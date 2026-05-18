@@ -8,6 +8,8 @@ import java.util.Set;
 import org.eclipse.jdt.annotation.Nullable;
 
 import com.dlb.chess.analyze.ChessRuleAnalyzer;
+import com.dlb.chess.bitboard.BitboardPosition;
+import com.dlb.chess.bitboard.BitboardPositionUtility;
 import com.dlb.chess.board.enums.CastlingMove;
 import com.dlb.chess.board.enums.CastlingRight;
 import com.dlb.chess.board.enums.CastlingRightLoss;
@@ -782,6 +784,16 @@ public class Board {
 
   public StaticPosition getStaticPosition() {
     return Nulls.getLast(dynamicPositionList).staticPosition();
+  }
+
+  /**
+   * Current position as a {@link BitboardPosition}. Computed per call from {@link #getStaticPosition()} via
+   * {@link BitboardPositionUtility#fromStaticPosition} — no caching. This is the first step of the switchover
+   * release: exposes the bitboard view without changing any production behaviour yet. Phase 1.2 will cache the
+   * bitboard as a field; for now, callers that read this in a hot loop should hold the result locally.
+   */
+  public BitboardPosition getBitboardPosition() {
+    return BitboardPositionUtility.fromStaticPosition(getStaticPosition());
   }
 
   StaticPosition getStaticPositionBeforeLastMove() {
