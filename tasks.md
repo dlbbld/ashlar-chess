@@ -238,18 +238,88 @@ All of the above belong to the dedicated switchover release that follows, and on
 
 This release **only proceeds if the differential-test harness from the bitboard release has stayed green across the full corpus.** Per the Project invariant at the top of this file: this release switches the production path, and at the same time moves the `StaticPosition` subtree from `src/main/` to `src/test/` — relocated, not deleted, and remains as the permanent differential-test oracle from that point on.
 
-- [ ] Switch production hot paths in `Board` to consume `BitboardPosition`. Public API shape unchanged where possible
-- [ ] Port the unwinnability analyzers (`FindHelpMateInterrupt`, `FindHelpmateExhaust`, `UnwinnableQuickAnalyzer`, `UnwinnableFullAnalyzer`, `UnwinnableSemiStatic`, `Mobility`, `Score`, `GoingToCorner`) to `BitboardPosition`
-- [ ] Magic bitboards for sliding pieces, if the profiler at this stage shows the classical ray loops are a bottleneck on the now-hot bitboard path
-- [ ] Mutable make/unmake variant on `BitboardPosition`, for tree search inside the helpmate analyzer
-- [ ] Lean analyzer-side board (no per-ply history, no SAN/LAN/disambiguation lists, no repetition map) usable by `FindHelpmateExhaust`. This is the actual `findHelpMate` perf fix
-- [ ] **Relocate the `StaticPosition` subtree from `src/main/java/` to `src/test/java/`.** Classes that move together: `StaticPosition`, `StaticPositionUtility`, the `com.dlb.chess.squares.*` family (consumers of `StaticPosition`), the `com.dlb.chess.moves.*` family (consumers of `StaticPosition`), and any utilities whose only remaining callers are in this subtree. After this step no `src/main/` code references any of these.
-- [ ] Permanent differential-test layer formalised: every primitive on `BitboardPosition` is asserted against the relocated `StaticPosition` oracle for every fixture in the corpus, for every supported release going forward. This is project policy from this point on, not a one-off check
-- [ ] Performance baseline: measure `findHelpMate` on representative unwinnability fixtures; target within 5× of `chesslib`
+### Implementation plan
 
-## Bitboard for CHA
+Commit-sized steps suitable for Codex review. The bitboard release (commit `246a66ae`) shipped a verified parallel implementation; this release flips production. Each step lands one logical change, validated against the existing test surface plus the bitboard differential tests from the prior release.
 
-The CHA tree search is suffering from the performance caused by the rich board, for example Board.unmove is not suited for a tree search. Replace with a bitboard suited for the high performance required for a treesearch.
+#### Status
+
+- ⬜ **Step 1.1** — current — `Board.getBitboardPosition()` returning a per-call computed `BitboardPosition` (no caching yet). Pure additive.
+- ⬜ Steps 1.2 → 7.x — pending
+
+#### Cross-cutting decisions (settled upfront)
+
+- **One hot path at a time.** Production callers switch over individually, with the existing test suite green after each step. No "big bang" cutover.
+- **`StaticPosition` computation stays on `Board` through Phases 1-5.** Only Phase 6 removes it. Until then `BitboardPosition` rides alongside as the primary, `StaticPosition` as a fallback for any callers not yet ported.
+- **Magic bitboards are profile-gated.** Only land if classical ray loops show as the actual bottleneck after the lean analyzer board is in place.
+- **Mutable make/unmake is conditional.** Only land if the lean analyzer board's tree search actually demands it; immutable `afterMove` might be sufficient.
+- **The bitboard-release test bridges stay.** `SlidingAttacksTestOracle` and `LegalMovesTestOracle` under `src/test/java/com.dlb.chess.squares` / `com.dlb.chess.moves` become permanent — they outlive the bitboard release as long as those reference classes exist.
+
+---
+
+### Phase 1 — `Board` carries `BitboardPosition`; primary queries switch
+
+**Step 1.1** — Add `Board.getBitboardPosition()` returning a fresh `BitboardPositionUtility.fromStaticPosition(getStaticPosition())` per call. No field caching yet. Test: returned bitboard agrees with the existing `StaticPosition` on every fixture in the corpus.
+
+**Step 1.2** — Cache the bitboard as a field on `Board`, maintained through every `move()` / `unmove()` via `afterMove`. Test: the cached bitboard equals the freshly-computed version at every halfmove of every fixture replayed.
+
+**Step 1.3** — Switch `Board.isCheck()` to consume `bitboardPosition.isInCheck(side)`. Test: existing Board check tests + bitboard `TestBitboardPositionIsInCheck`.
+
+**Step 1.4** — Switch `Board.getLegalMoves()` to compose `bitboardPosition.legalMoves(...)` with the castling moves still computed on the Board side. Test: existing Board / SAN / PGN tests.
+
+---
+
+### Phase 2 — Port unwinnability analyzers
+
+**Step 2.1** — Port `UnwinnableQuickAnalyzer` to consume `BitboardPosition`. Reuses Phase 4-5 bitboard primitives. Test: existing CHA-quick tests.
+
+**Step 2.2** — Port `UnwinnableSemiStatic` + supporting analysis classes (`Mobility`, `SemiOpenFilesUtility`, etc.).
+
+**Step 2.3** — Port `Score`, `GoingToCorner`, and the per-side helpmate-eval helpers.
+
+**Step 2.4** — Port `UnwinnableFullAnalyzer` and `FindHelpMateInterrupt`. `FindHelpmateExhaust` deferred to Phase 3 where it merges with the lean board.
+
+---
+
+### Phase 3 — Lean analyzer board for `FindHelpmateExhaust`
+
+**Step 3.1** — Design + new lightweight position class. Minimal state: `BitboardPosition` + side-to-move + en-passant target + castling rights + halfmove clock. No SAN/LAN lists, no disambiguation, no full history. Keyed on `BitboardPosition.zobristPieces()` + side/castling/EP contributions for transposition.
+
+**Step 3.2** — `FindHelpmateExhaust` consumes the lean board. Helpmate transposition map switches from `DynamicPosition` to `long` Zobrist key.
+
+**Step 3.3** — Baseline `findHelpMate` runtime on representative unwinnability fixtures. Record in tasks.md.
+
+---
+
+### Phase 4 — Mutable make/unmake (conditional)
+
+**Step 4.1** — Only if Phase 3's tree-search profile shows immutable `afterMove` allocations are a bottleneck. Add mutable variant on the lean analyzer board (NOT on `BitboardPosition` itself — preserves the record's immutability).
+
+---
+
+### Phase 5 — Magic bitboards (conditional)
+
+**Step 5.1** — Only if profiling after Phases 3-4 shows classical ray loops are the bottleneck on the now-hot bitboard path. Drop in magic bitboards behind the existing `(int squareOrdinal, long occupied) -> long` API in `BishopAttacks` / `RookAttacks` — no caller changes needed.
+
+---
+
+### Phase 6 — Relocate `StaticPosition` subtree to `src/test/`
+
+**Step 6.1** — Audit: confirm no `src/main/` class still references `StaticPosition`, `StaticPositionUtility`, the `com.dlb.chess.squares.*` consumers, or the `com.dlb.chess.moves.*` consumers. Any holdouts get ported or fixed.
+
+**Step 6.2** — Drop `Board`'s `staticPosition` field. `getStaticPosition()` becomes a derived view computed from the bitboard via `BitboardPositionUtility.toStaticPosition()` — and stays as a public API for callers that want the human-readable mailbox form.
+
+**Step 6.3** — Move the subtree from `src/main/java/` to `src/test/java/`: `StaticPosition`, `StaticPositionUtility`, the `com.dlb.chess.squares.*` family, the `com.dlb.chess.moves.*` family. Test: full suite still green (differential tests now drive the relocated oracle against the bitboard).
+
+**Step 6.4** — Formalize the permanent differential-test layer in tasks.md / specification.md: every primitive on `BitboardPosition` is asserted against the relocated `StaticPosition` oracle for every fixture in the corpus, for every supported release going forward. Project policy from this point on.
+
+---
+
+### Phase 7 — Performance baseline + release notes
+
+**Step 7.1** — Measure `findHelpMate` runtime against the representative unwinnability fixtures. Target: within 5× of `chesslib` on the same fixtures.
+
+**Step 7.2** — Update `tasks.md` (move switchover to Done), `README.md` (note bitboard backend), and `specification.md` (architecture section now describes the bitboard primary / StaticPosition oracle split).
 
 ## Future release — python-chess primary cross-validation + PGN/FEN test coverage expansion
 
