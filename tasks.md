@@ -61,9 +61,15 @@ Commit-sized steps suitable for Codex review. Each step is one PR-style commit o
 - ✅ **Step 5.3** — `920ebce0` — `PawnMoves.captures` (regular + en-passant) + differential test. Phase 5 complete.
 - ✅ **Step 6.1** — `b2d4cf5b` — `BitboardPosition.legalKingTargets(Side)` (XRAY-aware king-safety filter) + differential test against `KingNonCastlingLegalMoves`. Adds `attackedSquares(Side, long occupiedOverride)` overload and the `LegalMovesTestOracle` test bridge.
 - ✅ **Step 6.2** — `745251a0` — `BitboardPosition.pinRay(Square, Side)` and `pinnedPieces(Side)` + differential test against a "remove and re-check enemy slider attackers" reference oracle
-- ✅ **Step 6.3** — `71c87937` — `BitboardPosition.legalMoves(Side, long enPassantBit)` + **spine differential test** against `Board.getLegalMoves()` (castling-filtered) for every fixture × side-to-move. Phase 6 complete. The bitboard layer is now a verified parallel implementation through legal moves.
-- ⬜ **Step 7.1** — current — immutable `BitboardPosition.afterMove(MoveSpecification) -> BitboardPosition` + differential test against `StaticPositionUtility.createPositionAfterMove`. Includes the piece-movement part of castling (rook + king both move).
-- ⬜ Steps 8.1 → 9.3 — pending
+- ✅ **Step 6.3** — `71c87937` — `BitboardPosition.legalMoves(Side, long enPassantBit)` + **spine differential test** against `Board.getLegalMoves()` (castling-filtered) for every fixture × side-to-move. Phase 6 complete.
+- ✅ **Step 7.1** — `efac6be4` — immutable `BitboardPosition.afterMove(MoveSpecification, Side) -> BitboardPosition` + **second spine differential test** against `StaticPositionUtility.createPositionAfterMove` for every fixture × every legal move (normal, capture, EP, four promotion targets, both castling sides). Phase 7 complete.
+- ✅ **Steps 8.1 + 8.2** — `9b406562` — `ZobristKeys` (768-entry piece-square table from a fixed seed) + `BitboardPosition.zobristPieces()` (piece-placement hash) + collision-free / equal-position-equal-hash / move-changes-hash property tests
+- ✅ **Step 8.3** — `58081891` — `BitboardPosition.hashDelta(MoveSpecification, Side)` (incremental Zobrist XOR) + corpus differential test against fresh recomputation. Phase 8 complete.
+- ✅ **Step 9.1** — `60f07052` — re-enabled all 18 unwinnability test classes disabled in Phase 0. Phase 9 complete.
+
+**Bitboard backend release: COMPLETE.** Suite 1125 tests / 0 failures / 0 errors / 4 skipped (the 4 are pre-existing `IS_EXCLUDE_LONG_RUNNING_*` exclusions). Runtime ~54 s on this machine — well under the previous baseline. The bitboard layer is a fully-verified parallel implementation of `StaticPosition`-based move generation, move application, and Zobrist hashing across the entire corpus. Per the Project invariant, `StaticPosition` and every class derived from it remain in `src/main/` unchanged; production hot paths still consume them.
+
+**Baseline for the switchover release (Phase 9.2):** `findHelpMate` continues to run on the `StaticPosition` pipeline. The full unwinnability test suite contributes ~13 s to the 54 s total. This is the slow-and-right baseline against which the switchover release's lean-analyzer-board perf work will be measured.
 
 ### Cross-cutting decisions (settled upfront)
 
