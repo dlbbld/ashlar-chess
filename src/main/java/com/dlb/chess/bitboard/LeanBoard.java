@@ -3,6 +3,7 @@ package com.dlb.chess.bitboard;
 import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.Set;
+import java.util.TreeSet;
 
 import com.dlb.chess.board.Board;
 import com.dlb.chess.board.enums.CastlingMove;
@@ -11,6 +12,8 @@ import com.dlb.chess.board.enums.PieceType;
 import com.dlb.chess.board.enums.Side;
 import com.dlb.chess.board.enums.Square;
 import com.dlb.chess.common.model.MoveSpecification;
+import com.dlb.chess.model.LegalMove;
+import com.dlb.chess.moves.AbstractLegalMoves;
 
 /**
  * Lean position-and-state container for tree search inside the unwinnability / helpmate analyzers. Carries only the
@@ -78,9 +81,30 @@ public final class LeanBoard {
     return halfmoveClock;
   }
 
+  /**
+   * Legal moves for the side to move — non-castling targets via {@link BitboardPosition#legalMoves} plus castling
+   * moves via the existing {@link AbstractLegalMoves#calculateCastlingLegalMoves} bridge. Castling cannot be
+   * dropped from a tree-search legal-move set: a position whose only escape from check is a castle would otherwise
+   * be misclassified as checkmate, and games where the winning line involves castling would be silently
+   * truncated.
+   *
+   * <p>
+   * The castling bridge currently consumes a {@link com.dlb.chess.board.StaticPosition}, derived here via
+   * {@link BitboardPositionUtility#toStaticPosition}. That conversion is per-call cost and will need to either
+   * become a cached field or be replaced with a bitboard-native castling check before this method drives a hot
+   * helpmate search (Step 3.2). TODO is captured in tasks.md.
+   */
   public Set<MoveSpecification> legalMoves() {
     final long enPassantBit = enPassantTarget == Square.NONE ? 0L : 1L << enPassantTarget.ordinal();
-    return bitboardPosition.legalMoves(havingMove, enPassantBit);
+    final Set<MoveSpecification> moves = new TreeSet<>(bitboardPosition.legalMoves(havingMove, enPassantBit));
+    final CastlingRight currentCastlingRight = castlingRight(havingMove);
+    if (currentCastlingRight != CastlingRight.NONE) {
+      for (final LegalMove castlingLegalMove : AbstractLegalMoves.calculateCastlingLegalMoves(
+          BitboardPositionUtility.toStaticPosition(bitboardPosition), havingMove, currentCastlingRight)) {
+        moves.add(castlingLegalMove.moveSpecification());
+      }
+    }
+    return moves;
   }
 
   public boolean isInCheck() {

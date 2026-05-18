@@ -6,6 +6,9 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
 
+import java.util.Set;
+import java.util.TreeSet;
+
 import com.dlb.chess.bitboard.LeanBoard;
 import com.dlb.chess.board.Board;
 import com.dlb.chess.board.enums.Side;
@@ -52,23 +55,41 @@ class TestLeanBoard {
 
   @SuppressWarnings("static-method")
   @Test
-  void corpusMoveAndUnmoveMatchesBoardState() throws Exception {
-    // For each fixture, take the first legal move (if any); apply on a parallel Board AND the LeanBoard;
-    // verify post-move state matches; undo the LeanBoard; verify pre-move state restored.
+  void corpusLegalMovesSetMatchesBoard() {
+    // LeanBoard.legalMoves must include both bitboard non-castling moves AND castling targets — set-equal with the
+    // production Board's legal move set (taken as MoveSpecifications, so this catches castling drops).
+    for (final PgnTest pgnTest : PgnTest.values()) {
+      final PgnTestCaseList testCaseList = PgnTestCaseCatalog.getTestList(pgnTest);
+      for (final PgnTestCase testCase : testCaseList.list()) {
+        final Board board = testCase.finalPosition();
+        final LeanBoard leanBoard = LeanBoard.fromBoard(board);
+        final Set<MoveSpecification> boardSpecs = new TreeSet<>();
+        for (final LegalMove legalMove : board.getLegalMoves()) {
+          boardSpecs.add(legalMove.moveSpecification());
+        }
+        assertEquals(boardSpecs, leanBoard.legalMoves(),
+            "legalMoves set mismatch in fixture " + testCase.pgnName());
+      }
+    }
+  }
+
+  @SuppressWarnings("static-method")
+  @Test
+  void corpusEveryLegalMoveAndUnmoveMatchesBoardState() throws Exception {
+    // For each fixture, apply EVERY legal move (one ply each) on a parallel Board AND the LeanBoard; verify state
+    // matches both sides; unmove on both; verify pre-move state restored. Catches any move-shape-specific bug:
+    // captures, castling, EP, all four promotions, pawn double-pushes, etc.
     for (final PgnTest pgnTest : PgnTest.values()) {
       final PgnTestCaseList testCaseList = PgnTestCaseCatalog.getTestList(pgnTest);
       for (final PgnTestCase testCase : testCaseList.list()) {
         final Board board = testCase.finalPosition();
         if (board.getLegalMoves().isEmpty()
             || BasicChessUtility.calculateGameStatus(board).isAutomaticTermination()) {
-          // Skip terminal positions (checkmate/stalemate or FIDE auto-termination) — board.move() would throw.
+          // Skip terminal positions — board.move() would throw.
           continue;
         }
-        final LegalMove firstLegal = board.getLegalMoves().get(0);
-        final MoveSpecification moveSpec = firstLegal.moveSpecification();
-
         final LeanBoard leanBoard = LeanBoard.fromBoard(board);
-        // Capture pre-move state for the round-trip assertion.
+        // Capture initial state to assert restoration after each unmove.
         final var preBitboard = leanBoard.bitboardPosition();
         final var preHavingMove = leanBoard.havingMove();
         final var preEpTarget = leanBoard.enPassantTarget();
@@ -76,39 +97,40 @@ class TestLeanBoard {
         final var preBlackCastling = leanBoard.castlingRight(Side.BLACK);
         final var preHalfmove = leanBoard.halfmoveClock();
 
-        board.move(moveSpec);
-        leanBoard.move(moveSpec);
+        for (final LegalMove legalMove : board.getLegalMoves()) {
+          final MoveSpecification moveSpec = legalMove.moveSpecification();
+          board.move(moveSpec);
+          leanBoard.move(moveSpec);
 
-        assertEquals(board.getBitboardPosition(), leanBoard.bitboardPosition(),
-            "post-move bitboardPosition mismatch in fixture " + testCase.pgnName());
-        assertEquals(board.getHavingMove(), leanBoard.havingMove(),
-            "post-move havingMove mismatch in fixture " + testCase.pgnName());
-        assertEquals(board.getEnPassantCaptureTargetSquare(), leanBoard.enPassantTarget(),
-            "post-move enPassantTarget mismatch in fixture " + testCase.pgnName());
-        assertEquals(board.getCastlingRightWhite(), leanBoard.castlingRight(Side.WHITE),
-            "post-move castlingRightWhite mismatch in fixture " + testCase.pgnName());
-        assertEquals(board.getCastlingRightBlack(), leanBoard.castlingRight(Side.BLACK),
-            "post-move castlingRightBlack mismatch in fixture " + testCase.pgnName());
-        assertEquals(board.getHalfMoveClock(), leanBoard.halfmoveClock(),
-            "post-move halfmoveClock mismatch in fixture " + testCase.pgnName());
-        assertFalse(leanBoard.isFirstMove(), "after move, leanBoard should not report isFirstMove");
+          assertEquals(board.getBitboardPosition(), leanBoard.bitboardPosition(),
+              "post-move bitboardPosition mismatch for " + moveSpec + " in fixture " + testCase.pgnName());
+          assertEquals(board.getHavingMove(), leanBoard.havingMove(),
+              "post-move havingMove mismatch for " + moveSpec + " in fixture " + testCase.pgnName());
+          assertEquals(board.getEnPassantCaptureTargetSquare(), leanBoard.enPassantTarget(),
+              "post-move enPassantTarget mismatch for " + moveSpec + " in fixture " + testCase.pgnName());
+          assertEquals(board.getCastlingRightWhite(), leanBoard.castlingRight(Side.WHITE),
+              "post-move castlingRightWhite mismatch for " + moveSpec + " in fixture " + testCase.pgnName());
+          assertEquals(board.getCastlingRightBlack(), leanBoard.castlingRight(Side.BLACK),
+              "post-move castlingRightBlack mismatch for " + moveSpec + " in fixture " + testCase.pgnName());
+          assertEquals(board.getHalfMoveClock(), leanBoard.halfmoveClock(),
+              "post-move halfmoveClock mismatch for " + moveSpec + " in fixture " + testCase.pgnName());
+          assertFalse(leanBoard.isFirstMove(),
+              "after move, leanBoard should not report isFirstMove for " + moveSpec);
 
-        leanBoard.unmove();
-        assertEquals(preBitboard, leanBoard.bitboardPosition(),
-            "post-unmove bitboardPosition not restored in fixture " + testCase.pgnName());
-        assertEquals(preHavingMove, leanBoard.havingMove(),
-            "post-unmove havingMove not restored in fixture " + testCase.pgnName());
-        assertEquals(preEpTarget, leanBoard.enPassantTarget(),
-            "post-unmove enPassantTarget not restored in fixture " + testCase.pgnName());
-        assertEquals(preWhiteCastling, leanBoard.castlingRight(Side.WHITE),
-            "post-unmove castlingRightWhite not restored in fixture " + testCase.pgnName());
-        assertEquals(preBlackCastling, leanBoard.castlingRight(Side.BLACK),
-            "post-unmove castlingRightBlack not restored in fixture " + testCase.pgnName());
-        assertEquals(preHalfmove, leanBoard.halfmoveClock(),
-            "post-unmove halfmoveClock not restored in fixture " + testCase.pgnName());
-        assertTrue(leanBoard.isFirstMove(), "after unmove, leanBoard should report isFirstMove again");
+          leanBoard.unmove();
+          board.unmove();
 
-        board.unmove();
+          assertEquals(preBitboard, leanBoard.bitboardPosition(),
+              "post-unmove bitboardPosition not restored after " + moveSpec + " in fixture " + testCase.pgnName());
+          assertEquals(preHavingMove, leanBoard.havingMove(), "post-unmove havingMove not restored");
+          assertEquals(preEpTarget, leanBoard.enPassantTarget(), "post-unmove enPassantTarget not restored");
+          assertEquals(preWhiteCastling, leanBoard.castlingRight(Side.WHITE),
+              "post-unmove castlingRightWhite not restored");
+          assertEquals(preBlackCastling, leanBoard.castlingRight(Side.BLACK),
+              "post-unmove castlingRightBlack not restored");
+          assertEquals(preHalfmove, leanBoard.halfmoveClock(), "post-unmove halfmoveClock not restored");
+          assertTrue(leanBoard.isFirstMove(), "after unmove, leanBoard should report isFirstMove again");
+        }
       }
     }
   }
