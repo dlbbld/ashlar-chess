@@ -17,6 +17,7 @@ import com.dlb.chess.board.enums.Side;
 import com.dlb.chess.board.enums.Square;
 import com.dlb.chess.common.model.MoveSpecification;
 import com.dlb.chess.model.LegalMove;
+import com.dlb.chess.moves.AbstractLegalMoves;
 import com.dlb.chess.test.model.PgnTestCase;
 import com.dlb.chess.test.model.PgnTestCaseList;
 import com.dlb.chess.test.pgn.setup.PgnTestCaseCatalog;
@@ -25,9 +26,16 @@ import com.dlb.chess.test.pgntest.enums.PgnTest;
 /**
  * The spine assertion of the bitboard release: for every fixture in the corpus, the bitboard's
  * {@link BitboardPosition#legalMoves(Side, long)} (non-castling only) must agree set-equal with
- * {@code Board.getLegalMoves()} after filtering out castling moves from the reference. Every piece type,
- * pin filtering, check evasion, double check, EP including the rank-pin edge case, and promotion expansion are
- * exercised together.
+ * {@link AbstractLegalMoves#calculateLegalMoves} (the StaticPosition-backed reference) after filtering out castling
+ * moves. Every piece type, pin filtering, check evasion, double check, EP including the rank-pin edge case, and
+ * promotion expansion are exercised together.
+ *
+ * <p>
+ * The reference is {@code AbstractLegalMoves.calculateLegalMoves} directly — NOT {@code board.getLegalMoves()},
+ * which since Switchover Step 2.2 ({@code a235d363}) is produced by the bitboard pipeline itself. Using
+ * {@code board.getLegalMoves()} as the oracle here would make the test self-referential and unable to detect
+ * bitboard-side regressions. The StaticPosition-backed reference path must stay independent of the bitboard until
+ * the relocation phase moves it to {@code src/test/}.
  *
  * <p>
  * Castling moves are excluded because they live on {@link Board} with the castling-rights state; the bitboard layer
@@ -49,7 +57,8 @@ class TestBitboardPositionLegalMoves {
         final long enPassantBit = boardEpTarget == Square.NONE ? 0L : 1L << boardEpTarget.ordinal();
 
         final Set<MoveSpecification> bitboardMoves = bitboardPosition.legalMoves(havingMove, enPassantBit);
-        final Set<MoveSpecification> referenceNonCastlingMoves = referenceNonCastlingMoves(board);
+        final Set<MoveSpecification> referenceNonCastlingMoves = staticPositionReferenceNonCastlingMoves(board,
+            staticPosition, havingMove, boardEpTarget);
 
         assertEquals(referenceNonCastlingMoves, bitboardMoves,
             "legalMoves disagreement for " + havingMove + " in fixture " + testCase.pgnName());
@@ -57,9 +66,11 @@ class TestBitboardPositionLegalMoves {
     }
   }
 
-  private static Set<MoveSpecification> referenceNonCastlingMoves(Board board) {
+  private static Set<MoveSpecification> staticPositionReferenceNonCastlingMoves(Board board,
+      StaticPosition staticPosition, Side havingMove, Square enPassantTargetSquare) {
     final Set<MoveSpecification> result = new TreeSet<>();
-    for (final LegalMove legalMove : board.getLegalMoves()) {
+    for (final LegalMove legalMove : AbstractLegalMoves.calculateLegalMoves(staticPosition, havingMove,
+        board.getCastlingRight(havingMove), enPassantTargetSquare)) {
       final MoveSpecification spec = legalMove.moveSpecification();
       if (spec.castlingMove() == CastlingMove.NONE) {
         result.add(spec);

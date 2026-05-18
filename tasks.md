@@ -270,7 +270,7 @@ The original plan had a Step 1.4 — switch `Board.getLegalMoves()` to compose `
 
 **Step 1.1** — Add `Board.getBitboardPosition()` returning a fresh `BitboardPositionUtility.fromStaticPosition(getStaticPosition())` per call. No field caching yet. Test: returned bitboard agrees with the existing `StaticPosition` on every fixture in the corpus.
 
-**Step 1.2** — Cache the bitboard as a field on `Board`, maintained through every `move()` / `unmove()` via `afterMove`. Test: the cached bitboard equals the freshly-computed version at every halfmove of every fixture replayed.
+**Step 1.2** — Cache the bitboard as a field on `Board`: a `List<BitboardPosition>` parallel to `dynamicPositionList`, appended on every `move()` (via `BitboardPositionUtility.fromStaticPosition(afterStaticPosition)`) and popped on every `unmove()`. `getBitboardPosition()` becomes O(1) via `Nulls.getLast`. Incremental computation via `BitboardPosition.afterMove` is a follow-on if profiling shows the per-move recomputation is hot. Test: corpus final positions agree with `fromStaticPosition`, plus a hand-played five-move sequence (e4, e5, Nf3, Nc6, Bb5) followed by full `unmove()` walk, asserting the cache is bit-exact at every intermediate state.
 
 **Step 1.3** — Switch `Board.isCheck()` to consume `bitboardPosition.isInCheck(side)`. Test: existing Board check tests + bitboard `TestBitboardPositionIsInCheck`. Phase 1 complete after this step.
 

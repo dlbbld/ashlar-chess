@@ -12,6 +12,7 @@ import com.dlb.chess.board.enums.Side;
 import com.dlb.chess.board.enums.Square;
 import com.dlb.chess.common.model.MoveSpecification;
 import com.dlb.chess.model.LegalMove;
+import com.dlb.chess.moves.AbstractLegalMoves;
 import com.dlb.chess.test.model.PgnTestCase;
 import com.dlb.chess.test.model.PgnTestCaseList;
 import com.dlb.chess.test.pgn.setup.PgnTestCaseCatalog;
@@ -20,9 +21,12 @@ import com.dlb.chess.test.pgntest.enums.PgnTest;
 /**
  * Differential test for {@link BitboardLegalMoveFactory#toLegalMove}: for every legal move on every corpus fixture,
  * the converter applied to the move's {@link MoveSpecification} must reproduce the reference's {@link LegalMove}
- * record (same moving piece, captured piece, and {@link com.dlb.chess.model.LegalMoveKind}). This is the
- * prerequisite check for swapping {@code Board.getLegalMoves()}'s population path to the bitboard pipeline in
- * Phase 2.2.
+ * record (same moving piece, captured piece, and {@link com.dlb.chess.model.LegalMoveKind}).
+ *
+ * <p>
+ * The reference is {@link AbstractLegalMoves#calculateLegalMoves} directly — NOT
+ * {@code board.getLegalMoves()}, which since Switchover Step 2.2 ({@code a235d363}) is produced via this very
+ * factory. Using {@code board.getLegalMoves()} as the oracle here would make the test self-referential.
  */
 class TestBitboardLegalMoveFactory {
 
@@ -35,7 +39,8 @@ class TestBitboardLegalMoveFactory {
         final Board board = testCase.finalPosition();
         final Side havingMove = board.getHavingMove();
         final BitboardPosition bitboardPosition = board.getBitboardPosition();
-        for (final LegalMove referenceMove : board.getLegalMoves()) {
+        for (final LegalMove referenceMove : AbstractLegalMoves.calculateLegalMoves(board.getStaticPosition(),
+            havingMove, board.getCastlingRight(havingMove), board.getEnPassantCaptureTargetSquare())) {
           final LegalMove converted = BitboardLegalMoveFactory.toLegalMove(bitboardPosition,
               referenceMove.moveSpecification(), havingMove);
           assertEquals(referenceMove, converted,
