@@ -252,8 +252,10 @@ Commit-sized steps suitable for Codex review. The bitboard release (commit `246a
 - ✅ **Codex P2 fix** — `ed4e20eb` — `TestBitboardPositionLegalMoves` and `TestBitboardLegalMoveFactory` were silently turned self-referential by Step 2.2; both now use `AbstractLegalMoves.calculateLegalMoves` directly as the independent StaticPosition-backed oracle. Plus a Step 1.2 doc-mismatch fix.
 - ✅ **Step 2.3a** — `732e356f` — bitboard variants added to `UnwinnabilityMaterial` (pure additive; differential-tested against the StaticPosition surface).
 - ✅ **Step 2.3b** — `33e03a96` — `UnwinnableQuickAnalyzer`'s five private helpers (`calculateHasOnlyPawnsBishopsAndKings`, `calculateIsAlmostOnlyPawnsBishopsAndKings`, `calculateIsBlockedCandidate`, `calculateNumberOfBlockedPawns`, `calculateHasLonelyPawns`) now consume `BitboardPosition`; call sites route through `board.getBitboardPosition()`. Plus bitboard variant of `SemiOpenFilesUtility.calculateHasSemiOpenFile`. Drops `StaticPosition`, `Piece`, `Square` imports from `UnwinnableQuickAnalyzer`. Suite runtime drops to ~31s.
-- ⬜ **Step 2.4** — current — port `Mobility` to consume `BitboardPosition` (next analyzer leaf used by `UnwinnableQuickAnalyzer.unwinnableQuick`)
-- ⬜ Steps 2.5 → 7.x — pending
+- ✅ **Step 2.4** — `692f96ce` — `Mobility.mobility` now consumes `board.getBitboardPosition()` (the only two StaticPosition queries: build the piecePlacementList from occupied squares + first-round empty-target check). The class is otherwise self-contained on its `PiecePlacement`/`MobilitySolution` data structures.
+- ✅ **Step 2.5** — `9abc0926` — `Score.score`, `GoingToCorner.goingToCorner`, and `FindHelpmateExhaust.calculateIsNeedLoserPromotion` (+ its two helpers) all swap from `StaticPosition` to `BitboardPosition`. The `findHelpmate` recursion call site extracts `board.getBitboardPosition()` once and reuses it for the KingOnly / HasNoPawns / needLoserPromotion guards, the `Score.score` call, and the `calculateHasQueen` check. `UnwinnableSemiStatic` did not need porting — it consumes only `Board`'s public surface, which has been bitboard-backed since Phase 1.
+- ⬜ **Step 2.6** — current — port the remaining StaticPosition holdouts: `EnPassantCaptureUtility.calculateHasOpponentPawnOnLeftOrRight` (called from `FindHelpmateExhaust`), the unused `calculateIsUnwinnableAccordingLemma5/6`, and `FindHelpMateInterrupt` / `UnwinnableFullAnalyzer`
+- ⬜ Steps 3.1 → 7.x — pending
 
 #### Note on the original Step 1.4
 
