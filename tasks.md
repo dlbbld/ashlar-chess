@@ -247,8 +247,10 @@ Commit-sized steps suitable for Codex review. The bitboard release (commit `246a
 - ✅ **Step 1.1** — `915cf866` — `Board.getBitboardPosition()` returning a per-call computed `BitboardPosition` (no caching yet). Pure additive.
 - ✅ **Step 1.2** — `bb85f09e` — bitboard cached as `bitboardPositionList` field on `Board`, maintained per `move()`/`unmove()`. O(1) `getBitboardPosition()` via `Nulls.getLast`.
 - ✅ **Step 1.3** — `c752bd5e` — `Board`'s `isCheck` computation switches to `BitboardPosition.isInCheck`; drops the unused `AbstractAttackedSquares` / `Set` imports. Phase 1 complete.
-- ⬜ **Step 2.1** — current — `MoveSpecification → LegalMove` converter on the bitboard side (kind classification, captured-piece lookup), the prerequisite for porting `Board.getLegalMoves()` and the unwinnability analyzers
-- ⬜ Steps 2.2 → 7.x — pending
+- ✅ **Step 2.1** — `4c7cb4e9` — `BitboardLegalMoveFactory.toLegalMove` converts a bare `MoveSpecification` into a fully-typed `LegalMove` (movingPiece, capturedPiece, kind), differential-tested against `board.getLegalMoves()` on every corpus fixture.
+- ✅ **Step 2.2** — `a235d363` — `Board.getLegalMoves()` population switches to `BitboardLegalMoveFactory.calculateLegalMoves` (bitboard for non-castling + public bridge to `KingCastlingLegalMoves` for castling). Full suite ~46s vs. ~54s before — the bitboard pipeline is faster than the StaticPosition path it replaces.
+- ⬜ **Step 2.3** — current — port `UnwinnableQuickAnalyzer` to consume `BitboardPosition`
+- ⬜ Steps 2.4 → 7.x — pending
 
 #### Note on the original Step 1.4
 
