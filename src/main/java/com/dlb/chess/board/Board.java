@@ -7,6 +7,7 @@ import java.util.Objects;
 import org.eclipse.jdt.annotation.Nullable;
 
 import com.dlb.chess.analyze.ChessRuleAnalyzer;
+import com.dlb.chess.bitboard.BitboardLegalMoveFactory;
 import com.dlb.chess.bitboard.BitboardPosition;
 import com.dlb.chess.bitboard.BitboardPositionUtility;
 import com.dlb.chess.board.enums.CastlingMove;
@@ -37,7 +38,6 @@ import com.dlb.chess.fen.model.Fen;
 import com.dlb.chess.model.CastlingRightBoth;
 import com.dlb.chess.model.LegalMove;
 import com.dlb.chess.model.LegalMoveKind;
-import com.dlb.chess.moves.AbstractLegalMoves;
 import com.dlb.chess.moves.CastlingUtility;
 import com.dlb.chess.moves.EnPassantCaptureUtility;
 import com.dlb.chess.moves.PromotionUtility;
@@ -191,13 +191,15 @@ public class Board {
 
     this.initialFen = initialFenUse;
 
+    final BitboardPosition initialBitboardPosition = BitboardPositionUtility.fromStaticPosition(initialStaticPosition);
+    final long initialEnPassantBit = initialEnPassantCaptureTargetSquare == Square.NONE ? 0L
+        : 1L << initialEnPassantCaptureTargetSquare.ordinal();
+
     this.performedLegalMoveList = new ArrayList<>();
     this.legalMoveListPerPly = new ArrayList<>();
-    final ImmutableList<LegalMove> legalMoves = AbstractLegalMoves.calculateLegalMoves(initialStaticPosition,
-        initialHavingMove, initialCastlingRight, initialEnPassantCaptureTargetSquare);
+    final ImmutableList<LegalMove> legalMoves = BitboardLegalMoveFactory.calculateLegalMoves(initialBitboardPosition,
+        initialStaticPosition, initialHavingMove, initialCastlingRight, initialEnPassantBit);
     this.legalMoveListPerPly.add(legalMoves);
-
-    final BitboardPosition initialBitboardPosition = BitboardPositionUtility.fromStaticPosition(initialStaticPosition);
 
     this.isCheckList = new ArrayList<>();
     final var isCheck = initialBitboardPosition.isInCheck(initialHavingMove);
@@ -432,12 +434,14 @@ public class Board {
     // now changing board class state, so performing the move!
     this.performedLegalMoveList.add(moveToPerform);
 
-    // now we have a depencency on instruction execution: the move must be performed before calling the legal moves
-    final ImmutableList<LegalMove> legalMovesAfterMove = AbstractLegalMoves.calculateLegalMoves(afterStaticPosition,
-        afterHavingMove, afterCastlingRightHavingMove, afterEnPassantCaptureTargetSquare);
-    this.legalMoveListPerPly.add(legalMovesAfterMove);
-
     final BitboardPosition afterBitboardPosition = BitboardPositionUtility.fromStaticPosition(afterStaticPosition);
+    final long afterEnPassantBit = afterEnPassantCaptureTargetSquare == Square.NONE ? 0L
+        : 1L << afterEnPassantCaptureTargetSquare.ordinal();
+
+    // now we have a depencency on instruction execution: the move must be performed before calling the legal moves
+    final ImmutableList<LegalMove> legalMovesAfterMove = BitboardLegalMoveFactory.calculateLegalMoves(
+        afterBitboardPosition, afterStaticPosition, afterHavingMove, afterCastlingRightHavingMove, afterEnPassantBit);
+    this.legalMoveListPerPly.add(legalMovesAfterMove);
 
     final var isCheck = afterBitboardPosition.isInCheck(afterHavingMove);
     this.isCheckList.add(isCheck);
