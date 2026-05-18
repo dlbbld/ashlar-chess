@@ -255,8 +255,10 @@ Commit-sized steps suitable for Codex review. The bitboard release (commit `246a
 - ✅ **Step 2.4** — `692f96ce` — `Mobility.mobility` now consumes `board.getBitboardPosition()` (the only two StaticPosition queries: build the piecePlacementList from occupied squares + first-round empty-target check). The class is otherwise self-contained on its `PiecePlacement`/`MobilitySolution` data structures.
 - ✅ **Step 2.5** — `9abc0926` — `Score.score`, `GoingToCorner.goingToCorner`, and `FindHelpmateExhaust.calculateIsNeedLoserPromotion` (+ its two helpers) all swap from `StaticPosition` to `BitboardPosition`. The `findHelpmate` recursion call site extracts `board.getBitboardPosition()` once and reuses it for the KingOnly / HasNoPawns / needLoserPromotion guards, the `Score.score` call, and the `calculateHasQueen` check. `UnwinnableSemiStatic` did not need porting — it consumes only `Board`'s public surface, which has been bitboard-backed since Phase 1.
 - ✅ **Step 2.6** — `b3ed0edf` — `FindHelpmateExhaust`'s last StaticPosition queries gone. `calculateIsEraseEnPassantCaptureTargetSquare` uses an inline bitboard adjacency check (kept inline because `EnPassantCaptureUtility` lives in the doomed-to-relocate `com.dlb.chess.moves` subtree). `calculateIsUnwinnableAccordingLemma5/6` ported to `BitboardPosition` with a TODO marker — they're declared but not yet wired into the analyzer flow; wiring them in is a follow-on.
-- ⬜ **Step 2.7** — current — `FindHelpMateInterrupt` has no `StaticPosition` use; `UnwinnableFullAnalyzer` has only the `Fen` pass-through (line 111). Phase 2 effectively complete on the analyzer side. Confirm and pivot to Phase 3.
-- ⬜ Steps 3.1 → 7.x — pending
+- ✅ **Step 2.7** — confirmed — `FindHelpMateInterrupt` has no `StaticPosition` use; `UnwinnableFullAnalyzer` has only the `Fen` constructor pass-through. Phase 2 done on the analyzer side.
+- ✅ **Step 3.1** — `a524c9b8` — `LeanBoard` (com.dlb.chess.bitboard) carries `BitboardPosition` + side + EP + per-side castling + halfmove clock, with snapshot-style move/unmove on a `Deque<UndoEntry>`. Differential-tested against `Board` for initial state and post-move/post-unmove state across the corpus.
+- ⬜ **Step 3.2** — current — wire `FindHelpmateExhaust` to consume a `LeanBoard` for tree search; switch the transposition map from `DynamicPosition` to a `long` Zobrist key (introduce side / castling / EP keys on `ZobristKeys`)
+- ⬜ Steps 3.3 → 7.x — pending
 
 #### Note on the original Step 1.4
 
