@@ -246,9 +246,13 @@ Commit-sized steps suitable for Codex review. The bitboard release (commit `246a
 
 - ✅ **Step 1.1** — `915cf866` — `Board.getBitboardPosition()` returning a per-call computed `BitboardPosition` (no caching yet). Pure additive.
 - ✅ **Step 1.2** — `bb85f09e` — bitboard cached as `bitboardPositionList` field on `Board`, maintained per `move()`/`unmove()`. O(1) `getBitboardPosition()` via `Nulls.getLast`.
-- ✅ **Step 1.3** — `c752bd5e` — `Board`'s `isCheck` computation switches to `BitboardPosition.isInCheck`; drops the unused `AbstractAttackedSquares` / `Set` imports.
-- ⬜ **Step 1.4** — current — switch `Board.getLegalMoves()` (the call that populates `legalMoveListPerPly`) to compose `bitboardPosition.legalMoves(...)` with castling moves still computed on the Board side
-- ⬜ Steps 2.1 → 7.x — pending
+- ✅ **Step 1.3** — `c752bd5e` — `Board`'s `isCheck` computation switches to `BitboardPosition.isInCheck`; drops the unused `AbstractAttackedSquares` / `Set` imports. Phase 1 complete.
+- ⬜ **Step 2.1** — current — `MoveSpecification → LegalMove` converter on the bitboard side (kind classification, captured-piece lookup), the prerequisite for porting `Board.getLegalMoves()` and the unwinnability analyzers
+- ⬜ Steps 2.2 → 7.x — pending
+
+#### Note on the original Step 1.4
+
+The original plan had a Step 1.4 — switch `Board.getLegalMoves()` to compose `bitboardPosition.legalMoves(...)` with castling. In practice this needs a `MoveSpecification → LegalMove` converter (because `getLegalMoves()` returns `LegalMove` records with `LegalMoveKind` + captured-piece info, while the bitboard returns bare `MoveSpecification`s) plus a castling generator. The converter is also needed by every unwinnability analyzer in Phase 2 — so it lives in Phase 2 as the lead-in, and the legal-move switch on `Board` lands once the converter exists.
 
 #### Cross-cutting decisions (settled upfront)
 
@@ -266,21 +270,23 @@ Commit-sized steps suitable for Codex review. The bitboard release (commit `246a
 
 **Step 1.2** — Cache the bitboard as a field on `Board`, maintained through every `move()` / `unmove()` via `afterMove`. Test: the cached bitboard equals the freshly-computed version at every halfmove of every fixture replayed.
 
-**Step 1.3** — Switch `Board.isCheck()` to consume `bitboardPosition.isInCheck(side)`. Test: existing Board check tests + bitboard `TestBitboardPositionIsInCheck`.
-
-**Step 1.4** — Switch `Board.getLegalMoves()` to compose `bitboardPosition.legalMoves(...)` with the castling moves still computed on the Board side. Test: existing Board / SAN / PGN tests.
+**Step 1.3** — Switch `Board.isCheck()` to consume `bitboardPosition.isInCheck(side)`. Test: existing Board check tests + bitboard `TestBitboardPositionIsInCheck`. Phase 1 complete after this step.
 
 ---
 
-### Phase 2 — Port unwinnability analyzers
+### Phase 2 — `MoveSpecification → LegalMove` converter, Board's legal-move switch, port unwinnability analyzers
 
-**Step 2.1** — Port `UnwinnableQuickAnalyzer` to consume `BitboardPosition`. Reuses Phase 4-5 bitboard primitives. Test: existing CHA-quick tests.
+**Step 2.1** — Build a `MoveSpecification → LegalMove` converter on the bitboard side. Given a `BitboardPosition` and a non-castling `MoveSpecification`, it determines the moving piece, captured piece (regular or EP), and the `LegalMoveKind` (NORMAL / EN_PASSANT_CAPTURE / PAWN_TWO_SQUARE_ADVANCE / PROMOTION). Castling moves get a separate, simpler converter that just emits the existing castling shape.
 
-**Step 2.2** — Port `UnwinnableSemiStatic` + supporting analysis classes (`Mobility`, `SemiOpenFilesUtility`, etc.).
+**Step 2.2** — Switch `Board.getLegalMoves()` population (the call that builds `legalMoveListPerPly` in the constructor and `move()`) to compose `bitboardPosition.legalMoves(...)` with castling-MoveSpecs from the existing castling path, plus the Step 2.1 converter to produce `LegalMove` records.
 
-**Step 2.3** — Port `Score`, `GoingToCorner`, and the per-side helpmate-eval helpers.
+**Step 2.3** — Port `UnwinnableQuickAnalyzer` to consume `BitboardPosition`. Reuses Phase 4-5 bitboard primitives. Test: existing CHA-quick tests.
 
-**Step 2.4** — Port `UnwinnableFullAnalyzer` and `FindHelpMateInterrupt`. `FindHelpmateExhaust` deferred to Phase 3 where it merges with the lean board.
+**Step 2.4** — Port `UnwinnableSemiStatic` + supporting analysis classes (`Mobility`, `SemiOpenFilesUtility`, etc.).
+
+**Step 2.5** — Port `Score`, `GoingToCorner`, and the per-side helpmate-eval helpers.
+
+**Step 2.6** — Port `UnwinnableFullAnalyzer` and `FindHelpMateInterrupt`. `FindHelpmateExhaust` deferred to Phase 3 where it merges with the lean board.
 
 ---
 
