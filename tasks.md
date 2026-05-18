@@ -245,8 +245,10 @@ Commit-sized steps suitable for Codex review. The bitboard release (commit `246a
 #### Status
 
 - ✅ **Step 1.1** — `915cf866` — `Board.getBitboardPosition()` returning a per-call computed `BitboardPosition` (no caching yet). Pure additive.
-- ⬜ **Step 1.2** — current — cache the bitboard as a field on `Board`, maintained through every `move()` / `unmove()` via `afterMove`
-- ⬜ Steps 1.3 → 7.x — pending
+- ✅ **Step 1.2** — `bb85f09e` — bitboard cached as `bitboardPositionList` field on `Board`, maintained per `move()`/`unmove()`. O(1) `getBitboardPosition()` via `Nulls.getLast`.
+- ✅ **Step 1.3** — `c752bd5e` — `Board`'s `isCheck` computation switches to `BitboardPosition.isInCheck`; drops the unused `AbstractAttackedSquares` / `Set` imports.
+- ⬜ **Step 1.4** — current — switch `Board.getLegalMoves()` (the call that populates `legalMoveListPerPly`) to compose `bitboardPosition.legalMoves(...)` with castling moves still computed on the Board side
+- ⬜ Steps 2.1 → 7.x — pending
 
 #### Cross-cutting decisions (settled upfront)
 
