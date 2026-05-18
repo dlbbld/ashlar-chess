@@ -6,9 +6,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
 
-import java.util.Set;
-import java.util.TreeSet;
-
 import com.dlb.chess.bitboard.LeanBoard;
 import com.dlb.chess.board.Board;
 import com.dlb.chess.board.enums.Side;
@@ -55,20 +52,16 @@ class TestLeanBoard {
 
   @SuppressWarnings("static-method")
   @Test
-  void corpusLegalMovesSetMatchesBoard() {
-    // LeanBoard.legalMoves must include both bitboard non-castling moves AND castling targets — set-equal with the
-    // production Board's legal move set (taken as MoveSpecifications, so this catches castling drops).
+  void corpusLegalMovesMatchesBoard() {
+    // LeanBoard.legalMoves must equal Board.getLegalMoves (same ImmutableList<LegalMove> shape, same sort order):
+    // including castling and bitboard non-castling moves alike, with full LegalMove records (piece / capture / kind).
     for (final PgnTest pgnTest : PgnTest.values()) {
       final PgnTestCaseList testCaseList = PgnTestCaseCatalog.getTestList(pgnTest);
       for (final PgnTestCase testCase : testCaseList.list()) {
         final Board board = testCase.finalPosition();
         final LeanBoard leanBoard = LeanBoard.fromBoard(board);
-        final Set<MoveSpecification> boardSpecs = new TreeSet<>();
-        for (final LegalMove legalMove : board.getLegalMoves()) {
-          boardSpecs.add(legalMove.moveSpecification());
-        }
-        assertEquals(boardSpecs, leanBoard.legalMoves(),
-            "legalMoves set mismatch in fixture " + testCase.pgnName());
+        assertEquals(board.getLegalMoves(), leanBoard.legalMoves(),
+            "legalMoves mismatch in fixture " + testCase.pgnName());
       }
     }
   }

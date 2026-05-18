@@ -2,8 +2,6 @@ package com.dlb.chess.bitboard;
 
 import java.util.ArrayDeque;
 import java.util.Deque;
-import java.util.Set;
-import java.util.TreeSet;
 
 import com.dlb.chess.board.Board;
 import com.dlb.chess.board.enums.CastlingMove;
@@ -13,7 +11,7 @@ import com.dlb.chess.board.enums.Side;
 import com.dlb.chess.board.enums.Square;
 import com.dlb.chess.common.model.MoveSpecification;
 import com.dlb.chess.model.LegalMove;
-import com.dlb.chess.moves.AbstractLegalMoves;
+import com.google.common.collect.ImmutableList;
 
 /**
  * Lean position-and-state container for tree search inside the unwinnability / helpmate analyzers. Carries only the
@@ -82,29 +80,62 @@ public final class LeanBoard {
   }
 
   /**
-   * Legal moves for the side to move — non-castling targets via {@link BitboardPosition#legalMoves} plus castling
-   * moves via the existing {@link AbstractLegalMoves#calculateCastlingLegalMoves} bridge. Castling cannot be
-   * dropped from a tree-search legal-move set: a position whose only escape from check is a castle would otherwise
-   * be misclassified as checkmate, and games where the winning line involves castling would be silently
-   * truncated.
+   * Sorted list of legal {@link LegalMove} records for the side to move — full piece / capture / kind info, not
+   * bare {@link MoveSpecification}s, so a search loop can pass the result straight to {@code Score.score}. Delegates
+   * to {@link BitboardLegalMoveFactory#calculateLegalMoves}, which composes bitboard non-castling moves with the
+   * castling bridge.
    *
    * <p>
-   * The castling bridge currently consumes a {@link com.dlb.chess.board.StaticPosition}, derived here via
-   * {@link BitboardPositionUtility#toStaticPosition}. That conversion is per-call cost and will need to either
-   * become a cached field or be replaced with a bitboard-native castling check before this method drives a hot
-   * helpmate search (Step 3.2). TODO is captured in tasks.md.
+   * Castling cannot be dropped from a tree-search legal-move set: a position whose only escape from check is a
+   * castle would otherwise be misclassified as checkmate, and games where the winning line involves castling would
+   * be silently truncated.
+   *
+   * <p>
+   * The castling bridge inside {@code BitboardLegalMoveFactory} currently consumes a
+   * {@link com.dlb.chess.board.StaticPosition}, derived per call via
+   * {@link BitboardPositionUtility#toStaticPosition}. That conversion is per-call cost and is the obvious
+   * optimisation target if {@code findHelpMate} profiling shows it dominating; replacing it with a cached
+   * StaticPosition or a bitboard-native castling check stays as a follow-on.
    */
-  public Set<MoveSpecification> legalMoves() {
+  public ImmutableList<LegalMove> legalMoves() {
     final long enPassantBit = enPassantTarget == Square.NONE ? 0L : 1L << enPassantTarget.ordinal();
-    final Set<MoveSpecification> moves = new TreeSet<>(bitboardPosition.legalMoves(havingMove, enPassantBit));
-    final CastlingRight currentCastlingRight = castlingRight(havingMove);
-    if (currentCastlingRight != CastlingRight.NONE) {
-      for (final LegalMove castlingLegalMove : AbstractLegalMoves.calculateCastlingLegalMoves(
-          BitboardPositionUtility.toStaticPosition(bitboardPosition), havingMove, currentCastlingRight)) {
-        moves.add(castlingLegalMove.moveSpecification());
-      }
+    return BitboardLegalMoveFactory.calculateLegalMoves(bitboardPosition,
+        BitboardPositionUtility.toStaticPosition(bitboardPosition), havingMove, castlingRight(havingMove),
+        enPassantBit);
+  }
+
+  /**
+   * Full-position Zobrist key combining {@link BitboardPosition#zobristPieces} with side-to-move, castling rights,
+   * and en-passant file contributions from {@link ZobristKeys}. Suitable as a transposition map key for tree search:
+   * two LeanBoard states with the same piece placement, side, castling rights, and EP file produce the same key.
+   *
+   * <p>
+   * The EP contribution uses the raw {@link #enPassantTarget} field — not a normalized "EP only if capturable"
+   * version. That means two positions differing only in a phantom EP target hash differently and miss the
+   * transposition cache. Acceptable for correctness (cache misses are slower, not wrong); a future optimisation
+   * could normalise the EP target via a bitboard adjacency check before mixing it in.
+   */
+  public long zobristKey() {
+    long key = bitboardPosition.zobristPieces();
+    if (havingMove == Side.BLACK) {
+      key ^= ZobristKeys.blackToMove();
     }
-    return moves;
+    if (castlingRightWhite.getHasKingSide()) {
+      key ^= ZobristKeys.castlingWhiteKingSide();
+    }
+    if (castlingRightWhite.getHasQueenSide()) {
+      key ^= ZobristKeys.castlingWhiteQueenSide();
+    }
+    if (castlingRightBlack.getHasKingSide()) {
+      key ^= ZobristKeys.castlingBlackKingSide();
+    }
+    if (castlingRightBlack.getHasQueenSide()) {
+      key ^= ZobristKeys.castlingBlackQueenSide();
+    }
+    if (enPassantTarget != Square.NONE) {
+      key ^= ZobristKeys.enPassantFile(enPassantTarget.ordinal() % 8);
+    }
+    return key;
   }
 
   public boolean isInCheck() {
