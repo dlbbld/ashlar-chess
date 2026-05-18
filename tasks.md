@@ -249,7 +249,9 @@ Commit-sized steps suitable for Codex review. The bitboard release (commit `246a
 - ✅ **Step 1.3** — `c752bd5e` — `Board`'s `isCheck` computation switches to `BitboardPosition.isInCheck`; drops the unused `AbstractAttackedSquares` / `Set` imports. Phase 1 complete.
 - ✅ **Step 2.1** — `4c7cb4e9` — `BitboardLegalMoveFactory.toLegalMove` converts a bare `MoveSpecification` into a fully-typed `LegalMove` (movingPiece, capturedPiece, kind), differential-tested against `board.getLegalMoves()` on every corpus fixture.
 - ✅ **Step 2.2** — `a235d363` — `Board.getLegalMoves()` population switches to `BitboardLegalMoveFactory.calculateLegalMoves` (bitboard for non-castling + public bridge to `KingCastlingLegalMoves` for castling). Full suite ~46s vs. ~54s before — the bitboard pipeline is faster than the StaticPosition path it replaces.
-- ⬜ **Step 2.3** — current — port `UnwinnableQuickAnalyzer` to consume `BitboardPosition`
+- ✅ **Codex P2 fix** — `ed4e20eb` — `TestBitboardPositionLegalMoves` and `TestBitboardLegalMoveFactory` were silently turned self-referential by Step 2.2; both now use `AbstractLegalMoves.calculateLegalMoves` directly as the independent StaticPosition-backed oracle. Plus a Step 1.2 doc-mismatch fix.
+- 🟡 **Step 2.3a** — `732e356f` — bitboard variants added to `UnwinnabilityMaterial` (pure additive; differential-tested against the StaticPosition surface). Caller migration to follow.
+- ⬜ **Step 2.3b** — current — switch `UnwinnableQuickAnalyzer`'s private helpers (`calculateHasOnlyPawnsBishopsAndKings`, `calculateIsAlmostOnlyPawnsBishopsAndKings`, `calculateIsBlockedCandidate`, `calculateNumberOfBlockedPawns`, `calculateHasLonelyPawns`) to consume `BitboardPosition`, and route the call sites through `board.getBitboardPosition()`. Plus bitboard variant for `SemiOpenFilesUtility`. Leaves deeper helpers (`Mobility`, `UnwinnableSemiStatic`, `FindHelpMateInterrupt`) on StaticPosition for now — they get ported in their own sub-steps.
 - ⬜ Steps 2.4 → 7.x — pending
 
 #### Note on the original Step 1.4
