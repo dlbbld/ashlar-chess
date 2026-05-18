@@ -255,8 +255,13 @@ Commit-sized steps suitable for Codex review. The bitboard release (commit `246a
 - ✅ **Step 2.4** — `692f96ce` — `Mobility.mobility` now consumes `board.getBitboardPosition()` (the only two StaticPosition queries: build the piecePlacementList from occupied squares + first-round empty-target check). The class is otherwise self-contained on its `PiecePlacement`/`MobilitySolution` data structures.
 - ✅ **Step 2.5** — `9abc0926` — `Score.score`, `GoingToCorner.goingToCorner`, and `FindHelpmateExhaust.calculateIsNeedLoserPromotion` (+ its two helpers) all swap from `StaticPosition` to `BitboardPosition`. The `findHelpmate` recursion call site extracts `board.getBitboardPosition()` once and reuses it for the KingOnly / HasNoPawns / needLoserPromotion guards, the `Score.score` call, and the `calculateHasQueen` check. `UnwinnableSemiStatic` did not need porting — it consumes only `Board`'s public surface, which has been bitboard-backed since Phase 1.
 - ✅ **Step 2.6** — `b3ed0edf` — `FindHelpmateExhaust`'s last StaticPosition queries gone. `calculateIsEraseEnPassantCaptureTargetSquare` uses an inline bitboard adjacency check (kept inline because `EnPassantCaptureUtility` lives in the doomed-to-relocate `com.dlb.chess.moves` subtree). `calculateIsUnwinnableAccordingLemma5/6` ported to `BitboardPosition` with a TODO marker — they're declared but not yet wired into the analyzer flow; wiring them in is a follow-on.
-- ⬜ **Step 2.7** — current — `FindHelpMateInterrupt` has no `StaticPosition` use; `UnwinnableFullAnalyzer` has only the `Fen` pass-through (line 111). Phase 2 effectively complete on the analyzer side. Confirm and pivot to Phase 3.
-- ⬜ Steps 3.1 → 7.x — pending
+- ✅ **Step 2.7** — `FindHelpMateInterrupt` has no `StaticPosition` use; `UnwinnableFullAnalyzer` has only the `Fen` pass-through. Phase 2 closed on the analyzer side.
+
+#### Release boundary
+
+**This Switchover release ends at the Phase 2 boundary.** Production hot paths consume `BitboardPosition`; the `StaticPosition` reference layer remains in `src/main/` per the Project Invariant. Phases 3-7 (lean analyzer board for `FindHelpmateExhaust`, transposition keys, conditional mutable make/unmake, conditional magics, `StaticPosition` relocation, perf baseline) are deferred to a **separate, dedicated release** so the bitboard-on-`Board` change and the tree-search refactor each ship and stabilize on their own. Their plan stays below for continuity, but they do not block closing this release.
+
+Phase 3 work-in-progress (`a524c9b8` LeanBoard, `befe521b` castling fix + stronger tests, `4b63738e` ZobristKeys side/castling/EP keys + `LeanBoard.zobristKey` + `legalMoves -> LegalMove`) was reverted from this release at `722e481` and preserved on `origin/feature/lean-bitboard-helpmate-wip` as the starting point for the next release.
 
 #### Note on the original Step 1.4
 
