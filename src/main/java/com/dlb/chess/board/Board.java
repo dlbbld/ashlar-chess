@@ -3,7 +3,6 @@ package com.dlb.chess.board;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.Set;
 
 import org.eclipse.jdt.annotation.Nullable;
 
@@ -49,7 +48,6 @@ import com.dlb.chess.san.MoveToSan;
 import com.dlb.chess.san.SanTerminalMarker;
 import com.dlb.chess.san.StrictSanParser;
 import com.dlb.chess.san.StrictSanParserValidationResult;
-import com.dlb.chess.squares.AbstractAttackedSquares;
 import com.dlb.chess.unwinnability.DeadPositionFull;
 import com.dlb.chess.unwinnability.DeadPositionQuick;
 import com.dlb.chess.unwinnability.UnwinnabilityFullVerdict;
@@ -199,14 +197,10 @@ public class Board {
         initialHavingMove, initialCastlingRight, initialEnPassantCaptureTargetSquare);
     this.legalMoveListPerPly.add(legalMoves);
 
-    final Set<Square> attackedSquareSet = AbstractAttackedSquares.calculateAttackedSquares(initialStaticPosition,
-        initialHavingMove.getOppositeSide());
-
-    final Square kingSquareHavingMove = StaticPositionUtility.calculateKingSquare(initialStaticPosition,
-        initialHavingMove);
+    final BitboardPosition initialBitboardPosition = BitboardPositionUtility.fromStaticPosition(initialStaticPosition);
 
     this.isCheckList = new ArrayList<>();
-    final var isCheck = attackedSquareSet.contains(kingSquareHavingMove);
+    final var isCheck = initialBitboardPosition.isInCheck(initialHavingMove);
     this.isCheckList.add(isCheck);
 
     this.isCheckmateList = new ArrayList<>();
@@ -229,7 +223,7 @@ public class Board {
           initialNormalizedEnPassantCaptureTargetSquare, initialCastlingRightWhite, initialCastlingRightBlack));
     }
     this.bitboardPositionList = new ArrayList<>();
-    this.bitboardPositionList.add(BitboardPositionUtility.fromStaticPosition(initialStaticPosition));
+    this.bitboardPositionList.add(initialBitboardPosition);
     this.halfMoveClockList = new ArrayList<>();
     this.halfMoveClockList.add(initialFenUse.halfMoveClock());
 
@@ -443,12 +437,9 @@ public class Board {
         afterHavingMove, afterCastlingRightHavingMove, afterEnPassantCaptureTargetSquare);
     this.legalMoveListPerPly.add(legalMovesAfterMove);
 
-    final Set<Square> attackedSquareSet = AbstractAttackedSquares.calculateAttackedSquares(afterStaticPosition,
-        afterHavingMove.getOppositeSide());
+    final BitboardPosition afterBitboardPosition = BitboardPositionUtility.fromStaticPosition(afterStaticPosition);
 
-    final Square kingSquareHavingMove = StaticPositionUtility.calculateKingSquare(afterStaticPosition, afterHavingMove);
-
-    final var isCheck = attackedSquareSet.contains(kingSquareHavingMove);
+    final var isCheck = afterBitboardPosition.isInCheck(afterHavingMove);
     this.isCheckList.add(isCheck);
 
     final var isCheckmate = isCheck && legalMovesAfterMove.isEmpty();
@@ -461,7 +452,7 @@ public class Board {
         afterNormalizedEnPassantCaptureTargetSquare, afterCastlingRightBoth.castlingRightWhite(),
         afterCastlingRightBoth.castlingRightBlack());
     this.dynamicPositionList.add(newDynamicPosition);
-    this.bitboardPositionList.add(BitboardPositionUtility.fromStaticPosition(afterStaticPosition));
+    this.bitboardPositionList.add(afterBitboardPosition);
 
     // order of instructions dependency!! - must be after adding the move
     final int lastHalfMoveClock = Nulls.getLast(halfMoveClockList);
