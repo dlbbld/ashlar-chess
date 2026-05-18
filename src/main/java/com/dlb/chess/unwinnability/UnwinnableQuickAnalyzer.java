@@ -5,12 +5,10 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import com.dlb.chess.bitboard.BitboardPosition;
 import com.dlb.chess.board.Board;
-import com.dlb.chess.board.StaticPosition;
-import com.dlb.chess.board.enums.Piece;
 import com.dlb.chess.board.enums.PieceType;
 import com.dlb.chess.board.enums.Side;
-import com.dlb.chess.board.enums.Square;
 import com.dlb.chess.common.Nulls;
 import com.dlb.chess.common.exceptions.ProgrammingMistakeException;
 import com.dlb.chess.common.model.DynamicPosition;
@@ -105,8 +103,8 @@ public class UnwinnableQuickAnalyzer {
 
     // 5: else if the position only contains pieces of type P,B,K and there are no semi-open
     // files in the position then
-    if (calculateHasOnlyPawnsBishopsAndKings(board.getStaticPosition())
-        && !SemiOpenFilesUtility.calculateHasSemiOpenFile(board.getStaticPosition())) {
+    if (calculateHasOnlyPawnsBishopsAndKings(board.getBitboardPosition())
+        && !SemiOpenFilesUtility.calculateHasSemiOpenFile(board.getBitboardPosition())) {
 
       // 6: if true UnwinnableSS(pos, c, Mobility(pos)) then return Unwinnable
       final MobilitySolution mobilitySolution;
@@ -126,15 +124,15 @@ public class UnwinnableQuickAnalyzer {
 
     if (IS_ALIGN_QUICK_WITH_AMBRONA_REFERENCE_IMPLEMENTATION) {
       var isUnwinnable = false;
-      final var hasOnlyPawnsAndBishops = calculateHasOnlyPawnsBishopsAndKings(board.getStaticPosition());
-      final var isBlockedCandidate = calculateIsBlockedCandidate(board.getStaticPosition());
+      final var hasOnlyPawnsAndBishops = calculateHasOnlyPawnsBishopsAndKings(board.getBitboardPosition());
+      final var isBlockedCandidate = calculateIsBlockedCandidate(board.getBitboardPosition());
       if (isBlockedCandidate && hasOnlyPawnsAndBishops) {
         final MobilitySolution mobilitySolution = Mobility.mobility(board);
         isUnwinnable = UnwinnableSemiStatic.unwinnableSemiStatic(board, c, mobilitySolution);
       }
 
-      if (isBlockedCandidate && !isUnwinnable && calculateIsAlmostOnlyPawnsBishopsAndKings(board.getStaticPosition())
-          && (board.isCheck() || UnwinnabilityMaterial.calculateHasKnight(board.getStaticPosition()))) {
+      if (isBlockedCandidate && !isUnwinnable && calculateIsAlmostOnlyPawnsBishopsAndKings(board.getBitboardPosition())
+          && (board.isCheck() || UnwinnabilityMaterial.calculateHasKnight(board.getBitboardPosition()))) {
         isUnwinnable = calculateIsUnwinnableAfterOneMove(board, c);
       }
 
@@ -164,10 +162,10 @@ public class UnwinnableQuickAnalyzer {
     return UnwinnabilityQuickVerdict.POSSIBLY_WINNABLE;
   }
 
-  private static boolean calculateHasOnlyPawnsBishopsAndKings(StaticPosition staticPosition) {
-    return !UnwinnabilityMaterial.calculateHasRook(staticPosition)
-        && !UnwinnabilityMaterial.calculateHasKnight(staticPosition)
-        && !UnwinnabilityMaterial.calculateHasQueen(staticPosition);
+  private static boolean calculateHasOnlyPawnsBishopsAndKings(BitboardPosition bitboardPosition) {
+    return !UnwinnabilityMaterial.calculateHasRook(bitboardPosition)
+        && !UnwinnabilityMaterial.calculateHasKnight(bitboardPosition)
+        && !UnwinnabilityMaterial.calculateHasQueen(bitboardPosition);
   }
 
   private static Board copyCurrentPositionForQuickSearch(Board input) {
@@ -177,22 +175,11 @@ public class UnwinnableQuickAnalyzer {
     return new Board(fen, false);
   }
 
-  private static boolean calculateIsAlmostOnlyPawnsBishopsAndKings(StaticPosition staticPosition) {
-    var heavyPieceCount = 0;
-    for (final var square : Square.REAL) {
-      final Piece piece = staticPosition.get(square);
-      if (piece == Piece.NONE) {
-        continue;
-      }
-      final PieceType pieceType = piece.getPieceType();
-      if (pieceType == PieceType.KNIGHT || pieceType == PieceType.ROOK || pieceType == PieceType.QUEEN) {
-        heavyPieceCount++;
-        if (heavyPieceCount > 1) {
-          return false;
-        }
-      }
-    }
-    return true;
+  private static boolean calculateIsAlmostOnlyPawnsBishopsAndKings(BitboardPosition bitboardPosition) {
+    final long heavyPieces = bitboardPosition.whiteKnights() | bitboardPosition.blackKnights()
+        | bitboardPosition.whiteRooks() | bitboardPosition.blackRooks()
+        | bitboardPosition.whiteQueens() | bitboardPosition.blackQueens();
+    return Long.bitCount(heavyPieces) <= 1;
   }
 
   private static boolean calculateIsDynamicallyUnwinnable(Board board, Side intendedWinner, int depth,
@@ -249,36 +236,33 @@ public class UnwinnableQuickAnalyzer {
     return true;
   }
 
-  private static boolean calculateIsBlockedCandidate(StaticPosition staticPosition) {
-    return calculateNumberOfBlockedPawns(staticPosition) >= 1 && !calculateHasLonelyPawns(staticPosition);
+  private static boolean calculateIsBlockedCandidate(BitboardPosition bitboardPosition) {
+    return calculateNumberOfBlockedPawns(bitboardPosition) >= 1 && !calculateHasLonelyPawns(bitboardPosition);
   }
 
-  private static int calculateNumberOfBlockedPawns(StaticPosition staticPosition) {
-    var result = 0;
-    for (final var square : Square.REAL) {
-      if (staticPosition.get(square) == Piece.WHITE_PAWN && Square.calculateHasAheadSquare(Side.WHITE, square)) {
-        final var aheadSquare = Square.calculateAheadSquare(Side.WHITE, square);
-        if (staticPosition.get(aheadSquare) == Piece.BLACK_PAWN) {
-          result++;
-        }
-      }
-    }
-    return result;
+  private static int calculateNumberOfBlockedPawns(BitboardPosition bitboardPosition) {
+    // A white pawn one rank below a black pawn = the white pawn's bit shifted up 8 lands on a black pawn.
+    // popcount of that intersection = number of such (white, black) blocking pairs (counted once per pair).
+    return Long.bitCount((bitboardPosition.whitePawns() << 8) & bitboardPosition.blackPawns());
   }
 
-  private static boolean calculateHasLonelyPawns(StaticPosition staticPosition) {
-    var whitePawnFileMask = 0;
-    var blackPawnFileMask = 0;
-    for (final var square : Square.REAL) {
-      final Piece piece = staticPosition.get(square);
-      if (piece == Piece.WHITE_PAWN && square.getRank().getNumber() < 7) {
-        whitePawnFileMask |= 1 << square.getFile().getNumber() - 1;
-      }
-      if (piece == Piece.BLACK_PAWN && square.getRank().getNumber() > 2) {
-        blackPawnFileMask |= 1 << square.getFile().getNumber() - 1;
-      }
-    }
+  // Mask matching the reference: ranks 1..6 (1-indexed) for white, ranks 3..8 for black — i.e. excludes
+  // the rank-immediately-before-promotion on the respective side. 0-indexed: white < rank 7, black > rank 2.
+  private static final long WHITE_LONELY_RANK_MASK = 0x0000FFFFFFFFFFFFL; // bits 0..47 = ranks 1..6 (0-indexed)
+  private static final long BLACK_LONELY_RANK_MASK = 0xFFFFFFFFFFFF0000L; // bits 16..63 = ranks 3..8 (0-indexed)
+
+  private static boolean calculateHasLonelyPawns(BitboardPosition bitboardPosition) {
+    final int whitePawnFileMask = projectToFiles(bitboardPosition.whitePawns() & WHITE_LONELY_RANK_MASK);
+    final int blackPawnFileMask = projectToFiles(bitboardPosition.blackPawns() & BLACK_LONELY_RANK_MASK);
     return whitePawnFileMask != blackPawnFileMask;
+  }
+
+  private static int projectToFiles(long bitboard) {
+    long result = bitboard;
+    result |= result >>> 32;
+    result |= result >>> 16;
+    result |= result >>> 8;
+    return (int) (result & 0xFFL);
   }
 
   private static UnwinnabilityQuickVerdict calculateWinnableVerdict() {
