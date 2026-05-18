@@ -244,8 +244,9 @@ Commit-sized steps suitable for Codex review. The bitboard release (commit `246a
 
 #### Status
 
-- ⬜ **Step 1.1** — current — `Board.getBitboardPosition()` returning a per-call computed `BitboardPosition` (no caching yet). Pure additive.
-- ⬜ Steps 1.2 → 7.x — pending
+- ✅ **Step 1.1** — `915cf866` — `Board.getBitboardPosition()` returning a per-call computed `BitboardPosition` (no caching yet). Pure additive.
+- ⬜ **Step 1.2** — current — cache the bitboard as a field on `Board`, maintained through every `move()` / `unmove()` via `afterMove`
+- ⬜ Steps 1.3 → 7.x — pending
 
 #### Cross-cutting decisions (settled upfront)
 
