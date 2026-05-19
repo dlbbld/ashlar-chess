@@ -56,7 +56,7 @@ class TestBitboardPositionPins {
   private static Set<Square> referencePinnedPieces(StaticPosition staticPosition, Side side) {
     final Set<Square> pinned = new TreeSet<>();
     final Square kingSquare = findKingSquare(staticPosition, side);
-    if (kingSquare == null) {
+    if (kingSquare == Square.NONE) {
       return pinned;
     }
     final Set<Square> attackersBefore = enemySliderAttackersToKing(staticPosition, kingSquare, side);
@@ -81,7 +81,7 @@ class TestBitboardPositionPins {
         return square;
       }
     }
-    return null;
+    return Square.NONE;
   }
 
   private static Set<Square> enemySliderAttackersToKing(StaticPosition staticPosition, Square kingSquare, Side ownSide) {
