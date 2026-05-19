@@ -117,7 +117,6 @@ public class Board {
   private final List<Boolean> isCheckmateList;
   private final List<Boolean> isStalemateList;
   private final List<DynamicPosition> dynamicPositionList;
-  private final List<BitboardPosition> bitboardPositionList;
   private final List<Integer> halfMoveClockList;
   private final List<Integer> repetitionCountList;
   private final List<String> sanList;
@@ -222,10 +221,9 @@ public class Board {
       this.dynamicPositionList.add(DynamicPositionConstants.INITIAL);
     } else {
       this.dynamicPositionList.add(new DynamicPosition(initialHavingMove, initialStaticPosition,
-          initialNormalizedEnPassantCaptureTargetSquare, initialCastlingRightWhite, initialCastlingRightBlack));
+          initialBitboardPosition, initialNormalizedEnPassantCaptureTargetSquare, initialCastlingRightWhite,
+          initialCastlingRightBlack));
     }
-    this.bitboardPositionList = new ArrayList<>();
-    this.bitboardPositionList.add(initialBitboardPosition);
     this.halfMoveClockList = new ArrayList<>();
     this.halfMoveClockList.add(initialFenUse.halfMoveClock());
 
@@ -434,8 +432,8 @@ public class Board {
     // now changing board class state, so performing the move!
     this.performedLegalMoveList.add(moveToPerform);
 
-    final BitboardPosition afterBitboardPosition = Nulls.getLast(bitboardPositionList).afterMove(moveSpecification,
-        havingMove);
+    final BitboardPosition afterBitboardPosition = Nulls.getLast(dynamicPositionList).bitboardPosition()
+        .afterMove(moveSpecification, havingMove);
     final long afterEnPassantBit = afterEnPassantCaptureTargetSquare == Square.NONE ? 0L
         : 1L << afterEnPassantCaptureTargetSquare.ordinal();
 
@@ -453,11 +451,10 @@ public class Board {
     final var isStalemate = !isCheck && legalMovesAfterMove.isEmpty();
     this.isStalemateList.add(isStalemate);
 
-    final var newDynamicPosition = new DynamicPosition(afterHavingMove, afterStaticPosition,
+    final var newDynamicPosition = new DynamicPosition(afterHavingMove, afterStaticPosition, afterBitboardPosition,
         afterNormalizedEnPassantCaptureTargetSquare, afterCastlingRightBoth.castlingRightWhite(),
         afterCastlingRightBoth.castlingRightBlack());
     this.dynamicPositionList.add(newDynamicPosition);
-    this.bitboardPositionList.add(afterBitboardPosition);
 
     // order of instructions dependency!! - must be after adding the move
     final int lastHalfMoveClock = Nulls.getLast(halfMoveClockList);
@@ -534,7 +531,6 @@ public class Board {
     this.isStalemateList.remove(isStalemateList.size() - 1);
 
     this.dynamicPositionList.remove(dynamicPositionList.size() - 1);
-    this.bitboardPositionList.remove(bitboardPositionList.size() - 1);
     this.halfMoveClockList.remove(halfMoveClockList.size() - 1);
     this.repetitionCountList.remove(repetitionCountList.size() - 1);
 
@@ -788,13 +784,13 @@ public class Board {
   }
 
   /**
-   * Current position as a {@link BitboardPosition}. Maintained as a parallel cache alongside
-   * {@link #dynamicPositionList}: appended on every {@link #move}, popped on every {@link #unmove}. O(1) per call.
+   * Current position as a {@link BitboardPosition}. Carried directly on every {@link DynamicPosition} in
+   * {@link #dynamicPositionList} (appended on every {@link #move}, popped on every {@link #unmove}). O(1) per call.
    * Bit-exact with {@code BitboardPositionUtility.fromStaticPosition(getStaticPosition())} on every halfmove of
    * every game (validated by the differential test).
    */
   public BitboardPosition getBitboardPosition() {
-    return Nulls.getLast(bitboardPositionList);
+    return Nulls.getLast(dynamicPositionList).bitboardPosition();
   }
 
   StaticPosition getStaticPositionBeforeLastMove() {
