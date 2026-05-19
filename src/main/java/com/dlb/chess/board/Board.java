@@ -220,9 +220,8 @@ public class Board {
     if (initialFenUse.equals(FenConstants.FEN_INITIAL)) {
       this.dynamicPositionList.add(DynamicPositionConstants.INITIAL);
     } else {
-      this.dynamicPositionList.add(new DynamicPosition(initialHavingMove, initialStaticPosition,
-          initialBitboardPosition, initialNormalizedEnPassantCaptureTargetSquare, initialCastlingRightWhite,
-          initialCastlingRightBlack));
+      this.dynamicPositionList.add(new DynamicPosition(initialHavingMove, initialBitboardPosition,
+          initialNormalizedEnPassantCaptureTargetSquare, initialCastlingRightWhite, initialCastlingRightBlack));
     }
     this.halfMoveClockList = new ArrayList<>();
     this.halfMoveClockList.add(initialFenUse.halfMoveClock());
@@ -451,7 +450,7 @@ public class Board {
     final var isStalemate = !isCheck && legalMovesAfterMove.isEmpty();
     this.isStalemateList.add(isStalemate);
 
-    final var newDynamicPosition = new DynamicPosition(afterHavingMove, afterStaticPosition, afterBitboardPosition,
+    final var newDynamicPosition = new DynamicPosition(afterHavingMove, afterBitboardPosition,
         afterNormalizedEnPassantCaptureTargetSquare, afterCastlingRightBoth.castlingRightWhite(),
         afterCastlingRightBoth.castlingRightBlack());
     this.dynamicPositionList.add(newDynamicPosition);
@@ -779,8 +778,13 @@ public class Board {
     return lastMove.havingMove().getOppositeSide();
   }
 
+  /**
+   * Current position as a {@link StaticPosition} — derived on demand from the cached {@link BitboardPosition} via
+   * {@link BitboardPositionUtility#toStaticPosition(BitboardPosition)}. {@code Board} no longer caches a {@code
+   * StaticPosition} alongside the bitboard; the bitboard is the single source of truth on the data path.
+   */
   public StaticPosition getStaticPosition() {
-    return Nulls.getLast(dynamicPositionList).staticPosition();
+    return BitboardPositionUtility.toStaticPosition(Nulls.getLast(dynamicPositionList).bitboardPosition());
   }
 
   /**
@@ -797,7 +801,8 @@ public class Board {
     if (isFirstMove()) {
       throw new ProgrammingMistakeException("The method cannot be called if no move was yet made");
     }
-    return Nulls.get(dynamicPositionList, this.dynamicPositionList.size() - 2).staticPosition();
+    return BitboardPositionUtility
+        .toStaticPosition(Nulls.get(dynamicPositionList, this.dynamicPositionList.size() - 2).bitboardPosition());
   }
 
   public boolean isEnPassantCapturePossible() {

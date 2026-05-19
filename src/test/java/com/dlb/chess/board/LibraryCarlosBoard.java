@@ -109,7 +109,7 @@ public class LibraryCarlosBoard {
     final var normalizedEnPassantCaptureTargetSquare = isEnPassantCapturePossible() ? getEnPassantCaptureTargetSquare()
         : Square.NONE;
     final var bitboardPosition = BitboardPositionUtility.fromStaticPosition(getStaticPosition());
-    dynamicPositionList.add(new DynamicPosition(getHavingMove(), getStaticPosition(), bitboardPosition,
+    dynamicPositionList.add(new DynamicPosition(getHavingMove(), bitboardPosition,
         normalizedEnPassantCaptureTargetSquare, getCastlingRightWhite(), getCastlingRightBlack()));
 
     // ATTENTION: timely dependency, must be after the above code is very very dangerous

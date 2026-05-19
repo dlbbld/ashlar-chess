@@ -8,6 +8,6 @@ import com.dlb.chess.fen.constants.FenConstants;
 public class DynamicPositionConstants {
 
   public static final DynamicPosition INITIAL = new DynamicPosition(FenConstants.FEN_INITIAL.havingMove(),
-      FenConstants.FEN_INITIAL.staticPosition(), BitboardPosition.INITIAL_POSITION, Square.NONE,
-      FenConstants.FEN_INITIAL.castlingRightWhite(), FenConstants.FEN_INITIAL.castlingRightBlack());
+      BitboardPosition.INITIAL_POSITION, Square.NONE, FenConstants.FEN_INITIAL.castlingRightWhite(),
+      FenConstants.FEN_INITIAL.castlingRightBlack());
 }
