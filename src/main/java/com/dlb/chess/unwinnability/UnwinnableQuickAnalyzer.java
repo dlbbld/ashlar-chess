@@ -132,7 +132,7 @@ public class UnwinnableQuickAnalyzer {
       }
 
       if (isBlockedCandidate && !isUnwinnable && calculateIsAlmostOnlyPawnsBishopsAndKings(board.getBitboardPosition())
-          && (board.isCheck() || UnwinnabilityMaterial.calculateHasKnight(board.getBitboardPosition()))) {
+          && (board.isCheck() || UnwinnabilityMaterialBitboard.calculateHasKnight(board.getBitboardPosition()))) {
         isUnwinnable = calculateIsUnwinnableAfterOneMove(board, c);
       }
 
@@ -163,9 +163,9 @@ public class UnwinnableQuickAnalyzer {
   }
 
   private static boolean calculateHasOnlyPawnsBishopsAndKings(BitboardPosition bitboardPosition) {
-    return !UnwinnabilityMaterial.calculateHasRook(bitboardPosition)
-        && !UnwinnabilityMaterial.calculateHasKnight(bitboardPosition)
-        && !UnwinnabilityMaterial.calculateHasQueen(bitboardPosition);
+    return !UnwinnabilityMaterialBitboard.calculateHasRook(bitboardPosition)
+        && !UnwinnabilityMaterialBitboard.calculateHasKnight(bitboardPosition)
+        && !UnwinnabilityMaterialBitboard.calculateHasQueen(bitboardPosition);
   }
 
   private static Board copyCurrentPositionForQuickSearch(Board input) {

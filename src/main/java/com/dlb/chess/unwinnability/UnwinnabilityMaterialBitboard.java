@@ -1,0 +1,119 @@
+package com.dlb.chess.unwinnability;
+
+import com.dlb.chess.bitboard.BitboardPosition;
+import com.dlb.chess.board.enums.Side;
+import com.dlb.chess.board.enums.SquareType;
+import com.dlb.chess.common.constants.EnumConstants;
+
+/**
+ * Bitboard-backed material predicates used by the unwinnability/helpmate analysis. Production callers in
+ * {@link UnwinnableQuickAnalyzer}, {@link FindHelpmateExhaust}, and {@link GoingToCorner} consume this class.
+ *
+ * <p>
+ * The sibling {@link UnwinnabilityMaterial} carries the StaticPosition-backed reference implementations of the same
+ * predicates; that class is the differential-test oracle and will relocate to {@code src/test/} alongside the rest of
+ * the StaticPosition layer when Phase 6 of the switchover lands. Splitting the two surfaces into separate classes
+ * (rather than overloads on one class) keeps that future relocation a single {@code git mv}, and satisfies the
+ * Checkstyle overload-adjacency rule without resorting to suppressions or semantically odd reordering.
+ */
+abstract class UnwinnabilityMaterialBitboard implements EnumConstants {
+
+  // Square-colour masks: A1 is dark, B1 is light, alternating. Bit i is light iff (file_i + rank_i) is odd.
+  private static final long LIGHT_SQUARES = 0x55AA55AA55AA55AAL;
+  private static final long DARK_SQUARES = ~LIGHT_SQUARES;
+
+  // --- existence checks (any side or specific side) ---
+
+  static boolean calculateHasRook(BitboardPosition bitboardPosition) {
+    return (bitboardPosition.whiteRooks() | bitboardPosition.blackRooks()) != 0L;
+  }
+
+  static boolean calculateHasRook(Side side, BitboardPosition bitboardPosition) {
+    return (side == Side.WHITE ? bitboardPosition.whiteRooks() : bitboardPosition.blackRooks()) != 0L;
+  }
+
+  static boolean calculateHasKnight(BitboardPosition bitboardPosition) {
+    return (bitboardPosition.whiteKnights() | bitboardPosition.blackKnights()) != 0L;
+  }
+
+  static boolean calculateHasKnight(Side side, BitboardPosition bitboardPosition) {
+    return (side == Side.WHITE ? bitboardPosition.whiteKnights() : bitboardPosition.blackKnights()) != 0L;
+  }
+
+  static boolean calculateHasQueen(BitboardPosition bitboardPosition) {
+    return (bitboardPosition.whiteQueens() | bitboardPosition.blackQueens()) != 0L;
+  }
+
+  static boolean calculateHasQueen(Side side, BitboardPosition bitboardPosition) {
+    return (side == Side.WHITE ? bitboardPosition.whiteQueens() : bitboardPosition.blackQueens()) != 0L;
+  }
+
+  // --- absence checks ---
+
+  static boolean calculateHasNoRooks(Side side, BitboardPosition bitboardPosition) {
+    return !calculateHasRook(side, bitboardPosition);
+  }
+
+  static boolean calculateHasNoKnights(Side side, BitboardPosition bitboardPosition) {
+    return !calculateHasKnight(side, bitboardPosition);
+  }
+
+  static boolean calculateHasNoBishops(Side side, BitboardPosition bitboardPosition) {
+    return (side == Side.WHITE ? bitboardPosition.whiteBishops() : bitboardPosition.blackBishops()) == 0L;
+  }
+
+  static boolean calculateHasNoBishops(Side side, BitboardPosition bitboardPosition, SquareType squareType) {
+    return countBishops(side, bitboardPosition, squareType) == 0;
+  }
+
+  static boolean calculateHasNoPawns(Side side, BitboardPosition bitboardPosition) {
+    return (side == Side.WHITE ? bitboardPosition.whitePawns() : bitboardPosition.blackPawns()) == 0L;
+  }
+
+  // --- bishop colour-class checks ---
+
+  static boolean calculateHasLightSquareBishops(Side side, BitboardPosition bitboardPosition) {
+    final long bishops = side == Side.WHITE ? bitboardPosition.whiteBishops() : bitboardPosition.blackBishops();
+    return (bishops & LIGHT_SQUARES) != 0L;
+  }
+
+  static boolean calculateHasDarkSquareBishops(Side side, BitboardPosition bitboardPosition) {
+    final long bishops = side == Side.WHITE ? bitboardPosition.whiteBishops() : bitboardPosition.blackBishops();
+    return (bishops & DARK_SQUARES) != 0L;
+  }
+
+  // --- aggregate shape checks ---
+
+  static boolean calculateHasKingOnly(Side side, BitboardPosition bitboardPosition) {
+    final long sideOccupancy = bitboardPosition.occupied(side);
+    final long sideKings = side == Side.WHITE ? bitboardPosition.whiteKings() : bitboardPosition.blackKings();
+    return sideOccupancy == sideKings && Long.bitCount(sideKings) == 1;
+  }
+
+  static boolean calculateHasKingAndKnightOnly(Side side, BitboardPosition bitboardPosition) {
+    final long sideKings = side == Side.WHITE ? bitboardPosition.whiteKings() : bitboardPosition.blackKings();
+    final long sideKnights = side == Side.WHITE ? bitboardPosition.whiteKnights() : bitboardPosition.blackKnights();
+    final long sideOccupancy = bitboardPosition.occupied(side);
+    return sideOccupancy == (sideKings | sideKnights) && Long.bitCount(sideKings) == 1 && Long.bitCount(sideKnights) == 1;
+  }
+
+  static boolean calculateHasKingAndBishopsOnly(Side side, BitboardPosition bitboardPosition, SquareType squareType) {
+    final long sideKings = side == Side.WHITE ? bitboardPosition.whiteKings() : bitboardPosition.blackKings();
+    final long sideBishops = side == Side.WHITE ? bitboardPosition.whiteBishops() : bitboardPosition.blackBishops();
+    final long sideOccupancy = bitboardPosition.occupied(side);
+    if (sideOccupancy != (sideKings | sideBishops)) {
+      return false;
+    }
+    if (Long.bitCount(sideKings) != 1) {
+      return false;
+    }
+    final long colourMask = squareType == SquareType.LIGHT_SQUARE ? LIGHT_SQUARES : DARK_SQUARES;
+    return (sideBishops & colourMask) != 0L && (sideBishops & ~colourMask) == 0L;
+  }
+
+  private static int countBishops(Side side, BitboardPosition bitboardPosition, SquareType squareType) {
+    final long bishops = side == Side.WHITE ? bitboardPosition.whiteBishops() : bitboardPosition.blackBishops();
+    final long colourMask = squareType == SquareType.LIGHT_SQUARE ? LIGHT_SQUARES : DARK_SQUARES;
+    return Long.bitCount(bishops & colourMask);
+  }
+}

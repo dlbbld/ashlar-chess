@@ -15,10 +15,10 @@ import com.dlb.chess.test.pgn.setup.PgnTestCaseCatalog;
 import com.dlb.chess.test.pgntest.enums.PgnTest;
 
 /**
- * Differential test for the bitboard variants of {@link UnwinnabilityMaterial}: for every fixture in the corpus,
- * every bitboard-keyed predicate must agree with its {@link StaticPosition}-keyed counterpart. The bitboard
- * variants are pure additions; this test guards against drift between the two surfaces as callers migrate during
- * the switchover release.
+ * Differential test pairing {@link UnwinnabilityMaterialBitboard} (production) against {@link UnwinnabilityMaterial}
+ * (StaticPosition reference oracle). For every fixture in the corpus, every bitboard-keyed predicate must agree with
+ * its StaticPosition-keyed counterpart. Guards against drift between the two surfaces — and will continue to do so
+ * once {@link UnwinnabilityMaterial} relocates to {@code src/test/} alongside the rest of the StaticPosition layer.
  */
 class TestUnwinnabilityMaterialBitboard {
 
@@ -33,47 +33,47 @@ class TestUnwinnabilityMaterialBitboard {
         final String tag = " in fixture " + testCase.pgnName();
 
         // Any-side existence checks.
-        assertEquals(UnwinnabilityMaterial.calculateHasRook(sp), UnwinnabilityMaterial.calculateHasRook(bp),
+        assertEquals(UnwinnabilityMaterial.calculateHasRook(sp), UnwinnabilityMaterialBitboard.calculateHasRook(bp),
             "calculateHasRook (any side)" + tag);
-        assertEquals(UnwinnabilityMaterial.calculateHasKnight(sp), UnwinnabilityMaterial.calculateHasKnight(bp),
+        assertEquals(UnwinnabilityMaterial.calculateHasKnight(sp), UnwinnabilityMaterialBitboard.calculateHasKnight(bp),
             "calculateHasKnight (any side)" + tag);
-        assertEquals(UnwinnabilityMaterial.calculateHasQueen(sp), UnwinnabilityMaterial.calculateHasQueen(bp),
+        assertEquals(UnwinnabilityMaterial.calculateHasQueen(sp), UnwinnabilityMaterialBitboard.calculateHasQueen(bp),
             "calculateHasQueen (any side)" + tag);
 
         for (final Side side : new Side[] { Side.WHITE, Side.BLACK }) {
           final String sideTag = " side=" + side + tag;
           assertEquals(UnwinnabilityMaterial.calculateHasRook(side, sp),
-              UnwinnabilityMaterial.calculateHasRook(side, bp), "calculateHasRook" + sideTag);
+              UnwinnabilityMaterialBitboard.calculateHasRook(side, bp), "calculateHasRook" + sideTag);
           assertEquals(UnwinnabilityMaterial.calculateHasKnight(side, sp),
-              UnwinnabilityMaterial.calculateHasKnight(side, bp), "calculateHasKnight" + sideTag);
+              UnwinnabilityMaterialBitboard.calculateHasKnight(side, bp), "calculateHasKnight" + sideTag);
           assertEquals(UnwinnabilityMaterial.calculateHasQueen(side, sp),
-              UnwinnabilityMaterial.calculateHasQueen(side, bp), "calculateHasQueen" + sideTag);
+              UnwinnabilityMaterialBitboard.calculateHasQueen(side, bp), "calculateHasQueen" + sideTag);
           assertEquals(UnwinnabilityMaterial.calculateHasNoRooks(side, sp),
-              UnwinnabilityMaterial.calculateHasNoRooks(side, bp), "calculateHasNoRooks" + sideTag);
+              UnwinnabilityMaterialBitboard.calculateHasNoRooks(side, bp), "calculateHasNoRooks" + sideTag);
           assertEquals(UnwinnabilityMaterial.calculateHasNoKnights(side, sp),
-              UnwinnabilityMaterial.calculateHasNoKnights(side, bp), "calculateHasNoKnights" + sideTag);
+              UnwinnabilityMaterialBitboard.calculateHasNoKnights(side, bp), "calculateHasNoKnights" + sideTag);
           assertEquals(UnwinnabilityMaterial.calculateHasNoBishops(side, sp),
-              UnwinnabilityMaterial.calculateHasNoBishops(side, bp), "calculateHasNoBishops" + sideTag);
+              UnwinnabilityMaterialBitboard.calculateHasNoBishops(side, bp), "calculateHasNoBishops" + sideTag);
           assertEquals(UnwinnabilityMaterial.calculateHasNoPawns(side, sp),
-              UnwinnabilityMaterial.calculateHasNoPawns(side, bp), "calculateHasNoPawns" + sideTag);
+              UnwinnabilityMaterialBitboard.calculateHasNoPawns(side, bp), "calculateHasNoPawns" + sideTag);
           assertEquals(UnwinnabilityMaterial.calculateHasLightSquareBishops(side, sp),
-              UnwinnabilityMaterial.calculateHasLightSquareBishops(side, bp),
+              UnwinnabilityMaterialBitboard.calculateHasLightSquareBishops(side, bp),
               "calculateHasLightSquareBishops" + sideTag);
           assertEquals(UnwinnabilityMaterial.calculateHasDarkSquareBishops(side, sp),
-              UnwinnabilityMaterial.calculateHasDarkSquareBishops(side, bp),
+              UnwinnabilityMaterialBitboard.calculateHasDarkSquareBishops(side, bp),
               "calculateHasDarkSquareBishops" + sideTag);
           assertEquals(UnwinnabilityMaterial.calculateHasKingOnly(side, sp),
-              UnwinnabilityMaterial.calculateHasKingOnly(side, bp), "calculateHasKingOnly" + sideTag);
+              UnwinnabilityMaterialBitboard.calculateHasKingOnly(side, bp), "calculateHasKingOnly" + sideTag);
           assertEquals(UnwinnabilityMaterial.calculateHasKingAndKnightOnly(side, sp),
-              UnwinnabilityMaterial.calculateHasKingAndKnightOnly(side, bp),
+              UnwinnabilityMaterialBitboard.calculateHasKingAndKnightOnly(side, bp),
               "calculateHasKingAndKnightOnly" + sideTag);
 
           for (final SquareType squareType : new SquareType[] { SquareType.LIGHT_SQUARE, SquareType.DARK_SQUARE }) {
             assertEquals(UnwinnabilityMaterial.calculateHasNoBishops(side, sp, squareType),
-                UnwinnabilityMaterial.calculateHasNoBishops(side, bp, squareType),
+                UnwinnabilityMaterialBitboard.calculateHasNoBishops(side, bp, squareType),
                 "calculateHasNoBishops(squareType=" + squareType + ")" + sideTag);
             assertEquals(UnwinnabilityMaterial.calculateHasKingAndBishopsOnly(side, sp, squareType),
-                UnwinnabilityMaterial.calculateHasKingAndBishopsOnly(side, bp, squareType),
+                UnwinnabilityMaterialBitboard.calculateHasKingAndBishopsOnly(side, bp, squareType),
                 "calculateHasKingAndBishopsOnly(squareType=" + squareType + ")" + sideTag);
           }
         }

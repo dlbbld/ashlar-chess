@@ -131,8 +131,8 @@ class FindHelpmateExhaust {
     // here is removed for paper compliance.
 
     final BitboardPosition bitboardPosition = board.getBitboardPosition();
-    if (UnwinnabilityMaterial.calculateHasKingOnly(color, bitboardPosition)
-        || UnwinnabilityMaterial.calculateHasNoPawns(color.getOppositeSide(), bitboardPosition)
+    if (UnwinnabilityMaterialBitboard.calculateHasKingOnly(color, bitboardPosition)
+        || UnwinnabilityMaterialBitboard.calculateHasNoPawns(color.getOppositeSide(), bitboardPosition)
             && calculateIsNeedLoserPromotion(color, bitboardPosition)) {
       return FindHelpmateRecursionResult.FALSE;
     }
@@ -143,7 +143,7 @@ class FindHelpmateExhaust {
       ScoreResult score = Score.score(color, board.getHavingMove(), bitboardPosition, legalMove);
 
       if (board.getHavingMove() == color.getOppositeSide()
-          && UnwinnabilityMaterial.calculateHasQueen(color.getOppositeSide(), bitboardPosition)) {
+          && UnwinnabilityMaterialBitboard.calculateHasQueen(color.getOppositeSide(), bitboardPosition)) {
         score = score == ScoreResult.REWARD ? ScoreResult.NORMAL : score;
       }
 
@@ -233,11 +233,11 @@ class FindHelpmateExhaust {
   // knights nor opposite-coloured bishops" (Lemma 6) sufficient-unwinnable conditions. Find the right call site
   // in FindHelpmateExhaust / UnwinnableFullAnalyzer and connect them.
   static boolean calculateIsUnwinnableAccordingLemma5(Side color, BitboardPosition bitboardPosition) {
-    if (UnwinnabilityMaterial.calculateHasKingAndKnightOnly(color, bitboardPosition)) {
-      if (UnwinnabilityMaterial.calculateHasNoKnights(color.getOppositeSide(), bitboardPosition)
-          && UnwinnabilityMaterial.calculateHasNoBishops(color.getOppositeSide(), bitboardPosition)
-          && UnwinnabilityMaterial.calculateHasNoRooks(color.getOppositeSide(), bitboardPosition)
-          && UnwinnabilityMaterial.calculateHasNoPawns(color.getOppositeSide(), bitboardPosition)) {
+    if (UnwinnabilityMaterialBitboard.calculateHasKingAndKnightOnly(color, bitboardPosition)) {
+      if (UnwinnabilityMaterialBitboard.calculateHasNoKnights(color.getOppositeSide(), bitboardPosition)
+          && UnwinnabilityMaterialBitboard.calculateHasNoBishops(color.getOppositeSide(), bitboardPosition)
+          && UnwinnabilityMaterialBitboard.calculateHasNoRooks(color.getOppositeSide(), bitboardPosition)
+          && UnwinnabilityMaterialBitboard.calculateHasNoPawns(color.getOppositeSide(), bitboardPosition)) {
         return true;
       }
     }
@@ -246,10 +246,10 @@ class FindHelpmateExhaust {
 
   static boolean calculateIsUnwinnableAccordingLemma6(Side color, BitboardPosition bitboardPosition) {
     for (final SquareType squareType : SquareType.REAL) {
-      if (UnwinnabilityMaterial.calculateHasKingAndBishopsOnly(color, bitboardPosition, squareType)
-          && UnwinnabilityMaterial.calculateHasNoKnights(color.getOppositeSide(), bitboardPosition)
-          && UnwinnabilityMaterial.calculateHasNoBishops(color, bitboardPosition, squareType.getOppositeSquareType())
-          && UnwinnabilityMaterial.calculateHasNoPawns(color.getOppositeSide(), bitboardPosition)) {
+      if (UnwinnabilityMaterialBitboard.calculateHasKingAndBishopsOnly(color, bitboardPosition, squareType)
+          && UnwinnabilityMaterialBitboard.calculateHasNoKnights(color.getOppositeSide(), bitboardPosition)
+          && UnwinnabilityMaterialBitboard.calculateHasNoBishops(color, bitboardPosition, squareType.getOppositeSquareType())
+          && UnwinnabilityMaterialBitboard.calculateHasNoPawns(color.getOppositeSide(), bitboardPosition)) {
         return true;
       }
     }
@@ -267,10 +267,10 @@ class FindHelpmateExhaust {
   private static boolean calculateIsKnightNeedsPromotion(Side winner, BitboardPosition bitboardPosition) {
     // if the intended winner has just a knight and the intended loser has just pawns
     // and/or queens
-    return UnwinnabilityMaterial.calculateHasKingAndKnightOnly(winner, bitboardPosition)
-        && UnwinnabilityMaterial.calculateHasNoRooks(winner.getOppositeSide(), bitboardPosition)
-        && UnwinnabilityMaterial.calculateHasNoBishops(winner.getOppositeSide(), bitboardPosition)
-        && UnwinnabilityMaterial.calculateHasNoKnights(winner.getOppositeSide(), bitboardPosition);
+    return UnwinnabilityMaterialBitboard.calculateHasKingAndKnightOnly(winner, bitboardPosition)
+        && UnwinnabilityMaterialBitboard.calculateHasNoRooks(winner.getOppositeSide(), bitboardPosition)
+        && UnwinnabilityMaterialBitboard.calculateHasNoBishops(winner.getOppositeSide(), bitboardPosition)
+        && UnwinnabilityMaterialBitboard.calculateHasNoKnights(winner.getOppositeSide(), bitboardPosition);
   }
 
   private static boolean calculateIsBishopNeedsPromotion(Side winner, BitboardPosition bitboardPosition) {
@@ -278,9 +278,9 @@ class FindHelpmateExhaust {
     // the intended loser does not have knights or bishops of the opposite color
 
     for (final SquareType squareType : SquareType.REAL) {
-      if (UnwinnabilityMaterial.calculateHasKingAndBishopsOnly(winner, bitboardPosition, squareType)
-          && UnwinnabilityMaterial.calculateHasNoKnights(winner.getOppositeSide(), bitboardPosition)
-          && UnwinnabilityMaterial.calculateHasNoBishops(winner.getOppositeSide(), bitboardPosition,
+      if (UnwinnabilityMaterialBitboard.calculateHasKingAndBishopsOnly(winner, bitboardPosition, squareType)
+          && UnwinnabilityMaterialBitboard.calculateHasNoKnights(winner.getOppositeSide(), bitboardPosition)
+          && UnwinnabilityMaterialBitboard.calculateHasNoBishops(winner.getOppositeSide(), bitboardPosition,
               squareType.getOppositeSquareType())) {
         return true;
       }
