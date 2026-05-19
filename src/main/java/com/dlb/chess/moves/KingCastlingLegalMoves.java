@@ -3,6 +3,7 @@ package com.dlb.chess.moves;
 import java.util.Set;
 import java.util.TreeSet;
 
+import com.dlb.chess.bitboard.BitboardPosition;
 import com.dlb.chess.board.StaticPosition;
 import com.dlb.chess.board.enums.CastlingRight;
 import com.dlb.chess.board.enums.Side;
@@ -35,6 +36,44 @@ class KingCastlingLegalMoves extends KingLegalMoves {
         }
 
         if (CastlingUtility.calculateKingSideCastlingCheck(staticPosition, havingMove,
+            castlingRight) == CastlingCheck.SUCCESS) {
+          legalMoveSet.add(CastlingConstants.WHITE_KING_SIDE_CASTLING_MOVE);
+        }
+        break;
+      case NONE:
+      default:
+        throw new IllegalArgumentException();
+
+    }
+    return legalMoveSet;
+  }
+
+  // Bitboard sibling of the StaticPosition overload above. The bitboard production pipeline reaches this through
+  // AbstractLegalMoves.calculateCastlingLegalMoves(BitboardPosition, ...).
+  public static Set<LegalMove> calculateKingCastlingLegalMoves(BitboardPosition bitboardPosition, Side havingMove,
+      CastlingRight castlingRight) {
+
+    final Set<LegalMove> legalMoveSet = new TreeSet<>();
+
+    switch (havingMove) {
+      case BLACK:
+        if (CastlingUtility.calculateQueenSideCastlingCheck(bitboardPosition, havingMove,
+            castlingRight) == CastlingCheck.SUCCESS) {
+          legalMoveSet.add(CastlingConstants.BLACK_QUEEN_SIDE_CASTLING_MOVE);
+        }
+
+        if (CastlingUtility.calculateKingSideCastlingCheck(bitboardPosition, havingMove,
+            castlingRight) == CastlingCheck.SUCCESS) {
+          legalMoveSet.add(CastlingConstants.BLACK_KING_SIDE_CASTLING_MOVE);
+        }
+        break;
+      case WHITE:
+        if (CastlingUtility.calculateQueenSideCastlingCheck(bitboardPosition, havingMove,
+            castlingRight) == CastlingCheck.SUCCESS) {
+          legalMoveSet.add(CastlingConstants.WHITE_QUEEN_SIDE_CASTLING_MOVE);
+        }
+
+        if (CastlingUtility.calculateKingSideCastlingCheck(bitboardPosition, havingMove,
             castlingRight) == CastlingCheck.SUCCESS) {
           legalMoveSet.add(CastlingConstants.WHITE_KING_SIDE_CASTLING_MOVE);
         }
