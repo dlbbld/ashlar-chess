@@ -4,6 +4,46 @@ Releases from 3.3 onward. Earlier history is in git tags only.
 
 ## [Unreleased]
 
+## [9.0.0] - 2026-05-19
+
+The **Bitboard release**. A second piece-placement representation (`BitboardPosition`, twelve `long`s indexed by `Square.ordinal()` little-endian rank-file) is built alongside `StaticPosition`, verified bit-exact against it on the full PGN/FEN corpus for every primitive, and then production hot paths switch to consume it. `StaticPosition` and the surrounding mailbox-rich-board reference layer remain in `src/main/` per the **Project Invariant** documented in `tasks.md`: that implementation represents the project's correctness ground truth and is never deleted — only relocated to `src/test/` as the permanent differential-test oracle in the next release.
+
+Suite runtime drops from ~54s on the StaticPosition baseline to ~31s on the bitboard primary path, on the same corpus. Sliding attacks use classical ray loops in this release; magic bitboards stay profile-gated.
+
+### Notable
+
+- **`BitboardPosition` record** in the new `com.dlb.chess.bitboard` package. Twelve `long`s — one per real `Piece`, each bit indexed by `Square.ordinal()`. Immutable; the compact constructor enforces pairwise-disjointness (no square may carry two pieces). Public methods cover the full board surface: `get`, `isEmpty`, `occupied`, `occupied(Side)`, `attackedSquares`, `isInCheck`, `attackersTo`, `legalKingTargets` (XRAY-aware), `pinRay`, `pinnedPieces`, `legalMoves(Side, long enPassantBit)`, immutable `afterMove(MoveSpecification, Side)`, `zobristPieces()`, `hashDelta(MoveSpecification, Side)`.
+- **Differential-test layer** drives every bitboard primitive against the StaticPosition reference on the full PGN/FEN corpus — piece queries, per-piece attacks (knight, king, two pawn tables, bishop/rook/queen via classical ray loops), pseudo-legal moves, aggregate attacks, `attackersTo`, `legalKingTargets`, pin detection, full legal-move generation, immutable `afterMove`, Zobrist piece-square hash, incremental `hashDelta`. Two spine-level assertions: legal-move agreement (`BitboardPosition.legalMoves` vs. `AbstractLegalMoves`, every fixture × side-to-move) and afterMove state agreement (`BitboardPosition.afterMove` vs. `StaticPositionUtility.createPositionAfterMove`, every fixture × every legal move including the four promotion targets and both castling sides). Disagreement is a correctness signal; the bitboard side must yield.
+- **Production hot paths now consume `BitboardPosition`:**
+  - `Board.isCheck()` → `bitboardPosition.isInCheck(side)`.
+  - `Board.getLegalMoves()` → `BitboardLegalMoveFactory.calculateLegalMoves` (bitboard for non-castling + bridge to the existing `KingCastlingLegalMoves` for castling).
+  - All five `UnwinnableQuickAnalyzer` private helpers (`calculateHasOnlyPawnsBishopsAndKings`, `calculateIsAlmostOnlyPawnsBishopsAndKings`, `calculateIsBlockedCandidate`, `calculateNumberOfBlockedPawns`, `calculateHasLonelyPawns`).
+  - `Mobility.mobility`, `Score.score`, `GoingToCorner.goingToCorner`.
+  - `FindHelpmateExhaust` (KingOnly / HasNoPawns / needLoserPromotion guards, the `Score.score` call, the `calculateHasQueen` check, the EP-erase adjacency check, and the Lemma 5 / Lemma 6 helpers) and `FindHelpMateInterrupt`.
+- **`Board.getBitboardPosition()`** — new public accessor returning the cached current-position bitboard in O(1). The bitboard is maintained as a parallel `bitboardPositionList` alongside `dynamicPositionList`, appended on every `move()` and popped on every `unmove()`.
+- **`BitboardPositionUtility`** — bit-exact conversion (`fromStaticPosition` / `toStaticPosition`) and a `toSquareSet(long)` decoder used by the differential-test harness.
+- **`ZobristKeys`** — 768 fixed-seed piece-square keys (12 pieces × 64 squares) deterministic across JVM runs, for transposition keys persisted across processes. Side-to-move / castling / en-passant keys deferred to the next release (lean helpmate board).
+- **`UnwinnabilityMaterial` split** into `UnwinnabilityMaterial` (StaticPosition reference oracle, only called from the differential test) and `UnwinnabilityMaterialBitboard` (production, called from all `src/main/` consumers). Pre-positions the StaticPosition variant for the next release's relocation to `src/test/` as a single `git mv`.
+- **`AbstractLegalMoves.calculateCastlingLegalMoves`** exposed as a public bridge so the bitboard legal-move pipeline can compose castling without duplicating the castling-rights logic.
+- **`PawnAttacks` geometric across all 64 from-squares.** Reverse-attack identity (used by `attackersTo`) needs pawn attack patterns defined on the back ranks too; the table is now purely geometric rather than mirroring the StaticPosition "pawns only on ranks 2-7" convention.
+- **Project Invariant** documented prominently in `tasks.md` (Bitboard release section): the `StaticPosition` reference implementation and its rich-board consumer tree (`AbstractAttackedSquares`, `com.dlb.chess.squares.*`, `AbstractLegalMoves`, `com.dlb.chess.moves.*`, `StaticPositionUtility`) represent several years of correctness-first work, hand-derived independently from the FIDE rules. They are **never deleted**; they relocate to `src/test/` at the end of the switchover and stay as the permanent differential-test oracle. If the migration can't reach that end state, the migration doesn't happen.
+
+### Internal
+
+- **Phase 0-9** of the bitboard release (purely additive) covered the parallel build-out: record + conversion → non-sliding attacks → classical-ray sliding attacks → aggregate attacks + check → pseudo-legal moves → legal moves with pins and XRAY king-safety → immutable `afterMove` → Zobrist piece-square hash + incremental delta. Each phase landed on `use_bitboard_for_rich_board` as one reviewable commit with its differential test attached. See `tasks.md` for per-step commit boundaries.
+- **Phase 1-2** of the switchover release flipped production: `Board.getBitboardPosition()` added → bitboard cached on `Board` → `isCheck` and `getLegalMoves` switch → all unwinnability analyzers ported.
+- **Phase 3+ deferred** to a separate next release: lean analyzer board for `FindHelpmateExhaust` with state-keyed transposition (side / castling / EP keys), conditional mutable make/unmake, conditional magic bitboards, the `StaticPosition` subtree relocation to `src/test/`, and the performance baseline. WIP for Phase 3 is preserved on `origin/feature/lean-bitboard-helpmate-wip` as the resume base.
+- Eclipse JDT null-analysis cleanup: all `Square.REAL.get(int)` callsites routed through `Nulls.get(Square.REAL, ordinal)` so the result is `@NonNull` rather than `@Nullable`.
+- Two Codex P2 fixes worth noting: (1) the legal-move tests were silently turned self-referential when Step 2.2 switched `Board.getLegalMoves` to the bitboard pipeline — the oracle is now pinned to `AbstractLegalMoves.calculateLegalMoves` directly. (2) `BitboardPosition`'s compact constructor was missing a popcount-vs-union check for the disjointness invariant.
+
+### Breaking
+
+None on the public API. The bitboard backend is additive infrastructure; existing entry points (`Board`, the parsers, the reporters) keep their signatures and semantics. `Board` gains the new public method `getBitboardPosition()`. `AbstractLegalMoves` gains a new public `calculateCastlingLegalMoves` method (was previously package-private). `UnwinnabilityMaterialBitboard` is a new package-private class.
+
+### Migration
+
+For typical use (read a PGN, play moves, query check / legal moves / unwinnability): no source change. The bitboard backend is transparent — same APIs, same semantics, just faster. If you want a `BitboardPosition` directly (e.g. to write your own engine code against it), call `board.getBitboardPosition()`.
+
 ## [8.0.0] - 2026-05-17
 
 The **DeepSquare moment**. clean-chess closes FIDE 5.2.2 dead-position gap to high extend (auto-CHA unwinnability quick per move) and is now cross-validated against the D3-Chess (Ambrona FUN22) reference oracle at three levels. Higher coverage with unwinnability full in evaluation for later release.

@@ -1,6 +1,6 @@
 package com.dlb.chess.unwinnability;
 
-import com.dlb.chess.board.StaticPosition;
+import com.dlb.chess.bitboard.BitboardPosition;
 import com.dlb.chess.board.enums.Piece;
 import com.dlb.chess.board.enums.PieceType;
 import com.dlb.chess.board.enums.Side;
@@ -15,7 +15,7 @@ class GoingToCorner implements EnumConstants {
 
   // Inputs: position, legal move in the position, objective (Win or Lose)
   // Output: bool (indicating whether or not m is leading to a corner mating position)
-  public static boolean goingToCorner(Side color, StaticPosition staticPosition, LegalMove m, Goal goal) {
+  public static boolean goingToCorner(Side color, BitboardPosition bitboardPosition, LegalMove m, Goal goal) {
 
     // 1: let P be moved piece in m and let s be the square P is moving to
 
@@ -44,7 +44,7 @@ class GoingToCorner implements EnumConstants {
     // 3: if the intended winner has dark-squared bishops or the intended loser has lightsquared
     // bishops (and the intended winner does not) then ( -> The target corner is set
     // to be h8)
-    final Square targetSquare = calculateTargetSquare(color, staticPosition, goal, movingPiece);
+    final Square targetSquare = calculateTargetSquare(color, bitboardPosition, goal, movingPiece);
 
     // 9: if P.type =K then return king-distance(s, target) < king-distance(P.sq, target)
     if (movingPiece.getPieceType() == KING) {
@@ -55,12 +55,12 @@ class GoingToCorner implements EnumConstants {
 
   }
 
-  private static Square calculateTargetSquare(Side winner, StaticPosition staticPosition, Goal goal, Piece p) {
+  private static Square calculateTargetSquare(Side winner, BitboardPosition bitboardPosition, Goal goal, Piece p) {
     Square target;
 
-    final var isDarkCorner = UnwinnabilityMaterial.calculateHasDarkSquareBishops(winner, staticPosition)
-        || UnwinnabilityMaterial.calculateHasLightSquareBishops(winner.getOppositeSide(), staticPosition)
-            && UnwinnabilityMaterial.calculateHasNoBishops(winner, staticPosition);
+    final var isDarkCorner = UnwinnabilityMaterialBitboard.calculateHasDarkSquareBishops(winner, bitboardPosition)
+        || UnwinnabilityMaterialBitboard.calculateHasLightSquareBishops(winner.getOppositeSide(), bitboardPosition)
+            && UnwinnabilityMaterialBitboard.calculateHasNoBishops(winner, bitboardPosition);
 
     if (isDarkCorner) {
       // 4: set target := if goal = Win then (P.type=K)?h6 : h8 else (P.type =K)?h8 : g8

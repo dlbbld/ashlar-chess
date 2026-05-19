@@ -7,6 +7,7 @@ import java.util.TreeSet;
 
 import org.apache.logging.log4j.Logger;
 
+import com.dlb.chess.bitboard.BitboardPosition;
 import com.dlb.chess.board.Board;
 import com.dlb.chess.board.enums.File;
 import com.dlb.chess.board.enums.Piece;
@@ -33,13 +34,14 @@ class Mobility {
     // the state containing all these variables
 
     // set MP->s := 0
+    final BitboardPosition bitboardPosition = board.getBitboardPosition();
     final List<PiecePlacement> piecePlacementList = new ArrayList<>();
-    for (final Square square : Square.REAL) {
-      if (!board.getStaticPosition().isEmpty(square)) {
-        final Piece piece = board.getStaticPosition().get(square);
-        final PiecePlacement p = new PiecePlacement(piece.getPieceType(), piece.getSide(), square);
-        piecePlacementList.add(p);
-      }
+    long occupied = bitboardPosition.occupied();
+    while (occupied != 0L) {
+      final Square square = Nulls.get(Square.REAL, Long.numberOfTrailingZeros(occupied));
+      final Piece piece = bitboardPosition.get(square);
+      piecePlacementList.add(new PiecePlacement(piece.getPieceType(), piece.getSide(), square));
+      occupied &= occupied - 1L;
     }
 
     final var mobility = new MobilitySolution();
@@ -168,7 +170,7 @@ class Mobility {
             continue;
           }
 
-          if (round <= 1 && !board.getStaticPosition().isEmpty(candidateToSquare)) {
+          if (round <= 1 && !bitboardPosition.isEmpty(candidateToSquare)) {
             isFirstRoundCaptureDeferred = true;
             continue;
           }

@@ -1,0 +1,90 @@
+package com.dlb.chess.test.bitboard;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
+import java.util.Set;
+
+import org.junit.jupiter.api.Test;
+
+import com.dlb.chess.bitboard.BitboardPosition;
+import com.dlb.chess.bitboard.BitboardPositionUtility;
+import com.dlb.chess.board.StaticPosition;
+import com.dlb.chess.board.enums.Side;
+import com.dlb.chess.board.enums.Square;
+import com.dlb.chess.common.Nulls;
+import com.dlb.chess.moves.LegalMovesTestOracle;
+import com.dlb.chess.test.model.PgnTestCase;
+import com.dlb.chess.test.model.PgnTestCaseList;
+import com.dlb.chess.test.pgn.setup.PgnTestCaseCatalog;
+import com.dlb.chess.test.pgntest.enums.PgnTest;
+
+/**
+ * Differential test for {@link BitboardPosition#legalKingTargets(Side)}: for every king on every fixture, the
+ * bitboard's legal-non-castling target set must agree with the reference
+ * {@code KingNonCastlingLegalMoves.calculateKingNonCastlingLegalMoves} (reached via {@link LegalMovesTestOracle}).
+ * Castling targets are intentionally out of scope here; they live on {@code Board} together with castling-rights
+ * state.
+ */
+class TestBitboardPositionLegalKingMoves {
+
+  @SuppressWarnings("static-method")
+  @Test
+  void corpusAgreesPerSide() {
+    for (final PgnTest pgnTest : PgnTest.values()) {
+      final PgnTestCaseList testCaseList = PgnTestCaseCatalog.getTestList(pgnTest);
+      for (final PgnTestCase testCase : testCaseList.list()) {
+        final StaticPosition staticPosition = testCase.finalPosition().getStaticPosition();
+        final BitboardPosition bitboardPosition = BitboardPositionUtility.fromStaticPosition(staticPosition);
+        assertSideAgrees(staticPosition, bitboardPosition, Side.WHITE, testCase);
+        assertSideAgrees(staticPosition, bitboardPosition, Side.BLACK, testCase);
+      }
+    }
+  }
+
+  private static void assertSideAgrees(StaticPosition staticPosition, BitboardPosition bitboardPosition, Side side,
+      PgnTestCase testCase) {
+    final long ownKings = side == Side.WHITE ? bitboardPosition.whiteKings() : bitboardPosition.blackKings();
+    if (ownKings == 0L) {
+      return;
+    }
+    // Bitboard returns the union of legal targets across all own kings; the reference is per-king. Compare per-king
+    // by computing the bitboard's legal-king-targets and intersecting with each king's pseudo-legal pattern, but for
+    // standard chess (one king per side) the union is just the one king's set.
+    final Set<Square> bitboardTargets = BitboardPositionUtility.toSquareSet(bitboardPosition.legalKingTargets(side));
+
+    // For each own king, ask the reference. Union the answers (handles the multi-king edge case symmetrically).
+    final Set<Square> referenceTargets = new java.util.TreeSet<>();
+    long remaining = ownKings;
+    while (remaining != 0L) {
+      final Square kingSquare = Nulls.get(Square.REAL, Long.numberOfTrailingZeros(remaining));
+      referenceTargets.addAll(LegalMovesTestOracle.kingNonCastlingLegalTargets(staticPosition, kingSquare, side));
+      remaining &= remaining - 1L;
+    }
+
+    assertEquals(referenceTargets, bitboardTargets,
+        side + " legalKingTargets in fixture " + testCase.pgnName());
+  }
+
+  @SuppressWarnings("static-method")
+  @Test
+  void initialPositionKingsHaveNoTargets() {
+    // In the initial position the king is surrounded by own pieces — no pseudo-legal squares to begin with.
+    assertEquals(0L, BitboardPosition.INITIAL_POSITION.legalKingTargets(Side.WHITE));
+    assertEquals(0L, BitboardPosition.INITIAL_POSITION.legalKingTargets(Side.BLACK));
+  }
+
+  @SuppressWarnings("static-method")
+  @Test
+  void emptyPositionReturnsZero() {
+    assertEquals(0L, BitboardPosition.EMPTY_POSITION.legalKingTargets(Side.WHITE));
+    assertEquals(0L, BitboardPosition.EMPTY_POSITION.legalKingTargets(Side.BLACK));
+  }
+
+  @SuppressWarnings("static-method")
+  @Test
+  void noneSideThrows() {
+    assertThrows(IllegalArgumentException.class,
+        () -> BitboardPosition.INITIAL_POSITION.legalKingTargets(Side.NONE));
+  }
+}

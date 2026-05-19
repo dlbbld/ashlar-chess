@@ -41,6 +41,17 @@ public abstract class AbstractLegalMoves implements EnumConstants {
         calculateLegalMovesBottomUp(staticPosition, havingMove, castlingRight, enPassantCaptureTargetSquare));
   }
 
+  /**
+   * Public bridge to {@link KingCastlingLegalMoves}. Returns only the castling legal moves for {@code havingMove}
+   * given the current castling rights. Used by {@code BitboardLegalMoveFactory.calculateLegalMoves} during the
+   * switchover: the bitboard generates non-castling moves; castling stays on the StaticPosition-based path until
+   * the relocation phase.
+   */
+  public static Set<LegalMove> calculateCastlingLegalMoves(StaticPosition staticPosition, Side havingMove,
+      CastlingRight castlingRight) {
+    return KingCastlingLegalMoves.calculateKingCastlingLegalMoves(staticPosition, havingMove, castlingRight);
+  }
+
   private static Set<LegalMove> calculateLegalMovesBottomUp(StaticPosition staticPosition,
       Square enPassantCaptureTargetSquare, CastlingRight castlingRight, Side havingMove, Square fromSquare) {
     final PieceType pieceType = staticPosition.get(fromSquare).getPieceType();

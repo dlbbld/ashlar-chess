@@ -4,175 +4,208 @@ Order within each section is the source of truth. Completed tasks move to **Done
 
 ---
 
-## Release sequence
+## The story when releases are done
 
-The next four releases, in order:
-
-1. **DeepSquare moment** — Auto-CHA per-move + Zobrist transposition key + pawn-wall sound classifier + foundational refactors. Completes the FIDE-rules correctness story. Still on the `StaticPosition` reference implementation; performance acceptable for live game analysis.
-2. **Bitboard backend** — performance overhaul. New `BitboardPosition` alongside the existing `StaticPosition`, verified bit-exact via differential testing. Move generation, attacks, check detection switch to bitboards; `StaticPosition` retained as the reference oracle. Required before Maven Central — public users expect engine-class performance.
-3. **python-chess primary cross-validation + PGN/FEN test coverage expansion** — reactivate the python-chess test path (currently dormant: `GeneratePythonTestCases.java` exists but is not consumed). Make python-chess the main move-test reference; keep `chesslib` as a second witness. Expand PGN/FEN import-export coverage — the area `chesslib` cannot exercise (non-initial-position PGN via the `FEN`/`SetUp` tags).
-4. **Maven Central publication** — the public release. Gated on all three preceding releases.
-
-The story when the sequence completes: *clean-chess started as a correctness-first reference implementation, built from the FIDE rules without consulting existing libraries. It found correctness bugs in python-chess and ScalaChess along the way. Once the rules were stable, a bitboard backend was added and verified bit-exact against the original reference layer. Then cross-validation against python-chess was reactivated as primary, with `chesslib` retained as a second witness. Only then published to Maven Central.*
+*clean-chess started as a correctness-first reference implementation, built from the FIDE rules without consulting existing libraries. It found correctness bugs in python-chess and ScalaChess along the way. Once the rules were stable, a bitboard backend was added alongside the reference layer and verified bit-exact against it. Production then switched to the bitboard path; the reference layer was relocated into the test tree and remains as the permanent differential-test oracle. Cross-validation against python-chess was reactivated as primary, with `chesslib` retained as a second witness. Only then published to Maven Central.*
 
 ---
 
-## Current release — DeepSquare moment
+## Current Bitboard release — project invariant — the `StaticPosition` reference implementation is never lost
 
-### GPL v3 source-file headers
+The mailbox `StaticPosition` representation and every piece of the rich board implementation built on top of it — attack queries (`AbstractAttackedSquares` and the per-piece-type classes under `com.dlb.chess.squares`), legal-move generation (`AbstractLegalMoves` and per-piece classes under `com.dlb.chess.moves`), `StaticPositionUtility`, insufficient-material detection, repetition logic, the `Board`-level FIDE-rules machinery, the SAN/LAN encoding paths that consume `StaticPosition` — represents several years of correctness-first work, hand-derived independently from the FIDE rules. **This implementation is the project's correctness ground truth. It is not deleted. Ever.**
 
-Add a short GPL preamble at the top of every source file, in the style CHA (D3-Chess) uses on its own files. The unwinnability release is the natural moment because the file headers are the strongest place to assert the CHA derivation that this release leans into.
+### What this means concretely across the bitboard migration
 
-Reference — CHA's header style:
+1. **The bitboard release is purely additive.** `BitboardPosition` is built alongside `StaticPosition`. Throughout that entire release every existing `StaticPosition`-based code path stays compilable, callable, and tested. Production hot paths are NOT switched in this release.
+2. **Every bitboard primitive is differential-tested bit-exact** against the corresponding `StaticPosition`-based code, on the full PGN/FEN corpus. Disagreement is a correctness signal; the bitboard side is the one that must yield.
+3. **Switchover (the release after the bitboard release) is gated** on the differential-test harness being green across the full corpus.
+4. **At switchover, the `StaticPosition` subtree moves from `src/main/java/` to `src/test/java/`.** Not deleted. Relocated. The classes that move together include at minimum: `StaticPosition`, `StaticPositionUtility`, the `com.dlb.chess.squares.*` family, the `com.dlb.chess.moves.*` family (those that consume `StaticPosition`), and any utility classes whose only consumers are this subtree. After the move, no `src/main/` code references any of them.
+5. **A permanent differential-test layer is maintained** driving the relocated `StaticPosition` oracle against `BitboardPosition`, on every test fixture, for every primitive — piece queries, attacks, legal moves, make-move, check, insufficient-material, repetition equivalents. The two representations continue to agree on every test position, forever.
 
-```
-/*
-  Chess Unwinnability Analyzer, an implementation of a decision procedure for
-  checking whether a certain player can deliver checkmate (i.e. win) in a given
-  chess position.
+### Non-negotiable precondition
 
-  This software leverages Stockfish as a backend for chess-related functions.
-  Stockfish is free software provided under the GNU General Public License
-  (see <http://www.gnu.org/licenses/>) and so is this tool.
-  The full source code of Stockfish can be found here:
-  <https://github.com/official-stockfish/Stockfish>.
+**If at any point it becomes clear that the migration cannot reach the end-state of "`StaticPosition` lives in `src/test/` as the perpetual oracle, with a full differential-test layer driving the bitboard against it," the migration does not happen.** Performance is not bought at the cost of deleting the reference implementation. The slow-and-right phase stays available as the witness — whether under `src/main/` (today) or under `src/test/` (after switchover).
 
-  Chess Unwinnability Analyzer is distributed in the hope that it will be
-  useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU GPL for more
-  details.
-*/
-```
+### Why this matters
 
-For clean-chess, adapt: short project description, copyright line, GPL v3 reference, credit to CHA as the derivation source for the unwinnability code, standard no-warranty boilerplate.
+clean-chess's identity is "correctness-first reference implementation, derived independently of every other chess library." The `StaticPosition` path is that identity expressed in code. It is what enables the bitboard release to be verifiable in the first place. Two independently-derived representations agreeing is information-theoretically stronger than one fast representation alone. The project keeps both, permanently.
 
-- [ ] Design the clean-chess header text (one paragraph + boilerplate)
-- [ ] Apply to every `.java` file under `src/main/` and `src/test/` via a script
-- [ ] One isolated commit (noisy diff, do not bundle with semantic changes)
-
-### Speed up `findHelpMate` — transposition key instead of FEN string for visited-position storage
-
-The unwinnability `findHelpMate` search used to key its visited-position set by `Board.fen()` — the full FEN string. Every node serialised a FEN, re-parsed it via `FenParserRaw`, and rebuilt a stripped-down FEN-shape string for the map key. For a search visiting many positions, FEN serialisation was the hot path.
-
-Landed in `996bcd3a` (May 14, 2026) as a structured `TranspositionKey` record on `FindHelpmateExhaust`: `(StaticPosition, Side havingMove, CastlingRight white, CastlingRight black, Square enPassantCaptureTargetSquare)`. Records get `equals` / `hashCode` for free; no allocation of FEN strings; no regex parsing; exact equality (no hash-collision risk).
-
-**En passant normalization.** Unlike `DynamicPosition` (which uses a boolean for en-passant availability — sufficient for in-game threefold repetition because pawn-irreversibility makes the boolean a complete distinguisher along a single game's history), the transposition key crosses the move-tree, not game history. Two different paths can converge on the same piece arrangement with the same side-to-move and castling rights but a *different* en-passant target square. The target is therefore included in the key, but **normalised**: if no opposing pawn can actually capture on the target (a "phantom" e.p. that FEN records but is unreachable), the field is set to `Square.NONE`. This uses the existing `calculateIsEraseEnPassantCaptureTargetSquare` logic from the old FEN-string approach.
-
-- [x] Decide on the key shape — chose structured record over long Zobrist hash. Simpler, no per-square-piece random tables, allocation-heavier per node but exact equality
-- [x] Swap `findHelpMate`'s visited-position store to use the new key
-- [x] Include the en-passant target square in the key (not just availability), normalised to `NONE` when no capture is actually available
-- [x] Confirm CHA-quick and CHA-full correctness unchanged (full `mvn -q test` passes)
-- [x] Tests covering counter-ignoring, phantom-e.p.-normalising, and capturable-e.p.-preserving behaviour (`TestFindHelpmateExhaustTranspositionKey`)
-
-**Deferred to the bitboard release.** A long Zobrist hash (with per-square-piece random tables, XOR'd incrementally on each move) becomes natural once `BitboardPosition` lands — the bitboard update sites are exactly where the Zobrist XORs go. If profiling at that point shows the record allocation matters, promote to a `long` key then. Until then the structured record is the right shape.
-
-### Switch `DynamicPosition` to hold the normalized en-passant target square; collapse `TranspositionKey` into it
-
-After the helpmate transposition-key work landed (`996bcd3a`), `DynamicPosition` and `TranspositionKey` are structurally near-identical: both are `(StaticPosition, Side, CastlingRight, CastlingRight, ?)`. The only difference is that `DynamicPosition` carries a `boolean isEnPassantCapturePossible` and `TranspositionKey` carries a `Square enPassantCaptureTargetSquare` (normalized to `NONE` when no opposing pawn can actually capture).
-
-**Semantic equivalence:** within a single game's history, pawn-irreversibility means the boolean and the normalized-square carry equivalent equality information — the threefold-repetition behavior is unchanged either way. The boolean was correct for `DynamicPosition`'s use case. The reason to switch is architectural symmetry, not correctness: if `DynamicPosition` adopts the square, then `TranspositionKey` becomes structurally identical and can collapse into `DynamicPosition`. One type, one normalization rule, one conceptual model of "chess-position equivalence." The helpmate transposition map keys directly on `DynamicPosition` and `FindHelpmateExhaust.calculateTranspositionKey` disappears.
-
-The FEN export path is untouched — it reads `Board.getEnPassantCaptureTargetSquare()` (the raw, FEN-spec target square), which is separate from `DynamicPosition`'s normalized square. Those two pieces of information serve different purposes (FEN compliance vs. position equivalence) and the distinction stays.
-
-Landed in `2d01c2ab` (May 14, 2026); follow-up `[hash-of-this-commit]` adds the `DynamicPosition.isEnPassantCapturePossible()` derived accessor for public-API source compatibility and a test for the king-safety-aware tightening.
-
-- [x] Change `DynamicPosition`'s `boolean isEnPassantCapturePossible` to `Square enPassantCaptureTargetSquare`; the field holds the e.p. target square when an opposing pawn can actually capture there, `Square.NONE` otherwise
-- [x] Update Board's two `DynamicPosition` construction sites (initial and post-move) to pass the normalized square instead of the boolean
-- [x] Update `RepetitionUtility`'s manual `DynamicPosition` equality (line 34 today) to compare the square component
-- [x] Update `Board.isEnPassantCapturePossible()` public API to read `getDynamicPosition().enPassantCaptureTargetSquare() != Square.NONE` — preserves the public method for existing callers
-- [x] Preserve `DynamicPosition.isEnPassantCapturePossible()` as a derived accessor on the record so external callers of the old auto-generated accessor still compile
-- [x] In `FindHelpmateExhaust`: switch the transposition map to `HashMap<DynamicPosition, Integer>`, delete the `TranspositionKey` record, delete `calculateTranspositionKey`, callers use `board.getDynamicPosition()` directly
-- [x] Verify the existing helpmate transposition-key tests still pass under the new shape; add a pinned-e.p.-capturer test to cover the king-safety-aware tightening (positions where an adjacent pawn exists but cannot legally capture due to a pin now correctly collapse to `Square.NONE`)
-
-`FindHelpmateExhaust.calculateIsEraseEnPassantCaptureTargetSquare` is **kept**, contrary to the original sketch: it has one remaining caller, the debug-only `calculateStockfishFen` helper (cold code behind `IS_DEBUG = false`).
-
-### Auto-CHA after every move
-- [ ] Per-move pipeline: invoke `isUnwinnableQuick` for both sides after every legal move; both unwinnable ⇒ `DEAD_POSITION` automatic termination
-- [ ] Update `isAutomaticallyTerminated()` to include this case
-- [ ] `BoardConfig` (record) with `autoChaEnabled` boolean; default `true` in production, `false` for tests and bulk PGN parsers
-- [ ] Test factory/base class that constructs disabled boards
-- [ ] `StrictPgnParser` and `LenientPgnParser` construct boards with auto-CHA disabled by default
-- [ ] README: remove the "CHA is not run automatically after every move" note
-- [ ] `specification.md` §3.1 termination table: add "Dead position (CHA quick) — automatic"
-- [ ] `specification.md` §3.2: invert the framing — quick is now per-move automatic; full remains opt-in
-- [ ] Performance check: with disable flag on, suite within ~10% of current
-- [ ] Targeted regression tests on positions that should auto-terminate
-
-### Pawn-wall classifier — sound tri-state verdict
-
-See [pawn-wall-soundness.md](pawn-wall-soundness.md) for the full design: production geometric check (chain-finder over orthogonally-adjacent barrier squares), BFS king-walk as a test oracle, and the asymmetric agreement contract `geometric_YES ⟹ BFS_YES`. Initial scaffolding has landed; the geometric check still has a known false-positive case (see follow-up below).
-
-- [x] Introduce `PawnWallVerdict { YES, NO, UNKNOWN }`
-- [x] `PawnWall.calculate(Board) -> PawnWallVerdict` wrapping the existing geometric predicate
-- [x] Migrate the three call sites in `WinnableAnalyzer` and `WinnableUtilityAnalyzeChaLichess` to `verdict == YES`
-- [x] BFS king-walk implemented as the test-only `PawnWallKingWalkOracle`
-- [x] Test class `TestPawnWallGeometricVerdict` verifies the agreement contract on the horizontal-wall and zig-zag-wall fixtures from `pawn-wall-soundness.md`
-
-#### Follow-up — tighten the geometric check to reject the false-positive fixture
-
-The current chain-finder accepts the position `7k/8/1p6/1Pp5/2Pp4/pB1Pp1p1/P1B1P1P1/3B2K1 b - - 0 1` (documented in `pawn-wall-soundness.md`). The chain `a5-b5-c5-c4-d4-d3-e3-e2-f2-g2-h2` is geometrically valid, but the king can capture the undefended Black pawn on a3 (sitting on the king's side of the chain) by routing through bishop-occupied squares (c2, b3). The geometric check returns `YES`; the BFS oracle would return "not trapped." This fixture is not in the test corpus yet (would cause a test failure with the current code).
-
-Two candidate tightenings:
-
-- Reject chains where any opposing pawn exists on the king's side of the chain. (Catches a3.)
-- Reject positions where any own non-pawn piece sits on a square that's currently masking the chain (i.e., the chain would be incomplete without that piece as a "stand-in barrier"). (Catches the c2/b3 bishops.)
-
-Both are conservative — they reject some sound walls. Once Auto-CHA per move is wired in, this whole local heuristic may be deletable. Decide at implementation time.
-
-- [ ] Add the false-positive fixture to the test corpus once the geometric check is tightened
-- [ ] Decide: tighten the geometric check, or delete the local heuristic once Auto-CHA is in place
-
-#### Follow-up — the all-pawns-involved soundness check landed
-
-`PawnWall.calculate(Board)` now wraps the existing chain check with an additional rule: **every pawn on the board must be either a chain element or an attacker of a chain element**. Floating pawns — those not contributing to the barrier — admit helpmates where the king captures the floater (or allows it to be captured) and a promotion follows. This rule rejects the ambrona_10 false positive (`7k/8/1p6/1Pp5/2Pp4/pB1Pp1p1/P1B1P1P1/3B2K1`): the `a2`/`a3` pair are floating, and CHA-full correctly says WINNABLE.
-
-The test corpus cross-checks the geometric verdict against two independent oracles:
-
-1. The BFS king-walk (`PawnWallKingWalkOracle`) — verifies the king truly cannot reach the opposing king's square.
-2. `UnwinnableQuickAnalyzer` — Ambrona's quick unwinnability oracle. The main soundness gate.
-
-The geometric classifier is now intentionally narrower than full unwinnability: many positions Ambrona's analyzer correctly classifies as `UNWINNABLE` fall through to `UNKNOWN` here (e.g. Norgaard examples with extra backed-up pawns that can't actually promote). The geometric classifier exists for the geometric pattern itself; `UnwinnableQuick` is the canonical unwinnability check.
-
-#### Future work — bishop-mate edge cases
-
-The current all-pawns-involved rule is sound for the known false-positive class (floating-pawn promotion). It's possible some bishop-only mating patterns (positions where multiple same-coloured bishops force mate even though the king is trapped behind a sound wall) could still slip through — none have been observed in the corpus yet. If one surfaces, the test catches it via the `UnwinnableQuick != UNWINNABLE` disagreement.
-
-### Separate the cheap-position and full-game paths on `PgnTestCase`
-
-Most of the test corpus consists of fixtures where the test only consults `testCase.finalFen()` — the FEN field is the cache, populated when the fixture was added to `PgnTestCaseCatalog`. For those tests the PGN file on disk is dead weight: `testCase.finalPosition()` builds a history-less position and skips replay entirely. A second category of tests genuinely needs the move history (repetition counts, claimable threefold, end-to-end PGN-pipeline tests); for those, `testCase.game(...)` replays the full game.
-
-The two paths look different at the call site today and don't advertise themselves as cheap-vs-expensive. A new test author writing a position-only test can accidentally reach for the replay path because they see other tests do it. With dead-position detection landing this release, that mistake becomes much more expensive: replay cost scales as N × (unwinnable-quick-cost-per-position) for a fixture that only needed its final position.
-
-**The fix is small and structural — no startup cache, no build-time codegen, no disk-cache invalidation.** Two changes:
-
-1. Name the two paths on `PgnTestCase` so the choice is intentional and visible at every call site:
-
-   ```java
-   public record PgnTestCase(...) {
-     /** History-free position from the FEN field. Cheap. Use for position-only tests. */
-     public Board finalPosition() { return new Board(finalFen(), false); }
-
-     /** History-bearing board from PGN replay. Expensive. Use for repetition / claimable / pipeline tests. */
-     public Board game(PgnTest pgnTest) {
-       return PgnUtility.calculateBoard(pgnTest.getFolderPath(), pgnName(), false);
-     }
-   }
-   ```
-
-2. Add a small command-line scratch tool that prints a PGN's final FEN. Currently, adding a new fixture means computing the FEN by hand (or by ad-hoc tooling); a 30-line `FenFromPgn` under `src/test/java/.../tools/` makes the workflow `mvn exec:java -Dexec.args="path/to/fixture.pgn"` → paste the FEN into `PgnTestCaseCatalog`. Fully mechanical.
-
-**What this is NOT.** Not an in-memory startup cache (single-test runs would pay full-suite startup cost). Not a `.fen` parallel corpus (bulk file conversion has no upside given the FEN is already in source). Not build-time codegen of `PgnTestCase` from PGN files (the FEN being committed source IS the cache and works fine). The existing architecture already gives lazy-per-fixture behaviour; this task just names the cheap/expensive paths cleanly and removes the friction of adding new fixtures.
-
-- [x] Add `finalPosition()` and `game(PgnTest)` methods on `PgnTestCase`
-- [x] Sweep existing tests; replace `new Board(testCase.finalFen())` with `testCase.finalPosition()` and replay helpers with `testCase.game(...)` (mechanical search/replace)
-- [x] Add the `FenFromPgn` scratch tool
-- [x] Document the choice in `PgnTestCase`'s javadoc: when to use which
+This rule overrides any task in any release section below. Tasks that conflict with it are wrong as stated and must be reframed.
 
 ---
 
-## Next release — Bitboard backend
+## Current Bitboard release — Implementation plan
+
+Commit-sized steps suitable for Codex review. Each step is one PR-style commit on `use_bitboard_for_rich_board`, with the differential test attached to the step that needs it. Sliding attacks use classical ray loops in this release (magics deferred to the switchover release where they actually pay off); make-move is immutable-only here (mutable make/unmake belongs to the lean-analyzer release).
+
+### Status
+
+- ✅ **Phase 0** — `13e56fbe` — unwinnability tests disabled
+- ✅ **Step 1.1** — `2c671f16` — `BitboardPosition` record + package skeleton
+- ✅ **Step 1.2** — `fb4132d1` — `BitboardPosition` ⇄ `StaticPosition` conversion + round-trip differential test
+- ✅ **Step 1.3** — `4427957d` — `BitboardPosition.get(Square)` / `isEmpty(Square)` + differential piece-query test
+- ✅ **Step 2.1** — `acb6cc0d` — `KnightAttacks` precomputed `long[64]` table + differential test (also adds `BitboardPositionUtility.toSquareSet`)
+- ✅ **Step 2.2** — `94485cd6` — `KingAttacks` precomputed `long[64]` table + differential test (castling stays on `Board`)
+- ✅ **Step 2.3** — `cbfa1766` — `PawnAttacks` two `long[64]` tables (per side) + differential test. Phase 2 complete.
+- ✅ **Step 3.1** — `38dfae2a` — `BishopAttacks.attacks(int, long)` via classical ray loops + differential test (adds `BitboardPosition.occupied()` and the `SlidingAttacksTestOracle` test bridge)
+- ✅ **Step 3.2** — `b81f7c4e` — `RookAttacks.attacks(int, long)` via classical ray loops + differential test
+- ✅ **Step 3.3** — `039d28a5` — `QueenAttacks.attacks(int, long)` = bishop | rook + differential test. Phase 3 complete.
+- ✅ **Codex P2 fix** — `66bee5fa` — `BitboardPosition` compact constructor rejects overlapping piece bitboards
+- ✅ **Codex open Q** — `8fec1bac` — `BitboardPosition.occupied(Side)` + differential test (positions Phase 4 cleanly)
+- ✅ **Step 4.1** — `fb73f2da` — `BitboardPosition.attackedSquares(Side)` + differential test against `AbstractAttackedSquares.calculateAttackedSquares`
+- ✅ **Step 4.2** — `a0ff8af7` — `BitboardPosition.isInCheck(Side)` + differential test against `StaticPositionUtility.calculateIsCheck`
+- ✅ **PawnAttacks geometric** — `ca75a3e0` — expand `PawnAttacks` to all 64 from-squares (enables the reverse-attack identity at the back ranks)
+- ✅ **Step 4.3** — `ff678853` — `BitboardPosition.attackersTo(Square, Side)` + differential test. Phase 4 complete.
+- ✅ **Step 5.1** — `b1f73147` — per-piece pseudo-legal target generators (`KnightMoves`, `KingMoves`, `BishopMoves`, `RookMoves`, `QueenMoves`) + differential test
+- ✅ **Step 5.2** — `7fdeb435` — `PawnMoves.pushes` (single + double + promotion) + differential test
+- ✅ **Step 5.3** — `920ebce0` — `PawnMoves.captures` (regular + en-passant) + differential test. Phase 5 complete.
+- ✅ **Step 6.1** — `b2d4cf5b` — `BitboardPosition.legalKingTargets(Side)` (XRAY-aware king-safety filter) + differential test against `KingNonCastlingLegalMoves`. Adds `attackedSquares(Side, long occupiedOverride)` overload and the `LegalMovesTestOracle` test bridge.
+- ✅ **Step 6.2** — `745251a0` — `BitboardPosition.pinRay(Square, Side)` and `pinnedPieces(Side)` + differential test against a "remove and re-check enemy slider attackers" reference oracle
+- ✅ **Step 6.3** — `71c87937` — `BitboardPosition.legalMoves(Side, long enPassantBit)` + **spine differential test** against `Board.getLegalMoves()` (castling-filtered) for every fixture × side-to-move. Phase 6 complete.
+- ✅ **Step 7.1** — `efac6be4` — immutable `BitboardPosition.afterMove(MoveSpecification, Side) -> BitboardPosition` + **second spine differential test** against `StaticPositionUtility.createPositionAfterMove` for every fixture × every legal move (normal, capture, EP, four promotion targets, both castling sides). Phase 7 complete.
+- ✅ **Steps 8.1 + 8.2** — `9b406562` — `ZobristKeys` (768-entry piece-square table from a fixed seed) + `BitboardPosition.zobristPieces()` (piece-placement hash) + collision-free / equal-position-equal-hash / move-changes-hash property tests
+- ✅ **Step 8.3** — `58081891` — `BitboardPosition.hashDelta(MoveSpecification, Side)` (incremental Zobrist XOR) + corpus differential test against fresh recomputation. Phase 8 complete.
+- ✅ **Step 9.1** — `60f07052` — re-enabled all 18 unwinnability test classes disabled in Phase 0. Phase 9 complete.
+
+**Bitboard backend release: COMPLETE.** Suite 1125 tests / 0 failures / 0 errors / 4 skipped (the 4 are pre-existing `IS_EXCLUDE_LONG_RUNNING_*` exclusions). Runtime ~54 s on this machine — well under the previous baseline. The bitboard layer is a fully-verified parallel implementation of `StaticPosition`-based move generation, move application, and Zobrist hashing across the entire corpus. Per the Project invariant, `StaticPosition` and every class derived from it remain in `src/main/` unchanged; production hot paths still consume them.
+
+**Baseline for the switchover release (Phase 9.2):** `findHelpMate` continues to run on the `StaticPosition` pipeline. The full unwinnability test suite contributes ~13 s to the 54 s total. This is the slow-and-right baseline against which the switchover release's lean-analyzer-board perf work will be measured.
+
+### Cross-cutting decisions (settled upfront)
+
+- **Bit layout**: little-endian rank-file, `bit_i = Square.values()[i].ordinal()`. Already true from the `Square` enum's declaration order — no remapping code.
+- **Representation**: 12 `long` fields on `BitboardPosition` (one per `Piece` value `WHITE_PAWN`..`BLACK_KING`), record-shaped. `occupied(Side)` / `occupied()` are derived methods. Records carry data only (project rule).
+- **Sliding attacks**: classical ray loops on bitboards. Magics are a follow-on perf step. Bitboard *shape* is what unlocks the lean analyzer board (release 3); bitboard *speed* via magics is separable.
+- **Make/unmake**: immutable `afterMove(MoveSpecification) -> BitboardPosition` only. Mirrors `StaticPositionUtility.createPositionAfterMove`, so differential testing is direct equality. Mutable make/unmake belongs to the lean-analyzer release.
+- **Differential-test harness**: a `BitboardDifferentialAssert` helper that the existing PGN-corpus tests can call from inside their per-position loops. Piggybacks on existing traversal — no separate corpus walk.
+- **Production callers unchanged**: `Board`, the `squares/*AttackedSquares` classes, and the `moves/*LegalMoves` classes keep using `StaticPosition`. This release is pure background.
+- **No `Board` integration in this release.** That's explicitly release 3.
+
+---
+
+### Phase 0 — Disable unwinnability tests
+
+**Step 0.1** — Mark every test class under `src/test/java/com/dlb/chess/unwinnability/` and `src/test/java/com/dlb/chess/test/unwinnability/` (the `Test*.java` files) with:
+
+```java
+@Disabled("Suspended for the bitboard backend release; re-enabled in Phase 9.")
+```
+
+Plain JUnit `@Disabled` rather than a new `RestrictTestConstants` flag — simplest to unwind in Phase 9, and the reason is self-documenting.
+
+Single commit. Verify the suite still passes and is meaningfully faster.
+
+---
+
+### Phase 1 — Foundation
+
+**Step 1.1** — Create package `com.dlb.chess.bitboard` with `package-info.java` (`@NonNullByDefault`). Add `BitboardPosition` record with 12 `long` fields (one per real `Piece` value, field order matches `Piece.REAL`). No methods or constants yet beyond what records auto-generate. *(`INITIAL_POSITION` / `EMPTY_POSITION` constants moved to Step 1.2 where they become trivial one-liners off `fromStaticPosition`.)*
+
+**Step 1.2** — `BitboardPosition.fromStaticPosition(StaticPosition)` + `toStaticPosition()`. Add `INITIAL_POSITION` and `EMPTY_POSITION` constants, computed off `fromStaticPosition(StaticPosition.INITIAL_POSITION)` and `fromStaticPosition(StaticPosition.EMPTY_POSITION)`. First differential test class `TestBitboardPositionRoundTrip`: for every `PgnTestCase.finalPosition()` in the corpus, assert `BitboardPosition.fromStaticPosition(sp).toStaticPosition().equals(sp)`. This is the spine — every later step rides on this being green.
+
+**Step 1.3** — `BitboardPosition.get(Square) -> Piece` and `isEmpty(Square)`. Differential test: corpus × all 64 squares, both representations agree.
+
+---
+
+### Phase 2 — Non-sliding attacks
+
+**Step 2.1** — `KnightAttacks` class with precomputed `long[64]` table. Differential test against `KnightAttackedSquares.calculateKnightAttackedSquares` for every knight on every corpus position.
+
+**Step 2.2** — `KingAttacks` class with precomputed `long[64]` table (non-castling attacks only — castling lives on `Board`, not on `BitboardPosition`). Differential test against `KingNonCastlingAttackedSquares`.
+
+**Step 2.3** — `PawnAttacks` class with two `long[64]` tables (white-from-square, black-from-square). Differential test against `PawnAttackedSquares`.
+
+---
+
+### Phase 3 — Sliding attacks (classical)
+
+**Step 3.1** — `BishopAttacks.attacks(int sq, long occupied) -> long` via four ray loops (NW, NE, SW, SE) with edge masks. Differential test against `BishopAttackedSquares`.
+
+**Step 3.2** — `RookAttacks.attacks(int sq, long occupied) -> long`. Differential test against `RookAttackedSquares`.
+
+**Step 3.3** — `QueenAttacks` = bishop | rook. Differential test against `QueenAttackedSquares`.
+
+---
+
+### Phase 4 — Aggregate attacks + check
+
+**Step 4.1** — `BitboardPosition.attackedSquares(Side) -> long` (union of all piece attacks). Differential test against `AbstractAttackedSquares.calculateAttackedSquares`.
+
+**Step 4.2** — `BitboardPosition.isInCheck(Side)`. Differential test against `Board.isCheck()` re-derived from `StaticPosition` (need a small test-side helper that takes `(StaticPosition, Side)` to compare cleanly).
+
+**Step 4.3** — `BitboardPosition.attackersTo(Square, Side) -> long` (bitset of `Side`'s pieces attacking the square). No direct production counterpart, so the oracle is "enumerate own pieces, ask each whether its attack set contains the target square." Differential test against that derivation. Used in Phase 6 for pin detection.
+
+---
+
+### Phase 5 — Pseudo-legal moves
+
+**Step 5.1** — Per-piece pseudo-legal generation returning `long` target sets, intersected with `~own`. Five small classes (`KnightMoves`, `BishopMoves`, `RookMoves`, `QueenMoves`, `KingMoves` — non-castling). Differential test: take each legal move from `AbstractLegalMoves`, strip pin/check filtering by re-running on `StaticPosition` without the king-safety filter — *or* simpler, write a small `StaticPositionPseudoLegalOracle` test helper that walks `StaticPosition` and lists pseudo-legal targets directly. The helper becomes the oracle.
+
+**Step 5.2** — Pawn pushes (single + double + promotion). Bitboard form using shift + mask. Differential test against `PawnForwardNonPromotionLegalMoves` + `PawnForwardPromotionLegalMoves` re-derived on `StaticPosition` without king-safety.
+
+**Step 5.3** — Pawn captures + en-passant. The en-passant target square is passed in (the bitboard layer is stateless about EP). Differential test against the corresponding pawn-capture legal-move classes.
+
+---
+
+### Phase 6 — Legal moves
+
+**Step 6.1** — Legal king moves (filter pseudo-legal king targets by `attackedSquares(opposite)`). Differential test against `KingNonCastlingLegalMoves`.
+
+**Step 6.2** — Pin detection: xray rook/bishop rays through the friendly king to find pinned own pieces and their pin-rays. Differential test against an oracle helper built from `StaticPosition` (for each own piece, hypothetically remove it and check whether the king becomes attacked along the same ray).
+
+**Step 6.3** — Full legal-move generation: filter pseudo-legal moves by check evasion (when in check, restrict to king moves, block-the-ray, capture-the-checker) + pin filter. **Closes the loop**: differential test the bitboard `Set<LegalMove>` against `AbstractLegalMoves.calculate(Board)` for every fixture × every legal halfmove.
+
+Castling is **not** included in `BitboardPosition.legalMoves` — castling rights live on `Board`. This stays a Board-layer concern. Document this explicitly in the bitboard package's `package-info.java`.
+
+---
+
+### Phase 7 — Immutable make-move
+
+**Step 7.1** — `BitboardPosition.afterMove(MoveSpecification) -> BitboardPosition`. Handles regular moves, captures, promotions, en-passant capture, and the *piece movement* part of castling (rook + king both move). Differential test against `StaticPositionUtility.createPositionAfterMove`: for every fixture × every legal move, both representations agree on the resulting position.
+
+This is the second spine assertion. Once green, the bitboard side is a faithful parallel implementation of the entire `StaticPosition` surface.
+
+---
+
+### Phase 8 — Zobrist hash
+
+(From tasks.md — naturally lands here because the XOR sites coincide with `afterMove`.)
+
+**Step 8.1** — Zobrist random tables (per piece × square; side-to-move; castling rights; en-passant file). Static, initialized once. Add `BitboardPosition.zobristPieces() -> long` (the piece-placement-only component — side/castling/EP are added by Board callers when they need a full key).
+
+**Step 8.2** — Differential property test: equal `BitboardPosition`s → equal hash; deliberately mutated positions across the corpus → different hash (no collisions observed).
+
+**Step 8.3** — Incremental Zobrist update inside `afterMove`. Differential test against full recomputation on the result.
+
+This step is the only one in this release where bitboards earn perf today: `FindHelpmateExhaust` could swap its `DynamicPosition`-keyed map to a `long` Zobrist key. **But that's a Board-layer change** — defer to release 3 along with the lean analyzer board, or do it as a tiny separate commit at the end of this release if the change stays inside `FindHelpmateExhaust` and re-enables under existing tests.
+
+---
+
+### Phase 9 — Re-enable unwinnability tests
+
+**Step 9.1** — Remove the `@Disabled` annotations from Phase 0. Suite runs full, on the existing `StaticPosition` path — no perf change yet, but back in CI.
+
+**Step 9.2** — Note the current `findHelpMate` runtime as the baseline for release 3 (lean analyzer board). Capture in `tasks.md`.
+
+**Step 9.3** — Update `tasks.md`: move the bitboard release to Done; surface the deferred work — magics, mutable make/unmake, Board integration, lean analyzer — into release 3's section.
+
+---
+
+### What I deliberately deferred
+
+- **Magic bitboards** — perf optimization layered on top once the parallel-and-verified property is established.
+- **Mutable make/unmake** — only useful for the lean analyzer board (release 3).
+- **`Board` integration** — explicitly out of scope; this release is pure background.
+- **Porting unwinnability analyzers to `BitboardPosition`** — tasks.md lists this in the bitboard release; it actually belongs to release 3, since the perf win comes from the lean analyzer board, not from the bitboard substrate alone.
+
+---
+
+
+## Current Bitboard release — general
 
 The performance overhaul. Same library, faster — same answers verified bit-exact against the existing `StaticPosition` reference. Ships before Maven Central because the public-facing library needs acceptable performance: users expect engine-class speed, not reference-implementation-class speed. People reach for Carlos's `chesslib` over alternatives because it has bitboards.
+
+**Governing rule for this release: see _Project invariant — the `StaticPosition` reference implementation is never lost_ at the top of this file.** This release is purely additive. No production hot path is switched to `BitboardPosition` here. No `StaticPosition`-based class is deleted, deprecated, or relocated here. The switchover and the relocation of `StaticPosition` into `src/test/` are a **separate later release**, gated on the differential-test harness being green across the full corpus.
 
 ### Approach — differential testing
 
@@ -180,40 +213,135 @@ The existing `StaticPosition` (square-array, slow-and-right) becomes the test or
 
 The architectural advantage clean-chess has: the two representations are independently derived from the FIDE rules, not from a common ancestor — so when they disagree, that's a real signal. Most chess engines added bitboards without a pre-existing reference; clean-chess's slow-and-right phase becomes the gift that pays back here.
 
-### Action items — design phase (settle first)
+After this release the `StaticPosition` path remains in `src/main/` and continues to be the production code path. It moves to `src/test/` only in the dedicated switchover release that follows, and only if the differential-test harness has stayed green throughout.
 
-- [ ] Relationship between `BitboardPosition` and `StaticPosition`: independent siblings (sync on every move) vs bitboard primary + `StaticPosition` as derived view. Lean: bitboard primary, `StaticPosition` computed on demand for human-readable purposes / introspection
-- [ ] Magic-bitboard tables for sliding pieces (rook, bishop, queen): standard magic numbers vs PEXT (BMI2). Java + portability concern → magic
-- [ ] Differential-test harness shape: every existing test runs both representations under an assertion, or a dedicated equivalence test that walks all production positions?
-- [ ] Incremental make/unmake on bitboards vs full recomputation per move
+The action items for this release are expressed as commit-sized Steps in *Current Bitboard release — Implementation plan* above. The harness, not a perf number, is the deliverable of this release. The bitboard path being a verified parallel implementation is the contract that unlocks the switchover release.
 
-### Action items — implementation
+### Explicitly NOT in this release (see Project invariant)
 
-- [ ] New package `com.dlb.chess.bitboard` with `BitboardPosition` and supporting bitboard utilities
-- [ ] Piece-on-square query
-- [ ] Knight attack table; pawn attack tables (per side)
-- [ ] Magic bitboards for sliding pieces (rook, bishop, queen)
-- [ ] King attacks
-- [ ] Attacked-squares computation
-- [ ] Legal-move generation on bitboards
-- [ ] Pin detection / check detection
-- [ ] Incremental make/unmake support
-- [ ] Production hot paths in `Board` switch to use `BitboardPosition`
-- [ ] `StaticPosition` retained as reference oracle in tests; can be computed from `BitboardPosition` on demand
-- [ ] Zobrist hash (introduced in the DeepSquare release as a string-FEN replacement) promoted to a properly bitboard-aware incremental hash
-- [ ] **Port the unwinnability analyzers to `BitboardPosition`.** `FindHelpMateInterrupt`, `FindHelpmateExhaust`, `UnwinnableQuickAnalyzer`, `UnwinnableFullAnalyzer`, `UnwinnableSemiStatic`, `Mobility`, `Score`, `GoingToCorner` — currently all consume `StaticPosition` / `Board`. They are the hottest production callers (auto-CHA per move) and the main motivation for this release. The semi-static path needs bitboard piece-set queries (`pos.pieces(KNIGHT)`-style); the helpmate search needs fast legal-move generation and `isCheckmate`. Verified bit-exact against the existing `StaticPosition` implementations via the differential-test harness.
-- [ ] Performance baseline: measure `findHelpMate` on representative unwinnability fixtures; target within 5× of `chesslib`
+- Switching any production hot path in `Board` to consume `BitboardPosition`.
+- Porting the unwinnability analyzers (`FindHelpMateInterrupt`, `FindHelpmateExhaust`, `UnwinnableQuickAnalyzer`, `UnwinnableFullAnalyzer`, `UnwinnableSemiStatic`, `Mobility`, `Score`, `GoingToCorner`) to `BitboardPosition`.
+- Relocating `StaticPosition` or any of its consumers from `src/main/` to `src/test/`.
+- Magic bitboards.
+- Mutable make/unmake / lean analyzer board for tree search.
+
+All of the above belong to the dedicated switchover release that follows, and only proceed once the differential-test harness has stayed green across the full corpus.
 
 ### Notes
 
-- Auto-CHA per-move (in the DeepSquare release) uses `isUnwinnableQuick`, which is already cheap — no bitboard dependency there. The performance pain that motivates this release is `findHelpMate` (full unwinnability search).
-- The DeepSquare-release Zobrist task partially addresses `findHelpMate` performance without bitboards (FEN-string visited set → `long` key). This release takes it the rest of the way.
+- Auto-CHA per-move (in the DeepSquare release) uses `isUnwinnableQuick`, which is already cheap — no bitboard dependency there. The performance pain that motivates this overall arc is `findHelpMate` (full unwinnability search), but that perf win lands in the switchover release, not this one.
+- The DeepSquare-release Zobrist task partially addressed `findHelpMate` performance without bitboards (FEN-string visited set → structured record key). The properly-bitboard-aware incremental Zobrist hash lands in this release; the actual swap of `findHelpmate`'s visited-position map to that key is part of the switchover release.
 
 ---
 
-## Deep square moment follow-up release - bitboard for tree search
+## Switchover release — production hot paths use `BitboardPosition`; `StaticPosition` relocates to `src/test/`
 
-- [ ] Implement a bitboard suited for tree search (the existing board is rich and not designed for such operations, for example the unmove is partially slow, as it maintains a lot of lists).
+This release **only proceeds if the differential-test harness from the bitboard release has stayed green across the full corpus.** Per the Project invariant at the top of this file: this release switches the production path, and at the same time moves the `StaticPosition` subtree from `src/main/` to `src/test/` — relocated, not deleted, and remains as the permanent differential-test oracle from that point on.
+
+### Implementation plan
+
+Commit-sized steps suitable for Codex review. The bitboard release (commit `246a66ae`) shipped a verified parallel implementation; this release flips production. Each step lands one logical change, validated against the existing test surface plus the bitboard differential tests from the prior release.
+
+#### Status
+
+- ✅ **Step 1.1** — `915cf866` — `Board.getBitboardPosition()` returning a per-call computed `BitboardPosition` (no caching yet). Pure additive.
+- ✅ **Step 1.2** — `bb85f09e` — bitboard cached as `bitboardPositionList` field on `Board`, maintained per `move()`/`unmove()`. O(1) `getBitboardPosition()` via `Nulls.getLast`.
+- ✅ **Step 1.3** — `c752bd5e` — `Board`'s `isCheck` computation switches to `BitboardPosition.isInCheck`; drops the unused `AbstractAttackedSquares` / `Set` imports. Phase 1 complete.
+- ✅ **Step 2.1** — `4c7cb4e9` — `BitboardLegalMoveFactory.toLegalMove` converts a bare `MoveSpecification` into a fully-typed `LegalMove` (movingPiece, capturedPiece, kind), differential-tested against `AbstractLegalMoves.calculateLegalMoves` (the StaticPosition-backed oracle) on every corpus fixture. The original Step 2.1 test compared against `board.getLegalMoves()`; that became self-referential once Step 2.2 switched `Board` to the bitboard pipeline, and the oracle was repointed at the `AbstractLegalMoves` surface in `ed4e20eb` (see below).
+- ✅ **Step 2.2** — `a235d363` — `Board.getLegalMoves()` population switches to `BitboardLegalMoveFactory.calculateLegalMoves` (bitboard for non-castling + public bridge to `KingCastlingLegalMoves` for castling). Full suite ~46s vs. ~54s before — the bitboard pipeline is faster than the StaticPosition path it replaces.
+- ✅ **Codex P2 fix** — `ed4e20eb` — `TestBitboardPositionLegalMoves` and `TestBitboardLegalMoveFactory` were silently turned self-referential by Step 2.2; both now use `AbstractLegalMoves.calculateLegalMoves` directly as the independent StaticPosition-backed oracle. Plus a Step 1.2 doc-mismatch fix.
+- ✅ **Step 2.3a** — `732e356f` — bitboard variants added to `UnwinnabilityMaterial` (pure additive; differential-tested against the StaticPosition surface).
+- ✅ **Step 2.3b** — `33e03a96` — `UnwinnableQuickAnalyzer`'s five private helpers (`calculateHasOnlyPawnsBishopsAndKings`, `calculateIsAlmostOnlyPawnsBishopsAndKings`, `calculateIsBlockedCandidate`, `calculateNumberOfBlockedPawns`, `calculateHasLonelyPawns`) now consume `BitboardPosition`; call sites route through `board.getBitboardPosition()`. Plus bitboard variant of `SemiOpenFilesUtility.calculateHasSemiOpenFile`. Drops `StaticPosition`, `Piece`, `Square` imports from `UnwinnableQuickAnalyzer`. Suite runtime drops to ~31s.
+- ✅ **Step 2.4** — `692f96ce` — `Mobility.mobility` now consumes `board.getBitboardPosition()` (the only two StaticPosition queries: build the piecePlacementList from occupied squares + first-round empty-target check). The class is otherwise self-contained on its `PiecePlacement`/`MobilitySolution` data structures.
+- ✅ **Step 2.5** — `9abc0926` — `Score.score`, `GoingToCorner.goingToCorner`, and `FindHelpmateExhaust.calculateIsNeedLoserPromotion` (+ its two helpers) all swap from `StaticPosition` to `BitboardPosition`. The `findHelpmate` recursion call site extracts `board.getBitboardPosition()` once and reuses it for the KingOnly / HasNoPawns / needLoserPromotion guards, the `Score.score` call, and the `calculateHasQueen` check. `UnwinnableSemiStatic` did not need porting — it consumes only `Board`'s public surface, which has been bitboard-backed since Phase 1.
+- ✅ **Step 2.6** — `b3ed0edf` — `FindHelpmateExhaust`'s last StaticPosition queries gone. `calculateIsEraseEnPassantCaptureTargetSquare` uses an inline bitboard adjacency check (kept inline because `EnPassantCaptureUtility` lives in the doomed-to-relocate `com.dlb.chess.moves` subtree). `calculateIsUnwinnableAccordingLemma5/6` ported to `BitboardPosition` with a TODO marker — they're declared but not yet wired into the analyzer flow; wiring them in is a follow-on.
+- ✅ **Step 2.7** — `FindHelpMateInterrupt` has no `StaticPosition` use; `UnwinnableFullAnalyzer` has only the `Fen` pass-through. Phase 2 closed on the analyzer side.
+
+#### Release boundary
+
+**This Switchover release ends at the Phase 2 boundary.** Production hot paths consume `BitboardPosition`; the `StaticPosition` reference layer remains in `src/main/` per the Project Invariant. Phases 3-7 (lean analyzer board for `FindHelpmateExhaust`, transposition keys, conditional mutable make/unmake, conditional magics, `StaticPosition` relocation, perf baseline) are deferred to a **separate, dedicated release** so the bitboard-on-`Board` change and the tree-search refactor each ship and stabilize on their own. Their plan stays below for continuity, but they do not block closing this release.
+
+Phase 3 work-in-progress (`a524c9b8` LeanBoard, `befe521b` castling fix + stronger tests, `4b63738e` ZobristKeys side/castling/EP keys + `LeanBoard.zobristKey` + `legalMoves -> LegalMove`) was reverted from this release at `722e481` and preserved on `origin/feature/lean-bitboard-helpmate-wip` as the starting point for the next release.
+
+#### Note on the original Step 1.4
+
+The original plan had a Step 1.4 — switch `Board.getLegalMoves()` to compose `bitboardPosition.legalMoves(...)` with castling. In practice this needs a `MoveSpecification → LegalMove` converter (because `getLegalMoves()` returns `LegalMove` records with `LegalMoveKind` + captured-piece info, while the bitboard returns bare `MoveSpecification`s) plus a castling generator. The converter is also needed by every unwinnability analyzer in Phase 2 — so it lives in Phase 2 as the lead-in, and the legal-move switch on `Board` lands once the converter exists.
+
+#### Cross-cutting decisions (settled upfront)
+
+- **One hot path at a time.** Production callers switch over individually, with the existing test suite green after each step. No "big bang" cutover.
+- **`StaticPosition` computation stays on `Board` through Phases 1-5.** Only Phase 6 removes it. Until then `BitboardPosition` rides alongside as the primary, `StaticPosition` as a fallback for any callers not yet ported.
+- **Magic bitboards are profile-gated.** Only land if classical ray loops show as the actual bottleneck after the lean analyzer board is in place.
+- **Mutable make/unmake is conditional.** Only land if the lean analyzer board's tree search actually demands it; immutable `afterMove` might be sufficient.
+- **The bitboard-release test bridges stay.** `SlidingAttacksTestOracle` and `LegalMovesTestOracle` under `src/test/java/com.dlb.chess.squares` / `com.dlb.chess.moves` become permanent — they outlive the bitboard release as long as those reference classes exist.
+
+---
+
+### Phase 1 — `Board` carries `BitboardPosition`; primary queries switch
+
+**Step 1.1** — Add `Board.getBitboardPosition()` returning a fresh `BitboardPositionUtility.fromStaticPosition(getStaticPosition())` per call. No field caching yet. Test: returned bitboard agrees with the existing `StaticPosition` on every fixture in the corpus.
+
+**Step 1.2** — Cache the bitboard as a field on `Board`: a `List<BitboardPosition>` parallel to `dynamicPositionList`, appended on every `move()` (via `BitboardPositionUtility.fromStaticPosition(afterStaticPosition)`) and popped on every `unmove()`. `getBitboardPosition()` becomes O(1) via `Nulls.getLast`. Incremental computation via `BitboardPosition.afterMove` is a follow-on if profiling shows the per-move recomputation is hot. Test: corpus final positions agree with `fromStaticPosition`, plus a hand-played five-move sequence (e4, e5, Nf3, Nc6, Bb5) followed by full `unmove()` walk, asserting the cache is bit-exact at every intermediate state.
+
+**Step 1.3** — Switch `Board.isCheck()` to consume `bitboardPosition.isInCheck(side)`. Test: existing Board check tests + bitboard `TestBitboardPositionIsInCheck`. Phase 1 complete after this step.
+
+---
+
+### Phase 2 — `MoveSpecification → LegalMove` converter, Board's legal-move switch, port unwinnability analyzers
+
+**Step 2.1** — Build a `MoveSpecification → LegalMove` converter on the bitboard side. Given a `BitboardPosition` and a non-castling `MoveSpecification`, it determines the moving piece, captured piece (regular or EP), and the `LegalMoveKind` (NORMAL / EN_PASSANT_CAPTURE / PAWN_TWO_SQUARE_ADVANCE / PROMOTION). Castling moves get a separate, simpler converter that just emits the existing castling shape.
+
+**Step 2.2** — Switch `Board.getLegalMoves()` population (the call that builds `legalMoveListPerPly` in the constructor and `move()`) to compose `bitboardPosition.legalMoves(...)` with castling-MoveSpecs from the existing castling path, plus the Step 2.1 converter to produce `LegalMove` records.
+
+**Step 2.3** — Port `UnwinnableQuickAnalyzer` to consume `BitboardPosition`. Reuses Phase 4-5 bitboard primitives. Test: existing CHA-quick tests.
+
+**Step 2.4** — Port `UnwinnableSemiStatic` + supporting analysis classes (`Mobility`, `SemiOpenFilesUtility`, etc.).
+
+**Step 2.5** — Port `Score`, `GoingToCorner`, and the per-side helpmate-eval helpers.
+
+**Step 2.6** — Port `UnwinnableFullAnalyzer` and `FindHelpMateInterrupt`. `FindHelpmateExhaust` deferred to Phase 3 where it merges with the lean board.
+
+---
+
+### Phase 3 — Lean analyzer board for `FindHelpmateExhaust`
+
+**Step 3.1** — Design + new lightweight position class. Minimal state: `BitboardPosition` + side-to-move + en-passant target + castling rights + halfmove clock. No SAN/LAN lists, no disambiguation, no full history. Keyed on `BitboardPosition.zobristPieces()` + side/castling/EP contributions for transposition.
+
+**Step 3.2** — `FindHelpmateExhaust` consumes the lean board. Helpmate transposition map switches from `DynamicPosition` to `long` Zobrist key.
+
+**Step 3.3** — Baseline `findHelpMate` runtime on representative unwinnability fixtures. Record in tasks.md.
+
+---
+
+### Phase 4 — Mutable make/unmake (conditional)
+
+**Step 4.1** — Only if Phase 3's tree-search profile shows immutable `afterMove` allocations are a bottleneck. Add mutable variant on the lean analyzer board (NOT on `BitboardPosition` itself — preserves the record's immutability).
+
+---
+
+### Phase 5 — Magic bitboards (conditional)
+
+**Step 5.1** — Only if profiling after Phases 3-4 shows classical ray loops are the bottleneck on the now-hot bitboard path. Drop in magic bitboards behind the existing `(int squareOrdinal, long occupied) -> long` API in `BishopAttacks` / `RookAttacks` — no caller changes needed.
+
+---
+
+### Phase 6 — Relocate `StaticPosition` subtree to `src/test/`
+
+**Step 6.1** — Audit: confirm no `src/main/` class still references `StaticPosition`, `StaticPositionUtility`, the `com.dlb.chess.squares.*` consumers, or the `com.dlb.chess.moves.*` consumers. Any holdouts get ported or fixed.
+
+**Step 6.2** — Drop `Board`'s `staticPosition` field. `getStaticPosition()` becomes a derived view computed from the bitboard via `BitboardPositionUtility.toStaticPosition()` — and stays as a public API for callers that want the human-readable mailbox form.
+
+**Step 6.3** — Move the subtree from `src/main/java/` to `src/test/java/`: `StaticPosition`, `StaticPositionUtility`, the `com.dlb.chess.squares.*` family, the `com.dlb.chess.moves.*` family. Test: full suite still green (differential tests now drive the relocated oracle against the bitboard).
+
+**Step 6.4** — Formalize the permanent differential-test layer in tasks.md / specification.md: every primitive on `BitboardPosition` is asserted against the relocated `StaticPosition` oracle for every fixture in the corpus, for every supported release going forward. Project policy from this point on.
+
+---
+
+### Phase 7 — Performance baseline + release notes
+
+**Step 7.1** — Measure `findHelpMate` runtime against the representative unwinnability fixtures. Target: within 5× of `chesslib` on the same fixtures.
+
+**Step 7.2** — Update `tasks.md` (move switchover to Done), `README.md` (note bitboard backend), and `specification.md` (architecture section now describes the bitboard primary / StaticPosition oracle split).
 
 ## Future release — python-chess primary cross-validation + PGN/FEN test coverage expansion
 

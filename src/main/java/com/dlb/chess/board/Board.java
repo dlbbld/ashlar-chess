@@ -3,11 +3,13 @@ package com.dlb.chess.board;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.Set;
 
 import org.eclipse.jdt.annotation.Nullable;
 
 import com.dlb.chess.analyze.ChessRuleAnalyzer;
+import com.dlb.chess.bitboard.BitboardLegalMoveFactory;
+import com.dlb.chess.bitboard.BitboardPosition;
+import com.dlb.chess.bitboard.BitboardPositionUtility;
 import com.dlb.chess.board.enums.CastlingMove;
 import com.dlb.chess.board.enums.CastlingRight;
 import com.dlb.chess.board.enums.CastlingRightLoss;
@@ -36,7 +38,6 @@ import com.dlb.chess.fen.model.Fen;
 import com.dlb.chess.model.CastlingRightBoth;
 import com.dlb.chess.model.LegalMove;
 import com.dlb.chess.model.LegalMoveKind;
-import com.dlb.chess.moves.AbstractLegalMoves;
 import com.dlb.chess.moves.CastlingUtility;
 import com.dlb.chess.moves.EnPassantCaptureUtility;
 import com.dlb.chess.moves.PromotionUtility;
@@ -47,7 +48,6 @@ import com.dlb.chess.san.MoveToSan;
 import com.dlb.chess.san.SanTerminalMarker;
 import com.dlb.chess.san.StrictSanParser;
 import com.dlb.chess.san.StrictSanParserValidationResult;
-import com.dlb.chess.squares.AbstractAttackedSquares;
 import com.dlb.chess.unwinnability.DeadPositionFull;
 import com.dlb.chess.unwinnability.DeadPositionQuick;
 import com.dlb.chess.unwinnability.UnwinnabilityFullVerdict;
@@ -117,6 +117,7 @@ public class Board {
   private final List<Boolean> isCheckmateList;
   private final List<Boolean> isStalemateList;
   private final List<DynamicPosition> dynamicPositionList;
+  private final List<BitboardPosition> bitboardPositionList;
   private final List<Integer> halfMoveClockList;
   private final List<Integer> repetitionCountList;
   private final List<String> sanList;
@@ -190,20 +191,18 @@ public class Board {
 
     this.initialFen = initialFenUse;
 
+    final BitboardPosition initialBitboardPosition = BitboardPositionUtility.fromStaticPosition(initialStaticPosition);
+    final long initialEnPassantBit = initialEnPassantCaptureTargetSquare == Square.NONE ? 0L
+        : 1L << initialEnPassantCaptureTargetSquare.ordinal();
+
     this.performedLegalMoveList = new ArrayList<>();
     this.legalMoveListPerPly = new ArrayList<>();
-    final ImmutableList<LegalMove> legalMoves = AbstractLegalMoves.calculateLegalMoves(initialStaticPosition,
-        initialHavingMove, initialCastlingRight, initialEnPassantCaptureTargetSquare);
+    final ImmutableList<LegalMove> legalMoves = BitboardLegalMoveFactory.calculateLegalMoves(initialBitboardPosition,
+        initialStaticPosition, initialHavingMove, initialCastlingRight, initialEnPassantBit);
     this.legalMoveListPerPly.add(legalMoves);
 
-    final Set<Square> attackedSquareSet = AbstractAttackedSquares.calculateAttackedSquares(initialStaticPosition,
-        initialHavingMove.getOppositeSide());
-
-    final Square kingSquareHavingMove = StaticPositionUtility.calculateKingSquare(initialStaticPosition,
-        initialHavingMove);
-
     this.isCheckList = new ArrayList<>();
-    final var isCheck = attackedSquareSet.contains(kingSquareHavingMove);
+    final var isCheck = initialBitboardPosition.isInCheck(initialHavingMove);
     this.isCheckList.add(isCheck);
 
     this.isCheckmateList = new ArrayList<>();
@@ -225,6 +224,8 @@ public class Board {
       this.dynamicPositionList.add(new DynamicPosition(initialHavingMove, initialStaticPosition,
           initialNormalizedEnPassantCaptureTargetSquare, initialCastlingRightWhite, initialCastlingRightBlack));
     }
+    this.bitboardPositionList = new ArrayList<>();
+    this.bitboardPositionList.add(initialBitboardPosition);
     this.halfMoveClockList = new ArrayList<>();
     this.halfMoveClockList.add(initialFenUse.halfMoveClock());
 
@@ -433,17 +434,16 @@ public class Board {
     // now changing board class state, so performing the move!
     this.performedLegalMoveList.add(moveToPerform);
 
+    final BitboardPosition afterBitboardPosition = BitboardPositionUtility.fromStaticPosition(afterStaticPosition);
+    final long afterEnPassantBit = afterEnPassantCaptureTargetSquare == Square.NONE ? 0L
+        : 1L << afterEnPassantCaptureTargetSquare.ordinal();
+
     // now we have a depencency on instruction execution: the move must be performed before calling the legal moves
-    final ImmutableList<LegalMove> legalMovesAfterMove = AbstractLegalMoves.calculateLegalMoves(afterStaticPosition,
-        afterHavingMove, afterCastlingRightHavingMove, afterEnPassantCaptureTargetSquare);
+    final ImmutableList<LegalMove> legalMovesAfterMove = BitboardLegalMoveFactory.calculateLegalMoves(
+        afterBitboardPosition, afterStaticPosition, afterHavingMove, afterCastlingRightHavingMove, afterEnPassantBit);
     this.legalMoveListPerPly.add(legalMovesAfterMove);
 
-    final Set<Square> attackedSquareSet = AbstractAttackedSquares.calculateAttackedSquares(afterStaticPosition,
-        afterHavingMove.getOppositeSide());
-
-    final Square kingSquareHavingMove = StaticPositionUtility.calculateKingSquare(afterStaticPosition, afterHavingMove);
-
-    final var isCheck = attackedSquareSet.contains(kingSquareHavingMove);
+    final var isCheck = afterBitboardPosition.isInCheck(afterHavingMove);
     this.isCheckList.add(isCheck);
 
     final var isCheckmate = isCheck && legalMovesAfterMove.isEmpty();
@@ -456,6 +456,7 @@ public class Board {
         afterNormalizedEnPassantCaptureTargetSquare, afterCastlingRightBoth.castlingRightWhite(),
         afterCastlingRightBoth.castlingRightBlack());
     this.dynamicPositionList.add(newDynamicPosition);
+    this.bitboardPositionList.add(afterBitboardPosition);
 
     // order of instructions dependency!! - must be after adding the move
     final int lastHalfMoveClock = Nulls.getLast(halfMoveClockList);
@@ -532,6 +533,7 @@ public class Board {
     this.isStalemateList.remove(isStalemateList.size() - 1);
 
     this.dynamicPositionList.remove(dynamicPositionList.size() - 1);
+    this.bitboardPositionList.remove(bitboardPositionList.size() - 1);
     this.halfMoveClockList.remove(halfMoveClockList.size() - 1);
     this.repetitionCountList.remove(repetitionCountList.size() - 1);
 
@@ -782,6 +784,16 @@ public class Board {
 
   public StaticPosition getStaticPosition() {
     return Nulls.getLast(dynamicPositionList).staticPosition();
+  }
+
+  /**
+   * Current position as a {@link BitboardPosition}. Maintained as a parallel cache alongside
+   * {@link #dynamicPositionList}: appended on every {@link #move}, popped on every {@link #unmove}. O(1) per call.
+   * Bit-exact with {@code BitboardPositionUtility.fromStaticPosition(getStaticPosition())} on every halfmove of
+   * every game (validated by the differential test).
+   */
+  public BitboardPosition getBitboardPosition() {
+    return Nulls.getLast(bitboardPositionList);
   }
 
   StaticPosition getStaticPositionBeforeLastMove() {

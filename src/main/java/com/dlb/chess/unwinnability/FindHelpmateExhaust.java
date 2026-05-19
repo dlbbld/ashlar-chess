@@ -7,8 +7,8 @@ import java.util.List;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
 
+import com.dlb.chess.bitboard.BitboardPosition;
 import com.dlb.chess.board.Board;
-import com.dlb.chess.board.StaticPosition;
 import com.dlb.chess.board.enums.Side;
 import com.dlb.chess.board.enums.Square;
 import com.dlb.chess.board.enums.SquareType;
@@ -20,7 +20,6 @@ import com.dlb.chess.fen.FenParserRaw;
 import com.dlb.chess.fen.model.FenRaw;
 import com.dlb.chess.model.LegalMove;
 import com.dlb.chess.model.UciMove;
-import com.dlb.chess.moves.EnPassantCaptureUtility;
 
 //Figure 5 Find-Helpmatec routine, returns true if a checkmate sequence for player c in {w, b},
 //the intended winner, is found or false otherwise. The base call should be done on depth = 0,
@@ -131,19 +130,20 @@ class FindHelpmateExhaust {
     // timeouts, so the helpmate search must continue past them. The previous fivefold/seventy-five gate
     // here is removed for paper compliance.
 
-    if (UnwinnabilityMaterial.calculateHasKingOnly(color, board.getStaticPosition())
-        || UnwinnabilityMaterial.calculateHasNoPawns(color.getOppositeSide(), board.getStaticPosition())
-            && calculateIsNeedLoserPromotion(color, board.getStaticPosition())) {
+    final BitboardPosition bitboardPosition = board.getBitboardPosition();
+    if (UnwinnabilityMaterialBitboard.calculateHasKingOnly(color, bitboardPosition)
+        || UnwinnabilityMaterialBitboard.calculateHasNoPawns(color.getOppositeSide(), bitboardPosition)
+            && calculateIsNeedLoserPromotion(color, bitboardPosition)) {
       return FindHelpmateRecursionResult.FALSE;
     }
 
     // 7: for every legal move m in pos do:
     for (final LegalMove legalMove : board.getLegalMoves()) {
       // 8: let inc = match Score(pos,m) with Normal ! 0 | Reward ! 1 | Punish ! Ã¢Ë†â€™2
-      ScoreResult score = Score.score(color, board.getHavingMove(), board.getStaticPosition(), legalMove);
+      ScoreResult score = Score.score(color, board.getHavingMove(), bitboardPosition, legalMove);
 
       if (board.getHavingMove() == color.getOppositeSide()
-          && UnwinnabilityMaterial.calculateHasQueen(color.getOppositeSide(), board.getStaticPosition())) {
+          && UnwinnabilityMaterialBitboard.calculateHasQueen(color.getOppositeSide(), bitboardPosition)) {
         score = score == ScoreResult.REWARD ? ScoreResult.NORMAL : score;
       }
 
@@ -227,55 +227,60 @@ class FindHelpmateExhaust {
     transpositionMap.put(cacheKey, movesLeft);
   }
 
-  static boolean calculateIsUnwinnableAccordingLemma5(Side color, StaticPosition staticPosition) {
-    if (UnwinnabilityMaterial.calculateHasKingAndKnightOnly(color, staticPosition)) {
-      if (UnwinnabilityMaterial.calculateHasNoKnights(color.getOppositeSide(), staticPosition)
-          && UnwinnabilityMaterial.calculateHasNoBishops(color.getOppositeSide(), staticPosition)
-          && UnwinnabilityMaterial.calculateHasNoRooks(color.getOppositeSide(), staticPosition)
-          && UnwinnabilityMaterial.calculateHasNoPawns(color.getOppositeSide(), staticPosition)) {
+  // TODO: these two lemma predicates are declared but not yet wired into the helpmate-search /
+  // unwinnability-evaluation flow. They encode the "intended winner has only K+N and intended loser has nothing
+  // useful" (Lemma 5) and "intended winner has only K + same-coloured bishops and intended loser has neither
+  // knights nor opposite-coloured bishops" (Lemma 6) sufficient-unwinnable conditions. Find the right call site
+  // in FindHelpmateExhaust / UnwinnableFullAnalyzer and connect them.
+  static boolean calculateIsUnwinnableAccordingLemma5(Side color, BitboardPosition bitboardPosition) {
+    if (UnwinnabilityMaterialBitboard.calculateHasKingAndKnightOnly(color, bitboardPosition)) {
+      if (UnwinnabilityMaterialBitboard.calculateHasNoKnights(color.getOppositeSide(), bitboardPosition)
+          && UnwinnabilityMaterialBitboard.calculateHasNoBishops(color.getOppositeSide(), bitboardPosition)
+          && UnwinnabilityMaterialBitboard.calculateHasNoRooks(color.getOppositeSide(), bitboardPosition)
+          && UnwinnabilityMaterialBitboard.calculateHasNoPawns(color.getOppositeSide(), bitboardPosition)) {
         return true;
       }
     }
     return false;
   }
 
-  static boolean calculateIsUnwinnableAccordingLemma6(Side color, StaticPosition staticPosition) {
+  static boolean calculateIsUnwinnableAccordingLemma6(Side color, BitboardPosition bitboardPosition) {
     for (final SquareType squareType : SquareType.REAL) {
-      if (UnwinnabilityMaterial.calculateHasKingAndBishopsOnly(color, staticPosition, squareType)
-          && UnwinnabilityMaterial.calculateHasNoKnights(color.getOppositeSide(), staticPosition)
-          && UnwinnabilityMaterial.calculateHasNoBishops(color, staticPosition, squareType.getOppositeSquareType())
-          && UnwinnabilityMaterial.calculateHasNoPawns(color.getOppositeSide(), staticPosition)) {
+      if (UnwinnabilityMaterialBitboard.calculateHasKingAndBishopsOnly(color, bitboardPosition, squareType)
+          && UnwinnabilityMaterialBitboard.calculateHasNoKnights(color.getOppositeSide(), bitboardPosition)
+          && UnwinnabilityMaterialBitboard.calculateHasNoBishops(color, bitboardPosition, squareType.getOppositeSquareType())
+          && UnwinnabilityMaterialBitboard.calculateHasNoPawns(color.getOppositeSide(), bitboardPosition)) {
         return true;
       }
     }
     return false;
   }
 
-  static boolean calculateIsNeedLoserPromotion(Side winner, StaticPosition staticPosition) {
-    if (calculateIsKnightNeedsPromotion(winner, staticPosition)) {
+  static boolean calculateIsNeedLoserPromotion(Side winner, BitboardPosition bitboardPosition) {
+    if (calculateIsKnightNeedsPromotion(winner, bitboardPosition)) {
       return true;
     }
 
-    return calculateIsBishopNeedsPromotion(winner, staticPosition);
+    return calculateIsBishopNeedsPromotion(winner, bitboardPosition);
   }
 
-  private static boolean calculateIsKnightNeedsPromotion(Side winner, StaticPosition staticPosition) {
+  private static boolean calculateIsKnightNeedsPromotion(Side winner, BitboardPosition bitboardPosition) {
     // if the intended winner has just a knight and the intended loser has just pawns
     // and/or queens
-    return UnwinnabilityMaterial.calculateHasKingAndKnightOnly(winner, staticPosition)
-        && UnwinnabilityMaterial.calculateHasNoRooks(winner.getOppositeSide(), staticPosition)
-        && UnwinnabilityMaterial.calculateHasNoBishops(winner.getOppositeSide(), staticPosition)
-        && UnwinnabilityMaterial.calculateHasNoKnights(winner.getOppositeSide(), staticPosition);
+    return UnwinnabilityMaterialBitboard.calculateHasKingAndKnightOnly(winner, bitboardPosition)
+        && UnwinnabilityMaterialBitboard.calculateHasNoRooks(winner.getOppositeSide(), bitboardPosition)
+        && UnwinnabilityMaterialBitboard.calculateHasNoBishops(winner.getOppositeSide(), bitboardPosition)
+        && UnwinnabilityMaterialBitboard.calculateHasNoKnights(winner.getOppositeSide(), bitboardPosition);
   }
 
-  private static boolean calculateIsBishopNeedsPromotion(Side winner, StaticPosition staticPosition) {
+  private static boolean calculateIsBishopNeedsPromotion(Side winner, BitboardPosition bitboardPosition) {
     // or the intended winner has just bishops of the same square color and
     // the intended loser does not have knights or bishops of the opposite color
 
     for (final SquareType squareType : SquareType.REAL) {
-      if (UnwinnabilityMaterial.calculateHasKingAndBishopsOnly(winner, staticPosition, squareType)
-          && UnwinnabilityMaterial.calculateHasNoKnights(winner.getOppositeSide(), staticPosition)
-          && UnwinnabilityMaterial.calculateHasNoBishops(winner.getOppositeSide(), staticPosition,
+      if (UnwinnabilityMaterialBitboard.calculateHasKingAndBishopsOnly(winner, bitboardPosition, squareType)
+          && UnwinnabilityMaterialBitboard.calculateHasNoKnights(winner.getOppositeSide(), bitboardPosition)
+          && UnwinnabilityMaterialBitboard.calculateHasNoBishops(winner.getOppositeSide(), bitboardPosition,
               squareType.getOppositeSquareType())) {
         return true;
       }
@@ -329,12 +334,21 @@ class FindHelpmateExhaust {
       return false;
     }
 
+    // The just-double-pushed (opponent) pawn sits one rank ahead of the EP target from the OPPONENT's perspective
+    // (= one rank back from the EP target from the side-to-move's perspective). The EP capture is realisable iff a
+    // side-to-move pawn sits on either file-adjacent square on the same rank as that opponent pawn.
     final Square pawnTwoAdvanceSquare = Square.calculateAheadSquare(board.getHavingMove().getOppositeSide(),
         enPassantCaptureTargetSquare);
-
-    return !EnPassantCaptureUtility.calculateHasOpponentPawnOnLeftOrRight(pawnTwoAdvanceSquare,
-        board.getStaticPosition());
-
+    final int pawnOrdinal = pawnTwoAdvanceSquare.ordinal();
+    final int pawnFile = pawnOrdinal % 8;
+    final long pawnBit = 1L << pawnOrdinal;
+    final long leftAdjacent = pawnFile > 0 ? pawnBit >>> 1 : 0L;
+    final long rightAdjacent = pawnFile < 7 ? pawnBit << 1 : 0L;
+    final long adjacentSameRank = leftAdjacent | rightAdjacent;
+    final BitboardPosition bitboardPosition = board.getBitboardPosition();
+    final long sideToMovePawns = board.getHavingMove() == Side.WHITE ? bitboardPosition.whitePawns()
+        : bitboardPosition.blackPawns();
+    return (adjacentSameRank & sideToMovePawns) == 0L;
   }
 
 }

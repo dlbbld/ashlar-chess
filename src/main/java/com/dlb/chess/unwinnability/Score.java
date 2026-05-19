@@ -1,6 +1,6 @@
 package com.dlb.chess.unwinnability;
 
-import com.dlb.chess.board.StaticPosition;
+import com.dlb.chess.bitboard.BitboardPosition;
 import com.dlb.chess.board.enums.Piece;
 import com.dlb.chess.board.enums.PieceType;
 import com.dlb.chess.board.enums.PromotionPieceType;
@@ -14,7 +14,7 @@ class Score {
 
   // Inputs: position, legal move in the position
   // Output: Normal, Reward, or Punish (variation score)
-  public static ScoreResult score(Side color, Side havingMove, StaticPosition staticPosition, LegalMove legalMove) {
+  public static ScoreResult score(Side color, Side havingMove, BitboardPosition bitboardPosition, LegalMove legalMove) {
     var variation = ScoreResult.NORMAL;
 
     // 1: if it is the intended winnerâ€™s turn in pos then
@@ -22,7 +22,7 @@ class Score {
       // 2: if m is a capture or m is a pawn push or Going-to-corner(pos, m, Win) then
       // 3: return Reward
       if (calculateIsCapture(legalMove) || calculateIsAdvancedPawnPush(legalMove)
-          || GoingToCorner.goingToCorner(color, staticPosition, legalMove, Goal.WIN)) {
+          || GoingToCorner.goingToCorner(color, bitboardPosition, legalMove, Goal.WIN)) {
         return ScoreResult.REWARD;
       }
       // 4: else ( -> It is the intended loserâ€™s turn in pos)
@@ -36,7 +36,7 @@ class Score {
 
       // Note: We are not immediately returning the value when evaluated as in the PDF, but also evaluating the
       // later condition as in the code. Must be checked what is todot.
-      final var isNeedLoserPromotion = FindHelpmateExhaust.calculateIsNeedLoserPromotion(color, staticPosition);
+      final var isNeedLoserPromotion = FindHelpmateExhaust.calculateIsNeedLoserPromotion(color, bitboardPosition);
       if (isNeedLoserPromotion) {
         // 6: if m is a promotion to a queen or rook then return Punish
         // Note: we implement the code with differences to the PDF for this case
@@ -48,7 +48,7 @@ class Score {
       }
 
       // 8: if Going-to-corner(pos, m, Lose) then return Reward
-      if (GoingToCorner.goingToCorner(color, staticPosition, legalMove, Goal.LOSE)) {
+      if (GoingToCorner.goingToCorner(color, bitboardPosition, legalMove, Goal.LOSE)) {
         variation = ScoreResult.REWARD;
       }
 
