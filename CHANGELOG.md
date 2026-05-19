@@ -4,6 +4,46 @@ Releases from 3.3 onward. Earlier history is in git tags only.
 
 ## [Unreleased]
 
+## [10.0.0] - 2026-05-19
+
+The **Switchover release**. With 9.0.0 in hand the bitboard layer was a verified parallel implementation but `Board.move()` still computed `StaticPosition` per ply and the parallel `bitboardPositionList` cache derived its entries via `BitboardPositionUtility.fromStaticPosition(afterStaticPosition)`. This release moves the per-move data path entirely onto the bitboard: the incremental `BitboardPosition.afterMove` becomes the only computation, `StaticPosition` no longer rides alongside `DynamicPosition`, and the per-move `StaticPositionUtility.createPositionAfterMove` call is gone. `Board.getStaticPosition()` survives as a derived view via `BitboardPositionUtility.toStaticPosition()` on the cached bitboard — public API preserved, internal data path bitboard-only.
+
+Physical relocation of the `StaticPosition` subtree to `src/test/` is **not** part of this release. The audit at the start of 10.0.0 surfaced ~25 `src/main/` classes outside the relocation subtree that still consume `StaticPosition` (including the public `Fen` record, the SAN classes, `FenParserAdvanced`, `ChessRuleAnalyzer`, `InsufficientMaterialUtility`, `BoardMaterial`, `ValidateNewMove`, `UciMoveUtility`, `SemiOpenFilesUtility`, the FEN-pass-through analyzers). Porting all of those off `StaticPosition` is a multi-release effort and is now scoped as its own dedicated future release in `tasks.md` — *Future release — StaticPosition subtree relocation to `src/test/`*.
+
+### Notable
+
+- **Per-move incremental bitboard hot swap.** `Board.performMoveWithoutValidation` no longer derives the next-position bitboard from a freshly-computed `afterStaticPosition`. It calls `Nulls.getLast(dynamicPositionList).bitboardPosition().afterMove(moveSpecification, havingMove)` directly. `BitboardPosition.afterMove` was implemented and corpus-spine-tested in 9.0.0 (Step 7.1, commit `efac6be4`); this release flips the call site.
+- **`BitboardPosition` carried on `DynamicPosition`.** The 9.0.0 parallel `Board.bitboardPositionList` field is gone. `DynamicPosition` gains a `bitboardPosition` field and travels as the unified per-ply position record. `Board.getBitboardPosition()` now reads off the last `DynamicPosition`. `RepetitionUtility.equals` compares bitboards (twelve `long`s) instead of static positions (sixty-four `Piece` fields).
+- **`DynamicPosition.staticPosition` field dropped.** `Board.getStaticPosition()` / `getStaticPositionBeforeLastMove()` derive their result on demand from the cached bitboard via `BitboardPositionUtility.toStaticPosition()`. The public method signatures and return values are unchanged — every external caller of `Board.getStaticPosition()` still works without source change. What's gone is the cached `StaticPosition` instance per ply.
+- **Per-move `StaticPositionUtility.createPositionAfterMove` call removed from `Board.move()`.** With `afterStaticPosition` no longer flowing downstream, `BitboardLegalMoveFactory.calculateLegalMoves` drops its `StaticPosition` parameter (castling generation goes through a new bitboard-shaped bridge `AbstractLegalMoves.calculateCastlingLegalMoves(BitboardPosition, ...)`), and `Board.calculateIsEnPassantCapturePossible` switches to a bitboard-shaped signature that uses `BitboardPosition.afterMove(...).isInCheck(...)` for its king-safety check.
+- **Bitboard-shaped castling primitives added.** `CastlingUtility.calculateQueenSideCastlingCheck(BitboardPosition, ...)` and `calculateKingSideCastlingCheck(BitboardPosition, ...)` sit alongside their `StaticPosition` siblings (which remain for the reference layer). `KingCastlingLegalMoves` and `AbstractLegalMoves` each gain a `BitboardPosition`-shaped overload of their respective public bridge methods. The corridor-empty-square constants and king-travel/destination square helpers are reused across both variants.
+- **Board's private `calculateLegalMove(StaticPosition, ...)` helper deleted.** Its responsibilities (movingPiece/capturedPiece/kind derivation for a known-legal `MoveSpecification`) are equivalent to and now provided by `BitboardLegalMoveFactory.toLegalMove(BitboardPosition, MoveSpecification, Side)` (added in 9.0.0 Step 2.1 and corpus-tested against `AbstractLegalMoves.calculateLegalMoves` as the StaticPosition-backed oracle).
+
+### Internal
+
+- `Step 1` — per-move incremental hot swap (`cb136e49`).
+- `Step 2` — move `BitboardPosition` onto `DynamicPosition`; drop the parallel `Board.bitboardPositionList` field (`15659571`).
+- `Step 3` — drop `DynamicPosition.staticPosition`; `Board.getStaticPosition()` becomes derived view; `RepetitionUtility.equals` switches to `BitboardPosition.equals` (`e7fd7815`).
+- `Step 4` — remove per-move `StaticPosition` computation entirely from `Board`; add bitboard-shaped castling primitives to `CastlingUtility` / `KingCastlingLegalMoves` / `AbstractLegalMoves`; `BitboardLegalMoveFactory.calculateLegalMoves` drops its `StaticPosition` parameter; private `Board.calculateLegalMove` helper deleted; `Board.calculateIsEnPassantCapturePossible` ported to `BitboardPosition` (`fdff3f5a`).
+- `LibraryCarlosBoard` (test oracle): builds its `DynamicPosition` via `BitboardPositionUtility.fromStaticPosition(getStaticPosition())` since it has no native bitboard of its own. Pure mechanical update across Steps 2 and 3.
+- `tasks.md` restructured at the top of 10.0.0 (`7dde3b61`) — Switchover release scope reframed to scope B; the lean-analyzer / magics / perf phases moved into a dedicated *Lean bitboard winnability release* section; the physical relocation captured in a dedicated *Future release — StaticPosition subtree relocation to src/test/* section that documents the audit findings.
+
+### Breaking
+
+`DynamicPosition` record shape changed twice: it gained a `BitboardPosition bitboardPosition` field (Step 2) and lost its `StaticPosition staticPosition` field (Step 3). The post-10.0.0 shape is `(Side havingMove, BitboardPosition bitboardPosition, Square enPassantCaptureTargetSquare, CastlingRight castlingRightWhite, CastlingRight castlingRightBlack)`. Any caller that constructed `DynamicPosition` directly or read `dynamicPosition.staticPosition()` must update — typical end-user code does not touch `DynamicPosition` directly.
+
+`Board.bitboardPositionList` is gone (the field was added in 9.0.0 Step 1.2 — it was never public, but custom subclasses or reflection consumers that touched it must read via `dynamicPositionList` and `.bitboardPosition()` instead).
+
+`BitboardLegalMoveFactory.calculateLegalMoves(BitboardPosition, StaticPosition, Side, CastlingRight, long)` is replaced by `BitboardLegalMoveFactory.calculateLegalMoves(BitboardPosition, Side, CastlingRight, long)` — the `StaticPosition` parameter is dropped. Direct callers (uncommon: this is an internal-feeling API even though public) must drop the argument.
+
+### Migration
+
+Typical use (read a PGN, play moves, query check / legal moves / unwinnability): no source change. The bitboard backend is transparent — same APIs, same semantics. `Board.getStaticPosition()` still returns the same `StaticPosition` you'd expect, just computed on demand instead of cached.
+
+If your code constructed `DynamicPosition` directly: rebuild against the new shape; pass `bitboardPosition` instead of `staticPosition`. If you computed `BitboardPositionUtility.fromStaticPosition(...)` for the bitboard component, that still works.
+
+If your code called `BitboardLegalMoveFactory.calculateLegalMoves(bitboard, staticPosition, side, castling, enPassantBit)`: drop the `staticPosition` argument. The function now uses the bitboard for castling generation too (via the new `AbstractLegalMoves.calculateCastlingLegalMoves(BitboardPosition, ...)` bridge).
+
 ## [9.0.0] - 2026-05-19
 
 The **Bitboard release**. A second piece-placement representation (`BitboardPosition`, twelve `long`s indexed by `Square.ordinal()` little-endian rank-file) is built alongside `StaticPosition`, verified bit-exact against it on the full PGN/FEN corpus for every primitive, and then production hot paths switch to consume it. `StaticPosition` and the surrounding mailbox-rich-board reference layer remain in `src/main/` per the **Project Invariant** documented in `tasks.md`: that implementation represents the project's correctness ground truth and is never deleted — only relocated to `src/test/` as the permanent differential-test oracle in the next release.
