@@ -434,7 +434,8 @@ public class Board {
     // now changing board class state, so performing the move!
     this.performedLegalMoveList.add(moveToPerform);
 
-    final BitboardPosition afterBitboardPosition = BitboardPositionUtility.fromStaticPosition(afterStaticPosition);
+    final BitboardPosition afterBitboardPosition = Nulls.getLast(bitboardPositionList).afterMove(moveSpecification,
+        havingMove);
     final long afterEnPassantBit = afterEnPassantCaptureTargetSquare == Square.NONE ? 0L
         : 1L << afterEnPassantCaptureTargetSquare.ordinal();
 
