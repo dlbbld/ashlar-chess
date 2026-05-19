@@ -17,8 +17,8 @@ import com.dlb.chess.test.pgntest.enums.PgnTest;
 /**
  * Differential test pairing {@link UnwinnabilityMaterialBitboard} (production) against {@link UnwinnabilityMaterial}
  * (StaticPosition reference oracle). For every fixture in the corpus, every bitboard-keyed predicate must agree with
- * its StaticPosition-keyed counterpart. Guards against drift between the two surfaces — and will continue to do so
- * once {@link UnwinnabilityMaterial} relocates to {@code src/test/} alongside the rest of the StaticPosition layer.
+ * its StaticPosition-keyed counterpart. Guards against drift between the two surfaces — and will continue to do so once
+ * {@link UnwinnabilityMaterial} relocates to {@code src/test/} alongside the rest of the StaticPosition layer.
  */
 class TestUnwinnabilityMaterialBitboard {
 
@@ -30,7 +30,7 @@ class TestUnwinnabilityMaterialBitboard {
       for (final PgnTestCase testCase : testCaseList.list()) {
         final StaticPosition sp = testCase.finalPosition().getStaticPosition();
         final BitboardPosition bp = BitboardPositionUtility.fromStaticPosition(sp);
-        final String tag = " in fixture " + testCase.pgnName();
+        final var tag = " in fixture " + testCase.pgnName();
 
         // Any-side existence checks.
         assertEquals(UnwinnabilityMaterial.calculateHasRook(sp), UnwinnabilityMaterialBitboard.calculateHasRook(bp),
@@ -40,8 +40,8 @@ class TestUnwinnabilityMaterialBitboard {
         assertEquals(UnwinnabilityMaterial.calculateHasQueen(sp), UnwinnabilityMaterialBitboard.calculateHasQueen(bp),
             "calculateHasQueen (any side)" + tag);
 
-        for (final Side side : new Side[] { Side.WHITE, Side.BLACK }) {
-          final String sideTag = " side=" + side + tag;
+        for (final Side side : Side.REAL) {
+          final var sideTag = " side=" + side + tag;
           assertEquals(UnwinnabilityMaterial.calculateHasRook(side, sp),
               UnwinnabilityMaterialBitboard.calculateHasRook(side, bp), "calculateHasRook" + sideTag);
           assertEquals(UnwinnabilityMaterial.calculateHasKnight(side, sp),
@@ -68,7 +68,7 @@ class TestUnwinnabilityMaterialBitboard {
               UnwinnabilityMaterialBitboard.calculateHasKingAndKnightOnly(side, bp),
               "calculateHasKingAndKnightOnly" + sideTag);
 
-          for (final SquareType squareType : new SquareType[] { SquareType.LIGHT_SQUARE, SquareType.DARK_SQUARE }) {
+          for (final SquareType squareType : SquareType.REAL) {
             assertEquals(UnwinnabilityMaterial.calculateHasNoBishops(side, sp, squareType),
                 UnwinnabilityMaterialBitboard.calculateHasNoBishops(side, bp, squareType),
                 "calculateHasNoBishops(squareType=" + squareType + ")" + sideTag);

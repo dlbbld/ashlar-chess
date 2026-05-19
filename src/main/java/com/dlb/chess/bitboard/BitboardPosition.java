@@ -10,35 +10,34 @@ import com.dlb.chess.board.enums.PieceType;
 import com.dlb.chess.board.enums.PromotionPieceType;
 import com.dlb.chess.board.enums.Side;
 import com.dlb.chess.board.enums.Square;
+import com.dlb.chess.common.Nulls;
 import com.dlb.chess.common.model.MoveSpecification;
 
 /**
- * Twelve-bitboard piece-placement representation: one {@code long} per real
- * {@link com.dlb.chess.board.enums.Piece} value, each bit indexed by
- * {@link com.dlb.chess.board.enums.Square#ordinal()} (little-endian rank-file:
- * {@code A1 = 0, B1 = 1, …, H8 = 63}). Field order matches the
- * {@link com.dlb.chess.board.enums.Piece#REAL} enum order.
+ * Twelve-bitboard piece-placement representation: one {@code long} per real {@link com.dlb.chess.board.enums.Piece}
+ * value, each bit indexed by {@link com.dlb.chess.board.enums.Square#ordinal()} (little-endian rank-file:
+ * {@code A1 = 0, B1 = 1, …, H8 = 63}). Field order matches the {@link com.dlb.chess.board.enums.Piece#REAL} enum order.
  *
  * <p>
- * <b>Construction invariant:</b> the twelve piece bitboards are pairwise disjoint — no square may carry two pieces.
- * The compact constructor enforces this, so any reachable {@code BitboardPosition} is guaranteed consistent under
- * every query method. Attempting to construct one with overlapping bitboards is rejected with
+ * <b>Construction invariant:</b> the twelve piece bitboards are pairwise disjoint — no square may carry two pieces. The
+ * compact constructor enforces this, so any reachable {@code BitboardPosition} is guaranteed consistent under every
+ * query method. Attempting to construct one with overlapping bitboards is rejected with
  * {@link IllegalArgumentException}.
  *
  * <p>
- * Built alongside {@link com.dlb.chess.board.StaticPosition} and verified bit-exact against it via differential
- * testing across the full PGN/FEN corpus. See {@code tasks.md} and the package-level Javadoc for the governing
- * invariant: the bitboard backend release is purely additive; the {@code StaticPosition} reference implementation
- * remains the project's correctness ground truth.
+ * Built alongside {@link com.dlb.chess.board.StaticPosition} and verified bit-exact against it via differential testing
+ * across the full PGN/FEN corpus. See {@code tasks.md} and the package-level Javadoc for the governing invariant: the
+ * bitboard backend release is purely additive; the {@code StaticPosition} reference implementation remains the
+ * project's correctness ground truth.
  */
 public record BitboardPosition(long whitePawns, long whiteRooks, long whiteKnights, long whiteBishops, long whiteQueens,
     long whiteKings, long blackPawns, long blackRooks, long blackKnights, long blackBishops, long blackQueens,
     long blackKings) {
 
   public BitboardPosition {
-    final long union = whitePawns | whiteRooks | whiteKnights | whiteBishops | whiteQueens | whiteKings | blackPawns
+    final var union = whitePawns | whiteRooks | whiteKnights | whiteBishops | whiteQueens | whiteKings | blackPawns
         | blackRooks | blackKnights | blackBishops | blackQueens | blackKings;
-    final int sumOfBitCounts = Long.bitCount(whitePawns) + Long.bitCount(whiteRooks) + Long.bitCount(whiteKnights)
+    final var sumOfBitCounts = Long.bitCount(whitePawns) + Long.bitCount(whiteRooks) + Long.bitCount(whiteKnights)
         + Long.bitCount(whiteBishops) + Long.bitCount(whiteQueens) + Long.bitCount(whiteKings)
         + Long.bitCount(blackPawns) + Long.bitCount(blackRooks) + Long.bitCount(blackKnights)
         + Long.bitCount(blackBishops) + Long.bitCount(blackQueens) + Long.bitCount(blackKings);
@@ -54,7 +53,7 @@ public record BitboardPosition(long whitePawns, long whiteRooks, long whiteKnigh
       .fromStaticPosition(StaticPosition.EMPTY_POSITION);
 
   public Piece get(Square square) {
-    final long bit = bitFor(square);
+    final var bit = bitFor(square);
     if ((whitePawns & bit) != 0L) {
       return Piece.WHITE_PAWN;
     }
@@ -113,8 +112,8 @@ public record BitboardPosition(long whitePawns, long whiteRooks, long whiteKnigh
   }
 
   /**
-   * Union of all squares attacked / defended by {@code side}'s pieces, in the same "isAllowOwnPiece = true" sense
-   * the reference uses: includes squares occupied by own pieces (those are defended). Differential-tested against
+   * Union of all squares attacked / defended by {@code side}'s pieces, in the same "isAllowOwnPiece = true" sense the
+   * reference uses: includes squares occupied by own pieces (those are defended). Differential-tested against
    * {@code AbstractAttackedSquares.calculateAttackedSquares}.
    */
   public long attackedSquares(Side side) {
@@ -124,36 +123,36 @@ public record BitboardPosition(long whitePawns, long whiteRooks, long whiteKnigh
   /**
    * Same as {@link #attackedSquares(Side)} but computed against a caller-supplied occupancy mask rather than the
    * record's own {@link #occupied()}. Used by king-safety calculations in legal-move generation, which need to ask
-   * "what would the opponent attack if my king were not on the board" so a slider's ray correctly projects through
-   * the king's current square onto squares the king might move to.
+   * "what would the opponent attack if my king were not on the board" so a slider's ray correctly projects through the
+   * king's current square onto squares the king might move to.
    *
    * <p>
-   * Only sliding-piece attacks (bishop, rook, queen) consult {@code occupiedOverride}; non-sliders (knight, king,
-   * pawn) ignore it. Callers wanting "no king" semantics should pass {@code occupied() ^ kingBits}.
+   * Only sliding-piece attacks (bishop, rook, queen) consult {@code occupiedOverride}; non-sliders (knight, king, pawn)
+   * ignore it. Callers wanting "no king" semantics should pass {@code occupied() ^ kingBits}.
    */
   public long attackedSquares(Side side, long occupiedOverride) {
     if (side != Side.WHITE && side != Side.BLACK) {
       throw new IllegalArgumentException("attackedSquares requires Side.WHITE or Side.BLACK, got " + side);
     }
-    final boolean white = side == Side.WHITE;
-    final long pawns = white ? whitePawns : blackPawns;
-    final long knights = white ? whiteKnights : blackKnights;
-    final long bishops = white ? whiteBishops : blackBishops;
-    final long rooks = white ? whiteRooks : blackRooks;
-    final long queens = white ? whiteQueens : blackQueens;
-    final long kings = white ? whiteKings : blackKings;
+    final var white = side == Side.WHITE;
+    final var pawns = white ? whitePawns : blackPawns;
+    final var knights = white ? whiteKnights : blackKnights;
+    final var bishops = white ? whiteBishops : blackBishops;
+    final var rooks = white ? whiteRooks : blackRooks;
+    final var queens = white ? whiteQueens : blackQueens;
+    final var kings = white ? whiteKings : blackKings;
 
-    long attacks = 0L;
+    var attacks = 0L;
 
-    long remaining = pawns;
+    var remaining = pawns;
     while (remaining != 0L) {
-      attacks |= PawnAttacks.attacks(Square.REAL.get(Long.numberOfTrailingZeros(remaining)), side);
+      attacks |= PawnAttacks.attacks(Nulls.get(Square.REAL, Long.numberOfTrailingZeros(remaining)), side);
       remaining &= remaining - 1L;
     }
 
     remaining = knights;
     while (remaining != 0L) {
-      attacks |= KnightAttacks.attacks(Square.REAL.get(Long.numberOfTrailingZeros(remaining)));
+      attacks |= KnightAttacks.attacks(Nulls.get(Square.REAL, Long.numberOfTrailingZeros(remaining)));
       remaining &= remaining - 1L;
     }
 
@@ -177,7 +176,7 @@ public record BitboardPosition(long whitePawns, long whiteRooks, long whiteKnigh
 
     remaining = kings;
     while (remaining != 0L) {
-      attacks |= KingAttacks.attacks(Square.REAL.get(Long.numberOfTrailingZeros(remaining)));
+      attacks |= KingAttacks.attacks(Nulls.get(Square.REAL, Long.numberOfTrailingZeros(remaining)));
       remaining &= remaining - 1L;
     }
 
@@ -194,7 +193,7 @@ public record BitboardPosition(long whitePawns, long whiteRooks, long whiteKnigh
     if (side != Side.WHITE && side != Side.BLACK) {
       throw new IllegalArgumentException("isInCheck requires Side.WHITE or Side.BLACK, got " + side);
     }
-    final long ownKings = (side == Side.WHITE) ? whiteKings : blackKings;
+    final var ownKings = side == Side.WHITE ? whiteKings : blackKings;
     if (ownKings == 0L) {
       return false;
     }
@@ -202,44 +201,33 @@ public record BitboardPosition(long whitePawns, long whiteRooks, long whiteKnigh
   }
 
   /**
-   * Bitboard of {@code side}'s pieces that attack {@code square}. Uses the "reverse attack" identity: a piece of
-   * colour C attacks X iff X is in that piece's attack set. By the symmetry of all non-pawn piece-type attacks, that
-   * is equivalent to "the piece sits on a square in the attack set of X" — and pawns are handled by querying the
-   * opposite-colour pawn attack set from X (a white pawn at S attacks X iff a black pawn at X would attack S).
-   *
-   * <p>
-   * Used in Phase 6 for pin detection. No direct production counterpart; the differential test derives the reference
-   * by enumerating own pieces and asking each whether its attack set contains the target.
-   */
-  /**
-   * Bitboard of legal non-castling king target squares for {@code side}. A target is legal iff (a) it is a
-   * pseudo-legal target — surrounding square not occupied by own piece — and (b) it is not attacked by the opposite
-   * side after the king vacates its current square. The "king vacates" part is essential: a slider that the king
-   * was blocking would, post-move, project its ray through the king's old square onto squares the king might try
-   * to move to (the XRAY case). The implementation removes own kings from the occupied mask before computing
-   * opponent attacks.
+   * Bitboard of legal non-castling king target squares for {@code side}. A target is legal iff (a) it is a pseudo-legal
+   * target — surrounding square not occupied by own piece — and (b) it is not attacked by the opposite side after the
+   * king vacates its current square. The "king vacates" part is essential: a slider that the king was blocking would,
+   * post-move, project its ray through the king's old square onto squares the king might try to move to (the XRAY
+   * case). The implementation removes own kings from the occupied mask before computing opponent attacks.
    *
    * <p>
    * Captures of opponent pieces are included when the captured piece's square is not defended by another opponent
-   * piece. Standard chess assumes one king per side; the implementation tolerates multiple kings (taking the union
-   * of legal targets from each) for the differential test's robustness.
+   * piece. Standard chess assumes one king per side; the implementation tolerates multiple kings (taking the union of
+   * legal targets from each) for the differential test's robustness.
    */
   public long legalKingTargets(Side side) {
     if (side != Side.WHITE && side != Side.BLACK) {
       throw new IllegalArgumentException("legalKingTargets requires Side.WHITE or Side.BLACK, got " + side);
     }
-    final long ownKings = side == Side.WHITE ? whiteKings : blackKings;
+    final var ownKings = side == Side.WHITE ? whiteKings : blackKings;
     if (ownKings == 0L) {
       return 0L;
     }
-    final long ownPieces = occupied(side);
-    final long occupiedWithoutOwnKings = occupied() ^ ownKings;
-    final long opponentAttacks = attackedSquares(side.getOppositeSide(), occupiedWithoutOwnKings);
+    final var ownPieces = occupied(side);
+    final var occupiedWithoutOwnKings = occupied() ^ ownKings;
+    final var opponentAttacks = attackedSquares(side.getOppositeSide(), occupiedWithoutOwnKings);
 
-    long legalTargets = 0L;
-    long remaining = ownKings;
+    var legalTargets = 0L;
+    var remaining = ownKings;
     while (remaining != 0L) {
-      final Square kingSquare = Square.REAL.get(Long.numberOfTrailingZeros(remaining));
+      final Square kingSquare = Nulls.get(Square.REAL, Long.numberOfTrailingZeros(remaining));
       legalTargets |= KingMoves.targets(kingSquare, ownPieces) & ~opponentAttacks;
       remaining &= remaining - 1L;
     }
@@ -247,16 +235,16 @@ public record BitboardPosition(long whitePawns, long whiteRooks, long whiteKnigh
   }
 
   /**
-   * Pin ray for the piece on {@code pinnedSquare} relative to {@code side}'s king: the squares from king (exclusive)
-   * to pinner (inclusive) along the line through {@code pinnedSquare}. Returns {@code 0L} if the piece is not
-   * pinned. The pinned piece's legal-move filter is {@code pseudoLegal & pinRay(pinnedSquare, side)} — the piece may
-   * move along the pin line (capturing the pinner is allowed; vacating the line is not).
+   * Pin ray for the piece on {@code pinnedSquare} relative to {@code side}'s king: the squares from king (exclusive) to
+   * pinner (inclusive) along the line through {@code pinnedSquare}. Returns {@code 0L} if the piece is not pinned. The
+   * pinned piece's legal-move filter is {@code pseudoLegal & pinRay(pinnedSquare, side)} — the piece may move along the
+   * pin line (capturing the pinner is allowed; vacating the line is not).
    *
    * <p>
    * Pinning requires: pinned piece on a file / rank / diagonal with own king, no other piece between king and the
-   * pinned piece, and the first piece beyond the pinned piece (in the same direction) is an opposite-side slider
-   * whose move type matches the direction (bishop / queen on a diagonal; rook / queen on a file or rank). Standard
-   * chess one-king-per-side assumed; with no own king of {@code side}, returns {@code 0L}.
+   * pinned piece, and the first piece beyond the pinned piece (in the same direction) is an opposite-side slider whose
+   * move type matches the direction (bishop / queen on a diagonal; rook / queen on a file or rank). Standard chess
+   * one-king-per-side assumed; with no own king of {@code side}, returns {@code 0L}.
    */
   public long pinRay(Square pinnedSquare, Side side) {
     if (pinnedSquare == Square.NONE) {
@@ -265,36 +253,36 @@ public record BitboardPosition(long whitePawns, long whiteRooks, long whiteKnigh
     if (side != Side.WHITE && side != Side.BLACK) {
       throw new IllegalArgumentException("pinRay requires Side.WHITE or Side.BLACK, got " + side);
     }
-    final long ownKings = side == Side.WHITE ? whiteKings : blackKings;
+    final var ownKings = side == Side.WHITE ? whiteKings : blackKings;
     if (ownKings == 0L) {
       return 0L;
     }
-    final int kingOrdinal = Long.numberOfTrailingZeros(ownKings);
-    final int pinnedOrdinal = pinnedSquare.ordinal();
-    final int kingFile = kingOrdinal % 8;
-    final int kingRank = kingOrdinal / 8;
-    final int pinnedFile = pinnedOrdinal % 8;
-    final int pinnedRank = pinnedOrdinal / 8;
-    final int fileDiff = pinnedFile - kingFile;
-    final int rankDiff = pinnedRank - kingRank;
+    final var kingOrdinal = Long.numberOfTrailingZeros(ownKings);
+    final var pinnedOrdinal = pinnedSquare.ordinal();
+    final var kingFile = kingOrdinal % 8;
+    final var kingRank = kingOrdinal / 8;
+    final var pinnedFile = pinnedOrdinal % 8;
+    final var pinnedRank = pinnedOrdinal / 8;
+    final var fileDiff = pinnedFile - kingFile;
+    final var rankDiff = pinnedRank - kingRank;
     if (fileDiff == 0 && rankDiff == 0) {
       return 0L;
     }
-    final boolean onFile = fileDiff == 0;
-    final boolean onRank = rankDiff == 0;
-    final boolean onDiagonal = !onFile && !onRank && Math.abs(fileDiff) == Math.abs(rankDiff);
+    final var onFile = fileDiff == 0;
+    final var onRank = rankDiff == 0;
+    final var onDiagonal = !onFile && !onRank && Math.abs(fileDiff) == Math.abs(rankDiff);
     if (!onFile && !onRank && !onDiagonal) {
       return 0L;
     }
 
-    final int fileStep = Integer.signum(fileDiff);
-    final int rankStep = Integer.signum(rankDiff);
-    final long occ = occupied();
+    final var fileStep = Integer.signum(fileDiff);
+    final var rankStep = Integer.signum(rankDiff);
+    final var occ = occupied();
 
-    int file = kingFile + fileStep;
-    int rank = kingRank + rankStep;
+    var file = kingFile + fileStep;
+    var rank = kingRank + rankStep;
     while (file != pinnedFile || rank != pinnedRank) {
-      if ((occ & (1L << (rank * 8 + file))) != 0L) {
+      if ((occ & 1L << rank * 8 + file) != 0L) {
         return 0L;
       }
       file += fileStep;
@@ -304,16 +292,16 @@ public record BitboardPosition(long whitePawns, long whiteRooks, long whiteKnigh
     file = pinnedFile + fileStep;
     rank = pinnedRank + rankStep;
     while (file >= 0 && file < 8 && rank >= 0 && rank < 8) {
-      final int beyondOrdinal = rank * 8 + file;
-      if ((occ & (1L << beyondOrdinal)) != 0L) {
-        final Piece beyondPiece = get(Square.REAL.get(beyondOrdinal));
+      final var beyondOrdinal = rank * 8 + file;
+      if ((occ & 1L << beyondOrdinal) != 0L) {
+        final Piece beyondPiece = get(Nulls.get(Square.REAL, beyondOrdinal));
         if (beyondPiece.getSide() == side) {
           return 0L;
         }
         final PieceType beyondPieceType = beyondPiece.getPieceType();
-        final boolean diagonalMover = beyondPieceType == PieceType.BISHOP || beyondPieceType == PieceType.QUEEN;
-        final boolean orthogonalMover = beyondPieceType == PieceType.ROOK || beyondPieceType == PieceType.QUEEN;
-        if ((onDiagonal && diagonalMover) || ((onFile || onRank) && orthogonalMover)) {
+        final var diagonalMover = beyondPieceType == PieceType.BISHOP || beyondPieceType == PieceType.QUEEN;
+        final var orthogonalMover = beyondPieceType == PieceType.ROOK || beyondPieceType == PieceType.QUEEN;
+        if (onDiagonal && diagonalMover || (onFile || onRank) && orthogonalMover) {
           return inclusiveRayFromKing(kingOrdinal, beyondOrdinal);
         }
         return 0L;
@@ -332,16 +320,16 @@ public record BitboardPosition(long whitePawns, long whiteRooks, long whiteKnigh
     if (side != Side.WHITE && side != Side.BLACK) {
       throw new IllegalArgumentException("pinnedPieces requires Side.WHITE or Side.BLACK, got " + side);
     }
-    final long ownKings = side == Side.WHITE ? whiteKings : blackKings;
+    final var ownKings = side == Side.WHITE ? whiteKings : blackKings;
     if (ownKings == 0L) {
       return 0L;
     }
-    final long ownNonKings = occupied(side) & ~ownKings;
-    long pinned = 0L;
-    long remaining = ownNonKings;
+    final var ownNonKings = occupied(side) & ~ownKings;
+    var pinned = 0L;
+    var remaining = ownNonKings;
     while (remaining != 0L) {
-      final long pieceBit = Long.lowestOneBit(remaining);
-      final Square pieceSquare = Square.REAL.get(Long.numberOfTrailingZeros(pieceBit));
+      final var pieceBit = Long.lowestOneBit(remaining);
+      final Square pieceSquare = Nulls.get(Square.REAL, Long.numberOfTrailingZeros(pieceBit));
       if (pinRay(pieceSquare, side) != 0L) {
         pinned |= pieceBit;
       }
@@ -352,18 +340,17 @@ public record BitboardPosition(long whitePawns, long whiteRooks, long whiteKnigh
 
   /**
    * Full legal non-castling move generation. Returns the set of legal {@link MoveSpecification}s for {@code side}'s
-   * pieces excluding castling — castling lives on {@link com.dlb.chess.board.Board} together with the castling-
-   * rights state. The {@code enPassantBit} parameter is the single-bit bitboard of the en-passant target square
-   * (or {@code 0L} if no EP is available to {@code side}); the bitboard layer is stateless about whose turn it is.
+   * pieces excluding castling — castling lives on {@link com.dlb.chess.board.Board} together with the castling- rights
+   * state. The {@code enPassantBit} parameter is the single-bit bitboard of the en-passant target square (or {@code 0L}
+   * if no EP is available to {@code side}); the bitboard layer is stateless about whose turn it is.
    *
    * <p>
-   * Algorithm: generate the king's legal targets via {@link #legalKingTargets}; if double check, only king moves
-   * are legal. Otherwise compute the check-evasion mask (the squares non-king pieces must land on: the checker
-   * square plus the squares between king and a sliding checker). For each own non-king piece, take its pseudo-legal
-   * targets, intersect with the check-evasion mask and the pin ray (if pinned), and emit
-   * {@link MoveSpecification}s. Pawn promotion expands each rank-1/rank-8 target into four moves; en-passant is
-   * special-cased for the rank-pin edge case where capturing the EP pawn could expose own king to a rook or queen
-   * along the rank.
+   * Algorithm: generate the king's legal targets via {@link #legalKingTargets}; if double check, only king moves are
+   * legal. Otherwise compute the check-evasion mask (the squares non-king pieces must land on: the checker square plus
+   * the squares between king and a sliding checker). For each own non-king piece, take its pseudo-legal targets,
+   * intersect with the check-evasion mask and the pin ray (if pinned), and emit {@link MoveSpecification}s. Pawn
+   * promotion expands each rank-1/rank-8 target into four moves; en-passant is special-cased for the rank-pin edge case
+   * where capturing the EP pawn could expose own king to a rook or queen along the rank.
    */
   public Set<MoveSpecification> legalMoves(Side side, long enPassantBit) {
     if (side != Side.WHITE && side != Side.BLACK) {
@@ -371,58 +358,56 @@ public record BitboardPosition(long whitePawns, long whiteRooks, long whiteKnigh
     }
     final Set<MoveSpecification> moves = new TreeSet<>();
 
-    final long ownKings = side == Side.WHITE ? whiteKings : blackKings;
+    final var ownKings = side == Side.WHITE ? whiteKings : blackKings;
     if (ownKings == 0L) {
       return moves;
     }
-    final int kingOrdinal = Long.numberOfTrailingZeros(ownKings);
-    final Square kingSquare = Square.REAL.get(kingOrdinal);
+    final var kingOrdinal = Long.numberOfTrailingZeros(ownKings);
+    final Square kingSquare = Nulls.get(Square.REAL, kingOrdinal);
 
-    final long kingTargets = legalKingTargets(side);
+    final var kingTargets = legalKingTargets(side);
     addTargetsAsMoves(moves, kingSquare, kingTargets);
 
-    final long checkers = attackersTo(kingSquare, side.getOppositeSide());
-    final int checkerCount = Long.bitCount(checkers);
+    final var checkers = attackersTo(kingSquare, side.getOppositeSide());
+    final var checkerCount = Long.bitCount(checkers);
     if (checkerCount >= 2) {
       return moves;
     }
 
     final long checkEvasionMask;
     if (checkerCount == 1) {
-      final int checkerOrdinal = Long.numberOfTrailingZeros(checkers);
-      final Piece checker = get(Square.REAL.get(checkerOrdinal));
-      final long betweenMask = isSlider(checker.getPieceType())
-          ? squaresBetween(kingOrdinal, checkerOrdinal) : 0L;
+      final var checkerOrdinal = Long.numberOfTrailingZeros(checkers);
+      final Piece checker = get(Nulls.get(Square.REAL, checkerOrdinal));
+      final var betweenMask = isSlider(checker.getPieceType()) ? squaresBetween(kingOrdinal, checkerOrdinal) : 0L;
       checkEvasionMask = checkers | betweenMask;
     } else {
       checkEvasionMask = -1L;
     }
 
-    final long ownPieces = occupied(side);
-    final long ownNonKings = ownPieces & ~ownKings;
-    final long occ = occupied();
-    final long opponentPieces = occupied(side.getOppositeSide());
+    final var ownPieces = occupied(side);
+    final var ownNonKings = ownPieces & ~ownKings;
+    final var occ = occupied();
+    final var opponentPieces = occupied(side.getOppositeSide());
 
-    long remaining = ownNonKings;
+    var remaining = ownNonKings;
     while (remaining != 0L) {
-      final int fromOrdinal = Long.numberOfTrailingZeros(remaining);
+      final var fromOrdinal = Long.numberOfTrailingZeros(remaining);
       final Square fromSquare = Square.REAL.get(fromOrdinal);
       final Piece piece = get(fromSquare);
-      final long pinRay = pinRay(fromSquare, side);
-      final long pinFilter = pinRay == 0L ? -1L : pinRay;
-      final long combinedMask = checkEvasionMask & pinFilter;
+      final var pinRay = pinRay(fromSquare, side);
+      final var pinFilter = pinRay == 0L ? -1L : pinRay;
+      final var combinedMask = checkEvasionMask & pinFilter;
 
       switch (piece.getPieceType()) {
-        case KNIGHT -> addTargetsAsMoves(moves, fromSquare,
-            KnightMoves.targets(fromSquare, ownPieces) & combinedMask);
+        case KNIGHT -> addTargetsAsMoves(moves, fromSquare, KnightMoves.targets(fromSquare, ownPieces) & combinedMask);
         case BISHOP -> addTargetsAsMoves(moves, fromSquare,
             BishopMoves.targets(fromOrdinal, occ, ownPieces) & combinedMask);
         case ROOK -> addTargetsAsMoves(moves, fromSquare,
             RookMoves.targets(fromOrdinal, occ, ownPieces) & combinedMask);
         case QUEEN -> addTargetsAsMoves(moves, fromSquare,
             QueenMoves.targets(fromOrdinal, occ, ownPieces) & combinedMask);
-        case PAWN -> addPawnMoves(moves, fromSquare, fromOrdinal, side, occ, opponentPieces, enPassantBit,
-            combinedMask, checkers, checkerCount, kingOrdinal, pinFilter);
+        case PAWN -> addPawnMoves(moves, fromSquare, fromOrdinal, side, occ, opponentPieces, enPassantBit, combinedMask,
+            checkers, checkerCount, kingOrdinal, pinFilter);
         default -> throw new IllegalArgumentException();
       }
       remaining &= remaining - 1L;
@@ -433,17 +418,17 @@ public record BitboardPosition(long whitePawns, long whiteRooks, long whiteKnigh
   private void addPawnMoves(Set<MoveSpecification> moves, Square fromSquare, int fromOrdinal, Side side, long occ,
       long opponentPieces, long enPassantBit, long combinedMask, long checkers, int checkerCount, int kingOrdinal,
       long pinFilter) {
-    final long pushTargets = PawnMoves.pushes(fromOrdinal, occ, side) & combinedMask;
-    final long regularCaptureTargets = PawnMoves.captures(fromOrdinal, opponentPieces, 0L, side) & combinedMask;
+    final var pushTargets = PawnMoves.pushes(fromOrdinal, occ, side) & combinedMask;
+    final var regularCaptureTargets = PawnMoves.captures(fromOrdinal, opponentPieces, 0L, side) & combinedMask;
 
-    long epCaptureTarget = 0L;
+    var epCaptureTarget = 0L;
     if (enPassantBit != 0L) {
-      final long pawnDiagonalAttacks = PawnAttacks.attacks(fromSquare, side);
+      final var pawnDiagonalAttacks = PawnAttacks.attacks(fromSquare, side);
       if ((pawnDiagonalAttacks & enPassantBit) != 0L) {
-        final long capturedPawnBit = side == Side.WHITE ? (enPassantBit >>> 8) : (enPassantBit << 8);
-        final boolean epEvadesCheck = checkerCount == 0 || (enPassantBit & combinedMask) != 0L
-            || (checkerCount == 1 && capturedPawnBit == checkers);
-        final boolean epOnPinRay = (enPassantBit & pinFilter) != 0L;
+        final var capturedPawnBit = side == Side.WHITE ? enPassantBit >>> 8 : enPassantBit << 8;
+        final var epEvadesCheck = checkerCount == 0 || (enPassantBit & combinedMask) != 0L
+            || checkerCount == 1 && capturedPawnBit == checkers;
+        final var epOnPinRay = (enPassantBit & pinFilter) != 0L;
         if (epEvadesCheck && epOnPinRay
             && !epExposesKing(fromOrdinal, enPassantBit, capturedPawnBit, kingOrdinal, side)) {
           epCaptureTarget = enPassantBit;
@@ -456,17 +441,17 @@ public record BitboardPosition(long whitePawns, long whiteRooks, long whiteKnigh
   }
 
   private boolean epExposesKing(int fromOrdinal, long enPassantBit, long capturedPawnBit, int kingOrdinal, Side side) {
-    final long fromBit = 1L << fromOrdinal;
-    final long occAfterEp = (occupied() & ~fromBit & ~capturedPawnBit) | enPassantBit;
+    final var fromBit = 1L << fromOrdinal;
+    final var occAfterEp = occupied() & ~fromBit & ~capturedPawnBit | enPassantBit;
 
     final Side opp = side.getOppositeSide();
-    final long oppPawns = (opp == Side.WHITE ? whitePawns : blackPawns) & ~capturedPawnBit;
-    final long oppKnights = opp == Side.WHITE ? whiteKnights : blackKnights;
-    final long oppBishops = opp == Side.WHITE ? whiteBishops : blackBishops;
-    final long oppRooks = opp == Side.WHITE ? whiteRooks : blackRooks;
-    final long oppQueens = opp == Side.WHITE ? whiteQueens : blackQueens;
-    final long oppKings = opp == Side.WHITE ? whiteKings : blackKings;
-    final Square kingSquare = Square.REAL.get(kingOrdinal);
+    final var oppPawns = (opp == Side.WHITE ? whitePawns : blackPawns) & ~capturedPawnBit;
+    final var oppKnights = opp == Side.WHITE ? whiteKnights : blackKnights;
+    final var oppBishops = opp == Side.WHITE ? whiteBishops : blackBishops;
+    final var oppRooks = opp == Side.WHITE ? whiteRooks : blackRooks;
+    final var oppQueens = opp == Side.WHITE ? whiteQueens : blackQueens;
+    final var oppKings = opp == Side.WHITE ? whiteKings : blackKings;
+    final Square kingSquare = Nulls.get(Square.REAL, kingOrdinal);
 
     if ((oppPawns & PawnAttacks.attacks(kingSquare, side)) != 0L) {
       return true;
@@ -487,20 +472,20 @@ public record BitboardPosition(long whitePawns, long whiteRooks, long whiteKnigh
   }
 
   private static void addTargetsAsMoves(Set<MoveSpecification> moves, Square fromSquare, long targets) {
-    long remaining = targets;
+    var remaining = targets;
     while (remaining != 0L) {
-      final Square toSquare = Square.REAL.get(Long.numberOfTrailingZeros(remaining));
+      final Square toSquare = Nulls.get(Square.REAL, Long.numberOfTrailingZeros(remaining));
       moves.add(new MoveSpecification(fromSquare, toSquare));
       remaining &= remaining - 1L;
     }
   }
 
   private static void addPawnTargetsWithPromotion(Set<MoveSpecification> moves, Square fromSquare, long targets) {
-    long remaining = targets;
+    var remaining = targets;
     while (remaining != 0L) {
-      final int toOrdinal = Long.numberOfTrailingZeros(remaining);
+      final var toOrdinal = Long.numberOfTrailingZeros(remaining);
       final Square toSquare = Square.REAL.get(toOrdinal);
-      final int toRank = toOrdinal / 8;
+      final var toRank = toOrdinal / 8;
       if (toRank == 0 || toRank == 7) {
         for (final PromotionPieceType promotion : PromotionPieceType.REAL) {
           moves.add(new MoveSpecification(fromSquare, toSquare, promotion));
@@ -517,28 +502,28 @@ public record BitboardPosition(long whitePawns, long whiteRooks, long whiteKnigh
   }
 
   private static long squaresBetween(int sq1, int sq2) {
-    final int file1 = sq1 % 8;
-    final int rank1 = sq1 / 8;
-    final int file2 = sq2 % 8;
-    final int rank2 = sq2 / 8;
-    final int fileDiff = file2 - file1;
-    final int rankDiff = rank2 - rank1;
+    final var file1 = sq1 % 8;
+    final var rank1 = sq1 / 8;
+    final var file2 = sq2 % 8;
+    final var rank2 = sq2 / 8;
+    final var fileDiff = file2 - file1;
+    final var rankDiff = rank2 - rank1;
     if (fileDiff == 0 && rankDiff == 0) {
       return 0L;
     }
-    final boolean onFile = fileDiff == 0;
-    final boolean onRank = rankDiff == 0;
-    final boolean onDiagonal = !onFile && !onRank && Math.abs(fileDiff) == Math.abs(rankDiff);
+    final var onFile = fileDiff == 0;
+    final var onRank = rankDiff == 0;
+    final var onDiagonal = !onFile && !onRank && Math.abs(fileDiff) == Math.abs(rankDiff);
     if (!onFile && !onRank && !onDiagonal) {
       return 0L;
     }
-    final int fileStep = Integer.signum(fileDiff);
-    final int rankStep = Integer.signum(rankDiff);
-    long result = 0L;
-    int file = file1 + fileStep;
-    int rank = rank1 + rankStep;
+    final var fileStep = Integer.signum(fileDiff);
+    final var rankStep = Integer.signum(rankDiff);
+    var result = 0L;
+    var file = file1 + fileStep;
+    var rank = rank1 + rankStep;
     while (file != file2 || rank != rank2) {
-      result |= 1L << (rank * 8 + file);
+      result |= 1L << rank * 8 + file;
       file += fileStep;
       rank += rankStep;
     }
@@ -548,19 +533,18 @@ public record BitboardPosition(long whitePawns, long whiteRooks, long whiteKnigh
   /**
    * Immutable make-move: returns the {@code BitboardPosition} that results from applying {@code moveSpec} to this
    * position with {@code movingSide} as the moving side. Handles regular moves, captures, en-passant capture,
-   * promotions (the destination piece becomes {@code moveSpec.promotionPieceType()} fixed to {@code movingSide}),
-   * and the piece-movement part of castling (king and rook both move).
+   * promotions (the destination piece becomes {@code moveSpec.promotionPieceType()} fixed to {@code movingSide}), and
+   * the piece-movement part of castling (king and rook both move).
    *
    * <p>
-   * Castling rights, en-passant target square, side-to-move, and the halfmove / fullmove counters are intentionally
-   * NOT updated here — they live on {@link com.dlb.chess.board.Board} / {@link com.dlb.chess.board.DynamicPosition}.
-   * This is the piece-placement-only equivalent of
-   * {@code StaticPositionUtility.createPositionAfterMove}.
+   * Castling rights, en-passant target square, side-to-move, and the halfmove / fullmove counters are intentionally NOT
+   * updated here — they live on {@link com.dlb.chess.board.Board} / {@link com.dlb.chess.board.DynamicPosition}. This
+   * is the piece-placement-only equivalent of {@code StaticPositionUtility.createPositionAfterMove}.
    *
    * <p>
-   * The bitboard layer is intentionally stateless about whose turn it is. Callers pass {@code movingSide} explicitly
-   * — for castling, this determines which king/rook pair moves; for non-castling moves, it determines the
-   * promotion piece's side and the direction of en-passant capture.
+   * The bitboard layer is intentionally stateless about whose turn it is. Callers pass {@code movingSide} explicitly —
+   * for castling, this determines which king/rook pair moves; for non-castling moves, it determines the promotion
+   * piece's side and the direction of en-passant capture.
    */
   public BitboardPosition afterMove(MoveSpecification moveSpec, Side movingSide) {
     if (movingSide != Side.WHITE && movingSide != Side.BLACK) {
@@ -572,8 +556,8 @@ public record BitboardPosition(long whitePawns, long whiteRooks, long whiteKnigh
     final Square from = moveSpec.fromSquare();
     final Square to = moveSpec.toSquare();
     final Piece movingPiece = get(from);
-    final long fromBit = 1L << from.ordinal();
-    final long toBit = 1L << to.ordinal();
+    final var fromBit = 1L << from.ordinal();
+    final var toBit = 1L << to.ordinal();
 
     final Piece capturedPiece;
     final long capturedBit;
@@ -582,7 +566,7 @@ public record BitboardPosition(long whitePawns, long whiteRooks, long whiteKnigh
       capturedBit = toBit;
     } else if (movingPiece.getPieceType() == PieceType.PAWN && from.getFile() != to.getFile()) {
       // En-passant: captured pawn sits on the same rank as the capturing pawn, file matching `to`.
-      final int capturedOrdinal = movingSide == Side.WHITE ? to.ordinal() - 8 : to.ordinal() + 8;
+      final var capturedOrdinal = movingSide == Side.WHITE ? to.ordinal() - 8 : to.ordinal() + 8;
       capturedBit = 1L << capturedOrdinal;
       capturedPiece = movingSide == Side.WHITE ? Piece.BLACK_PAWN : Piece.WHITE_PAWN;
     } else {
@@ -591,7 +575,7 @@ public record BitboardPosition(long whitePawns, long whiteRooks, long whiteKnigh
     }
 
     final PromotionPieceType promotion = moveSpec.promotionPieceType();
-    final Piece destPiece = promotion == PromotionPieceType.NONE ? movingPiece
+    final var destPiece = promotion == PromotionPieceType.NONE ? movingPiece
         : Piece.calculate(movingSide, promotion.getPieceType());
 
     final long[] pieces = currentPieceBitboards();
@@ -618,21 +602,19 @@ public record BitboardPosition(long whitePawns, long whiteRooks, long whiteKnigh
         rookFromOrdinal = Square.A1.ordinal();
         rookToOrdinal = Square.D1.ordinal();
       }
+    } else if (castlingMove == CastlingMove.KING_SIDE) {
+      kingFromOrdinal = Square.E8.ordinal();
+      kingToOrdinal = Square.G8.ordinal();
+      rookFromOrdinal = Square.H8.ordinal();
+      rookToOrdinal = Square.F8.ordinal();
     } else {
-      if (castlingMove == CastlingMove.KING_SIDE) {
-        kingFromOrdinal = Square.E8.ordinal();
-        kingToOrdinal = Square.G8.ordinal();
-        rookFromOrdinal = Square.H8.ordinal();
-        rookToOrdinal = Square.F8.ordinal();
-      } else {
-        kingFromOrdinal = Square.E8.ordinal();
-        kingToOrdinal = Square.C8.ordinal();
-        rookFromOrdinal = Square.A8.ordinal();
-        rookToOrdinal = Square.D8.ordinal();
-      }
+      kingFromOrdinal = Square.E8.ordinal();
+      kingToOrdinal = Square.C8.ordinal();
+      rookFromOrdinal = Square.A8.ordinal();
+      rookToOrdinal = Square.D8.ordinal();
     }
-    final Piece kingPiece = movingSide == Side.WHITE ? Piece.WHITE_KING : Piece.BLACK_KING;
-    final Piece rookPiece = movingSide == Side.WHITE ? Piece.WHITE_ROOK : Piece.BLACK_ROOK;
+    final var kingPiece = movingSide == Side.WHITE ? Piece.WHITE_KING : Piece.BLACK_KING;
+    final var rookPiece = movingSide == Side.WHITE ? Piece.WHITE_ROOK : Piece.BLACK_ROOK;
 
     final long[] pieces = currentPieceBitboards();
     toggleBit(pieces, kingPiece, 1L << kingFromOrdinal);
@@ -653,7 +635,7 @@ public record BitboardPosition(long whitePawns, long whiteRooks, long whiteKnigh
   }
 
   private static void toggleBit(long[] pieces, Piece piece, long bit) {
-    final int index = pieceIndex(piece);
+    final var index = pieceIndex(piece);
     if (index >= 0) {
       pieces[index] ^= bit;
     }
@@ -679,12 +661,12 @@ public record BitboardPosition(long whitePawns, long whiteRooks, long whiteKnigh
   }
 
   /**
-   * Piece-placement Zobrist hash: XOR of {@link ZobristKeys#pieceSquare} for every (piece, square) pair currently
-   * on the board. Side-to-move, castling rights, and en-passant target are intentionally NOT mixed in — those state
-   * pieces live on {@code Board} / {@code DynamicPosition} and their Zobrist contributions belong there.
+   * Piece-placement Zobrist hash: XOR of {@link ZobristKeys#pieceSquare} for every (piece, square) pair currently on
+   * the board. Side-to-move, castling rights, and en-passant target are intentionally NOT mixed in — those state pieces
+   * live on {@code Board} / {@code DynamicPosition} and their Zobrist contributions belong there.
    */
   public long zobristPieces() {
-    long hash = 0L;
+    var hash = 0L;
     hash ^= zobristForPiece(whitePawns, Piece.WHITE_PAWN);
     hash ^= zobristForPiece(whiteRooks, Piece.WHITE_ROOK);
     hash ^= zobristForPiece(whiteKnights, Piece.WHITE_KNIGHT);
@@ -701,18 +683,18 @@ public record BitboardPosition(long whitePawns, long whiteRooks, long whiteKnigh
   }
 
   /**
-   * Incremental Zobrist update: returns the XOR delta that converts the piece-placement hash of this position
-   * (before the move) into the piece-placement hash of the position after the move. That is:
+   * Incremental Zobrist update: returns the XOR delta that converts the piece-placement hash of this position (before
+   * the move) into the piece-placement hash of the position after the move. That is the below is guaranteed equal to
+   * {@code before.afterMove(moveSpec, movingSide).zobristPieces()}:
+   *
    * <pre>
-   *   long afterHash = beforeHash ^ before.hashDelta(moveSpec, movingSide);
+   * long afterHash = beforeHash ^ before.hashDelta(moveSpec, movingSide);
    * </pre>
-   * is guaranteed equal to {@code before.afterMove(moveSpec, movingSide).zobristPieces()}.
    *
    * <p>
-   * Parallel in structure to {@link #afterMove}: identifies the moving piece, captured piece (regular or
-   * en-passant), and destination piece (handles promotion), and XORs the corresponding
-   * {@link ZobristKeys#pieceSquare} values rather than toggling bitboards. For castling, XORs both king's and
-   * rook's from/to keys.
+   * Parallel in structure to {@link #afterMove}: identifies the moving piece, captured piece (regular or en-passant),
+   * and destination piece (handles promotion), and XORs the corresponding {@link ZobristKeys#pieceSquare} values rather
+   * than toggling bitboards. For castling, XORs both king's and rook's from/to keys.
    */
   public long hashDelta(MoveSpecification moveSpec, Side movingSide) {
     if (movingSide != Side.WHITE && movingSide != Side.BLACK) {
@@ -724,7 +706,7 @@ public record BitboardPosition(long whitePawns, long whiteRooks, long whiteKnigh
     final Square from = moveSpec.fromSquare();
     final Square to = moveSpec.toSquare();
     final Piece movingPiece = get(from);
-    final long toBit = 1L << to.ordinal();
+    final var toBit = 1L << to.ordinal();
 
     final Piece capturedPiece;
     final Square capturedSquare;
@@ -732,7 +714,7 @@ public record BitboardPosition(long whitePawns, long whiteRooks, long whiteKnigh
       capturedPiece = get(to);
       capturedSquare = to;
     } else if (movingPiece.getPieceType() == PieceType.PAWN && from.getFile() != to.getFile()) {
-      final int capturedOrdinal = movingSide == Side.WHITE ? to.ordinal() - 8 : to.ordinal() + 8;
+      final var capturedOrdinal = movingSide == Side.WHITE ? to.ordinal() - 8 : to.ordinal() + 8;
       capturedSquare = Square.REAL.get(capturedOrdinal);
       capturedPiece = movingSide == Side.WHITE ? Piece.BLACK_PAWN : Piece.WHITE_PAWN;
     } else {
@@ -741,10 +723,10 @@ public record BitboardPosition(long whitePawns, long whiteRooks, long whiteKnigh
     }
 
     final PromotionPieceType promotion = moveSpec.promotionPieceType();
-    final Piece destPiece = promotion == PromotionPieceType.NONE ? movingPiece
+    final var destPiece = promotion == PromotionPieceType.NONE ? movingPiece
         : Piece.calculate(movingSide, promotion.getPieceType());
 
-    long delta = ZobristKeys.pieceSquare(movingPiece, from);
+    var delta = ZobristKeys.pieceSquare(movingPiece, from);
     if (capturedPiece != Piece.NONE) {
       delta ^= ZobristKeys.pieceSquare(capturedPiece, capturedSquare);
     }
@@ -769,47 +751,45 @@ public record BitboardPosition(long whitePawns, long whiteRooks, long whiteKnigh
         rookFrom = Square.A1;
         rookTo = Square.D1;
       }
+    } else if (castlingMove == CastlingMove.KING_SIDE) {
+      kingFrom = Square.E8;
+      kingTo = Square.G8;
+      rookFrom = Square.H8;
+      rookTo = Square.F8;
     } else {
-      if (castlingMove == CastlingMove.KING_SIDE) {
-        kingFrom = Square.E8;
-        kingTo = Square.G8;
-        rookFrom = Square.H8;
-        rookTo = Square.F8;
-      } else {
-        kingFrom = Square.E8;
-        kingTo = Square.C8;
-        rookFrom = Square.A8;
-        rookTo = Square.D8;
-      }
+      kingFrom = Square.E8;
+      kingTo = Square.C8;
+      rookFrom = Square.A8;
+      rookTo = Square.D8;
     }
-    final Piece kingPiece = movingSide == Side.WHITE ? Piece.WHITE_KING : Piece.BLACK_KING;
-    final Piece rookPiece = movingSide == Side.WHITE ? Piece.WHITE_ROOK : Piece.BLACK_ROOK;
+    final var kingPiece = movingSide == Side.WHITE ? Piece.WHITE_KING : Piece.BLACK_KING;
+    final var rookPiece = movingSide == Side.WHITE ? Piece.WHITE_ROOK : Piece.BLACK_ROOK;
     return ZobristKeys.pieceSquare(kingPiece, kingFrom) ^ ZobristKeys.pieceSquare(kingPiece, kingTo)
         ^ ZobristKeys.pieceSquare(rookPiece, rookFrom) ^ ZobristKeys.pieceSquare(rookPiece, rookTo);
   }
 
   private static long zobristForPiece(long bitboard, Piece piece) {
-    long hash = 0L;
-    long remaining = bitboard;
+    var hash = 0L;
+    var remaining = bitboard;
     while (remaining != 0L) {
-      hash ^= ZobristKeys.pieceSquare(piece, Square.REAL.get(Long.numberOfTrailingZeros(remaining)));
+      hash ^= ZobristKeys.pieceSquare(piece, Nulls.get(Square.REAL, Long.numberOfTrailingZeros(remaining)));
       remaining &= remaining - 1L;
     }
     return hash;
   }
 
   private static long inclusiveRayFromKing(int kingOrdinal, int pinnerOrdinal) {
-    final int kingFile = kingOrdinal % 8;
-    final int kingRank = kingOrdinal / 8;
-    final int pinnerFile = pinnerOrdinal % 8;
-    final int pinnerRank = pinnerOrdinal / 8;
-    final int fileStep = Integer.signum(pinnerFile - kingFile);
-    final int rankStep = Integer.signum(pinnerRank - kingRank);
-    long result = 0L;
-    int file = kingFile + fileStep;
-    int rank = kingRank + rankStep;
+    final var kingFile = kingOrdinal % 8;
+    final var kingRank = kingOrdinal / 8;
+    final var pinnerFile = pinnerOrdinal % 8;
+    final var pinnerRank = pinnerOrdinal / 8;
+    final var fileStep = Integer.signum(pinnerFile - kingFile);
+    final var rankStep = Integer.signum(pinnerRank - kingRank);
+    var result = 0L;
+    var file = kingFile + fileStep;
+    var rank = kingRank + rankStep;
     while (file != pinnerFile || rank != pinnerRank) {
-      result |= 1L << (rank * 8 + file);
+      result |= 1L << rank * 8 + file;
       file += fileStep;
       rank += rankStep;
     }
@@ -824,18 +804,18 @@ public record BitboardPosition(long whitePawns, long whiteRooks, long whiteKnigh
     if (side != Side.WHITE && side != Side.BLACK) {
       throw new IllegalArgumentException("attackersTo requires Side.WHITE or Side.BLACK, got " + side);
     }
-    final int squareOrdinal = square.ordinal();
-    final long occ = occupied();
+    final var squareOrdinal = square.ordinal();
+    final var occ = occupied();
 
-    final boolean white = side == Side.WHITE;
-    final long pawns = white ? whitePawns : blackPawns;
-    final long knights = white ? whiteKnights : blackKnights;
-    final long bishops = white ? whiteBishops : blackBishops;
-    final long rooks = white ? whiteRooks : blackRooks;
-    final long queens = white ? whiteQueens : blackQueens;
-    final long kings = white ? whiteKings : blackKings;
+    final var white = side == Side.WHITE;
+    final var pawns = white ? whitePawns : blackPawns;
+    final var knights = white ? whiteKnights : blackKnights;
+    final var bishops = white ? whiteBishops : blackBishops;
+    final var rooks = white ? whiteRooks : blackRooks;
+    final var queens = white ? whiteQueens : blackQueens;
+    final var kings = white ? whiteKings : blackKings;
 
-    long attackers = 0L;
+    var attackers = 0L;
     attackers |= pawns & PawnAttacks.attacks(square, side.getOppositeSide());
     attackers |= knights & KnightAttacks.attacks(square);
     attackers |= bishops & BishopAttacks.attacks(squareOrdinal, occ);

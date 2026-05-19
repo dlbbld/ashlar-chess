@@ -2,12 +2,16 @@ package com.dlb.chess.test.bitboard;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.junit.jupiter.api.Test;
 
 import com.dlb.chess.bitboard.BitboardPosition;
 import com.dlb.chess.bitboard.BitboardPositionUtility;
 import com.dlb.chess.board.Board;
 import com.dlb.chess.board.enums.Square;
+import com.dlb.chess.common.Nulls;
 import com.dlb.chess.common.model.MoveSpecification;
 import com.dlb.chess.test.model.PgnTestCase;
 import com.dlb.chess.test.model.PgnTestCaseList;
@@ -50,12 +54,18 @@ class TestBoardGetBitboardPosition {
     // Synthetic sequence covering both move() and unmove(): cache must equal the freshly-computed bitboard at every
     // intermediate state. Hand-played five-move opening (e4, e5, Nf3, Nc6, Bb5) plus full unmove back to initial.
     final Board board = new Board(false);
-    final Square[][] moves = { { Square.E2, Square.E4 }, { Square.E7, Square.E5 }, { Square.G1, Square.F3 },
-        { Square.B8, Square.C6 }, { Square.F1, Square.B5 } };
-    for (final Square[] move : moves) {
-      board.move(new MoveSpecification(move[0], move[1]));
+    final List<List<Square>> listMoveSquareList = new ArrayList<>();
+    listMoveSquareList.add(Nulls.asList(Square.E2, Square.E4));
+    listMoveSquareList.add(Nulls.asList(Square.E7, Square.E5));
+    listMoveSquareList.add(Nulls.asList(Square.G1, Square.F3));
+    listMoveSquareList.add(Nulls.asList(Square.B8, Square.C6));
+    listMoveSquareList.add(Nulls.asList(Square.F1, Square.B5));
+    for (final List<Square> moveSquareList : listMoveSquareList) {
+      final Square squareFrom = Nulls.get(moveSquareList, 0);
+      final Square squareTo = Nulls.get(moveSquareList, 1);
+      board.move(new MoveSpecification(squareFrom, squareTo));
       assertEquals(BitboardPositionUtility.fromStaticPosition(board.getStaticPosition()), board.getBitboardPosition(),
-          "cache out of sync after move " + move[0].getName() + "-" + move[1].getName());
+          "cache out of sync after move " + squareFrom.getName() + "-" + squareTo.getName());
     }
     while (!board.isFirstMove()) {
       board.unmove();

@@ -1,7 +1,6 @@
 package com.dlb.chess.bitboard;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
@@ -10,11 +9,12 @@ import com.dlb.chess.board.StaticPosition;
 import com.dlb.chess.board.enums.Piece;
 import com.dlb.chess.board.enums.Square;
 import com.dlb.chess.board.model.UpdateSquare;
+import com.dlb.chess.common.Nulls;
 
 /**
- * Bit-exact conversion between {@link BitboardPosition} and the existing {@link StaticPosition} mailbox
- * representation. Round-tripping a {@code StaticPosition} through {@code fromStaticPosition} followed by
- * {@code toStaticPosition} reproduces the original; round-tripping a {@code BitboardPosition} likewise.
+ * Bit-exact conversion between {@link BitboardPosition} and the existing {@link StaticPosition} mailbox representation.
+ * Round-tripping a {@code StaticPosition} through {@code fromStaticPosition} followed by {@code toStaticPosition}
+ * reproduces the original; round-tripping a {@code BitboardPosition} likewise.
  *
  * <p>
  * Used by the differential-test harness as the bridge between the bitboard and reference layers; production callers
@@ -26,25 +26,25 @@ public final class BitboardPositionUtility {
   }
 
   public static BitboardPosition fromStaticPosition(StaticPosition staticPosition) {
-    long whitePawns = 0L;
-    long whiteRooks = 0L;
-    long whiteKnights = 0L;
-    long whiteBishops = 0L;
-    long whiteQueens = 0L;
-    long whiteKings = 0L;
-    long blackPawns = 0L;
-    long blackRooks = 0L;
-    long blackKnights = 0L;
-    long blackBishops = 0L;
-    long blackQueens = 0L;
-    long blackKings = 0L;
+    var whitePawns = 0L;
+    var whiteRooks = 0L;
+    var whiteKnights = 0L;
+    var whiteBishops = 0L;
+    var whiteQueens = 0L;
+    var whiteKings = 0L;
+    var blackPawns = 0L;
+    var blackRooks = 0L;
+    var blackKnights = 0L;
+    var blackBishops = 0L;
+    var blackQueens = 0L;
+    var blackKings = 0L;
 
     for (final Square square : Square.REAL) {
       final Piece piece = staticPosition.get(square);
       if (piece == Piece.NONE) {
         continue;
       }
-      final long bit = 1L << square.ordinal();
+      final var bit = 1L << square.ordinal();
       switch (piece) {
         case WHITE_PAWN -> whitePawns |= bit;
         case WHITE_ROOK -> whiteRooks |= bit;
@@ -89,9 +89,9 @@ public final class BitboardPositionUtility {
   }
 
   private static void collectOccupiedSquares(List<UpdateSquare> updates, long bitboard, Piece piece) {
-    long remaining = bitboard;
+    var remaining = bitboard;
     while (remaining != 0L) {
-      final int squareOrdinal = Long.numberOfTrailingZeros(remaining);
+      final var squareOrdinal = Long.numberOfTrailingZeros(remaining);
       updates.add(new UpdateSquare(Square.REAL.get(squareOrdinal), piece));
       remaining &= remaining - 1L;
     }
@@ -104,10 +104,10 @@ public final class BitboardPositionUtility {
    */
   public static Set<Square> toSquareSet(long bitboard) {
     if (bitboard == 0L) {
-      return Collections.emptySet();
+      return Nulls.emptySet();
     }
     final Set<Square> squares = new TreeSet<>();
-    long remaining = bitboard;
+    var remaining = bitboard;
     while (remaining != 0L) {
       squares.add(Square.REAL.get(Long.numberOfTrailingZeros(remaining)));
       remaining &= remaining - 1L;

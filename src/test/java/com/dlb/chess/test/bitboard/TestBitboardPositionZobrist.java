@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.eclipse.jdt.annotation.Nullable;
 import org.junit.jupiter.api.Test;
 
 import com.dlb.chess.bitboard.BitboardPosition;
@@ -52,10 +53,10 @@ class TestBitboardPositionZobrist {
       for (final PgnTestCase testCase : testCaseList.list()) {
         final BitboardPosition position = BitboardPositionUtility
             .fromStaticPosition(testCase.finalPosition().getStaticPosition());
-        final long hash = position.zobristPieces();
-        final BitboardPosition existing = seen.putIfAbsent(hash, position);
-        if (existing != null) {
-          assertEquals(existing, position,
+        final var hash = position.zobristPieces();
+        if (seen.containsKey(hash)) {
+          final @Nullable BitboardPosition existing = seen.get(hash);
+          assertEquals(position, existing,
               "Zobrist collision: distinct positions hashed equal in fixture " + testCase.pgnName());
         }
       }
@@ -71,7 +72,7 @@ class TestBitboardPositionZobrist {
       for (final PgnTestCase testCase : testCaseList.list()) {
         final Board board = testCase.finalPosition();
         final BitboardPosition before = BitboardPositionUtility.fromStaticPosition(board.getStaticPosition());
-        final long beforeHash = before.zobristPieces();
+        final var beforeHash = before.zobristPieces();
         final Side havingMove = board.getHavingMove();
         for (final LegalMove legalMove : board.getLegalMoves()) {
           final MoveSpecification spec = legalMove.moveSpecification();

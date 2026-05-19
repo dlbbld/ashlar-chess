@@ -4,6 +4,7 @@ import java.io.File;
 import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.EnumMap;
 import java.util.EnumSet;
 import java.util.List;
@@ -192,6 +193,10 @@ public class Nulls {
 
   public static <E, F> Set<E> keySet(Map<E, F> map) {
     return checkResult(map.keySet());
+  }
+
+  public static <E> Set<E> emptySet() {
+    return checkResult(Collections.emptySet());
   }
 
   @NonNull
