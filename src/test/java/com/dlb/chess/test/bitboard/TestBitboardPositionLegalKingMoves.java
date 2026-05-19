@@ -12,6 +12,7 @@ import com.dlb.chess.bitboard.BitboardPositionUtility;
 import com.dlb.chess.board.StaticPosition;
 import com.dlb.chess.board.enums.Side;
 import com.dlb.chess.board.enums.Square;
+import com.dlb.chess.common.Nulls;
 import com.dlb.chess.moves.LegalMovesTestOracle;
 import com.dlb.chess.test.model.PgnTestCase;
 import com.dlb.chess.test.model.PgnTestCaseList;
@@ -56,7 +57,7 @@ class TestBitboardPositionLegalKingMoves {
     final Set<Square> referenceTargets = new java.util.TreeSet<>();
     long remaining = ownKings;
     while (remaining != 0L) {
-      final Square kingSquare = Square.REAL.get(Long.numberOfTrailingZeros(remaining));
+      final Square kingSquare = Nulls.get(Square.REAL, Long.numberOfTrailingZeros(remaining));
       referenceTargets.addAll(LegalMovesTestOracle.kingNonCastlingLegalTargets(staticPosition, kingSquare, side));
       remaining &= remaining - 1L;
     }

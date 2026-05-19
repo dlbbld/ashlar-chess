@@ -38,7 +38,7 @@ class Mobility {
     final List<PiecePlacement> piecePlacementList = new ArrayList<>();
     long occupied = bitboardPosition.occupied();
     while (occupied != 0L) {
-      final Square square = Square.REAL.get(Long.numberOfTrailingZeros(occupied));
+      final Square square = Nulls.get(Square.REAL, Long.numberOfTrailingZeros(occupied));
       final Piece piece = bitboardPosition.get(square);
       piecePlacementList.add(new PiecePlacement(piece.getPieceType(), piece.getSide(), square));
       occupied &= occupied - 1L;

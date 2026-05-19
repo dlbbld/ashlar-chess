@@ -12,6 +12,7 @@ import com.dlb.chess.bitboard.BitboardPositionUtility;
 import com.dlb.chess.bitboard.KnightAttacks;
 import com.dlb.chess.board.StaticPosition;
 import com.dlb.chess.board.enums.Square;
+import com.dlb.chess.common.Nulls;
 import com.dlb.chess.squares.KnightEmptyBoardSquares;
 import com.dlb.chess.test.model.PgnTestCase;
 import com.dlb.chess.test.model.PgnTestCaseList;
@@ -46,7 +47,7 @@ class TestKnightAttacks {
         final BitboardPosition bitboardPosition = BitboardPositionUtility.fromStaticPosition(staticPosition);
         long knights = bitboardPosition.whiteKnights() | bitboardPosition.blackKnights();
         while (knights != 0L) {
-          final Square fromSquare = Square.REAL.get(Long.numberOfTrailingZeros(knights));
+          final Square fromSquare = Nulls.get(Square.REAL, Long.numberOfTrailingZeros(knights));
           final Set<Square> bitboardAttacks = BitboardPositionUtility.toSquareSet(KnightAttacks.attacks(fromSquare));
           final Set<Square> referenceAttacks = KnightEmptyBoardSquares.getKnightSquares(fromSquare);
           assertEquals(referenceAttacks, bitboardAttacks,

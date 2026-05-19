@@ -17,6 +17,7 @@ import com.dlb.chess.bitboard.RookMoves;
 import com.dlb.chess.board.StaticPosition;
 import com.dlb.chess.board.enums.Side;
 import com.dlb.chess.board.enums.Square;
+import com.dlb.chess.common.Nulls;
 import com.dlb.chess.squares.KingNonCastlingEmptyBoardSquares;
 import com.dlb.chess.squares.KnightEmptyBoardSquares;
 import com.dlb.chess.squares.SlidingAttacksTestOracle;
@@ -53,7 +54,7 @@ class TestPseudoLegalMoves {
     final long ownPieces = bitboardPosition.occupied(side);
     long remaining = knights;
     while (remaining != 0L) {
-      final Square fromSquare = Square.REAL.get(Long.numberOfTrailingZeros(remaining));
+      final Square fromSquare = Nulls.get(Square.REAL, Long.numberOfTrailingZeros(remaining));
       final Set<Square> bitboardTargets = BitboardPositionUtility.toSquareSet(KnightMoves.targets(fromSquare, ownPieces));
       final Set<Square> referenceTargets = withoutOwnPieces(KnightEmptyBoardSquares.getKnightSquares(fromSquare),
           staticPosition, side);
@@ -83,7 +84,7 @@ class TestPseudoLegalMoves {
     final long ownPieces = bitboardPosition.occupied(side);
     long remaining = kings;
     while (remaining != 0L) {
-      final Square fromSquare = Square.REAL.get(Long.numberOfTrailingZeros(remaining));
+      final Square fromSquare = Nulls.get(Square.REAL, Long.numberOfTrailingZeros(remaining));
       final Set<Square> bitboardTargets = BitboardPositionUtility.toSquareSet(KingMoves.targets(fromSquare, ownPieces));
       final Set<Square> referenceTargets = withoutOwnPieces(
           KingNonCastlingEmptyBoardSquares.getKingSquares(fromSquare), staticPosition, side);
@@ -115,7 +116,7 @@ class TestPseudoLegalMoves {
     long remaining = bishops;
     while (remaining != 0L) {
       final int squareOrdinal = Long.numberOfTrailingZeros(remaining);
-      final Square fromSquare = Square.REAL.get(squareOrdinal);
+      final Square fromSquare = Nulls.get(Square.REAL, squareOrdinal);
       final Set<Square> bitboardTargets = BitboardPositionUtility
           .toSquareSet(BishopMoves.targets(squareOrdinal, occupied, ownPieces));
       final Set<Square> referenceTargets = withoutOwnPieces(
@@ -148,7 +149,7 @@ class TestPseudoLegalMoves {
     long remaining = rooks;
     while (remaining != 0L) {
       final int squareOrdinal = Long.numberOfTrailingZeros(remaining);
-      final Square fromSquare = Square.REAL.get(squareOrdinal);
+      final Square fromSquare = Nulls.get(Square.REAL, squareOrdinal);
       final Set<Square> bitboardTargets = BitboardPositionUtility
           .toSquareSet(RookMoves.targets(squareOrdinal, occupied, ownPieces));
       final Set<Square> referenceTargets = withoutOwnPieces(
@@ -181,7 +182,7 @@ class TestPseudoLegalMoves {
     long remaining = queens;
     while (remaining != 0L) {
       final int squareOrdinal = Long.numberOfTrailingZeros(remaining);
-      final Square fromSquare = Square.REAL.get(squareOrdinal);
+      final Square fromSquare = Nulls.get(Square.REAL, squareOrdinal);
       final Set<Square> bitboardTargets = BitboardPositionUtility
           .toSquareSet(QueenMoves.targets(squareOrdinal, occupied, ownPieces));
       final Set<Square> referenceTargets = withoutOwnPieces(

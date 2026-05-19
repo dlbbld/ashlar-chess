@@ -13,6 +13,7 @@ import com.dlb.chess.bitboard.PawnAttacks;
 import com.dlb.chess.board.StaticPosition;
 import com.dlb.chess.board.enums.Side;
 import com.dlb.chess.board.enums.Square;
+import com.dlb.chess.common.Nulls;
 import com.dlb.chess.squares.PawnDiagonalSquares;
 import com.dlb.chess.test.model.PgnTestCase;
 import com.dlb.chess.test.model.PgnTestCaseList;
@@ -78,7 +79,7 @@ class TestPawnAttacks {
   private static void assertSideAgrees(long pawns, Side side, PgnTestCase testCase) {
     long remaining = pawns;
     while (remaining != 0L) {
-      final Square fromSquare = Square.REAL.get(Long.numberOfTrailingZeros(remaining));
+      final Square fromSquare = Nulls.get(Square.REAL, Long.numberOfTrailingZeros(remaining));
       final Set<Square> bitboardAttacks = BitboardPositionUtility.toSquareSet(PawnAttacks.attacks(fromSquare, side));
       final Set<Square> referenceAttacks = PawnDiagonalSquares.getPawnDiagonalSquares(side, fromSquare);
       assertEquals(referenceAttacks, bitboardAttacks,

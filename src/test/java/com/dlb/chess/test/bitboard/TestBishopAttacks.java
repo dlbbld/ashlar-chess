@@ -13,6 +13,7 @@ import com.dlb.chess.bitboard.BitboardPositionUtility;
 import com.dlb.chess.board.StaticPosition;
 import com.dlb.chess.board.enums.Side;
 import com.dlb.chess.board.enums.Square;
+import com.dlb.chess.common.Nulls;
 import com.dlb.chess.squares.SlidingAttacksTestOracle;
 import com.dlb.chess.test.model.PgnTestCase;
 import com.dlb.chess.test.model.PgnTestCaseList;
@@ -47,7 +48,7 @@ class TestBishopAttacks {
     long remaining = bishops;
     while (remaining != 0L) {
       final int squareOrdinal = Long.numberOfTrailingZeros(remaining);
-      final Square fromSquare = Square.REAL.get(squareOrdinal);
+      final Square fromSquare = Nulls.get(Square.REAL, squareOrdinal);
       final Set<Square> bitboardAttacks = BitboardPositionUtility
           .toSquareSet(BishopAttacks.attacks(squareOrdinal, occupied));
       final Set<Square> referenceAttacks = SlidingAttacksTestOracle.bishopAttacks(staticPosition, fromSquare, side);

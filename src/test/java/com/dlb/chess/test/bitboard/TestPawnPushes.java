@@ -14,6 +14,7 @@ import com.dlb.chess.bitboard.PawnMoves;
 import com.dlb.chess.board.StaticPosition;
 import com.dlb.chess.board.enums.Side;
 import com.dlb.chess.board.enums.Square;
+import com.dlb.chess.common.Nulls;
 import com.dlb.chess.test.model.PgnTestCase;
 import com.dlb.chess.test.model.PgnTestCaseList;
 import com.dlb.chess.test.pgn.setup.PgnTestCaseCatalog;
@@ -47,7 +48,7 @@ class TestPawnPushes {
     long remaining = pawns;
     while (remaining != 0L) {
       final int squareOrdinal = Long.numberOfTrailingZeros(remaining);
-      final Square fromSquare = Square.REAL.get(squareOrdinal);
+      final Square fromSquare = Nulls.get(Square.REAL, squareOrdinal);
       final Set<Square> bitboardPushes = BitboardPositionUtility
           .toSquareSet(PawnMoves.pushes(squareOrdinal, occupied, side));
       final Set<Square> referencePushes = referencePushes(staticPosition, fromSquare, side);

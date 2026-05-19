@@ -2,6 +2,7 @@ package com.dlb.chess.bitboard;
 
 import com.dlb.chess.board.enums.Side;
 import com.dlb.chess.board.enums.Square;
+import com.dlb.chess.common.Nulls;
 
 /**
  * Pseudo-legal pawn target squares.
@@ -66,7 +67,7 @@ public final class PawnMoves {
     if (side != Side.WHITE && side != Side.BLACK) {
       throw new IllegalArgumentException("captures requires Side.WHITE or Side.BLACK, got " + side);
     }
-    final long diagonalAttacks = PawnAttacks.attacks(Square.REAL.get(squareOrdinal), side);
+    final long diagonalAttacks = PawnAttacks.attacks(Nulls.get(Square.REAL, squareOrdinal), side);
     return (diagonalAttacks & opponentPieces) | (diagonalAttacks & enPassantBit);
   }
 }

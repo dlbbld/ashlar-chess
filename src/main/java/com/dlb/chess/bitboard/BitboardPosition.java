@@ -392,7 +392,7 @@ public record BitboardPosition(long whitePawns, long whiteRooks, long whiteKnigh
     var remaining = ownNonKings;
     while (remaining != 0L) {
       final var fromOrdinal = Long.numberOfTrailingZeros(remaining);
-      final Square fromSquare = Square.REAL.get(fromOrdinal);
+      final Square fromSquare = Nulls.get(Square.REAL, fromOrdinal);
       final Piece piece = get(fromSquare);
       final var pinRay = pinRay(fromSquare, side);
       final var pinFilter = pinRay == 0L ? -1L : pinRay;
@@ -484,7 +484,7 @@ public record BitboardPosition(long whitePawns, long whiteRooks, long whiteKnigh
     var remaining = targets;
     while (remaining != 0L) {
       final var toOrdinal = Long.numberOfTrailingZeros(remaining);
-      final Square toSquare = Square.REAL.get(toOrdinal);
+      final Square toSquare = Nulls.get(Square.REAL, toOrdinal);
       final var toRank = toOrdinal / 8;
       if (toRank == 0 || toRank == 7) {
         for (final PromotionPieceType promotion : PromotionPieceType.REAL) {
@@ -715,7 +715,7 @@ public record BitboardPosition(long whitePawns, long whiteRooks, long whiteKnigh
       capturedSquare = to;
     } else if (movingPiece.getPieceType() == PieceType.PAWN && from.getFile() != to.getFile()) {
       final var capturedOrdinal = movingSide == Side.WHITE ? to.ordinal() - 8 : to.ordinal() + 8;
-      capturedSquare = Square.REAL.get(capturedOrdinal);
+      capturedSquare = Nulls.get(Square.REAL, capturedOrdinal);
       capturedPiece = movingSide == Side.WHITE ? Piece.BLACK_PAWN : Piece.WHITE_PAWN;
     } else {
       capturedPiece = Piece.NONE;

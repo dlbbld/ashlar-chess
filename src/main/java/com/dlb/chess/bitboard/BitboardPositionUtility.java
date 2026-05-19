@@ -92,7 +92,7 @@ public final class BitboardPositionUtility {
     var remaining = bitboard;
     while (remaining != 0L) {
       final var squareOrdinal = Long.numberOfTrailingZeros(remaining);
-      updates.add(new UpdateSquare(Square.REAL.get(squareOrdinal), piece));
+      updates.add(new UpdateSquare(Nulls.get(Square.REAL, squareOrdinal), piece));
       remaining &= remaining - 1L;
     }
   }
@@ -109,7 +109,7 @@ public final class BitboardPositionUtility {
     final Set<Square> squares = new TreeSet<>();
     var remaining = bitboard;
     while (remaining != 0L) {
-      squares.add(Square.REAL.get(Long.numberOfTrailingZeros(remaining)));
+      squares.add(Nulls.get(Square.REAL, Long.numberOfTrailingZeros(remaining)));
       remaining &= remaining - 1L;
     }
     return squares;
