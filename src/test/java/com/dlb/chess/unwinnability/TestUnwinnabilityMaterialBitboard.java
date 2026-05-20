@@ -28,7 +28,7 @@ class TestUnwinnabilityMaterialBitboard {
     for (final PgnTest pgnTest : PgnTest.values()) {
       final PgnTestCaseList testCaseList = PgnTestCaseCatalog.getTestList(pgnTest);
       for (final PgnTestCase testCase : testCaseList.list()) {
-        final StaticPosition sp = testCase.finalPosition().getStaticPosition();
+        final StaticPosition sp = BitboardPositionUtility.toStaticPosition(testCase.finalPosition().getBitboardPosition());
         final BitboardPosition bp = BitboardPositionUtility.fromStaticPosition(sp);
         final var tag = " in fixture " + testCase.pgnName();
 

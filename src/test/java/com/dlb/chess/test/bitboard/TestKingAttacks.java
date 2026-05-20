@@ -42,7 +42,7 @@ class TestKingAttacks {
     for (final PgnTest pgnTest : PgnTest.values()) {
       final PgnTestCaseList testCaseList = PgnTestCaseCatalog.getTestList(pgnTest);
       for (final PgnTestCase testCase : testCaseList.list()) {
-        final StaticPosition staticPosition = testCase.finalPosition().getStaticPosition();
+        final StaticPosition staticPosition = BitboardPositionUtility.toStaticPosition(testCase.finalPosition().getBitboardPosition());
         final BitboardPosition bitboardPosition = BitboardPositionUtility.fromStaticPosition(staticPosition);
         long kings = bitboardPosition.whiteKings() | bitboardPosition.blackKings();
         while (kings != 0L) {

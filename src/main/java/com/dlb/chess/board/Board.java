@@ -745,30 +745,20 @@ public class Board {
   }
 
   /**
-   * Current position as a {@link StaticPosition} — derived on demand from the cached {@link BitboardPosition} via
-   * {@link BitboardPositionUtility#toStaticPosition(BitboardPosition)}. {@code Board} no longer caches a {@code
-   * StaticPosition} alongside the bitboard; the bitboard is the single source of truth on the data path.
-   */
-  public StaticPosition getStaticPosition() {
-    return BitboardPositionUtility.toStaticPosition(Nulls.getLast(dynamicPositionList).bitboardPosition());
-  }
-
-  /**
    * Current position as a {@link BitboardPosition}. Carried directly on every {@link DynamicPosition} in
    * {@link #dynamicPositionList} (appended on every {@link #move}, popped on every {@link #unmove}). O(1) per call.
-   * Bit-exact with {@code BitboardPositionUtility.fromStaticPosition(getStaticPosition())} on every halfmove of
-   * every game (validated by the differential test).
+   * The bitboard is the single source of truth for piece placement on the board; the StaticPosition reference layer
+   * lives in {@code src/test/} as the permanent differential-test oracle.
    */
   public BitboardPosition getBitboardPosition() {
     return Nulls.getLast(dynamicPositionList).bitboardPosition();
   }
 
-  StaticPosition getStaticPositionBeforeLastMove() {
+  BitboardPosition getBitboardPositionBeforeLastMove() {
     if (isFirstMove()) {
       throw new ProgrammingMistakeException("The method cannot be called if no move was yet made");
     }
-    return BitboardPositionUtility
-        .toStaticPosition(Nulls.get(dynamicPositionList, this.dynamicPositionList.size() - 2).bitboardPosition());
+    return Nulls.get(dynamicPositionList, this.dynamicPositionList.size() - 2).bitboardPosition();
   }
 
   public boolean isEnPassantCapturePossible() {
@@ -838,7 +828,7 @@ public class Board {
 
   @Override
   public String toString() {
-    return getStaticPosition().toString();
+    return BitboardPositionUtility.toStaticPosition(getBitboardPosition()).toString();
   }
 
   public Square getEnPassantCaptureTargetSquare() {

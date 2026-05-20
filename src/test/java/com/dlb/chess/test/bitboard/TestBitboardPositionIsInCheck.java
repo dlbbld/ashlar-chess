@@ -30,7 +30,7 @@ class TestBitboardPositionIsInCheck {
     for (final PgnTest pgnTest : PgnTest.values()) {
       final PgnTestCaseList testCaseList = PgnTestCaseCatalog.getTestList(pgnTest);
       for (final PgnTestCase testCase : testCaseList.list()) {
-        final StaticPosition staticPosition = testCase.finalPosition().getStaticPosition();
+        final StaticPosition staticPosition = BitboardPositionUtility.toStaticPosition(testCase.finalPosition().getBitboardPosition());
         final BitboardPosition bitboardPosition = BitboardPositionUtility.fromStaticPosition(staticPosition);
 
         final boolean bbWhite = bitboardPosition.isInCheck(Side.WHITE);

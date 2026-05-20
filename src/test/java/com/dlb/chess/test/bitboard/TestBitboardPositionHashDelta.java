@@ -32,7 +32,7 @@ class TestBitboardPositionHashDelta {
       final PgnTestCaseList testCaseList = PgnTestCaseCatalog.getTestList(pgnTest);
       for (final PgnTestCase testCase : testCaseList.list()) {
         final Board board = testCase.finalPosition();
-        final StaticPosition staticPosition = board.getStaticPosition();
+        final StaticPosition staticPosition = BitboardPositionUtility.toStaticPosition(board.getBitboardPosition());
         final BitboardPosition before = BitboardPositionUtility.fromStaticPosition(staticPosition);
         final long beforeHash = before.zobristPieces();
         final Side havingMove = board.getHavingMove();

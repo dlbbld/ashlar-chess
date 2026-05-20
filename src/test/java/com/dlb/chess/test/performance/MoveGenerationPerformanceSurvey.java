@@ -14,6 +14,7 @@ import com.dlb.chess.test.model.PgnTestCaseList;
 import com.dlb.chess.test.pgn.parser.PgnCacheForStrictPgnParserTestCases;
 import com.dlb.chess.test.pgn.setup.PgnTestCaseCatalog;
 import com.dlb.chess.test.pgntest.enums.PgnTest;
+import com.dlb.chess.bitboard.BitboardPositionUtility;
 import com.github.bhlangonijr.chesslib.move.MoveGenerator;
 import com.github.bhlangonijr.chesslib.move.MoveGeneratorException;
 
@@ -81,7 +82,7 @@ public class MoveGenerationPerformanceSurvey {
     for (var round = 0; round < MEASURE_ROUNDS; round++) {
       for (final PositionPair position : positionList) {
         final Board board = position.cleanChessBoard();
-        moveCount += AbstractLegalMoves.calculateLegalMoves(board.getStaticPosition(), board.getHavingMove(),
+        moveCount += AbstractLegalMoves.calculateLegalMoves(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), board.getHavingMove(),
             board.getCastlingRight(board.getHavingMove()), board.getEnPassantCaptureTargetSquare()).size();
       }
     }

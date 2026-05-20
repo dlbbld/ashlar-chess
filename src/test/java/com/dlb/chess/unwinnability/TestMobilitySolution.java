@@ -18,6 +18,7 @@ import com.dlb.chess.board.StaticPosition;
 import com.dlb.chess.board.enums.Square;
 import com.dlb.chess.common.Nulls;
 import com.dlb.chess.common.constants.EnumConstants;
+import com.dlb.chess.bitboard.BitboardPositionUtility;
 
 class TestMobilitySolution implements EnumConstants {
 
@@ -421,7 +422,7 @@ class TestMobilitySolution implements EnumConstants {
 
     final MobilitySolution mobilitySolution = Mobility.mobility(board);
 
-    checkBoardOccupation(board.getStaticPosition(), mobilitySolution);
+    checkBoardOccupation(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), mobilitySolution);
 
     for (final PiecePlacement piecePlacement : mobilitySolution.getPiecePlacementSet()) {
       final Set<Square> squaresWithValueOne = mobilitySolution.calculateSquaresWithValueOne(piecePlacement);

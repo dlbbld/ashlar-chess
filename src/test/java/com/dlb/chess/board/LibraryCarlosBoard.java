@@ -554,6 +554,16 @@ public class LibraryCarlosBoard {
     return staticPosition;
   }
 
+  // Bitboard accessors mirror the Board API for the CommonTestUtility cross-comparison. LibraryCarlosBoard has no
+  // native bitboard of its own; both derive from the chesslib-derived StaticPosition via the bridge utility.
+  public com.dlb.chess.bitboard.BitboardPosition getBitboardPosition() {
+    return com.dlb.chess.bitboard.BitboardPositionUtility.fromStaticPosition(getStaticPosition());
+  }
+
+  public com.dlb.chess.bitboard.BitboardPosition getBitboardPositionBeforeLastMove() {
+    return com.dlb.chess.bitboard.BitboardPositionUtility.fromStaticPosition(getStaticPositionBeforeLastMove());
+  }
+
   public boolean movesStrict(String... sanArray) {
     for (final String san : sanArray) {
       if (san == null) {

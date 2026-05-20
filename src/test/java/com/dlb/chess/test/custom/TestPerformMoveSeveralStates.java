@@ -15,6 +15,7 @@ import com.dlb.chess.common.model.MoveSpecification;
 import com.dlb.chess.enums.CastlingCheck;
 import com.dlb.chess.model.LegalMoveKind;
 import com.dlb.chess.moves.CastlingUtility;
+import com.dlb.chess.bitboard.BitboardPositionUtility;
 
 class TestPerformMoveSeveralStates implements EnumConstants {
 
@@ -34,15 +35,15 @@ class TestPerformMoveSeveralStates implements EnumConstants {
       assertTrue(board.isFirstMove());
       assertEquals(havingMove, board.getHavingMove());
 
-      assertEquals(movingPiece, board.getStaticPosition().get(fromSquare));
-      assertEquals(Piece.NONE, board.getStaticPosition().get(toSquare));
+      assertEquals(movingPiece, BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()).get(fromSquare));
+      assertEquals(Piece.NONE, BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()).get(toSquare));
 
       final MoveSpecification halfMoveWhite = new MoveSpecification(fromSquare, toSquare);
 
       assertEquals(CastlingCheck.TEMPORARY_SQUARES_NOT_EMPTY, CastlingUtility
-          .calculateQueenSideCastlingCheck(board.getStaticPosition(), havingMove, board.getCastlingRightWhite()));
+          .calculateQueenSideCastlingCheck(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), havingMove, board.getCastlingRightWhite()));
       assertEquals(CastlingCheck.TEMPORARY_SQUARES_NOT_EMPTY, CastlingUtility
-          .calculateKingSideCastlingCheck(board.getStaticPosition(), havingMove, board.getCastlingRightWhite()));
+          .calculateKingSideCastlingCheck(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), havingMove, board.getCastlingRightWhite()));
       assertEquals(0, board.getHalfMoveClock());
 
       board.move(halfMoveWhite);
@@ -55,8 +56,8 @@ class TestPerformMoveSeveralStates implements EnumConstants {
       assertFalse(calculateIsCastlingLastMove(board));
       assertFalse(calculateIsPromotionLastMove(board));
 
-      assertEquals(Piece.NONE, board.getStaticPosition().get(fromSquare));
-      assertEquals(movingPiece, board.getStaticPosition().get(toSquare));
+      assertEquals(Piece.NONE, BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()).get(fromSquare));
+      assertEquals(movingPiece, BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()).get(toSquare));
 
       assertEquals(Piece.NONE, board.getLastMove().pieceCaptured());
 
@@ -77,15 +78,15 @@ class TestPerformMoveSeveralStates implements EnumConstants {
       assertFalse(board.isFirstMove());
       assertEquals(havingMove, board.getHavingMove());
 
-      assertEquals(movingPiece, board.getStaticPosition().get(fromSquare));
-      assertEquals(Piece.NONE, board.getStaticPosition().get(toSquare));
+      assertEquals(movingPiece, BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()).get(fromSquare));
+      assertEquals(Piece.NONE, BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()).get(toSquare));
 
       final MoveSpecification halfMoveBlack = new MoveSpecification(fromSquare, toSquare);
 
       assertEquals(CastlingCheck.TEMPORARY_SQUARES_NOT_EMPTY, CastlingUtility
-          .calculateQueenSideCastlingCheck(board.getStaticPosition(), havingMove, board.getCastlingRightBlack()));
+          .calculateQueenSideCastlingCheck(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), havingMove, board.getCastlingRightBlack()));
       assertEquals(CastlingCheck.TEMPORARY_SQUARES_NOT_EMPTY, CastlingUtility
-          .calculateKingSideCastlingCheck(board.getStaticPosition(), havingMove, board.getCastlingRightBlack()));
+          .calculateKingSideCastlingCheck(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), havingMove, board.getCastlingRightBlack()));
 
       board.move(halfMoveBlack);
 
@@ -97,8 +98,8 @@ class TestPerformMoveSeveralStates implements EnumConstants {
       assertFalse(calculateIsCastlingLastMove(board));
       assertFalse(calculateIsPromotionLastMove(board));
 
-      assertEquals(Piece.NONE, board.getStaticPosition().get(fromSquare));
-      assertEquals(movingPiece, board.getStaticPosition().get(toSquare));
+      assertEquals(Piece.NONE, BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()).get(fromSquare));
+      assertEquals(movingPiece, BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()).get(toSquare));
 
       assertEquals(movingPiece, board.getLastMove().movingPiece());
 
@@ -117,15 +118,15 @@ class TestPerformMoveSeveralStates implements EnumConstants {
       assertFalse(board.isFirstMove());
       assertEquals(havingMove, board.getHavingMove());
 
-      assertEquals(movingPiece, board.getStaticPosition().get(fromSquare));
-      assertEquals(BLACK_PAWN, board.getStaticPosition().get(toSquare));
+      assertEquals(movingPiece, BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()).get(fromSquare));
+      assertEquals(BLACK_PAWN, BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()).get(toSquare));
 
       final MoveSpecification halfMoveWhite = new MoveSpecification(fromSquare, toSquare);
 
       assertEquals(CastlingCheck.TEMPORARY_SQUARES_NOT_EMPTY, CastlingUtility
-          .calculateQueenSideCastlingCheck(board.getStaticPosition(), havingMove, board.getCastlingRightWhite()));
+          .calculateQueenSideCastlingCheck(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), havingMove, board.getCastlingRightWhite()));
       assertEquals(CastlingCheck.TEMPORARY_SQUARES_NOT_EMPTY, CastlingUtility
-          .calculateKingSideCastlingCheck(board.getStaticPosition(), havingMove, board.getCastlingRightWhite()));
+          .calculateKingSideCastlingCheck(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), havingMove, board.getCastlingRightWhite()));
 
       board.move(halfMoveWhite);
 
@@ -137,8 +138,8 @@ class TestPerformMoveSeveralStates implements EnumConstants {
       assertFalse(calculateIsCastlingLastMove(board));
       assertFalse(calculateIsPromotionLastMove(board));
 
-      assertEquals(Piece.NONE, board.getStaticPosition().get(fromSquare));
-      assertEquals(movingPiece, board.getStaticPosition().get(toSquare));
+      assertEquals(Piece.NONE, BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()).get(fromSquare));
+      assertEquals(movingPiece, BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()).get(toSquare));
 
       assertEquals(movingPiece, board.getLastMove().movingPiece());
 
@@ -157,15 +158,15 @@ class TestPerformMoveSeveralStates implements EnumConstants {
       assertFalse(board.isFirstMove());
       assertEquals(havingMove, board.getHavingMove());
 
-      assertEquals(movingPiece, board.getStaticPosition().get(fromSquare));
-      assertEquals(WHITE_PAWN, board.getStaticPosition().get(toSquare));
+      assertEquals(movingPiece, BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()).get(fromSquare));
+      assertEquals(WHITE_PAWN, BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()).get(toSquare));
 
       final MoveSpecification halfMoveBlack = new MoveSpecification(fromSquare, toSquare);
 
       assertEquals(CastlingCheck.TEMPORARY_SQUARES_NOT_EMPTY, CastlingUtility
-          .calculateQueenSideCastlingCheck(board.getStaticPosition(), havingMove, board.getCastlingRightBlack()));
+          .calculateQueenSideCastlingCheck(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), havingMove, board.getCastlingRightBlack()));
       assertEquals(CastlingCheck.TEMPORARY_SQUARES_NOT_EMPTY, CastlingUtility
-          .calculateKingSideCastlingCheck(board.getStaticPosition(), havingMove, board.getCastlingRightBlack()));
+          .calculateKingSideCastlingCheck(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), havingMove, board.getCastlingRightBlack()));
 
       board.move(halfMoveBlack);
 
@@ -177,8 +178,8 @@ class TestPerformMoveSeveralStates implements EnumConstants {
       assertFalse(calculateIsCastlingLastMove(board));
       assertFalse(calculateIsPromotionLastMove(board));
 
-      assertEquals(Piece.NONE, board.getStaticPosition().get(fromSquare));
-      assertEquals(movingPiece, board.getStaticPosition().get(toSquare));
+      assertEquals(Piece.NONE, BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()).get(fromSquare));
+      assertEquals(movingPiece, BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()).get(toSquare));
 
       assertEquals(movingPiece, board.getLastMove().movingPiece());
 
@@ -197,15 +198,15 @@ class TestPerformMoveSeveralStates implements EnumConstants {
       assertFalse(board.isFirstMove());
       assertEquals(havingMove, board.getHavingMove());
 
-      assertEquals(movingPiece, board.getStaticPosition().get(fromSquare));
-      assertEquals(Piece.NONE, board.getStaticPosition().get(toSquare));
+      assertEquals(movingPiece, BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()).get(fromSquare));
+      assertEquals(Piece.NONE, BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()).get(toSquare));
 
       final MoveSpecification halfMoveWhite = new MoveSpecification(fromSquare, toSquare);
 
       assertEquals(CastlingCheck.TEMPORARY_SQUARES_NOT_EMPTY, CastlingUtility
-          .calculateQueenSideCastlingCheck(board.getStaticPosition(), havingMove, board.getCastlingRightWhite()));
+          .calculateQueenSideCastlingCheck(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), havingMove, board.getCastlingRightWhite()));
       assertEquals(CastlingCheck.TEMPORARY_SQUARES_NOT_EMPTY, CastlingUtility
-          .calculateKingSideCastlingCheck(board.getStaticPosition(), havingMove, board.getCastlingRightWhite()));
+          .calculateKingSideCastlingCheck(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), havingMove, board.getCastlingRightWhite()));
 
       board.move(halfMoveWhite);
 
@@ -217,8 +218,8 @@ class TestPerformMoveSeveralStates implements EnumConstants {
       assertFalse(calculateIsCastlingLastMove(board));
       assertFalse(calculateIsPromotionLastMove(board));
 
-      assertEquals(Piece.NONE, board.getStaticPosition().get(fromSquare));
-      assertEquals(movingPiece, board.getStaticPosition().get(toSquare));
+      assertEquals(Piece.NONE, BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()).get(fromSquare));
+      assertEquals(movingPiece, BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()).get(toSquare));
 
       assertEquals(movingPiece, board.getLastMove().movingPiece());
 
@@ -237,15 +238,15 @@ class TestPerformMoveSeveralStates implements EnumConstants {
       assertFalse(board.isFirstMove());
       assertEquals(havingMove, board.getHavingMove());
 
-      assertEquals(movingPiece, board.getStaticPosition().get(fromSquare));
-      assertEquals(Piece.NONE, board.getStaticPosition().get(toSquare));
+      assertEquals(movingPiece, BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()).get(fromSquare));
+      assertEquals(Piece.NONE, BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()).get(toSquare));
 
       final MoveSpecification halfMoveBlack = new MoveSpecification(fromSquare, toSquare);
 
       assertEquals(CastlingCheck.TEMPORARY_SQUARES_NOT_EMPTY, CastlingUtility
-          .calculateQueenSideCastlingCheck(board.getStaticPosition(), havingMove, board.getCastlingRightBlack()));
+          .calculateQueenSideCastlingCheck(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), havingMove, board.getCastlingRightBlack()));
       assertEquals(CastlingCheck.TEMPORARY_SQUARES_NOT_EMPTY, CastlingUtility
-          .calculateKingSideCastlingCheck(board.getStaticPosition(), havingMove, board.getCastlingRightBlack()));
+          .calculateKingSideCastlingCheck(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), havingMove, board.getCastlingRightBlack()));
 
       board.move(halfMoveBlack);
 
@@ -257,8 +258,8 @@ class TestPerformMoveSeveralStates implements EnumConstants {
       assertFalse(calculateIsCastlingLastMove(board));
       assertFalse(calculateIsPromotionLastMove(board));
 
-      assertEquals(Piece.NONE, board.getStaticPosition().get(fromSquare));
-      assertEquals(movingPiece, board.getStaticPosition().get(toSquare));
+      assertEquals(Piece.NONE, BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()).get(fromSquare));
+      assertEquals(movingPiece, BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()).get(toSquare));
 
       assertEquals(movingPiece, board.getLastMove().movingPiece());
 
@@ -277,15 +278,15 @@ class TestPerformMoveSeveralStates implements EnumConstants {
       assertFalse(board.isFirstMove());
       assertEquals(havingMove, board.getHavingMove());
 
-      assertEquals(movingPiece, board.getStaticPosition().get(fromSquare));
-      assertEquals(Piece.NONE, board.getStaticPosition().get(toSquare));
+      assertEquals(movingPiece, BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()).get(fromSquare));
+      assertEquals(Piece.NONE, BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()).get(toSquare));
 
       final MoveSpecification halfMoveWhite = new MoveSpecification(fromSquare, toSquare);
 
       assertEquals(CastlingCheck.TEMPORARY_SQUARES_NOT_EMPTY, CastlingUtility
-          .calculateQueenSideCastlingCheck(board.getStaticPosition(), havingMove, board.getCastlingRightWhite()));
+          .calculateQueenSideCastlingCheck(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), havingMove, board.getCastlingRightWhite()));
       assertEquals(CastlingCheck.TEMPORARY_SQUARES_NOT_EMPTY, CastlingUtility
-          .calculateKingSideCastlingCheck(board.getStaticPosition(), havingMove, board.getCastlingRightWhite()));
+          .calculateKingSideCastlingCheck(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), havingMove, board.getCastlingRightWhite()));
 
       board.move(halfMoveWhite);
 
@@ -297,8 +298,8 @@ class TestPerformMoveSeveralStates implements EnumConstants {
       assertFalse(calculateIsCastlingLastMove(board));
       assertFalse(calculateIsPromotionLastMove(board));
 
-      assertEquals(Piece.NONE, board.getStaticPosition().get(fromSquare));
-      assertEquals(movingPiece, board.getStaticPosition().get(toSquare));
+      assertEquals(Piece.NONE, BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()).get(fromSquare));
+      assertEquals(movingPiece, BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()).get(toSquare));
 
       assertEquals(movingPiece, board.getLastMove().movingPiece());
 
@@ -317,15 +318,15 @@ class TestPerformMoveSeveralStates implements EnumConstants {
       assertFalse(board.isFirstMove());
       assertEquals(havingMove, board.getHavingMove());
 
-      assertEquals(movingPiece, board.getStaticPosition().get(fromSquare));
-      assertEquals(Piece.NONE, board.getStaticPosition().get(toSquare));
+      assertEquals(movingPiece, BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()).get(fromSquare));
+      assertEquals(Piece.NONE, BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()).get(toSquare));
 
       final MoveSpecification halfMoveBlack = new MoveSpecification(fromSquare, toSquare);
 
       assertEquals(CastlingCheck.TEMPORARY_SQUARES_NOT_EMPTY, CastlingUtility
-          .calculateQueenSideCastlingCheck(board.getStaticPosition(), havingMove, board.getCastlingRightBlack()));
+          .calculateQueenSideCastlingCheck(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), havingMove, board.getCastlingRightBlack()));
       assertEquals(CastlingCheck.TEMPORARY_SQUARES_NOT_EMPTY, CastlingUtility
-          .calculateKingSideCastlingCheck(board.getStaticPosition(), havingMove, board.getCastlingRightBlack()));
+          .calculateKingSideCastlingCheck(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), havingMove, board.getCastlingRightBlack()));
 
       board.move(halfMoveBlack);
 
@@ -337,8 +338,8 @@ class TestPerformMoveSeveralStates implements EnumConstants {
       assertFalse(calculateIsCastlingLastMove(board));
       assertFalse(calculateIsPromotionLastMove(board));
 
-      assertEquals(Piece.NONE, board.getStaticPosition().get(fromSquare));
-      assertEquals(movingPiece, board.getStaticPosition().get(toSquare));
+      assertEquals(Piece.NONE, BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()).get(fromSquare));
+      assertEquals(movingPiece, BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()).get(toSquare));
 
       assertEquals(movingPiece, board.getLastMove().movingPiece());
 
@@ -357,15 +358,15 @@ class TestPerformMoveSeveralStates implements EnumConstants {
       assertFalse(board.isFirstMove());
       assertEquals(havingMove, board.getHavingMove());
 
-      assertEquals(movingPiece, board.getStaticPosition().get(fromSquare));
-      assertEquals(Piece.NONE, board.getStaticPosition().get(toSquare));
+      assertEquals(movingPiece, BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()).get(fromSquare));
+      assertEquals(Piece.NONE, BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()).get(toSquare));
 
       final MoveSpecification halfMoveWhite = new MoveSpecification(fromSquare, toSquare);
 
       assertEquals(CastlingCheck.TEMPORARY_SQUARES_NOT_EMPTY, CastlingUtility
-          .calculateQueenSideCastlingCheck(board.getStaticPosition(), havingMove, board.getCastlingRightWhite()));
+          .calculateQueenSideCastlingCheck(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), havingMove, board.getCastlingRightWhite()));
       assertEquals(CastlingCheck.TEMPORARY_SQUARES_NOT_EMPTY, CastlingUtility
-          .calculateKingSideCastlingCheck(board.getStaticPosition(), havingMove, board.getCastlingRightWhite()));
+          .calculateKingSideCastlingCheck(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), havingMove, board.getCastlingRightWhite()));
 
       board.move(halfMoveWhite);
 
@@ -377,8 +378,8 @@ class TestPerformMoveSeveralStates implements EnumConstants {
       assertFalse(calculateIsCastlingLastMove(board));
       assertFalse(calculateIsPromotionLastMove(board));
 
-      assertEquals(Piece.NONE, board.getStaticPosition().get(fromSquare));
-      assertEquals(movingPiece, board.getStaticPosition().get(toSquare));
+      assertEquals(Piece.NONE, BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()).get(fromSquare));
+      assertEquals(movingPiece, BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()).get(toSquare));
 
       assertEquals(movingPiece, board.getLastMove().movingPiece());
 
@@ -397,15 +398,15 @@ class TestPerformMoveSeveralStates implements EnumConstants {
       assertFalse(board.isFirstMove());
       assertEquals(havingMove, board.getHavingMove());
 
-      assertEquals(movingPiece, board.getStaticPosition().get(fromSquare));
-      assertEquals(Piece.NONE, board.getStaticPosition().get(toSquare));
+      assertEquals(movingPiece, BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()).get(fromSquare));
+      assertEquals(Piece.NONE, BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()).get(toSquare));
 
       final MoveSpecification halfMoveBlack = new MoveSpecification(fromSquare, toSquare);
 
       assertEquals(CastlingCheck.TEMPORARY_SQUARES_NOT_EMPTY, CastlingUtility
-          .calculateQueenSideCastlingCheck(board.getStaticPosition(), havingMove, board.getCastlingRightBlack()));
+          .calculateQueenSideCastlingCheck(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), havingMove, board.getCastlingRightBlack()));
       assertEquals(CastlingCheck.TEMPORARY_SQUARES_NOT_EMPTY, CastlingUtility
-          .calculateKingSideCastlingCheck(board.getStaticPosition(), havingMove, board.getCastlingRightBlack()));
+          .calculateKingSideCastlingCheck(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), havingMove, board.getCastlingRightBlack()));
 
       board.move(halfMoveBlack);
 
@@ -417,8 +418,8 @@ class TestPerformMoveSeveralStates implements EnumConstants {
       assertFalse(calculateIsCastlingLastMove(board));
       assertFalse(calculateIsPromotionLastMove(board));
 
-      assertEquals(Piece.NONE, board.getStaticPosition().get(fromSquare));
-      assertEquals(movingPiece, board.getStaticPosition().get(toSquare));
+      assertEquals(Piece.NONE, BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()).get(fromSquare));
+      assertEquals(movingPiece, BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()).get(toSquare));
 
       assertEquals(movingPiece, board.getLastMove().movingPiece());
 
@@ -437,15 +438,15 @@ class TestPerformMoveSeveralStates implements EnumConstants {
       assertFalse(board.isFirstMove());
       assertEquals(havingMove, board.getHavingMove());
 
-      assertEquals(movingPiece, board.getStaticPosition().get(fromSquare));
-      assertEquals(Piece.NONE, board.getStaticPosition().get(toSquare));
+      assertEquals(movingPiece, BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()).get(fromSquare));
+      assertEquals(Piece.NONE, BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()).get(toSquare));
 
       final MoveSpecification halfMoveWhite = new MoveSpecification(fromSquare, toSquare);
 
       assertEquals(CastlingCheck.TEMPORARY_SQUARES_NOT_EMPTY, CastlingUtility
-          .calculateQueenSideCastlingCheck(board.getStaticPosition(), havingMove, board.getCastlingRightWhite()));
+          .calculateQueenSideCastlingCheck(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), havingMove, board.getCastlingRightWhite()));
       assertEquals(CastlingCheck.TEMPORARY_SQUARES_NOT_EMPTY, CastlingUtility
-          .calculateKingSideCastlingCheck(board.getStaticPosition(), havingMove, board.getCastlingRightWhite()));
+          .calculateKingSideCastlingCheck(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), havingMove, board.getCastlingRightWhite()));
 
       board.move(halfMoveWhite);
 
@@ -457,8 +458,8 @@ class TestPerformMoveSeveralStates implements EnumConstants {
       assertFalse(calculateIsCastlingLastMove(board));
       assertFalse(calculateIsPromotionLastMove(board));
 
-      assertEquals(Piece.NONE, board.getStaticPosition().get(fromSquare));
-      assertEquals(movingPiece, board.getStaticPosition().get(toSquare));
+      assertEquals(Piece.NONE, BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()).get(fromSquare));
+      assertEquals(movingPiece, BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()).get(toSquare));
 
       assertEquals(movingPiece, board.getLastMove().movingPiece());
 
@@ -477,15 +478,15 @@ class TestPerformMoveSeveralStates implements EnumConstants {
       assertFalse(board.isFirstMove());
       assertEquals(havingMove, board.getHavingMove());
 
-      assertEquals(movingPiece, board.getStaticPosition().get(fromSquare));
-      assertEquals(Piece.NONE, board.getStaticPosition().get(toSquare));
+      assertEquals(movingPiece, BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()).get(fromSquare));
+      assertEquals(Piece.NONE, BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()).get(toSquare));
 
       final MoveSpecification halfMoveBlack = new MoveSpecification(fromSquare, toSquare);
 
-      assertEquals(CastlingCheck.SUCCESS, CastlingUtility.calculateQueenSideCastlingCheck(board.getStaticPosition(),
+      assertEquals(CastlingCheck.SUCCESS, CastlingUtility.calculateQueenSideCastlingCheck(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()),
           havingMove, board.getCastlingRightBlack()));
       assertEquals(CastlingCheck.TEMPORARY_SQUARES_NOT_EMPTY, CastlingUtility
-          .calculateKingSideCastlingCheck(board.getStaticPosition(), havingMove, board.getCastlingRightBlack()));
+          .calculateKingSideCastlingCheck(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), havingMove, board.getCastlingRightBlack()));
 
       board.move(halfMoveBlack);
 
@@ -497,8 +498,8 @@ class TestPerformMoveSeveralStates implements EnumConstants {
       assertFalse(calculateIsCastlingLastMove(board));
       assertFalse(calculateIsPromotionLastMove(board));
 
-      assertEquals(Piece.NONE, board.getStaticPosition().get(fromSquare));
-      assertEquals(movingPiece, board.getStaticPosition().get(toSquare));
+      assertEquals(Piece.NONE, BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()).get(fromSquare));
+      assertEquals(movingPiece, BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()).get(toSquare));
 
       assertEquals(movingPiece, board.getLastMove().movingPiece());
 
@@ -517,15 +518,15 @@ class TestPerformMoveSeveralStates implements EnumConstants {
       assertFalse(board.isFirstMove());
       assertEquals(havingMove, board.getHavingMove());
 
-      assertEquals(movingPiece, board.getStaticPosition().get(fromSquare));
-      assertEquals(Piece.NONE, board.getStaticPosition().get(toSquare));
+      assertEquals(movingPiece, BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()).get(fromSquare));
+      assertEquals(Piece.NONE, BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()).get(toSquare));
 
       final MoveSpecification halfMoveWhite = new MoveSpecification(fromSquare, toSquare);
 
       assertEquals(CastlingCheck.TEMPORARY_SQUARES_NOT_EMPTY, CastlingUtility
-          .calculateQueenSideCastlingCheck(board.getStaticPosition(), havingMove, board.getCastlingRightWhite()));
+          .calculateQueenSideCastlingCheck(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), havingMove, board.getCastlingRightWhite()));
       assertEquals(CastlingCheck.TEMPORARY_SQUARES_NOT_EMPTY, CastlingUtility
-          .calculateKingSideCastlingCheck(board.getStaticPosition(), havingMove, board.getCastlingRightWhite()));
+          .calculateKingSideCastlingCheck(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), havingMove, board.getCastlingRightWhite()));
 
       board.move(halfMoveWhite);
 
@@ -537,8 +538,8 @@ class TestPerformMoveSeveralStates implements EnumConstants {
       assertFalse(calculateIsCastlingLastMove(board));
       assertFalse(calculateIsPromotionLastMove(board));
 
-      assertEquals(Piece.NONE, board.getStaticPosition().get(fromSquare));
-      assertEquals(movingPiece, board.getStaticPosition().get(toSquare));
+      assertEquals(Piece.NONE, BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()).get(fromSquare));
+      assertEquals(movingPiece, BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()).get(toSquare));
 
       assertEquals(movingPiece, board.getLastMove().movingPiece());
 
@@ -557,15 +558,15 @@ class TestPerformMoveSeveralStates implements EnumConstants {
       assertFalse(board.isFirstMove());
       assertEquals(havingMove, board.getHavingMove());
 
-      assertEquals(movingPiece, board.getStaticPosition().get(fromSquare));
-      assertEquals(Piece.NONE, board.getStaticPosition().get(toSquare));
+      assertEquals(movingPiece, BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()).get(fromSquare));
+      assertEquals(Piece.NONE, BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()).get(toSquare));
 
       final MoveSpecification halfMoveBlack = new MoveSpecification(fromSquare, toSquare);
 
-      assertEquals(CastlingCheck.SUCCESS, CastlingUtility.calculateQueenSideCastlingCheck(board.getStaticPosition(),
+      assertEquals(CastlingCheck.SUCCESS, CastlingUtility.calculateQueenSideCastlingCheck(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()),
           havingMove, board.getCastlingRightBlack()));
       assertEquals(CastlingCheck.TEMPORARY_SQUARES_NOT_EMPTY, CastlingUtility
-          .calculateKingSideCastlingCheck(board.getStaticPosition(), havingMove, board.getCastlingRightBlack()));
+          .calculateKingSideCastlingCheck(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), havingMove, board.getCastlingRightBlack()));
 
       board.move(halfMoveBlack);
 
@@ -577,8 +578,8 @@ class TestPerformMoveSeveralStates implements EnumConstants {
       assertFalse(calculateIsCastlingLastMove(board));
       assertFalse(calculateIsPromotionLastMove(board));
 
-      assertEquals(Piece.NONE, board.getStaticPosition().get(fromSquare));
-      assertEquals(movingPiece, board.getStaticPosition().get(toSquare));
+      assertEquals(Piece.NONE, BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()).get(fromSquare));
+      assertEquals(movingPiece, BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()).get(toSquare));
 
       assertEquals(movingPiece, board.getLastMove().movingPiece());
 
@@ -597,14 +598,14 @@ class TestPerformMoveSeveralStates implements EnumConstants {
       assertFalse(board.isFirstMove());
       assertEquals(havingMove, board.getHavingMove());
 
-      assertEquals(movingPiece, board.getStaticPosition().get(fromSquare));
-      assertEquals(Piece.NONE, board.getStaticPosition().get(toSquare));
+      assertEquals(movingPiece, BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()).get(fromSquare));
+      assertEquals(Piece.NONE, BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()).get(toSquare));
 
       final MoveSpecification halfMoveWhite = new MoveSpecification(fromSquare, toSquare);
 
       assertEquals(CastlingCheck.TEMPORARY_SQUARES_NOT_EMPTY, CastlingUtility
-          .calculateQueenSideCastlingCheck(board.getStaticPosition(), havingMove, board.getCastlingRightWhite()));
-      assertEquals(CastlingCheck.SUCCESS, CastlingUtility.calculateKingSideCastlingCheck(board.getStaticPosition(),
+          .calculateQueenSideCastlingCheck(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), havingMove, board.getCastlingRightWhite()));
+      assertEquals(CastlingCheck.SUCCESS, CastlingUtility.calculateKingSideCastlingCheck(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()),
           havingMove, board.getCastlingRightWhite()));
 
       board.move(halfMoveWhite);
@@ -617,8 +618,8 @@ class TestPerformMoveSeveralStates implements EnumConstants {
       assertFalse(calculateIsCastlingLastMove(board));
       assertFalse(calculateIsPromotionLastMove(board));
 
-      assertEquals(Piece.NONE, board.getStaticPosition().get(fromSquare));
-      assertEquals(movingPiece, board.getStaticPosition().get(toSquare));
+      assertEquals(Piece.NONE, BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()).get(fromSquare));
+      assertEquals(movingPiece, BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()).get(toSquare));
 
       assertEquals(movingPiece, board.getLastMove().movingPiece());
 

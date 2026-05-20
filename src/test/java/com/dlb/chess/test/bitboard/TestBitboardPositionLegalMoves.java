@@ -50,7 +50,7 @@ class TestBitboardPositionLegalMoves {
       final PgnTestCaseList testCaseList = PgnTestCaseCatalog.getTestList(pgnTest);
       for (final PgnTestCase testCase : testCaseList.list()) {
         final Board board = testCase.finalPosition();
-        final StaticPosition staticPosition = board.getStaticPosition();
+        final StaticPosition staticPosition = BitboardPositionUtility.toStaticPosition(board.getBitboardPosition());
         final BitboardPosition bitboardPosition = BitboardPositionUtility.fromStaticPosition(staticPosition);
         final Side havingMove = board.getHavingMove();
         final Square boardEpTarget = board.getEnPassantCaptureTargetSquare();

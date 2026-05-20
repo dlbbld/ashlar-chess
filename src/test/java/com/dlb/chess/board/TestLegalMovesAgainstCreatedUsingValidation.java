@@ -30,6 +30,7 @@ import com.dlb.chess.test.model.PgnTestCase;
 import com.dlb.chess.test.model.PgnTestCaseList;
 import com.dlb.chess.test.pgn.parser.PgnCacheForStrictPgnParserTestCases;
 import com.dlb.chess.test.pgn.setup.PgnTestCaseCatalog;
+import com.dlb.chess.bitboard.BitboardPositionUtility;
 
 class TestLegalMovesAgainstCreatedUsingValidation {
 
@@ -120,10 +121,10 @@ class TestLegalMovesAgainstCreatedUsingValidation {
     // now we do something crazy:
     // we loop through all possible from/to square combinations and filter out the legal ones using the validation
     // this must match with the calculated legal moves - so both methods are hopefully correct (or both wrong..)
-    if (board.getStaticPosition().isEmpty(fromSquare)) {
+    if (BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()).isEmpty(fromSquare)) {
       return listForSquare;
     }
-    final Piece boardPiece = board.getStaticPosition().get(fromSquare);
+    final Piece boardPiece = BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()).get(fromSquare);
     if (boardPiece.getSide() == havingMove) {
       // castling needs special treatment as always
       if (boardPiece.getPieceType() == PieceType.KING) {
@@ -143,7 +144,7 @@ class TestLegalMovesAgainstCreatedUsingValidation {
         }
       }
       final Set<Square> potentialToSquareSet = AbstractPotentialToSquares.calculatePotentialToSquare(
-          board.getStaticPosition(), board.getEnPassantCaptureTargetSquare(), havingMove, fromSquare);
+          BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), board.getEnPassantCaptureTargetSquare(), havingMove, fromSquare);
       // we cannot use all board squares - that get's too slow
       // all PGN's expected outcomes are not through in 90 minutes
       for (final Square toSquare : potentialToSquareSet) {
