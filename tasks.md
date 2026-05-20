@@ -312,33 +312,48 @@ The motivation is the `findHelpMate` cost in `UnwinnableFullAnalyzer`. Even with
 
 ---
 
-## Future release — `StaticPosition` subtree relocation to `src/test/`
+## Next release — role inversion: `StaticPosition` subtree moves to `src/test/`
 
-The end-state described in the Project Invariant: the `StaticPosition` subtree (record, `StaticPositionUtility`, `com.dlb.chess.squares.*`, `AbstractLegalMoves` + `*LegalMoves` consumers in `com.dlb.chess.moves`, `UnwinnabilityMaterial`) physically moves from `src/main/java/` to `src/test/java/` and becomes the permanent differential-test oracle from that point on. **Not deleted. Relocated.**
+The end-state described in the Project Invariant: the `StaticPosition` subtree (record, `StaticPositionUtility`, `com.dlb.chess.squares.*` consumer subset, `AbstractLegalMoves` + `*LegalMoves` consumers in `com.dlb.chess.moves`, `UnwinnabilityMaterial`) physically moves from `src/main/java/` to `src/test/java/` and becomes the permanent differential-test oracle from that point on. **Not deleted. Relocated.**
 
-### Why this is its own release (not folded into Switchover)
+The role inversion: today the high-level board is a peer of the bitboard in `src/main/`; afterwards, it lives strictly above (test-side of) the bitboard. Production speaks only the bitboard. The high-level board exists to assert the bitboard is correct.
 
-The audit run at the start of the 10.0.0 (Switchover) work surfaced ~25 production classes outside the relocation subtree that still consume `StaticPosition`:
+### Audit findings (run at the start of 10.0.0)
+
+~25 src/main classes outside the relocation subtree still consumed `StaticPosition` after 10.0.0 shipped. They must be ported off before the physical relocation:
 
 - **Public API:** `Fen` (record with a `StaticPosition` field), `Board.getStaticPosition()`, `InsufficientMaterialUtility.calculateIs*` overloads, `ChessRuleAnalyzer.analyze*` overloads.
-- **Internal model:** `DynamicPosition` (record with a `StaticPosition` field — addressed by 10.0.0 Step 3, where it becomes a `BitboardPosition` field instead).
 - **FEN layer:** `FenParserAdvanced`, `FenBoard`, `FenMaterialCount`, `FenConstants.FEN_INITIAL`.
 - **SAN layer:** `StrictSanParser`, `LenientSanShapeNormalize`, `SanValidateDestination`, `SanValidateLegalMoves`, `SanValidatePieceExists`, `SanPieceCheck`.
 - **Board layer:** `ValidateNewMove`, `BoardMaterial`, `UciMoveUtility`.
 - **Unwinnability layer:** `SemiOpenFilesUtility` (StaticPosition variant remains alongside its bitboard sibling), `UnwinnableFullAnalyzer` / `UnwinnableQuickAnalyzer` (Fen pass-throughs).
 
-A clean `git mv` is blocked until each of those is either ported to consume `BitboardPosition` or has its `StaticPosition` parameter replaced with a derived call. The public-API ones (`Fen`, `Board.getStaticPosition`, the public `InsufficientMaterialUtility` / `ChessRuleAnalyzer` signatures) are binary-incompatible changes — they need their own dedicated thinking, not a "while we're at it" diff inside the switchover.
+Plus the public-API decisions: the `Fen` record reshape is binary-incompatible; `Board.getStaticPosition()` removal breaks API. Both are fine — no downstream consumers exist (no Maven Central publish yet), so the project is free to break.
 
-### Shape — multi-step porting, then physical move
+### Design decisions settled
 
-- **Step 1** — Port the FEN layer. `Fen` record stops carrying `StaticPosition` (it can carry the bitboard or just a piece-placement string — design decision deferred to release time). `FenParserAdvanced` builds `BitboardPosition` directly.
-- **Step 2** — Port the SAN layer. All six SAN classes take `BitboardPosition` instead of `StaticPosition`. `StaticPositionUtility` callers replaced with bitboard equivalents.
-- **Step 3** — Port the remaining `Board`/`ChessRuleAnalyzer`/`InsufficientMaterialUtility` consumers off `StaticPosition` parameters.
-- **Step 4** — Drop `Board.getStaticPosition()` (or document it as deprecated returning a derived view; final decision deferred).
-- **Step 5** — Physical `git mv` of the subtree from `src/main/java/` to `src/test/java/`. Add `package-info.java` files for the new test-tree packages with `@NonNullByDefault`.
-- **Step 6** — Formalize the permanent differential-test layer in `tasks.md` / `specification.md`: every primitive on `BitboardPosition` is asserted against the relocated `StaticPosition` oracle for every fixture in the corpus, for every supported release going forward.
+- **`Board.getStaticPosition()`: dropped entirely.** No deprecated derived view. After this release no `src/main/` class references `StaticPosition`.
+- **Test-tree package layout: original package names under `src/test/java/`.** No `reference/` package rename. Smaller diff; matches the established pattern (`LibraryCarlosBoard` already lives in `com.dlb.chess.board` on the test source root alongside the production `Board.java`). The relocation is purely physical.
+- **Square geometry tables stay in `src/main/`:** `OrthogonalRange`, `DiagonalRange`, `RayUtility`, all `*EmptyBoardSquares` in `com.dlb.chess.squares`. Pure data, useful to the bitboard layer.
+- **Non-StaticPosition `com.dlb.chess.moves` stays in `src/main/`:** `CastlingUtility`, `EnPassantCaptureUtility`, `KingCastlingLegalMoves`, `PromotionUtility`, `StandardMoveUtility`, `PawnDiagonalMoveUtility`.
 
-Each step is its own release-sized commit set. The shape may be one release per layer (FEN, SAN, Board) or all-in-one once the porting work is mechanical and reviewed — that's a release-time call.
+### Phases — each its own commit-sized step, suite green after each
+
+- ✅ **Phase 0** — `tasks.md` restructure for the role-inversion release: 8-phase plan spelled out, design decisions captured.
+- **Phase 1** — Port the SAN layer off `StaticPosition`. Six classes: `StrictSanParser`, `SanValidateLegalMoves`, `SanValidateDestination`, `SanValidatePieceExists`, `SanPieceCheck`, `LenientSanShapeNormalize`. Add bitboard helpers as needed (`BitboardPosition.kingSquare(Side)`, `BitboardPosition.potentialToSquares(Square, long)`, `BitboardPosition.isOwnPiece(Square, Side, PieceType)`, bitboard overload of `EnPassantCaptureUtility.calculateIsPotentialEnPassantCapture`). Differential test for `potentialToSquares` against `AbstractPotentialToSquares.calculatePotentialToSquare`.
+- **Phase 2** — Port `ChessRuleAnalyzer`, `InsufficientMaterialUtility`, `BoardMaterial`, `ValidateNewMove`, `UciMoveUtility`, `SemiOpenFilesUtility` (StaticPosition variant) off `StaticPosition`. Most are mechanical — methods that take `StaticPosition` parameter and do piece-square lookups become bitboard-shaped.
+- **Phase 3** — Port the FEN parser / serializer off `StaticPosition`. `FenParserAdvanced` builds `BitboardPosition` directly. `FenBoard` reads `BitboardPosition`. `FenMaterialCount`, `FenConstants` updated. `Fen` record still carries `StaticPosition` for this phase — its reshape lands in Phase 4 as the binary-incompatible change.
+- **Phase 4** — Reshape the `Fen` record. Drop `staticPosition`, add `bitboardPosition`. Binary-incompatible. `Board(Fen)` reads `fen.bitboardPosition()`.
+- **Phase 5** — Drop `Board.getStaticPosition()` and `getStaticPositionBeforeLastMove()` entirely. No deprecated view. Any remaining readers in `src/main/` must be ported off; readers in `src/test/` either move to oracle-side code or switch to bitboard.
+- **Phase 6** — Physical `git mv` of the relocation subtree to `src/test/java/`:
+  - `src/main/java/com/dlb/chess/board/StaticPosition.java` → `src/test/java/com/dlb/chess/board/StaticPosition.java`
+  - `src/main/java/com/dlb/chess/common/utility/StaticPositionUtility.java` → `src/test/java/com/dlb/chess/common/utility/StaticPositionUtility.java`
+  - `src/main/java/com/dlb/chess/squares/{AbstractAttackedSquares, AbstractToSquares, AbstractPotentialToSquares, AbstractRangeSquares, *AttackedSquares, *PotentialToSquares, *RangeSquares}.java` → test tree (consumer subset only; geometry tables stay in main)
+  - `src/main/java/com/dlb/chess/moves/{AbstractLegalMoves, *LegalMoves}.java` → test tree (consumer subset only; `CastlingUtility`, `EnPassantCaptureUtility`, `KingCastlingLegalMoves`, `PromotionUtility`, `StandardMoveUtility`, `PawnDiagonalMoveUtility` stay in main)
+  - `src/main/java/com/dlb/chess/unwinnability/UnwinnabilityMaterial.java` → test tree
+  - Original package names preserved (no `reference/` rename). Java/Maven allow a package to span source roots; the test side inherits package-level annotations from the src/main `package-info.java` for shared packages, and gets its own `package-info.java` for any test-tree-only package.
+- **Phase 7** — Formalize the permanent differential-test layer in `specification.md` + `tasks.md`. Project policy from this point on: every primitive on `BitboardPosition` is asserted against the relocated `StaticPosition` oracle on every fixture in the corpus, for every supported release going forward.
+- **Phase 8** — Release artifacts: version bump (`pom.xml`, `README.md`), `CHANGELOG.md` entry, this section moves to Done.
 
 ---
 
