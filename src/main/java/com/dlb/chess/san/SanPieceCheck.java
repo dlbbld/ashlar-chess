@@ -1,6 +1,6 @@
 package com.dlb.chess.san;
 
-import com.dlb.chess.board.StaticPosition;
+import com.dlb.chess.bitboard.BitboardPosition;
 import com.dlb.chess.board.enums.File;
 import com.dlb.chess.board.enums.Piece;
 import com.dlb.chess.board.enums.PieceType;
@@ -14,36 +14,36 @@ import com.dlb.chess.board.enums.Square;
  */
 abstract class SanPieceCheck {
 
-  static boolean calculateHasPieceType(Side side, PieceType pieceType, StaticPosition staticPosition) {
+  static boolean calculateHasPieceType(Side side, PieceType pieceType, BitboardPosition bitboardPosition) {
     final Piece piece = Piece.calculate(side, pieceType);
     for (final Square boardSquare : Square.REAL) {
-      if (staticPosition.get(boardSquare) == piece) {
+      if (bitboardPosition.get(boardSquare) == piece) {
         return true;
       }
     }
     return false;
   }
 
-  static boolean calculateHasPieceType(Side side, PieceType pieceType, StaticPosition staticPosition, File file) {
+  static boolean calculateHasPieceType(Side side, PieceType pieceType, BitboardPosition bitboardPosition, File file) {
     final Piece piece = Piece.calculate(side, pieceType);
     for (final Square boardSquare : Square.REAL) {
       if (boardSquare.getFile() != file) {
         continue;
       }
-      if (staticPosition.get(boardSquare) == piece) {
+      if (bitboardPosition.get(boardSquare) == piece) {
         return true;
       }
     }
     return false;
   }
 
-  static boolean calculateHasPieceType(Side side, PieceType pieceType, StaticPosition staticPosition, Rank rank) {
+  static boolean calculateHasPieceType(Side side, PieceType pieceType, BitboardPosition bitboardPosition, Rank rank) {
     final Piece piece = Piece.calculate(side, pieceType);
     for (final Square boardSquare : Square.REAL) {
       if (boardSquare.getRank() != rank) {
         continue;
       }
-      if (staticPosition.get(boardSquare) == piece) {
+      if (bitboardPosition.get(boardSquare) == piece) {
         return true;
       }
     }

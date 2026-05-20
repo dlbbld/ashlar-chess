@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.List;
 
+import com.dlb.chess.bitboard.BitboardPosition;
 import com.dlb.chess.board.StaticPosition;
 import com.dlb.chess.board.enums.Piece;
 import com.dlb.chess.board.enums.Side;
@@ -252,6 +253,26 @@ public abstract class EnPassantCaptureUtility implements EnumConstants {
           .contains(calculateFromToList(move)) && staticPositionBeforeMove.get(move.toSquare()) == Piece.NONE;
       case BLACK -> /* when the destination capture field is empty, this was an en passant capture */ BLACK_EN_PASSANT_CAPTURE_FROM_TO
           .contains(calculateFromToList(move)) && staticPositionBeforeMove.get(move.toSquare()) == Piece.NONE;
+      case NONE -> throw new IllegalArgumentException();
+      default -> throw new IllegalArgumentException();
+    };
+  }
+
+  // Bitboard sibling of the StaticPosition overload above. Same semantics, bitboard-shaped board parameter.
+  public static boolean calculateIsPotentialEnPassantCapture(BitboardPosition bitboardPositionBeforeMove,
+      MoveSpecification move) {
+    if (CastlingUtility.calculateIsCastlingMove(move)) {
+      return false;
+    }
+    final Piece movingPiece = bitboardPositionBeforeMove.get(move.fromSquare());
+    if (movingPiece == Piece.NONE || movingPiece.getPieceType() != PAWN) {
+      return false;
+    }
+    return switch (movingPiece.getSide()) {
+      case WHITE -> WHITE_EN_PASSANT_CAPTURE_FROM_TO.contains(calculateFromToList(move))
+          && bitboardPositionBeforeMove.get(move.toSquare()) == Piece.NONE;
+      case BLACK -> BLACK_EN_PASSANT_CAPTURE_FROM_TO.contains(calculateFromToList(move))
+          && bitboardPositionBeforeMove.get(move.toSquare()) == Piece.NONE;
       case NONE -> throw new IllegalArgumentException();
       default -> throw new IllegalArgumentException();
     };

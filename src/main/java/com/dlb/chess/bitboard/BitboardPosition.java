@@ -112,6 +112,89 @@ public record BitboardPosition(long whitePawns, long whiteRooks, long whiteKnigh
   }
 
   /**
+   * Convenience predicate: does {@code square} carry a piece of {@code side} and {@code pieceType}? Equivalent to
+   * {@code get(square) == Piece.calculate(side, pieceType)} but avoids constructing the {@code Piece} value.
+   */
+  public boolean isOwnPiece(Square square, Side side, PieceType pieceType) {
+    if (side != Side.WHITE && side != Side.BLACK) {
+      throw new IllegalArgumentException("isOwnPiece requires Side.WHITE or Side.BLACK, got " + side);
+    }
+    if (pieceType == PieceType.NONE) {
+      throw new IllegalArgumentException("isOwnPiece requires a real piece type, got NONE");
+    }
+    return get(square) == Piece.calculate(side, pieceType);
+  }
+
+  /**
+   * Square of {@code side}'s king. Throws {@link IllegalStateException} if there is no king of {@code side} on the
+   * board, matching the reference {@code StaticPositionUtility.calculateKingSquare}. Standard chess assumes one king
+   * per side; the implementation returns the lowest-ordinal king bit when more than one is present.
+   */
+  public Square kingSquare(Side side) {
+    if (side != Side.WHITE && side != Side.BLACK) {
+      throw new IllegalArgumentException("kingSquare requires Side.WHITE or Side.BLACK, got " + side);
+    }
+    final var kings = side == Side.WHITE ? whiteKings : blackKings;
+    if (kings == 0L) {
+      throw new IllegalStateException("No king of side " + side + " on the board");
+    }
+    return Nulls.get(Square.REAL, Long.numberOfTrailingZeros(kings));
+  }
+
+  /**
+   * Pseudo-legal target squares for the piece on {@code fromSquare}: squares the piece could move to, considering own
+   * piece blocking and slider line-of-sight, but NOT king-safety. Mirrors the reference
+   * {@code AbstractPotentialToSquares.calculatePotentialToSquare} surface used by the SAN error-reporting layer.
+   *
+   * <p>
+   * For pawns, includes forward advances (single + double when applicable) and diagonal captures against opponent
+   * pieces — <em>excluding</em> the opponent king (matching the reference) — and to the EP target square. For other
+   * pieces, includes the standard pseudo-legal target set: own pieces are blocked, opponent pieces are capturable
+   * (including the opponent king at this level — king-capture filtering happens at the legal-move-classification
+   * level, not here).
+   *
+   * <p>
+   * Returns an empty set if {@code fromSquare} is empty. {@code enPassantBit} is the single-bit bitboard of the EP
+   * target square, or {@code 0L} if no EP is available.
+   */
+  public Set<Square> potentialToSquares(Square fromSquare, long enPassantBit) {
+    if (fromSquare == Square.NONE) {
+      throw new IllegalArgumentException("The NONE square does not belong to the board");
+    }
+    final Piece piece = get(fromSquare);
+    if (piece == Piece.NONE) {
+      return new TreeSet<>();
+    }
+    final Side side = piece.getSide();
+    final var ownPieces = occupied(side);
+    final var fromOrdinal = fromSquare.ordinal();
+    final long targets = switch (piece.getPieceType()) {
+      case KNIGHT -> KnightMoves.targets(fromSquare, ownPieces);
+      case KING -> KingMoves.targets(fromSquare, ownPieces);
+      case BISHOP -> BishopMoves.targets(fromOrdinal, occupied(), ownPieces);
+      case ROOK -> RookMoves.targets(fromOrdinal, occupied(), ownPieces);
+      case QUEEN -> QueenMoves.targets(fromOrdinal, occupied(), ownPieces);
+      case PAWN -> pawnPotentialTargets(fromSquare, fromOrdinal, side, enPassantBit);
+      case NONE -> throw new IllegalStateException("Unreachable — Piece.NONE filtered above");
+      default -> throw new IllegalArgumentException();
+    };
+    return BitboardPositionUtility.toSquareSet(targets);
+  }
+
+  private long pawnPotentialTargets(Square fromSquare, int fromOrdinal, Side side, long enPassantBit) {
+    final var occ = occupied();
+    final var opponentPieces = occupied(side.getOppositeSide());
+    final var opponentKings = side == Side.WHITE ? blackKings : whiteKings;
+    // Forward pushes: single + double, blocked by occupancy.
+    final var pushTargets = PawnMoves.pushes(fromOrdinal, occ, side);
+    // Diagonal captures: opponent pieces excluding king (the reference excludes king on pawn diagonals).
+    final var pawnAttacks = PawnAttacks.attacks(fromSquare, side);
+    final var captureTargets = pawnAttacks & (opponentPieces & ~opponentKings);
+    final var epTarget = pawnAttacks & enPassantBit;
+    return pushTargets | captureTargets | epTarget;
+  }
+
+  /**
    * Union of all squares attacked / defended by {@code side}'s pieces, in the same "isAllowOwnPiece = true" sense the
    * reference uses: includes squares occupied by own pieces (those are defended). Differential-tested against
    * {@code AbstractAttackedSquares.calculateAttackedSquares}.

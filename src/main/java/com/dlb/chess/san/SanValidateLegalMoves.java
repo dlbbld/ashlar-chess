@@ -5,9 +5,9 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
-import com.dlb.chess.analyze.ChessRuleAnalyzer;
+import com.dlb.chess.bitboard.BitboardPosition;
+import com.dlb.chess.bitboard.KingAttacks;
 import com.dlb.chess.board.Board;
-import com.dlb.chess.board.StaticPosition;
 import com.dlb.chess.board.enums.CastlingMove;
 import com.dlb.chess.board.enums.CastlingRight;
 import com.dlb.chess.board.enums.File;
@@ -23,17 +23,12 @@ import com.dlb.chess.common.exceptions.ProgrammingMistakeException;
 import com.dlb.chess.common.model.MoveSpecification;
 import com.dlb.chess.common.utility.ListUtility;
 import com.dlb.chess.common.utility.SetUtility;
-import com.dlb.chess.common.utility.StaticPositionUtility;
 import com.dlb.chess.enums.KingSafetyCheck;
 import com.dlb.chess.enums.MovementCheck;
 import com.dlb.chess.messages.Message;
 import com.dlb.chess.model.LegalMove;
-import com.dlb.chess.model.LegalMoveCalculation;
 import com.dlb.chess.model.LegalMoveKind;
-import com.dlb.chess.model.PseudoLegalMove;
-import com.dlb.chess.moves.AbstractLegalMoves;
 import com.dlb.chess.moves.CastlingUtility;
-import com.dlb.chess.squares.AbstractPotentialToSquares;
 
 abstract class SanValidateLegalMoves extends AbstractSan implements EnumConstants {
 
@@ -65,7 +60,7 @@ abstract class SanValidateLegalMoves extends AbstractSan implements EnumConstant
         // we calculate this with san information and knowing it's a legal move (so e4
         // is e2-e4 xor e3-e4)
         final Square potentialJumpOverSquare = Square.calculateJumpOverSquare(havingMove, toSquare);
-        if (board.getStaticPosition().get(potentialJumpOverSquare) == Piece.NONE) {
+        if (board.getBitboardPosition().get(potentialJumpOverSquare) == Piece.NONE) {
           // two square advance
           final File fromFile = toSquare.getFile(); // moving straight forward
           final Rank fromRank = Rank.calculatePawnInitialRank(havingMove);
@@ -177,7 +172,9 @@ abstract class SanValidateLegalMoves extends AbstractSan implements EnumConstant
   public static void validateAgainstLegalMoves(Board board, Side havingMove, List<LegalMove> legalMovesCandidates,
       SanFormat sanFormat, SanConversion sanConversion) {
 
-    final StaticPosition staticPosition = board.getStaticPosition();
+    final BitboardPosition bitboardPosition = board.getBitboardPosition();
+    final Square epTarget = board.getEnPassantCaptureTargetSquare();
+    final long epBit = epTarget == Square.NONE ? 0L : 1L << epTarget.ordinal();
 
     // we need an early return for castling first so for the remaining cases we can
     // calculate the to square
@@ -202,40 +199,37 @@ abstract class SanValidateLegalMoves extends AbstractSan implements EnumConstant
       case KING_CASTLING_QUEEN_SIDE, KING_CASTLING_KING_SIDE -> throw new ProgrammingMistakeException(
           "Invalid program flow, the castling must be handled at this point");
       case KING_NON_CASTLING_NON_CAPTURING, KING_NON_CASTLING_CAPTURING -> validateAgainstLegalMovesForKingNonCastling(
-          staticPosition, havingMove, legalMovesCandidates, toSquare);
+          bitboardPosition, havingMove, legalMovesCandidates, toSquare, epBit);
       case PAWN_NON_CAPTURING_NON_PROMOTION, PAWN_CAPTURING_NON_PROMOTION, PAWN_NON_CAPTURING_PROMOTION, PAWN_CAPTURING_PROMOTION -> validateAgainstLegalMovesForPawn(
-          staticPosition, havingMove, legalMovesCandidates, pieceType, sanFormat, sanConversion, toSquare,
-          board.getEnPassantCaptureTargetSquare());
+          bitboardPosition, havingMove, legalMovesCandidates, pieceType, sanFormat, sanConversion, toSquare, epBit);
       case RNBQ_NON_CAPTURING_NEITHER, RNBQ_CAPTURING_NEITHER -> validateAgainstLegalMovesForPieceNeither(
-          staticPosition, havingMove, legalMovesCandidates, pieceType, toSquare);
-      case RNBQ_NON_CAPTURING_FILE, RNBQ_CAPTURING_FILE -> validateAgainstLegalMovesForPieceFile(staticPosition,
+          bitboardPosition, havingMove, legalMovesCandidates, pieceType, toSquare);
+      case RNBQ_NON_CAPTURING_FILE, RNBQ_CAPTURING_FILE -> validateAgainstLegalMovesForPieceFile(bitboardPosition,
           havingMove, legalMovesCandidates, pieceType, sanFormat, sanConversion, toSquare);
-      case RNBQ_NON_CAPTURING_RANK, RNBQ_CAPTURING_RANK -> validateAgainstLegalMovesForPieceRank(staticPosition,
+      case RNBQ_NON_CAPTURING_RANK, RNBQ_CAPTURING_RANK -> validateAgainstLegalMovesForPieceRank(bitboardPosition,
           havingMove, legalMovesCandidates, pieceType, sanFormat, sanConversion, toSquare);
-      case RNBQ_NON_CAPTURING_SQUARE, RNBQ_CAPTURING_SQUARE -> validateAgainstLegalMovesForPieceSquare(staticPosition,
+      case RNBQ_NON_CAPTURING_SQUARE, RNBQ_CAPTURING_SQUARE -> validateAgainstLegalMovesForPieceSquare(bitboardPosition,
           havingMove, legalMovesCandidates, pieceType, sanFormat, sanConversion, toSquare);
       default -> throw new IllegalArgumentException();
     }
   }
 
-  private static void validateAgainstLegalMovesForKingNonCastling(StaticPosition staticPosition, Side havingMove,
-      List<LegalMove> legalMovesCandidates, Square toSquare) {
+  private static void validateAgainstLegalMovesForKingNonCastling(BitboardPosition bitboardPosition, Side havingMove,
+      List<LegalMove> legalMovesCandidates, Square toSquare, long epBit) {
     if (!legalMovesCandidates.isEmpty()) {
       return;
     }
-    final Set<PseudoLegalMove> pseudoLegalMoves = calculatePseudoLegalMovesForKingNonCastling(staticPosition,
-        havingMove, toSquare);
-    if (pseudoLegalMoves.isEmpty()) {
+    final Set<Square> pseudoLegalFromSquares = calculatePseudoLegalKingNonCastlingFromSquares(bitboardPosition,
+        havingMove, toSquare, epBit);
+    if (pseudoLegalFromSquares.isEmpty()) {
       throw new SanValidationException(SanValidationProblem.NOT_REACHABLE_KING_NON_CASTLING,
           Message.getString("validation.san.notReachable.king.nonCastling", toSquare.getName()));
     }
-    // Pseudo-legal but not legal: classify via the analyzer. For king moves the safety
+    // Pseudo-legal but not legal: classify via the bitboard king-classification helper. For king moves the safety
     // reasons (KING_CAPTURES_GUARDED_PIECE / KING_MOVES_NEXT_TO_OPPONENT_KING /
     // KING_MOVES_TO_ATTACKED_EMPTY_SQUARE) live in MovementCheck rather than the LEFT/EXPOSED
     // distinction used for non-king pieces.
-    final Square kingSquare = StaticPositionUtility.calculateKingSquare(staticPosition, havingMove);
-    final MovementCheck movementCheck = ChessRuleAnalyzer.analyzeMovement(staticPosition, havingMove, Square.NONE,
-        new MoveSpecification(kingSquare, toSquare));
+    final MovementCheck movementCheck = classifyKingNonCastlingMovementCheck(bitboardPosition, havingMove, toSquare);
     switch (movementCheck) {
       case KING_CAPTURES_GUARDED_PIECE -> throw new SanValidationException(
           SanValidationProblem.KING_CAPTURES_GUARDED_PIECE,
@@ -251,35 +245,60 @@ abstract class SanValidateLegalMoves extends AbstractSan implements EnumConstant
     }
   }
 
-  private static Set<PseudoLegalMove> calculatePseudoLegalMovesForKingNonCastling(StaticPosition staticPosition,
-      Side havingMove, Square toSquare) {
-    final Set<PseudoLegalMove> allPseudoLegal = new TreeSet<>();
-    for (final Square fromSquare : Square.REAL) {
-      if (!staticPosition.isOwnPiece(fromSquare, havingMove, KING)) {
-        continue;
-      }
-      final Set<Square> potentialToSquares = AbstractPotentialToSquares.calculatePotentialToSquare(staticPosition,
-          Square.NONE, havingMove, fromSquare);
-      if (potentialToSquares.contains(toSquare)) {
-        final LegalMoveCalculation calc = AbstractLegalMoves.calculateLegalMoveCalculation(staticPosition, havingMove,
-            fromSquare, Nulls.setOf(toSquare));
-        allPseudoLegal.addAll(calc.pseudoLegalMoveSet());
-      }
+  /**
+   * Bitboard sibling of the reference {@code ChessRuleAnalyzer.analyzeKing} king-safety branch — called only after
+   * SAN validation has established that the king move (own king to {@code toSquare}) is pseudo-legal but not legal
+   * (king-unsafe after the move). Returns the {@link MovementCheck} that classifies why. Precedence matches the
+   * reference: NEXT_TO_OPPONENT_KING wins first, then CAPTURES_GUARDED_PIECE (opponent piece on destination),
+   * then MOVES_TO_ATTACKED_EMPTY_SQUARE (empty destination, attacked).
+   */
+  private static MovementCheck classifyKingNonCastlingMovementCheck(BitboardPosition bitboardPosition, Side havingMove,
+      Square toSquare) {
+    final Square opponentKingSquare = bitboardPosition.kingSquare(havingMove.getOppositeSide());
+    if ((KingAttacks.attacks(opponentKingSquare) & 1L << toSquare.ordinal()) != 0L) {
+      return MovementCheck.KING_MOVES_NEXT_TO_OPPONENT_KING;
     }
-    return allPseudoLegal;
+    final Piece pieceOnTo = bitboardPosition.get(toSquare);
+    if (pieceOnTo != Piece.NONE && pieceOnTo.getSide() == havingMove.getOppositeSide()) {
+      return MovementCheck.KING_CAPTURES_GUARDED_PIECE;
+    }
+    return MovementCheck.KING_MOVES_TO_ATTACKED_EMPTY_SQUARE;
   }
 
-  private static void validateAgainstLegalMovesForPawn(StaticPosition staticPosition, Side havingMove,
+  private static Set<Square> calculatePseudoLegalKingNonCastlingFromSquares(BitboardPosition bitboardPosition,
+      Side havingMove, Square toSquare, long epBit) {
+    final Set<Square> result = new TreeSet<>();
+    for (final Square fromSquare : Square.REAL) {
+      if (!bitboardPosition.isOwnPiece(fromSquare, havingMove, KING)) {
+        continue;
+      }
+      if (!bitboardPosition.potentialToSquares(fromSquare, epBit).contains(toSquare)) {
+        continue;
+      }
+      // Skip king-capture moves (toSquare has opponent king) to match reference semantics.
+      final Piece pieceOnTo = bitboardPosition.get(toSquare);
+      if (pieceOnTo != Piece.NONE && pieceOnTo.getPieceType() == KING) {
+        continue;
+      }
+      final MoveSpecification spec = new MoveSpecification(fromSquare, toSquare);
+      if (bitboardPosition.afterMove(spec, havingMove).isInCheck(havingMove)) {
+        result.add(fromSquare);
+      }
+    }
+    return result;
+  }
+
+  private static void validateAgainstLegalMovesForPawn(BitboardPosition bitboardPosition, Side havingMove,
       List<LegalMove> legalMovesCandidates, PieceType pieceType, SanFormat sanFormat, SanConversion sanConversion,
-      Square toSquare, Square enPassantCaptureTargetSquare) {
+      Square toSquare, long epBit) {
     if (!legalMovesCandidates.isEmpty()) {
       return;
     }
     final var isCapturing = sanFormat == SanFormat.PAWN_CAPTURING_NON_PROMOTION
         || sanFormat == SanFormat.PAWN_CAPTURING_PROMOTION;
-    final Set<PseudoLegalMove> pseudoLegalMoves = calculatePseudoLegalMovesForPawn(staticPosition, havingMove,
-        isCapturing, sanConversion, toSquare, enPassantCaptureTargetSquare);
-    if (pseudoLegalMoves.isEmpty()) {
+    final Set<Square> pseudoLegalFromSquares = calculatePseudoLegalPawnFromSquares(bitboardPosition, havingMove,
+        isCapturing, sanConversion, toSquare, epBit);
+    if (pseudoLegalFromSquares.isEmpty()) {
       if (isCapturing) {
         throw new SanValidationException(SanValidationProblem.NOT_REACHABLE_PAWN_CAPTURING,
             Message.getString("validation.san.notReachable.pawn.capturing", pieceType.getName(), toSquare.getName()));
@@ -287,7 +306,7 @@ abstract class SanValidateLegalMoves extends AbstractSan implements EnumConstant
       throw new SanValidationException(SanValidationProblem.NOT_REACHABLE_PAWN_NON_CAPTURING,
           Message.getString("validation.san.notReachable.pawn.nonCapturing", pieceType.getName(), toSquare.getName()));
     }
-    final var reason = calculatePseudoLegalKingSafety(staticPosition, havingMove);
+    final var reason = calculatePseudoLegalKingSafety(bitboardPosition, havingMove);
     if (reason == KingSafetyCheck.NON_KING_LEFT_IN_CHECK) {
       throw new SanValidationException(SanValidationProblem.KING_LEFT_IN_CHECK_PAWN,
           Message.getString("validation.san.kingLeftInCheck.pawn", pieceType.getName(), toSquare.getName()));
@@ -296,42 +315,29 @@ abstract class SanValidateLegalMoves extends AbstractSan implements EnumConstant
         Message.getString("validation.san.kingExposedToCheck.pawn", pieceType.getName(), toSquare.getName()));
   }
 
-  private static Set<PseudoLegalMove> calculatePseudoLegalMovesForPawn(StaticPosition staticPosition, Side havingMove,
-      boolean isCapturing, SanConversion sanConversion, Square toSquare, Square enPassantCaptureTargetSquare) {
+  private static Set<Square> calculatePseudoLegalPawnFromSquares(BitboardPosition bitboardPosition, Side havingMove,
+      boolean isCapturing, SanConversion sanConversion, Square toSquare, long epBit) {
     final var filterFromFile = isCapturing ? sanConversion.fromFile() : toSquare.getFile();
-    final Set<PseudoLegalMove> allPseudoLegal = new TreeSet<>();
-    for (final Square fromSquare : Square.REAL) {
-      if (fromSquare.getFile() != filterFromFile || !staticPosition.isOwnPiece(fromSquare, havingMove, PAWN)) {
-        continue;
-      }
-      final Set<Square> potentialToSquares = AbstractPotentialToSquares.calculatePotentialToSquare(staticPosition,
-          enPassantCaptureTargetSquare, havingMove, fromSquare);
-      if (potentialToSquares.contains(toSquare)) {
-        final LegalMoveCalculation calc = AbstractLegalMoves.calculateLegalMoveCalculation(staticPosition, havingMove,
-            fromSquare, Nulls.setOf(toSquare));
-        allPseudoLegal.addAll(calc.pseudoLegalMoveSet());
-      }
-    }
-    return allPseudoLegal;
+    return calculatePseudoLegalFromSquaresOnFile(bitboardPosition, havingMove, PAWN, toSquare, epBit, filterFromFile);
   }
 
-  private static void validateAgainstLegalMovesForPieceNeither(StaticPosition staticPosition, Side havingMove,
+  private static void validateAgainstLegalMovesForPieceNeither(BitboardPosition bitboardPosition, Side havingMove,
       List<LegalMove> legalMovesCandidates, PieceType pieceType, Square toSquare) {
     if (legalMovesCandidates.isEmpty()) {
-      final Set<PseudoLegalMove> pseudoLegalMoves = calculatePseudoLegalMovesForPieceNeither(staticPosition, havingMove,
+      final Set<Square> pseudoLegalFromSquares = calculatePseudoLegalFromSquaresAny(bitboardPosition, havingMove,
           pieceType, toSquare);
 
-      if (pseudoLegalMoves.isEmpty()) {
-        if (countPiecesOfType(staticPosition, havingMove, pieceType) == 1) {
+      if (pseudoLegalFromSquares.isEmpty()) {
+        if (countPiecesOfType(bitboardPosition, havingMove, pieceType) == 1) {
           throw new SanValidationException(SanValidationProblem.NOT_REACHABLE_RNBQ_NEITHER_SINGLE, Message
               .getString("validation.san.notReachable.rnbq.neither.single", pieceType.getName(), toSquare.getName()));
         }
         throw new SanValidationException(SanValidationProblem.NOT_REACHABLE_RNBQ_NEITHER_MULTIPLE, Message
             .getString("validation.san.notReachable.rnbq.neither.multiple", pieceType.getName(), toSquare.getName()));
       }
-      final var reason = calculatePseudoLegalKingSafety(staticPosition, havingMove);
-      if (pseudoLegalMoves.size() == 1) {
-        final Square fromSquare = SetUtility.getOnly(pseudoLegalMoves).moveSpecification().fromSquare();
+      final var reason = calculatePseudoLegalKingSafety(bitboardPosition, havingMove);
+      if (pseudoLegalFromSquares.size() == 1) {
+        final Square fromSquare = SetUtility.getOnly(pseudoLegalFromSquares);
         if (reason == KingSafetyCheck.NON_KING_LEFT_IN_CHECK) {
           throw new SanValidationException(SanValidationProblem.KING_LEFT_IN_CHECK_RNBQ_NEITHER_SINGLE,
               Message.getString("validation.san.kingLeftInCheck.rnbq.neither.single", pieceType.getName(),
@@ -362,8 +368,8 @@ abstract class SanValidateLegalMoves extends AbstractSan implements EnumConstant
       CastlingMove castlingMove) {
     final CastlingRight castlingRight = board.getCastlingRight(havingMove);
     final var castlingCheck = castlingMove == CastlingMove.QUEEN_SIDE
-        ? CastlingUtility.calculateQueenSideCastlingCheck(board.getStaticPosition(), havingMove, castlingRight)
-        : CastlingUtility.calculateKingSideCastlingCheck(board.getStaticPosition(), havingMove, castlingRight);
+        ? CastlingUtility.calculateQueenSideCastlingCheck(board.getBitboardPosition(), havingMove, castlingRight)
+        : CastlingUtility.calculateKingSideCastlingCheck(board.getBitboardPosition(), havingMove, castlingRight);
 
     final var castlingRightLoss = board.getCastlingRightLoss(havingMove, castlingMove);
     final String message;
@@ -406,110 +412,106 @@ abstract class SanValidateLegalMoves extends AbstractSan implements EnumConstant
         castlingCheck.toMoveCheck(castlingRightLoss), castlingRightLoss);
   }
 
-  private static KingSafetyCheck calculatePseudoLegalKingSafety(StaticPosition staticPosition, Side havingMove) {
+  private static KingSafetyCheck calculatePseudoLegalKingSafety(BitboardPosition bitboardPosition, Side havingMove) {
     // is check works because already narrowed down by legal move calculation to one or the other case
-    if (StaticPositionUtility.calculateIsCheck(staticPosition, havingMove)) {
+    if (bitboardPosition.isInCheck(havingMove)) {
       return KingSafetyCheck.NON_KING_LEFT_IN_CHECK;
     }
     return KingSafetyCheck.NON_KING_EXPOSED_TO_CHECK;
   }
 
-  private static Set<PseudoLegalMove> calculatePseudoLegalMovesForPieceNeither(StaticPosition staticPosition,
-      Side havingMove, PieceType pieceType, Square toSquare) {
-    final Set<PseudoLegalMove> allPseudoLegal = new TreeSet<>();
-    for (final Square fromSquare : Square.REAL) {
-      if (!staticPosition.isOwnPiece(fromSquare, havingMove, pieceType)) {
-        continue;
-      }
-      final Set<Square> potentialToSquares = AbstractPotentialToSquares.calculatePotentialToSquare(staticPosition,
-          Square.NONE, havingMove, fromSquare);
-      if (potentialToSquares.contains(toSquare)) {
-        final LegalMoveCalculation calc = AbstractLegalMoves.calculateLegalMoveCalculation(staticPosition, havingMove,
-            fromSquare, Nulls.setOf(toSquare));
-        allPseudoLegal.addAll(calc.pseudoLegalMoveSet());
-      }
-    }
-    return allPseudoLegal;
+  /**
+   * Returns the from-squares of own {@code pieceType} pieces whose move to {@code toSquare} is pseudo-legal but
+   * king-unsafe (i.e. it geometrically reaches {@code toSquare} but {@code afterMove(spec, side).isInCheck(side)}).
+   * Mirrors the {@code AbstractLegalMoves.calculateLegalMoveCalculation(...).pseudoLegalMoveSet()} surface used by
+   * SAN error reporting. Reference behavior: king captures (toSquare carries a king) are skipped.
+   */
+  private static Set<Square> calculatePseudoLegalFromSquaresAny(BitboardPosition bitboardPosition, Side havingMove,
+      PieceType pieceType, Square toSquare) {
+    return calculatePseudoLegalFromSquaresFiltered(bitboardPosition, havingMove, pieceType, toSquare, 0L, null, null);
   }
 
-  private static int countPiecesOfType(StaticPosition staticPosition, Side havingMove, PieceType pieceType) {
+  private static Set<Square> calculatePseudoLegalFromSquaresOnFile(BitboardPosition bitboardPosition, Side havingMove,
+      PieceType pieceType, Square toSquare, long epBit, File file) {
+    return calculatePseudoLegalFromSquaresFiltered(bitboardPosition, havingMove, pieceType, toSquare, epBit, file, null);
+  }
+
+  private static Set<Square> calculatePseudoLegalFromSquaresOnRank(BitboardPosition bitboardPosition, Side havingMove,
+      PieceType pieceType, Square toSquare, Rank rank) {
+    return calculatePseudoLegalFromSquaresFiltered(bitboardPosition, havingMove, pieceType, toSquare, 0L, null, rank);
+  }
+
+  private static Set<Square> calculatePseudoLegalFromSquaresFiltered(BitboardPosition bitboardPosition, Side havingMove,
+      PieceType pieceType, Square toSquare, long epBit, File fileFilter, Rank rankFilter) {
+    final Set<Square> result = new TreeSet<>();
+    for (final Square fromSquare : Square.REAL) {
+      if (fileFilter != null && fromSquare.getFile() != fileFilter) {
+        continue;
+      }
+      if (rankFilter != null && fromSquare.getRank() != rankFilter) {
+        continue;
+      }
+      if (!bitboardPosition.isOwnPiece(fromSquare, havingMove, pieceType)) {
+        continue;
+      }
+      if (!bitboardPosition.potentialToSquares(fromSquare, epBit).contains(toSquare)) {
+        continue;
+      }
+      // Skip king-capture moves (toSquare carries opponent king) to match reference.
+      final Piece pieceOnTo = bitboardPosition.get(toSquare);
+      if (pieceOnTo != Piece.NONE && pieceOnTo.getPieceType() == KING) {
+        continue;
+      }
+      final MoveSpecification spec = new MoveSpecification(fromSquare, toSquare);
+      if (bitboardPosition.afterMove(spec, havingMove).isInCheck(havingMove)) {
+        result.add(fromSquare);
+      }
+    }
+    return result;
+  }
+
+  private static int countPiecesOfType(BitboardPosition bitboardPosition, Side havingMove, PieceType pieceType) {
     var count = 0;
     for (final Square square : Square.REAL) {
-      if (staticPosition.isOwnPiece(square, havingMove, pieceType)) {
+      if (bitboardPosition.isOwnPiece(square, havingMove, pieceType)) {
         count++;
       }
     }
     return count;
   }
 
-  private static int countPiecesOfTypeOnFile(StaticPosition staticPosition, Side havingMove, PieceType pieceType,
+  private static int countPiecesOfTypeOnFile(BitboardPosition bitboardPosition, Side havingMove, PieceType pieceType,
       File file) {
     var count = 0;
     for (final Square square : Square.REAL) {
-      if (square.getFile() == file && staticPosition.isOwnPiece(square, havingMove, pieceType)) {
+      if (square.getFile() == file && bitboardPosition.isOwnPiece(square, havingMove, pieceType)) {
         count++;
       }
     }
     return count;
   }
 
-  private static Set<PseudoLegalMove> calculatePseudoLegalMovesForPieceFile(StaticPosition staticPosition,
-      Side havingMove, PieceType pieceType, File file, Square toSquare) {
-    final Set<PseudoLegalMove> allPseudoLegal = new TreeSet<>();
-    for (final Square fromSquare : Square.REAL) {
-      if (fromSquare.getFile() != file || !staticPosition.isOwnPiece(fromSquare, havingMove, pieceType)) {
-        continue;
-      }
-      final Set<Square> potentialToSquares = AbstractPotentialToSquares.calculatePotentialToSquare(staticPosition,
-          Square.NONE, havingMove, fromSquare);
-      if (potentialToSquares.contains(toSquare)) {
-        final LegalMoveCalculation calc = AbstractLegalMoves.calculateLegalMoveCalculation(staticPosition, havingMove,
-            fromSquare, Nulls.setOf(toSquare));
-        allPseudoLegal.addAll(calc.pseudoLegalMoveSet());
-      }
-    }
-    return allPseudoLegal;
-  }
-
-  private static int countPiecesOfTypeOnRank(StaticPosition staticPosition, Side havingMove, PieceType pieceType,
+  private static int countPiecesOfTypeOnRank(BitboardPosition bitboardPosition, Side havingMove, PieceType pieceType,
       Rank rank) {
     var count = 0;
     for (final Square square : Square.REAL) {
-      if (square.getRank() == rank && staticPosition.isOwnPiece(square, havingMove, pieceType)) {
+      if (square.getRank() == rank && bitboardPosition.isOwnPiece(square, havingMove, pieceType)) {
         count++;
       }
     }
     return count;
   }
 
-  private static Set<PseudoLegalMove> calculatePseudoLegalMovesForPieceRank(StaticPosition staticPosition,
-      Side havingMove, PieceType pieceType, Rank rank, Square toSquare) {
-    final Set<PseudoLegalMove> allPseudoLegal = new TreeSet<>();
-    for (final Square fromSquare : Square.REAL) {
-      if (fromSquare.getRank() != rank || !staticPosition.isOwnPiece(fromSquare, havingMove, pieceType)) {
-        continue;
-      }
-      final Set<Square> potentialToSquares = AbstractPotentialToSquares.calculatePotentialToSquare(staticPosition,
-          Square.NONE, havingMove, fromSquare);
-      if (potentialToSquares.contains(toSquare)) {
-        final LegalMoveCalculation calc = AbstractLegalMoves.calculateLegalMoveCalculation(staticPosition, havingMove,
-            fromSquare, Nulls.setOf(toSquare));
-        allPseudoLegal.addAll(calc.pseudoLegalMoveSet());
-      }
-    }
-    return allPseudoLegal;
-  }
-
-  private static void validateAgainstLegalMovesForPieceFile(StaticPosition staticPosition, Side havingMove,
+  private static void validateAgainstLegalMovesForPieceFile(BitboardPosition bitboardPosition, Side havingMove,
       List<LegalMove> legalMovesCandidates, PieceType pieceType, SanFormat sanFormat, SanConversion sanConversion,
       Square toSquare) {
     final File fromFile = sanConversion.fromFile();
-    final Set<Square> pieceCandidates = calculatePieceCandidateSquareSet(staticPosition, havingMove, pieceType,
+    final Set<Square> pieceCandidates = calculatePieceCandidateSquareSet(bitboardPosition, havingMove, pieceType,
         sanFormat, sanConversion);
-    final Set<Square> movementCandidates = filterCandidateSquaresForPotentialMove(staticPosition, havingMove, toSquare,
+    final Set<Square> movementCandidates = filterCandidateSquaresForPotentialMove(bitboardPosition, toSquare,
         pieceCandidates);
     if (movementCandidates.isEmpty()) {
-      if (countPiecesOfTypeOnFile(staticPosition, havingMove, pieceType, fromFile) == 1) {
+      if (countPiecesOfTypeOnFile(bitboardPosition, havingMove, pieceType, fromFile) == 1) {
         final Square pieceSquare = SetUtility.getOnly(pieceCandidates);
         throw new SanValidationException(SanValidationProblem.NOT_REACHABLE_RNBQ_FILE_SINGLE,
             Message.getString("validation.san.notReachable.rnbq.file.single", pieceType.getName(),
@@ -522,11 +524,11 @@ abstract class SanValidateLegalMoves extends AbstractSan implements EnumConstant
 
     final var numberOfLegalMovesFromSameFile = calculateNumberOfLegalMovesFromFile(fromFile, legalMovesCandidates);
     if (numberOfLegalMovesFromSameFile == 0) {
-      final Set<PseudoLegalMove> pseudoLegalMoves = calculatePseudoLegalMovesForPieceFile(staticPosition, havingMove,
-          pieceType, fromFile, toSquare);
-      final var reason = calculatePseudoLegalKingSafety(staticPosition, havingMove);
-      if (pseudoLegalMoves.size() == 1) {
-        final Square pieceSquare = SetUtility.getOnly(pseudoLegalMoves).moveSpecification().fromSquare();
+      final Set<Square> pseudoLegalFromSquares = calculatePseudoLegalFromSquaresOnFile(bitboardPosition, havingMove,
+          pieceType, toSquare, 0L, fromFile);
+      final var reason = calculatePseudoLegalKingSafety(bitboardPosition, havingMove);
+      if (pseudoLegalFromSquares.size() == 1) {
+        final Square pieceSquare = SetUtility.getOnly(pseudoLegalFromSquares);
         if (reason == KingSafetyCheck.NON_KING_LEFT_IN_CHECK) {
           throw new SanValidationException(SanValidationProblem.KING_LEFT_IN_CHECK_RNBQ_FILE_SINGLE,
               Message.getString("validation.san.kingLeftInCheck.rnbq.file.single", pieceType.getName(),
@@ -573,16 +575,16 @@ abstract class SanValidateLegalMoves extends AbstractSan implements EnumConstant
     }
   }
 
-  private static void validateAgainstLegalMovesForPieceRank(StaticPosition staticPosition, Side havingMove,
+  private static void validateAgainstLegalMovesForPieceRank(BitboardPosition bitboardPosition, Side havingMove,
       List<LegalMove> legalMovesCandidates, PieceType pieceType, SanFormat sanFormat, SanConversion sanConversion,
       Square toSquare) {
     final Rank fromRank = sanConversion.fromRank();
-    final Set<Square> pieceCandidates = calculatePieceCandidateSquareSet(staticPosition, havingMove, pieceType,
+    final Set<Square> pieceCandidates = calculatePieceCandidateSquareSet(bitboardPosition, havingMove, pieceType,
         sanFormat, sanConversion);
-    final Set<Square> movementCandidates = filterCandidateSquaresForPotentialMove(staticPosition, havingMove, toSquare,
+    final Set<Square> movementCandidates = filterCandidateSquaresForPotentialMove(bitboardPosition, toSquare,
         pieceCandidates);
     if (movementCandidates.isEmpty()) {
-      if (countPiecesOfTypeOnRank(staticPosition, havingMove, pieceType, fromRank) == 1) {
+      if (countPiecesOfTypeOnRank(bitboardPosition, havingMove, pieceType, fromRank) == 1) {
         final Square pieceSquare = SetUtility.getOnly(pieceCandidates);
         throw new SanValidationException(SanValidationProblem.NOT_REACHABLE_RNBQ_RANK_SINGLE,
             Message.getString("validation.san.notReachable.rnbq.rank.single", pieceType.getName(),
@@ -595,11 +597,11 @@ abstract class SanValidateLegalMoves extends AbstractSan implements EnumConstant
 
     final var numberOfLegalMovesFromSameRank = calculateNumberOfLegalMovesFromRank(fromRank, legalMovesCandidates);
     if (numberOfLegalMovesFromSameRank == 0) {
-      final Set<PseudoLegalMove> pseudoLegalMoves = calculatePseudoLegalMovesForPieceRank(staticPosition, havingMove,
-          pieceType, fromRank, toSquare);
-      final var reason = calculatePseudoLegalKingSafety(staticPosition, havingMove);
-      if (pseudoLegalMoves.size() == 1) {
-        final Square pieceSquare = SetUtility.getOnly(pseudoLegalMoves).moveSpecification().fromSquare();
+      final Set<Square> pseudoLegalFromSquares = calculatePseudoLegalFromSquaresOnRank(bitboardPosition, havingMove,
+          pieceType, toSquare, fromRank);
+      final var reason = calculatePseudoLegalKingSafety(bitboardPosition, havingMove);
+      if (pseudoLegalFromSquares.size() == 1) {
+        final Square pieceSquare = SetUtility.getOnly(pseudoLegalFromSquares);
         if (reason == KingSafetyCheck.NON_KING_LEFT_IN_CHECK) {
           throw new SanValidationException(SanValidationProblem.KING_LEFT_IN_CHECK_RNBQ_RANK_SINGLE,
               Message.getString("validation.san.kingLeftInCheck.rnbq.rank.single", pieceType.getName(),
@@ -659,20 +661,20 @@ abstract class SanValidateLegalMoves extends AbstractSan implements EnumConstant
     }
   }
 
-  private static void validateAgainstLegalMovesForPieceSquare(StaticPosition staticPosition, Side havingMove,
+  private static void validateAgainstLegalMovesForPieceSquare(BitboardPosition bitboardPosition, Side havingMove,
       List<LegalMove> legalMovesCandidates, PieceType pieceType, SanFormat sanFormat, SanConversion sanConversion,
       Square toSquare) {
     final Square fromSquare = calculateFromSquare(sanConversion);
-    final Set<Square> pieceCandidates = calculatePieceCandidateSquareSet(staticPosition, havingMove, pieceType,
+    final Set<Square> pieceCandidates = calculatePieceCandidateSquareSet(bitboardPosition, havingMove, pieceType,
         sanFormat, sanConversion);
-    final Set<Square> movementCandidates = filterCandidateSquaresForPotentialMove(staticPosition, havingMove, toSquare,
+    final Set<Square> movementCandidates = filterCandidateSquaresForPotentialMove(bitboardPosition, toSquare,
         pieceCandidates);
     if (movementCandidates.isEmpty()) {
       throw new SanValidationException(SanValidationProblem.NOT_REACHABLE_RNBQ_SQUARE, Message.getString(
           "validation.san.notReachable.rnbq.square", pieceType.getName(), fromSquare.getName(), toSquare.getName()));
     }
     if (calculateNumberOfLegalMovesFromSquare(fromSquare, legalMovesCandidates) == 0) {
-      final var reason = calculatePseudoLegalKingSafety(staticPosition, havingMove);
+      final var reason = calculatePseudoLegalKingSafety(bitboardPosition, havingMove);
       if (reason == KingSafetyCheck.NON_KING_LEFT_IN_CHECK) {
         throw new SanValidationException(SanValidationProblem.KING_LEFT_IN_CHECK_RNBQ_SQUARE,
             Message.getString("validation.san.kingLeftInCheck.rnbq.square", pieceType.getName(), fromSquare.getName(),
@@ -705,11 +707,11 @@ abstract class SanValidateLegalMoves extends AbstractSan implements EnumConstant
     }
   }
 
-  private static Set<Square> calculatePieceCandidateSquareSet(StaticPosition staticPosition, Side havingMove,
+  private static Set<Square> calculatePieceCandidateSquareSet(BitboardPosition bitboardPosition, Side havingMove,
       PieceType pieceType, SanFormat sanFormat, SanConversion sanConversion) {
     final Set<Square> result = new TreeSet<>();
     for (final Square square : Square.REAL) {
-      if (!staticPosition.isOwnPiece(square, havingMove, pieceType)) {
+      if (!bitboardPosition.isOwnPiece(square, havingMove, pieceType)) {
         continue;
       }
       switch (sanFormat) {
@@ -742,12 +744,11 @@ abstract class SanValidateLegalMoves extends AbstractSan implements EnumConstant
     return result;
   }
 
-  private static Set<Square> filterCandidateSquaresForPotentialMove(StaticPosition staticPosition, Side havingMove,
-      Square toSquare, Set<Square> candidateSquares) {
+  private static Set<Square> filterCandidateSquaresForPotentialMove(BitboardPosition bitboardPosition, Square toSquare,
+      Set<Square> candidateSquares) {
     final Set<Square> result = new TreeSet<>();
     for (final Square candidateSquare : candidateSquares) {
-      final Set<Square> potentialToSquares = AbstractPotentialToSquares.calculatePotentialToSquare(staticPosition,
-          Square.NONE, havingMove, candidateSquare);
+      final Set<Square> potentialToSquares = bitboardPosition.potentialToSquares(candidateSquare, 0L);
       if (potentialToSquares.contains(toSquare)) {
         result.add(candidateSquare);
       }
