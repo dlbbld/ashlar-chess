@@ -604,7 +604,7 @@ public class Board {
   }
 
   public boolean isInsufficientMaterial(Side side) {
-    return InsufficientMaterialUtility.calculateIsInsufficientMaterial(side, getStaticPosition());
+    return InsufficientMaterialUtility.calculateIsInsufficientMaterial(side, getBitboardPosition());
   }
 
   public String getFen() {

@@ -3,7 +3,6 @@ package com.dlb.chess.moves;
 import java.util.Set;
 import java.util.TreeSet;
 
-import com.dlb.chess.analyze.ChessRuleAnalyzer;
 import com.dlb.chess.bitboard.BitboardPosition;
 import com.dlb.chess.board.StaticPosition;
 import com.dlb.chess.board.enums.CastlingRight;
@@ -109,7 +108,7 @@ public abstract class AbstractLegalMoves implements EnumConstants {
         continue;
       }
 
-      if (ChessRuleAnalyzer.isMoveKingSafe(staticPosition, havingMove, moveSpecification)) {
+      if (!StaticPositionUtility.calculateIsKingAttackedAfterMove(staticPosition, havingMove, moveSpecification)) {
         // This helper services non-pawn, non-castling moves only (rook / knight / bishop / queen / king-non-castling).
         // Pawn moves go through PawnLegalMoves; castling goes through KingCastlingLegalMoves. None of those routes lead
         // here, so the kind is always NORMAL.

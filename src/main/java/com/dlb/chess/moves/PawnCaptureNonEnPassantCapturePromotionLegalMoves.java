@@ -3,7 +3,6 @@ package com.dlb.chess.moves;
 import java.util.Set;
 import java.util.TreeSet;
 
-import com.dlb.chess.analyze.ChessRuleAnalyzer;
 import com.dlb.chess.board.StaticPosition;
 import com.dlb.chess.board.enums.Piece;
 import com.dlb.chess.board.enums.PieceType;
@@ -12,6 +11,7 @@ import com.dlb.chess.board.enums.Rank;
 import com.dlb.chess.board.enums.Side;
 import com.dlb.chess.board.enums.Square;
 import com.dlb.chess.common.model.MoveSpecification;
+import com.dlb.chess.common.utility.StaticPositionUtility;
 import com.dlb.chess.model.LegalMove;
 import com.dlb.chess.model.LegalMoveKind;
 import com.dlb.chess.squares.PawnDiagonalSquares;
@@ -31,7 +31,7 @@ class PawnCaptureNonEnPassantCapturePromotionLegalMoves extends PawnLegalMoves {
         for (final PromotionPieceType promotionPieceType : PromotionPieceType.REAL) {
           final MoveSpecification moveSpecification = new MoveSpecification(fromSquare, diagonalSquareTo,
               promotionPieceType);
-          if (ChessRuleAnalyzer.isMoveKingSafe(staticPosition, havingMove, moveSpecification)) {
+          if (!StaticPositionUtility.calculateIsKingAttackedAfterMove(staticPosition, havingMove, moveSpecification)) {
 
             final Piece pieceCaptured = staticPosition.get(diagonalSquareTo);
             if (pieceCaptured.getPieceType() != PieceType.KING) {

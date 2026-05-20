@@ -1,9 +1,8 @@
 package com.dlb.chess.analyze;
 
 import java.util.Set;
-import java.util.TreeSet;
 
-import com.dlb.chess.board.StaticPosition;
+import com.dlb.chess.bitboard.BitboardPosition;
 import com.dlb.chess.board.enums.Piece;
 import com.dlb.chess.board.enums.Rank;
 import com.dlb.chess.board.enums.Side;
@@ -11,7 +10,6 @@ import com.dlb.chess.board.enums.Square;
 import com.dlb.chess.common.constants.EnumConstants;
 import com.dlb.chess.common.exceptions.ProgrammingMistakeException;
 import com.dlb.chess.common.model.MoveSpecification;
-import com.dlb.chess.common.utility.StaticPositionUtility;
 import com.dlb.chess.enums.KingSafetyCheck;
 import com.dlb.chess.enums.MovementCheck;
 import com.dlb.chess.model.EmptyBoardMove;
@@ -19,10 +17,7 @@ import com.dlb.chess.moves.CastlingUtility;
 import com.dlb.chess.moves.EnPassantCaptureUtility;
 import com.dlb.chess.moves.PawnDiagonalMoveUtility;
 import com.dlb.chess.squares.AbstractEmptyBoardSquares;
-import com.dlb.chess.squares.BishopPotentialToSquares;
 import com.dlb.chess.squares.KingNonCastlingEmptyBoardSquares;
-import com.dlb.chess.squares.QueenPotentialToSquares;
-import com.dlb.chess.squares.RookPotentialToSquares;
 
 /**
  * Stateless chess-rules analysis shared by both validation pipelines (MoveSpecification and SAN).
@@ -44,19 +39,19 @@ public final class ChessRuleAnalyzer implements EnumConstants {
   private ChessRuleAnalyzer() {
   }
 
-  public static MovementCheck analyzeMovement(StaticPosition staticPosition, Side havingMove,
+  public static MovementCheck analyzeMovement(BitboardPosition bitboardPosition, Side havingMove,
       Square enPassantCaptureTargetSquare, MoveSpecification moveSpecification) {
     if (CastlingUtility.calculateIsCastlingMove(moveSpecification)) {
       throw new ProgrammingMistakeException("Castling is not handled by movement analysis");
     }
-    final Piece movingPiece = staticPosition.get(moveSpecification.fromSquare());
+    final Piece movingPiece = bitboardPosition.get(moveSpecification.fromSquare());
     if (movingPiece == Piece.NONE || movingPiece.getSide() != havingMove) {
       throw new ProgrammingMistakeException("From-square does not hold an own piece");
     }
     return switch (movingPiece.getPieceType()) {
-      case PAWN -> analyzePawn(staticPosition, havingMove, enPassantCaptureTargetSquare, moveSpecification);
-      case KING -> analyzeKing(staticPosition, havingMove, moveSpecification);
-      case ROOK, KNIGHT, BISHOP, QUEEN -> analyzeStandardPiece(staticPosition, havingMove, moveSpecification);
+      case PAWN -> analyzePawn(bitboardPosition, havingMove, enPassantCaptureTargetSquare, moveSpecification);
+      case KING -> analyzeKing(bitboardPosition, havingMove, moveSpecification);
+      case ROOK, KNIGHT, BISHOP, QUEEN -> analyzeStandardPiece(bitboardPosition, havingMove, moveSpecification);
       case NONE -> throw new ProgrammingMistakeException("None piece type is not movable");
     };
   }
@@ -64,20 +59,20 @@ public final class ChessRuleAnalyzer implements EnumConstants {
   // Cheap variant: returns true iff the move leaves the own king safe. Use this when callers do
   // not need the failure-reason classification (e.g. legal-vs-pseudo-legal split during legal-move
   // enumeration).
-  public static boolean isMoveKingSafe(StaticPosition staticPosition, Side havingMove,
+  public static boolean isMoveKingSafe(BitboardPosition bitboardPosition, Side havingMove,
       MoveSpecification moveSpecification) {
     if (CastlingUtility.calculateIsCastlingMove(moveSpecification)) {
       throw new ProgrammingMistakeException("Castling king-safety is handled by CastlingCheck");
     }
-    return !StaticPositionUtility.calculateIsKingAttackedAfterMove(staticPosition, havingMove, moveSpecification);
+    return !bitboardPosition.afterMove(moveSpecification, havingMove).isInCheck(havingMove);
   }
 
-  public static KingSafetyCheck analyzeKingSafety(StaticPosition staticPosition, Side havingMove,
+  public static KingSafetyCheck analyzeKingSafety(BitboardPosition bitboardPosition, Side havingMove,
       MoveSpecification moveSpecification) {
     if (CastlingUtility.calculateIsCastlingMove(moveSpecification)) {
       throw new ProgrammingMistakeException("Castling king-safety is handled by CastlingCheck");
     }
-    final Piece movingPiece = staticPosition.get(moveSpecification.fromSquare());
+    final Piece movingPiece = bitboardPosition.get(moveSpecification.fromSquare());
     if (movingPiece == Piece.NONE || movingPiece.getSide() != havingMove) {
       throw new ProgrammingMistakeException("From-square does not hold an own piece");
     }
@@ -85,18 +80,18 @@ public final class ChessRuleAnalyzer implements EnumConstants {
     // / KING_MOVES_TO_ATTACKED_EMPTY_SQUARE). The was-in-check distinction has no analog for the
     // king itself, so this method only handles non-king moves.
     if (movingPiece.getPieceType() == KING
-        || !StaticPositionUtility.calculateIsKingAttackedAfterMove(staticPosition, havingMove, moveSpecification)) {
+        || !bitboardPosition.afterMove(moveSpecification, havingMove).isInCheck(havingMove)) {
       return KingSafetyCheck.SUCCESS;
     }
-    final var wasInCheck = StaticPositionUtility.calculateIsCheck(staticPosition, havingMove);
+    final var wasInCheck = bitboardPosition.isInCheck(havingMove);
     return wasInCheck ? KingSafetyCheck.NON_KING_LEFT_IN_CHECK : KingSafetyCheck.NON_KING_EXPOSED_TO_CHECK;
   }
 
-  private static MovementCheck analyzePawn(StaticPosition staticPosition, Side havingMove,
+  private static MovementCheck analyzePawn(BitboardPosition bitboardPosition, Side havingMove,
       Square enPassantCaptureTargetSquare, MoveSpecification moveSpecification) {
     final Square fromSquare = moveSpecification.fromSquare();
     final Square toSquare = moveSpecification.toSquare();
-    final Piece movingPiece = staticPosition.get(fromSquare);
+    final Piece movingPiece = bitboardPosition.get(fromSquare);
 
     final var isForwardMove = calculateIsPawnEmptyBoardMove(havingMove, fromSquare, toSquare);
     final var isDiagonalMove = PawnDiagonalMoveUtility.calculateIsPawnDiagonalMove(havingMove, fromSquare, toSquare);
@@ -107,23 +102,24 @@ public final class ChessRuleAnalyzer implements EnumConstants {
 
     if (isForwardMove) {
       if (EnPassantCaptureUtility.calculateIsPawnTwoSquareAdvanceMove(movingPiece, moveSpecification)) {
-        final MovementCheck twoSquareCheck = analyzePawnTwoSquareAdvance(staticPosition, havingMove, moveSpecification);
+        final MovementCheck twoSquareCheck = analyzePawnTwoSquareAdvance(bitboardPosition, havingMove,
+            moveSpecification);
         if (twoSquareCheck != MovementCheck.SUCCESS) {
           return twoSquareCheck;
         }
       }
-      return analyzePawnOneSquareAdvance(staticPosition, havingMove, moveSpecification);
+      return analyzePawnOneSquareAdvance(bitboardPosition, havingMove, moveSpecification);
     }
 
-    return analyzePawnDiagonal(staticPosition, havingMove, enPassantCaptureTargetSquare, moveSpecification);
+    return analyzePawnDiagonal(bitboardPosition, havingMove, enPassantCaptureTargetSquare, moveSpecification);
   }
 
-  private static MovementCheck analyzePawnTwoSquareAdvance(StaticPosition staticPosition, Side havingMove,
+  private static MovementCheck analyzePawnTwoSquareAdvance(BitboardPosition bitboardPosition, Side havingMove,
       MoveSpecification moveSpecification) {
     final Square toSquare = moveSpecification.toSquare();
     final Square jumpOverSquare = Square.calculateJumpOverSquare(havingMove, toSquare);
-    final var jumpOverSquareIsEmpty = staticPosition.get(jumpOverSquare) == Piece.NONE;
-    final var toSquareIsEmpty = staticPosition.get(toSquare) == Piece.NONE;
+    final var jumpOverSquareIsEmpty = bitboardPosition.isEmpty(jumpOverSquare);
+    final var toSquareIsEmpty = bitboardPosition.isEmpty(toSquare);
 
     if (!jumpOverSquareIsEmpty) {
       if (!toSquareIsEmpty) {
@@ -138,23 +134,23 @@ public final class ChessRuleAnalyzer implements EnumConstants {
     return MovementCheck.SUCCESS;
   }
 
-  private static MovementCheck analyzePawnOneSquareAdvance(StaticPosition staticPosition, Side havingMove,
+  private static MovementCheck analyzePawnOneSquareAdvance(BitboardPosition bitboardPosition, Side havingMove,
       MoveSpecification moveSpecification) {
     final Square toSquare = moveSpecification.toSquare();
-    if (staticPosition.isEmpty(toSquare)) {
+    if (bitboardPosition.isEmpty(toSquare)) {
       return MovementCheck.SUCCESS;
     }
-    final Piece pieceOnToSquare = staticPosition.get(toSquare);
+    final Piece pieceOnToSquare = bitboardPosition.get(toSquare);
     if (pieceOnToSquare.getSide() == havingMove) {
       return MovementCheck.PAWN_FORWARD_ONE_SQUARE_TO_SQUARE_NOT_EMPTY_OWN_PIECE;
     }
     return MovementCheck.PAWN_FORWARD_ONE_SQUARE_TO_SQUARE_NOT_EMPTY_OPPONENT_PIECE;
   }
 
-  private static MovementCheck analyzePawnDiagonal(StaticPosition staticPosition, Side havingMove,
+  private static MovementCheck analyzePawnDiagonal(BitboardPosition bitboardPosition, Side havingMove,
       Square enPassantCaptureTargetSquare, MoveSpecification moveSpecification) {
     final Square toSquare = moveSpecification.toSquare();
-    final Piece capturedPiece = staticPosition.get(toSquare);
+    final Piece capturedPiece = bitboardPosition.get(toSquare);
 
     if (capturedPiece == Piece.NONE) {
       return analyzePawnEnPassant(havingMove, enPassantCaptureTargetSquare, moveSpecification);
@@ -178,12 +174,12 @@ public final class ChessRuleAnalyzer implements EnumConstants {
     return MovementCheck.SUCCESS;
   }
 
-  private static MovementCheck analyzeStandardPiece(StaticPosition staticPosition, Side havingMove,
+  private static MovementCheck analyzeStandardPiece(BitboardPosition bitboardPosition, Side havingMove,
       MoveSpecification moveSpecification) {
     final Square fromSquare = moveSpecification.fromSquare();
     final Square toSquare = moveSpecification.toSquare();
-    final Piece movingPiece = staticPosition.get(fromSquare);
-    final Piece capturedPiece = staticPosition.get(toSquare);
+    final Piece movingPiece = bitboardPosition.get(fromSquare);
+    final Piece capturedPiece = bitboardPosition.get(toSquare);
 
     final Set<EmptyBoardMove> emptyBoardMoves = AbstractEmptyBoardSquares
         .calculateNonPawnEmptyBoardMoves(movingPiece.getPieceType(), fromSquare);
@@ -193,16 +189,9 @@ public final class ChessRuleAnalyzer implements EnumConstants {
     if (capturedPiece != Piece.NONE && capturedPiece.getSide() == havingMove) {
       return MovementCheck.TO_SQUARE_OCCUPIED_BY_OWN_PIECE;
     }
-    final var toSquareSet = switch (movingPiece.getPieceType()) {
-      case ROOK -> RookPotentialToSquares.calculateRookPotentialToSquares(staticPosition, fromSquare, havingMove);
-      case KNIGHT -> new TreeSet<Square>();
-      case BISHOP -> BishopPotentialToSquares.calculateBishopPotentialToSquares(staticPosition, fromSquare, havingMove);
-      case QUEEN -> QueenPotentialToSquares.calculateQueenPotentialToSquares(staticPosition, fromSquare, havingMove);
-      case PAWN, KING, NONE -> throw new ProgrammingMistakeException(
-          "Unexpected piece type for standard analysis: " + movingPiece.getPieceType());
-    };
     return switch (movingPiece.getPieceType()) {
-      case ROOK, BISHOP, QUEEN -> toSquareSet.contains(toSquare) ? MovementCheck.SUCCESS
+      case ROOK, BISHOP, QUEEN -> bitboardPosition.potentialToSquares(fromSquare, 0L).contains(toSquare)
+          ? MovementCheck.SUCCESS
           : MovementCheck.LONG_RANGE_PIECE_JUMPS_OVER_PIECE;
       case KNIGHT -> MovementCheck.SUCCESS;
       case PAWN, KING, NONE -> throw new ProgrammingMistakeException(
@@ -210,11 +199,11 @@ public final class ChessRuleAnalyzer implements EnumConstants {
     };
   }
 
-  private static MovementCheck analyzeKing(StaticPosition staticPosition, Side havingMove,
+  private static MovementCheck analyzeKing(BitboardPosition bitboardPosition, Side havingMove,
       MoveSpecification moveSpecification) {
     final Square fromSquare = moveSpecification.fromSquare();
     final Square toSquare = moveSpecification.toSquare();
-    final Piece pieceOnToSquare = staticPosition.get(toSquare);
+    final Piece pieceOnToSquare = bitboardPosition.get(toSquare);
 
     final Set<EmptyBoardMove> emptyBoardMoves = AbstractEmptyBoardSquares.calculateNonPawnEmptyBoardMoves(KING,
         fromSquare);
@@ -224,14 +213,14 @@ public final class ChessRuleAnalyzer implements EnumConstants {
     if (pieceOnToSquare != Piece.NONE && pieceOnToSquare.getSide() == havingMove) {
       return MovementCheck.TO_SQUARE_OCCUPIED_BY_OWN_PIECE;
     }
-    if (calculateIsMoveNextToOpponentKing(staticPosition, havingMove, toSquare)) {
+    if (calculateIsMoveNextToOpponentKing(bitboardPosition, havingMove, toSquare)) {
       return MovementCheck.KING_MOVES_NEXT_TO_OPPONENT_KING;
     }
     // Post-move attack detection (rather than pre-move attackedSquares): when the king moves
     // along an opponent long-range piece's line, the king itself was the blocker; pre-move
     // attackedSquares would not include the destination, but the king IS attacked there after
-    // moving off its current square.
-    if (!StaticPositionUtility.calculateIsKingAttackedAfterMove(staticPosition, havingMove, moveSpecification)) {
+    // moving off its current square. BitboardPosition.afterMove + isInCheck encodes this directly.
+    if (!bitboardPosition.afterMove(moveSpecification, havingMove).isInCheck(havingMove)) {
       return MovementCheck.SUCCESS;
     }
     if (pieceOnToSquare != Piece.NONE && pieceOnToSquare.getSide() == havingMove.getOppositeSide()) {
@@ -241,10 +230,9 @@ public final class ChessRuleAnalyzer implements EnumConstants {
     return MovementCheck.KING_MOVES_TO_ATTACKED_EMPTY_SQUARE;
   }
 
-  private static boolean calculateIsMoveNextToOpponentKing(StaticPosition staticPosition, Side havingMove,
+  private static boolean calculateIsMoveNextToOpponentKing(BitboardPosition bitboardPosition, Side havingMove,
       Square toSquare) {
-    final Square opponentKingSquare = StaticPositionUtility.calculateKingSquare(staticPosition,
-        havingMove.getOppositeSide());
+    final Square opponentKingSquare = bitboardPosition.kingSquare(havingMove.getOppositeSide());
     final Set<Square> opponentKingAttackedSquareSet = KingNonCastlingEmptyBoardSquares
         .getKingSquares(opponentKingSquare);
     return opponentKingAttackedSquareSet.contains(toSquare);
