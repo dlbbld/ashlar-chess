@@ -828,7 +828,7 @@ public class Board {
 
   @Override
   public String toString() {
-    return BitboardPositionUtility.toStaticPosition(getBitboardPosition()).toString();
+    return getFen();
   }
 
   public Square getEnPassantCaptureTargetSquare() {

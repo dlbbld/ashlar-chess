@@ -352,11 +352,15 @@ public class FenParserAdvanced implements EnumConstants {
 
     final Side oppositeSide = havingMove.getOppositeSide();
     final Square pawnTwoAdvanceSquare = Square.calculateAheadSquare(oppositeSide, enPassantCaptureTargetSquare);
-    // if not two square advance then specifying the en passant target square is
-    // invalid
+    // The two-advance square must carry an opposite-side PAWN (the pawn that just played the two-square advance).
+    // Three rejection conditions, all unioned: no piece at all, wrong side, or wrong piece type. The original
+    // StaticPosition predicate read `A || (B && C)` due to Java operator precedence, which let some wrong-side or
+    // wrong-piece-type FENs slip past this check and trip an exception further down (in the rewind step). The
+    // bitboard rewind is strict (withRelocatedPiece preconditions piece presence) so the loose predicate now
+    // surfaces as an unchecked IllegalArgumentException — fixed here to throw the right typed validation exception.
     final Piece pieceOnTwoAdvanceSquare = bitboardPosition.get(pawnTwoAdvanceSquare);
-    if (pieceOnTwoAdvanceSquare == Piece.NONE
-        || pieceOnTwoAdvanceSquare.getSide() != oppositeSide && pieceOnTwoAdvanceSquare.getPieceType() != PAWN) {
+    if (pieceOnTwoAdvanceSquare == Piece.NONE || pieceOnTwoAdvanceSquare.getSide() != oppositeSide
+        || pieceOnTwoAdvanceSquare.getPieceType() != PAWN) {
       throw new FenAdvancedValidationException(
           FenAdvancedValidationProblem.INVALID_EN_PASSANT_CAPTURE_TARGET_SQUARE_NO_PAWN_AFTER,
           "the en passant target square is specified as \"" + enPassantCaptureTargetSquare
