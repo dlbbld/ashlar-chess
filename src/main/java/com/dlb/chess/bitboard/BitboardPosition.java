@@ -707,6 +707,29 @@ public record BitboardPosition(long whitePawns, long whiteRooks, long whiteKnigh
     return fromPieceBitboards(pieces);
   }
 
+  /**
+   * Returns a new {@code BitboardPosition} in which {@code piece} is relocated from {@code from} to {@code to}.
+   * Pre: {@code from} carries {@code piece}, {@code to} is empty. Used for hypothetical-position construction
+   * outside the regular move pipeline — e.g. FEN-level validation rewinding a pawn two-square advance to its
+   * starting square to check the prior position's legality.
+   */
+  public BitboardPosition withRelocatedPiece(Piece piece, Square from, Square to) {
+    if (piece == Piece.NONE) {
+      throw new IllegalArgumentException("withRelocatedPiece requires a real piece, got NONE");
+    }
+    if (get(from) != piece) {
+      throw new IllegalArgumentException(
+          "From square " + from + " does not carry " + piece + " (actual: " + get(from) + ")");
+    }
+    if (!isEmpty(to)) {
+      throw new IllegalArgumentException("To square " + to + " is not empty (carries " + get(to) + ")");
+    }
+    final long[] pieces = currentPieceBitboards();
+    toggleBit(pieces, piece, 1L << from.ordinal());
+    toggleBit(pieces, piece, 1L << to.ordinal());
+    return fromPieceBitboards(pieces);
+  }
+
   private long[] currentPieceBitboards() {
     return new long[] { whitePawns, whiteRooks, whiteKnights, whiteBishops, whiteQueens, whiteKings, blackPawns,
         blackRooks, blackKnights, blackBishops, blackQueens, blackKings };

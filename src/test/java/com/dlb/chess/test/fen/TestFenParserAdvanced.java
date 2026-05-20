@@ -317,7 +317,8 @@ class TestFenParserAdvanced implements EnumConstants {
 
     final Fen actual = FenParserAdvanced.parseFenAdvanced(FenConstants.FEN_INITIAL_STR);
 
-    assertEquals(StaticPosition.INITIAL_POSITION, actual.staticPosition());
+    assertEquals(StaticPosition.INITIAL_POSITION,
+        com.dlb.chess.bitboard.BitboardPositionUtility.toStaticPosition(actual.bitboardPosition()));
     assertEquals(WHITE, actual.havingMove());
     assertEquals(CastlingRight.KING_AND_QUEEN_SIDE, actual.castlingRightWhite());
     assertEquals(CastlingRight.KING_AND_QUEEN_SIDE, actual.castlingRightBlack());

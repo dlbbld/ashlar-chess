@@ -5,7 +5,7 @@ import java.util.List;
 
 import org.eclipse.jdt.annotation.NonNull;
 
-import com.dlb.chess.board.StaticPosition;
+import com.dlb.chess.bitboard.BitboardPosition;
 import com.dlb.chess.board.enums.CastlingRight;
 import com.dlb.chess.board.enums.Square;
 import com.dlb.chess.common.Nulls;
@@ -28,7 +28,7 @@ public class FenConstants implements EnumConstants {
   // we set the max full move counter so that the halfmove clock still fits in the int range
   public static final int MAX_FULL_MOVE_NUMBER = (Integer.MAX_VALUE - 1) / 2;
 
-  public static final Fen FEN_INITIAL = new Fen(FEN_INITIAL_STR, StaticPosition.INITIAL_POSITION, WHITE,
+  public static final Fen FEN_INITIAL = new Fen(FEN_INITIAL_STR, BitboardPosition.INITIAL_POSITION, WHITE,
       CastlingRight.KING_AND_QUEEN_SIDE, CastlingRight.KING_AND_QUEEN_SIDE, Square.NONE, 0, 1);
 
   public static final ImmutableList<String> POSSIBLE_FEN_AFTER_FIRST_HALF_MOVE;

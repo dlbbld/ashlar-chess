@@ -180,8 +180,7 @@ public class Board {
 
     this.initialFen = initialFenUse;
 
-    final BitboardPosition initialBitboardPosition = BitboardPositionUtility
-        .fromStaticPosition(initialFenUse.staticPosition());
+    final BitboardPosition initialBitboardPosition = initialFenUse.bitboardPosition();
     final long initialEnPassantBit = initialEnPassantCaptureTargetSquare == Square.NONE ? 0L
         : 1L << initialEnPassantCaptureTargetSquare.ordinal();
 
@@ -298,7 +297,7 @@ public class Board {
    * Auto-detection of {@code DEAD_POSITION_UNWINNABLE_QUICK} follows the {@code detectDeadPositionUnwinnable} flag.
    */
   public Board copyCurrentPositionWithoutHistory(boolean detectDeadPositionUnwinnable) {
-    final Fen currentPosition = new Fen(getFen(), getStaticPosition(), getHavingMove(), getCastlingRightWhite(),
+    final Fen currentPosition = new Fen(getFen(), getBitboardPosition(), getHavingMove(), getCastlingRightWhite(),
         getCastlingRightBlack(), getEnPassantCaptureTargetSquare(), 0, getFullMoveNumberForNextHalfMove());
     return new Board(currentPosition, detectDeadPositionUnwinnable);
   }

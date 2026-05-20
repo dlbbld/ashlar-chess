@@ -10,6 +10,7 @@ import com.dlb.chess.board.enums.Piece;
 import com.dlb.chess.board.enums.Square;
 import com.dlb.chess.board.model.UpdateSquare;
 import com.dlb.chess.common.Nulls;
+import com.dlb.chess.fen.FenPieceSymbol;
 
 /**
  * Bit-exact conversion between {@link BitboardPosition} and the existing {@link StaticPosition} mailbox representation.
@@ -95,6 +96,39 @@ public final class BitboardPositionUtility {
       updates.add(new UpdateSquare(Nulls.get(Square.REAL, squareOrdinal), piece));
       remaining &= remaining - 1L;
     }
+  }
+
+  /**
+   * Returns the FEN piece-placement string for {@code bitboardPosition} — the first space-separated field of a FEN
+   * string. Format: rank 8 first, ranks separated by "/", consecutive empty squares within a rank collapsed to a
+   * digit, pieces as {@link FenPieceSymbol} letters (uppercase = white, lowercase = black).
+   */
+  public static String calculatePiecePlacement(BitboardPosition bitboardPosition) {
+    final StringBuilder piecePlacement = new StringBuilder();
+    for (var rankNumber = 8; rankNumber >= 1; rankNumber--) {
+      var consecutiveEmptySquares = 0;
+      for (var fileNumber = 1; fileNumber <= 8; fileNumber++) {
+        final Square square = Square.calculate(fileNumber, rankNumber);
+        final Piece pieceOnSquare = bitboardPosition.get(square);
+        final var isEmptySquare = pieceOnSquare == Piece.NONE;
+        if (isEmptySquare) {
+          consecutiveEmptySquares++;
+          if (fileNumber == 8) {
+            piecePlacement.append(consecutiveEmptySquares);
+          }
+        } else {
+          if (consecutiveEmptySquares > 0) {
+            piecePlacement.append(consecutiveEmptySquares);
+            consecutiveEmptySquares = 0;
+          }
+          piecePlacement.append(FenPieceSymbol.calculate(pieceOnSquare).pieceLetter());
+        }
+      }
+      if (rankNumber != 1) {
+        piecePlacement.append("/");
+      }
+    }
+    return Nulls.toString(piecePlacement);
   }
 
   /**
