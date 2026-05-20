@@ -15,6 +15,7 @@ import com.dlb.chess.fen.FenParserAdvanced;
 import com.dlb.chess.fen.constants.FenConstants;
 import com.dlb.chess.fen.model.Fen;
 import com.dlb.chess.squares.AbstractAttackedSquares;
+import com.dlb.chess.bitboard.StaticPositionBridge;
 
 class TestAttackedSquaresByPosition implements EnumConstants {
 
@@ -60,7 +61,7 @@ class TestAttackedSquaresByPosition implements EnumConstants {
     // The relocated reference oracle (AbstractAttackedSquares) takes StaticPosition; derive it on demand from
     // Fen's bitboard via the test-oracle bridge.
     final Set<Square> actualSquareSet = AbstractAttackedSquares.calculateAttackedSquares(
-        BitboardPositionUtility.toStaticPosition(fen.bitboardPosition()), fen.havingMove());
+        StaticPositionBridge.toStaticPosition(fen.bitboardPosition()), fen.havingMove());
 
     final Set<String> expected = new TreeSet<>();
     for (final String square : expectedSquareList) {

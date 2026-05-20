@@ -10,6 +10,7 @@ import com.dlb.chess.board.enums.Piece;
 import com.dlb.chess.board.enums.Square;
 import com.dlb.chess.common.Nulls;
 import com.dlb.chess.bitboard.BitboardPositionUtility;
+import com.dlb.chess.bitboard.StaticPositionBridge;
 
 public final class MobilityOracleFormatter {
 
@@ -32,7 +33,7 @@ public final class MobilityOracleFormatter {
   public static List<String> calculateRows(String fen) {
     final Board board = new Board(fen, false);
     final MobilitySolution mobilitySolution = Mobility.mobility(board);
-    final StaticPosition staticPosition = BitboardPositionUtility.toStaticPosition(board.getBitboardPosition());
+    final StaticPosition staticPosition = StaticPositionBridge.toStaticPosition(board.getBitboardPosition());
 
     final List<String> rowList = new ArrayList<>();
     for (final Square source : Square.REAL) {

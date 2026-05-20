@@ -18,6 +18,7 @@ import com.dlb.chess.test.model.PgnTestCase;
 import com.dlb.chess.test.model.PgnTestCaseList;
 import com.dlb.chess.test.pgn.setup.PgnTestCaseCatalog;
 import com.dlb.chess.test.pgntest.enums.PgnTest;
+import com.dlb.chess.bitboard.StaticPositionBridge;
 
 /**
  * Differential test for {@link KingAttacks}: the precomputed bitboard table must agree, for every from-square, with
@@ -42,8 +43,8 @@ class TestKingAttacks {
     for (final PgnTest pgnTest : PgnTest.values()) {
       final PgnTestCaseList testCaseList = PgnTestCaseCatalog.getTestList(pgnTest);
       for (final PgnTestCase testCase : testCaseList.list()) {
-        final StaticPosition staticPosition = BitboardPositionUtility.toStaticPosition(testCase.finalPosition().getBitboardPosition());
-        final BitboardPosition bitboardPosition = BitboardPositionUtility.fromStaticPosition(staticPosition);
+        final StaticPosition staticPosition = StaticPositionBridge.toStaticPosition(testCase.finalPosition().getBitboardPosition());
+        final BitboardPosition bitboardPosition = StaticPositionBridge.fromStaticPosition(staticPosition);
         long kings = bitboardPosition.whiteKings() | bitboardPosition.blackKings();
         while (kings != 0L) {
           final Square fromSquare = Nulls.get(Square.REAL, Long.numberOfTrailingZeros(kings));

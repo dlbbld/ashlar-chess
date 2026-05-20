@@ -17,6 +17,7 @@ import com.dlb.chess.test.model.PgnTestCase;
 import com.dlb.chess.test.model.PgnTestCaseList;
 import com.dlb.chess.test.pgn.setup.PgnTestCaseCatalog;
 import com.dlb.chess.test.pgntest.enums.PgnTest;
+import com.dlb.chess.bitboard.StaticPositionBridge;
 
 /**
  * Differential test for {@link BitboardPosition#hashDelta}: applying the XOR delta to the before-hash must match
@@ -32,8 +33,8 @@ class TestBitboardPositionHashDelta {
       final PgnTestCaseList testCaseList = PgnTestCaseCatalog.getTestList(pgnTest);
       for (final PgnTestCase testCase : testCaseList.list()) {
         final Board board = testCase.finalPosition();
-        final StaticPosition staticPosition = BitboardPositionUtility.toStaticPosition(board.getBitboardPosition());
-        final BitboardPosition before = BitboardPositionUtility.fromStaticPosition(staticPosition);
+        final StaticPosition staticPosition = StaticPositionBridge.toStaticPosition(board.getBitboardPosition());
+        final BitboardPosition before = StaticPositionBridge.fromStaticPosition(staticPosition);
         final long beforeHash = before.zobristPieces();
         final Side havingMove = board.getHavingMove();
         for (final LegalMove legalMove : board.getLegalMoves()) {

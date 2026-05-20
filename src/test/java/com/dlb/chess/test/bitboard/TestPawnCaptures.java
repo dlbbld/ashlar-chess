@@ -20,6 +20,7 @@ import com.dlb.chess.test.model.PgnTestCase;
 import com.dlb.chess.test.model.PgnTestCaseList;
 import com.dlb.chess.test.pgn.setup.PgnTestCaseCatalog;
 import com.dlb.chess.test.pgntest.enums.PgnTest;
+import com.dlb.chess.bitboard.StaticPositionBridge;
 
 /**
  * Differential test for {@link PawnMoves#captures}. Regular captures = diagonal-forward squares occupied by an
@@ -36,8 +37,8 @@ class TestPawnCaptures {
       final PgnTestCaseList testCaseList = PgnTestCaseCatalog.getTestList(pgnTest);
       for (final PgnTestCase testCase : testCaseList.list()) {
         final Board board = testCase.finalPosition();
-        final StaticPosition staticPosition = BitboardPositionUtility.toStaticPosition(board.getBitboardPosition());
-        final BitboardPosition bitboardPosition = BitboardPositionUtility.fromStaticPosition(staticPosition);
+        final StaticPosition staticPosition = StaticPositionBridge.toStaticPosition(board.getBitboardPosition());
+        final BitboardPosition bitboardPosition = StaticPositionBridge.fromStaticPosition(staticPosition);
         final Square boardEpTarget = board.getEnPassantCaptureTargetSquare();
         final Side havingMove = board.getHavingMove();
 

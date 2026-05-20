@@ -22,6 +22,7 @@ import com.dlb.chess.test.model.PgnTestCase;
 import com.dlb.chess.test.model.PgnTestCaseList;
 import com.dlb.chess.test.pgn.setup.PgnTestCaseCatalog;
 import com.dlb.chess.test.pgntest.enums.PgnTest;
+import com.dlb.chess.bitboard.StaticPositionBridge;
 
 /**
  * The spine assertion of the bitboard release: for every fixture in the corpus, the bitboard's
@@ -50,8 +51,8 @@ class TestBitboardPositionLegalMoves {
       final PgnTestCaseList testCaseList = PgnTestCaseCatalog.getTestList(pgnTest);
       for (final PgnTestCase testCase : testCaseList.list()) {
         final Board board = testCase.finalPosition();
-        final StaticPosition staticPosition = BitboardPositionUtility.toStaticPosition(board.getBitboardPosition());
-        final BitboardPosition bitboardPosition = BitboardPositionUtility.fromStaticPosition(staticPosition);
+        final StaticPosition staticPosition = StaticPositionBridge.toStaticPosition(board.getBitboardPosition());
+        final BitboardPosition bitboardPosition = StaticPositionBridge.fromStaticPosition(staticPosition);
         final Side havingMove = board.getHavingMove();
         final Square boardEpTarget = board.getEnPassantCaptureTargetSquare();
         final long enPassantBit = boardEpTarget == Square.NONE ? 0L : 1L << boardEpTarget.ordinal();

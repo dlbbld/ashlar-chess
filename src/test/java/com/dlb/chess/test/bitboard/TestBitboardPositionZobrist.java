@@ -21,6 +21,7 @@ import com.dlb.chess.test.model.PgnTestCase;
 import com.dlb.chess.test.model.PgnTestCaseList;
 import com.dlb.chess.test.pgn.setup.PgnTestCaseCatalog;
 import com.dlb.chess.test.pgntest.enums.PgnTest;
+import com.dlb.chess.bitboard.StaticPositionBridge;
 
 /**
  * Property tests for {@link BitboardPosition#zobristPieces()}: equal positions hash equal (consistency); distinct
@@ -33,7 +34,7 @@ class TestBitboardPositionZobrist {
   @Test
   void equalPositionsHashEqual() {
     // Two independently-constructed INITIAL_POSITION values must hash identical.
-    final BitboardPosition a = BitboardPositionUtility.fromStaticPosition(StaticPosition.INITIAL_POSITION);
+    final BitboardPosition a = StaticPositionBridge.fromStaticPosition(StaticPosition.INITIAL_POSITION);
     final BitboardPosition b = BitboardPosition.INITIAL_POSITION;
     assertEquals(a, b);
     assertEquals(a.zobristPieces(), b.zobristPieces());
@@ -51,8 +52,8 @@ class TestBitboardPositionZobrist {
     for (final PgnTest pgnTest : PgnTest.values()) {
       final PgnTestCaseList testCaseList = PgnTestCaseCatalog.getTestList(pgnTest);
       for (final PgnTestCase testCase : testCaseList.list()) {
-        final BitboardPosition position = BitboardPositionUtility
-            .fromStaticPosition(BitboardPositionUtility.toStaticPosition(testCase.finalPosition().getBitboardPosition()));
+        final BitboardPosition position = StaticPositionBridge
+            .fromStaticPosition(StaticPositionBridge.toStaticPosition(testCase.finalPosition().getBitboardPosition()));
         final var hash = position.zobristPieces();
         if (seen.containsKey(hash)) {
           final @Nullable BitboardPosition existing = seen.get(hash);
@@ -71,7 +72,7 @@ class TestBitboardPositionZobrist {
       final PgnTestCaseList testCaseList = PgnTestCaseCatalog.getTestList(pgnTest);
       for (final PgnTestCase testCase : testCaseList.list()) {
         final Board board = testCase.finalPosition();
-        final BitboardPosition before = BitboardPositionUtility.fromStaticPosition(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()));
+        final BitboardPosition before = StaticPositionBridge.fromStaticPosition(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()));
         final var beforeHash = before.zobristPieces();
         final Side havingMove = board.getHavingMove();
         for (final LegalMove legalMove : board.getLegalMoves()) {
@@ -92,6 +93,6 @@ class TestBitboardPositionZobrist {
     final MoveSpecification e2e4 = new MoveSpecification(Square.E2, Square.E4);
     final BitboardPosition after = BitboardPosition.INITIAL_POSITION.afterMove(e2e4, Side.WHITE);
     assertEquals(after.zobristPieces(),
-        BitboardPositionUtility.fromStaticPosition(BitboardPositionUtility.toStaticPosition(after)).zobristPieces());
+        StaticPositionBridge.fromStaticPosition(StaticPositionBridge.toStaticPosition(after)).zobristPieces());
   }
 }

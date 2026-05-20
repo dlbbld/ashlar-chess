@@ -16,6 +16,7 @@ import com.dlb.chess.board.enums.Square;
 import com.dlb.chess.common.Nulls;
 import com.dlb.chess.common.utility.StaticPositionUtility;
 import com.dlb.chess.bitboard.BitboardPositionUtility;
+import com.dlb.chess.bitboard.StaticPositionBridge;
 
 /**
  * Test-only BFS oracle for the pawn-wall classifier.
@@ -59,7 +60,7 @@ final class PawnWallKingWalkOracle {
    * the helpmate-cooperation movement model, considering dynamic capture effects on opposing-pawn attacks.
    */
   static boolean isKingTrappedBehindPermanentBarrier(Board board, Side side) {
-    final StaticPosition position = BitboardPositionUtility.toStaticPosition(board.getBitboardPosition());
+    final StaticPosition position = StaticPositionBridge.toStaticPosition(board.getBitboardPosition());
     final Side opponent = side.getOppositeSide();
 
     final Square ownKingSquare = StaticPositionUtility.calculateKingSquare(position, side);

@@ -18,6 +18,7 @@ import com.dlb.chess.test.model.PgnTestCaseList;
 import com.dlb.chess.test.pgn.setup.PgnTestCaseCatalog;
 import com.dlb.chess.test.pgntest.enums.PgnTest;
 import com.dlb.chess.bitboard.BitboardPositionUtility;
+import com.dlb.chess.bitboard.StaticPositionBridge;
 
 /**
  * Differential test for {@link BitboardLegalMoveFactory#toLegalMove}: for every legal move on every corpus fixture,
@@ -40,7 +41,7 @@ class TestBitboardLegalMoveFactory {
         final Board board = testCase.finalPosition();
         final Side havingMove = board.getHavingMove();
         final BitboardPosition bitboardPosition = board.getBitboardPosition();
-        for (final LegalMove referenceMove : AbstractLegalMoves.calculateLegalMoves(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()),
+        for (final LegalMove referenceMove : AbstractLegalMoves.calculateLegalMoves(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()),
             havingMove, board.getCastlingRight(havingMove), board.getEnPassantCaptureTargetSquare())) {
           final LegalMove converted = BitboardLegalMoveFactory.toLegalMove(bitboardPosition,
               referenceMove.moveSpecification(), havingMove);

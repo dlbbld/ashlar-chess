@@ -17,6 +17,7 @@ import com.dlb.chess.fen.FenParserRaw;
 import com.dlb.chess.fen.constants.FenConstants;
 import com.dlb.chess.fen.model.Fen;
 import com.dlb.chess.fen.model.FenRaw;
+import com.dlb.chess.bitboard.StaticPositionBridge;
 
 class TestFenParserAdvanced implements EnumConstants {
 
@@ -333,7 +334,7 @@ class TestFenParserAdvanced implements EnumConstants {
     final Fen actual = FenParserAdvanced.parseFenAdvanced(FenConstants.FEN_INITIAL_STR);
 
     assertEquals(StaticPosition.INITIAL_POSITION,
-        com.dlb.chess.bitboard.BitboardPositionUtility.toStaticPosition(actual.bitboardPosition()));
+        com.dlb.chess.bitboard.StaticPositionBridge.toStaticPosition(actual.bitboardPosition()));
     assertEquals(WHITE, actual.havingMove());
     assertEquals(CastlingRight.KING_AND_QUEEN_SIDE, actual.castlingRightWhite());
     assertEquals(CastlingRight.KING_AND_QUEEN_SIDE, actual.castlingRightBlack());

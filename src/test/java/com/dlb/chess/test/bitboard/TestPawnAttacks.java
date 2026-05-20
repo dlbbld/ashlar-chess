@@ -19,6 +19,7 @@ import com.dlb.chess.test.model.PgnTestCase;
 import com.dlb.chess.test.model.PgnTestCaseList;
 import com.dlb.chess.test.pgn.setup.PgnTestCaseCatalog;
 import com.dlb.chess.test.pgntest.enums.PgnTest;
+import com.dlb.chess.bitboard.StaticPositionBridge;
 
 /**
  * Differential test for {@link PawnAttacks}: per side, the precomputed bitboard table must agree with the existing
@@ -68,8 +69,8 @@ class TestPawnAttacks {
     for (final PgnTest pgnTest : PgnTest.values()) {
       final PgnTestCaseList testCaseList = PgnTestCaseCatalog.getTestList(pgnTest);
       for (final PgnTestCase testCase : testCaseList.list()) {
-        final StaticPosition staticPosition = BitboardPositionUtility.toStaticPosition(testCase.finalPosition().getBitboardPosition());
-        final BitboardPosition bitboardPosition = BitboardPositionUtility.fromStaticPosition(staticPosition);
+        final StaticPosition staticPosition = StaticPositionBridge.toStaticPosition(testCase.finalPosition().getBitboardPosition());
+        final BitboardPosition bitboardPosition = StaticPositionBridge.fromStaticPosition(staticPosition);
         assertSideAgrees(bitboardPosition.whitePawns(), Side.WHITE, testCase);
         assertSideAgrees(bitboardPosition.blackPawns(), Side.BLACK, testCase);
       }

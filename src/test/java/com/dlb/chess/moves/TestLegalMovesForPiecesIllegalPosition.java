@@ -16,6 +16,7 @@ import com.dlb.chess.common.constants.EnumConstants;
 import com.dlb.chess.common.model.MoveSpecification;
 import com.dlb.chess.fen.FenParserAdvanced;
 import com.dlb.chess.model.LegalMove;
+import com.dlb.chess.bitboard.StaticPositionBridge;
 
 class TestLegalMovesForPiecesIllegalPosition implements EnumConstants {
 
@@ -23,7 +24,7 @@ class TestLegalMovesForPiecesIllegalPosition implements EnumConstants {
   // returns BitboardPosition after Phase 3+4 of the role-inversion release. Test-oracle bridge below derives the
   // StaticPosition from the parser's bitboard output.
   private static StaticPosition staticPositionFromFen(String piecePlacement) {
-    return BitboardPositionUtility.toStaticPosition(FenParserAdvanced.validatePiecePlacement(piecePlacement));
+    return StaticPositionBridge.toStaticPosition(FenParserAdvanced.validatePiecePlacement(piecePlacement));
   }
 
   @SuppressWarnings("static-method")

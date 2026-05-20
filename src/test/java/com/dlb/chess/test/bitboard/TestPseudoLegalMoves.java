@@ -25,6 +25,7 @@ import com.dlb.chess.test.model.PgnTestCase;
 import com.dlb.chess.test.model.PgnTestCaseList;
 import com.dlb.chess.test.pgn.setup.PgnTestCaseCatalog;
 import com.dlb.chess.test.pgntest.enums.PgnTest;
+import com.dlb.chess.bitboard.StaticPositionBridge;
 
 /**
  * Differential test for the per-piece pseudo-legal target generators ({@link KnightMoves}, {@link KingMoves},
@@ -40,8 +41,8 @@ class TestPseudoLegalMoves {
     for (final PgnTest pgnTest : PgnTest.values()) {
       final PgnTestCaseList testCaseList = PgnTestCaseCatalog.getTestList(pgnTest);
       for (final PgnTestCase testCase : testCaseList.list()) {
-        final StaticPosition staticPosition = BitboardPositionUtility.toStaticPosition(testCase.finalPosition().getBitboardPosition());
-        final BitboardPosition bitboardPosition = BitboardPositionUtility.fromStaticPosition(staticPosition);
+        final StaticPosition staticPosition = StaticPositionBridge.toStaticPosition(testCase.finalPosition().getBitboardPosition());
+        final BitboardPosition bitboardPosition = StaticPositionBridge.fromStaticPosition(staticPosition);
         assertKnightTargetsAgree(staticPosition, bitboardPosition, Side.WHITE, testCase);
         assertKnightTargetsAgree(staticPosition, bitboardPosition, Side.BLACK, testCase);
       }
@@ -70,8 +71,8 @@ class TestPseudoLegalMoves {
     for (final PgnTest pgnTest : PgnTest.values()) {
       final PgnTestCaseList testCaseList = PgnTestCaseCatalog.getTestList(pgnTest);
       for (final PgnTestCase testCase : testCaseList.list()) {
-        final StaticPosition staticPosition = BitboardPositionUtility.toStaticPosition(testCase.finalPosition().getBitboardPosition());
-        final BitboardPosition bitboardPosition = BitboardPositionUtility.fromStaticPosition(staticPosition);
+        final StaticPosition staticPosition = StaticPositionBridge.toStaticPosition(testCase.finalPosition().getBitboardPosition());
+        final BitboardPosition bitboardPosition = StaticPositionBridge.fromStaticPosition(staticPosition);
         assertKingTargetsAgree(staticPosition, bitboardPosition, Side.WHITE, testCase);
         assertKingTargetsAgree(staticPosition, bitboardPosition, Side.BLACK, testCase);
       }
@@ -100,8 +101,8 @@ class TestPseudoLegalMoves {
     for (final PgnTest pgnTest : PgnTest.values()) {
       final PgnTestCaseList testCaseList = PgnTestCaseCatalog.getTestList(pgnTest);
       for (final PgnTestCase testCase : testCaseList.list()) {
-        final StaticPosition staticPosition = BitboardPositionUtility.toStaticPosition(testCase.finalPosition().getBitboardPosition());
-        final BitboardPosition bitboardPosition = BitboardPositionUtility.fromStaticPosition(staticPosition);
+        final StaticPosition staticPosition = StaticPositionBridge.toStaticPosition(testCase.finalPosition().getBitboardPosition());
+        final BitboardPosition bitboardPosition = StaticPositionBridge.fromStaticPosition(staticPosition);
         assertBishopTargetsAgree(staticPosition, bitboardPosition, Side.WHITE, testCase);
         assertBishopTargetsAgree(staticPosition, bitboardPosition, Side.BLACK, testCase);
       }
@@ -133,8 +134,8 @@ class TestPseudoLegalMoves {
     for (final PgnTest pgnTest : PgnTest.values()) {
       final PgnTestCaseList testCaseList = PgnTestCaseCatalog.getTestList(pgnTest);
       for (final PgnTestCase testCase : testCaseList.list()) {
-        final StaticPosition staticPosition = BitboardPositionUtility.toStaticPosition(testCase.finalPosition().getBitboardPosition());
-        final BitboardPosition bitboardPosition = BitboardPositionUtility.fromStaticPosition(staticPosition);
+        final StaticPosition staticPosition = StaticPositionBridge.toStaticPosition(testCase.finalPosition().getBitboardPosition());
+        final BitboardPosition bitboardPosition = StaticPositionBridge.fromStaticPosition(staticPosition);
         assertRookTargetsAgree(staticPosition, bitboardPosition, Side.WHITE, testCase);
         assertRookTargetsAgree(staticPosition, bitboardPosition, Side.BLACK, testCase);
       }
@@ -166,8 +167,8 @@ class TestPseudoLegalMoves {
     for (final PgnTest pgnTest : PgnTest.values()) {
       final PgnTestCaseList testCaseList = PgnTestCaseCatalog.getTestList(pgnTest);
       for (final PgnTestCase testCase : testCaseList.list()) {
-        final StaticPosition staticPosition = BitboardPositionUtility.toStaticPosition(testCase.finalPosition().getBitboardPosition());
-        final BitboardPosition bitboardPosition = BitboardPositionUtility.fromStaticPosition(staticPosition);
+        final StaticPosition staticPosition = StaticPositionBridge.toStaticPosition(testCase.finalPosition().getBitboardPosition());
+        final BitboardPosition bitboardPosition = StaticPositionBridge.fromStaticPosition(staticPosition);
         assertQueenTargetsAgree(staticPosition, bitboardPosition, Side.WHITE, testCase);
         assertQueenTargetsAgree(staticPosition, bitboardPosition, Side.BLACK, testCase);
       }

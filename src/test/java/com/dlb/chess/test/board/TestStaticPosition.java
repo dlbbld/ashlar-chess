@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 
 import com.dlb.chess.board.Board;
 import com.dlb.chess.bitboard.BitboardPositionUtility;
+import com.dlb.chess.bitboard.StaticPositionBridge;
 
 class TestStaticPosition {
 
@@ -26,7 +27,7 @@ class TestStaticPosition {
         RNBQKBNR
         """;
 
-    assertEquals(expected, BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()).toString());
+    assertEquals(expected, StaticPositionBridge.toStaticPosition(board.getBitboardPosition()).toString());
   }
 
   @SuppressWarnings("static-method")
@@ -48,7 +49,7 @@ class TestStaticPosition {
         RNBQK..R
         """;
 
-    assertEquals(expected, BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()).toString());
+    assertEquals(expected, StaticPositionBridge.toStaticPosition(board.getBitboardPosition()).toString());
   }
 
   @SuppressWarnings("static-method")
@@ -68,6 +69,6 @@ class TestStaticPosition {
         ......R.
         """;
 
-    assertEquals(expected, BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()).toString());
+    assertEquals(expected, StaticPositionBridge.toStaticPosition(board.getBitboardPosition()).toString());
   }
 }

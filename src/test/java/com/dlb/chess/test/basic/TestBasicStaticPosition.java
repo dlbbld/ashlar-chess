@@ -12,6 +12,7 @@ import com.dlb.chess.board.enums.Square;
 import com.dlb.chess.common.constants.EnumConstants;
 import com.dlb.chess.fen.FenParserAdvanced;
 import com.dlb.chess.fen.constants.FenConstants;
+import com.dlb.chess.bitboard.StaticPositionBridge;
 
 class TestBasicStaticPosition implements EnumConstants {
 
@@ -33,7 +34,7 @@ class TestBasicStaticPosition implements EnumConstants {
   void testInitialPosition() throws Exception {
     // FEN parser now produces BitboardPosition; derive StaticPosition via the test-oracle bridge for the
     // structural assertion against the reference StaticPosition.INITIAL_POSITION constant.
-    final StaticPosition staticInitialPositionActual = BitboardPositionUtility.toStaticPosition(
+    final StaticPosition staticInitialPositionActual = StaticPositionBridge.toStaticPosition(
         FenParserAdvanced.parseFenAdvanced(FenConstants.FEN_INITIAL_STR).bitboardPosition());
 
     assertEquals(StaticPosition.INITIAL_POSITION, staticInitialPositionActual);

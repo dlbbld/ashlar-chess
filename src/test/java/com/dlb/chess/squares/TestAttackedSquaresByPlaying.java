@@ -17,6 +17,7 @@ import com.dlb.chess.board.enums.Square;
 import com.dlb.chess.common.constants.EnumConstants;
 import com.dlb.chess.common.model.MoveSpecification;
 import com.dlb.chess.bitboard.BitboardPositionUtility;
+import com.dlb.chess.bitboard.StaticPositionBridge;
 
 class TestAttackedSquaresByPlaying implements EnumConstants {
 
@@ -27,43 +28,43 @@ class TestAttackedSquaresByPlaying implements EnumConstants {
 
     // test initital position
     // white
-    checkExceptionRook(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), A2, WHITE);
+    checkExceptionRook(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), A2, WHITE);
 
-    checkExceptionRook(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), D5, WHITE);
+    checkExceptionRook(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), D5, WHITE);
 
-    checkExceptionRook(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), A8, WHITE);
+    checkExceptionRook(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), A8, WHITE);
 
     // black
-    checkExceptionRook(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), A7, BLACK);
+    checkExceptionRook(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), A7, BLACK);
 
-    checkExceptionRook(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), D5, BLACK);
+    checkExceptionRook(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), D5, BLACK);
 
-    checkExceptionRook(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), A1, BLACK);
+    checkExceptionRook(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), A1, BLACK);
 
     {
       final Set<Square> potentialToSquareSet = RookAttackedSquares
-          .calculateRookAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), A1, WHITE);
+          .calculateRookAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), A1, WHITE);
       final Set<Square> expectedSquareSet = new TreeSet<>(Arrays.asList(A2, B1));
       assertEquals(expectedSquareSet, potentialToSquareSet);
     }
 
     {
       final Set<Square> potentialToSquareSet = RookAttackedSquares
-          .calculateRookAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), H1, WHITE);
+          .calculateRookAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), H1, WHITE);
       final Set<Square> expectedSquareSet = new TreeSet<>(Arrays.asList(G1, H2));
       assertEquals(expectedSquareSet, potentialToSquareSet);
     }
 
     {
       final Set<Square> potentialToSquareSet = RookAttackedSquares
-          .calculateRookAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), A8, BLACK);
+          .calculateRookAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), A8, BLACK);
       final Set<Square> expectedSquareSet = new TreeSet<>(Arrays.asList(A7, B8));
       assertEquals(expectedSquareSet, potentialToSquareSet);
     }
 
     {
       final Set<Square> potentialToSquareSet = RookAttackedSquares
-          .calculateRookAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), H8, BLACK);
+          .calculateRookAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), H8, BLACK);
       final Set<Square> expectedSquareSet = new TreeSet<>(Arrays.asList(G8, H7));
       assertEquals(expectedSquareSet, potentialToSquareSet);
     }
@@ -77,13 +78,13 @@ class TestAttackedSquaresByPlaying implements EnumConstants {
 
     {
       final Set<Square> potentialToSquareSet = RookAttackedSquares
-          .calculateRookAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), A1, WHITE);
+          .calculateRookAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), A1, WHITE);
       final Set<Square> expectedSquareSet = new TreeSet<>(Arrays.asList(A2, A3, A4, B1));
       assertEquals(expectedSquareSet, potentialToSquareSet);
     }
     {
       final Set<Square> potentialToSquareSet = RookAttackedSquares
-          .calculateRookAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), H8, BLACK);
+          .calculateRookAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), H8, BLACK);
       final Set<Square> expectedSquareSet = new TreeSet<>(Arrays.asList(G8, H7));
       assertEquals(expectedSquareSet, potentialToSquareSet);
     }
@@ -95,13 +96,13 @@ class TestAttackedSquaresByPlaying implements EnumConstants {
 
     {
       final Set<Square> potentialToSquareSet = RookAttackedSquares
-          .calculateRookAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), A1, WHITE);
+          .calculateRookAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), A1, WHITE);
       final Set<Square> expectedSquareSet = new TreeSet<>(Arrays.asList(A2, A3, A4, B1));
       assertEquals(expectedSquareSet, potentialToSquareSet);
     }
     {
       final Set<Square> potentialToSquareSet = RookAttackedSquares
-          .calculateRookAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), H8, BLACK);
+          .calculateRookAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), H8, BLACK);
       final Set<Square> expectedSquareSet = new TreeSet<>(Arrays.asList(H7, H6, H5, G8));
       assertEquals(expectedSquareSet, potentialToSquareSet);
     }
@@ -113,13 +114,13 @@ class TestAttackedSquaresByPlaying implements EnumConstants {
 
     {
       final Set<Square> potentialToSquareSet = RookAttackedSquares
-          .calculateRookAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), A3, WHITE);
+          .calculateRookAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), A3, WHITE);
       final Set<Square> expectedSquareSet = new TreeSet<>(Arrays.asList(B3, C3, D3, E3, F3, G3, H3, A2, A1, A4));
       assertEquals(expectedSquareSet, potentialToSquareSet);
     }
     {
       final Set<Square> potentialToSquareSet = RookAttackedSquares
-          .calculateRookAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), H8, BLACK);
+          .calculateRookAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), H8, BLACK);
       final Set<Square> expectedSquareSet = new TreeSet<>(Arrays.asList(H7, H6, H5, G8));
       assertEquals(expectedSquareSet, potentialToSquareSet);
     }
@@ -131,13 +132,13 @@ class TestAttackedSquaresByPlaying implements EnumConstants {
 
     {
       final Set<Square> potentialToSquareSet = RookAttackedSquares
-          .calculateRookAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), A3, WHITE);
+          .calculateRookAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), A3, WHITE);
       final Set<Square> expectedSquareSet = new TreeSet<>(Arrays.asList(B3, C3, D3, E3, F3, G3, H3, A2, A1, A4));
       assertEquals(expectedSquareSet, potentialToSquareSet);
     }
     {
       final Set<Square> potentialToSquareSet = RookAttackedSquares
-          .calculateRookAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), H8, BLACK);
+          .calculateRookAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), H8, BLACK);
       final Set<Square> expectedSquareSet = new TreeSet<>(Arrays.asList(H7, H6, H5, H4, G8));
       assertEquals(expectedSquareSet, potentialToSquareSet);
     }
@@ -149,14 +150,14 @@ class TestAttackedSquaresByPlaying implements EnumConstants {
 
     {
       final Set<Square> potentialToSquareSet = RookAttackedSquares
-          .calculateRookAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), D3, WHITE);
+          .calculateRookAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), D3, WHITE);
       final Set<Square> expectedSquareSet = new TreeSet<>(
           Arrays.asList(D4, D5, D6, D7, E3, F3, G3, H3, C3, B3, A3, D2));
       assertEquals(expectedSquareSet, potentialToSquareSet);
     }
     {
       final Set<Square> potentialToSquareSet = RookAttackedSquares
-          .calculateRookAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), H8, BLACK);
+          .calculateRookAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), H8, BLACK);
       final Set<Square> expectedSquareSet = new TreeSet<>(Arrays.asList(H7, H6, H5, H4, G8));
       assertEquals(expectedSquareSet, potentialToSquareSet);
     }
@@ -168,14 +169,14 @@ class TestAttackedSquaresByPlaying implements EnumConstants {
 
     {
       final Set<Square> potentialToSquareSet = RookAttackedSquares
-          .calculateRookAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), D3, WHITE);
+          .calculateRookAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), D3, WHITE);
       final Set<Square> expectedSquareSet = new TreeSet<>(
           Arrays.asList(D4, D5, D6, D7, E3, F3, G3, H3, C3, B3, A3, D2));
       assertEquals(expectedSquareSet, potentialToSquareSet);
     }
     {
       final Set<Square> potentialToSquareSet = RookAttackedSquares
-          .calculateRookAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), H5, BLACK);
+          .calculateRookAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), H5, BLACK);
       final Set<Square> expectedSquareSet = new TreeSet<>(Arrays.asList(H6, H7, H8, G5, F5, E5, D5, C5, B5, A5, H4));
       assertEquals(expectedSquareSet, potentialToSquareSet);
     }
@@ -187,14 +188,14 @@ class TestAttackedSquaresByPlaying implements EnumConstants {
 
     {
       final Set<Square> potentialToSquareSet = RookAttackedSquares
-          .calculateRookAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), D5, WHITE);
+          .calculateRookAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), D5, WHITE);
       final Set<Square> expectedSquareSet = new TreeSet<>(
           Arrays.asList(D6, D7, E5, F5, G5, H5, D4, D3, C5, B5, A5, D2));
       assertEquals(expectedSquareSet, potentialToSquareSet);
     }
     {
       final Set<Square> potentialToSquareSet = RookAttackedSquares
-          .calculateRookAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), H5, BLACK);
+          .calculateRookAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), H5, BLACK);
       final Set<Square> expectedSquareSet = new TreeSet<>(Arrays.asList(H6, H7, H8, G5, F5, E5, D5, H4));
       assertEquals(expectedSquareSet, potentialToSquareSet);
     }
@@ -206,13 +207,13 @@ class TestAttackedSquaresByPlaying implements EnumConstants {
 
     {
       final Set<Square> potentialToSquareSet = RookAttackedSquares
-          .calculateRookAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), D5, WHITE);
+          .calculateRookAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), D5, WHITE);
       final Set<Square> expectedSquareSet = new TreeSet<>(Arrays.asList(D6, D7, E5, D4, D3, C5, B5, A5, D2));
       assertEquals(expectedSquareSet, potentialToSquareSet);
     }
     {
       final Set<Square> potentialToSquareSet = RookAttackedSquares
-          .calculateRookAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), E5, BLACK);
+          .calculateRookAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), E5, BLACK);
       final Set<Square> expectedSquareSet = new TreeSet<>(Arrays.asList(E6, F5, G5, H5, E4, E3, E2, D5, E7));
       assertEquals(expectedSquareSet, potentialToSquareSet);
     }
@@ -224,13 +225,13 @@ class TestAttackedSquaresByPlaying implements EnumConstants {
 
     {
       final Set<Square> potentialToSquareSet = RookAttackedSquares
-          .calculateRookAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), D5, WHITE);
+          .calculateRookAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), D5, WHITE);
       final Set<Square> expectedSquareSet = new TreeSet<>(Arrays.asList(D6, D7, E5, D4, D3, C5, B5, A5, D2));
       assertEquals(expectedSquareSet, potentialToSquareSet);
     }
     {
       final Set<Square> potentialToSquareSet = RookAttackedSquares
-          .calculateRookAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), E5, BLACK);
+          .calculateRookAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), E5, BLACK);
       final Set<Square> expectedSquareSet = new TreeSet<>(Arrays.asList(E6, F5, G5, H5, E4, E3, D5, E7));
       assertEquals(expectedSquareSet, potentialToSquareSet);
     }
@@ -242,13 +243,13 @@ class TestAttackedSquaresByPlaying implements EnumConstants {
 
     {
       final Set<Square> potentialToSquareSet = RookAttackedSquares
-          .calculateRookAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), D5, WHITE);
+          .calculateRookAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), D5, WHITE);
       final Set<Square> expectedSquareSet = new TreeSet<>(Arrays.asList(D6, D7, E5, D4, D3, C5, B5, A5, D2));
       assertEquals(expectedSquareSet, potentialToSquareSet);
     }
     {
       final Set<Square> potentialToSquareSet = RookAttackedSquares
-          .calculateRookAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), E5, BLACK);
+          .calculateRookAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), E5, BLACK);
       final Set<Square> expectedSquareSet = new TreeSet<>(Arrays.asList(E6, F5, G5, H5, E4, E3, D5, E7));
       assertEquals(expectedSquareSet, potentialToSquareSet);
     }
@@ -260,13 +261,13 @@ class TestAttackedSquaresByPlaying implements EnumConstants {
 
     {
       final Set<Square> potentialToSquareSet = RookAttackedSquares
-          .calculateRookAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), D5, WHITE);
+          .calculateRookAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), D5, WHITE);
       final Set<Square> expectedSquareSet = new TreeSet<>(Arrays.asList(D6, D7, E5, D4, D3, C5, B5, A5, D2));
       assertEquals(expectedSquareSet, potentialToSquareSet);
     }
     {
       final Set<Square> potentialToSquareSet = RookAttackedSquares
-          .calculateRookAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), E5, BLACK);
+          .calculateRookAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), E5, BLACK);
       final Set<Square> expectedSquareSet = new TreeSet<>(Arrays.asList(E6, F5, G5, H5, E4, E3, D5, E7));
       assertEquals(expectedSquareSet, potentialToSquareSet);
     }
@@ -278,13 +279,13 @@ class TestAttackedSquaresByPlaying implements EnumConstants {
 
     {
       final Set<Square> potentialToSquareSet = RookAttackedSquares
-          .calculateRookAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), D5, WHITE);
+          .calculateRookAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), D5, WHITE);
       final Set<Square> expectedSquareSet = new TreeSet<>(Arrays.asList(D6, D7, E5, D4, C5, B5, A5));
       assertEquals(expectedSquareSet, potentialToSquareSet);
     }
     {
       final Set<Square> potentialToSquareSet = RookAttackedSquares
-          .calculateRookAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), E5, BLACK);
+          .calculateRookAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), E5, BLACK);
       final Set<Square> expectedSquareSet = new TreeSet<>(Arrays.asList(E6, F5, G5, H5, E4, E3, D5, E7));
       assertEquals(expectedSquareSet, potentialToSquareSet);
     }
@@ -296,13 +297,13 @@ class TestAttackedSquaresByPlaying implements EnumConstants {
 
     {
       final Set<Square> potentialToSquareSet = RookAttackedSquares
-          .calculateRookAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), D5, WHITE);
+          .calculateRookAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), D5, WHITE);
       final Set<Square> expectedSquareSet = new TreeSet<>(Arrays.asList(D6, D7, E5, D4, C5, B5));
       assertEquals(expectedSquareSet, potentialToSquareSet);
     }
     {
       final Set<Square> potentialToSquareSet = RookAttackedSquares
-          .calculateRookAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), E5, BLACK);
+          .calculateRookAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), E5, BLACK);
       final Set<Square> expectedSquareSet = new TreeSet<>(Arrays.asList(E6, F5, G5, H5, E4, E3, D5, E7));
       assertEquals(expectedSquareSet, potentialToSquareSet);
     }
@@ -314,13 +315,13 @@ class TestAttackedSquaresByPlaying implements EnumConstants {
 
     {
       final Set<Square> potentialToSquareSet = RookAttackedSquares
-          .calculateRookAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), D5, WHITE);
+          .calculateRookAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), D5, WHITE);
       final Set<Square> expectedSquareSet = new TreeSet<>(Arrays.asList(D6, D7, E5, D4, D3, C5, D2, B5));
       assertEquals(expectedSquareSet, potentialToSquareSet);
     }
     {
       final Set<Square> potentialToSquareSet = RookAttackedSquares
-          .calculateRookAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), E5, BLACK);
+          .calculateRookAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), E5, BLACK);
       final Set<Square> expectedSquareSet = new TreeSet<>(Arrays.asList(E6, E4, E3, D5, F5, E7));
       assertEquals(expectedSquareSet, potentialToSquareSet);
     }
@@ -333,13 +334,13 @@ class TestAttackedSquaresByPlaying implements EnumConstants {
 
     {
       final Set<Square> potentialToSquareSet = RookAttackedSquares
-          .calculateRookAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), D5, WHITE);
+          .calculateRookAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), D5, WHITE);
       final Set<Square> expectedSquareSet = new TreeSet<>(Arrays.asList(D6, D7, E5, D4, D3, C5, D2, B5));
       assertEquals(expectedSquareSet, potentialToSquareSet);
     }
     {
       final Set<Square> potentialToSquareSet = RookAttackedSquares
-          .calculateRookAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), E5, BLACK);
+          .calculateRookAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), E5, BLACK);
       final Set<Square> expectedSquareSet = new TreeSet<>(Arrays.asList(E6, E4, E3, D5, F5, E7));
       assertEquals(expectedSquareSet, potentialToSquareSet);
     }
@@ -352,13 +353,13 @@ class TestAttackedSquaresByPlaying implements EnumConstants {
 
     {
       final Set<Square> potentialToSquareSet = RookAttackedSquares
-          .calculateRookAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), D5, WHITE);
+          .calculateRookAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), D5, WHITE);
       final Set<Square> expectedSquareSet = new TreeSet<>(Arrays.asList(D6, D7, E5, F5, D4, D3, C5, B5, D2));
       assertEquals(expectedSquareSet, potentialToSquareSet);
     }
     {
       final Set<Square> potentialToSquareSet = RookAttackedSquares
-          .calculateRookAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), E3, BLACK);
+          .calculateRookAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), E3, BLACK);
       final Set<Square> expectedSquareSet = new TreeSet<>(Arrays.asList(E4, E5, E6, F3, G3, H3, E2, E1, D3, C3, E7));
       assertEquals(expectedSquareSet, potentialToSquareSet);
     }
@@ -371,13 +372,13 @@ class TestAttackedSquaresByPlaying implements EnumConstants {
 
     {
       final Set<Square> potentialToSquareSet = RookAttackedSquares
-          .calculateRookAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), D5, WHITE);
+          .calculateRookAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), D5, WHITE);
       final Set<Square> expectedSquareSet = new TreeSet<>(Arrays.asList(D6, D7, E5, F5, D4, D3, C5, D2, B5));
       assertEquals(expectedSquareSet, potentialToSquareSet);
     }
     {
       final Set<Square> potentialToSquareSet = RookAttackedSquares
-          .calculateRookAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), E3, BLACK);
+          .calculateRookAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), E3, BLACK);
       final Set<Square> expectedSquareSet = new TreeSet<>(Arrays.asList(E4, E5, E6, F3, G3, H3, E2, D3, C3, E7));
       assertEquals(expectedSquareSet, potentialToSquareSet);
     }
@@ -393,30 +394,30 @@ class TestAttackedSquaresByPlaying implements EnumConstants {
     // white
     {
       final Set<Square> potentialToSquareSet = KnightAttackedSquares
-          .calculateKnightAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), B1, WHITE);
+          .calculateKnightAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), B1, WHITE);
       final Set<Square> expectedSquareSet = new TreeSet<>(Arrays.asList(C3, A3, D2));
       assertEquals(expectedSquareSet, potentialToSquareSet);
     }
 
-    checkExceptionKnight(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), A1, WHITE);
+    checkExceptionKnight(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), A1, WHITE);
 
-    checkExceptionKnight(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), D4, WHITE);
+    checkExceptionKnight(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), D4, WHITE);
 
-    checkExceptionKnight(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), B8, WHITE);
+    checkExceptionKnight(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), B8, WHITE);
 
     // black
     {
       final Set<Square> potentialToSquareSet = KnightAttackedSquares
-          .calculateKnightAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), G8, BLACK);
+          .calculateKnightAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), G8, BLACK);
       final Set<Square> expectedSquareSet = new TreeSet<>(Arrays.asList(F6, H6, E7));
       assertEquals(expectedSquareSet, potentialToSquareSet);
     }
 
-    checkExceptionKnight(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), A1, BLACK);
+    checkExceptionKnight(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), A1, BLACK);
 
-    checkExceptionKnight(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), D4, BLACK);
+    checkExceptionKnight(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), D4, BLACK);
 
-    checkExceptionKnight(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), B1, BLACK);
+    checkExceptionKnight(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), B1, BLACK);
 
     // now we look on knights initially on B1 and F8 after each move from white and
     // black
@@ -427,13 +428,13 @@ class TestAttackedSquaresByPlaying implements EnumConstants {
 
     {
       final Set<Square> potentialToSquareSet = KnightAttackedSquares
-          .calculateKnightAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), C3, WHITE);
+          .calculateKnightAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), C3, WHITE);
       final Set<Square> expectedSquareSet = new TreeSet<>(Arrays.asList(D5, E4, B1, A4, B5, A2, E2, D1));
       assertEquals(expectedSquareSet, potentialToSquareSet);
     }
     {
       final Set<Square> potentialToSquareSet = KnightAttackedSquares
-          .calculateKnightAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), G8, BLACK);
+          .calculateKnightAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), G8, BLACK);
       final Set<Square> expectedSquareSet = new TreeSet<>(Arrays.asList(F6, H6, E7));
       assertEquals(expectedSquareSet, potentialToSquareSet);
     }
@@ -445,13 +446,13 @@ class TestAttackedSquaresByPlaying implements EnumConstants {
 
     {
       final Set<Square> potentialToSquareSet = KnightAttackedSquares
-          .calculateKnightAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), C3, WHITE);
+          .calculateKnightAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), C3, WHITE);
       final Set<Square> expectedSquareSet = new TreeSet<>(Arrays.asList(D5, E4, B1, A4, B5, A2, E2, D1));
       assertEquals(expectedSquareSet, potentialToSquareSet);
     }
     {
       final Set<Square> potentialToSquareSet = KnightAttackedSquares
-          .calculateKnightAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), H6, BLACK);
+          .calculateKnightAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), H6, BLACK);
       final Set<Square> expectedSquareSet = new TreeSet<>(Arrays.asList(G4, F5, G8, F7));
       assertEquals(expectedSquareSet, potentialToSquareSet);
     }
@@ -463,13 +464,13 @@ class TestAttackedSquaresByPlaying implements EnumConstants {
 
     {
       final Set<Square> potentialToSquareSet = KnightAttackedSquares
-          .calculateKnightAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), D5, WHITE);
+          .calculateKnightAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), D5, WHITE);
       final Set<Square> expectedSquareSet = new TreeSet<>(Arrays.asList(E7, F6, F4, E3, C3, B4, B6, C7));
       assertEquals(expectedSquareSet, potentialToSquareSet);
     }
     {
       final Set<Square> potentialToSquareSet = KnightAttackedSquares
-          .calculateKnightAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), H6, BLACK);
+          .calculateKnightAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), H6, BLACK);
       final Set<Square> expectedSquareSet = new TreeSet<>(Arrays.asList(G4, F5, G8, F7));
       assertEquals(expectedSquareSet, potentialToSquareSet);
     }
@@ -481,13 +482,13 @@ class TestAttackedSquaresByPlaying implements EnumConstants {
 
     {
       final Set<Square> potentialToSquareSet = KnightAttackedSquares
-          .calculateKnightAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), D5, WHITE);
+          .calculateKnightAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), D5, WHITE);
       final Set<Square> expectedSquareSet = new TreeSet<>(Arrays.asList(E7, F6, F4, E3, C3, B4, B6, C7));
       assertEquals(expectedSquareSet, potentialToSquareSet);
     }
     {
       final Set<Square> potentialToSquareSet = KnightAttackedSquares
-          .calculateKnightAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), G4, BLACK);
+          .calculateKnightAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), G4, BLACK);
       final Set<Square> expectedSquareSet = new TreeSet<>(Arrays.asList(F2, E3, E5, F6, H6, H2));
       assertEquals(expectedSquareSet, potentialToSquareSet);
     }
@@ -499,13 +500,13 @@ class TestAttackedSquaresByPlaying implements EnumConstants {
 
     {
       final Set<Square> potentialToSquareSet = KnightAttackedSquares
-          .calculateKnightAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), D5, WHITE);
+          .calculateKnightAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), D5, WHITE);
       final Set<Square> expectedSquareSet = new TreeSet<>(Arrays.asList(E7, F6, F4, E3, C3, B4, B6, C7));
       assertEquals(expectedSquareSet, potentialToSquareSet);
     }
     {
       final Set<Square> potentialToSquareSet = KnightAttackedSquares
-          .calculateKnightAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), G4, BLACK);
+          .calculateKnightAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), G4, BLACK);
       final Set<Square> expectedSquareSet = new TreeSet<>(Arrays.asList(F2, E3, E5, F6, H6, H2));
       assertEquals(expectedSquareSet, potentialToSquareSet);
     }
@@ -517,13 +518,13 @@ class TestAttackedSquaresByPlaying implements EnumConstants {
 
     {
       final Set<Square> potentialToSquareSet = KnightAttackedSquares
-          .calculateKnightAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), D5, WHITE);
+          .calculateKnightAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), D5, WHITE);
       final Set<Square> expectedSquareSet = new TreeSet<>(Arrays.asList(E7, F6, F4, E3, C3, B4, B6, C7));
       assertEquals(expectedSquareSet, potentialToSquareSet);
     }
     {
       final Set<Square> potentialToSquareSet = KnightAttackedSquares
-          .calculateKnightAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), G4, BLACK);
+          .calculateKnightAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), G4, BLACK);
       final Set<Square> expectedSquareSet = new TreeSet<>(Arrays.asList(F2, E3, E5, F6, H6, H2));
       assertEquals(expectedSquareSet, potentialToSquareSet);
     }
@@ -535,13 +536,13 @@ class TestAttackedSquaresByPlaying implements EnumConstants {
 
     {
       final Set<Square> potentialToSquareSet = KnightAttackedSquares
-          .calculateKnightAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), D5, WHITE);
+          .calculateKnightAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), D5, WHITE);
       final Set<Square> expectedSquareSet = new TreeSet<>(Arrays.asList(E7, F6, F4, E3, B4, B6, C7, C3));
       assertEquals(expectedSquareSet, potentialToSquareSet);
     }
     {
       final Set<Square> potentialToSquareSet = KnightAttackedSquares
-          .calculateKnightAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), G4, BLACK);
+          .calculateKnightAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), G4, BLACK);
       final Set<Square> expectedSquareSet = new TreeSet<>(Arrays.asList(F2, E3, E5, F6, H2, H6));
       assertEquals(expectedSquareSet, potentialToSquareSet);
     }
@@ -553,13 +554,13 @@ class TestAttackedSquaresByPlaying implements EnumConstants {
 
     {
       final Set<Square> potentialToSquareSet = KnightAttackedSquares
-          .calculateKnightAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), D5, WHITE);
+          .calculateKnightAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), D5, WHITE);
       final Set<Square> expectedSquareSet = new TreeSet<>(Arrays.asList(E7, F6, F4, E3, B4, B6, C7, C3));
       assertEquals(expectedSquareSet, potentialToSquareSet);
     }
     {
       final Set<Square> potentialToSquareSet = KnightAttackedSquares
-          .calculateKnightAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), G4, BLACK);
+          .calculateKnightAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), G4, BLACK);
       final Set<Square> expectedSquareSet = new TreeSet<>(Arrays.asList(F2, E3, E5, F6, H2, H6));
       assertEquals(expectedSquareSet, potentialToSquareSet);
     }
@@ -571,13 +572,13 @@ class TestAttackedSquaresByPlaying implements EnumConstants {
 
     {
       final Set<Square> potentialToSquareSet = KnightAttackedSquares
-          .calculateKnightAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), D5, WHITE);
+          .calculateKnightAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), D5, WHITE);
       final Set<Square> expectedSquareSet = new TreeSet<>(Arrays.asList(E7, F6, F4, E3, B4, B6, C7, C3));
       assertEquals(expectedSquareSet, potentialToSquareSet);
     }
     {
       final Set<Square> potentialToSquareSet = KnightAttackedSquares
-          .calculateKnightAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), G4, BLACK);
+          .calculateKnightAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), G4, BLACK);
       final Set<Square> expectedSquareSet = new TreeSet<>(Arrays.asList(F2, E3, E5, F6, H2, H6));
       assertEquals(expectedSquareSet, potentialToSquareSet);
     }
@@ -589,13 +590,13 @@ class TestAttackedSquaresByPlaying implements EnumConstants {
 
     {
       final Set<Square> potentialToSquareSet = KnightAttackedSquares
-          .calculateKnightAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), D5, WHITE);
+          .calculateKnightAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), D5, WHITE);
       final Set<Square> expectedSquareSet = new TreeSet<>(Arrays.asList(E7, F6, F4, E3, B4, B6, C7, C3));
       assertEquals(expectedSquareSet, potentialToSquareSet);
     }
     {
       final Set<Square> potentialToSquareSet = KnightAttackedSquares
-          .calculateKnightAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), G4, BLACK);
+          .calculateKnightAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), G4, BLACK);
       final Set<Square> expectedSquareSet = new TreeSet<>(Arrays.asList(F2, E3, E5, F6, H2, H6));
       assertEquals(expectedSquareSet, potentialToSquareSet);
     }
@@ -608,13 +609,13 @@ class TestAttackedSquaresByPlaying implements EnumConstants {
 
     {
       final Set<Square> potentialToSquareSet = KnightAttackedSquares
-          .calculateKnightAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), F6, WHITE);
+          .calculateKnightAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), F6, WHITE);
       final Set<Square> expectedSquareSet = new TreeSet<>(Arrays.asList(G8, H7, H5, G4, E4, D5, D7, E8));
       assertEquals(expectedSquareSet, potentialToSquareSet);
     }
     {
       final Set<Square> potentialToSquareSet = KnightAttackedSquares
-          .calculateKnightAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), G4, BLACK);
+          .calculateKnightAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), G4, BLACK);
       final Set<Square> expectedSquareSet = new TreeSet<>(Arrays.asList(F2, E3, E5, F6, H2, H6));
       assertEquals(expectedSquareSet, potentialToSquareSet);
     }
@@ -627,13 +628,13 @@ class TestAttackedSquaresByPlaying implements EnumConstants {
 
     {
       final Set<Square> potentialToSquareSet = KnightAttackedSquares
-          .calculateKnightAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), F6, WHITE);
+          .calculateKnightAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), F6, WHITE);
       final Set<Square> expectedSquareSet = new TreeSet<>(Arrays.asList(G8, H7, H5, G4, E4, D5, D7, E8));
       assertEquals(expectedSquareSet, potentialToSquareSet);
     }
     {
       final Set<Square> potentialToSquareSet = KnightAttackedSquares
-          .calculateKnightAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), G4, BLACK);
+          .calculateKnightAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), G4, BLACK);
       final Set<Square> expectedSquareSet = new TreeSet<>(Arrays.asList(F2, E3, E5, F6, H2, H6));
       assertEquals(expectedSquareSet, potentialToSquareSet);
     }
@@ -645,13 +646,13 @@ class TestAttackedSquaresByPlaying implements EnumConstants {
 
     {
       final Set<Square> potentialToSquareSet = KnightAttackedSquares
-          .calculateKnightAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), F6, WHITE);
+          .calculateKnightAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), F6, WHITE);
       final Set<Square> expectedSquareSet = new TreeSet<>(Arrays.asList(G8, H7, H5, G4, D5, D7, E8, E4));
       assertEquals(expectedSquareSet, potentialToSquareSet);
     }
     {
       final Set<Square> potentialToSquareSet = KnightAttackedSquares
-          .calculateKnightAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), G4, BLACK);
+          .calculateKnightAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), G4, BLACK);
       final Set<Square> expectedSquareSet = new TreeSet<>(Arrays.asList(F2, E3, E5, F6, H2, H6));
       assertEquals(expectedSquareSet, potentialToSquareSet);
     }
@@ -663,13 +664,13 @@ class TestAttackedSquaresByPlaying implements EnumConstants {
 
     {
       final Set<Square> potentialToSquareSet = KnightAttackedSquares
-          .calculateKnightAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), F6, WHITE);
+          .calculateKnightAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), F6, WHITE);
       final Set<Square> expectedSquareSet = new TreeSet<>(Arrays.asList(G8, H7, H5, G4, D5, D7, E8, E4));
       assertEquals(expectedSquareSet, potentialToSquareSet);
     }
     {
       final Set<Square> potentialToSquareSet = KnightAttackedSquares
-          .calculateKnightAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), G4, BLACK);
+          .calculateKnightAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), G4, BLACK);
       final Set<Square> expectedSquareSet = new TreeSet<>(Arrays.asList(F2, E3, E5, F6, H2, H6));
       assertEquals(expectedSquareSet, potentialToSquareSet);
     }
@@ -681,13 +682,13 @@ class TestAttackedSquaresByPlaying implements EnumConstants {
 
     {
       final Set<Square> potentialToSquareSet = KnightAttackedSquares
-          .calculateKnightAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), F6, WHITE);
+          .calculateKnightAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), F6, WHITE);
       final Set<Square> expectedSquareSet = new TreeSet<>(Arrays.asList(G8, H7, H5, G4, D5, D7, E8, E4));
       assertEquals(expectedSquareSet, potentialToSquareSet);
     }
     {
       final Set<Square> potentialToSquareSet = KnightAttackedSquares
-          .calculateKnightAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), G4, BLACK);
+          .calculateKnightAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), G4, BLACK);
       final Set<Square> expectedSquareSet = new TreeSet<>(Arrays.asList(F2, E3, E5, F6, H2, H6));
       assertEquals(expectedSquareSet, potentialToSquareSet);
     }
@@ -699,13 +700,13 @@ class TestAttackedSquaresByPlaying implements EnumConstants {
 
     {
       final Set<Square> potentialToSquareSet = KnightAttackedSquares
-          .calculateKnightAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), F6, WHITE);
+          .calculateKnightAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), F6, WHITE);
       final Set<Square> expectedSquareSet = new TreeSet<>(Arrays.asList(G8, H7, H5, G4, D5, D7, E8, E4));
       assertEquals(expectedSquareSet, potentialToSquareSet);
     }
     {
       final Set<Square> potentialToSquareSet = KnightAttackedSquares
-          .calculateKnightAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), G4, BLACK);
+          .calculateKnightAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), G4, BLACK);
       final Set<Square> expectedSquareSet = new TreeSet<>(Arrays.asList(F2, E3, F6, H2, H6, E5));
       assertEquals(expectedSquareSet, potentialToSquareSet);
     }
@@ -717,13 +718,13 @@ class TestAttackedSquaresByPlaying implements EnumConstants {
 
     {
       final Set<Square> potentialToSquareSet = KnightAttackedSquares
-          .calculateKnightAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), F6, WHITE);
+          .calculateKnightAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), F6, WHITE);
       final Set<Square> expectedSquareSet = new TreeSet<>(Arrays.asList(G8, H7, H5, G4, D5, D7, E8, E4));
       assertEquals(expectedSquareSet, potentialToSquareSet);
     }
     {
       final Set<Square> potentialToSquareSet = KnightAttackedSquares
-          .calculateKnightAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), G4, BLACK);
+          .calculateKnightAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), G4, BLACK);
       final Set<Square> expectedSquareSet = new TreeSet<>(Arrays.asList(F2, E3, F6, H2, H6, E5));
       assertEquals(expectedSquareSet, potentialToSquareSet);
     }
@@ -736,13 +737,13 @@ class TestAttackedSquaresByPlaying implements EnumConstants {
 
     {
       final Set<Square> potentialToSquareSet = KnightAttackedSquares
-          .calculateKnightAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), F6, WHITE);
+          .calculateKnightAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), F6, WHITE);
       final Set<Square> expectedSquareSet = new TreeSet<>(Arrays.asList(G8, H7, H5, G4, D5, D7, E8, E4));
       assertEquals(expectedSquareSet, potentialToSquareSet);
     }
     {
       final Set<Square> potentialToSquareSet = KnightAttackedSquares
-          .calculateKnightAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), H2, BLACK);
+          .calculateKnightAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), H2, BLACK);
       final Set<Square> expectedSquareSet = new TreeSet<>(Arrays.asList(F1, F3, G4));
       assertEquals(expectedSquareSet, potentialToSquareSet);
     }
@@ -755,13 +756,13 @@ class TestAttackedSquaresByPlaying implements EnumConstants {
 
     {
       final Set<Square> potentialToSquareSet = KnightAttackedSquares
-          .calculateKnightAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), F6, WHITE);
+          .calculateKnightAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), F6, WHITE);
       final Set<Square> expectedSquareSet = new TreeSet<>(Arrays.asList(G8, H7, H5, G4, D5, D7, E8, E4));
       assertEquals(expectedSquareSet, potentialToSquareSet);
     }
     {
       final Set<Square> potentialToSquareSet = KnightAttackedSquares
-          .calculateKnightAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), H2, BLACK);
+          .calculateKnightAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), H2, BLACK);
       final Set<Square> expectedSquareSet = new TreeSet<>(Arrays.asList(F1, F3, G4));
       assertEquals(expectedSquareSet, potentialToSquareSet);
     }
@@ -775,44 +776,44 @@ class TestAttackedSquaresByPlaying implements EnumConstants {
     // test initital position
     // white
 
-    checkExceptionBishop(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), D1, WHITE);
+    checkExceptionBishop(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), D1, WHITE);
 
-    checkExceptionBishop(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), E4, WHITE);
+    checkExceptionBishop(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), E4, WHITE);
 
-    checkExceptionBishop(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), A8, WHITE);
+    checkExceptionBishop(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), A8, WHITE);
 
     // black
 
-    checkExceptionBishop(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), D8, BLACK);
+    checkExceptionBishop(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), D8, BLACK);
 
-    checkExceptionBishop(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), E4, BLACK);
+    checkExceptionBishop(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), E4, BLACK);
 
-    checkExceptionBishop(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), A1, BLACK);
+    checkExceptionBishop(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), A1, BLACK);
 
     {
       final Set<Square> potentialToSquareSet = BishopAttackedSquares
-          .calculateBishopAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), C1, WHITE);
+          .calculateBishopAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), C1, WHITE);
       final Set<Square> expectedSquareSet = new TreeSet<>(Arrays.asList(B2, D2));
       assertEquals(expectedSquareSet, potentialToSquareSet);
     }
 
     {
       final Set<Square> potentialToSquareSet = BishopAttackedSquares
-          .calculateBishopAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), F1, WHITE);
+          .calculateBishopAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), F1, WHITE);
       final Set<Square> expectedSquareSet = new TreeSet<>(Arrays.asList(E2, G2));
       assertEquals(expectedSquareSet, potentialToSquareSet);
     }
 
     {
       final Set<Square> potentialToSquareSet = BishopAttackedSquares
-          .calculateBishopAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), C8, BLACK);
+          .calculateBishopAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), C8, BLACK);
       final Set<Square> expectedSquareSet = new TreeSet<>(Arrays.asList(B7, D7));
       assertEquals(expectedSquareSet, potentialToSquareSet);
     }
 
     {
       final Set<Square> potentialToSquareSet = BishopAttackedSquares
-          .calculateBishopAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), F8, BLACK);
+          .calculateBishopAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), F8, BLACK);
       final Set<Square> expectedSquareSet = new TreeSet<>(Arrays.asList(E7, G7));
       assertEquals(expectedSquareSet, potentialToSquareSet);
     }
@@ -825,13 +826,13 @@ class TestAttackedSquaresByPlaying implements EnumConstants {
 
     {
       final Set<Square> potentialToSquareSet = BishopAttackedSquares
-          .calculateBishopAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), C1, WHITE);
+          .calculateBishopAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), C1, WHITE);
       final Set<Square> expectedSquareSet = new TreeSet<>(Arrays.asList(B2, D2, A3));
       assertEquals(expectedSquareSet, potentialToSquareSet);
     }
     {
       final Set<Square> potentialToSquareSet = BishopAttackedSquares
-          .calculateBishopAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), F8, BLACK);
+          .calculateBishopAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), F8, BLACK);
       final Set<Square> expectedSquareSet = new TreeSet<>(Arrays.asList(E7, G7));
       assertEquals(expectedSquareSet, potentialToSquareSet);
     }
@@ -843,13 +844,13 @@ class TestAttackedSquaresByPlaying implements EnumConstants {
 
     {
       final Set<Square> potentialToSquareSet = BishopAttackedSquares
-          .calculateBishopAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), C1, WHITE);
+          .calculateBishopAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), C1, WHITE);
       final Set<Square> expectedSquareSet = new TreeSet<>(Arrays.asList(B2, D2, A3));
       assertEquals(expectedSquareSet, potentialToSquareSet);
     }
     {
       final Set<Square> potentialToSquareSet = BishopAttackedSquares
-          .calculateBishopAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), F8, BLACK);
+          .calculateBishopAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), F8, BLACK);
       final Set<Square> expectedSquareSet = new TreeSet<>(Arrays.asList(E7, D6, C5, B4, A3, G7));
       assertEquals(expectedSquareSet, potentialToSquareSet);
     }
@@ -861,13 +862,13 @@ class TestAttackedSquaresByPlaying implements EnumConstants {
 
     {
       final Set<Square> potentialToSquareSet = BishopAttackedSquares
-          .calculateBishopAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), B2, WHITE);
+          .calculateBishopAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), B2, WHITE);
       final Set<Square> expectedSquareSet = new TreeSet<>(Arrays.asList(C3, D4, E5, F6, G7, C1, A1, A3));
       assertEquals(expectedSquareSet, potentialToSquareSet);
     }
     {
       final Set<Square> potentialToSquareSet = BishopAttackedSquares
-          .calculateBishopAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), F8, BLACK);
+          .calculateBishopAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), F8, BLACK);
       final Set<Square> expectedSquareSet = new TreeSet<>(Arrays.asList(E7, D6, C5, B4, A3, G7));
       assertEquals(expectedSquareSet, potentialToSquareSet);
     }
@@ -879,13 +880,13 @@ class TestAttackedSquaresByPlaying implements EnumConstants {
 
     {
       final Set<Square> potentialToSquareSet = BishopAttackedSquares
-          .calculateBishopAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), B2, WHITE);
+          .calculateBishopAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), B2, WHITE);
       final Set<Square> expectedSquareSet = new TreeSet<>(Arrays.asList(C3, D4, E5, F6, G7, C1, A1, A3));
       assertEquals(expectedSquareSet, potentialToSquareSet);
     }
     {
       final Set<Square> potentialToSquareSet = BishopAttackedSquares
-          .calculateBishopAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), C5, BLACK);
+          .calculateBishopAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), C5, BLACK);
       final Set<Square> expectedSquareSet = new TreeSet<>(Arrays.asList(D6, E7, F8, D4, E3, F2, B4, A3, B6, A7));
       assertEquals(expectedSquareSet, potentialToSquareSet);
     }
@@ -897,13 +898,13 @@ class TestAttackedSquaresByPlaying implements EnumConstants {
 
     {
       final Set<Square> potentialToSquareSet = BishopAttackedSquares
-          .calculateBishopAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), D4, WHITE);
+          .calculateBishopAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), D4, WHITE);
       final Set<Square> expectedSquareSet = new TreeSet<>(Arrays.asList(E5, F6, G7, E3, C3, B2, C5, A1, F2));
       assertEquals(expectedSquareSet, potentialToSquareSet);
     }
     {
       final Set<Square> potentialToSquareSet = BishopAttackedSquares
-          .calculateBishopAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), C5, BLACK);
+          .calculateBishopAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), C5, BLACK);
       final Set<Square> expectedSquareSet = new TreeSet<>(Arrays.asList(D6, E7, F8, D4, B4, A3, B6, A7));
       assertEquals(expectedSquareSet, potentialToSquareSet);
     }
@@ -915,13 +916,13 @@ class TestAttackedSquaresByPlaying implements EnumConstants {
 
     {
       final Set<Square> potentialToSquareSet = BishopAttackedSquares
-          .calculateBishopAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), D4, WHITE);
+          .calculateBishopAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), D4, WHITE);
       final Set<Square> expectedSquareSet = new TreeSet<>(Arrays.asList(E5, F6, G7, H8, E3, C3, B2, C5, A1, F2));
       assertEquals(expectedSquareSet, potentialToSquareSet);
     }
     {
       final Set<Square> potentialToSquareSet = BishopAttackedSquares
-          .calculateBishopAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), C5, BLACK);
+          .calculateBishopAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), C5, BLACK);
       final Set<Square> expectedSquareSet = new TreeSet<>(Arrays.asList(D6, E7, F8, D4, B4, A3, B6, A7));
       assertEquals(expectedSquareSet, potentialToSquareSet);
     }
@@ -934,13 +935,13 @@ class TestAttackedSquaresByPlaying implements EnumConstants {
 
     {
       final Set<Square> potentialToSquareSet = BishopAttackedSquares
-          .calculateBishopAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), H8, WHITE);
+          .calculateBishopAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), H8, WHITE);
       final Set<Square> expectedSquareSet = new TreeSet<>(Arrays.asList(G7, F6, E5, D4, C3, B2, A1));
       assertEquals(expectedSquareSet, potentialToSquareSet);
     }
     {
       final Set<Square> potentialToSquareSet = BishopAttackedSquares
-          .calculateBishopAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), C5, BLACK);
+          .calculateBishopAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), C5, BLACK);
       final Set<Square> expectedSquareSet = new TreeSet<>(Arrays.asList(D6, E7, F8, D4, E3, F2, B4, A3, B6, A7));
       assertEquals(expectedSquareSet, potentialToSquareSet);
     }
@@ -953,13 +954,13 @@ class TestAttackedSquaresByPlaying implements EnumConstants {
 
     {
       final Set<Square> potentialToSquareSet = BishopAttackedSquares
-          .calculateBishopAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), H8, WHITE);
+          .calculateBishopAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), H8, WHITE);
       final Set<Square> expectedSquareSet = new TreeSet<>(Arrays.asList(G7, F6, E5, D4, C3, B2, A1));
       assertEquals(expectedSquareSet, potentialToSquareSet);
     }
     {
       final Set<Square> potentialToSquareSet = BishopAttackedSquares
-          .calculateBishopAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), B6, BLACK);
+          .calculateBishopAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), B6, BLACK);
       final Set<Square> expectedSquareSet = new TreeSet<>(Arrays.asList(C5, D4, E3, F2, A5, A7, C7));
       assertEquals(expectedSquareSet, potentialToSquareSet);
     }
@@ -973,13 +974,13 @@ class TestAttackedSquaresByPlaying implements EnumConstants {
 
     {
       final Set<Square> potentialToSquareSet = BishopAttackedSquares
-          .calculateBishopAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), F1, WHITE);
+          .calculateBishopAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), F1, WHITE);
       final Set<Square> expectedSquareSet = new TreeSet<>(Arrays.asList(E2, D3, C4, B5, A6, G2));
       assertEquals(expectedSquareSet, potentialToSquareSet);
     }
     {
       final Set<Square> potentialToSquareSet = BishopAttackedSquares
-          .calculateBishopAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), B6, BLACK);
+          .calculateBishopAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), B6, BLACK);
       final Set<Square> expectedSquareSet = new TreeSet<>(Arrays.asList(C5, D4, E3, F2, A5, A7, C7));
       assertEquals(expectedSquareSet, potentialToSquareSet);
     }
@@ -993,13 +994,13 @@ class TestAttackedSquaresByPlaying implements EnumConstants {
 
     {
       final Set<Square> potentialToSquareSet = BishopAttackedSquares
-          .calculateBishopAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), F1, WHITE);
+          .calculateBishopAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), F1, WHITE);
       final Set<Square> expectedSquareSet = new TreeSet<>(Arrays.asList(E2, D3, C4, B5, A6, G2));
       assertEquals(expectedSquareSet, potentialToSquareSet);
     }
     {
       final Set<Square> potentialToSquareSet = BishopAttackedSquares
-          .calculateBishopAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), B6, BLACK);
+          .calculateBishopAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), B6, BLACK);
       final Set<Square> expectedSquareSet = new TreeSet<>(Arrays.asList(C5, D4, E3, F2, A5, A7, C7));
       assertEquals(expectedSquareSet, potentialToSquareSet);
     }
@@ -1012,13 +1013,13 @@ class TestAttackedSquaresByPlaying implements EnumConstants {
 
     {
       final Set<Square> potentialToSquareSet = BishopAttackedSquares
-          .calculateBishopAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), F1, WHITE);
+          .calculateBishopAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), F1, WHITE);
       final Set<Square> expectedSquareSet = new TreeSet<>(Arrays.asList(E2, D3, C4, B5, A6, G2));
       assertEquals(expectedSquareSet, potentialToSquareSet);
     }
     {
       final Set<Square> potentialToSquareSet = BishopAttackedSquares
-          .calculateBishopAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), B6, BLACK);
+          .calculateBishopAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), B6, BLACK);
       final Set<Square> expectedSquareSet = new TreeSet<>(Arrays.asList(C5, D4, E3, F2, A5, A7, C7));
       assertEquals(expectedSquareSet, potentialToSquareSet);
     }
@@ -1031,13 +1032,13 @@ class TestAttackedSquaresByPlaying implements EnumConstants {
 
     {
       final Set<Square> potentialToSquareSet = BishopAttackedSquares
-          .calculateBishopAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), F1, WHITE);
+          .calculateBishopAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), F1, WHITE);
       final Set<Square> expectedSquareSet = new TreeSet<>(Arrays.asList(E2, D3, C4, B5, A6, G2));
       assertEquals(expectedSquareSet, potentialToSquareSet);
     }
     {
       final Set<Square> potentialToSquareSet = BishopAttackedSquares
-          .calculateBishopAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), F2, BLACK);
+          .calculateBishopAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), F2, BLACK);
       final Set<Square> expectedSquareSet = new TreeSet<>(Arrays.asList(G3, H4, G1, E1, E3, D4, C5, B6, A7));
       assertEquals(expectedSquareSet, potentialToSquareSet);
     }
@@ -1049,13 +1050,13 @@ class TestAttackedSquaresByPlaying implements EnumConstants {
     }
     {
       final Set<Square> potentialToSquareSet = BishopAttackedSquares
-          .calculateBishopAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), F1, WHITE);
+          .calculateBishopAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), F1, WHITE);
       final Set<Square> expectedSquareSet = new TreeSet<>(Arrays.asList(E2, D3, C4, B5, A6, G2));
       assertEquals(expectedSquareSet, potentialToSquareSet);
     }
     {
       final Set<Square> potentialToSquareSet = BishopAttackedSquares
-          .calculateBishopAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), F2, BLACK);
+          .calculateBishopAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), F2, BLACK);
       final Set<Square> expectedSquareSet = new TreeSet<>(Arrays.asList(G3, H4, G1, E1, E3, D4, C5, B6, A7));
       assertEquals(expectedSquareSet, potentialToSquareSet);
     }
@@ -1067,13 +1068,13 @@ class TestAttackedSquaresByPlaying implements EnumConstants {
     }
     {
       final Set<Square> potentialToSquareSet = BishopAttackedSquares
-          .calculateBishopAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), F1, WHITE);
+          .calculateBishopAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), F1, WHITE);
       final Set<Square> expectedSquareSet = new TreeSet<>(Arrays.asList(E2, D3, C4, B5, A6, G2));
       assertEquals(expectedSquareSet, potentialToSquareSet);
     }
     {
       final Set<Square> potentialToSquareSet = BishopAttackedSquares
-          .calculateBishopAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), G1, BLACK);
+          .calculateBishopAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), G1, BLACK);
       final Set<Square> expectedSquareSet = new TreeSet<>(Arrays.asList(H2, F2, E3, D4, C5, B6, A7));
       assertEquals(expectedSquareSet, potentialToSquareSet);
     }
@@ -1085,13 +1086,13 @@ class TestAttackedSquaresByPlaying implements EnumConstants {
     }
     {
       final Set<Square> potentialToSquareSet = BishopAttackedSquares
-          .calculateBishopAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), C4, WHITE);
+          .calculateBishopAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), C4, WHITE);
       final Set<Square> expectedSquareSet = new TreeSet<>(Arrays.asList(D5, E6, D3, E2, F1, B5, A6, B3));
       assertEquals(expectedSquareSet, potentialToSquareSet);
     }
     {
       final Set<Square> potentialToSquareSet = BishopAttackedSquares
-          .calculateBishopAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), G1, BLACK);
+          .calculateBishopAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), G1, BLACK);
       final Set<Square> expectedSquareSet = new TreeSet<>(Arrays.asList(H2, F2, E3, D4, C5, B6, A7));
       assertEquals(expectedSquareSet, potentialToSquareSet);
     }
@@ -1103,13 +1104,13 @@ class TestAttackedSquaresByPlaying implements EnumConstants {
     }
     {
       final Set<Square> potentialToSquareSet = BishopAttackedSquares
-          .calculateBishopAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), C4, WHITE);
+          .calculateBishopAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), C4, WHITE);
       final Set<Square> expectedSquareSet = new TreeSet<>(Arrays.asList(D5, E6, F7, D3, E2, F1, B5, A6, B3));
       assertEquals(expectedSquareSet, potentialToSquareSet);
     }
     {
       final Set<Square> potentialToSquareSet = BishopAttackedSquares
-          .calculateBishopAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), G1, BLACK);
+          .calculateBishopAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), G1, BLACK);
       final Set<Square> expectedSquareSet = new TreeSet<>(Arrays.asList(H2, F2, E3, D4, C5, B6, A7));
       assertEquals(expectedSquareSet, potentialToSquareSet);
     }
@@ -1121,13 +1122,13 @@ class TestAttackedSquaresByPlaying implements EnumConstants {
     }
     {
       final Set<Square> potentialToSquareSet = BishopAttackedSquares
-          .calculateBishopAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), F7, WHITE);
+          .calculateBishopAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), F7, WHITE);
       final Set<Square> expectedSquareSet = new TreeSet<>(Arrays.asList(G8, G6, E6, D5, C4, E8, B3));
       assertEquals(expectedSquareSet, potentialToSquareSet);
     }
     {
       final Set<Square> potentialToSquareSet = BishopAttackedSquares
-          .calculateBishopAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), G1, BLACK);
+          .calculateBishopAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), G1, BLACK);
       final Set<Square> expectedSquareSet = new TreeSet<>(Arrays.asList(H2, F2, E3, D4, C5, B6, A7));
       assertEquals(expectedSquareSet, potentialToSquareSet);
     }
@@ -1139,13 +1140,13 @@ class TestAttackedSquaresByPlaying implements EnumConstants {
     }
     {
       final Set<Square> potentialToSquareSet = BishopAttackedSquares
-          .calculateBishopAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), F7, WHITE);
+          .calculateBishopAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), F7, WHITE);
       final Set<Square> expectedSquareSet = new TreeSet<>(Arrays.asList(G8, G6, E6, D5, C4, E8, B3));
       assertEquals(expectedSquareSet, potentialToSquareSet);
     }
     {
       final Set<Square> potentialToSquareSet = BishopAttackedSquares
-          .calculateBishopAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), G1, BLACK);
+          .calculateBishopAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), G1, BLACK);
       final Set<Square> expectedSquareSet = new TreeSet<>(Arrays.asList(H2, F2, E3, D4, C5, B6, A7));
       assertEquals(expectedSquareSet, potentialToSquareSet);
     }
@@ -1159,29 +1160,29 @@ class TestAttackedSquaresByPlaying implements EnumConstants {
     // test initital position
     // white
 
-    checkExceptionQueen(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), C1, WHITE);
+    checkExceptionQueen(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), C1, WHITE);
 
-    checkExceptionQueen(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), E4, WHITE);
+    checkExceptionQueen(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), E4, WHITE);
 
-    checkExceptionQueen(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), D8, WHITE);
+    checkExceptionQueen(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), D8, WHITE);
 
     // black
 
-    checkExceptionQueen(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), B8, BLACK);
+    checkExceptionQueen(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), B8, BLACK);
 
-    checkExceptionQueen(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), D5, BLACK);
+    checkExceptionQueen(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), D5, BLACK);
 
-    checkExceptionQueen(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), D1, BLACK);
+    checkExceptionQueen(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), D1, BLACK);
 
     {
       final Set<Square> potentialToSquareSet = QueenAttackedSquares
-          .calculateQueenAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), D1, WHITE);
+          .calculateQueenAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), D1, WHITE);
       final Set<Square> expectedSquareSet = new TreeSet<>(Arrays.asList(C1, C2, D2, E2, E1));
       assertEquals(expectedSquareSet, potentialToSquareSet);
     }
     {
       final Set<Square> potentialToSquareSet = QueenAttackedSquares
-          .calculateQueenAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), D8, BLACK);
+          .calculateQueenAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), D8, BLACK);
       final Set<Square> expectedSquareSet = new TreeSet<>(Arrays.asList(C8, C7, D7, E7, E8));
       assertEquals(expectedSquareSet, potentialToSquareSet);
     }
@@ -1194,13 +1195,13 @@ class TestAttackedSquaresByPlaying implements EnumConstants {
     }
     {
       final Set<Square> potentialToSquareSet = QueenAttackedSquares
-          .calculateQueenAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), D1, WHITE);
+          .calculateQueenAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), D1, WHITE);
       final Set<Square> expectedSquareSet = new TreeSet<>(Arrays.asList(C1, C2, D2, E2, F3, G4, H5, E1));
       assertEquals(expectedSquareSet, potentialToSquareSet);
     }
     {
       final Set<Square> potentialToSquareSet = QueenAttackedSquares
-          .calculateQueenAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), D8, BLACK);
+          .calculateQueenAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), D8, BLACK);
       final Set<Square> expectedSquareSet = new TreeSet<>(Arrays.asList(C8, C7, D7, E7, E8));
       assertEquals(expectedSquareSet, potentialToSquareSet);
     }
@@ -1212,13 +1213,13 @@ class TestAttackedSquaresByPlaying implements EnumConstants {
     }
     {
       final Set<Square> potentialToSquareSet = QueenAttackedSquares
-          .calculateQueenAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), D1, WHITE);
+          .calculateQueenAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), D1, WHITE);
       final Set<Square> expectedSquareSet = new TreeSet<>(Arrays.asList(C1, C2, D2, E2, F3, G4, H5, E1));
       assertEquals(expectedSquareSet, potentialToSquareSet);
     }
     {
       final Set<Square> potentialToSquareSet = QueenAttackedSquares
-          .calculateQueenAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), D8, BLACK);
+          .calculateQueenAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), D8, BLACK);
       final Set<Square> expectedSquareSet = new TreeSet<>(Arrays.asList(C8, C7, D7, E7, E8, D6, D5));
       assertEquals(expectedSquareSet, potentialToSquareSet);
     }
@@ -1230,14 +1231,14 @@ class TestAttackedSquaresByPlaying implements EnumConstants {
     }
     {
       final Set<Square> potentialToSquareSet = QueenAttackedSquares
-          .calculateQueenAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), H5, WHITE);
+          .calculateQueenAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), H5, WHITE);
       final Set<Square> expectedSquareSet = new TreeSet<>(
           Arrays.asList(H6, H7, H4, H3, G4, F3, E2, D1, G5, F5, E5, D5, G6, F7, H2));
       assertEquals(expectedSquareSet, potentialToSquareSet);
     }
     {
       final Set<Square> potentialToSquareSet = QueenAttackedSquares
-          .calculateQueenAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), D8, BLACK);
+          .calculateQueenAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), D8, BLACK);
       final Set<Square> expectedSquareSet = new TreeSet<>(Arrays.asList(C8, C7, D7, E7, E8, D6, D5));
       assertEquals(expectedSquareSet, potentialToSquareSet);
     }
@@ -1249,14 +1250,14 @@ class TestAttackedSquaresByPlaying implements EnumConstants {
     }
     {
       final Set<Square> potentialToSquareSet = QueenAttackedSquares
-          .calculateQueenAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), H5, WHITE);
+          .calculateQueenAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), H5, WHITE);
       final Set<Square> expectedSquareSet = new TreeSet<>(
           Arrays.asList(H6, H4, H3, G4, F3, E2, D1, G5, F5, E5, D5, G6, F7, H2));
       assertEquals(expectedSquareSet, potentialToSquareSet);
     }
     {
       final Set<Square> potentialToSquareSet = QueenAttackedSquares
-          .calculateQueenAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), D8, BLACK);
+          .calculateQueenAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), D8, BLACK);
       final Set<Square> expectedSquareSet = new TreeSet<>(Arrays.asList(C8, C7, D7, E7, E8, D6, D5));
       assertEquals(expectedSquareSet, potentialToSquareSet);
     }
@@ -1268,14 +1269,14 @@ class TestAttackedSquaresByPlaying implements EnumConstants {
     }
     {
       final Set<Square> potentialToSquareSet = QueenAttackedSquares
-          .calculateQueenAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), H5, WHITE);
+          .calculateQueenAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), H5, WHITE);
       final Set<Square> expectedSquareSet = new TreeSet<>(
           Arrays.asList(H6, H4, H3, G4, F3, E2, D1, G5, F5, E5, D5, G6, F7, H3));
       assertEquals(expectedSquareSet, potentialToSquareSet);
     }
     {
       final Set<Square> potentialToSquareSet = QueenAttackedSquares
-          .calculateQueenAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), D8, BLACK);
+          .calculateQueenAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), D8, BLACK);
       final Set<Square> expectedSquareSet = new TreeSet<>(Arrays.asList(C8, C7, D7, E7, E8, D6, D5));
       assertEquals(expectedSquareSet, potentialToSquareSet);
     }
@@ -1287,14 +1288,14 @@ class TestAttackedSquaresByPlaying implements EnumConstants {
     }
     {
       final Set<Square> potentialToSquareSet = QueenAttackedSquares
-          .calculateQueenAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), H5, WHITE);
+          .calculateQueenAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), H5, WHITE);
       final Set<Square> expectedSquareSet = new TreeSet<>(
           Arrays.asList(H6, H4, H3, G4, F3, E2, D1, G5, F5, E5, D5, G6, F7, H3));
       assertEquals(expectedSquareSet, potentialToSquareSet);
     }
     {
       final Set<Square> potentialToSquareSet = QueenAttackedSquares
-          .calculateQueenAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), D8, BLACK);
+          .calculateQueenAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), D8, BLACK);
       final Set<Square> expectedSquareSet = new TreeSet<>(Arrays.asList(C8, C7, D7, E7, E8, D6, D5));
       assertEquals(expectedSquareSet, potentialToSquareSet);
     }
@@ -1306,14 +1307,14 @@ class TestAttackedSquaresByPlaying implements EnumConstants {
     }
     {
       final Set<Square> potentialToSquareSet = QueenAttackedSquares
-          .calculateQueenAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), D5, WHITE);
+          .calculateQueenAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), D5, WHITE);
       final Set<Square> expectedSquareSet = new TreeSet<>(
           Arrays.asList(D6, D7, D8, E6, F7, E5, F5, G5, H5, D4, D3, C4, B3, C5, B5, A5, C6, B7, E4, D2, A2));
       assertEquals(expectedSquareSet, potentialToSquareSet);
     }
     {
       final Set<Square> potentialToSquareSet = QueenAttackedSquares
-          .calculateQueenAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), D8, BLACK);
+          .calculateQueenAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), D8, BLACK);
       final Set<Square> expectedSquareSet = new TreeSet<>(Arrays.asList(C8, C7, D7, E7, E8, D6, D5));
       assertEquals(expectedSquareSet, potentialToSquareSet);
     }
@@ -1325,14 +1326,14 @@ class TestAttackedSquaresByPlaying implements EnumConstants {
     }
     {
       final Set<Square> potentialToSquareSet = QueenAttackedSquares
-          .calculateQueenAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), D5, WHITE);
+          .calculateQueenAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), D5, WHITE);
       final Set<Square> expectedSquareSet = new TreeSet<>(
           Arrays.asList(D6, E6, F7, E5, F5, G5, H5, D4, D3, C4, B3, C5, B5, A5, C6, B7, E4, D2, A2));
       assertEquals(expectedSquareSet, potentialToSquareSet);
     }
     {
       final Set<Square> potentialToSquareSet = QueenAttackedSquares
-          .calculateQueenAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), D6, BLACK);
+          .calculateQueenAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), D6, BLACK);
       final Set<Square> expectedSquareSet = new TreeSet<>(
           Arrays.asList(D7, D8, E6, F6, G6, E5, F4, G3, H2, D5, C5, B4, A3, C6, B6, A6, C7, E7, H6));
       assertEquals(expectedSquareSet, potentialToSquareSet);
@@ -1345,14 +1346,14 @@ class TestAttackedSquaresByPlaying implements EnumConstants {
     }
     {
       final Set<Square> potentialToSquareSet = QueenAttackedSquares
-          .calculateQueenAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), F7, WHITE);
+          .calculateQueenAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), F7, WHITE);
       final Set<Square> expectedSquareSet = new TreeSet<>(
           Arrays.asList(F8, G8, G7, G6, H5, F6, F5, F4, F3, E6, D5, C4, B3, E7, E8, A2, F2));
       assertEquals(expectedSquareSet, potentialToSquareSet);
     }
     {
       final Set<Square> potentialToSquareSet = QueenAttackedSquares
-          .calculateQueenAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), D6, BLACK);
+          .calculateQueenAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), D6, BLACK);
       final Set<Square> expectedSquareSet = new TreeSet<>(
           Arrays.asList(D7, D8, E6, F6, G6, E5, F4, G3, H2, D5, D4, D3, D2, C5, B4, A3, C6, B6, A6, C7, E7, H6));
       assertEquals(expectedSquareSet, potentialToSquareSet);
@@ -1365,14 +1366,14 @@ class TestAttackedSquaresByPlaying implements EnumConstants {
     }
     {
       final Set<Square> potentialToSquareSet = QueenAttackedSquares
-          .calculateQueenAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), F7, WHITE);
+          .calculateQueenAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), F7, WHITE);
       final Set<Square> expectedSquareSet = new TreeSet<>(
           Arrays.asList(F8, G8, G7, G6, H5, F6, F5, F4, F3, E6, D5, C4, B3, E7, E8, A2, F2));
       assertEquals(expectedSquareSet, potentialToSquareSet);
     }
     {
       final Set<Square> potentialToSquareSet = QueenAttackedSquares
-          .calculateQueenAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), D6, BLACK);
+          .calculateQueenAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), D6, BLACK);
       final Set<Square> expectedSquareSet = new TreeSet<>(
           Arrays.asList(D7, D8, E6, F6, G6, E5, F4, G3, H2, D5, D4, D3, D2, C5, B4, A3, C6, B6, A6, C7, E7, H6));
       assertEquals(expectedSquareSet, potentialToSquareSet);
@@ -1385,14 +1386,14 @@ class TestAttackedSquaresByPlaying implements EnumConstants {
     }
     {
       final Set<Square> potentialToSquareSet = QueenAttackedSquares
-          .calculateQueenAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), F7, WHITE);
+          .calculateQueenAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), F7, WHITE);
       final Set<Square> expectedSquareSet = new TreeSet<>(
           Arrays.asList(F8, G8, G7, G6, H5, F6, F5, F4, F3, E6, D5, C4, B3, E7, E8, A2, F2));
       assertEquals(expectedSquareSet, potentialToSquareSet);
     }
     {
       final Set<Square> potentialToSquareSet = QueenAttackedSquares
-          .calculateQueenAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), D6, BLACK);
+          .calculateQueenAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), D6, BLACK);
       final Set<Square> expectedSquareSet = new TreeSet<>(
           Arrays.asList(D7, D8, E6, F6, G6, E5, F4, G3, H2, D5, D4, D3, D2, C5, B4, A3, C6, B6, A6, C7, E7, H6));
       assertEquals(expectedSquareSet, potentialToSquareSet);
@@ -1405,14 +1406,14 @@ class TestAttackedSquaresByPlaying implements EnumConstants {
     }
     {
       final Set<Square> potentialToSquareSet = QueenAttackedSquares
-          .calculateQueenAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), F7, WHITE);
+          .calculateQueenAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), F7, WHITE);
       final Set<Square> expectedSquareSet = new TreeSet<>(
           Arrays.asList(F8, G8, G7, G6, H5, F6, F5, F4, F3, E6, D5, C4, B3, E7, E8, A2, F2));
       assertEquals(expectedSquareSet, potentialToSquareSet);
     }
     {
       final Set<Square> potentialToSquareSet = QueenAttackedSquares
-          .calculateQueenAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), D6, BLACK);
+          .calculateQueenAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), D6, BLACK);
       final Set<Square> expectedSquareSet = new TreeSet<>(
           Arrays.asList(D7, D8, E6, F6, G6, E5, F4, G3, H2, D5, D4, D3, D2, C5, B4, A3, C6, B6, A6, C7, E7, H6));
       assertEquals(expectedSquareSet, potentialToSquareSet);
@@ -1425,14 +1426,14 @@ class TestAttackedSquaresByPlaying implements EnumConstants {
     }
     {
       final Set<Square> potentialToSquareSet = QueenAttackedSquares
-          .calculateQueenAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), F7, WHITE);
+          .calculateQueenAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), F7, WHITE);
       final Set<Square> expectedSquareSet = new TreeSet<>(
           Arrays.asList(F8, G8, G7, G6, H5, F6, F5, F4, F3, E6, D5, C4, B3, E7, E8, A2, F2));
       assertEquals(expectedSquareSet, potentialToSquareSet);
     }
     {
       final Set<Square> potentialToSquareSet = QueenAttackedSquares
-          .calculateQueenAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), D6, BLACK);
+          .calculateQueenAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), D6, BLACK);
       final Set<Square> expectedSquareSet = new TreeSet<>(
           Arrays.asList(D7, E6, F6, G6, E5, F4, G3, H2, D5, D4, D3, D2, C5, B4, A3, C6, C7, E7, H6, D8));
       assertEquals(expectedSquareSet, potentialToSquareSet);
@@ -1445,14 +1446,14 @@ class TestAttackedSquaresByPlaying implements EnumConstants {
     }
     {
       final Set<Square> potentialToSquareSet = QueenAttackedSquares
-          .calculateQueenAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), F7, WHITE);
+          .calculateQueenAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), F7, WHITE);
       final Set<Square> expectedSquareSet = new TreeSet<>(
           Arrays.asList(F8, G8, G7, G6, H5, F6, F5, F4, F3, E6, D5, C4, B3, E7, E8, A2, F2));
       assertEquals(expectedSquareSet, potentialToSquareSet);
     }
     {
       final Set<Square> potentialToSquareSet = QueenAttackedSquares
-          .calculateQueenAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), D2, BLACK);
+          .calculateQueenAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), D2, BLACK);
       final Set<Square> expectedSquareSet = new TreeSet<>(
           Arrays.asList(D3, D4, D5, D6, D7, E3, F4, G5, E2, F2, E1, D1, C1, C2, C3, B4, A5, D8, H6));
       assertEquals(expectedSquareSet, potentialToSquareSet);
@@ -1465,14 +1466,14 @@ class TestAttackedSquaresByPlaying implements EnumConstants {
     }
     {
       final Set<Square> potentialToSquareSet = QueenAttackedSquares
-          .calculateQueenAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), F7, WHITE);
+          .calculateQueenAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), F7, WHITE);
       final Set<Square> expectedSquareSet = new TreeSet<>(
           Arrays.asList(F8, G8, G7, G6, H5, F6, F5, F4, F3, E6, D5, C4, B3, E7, E8, A2, F2));
       assertEquals(expectedSquareSet, potentialToSquareSet);
     }
     {
       final Set<Square> potentialToSquareSet = QueenAttackedSquares
-          .calculateQueenAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), D2, BLACK);
+          .calculateQueenAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), D2, BLACK);
       final Set<Square> expectedSquareSet = new TreeSet<>(
           Arrays.asList(D3, D4, D5, D6, D7, E3, F4, G5, E2, F2, E1, D1, C1, C2, C3, B4, A5, D8, H6));
       assertEquals(expectedSquareSet, potentialToSquareSet);
@@ -1485,14 +1486,14 @@ class TestAttackedSquaresByPlaying implements EnumConstants {
     }
     {
       final Set<Square> potentialToSquareSet = QueenAttackedSquares
-          .calculateQueenAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), F7, WHITE);
+          .calculateQueenAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), F7, WHITE);
       final Set<Square> expectedSquareSet = new TreeSet<>(
           Arrays.asList(F8, G8, G7, G6, H5, F6, F5, F4, F3, E6, D5, C4, B3, E7, E8, A2, F2));
       assertEquals(expectedSquareSet, potentialToSquareSet);
     }
     {
       final Set<Square> potentialToSquareSet = QueenAttackedSquares
-          .calculateQueenAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), C2, BLACK);
+          .calculateQueenAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), C2, BLACK);
       final Set<Square> expectedSquareSet = new TreeSet<>(
           Arrays.asList(C3, C4, C5, C6, D3, E4, D2, E2, F2, D1, C1, B1, B2, B3, A4));
       assertEquals(expectedSquareSet, potentialToSquareSet);
@@ -1505,14 +1506,14 @@ class TestAttackedSquaresByPlaying implements EnumConstants {
     }
     {
       final Set<Square> potentialToSquareSet = QueenAttackedSquares
-          .calculateQueenAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), G7, WHITE);
+          .calculateQueenAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), G7, WHITE);
       final Set<Square> expectedSquareSet = new TreeSet<>(
           Arrays.asList(G8, H8, H7, H6, G6, G5, G4, G3, F6, E5, D4, C3, F7, E7, F8, B2, G2));
       assertEquals(expectedSquareSet, potentialToSquareSet);
     }
     {
       final Set<Square> potentialToSquareSet = QueenAttackedSquares
-          .calculateQueenAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), C2, BLACK);
+          .calculateQueenAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), C2, BLACK);
       final Set<Square> expectedSquareSet = new TreeSet<>(
           Arrays.asList(C3, C4, C5, C6, D3, E4, D2, E2, F2, D1, C1, B1, B2, B3, A4));
       assertEquals(expectedSquareSet, potentialToSquareSet);
@@ -1527,29 +1528,29 @@ class TestAttackedSquaresByPlaying implements EnumConstants {
     // test initital position
     // white
 
-    checkExceptionKingNonCastling(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), C1, WHITE);
+    checkExceptionKingNonCastling(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), C1, WHITE);
 
-    checkExceptionKingNonCastling(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), E4, WHITE);
+    checkExceptionKingNonCastling(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), E4, WHITE);
 
-    checkExceptionKingNonCastling(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), E8, WHITE);
+    checkExceptionKingNonCastling(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), E8, WHITE);
 
     // black
 
-    checkExceptionKingNonCastling(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), B8, BLACK);
+    checkExceptionKingNonCastling(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), B8, BLACK);
 
-    checkExceptionKingNonCastling(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), D5, BLACK);
+    checkExceptionKingNonCastling(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), D5, BLACK);
 
-    checkExceptionKingNonCastling(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), E1, BLACK);
+    checkExceptionKingNonCastling(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), E1, BLACK);
 
     {
       final Set<Square> potentialToSquareSet = KingNonCastlingAttackedSquares
-          .calculateKingNonCastlingAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), E1, WHITE);
+          .calculateKingNonCastlingAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), E1, WHITE);
       final Set<Square> expectedSquareSet = new TreeSet<>(Arrays.asList(D1, D2, E2, F2, F1));
       assertEquals(expectedSquareSet, potentialToSquareSet);
     }
     {
       final Set<Square> potentialToSquareSet = KingNonCastlingAttackedSquares
-          .calculateKingNonCastlingAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), E8, BLACK);
+          .calculateKingNonCastlingAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), E8, BLACK);
       final Set<Square> expectedSquareSet = new TreeSet<>(Arrays.asList(D8, D7, E7, F7, F8));
       assertEquals(expectedSquareSet, potentialToSquareSet);
     }
@@ -1562,13 +1563,13 @@ class TestAttackedSquaresByPlaying implements EnumConstants {
     }
     {
       final Set<Square> potentialToSquareSet = KingNonCastlingAttackedSquares
-          .calculateKingNonCastlingAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), E1, WHITE);
+          .calculateKingNonCastlingAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), E1, WHITE);
       final Set<Square> expectedSquareSet = new TreeSet<>(Arrays.asList(D1, D2, E2, F2, F1));
       assertEquals(expectedSquareSet, potentialToSquareSet);
     }
     {
       final Set<Square> potentialToSquareSet = KingNonCastlingAttackedSquares
-          .calculateKingNonCastlingAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), E8, BLACK);
+          .calculateKingNonCastlingAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), E8, BLACK);
       final Set<Square> expectedSquareSet = new TreeSet<>(Arrays.asList(D8, D7, E7, F7, F8));
       assertEquals(expectedSquareSet, potentialToSquareSet);
     }
@@ -1580,13 +1581,13 @@ class TestAttackedSquaresByPlaying implements EnumConstants {
     }
     {
       final Set<Square> potentialToSquareSet = KingNonCastlingAttackedSquares
-          .calculateKingNonCastlingAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), E1, WHITE);
+          .calculateKingNonCastlingAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), E1, WHITE);
       final Set<Square> expectedSquareSet = new TreeSet<>(Arrays.asList(D1, D2, E2, F2, F1));
       assertEquals(expectedSquareSet, potentialToSquareSet);
     }
     {
       final Set<Square> potentialToSquareSet = KingNonCastlingAttackedSquares
-          .calculateKingNonCastlingAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), E8, BLACK);
+          .calculateKingNonCastlingAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), E8, BLACK);
       final Set<Square> expectedSquareSet = new TreeSet<>(Arrays.asList(D8, D7, E7, F7, F8));
       assertEquals(expectedSquareSet, potentialToSquareSet);
     }
@@ -1598,13 +1599,13 @@ class TestAttackedSquaresByPlaying implements EnumConstants {
     }
     {
       final Set<Square> potentialToSquareSet = KingNonCastlingAttackedSquares
-          .calculateKingNonCastlingAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), E2, WHITE);
+          .calculateKingNonCastlingAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), E2, WHITE);
       final Set<Square> expectedSquareSet = new TreeSet<>(Arrays.asList(D1, D2, D3, E3, F3, F2, F1, E1));
       assertEquals(expectedSquareSet, potentialToSquareSet);
     }
     {
       final Set<Square> potentialToSquareSet = KingNonCastlingAttackedSquares
-          .calculateKingNonCastlingAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), E8, BLACK);
+          .calculateKingNonCastlingAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), E8, BLACK);
       final Set<Square> expectedSquareSet = new TreeSet<>(Arrays.asList(D8, D7, E7, F7, F8));
       assertEquals(expectedSquareSet, potentialToSquareSet);
     }
@@ -1616,13 +1617,13 @@ class TestAttackedSquaresByPlaying implements EnumConstants {
     }
     {
       final Set<Square> potentialToSquareSet = KingNonCastlingAttackedSquares
-          .calculateKingNonCastlingAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), E2, WHITE);
+          .calculateKingNonCastlingAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), E2, WHITE);
       final Set<Square> expectedSquareSet = new TreeSet<>(Arrays.asList(D1, D2, D3, E3, F3, F2, F1, E1));
       assertEquals(expectedSquareSet, potentialToSquareSet);
     }
     {
       final Set<Square> potentialToSquareSet = KingNonCastlingAttackedSquares
-          .calculateKingNonCastlingAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), D7, BLACK);
+          .calculateKingNonCastlingAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), D7, BLACK);
       final Set<Square> expectedSquareSet = new TreeSet<>(Arrays.asList(E8, E7, E6, D6, C6, C7, C8, D8));
       assertEquals(expectedSquareSet, potentialToSquareSet);
     }
@@ -1634,13 +1635,13 @@ class TestAttackedSquaresByPlaying implements EnumConstants {
     }
     {
       final Set<Square> potentialToSquareSet = KingNonCastlingAttackedSquares
-          .calculateKingNonCastlingAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), E3, WHITE);
+          .calculateKingNonCastlingAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), E3, WHITE);
       final Set<Square> expectedSquareSet = new TreeSet<>(Arrays.asList(D2, D3, D4, E4, F4, F3, F2, E2));
       assertEquals(expectedSquareSet, potentialToSquareSet);
     }
     {
       final Set<Square> potentialToSquareSet = KingNonCastlingAttackedSquares
-          .calculateKingNonCastlingAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), D7, BLACK);
+          .calculateKingNonCastlingAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), D7, BLACK);
       final Set<Square> expectedSquareSet = new TreeSet<>(Arrays.asList(E8, E7, E6, D6, C6, C7, C8, D8));
 
       assertEquals(expectedSquareSet, potentialToSquareSet);
@@ -1653,13 +1654,13 @@ class TestAttackedSquaresByPlaying implements EnumConstants {
     }
     {
       final Set<Square> potentialToSquareSet = KingNonCastlingAttackedSquares
-          .calculateKingNonCastlingAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), E3, WHITE);
+          .calculateKingNonCastlingAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), E3, WHITE);
       final Set<Square> expectedSquareSet = new TreeSet<>(Arrays.asList(D2, D3, D4, E4, F4, F3, F2, E2));
       assertEquals(expectedSquareSet, potentialToSquareSet);
     }
     {
       final Set<Square> potentialToSquareSet = KingNonCastlingAttackedSquares
-          .calculateKingNonCastlingAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), D6, BLACK);
+          .calculateKingNonCastlingAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), D6, BLACK);
       final Set<Square> expectedSquareSet = new TreeSet<>(Arrays.asList(E7, E6, E5, D5, C5, C6, C7, D7));
       assertEquals(expectedSquareSet, potentialToSquareSet);
     }
@@ -1671,13 +1672,13 @@ class TestAttackedSquaresByPlaying implements EnumConstants {
     }
     {
       final Set<Square> potentialToSquareSet = KingNonCastlingAttackedSquares
-          .calculateKingNonCastlingAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), F4, WHITE);
+          .calculateKingNonCastlingAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), F4, WHITE);
       final Set<Square> expectedSquareSet = new TreeSet<>(Arrays.asList(E3, E4, E5, F5, G5, G4, G3, F3));
       assertEquals(expectedSquareSet, potentialToSquareSet);
     }
     {
       final Set<Square> potentialToSquareSet = KingNonCastlingAttackedSquares
-          .calculateKingNonCastlingAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), D6, BLACK);
+          .calculateKingNonCastlingAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), D6, BLACK);
       final Set<Square> expectedSquareSet = new TreeSet<>(Arrays.asList(E7, E6, E5, D5, C5, C6, C7, D7));
       assertEquals(expectedSquareSet, potentialToSquareSet);
     }
@@ -1689,13 +1690,13 @@ class TestAttackedSquaresByPlaying implements EnumConstants {
     }
     {
       final Set<Square> potentialToSquareSet = KingNonCastlingAttackedSquares
-          .calculateKingNonCastlingAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), F4, WHITE);
+          .calculateKingNonCastlingAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), F4, WHITE);
       final Set<Square> expectedSquareSet = new TreeSet<>(Arrays.asList(E3, E4, E5, F5, G5, G4, G3, F3));
       assertEquals(expectedSquareSet, potentialToSquareSet);
     }
     {
       final Set<Square> potentialToSquareSet = KingNonCastlingAttackedSquares
-          .calculateKingNonCastlingAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), D6, BLACK);
+          .calculateKingNonCastlingAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), D6, BLACK);
       final Set<Square> expectedSquareSet = new TreeSet<>(Arrays.asList(E7, E6, E5, D5, C5, C6, C7, D7));
       assertEquals(expectedSquareSet, potentialToSquareSet);
     }
@@ -1707,13 +1708,13 @@ class TestAttackedSquaresByPlaying implements EnumConstants {
     }
     {
       final Set<Square> potentialToSquareSet = KingNonCastlingAttackedSquares
-          .calculateKingNonCastlingAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), F4, WHITE);
+          .calculateKingNonCastlingAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), F4, WHITE);
       final Set<Square> expectedSquareSet = new TreeSet<>(Arrays.asList(E3, E4, E5, F5, G5, G4, G3, F3));
       assertEquals(expectedSquareSet, potentialToSquareSet);
     }
     {
       final Set<Square> potentialToSquareSet = KingNonCastlingAttackedSquares
-          .calculateKingNonCastlingAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), D6, BLACK);
+          .calculateKingNonCastlingAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), D6, BLACK);
       final Set<Square> expectedSquareSet = new TreeSet<>(Arrays.asList(E7, E6, E5, D5, C5, C6, C7, D7));
       assertEquals(expectedSquareSet, potentialToSquareSet);
     }
@@ -1727,13 +1728,13 @@ class TestAttackedSquaresByPlaying implements EnumConstants {
     }
     {
       final Set<Square> potentialToSquareSet = KingNonCastlingAttackedSquares
-          .calculateKingNonCastlingAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), F4, WHITE);
+          .calculateKingNonCastlingAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), F4, WHITE);
       final Set<Square> expectedSquareSet = new TreeSet<>(Arrays.asList(E3, E4, E5, F5, G5, G4, G3, F3));
       assertEquals(expectedSquareSet, potentialToSquareSet);
     }
     {
       final Set<Square> potentialToSquareSet = KingNonCastlingAttackedSquares
-          .calculateKingNonCastlingAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), D6, BLACK);
+          .calculateKingNonCastlingAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), D6, BLACK);
       final Set<Square> expectedSquareSet = new TreeSet<>(Arrays.asList(E7, E6, E5, D5, C5, C6, C7, D7));
       assertEquals(expectedSquareSet, potentialToSquareSet);
     }
@@ -1747,13 +1748,13 @@ class TestAttackedSquaresByPlaying implements EnumConstants {
     }
     {
       final Set<Square> potentialToSquareSet = KingNonCastlingAttackedSquares
-          .calculateKingNonCastlingAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), F4, WHITE);
+          .calculateKingNonCastlingAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), F4, WHITE);
       final Set<Square> expectedSquareSet = new TreeSet<>(Arrays.asList(E3, E4, E5, F5, G5, G4, G3, F3));
       assertEquals(expectedSquareSet, potentialToSquareSet);
     }
     {
       final Set<Square> potentialToSquareSet = KingNonCastlingAttackedSquares
-          .calculateKingNonCastlingAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), D6, BLACK);
+          .calculateKingNonCastlingAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), D6, BLACK);
       final Set<Square> expectedSquareSet = new TreeSet<>(Arrays.asList(E7, E6, E5, D5, C5, C6, C7, D7));
       assertEquals(expectedSquareSet, potentialToSquareSet);
     }
@@ -1765,13 +1766,13 @@ class TestAttackedSquaresByPlaying implements EnumConstants {
     }
     {
       final Set<Square> potentialToSquareSet = KingNonCastlingAttackedSquares
-          .calculateKingNonCastlingAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), F4, WHITE);
+          .calculateKingNonCastlingAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), F4, WHITE);
       final Set<Square> expectedSquareSet = new TreeSet<>(Arrays.asList(E3, E4, E5, F5, G5, G4, G3, F3));
       assertEquals(expectedSquareSet, potentialToSquareSet);
     }
     {
       final Set<Square> potentialToSquareSet = KingNonCastlingAttackedSquares
-          .calculateKingNonCastlingAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), D6, BLACK);
+          .calculateKingNonCastlingAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), D6, BLACK);
       final Set<Square> expectedSquareSet = new TreeSet<>(Arrays.asList(E7, E6, E5, D5, C5, C6, C7, D7));
       assertEquals(expectedSquareSet, potentialToSquareSet);
     }
@@ -1783,13 +1784,13 @@ class TestAttackedSquaresByPlaying implements EnumConstants {
     }
     {
       final Set<Square> potentialToSquareSet = KingNonCastlingAttackedSquares
-          .calculateKingNonCastlingAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), E4, WHITE);
+          .calculateKingNonCastlingAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), E4, WHITE);
       final Set<Square> expectedSquareSet = new TreeSet<>(Arrays.asList(D3, D4, D5, E5, F5, F4, F3, E3));
       assertEquals(expectedSquareSet, potentialToSquareSet);
     }
     {
       final Set<Square> potentialToSquareSet = KingNonCastlingAttackedSquares
-          .calculateKingNonCastlingAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), D6, BLACK);
+          .calculateKingNonCastlingAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), D6, BLACK);
       final Set<Square> expectedSquareSet = new TreeSet<>(Arrays.asList(E7, E6, E5, D5, C5, C6, C7, D7));
       assertEquals(expectedSquareSet, potentialToSquareSet);
     }
@@ -1801,13 +1802,13 @@ class TestAttackedSquaresByPlaying implements EnumConstants {
     }
     {
       final Set<Square> potentialToSquareSet = KingNonCastlingAttackedSquares
-          .calculateKingNonCastlingAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), E4, WHITE);
+          .calculateKingNonCastlingAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), E4, WHITE);
       final Set<Square> expectedSquareSet = new TreeSet<>(Arrays.asList(D3, D4, D5, E5, F5, F4, F3, E3));
       assertEquals(expectedSquareSet, potentialToSquareSet);
     }
     {
       final Set<Square> potentialToSquareSet = KingNonCastlingAttackedSquares
-          .calculateKingNonCastlingAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), D6, BLACK);
+          .calculateKingNonCastlingAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), D6, BLACK);
       final Set<Square> expectedSquareSet = new TreeSet<>(Arrays.asList(E7, E6, E5, D5, C5, C6, C7, D7));
       assertEquals(expectedSquareSet, potentialToSquareSet);
     }
@@ -1865,13 +1866,13 @@ class TestAttackedSquaresByPlaying implements EnumConstants {
     }
     {
       final Set<Square> potentialToSquareSet = KingNonCastlingAttackedSquares
-          .calculateKingNonCastlingAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), E4, WHITE);
+          .calculateKingNonCastlingAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), E4, WHITE);
       final Set<Square> expectedSquareSet = new TreeSet<>(Arrays.asList(D3, D4, D5, E5, F5, F4, F3, E3));
       assertEquals(expectedSquareSet, potentialToSquareSet);
     }
     {
       final Set<Square> potentialToSquareSet = KingNonCastlingAttackedSquares
-          .calculateKingNonCastlingAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), D6, BLACK);
+          .calculateKingNonCastlingAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), D6, BLACK);
       final Set<Square> expectedSquareSet = new TreeSet<>(Arrays.asList(E7, E6, E5, D5, C5, C6, C7, D7));
       assertEquals(expectedSquareSet, potentialToSquareSet);
     }
@@ -1883,13 +1884,13 @@ class TestAttackedSquaresByPlaying implements EnumConstants {
     }
     {
       final Set<Square> potentialToSquareSet = KingNonCastlingAttackedSquares
-          .calculateKingNonCastlingAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), E4, WHITE);
+          .calculateKingNonCastlingAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), E4, WHITE);
       final Set<Square> expectedSquareSet = new TreeSet<>(Arrays.asList(D3, D4, D5, E5, F5, F4, F3, E3));
       assertEquals(expectedSquareSet, potentialToSquareSet);
     }
     {
       final Set<Square> potentialToSquareSet = KingNonCastlingAttackedSquares
-          .calculateKingNonCastlingAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), D6, BLACK);
+          .calculateKingNonCastlingAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), D6, BLACK);
       final Set<Square> expectedSquareSet = new TreeSet<>(Arrays.asList(E7, E6, E5, D5, C5, C6, C7, D7));
       assertEquals(expectedSquareSet, potentialToSquareSet);
     }
@@ -1901,13 +1902,13 @@ class TestAttackedSquaresByPlaying implements EnumConstants {
     }
     {
       final Set<Square> potentialToSquareSet = KingNonCastlingAttackedSquares
-          .calculateKingNonCastlingAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), F3, WHITE);
+          .calculateKingNonCastlingAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), F3, WHITE);
       final Set<Square> expectedSquareSet = new TreeSet<>(Arrays.asList(E2, E3, E4, F4, G4, G3, G2, F2));
       assertEquals(expectedSquareSet, potentialToSquareSet);
     }
     {
       final Set<Square> potentialToSquareSet = KingNonCastlingAttackedSquares
-          .calculateKingNonCastlingAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), D6, BLACK);
+          .calculateKingNonCastlingAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), D6, BLACK);
       final Set<Square> expectedSquareSet = new TreeSet<>(Arrays.asList(E7, E6, E5, D5, C5, C6, C7, D7));
       assertEquals(expectedSquareSet, potentialToSquareSet);
     }
@@ -1931,13 +1932,13 @@ class TestAttackedSquaresByPlaying implements EnumConstants {
     }
     {
       final Set<Square> potentialToSquareSet = KingNonCastlingAttackedSquares
-          .calculateKingNonCastlingAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), F3, WHITE);
+          .calculateKingNonCastlingAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), F3, WHITE);
       final Set<Square> expectedSquareSet = new TreeSet<>(Arrays.asList(E2, E3, E4, F4, G4, G3, G2, F2));
       assertEquals(expectedSquareSet, potentialToSquareSet);
     }
     {
       final Set<Square> potentialToSquareSet = KingNonCastlingAttackedSquares
-          .calculateKingNonCastlingAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), D6, BLACK);
+          .calculateKingNonCastlingAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), D6, BLACK);
       final Set<Square> expectedSquareSet = new TreeSet<>(Arrays.asList(E7, E6, E5, D5, C5, C6, C7, D7));
       assertEquals(expectedSquareSet, potentialToSquareSet);
     }
@@ -1949,13 +1950,13 @@ class TestAttackedSquaresByPlaying implements EnumConstants {
     }
     {
       final Set<Square> potentialToSquareSet = KingNonCastlingAttackedSquares
-          .calculateKingNonCastlingAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), F3, WHITE);
+          .calculateKingNonCastlingAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), F3, WHITE);
       final Set<Square> expectedSquareSet = new TreeSet<>(Arrays.asList(E2, E3, E4, F4, G4, G3, G2, F2));
       assertEquals(expectedSquareSet, potentialToSquareSet);
     }
     {
       final Set<Square> potentialToSquareSet = KingNonCastlingAttackedSquares
-          .calculateKingNonCastlingAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), D6, BLACK);
+          .calculateKingNonCastlingAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), D6, BLACK);
       final Set<Square> expectedSquareSet = new TreeSet<>(Arrays.asList(E7, E6, E5, D5, C5, C6, C7, D7));
       assertEquals(expectedSquareSet, potentialToSquareSet);
     }
@@ -1967,13 +1968,13 @@ class TestAttackedSquaresByPlaying implements EnumConstants {
     }
     {
       final Set<Square> potentialToSquareSet = KingNonCastlingAttackedSquares
-          .calculateKingNonCastlingAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), F3, WHITE);
+          .calculateKingNonCastlingAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), F3, WHITE);
       final Set<Square> expectedSquareSet = new TreeSet<>(Arrays.asList(E2, E3, E4, F4, G4, G3, G2, F2));
       assertEquals(expectedSquareSet, potentialToSquareSet);
     }
     {
       final Set<Square> potentialToSquareSet = KingNonCastlingAttackedSquares
-          .calculateKingNonCastlingAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), E5, BLACK);
+          .calculateKingNonCastlingAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), E5, BLACK);
       final Set<Square> expectedSquareSet = new TreeSet<>(Arrays.asList(F6, F5, F4, E4, D4, D5, D6, E6));
       assertEquals(expectedSquareSet, potentialToSquareSet);
     }
@@ -1987,29 +1988,29 @@ class TestAttackedSquaresByPlaying implements EnumConstants {
     // test initital position
     // white
 
-    checkExceptionPawn(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), C1, WHITE);
+    checkExceptionPawn(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), C1, WHITE);
 
-    checkExceptionPawn(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), E4, WHITE);
+    checkExceptionPawn(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), E4, WHITE);
 
-    checkExceptionPawn(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), E7, WHITE);
+    checkExceptionPawn(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), E7, WHITE);
 
     // black
 
-    checkExceptionPawn(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), B8, BLACK);
+    checkExceptionPawn(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), B8, BLACK);
 
-    checkExceptionPawn(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), D5, BLACK);
+    checkExceptionPawn(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), D5, BLACK);
 
-    checkExceptionPawn(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), E2, BLACK);
+    checkExceptionPawn(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), E2, BLACK);
 
     {
       final Set<Square> potentialToSquareSet = PawnAttackedSquares
-          .calculatePawnAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), C2, WHITE);
+          .calculatePawnAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), C2, WHITE);
       final Set<Square> expectedSquareSet = new TreeSet<>(Arrays.asList(B3, D3));
       assertEquals(expectedSquareSet, potentialToSquareSet);
     }
     {
       final Set<Square> potentialToSquareSet = PawnAttackedSquares
-          .calculatePawnAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), F7, BLACK);
+          .calculatePawnAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), F7, BLACK);
       final Set<Square> expectedSquareSet = new TreeSet<>(Arrays.asList(E6, G6));
       assertEquals(expectedSquareSet, potentialToSquareSet);
     }
@@ -2022,13 +2023,13 @@ class TestAttackedSquaresByPlaying implements EnumConstants {
     }
     {
       final Set<Square> potentialToSquareSet = PawnAttackedSquares
-          .calculatePawnAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), C4, WHITE);
+          .calculatePawnAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), C4, WHITE);
       final Set<Square> expectedSquareSet = new TreeSet<>(Arrays.asList(B5, D5));
       assertEquals(expectedSquareSet, potentialToSquareSet);
     }
     {
       final Set<Square> potentialToSquareSet = PawnAttackedSquares
-          .calculatePawnAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), F7, BLACK);
+          .calculatePawnAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), F7, BLACK);
       final Set<Square> expectedSquareSet = new TreeSet<>(Arrays.asList(E6, G6));
       assertEquals(expectedSquareSet, potentialToSquareSet);
     }
@@ -2040,13 +2041,13 @@ class TestAttackedSquaresByPlaying implements EnumConstants {
     }
     {
       final Set<Square> potentialToSquareSet = PawnAttackedSquares
-          .calculatePawnAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), C4, WHITE);
+          .calculatePawnAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), C4, WHITE);
       final Set<Square> expectedSquareSet = new TreeSet<>(Arrays.asList(B5, D5));
       assertEquals(expectedSquareSet, potentialToSquareSet);
     }
     {
       final Set<Square> potentialToSquareSet = PawnAttackedSquares
-          .calculatePawnAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), F5, BLACK);
+          .calculatePawnAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), F5, BLACK);
       final Set<Square> expectedSquareSet = new TreeSet<>(Arrays.asList(E4, G4));
       assertEquals(expectedSquareSet, potentialToSquareSet);
     }
@@ -2058,13 +2059,13 @@ class TestAttackedSquaresByPlaying implements EnumConstants {
     }
     {
       final Set<Square> potentialToSquareSet = PawnAttackedSquares
-          .calculatePawnAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), C4, WHITE);
+          .calculatePawnAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), C4, WHITE);
       final Set<Square> expectedSquareSet = new TreeSet<>(Arrays.asList(B5, D5));
       assertEquals(expectedSquareSet, potentialToSquareSet);
     }
     {
       final Set<Square> potentialToSquareSet = PawnAttackedSquares
-          .calculatePawnAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), F5, BLACK);
+          .calculatePawnAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), F5, BLACK);
       final Set<Square> expectedSquareSet = new TreeSet<>(Arrays.asList(E4, G4));
       assertEquals(expectedSquareSet, potentialToSquareSet);
     }
@@ -2076,13 +2077,13 @@ class TestAttackedSquaresByPlaying implements EnumConstants {
     }
     {
       final Set<Square> potentialToSquareSet = PawnAttackedSquares
-          .calculatePawnAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), C4, WHITE);
+          .calculatePawnAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), C4, WHITE);
       final Set<Square> expectedSquareSet = new TreeSet<>(Arrays.asList(B5, D5));
       assertEquals(expectedSquareSet, potentialToSquareSet);
     }
     {
       final Set<Square> potentialToSquareSet = PawnAttackedSquares
-          .calculatePawnAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), F5, BLACK);
+          .calculatePawnAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), F5, BLACK);
       final Set<Square> expectedSquareSet = new TreeSet<>(Arrays.asList(E4, G4));
       assertEquals(expectedSquareSet, potentialToSquareSet);
     }
@@ -2096,13 +2097,13 @@ class TestAttackedSquaresByPlaying implements EnumConstants {
     }
     {
       final Set<Square> potentialToSquareSet = PawnAttackedSquares
-          .calculatePawnAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), A4, WHITE);
+          .calculatePawnAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), A4, WHITE);
       final Set<Square> expectedSquareSet = new TreeSet<>(Arrays.asList(B5));
       assertEquals(expectedSquareSet, potentialToSquareSet);
     }
     {
       final Set<Square> potentialToSquareSet = PawnAttackedSquares
-          .calculatePawnAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), F5, BLACK);
+          .calculatePawnAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), F5, BLACK);
       final Set<Square> expectedSquareSet = new TreeSet<>(Arrays.asList(E4, G4));
       assertEquals(expectedSquareSet, potentialToSquareSet);
     }
@@ -2114,13 +2115,13 @@ class TestAttackedSquaresByPlaying implements EnumConstants {
     }
     {
       final Set<Square> potentialToSquareSet = PawnAttackedSquares
-          .calculatePawnAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), C4, WHITE);
+          .calculatePawnAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), C4, WHITE);
       final Set<Square> expectedSquareSet = new TreeSet<>(Arrays.asList(B5, D5));
       assertEquals(expectedSquareSet, potentialToSquareSet);
     }
     {
       final Set<Square> potentialToSquareSet = PawnAttackedSquares
-          .calculatePawnAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), G4, BLACK);
+          .calculatePawnAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), G4, BLACK);
       final Set<Square> expectedSquareSet = new TreeSet<>(Arrays.asList(F3, H3));
       assertEquals(expectedSquareSet, potentialToSquareSet);
     }
@@ -2133,13 +2134,13 @@ class TestAttackedSquaresByPlaying implements EnumConstants {
     }
     {
       final Set<Square> potentialToSquareSet = PawnAttackedSquares
-          .calculatePawnAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), C4, WHITE);
+          .calculatePawnAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), C4, WHITE);
       final Set<Square> expectedSquareSet = new TreeSet<>(Arrays.asList(B5, D5));
       assertEquals(expectedSquareSet, potentialToSquareSet);
     }
     {
       final Set<Square> potentialToSquareSet = PawnAttackedSquares
-          .calculatePawnAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), G4, BLACK);
+          .calculatePawnAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), G4, BLACK);
       final Set<Square> expectedSquareSet = new TreeSet<>(Arrays.asList(F3, H3));
       assertEquals(expectedSquareSet, potentialToSquareSet);
     }
@@ -2151,13 +2152,13 @@ class TestAttackedSquaresByPlaying implements EnumConstants {
     }
     {
       final Set<Square> potentialToSquareSet = PawnAttackedSquares
-          .calculatePawnAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), C4, WHITE);
+          .calculatePawnAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), C4, WHITE);
       final Set<Square> expectedSquareSet = new TreeSet<>(Arrays.asList(B5, D5));
       assertEquals(expectedSquareSet, potentialToSquareSet);
     }
     {
       final Set<Square> potentialToSquareSet = PawnAttackedSquares
-          .calculatePawnAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), H3, BLACK);
+          .calculatePawnAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), H3, BLACK);
       final Set<Square> expectedSquareSet = new TreeSet<>(Arrays.asList(G2));
       assertEquals(expectedSquareSet, potentialToSquareSet);
     }
@@ -2169,13 +2170,13 @@ class TestAttackedSquaresByPlaying implements EnumConstants {
     }
     {
       final Set<Square> potentialToSquareSet = PawnAttackedSquares
-          .calculatePawnAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), A5, WHITE);
+          .calculatePawnAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), A5, WHITE);
       final Set<Square> expectedSquareSet = new TreeSet<>(Arrays.asList(B6));
       assertEquals(expectedSquareSet, potentialToSquareSet);
     }
     {
       final Set<Square> potentialToSquareSet = PawnAttackedSquares
-          .calculatePawnAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), H3, BLACK);
+          .calculatePawnAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), H3, BLACK);
       final Set<Square> expectedSquareSet = new TreeSet<>(Arrays.asList(G2));
       assertEquals(expectedSquareSet, potentialToSquareSet);
     }
@@ -2187,13 +2188,13 @@ class TestAttackedSquaresByPlaying implements EnumConstants {
     }
     {
       final Set<Square> potentialToSquareSet = PawnAttackedSquares
-          .calculatePawnAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), A5, WHITE);
+          .calculatePawnAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), A5, WHITE);
       final Set<Square> expectedSquareSet = new TreeSet<>(Arrays.asList(B6));
       assertEquals(expectedSquareSet, potentialToSquareSet);
     }
     {
       final Set<Square> potentialToSquareSet = PawnAttackedSquares
-          .calculatePawnAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), H3, BLACK);
+          .calculatePawnAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), H3, BLACK);
       final Set<Square> expectedSquareSet = new TreeSet<>(Arrays.asList(G2));
       assertEquals(expectedSquareSet, potentialToSquareSet);
     }
@@ -2205,13 +2206,13 @@ class TestAttackedSquaresByPlaying implements EnumConstants {
     }
     {
       final Set<Square> potentialToSquareSet = PawnAttackedSquares
-          .calculatePawnAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), B6, WHITE);
+          .calculatePawnAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), B6, WHITE);
       final Set<Square> expectedSquareSet = new TreeSet<>(Arrays.asList(A7, C7));
       assertEquals(expectedSquareSet, potentialToSquareSet);
     }
     {
       final Set<Square> potentialToSquareSet = PawnAttackedSquares
-          .calculatePawnAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), H3, BLACK);
+          .calculatePawnAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), H3, BLACK);
       final Set<Square> expectedSquareSet = new TreeSet<>(Arrays.asList(G2));
       assertEquals(expectedSquareSet, potentialToSquareSet);
     }
@@ -2223,13 +2224,13 @@ class TestAttackedSquaresByPlaying implements EnumConstants {
     }
     {
       final Set<Square> potentialToSquareSet = PawnAttackedSquares
-          .calculatePawnAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), B6, WHITE);
+          .calculatePawnAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), B6, WHITE);
       final Set<Square> expectedSquareSet = new TreeSet<>(Arrays.asList(A7, C7));
       assertEquals(expectedSquareSet, potentialToSquareSet);
     }
     {
       final Set<Square> potentialToSquareSet = PawnAttackedSquares
-          .calculatePawnAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), H2, BLACK);
+          .calculatePawnAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), H2, BLACK);
       final Set<Square> expectedSquareSet = new TreeSet<>(Arrays.asList(G1));
       assertEquals(expectedSquareSet, potentialToSquareSet);
     }
@@ -2241,13 +2242,13 @@ class TestAttackedSquaresByPlaying implements EnumConstants {
     }
     {
       final Set<Square> potentialToSquareSet = PawnAttackedSquares
-          .calculatePawnAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), A7, WHITE);
+          .calculatePawnAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), A7, WHITE);
       final Set<Square> expectedSquareSet = new TreeSet<>(Arrays.asList(B8));
       assertEquals(expectedSquareSet, potentialToSquareSet);
     }
     {
       final Set<Square> potentialToSquareSet = PawnAttackedSquares
-          .calculatePawnAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), H2, BLACK);
+          .calculatePawnAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), H2, BLACK);
       final Set<Square> expectedSquareSet = new TreeSet<>(Arrays.asList(G1));
       assertEquals(expectedSquareSet, potentialToSquareSet);
     }
@@ -2259,14 +2260,14 @@ class TestAttackedSquaresByPlaying implements EnumConstants {
     }
     {
       final Set<Square> potentialToSquareSet = PawnAttackedSquares
-          .calculatePawnAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), A7, WHITE);
+          .calculatePawnAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), A7, WHITE);
       final Set<Square> expectedSquareSet = new TreeSet<>(Arrays.asList(B8));
       assertEquals(expectedSquareSet, potentialToSquareSet);
     }
     {
       // we check the queen
       final Set<Square> potentialToSquareSet = QueenAttackedSquares
-          .calculateQueenAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), G1, BLACK);
+          .calculateQueenAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), G1, BLACK);
       final Set<Square> expectedSquareSet = new TreeSet<>(Arrays.asList(G2, G3, G4, G5, G6, H2, H1, F1, F2, G7));
       assertEquals(expectedSquareSet, potentialToSquareSet);
     }
@@ -2279,13 +2280,13 @@ class TestAttackedSquaresByPlaying implements EnumConstants {
     {
       // we check the queen
       final Set<Square> potentialToSquareSet = QueenAttackedSquares
-          .calculateQueenAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), B8, WHITE);
+          .calculateQueenAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), B8, WHITE);
       final Set<Square> expectedSquareSet = new TreeSet<>(Arrays.asList(C8, C7, B7, B6, B5, B4, B3, A7, A8, B2));
       assertEquals(expectedSquareSet, potentialToSquareSet);
     }
     {
       final Set<Square> potentialToSquareSet = QueenAttackedSquares
-          .calculateQueenAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), G1, BLACK);
+          .calculateQueenAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), G1, BLACK);
       final Set<Square> expectedSquareSet = new TreeSet<>(Arrays.asList(G2, G3, G4, G5, G6, H2, H1, F1, F2, G7));
       assertEquals(expectedSquareSet, potentialToSquareSet);
     }
@@ -2298,13 +2299,13 @@ class TestAttackedSquaresByPlaying implements EnumConstants {
     {
       // we check the queen
       final Set<Square> potentialToSquareSet = QueenAttackedSquares
-          .calculateQueenAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), B8, WHITE);
+          .calculateQueenAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), B8, WHITE);
       final Set<Square> expectedSquareSet = new TreeSet<>(Arrays.asList(C8, C7, B7, B6, B5, B4, B3, A7, A8, B2));
       assertEquals(expectedSquareSet, potentialToSquareSet);
     }
     {
       final Set<Square> potentialToSquareSet = QueenAttackedSquares
-          .calculateQueenAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), G1, BLACK);
+          .calculateQueenAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), G1, BLACK);
       final Set<Square> expectedSquareSet = new TreeSet<>(Arrays.asList(G2, G3, G4, G5, G6, H2, H1, F1, F2, G7));
       assertEquals(expectedSquareSet, potentialToSquareSet);
     }
@@ -2317,13 +2318,13 @@ class TestAttackedSquaresByPlaying implements EnumConstants {
     }
     {
       final Set<Square> potentialToSquareSet = PawnAttackedSquares
-          .calculatePawnAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), C4, WHITE);
+          .calculatePawnAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), C4, WHITE);
       final Set<Square> expectedSquareSet = new TreeSet<>(Arrays.asList(B5, D5));
       assertEquals(expectedSquareSet, potentialToSquareSet);
     }
     {
       final Set<Square> potentialToSquareSet = PawnAttackedSquares
-          .calculatePawnAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), D5, BLACK);
+          .calculatePawnAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), D5, BLACK);
       final Set<Square> expectedSquareSet = new TreeSet<>(Arrays.asList(C4, E4));
       assertEquals(expectedSquareSet, potentialToSquareSet);
     }
@@ -2335,13 +2336,13 @@ class TestAttackedSquaresByPlaying implements EnumConstants {
     }
     {
       final Set<Square> potentialToSquareSet = PawnAttackedSquares
-          .calculatePawnAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), C4, WHITE);
+          .calculatePawnAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), C4, WHITE);
       final Set<Square> expectedSquareSet = new TreeSet<>(Arrays.asList(B5, D5));
       assertEquals(expectedSquareSet, potentialToSquareSet);
     }
     {
       final Set<Square> potentialToSquareSet = PawnAttackedSquares
-          .calculatePawnAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), D5, BLACK);
+          .calculatePawnAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), D5, BLACK);
       final Set<Square> expectedSquareSet = new TreeSet<>(Arrays.asList(C4, E4));
       assertEquals(expectedSquareSet, potentialToSquareSet);
     }
@@ -2353,13 +2354,13 @@ class TestAttackedSquaresByPlaying implements EnumConstants {
     }
     {
       final Set<Square> potentialToSquareSet = PawnAttackedSquares
-          .calculatePawnAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), B5, WHITE);
+          .calculatePawnAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), B5, WHITE);
       final Set<Square> expectedSquareSet = new TreeSet<>(Arrays.asList(A6, C6));
       assertEquals(expectedSquareSet, potentialToSquareSet);
     }
     {
       final Set<Square> potentialToSquareSet = PawnAttackedSquares
-          .calculatePawnAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), D5, BLACK);
+          .calculatePawnAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), D5, BLACK);
       final Set<Square> expectedSquareSet = new TreeSet<>(Arrays.asList(C4, E4));
       assertEquals(expectedSquareSet, potentialToSquareSet);
     }
@@ -2371,13 +2372,13 @@ class TestAttackedSquaresByPlaying implements EnumConstants {
     }
     {
       final Set<Square> potentialToSquareSet = PawnAttackedSquares
-          .calculatePawnAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), B5, WHITE);
+          .calculatePawnAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), B5, WHITE);
       final Set<Square> expectedSquareSet = new TreeSet<>(Arrays.asList(A6, C6));
       assertEquals(expectedSquareSet, potentialToSquareSet);
     }
     {
       final Set<Square> potentialToSquareSet = PawnAttackedSquares
-          .calculatePawnAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), D5, BLACK);
+          .calculatePawnAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), D5, BLACK);
       final Set<Square> expectedSquareSet = new TreeSet<>(Arrays.asList(C4, E4));
       assertEquals(expectedSquareSet, potentialToSquareSet);
     }
@@ -2389,13 +2390,13 @@ class TestAttackedSquaresByPlaying implements EnumConstants {
     }
     {
       final Set<Square> potentialToSquareSet = PawnAttackedSquares
-          .calculatePawnAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), B5, WHITE);
+          .calculatePawnAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), B5, WHITE);
       final Set<Square> expectedSquareSet = new TreeSet<>(Arrays.asList(A6, C6));
       assertEquals(expectedSquareSet, potentialToSquareSet);
     }
     {
       final Set<Square> potentialToSquareSet = PawnAttackedSquares
-          .calculatePawnAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), D5, BLACK);
+          .calculatePawnAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), D5, BLACK);
       final Set<Square> expectedSquareSet = new TreeSet<>(Arrays.asList(C4, E4));
       assertEquals(expectedSquareSet, potentialToSquareSet);
     }
@@ -2407,13 +2408,13 @@ class TestAttackedSquaresByPlaying implements EnumConstants {
     }
     {
       final Set<Square> potentialToSquareSet = PawnAttackedSquares
-          .calculatePawnAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), B5, WHITE);
+          .calculatePawnAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), B5, WHITE);
       final Set<Square> expectedSquareSet = new TreeSet<>(Arrays.asList(A6, C6));
       assertEquals(expectedSquareSet, potentialToSquareSet);
     }
     {
       final Set<Square> potentialToSquareSet = PawnAttackedSquares
-          .calculatePawnAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), E4, BLACK);
+          .calculatePawnAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), E4, BLACK);
       final Set<Square> expectedSquareSet = new TreeSet<>(Arrays.asList(D3, F3));
       assertEquals(expectedSquareSet, potentialToSquareSet);
     }
@@ -2425,13 +2426,13 @@ class TestAttackedSquaresByPlaying implements EnumConstants {
     }
     {
       final Set<Square> potentialToSquareSet = PawnAttackedSquares
-          .calculatePawnAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), B5, WHITE);
+          .calculatePawnAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), B5, WHITE);
       final Set<Square> expectedSquareSet = new TreeSet<>(Arrays.asList(A6, C6));
       assertEquals(expectedSquareSet, potentialToSquareSet);
     }
     {
       final Set<Square> potentialToSquareSet = PawnAttackedSquares
-          .calculatePawnAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), E4, BLACK);
+          .calculatePawnAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), E4, BLACK);
       final Set<Square> expectedSquareSet = new TreeSet<>(Arrays.asList(D3, F3));
       assertEquals(expectedSquareSet, potentialToSquareSet);
     }
@@ -2443,13 +2444,13 @@ class TestAttackedSquaresByPlaying implements EnumConstants {
     }
     {
       final Set<Square> potentialToSquareSet = PawnAttackedSquares
-          .calculatePawnAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), B5, WHITE);
+          .calculatePawnAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), B5, WHITE);
       final Set<Square> expectedSquareSet = new TreeSet<>(Arrays.asList(A6, C6));
       assertEquals(expectedSquareSet, potentialToSquareSet);
     }
     {
       final Set<Square> potentialToSquareSet = PawnAttackedSquares
-          .calculatePawnAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), E4, BLACK);
+          .calculatePawnAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), E4, BLACK);
       final Set<Square> expectedSquareSet = new TreeSet<>(Arrays.asList(D3, F3));
       assertEquals(expectedSquareSet, potentialToSquareSet);
     }
@@ -2462,13 +2463,13 @@ class TestAttackedSquaresByPlaying implements EnumConstants {
     }
     {
       final Set<Square> potentialToSquareSet = PawnAttackedSquares
-          .calculatePawnAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), F4, WHITE);
+          .calculatePawnAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), F4, WHITE);
       final Set<Square> expectedSquareSet = new TreeSet<>(Arrays.asList(E5, G5));
       assertEquals(expectedSquareSet, potentialToSquareSet);
     }
     {
       final Set<Square> potentialToSquareSet = PawnAttackedSquares
-          .calculatePawnAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), E4, BLACK);
+          .calculatePawnAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), E4, BLACK);
       final Set<Square> expectedSquareSet = new TreeSet<>(Arrays.asList(D3, F3));
       assertEquals(expectedSquareSet, potentialToSquareSet);
     }
@@ -2481,13 +2482,13 @@ class TestAttackedSquaresByPlaying implements EnumConstants {
     }
     {
       final Set<Square> potentialToSquareSet = PawnAttackedSquares
-          .calculatePawnAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), F4, WHITE);
+          .calculatePawnAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), F4, WHITE);
       final Set<Square> expectedSquareSet = new TreeSet<>(Arrays.asList(E5, G5));
       assertEquals(expectedSquareSet, potentialToSquareSet);
     }
     {
       final Set<Square> potentialToSquareSet = PawnAttackedSquares
-          .calculatePawnAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), E4, BLACK);
+          .calculatePawnAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), E4, BLACK);
       final Set<Square> expectedSquareSet = new TreeSet<>(Arrays.asList(D3, F3));
       assertEquals(expectedSquareSet, potentialToSquareSet);
     }
@@ -2499,13 +2500,13 @@ class TestAttackedSquaresByPlaying implements EnumConstants {
     }
     {
       final Set<Square> potentialToSquareSet = PawnAttackedSquares
-          .calculatePawnAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), F5, WHITE);
+          .calculatePawnAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), F5, WHITE);
       final Set<Square> expectedSquareSet = new TreeSet<>(Arrays.asList(E6, G6));
       assertEquals(expectedSquareSet, potentialToSquareSet);
     }
     {
       final Set<Square> potentialToSquareSet = PawnAttackedSquares
-          .calculatePawnAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), E4, BLACK);
+          .calculatePawnAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), E4, BLACK);
       final Set<Square> expectedSquareSet = new TreeSet<>(Arrays.asList(D3, F3));
       assertEquals(expectedSquareSet, potentialToSquareSet);
     }
@@ -2517,13 +2518,13 @@ class TestAttackedSquaresByPlaying implements EnumConstants {
     }
     {
       final Set<Square> potentialToSquareSet = PawnAttackedSquares
-          .calculatePawnAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), F5, WHITE);
+          .calculatePawnAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), F5, WHITE);
       final Set<Square> expectedSquareSet = new TreeSet<>(Arrays.asList(E6, G6));
       assertEquals(expectedSquareSet, potentialToSquareSet);
     }
     {
       final Set<Square> potentialToSquareSet = PawnAttackedSquares
-          .calculatePawnAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), E4, BLACK);
+          .calculatePawnAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), E4, BLACK);
       final Set<Square> expectedSquareSet = new TreeSet<>(Arrays.asList(D3, F3));
       assertEquals(expectedSquareSet, potentialToSquareSet);
     }
@@ -2536,13 +2537,13 @@ class TestAttackedSquaresByPlaying implements EnumConstants {
     }
     {
       final Set<Square> potentialToSquareSet = PawnAttackedSquares
-          .calculatePawnAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), F5, WHITE);
+          .calculatePawnAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), F5, WHITE);
       final Set<Square> expectedSquareSet = new TreeSet<>(Arrays.asList(E6, G6));
       assertEquals(expectedSquareSet, potentialToSquareSet);
     }
     {
       final Set<Square> potentialToSquareSet = PawnAttackedSquares
-          .calculatePawnAttackedSquares(BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()), E4, BLACK);
+          .calculatePawnAttackedSquares(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), E4, BLACK);
       final Set<Square> expectedSquareSet = new TreeSet<>(Arrays.asList(D3, F3));
       assertEquals(expectedSquareSet, potentialToSquareSet);
     }

@@ -31,6 +31,7 @@ import com.dlb.chess.test.librarycarlos.NullsCarlos;
 import com.dlb.chess.test.librarycarlos.utility.MoveConversionUtility;
 import com.dlb.chess.test.librarycomparison.utility.BoardConversionUtitlity;
 import com.dlb.chess.test.librarycomparison.utility.EnumConversionUtility;
+import com.dlb.chess.bitboard.StaticPositionBridge;
 import com.github.bhlangonijr.chesslib.Board;
 import com.github.bhlangonijr.chesslib.CastleRight;
 import com.github.bhlangonijr.chesslib.MoveBackup;
@@ -108,7 +109,7 @@ public class LibraryCarlosBoard {
     performedLegalMoveList.add(legalMove);
     final var normalizedEnPassantCaptureTargetSquare = isEnPassantCapturePossible() ? getEnPassantCaptureTargetSquare()
         : Square.NONE;
-    final var bitboardPosition = BitboardPositionUtility.fromStaticPosition(getStaticPosition());
+    final var bitboardPosition = StaticPositionBridge.fromStaticPosition(getStaticPosition());
     dynamicPositionList.add(new DynamicPosition(getHavingMove(), bitboardPosition,
         normalizedEnPassantCaptureTargetSquare, getCastlingRightWhite(), getCastlingRightBlack()));
 
@@ -557,11 +558,11 @@ public class LibraryCarlosBoard {
   // Bitboard accessors mirror the Board API for the CommonTestUtility cross-comparison. LibraryCarlosBoard has no
   // native bitboard of its own; both derive from the chesslib-derived StaticPosition via the bridge utility.
   public com.dlb.chess.bitboard.BitboardPosition getBitboardPosition() {
-    return com.dlb.chess.bitboard.BitboardPositionUtility.fromStaticPosition(getStaticPosition());
+    return com.dlb.chess.bitboard.StaticPositionBridge.fromStaticPosition(getStaticPosition());
   }
 
   public com.dlb.chess.bitboard.BitboardPosition getBitboardPositionBeforeLastMove() {
-    return com.dlb.chess.bitboard.BitboardPositionUtility.fromStaticPosition(getStaticPositionBeforeLastMove());
+    return com.dlb.chess.bitboard.StaticPositionBridge.fromStaticPosition(getStaticPositionBeforeLastMove());
   }
 
   public boolean movesStrict(String... sanArray) {

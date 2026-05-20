@@ -11,6 +11,7 @@ import com.dlb.chess.board.enums.Side;
 import com.dlb.chess.board.enums.Square;
 import com.dlb.chess.common.Nulls;
 import com.dlb.chess.bitboard.BitboardPositionUtility;
+import com.dlb.chess.bitboard.StaticPositionBridge;
 
 public final class SemiStaticOracleFormatter {
 
@@ -36,10 +37,10 @@ public final class SemiStaticOracleFormatter {
     final List<String> rowList = new ArrayList<>();
 
     for (final Square source : Square.REAL) {
-      if (BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()).isEmpty(source)) {
+      if (StaticPositionBridge.toStaticPosition(board.getBitboardPosition()).isEmpty(source)) {
         continue;
       }
-      final Piece piece = BitboardPositionUtility.toStaticPosition(board.getBitboardPosition()).get(source);
+      final Piece piece = StaticPositionBridge.toStaticPosition(board.getBitboardPosition()).get(source);
       final PiecePlacement piecePlacement = calculatePiecePlacement(piece.getPieceType(), piece.getSide(), source,
           mobilitySolution);
       addRow(rowList, fen, "-", "JAVA_ATTACKED_REGION", formatPiece(piecePlacement),

@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import com.dlb.chess.common.constants.EnumConstants;
 import com.dlb.chess.bitboard.BitboardPositionUtility;
+import com.dlb.chess.bitboard.StaticPositionBridge;
 
 public abstract class CommonTestUtility implements EnumConstants {
 
@@ -108,7 +109,7 @@ public abstract class CommonTestUtility implements EnumConstants {
       assertEquals(boardFirst.getLastMove(), boardSecond.getLastMove());
     }
 
-    assertEquals(BitboardPositionUtility.toStaticPosition(boardFirst.getBitboardPosition()), BitboardPositionUtility.toStaticPosition(boardSecond.getBitboardPosition()));
+    assertEquals(StaticPositionBridge.toStaticPosition(boardFirst.getBitboardPosition()), StaticPositionBridge.toStaticPosition(boardSecond.getBitboardPosition()));
     if (!boardFirst.isFirstMove() && !boardSecond.isFirstMove()) {
       assertEquals(boardFirst.getBitboardPositionBeforeLastMove(), boardSecond.getBitboardPositionBeforeLastMove());
     }
@@ -188,7 +189,7 @@ public abstract class CommonTestUtility implements EnumConstants {
       assertEquals(boardFirst.getLastMove(), boardSecond.getLastMove());
     }
 
-    assertEquals(BitboardPositionUtility.toStaticPosition(boardFirst.getBitboardPosition()), BitboardPositionUtility.toStaticPosition(boardSecond.getBitboardPosition()));
+    assertEquals(StaticPositionBridge.toStaticPosition(boardFirst.getBitboardPosition()), StaticPositionBridge.toStaticPosition(boardSecond.getBitboardPosition()));
     if (!boardFirst.isFirstMove() && !boardSecond.isFirstMove()) {
       assertEquals(boardFirst.getBitboardPositionBeforeLastMove(), boardSecond.getBitboardPositionBeforeLastMove());
     }

@@ -13,6 +13,7 @@ import com.dlb.chess.test.model.PgnTestCase;
 import com.dlb.chess.test.model.PgnTestCaseList;
 import com.dlb.chess.test.pgn.setup.PgnTestCaseCatalog;
 import com.dlb.chess.test.pgntest.enums.PgnTest;
+import com.dlb.chess.bitboard.StaticPositionBridge;
 
 /**
  * Differential round-trip test: for every fixture in the corpus, converting the {@link StaticPosition} to
@@ -25,8 +26,8 @@ class TestBitboardPositionRoundTrip {
   @Test
   void initialPosition() {
     final StaticPosition staticPosition = StaticPosition.INITIAL_POSITION;
-    final BitboardPosition bitboardPosition = BitboardPositionUtility.fromStaticPosition(staticPosition);
-    assertEquals(staticPosition, BitboardPositionUtility.toStaticPosition(bitboardPosition));
+    final BitboardPosition bitboardPosition = StaticPositionBridge.fromStaticPosition(staticPosition);
+    assertEquals(staticPosition, StaticPositionBridge.toStaticPosition(bitboardPosition));
     assertEquals(bitboardPosition, BitboardPosition.INITIAL_POSITION);
   }
 
@@ -34,8 +35,8 @@ class TestBitboardPositionRoundTrip {
   @Test
   void emptyPosition() {
     final StaticPosition staticPosition = StaticPosition.EMPTY_POSITION;
-    final BitboardPosition bitboardPosition = BitboardPositionUtility.fromStaticPosition(staticPosition);
-    assertEquals(staticPosition, BitboardPositionUtility.toStaticPosition(bitboardPosition));
+    final BitboardPosition bitboardPosition = StaticPositionBridge.fromStaticPosition(staticPosition);
+    assertEquals(staticPosition, StaticPositionBridge.toStaticPosition(bitboardPosition));
     assertEquals(bitboardPosition, BitboardPosition.EMPTY_POSITION);
   }
 
@@ -45,9 +46,9 @@ class TestBitboardPositionRoundTrip {
     for (final PgnTest pgnTest : PgnTest.values()) {
       final PgnTestCaseList testCaseList = PgnTestCaseCatalog.getTestList(pgnTest);
       for (final PgnTestCase testCase : testCaseList.list()) {
-        final StaticPosition staticPosition = BitboardPositionUtility.toStaticPosition(testCase.finalPosition().getBitboardPosition());
-        final BitboardPosition bitboardPosition = BitboardPositionUtility.fromStaticPosition(staticPosition);
-        assertEquals(staticPosition, BitboardPositionUtility.toStaticPosition(bitboardPosition),
+        final StaticPosition staticPosition = StaticPositionBridge.toStaticPosition(testCase.finalPosition().getBitboardPosition());
+        final BitboardPosition bitboardPosition = StaticPositionBridge.fromStaticPosition(staticPosition);
+        assertEquals(staticPosition, StaticPositionBridge.toStaticPosition(bitboardPosition),
             "round-trip mismatch for fixture " + testCase.pgnName());
       }
     }

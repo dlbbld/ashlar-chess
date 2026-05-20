@@ -18,6 +18,7 @@ import com.dlb.chess.test.model.PgnTestCase;
 import com.dlb.chess.test.model.PgnTestCaseList;
 import com.dlb.chess.test.pgn.setup.PgnTestCaseCatalog;
 import com.dlb.chess.test.pgntest.enums.PgnTest;
+import com.dlb.chess.bitboard.StaticPositionBridge;
 
 /**
  * Differential test: {@link BitboardPosition#potentialToSquares(Square, long)} must agree set-equal with
@@ -39,8 +40,8 @@ class TestBitboardPositionPotentialToSquares {
       final PgnTestCaseList testCaseList = PgnTestCaseCatalog.getTestList(pgnTest);
       for (final PgnTestCase testCase : testCaseList.list()) {
         final Board board = testCase.finalPosition();
-        final StaticPosition staticPosition = BitboardPositionUtility.toStaticPosition(board.getBitboardPosition());
-        final BitboardPosition bitboardPosition = BitboardPositionUtility.fromStaticPosition(staticPosition);
+        final StaticPosition staticPosition = StaticPositionBridge.toStaticPosition(board.getBitboardPosition());
+        final BitboardPosition bitboardPosition = StaticPositionBridge.fromStaticPosition(staticPosition);
         final Side havingMove = board.getHavingMove();
         final Square epTarget = board.getEnPassantCaptureTargetSquare();
         final long epBit = epTarget == Square.NONE ? 0L : 1L << epTarget.ordinal();

@@ -18,6 +18,7 @@ import com.dlb.chess.test.model.PgnTestCase;
 import com.dlb.chess.test.model.PgnTestCaseList;
 import com.dlb.chess.test.pgn.setup.PgnTestCaseCatalog;
 import com.dlb.chess.test.pgntest.enums.PgnTest;
+import com.dlb.chess.bitboard.StaticPositionBridge;
 
 /**
  * The second spine assertion: for every fixture × every legal move, the bitboard's
@@ -34,15 +35,15 @@ class TestBitboardPositionAfterMove {
       final PgnTestCaseList testCaseList = PgnTestCaseCatalog.getTestList(pgnTest);
       for (final PgnTestCase testCase : testCaseList.list()) {
         final Board board = testCase.finalPosition();
-        final StaticPosition staticPosition = BitboardPositionUtility.toStaticPosition(board.getBitboardPosition());
-        final BitboardPosition bitboardPosition = BitboardPositionUtility.fromStaticPosition(staticPosition);
+        final StaticPosition staticPosition = StaticPositionBridge.toStaticPosition(board.getBitboardPosition());
+        final BitboardPosition bitboardPosition = StaticPositionBridge.fromStaticPosition(staticPosition);
         final Side havingMove = board.getHavingMove();
 
         for (final LegalMove legalMove : board.getLegalMoves()) {
           final MoveSpecification moveSpec = legalMove.moveSpecification();
           final StaticPosition referenceAfter = StaticPositionUtility.createPositionAfterMove(staticPosition,
               havingMove, moveSpec);
-          final BitboardPosition expectedAfter = BitboardPositionUtility.fromStaticPosition(referenceAfter);
+          final BitboardPosition expectedAfter = StaticPositionBridge.fromStaticPosition(referenceAfter);
           final BitboardPosition bitboardAfter = bitboardPosition.afterMove(moveSpec, havingMove);
           assertEquals(expectedAfter, bitboardAfter,
               "afterMove disagreement for " + moveSpec + " in fixture " + testCase.pgnName());
@@ -57,7 +58,7 @@ class TestBitboardPositionAfterMove {
     final MoveSpecification e2e4 = new MoveSpecification(Square.E2, Square.E4);
     final StaticPosition referenceAfter = StaticPositionUtility
         .createPositionAfterMove(StaticPosition.INITIAL_POSITION, Side.WHITE, e2e4);
-    final BitboardPosition expectedAfter = BitboardPositionUtility.fromStaticPosition(referenceAfter);
+    final BitboardPosition expectedAfter = StaticPositionBridge.fromStaticPosition(referenceAfter);
     final BitboardPosition bitboardAfter = BitboardPosition.INITIAL_POSITION.afterMove(e2e4, Side.WHITE);
     assertEquals(expectedAfter, bitboardAfter);
   }

@@ -19,6 +19,7 @@ import com.dlb.chess.test.model.PgnTestCase;
 import com.dlb.chess.test.model.PgnTestCaseList;
 import com.dlb.chess.test.pgn.setup.PgnTestCaseCatalog;
 import com.dlb.chess.test.pgntest.enums.PgnTest;
+import com.dlb.chess.bitboard.StaticPositionBridge;
 
 /**
  * Differential test for {@link RookAttacks}: for every rook on every fixture in the corpus, the bitboard ray-loop
@@ -32,8 +33,8 @@ class TestRookAttacks {
     for (final PgnTest pgnTest : PgnTest.values()) {
       final PgnTestCaseList testCaseList = PgnTestCaseCatalog.getTestList(pgnTest);
       for (final PgnTestCase testCase : testCaseList.list()) {
-        final StaticPosition staticPosition = BitboardPositionUtility.toStaticPosition(testCase.finalPosition().getBitboardPosition());
-        final BitboardPosition bitboardPosition = BitboardPositionUtility.fromStaticPosition(staticPosition);
+        final StaticPosition staticPosition = StaticPositionBridge.toStaticPosition(testCase.finalPosition().getBitboardPosition());
+        final BitboardPosition bitboardPosition = StaticPositionBridge.fromStaticPosition(staticPosition);
         final long occupied = bitboardPosition.occupied();
         assertSideAgrees(bitboardPosition.whiteRooks(), Side.WHITE, staticPosition, occupied, testCase);
         assertSideAgrees(bitboardPosition.blackRooks(), Side.BLACK, staticPosition, occupied, testCase);
@@ -61,7 +62,7 @@ class TestRookAttacks {
   void emptyBoardFromCenterMatchesReference() {
     final StaticPosition staticPosition = StaticPosition.EMPTY_POSITION
         .createChangedPosition(Square.D4, com.dlb.chess.board.enums.Piece.WHITE_ROOK);
-    final BitboardPosition bitboardPosition = BitboardPositionUtility.fromStaticPosition(staticPosition);
+    final BitboardPosition bitboardPosition = StaticPositionBridge.fromStaticPosition(staticPosition);
     final Set<Square> bitboardAttacks = BitboardPositionUtility
         .toSquareSet(RookAttacks.attacks(Square.D4.ordinal(), bitboardPosition.occupied()));
     final Set<Square> referenceAttacks = SlidingAttacksTestOracle.rookAttacks(staticPosition, Square.D4, Side.WHITE);

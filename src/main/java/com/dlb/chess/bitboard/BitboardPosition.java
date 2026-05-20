@@ -3,7 +3,6 @@ package com.dlb.chess.bitboard;
 import java.util.Set;
 import java.util.TreeSet;
 
-import com.dlb.chess.board.StaticPosition;
 import com.dlb.chess.board.enums.CastlingMove;
 import com.dlb.chess.board.enums.Piece;
 import com.dlb.chess.board.enums.PieceType;
@@ -25,10 +24,10 @@ import com.dlb.chess.common.model.MoveSpecification;
  * {@link IllegalArgumentException}.
  *
  * <p>
- * Built alongside {@link com.dlb.chess.board.StaticPosition} and verified bit-exact against it via differential testing
- * across the full PGN/FEN corpus. See {@code tasks.md} and the package-level Javadoc for the governing invariant: the
- * bitboard backend release is purely additive; the {@code StaticPosition} reference implementation remains the
- * project's correctness ground truth.
+ * Built alongside {@code StaticPosition} and verified bit-exact against it via differential testing across the full
+ * PGN/FEN corpus. After the role-inversion release, {@code StaticPosition} lives in {@code src/test/} as the
+ * permanent differential-test oracle; this record is the production representation. See {@code tasks.md} and the
+ * package-level Javadoc for the governing Project Invariant.
  */
 public record BitboardPosition(long whitePawns, long whiteRooks, long whiteKnights, long whiteBishops, long whiteQueens,
     long whiteKings, long blackPawns, long blackRooks, long blackKnights, long blackBishops, long blackQueens,
@@ -46,11 +45,26 @@ public record BitboardPosition(long whitePawns, long whiteRooks, long whiteKnigh
     }
   }
 
-  public static final BitboardPosition INITIAL_POSITION = BitboardPositionUtility
-      .fromStaticPosition(StaticPosition.INITIAL_POSITION);
+  // Initial position bit layout (little-endian rank-file: A1 = bit 0, H8 = bit 63):
+  //   white pawns on rank 2 (bits 8-15)        -> 0x000000000000FF00L
+  //   white rooks   on a1, h1   (bits 0, 7)    -> 0x0000000000000081L
+  //   white knights on b1, g1   (bits 1, 6)    -> 0x0000000000000042L
+  //   white bishops on c1, f1   (bits 2, 5)    -> 0x0000000000000024L
+  //   white queen   on d1       (bit 3)        -> 0x0000000000000008L
+  //   white king    on e1       (bit 4)        -> 0x0000000000000010L
+  //   black pawns on rank 7 (bits 48-55)       -> 0x00FF000000000000L
+  //   black rooks   on a8, h8   (bits 56, 63)  -> 0x8100000000000000L
+  //   black knights on b8, g8   (bits 57, 62)  -> 0x4200000000000000L
+  //   black bishops on c8, f8   (bits 58, 61)  -> 0x2400000000000000L
+  //   black queen   on d8       (bit 59)       -> 0x0800000000000000L
+  //   black king    on e8       (bit 60)       -> 0x1000000000000000L
+  public static final BitboardPosition INITIAL_POSITION = new BitboardPosition(0x000000000000FF00L,
+      0x0000000000000081L, 0x0000000000000042L, 0x0000000000000024L, 0x0000000000000008L, 0x0000000000000010L,
+      0x00FF000000000000L, 0x8100000000000000L, 0x4200000000000000L, 0x2400000000000000L, 0x0800000000000000L,
+      0x1000000000000000L);
 
-  public static final BitboardPosition EMPTY_POSITION = BitboardPositionUtility
-      .fromStaticPosition(StaticPosition.EMPTY_POSITION);
+  public static final BitboardPosition EMPTY_POSITION = new BitboardPosition(0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L,
+      0L, 0L);
 
   public Piece get(Square square) {
     final var bit = bitFor(square);
