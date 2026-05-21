@@ -635,8 +635,8 @@ public record BitboardPosition(long whitePawns, long whiteRooks, long whiteKnigh
    *
    * <p>
    * Castling rights, en-passant target square, side-to-move, and the halfmove / fullmove counters are intentionally NOT
-   * updated here — they live on {@link com.dlb.chess.board.Board} / {@link com.dlb.chess.common.model.DynamicPosition}. This
-   * is the piece-placement-only equivalent of {@code StaticPositionUtility.createPositionAfterMove}.
+   * updated here — they live on {@link com.dlb.chess.board.Board} / {@link com.dlb.chess.common.model.DynamicPosition}.
+   * This is the piece-placement-only equivalent of {@code StaticPositionUtility.createPositionAfterMove}.
    *
    * <p>
    * The bitboard layer is intentionally stateless about whose turn it is. Callers pass {@code movingSide} explicitly —

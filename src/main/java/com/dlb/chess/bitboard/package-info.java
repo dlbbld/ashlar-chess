@@ -1,9 +1,9 @@
 /**
- * Bitboard piece-placement representation, built alongside the {@link com.dlb.chess.board.StaticPosition} mailbox
- * representation. This package is purely additive during the bitboard backend release: no production hot path is
- * switched to consume it here, and no {@code StaticPosition}-based code under {@code src/main/} is deleted or
- * relocated by this release. Every primitive added under this package is differential-tested bit-exact against the
- * corresponding {@code StaticPosition}-based code on the full PGN/FEN corpus.
+ * Bitboard piece-placement representation. The single piece-placement representation that production code consumes,
+ * paired with the {@code StaticPosition} mailbox representation that lives test-side (under {@code src/test/}) as
+ * the permanent differential-test oracle. Every primitive in this package is asserted bit-exact against the
+ * corresponding {@code StaticPosition}-based code on the full PGN/FEN corpus, on every release going forward — see
+ * {@code specification.md} §4.1 and §6.1.
  *
  * <p>
  * Bit layout: little-endian rank-file. Bit {@code i} of every {@code long} corresponds to
@@ -12,8 +12,8 @@
  *
  * <p>
  * Castling rights, en-passant target, side-to-move, and the halfmove / fullmove counters live on
- * {@link com.dlb.chess.board.Board} / {@link com.dlb.chess.common.model.DynamicPosition} and intentionally do not appear on
- * {@link com.dlb.chess.bitboard.BitboardPosition}, which carries piece placement only.
+ * {@link com.dlb.chess.board.Board} / {@link com.dlb.chess.common.model.DynamicPosition} and intentionally do not
+ * appear on {@link com.dlb.chess.bitboard.BitboardPosition}, which carries piece placement only.
  *
  * <p>
  * See {@code tasks.md} — <em>Project invariant — the {@code StaticPosition} reference implementation is never lost</em>
