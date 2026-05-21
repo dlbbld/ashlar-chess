@@ -56,25 +56,18 @@ If your code unpacks a `Fen` record: change `fen.staticPosition()` → `fen.bitb
 
 If your code called `BitboardPositionUtility.fromStaticPosition`/`toStaticPosition` from production: it shouldn't have, but if it did, switch the calling code to flow `BitboardPosition` throughout instead of round-tripping through the mailbox.
 
-### Known release-gate failures (pre-existing corpus hygiene)
+### Release gates
 
-`mvn test` (restricted): **1132 / 0 / 0 / 4** — green. `mvn javadoc:javadoc`: green. `mvn test -Pfull`: **red, on pre-existing corpus hygiene unrelated to the role inversion** — verified by reproducing the same failures at commit `d1bd0e16` (Phase 5, before any Phase 6+ work). Two audit failures and six tests that consume one of the affected fixtures:
+`mvn test` (restricted): **1132 / 0 / 0 / 4** — green. `mvn javadoc:javadoc`: green. `mvn test -Pfull`: **1132 / 0 / 0 / 1** — green.
 
-- `TestSetupPgnCorpusNotPlaysBeyondAudit.auditCorpus` — **28 of 1280 PGN files** in the regular corpus fail the strict PGN parser. The audit is named for "plays past a FIDE-automatic termination," but it catches any `RuntimeException` from the strict parser. **None of these 28 files actually play past termination.** They all fail for the same boring reason: the strict PGN parser requires exactly two empty lines (one after the last tag block, one at end of file), and these CHA test fixtures are missing one or both. The fix is mechanical — append the missing newline(s) — not a folder relocation. The 28 files:
+Cleaned up pre-existing corpus hygiene that was blocking `-Pfull` before the release:
 
-  - `CHA_LICHESS_QUICK_NOT_DEPTH_THREE_HELPMATE/test_lichess_V7eJ1RR9_helpmate.pgn`
-  - `CHA_SHALLOW_TERMINATION/{01_m1_white_to_move, 02_m1_black_to_move, 03_m2_white_to_move, 04_m2_black_to_move, 05_helpmate2_white_to_move, 06_helpmate2_black_to_move, 07_helpmate3_white_to_move, 08_helpmate3_black_to_move, 09_control_white_to_move, 10_control_black_to_move}.pgn` (10 files)
-  - `CHA_HELPMATE_BEYOND_FIVEFOLD/01_beyond_fivefold.pgn`
-  - `CHA_BASIC_MATE_DRAW/{01_draw_KR_K, 02_draw_KQ_K, 03_draw_KBwBb_K, 04_draw_KBwN_K}.pgn` (4 files)
-  - `CHA_BASIC_MATE_HELPMATE_04/{01_helpmate_04_KR_K, 02_helpmate_04_KQ_K, 03_helpmate_04_KBwBb_K, 04_helpmate_04_KBwN_K}.pgn` (4 files)
-  - `CHA_BASIC_MATE_HELPMATE_10/{01_helpmate_10_KR_K, 02_helpmate_10_KQ_K, 03_helpmate_10_KBwBb_K, 04_helpmate_10_KBwN_K}.pgn` (4 files)
-  - `CHA_BASIC_MATE_HELPMATE_AROUND_MAX/{01_helpmate_around_max_KR_K, 02_helpmate_around_max_KQ_K, 03_helpmate_around_max_KBwBb_K, 04_helpmate_around_max_KBwN_K}.pgn` (4 files)
+- **28 CHA test fixtures** under `src/test/resources/pgn/cha/` had malformed trailing whitespace (missing or extra empty lines, sometimes missing the result token entirely). The strict PGN parser requires exactly two empty lines — one after the last tag block, one at end of file. Normalised all 28 files to end with `...<result>\n\n`. Four observed shapes (tag-only with no movetext, movetext with one trailing newline, movetext with no trailing newline, movetext with three trailing newlines). None of these files actually played past a FIDE-automatic termination; the audit's catch net was broader than its name suggested.
+- **`test_lichess_V7eJ1RR9_helpmate.pgn`** had a double space at move 56 (`bxc7+  Qxc7`) that the strict parser flags as "a half-move must be followed by a single space before the next token." Collapsed to single space.
+- **`01_beyond_fivefold.pgn`** had its movetext start with `10. Kc8 Kc6 ... 17. Kd8 Kd6` while the FEN tag specified fullmove number 50. Renumbered the movetext to `50. ... 57.` to match the FEN.
+- **`TestLegacyPgnParsePlaysBeyondAudit`** asserted a hardcoded expected count of 101 legacy fixtures, but the actual `pgnParser/legacy/common/beyond/` folder and the test's own `EXPECTED` map both have 99. Updated the hardcoded constant to 99.
 
-- `TestLegacyPgnParsePlaysBeyondAudit.test` — expected 101 legacy fixtures in the EXPECTED map, found 99. Stale test-side expectation vs. actual `pgnParser/legacy/common/beyond/` folder count.
-
-- Six tests that consume one of the affected fixtures fail with the same "PGN must have exactly two empty lines" parser error rather than running their actual assertions: `TestInsufficientMaterial.testPgnSample`, `TestLegalMovesAgainstCreatedUsingValidation.test`, `TestFenRoundtripPgn.testPgnSample`, `TestBoardAgainstEachOther.test`, `TestLenientPgnParserAgainstEachOther.test`, `TestStrictPgnParserAgainstLenientPgnParser.test`.
-
-None of the above touch bitboard, `StaticPosition`, or the role-inversion code. They are corpus-data debt, scheduled as a follow-up cleanup task.
+After the cleanup, every test in the `-Pfull` suite either passes or is skipped via `@assumeFalse` (one suite-level skip). No pre-existing failures remain.
 
 ## [10.0.0] - 2026-05-19
 
