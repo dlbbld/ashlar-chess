@@ -357,6 +357,52 @@ Plus the public-API decisions: the `Fen` record reshape is binary-incompatible; 
 
 ---
 
+## Next release — drop auto-CHA-per-move; dead-position queries become request-based
+
+The construction we have today is too complicated and does work the library doesn't need. Today every `Board.move()` (and every `Board` constructor) runs the unwinnability quick analyzer on the new position and caches the verdict in `isDeadPositionUnwinnableQuickList`. The cached value drives `Board.isDeadPositionUnwinnableQuick()`, feeds `Board.isDeadPosition()` (alongside the cheap mechanical `isInsufficientMaterial`), and through `ValidateNewMove` causes the move pipeline to throw `MoveCheck.GAME_ALREADY_ENDED` with `GameStatus.DEAD_POSITION_UNWINNABLE_QUICK` if a consumer tries to play on. The whole apparatus exists to model FIDE 5.2.2 "dead position" as an automatic termination.
+
+**The premise the auto-termination relies on is false in practice.** Playing on in a dead position is harmless: no win is reachable, the position can only resolve to a draw. In a real game the practical outcomes are all draws — flagfall in a dead position is a draw by adjudication, resignation in a dead position is a draw under current FIDE rules (no win available to the opponent), and the players can always agree to a draw. Nothing changes if they keep moving. So the library does not need to *enforce* dead-position termination at the move-pipeline boundary; it only needs to make it *queryable* so consumers that want to surface it can do so.
+
+The current eager-per-move construction also costs more than just complexity: it makes every move pay the analyzer cost (mitigated but not erased by the bitboard work), it adds a constructor flag (`detectDeadPositionUnwinnable`) that has to be threaded through every `Board` overload, it requires a recursion-suppression guard inside the analyzer when it builds throwaway sub-boards, and it leaks into the test corpus — fixtures get relocated to `pgnParser/legacy/common/beyond/` whenever they happen to step into a dead position even though the recorded games are otherwise well-formed PGN. The fix simplifies all of that.
+
+### Phase 1 — Drop auto-detection from `Board`
+
+**Step 1.1** — Remove the per-ply cache and computation. Drop `Board.isDeadPositionUnwinnableQuickList`, `Board.computeDeadPositionUnwinnableQuick()`, the `isDetectDeadPositionUnwinnable` field, every `Board` constructor overload that took the `detectDeadPositionUnwinnable` flag (including `copyCurrentPositionWithoutHistory(boolean)`), and the eager calls from `Board` constructors and `performMoveWithoutValidation`. `Board.isDeadPositionUnwinnableQuick()` as a stateful accessor is removed.
+
+**Step 1.2** — Reshape `Board.isDeadPosition()` and the `isDeadPosition*` family as pure on-demand queries that run the analyzer when called. `isDeadPositionQuick()` and `isDeadPositionFull()` are already that today (`Board` lines ~951 / ~999); the change is that `isDeadPosition()` joins them — it computes `isInsufficientMaterial() || isDeadPositionQuick().isDeadPosition()` at the call site instead of reading a cached field. Consumers that want the old "checked after every move" behavior call the query themselves in their move loop.
+
+**Step 1.3** — `ValidateNewMove` no longer rejects moves on `DEAD_POSITION_UNWINNABLE_QUICK`. Remove the corresponding check from the move-acceptance precondition (the auto-terminators that remain: checkmate, stalemate, insufficient material, plus fivefold and 75-move if Phase 2 below is not adopted). `MoveCheck.GAME_ALREADY_ENDED` continues to fire for the auto-terminators that survive.
+
+**Step 1.4** — Decide the `GameStatus.DEAD_POSITION_UNWINNABLE_QUICK` enum value's fate. Two options: keep it (returned by an explicit "what status is this position in" query, never thrown by the move pipeline) or drop it (the analyzer's `UnwinnabilityQuickVerdict` is the only place that concept lives). Recommend keep, narrowed in scope — `Board.calculateGameStatus()` or equivalent maps the position to a status that can include `DEAD_POSITION_UNWINNABLE_QUICK`, but the move pipeline never throws it.
+
+### Phase 2 — Tentative: drop auto-fivefold and auto-75-move termination
+
+**Not committed yet — captured for discussion.** The same line of reasoning applies to FIDE 9.6.1 (fivefold) and 9.6.2 (75-move): both are automatic terminations under the current model, but playing on past either is harmless (same outcome arguments as dead position). Dropping the auto-termination would unlock tests the corpus cannot currently express — sixfold, sevenfold, longer-than-75-move sequences after the 75th — that today either fail with `GAME_ALREADY_ENDED` or have to live as legacy fixtures.
+
+The trade-off the user flagged: if these stop being automatic terminators, consumers that *do* want to surface them have to query the predicates themselves (`isFivefoldRepetition()`, `isSeventyFiveMove()`). The signal is "presented twice" in the sense that the consumer first sees the rule fire and then has to keep asking on subsequent moves whether the game has progressed past it. That is a real ergonomics cost for the typical consumer.
+
+If adopted, the work mirrors Phase 1: remove the corresponding checks from `ValidateNewMove`, leave `isFivefoldRepetition()` / `isSeventyFiveMove()` as queryable predicates. The 75-move-rule fixtures currently parked in `pgnParser/legacy/common/beyond/` (~30 files) move back into the regular corpus.
+
+**To decide before any code lands.** Listed here as a follow-on so the question stays visible alongside Phase 1, not because it's settled.
+
+### Phase 3 — Corpus and test cleanup
+
+**Step 3.1** — Legacy fixtures that exist only because their game played past a dead position move back into the regular corpus. The relocation under `pgnParser/legacy/common/beyond/` was specifically to keep `TestSetupPgnCorpusNotPlaysBeyondAudit` green; if dead position is no longer an auto-terminator, the audit no longer flags them. Identifying the affected files comes out of grepping the legacy tree for fixtures whose recorded termination is `DEAD_POSITION_*`.
+
+**Step 3.2** — `TestLegacyPgnParsePlaysBeyondAudit`'s `EXPECTED` map and the expected-count constant update accordingly. Any test that asserts on `GameStatus.DEAD_POSITION_UNWINNABLE_QUICK` being thrown from the move pipeline switches to asserting on the queryable predicate.
+
+**Step 3.3** — `CHANGELOG.md`, `README.md` "Notable features" if the auto-detection is called out there, and `specification.md` §3.1 ("FIDE rule fidelity and game termination") get the table updated: dead position moves from "automatic" to "queryable" (and same for fivefold / 75-move if Phase 2 lands).
+
+### Phase 4 — Release artifacts
+
+**Step 4.1** — Version bump (12.0.0; this is binary-incompatible because the `Board` constructor signatures with the `detectDeadPositionUnwinnable` flag are gone). `CHANGELOG.md` entry above `[11.0.0]`. `tasks.md` section marked done.
+
+### Why before the python-chess release
+
+Reactivating python-chess as the primary cross-validation reference means matching what python-chess actually does. python-chess does not auto-terminate on a dead position; it exposes the query and lets the caller decide. Aligning the library's termination model with python-chess's first makes the cross-validation pass cleaner (fewer "we say game-ended, python-chess says still-playable" disagreements that have to be papered over in the bridge).
+
+---
+
 ## Future release — python-chess primary cross-validation + PGN/FEN test coverage expansion
 
 The third release. Reactivates the python-chess test path (currently dormant), makes python-chess the main move-test reference, and expands PGN import/export test coverage — especially the FEN-anchored cases that `chesslib` cannot exercise.
