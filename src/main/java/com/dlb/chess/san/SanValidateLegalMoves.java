@@ -174,7 +174,7 @@ abstract class SanValidateLegalMoves extends AbstractSan implements EnumConstant
 
     final BitboardPosition bitboardPosition = board.getBitboardPosition();
     final Square epTarget = board.getEnPassantCaptureTargetSquare();
-    final long epBit = epTarget == Square.NONE ? 0L : 1L << epTarget.ordinal();
+    final var epBit = epTarget == Square.NONE ? 0L : 1L << epTarget.ordinal();
 
     // we need an early return for castling first so for the remaining cases we can
     // calculate the to square
@@ -246,11 +246,11 @@ abstract class SanValidateLegalMoves extends AbstractSan implements EnumConstant
   }
 
   /**
-   * Bitboard sibling of the reference {@code ChessRuleAnalyzer.analyzeKing} king-safety branch — called only after
-   * SAN validation has established that the king move (own king to {@code toSquare}) is pseudo-legal but not legal
+   * Bitboard sibling of the reference {@code ChessRuleAnalyzer.analyzeKing} king-safety branch — called only after SAN
+   * validation has established that the king move (own king to {@code toSquare}) is pseudo-legal but not legal
    * (king-unsafe after the move). Returns the {@link MovementCheck} that classifies why. Precedence matches the
-   * reference: NEXT_TO_OPPONENT_KING wins first, then CAPTURES_GUARDED_PIECE (opponent piece on destination),
-   * then MOVES_TO_ATTACKED_EMPTY_SQUARE (empty destination, attacked).
+   * reference: NEXT_TO_OPPONENT_KING wins first, then CAPTURES_GUARDED_PIECE (opponent piece on destination), then
+   * MOVES_TO_ATTACKED_EMPTY_SQUARE (empty destination, attacked).
    */
   private static MovementCheck classifyKingNonCastlingMovementCheck(BitboardPosition bitboardPosition, Side havingMove,
       Square toSquare) {
@@ -423,32 +423,35 @@ abstract class SanValidateLegalMoves extends AbstractSan implements EnumConstant
   /**
    * Returns the from-squares of own {@code pieceType} pieces whose move to {@code toSquare} is pseudo-legal but
    * king-unsafe (i.e. it geometrically reaches {@code toSquare} but {@code afterMove(spec, side).isInCheck(side)}).
-   * Mirrors the {@code AbstractLegalMoves.calculateLegalMoveCalculation(...).pseudoLegalMoveSet()} surface used by
-   * SAN error reporting. Reference behavior: king captures (toSquare carries a king) are skipped.
+   * Mirrors the {@code AbstractLegalMoves.calculateLegalMoveCalculation(...).pseudoLegalMoveSet()} surface used by SAN
+   * error reporting. Reference behavior: king captures (toSquare carries a king) are skipped.
    */
   private static Set<Square> calculatePseudoLegalFromSquaresAny(BitboardPosition bitboardPosition, Side havingMove,
       PieceType pieceType, Square toSquare) {
-    return calculatePseudoLegalFromSquaresFiltered(bitboardPosition, havingMove, pieceType, toSquare, 0L, null, null);
+    return calculatePseudoLegalFromSquaresFiltered(bitboardPosition, havingMove, pieceType, toSquare, 0L, File.NONE,
+        Rank.NONE);
   }
 
   private static Set<Square> calculatePseudoLegalFromSquaresOnFile(BitboardPosition bitboardPosition, Side havingMove,
       PieceType pieceType, Square toSquare, long epBit, File file) {
-    return calculatePseudoLegalFromSquaresFiltered(bitboardPosition, havingMove, pieceType, toSquare, epBit, file, null);
+    return calculatePseudoLegalFromSquaresFiltered(bitboardPosition, havingMove, pieceType, toSquare, epBit, file,
+        Rank.NONE);
   }
 
   private static Set<Square> calculatePseudoLegalFromSquaresOnRank(BitboardPosition bitboardPosition, Side havingMove,
       PieceType pieceType, Square toSquare, Rank rank) {
-    return calculatePseudoLegalFromSquaresFiltered(bitboardPosition, havingMove, pieceType, toSquare, 0L, null, rank);
+    return calculatePseudoLegalFromSquaresFiltered(bitboardPosition, havingMove, pieceType, toSquare, 0L, File.NONE,
+        rank);
   }
 
   private static Set<Square> calculatePseudoLegalFromSquaresFiltered(BitboardPosition bitboardPosition, Side havingMove,
       PieceType pieceType, Square toSquare, long epBit, File fileFilter, Rank rankFilter) {
     final Set<Square> result = new TreeSet<>();
     for (final Square fromSquare : Square.REAL) {
-      if (fileFilter != null && fromSquare.getFile() != fileFilter) {
+      if (fileFilter != File.NONE && fromSquare.getFile() != fileFilter) {
         continue;
       }
-      if (rankFilter != null && fromSquare.getRank() != rankFilter) {
+      if (rankFilter != Rank.NONE && fromSquare.getRank() != rankFilter) {
         continue;
       }
       if (!bitboardPosition.isOwnPiece(fromSquare, havingMove, pieceType)) {

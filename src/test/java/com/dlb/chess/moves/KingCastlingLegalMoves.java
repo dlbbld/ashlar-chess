@@ -13,7 +13,6 @@ import com.dlb.chess.board.enums.Piece;
 import com.dlb.chess.board.enums.Side;
 import com.dlb.chess.board.enums.Square;
 import com.dlb.chess.common.constants.CastlingConstants;
-import com.dlb.chess.common.constants.EnumConstants;
 import com.dlb.chess.common.exceptions.ProgrammingMistakeException;
 import com.dlb.chess.enums.CastlingCheck;
 import com.dlb.chess.model.LegalMove;
@@ -24,22 +23,22 @@ import com.google.common.collect.ImmutableList;
  * Test-side legal-move generator for castling. The StaticPosition overload re-implements the castling check on the
  * mailbox surface ({@code StaticPosition.get(Square)} + {@link AbstractAttackedSquares}) end-to-end — it is the
  * differential-test oracle for the bitboard castling pipeline ({@code BitboardLegalMoveFactory} +
- * {@code CastlingUtility} bitboard methods), so it must not delegate to that pipeline. The bitboard overload is the
- * one production calls; both overloads agreeing on every fixture is the spine assertion for castling.
+ * {@code CastlingUtility} bitboard methods), so it must not delegate to that pipeline. The bitboard overload is the one
+ * production calls; both overloads agreeing on every fixture is the spine assertion for castling.
  */
-class KingCastlingLegalMoves extends KingLegalMoves implements EnumConstants {
+class KingCastlingLegalMoves extends KingLegalMoves {
 
   // Required-empty corridor and king-travel/king-destination squares — duplicated test-side so the StaticPosition
   // overload does not borrow them from the production CastlingUtility (which would weaken the oracle).
 
-  private static final ImmutableList<Square> WHITE_QUEEN_SIDE_CASTLING_REQUIRED_EMPTY_SQUARE_LIST =
-      constructListSquare(B1, C1, D1);
-  private static final ImmutableList<Square> WHITE_KING_SIDE_CASTLING_REQUIRED_EMPTY_SQUARE_LIST =
-      constructListSquare(F1, G1);
-  private static final ImmutableList<Square> BLACK_QUEEN_SIDE_CASTLING_REQUIRED_EMPTY_SQUARE_LIST =
-      constructListSquare(B8, C8, D8);
-  private static final ImmutableList<Square> BLACK_KING_SIDE_CASTLING_REQUIRED_EMPTY_SQUARE_LIST =
-      constructListSquare(F8, G8);
+  private static final ImmutableList<Square> WHITE_QUEEN_SIDE_CASTLING_REQUIRED_EMPTY_SQUARE_LIST = constructListSquare(
+      B1, C1, D1);
+  private static final ImmutableList<Square> WHITE_KING_SIDE_CASTLING_REQUIRED_EMPTY_SQUARE_LIST = constructListSquare(
+      F1, G1);
+  private static final ImmutableList<Square> BLACK_QUEEN_SIDE_CASTLING_REQUIRED_EMPTY_SQUARE_LIST = constructListSquare(
+      B8, C8, D8);
+  private static final ImmutableList<Square> BLACK_KING_SIDE_CASTLING_REQUIRED_EMPTY_SQUARE_LIST = constructListSquare(
+      F8, G8);
 
   private static final Square WHITE_QUEEN_SIDE_TRAVEL_OVER_SQUARE = D1;
   private static final Square BLACK_QUEEN_SIDE_TRAVEL_OVER_SQUARE = D8;
