@@ -12,7 +12,7 @@
  *
  * <p>
  * Castling rights, en-passant target, side-to-move, and the halfmove / fullmove counters live on
- * {@link com.dlb.chess.board.Board} / {@link com.dlb.chess.board.DynamicPosition} and intentionally do not appear on
+ * {@link com.dlb.chess.board.Board} / {@link com.dlb.chess.common.model.DynamicPosition} and intentionally do not appear on
  * {@link com.dlb.chess.bitboard.BitboardPosition}, which carries piece placement only.
  *
  * <p>

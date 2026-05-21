@@ -16,10 +16,11 @@ import com.dlb.chess.model.LegalMove;
 public abstract class RepetitionUtility {
 
   /**
-   * Two dynamic positions are equal for FIDE threefold-repetition purposes when the static position, side to move,
-   * castling rights, and en-passant availability all match. We do not override {@code equals} on
-   * {@link DynamicPosition} because elsewhere positions are compared by piece-arrangement only; this method is the
-   * authoritative repetition-comparison.
+   * Two dynamic positions are equal for FIDE threefold-repetition purposes when the piece placement, side to move,
+   * castling rights, and en-passant availability all match. Piece-placement equality goes through
+   * {@link com.dlb.chess.bitboard.BitboardPosition#equals(Object)} on the carried bitboard, which compares the 12
+   * per-piece bitboards directly. We do not override {@code equals} on {@link DynamicPosition} because elsewhere
+   * positions are compared by piece-arrangement only; this method is the authoritative repetition-comparison.
    */
   private static boolean equals(DynamicPosition dynamicPosition, @Nullable Object obj) {
     if (dynamicPosition == obj) {
@@ -33,7 +34,7 @@ public abstract class RepetitionUtility {
         && dynamicPosition.castlingRightBlack().equals(other.castlingRightBlack())
         && dynamicPosition.enPassantCaptureTargetSquare() == other.enPassantCaptureTargetSquare()
         && dynamicPosition.havingMove() == other.havingMove()
-        && dynamicPosition.staticPosition().equals(other.staticPosition());
+        && dynamicPosition.bitboardPosition().equals(other.bitboardPosition());
   }
 
   public static int getCountRepetition(HalfMove halfMove) {

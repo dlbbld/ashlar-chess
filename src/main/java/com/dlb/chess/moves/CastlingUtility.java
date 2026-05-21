@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import com.dlb.chess.bitboard.BitboardPosition;
 import com.dlb.chess.board.StaticPosition;
 import com.dlb.chess.board.enums.CastlingMove;
 import com.dlb.chess.board.enums.CastlingRight;
@@ -524,6 +525,131 @@ public abstract class CastlingUtility implements EnumConstants {
     final Square rookOriginalSquare = Square.calculateKingSideRookOriginalSquare(havingMove);
     final Piece rookPiece = Piece.calculateRookPiece(havingMove);
     return staticPosition.get(rookOriginalSquare) == rookPiece;
+  }
+
+  // Bitboard variants — sibling overloads of the StaticPosition methods above. Used by the bitboard production
+  // pipeline (Board.move() and BitboardLegalMoveFactory.calculateLegalMoves); the StaticPosition overloads remain
+  // for the reference layer.
+
+  public static CastlingCheck calculateQueenSideCastlingCheck(BitboardPosition bitboardPosition, Side havingMove,
+      CastlingRight castlingRight) {
+
+    final var hasLostCastlingRight = castlingRight != CastlingRight.KING_AND_QUEEN_SIDE
+        && castlingRight != CastlingRight.QUEEN_SIDE;
+    if (hasLostCastlingRight) {
+      return CastlingCheck.FINAL_NO_RIGHT;
+    }
+
+    final var isOriginalPosition = calculateQueenSideCastlingIsOriginalPosition(bitboardPosition, havingMove);
+    if (!isOriginalPosition) {
+      throw new ProgrammingMistakeException(
+          "Castling right held but king or rook not on required square (inconsistent board state).");
+    }
+
+    final var isEmptySquaresBetweenRookAndKing = calculateQueenSideCastlingIsEmptySquaresBetweenRookAndKing(
+        bitboardPosition, havingMove);
+    if (!isEmptySquaresBetweenRookAndKing) {
+      return CastlingCheck.TEMPORARY_SQUARES_NOT_EMPTY;
+    }
+
+    return calculateQueenSideCheckCondition(bitboardPosition, havingMove);
+  }
+
+  public static CastlingCheck calculateKingSideCastlingCheck(BitboardPosition bitboardPosition, Side havingMove,
+      CastlingRight castlingRight) {
+
+    final var hasLostCastlingRight = castlingRight != CastlingRight.KING_AND_QUEEN_SIDE
+        && castlingRight != CastlingRight.KING_SIDE;
+    if (hasLostCastlingRight) {
+      return CastlingCheck.FINAL_NO_RIGHT;
+    }
+
+    final var isOriginalPosition = calculateKingSideCastlingIsOriginalPosition(bitboardPosition, havingMove);
+    if (!isOriginalPosition) {
+      throw new ProgrammingMistakeException(
+          "Castling right held but king or rook not on required square (inconsistent board state).");
+    }
+
+    final var isEmptySquaresBetweenRookAndKing = calculateKingSideCastlingIsEmptySquaresBetweenRookAndKing(
+        bitboardPosition, havingMove);
+    if (!isEmptySquaresBetweenRookAndKing) {
+      return CastlingCheck.TEMPORARY_SQUARES_NOT_EMPTY;
+    }
+
+    return calculateKingSideCheckCondition(bitboardPosition, havingMove);
+  }
+
+  public static boolean calculateQueenSideCastlingIsOriginalPosition(BitboardPosition bitboardPosition,
+      Side havingMove) {
+    final Square kingOriginalSquare = Square.calculateKingOriginalSquare(havingMove);
+    final Piece kingPiece = Piece.calculateKingPiece(havingMove);
+    if (bitboardPosition.get(kingOriginalSquare) != kingPiece) {
+      return false;
+    }
+    final Square rookOriginalSquare = Square.calculateQueenSideRookOriginalSquare(havingMove);
+    final Piece rookPiece = Piece.calculateRookPiece(havingMove);
+    return bitboardPosition.get(rookOriginalSquare) == rookPiece;
+  }
+
+  public static boolean calculateKingSideCastlingIsOriginalPosition(BitboardPosition bitboardPosition,
+      Side havingMove) {
+    final Square kingOriginalSquare = Square.calculateKingOriginalSquare(havingMove);
+    final Piece kingPiece = Piece.calculateKingPiece(havingMove);
+    if (bitboardPosition.get(kingOriginalSquare) != kingPiece) {
+      return false;
+    }
+    final Square rookOriginalSquare = Square.calculateKingSideRookOriginalSquare(havingMove);
+    final Piece rookPiece = Piece.calculateRookPiece(havingMove);
+    return bitboardPosition.get(rookOriginalSquare) == rookPiece;
+  }
+
+  private static boolean calculateQueenSideCastlingIsEmptySquaresBetweenRookAndKing(BitboardPosition bitboardPosition,
+      Side havingMove) {
+    return calculateIsAllEmpty(bitboardPosition, calculateQueenSideCastlingRequiredEmptySquareList(havingMove));
+  }
+
+  private static boolean calculateKingSideCastlingIsEmptySquaresBetweenRookAndKing(BitboardPosition bitboardPosition,
+      Side havingMove) {
+    return calculateIsAllEmpty(bitboardPosition, calculateKingSideCastlingRequiredEmptySquareList(havingMove));
+  }
+
+  private static boolean calculateIsAllEmpty(BitboardPosition bitboardPosition, List<Square> squareList) {
+    for (final Square square : squareList) {
+      if (!bitboardPosition.isEmpty(square)) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  private static CastlingCheck calculateQueenSideCheckCondition(BitboardPosition bitboardPosition, Side havingMove) {
+    final long attackedSquares = bitboardPosition.attackedSquares(havingMove.getOppositeSide());
+
+    if ((attackedSquares & (1L << calculateKingOriginalSquare(havingMove).ordinal())) != 0L) {
+      return CastlingCheck.TEMPORARY_KING_IN_CHECK;
+    }
+    if ((attackedSquares & (1L << calculateQueenSideKingTravelOverSquare(havingMove).ordinal())) != 0L) {
+      return CastlingCheck.TEMPORARY_KING_TRAVELS_THROUGH_CHECK;
+    }
+    if ((attackedSquares & (1L << calculateQueenSideKingDestinationSquare(havingMove).ordinal())) != 0L) {
+      return CastlingCheck.TEMPORARY_KING_ENDS_IN_CHECK;
+    }
+    return CastlingCheck.SUCCESS;
+  }
+
+  private static CastlingCheck calculateKingSideCheckCondition(BitboardPosition bitboardPosition, Side havingMove) {
+    final long attackedSquares = bitboardPosition.attackedSquares(havingMove.getOppositeSide());
+
+    if ((attackedSquares & (1L << calculateKingOriginalSquare(havingMove).ordinal())) != 0L) {
+      return CastlingCheck.TEMPORARY_KING_IN_CHECK;
+    }
+    if ((attackedSquares & (1L << calculateKingSideKingTravelOverSquare(havingMove).ordinal())) != 0L) {
+      return CastlingCheck.TEMPORARY_KING_TRAVELS_THROUGH_CHECK;
+    }
+    if ((attackedSquares & (1L << calculateKingSideKingDestinationSquare(havingMove).ordinal())) != 0L) {
+      return CastlingCheck.TEMPORARY_KING_ENDS_IN_CHECK;
+    }
+    return CastlingCheck.SUCCESS;
   }
 
   public static Square calculateKingCastlingFrom(Side havingMove, MoveSpecification moveSpecification) {

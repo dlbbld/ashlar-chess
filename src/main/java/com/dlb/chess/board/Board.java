@@ -6,7 +6,6 @@ import java.util.Objects;
 
 import org.eclipse.jdt.annotation.Nullable;
 
-import com.dlb.chess.analyze.ChessRuleAnalyzer;
 import com.dlb.chess.bitboard.BitboardLegalMoveFactory;
 import com.dlb.chess.bitboard.BitboardPosition;
 import com.dlb.chess.bitboard.BitboardPositionUtility;
@@ -14,6 +13,7 @@ import com.dlb.chess.board.enums.CastlingMove;
 import com.dlb.chess.board.enums.CastlingRight;
 import com.dlb.chess.board.enums.CastlingRightLoss;
 import com.dlb.chess.board.enums.Piece;
+import com.dlb.chess.board.enums.PieceType;
 import com.dlb.chess.board.enums.Side;
 import com.dlb.chess.board.enums.Square;
 import com.dlb.chess.common.Nulls;
@@ -28,7 +28,6 @@ import com.dlb.chess.common.model.MoveSpecification;
 import com.dlb.chess.common.ucimove.utility.UciMoveUtility;
 import com.dlb.chess.common.utility.BasicChessUtility;
 import com.dlb.chess.common.utility.RepetitionUtility;
-import com.dlb.chess.common.utility.StaticPositionUtility;
 import com.dlb.chess.exceptions.InvalidMoveException;
 import com.dlb.chess.fen.FenBoard;
 import com.dlb.chess.fen.FenParserAdvanced;
@@ -37,10 +36,8 @@ import com.dlb.chess.fen.constants.FenConstants;
 import com.dlb.chess.fen.model.Fen;
 import com.dlb.chess.model.CastlingRightBoth;
 import com.dlb.chess.model.LegalMove;
-import com.dlb.chess.model.LegalMoveKind;
 import com.dlb.chess.moves.CastlingUtility;
 import com.dlb.chess.moves.EnPassantCaptureUtility;
-import com.dlb.chess.moves.PromotionUtility;
 import com.dlb.chess.san.LenientSanParser;
 import com.dlb.chess.san.LenientSanParserValidationResult;
 import com.dlb.chess.san.MoveToLan;
@@ -117,7 +114,6 @@ public class Board {
   private final List<Boolean> isCheckmateList;
   private final List<Boolean> isStalemateList;
   private final List<DynamicPosition> dynamicPositionList;
-  private final List<BitboardPosition> bitboardPositionList;
   private final List<Integer> halfMoveClockList;
   private final List<Integer> repetitionCountList;
   private final List<String> sanList;
@@ -178,27 +174,28 @@ public class Board {
     }
 
     // values used in the following not to be get from board methods!!!
-    final StaticPosition initialStaticPosition = initialFenUse.staticPosition();
     final Side initialHavingMove = initialFenUse.havingMove();
     final CastlingRight initialCastlingRight = CastlingUtility.getCastlingRight(initialFenUse, initialHavingMove);
     final var initialEnPassantCaptureTargetSquare = initialFenUse.enPassantCaptureTargetSquare();
-    // Normalize: keep the target square on DynamicPosition only when an opposing pawn can actually capture there.
-    // The raw FEN-spec square is preserved on Board (see getEnPassantCaptureTargetSquare()) for FEN export.
-    final var initialNormalizedEnPassantCaptureTargetSquare = calculateIsEnPassantCapturePossible(
-        initialEnPassantCaptureTargetSquare, initialHavingMove, initialStaticPosition)
-            ? initialEnPassantCaptureTargetSquare
-            : Square.NONE;
 
     this.initialFen = initialFenUse;
 
-    final BitboardPosition initialBitboardPosition = BitboardPositionUtility.fromStaticPosition(initialStaticPosition);
+    final BitboardPosition initialBitboardPosition = BitboardPositionUtility
+        .fromStaticPosition(initialFenUse.staticPosition());
     final long initialEnPassantBit = initialEnPassantCaptureTargetSquare == Square.NONE ? 0L
         : 1L << initialEnPassantCaptureTargetSquare.ordinal();
+
+    // Normalize: keep the target square on DynamicPosition only when an opposing pawn can actually capture there.
+    // The raw FEN-spec square is preserved on Board (see getEnPassantCaptureTargetSquare()) for FEN export.
+    final var initialNormalizedEnPassantCaptureTargetSquare = calculateIsEnPassantCapturePossible(
+        initialEnPassantCaptureTargetSquare, initialHavingMove, initialBitboardPosition)
+            ? initialEnPassantCaptureTargetSquare
+            : Square.NONE;
 
     this.performedLegalMoveList = new ArrayList<>();
     this.legalMoveListPerPly = new ArrayList<>();
     final ImmutableList<LegalMove> legalMoves = BitboardLegalMoveFactory.calculateLegalMoves(initialBitboardPosition,
-        initialStaticPosition, initialHavingMove, initialCastlingRight, initialEnPassantBit);
+        initialHavingMove, initialCastlingRight, initialEnPassantBit);
     this.legalMoveListPerPly.add(legalMoves);
 
     this.isCheckList = new ArrayList<>();
@@ -221,11 +218,9 @@ public class Board {
     if (initialFenUse.equals(FenConstants.FEN_INITIAL)) {
       this.dynamicPositionList.add(DynamicPositionConstants.INITIAL);
     } else {
-      this.dynamicPositionList.add(new DynamicPosition(initialHavingMove, initialStaticPosition,
+      this.dynamicPositionList.add(new DynamicPosition(initialHavingMove, initialBitboardPosition,
           initialNormalizedEnPassantCaptureTargetSquare, initialCastlingRightWhite, initialCastlingRightBlack));
     }
-    this.bitboardPositionList = new ArrayList<>();
-    this.bitboardPositionList.add(initialBitboardPosition);
     this.halfMoveClockList = new ArrayList<>();
     this.halfMoveClockList.add(initialFenUse.halfMoveClock());
 
@@ -404,11 +399,10 @@ public class Board {
     final CastlingRight beforeCastlingRightBlack = Nulls.getLast(dynamicPositionList).castlingRightBlack();
 
     final Side havingMove = this.getHavingMove();
-    final LegalMove moveToPerform = calculateLegalMove(this.getStaticPosition(), havingMove, moveSpecification);
+    final BitboardPosition beforeBitboardPosition = Nulls.getLast(dynamicPositionList).bitboardPosition();
+    final LegalMove moveToPerform = BitboardLegalMoveFactory.toLegalMove(beforeBitboardPosition, moveSpecification,
+        havingMove);
 
-    // values used in the following not to be get from board methods!!!
-    final StaticPosition afterStaticPosition = StaticPositionUtility.createPositionAfterMove(this.getStaticPosition(),
-        havingMove, moveSpecification);
     final Side afterHavingMove = havingMove.getOppositeSide();
     final CastlingRightBoth afterCastlingRightBoth = CastlingUtility
         .calculateCastlingRightBoth(beforeCastlingRightWhite, beforeCastlingRightBlack, moveToPerform);
@@ -416,9 +410,12 @@ public class Board {
         afterHavingMove);
     final var afterEnPassantCaptureTargetSquare = EnPassantCaptureUtility
         .calculateEnPassantCaptureTargetSquare(moveToPerform);
+
+    final BitboardPosition afterBitboardPosition = beforeBitboardPosition.afterMove(moveSpecification, havingMove);
+
     // Normalize for DynamicPosition; see initial-position construction site for the rationale.
     final var afterNormalizedEnPassantCaptureTargetSquare = calculateIsEnPassantCapturePossible(
-        afterEnPassantCaptureTargetSquare, afterHavingMove, afterStaticPosition) ? afterEnPassantCaptureTargetSquare
+        afterEnPassantCaptureTargetSquare, afterHavingMove, afterBitboardPosition) ? afterEnPassantCaptureTargetSquare
             : Square.NONE;
 
     // update castling loss reasons
@@ -434,13 +431,12 @@ public class Board {
     // now changing board class state, so performing the move!
     this.performedLegalMoveList.add(moveToPerform);
 
-    final BitboardPosition afterBitboardPosition = BitboardPositionUtility.fromStaticPosition(afterStaticPosition);
     final long afterEnPassantBit = afterEnPassantCaptureTargetSquare == Square.NONE ? 0L
         : 1L << afterEnPassantCaptureTargetSquare.ordinal();
 
     // now we have a depencency on instruction execution: the move must be performed before calling the legal moves
     final ImmutableList<LegalMove> legalMovesAfterMove = BitboardLegalMoveFactory.calculateLegalMoves(
-        afterBitboardPosition, afterStaticPosition, afterHavingMove, afterCastlingRightHavingMove, afterEnPassantBit);
+        afterBitboardPosition, afterHavingMove, afterCastlingRightHavingMove, afterEnPassantBit);
     this.legalMoveListPerPly.add(legalMovesAfterMove);
 
     final var isCheck = afterBitboardPosition.isInCheck(afterHavingMove);
@@ -452,11 +448,10 @@ public class Board {
     final var isStalemate = !isCheck && legalMovesAfterMove.isEmpty();
     this.isStalemateList.add(isStalemate);
 
-    final var newDynamicPosition = new DynamicPosition(afterHavingMove, afterStaticPosition,
+    final var newDynamicPosition = new DynamicPosition(afterHavingMove, afterBitboardPosition,
         afterNormalizedEnPassantCaptureTargetSquare, afterCastlingRightBoth.castlingRightWhite(),
         afterCastlingRightBoth.castlingRightBlack());
     this.dynamicPositionList.add(newDynamicPosition);
-    this.bitboardPositionList.add(afterBitboardPosition);
 
     // order of instructions dependency!! - must be after adding the move
     final int lastHalfMoveClock = Nulls.getLast(halfMoveClockList);
@@ -485,37 +480,6 @@ public class Board {
 
   }
 
-  // Package-private â€” a LegalMove can only be safely constructed when the caller has already validated the
-  // moveSpecification as legal, and that's an invariant only the rule pipeline can guarantee. If a non-pipeline
-  // caller passed an unvalidated MoveSpecification here, the result would silently carry incorrect derived data
-  // (wrong moving piece, wrong captured piece, wrong en-passant role).
-  private static LegalMove calculateLegalMove(StaticPosition staticPosition, Side havingMove,
-      MoveSpecification moveSpecification) {
-
-    if (CastlingUtility.calculateIsCastlingMove(moveSpecification)) {
-      final Piece king = Piece.calculateKingPiece(havingMove);
-      return new LegalMove(moveSpecification, king, Piece.NONE, LegalMoveKind.CASTLING);
-    }
-
-    final Piece movingPiece = staticPosition.get(moveSpecification.fromSquare());
-
-    if (EnPassantCaptureUtility.calculateIsEnPassantCaptureNewMove(staticPosition, moveSpecification)) {
-      final Square squareOfCapturedPawnForEnPassantCapture = EnPassantCaptureUtility
-          .calculateSquareOfCapturedPawnForEnPassantCapture(havingMove, moveSpecification);
-      final Piece pieceCaptured = staticPosition.get(squareOfCapturedPawnForEnPassantCapture);
-      return new LegalMove(moveSpecification, movingPiece, pieceCaptured, LegalMoveKind.EN_PASSANT_CAPTURE);
-    }
-    if (PromotionUtility.calculateIsPromotionNewMove(moveSpecification)) {
-      final Piece pieceCaptured = staticPosition.get(moveSpecification.toSquare());
-      return new LegalMove(moveSpecification, movingPiece, pieceCaptured, LegalMoveKind.PROMOTION);
-    }
-    final Piece pieceCaptured = staticPosition.get(moveSpecification.toSquare());
-    final var kind = EnPassantCaptureUtility.calculateIsPawnTwoSquareAdvanceMove(movingPiece, moveSpecification)
-        ? LegalMoveKind.PAWN_TWO_SQUARE_ADVANCE
-        : LegalMoveKind.NORMAL;
-    return new LegalMove(moveSpecification, movingPiece, pieceCaptured, kind);
-  }
-
   /**
    * Undoes the most recently played halfmove, restoring the board to the state immediately before that move. Throws if
    * no move has been played from the initial FEN.
@@ -533,7 +497,6 @@ public class Board {
     this.isStalemateList.remove(isStalemateList.size() - 1);
 
     this.dynamicPositionList.remove(dynamicPositionList.size() - 1);
-    this.bitboardPositionList.remove(bitboardPositionList.size() - 1);
     this.halfMoveClockList.remove(halfMoveClockList.size() - 1);
     this.repetitionCountList.remove(repetitionCountList.size() - 1);
 
@@ -782,25 +745,31 @@ public class Board {
     return lastMove.havingMove().getOppositeSide();
   }
 
+  /**
+   * Current position as a {@link StaticPosition} — derived on demand from the cached {@link BitboardPosition} via
+   * {@link BitboardPositionUtility#toStaticPosition(BitboardPosition)}. {@code Board} no longer caches a {@code
+   * StaticPosition} alongside the bitboard; the bitboard is the single source of truth on the data path.
+   */
   public StaticPosition getStaticPosition() {
-    return Nulls.getLast(dynamicPositionList).staticPosition();
+    return BitboardPositionUtility.toStaticPosition(Nulls.getLast(dynamicPositionList).bitboardPosition());
   }
 
   /**
-   * Current position as a {@link BitboardPosition}. Maintained as a parallel cache alongside
-   * {@link #dynamicPositionList}: appended on every {@link #move}, popped on every {@link #unmove}. O(1) per call.
+   * Current position as a {@link BitboardPosition}. Carried directly on every {@link DynamicPosition} in
+   * {@link #dynamicPositionList} (appended on every {@link #move}, popped on every {@link #unmove}). O(1) per call.
    * Bit-exact with {@code BitboardPositionUtility.fromStaticPosition(getStaticPosition())} on every halfmove of
    * every game (validated by the differential test).
    */
   public BitboardPosition getBitboardPosition() {
-    return Nulls.getLast(bitboardPositionList);
+    return Nulls.getLast(dynamicPositionList).bitboardPosition();
   }
 
   StaticPosition getStaticPositionBeforeLastMove() {
     if (isFirstMove()) {
       throw new ProgrammingMistakeException("The method cannot be called if no move was yet made");
     }
-    return Nulls.get(dynamicPositionList, this.dynamicPositionList.size() - 2).staticPosition();
+    return BitboardPositionUtility
+        .toStaticPosition(Nulls.get(dynamicPositionList, this.dynamicPositionList.size() - 2).bitboardPosition());
   }
 
   public boolean isEnPassantCapturePossible() {
@@ -808,7 +777,7 @@ public class Board {
   }
 
   private static boolean calculateIsEnPassantCapturePossible(Square enPassantCaptureTargetSquare, Side havingMove,
-      StaticPosition staticPosition) {
+      BitboardPosition bitboardPosition) {
     if (enPassantCaptureTargetSquare == Square.NONE) {
       return false;
     }
@@ -818,13 +787,14 @@ public class Board {
       throw new ProgrammingMistakeException();
     }
     final Square squareBehind = Square.calculateBehindSquare(havingMove, enPassantCaptureTargetSquare);
+    final Piece ownPawn = Piece.calculate(havingMove, PieceType.PAWN);
 
     // capture move from right square
     if (Square.calculateHasRightSquare(havingMove, squareBehind)) {
       final Square squareRight = Square.calculateRightSquare(havingMove, squareBehind);
-      if (staticPosition.isOwnPawn(squareRight, havingMove)) {
+      if (bitboardPosition.get(squareRight) == ownPawn) {
         final MoveSpecification moveSpecification = new MoveSpecification(squareRight, enPassantCaptureTargetSquare);
-        if (ChessRuleAnalyzer.isMoveKingSafe(staticPosition, havingMove, moveSpecification)) {
+        if (!bitboardPosition.afterMove(moveSpecification, havingMove).isInCheck(havingMove)) {
           return true;
         }
       }
@@ -833,9 +803,9 @@ public class Board {
     // capture move from left square
     if (Square.calculateHasLeftSquare(havingMove, squareBehind)) {
       final Square squareLeft = Square.calculateLeftSquare(havingMove, squareBehind);
-      if (staticPosition.isOwnPawn(squareLeft, havingMove)) {
+      if (bitboardPosition.get(squareLeft) == ownPawn) {
         final MoveSpecification moveSpecification = new MoveSpecification(squareLeft, enPassantCaptureTargetSquare);
-        if (ChessRuleAnalyzer.isMoveKingSafe(staticPosition, havingMove, moveSpecification)) {
+        if (!bitboardPosition.afterMove(moveSpecification, havingMove).isInCheck(havingMove)) {
           return true;
         }
       }

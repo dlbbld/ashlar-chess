@@ -1,6 +1,6 @@
 package com.dlb.chess.common.model;
 
-import com.dlb.chess.board.StaticPosition;
+import com.dlb.chess.bitboard.BitboardPosition;
 import com.dlb.chess.board.enums.CastlingRight;
 import com.dlb.chess.board.enums.Side;
 import com.dlb.chess.board.enums.Square;
@@ -16,8 +16,8 @@ import com.dlb.chess.board.enums.Square;
  * passant"). The raw FEN-spec e.p. target square (which is reported after any pawn double-step regardless of
  * capturability) lives on {@code Board} separately and is used for FEN export.
  */
-public record DynamicPosition(Side havingMove, StaticPosition staticPosition, Square enPassantCaptureTargetSquare,
-    CastlingRight castlingRightWhite, CastlingRight castlingRightBlack) {
+public record DynamicPosition(Side havingMove, BitboardPosition bitboardPosition,
+    Square enPassantCaptureTargetSquare, CastlingRight castlingRightWhite, CastlingRight castlingRightBlack) {
 
   /**
    * Convenience predicate preserved for source compatibility with the previous shape of this record (which carried an

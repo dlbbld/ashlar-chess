@@ -8,6 +8,7 @@ import java.util.TreeSet;
 
 import org.eclipse.jdt.annotation.NonNull;
 
+import com.dlb.chess.bitboard.BitboardPositionUtility;
 import com.dlb.chess.board.enums.CastlingRight;
 import com.dlb.chess.board.enums.Piece;
 import com.dlb.chess.board.enums.Side;
@@ -107,7 +108,8 @@ public class LibraryCarlosBoard {
     performedLegalMoveList.add(legalMove);
     final var normalizedEnPassantCaptureTargetSquare = isEnPassantCapturePossible() ? getEnPassantCaptureTargetSquare()
         : Square.NONE;
-    dynamicPositionList.add(new DynamicPosition(getHavingMove(), getStaticPosition(),
+    final var bitboardPosition = BitboardPositionUtility.fromStaticPosition(getStaticPosition());
+    dynamicPositionList.add(new DynamicPosition(getHavingMove(), bitboardPosition,
         normalizedEnPassantCaptureTargetSquare, getCastlingRightWhite(), getCastlingRightBlack()));
 
     // ATTENTION: timely dependency, must be after the above code is very very dangerous

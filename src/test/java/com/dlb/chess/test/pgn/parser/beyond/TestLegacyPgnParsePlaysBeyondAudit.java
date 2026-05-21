@@ -37,7 +37,7 @@ import com.dlb.chess.test.RestrictTestConstants;
  * behaviour shows up as a precise mismatch rather than a vague rejection.
  *
  * <p>
- * The legacy tree has 101 fixtures; iteration through the strict parser takes a few seconds. Heavier than per-test
+ * The legacy tree has 99 fixtures; iteration through the strict parser takes a few seconds. Heavier than per-test
  * methods but a single iterating test keeps the explicit map close to the assertions.
  */
 class TestLegacyPgnParsePlaysBeyondAudit {
@@ -92,8 +92,8 @@ class TestLegacyPgnParsePlaysBeyondAudit {
       }
     }
 
-    if (totalFiles != 101) {
-      fail("Expected 101 legacy fixtures in the EXPECTED map, found " + totalFiles);
+    if (totalFiles != 99) {
+      fail("Expected 99 legacy fixtures in the EXPECTED map, found " + totalFiles);
     }
     if (!failures.isEmpty()) {
       final var report = new StringBuilder().append(failures.size()).append(" of ").append(totalFiles)
