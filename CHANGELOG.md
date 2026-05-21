@@ -58,16 +58,7 @@ If your code called `BitboardPositionUtility.fromStaticPosition`/`toStaticPositi
 
 ### Release gates
 
-`mvn test` (restricted): **1132 / 0 / 0 / 4** — green. `mvn javadoc:javadoc`: green. `mvn test -Pfull`: **1132 / 0 / 0 / 1** — green.
-
-Cleaned up pre-existing corpus hygiene that was blocking `-Pfull` before the release:
-
-- **28 CHA test fixtures** under `src/test/resources/pgn/cha/` had malformed trailing whitespace (missing or extra empty lines, sometimes missing the result token entirely). The strict PGN parser requires exactly two empty lines — one after the last tag block, one at end of file. Normalised all 28 files to end with `...<result>\n\n`. Four observed shapes (tag-only with no movetext, movetext with one trailing newline, movetext with no trailing newline, movetext with three trailing newlines). None of these files actually played past a FIDE-automatic termination; the audit's catch net was broader than its name suggested.
-- **`test_lichess_V7eJ1RR9_helpmate.pgn`** had a double space at move 56 (`bxc7+  Qxc7`) that the strict parser flags as "a half-move must be followed by a single space before the next token." Collapsed to single space.
-- **`01_beyond_fivefold.pgn`** had its movetext start with `10. Kc8 Kc6 ... 17. Kd8 Kd6` while the FEN tag specified fullmove number 50. Renumbered the movetext to `50. ... 57.` to match the FEN.
-- **`TestLegacyPgnParsePlaysBeyondAudit`** asserted a hardcoded expected count of 101 legacy fixtures, but the actual `pgnParser/legacy/common/beyond/` folder and the test's own `EXPECTED` map both have 99. Updated the hardcoded constant to 99.
-
-After the cleanup, every test in the `-Pfull` suite either passes or is skipped via `@assumeFalse` (one suite-level skip). No pre-existing failures remain.
+`mvn test` (restricted): **1132 / 0 / 0 / 4** — green. `mvn javadoc:javadoc`: green. `mvn test -Pfull`: **1132 / 0 / 0 / 1** — green. The corpus cleanup that originally unblocked `-Pfull` shipped in [10.0.0] (see *Corpus cleanup* there); this release inherits the green state.
 
 ## [10.0.0] - 2026-05-19
 
