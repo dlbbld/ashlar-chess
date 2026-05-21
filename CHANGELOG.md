@@ -30,6 +30,7 @@ The **Role-inversion release**. With 10.0.0 in hand the per-move data path was b
 - **Phase 6** — Physical `git mv` of the relocation subtree (`d6ef72fb`-adjacent commits `617411bf` and `5ea36bc3`). Production-side move utilities (`CastlingUtility`, `EnPassantCaptureUtility`, `StandardMoveUtility`) cleaned up to drop their StaticPosition surfaces.
 - **Phase 7** — `specification.md` formalises the differential-test layer as permanent policy (`d6ef72fb`).
 - **Codex review fixes during the release** — P1 self-referential test in `TestBoardGetBitboardPosition` (rewritten with `StaticPositionUtility.createPositionAfterMove` as the independent oracle); P2 `Board.toString()` routing through the soon-to-relocate bridge (rerouted via `getFen()`); P2 FEN predicate precedence (`A || (B && C)` → `A || B || C`); P3 stale comment correction in `TestFenParserAdvanced`.
+- **Codex post-release-cut fixes** (`4ddae3d1`) — P1 javadoc doclint: six stale `@link` references in `src/main` Javadoc fixed (five pointed at the relocated `StaticPosition` subtree from `src/main` scope where it no longer resolves; one pointed at `com.dlb.chess.board.DynamicPosition`, a path that never existed — the record lives in `com.dlb.chess.common.model`). All converted to `@code` prose for relocated types, or repointed to the correct package. `mvn javadoc:javadoc` now passes. P2 castling oracle independence: the test-side `KingCastlingLegalMoves.calculateKingCastlingLegalMoves(StaticPosition, ...)` overload was bridging through `StaticPositionBridge.fromStaticPosition` plus the production `CastlingUtility` bitboard checks — the same checks `BitboardLegalMoveFactory` drives — which weakened the differential oracle for castling. Restored independence: the test-side overload now re-implements the StaticPosition castling check end-to-end on the mailbox surface (`StaticPosition.get(Square)` + `AbstractAttackedSquares.calculateAttackedSquares(StaticPosition, Side)`), duplicating the required-empty corridors, king-travel and king-destination squares, original-position predicates, and the four `CastlingCheck` states.
 
 ### Breaking
 
@@ -54,6 +55,26 @@ If your code reads `Board.getStaticPosition()`: switch to `board.getBitboardPosi
 If your code unpacks a `Fen` record: change `fen.staticPosition()` → `fen.bitboardPosition()`.
 
 If your code called `BitboardPositionUtility.fromStaticPosition`/`toStaticPosition` from production: it shouldn't have, but if it did, switch the calling code to flow `BitboardPosition` throughout instead of round-tripping through the mailbox.
+
+### Known release-gate failures (pre-existing corpus hygiene)
+
+`mvn test` (restricted): **1132 / 0 / 0 / 4** — green. `mvn javadoc:javadoc`: green. `mvn test -Pfull`: **red, on pre-existing corpus hygiene unrelated to the role inversion** — verified by reproducing the same failures at commit `d1bd0e16` (Phase 5, before any Phase 6+ work). Two audit failures and six tests that consume one of the affected fixtures:
+
+- `TestSetupPgnCorpusNotPlaysBeyondAudit.auditCorpus` — **28 of 1280 PGN files** in the regular corpus fail the strict PGN parser. The audit is named for "plays past a FIDE-automatic termination," but it catches any `RuntimeException` from the strict parser. **None of these 28 files actually play past termination.** They all fail for the same boring reason: the strict PGN parser requires exactly two empty lines (one after the last tag block, one at end of file), and these CHA test fixtures are missing one or both. The fix is mechanical — append the missing newline(s) — not a folder relocation. The 28 files:
+
+  - `CHA_LICHESS_QUICK_NOT_DEPTH_THREE_HELPMATE/test_lichess_V7eJ1RR9_helpmate.pgn`
+  - `CHA_SHALLOW_TERMINATION/{01_m1_white_to_move, 02_m1_black_to_move, 03_m2_white_to_move, 04_m2_black_to_move, 05_helpmate2_white_to_move, 06_helpmate2_black_to_move, 07_helpmate3_white_to_move, 08_helpmate3_black_to_move, 09_control_white_to_move, 10_control_black_to_move}.pgn` (10 files)
+  - `CHA_HELPMATE_BEYOND_FIVEFOLD/01_beyond_fivefold.pgn`
+  - `CHA_BASIC_MATE_DRAW/{01_draw_KR_K, 02_draw_KQ_K, 03_draw_KBwBb_K, 04_draw_KBwN_K}.pgn` (4 files)
+  - `CHA_BASIC_MATE_HELPMATE_04/{01_helpmate_04_KR_K, 02_helpmate_04_KQ_K, 03_helpmate_04_KBwBb_K, 04_helpmate_04_KBwN_K}.pgn` (4 files)
+  - `CHA_BASIC_MATE_HELPMATE_10/{01_helpmate_10_KR_K, 02_helpmate_10_KQ_K, 03_helpmate_10_KBwBb_K, 04_helpmate_10_KBwN_K}.pgn` (4 files)
+  - `CHA_BASIC_MATE_HELPMATE_AROUND_MAX/{01_helpmate_around_max_KR_K, 02_helpmate_around_max_KQ_K, 03_helpmate_around_max_KBwBb_K, 04_helpmate_around_max_KBwN_K}.pgn` (4 files)
+
+- `TestLegacyPgnParsePlaysBeyondAudit.test` — expected 101 legacy fixtures in the EXPECTED map, found 99. Stale test-side expectation vs. actual `pgnParser/legacy/common/beyond/` folder count.
+
+- Six tests that consume one of the affected fixtures fail with the same "PGN must have exactly two empty lines" parser error rather than running their actual assertions: `TestInsufficientMaterial.testPgnSample`, `TestLegalMovesAgainstCreatedUsingValidation.test`, `TestFenRoundtripPgn.testPgnSample`, `TestBoardAgainstEachOther.test`, `TestLenientPgnParserAgainstEachOther.test`, `TestStrictPgnParserAgainstLenientPgnParser.test`.
+
+None of the above touch bitboard, `StaticPosition`, or the role-inversion code. They are corpus-data debt, scheduled as a follow-up cleanup task.
 
 ## [10.0.0] - 2026-05-19
 
