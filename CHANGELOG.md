@@ -4,6 +4,57 @@ Releases from 3.3 onward. Earlier history is in git tags only.
 
 ## [Unreleased]
 
+## [11.0.0] - 2026-05-21
+
+The **Role-inversion release**. With 10.0.0 in hand the per-move data path was bitboard-only, but `StaticPosition` was still a peer of `BitboardPosition` in `src/main/` — the public `Fen` record carried a `StaticPosition` field, `Board.getStaticPosition()` was a public derived view, the SAN / FEN / analyzer layers all still consumed `StaticPosition` through their public surface. This release finishes the inversion: production speaks only `BitboardPosition`, and the entire `StaticPosition` subtree (record, `StaticPositionUtility`, `com.dlb.chess.squares.*` consumer subset, `AbstractLegalMoves` + per-piece `*LegalMoves`, `UnwinnabilityMaterial`) is physically relocated to `src/test/java/` as the permanent differential-test oracle. **Not deleted. Relocated.** Project policy from this point on: every primitive on `BitboardPosition` is asserted against the relocated `StaticPosition` oracle on every fixture in the corpus, for every supported release going forward. See `specification.md` §4.1 and §6.1.
+
+### Notable
+
+- **`StaticPosition` subtree physically relocated to `src/test/java/`.** All 36 files moved via `git mv` preserving history. Original package names preserved (no `reference/` rename) — Java/Maven allow a package to span source roots; `com.dlb.chess.board`, `com.dlb.chess.squares`, `com.dlb.chess.moves`, `com.dlb.chess.unwinnability` now have a test-side surface alongside their production-side surface.
+- **Public `Fen` record reshaped.** `Fen` now carries `BitboardPosition bitboardPosition` instead of `StaticPosition staticPosition`. The new shape: `(String fen, BitboardPosition bitboardPosition, Side havingMove, CastlingRight castlingRightWhite, CastlingRight castlingRightBlack, Square enPassantCaptureTargetSquare, int halfMoveClock, int fullMoveNumber)`. `Board(Fen)` reads `fen.bitboardPosition()`.
+- **`Board.getStaticPosition()` / `getStaticPositionBeforeLastMove()` dropped.** No deprecated derived view. After this release no `src/main/` class references `StaticPosition`. `Board.toString()` returns `getFen()` instead of routing through the (now-test-side) bridge.
+- **SAN layer ported off `StaticPosition`.** Six classes: `StrictSanParser`, `SanValidateLegalMoves`, `SanValidateDestination`, `SanValidatePieceExists`, `SanPieceCheck`, `LenientSanShapeNormalize`. New bitboard helpers on `BitboardPosition`: `kingSquare(Side)`, `potentialToSquares(Square, long)`, `isOwnPiece(Square, Side, PieceType)`, `withRelocatedPiece(Piece, Square from, Square to)`. New bitboard overload of `EnPassantCaptureUtility.calculateIsPotentialEnPassantCapture`. Differential test for `potentialToSquares` against `AbstractPotentialToSquares.calculatePotentialToSquare` on the full corpus.
+- **Board internals and analyzer layer ported off `StaticPosition`:** `ChessRuleAnalyzer`, `InsufficientMaterialUtility`, `BoardMaterial`, `ValidateNewMove`, `UciMoveUtility`, `SemiOpenFilesUtility` (StaticPosition variant), `UnwinnableFullAnalyzer` / `UnwinnableQuickAnalyzer` (Fen pass-throughs).
+- **FEN layer ported off `StaticPosition`.** `FenParserAdvanced` builds `BitboardPosition` directly. `FenBoard`, `FenMaterialCount`, `FenConstants` updated. Plus a Codex P2 predicate-precedence fix in `FenParserAdvanced.validateEnPassantCaptureTargetSquareAgainstBitboardPosition`: `A || (B && C)` corrected to `A || B || C` (Java operator precedence), with regression tests in `TestFenParserAdvanced`.
+- **Production-side move utilities cleaned up.** `CastlingUtility` dropped all StaticPosition overloads (`calculateQueenSideCastlingCheck`, `calculateKingSideCastlingCheck`, `calculate*CheckCondition`, `calculate*IsOriginalPosition`, `calculate*IsEmptySquaresBetweenRookAndKing`, `calculateIsAllEmpty`, `calculateIsEmptySquare`). `EnPassantCaptureUtility` dropped its StaticPosition overloads; `performEnPassantCaptureMovements(Side, MoveSpecification)` no longer takes a StaticPosition. `StandardMoveUtility.performStandardMovements(Piece movingPiece, MoveSpecification)` takes the moving Piece directly instead of looking it up on a StaticPosition. `BitboardLegalMoveFactory.calculateLegalMoves` inlines its own castling generation (it no longer depends on the relocated `AbstractLegalMoves`).
+- **`BitboardPosition.INITIAL_POSITION` / `EMPTY_POSITION` rewritten as standalone bit constants** — no longer derived from `StaticPosition.INITIAL_POSITION` via the bridge, since `StaticPosition` is now test-side. `EMPTY_POSITION.zobristPieces()` is `0L` (XOR of nothing).
+- **`StaticPositionBridge` (test-side)** carries the `StaticPosition` ⇄ `BitboardPosition` round-trip helpers (`fromStaticPosition`, `toStaticPosition`). Lives in `src/test/java/com/dlb/chess/bitboard/` alongside production `BitboardPosition` — same package, different source root. `BitboardPositionUtility` (production-side) holds only StaticPosition-free helpers.
+
+### Internal
+
+- **Phase 0** — `tasks.md` restructure: 8-phase plan with audit findings (~25 src/main classes still on StaticPosition after 10.0.0).
+- **Phase 1** — SAN layer ported. Bitboard helpers added on `BitboardPosition`. Differential test for `potentialToSquares` lands.
+- **Phase 2** — Board internals and analyzers ported.
+- **Phase 3+4** — FEN parser/serializer ported; `Fen` record reshape (binary-incompatible).
+- **Phase 5** — `Board.getStaticPosition()` / `getStaticPositionBeforeLastMove()` dropped. `Board.toString()` returns `getFen()`.
+- **Phase 6** — Physical `git mv` of the relocation subtree (`d6ef72fb`-adjacent commits `617411bf` and `5ea36bc3`). Production-side move utilities (`CastlingUtility`, `EnPassantCaptureUtility`, `StandardMoveUtility`) cleaned up to drop their StaticPosition surfaces.
+- **Phase 7** — `specification.md` formalises the differential-test layer as permanent policy (`d6ef72fb`).
+- **Codex review fixes during the release** — P1 self-referential test in `TestBoardGetBitboardPosition` (rewritten with `StaticPositionUtility.createPositionAfterMove` as the independent oracle); P2 `Board.toString()` routing through the soon-to-relocate bridge (rerouted via `getFen()`); P2 FEN predicate precedence (`A || (B && C)` → `A || B || C`); P3 stale comment correction in `TestFenParserAdvanced`.
+
+### Breaking
+
+`Fen` record shape changed: now `(String fen, BitboardPosition bitboardPosition, Side havingMove, CastlingRight castlingRightWhite, CastlingRight castlingRightBlack, Square enPassantCaptureTargetSquare, int halfMoveClock, int fullMoveNumber)`. Callers reading `fen.staticPosition()` must switch to `fen.bitboardPosition()`. Callers constructing `Fen` directly must pass a `BitboardPosition` in slot 2.
+
+`Board.getStaticPosition()` and `Board.getStaticPositionBeforeLastMove()` are gone. Callers wanting the mailbox view must construct a `StaticPosition` themselves — but note that `StaticPosition` itself is now under `src/test/java/`, so this is only available on the test classpath. Typical end-user code does not need either.
+
+`InsufficientMaterialUtility.calculateIs*(StaticPosition, ...)` overloads, `ChessRuleAnalyzer.analyze*(StaticPosition, ...)` overloads, and other `StaticPosition`-taking public surfaces are gone. The bitboard-taking variants remain.
+
+`CastlingUtility`'s StaticPosition overloads (`calculateQueenSideCastlingCheck`, `calculateKingSideCastlingCheck`, `calculate*CheckCondition`, `calculate*IsOriginalPosition`, etc.), `EnPassantCaptureUtility`'s StaticPosition overloads, and `StandardMoveUtility.performStandardMovements(StaticPosition, ...)` are gone. Direct callers must switch to the bitboard variants.
+
+`BitboardPositionUtility.fromStaticPosition` / `toStaticPosition` are gone from `src/main/` — they relocated to `StaticPositionBridge` (test-side). Production code that mixed the two representations should consume `BitboardPosition` directly; test code can use the bridge.
+
+The packages `com.dlb.chess.board`, `com.dlb.chess.squares`, `com.dlb.chess.moves`, and `com.dlb.chess.unwinnability` now span both source roots. Production classes are unchanged but their package-mate StaticPosition consumers (`AbstractAttackedSquares`, `*PotentialToSquares`, `*AttackedSquares`, `*RangeSquares`, `*LegalMoves`, `AbstractLegalMoves`, `UnwinnabilityMaterial`) are only available on the test classpath. Production code that imported them must port to `BitboardPosition` primitives.
+
+### Migration
+
+Typical use (read a PGN, play moves, query check / legal moves / unwinnability): no source change. `Board`'s public API around game progression is preserved.
+
+If your code reads `Board.getStaticPosition()`: switch to `board.getBitboardPosition()` and ask the bitboard directly (`get`, `getPiece`, `isEmpty`, `occupied`, `attackedSquares`, `isInCheck`, `legalMoves`, `afterMove`). The bitboard exposes everything the mailbox did plus more (attack maps, pin rays, Zobrist).
+
+If your code unpacks a `Fen` record: change `fen.staticPosition()` → `fen.bitboardPosition()`.
+
+If your code called `BitboardPositionUtility.fromStaticPosition`/`toStaticPosition` from production: it shouldn't have, but if it did, switch the calling code to flow `BitboardPosition` throughout instead of round-tripping through the mailbox.
+
 ## [10.0.0] - 2026-05-19
 
 The **Switchover release**. With 9.0.0 in hand the bitboard layer was a verified parallel implementation but `Board.move()` still computed `StaticPosition` per ply and the parallel `bitboardPositionList` cache derived its entries via `BitboardPositionUtility.fromStaticPosition(afterStaticPosition)`. This release moves the per-move data path entirely onto the bitboard: the incremental `BitboardPosition.afterMove` becomes the only computation, `StaticPosition` no longer rides alongside `DynamicPosition`, and the per-move `StaticPositionUtility.createPositionAfterMove` call is gone. `Board.getStaticPosition()` survives as a derived view via `BitboardPositionUtility.toStaticPosition()` on the cached bitboard — public API preserved, internal data path bitboard-only.
