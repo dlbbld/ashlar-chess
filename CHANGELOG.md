@@ -44,6 +44,17 @@ If your code constructed `DynamicPosition` directly: rebuild against the new sha
 
 If your code called `BitboardLegalMoveFactory.calculateLegalMoves(bitboard, staticPosition, side, castling, enPassantBit)`: drop the `staticPosition` argument. The function now uses the bitboard for castling generation too (via the new `AbstractLegalMoves.calculateCastlingLegalMoves(BitboardPosition, ...)` bridge).
 
+### Corpus cleanup
+
+Pre-existing test-fixture debt cleared so all release gates pass green:
+
+- **28 CHA test fixtures** under `src/test/resources/pgn/cha/` had malformed trailing whitespace (missing or extra empty lines, sometimes missing the result token entirely). The strict PGN parser requires exactly two empty lines per file — one after the last tag block, one at end of file. Normalised all 28 files to end with `...<result>\n\n`. Four observed shapes (tag-only with no movetext, movetext with one trailing newline, movetext with no trailing newline, movetext with three trailing newlines). Caught by `TestSetupPgnCorpusNotPlaysBeyondAudit`, whose catch net is broader than its "plays beyond a dead position" name suggests — none of these files actually played past termination; they failed the strict parser at the file-structure pre-scan.
+- **`test_lichess_V7eJ1RR9_helpmate.pgn`** had a double space at move 56 (`bxc7+  Qxc7`) flagged as "a half-move must be followed by a single space before the next token." Collapsed to single space.
+- **`01_beyond_fivefold.pgn`** had its movetext start with `10. Kc8 Kc6 ... 17. Kd8 Kd6` while the FEN tag specified fullmove number 50. Renumbered the movetext to `50. ... 57.` to match the FEN. The repetition pattern (Kc8/Kd8 vs. Kc6/Kd6) is unchanged.
+- **`TestLegacyPgnParsePlaysBeyondAudit`** asserted a hardcoded expected count of 101 legacy fixtures, but the actual `pgnParser/legacy/common/beyond/` folder and the test's own `EXPECTED` map both have 99. Updated the constant to 99.
+
+Release gates after the cleanup: `mvn test` 1132/0/0/4, `mvn javadoc:javadoc` green, `mvn test -Pfull` 1132/0/0/1 (one suite-level `@assumeFalse` skip). No pre-existing failures remain.
+
 ## [9.0.0] - 2026-05-19
 
 The **Bitboard release**. A second piece-placement representation (`BitboardPosition`, twelve `long`s indexed by `Square.ordinal()` little-endian rank-file) is built alongside `StaticPosition`, verified bit-exact against it on the full PGN/FEN corpus for every primitive, and then production hot paths switch to consume it. `StaticPosition` and the surrounding mailbox-rich-board reference layer remain in `src/main/` per the **Project Invariant** documented in `tasks.md`: that implementation represents the project's correctness ground truth and is never deleted — only relocated to `src/test/` as the permanent differential-test oracle in the next release.
