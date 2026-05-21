@@ -9,6 +9,7 @@ import java.util.TreeSet;
 
 import org.junit.jupiter.api.Test;
 
+import com.dlb.chess.bitboard.StaticPositionBridge;
 import com.dlb.chess.board.Board;
 import com.dlb.chess.board.StaticPosition;
 import com.dlb.chess.board.enums.PromotionPieceType;
@@ -16,8 +17,6 @@ import com.dlb.chess.board.enums.Side;
 import com.dlb.chess.board.enums.Square;
 import com.dlb.chess.common.constants.EnumConstants;
 import com.dlb.chess.common.model.MoveSpecification;
-import com.dlb.chess.bitboard.BitboardPositionUtility;
-import com.dlb.chess.bitboard.StaticPositionBridge;
 
 class TestAttackedSquaresByPlaying implements EnumConstants {
 

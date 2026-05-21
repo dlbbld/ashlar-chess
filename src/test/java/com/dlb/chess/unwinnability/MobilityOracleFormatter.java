@@ -4,13 +4,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import com.dlb.chess.bitboard.StaticPositionBridge;
 import com.dlb.chess.board.Board;
 import com.dlb.chess.board.StaticPosition;
 import com.dlb.chess.board.enums.Piece;
 import com.dlb.chess.board.enums.Square;
 import com.dlb.chess.common.Nulls;
-import com.dlb.chess.bitboard.BitboardPositionUtility;
-import com.dlb.chess.bitboard.StaticPositionBridge;
 
 public final class MobilityOracleFormatter {
 

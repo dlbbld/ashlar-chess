@@ -10,6 +10,7 @@ import java.util.TreeSet;
 import org.apache.logging.log4j.Logger;
 import org.junit.jupiter.api.Test;
 
+import com.dlb.chess.bitboard.StaticPositionBridge;
 import com.dlb.chess.board.enums.CastlingMove;
 import com.dlb.chess.board.enums.Piece;
 import com.dlb.chess.board.enums.PieceType;
@@ -30,8 +31,6 @@ import com.dlb.chess.test.model.PgnTestCase;
 import com.dlb.chess.test.model.PgnTestCaseList;
 import com.dlb.chess.test.pgn.parser.PgnCacheForStrictPgnParserTestCases;
 import com.dlb.chess.test.pgn.setup.PgnTestCaseCatalog;
-import com.dlb.chess.bitboard.BitboardPositionUtility;
-import com.dlb.chess.bitboard.StaticPositionBridge;
 
 class TestLegalMovesAgainstCreatedUsingValidation {
 

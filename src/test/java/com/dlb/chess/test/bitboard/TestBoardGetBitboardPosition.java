@@ -8,7 +8,7 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 
 import com.dlb.chess.bitboard.BitboardPosition;
-import com.dlb.chess.bitboard.BitboardPositionUtility;
+import com.dlb.chess.bitboard.StaticPositionBridge;
 import com.dlb.chess.board.Board;
 import com.dlb.chess.board.StaticPosition;
 import com.dlb.chess.board.enums.Side;
@@ -16,7 +16,6 @@ import com.dlb.chess.board.enums.Square;
 import com.dlb.chess.common.Nulls;
 import com.dlb.chess.common.model.MoveSpecification;
 import com.dlb.chess.common.utility.StaticPositionUtility;
-import com.dlb.chess.bitboard.StaticPositionBridge;
 
 /**
  * {@link Board#getBitboardPosition()} integration tests. Step 3 of the switchover release removed the cached

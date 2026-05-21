@@ -5,14 +5,13 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
 
-import com.dlb.chess.bitboard.BitboardPositionUtility;
+import com.dlb.chess.bitboard.StaticPositionBridge;
 import com.dlb.chess.board.StaticPosition;
 import com.dlb.chess.board.enums.Piece;
 import com.dlb.chess.board.enums.Square;
 import com.dlb.chess.common.constants.EnumConstants;
 import com.dlb.chess.fen.FenParserAdvanced;
 import com.dlb.chess.fen.constants.FenConstants;
-import com.dlb.chess.bitboard.StaticPositionBridge;
 
 class TestBasicStaticPosition implements EnumConstants {
 

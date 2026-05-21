@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 import com.dlb.chess.bitboard.BitboardPosition;
 import com.dlb.chess.bitboard.BitboardPositionUtility;
 import com.dlb.chess.bitboard.RookAttacks;
+import com.dlb.chess.bitboard.StaticPositionBridge;
 import com.dlb.chess.board.StaticPosition;
 import com.dlb.chess.board.enums.Side;
 import com.dlb.chess.board.enums.Square;
@@ -19,7 +20,6 @@ import com.dlb.chess.test.model.PgnTestCase;
 import com.dlb.chess.test.model.PgnTestCaseList;
 import com.dlb.chess.test.pgn.setup.PgnTestCaseCatalog;
 import com.dlb.chess.test.pgntest.enums.PgnTest;
-import com.dlb.chess.bitboard.StaticPositionBridge;
 
 /**
  * Differential test for {@link RookAttacks}: for every rook on every fixture in the corpus, the bitboard ray-loop

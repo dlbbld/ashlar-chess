@@ -4,7 +4,6 @@ import static com.dlb.chess.common.utility.ImmutableUtility.constructListSquare;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 import com.dlb.chess.bitboard.BitboardPosition;
 import com.dlb.chess.board.enums.CastlingMove;

@@ -7,7 +7,7 @@ import java.util.TreeSet;
 
 import org.junit.jupiter.api.Test;
 
-import com.dlb.chess.bitboard.BitboardPositionUtility;
+import com.dlb.chess.bitboard.StaticPositionBridge;
 import com.dlb.chess.board.StaticPosition;
 import com.dlb.chess.board.enums.CastlingRight;
 import com.dlb.chess.board.enums.Side;
@@ -16,7 +16,6 @@ import com.dlb.chess.common.constants.EnumConstants;
 import com.dlb.chess.common.model.MoveSpecification;
 import com.dlb.chess.fen.FenParserAdvanced;
 import com.dlb.chess.model.LegalMove;
-import com.dlb.chess.bitboard.StaticPositionBridge;
 
 class TestLegalMovesForPiecesIllegalPosition implements EnumConstants {
 

@@ -8,7 +8,6 @@ import org.eclipse.jdt.annotation.Nullable;
 
 import com.dlb.chess.bitboard.BitboardLegalMoveFactory;
 import com.dlb.chess.bitboard.BitboardPosition;
-import com.dlb.chess.bitboard.BitboardPositionUtility;
 import com.dlb.chess.board.enums.CastlingMove;
 import com.dlb.chess.board.enums.CastlingRight;
 import com.dlb.chess.board.enums.CastlingRightLoss;

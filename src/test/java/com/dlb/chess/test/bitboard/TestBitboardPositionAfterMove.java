@@ -6,7 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import org.junit.jupiter.api.Test;
 
 import com.dlb.chess.bitboard.BitboardPosition;
-import com.dlb.chess.bitboard.BitboardPositionUtility;
+import com.dlb.chess.bitboard.StaticPositionBridge;
 import com.dlb.chess.board.Board;
 import com.dlb.chess.board.StaticPosition;
 import com.dlb.chess.board.enums.Side;
@@ -18,7 +18,6 @@ import com.dlb.chess.test.model.PgnTestCase;
 import com.dlb.chess.test.model.PgnTestCaseList;
 import com.dlb.chess.test.pgn.setup.PgnTestCaseCatalog;
 import com.dlb.chess.test.pgntest.enums.PgnTest;
-import com.dlb.chess.bitboard.StaticPositionBridge;
 
 /**
  * The second spine assertion: for every fixture × every legal move, the bitboard's

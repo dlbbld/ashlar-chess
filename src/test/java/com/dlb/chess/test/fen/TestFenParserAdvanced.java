@@ -17,7 +17,6 @@ import com.dlb.chess.fen.FenParserRaw;
 import com.dlb.chess.fen.constants.FenConstants;
 import com.dlb.chess.fen.model.Fen;
 import com.dlb.chess.fen.model.FenRaw;
-import com.dlb.chess.bitboard.StaticPositionBridge;
 
 class TestFenParserAdvanced implements EnumConstants {
 

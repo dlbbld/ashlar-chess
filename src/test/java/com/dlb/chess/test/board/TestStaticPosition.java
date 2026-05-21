@@ -4,9 +4,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.junit.jupiter.api.Test;
 
-import com.dlb.chess.board.Board;
-import com.dlb.chess.bitboard.BitboardPositionUtility;
 import com.dlb.chess.bitboard.StaticPositionBridge;
+import com.dlb.chess.board.Board;
 
 class TestStaticPosition {
 

@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.eclipse.jdt.annotation.NonNull;
 
+import com.dlb.chess.bitboard.StaticPositionBridge;
 import com.dlb.chess.board.Board;
 import com.dlb.chess.model.PgnHalfMove;
 import com.dlb.chess.moves.AbstractLegalMoves;
@@ -14,8 +15,6 @@ import com.dlb.chess.test.model.PgnTestCaseList;
 import com.dlb.chess.test.pgn.parser.PgnCacheForStrictPgnParserTestCases;
 import com.dlb.chess.test.pgn.setup.PgnTestCaseCatalog;
 import com.dlb.chess.test.pgntest.enums.PgnTest;
-import com.dlb.chess.bitboard.BitboardPositionUtility;
-import com.dlb.chess.bitboard.StaticPositionBridge;
 import com.github.bhlangonijr.chesslib.move.MoveGenerator;
 import com.github.bhlangonijr.chesslib.move.MoveGeneratorException;
 

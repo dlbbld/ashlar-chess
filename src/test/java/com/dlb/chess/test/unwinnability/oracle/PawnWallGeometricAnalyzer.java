@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
+import com.dlb.chess.bitboard.StaticPositionBridge;
 import com.dlb.chess.board.Board;
 import com.dlb.chess.board.StaticPosition;
 import com.dlb.chess.board.enums.Piece;
@@ -19,8 +20,6 @@ import com.dlb.chess.common.Nulls;
 import com.dlb.chess.common.exceptions.ProgrammingMistakeException;
 import com.dlb.chess.common.utility.BasicUtility;
 import com.dlb.chess.common.utility.StaticPositionUtility;
-import com.dlb.chess.bitboard.BitboardPositionUtility;
-import com.dlb.chess.bitboard.StaticPositionBridge;
 
 public class PawnWallGeometricAnalyzer {
 

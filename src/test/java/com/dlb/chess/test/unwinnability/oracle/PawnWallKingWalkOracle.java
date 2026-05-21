@@ -7,6 +7,7 @@ import java.util.EnumSet;
 import java.util.List;
 import java.util.Set;
 
+import com.dlb.chess.bitboard.StaticPositionBridge;
 import com.dlb.chess.board.Board;
 import com.dlb.chess.board.StaticPosition;
 import com.dlb.chess.board.enums.Piece;
@@ -15,8 +16,6 @@ import com.dlb.chess.board.enums.Side;
 import com.dlb.chess.board.enums.Square;
 import com.dlb.chess.common.Nulls;
 import com.dlb.chess.common.utility.StaticPositionUtility;
-import com.dlb.chess.bitboard.BitboardPositionUtility;
-import com.dlb.chess.bitboard.StaticPositionBridge;
 
 /**
  * Test-only BFS oracle for the pawn-wall classifier.

@@ -8,14 +8,13 @@ import java.util.TreeSet;
 import org.eclipse.jdt.annotation.NonNull;
 import org.junit.jupiter.api.Test;
 
-import com.dlb.chess.bitboard.BitboardPositionUtility;
+import com.dlb.chess.bitboard.StaticPositionBridge;
 import com.dlb.chess.board.enums.Square;
 import com.dlb.chess.common.constants.EnumConstants;
 import com.dlb.chess.fen.FenParserAdvanced;
 import com.dlb.chess.fen.constants.FenConstants;
 import com.dlb.chess.fen.model.Fen;
 import com.dlb.chess.squares.AbstractAttackedSquares;
-import com.dlb.chess.bitboard.StaticPositionBridge;
 
 class TestAttackedSquaresByPosition implements EnumConstants {
 

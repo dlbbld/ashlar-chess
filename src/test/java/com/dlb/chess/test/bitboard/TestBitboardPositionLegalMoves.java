@@ -9,7 +9,7 @@ import java.util.TreeSet;
 import org.junit.jupiter.api.Test;
 
 import com.dlb.chess.bitboard.BitboardPosition;
-import com.dlb.chess.bitboard.BitboardPositionUtility;
+import com.dlb.chess.bitboard.StaticPositionBridge;
 import com.dlb.chess.board.Board;
 import com.dlb.chess.board.StaticPosition;
 import com.dlb.chess.board.enums.CastlingMove;
@@ -22,7 +22,6 @@ import com.dlb.chess.test.model.PgnTestCase;
 import com.dlb.chess.test.model.PgnTestCaseList;
 import com.dlb.chess.test.pgn.setup.PgnTestCaseCatalog;
 import com.dlb.chess.test.pgntest.enums.PgnTest;
-import com.dlb.chess.bitboard.StaticPositionBridge;
 
 /**
  * The spine assertion of the bitboard release: for every fixture in the corpus, the bitboard's

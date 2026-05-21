@@ -8,7 +8,7 @@ import java.util.TreeSet;
 
 import org.eclipse.jdt.annotation.NonNull;
 
-import com.dlb.chess.bitboard.BitboardPositionUtility;
+import com.dlb.chess.bitboard.StaticPositionBridge;
 import com.dlb.chess.board.enums.CastlingRight;
 import com.dlb.chess.board.enums.Piece;
 import com.dlb.chess.board.enums.Side;
@@ -31,7 +31,6 @@ import com.dlb.chess.test.librarycarlos.NullsCarlos;
 import com.dlb.chess.test.librarycarlos.utility.MoveConversionUtility;
 import com.dlb.chess.test.librarycomparison.utility.BoardConversionUtitlity;
 import com.dlb.chess.test.librarycomparison.utility.EnumConversionUtility;
-import com.dlb.chess.bitboard.StaticPositionBridge;
 import com.github.bhlangonijr.chesslib.Board;
 import com.github.bhlangonijr.chesslib.CastleRight;
 import com.github.bhlangonijr.chesslib.MoveBackup;

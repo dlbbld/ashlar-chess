@@ -15,8 +15,6 @@ import com.dlb.chess.common.model.MoveSpecification;
 import com.dlb.chess.enums.CastlingCheck;
 import com.dlb.chess.model.LegalMoveKind;
 import com.dlb.chess.moves.CastlingUtility;
-import com.dlb.chess.bitboard.BitboardPositionUtility;
-import com.dlb.chess.bitboard.StaticPositionBridge;
 
 class TestPerformMoveSeveralStates implements EnumConstants {
 

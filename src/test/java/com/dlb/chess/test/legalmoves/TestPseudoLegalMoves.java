@@ -8,6 +8,7 @@ import java.util.Set;
 
 import org.junit.jupiter.api.Test;
 
+import com.dlb.chess.bitboard.StaticPositionBridge;
 import com.dlb.chess.board.Board;
 import com.dlb.chess.board.StaticPosition;
 import com.dlb.chess.board.enums.Square;
@@ -24,8 +25,6 @@ import com.dlb.chess.squares.KnightPotentialToSquares;
 import com.dlb.chess.squares.PawnPotentialToSquares;
 import com.dlb.chess.squares.QueenPotentialToSquares;
 import com.dlb.chess.squares.RookPotentialToSquares;
-import com.dlb.chess.bitboard.BitboardPositionUtility;
-import com.dlb.chess.bitboard.StaticPositionBridge;
 
 class TestPseudoLegalMoves implements EnumConstants {
 

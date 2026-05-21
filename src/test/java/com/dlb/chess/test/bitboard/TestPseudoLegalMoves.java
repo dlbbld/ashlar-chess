@@ -14,6 +14,7 @@ import com.dlb.chess.bitboard.KingMoves;
 import com.dlb.chess.bitboard.KnightMoves;
 import com.dlb.chess.bitboard.QueenMoves;
 import com.dlb.chess.bitboard.RookMoves;
+import com.dlb.chess.bitboard.StaticPositionBridge;
 import com.dlb.chess.board.StaticPosition;
 import com.dlb.chess.board.enums.Side;
 import com.dlb.chess.board.enums.Square;
@@ -25,7 +26,6 @@ import com.dlb.chess.test.model.PgnTestCase;
 import com.dlb.chess.test.model.PgnTestCaseList;
 import com.dlb.chess.test.pgn.setup.PgnTestCaseCatalog;
 import com.dlb.chess.test.pgntest.enums.PgnTest;
-import com.dlb.chess.bitboard.StaticPositionBridge;
 
 /**
  * Differential test for the per-piece pseudo-legal target generators ({@link KnightMoves}, {@link KingMoves},

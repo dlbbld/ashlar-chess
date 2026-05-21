@@ -2,9 +2,8 @@ package com.dlb.chess.board;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import com.dlb.chess.common.constants.EnumConstants;
-import com.dlb.chess.bitboard.BitboardPositionUtility;
 import com.dlb.chess.bitboard.StaticPositionBridge;
+import com.dlb.chess.common.constants.EnumConstants;
 
 public abstract class CommonTestUtility implements EnumConstants {
 

@@ -10,8 +10,6 @@ import com.dlb.chess.board.enums.PieceType;
 import com.dlb.chess.board.enums.Side;
 import com.dlb.chess.board.enums.Square;
 import com.dlb.chess.common.Nulls;
-import com.dlb.chess.bitboard.BitboardPositionUtility;
-import com.dlb.chess.bitboard.StaticPositionBridge;
 
 public final class SemiStaticOracleFormatter {
 
