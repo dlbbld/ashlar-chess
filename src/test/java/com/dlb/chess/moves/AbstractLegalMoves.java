@@ -3,7 +3,6 @@ package com.dlb.chess.moves;
 import java.util.Set;
 import java.util.TreeSet;
 
-import com.dlb.chess.bitboard.BitboardPosition;
 import com.dlb.chess.board.StaticPosition;
 import com.dlb.chess.board.enums.CastlingRight;
 import com.dlb.chess.board.enums.Piece;
@@ -43,18 +42,12 @@ public abstract class AbstractLegalMoves implements EnumConstants {
 
   /**
    * Public bridge to {@link KingCastlingLegalMoves}. Returns only the castling legal moves for {@code havingMove}
-   * given the current castling rights. The StaticPosition-shaped overload is retained for the reference layer; the
-   * BitboardPosition-shaped overload is what {@code BitboardLegalMoveFactory.calculateLegalMoves} uses on the
-   * production hot path (as of the 10.0.0 switchover release).
+   * given the current castling rights. Reference-layer entry point used by the corpus differential tests
+   * comparing this StaticPosition-shaped pipeline against {@code BitboardLegalMoveFactory}.
    */
   public static Set<LegalMove> calculateCastlingLegalMoves(StaticPosition staticPosition, Side havingMove,
       CastlingRight castlingRight) {
     return KingCastlingLegalMoves.calculateKingCastlingLegalMoves(staticPosition, havingMove, castlingRight);
-  }
-
-  public static Set<LegalMove> calculateCastlingLegalMoves(BitboardPosition bitboardPosition, Side havingMove,
-      CastlingRight castlingRight) {
-    return KingCastlingLegalMoves.calculateKingCastlingLegalMoves(bitboardPosition, havingMove, castlingRight);
   }
 
   private static Set<LegalMove> calculateLegalMovesBottomUp(StaticPosition staticPosition,

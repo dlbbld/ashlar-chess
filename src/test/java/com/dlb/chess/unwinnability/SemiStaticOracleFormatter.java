@@ -37,10 +37,10 @@ public final class SemiStaticOracleFormatter {
     final List<String> rowList = new ArrayList<>();
 
     for (final Square source : Square.REAL) {
-      if (StaticPositionBridge.toStaticPosition(board.getBitboardPosition()).isEmpty(source)) {
+      if (board.getBitboardPosition().isEmpty(source)) {
         continue;
       }
-      final Piece piece = StaticPositionBridge.toStaticPosition(board.getBitboardPosition()).get(source);
+      final Piece piece = board.getBitboardPosition().get(source);
       final PiecePlacement piecePlacement = calculatePiecePlacement(piece.getPieceType(), piece.getSide(), source,
           mobilitySolution);
       addRow(rowList, fen, "-", "JAVA_ATTACKED_REGION", formatPiece(piecePlacement),

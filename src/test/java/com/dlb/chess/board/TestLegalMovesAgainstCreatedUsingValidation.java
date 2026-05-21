@@ -122,10 +122,10 @@ class TestLegalMovesAgainstCreatedUsingValidation {
     // now we do something crazy:
     // we loop through all possible from/to square combinations and filter out the legal ones using the validation
     // this must match with the calculated legal moves - so both methods are hopefully correct (or both wrong..)
-    if (StaticPositionBridge.toStaticPosition(board.getBitboardPosition()).isEmpty(fromSquare)) {
+    if (board.getBitboardPosition().isEmpty(fromSquare)) {
       return listForSquare;
     }
-    final Piece boardPiece = StaticPositionBridge.toStaticPosition(board.getBitboardPosition()).get(fromSquare);
+    final Piece boardPiece = board.getBitboardPosition().get(fromSquare);
     if (boardPiece.getSide() == havingMove) {
       // castling needs special treatment as always
       if (boardPiece.getPieceType() == PieceType.KING) {
@@ -145,7 +145,8 @@ class TestLegalMovesAgainstCreatedUsingValidation {
         }
       }
       final Set<Square> potentialToSquareSet = AbstractPotentialToSquares.calculatePotentialToSquare(
-          StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), board.getEnPassantCaptureTargetSquare(), havingMove, fromSquare);
+          StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), board.getEnPassantCaptureTargetSquare(),
+          havingMove, fromSquare);
       // we cannot use all board squares - that get's too slow
       // all PGN's expected outcomes are not through in 90 minutes
       for (final Square toSquare : potentialToSquareSet) {

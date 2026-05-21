@@ -4,6 +4,7 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import com.dlb.chess.bitboard.BitboardPosition;
+import com.dlb.chess.bitboard.StaticPositionBridge;
 import com.dlb.chess.board.StaticPosition;
 import com.dlb.chess.board.enums.CastlingRight;
 import com.dlb.chess.board.enums.Side;
@@ -14,38 +15,9 @@ import com.dlb.chess.model.LegalMove;
 class KingCastlingLegalMoves extends KingLegalMoves {
   public static Set<LegalMove> calculateKingCastlingLegalMoves(StaticPosition staticPosition, Side havingMove,
       CastlingRight castlingRight) {
-
-    final Set<LegalMove> legalMoveSet = new TreeSet<>();
-
-    switch (havingMove) {
-      case BLACK:
-        if (CastlingUtility.calculateQueenSideCastlingCheck(staticPosition, havingMove,
-            castlingRight) == CastlingCheck.SUCCESS) {
-          legalMoveSet.add(CastlingConstants.BLACK_QUEEN_SIDE_CASTLING_MOVE);
-        }
-
-        if (CastlingUtility.calculateKingSideCastlingCheck(staticPosition, havingMove,
-            castlingRight) == CastlingCheck.SUCCESS) {
-          legalMoveSet.add(CastlingConstants.BLACK_KING_SIDE_CASTLING_MOVE);
-        }
-        break;
-      case WHITE:
-        if (CastlingUtility.calculateQueenSideCastlingCheck(staticPosition, havingMove,
-            castlingRight) == CastlingCheck.SUCCESS) {
-          legalMoveSet.add(CastlingConstants.WHITE_QUEEN_SIDE_CASTLING_MOVE);
-        }
-
-        if (CastlingUtility.calculateKingSideCastlingCheck(staticPosition, havingMove,
-            castlingRight) == CastlingCheck.SUCCESS) {
-          legalMoveSet.add(CastlingConstants.WHITE_KING_SIDE_CASTLING_MOVE);
-        }
-        break;
-      case NONE:
-      default:
-        throw new IllegalArgumentException();
-
-    }
-    return legalMoveSet;
+    // StaticPosition overload bridges through the bitboard pipeline.
+    return calculateKingCastlingLegalMoves(StaticPositionBridge.fromStaticPosition(staticPosition), havingMove,
+        castlingRight);
   }
 
   // Bitboard sibling of the StaticPosition overload above. The bitboard production pipeline reaches this through

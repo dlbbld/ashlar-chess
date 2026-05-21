@@ -498,7 +498,8 @@ public class PawnWallGeometricAnalyzer {
   }
 
   protected static boolean calculateHasPawnWallLine(Board board, Side side) {
-    return calculateHasPawnWallLine(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), findAllPawnWallLines(board, side), side);
+    return calculateHasPawnWallLine(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()),
+        findAllPawnWallLines(board, side), side);
   }
 
   private static boolean calculateHasPawnWallLine(StaticPosition staticPosition, List<List<Square>> resultList,

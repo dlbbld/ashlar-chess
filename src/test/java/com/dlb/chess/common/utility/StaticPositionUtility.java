@@ -3,6 +3,7 @@ package com.dlb.chess.common.utility;
 import java.util.List;
 import java.util.Set;
 
+import com.dlb.chess.bitboard.StaticPositionBridge;
 import com.dlb.chess.board.StaticPosition;
 import com.dlb.chess.board.enums.Piece;
 import com.dlb.chess.board.enums.Side;
@@ -88,8 +89,11 @@ public abstract class StaticPositionUtility implements EnumConstants {
   private static List<UpdateSquare> calculateUpdateSquareList(StaticPosition staticPosition, Side havingMove,
       MoveSpecification moveSpecification) {
 
-    if (EnPassantCaptureUtility.calculateIsEnPassantCaptureNewMove(staticPosition, moveSpecification)) {
-      return EnPassantCaptureUtility.performEnPassantCaptureMovements(staticPosition, havingMove, moveSpecification);
+    // EnPassantCaptureUtility's bitboard variant survives in src/main as the single EP-detection method;
+    // bridge a StaticPosition through to it. (StaticPositionBridge is the relocation-side bridge utility.)
+    if (EnPassantCaptureUtility.calculateIsPotentialEnPassantCapture(
+        StaticPositionBridge.fromStaticPosition(staticPosition), moveSpecification)) {
+      return EnPassantCaptureUtility.performEnPassantCaptureMovements(havingMove, moveSpecification);
     }
     if (CastlingUtility.calculateIsCastlingMove(moveSpecification)) {
       return CastlingUtility.performCastlingMovements(havingMove, moveSpecification);
@@ -97,7 +101,8 @@ public abstract class StaticPositionUtility implements EnumConstants {
     if (PromotionUtility.calculateIsPromotionNewMove(moveSpecification)) {
       return PromotionUtility.performPromotionMovements(havingMove, moveSpecification);
     }
-    return StandardMoveUtility.performStandardMovements(staticPosition, moveSpecification);
+    return StandardMoveUtility.performStandardMovements(staticPosition.get(moveSpecification.fromSquare()),
+        moveSpecification);
   }
 
 }

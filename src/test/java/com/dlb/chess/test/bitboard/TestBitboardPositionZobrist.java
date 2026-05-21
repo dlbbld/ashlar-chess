@@ -72,7 +72,7 @@ class TestBitboardPositionZobrist {
       final PgnTestCaseList testCaseList = PgnTestCaseCatalog.getTestList(pgnTest);
       for (final PgnTestCase testCase : testCaseList.list()) {
         final Board board = testCase.finalPosition();
-        final BitboardPosition before = StaticPositionBridge.fromStaticPosition(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()));
+        final BitboardPosition before = board.getBitboardPosition();
         final var beforeHash = before.zobristPieces();
         final Side havingMove = board.getHavingMove();
         for (final LegalMove legalMove : board.getLegalMoves()) {

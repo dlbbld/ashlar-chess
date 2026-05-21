@@ -413,8 +413,7 @@ class TestLegalMovesForPiecesLegalPosition implements EnumConstants {
     // now we look at moves
     {
       // white knight possible moves
-      final Set<LegalMove> calculatedLegalMoveSet = KnightLegalMoves
-          .calculateKnightLegalMoves(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), board.getHavingMove(), B1);
+      final Set<LegalMove> calculatedLegalMoveSet = KnightLegalMoves.calculateKnightLegalMoves(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), board.getHavingMove(), B1);
 
       final Set<MoveSpecification> expected = new TreeSet<>();
       expected.add(new MoveSpecification(B1, C3));
@@ -430,8 +429,7 @@ class TestLegalMovesForPiecesLegalPosition implements EnumConstants {
 
     {
       // black knight possible moves
-      final Set<LegalMove> calculatedLegalMoveSet = KnightLegalMoves
-          .calculateKnightLegalMoves(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), board.getHavingMove(), G8);
+      final Set<LegalMove> calculatedLegalMoveSet = KnightLegalMoves.calculateKnightLegalMoves(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), board.getHavingMove(), G8);
 
       final Set<MoveSpecification> expected = new TreeSet<>();
       expected.add(new MoveSpecification(G8, F6));
@@ -447,8 +445,7 @@ class TestLegalMovesForPiecesLegalPosition implements EnumConstants {
 
     {
       // white knight possible moves
-      final Set<LegalMove> calculatedLegalMoveSet = KnightLegalMoves
-          .calculateKnightLegalMoves(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), board.getHavingMove(), A3);
+      final Set<LegalMove> calculatedLegalMoveSet = KnightLegalMoves.calculateKnightLegalMoves(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), board.getHavingMove(), A3);
 
       final Set<MoveSpecification> expected = new TreeSet<>();
       expected.add(new MoveSpecification(A3, B5));
@@ -465,8 +462,7 @@ class TestLegalMovesForPiecesLegalPosition implements EnumConstants {
 
     {
       // black knight possible moves
-      final Set<LegalMove> calculatedLegalMoveSet = KnightLegalMoves
-          .calculateKnightLegalMoves(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), board.getHavingMove(), F6);
+      final Set<LegalMove> calculatedLegalMoveSet = KnightLegalMoves.calculateKnightLegalMoves(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), board.getHavingMove(), F6);
 
       final Set<MoveSpecification> expected = new TreeSet<>();
       expected.add(new MoveSpecification(F6, E4));
@@ -485,8 +481,7 @@ class TestLegalMovesForPiecesLegalPosition implements EnumConstants {
 
     {
       // white knight possible moves - unchanged
-      final Set<LegalMove> calculatedLegalMoveSet = KnightLegalMoves
-          .calculateKnightLegalMoves(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), board.getHavingMove(), A3);
+      final Set<LegalMove> calculatedLegalMoveSet = KnightLegalMoves.calculateKnightLegalMoves(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), board.getHavingMove(), A3);
 
       final Set<MoveSpecification> expected = new TreeSet<>();
       expected.add(new MoveSpecification(A3, B5));
@@ -503,8 +498,7 @@ class TestLegalMovesForPiecesLegalPosition implements EnumConstants {
 
     {
       // black offers white knight a pawn
-      final Set<LegalMove> calculatedLegalMoveSet = KnightLegalMoves
-          .calculateKnightLegalMoves(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), board.getHavingMove(), E4);
+      final Set<LegalMove> calculatedLegalMoveSet = KnightLegalMoves.calculateKnightLegalMoves(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), board.getHavingMove(), E4);
 
       final Set<MoveSpecification> expected = new TreeSet<>();
       expected.add(new MoveSpecification(E4, F6));
@@ -526,8 +520,7 @@ class TestLegalMovesForPiecesLegalPosition implements EnumConstants {
 
     {
       // white knight possible moves - unchanged
-      final Set<LegalMove> calculatedLegalMoveSet = KnightLegalMoves
-          .calculateKnightLegalMoves(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), board.getHavingMove(), C4);
+      final Set<LegalMove> calculatedLegalMoveSet = KnightLegalMoves.calculateKnightLegalMoves(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), board.getHavingMove(), C4);
 
       final Set<MoveSpecification> expected = new TreeSet<>();
       expected.add(new MoveSpecification(C4, D6));
@@ -547,8 +540,7 @@ class TestLegalMovesForPiecesLegalPosition implements EnumConstants {
 
     {
       // black knight unchanged
-      final Set<LegalMove> calculatedLegalMoveSet = KnightLegalMoves
-          .calculateKnightLegalMoves(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), board.getHavingMove(), E4);
+      final Set<LegalMove> calculatedLegalMoveSet = KnightLegalMoves.calculateKnightLegalMoves(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), board.getHavingMove(), E4);
 
       final Set<MoveSpecification> expected = new TreeSet<>();
       expected.add(new MoveSpecification(E4, F6));
@@ -570,8 +562,7 @@ class TestLegalMovesForPiecesLegalPosition implements EnumConstants {
 
     {
       // white knight possible moves
-      final Set<LegalMove> calculatedLegalMoveSet = KnightLegalMoves
-          .calculateKnightLegalMoves(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), board.getHavingMove(), A5);
+      final Set<LegalMove> calculatedLegalMoveSet = KnightLegalMoves.calculateKnightLegalMoves(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), board.getHavingMove(), A5);
 
       final Set<MoveSpecification> expected = new TreeSet<>();
       expected.add(new MoveSpecification(A5, B7));
@@ -589,8 +580,7 @@ class TestLegalMovesForPiecesLegalPosition implements EnumConstants {
 
     {
       // black knight unchanged
-      final Set<LegalMove> calculatedLegalMoveSet = KnightLegalMoves
-          .calculateKnightLegalMoves(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), board.getHavingMove(), E4);
+      final Set<LegalMove> calculatedLegalMoveSet = KnightLegalMoves.calculateKnightLegalMoves(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), board.getHavingMove(), E4);
 
       final Set<MoveSpecification> expected = new TreeSet<>();
       expected.add(new MoveSpecification(E4, F6));
@@ -612,8 +602,7 @@ class TestLegalMovesForPiecesLegalPosition implements EnumConstants {
 
     {
       // white knight possible moves
-      final Set<LegalMove> calculatedLegalMoveSet = KnightLegalMoves
-          .calculateKnightLegalMoves(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), board.getHavingMove(), B3);
+      final Set<LegalMove> calculatedLegalMoveSet = KnightLegalMoves.calculateKnightLegalMoves(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), board.getHavingMove(), B3);
 
       final Set<MoveSpecification> expected = new TreeSet<>();
       expected.add(new MoveSpecification(B3, C5));
@@ -630,8 +619,7 @@ class TestLegalMovesForPiecesLegalPosition implements EnumConstants {
 
     {
       // we look at knight on C6 quickly
-      final Set<LegalMove> calculatedLegalMoveSet = KnightLegalMoves
-          .calculateKnightLegalMoves(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), board.getHavingMove(), C6);
+      final Set<LegalMove> calculatedLegalMoveSet = KnightLegalMoves.calculateKnightLegalMoves(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), board.getHavingMove(), C6);
 
       final Set<MoveSpecification> expected = new TreeSet<>();
       expected.add(new MoveSpecification(C6, E5));
@@ -651,8 +639,7 @@ class TestLegalMovesForPiecesLegalPosition implements EnumConstants {
 
     {
       // white knight possible moves
-      final Set<LegalMove> calculatedLegalMoveSet = KnightLegalMoves
-          .calculateKnightLegalMoves(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), board.getHavingMove(), A5);
+      final Set<LegalMove> calculatedLegalMoveSet = KnightLegalMoves.calculateKnightLegalMoves(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), board.getHavingMove(), A5);
 
       final Set<MoveSpecification> expected = new TreeSet<>();
       expected.add(new MoveSpecification(A5, B7));
@@ -670,8 +657,7 @@ class TestLegalMovesForPiecesLegalPosition implements EnumConstants {
 
     {
       // black knight
-      final Set<LegalMove> calculatedLegalMoveSet = KnightLegalMoves
-          .calculateKnightLegalMoves(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), board.getHavingMove(), E4);
+      final Set<LegalMove> calculatedLegalMoveSet = KnightLegalMoves.calculateKnightLegalMoves(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), board.getHavingMove(), E4);
 
       final Set<MoveSpecification> expected = new TreeSet<>();
       expected.add(new MoveSpecification(E4, F6));
@@ -692,8 +678,7 @@ class TestLegalMovesForPiecesLegalPosition implements EnumConstants {
 
     {
       // white knight possible moves
-      final Set<LegalMove> calculatedLegalMoveSet = KnightLegalMoves
-          .calculateKnightLegalMoves(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), board.getHavingMove(), A5);
+      final Set<LegalMove> calculatedLegalMoveSet = KnightLegalMoves.calculateKnightLegalMoves(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), board.getHavingMove(), A5);
 
       final Set<MoveSpecification> expected = new TreeSet<>();
       expected.add(new MoveSpecification(A5, B7));
@@ -711,8 +696,7 @@ class TestLegalMovesForPiecesLegalPosition implements EnumConstants {
 
     {
       // black knight on C6 is pinned
-      final Set<LegalMove> calculatedLegalMoveSet = KnightLegalMoves
-          .calculateKnightLegalMoves(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), board.getHavingMove(), C6);
+      final Set<LegalMove> calculatedLegalMoveSet = KnightLegalMoves.calculateKnightLegalMoves(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), board.getHavingMove(), C6);
 
       final Set<MoveSpecification> expected = new TreeSet<>();
 
@@ -726,8 +710,7 @@ class TestLegalMovesForPiecesLegalPosition implements EnumConstants {
 
     {
       // white knight possible moves
-      final Set<LegalMove> calculatedLegalMoveSet = KnightLegalMoves
-          .calculateKnightLegalMoves(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), board.getHavingMove(), A5);
+      final Set<LegalMove> calculatedLegalMoveSet = KnightLegalMoves.calculateKnightLegalMoves(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), board.getHavingMove(), A5);
 
       final Set<MoveSpecification> expected = new TreeSet<>();
       expected.add(new MoveSpecification(A5, B7));
@@ -745,8 +728,7 @@ class TestLegalMovesForPiecesLegalPosition implements EnumConstants {
 
     {
       // black knight on C6 is unpinned
-      final Set<LegalMove> calculatedLegalMoveSet = KnightLegalMoves
-          .calculateKnightLegalMoves(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), board.getHavingMove(), C6);
+      final Set<LegalMove> calculatedLegalMoveSet = KnightLegalMoves.calculateKnightLegalMoves(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), board.getHavingMove(), C6);
 
       final Set<MoveSpecification> expected = new TreeSet<>();
       expected.add(new MoveSpecification(C6, E5));
@@ -766,8 +748,7 @@ class TestLegalMovesForPiecesLegalPosition implements EnumConstants {
 
     {
       // we look at white knight on g1 now
-      final Set<LegalMove> calculatedLegalMoveSet = KnightLegalMoves
-          .calculateKnightLegalMoves(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), board.getHavingMove(), G1);
+      final Set<LegalMove> calculatedLegalMoveSet = KnightLegalMoves.calculateKnightLegalMoves(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), board.getHavingMove(), G1);
 
       final Set<MoveSpecification> expected = new TreeSet<>();
       expected.add(new MoveSpecification(G1, H3));
@@ -784,8 +765,7 @@ class TestLegalMovesForPiecesLegalPosition implements EnumConstants {
 
     {
       // we look at black knight on g3 now again
-      final Set<LegalMove> calculatedLegalMoveSet = KnightLegalMoves
-          .calculateKnightLegalMoves(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), board.getHavingMove(), G3);
+      final Set<LegalMove> calculatedLegalMoveSet = KnightLegalMoves.calculateKnightLegalMoves(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), board.getHavingMove(), G3);
 
       final Set<MoveSpecification> expected = new TreeSet<>();
       expected.add(new MoveSpecification(G3, H5));
@@ -805,8 +785,7 @@ class TestLegalMovesForPiecesLegalPosition implements EnumConstants {
 
     {
       // we look at white knight
-      final Set<LegalMove> calculatedLegalMoveSet = KnightLegalMoves
-          .calculateKnightLegalMoves(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), board.getHavingMove(), E2);
+      final Set<LegalMove> calculatedLegalMoveSet = KnightLegalMoves.calculateKnightLegalMoves(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), board.getHavingMove(), E2);
 
       final Set<MoveSpecification> expected = new TreeSet<>();
       expected.add(new MoveSpecification(E2, F4));
@@ -825,8 +804,7 @@ class TestLegalMovesForPiecesLegalPosition implements EnumConstants {
 
     {
       // we look at black knight on g3 now again
-      final Set<LegalMove> calculatedLegalMoveSet = KnightLegalMoves
-          .calculateKnightLegalMoves(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), board.getHavingMove(), G3);
+      final Set<LegalMove> calculatedLegalMoveSet = KnightLegalMoves.calculateKnightLegalMoves(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), board.getHavingMove(), G3);
 
       final Set<MoveSpecification> expected = new TreeSet<>();
       expected.add(new MoveSpecification(G3, H5));
@@ -846,8 +824,7 @@ class TestLegalMovesForPiecesLegalPosition implements EnumConstants {
 
     {
       // we look at white knight
-      final Set<LegalMove> calculatedLegalMoveSet = KnightLegalMoves
-          .calculateKnightLegalMoves(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), board.getHavingMove(), E2);
+      final Set<LegalMove> calculatedLegalMoveSet = KnightLegalMoves.calculateKnightLegalMoves(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), board.getHavingMove(), E2);
 
       final Set<MoveSpecification> expected = new TreeSet<>();
       expected.add(new MoveSpecification(E2, F4));
@@ -866,8 +843,7 @@ class TestLegalMovesForPiecesLegalPosition implements EnumConstants {
 
     {
       // we look at black knight on g3 now again
-      final Set<LegalMove> calculatedLegalMoveSet = KnightLegalMoves
-          .calculateKnightLegalMoves(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), board.getHavingMove(), G3);
+      final Set<LegalMove> calculatedLegalMoveSet = KnightLegalMoves.calculateKnightLegalMoves(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), board.getHavingMove(), G3);
 
       final Set<MoveSpecification> expected = new TreeSet<>();
       expected.add(new MoveSpecification(G3, H5));
@@ -887,8 +863,7 @@ class TestLegalMovesForPiecesLegalPosition implements EnumConstants {
 
     {
       // we look at white knight - which is pinned
-      final Set<LegalMove> calculatedLegalMoveSet = KnightLegalMoves
-          .calculateKnightLegalMoves(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), board.getHavingMove(), E2);
+      final Set<LegalMove> calculatedLegalMoveSet = KnightLegalMoves.calculateKnightLegalMoves(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), board.getHavingMove(), E2);
 
       final Set<MoveSpecification> expected = new TreeSet<>();
 
@@ -902,8 +877,7 @@ class TestLegalMovesForPiecesLegalPosition implements EnumConstants {
 
     {
       // we look at black knight on g3 now again
-      final Set<LegalMove> calculatedLegalMoveSet = KnightLegalMoves
-          .calculateKnightLegalMoves(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), board.getHavingMove(), G3);
+      final Set<LegalMove> calculatedLegalMoveSet = KnightLegalMoves.calculateKnightLegalMoves(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), board.getHavingMove(), G3);
 
       final Set<MoveSpecification> expected = new TreeSet<>();
       expected.add(new MoveSpecification(G3, H5));
@@ -923,8 +897,7 @@ class TestLegalMovesForPiecesLegalPosition implements EnumConstants {
 
     {
       // we look at white knight - now unpinned
-      final Set<LegalMove> calculatedLegalMoveSet = KnightLegalMoves
-          .calculateKnightLegalMoves(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), board.getHavingMove(), E2);
+      final Set<LegalMove> calculatedLegalMoveSet = KnightLegalMoves.calculateKnightLegalMoves(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), board.getHavingMove(), E2);
 
       final Set<MoveSpecification> expected = new TreeSet<>();
       expected.add(new MoveSpecification(E2, F4));
@@ -965,8 +938,7 @@ class TestLegalMovesForPiecesLegalPosition implements EnumConstants {
     // now we look at moves
     {
       // white bishop possible moves
-      final Set<LegalMove> calculatedLegalMoveSet = BishopLegalMoves
-          .calculateBishopLegalMoves(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), board.getHavingMove(), C1);
+      final Set<LegalMove> calculatedLegalMoveSet = BishopLegalMoves.calculateBishopLegalMoves(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), board.getHavingMove(), C1);
 
       final Set<MoveSpecification> expected = new TreeSet<>();
 
@@ -980,8 +952,7 @@ class TestLegalMovesForPiecesLegalPosition implements EnumConstants {
 
     {
       // black bishop possible moves
-      final Set<LegalMove> calculatedLegalMoveSet = BishopLegalMoves
-          .calculateBishopLegalMoves(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), board.getHavingMove(), C8);
+      final Set<LegalMove> calculatedLegalMoveSet = BishopLegalMoves.calculateBishopLegalMoves(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), board.getHavingMove(), C8);
 
       final Set<MoveSpecification> expected = new TreeSet<>();
 
@@ -995,8 +966,7 @@ class TestLegalMovesForPiecesLegalPosition implements EnumConstants {
 
     {
       // white bishop possible moves
-      final Set<LegalMove> calculatedLegalMoveSet = BishopLegalMoves
-          .calculateBishopLegalMoves(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), board.getHavingMove(), C1);
+      final Set<LegalMove> calculatedLegalMoveSet = BishopLegalMoves.calculateBishopLegalMoves(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), board.getHavingMove(), C1);
 
       final Set<MoveSpecification> expected = new TreeSet<>();
       expected.add(new MoveSpecification(C1, D2));
@@ -1015,8 +985,7 @@ class TestLegalMovesForPiecesLegalPosition implements EnumConstants {
 
     {
       // black bishop possible moves
-      final Set<LegalMove> calculatedLegalMoveSet = BishopLegalMoves
-          .calculateBishopLegalMoves(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), board.getHavingMove(), C8);
+      final Set<LegalMove> calculatedLegalMoveSet = BishopLegalMoves.calculateBishopLegalMoves(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), board.getHavingMove(), C8);
 
       final Set<MoveSpecification> expected = new TreeSet<>();
       expected.add(new MoveSpecification(C8, D7));
@@ -1035,8 +1004,7 @@ class TestLegalMovesForPiecesLegalPosition implements EnumConstants {
 
     {
       // white bishop possible moves
-      final Set<LegalMove> calculatedLegalMoveSet = BishopLegalMoves
-          .calculateBishopLegalMoves(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), board.getHavingMove(), H6);
+      final Set<LegalMove> calculatedLegalMoveSet = BishopLegalMoves.calculateBishopLegalMoves(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), board.getHavingMove(), H6);
 
       final Set<MoveSpecification> expected = new TreeSet<>();
       expected.add(new MoveSpecification(H6, G5));
@@ -1056,8 +1024,7 @@ class TestLegalMovesForPiecesLegalPosition implements EnumConstants {
 
     {
       // black bishop possible moves
-      final Set<LegalMove> calculatedLegalMoveSet = BishopLegalMoves
-          .calculateBishopLegalMoves(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), board.getHavingMove(), D7);
+      final Set<LegalMove> calculatedLegalMoveSet = BishopLegalMoves.calculateBishopLegalMoves(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), board.getHavingMove(), D7);
 
       final Set<MoveSpecification> expected = new TreeSet<>();
       expected.add(new MoveSpecification(D7, E6));
@@ -1078,8 +1045,7 @@ class TestLegalMovesForPiecesLegalPosition implements EnumConstants {
 
     {
       // white bishop possible moves
-      final Set<LegalMove> calculatedLegalMoveSet = BishopLegalMoves
-          .calculateBishopLegalMoves(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), board.getHavingMove(), H6);
+      final Set<LegalMove> calculatedLegalMoveSet = BishopLegalMoves.calculateBishopLegalMoves(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), board.getHavingMove(), H6);
 
       final Set<MoveSpecification> expected = new TreeSet<>();
       expected.add(new MoveSpecification(H6, G5));
@@ -1099,8 +1065,7 @@ class TestLegalMovesForPiecesLegalPosition implements EnumConstants {
 
     {
       // black bishop possible moves
-      final Set<LegalMove> calculatedLegalMoveSet = BishopLegalMoves
-          .calculateBishopLegalMoves(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), board.getHavingMove(), D7);
+      final Set<LegalMove> calculatedLegalMoveSet = BishopLegalMoves.calculateBishopLegalMoves(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), board.getHavingMove(), D7);
 
       final Set<MoveSpecification> expected = new TreeSet<>();
       expected.add(new MoveSpecification(D7, E6));
@@ -1118,8 +1083,7 @@ class TestLegalMovesForPiecesLegalPosition implements EnumConstants {
 
     {
       // white bishop possible moves
-      final Set<LegalMove> calculatedLegalMoveSet = BishopLegalMoves
-          .calculateBishopLegalMoves(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), board.getHavingMove(), H6);
+      final Set<LegalMove> calculatedLegalMoveSet = BishopLegalMoves.calculateBishopLegalMoves(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), board.getHavingMove(), H6);
 
       final Set<MoveSpecification> expected = new TreeSet<>();
       expected.add(new MoveSpecification(H6, G5));
@@ -1139,8 +1103,7 @@ class TestLegalMovesForPiecesLegalPosition implements EnumConstants {
 
     {
       // black bishop possible moves
-      final Set<LegalMove> calculatedLegalMoveSet = BishopLegalMoves
-          .calculateBishopLegalMoves(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), board.getHavingMove(), D7);
+      final Set<LegalMove> calculatedLegalMoveSet = BishopLegalMoves.calculateBishopLegalMoves(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), board.getHavingMove(), D7);
 
       final Set<MoveSpecification> expected = new TreeSet<>();
       expected.add(new MoveSpecification(D7, C8));
@@ -1154,8 +1117,7 @@ class TestLegalMovesForPiecesLegalPosition implements EnumConstants {
 
     {
       // white bishop possible moves
-      final Set<LegalMove> calculatedLegalMoveSet = BishopLegalMoves
-          .calculateBishopLegalMoves(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), board.getHavingMove(), H6);
+      final Set<LegalMove> calculatedLegalMoveSet = BishopLegalMoves.calculateBishopLegalMoves(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), board.getHavingMove(), H6);
 
       final Set<MoveSpecification> expected = new TreeSet<>();
       expected.add(new MoveSpecification(H6, G5));
@@ -1175,8 +1137,7 @@ class TestLegalMovesForPiecesLegalPosition implements EnumConstants {
 
     {
       // black bishop possible moves
-      final Set<LegalMove> calculatedLegalMoveSet = BishopLegalMoves
-          .calculateBishopLegalMoves(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), board.getHavingMove(), D7);
+      final Set<LegalMove> calculatedLegalMoveSet = BishopLegalMoves.calculateBishopLegalMoves(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), board.getHavingMove(), D7);
 
       final Set<MoveSpecification> expected = new TreeSet<>();
       check(expected, calculatedLegalMoveSet);
@@ -1189,8 +1150,7 @@ class TestLegalMovesForPiecesLegalPosition implements EnumConstants {
 
     {
       // white bishop possible moves
-      final Set<LegalMove> calculatedLegalMoveSet = BishopLegalMoves
-          .calculateBishopLegalMoves(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), board.getHavingMove(), H6);
+      final Set<LegalMove> calculatedLegalMoveSet = BishopLegalMoves.calculateBishopLegalMoves(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), board.getHavingMove(), H6);
 
       final Set<MoveSpecification> expected = new TreeSet<>();
       expected.add(new MoveSpecification(H6, G5));
@@ -1206,8 +1166,7 @@ class TestLegalMovesForPiecesLegalPosition implements EnumConstants {
 
     {
       // black bishop possible moves
-      final Set<LegalMove> calculatedLegalMoveSet = BishopLegalMoves
-          .calculateBishopLegalMoves(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), board.getHavingMove(), D7);
+      final Set<LegalMove> calculatedLegalMoveSet = BishopLegalMoves.calculateBishopLegalMoves(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), board.getHavingMove(), D7);
 
       final Set<MoveSpecification> expected = new TreeSet<>();
       expected.add(new MoveSpecification(D7, E8));
@@ -1221,8 +1180,7 @@ class TestLegalMovesForPiecesLegalPosition implements EnumConstants {
 
     {
       // white bishop possible moves
-      final Set<LegalMove> calculatedLegalMoveSet = BishopLegalMoves
-          .calculateBishopLegalMoves(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), board.getHavingMove(), H6);
+      final Set<LegalMove> calculatedLegalMoveSet = BishopLegalMoves.calculateBishopLegalMoves(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), board.getHavingMove(), H6);
 
       final Set<MoveSpecification> expected = new TreeSet<>();
       expected.add(new MoveSpecification(H6, G5));
@@ -1238,8 +1196,7 @@ class TestLegalMovesForPiecesLegalPosition implements EnumConstants {
 
     {
       // black bishop possible moves
-      final Set<LegalMove> calculatedLegalMoveSet = BishopLegalMoves
-          .calculateBishopLegalMoves(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), board.getHavingMove(), D7);
+      final Set<LegalMove> calculatedLegalMoveSet = BishopLegalMoves.calculateBishopLegalMoves(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), board.getHavingMove(), D7);
 
       final Set<MoveSpecification> expected = new TreeSet<>();
       expected.add(new MoveSpecification(D7, E8));
@@ -1253,8 +1210,7 @@ class TestLegalMovesForPiecesLegalPosition implements EnumConstants {
 
     {
       // white bishop possible moves
-      final Set<LegalMove> calculatedLegalMoveSet = BishopLegalMoves
-          .calculateBishopLegalMoves(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), board.getHavingMove(), H6);
+      final Set<LegalMove> calculatedLegalMoveSet = BishopLegalMoves.calculateBishopLegalMoves(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), board.getHavingMove(), H6);
 
       final Set<MoveSpecification> expected = new TreeSet<>();
       expected.add(new MoveSpecification(H6, G5));
@@ -1270,8 +1226,7 @@ class TestLegalMovesForPiecesLegalPosition implements EnumConstants {
 
     {
       // black bishop possible moves
-      final Set<LegalMove> calculatedLegalMoveSet = BishopLegalMoves
-          .calculateBishopLegalMoves(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), board.getHavingMove(), D7);
+      final Set<LegalMove> calculatedLegalMoveSet = BishopLegalMoves.calculateBishopLegalMoves(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), board.getHavingMove(), D7);
 
       final Set<MoveSpecification> expected = new TreeSet<>();
       expected.add(new MoveSpecification(D7, E8));
@@ -1290,8 +1245,7 @@ class TestLegalMovesForPiecesLegalPosition implements EnumConstants {
     // two more
     {
       // white bishop possible moves
-      final Set<LegalMove> calculatedLegalMoveSet = BishopLegalMoves
-          .calculateBishopLegalMoves(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), board.getHavingMove(), H6);
+      final Set<LegalMove> calculatedLegalMoveSet = BishopLegalMoves.calculateBishopLegalMoves(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), board.getHavingMove(), H6);
 
       final Set<MoveSpecification> expected = new TreeSet<>();
       expected.add(new MoveSpecification(H6, G5));
@@ -1306,8 +1260,7 @@ class TestLegalMovesForPiecesLegalPosition implements EnumConstants {
 
     {
       // black bishop possible moves - pinned
-      final Set<LegalMove> calculatedLegalMoveSet = BishopLegalMoves
-          .calculateBishopLegalMoves(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), board.getHavingMove(), B5);
+      final Set<LegalMove> calculatedLegalMoveSet = BishopLegalMoves.calculateBishopLegalMoves(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), board.getHavingMove(), B5);
 
       final Set<MoveSpecification> expected = new TreeSet<>();
       expected.add(new MoveSpecification(B5, C6));
@@ -1329,8 +1282,7 @@ class TestLegalMovesForPiecesLegalPosition implements EnumConstants {
 
     {
       // white bishop possible moves
-      final Set<LegalMove> calculatedLegalMoveSet = BishopLegalMoves
-          .calculateBishopLegalMoves(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), board.getHavingMove(), H6);
+      final Set<LegalMove> calculatedLegalMoveSet = BishopLegalMoves.calculateBishopLegalMoves(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), board.getHavingMove(), H6);
 
       final Set<MoveSpecification> expected = new TreeSet<>();
       expected.add(new MoveSpecification(H6, G5));
@@ -1346,8 +1298,7 @@ class TestLegalMovesForPiecesLegalPosition implements EnumConstants {
 
     {
       // black bishop possible moves - pinned
-      final Set<LegalMove> calculatedLegalMoveSet = BishopLegalMoves
-          .calculateBishopLegalMoves(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), board.getHavingMove(), B5);
+      final Set<LegalMove> calculatedLegalMoveSet = BishopLegalMoves.calculateBishopLegalMoves(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), board.getHavingMove(), B5);
 
       final Set<MoveSpecification> expected = new TreeSet<>();
 
@@ -1362,8 +1313,7 @@ class TestLegalMovesForPiecesLegalPosition implements EnumConstants {
     // two more moves
     {
       // white bishop possible moves - the bishop can only protect the check!
-      final Set<LegalMove> calculatedLegalMoveSet = BishopLegalMoves
-          .calculateBishopLegalMoves(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), board.getHavingMove(), H6);
+      final Set<LegalMove> calculatedLegalMoveSet = BishopLegalMoves.calculateBishopLegalMoves(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), board.getHavingMove(), H6);
 
       final Set<MoveSpecification> expected = new TreeSet<>();
       expected.add(new MoveSpecification(H6, G5));
@@ -1379,8 +1329,7 @@ class TestLegalMovesForPiecesLegalPosition implements EnumConstants {
 
     {
       // black bishop possible moves - king in check - no moves
-      final Set<LegalMove> calculatedLegalMoveSet = BishopLegalMoves
-          .calculateBishopLegalMoves(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), board.getHavingMove(), B5);
+      final Set<LegalMove> calculatedLegalMoveSet = BishopLegalMoves.calculateBishopLegalMoves(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), board.getHavingMove(), B5);
 
       final Set<MoveSpecification> expected = new TreeSet<>();
 
@@ -1395,8 +1344,7 @@ class TestLegalMovesForPiecesLegalPosition implements EnumConstants {
 
     {
       // white bishop possible moves
-      final Set<LegalMove> calculatedLegalMoveSet = BishopLegalMoves
-          .calculateBishopLegalMoves(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), board.getHavingMove(), G5);
+      final Set<LegalMove> calculatedLegalMoveSet = BishopLegalMoves.calculateBishopLegalMoves(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), board.getHavingMove(), G5);
 
       final Set<MoveSpecification> expected = new TreeSet<>();
       expected.add(new MoveSpecification(G5, H6));
@@ -1415,8 +1363,7 @@ class TestLegalMovesForPiecesLegalPosition implements EnumConstants {
 
     {
       // black bishop possible moves - pinned
-      final Set<LegalMove> calculatedLegalMoveSet = BishopLegalMoves
-          .calculateBishopLegalMoves(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), board.getHavingMove(), B5);
+      final Set<LegalMove> calculatedLegalMoveSet = BishopLegalMoves.calculateBishopLegalMoves(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), board.getHavingMove(), B5);
 
       final Set<MoveSpecification> expected = new TreeSet<>();
 
@@ -1430,8 +1377,7 @@ class TestLegalMovesForPiecesLegalPosition implements EnumConstants {
     // two more moves
     {
       // white bishop possible moves
-      final Set<LegalMove> calculatedLegalMoveSet = BishopLegalMoves
-          .calculateBishopLegalMoves(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), board.getHavingMove(), G5);
+      final Set<LegalMove> calculatedLegalMoveSet = BishopLegalMoves.calculateBishopLegalMoves(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), board.getHavingMove(), G5);
 
       final Set<MoveSpecification> expected = new TreeSet<>();
       expected.add(new MoveSpecification(G5, H6));
@@ -1453,8 +1399,7 @@ class TestLegalMovesForPiecesLegalPosition implements EnumConstants {
     }
     {
       // black bishop possible moves - pinned
-      final Set<LegalMove> calculatedLegalMoveSet = BishopLegalMoves
-          .calculateBishopLegalMoves(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), board.getHavingMove(), B5);
+      final Set<LegalMove> calculatedLegalMoveSet = BishopLegalMoves.calculateBishopLegalMoves(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), board.getHavingMove(), B5);
 
       final Set<MoveSpecification> expected = new TreeSet<>();
 
@@ -1469,8 +1414,7 @@ class TestLegalMovesForPiecesLegalPosition implements EnumConstants {
 
     {
       // white bishop possible moves - the bishop can only protect the check!
-      final Set<LegalMove> calculatedLegalMoveSet = BishopLegalMoves
-          .calculateBishopLegalMoves(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), board.getHavingMove(), G5);
+      final Set<LegalMove> calculatedLegalMoveSet = BishopLegalMoves.calculateBishopLegalMoves(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), board.getHavingMove(), G5);
 
       final Set<MoveSpecification> expected = new TreeSet<>();
       expected.add(new MoveSpecification(G5, F4));
@@ -1486,8 +1430,7 @@ class TestLegalMovesForPiecesLegalPosition implements EnumConstants {
 
     {
       // black bishop possible moves - pinned
-      final Set<LegalMove> calculatedLegalMoveSet = BishopLegalMoves
-          .calculateBishopLegalMoves(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), board.getHavingMove(), B5);
+      final Set<LegalMove> calculatedLegalMoveSet = BishopLegalMoves.calculateBishopLegalMoves(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), board.getHavingMove(), B5);
 
       final Set<MoveSpecification> expected = new TreeSet<>();
 
@@ -1501,8 +1444,7 @@ class TestLegalMovesForPiecesLegalPosition implements EnumConstants {
 
     {
       // white bishop possible moves - pinned
-      final Set<LegalMove> calculatedLegalMoveSet = BishopLegalMoves
-          .calculateBishopLegalMoves(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), board.getHavingMove(), F4);
+      final Set<LegalMove> calculatedLegalMoveSet = BishopLegalMoves.calculateBishopLegalMoves(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), board.getHavingMove(), F4);
 
       final Set<MoveSpecification> expected = new TreeSet<>();
 
@@ -1515,8 +1457,7 @@ class TestLegalMovesForPiecesLegalPosition implements EnumConstants {
 
     {
       // black bishop possible moves - pinned
-      final Set<LegalMove> calculatedLegalMoveSet = BishopLegalMoves
-          .calculateBishopLegalMoves(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), board.getHavingMove(), B5);
+      final Set<LegalMove> calculatedLegalMoveSet = BishopLegalMoves.calculateBishopLegalMoves(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), board.getHavingMove(), B5);
 
       final Set<MoveSpecification> expected = new TreeSet<>();
 
@@ -1530,8 +1471,7 @@ class TestLegalMovesForPiecesLegalPosition implements EnumConstants {
 
     {
       // white bishop possible moves - pinned
-      final Set<LegalMove> calculatedLegalMoveSet = BishopLegalMoves
-          .calculateBishopLegalMoves(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), board.getHavingMove(), F4);
+      final Set<LegalMove> calculatedLegalMoveSet = BishopLegalMoves.calculateBishopLegalMoves(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), board.getHavingMove(), F4);
 
       final Set<MoveSpecification> expected = new TreeSet<>();
 
@@ -1545,8 +1485,7 @@ class TestLegalMovesForPiecesLegalPosition implements EnumConstants {
 
     {
       // black bishop possible moves - pinned
-      final Set<LegalMove> calculatedLegalMoveSet = BishopLegalMoves
-          .calculateBishopLegalMoves(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), board.getHavingMove(), B5);
+      final Set<LegalMove> calculatedLegalMoveSet = BishopLegalMoves.calculateBishopLegalMoves(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), board.getHavingMove(), B5);
 
       final Set<MoveSpecification> expected = new TreeSet<>();
       expected.add(new MoveSpecification(B5, C4));
@@ -1564,8 +1503,7 @@ class TestLegalMovesForPiecesLegalPosition implements EnumConstants {
 
     {
       // white bishop possible moves - not pinned anymore
-      final Set<LegalMove> calculatedLegalMoveSet = BishopLegalMoves
-          .calculateBishopLegalMoves(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), board.getHavingMove(), F4);
+      final Set<LegalMove> calculatedLegalMoveSet = BishopLegalMoves.calculateBishopLegalMoves(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), board.getHavingMove(), F4);
 
       final Set<MoveSpecification> expected = new TreeSet<>();
       expected.add(new MoveSpecification(F4, G5));
