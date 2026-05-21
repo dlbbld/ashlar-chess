@@ -395,12 +395,11 @@ public abstract class CastlingUtility implements EnumConstants {
     };
   }
 
-  // CastlingUtility's castling-check methods are bitboard-only after Phase 6 of the role-inversion release.
-  // The StaticPosition variants that previously lived here moved out: production callers (Board.move() and
-  // BitboardLegalMoveFactory.calculateLegalMoves) already used the bitboard overloads after 10.0.0 Step 4; the
-  // last StaticPosition caller (KingCastlingLegalMoves's StaticPosition overload) now derives a bitboard via
-  // StaticPositionBridge and calls these methods, since both KingCastlingLegalMoves and StaticPositionBridge
-  // live in src/test/ now.
+  // CastlingUtility's castling-check methods are bitboard-only. After Phase 6 of the role-inversion release the
+  // StaticPosition variants moved out entirely: production callers (Board.move() and
+  // BitboardLegalMoveFactory.calculateLegalMoves) already used the bitboard overloads after 10.0.0 Step 4, and the
+  // test-side StaticPosition castling check now lives in KingCastlingLegalMoves (re-implemented end-to-end on the
+  // mailbox surface as an independent oracle — it does not call back into this class).
 
   public static CastlingCheck calculateQueenSideCastlingCheck(BitboardPosition bitboardPosition, Side havingMove,
       CastlingRight castlingRight) {

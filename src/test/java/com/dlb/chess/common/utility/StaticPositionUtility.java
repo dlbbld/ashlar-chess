@@ -1,9 +1,11 @@
 package com.dlb.chess.common.utility;
 
+import static com.dlb.chess.common.utility.ImmutableUtility.constructListSquare;
+
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import com.dlb.chess.bitboard.StaticPositionBridge;
 import com.dlb.chess.board.StaticPosition;
 import com.dlb.chess.board.enums.Piece;
 import com.dlb.chess.board.enums.Side;
@@ -19,8 +21,56 @@ import com.dlb.chess.moves.EnPassantCaptureUtility;
 import com.dlb.chess.moves.PromotionUtility;
 import com.dlb.chess.moves.StandardMoveUtility;
 import com.dlb.chess.squares.AbstractAttackedSquares;
+import com.google.common.collect.ImmutableList;
 
 public abstract class StaticPositionUtility implements EnumConstants {
+
+  // En-passant (from, to) patterns — test-side duplicate of EnPassantCaptureUtility's WHITE/BLACK_EN_PASSANT_CAPTURE_FROM_TO
+  // constants. Mirrored here so the StaticPosition EP-detection oracle does not borrow the production constants
+  // (the differential test would then not catch a bitboard EP-detection regression that mistakenly agreed with a
+  // bad production constant). Same rationale as the castling oracle duplication in KingCastlingLegalMoves.
+
+  private static final ImmutableList<ImmutableList<Square>> WHITE_EN_PASSANT_CAPTURE_FROM_TO;
+
+  static {
+    final List<ImmutableList<Square>> list = new ArrayList<>();
+    list.add(constructListSquare(Square.A5, Square.B6));
+    list.add(constructListSquare(Square.B5, Square.C6));
+    list.add(constructListSquare(Square.C5, Square.D6));
+    list.add(constructListSquare(Square.D5, Square.E6));
+    list.add(constructListSquare(Square.E5, Square.F6));
+    list.add(constructListSquare(Square.F5, Square.G6));
+    list.add(constructListSquare(Square.G5, Square.H6));
+    list.add(constructListSquare(Square.B5, Square.A6));
+    list.add(constructListSquare(Square.C5, Square.B6));
+    list.add(constructListSquare(Square.D5, Square.C6));
+    list.add(constructListSquare(Square.E5, Square.D6));
+    list.add(constructListSquare(Square.F5, Square.E6));
+    list.add(constructListSquare(Square.G5, Square.F6));
+    list.add(constructListSquare(Square.H5, Square.G6));
+    WHITE_EN_PASSANT_CAPTURE_FROM_TO = Nulls.copyOfList(list);
+  }
+
+  private static final ImmutableList<ImmutableList<Square>> BLACK_EN_PASSANT_CAPTURE_FROM_TO;
+
+  static {
+    final List<ImmutableList<Square>> list = new ArrayList<>();
+    list.add(constructListSquare(Square.A4, Square.B3));
+    list.add(constructListSquare(Square.B4, Square.C3));
+    list.add(constructListSquare(Square.C4, Square.D3));
+    list.add(constructListSquare(Square.D4, Square.E3));
+    list.add(constructListSquare(Square.E4, Square.F3));
+    list.add(constructListSquare(Square.F4, Square.G3));
+    list.add(constructListSquare(Square.G4, Square.H3));
+    list.add(constructListSquare(Square.B4, Square.A3));
+    list.add(constructListSquare(Square.C4, Square.B3));
+    list.add(constructListSquare(Square.D4, Square.C3));
+    list.add(constructListSquare(Square.E4, Square.D3));
+    list.add(constructListSquare(Square.F4, Square.E3));
+    list.add(constructListSquare(Square.G4, Square.F3));
+    list.add(constructListSquare(Square.H4, Square.G3));
+    BLACK_EN_PASSANT_CAPTURE_FROM_TO = Nulls.copyOfList(list);
+  }
 
   public static boolean calculateIsCheck(StaticPosition staticPosition, Side havingMove) {
     final Set<Square> attackedSquares = AbstractAttackedSquares.calculateAttackedSquares(staticPosition,
@@ -89,10 +139,7 @@ public abstract class StaticPositionUtility implements EnumConstants {
   private static List<UpdateSquare> calculateUpdateSquareList(StaticPosition staticPosition, Side havingMove,
       MoveSpecification moveSpecification) {
 
-    // EnPassantCaptureUtility's bitboard variant survives in src/main as the single EP-detection method;
-    // bridge a StaticPosition through to it. (StaticPositionBridge is the relocation-side bridge utility.)
-    if (EnPassantCaptureUtility.calculateIsPotentialEnPassantCapture(
-        StaticPositionBridge.fromStaticPosition(staticPosition), moveSpecification)) {
+    if (calculateIsPotentialEnPassantCaptureStaticPosition(staticPosition, moveSpecification)) {
       return EnPassantCaptureUtility.performEnPassantCaptureMovements(havingMove, moveSpecification);
     }
     if (CastlingUtility.calculateIsCastlingMove(moveSpecification)) {
@@ -103,6 +150,32 @@ public abstract class StaticPositionUtility implements EnumConstants {
     }
     return StandardMoveUtility.performStandardMovements(staticPosition.get(moveSpecification.fromSquare()),
         moveSpecification);
+  }
+
+  // EP-capture predicate on the mailbox surface end-to-end. Mirror of EnPassantCaptureUtility's bitboard variant
+  // (calculateIsPotentialEnPassantCapture(BitboardPosition, MoveSpecification)). Duplicated test-side so the
+  // StaticPosition oracle does not bridge through BitboardPosition for EP detection — that would weaken the oracle
+  // for after-move / king-safety checks that depend on whether a move was EP. Same independence rationale as the
+  // castling oracle re-implementation in KingCastlingLegalMoves.
+  private static boolean calculateIsPotentialEnPassantCaptureStaticPosition(StaticPosition staticPosition,
+      MoveSpecification moveSpecification) {
+    if (CastlingUtility.calculateIsCastlingMove(moveSpecification)) {
+      return false;
+    }
+    final Piece movingPiece = staticPosition.get(moveSpecification.fromSquare());
+    if (movingPiece == Piece.NONE || movingPiece.getPieceType() != PAWN) {
+      return false;
+    }
+    final ImmutableList<Square> fromTo = constructListSquare(moveSpecification.fromSquare(),
+        moveSpecification.toSquare());
+    return switch (movingPiece.getSide()) {
+      case WHITE -> WHITE_EN_PASSANT_CAPTURE_FROM_TO.contains(fromTo)
+          && staticPosition.get(moveSpecification.toSquare()) == Piece.NONE;
+      case BLACK -> BLACK_EN_PASSANT_CAPTURE_FROM_TO.contains(fromTo)
+          && staticPosition.get(moveSpecification.toSquare()) == Piece.NONE;
+      case NONE -> throw new IllegalArgumentException();
+      default -> throw new IllegalArgumentException();
+    };
   }
 
 }

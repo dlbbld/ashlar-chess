@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
-import com.dlb.chess.bitboard.BitboardPosition;
 import com.dlb.chess.board.StaticPosition;
 import com.dlb.chess.board.enums.CastlingRight;
 import com.dlb.chess.board.enums.Piece;
@@ -20,11 +19,11 @@ import com.dlb.chess.squares.AbstractAttackedSquares;
 import com.google.common.collect.ImmutableList;
 
 /**
- * Test-side legal-move generator for castling. The StaticPosition overload re-implements the castling check on the
- * mailbox surface ({@code StaticPosition.get(Square)} + {@link AbstractAttackedSquares}) end-to-end — it is the
- * differential-test oracle for the bitboard castling pipeline ({@code BitboardLegalMoveFactory} +
- * {@code CastlingUtility} bitboard methods), so it must not delegate to that pipeline. The bitboard overload is the one
- * production calls; both overloads agreeing on every fixture is the spine assertion for castling.
+ * Test-side StaticPosition legal-move generator for castling. Re-implements the castling check on the mailbox
+ * surface ({@code StaticPosition.get(Square)} + {@link AbstractAttackedSquares}) end-to-end — it is the
+ * differential-test oracle for the bitboard castling pipeline ({@code BitboardLegalMoveFactory} inlines its own
+ * castling generation against {@code CastlingUtility}'s bitboard methods), so this class must not delegate to that
+ * pipeline. Both sides agreeing on every fixture is the spine assertion for castling.
  */
 class KingCastlingLegalMoves extends KingLegalMoves {
 
@@ -70,44 +69,6 @@ class KingCastlingLegalMoves extends KingLegalMoves {
       case NONE:
       default:
         throw new IllegalArgumentException();
-    }
-    return legalMoveSet;
-  }
-
-  // Bitboard sibling of the StaticPosition overload above. The bitboard production pipeline reaches this through
-  // AbstractLegalMoves.calculateCastlingLegalMoves(BitboardPosition, ...).
-  public static Set<LegalMove> calculateKingCastlingLegalMoves(BitboardPosition bitboardPosition, Side havingMove,
-      CastlingRight castlingRight) {
-
-    final Set<LegalMove> legalMoveSet = new TreeSet<>();
-
-    switch (havingMove) {
-      case BLACK:
-        if (CastlingUtility.calculateQueenSideCastlingCheck(bitboardPosition, havingMove,
-            castlingRight) == CastlingCheck.SUCCESS) {
-          legalMoveSet.add(CastlingConstants.BLACK_QUEEN_SIDE_CASTLING_MOVE);
-        }
-
-        if (CastlingUtility.calculateKingSideCastlingCheck(bitboardPosition, havingMove,
-            castlingRight) == CastlingCheck.SUCCESS) {
-          legalMoveSet.add(CastlingConstants.BLACK_KING_SIDE_CASTLING_MOVE);
-        }
-        break;
-      case WHITE:
-        if (CastlingUtility.calculateQueenSideCastlingCheck(bitboardPosition, havingMove,
-            castlingRight) == CastlingCheck.SUCCESS) {
-          legalMoveSet.add(CastlingConstants.WHITE_QUEEN_SIDE_CASTLING_MOVE);
-        }
-
-        if (CastlingUtility.calculateKingSideCastlingCheck(bitboardPosition, havingMove,
-            castlingRight) == CastlingCheck.SUCCESS) {
-          legalMoveSet.add(CastlingConstants.WHITE_KING_SIDE_CASTLING_MOVE);
-        }
-        break;
-      case NONE:
-      default:
-        throw new IllegalArgumentException();
-
     }
     return legalMoveSet;
   }
