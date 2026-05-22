@@ -1,7 +1,7 @@
 package com.dlb.chess.san;
 
+import com.dlb.chess.bitboard.BitboardPosition;
 import com.dlb.chess.board.Board;
-import com.dlb.chess.board.StaticPosition;
 import com.dlb.chess.board.enums.Piece;
 import com.dlb.chess.board.enums.PieceType;
 import com.dlb.chess.board.enums.Rank;
@@ -21,8 +21,8 @@ abstract class SanValidateDestination extends AbstractSan implements EnumConstan
     }
 
     final Square toSquare = sanConversion.toSquare();
-    final StaticPosition staticPosition = board.getStaticPosition();
-    final Piece pieceOnToSquare = staticPosition.get(toSquare);
+    final BitboardPosition bitboardPosition = board.getBitboardPosition();
+    final Piece pieceOnToSquare = bitboardPosition.get(toSquare);
     final PieceType movingPieceType = sanConversion.movingPieceType();
 
     if (movingPieceType == PAWN) {
@@ -127,7 +127,7 @@ abstract class SanValidateDestination extends AbstractSan implements EnumConstan
     final Rank fromRank = Rank.calculatePreviousRank(havingMove, toSquare.getRank());
     final Square fromSquare = Square.calculate(sanConversion.fromFile(), fromRank);
     final MoveSpecification pawnCapturingNonPromotionMove = new MoveSpecification(fromSquare, toSquare);
-    return EnPassantCaptureUtility.calculateIsPotentialEnPassantCapture(board.getStaticPosition(),
+    return EnPassantCaptureUtility.calculateIsPotentialEnPassantCapture(board.getBitboardPosition(),
         pawnCapturingNonPromotionMove);
   }
 }

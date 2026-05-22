@@ -4,8 +4,8 @@ import java.util.List;
 
 import org.eclipse.jdt.annotation.Nullable;
 
+import com.dlb.chess.bitboard.BitboardPosition;
 import com.dlb.chess.board.Board;
-import com.dlb.chess.board.StaticPosition;
 import com.dlb.chess.board.enums.Piece;
 import com.dlb.chess.board.enums.PieceType;
 import com.dlb.chess.board.enums.Square;
@@ -125,7 +125,7 @@ final class LenientSanShapeNormalize {
     if (from == Square.NONE || to == Square.NONE) {
       return null;
     }
-    final StaticPosition position = board.getStaticPosition();
+    final BitboardPosition position = board.getBitboardPosition();
     final Piece piece = position.get(from);
     if (piece == Piece.NONE || piece.getPieceType() != PieceType.KING) {
       return null;
@@ -188,7 +188,7 @@ final class LenientSanShapeNormalize {
     if (from == Square.NONE || to == Square.NONE || from == to) {
       return null;
     }
-    final StaticPosition position = board.getStaticPosition();
+    final BitboardPosition position = board.getBitboardPosition();
     final Piece piece = position.get(from);
     if (piece == Piece.NONE) {
       return null;

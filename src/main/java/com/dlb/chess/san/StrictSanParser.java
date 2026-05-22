@@ -45,7 +45,7 @@ public class StrictSanParser extends AbstractSan {
     final var sanConversion = sanParse.sanConversion();
 
     SanValidatePieceExists.validatePieceExists(havingMove, sanFormat, sanConversion, sanConversion.movingPieceType(),
-        board.getStaticPosition());
+        board.getBitboardPosition());
 
     SanValidateDestination.validateDestinationSquareSemantics(board, havingMove, sanFormat, sanConversion);
 

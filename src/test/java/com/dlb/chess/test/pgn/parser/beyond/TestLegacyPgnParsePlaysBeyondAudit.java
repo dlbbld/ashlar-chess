@@ -1,7 +1,7 @@
 package com.dlb.chess.test.pgn.parser.beyond;
 
-import static com.dlb.chess.common.enums.GameStatus.FIVE_FOLD_REPETITION_RULE;
 import static com.dlb.chess.common.enums.GameStatus.DEAD_POSITION_INSUFFICIENT_MATERIAL;
+import static com.dlb.chess.common.enums.GameStatus.FIVE_FOLD_REPETITION_RULE;
 import static com.dlb.chess.common.enums.GameStatus.SEVENTY_FIVE_MOVE_RULE;
 import static org.junit.jupiter.api.Assertions.fail;
 import static org.junit.jupiter.api.Assumptions.assumeFalse;

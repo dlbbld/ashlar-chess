@@ -45,8 +45,8 @@ public abstract class UciMoveUtility {
       return new MoveSpecification(fromSquare, toSquare, uciMove.promotionPieceType());
     }
 
-    if (!board.getStaticPosition().isEmpty(fromSquare)
-        && board.getStaticPosition().get(fromSquare).getPieceType() == PieceType.KING) {
+    if (!board.getBitboardPosition().isEmpty(fromSquare)
+        && board.getBitboardPosition().get(fromSquare).getPieceType() == PieceType.KING) {
       final CastlingMove potentialCastlingMove = calculatePotentialCastlingMove(fromSquare, toSquare);
       switch (potentialCastlingMove) {
         case KING_SIDE:

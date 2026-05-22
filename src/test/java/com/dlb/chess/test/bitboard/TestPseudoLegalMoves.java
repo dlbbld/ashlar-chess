@@ -14,6 +14,7 @@ import com.dlb.chess.bitboard.KingMoves;
 import com.dlb.chess.bitboard.KnightMoves;
 import com.dlb.chess.bitboard.QueenMoves;
 import com.dlb.chess.bitboard.RookMoves;
+import com.dlb.chess.bitboard.StaticPositionBridge;
 import com.dlb.chess.board.StaticPosition;
 import com.dlb.chess.board.enums.Side;
 import com.dlb.chess.board.enums.Square;
@@ -40,8 +41,8 @@ class TestPseudoLegalMoves {
     for (final PgnTest pgnTest : PgnTest.values()) {
       final PgnTestCaseList testCaseList = PgnTestCaseCatalog.getTestList(pgnTest);
       for (final PgnTestCase testCase : testCaseList.list()) {
-        final StaticPosition staticPosition = testCase.finalPosition().getStaticPosition();
-        final BitboardPosition bitboardPosition = BitboardPositionUtility.fromStaticPosition(staticPosition);
+        final StaticPosition staticPosition = StaticPositionBridge.toStaticPosition(testCase.finalPosition().getBitboardPosition());
+        final BitboardPosition bitboardPosition = StaticPositionBridge.fromStaticPosition(staticPosition);
         assertKnightTargetsAgree(staticPosition, bitboardPosition, Side.WHITE, testCase);
         assertKnightTargetsAgree(staticPosition, bitboardPosition, Side.BLACK, testCase);
       }
@@ -70,8 +71,8 @@ class TestPseudoLegalMoves {
     for (final PgnTest pgnTest : PgnTest.values()) {
       final PgnTestCaseList testCaseList = PgnTestCaseCatalog.getTestList(pgnTest);
       for (final PgnTestCase testCase : testCaseList.list()) {
-        final StaticPosition staticPosition = testCase.finalPosition().getStaticPosition();
-        final BitboardPosition bitboardPosition = BitboardPositionUtility.fromStaticPosition(staticPosition);
+        final StaticPosition staticPosition = StaticPositionBridge.toStaticPosition(testCase.finalPosition().getBitboardPosition());
+        final BitboardPosition bitboardPosition = StaticPositionBridge.fromStaticPosition(staticPosition);
         assertKingTargetsAgree(staticPosition, bitboardPosition, Side.WHITE, testCase);
         assertKingTargetsAgree(staticPosition, bitboardPosition, Side.BLACK, testCase);
       }
@@ -100,8 +101,8 @@ class TestPseudoLegalMoves {
     for (final PgnTest pgnTest : PgnTest.values()) {
       final PgnTestCaseList testCaseList = PgnTestCaseCatalog.getTestList(pgnTest);
       for (final PgnTestCase testCase : testCaseList.list()) {
-        final StaticPosition staticPosition = testCase.finalPosition().getStaticPosition();
-        final BitboardPosition bitboardPosition = BitboardPositionUtility.fromStaticPosition(staticPosition);
+        final StaticPosition staticPosition = StaticPositionBridge.toStaticPosition(testCase.finalPosition().getBitboardPosition());
+        final BitboardPosition bitboardPosition = StaticPositionBridge.fromStaticPosition(staticPosition);
         assertBishopTargetsAgree(staticPosition, bitboardPosition, Side.WHITE, testCase);
         assertBishopTargetsAgree(staticPosition, bitboardPosition, Side.BLACK, testCase);
       }
@@ -133,8 +134,8 @@ class TestPseudoLegalMoves {
     for (final PgnTest pgnTest : PgnTest.values()) {
       final PgnTestCaseList testCaseList = PgnTestCaseCatalog.getTestList(pgnTest);
       for (final PgnTestCase testCase : testCaseList.list()) {
-        final StaticPosition staticPosition = testCase.finalPosition().getStaticPosition();
-        final BitboardPosition bitboardPosition = BitboardPositionUtility.fromStaticPosition(staticPosition);
+        final StaticPosition staticPosition = StaticPositionBridge.toStaticPosition(testCase.finalPosition().getBitboardPosition());
+        final BitboardPosition bitboardPosition = StaticPositionBridge.fromStaticPosition(staticPosition);
         assertRookTargetsAgree(staticPosition, bitboardPosition, Side.WHITE, testCase);
         assertRookTargetsAgree(staticPosition, bitboardPosition, Side.BLACK, testCase);
       }
@@ -166,8 +167,8 @@ class TestPseudoLegalMoves {
     for (final PgnTest pgnTest : PgnTest.values()) {
       final PgnTestCaseList testCaseList = PgnTestCaseCatalog.getTestList(pgnTest);
       for (final PgnTestCase testCase : testCaseList.list()) {
-        final StaticPosition staticPosition = testCase.finalPosition().getStaticPosition();
-        final BitboardPosition bitboardPosition = BitboardPositionUtility.fromStaticPosition(staticPosition);
+        final StaticPosition staticPosition = StaticPositionBridge.toStaticPosition(testCase.finalPosition().getBitboardPosition());
+        final BitboardPosition bitboardPosition = StaticPositionBridge.fromStaticPosition(staticPosition);
         assertQueenTargetsAgree(staticPosition, bitboardPosition, Side.WHITE, testCase);
         assertQueenTargetsAgree(staticPosition, bitboardPosition, Side.BLACK, testCase);
       }

@@ -7,6 +7,7 @@ import java.util.EnumSet;
 import java.util.List;
 import java.util.Set;
 
+import com.dlb.chess.bitboard.StaticPositionBridge;
 import com.dlb.chess.board.Board;
 import com.dlb.chess.board.StaticPosition;
 import com.dlb.chess.board.enums.Piece;
@@ -58,7 +59,7 @@ final class PawnWallKingWalkOracle {
    * the helpmate-cooperation movement model, considering dynamic capture effects on opposing-pawn attacks.
    */
   static boolean isKingTrappedBehindPermanentBarrier(Board board, Side side) {
-    final StaticPosition position = board.getStaticPosition();
+    final StaticPosition position = StaticPositionBridge.toStaticPosition(board.getBitboardPosition());
     final Side opponent = side.getOppositeSide();
 
     final Square ownKingSquare = StaticPositionUtility.calculateKingSquare(position, side);

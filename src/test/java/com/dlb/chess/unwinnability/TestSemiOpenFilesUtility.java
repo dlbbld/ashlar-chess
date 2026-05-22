@@ -37,10 +37,10 @@ class TestSemiOpenFilesUtility implements EnumConstants {
   private static void checkFile(String fen, File file, Side side, boolean expected) {
     final Board board = new Board(fen, false);
 
-    assertEquals(expected, SemiOpenFilesUtility.calculateIsSemiOpenFile(board.getStaticPosition(), file, side));
+    assertEquals(expected, SemiOpenFilesUtility.calculateIsSemiOpenFile(board.getBitboardPosition(), file, side));
 
     if (expected) {
-      assertEquals(true, SemiOpenFilesUtility.calculateHasSemiOpenFile(board.getStaticPosition()));
+      assertEquals(true, SemiOpenFilesUtility.calculateHasSemiOpenFile(board.getBitboardPosition()));
     }
   }
 
@@ -67,7 +67,7 @@ class TestSemiOpenFilesUtility implements EnumConstants {
   private static void checkPosition(String fen, boolean expected) {
     final Board board = new Board(fen, false);
 
-    assertEquals(expected, SemiOpenFilesUtility.calculateHasSemiOpenFile(board.getStaticPosition()));
+    assertEquals(expected, SemiOpenFilesUtility.calculateHasSemiOpenFile(board.getBitboardPosition()));
 
   }
 }

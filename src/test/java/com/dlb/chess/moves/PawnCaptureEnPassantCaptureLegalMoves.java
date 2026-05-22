@@ -3,13 +3,13 @@ package com.dlb.chess.moves;
 import java.util.Set;
 import java.util.TreeSet;
 
-import com.dlb.chess.analyze.ChessRuleAnalyzer;
 import com.dlb.chess.board.StaticPosition;
 import com.dlb.chess.board.enums.Piece;
 import com.dlb.chess.board.enums.Side;
 import com.dlb.chess.board.enums.Square;
 import com.dlb.chess.common.exceptions.ProgrammingMistakeException;
 import com.dlb.chess.common.model.MoveSpecification;
+import com.dlb.chess.common.utility.StaticPositionUtility;
 import com.dlb.chess.model.LegalMove;
 import com.dlb.chess.model.LegalMoveKind;
 import com.dlb.chess.squares.PawnPotentialToSquares;
@@ -36,7 +36,7 @@ class PawnCaptureEnPassantCaptureLegalMoves extends PawnLegalMoves {
     final Set<LegalMove> legalMoveSet = new TreeSet<>();
 
     final MoveSpecification moveSpecification = new MoveSpecification(fromSquare, enPassantCaptureTargetSquare);
-    if (ChessRuleAnalyzer.isMoveKingSafe(staticPosition, havingMove, moveSpecification)) {
+    if (!StaticPositionUtility.calculateIsKingAttackedAfterMove(staticPosition, havingMove, moveSpecification)) {
 
       final Square squareOfCapturedPawnForEnPassantCapture = EnPassantCaptureUtility
           .calculateSquareOfCapturedPawnForEnPassantCapture(havingMove, moveSpecification);

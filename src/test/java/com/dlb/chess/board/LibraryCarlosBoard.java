@@ -8,7 +8,7 @@ import java.util.TreeSet;
 
 import org.eclipse.jdt.annotation.NonNull;
 
-import com.dlb.chess.bitboard.BitboardPositionUtility;
+import com.dlb.chess.bitboard.StaticPositionBridge;
 import com.dlb.chess.board.enums.CastlingRight;
 import com.dlb.chess.board.enums.Piece;
 import com.dlb.chess.board.enums.Side;
@@ -108,7 +108,7 @@ public class LibraryCarlosBoard {
     performedLegalMoveList.add(legalMove);
     final var normalizedEnPassantCaptureTargetSquare = isEnPassantCapturePossible() ? getEnPassantCaptureTargetSquare()
         : Square.NONE;
-    final var bitboardPosition = BitboardPositionUtility.fromStaticPosition(getStaticPosition());
+    final var bitboardPosition = StaticPositionBridge.fromStaticPosition(getStaticPosition());
     dynamicPositionList.add(new DynamicPosition(getHavingMove(), bitboardPosition,
         normalizedEnPassantCaptureTargetSquare, getCastlingRightWhite(), getCastlingRightBlack()));
 
@@ -552,6 +552,16 @@ public class LibraryCarlosBoard {
     final StaticPosition staticPosition = getStaticPosition();
     board.doMove(lastMove);
     return staticPosition;
+  }
+
+  // Bitboard accessors mirror the Board API for the CommonTestUtility cross-comparison. LibraryCarlosBoard has no
+  // native bitboard of its own; both derive from the chesslib-derived StaticPosition via the bridge utility.
+  public com.dlb.chess.bitboard.BitboardPosition getBitboardPosition() {
+    return com.dlb.chess.bitboard.StaticPositionBridge.fromStaticPosition(getStaticPosition());
+  }
+
+  public com.dlb.chess.bitboard.BitboardPosition getBitboardPositionBeforeLastMove() {
+    return com.dlb.chess.bitboard.StaticPositionBridge.fromStaticPosition(getStaticPositionBeforeLastMove());
   }
 
   public boolean movesStrict(String... sanArray) {

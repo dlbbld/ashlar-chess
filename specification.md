@@ -221,10 +221,27 @@ The top-level package `com.dlb.chess` is organised by concern:
 | `distance` | Square-to-square distance metrics (king, knight) |
 | `range` | Orthogonal and diagonal direction ranges for piece movement |
 | `squares` | Precomputed square-to-square reachability and attack lookup tables (`emptyboard`, `pawn`, `to.attacked`, `to.potential`, `to.range`) |
+| `bitboard` | `BitboardPosition` (12-long piece-bitboard record) and its move/attack/Zobrist helpers — the production piece-placement representation |
 | `exceptions` | Top-level move-pipeline exception (`InvalidMoveException`); other exceptions live in `common.exceptions` |
 | `common` | Generic utilities, constants, and exceptions |
 
 Packages depend in roughly that order (top to bottom).
+
+### 4.1 Piece placement: bitboard in production, mailbox as test oracle
+
+Piece placement has two independent representations in the codebase, by design.
+
+**`BitboardPosition`** (in `src/main/java/com/dlb/chess/bitboard/`) is the single piece-placement representation that production code sees. It is a 12-long record — one `long` per piece-and-side bitboard, little-endian rank-file with A1 at bit 0 — exposing move generation, attack queries, immutable make-move (`afterMove`), and a piece-only Zobrist hash. Everything in `src/main/` that needs to ask a question about pieces on squares asks `BitboardPosition`.
+
+**`StaticPosition`** (in `src/test/java/com/dlb/chess/board/`) is the 64-square mailbox reference implementation, accumulated over years of correctness-first work. It does not live in `src/main/` anymore — it was relocated, not deleted — and exists in `src/test/` strictly to act as the **permanent differential-test oracle** for the bitboard backend. Its consumer subtree relocated with it (`StaticPositionUtility`; `com.dlb.chess.squares.{Abstract,Bishop,Rook,Queen,Knight,King,Pawn}{AttackedSquares,PotentialToSquares,RangeSquares}`; `com.dlb.chess.moves.{Abstract,Bishop,Rook,Queen,Knight,King,Pawn}LegalMoves`; `UnwinnabilityMaterial`). The bridge methods `StaticPositionBridge.fromStaticPosition` / `toStaticPosition` (also in `src/test/java/com/dlb/chess/bitboard/`) round-trip between the two on the test side only.
+
+The contract is **permanent project policy**, not transitional:
+
+- Every primitive on `BitboardPosition` is asserted against the relocated `StaticPosition` oracle across the full PGN/FEN corpus — every fixture × every legal move — on every release going forward. The corpus walks live in `src/test/java/com/dlb/chess/test/bitboard/` (`TestBitboardPositionAfterMove`, `TestBitboardPositionAttackedSquares`, `TestBitboardPositionLegalMoves`, `TestBitboardPositionZobrist`, etc.) and use `StaticPositionUtility.createPositionAfterMove` as the independent oracle.
+- `StaticPosition` and its consumer subtree are never deleted. A future bitboard optimisation (incremental Zobrist, magic bitboards, mutable make/unmake for the lean analyzer board) cannot land without the oracle keeping it honest.
+- The boundary is one-way: nothing in `src/main/` may import from `com.dlb.chess.board.StaticPosition` or any relocated consumer. Doc comments may cross-reference; code may not.
+
+This is the project invariant in §2.1's "clarity over clever optimisation" — applied to representation. The bitboard exists for the production code path; the mailbox stays as the readable, audit-friendly second opinion that the bitboard is forever measured against.
 
 ---
 
@@ -266,7 +283,17 @@ clean-chess relies on a large regression test suite:
 
 The test suite is the project's safety net. Refactors are expected to leave the test count unchanged or growing; if they don't, the change is suspect.
 
-### 6.1 Restricted vs full suite
+### 6.1 Differential testing of the bitboard backend
+
+A specific testing pattern, called out because it is permanent project policy (see §4.1): the bitboard piece-placement representation that production runs on is asserted bit-exact against the `StaticPosition` mailbox oracle across the full PGN/FEN corpus. Pattern:
+
+- For each fixture in the corpus, take the position at every reachable game state, derive a `BitboardPosition` from it, and run the bitboard primitive being tested.
+- Compute the reference answer from `StaticPosition` / `StaticPositionUtility` independently.
+- Assert the two agree exactly. For `afterMove`, walk both forward over every legal move in every fixture position. For `zobristPieces()`, also assert that distinct corpus positions hash distinctly (no collisions observed) and that any legal move changes the hash.
+
+The corpus-walking tests live in `src/test/java/com/dlb/chess/test/bitboard/`. A new primitive on `BitboardPosition` is not considered complete until its corpus walk lands alongside it.
+
+### 6.2 Restricted vs full suite
 
 Day-to-day iteration runs a restricted subset (`mvn test`). A handful of long-running audits are gated by `RestrictTestConstants`: the cross-corpus parser audits, a multi-second unwinnability full-search test, the legacy parser-rejection audit. They take from a few seconds to a few minutes apiece and are not useful on every iteration.
 

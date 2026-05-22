@@ -13,6 +13,7 @@ import java.util.TreeSet;
 
 import org.junit.jupiter.api.Test;
 
+import com.dlb.chess.bitboard.StaticPositionBridge;
 import com.dlb.chess.board.Board;
 import com.dlb.chess.board.StaticPosition;
 import com.dlb.chess.board.enums.Square;
@@ -421,7 +422,7 @@ class TestMobilitySolution implements EnumConstants {
 
     final MobilitySolution mobilitySolution = Mobility.mobility(board);
 
-    checkBoardOccupation(board.getStaticPosition(), mobilitySolution);
+    checkBoardOccupation(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), mobilitySolution);
 
     for (final PiecePlacement piecePlacement : mobilitySolution.getPiecePlacementSet()) {
       final Set<Square> squaresWithValueOne = mobilitySolution.calculateSquaresWithValueOne(piecePlacement);

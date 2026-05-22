@@ -8,7 +8,7 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 
 import com.dlb.chess.bitboard.BitboardPosition;
-import com.dlb.chess.bitboard.BitboardPositionUtility;
+import com.dlb.chess.bitboard.StaticPositionBridge;
 import com.dlb.chess.board.Board;
 import com.dlb.chess.board.StaticPosition;
 import com.dlb.chess.board.enums.Side;
@@ -75,7 +75,7 @@ class TestBoardGetBitboardPosition {
 
       board.move(spec);
 
-      assertEquals(BitboardPositionUtility.fromStaticPosition(nextIndependent), board.getBitboardPosition(),
+      assertEquals(StaticPositionBridge.fromStaticPosition(nextIndependent), board.getBitboardPosition(),
           "cache out of sync after move " + squareFrom.getName() + "-" + squareTo.getName());
 
       currentSide = currentSide.getOppositeSide();
@@ -85,7 +85,7 @@ class TestBoardGetBitboardPosition {
       board.unmove();
       independentHistory.remove(independentHistory.size() - 1);
       final StaticPosition expectedIndependent = Nulls.get(independentHistory, independentHistory.size() - 1);
-      assertEquals(BitboardPositionUtility.fromStaticPosition(expectedIndependent), board.getBitboardPosition(),
+      assertEquals(StaticPositionBridge.fromStaticPosition(expectedIndependent), board.getBitboardPosition(),
           "cache out of sync after unmove (expected independent step " + (independentHistory.size() - 1) + ")");
     }
     assertEquals(BitboardPosition.INITIAL_POSITION, board.getBitboardPosition(),

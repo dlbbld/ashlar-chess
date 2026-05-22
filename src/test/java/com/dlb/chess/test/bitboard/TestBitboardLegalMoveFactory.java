@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 
 import com.dlb.chess.bitboard.BitboardLegalMoveFactory;
 import com.dlb.chess.bitboard.BitboardPosition;
+import com.dlb.chess.bitboard.StaticPositionBridge;
 import com.dlb.chess.board.Board;
 import com.dlb.chess.board.enums.Side;
 import com.dlb.chess.board.enums.Square;
@@ -39,7 +40,7 @@ class TestBitboardLegalMoveFactory {
         final Board board = testCase.finalPosition();
         final Side havingMove = board.getHavingMove();
         final BitboardPosition bitboardPosition = board.getBitboardPosition();
-        for (final LegalMove referenceMove : AbstractLegalMoves.calculateLegalMoves(board.getStaticPosition(),
+        for (final LegalMove referenceMove : AbstractLegalMoves.calculateLegalMoves(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()),
             havingMove, board.getCastlingRight(havingMove), board.getEnPassantCaptureTargetSquare())) {
           final LegalMove converted = BitboardLegalMoveFactory.toLegalMove(bitboardPosition,
               referenceMove.moveSpecification(), havingMove);

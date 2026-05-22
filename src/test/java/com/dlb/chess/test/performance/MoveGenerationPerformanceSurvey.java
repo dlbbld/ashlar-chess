@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.eclipse.jdt.annotation.NonNull;
 
+import com.dlb.chess.bitboard.StaticPositionBridge;
 import com.dlb.chess.board.Board;
 import com.dlb.chess.model.PgnHalfMove;
 import com.dlb.chess.moves.AbstractLegalMoves;
@@ -81,7 +82,7 @@ public class MoveGenerationPerformanceSurvey {
     for (var round = 0; round < MEASURE_ROUNDS; round++) {
       for (final PositionPair position : positionList) {
         final Board board = position.cleanChessBoard();
-        moveCount += AbstractLegalMoves.calculateLegalMoves(board.getStaticPosition(), board.getHavingMove(),
+        moveCount += AbstractLegalMoves.calculateLegalMoves(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), board.getHavingMove(),
             board.getCastlingRight(board.getHavingMove()), board.getEnPassantCaptureTargetSquare()).size();
       }
     }

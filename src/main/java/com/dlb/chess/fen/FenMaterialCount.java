@@ -1,6 +1,6 @@
 package com.dlb.chess.fen;
 
-import com.dlb.chess.board.StaticPosition;
+import com.dlb.chess.bitboard.BitboardPosition;
 import com.dlb.chess.board.enums.Piece;
 import com.dlb.chess.board.enums.PieceType;
 import com.dlb.chess.board.enums.Side;
@@ -13,22 +13,22 @@ import com.dlb.chess.board.enums.SquareType;
  */
 abstract class FenMaterialCount {
 
-  static int calculateNumberOfPieces(Side side, StaticPosition staticPosition, PieceType pieceType) {
+  static int calculateNumberOfPieces(Side side, BitboardPosition bitboardPosition, PieceType pieceType) {
     final Piece piece = Piece.calculate(side, pieceType);
     var total = 0;
     for (final Square boardSquare : Square.REAL) {
-      if (staticPosition.get(boardSquare) == piece) {
+      if (bitboardPosition.get(boardSquare) == piece) {
         total++;
       }
     }
     return total;
   }
 
-  static int calculateNumberOfBishops(Side side, StaticPosition staticPosition, SquareType squareType) {
+  static int calculateNumberOfBishops(Side side, BitboardPosition bitboardPosition, SquareType squareType) {
     final Piece bishop = Piece.calculate(side, PieceType.BISHOP);
     var total = 0;
     for (final Square boardSquare : Square.REAL) {
-      if (staticPosition.get(boardSquare) == bishop && boardSquare.getSquareType() == squareType) {
+      if (bitboardPosition.get(boardSquare) == bishop && boardSquare.getSquareType() == squareType) {
         total++;
       }
     }

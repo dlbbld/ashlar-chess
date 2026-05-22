@@ -8,6 +8,7 @@ import java.util.TreeSet;
 import org.eclipse.jdt.annotation.NonNull;
 import org.junit.jupiter.api.Test;
 
+import com.dlb.chess.bitboard.StaticPositionBridge;
 import com.dlb.chess.board.enums.Square;
 import com.dlb.chess.common.constants.EnumConstants;
 import com.dlb.chess.fen.FenParserAdvanced;
@@ -56,8 +57,10 @@ class TestAttackedSquaresByPosition implements EnumConstants {
   private static void checkPosition(String fenStr, String... expectedSquareList) {
     final Fen fen = FenParserAdvanced.parseFenAdvanced(fenStr);
 
-    final Set<Square> actualSquareSet = AbstractAttackedSquares.calculateAttackedSquares(fen.staticPosition(),
-        fen.havingMove());
+    // The relocated reference oracle (AbstractAttackedSquares) takes StaticPosition; derive it on demand from
+    // Fen's bitboard via the test-oracle bridge.
+    final Set<Square> actualSquareSet = AbstractAttackedSquares.calculateAttackedSquares(
+        StaticPositionBridge.toStaticPosition(fen.bitboardPosition()), fen.havingMove());
 
     final Set<String> expected = new TreeSet<>();
     for (final String square : expectedSquareList) {

@@ -6,7 +6,7 @@ import com.dlb.chess.board.enums.Square;
  * Precomputed knight-attack table. The geometric pattern is position-independent: for any square {@code sq},
  * {@link #attacks(Square)} returns the bitboard of the 2–8 squares a knight on {@code sq} attacks on an otherwise
  * empty board. Differential-tested bit-exact against {@code KnightEmptyBoardSquares.getKnightSquares} (the
- * {@link com.dlb.chess.board.StaticPosition}-layer table).
+ * {@code StaticPosition}-layer table, test-side since the 11.0.0 role-inversion release).
  */
 public final class KnightAttacks {
 

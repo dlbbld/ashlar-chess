@@ -34,7 +34,7 @@ class ValidateNewMove implements EnumConstants {
     }
 
     validateNonCastlingBasic(board, moveSpecification);
-    final Piece movingPiece = board.getStaticPosition().get(moveSpecification.fromSquare());
+    final Piece movingPiece = board.getBitboardPosition().get(moveSpecification.fromSquare());
 
     validateNonPawnPromotionPieceFlag(moveSpecification, movingPiece);
 
@@ -73,9 +73,9 @@ class ValidateNewMove implements EnumConstants {
 
     final CastlingMove castlingMove = moveSpecification.castlingMove();
     final var castlingCheck = switch (castlingMove) {
-      case KING_SIDE -> CastlingUtility.calculateKingSideCastlingCheck(board.getStaticPosition(), havingMove,
+      case KING_SIDE -> CastlingUtility.calculateKingSideCastlingCheck(board.getBitboardPosition(), havingMove,
           board.getCastlingRight(havingMove));
-      case QUEEN_SIDE -> CastlingUtility.calculateQueenSideCastlingCheck(board.getStaticPosition(), havingMove,
+      case QUEEN_SIDE -> CastlingUtility.calculateQueenSideCastlingCheck(board.getBitboardPosition(), havingMove,
           board.getCastlingRight(havingMove));
       case NONE -> throw new IllegalArgumentException();
     };
@@ -114,7 +114,7 @@ class ValidateNewMove implements EnumConstants {
       throws InvalidMoveException {
     final Side havingMove = board.getHavingMove();
     final Square fromSquare = moveSpecification.fromSquare();
-    final Piece movingPiece = board.getStaticPosition().get(fromSquare);
+    final Piece movingPiece = board.getBitboardPosition().get(fromSquare);
 
     if (movingPiece == Piece.NONE) {
       throw new InvalidMoveException("the from square is empty", MoveCheck.MOVE_SPEC_FROM_SQUARE_EMPTY);
@@ -152,7 +152,7 @@ class ValidateNewMove implements EnumConstants {
   }
 
   private static void validateMovement(Board board, MoveSpecification moveSpecification) throws InvalidMoveException {
-    final MovementCheck movementCheck = ChessRuleAnalyzer.analyzeMovement(board.getStaticPosition(),
+    final MovementCheck movementCheck = ChessRuleAnalyzer.analyzeMovement(board.getBitboardPosition(),
         board.getHavingMove(), board.getEnPassantCaptureTargetSquare(), moveSpecification);
     if (movementCheck == MovementCheck.SUCCESS) {
       return;
@@ -162,7 +162,7 @@ class ValidateNewMove implements EnumConstants {
   }
 
   private static String movementMessage(MovementCheck check, Board board, MoveSpecification moveSpecification) {
-    final Piece movingPiece = board.getStaticPosition().get(moveSpecification.fromSquare());
+    final Piece movingPiece = board.getBitboardPosition().get(moveSpecification.fromSquare());
     return switch (check) {
       case NOT_POSSIBLE -> movingPiece.getPieceType() == PAWN ? "pawns cannot move in this way"
           : "the " + movingPiece.getPieceType().getName() + " cannot move in this way";
@@ -193,7 +193,7 @@ class ValidateNewMove implements EnumConstants {
   }
 
   private static void validateKingSafety(Board board, MoveSpecification moveSpecification) throws InvalidMoveException {
-    final KingSafetyCheck kingSafetyCheck = ChessRuleAnalyzer.analyzeKingSafety(board.getStaticPosition(),
+    final KingSafetyCheck kingSafetyCheck = ChessRuleAnalyzer.analyzeKingSafety(board.getBitboardPosition(),
         board.getHavingMove(), moveSpecification);
     if (kingSafetyCheck == KingSafetyCheck.SUCCESS) {
       return;

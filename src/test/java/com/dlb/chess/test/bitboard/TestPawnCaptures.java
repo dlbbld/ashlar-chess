@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Test;
 import com.dlb.chess.bitboard.BitboardPosition;
 import com.dlb.chess.bitboard.BitboardPositionUtility;
 import com.dlb.chess.bitboard.PawnMoves;
+import com.dlb.chess.bitboard.StaticPositionBridge;
 import com.dlb.chess.board.Board;
 import com.dlb.chess.board.StaticPosition;
 import com.dlb.chess.board.enums.Side;
@@ -36,8 +37,8 @@ class TestPawnCaptures {
       final PgnTestCaseList testCaseList = PgnTestCaseCatalog.getTestList(pgnTest);
       for (final PgnTestCase testCase : testCaseList.list()) {
         final Board board = testCase.finalPosition();
-        final StaticPosition staticPosition = board.getStaticPosition();
-        final BitboardPosition bitboardPosition = BitboardPositionUtility.fromStaticPosition(staticPosition);
+        final StaticPosition staticPosition = StaticPositionBridge.toStaticPosition(board.getBitboardPosition());
+        final BitboardPosition bitboardPosition = StaticPositionBridge.fromStaticPosition(staticPosition);
         final Square boardEpTarget = board.getEnPassantCaptureTargetSquare();
         final Side havingMove = board.getHavingMove();
 

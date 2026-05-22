@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 import com.dlb.chess.bitboard.BitboardPosition;
 import com.dlb.chess.bitboard.BitboardPositionUtility;
 import com.dlb.chess.bitboard.KnightAttacks;
+import com.dlb.chess.bitboard.StaticPositionBridge;
 import com.dlb.chess.board.StaticPosition;
 import com.dlb.chess.board.enums.Square;
 import com.dlb.chess.common.Nulls;
@@ -43,8 +44,8 @@ class TestKnightAttacks {
     for (final PgnTest pgnTest : PgnTest.values()) {
       final PgnTestCaseList testCaseList = PgnTestCaseCatalog.getTestList(pgnTest);
       for (final PgnTestCase testCase : testCaseList.list()) {
-        final StaticPosition staticPosition = testCase.finalPosition().getStaticPosition();
-        final BitboardPosition bitboardPosition = BitboardPositionUtility.fromStaticPosition(staticPosition);
+        final StaticPosition staticPosition = StaticPositionBridge.toStaticPosition(testCase.finalPosition().getBitboardPosition());
+        final BitboardPosition bitboardPosition = StaticPositionBridge.fromStaticPosition(staticPosition);
         long knights = bitboardPosition.whiteKnights() | bitboardPosition.blackKnights();
         while (knights != 0L) {
           final Square fromSquare = Nulls.get(Square.REAL, Long.numberOfTrailingZeros(knights));

@@ -7,6 +7,7 @@ import java.nio.file.Path;
 import org.apache.logging.log4j.Logger;
 import org.junit.jupiter.api.Test;
 
+import com.dlb.chess.bitboard.BitboardPosition;
 import com.dlb.chess.board.enums.Side;
 import com.dlb.chess.common.Nulls;
 import com.dlb.chess.common.constants.EnumConstants;
@@ -64,7 +65,7 @@ class TestInsufficientMaterial implements EnumConstants {
     }
 
     final var isInsufficientMaterialDirectlyCalculated = calculateIsInsufficientMaterial(
-        boardFromFen.getStaticPosition());
+        boardFromFen.getBitboardPosition());
     final var isInsufficientMaterialDerived = boardFromFen.isInsufficientMaterial(Side.WHITE)
         && boardFromFen.isInsufficientMaterial(Side.BLACK);
 
@@ -72,27 +73,27 @@ class TestInsufficientMaterial implements EnumConstants {
 
   }
 
-  private static boolean calculateIsInsufficientMaterial(StaticPosition staticPosition) {
+  private static boolean calculateIsInsufficientMaterial(BitboardPosition bitboardPosition) {
 
     // KNvK, KvKN
-    if (BoardMaterial.calculateHasKingAndKnightOnly(WHITE, staticPosition)
-        && BoardMaterial.calculateHasKingOnly(BLACK, staticPosition)
-        || BoardMaterial.calculateHasKingOnly(WHITE, staticPosition)
-            && BoardMaterial.calculateHasKingAndKnightOnly(BLACK, staticPosition)
-        || BoardMaterial.calculateHasKingOnly(WHITE, staticPosition)
-            && BoardMaterial.calculateHasKingAndBishopOnly(BLACK, staticPosition)
-        || BoardMaterial.calculateHasKingOnly(WHITE, staticPosition)
-            && BoardMaterial.calculateHasKingAndBishopOnly(BLACK, staticPosition)
+    if (BoardMaterial.calculateHasKingAndKnightOnly(WHITE, bitboardPosition)
+        && BoardMaterial.calculateHasKingOnly(BLACK, bitboardPosition)
+        || BoardMaterial.calculateHasKingOnly(WHITE, bitboardPosition)
+            && BoardMaterial.calculateHasKingAndKnightOnly(BLACK, bitboardPosition)
+        || BoardMaterial.calculateHasKingOnly(WHITE, bitboardPosition)
+            && BoardMaterial.calculateHasKingAndBishopOnly(BLACK, bitboardPosition)
+        || BoardMaterial.calculateHasKingOnly(WHITE, bitboardPosition)
+            && BoardMaterial.calculateHasKingAndBishopOnly(BLACK, bitboardPosition)
 
     ) {
       return true;
     }
 
     // K(B^lightSquares)*vK(B^lightSquares)*, K(B^darkSquares)*vK(B^darkSquares)* (includes KvK)
-    if (InsufficientMaterialUtility.calculateHasZeroOrMultipleLightSquareBishopOnly(WHITE, staticPosition)
-        && InsufficientMaterialUtility.calculateHasZeroOrMultipleLightSquareBishopOnly(BLACK, staticPosition)
-        || InsufficientMaterialUtility.calculateHasZeroOrMultipleDarkSquareBishopOnly(WHITE, staticPosition)
-            && InsufficientMaterialUtility.calculateHasZeroOrMultipleDarkSquareBishopOnly(BLACK, staticPosition)) {
+    if (InsufficientMaterialUtility.calculateHasZeroOrMultipleLightSquareBishopOnly(WHITE, bitboardPosition)
+        && InsufficientMaterialUtility.calculateHasZeroOrMultipleLightSquareBishopOnly(BLACK, bitboardPosition)
+        || InsufficientMaterialUtility.calculateHasZeroOrMultipleDarkSquareBishopOnly(WHITE, bitboardPosition)
+            && InsufficientMaterialUtility.calculateHasZeroOrMultipleDarkSquareBishopOnly(BLACK, bitboardPosition)) {
       return true;
     }
 

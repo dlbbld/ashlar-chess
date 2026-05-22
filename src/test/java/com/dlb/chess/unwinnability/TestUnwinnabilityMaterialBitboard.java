@@ -5,7 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.junit.jupiter.api.Test;
 
 import com.dlb.chess.bitboard.BitboardPosition;
-import com.dlb.chess.bitboard.BitboardPositionUtility;
+import com.dlb.chess.bitboard.StaticPositionBridge;
 import com.dlb.chess.board.StaticPosition;
 import com.dlb.chess.board.enums.Side;
 import com.dlb.chess.board.enums.SquareType;
@@ -28,8 +28,8 @@ class TestUnwinnabilityMaterialBitboard {
     for (final PgnTest pgnTest : PgnTest.values()) {
       final PgnTestCaseList testCaseList = PgnTestCaseCatalog.getTestList(pgnTest);
       for (final PgnTestCase testCase : testCaseList.list()) {
-        final StaticPosition sp = testCase.finalPosition().getStaticPosition();
-        final BitboardPosition bp = BitboardPositionUtility.fromStaticPosition(sp);
+        final StaticPosition sp = StaticPositionBridge.toStaticPosition(testCase.finalPosition().getBitboardPosition());
+        final BitboardPosition bp = StaticPositionBridge.fromStaticPosition(sp);
         final var tag = " in fixture " + testCase.pgnName();
 
         // Any-side existence checks.

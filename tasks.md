@@ -312,33 +312,94 @@ The motivation is the `findHelpMate` cost in `UnwinnableFullAnalyzer`. Even with
 
 ---
 
-## Future release — `StaticPosition` subtree relocation to `src/test/`
+## Role-inversion release — `StaticPosition` subtree moves to `src/test/`
 
-The end-state described in the Project Invariant: the `StaticPosition` subtree (record, `StaticPositionUtility`, `com.dlb.chess.squares.*`, `AbstractLegalMoves` + `*LegalMoves` consumers in `com.dlb.chess.moves`, `UnwinnabilityMaterial`) physically moves from `src/main/java/` to `src/test/java/` and becomes the permanent differential-test oracle from that point on. **Not deleted. Relocated.**
+The end-state described in the Project Invariant: the `StaticPosition` subtree (record, `StaticPositionUtility`, `com.dlb.chess.squares.*` consumer subset, `AbstractLegalMoves` + `*LegalMoves` consumers in `com.dlb.chess.moves`, `UnwinnabilityMaterial`) physically moves from `src/main/java/` to `src/test/java/` and becomes the permanent differential-test oracle from that point on. **Not deleted. Relocated.**
 
-### Why this is its own release (not folded into Switchover)
+The role inversion: today the high-level board is a peer of the bitboard in `src/main/`; afterwards, it lives strictly above (test-side of) the bitboard. Production speaks only the bitboard. The high-level board exists to assert the bitboard is correct.
 
-The audit run at the start of the 10.0.0 (Switchover) work surfaced ~25 production classes outside the relocation subtree that still consume `StaticPosition`:
+### Audit findings (run at the start of 10.0.0)
+
+~25 src/main classes outside the relocation subtree still consumed `StaticPosition` after 10.0.0 shipped. They must be ported off before the physical relocation:
 
 - **Public API:** `Fen` (record with a `StaticPosition` field), `Board.getStaticPosition()`, `InsufficientMaterialUtility.calculateIs*` overloads, `ChessRuleAnalyzer.analyze*` overloads.
-- **Internal model:** `DynamicPosition` (record with a `StaticPosition` field — addressed by 10.0.0 Step 3, where it becomes a `BitboardPosition` field instead).
 - **FEN layer:** `FenParserAdvanced`, `FenBoard`, `FenMaterialCount`, `FenConstants.FEN_INITIAL`.
 - **SAN layer:** `StrictSanParser`, `LenientSanShapeNormalize`, `SanValidateDestination`, `SanValidateLegalMoves`, `SanValidatePieceExists`, `SanPieceCheck`.
 - **Board layer:** `ValidateNewMove`, `BoardMaterial`, `UciMoveUtility`.
 - **Unwinnability layer:** `SemiOpenFilesUtility` (StaticPosition variant remains alongside its bitboard sibling), `UnwinnableFullAnalyzer` / `UnwinnableQuickAnalyzer` (Fen pass-throughs).
 
-A clean `git mv` is blocked until each of those is either ported to consume `BitboardPosition` or has its `StaticPosition` parameter replaced with a derived call. The public-API ones (`Fen`, `Board.getStaticPosition`, the public `InsufficientMaterialUtility` / `ChessRuleAnalyzer` signatures) are binary-incompatible changes — they need their own dedicated thinking, not a "while we're at it" diff inside the switchover.
+Plus the public-API decisions: the `Fen` record reshape is binary-incompatible; `Board.getStaticPosition()` removal breaks API. Both are fine — no downstream consumers exist (no Maven Central publish yet), so the project is free to break.
 
-### Shape — multi-step porting, then physical move
+### Design decisions settled
 
-- **Step 1** — Port the FEN layer. `Fen` record stops carrying `StaticPosition` (it can carry the bitboard or just a piece-placement string — design decision deferred to release time). `FenParserAdvanced` builds `BitboardPosition` directly.
-- **Step 2** — Port the SAN layer. All six SAN classes take `BitboardPosition` instead of `StaticPosition`. `StaticPositionUtility` callers replaced with bitboard equivalents.
-- **Step 3** — Port the remaining `Board`/`ChessRuleAnalyzer`/`InsufficientMaterialUtility` consumers off `StaticPosition` parameters.
-- **Step 4** — Drop `Board.getStaticPosition()` (or document it as deprecated returning a derived view; final decision deferred).
-- **Step 5** — Physical `git mv` of the subtree from `src/main/java/` to `src/test/java/`. Add `package-info.java` files for the new test-tree packages with `@NonNullByDefault`.
-- **Step 6** — Formalize the permanent differential-test layer in `tasks.md` / `specification.md`: every primitive on `BitboardPosition` is asserted against the relocated `StaticPosition` oracle for every fixture in the corpus, for every supported release going forward.
+- **`Board.getStaticPosition()`: dropped entirely.** No deprecated derived view. After this release no `src/main/` class references `StaticPosition`.
+- **Test-tree package layout: original package names under `src/test/java/`.** No `reference/` package rename. Smaller diff; matches the established pattern (`LibraryCarlosBoard` already lives in `com.dlb.chess.board` on the test source root alongside the production `Board.java`). The relocation is purely physical.
+- **Square geometry tables stay in `src/main/`:** `OrthogonalRange`, `DiagonalRange`, `RayUtility`, all `*EmptyBoardSquares` in `com.dlb.chess.squares`. Pure data, useful to the bitboard layer.
+- **Non-StaticPosition `com.dlb.chess.moves` stays in `src/main/`:** `CastlingUtility`, `EnPassantCaptureUtility`, `KingCastlingLegalMoves`, `PromotionUtility`, `StandardMoveUtility`, `PawnDiagonalMoveUtility`.
 
-Each step is its own release-sized commit set. The shape may be one release per layer (FEN, SAN, Board) or all-in-one once the porting work is mechanical and reviewed — that's a release-time call.
+### Phases — each its own commit-sized step, suite green after each
+
+- ✅ **Phase 0** — `tasks.md` restructure for the role-inversion release: 8-phase plan spelled out, design decisions captured.
+- ✅ **Phase 1** — Port the SAN layer off `StaticPosition`. Six classes: `StrictSanParser`, `SanValidateLegalMoves`, `SanValidateDestination`, `SanValidatePieceExists`, `SanPieceCheck`, `LenientSanShapeNormalize`. New bitboard helpers on `BitboardPosition`: `kingSquare(Side)`, `potentialToSquares(Square, long)`, `isOwnPiece(Square, Side, PieceType)`. Bitboard overload of `EnPassantCaptureUtility.calculateIsPotentialEnPassantCapture`. Differential test for `potentialToSquares` against `AbstractPotentialToSquares.calculatePotentialToSquare`.
+- ✅ **Phase 2** — Ported `ChessRuleAnalyzer`, `InsufficientMaterialUtility`, `BoardMaterial`, `ValidateNewMove`, `UciMoveUtility`, `SemiOpenFilesUtility` (StaticPosition variant) off `StaticPosition`.
+- ✅ **Phase 3+4** — Ported the FEN parser / serializer off `StaticPosition` and reshaped the `Fen` record: dropped `staticPosition`, added `bitboardPosition`. `FenParserAdvanced` builds `BitboardPosition` directly. `Board(Fen)` reads `fen.bitboardPosition()`. Binary-incompatible.
+- ✅ **Phase 5** — Dropped `Board.getStaticPosition()` and `getStaticPositionBeforeLastMove()` entirely. No deprecated view. All `src/main/` readers ported off.
+- ✅ **Phase 6** — Physical `git mv` of the relocation subtree to `src/test/java/`:
+  - `src/main/java/com/dlb/chess/board/StaticPosition.java` → `src/test/java/com/dlb/chess/board/StaticPosition.java`
+  - `src/main/java/com/dlb/chess/common/utility/StaticPositionUtility.java` → `src/test/java/com/dlb/chess/common/utility/StaticPositionUtility.java`
+  - `src/main/java/com/dlb/chess/squares/{AbstractAttackedSquares, AbstractToSquares, AbstractPotentialToSquares, AbstractRangeSquares, *AttackedSquares, *PotentialToSquares, *RangeSquares}.java` → test tree (consumer subset only; geometry tables stay in main)
+  - `src/main/java/com/dlb/chess/moves/{AbstractLegalMoves, *LegalMoves}.java` → test tree (consumer subset only; `CastlingUtility`, `EnPassantCaptureUtility`, `KingCastlingLegalMoves`, `PromotionUtility`, `StandardMoveUtility`, `PawnDiagonalMoveUtility` stay in main)
+  - `src/main/java/com/dlb/chess/unwinnability/UnwinnabilityMaterial.java` → test tree
+  - Plus production-side cleanup: dropped all `StaticPosition` overloads from `CastlingUtility`, `EnPassantCaptureUtility`, `StandardMoveUtility`. `BitboardLegalMoveFactory` inlines its own castling generation. `BitboardPosition.INITIAL_POSITION` / `EMPTY_POSITION` rewritten as standalone bit constants. New `StaticPositionBridge` in `src/test/java/com/dlb/chess/bitboard/` carries the round-trip helpers; `BitboardPositionUtility` (production-side) holds only `StaticPosition`-free helpers.
+  - Original package names preserved (no `reference/` rename). After Phase 6 no `src/main/` code imports `StaticPosition` or any relocated consumer; doc comments may cross-reference, code may not.
+- ✅ **Phase 7** — Formalized the permanent differential-test layer in `specification.md` (new §4.1 *Piece placement: bitboard in production, mailbox as test oracle* and §6.1 *Differential testing of the bitboard backend*) and here. Project policy from this point on: every primitive on `BitboardPosition` is asserted against the relocated `StaticPosition` oracle on every fixture in the corpus, for every supported release going forward.
+- ✅ **Phase 8** — Release artifacts: version bump 10.0.0 → 11.0.0 (`pom.xml`, `README.md` ×2), `[11.0.0]` `CHANGELOG.md` entry above `[10.0.0]`.
+
+---
+
+## Next release — drop auto-CHA-per-move; dead-position queries become request-based
+
+The construction we have today is too complicated and does work the library doesn't need. Today every `Board.move()` (and every `Board` constructor) runs the unwinnability quick analyzer on the new position and caches the verdict in `isDeadPositionUnwinnableQuickList`. The cached value drives `Board.isDeadPositionUnwinnableQuick()`, feeds `Board.isDeadPosition()` (alongside the cheap mechanical `isInsufficientMaterial`), and through `ValidateNewMove` causes the move pipeline to throw `MoveCheck.GAME_ALREADY_ENDED` with `GameStatus.DEAD_POSITION_UNWINNABLE_QUICK` if a consumer tries to play on. The whole apparatus exists to model FIDE 5.2.2 "dead position" as an automatic termination.
+
+**The premise the auto-termination relies on is false in practice.** Playing on in a dead position is harmless: no win is reachable, the position can only resolve to a draw. In a real game the practical outcomes are all draws — flagfall in a dead position is a draw by adjudication, resignation in a dead position is a draw under current FIDE rules (no win available to the opponent), and the players can always agree to a draw. Nothing changes if they keep moving. So the library does not need to *enforce* dead-position termination at the move-pipeline boundary; it only needs to make it *queryable* so consumers that want to surface it can do so.
+
+The current eager-per-move construction also costs more than just complexity: it makes every move pay the analyzer cost (mitigated but not erased by the bitboard work), it adds a constructor flag (`detectDeadPositionUnwinnable`) that has to be threaded through every `Board` overload, it requires a recursion-suppression guard inside the analyzer when it builds throwaway sub-boards, and it leaks into the test corpus — fixtures get relocated to `pgnParser/legacy/common/beyond/` whenever they happen to step into a dead position even though the recorded games are otherwise well-formed PGN. The fix simplifies all of that.
+
+### Phase 1 — Drop auto-detection from `Board`
+
+**Step 1.1** — Remove the per-ply cache and computation. Drop `Board.isDeadPositionUnwinnableQuickList`, `Board.computeDeadPositionUnwinnableQuick()`, the `isDetectDeadPositionUnwinnable` field, every `Board` constructor overload that took the `detectDeadPositionUnwinnable` flag (including `copyCurrentPositionWithoutHistory(boolean)`), and the eager calls from `Board` constructors and `performMoveWithoutValidation`. `Board.isDeadPositionUnwinnableQuick()` as a stateful accessor is removed.
+
+**Step 1.2** — Reshape `Board.isDeadPosition()` and the `isDeadPosition*` family as pure on-demand queries that run the analyzer when called. `isDeadPositionQuick()` and `isDeadPositionFull()` are already that today (`Board` lines ~951 / ~999); the change is that `isDeadPosition()` joins them — it computes `isInsufficientMaterial() || isDeadPositionQuick().isDeadPosition()` at the call site instead of reading a cached field. Consumers that want the old "checked after every move" behavior call the query themselves in their move loop.
+
+**Step 1.3** — `ValidateNewMove` no longer rejects moves on `DEAD_POSITION_UNWINNABLE_QUICK`. Remove the corresponding check from the move-acceptance precondition (the auto-terminators that remain: checkmate, stalemate, insufficient material, plus fivefold and 75-move if Phase 2 below is not adopted). `MoveCheck.GAME_ALREADY_ENDED` continues to fire for the auto-terminators that survive.
+
+**Step 1.4** — Decide the `GameStatus.DEAD_POSITION_UNWINNABLE_QUICK` enum value's fate. Two options: keep it (returned by an explicit "what status is this position in" query, never thrown by the move pipeline) or drop it (the analyzer's `UnwinnabilityQuickVerdict` is the only place that concept lives). Recommend keep, narrowed in scope — `Board.calculateGameStatus()` or equivalent maps the position to a status that can include `DEAD_POSITION_UNWINNABLE_QUICK`, but the move pipeline never throws it.
+
+### Phase 2 — Tentative: drop auto-fivefold and auto-75-move termination
+
+**Not committed yet — captured for discussion.** The same line of reasoning applies to FIDE 9.6.1 (fivefold) and 9.6.2 (75-move): both are automatic terminations under the current model, but playing on past either is harmless (same outcome arguments as dead position). Dropping the auto-termination would unlock tests the corpus cannot currently express — sixfold, sevenfold, longer-than-75-move sequences after the 75th — that today either fail with `GAME_ALREADY_ENDED` or have to live as legacy fixtures.
+
+The trade-off the user flagged: if these stop being automatic terminators, consumers that *do* want to surface them have to query the predicates themselves (`isFivefoldRepetition()`, `isSeventyFiveMove()`). The signal is "presented twice" in the sense that the consumer first sees the rule fire and then has to keep asking on subsequent moves whether the game has progressed past it. That is a real ergonomics cost for the typical consumer.
+
+If adopted, the work mirrors Phase 1: remove the corresponding checks from `ValidateNewMove`, leave `isFivefoldRepetition()` / `isSeventyFiveMove()` as queryable predicates. The 75-move-rule fixtures currently parked in `pgnParser/legacy/common/beyond/` (~30 files) move back into the regular corpus.
+
+**To decide before any code lands.** Listed here as a follow-on so the question stays visible alongside Phase 1, not because it's settled.
+
+### Phase 3 — Corpus and test cleanup
+
+**Step 3.1** — Legacy fixtures that exist only because their game played past a dead position move back into the regular corpus. The relocation under `pgnParser/legacy/common/beyond/` was specifically to keep `TestSetupPgnCorpusNotPlaysBeyondAudit` green; if dead position is no longer an auto-terminator, the audit no longer flags them. Identifying the affected files comes out of grepping the legacy tree for fixtures whose recorded termination is `DEAD_POSITION_*`.
+
+**Step 3.2** — `TestLegacyPgnParsePlaysBeyondAudit`'s `EXPECTED` map and the expected-count constant update accordingly. Any test that asserts on `GameStatus.DEAD_POSITION_UNWINNABLE_QUICK` being thrown from the move pipeline switches to asserting on the queryable predicate.
+
+**Step 3.3** — `CHANGELOG.md`, `README.md` "Notable features" if the auto-detection is called out there, and `specification.md` §3.1 ("FIDE rule fidelity and game termination") get the table updated: dead position moves from "automatic" to "queryable" (and same for fivefold / 75-move if Phase 2 lands).
+
+### Phase 4 — Release artifacts
+
+**Step 4.1** — Version bump (12.0.0; this is binary-incompatible because the `Board` constructor signatures with the `detectDeadPositionUnwinnable` flag are gone). `CHANGELOG.md` entry above `[11.0.0]`. `tasks.md` section marked done.
+
+### Why before the python-chess release
+
+Reactivating python-chess as the primary cross-validation reference means matching what python-chess actually does. python-chess does not auto-terminate on a dead position; it exposes the query and lets the caller decide. Aligning the library's termination model with python-chess's first makes the cross-validation pass cleaner (fewer "we say game-ended, python-chess says still-playable" disagreements that have to be papered over in the bridge).
 
 ---
 

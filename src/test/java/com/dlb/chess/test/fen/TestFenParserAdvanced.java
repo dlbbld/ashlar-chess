@@ -198,6 +198,21 @@ class TestFenParserAdvanced implements EnumConstants {
     checkParseFenException("rnbqkbnr/p1pppppp/1p6/8/8/4P3/PPPP1PPP/RNBQKBNR w KQkq b6 0 2",
         FenAdvancedValidationProblem.INVALID_EN_PASSANT_CAPTURE_TARGET_SQUARE_NO_PAWN_AFTER);
 
+    // Regression: opponent NON-PAWN on the two-advance square (white knight on e4 when the claimed e2-e4
+    // pawn advance would put a white pawn there for black-to-move EP). The original predicate read
+    // `A || (B && C)` due to Java operator precedence — A and B&&C both false here (right side, wrong piece
+    // type), so the FEN slipped past validation and tripped an unchecked IllegalArgumentException in the
+    // bitboard rewind (withRelocatedPiece preconditions the piece's presence). Fixed predicate `A || B || C`
+    // throws the right typed exception.
+    checkParseFenException("rnbqkb1r/pppp1ppp/8/3n4/4N3/8/PPPP1PPP/RNBQKB1R b KQkq e3 0 3",
+        FenAdvancedValidationProblem.INVALID_EN_PASSANT_CAPTURE_TARGET_SQUARE_NO_PAWN_AFTER);
+    // Regression: OWN-side pawn on the two-advance square (white pawn on d5 with white-to-move and EP target
+    // d6 — d6 is black's EP target square, so the two-advance square is d5; a white pawn there is the wrong
+    // side). The original predicate accepted this case because B&&C was false (B = wrong side true, but C =
+    // not a pawn false). Fixed predicate throws.
+    checkParseFenException("rnbqkb1r/p1pppppp/8/3P4/8/8/PPPP1PPP/RNBQKBNR w KQkq d6 0 3",
+        FenAdvancedValidationProblem.INVALID_EN_PASSANT_CAPTURE_TARGET_SQUARE_NO_PAWN_AFTER);
+
     // en passant target square not empty
     checkParseFenException("r1bqkbnr/2pppppp/p1n5/1p6/4P3/3PBN2/PPP2PPP/RN1QKB1R b KQkq e3 0 4",
         FenAdvancedValidationProblem.INVALID_EN_PASSANT_CAPTURE_TARGET_SQUARE_NOT_EMPTY);
@@ -317,7 +332,8 @@ class TestFenParserAdvanced implements EnumConstants {
 
     final Fen actual = FenParserAdvanced.parseFenAdvanced(FenConstants.FEN_INITIAL_STR);
 
-    assertEquals(StaticPosition.INITIAL_POSITION, actual.staticPosition());
+    assertEquals(StaticPosition.INITIAL_POSITION,
+        com.dlb.chess.bitboard.StaticPositionBridge.toStaticPosition(actual.bitboardPosition()));
     assertEquals(WHITE, actual.havingMove());
     assertEquals(CastlingRight.KING_AND_QUEEN_SIDE, actual.castlingRightWhite());
     assertEquals(CastlingRight.KING_AND_QUEEN_SIDE, actual.castlingRightBlack());

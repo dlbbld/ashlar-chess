@@ -3,7 +3,6 @@ package com.dlb.chess.bitboard;
 import java.util.Set;
 import java.util.TreeSet;
 
-import com.dlb.chess.board.StaticPosition;
 import com.dlb.chess.board.enums.CastlingMove;
 import com.dlb.chess.board.enums.Piece;
 import com.dlb.chess.board.enums.PieceType;
@@ -25,10 +24,10 @@ import com.dlb.chess.common.model.MoveSpecification;
  * {@link IllegalArgumentException}.
  *
  * <p>
- * Built alongside {@link com.dlb.chess.board.StaticPosition} and verified bit-exact against it via differential testing
- * across the full PGN/FEN corpus. See {@code tasks.md} and the package-level Javadoc for the governing invariant: the
- * bitboard backend release is purely additive; the {@code StaticPosition} reference implementation remains the
- * project's correctness ground truth.
+ * Built alongside {@code StaticPosition} and verified bit-exact against it via differential testing across the full
+ * PGN/FEN corpus. After the role-inversion release, {@code StaticPosition} lives in {@code src/test/} as the
+ * permanent differential-test oracle; this record is the production representation. See {@code tasks.md} and the
+ * package-level Javadoc for the governing Project Invariant.
  */
 public record BitboardPosition(long whitePawns, long whiteRooks, long whiteKnights, long whiteBishops, long whiteQueens,
     long whiteKings, long blackPawns, long blackRooks, long blackKnights, long blackBishops, long blackQueens,
@@ -46,11 +45,26 @@ public record BitboardPosition(long whitePawns, long whiteRooks, long whiteKnigh
     }
   }
 
-  public static final BitboardPosition INITIAL_POSITION = BitboardPositionUtility
-      .fromStaticPosition(StaticPosition.INITIAL_POSITION);
+  // Initial position bit layout (little-endian rank-file: A1 = bit 0, H8 = bit 63):
+  //   white pawns on rank 2 (bits 8-15)        -> 0x000000000000FF00L
+  //   white rooks   on a1, h1   (bits 0, 7)    -> 0x0000000000000081L
+  //   white knights on b1, g1   (bits 1, 6)    -> 0x0000000000000042L
+  //   white bishops on c1, f1   (bits 2, 5)    -> 0x0000000000000024L
+  //   white queen   on d1       (bit 3)        -> 0x0000000000000008L
+  //   white king    on e1       (bit 4)        -> 0x0000000000000010L
+  //   black pawns on rank 7 (bits 48-55)       -> 0x00FF000000000000L
+  //   black rooks   on a8, h8   (bits 56, 63)  -> 0x8100000000000000L
+  //   black knights on b8, g8   (bits 57, 62)  -> 0x4200000000000000L
+  //   black bishops on c8, f8   (bits 58, 61)  -> 0x2400000000000000L
+  //   black queen   on d8       (bit 59)       -> 0x0800000000000000L
+  //   black king    on e8       (bit 60)       -> 0x1000000000000000L
+  public static final BitboardPosition INITIAL_POSITION = new BitboardPosition(0x000000000000FF00L,
+      0x0000000000000081L, 0x0000000000000042L, 0x0000000000000024L, 0x0000000000000008L, 0x0000000000000010L,
+      0x00FF000000000000L, 0x8100000000000000L, 0x4200000000000000L, 0x2400000000000000L, 0x0800000000000000L,
+      0x1000000000000000L);
 
-  public static final BitboardPosition EMPTY_POSITION = BitboardPositionUtility
-      .fromStaticPosition(StaticPosition.EMPTY_POSITION);
+  public static final BitboardPosition EMPTY_POSITION = new BitboardPosition(0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L,
+      0L, 0L);
 
   public Piece get(Square square) {
     final var bit = bitFor(square);
@@ -109,6 +123,89 @@ public record BitboardPosition(long whitePawns, long whiteRooks, long whiteKnigh
       case NONE -> throw new IllegalArgumentException("Side.NONE has no occupancy");
       default -> throw new IllegalArgumentException();
     };
+  }
+
+  /**
+   * Convenience predicate: does {@code square} carry a piece of {@code side} and {@code pieceType}? Equivalent to
+   * {@code get(square) == Piece.calculate(side, pieceType)} but avoids constructing the {@code Piece} value.
+   */
+  public boolean isOwnPiece(Square square, Side side, PieceType pieceType) {
+    if (side != Side.WHITE && side != Side.BLACK) {
+      throw new IllegalArgumentException("isOwnPiece requires Side.WHITE or Side.BLACK, got " + side);
+    }
+    if (pieceType == PieceType.NONE) {
+      throw new IllegalArgumentException("isOwnPiece requires a real piece type, got NONE");
+    }
+    return get(square) == Piece.calculate(side, pieceType);
+  }
+
+  /**
+   * Square of {@code side}'s king. Throws {@link IllegalStateException} if there is no king of {@code side} on the
+   * board, matching the reference {@code StaticPositionUtility.calculateKingSquare}. Standard chess assumes one king
+   * per side; the implementation returns the lowest-ordinal king bit when more than one is present.
+   */
+  public Square kingSquare(Side side) {
+    if (side != Side.WHITE && side != Side.BLACK) {
+      throw new IllegalArgumentException("kingSquare requires Side.WHITE or Side.BLACK, got " + side);
+    }
+    final var kings = side == Side.WHITE ? whiteKings : blackKings;
+    if (kings == 0L) {
+      throw new IllegalStateException("No king of side " + side + " on the board");
+    }
+    return Nulls.get(Square.REAL, Long.numberOfTrailingZeros(kings));
+  }
+
+  /**
+   * Pseudo-legal target squares for the piece on {@code fromSquare}: squares the piece could move to, considering own
+   * piece blocking and slider line-of-sight, but NOT king-safety. Mirrors the reference
+   * {@code AbstractPotentialToSquares.calculatePotentialToSquare} surface used by the SAN error-reporting layer.
+   *
+   * <p>
+   * For pawns, includes forward advances (single + double when applicable) and diagonal captures against opponent
+   * pieces — <em>excluding</em> the opponent king (matching the reference) — and to the EP target square. For other
+   * pieces, includes the standard pseudo-legal target set: own pieces are blocked, opponent pieces are capturable
+   * (including the opponent king at this level — king-capture filtering happens at the legal-move-classification
+   * level, not here).
+   *
+   * <p>
+   * Returns an empty set if {@code fromSquare} is empty. {@code enPassantBit} is the single-bit bitboard of the EP
+   * target square, or {@code 0L} if no EP is available.
+   */
+  public Set<Square> potentialToSquares(Square fromSquare, long enPassantBit) {
+    if (fromSquare == Square.NONE) {
+      throw new IllegalArgumentException("The NONE square does not belong to the board");
+    }
+    final Piece piece = get(fromSquare);
+    if (piece == Piece.NONE) {
+      return new TreeSet<>();
+    }
+    final Side side = piece.getSide();
+    final var ownPieces = occupied(side);
+    final var fromOrdinal = fromSquare.ordinal();
+    final long targets = switch (piece.getPieceType()) {
+      case KNIGHT -> KnightMoves.targets(fromSquare, ownPieces);
+      case KING -> KingMoves.targets(fromSquare, ownPieces);
+      case BISHOP -> BishopMoves.targets(fromOrdinal, occupied(), ownPieces);
+      case ROOK -> RookMoves.targets(fromOrdinal, occupied(), ownPieces);
+      case QUEEN -> QueenMoves.targets(fromOrdinal, occupied(), ownPieces);
+      case PAWN -> pawnPotentialTargets(fromSquare, fromOrdinal, side, enPassantBit);
+      case NONE -> throw new IllegalStateException("Unreachable — Piece.NONE filtered above");
+      default -> throw new IllegalArgumentException();
+    };
+    return BitboardPositionUtility.toSquareSet(targets);
+  }
+
+  private long pawnPotentialTargets(Square fromSquare, int fromOrdinal, Side side, long enPassantBit) {
+    final var occ = occupied();
+    final var opponentPieces = occupied(side.getOppositeSide());
+    final var opponentKings = side == Side.WHITE ? blackKings : whiteKings;
+    // Forward pushes: single + double, blocked by occupancy.
+    final var pushTargets = PawnMoves.pushes(fromOrdinal, occ, side);
+    // Diagonal captures: opponent pieces excluding king (the reference excludes king on pawn diagonals).
+    final var pawnAttacks = PawnAttacks.attacks(fromSquare, side);
+    final var captureTargets = pawnAttacks & (opponentPieces & ~opponentKings);
+    final var epTarget = pawnAttacks & enPassantBit;
+    return pushTargets | captureTargets | epTarget;
   }
 
   /**
@@ -538,8 +635,8 @@ public record BitboardPosition(long whitePawns, long whiteRooks, long whiteKnigh
    *
    * <p>
    * Castling rights, en-passant target square, side-to-move, and the halfmove / fullmove counters are intentionally NOT
-   * updated here — they live on {@link com.dlb.chess.board.Board} / {@link com.dlb.chess.common.model.DynamicPosition}. This
-   * is the piece-placement-only equivalent of {@code StaticPositionUtility.createPositionAfterMove}.
+   * updated here — they live on {@link com.dlb.chess.board.Board} / {@link com.dlb.chess.common.model.DynamicPosition}.
+   * This is the piece-placement-only equivalent of {@code StaticPositionUtility.createPositionAfterMove}.
    *
    * <p>
    * The bitboard layer is intentionally stateless about whose turn it is. Callers pass {@code movingSide} explicitly —
@@ -621,6 +718,29 @@ public record BitboardPosition(long whitePawns, long whiteRooks, long whiteKnigh
     toggleBit(pieces, kingPiece, 1L << kingToOrdinal);
     toggleBit(pieces, rookPiece, 1L << rookFromOrdinal);
     toggleBit(pieces, rookPiece, 1L << rookToOrdinal);
+    return fromPieceBitboards(pieces);
+  }
+
+  /**
+   * Returns a new {@code BitboardPosition} in which {@code piece} is relocated from {@code from} to {@code to}.
+   * Pre: {@code from} carries {@code piece}, {@code to} is empty. Used for hypothetical-position construction
+   * outside the regular move pipeline — e.g. FEN-level validation rewinding a pawn two-square advance to its
+   * starting square to check the prior position's legality.
+   */
+  public BitboardPosition withRelocatedPiece(Piece piece, Square from, Square to) {
+    if (piece == Piece.NONE) {
+      throw new IllegalArgumentException("withRelocatedPiece requires a real piece, got NONE");
+    }
+    if (get(from) != piece) {
+      throw new IllegalArgumentException(
+          "From square " + from + " does not carry " + piece + " (actual: " + get(from) + ")");
+    }
+    if (!isEmpty(to)) {
+      throw new IllegalArgumentException("To square " + to + " is not empty (carries " + get(to) + ")");
+    }
+    final long[] pieces = currentPieceBitboards();
+    toggleBit(pieces, piece, 1L << from.ordinal());
+    toggleBit(pieces, piece, 1L << to.ordinal());
     return fromPieceBitboards(pieces);
   }
 

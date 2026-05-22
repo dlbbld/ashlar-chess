@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 import com.dlb.chess.bitboard.BishopAttacks;
 import com.dlb.chess.bitboard.BitboardPosition;
 import com.dlb.chess.bitboard.BitboardPositionUtility;
+import com.dlb.chess.bitboard.StaticPositionBridge;
 import com.dlb.chess.board.StaticPosition;
 import com.dlb.chess.board.enums.Side;
 import com.dlb.chess.board.enums.Square;
@@ -34,8 +35,8 @@ class TestBishopAttacks {
     for (final PgnTest pgnTest : PgnTest.values()) {
       final PgnTestCaseList testCaseList = PgnTestCaseCatalog.getTestList(pgnTest);
       for (final PgnTestCase testCase : testCaseList.list()) {
-        final StaticPosition staticPosition = testCase.finalPosition().getStaticPosition();
-        final BitboardPosition bitboardPosition = BitboardPositionUtility.fromStaticPosition(staticPosition);
+        final StaticPosition staticPosition = StaticPositionBridge.toStaticPosition(testCase.finalPosition().getBitboardPosition());
+        final BitboardPosition bitboardPosition = StaticPositionBridge.fromStaticPosition(staticPosition);
         final long occupied = bitboardPosition.occupied();
         assertSideAgrees(bitboardPosition.whiteBishops(), Side.WHITE, staticPosition, occupied, testCase);
         assertSideAgrees(bitboardPosition.blackBishops(), Side.BLACK, staticPosition, occupied, testCase);
@@ -65,7 +66,7 @@ class TestBishopAttacks {
     // reference rather than a hand-written expected set (no tautological self-test).
     final StaticPosition staticPosition = StaticPosition.EMPTY_POSITION
         .createChangedPosition(Square.D4, com.dlb.chess.board.enums.Piece.WHITE_BISHOP);
-    final BitboardPosition bitboardPosition = BitboardPositionUtility.fromStaticPosition(staticPosition);
+    final BitboardPosition bitboardPosition = StaticPositionBridge.fromStaticPosition(staticPosition);
     final Set<Square> bitboardAttacks = BitboardPositionUtility
         .toSquareSet(BishopAttacks.attacks(Square.D4.ordinal(), bitboardPosition.occupied()));
     final Set<Square> referenceAttacks = SlidingAttacksTestOracle.bishopAttacks(staticPosition, Square.D4, Side.WHITE);

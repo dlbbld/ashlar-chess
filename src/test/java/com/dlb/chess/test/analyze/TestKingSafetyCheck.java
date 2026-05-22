@@ -25,7 +25,7 @@ class TestKingSafetyCheck implements EnumConstants {
   private static final Set<KingSafetyCheck> COVERED = new TreeSet<>();
 
   private static KingSafetyCheck analyze(Board board, MoveSpecification move) {
-    final KingSafetyCheck result = ChessRuleAnalyzer.analyzeKingSafety(board.getStaticPosition(), board.getHavingMove(),
+    final KingSafetyCheck result = ChessRuleAnalyzer.analyzeKingSafety(board.getBitboardPosition(), board.getHavingMove(),
         move);
     COVERED.add(result);
     return result;

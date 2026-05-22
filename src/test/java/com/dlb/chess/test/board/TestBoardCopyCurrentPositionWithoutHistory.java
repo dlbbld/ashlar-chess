@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.junit.jupiter.api.Test;
 
+import com.dlb.chess.bitboard.StaticPositionBridge;
 import com.dlb.chess.board.Board;
 import com.dlb.chess.fen.constants.FenConstants;
 
@@ -56,7 +57,7 @@ class TestBoardCopyCurrentPositionWithoutHistory {
 
     // halfmove clock reset, everything else preserved
     assertEquals(0, actual.getHalfMoveClock());
-    assertEquals(source.getStaticPosition(), actual.getStaticPosition());
+    assertEquals(StaticPositionBridge.toStaticPosition(source.getBitboardPosition()), StaticPositionBridge.toStaticPosition(actual.getBitboardPosition()));
     assertEquals(source.getHavingMove(), actual.getHavingMove());
     assertEquals(source.getCastlingRightWhite(), actual.getCastlingRightWhite());
     assertEquals(source.getCastlingRightBlack(), actual.getCastlingRightBlack());

@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
 
+import com.dlb.chess.bitboard.StaticPositionBridge;
 import com.dlb.chess.board.StaticPosition;
 import com.dlb.chess.board.enums.Piece;
 import com.dlb.chess.board.enums.Square;
@@ -30,8 +31,10 @@ class TestBasicStaticPosition implements EnumConstants {
   @SuppressWarnings("static-method")
   @Test
   void testInitialPosition() throws Exception {
-    final StaticPosition staticInitialPositionActual = FenParserAdvanced.parseFenAdvanced(FenConstants.FEN_INITIAL_STR)
-        .staticPosition();
+    // FEN parser now produces BitboardPosition; derive StaticPosition via the test-oracle bridge for the
+    // structural assertion against the reference StaticPosition.INITIAL_POSITION constant.
+    final StaticPosition staticInitialPositionActual = StaticPositionBridge.toStaticPosition(
+        FenParserAdvanced.parseFenAdvanced(FenConstants.FEN_INITIAL_STR).bitboardPosition());
 
     assertEquals(StaticPosition.INITIAL_POSITION, staticInitialPositionActual);
   }

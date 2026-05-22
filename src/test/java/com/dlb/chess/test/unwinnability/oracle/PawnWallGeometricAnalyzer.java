@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
+import com.dlb.chess.bitboard.StaticPositionBridge;
 import com.dlb.chess.board.Board;
 import com.dlb.chess.board.StaticPosition;
 import com.dlb.chess.board.enums.Piece;
@@ -72,7 +73,7 @@ public class PawnWallGeometricAnalyzer {
 
   private static boolean areAllPawnsInvolvedInPawnWall(Board board, Side side) {
     final List<List<Square>> chains = findAllPawnWallLines(board, side);
-    final StaticPosition position = board.getStaticPosition();
+    final StaticPosition position = StaticPositionBridge.toStaticPosition(board.getBitboardPosition());
     for (final List<Square> chain : chains) {
       if (allPawnsInvolvedInSpecificChain(position, chain)) {
         return true;
@@ -122,7 +123,7 @@ public class PawnWallGeometricAnalyzer {
 
   public static boolean calculateHasPawnWall(Board board) {
 
-    final StaticPosition staticPosition = board.getStaticPosition();
+    final StaticPosition staticPosition = StaticPositionBridge.toStaticPosition(board.getBitboardPosition());
 
     // 1) we do not consider positions with rooks, knights or queens
     // 2) we need at least a pawn for a pawn wall (the minimum is most likely much higher, but not having a better
@@ -215,7 +216,7 @@ public class PawnWallGeometricAnalyzer {
   private static Set<Square> calculateAttackingSquareAsIs(Board board, Side side) {
     final Set<Square> attackingSquaresAsIs = new TreeSet<>();
     for (final Square square : Square.REAL) {
-      if (board.getStaticPosition().isOwnPawn(square, side)) {
+      if (StaticPositionBridge.toStaticPosition(board.getBitboardPosition()).isOwnPawn(square, side)) {
         if (Square.calculateHasLeftDiagonalSquare(side, square)) {
           final Square squareLeftDiagonal = Square.calculateLeftDiagonalSquare(side, square);
           attackingSquaresAsIs.add(squareLeftDiagonal);
@@ -232,9 +233,9 @@ public class PawnWallGeometricAnalyzer {
   private static Set<Square> calculateAttackingSquareAfterMoving(Board board, Side side) {
     final Set<Square> attackingSquaresAll = new TreeSet<>();
 
-    final StaticPosition staticPosition = board.getStaticPosition();
+    final StaticPosition staticPosition = StaticPositionBridge.toStaticPosition(board.getBitboardPosition());
     for (final Square square : Square.REAL) {
-      if (board.getStaticPosition().isOwnPawn(square, side)) {
+      if (StaticPositionBridge.toStaticPosition(board.getBitboardPosition()).isOwnPawn(square, side)) {
         final Set<Square> attackingSquaresAfterMoving = new TreeSet<>();
         addAttackingSquaresAfterMovingForFile(attackingSquaresAfterMoving, square, staticPosition, side);
         attackingSquaresAll.addAll(attackingSquaresAfterMoving);
@@ -283,7 +284,7 @@ public class PawnWallGeometricAnalyzer {
   private static Set<Square> calculatePawnSquareAsIs(Board board, Side side) {
     final Set<Square> pawnSquaresAsIs = new TreeSet<>();
     for (final Square square : Square.REAL) {
-      if (board.getStaticPosition().isOwnPawn(square, side)) {
+      if (StaticPositionBridge.toStaticPosition(board.getBitboardPosition()).isOwnPawn(square, side)) {
         pawnSquaresAsIs.add(square);
       }
     }
@@ -293,9 +294,9 @@ public class PawnWallGeometricAnalyzer {
   private static Set<Square> calculatePawnSquareAfterMoving(Board board, Side side) {
     final Set<Square> pawnSquaresAll = new TreeSet<>();
 
-    final StaticPosition staticPosition = board.getStaticPosition();
+    final StaticPosition staticPosition = StaticPositionBridge.toStaticPosition(board.getBitboardPosition());
     for (final Square square : Square.REAL) {
-      if (board.getStaticPosition().isOwnPawn(square, side)) {
+      if (StaticPositionBridge.toStaticPosition(board.getBitboardPosition()).isOwnPawn(square, side)) {
         final Set<Square> pawnSquaresAfterMoving = new TreeSet<>();
         addPawnSquaresAfterMovingForFile(pawnSquaresAfterMoving, square, staticPosition, side);
         pawnSquaresAll.addAll(pawnSquaresAfterMoving);
@@ -328,7 +329,7 @@ public class PawnWallGeometricAnalyzer {
 
   private static boolean calculateIsKingBehindPawnWall(Board board, Side side) {
     final StaticPosition blockedSquares = calculateBlockedSquares(board, side);
-    final Square kingSquare = StaticPositionUtility.calculateKingSquare(board.getStaticPosition(), side);
+    final Square kingSquare = StaticPositionUtility.calculateKingSquare(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), side);
     return calculateIsKingBehindPawnWall(blockedSquares, kingSquare, side);
   }
 
@@ -357,7 +358,7 @@ public class PawnWallGeometricAnalyzer {
 
   protected static boolean calculateIsAllPawnsHavePawnAhead(Board board) {
     // loop over all square and check each pawn
-    final StaticPosition staticPosition = board.getStaticPosition();
+    final StaticPosition staticPosition = StaticPositionBridge.toStaticPosition(board.getBitboardPosition());
     for (final Square square : Square.REAL) {
       if (staticPosition.isPawn(square)) {
         final Piece piece = staticPosition.get(square);
@@ -381,7 +382,7 @@ public class PawnWallGeometricAnalyzer {
 
   protected static boolean calculateIsAllPawnsCanReachPawnAhead(Board board) {
     // loop over all square and check each pawn
-    final StaticPosition staticPosition = board.getStaticPosition();
+    final StaticPosition staticPosition = StaticPositionBridge.toStaticPosition(board.getBitboardPosition());
     for (final Square square : Square.REAL) {
       if (!staticPosition.isEmpty(square)) {
         final Piece piece = staticPosition.get(square);
@@ -422,7 +423,7 @@ public class PawnWallGeometricAnalyzer {
     }
 
     // loop over all square and check each pawn
-    final StaticPosition staticPosition = board.getStaticPosition();
+    final StaticPosition staticPosition = StaticPositionBridge.toStaticPosition(board.getBitboardPosition());
     for (final Square square : Square.REAL) {
       if (staticPosition.isPawn(square)) {
         final Piece piece = staticPosition.get(square);
@@ -456,7 +457,7 @@ public class PawnWallGeometricAnalyzer {
   }
 
   private static StaticPosition calculateBlockedSquares(Board board, Side side) {
-    final StaticPosition staticPosition = board.getStaticPosition();
+    final StaticPosition staticPosition = StaticPositionBridge.toStaticPosition(board.getBitboardPosition());
     final Square ownKingSquare = StaticPositionUtility.calculateKingSquare(staticPosition, side);
 
     // we make a board full of white pawns to mark all blocked squares
@@ -496,7 +497,8 @@ public class PawnWallGeometricAnalyzer {
   }
 
   protected static boolean calculateHasPawnWallLine(Board board, Side side) {
-    return calculateHasPawnWallLine(board.getStaticPosition(), findAllPawnWallLines(board, side), side);
+    return calculateHasPawnWallLine(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()),
+        findAllPawnWallLines(board, side), side);
   }
 
   private static boolean calculateHasPawnWallLine(StaticPosition staticPosition, List<List<Square>> resultList,
