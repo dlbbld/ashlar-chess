@@ -29,12 +29,6 @@ class TestUnwinnabilityFullHelpMateIsHelpMate {
   /** Cap on files tested when the smoke restriction is active. */
   private static final int MAX_FILES = 10;
 
-  /**
-   * Property check: when the analyzer returns a mate line for a known-winnable position, playing the mate line out from
-   * the start position (after any forced-move preamble) must deliver checkmate against the intended winner's opponent.
-   * Decoupled from {@link #verdictsAreWinnable} so a regression in mate-line construction reports separately from a
-   * regression in verdict computation.
-   */
   @SuppressWarnings("static-method")
   @Test
   void mateLinesActuallyCheckmate() {

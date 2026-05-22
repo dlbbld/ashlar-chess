@@ -27,11 +27,6 @@ class TestUnwinnabilityFullWinnable {
   /** Cap on files tested when the smoke restriction is active. */
   private static final int MAX_FILES = 10;
 
-  /**
-   * For each Lichess game in the helpmate corpus, the analyzer's verdict is {@link UnwinnabilityFullVerdict#WINNABLE}
-   * for the side to move. The companion {@link #mateLinesActuallyCheckmate} test handles the orthogonal claim that the
-   * returned mate line is a valid checkmate sequence.
-   */
   @SuppressWarnings("static-method")
   @Test
   void verdictsAreWinnable() {
