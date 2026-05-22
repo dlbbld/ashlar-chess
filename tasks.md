@@ -393,7 +393,7 @@ If adopted, the work mirrors Phase 1: remove the corresponding checks from `Vali
 
 ### Phase 4 — Release artifacts
 
-**Step 4.1** — Version bump (12.0.0; this is binary-incompatible because the `Board` constructor signatures with the `detectDeadPositionUnwinnable` flag are gone). `CHANGELOG.md` entry above `[11.0.0]`. `tasks.md` section marked done.
+**Step 4.1** — Version bump (TBD; this is binary-incompatible if the `Board` constructor signatures with the `detectDeadPositionUnwinnable` flag are removed). `CHANGELOG.md` entry above the current release. `tasks.md` section marked done.
 
 ### Why before the python-chess release
 

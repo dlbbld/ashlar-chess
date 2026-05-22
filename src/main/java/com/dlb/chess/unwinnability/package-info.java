@@ -24,15 +24,15 @@
  * Dead-position detection is the symmetric notion with analogous three-valued returns
  * ({@link com.dlb.chess.unwinnability.DeadPositionQuick}, {@link com.dlb.chess.unwinnability.DeadPositionFull}).
  *
- * <h2>Opt-in by design</h2>
+ * <h2>Analyzer entry points and Board auto-detection</h2>
  *
  * <p>
- * Both variants are caller-invoked. CHA is <em>not</em> run automatically when a move is performed — the only deadness
- * check in the per-move game-status query is the structural insufficient-material test (see
- * {@link com.dlb.chess.board}). The motivating concern is bulk-PGN analysis, where a per-move CHA check would add
- * significant cumulative cost. The convenience entry points are on the {@link com.dlb.chess.board.Board} interface
- * ({@code isUnwinnableQuick}, {@code isUnwinnableFull}, {@code isDeadPositionQuick}, {@code isDeadPositionFull}) and
- * inherited by {@link com.dlb.chess.board.Board}.
+ * The analyzers can be invoked directly when a caller wants a side-specific answer. {@link com.dlb.chess.board.Board}
+ * also performs FIDE dead-position auto-detection with the quick analyzer by default: once per ply it checks whether
+ * both sides are quick-unwinnable and then reports
+ * {@link com.dlb.chess.common.enums.GameStatus#DEAD_POSITION_UNWINNABLE_QUICK}. Bulk-analysis callers can disable that
+ * per-ply analyzer cost with the {@code detectDeadPositionUnwinnable} constructor flag. The full analyzer is never run
+ * automatically.
  *
  * <p>
  * See {@code specification.md} §3.2 for the full design rationale.

@@ -146,7 +146,7 @@ class FindHelpmateExhaust {
 
     // 7: for every legal move m in pos do:
     for (final LegalMove legalMove : board.getLegalMoves()) {
-      // 8: let inc = match Score(pos,m) with Normal ! 0 | Reward ! 1 | Punish ! Ã¢Ë†â€™2
+      // 8: let inc = match Score(pos,m) with Normal -> 0 | Reward -> 1 | Punish -> -2
       ScoreResult score = Score.score(color, board.getHavingMove(), bitboardPosition, legalMove);
 
       if (board.getHavingMove() == color.getOppositeSide()

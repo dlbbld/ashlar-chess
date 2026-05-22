@@ -72,12 +72,13 @@ The library follows the FIDE Laws of Chess closely, distinguishing **automatic**
 | Checkmate | automatic | 5.1 |
 | Stalemate | automatic | 5.2.1 |
 | Insufficient material (structural) | automatic | 5.2.2 / 9.4 |
+| Dead position by quick unwinnability | automatic when enabled on `Board` | 5.2.2 |
 | Fivefold repetition | automatic | 9.6.1 |
 | 75-move rule | automatic | 9.6.2 |
 | Threefold repetition | claimable | 9.2 |
 | 50-move rule | claimable | 9.3 |
 
-Once a position is automatically terminated, the board does not allow further moves; continuation past mandatory termination is a usage error. Insufficient material is detected by a fast structural test (king-vs-king, king + minor vs king, etc.); positions that are dead by *exhaustive* search but not by structural insufficiency are handled by the unwinnability path (§3.2), not here.
+Once a position is automatically terminated, the board does not allow further moves; continuation past mandatory termination is a usage error. Insufficient material is detected by a fast structural test (king-vs-king, king + minor vs king, etc.). `Board` also detects dead positions by running the quick unwinnability analyzer for both sides once per ply when its `detectDeadPositionUnwinnable` flag is enabled, which is the default. Positions that require the full analyzer remain caller-invoked.
 
 For the claimable rules, the library exposes both the **on-board** predicate (current position satisfies the rule) and the **with-move** predicate (some legal move would satisfy it), and produces analysis output that names which moves *would* satisfy the claim — surfacing missed claim opportunities that other libraries do not. Position equality follows the FIDE definition: same piece placement, same side to move, same castling rights, same en-passant possibilities.
 
@@ -92,7 +93,11 @@ Miguel Ambrona's CHA is, to the author's knowledge, the only published algorithm
 
 `Dead position` is the symmetric notion with the analogous three-valued return.
 
-Both variants are **opt-in**. clean-chess does not invoke CHA automatically when a move is performed: the only deadness check in the per-move game-status query is the structural insufficient-material test (§3.1). The motivating concern is **bulk PGN analysis** — the library is also designed to process many games in batch, where a per-move CHA check would add significant cumulative cost. This is not a statement about quick CHA being slow: it runs in microsecond range and is fine to call directly during ordinary gameplay (e.g. on resignation or flag fall). The full variant is naturally heavier. Both are caller-invoked when the result is wanted.
+The direct side-specific analyzers return analysis records. For `WINNABLE`, those records carry a helpmate line that
+can be replayed from the input position; the `Board.isUnwinnableQuick(Side)` and `Board.isUnwinnableFull(Side)`
+convenience methods expose only the verdict.
+
+Side-specific quick/full unwinnability queries are caller-invoked. In addition, `Board` uses the quick analyzer automatically for FIDE 5.2.2 dead-position detection once per ply when `detectDeadPositionUnwinnable` is enabled. The default constructors enable it; bulk PGN analysis can disable it with the boolean constructor overloads and call the analyzers explicitly when needed. The full variant is naturally heavier and is never run automatically.
 
 ### 3.3 SAN, FEN, PGN
 
@@ -300,10 +305,9 @@ Day-to-day iteration runs a restricted subset (`mvn test`). A handful of long-ru
 The full suite is a Maven profile:
 
 ```
-mvn test -Pfull
+mvn test -Pfull -Dtest.excludes=
 ```
 
-`-Pfull` sets the `clean-chess.full` system property, which flips every gate inside `RestrictTestConstants` and switches `PgnTestInclusion` to `ALL` (including the longest-possible-game corpus).
+`-Pfull` sets the `clean-chess.full` system property, which flips every gate inside `RestrictTestConstants` and switches `PgnTestInclusion` to `ALL` (including the longest-possible-game corpus). `-Dtest.excludes=` clears the default unwinnability-suite exclusion.
 
-**Release-time requirement:** before tagging a release, run `mvn test -Pfull` and confirm green. The default suite is *not* sufficient to certify a release.
-
+**Release-time requirement:** before tagging a release, run `mvn test -Pfull -Dtest.excludes=` and confirm green. The default suite is *not* sufficient to certify a release.

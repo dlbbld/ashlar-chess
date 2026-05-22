@@ -227,7 +227,10 @@ The library implements the [Chess Unwinnability Analyzer (CHA)](https://github.c
 A position is unwinnable for a player if there is no legal sequence that can end with that player giving checkmate,
 even if the opponent cooperates. If the position is unwinnable for both players, it's a dead position.
 
-> **Note:** Unwinnable-position detection (CHA algorithm) is not run automatically after every move. The reason is **bulk-processing usage**: the library is also designed to analyse many PGN games in batch, where a per-move CHA check would add significant cumulative cost. This is not a statement about the quick variant being slow — it runs in microsecond range and is fine for ordinary gameplay; the full variant is naturally heavier. Both can be triggered manually whenever the result is wanted, so games may continue in theoretically dead positions unless the check is invoked.
+> **Note:** `Board` runs quick dead-position detection automatically by default: on construction and after each move it
+> checks whether both sides are quick-unwinnable and, if so, reports `DEAD_POSITION_UNWINNABLE_QUICK`. Bulk-processing
+> callers can disable that per-ply analyzer cost with the boolean `Board(..., false)` constructor overloads and invoke
+> the quick/full analyzers manually when the result is wanted. The full analyzer is never run automatically.
 
 ## Methods
 The library provides an implementation of CHA. So for both situations, there is a quick and a full method.
@@ -240,6 +243,9 @@ The quick method has three return values:
 * UNWINNABLE - the position is not winnable by the player
 * WINNABLE - the position is winnable by the player
 * POSSIBLY_WINNABLE - the position is most likely winnable by the player, but it might also be unwinnable in some rare cases
+
+`Board.isUnwinnableQuick(Side)` returns this verdict directly. `UnwinnableQuickAnalyzer.unwinnableQuick(...)` returns
+`UnwinnabilityQuickAnalysis`, which includes the verdict and the helpmate line when the quick result is `WINNABLE`.
 
 The full method also has three return values:
 * UNWINNABLE - the position is not winnable by the player

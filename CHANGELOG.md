@@ -18,6 +18,7 @@ The **Helpmate analyzer board release**. `FindHelpmateExhaust` and `FindHelpMate
 - **New test classes for the Lichess "not adjudicated correctly" corpus.** `TestUnwinnableFullForLichessGamesNotAdjudicatedCorrectly` and `TestUnwinnableQuickForLichessGamesNotAdjudicatedCorrectly` assert UNWINNABLE for the non-flagging side on real Lichess games that Lichess mis-adjudicated as wins on time despite the position being a forced draw. Regression-set coverage anchored on the FIDE-rule expectation, not on another analyzer.
 - **Lichess unwinnable corpus reorganization.** The `cha/lichess/quick/notDepthThree` folder is renamed to `cha/lichess/quick/depthAboveFour`; the `CHA_LICHESS_QUICK_NOT_DEPTH_THREE` enum and its `_HELPMATE` companion are renamed to `CHA_LICHESS_QUICK_DEPTH_ABOVE_FOUR(_HELPMATE)`. The `CHA_LICHESS_NOT_QUICK` enum (single fixture) is folded into `DEPTH_ABOVE_FOUR` and dropped. The single `test_lichess_V7eJ1RR9_helpmate.pgn` fixture is renamed to `lichess_V7eJ1RR9_helpmate.pgn` to match the convention used by all other helpmate fixtures.
 - **`TestUnwinnableFullForLichessGamesHavingHelpMate` split into two `@Test` methods.** `verdictsAreWinnable` asserts the analyzer's verdict; `mateLinesActuallyCheckmate` asserts the returned mate line, played out, delivers checkmate. A regression in either now reports separately.
+- **Quick unwinnability analysis now exposes mate lines.** `UnwinnableQuickAnalyzer.unwinnableQuick(...)` returns `UnwinnabilityQuickAnalysis`, mirroring the full analyzer's `UnwinnabilityFullAnalysis`: callers get the quick verdict plus the helpmate line when the verdict is `WINNABLE`. The `Board.isUnwinnableQuick(Side)` convenience method still returns only `UnwinnabilityQuickVerdict`.
 
 ### Internal
 
@@ -25,6 +26,10 @@ The **Helpmate analyzer board release**. `FindHelpmateExhaust` and `FindHelpMate
 - **`FindHelpMateInterrupt.calculateHelpmate(Board, Side)`** follows the same pattern: public Board entry, private `HelpmateSearchBoard` recursion.
 - **`calculateStockfishFen` debug helper** rebuilt to derive FEN from `HelpmateSearchBoard` directly (`BitboardPositionUtility.calculatePiecePlacement`, manual castling-rights assembly, EP normalization). Still gated on `IS_DEBUG = false`.
 - **`CheckAgainstChaFull` removed** (144 lines) — superseded by the new `*NotAdjudicatedCorrectly` tests above.
+
+### Breaking
+
+`UnwinnableQuickAnalyzer.unwinnableQuick(...)` now returns `UnwinnabilityQuickAnalysis` instead of `UnwinnabilityQuickVerdict`. Use `.verdict()` for the previous behaviour, or `.mateLine()` when a quick `WINNABLE` result should be replayed. `Board.isUnwinnableQuick(Side)` is unchanged.
 
 ## [11.0.0] - 2026-05-21
 

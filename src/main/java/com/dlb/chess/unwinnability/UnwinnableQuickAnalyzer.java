@@ -42,12 +42,10 @@ public class UnwinnableQuickAnalyzer {
     // 1: advance the position as long as there is only one legal move
     // if position is advanced cannot use the provided mobility solution if any
     var isCanUseMobilitySolution = true;
-    var isForcedMove = true;
     var countHalfmoves = 0;
     final List<UciMove> forcedMoveLine = new ArrayList<>();
     final Set<DynamicPosition> forcedPositionSet = new HashSet<>();
-    while (isForcedMove && forcedPositionSet.add(board.getDynamicPosition())) {
-      isCanUseMobilitySolution = false;
+    while (forcedPositionSet.add(board.getDynamicPosition())) {
       if (board.isCheckmate()) {
         // crucial, store the side before undoing moves, as it can change with undoing moves!!
         final Side sideBeingCheckmated = board.getHavingMove();
@@ -69,14 +67,16 @@ public class UnwinnableQuickAnalyzer {
         return analysis(UnwinnabilityQuickVerdict.UNWINNABLE);
       }
 
-      isForcedMove = board.getLegalMoves().size() == 1;
-      if (isForcedMove) {
-        final LegalMove legalMove = Nulls.getFirst(board.getLegalMoves());
-        forcedMoveLine.add(UciMoveUtility.convertMoveSpecificationToUci(legalMove.havingMove(),
-            legalMove.moveSpecification()));
-        board.move(legalMove.moveSpecification());
-        countHalfmoves++;
+      if (board.getLegalMoves().size() != 1) {
+        break;
       }
+
+      isCanUseMobilitySolution = false;
+      final LegalMove legalMove = Nulls.getFirst(board.getLegalMoves());
+      forcedMoveLine.add(UciMoveUtility.convertMoveSpecificationToUci(legalMove.havingMove(),
+          legalMove.moveSpecification()));
+      board.move(legalMove.moveSpecification());
+      countHalfmoves++;
     }
 
     // 2: perform a depth-first search over the tree of variations of pos and interrupt the
