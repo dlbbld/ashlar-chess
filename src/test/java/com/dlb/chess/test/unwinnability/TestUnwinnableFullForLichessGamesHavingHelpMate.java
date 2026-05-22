@@ -23,7 +23,7 @@ import com.dlb.chess.unwinnability.UnwinnabilityFullAnalysis;
 import com.dlb.chess.unwinnability.UnwinnabilityFullVerdict;
 import com.dlb.chess.unwinnability.UnwinnableFullAnalyzer;
 
-class    {
+class TestUnwinnableFullForLichessGamesHavingHelpMate {
 
   private static final Logger logger = Nulls.getLogger(TestUnwinnableFullForLichessGamesHavingHelpMate.class);
 
