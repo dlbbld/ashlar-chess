@@ -5,8 +5,10 @@ import java.util.List;
 
 import org.eclipse.jdt.annotation.NonNull;
 
+import com.dlb.chess.bitboard.BitboardLegalMoveFactory;
 import com.dlb.chess.bitboard.StaticPositionBridge;
 import com.dlb.chess.board.Board;
+import com.dlb.chess.board.enums.Square;
 import com.dlb.chess.model.PgnHalfMove;
 import com.dlb.chess.moves.AbstractLegalMoves;
 import com.dlb.chess.pgn.PgnGame;
@@ -33,11 +35,27 @@ public class MoveGenerationPerformanceSurvey {
       final List<PositionPair> positionList = collectPositions(pgnTestNotNull);
       warmup(positionList);
 
-      final Measurement cleanChess = measureCleanChess(positionList);
+      final Measurement bitboard = measureBitboard(positionList);
+      final Measurement reference = measureReference(positionList);
       final Measurement chessLib = measureChessLib(positionList);
 
-      printResult(pgnTestNotNull, positionList.size(), cleanChess, chessLib);
+      printResult(pgnTestNotNull, positionList.size(), bitboard, reference, chessLib);
     }
+  }
+
+  private static Measurement measureBitboard(List<PositionPair> positionList) {
+    var moveCount = 0L;
+    final var start = System.nanoTime();
+    for (var round = 0; round < MEASURE_ROUNDS; round++) {
+      for (final PositionPair position : positionList) {
+        final Board board = position.cleanChessBoard();
+        final Square ep = board.getEnPassantCaptureTargetSquare();
+        final long enPassantBit = ep == Square.NONE ? 0L : 1L << ep.ordinal();
+        moveCount += BitboardLegalMoveFactory.calculateLegalMoves(board.getBitboardPosition(),
+            board.getHavingMove(), board.getCastlingRight(board.getHavingMove()), enPassantBit).size();
+      }
+    }
+    return new Measurement(System.nanoTime() - start, moveCount);
   }
 
   private static List<PositionPair> collectPositions(PgnTest pgnTest) {
@@ -71,12 +89,13 @@ public class MoveGenerationPerformanceSurvey {
 
   private static void warmup(List<PositionPair> positionList) {
     for (var i = 0; i < WARMUP_ROUNDS; i++) {
-      measureCleanChess(positionList);
+      measureBitboard(positionList);
+      measureReference(positionList);
       measureChessLib(positionList);
     }
   }
 
-  private static Measurement measureCleanChess(List<PositionPair> positionList) {
+  private static Measurement measureReference(List<PositionPair> positionList) {
     var moveCount = 0L;
     final var start = System.nanoTime();
     for (var round = 0; round < MEASURE_ROUNDS; round++) {
@@ -110,19 +129,20 @@ public class MoveGenerationPerformanceSurvey {
     }
   }
 
-  private static void printResult(PgnTest pgnTest, int positionCount, Measurement cleanChess, Measurement chessLib) {
+  private static void printResult(PgnTest pgnTest, int positionCount, Measurement bitboard, Measurement reference,
+      Measurement chessLib) {
     final double denominator = positionCount * MEASURE_ROUNDS;
-    final var cleanChessMicroseconds = cleanChess.nanoseconds() / denominator / 1000.0;
-    final var chessLibMicroseconds = chessLib.nanoseconds() / denominator / 1000.0;
-    final var ratio = cleanChessMicroseconds / chessLibMicroseconds;
+    final var bitboardUs = bitboard.nanoseconds() / denominator / 1000.0;
+    final var referenceUs = reference.nanoseconds() / denominator / 1000.0;
+    final var chessLibUs = chessLib.nanoseconds() / denominator / 1000.0;
 
     System.out.printf("%s%n", pgnTest);
     System.out.printf("  positions: %,d%n", positionCount);
-    System.out.printf("  generated moves: clean-chess=%,d chesslib=%,d%n", cleanChess.moveCount(),
-        chessLib.moveCount());
-    System.out.printf("  clean-chess: %.3f us/position%n", cleanChessMicroseconds);
-    System.out.printf("  ChessLib:    %.3f us/position%n", chessLibMicroseconds);
-    System.out.printf("  ratio:       %.1fx%n%n", ratio);
+    System.out.printf("  generated moves: bitboard=%,d reference=%,d chesslib=%,d%n", bitboard.moveCount(),
+        reference.moveCount(), chessLib.moveCount());
+    System.out.printf("  bitboard (12.0.0): %.3f us/position  (%.1fx ChessLib)%n", bitboardUs, bitboardUs / chessLibUs);
+    System.out.printf("  reference oracle:  %.3f us/position  (%.1fx ChessLib)%n", referenceUs, referenceUs / chessLibUs);
+    System.out.printf("  ChessLib:          %.3f us/position%n%n", chessLibUs);
   }
 
   private record PositionPair(Board cleanChessBoard, com.github.bhlangonijr.chesslib.Board chessLibBoard) {
