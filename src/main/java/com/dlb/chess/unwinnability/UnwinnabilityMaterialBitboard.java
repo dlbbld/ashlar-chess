@@ -90,6 +90,27 @@ abstract class UnwinnabilityMaterialBitboard implements EnumConstants {
     return sideOccupancy == sideKings && Long.bitCount(sideKings) == 1;
   }
 
+  static boolean calculateIsInsufficientMaterial(Side side, BitboardPosition bitboardPosition) {
+    final Side oppositeSide = side.getOppositeSide();
+    if (calculateHasKingOnly(side, bitboardPosition)) {
+      return true;
+    }
+    if (calculateHasKingAndKnightOnly(side, bitboardPosition)) {
+      return calculateHasKingAndQueensOnly(oppositeSide, bitboardPosition);
+    }
+    if (calculateHasKingAndBishopsOnly(side, bitboardPosition, SquareType.LIGHT_SQUARE)) {
+      return calculateHasNoPawns(oppositeSide, bitboardPosition)
+          && calculateHasNoKnights(oppositeSide, bitboardPosition)
+          && calculateHasNoBishops(oppositeSide, bitboardPosition, SquareType.DARK_SQUARE);
+    }
+    if (calculateHasKingAndBishopsOnly(side, bitboardPosition, SquareType.DARK_SQUARE)) {
+      return calculateHasNoPawns(oppositeSide, bitboardPosition)
+          && calculateHasNoKnights(oppositeSide, bitboardPosition)
+          && calculateHasNoBishops(oppositeSide, bitboardPosition, SquareType.LIGHT_SQUARE);
+    }
+    return false;
+  }
+
   static boolean calculateHasKingAndKnightOnly(Side side, BitboardPosition bitboardPosition) {
     final long sideKings = side == Side.WHITE ? bitboardPosition.whiteKings() : bitboardPosition.blackKings();
     final long sideKnights = side == Side.WHITE ? bitboardPosition.whiteKnights() : bitboardPosition.blackKnights();
@@ -115,5 +136,12 @@ abstract class UnwinnabilityMaterialBitboard implements EnumConstants {
     final long bishops = side == Side.WHITE ? bitboardPosition.whiteBishops() : bitboardPosition.blackBishops();
     final long colourMask = squareType == SquareType.LIGHT_SQUARE ? LIGHT_SQUARES : DARK_SQUARES;
     return Long.bitCount(bishops & colourMask);
+  }
+
+  private static boolean calculateHasKingAndQueensOnly(Side side, BitboardPosition bitboardPosition) {
+    final long sideKings = side == Side.WHITE ? bitboardPosition.whiteKings() : bitboardPosition.blackKings();
+    final long sideQueens = side == Side.WHITE ? bitboardPosition.whiteQueens() : bitboardPosition.blackQueens();
+    final long sideOccupancy = bitboardPosition.occupied(side);
+    return sideOccupancy == (sideKings | sideQueens) && Long.bitCount(sideKings) == 1;
   }
 }

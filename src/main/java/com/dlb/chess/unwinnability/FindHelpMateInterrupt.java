@@ -26,6 +26,10 @@ class FindHelpMateInterrupt {
   private static final int D = 9;
 
   public static FindHelpmateResult calculateHelpmate(Board board, Side c) {
+    return calculateHelpmate(HelpmateSearchBoard.from(board), c);
+  }
+
+  private static FindHelpmateResult calculateHelpmate(HelpmateSearchBoard board, Side c) {
     final List<LegalMove> mateList = new ArrayList<>();
     final FindHelpMateInterruptResult result = calculateHelpmate(board, c, 0, mateList);
 
@@ -37,7 +41,7 @@ class FindHelpMateInterrupt {
     };
   }
 
-  private static FindHelpMateInterruptResult calculateHelpmate(Board board, Side c, int currentDepth,
+  private static FindHelpMateInterruptResult calculateHelpmate(HelpmateSearchBoard board, Side c, int currentDepth,
       List<LegalMove> mateList) {
     final var isIntendedWinnerHavingCheckmate = board.isCheckmate() && board.getHavingMove() == c.getOppositeSide();
     if (isIntendedWinnerHavingCheckmate) {
