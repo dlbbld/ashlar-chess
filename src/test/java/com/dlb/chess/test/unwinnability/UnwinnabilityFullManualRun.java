@@ -9,7 +9,7 @@ import com.dlb.chess.test.pgn.setup.PgnTestCaseCatalog;
 import com.dlb.chess.test.pgntest.enums.PgnTest;
 import com.dlb.chess.unwinnability.UnwinnableFullAnalyzer;
 
-public class UnwinnabilityFullRun {
+public class UnwinnabilityFullManualRun {
 
   public static void main(String[] args) {
 
