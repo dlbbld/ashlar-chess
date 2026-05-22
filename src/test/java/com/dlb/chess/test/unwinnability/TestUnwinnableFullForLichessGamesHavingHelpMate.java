@@ -72,7 +72,7 @@ class TestUnwinnableFullForLichessGamesHavingHelpMate {
 
   private static List<PgnTestCase> helpmateFixtures() {
     final PgnTestCaseList testCaseHavingHelpmateList = PgnTestCaseCatalog
-        .getTestList(PgnTest.CHA_LICHESS_QUICK_DEPTH_ABOVE_FOUR_HELPMATE);
+        .getTestList(PgnTest.CHA_LICHESS_QUICK_DEPTH_ABOVE_FOUR_WINNABLE_FOR_FLAGGING_WITH_HELPMATE);
     if (!RestrictTestConstants.IS_RESTRICT_UNWINNABLE_FULL_FOR_LICHESS_HELPMATE_TEST) {
       return testCaseHavingHelpmateList.list();
     }

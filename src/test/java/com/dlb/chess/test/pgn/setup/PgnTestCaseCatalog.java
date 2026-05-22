@@ -77,7 +77,7 @@ public class PgnTestCaseCatalog {
       case WCC2021 -> createTestCasesWcc201();
       case LAST_MOVE_ADDED_ACCIDENTALLY -> createTestCasesLastMoveAddedAccidentally();
       case CHA_LICHESS_QUICK_DEPTH_ABOVE_FOUR -> createTestCasesChaLichessQuickNotDepthThree();
-      case CHA_LICHESS_QUICK_DEPTH_ABOVE_FOUR_HELPMATE -> createTestCasesChaLichessQuickNotDepthThreeHelpmate();
+      case CHA_LICHESS_QUICK_DEPTH_ABOVE_FOUR_WINNABLE_FOR_FLAGGING_WITH_HELPMATE -> createTestCasesChaLichessQuickNotDepthThreeHelpmate();
       case CHA_LICHESS_QUICK_DEPTH_THREE -> createTestCasesChaLichessQuickDepthThree();
       case CHA_LICHESS_QUICK_DEPTH_FOUR -> createTestCasesChaLichessQuickDepthFour();
       case CHA_AMBRONA -> createTestCasesChaAmbrona();
@@ -3463,7 +3463,7 @@ public class PgnTestCaseCatalog {
     list.add(new PgnTestCase("lichess_V7eJ1RR9_helpmate.pgn", "", "", 14, 34, CheckmateOrStalemate.CHECKMATE, 1,
         InsufficientMaterial.WHITE_ONLY, "8/8/8/8/8/7k/8/q6K w - - 34 74"));
 
-    return new PgnTestCaseList(PgnTest.CHA_LICHESS_QUICK_DEPTH_ABOVE_FOUR_HELPMATE, list);
+    return new PgnTestCaseList(PgnTest.CHA_LICHESS_QUICK_DEPTH_ABOVE_FOUR_WINNABLE_FOR_FLAGGING_WITH_HELPMATE, list);
   }
 
   private static PgnTestCaseList createTestCasesChaLichessQuickDepthThree() {
