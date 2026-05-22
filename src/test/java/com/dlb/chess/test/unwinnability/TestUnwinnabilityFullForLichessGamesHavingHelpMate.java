@@ -23,9 +23,9 @@ import com.dlb.chess.unwinnability.UnwinnabilityFullAnalysis;
 import com.dlb.chess.unwinnability.UnwinnabilityFullVerdict;
 import com.dlb.chess.unwinnability.UnwinnableFullAnalyzer;
 
-class TestUnwinnableFullForLichessGamesHavingHelpMate {
+class TestUnwinnabilityFullForLichessGamesHavingHelpMate {
 
-  private static final Logger logger = Nulls.getLogger(TestUnwinnableFullForLichessGamesHavingHelpMate.class);
+  private static final Logger logger = Nulls.getLogger(TestUnwinnabilityFullForLichessGamesHavingHelpMate.class);
 
   /** Cap on files tested when the smoke restriction is active. */
   private static final int MAX_FILES = 10;

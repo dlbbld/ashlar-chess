@@ -16,9 +16,9 @@ import com.dlb.chess.test.unwinnability.againstcha.model.AmbronaUnwinnabilityVer
 import com.dlb.chess.unwinnability.UnwinnabilityFullVerdict;
 import com.dlb.chess.unwinnability.UnwinnableFullAnalyzer;
 
-class TestUnwinnableFullForLichessGamesNotAdjudicatedCorrectly {
+class TestUnwinnabilityFullForLichessGamesNotAdjudicatedCorrectly {
 
-  private static final Logger logger = Nulls.getLogger(TestUnwinnableFullForLichessGamesNotAdjudicatedCorrectly.class);
+  private static final Logger logger = Nulls.getLogger(TestUnwinnabilityFullForLichessGamesNotAdjudicatedCorrectly.class);
 
   @SuppressWarnings("static-method")
   @Test
