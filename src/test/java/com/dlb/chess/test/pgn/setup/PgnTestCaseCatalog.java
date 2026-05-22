@@ -3457,7 +3457,7 @@ public class PgnTestCaseCatalog {
         InsufficientMaterial.NONE, "7k/7Q/7K/2p3P1/2P5/8/8/8 b - - 0 59"));
     list.add(new PgnTestCase("lichess_zmelXKvA_helpmate.pgn", "", "", 23, 14, CheckmateOrStalemate.CHECKMATE, 1,
         InsufficientMaterial.WHITE_ONLY, "8/q7/8/8/8/8/K1k5/4b3 w - - 14 80"));
-    list.add(new PgnTestCase("test_lichess_V7eJ1RR9_helpmate.pgn", "", "", 14, 34, CheckmateOrStalemate.CHECKMATE, 1,
+    list.add(new PgnTestCase("lichess_V7eJ1RR9_helpmate.pgn", "", "", 14, 34, CheckmateOrStalemate.CHECKMATE, 1,
         InsufficientMaterial.WHITE_ONLY, "8/8/8/8/8/7k/8/q6K w - - 34 74"));
 
     return new PgnTestCaseList(PgnTest.CHA_LICHESS_QUICK_NOT_DEPTH_THREE_HELPMATE, list);
