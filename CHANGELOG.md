@@ -15,13 +15,16 @@ The **Helpmate analyzer board release**. `FindHelpmateExhaust` and `FindHelpMate
 - **`HelpmateSearchBoard` caches derived state per ply.** `legalMoves`, `isCheck`, `isCheckmate`, `isStalemate` are computed once via `refreshDerivedState()` on `move()` / construction; restored from a per-ply snapshot on `unmove()`.
 - **`TestHelpmateSearchBoard`** asserts state parity with `Board` (DynamicPosition, bitboardPosition, side, EP, castling, legalMoves, isCheck, isCheckmate, isStalemate, both-side insufficient-material) across a recursive search tree on representative castling / EP / pawn-promotion / queen-mate / king-corner FENs at depths 0–2.
 - **`UnwinnabilityMaterialBitboard.calculateIsInsufficientMaterial`** added — a single side / opposite-side material query that `HelpmateSearchBoard.isInsufficientMaterial` consumes, mirroring the rules in `InsufficientMaterialUtility` on the bitboard layer.
+- **New test classes for the Lichess "not adjudicated correctly" corpus.** `TestUnwinnableFullForLichessGamesNotAdjudicatedCorrectly` and `TestUnwinnableQuickForLichessGamesNotAdjudicatedCorrectly` assert UNWINNABLE for the non-flagging side on real Lichess games that Lichess mis-adjudicated as wins on time despite the position being a forced draw. Regression-set coverage anchored on the FIDE-rule expectation, not on another analyzer.
+- **Lichess unwinnable corpus reorganization.** The `cha/lichess/quick/notDepthThree` folder is renamed to `cha/lichess/quick/depthAboveFour`; the `CHA_LICHESS_QUICK_NOT_DEPTH_THREE` enum and its `_HELPMATE` companion are renamed to `CHA_LICHESS_QUICK_DEPTH_ABOVE_FOUR(_HELPMATE)`. The `CHA_LICHESS_NOT_QUICK` enum (single fixture) is folded into `DEPTH_ABOVE_FOUR` and dropped. The single `test_lichess_V7eJ1RR9_helpmate.pgn` fixture is renamed to `lichess_V7eJ1RR9_helpmate.pgn` to match the convention used by all other helpmate fixtures.
+- **`TestUnwinnableFullForLichessGamesHavingHelpMate` split into two `@Test` methods.** `verdictsAreWinnable` asserts the analyzer's verdict; `mateLinesActuallyCheckmate` asserts the returned mate line, played out, delivers checkmate. A regression in either now reports separately.
 
 ### Internal
 
 - **`FindHelpmateExhaust.calculateHelpmate(Board, int)`** keeps its public signature; internally constructs `HelpmateSearchBoard.from(board)` and delegates to a private overload. The board-was-changed invariant check now compares `DynamicPosition` / EP target (cheap) instead of re-serializing FEN.
 - **`FindHelpMateInterrupt.calculateHelpmate(Board, Side)`** follows the same pattern: public Board entry, private `HelpmateSearchBoard` recursion.
 - **`calculateStockfishFen` debug helper** rebuilt to derive FEN from `HelpmateSearchBoard` directly (`BitboardPositionUtility.calculatePiecePlacement`, manual castling-rights assembly, EP normalization). Still gated on `IS_DEBUG = false`.
-- **`TestUnwinnableFullForLichessGamesHavingHelpMate.calculateCorrespondingLichessGame`** strips a leading `test_` prefix in addition to `_helpmate`, fixing the `test_lichess_V7eJ1RR9_helpmate.pgn` / `lichess_V7eJ1RR9.pgn` fixture pair lookup.
+- **`CheckAgainstChaFull` removed** (144 lines) — superseded by the new `*NotAdjudicatedCorrectly` tests above.
 
 ## [11.0.0] - 2026-05-21
 
