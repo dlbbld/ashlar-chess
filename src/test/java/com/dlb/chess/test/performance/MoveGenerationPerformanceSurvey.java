@@ -25,7 +25,7 @@ public class MoveGenerationPerformanceSurvey {
   private static final int MEASURE_ROUNDS = 20;
 
   private static final PgnTest[] GROUPS = { PgnTest.MAX_MOVES, PgnTest.RANDOM_NO_REPETITION, PgnTest.WCC2021,
-      PgnTest.CHA_LICHESS_QUICK_NOT_DEPTH_THREE };
+      PgnTest.CHA_LICHESS_QUICK_DEPTH_ABOVE_FOUR };
 
   public static void main(String[] args) {
     for (final PgnTest pgnTest : GROUPS) {

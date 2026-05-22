@@ -34,7 +34,7 @@ class TestUnwinnableFullForLichessGamesHavingHelpMate {
   @Test
   void testFolder() throws Exception {
     final PgnTestCaseList testCaseHavingHelpmateList = PgnTestCaseCatalog
-        .getTestList(PgnTest.CHA_LICHESS_QUICK_NOT_DEPTH_THREE_HELPMATE);
+        .getTestList(PgnTest.CHA_LICHESS_QUICK_DEPTH_ABOVE_FOUR_HELPMATE);
 
     var processedFilesInFolder = 0;
     for (final PgnTestCase testCaseHavingHelpmate : testCaseHavingHelpmateList.list()) {

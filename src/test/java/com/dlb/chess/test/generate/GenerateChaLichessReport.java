@@ -20,7 +20,7 @@ public class GenerateChaLichessReport {
   private static final Logger logger = Nulls.getLogger(GenerateChaLichessReport.class);
 
   public static void main(String[] args) throws Exception {
-    generate(PgnTestCaseCatalog.getTestList(PgnTest.CHA_LICHESS_QUICK_NOT_DEPTH_THREE));
+    generate(PgnTestCaseCatalog.getTestList(PgnTest.CHA_LICHESS_QUICK_DEPTH_ABOVE_FOUR));
   }
 
   private static void generate(PgnTestCaseList testCaseList) throws Exception {

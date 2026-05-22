@@ -78,10 +78,9 @@ public abstract class AbstractCheckAgainstCha {
   static boolean isUseTestForCha(PgnTest pgnTest) {
     switch (pgnTest) {
       case BASIC_FORCED:
-      case CHA_LICHESS_QUICK_NOT_DEPTH_THREE:
+      case CHA_LICHESS_QUICK_DEPTH_ABOVE_FOUR:
       case CHA_LICHESS_QUICK_DEPTH_THREE:
       case CHA_LICHESS_QUICK_DEPTH_FOUR:
-      case CHA_LICHESS_NOT_QUICK:
       case CHA_AMBRONA:
       case CHA_PAWN_WALL_YES:
       case CHA_PAWN_WALL_NO:
