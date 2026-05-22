@@ -89,18 +89,10 @@ public final class LeanBoard {
    * Castling cannot be dropped from a tree-search legal-move set: a position whose only escape from check is a
    * castle would otherwise be misclassified as checkmate, and games where the winning line involves castling would
    * be silently truncated.
-   *
-   * <p>
-   * The castling bridge inside {@code BitboardLegalMoveFactory} currently consumes a
-   * {@link com.dlb.chess.board.StaticPosition}, derived per call via
-   * {@link BitboardPositionUtility#toStaticPosition}. That conversion is per-call cost and is the obvious
-   * optimisation target if {@code findHelpMate} profiling shows it dominating; replacing it with a cached
-   * StaticPosition or a bitboard-native castling check stays as a follow-on.
    */
   public ImmutableList<LegalMove> legalMoves() {
     final long enPassantBit = enPassantTarget == Square.NONE ? 0L : 1L << enPassantTarget.ordinal();
-    return BitboardLegalMoveFactory.calculateLegalMoves(bitboardPosition,
-        BitboardPositionUtility.toStaticPosition(bitboardPosition), havingMove, castlingRight(havingMove),
+    return BitboardLegalMoveFactory.calculateLegalMoves(bitboardPosition, havingMove, castlingRight(havingMove),
         enPassantBit);
   }
 
