@@ -23,7 +23,7 @@ import com.dlb.chess.unwinnability.UnwinnabilityFullAnalysis;
 import com.dlb.chess.unwinnability.UnwinnabilityFullVerdict;
 import com.dlb.chess.unwinnability.UnwinnableFullAnalyzer;
 
-class TestUnwinnableFullForLichessGamesHavingHelpMate {
+class    {
 
   private static final Logger logger = Nulls.getLogger(TestUnwinnableFullForLichessGamesHavingHelpMate.class);
 
@@ -80,11 +80,6 @@ class TestUnwinnableFullForLichessGamesHavingHelpMate {
   private static String calculateCorrespondingLichessGame(String lichessGameHelpmate) {
     var withoutExtension = PgnExtensionUtility.removePgnExtension(lichessGameHelpmate);
     withoutExtension = Nulls.replace(withoutExtension, "_helpmate", "");
-    // Some helpmate fixtures (e.g. test_lichess_V7eJ1RR9_helpmate.pgn) carry a "test_" prefix
-    // that the corresponding lichess game (lichess_V7eJ1RR9.pgn) does not — strip it for the lookup.
-    if (withoutExtension.startsWith("test_")) {
-      withoutExtension = withoutExtension.substring("test_".length());
-    }
     return PgnExtensionUtility.addPgnExtension(withoutExtension);
   }
 }
