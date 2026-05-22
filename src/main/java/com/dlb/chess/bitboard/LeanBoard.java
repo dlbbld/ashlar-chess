@@ -6,6 +6,7 @@ import java.util.Deque;
 import com.dlb.chess.board.Board;
 import com.dlb.chess.board.enums.CastlingMove;
 import com.dlb.chess.board.enums.CastlingRight;
+import com.dlb.chess.board.enums.Piece;
 import com.dlb.chess.board.enums.PieceType;
 import com.dlb.chess.board.enums.Side;
 import com.dlb.chess.board.enums.Square;
@@ -99,13 +100,14 @@ public final class LeanBoard {
   /**
    * Full-position Zobrist key combining {@link BitboardPosition#zobristPieces} with side-to-move, castling rights,
    * and en-passant file contributions from {@link ZobristKeys}. Suitable as a transposition map key for tree search:
-   * two LeanBoard states with the same piece placement, side, castling rights, and EP file produce the same key.
+   * two LeanBoard states with the same piece placement, side, castling rights, and (normalized) EP file produce the
+   * same key.
    *
    * <p>
-   * The EP contribution uses the raw {@link #enPassantTarget} field — not a normalized "EP only if capturable"
-   * version. That means two positions differing only in a phantom EP target hash differently and miss the
-   * transposition cache. Acceptable for correctness (cache misses are slower, not wrong); a future optimisation
-   * could normalise the EP target via a bitboard adjacency check before mixing it in.
+   * EP normalization matches {@link com.dlb.chess.common.model.DynamicPosition}: the EP file contributes only when an
+   * opposing pawn can <em>actually</em> capture en passant (king-safety considered). Without this normalization the
+   * helpmate-search transposition cache misses on every pawn double-push in lines without a capturer present — common
+   * in unwinnability fixtures — exploding the search node count.
    */
   public long zobristKey() {
     long key = bitboardPosition.zobristPieces();
@@ -124,10 +126,39 @@ public final class LeanBoard {
     if (castlingRightBlack.getHasQueenSide()) {
       key ^= ZobristKeys.castlingBlackQueenSide();
     }
-    if (enPassantTarget != Square.NONE) {
+    if (calculateIsEnPassantCapturePossible()) {
       key ^= ZobristKeys.enPassantFile(enPassantTarget.ordinal() % 8);
     }
     return key;
+  }
+
+  private boolean calculateIsEnPassantCapturePossible() {
+    if (enPassantTarget == Square.NONE) {
+      return false;
+    }
+    final Square squareBehind = Square.calculateBehindSquare(havingMove, enPassantTarget);
+    final Piece ownPawn = Piece.calculate(havingMove, PieceType.PAWN);
+
+    if (Square.calculateHasRightSquare(havingMove, squareBehind)) {
+      final Square squareRight = Square.calculateRightSquare(havingMove, squareBehind);
+      if (bitboardPosition.get(squareRight) == ownPawn) {
+        final MoveSpecification moveSpec = new MoveSpecification(squareRight, enPassantTarget);
+        if (!bitboardPosition.afterMove(moveSpec, havingMove).isInCheck(havingMove)) {
+          return true;
+        }
+      }
+    }
+
+    if (Square.calculateHasLeftSquare(havingMove, squareBehind)) {
+      final Square squareLeft = Square.calculateLeftSquare(havingMove, squareBehind);
+      if (bitboardPosition.get(squareLeft) == ownPawn) {
+        final MoveSpecification moveSpec = new MoveSpecification(squareLeft, enPassantTarget);
+        if (!bitboardPosition.afterMove(moveSpec, havingMove).isInCheck(havingMove)) {
+          return true;
+        }
+      }
+    }
+    return false;
   }
 
   public boolean isInCheck() {

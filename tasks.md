@@ -290,9 +290,9 @@ The motivation is the `findHelpMate` cost in `UnwinnableFullAnalyzer`. Even with
 
 ### Phase 1 — Lean analyzer board
 
-**Step 1.1** — Design + new lightweight position class. Minimal state: `BitboardPosition` + side-to-move + en-passant target + castling rights + halfmove clock. No SAN/LAN lists, no disambiguation, no full history. Keyed on `BitboardPosition.zobristPieces()` + side/castling/EP contributions for transposition.
+- ✅ **Step 1.1** — Design + lightweight position class landed. `LeanBoard` carries `BitboardPosition` + side-to-move + EP target + per-side castling rights + halfmove clock, snapshot-style undo stack, `legalMoves()` via `BitboardLegalMoveFactory`, and `zobristKey()` keyed on `BitboardPosition.zobristPieces()` + side/castling/EP. Cherry-picked across three WIP commits from `origin/feature/lean-bitboard-helpmate-wip` and adapted the `legalMoves()` call to the post-11.0.0 `BitboardLegalMoveFactory` signature (castling now inlined; no per-call `StaticPosition`). `TestLeanBoard`'s three corpus differential tests confirm bitboard / side / EP / castling / halfmove parity with `Board` across the full PGN corpus, including every legal move + unmove cycle.
 
-**Step 1.2** — `FindHelpmateExhaust` consumes the lean board. Helpmate transposition map switches from `DynamicPosition` to `long` Zobrist key.
+- ✅ **Step 1.2** — `FindHelpmateExhaust` rewritten to consume `LeanBoard`. Recursion takes `LeanBoard` and uses its `havingMove()` / `isCheckmate()` / `legalMoves()` / `move()` / `unmove()` / `bitboardPosition()`. `calculateHelpmate(Board, int)` keeps its public signature and constructs the LeanBoard once at entry. Transposition map: `HashMap<Long, Integer>` keyed on `LeanBoard.zobristKey()`. Dead debug helpers (`IS_DEBUG` gate, `calculateStockfishFen`, EP-erase utility) and the now-vacuous FEN-invariant check removed. `LeanBoard.zobristKey()` now normalizes EP: file contributes only when an opposing pawn can actually capture en passant (king-safety considered), matching `DynamicPosition`'s rule — without this, phantom EP targets cause cache misses across pawn-ending lines and explode the search.
 
 **Step 1.3** — Baseline `findHelpMate` runtime on representative unwinnability fixtures. Record in tasks.md.
 

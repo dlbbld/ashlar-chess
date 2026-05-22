@@ -8,16 +8,12 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
 
 import com.dlb.chess.bitboard.BitboardPosition;
+import com.dlb.chess.bitboard.LeanBoard;
 import com.dlb.chess.board.Board;
 import com.dlb.chess.board.enums.Side;
-import com.dlb.chess.board.enums.Square;
 import com.dlb.chess.board.enums.SquareType;
 import com.dlb.chess.common.Nulls;
-import com.dlb.chess.common.exceptions.ProgrammingMistakeException;
-import com.dlb.chess.common.model.DynamicPosition;
 import com.dlb.chess.common.ucimove.utility.UciMoveUtility;
-import com.dlb.chess.fen.FenParserRaw;
-import com.dlb.chess.fen.model.FenRaw;
 import com.dlb.chess.model.LegalMove;
 import com.dlb.chess.model.UciMove;
 
@@ -27,20 +23,20 @@ import com.dlb.chess.model.UciMove;
 //limits of the search. The Score routine is defined in Figure 12 (Appendix A).
 class FindHelpmateExhaust {
 
-  private static final boolean IS_DEBUG = false;
-
   private static final Logger logger = Nulls.getLogger(FindHelpmateExhaust.class);
 
   // empirically enough
   private static final int LOCAL_NODES_BOUND = 10000;
 
   private final Side color;
-  private final HashMap<DynamicPosition, Integer> transpositionMap = new HashMap<>();
+  // Zobrist-keyed: identifies a node by LeanBoard.zobristKey (piece placement + side + castling + EP file).
+  // Phantom EP targets are NOT normalized away, so positions that DynamicPosition would have collapsed are
+  // visited separately (more cache misses, no soundness loss). 64-bit collision risk is negligible at the
+  // node counts FindHelpmateExhaust explores.
+  private final HashMap<Long, Integer> transpositionMap = new HashMap<>();
 
   private int localNodeCount = 0;
 
-  private int evalCounter = 0;
-  private final List<String> evalFenList = new ArrayList<>();
   private boolean isCanExhaust = true;
   private List<LegalMove> moveEvaluationList = new ArrayList<>();
 
@@ -50,8 +46,6 @@ class FindHelpmateExhaust {
 
   public FindHelpmateAnalysis calculateHelpmate(Board board, int maxDepth) {
 
-    final String invariant = board.getFen();
-
     if (maxDepth != 0 && maxDepth % 10 == 0) {
       logger.printf(Level.DEBUG, "maxDepth=%d", maxDepth);
     }
@@ -60,18 +54,8 @@ class FindHelpmateExhaust {
     this.isCanExhaust = true;
     this.moveEvaluationList = new ArrayList<>();
 
-    final var findHelpmate = findHelpmate(board, 0, maxDepth, 0, false);
-
-    if (!invariant.equals(board.getFen())) {
-      throw new ProgrammingMistakeException("Board was changed");
-    }
-
-    if (IS_DEBUG) {
-      logger.printf(Level.DEBUG, "Evaluated %d FEN positions", evalFenList.size());
-      for (final String fen : evalFenList) {
-        logger.debug(fen);
-      }
-    }
+    final LeanBoard leanBoard = LeanBoard.fromBoard(board);
+    final var findHelpmate = findHelpmate(leanBoard, 0, maxDepth, 0, false);
 
     switch (findHelpmate) {
       case TRUE:
@@ -89,11 +73,11 @@ class FindHelpmateExhaust {
 
   // Inputs: position, depth (int), maxDepth (int)
   // Output: bool (true if a checkmate sequence was found, false otherwise)
-  private FindHelpmateRecursionResult findHelpmate(Board board, int depth, int maxDepth, int actualDepth,
+  private FindHelpmateRecursionResult findHelpmate(LeanBoard leanBoard, int depth, int maxDepth, int actualDepth,
       boolean isPastProgress) {
 
     // 1: if the intended winner is checkmating their opponent in pos then return true
-    if (board.getHavingMove() == color.getOppositeSide() && board.isCheckmate()) {
+    if (leanBoard.havingMove() == color.getOppositeSide() && leanBoard.isCheckmate()) {
       return FindHelpmateRecursionResult.TRUE;
     }
 
@@ -108,7 +92,7 @@ class FindHelpmateExhaust {
     // set d := limits.max-depth - depth
     final var movesLeft = maxDepth - depth;
 
-    final DynamicPosition cacheKey = board.getDynamicPosition();
+    final long cacheKey = leanBoard.zobristKey();
     // 5: if (pos,D) in table with D >= d then return false (-> pos was already analyzed)
     if (calculateIsInTranspositionTableWithEnoughDepth(cacheKey, movesLeft)) {
       return FindHelpmateRecursionResult.FALSE;
@@ -130,7 +114,7 @@ class FindHelpmateExhaust {
     // timeouts, so the helpmate search must continue past them. The previous fivefold/seventy-five gate
     // here is removed for paper compliance.
 
-    final BitboardPosition bitboardPosition = board.getBitboardPosition();
+    final BitboardPosition bitboardPosition = leanBoard.bitboardPosition();
     if (UnwinnabilityMaterialBitboard.calculateHasKingOnly(color, bitboardPosition)
         || UnwinnabilityMaterialBitboard.calculateHasNoPawns(color.getOppositeSide(), bitboardPosition)
             && calculateIsNeedLoserPromotion(color, bitboardPosition)) {
@@ -138,11 +122,11 @@ class FindHelpmateExhaust {
     }
 
     // 7: for every legal move m in pos do:
-    for (final LegalMove legalMove : board.getLegalMoves()) {
-      // 8: let inc = match Score(pos,m) with Normal ! 0 | Reward ! 1 | Punish ! Ã¢Ë†â€™2
-      ScoreResult score = Score.score(color, board.getHavingMove(), bitboardPosition, legalMove);
+    for (final LegalMove legalMove : leanBoard.legalMoves()) {
+      // 8: let inc = match Score(pos,m) with Normal ! 0 | Reward ! 1 | Punish ! -2
+      ScoreResult score = Score.score(color, leanBoard.havingMove(), bitboardPosition, legalMove);
 
-      if (board.getHavingMove() == color.getOppositeSide()
+      if (leanBoard.havingMove() == color.getOppositeSide()
           && UnwinnabilityMaterialBitboard.calculateHasQueen(color.getOppositeSide(), bitboardPosition)) {
         score = score == ScoreResult.REWARD ? ScoreResult.NORMAL : score;
       }
@@ -168,27 +152,8 @@ class FindHelpmateExhaust {
           throw new IllegalArgumentException();
       }
 
-      if (IS_DEBUG) {
-        final String uciMoveStr = UciMoveUtility
-            .convertMoveSpecificationToUci(legalMove.havingMove(), legalMove.moveSpecification()).text();
-        final var out = uciMoveStr + " " + newDepth;
-        logger.debug(out);
-        evalCounter++;
-        final String evaluateStockfishFen = calculateStockfishFen(board);
-
-        if (evaluateStockfishFen.startsWith("r1bqkb1r/pppppppp/8/8/5P2/8/2n3P1/n1K5 w kq")) {
-          logger.debug("Reached debug FEN marker");
-        }
-
-        if (evalCounter == 3527) {
-          logger.debug("Reached debug evaluation counter marker");
-        }
-
-        evalFenList.add(evaluateStockfishFen);
-      }
-
       // 9: if Find-Helpmatec(pos.move(m), depth+1, maxDepth+inc) then return true
-      board.move(legalMove.moveSpecification());
+      leanBoard.move(legalMove.moveSpecification());
 
       moveEvaluationList.add(legalMove);
 
@@ -197,8 +162,8 @@ class FindHelpmateExhaust {
       // 3: increase cnt
       localNodeCount++;
 
-      final var findHelpmate = findHelpmate(board, newDepth, maxDepth, actualDepth + 1, isProgress);
-      board.unmove();
+      final var findHelpmate = findHelpmate(leanBoard, newDepth, maxDepth, actualDepth + 1, isProgress);
+      leanBoard.unmove();
       switch (findHelpmate) {
         case TRUE:
           return findHelpmate;
@@ -216,14 +181,15 @@ class FindHelpmateExhaust {
 
   }
 
-  private boolean calculateIsInTranspositionTableWithEnoughDepth(DynamicPosition cacheKey, int movesLeft) {
-    if (!transpositionMap.containsKey(cacheKey)) {
+  private boolean calculateIsInTranspositionTableWithEnoughDepth(long cacheKey, int movesLeft) {
+    final Integer stored = transpositionMap.get(cacheKey);
+    if (stored == null) {
       return false;
     }
-    return Nulls.get(transpositionMap, cacheKey).intValue() >= movesLeft;
+    return stored.intValue() >= movesLeft;
   }
 
-  private void store(DynamicPosition cacheKey, int movesLeft) {
+  private void store(long cacheKey, int movesLeft) {
     transpositionMap.put(cacheKey, movesLeft);
   }
 
@@ -295,60 +261,6 @@ class FindHelpmateExhaust {
       result.add(UciMoveUtility.convertMoveSpecificationToUci(legalMove.havingMove(), legalMove.moveSpecification()));
     }
     return result;
-  }
-
-  private static String calculateStockfishFen(Board board) {
-
-    if (!calculateIsEraseEnPassantCaptureTargetSquare(board)) {
-      return board.getFen();
-    }
-
-    final FenRaw fenRaw = FenParserRaw.parseFenRaw(board.getFen());
-
-    final StringBuilder fenSquareErased = new StringBuilder();
-
-    fenSquareErased.append(fenRaw.piecePlacement());
-    fenSquareErased.append(" ");
-
-    fenSquareErased.append(fenRaw.havingMove());
-    fenSquareErased.append(" ");
-
-    fenSquareErased.append(fenRaw.castlingRightBothStr());
-    fenSquareErased.append(" ");
-
-    fenSquareErased.append("-");
-    fenSquareErased.append(" ");
-
-    fenSquareErased.append(fenRaw.halfMoveClock());
-    fenSquareErased.append(" ");
-
-    fenSquareErased.append(fenRaw.fullMoveNumber());
-
-    return Nulls.toString(fenSquareErased);
-  }
-
-  private static boolean calculateIsEraseEnPassantCaptureTargetSquare(Board board) {
-    final Square enPassantCaptureTargetSquare = board.getEnPassantCaptureTargetSquare();
-
-    if (enPassantCaptureTargetSquare == Square.NONE) {
-      return false;
-    }
-
-    // The just-double-pushed (opponent) pawn sits one rank ahead of the EP target from the OPPONENT's perspective
-    // (= one rank back from the EP target from the side-to-move's perspective). The EP capture is realisable iff a
-    // side-to-move pawn sits on either file-adjacent square on the same rank as that opponent pawn.
-    final Square pawnTwoAdvanceSquare = Square.calculateAheadSquare(board.getHavingMove().getOppositeSide(),
-        enPassantCaptureTargetSquare);
-    final int pawnOrdinal = pawnTwoAdvanceSquare.ordinal();
-    final int pawnFile = pawnOrdinal % 8;
-    final long pawnBit = 1L << pawnOrdinal;
-    final long leftAdjacent = pawnFile > 0 ? pawnBit >>> 1 : 0L;
-    final long rightAdjacent = pawnFile < 7 ? pawnBit << 1 : 0L;
-    final long adjacentSameRank = leftAdjacent | rightAdjacent;
-    final BitboardPosition bitboardPosition = board.getBitboardPosition();
-    final long sideToMovePawns = board.getHavingMove() == Side.WHITE ? bitboardPosition.whitePawns()
-        : bitboardPosition.blackPawns();
-    return (adjacentSameRank & sideToMovePawns) == 0L;
   }
 
 }
