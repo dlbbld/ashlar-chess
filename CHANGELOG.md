@@ -4,6 +4,25 @@ Releases from 3.3 onward. Earlier history is in git tags only.
 
 ## [Unreleased]
 
+## [12.0.0] - 2026-05-22
+
+The **Helpmate analyzer board release**. `FindHelpmateExhaust` and `FindHelpMateInterrupt` no longer recurse on the full `Board` at every node — SAN/LAN lists, full move history, repetition counts, halfmove-clock list, etc., are all cost the tree search never used. A new package-private `HelpmateSearchBoard` (`com.dlb.chess.unwinnability`) carries only what the search needs: a `DynamicPosition` plus the raw EP target plus cached derived state (legal moves, isCheck, isCheckmate, isStalemate). One `HelpmateSearchBoard.from(Board)` at entry; the recursion runs on it.
+
+### Notable
+
+- **Helpmate search uses `HelpmateSearchBoard` on every recursion node.** Package-private in `com.dlb.chess.unwinnability`. No public API addition. Built once from the caller's `Board`; the caller's `Board` is never mutated by the search.
+- **Transposition cache keys on `DynamicPosition`.** Already EP-normalized and king-safety-aware — no Zobrist composition needed in the search layer. The map is `HashMap<DynamicPosition, Integer>`.
+- **`HelpmateSearchBoard` caches derived state per ply.** `legalMoves`, `isCheck`, `isCheckmate`, `isStalemate` are computed once via `refreshDerivedState()` on `move()` / construction; restored from a per-ply snapshot on `unmove()`.
+- **`TestHelpmateSearchBoard`** asserts state parity with `Board` (DynamicPosition, bitboardPosition, side, EP, castling, legalMoves, isCheck, isCheckmate, isStalemate, both-side insufficient-material) across a recursive search tree on representative castling / EP / pawn-promotion / queen-mate / king-corner FENs at depths 0–2.
+- **`UnwinnabilityMaterialBitboard.calculateIsInsufficientMaterial`** added — a single side / opposite-side material query that `HelpmateSearchBoard.isInsufficientMaterial` consumes, mirroring the rules in `InsufficientMaterialUtility` on the bitboard layer.
+
+### Internal
+
+- **`FindHelpmateExhaust.calculateHelpmate(Board, int)`** keeps its public signature; internally constructs `HelpmateSearchBoard.from(board)` and delegates to a private overload. The board-was-changed invariant check now compares `DynamicPosition` / EP target (cheap) instead of re-serializing FEN.
+- **`FindHelpMateInterrupt.calculateHelpmate(Board, Side)`** follows the same pattern: public Board entry, private `HelpmateSearchBoard` recursion.
+- **`calculateStockfishFen` debug helper** rebuilt to derive FEN from `HelpmateSearchBoard` directly (`BitboardPositionUtility.calculatePiecePlacement`, manual castling-rights assembly, EP normalization). Still gated on `IS_DEBUG = false`.
+- **`TestUnwinnableFullForLichessGamesHavingHelpMate.calculateCorrespondingLichessGame`** strips a leading `test_` prefix in addition to `_helpmate`, fixing the `test_lichess_V7eJ1RR9_helpmate.pgn` / `lichess_V7eJ1RR9.pgn` fixture pair lookup.
+
 ## [11.0.0] - 2026-05-21
 
 The **Role-inversion release**. With 10.0.0 in hand the per-move data path was bitboard-only, but `StaticPosition` was still a peer of `BitboardPosition` in `src/main/` — the public `Fen` record carried a `StaticPosition` field, `Board.getStaticPosition()` was a public derived view, the SAN / FEN / analyzer layers all still consumed `StaticPosition` through their public surface. This release finishes the inversion: production speaks only `BitboardPosition`, and the entire `StaticPosition` subtree (record, `StaticPositionUtility`, `com.dlb.chess.squares.*` consumer subset, `AbstractLegalMoves` + per-piece `*LegalMoves`, `UnwinnabilityMaterial`) is physically relocated to `src/test/java/` as the permanent differential-test oracle. **Not deleted. Relocated.** Project policy from this point on: every primitive on `BitboardPosition` is asserted against the relocated `StaticPosition` oracle on every fixture in the corpus, for every supported release going forward. See `specification.md` §4.1 and §6.1.
