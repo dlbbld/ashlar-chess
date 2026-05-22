@@ -25,18 +25,18 @@ class FindHelpMateInterrupt {
   // Database except three were correctly identified by Unwinnablequick.
   private static final int D = 9;
 
-  public static FindHelpmateResult calculateHelpmate(Board board, Side c) {
+  public static FindHelpmateAnalysis calculateHelpmate(Board board, Side c) {
     return calculateHelpmate(HelpmateSearchBoard.from(board), c);
   }
 
-  private static FindHelpmateResult calculateHelpmate(HelpmateSearchBoard board, Side c) {
+  private static FindHelpmateAnalysis calculateHelpmate(HelpmateSearchBoard board, Side c) {
     final List<LegalMove> mateList = new ArrayList<>();
     final FindHelpMateInterruptResult result = calculateHelpmate(board, c, 0, mateList);
 
     return switch (result) {
-      case TRUE -> FindHelpmateResult.YES;
-      case FALSE -> FindHelpmateResult.NO;
-      case INTERRUPTED -> FindHelpmateResult.UNKNOWN;
+      case TRUE -> new FindHelpmateAnalysis(FindHelpmateResult.YES, 0, convertLegalMoveList(mateList));
+      case FALSE -> new FindHelpmateAnalysis(FindHelpmateResult.NO, 0, new ArrayList<>());
+      case INTERRUPTED -> new FindHelpmateAnalysis(FindHelpmateResult.UNKNOWN, 0, new ArrayList<>());
       default -> throw new IllegalArgumentException();
     };
   }
@@ -83,6 +83,14 @@ class FindHelpMateInterrupt {
       return FindHelpMateInterruptResult.INTERRUPTED;
     }
     return FindHelpMateInterruptResult.FALSE;
+  }
+
+  private static List<UciMove> convertLegalMoveList(List<LegalMove> moveProgressList) {
+    final List<UciMove> result = new ArrayList<>();
+    for (final LegalMove legalMove : moveProgressList) {
+      result.add(UciMoveUtility.convertMoveSpecificationToUci(legalMove.havingMove(), legalMove.moveSpecification()));
+    }
+    return result;
   }
 
 }

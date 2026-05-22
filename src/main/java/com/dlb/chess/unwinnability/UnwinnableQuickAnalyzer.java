@@ -1,7 +1,9 @@
 package com.dlb.chess.unwinnability;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -12,14 +14,16 @@ import com.dlb.chess.board.enums.Side;
 import com.dlb.chess.common.Nulls;
 import com.dlb.chess.common.exceptions.ProgrammingMistakeException;
 import com.dlb.chess.common.model.DynamicPosition;
+import com.dlb.chess.common.ucimove.utility.UciMoveUtility;
 import com.dlb.chess.fen.model.Fen;
 import com.dlb.chess.model.LegalMove;
+import com.dlb.chess.model.UciMove;
 
 public class UnwinnableQuickAnalyzer {
 
   private static final boolean IS_ALIGN_QUICK_WITH_AMBRONA_REFERENCE_IMPLEMENTATION = true;
 
-  public static UnwinnabilityQuickVerdict unwinnableQuick(Board board, Side c) {
+  public static UnwinnabilityQuickAnalysis unwinnableQuick(Board board, Side c) {
     return unwinnableQuick(board, c, false, new MobilitySolution());
   }
 
@@ -29,7 +33,7 @@ public class UnwinnableQuickAnalyzer {
    * dead-position auto-detect (which itself runs this analyzer). Repetition history from the caller's game is lost on
    * the fresh board — acceptable for the quick check, whose verdict is conservative anyway.
    */
-  public static UnwinnabilityQuickVerdict unwinnableQuick(Board input, Side c, boolean isHasMobilitySolution,
+  public static UnwinnabilityQuickAnalysis unwinnableQuick(Board input, Side c, boolean isHasMobilitySolution,
       MobilitySolution calculatedMobilitySolution) {
     final Board board = copyCurrentPositionForQuickSearch(input);
 
@@ -40,6 +44,7 @@ public class UnwinnableQuickAnalyzer {
     var isCanUseMobilitySolution = true;
     var isForcedMove = true;
     var countHalfmoves = 0;
+    final List<UciMove> forcedMoveLine = new ArrayList<>();
     final Set<DynamicPosition> forcedPositionSet = new HashSet<>();
     while (isForcedMove && forcedPositionSet.add(board.getDynamicPosition())) {
       isCanUseMobilitySolution = false;
@@ -51,9 +56,9 @@ public class UnwinnableQuickAnalyzer {
           throw new ProgrammingMistakeException("Board was changed");
         }
         if (sideBeingCheckmated == c) {
-          return UnwinnabilityQuickVerdict.UNWINNABLE;
+          return analysis(UnwinnabilityQuickVerdict.UNWINNABLE);
         }
-        return calculateWinnableVerdict();
+        return winnableAnalysis(forcedMoveLine);
       }
 
       if (board.isInsufficientMaterial(c) || board.isStalemate()) {
@@ -61,12 +66,14 @@ public class UnwinnableQuickAnalyzer {
         if (!invariant.equals(board.getFen())) {
           throw new ProgrammingMistakeException("Board was changed");
         }
-        return UnwinnabilityQuickVerdict.UNWINNABLE;
+        return analysis(UnwinnabilityQuickVerdict.UNWINNABLE);
       }
 
       isForcedMove = board.getLegalMoves().size() == 1;
       if (isForcedMove) {
         final LegalMove legalMove = Nulls.getFirst(board.getLegalMoves());
+        forcedMoveLine.add(UciMoveUtility.convertMoveSpecificationToUci(legalMove.havingMove(),
+            legalMove.moveSpecification()));
         board.move(legalMove.moveSpecification());
         countHalfmoves++;
       }
@@ -80,21 +87,21 @@ public class UnwinnableQuickAnalyzer {
       throw new ProgrammingMistakeException("Board was changed");
     }
 
-    switch (checkmateSearchResult) {
+    switch (checkmateSearchResult.findHelpmateResult()) {
       case YES:
         // 3: if checkmate was found on the previous search then return Winnable
         unperformHalfmoves(board, countHalfmoves);
         if (!invariant.equals(board.getFen())) {
           throw new ProgrammingMistakeException("Board was changed");
         }
-        return calculateWinnableVerdict();
+        return winnableAnalysis(forcedMoveLine, checkmateSearchResult.mateLine());
       case NO:
         // 4: else if the search was not interrupted then return Unwinnable
         unperformHalfmoves(board, countHalfmoves);
         if (!invariant.equals(board.getFen())) {
           throw new ProgrammingMistakeException("Board was changed");
         }
-        return UnwinnabilityQuickVerdict.UNWINNABLE;
+        return analysis(UnwinnabilityQuickVerdict.UNWINNABLE);
       case UNKNOWN:
         break;
       default:
@@ -118,7 +125,7 @@ public class UnwinnableQuickAnalyzer {
         if (!invariant.equals(board.getFen())) {
           throw new ProgrammingMistakeException("Board was changed");
         }
-        return UnwinnabilityQuickVerdict.UNWINNABLE;
+        return analysis(UnwinnabilityQuickVerdict.UNWINNABLE);
       }
     }
 
@@ -150,7 +157,7 @@ public class UnwinnableQuickAnalyzer {
         if (!invariant.equals(board.getFen())) {
           throw new ProgrammingMistakeException("Board was changed");
         }
-        return UnwinnabilityQuickVerdict.UNWINNABLE;
+        return analysis(UnwinnabilityQuickVerdict.UNWINNABLE);
       }
     }
 
@@ -159,7 +166,7 @@ public class UnwinnableQuickAnalyzer {
     if (!invariant.equals(board.getFen())) {
       throw new ProgrammingMistakeException("Board was changed");
     }
-    return UnwinnabilityQuickVerdict.POSSIBLY_WINNABLE;
+    return analysis(UnwinnabilityQuickVerdict.POSSIBLY_WINNABLE);
   }
 
   private static boolean calculateHasOnlyPawnsBishopsAndKings(BitboardPosition bitboardPosition) {
@@ -265,8 +272,18 @@ public class UnwinnableQuickAnalyzer {
     return (int) (result & 0xFFL);
   }
 
-  private static UnwinnabilityQuickVerdict calculateWinnableVerdict() {
-    return UnwinnabilityQuickVerdict.WINNABLE;
+  private static UnwinnabilityQuickAnalysis analysis(UnwinnabilityQuickVerdict verdict) {
+    return new UnwinnabilityQuickAnalysis(verdict, new ArrayList<>());
+  }
+
+  private static UnwinnabilityQuickAnalysis winnableAnalysis(List<UciMove> mateLine) {
+    return new UnwinnabilityQuickAnalysis(UnwinnabilityQuickVerdict.WINNABLE, new ArrayList<>(mateLine));
+  }
+
+  private static UnwinnabilityQuickAnalysis winnableAnalysis(List<UciMove> forcedMoveLine, List<UciMove> helpmateLine) {
+    final List<UciMove> mateLine = new ArrayList<>(forcedMoveLine);
+    mateLine.addAll(helpmateLine);
+    return winnableAnalysis(mateLine);
   }
 
   private static void unperformHalfmoves(Board board, int countHalfmoves) {

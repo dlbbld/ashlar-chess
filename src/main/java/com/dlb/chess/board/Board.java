@@ -948,8 +948,10 @@ public class Board {
   }
 
   public DeadPositionQuick isDeadPositionQuick() {
-    final UnwinnabilityQuickVerdict unwinnableWhite = UnwinnableQuickAnalyzer.unwinnableQuick(this, Side.WHITE);
-    final UnwinnabilityQuickVerdict unwinnableBlack = UnwinnableQuickAnalyzer.unwinnableQuick(this, Side.BLACK);
+    final UnwinnabilityQuickVerdict unwinnableWhite = UnwinnableQuickAnalyzer.unwinnableQuick(this, Side.WHITE)
+        .verdict();
+    final UnwinnabilityQuickVerdict unwinnableBlack = UnwinnableQuickAnalyzer.unwinnableQuick(this, Side.BLACK)
+        .verdict();
     if (unwinnableWhite == UnwinnabilityQuickVerdict.UNWINNABLE
         && unwinnableBlack == UnwinnabilityQuickVerdict.UNWINNABLE) {
       return DeadPositionQuick.DEAD_POSITION;
@@ -989,10 +991,10 @@ public class Board {
     if (!isDetectDeadPositionUnwinnable) {
       return false;
     }
-    if (UnwinnableQuickAnalyzer.unwinnableQuick(this, Side.WHITE) != UnwinnabilityQuickVerdict.UNWINNABLE) {
+    if (UnwinnableQuickAnalyzer.unwinnableQuick(this, Side.WHITE).verdict() != UnwinnabilityQuickVerdict.UNWINNABLE) {
       return false;
     }
-    return UnwinnableQuickAnalyzer.unwinnableQuick(this, Side.BLACK) == UnwinnabilityQuickVerdict.UNWINNABLE;
+    return UnwinnableQuickAnalyzer.unwinnableQuick(this, Side.BLACK).verdict() == UnwinnabilityQuickVerdict.UNWINNABLE;
   }
 
   public DeadPositionFull isDeadPositionFull() {
@@ -1012,7 +1014,7 @@ public class Board {
   }
 
   public UnwinnabilityQuickVerdict isUnwinnableQuick(Side side) {
-    return UnwinnableQuickAnalyzer.unwinnableQuick(this, side);
+    return UnwinnableQuickAnalyzer.unwinnableQuick(this, side).verdict();
   }
 
   public UnwinnabilityFullVerdict isUnwinnableFull(Side side) {

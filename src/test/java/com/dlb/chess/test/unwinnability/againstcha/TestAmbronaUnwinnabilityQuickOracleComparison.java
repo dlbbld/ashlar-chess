@@ -63,12 +63,12 @@ class TestAmbronaUnwinnabilityQuickOracleComparison {
         logger.info(testCase.pgnName());
 
         final UnwinnabilityQuickVerdict unwinnableQuickWhite = UnwinnableQuickAnalyzer.unwinnableQuick(board,
-            Side.WHITE);
+            Side.WHITE).verdict();
         check(testCase, Side.WHITE, AmbronaUnwinnabilityOracle.get(testCase.finalFen()).quickWhite(),
             unwinnableQuickWhite, failureList, remainingAcceptedDifferenceSet);
 
         final UnwinnabilityQuickVerdict unwinnableQuickBlack = UnwinnableQuickAnalyzer.unwinnableQuick(board,
-            Side.BLACK);
+            Side.BLACK).verdict();
         check(testCase, Side.BLACK, AmbronaUnwinnabilityOracle.get(testCase.finalFen()).quickBlack(),
             unwinnableQuickBlack, failureList, remainingAcceptedDifferenceSet);
       }
@@ -120,7 +120,7 @@ class TestAmbronaUnwinnabilityQuickOracleComparison {
   void testStartPosition() {
     final Board board = new Board(false);
     assertEquals(UnwinnabilityQuickVerdict.POSSIBLY_WINNABLE,
-        UnwinnableQuickAnalyzer.unwinnableQuick(board, board.getHavingMove().getOppositeSide()));
+        UnwinnableQuickAnalyzer.unwinnableQuick(board, board.getHavingMove().getOppositeSide()).verdict());
   }
 
   private record AcceptedDifference(String pgnName, Side side, UnwinnabilityQuickVerdict expected,

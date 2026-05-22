@@ -85,10 +85,12 @@ class TestPawnWallGeometricAnalyzer {
           "Geometric YES but BFS says Black king is not trapped: " + testCase.pgnName() + " - "
               + testCase.finalFen());
       // Soundness gate 2: Ambrona's quick unwinnability check must agree the position is unwinnable for both sides.
-      assertEquals(UnwinnabilityQuickVerdict.UNWINNABLE, UnwinnableQuickAnalyzer.unwinnableQuick(board, Side.WHITE),
+      assertEquals(UnwinnabilityQuickVerdict.UNWINNABLE,
+          UnwinnableQuickAnalyzer.unwinnableQuick(board, Side.WHITE).verdict(),
           "Geometric YES but UnwinnableQuick is not UNWINNABLE for White: " + testCase.pgnName() + " - "
               + testCase.finalFen());
-      assertEquals(UnwinnabilityQuickVerdict.UNWINNABLE, UnwinnableQuickAnalyzer.unwinnableQuick(board, Side.BLACK),
+      assertEquals(UnwinnabilityQuickVerdict.UNWINNABLE,
+          UnwinnableQuickAnalyzer.unwinnableQuick(board, Side.BLACK).verdict(),
           "Geometric YES but UnwinnableQuick is not UNWINNABLE for Black: " + testCase.pgnName() + " - "
               + testCase.finalFen());
     }
