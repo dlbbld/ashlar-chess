@@ -35,7 +35,7 @@ class FindHelpmateExhaust {
   private static final int LOCAL_NODES_BOUND = 10000;
 
   private final Side color;
-  private final HashMap<DynamicPosition, Integer> transpositionMap = new HashMap<>();
+  private final HashMap<HelpmateSearchKey, Integer> transpositionMap = new HashMap<>();
 
   private int localNodeCount = 0;
 
@@ -115,7 +115,7 @@ class FindHelpmateExhaust {
     // set d := limits.max-depth - depth
     final var movesLeft = maxDepth - depth;
 
-    final DynamicPosition cacheKey = board.getDynamicPosition();
+    final HelpmateSearchKey cacheKey = board.currentTranspositionKey();
     // 5: if (pos,D) in table with D >= d then return false (-> pos was already analyzed)
     if (calculateIsInTranspositionTableWithEnoughDepth(cacheKey, movesLeft)) {
       return FindHelpmateRecursionResult.FALSE;
@@ -223,14 +223,14 @@ class FindHelpmateExhaust {
 
   }
 
-  private boolean calculateIsInTranspositionTableWithEnoughDepth(DynamicPosition cacheKey, int movesLeft) {
+  private boolean calculateIsInTranspositionTableWithEnoughDepth(HelpmateSearchKey cacheKey, int movesLeft) {
     if (!transpositionMap.containsKey(cacheKey)) {
       return false;
     }
     return Nulls.get(transpositionMap, cacheKey).intValue() >= movesLeft;
   }
 
-  private void store(DynamicPosition cacheKey, int movesLeft) {
+  private void store(HelpmateSearchKey cacheKey, int movesLeft) {
     transpositionMap.put(cacheKey, movesLeft);
   }
 

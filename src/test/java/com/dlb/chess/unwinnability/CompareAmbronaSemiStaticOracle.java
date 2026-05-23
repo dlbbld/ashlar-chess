@@ -46,14 +46,27 @@ public final class CompareAmbronaSemiStaticOracle {
   }
 
   public static SemiStaticOracleComparison compare() throws Exception {
+    return compare(Integer.MAX_VALUE);
+  }
+
+  /**
+   * Compare against the oracle, processing at most {@code maxFens} unique FEN entries from the oracle file (in the
+   * file's encounter order). Pass {@link Integer#MAX_VALUE} for the full comparison. Smoke-mode callers pass a small
+   * cap to keep the test wall-clock short.
+   */
+  public static SemiStaticOracleComparison compare(int maxFens) throws Exception {
     final Map<String, List<String>> expectedByFen = readExpectedByFen();
     var fenDifferenceCount = 0;
     var rowDifferenceCount = 0;
+    var comparedFenCount = 0;
     final List<String> differentFenList = new ArrayList<>();
     final List<String> printedDifferenceList = new ArrayList<>();
     final Map<String, Integer> differenceCountByKind = new TreeMap<>();
 
     for (final Map.Entry<String, List<String>> entry : Nulls.entrySet(expectedByFen)) {
+      if (comparedFenCount >= maxFens) {
+        break;
+      }
       final String fen = Nulls.getKey(entry);
       final List<String> expectedRows = Nulls.getValue(entry);
       final List<String> actualRows = SemiStaticOracleFormatter.calculateRows(fen);
@@ -64,8 +77,9 @@ public final class CompareAmbronaSemiStaticOracle {
         differentFenList.add(fen);
         rowDifferenceCount += differenceCount;
       }
+      comparedFenCount++;
     }
-    return new SemiStaticOracleComparison(expectedByFen.size(), fenDifferenceCount, rowDifferenceCount,
+    return new SemiStaticOracleComparison(comparedFenCount, fenDifferenceCount, rowDifferenceCount,
         Nulls.copyOfMap(differenceCountByKind), Nulls.copyOfList(differentFenList),
         Nulls.copyOfList(printedDifferenceList));
   }

@@ -4,6 +4,46 @@ Releases from 3.3 onward. Earlier history is in git tags only.
 
 ## [Unreleased]
 
+## [12.1.0] - 2026-05-23
+
+The **helpmate hot-path release**. 12.0.0 made `findHelpMate` cheaper per node by collapsing the search wrapper down to `HelpmateSearchBoard`; this release closes the per-move allocation gap inside that wrapper. `HelpmateSearchBoard` now owns mutable 12 piece bitboards and a growable, pre-allocated undo stack, fills a per-depth reusable legal-move buffer through a new sink-based generator overload on the shared bitboard layer, and consults the transposition cache via an exact structural key that mirrors `DynamicPosition` equality without the nested `BitboardPosition` record allocation. The mutable state and the buffer / key are scoped to `com.dlb.chess.unwinnability`; `BitboardPosition` stays an immutable record.
+
+### Performance
+
+- The helpmate search's `move(spec) + unmove()` cycle — make + unmake + post-make `refreshDerivedState` (sink-based legal-move generation, `isInCheck`, `isCheckmate` / `isStalemate` flags) — measured within **0.96× – 1.13×** of ChessLib's legal-move generation on the surveyed corpora (`MAX_MOVES`, `RANDOM_NO_REPETITION`, `WCC2021`, `CHA_LICHESS_QUICK_DEPTH_ABOVE_FOUR`). The comparison is apples-to-oranges in the cycle's favor: ChessLib measures generation only, the cycle additionally applies and reverses the move and refreshes derived state. The 12.1.0 cycle therefore does strictly more work per measurement and still lands at ChessLib parity. New `HelpmateSearchBoardPerformanceSurvey` captures this measurement.
+- The Board public path (`Board.getLegalMoves()` via `BitboardLegalMoveFactory.calculateLegalMoves`) is faster as a side effect of Phase C's sink-overload refactor: it now bypasses the inner `TreeSet<MoveSpecification>` that the old `BitboardPosition.legalMoves` allocated. Existing `MoveGenerationPerformanceSurvey` ratios drop from `3.5×–4.0×` ChessLib (12.0.0) to `1.9×–2.8×` ChessLib (12.1.0), depending on the corpus.
+- Transposition-cache key construction (`HelpmateSearchKey`) adds 0.013–0.038 μs per cycle — 1–3% overhead.
+
+### Notable
+
+- **Mutable `HelpmateSearchBoard`** (`com.dlb.chess.unwinnability`, package-private). Twelve mutable piece-bitboard `long` fields plus `Side havingMove`, raw + normalized EP target squares, castling rights for each side, and cached derived flags. `move(MoveSpecification)` mutates the bitboards in place; `unmove()` pops the prior snapshot off a growable, pre-allocated `UndoState[]` stack (no per-move record allocation along the search hot path).
+- **Per-depth `LegalMoveBuffer`** (`com.dlb.chess.unwinnability`, package-private, extends `AbstractList<LegalMove>`). One buffer per search depth; the parent's buffer at depth N is preserved untouched while recursion fills depth N+1. Eliminates the per-ply `TreeSet<MoveSpecification>` + `TreeSet<LegalMove>` + `ImmutableList<LegalMove>` allocations the prior release paid on every node.
+- **Sink-based legal-move generator overloads** on the shared bitboard layer. `BitboardPosition.legalMovesInto(Consumer<MoveSpecification>, Side, long)` and `BitboardLegalMoveFactory.calculateLegalMovesInto(Consumer<LegalMove>, BitboardPosition, Side, CastlingRight, long)` emit moves directly to a caller-supplied sink in the generator's natural traversal order. The existing `legalMoves` / `calculateLegalMoves` methods stay as `TreeSet`-collecting wrappers — Board's public sorted-output contract is preserved unchanged.
+- **`HelpmateSearchKey`** (package-private, `com.dlb.chess.unwinnability`) — exact structural transposition-cache key over `havingMove`, the twelve piece bitboards, the normalized EP target, and both sides' castling rights. Equivalent equality semantics to `DynamicPosition` but with the bitboards inlined as record components, so `currentTranspositionKey()` costs exactly one record allocation per cache touch. `FindHelpmateExhaust.transpositionMap` switches from `HashMap<DynamicPosition, Integer>` to `HashMap<HelpmateSearchKey, Integer>`.
+- **`BitboardPosition.isInCheckAfterEnPassantCapture(Square, Square, Side)`** — public allocation-free EP king-safety probe lifted from the existing private `epExposesKing` helper. `HelpmateSearchBoard`'s EP-normalization probe and the legal-move generator's pawn-handler both route through it; the previous `bitboardPosition.afterMove(epMoveSpec, mover).isInCheck(mover)` allocation per EP candidate is gone.
+
+### Behavioral
+
+- **Move-iteration order inside `HelpmateSearchBoard` is no longer sorted.** Per the move-order policy adopted for this release, the search board's iteration order is an internal performance choice; the generator's natural traversal order is what the per-depth buffer holds. Public `Board.getLegalMoves()` order remains stable (still `TreeSet`-sorted via the wrapper). The `TestHelpmateSearchBoard` parity test relaxes from ordered-list equality to legal-move **set** equality, with a paired size assertion to catch any duplicate emission.
+- **Helpmate search verdicts are mildly order-sensitive in policy.** Because the bounded-depth search (`FindHelpMateInterrupt` depth 9, `FindHelpmateExhaust` node-bounded) explores moves in the generator's order, an internal-order change can shift which mate line is found first or flip a bounded `WINNABLE` / `UNDETERMINED` result. Four previously-recorded accepted-difference entries in the Ambrona oracle comparison TSVs flipped between `WINNABLE` / `POSSIBLY_WINNABLE` / `UNDETERMINED` and were pruned. No unsound `UNWINNABLE` regressions; `UNWINNABLE` and `DEAD_POSITION` outputs are unchanged.
+
+### Internal
+
+- **`TestHelpmateSearchBoard`** extended with four hand-constructed minimal scenarios (check-with-king-only-evasions, double-check-king-only, EP-capture-as-check-response, plus relabeling the prior "mate-adjacent" scenario as stalemate-terminal); all ten scenarios promoted to named `SearchCase` constants with inline doc comments so failures point at fixtures by name.
+- **`TestHelpmateSearchBoardMakeUnmakeRoundTrip`** — Phase B's make/unmake gate. For every legal move at every node of a recursive walk across the scenario set, asserts every observable field (piece bitboards, side, raw + normalized EP, castling, legal-move list, cached flags, transposition key) is byte-identical post-unmove.
+- **`TestHelpmateSearchKey`** — Phase D's differential test. Lock-step recursive walker assertion that key equality mirrors `DynamicPosition` equality at every node, plus five positive controls (one per distinguishing field: side-to-move, normalized EP, white castling, black castling, piece placement).
+- **`TestBitboardPositionIsInCheckAfterEnPassantCapture`** — bit-exact differential test against the allocating `afterMove(...).isInCheck(...)` reference on five EP fixtures (legal / illegal EP for each side, EP resolving a pawn check).
+- **`TestAmbronaSemiStaticOracleComparison`** capped at 10 FENs in smoke mode (full 1249 in `-Pfull`). The full comparison was the single largest test in the unwinnability suite (~60s); smoke runs now keep the dev-loop fast without dropping release-gate coverage.
+
+### Breaking
+
+- None. All public API additions are additive (new methods on existing types); no signatures changed.
+
+### Deferred — profile-gated future work
+
+- **Raw-long `BitboardPosition.isInCheck(long whitePawns, …, Side)` overload** to eliminate the remaining per-move `BitboardPosition` snapshot in `refreshDerivedState`. Phase F measurement showed the cycle already at ChessLib parity; the snapshot isn't a bottleneck worth the public-API addition right now.
+- **Magic bitboards** behind the existing `BishopAttacks.attacks(int, long)` / `RookAttacks.attacks(int, long)` API. Same reason: sliding attacks aren't the bottleneck on the surveyed corpora. Stays as a profile-gated option for a later release if a future measurement justifies it.
+
 ## [12.0.0] - 2026-05-22
 
 The **Helpmate analyzer board release**. `FindHelpmateExhaust` and `FindHelpMateInterrupt` no longer recurse on the full `Board` at every node — SAN/LAN lists, full move history, repetition counts, halfmove-clock list, etc., are all cost the tree search never used. A new package-private `HelpmateSearchBoard` (`com.dlb.chess.unwinnability`) carries only what the search needs: a `DynamicPosition` plus the raw EP target plus cached derived state (legal moves, isCheck, isCheckmate, isStalemate). One `HelpmateSearchBoard.from(Board)` at entry; the recursion runs on it.

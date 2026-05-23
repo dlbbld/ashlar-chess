@@ -41,8 +41,9 @@ public class Nulls {
     return result;
   }
 
+  @SuppressWarnings("null")
   public static String getName(File file) {
-    return checkResult(file.getName());
+    return file.getName();
   }
 
   public static String getAbsolutePath(File file) {
