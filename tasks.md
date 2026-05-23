@@ -310,6 +310,48 @@ The motivation is the `findHelpMate` cost in `UnwinnableFullAnalyzer` / `Unwinna
 
 ---
 
+## Helpmate hot-path release (12.1.0) — mutable `HelpmateSearchBoard`, per-ply move buffers, exact transposition key
+
+12.0.0 made `findHelpMate` cheaper per node by collapsing the wrapper down to `HelpmateSearchBoard`, but every search move still allocates: a fresh `BitboardPosition` from `afterMove(...)`, a new `DynamicPosition`, an `ImmutableList<LegalMove>`, a `TreeSet`/`MoveSpecification`/`LegalMove` graph, and sometimes an extra `afterMove()` for EP normalization. After 12.0.0's `MoveGenerationPerformanceSurvey` baseline the production bitboard path sits at ~3.5–4× `chesslib`. This release closes the allocation gap inside `com.dlb.chess.unwinnability` only. Public `BitboardPosition` remains an immutable record; `StaticPosition` and the differential-test oracle layer are not touched.
+
+### Goals
+
+- `HelpmateSearchBoard` makes and unmakes moves in place — no per-move `BitboardPosition` / `DynamicPosition` / move-list allocation along the tree-search hot path.
+- `getLegalMoves()` on `HelpmateSearchBoard` returns a per-ply reusable buffer with **byte-for-byte / order-equivalent** contents vs. today — the mate-line output and search cutoffs are observable behavior pinned by tests.
+- Transposition cache keyed by an **exact** package-private structural key over the mutable board fields. No Zobrist as a correctness-bearing key in this release.
+- `MoveGenerationPerformanceSurvey` ratio target: within ~1.5–2× of `chesslib` on the production bitboard path.
+
+### Non-goals
+
+- Touching `BitboardPosition` mutability, `StaticPosition`, `AbstractLegalMoves`, or any class on the differential-test oracle side.
+- New public API. Every change in this release lives in `com.dlb.chess.unwinnability` and is package-private.
+- Magic bitboards as a first move. Magics are profile-gated to Phase E and only land if Phases B–D leave the ratio outside target.
+- Probabilistic / Zobrist-keyed transposition tables as the first-correctness move. (Zobrist may return later, behind equality verification or explicit collision handling.)
+
+### Phase boundaries
+
+- **Phase A — differential-test scaffolding for `HelpmateSearchBoard`.** Lock-step `HelpmateSearchBoard` ↔ `Board` parity across recursive trees. Default tree depth 3; depth 4 only for deliberately tiny / forced positions so failure traces stay reviewable. At every node both representations must agree on: 12 piece bitboards, side to move, raw EP, normalized EP, castling rights, cached check flags (`isCheck` / `isCheckmate` / `isStalemate`), and `getLegalMoves()` iteration order. Fixtures **enumerated in the test or test helper before any implementation** — failures must be reproducible by fixture name, not by "whatever the corpus happened to surface." Required categories: castling rights, legal EP, pinned/illegal EP normalization (the case the EP-normalization extra-`afterMove` exists for), promotion, check/evasion, stalemate terminal, checkmate terminal, plus at least one helpmate fixture where move-iteration order is load-bearing for the mate line. Plus quick + full helpmate fixture-regression on the existing analyzer outputs (mate-line equality, not just verdict equality). This phase is the behavioral oracle the rest of the release rides on.
+
+- **Phase B — mutable `HelpmateSearchBoard` + explicit undo stack.** `HelpmateSearchBoard` owns mutable 12 piece bitboards, side to move, raw EP, normalized EP, castling rights, cached derived flags. `make(move)` mutates in place; `unmake()` pops an undo record (per-ply deltas: flipped bits, captured piece, castling-rights/EP/halfmove deltas, prior cached-flag values). No per-move `BitboardPosition.afterMove(...)` allocation, no per-move `DynamicPosition` allocation, no extra `afterMove()` for EP normalization. Phase A's full differential-test set must remain green. **Additional gate: a dedicated `make → unmake` round-trip test** asserts every observable field is byte-identical to its pre-`make` value — raw EP, normalized EP, castling rights, cached check / checkmate / stalemate flags, legal-move buffer contents and count, transposition-key material. This gate has to be green before any caller switches to the mutable path.
+
+- **Phase C — per-ply reusable `MoveBuffer`.** Replace `ImmutableList<LegalMove>` per-ply allocation with a per-depth reusable buffer. **One buffer per depth, NOT one shared global** — parent buffers must survive child recursion. Iteration order must remain byte-for-byte equivalent to the current `TreeSet`-derived order; if a `TreeSet` replacement is part of the win, the equivalence is asserted by Phase A tests, not assumed. Treat the returned buffer as read-only at callsites.
+
+- **Phase D — exact structural transposition key.** Replace `HashMap<DynamicPosition, Integer>` with a package-private exact structural key over the mutable board fields, or with a custom exact table. Equality semantics match today's `DynamicPosition.equals`. Do not use public `ZobristKeys` helpers as the correctness-bearing key — Zobrist becomes a re-evaluation candidate only after this release ships and only behind explicit collision handling or equality verification.
+
+- **Phase E (deferred, profile-gated) — magic bitboards.** Only if the post-D `MoveGenerationPerformanceSurvey` ratio is still outside the ~1.5–2× target and profiling identifies sliders as the remaining cost. Drop in behind the existing `BishopAttacks.attacks(int, long)` / `RookAttacks.attacks(int, long)` API — no caller changes. Magics do not touch the larger allocation paths in `BitboardLegalMoveFactory.java:94` or `BitboardPosition.legalMoves`, which is exactly why this is last.
+
+- **Phase F — re-measure, version bump, CHANGELOG, gates.** Re-run `MoveGenerationPerformanceSurvey` and record the new ratios in `CHANGELOG.md`. Version bump to `12.1.0` (or `13.0.0` only if a breaking change has actually surfaced — none is expected; all changes are internal to `com.dlb.chess.unwinnability`). Update `pom.xml`, both `README.md` copies, and the `CHANGELOG.md` entry. Mark this release done in `tasks.md`.
+
+### Gates (all three green before tagging)
+
+- `mvn test` (smoke).
+- `mvn javadoc:javadoc`.
+- `mvn test -Pfull -Dtest.excludes=` (full corpus, including the now-capped `TestAmbronaSemiStaticOracleComparison`).
+
+Plus the per-phase behavioral gates: Phase A's differential and fixture-regression suites must stay green from B onward; Phase B's `make → unmake` round-trip gate must be green before any caller is switched onto the mutable path.
+
+---
+
 ## Role-inversion release — `StaticPosition` subtree moves to `src/test/`
 
 The end-state described in the Project Invariant: the `StaticPosition` subtree (record, `StaticPositionUtility`, `com.dlb.chess.squares.*` consumer subset, `AbstractLegalMoves` + `*LegalMoves` consumers in `com.dlb.chess.moves`, `UnwinnabilityMaterial`) physically moves from `src/main/java/` to `src/test/java/` and becomes the permanent differential-test oracle from that point on. **Not deleted. Relocated.**
