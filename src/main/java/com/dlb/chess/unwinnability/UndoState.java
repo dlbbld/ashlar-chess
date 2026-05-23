@@ -3,8 +3,6 @@ package com.dlb.chess.unwinnability;
 import com.dlb.chess.board.enums.CastlingRight;
 import com.dlb.chess.board.enums.Side;
 import com.dlb.chess.board.enums.Square;
-import com.dlb.chess.model.LegalMove;
-import com.google.common.collect.ImmutableList;
 
 /**
  * Per-ply undo snapshot for {@link HelpmateSearchBoard}'s mutable make / unmake. Mutable by construction: instances
@@ -15,10 +13,10 @@ import com.google.common.collect.ImmutableList;
  *
  * <p>
  * Holds the full pre-move state of {@link HelpmateSearchBoard}: the twelve piece bitboards, side to move, raw and
- * normalized en-passant target squares, castling rights for both sides, the cached legal-move list reference, and
- * the cached derived flags ({@code isCheck} / {@code isCheckmate} / {@code isStalemate}). The legal-move list is a
- * reference share — the {@link ImmutableList} from the prior {@code refreshDerivedState} call — so {@code unmove}
- * does not need to recompute it.
+ * normalized en-passant target squares, castling rights for both sides, and the cached derived flags
+ * ({@code isCheck} / {@code isCheckmate} / {@code isStalemate}). The legal-move buffer is NOT saved here — Phase C's
+ * per-depth {@link LegalMoveBuffer}s mean the buffer at depth N is preserved untouched across recursion into depth
+ * N+1, so restoring it on unmove is a no-op (the buffer's contents at depth N are still the depth-N legal moves).
  */
 final class UndoState {
 
@@ -41,8 +39,6 @@ final class UndoState {
   CastlingRight castlingRightWhite = CastlingRight.NONE;
   CastlingRight castlingRightBlack = CastlingRight.NONE;
 
-  @SuppressWarnings("null")
-  ImmutableList<LegalMove> legalMoves = ImmutableList.of();
   boolean isCheck;
   boolean isCheckmate;
   boolean isStalemate;

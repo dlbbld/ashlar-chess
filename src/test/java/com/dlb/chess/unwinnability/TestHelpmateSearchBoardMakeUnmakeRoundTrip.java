@@ -12,7 +12,6 @@ import com.dlb.chess.board.enums.Side;
 import com.dlb.chess.board.enums.Square;
 import com.dlb.chess.common.model.DynamicPosition;
 import com.dlb.chess.model.LegalMove;
-import com.google.common.collect.ImmutableList;
 
 /**
  * Phase B.2 gate: for every legal move at every node of a recursive walk, asserts that
@@ -67,7 +66,9 @@ class TestHelpmateSearchBoardMakeUnmakeRoundTrip {
     for (final LegalMove legalMove : legalMovesBefore) {
       final BitboardPosition beforeBitboard = searchBoard.getBitboardPosition();
       final DynamicPosition beforeDp = searchBoard.getDynamicPosition();
-      final ImmutableList<LegalMove> beforeLegalMoves = searchBoard.getLegalMoves();
+      // Defensive copy: per-depth buffers preserve the live view at depth N through recursion, but a snapshot
+      // here makes the round-trip comparison robust to any future buffer-management change.
+      final List<LegalMove> beforeLegalMoves = List.copyOf(searchBoard.getLegalMoves());
       final Side beforeHavingMove = searchBoard.getHavingMove();
       final Square beforeRawEp = searchBoard.getEnPassantCaptureTargetSquare();
       final var beforeCheck = searchBoard.isCheck();

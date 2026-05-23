@@ -3,6 +3,7 @@ package com.dlb.chess.unwinnability;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.List;
+import java.util.Set;
 
 import org.junit.jupiter.api.Test;
 
@@ -117,7 +118,9 @@ class TestHelpmateSearchBoard {
     assertEquals(board.getEnPassantCaptureTargetSquare(), searchBoard.getEnPassantCaptureTargetSquare());
     assertEquals(board.getCastlingRightWhite(), searchBoard.getCastlingRight(Side.WHITE));
     assertEquals(board.getCastlingRightBlack(), searchBoard.getCastlingRight(Side.BLACK));
-    assertEquals(board.getLegalMoves(), searchBoard.getLegalMoves());
+    // Move-order policy: HelpmateSearchBoard's iteration order is an internal performance choice, so we assert
+    // set equality with Board, not ordered-list equality. Board's order remains stable as public API.
+    assertEquals(Set.copyOf(board.getLegalMoves()), Set.copyOf(searchBoard.getLegalMoves()));
     assertEquals(board.isCheck(), searchBoard.isCheck());
     assertEquals(board.isCheckmate(), searchBoard.isCheckmate());
     assertEquals(board.isStalemate(), searchBoard.isStalemate());

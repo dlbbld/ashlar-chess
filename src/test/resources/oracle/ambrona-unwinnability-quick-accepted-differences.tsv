@@ -14,5 +14,3 @@ lichess_wuHnMP2q.pgn	BLACK	POSSIBLY_WINNABLE	WINNABLE	7R/7p/p5p1/8/2p4P/5P1k/P2q
 lichess_z3xkCyBY.pgn	WHITE	POSSIBLY_WINNABLE	WINNABLE	7k/2Q4q/7K/2p3P1/2P5/8/8/8 w - - 6 59	Java quick follows the paper/spec WINNABLE return; Ambrona C++ quick reports undetermined.
 lichess_pUEeHLfu.pgn	WHITE	POSSIBLY_WINNABLE	WINNABLE	7k/5Q2/6Q1/6P1/5P1p/6K1/7P/8 w - - 0 78	Java quick follows the paper/spec WINNABLE return; Ambrona C++ quick reports undetermined.
 lichess_UNX9jAKK.pgn	BLACK	POSSIBLY_WINNABLE	WINNABLE	8/p4kp1/6Pp/7K/2rq4/7P/8/8 b - - 0 51	Java quick follows the paper/spec WINNABLE return; Ambrona C++ quick reports undetermined.
-05_helpmate2_white_to_move.pgn	BLACK	POSSIBLY_WINNABLE	WINNABLE	8/8/8/8/8/5k2/2p5/4K3 w - - 1 50	Java quick follows the paper/spec WINNABLE return; Ambrona C++ quick reports undetermined.
-02_helpmate_04_KQ_K.pgn	WHITE	POSSIBLY_WINNABLE	WINNABLE	8/8/8/8/k7/2K5/3Q4/8 b - - 0 50	Java quick follows the paper/spec WINNABLE return; Ambrona C++ quick reports undetermined.

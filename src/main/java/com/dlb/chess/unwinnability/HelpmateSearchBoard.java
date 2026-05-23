@@ -1,5 +1,7 @@
 package com.dlb.chess.unwinnability;
 
+import java.util.List;
+
 import com.dlb.chess.bitboard.BitboardLegalMoveFactory;
 import com.dlb.chess.bitboard.BitboardPosition;
 import com.dlb.chess.board.Board;
@@ -18,7 +20,6 @@ import com.dlb.chess.model.LegalMove;
 import com.dlb.chess.model.LegalMoveKind;
 import com.dlb.chess.moves.CastlingUtility;
 import com.dlb.chess.moves.EnPassantCaptureUtility;
-import com.google.common.collect.ImmutableList;
 
 /**
  * Mutable helpmate-search board: owns twelve piece bitboards, side to move, raw and normalized en-passant target,
@@ -67,15 +68,17 @@ final class HelpmateSearchBoard {
   private CastlingRight castlingRightWhite;
   private CastlingRight castlingRightBlack;
 
-  // Derived cache (refreshDerivedState rebuilds these on every move).
-  @SuppressWarnings("null")
-  private ImmutableList<LegalMove> legalMoves = ImmutableList.of();
+  // Derived cache (refreshDerivedState rebuilds these on every move). legalMoves is held in the per-depth
+  // LegalMoveBuffer at buffersByDepth[undoTop] rather than as a separate field.
   private boolean isCheck;
   private boolean isCheckmate;
   private boolean isStalemate;
 
-  // Growable undo stack of mutable UndoState objects, reused across moves.
+  // Growable parallel stacks of mutable UndoState objects and per-depth LegalMoveBuffers, reused across moves.
+  // buffersByDepth[d] holds the legal moves for the position at depth d; the parent's buffer at depth d is
+  // preserved untouched while we recurse into depth d+1.
   private UndoState[] undoStack;
+  private LegalMoveBuffer[] buffersByDepth;
   private int undoTop;
 
   private HelpmateSearchBoard(BitboardPosition initialBitboard, Side havingMove,
@@ -86,8 +89,10 @@ final class HelpmateSearchBoard {
     this.castlingRightWhite = castlingRightWhite;
     this.castlingRightBlack = castlingRightBlack;
     this.undoStack = new UndoState[INITIAL_UNDO_CAPACITY];
+    this.buffersByDepth = new LegalMoveBuffer[INITIAL_UNDO_CAPACITY];
     for (var i = 0; i < this.undoStack.length; i++) {
       this.undoStack[i] = new UndoState();
+      this.buffersByDepth[i] = new LegalMoveBuffer();
     }
     this.undoTop = 0;
     this.normalizedEnPassantCaptureTargetSquare = computeNormalizedEnPassantCaptureTargetSquare();
@@ -103,10 +108,11 @@ final class HelpmateSearchBoard {
   void move(MoveSpecification moveSpecification) {
     // 1. Snapshot current state into the undo stack (grow if needed).
     if (undoTop == undoStack.length) {
-      growUndoStack();
+      growStacks();
     }
     saveUndoState(undoStack[undoTop]);
     undoTop++;
+    // The parent's buffer at undoTop-1 is preserved untouched; we write into buffersByDepth[undoTop] in step 8.
 
     // 2. Identify the move (movingPiece, capturedPiece, kind) from current mutable state — no snapshot allocation.
     final LegalMove moveToPerform = identifyLegalMove(moveSpecification);
@@ -167,8 +173,8 @@ final class HelpmateSearchBoard {
     };
   }
 
-  ImmutableList<LegalMove> getLegalMoves() {
-    return legalMoves;
+  List<LegalMove> getLegalMoves() {
+    return buffersByDepth[undoTop].asList();
   }
 
   boolean isCheck() {
@@ -222,7 +228,6 @@ final class HelpmateSearchBoard {
     undo.normalizedEnPassantCaptureTargetSquare = normalizedEnPassantCaptureTargetSquare;
     undo.castlingRightWhite = castlingRightWhite;
     undo.castlingRightBlack = castlingRightBlack;
-    undo.legalMoves = legalMoves;
     undo.isCheck = isCheck;
     undo.isCheckmate = isCheckmate;
     undo.isStalemate = isStalemate;
@@ -246,21 +251,24 @@ final class HelpmateSearchBoard {
     normalizedEnPassantCaptureTargetSquare = undo.normalizedEnPassantCaptureTargetSquare;
     castlingRightWhite = undo.castlingRightWhite;
     castlingRightBlack = undo.castlingRightBlack;
-    legalMoves = undo.legalMoves;
     isCheck = undo.isCheck;
     isCheckmate = undo.isCheckmate;
     isStalemate = undo.isStalemate;
   }
 
-  private void growUndoStack() {
+  private void growStacks() {
     final var oldLen = undoStack.length;
     final var newLen = oldLen * 2;
-    final UndoState[] grown = new UndoState[newLen];
-    System.arraycopy(undoStack, 0, grown, 0, oldLen);
+    final UndoState[] grownUndo = new UndoState[newLen];
+    final LegalMoveBuffer[] grownBuffers = new LegalMoveBuffer[newLen];
+    System.arraycopy(undoStack, 0, grownUndo, 0, oldLen);
+    System.arraycopy(buffersByDepth, 0, grownBuffers, 0, oldLen);
     for (var i = oldLen; i < newLen; i++) {
-      grown[i] = new UndoState();
+      grownUndo[i] = new UndoState();
+      grownBuffers[i] = new LegalMoveBuffer();
     }
-    undoStack = grown;
+    undoStack = grownUndo;
+    buffersByDepth = grownBuffers;
   }
 
   /**
@@ -482,15 +490,18 @@ final class HelpmateSearchBoard {
   }
 
   private void refreshDerivedState() {
-    // Phase B.2 cost: build one local BitboardPosition snapshot per move for calculateLegalMoves.
-    // Phase C will lift calculateLegalMoves onto a raw-long API and remove this allocation.
+    // Phase C: clear the current-depth buffer and have the sink-based legal-move generator emit directly into it.
+    // No TreeSet / ImmutableList allocation in this path. One BitboardPosition snapshot is still built for the
+    // isInCheck query; Phase D removes it when transposition-key work introduces raw-long bitboard helpers.
+    final LegalMoveBuffer currentBuffer = buffersByDepth[undoTop];
+    currentBuffer.clear();
     final BitboardPosition snapshot = getBitboardPosition();
     final var enPassantBit = enPassantCaptureTargetSquare == Square.NONE ? 0L
         : 1L << enPassantCaptureTargetSquare.ordinal();
-    legalMoves = BitboardLegalMoveFactory.calculateLegalMoves(snapshot, havingMove, getCastlingRight(havingMove),
-        enPassantBit);
+    BitboardLegalMoveFactory.calculateLegalMovesInto(currentBuffer::add, snapshot, havingMove,
+        getCastlingRight(havingMove), enPassantBit);
     isCheck = snapshot.isInCheck(havingMove);
-    isCheckmate = isCheck && legalMoves.isEmpty();
-    isStalemate = !isCheck && legalMoves.isEmpty();
+    isCheckmate = isCheck && currentBuffer.isEmpty();
+    isStalemate = !isCheck && currentBuffer.isEmpty();
   }
 }

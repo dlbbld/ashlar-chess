@@ -1,4 +1,2 @@
 pgnName	side	expected	actual	fen	reason
-ambrona_04.pgn	WHITE	UNDETERMINED	WINNABLE	7b/1k5B/7b/8/1p1p1p1p/1PpP1P1P/2P3K1/N7 b - - 10 100	Online CHA API returns winnable for White.
-ambrona_15_lichess_QRvIMh3z.pgn	WHITE	WINNABLE	UNDETERMINED	2b5/1p6/pPp3k1/2Pp3p/P2PpBpP/4P1P1/5K2/8 b - - 46 59	Known Java full-search limitation; online CHA API returns winnable.
 ambrona_15_lichess_QRvIMh3z.pgn	BLACK	WINNABLE	UNDETERMINED	2b5/1p6/pPp3k1/2Pp3p/P2PpBpP/4P1P1/5K2/8 b - - 46 59	Known Java full-search limitation; online CHA API returns winnable.

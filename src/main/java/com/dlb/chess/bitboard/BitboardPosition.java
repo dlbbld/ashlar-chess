@@ -2,6 +2,7 @@ package com.dlb.chess.bitboard;
 
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.function.Consumer;
 
 import com.dlb.chess.board.enums.CastlingMove;
 import com.dlb.chess.board.enums.Piece;
@@ -450,25 +451,37 @@ public record BitboardPosition(long whitePawns, long whiteRooks, long whiteKnigh
    * where capturing the EP pawn could expose own king to a rook or queen along the rank.
    */
   public Set<MoveSpecification> legalMoves(Side side, long enPassantBit) {
-    if (side != Side.WHITE && side != Side.BLACK) {
-      throw new IllegalArgumentException("legalMoves requires Side.WHITE or Side.BLACK, got " + side);
-    }
     final Set<MoveSpecification> moves = new TreeSet<>();
+    legalMovesInto(moves::add, side, enPassantBit);
+    return moves;
+  }
 
+  /**
+   * Sink-based variant of {@link #legalMoves(Side, long)}: emits the same legal {@link MoveSpecification}s to
+   * {@code sink} as {@code legalMoves} would put into its returned set, but in the move generator's natural traversal
+   * order rather than {@link MoveSpecification#compareTo} order — no intermediate {@link Set} / {@link TreeSet} is
+   * allocated. The set-based {@link #legalMoves(Side, long)} wraps this with a {@link TreeSet}-collecting sink so
+   * the existing public contract is preserved verbatim. Used by the helpmate search hot path to fill a per-depth
+   * reusable move buffer without allocating a sorted-set scaffold per ply.
+   */
+  public void legalMovesInto(Consumer<MoveSpecification> sink, Side side, long enPassantBit) {
+    if (side != Side.WHITE && side != Side.BLACK) {
+      throw new IllegalArgumentException("legalMovesInto requires Side.WHITE or Side.BLACK, got " + side);
+    }
     final var ownKings = side == Side.WHITE ? whiteKings : blackKings;
     if (ownKings == 0L) {
-      return moves;
+      return;
     }
     final var kingOrdinal = Long.numberOfTrailingZeros(ownKings);
     final Square kingSquare = Nulls.get(Square.REAL, kingOrdinal);
 
     final var kingTargets = legalKingTargets(side);
-    addTargetsAsMoves(moves, kingSquare, kingTargets);
+    emitTargetsAsMoves(sink, kingSquare, kingTargets);
 
     final var checkers = attackersTo(kingSquare, side.getOppositeSide());
     final var checkerCount = Long.bitCount(checkers);
     if (checkerCount >= 2) {
-      return moves;
+      return;
     }
 
     final long checkEvasionMask;
@@ -496,23 +509,22 @@ public record BitboardPosition(long whitePawns, long whiteRooks, long whiteKnigh
       final var combinedMask = checkEvasionMask & pinFilter;
 
       switch (piece.getPieceType()) {
-        case KNIGHT -> addTargetsAsMoves(moves, fromSquare, KnightMoves.targets(fromSquare, ownPieces) & combinedMask);
-        case BISHOP -> addTargetsAsMoves(moves, fromSquare,
+        case KNIGHT -> emitTargetsAsMoves(sink, fromSquare, KnightMoves.targets(fromSquare, ownPieces) & combinedMask);
+        case BISHOP -> emitTargetsAsMoves(sink, fromSquare,
             BishopMoves.targets(fromOrdinal, occ, ownPieces) & combinedMask);
-        case ROOK -> addTargetsAsMoves(moves, fromSquare,
+        case ROOK -> emitTargetsAsMoves(sink, fromSquare,
             RookMoves.targets(fromOrdinal, occ, ownPieces) & combinedMask);
-        case QUEEN -> addTargetsAsMoves(moves, fromSquare,
+        case QUEEN -> emitTargetsAsMoves(sink, fromSquare,
             QueenMoves.targets(fromOrdinal, occ, ownPieces) & combinedMask);
-        case PAWN -> addPawnMoves(moves, fromSquare, fromOrdinal, side, occ, opponentPieces, enPassantBit, combinedMask,
-            checkers, checkerCount, kingOrdinal, pinFilter);
+        case PAWN -> emitPawnMoves(sink, fromSquare, fromOrdinal, side, occ, opponentPieces, enPassantBit,
+            combinedMask, checkers, checkerCount, kingOrdinal, pinFilter);
         default -> throw new IllegalArgumentException();
       }
       remaining &= remaining - 1L;
     }
-    return moves;
   }
 
-  private void addPawnMoves(Set<MoveSpecification> moves, Square fromSquare, int fromOrdinal, Side side, long occ,
+  private void emitPawnMoves(Consumer<MoveSpecification> sink, Square fromSquare, int fromOrdinal, Side side, long occ,
       long opponentPieces, long enPassantBit, long combinedMask, long checkers, int checkerCount, int kingOrdinal,
       long pinFilter) {
     final var pushTargets = PawnMoves.pushes(fromOrdinal, occ, side) & combinedMask;
@@ -533,8 +545,8 @@ public record BitboardPosition(long whitePawns, long whiteRooks, long whiteKnigh
       }
     }
 
-    addPawnTargetsWithPromotion(moves, fromSquare, pushTargets);
-    addPawnTargetsWithPromotion(moves, fromSquare, regularCaptureTargets | epCaptureTarget);
+    emitPawnTargetsWithPromotion(sink, fromSquare, pushTargets);
+    emitPawnTargetsWithPromotion(sink, fromSquare, regularCaptureTargets | epCaptureTarget);
   }
 
   private boolean epExposesKing(int fromOrdinal, long enPassantBit, long capturedPawnBit, int kingOrdinal, Side side) {
@@ -568,16 +580,16 @@ public record BitboardPosition(long whitePawns, long whiteRooks, long whiteKnigh
     return false;
   }
 
-  private static void addTargetsAsMoves(Set<MoveSpecification> moves, Square fromSquare, long targets) {
+  private static void emitTargetsAsMoves(Consumer<MoveSpecification> sink, Square fromSquare, long targets) {
     var remaining = targets;
     while (remaining != 0L) {
       final Square toSquare = Nulls.get(Square.REAL, Long.numberOfTrailingZeros(remaining));
-      moves.add(new MoveSpecification(fromSquare, toSquare));
+      sink.accept(new MoveSpecification(fromSquare, toSquare));
       remaining &= remaining - 1L;
     }
   }
 
-  private static void addPawnTargetsWithPromotion(Set<MoveSpecification> moves, Square fromSquare, long targets) {
+  private static void emitPawnTargetsWithPromotion(Consumer<MoveSpecification> sink, Square fromSquare, long targets) {
     var remaining = targets;
     while (remaining != 0L) {
       final var toOrdinal = Long.numberOfTrailingZeros(remaining);
@@ -585,10 +597,10 @@ public record BitboardPosition(long whitePawns, long whiteRooks, long whiteKnigh
       final var toRank = toOrdinal / 8;
       if (toRank == 0 || toRank == 7) {
         for (final PromotionPieceType promotion : PromotionPieceType.REAL) {
-          moves.add(new MoveSpecification(fromSquare, toSquare, promotion));
+          sink.accept(new MoveSpecification(fromSquare, toSquare, promotion));
         }
       } else {
-        moves.add(new MoveSpecification(fromSquare, toSquare));
+        sink.accept(new MoveSpecification(fromSquare, toSquare));
       }
       remaining &= remaining - 1L;
     }
