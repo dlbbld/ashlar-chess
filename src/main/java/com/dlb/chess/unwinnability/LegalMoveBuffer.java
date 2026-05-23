@@ -2,6 +2,9 @@ package com.dlb.chess.unwinnability;
 
 import java.util.AbstractList;
 
+import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.Nullable;
+
 import com.dlb.chess.model.LegalMove;
 
 /**
@@ -22,12 +25,12 @@ import com.dlb.chess.model.LegalMove;
  * from inside this package. They are deliberately named differently from the {@link java.util.List} mutators
  * ({@code add} / {@code clear}) so the inherited unsupported-by-default contract is preserved unchanged.
  */
-final class LegalMoveBuffer extends AbstractList<LegalMove> {
+final class LegalMoveBuffer extends AbstractList<@NonNull LegalMove> {
 
   /** Initial backing-array capacity. Doubles on overflow. */
   private static final int INITIAL_CAPACITY = 64;
 
-  private LegalMove[] moves = new LegalMove[INITIAL_CAPACITY];
+  private @Nullable LegalMove[] moves = new LegalMove[INITIAL_CAPACITY];
   private int size;
 
   /** Reset size to zero; backing array preserved for reuse. Call before the generator fills the buffer. */
@@ -41,7 +44,7 @@ final class LegalMoveBuffer extends AbstractList<LegalMove> {
    */
   void append(LegalMove move) {
     if (size == moves.length) {
-      final var grown = new LegalMove[moves.length * 2];
+      final @Nullable LegalMove[] grown = new LegalMove[moves.length * 2];
       System.arraycopy(moves, 0, grown, 0, moves.length);
       moves = grown;
     }
@@ -50,11 +53,11 @@ final class LegalMoveBuffer extends AbstractList<LegalMove> {
   }
 
   @Override
-  public LegalMove get(int index) {
+  public @NonNull LegalMove get(int index) {
     if (index < 0 || index >= size) {
       throw new IndexOutOfBoundsException(index);
     }
-    final LegalMove move = moves[index];
+    final @Nullable LegalMove move = moves[index];
     if (move == null) {
       throw new IllegalStateException("Buffer slot " + index + " is null");
     }

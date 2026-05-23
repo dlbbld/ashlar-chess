@@ -111,7 +111,7 @@ final class HelpmateSearchBoard {
     if (undoTop == undoStack.length) {
       growStacks();
     }
-    saveUndoState(undoStack[undoTop]);
+    saveUndoState(undoStateAt(undoTop));
     undoTop++;
     // The parent's buffer at undoTop-1 is preserved untouched; we write into buffersByDepth[undoTop] in step 8.
 
@@ -142,7 +142,7 @@ final class HelpmateSearchBoard {
 
   void unmove() {
     undoTop--;
-    restoreUndoState(undoStack[undoTop]);
+    restoreUndoState(undoStateAt(undoTop));
   }
 
   // ---------------------------- Getters (snapshots / debug, not the search hot path) ----------------------------
@@ -188,7 +188,17 @@ final class HelpmateSearchBoard {
   }
 
   List<LegalMove> getLegalMoves() {
-    return buffersByDepth[undoTop];
+    return legalMoveBufferAt(undoTop);
+  }
+
+  @SuppressWarnings("null")
+  private UndoState undoStateAt(int index) {
+    return undoStack[index];
+  }
+
+  @SuppressWarnings("null")
+  private LegalMoveBuffer legalMoveBufferAt(int index) {
+    return buffersByDepth[index];
   }
 
   boolean isCheck() {
