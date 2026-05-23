@@ -38,10 +38,14 @@ class TestHelpmateSearchBoard {
       "7k/P7/8/8/8/8/7p/K7 w - - 0 1", 1);
 
   // Terminal-flag fixtures (depth 0 — root assertion only).
-  /** Checkmate terminal: back-rank Qg7# — pins {@code isCheckmate} at the root node. */
+  /**
+   * Checkmate terminal: back-rank Qg7# — pins {@code isCheckmate} at the root node.
+   */
   private static final SearchCase SCENARIO_CHECKMATE_TERMINAL = new SearchCase("checkmate-terminal",
       "7k/6Q1/6K1/8/8/8/8/8 b - - 0 1", 0);
-  /** Stalemate terminal: Black king h8, White Qf7 controls all king-flight squares — pins {@code isStalemate}. */
+  /**
+   * Stalemate terminal: Black king h8, White Qf7 controls all king-flight squares — pins {@code isStalemate}.
+   */
   private static final SearchCase SCENARIO_STALEMATE_TERMINAL = new SearchCase("stalemate-terminal",
       "7k/5Q2/6K1/8/8/8/8/8 b - - 0 1", 0);
 
@@ -143,6 +147,8 @@ class TestHelpmateSearchBoard {
   }
 
   /**
+   * Fixture for a single search-tree walk.
+   *
    * @param label human-readable scenario name (matches the constant suffix, kebab-case); appears in failure traces so a
    *              regression points at the fixture, not at a raw FEN.
    * @param fen   starting position; {@code null} means "use {@code new Board(false)} = chess initial position."
