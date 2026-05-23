@@ -157,6 +157,19 @@ final class HelpmateSearchBoard {
         blackPawns, blackRooks, blackKnights, blackBishops, blackQueens, blackKings);
   }
 
+  /**
+   * Exact structural transposition-cache key for the current search-board state. Constructed directly from the
+   * mutable piece bitboards and per-move auxiliary state — one record allocation per call, no nested
+   * {@link BitboardPosition} (the twelve piece bitboards are inlined in {@link HelpmateSearchKey}). Equivalent in
+   * equality semantics to {@link #getDynamicPosition()}{@code .equals}, but without the nested-record allocation
+   * cost. See {@link HelpmateSearchKey} for the included / excluded field list.
+   */
+  HelpmateSearchKey currentTranspositionKey() {
+    return new HelpmateSearchKey(havingMove, whitePawns, whiteRooks, whiteKnights, whiteBishops, whiteQueens,
+        whiteKings, blackPawns, blackRooks, blackKnights, blackBishops, blackQueens, blackKings,
+        normalizedEnPassantCaptureTargetSquare, castlingRightWhite, castlingRightBlack);
+  }
+
   Side getHavingMove() {
     return havingMove;
   }

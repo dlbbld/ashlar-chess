@@ -66,6 +66,7 @@ class TestHelpmateSearchBoardMakeUnmakeRoundTrip {
     for (final LegalMove legalMove : legalMovesBefore) {
       final BitboardPosition beforeBitboard = searchBoard.getBitboardPosition();
       final DynamicPosition beforeDp = searchBoard.getDynamicPosition();
+      final HelpmateSearchKey beforeKey = searchBoard.currentTranspositionKey();
       // Defensive copy: per-depth buffers preserve the live view at depth N through recursion, but a snapshot
       // here makes the round-trip comparison robust to any future buffer-management change.
       final List<LegalMove> beforeLegalMoves = List.copyOf(searchBoard.getLegalMoves());
@@ -81,6 +82,8 @@ class TestHelpmateSearchBoardMakeUnmakeRoundTrip {
 
       assertEquals(beforeBitboard, searchBoard.getBitboardPosition(), "bitboard after unmove (move " + legalMove + ")");
       assertEquals(beforeDp, searchBoard.getDynamicPosition(), "dynamicPosition after unmove (move " + legalMove + ")");
+      assertEquals(beforeKey, searchBoard.currentTranspositionKey(),
+          "transposition key after unmove (move " + legalMove + ")");
       assertEquals(beforeLegalMoves, searchBoard.getLegalMoves(), "legalMoves after unmove (move " + legalMove + ")");
       assertEquals(beforeHavingMove, searchBoard.getHavingMove(), "havingMove after unmove (move " + legalMove + ")");
       assertEquals(beforeRawEp, searchBoard.getEnPassantCaptureTargetSquare(),
