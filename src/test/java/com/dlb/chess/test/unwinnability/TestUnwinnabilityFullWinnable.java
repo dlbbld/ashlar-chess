@@ -47,7 +47,8 @@ class TestUnwinnabilityFullWinnable {
     if (!RestrictTestConstants.IS_RESTRICT_UNWINNABLE_FULL_FOR_LICHESS_HELPMATE_TEST) {
       return testCaseHavingHelpmateList.list();
     }
-    return testCaseHavingHelpmateList.list().subList(0, Math.min(MAX_FILES, testCaseHavingHelpmateList.list().size()));
+    return Nulls.subList(testCaseHavingHelpmateList.list(), 0,
+        Math.min(MAX_FILES, testCaseHavingHelpmateList.list().size()));
   }
 
   private static String calculateCorrespondingLichessGame(String lichessGameHelpmate) {

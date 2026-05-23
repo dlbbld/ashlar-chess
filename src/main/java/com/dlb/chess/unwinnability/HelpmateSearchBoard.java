@@ -11,6 +11,7 @@ import com.dlb.chess.board.enums.Piece;
 import com.dlb.chess.board.enums.PieceType;
 import com.dlb.chess.board.enums.Side;
 import com.dlb.chess.board.enums.Square;
+import com.dlb.chess.common.Nulls;
 import com.dlb.chess.common.exceptions.ProgrammingMistakeException;
 import com.dlb.chess.common.model.DynamicPosition;
 import com.dlb.chess.common.model.MoveSpecification;
@@ -26,6 +27,7 @@ final class HelpmateSearchBoard {
   private Square enPassantCaptureTargetSquare;
   // Initialized to empty so JDT can verify @NonNull at the end of the constructor;
   // refreshDerivedState() overwrites with the real legal moves before any caller observes it.
+  @SuppressWarnings("null")
   private ImmutableList<LegalMove> legalMoves = ImmutableList.of();
   private boolean isCheck;
   private boolean isCheckmate;
@@ -44,8 +46,8 @@ final class HelpmateSearchBoard {
   }
 
   void move(MoveSpecification moveSpecification) {
-    stateList.add(new State(dynamicPosition, enPassantCaptureTargetSquare, legalMoves, isCheck, isCheckmate,
-        isStalemate));
+    stateList
+        .add(new State(dynamicPosition, enPassantCaptureTargetSquare, legalMoves, isCheck, isCheckmate, isStalemate));
 
     final Side beforeHavingMove = getHavingMove();
     final BitboardPosition beforeBitboardPosition = getBitboardPosition();
@@ -70,7 +72,7 @@ final class HelpmateSearchBoard {
   }
 
   void unmove() {
-    final State previous = stateList.remove(stateList.size() - 1);
+    final State previous = Nulls.remove(stateList, stateList.size() - 1);
     dynamicPosition = previous.dynamicPosition();
     enPassantCaptureTargetSquare = previous.enPassantCaptureTargetSquare();
     legalMoves = previous.legalMoves();
@@ -125,7 +127,7 @@ final class HelpmateSearchBoard {
   }
 
   private void refreshDerivedState() {
-    final long enPassantBit = enPassantCaptureTargetSquare == Square.NONE ? 0L
+    final var enPassantBit = enPassantCaptureTargetSquare == Square.NONE ? 0L
         : 1L << enPassantCaptureTargetSquare.ordinal();
     legalMoves = BitboardLegalMoveFactory.calculateLegalMoves(getBitboardPosition(), getHavingMove(),
         getCastlingRight(getHavingMove()), enPassantBit);

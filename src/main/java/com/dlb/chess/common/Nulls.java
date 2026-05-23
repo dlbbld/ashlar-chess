@@ -60,6 +60,10 @@ public class Nulls {
     return checkResult(queue.remove());
   }
 
+  public static <E> E remove(List<E> list, int index) {
+    return checkResult(list.remove(index));
+  }
+
   public static String toString(StringBuilder stringBuilder) {
     return checkResult(stringBuilder.toString());
   }
