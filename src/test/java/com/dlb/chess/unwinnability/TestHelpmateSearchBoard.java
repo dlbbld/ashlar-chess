@@ -119,8 +119,13 @@ class TestHelpmateSearchBoard {
     assertEquals(board.getCastlingRightWhite(), searchBoard.getCastlingRight(Side.WHITE));
     assertEquals(board.getCastlingRightBlack(), searchBoard.getCastlingRight(Side.BLACK));
     // Move-order policy: HelpmateSearchBoard's iteration order is an internal performance choice, so we assert
-    // set equality with Board, not ordered-list equality. Board's order remains stable as public API.
-    assertEquals(Set.copyOf(board.getLegalMoves()), Set.copyOf(searchBoard.getLegalMoves()));
+    // set equality with Board, not ordered-list equality. Board's order remains stable as public API. The size
+    // assertion alongside catches the case where the generator emits a duplicate move (set equality alone would
+    // silently collapse duplicates).
+    final List<LegalMove> boardMoves = board.getLegalMoves();
+    final List<LegalMove> searchMoves = searchBoard.getLegalMoves();
+    assertEquals(boardMoves.size(), searchMoves.size(), "legal-move count");
+    assertEquals(Set.copyOf(boardMoves), Set.copyOf(searchMoves), "legal-move set");
     assertEquals(board.isCheck(), searchBoard.isCheck());
     assertEquals(board.isCheckmate(), searchBoard.isCheckmate());
     assertEquals(board.isStalemate(), searchBoard.isStalemate());

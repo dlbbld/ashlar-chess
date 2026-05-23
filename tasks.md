@@ -25,7 +25,7 @@ Mutable `HelpmateSearchBoard`, per-ply move buffers, exact transposition key.
 ### Non-goals
 
 - Touching `BitboardPosition` mutability, `StaticPosition`, `AbstractLegalMoves`, or any class on the differential-test oracle side.
-- New public API. Every change inside the `com.dlb.chess.unwinnability` package is package-private; the only shared-layer touch this release allows is the optional Phase E behind the existing slider-attack API in `com.dlb.chess.bitboard` (see *Layer discipline* below).
+- Breaking changes to existing public API. New shared-layer additions in `com.dlb.chess.bitboard` are allowed — and necessary — when the layer-discipline rule rules out a search-board-private duplicate: e.g. Phase B.0's `BitboardPosition.isInCheckAfterEnPassantCapture`, Phase C's `BitboardPosition.legalMovesInto` / `BitboardLegalMoveFactory.calculateLegalMovesInto` sink overloads, the (deferred) Phase E magic-bitboard implementation behind the existing slider-attack API. Every change inside the `com.dlb.chess.unwinnability` package stays package-private.
 - Magic bitboards as a first move. Magics are profile-gated to Phase E and only land if Phases B–D leave the ratio outside target.
 - Probabilistic / Zobrist-keyed transposition tables as the first-correctness move. (Zobrist may return later, behind equality verification or explicit collision handling.)
 

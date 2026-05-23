@@ -25,22 +25,23 @@ import com.dlb.chess.moves.EnPassantCaptureUtility;
  * Mutable helpmate-search board: owns twelve piece bitboards, side to move, raw and normalized en-passant target,
  * and castling rights for both sides as mutable instance fields. {@link #move(MoveSpecification)} mutates the
  * bitboards in place; {@link #unmove()} pops a snapshot off a growable, pre-allocated stack of mutable
- * {@link UndoState} objects (no per-move allocation along the search hot path).
+ * {@link UndoState} objects. The legal-move generator emits directly into a per-depth {@link LegalMoveBuffer} via
+ * {@link BitboardLegalMoveFactory#calculateLegalMovesInto} — no per-move {@code Set} / {@code ImmutableList}
+ * allocation along the search hot path.
  *
  * <p>
- * Phase B.2 of the 12.1.0 helpmate hot-path release. {@link BitboardPosition} stays immutable (it remains a record);
- * the mutation is local to this package-private search board. Per the layer-discipline rule, the search board calls
- * the shared {@link BitboardLegalMoveFactory#calculateLegalMoves} for move generation and
- * {@link BitboardPosition#isInCheckAfterEnPassantCapture} for EP normalization — no private parallel engine. The
- * only allocations that survive on the hot path are (1) one {@link BitboardPosition} snapshot per
- * {@code refreshDerivedState} call for {@code calculateLegalMoves} and (2) the {@link ImmutableList} that
- * {@code calculateLegalMoves} returns; Phase C eliminates both by lifting move generation onto a raw-long API
- * with a per-ply reusable buffer.
+ * {@link BitboardPosition} stays immutable (it remains a record); the mutation is local to this package-private
+ * search board. Per the layer-discipline rule, the search board calls the shared bitboard layer for move generation
+ * (the sink overload {@link BitboardLegalMoveFactory#calculateLegalMovesInto}) and for the EP normalization probe
+ * ({@link BitboardPosition#isInCheckAfterEnPassantCapture}) — no private parallel engine. One
+ * {@link BitboardPosition} snapshot is still built per {@code refreshDerivedState} call for the {@code isInCheck}
+ * query; the snapshot is local-scope and the surrounding cached flags ({@code isCheckmate} / {@code isStalemate})
+ * are derived from it together with {@link LegalMoveBuffer#isEmpty}.
  *
  * <p>
  * Getters that expose record-shaped snapshots ({@link #getBitboardPosition}, {@link #getDynamicPosition}) construct
- * a fresh record on each call — they exist for the Phase A parity test and for debugging, not for the search hot
- * path. Internal callers read the mutable fields directly.
+ * a fresh record on each call — they exist for the lock-step Board parity test and for debugging, not for the
+ * search hot path. Internal callers read the mutable fields directly.
  */
 final class HelpmateSearchBoard {
 
@@ -135,7 +136,7 @@ final class HelpmateSearchBoard {
     // 7. Normalize EP — NONE if no opposing pawn can legally execute the EP capture.
     normalizedEnPassantCaptureTargetSquare = computeNormalizedEnPassantCaptureTargetSquare();
 
-    // 8. Refresh derived state (one BitboardPosition snapshot per move; Phase C removes).
+    // 8. Refresh derived state: fill the per-depth legal-move buffer and recompute cached check / mate flags.
     refreshDerivedState();
   }
 
@@ -174,7 +175,7 @@ final class HelpmateSearchBoard {
   }
 
   List<LegalMove> getLegalMoves() {
-    return buffersByDepth[undoTop].asList();
+    return buffersByDepth[undoTop];
   }
 
   boolean isCheck() {
@@ -490,15 +491,12 @@ final class HelpmateSearchBoard {
   }
 
   private void refreshDerivedState() {
-    // Phase C: clear the current-depth buffer and have the sink-based legal-move generator emit directly into it.
-    // No TreeSet / ImmutableList allocation in this path. One BitboardPosition snapshot is still built for the
-    // isInCheck query; Phase D removes it when transposition-key work introduces raw-long bitboard helpers.
     final LegalMoveBuffer currentBuffer = buffersByDepth[undoTop];
-    currentBuffer.clear();
+    currentBuffer.reset();
     final BitboardPosition snapshot = getBitboardPosition();
     final var enPassantBit = enPassantCaptureTargetSquare == Square.NONE ? 0L
         : 1L << enPassantCaptureTargetSquare.ordinal();
-    BitboardLegalMoveFactory.calculateLegalMovesInto(currentBuffer::add, snapshot, havingMove,
+    BitboardLegalMoveFactory.calculateLegalMovesInto(currentBuffer::append, snapshot, havingMove,
         getCastlingRight(havingMove), enPassantBit);
     isCheck = snapshot.isInCheck(havingMove);
     isCheckmate = isCheck && currentBuffer.isEmpty();
