@@ -324,9 +324,13 @@ The motivation is the `findHelpMate` cost in `UnwinnableFullAnalyzer` / `Unwinna
 ### Non-goals
 
 - Touching `BitboardPosition` mutability, `StaticPosition`, `AbstractLegalMoves`, or any class on the differential-test oracle side.
-- New public API. Every change in this release lives in `com.dlb.chess.unwinnability` and is package-private.
+- New public API. Every change inside the `com.dlb.chess.unwinnability` package is package-private; the only shared-layer touch this release allows is the optional Phase E behind the existing slider-attack API in `com.dlb.chess.bitboard` (see *Layer discipline* below).
 - Magic bitboards as a first move. Magics are profile-gated to Phase E and only land if Phases B–D leave the ratio outside target.
 - Probabilistic / Zobrist-keyed transposition tables as the first-correctness move. (Zobrist may return later, behind equality verification or explicit collision handling.)
+
+### Layer discipline (invariant)
+
+Sliding-attack truth lives in `com.dlb.chess.bitboard` (`BishopAttacks`, `RookAttacks`, `QueenAttacks`) and is shared by `BitboardPosition` and `HelpmateSearchBoard`. The helpmate search board does **not** get its own attack implementation — magic bitboards (if Phase E happens), any X-ray helpers added later for pins / discovered checks / king-safety probes, and any other slider-related primitives stay in the shared `com.dlb.chess.bitboard` package, hidden behind the existing `(int squareOrdinal, long occupied) -> long` API so callers do not change. `HelpmateSearchBoard` is faster because its state is mutable and its allocations are amortized — not because it carries a private parallel engine that could drift from `BitboardPosition`. Treat any PR that grows a slider / X-ray / attack helper inside `com.dlb.chess.unwinnability` as wrong by construction; lift it into `com.dlb.chess.bitboard` first.
 
 ### Phase boundaries
 
@@ -338,7 +342,7 @@ The motivation is the `findHelpMate` cost in `UnwinnableFullAnalyzer` / `Unwinna
 
 - **Phase D — exact structural transposition key.** Replace `HashMap<DynamicPosition, Integer>` with a package-private exact structural key over the mutable board fields, or with a custom exact table. Equality semantics match today's `DynamicPosition.equals`. Do not use public `ZobristKeys` helpers as the correctness-bearing key — Zobrist becomes a re-evaluation candidate only after this release ships and only behind explicit collision handling or equality verification.
 
-- **Phase E (deferred, profile-gated) — magic bitboards.** Only if the post-D `MoveGenerationPerformanceSurvey` ratio is still outside the ~1.5–2× target and profiling identifies sliders as the remaining cost. Drop in behind the existing `BishopAttacks.attacks(int, long)` / `RookAttacks.attacks(int, long)` API — no caller changes. Magics do not touch the larger allocation paths in `BitboardLegalMoveFactory.java:94` or `BitboardPosition.legalMoves`, which is exactly why this is last.
+- **Phase E (deferred, profile-gated) — magic bitboards.** Only if the post-D `MoveGenerationPerformanceSurvey` ratio is still outside the ~1.5–2× target and profiling identifies sliders as the remaining cost. The change is purely internal to `com.dlb.chess.bitboard.BishopAttacks` / `RookAttacks` — it sits behind the existing `(int squareOrdinal, long occupied) -> long` API so both `BitboardPosition.legalMoves` and `HelpmateSearchBoard` pick up the speed-up automatically, with no caller changes anywhere (see *Layer discipline* above — the magic implementation is shared, not search-board-private). Magics do not touch the larger allocation paths in `BitboardLegalMoveFactory.java:94` or `BitboardPosition.legalMoves`, which is exactly why this is last.
 
 - **Phase F — re-measure, version bump, CHANGELOG, gates.** Re-run `MoveGenerationPerformanceSurvey` and record the new ratios in `CHANGELOG.md`. Version bump to `12.1.0` (or `13.0.0` only if a breaking change has actually surfaced — none is expected; all changes are internal to `com.dlb.chess.unwinnability`). Update `pom.xml`, both `README.md` copies, and the `CHANGELOG.md` entry. Mark this release done in `tasks.md`.
 
