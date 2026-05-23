@@ -18,7 +18,7 @@ Mutable `HelpmateSearchBoard`, per-ply move buffers, exact transposition key.
 ### Goals
 
 - `HelpmateSearchBoard` makes and unmakes moves in place — no per-move `BitboardPosition` / `DynamicPosition` / move-list allocation along the tree-search hot path.
-- `getLegalMoves()` on `HelpmateSearchBoard` returns a per-ply reusable buffer with **byte-for-byte / order-equivalent** contents vs. today — the mate-line output and search cutoffs are observable behavior pinned by tests.
+- `HelpmateSearchBoard.getLegalMoves()` preserves legal-move **set** equality vs. `Board.getLegalMoves()`; internal iteration order is a deterministic performance choice and is free to differ (see *Move-order policy*). Public `Board.getLegalMoves()` order stays stable.
 - Transposition cache keyed by an **exact** package-private structural key over the mutable board fields. No Zobrist as a correctness-bearing key in this release.
 - `MoveGenerationPerformanceSurvey` ratio target: within ~1.5–2× of `chesslib` on the production bitboard path.
 
