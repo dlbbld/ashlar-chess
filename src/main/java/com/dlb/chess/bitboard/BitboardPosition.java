@@ -917,6 +917,55 @@ public record BitboardPosition(long whitePawns, long whiteRooks, long whiteKnigh
     return result;
   }
 
+  /**
+   * Returns {@code true} if {@code mover}'s king would be in check after applying an en-passant capture from
+   * {@code fromSquare} to {@code enPassantTargetSquare}. The capturing pawn vacates {@code fromSquare} and lands on
+   * {@code enPassantTargetSquare}; the captured opposing pawn is removed from the square one rank behind
+   * {@code enPassantTargetSquare} (rank 5 for a {@link Side#WHITE} move to rank 6; rank 4 for a {@link Side#BLACK}
+   * move to rank 3).
+   *
+   * <p>
+   * Allocation-free: derives the post-EP occupied mask by XORing single-bit deltas off the current state and runs the
+   * standard piece-type-by-piece-type attack check against {@code mover}'s king square. This is the non-allocating
+   * equivalent of {@code afterMove(epMoveSpec, mover).isInCheck(mover)} for the EP-specific case — used by EP
+   * normalization probes in the helpmate search where allocating a fresh {@link BitboardPosition} for every EP
+   * candidate adds up across the recursion. Differential-tested bit-exact against the {@code afterMove(...).isInCheck}
+   * reference on every EP candidate in the fixture set.
+   *
+   * <p>
+   * Preconditions (not validated): {@code fromSquare} carries a {@code mover}-side pawn; {@code enPassantTargetSquare}
+   * is on the correct rank for a {@code mover} EP target (rank 6 for {@link Side#WHITE}, rank 3 for {@link Side#BLACK});
+   * the square one rank behind {@code enPassantTargetSquare} carries an opposing pawn. If these don't hold, the
+   * returned value is undefined. The method does validate that the {@link Square} / {@link Side} inputs are real (not
+   * {@link Square#NONE} / {@link Side#NONE}).
+   */
+  public boolean isInCheckAfterEnPassantCapture(Square fromSquare, Square enPassantTargetSquare, Side mover) {
+    if (fromSquare == Square.NONE || enPassantTargetSquare == Square.NONE) {
+      throw new IllegalArgumentException("The NONE square does not belong to the board");
+    }
+    if (mover != Side.WHITE && mover != Side.BLACK) {
+      throw new IllegalArgumentException(
+          "isInCheckAfterEnPassantCapture requires Side.WHITE or Side.BLACK, got " + mover);
+    }
+    final var ownKings = mover == Side.WHITE ? whiteKings : blackKings;
+    if (ownKings == 0L) {
+      return false;
+    }
+    final var enPassantBit = 1L << enPassantTargetSquare.ordinal();
+    final var capturedPawnBit = mover == Side.WHITE ? enPassantBit >>> 8 : enPassantBit << 8;
+    final var kingOrdinal = Long.numberOfTrailingZeros(ownKings);
+    return epExposesKing(fromSquare.ordinal(), enPassantBit, capturedPawnBit, kingOrdinal, mover);
+  }
+
+  /**
+   * Convenience overload: extracts {@code fromSquare} and {@code enPassantTargetSquare} from {@code epMoveSpec} and
+   * delegates to {@link #isInCheckAfterEnPassantCapture(Square, Square, Side)}. Caller is responsible for ensuring
+   * {@code epMoveSpec} represents an en-passant capture (the method does not inspect promotion / castling fields).
+   */
+  public boolean isInCheckAfterEnPassantCapture(MoveSpecification epMoveSpec, Side mover) {
+    return isInCheckAfterEnPassantCapture(epMoveSpec.fromSquare(), epMoveSpec.toSquare(), mover);
+  }
+
   public long attackersTo(Square square, Side side) {
     if (square == Square.NONE) {
       throw new IllegalArgumentException("The NONE square does not belong to the board");
