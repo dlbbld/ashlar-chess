@@ -6,7 +6,7 @@ import com.dlb.chess.model.LegalMove;
 
 /**
  * Per-ply reusable container for the legal-move generator's output, owned by {@link HelpmateSearchBoard}. Backed by
- * a {@code LegalMove[]} array that grows by doubling on overflow; {@link #clear()} resets the size counter so the
+ * a {@code LegalMove[]} array that grows by doubling on overflow; {@link #reset()} resets the size counter so the
  * array slots are reused across moves. {@link HelpmateSearchBoard} keeps one buffer per search depth so the parent's
  * buffer survives child recursion untouched.
  *
