@@ -3,9 +3,8 @@ package com.dlb.chess.unwinnability;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.jdt.annotation.NonNull;
-
 import com.dlb.chess.board.Board;
+import com.dlb.chess.common.Nulls;
 import com.dlb.chess.model.LegalMove;
 import com.dlb.chess.model.PgnHalfMove;
 import com.dlb.chess.pgn.PgnGame;
@@ -47,19 +46,18 @@ public class HelpmateSearchBoardPerformanceSurvey {
   private static final int WARMUP_ROUNDS = 3;
   private static final int MEASURE_ROUNDS = 20;
 
-  private static final PgnTest[] GROUPS = { PgnTest.MAX_MOVES, PgnTest.RANDOM_NO_REPETITION, PgnTest.WCC2021,
-      PgnTest.CHA_LICHESS_QUICK_DEPTH_ABOVE_FOUR };
+  private static final List<PgnTest> GROUPS = Nulls.listOf(PgnTest.MAX_MOVES, PgnTest.RANDOM_NO_REPETITION,
+      PgnTest.WCC2021, PgnTest.CHA_LICHESS_QUICK_DEPTH_ABOVE_FOUR);
 
   public static void main(String[] args) {
     for (final PgnTest pgnTest : GROUPS) {
-      @SuppressWarnings("null") final @NonNull PgnTest pgnTestNotNull = pgnTest;
-      final List<Setup> setupList = buildSetups(pgnTestNotNull);
+      final List<Setup> setupList = buildSetups(pgnTest);
       warmup(setupList);
 
       final Measurement cycle = measureCycle(setupList);
       final Measurement cycleWithKey = measureCycleWithKey(setupList);
 
-      printResult(pgnTestNotNull, setupList, cycle, cycleWithKey);
+      printResult(pgnTest, setupList, cycle, cycleWithKey);
     }
   }
 

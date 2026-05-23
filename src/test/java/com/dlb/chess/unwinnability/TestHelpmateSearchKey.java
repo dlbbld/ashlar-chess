@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 import java.util.List;
 
+import org.eclipse.jdt.annotation.Nullable;
 import org.junit.jupiter.api.Test;
 
 import com.dlb.chess.board.Board;
@@ -41,8 +42,8 @@ class TestHelpmateSearchKey {
   void keyEqualityMirrorsDynamicPositionAcrossRecursiveWalk() {
     for (final Scenario scenario : SCENARIOS) {
       try {
-        final var board1 = scenario.fen() == null ? new Board(false) : new Board(scenario.fen(), false);
-        final var board2 = scenario.fen() == null ? new Board(false) : new Board(scenario.fen(), false);
+        final var board1 = boardFrom(scenario.fen());
+        final var board2 = boardFrom(scenario.fen());
         final HelpmateSearchBoard search1 = HelpmateSearchBoard.from(board1);
         final HelpmateSearchBoard search2 = HelpmateSearchBoard.from(board2);
         assertParityAtRoot(search1, search2);
@@ -52,6 +53,13 @@ class TestHelpmateSearchKey {
             "scenario=" + scenario.label() + " fen=" + scenario.fen() + " depth=" + scenario.depth(), e);
       }
     }
+  }
+
+  private static Board boardFrom(@Nullable String fen) {
+    if (fen == null) {
+      return new Board(false);
+    }
+    return new Board(fen, false);
   }
 
   private static void walkInLockStep(HelpmateSearchBoard search1, HelpmateSearchBoard search2, int depth) {
@@ -156,6 +164,6 @@ class TestHelpmateSearchKey {
       new Scenario("double-check-king-only", "4k3/2N5/8/8/8/2r5/8/4R2K b - - 0 1", 2),
       new Scenario("en-passant-resolves-check", "4k3/8/8/3pP3/2K5/8/8/8 w - - 0 1", 1));
 
-  private record Scenario(String label, String fen, int depth) {
+  private record Scenario(String label, @Nullable String fen, int depth) {
   }
 }

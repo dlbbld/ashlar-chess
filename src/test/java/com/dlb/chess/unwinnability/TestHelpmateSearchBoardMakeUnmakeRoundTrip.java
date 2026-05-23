@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.List;
 
+import org.eclipse.jdt.annotation.Nullable;
 import org.junit.jupiter.api.Test;
 
 import com.dlb.chess.bitboard.BitboardPosition;
@@ -47,7 +48,7 @@ class TestHelpmateSearchBoardMakeUnmakeRoundTrip {
   void everyLegalMoveRoundTrips() {
     for (final Scenario scenario : SCENARIOS) {
       try {
-        final var board = scenario.fen() == null ? new Board(false) : new Board(scenario.fen(), false);
+        final var board = boardFrom(scenario.fen());
         final HelpmateSearchBoard searchBoard = HelpmateSearchBoard.from(board);
         assertRoundTripsRecursively(searchBoard, scenario.depth());
       } catch (final AssertionError | RuntimeException e) {
@@ -95,6 +96,13 @@ class TestHelpmateSearchBoardMakeUnmakeRoundTrip {
     }
   }
 
-  private record Scenario(String label, String fen, int depth) {
+  private static Board boardFrom(@Nullable String fen) {
+    if (fen == null) {
+      return new Board(false);
+    }
+    return new Board(fen, false);
+  }
+
+  private record Scenario(String label, @Nullable String fen, int depth) {
   }
 }

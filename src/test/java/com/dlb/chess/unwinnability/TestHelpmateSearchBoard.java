@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import java.util.List;
 import java.util.Set;
 
+import org.eclipse.jdt.annotation.Nullable;
 import org.junit.jupiter.api.Test;
 
 import com.dlb.chess.board.Board;
@@ -78,13 +79,20 @@ class TestHelpmateSearchBoard {
   void representativeTreesMatchBoardState() {
     for (final SearchCase scenario : SCENARIOS) {
       try {
-        final var board = scenario.fen() == null ? new Board(false) : new Board(scenario.fen(), false);
+        final var board = boardFrom(scenario.fen());
         assertSearchTreeMatchesBoard(board, scenario.depth());
       } catch (final AssertionError | RuntimeException e) {
         throw new AssertionError(
             "scenario=" + scenario.label() + " fen=" + scenario.fen() + " depth=" + scenario.depth(), e);
       }
     }
+  }
+
+  private static Board boardFrom(@Nullable String fen) {
+    if (fen == null) {
+      return new Board(false);
+    }
+    return new Board(fen, false);
   }
 
   private static void assertSearchTreeMatchesBoard(Board board, int depth) {
@@ -140,6 +148,6 @@ class TestHelpmateSearchBoard {
    * @param fen   starting position; {@code null} means "use {@code new Board(false)} = chess initial position."
    * @param depth tree depth to walk from the root; {@code 0} asserts the root node only (no recursion).
    */
-  private record SearchCase(String label, String fen, int depth) {
+  private record SearchCase(String label, @Nullable String fen, int depth) {
   }
 }
