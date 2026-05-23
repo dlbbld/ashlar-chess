@@ -10,63 +10,7 @@ Order within each section is the source of truth. Completed tasks move to **Done
 
 ---
 
-## Current release - helpmate hot-path release (12.1.0) 
-
-Mutable `HelpmateSearchBoard`, per-ply move buffers, exact transposition key.
-12.0.0 made `findHelpMate` cheaper per node by collapsing the wrapper down to `HelpmateSearchBoard`, but every search move still allocates: a fresh `BitboardPosition` from `afterMove(...)`, a new `DynamicPosition`, an `ImmutableList<LegalMove>`, a `TreeSet`/`MoveSpecification`/`LegalMove` graph, and sometimes an extra `afterMove()` for EP normalization. After 12.0.0's `MoveGenerationPerformanceSurvey` baseline the production bitboard path sits at ~3.5–4× `chesslib`. This release closes the allocation gap inside `com.dlb.chess.unwinnability` only. Public `BitboardPosition` remains an immutable record; `StaticPosition` and the differential-test oracle layer are not touched.
-
-### Goals
-
-- `HelpmateSearchBoard` makes and unmakes moves in place — no per-move `BitboardPosition` / `DynamicPosition` / move-list allocation along the tree-search hot path.
-- `HelpmateSearchBoard.getLegalMoves()` preserves legal-move **set** equality vs. `Board.getLegalMoves()`; internal iteration order is a deterministic performance choice and is free to differ (see *Move-order policy*). Public `Board.getLegalMoves()` order stays stable.
-- Transposition cache keyed by an **exact** package-private structural key over the mutable board fields. No Zobrist as a correctness-bearing key in this release.
-- `MoveGenerationPerformanceSurvey` ratio target: within ~1.5–2× of `chesslib` on the production bitboard path.
-
-### Non-goals
-
-- Touching `BitboardPosition` mutability, `StaticPosition`, `AbstractLegalMoves`, or any class on the differential-test oracle side.
-- Breaking changes to existing public API. New shared-layer additions in `com.dlb.chess.bitboard` are allowed — and necessary — when the layer-discipline rule rules out a search-board-private duplicate: e.g. Phase B.0's `BitboardPosition.isInCheckAfterEnPassantCapture`, Phase C's `BitboardPosition.legalMovesInto` / `BitboardLegalMoveFactory.calculateLegalMovesInto` sink overloads, the (deferred) Phase E magic-bitboard implementation behind the existing slider-attack API. Every change inside the `com.dlb.chess.unwinnability` package stays package-private.
-- Magic bitboards as a first move. Magics are profile-gated to Phase E and only land if Phases B–D leave the ratio outside target.
-- Probabilistic / Zobrist-keyed transposition tables as the first-correctness move. (Zobrist may return later, behind equality verification or explicit collision handling.)
-
-### Layer discipline (invariant)
-
-Sliding-attack truth lives in `com.dlb.chess.bitboard` (`BishopAttacks`, `RookAttacks`, `QueenAttacks`) and is shared by `BitboardPosition` and `HelpmateSearchBoard`. The helpmate search board does **not** get its own attack implementation — magic bitboards (if Phase E happens), any X-ray helpers added later for pins / discovered checks / king-safety probes, and any other slider-related primitives stay in the shared `com.dlb.chess.bitboard` package, hidden behind the existing `(int squareOrdinal, long occupied) -> long` API so callers do not change. `HelpmateSearchBoard` is faster because its state is mutable and its allocations are amortized — not because it carries a private parallel engine that could drift from `BitboardPosition`. Treat any PR that grows a slider / X-ray / attack helper inside `com.dlb.chess.unwinnability` as wrong by construction; lift it into `com.dlb.chess.bitboard` first.
-
-### Move-order policy
-
-Public `Board.getLegalMoves()` iteration order stays **stable** in this release. `Board` is published API surface; its move-list order is observable by external consumers, and we change it only via a deliberate API-visible release decision, not casually for performance.
-
-Inside the search, **`HelpmateSearchBoard` is free to enumerate moves in any deterministic order it likes.** Iteration order is an internal performance choice for the speed work, not a semantic correctness requirement. Phase A's parity test will be relaxed from ordered-list equality to legal-move **set** equality once Phase B's make/unmake correctness gate is green (until then, ordered equality stays as a free differential guard since Phase B does not touch the move generator). Phase C's per-ply `MoveBuffer` is free to drop `TreeSet`-derived ordering and pick whatever the fast generator naturally produces.
-
-Mate-line stability follows the same shape: the existing `TestUnwinnability{Quick,Full}HelpMateIsHelpMate` tests assert that the analyzer's mate-line, when played out, is legal and ends in checkmate for the intended winner. This release does **not** add exact-UCI-mate-line equality assertions. The helpmate algorithms — `FindHelpMateInterrupt` (depth 9) and `FindHelpmateExhaust` (node-bounded with transposition behavior) — are inherently order-sensitive in practice; changing internal move order may shift the first-found mate line, alter node counts, or occasionally flip a bounded `WINNABLE` / `UNDETERMINED` result. The product-priority output is `UNWINNABLE` (and `DEAD_POSITION`); an unsound `UNWINNABLE` regression is unacceptable. `WINNABLE` output is fragile by design and accepted as such — it depends on whether a bounded helpmate line happens to be found, and any change that does not introduce an unsound `UNWINNABLE` is in policy. Protect with state parity, terminal flags, set equality, and legal-checkmating mate-line validation. Do not protect with exact move ordering.
-
-### Phase boundaries
-
-- **Phase A — differential-test scaffolding for `HelpmateSearchBoard`.** Lock-step `HelpmateSearchBoard` ↔ `Board` parity across recursive trees. Default tree depth 3; depth 4 only for deliberately tiny / forced positions so failure traces stay reviewable. At every node both representations must agree on: 12 piece bitboards, side to move, raw EP, normalized EP, castling rights, cached check flags (`isCheck` / `isCheckmate` / `isStalemate`), and the legal-move **set** (ordered-list equality stays as a free differential guard through Phase B since the move generator isn't touched there; relaxes to set equality when Phase C reworks the buffer — see *Move-order policy*). Fixtures **enumerated in the test or test helper before any implementation** — failures must be reproducible by fixture name, not by "whatever the corpus happened to surface." Required categories: castling rights, legal EP, pinned/illegal EP normalization (the case the EP-normalization extra-`afterMove` exists for), promotion, in-check + evasion, double-check king-only, EP capture among legal responses to a pawn check, stalemate terminal, checkmate terminal. Mate-line validation continues to ride on the existing `TestUnwinnability{Quick,Full}HelpMateIsHelpMate` (play-the-line, assert checkmate-at-end) — Phase A does NOT pin exact UCI mate-line equality. This phase is the behavioral oracle the rest of the release rides on.
-
-- **Phase B — mutable `HelpmateSearchBoard` + explicit undo stack.** `HelpmateSearchBoard` owns mutable 12 piece bitboards, side to move, raw EP, normalized EP, castling rights, cached derived flags. `make(move)` mutates in place; `unmake()` pops an undo record (per-ply deltas: flipped bits, captured piece, castling-rights/EP/halfmove deltas, prior cached-flag values). No per-move `BitboardPosition.afterMove(...)` allocation, no per-move `DynamicPosition` allocation, no extra `afterMove()` for EP normalization. Phase A's full differential-test set must remain green. **Additional gate: a dedicated `make → unmake` round-trip test** asserts every observable field is byte-identical to its pre-`make` value — raw EP, normalized EP, castling rights, cached check / checkmate / stalemate flags, legal-move buffer contents and count, transposition-key material. This gate has to be green before any caller switches to the mutable path.
-
-- **Phase C — per-ply reusable `MoveBuffer`.** Replace `ImmutableList<LegalMove>` per-ply allocation with a per-depth reusable buffer. **One buffer per depth, NOT one shared global** — parent buffers must survive child recursion. Iteration order is free to follow whatever the fast generator naturally produces — the buffer is allowed to drop `TreeSet`-equivalent ordering, since *Move-order policy* (above) treats `HelpmateSearchBoard` enumeration order as an internal performance choice. Phase A's parity test relaxes from ordered-list to set equality in the same commit that ships the new buffer, so the change has a single coherent green-step boundary. Treat the returned buffer as read-only at callsites.
-
-- **Phase D — exact structural transposition key.** Replace `HashMap<DynamicPosition, Integer>` with a package-private exact structural key over the mutable board fields, or with a custom exact table. Equality semantics match today's `DynamicPosition.equals`. Do not use public `ZobristKeys` helpers as the correctness-bearing key — Zobrist becomes a re-evaluation candidate only after this release ships and only behind explicit collision handling or equality verification.
-
-- **Phase E (deferred, profile-gated) — magic bitboards.** Only if the post-D `MoveGenerationPerformanceSurvey` ratio is still outside the ~1.5–2× target and profiling identifies sliders as the remaining cost. The change is purely internal to `com.dlb.chess.bitboard.BishopAttacks` / `RookAttacks` — it sits behind the existing `(int squareOrdinal, long occupied) -> long` API so both `BitboardPosition.legalMoves` and `HelpmateSearchBoard` pick up the speed-up automatically, with no caller changes anywhere (see *Layer discipline* above — the magic implementation is shared, not search-board-private). Magics do not touch the larger allocation paths in `BitboardLegalMoveFactory.java:94` or `BitboardPosition.legalMoves`, which is exactly why this is last.
-
-- **Phase F — re-measure, version bump, CHANGELOG, gates.** Re-run `MoveGenerationPerformanceSurvey` and record the new ratios in `CHANGELOG.md`. Version bump to `12.1.0` (or `13.0.0` only if a breaking change has actually surfaced — none is expected; all changes are internal to `com.dlb.chess.unwinnability`). Update `pom.xml`, both `README.md` copies, and the `CHANGELOG.md` entry. Mark this release done in `tasks.md`.
-
-### Gates (all three green before tagging)
-
-- `mvn test` (smoke).
-- `mvn javadoc:javadoc`.
-- `mvn test -Pfull -Dtest.excludes=` (full corpus, including the now-capped `TestAmbronaSemiStaticOracleComparison`).
-
-Plus the per-phase behavioral gates: Phase A's differential and fixture-regression suites must stay green from B onward; Phase B's `make → unmake` round-trip gate must be green before any caller is switched onto the mutable path.
-
----
-
-
-## Next release — drop auto-CHA-per-move; dead-position queries become request-based
+## Current release — drop auto-CHA-per-move; dead-position queries become request-based
 
 The construction we have today is too complicated and does work the library doesn't need. Today every `Board.move()` (and every `Board` constructor) runs the unwinnability quick analyzer on the new position and caches the verdict in `isDeadPositionUnwinnableQuickList`. The cached value drives `Board.isDeadPositionUnwinnableQuick()`, feeds `Board.isDeadPosition()` (alongside the cheap mechanical `isInsufficientMaterial`), and through `ValidateNewMove` causes the move pipeline to throw `MoveCheck.GAME_ALREADY_ENDED` with `GameStatus.DEAD_POSITION_UNWINNABLE_QUICK` if a consumer tries to play on. The whole apparatus exists to model FIDE 5.2.2 "dead position" as an automatic termination.
 
