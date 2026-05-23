@@ -157,21 +157,17 @@ final class HelpmateSearchBoard {
 
     if (Square.calculateHasRightSquare(havingMove, squareBehind)) {
       final Square squareRight = Square.calculateRightSquare(havingMove, squareBehind);
-      if (bitboardPosition.get(squareRight) == ownPawn) {
-        final MoveSpecification moveSpecification = new MoveSpecification(squareRight, enPassantCaptureTargetSquare);
-        if (!bitboardPosition.afterMove(moveSpecification, havingMove).isInCheck(havingMove)) {
-          return true;
-        }
+      if (bitboardPosition.get(squareRight) == ownPawn && !bitboardPosition
+          .isInCheckAfterEnPassantCapture(squareRight, enPassantCaptureTargetSquare, havingMove)) {
+        return true;
       }
     }
 
     if (Square.calculateHasLeftSquare(havingMove, squareBehind)) {
       final Square squareLeft = Square.calculateLeftSquare(havingMove, squareBehind);
-      if (bitboardPosition.get(squareLeft) == ownPawn) {
-        final MoveSpecification moveSpecification = new MoveSpecification(squareLeft, enPassantCaptureTargetSquare);
-        if (!bitboardPosition.afterMove(moveSpecification, havingMove).isInCheck(havingMove)) {
-          return true;
-        }
+      if (bitboardPosition.get(squareLeft) == ownPawn && !bitboardPosition
+          .isInCheckAfterEnPassantCapture(squareLeft, enPassantCaptureTargetSquare, havingMove)) {
+        return true;
       }
     }
     return false;
