@@ -22,26 +22,26 @@ import com.dlb.chess.moves.CastlingUtility;
 import com.dlb.chess.moves.EnPassantCaptureUtility;
 
 /**
- * Mutable helpmate-search board: owns twelve piece bitboards, side to move, raw and normalized en-passant target,
- * and castling rights for both sides as mutable instance fields. {@link #move(MoveSpecification)} mutates the
- * bitboards in place; {@link #unmove()} pops a snapshot off a growable, pre-allocated stack of mutable
- * {@link UndoState} objects. The legal-move generator emits directly into a per-depth {@link LegalMoveBuffer} via
- * {@link BitboardLegalMoveFactory#calculateLegalMovesInto} — no per-move {@code Set} / {@code ImmutableList}
- * allocation along the search hot path.
+ * Mutable helpmate-search board: owns twelve piece bitboards, side to move, raw and normalized en-passant target, and
+ * castling rights for both sides as mutable instance fields. {@link #move(MoveSpecification)} mutates the bitboards in
+ * place; {@link #unmove()} pops a snapshot off a growable, pre-allocated stack of mutable {@link UndoState} objects.
+ * The legal-move generator emits directly into a per-depth {@link LegalMoveBuffer} via
+ * {@link BitboardLegalMoveFactory#calculateLegalMovesInto} — no per-move {@code Set} / {@code ImmutableList} allocation
+ * along the search hot path.
  *
  * <p>
- * {@link BitboardPosition} stays immutable (it remains a record); the mutation is local to this package-private
- * search board. Per the layer-discipline rule, the search board calls the shared bitboard layer for move generation
- * (the sink overload {@link BitboardLegalMoveFactory#calculateLegalMovesInto}) and for the EP normalization probe
- * ({@link BitboardPosition#isInCheckAfterEnPassantCapture}) — no private parallel engine. One
- * {@link BitboardPosition} snapshot is still built per {@code refreshDerivedState} call for the {@code isInCheck}
- * query; the snapshot is local-scope and the surrounding cached flags ({@code isCheckmate} / {@code isStalemate})
- * are derived from it together with {@link LegalMoveBuffer#isEmpty}.
+ * {@link BitboardPosition} stays immutable (it remains a record); the mutation is local to this package-private search
+ * board. Per the layer-discipline rule, the search board calls the shared bitboard layer for move generation (the sink
+ * overload {@link BitboardLegalMoveFactory#calculateLegalMovesInto}) and for the EP normalization probe
+ * ({@link BitboardPosition#isInCheckAfterEnPassantCapture}) — no private parallel engine. One {@link BitboardPosition}
+ * snapshot is still built per {@code refreshDerivedState} call for the {@code isInCheck} query; the snapshot is
+ * local-scope and the surrounding cached flags ({@code isCheckmate} / {@code isStalemate}) are derived from it together
+ * with {@link LegalMoveBuffer#isEmpty}.
  *
  * <p>
- * Getters that expose record-shaped snapshots ({@link #getBitboardPosition}, {@link #getDynamicPosition}) construct
- * a fresh record on each call — they exist for the lock-step Board parity test and for debugging, not for the
- * search hot path. Internal callers read the mutable fields directly.
+ * Getters that expose record-shaped snapshots ({@link #getBitboardPosition}, {@link #getDynamicPosition}) construct a
+ * fresh record on each call — they exist for the lock-step Board parity test and for debugging, not for the search hot
+ * path. Internal callers read the mutable fields directly.
  */
 final class HelpmateSearchBoard {
 
@@ -82,8 +82,8 @@ final class HelpmateSearchBoard {
   private LegalMoveBuffer[] buffersByDepth;
   private int undoTop;
 
-  private HelpmateSearchBoard(BitboardPosition initialBitboard, Side havingMove,
-      Square enPassantCaptureTargetSquare, CastlingRight castlingRightWhite, CastlingRight castlingRightBlack) {
+  private HelpmateSearchBoard(BitboardPosition initialBitboard, Side havingMove, Square enPassantCaptureTargetSquare,
+      CastlingRight castlingRightWhite, CastlingRight castlingRightBlack) {
     loadBitboard(initialBitboard);
     this.havingMove = havingMove;
     this.enPassantCaptureTargetSquare = enPassantCaptureTargetSquare;
@@ -153,16 +153,16 @@ final class HelpmateSearchBoard {
   }
 
   BitboardPosition getBitboardPosition() {
-    return new BitboardPosition(whitePawns, whiteRooks, whiteKnights, whiteBishops, whiteQueens, whiteKings,
-        blackPawns, blackRooks, blackKnights, blackBishops, blackQueens, blackKings);
+    return new BitboardPosition(whitePawns, whiteRooks, whiteKnights, whiteBishops, whiteQueens, whiteKings, blackPawns,
+        blackRooks, blackKnights, blackBishops, blackQueens, blackKings);
   }
 
   /**
-   * Exact structural transposition-cache key for the current search-board state. Constructed directly from the
-   * mutable piece bitboards and per-move auxiliary state — one record allocation per call, no nested
-   * {@link BitboardPosition} (the twelve piece bitboards are inlined in {@link HelpmateSearchKey}). Equivalent in
-   * equality semantics to {@link #getDynamicPosition()}{@code .equals}, but without the nested-record allocation
-   * cost. See {@link HelpmateSearchKey} for the included / excluded field list.
+   * Exact structural transposition-cache key for the current search-board state. Constructed directly from the mutable
+   * piece bitboards and per-move auxiliary state — one record allocation per call, no nested {@link BitboardPosition}
+   * (the twelve piece bitboards are inlined in {@link HelpmateSearchKey}). Equivalent in equality semantics to
+   * {@link #getDynamicPosition()}{@code .equals}, but without the nested-record allocation cost. See
+   * {@link HelpmateSearchKey} for the included / excluded field list.
    */
   HelpmateSearchKey currentTranspositionKey() {
     return new HelpmateSearchKey(havingMove, whitePawns, whiteRooks, whiteKnights, whiteBishops, whiteQueens,
@@ -273,8 +273,8 @@ final class HelpmateSearchBoard {
   private void growStacks() {
     final var oldLen = undoStack.length;
     final var newLen = oldLen * 2;
-    final UndoState[] grownUndo = new UndoState[newLen];
-    final LegalMoveBuffer[] grownBuffers = new LegalMoveBuffer[newLen];
+    final var grownUndo = new UndoState[newLen];
+    final var grownBuffers = new LegalMoveBuffer[newLen];
     System.arraycopy(undoStack, 0, grownUndo, 0, oldLen);
     System.arraycopy(buffersByDepth, 0, grownBuffers, 0, oldLen);
     for (var i = oldLen; i < newLen; i++) {
@@ -293,7 +293,7 @@ final class HelpmateSearchBoard {
    */
   private LegalMove identifyLegalMove(MoveSpecification moveSpec) {
     if (moveSpec.castlingMove() != CastlingMove.NONE) {
-      final Piece kingPiece = havingMove == Side.WHITE ? Piece.WHITE_KING : Piece.BLACK_KING;
+      final var kingPiece = havingMove == Side.WHITE ? Piece.WHITE_KING : Piece.BLACK_KING;
       return new LegalMove(moveSpec, kingPiece, Piece.NONE, LegalMoveKind.CASTLING);
     }
 
@@ -332,7 +332,9 @@ final class HelpmateSearchBoard {
     return new LegalMove(moveSpec, movingPiece, capturedPiece, kind);
   }
 
-  /** Returns the piece on {@code square} from the mutable bitboards. Mirrors {@link BitboardPosition#get(Square)}. */
+  /**
+   * Returns the piece on {@code square} from the mutable bitboards. Mirrors {@link BitboardPosition#get(Square)}.
+   */
   private Piece pieceAt(Square square) {
     final var bit = 1L << square.ordinal();
     if ((whitePawns & bit) != 0L) {
@@ -374,7 +376,9 @@ final class HelpmateSearchBoard {
     return Piece.NONE;
   }
 
-  /** Toggles {@code bit} on the bitboard for {@code piece}. No-op for {@link Piece#NONE}. */
+  /**
+   * Toggles {@code bit} on the bitboard for {@code piece}. No-op for {@link Piece#NONE}.
+   */
   private void togglePieceBit(Piece piece, long bit) {
     switch (piece) {
       case WHITE_PAWN -> whitePawns ^= bit;
@@ -389,12 +393,15 @@ final class HelpmateSearchBoard {
       case BLACK_BISHOP -> blackBishops ^= bit;
       case BLACK_QUEEN -> blackQueens ^= bit;
       case BLACK_KING -> blackKings ^= bit;
-      case NONE -> { /* no-op */ }
+      case NONE -> {
+        /* no-op */ }
       default -> throw new IllegalArgumentException("Unexpected piece " + piece);
     }
   }
 
-  /** Applies {@code moveToPerform} to the piece bitboards in place — mirrors {@link BitboardPosition#afterMove}. */
+  /**
+   * Applies {@code moveToPerform} to the piece bitboards in place — mirrors {@link BitboardPosition#afterMove}.
+   */
   private void applyMoveInPlace(LegalMove moveToPerform) {
     final MoveSpecification moveSpec = moveToPerform.moveSpecification();
     if (moveSpec.castlingMove() != CastlingMove.NONE) {
@@ -419,7 +426,7 @@ final class HelpmateSearchBoard {
     }
 
     final PromotionPieceType promotion = moveSpec.promotionPieceType();
-    final Piece destPiece = promotion == PromotionPieceType.NONE ? movingPiece
+    final var destPiece = promotion == PromotionPieceType.NONE ? movingPiece
         : Piece.calculate(havingMove, promotion.getPieceType());
 
     togglePieceBit(movingPiece, fromBit);
@@ -455,8 +462,8 @@ final class HelpmateSearchBoard {
       rookFromOrdinal = Square.A8.ordinal();
       rookToOrdinal = Square.D8.ordinal();
     }
-    final Piece kingPiece = movingSide == Side.WHITE ? Piece.WHITE_KING : Piece.BLACK_KING;
-    final Piece rookPiece = movingSide == Side.WHITE ? Piece.WHITE_ROOK : Piece.BLACK_ROOK;
+    final var kingPiece = movingSide == Side.WHITE ? Piece.WHITE_KING : Piece.BLACK_KING;
+    final var rookPiece = movingSide == Side.WHITE ? Piece.WHITE_ROOK : Piece.BLACK_ROOK;
     togglePieceBit(kingPiece, 1L << kingFromOrdinal);
     togglePieceBit(kingPiece, 1L << kingToOrdinal);
     togglePieceBit(rookPiece, 1L << rookFromOrdinal);
@@ -464,11 +471,10 @@ final class HelpmateSearchBoard {
   }
 
   /**
-   * Returns the EP target square that is actually capturable from the current mutable state, or {@link Square#NONE}
-   * if no opposing pawn can legally execute the EP capture. Cheap path first: returns NONE on no raw EP target.
-   * Otherwise checks the mutable pawn bitboards for adjacent same-rank own pawns; only if at least one candidate
-   * pawn exists is a {@link BitboardPosition} snapshot built once and passed to
-   * {@link BitboardPosition#isInCheckAfterEnPassantCapture}.
+   * Returns the EP target square that is actually capturable from the current mutable state, or {@link Square#NONE} if
+   * no opposing pawn can legally execute the EP capture. Cheap path first: returns NONE on no raw EP target. Otherwise
+   * checks the mutable pawn bitboards for adjacent same-rank own pawns; only if at least one candidate pawn exists is a
+   * {@link BitboardPosition} snapshot built once and passed to {@link BitboardPosition#isInCheckAfterEnPassantCapture}.
    */
   private Square computeNormalizedEnPassantCaptureTargetSquare() {
     if (enPassantCaptureTargetSquare == Square.NONE) {
@@ -482,8 +488,8 @@ final class HelpmateSearchBoard {
 
     final var hasRight = Square.calculateHasRightSquare(havingMove, squareBehind);
     final var hasLeft = Square.calculateHasLeftSquare(havingMove, squareBehind);
-    final Square candidateRight = hasRight ? Square.calculateRightSquare(havingMove, squareBehind) : Square.NONE;
-    final Square candidateLeft = hasLeft ? Square.calculateLeftSquare(havingMove, squareBehind) : Square.NONE;
+    final var candidateRight = hasRight ? Square.calculateRightSquare(havingMove, squareBehind) : Square.NONE;
+    final var candidateLeft = hasLeft ? Square.calculateLeftSquare(havingMove, squareBehind) : Square.NONE;
     final var hasRightPawn = hasRight && pieceAt(candidateRight) == ownPawn;
     final var hasLeftPawn = hasLeft && pieceAt(candidateLeft) == ownPawn;
 
@@ -504,7 +510,7 @@ final class HelpmateSearchBoard {
   }
 
   private void refreshDerivedState() {
-    final LegalMoveBuffer currentBuffer = buffersByDepth[undoTop];
+    final var currentBuffer = buffersByDepth[undoTop];
     currentBuffer.reset();
     final BitboardPosition snapshot = getBitboardPosition();
     final var enPassantBit = enPassantCaptureTargetSquare == Square.NONE ? 0L

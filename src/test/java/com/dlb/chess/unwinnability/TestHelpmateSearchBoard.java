@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test;
 
 import com.dlb.chess.board.Board;
 import com.dlb.chess.board.enums.Side;
+import com.dlb.chess.common.Nulls;
 import com.dlb.chess.model.LegalMove;
 
 class TestHelpmateSearchBoard {
@@ -52,22 +53,22 @@ class TestHelpmateSearchBoard {
   private static final SearchCase SCENARIO_CHECK_WITH_KING_ONLY_EVASIONS = new SearchCase(
       "check-with-king-only-evasions", "4k3/8/8/8/8/8/4R3/4K3 b - - 0 1", 3);
   /**
-   * Double check: black king e8 attacked simultaneously by Nc7 (knight reach) and Re1 (e-file). Black has a rook on
-   * c3 whose pseudo-legal moves must all be filtered — the double-check rule mandates king-only response. Verifies
-   * that the legal-move generator rejects every non-king move under double check.
+   * Double check: black king e8 attacked simultaneously by Nc7 (knight reach) and Re1 (e-file). Black has a rook on c3
+   * whose pseudo-legal moves must all be filtered — the double-check rule mandates king-only response. Verifies that
+   * the legal-move generator rejects every non-king move under double check.
    */
   private static final SearchCase SCENARIO_DOUBLE_CHECK_KING_ONLY = new SearchCase("double-check-king-only",
       "4k3/2N5/8/8/8/2r5/8/4R2K b - - 0 1", 2);
   /**
-   * En passant capture as a check response: white king c4 in direct check from black pawn d5 (just played d7-d5).
-   * The legal-move list must include exd6 e.p. (which removes the checker) alongside the king-evasion squares.
-   * Exercises the EP-probe × check-evasion interaction — the EP candidate must survive both the "post-EP king
-   * safety" probe AND the check-evasion filter.
+   * En passant capture as a check response: white king c4 in direct check from black pawn d5 (just played d7-d5). The
+   * legal-move list must include exd6 e.p. (which removes the checker) alongside the king-evasion squares. Exercises
+   * the EP-probe × check-evasion interaction — the EP candidate must survive both the "post-EP king safety" probe AND
+   * the check-evasion filter.
    */
   private static final SearchCase SCENARIO_EN_PASSANT_RESOLVES_CHECK = new SearchCase("en-passant-resolves-check",
       "4k3/8/8/3pP3/2K5/8/8/8 w - d6 0 1", 1);
 
-  private static final List<SearchCase> SCENARIOS = List.of(SCENARIO_INITIAL, SCENARIO_ALL_FOUR_CASTLING_RIGHTS,
+  private static final List<SearchCase> SCENARIOS = Nulls.listOf(SCENARIO_INITIAL, SCENARIO_ALL_FOUR_CASTLING_RIGHTS,
       SCENARIO_LEGAL_EN_PASSANT, SCENARIO_ILLEGAL_EN_PASSANT_NORMALIZATION, SCENARIO_BOTH_SIDES_PROMOTE,
       SCENARIO_CHECKMATE_TERMINAL, SCENARIO_STALEMATE_TERMINAL, SCENARIO_CHECK_WITH_KING_ONLY_EVASIONS,
       SCENARIO_DOUBLE_CHECK_KING_ONLY, SCENARIO_EN_PASSANT_RESOLVES_CHECK);
@@ -77,11 +78,11 @@ class TestHelpmateSearchBoard {
   void representativeTreesMatchBoardState() {
     for (final SearchCase scenario : SCENARIOS) {
       try {
-        final Board board = scenario.fen() == null ? new Board(false) : new Board(scenario.fen(), false);
+        final var board = scenario.fen() == null ? new Board(false) : new Board(scenario.fen(), false);
         assertSearchTreeMatchesBoard(board, scenario.depth());
       } catch (final AssertionError | RuntimeException e) {
-        throw new AssertionError("scenario=" + scenario.label() + " fen=" + scenario.fen() + " depth="
-            + scenario.depth(), e);
+        throw new AssertionError(
+            "scenario=" + scenario.label() + " fen=" + scenario.fen() + " depth=" + scenario.depth(), e);
       }
     }
   }
@@ -134,10 +135,10 @@ class TestHelpmateSearchBoard {
   }
 
   /**
-   * @param label    human-readable scenario name (matches the constant suffix, kebab-case); appears in failure
-   *                 traces so a regression points at the fixture, not at a raw FEN.
-   * @param fen      starting position; {@code null} means "use {@code new Board(false)} = chess initial position."
-   * @param depth    tree depth to walk from the root; {@code 0} asserts the root node only (no recursion).
+   * @param label human-readable scenario name (matches the constant suffix, kebab-case); appears in failure traces so a
+   *              regression points at the fixture, not at a raw FEN.
+   * @param fen   starting position; {@code null} means "use {@code new Board(false)} = chess initial position."
+   * @param depth tree depth to walk from the root; {@code 0} asserts the root node only (no recursion).
    */
   private record SearchCase(String label, String fen, int depth) {
   }

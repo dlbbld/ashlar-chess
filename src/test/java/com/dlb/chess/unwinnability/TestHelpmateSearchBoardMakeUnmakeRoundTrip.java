@@ -10,27 +10,28 @@ import com.dlb.chess.bitboard.BitboardPosition;
 import com.dlb.chess.board.Board;
 import com.dlb.chess.board.enums.Side;
 import com.dlb.chess.board.enums.Square;
+import com.dlb.chess.common.Nulls;
 import com.dlb.chess.common.model.DynamicPosition;
 import com.dlb.chess.model.LegalMove;
 
 /**
- * Phase B.2 gate: for every legal move at every node of a recursive walk, asserts that
- * {@link HelpmateSearchBoard#move} followed immediately by {@link HelpmateSearchBoard#unmove} restores every
- * observable field to its pre-move value. Covers the same scenario set as
- * {@link TestHelpmateSearchBoard} so the round-trip property is verified on the categories the parity test
- * already pins (initial, castling, EP both legal and illegal, promotion, terminal flags, check-evasion variants).
+ * Phase B.2 gate: for every legal move at every node of a recursive walk, asserts that {@link HelpmateSearchBoard#move}
+ * followed immediately by {@link HelpmateSearchBoard#unmove} restores every observable field to its pre-move value.
+ * Covers the same scenario set as {@link TestHelpmateSearchBoard} so the round-trip property is verified on the
+ * categories the parity test already pins (initial, castling, EP both legal and illegal, promotion, terminal flags,
+ * check-evasion variants).
  *
  * <p>
  * "Observable fields" per the Phase B gate spec: 12 piece bitboards (via {@link BitboardPosition#equals}), side to
- * move, raw EP target, normalized EP target (via {@link DynamicPosition#enPassantCaptureTargetSquare}), castling
- * rights both sides, the {@code legalMoves} list (ordered equality — this is self-comparison of the same ply before
- * make and after unmake, so ordered list equality is the right contract), and the cached derived flags
- * ({@code isCheck} / {@code isCheckmate} / {@code isStalemate}).
+ * move, raw EP target, normalized EP target (via {@link DynamicPosition#enPassantCaptureTargetSquare}), castling rights
+ * both sides, the {@code legalMoves} list (ordered equality — this is self-comparison of the same ply before make and
+ * after unmake, so ordered list equality is the right contract), and the cached derived flags ({@code isCheck} /
+ * {@code isCheckmate} / {@code isStalemate}).
  */
 class TestHelpmateSearchBoardMakeUnmakeRoundTrip {
 
   /** Mirrors {@link TestHelpmateSearchBoard}'s scenario set. {@code null} fen means initial position. */
-  private static final List<Scenario> SCENARIOS = List.of(new Scenario("initial", null, 2),
+  private static final List<Scenario> SCENARIOS = Nulls.listOf(new Scenario("initial", null, 2),
       new Scenario("all-four-castling-rights", "r3k2r/8/8/8/8/8/8/R3K2R w KQkq - 0 1", 1),
       new Scenario("legal-en-passant", "8/8/8/8/3pP3/8/8/K6k b - e3 0 1", 2),
       new Scenario("illegal-en-passant-normalization", "8/8/8/8/k2pP2R/8/8/7K b - e3 0 1", 1),
@@ -46,12 +47,12 @@ class TestHelpmateSearchBoardMakeUnmakeRoundTrip {
   void everyLegalMoveRoundTrips() {
     for (final Scenario scenario : SCENARIOS) {
       try {
-        final Board board = scenario.fen() == null ? new Board(false) : new Board(scenario.fen(), false);
+        final var board = scenario.fen() == null ? new Board(false) : new Board(scenario.fen(), false);
         final HelpmateSearchBoard searchBoard = HelpmateSearchBoard.from(board);
         assertRoundTripsRecursively(searchBoard, scenario.depth());
       } catch (final AssertionError | RuntimeException e) {
-        throw new AssertionError("scenario=" + scenario.label() + " fen=" + scenario.fen() + " depth="
-            + scenario.depth(), e);
+        throw new AssertionError(
+            "scenario=" + scenario.label() + " fen=" + scenario.fen() + " depth=" + scenario.depth(), e);
       }
     }
   }

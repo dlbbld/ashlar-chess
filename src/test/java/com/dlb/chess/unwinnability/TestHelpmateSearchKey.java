@@ -8,32 +8,32 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 
 import com.dlb.chess.board.Board;
-import com.dlb.chess.board.enums.Side;
+import com.dlb.chess.common.Nulls;
 import com.dlb.chess.common.model.DynamicPosition;
 import com.dlb.chess.model.LegalMove;
 
 /**
- * Differential test for {@link HelpmateSearchKey}: its equality semantics must match {@link DynamicPosition}'s
- * exactly. Phase D.1 of the 12.1.0 helpmate hot-path release.
+ * Differential test for {@link HelpmateSearchKey}: its equality semantics must match {@link DynamicPosition}'s exactly.
+ * Phase D.1 of the 12.1.0 helpmate hot-path release.
  *
  * <p>
  * Two prongs:
  * <ol>
- *   <li><strong>Lock-step parity with DynamicPosition</strong> across a recursive walk: at every node of every
- *       scenario in {@link TestHelpmateSearchBoard}'s fixture set, build two independent {@link HelpmateSearchBoard}s
- *       from the same {@code Board} state, walk the same move, and assert {@code key1.equals(key2)} iff
- *       {@code dp1.equals(dp2)}. The two prongs (key equality, DynamicPosition equality) must agree at every node.
- *   <li><strong>Positive controls</strong> for each distinguishing field: hand-constructed pairs that differ on
- *       exactly one of {sideToMove, normalized EP, white castling rights, black castling rights, a piece bitboard}
- *       and assert the keys are unequal. Catches accidental field omission in the equality / hashCode contract.
+ * <li><strong>Lock-step parity with DynamicPosition</strong> across a recursive walk: at every node of every scenario
+ * in {@link TestHelpmateSearchBoard}'s fixture set, build two independent {@link HelpmateSearchBoard}s from the same
+ * {@code Board} state, walk the same move, and assert {@code key1.equals(key2)} iff {@code dp1.equals(dp2)}. The two
+ * prongs (key equality, DynamicPosition equality) must agree at every node.
+ * <li><strong>Positive controls</strong> for each distinguishing field: hand-constructed pairs that differ on exactly
+ * one of {sideToMove, normalized EP, white castling rights, black castling rights, a piece bitboard} and assert the
+ * keys are unequal. Catches accidental field omission in the equality / hashCode contract.
  * </ol>
  */
 class TestHelpmateSearchKey {
 
   /**
    * Lock-step walker over {@link TestHelpmateSearchBoard}'s scenario fixtures. Tighter than the parity test in
-   * {@link TestHelpmateSearchBoard} which compares search-board vs Board: here we compare two independent search
-   * boards built from the same source, walking the same move sequence, so any deviation between key equality and
+   * {@link TestHelpmateSearchBoard} which compares search-board vs Board: here we compare two independent search boards
+   * built from the same source, walking the same move sequence, so any deviation between key equality and
    * {@link DynamicPosition} equality is surfaced.
    */
   @SuppressWarnings("static-method")
@@ -41,15 +41,15 @@ class TestHelpmateSearchKey {
   void keyEqualityMirrorsDynamicPositionAcrossRecursiveWalk() {
     for (final Scenario scenario : SCENARIOS) {
       try {
-        final Board board1 = scenario.fen() == null ? new Board(false) : new Board(scenario.fen(), false);
-        final Board board2 = scenario.fen() == null ? new Board(false) : new Board(scenario.fen(), false);
+        final var board1 = scenario.fen() == null ? new Board(false) : new Board(scenario.fen(), false);
+        final var board2 = scenario.fen() == null ? new Board(false) : new Board(scenario.fen(), false);
         final HelpmateSearchBoard search1 = HelpmateSearchBoard.from(board1);
         final HelpmateSearchBoard search2 = HelpmateSearchBoard.from(board2);
         assertParityAtRoot(search1, search2);
         walkInLockStep(search1, search2, scenario.depth());
       } catch (final AssertionError | RuntimeException e) {
-        throw new AssertionError("scenario=" + scenario.label() + " fen=" + scenario.fen() + " depth="
-            + scenario.depth(), e);
+        throw new AssertionError(
+            "scenario=" + scenario.label() + " fen=" + scenario.fen() + " depth=" + scenario.depth(), e);
       }
     }
   }
@@ -145,7 +145,7 @@ class TestHelpmateSearchKey {
 
   // ---------------------------- Scenario fixtures (mirror TestHelpmateSearchBoard) ----------------------------
 
-  private static final List<Scenario> SCENARIOS = List.of(new Scenario("initial", null, 2),
+  private static final List<Scenario> SCENARIOS = Nulls.listOf(new Scenario("initial", null, 2),
       new Scenario("all-four-castling-rights", "r3k2r/8/8/8/8/8/8/R3K2R w KQkq - 0 1", 1),
       new Scenario("legal-en-passant", "8/8/8/8/3pP3/8/8/K6k b - e3 0 1", 2),
       new Scenario("illegal-en-passant-normalization", "8/8/8/8/k2pP2R/8/8/7K b - e3 0 1", 1),
