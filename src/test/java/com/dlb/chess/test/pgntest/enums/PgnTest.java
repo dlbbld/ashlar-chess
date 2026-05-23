@@ -86,11 +86,10 @@ public enum PgnTest {
   WIKIPEDIA_THREEFOLD(false, "review/wikipedia/threefold"),
   WIKIPEDIA_FIFTY_MOVE(false, "review/wikipedia/fiftyMove"),
 
-  CHA_LICHESS_QUICK_NOT_DEPTH_THREE(false, "cha/lichess/quick/notDepthThree"),
-  CHA_LICHESS_QUICK_NOT_DEPTH_THREE_HELPMATE(false, "cha/lichess/quick/notDepthThree/helpmate"),
   CHA_LICHESS_QUICK_DEPTH_THREE(false, "cha/lichess/quick/depthThree"),
   CHA_LICHESS_QUICK_DEPTH_FOUR(false, "cha/lichess/quick/depthFour"),
-  CHA_LICHESS_NOT_QUICK(false, "cha/lichess/notQuick"),
+  CHA_LICHESS_QUICK_DEPTH_ABOVE_FOUR(false, "cha/lichess/quick/depthAboveFour"),
+  CHA_LICHESS_QUICK_DEPTH_ABOVE_FOUR_WINNABLE_FOR_FLAGGING_WITH_HELPMATE(false, "cha/lichess/quick/depthAboveFour/winnableForFlaggingWithHelpmate"),
   CHA_AMBRONA(false, "cha/ambrona"),
   CHA_PAWN_WALL_YES(false, "cha/pawnWall/yes"),
   CHA_PAWN_WALL_NO(false, "cha/pawnWall/no"),

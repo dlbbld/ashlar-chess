@@ -76,11 +76,10 @@ public class PgnTestCaseCatalog {
       case VARIOUS -> createTestCasesVarious();
       case WCC2021 -> createTestCasesWcc201();
       case LAST_MOVE_ADDED_ACCIDENTALLY -> createTestCasesLastMoveAddedAccidentally();
-      case CHA_LICHESS_QUICK_NOT_DEPTH_THREE -> createTestCasesChaLichessQuickNotDepthThree();
-      case CHA_LICHESS_QUICK_NOT_DEPTH_THREE_HELPMATE -> createTestCasesChaLichessQuickNotDepthThreeHelpmate();
+      case CHA_LICHESS_QUICK_DEPTH_ABOVE_FOUR -> createTestCasesChaLichessQuickNotDepthThree();
+      case CHA_LICHESS_QUICK_DEPTH_ABOVE_FOUR_WINNABLE_FOR_FLAGGING_WITH_HELPMATE -> createTestCasesChaLichessQuickNotDepthThreeHelpmate();
       case CHA_LICHESS_QUICK_DEPTH_THREE -> createTestCasesChaLichessQuickDepthThree();
       case CHA_LICHESS_QUICK_DEPTH_FOUR -> createTestCasesChaLichessQuickDepthFour();
-      case CHA_LICHESS_NOT_QUICK -> createTestCasesChaLichessNotQuick();
       case CHA_AMBRONA -> createTestCasesChaAmbrona();
       case MAX_MOVES -> createTestCasesLongestPossible();
       case MAX_SAME_PIECE_PROMOTION_WHITE -> createTestCasesMaxSamePiecePromotionWhite();
@@ -3187,7 +3186,11 @@ public class PgnTestCaseCatalog {
         InsufficientMaterial.NONE, "7k/5R2/6RK/7r/6PP/8/8/8 w - - 2 54"));
     list.add(new PgnTestCase("lichess_Zqc7ug8u.pgn", "", "", 11, 14, CheckmateOrStalemate.NA, 1,
         InsufficientMaterial.NONE, "7R/6pk/8/6K1/2n1r3/8/8/8 b - - 9 61"));
-    return new PgnTestCaseList(PgnTest.CHA_LICHESS_QUICK_NOT_DEPTH_THREE, list);
+
+    list.add(new PgnTestCase("lichess_f6c1lu7R.pgn", "", "", 13, 70, CheckmateOrStalemate.NA, 1,
+        InsufficientMaterial.NONE, "8/8/7p/5p1P/5p1K/5Pp1/6P1/1k6 w - - 70 83"));
+
+    return new PgnTestCaseList(PgnTest.CHA_LICHESS_QUICK_DEPTH_ABOVE_FOUR, list);
   }
 
   private static PgnTestCaseList createTestCasesChaLichessQuickNotDepthThreeHelpmate() {
@@ -3457,10 +3460,10 @@ public class PgnTestCaseCatalog {
         InsufficientMaterial.NONE, "7k/7Q/7K/2p3P1/2P5/8/8/8 b - - 0 59"));
     list.add(new PgnTestCase("lichess_zmelXKvA_helpmate.pgn", "", "", 23, 14, CheckmateOrStalemate.CHECKMATE, 1,
         InsufficientMaterial.WHITE_ONLY, "8/q7/8/8/8/8/K1k5/4b3 w - - 14 80"));
-    list.add(new PgnTestCase("test_lichess_V7eJ1RR9_helpmate.pgn", "", "", 14, 34, CheckmateOrStalemate.CHECKMATE, 1,
+    list.add(new PgnTestCase("lichess_V7eJ1RR9_helpmate.pgn", "", "", 14, 34, CheckmateOrStalemate.CHECKMATE, 1,
         InsufficientMaterial.WHITE_ONLY, "8/8/8/8/8/7k/8/q6K w - - 34 74"));
 
-    return new PgnTestCaseList(PgnTest.CHA_LICHESS_QUICK_NOT_DEPTH_THREE_HELPMATE, list);
+    return new PgnTestCaseList(PgnTest.CHA_LICHESS_QUICK_DEPTH_ABOVE_FOUR_WINNABLE_FOR_FLAGGING_WITH_HELPMATE, list);
   }
 
   private static PgnTestCaseList createTestCasesChaLichessQuickDepthThree() {
@@ -3481,15 +3484,6 @@ public class PgnTestCaseCatalog {
         InsufficientMaterial.NONE, "8/8/8/8/pp6/k1p5/1qQ5/K7 w - - 2 72"));
 
     return new PgnTestCaseList(PgnTest.CHA_LICHESS_QUICK_DEPTH_FOUR, list);
-  }
-
-  private static PgnTestCaseList createTestCasesChaLichessNotQuick() {
-    final List<PgnTestCase> list = new ArrayList<>();
-
-    list.add(new PgnTestCase("lichess_f6c1lu7R.pgn", "", "", 13, 70, CheckmateOrStalemate.NA, 1,
-        InsufficientMaterial.NONE, "8/8/7p/5p1P/5p1K/5Pp1/6P1/1k6 w - - 70 83"));
-
-    return new PgnTestCaseList(PgnTest.CHA_LICHESS_NOT_QUICK, list);
   }
 
   private static PgnTestCaseList createTestCasesChaAmbrona() {

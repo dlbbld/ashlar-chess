@@ -78,9 +78,9 @@ import com.google.common.collect.ImmutableList;
  * move-pipelines validate the candidate against the current legal-move set; an invalid move throws (see
  * {@link com.dlb.chess.exceptions.InvalidMoveException} from the {@code MoveSpecification} pipeline,
  * {@code SanValidationException} from the SAN pipeline). Once the game has reached any FIDE-automatic termination
- * (checkmate, stalemate, mutual insufficient material, fivefold repetition, 75-move rule), neither pipeline accepts
- * further moves â€” the package-level Javadoc on {@link com.dlb.chess.board} documents the strict-game invariant in
- * detail.
+ * (checkmate, stalemate, mutual insufficient material, quick-unwinnability dead position, fivefold repetition,
+ * 75-move rule), neither pipeline accepts further moves. The package-level Javadoc on {@link com.dlb.chess.board}
+ * documents the strict-game invariant in detail.
  *
  * <h2>Querying the game</h2>
  *
@@ -124,7 +124,7 @@ public class Board {
   private final List<CastlingRightLoss> blackQueenSideLossList;
 
   /**
-   * Constructor flag: auto-detect {@link GameStatus#DEAD_POSITION_UNWINNABLE_QUICK} after every move. {@code true} is
+   * Constructor flag: auto-detect {@link GameStatus#DEAD_POSITION_UNWINNABLE_QUICK} once per ply. {@code true} is
    * the FIDE-compliant default. {@code false} skips the expensive analyzer-driven check; mechanical
    * insufficient-material detection is unaffected.
    *
@@ -948,8 +948,10 @@ public class Board {
   }
 
   public DeadPositionQuick isDeadPositionQuick() {
-    final UnwinnabilityQuickVerdict unwinnableWhite = UnwinnableQuickAnalyzer.unwinnableQuick(this, Side.WHITE);
-    final UnwinnabilityQuickVerdict unwinnableBlack = UnwinnableQuickAnalyzer.unwinnableQuick(this, Side.BLACK);
+    final UnwinnabilityQuickVerdict unwinnableWhite = UnwinnableQuickAnalyzer.unwinnableQuick(this, Side.WHITE)
+        .verdict();
+    final UnwinnabilityQuickVerdict unwinnableBlack = UnwinnableQuickAnalyzer.unwinnableQuick(this, Side.BLACK)
+        .verdict();
     if (unwinnableWhite == UnwinnabilityQuickVerdict.UNWINNABLE
         && unwinnableBlack == UnwinnabilityQuickVerdict.UNWINNABLE) {
       return DeadPositionQuick.DEAD_POSITION;
@@ -989,10 +991,10 @@ public class Board {
     if (!isDetectDeadPositionUnwinnable) {
       return false;
     }
-    if (UnwinnableQuickAnalyzer.unwinnableQuick(this, Side.WHITE) != UnwinnabilityQuickVerdict.UNWINNABLE) {
+    if (UnwinnableQuickAnalyzer.unwinnableQuick(this, Side.WHITE).verdict() != UnwinnabilityQuickVerdict.UNWINNABLE) {
       return false;
     }
-    return UnwinnableQuickAnalyzer.unwinnableQuick(this, Side.BLACK) == UnwinnabilityQuickVerdict.UNWINNABLE;
+    return UnwinnableQuickAnalyzer.unwinnableQuick(this, Side.BLACK).verdict() == UnwinnabilityQuickVerdict.UNWINNABLE;
   }
 
   public DeadPositionFull isDeadPositionFull() {
@@ -1012,7 +1014,7 @@ public class Board {
   }
 
   public UnwinnabilityQuickVerdict isUnwinnableQuick(Side side) {
-    return UnwinnableQuickAnalyzer.unwinnableQuick(this, side);
+    return UnwinnableQuickAnalyzer.unwinnableQuick(this, side).verdict();
   }
 
   public UnwinnabilityFullVerdict isUnwinnableFull(Side side) {

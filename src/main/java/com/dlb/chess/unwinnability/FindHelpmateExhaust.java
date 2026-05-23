@@ -8,7 +8,9 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
 
 import com.dlb.chess.bitboard.BitboardPosition;
+import com.dlb.chess.bitboard.BitboardPositionUtility;
 import com.dlb.chess.board.Board;
+import com.dlb.chess.board.enums.CastlingRight;
 import com.dlb.chess.board.enums.Side;
 import com.dlb.chess.board.enums.Square;
 import com.dlb.chess.board.enums.SquareType;
@@ -16,8 +18,6 @@ import com.dlb.chess.common.Nulls;
 import com.dlb.chess.common.exceptions.ProgrammingMistakeException;
 import com.dlb.chess.common.model.DynamicPosition;
 import com.dlb.chess.common.ucimove.utility.UciMoveUtility;
-import com.dlb.chess.fen.FenParserRaw;
-import com.dlb.chess.fen.model.FenRaw;
 import com.dlb.chess.model.LegalMove;
 import com.dlb.chess.model.UciMove;
 
@@ -49,8 +49,14 @@ class FindHelpmateExhaust {
   }
 
   public FindHelpmateAnalysis calculateHelpmate(Board board, int maxDepth) {
+    final HelpmateSearchBoard searchBoard = HelpmateSearchBoard.from(board);
+    return calculateHelpmate(searchBoard, maxDepth);
+  }
 
-    final String invariant = board.getFen();
+  private FindHelpmateAnalysis calculateHelpmate(HelpmateSearchBoard board, int maxDepth) {
+
+    final DynamicPosition invariantPosition = board.getDynamicPosition();
+    final Square invariantEnPassantCaptureTargetSquare = board.getEnPassantCaptureTargetSquare();
 
     if (maxDepth != 0 && maxDepth % 10 == 0) {
       logger.printf(Level.DEBUG, "maxDepth=%d", maxDepth);
@@ -62,7 +68,8 @@ class FindHelpmateExhaust {
 
     final var findHelpmate = findHelpmate(board, 0, maxDepth, 0, false);
 
-    if (!invariant.equals(board.getFen())) {
+    if (!invariantPosition.equals(board.getDynamicPosition())
+        || invariantEnPassantCaptureTargetSquare != board.getEnPassantCaptureTargetSquare()) {
       throw new ProgrammingMistakeException("Board was changed");
     }
 
@@ -89,7 +96,7 @@ class FindHelpmateExhaust {
 
   // Inputs: position, depth (int), maxDepth (int)
   // Output: bool (true if a checkmate sequence was found, false otherwise)
-  private FindHelpmateRecursionResult findHelpmate(Board board, int depth, int maxDepth, int actualDepth,
+  private FindHelpmateRecursionResult findHelpmate(HelpmateSearchBoard board, int depth, int maxDepth, int actualDepth,
       boolean isPastProgress) {
 
     // 1: if the intended winner is checkmating their opponent in pos then return true
@@ -139,7 +146,7 @@ class FindHelpmateExhaust {
 
     // 7: for every legal move m in pos do:
     for (final LegalMove legalMove : board.getLegalMoves()) {
-      // 8: let inc = match Score(pos,m) with Normal ! 0 | Reward ! 1 | Punish ! Ã¢Ë†â€™2
+      // 8: let inc = match Score(pos,m) with Normal -> 0 | Reward -> 1 | Punish -> -2
       ScoreResult score = Score.score(color, board.getHavingMove(), bitboardPosition, legalMove);
 
       if (board.getHavingMove() == color.getOppositeSide()
@@ -297,37 +304,64 @@ class FindHelpmateExhaust {
     return result;
   }
 
-  private static String calculateStockfishFen(Board board) {
+  private static String calculateStockfishFen(HelpmateSearchBoard board) {
 
-    if (!calculateIsEraseEnPassantCaptureTargetSquare(board)) {
-      return board.getFen();
-    }
-
-    final FenRaw fenRaw = FenParserRaw.parseFenRaw(board.getFen());
+    final Square enPassantCaptureTargetSquare = calculateIsEraseEnPassantCaptureTargetSquare(board) ? Square.NONE
+        : board.getEnPassantCaptureTargetSquare();
 
     final StringBuilder fenSquareErased = new StringBuilder();
 
-    fenSquareErased.append(fenRaw.piecePlacement());
+    fenSquareErased.append(BitboardPositionUtility.calculatePiecePlacement(board.getBitboardPosition()));
     fenSquareErased.append(" ");
 
-    fenSquareErased.append(fenRaw.havingMove());
+    fenSquareErased.append(board.getHavingMove() == Side.WHITE ? "w" : "b");
     fenSquareErased.append(" ");
 
-    fenSquareErased.append(fenRaw.castlingRightBothStr());
+    appendCastlingRights(fenSquareErased, board.getCastlingRight(Side.WHITE), board.getCastlingRight(Side.BLACK));
     fenSquareErased.append(" ");
 
-    fenSquareErased.append("-");
+    if (enPassantCaptureTargetSquare == Square.NONE) {
+      fenSquareErased.append("-");
+    } else {
+      fenSquareErased.append(enPassantCaptureTargetSquare.getName().toLowerCase());
+    }
     fenSquareErased.append(" ");
 
-    fenSquareErased.append(fenRaw.halfMoveClock());
+    fenSquareErased.append("0");
     fenSquareErased.append(" ");
 
-    fenSquareErased.append(fenRaw.fullMoveNumber());
+    fenSquareErased.append("1");
 
     return Nulls.toString(fenSquareErased);
   }
 
-  private static boolean calculateIsEraseEnPassantCaptureTargetSquare(Board board) {
+  private static void appendCastlingRights(StringBuilder fen, CastlingRight whiteCastlingRight,
+      CastlingRight blackCastlingRight) {
+    if (whiteCastlingRight == CastlingRight.NONE && blackCastlingRight == CastlingRight.NONE) {
+      fen.append("-");
+      return;
+    }
+    switch (whiteCastlingRight) {
+      case KING_AND_QUEEN_SIDE -> fen.append("KQ");
+      case KING_SIDE -> fen.append("K");
+      case QUEEN_SIDE -> fen.append("Q");
+      case NONE -> {
+        // no characters for NONE; the all-NONE case is short-circuited above
+      }
+      default -> throw new IllegalArgumentException();
+    }
+    switch (blackCastlingRight) {
+      case KING_AND_QUEEN_SIDE -> fen.append("kq");
+      case KING_SIDE -> fen.append("k");
+      case QUEEN_SIDE -> fen.append("q");
+      case NONE -> {
+        // no characters for NONE; the all-NONE case is short-circuited above
+      }
+      default -> throw new IllegalArgumentException();
+    }
+  }
+
+  private static boolean calculateIsEraseEnPassantCaptureTargetSquare(HelpmateSearchBoard board) {
     final Square enPassantCaptureTargetSquare = board.getEnPassantCaptureTargetSquare();
 
     if (enPassantCaptureTargetSquare == Square.NONE) {

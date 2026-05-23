@@ -2,14 +2,17 @@ package com.dlb.chess.unwinnability;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import com.dlb.chess.board.Board;
 import com.dlb.chess.board.enums.Side;
 import com.dlb.chess.common.Nulls;
 import com.dlb.chess.common.model.DynamicPosition;
+import com.dlb.chess.common.ucimove.utility.UciMoveUtility;
 import com.dlb.chess.fen.model.Fen;
 import com.dlb.chess.model.LegalMove;
+import com.dlb.chess.model.UciMove;
 
 //Figure 9 Main routine for deciding chess unwinnability. It is based on our semi-static
 //algorithm (Figure 8) and our search routine (Figure 5) integrated via iterative deepening.
@@ -42,10 +45,13 @@ public class UnwinnableFullAnalyzer {
     var isCanUseMobilitySolution = true;
     var isForcedMove = board.getLegalMoves().size() == 1;
     var totalForcedMoves = 0;
+    final List<UciMove> forcedMoveLine = new ArrayList<>();
     final Set<DynamicPosition> forcedPositionSet = new HashSet<>();
     while (isForcedMove && forcedPositionSet.add(board.getDynamicPosition())) {
       isCanUseMobilitySolution = false;
       final LegalMove onlyLegalMove = Nulls.getFirst(board.getLegalMoves());
+      forcedMoveLine.add(UciMoveUtility.convertMoveSpecificationToUci(onlyLegalMove.havingMove(),
+          onlyLegalMove.moveSpecification()));
       board.move(onlyLegalMove.moveSpecification());
       isForcedMove = board.getLegalMoves().size() == 1;
       totalForcedMoves++;
@@ -83,7 +89,8 @@ public class UnwinnableFullAnalyzer {
         case YES:
           // 4: if bd = true then return Winnable
           undoForcedMoves(board, totalForcedMoves);
-          return new UnwinnabilityFullAnalysis(UnwinnabilityFullVerdict.WINNABLE, helpmateAnalysis.mateLine());
+          return new UnwinnabilityFullAnalysis(UnwinnabilityFullVerdict.WINNABLE,
+              prependForcedMoves(forcedMoveLine, helpmateAnalysis.mateLine()));
         case NO:
           // 5: else if the search was not interrupted (in step 4 of Figure 5) then
           // 6: return Unwinnable
@@ -105,6 +112,12 @@ public class UnwinnableFullAnalyzer {
     for (var i = 1; i <= totalForcedMoves; i++) {
       board.unmove();
     }
+  }
+
+  private static List<UciMove> prependForcedMoves(List<UciMove> forcedMoveLine, List<UciMove> helpmateLine) {
+    final List<UciMove> result = new ArrayList<>(forcedMoveLine);
+    result.addAll(helpmateLine);
+    return result;
   }
 
   private static Board copyCurrentPositionForFullSearch(Board input) {

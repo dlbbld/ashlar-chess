@@ -20,50 +20,42 @@ import com.dlb.chess.test.model.PgnTestCaseList;
 import com.dlb.chess.test.pgn.setup.PgnTestCaseCatalog;
 import com.dlb.chess.test.pgntest.enums.PgnTest;
 import com.dlb.chess.unwinnability.UnwinnabilityFullAnalysis;
-import com.dlb.chess.unwinnability.UnwinnabilityFullVerdict;
 import com.dlb.chess.unwinnability.UnwinnableFullAnalyzer;
 
-class TestUnwinnableFullForLichessGamesHavingHelpMate {
+class TestUnwinnabilityFullHelpMateIsHelpMate {
 
-  private static final Logger logger = Nulls.getLogger(TestUnwinnableFullForLichessGamesHavingHelpMate.class);
+  private static final Logger logger = Nulls.getLogger(TestUnwinnabilityFullHelpMateIsHelpMate.class);
 
   /** Cap on files tested when the smoke restriction is active. */
   private static final int MAX_FILES = 10;
 
   @SuppressWarnings("static-method")
   @Test
-  void testFolder() throws Exception {
-    final PgnTestCaseList testCaseHavingHelpmateList = PgnTestCaseCatalog
-        .getTestList(PgnTest.CHA_LICHESS_QUICK_NOT_DEPTH_THREE_HELPMATE);
-
-    var processedFilesInFolder = 0;
-    for (final PgnTestCase testCaseHavingHelpmate : testCaseHavingHelpmateList.list()) {
-      if (RestrictTestConstants.IS_RESTRICT_UNWINNABLE_FULL_FOR_LICHESS_HELPMATE_TEST
-          && processedFilesInFolder >= MAX_FILES) {
-        break;
-      }
+  void mateLinesActuallyCheckmate() {
+    for (final PgnTestCase testCaseHavingHelpmate : helpmateFixtures()) {
       logger.info(testCaseHavingHelpmate.pgnName());
-
-      // Cheap path: the lichess game's final position is already cached on its test case's FEN field, so the PGN
-      // need not be parsed and replayed just to read the end state. The helpmate-line check below builds its own
-      // mini-board from the FEN.
-      final String lichessGame = calculateCorrespondingLichessGame(testCaseHavingHelpmate.pgnName());
-      final PgnTestCase lichessTestCase = PgnTestCaseCatalog.findTestCase(lichessGame);
+      final PgnTestCase lichessTestCase = PgnTestCaseCatalog
+          .findTestCase(calculateCorrespondingLichessGame(testCaseHavingHelpmate.pgnName()));
       final Board board = lichessTestCase.finalPosition();
       final String fen = lichessTestCase.finalFen();
       final Side winner = board.getHavingMove();
       final UnwinnabilityFullAnalysis analysis = UnwinnableFullAnalyzer.unwinnableFull(board, winner);
-
-      assertEquals(UnwinnabilityFullVerdict.WINNABLE, analysis.verdict());
       assertHelpmateLine(fen, winner, analysis.mateLine());
-
-      processedFilesInFolder++;
     }
+  }
+
+  private static List<PgnTestCase> helpmateFixtures() {
+    final PgnTestCaseList testCaseHavingHelpmateList = PgnTestCaseCatalog
+        .getTestList(PgnTest.CHA_LICHESS_QUICK_DEPTH_ABOVE_FOUR_WINNABLE_FOR_FLAGGING_WITH_HELPMATE);
+    if (!RestrictTestConstants.IS_RESTRICT_UNWINNABLE_FULL_FOR_LICHESS_HELPMATE_TEST) {
+      return testCaseHavingHelpmateList.list();
+    }
+    return Nulls.subList(testCaseHavingHelpmateList.list(), 0,
+        Math.min(MAX_FILES, testCaseHavingHelpmateList.list().size()));
   }
 
   private static void assertHelpmateLine(String fen, Side winner, List<UciMove> mateLine) {
     final var board = new Board(fen, false);
-    advanceForcedMoves(board);
     for (final UciMove uciMove : mateLine) {
       board.move(UciMoveUtility.convertUciMoveToMoveSpecification(board, uciMove));
     }
@@ -71,15 +63,9 @@ class TestUnwinnableFullForLichessGamesHavingHelpMate {
     assertTrue(board.isCheckmate());
   }
 
-  private static void advanceForcedMoves(Board board) {
-    while (board.getLegalMoves().size() == 1 && !board.isFivefoldRepetition() && !board.isSeventyFiveMove()) {
-      board.move(Nulls.getFirst(board.getLegalMoves()).moveSpecification());
-    }
-  }
-
   private static String calculateCorrespondingLichessGame(String lichessGameHelpmate) {
-    final var lichessGameHelpmateWithoutExtension = PgnExtensionUtility.removePgnExtension(lichessGameHelpmate);
-    final var lichessGameWithoutExtension = Nulls.replace(lichessGameHelpmateWithoutExtension, "_helpmate", "");
-    return PgnExtensionUtility.addPgnExtension(lichessGameWithoutExtension);
+    var withoutExtension = PgnExtensionUtility.removePgnExtension(lichessGameHelpmate);
+    withoutExtension = Nulls.replace(withoutExtension, "_helpmate", "");
+    return PgnExtensionUtility.addPgnExtension(withoutExtension);
   }
 }

@@ -72,7 +72,8 @@ public class LichessCheckFen extends AbstractLichessCheckFen {
         final Board board = new Board(fen, false);
         final Side testingSide = board.getHavingMove().getOppositeSide();
         final var beforeMilliSeconds = System.currentTimeMillis();
-        final UnwinnabilityQuickVerdict unwinnableQuick = UnwinnableQuickAnalyzer.unwinnableQuick(board, testingSide);
+        final UnwinnabilityQuickVerdict unwinnableQuick = UnwinnableQuickAnalyzer.unwinnableQuick(board, testingSide)
+            .verdict();
         final var durationMilliSeconds = System.currentTimeMillis() - beforeMilliSeconds;
 
         final StringBuilder outputLine = new StringBuilder();

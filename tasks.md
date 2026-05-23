@@ -282,33 +282,31 @@ Five commit-sized steps, each leaving the suite green:
 
 ---
 
-## Lean bitboard winnability release — lean analyzer board for `FindHelpmateExhaust`, transposition keys, conditional magics, perf baseline
+## ✅ Helpmate analyzer board release (12.0.0) — `HelpmateSearchBoard` replaces `LeanBoard`
 
-The release **after** the Switchover release. Resumed from `origin/feature/lean-bitboard-helpmate-wip` (tip `ba4958fc`), which preserved the work-in-progress reverted out of 9.0.0 (`a524c9b8` LeanBoard, `befe521b` castling fix + stronger tests, `4b63738e` ZobristKeys side/castling/EP keys + `LeanBoard.zobristKey` + `legalMoves -> LegalMove`).
+The motivation is the `findHelpMate` cost in `UnwinnableFullAnalyzer` / `UnwinnableFullAnalyzer` / `FindHelpMateInterrupt`. Even with bitboards everywhere on the per-move path (10.0.0), the helpmate tree search still pays for full `Board` construction at every recursion node — SAN/LAN lists, full history, repetition counts, halfmove-clock list, etc. — none of which the search uses.
 
-The motivation is the `findHelpMate` cost in `UnwinnableFullAnalyzer`. Even with bitboards everywhere on the per-move path (10.0.0), the helpmate tree search still pays for full `Board` construction at every recursion node — SAN/LAN lists, full history, repetition counts, etc., none of which the search uses. A lean analyzer board strips this down to the minimum the search actually needs.
+### Trajectory
 
-### Phase 1 — Lean analyzer board
+- **First attempt — `LeanBoard` (fast_bitboard_for_tree_search).** Resumed from `origin/feature/lean-bitboard-helpmate-wip` (tip `ba4958fc`). Added a `LeanBoard` carrying `BitboardPosition` + side + EP + castling + halfmove, public class in `com.dlb.chess.bitboard`, transposition cache keyed on a 64-bit `LeanBoard.zobristKey()` composed from `BitboardPosition.zobristPieces()` + side/castling/EP keys added to `ZobristKeys`. Codex review flagged: (P2) public `LeanBoard` + new public `ZobristKeys` helpers leak the speedboard into public API, (P2) `LeanBoard.zobristKey()` not directly tested, (P3) stale "phantom EP NOT normalized" comment after the EP-normalization fix.
 
-**Step 1.1** — Design + new lightweight position class. Minimal state: `BitboardPosition` + side-to-move + en-passant target + castling rights + halfmove clock. No SAN/LAN lists, no disambiguation, no full history. Keyed on `BitboardPosition.zobristPieces()` + side/castling/EP contributions for transposition.
+- **Final design — `HelpmateSearchBoard` (12.0.0).** Replaces `LeanBoard` with a package-private analyzer board in `com.dlb.chess.unwinnability`. Stores a `DynamicPosition` directly (already EP-normalized + king-safety-aware) — no separate Zobrist composition, no new public surface, no collision risk. Caches `legalMoves` / `isCheck` / `isCheckmate` / `isStalemate` per ply on `refreshDerivedState()` so the recursion doesn't recompute on every read. `TestHelpmateSearchBoard` differential-tests against `Board` across a recursive tree on representative castling / EP / pawn-promotion / queen-mate / king-corner FENs.
 
-**Step 1.2** — `FindHelpmateExhaust` consumes the lean board. Helpmate transposition map switches from `DynamicPosition` to `long` Zobrist key.
+### What shipped
 
-**Step 1.3** — Baseline `findHelpMate` runtime on representative unwinnability fixtures. Record in tasks.md.
+- `HelpmateSearchBoard` (package-private, `com.dlb.chess.unwinnability`).
+- `TestHelpmateSearchBoard` recursive differential test.
+- `FindHelpmateExhaust` + `FindHelpMateInterrupt` rewritten to consume `HelpmateSearchBoard` internally; public `(Board, …)` entry points unchanged.
+- Transposition cache: `HashMap<DynamicPosition, Integer>`.
+- `UnwinnabilityMaterialBitboard.calculateIsInsufficientMaterial` added (consumed by `HelpmateSearchBoard.isInsufficientMaterial`).
+- `LeanBoard` + `TestLeanBoard` deleted. `ZobristKeys` reverted to its pre-WIP shape (only the piece-square helper).
+- `TestUnwinnableFullForLichessGamesHavingHelpMate.calculateCorrespondingLichessGame` fixed to also strip the leading `test_` prefix (pre-existing fixture-name bug for `test_lichess_V7eJ1RR9_helpmate.pgn` ↔ `lichess_V7eJ1RR9.pgn`).
 
-### Phase 2 — Mutable make/unmake (conditional)
+### Deferred — conditional follow-ons (not in 12.0.0)
 
-**Step 2.1** — Only if Phase 1's tree-search profile shows immutable `afterMove` allocations are a bottleneck. Add mutable variant on the lean analyzer board (NOT on `BitboardPosition` itself — preserves the record's immutability).
-
-### Phase 3 — Magic bitboards (conditional)
-
-**Step 3.1** — Only if profiling after Phases 1-2 shows classical ray loops are the bottleneck on the now-hot bitboard path. Drop in magic bitboards behind the existing `(int squareOrdinal, long occupied) -> long` API in `BishopAttacks` / `RookAttacks` — no caller changes needed.
-
-### Phase 4 — Performance baseline + release notes
-
-**Step 4.1** — Measure `findHelpMate` runtime against the representative unwinnability fixtures. Target: within 5× of `chesslib` on the same fixtures.
-
-**Step 4.2** — Update `tasks.md` (move release to Done), `README.md` (note tree-search perf), `specification.md` (architecture section gains the lean-analyzer-board layer).
+- **Mutable make/unmake.** Only if profiling shows immutable `afterMove` allocations dominate the tree-search hot path. Add mutable variant on `HelpmateSearchBoard` (NOT on `BitboardPosition` — preserves the record's immutability).
+- **Magic bitboards.** Only if profiling shows classical ray loops dominate. Drop in behind the existing `(int squareOrdinal, long occupied) -> long` API in `BishopAttacks` / `RookAttacks` — no caller changes.
+- **Performance baseline.** Measure `findHelpMate` runtime against representative unwinnability fixtures. Target: within 5× of `chesslib` on the same fixtures.
 
 ---
 
@@ -395,7 +393,7 @@ If adopted, the work mirrors Phase 1: remove the corresponding checks from `Vali
 
 ### Phase 4 — Release artifacts
 
-**Step 4.1** — Version bump (12.0.0; this is binary-incompatible because the `Board` constructor signatures with the `detectDeadPositionUnwinnable` flag are gone). `CHANGELOG.md` entry above `[11.0.0]`. `tasks.md` section marked done.
+**Step 4.1** — Version bump (TBD; this is binary-incompatible if the `Board` constructor signatures with the `detectDeadPositionUnwinnable` flag are removed). `CHANGELOG.md` entry above the current release. `tasks.md` section marked done.
 
 ### Why before the python-chess release
 

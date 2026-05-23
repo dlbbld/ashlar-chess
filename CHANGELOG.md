@@ -4,6 +4,33 @@ Releases from 3.3 onward. Earlier history is in git tags only.
 
 ## [Unreleased]
 
+## [12.0.0] - 2026-05-22
+
+The **Helpmate analyzer board release**. `FindHelpmateExhaust` and `FindHelpMateInterrupt` no longer recurse on the full `Board` at every node — SAN/LAN lists, full move history, repetition counts, halfmove-clock list, etc., are all cost the tree search never used. A new package-private `HelpmateSearchBoard` (`com.dlb.chess.unwinnability`) carries only what the search needs: a `DynamicPosition` plus the raw EP target plus cached derived state (legal moves, isCheck, isCheckmate, isStalemate). One `HelpmateSearchBoard.from(Board)` at entry; the recursion runs on it.
+
+### Notable
+
+- **Helpmate search uses `HelpmateSearchBoard` on every recursion node.** Package-private in `com.dlb.chess.unwinnability`. No public API addition. Built once from the caller's `Board`; the caller's `Board` is never mutated by the search.
+- **Transposition cache keys on `DynamicPosition`.** Already EP-normalized and king-safety-aware — no Zobrist composition needed in the search layer. The map is `HashMap<DynamicPosition, Integer>`.
+- **`HelpmateSearchBoard` caches derived state per ply.** `legalMoves`, `isCheck`, `isCheckmate`, `isStalemate` are computed once via `refreshDerivedState()` on `move()` / construction; restored from a per-ply snapshot on `unmove()`.
+- **`TestHelpmateSearchBoard`** asserts state parity with `Board` (DynamicPosition, bitboardPosition, side, EP, castling, legalMoves, isCheck, isCheckmate, isStalemate, both-side insufficient-material) across a recursive search tree on representative castling / EP / pawn-promotion / queen-mate / king-corner FENs at depths 0–2.
+- **`UnwinnabilityMaterialBitboard.calculateIsInsufficientMaterial`** added — a single side / opposite-side material query that `HelpmateSearchBoard.isInsufficientMaterial` consumes, mirroring the rules in `InsufficientMaterialUtility` on the bitboard layer.
+- **New test classes for the Lichess "not adjudicated correctly" corpus.** `TestUnwinnableFullForLichessGamesNotAdjudicatedCorrectly` and `TestUnwinnableQuickForLichessGamesNotAdjudicatedCorrectly` assert UNWINNABLE for the non-flagging side on real Lichess games that Lichess mis-adjudicated as wins on time despite the position being a forced draw. Regression-set coverage anchored on the FIDE-rule expectation, not on another analyzer.
+- **Lichess unwinnable corpus reorganization.** The `cha/lichess/quick/notDepthThree` folder is renamed to `cha/lichess/quick/depthAboveFour`; the `CHA_LICHESS_QUICK_NOT_DEPTH_THREE` enum and its `_HELPMATE` companion are renamed to `CHA_LICHESS_QUICK_DEPTH_ABOVE_FOUR(_HELPMATE)`. The `CHA_LICHESS_NOT_QUICK` enum (single fixture) is folded into `DEPTH_ABOVE_FOUR` and dropped. The single `test_lichess_V7eJ1RR9_helpmate.pgn` fixture is renamed to `lichess_V7eJ1RR9_helpmate.pgn` to match the convention used by all other helpmate fixtures.
+- **`TestUnwinnableFullForLichessGamesHavingHelpMate` split into two `@Test` methods.** `verdictsAreWinnable` asserts the analyzer's verdict; `mateLinesActuallyCheckmate` asserts the returned mate line, played out, delivers checkmate. A regression in either now reports separately.
+- **Quick unwinnability analysis now exposes mate lines.** `UnwinnableQuickAnalyzer.unwinnableQuick(...)` returns `UnwinnabilityQuickAnalysis`, mirroring the full analyzer's `UnwinnabilityFullAnalysis`: callers get the quick verdict plus the helpmate line when the verdict is `WINNABLE`. The `Board.isUnwinnableQuick(Side)` convenience method still returns only `UnwinnabilityQuickVerdict`.
+
+### Internal
+
+- **`FindHelpmateExhaust.calculateHelpmate(Board, int)`** keeps its public signature; internally constructs `HelpmateSearchBoard.from(board)` and delegates to a private overload. The board-was-changed invariant check now compares `DynamicPosition` / EP target (cheap) instead of re-serializing FEN.
+- **`FindHelpMateInterrupt.calculateHelpmate(Board, Side)`** follows the same pattern: public Board entry, private `HelpmateSearchBoard` recursion.
+- **`calculateStockfishFen` debug helper** rebuilt to derive FEN from `HelpmateSearchBoard` directly (`BitboardPositionUtility.calculatePiecePlacement`, manual castling-rights assembly, EP normalization). Still gated on `IS_DEBUG = false`.
+- **`CheckAgainstChaFull` removed** (144 lines) — superseded by the new `*NotAdjudicatedCorrectly` tests above.
+
+### Breaking
+
+`UnwinnableQuickAnalyzer.unwinnableQuick(...)` now returns `UnwinnabilityQuickAnalysis` instead of `UnwinnabilityQuickVerdict`. Use `.verdict()` for the previous behaviour, or `.mateLine()` when a quick `WINNABLE` result should be replayed. `Board.isUnwinnableQuick(Side)` is unchanged.
+
 ## [11.0.0] - 2026-05-21
 
 The **Role-inversion release**. With 10.0.0 in hand the per-move data path was bitboard-only, but `StaticPosition` was still a peer of `BitboardPosition` in `src/main/` — the public `Fen` record carried a `StaticPosition` field, `Board.getStaticPosition()` was a public derived view, the SAN / FEN / analyzer layers all still consumed `StaticPosition` through their public surface. This release finishes the inversion: production speaks only `BitboardPosition`, and the entire `StaticPosition` subtree (record, `StaticPositionUtility`, `com.dlb.chess.squares.*` consumer subset, `AbstractLegalMoves` + per-piece `*LegalMoves`, `UnwinnabilityMaterial`) is physically relocated to `src/test/java/` as the permanent differential-test oracle. **Not deleted. Relocated.** Project policy from this point on: every primitive on `BitboardPosition` is asserted against the relocated `StaticPosition` oracle on every fixture in the corpus, for every supported release going forward. See `specification.md` §4.1 and §6.1.

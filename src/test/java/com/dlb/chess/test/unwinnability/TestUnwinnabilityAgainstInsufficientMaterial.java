@@ -62,7 +62,8 @@ class TestUnwinnabilityAgainstInsufficientMaterial {
   private static void assertUnwinnable(PgnTestCase testCase, Side side) {
     final Board board = testCase.finalPosition();
     final var message = testCase.pgnName() + " " + side;
-    assertEquals(UnwinnabilityQuickVerdict.UNWINNABLE, UnwinnableQuickAnalyzer.unwinnableQuick(board, side), message);
+    assertEquals(UnwinnabilityQuickVerdict.UNWINNABLE, UnwinnableQuickAnalyzer.unwinnableQuick(board, side).verdict(),
+        message);
     assertEquals(UnwinnabilityFullVerdict.UNWINNABLE, UnwinnableFullAnalyzer.unwinnableFull(board, side).verdict(),
         message);
   }

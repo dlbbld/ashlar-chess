@@ -27,7 +27,7 @@ class TestUnwinnabilityFullAgainstLimitedOracle {
   @Test
   void test() throws Exception {
 
-    final PgnTestCaseList testCaseList = PgnTestCaseCatalog.getTestList(PgnTest.CHA_LICHESS_QUICK_NOT_DEPTH_THREE);
+    final PgnTestCaseList testCaseList = PgnTestCaseCatalog.getTestList(PgnTest.CHA_LICHESS_QUICK_DEPTH_ABOVE_FOUR);
     for (final PgnTestCase testCase : testCaseList.list()) {
       test(testCase);
     }

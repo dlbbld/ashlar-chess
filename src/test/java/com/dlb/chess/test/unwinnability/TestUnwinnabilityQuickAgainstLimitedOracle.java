@@ -32,11 +32,9 @@ class TestUnwinnabilityQuickAgainstLimitedOracle {
       for (final PgnTestCase testCase : testCaseList.list()) {
         if (RestrictTestConstants.IS_RESTRICT_PGN_UNWINNABILITY_QUICK_AGAINST_LIMITED_ORACLE_TEST) {
           switch (testCaseList.pgnTest()) {
-            case CHA_LICHESS_QUICK_NOT_DEPTH_THREE:
-            case CHA_LICHESS_QUICK_NOT_DEPTH_THREE_HELPMATE:
+            case CHA_LICHESS_QUICK_DEPTH_ABOVE_FOUR:
             case CHA_LICHESS_QUICK_DEPTH_THREE:
             case CHA_LICHESS_QUICK_DEPTH_FOUR:
-            case CHA_LICHESS_NOT_QUICK:
             case CHA_AMBRONA:
               break;
             // $CASES-OMITTED$
@@ -62,13 +60,13 @@ class TestUnwinnabilityQuickAgainstLimitedOracle {
         final LimitedUnwinnabilityVerdict verdictWhite = LimitedUnwinnabilityOracle.calculateUnwinnability(board,
             Side.WHITE);
         final UnwinnabilityQuickVerdict unwinnableQuickWhite = UnwinnableQuickAnalyzer.unwinnableQuick(board,
-            Side.WHITE);
+            Side.WHITE).verdict();
         check(verdictWhite, unwinnableQuickWhite);
 
         final LimitedUnwinnabilityVerdict verdictBlack = LimitedUnwinnabilityOracle.calculateUnwinnability(board,
             Side.BLACK);
         final UnwinnabilityQuickVerdict unwinnableQuickBlack = UnwinnableQuickAnalyzer.unwinnableQuick(board,
-            Side.BLACK);
+            Side.BLACK).verdict();
 
         check(verdictBlack, unwinnableQuickBlack);
       }
