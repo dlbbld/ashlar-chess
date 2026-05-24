@@ -40,7 +40,7 @@ Requires JDK 17 or later at runtime. Available via the [JitPack](https://jitpack
 <dependency>
   <groupId>com.github.dlbbld</groupId>
   <artifactId>clean-chess</artifactId>
-  <version>12.2.0</version>
+  <version>13.0.0</version>
 </dependency>
 ```
 
@@ -56,7 +56,7 @@ repositories {
 ```groovy
 dependencies {
     ...
-    implementation 'com.github.dlbbld:clean-chess:12.2.0'
+    implementation 'com.github.dlbbld:clean-chess:13.0.0'
     ...
 }
 ```
