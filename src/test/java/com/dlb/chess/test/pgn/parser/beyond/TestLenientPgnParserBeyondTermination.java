@@ -73,30 +73,6 @@ class TestLenientPgnParserBeyondTermination {
         GameStatus.DEAD_POSITION_INSUFFICIENT_MATERIAL);
   }
 
-  @SuppressWarnings("static-method")
-  @Test
-  void test07PlayBeyondFivefoldRepetitionWithWhiteMove() {
-    assertRejectedWith("07_play_beyond_fivefold_repetition_with_white_move.pgn", GameStatus.FIVE_FOLD_REPETITION_RULE);
-  }
-
-  @SuppressWarnings("static-method")
-  @Test
-  void test08PlayBeyondFivefoldRepetitionWithBlackMove() {
-    assertRejectedWith("08_play_beyond_fivefold_repetition_with_black_move.pgn", GameStatus.FIVE_FOLD_REPETITION_RULE);
-  }
-
-  @SuppressWarnings("static-method")
-  @Test
-  void test09PlayBeyondSeventyFiveMoveRuleWithWhiteMove() {
-    assertRejectedWith("09_play_beyond_seventy_five_move_rule_with_white_move.pgn", GameStatus.SEVENTY_FIVE_MOVE_RULE);
-  }
-
-  @SuppressWarnings("static-method")
-  @Test
-  void test10PlayBeyondSeventyFiveMoveRuleWithBlackMove() {
-    assertRejectedWith("10_play_beyond_seventy_five_move_rule_with_black_move.pgn", GameStatus.SEVENTY_FIVE_MOVE_RULE);
-  }
-
   private static void assertRejectedWith(String pgnName, GameStatus expectedStatus) {
     final LenientPgnParserValidationException e = assertThrows(LenientPgnParserValidationException.class,
         () -> LenientPgnParser.parse(BEYOND_FOLDER, pgnName));

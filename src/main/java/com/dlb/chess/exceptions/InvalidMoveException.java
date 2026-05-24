@@ -19,7 +19,7 @@ public class InvalidMoveException extends UsageException {
 
   /**
    * Used when {@link MoveCheck#GAME_ALREADY_ENDED} is the reason: carries the specific {@link GameStatus} (checkmate /
-   * stalemate / insufficient material / fivefold / 75-move) that ended the game.
+   * stalemate / dead-position-insufficient-material / dead-position-unwinnable-quick) that ended the game.
    */
   public InvalidMoveException(String message, MoveCheck moveCheck, GameStatus gameStatus) {
     super(message);

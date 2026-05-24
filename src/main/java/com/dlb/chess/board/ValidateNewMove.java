@@ -51,8 +51,8 @@ class ValidateNewMove implements EnumConstants {
 
   /**
    * Top-of-pipeline check: once any FIDE-automatic termination has been reached the game has ended permanently and no
-   * further moves are accepted. See {@code com.dlb.chess.board} package-info for the six terminal statuses and the
-   * single-side-insufficient-material / claimable-draw exclusions.
+   * further moves are accepted. See {@code com.dlb.chess.board} package-info for the four terminal statuses and the
+   * single-side-insufficient-material / claimable-draw / queryable-rule (fivefold, 75-move) exclusions.
    */
   private static void validateGameNotEnded(Board board) throws InvalidMoveException {
     final GameStatus gameStatus = BasicChessUtility.calculateGameStatus(board);

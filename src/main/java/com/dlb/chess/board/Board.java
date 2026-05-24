@@ -706,16 +706,20 @@ public class Board {
   }
 
   /**
-   * True iff the halfmove clock has reached the 75-move-rule threshold (FIDE 9.6.2). This is an automatic FIDE
-   * termination â€” once true, the game has ended in a draw and no further moves are accepted.
+   * True iff the halfmove clock has reached the 75-move-rule threshold (FIDE 9.6.2). In this library the 75-move rule
+   * is surfaced as a queryable predicate rather than an enforced termination: the move pipeline does NOT reject moves
+   * on this condition, and the predicate remains {@code true} for every subsequent halfmove until the clock is reset
+   * by a pawn move or capture. Consumers that want to surface the rule call this predicate themselves.
    */
   public boolean isSeventyFiveMove() {
     return getHalfMoveClock() >= ChessConstants.SEVENTY_FIVE_MOVE_RULE_HALF_MOVE_CLOCK_THRESHOLD;
   }
 
   /**
-   * True iff the current position has occurred at least five times in the game (FIDE 9.6.1). This is an automatic FIDE
-   * termination â€” once true, the game has ended in a draw and no further moves are accepted.
+   * True iff the current position has occurred at least five times in the game (FIDE 9.6.1). In this library the
+   * fivefold-repetition rule is surfaced as a queryable predicate rather than an enforced termination: the move
+   * pipeline does NOT reject moves on this condition. Consumers that want to surface the rule call this predicate
+   * themselves.
    */
   public boolean isFivefoldRepetition() {
     return getRepetitionCount() >= ChessConstants.FIVEFOLD_REPETITION_RULE_THRESHOLD;

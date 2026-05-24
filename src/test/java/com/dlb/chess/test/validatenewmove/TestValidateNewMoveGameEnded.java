@@ -3,6 +3,7 @@ package com.dlb.chess.test.validatenewmove;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 import org.junit.jupiter.api.Test;
 
@@ -15,12 +16,17 @@ import com.dlb.chess.exceptions.InvalidMoveException;
 
 /**
  * Surface-level tests for the strict-pipeline game-end pre-check in
- * {@link com.dlb.chess.board.ValidateNewMove#validateNewMove}: one scenario per FIDE-automatic termination
+ * {@link com.dlb.chess.board.ValidateNewMove#validateNewMove}: one scenario per enforced FIDE-automatic termination
  * ({@link GameStatus#CHECKMATE}, {@link GameStatus#STALEMATE}, {@link GameStatus#DEAD_POSITION_INSUFFICIENT_MATERIAL},
- * {@link GameStatus#DEAD_POSITION_UNWINNABLE_QUICK}, {@link GameStatus#FIVE_FOLD_REPETITION_RULE},
- * {@link GameStatus#SEVENTY_FIVE_MOVE_RULE}). Each verifies that any move attempted on a terminal-state board is
- * rejected with {@link MoveCheck#GAME_ALREADY_ENDED} and that the thrown {@link InvalidMoveException} carries the
+ * {@link GameStatus#DEAD_POSITION_UNWINNABLE_QUICK}). Each verifies that any move attempted on a terminal-state board
+ * is rejected with {@link MoveCheck#GAME_ALREADY_ENDED} and that the thrown {@link InvalidMoveException} carries the
  * originating {@link GameStatus} as payload.
+ *
+ * <p>
+ * Fivefold and 75-move are <em>not</em> enforced terminations in this library (see
+ * {@link GameStatus#isAutomaticTermination()}); the move pipeline accepts further moves at and past those thresholds.
+ * The companion {@code testMoveAcceptedAtFivefoldThreshold} / {@code testMoveAcceptedAtSeventyFiveMoveThreshold} pin
+ * that behavior down.
  *
  * <p>
  * For {@code DEAD_POSITION_UNWINNABLE_QUICK} two scenarios are exercised: a board born dead from a pawn-wall FEN (the
@@ -93,30 +99,31 @@ class TestValidateNewMoveGameEnded implements EnumConstants {
     check(board, new MoveSpecification(E8, D8), GameStatus.DEAD_POSITION_UNWINNABLE_QUICK);
   }
 
-  // --- SEVENTY_FIVE_MOVE_RULE ---
+  // --- queryable-only predicates: pipeline does NOT block past these ---
 
   @SuppressWarnings("static-method")
   @Test
-  void testGameEndedBySeventyFiveMoveRule() {
-    // FEN with halfmove clock at the 75-move threshold (150) — the position is the terminal
-    // moment of the 75-move rule. Any further move is rejected.
+  void testMoveAcceptedAtSeventyFiveMoveThreshold() {
+    // FEN with halfmove clock at the 75-move threshold (150). isSeventyFiveMove() returns true,
+    // but the move pipeline accepts further moves — fivefold and 75-move are queryable, not
+    // enforced.
     final Board board = new Board("4k3/8/4P3/8/8/8/2N1B3/3KQ2R w - - 150 76", false);
-    check(board, new MoveSpecification(D1, D2), GameStatus.SEVENTY_FIVE_MOVE_RULE);
+    assertTrue(board.isSeventyFiveMove(), "predicate must fire at threshold");
+    assertDoesNotThrow(() -> board.move(new MoveSpecification(D1, D2)),
+        "75-move is queryable only; the pipeline must accept the move");
   }
 
-  // --- FIVE_FOLD_REPETITION_RULE ---
-
   @SuppressWarnings("static-method")
   @Test
-  void testGameEndedByFivefoldRepetition() {
-    // Drive a board to fivefold by alternating knight moves between two squares for both
-    // sides, so the same position recurs 5 times.
+  void testMoveAcceptedAtFivefoldThreshold() {
+    // Drive the board to fivefold by alternating knight moves so the starting position recurs 5
+    // times. isFivefoldRepetition() returns true, but the move pipeline accepts further moves.
     final Board board = new Board(false);
-    // Sequence: 1.Nf3 Nf6 2.Ng1 Ng8 3.Nf3 Nf6 4.Ng1 Ng8 5.Nf3 Nf6 6.Ng1 Ng8 7.Nf3 Nf6 8.Ng1 Ng8
-    // After move 8...Ng8 the starting position has occurred 5 times (move 0, 2, 4, 6, 8).
     board.movesStrict("Nf3", "Nf6", "Ng1", "Ng8", "Nf3", "Nf6", "Ng1", "Ng8", "Nf3", "Nf6", "Ng1", "Ng8", "Nf3", "Nf6",
         "Ng1", "Ng8");
-    check(board, new MoveSpecification(E2, E4), GameStatus.FIVE_FOLD_REPETITION_RULE);
+    assertTrue(board.isFivefoldRepetition(), "predicate must fire at fivefold");
+    assertDoesNotThrow(() -> board.move(new MoveSpecification(E2, E4)),
+        "fivefold is queryable only; the pipeline must accept the move");
   }
 
   // --- helpers ---

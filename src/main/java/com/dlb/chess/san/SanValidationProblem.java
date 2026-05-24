@@ -5,8 +5,9 @@ public enum SanValidationProblem {
   NONE,
 
   // Top-of-pipeline rejection: the game has already ended by an automatic FIDE termination
-  // (checkmate, stalemate, insufficient material, fivefold repetition, 75-move rule). The
-  // specific reason is carried as a GameStatus payload on the thrown SanValidationException.
+  // (checkmate, stalemate, dead position by mutual insufficient material, dead position by
+  // Ambrona's quick unwinnability analyzer). The specific reason is carried as a GameStatus
+  // payload on the thrown SanValidationException.
   GAME_ALREADY_ENDED,
 
   FORMAT_BLANK,

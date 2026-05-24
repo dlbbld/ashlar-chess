@@ -1,10 +1,18 @@
 package com.dlb.chess.common.enums;
 
 /**
- * Status of a game (board with history). The six FIDE-automatic terminations ({@link #CHECKMATE}, {@link #STALEMATE},
- * {@link #DEAD_POSITION_INSUFFICIENT_MATERIAL}, {@link #DEAD_POSITION_UNWINNABLE_QUICK},
- * {@link #FIVE_FOLD_REPETITION_RULE}, {@link #SEVENTY_FIVE_MOVE_RULE}) end the game permanently — no further moves are
- * accepted by the validation pipeline (see {@code ValidateNewMove} and {@code StrictSanParser}).
+ * Status of a game (board with history). The four FIDE-automatic terminations ({@link #CHECKMATE}, {@link #STALEMATE},
+ * {@link #DEAD_POSITION_INSUFFICIENT_MATERIAL}, {@link #DEAD_POSITION_UNWINNABLE_QUICK}) end the game permanently — no
+ * further moves are accepted by the validation pipeline (see {@code ValidateNewMove} and {@code StrictSanParser}).
+ *
+ * <p>
+ * {@link #FIVE_FOLD_REPETITION_RULE} (FIDE 9.6.1) and {@link #SEVENTY_FIVE_MOVE_RULE} (FIDE 9.6.2) are FIDE-automatic
+ * terminations in the rulebook, but in this library they are surfaced as <em>queryable predicates</em> rather than
+ * enforced at the move pipeline: playing on past either threshold is harmless (no win is reachable for either side; the
+ * practical outcome is always a draw by adjudication, resignation, or agreement), and historical PGN corpora routinely
+ * contain games whose recorded play continues a move or two past the threshold. Consumers that want to surface the
+ * rule call {@link com.dlb.chess.board.Board#isFivefoldRepetition()} /
+ * {@link com.dlb.chess.board.Board#isSeventyFiveMove()} themselves. See {@link #isAutomaticTermination()}.
  *
  * <p>
  * The two single-side insufficient-material variants ({@link #INSUFFICIENT_MATERIAL_WHITE_ONLY},
@@ -36,13 +44,16 @@ public enum GameStatus {
   ONGOING;
 
   /**
-   * Returns {@code true} iff this status is one of the six FIDE-automatic terminations that end the game permanently.
-   * The single-side insufficient-material variants and {@link #ONGOING} return {@code false}.
+   * Returns {@code true} iff this status is one of the four FIDE-automatic terminations that end the game permanently
+   * in this library: {@link #CHECKMATE}, {@link #STALEMATE}, {@link #DEAD_POSITION_INSUFFICIENT_MATERIAL},
+   * {@link #DEAD_POSITION_UNWINNABLE_QUICK}. {@link #FIVE_FOLD_REPETITION_RULE} and {@link #SEVENTY_FIVE_MOVE_RULE} are
+   * queryable predicates rather than enforced terminations and return {@code false} here. The single-side
+   * insufficient-material variants and {@link #ONGOING} also return {@code false}.
    */
   public boolean isAutomaticTermination() {
     return switch (this) {
-      case CHECKMATE, STALEMATE, DEAD_POSITION_INSUFFICIENT_MATERIAL, DEAD_POSITION_UNWINNABLE_QUICK, FIVE_FOLD_REPETITION_RULE, SEVENTY_FIVE_MOVE_RULE -> true;
-      case INSUFFICIENT_MATERIAL_WHITE_ONLY, INSUFFICIENT_MATERIAL_BLACK_ONLY, ONGOING -> false;
+      case CHECKMATE, STALEMATE, DEAD_POSITION_INSUFFICIENT_MATERIAL, DEAD_POSITION_UNWINNABLE_QUICK -> true;
+      case FIVE_FOLD_REPETITION_RULE, SEVENTY_FIVE_MOVE_RULE, INSUFFICIENT_MATERIAL_WHITE_ONLY, INSUFFICIENT_MATERIAL_BLACK_ONLY, ONGOING -> false;
     };
   }
 }
