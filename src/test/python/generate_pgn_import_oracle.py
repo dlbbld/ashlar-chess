@@ -30,7 +30,15 @@ JSONL schema (one record per line, keys sorted alphabetically):
     "isStalemate":                  <bool>,    # board.is_stalemate() after the move
     "isInsufficientMaterial":       <bool>,    # board.is_insufficient_material() (both sides)
     "hasInsufficientMaterialWhite": <bool>,    # board.has_insufficient_material(chess.WHITE)
-    "hasInsufficientMaterialBlack": <bool>     # board.has_insufficient_material(chess.BLACK)
+    "hasInsufficientMaterialBlack": <bool>,    # board.has_insufficient_material(chess.BLACK)
+    "isRepetition2":                <bool>,    # board.is_repetition(2)
+    "isRepetition3":                <bool>,    # board.is_repetition(3) — threefold by count
+    "isRepetition4":                <bool>,    # board.is_repetition(4)
+    "isFivefoldRepetition":         <bool>,    # board.is_fivefold_repetition() — FIDE 9.6.1 auto-draw
+    "isFiftyMoves":                 <bool>,    # board.is_fifty_moves() — halfmove clock >= 100
+    "isSeventyFiveMoves":           <bool>,    # board.is_seventyfive_moves() — FIDE 9.6.2 auto-draw
+    "canClaimThreefold":            <bool>,    # board.can_claim_threefold_repetition() — claim by repetition
+    "canClaimFifty":                <bool>     # board.can_claim_fifty_moves() — claim by 50-move rule
   }
 
 This module is the schema source of truth; the Java side
@@ -154,6 +162,14 @@ def record_for_pgn(pgn_path: Path) -> dict:
             "isInsufficientMaterial": board.is_insufficient_material(),
             "hasInsufficientMaterialWhite": board.has_insufficient_material(chess.WHITE),
             "hasInsufficientMaterialBlack": board.has_insufficient_material(chess.BLACK),
+            "isRepetition2": board.is_repetition(2),
+            "isRepetition3": board.is_repetition(3),
+            "isRepetition4": board.is_repetition(4),
+            "isFivefoldRepetition": board.is_fivefold_repetition(),
+            "isFiftyMoves": board.is_fifty_moves(),
+            "isSeventyFiveMoves": board.is_seventyfive_moves(),
+            "canClaimThreefold": board.can_claim_threefold_repetition(),
+            "canClaimFifty": board.can_claim_fifty_moves(),
         })
 
     return {

@@ -149,6 +149,41 @@ class TestPgnImportAgainstPythonChessOracle {
             assertEquals(expected.hasInsufficientMaterialBlack(), board.isInsufficientMaterial(Side.BLACK),
                 () -> bucket + " / " + record.pgn() + " ply " + plyLabel
                     + " — isInsufficientMaterial(BLACK) mismatch");
+            assertEquals(expected.isRepetition2(), board.getRepetitionCount() >= 2,
+                () -> bucket + " / " + record.pgn() + " ply " + plyLabel + " — isRepetition(2) mismatch");
+            assertEquals(expected.isRepetition3(), board.getRepetitionCount() >= 3,
+                () -> bucket + " / " + record.pgn() + " ply " + plyLabel + " — isRepetition(3) mismatch");
+            assertEquals(expected.isRepetition4(), board.getRepetitionCount() >= 4,
+                () -> bucket + " / " + record.pgn() + " ply " + plyLabel + " — isRepetition(4) mismatch");
+            assertEquals(expected.isFivefoldRepetition(), board.isFivefoldRepetition(),
+                () -> bucket + " / " + record.pgn() + " ply " + plyLabel + " — isFivefoldRepetition mismatch");
+            // Two clean-chess vs python-chess semantic disagreements at game-end positions, both treated as
+            // surfaced findings (see tasks.md "drop auto-fivefold / auto-75-move termination" discussion) rather
+            // than silently resolved in the oracle layer:
+            //
+            // (1) python-chess `is_fifty_moves()` / `is_seventyfive_moves()` require `halfmove_clock >= N AND a
+            //     legal move exists`; clean-chess `isFiftyMove()` / `isSeventyFiveMove()` are pure threshold
+            //     checks. At checkmate/stalemate positions where the clock is past the threshold, python-chess
+            //     returns false while clean-chess returns true.
+            //
+            // (2) clean-chess `canClaimThreefoldRepetitionRule()` / `canClaimFiftyMoveRule()` internally simulate
+            //     legal moves via Board.move(); on auto-terminated positions Board.move() throws
+            //     InvalidMoveException, so the canClaim* methods are unsafe to call. python-chess returns a
+            //     clean boolean in the same situation.
+            //
+            // Skip all four assertions when clean-chess considers the game ended; assertions still run at every
+            // mid-game position, which is where claim semantics actually matter.
+            if (!board.isCheckmate() && !board.isStalemate() && !board.isFivefoldRepetition()
+                && !board.isSeventyFiveMove() && !board.isInsufficientMaterial()) {
+              assertEquals(expected.isFiftyMoves(), board.isFiftyMove(),
+                  () -> bucket + " / " + record.pgn() + " ply " + plyLabel + " — isFiftyMoves mismatch");
+              assertEquals(expected.isSeventyFiveMoves(), board.isSeventyFiveMove(),
+                  () -> bucket + " / " + record.pgn() + " ply " + plyLabel + " — isSeventyFiveMoves mismatch");
+              assertEquals(expected.canClaimThreefold(), board.canClaimThreefoldRepetitionRule(),
+                  () -> bucket + " / " + record.pgn() + " ply " + plyLabel + " — canClaimThreefold mismatch");
+              assertEquals(expected.canClaimFifty(), board.canClaimFiftyMoveRule(),
+                  () -> bucket + " / " + record.pgn() + " ply " + plyLabel + " — canClaimFifty mismatch");
+            }
           } catch (final AssertionError e) {
             failures.add(BasicUtility.getMessage(e));
           }

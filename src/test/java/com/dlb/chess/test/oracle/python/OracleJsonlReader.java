@@ -57,7 +57,15 @@ public final class OracleJsonlReader {
         ((Boolean) obj.get("isStalemate")).booleanValue(),
         ((Boolean) obj.get("isInsufficientMaterial")).booleanValue(),
         ((Boolean) obj.get("hasInsufficientMaterialWhite")).booleanValue(),
-        ((Boolean) obj.get("hasInsufficientMaterialBlack")).booleanValue());
+        ((Boolean) obj.get("hasInsufficientMaterialBlack")).booleanValue(),
+        ((Boolean) obj.get("isRepetition2")).booleanValue(),
+        ((Boolean) obj.get("isRepetition3")).booleanValue(),
+        ((Boolean) obj.get("isRepetition4")).booleanValue(),
+        ((Boolean) obj.get("isFivefoldRepetition")).booleanValue(),
+        ((Boolean) obj.get("isFiftyMoves")).booleanValue(),
+        ((Boolean) obj.get("isSeventyFiveMoves")).booleanValue(),
+        ((Boolean) obj.get("canClaimThreefold")).booleanValue(),
+        ((Boolean) obj.get("canClaimFifty")).booleanValue());
   }
 
   private static Object parseValue(String text) {
