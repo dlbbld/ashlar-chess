@@ -7,9 +7,9 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.apache.logging.log4j.Logger;
+import org.eclipse.jdt.annotation.NonNull;
 import org.junit.jupiter.api.Test;
 
 import com.dlb.chess.board.Board;
@@ -84,7 +84,7 @@ class TestPgnExportRoundTripAgainstPythonChessOracle {
   @SuppressWarnings("static-method")
   @Test
   void pgnExportRoundTripAgainstPythonChessOracle() throws IOException {
-    final List<String> failures = new ArrayList<>();
+    final @NonNull List<String> failures = new ArrayList<>();
     var totalFixtures = 0;
 
     for (final PgnTest bucket : BUCKETS) {
@@ -100,8 +100,10 @@ class TestPgnExportRoundTripAgainstPythonChessOracle {
       final Path folderPath = bucket.getFolderPath();
       for (final OracleRecord record : records) {
         totalFixtures++;
-        final List<String> expectedUcis = record.moves().stream().map(OracleMove::uci)
-            .collect(Collectors.toUnmodifiableList());
+        final @NonNull List<String> expectedUcis = new ArrayList<>();
+        for (final OracleMove move : record.moves()) {
+          expectedUcis.add(move.uci());
+        }
 
         final PgnGame original = StrictPgnParser.parse(folderPath, record.pgn());
         verify(record, expectedUcis, original, "original-parse", bucket, failures);
@@ -130,9 +132,9 @@ class TestPgnExportRoundTripAgainstPythonChessOracle {
     LOGGER.info("Round-trip cross-validated {} fixtures × 2 modes across {} buckets", totalFixtures, BUCKETS.size());
 
     if (!failures.isEmpty()) {
-      final var report = new StringBuilder().append(failures.size())
-          .append(" PGN-export round-trip disagreement(s) across ").append(totalFixtures).append(" fixtures in ")
-          .append(BUCKETS.size()).append(" buckets:\n");
+      final StringBuilder report = new StringBuilder();
+      report.append(failures.size()).append(" PGN-export round-trip disagreement(s) across ").append(totalFixtures)
+          .append(" fixtures in ").append(BUCKETS.size()).append(" buckets:\n");
       for (final String f : failures) {
         report.append("  ").append(f).append('\n');
       }

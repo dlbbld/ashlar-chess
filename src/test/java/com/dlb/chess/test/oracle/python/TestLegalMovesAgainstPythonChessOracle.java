@@ -124,8 +124,9 @@ class TestLegalMovesAgainstPythonChessOracle {
         totalFixtures, BUCKETS.size());
 
     if (!failures.isEmpty()) {
-      final var report = new StringBuilder().append(failures.size()).append(" legal-move set disagreement(s) across ")
-          .append(totalFixtures).append(" fixtures in ").append(BUCKETS.size()).append(" buckets:\n");
+      final StringBuilder report = new StringBuilder();
+      report.append(failures.size()).append(" legal-move set disagreement(s) across ").append(totalFixtures)
+          .append(" fixtures in ").append(BUCKETS.size()).append(" buckets:\n");
       for (final String f : failures) {
         report.append("  ").append(f).append('\n');
       }
