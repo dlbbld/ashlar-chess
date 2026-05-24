@@ -65,7 +65,7 @@ In short: share records and call static utilities from anywhere; never share a `
 
 ### 3.1 FIDE rule fidelity and game termination
 
-The library follows the FIDE Laws of Chess closely, distinguishing **automatic** terminations (the game is over in the model) from **claimable** ones (the library exposes the predicate; the game continues until claimed):
+The library follows the FIDE Laws of Chess closely, distinguishing **automatic** terminations (the game is over in the model — no further moves accepted by the move pipeline) from **queryable** ones (the library exposes the predicate but does not enforce termination; the game continues until the caller decides) from **claimable** ones (the library exposes both the on-board and with-move predicates; the game continues until claimed):
 
 | Rule | Mode | FIDE article |
 |---|---|---|
@@ -73,12 +73,14 @@ The library follows the FIDE Laws of Chess closely, distinguishing **automatic**
 | Stalemate | automatic | 5.2.1 |
 | Insufficient material (structural) | automatic | 5.2.2 / 9.4 |
 | Dead position by quick unwinnability | automatic when enabled on `Board` | 5.2.2 |
-| Fivefold repetition | automatic | 9.6.1 |
-| 75-move rule | automatic | 9.6.2 |
+| Fivefold repetition | queryable | 9.6.1 |
+| 75-move rule | queryable | 9.6.2 |
 | Threefold repetition | claimable | 9.2 |
 | 50-move rule | claimable | 9.3 |
 
 Once a position is automatically terminated, the board does not allow further moves; continuation past mandatory termination is a usage error. Insufficient material is detected by a fast structural test (king-vs-king, king + minor vs king, etc.). `Board` also detects dead positions by running the quick unwinnability analyzer for both sides once per ply when its `detectDeadPositionUnwinnable` flag is enabled, which is the default. Positions that require the full analyzer remain caller-invoked.
+
+Fivefold repetition (FIDE 9.6.1) and the 75-move rule (FIDE 9.6.2) are FIDE-automatic terminations in the rulebook, but the library surfaces them as queryable predicates rather than enforcing them at the move pipeline. Playing on past either threshold is harmless — no win is reachable for either side and the practical outcome is always a draw by adjudication, resignation, or agreement — and historical PGN corpora routinely contain games whose recorded play continues a move or two past the threshold. Consumers that want to surface the rule call `Board.isFivefoldRepetition()` / `Board.isSeventyFiveMove()` themselves. The corresponding `GameStatus` values remain available through `BasicChessUtility.calculateGameStatus(...)` as diagnostic answers, with the automatic-termination statuses taking precedence when both apply to the same position.
 
 For the claimable rules, the library exposes both the **on-board** predicate (current position satisfies the rule) and the **with-move** predicate (some legal move would satisfy it), and produces analysis output that names which moves *would* satisfy the claim — surfacing missed claim opportunities that other libraries do not. Position equality follows the FIDE definition: same piece placement, same side to move, same castling rights, same en-passant possibilities.
 
