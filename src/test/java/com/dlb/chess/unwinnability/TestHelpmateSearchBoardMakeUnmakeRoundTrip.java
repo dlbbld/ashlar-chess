@@ -100,9 +100,9 @@ class TestHelpmateSearchBoardMakeUnmakeRoundTrip {
 
   private static Board boardFrom(@Nullable String fen) {
     if (fen == null) {
-      return new Board(false);
+      return new Board();
     }
-    return new Board(fen, false);
+    return new Board(fen);
   }
 
   private record Scenario(String label, @Nullable String fen, int depth) {

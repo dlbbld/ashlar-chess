@@ -14,7 +14,7 @@ class TestSanValidateNonMovement extends AbstractTestSanValidate {
 
     // attention for kings this is disallowed by format definition
 
-    final Board board = new Board(false);
+    final Board board = new Board();
 
     checkExceptionNonMovement("Ra1a1", board);
     checkExceptionNonMovement("Nb1b1", board);

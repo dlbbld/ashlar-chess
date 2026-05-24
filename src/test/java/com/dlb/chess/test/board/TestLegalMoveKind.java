@@ -24,7 +24,7 @@ class TestLegalMoveKind {
   @SuppressWarnings("static-method")
   @Test
   void testNormalForKnightMove() {
-    final Board board = new Board(false);
+    final Board board = new Board();
     // From the initial position, any piece-move (e.g. Nb1-c3) has kind NORMAL.
     final LegalMove knightToC3 = findLegalMoveByFromTo(board, Square.B1, Square.C3);
     assertEquals(LegalMoveKind.NORMAL, knightToC3.kind());
@@ -33,7 +33,7 @@ class TestLegalMoveKind {
   @SuppressWarnings("static-method")
   @Test
   void testPawnTwoSquareAdvanceForPawnInitialDoublePush() {
-    final Board board = new Board(false);
+    final Board board = new Board();
     // 1.e4 from the initial position — white pawn e2 → e4 is a two-square advance.
     final LegalMove e2ToE4 = findLegalMoveByFromTo(board, Square.E2, Square.E4);
     assertEquals(LegalMoveKind.PAWN_TWO_SQUARE_ADVANCE, e2ToE4.kind());
@@ -42,7 +42,7 @@ class TestLegalMoveKind {
   @SuppressWarnings("static-method")
   @Test
   void testNormalForPawnSingleAdvance() {
-    final Board board = new Board(false);
+    final Board board = new Board();
     // 1.e3 is a one-square advance, not two-square — kind NORMAL.
     final LegalMove e2ToE3 = findLegalMoveByFromTo(board, Square.E2, Square.E3);
     assertEquals(LegalMoveKind.NORMAL, e2ToE3.kind());
@@ -52,7 +52,7 @@ class TestLegalMoveKind {
   @Test
   void testEnPassantCaptureAfterTwoSquareAdvance() {
     // Classic en-passant setup: 1.e4 Nf6 2.e5 d5 — now white's e5 pawn can capture d-pawn en passant.
-    final Board board = new Board(false);
+    final Board board = new Board();
     board.movesStrict("e4", "Nf6", "e5", "d5");
     final LegalMove exd6 = findLegalMoveByFromTo(board, Square.E5, Square.D6);
     assertEquals(LegalMoveKind.EN_PASSANT_CAPTURE, exd6.kind());
@@ -62,7 +62,7 @@ class TestLegalMoveKind {
   @Test
   void testNormalForRegularPawnCapture() {
     // Plain diagonal pawn capture (not en passant).
-    final Board board = new Board(false);
+    final Board board = new Board();
     board.movesStrict("e4", "d5");
     // Now 2.exd5 is a regular capture, not en passant.
     final LegalMove exd5 = findLegalMoveByFromTo(board, Square.E4, Square.D5);
@@ -73,7 +73,7 @@ class TestLegalMoveKind {
   @Test
   void testCastlingForKingSideCastle() {
     // Quick king-side castling setup for white: 1.e4 e5 2.Nf3 Nc6 3.Bc4 Bc5 — now white can castle short.
-    final Board board = new Board(false);
+    final Board board = new Board();
     board.movesStrict("e4", "e5", "Nf3", "Nc6", "Bc4", "Bc5");
     final LegalMove castling = findLegalMoveByCastlingMove(board, CastlingMove.KING_SIDE);
     assertEquals(LegalMoveKind.CASTLING, castling.kind());
@@ -83,7 +83,7 @@ class TestLegalMoveKind {
   @Test
   void testPromotionForPawnReachingPromotionRank() {
     // Custom position: white pawn on a7 with empty a8 — any of the four promotion moves carries kind PROMOTION.
-    final Board board = new Board("4k3/P7/8/8/8/8/8/4K3 w - - 0 1", false);
+    final Board board = new Board("4k3/P7/8/8/8/8/8/4K3 w - - 0 1");
     final LegalMove promotion = findFirstLegalMoveFromSquare(board, Square.A7);
     assertEquals(LegalMoveKind.PROMOTION, promotion.kind());
   }

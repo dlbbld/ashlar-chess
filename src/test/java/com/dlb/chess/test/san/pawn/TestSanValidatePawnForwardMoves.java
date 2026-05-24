@@ -17,7 +17,7 @@ class TestSanValidatePawnForwardMoves {
   void testWhite() {
 
     {
-      final Board board = new Board(false);
+      final Board board = new Board();
 
       board.moveStrict("d4");
       board.moveStrict("d5");
@@ -25,7 +25,7 @@ class TestSanValidatePawnForwardMoves {
     }
 
     {
-      final Board board = new Board(false);
+      final Board board = new Board();
 
       board.moveStrict("d4");
       board.moveStrict("e5");
@@ -42,7 +42,7 @@ class TestSanValidatePawnForwardMoves {
   void testBlack() {
 
     {
-      final Board board = new Board(false);
+      final Board board = new Board();
 
       board.moveStrict("d4");
       board.moveStrict("d5");
@@ -51,7 +51,7 @@ class TestSanValidatePawnForwardMoves {
     }
 
     {
-      final Board board = new Board(false);
+      final Board board = new Board();
 
       board.moveStrict("d4");
       board.moveStrict("e5");

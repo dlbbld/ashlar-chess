@@ -20,8 +20,8 @@ public class LenientPgnParserValidationException extends UsageException {
   /**
    * The {@link GameStatus} that ended the game when {@link #sanValidationProblem} is
    * {@link SanValidationProblem#GAME_ALREADY_ENDED}; {@code null} otherwise. Carried so the caller can distinguish the
-   * four enforced FIDE-automatic terminations (checkmate, stalemate, mutual insufficient material, dead position by
-   * quick unwinnability) without having to parse the human-readable message.
+   * enforced move-blocking terminations (checkmate, stalemate, mutual insufficient material) without having to parse
+   * the human-readable message.
    */
   private final @Nullable GameStatus gameStatus;
 

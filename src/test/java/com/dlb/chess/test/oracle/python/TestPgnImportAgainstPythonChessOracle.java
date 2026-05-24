@@ -115,7 +115,7 @@ class TestPgnImportAgainstPythonChessOracle {
           continue;
         }
 
-        final Board board = new Board(pgnGame.startFen(), false);
+        final Board board = new Board(pgnGame.startFen());
         for (var ply = 0; ply < pgnGame.halfMoveList().size(); ply++) {
           totalPlies++;
           final PgnHalfMove halfMove = Nulls.get(pgnGame.halfMoveList(), ply);
@@ -158,8 +158,7 @@ class TestPgnImportAgainstPythonChessOracle {
             assertEquals(expected.isFivefoldRepetition(), board.isFivefoldRepetition(),
                 () -> bucket + " / " + record.pgn() + " ply " + plyLabel + " — isFivefoldRepetition mismatch");
             // Two clean-chess vs python-chess semantic disagreements at game-end positions, both treated as
-            // surfaced findings (see tasks.md "drop auto-fivefold / auto-75-move termination" discussion) rather
-            // than silently resolved in the oracle layer:
+            // surfaced findings rather than silently resolved in the oracle layer:
             //
             // (1) python-chess `is_fifty_moves()` / `is_seventyfive_moves()` require `halfmove_clock >= N AND a
             // legal move exists`; clean-chess `isFiftyMove()` / `isSeventyFiveMove()` are pure threshold
@@ -167,12 +166,15 @@ class TestPgnImportAgainstPythonChessOracle {
             // returns false while clean-chess returns true.
             //
             // (2) clean-chess `canClaimThreefoldRepetitionRule()` / `canClaimFiftyMoveRule()` internally simulate
-            // legal moves via Board.move(); on auto-terminated positions Board.move() throws
-            // InvalidMoveException, so the canClaim* methods are unsafe to call. python-chess returns a
-            // clean boolean in the same situation.
+            // legal moves via Board.move(); on move-blocking terminations (checkmate, stalemate, mutual
+            // insufficient material) Board.move() throws InvalidMoveException, so the canClaim* methods are
+            // unsafe to call. python-chess returns a clean boolean in the same situation.
             //
-            // Skip all four assertions when clean-chess considers the game ended; assertions still run at every
-            // mid-game position, which is where claim semantics actually matter.
+            // The fivefold / 75-move clauses below are belt-and-suspenders for semantic alignment at the
+            // queryable-rule boundary, not crash safety: since 13.0.0 those rules no longer auto-terminate
+            // and Board.move() does not throw on them. Skip all four assertions when clean-chess considers
+            // the game ended or at a queryable draw threshold; assertions still run at every mid-game
+            // position, which is where claim semantics actually matter.
             if (!board.isCheckmate() && !board.isStalemate() && !board.isFivefoldRepetition()
                 && !board.isSeventyFiveMove() && !board.isInsufficientMaterial()) {
               assertEquals(expected.isFiftyMoves(), board.isFiftyMove(),

@@ -27,18 +27,18 @@ class TestBoardCopyCurrentPositionWithoutHistory {
   }
 
   private static void checkAfterMoves(String... sanMoves) {
-    final Board source = new Board(false);
+    final Board source = new Board();
     source.movesStrict(sanMoves);
 
-    final Board actual = source.copyCurrentPositionWithoutHistory(false);
+    final Board actual = source.copyCurrentPositionWithoutHistory();
 
     assertEquivalentHistorylessBoard(source, actual);
   }
 
   private static void checkFromFen(String fen) {
-    final Board source = new Board(fen, false);
-    final Board copy = source.copyCurrentPositionWithoutHistory(false);
-    final Board copyOfCopy = copy.copyCurrentPositionWithoutHistory(false);
+    final Board source = new Board(fen);
+    final Board copy = source.copyCurrentPositionWithoutHistory();
+    final Board copyOfCopy = copy.copyCurrentPositionWithoutHistory();
 
     assertEquivalentHistorylessBoard(source, copy);
     assertEquivalentHistorylessBoard(source, copyOfCopy);
@@ -68,6 +68,6 @@ class TestBoardCopyCurrentPositionWithoutHistory {
     assertEquals(source.isCheckmate(), actual.isCheckmate());
     assertEquals(source.isStalemate(), actual.isStalemate());
     assertEquals(source.isInsufficientMaterial(), actual.isInsufficientMaterial());
-    assertEquals(source.isDeadPositionUnwinnableQuick(), actual.isDeadPositionUnwinnableQuick());
+    assertEquals(source.isDeadPositionQuick(), actual.isDeadPositionQuick());
   }
 }

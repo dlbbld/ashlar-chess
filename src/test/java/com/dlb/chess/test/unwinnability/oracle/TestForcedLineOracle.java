@@ -24,7 +24,7 @@ class TestForcedLineOracle {
   @SuppressWarnings("static-method")
   @Test
   void testStartPosition() {
-    final Board board = new Board(false);
+    final Board board = new Board();
 
     assertEquals(LimitedUnwinnabilityVerdict.UNKNOWN, ForcedLineOracle.calculateUnwinnability(board, Side.WHITE));
     assertEquals(LimitedUnwinnabilityVerdict.UNKNOWN, ForcedLineOracle.calculateUnwinnability(board, Side.BLACK));

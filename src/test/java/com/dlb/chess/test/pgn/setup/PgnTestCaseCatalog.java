@@ -3798,7 +3798,7 @@ public class PgnTestCaseCatalog {
         InsufficientMaterial.NONE, "4k3/8/7p/p1p2p1P/P1P1pP2/4P3/8/4K3 b - - 0 50"));
 
     // Ambrona 83
-    list.add(new PgnTestCase("pawn_wall_ambrona_real_game.pgn", "", "", 5, 83, CheckmateOrStalemate.NA, 2,
+    list.add(new PgnTestCase("pawn_wall_ambrona_lichess_Ob5ozxgG.pgn", "", "", 5, 83, CheckmateOrStalemate.NA, 2,
         InsufficientMaterial.NONE, "1k6/5p1p/1p2pP1P/1P2P3/8/1K6/8/8 b - - 83 95"));
 
     return new PgnTestCaseList(PgnTest.CHA_PAWN_WALL_YES, list);

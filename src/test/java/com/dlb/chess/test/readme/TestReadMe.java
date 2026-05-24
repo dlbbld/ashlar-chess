@@ -132,7 +132,7 @@ class TestReadMe {
   @Test
   @SuppressWarnings("static-method")
   void boardExampleEndsInCheckmate() {
-    final Board board = new Board(false);
+    final Board board = new Board();
 
     board.moveStrict("e4");
     board.movesStrict("e5", "Bc4");
@@ -159,8 +159,8 @@ class TestReadMe {
     // through strict parsing is the demonstration this test exists for, so the producer side asks for archival.
     PgnWriter.writePgn(pgnGame, filePath, WriteMode.ARCHIVAL);
 
-    final Board lenientBoard = PgnUtility.calculateBoard(LenientPgnParser.parse(filePath), false);
-    final Board strictBoard = PgnUtility.calculateBoard(StrictPgnParser.parse(filePath), false);
+    final Board lenientBoard = PgnUtility.calculateBoard(LenientPgnParser.parse(filePath));
+    final Board strictBoard = PgnUtility.calculateBoard(StrictPgnParser.parse(filePath));
 
     assertFalse(lenientBoard.isCheckmate());
     assertFalse(strictBoard.isThreefoldRepetition());
@@ -180,7 +180,7 @@ class TestReadMe {
                 """;
 
     final PgnGame pgnGame = LenientPgnParser.parseText(pgn);
-    final Board board = PgnUtility.calculateBoard(pgnGame, false);
+    final Board board = PgnUtility.calculateBoard(pgnGame);
     board.moveStrict("a3");
 
     assertEquals("Spring Classic", tagValue(pgnGame, "Event"));
@@ -250,7 +250,7 @@ class TestReadMe {
         """;
 
     final PgnGame pgnGame = StrictPgnParser.parseText(pgn);
-    final Board board = PgnUtility.calculateBoard(pgnGame, false);
+    final Board board = PgnUtility.calculateBoard(pgnGame);
     board.moveStrict("a3");
 
     assertEquals(6, pgnGame.halfMoveList().size());
@@ -415,24 +415,24 @@ class TestReadMe {
   }
 
   private static Board calculateBoard(String pgn) {
-    return PgnUtility.calculateBoard(LenientPgnParser.parseText(pgn), false);
+    return PgnUtility.calculateBoard(LenientPgnParser.parseText(pgn));
   }
 
   private static Board createOpeningExampleBoard() {
-    final Board board = new Board(false);
+    final Board board = new Board();
     board.movesStrict("e4", "e5", "Nf3", "Nf6", "Bc4", "Bc5");
     return board;
   }
 
   private static void assertUnwinnability(String fen, Side side, UnwinnabilityQuickVerdict expectedQuick,
       UnwinnabilityFullVerdict expectedFull) {
-    final Board board = new Board(fen, false);
+    final Board board = new Board(fen);
     assertEquals(expectedQuick, board.isUnwinnableQuick(side));
     assertEquals(expectedFull, board.isUnwinnableFull(side));
   }
 
   private static void assertDeadPosition(String fen, DeadPositionQuick expectedQuick, DeadPositionFull expectedFull) {
-    final Board board = new Board(fen, false);
+    final Board board = new Board(fen);
     assertEquals(expectedQuick, board.isDeadPositionQuick());
     assertEquals(expectedFull, board.isDeadPositionFull());
   }

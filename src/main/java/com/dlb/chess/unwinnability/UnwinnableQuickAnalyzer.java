@@ -28,10 +28,8 @@ public class UnwinnableQuickAnalyzer {
   }
 
   /**
-   * Runs the algorithm on a fresh detection-off board built from the caller's FEN. Isolation has two effects: (1) the
-   * caller's board is not mutated, and (2) the analyzer's internal {@code board.move(...)} calls don't trigger the
-   * dead-position auto-detect (which itself runs this analyzer). Repetition history from the caller's game is lost on
-   * the fresh board — acceptable for the quick check, whose verdict is conservative anyway.
+   * Runs the algorithm on a fresh history-less board built from the caller's FEN. The caller's board is not mutated,
+   * and repetition history is intentionally ignored for the conservative quick check.
    */
   public static UnwinnabilityQuickAnalysis unwinnableQuick(Board input, Side c, boolean isHasMobilitySolution,
       MobilitySolution calculatedMobilitySolution) {
@@ -179,7 +177,7 @@ public class UnwinnableQuickAnalyzer {
     final Fen fen = new Fen(input.getFen(), input.getBitboardPosition(), input.getHavingMove(),
         input.getCastlingRightWhite(), input.getCastlingRightBlack(), input.getEnPassantCaptureTargetSquare(), 0,
         input.getFullMoveNumber());
-    return new Board(fen, false);
+    return new Board(fen);
   }
 
   private static boolean calculateIsAlmostOnlyPawnsBishopsAndKings(BitboardPosition bitboardPosition) {

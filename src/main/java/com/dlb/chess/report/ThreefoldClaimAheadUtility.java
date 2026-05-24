@@ -16,7 +16,7 @@ abstract class ThreefoldClaimAheadUtility {
   private static List<List<ClaimAhead>> calculateThreefoldClaimAhead(List<LegalMove> legalMoveList, Fen initialFen) {
 
     final List<List<ClaimAhead>> resultListList = new ArrayList<>();
-    final Board board = new Board(initialFen, false);
+    final Board board = new Board(initialFen);
 
     for (final LegalMove legalMove : legalMoveList) {
       final List<ClaimAhead> resultList = new ArrayList<>();

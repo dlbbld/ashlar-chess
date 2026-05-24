@@ -75,7 +75,7 @@ class TestBasicChessUtility {
   }
 
   // ---------------------------------------------------------------------------------------------
-  // calculateGameStatus precedence: hard blockers (the four FIDE-automatic terminations) take
+  // calculateGameStatus precedence: move-blocking statuses take
   // precedence over the queryable rule predicates (fivefold, 75-move) when both apply to the
   // same position. Locks in the precedence ordering — without it, a KvK position with halfmove
   // clock at 150 would resolve as SEVENTY_FIVE_MOVE_RULE (no longer auto-blocking) and the move
@@ -88,7 +88,7 @@ class TestBasicChessUtility {
     // KvK position (insufficient material) with halfmove clock at the 75-move threshold.
     // Both isInsufficientMaterial() and isSeventyFiveMove() return true on this board; the
     // returned status must be the hard blocker, not the queryable rule.
-    final Board board = new Board("4k3/8/8/8/8/8/8/4K3 w - - 150 76", false);
+    final Board board = new Board("4k3/8/8/8/8/8/8/4K3 w - - 150 76");
     assertEquals(true, board.isInsufficientMaterial(), "precondition: insufficient material");
     assertEquals(true, board.isSeventyFiveMove(), "precondition: 75-move threshold reached");
     assertEquals(GameStatus.DEAD_POSITION_INSUFFICIENT_MATERIAL, BasicChessUtility.calculateGameStatus(board));
@@ -98,7 +98,7 @@ class TestBasicChessUtility {
   @Test
   void testCalculateGameStatusFivefoldFiresWhenNoHardBlocker() {
     // Drive the board to fivefold by alternating knight moves. No hard blocker applies.
-    final Board board = new Board(false);
+    final Board board = new Board();
     board.movesStrict("Nf3", "Nf6", "Ng1", "Ng8", "Nf3", "Nf6", "Ng1", "Ng8", "Nf3", "Nf6", "Ng1", "Ng8", "Nf3", "Nf6",
         "Ng1", "Ng8");
     assertEquals(true, board.isFivefoldRepetition(), "precondition: fivefold threshold reached");
@@ -110,7 +110,7 @@ class TestBasicChessUtility {
   void testCalculateGameStatusSeventyFiveMoveFiresWhenNoHardBlocker() {
     // FEN at the 75-move threshold with enough material for both sides — no hard blocker
     // applies, so the queryable 75-move status is the most-specific answer.
-    final Board board = new Board("4k3/8/4P3/8/8/8/2N1B3/3KQ2R w - - 150 76", false);
+    final Board board = new Board("4k3/8/4P3/8/8/8/2N1B3/3KQ2R w - - 150 76");
     assertEquals(true, board.isSeventyFiveMove(), "precondition: 75-move threshold reached");
     assertEquals(false, board.isInsufficientMaterial(), "precondition: not insufficient material");
     assertEquals(GameStatus.SEVENTY_FIVE_MOVE_RULE, BasicChessUtility.calculateGameStatus(board));

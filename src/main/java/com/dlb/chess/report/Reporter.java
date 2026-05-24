@@ -54,12 +54,12 @@ public final class Reporter {
 
   public static void printReport(String pgnString) {
     final PgnGame pgnGame = LenientPgnParser.parseText(pgnString);
-    final Board board = PgnUtility.calculateBoard(pgnGame, false);
+    final Board board = PgnUtility.calculateBoard(pgnGame);
     printReport(board);
   }
 
   public static void printReport(Path folderPath, String pgnName) {
-    final Board board = PgnUtility.calculateBoard(folderPath, pgnName, false);
+    final Board board = PgnUtility.calculateBoard(folderPath, pgnName);
     printReport(board);
   }
 
@@ -73,7 +73,7 @@ public final class Reporter {
    */
   public static String calculateReportText(String pgnString) {
     final PgnGame pgnGame = LenientPgnParser.parseText(pgnString);
-    final Board board = PgnUtility.calculateBoard(pgnGame, false);
+    final Board board = PgnUtility.calculateBoard(pgnGame);
     return calculateReportText(board);
   }
 
@@ -82,7 +82,7 @@ public final class Reporter {
    * by {@code "\n"}.
    */
   public static String calculateReportText(Path folderPath, String pgnName) {
-    final Board board = PgnUtility.calculateBoard(folderPath, pgnName, false);
+    final Board board = PgnUtility.calculateBoard(folderPath, pgnName);
     return calculateReportText(board);
   }
 
@@ -142,7 +142,7 @@ public final class Reporter {
 
   public static Report calculateReport(Path folderPath, String pgnName) throws Exception {
 
-    final Board board = PgnUtility.calculateBoard(folderPath, pgnName, false);
+    final Board board = PgnUtility.calculateBoard(folderPath, pgnName);
     return calculateReport(board);
   }
 

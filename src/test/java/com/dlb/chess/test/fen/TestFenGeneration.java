@@ -12,7 +12,7 @@ class TestFenGeneration {
   @SuppressWarnings("static-method")
   @Test
   void test() {
-    final Board board = new Board(false);
+    final Board board = new Board();
 
     // initial position
     check(FenConstants.FEN_INITIAL_STR, board);

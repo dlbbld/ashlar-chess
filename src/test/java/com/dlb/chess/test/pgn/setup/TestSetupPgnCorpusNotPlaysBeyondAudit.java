@@ -17,12 +17,12 @@ import com.dlb.chess.test.pgn.parser.PgnCacheForStrictPgnParserTestCases;
 import com.dlb.chess.test.pgntest.enums.PgnTest;
 
 /**
- * Asserts the regular PGN test corpus contains no fixtures that play past one of the four enforced FIDE-automatic
- * terminations (checkmate, stalemate, dead position by mutual insufficient material, dead position by quick
- * unwinnability) — i.e. every file replays cleanly under the strict-game invariant. Fivefold repetition and the
- * 75-move rule are queryable predicates in this library, not enforced terminations, so fixtures that continue past
- * those thresholds replay cleanly and are not flagged. The class name states the expected outcome ("not plays
- * beyond"); the test fails if any leftover is found.
+ * Asserts the regular PGN test corpus contains no fixtures that play past one of the three enforced move-blocking
+ * terminations (checkmate, stalemate, dead position by mutual insufficient material) — i.e. every file replays cleanly
+ * under the strict-game invariant. Fivefold repetition, the 75-move rule, and quick-unwinnable dead positions are
+ * queryable predicates in this library, not enforced terminations, so fixtures that continue past those thresholds
+ * replay cleanly and are not flagged. The class name states the expected outcome ("not plays beyond"); the test fails
+ * if any leftover is found.
  *
  * <h2>Scope and runtime</h2>
  *
@@ -70,8 +70,8 @@ class TestSetupPgnCorpusNotPlaysBeyondAudit {
 
     final var report = new StringBuilder().append("Corpus audit: ").append(playsBeyondFiles.size()).append(" of ")
         .append(totalFiles).append(" PGN files cannot be fully replayed under the strict-game ")
-        .append("invariant. They play past an enforced FIDE-automatic termination (checkmate, stalemate, ")
-        .append("dead position by mutual insufficient material, or dead position by quick unwinnability). ")
+        .append("invariant. They play past an enforced move-blocking termination (checkmate, stalemate, ")
+        .append("or dead position by mutual insufficient material). ")
         .append("Either the PGN file contains an extra move past the termination that should be removed, ")
         .append("or the parser / move-pipeline has a regression that needs investigation:\n");
     for (final String entry : playsBeyondFiles) {

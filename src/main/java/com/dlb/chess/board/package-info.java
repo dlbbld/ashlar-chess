@@ -5,8 +5,8 @@
  *
  * <p>
  * A {@link com.dlb.chess.board.Board} represents a <em>game</em> — a position together with its move history — not
- * merely a position. Once any FIDE-automatic termination has been reached, the game has ended permanently and no
- * further moves are accepted by either pipeline:
+ * merely a position. Once any move-blocking termination has been reached, the game has ended permanently and no further
+ * moves are accepted by either pipeline:
  *
  * <ul>
  * <li>{@link com.dlb.chess.board.ValidateNewMove#validateNewMove} (MoveSpecification pipeline)</li>
@@ -14,7 +14,7 @@
  * </ul>
  *
  * <p>
- * The four FIDE-automatic terminations enforced at the move pipeline (queryable via
+ * The three terminations enforced at the move pipeline (queryable via
  * {@link com.dlb.chess.common.utility.BasicChessUtility#calculateGameStatus}) are:
  *
  * <ul>
@@ -23,10 +23,6 @@
  * <li>{@link com.dlb.chess.common.enums.GameStatus#DEAD_POSITION_INSUFFICIENT_MATERIAL} — FIDE 5.2.2 dead position by
  * mutual insufficient material (the single-side {@code INSUFFICIENT_MATERIAL_*_ONLY} variants are diagnostic states,
  * NOT terminations)</li>
- * <li>{@link com.dlb.chess.common.enums.GameStatus#DEAD_POSITION_UNWINNABLE_QUICK} — FIDE 5.2.2 dead position by
- * Ambrona's quick unwinnability analyzer (both sides unwinnable). Detected only when the
- * {@code detectDeadPositionUnwinnable} board constructor flag is set; otherwise the predicate evaluates to
- * {@code false} and the game continues</li>
  * </ul>
  *
  * <p>
@@ -37,17 +33,18 @@
  *
  * <p>
  * {@link com.dlb.chess.common.enums.GameStatus#FIVE_FOLD_REPETITION_RULE} (FIDE 9.6.1) and
- * {@link com.dlb.chess.common.enums.GameStatus#SEVENTY_FIVE_MOVE_RULE} (FIDE 9.6.2) are FIDE-automatic draw rules in
- * the rulebook, but in this library they are surfaced as <em>queryable predicates</em>
- * ({@link com.dlb.chess.board.Board#isFivefoldRepetition()} /
- * {@link com.dlb.chess.board.Board#isSeventyFiveMove()}) rather than enforced at the move pipeline. The position
- * itself is not necessarily drawn — mating material can still be present, pawn moves and captures can still happen,
- * and a later checkmate can still occur if play continues. The library is permissive here for corpus and tooling
- * compatibility (historical PGN databases routinely contain games whose recorded play continues a move or two past
- * the threshold); the caller decides whether to adjudicate the draw. The
- * {@link com.dlb.chess.common.enums.GameStatus} value remains available via {@code calculateGameStatus} as a
- * diagnostic answer, with hard blockers (the four terminations above) taking precedence when both apply to the same
- * position.
+ * {@link com.dlb.chess.common.enums.GameStatus#SEVENTY_FIVE_MOVE_RULE} (FIDE 9.6.2) are surfaced as <em>queryable
+ * predicates</em> rather than enforced at the move pipeline. Their {@link com.dlb.chess.common.enums.GameStatus} values
+ * remain available via {@code calculateGameStatus} as diagnostic answers, with move-blocking statuses taking precedence
+ * when both apply to the same position.
+ *
+ * <p>
+ * Analyzer-driven dead positions (FIDE 5.2.2 via the quick or full unwinnability analyzer) are <em>not</em> surfaced
+ * via {@code calculateGameStatus} either — invoking the analyzer from that method would silently make every status
+ * query expensive. Callers that want the analyzer-driven verdict invoke
+ * {@link com.dlb.chess.board.Board#isDeadPositionQuick()} or {@link com.dlb.chess.board.Board#isDeadPositionFull()}
+ * directly. The library is permissive at the move pipeline for corpus and tooling compatibility; the caller decides
+ * whether to adjudicate.
  *
  * <p>
  * The claimable draws — {@link com.dlb.chess.common.enums.GameStatus FIDE 9.2 (3-fold) and 9.3 (50-move)} — are

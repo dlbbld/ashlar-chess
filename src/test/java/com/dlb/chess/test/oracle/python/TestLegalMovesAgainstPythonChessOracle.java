@@ -95,7 +95,7 @@ class TestLegalMovesAgainstPythonChessOracle {
           continue;
         }
 
-        final Board board = new Board(pgnGame.startFen(), false);
+        final Board board = new Board(pgnGame.startFen());
         for (var ply = 0; ply <= halfMoveCount; ply++) {
           totalPositions++;
           final LegalMovesPly expectedPly = Nulls.get(record.perPly(), ply);

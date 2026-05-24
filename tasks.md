@@ -10,7 +10,11 @@ Order within each section is the source of truth. Completed tasks move to **Done
 
 ---
 
-## Current release — drop auto-CHA-per-move; dead-position queries become request-based
+## Previous release — 14.0.0: drop auto-CHA-per-move; dead-position queries become request-based
+
+✅ Shipped 2026-05-24. Analyzer-driven dead-position detection no longer runs automatically on construction or every
+move, `DEAD_POSITION_UNWINNABLE_QUICK` is reportable but non-blocking, and the boolean `Board` constructor/config
+overloads are removed. Structural insufficient material remains move-blocking.
 
 The construction we have today is too complicated and does work the library doesn't need. Today every `Board.move()` (and every `Board` constructor) runs the unwinnability quick analyzer on the new position and caches the verdict in `isDeadPositionUnwinnableQuickList`. The cached value drives `Board.isDeadPositionUnwinnableQuick()`, feeds `Board.isDeadPosition()` (alongside the cheap mechanical `isInsufficientMaterial`), and through `ValidateNewMove` causes the move pipeline to throw `MoveCheck.GAME_ALREADY_ENDED` with `GameStatus.DEAD_POSITION_UNWINNABLE_QUICK` if a consumer tries to play on. The whole apparatus exists to model FIDE 5.2.2 "dead position" as an automatic termination.
 

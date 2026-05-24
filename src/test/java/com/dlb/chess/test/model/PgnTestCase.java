@@ -25,8 +25,7 @@ import com.dlb.chess.test.pgntest.enums.PgnTest;
  * </ul>
  *
  * <p>
- * The cost difference is significant with auto-CHA on: replay pays {@code N × isUnwinnableQuick(...)} per move; a
- * position-only test that mistakenly chose {@code game(...)} scales as the number of plies in the fixture.
+ * A position-only test that mistakenly chose {@code game(...)} scales as the number of plies in the fixture.
  */
 public record PgnTestCase(String pgnName, String expectedRepetition, String expectedNoProgressMoveRule,
     int firstCapture, int maxNoProgressSequence, CheckmateOrStalemate checkmateOrStalemate,
@@ -34,18 +33,16 @@ public record PgnTestCase(String pgnName, String expectedRepetition, String expe
 
   /**
    * History-less board built directly from the cached FEN. Cheap — no PGN parse, no move replay. Use this whenever the
-   * test only needs the final position. Dead-position auto-detection is disabled so fixtures whose final position is
-   * intentionally dead can still be analysed.
+   * test only needs the final position.
    */
   public Board finalPosition() {
-    return new Board(FenCacheForTestCases.getFen(finalFen()), false);
+    return new Board(FenCacheForTestCases.getFen(finalFen()));
   }
 
   /**
    * Full PGN replay with move history. Expensive — parses the PGN and plays every half-move. Use only when the test
    * genuinely needs history-derived state (repetition counts, claimable threefold, last-move metadata, end-to-end
-   * pipeline tests). Dead-position auto-detection is disabled during replay so fixtures may pass through positions the
-   * quick analyzer would classify as dead.
+   * pipeline tests).
    *
    * <p>
    * The {@code pgnTest} argument supplies the folder; pass {@code testCaseList.pgnTest()} when iterating a test list,
@@ -53,7 +50,7 @@ public record PgnTestCase(String pgnName, String expectedRepetition, String expe
    */
   public Board game(PgnTest pgnTest) {
     final PgnGame pgnGame = PgnCacheForLenientPgnParserTestCases.getPgn(pgnTest.getFolderPath(), pgnName());
-    return PgnUtility.calculateBoard(pgnGame, false);
+    return PgnUtility.calculateBoard(pgnGame);
   }
 
 }

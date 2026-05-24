@@ -40,12 +40,11 @@ public class ShallowTerminationOracle {
   }
 
   /**
-   * Runs the oracle on a fresh detection-off board built from the caller's FEN — the 3-ply scan's
-   * {@code board.move(...)} calls do not trigger the dead-position auto-detect, and the caller's board is not mutated.
-   * Repetition history from the caller's game is lost on the fresh board.
+   * Runs the oracle on a fresh history-less board built from the caller's FEN. The caller's board is not mutated, and
+   * repetition history from the caller's game is lost on the fresh board.
    */
   public static LimitedUnwinnabilityVerdict calculateUnwinnability(Board input, Side side) {
-    final Board board = input.copyCurrentPositionWithoutHistory(false);
+    final Board board = input.copyCurrentPositionWithoutHistory();
     return switch (scan(board, side, 0)) {
       case WIN -> LimitedUnwinnabilityVerdict.WINNABLE;
       case LOSS_OR_DRAW -> LimitedUnwinnabilityVerdict.UNWINNABLE;
@@ -108,7 +107,9 @@ public class ShallowTerminationOracle {
           // the side we're evaluating just delivered the mate — i.e. WIN.
           board.getHavingMove() == side ? NodeOutcome.LOSS_OR_DRAW : NodeOutcome.WIN;
       case STALEMATE, FIVE_FOLD_REPETITION_RULE, SEVENTY_FIVE_MOVE_RULE, DEAD_POSITION_INSUFFICIENT_MATERIAL, DEAD_POSITION_UNWINNABLE_QUICK ->
-          // All drawing terminations: neither side wins.
+          // All drawing terminations: neither side wins. DEAD_POSITION_UNWINNABLE_QUICK is unreachable
+          // here because calculateGameStatus does not invoke the analyzer; grouped with the others to
+          // keep the switch exhaustive.
           NodeOutcome.LOSS_OR_DRAW;
       case INSUFFICIENT_MATERIAL_WHITE_ONLY ->
           // Only White lacks the material to mate. Bad for White, fine for Black — Black may still win.

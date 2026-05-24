@@ -33,7 +33,7 @@ public class GenerateChaLichessReport {
       if (isPawnWallAmbrona) {
         logger.info(pgnName + ";" + "pawn wall");
       } else {
-        final Board board = PgnUtility.calculateBoard(folderPath, pgnName, false);
+        final Board board = PgnUtility.calculateBoard(folderPath, pgnName);
         final LimitedUnwinnabilityVerdict verdictWhite = LimitedUnwinnabilityOracle.calculateUnwinnability(board,
             Side.WHITE);
         final LimitedUnwinnabilityVerdict verdictBlack = LimitedUnwinnabilityOracle.calculateUnwinnability(board,

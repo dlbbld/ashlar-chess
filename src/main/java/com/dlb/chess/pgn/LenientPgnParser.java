@@ -745,11 +745,7 @@ public final class LenientPgnParser {
    * The {@link com.dlb.chess.common.enums.GameStatus} from a {@code GAME_ALREADY_ENDED} reject is propagated unchanged.
    */
   private List<PgnHalfMove> replayBoardCanonicalizing(Fen startFen, List<PgnHalfMove> halfMoveList) {
-    // PGN parser's internal board: disable dead-position-unwinnable-quick auto-detection. Real-world PGNs from
-    // engines, sites, and historical sources routinely play past a position the quick analyzer classifies as dead
-    // (FIDE 5.2.2 isn't uniformly enforced by software). The parser must round-trip whatever moves are recorded;
-    // dead-position termination is the consumer's responsibility once the Board is materialised.
-    final Board board = new Board(startFen, false);
+    final Board board = new Board(startFen);
     final List<PgnHalfMove> canonicalList = new ArrayList<>(halfMoveList.size());
     for (final PgnHalfMove halfMove : halfMoveList) {
       final Side side = board.getHavingMove();

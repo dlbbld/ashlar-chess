@@ -26,10 +26,7 @@ class TestLimitedUnwinnabilityOracle {
 
     final PgnTest pgnTest = PgnTestCaseCatalog.findPgnTestPgnNotListed(pgnName);
     final PgnGame pgnGame = LenientPgnParser.parse(pgnTest.getFolderPath(), pgnName);
-    // PGN replay must NOT auto-detect DEAD_POSITION_UNWINNABLE_QUICK here — the recorded game intentionally passes
-    // through a pawn-wall position that the quick analyzer classifies as dead before the PGN's final move. The test
-    // itself then asserts the oracle behaviour on the resulting position.
-    final Board board = PgnUtility.calculateBoard(pgnGame, false);
+    final Board board = PgnUtility.calculateBoard(pgnGame);
     logger.info(pgnName);
 
     assertEquals(LimitedUnwinnabilityVerdict.WINNABLE,
@@ -45,10 +42,7 @@ class TestLimitedUnwinnabilityOracle {
 
     final PgnTest pgnTest = PgnTestCaseCatalog.findPgnTestPgnNotListed(pgnName);
     final PgnGame pgnGame = LenientPgnParser.parse(pgnTest.getFolderPath(), pgnName);
-    // PGN replay must NOT auto-detect DEAD_POSITION_UNWINNABLE_QUICK here — the recorded game intentionally passes
-    // through a pawn-wall position that the quick analyzer classifies as dead before the PGN's final move. The test
-    // itself then asserts the oracle behaviour on the resulting position.
-    final Board board = PgnUtility.calculateBoard(pgnGame, false);
+    final Board board = PgnUtility.calculateBoard(pgnGame);
     logger.info(pgnName);
 
     assertEquals(LimitedUnwinnabilityVerdict.WINNABLE,
@@ -60,14 +54,11 @@ class TestLimitedUnwinnabilityOracle {
   @SuppressWarnings("static-method")
   @Test
   void testPawnWall() {
-    final var pgnName = "pawn_wall_ambrona_real_game.pgn";
+    final var pgnName = "pawn_wall_ambrona_lichess_Ob5ozxgG.pgn";
 
     final PgnTest pgnTest = PgnTestCaseCatalog.findPgnTestPgnNotListed(pgnName);
     final PgnGame pgnGame = LenientPgnParser.parse(pgnTest.getFolderPath(), pgnName);
-    // PGN replay must NOT auto-detect DEAD_POSITION_UNWINNABLE_QUICK here — the recorded game intentionally passes
-    // through a pawn-wall position that the quick analyzer classifies as dead before the PGN's final move. The test
-    // itself then asserts the oracle behaviour on the resulting position.
-    final Board board = PgnUtility.calculateBoard(pgnGame, false);
+    final Board board = PgnUtility.calculateBoard(pgnGame);
     logger.info(pgnName);
 
     assertEquals(LimitedUnwinnabilityVerdict.UNWINNABLE,

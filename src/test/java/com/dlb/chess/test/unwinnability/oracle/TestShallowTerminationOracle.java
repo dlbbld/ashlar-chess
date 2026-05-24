@@ -25,7 +25,7 @@ class TestShallowTerminationOracle {
   @SuppressWarnings("static-method")
   @Test
   void testStartPosition() {
-    final Board board = new Board(false);
+    final Board board = new Board();
 
     assertEquals(LimitedUnwinnabilityVerdict.UNKNOWN,
         ShallowTerminationOracle.calculateUnwinnability(board, Side.WHITE));
@@ -37,7 +37,7 @@ class TestShallowTerminationOracle {
   @Test
   void testFen() {
     final var fen = "rnbq1bnr/pppp2pp/PN6/R4k2/4pp2/5N2/1PPPPPPP/2BQKB1R b K - 5 8";
-    final Board board = new Board(fen, false);
+    final Board board = new Board(fen);
 
     assertEquals(LimitedUnwinnabilityVerdict.WINNABLE,
         ShallowTerminationOracle.calculateUnwinnability(board, Side.WHITE));

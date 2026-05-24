@@ -55,7 +55,7 @@ class TestBoardAgainstEachOther {
           continue;
         }
 
-        final Board board = new Board(false);
+        final Board board = new Board();
         final LibraryCarlosBoard carlosBoard = new LibraryCarlosBoard();
 
         for (final PgnHalfMove pgnHalfMove : pgnGame.halfMoveList()) {

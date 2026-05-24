@@ -10,7 +10,7 @@ class TestSanValidateMovingOntoOwnPiece extends AbstractTestSanValidate {
   @SuppressWarnings("static-method")
   @Test
   void testUnderstanding() {
-    final Board board = new Board("8/3k4/3r4/R7/4K3/8/8/R7 b - - 0 1", false);
+    final Board board = new Board("8/3k4/3r4/R7/4K3/8/8/R7 b - - 0 1");
 
     checkExceptionRnbqkMovingOntoOwnPiece("Rd6", board);
     board.movesStrict("Rc6");
@@ -22,7 +22,7 @@ class TestSanValidateMovingOntoOwnPiece extends AbstractTestSanValidate {
   @Test
   void testWhite() {
 
-    final Board board = new Board(false);
+    final Board board = new Board();
 
     // rook
     checkExceptionRnbqkCapturingOwnPiece("Rxa2", board);
@@ -50,7 +50,7 @@ class TestSanValidateMovingOntoOwnPiece extends AbstractTestSanValidate {
   @Test
   void testBlack() {
 
-    final Board board = new Board(false);
+    final Board board = new Board();
     board.movesStrict("e4");
 
     // rook

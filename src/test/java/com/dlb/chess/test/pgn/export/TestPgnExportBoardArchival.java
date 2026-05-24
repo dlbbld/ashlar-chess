@@ -38,7 +38,7 @@ class TestPgnExportBoardArchival {
 
   private static void check(ResultTagValue expectedResult, String... sanArray) {
 
-    final Board board = new Board(false);
+    final Board board = new Board();
     for (final String san : sanArray) {
       @SuppressWarnings("null") @NonNull final String sanIsNotNull = san;
       board.moveStrict(sanIsNotNull);
@@ -85,7 +85,7 @@ class TestPgnExportBoardArchival {
     // Caller passes a tagList already containing FEN+SetUp for a custom starting position, then makes moves on
     // the board. Archival export must preserve the position-encoding tags.
     final var customFen = "r1b2r2/pp1pk1pp/8/7q/3pP1n1/5N1P/PPQ2PP1/3R1RK1 w - - 0 17";
-    final Board board = new Board(customFen, false);
+    final Board board = new Board(customFen);
     board.moveStrict("Qa4");
 
     final List<Tag> tagList = new java.util.ArrayList<>();
@@ -106,7 +106,7 @@ class TestPgnExportBoardArchival {
   void archivalTagOrderIsCanonical() {
     // Tags emitted in canonical sort order (STR first by sortOrder, then supplemental tags). Verify by checking
     // that Event appears before Result in the output.
-    final Board board = new Board(false);
+    final Board board = new Board();
     final PgnGame pgnGame = PgnCreate.createPgnGame(board);
 
     final String archivalOutput = PgnCreate.createPgnString(pgnGame, WriteMode.ARCHIVAL);
@@ -123,7 +123,7 @@ class TestPgnExportBoardArchival {
   void semanticOutputForInitialBoardIsTagless() {
     // Counterpart to the archival path: semantic mode of an initial-position Board emits a tag-less PGN — just
     // the movetext and termination marker. Honest preservation of "no caller-provided tags."
-    final Board board = new Board(false);
+    final Board board = new Board();
     final PgnGame pgnGame = PgnCreate.createPgnGame(board);
 
     final String semanticOutput = PgnCreate.createPgnString(pgnGame, WriteMode.SEMANTIC);
@@ -146,7 +146,7 @@ class TestPgnExportBoardArchival {
     // caller supplies a Result tag with a different value, the compact constructor of PgnGame catches the
     // inconsistency and throws — rather than silently producing a model that archival export would then have
     // to choose between when emitting the Result tag vs the termination marker.
-    final Board boardWonByWhite = new Board(false);
+    final Board boardWonByWhite = new Board();
     boardWonByWhite.moveStrict("e4");
     boardWonByWhite.moveStrict("e5");
     boardWonByWhite.moveStrict("Bc4");

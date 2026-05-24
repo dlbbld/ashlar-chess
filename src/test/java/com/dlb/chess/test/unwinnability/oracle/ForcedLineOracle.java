@@ -35,12 +35,11 @@ import com.dlb.chess.test.unwinnability.oracle.model.GameForced;
 public class ForcedLineOracle {
 
   /**
-   * Runs the oracle on a fresh detection-off board built from the caller's FEN — the oracle's internal
-   * {@code board.move(...)} calls don't trigger the dead-position auto-detect, and the caller's board is not mutated.
-   * Repetition history from the caller's game is lost on the fresh board.
+   * Runs the oracle on a fresh history-less board built from the caller's FEN. The caller's board is not mutated, and
+   * repetition history from the caller's game is lost on the fresh board.
    */
   public static LimitedUnwinnabilityVerdict calculateUnwinnability(Board input, Side side) {
-    final Board board = input.copyCurrentPositionWithoutHistory(false);
+    final Board board = input.copyCurrentPositionWithoutHistory();
     return calculateUnwinnabilityInternal(board, side);
   }
 
@@ -120,6 +119,8 @@ public class ForcedLineOracle {
     return switch (gameForced.gameStatus()) {
       case CHECKMATE -> sideMadeLastMove == sideToEvaluate ? LimitedUnwinnabilityVerdict.WINNABLE
           : LimitedUnwinnabilityVerdict.UNWINNABLE;
+      // DEAD_POSITION_UNWINNABLE_QUICK is unreachable here because calculateGameStatus does not invoke the
+      // analyzer; it is grouped with the other drawing terminations to keep the switch exhaustive.
       case STALEMATE, DEAD_POSITION_INSUFFICIENT_MATERIAL, DEAD_POSITION_UNWINNABLE_QUICK, FIVE_FOLD_REPETITION_RULE, SEVENTY_FIVE_MOVE_RULE -> LimitedUnwinnabilityVerdict.UNWINNABLE;
       case INSUFFICIENT_MATERIAL_WHITE_ONLY -> sideToEvaluate == Side.WHITE ? LimitedUnwinnabilityVerdict.UNWINNABLE
           : LimitedUnwinnabilityVerdict.UNKNOWN;

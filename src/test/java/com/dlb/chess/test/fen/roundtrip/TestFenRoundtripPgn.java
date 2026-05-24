@@ -51,7 +51,7 @@ class TestFenRoundtripPgn extends AbstractTestFenRoundtrip {
 
     final PgnGame pgnGame = PgnCacheForStrictPgnParserTestCases.getPgn(folderPath, pgnName);
 
-    final Board board = new Board(pgnGame.startFen(), false);
+    final Board board = new Board(pgnGame.startFen());
     for (final PgnHalfMove halfMove : pgnGame.halfMoveList()) {
       board.moveStrict(halfMove.san());
     }

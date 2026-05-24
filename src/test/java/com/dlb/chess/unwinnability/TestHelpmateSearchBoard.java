@@ -94,9 +94,9 @@ class TestHelpmateSearchBoard {
 
   private static Board boardFrom(@Nullable String fen) {
     if (fen == null) {
-      return new Board(false);
+      return new Board();
     }
-    return new Board(fen, false);
+    return new Board(fen);
   }
 
   private static void assertSearchTreeMatchesBoard(Board board, int depth) {
@@ -151,7 +151,7 @@ class TestHelpmateSearchBoard {
    *
    * @param label human-readable scenario name (matches the constant suffix, kebab-case); appears in failure traces so a
    *              regression points at the fixture, not at a raw FEN.
-   * @param fen   starting position; {@code null} means "use {@code new Board(false)} = chess initial position."
+   * @param fen   starting position; {@code null} means "use {@code new Board()} = chess initial position."
    * @param depth tree depth to walk from the root; {@code 0} asserts the root node only (no recursion).
    */
   private record SearchCase(String label, @Nullable String fen, int depth) {

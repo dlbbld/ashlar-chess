@@ -85,7 +85,7 @@ class TestInsufficientMaterialAgainstPythonChessOracle {
           continue;
         }
         final OracleMove expectedFinal = Nulls.get(record.moves(), record.moves().size() - 1);
-        final Board board = new Board(record.finalFen(), false);
+        final Board board = new Board(record.finalFen());
 
         try {
           assertEquals(expectedFinal.isInsufficientMaterial(), board.isInsufficientMaterial(),

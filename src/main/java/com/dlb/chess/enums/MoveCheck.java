@@ -3,10 +3,9 @@ package com.dlb.chess.enums;
 public enum MoveCheck {
   SUCCESS,
 
-  // Top-of-pipeline rejection: the game has already ended by an enforced FIDE-automatic
-  // termination (checkmate, stalemate, mutual insufficient material, dead position by quick
-  // unwinnability). The specific reason is carried as a GameStatus payload on the thrown
-  // InvalidMoveException.
+  // Top-of-pipeline rejection: the game has already ended by a move-blocking termination
+  // (checkmate, stalemate, mutual insufficient material). The specific reason is carried as a
+  // GameStatus payload on the thrown InvalidMoveException.
   GAME_ALREADY_ENDED,
 
   MOVE_SPEC_NON_PAWN_PROMOTION_PIECE_SET,

@@ -30,7 +30,7 @@ public final class SemiStaticOracleFormatter {
   }
 
   public static List<String> calculateRows(String fen) {
-    final Board board = new Board(fen, false);
+    final Board board = new Board(fen);
     final MobilitySolution mobilitySolution = Mobility.mobility(board);
     final List<String> rowList = new ArrayList<>();
 

@@ -26,26 +26,26 @@ class TestValidateNewMove extends AbstractTestValidateNewMove {
   @SuppressWarnings("static-method")
   @Test
   void testMoveSpecFromSquareEmpty() {
-    check(new Board(false), new MoveSpecification(E3, E4), MoveCheck.MOVE_SPEC_FROM_SQUARE_EMPTY);
+    check(new Board(), new MoveSpecification(E3, E4), MoveCheck.MOVE_SPEC_FROM_SQUARE_EMPTY);
   }
 
   @SuppressWarnings("static-method")
   @Test
   void testMoveSpecFromSquareOccupiedByOpponent() {
-    check(new Board(false), new MoveSpecification(E7, E5), MoveCheck.MOVE_SPEC_FROM_SQUARE_OCCUPIED_BY_OPPONENT);
+    check(new Board(), new MoveSpecification(E7, E5), MoveCheck.MOVE_SPEC_FROM_SQUARE_OCCUPIED_BY_OPPONENT);
   }
 
   @SuppressWarnings("static-method")
   @Test
   void testMoveSpecNonPawnPromotionPieceSet() {
-    check(new Board(false), new MoveSpecification(B1, C3, PromotionPieceType.QUEEN),
+    check(new Board(), new MoveSpecification(B1, C3, PromotionPieceType.QUEEN),
         MoveCheck.MOVE_SPEC_NON_PAWN_PROMOTION_PIECE_SET);
   }
 
   @SuppressWarnings("static-method")
   @Test
   void testMoveSpecPawnNonPromotionPromotionPiece() {
-    check(new Board(false), new MoveSpecification(E2, E4, PromotionPieceType.QUEEN),
+    check(new Board(), new MoveSpecification(E2, E4, PromotionPieceType.QUEEN),
         MoveCheck.MOVE_SPEC_PAWN_NON_PROMOTION_PROMOTION_PIECE);
   }
 
@@ -61,13 +61,13 @@ class TestValidateNewMove extends AbstractTestValidateNewMove {
   @SuppressWarnings("static-method")
   @Test
   void testMovementNotPossible() {
-    check(new Board(false), new MoveSpecification(B1, B4), MoveCheck.MOVEMENT_NOT_POSSIBLE);
+    check(new Board(), new MoveSpecification(B1, B4), MoveCheck.MOVEMENT_NOT_POSSIBLE);
   }
 
   @SuppressWarnings("static-method")
   @Test
   void testMovementToSquareOccupiedByOwnPiece() {
-    check(new Board(false), new MoveSpecification(A1, A2), MoveCheck.MOVEMENT_TO_SQUARE_OCCUPIED_BY_OWN_PIECE);
+    check(new Board(), new MoveSpecification(A1, A2), MoveCheck.MOVEMENT_TO_SQUARE_OCCUPIED_BY_OWN_PIECE);
   }
 
   @SuppressWarnings("static-method")

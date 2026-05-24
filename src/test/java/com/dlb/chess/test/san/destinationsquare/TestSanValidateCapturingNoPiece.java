@@ -16,7 +16,7 @@ class TestSanValidateCapturingNoPiece {
   @Test
   void testWhite() {
 
-    final Board board = new Board(false);
+    final Board board = new Board();
 
     // pawn
     checkExceptionPawn("axb3", board);
@@ -48,7 +48,7 @@ class TestSanValidateCapturingNoPiece {
   @Test
   void testBlack() {
 
-    final Board board = new Board(false);
+    final Board board = new Board();
 
     // pawn
     board.movesStrict("a3");

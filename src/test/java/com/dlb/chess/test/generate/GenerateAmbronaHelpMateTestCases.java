@@ -106,7 +106,7 @@ public class GenerateAmbronaHelpMateTestCases {
       updateTag(newTagList, "Termination", "Adjudication");
 
       // play the existing moves
-      final Board board = new Board(false);
+      final Board board = new Board();
       for (final HalfMove halfMove : report.halfMoveList()) {
         board.move(halfMove.moveSpecification());
       }

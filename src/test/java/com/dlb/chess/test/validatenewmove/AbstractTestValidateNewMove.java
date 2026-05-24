@@ -24,7 +24,7 @@ public abstract class AbstractTestValidateNewMove implements EnumConstants {
   }
 
   static void check(String fen, MoveSpecification move, MoveCheck expectedMoveCheck) {
-    final Board board = new Board(fen, false);
+    final Board board = new Board(fen);
     check(board, move, expectedMoveCheck);
 
   }

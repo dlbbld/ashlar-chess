@@ -27,10 +27,8 @@ import com.dlb.chess.test.pgntest.enums.PgnTest;
  * }</pre>
  *
  * <p>
- * The audit replays each PGN with dead-position auto-detection disabled (the same mode used when the fixture was
- * originally captured) so fixtures whose final position is intentionally dead still produce a deterministic FEN. Every
- * mismatch is reported on the test failure message: PGN filename, the {@link PgnTest} it belongs to, the expected
- * (cached) FEN, and the actual (replayed) FEN. Apply fixes by editing the matching literal in
+ * Every mismatch is reported on the test failure message: PGN filename, the {@link PgnTest} it belongs to, the
+ * expected (cached) FEN, and the actual (replayed) FEN. Apply fixes by editing the matching literal in
  * {@code PgnTestCaseCatalog}.
  */
 class TestSetupFinalFen {

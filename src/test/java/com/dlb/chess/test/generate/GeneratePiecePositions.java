@@ -209,7 +209,7 @@ public class GeneratePiecePositions {
   }
 
   private static void ensureNotCheckmate(String fen) {
-    final Board board = new Board(fen, false);
+    final Board board = new Board(fen);
     if (board.isCheckmate()) {
       throw new ProgrammingMistakeException("We don't have insufficient material. The FEN is \"" + fen + "\".");
     }

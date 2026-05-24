@@ -83,8 +83,8 @@ class TestBoardUnperformMove {
     final PgnGame pgnGame = PgnCacheForStrictPgnParserTestCases.getPgn(testCaseList.pgnTest().getFolderPath(),
         testCase.pgnName());
 
-    final Board expected = new Board(pgnGame.startFen(), false);
-    final Board actual = new Board(pgnGame.startFen(), false);
+    final Board expected = new Board(pgnGame.startFen());
+    final Board actual = new Board(pgnGame.startFen());
 
     var halfMoveIndex = 0;
     for (final PgnHalfMove halfMove : pgnGame.halfMoveList()) {

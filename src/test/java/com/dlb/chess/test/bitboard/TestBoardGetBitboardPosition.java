@@ -39,7 +39,7 @@ class TestBoardGetBitboardPosition {
   @SuppressWarnings("static-method")
   @Test
   void initialPositionMatchesBitboardConstant() {
-    final Board board = new Board(false);
+    final Board board = new Board();
     assertEquals(BitboardPosition.INITIAL_POSITION, board.getBitboardPosition());
   }
 
@@ -51,7 +51,7 @@ class TestBoardGetBitboardPosition {
     // built by applying StaticPositionUtility.createPositionAfterMove move-by-move — no bitboard involved in
     // computing the reference. This is the cache-correctness invariant from Step 1.2, expressed against a truly
     // independent oracle now that the Board-side StaticPosition cache is gone.
-    final Board board = new Board(false);
+    final Board board = new Board();
     final List<StaticPosition> independentHistory = new ArrayList<>();
     independentHistory.add(StaticPosition.INITIAL_POSITION);
 

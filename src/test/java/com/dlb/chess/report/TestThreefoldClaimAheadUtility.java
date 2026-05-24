@@ -25,21 +25,21 @@ class TestThreefoldClaimAheadUtility {
 
     {
       final List<List<ClaimAhead>> actualListList = ThreefoldClaimAheadUtility
-          .calculateThreefoldClaimAhead(new Board(false));
+          .calculateThreefoldClaimAhead(new Board());
 
       assertEquals(expectedEmptyListList, actualListList);
     }
 
     {
       final List<List<ClaimAhead>> actual = ThreefoldClaimAheadUtility
-          .calculateThreefoldClaimAhead(new Board(FenConstants.FEN_AFTER_E4_STR, false));
+          .calculateThreefoldClaimAhead(new Board(FenConstants.FEN_AFTER_E4_STR));
 
       assertEquals(expectedEmptyListList, actual);
     }
 
     {
       final PgnGame pgnGame = LenientPgnParser.parseText("e4 e5 Nf3 Nc6 Ng1 Nb8 Nf3");
-      final Board board = PgnUtility.calculateBoard(pgnGame, false);
+      final Board board = PgnUtility.calculateBoard(pgnGame);
 
       final List<List<ClaimAhead>> actualListList = ThreefoldClaimAheadUtility.calculateThreefoldClaimAhead(board);
 
@@ -48,7 +48,7 @@ class TestThreefoldClaimAheadUtility {
 
     {
       final PgnGame pgnGame = LenientPgnParser.parseText("e4 e5 Nf3 Nc6 Ng1 Nb8 Nf3 Nc6");
-      final Board board = PgnUtility.calculateBoard(pgnGame, false);
+      final Board board = PgnUtility.calculateBoard(pgnGame);
 
       final List<List<ClaimAhead>> actualListList = ThreefoldClaimAheadUtility.calculateThreefoldClaimAhead(board);
 
@@ -58,7 +58,7 @@ class TestThreefoldClaimAheadUtility {
     // White can claim ahead first
     {
       final PgnGame pgnGame = LenientPgnParser.parseText("e4 e5 Nf3 Nc6 Ng1 Nb8 Nf3 Nc6 Ng5 Nb8");
-      final Board board = PgnUtility.calculateBoard(pgnGame, false);
+      final Board board = PgnUtility.calculateBoard(pgnGame);
 
       final List<List<ClaimAhead>> actualListList = ThreefoldClaimAheadUtility.calculateThreefoldClaimAhead(board);
 
@@ -77,7 +77,7 @@ class TestThreefoldClaimAheadUtility {
     // Black can claim ahead first
     {
       final PgnGame pgnGame = LenientPgnParser.parseText("e4 e5 Nf3 Nc6 Ng1 Nb8 Nf3 Nc6 Ng1");
-      final Board board = PgnUtility.calculateBoard(pgnGame, false);
+      final Board board = PgnUtility.calculateBoard(pgnGame);
 
       final List<List<ClaimAhead>> actualListList = ThreefoldClaimAheadUtility.calculateThreefoldClaimAhead(board);
 
@@ -96,7 +96,7 @@ class TestThreefoldClaimAheadUtility {
     // White can claim ahead first, then Black can claim ahead
     {
       final PgnGame pgnGame = LenientPgnParser.parseText("e4 e5 Nf3 Nc6 Ng1 Nb8 Nf3 Nc6 Ng1 Nb8");
-      final Board board = PgnUtility.calculateBoard(pgnGame, false);
+      final Board board = PgnUtility.calculateBoard(pgnGame);
 
       final List<List<ClaimAhead>> actualListList = ThreefoldClaimAheadUtility.calculateThreefoldClaimAhead(board);
 
@@ -123,7 +123,7 @@ class TestThreefoldClaimAheadUtility {
     // Black can claim ahead first, then White can claim ahead
     {
       final PgnGame pgnGame = LenientPgnParser.parseText("e4 e5 Nf3 Nc6 Ng1 Nb8 Nf3 Nc6 Ng5 Nb8 Nf3");
-      final Board board = PgnUtility.calculateBoard(pgnGame, false);
+      final Board board = PgnUtility.calculateBoard(pgnGame);
 
       final List<List<ClaimAhead>> actualListList = ThreefoldClaimAheadUtility.calculateThreefoldClaimAhead(board);
 

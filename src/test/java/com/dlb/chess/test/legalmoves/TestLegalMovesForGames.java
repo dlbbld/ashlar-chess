@@ -24,7 +24,7 @@ class TestLegalMovesForGames {
   @Test
   void testGame1() {
     // 2_0_1_spassky_fischer_1972_seventeenth
-    final Board board = new Board(false);
+    final Board board = new Board();
     checkInitial(board);
 
     checkLegalMoves(board, "e4", "Na6, Nc6, Nf6, Nh6, a5, a6, b5, b6, c5, c6, d5, d6, e5, e6, f5, f6, g5, g6, h5, h6");
@@ -209,7 +209,7 @@ class TestLegalMovesForGames {
   @Test
   void testGame2() {
     // 2_4_1_alekhine_lasker_1914
-    final var board = new Board(false);
+    final var board = new Board();
     checkInitial(board);
 
     checkLegalMoves(board, "e4", "Na6, Nc6, Nf6, Nh6, a5, a6, b5, b6, c5, c6, d5, d6, e5, e6, f5, f6, g5, g6, h5, h6");
@@ -279,7 +279,7 @@ class TestLegalMovesForGames {
   @Test
   void testGame3() {
     // 1_filipowicz_smederevac_1966
-    final var board = new Board(false);
+    final var board = new Board();
     checkInitial(board);
 
     checkLegalMoves(board, "e4", "Na6, Nc6, Nf6, Nh6, a5, a6, b5, b6, c5, c6, d5, d6, e5, e6, f5, f6, g5, g6, h5, h6");
@@ -567,7 +567,7 @@ class TestLegalMovesForGames {
   @Test
   void testGame4() {
     // 2_2_karpov_kasparov_1991
-    final var board = new Board(false);
+    final var board = new Board();
     checkInitial(board);
 
     checkLegalMoves(board, "d4", "Na6, Nc6, Nf6, Nh6, a5, a6, b5, b6, c5, c6, d5, d6, e5, e6, f5, f6, g5, g6, h5, h6");
@@ -1003,7 +1003,7 @@ class TestLegalMovesForGames {
 
   private static void generateGame(PgnTest pgnTest, String pgnName) {
     final PgnGame pgnGame = PgnCacheForStrictPgnParserTestCases.getPgn(pgnTest.getFolderPath(), pgnName);
-    final var board = new Board(false);
+    final var board = new Board();
     for (final PgnHalfMove move : pgnGame.halfMoveList()) {
       board.moveStrict(move.san());
       final String san = board.getSan();

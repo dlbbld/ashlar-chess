@@ -18,7 +18,6 @@ import com.dlb.chess.board.enums.Square;
 import com.dlb.chess.common.Nulls;
 import com.dlb.chess.common.constants.ChessConstants;
 import com.dlb.chess.common.constants.DynamicPositionConstants;
-import com.dlb.chess.common.enums.GameStatus;
 import com.dlb.chess.common.enums.InsufficientMaterial;
 import com.dlb.chess.common.exceptions.ProgrammingMistakeException;
 import com.dlb.chess.common.model.DynamicPosition;
@@ -77,12 +76,10 @@ import com.google.common.collect.ImmutableList;
  * {@link #move(MoveSpecification)}, {@link #movesStrict(String...)}, and is undone by {@link #unmove()}. Both
  * move-pipelines validate the candidate against the current legal-move set; an invalid move throws (see
  * {@link com.dlb.chess.exceptions.InvalidMoveException} from the {@code MoveSpecification} pipeline,
- * {@code SanValidationException} from the SAN pipeline). Once the game has reached any of the four enforced
- * FIDE-automatic terminations (checkmate, stalemate, mutual insufficient material, quick-unwinnability dead position),
- * neither pipeline accepts further moves. Fivefold repetition and the 75-move rule are queryable predicates
- * ({@link #isFivefoldRepetition()} / {@link #isSeventyFiveMove()}); the move pipeline does <em>not</em> reject moves
- * on those conditions. The package-level Javadoc on {@link com.dlb.chess.board} documents the strict-game invariant in
- * detail.
+ * {@code SanValidationException} from the SAN pipeline). Checkmate, stalemate, and mutual insufficient material block
+ * further moves. Fivefold repetition, the 75-move rule, and analyzer-driven dead positions are queryable states; the
+ * move pipeline does <em>not</em> reject moves on those conditions. The package-level Javadoc on
+ * {@link com.dlb.chess.board} documents the strict-game invariant in detail.
  *
  * <h2>Querying the game</h2>
  *
@@ -126,45 +123,9 @@ public class Board {
   private final List<CastlingRightLoss> blackQueenSideLossList;
 
   /**
-   * Constructor flag: auto-detect {@link GameStatus#DEAD_POSITION_UNWINNABLE_QUICK} once per ply. {@code true} is the
-   * FIDE-compliant default. {@code false} skips the expensive analyzer-driven check; mechanical insufficient-material
-   * detection is unaffected.
-   *
-   * <p>
-   * {@code transient} so reflective equality treats boards with different detection flags as equal — the flag governs
-   * detection behaviour, not position state.
-   */
-  private final transient boolean isDetectDeadPositionUnwinnable;
-
-  /**
-   * Per-ply boolean: did the quick analyzer find both sides UNWINNABLE at this ply? Computed eagerly during
-   * {@link #performMoveWithoutValidation} (and the constructor) and read by {@link #isDeadPositionUnwinnableQuick()}.
-   * Same list-per-ply pattern as {@link #isCheckmateList}.
-   */
-  private final List<Boolean> isDeadPositionUnwinnableQuickList;
-
-  /**
-   * Constructs a {@code Board} at the position carried by the given pre-parsed {@link Fen}, with dead-position
-   * unwinnable-quick detection enabled (FIDE-compliant default — game terminates automatically when both sides reach a
-   * position the quick unwinnability analyzer classifies as unwinnable).
+   * Constructs a {@code Board} at the position carried by the given pre-parsed {@link Fen}.
    */
   public Board(Fen initialFen) {
-    this(initialFen, true);
-  }
-
-  /**
-   * Constructs a {@code Board} at the position carried by the given pre-parsed {@link Fen}, with explicit control of
-   * the {@link GameStatus#DEAD_POSITION_UNWINNABLE_QUICK} auto-detection. Pass {@code false} to skip the expensive
-   * per-move analyzer-driven check; mechanical insufficient-material detection (cheap, exact) always runs regardless.
-   *
-   * @param detectDeadPositionUnwinnable {@code true} for FIDE-compliant behaviour (default); {@code false} for callers
-   *                                     that have their own dead-position pipeline or for test corpora that replay
-   *                                     large numbers of games and can't afford the per-move analyzer cost
-   */
-  public Board(Fen initialFen, boolean detectDeadPositionUnwinnable) {
-
-    this.isDetectDeadPositionUnwinnable = detectDeadPositionUnwinnable;
-    this.isDeadPositionUnwinnableQuickList = new ArrayList<>();
 
     // using the static fen in case saves a bit of memory
     Fen initialFenUse;
@@ -248,26 +209,13 @@ public class Board {
     this.blackQueenSideLossList.add(initialCastlingRightBlack == CastlingRight.KING_AND_QUEEN_SIDE
         || initialCastlingRightBlack == CastlingRight.QUEEN_SIDE ? CastlingRightLoss.NOT_LOST
             : CastlingRightLoss.UNKNOWN_FEN_IMPORT);
-
-    // Eager initial-position dead-position-unwinnable-quick value. Must be after all other state is initialised
-    // since the analyzer reads the board via the regular API.
-    this.isDeadPositionUnwinnableQuickList.add(computeDeadPositionUnwinnableQuick());
   }
 
   /**
-   * Constructs a {@code Board} at the standard initial position with dead-position-unwinnable-quick auto-detection
-   * enabled (FIDE-compliant default).
+   * Constructs a {@code Board} at the standard initial position.
    */
   public Board() {
-    this(FenConstants.FEN_INITIAL, true);
-  }
-
-  /**
-   * Constructs a {@code Board} at the standard initial position with explicit control of the
-   * {@link GameStatus#DEAD_POSITION_UNWINNABLE_QUICK} auto-detection. See {@link #Board(Fen, boolean)}.
-   */
-  public Board(boolean detectDeadPositionUnwinnable) {
-    this(FenConstants.FEN_INITIAL, detectDeadPositionUnwinnable);
+    this(FenConstants.FEN_INITIAL);
   }
 
   /**
@@ -279,29 +227,18 @@ public class Board {
    * {@code com.dlb.chess.fen} package documentation for the full contract.
    */
   public Board(String fen) {
-    this(FenParserAdvanced.parseFenAdvanced(fen), true);
-  }
-
-  /**
-   * Constructs a {@code Board} from a FEN string with explicit control of the
-   * {@link GameStatus#DEAD_POSITION_UNWINNABLE_QUICK} auto-detection. See {@link #Board(Fen, boolean)} for the meaning
-   * of the flag.
-   */
-  public Board(String fen, boolean detectDeadPositionUnwinnable) {
-    this(FenParserAdvanced.parseFenAdvanced(fen), detectDeadPositionUnwinnable);
+    this(FenParserAdvanced.parseFenAdvanced(fen));
   }
 
   /**
    * Creates a new board whose initial position is this board's current position, without carrying over the move
    * history.
    *
-   * <p>
-   * Auto-detection of {@code DEAD_POSITION_UNWINNABLE_QUICK} follows the {@code detectDeadPositionUnwinnable} flag.
    */
-  public Board copyCurrentPositionWithoutHistory(boolean detectDeadPositionUnwinnable) {
+  public Board copyCurrentPositionWithoutHistory() {
     final Fen currentPosition = new Fen(getFen(), getBitboardPosition(), getHavingMove(), getCastlingRightWhite(),
         getCastlingRightBlack(), getEnPassantCaptureTargetSquare(), 0, getFullMoveNumber());
-    return new Board(currentPosition, detectDeadPositionUnwinnable);
+    return new Board(currentPosition);
   }
 
   /**
@@ -474,9 +411,6 @@ public class Board {
     final HalfMove halfMove = buildHalfMove(moveSpecification);
     this.halfMoveList.add(halfMove);
 
-    // Eager per-ply dead-position-unwinnable-quick value (false when detection disabled or recursion-suppressed).
-    this.isDeadPositionUnwinnableQuickList.add(computeDeadPositionUnwinnableQuick());
-
     return true;
 
   }
@@ -510,8 +444,6 @@ public class Board {
     this.whiteQueenSideLossList.remove(whiteQueenSideLossList.size() - 1);
     this.blackKingSideLossList.remove(blackKingSideLossList.size() - 1);
     this.blackQueenSideLossList.remove(blackQueenSideLossList.size() - 1);
-
-    this.isDeadPositionUnwinnableQuickList.remove(isDeadPositionUnwinnableQuickList.size() - 1);
 
   }
 
@@ -962,37 +894,11 @@ public class Board {
   }
 
   /**
-   * Per-ply: did the quick analyzer find both sides UNWINNABLE at the current position? Read against the eager per-ply
-   * value; returns {@code false} when detection is disabled.
-   */
-  public boolean isDeadPositionUnwinnableQuick() {
-    if (!isDetectDeadPositionUnwinnable) {
-      return false;
-    }
-    return Nulls.getLast(isDeadPositionUnwinnableQuickList);
-  }
-
-  /**
    * FIDE 5.2.2 dead position: either both sides insufficient material (cheap, exact) or both sides UNWINNABLE per the
-   * quick analyzer ({@link #isDeadPositionUnwinnableQuick}). The cheap predicate short-circuits the expensive one.
+   * quick analyzer. The cheap predicate short-circuits the expensive one.
    */
   public boolean isDeadPosition() {
-    return isInsufficientMaterial() || isDeadPositionUnwinnableQuick();
-  }
-
-  /**
-   * Eager compute, called once per ply from the constructor and {@link #performMoveWithoutValidation}. Returns
-   * {@code false} when detection is disabled; otherwise delegates to the quick analyzer, which isolates itself by
-   * running on its own fresh detection-off board (no recursion concern).
-   */
-  private boolean computeDeadPositionUnwinnableQuick() {
-    if (!isDetectDeadPositionUnwinnable) {
-      return false;
-    }
-    if (UnwinnableQuickAnalyzer.unwinnableQuick(this, Side.WHITE).verdict() != UnwinnabilityQuickVerdict.UNWINNABLE) {
-      return false;
-    }
-    return UnwinnableQuickAnalyzer.unwinnableQuick(this, Side.BLACK).verdict() == UnwinnabilityQuickVerdict.UNWINNABLE;
+    return isInsufficientMaterial() || isDeadPositionQuick() == DeadPositionQuick.DEAD_POSITION;
   }
 
   public DeadPositionFull isDeadPositionFull() {

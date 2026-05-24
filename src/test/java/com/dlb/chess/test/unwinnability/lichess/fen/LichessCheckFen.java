@@ -69,7 +69,7 @@ public class LichessCheckFen extends AbstractLichessCheckFen {
       final var lichessGameId = line.substring(sepPos + 1);
 
       if (isStartAnalysis) {
-        final Board board = new Board(fen, false);
+        final Board board = new Board(fen);
         final Side testingSide = board.getHavingMove().getOppositeSide();
         final var beforeMilliSeconds = System.currentTimeMillis();
         final UnwinnabilityQuickVerdict unwinnableQuick = UnwinnableQuickAnalyzer.unwinnableQuick(board, testingSide)
