@@ -6,7 +6,7 @@ import com.dlb.chess.test.pgntest.enums.PgnTest;
 public class GenerateTestCaseForPgn extends AbstractGenerateTestCaseForPgn {
 
   // we assume for convenience the file is in one of the provided folders
-  private static final String ABC_XYZ_PGN_TTT_NAME = "01_m1_white_to_move.pgn";
+  private static final String ABC_XYZ_PGN_TTT_NAME = "02_last_move_added_accidentally_result_draw_one_move_in_KvK.pgn";
 
   public static void main(String[] args) throws Exception {
     generateTestCaseForPgn(ABC_XYZ_PGN_TTT_NAME);

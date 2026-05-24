@@ -2090,8 +2090,7 @@ public class PgnTestCaseCatalog {
         InsufficientMaterial.BLACK_ONLY, "7k/3K4/8/8/8/6R1/8/8 w - - 704 458"));
     list.add(new PgnTestCase("04_random_no_repetition.pgn", "",
         "122...Kc7 (1) 172.Rd1 (100) 189.Re2 (134); 190.Re6+ (1) 239...Kf4 (100) 246.Rd8 (113); 247.Kb3 (1) 296...Ka5 (100) 321...Kg1 (150) 324...Kh1 (156)",
-        27, 156, CheckmateOrStalemate.NA, 1, InsufficientMaterial.BLACK_ONLY,
-        "8/8/8/8/4K3/8/4R3/7k w - - 156 325"));
+        27, 156, CheckmateOrStalemate.NA, 1, InsufficientMaterial.BLACK_ONLY, "8/8/8/8/4K3/8/4R3/7k w - - 156 325"));
 
     return new PgnTestCaseList(PgnTest.RANDOM_NO_REPETITION, list);
   }
@@ -3976,6 +3975,8 @@ public class PgnTestCaseCatalog {
 
     list.add(new PgnTestCase("01_last_move_added_accidentally_result_white_win_last_move_white_draws.pgn", "", "", 27,
         21, CheckmateOrStalemate.NA, 1, InsufficientMaterial.NONE, "8/6Pk/2b5/2P1K3/8/8/8/8 b - - 2 87"));
+    list.add(new PgnTestCase("02_last_move_added_accidentally_result_draw_one_move_in_KvK.pgn", "", "", 22, 13,
+        CheckmateOrStalemate.NA, 1, InsufficientMaterial.BOTH, "8/8/8/3K4/8/8/k7/8 w - - 0 69"));
     list.add(new PgnTestCase("03_last_move_added_accidentally_result_draw_black_last_move_loses.pgn", "", "", 7, 18,
         CheckmateOrStalemate.NA, 1, InsufficientMaterial.NONE, "8/8/8/4k1pP/6K1/8/8/8 w - - 2 69"));
     list.add(new PgnTestCase("04_last_move_added_accidentally_result_draw_black_last_move_loses.pgn", "", "", 8, 13,
@@ -4255,9 +4256,9 @@ public class PgnTestCaseCatalog {
         "repPos=3: 122.Kh3 126.Kh3 128.Kh3; repPos=3: 124.Kh3 130.Kh3 132.Kh3",
         "62...Nd7 (1) 112.Kg2 (100) 137.Kg2 (150) 147...Kg4 (171)", 34, 171, CheckmateOrStalemate.NA, 1,
         InsufficientMaterial.NONE, "8/3n4/3P4/8/6k1/4n3/7K/8 w - - 171 148"));
-    list.add(new PgnTestCase("seventy_five_beyond_aronian_navara_2017.pgn",
-        "repPos=3: 46...Bb3 48...Kf7 50...Bb3", "64...Kf6 (1) 114.Re6+ (100) 139.Kf6 (150) 147...Kh6 (167)", 8, 167,
-        CheckmateOrStalemate.NA, 1, InsufficientMaterial.NONE, "8/3R4/5K1k/7p/7P/5b2/8/8 w - - 167 148"));
+    list.add(new PgnTestCase("seventy_five_beyond_aronian_navara_2017.pgn", "repPos=3: 46...Bb3 48...Kf7 50...Bb3",
+        "64...Kf6 (1) 114.Re6+ (100) 139.Kf6 (150) 147...Kh6 (167)", 8, 167, CheckmateOrStalemate.NA, 1,
+        InsufficientMaterial.NONE, "8/3R4/5K1k/7p/7P/5b2/8/8 w - - 167 148"));
     list.add(new PgnTestCase("seventy_five_beyond_cheparinov_jones_2019.pgn", "",
         "69.Ke4 (1) 118...Ra6 (100) 143...Kc4 (150) 144...Rg6 (152)", 6, 152, CheckmateOrStalemate.NA, 1,
         InsufficientMaterial.NONE, "8/8/6r1/K6R/2k5/8/2n5/8 w - - 152 145"));
