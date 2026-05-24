@@ -49,7 +49,7 @@ class TestPerformMoveSeveralStates implements EnumConstants {
 
       // test after move
       assertEquals("e4", board.getSan());
-      assertEquals("e2e4", board.getLan());
+      assertEquals("e2-e4", board.getLan());
       assertEquals(0, board.getHalfMoveClock());
       assertFalse(calculateIsEnPassantCaptureLastMove(board));
       assertFalse(calculateIsCastlingLastMove(board));
@@ -91,7 +91,7 @@ class TestPerformMoveSeveralStates implements EnumConstants {
 
       // test after move
       assertEquals("d5", board.getSan());
-      assertEquals("d7d5", board.getLan());
+      assertEquals("d7-d5", board.getLan());
       assertEquals(0, board.getHalfMoveClock());
       assertFalse(calculateIsEnPassantCaptureLastMove(board));
       assertFalse(calculateIsCastlingLastMove(board));
@@ -211,7 +211,7 @@ class TestPerformMoveSeveralStates implements EnumConstants {
 
       // test after move
       assertEquals("g4", board.getSan());
-      assertEquals("g2g4", board.getLan());
+      assertEquals("g2-g4", board.getLan());
       assertEquals(0, board.getHalfMoveClock());
       assertFalse(calculateIsEnPassantCaptureLastMove(board));
       assertFalse(calculateIsCastlingLastMove(board));
@@ -251,7 +251,7 @@ class TestPerformMoveSeveralStates implements EnumConstants {
 
       // test after move
       assertEquals("Bd7", board.getSan());
-      assertEquals("Bc8d7", board.getLan());
+      assertEquals("Bc8-d7", board.getLan());
       assertEquals(1, board.getHalfMoveClock());
       assertFalse(calculateIsEnPassantCaptureLastMove(board));
       assertFalse(calculateIsCastlingLastMove(board));
@@ -291,7 +291,7 @@ class TestPerformMoveSeveralStates implements EnumConstants {
 
       // test after move
       assertEquals("g5", board.getSan());
-      assertEquals("g4g5", board.getLan());
+      assertEquals("g4-g5", board.getLan());
       assertEquals(0, board.getHalfMoveClock());
       assertFalse(calculateIsEnPassantCaptureLastMove(board));
       assertFalse(calculateIsCastlingLastMove(board));
@@ -331,7 +331,7 @@ class TestPerformMoveSeveralStates implements EnumConstants {
 
       // test after move
       assertEquals("f5", board.getSan());
-      assertEquals("f7f5", board.getLan());
+      assertEquals("f7-f5", board.getLan());
       assertEquals(0, board.getHalfMoveClock());
       assertFalse(calculateIsEnPassantCaptureLastMove(board));
       assertFalse(calculateIsCastlingLastMove(board));
@@ -411,7 +411,7 @@ class TestPerformMoveSeveralStates implements EnumConstants {
 
       // test after move
       assertEquals("Nc6", board.getSan());
-      assertEquals("Nb8c6", board.getLan());
+      assertEquals("Nb8-c6", board.getLan());
       assertEquals(1, board.getHalfMoveClock());
       assertFalse(calculateIsEnPassantCaptureLastMove(board));
       assertFalse(calculateIsCastlingLastMove(board));
@@ -451,7 +451,7 @@ class TestPerformMoveSeveralStates implements EnumConstants {
 
       // test after move
       assertEquals("Nf3", board.getSan());
-      assertEquals("Ng1f3", board.getLan());
+      assertEquals("Ng1-f3", board.getLan());
       assertEquals(2, board.getHalfMoveClock());
       assertFalse(calculateIsEnPassantCaptureLastMove(board));
       assertFalse(calculateIsCastlingLastMove(board));
@@ -491,7 +491,7 @@ class TestPerformMoveSeveralStates implements EnumConstants {
 
       // test after move
       assertEquals("a5", board.getSan());
-      assertEquals("a7a5", board.getLan());
+      assertEquals("a7-a5", board.getLan());
       assertEquals(0, board.getHalfMoveClock());
       assertFalse(calculateIsEnPassantCaptureLastMove(board));
       assertFalse(calculateIsCastlingLastMove(board));
@@ -531,7 +531,7 @@ class TestPerformMoveSeveralStates implements EnumConstants {
 
       // test after move
       assertEquals("Bc4", board.getSan());
-      assertEquals("Bf1c4", board.getLan());
+      assertEquals("Bf1-c4", board.getLan());
       assertEquals(1, board.getHalfMoveClock());
       assertFalse(calculateIsEnPassantCaptureLastMove(board));
       assertFalse(calculateIsCastlingLastMove(board));
@@ -571,7 +571,7 @@ class TestPerformMoveSeveralStates implements EnumConstants {
 
       // test after move
       assertEquals("a4", board.getSan());
-      assertEquals("a5a4", board.getLan());
+      assertEquals("a5-a4", board.getLan());
       assertEquals(0, board.getHalfMoveClock());
       assertFalse(calculateIsEnPassantCaptureLastMove(board));
       assertFalse(calculateIsCastlingLastMove(board));
@@ -611,7 +611,7 @@ class TestPerformMoveSeveralStates implements EnumConstants {
 
       // test after move
       assertEquals("Nc3", board.getSan());
-      assertEquals("Nb1c3", board.getLan());
+      assertEquals("Nb1-c3", board.getLan());
       assertEquals(1, board.getHalfMoveClock());
       assertFalse(calculateIsEnPassantCaptureLastMove(board));
       assertFalse(calculateIsCastlingLastMove(board));

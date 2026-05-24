@@ -51,7 +51,8 @@ public final class OracleJsonlReader {
   }
 
   private static OracleMove toMove(Map<String, Object> obj) {
-    return new OracleMove((String) obj.get("san"), (String) obj.get("uci"), (String) obj.get("fenAfter"),
+    return new OracleMove((String) obj.get("san"), (String) obj.get("lan"), (String) obj.get("uci"),
+        (String) obj.get("fenAfter"),
         ((Integer) obj.get("halfmoveClock")).intValue(), ((Integer) obj.get("fullmoveNumber")).intValue(),
         ((Boolean) obj.get("isCheck")).booleanValue(), ((Boolean) obj.get("isCheckmate")).booleanValue(),
         ((Boolean) obj.get("isStalemate")).booleanValue(),

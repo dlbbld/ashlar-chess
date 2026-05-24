@@ -21,6 +21,7 @@ JSONL schema (one record per line, keys sorted alphabetically):
 
   Move := {
     "san":                          <string>,  # python-chess's regenerated SAN
+    "lan":                          <string>,  # python-chess's regenerated LAN (canonical: dash separator on non-captures)
     "uci":                          <string>,  # UCI of the move
     "fenAfter":                     <string>,  # FEN after the move
     "halfmoveClock":                <int>,     # FIDE halfmove clock after the move
@@ -148,10 +149,12 @@ def record_for_pgn(pgn_path: Path) -> dict:
     moves = []
     for move in game.mainline_moves():
         san = board.san(move)
+        lan = board.lan(move)
         uci = move.uci()
         board.push(move)
         moves.append({
             "san": san,
+            "lan": lan,
             "uci": uci,
             "fenAfter": board.fen(en_passant="fen"),
             "halfmoveClock": board.halfmove_clock,

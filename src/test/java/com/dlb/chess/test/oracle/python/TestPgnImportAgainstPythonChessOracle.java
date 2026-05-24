@@ -146,6 +146,8 @@ class TestPgnImportAgainstPythonChessOracle {
             // canonical sidesteps stylistic differences in the source PGN's input SAN.
             assertEquals(expected.san(), board.getSan(),
                 () -> bucket + " / " + record.pgn() + " ply " + plyLabel + " — canonical SAN mismatch");
+            assertEquals(expected.lan(), board.getLan(),
+                () -> bucket + " / " + record.pgn() + " ply " + plyLabel + " — canonical LAN mismatch");
             assertEquals(expected.isInsufficientMaterial(), board.isInsufficientMaterial(),
                 () -> bucket + " / " + record.pgn() + " ply " + plyLabel + " — isInsufficientMaterial mismatch");
             assertEquals(expected.hasInsufficientMaterialWhite(), board.isInsufficientMaterial(Side.WHITE),

@@ -30,7 +30,7 @@ class TestPerformMoveMainlyStaticPositionState implements EnumConstants {
     assertEquals(staticPosition1W, StaticPositionBridge.toStaticPosition(apiBoard.getBitboardPosition()));
     assertEquals(BLACK, apiBoard.getHavingMove());
     assertEquals("e4", apiBoard.getSan());
-    assertEquals("e2e4", apiBoard.getLan());
+    assertEquals("e2-e4", apiBoard.getLan());
 
     workingPosition = StaticPositionBridge.toStaticPosition(apiBoard.getBitboardPosition());
     final MoveSpecification move1B = new MoveSpecification(C7, C5);
@@ -40,7 +40,7 @@ class TestPerformMoveMainlyStaticPositionState implements EnumConstants {
     assertEquals(staticPosition1B, StaticPositionBridge.toStaticPosition(apiBoard.getBitboardPosition()));
     assertEquals(WHITE, apiBoard.getHavingMove());
     assertEquals("c5", apiBoard.getSan());
-    assertEquals("c7c5", apiBoard.getLan());
+    assertEquals("c7-c5", apiBoard.getLan());
 
     workingPosition = StaticPositionBridge.toStaticPosition(apiBoard.getBitboardPosition());
     final MoveSpecification move2W = new MoveSpecification(G1, F3);
@@ -50,7 +50,7 @@ class TestPerformMoveMainlyStaticPositionState implements EnumConstants {
     assertEquals(staticPosition2W, StaticPositionBridge.toStaticPosition(apiBoard.getBitboardPosition()));
     assertEquals(BLACK, apiBoard.getHavingMove());
     assertEquals("Nf3", apiBoard.getSan());
-    assertEquals("Ng1f3", apiBoard.getLan());
+    assertEquals("Ng1-f3", apiBoard.getLan());
 
     workingPosition = StaticPositionBridge.toStaticPosition(apiBoard.getBitboardPosition());
     final MoveSpecification move2B = new MoveSpecification(B8, C6);
@@ -60,7 +60,7 @@ class TestPerformMoveMainlyStaticPositionState implements EnumConstants {
     assertEquals(staticPosition2B, StaticPositionBridge.toStaticPosition(apiBoard.getBitboardPosition()));
     assertEquals(WHITE, apiBoard.getHavingMove());
     assertEquals("Nc6", apiBoard.getSan());
-    assertEquals("Nb8c6", apiBoard.getLan());
+    assertEquals("Nb8-c6", apiBoard.getLan());
 
     workingPosition = StaticPositionBridge.toStaticPosition(apiBoard.getBitboardPosition());
     final MoveSpecification move3W = new MoveSpecification(F1, C4);
@@ -70,7 +70,7 @@ class TestPerformMoveMainlyStaticPositionState implements EnumConstants {
     assertEquals(staticPosition3W, StaticPositionBridge.toStaticPosition(apiBoard.getBitboardPosition()));
     assertEquals(BLACK, apiBoard.getHavingMove());
     assertEquals("Bc4", apiBoard.getSan());
-    assertEquals("Bf1c4", apiBoard.getLan());
+    assertEquals("Bf1-c4", apiBoard.getLan());
 
     workingPosition = StaticPositionBridge.toStaticPosition(apiBoard.getBitboardPosition());
     final MoveSpecification move3B = new MoveSpecification(D7, D6);
@@ -80,7 +80,7 @@ class TestPerformMoveMainlyStaticPositionState implements EnumConstants {
     assertEquals(staticPosition3B, StaticPositionBridge.toStaticPosition(apiBoard.getBitboardPosition()));
     assertEquals(WHITE, apiBoard.getHavingMove());
     assertEquals("d6", apiBoard.getSan());
-    assertEquals("d7d6", apiBoard.getLan());
+    assertEquals("d7-d6", apiBoard.getLan());
 
     workingPosition = StaticPositionBridge.toStaticPosition(apiBoard.getBitboardPosition());
     final MoveSpecification move4W = new MoveSpecification(B1, C3);
@@ -90,7 +90,7 @@ class TestPerformMoveMainlyStaticPositionState implements EnumConstants {
     assertEquals(staticPosition4W, StaticPositionBridge.toStaticPosition(apiBoard.getBitboardPosition()));
     assertEquals(BLACK, apiBoard.getHavingMove());
     assertEquals("Nc3", apiBoard.getSan());
-    assertEquals("Nb1c3", apiBoard.getLan());
+    assertEquals("Nb1-c3", apiBoard.getLan());
 
     workingPosition = StaticPositionBridge.toStaticPosition(apiBoard.getBitboardPosition());
     final MoveSpecification move4B = new MoveSpecification(C8, G4);
@@ -100,7 +100,7 @@ class TestPerformMoveMainlyStaticPositionState implements EnumConstants {
     assertEquals(staticPosition4B, StaticPositionBridge.toStaticPosition(apiBoard.getBitboardPosition()));
     assertEquals(WHITE, apiBoard.getHavingMove());
     assertEquals("Bg4", apiBoard.getSan());
-    assertEquals("Bc8g4", apiBoard.getLan());
+    assertEquals("Bc8-g4", apiBoard.getLan());
 
     workingPosition = StaticPositionBridge.toStaticPosition(apiBoard.getBitboardPosition());
     final MoveSpecification move5W = new MoveSpecification(D2, D3);
@@ -110,7 +110,7 @@ class TestPerformMoveMainlyStaticPositionState implements EnumConstants {
     assertEquals(staticPosition5W, StaticPositionBridge.toStaticPosition(apiBoard.getBitboardPosition()));
     assertEquals(BLACK, apiBoard.getHavingMove());
     assertEquals("d3", apiBoard.getSan());
-    assertEquals("d2d3", apiBoard.getLan());
+    assertEquals("d2-d3", apiBoard.getLan());
 
     workingPosition = StaticPositionBridge.toStaticPosition(apiBoard.getBitboardPosition());
     final MoveSpecification move5B = new MoveSpecification(G8, F6);
@@ -120,7 +120,7 @@ class TestPerformMoveMainlyStaticPositionState implements EnumConstants {
     assertEquals(staticPosition5B, StaticPositionBridge.toStaticPosition(apiBoard.getBitboardPosition()));
     assertEquals(WHITE, apiBoard.getHavingMove());
     assertEquals("Nf6", apiBoard.getSan());
-    assertEquals("Ng8f6", apiBoard.getLan());
+    assertEquals("Ng8-f6", apiBoard.getLan());
 
     workingPosition = StaticPositionBridge.toStaticPosition(apiBoard.getBitboardPosition());
     final MoveSpecification move6W = new MoveSpecification(C1, F4);
@@ -130,7 +130,7 @@ class TestPerformMoveMainlyStaticPositionState implements EnumConstants {
     assertEquals(staticPosition6W, StaticPositionBridge.toStaticPosition(apiBoard.getBitboardPosition()));
     assertEquals(BLACK, apiBoard.getHavingMove());
     assertEquals("Bf4", apiBoard.getSan());
-    assertEquals("Bc1f4", apiBoard.getLan());
+    assertEquals("Bc1-f4", apiBoard.getLan());
 
     workingPosition = StaticPositionBridge.toStaticPosition(apiBoard.getBitboardPosition());
     final MoveSpecification move6B = new MoveSpecification(E7, E5);
@@ -140,7 +140,7 @@ class TestPerformMoveMainlyStaticPositionState implements EnumConstants {
     assertEquals(staticPosition6B, StaticPositionBridge.toStaticPosition(apiBoard.getBitboardPosition()));
     assertEquals(WHITE, apiBoard.getHavingMove());
     assertEquals("e5", apiBoard.getSan());
-    assertEquals("e7e5", apiBoard.getLan());
+    assertEquals("e7-e5", apiBoard.getLan());
 
     workingPosition = StaticPositionBridge.toStaticPosition(apiBoard.getBitboardPosition());
     final MoveSpecification move7W = new MoveSpecification(D1, E2);
@@ -150,7 +150,7 @@ class TestPerformMoveMainlyStaticPositionState implements EnumConstants {
     assertEquals(staticPosition7W, StaticPositionBridge.toStaticPosition(apiBoard.getBitboardPosition()));
     assertEquals(BLACK, apiBoard.getHavingMove());
     assertEquals("Qe2", apiBoard.getSan());
-    assertEquals("Qd1e2", apiBoard.getLan());
+    assertEquals("Qd1-e2", apiBoard.getLan());
 
     workingPosition = StaticPositionBridge.toStaticPosition(apiBoard.getBitboardPosition());
     final MoveSpecification move7B = new MoveSpecification(F8, E7);
@@ -160,7 +160,7 @@ class TestPerformMoveMainlyStaticPositionState implements EnumConstants {
     assertEquals(staticPosition7B, StaticPositionBridge.toStaticPosition(apiBoard.getBitboardPosition()));
     assertEquals(WHITE, apiBoard.getHavingMove());
     assertEquals("Be7", apiBoard.getSan());
-    assertEquals("Bf8e7", apiBoard.getLan());
+    assertEquals("Bf8-e7", apiBoard.getLan());
 
     workingPosition = StaticPositionBridge.toStaticPosition(apiBoard.getBitboardPosition());
     final MoveSpecification move8W = new MoveSpecification(A1, D1);
@@ -170,7 +170,7 @@ class TestPerformMoveMainlyStaticPositionState implements EnumConstants {
     assertEquals(staticPosition8W, StaticPositionBridge.toStaticPosition(apiBoard.getBitboardPosition()));
     assertEquals(BLACK, apiBoard.getHavingMove());
     assertEquals("Rd1", apiBoard.getSan());
-    assertEquals("Ra1d1", apiBoard.getLan());
+    assertEquals("Ra1-d1", apiBoard.getLan());
 
     workingPosition = StaticPositionBridge.toStaticPosition(apiBoard.getBitboardPosition());
     final MoveSpecification move8B = new MoveSpecification(D8, D7);
@@ -180,7 +180,7 @@ class TestPerformMoveMainlyStaticPositionState implements EnumConstants {
     assertEquals(staticPosition8B, StaticPositionBridge.toStaticPosition(apiBoard.getBitboardPosition()));
     assertEquals(WHITE, apiBoard.getHavingMove());
     assertEquals("Qd7", apiBoard.getSan());
-    assertEquals("Qd8d7", apiBoard.getLan());
+    assertEquals("Qd8-d7", apiBoard.getLan());
 
     workingPosition = StaticPositionBridge.toStaticPosition(apiBoard.getBitboardPosition());
     final MoveSpecification move9W = new MoveSpecification(CastlingMove.KING_SIDE);
@@ -214,7 +214,7 @@ class TestPerformMoveMainlyStaticPositionState implements EnumConstants {
     assertEquals(staticPosition10W, StaticPositionBridge.toStaticPosition(apiBoard.getBitboardPosition()));
     assertEquals(BLACK, apiBoard.getHavingMove());
     assertEquals("Rfe1", apiBoard.getSan());
-    assertEquals("Rf1e1", apiBoard.getLan());
+    assertEquals("Rf1-e1", apiBoard.getLan());
 
     workingPosition = StaticPositionBridge.toStaticPosition(apiBoard.getBitboardPosition());
     final MoveSpecification move10B = new MoveSpecification(D8, E8);
@@ -224,7 +224,7 @@ class TestPerformMoveMainlyStaticPositionState implements EnumConstants {
     assertEquals(staticPosition10B, StaticPositionBridge.toStaticPosition(apiBoard.getBitboardPosition()));
     assertEquals(WHITE, apiBoard.getHavingMove());
     assertEquals("Rde8", apiBoard.getSan());
-    assertEquals("Rd8e8", apiBoard.getLan());
+    assertEquals("Rd8-e8", apiBoard.getLan());
 
     workingPosition = StaticPositionBridge.toStaticPosition(apiBoard.getBitboardPosition());
     final MoveSpecification move11W = new MoveSpecification(G1, H1);
@@ -234,7 +234,7 @@ class TestPerformMoveMainlyStaticPositionState implements EnumConstants {
     assertEquals(staticPosition11W, StaticPositionBridge.toStaticPosition(apiBoard.getBitboardPosition()));
     assertEquals(BLACK, apiBoard.getHavingMove());
     assertEquals("Kh1", apiBoard.getSan());
-    assertEquals("Kg1h1", apiBoard.getLan());
+    assertEquals("Kg1-h1", apiBoard.getLan());
 
     workingPosition = StaticPositionBridge.toStaticPosition(apiBoard.getBitboardPosition());
     final MoveSpecification move11B = new MoveSpecification(C8, B8);
@@ -244,7 +244,7 @@ class TestPerformMoveMainlyStaticPositionState implements EnumConstants {
     assertEquals(staticPosition11B, StaticPositionBridge.toStaticPosition(apiBoard.getBitboardPosition()));
     assertEquals(WHITE, apiBoard.getHavingMove());
     assertEquals("Kb8", apiBoard.getSan());
-    assertEquals("Kc8b8", apiBoard.getLan());
+    assertEquals("Kc8-b8", apiBoard.getLan());
 
     workingPosition = StaticPositionBridge.toStaticPosition(apiBoard.getBitboardPosition());
     final MoveSpecification move12W = new MoveSpecification(H2, H4);
@@ -254,7 +254,7 @@ class TestPerformMoveMainlyStaticPositionState implements EnumConstants {
     assertEquals(staticPosition12W, StaticPositionBridge.toStaticPosition(apiBoard.getBitboardPosition()));
     assertEquals(BLACK, apiBoard.getHavingMove());
     assertEquals("h4", apiBoard.getSan());
-    assertEquals("h2h4", apiBoard.getLan());
+    assertEquals("h2-h4", apiBoard.getLan());
 
     workingPosition = StaticPositionBridge.toStaticPosition(apiBoard.getBitboardPosition());
     final MoveSpecification move12B = new MoveSpecification(A7, A5);
@@ -264,7 +264,7 @@ class TestPerformMoveMainlyStaticPositionState implements EnumConstants {
     assertEquals(staticPosition12B, StaticPositionBridge.toStaticPosition(apiBoard.getBitboardPosition()));
     assertEquals(WHITE, apiBoard.getHavingMove());
     assertEquals("a5", apiBoard.getSan());
-    assertEquals("a7a5", apiBoard.getLan());
+    assertEquals("a7-a5", apiBoard.getLan());
 
     workingPosition = StaticPositionBridge.toStaticPosition(apiBoard.getBitboardPosition());
     final MoveSpecification move13W = new MoveSpecification(H4, H5);
@@ -274,7 +274,7 @@ class TestPerformMoveMainlyStaticPositionState implements EnumConstants {
     assertEquals(staticPosition13W, StaticPositionBridge.toStaticPosition(apiBoard.getBitboardPosition()));
     assertEquals(BLACK, apiBoard.getHavingMove());
     assertEquals("h5", apiBoard.getSan());
-    assertEquals("h4h5", apiBoard.getLan());
+    assertEquals("h4-h5", apiBoard.getLan());
 
     workingPosition = StaticPositionBridge.toStaticPosition(apiBoard.getBitboardPosition());
     final MoveSpecification move13B = new MoveSpecification(G7, G5);
@@ -284,7 +284,7 @@ class TestPerformMoveMainlyStaticPositionState implements EnumConstants {
     assertEquals(staticPosition13B, StaticPositionBridge.toStaticPosition(apiBoard.getBitboardPosition()));
     assertEquals(WHITE, apiBoard.getHavingMove());
     assertEquals("g5", apiBoard.getSan());
-    assertEquals("g7g5", apiBoard.getLan());
+    assertEquals("g7-g5", apiBoard.getLan());
 
     workingPosition = StaticPositionBridge.toStaticPosition(apiBoard.getBitboardPosition());
     final MoveSpecification move14W = new MoveSpecification(H5, G6);
@@ -305,7 +305,7 @@ class TestPerformMoveMainlyStaticPositionState implements EnumConstants {
     assertEquals(staticPosition14B, StaticPositionBridge.toStaticPosition(apiBoard.getBitboardPosition()));
     assertEquals(WHITE, apiBoard.getHavingMove());
     assertEquals("a4", apiBoard.getSan());
-    assertEquals("a5a4", apiBoard.getLan());
+    assertEquals("a5-a4", apiBoard.getLan());
 
     workingPosition = StaticPositionBridge.toStaticPosition(apiBoard.getBitboardPosition());
     final MoveSpecification move15W = new MoveSpecification(B2, B4);
@@ -315,7 +315,7 @@ class TestPerformMoveMainlyStaticPositionState implements EnumConstants {
     assertEquals(staticPosition15W, StaticPositionBridge.toStaticPosition(apiBoard.getBitboardPosition()));
     assertEquals(BLACK, apiBoard.getHavingMove());
     assertEquals("b4", apiBoard.getSan());
-    assertEquals("b2b4", apiBoard.getLan());
+    assertEquals("b2-b4", apiBoard.getLan());
 
     workingPosition = StaticPositionBridge.toStaticPosition(apiBoard.getBitboardPosition());
     final MoveSpecification move15B = new MoveSpecification(A4, B3);
@@ -366,7 +366,7 @@ class TestPerformMoveMainlyStaticPositionState implements EnumConstants {
     assertEquals(staticPosition17B, StaticPositionBridge.toStaticPosition(apiBoard.getBitboardPosition()));
     assertEquals(WHITE, apiBoard.getHavingMove());
     assertEquals("a1=Q", apiBoard.getSan());
-    assertEquals("a2a1=Q", apiBoard.getLan());
+    assertEquals("a2-a1=Q", apiBoard.getLan());
 
     workingPosition = StaticPositionBridge.toStaticPosition(apiBoard.getBitboardPosition());
     final MoveSpecification move18W = new MoveSpecification(F3, G5);
@@ -376,7 +376,7 @@ class TestPerformMoveMainlyStaticPositionState implements EnumConstants {
     assertEquals(staticPosition18W, StaticPositionBridge.toStaticPosition(apiBoard.getBitboardPosition()));
     assertEquals(BLACK, apiBoard.getHavingMove());
     assertEquals("Ng5", apiBoard.getSan());
-    assertEquals("Nf3g5", apiBoard.getLan());
+    assertEquals("Nf3-g5", apiBoard.getLan());
 
     workingPosition = StaticPositionBridge.toStaticPosition(apiBoard.getBitboardPosition());
     final MoveSpecification move18B = new MoveSpecification(H8, G8);
@@ -386,7 +386,7 @@ class TestPerformMoveMainlyStaticPositionState implements EnumConstants {
     assertEquals(staticPosition18B, StaticPositionBridge.toStaticPosition(apiBoard.getBitboardPosition()));
     assertEquals(WHITE, apiBoard.getHavingMove());
     assertEquals("Rhg8", apiBoard.getSan());
-    assertEquals("Rh8g8", apiBoard.getLan());
+    assertEquals("Rh8-g8", apiBoard.getLan());
 
     workingPosition = StaticPositionBridge.toStaticPosition(apiBoard.getBitboardPosition());
     final MoveSpecification move19W = new MoveSpecification(H7, G8, PromotionPieceType.KNIGHT);
@@ -406,7 +406,7 @@ class TestPerformMoveMainlyStaticPositionState implements EnumConstants {
     assertEquals(staticPosition19B, StaticPositionBridge.toStaticPosition(apiBoard.getBitboardPosition()));
     assertEquals(WHITE, apiBoard.getHavingMove());
     assertEquals("Na5", apiBoard.getSan());
-    assertEquals("Nc6a5", apiBoard.getLan());
+    assertEquals("Nc6-a5", apiBoard.getLan());
 
     workingPosition = StaticPositionBridge.toStaticPosition(apiBoard.getBitboardPosition());
     final MoveSpecification move20W = new MoveSpecification(G5, F7);
@@ -456,7 +456,7 @@ class TestPerformMoveMainlyStaticPositionState implements EnumConstants {
     assertEquals(staticPosition22W, StaticPositionBridge.toStaticPosition(apiBoard.getBitboardPosition()));
     assertEquals(BLACK, apiBoard.getHavingMove());
     assertEquals("f3", apiBoard.getSan());
-    assertEquals("f2f3", apiBoard.getLan());
+    assertEquals("f2-f3", apiBoard.getLan());
 
     workingPosition = StaticPositionBridge.toStaticPosition(apiBoard.getBitboardPosition());
     final MoveSpecification move22B = new MoveSpecification(A1, D1);
@@ -576,7 +576,7 @@ class TestPerformMoveMainlyStaticPositionState implements EnumConstants {
     assertEquals(staticPosition28W, StaticPositionBridge.toStaticPosition(apiBoard.getBitboardPosition()));
     assertEquals(BLACK, apiBoard.getHavingMove());
     assertEquals("Nd5", apiBoard.getSan());
-    assertEquals("Nc3d5", apiBoard.getLan());
+    assertEquals("Nc3-d5", apiBoard.getLan());
 
     workingPosition = StaticPositionBridge.toStaticPosition(apiBoard.getBitboardPosition());
     final MoveSpecification move28B = new MoveSpecification(E5, E4);
@@ -626,7 +626,7 @@ class TestPerformMoveMainlyStaticPositionState implements EnumConstants {
     assertEquals(staticPosition30B, StaticPositionBridge.toStaticPosition(apiBoard.getBitboardPosition()));
     assertEquals(WHITE, apiBoard.getHavingMove());
     assertEquals("b5", apiBoard.getSan());
-    assertEquals("b7b5", apiBoard.getLan());
+    assertEquals("b7-b5", apiBoard.getLan());
 
     workingPosition = StaticPositionBridge.toStaticPosition(apiBoard.getBitboardPosition());
     final MoveSpecification move31W = new MoveSpecification(C2, C4);
@@ -636,7 +636,7 @@ class TestPerformMoveMainlyStaticPositionState implements EnumConstants {
     assertEquals(staticPosition31W, StaticPositionBridge.toStaticPosition(apiBoard.getBitboardPosition()));
     assertEquals(BLACK, apiBoard.getHavingMove());
     assertEquals("c4", apiBoard.getSan());
-    assertEquals("c2c4", apiBoard.getLan());
+    assertEquals("c2-c4", apiBoard.getLan());
 
     workingPosition = StaticPositionBridge.toStaticPosition(apiBoard.getBitboardPosition());
     final MoveSpecification move31B = new MoveSpecification(B5, C4);
@@ -656,7 +656,7 @@ class TestPerformMoveMainlyStaticPositionState implements EnumConstants {
     assertEquals(staticPosition32W, StaticPositionBridge.toStaticPosition(apiBoard.getBitboardPosition()));
     assertEquals(BLACK, apiBoard.getHavingMove());
     assertEquals("f4", apiBoard.getSan());
-    assertEquals("f3f4", apiBoard.getLan());
+    assertEquals("f3-f4", apiBoard.getLan());
 
     workingPosition = StaticPositionBridge.toStaticPosition(apiBoard.getBitboardPosition());
     final MoveSpecification move32B = new MoveSpecification(B8, C7);
@@ -666,7 +666,7 @@ class TestPerformMoveMainlyStaticPositionState implements EnumConstants {
     assertEquals(staticPosition32B, StaticPositionBridge.toStaticPosition(apiBoard.getBitboardPosition()));
     assertEquals(WHITE, apiBoard.getHavingMove());
     assertEquals("Kc7", apiBoard.getSan());
-    assertEquals("Kb8c7", apiBoard.getLan());
+    assertEquals("Kb8-c7", apiBoard.getLan());
 
     workingPosition = StaticPositionBridge.toStaticPosition(apiBoard.getBitboardPosition());
     final MoveSpecification move33W = new MoveSpecification(D5, C4);
@@ -686,7 +686,7 @@ class TestPerformMoveMainlyStaticPositionState implements EnumConstants {
     assertEquals(staticPosition33B, StaticPositionBridge.toStaticPosition(apiBoard.getBitboardPosition()));
     assertEquals(WHITE, apiBoard.getHavingMove());
     assertEquals("Kd6", apiBoard.getSan());
-    assertEquals("Kc7d6", apiBoard.getLan());
+    assertEquals("Kc7-d6", apiBoard.getLan());
 
     workingPosition = StaticPositionBridge.toStaticPosition(apiBoard.getBitboardPosition());
     final MoveSpecification move34W = new MoveSpecification(C4, C3);
@@ -696,7 +696,7 @@ class TestPerformMoveMainlyStaticPositionState implements EnumConstants {
     assertEquals(staticPosition34W, StaticPositionBridge.toStaticPosition(apiBoard.getBitboardPosition()));
     assertEquals(BLACK, apiBoard.getHavingMove());
     assertEquals("Qc3", apiBoard.getSan());
-    assertEquals("Qc4c3", apiBoard.getLan());
+    assertEquals("Qc4-c3", apiBoard.getLan());
 
     workingPosition = StaticPositionBridge.toStaticPosition(apiBoard.getBitboardPosition());
     final MoveSpecification move34B = new MoveSpecification(D6, E6);
@@ -706,7 +706,7 @@ class TestPerformMoveMainlyStaticPositionState implements EnumConstants {
     assertEquals(staticPosition34B, StaticPositionBridge.toStaticPosition(apiBoard.getBitboardPosition()));
     assertEquals(WHITE, apiBoard.getHavingMove());
     assertEquals("Ke6", apiBoard.getSan());
-    assertEquals("Kd6e6", apiBoard.getLan());
+    assertEquals("Kd6-e6", apiBoard.getLan());
 
     workingPosition = StaticPositionBridge.toStaticPosition(apiBoard.getBitboardPosition());
     final MoveSpecification move35W = new MoveSpecification(C3, C2);
@@ -716,7 +716,7 @@ class TestPerformMoveMainlyStaticPositionState implements EnumConstants {
     assertEquals(staticPosition35W, StaticPositionBridge.toStaticPosition(apiBoard.getBitboardPosition()));
     assertEquals(BLACK, apiBoard.getHavingMove());
     assertEquals("Qc2", apiBoard.getSan());
-    assertEquals("Qc3c2", apiBoard.getLan());
+    assertEquals("Qc3-c2", apiBoard.getLan());
 
     workingPosition = StaticPositionBridge.toStaticPosition(apiBoard.getBitboardPosition());
     final MoveSpecification move35B = new MoveSpecification(E6, F6);
@@ -726,7 +726,7 @@ class TestPerformMoveMainlyStaticPositionState implements EnumConstants {
     assertEquals(staticPosition35B, StaticPositionBridge.toStaticPosition(apiBoard.getBitboardPosition()));
     assertEquals(WHITE, apiBoard.getHavingMove());
     assertEquals("Kf6", apiBoard.getSan());
-    assertEquals("Ke6f6", apiBoard.getLan());
+    assertEquals("Ke6-f6", apiBoard.getLan());
 
     workingPosition = StaticPositionBridge.toStaticPosition(apiBoard.getBitboardPosition());
     final MoveSpecification move36W = new MoveSpecification(F4, F5);
@@ -736,7 +736,7 @@ class TestPerformMoveMainlyStaticPositionState implements EnumConstants {
     assertEquals(staticPosition36W, StaticPositionBridge.toStaticPosition(apiBoard.getBitboardPosition()));
     assertEquals(BLACK, apiBoard.getHavingMove());
     assertEquals("f5", apiBoard.getSan());
-    assertEquals("f4f5", apiBoard.getLan());
+    assertEquals("f4-f5", apiBoard.getLan());
 
     workingPosition = StaticPositionBridge.toStaticPosition(apiBoard.getBitboardPosition());
     final MoveSpecification move36B = new MoveSpecification(F6, G5);
@@ -746,7 +746,7 @@ class TestPerformMoveMainlyStaticPositionState implements EnumConstants {
     assertEquals(staticPosition36B, StaticPositionBridge.toStaticPosition(apiBoard.getBitboardPosition()));
     assertEquals(WHITE, apiBoard.getHavingMove());
     assertEquals("Kg5", apiBoard.getSan());
-    assertEquals("Kf6g5", apiBoard.getLan());
+    assertEquals("Kf6-g5", apiBoard.getLan());
 
     workingPosition = StaticPositionBridge.toStaticPosition(apiBoard.getBitboardPosition());
     final MoveSpecification move37W = new MoveSpecification(C2, C3);
@@ -756,7 +756,7 @@ class TestPerformMoveMainlyStaticPositionState implements EnumConstants {
     assertEquals(staticPosition37W, StaticPositionBridge.toStaticPosition(apiBoard.getBitboardPosition()));
     assertEquals(BLACK, apiBoard.getHavingMove());
     assertEquals("Qc3", apiBoard.getSan());
-    assertEquals("Qc2c3", apiBoard.getLan());
+    assertEquals("Qc2-c3", apiBoard.getLan());
 
     workingPosition = StaticPositionBridge.toStaticPosition(apiBoard.getBitboardPosition());
     final MoveSpecification move37B = new MoveSpecification(G5, F5);
@@ -786,7 +786,7 @@ class TestPerformMoveMainlyStaticPositionState implements EnumConstants {
     assertEquals(staticPosition38B, StaticPositionBridge.toStaticPosition(apiBoard.getBitboardPosition()));
     assertEquals(WHITE, apiBoard.getHavingMove());
     assertEquals("Kf4", apiBoard.getSan());
-    assertEquals("Kf5f4", apiBoard.getLan());
+    assertEquals("Kf5-f4", apiBoard.getLan());
 
     workingPosition = StaticPositionBridge.toStaticPosition(apiBoard.getBitboardPosition());
     final MoveSpecification move39W = new MoveSpecification(C5, F5);
@@ -796,7 +796,7 @@ class TestPerformMoveMainlyStaticPositionState implements EnumConstants {
     assertEquals(staticPosition39W, StaticPositionBridge.toStaticPosition(apiBoard.getBitboardPosition()));
     assertEquals(BLACK, apiBoard.getHavingMove());
     assertEquals("Qf5+", apiBoard.getSan());
-    assertEquals("Qc5f5+", apiBoard.getLan());
+    assertEquals("Qc5-f5+", apiBoard.getLan());
 
     workingPosition = StaticPositionBridge.toStaticPosition(apiBoard.getBitboardPosition());
     final MoveSpecification move39B = new MoveSpecification(F4, F5);
