@@ -40,8 +40,6 @@ public abstract class CommonTestUtility implements EnumConstants {
     if (isIncludeHistory) {
       assertEquals(boardFirst.getInitialFenFullMoveNumber(), boardSecond.getInitialFenFullMoveNumber());
     }
-    // in super
-    // assertEquals(boardFirst.getFullMoveNumberForNextHalfMove(), boardSecond.getFullMoveNumberForNextHalfMove());
 
     if (isIncludeHistory) {
       assertEquals(boardFirst.getRepetitionCount(), boardSecond.getRepetitionCount());
@@ -108,7 +106,8 @@ public abstract class CommonTestUtility implements EnumConstants {
       assertEquals(boardFirst.getLastMove(), boardSecond.getLastMove());
     }
 
-    assertEquals(StaticPositionBridge.toStaticPosition(boardFirst.getBitboardPosition()), StaticPositionBridge.toStaticPosition(boardSecond.getBitboardPosition()));
+    assertEquals(StaticPositionBridge.toStaticPosition(boardFirst.getBitboardPosition()),
+        StaticPositionBridge.toStaticPosition(boardSecond.getBitboardPosition()));
     if (!boardFirst.isFirstMove() && !boardSecond.isFirstMove()) {
       assertEquals(boardFirst.getBitboardPositionBeforeLastMove(), boardSecond.getBitboardPositionBeforeLastMove());
     }
@@ -188,7 +187,8 @@ public abstract class CommonTestUtility implements EnumConstants {
       assertEquals(boardFirst.getLastMove(), boardSecond.getLastMove());
     }
 
-    assertEquals(StaticPositionBridge.toStaticPosition(boardFirst.getBitboardPosition()), StaticPositionBridge.toStaticPosition(boardSecond.getBitboardPosition()));
+    assertEquals(StaticPositionBridge.toStaticPosition(boardFirst.getBitboardPosition()),
+        StaticPositionBridge.toStaticPosition(boardSecond.getBitboardPosition()));
     if (!boardFirst.isFirstMove() && !boardSecond.isFirstMove()) {
       assertEquals(boardFirst.getBitboardPositionBeforeLastMove(), boardSecond.getBitboardPositionBeforeLastMove());
     }

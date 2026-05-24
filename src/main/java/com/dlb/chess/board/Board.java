@@ -78,9 +78,9 @@ import com.google.common.collect.ImmutableList;
  * move-pipelines validate the candidate against the current legal-move set; an invalid move throws (see
  * {@link com.dlb.chess.exceptions.InvalidMoveException} from the {@code MoveSpecification} pipeline,
  * {@code SanValidationException} from the SAN pipeline). Once the game has reached any FIDE-automatic termination
- * (checkmate, stalemate, mutual insufficient material, quick-unwinnability dead position, fivefold repetition,
- * 75-move rule), neither pipeline accepts further moves. The package-level Javadoc on {@link com.dlb.chess.board}
- * documents the strict-game invariant in detail.
+ * (checkmate, stalemate, mutual insufficient material, quick-unwinnability dead position, fivefold repetition, 75-move
+ * rule), neither pipeline accepts further moves. The package-level Javadoc on {@link com.dlb.chess.board} documents the
+ * strict-game invariant in detail.
  *
  * <h2>Querying the game</h2>
  *
@@ -124,9 +124,9 @@ public class Board {
   private final List<CastlingRightLoss> blackQueenSideLossList;
 
   /**
-   * Constructor flag: auto-detect {@link GameStatus#DEAD_POSITION_UNWINNABLE_QUICK} once per ply. {@code true} is
-   * the FIDE-compliant default. {@code false} skips the expensive analyzer-driven check; mechanical
-   * insufficient-material detection is unaffected.
+   * Constructor flag: auto-detect {@link GameStatus#DEAD_POSITION_UNWINNABLE_QUICK} once per ply. {@code true} is the
+   * FIDE-compliant default. {@code false} skips the expensive analyzer-driven check; mechanical insufficient-material
+   * detection is unaffected.
    *
    * <p>
    * {@code transient} so reflective equality treats boards with different detection flags as equal — the flag governs
@@ -180,7 +180,7 @@ public class Board {
     this.initialFen = initialFenUse;
 
     final BitboardPosition initialBitboardPosition = initialFenUse.bitboardPosition();
-    final long initialEnPassantBit = initialEnPassantCaptureTargetSquare == Square.NONE ? 0L
+    final var initialEnPassantBit = initialEnPassantCaptureTargetSquare == Square.NONE ? 0L
         : 1L << initialEnPassantCaptureTargetSquare.ordinal();
 
     // Normalize: keep the target square on DynamicPosition only when an opposing pawn can actually capture there.
@@ -297,7 +297,7 @@ public class Board {
    */
   public Board copyCurrentPositionWithoutHistory(boolean detectDeadPositionUnwinnable) {
     final Fen currentPosition = new Fen(getFen(), getBitboardPosition(), getHavingMove(), getCastlingRightWhite(),
-        getCastlingRightBlack(), getEnPassantCaptureTargetSquare(), 0, getFullMoveNumberForNextHalfMove());
+        getCastlingRightBlack(), getEnPassantCaptureTargetSquare(), 0, getFullMoveNumber());
     return new Board(currentPosition, detectDeadPositionUnwinnable);
   }
 
@@ -429,12 +429,12 @@ public class Board {
     // now changing board class state, so performing the move!
     this.performedLegalMoveList.add(moveToPerform);
 
-    final long afterEnPassantBit = afterEnPassantCaptureTargetSquare == Square.NONE ? 0L
+    final var afterEnPassantBit = afterEnPassantCaptureTargetSquare == Square.NONE ? 0L
         : 1L << afterEnPassantCaptureTargetSquare.ordinal();
 
     // now we have a depencency on instruction execution: the move must be performed before calling the legal moves
-    final ImmutableList<LegalMove> legalMovesAfterMove = BitboardLegalMoveFactory.calculateLegalMoves(
-        afterBitboardPosition, afterHavingMove, afterCastlingRightHavingMove, afterEnPassantBit);
+    final ImmutableList<LegalMove> legalMovesAfterMove = BitboardLegalMoveFactory
+        .calculateLegalMoves(afterBitboardPosition, afterHavingMove, afterCastlingRightHavingMove, afterEnPassantBit);
     this.legalMoveListPerPly.add(legalMovesAfterMove);
 
     final var isCheck = afterBitboardPosition.isInCheck(afterHavingMove);
@@ -634,22 +634,22 @@ public class Board {
     return initialFen.fullMoveNumber();
   }
 
-  public int getFullMoveNumber() {
-    // because I implemented the full move number calculation for the next half move to be played, I now calculate the
-    // full move number using this existing method. nicer would be to implement full move counter calculation and then
-    // derive the full move counter for the next half move from it.
-    final var fullMoveNumberForNextHalfMove = calculateFullMoveNumberForNextHalfMove(isFirstMove(),
-        initialFen.fullMoveNumber(), initialFen.havingMove(), getHavingMove(), getPerformedHalfMoveCount());
+  public int getLastPlayedFullMoveNumber() {
+    if (isFirstMove()) {
+      throw new IllegalStateException("There is no last move");
+    }
+    final var fullMoveNumber = calculateFullMoveNumber(isFirstMove(), initialFen.fullMoveNumber(),
+        initialFen.havingMove(), getHavingMove(), getPerformedHalfMoveCount());
 
     return switch (getHavingMove()) {
-      case WHITE -> fullMoveNumberForNextHalfMove - 1;
-      case BLACK -> fullMoveNumberForNextHalfMove;
+      case WHITE -> fullMoveNumber - 1;
+      case BLACK -> fullMoveNumber;
       case NONE -> throw new IllegalArgumentException();
       default -> throw new IllegalArgumentException();
     };
   }
 
-  private static int calculateFullMoveNumberForNextHalfMove(boolean isFirstMove, int initialFenFullMoveNumber,
+  private static int calculateFullMoveNumber(boolean isFirstMove, int initialFenFullMoveNumber,
       Side initialFenHavingMove, Side havingMove, int halfMoveCount) {
     if (isFirstMove) {
       return initialFenFullMoveNumber;
@@ -745,9 +745,9 @@ public class Board {
 
   /**
    * Current position as a {@link BitboardPosition}. Carried directly on every {@link DynamicPosition} in
-   * {@link #dynamicPositionList} (appended on every {@link #move}, popped on every {@link #unmove}). O(1) per call.
-   * The bitboard is the single source of truth for piece placement on the board; the StaticPosition reference layer
-   * lives in {@code src/test/} as the permanent differential-test oracle.
+   * {@link #dynamicPositionList} (appended on every {@link #move}, popped on every {@link #unmove}). O(1) per call. The
+   * bitboard is the single source of truth for piece placement on the board; the StaticPosition reference layer lives
+   * in {@code src/test/} as the permanent differential-test oracle.
    */
   public BitboardPosition getBitboardPosition() {
     return Nulls.getLast(dynamicPositionList).bitboardPosition();
@@ -906,18 +906,9 @@ public class Board {
     return getDynamicPosition().castlingRightBlack();
   }
 
-  // ===== Methods previously inherited as `default` from the (now-removed) ChessBoard interface =====
-
-  public int getFullMoveNumberForNextHalfMove() {
-    if (isFirstMove()) {
-      return getInitialFenFullMoveNumber();
-    }
-    return switch (getHavingMove()) {
-      case BLACK -> getFullMoveNumber();
-      case WHITE -> getFullMoveNumber() + 1;
-      case NONE -> throw new IllegalArgumentException();
-      default -> throw new IllegalArgumentException();
-    };
+  public int getFullMoveNumber() {
+    return calculateFullMoveNumber(isFirstMove(), initialFen.fullMoveNumber(), initialFen.havingMove(), getHavingMove(),
+        getPerformedHalfMoveCount());
   }
 
   public boolean canClaimFiftyMoveRule() {
@@ -1054,7 +1045,7 @@ public class Board {
     final var halfMoveCount = getPerformedHalfMoveCount();
     final var index = halfMoveCount - 1;
     final var halfMoveClock = getHalfMoveClock();
-    final var fullMoveNumber = getFullMoveNumber();
+    final var fullMoveNumber = getLastPlayedFullMoveNumber();
     final String fen = getFen();
     final var isCapture = isCapture();
     final var countRepetition = getRepetitionCount();

@@ -24,7 +24,7 @@ abstract class ThreefoldClaimAheadUtility {
       for (final LegalMove legalMoveCheckAhead : board.getLegalMoves()) {
         board.move(legalMoveCheckAhead.moveSpecification());
         if (board.isThreefoldRepetition()) {
-          resultList.add(new ClaimAhead(legalMoveCheckAhead, board.getFullMoveNumber(), board.getSan()));
+          resultList.add(new ClaimAhead(legalMoveCheckAhead, board.getLastPlayedFullMoveNumber(), board.getSan()));
         }
         board.unmove();
       }
