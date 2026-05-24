@@ -423,19 +423,6 @@ public class FenParserAdvanced implements EnumConstants {
       throw new FenAdvancedValidationException(FenAdvancedValidationProblem.INVALID_HALF_MOVE_CLOCK_RANGE,
           "the half-move clock part of \"" + halfMoveClockStr + "\" is not an integer value");
     }
-
-    // Under the strict-game invariant, a position with halfmove clock > 150 represents a game
-    // that has continued past the FIDE 75-move rule (which triggers automatically at 150
-    // halfmoves). Such a position cannot be reached through legal play and is rejected at FEN
-    // import. A clock of exactly 150 is the legal terminal moment and is accepted.
-    if (halfMoveClock > ChessConstants.SEVENTY_FIVE_MOVE_RULE_HALF_MOVE_CLOCK_THRESHOLD) {
-      throw new FenAdvancedValidationException(
-          FenAdvancedValidationProblem.INVALID_HALF_MOVE_CLOCK_BEYOND_SEVENTY_FIVE_MOVE_RULE,
-          "the half-move clock of " + halfMoveClock + " is beyond the 75-move rule threshold of "
-              + ChessConstants.SEVENTY_FIVE_MOVE_RULE_HALF_MOVE_CLOCK_THRESHOLD
-              + "; the game would have ended automatically");
-    }
-
     return halfMoveClock;
   }
 

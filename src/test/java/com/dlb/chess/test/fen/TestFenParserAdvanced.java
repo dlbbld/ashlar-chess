@@ -271,12 +271,13 @@ class TestFenParserAdvanced implements EnumConstants {
     checkParseFenException("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - " + aboveMaxValue + " 100",
         FenAdvancedValidationProblem.INVALID_HALF_MOVE_CLOCK_RANGE);
 
-    // max value reached: under the strict-game invariant the half-move clock cannot exceed the
-    // 75-move rule threshold (150). At exactly 150 the position represents the terminal moment
-    // and is still a valid FEN; values above 150 are rejected by the strict-pipeline check (see
-    // testParseFenExceptionHalfMoveClockBeyondSeventyFiveMoveRule below).
+    // Halfmove clock at and above the 75-move rule threshold (150) is accepted — the 75-move rule
+    // is surfaced as a queryable predicate, not enforced at FEN import, so a position with
+    // halfmove clock above 150 is a legitimate FEN.
     checkParseFenSuccess("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - "
         + ChessConstants.SEVENTY_FIVE_MOVE_RULE_HALF_MOVE_CLOCK_THRESHOLD + " 76");
+    checkParseFenSuccess("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - "
+        + (ChessConstants.SEVENTY_FIVE_MOVE_RULE_HALF_MOVE_CLOCK_THRESHOLD + 1) + " 77");
 
     // fullMoveNumber
 
@@ -289,22 +290,6 @@ class TestFenParserAdvanced implements EnumConstants {
         "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 " + (FenConstants.MAX_FULL_MOVE_NUMBER + 1),
         FenAdvancedValidationProblem.INVALID_FULL_MOVE_NUMBER_TOO_BIG_ABSOLUT);
 
-  }
-
-  @SuppressWarnings("static-method")
-  @Test
-  void testParseFenExceptionHalfMoveClockBeyondSeventyFiveMoveRule() {
-    // halfmove clock exactly at the 75-move threshold (150) is the terminal moment and remains
-    // a valid FEN.
-    checkParseFenSuccess("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - "
-        + ChessConstants.SEVENTY_FIVE_MOVE_RULE_HALF_MOVE_CLOCK_THRESHOLD + " 76");
-
-    // halfmove clock above the threshold represents a game continued past automatic termination
-    // — rejected by FEN import under the strict-game invariant.
-    checkParseFenException(
-        "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - "
-            + (ChessConstants.SEVENTY_FIVE_MOVE_RULE_HALF_MOVE_CLOCK_THRESHOLD + 1) + " 77",
-        FenAdvancedValidationProblem.INVALID_HALF_MOVE_CLOCK_BEYOND_SEVENTY_FIVE_MOVE_RULE);
   }
 
   @SuppressWarnings("static-method")
