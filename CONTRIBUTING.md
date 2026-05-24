@@ -45,6 +45,8 @@ mvn test -Pfull
 - Test fixtures: `src/test/resources/pgn/<category>/`
 - Test code: `src/test/java/com/dlb/chess/test/<package>/`
 
+For concrete procedures — adding a PGN test fixture, running test subsets, cutting a release — see **[workflows.md](workflows.md)**.
+
 Open issues / pull requests against the active development branch (currently `lenient_san_validation`). The `main` branch tracks the most recent shipped release.
 
 ## Active and planned work

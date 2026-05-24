@@ -53,6 +53,9 @@ public enum PgnTest {
 
   PARSER_FROM_FEN(false, "parserFenMechanics/"),
 
+  BASIC_FROM_FEN_NO_PROGRESS_BLACK(false, "basic/fromFenNoProgress/black"),
+  BASIC_FROM_FEN_NO_PROGRESS_WHITE(false, "basic/fromFenNoProgress/white"),
+
   // skipped when testing against scalachess for cannot manage so long games in
   // testing approach
   MAX_MOVES(false, "edgeCases/max/maxMoves"),
@@ -78,11 +81,15 @@ public enum PgnTest {
   VARIOUS(false, "realGames/various"),
   WCC2021(false, "review/wcc2021"),
   FIVEFOLD_CORRECT(false, "realGames/fivefold/correct"),
+  FIVEFOLD_BEYOND(false, "realGames/fivefold/beyond"),
   FIFTY_GENERAL(false, "realGames/fifty/general"),
   FIFTY_PATTERN(false, "realGames/fifty/pattern"),
 
   SEVENTY_FIVE_CORRECT(false, "realGames/seventyFive/correct"),
+  SEVENTY_FIVE_BEYOND(false, "realGames/seventyFive/beyond"),
   EARLY_DRAW(false, "realGames/earlyDraw"),
+  LONG(false, "long"),
+  LONGEST_MATE(false, "longestMate"),
   WIKIPEDIA_THREEFOLD(false, "review/wikipedia/threefold"),
   WIKIPEDIA_FIFTY_MOVE(false, "review/wikipedia/fiftyMove"),
 
