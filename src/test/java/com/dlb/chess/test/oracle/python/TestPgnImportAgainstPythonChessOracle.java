@@ -141,6 +141,11 @@ class TestPgnImportAgainstPythonChessOracle {
                 () -> bucket + " / " + record.pgn() + " ply " + plyLabel + " — isCheckmate mismatch");
             assertEquals(expected.isStalemate(), board.isStalemate(),
                 () -> bucket + " / " + record.pgn() + " ply " + plyLabel + " — isStalemate mismatch");
+            // Slice 7 — clean-chess's regenerated canonical SAN (board.getSan()) vs python-chess's regenerated
+            // canonical SAN (board.san(move) before push, recorded as expected.san()). Comparing canonical-vs-
+            // canonical sidesteps stylistic differences in the source PGN's input SAN.
+            assertEquals(expected.san(), board.getSan(),
+                () -> bucket + " / " + record.pgn() + " ply " + plyLabel + " — canonical SAN mismatch");
             assertEquals(expected.isInsufficientMaterial(), board.isInsufficientMaterial(),
                 () -> bucket + " / " + record.pgn() + " ply " + plyLabel + " — isInsufficientMaterial mismatch");
             assertEquals(expected.hasInsufficientMaterialWhite(), board.isInsufficientMaterial(Side.WHITE),
