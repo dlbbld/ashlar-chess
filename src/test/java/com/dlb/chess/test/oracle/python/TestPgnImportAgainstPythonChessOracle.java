@@ -28,16 +28,16 @@ import com.dlb.chess.test.pgntest.enums.PgnTest;
  * <p>
  * For each covered bucket, reads the bucket's committed JSONL oracle (one record per PGN) under
  * {@code src/test/resources/oracle/python-chess/<folderPart>.jsonl}, produced by
- * {@code src/test/python/generate_pgn_import_oracle.py}. For each fixture: parses the PGN with
- * {@link StrictPgnParser}, replays the half-moves on a {@link Board} starting from the parsed FEN, and asserts at every
- * ply that {@code board.getFen()}, {@code halfmoveClock}, {@code fullmoveNumber}, {@code isCheck}, {@code isCheckmate}
- * and {@code isStalemate} match python-chess's recorded values.
+ * {@code src/test/python/generate_pgn_import_oracle.py}. For each fixture: parses the PGN with {@link StrictPgnParser},
+ * replays the half-moves on a {@link Board} starting from the parsed FEN, and asserts at every ply that
+ * {@code board.getFen()}, {@code halfmoveClock}, {@code fullmoveNumber}, {@code isCheck}, {@code isCheckmate} and
+ * {@code isStalemate} match python-chess's recorded values.
  *
  * <p>
  * The oracle is regenerated only when the PGN fixtures or the recorded fields change; {@code mvn test} does not invoke
  * Python. The generator script is the schema source of truth — see the module docstring of
- * {@code src/test/python/generate_pgn_import_oracle.py} for the per-record JSON shape, the
- * reproducibility install command, and the version of python-chess that produced the committed oracle.
+ * {@code src/test/python/generate_pgn_import_oracle.py} for the per-record JSON shape, the reproducibility install
+ * command, and the version of python-chess that produced the committed oracle.
  *
  * <p>
  * FEN convention: the oracle is emitted with python-chess's {@code board.fen(en_passant="fen")} option so that the
@@ -58,37 +58,32 @@ class TestPgnImportAgainstPythonChessOracle {
   private static final Path ORACLE_ROOT = Nulls.pathResolve(ConfigurationTestConstants.PROJECT_ROOT_FOLDER_PATH,
       "src/test/resources/oracle/python-chess");
 
-  private static final List<PgnTest> BUCKETS = List.of(PgnTest.PARSER_FROM_FEN,
+  private static final List<PgnTest> BUCKETS = Nulls.listOf(PgnTest.PARSER_FROM_FEN,
       // basic — moving pieces / capture / en passant / promotion
-      PgnTest.BASIC_MOVING_PIECE_WHITE, PgnTest.BASIC_MOVING_PIECE_BLACK,
-      PgnTest.BASIC_CAPTURE_WHITE, PgnTest.BASIC_CAPTURE_BLACK, PgnTest.BASIC_CAPTURE_LAST_MOVE,
-      PgnTest.BASIC_EN_PASSANT_CAPTURE_WHITE, PgnTest.BASIC_EN_PASSANT_CAPTURE_BLACK,
-      PgnTest.BASIC_PROMOTION_PIECE_WHITE, PgnTest.BASIC_PROMOTION_PIECE_BLACK,
+      PgnTest.BASIC_MOVING_PIECE_WHITE, PgnTest.BASIC_MOVING_PIECE_BLACK, PgnTest.BASIC_CAPTURE_WHITE,
+      PgnTest.BASIC_CAPTURE_BLACK, PgnTest.BASIC_CAPTURE_LAST_MOVE, PgnTest.BASIC_EN_PASSANT_CAPTURE_WHITE,
+      PgnTest.BASIC_EN_PASSANT_CAPTURE_BLACK, PgnTest.BASIC_PROMOTION_PIECE_WHITE, PgnTest.BASIC_PROMOTION_PIECE_BLACK,
       PgnTest.BASIC_PROMOTION_SQUARE_WHITE, PgnTest.BASIC_PROMOTION_SQUARE_BLACK,
       // basic — check / checkmate / double check / stalemate
-      PgnTest.BASIC_CHECK_WHITE, PgnTest.BASIC_CHECK_BLACK,
-      PgnTest.BASIC_CHECKMATE_WHITE, PgnTest.BASIC_CHECKMATE_BLACK,
-      PgnTest.BASIC_CHECKMATE_VARIOUS_WHITE, PgnTest.BASIC_CHECKMATE_VARIOUS_BLACK,
-      PgnTest.BASIC_DOUBLE_CHECK_WHITE, PgnTest.BASIC_DOUBLE_CHECK_BLACK,
-      PgnTest.BASIC_CHECKMATE_DOUBLE_CHECK_WHITE, PgnTest.BASIC_CHECKMATE_DOUBLE_CHECK_BLACK,
-      PgnTest.BASIC_STALEMATE,
+      PgnTest.BASIC_CHECK_WHITE, PgnTest.BASIC_CHECK_BLACK, PgnTest.BASIC_CHECKMATE_WHITE,
+      PgnTest.BASIC_CHECKMATE_BLACK, PgnTest.BASIC_CHECKMATE_VARIOUS_WHITE, PgnTest.BASIC_CHECKMATE_VARIOUS_BLACK,
+      PgnTest.BASIC_DOUBLE_CHECK_WHITE, PgnTest.BASIC_DOUBLE_CHECK_BLACK, PgnTest.BASIC_CHECKMATE_DOUBLE_CHECK_WHITE,
+      PgnTest.BASIC_CHECKMATE_DOUBLE_CHECK_BLACK, PgnTest.BASIC_STALEMATE,
       // basic — insufficient material / repetition / fifty / seventy-five
       PgnTest.BASIC_INSUFFICIENT_MATERIAL_BOTH, PgnTest.BASIC_INSUFFICIENT_MATERIAL_ONLY_WHITE,
-      PgnTest.BASIC_INSUFFICIENT_MATERIAL_ONLY_BLACK, PgnTest.BASIC_INSUFFICIENT_MATERIAL_NONE,
-      PgnTest.BASIC_THREEFOLD, PgnTest.BASIC_FIFTY, PgnTest.BASIC_FIVEFOLD, PgnTest.BASIC_SEVENTY_FIVE,
-      PgnTest.BASIC_INTERVENING, PgnTest.BASIC_DOUBLE_DRAW,
+      PgnTest.BASIC_INSUFFICIENT_MATERIAL_ONLY_BLACK, PgnTest.BASIC_INSUFFICIENT_MATERIAL_NONE, PgnTest.BASIC_THREEFOLD,
+      PgnTest.BASIC_FIFTY, PgnTest.BASIC_FIVEFOLD, PgnTest.BASIC_SEVENTY_FIVE, PgnTest.BASIC_INTERVENING,
+      PgnTest.BASIC_DOUBLE_DRAW,
       // basic — castling / forced / report
-      PgnTest.BASIC_CASTLING_WHITE, PgnTest.BASIC_CASTLING_BLACK,
-      PgnTest.BASIC_CASTLING_SPECIAL_WHITE, PgnTest.BASIC_CASTLING_SPECIAL_BLACK,
-      PgnTest.BASIC_FORCED,
-      PgnTest.BASIC_REPORT_NO_PROGRESS_SEQUENCES_WHITE, PgnTest.BASIC_REPORT_NO_PROGRESS_SEQUENCES_BLACK,
-      PgnTest.BASIC_REPORT_REPETITION, PgnTest.BASIC_REPORT_MAX_NO_PROGRESS,
+      PgnTest.BASIC_CASTLING_WHITE, PgnTest.BASIC_CASTLING_BLACK, PgnTest.BASIC_CASTLING_SPECIAL_WHITE,
+      PgnTest.BASIC_CASTLING_SPECIAL_BLACK, PgnTest.BASIC_FORCED, PgnTest.BASIC_REPORT_NO_PROGRESS_SEQUENCES_WHITE,
+      PgnTest.BASIC_REPORT_NO_PROGRESS_SEQUENCES_BLACK, PgnTest.BASIC_REPORT_REPETITION,
+      PgnTest.BASIC_REPORT_MAX_NO_PROGRESS,
       // real games / review
-      PgnTest.VARIOUS, PgnTest.WCC2021,
-      PgnTest.FIVEFOLD_CORRECT, PgnTest.FIFTY_GENERAL, PgnTest.FIFTY_PATTERN,
-      PgnTest.SEVENTY_FIVE_CORRECT, PgnTest.EARLY_DRAW,
-      PgnTest.WIKIPEDIA_THREEFOLD, PgnTest.WIKIPEDIA_FIFTY_MOVE);
+      PgnTest.VARIOUS, PgnTest.WCC2021, PgnTest.FIVEFOLD_CORRECT, PgnTest.FIFTY_GENERAL, PgnTest.FIFTY_PATTERN,
+      PgnTest.SEVENTY_FIVE_CORRECT, PgnTest.EARLY_DRAW, PgnTest.WIKIPEDIA_THREEFOLD, PgnTest.WIKIPEDIA_FIFTY_MOVE);
 
+  @SuppressWarnings("static-method")
   @Test
   void pgnImportAgainstPythonChessOracle() throws IOException {
     final List<String> failures = new ArrayList<>();
@@ -123,8 +118,8 @@ class TestPgnImportAgainstPythonChessOracle {
         final Board board = new Board(pgnGame.startFen(), false);
         for (var ply = 0; ply < pgnGame.halfMoveList().size(); ply++) {
           totalPlies++;
-          final PgnHalfMove halfMove = pgnGame.halfMoveList().get(ply);
-          final OracleMove expected = record.moves().get(ply);
+          final PgnHalfMove halfMove = Nulls.get(pgnGame.halfMoveList(), ply);
+          final OracleMove expected = Nulls.get(record.moves(), ply);
           board.moveStrict(halfMove.san());
 
           final var plyLabel = ply + 1;
@@ -151,11 +146,9 @@ class TestPgnImportAgainstPythonChessOracle {
             assertEquals(expected.isInsufficientMaterial(), board.isInsufficientMaterial(),
                 () -> bucket + " / " + record.pgn() + " ply " + plyLabel + " — isInsufficientMaterial mismatch");
             assertEquals(expected.hasInsufficientMaterialWhite(), board.isInsufficientMaterial(Side.WHITE),
-                () -> bucket + " / " + record.pgn() + " ply " + plyLabel
-                    + " — isInsufficientMaterial(WHITE) mismatch");
+                () -> bucket + " / " + record.pgn() + " ply " + plyLabel + " — isInsufficientMaterial(WHITE) mismatch");
             assertEquals(expected.hasInsufficientMaterialBlack(), board.isInsufficientMaterial(Side.BLACK),
-                () -> bucket + " / " + record.pgn() + " ply " + plyLabel
-                    + " — isInsufficientMaterial(BLACK) mismatch");
+                () -> bucket + " / " + record.pgn() + " ply " + plyLabel + " — isInsufficientMaterial(BLACK) mismatch");
             assertEquals(expected.isRepetition2(), board.getRepetitionCount() >= 2,
                 () -> bucket + " / " + record.pgn() + " ply " + plyLabel + " — isRepetition(2) mismatch");
             assertEquals(expected.isRepetition3(), board.getRepetitionCount() >= 3,
@@ -169,14 +162,14 @@ class TestPgnImportAgainstPythonChessOracle {
             // than silently resolved in the oracle layer:
             //
             // (1) python-chess `is_fifty_moves()` / `is_seventyfive_moves()` require `halfmove_clock >= N AND a
-            //     legal move exists`; clean-chess `isFiftyMove()` / `isSeventyFiveMove()` are pure threshold
-            //     checks. At checkmate/stalemate positions where the clock is past the threshold, python-chess
-            //     returns false while clean-chess returns true.
+            // legal move exists`; clean-chess `isFiftyMove()` / `isSeventyFiveMove()` are pure threshold
+            // checks. At checkmate/stalemate positions where the clock is past the threshold, python-chess
+            // returns false while clean-chess returns true.
             //
             // (2) clean-chess `canClaimThreefoldRepetitionRule()` / `canClaimFiftyMoveRule()` internally simulate
-            //     legal moves via Board.move(); on auto-terminated positions Board.move() throws
-            //     InvalidMoveException, so the canClaim* methods are unsafe to call. python-chess returns a
-            //     clean boolean in the same situation.
+            // legal moves via Board.move(); on auto-terminated positions Board.move() throws
+            // InvalidMoveException, so the canClaim* methods are unsafe to call. python-chess returns a
+            // clean boolean in the same situation.
             //
             // Skip all four assertions when clean-chess considers the game ended; assertions still run at every
             // mid-game position, which is where claim semantics actually matter.
@@ -212,8 +205,8 @@ class TestPgnImportAgainstPythonChessOracle {
 
     if (!failures.isEmpty()) {
       final var report = new StringBuilder().append(failures.size())
-          .append(" python-chess oracle disagreement(s) across ").append(totalFixtures)
-          .append(" fixtures in ").append(BUCKETS.size()).append(" buckets:\n");
+          .append(" python-chess oracle disagreement(s) across ").append(totalFixtures).append(" fixtures in ")
+          .append(BUCKETS.size()).append(" buckets:\n");
       for (final String f : failures) {
         report.append("  ").append(f).append('\n');
       }

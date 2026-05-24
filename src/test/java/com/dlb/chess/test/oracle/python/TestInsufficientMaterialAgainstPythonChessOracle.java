@@ -20,9 +20,12 @@ import com.dlb.chess.test.pgntest.constants.PgnTestConstants;
 import com.dlb.chess.test.pgntest.enums.PgnTest;
 
 /**
+ * Checks insufficient material assessment against python-chess.
+ *
+ * <p>
  * Focused cross-validation of clean-chess's {@code InsufficientMaterialUtility} against python-chess's
- * {@code board.is_insufficient_material()} and {@code board.has_insufficient_material(color)} on the
- * <strong>final position</strong> of every PGN in the four core insufficient-material buckets:
+ * {@code board.is_insufficient_material()} and {@code board.has_insufficient_material(color)} on the <strong>final
+ * position</strong> of every PGN in the four core insufficient-material buckets:
  *
  * <ul>
  * <li>{@link PgnTest#BASIC_INSUFFICIENT_MATERIAL_BOTH} — fixtures whose final position has both sides holding
@@ -36,35 +39,34 @@ import com.dlb.chess.test.pgntest.enums.PgnTest;
  * Insufficient material is a function of the position alone, not the path that led to it, so this test builds a
  * history-less board directly from the oracle's recorded {@code finalFen} (no PGN parse, no per-ply replay) and
  * compares the three predicates against the python-chess values recorded for the same final position. Per-ply
- * cross-validation across the whole import corpus is the broader {@link TestPgnImportAgainstPythonChessOracle}'s
- * job; this test isolates the predicate subject of interest.
+ * cross-validation across the whole import corpus is the broader {@link TestPgnImportAgainstPythonChessOracle}'s job;
+ * this test isolates the predicate subject of interest.
  *
  * <p>
- * Reads the existing JSONL oracle at {@code src/test/resources/oracle/python-chess/<folderPart>.jsonl} — no new
- * oracle data. The expected final-position material flags come from the last entry in
- * {@link OracleRecord#moves()}, whose {@code fenAfter} equals {@link OracleRecord#finalFen()} by construction
- * (see the generator script docstring).
+ * Reads the existing JSONL oracle at {@code src/test/resources/oracle/python-chess/<folderPart>.jsonl} — no new oracle
+ * data. The expected final-position material flags come from the last entry in {@link OracleRecord#moves()}, whose
+ * {@code fenAfter} equals {@link OracleRecord#finalFen()} by construction (see the generator script docstring).
  */
 class TestInsufficientMaterialAgainstPythonChessOracle {
 
-  private static final Logger LOGGER = Nulls
-      .getLogger(TestInsufficientMaterialAgainstPythonChessOracle.class);
+  private static final Logger LOGGER = Nulls.getLogger(TestInsufficientMaterialAgainstPythonChessOracle.class);
 
   private static final Path ORACLE_ROOT = Nulls.pathResolve(ConfigurationTestConstants.PROJECT_ROOT_FOLDER_PATH,
       "src/test/resources/oracle/python-chess");
 
-  private static final List<PgnTest> BUCKETS = List.of(PgnTest.BASIC_INSUFFICIENT_MATERIAL_BOTH,
+  private static final List<PgnTest> BUCKETS = Nulls.listOf(PgnTest.BASIC_INSUFFICIENT_MATERIAL_BOTH,
       PgnTest.BASIC_INSUFFICIENT_MATERIAL_ONLY_WHITE, PgnTest.BASIC_INSUFFICIENT_MATERIAL_ONLY_BLACK,
       PgnTest.BASIC_INSUFFICIENT_MATERIAL_NONE);
 
+  @SuppressWarnings("static-method")
   @Test
   void insufficientMaterialAgainstPythonChessOracle() throws IOException {
     final List<String> failures = new ArrayList<>();
     var totalFixtures = 0;
-    final int[] perBucketFixtureCounts = new int[BUCKETS.size()];
+    final var perBucketFixtureCounts = new int[BUCKETS.size()];
 
-    for (var bIdx = 0; bIdx < BUCKETS.size(); bIdx++) {
-      final PgnTest bucket = BUCKETS.get(bIdx);
+    for (var bucketIdx = 0; bucketIdx < BUCKETS.size(); bucketIdx++) {
+      final PgnTest bucket = Nulls.get(BUCKETS, bucketIdx);
       final Path jsonlPath = jsonlPathFor(bucket);
       LOGGER.info("Bucket {} → {}", bucket, jsonlPath);
 
@@ -73,16 +75,16 @@ class TestInsufficientMaterialAgainstPythonChessOracle {
         failures.add(bucket + " — oracle file is empty or missing: " + jsonlPath);
         continue;
       }
-      perBucketFixtureCounts[bIdx] = records.size();
+      perBucketFixtureCounts[bucketIdx] = records.size();
 
       for (final OracleRecord record : records) {
         totalFixtures++;
         if (record.moves().isEmpty()) {
-          failures.add(bucket + " / " + record.pgn()
-              + " — oracle record has no plies; material at start FEN is not recorded");
+          failures.add(
+              bucket + " / " + record.pgn() + " — oracle record has no plies; material at start FEN is not recorded");
           continue;
         }
-        final OracleMove expectedFinal = record.moves().get(record.moves().size() - 1);
+        final OracleMove expectedFinal = Nulls.get(record.moves(), record.moves().size() - 1);
         final Board board = new Board(record.finalFen(), false);
 
         try {
@@ -107,7 +109,7 @@ class TestInsufficientMaterialAgainstPythonChessOracle {
       if (i > 0) {
         summary.append(", ");
       }
-      summary.append(BUCKETS.get(i).name().replace("BASIC_INSUFFICIENT_MATERIAL_", "")).append('=')
+      summary.append(Nulls.get(BUCKETS, i).name().replace("BASIC_INSUFFICIENT_MATERIAL_", "")).append('=')
           .append(perBucketFixtureCounts[i]);
     }
     summary.append(" — ").append(totalFixtures).append(" fixtures total; clean-chess InsufficientMaterialUtility")
@@ -116,8 +118,8 @@ class TestInsufficientMaterialAgainstPythonChessOracle {
 
     if (!failures.isEmpty()) {
       final var report = new StringBuilder().append(failures.size())
-          .append(" insufficient-material disagreement(s) across ").append(totalFixtures)
-          .append(" fixtures in ").append(BUCKETS.size()).append(" buckets:\n");
+          .append(" insufficient-material disagreement(s) across ").append(totalFixtures).append(" fixtures in ")
+          .append(BUCKETS.size()).append(" buckets:\n");
       for (final String f : failures) {
         report.append("  ").append(f).append('\n');
       }
