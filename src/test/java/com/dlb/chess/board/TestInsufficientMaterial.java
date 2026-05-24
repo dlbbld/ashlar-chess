@@ -2,8 +2,6 @@ package com.dlb.chess.board;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import java.nio.file.Path;
-
 import org.apache.logging.log4j.Logger;
 import org.junit.jupiter.api.Test;
 
@@ -11,12 +9,9 @@ import com.dlb.chess.bitboard.BitboardPosition;
 import com.dlb.chess.board.enums.Side;
 import com.dlb.chess.common.Nulls;
 import com.dlb.chess.common.constants.EnumConstants;
-import com.dlb.chess.model.PgnHalfMove;
-import com.dlb.chess.pgn.PgnGame;
 import com.dlb.chess.test.RestrictTestConstants;
 import com.dlb.chess.test.model.PgnTestCase;
 import com.dlb.chess.test.model.PgnTestCaseList;
-import com.dlb.chess.test.pgn.parser.PgnCacheForStrictPgnParserTestCases;
 import com.dlb.chess.test.pgn.setup.PgnTestCaseCatalog;
 
 class TestInsufficientMaterial implements EnumConstants {
@@ -45,32 +40,25 @@ class TestInsufficientMaterial implements EnumConstants {
         }
       }
       for (final PgnTestCase testCase : testCaseList.list()) {
-        checkInsufficientMaterial(testCaseList.pgnTest().getFolderPath(), testCase.pgnName());
+        checkInsufficientMaterial(testCase);
       }
     }
   }
 
-  private static void checkInsufficientMaterial(Path folderPath, String pgnName) throws Exception {
+  // Insufficient material is a function of the position alone, not the path. Build a history-less board from the
+  // cached final FEN via PgnTestCase.finalPosition() — no PGN parse, no per-ply replay — and assert that the
+  // mechanical bitboard-level computation agrees with the per-side Board predicate combined.
+  private static void checkInsufficientMaterial(PgnTestCase testCase) {
 
-    logger.info(pgnName);
+    logger.info(testCase.pgnName());
 
-    final PgnGame pgnGame = PgnCacheForStrictPgnParserTestCases.getPgn(folderPath, pgnName);
-    // PGN replay disables dead-position-unwinnable-quick auto-detection. Some of these recorded games pass through
-    // positions the quick analyzer would classify as dead before reaching the actually-insufficient-material final
-    // position; the test cares about the mechanical insufficient-material check on the final state, not the
-    // analyzer's prediction on intermediate positions.
-    final Board boardFromFen = new Board(pgnGame.startFen(), false);
-    for (final PgnHalfMove halfMove : pgnGame.halfMoveList()) {
-      boardFromFen.moveStrict(halfMove.san());
-    }
+    final Board board = testCase.finalPosition();
 
-    final var isInsufficientMaterialDirectlyCalculated = calculateIsInsufficientMaterial(
-        boardFromFen.getBitboardPosition());
-    final var isInsufficientMaterialDerived = boardFromFen.isInsufficientMaterial(Side.WHITE)
-        && boardFromFen.isInsufficientMaterial(Side.BLACK);
+    final var isInsufficientMaterialDirectlyCalculated = calculateIsInsufficientMaterial(board.getBitboardPosition());
+    final var isInsufficientMaterialDerived = board.isInsufficientMaterial(Side.WHITE)
+        && board.isInsufficientMaterial(Side.BLACK);
 
     assertEquals(isInsufficientMaterialDirectlyCalculated, isInsufficientMaterialDerived);
-
   }
 
   private static boolean calculateIsInsufficientMaterial(BitboardPosition bitboardPosition) {
