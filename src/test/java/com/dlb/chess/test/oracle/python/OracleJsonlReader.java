@@ -1,6 +1,5 @@
 package com.dlb.chess.test.oracle.python;
 
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -26,7 +25,7 @@ public final class OracleJsonlReader {
 
   public static List<OracleRecord> readAll(Path jsonlPath) throws IOException {
     final List<OracleRecord> records = new ArrayList<>();
-    try (BufferedReader reader = Files.newBufferedReader(jsonlPath, StandardCharsets.UTF_8)) {
+    try (var reader = Files.newBufferedReader(jsonlPath, StandardCharsets.UTF_8)) {
       String line;
       while ((line = reader.readLine()) != null) {
         if (line.isBlank()) {
@@ -35,41 +34,36 @@ public final class OracleJsonlReader {
         records.add(toRecord((Map<String, Object>) parseValue(line)));
       }
     }
-    return List.copyOf(records);
+    return Nulls.copyOfList(records);
   }
 
   private static OracleRecord toRecord(Map<String, Object> obj) {
-    final String pgn = (String) obj.get("pgn");
-    final String startFen = (String) obj.get("startFen");
-    final String finalFen = (String) obj.get("finalFen");
-    final List<Object> rawMoves = (List<Object>) obj.get("moves");
+    final var pgn = (String) obj.get("pgn");
+    final var startFen = (String) obj.get("startFen");
+    final var finalFen = (String) obj.get("finalFen");
+    final var rawMoves = (List<Object>) obj.get("moves");
     final List<OracleMove> moves = new ArrayList<>(rawMoves.size());
     for (final Object raw : rawMoves) {
       moves.add(toMove((Map<String, Object>) raw));
     }
-    return new OracleRecord(pgn, startFen, List.copyOf(moves), finalFen);
+    return new OracleRecord(pgn, startFen, Nulls.copyOfList(moves), finalFen);
   }
 
   private static OracleMove toMove(Map<String, Object> obj) {
     return new OracleMove((String) obj.get("san"), (String) obj.get("lan"), (String) obj.get("uci"),
-        (String) obj.get("fenAfter"),
-        ((Integer) obj.get("halfmoveClock")).intValue(), ((Integer) obj.get("fullmoveNumber")).intValue(),
-        ((Boolean) obj.get("isCheck")).booleanValue(), ((Boolean) obj.get("isCheckmate")).booleanValue(),
-        ((Boolean) obj.get("isStalemate")).booleanValue(),
-        ((Boolean) obj.get("isInsufficientMaterial")).booleanValue(),
-        ((Boolean) obj.get("hasInsufficientMaterialWhite")).booleanValue(),
-        ((Boolean) obj.get("hasInsufficientMaterialBlack")).booleanValue(),
-        ((Boolean) obj.get("isRepetition2")).booleanValue(),
-        ((Boolean) obj.get("isRepetition3")).booleanValue(),
-        ((Boolean) obj.get("isRepetition4")).booleanValue(),
-        ((Boolean) obj.get("isFivefoldRepetition")).booleanValue(),
-        ((Boolean) obj.get("isFiftyMoves")).booleanValue(),
-        ((Boolean) obj.get("isSeventyFiveMoves")).booleanValue(),
-        ((Boolean) obj.get("canClaimThreefold")).booleanValue(),
-        ((Boolean) obj.get("canClaimFifty")).booleanValue());
+        (String) obj.get("fenAfter"), (Integer) obj.get("halfmoveClock"), (Integer) obj.get("fullmoveNumber"),
+        (Boolean) obj.get("isCheck"), (Boolean) obj.get("isCheckmate"), (Boolean) obj.get("isStalemate"),
+        (Boolean) obj.get("isInsufficientMaterial"), (Boolean) obj.get("hasInsufficientMaterialWhite"),
+        (Boolean) obj.get("hasInsufficientMaterialBlack"), (Boolean) obj.get("isRepetition2"),
+        (Boolean) obj.get("isRepetition3"), (Boolean) obj.get("isRepetition4"),
+        (Boolean) obj.get("isFivefoldRepetition"), (Boolean) obj.get("isFiftyMoves"),
+        (Boolean) obj.get("isSeventyFiveMoves"), (Boolean) obj.get("canClaimThreefold"),
+        (Boolean) obj.get("canClaimFifty"));
   }
 
-  /** Package-visible: parse one JSONL line into a fresh {@code LinkedHashMap}. Used by sibling oracle readers. */
+  /**
+   * Package-visible: parse one JSONL line into a fresh {@code LinkedHashMap}. Used by sibling oracle readers.
+   */
   static Map<String, Object> parseLineToObject(String text) {
     return (Map<String, Object>) parseValue(text);
   }
@@ -87,7 +81,7 @@ public final class OracleJsonlReader {
 
   private static Object parseValue(Cursor c) {
     c.skipWhitespace();
-    final char ch = c.peek();
+    final var ch = c.peek();
     return switch (ch) {
       case '{' -> parseObject(c);
       case '[' -> parseArray(c);
@@ -114,7 +108,7 @@ public final class OracleJsonlReader {
       final Object value = parseValue(c);
       out.put(key, value);
       c.skipWhitespace();
-      final char sep = c.peek();
+      final var sep = c.peek();
       if (sep == ',') {
         c.advance();
         continue;
@@ -138,7 +132,7 @@ public final class OracleJsonlReader {
     while (true) {
       out.add(parseValue(c));
       c.skipWhitespace();
-      final char sep = c.peek();
+      final var sep = c.peek();
       if (sep == ',') {
         c.advance();
         continue;
@@ -155,12 +149,12 @@ public final class OracleJsonlReader {
     c.expect('"');
     final StringBuilder sb = new StringBuilder();
     while (true) {
-      final char ch = c.next();
+      final var ch = c.next();
       if (ch == '"') {
         return Nulls.toString(sb);
       }
       if (ch == '\\') {
-        final char esc = c.next();
+        final var esc = c.next();
         switch (esc) {
           case '"' -> sb.append('"');
           case '\\' -> sb.append('\\');
@@ -171,7 +165,7 @@ public final class OracleJsonlReader {
           case 'r' -> sb.append('\r');
           case 't' -> sb.append('\t');
           case 'u' -> {
-            final int code = Integer.parseInt(c.take(4), 16);
+            final var code = Integer.parseInt(c.take(4), 16);
             sb.append((char) code);
           }
           default -> throw new IllegalArgumentException("bad escape '\\" + esc + "' at position " + c.position());
@@ -185,21 +179,21 @@ public final class OracleJsonlReader {
   private static Boolean parseBoolean(Cursor c) {
     if (c.peek() == 't') {
       c.expectLiteral("true");
-      return Boolean.TRUE;
+      return true;
     }
     c.expectLiteral("false");
-    return Boolean.FALSE;
+    return false;
   }
 
   private static Integer parseInteger(Cursor c) {
-    final int start = c.position();
+    final var start = c.position();
     if (c.peek() == '-') {
       c.advance();
     }
     while (c.hasMore() && c.peek() >= '0' && c.peek() <= '9') {
       c.advance();
     }
-    return Integer.valueOf(c.substring(start));
+    return Integer.parseInt(c.substring(start));
   }
 
   private static final class Cursor {
@@ -228,7 +222,7 @@ public final class OracleJsonlReader {
     }
 
     char next() {
-      final char ch = peek();
+      final var ch = peek();
       pos++;
       return ch;
     }
@@ -262,7 +256,7 @@ public final class OracleJsonlReader {
 
     void skipWhitespace() {
       while (pos < text.length()) {
-        final char ch = text.charAt(pos);
+        final var ch = text.charAt(pos);
         if (ch == ' ' || ch == '\t' || ch == '\n' || ch == '\r') {
           pos++;
           continue;

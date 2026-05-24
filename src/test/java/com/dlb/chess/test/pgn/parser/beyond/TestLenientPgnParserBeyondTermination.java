@@ -20,6 +20,17 @@ import com.dlb.chess.test.ConfigurationTestConstants;
  * and that the rejection reason carries the specific {@link GameStatus} that ended the game.
  *
  * <p>
+ * Scope is the four enforced FIDE-automatic terminations only: checkmate, stalemate, and dead position by mutual
+ * insufficient material (each in a white-move and black-move variant). Fivefold repetition and the 75-move rule are
+ * queryable predicates in this library, not enforced at the move pipeline (see
+ * {@link GameStatus#isAutomaticTermination()}); their "play past the threshold" cases are accepted by the parser,
+ * exercised implicitly via the regular corpus, and pinned explicitly at the move-pipeline level by
+ * {@code TestSanValidationGameEnded.testSanAcceptedAtFivefoldThreshold()} and the 75-move companion.
+ * {@code DEAD_POSITION_UNWINNABLE_QUICK} is the analyzer-driven dead-position detector — the PGN parsers
+ * intentionally do not enforce it on intermediate positions; production-runtime enforcement lives on
+ * {@code Board.move(...)} via the {@code detectDeadPositionUnwinnable} constructor flag.
+ *
+ * <p>
  * Each fixture has its own {@code @Test} method with the expected {@link GameStatus} pinned literally in the method
  * body. No runtime filename parsing.
  *
@@ -71,30 +82,6 @@ class TestLenientPgnParserBeyondTermination {
   void test06PlayBeyondInsufficientMaterialWithBlackMove() {
     assertRejectedWith("06_play_beyond_insufficient_material_with_black_move.pgn",
         GameStatus.DEAD_POSITION_INSUFFICIENT_MATERIAL);
-  }
-
-  @SuppressWarnings("static-method")
-  @Test
-  void test07PlayBeyondFivefoldRepetitionWithWhiteMove() {
-    assertRejectedWith("07_play_beyond_fivefold_repetition_with_white_move.pgn", GameStatus.FIVE_FOLD_REPETITION_RULE);
-  }
-
-  @SuppressWarnings("static-method")
-  @Test
-  void test08PlayBeyondFivefoldRepetitionWithBlackMove() {
-    assertRejectedWith("08_play_beyond_fivefold_repetition_with_black_move.pgn", GameStatus.FIVE_FOLD_REPETITION_RULE);
-  }
-
-  @SuppressWarnings("static-method")
-  @Test
-  void test09PlayBeyondSeventyFiveMoveRuleWithWhiteMove() {
-    assertRejectedWith("09_play_beyond_seventy_five_move_rule_with_white_move.pgn", GameStatus.SEVENTY_FIVE_MOVE_RULE);
-  }
-
-  @SuppressWarnings("static-method")
-  @Test
-  void test10PlayBeyondSeventyFiveMoveRuleWithBlackMove() {
-    assertRejectedWith("10_play_beyond_seventy_five_move_rule_with_black_move.pgn", GameStatus.SEVENTY_FIVE_MOVE_RULE);
   }
 
   private static void assertRejectedWith(String pgnName, GameStatus expectedStatus) {

@@ -28,8 +28,8 @@ import com.dlb.chess.test.pgntest.enums.PgnTest;
  *
  * <p>
  * For each fixture: parses the PGN, walks the board through the played sequence, and at each ply (including ply 0
- * before any move and the position after the final move) asserts that the sorted UCI set of {@code board.getLegalMovesUci()}
- * equals the python-chess set recorded in the JSONL oracle under
+ * before any move and the position after the final move) asserts that the sorted UCI set of
+ * {@code board.getLegalMovesUci()} equals the python-chess set recorded in the JSONL oracle under
  * {@code src/test/resources/oracle/python-chess/move-gen/<folderPart>.jsonl}.
  *
  * <p>
@@ -38,11 +38,11 @@ import com.dlb.chess.test.pgntest.enums.PgnTest;
  * questions matter; merging them would conflate the import surface and the move-generation surface.
  *
  * <p>
- * Bucket coverage is intentionally narrower than the PGN-import oracle: move-rule-mechanics buckets only
- * (piece moves, captures, en passant, promotion, check, double check, castling, plus parserFenMechanics for the
- * unusual FEN-load positions). Long-game corpora are excluded to keep the JSONL file sizes proportional to the
- * value delivered — move generation is already heavily exercised by the internal differential-test layer against
- * the relocated {@code StaticPosition} oracle.
+ * Bucket coverage is intentionally narrower than the PGN-import oracle: move-rule-mechanics buckets only (piece moves,
+ * captures, en passant, promotion, check, double check, castling, plus parserFenMechanics for the unusual FEN-load
+ * positions). Long-game corpora are excluded to keep the JSONL file sizes proportional to the value delivered — move
+ * generation is already heavily exercised by the internal differential-test layer against the relocated
+ * {@code StaticPosition} oracle.
  *
  * <p>
  * See {@code src/test/python/generate_move_gen_oracle.py} module docstring for the schema source of truth, the
@@ -55,18 +55,16 @@ class TestLegalMovesAgainstPythonChessOracle {
   private static final Path ORACLE_ROOT = Nulls.pathResolve(ConfigurationTestConstants.PROJECT_ROOT_FOLDER_PATH,
       "src/test/resources/oracle/python-chess/move-gen");
 
-  private static final List<PgnTest> BUCKETS = List.of(PgnTest.PARSER_FROM_FEN,
-      PgnTest.BASIC_MOVING_PIECE_WHITE, PgnTest.BASIC_MOVING_PIECE_BLACK,
-      PgnTest.BASIC_CAPTURE_WHITE, PgnTest.BASIC_CAPTURE_BLACK, PgnTest.BASIC_CAPTURE_LAST_MOVE,
-      PgnTest.BASIC_EN_PASSANT_CAPTURE_WHITE, PgnTest.BASIC_EN_PASSANT_CAPTURE_BLACK,
-      PgnTest.BASIC_PROMOTION_PIECE_WHITE, PgnTest.BASIC_PROMOTION_PIECE_BLACK,
-      PgnTest.BASIC_PROMOTION_SQUARE_WHITE, PgnTest.BASIC_PROMOTION_SQUARE_BLACK,
-      PgnTest.BASIC_CHECK_WHITE, PgnTest.BASIC_CHECK_BLACK,
-      PgnTest.BASIC_DOUBLE_CHECK_WHITE, PgnTest.BASIC_DOUBLE_CHECK_BLACK,
-      PgnTest.BASIC_CHECKMATE_DOUBLE_CHECK_WHITE, PgnTest.BASIC_CHECKMATE_DOUBLE_CHECK_BLACK,
-      PgnTest.BASIC_CASTLING_WHITE, PgnTest.BASIC_CASTLING_BLACK,
+  private static final List<PgnTest> BUCKETS = Nulls.listOf(PgnTest.PARSER_FROM_FEN, PgnTest.BASIC_MOVING_PIECE_WHITE,
+      PgnTest.BASIC_MOVING_PIECE_BLACK, PgnTest.BASIC_CAPTURE_WHITE, PgnTest.BASIC_CAPTURE_BLACK,
+      PgnTest.BASIC_CAPTURE_LAST_MOVE, PgnTest.BASIC_EN_PASSANT_CAPTURE_WHITE, PgnTest.BASIC_EN_PASSANT_CAPTURE_BLACK,
+      PgnTest.BASIC_PROMOTION_PIECE_WHITE, PgnTest.BASIC_PROMOTION_PIECE_BLACK, PgnTest.BASIC_PROMOTION_SQUARE_WHITE,
+      PgnTest.BASIC_PROMOTION_SQUARE_BLACK, PgnTest.BASIC_CHECK_WHITE, PgnTest.BASIC_CHECK_BLACK,
+      PgnTest.BASIC_DOUBLE_CHECK_WHITE, PgnTest.BASIC_DOUBLE_CHECK_BLACK, PgnTest.BASIC_CHECKMATE_DOUBLE_CHECK_WHITE,
+      PgnTest.BASIC_CHECKMATE_DOUBLE_CHECK_BLACK, PgnTest.BASIC_CASTLING_WHITE, PgnTest.BASIC_CASTLING_BLACK,
       PgnTest.BASIC_CASTLING_SPECIAL_WHITE, PgnTest.BASIC_CASTLING_SPECIAL_BLACK);
 
+  @SuppressWarnings("static-method")
   @Test
   void legalMovesAgainstPythonChessOracle() throws IOException {
     final List<String> failures = new ArrayList<>();
@@ -87,7 +85,7 @@ class TestLegalMovesAgainstPythonChessOracle {
       for (final LegalMovesRecord record : records) {
         totalFixtures++;
         final PgnGame pgnGame = StrictPgnParser.parse(folderPath, record.pgn());
-        final int halfMoveCount = pgnGame.halfMoveList().size();
+        final var halfMoveCount = pgnGame.halfMoveList().size();
 
         try {
           assertEquals(halfMoveCount + 1, record.perPly().size(),
@@ -100,20 +98,19 @@ class TestLegalMovesAgainstPythonChessOracle {
         final Board board = new Board(pgnGame.startFen(), false);
         for (var ply = 0; ply <= halfMoveCount; ply++) {
           totalPositions++;
-          final LegalMovesPly expectedPly = record.perPly().get(ply);
+          final LegalMovesPly expectedPly = Nulls.get(record.perPly(), ply);
           final List<String> actualSorted = sortedCopy(board.getLegalMovesUci());
 
           final var positionLabel = ply;
           try {
-            assertEquals(expectedPly.legalMovesUci(), actualSorted,
-                () -> bucket + " / " + record.pgn() + " position " + positionLabel
-                    + " — legal-move set mismatch (clean-chess vs python-chess)");
+            assertEquals(expectedPly.legalMovesUci(), actualSorted, () -> bucket + " / " + record.pgn() + " position "
+                + positionLabel + " — legal-move set mismatch (clean-chess vs python-chess)");
           } catch (final AssertionError e) {
             failures.add(BasicUtility.getMessage(e));
           }
 
           if (ply < halfMoveCount) {
-            final PgnHalfMove halfMove = pgnGame.halfMoveList().get(ply);
+            final PgnHalfMove halfMove = Nulls.get(pgnGame.halfMoveList(), ply);
             board.moveStrict(halfMove.san());
           }
         }
@@ -123,12 +120,12 @@ class TestLegalMovesAgainstPythonChessOracle {
     if (totalFixtures == 0) {
       fail("No fixtures iterated — bucket wiring is broken");
     }
-    LOGGER.info("Cross-validated legal moves at {} positions across {} fixtures in {} buckets",
-        totalPositions, totalFixtures, BUCKETS.size());
+    LOGGER.info("Cross-validated legal moves at {} positions across {} fixtures in {} buckets", totalPositions,
+        totalFixtures, BUCKETS.size());
 
     if (!failures.isEmpty()) {
-      final var report = new StringBuilder().append(failures.size())
-          .append(" legal-move set disagreement(s) across ").append(totalFixtures)
+      final StringBuilder report = new StringBuilder();
+      report.append(failures.size()).append(" legal-move set disagreement(s) across ").append(totalFixtures)
           .append(" fixtures in ").append(BUCKETS.size()).append(" buckets:\n");
       for (final String f : failures) {
         report.append("  ").append(f).append('\n');

@@ -15,10 +15,10 @@
  * <li>the side <em>not</em> to move is not in check (otherwise the last move would have been illegal)</li>
  * <li>castling rights consistent with king and rook static positions</li>
  * <li>en-passant target square consistent with the side to move and the adjacent pawn structure</li>
- * <li>halfmove clock not above the 75-move-rule threshold of 150 — a clock of exactly 150 is the legal terminal moment
- * and is accepted; only values strictly above 150 are rejected</li>
  * <li>halfmove clock consistent with the fullmove number — {@code halfMoveClock <= 2 * (fullMoveNumber - 1) +
- * (havingMove == BLACK ? 1 : 0)}; a FEN like {@code ... 15 1} (15 halfmoves on move 1) is physically impossible</li>
+ * (havingMove == BLACK ? 1 : 0)}; a FEN like {@code ... 15 1} (15 halfmoves on move 1) is physically impossible. (The
+ * halfmove clock itself is not capped: the 75-move rule is a queryable predicate, not enforced at FEN import, so
+ * halfmove clock values at and above 150 are legitimate FEN.)</li>
  * <li>fullmove number in the supported range</li>
  * </ul>
  * This is the variant {@link com.dlb.chess.board.Board#Board(String)} uses. It does not prove full game reachability —

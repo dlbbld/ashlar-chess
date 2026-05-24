@@ -33,7 +33,8 @@ public class SanValidationException extends UsageException {
 
   /**
    * Used when {@link SanValidationProblem#GAME_ALREADY_ENDED} is the reason: carries the specific {@link GameStatus}
-   * (checkmate / stalemate / insufficient material / fivefold / 75-move) that ended the game.
+   * (checkmate / stalemate / dead-position-insufficient-material / dead-position-unwinnable-quick) that ended the
+   * game.
    */
   public SanValidationException(SanValidationProblem sanValidationProblem, String message, GameStatus gameStatus) {
     super(message);

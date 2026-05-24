@@ -38,6 +38,13 @@ public abstract class BasicChessUtility {
     };
   }
 
+  /**
+   * Returns the single most-specific {@link GameStatus} for the given board, with hard blockers (the statuses that
+   * {@link GameStatus#isAutomaticTermination()} returns {@code true} for) given precedence over the queryable rule
+   * predicates (fivefold, 75-move). A position that simultaneously satisfies a dead-position predicate AND fivefold or
+   * 75-move resolves to the dead-position status, so {@code ValidateNewMove}'s {@code isAutomaticTermination()}
+   * precondition sees the blocker and rejects the move.
+   */
   public static GameStatus calculateGameStatus(Board board) {
 
     if (board.isCheckmate()) {
@@ -46,17 +53,17 @@ public abstract class BasicChessUtility {
     if (board.isStalemate()) {
       return GameStatus.STALEMATE;
     }
-    if (board.isFivefoldRepetition()) {
-      return GameStatus.FIVE_FOLD_REPETITION_RULE;
-    }
-    if (board.isSeventyFiveMove()) {
-      return GameStatus.SEVENTY_FIVE_MOVE_RULE;
-    }
     if (board.isInsufficientMaterial()) {
       return GameStatus.DEAD_POSITION_INSUFFICIENT_MATERIAL;
     }
     if (board.isDeadPositionUnwinnableQuick()) {
       return GameStatus.DEAD_POSITION_UNWINNABLE_QUICK;
+    }
+    if (board.isFivefoldRepetition()) {
+      return GameStatus.FIVE_FOLD_REPETITION_RULE;
+    }
+    if (board.isSeventyFiveMove()) {
+      return GameStatus.SEVENTY_FIVE_MOVE_RULE;
     }
     if (board.isInsufficientMaterial(Side.WHITE)) {
       return GameStatus.INSUFFICIENT_MATERIAL_WHITE_ONLY;

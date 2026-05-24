@@ -57,6 +57,12 @@ public class PgnTestCaseCatalog {
       case BASIC_REPORT_MAX_NO_PROGRESS -> createTestCasesBasicMaxNoProgress();
 
       case PARSER_FROM_FEN -> createTestCasesParserFromFen();
+      case BASIC_FROM_FEN_NO_PROGRESS_BLACK -> createTestCasesBasicFromFenNoProgressBlack();
+      case BASIC_FROM_FEN_NO_PROGRESS_WHITE -> createTestCasesBasicFromFenNoProgressWhite();
+      case FIVEFOLD_BEYOND -> createTestCasesFivefoldBeyond();
+      case SEVENTY_FIVE_BEYOND -> createTestCasesSeventyFiveBeyond();
+      case LONG -> createTestCasesLong();
+      case LONGEST_MATE -> createTestCasesLongestMate();
       case BASIC_INSUFFICIENT_MATERIAL_BOTH -> createTestCasesBasicInsufficientMaterial(InsufficientMaterial.BOTH,
           PgnTest.BASIC_INSUFFICIENT_MATERIAL_BOTH);
       case BASIC_INSUFFICIENT_MATERIAL_ONLY_WHITE -> createTestCasesBasicInsufficientMaterial(
@@ -1312,6 +1318,13 @@ public class PgnTestCaseCatalog {
         "repPos=4: 37.d4+ 39.Ra2+ 41.Ra2+ 43.Ra2+", "", 4, 12, CheckmateOrStalemate.NA, 4, InsufficientMaterial.NONE,
         "8/8/8/8/3Pp3/8/R6k/K7 b - - 12 43"));
 
+    // Reactivated from pgnParser/legacy/common/beyond — filename says "threefold" but the game actually plays past
+    // the first fivefold (the original test category was misleading).
+    list.add(new PgnTestCase(
+        "37_threefold_en_passant_capture_situation_capture_allowed_no_exposing_own_king_to_check_mine_end_with_first_threefold.pgn",
+        "repPos=6: 5...d5 7...Nc6 9...Nf6 11...Nf6 13...Bc8 15...Qe7", "", 5, 20, CheckmateOrStalemate.NA, 6,
+        InsufficientMaterial.NONE, "r1b1kb1r/ppp1qppp/2n2n2/3pP3/8/5N2/PPPP1PPP/RNBQKB1R w KQkq - 20 16"));
+
     return new PgnTestCaseList(PgnTest.BASIC_THREEFOLD, list);
   }
 
@@ -1382,6 +1395,16 @@ public class PgnTestCaseCatalog {
         "repPos=5: 22...Rh8 24...Bc8 26...Nb8 28...Ke8 30...Qd8", "", -1, 52, CheckmateOrStalemate.NA, 5,
         InsufficientMaterial.NONE, "rnbqkbnr/2p1ppp1/p6p/1p1pP3/8/P6P/1PPP1PP1/RNBQKBNR w - - 52 31"));
 
+    // Reactivated from pgnParser/legacy/common/beyond — play continues past first fivefold.
+    list.add(new PgnTestCase("05_fivefold_beyond.pgn",
+        "repPos=5: 5...a6 7...Qd8 9...Qd8 11...Qd8 13...Qd8; repPos=4: 6.Bg5 8.Bg5 10.Bg5 12.Bg5; repPos=4: 6...Qd7 8...Qd7 10...Qd7 12...Qd7; repPos=4: 7.Bc1 9.Bc1 11.Bc1 13.Bc1",
+        "", -1, 16, CheckmateOrStalemate.NA, 1, InsufficientMaterial.NONE,
+        "r1bqk1nr/1pp2p1p/pbnp2p1/4p3/1PB1P3/P2P1N1P/2P2PP1/RNBQK2R w KQkq - 1 16"));
+    list.add(new PgnTestCase("06_fivefold_end_with_first_sixfold.pgn",
+        "repPos=6: 5...a6 7...Qd8 9...Qd8 11...Qd8 13...Qd8 15...Qd8; repPos=5: 6.Bg5 8.Bg5 10.Bg5 12.Bg5 14.Bg5; repPos=5: 6...Qd7 8...Qd7 10...Qd7 12...Qd7 14...Qd7; repPos=5: 7.Bc1 9.Bc1 11.Bc1 13.Bc1 15.Bc1",
+        "", -1, 20, CheckmateOrStalemate.NA, 6, InsufficientMaterial.NONE,
+        "r1bqk1nr/1pp2ppp/p1np4/2b1p3/2B1P3/3P1N1P/PPP2PP1/RNBQK2R w KQkq - 20 16"));
+
     return new PgnTestCaseList(PgnTest.BASIC_FIVEFOLD, list);
   }
 
@@ -1415,6 +1438,40 @@ public class PgnTestCaseCatalog {
     list.add(new PgnTestCase("16_seventy_five_half_move_clock_149_then_stalemate_by_black_move.pgn", "",
         "22.Kg2 (1) 71...Qd3 (100) 96...Qf2 (150)", 6, 150, CheckmateOrStalemate.STALEMATE, 1,
         InsufficientMaterial.NONE, "1r3n1r/kbp1n2p/1p2p2b/pP1pP1p1/P2P1pP1/5P2/5q2/7K w - - 150 97"));
+
+    // Reactivated from pgnParser/legacy/common/beyond — play continues past first 75-move.
+    list.add(new PgnTestCase("03_seventy_five_end_with_half_move_clock_154.pgn", "",
+        "7.Ba6 (1) 56...Nd6 (100) 81...Kc8 (150) 83...Ka7 (154)", -1, 154, CheckmateOrStalemate.NA, 1,
+        InsufficientMaterial.NONE, "1r1n2r1/k1p2ppR/1pbn4/pR1pp2p/P1B1P2P/1K1P1Q1N/1PP1NPP1/1qB3b1 w - - 154 84"));
+    list.add(new PgnTestCase("04_seventy_five_beyond_half_move_clock_154_end_with_half_move_clock_99.pgn", "",
+        "7.Ba6 (1) 56...Nd6 (100) 81...Kc8 (150) 83...Ka7 (154)", 167, 154, CheckmateOrStalemate.NA, 1,
+        InsufficientMaterial.NONE, "3nrr2/kqp2pp1/1pb1BRn1/pQ2p1Np/P2RPB1P/3P1K2/1PP1NPPb/8 w - - 99 134"));
+    list.add(new PgnTestCase("05_seventy_five_beyond_half_move_clock_154_end_with_half_move_clock_100.pgn", "",
+        "7.Ba6 (1) 56...Nd6 (100) 81...Kc8 (150) 83...Ka7 (154); 84...Rf8 (1) 134.Qd5 (100)", 167, 154,
+        CheckmateOrStalemate.NA, 1, InsufficientMaterial.NONE,
+        "3nrr2/kqp2pp1/1pb1BRn1/p2Qp1Np/P2RPB1P/3P1K2/1PP1NPPb/8 b - - 100 134"));
+    list.add(new PgnTestCase("06_seventy_five_beyond_half_move_clock_154_end_with_half_move_clock_117.pgn", "",
+        "7.Ba6 (1) 56...Nd6 (100) 81...Kc8 (150) 83...Ka7 (154); 84...Rf8 (1) 134.Qd5 (100) 142...Qd2 (117)", 167, 154,
+        CheckmateOrStalemate.NA, 1, InsufficientMaterial.NONE,
+        "2Qnrr2/k1pB1ppN/1p2R1n1/p2bp2p/P2RPB1P/3P1K2/1PPqNPPb/8 w - - 117 143"));
+    list.add(new PgnTestCase("07_seventy_five_beyond_half_move_clock_154_end_with_half_move_clock_149.pgn", "",
+        "7.Ba6 (1) 56...Nd6 (100) 81...Kc8 (150) 83...Ka7 (154); 84...Rf8 (1) 134.Qd5 (100) 158...Ne8 (149)", 167, 154,
+        CheckmateOrStalemate.NA, 1, InsufficientMaterial.NONE,
+        "r3n2Q/k1p1rpp1/1p2RB2/p2bp1Np/P2RPn1P/3P1K2/1PPN1PPb/1B4q1 w - - 149 159"));
+    list.add(new PgnTestCase("08_seventy_five_beyond_half_move_clock_154_end_with_half_move_clock_150.pgn", "",
+        "7.Ba6 (1) 56...Nd6 (100) 81...Kc8 (150) 83...Ka7 (154); 84...Rf8 (1) 134.Qd5 (100) 159.Qh6 (150)", 167, 154,
+        CheckmateOrStalemate.NA, 1, InsufficientMaterial.NONE,
+        "r3n3/k1p1rpp1/1p2RB1Q/p2bp1Np/P2RPn1P/3P1K2/1PPN1PPb/1B4q1 b - - 150 159"));
+    list.add(new PgnTestCase("09_seventy_five_beyond_half_move_clock_154_end_with_half_move_clock_178.pgn", "",
+        "7.Ba6 (1) 56...Nd6 (100) 81...Kc8 (150) 83...Ka7 (154); 84...Rf8 (1) 134.Qd5 (100) 159.Qh6 (150) 173.Re7 (178)",
+        167, 178, CheckmateOrStalemate.NA, 1, InsufficientMaterial.NONE,
+        "r2r1B1Q/1kp1Rpp1/1p3n2/p3p1Np/P2RPn1P/1b1P1K2/1PPN1PPb/1B2q3 b - - 178 173"));
+    list.add(new PgnTestCase(
+        "10_seventy_five_beyond_half_move_clock_154_beyond_half_move_clock_178_end_with_half_move_clock_10.pgn", "",
+        "7.Ba6 (1) 56...Nd6 (100) 81...Kc8 (150) 83...Ka7 (154); 84...Rf8 (1) 134.Qd5 (100) 159.Qh6 (150) 173.Re7 (178)",
+        167, 178, CheckmateOrStalemate.NA, 1, InsufficientMaterial.NONE,
+        "rn2RB2/2p2ppQ/kp1N2n1/p3p2p/P1r1P2P/1b1P1K1N/1PP2PPb/1B2q3 w - - 10 179"));
+
     return new PgnTestCaseList(PgnTest.BASIC_SEVENTY_FIVE, list);
   }
 
@@ -1438,6 +1495,24 @@ public class PgnTestCaseCatalog {
         "repPos=3: 2...e5 4...Bc8 12...Bf8; repPos=5: 5...Bc5 7...Bc5 9...Bc5 11...Bc5 14...Bc5", "", -1, 24,
         CheckmateOrStalemate.NA, 5, InsufficientMaterial.NONE,
         "rnbqk1nr/p1pp1ppp/8/1pb1p3/1PB1P3/8/P1PP1PPP/RNBQK1NR w KQkq - 24 15"));
+
+    // Reactivated from pgnParser/legacy/common/beyond — play continues past first fivefold.
+    list.add(new PgnTestCase("02_intervening_threefold_encapsulating_fivefold.pgn",
+        "repPos=3: 2...c5 4...Qd8 16...Bc8; repPos=5: 6...Be4 8...Be4 10...Be4 12...Be4 14...Be4", "", -1, 30,
+        CheckmateOrStalemate.NA, 1, InsufficientMaterial.NONE,
+        "r1bqkbnr/p2ppppp/2n5/1pp5/1PP5/2N5/P2PPPPP/R1BQKBNR w KQkq - 30 18"));
+    list.add(new PgnTestCase("04_intervening_fivefold_encapsulating_fivefold.pgn",
+        "repPos=5: 2...e6 4...Bf8 6...Bf8 8...Bf8 18...Qd8; repPos=5: 9...Qb6 11...Qb6 13...Qb6 15...Qb6 17...Qb6", "",
+        -1, 34, CheckmateOrStalemate.NA, 1, InsufficientMaterial.NONE,
+        "rnbqkb1r/pp1p1ppp/2p1pn2/8/8/2P1PN2/PP1P1PPP/RNBQKB1R w KQkq - 34 20"));
+    list.add(new PgnTestCase("07_intervening_fivefold_interlocked_threefold.pgn",
+        "repPos=5: 2...e5 4...Qd8 6...Qd8 8...Qd8 16...Bc8; repPos=3: 10...Ng4 12...Ng4 20...Bc8", "", -1, 38,
+        CheckmateOrStalemate.NA, 1, InsufficientMaterial.NONE,
+        "r1bqkb1r/ppp2ppp/2n5/3pp1N1/3PP1n1/2N5/PPP2PPP/R1BQKB1R w KQkq - 38 22"));
+    list.add(new PgnTestCase("08_intervening_fivefold_interlocked_fivefold.pgn",
+        "repPos=5: 3...d5 5...Qd8 7...Qd8 9...Bc8 17...Bc8; repPos=5: 10...Ba6 12...Ba6 14...Ba6 16...Ba6 22...Nb8", "",
+        -1, 40, CheckmateOrStalemate.NA, 1, InsufficientMaterial.NONE,
+        "rnq1kbnr/p1p1pp1p/bp4p1/3p4/3P4/BP4P1/P1P1PP1P/RNQ1KBNR w KQkq - 40 24"));
 
     return new PgnTestCaseList(PgnTest.BASIC_INTERVENING, list);
   }
@@ -1810,6 +1885,123 @@ public class PgnTestCaseCatalog {
         "50...NA (1) 100.Qf6 (100) 100...Qe7 (101)", -1, 101, CheckmateOrStalemate.NA, 1, InsufficientMaterial.NONE,
         "1rb1kb1r/pp1pqppp/2p2Q2/3Bp3/PR1NP3/Bn2N3/2PP1PPP/5RK1 w k - 101 101"));
 
+    // Reactivated from pgnParser/legacy/common/beyond — halfmove clocks at and above the 75-move threshold (150 / 151)
+    // and sixfold-repetition variants. No longer rejected at FEN import or replay.
+    list.add(new PgnTestCase("from_fen_capture_first_move_half_move_clock_150_black_to_move.pgn", "",
+        "25...NA (1) 75.NA (100) 100.NA (150)", 1, 150, CheckmateOrStalemate.NA, 1, InsufficientMaterial.NONE,
+        "k7/2q1Q3/5N2/5pP1/5P2/8/PPP1P3/K7 w - - 0 101"));
+    list.add(new PgnTestCase("from_fen_capture_first_move_half_move_clock_150_white_to_move.pgn", "",
+        "25.NA (1) 74...NA (100) 99...NA (150)", 1, 150, CheckmateOrStalemate.NA, 1, InsufficientMaterial.NONE,
+        "1r1nk2r/2pb1pp1/1p1Q4/p2pp1bp/P3P2P/1R1PR2N/1PP2PP1/qBB1K1N1 b - - 0 100"));
+    list.add(new PgnTestCase("from_fen_capture_first_move_half_move_clock_151_black_to_move.pgn", "",
+        "25.NA (1) 74...NA (100) 99...NA (150) 100.NA (151)", 1, 151, CheckmateOrStalemate.NA, 1,
+        InsufficientMaterial.NONE, "1r1nk2r/2pb1pp1/1p5Q/p2pp1bp/P3n2P/1R1PR2N/1PP2PP1/qBB1K1N1 w - - 0 101"));
+    list.add(new PgnTestCase("from_fen_capture_first_move_half_move_clock_151_white_to_move.pgn", "",
+        "24...NA (1) 74.NA (100) 99.NA (150) 99...NA (151)", 1, 151, CheckmateOrStalemate.NA, 1,
+        InsufficientMaterial.NONE, "1r1nk2r/2pb1pp1/1p1n4/p2pp1bQ/P3P2P/1R1PR2N/1PP2PP1/qBB1K1N1 b - - 0 100"));
+    list.add(new PgnTestCase("from_fen_capture_second_move_half_move_clock_149_black_to_move.pgn", "",
+        "26.NA (1) 75...NA (100) 100...Rb7 (150)", 2, 150, CheckmateOrStalemate.NA, 1, InsufficientMaterial.NONE,
+        "3nk2r/1rpb1pp1/1Q6/p2ppnbp/P3P2P/1R1PR2N/1PP2PP1/qBB1K1N1 b - - 0 101"));
+    list.add(new PgnTestCase("from_fen_capture_second_move_half_move_clock_149_white_to_move.pgn", "",
+        "25...NA (1) 75.NA (100) 100.Kh1 (150)", 2, 150, CheckmateOrStalemate.NA, 1, InsufficientMaterial.NONE,
+        "1rbqkb1r/pp1p1ppp/8/3pp3/PR1NP3/Bn2NQ2/2PP1PPP/5R1K w k - 0 101"));
+    list.add(new PgnTestCase("from_fen_capture_second_move_half_move_clock_150_black_to_move.pgn", "",
+        "25...NA (1) 75.NA (100) 100.NA (150) 100...Kb8 (151)", 2, 151, CheckmateOrStalemate.NA, 1,
+        InsufficientMaterial.NONE, "1k6/2R5/5N2/5pP1/5P2/Qr6/PPP1P3/K7 b - - 0 101"));
+    list.add(new PgnTestCase("from_fen_capture_second_move_half_move_clock_150_white_to_move.pgn", "",
+        "25.NA (1) 74...NA (100) 99...NA (150) 100.Nf4 (151)", 2, 151, CheckmateOrStalemate.NA, 1,
+        InsufficientMaterial.NONE, "1r1nk2r/2pb1p2/1p1n3p/p2pp1bp/P3PN1P/1R1PR3/1PP2PP1/qBB1K1N1 w - - 0 101"));
+    list.add(new PgnTestCase("from_fen_capture_second_move_half_move_clock_151_black_to_move.pgn", "",
+        "25.NA (1) 74...NA (100) 99...NA (150) 100...Nb5 (152)", 2, 152, CheckmateOrStalemate.NA, 1,
+        InsufficientMaterial.NONE, "1r1nk2r/2pb1pp1/1p5Q/pR1pp1bp/P3P2P/3PR2N/1PP2PP1/qBB1K1N1 b - - 0 101"));
+    list.add(new PgnTestCase("from_fen_capture_second_move_half_move_clock_151_white_to_move.pgn", "",
+        "24...NA (1) 74.NA (100) 99.NA (150) 100.Nf3 (152)", 2, 152, CheckmateOrStalemate.NA, 1,
+        InsufficientMaterial.NONE, "1r1nk2r/2pb1pp1/1p1n3Q/p2pp2p/P3P2P/1R1PbN1N/1PP2PP1/qBB1K3 w - - 0 101"));
+    list.add(new PgnTestCase("from_fen_one_move_half_move_clock_150_black_to_move.pgn", "",
+        "25...NA (1) 75.NA (100) 100.NA (150) 100...Kb8 (151)", -1, 151, CheckmateOrStalemate.NA, 1,
+        InsufficientMaterial.NONE, "1k6/2R1Q3/5N2/5pP1/5P2/8/PPP1P3/K7 w - - 151 101"));
+    list.add(new PgnTestCase("from_fen_one_move_half_move_clock_150_white_to_move.pgn", "",
+        "25.NA (1) 74...NA (100) 99...NA (150) 100.Nf4 (151)", -1, 151, CheckmateOrStalemate.NA, 1,
+        InsufficientMaterial.NONE, "1r1nk2r/2pb1pp1/1p1n3Q/p2pp1bp/P3PN1P/1R1PR3/1PP2PP1/qBB1K1N1 b - - 151 100"));
+    list.add(new PgnTestCase("from_fen_one_move_half_move_clock_151_black_to_move.pgn", "",
+        "25.NA (1) 74...NA (100) 99...NA (150) 100...Nb5 (152)", -1, 152, CheckmateOrStalemate.NA, 1,
+        InsufficientMaterial.NONE, "1r1nk2r/2pb1pp1/1p5Q/pn1pp1bp/P3P2P/1R1PR2N/1PP2PP1/qBB1K1N1 w - - 152 101"));
+    list.add(new PgnTestCase("from_fen_one_move_half_move_clock_151_white_to_move.pgn", "",
+        "24...NA (1) 74.NA (100) 99.NA (150) 100.Nf3 (152)", -1, 152, CheckmateOrStalemate.NA, 1,
+        InsufficientMaterial.NONE, "1r1nk2r/2pb1pp1/1p1n3Q/p2pp1bp/P3P2P/1R1PRN1N/1PP2PP1/qBB1K3 b - - 152 100"));
+    list.add(new PgnTestCase("from_fen_pawn_first_move_half_move_clock_150_black_to_move.pgn", "",
+        "25...NA (1) 75.NA (100) 100.NA (150)", -1, 150, CheckmateOrStalemate.NA, 1, InsufficientMaterial.NONE,
+        "k7/2R1Q3/5N2/6P1/5p2/5P2/PPP1P3/K7 w - - 0 101"));
+    list.add(new PgnTestCase("from_fen_pawn_first_move_half_move_clock_150_white_to_move.pgn", "",
+        "25.NA (1) 74...NA (100) 99...NA (150)", -1, 150, CheckmateOrStalemate.NA, 1, InsufficientMaterial.NONE,
+        "1r1nk2r/2pb1pp1/1p1n3Q/p2pp1bp/P3P2P/1R1PR1PN/1PP2P2/qBB1K1N1 b - - 0 100"));
+    list.add(new PgnTestCase("from_fen_pawn_first_move_half_move_clock_151_black_to_move.pgn", "",
+        "25.NA (1) 74...NA (100) 99...NA (150) 100.NA (151)", -1, 151, CheckmateOrStalemate.NA, 1,
+        InsufficientMaterial.NONE, "1r1nk2r/2pb1pp1/1p1n3Q/p3p1bp/P2pP2P/1R1PR2N/1PP2PP1/qBB1K1N1 w - - 0 101"));
+    list.add(new PgnTestCase("from_fen_pawn_first_move_half_move_clock_151_white_to_move.pgn", "",
+        "24...NA (1) 74.NA (100) 99.NA (150) 99...NA (151)", -1, 151, CheckmateOrStalemate.NA, 1,
+        InsufficientMaterial.NONE, "1r1nk2r/2pb1pp1/1p1n3Q/p2pp1bp/P3P1PP/1R1PR2N/1PP2P2/qBB1K1N1 b - g3 0 100"));
+    list.add(new PgnTestCase("from_fen_repetition_from_one_move_black_to_move_sixfold.pgn",
+        "repPos=6: 17...Qd7 19...Nb8 21...Bf8 23...Qd7 25...Qd7 27...Bf8", "", -1, 21, CheckmateOrStalemate.NA, 6,
+        InsufficientMaterial.NONE, "1n2kb1r/p2q1ppp/8/4p1B1/4P3/8/PPP2PPP/2KR4 w k - 21 28"));
+    list.add(new PgnTestCase("from_fen_repetition_from_one_move_white_to_move_sixfold.pgn",
+        "repPos=6: 17.Qa4 19.Qa4 21.Qa4 23.Qa4 25.Rf1 27.Kg1", "", -1, 21, CheckmateOrStalemate.NA, 6,
+        InsufficientMaterial.NONE, "r1b2r2/pp1pk1pp/8/7q/Q2pP1n1/5N1P/PP3PP1/3R1RK1 b - - 21 27"));
+    list.add(new PgnTestCase("from_fen_repetition_from_three_moves_black_to_move_sixfold.pgn",
+        "repPos=6: 6...g3 8...Nb8 10...Bf8 12...Qh4 14...Qh4 16...Ng8", "", -1, 20, CheckmateOrStalemate.NA, 6,
+        InsufficientMaterial.NONE, "rnb1kbnr/pppp1p1p/8/4N3/2B1Pp1q/6p1/PPPP2PP/RNBQ1K1R w kq - 20 17"));
+    list.add(new PgnTestCase("from_fen_repetition_from_three_moves_white_to_move_sixfold.pgn",
+        "repPos=6: 14.f4 16.Qc3 18.Nd2 20.Ra1 22.Kg1 24.Bg2", "", -1, 20, CheckmateOrStalemate.NA, 6,
+        InsufficientMaterial.NONE, "r4rk1/p1pq1ppp/1pn1p3/1b2P3/1Pp2Pn1/2Q3P1/PB1NP1BP/R4RK1 b - - 20 24"));
+    list.add(new PgnTestCase("from_fen_repetition_from_two_moves_black_to_move_sixfold.pgn",
+        "repPos=6: 13.a4 15.Qd1 17.Nc3 19.Bc4 21.Ng5 23.Kg1", "", -1, 20, CheckmateOrStalemate.NA, 6,
+        InsufficientMaterial.NONE, "r2qk2r/pppbnpp1/1bn4p/4p1N1/P1BP4/2N5/5PPP/R1BQR1K1 b kq - 20 23"));
+    list.add(new PgnTestCase("from_fen_repetition_from_two_moves_white_to_move_sixfold.pgn",
+        "repPos=6: 23...Qc8 25...Rf8 27...Nh5 29...Kg8 31...Bd7 33...Bb6", "", -1, 22, CheckmateOrStalemate.NA, 6,
+        InsufficientMaterial.NONE, "r1q2rk1/3b1ppp/nb1p4/1p1Pp2n/1P2P3/4BN1P/1Q2RPP1/RB3NK1 w - - 22 34"));
+    list.add(new PgnTestCase("from_fen_repetition_from_zero_moves_black_to_move_sixfold.pgn",
+        "repPos=6: 57.Qe3 59.Qe3 61.Nd2 63.Kg1 65.Nf5", "", -1, 20, CheckmateOrStalemate.NA, 6,
+        InsufficientMaterial.NONE, "r2q2n1/1bpk1pp1/p2b3p/1p2pN2/P2PP3/R1P1Q3/1P1N1PPP/2B2RK1 b - - 20 65"));
+    list.add(new PgnTestCase("from_fen_repetition_from_zero_moves_white_to_move_sixfold.pgn",
+        "repPos=6: 51...Nf6 53...Nf6 55...Nf6 57...Nf6 59...Nf6", "", -1, 30, CheckmateOrStalemate.NA, 6,
+        InsufficientMaterial.NONE, "r1bqkb1r/1pp2ppp/p1p2n2/4p2Q/P3P3/8/1PPP1PPP/RNB1K1NR w KQkq - 30 60"));
+    list.add(new PgnTestCase("from_fen_three_moves_half_move_clock_149_black_to_move.pgn", "",
+        "26.NA (1) 75...NA (100) 100...Rb7 (150) 101...Ra7 (152)", -1, 152, CheckmateOrStalemate.NA, 1,
+        InsufficientMaterial.NONE, "3nk2r/r1pb1pp1/1p5Q/p2ppnbp/P3P2P/1R1PR2N/1PP2PP1/qBBK2N1 w - - 152 102"));
+    list.add(new PgnTestCase("from_fen_three_moves_half_move_clock_149_white_to_move.pgn", "",
+        "25...NA (1) 75.NA (100) 100.Kh1 (150) 101.Qd1 (152)", -1, 152, CheckmateOrStalemate.NA, 1,
+        InsufficientMaterial.NONE, "1rb1kb1r/pp1p1ppp/2p5/3Bp3/PR1NP2q/Bn2N3/2PP1PPP/3Q1R1K b k - 152 101"));
+    list.add(new PgnTestCase("from_fen_three_moves_half_move_clock_150_black_to_move.pgn", "",
+        "25...NA (1) 75.NA (100) 100.NA (150) 101...Ka8 (153)", -1, 153, CheckmateOrStalemate.NA, 1,
+        InsufficientMaterial.NONE, "k7/1R2Q3/5N2/5pP1/5P2/8/PPP1P3/K7 w - - 153 102"));
+    list.add(new PgnTestCase("from_fen_three_moves_half_move_clock_150_white_to_move.pgn", "",
+        "25.NA (1) 74...NA (100) 99...NA (150) 101.Nfe2 (153)", -1, 153, CheckmateOrStalemate.NA, 1,
+        InsufficientMaterial.NONE, "1r1nk2r/1npb1pp1/1p5Q/p2pp1bp/P3P2P/1R1PR3/1PP1NPP1/qBB1K1N1 b - - 153 101"));
+    list.add(new PgnTestCase("from_fen_three_moves_half_move_clock_151_black_to_move.pgn", "",
+        "25.NA (1) 74...NA (100) 99...NA (150) 101...Nd4 (154)", -1, 154, CheckmateOrStalemate.NA, 1,
+        InsufficientMaterial.NONE, "1r1nk2r/2pb1pp1/1pQ5/p2pp1bp/P2nP2P/1R1PR2N/1PP2PP1/qBB1K1N1 w - - 154 102"));
+    list.add(new PgnTestCase("from_fen_three_moves_half_move_clock_151_white_to_move.pgn", "",
+        "24...NA (1) 74.NA (100) 99.NA (150) 101.Nfg1 (154)", -1, 154, CheckmateOrStalemate.NA, 1,
+        InsufficientMaterial.NONE, "1r2k2r/1npb1pp1/1p1n3Q/p2pp1bp/P3P2P/1R1PR2N/1PP2PP1/qBB1K1N1 b - - 154 101"));
+    list.add(new PgnTestCase("from_fen_two_moves_half_move_clock_149_black_to_move.pgn", "",
+        "26.NA (1) 75...NA (100) 100...Rb7 (150) 101.Kd1 (151)", -1, 151, CheckmateOrStalemate.NA, 1,
+        InsufficientMaterial.NONE, "3nk2r/1rpb1pp1/1p5Q/p2ppnbp/P3P2P/1R1PR2N/1PP2PP1/qBBK2N1 b - - 151 101"));
+    list.add(new PgnTestCase("from_fen_two_moves_half_move_clock_149_white_to_move.pgn", "",
+        "25...NA (1) 75.NA (100) 100.Kh1 (150) 100...Qh4 (151)", -1, 151, CheckmateOrStalemate.NA, 1,
+        InsufficientMaterial.NONE, "1rb1kb1r/pp1p1ppp/2p5/3Bp3/PR1NP2q/Bn2NQ2/2PP1PPP/5R1K w k - 151 101"));
+    list.add(new PgnTestCase("from_fen_two_moves_half_move_clock_150_black_to_move.pgn", "",
+        "25...NA (1) 75.NA (100) 100.NA (150) 101.Rb7+ (152)", -1, 152, CheckmateOrStalemate.NA, 1,
+        InsufficientMaterial.NONE, "1k6/1R2Q3/5N2/5pP1/5P2/8/PPP1P3/K7 b - - 152 101"));
+    list.add(new PgnTestCase("from_fen_two_moves_half_move_clock_150_white_to_move.pgn", "",
+        "25.NA (1) 74...NA (100) 99...NA (150) 100...N6b7 (152)", -1, 152, CheckmateOrStalemate.NA, 1,
+        InsufficientMaterial.NONE, "1r1nk2r/1npb1pp1/1p5Q/p2pp1bp/P3PN1P/1R1PR3/1PP2PP1/qBB1K1N1 w - - 152 101"));
+    list.add(new PgnTestCase("from_fen_two_moves_half_move_clock_151_black_to_move.pgn", "",
+        "25.NA (1) 74...NA (100) 99...NA (150) 101.Qc6 (153)", -1, 153, CheckmateOrStalemate.NA, 1,
+        InsufficientMaterial.NONE, "1r1nk2r/2pb1pp1/1pQ5/pn1pp1bp/P3P2P/1R1PR2N/1PP2PP1/qBB1K1N1 b - - 153 101"));
+    list.add(new PgnTestCase("from_fen_two_moves_half_move_clock_151_white_to_move.pgn", "",
+        "24...NA (1) 74.NA (100) 99.NA (150) 100...N8b7 (153)", -1, 153, CheckmateOrStalemate.NA, 1,
+        InsufficientMaterial.NONE, "1r2k2r/1npb1pp1/1p1n3Q/p2pp1bp/P3P2P/1R1PRN1N/1PP2PP1/qBB1K3 w - - 153 101"));
+
     return new PgnTestCaseList(PgnTest.PARSER_FROM_FEN, list);
   }
 
@@ -1885,6 +2077,20 @@ public class PgnTestCaseCatalog {
 
     list.add(new PgnTestCase("05_random_no_repetition.pgn", "", "", 18, 79, CheckmateOrStalemate.NA, 1,
         InsufficientMaterial.WHITE_ONLY, "4k3/8/3B4/8/8/8/4q3/K7 b - - 79 182"));
+
+    // Reactivated from pgnParser/legacy/common/beyond — long random games crossing 75-move.
+    list.add(new PgnTestCase("01_random_no_repetition.pgn", "",
+        "162.Rd3 (1) 211...Kh8 (100) 236...Ka8 (150) 1145...Ka1 (1968)", 10, 1968, CheckmateOrStalemate.NA, 1,
+        InsufficientMaterial.BLACK_ONLY, "7K/8/8/8/8/1R6/8/k7 w - - 1968 1146"));
+    list.add(new PgnTestCase("02_random_no_repetition.pgn", "",
+        "180...Ke8 (1) 230.Ka8 (100) 255.Kg6 (150) 880.Kh1 (1400)", 10, 1400, CheckmateOrStalemate.NA, 1,
+        InsufficientMaterial.WHITE_ONLY, "8/8/8/8/1k6/8/4r3/7K b - - 1400 880"));
+    list.add(new PgnTestCase("03_random_no_repetition.pgn", "",
+        "106.Rg5 (1) 155...Kg1 (100) 180...Kd7 (150) 457...Kh8 (704)", 14, 704, CheckmateOrStalemate.NA, 1,
+        InsufficientMaterial.BLACK_ONLY, "7k/3K4/8/8/8/6R1/8/8 w - - 704 458"));
+    list.add(new PgnTestCase("04_random_no_repetition.pgn", "",
+        "122...Kc7 (1) 172.Rd1 (100) 189.Re2 (134); 190.Re6+ (1) 239...Kf4 (100) 246.Rd8 (113); 247.Kb3 (1) 296...Ka5 (100) 321...Kg1 (150) 324...Kh1 (156)",
+        27, 156, CheckmateOrStalemate.NA, 1, InsufficientMaterial.BLACK_ONLY, "8/8/8/8/4K3/8/4R3/7k w - - 156 325"));
 
     return new PgnTestCaseList(PgnTest.RANDOM_NO_REPETITION, list);
   }
@@ -2413,6 +2619,17 @@ public class PgnTestCaseCatalog {
     list.add(new PgnTestCase("wikipedia_threefold_4_1_pillsbury_burn_1898.pgn",
         "repPos=3: 42...Qe3 46...Kg7 50...Kg7; repPos=3: 43.Qb2 47.Qb2 51.Qb2", "", 8, 42, CheckmateOrStalemate.NA, 1,
         InsufficientMaterial.NONE, "8/5Q2/8/P6p/7P/1q2p1P1/kp5K/8 w - - 2 91"));
+
+    // Reactivated from pgnParser/legacy/common/beyond — Wikipedia 3-fold examples that actually play past 5-fold.
+    list.add(new PgnTestCase("wikipedia_threefold_4_0_1_pest_paris.pgn",
+        "repPos=5: 18...Nb6 20...Bc7 22...Bc7 24...Bc7 26...Bc7; repPos=5: 19.Nc5 21.Nc5 23.Nc5 25.Nc5 27.Nc5; repPos=4: 19...Bd6 21...Bd6 23...Bd6 25...Bd6; repPos=4: 20.N5e4 22.N5e4 24.N5e4 26.N5e4",
+        "", 5, 23, CheckmateOrStalemate.NA, 1, InsufficientMaterial.NONE,
+        "1r3rk1/p1b3pp/1np5/2N5/2pP4/2Nb4/PP2RPPP/R1B3K1 w - - 23 28"));
+    list.add(new PgnTestCase("wikipedia_threefold_4_0_1_pest_paris_six_fold.pgn",
+        "repPos=6: 18...Nb6 20...Bc7 22...Bc7 24...Bc7 26...Bc7 28...Bc7; repPos=5: 19.Nc5 21.Nc5 23.Nc5 25.Nc5 27.Nc5; repPos=5: 19...Bd6 21...Bd6 23...Bd6 25...Bd6 27...Bd6; repPos=5: 20.N5e4 22.N5e4 24.N5e4 26.N5e4 28.N5e4",
+        "", 5, 25, CheckmateOrStalemate.NA, 6, InsufficientMaterial.NONE,
+        "1r3rk1/p1b3pp/1np5/5b2/2pPN3/2N5/PP2RPPP/R1B3K1 w - - 25 29"));
+
     return new PgnTestCaseList(PgnTest.WIKIPEDIA_THREEFOLD, list);
   }
 
@@ -3758,6 +3975,8 @@ public class PgnTestCaseCatalog {
 
     list.add(new PgnTestCase("01_last_move_added_accidentally_result_white_win_last_move_white_draws.pgn", "", "", 27,
         21, CheckmateOrStalemate.NA, 1, InsufficientMaterial.NONE, "8/6Pk/2b5/2P1K3/8/8/8/8 b - - 2 87"));
+    list.add(new PgnTestCase("02_last_move_added_accidentally_result_draw_one_move_in_KvK.pgn", "", "", 22, 13,
+        CheckmateOrStalemate.NA, 1, InsufficientMaterial.BOTH, "8/8/8/3K4/8/8/k7/8 w - - 0 69"));
     list.add(new PgnTestCase("03_last_move_added_accidentally_result_draw_black_last_move_loses.pgn", "", "", 7, 18,
         CheckmateOrStalemate.NA, 1, InsufficientMaterial.NONE, "8/8/8/4k1pP/6K1/8/8/8 w - - 2 69"));
     list.add(new PgnTestCase("04_last_move_added_accidentally_result_draw_black_last_move_loses.pgn", "", "", 8, 13,
@@ -3943,5 +4162,159 @@ public class PgnTestCaseCatalog {
         CheckmateOrStalemate.NA, 5, InsufficientMaterial.NONE, "4k1R1/8/5r2/3K4/8/3B4/8/8 b - - 24 82"));
 
     return new PgnTestCaseList(PgnTest.REPETITION_QUIZ_TWO, list);
+  }
+
+  private static PgnTestCaseList createTestCasesBasicFromFenNoProgressBlack() {
+    final List<PgnTestCase> list = new ArrayList<>();
+    list.add(new PgnTestCase("04_black_from_fen_no_progress_fifty_reoccuring_above_seventy_five.pgn", "",
+        "50...NA (1) 100.NA (100); 101.Qd3 (1) 150...Qe3 (100) 175...Qe3 (150) 179...Qg3 (158)", 1, 158,
+        CheckmateOrStalemate.NA, 1, InsufficientMaterial.NONE, "1Q6/6pk/8/6n1/2N5/6q1/1KP1P3/8 w - - 158 180"));
+    list.add(new PgnTestCase("05_black_from_fen_no_progress_seventy_five_reoccuring_fifty.pgn", "",
+        "13.NA (1) 62...NA (100) 87...NA (150) 100.NA (175); 101.Qd3 (1) 150...Qe3 (100)", 1, 175,
+        CheckmateOrStalemate.NA, 1, InsufficientMaterial.NONE, "8/6p1/7k/6n1/2NQ4/4q3/2P1P3/1K6 w - - 100 151"));
+    list.add(new PgnTestCase("06_black_from_fen_no_progress_seventy_five_reoccuring_seventy_five.pgn", "",
+        "25...NA (1) 75.NA (100) 100.NA (150); 101.Qd3 (1) 150...Qe3 (100) 175...Qe3 (150)", 1, 150,
+        CheckmateOrStalemate.NA, 1, InsufficientMaterial.NONE, "8/6pk/8/6n1/2NQ4/4q3/1KP1P3/8 w - - 150 176"));
+    list.add(new PgnTestCase("07_black_from_fen_no_progress_seventy_five_reoccuring_above_fifty.pgn", "",
+        "25...NA (1) 75.NA (100) 100.NA (150); 101.Qd3 (1) 150...Qe3 (100) 175.Qd4 (149)", 1, 150,
+        CheckmateOrStalemate.NA, 1, InsufficientMaterial.NONE, "8/6pk/8/4q1n1/2NQ4/8/1KP1P3/8 b - - 149 175"));
+    list.add(new PgnTestCase("08_black_from_fen_no_progress_seventy_five_reoccuring_above_seventy_five.pgn", "",
+        "25...NA (1) 75.NA (100) 100.NA (150); 101.Qd3 (1) 150...Qe3 (100) 175...Qe3 (150) 179...Qg3 (158)", 1, 158,
+        CheckmateOrStalemate.NA, 1, InsufficientMaterial.NONE, "1Q6/6pk/8/6n1/2N5/6q1/1KP1P3/8 w - - 158 180"));
+    list.add(new PgnTestCase("12_black_from_fen_no_progress_above_fifty_reoccuring_above_seventy_five.pgn", "",
+        "44.NA (1) 93...NA (100) 100.NA (113); 101.Qd3 (1) 150...Qe3 (100) 175...Qe3 (150) 179...Qg3 (158)", 1, 158,
+        CheckmateOrStalemate.NA, 1, InsufficientMaterial.NONE, "1Q6/6pk/8/6n1/2N5/6q1/1KP1P3/8 w - - 158 180"));
+    list.add(new PgnTestCase("13_black_from_fen_no_progress_above_seventy_five_reoccuring_fifty.pgn", "",
+        "20...NA (1) 70.NA (100) 95.NA (150) 100.NA (160); 101.Qd3 (1) 150...Qe3 (100)", 1, 160,
+        CheckmateOrStalemate.NA, 1, InsufficientMaterial.NONE, "8/6p1/7k/6n1/2NQ4/4q3/2P1P3/1K6 w - - 100 151"));
+    list.add(new PgnTestCase("14_black_from_fen_no_progress_above_seventy_five_reoccuring_seventy_five.pgn", "",
+        "20.NA (1) 69...NA (100) 94...NA (150) 100.NA (161); 101.Qd3 (1) 150...Qe3 (100) 175...Qe3 (150)", 1, 161,
+        CheckmateOrStalemate.NA, 1, InsufficientMaterial.NONE, "8/6pk/8/6n1/2NQ4/4q3/1KP1P3/8 w - - 150 176"));
+    list.add(new PgnTestCase("15_black_from_fen_no_progress_above_seventy_five_reoccuring_above_fifty.pgn", "",
+        "19...NA (1) 69.NA (100) 94.NA (150) 100.NA (162); 101.Qd3 (1) 150...Qe3 (100) 175.Qd4 (149)", 1, 162,
+        CheckmateOrStalemate.NA, 1, InsufficientMaterial.NONE, "8/6pk/8/4q1n1/2NQ4/8/1KP1P3/8 b - - 149 175"));
+    list.add(new PgnTestCase("16_black_from_fen_no_progress_above_seventy_five_reoccuring_above_seventy_five.pgn", "",
+        "19.NA (1) 68...NA (100) 93...NA (150) 100.NA (163); 101.Qd3 (1) 150...Qe3 (100) 175...Qe3 (150) 179...Qg3 (158)",
+        1, 163, CheckmateOrStalemate.NA, 1, InsufficientMaterial.NONE, "1Q6/6pk/8/6n1/2N5/6q1/1KP1P3/8 w - - 158 180"));
+    return new PgnTestCaseList(PgnTest.BASIC_FROM_FEN_NO_PROGRESS_BLACK, list);
+  }
+
+  private static PgnTestCaseList createTestCasesBasicFromFenNoProgressWhite() {
+    final List<PgnTestCase> list = new ArrayList<>();
+    list.add(new PgnTestCase("04_white_from_fen_no_progress_fifty_reoccuring_above_seventy_five.pgn", "",
+        "50.NA (1) 99...NA (100); 100...Qb6 (1) 150.Qd4+ (100) 175.Qc8 (150) 189.Qb3 (178)", -1, 178,
+        CheckmateOrStalemate.NA, 1, InsufficientMaterial.NONE, "8/3pk3/2p1p3/8/7P/qQ3PP1/6K1/8 b - - 178 189"));
+    list.add(new PgnTestCase("05_white_from_fen_no_progress_seventy_five_reoccuring_fifty.pgn", "",
+        "25.NA (1) 74...NA (100) 99...NA (150); 100...Qb6 (1) 150.Qd4+ (100)", -1, 150, CheckmateOrStalemate.NA, 1,
+        InsufficientMaterial.NONE, "8/3p4/1kp1p3/8/2qQ3P/5PPK/8/8 b - - 100 150"));
+    list.add(new PgnTestCase("06_white_from_fen_no_progress_seventy_five_reoccuring_seventy_five.pgn", "",
+        "25.NA (1) 74...NA (100) 99...NA (150); 100...Qb6 (1) 150.Qd4+ (100) 175.Qc8 (150)", -1, 150,
+        CheckmateOrStalemate.NA, 1, InsufficientMaterial.NONE, "2Q5/3p1q2/2pkp3/8/7P/5PPK/8/8 b - - 150 175"));
+    list.add(new PgnTestCase("07_white_from_fen_no_progress_seventy_five_reoccuring_above_fifty.pgn", "",
+        "25.NA (1) 74...NA (100) 99...NA (150); 100...Qb6 (1) 150.Qd4+ (100) 174...Qf7 (149)", -1, 150,
+        CheckmateOrStalemate.NA, 1, InsufficientMaterial.NONE, "Q7/3p1q2/2pkp3/8/7P/5PPK/8/8 w - - 149 175"));
+    list.add(new PgnTestCase("08_white_from_fen_no_progress_seventy_five_reoccuring_above_seventy_five.pgn", "",
+        "25.NA (1) 74...NA (100) 99...NA (150); 100...Qb6 (1) 150.Qd4+ (100) 175.Qc8 (150) 189.Qb3 (178)", -1, 178,
+        CheckmateOrStalemate.NA, 1, InsufficientMaterial.NONE, "8/3pk3/2p1p3/8/7P/qQ3PP1/6K1/8 b - - 178 189"));
+    list.add(new PgnTestCase("12_white_from_fen_no_progress_above_fifty_reoccuring_above_seventy_five.pgn", "",
+        "43...NA (1) 93.NA (100) 99...NA (113); 100...Qb6 (1) 150.Qd4+ (100) 175.Qc8 (150) 189.Qb3 (178)", -1, 178,
+        CheckmateOrStalemate.NA, 1, InsufficientMaterial.NONE, "8/3pk3/2p1p3/8/7P/qQ3PP1/6K1/8 b - - 178 189"));
+    list.add(new PgnTestCase("13_white_from_fen_no_progress_above_seventy_five_reoccuring_fifty.pgn", "",
+        "20.NA (1) 69...NA (100) 94...NA (150) 99...NA (160); 100...Qb6 (1) 150.Qd4+ (100)", -1, 160,
+        CheckmateOrStalemate.NA, 1, InsufficientMaterial.NONE, "8/3p4/1kp1p3/8/2qQ3P/5PPK/8/8 b - - 100 150"));
+    list.add(new PgnTestCase("14_white_from_fen_no_progress_above_seventy_five_reoccuring_seventy_five.pgn", "",
+        "19...NA (1) 69.NA (100) 94.NA (150) 99...NA (161); 100...Qb6 (1) 150.Qd4+ (100) 175.Qc8 (150)", -1, 161,
+        CheckmateOrStalemate.NA, 1, InsufficientMaterial.NONE, "2Q5/3p1q2/2pkp3/8/7P/5PPK/8/8 b - - 150 175"));
+    list.add(new PgnTestCase("15_white_from_fen_no_progress_above_seventy_five_reoccuring_above_fifty.pgn", "",
+        "19.NA (1) 68...NA (100) 93...NA (150) 99...NA (162); 100...Qb6 (1) 150.Qd4+ (100) 174...Qf7 (149)", -1, 162,
+        CheckmateOrStalemate.NA, 1, InsufficientMaterial.NONE, "Q7/3p1q2/2pkp3/8/7P/5PPK/8/8 w - - 149 175"));
+    list.add(new PgnTestCase("16_white_from_fen_no_progress_above_seventy_five_reoccuring_above_seventy_five.pgn", "",
+        "18...NA (1) 68.NA (100) 93.NA (150) 99...NA (163); 100...Qb6 (1) 150.Qd4+ (100) 175.Qc8 (150) 189.Qb3 (178)",
+        -1, 178, CheckmateOrStalemate.NA, 1, InsufficientMaterial.NONE,
+        "8/3pk3/2p1p3/8/7P/qQ3PP1/6K1/8 b - - 178 189"));
+    return new PgnTestCaseList(PgnTest.BASIC_FROM_FEN_NO_PROGRESS_WHITE, list);
+  }
+
+  private static PgnTestCaseList createTestCasesFivefoldBeyond() {
+    final List<PgnTestCase> list = new ArrayList<>();
+    list.add(new PgnTestCase("fivefold_beyond_savchenko_yu_y2017.pgn",
+        "repPos=3: 68.Rf6 70.Kf3 72.Kf3; repPos=5: 75.Kf3 77.Kf3 79.Rf6 83.Rf6 85.Rf6; repPos=3: 78.Rh6 80.Rh6 82.Kf3",
+        "", 20, 43, CheckmateOrStalemate.NA, 1, InsufficientMaterial.NONE, "8/8/1k2K3/1P2p3/2n1P3/8/8/3n4 w - - 0 96"));
+    list.add(new PgnTestCase("fivefold_beyond_wang_yu_2017.pgn",
+        "repPos=4: 40.f4 42.Kd5 46.Kd5 56.Kd5; repPos=5: 40...Kc7 42...Kc7 44...Kc7 46...Kc7 48...Kc7; repPos=3: 41.Kc5 45.Kc5 49.Kc5; repPos=4: 41...Kd7 45...Kd7 49...Kd7 57...Bg7",
+        "", 17, 36, CheckmateOrStalemate.NA, 1, InsufficientMaterial.NONE, "8/5p2/8/4N1P1/8/b2P1pk1/3K4/8 w - - 0 69"));
+    list.add(new PgnTestCase("fivefold_beyond_yu_alekseenko_2018.pgn",
+        "repPos=4: 68...Qe3+ 72...Qe3+ 76...Qe3+ 78...Qe3+; repPos=4: 69.Kg2 73.Kg2 77.Kg2 79.Kg2; repPos=3: 69...Qe2+ 73...Qe2+ 75...Qe2+; repPos=3: 70.Kg3 74.Kg3 76.Kg3; repPos=7: 83.Qa8+ 85.Qa8+ 87.Qa8+ 89.Qa8+ 91.Qa8+ 93.Qa8+ 95.Qa8+; repPos=4: 83...Kb6 85...Kb6 87...Kb6 91...Kb6; repPos=4: 84.Qb8+ 86.Qb8+ 88.Qb8+ 92.Qb8+; repPos=4: 84...Kc6 86...Kc6 88...Kc6 92...Kc6",
+        "", 4, 32, CheckmateOrStalemate.CHECKMATE, 1, InsufficientMaterial.NONE,
+        "8/2p5/p3r3/1p1Q2R1/2k2P2/P3q3/1P4K1/8 b - - 32 97"));
+    return new PgnTestCaseList(PgnTest.FIVEFOLD_BEYOND, list);
+  }
+
+  private static PgnTestCaseList createTestCasesSeventyFiveBeyond() {
+    final List<PgnTestCase> list = new ArrayList<>();
+    list.add(new PgnTestCase("seventy_five_beyond_anton_guijarro_antipov_2015.pgn",
+        "repPos=3: 122.Kh3 126.Kh3 128.Kh3; repPos=3: 124.Kh3 130.Kh3 132.Kh3",
+        "62...Nd7 (1) 112.Kg2 (100) 137.Kg2 (150) 147...Kg4 (171)", 34, 171, CheckmateOrStalemate.NA, 1,
+        InsufficientMaterial.NONE, "8/3n4/3P4/8/6k1/4n3/7K/8 w - - 171 148"));
+    list.add(new PgnTestCase("seventy_five_beyond_aronian_navara_2017.pgn", "repPos=3: 46...Bb3 48...Kf7 50...Bb3",
+        "64...Kf6 (1) 114.Re6+ (100) 139.Kf6 (150) 147...Kh6 (167)", 8, 167, CheckmateOrStalemate.NA, 1,
+        InsufficientMaterial.NONE, "8/3R4/5K1k/7p/7P/5b2/8/8 w - - 167 148"));
+    list.add(new PgnTestCase("seventy_five_beyond_cheparinov_jones_2019.pgn", "",
+        "69.Ke4 (1) 118...Ra6 (100) 143...Kc4 (150) 144...Rg6 (152)", 6, 152, CheckmateOrStalemate.NA, 1,
+        InsufficientMaterial.NONE, "8/8/6r1/K6R/2k5/8/2n5/8 w - - 152 145"));
+    list.add(new PgnTestCase("seventy_five_beyond_moiseenko_radjabov_2016.pgn",
+        "repPos=3: 135...Kf8 137...Rd1 139...Kf8", "87...Ke6 (1) 137.Rb7 (100) 162.Rc1 (150) 182...Rb1+ (191)", 16, 191,
+        CheckmateOrStalemate.NA, 1, InsufficientMaterial.NONE, "1k6/3R4/8/1K1N4/8/8/8/1r6 w - - 191 183"));
+    list.add(new PgnTestCase("seventy_five_beyond_onischuk_guseinov_2014.pgn", "",
+        "62.Be3+ (1) 111...Nc6 (100) 136...Kg5 (150) 138.Bd6 (153)", 6, 153, CheckmateOrStalemate.NA, 1,
+        InsufficientMaterial.NONE, "8/8/3Bn3/8/4B1k1/4K3/8/8 b - - 153 138"));
+    // "various_*" historical games: filename uses "various" but the gameplay characteristic is crossing the 75-move
+    // threshold, so they live under SEVENTY_FIVE_BEYOND rather than the catch-all VARIOUS bucket.
+    list.add(new PgnTestCase("various_drozdova_tan_2018.pgn", "",
+        "72.Kf4 (1) 121...Nd5 (100) 146...Ne4 (150) 155...Bh3 (168)", 8, 168, CheckmateOrStalemate.NA, 1,
+        InsufficientMaterial.WHITE_ONLY, "8/8/8/8/8/3n1k1b/8/6K1 w - - 168 156"));
+    list.add(new PgnTestCase("various_kevlishvili_zhigalko_2018.pgn",
+        "repPos=4: 95.Kd3 101.Nf5 144.Nf5 166.Kd3; repPos=3: 95...Nd4 99...Nd4 132...Nd4; repPos=3: 96.Ne7 100.Ne7 133.Ne7; repPos=3: 96...Nc6 131...Nc6 133...Nc6; repPos=3: 97.Nf5 132.Nf5 134.Nf5; repPos=3: 101...Kc6 144...Kc6 166...Kc6; repPos=3: 102.Ne7+ 145.Ne7+ 167.Ne7+; repPos=3: 102...Kd7 145...Kd7 167...Kd7; repPos=3: 103.Nf5 146.Nf5 168.Nf5; repPos=3: 103...Nc5+ 146...Nc5+ 168...Nc5+; repPos=3: 104.Ke3 147.Ke3 169.Ke3; repPos=3: 104...Ke6 147...Ke6 169...Ke6; repPos=3: 105.Ng3 148.Ng3 170.Ng3; repPos=3: 106.Ne2 108.Ne2 171.Ne2",
+        "64.Nd5 (1) 113...Kc6 (100) 138...Nf6 (150) 180.Kc4 (233)", 6, 233, CheckmateOrStalemate.NA, 1,
+        InsufficientMaterial.NONE, "8/8/8/8/5N1n/4K3/8/3k4 b - - 0 192"));
+    return new PgnTestCaseList(PgnTest.SEVENTY_FIVE_BEYOND, list);
+  }
+
+  private static PgnTestCaseList createTestCasesLong() {
+    final List<PgnTestCase> list = new ArrayList<>();
+    list.add(new PgnTestCase("long_nikolic_arsovic_1989.pgn",
+        "repPos=3: 96.Rf5 98.Kd1 102.Kd1; repPos=3: 96...Rh1+ 98...Rh1+ 102...Rh1+; repPos=3: 145...Ra8 147...Ra8 151...Ra8; repPos=3: 203...Rf6+ 205...Rf6+ 207...Rf6+",
+        "112.Rh8 (1) 161...Rc8 (100) 166...Rb5 (110); 167...Rb4+ (1) 217.Rh7 (100) 242.Kc3 (150) 269...Rg7 (205)", 33,
+        205, CheckmateOrStalemate.NA, 1, InsufficientMaterial.NONE, "8/6r1/8/8/3K4/3B4/5R2/3k4 w - - 205 270"));
+    return new PgnTestCaseList(PgnTest.LONG, list);
+  }
+
+  private static PgnTestCaseList createTestCasesLongestMate() {
+    final List<PgnTestCase> list = new ArrayList<>();
+    list.add(new PgnTestCase("longest_mate_seven_pieces_rank_1.pgn", "",
+        "43...Ke6 (1) 93.Kh3 (100) 118.Qe8 (150) 545...Kc5 (1005)", 6, 1005, CheckmateOrStalemate.CHECKMATE, 1,
+        InsufficientMaterial.BLACK_ONLY, "8/8/6Qk/5Kb1/8/8/8/8 b - - 20 586"));
+    list.add(new PgnTestCase("longest_mate_seven_pieces_rank_2.pgn", "",
+        "41...Kd6 (1) 91.Ka3 (100) 116.Qd8 (150) 545.Nc5+ (1008)", 5, 1008, CheckmateOrStalemate.CHECKMATE, 1,
+        InsufficientMaterial.BLACK_ONLY, "8/8/2K5/k7/8/Q7/8/8 b - - 8 584"));
+    list.add(new PgnTestCase("longest_mate_seven_pieces_rank_3.pgn", "",
+        "45...Rg4+ (1) 95.Qd8+ (100) 120.Qb6 (150) 551.Nc5+ (1012)", 5, 1012, CheckmateOrStalemate.CHECKMATE, 1,
+        InsufficientMaterial.BLACK_ONLY, "8/8/2K5/k7/8/Q7/8/8 b - - 8 590"));
+    list.add(new PgnTestCase("longest_mate_seven_pieces_rank_4.pgn", "",
+        "24...Kf8 (1) 74.Kf1 (100) 99.Qh8 (150) 550...Bb5 (1053)", 3, 1053, CheckmateOrStalemate.CHECKMATE, 1,
+        InsufficientMaterial.BLACK_ONLY, "8/8/5K2/6Qk/8/8/8/8 b - - 4 585"));
+    list.add(new PgnTestCase("longest_mate_seven_pieces_rank_5.pgn", "",
+        "38.Kb4 (1) 87...Rf7 (100) 112...Bc4 (150) 535.Nc5+ (995)", 5, 995, CheckmateOrStalemate.CHECKMATE, 1,
+        InsufficientMaterial.BLACK_ONLY, "8/8/2K5/k7/8/Q7/8/8 b - - 8 574"));
+    list.add(new PgnTestCase("longest_mate_seven_pieces_rank_6.pgn", "",
+        "53.Kc2 (1) 102...Kd2 (100) 127...Kf5 (150) 541...Bd2 (978)", 14, 978, CheckmateOrStalemate.CHECKMATE, 1,
+        InsufficientMaterial.BLACK_ONLY, "8/8/8/2K5/kQ6/8/8/8 b - - 6 576"));
+    list.add(new PgnTestCase("longest_mate_seven_pieces_rank_7.pgn", "",
+        "61...Ne5 (1) 111.Kc8 (100) 136.Kf8 (150) 529...Kc5 (937)", 5, 937, CheckmateOrStalemate.CHECKMATE, 1,
+        InsufficientMaterial.BLACK_ONLY, "8/8/6Qk/5Kb1/8/8/8/8 b - - 20 570"));
+    list.add(new PgnTestCase("longest_mate_seven_pieces_rank_8.pgn", "",
+        "57...Kc3 (1) 107.Kb7 (100) 132.Qe1 (150) 481...Bd2 (849)", 13, 849, CheckmateOrStalemate.CHECKMATE, 1,
+        InsufficientMaterial.BLACK_ONLY, "8/8/8/2K5/kQ6/8/8/8 b - - 6 516"));
+    return new PgnTestCaseList(PgnTest.LONGEST_MATE, list);
   }
 }
