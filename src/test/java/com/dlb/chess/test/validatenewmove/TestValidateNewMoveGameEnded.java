@@ -99,6 +99,20 @@ class TestValidateNewMoveGameEnded implements EnumConstants {
     check(board, new MoveSpecification(E8, D8), GameStatus.DEAD_POSITION_UNWINNABLE_QUICK);
   }
 
+  // --- precedence: hard blockers win when they coincide with queryable rules ---
+
+  @SuppressWarnings("static-method")
+  @Test
+  void testGameEndedByInsufficientMaterialOverridesSeventyFiveMove() {
+    // KvK with halfmove clock at the 75-move threshold. Both isInsufficientMaterial() and
+    // isSeventyFiveMove() are true — the move pipeline must still reject the move, and the
+    // payload must be the hard blocker (DEAD_POSITION_INSUFFICIENT_MATERIAL), not the
+    // queryable rule. Locks in the BasicChessUtility.calculateGameStatus precedence ordering
+    // at the move-pipeline layer.
+    final Board board = new Board("4k3/8/8/8/8/8/8/4K3 w - - 150 76", false);
+    check(board, new MoveSpecification(E1, E2), GameStatus.DEAD_POSITION_INSUFFICIENT_MATERIAL);
+  }
+
   // --- queryable-only predicates: pipeline does NOT block past these ---
 
   @SuppressWarnings("static-method")

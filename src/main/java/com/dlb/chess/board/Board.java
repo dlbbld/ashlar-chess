@@ -77,10 +77,12 @@ import com.google.common.collect.ImmutableList;
  * {@link #move(MoveSpecification)}, {@link #movesStrict(String...)}, and is undone by {@link #unmove()}. Both
  * move-pipelines validate the candidate against the current legal-move set; an invalid move throws (see
  * {@link com.dlb.chess.exceptions.InvalidMoveException} from the {@code MoveSpecification} pipeline,
- * {@code SanValidationException} from the SAN pipeline). Once the game has reached any FIDE-automatic termination
- * (checkmate, stalemate, mutual insufficient material, quick-unwinnability dead position, fivefold repetition, 75-move
- * rule), neither pipeline accepts further moves. The package-level Javadoc on {@link com.dlb.chess.board} documents the
- * strict-game invariant in detail.
+ * {@code SanValidationException} from the SAN pipeline). Once the game has reached any of the four enforced
+ * FIDE-automatic terminations (checkmate, stalemate, mutual insufficient material, quick-unwinnability dead position),
+ * neither pipeline accepts further moves. Fivefold repetition and the 75-move rule are queryable predicates
+ * ({@link #isFivefoldRepetition()} / {@link #isSeventyFiveMove()}); the move pipeline does <em>not</em> reject moves
+ * on those conditions. The package-level Javadoc on {@link com.dlb.chess.board} documents the strict-game invariant in
+ * detail.
  *
  * <h2>Querying the game</h2>
  *
@@ -271,9 +273,10 @@ public class Board {
   /**
    * Constructs a {@code Board} from a FEN string, validated by the advanced FEN parser. Enforces structural and
    * rule-consistency checks (piece counts within physical bounds, no pawns on rank 1 or 8, castling rights consistent
-   * with king/rook static positions, en-passant target consistent with the side to move, halfmove clock not above the
-   * 75-move-rule threshold of 150, etc.). Does not prove full game reachability — see the {@code com.dlb.chess.fen}
-   * package documentation for the full contract.
+   * with king/rook static positions, en-passant target consistent with the side to move, halfmove clock consistent
+   * with the fullmove number, etc.). The halfmove clock itself is not capped — the FIDE 75-move rule is a queryable
+   * predicate on {@code Board}, not enforced at FEN import. Does not prove full game reachability — see the
+   * {@code com.dlb.chess.fen} package documentation for the full contract.
    */
   public Board(String fen) {
     this(FenParserAdvanced.parseFenAdvanced(fen), true);
