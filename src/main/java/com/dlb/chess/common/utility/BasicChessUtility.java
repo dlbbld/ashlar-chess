@@ -6,7 +6,6 @@ import com.dlb.chess.board.enums.PieceType;
 import com.dlb.chess.board.enums.Side;
 import com.dlb.chess.common.enums.GameStatus;
 import com.dlb.chess.model.LegalMove;
-import com.dlb.chess.unwinnability.DeadPositionQuick;
 
 public abstract class BasicChessUtility {
 
@@ -41,16 +40,15 @@ public abstract class BasicChessUtility {
 
   /**
    * Returns the single most-specific {@link GameStatus} for the given board, with move-blocking statuses checked before
-   * queryable draw predicates. Analyzer-driven dead positions remain reportable here, but do not block further moves.
+   * cheap queryable draw predicates. Does <em>not</em> invoke any unwinnability analyzer:
+   * {@link GameStatus#DEAD_POSITION_UNWINNABLE_QUICK} is never returned. Callers that want the analyzer-driven
+   * dead-position verdict must call {@link Board#isDeadPositionQuick()} (or the full counterpart) directly.
    */
   public static GameStatus calculateGameStatus(Board board) {
 
     final GameStatus moveBlockingStatus = calculateMoveBlockingGameStatus(board);
     if (moveBlockingStatus != GameStatus.ONGOING) {
       return moveBlockingStatus;
-    }
-    if (board.isDeadPositionQuick() == DeadPositionQuick.DEAD_POSITION) {
-      return GameStatus.DEAD_POSITION_UNWINNABLE_QUICK;
     }
     if (board.isFivefoldRepetition()) {
       return GameStatus.FIVE_FOLD_REPETITION_RULE;

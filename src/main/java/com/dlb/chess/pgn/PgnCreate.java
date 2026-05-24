@@ -122,6 +122,8 @@ public class PgnCreate {
         case NONE -> throw new IllegalArgumentException();
         default -> throw new IllegalArgumentException();
       };
+      // DEAD_POSITION_UNWINNABLE_QUICK is unreachable here because calculateGameStatus does not invoke the
+      // analyzer; grouped with the other drawing terminations to keep the switch exhaustive.
       case FIVE_FOLD_REPETITION_RULE, DEAD_POSITION_INSUFFICIENT_MATERIAL, DEAD_POSITION_UNWINNABLE_QUICK -> ResultTagValue.DRAW;
       case INSUFFICIENT_MATERIAL_WHITE_ONLY, INSUFFICIENT_MATERIAL_BLACK_ONLY, ONGOING -> ResultTagValue.ONGOING;
       case SEVENTY_FIVE_MOVE_RULE, STALEMATE -> ResultTagValue.DRAW;

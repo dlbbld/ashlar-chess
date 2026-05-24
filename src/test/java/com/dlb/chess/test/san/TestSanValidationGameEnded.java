@@ -13,6 +13,7 @@ import com.dlb.chess.common.utility.BasicChessUtility;
 import com.dlb.chess.san.SanValidationException;
 import com.dlb.chess.san.SanValidationProblem;
 import com.dlb.chess.san.StrictSanParser;
+import com.dlb.chess.unwinnability.DeadPositionQuick;
 
 /**
  * Surface-level tests for the strict-pipeline game-end pre-check in {@link StrictSanParser#parseText}: one scenario per
@@ -57,7 +58,7 @@ class TestSanValidationGameEnded {
   void testSanAcceptedAtDeadPositionUnwinnableQuickBornDead() {
     // Pawn-wall fortress (horizontal_1 from the CHA pawn-wall corpus).
     final Board board = new Board("4k3/8/8/p1p1p1p1/P1P1P1P1/8/8/4K3 w - - 0 50");
-    assertEquals(GameStatus.DEAD_POSITION_UNWINNABLE_QUICK, BasicChessUtility.calculateGameStatus(board));
+    assertEquals(DeadPositionQuick.DEAD_POSITION, board.isDeadPositionQuick());
     assertDoesNotThrow(() -> StrictSanParser.parseText("Kd1", board),
         "quick-unwinnable dead position is queryable only; the SAN parser must accept the move");
   }
@@ -68,7 +69,7 @@ class TestSanValidationGameEnded {
     // Predecessor: pawn wall with white h-pawn still on h2. h3 completes the lock.
     final Board board = new Board("4k3/8/8/p1p1p1p1/PpPpPpPp/1P1P1P2/7P/4K3 w - - 0 49");
     board.moveStrict("h3");
-    assertEquals(GameStatus.DEAD_POSITION_UNWINNABLE_QUICK, BasicChessUtility.calculateGameStatus(board));
+    assertEquals(DeadPositionQuick.DEAD_POSITION, board.isDeadPositionQuick());
     assertDoesNotThrow(() -> StrictSanParser.parseText("Kd8", board),
         "quick-unwinnable dead position is queryable only; the SAN parser must accept the move");
   }

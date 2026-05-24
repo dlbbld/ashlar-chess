@@ -14,6 +14,7 @@ import com.dlb.chess.common.model.MoveSpecification;
 import com.dlb.chess.common.utility.BasicChessUtility;
 import com.dlb.chess.enums.MoveCheck;
 import com.dlb.chess.exceptions.InvalidMoveException;
+import com.dlb.chess.unwinnability.DeadPositionQuick;
 
 /**
  * Surface-level tests for the strict-pipeline game-end pre-check in
@@ -72,7 +73,7 @@ class TestValidateNewMoveGameEnded implements EnumConstants {
     // and locked pawns; the cheap insufficient-material detector stays quiet because pawns are
     // present, but the CHA quick analyzer classifies the position as dead.
     final Board board = new Board("4k3/8/8/p1p1p1p1/P1P1P1P1/8/8/4K3 w - - 0 50");
-    assertEquals(GameStatus.DEAD_POSITION_UNWINNABLE_QUICK, BasicChessUtility.calculateGameStatus(board));
+    assertEquals(DeadPositionQuick.DEAD_POSITION, board.isDeadPositionQuick());
     assertDoesNotThrow(() -> board.move(new MoveSpecification(E1, D1)),
         "quick-unwinnable dead position is queryable only; the pipeline must accept the move");
   }
@@ -84,7 +85,7 @@ class TestValidateNewMoveGameEnded implements EnumConstants {
     // h-pawn still on h2 (one rank back). White's h3 push completes the lock.
     final Board board = new Board("4k3/8/8/p1p1p1p1/PpPpPpPp/1P1P1P2/7P/4K3 w - - 0 49");
     board.moveStrict("h3");
-    assertEquals(GameStatus.DEAD_POSITION_UNWINNABLE_QUICK, BasicChessUtility.calculateGameStatus(board));
+    assertEquals(DeadPositionQuick.DEAD_POSITION, board.isDeadPositionQuick());
     assertDoesNotThrow(() -> board.move(new MoveSpecification(E8, D8)),
         "quick-unwinnable dead position is queryable only; the pipeline must accept the move");
   }

@@ -24,10 +24,12 @@ package com.dlb.chess.common.enums;
  * <p>
  * The two dead-position values capture the FIDE 5.2.2 "no series of legal moves can lead to checkmate" rule via two
  * detection paths of different costs. {@link #DEAD_POSITION_INSUFFICIENT_MATERIAL} is the cheap detector that fires on
- * mechanical piece-count grounds (KK, KBK, KNK, KBKB-same-color) and still blocks moves. {@link
- * #DEAD_POSITION_UNWINNABLE_QUICK} is the more expensive analyzer-driven detector that catches the rest of the
- * dead-position class within Ambrona's quick unwinnability check (pawn walls and similar); it is surfaced as a
- * queryable status so callers can decide whether to adjudicate.
+ * mechanical piece-count grounds (KK, KBK, KNK, KBKB-same-color) and still blocks moves; it is the value
+ * {@code BasicChessUtility.calculateGameStatus} surfaces. {@link #DEAD_POSITION_UNWINNABLE_QUICK} names the
+ * analyzer-driven dead-position verdict (Ambrona's quick unwinnability check — pawn walls and similar); it is
+ * <em>not</em> returned by {@code calculateGameStatus} because that method intentionally avoids invoking the analyzer.
+ * Callers that want the analyzer-driven verdict invoke {@link com.dlb.chess.board.Board#isDeadPositionQuick()}
+ * directly; the value here is the status word the caller maps the verdict onto.
  *
  * <p>
  * Claimable draws (3-fold repetition, 50-move rule) are NOT represented here — they remain queryable on the board but

@@ -119,6 +119,8 @@ public class ForcedLineOracle {
     return switch (gameForced.gameStatus()) {
       case CHECKMATE -> sideMadeLastMove == sideToEvaluate ? LimitedUnwinnabilityVerdict.WINNABLE
           : LimitedUnwinnabilityVerdict.UNWINNABLE;
+      // DEAD_POSITION_UNWINNABLE_QUICK is unreachable here because calculateGameStatus does not invoke the
+      // analyzer; it is grouped with the other drawing terminations to keep the switch exhaustive.
       case STALEMATE, DEAD_POSITION_INSUFFICIENT_MATERIAL, DEAD_POSITION_UNWINNABLE_QUICK, FIVE_FOLD_REPETITION_RULE, SEVENTY_FIVE_MOVE_RULE -> LimitedUnwinnabilityVerdict.UNWINNABLE;
       case INSUFFICIENT_MATERIAL_WHITE_ONLY -> sideToEvaluate == Side.WHITE ? LimitedUnwinnabilityVerdict.UNWINNABLE
           : LimitedUnwinnabilityVerdict.UNKNOWN;

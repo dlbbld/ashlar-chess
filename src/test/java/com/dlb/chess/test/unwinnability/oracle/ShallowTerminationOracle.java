@@ -107,7 +107,9 @@ public class ShallowTerminationOracle {
           // the side we're evaluating just delivered the mate — i.e. WIN.
           board.getHavingMove() == side ? NodeOutcome.LOSS_OR_DRAW : NodeOutcome.WIN;
       case STALEMATE, FIVE_FOLD_REPETITION_RULE, SEVENTY_FIVE_MOVE_RULE, DEAD_POSITION_INSUFFICIENT_MATERIAL, DEAD_POSITION_UNWINNABLE_QUICK ->
-          // All drawing terminations: neither side wins.
+          // All drawing terminations: neither side wins. DEAD_POSITION_UNWINNABLE_QUICK is unreachable
+          // here because calculateGameStatus does not invoke the analyzer; grouped with the others to
+          // keep the switch exhaustive.
           NodeOutcome.LOSS_OR_DRAW;
       case INSUFFICIENT_MATERIAL_WHITE_ONLY ->
           // Only White lacks the material to mate. Bad for White, fine for Black — Black may still win.

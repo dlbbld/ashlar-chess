@@ -32,13 +32,19 @@
  * {@code SanValidationException} with {@code SanValidationProblem.GAME_ALREADY_ENDED}).
  *
  * <p>
- * {@link com.dlb.chess.common.enums.GameStatus#FIVE_FOLD_REPETITION_RULE} (FIDE 9.6.1),
- * {@link com.dlb.chess.common.enums.GameStatus#SEVENTY_FIVE_MOVE_RULE} (FIDE 9.6.2), and
- * {@link com.dlb.chess.common.enums.GameStatus#DEAD_POSITION_UNWINNABLE_QUICK} (FIDE 5.2.2 via the quick analyzer) are
- * surfaced as <em>queryable predicates</em> rather than enforced at the move pipeline. The library is permissive here
- * for corpus and tooling compatibility; the caller decides whether to adjudicate. The
- * {@link com.dlb.chess.common.enums.GameStatus} values remain available via {@code calculateGameStatus} as diagnostic
- * answers, with move-blocking statuses taking precedence when both apply to the same position.
+ * {@link com.dlb.chess.common.enums.GameStatus#FIVE_FOLD_REPETITION_RULE} (FIDE 9.6.1) and
+ * {@link com.dlb.chess.common.enums.GameStatus#SEVENTY_FIVE_MOVE_RULE} (FIDE 9.6.2) are surfaced as <em>queryable
+ * predicates</em> rather than enforced at the move pipeline. Their {@link com.dlb.chess.common.enums.GameStatus} values
+ * remain available via {@code calculateGameStatus} as diagnostic answers, with move-blocking statuses taking precedence
+ * when both apply to the same position.
+ *
+ * <p>
+ * Analyzer-driven dead positions (FIDE 5.2.2 via the quick or full unwinnability analyzer) are <em>not</em> surfaced
+ * via {@code calculateGameStatus} either — invoking the analyzer from that method would silently make every status
+ * query expensive. Callers that want the analyzer-driven verdict invoke
+ * {@link com.dlb.chess.board.Board#isDeadPositionQuick()} or {@link com.dlb.chess.board.Board#isDeadPositionFull()}
+ * directly. The library is permissive at the move pipeline for corpus and tooling compatibility; the caller decides
+ * whether to adjudicate.
  *
  * <p>
  * The claimable draws — {@link com.dlb.chess.common.enums.GameStatus FIDE 9.2 (3-fold) and 9.3 (50-move)} — are

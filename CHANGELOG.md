@@ -18,9 +18,10 @@ adjudicate a draw.
   structural insufficient-material predicate first and invokes the quick dead-position query only when called.
 - **`GameStatus.isAutomaticTermination()` semantics change.** `DEAD_POSITION_UNWINNABLE_QUICK` now returns `false`.
   The move-blocking terminations are `CHECKMATE`, `STALEMATE`, and `DEAD_POSITION_INSUFFICIENT_MATERIAL`.
-- **`BasicChessUtility.calculateGameStatus(...)` still reports quick dead positions.** A position that the quick
-  analyzer classifies as dead still maps to `DEAD_POSITION_UNWINNABLE_QUICK`, but `ValidateNewMove`, `StrictSanParser`,
-  and lenient mirrors accept further legal moves from that state.
+- **`BasicChessUtility.calculateGameStatus(...)` no longer invokes the analyzer.** The method now keeps to cheap
+  predicates and never returns `DEAD_POSITION_UNWINNABLE_QUICK`; the enum value remains as a status word callers can
+  map onto. Callers that want the analyzer-driven verdict invoke `Board.isDeadPositionQuick()` /
+  `Board.isDeadPositionFull()` directly. Avoids the footgun of a status query that silently runs the analyzer.
 
 ### Breaking
 
@@ -28,7 +29,10 @@ adjudicate a draw.
   `Board(boolean)`, `Board(Fen, boolean)`, and `Board(String, boolean)`.
 - Removed `Board.copyCurrentPositionWithoutHistory(boolean)`; use `Board.copyCurrentPositionWithoutHistory()`.
 - Removed the stateful `Board.isDeadPositionUnwinnableQuick()` accessor. Use `Board.isDeadPositionQuick() ==
-  DeadPositionQuick.DEAD_POSITION` or `BasicChessUtility.calculateGameStatus(...)` when a `GameStatus` answer is wanted.
+  DeadPositionQuick.DEAD_POSITION` directly; `BasicChessUtility.calculateGameStatus(...)` no longer surfaces this verdict.
+- `BasicChessUtility.calculateGameStatus(...)` no longer returns `GameStatus.DEAD_POSITION_UNWINNABLE_QUICK`.
+  Consumers that need the verdict call `Board.isDeadPositionQuick()` themselves; the enum value remains as a status
+  word and downstream `switch` expressions over `GameStatus` should keep the case present for exhaustiveness.
 - Calling `Board.move(...)` / `StrictSanParser.parseText(...)` on a board whose quick dead-position query reports
   `DEAD_POSITION` no longer throws `GAME_ALREADY_ENDED`.
 
