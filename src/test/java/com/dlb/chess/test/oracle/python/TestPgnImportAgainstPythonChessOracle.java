@@ -115,7 +115,7 @@ class TestPgnImportAgainstPythonChessOracle {
           continue;
         }
 
-        final Board board = new Board(pgnGame.startFen(), false);
+        final Board board = new Board(pgnGame.startFen());
         for (var ply = 0; ply < pgnGame.halfMoveList().size(); ply++) {
           totalPlies++;
           final PgnHalfMove halfMove = Nulls.get(pgnGame.halfMoveList(), ply);

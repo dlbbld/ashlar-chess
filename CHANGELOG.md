@@ -4,6 +4,34 @@ Releases from 3.3 onward. Earlier history is in git tags only.
 
 ## [Unreleased]
 
+## [14.0.0] - 2026-05-24
+
+The **dead-position-query release**. Analyzer-driven dead-position detection (`DEAD_POSITION_UNWINNABLE_QUICK`) no
+longer runs automatically during `Board` construction or after every move, and no longer blocks further play. Quick and
+full unwinnability/dead-position checks remain available as request-based analysis APIs; callers decide whether to
+adjudicate a draw.
+
+### Notable
+
+- **Removed eager quick-unwinnability state from `Board`.** The per-ply `isDeadPositionUnwinnableQuick` cache and the
+  `detectDeadPositionUnwinnable` configuration flag are gone. `Board.isDeadPosition()` now evaluates the cheap
+  structural insufficient-material predicate first and invokes the quick dead-position query only when called.
+- **`GameStatus.isAutomaticTermination()` semantics change.** `DEAD_POSITION_UNWINNABLE_QUICK` now returns `false`.
+  The move-blocking terminations are `CHECKMATE`, `STALEMATE`, and `DEAD_POSITION_INSUFFICIENT_MATERIAL`.
+- **`BasicChessUtility.calculateGameStatus(...)` still reports quick dead positions.** A position that the quick
+  analyzer classifies as dead still maps to `DEAD_POSITION_UNWINNABLE_QUICK`, but `ValidateNewMove`, `StrictSanParser`,
+  and lenient mirrors accept further legal moves from that state.
+
+### Breaking
+
+- Removed the boolean `Board` constructor overloads that controlled quick dead-position auto-detection:
+  `Board(boolean)`, `Board(Fen, boolean)`, and `Board(String, boolean)`.
+- Removed `Board.copyCurrentPositionWithoutHistory(boolean)`; use `Board.copyCurrentPositionWithoutHistory()`.
+- Removed the stateful `Board.isDeadPositionUnwinnableQuick()` accessor. Use `Board.isDeadPositionQuick() ==
+  DeadPositionQuick.DEAD_POSITION` or `BasicChessUtility.calculateGameStatus(...)` when a `GameStatus` answer is wanted.
+- Calling `Board.move(...)` / `StrictSanParser.parseText(...)` on a board whose quick dead-position query reports
+  `DEAD_POSITION` no longer throws `GAME_ALREADY_ENDED`.
+
 ## [13.0.0] - 2026-05-24
 
 The **reallow-play-beyond release**. Fivefold repetition (FIDE 9.6.1) and the 75-move rule (FIDE 9.6.2) are no longer enforced as automatic terminations at the move pipeline — both remain as queryable predicates on `Board`. The position itself is not necessarily drawn at the threshold (mating material can still be present, pawn moves and captures can still happen, a later checkmate can still occur); the library is permissive here for corpus and tooling compatibility — historical PGN databases routinely contain games whose recorded play continues a move or two past the threshold — and the caller decides whether to adjudicate the draw. The FEN parser's halfmove-clock-≤-150 cap drops alongside as the matching serialized-form change. The motivation surfaced during the 12.2.0 python-chess cross-validation work: python-chess returns the rules as game-over outcomes while still allowing `push_uci()` / `push_san()` to continue, and clean-chess's eager auto-termination forced two skip guards in the oracle suite plus a crash in `canClaimThreefoldRepetitionRule()` / `canClaimFiftyMoveRule()` on auto-terminated positions. Dropping the auto-termination unblocks both.

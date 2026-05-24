@@ -17,7 +17,7 @@ class TestPerformMoveMainlyStaticPositionState implements EnumConstants {
   @SuppressWarnings("static-method")
   @Test
   void testGameWithMostBasicMoves() {
-    final Board apiBoard = new Board(false);
+    final Board apiBoard = new Board();
     final StaticPosition staticPosition0 = StaticPosition.INITIAL_POSITION;
     assertEquals(staticPosition0, StaticPositionBridge.toStaticPosition(apiBoard.getBitboardPosition()));
     assertEquals(WHITE, apiBoard.getHavingMove());

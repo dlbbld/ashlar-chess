@@ -33,7 +33,7 @@ class TestPgnExportBoard {
 
   private static void check(ResultTagValue resultTagValue, String... sanArray) {
 
-    final Board boardExpected = new Board(false);
+    final Board boardExpected = new Board();
     for (final String san : sanArray) {
       @SuppressWarnings("null") @NonNull final String sanIsNotNull = san;
       boardExpected.moveStrict(sanIsNotNull);
@@ -57,7 +57,7 @@ class TestPgnExportBoard {
   }
 
   private static void checkBoardReplay(Board boardExpected, PgnGame boardExpectedPgnGame) {
-    final Board boardActual = PgnUtility.calculateBoard(boardExpectedPgnGame, false);
+    final Board boardActual = PgnUtility.calculateBoard(boardExpectedPgnGame);
     assertEquals(boardExpected, boardActual);
   }
 

@@ -21,8 +21,8 @@ class TestFindHelpmateExhaustTranspositionKey {
   @SuppressWarnings("static-method")
   @Test
   void testIgnoresMoveCounters() {
-    final var boardFirst = new Board("8/8/8/8/8/8/8/K6k w - - 0 1", false);
-    final var boardSecond = new Board("8/8/8/8/8/8/8/K6k w - - 10 9", false);
+    final var boardFirst = new Board("8/8/8/8/8/8/8/K6k w - - 0 1");
+    final var boardSecond = new Board("8/8/8/8/8/8/8/K6k w - - 10 9");
 
     assertEquals(boardFirst.getDynamicPosition(), boardSecond.getDynamicPosition());
   }
@@ -30,8 +30,8 @@ class TestFindHelpmateExhaustTranspositionKey {
   @SuppressWarnings("static-method")
   @Test
   void testIgnoresUncapturableEnPassantTarget() {
-    final var boardWithTarget = new Board("8/8/8/8/4P3/8/8/K6k b - e3 0 1", false);
-    final var boardWithoutTarget = new Board("8/8/8/8/4P3/8/8/K6k b - - 0 1", false);
+    final var boardWithTarget = new Board("8/8/8/8/4P3/8/8/K6k b - e3 0 1");
+    final var boardWithoutTarget = new Board("8/8/8/8/4P3/8/8/K6k b - - 0 1");
 
     assertEquals(boardWithTarget.getDynamicPosition(), boardWithoutTarget.getDynamicPosition());
   }
@@ -39,8 +39,8 @@ class TestFindHelpmateExhaustTranspositionKey {
   @SuppressWarnings("static-method")
   @Test
   void testKeepsCapturableEnPassantTarget() {
-    final var boardWithTarget = new Board("8/8/8/8/3pP3/8/8/K6k b - e3 0 1", false);
-    final var boardWithoutTarget = new Board("8/8/8/8/3pP3/8/8/K6k b - - 0 1", false);
+    final var boardWithTarget = new Board("8/8/8/8/3pP3/8/8/K6k b - e3 0 1");
+    final var boardWithoutTarget = new Board("8/8/8/8/3pP3/8/8/K6k b - - 0 1");
 
     assertNotEquals(boardWithTarget.getDynamicPosition(), boardWithoutTarget.getDynamicPosition());
   }
@@ -54,8 +54,8 @@ class TestFindHelpmateExhaustTranspositionKey {
     // d4 and e4 from rank 4, exposing the Black king on a4 to the White rook on h4. The capture is
     // illegal, so the king-safety-aware normalization correctly drops the e.p. target to NONE -
     // collapsing this position into the same DynamicPosition as one with no e.p. target at all.
-    final var boardWithPinnedCapturer = new Board("8/8/8/8/k2pP2R/8/8/7K b - e3 0 1", false);
-    final var boardWithoutTarget = new Board("8/8/8/8/k2pP2R/8/8/7K b - - 0 1", false);
+    final var boardWithPinnedCapturer = new Board("8/8/8/8/k2pP2R/8/8/7K b - e3 0 1");
+    final var boardWithoutTarget = new Board("8/8/8/8/k2pP2R/8/8/7K b - - 0 1");
 
     assertEquals(boardWithPinnedCapturer.getDynamicPosition(), boardWithoutTarget.getDynamicPosition());
   }

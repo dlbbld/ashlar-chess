@@ -620,13 +620,10 @@ public final class StrictPgnParser {
 
   private static void validateBoardPerLastMove(Fen startFen, List<PgnHalfMove> halfMoveList) {
     // Strict parsing enforces PGN syntax + move legality + the cheap FIDE terminations
-    // (checkmate / stalemate / mutual insufficient material). Fivefold repetition and the 75-move rule are NOT
-    // enforced — both are queryable predicates on Board, and historical PGN corpora routinely contain games whose
-    // recorded play continues a move or two past either threshold. DEAD_POSITION_UNWINNABLE_QUICK is also not
-    // enforced here — that detection runs an analyzer heuristic and would make the parser unusable for real games.
-    // Production-runtime FIDE 5.2.2 enforcement of dead-position-unwinnable-quick lives on Board.move(...) via the
-    // detectDeadPositionUnwinnable constructor flag.
-    final Board board = new Board(startFen, false);
+    // (checkmate / stalemate / mutual insufficient material). Fivefold repetition, the 75-move rule, and
+    // analyzer-driven dead positions are queryable predicates on Board; historical PGN corpora routinely contain games
+    // whose recorded play continues past such states.
+    final Board board = new Board(startFen);
     for (final PgnHalfMove halfMove : halfMoveList) {
       final Side side = board.getHavingMove();
       final var fullMoveNumber = board.getFullMoveNumber();

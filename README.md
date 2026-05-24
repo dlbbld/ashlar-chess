@@ -227,10 +227,9 @@ The library implements the [Chess Unwinnability Analyzer (CHA)](https://github.c
 A position is unwinnable for a player if there is no legal sequence that can end with that player giving checkmate,
 even if the opponent cooperates. If the position is unwinnable for both players, it's a dead position.
 
-> **Note:** `Board` runs quick dead-position detection automatically by default: on construction and after each move it
-> checks whether both sides are quick-unwinnable and, if so, reports `DEAD_POSITION_UNWINNABLE_QUICK`. Bulk-processing
-> callers can disable that per-ply analyzer cost with the boolean `Board(..., false)` constructor overloads and invoke
-> the quick/full analyzers manually when the result is wanted. The full analyzer is never run automatically.
+> **Note:** quick/full dead-position detection is caller-invoked. `Board` does not run the quick analyzer during
+> construction or after each move; callers that want to adjudicate analyzer-driven dead positions can query
+> `Board.isDeadPositionQuick()` / `Board.isDeadPositionFull()` or the side-specific unwinnability APIs.
 
 ## Methods
 The library provides an implementation of CHA. So for both situations, there is a quick and a full method.

@@ -68,10 +68,10 @@ public class StrictSanParser extends AbstractSan {
 
   /**
    * SAN-pipeline mirror of {@code ValidateNewMove.validateGameNotEnded}: rejects SAN input on a board that has reached
-   * any FIDE-automatic termination. See {@code com.dlb.chess.board} package-info for the four terminal statuses.
+   * any move-blocking termination.
    */
   private static void validateGameNotEnded(Board board) throws SanValidationException {
-    final GameStatus gameStatus = BasicChessUtility.calculateGameStatus(board);
+    final GameStatus gameStatus = BasicChessUtility.calculateMoveBlockingGameStatus(board);
     if (!gameStatus.isAutomaticTermination()) {
       return;
     }

@@ -24,15 +24,11 @@
  * Dead-position detection is the symmetric notion with analogous three-valued returns
  * ({@link com.dlb.chess.unwinnability.DeadPositionQuick}, {@link com.dlb.chess.unwinnability.DeadPositionFull}).
  *
- * <h2>Analyzer entry points and Board auto-detection</h2>
+ * <h2>Analyzer entry points</h2>
  *
  * <p>
- * The analyzers can be invoked directly when a caller wants a side-specific answer. {@link com.dlb.chess.board.Board}
- * also performs FIDE dead-position auto-detection with the quick analyzer by default: once per ply it checks whether
- * both sides are quick-unwinnable and then reports
- * {@link com.dlb.chess.common.enums.GameStatus#DEAD_POSITION_UNWINNABLE_QUICK}. Bulk-analysis callers can disable that
- * per-ply analyzer cost with the {@code detectDeadPositionUnwinnable} constructor flag. The full analyzer is never run
- * automatically.
+ * The analyzers run only when a caller asks for a side-specific answer or a dead-position query on
+ * {@link com.dlb.chess.board.Board}. No analyzer is run automatically during board construction or move execution.
  *
  * <p>
  * See {@code specification.md} §3.2 for the full design rationale.

@@ -6,6 +6,7 @@ import com.dlb.chess.board.enums.PieceType;
 import com.dlb.chess.board.enums.Side;
 import com.dlb.chess.common.enums.GameStatus;
 import com.dlb.chess.model.LegalMove;
+import com.dlb.chess.unwinnability.DeadPositionQuick;
 
 public abstract class BasicChessUtility {
 
@@ -39,24 +40,16 @@ public abstract class BasicChessUtility {
   }
 
   /**
-   * Returns the single most-specific {@link GameStatus} for the given board, with hard blockers (the statuses that
-   * {@link GameStatus#isAutomaticTermination()} returns {@code true} for) given precedence over the queryable rule
-   * predicates (fivefold, 75-move). A position that simultaneously satisfies a dead-position predicate AND fivefold or
-   * 75-move resolves to the dead-position status, so {@code ValidateNewMove}'s {@code isAutomaticTermination()}
-   * precondition sees the blocker and rejects the move.
+   * Returns the single most-specific {@link GameStatus} for the given board, with move-blocking statuses checked before
+   * queryable draw predicates. Analyzer-driven dead positions remain reportable here, but do not block further moves.
    */
   public static GameStatus calculateGameStatus(Board board) {
 
-    if (board.isCheckmate()) {
-      return GameStatus.CHECKMATE;
+    final GameStatus moveBlockingStatus = calculateMoveBlockingGameStatus(board);
+    if (moveBlockingStatus != GameStatus.ONGOING) {
+      return moveBlockingStatus;
     }
-    if (board.isStalemate()) {
-      return GameStatus.STALEMATE;
-    }
-    if (board.isInsufficientMaterial()) {
-      return GameStatus.DEAD_POSITION_INSUFFICIENT_MATERIAL;
-    }
-    if (board.isDeadPositionUnwinnableQuick()) {
+    if (board.isDeadPositionQuick() == DeadPositionQuick.DEAD_POSITION) {
       return GameStatus.DEAD_POSITION_UNWINNABLE_QUICK;
     }
     if (board.isFivefoldRepetition()) {
@@ -70,6 +63,24 @@ public abstract class BasicChessUtility {
     }
     if (board.isInsufficientMaterial(Side.BLACK)) {
       return GameStatus.INSUFFICIENT_MATERIAL_BLACK_ONLY;
+    }
+    return GameStatus.ONGOING;
+  }
+
+  /**
+   * Returns only statuses that may block further move execution. This method deliberately avoids analyzer-driven
+   * dead-position queries, fivefold, and 75-move so the validation pipeline stays cheap and non-recursive.
+   */
+  public static GameStatus calculateMoveBlockingGameStatus(Board board) {
+
+    if (board.isCheckmate()) {
+      return GameStatus.CHECKMATE;
+    }
+    if (board.isStalemate()) {
+      return GameStatus.STALEMATE;
+    }
+    if (board.isInsufficientMaterial()) {
+      return GameStatus.DEAD_POSITION_INSUFFICIENT_MATERIAL;
     }
     return GameStatus.ONGOING;
   }

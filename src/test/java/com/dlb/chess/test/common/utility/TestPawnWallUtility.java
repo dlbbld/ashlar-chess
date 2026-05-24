@@ -44,7 +44,7 @@ class TestPawnWallUtility extends PawnWallGeometricAnalyzer {
   }
 
   private static void testAttacking(String fen, Side side, @NonNull Square... expectedSquareList) {
-    final Board board = new Board(fen, false);
+    final Board board = new Board(fen);
 
     final Set<Square> expectedSquareSet = new TreeSet<>(Arrays.asList(expectedSquareList));
     assertEquals(expectedSquareSet, PawnWallGeometricAnalyzer.calculateAttackingSquares(board, side));
@@ -62,7 +62,7 @@ class TestPawnWallUtility extends PawnWallGeometricAnalyzer {
   }
 
   private static void testReachAhead(String fen, boolean isExpectedTrue) {
-    final Board board = new Board(fen, false);
+    final Board board = new Board(fen);
 
     if (isExpectedTrue) {
       assertTrue(PawnWallGeometricAnalyzer.calculateIsAllPawnsCanReachPawnAhead(board));
@@ -91,7 +91,7 @@ class TestPawnWallUtility extends PawnWallGeometricAnalyzer {
   }
 
   private static void testHelperForward(String fen, boolean isExpectedTrue) {
-    final Board board = new Board(fen, false);
+    final Board board = new Board(fen);
 
     if (isExpectedTrue) {
       assertTrue(PawnWallGeometricAnalyzer.calculateIsAllPawnsHavePawnAhead(board));
@@ -119,7 +119,7 @@ class TestPawnWallUtility extends PawnWallGeometricAnalyzer {
   }
 
   private static void testAllPawnsCannotCapture(String fen, boolean isExpectedTrue) {
-    final Board board = new Board(fen, false);
+    final Board board = new Board(fen);
 
     if (isExpectedTrue) {
       assertTrue(PawnWallGeometricAnalyzer.calculateIsAllPawnsCannotCapture(board));
@@ -132,7 +132,7 @@ class TestPawnWallUtility extends PawnWallGeometricAnalyzer {
   @Test
   void testIsAllPawnsCannotCaptureEnPassantCapture() {
     {
-      final Board board = new Board("4k3/8/8/8/p7/8/1P6/4K3 w - - 0 50", false);
+      final Board board = new Board("4k3/8/8/8/p7/8/1P6/4K3 w - - 0 50");
 
       assertTrue(PawnWallGeometricAnalyzer.calculateIsAllPawnsCannotCapture(board));
       board.moveStrict("b4");
@@ -142,7 +142,7 @@ class TestPawnWallUtility extends PawnWallGeometricAnalyzer {
     }
 
     {
-      final Board board = new Board("8/5p2/3k4/6P1/8/8/8/4K3 b - - 0 50", false);
+      final Board board = new Board("8/5p2/3k4/6P1/8/8/8/4K3 b - - 0 50");
 
       assertTrue(PawnWallGeometricAnalyzer.calculateIsAllPawnsCannotCapture(board));
       board.moveStrict("f5");
@@ -167,7 +167,7 @@ class TestPawnWallUtility extends PawnWallGeometricAnalyzer {
   }
 
   private static void testAllBlocked(String fen, boolean isExpectedTrue) {
-    final Board board = new Board(fen, false);
+    final Board board = new Board(fen);
 
     if (isExpectedTrue) {
       assertTrue(PawnWallGeometricAnalyzer.calculateIsAllPawnsBlocked(board));
@@ -223,7 +223,7 @@ class TestPawnWallUtility extends PawnWallGeometricAnalyzer {
   }
 
   private static void testHasLine(String fen, Side side, boolean isExpectedTrue) {
-    final Board board = new Board(fen, false);
+    final Board board = new Board(fen);
 
     if (isExpectedTrue) {
       assertTrue(PawnWallGeometricAnalyzer.calculateHasPawnWallLine(board, side));
@@ -263,7 +263,7 @@ class TestPawnWallUtility extends PawnWallGeometricAnalyzer {
   }
 
   private static void testHasPawnWallHelper(String fen, boolean isExpectedTrue) {
-    final Board board = new Board(fen, false);
+    final Board board = new Board(fen);
 
     if (isExpectedTrue) {
       assertTrue(PawnWallGeometricAnalyzer.calculateHasPawnWall(board));
@@ -612,7 +612,7 @@ class TestPawnWallUtility extends PawnWallGeometricAnalyzer {
   }
 
   private static void testHelperLichess(String fen, boolean isExpectedTrue) {
-    final Board board = new Board(fen, false);
+    final Board board = new Board(fen);
 
     if (isExpectedTrue) {
       assertTrue(PawnWallGeometricAnalyzer.calculateHasPawnWall(board));

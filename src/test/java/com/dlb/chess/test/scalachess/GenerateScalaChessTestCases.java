@@ -130,11 +130,11 @@ public class GenerateScalaChessTestCases implements EnumConstants {
         processScalaChessCodeLine("  \"" + testCase.pgnName() + "\" should {", counterList, codeLineList);
 
         // initialize variables to use throughout the game
-        processScalaChessCodeLine("    val board = new Board(false)", counterList, codeLineList);
+        processScalaChessCodeLine("    val board = new Board()", counterList, codeLineList);
         processScalaChessCodeLine("    val uciAdaptedList = new java.util.ArrayList[String]()", counterList,
             codeLineList);
 
-        final Board boardPlayAlong = new Board(false);
+        final Board boardPlayAlong = new Board();
         final List<HalfMove> halfMoveList = report.halfMoveList();
         for (var i = 0; i < halfMoveList.size(); i++) {
           final HalfMove halfMove = Nulls.get(halfMoveList, i);
@@ -219,7 +219,7 @@ public class GenerateScalaChessTestCases implements EnumConstants {
     if (pgnGame.startFen() != FenConstants.FEN_INITIAL) {
       throw new ProgrammingMistakeException("Only test cases from initial FEN are supported");
     }
-    final Board board = new Board(false);
+    final Board board = new Board();
     for (final PgnHalfMove move : pgnGame.halfMoveList()) {
       board.moveStrict(move.san());
       System.out.println(calculateScalaMove(board.getLastMove().havingMove(), board.getLastMove().moveSpecification()));

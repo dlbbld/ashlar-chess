@@ -23,7 +23,7 @@ public abstract class AbstractLichessCheck {
 
   static boolean calculateIsIncorrectResult(PgnGame pgnGame) {
 
-    final Board boardPerLastMove = PgnUtility.calculateBoard(pgnGame, false);
+    final Board boardPerLastMove = PgnUtility.calculateBoard(pgnGame);
     final ResultTagValue resultTagValue = TagUtility.readResultTagValue(pgnGame);
 
     if (boardPerLastMove.getHavingMove() == Side.WHITE && resultTagValue == ResultTagValue.WHITE_WON

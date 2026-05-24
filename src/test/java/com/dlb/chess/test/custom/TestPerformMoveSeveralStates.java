@@ -21,7 +21,7 @@ class TestPerformMoveSeveralStates implements EnumConstants {
   @SuppressWarnings("static-method")
   @Test
   void testTrivial() {
-    final Board board = new Board(false);
+    final Board board = new Board();
 
     // white move 1
     // test before move

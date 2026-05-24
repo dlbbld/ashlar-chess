@@ -16,7 +16,7 @@ class TestSanValidateRnbqNeitherLegal {
   @Test
   void testPieceNeither1NoLegalMove() {
 
-    final Board board = new Board(false);
+    final Board board = new Board();
 
     // white
     checkException(board, "Ra3", SanValidationProblem.NOT_REACHABLE_RNBQ_NEITHER_MULTIPLE);
@@ -45,7 +45,7 @@ class TestSanValidateRnbqNeitherLegal {
   @Test
   void testPieceNeither2MultipleLegalMoves() {
 
-    final Board board = new Board(false);
+    final Board board = new Board();
 
     // white
     // white rook

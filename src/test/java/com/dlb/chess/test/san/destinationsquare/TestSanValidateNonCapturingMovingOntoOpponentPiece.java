@@ -18,7 +18,7 @@ class TestSanValidateNonCapturingMovingOntoOpponentPiece {
 
     // rook
     {
-      final Board board = new Board(false);
+      final Board board = new Board();
 
       board.moveStrict("a4");
       board.moveStrict("d5");
@@ -28,7 +28,7 @@ class TestSanValidateNonCapturingMovingOntoOpponentPiece {
     }
     // knight
     {
-      final Board board = new Board(false);
+      final Board board = new Board();
 
       board.moveStrict("Nc3");
       board.moveStrict("Nf6");
@@ -38,7 +38,7 @@ class TestSanValidateNonCapturingMovingOntoOpponentPiece {
     }
     // bishop
     {
-      final Board board = new Board(false);
+      final Board board = new Board();
 
       board.moveStrict("e4");
       board.moveStrict("e5");
@@ -48,7 +48,7 @@ class TestSanValidateNonCapturingMovingOntoOpponentPiece {
     }
     // queen
     {
-      final Board board = new Board(false);
+      final Board board = new Board();
 
       board.moveStrict("e4");
       board.moveStrict("e5");
@@ -58,7 +58,7 @@ class TestSanValidateNonCapturingMovingOntoOpponentPiece {
     }
     // king
     {
-      final Board board = new Board(false);
+      final Board board = new Board();
 
       board.moveStrict("e4");
       board.moveStrict("e5");
@@ -76,7 +76,7 @@ class TestSanValidateNonCapturingMovingOntoOpponentPiece {
   void testBlack() {
     // rook
     {
-      final Board board = new Board(false);
+      final Board board = new Board();
 
       board.moveStrict("e4");
       board.moveStrict("h5");
@@ -87,7 +87,7 @@ class TestSanValidateNonCapturingMovingOntoOpponentPiece {
     }
     // knight
     {
-      final Board board = new Board(false);
+      final Board board = new Board();
 
       board.moveStrict("Nc3");
       board.moveStrict("Nf6");
@@ -96,7 +96,7 @@ class TestSanValidateNonCapturingMovingOntoOpponentPiece {
     }
     // bishop
     {
-      final Board board = new Board(false);
+      final Board board = new Board();
 
       board.moveStrict("Nf3");
       board.moveStrict("d5");
@@ -107,7 +107,7 @@ class TestSanValidateNonCapturingMovingOntoOpponentPiece {
     }
     // queen
     {
-      final Board board = new Board(false);
+      final Board board = new Board();
 
       board.moveStrict("e4");
       board.moveStrict("e5");
@@ -118,7 +118,7 @@ class TestSanValidateNonCapturingMovingOntoOpponentPiece {
     }
     // king
     {
-      final Board board = new Board(false);
+      final Board board = new Board();
 
       board.moveStrict("e4");
       board.moveStrict("e5");

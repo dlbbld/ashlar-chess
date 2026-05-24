@@ -31,7 +31,7 @@ public class GenerateRandomGame {
   }
 
   private static void generateRandomGame(FindRandomGame findRandomGame) {
-    final Board board = new Board(false);
+    final Board board = new Board();
 
     List<MoveSpecification> legalMoves = board.getPossibleMoveSpecificationList();
     var numberOfMoveOptions = legalMoves.size();
@@ -152,7 +152,7 @@ public class GenerateRandomGame {
   }
 
   private static void generateNoRepetition() {
-    final Board board = new Board(false);
+    final Board board = new Board();
 
     List<MoveSpecification> legalMoves = board.getPossibleMoveSpecificationList();
     var numberOfMoveOptions = legalMoves.size();
@@ -191,7 +191,7 @@ public class GenerateRandomGame {
   // we only want one sequence over 50, so after passing 50 first time, we try to reach 75 and if not successful that's
   // it, then try again
   private static void generateSeventyFive() {
-    final Board board = new Board(false);
+    final Board board = new Board();
 
     List<MoveSpecification> legalMoves = board.getPossibleMoveSpecificationList();
     var numberOfMoveOptions = legalMoves.size();
@@ -259,7 +259,7 @@ public class GenerateRandomGame {
   }
 
   private static boolean generateRepetition(int repetitionNumber) {
-    final Board board = new Board(false);
+    final Board board = new Board();
 
     List<MoveSpecification> legalMoves = board.getPossibleMoveSpecificationList();
     var numberOfMoveOptions = legalMoves.size();

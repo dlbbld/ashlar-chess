@@ -11,7 +11,7 @@ import com.dlb.chess.common.model.MoveSpecification;
 public abstract class AbstractTestFenRoundtrip implements EnumConstants {
   public static void checFenRoundtrip(String initialFen, List<MoveSpecification> moveList) {
 
-    final Board boardPlayMoves = new Board(initialFen, false);
+    final Board boardPlayMoves = new Board(initialFen);
 
     Board previousBoardFromFen = null;
     for (var i = 0; i < moveList.size(); i++) {
@@ -24,7 +24,7 @@ public abstract class AbstractTestFenRoundtrip implements EnumConstants {
       }
 
       final String boardFen = boardPlayMoves.getFen();
-      final Board boardFromFen = new Board(boardFen, false);
+      final Board boardFromFen = new Board(boardFen);
       previousBoardFromFen = boardFromFen;
 
       // testing board plus played equals board after played move fen

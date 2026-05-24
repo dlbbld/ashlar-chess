@@ -75,7 +75,7 @@ public class GeneratePythonTestCases implements EnumConstants {
             codeLineList);
         processPythonCodeLine("    board = chess.Board()", counterList, codeLineList);
 
-        final Board boardPlayAlong = new Board(false);
+        final Board boardPlayAlong = new Board();
         for (final HalfMove halfMove : report.halfMoveList()) {
           boardPlayAlong.move(halfMove.moveSpecification());
           processPythonCodeLine("    board.push_san(\"" + halfMove.san() + "\")", counterList, codeLineList);

@@ -67,7 +67,7 @@ public class MoveGenerationPerformanceSurvey {
       }
       final PgnGame pgnGame = PgnCacheForStrictPgnParserTestCases.getPgn(pgnTest.getFolderPath(),
           testCase.pgnName());
-      final Board board = new Board(pgnGame.startFen(), false);
+      final Board board = new Board(pgnGame.startFen());
       addPosition(result, board);
       for (final PgnHalfMove halfMove : pgnGame.halfMoveList()) {
         board.moveStrict(halfMove.san());
@@ -84,7 +84,7 @@ public class MoveGenerationPerformanceSurvey {
     final String fen = cleanChessBoard.getFen();
     final var chessLibBoard = new com.github.bhlangonijr.chesslib.Board();
     chessLibBoard.loadFromFen(fen);
-    result.add(new PositionPair(new Board(fen, false), chessLibBoard));
+    result.add(new PositionPair(new Board(fen), chessLibBoard));
   }
 
   private static void warmup(List<PositionPair> positionList) {

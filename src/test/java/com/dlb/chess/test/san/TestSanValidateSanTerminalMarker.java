@@ -14,7 +14,7 @@ class TestSanValidateSanTerminalMarker {
   @SuppressWarnings("static-method")
   @Test
   void testWhite() {
-    final Board board = new Board(false);
+    final Board board = new Board();
 
     checkException("e4#", SanValidationProblem.CHECKMATE_SYMBOL_BUT_NO_CHECK, board);
     checkException("e4+", SanValidationProblem.CHECK_SYMBOL_BUT_NO_CHECK, board);
@@ -31,7 +31,7 @@ class TestSanValidateSanTerminalMarker {
   @SuppressWarnings("static-method")
   @Test
   void testBlack() {
-    final Board board = new Board(false);
+    final Board board = new Board();
 
     board.moveStrict("e4");
 

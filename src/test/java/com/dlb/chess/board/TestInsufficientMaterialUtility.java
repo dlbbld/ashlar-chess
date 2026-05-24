@@ -11,7 +11,7 @@ import com.dlb.chess.board.enums.Side;
 class TestInsufficientMaterialUtility {
 
   private static BitboardPosition position(String fen) {
-    return new Board(fen, false).getBitboardPosition();
+    return new Board(fen).getBitboardPosition();
   }
 
   // =====================================================================

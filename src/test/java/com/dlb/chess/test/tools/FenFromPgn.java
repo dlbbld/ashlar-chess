@@ -11,8 +11,7 @@ import com.dlb.chess.pgn.PgnUtility;
 /**
  * Scratch tool that prints the final FEN of a PGN file. Mechanical helper for fixture authoring: when a new test case
  * is added to {@code PgnTestCaseCatalog}, the {@code fen} field needs the position reached after the PGN's last
- * half-move. Computing it by hand is tedious; this tool replays the PGN with dead-position auto-detection disabled (so
- * fixtures whose final position is intentionally dead still produce a FEN) and prints the result on stdout.
+ * half-move. Computing it by hand is tedious; this tool replays the PGN and prints the result on stdout.
  *
  * <p>
  * Usage from Maven:
@@ -43,7 +42,7 @@ public final class FenFromPgn {
     final String fileName = Nulls.toString(Nulls.getFileName(pgnPath));
 
     final PgnGame pgnGame = LenientPgnParser.parse(folder, fileName);
-    final Board board = PgnUtility.calculateBoard(pgnGame, false);
+    final Board board = PgnUtility.calculateBoard(pgnGame);
     System.out.println(board.getFen());
   }
 }

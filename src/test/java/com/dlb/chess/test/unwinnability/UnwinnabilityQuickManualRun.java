@@ -17,7 +17,7 @@ public class UnwinnabilityQuickManualRun {
 
     final PgnTest pgnTest = PgnTestCaseCatalog.findPgnTestPgnNotListed(pgnName);
     final PgnGame pgnGame = LenientPgnParser.parse(pgnTest.getFolderPath(), pgnName);
-    final Board board = PgnUtility.calculateBoard(pgnGame, false);
+    final Board board = PgnUtility.calculateBoard(pgnGame);
 
     System.out.println("White quick: " + UnwinnableQuickAnalyzer.unwinnableQuick(board, Side.WHITE));
 

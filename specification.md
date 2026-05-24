@@ -72,15 +72,15 @@ The library follows the FIDE Laws of Chess closely, distinguishing **automatic**
 | Checkmate | automatic | 5.1 |
 | Stalemate | automatic | 5.2.1 |
 | Insufficient material (structural) | automatic | 5.2.2 / 9.4 |
-| Dead position by quick unwinnability | automatic when enabled on `Board` | 5.2.2 |
+| Dead position by quick unwinnability | queryable | 5.2.2 |
 | Fivefold repetition | queryable | 9.6.1 |
 | 75-move rule | queryable | 9.6.2 |
 | Threefold repetition | claimable | 9.2 |
 | 50-move rule | claimable | 9.3 |
 
-Once a position is automatically terminated, the board does not allow further moves; continuation past mandatory termination is a usage error. Insufficient material is detected by a fast structural test (king-vs-king, king + minor vs king, etc.). `Board` also detects dead positions by running the quick unwinnability analyzer for both sides once per ply when its `detectDeadPositionUnwinnable` flag is enabled, which is the default. Positions that require the full analyzer remain caller-invoked.
+Once a position is automatically terminated, the board does not allow further moves; continuation past mandatory termination is a usage error. Insufficient material is detected by a fast structural test (king-vs-king, king + minor vs king, etc.). Analyzer-driven dead-position checks are caller-invoked queries.
 
-Fivefold repetition (FIDE 9.6.1) and the 75-move rule (FIDE 9.6.2) are FIDE-automatic draw rules in the rulebook, but the library surfaces them as queryable predicates rather than enforcing them at the move pipeline. The position itself is not necessarily drawn at the threshold — mating material can still be present, pawn moves and captures can still happen, and a later checkmate can still occur if play continues. The library is permissive here for corpus and tooling compatibility (historical PGN databases routinely contain games whose recorded play continues a move or two past the threshold); the caller decides whether to adjudicate the draw. Consumers that want to surface the rule call `Board.isFivefoldRepetition()` / `Board.isSeventyFiveMove()` themselves. The corresponding `GameStatus` values remain available through `BasicChessUtility.calculateGameStatus(...)` as diagnostic answers, with the automatic-termination statuses taking precedence when both apply to the same position.
+Fivefold repetition (FIDE 9.6.1), the 75-move rule (FIDE 9.6.2), and analyzer-driven dead positions (FIDE 5.2.2) are surfaced as queryable predicates rather than enforced at the move pipeline. The library is permissive here for corpus and tooling compatibility; the caller decides whether to adjudicate the draw. Consumers that want to surface these states call `Board.isFivefoldRepetition()` / `Board.isSeventyFiveMove()` / `Board.isDeadPositionQuick()` / `Board.isDeadPositionFull()` themselves. The corresponding `GameStatus` values remain available through `BasicChessUtility.calculateGameStatus(...)` as diagnostic answers, with the automatic-termination statuses taking precedence when both apply to the same position.
 
 For the claimable rules, the library exposes both the **on-board** predicate (current position satisfies the rule) and the **with-move** predicate (some legal move would satisfy it), and produces analysis output that names which moves *would* satisfy the claim — surfacing missed claim opportunities that other libraries do not. Position equality follows the FIDE definition: same piece placement, same side to move, same castling rights, same en-passant possibilities.
 
@@ -99,7 +99,7 @@ The direct side-specific analyzers return analysis records. For `WINNABLE`, thos
 can be replayed from the input position; the `Board.isUnwinnableQuick(Side)` and `Board.isUnwinnableFull(Side)`
 convenience methods expose only the verdict.
 
-Side-specific quick/full unwinnability queries are caller-invoked. In addition, `Board` uses the quick analyzer automatically for FIDE 5.2.2 dead-position detection once per ply when `detectDeadPositionUnwinnable` is enabled. The default constructors enable it; bulk PGN analysis can disable it with the boolean constructor overloads and call the analyzers explicitly when needed. The full variant is naturally heavier and is never run automatically.
+Side-specific quick/full unwinnability queries are caller-invoked. Dead-position quick/full queries on `Board` are also caller-invoked; no analyzer runs automatically during construction or move execution.
 
 ### 3.3 SAN, FEN, PGN
 
@@ -150,7 +150,7 @@ Codes are not collapsed: each distinguishable deviation has its own code, and a 
 **Deliberate non-recoveries.** Three categories are rejected even by the lenient pipeline:
 - **Mixed castling** (`0-O`, `O-0`) — no real-world tool emits this; allowing it would add parser complexity for zero practical value.
 - **Pawn `SPURIOUS_CAPTURE_MARKER`** — `dxe5` when e5 is empty has no clean string mutation that yields canonical SAN; the only "recovery" would silently swap the user's intended pawn (d-file) for a different one (e-file). That crosses the line from forgiving sloppiness to overriding intent.
-- **Game already terminated** — top-of-pipeline guard before the lenient layer engages, identical to strict; once a FIDE-automatic termination is reached no further moves are accepted, lenient or otherwise.
+- **Game already terminated** — top-of-pipeline guard before the lenient layer engages, identical to strict; once a move-blocking termination is reached no further moves are accepted, lenient or otherwise.
 
 The strict pipeline remains the single source of chess-validation truth. Lenient is a thin input-shape transformation layer that reuses strict for everything else.
 

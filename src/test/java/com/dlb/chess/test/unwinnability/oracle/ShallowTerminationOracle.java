@@ -40,12 +40,11 @@ public class ShallowTerminationOracle {
   }
 
   /**
-   * Runs the oracle on a fresh detection-off board built from the caller's FEN — the 3-ply scan's
-   * {@code board.move(...)} calls do not trigger the dead-position auto-detect, and the caller's board is not mutated.
-   * Repetition history from the caller's game is lost on the fresh board.
+   * Runs the oracle on a fresh history-less board built from the caller's FEN. The caller's board is not mutated, and
+   * repetition history from the caller's game is lost on the fresh board.
    */
   public static LimitedUnwinnabilityVerdict calculateUnwinnability(Board input, Side side) {
-    final Board board = input.copyCurrentPositionWithoutHistory(false);
+    final Board board = input.copyCurrentPositionWithoutHistory();
     return switch (scan(board, side, 0)) {
       case WIN -> LimitedUnwinnabilityVerdict.WINNABLE;
       case LOSS_OR_DRAW -> LimitedUnwinnabilityVerdict.UNWINNABLE;

@@ -118,7 +118,7 @@ class TestAmbronaUnwinnabilityQuickOracleComparison {
   @SuppressWarnings("static-method")
   @Test
   void testStartPosition() {
-    final Board board = new Board(false);
+    final Board board = new Board();
     assertEquals(UnwinnabilityQuickVerdict.POSSIBLY_WINNABLE,
         UnwinnableQuickAnalyzer.unwinnableQuick(board, board.getHavingMove().getOppositeSide()).verdict());
   }

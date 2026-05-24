@@ -18,7 +18,7 @@ class TestNoProgressMoveUtility {
   void testBasic() {
 
     final var fenRookEndGame = "8/5k2/4rP2/8/8/8/8/6KR b - - 0 100";
-    final Board board = new Board(fenRookEndGame, false);
+    final Board board = new Board(fenRookEndGame);
 
     board.movesStrict("Kxf6", "Rh2", "Ke7", "Rh3", "Kd6", "Rh4", "Kc6", "Rh5", "Kd6", "Rh6", "Kc6", "Rh7", "Kd6", "Rh8",
         "Kc6", "Rg8", "Kd6", "Rg7", "Kc6", "Rg6", "Kd6", "Rg5", "Kc6", "Rg4", "Kd6", "Rg3", "Kc6", "Rg2", "Kd6", "Rf2",
@@ -33,7 +33,7 @@ class TestNoProgressMoveUtility {
 
     final List<List<NoProgressHalfMove>> expectedListList = new ArrayList<>();
 
-    final Board boardPlayAlong = new Board(fenRookEndGame, false);
+    final Board boardPlayAlong = new Board(fenRookEndGame);
     boardPlayAlong.movesStrict("Kxf6", "Rh2");
 
     final List<NoProgressHalfMove> noProgressHalfMoveList = new ArrayList<>();

@@ -61,7 +61,7 @@ class TestPawnWallGeometricAnalyzer {
     // are not part of any spanning chain - they are floating pawns.
     // This fixture lives under the ambrona/ folder, not pawnWall/, so it is not exercised by the folder iteration
     // tests below; we keep the explicit FEN here.
-    final Board board = new Board("7k/8/1p6/1Pp5/2Pp4/pB1Pp1p1/P1B1P1P1/3B2K1 b - - 0 1", false);
+    final Board board = new Board("7k/8/1p6/1Pp5/2Pp4/pB1Pp1p1/P1B1P1P1/3B2K1 b - - 0 1");
 
     assertEquals(PawnWallVerdict.UNKNOWN, PawnWallGeometricAnalyzer.calculate(board),
         "ambrona_10 has a floating a2/a3 pawn pair - must be rejected by the all-pawns-involved check");

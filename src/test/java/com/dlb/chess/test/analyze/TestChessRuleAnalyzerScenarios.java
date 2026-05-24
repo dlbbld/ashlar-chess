@@ -12,7 +12,7 @@ class TestChessRuleAnalyzerScenarios extends AbstractTestChessRuleAnalyzerScenar
   @Test
   @SuppressWarnings("static-method")
   void testWhiteMovingPiece() {
-    final Board board = new Board(false);
+    final Board board = new Board();
     MoveSpecification move = new MoveSpecification(E3, E4);
 
     check(board, move, MoveCheck.MOVE_SPEC_FROM_SQUARE_EMPTY);
@@ -143,7 +143,7 @@ class TestChessRuleAnalyzerScenarios extends AbstractTestChessRuleAnalyzerScenar
   void testWhiteCapturingNonPawn() {
 
     // capturing own pieces
-    final Board board = new Board(false);
+    final Board board = new Board();
 
     // rook
     MoveSpecification move = new MoveSpecification(A1, A2);
@@ -208,7 +208,7 @@ class TestChessRuleAnalyzerScenarios extends AbstractTestChessRuleAnalyzerScenar
   @SuppressWarnings("static-method")
   void testWhiteCapturingPawn() {
 
-    Board board = new Board("rnb1kbnr/pppq1ppp/8/3pp3/3P4/P7/1PPQPPPP/RNB1KBNR w KQkq - 2 4", false);
+    Board board = new Board("rnb1kbnr/pppq1ppp/8/3pp3/3P4/P7/1PPQPPPP/RNB1KBNR w KQkq - 2 4");
 
     // pawn
     MoveSpecification move = new MoveSpecification(A3, A4);
@@ -362,7 +362,7 @@ class TestChessRuleAnalyzerScenarios extends AbstractTestChessRuleAnalyzerScenar
     check(board, move, MoveCheck.MOVEMENT_PAWN_EN_PASSANT_NO_IMMEDIATE_BEFORE_TWO_SQUARE_ADVANCE);
 
     // pawn moves
-    board = new Board(false);
+    board = new Board();
 
     move = new MoveSpecification(E2, E4);
     board.move(move);
@@ -431,7 +431,7 @@ class TestChessRuleAnalyzerScenarios extends AbstractTestChessRuleAnalyzerScenar
     check(board, move, MoveCheck.MOVEMENT_PAWN_EN_PASSANT_NO_IMMEDIATE_BEFORE_TWO_SQUARE_ADVANCE);
 
     // pawn moves
-    board = new Board(false);
+    board = new Board();
 
     move = new MoveSpecification(B2, B4);
     board.move(move);
@@ -482,7 +482,7 @@ class TestChessRuleAnalyzerScenarios extends AbstractTestChessRuleAnalyzerScenar
   void testWhitePawnTwoSquareAdvanceMoves() {
     // pawn two advance moves
 
-    final Board board = new Board(false);
+    final Board board = new Board();
 
     MoveSpecification move = new MoveSpecification(B1, C3);
     board.move(move);
@@ -528,10 +528,10 @@ class TestChessRuleAnalyzerScenarios extends AbstractTestChessRuleAnalyzerScenar
   @SuppressWarnings("static-method")
   void testWhiteKingMoves() {
 
-    Board board = new Board(false);
+    Board board = new Board();
 
     // king
-    board = new Board(false);
+    board = new Board();
 
     MoveSpecification move = new MoveSpecification(B1, A3);
     board.move(move);
@@ -621,7 +621,7 @@ class TestChessRuleAnalyzerScenarios extends AbstractTestChessRuleAnalyzerScenar
     check(board, move, MoveCheck.KING_CAPTURES_GUARDED_PIECE);
 
     // kings walk on the middle of the board to move next to each other
-    board = new Board(false);
+    board = new Board();
 
     move = new MoveSpecification(E2, E4);
     board.move(move);
@@ -692,9 +692,9 @@ class TestChessRuleAnalyzerScenarios extends AbstractTestChessRuleAnalyzerScenar
   @SuppressWarnings("static-method")
   void testWhitePromotionPieceWronglySet() {
 
-    Board board = new Board(false);
+    Board board = new Board();
     // non pawn move - promotion piece set
-    board = new Board(false);
+    board = new Board();
 
     MoveSpecification move = new MoveSpecification(A2, A4);
     board.move(move);
@@ -739,7 +739,7 @@ class TestChessRuleAnalyzerScenarios extends AbstractTestChessRuleAnalyzerScenar
     check(board, move, MoveCheck.MOVE_SPEC_NON_PAWN_PROMOTION_PIECE_SET);
 
     // pawn move - promotion piece checks with promotion by capture
-    board = new Board(false);
+    board = new Board();
 
     move = new MoveSpecification(E2, E3, PromotionPieceType.QUEEN);
     check(board, move, MoveCheck.MOVE_SPEC_PAWN_NON_PROMOTION_PROMOTION_PIECE);
@@ -786,7 +786,7 @@ class TestChessRuleAnalyzerScenarios extends AbstractTestChessRuleAnalyzerScenar
     board.move(move);
 
     // pawn move - promotion piece checks with promotion without capture
-    board = new Board(false);
+    board = new Board();
 
     move = new MoveSpecification(D2, D3, PromotionPieceType.QUEEN);
     check(board, move, MoveCheck.MOVE_SPEC_PAWN_NON_PROMOTION_PROMOTION_PIECE);
@@ -836,7 +836,7 @@ class TestChessRuleAnalyzerScenarios extends AbstractTestChessRuleAnalyzerScenar
   @Test
   @SuppressWarnings("static-method")
   void testBlackMovingPieces() {
-    final Board board = new Board(false);
+    final Board board = new Board();
 
     board.moveStrict("e4");
 
@@ -969,7 +969,7 @@ class TestChessRuleAnalyzerScenarios extends AbstractTestChessRuleAnalyzerScenar
   void testBlackCapturingNonPawn() {
 
     // capturing own pieces
-    final Board board = new Board(false);
+    final Board board = new Board();
     board.moveStrict("e4");
 
     // rook
@@ -1036,7 +1036,7 @@ class TestChessRuleAnalyzerScenarios extends AbstractTestChessRuleAnalyzerScenar
   void testBlackCapturingPawn() {
     // pawn
 
-    Board board = new Board(false);
+    Board board = new Board();
 
     MoveSpecification move = new MoveSpecification(A2, A3);
     board.move(move);
@@ -1071,7 +1071,7 @@ class TestChessRuleAnalyzerScenarios extends AbstractTestChessRuleAnalyzerScenar
     move = new MoveSpecification(H7, H6);
     check(board, move, MoveCheck.MOVEMENT_PAWN_FORWARD_ONE_SQUARE_TO_SQUARE_NOT_EMPTY_OWN_PIECE);
 
-    board = new Board(false);
+    board = new Board();
 
     move = new MoveSpecification(A2, A4);
     board.move(move);
@@ -1100,7 +1100,7 @@ class TestChessRuleAnalyzerScenarios extends AbstractTestChessRuleAnalyzerScenar
     move = new MoveSpecification(G7, G6);
     check(board, move, MoveCheck.MOVEMENT_PAWN_FORWARD_ONE_SQUARE_TO_SQUARE_NOT_EMPTY_OPPONENT_PIECE);
 
-    board = new Board(false);
+    board = new Board();
 
     move = new MoveSpecification(E2, E4);
     board.move(move);
@@ -1141,7 +1141,7 @@ class TestChessRuleAnalyzerScenarios extends AbstractTestChessRuleAnalyzerScenar
     move = new MoveSpecification(F7, G6);
     check(board, move, MoveCheck.MOVEMENT_PAWN_DIAGONAL_OWN_PIECE);
 
-    board = new Board(false);
+    board = new Board();
 
     move = new MoveSpecification(E2, E4);
     board.move(move);
@@ -1173,7 +1173,7 @@ class TestChessRuleAnalyzerScenarios extends AbstractTestChessRuleAnalyzerScenar
     move = new MoveSpecification(B6, A5);
     check(board, move, MoveCheck.MOVEMENT_PAWN_EN_PASSANT_WRONG_RANK);
 
-    board = new Board(false);
+    board = new Board();
 
     move = new MoveSpecification(A2, A4);
     board.move(move);
@@ -1244,7 +1244,7 @@ class TestChessRuleAnalyzerScenarios extends AbstractTestChessRuleAnalyzerScenar
   @SuppressWarnings("static-method")
   void testBlackPawnTwoSquareAdvanceMoves() {
 
-    final Board board = new Board(false);
+    final Board board = new Board();
 
     MoveSpecification move = new MoveSpecification(E2, E4);
     board.move(move);
@@ -1315,7 +1315,7 @@ class TestChessRuleAnalyzerScenarios extends AbstractTestChessRuleAnalyzerScenar
   @SuppressWarnings("static-method")
   void testBlackKingMoves() {
 
-    Board board = new Board(false);
+    Board board = new Board();
 
     MoveSpecification move = new MoveSpecification(B1, C3);
     board.move(move);
@@ -1342,7 +1342,7 @@ class TestChessRuleAnalyzerScenarios extends AbstractTestChessRuleAnalyzerScenar
     check(board, move, MoveCheck.KING_CAPTURES_GUARDED_PIECE);
 
     // kings walk on the middle of the board to move next to each other
-    board = new Board(false);
+    board = new Board();
 
     move = new MoveSpecification(F2, F3);
     board.move(move);
@@ -1373,7 +1373,7 @@ class TestChessRuleAnalyzerScenarios extends AbstractTestChessRuleAnalyzerScenar
   @SuppressWarnings("static-method")
   void testBlackPromotionPieceWronglySet() {
 
-    Board board = new Board(false);
+    Board board = new Board();
 
     MoveSpecification move = new MoveSpecification(A2, A4);
     board.move(move);
@@ -1421,7 +1421,7 @@ class TestChessRuleAnalyzerScenarios extends AbstractTestChessRuleAnalyzerScenar
     check(board, move, MoveCheck.MOVE_SPEC_NON_PAWN_PROMOTION_PIECE_SET);
 
     // pawn move - promotion piece checks with promotion by capture
-    board = new Board(false);
+    board = new Board();
 
     move = new MoveSpecification(E2, E4);
     board.move(move);
@@ -1442,7 +1442,7 @@ class TestChessRuleAnalyzerScenarios extends AbstractTestChessRuleAnalyzerScenar
     check(board, move, MoveCheck.MOVE_SPEC_PAWN_NON_PROMOTION_PROMOTION_PIECE);
 
     // en passant capture
-    board = new Board(false);
+    board = new Board();
 
     move = new MoveSpecification(B1, C3);
     board.move(move);
@@ -1463,7 +1463,7 @@ class TestChessRuleAnalyzerScenarios extends AbstractTestChessRuleAnalyzerScenar
     check(board, move, MoveCheck.MOVE_SPEC_PAWN_NON_PROMOTION_PROMOTION_PIECE);
 
     // promotion with capture
-    board = new Board(false);
+    board = new Board();
 
     move = new MoveSpecification(B1, C3);
     board.move(move);
@@ -1496,7 +1496,7 @@ class TestChessRuleAnalyzerScenarios extends AbstractTestChessRuleAnalyzerScenar
     check(board, move, MoveCheck.MOVE_SPEC_PAWN_PROMOTION_NO_PROMOTION_PIECE);
 
     // pawn move - promotion piece checks with promotion without capture
-    board = new Board(false);
+    board = new Board();
 
     move = new MoveSpecification(G1, F3);
     board.move(move);

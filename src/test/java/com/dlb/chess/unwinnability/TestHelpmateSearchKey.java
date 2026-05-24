@@ -57,9 +57,9 @@ class TestHelpmateSearchKey {
 
   private static Board boardFrom(@Nullable String fen) {
     if (fen == null) {
-      return new Board(false);
+      return new Board();
     }
-    return new Board(fen, false);
+    return new Board(fen);
   }
 
   private static void walkInLockStep(HelpmateSearchBoard search1, HelpmateSearchBoard search2, int depth) {
@@ -99,9 +99,9 @@ class TestHelpmateSearchKey {
   @Test
   void differentSideToMoveProducesDifferentKey() {
     // Pawn-less position so the EP target is NONE for both sides; isolates the sideToMove field.
-    final HelpmateSearchKey whiteToMove = HelpmateSearchBoard.from(new Board("4k3/8/8/8/8/8/8/4K3 w - - 0 1", false))
+    final HelpmateSearchKey whiteToMove = HelpmateSearchBoard.from(new Board("4k3/8/8/8/8/8/8/4K3 w - - 0 1"))
         .currentTranspositionKey();
-    final HelpmateSearchKey blackToMove = HelpmateSearchBoard.from(new Board("4k3/8/8/8/8/8/8/4K3 b - - 0 1", false))
+    final HelpmateSearchKey blackToMove = HelpmateSearchBoard.from(new Board("4k3/8/8/8/8/8/8/4K3 b - - 0 1"))
         .currentTranspositionKey();
     assertNotEquals(whiteToMove, blackToMove);
   }
@@ -111,9 +111,9 @@ class TestHelpmateSearchKey {
   @Test
   void differentNormalizedEpProducesDifferentKey() {
     // Same piece placement; one has a normalized-EP-capturable target, the other does not.
-    final HelpmateSearchKey withEp = HelpmateSearchBoard.from(new Board("8/8/8/8/3pP3/8/8/K6k b - e3 0 1", false))
+    final HelpmateSearchKey withEp = HelpmateSearchBoard.from(new Board("8/8/8/8/3pP3/8/8/K6k b - e3 0 1"))
         .currentTranspositionKey();
-    final HelpmateSearchKey withoutEp = HelpmateSearchBoard.from(new Board("8/8/8/8/3pP3/8/8/K6k b - - 0 1", false))
+    final HelpmateSearchKey withoutEp = HelpmateSearchBoard.from(new Board("8/8/8/8/3pP3/8/8/K6k b - - 0 1"))
         .currentTranspositionKey();
     assertNotEquals(withEp, withoutEp);
   }
@@ -122,10 +122,10 @@ class TestHelpmateSearchKey {
   @SuppressWarnings("static-method")
   @Test
   void differentWhiteCastlingRightsProducesDifferentKey() {
-    final HelpmateSearchKey both = HelpmateSearchBoard.from(new Board("r3k2r/8/8/8/8/8/8/R3K2R w KQkq - 0 1", false))
+    final HelpmateSearchKey both = HelpmateSearchBoard.from(new Board("r3k2r/8/8/8/8/8/8/R3K2R w KQkq - 0 1"))
         .currentTranspositionKey();
     final HelpmateSearchKey whiteQueenSideOnly = HelpmateSearchBoard
-        .from(new Board("r3k2r/8/8/8/8/8/8/R3K2R w Qkq - 0 1", false)).currentTranspositionKey();
+        .from(new Board("r3k2r/8/8/8/8/8/8/R3K2R w Qkq - 0 1")).currentTranspositionKey();
     assertNotEquals(both, whiteQueenSideOnly);
   }
 
@@ -133,10 +133,10 @@ class TestHelpmateSearchKey {
   @SuppressWarnings("static-method")
   @Test
   void differentBlackCastlingRightsProducesDifferentKey() {
-    final HelpmateSearchKey both = HelpmateSearchBoard.from(new Board("r3k2r/8/8/8/8/8/8/R3K2R w KQkq - 0 1", false))
+    final HelpmateSearchKey both = HelpmateSearchBoard.from(new Board("r3k2r/8/8/8/8/8/8/R3K2R w KQkq - 0 1"))
         .currentTranspositionKey();
     final HelpmateSearchKey blackKingSideOnly = HelpmateSearchBoard
-        .from(new Board("r3k2r/8/8/8/8/8/8/R3K2R w KQk - 0 1", false)).currentTranspositionKey();
+        .from(new Board("r3k2r/8/8/8/8/8/8/R3K2R w KQk - 0 1")).currentTranspositionKey();
     assertNotEquals(both, blackKingSideOnly);
   }
 
@@ -144,9 +144,9 @@ class TestHelpmateSearchKey {
   @SuppressWarnings("static-method")
   @Test
   void differentPiecePlacementProducesDifferentKey() {
-    final HelpmateSearchKey before = HelpmateSearchBoard.from(new Board("4k3/8/8/8/8/4P3/8/4K3 w - - 0 1", false))
+    final HelpmateSearchKey before = HelpmateSearchBoard.from(new Board("4k3/8/8/8/8/4P3/8/4K3 w - - 0 1"))
         .currentTranspositionKey();
-    final HelpmateSearchKey after = HelpmateSearchBoard.from(new Board("4k3/8/8/8/4P3/8/8/4K3 w - - 0 1", false))
+    final HelpmateSearchKey after = HelpmateSearchBoard.from(new Board("4k3/8/8/8/4P3/8/8/4K3 w - - 0 1"))
         .currentTranspositionKey();
     assertNotEquals(before, after);
   }

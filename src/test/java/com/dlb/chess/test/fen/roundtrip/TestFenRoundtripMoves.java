@@ -17,8 +17,8 @@ class TestFenRoundtripMoves extends AbstractTestFenRoundtrip {
   @Test
   void testInitial() {
     final Fen fen = FenParserAdvanced.parseFenAdvanced(FenConstants.FEN_INITIAL_STR);
-    final Board boardFromFenInitial = new Board(fen, false);
-    final Board board = new Board(false);
+    final Board boardFromFenInitial = new Board(fen);
+    final Board board = new Board();
 
     CommonTestUtility.checkBoardsAgainstEachOtherExcludeHistory(board, boardFromFenInitial);
   }
@@ -26,7 +26,7 @@ class TestFenRoundtripMoves extends AbstractTestFenRoundtrip {
   @SuppressWarnings("static-method")
   @Test
   void testFenRoundtripGame1() {
-    final Board boardMakeMoves = new Board(false);
+    final Board boardMakeMoves = new Board();
 
     boardMakeMoves.movesStrict("d4", "d5", "Nc3", "Nf6", "Bf4", "a6", "e3", "b5", "Bd3", "e6", "Nf3", "c5", "O-O",
         "Bb7", "Ne5", "Nbd7", "a3", "Nxe5", "Bxe5", "Bd6", "f4", "O-O", "Qf3", "c4", "Be2", "Ne4", "Nxe4", "dxe4",
@@ -54,7 +54,7 @@ class TestFenRoundtripMoves extends AbstractTestFenRoundtrip {
   @SuppressWarnings("static-method")
   @Test
   void testFenRoundtripGame2() {
-    final Board boardMakeMoves = new Board(false);
+    final Board boardMakeMoves = new Board();
     boardMakeMoves.movesStrict("e4", "e5", "Nf3", "Nc6", "Bc4", "Bc5", "c3", "d6", "d4", "exd4", "cxd4", "Bxd4", "Nxd4",
         "Nxd4", "O-O", "Nf6", "Re1", "Nxe4", "Nc3", "O-O");
 

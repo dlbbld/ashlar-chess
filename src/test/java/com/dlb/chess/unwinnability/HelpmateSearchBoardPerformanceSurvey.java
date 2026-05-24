@@ -107,7 +107,7 @@ public class HelpmateSearchBoardPerformanceSurvey {
       }
       final PgnGame pgnGame = PgnCacheForStrictPgnParserTestCases.getPgn(pgnTest.getFolderPath(),
           testCase.pgnName());
-      final Board board = new Board(pgnGame.startFen(), false);
+      final Board board = new Board(pgnGame.startFen());
       addSetup(result, board);
       for (final PgnHalfMove halfMove : pgnGame.halfMoveList()) {
         board.moveStrict(halfMove.san());
@@ -121,7 +121,7 @@ public class HelpmateSearchBoardPerformanceSurvey {
   }
 
   private static void addSetup(List<Setup> result, Board sourceBoard) {
-    final var fenBoard = new Board(sourceBoard.getFen(), false);
+    final var fenBoard = new Board(sourceBoard.getFen());
     final HelpmateSearchBoard searchBoard = HelpmateSearchBoard.from(fenBoard);
     final List<LegalMove> rootMoves = List.copyOf(searchBoard.getLegalMoves());
     if (rootMoves.isEmpty()) {

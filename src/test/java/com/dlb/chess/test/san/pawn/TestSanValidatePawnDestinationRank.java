@@ -17,7 +17,7 @@ class TestSanValidatePawnDestinationRank {
   void testWhite() {
 
     {
-      final Board board = new Board("4k3/5p2/8/8/8/8/3P4/4K3 w - - 0 100", false);
+      final Board board = new Board("4k3/5p2/8/8/8/8/3P4/4K3 w - - 0 100");
 
       checkException("d2", board);
       checkException("d1=Q", board);
@@ -34,7 +34,7 @@ class TestSanValidatePawnDestinationRank {
   void testBlack() {
 
     {
-      final Board board = new Board("4k3/5p2/8/8/8/8/3P4/4K3 b - - 0 100", false);
+      final Board board = new Board("4k3/5p2/8/8/8/8/3P4/4K3 b - - 0 100");
 
       checkException("f7", board);
       checkException("f8=Q", board);

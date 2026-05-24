@@ -86,7 +86,7 @@ class TestUciMoveUtility {
   }
 
   private static void checkMoveSpecificationToUci(List<UciMoveTest> list) {
-    final Board board = new Board(false);
+    final Board board = new Board();
 
     for (final UciMoveTest test : list) {
       board.moveStrict(test.san());
@@ -109,7 +109,7 @@ class TestUciMoveUtility {
   }
 
   private static void checkUciMoveToMoveSpecification(List<UciMoveTest> list) {
-    final Board board = new Board(false);
+    final Board board = new Board();
 
     for (final UciMoveTest test : list) {
       final UciMove moveModel = UciMoveValidationUtility.lookup(test.uciMoveStr());
@@ -123,7 +123,7 @@ class TestUciMoveUtility {
   }
 
   private static void checkUciMoveToSan(List<UciMoveTest> list) {
-    final var board = new Board(false);
+    final var board = new Board();
 
     for (final UciMoveTest test : list) {
       final UciMove uciMove = UciMoveValidationUtility.lookup(test.uciMoveStr());

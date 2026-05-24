@@ -154,7 +154,7 @@ class TestPgnExportRoundTripAgainstPythonChessOracle {
       return;
     }
 
-    final Board board = new Board(parsed.startFen(), false);
+    final Board board = new Board(parsed.startFen());
     final List<String> actualUcis = new ArrayList<>(parsed.halfMoveList().size());
     for (final PgnHalfMove halfMove : parsed.halfMoveList()) {
       board.moveStrict(halfMove.san());

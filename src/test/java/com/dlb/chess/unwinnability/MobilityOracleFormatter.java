@@ -30,7 +30,7 @@ public final class MobilityOracleFormatter {
   }
 
   public static List<String> calculateRows(String fen) {
-    final Board board = new Board(fen, false);
+    final Board board = new Board(fen);
     final MobilitySolution mobilitySolution = Mobility.mobility(board);
     final StaticPosition staticPosition = StaticPositionBridge.toStaticPosition(board.getBitboardPosition());
 
