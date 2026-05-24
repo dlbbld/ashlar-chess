@@ -7,11 +7,12 @@ package com.dlb.chess.common.enums;
  *
  * <p>
  * {@link #FIVE_FOLD_REPETITION_RULE} (FIDE 9.6.1) and {@link #SEVENTY_FIVE_MOVE_RULE} (FIDE 9.6.2) are FIDE-automatic
- * terminations in the rulebook, but in this library they are surfaced as <em>queryable predicates</em> rather than
- * enforced at the move pipeline: playing on past either threshold is harmless (no win is reachable for either side; the
- * practical outcome is always a draw by adjudication, resignation, or agreement), and historical PGN corpora routinely
- * contain games whose recorded play continues a move or two past the threshold. Consumers that want to surface the
- * rule call {@link com.dlb.chess.board.Board#isFivefoldRepetition()} /
+ * draw rules in the rulebook, but in this library they are surfaced as <em>queryable predicates</em> rather than
+ * enforced at the move pipeline. The position itself is not necessarily drawn — mating material can still be present,
+ * pawn moves and captures can still happen, and a later checkmate can still occur if play continues. The library is
+ * permissive here for corpus and tooling compatibility (historical PGN databases routinely contain games whose
+ * recorded play continues a move or two past the threshold); the caller decides whether to adjudicate the draw.
+ * Consumers that want to surface the rule call {@link com.dlb.chess.board.Board#isFivefoldRepetition()} /
  * {@link com.dlb.chess.board.Board#isSeventyFiveMove()} themselves. See {@link #isAutomaticTermination()}.
  *
  * <p>
