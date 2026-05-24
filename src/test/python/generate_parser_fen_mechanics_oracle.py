@@ -9,6 +9,29 @@ TestParserFenMechanicsAgainstPythonChessOracle on the Java side. Regenerate this
 file only when fixtures change. Determinism: PGN filenames are sorted; JSON keys
 are sorted; line order is stable across runs.
 
+JSONL schema (one record per line, keys sorted alphabetically):
+
+  Record := {
+    "pgn":       <string>,    # PGN filename (sort key for the line)
+    "startFen":  <string>,    # FEN from the [FEN] header, re-emitted by python-chess
+    "moves":     [Move, ...], # one entry per half-move in mainline order
+    "finalFen":  <string>     # FEN after the last move
+  }
+
+  Move := {
+    "san":             <string>,  # python-chess's regenerated SAN
+    "uci":             <string>,  # UCI of the move
+    "fenAfter":        <string>,  # FEN after the move
+    "halfmoveClock":   <int>,     # FIDE halfmove clock after the move
+    "fullmoveNumber":  <int>,     # FEN-convention fullmove number after the move
+    "isCheck":         <bool>,    # board.is_check() after the move
+    "isCheckmate":     <bool>,    # board.is_checkmate() after the move
+    "isStalemate":     <bool>     # board.is_stalemate() after the move
+  }
+
+This module is the schema source of truth; the Java side
+(com.dlb.chess.test.oracle.python.OracleRecord / OracleMove) mirrors it.
+
 FEN convention: emitted via `board.fen(en_passant="fen")` so the en-passant target
 square is always written after a pawn double-step (PGN/Edwards 1994 §16.1.3.4),
 matching clean-chess. python-chess's default `board.fen()` omits the e.p. target
@@ -16,7 +39,8 @@ when no capture is legal next move (Stockfish / Lichess / X-FEN de-facto), which
 would disagree with clean-chess on every fixture where a pawn just double-stepped
 without an adjacent opposing pawn.
 
-Requires: python-chess (`pip install chess`).
+Reproducibility: python-chess 1.11.2 is the pinned version of record. Install via
+  pip install -r src/test/python/requirements.txt
 
 Usage:
   python src/test/python/generate_parser_fen_mechanics_oracle.py

@@ -32,7 +32,9 @@ import com.dlb.chess.test.pgntest.enums.PgnTest;
  *
  * <p>
  * The oracle is regenerated only when the PGN fixtures or the recorded fields change; {@code mvn test} does not invoke
- * Python. See {@code setup.md} for the regeneration command.
+ * Python. The generator script is the schema source of truth — see the module docstring of
+ * {@code src/test/python/generate_parser_fen_mechanics_oracle.py} for the per-record JSON shape, the
+ * reproducibility install command, and the version of python-chess that produced the committed oracle.
  *
  * <p>
  * FEN convention: the oracle is emitted with python-chess's {@code board.fen(en_passant="fen")} option so that the
