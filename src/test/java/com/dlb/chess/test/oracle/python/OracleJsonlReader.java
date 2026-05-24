@@ -68,6 +68,11 @@ public final class OracleJsonlReader {
         ((Boolean) obj.get("canClaimFifty")).booleanValue());
   }
 
+  /** Package-visible: parse one JSONL line into a fresh {@code LinkedHashMap}. Used by sibling oracle readers. */
+  static Map<String, Object> parseLineToObject(String text) {
+    return (Map<String, Object>) parseValue(text);
+  }
+
   private static Object parseValue(String text) {
     final Cursor c = new Cursor(text);
     c.skipWhitespace();
