@@ -20,14 +20,17 @@ JSONL schema (one record per line, keys sorted alphabetically):
   }
 
   Move := {
-    "san":             <string>,  # python-chess's regenerated SAN
-    "uci":             <string>,  # UCI of the move
-    "fenAfter":        <string>,  # FEN after the move
-    "halfmoveClock":   <int>,     # FIDE halfmove clock after the move
-    "fullmoveNumber":  <int>,     # FEN-convention fullmove number after the move
-    "isCheck":         <bool>,    # board.is_check() after the move
-    "isCheckmate":     <bool>,    # board.is_checkmate() after the move
-    "isStalemate":     <bool>     # board.is_stalemate() after the move
+    "san":                          <string>,  # python-chess's regenerated SAN
+    "uci":                          <string>,  # UCI of the move
+    "fenAfter":                     <string>,  # FEN after the move
+    "halfmoveClock":                <int>,     # FIDE halfmove clock after the move
+    "fullmoveNumber":               <int>,     # FEN-convention fullmove number after the move
+    "isCheck":                      <bool>,    # board.is_check() after the move
+    "isCheckmate":                  <bool>,    # board.is_checkmate() after the move
+    "isStalemate":                  <bool>,    # board.is_stalemate() after the move
+    "isInsufficientMaterial":       <bool>,    # board.is_insufficient_material() (both sides)
+    "hasInsufficientMaterialWhite": <bool>,    # board.has_insufficient_material(chess.WHITE)
+    "hasInsufficientMaterialBlack": <bool>     # board.has_insufficient_material(chess.BLACK)
   }
 
 This module is the schema source of truth; the Java side
@@ -148,6 +151,9 @@ def record_for_pgn(pgn_path: Path) -> dict:
             "isCheck": board.is_check(),
             "isCheckmate": board.is_checkmate(),
             "isStalemate": board.is_stalemate(),
+            "isInsufficientMaterial": board.is_insufficient_material(),
+            "hasInsufficientMaterialWhite": board.has_insufficient_material(chess.WHITE),
+            "hasInsufficientMaterialBlack": board.has_insufficient_material(chess.BLACK),
         })
 
     return {

@@ -12,6 +12,7 @@ import org.apache.logging.log4j.Logger;
 import org.junit.jupiter.api.Test;
 
 import com.dlb.chess.board.Board;
+import com.dlb.chess.board.enums.Side;
 import com.dlb.chess.common.Nulls;
 import com.dlb.chess.common.utility.BasicUtility;
 import com.dlb.chess.model.PgnHalfMove;
@@ -140,6 +141,14 @@ class TestPgnImportAgainstPythonChessOracle {
                 () -> bucket + " / " + record.pgn() + " ply " + plyLabel + " — isCheckmate mismatch");
             assertEquals(expected.isStalemate(), board.isStalemate(),
                 () -> bucket + " / " + record.pgn() + " ply " + plyLabel + " — isStalemate mismatch");
+            assertEquals(expected.isInsufficientMaterial(), board.isInsufficientMaterial(),
+                () -> bucket + " / " + record.pgn() + " ply " + plyLabel + " — isInsufficientMaterial mismatch");
+            assertEquals(expected.hasInsufficientMaterialWhite(), board.isInsufficientMaterial(Side.WHITE),
+                () -> bucket + " / " + record.pgn() + " ply " + plyLabel
+                    + " — isInsufficientMaterial(WHITE) mismatch");
+            assertEquals(expected.hasInsufficientMaterialBlack(), board.isInsufficientMaterial(Side.BLACK),
+                () -> bucket + " / " + record.pgn() + " ply " + plyLabel
+                    + " — isInsufficientMaterial(BLACK) mismatch");
           } catch (final AssertionError e) {
             failures.add(BasicUtility.getMessage(e));
           }
