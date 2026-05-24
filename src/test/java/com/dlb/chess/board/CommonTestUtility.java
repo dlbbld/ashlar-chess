@@ -40,8 +40,6 @@ public abstract class CommonTestUtility implements EnumConstants {
     if (isIncludeHistory) {
       assertEquals(boardFirst.getInitialFenFullMoveNumber(), boardSecond.getInitialFenFullMoveNumber());
     }
-    // in super
-    // assertEquals(boardFirst.getFullMoveNumberForNextHalfMove(), boardSecond.getFullMoveNumberForNextHalfMove());
 
     if (isIncludeHistory) {
       assertEquals(boardFirst.getRepetitionCount(), boardSecond.getRepetitionCount());
