@@ -150,7 +150,7 @@ class TestThreefoldClaimAheadUtility {
 
   private static void addLastMove(Board board, List<ClaimAhead> claimAheadList) {
     final LegalMove legalMove = board.getLastMove();
-    final var fullMoveNumber = board.getFullMoveNumber();
+    final var fullMoveNumber = board.getLastPlayedFullMoveNumber();
     final String san = board.getSan();
     claimAheadList.add(new ClaimAhead(legalMove, fullMoveNumber, san));
   }

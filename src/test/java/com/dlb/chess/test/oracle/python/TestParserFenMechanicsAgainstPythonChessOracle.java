@@ -89,7 +89,7 @@ class TestParserFenMechanicsAgainstPythonChessOracle {
           // python-chess board.fullmove_number follows the FEN convention (the number of the move about to be played).
           // clean-chess matches that convention via getFullMoveNumberForNextHalfMove(); Board.getFullMoveNumber() is a
           // different sense (the number of the move just played) and is one less when black has just moved.
-          assertEquals(expected.fullmoveNumber(), board.getFullMoveNumberForNextHalfMove(),
+          assertEquals(expected.fullmoveNumber(), board.getFullMoveNumber(),
               () -> record.pgn() + " ply " + plyLabel + " — fullmove number mismatch");
           assertEquals(expected.isCheck(), board.isCheck(),
               () -> record.pgn() + " ply " + plyLabel + " — isCheck mismatch");

@@ -753,7 +753,7 @@ public final class LenientPgnParser {
     final List<PgnHalfMove> canonicalList = new ArrayList<>(halfMoveList.size());
     for (final PgnHalfMove halfMove : halfMoveList) {
       final Side side = board.getHavingMove();
-      final var fullMoveNumber = board.getFullMoveNumberForNextHalfMove();
+      final var fullMoveNumber = board.getFullMoveNumber();
       try {
         final LenientSanParserValidationResult result = board.moveLenient(halfMove.san());
         sanForgivenItemsAccumulator.addAll(result.forgivenItems());

@@ -62,7 +62,7 @@ class TestBoardCopyCurrentPositionWithoutHistory {
     assertEquals(source.getCastlingRightWhite(), actual.getCastlingRightWhite());
     assertEquals(source.getCastlingRightBlack(), actual.getCastlingRightBlack());
     assertEquals(source.getEnPassantCaptureTargetSquare(), actual.getEnPassantCaptureTargetSquare());
-    assertEquals(source.getFullMoveNumberForNextHalfMove(), actual.getFullMoveNumberForNextHalfMove());
+    assertEquals(source.getFullMoveNumber(), actual.getFullMoveNumber());
     assertEquals(source.getLegalMoves(), actual.getLegalMoves());
     assertEquals(source.isCheck(), actual.isCheck());
     assertEquals(source.isCheckmate(), actual.isCheckmate());

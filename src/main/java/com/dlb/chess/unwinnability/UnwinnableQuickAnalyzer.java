@@ -178,7 +178,7 @@ public class UnwinnableQuickAnalyzer {
   private static Board copyCurrentPositionForQuickSearch(Board input) {
     final Fen fen = new Fen(input.getFen(), input.getBitboardPosition(), input.getHavingMove(),
         input.getCastlingRightWhite(), input.getCastlingRightBlack(), input.getEnPassantCaptureTargetSquare(), 0,
-        input.getFullMoveNumberForNextHalfMove());
+        input.getFullMoveNumber());
     return new Board(fen, false);
   }
 

@@ -58,7 +58,7 @@ class TestNoProgressMoveUtility {
 
   private static NoProgressHalfMove calculateNoProgressHalfMoveForLastMove(Board board) {
     final var performedHalfMoveCount = board.getPerformedHalfMoveCount();
-    final var fullMoveNumber = board.getFullMoveNumber();
+    final var fullMoveNumber = board.getLastPlayedFullMoveNumber();
     final String san = board.getSan();
     final Side sideMoved = board.getHavingMove().getOppositeSide();
     final var halfMoveClock = board.getHalfMoveClock();
