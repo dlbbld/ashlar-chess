@@ -156,10 +156,6 @@ public final class Reporter {
         hasFiftyMoveRule, hasSeventyFiveMoveRule, board);
   }
 
-  public static boolean calculateIsHalfMoveTerminatesNoProgressSequence(HalfMove halfMove) {
-    return halfMove.halfMoveClock() == 0;
-  }
-
   // ---------------------------------------------------------------------------------------------
   // Private helpers â€” calculate*
   // ---------------------------------------------------------------------------------------------
