@@ -127,12 +127,6 @@ public final class Reporter {
     return output;
   }
 
-  public static Report calculateReport(Path folderPath, String pgnName) throws Exception {
-
-    final Board board = PgnUtility.calculateBoard(folderPath, pgnName);
-    return calculateReport(board);
-  }
-
   public static Report calculateReport(Board board) {
 
     final String invariant = board.getFen();
