@@ -6,7 +6,6 @@ import java.util.List;
 import com.dlb.chess.board.HalfMoveUtility;
 import com.dlb.chess.common.Nulls;
 import com.dlb.chess.common.model.HalfMove;
-import com.dlb.chess.common.utility.RepetitionUtility;
 import com.dlb.chess.report.Report;
 
 public class RepetitionRepresentation {
@@ -17,7 +16,7 @@ public class RepetitionRepresentation {
     // so the last entry has the repetition count of the sequence in the repetition count for the half-move
     final HalfMove lastHalfMove = Nulls.getLast(halfMoveList);
 
-    final var countRepetition = RepetitionUtility.getCountRepetition(lastHalfMove);
+    final var countRepetition = lastHalfMove.countRepetition();
 
     result.append("repPos=").append(countRepetition).append(": ");
     for (var i = 0; i < halfMoveList.size(); i++) {

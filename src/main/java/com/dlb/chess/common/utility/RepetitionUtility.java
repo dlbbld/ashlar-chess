@@ -37,10 +37,6 @@ public abstract class RepetitionUtility {
         && dynamicPosition.bitboardPosition().equals(other.bitboardPosition());
   }
 
-  public static int getCountRepetition(HalfMove halfMove) {
-    return halfMove.countRepetition();
-  }
-
   public static int calculateCountRepetition(List<LegalMove> performedLegalMoveList,
       List<DynamicPosition> dynamicPositionList, DynamicPosition dynamicPosition) {
 
@@ -85,7 +81,7 @@ public abstract class RepetitionUtility {
       if (calculateIsContained(processed, searchDynamicPositionThreeFold)) {
         continue;
       }
-      final var countRepetition = getCountRepetition(searchHalfMoveThreeFold);
+      final var countRepetition = searchHalfMoveThreeFold.countRepetition();
 
       if (countRepetition == countRepetitionThreshold) {
         // if we found a half move which has the required count, we sample all half-moves with
