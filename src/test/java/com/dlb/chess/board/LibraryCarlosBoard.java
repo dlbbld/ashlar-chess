@@ -620,12 +620,10 @@ public class LibraryCarlosBoard {
     final var index = halfMoveCount - 1;
     final var halfMoveClock = getHalfMoveClock();
     final var fullMoveNumber = getFullMoveNumber();
-    final String fen = getFen();
-    final var isCapture = isCapture();
     final var countRepetition = getRepetitionCount();
     final DynamicPosition dynamicPosition = getDynamicPosition();
     final Piece movingPiece = getMovingPiece();
-    return new HalfMove(index, halfMoveCount, fullMoveNumber, halfMoveClock, isCapture, fen, dynamicPosition,
-        countRepetition, getSan(), movingPiece, moveSpecification);
+    return new HalfMove(index, halfMoveCount, fullMoveNumber, halfMoveClock, dynamicPosition, countRepetition, getSan(),
+        movingPiece, moveSpecification);
   }
 }

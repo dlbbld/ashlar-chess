@@ -10,11 +10,10 @@ import com.dlb.chess.board.Board;
 import com.dlb.chess.board.enums.Side;
 import com.dlb.chess.common.Nulls;
 import com.dlb.chess.common.constants.ChessConstants;
-import com.dlb.chess.common.enums.InsufficientMaterial;
 import com.dlb.chess.common.exceptions.ProgrammingMistakeException;
 import com.dlb.chess.common.model.ClaimAhead;
 import com.dlb.chess.common.model.HalfMove;
-import com.dlb.chess.common.utility.BoardUtility;
+import com.dlb.chess.common.utility.BasicUtility;
 import com.dlb.chess.common.utility.RepetitionUtility;
 import com.dlb.chess.messages.Message;
 import com.dlb.chess.pgn.LenientPgnParser;
@@ -101,7 +100,8 @@ public final class Reporter {
       output.add(Message.getString("report.repetition.threefold.ahead.none"));
     } else {
       final var claimAheadList = ThreefoldClaimAheadPrint.calculateClaimAheadList(claimAheadListList);
-      output.addAll(claimAheadList);
+      final String resultAsLine = BasicUtility.calculateCommaSeparatedList(claimAheadList);
+      output.add(resultAsLine);
     }
 
     final List<List<HalfMove>> repetitionListList = RepetitionUtility
@@ -153,23 +153,12 @@ public final class Reporter {
     final var hasFiftyMoveRule = !noProgressMoveListList.isEmpty();
     final var hasSeventyFiveMoveRule = calculateHasSeventyFiveMoveRule(noProgressMoveListList);
 
-    final var firstCapture = calculateFirstCapture(halfMoveList);
-    final var hasCapture = calculateHasCapture(halfMoveList);
-
-    final var maxNoProgressSequence = calculateMaxNoProgressSequence(board);
-
-    final var checkmateOrStalemate = BoardUtility.calculateEvaluation(board);
-    final InsufficientMaterial insufficientMaterial = board.calculateInsufficientMaterial();
-
-    final String fen = board.getFen();
-
     if (!invariant.equals(board.getFen())) {
       throw new ProgrammingMistakeException("Board was changed");
     }
 
     return new Report(havingMove, halfMoveList, repetitionListList, noProgressMoveListList, hasThreefoldRepetition,
-        hasFivefoldRepetition, hasFiftyMoveRule, hasSeventyFiveMoveRule, firstCapture, hasCapture,
-        maxNoProgressSequence, checkmateOrStalemate, insufficientMaterial, fen, board);
+        hasFivefoldRepetition, hasFiftyMoveRule, hasSeventyFiveMoveRule, board);
   }
 
   public static boolean calculateIsHalfMoveTerminatesNoProgressSequence(HalfMove halfMove) {
@@ -211,51 +200,6 @@ public final class Reporter {
     return false;
   }
 
-  private static int calculateFirstCapture(List<HalfMove> halfMoveList) {
-    for (final HalfMove halfMove : halfMoveList) {
-      if (halfMove.isCapture()) {
-        return halfMove.halfMoveCount();
-      }
-    }
-    return -1;
-  }
-
-  private static boolean calculateHasCapture(List<HalfMove> halfMoveList) {
-    for (final HalfMove halfMove : halfMoveList) {
-      if (halfMove.isCapture()) {
-        return true;
-      }
-    }
-    return false;
-  }
-
-  private static int calculateMaxNoProgressSequence(Board board) {
-    final List<HalfMove> halfMoveList = board.getHalfMoveList();
-
-    if (board.getHalfMoveList().isEmpty()) {
-      return board.getInitialFen().halfMoveClock();
-    }
-
-    // if the first move is capture or pawn move the initial half move clock is
-    // reset
-    // so we initialize the max with the initial half move clock to assure it is
-    // considered in the calculation
-    var maxHalfMoveClock = board.getInitialFen().halfMoveClock();
-    final var maxIndex = halfMoveList.size() - 1;
-    for (var i = 0; i <= maxIndex; i++) {
-      final HalfMove halfMove = Nulls.get(halfMoveList, i);
-      final var halfMoveClock = halfMove.halfMoveClock();
-      if (halfMoveClock > maxHalfMoveClock) {
-        maxHalfMoveClock = halfMoveClock;
-      }
-    }
-    return maxHalfMoveClock;
-  }
-
-  // ---------------------------------------------------------------------------------------------
-  // Private helpers â€” output formatting
-  // ---------------------------------------------------------------------------------------------
-
   private static void addFirstMainSection(List<String> output, String key) {
     final StringBuilder mainSection = new StringBuilder();
     mainSection.append(Message.getString(key));
@@ -263,21 +207,9 @@ public final class Reporter {
     output.add(Nulls.toString(mainSection));
   }
 
-  private static void addFirstMainSection(List<String> output, String key, String placeHolder) {
-    final StringBuilder mainSection = new StringBuilder();
-    mainSection.append(Message.getString(key, placeHolder));
-    mainSection.append(":");
-    output.add(Nulls.toString(mainSection));
-  }
-
   private static void addMainSection(List<String> output, String key) {
     output.add("");
     addFirstMainSection(output, key);
-  }
-
-  private static void addMainSection(List<String> output, String key, String placeHolder) {
-    output.add("");
-    addFirstMainSection(output, key, placeHolder);
   }
 
   private static void printList(List<String> list) {

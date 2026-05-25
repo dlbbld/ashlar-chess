@@ -18,15 +18,15 @@ public class GenerateLibraryCarlosInsufficientMaterialTestCases {
 
   private static void generateTestCase() throws Exception {
 
-    for (final PgnTestCaseList testCaseList : PgnTestCaseCatalog.getTestList(
-        PgnTest.BASIC_INSUFFICIENT_MATERIAL_BOTH, PgnTest.BASIC_INSUFFICIENT_MATERIAL_ONLY_WHITE,
-        PgnTest.BASIC_INSUFFICIENT_MATERIAL_ONLY_BLACK, PgnTest.BASIC_INSUFFICIENT_MATERIAL_NONE)) {
+    for (final PgnTestCaseList testCaseList : PgnTestCaseCatalog.getTestList(PgnTest.BASIC_INSUFFICIENT_MATERIAL_BOTH,
+        PgnTest.BASIC_INSUFFICIENT_MATERIAL_ONLY_WHITE, PgnTest.BASIC_INSUFFICIENT_MATERIAL_ONLY_BLACK,
+        PgnTest.BASIC_INSUFFICIENT_MATERIAL_NONE)) {
       for (final PgnTestCase testCase : testCaseList.list()) {
 
         final Report report = Reporter.calculateReport(testCaseList.pgnTest().getFolderPath(), testCase.pgnName());
 
-        final InsufficientMaterial insufficientMaterial = report.insufficientMaterial();
-        final String fen = report.fen();
+        final InsufficientMaterial insufficientMaterial = report.board().calculateInsufficientMaterial();
+        final String fen = report.board().getFen();
 
         final String testCaseTitel = calculateTestCaseTitel(testCase.pgnName());
         System.out.println("//" + testCaseTitel);

@@ -221,8 +221,8 @@ public class Board {
   /**
    * Constructs a {@code Board} from a FEN string, validated by the advanced FEN parser. Enforces structural and
    * rule-consistency checks (piece counts within physical bounds, no pawns on rank 1 or 8, castling rights consistent
-   * with king/rook static positions, en-passant target consistent with the side to move, halfmove clock consistent
-   * with the fullmove number, etc.). The halfmove clock itself is not capped — the FIDE 75-move rule is a queryable
+   * with king/rook static positions, en-passant target consistent with the side to move, halfmove clock consistent with
+   * the fullmove number, etc.). The halfmove clock itself is not capped — the FIDE 75-move rule is a queryable
    * predicate on {@code Board}, not enforced at FEN import. Does not prove full game reachability — see the
    * {@code com.dlb.chess.fen} package documentation for the full contract.
    */
@@ -643,8 +643,8 @@ public class Board {
   /**
    * True iff the halfmove clock has reached the 75-move-rule threshold (FIDE 9.6.2). In this library the 75-move rule
    * is surfaced as a queryable predicate rather than an enforced termination: the move pipeline does NOT reject moves
-   * on this condition, and the predicate remains {@code true} for every subsequent halfmove until the clock is reset
-   * by a pawn move or capture. Consumers that want to surface the rule call this predicate themselves.
+   * on this condition, and the predicate remains {@code true} for every subsequent halfmove until the clock is reset by
+   * a pawn move or capture. Consumers that want to surface the rule call this predicate themselves.
    */
   public boolean isSeventyFiveMove() {
     return getHalfMoveClock() >= ChessConstants.SEVENTY_FIVE_MOVE_RULE_HALF_MOVE_CLOCK_THRESHOLD;
@@ -959,13 +959,11 @@ public class Board {
     final var index = halfMoveCount - 1;
     final var halfMoveClock = getHalfMoveClock();
     final var fullMoveNumber = getLastPlayedFullMoveNumber();
-    final String fen = getFen();
-    final var isCapture = isCapture();
     final var countRepetition = getRepetitionCount();
     final DynamicPosition dynamicPosition = getDynamicPosition();
     final Piece movingPiece = getMovingPiece();
-    return new HalfMove(index, halfMoveCount, fullMoveNumber, halfMoveClock, isCapture, fen, dynamicPosition,
-        countRepetition, getSan(), movingPiece, moveSpecification);
+    return new HalfMove(index, halfMoveCount, fullMoveNumber, halfMoveClock, dynamicPosition, countRepetition, getSan(),
+        movingPiece, moveSpecification);
   }
 
 }

@@ -1,9 +1,9 @@
 package com.dlb.chess.test.validatenewmove;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 import org.junit.jupiter.api.Test;
 
@@ -11,7 +11,6 @@ import com.dlb.chess.board.Board;
 import com.dlb.chess.common.constants.EnumConstants;
 import com.dlb.chess.common.enums.GameStatus;
 import com.dlb.chess.common.model.MoveSpecification;
-import com.dlb.chess.common.utility.BasicChessUtility;
 import com.dlb.chess.enums.MoveCheck;
 import com.dlb.chess.exceptions.InvalidMoveException;
 import com.dlb.chess.unwinnability.DeadPositionQuick;

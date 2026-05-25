@@ -87,7 +87,7 @@ public abstract class RepetitionUtility {
       }
       final var countRepetition = getCountRepetition(searchHalfMoveThreeFold);
 
-      if (countRepetition == countRepetitionThreshold) {
+      if (countRepetition >= countRepetitionThreshold) {
         // if we found a half move which is equal or above the required count, we sample all previous half-moves with
         // the same dynamic position
         final List<HalfMove> halfMoveSameDynamicPositionList = new ArrayList<>();

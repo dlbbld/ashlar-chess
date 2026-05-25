@@ -4,7 +4,6 @@ import java.util.List;
 
 import com.dlb.chess.board.Board;
 import com.dlb.chess.board.enums.Side;
-import com.dlb.chess.common.enums.InsufficientMaterial;
 import com.dlb.chess.common.model.HalfMove;
 
 /**
@@ -15,8 +14,6 @@ import com.dlb.chess.common.model.HalfMove;
  */
 public record Report(Side havingMove, List<HalfMove> halfMoveList, List<List<HalfMove>> repetitionListList,
     List<List<NoProgressHalfMove>> noProgressMoveListList, boolean hasThreefoldRepetition,
-    boolean hasFivefoldRepetition, boolean hasFiftyMoveRule, boolean hasSeventyFiveMoveRule, int firstCapture,
-    boolean hasCapture, int maxNoProgressSequence, CheckmateOrStalemate checkmateOrStalemate,
-    InsufficientMaterial insufficientMaterial, String fen, Board board) {
+    boolean hasFivefoldRepetition, boolean hasFiftyMoveRule, boolean hasSeventyFiveMoveRule, Board board) {
 
 }
