@@ -7,7 +7,6 @@ import java.util.List;
 import org.eclipse.jdt.annotation.NonNull;
 
 import com.dlb.chess.board.Board;
-import com.dlb.chess.board.enums.Side;
 import com.dlb.chess.common.Nulls;
 import com.dlb.chess.common.constants.ChessConstants;
 import com.dlb.chess.common.exceptions.ProgrammingMistakeException;
@@ -138,8 +137,6 @@ public final class Reporter {
 
     final String invariant = board.getFen();
 
-    final Side havingMove = board.getHavingMove();
-
     final List<List<HalfMove>> repetitionListList = RepetitionUtility
         .calculateRepetitionListList(board.getHalfMoveList(), ChessConstants.THREEFOLD_REPETITION_RULE_THRESHOLD);
 
@@ -155,8 +152,8 @@ public final class Reporter {
       throw new ProgrammingMistakeException("Board was changed");
     }
 
-    return new Report(havingMove, repetitionListList, noProgressMoveListList, hasThreefoldRepetition,
-        hasFivefoldRepetition, hasFiftyMoveRule, hasSeventyFiveMoveRule, board);
+    return new Report(repetitionListList, noProgressMoveListList, hasThreefoldRepetition, hasFivefoldRepetition,
+        hasFiftyMoveRule, hasSeventyFiveMoveRule, board);
   }
 
   public static boolean calculateIsHalfMoveTerminatesNoProgressSequence(HalfMove halfMove) {

@@ -3,7 +3,6 @@ package com.dlb.chess.report;
 import java.util.List;
 
 import com.dlb.chess.board.Board;
-import com.dlb.chess.board.enums.Side;
 import com.dlb.chess.common.model.HalfMove;
 
 /**
@@ -12,8 +11,8 @@ import com.dlb.chess.common.model.HalfMove;
  * queryable rather than enforced, so games may legitimately continue past those thresholds and the corresponding
  * predicates ({@link #hasFivefoldRepetition()}, {@link #hasSeventyFiveMoveRule()}) report the first occurrence.
  */
-public record Report(Side havingMove, List<List<HalfMove>> repetitionListList,
-    List<List<NoProgressHalfMove>> noProgressMoveListList, boolean hasThreefoldRepetition,
-    boolean hasFivefoldRepetition, boolean hasFiftyMoveRule, boolean hasSeventyFiveMoveRule, Board board) {
+public record Report(List<List<HalfMove>> repetitionListList, List<List<NoProgressHalfMove>> noProgressMoveListList,
+    boolean hasThreefoldRepetition, boolean hasFivefoldRepetition, boolean hasFiftyMoveRule,
+    boolean hasSeventyFiveMoveRule, Board board) {
 
 }

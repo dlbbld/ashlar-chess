@@ -93,7 +93,7 @@ public class GenerateAmbronaHelpMateTestCases {
 
       final PgnGame pgnGame = PgnCacheForStrictPgnParserTestCases.getPgn(folderExisting, pgnName);
 
-      final Side helpMatingSide = report.havingMove();
+      final Side helpMatingSide = report.board().getHavingMove();
       final var newResultTagValue = switch (helpMatingSide) {
         case BLACK -> ResultTagValue.BLACK_WON;
         case WHITE -> ResultTagValue.WHITE_WON;
@@ -141,7 +141,7 @@ public class GenerateAmbronaHelpMateTestCases {
       uciMoveList.append(uci);
       uciMoveList.append(" ");
     }
-    System.out.println(game + ";" + report.havingMove().getName() + ";" + uciMoveList.toString());
+    System.out.println(game + ";" + report.board().getHavingMove().getName() + ";" + uciMoveList.toString());
   }
 
   private static void populateHelpMateUci(Map<String, String> havingHelpMate) {
