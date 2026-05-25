@@ -4,7 +4,7 @@ import org.junit.jupiter.api.Test;
 
 import com.dlb.chess.report.Reporter;
 
-class TestReporterPrintReport {
+class TestReporter {
 
   @SuppressWarnings("static-method")
   @Test

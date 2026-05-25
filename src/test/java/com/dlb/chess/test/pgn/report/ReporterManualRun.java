@@ -4,7 +4,7 @@ import com.dlb.chess.report.Reporter;
 import com.dlb.chess.test.pgn.setup.PgnTestCaseCatalog;
 import com.dlb.chess.test.pgntest.enums.PgnTest;
 
-public class PrintSinglePgnReport {
+public class ReporterManualRun {
 
   public static void main(String[] args) throws Exception {
     System.out.println("=============================================");
