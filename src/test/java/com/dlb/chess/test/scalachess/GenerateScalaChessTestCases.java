@@ -135,7 +135,7 @@ public class GenerateScalaChessTestCases implements EnumConstants {
             codeLineList);
 
         final Board boardPlayAlong = new Board();
-        final List<HalfMove> halfMoveList = report.halfMoveList();
+        final List<HalfMove> halfMoveList = report.board().getHalfMoveList();
         for (var i = 0; i < halfMoveList.size(); i++) {
           final HalfMove halfMove = Nulls.get(halfMoveList, i);
 
@@ -143,9 +143,8 @@ public class GenerateScalaChessTestCases implements EnumConstants {
           final var isMadeByWhite = halfMove.havingMove().getIsWhite();
           if (isMadeByWhite && halfMove.fullMoveNumber() % PRINT_MOVES_INTERVAL == 0) {
             final var moveDescription = halfMove.fullMoveNumber() + "." + halfMove.san();
-            processScalaChessCodeLine(
-                "    println(\"" + testCase.pgnName() + " - performed " + moveDescription + "\")", counterList,
-                codeLineList);
+            processScalaChessCodeLine("    println(\"" + testCase.pgnName() + " - performed " + moveDescription + "\")",
+                counterList, codeLineList);
           }
 
           final String uciForScala = convertMoveSpecificationToUciForScala(halfMove.havingMove(),

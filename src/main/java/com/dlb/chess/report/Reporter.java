@@ -140,10 +140,8 @@ public final class Reporter {
 
     final Side havingMove = board.getHavingMove();
 
-    final List<HalfMove> halfMoveList = board.getHalfMoveList();
-
-    final List<List<HalfMove>> repetitionListList = RepetitionUtility.calculateRepetitionListList(halfMoveList,
-        ChessConstants.THREEFOLD_REPETITION_RULE_THRESHOLD);
+    final List<List<HalfMove>> repetitionListList = RepetitionUtility
+        .calculateRepetitionListList(board.getHalfMoveList(), ChessConstants.THREEFOLD_REPETITION_RULE_THRESHOLD);
 
     final List<List<NoProgressHalfMove>> noProgressMoveListList = NoProgressMoveUtility
         .calculateNoProgressMoveRule(board, ChessConstants.FIFTY_MOVE_RULE_HALF_MOVE_CLOCK_THRESHOLD);
@@ -157,7 +155,7 @@ public final class Reporter {
       throw new ProgrammingMistakeException("Board was changed");
     }
 
-    return new Report(havingMove, halfMoveList, repetitionListList, noProgressMoveListList, hasThreefoldRepetition,
+    return new Report(havingMove, repetitionListList, noProgressMoveListList, hasThreefoldRepetition,
         hasFivefoldRepetition, hasFiftyMoveRule, hasSeventyFiveMoveRule, board);
   }
 

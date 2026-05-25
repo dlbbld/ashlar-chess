@@ -107,7 +107,7 @@ public class GenerateAmbronaHelpMateTestCases {
 
       // play the existing moves
       final Board board = new Board();
-      for (final HalfMove halfMove : report.halfMoveList()) {
+      for (final HalfMove halfMove : report.board().getHalfMoveList()) {
         board.move(halfMove.moveSpecification());
       }
 
@@ -135,7 +135,7 @@ public class GenerateAmbronaHelpMateTestCases {
   // we print out the below and add it to the map below manually, so we can use it in the code
   private static void printMovesAsUci(String game, Report report) {
     final StringBuilder uciMoveList = new StringBuilder();
-    for (final HalfMove halfMove : report.halfMoveList()) {
+    for (final HalfMove halfMove : report.board().getHalfMoveList()) {
       final String uci = UciMoveUtility
           .convertMoveSpecificationToUci(halfMove.havingMove(), halfMove.moveSpecification()).text();
       uciMoveList.append(uci);
