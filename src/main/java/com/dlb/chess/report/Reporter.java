@@ -3,12 +3,14 @@ package com.dlb.chess.report;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.eclipse.jdt.annotation.NonNull;
 
 import com.dlb.chess.board.Board;
 import com.dlb.chess.common.Nulls;
 import com.dlb.chess.common.constants.ChessConstants;
+import com.dlb.chess.common.model.DynamicPosition;
 import com.dlb.chess.common.model.HalfMove;
 import com.dlb.chess.common.utility.RepetitionUtility;
 import com.dlb.chess.messages.Message;
@@ -65,10 +67,13 @@ public final class Reporter {
     // repetition
     addFirstMainSection(output, "report.repetition.threefold.ahead.title");
     final List<List<HalfMove>> claimAheadListList = ThreefoldClaimAheadUtility.calculateClaimAheadListList(board);
+    final Map<DynamicPosition, String> positionIdentifierMap = PositionIdentifierUtility
+        .calculatePositionIdentifierMap(claimAheadListList);
     if (claimAheadListList.isEmpty()) {
       output.add(Message.getString("report.repetition.threefold.ahead.none"));
     } else {
-      final var claimAheadListListPrint = ThreefoldClaimAheadPrint.calculateClaimAheadListListPrint(claimAheadListList);
+      final var claimAheadListListPrint = ThreefoldClaimAheadPrint
+          .calculateClaimAheadListListPrint(board.getHalfMoveList(), claimAheadListList, positionIdentifierMap);
       for (final List<String> resultAsLine : claimAheadListListPrint) {
         output.addAll(resultAsLine);
       }
@@ -80,7 +85,8 @@ public final class Reporter {
     if (repetitionListList.isEmpty()) {
       output.add(Message.getString("report.repetition.threefold.list.none"));
     } else {
-      final var listChronic = RepetitionPrint.calculateOutputRepetitionChronologically(repetitionListList);
+      final var listChronic = RepetitionPrint.calculateOutputRepetitionChronologically(repetitionListList,
+          positionIdentifierMap);
       output.add(listChronic);
     }
 
