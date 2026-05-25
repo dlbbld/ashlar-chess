@@ -2,9 +2,8 @@ package com.dlb.chess.test.generate;
 
 import org.eclipse.jdt.annotation.NonNull;
 
+import com.dlb.chess.board.Board;
 import com.dlb.chess.common.enums.InsufficientMaterial;
-import com.dlb.chess.report.Report;
-import com.dlb.chess.report.Reporter;
 import com.dlb.chess.test.model.PgnTestCase;
 import com.dlb.chess.test.model.PgnTestCaseList;
 import com.dlb.chess.test.pgn.setup.PgnTestCaseCatalog;
@@ -23,10 +22,9 @@ public class GenerateLibraryCarlosInsufficientMaterialTestCases {
         PgnTest.BASIC_INSUFFICIENT_MATERIAL_NONE)) {
       for (final PgnTestCase testCase : testCaseList.list()) {
 
-        final Report report = Reporter.calculateReport(testCaseList.pgnTest().getFolderPath(), testCase.pgnName());
-
-        final InsufficientMaterial insufficientMaterial = report.board().calculateInsufficientMaterial();
-        final String fen = report.board().getFen();
+        final Board board = testCase.game(testCaseList.pgnTest());
+        final InsufficientMaterial insufficientMaterial = board.calculateInsufficientMaterial();
+        final String fen = board.getFen();
 
         final String testCaseTitel = calculateTestCaseTitel(testCase.pgnName());
         System.out.println("//" + testCaseTitel);
