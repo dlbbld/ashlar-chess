@@ -31,7 +31,8 @@ class RepetitionPrint {
 
     result.append(" (");
 
-    final String positionNumber = PositionIdentifierUtility.calculateIdentifier(repetitionMove.repetionSeriesId());
+    // FIXME that is wrong
+    final String positionNumber = PositionIdentifierUtility.calculateIdentifier(1);
     result.append(positionNumber);
     result.append(" - ");
     result.append(repetitionMove.halfMove().countRepetition());
@@ -46,12 +47,10 @@ class RepetitionPrint {
       List<List<HalfMove>> repetitionListList) {
 
     final List<RepetitionMove> resultList = new ArrayList<>();
-    var repetionSeriesId = 0;
     for (final List<HalfMove> repetionList : repetitionListList) {
-      repetionSeriesId++;
       final var totalRepetitionCount = repetionList.size();
       for (final HalfMove halfMove : repetionList) {
-        resultList.add(new RepetitionMove(repetionSeriesId, totalRepetitionCount, halfMove));
+        resultList.add(new RepetitionMove(totalRepetitionCount, halfMove));
       }
     }
 

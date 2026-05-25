@@ -9,9 +9,7 @@ import org.eclipse.jdt.annotation.NonNull;
 import com.dlb.chess.board.Board;
 import com.dlb.chess.common.Nulls;
 import com.dlb.chess.common.constants.ChessConstants;
-import com.dlb.chess.common.model.ClaimAhead;
 import com.dlb.chess.common.model.HalfMove;
-import com.dlb.chess.common.utility.BasicUtility;
 import com.dlb.chess.common.utility.RepetitionUtility;
 import com.dlb.chess.messages.Message;
 import com.dlb.chess.pgn.LenientPgnParser;
@@ -66,13 +64,14 @@ public final class Reporter {
 
     // repetition
     addFirstMainSection(output, "report.repetition.threefold.ahead.title");
-    final List<List<ClaimAhead>> claimAheadListList = ThreefoldClaimAheadUtility.calculateThreefoldClaimAhead(board);
+    final List<List<HalfMove>> claimAheadListList = ThreefoldClaimAheadUtility.calculateClaimAheadListList(board);
     if (claimAheadListList.isEmpty()) {
       output.add(Message.getString("report.repetition.threefold.ahead.none"));
     } else {
-      final var claimAheadList = ThreefoldClaimAheadPrint.calculateClaimAheadList(claimAheadListList);
-      final String resultAsLine = BasicUtility.calculateCommaSeparatedList(claimAheadList);
-      output.add(resultAsLine);
+      final var claimAheadListListPrint = ThreefoldClaimAheadPrint.calculateClaimAheadListListPrint(claimAheadListList);
+      for (final List<String> resultAsLine : claimAheadListListPrint) {
+        output.addAll(resultAsLine);
+      }
     }
 
     final List<List<HalfMove>> repetitionListList = RepetitionUtility

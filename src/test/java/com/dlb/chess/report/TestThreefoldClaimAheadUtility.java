@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Test;
 
 import com.dlb.chess.board.Board;
 import com.dlb.chess.common.Nulls;
-import com.dlb.chess.common.model.ClaimAhead;
+import com.dlb.chess.common.model.HalfMove;
 import com.dlb.chess.fen.constants.FenConstants;
 import com.dlb.chess.pgn.LenientPgnParser;
 import com.dlb.chess.pgn.PgnGame;
@@ -21,18 +21,17 @@ class TestThreefoldClaimAheadUtility {
   @Test
   void testBasic() {
 
-    final List<List<ClaimAhead>> expectedEmptyListList = new ArrayList<>();
+    final List<List<HalfMove>> expectedEmptyListList = new ArrayList<>();
 
     {
-      final List<List<ClaimAhead>> actualListList = ThreefoldClaimAheadUtility
-          .calculateThreefoldClaimAhead(new Board());
+      final List<List<HalfMove>> actualListList = ThreefoldClaimAheadUtility.calculateClaimAheadListList(new Board());
 
       assertEquals(expectedEmptyListList, actualListList);
     }
 
     {
-      final List<List<ClaimAhead>> actual = ThreefoldClaimAheadUtility
-          .calculateThreefoldClaimAhead(new Board(FenConstants.FEN_AFTER_E4_STR));
+      final List<List<HalfMove>> actual = ThreefoldClaimAheadUtility
+          .calculateClaimAheadListList(new Board(FenConstants.FEN_AFTER_E4_STR));
 
       assertEquals(expectedEmptyListList, actual);
     }
@@ -41,7 +40,7 @@ class TestThreefoldClaimAheadUtility {
       final PgnGame pgnGame = LenientPgnParser.parseText("e4 e5 Nf3 Nc6 Ng1 Nb8 Nf3");
       final Board board = PgnUtility.calculateBoard(pgnGame);
 
-      final List<List<ClaimAhead>> actualListList = ThreefoldClaimAheadUtility.calculateThreefoldClaimAhead(board);
+      final List<List<HalfMove>> actualListList = ThreefoldClaimAheadUtility.calculateClaimAheadListList(board);
 
       assertEquals(expectedEmptyListList, actualListList);
     }
@@ -50,7 +49,7 @@ class TestThreefoldClaimAheadUtility {
       final PgnGame pgnGame = LenientPgnParser.parseText("e4 e5 Nf3 Nc6 Ng1 Nb8 Nf3 Nc6");
       final Board board = PgnUtility.calculateBoard(pgnGame);
 
-      final List<List<ClaimAhead>> actualListList = ThreefoldClaimAheadUtility.calculateThreefoldClaimAhead(board);
+      final List<List<HalfMove>> actualListList = ThreefoldClaimAheadUtility.calculateClaimAheadListList(board);
 
       assertEquals(expectedEmptyListList, actualListList);
     }
@@ -60,16 +59,16 @@ class TestThreefoldClaimAheadUtility {
       final PgnGame pgnGame = LenientPgnParser.parseText("e4 e5 Nf3 Nc6 Ng1 Nb8 Nf3 Nc6 Ng5 Nb8");
       final Board board = PgnUtility.calculateBoard(pgnGame);
 
-      final List<List<ClaimAhead>> actualListList = ThreefoldClaimAheadUtility.calculateThreefoldClaimAhead(board);
+      final List<List<HalfMove>> actualListList = ThreefoldClaimAheadUtility.calculateClaimAheadListList(board);
 
-      final List<ClaimAhead> claimAheadList = new ArrayList<>();
+      final List<HalfMove> HalfMoveList = new ArrayList<>();
 
       board.moveStrict("Nf3");
-      addLastMove(board, claimAheadList);
+      addLastMove(board, HalfMoveList);
       board.unmove();
 
-      final List<List<ClaimAhead>> expectedListList = new ArrayList<>();
-      expectedListList.add(claimAheadList);
+      final List<List<HalfMove>> expectedListList = new ArrayList<>();
+      expectedListList.add(HalfMoveList);
 
       assertEquals(expectedListList, actualListList);
     }
@@ -79,16 +78,16 @@ class TestThreefoldClaimAheadUtility {
       final PgnGame pgnGame = LenientPgnParser.parseText("e4 e5 Nf3 Nc6 Ng1 Nb8 Nf3 Nc6 Ng1");
       final Board board = PgnUtility.calculateBoard(pgnGame);
 
-      final List<List<ClaimAhead>> actualListList = ThreefoldClaimAheadUtility.calculateThreefoldClaimAhead(board);
+      final List<List<HalfMove>> actualListList = ThreefoldClaimAheadUtility.calculateClaimAheadListList(board);
 
-      final List<ClaimAhead> claimAheadList = new ArrayList<>();
+      final List<HalfMove> HalfMoveList = new ArrayList<>();
 
       board.moveStrict("Nb8");
-      addLastMove(board, claimAheadList);
+      addLastMove(board, HalfMoveList);
       board.unmove();
 
-      final List<List<ClaimAhead>> expectedListList = new ArrayList<>();
-      expectedListList.add(claimAheadList);
+      final List<List<HalfMove>> expectedListList = new ArrayList<>();
+      expectedListList.add(HalfMoveList);
 
       assertEquals(expectedListList, actualListList);
     }
@@ -98,23 +97,23 @@ class TestThreefoldClaimAheadUtility {
       final PgnGame pgnGame = LenientPgnParser.parseText("e4 e5 Nf3 Nc6 Ng1 Nb8 Nf3 Nc6 Ng1 Nb8");
       final Board board = PgnUtility.calculateBoard(pgnGame);
 
-      final List<List<ClaimAhead>> actualListList = ThreefoldClaimAheadUtility.calculateThreefoldClaimAhead(board);
+      final List<List<HalfMove>> actualListList = ThreefoldClaimAheadUtility.calculateClaimAheadListList(board);
 
-      final List<List<ClaimAhead>> expectedListList = new ArrayList<>();
+      final List<List<HalfMove>> expectedListList = new ArrayList<>();
 
       {
-        final List<ClaimAhead> claimAheadList = new ArrayList<>();
-        addLastMove(board, claimAheadList);
-        expectedListList.add(claimAheadList);
+        final List<HalfMove> HalfMoveList = new ArrayList<>();
+        addLastMove(board, HalfMoveList);
+        expectedListList.add(HalfMoveList);
       }
 
       {
         board.moveStrict("Nf3");
-        final List<ClaimAhead> claimAheadList = new ArrayList<>();
-        addLastMove(board, claimAheadList);
+        final List<HalfMove> HalfMoveList = new ArrayList<>();
+        addLastMove(board, HalfMoveList);
         board.unmove();
 
-        expectedListList.add(claimAheadList);
+        expectedListList.add(HalfMoveList);
       }
 
       assertEquals(expectedListList, actualListList);
@@ -125,22 +124,22 @@ class TestThreefoldClaimAheadUtility {
       final PgnGame pgnGame = LenientPgnParser.parseText("e4 e5 Nf3 Nc6 Ng1 Nb8 Nf3 Nc6 Ng5 Nb8 Nf3");
       final Board board = PgnUtility.calculateBoard(pgnGame);
 
-      final List<List<ClaimAhead>> actualListList = ThreefoldClaimAheadUtility.calculateThreefoldClaimAhead(board);
+      final List<List<HalfMove>> actualListList = ThreefoldClaimAheadUtility.calculateClaimAheadListList(board);
 
-      final List<List<ClaimAhead>> expectedListList = new ArrayList<>();
+      final List<List<HalfMove>> expectedListList = new ArrayList<>();
 
       {
-        final List<ClaimAhead> claimAheadList = new ArrayList<>();
-        addLastMove(board, claimAheadList);
-        expectedListList.add(claimAheadList);
+        final List<HalfMove> HalfMoveList = new ArrayList<>();
+        addLastMove(board, HalfMoveList);
+        expectedListList.add(HalfMoveList);
       }
 
       {
         board.moveStrict("Nc6");
-        final List<ClaimAhead> claimAheadList = new ArrayList<>();
-        addLastMove(board, claimAheadList);
+        final List<HalfMove> HalfMoveList = new ArrayList<>();
+        addLastMove(board, HalfMoveList);
         board.unmove();
-        expectedListList.add(claimAheadList);
+        expectedListList.add(HalfMoveList);
       }
 
       assertEquals(expectedListList, actualListList);
@@ -148,7 +147,7 @@ class TestThreefoldClaimAheadUtility {
 
   }
 
-  private static void addLastMove(Board board, List<ClaimAhead> claimAheadList) {
-    claimAheadList.add(new ClaimAhead(true, Nulls.getLast(board.getHalfMoveList())));
+  private static void addLastMove(Board board, List<HalfMove> halfMoveList) {
+    halfMoveList.add(Nulls.getLast(board.getHalfMoveList()));
   }
 }

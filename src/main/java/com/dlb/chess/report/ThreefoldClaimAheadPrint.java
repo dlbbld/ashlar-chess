@@ -5,35 +5,33 @@ import java.util.List;
 
 import com.dlb.chess.board.HalfMoveUtility;
 import com.dlb.chess.common.Nulls;
-import com.dlb.chess.common.model.ClaimAhead;
-import com.dlb.chess.common.utility.BasicUtility;
+import com.dlb.chess.common.model.HalfMove;
 
 class ThreefoldClaimAheadPrint {
 
-  public static List<String> calculateClaimAheadList(List<List<ClaimAhead>> claimAheadListList) {
+  public static List<List<String>> calculateClaimAheadListListPrint(List<List<HalfMove>> claimAheadListList) {
 
-    final List<String> result = new ArrayList<>();
+    final List<List<String>> resultListList = new ArrayList<>();
 
-    for (final List<ClaimAhead> claimAheadList : claimAheadListList) {
-      final StringBuilder line = new StringBuilder();
+    for (final List<HalfMove> claimAheadList : claimAheadListList) {
 
       // lists contains at least one ahead claim per construction
-      final ClaimAhead claimAheadFirst = Nulls.getFirst(claimAheadList);
-      final String fullMoveNumber = HalfMoveUtility.calculateFullMoveNumberInitialWithSpace(
-          claimAheadFirst.halfMove().fullMoveNumber(), claimAheadFirst.halfMove().havingMove());
-      line.append(fullMoveNumber);
+      final HalfMove claimAheadFirst = Nulls.getFirst(claimAheadList);
+      final String fullMoveNumber = HalfMoveUtility
+          .calculateFullMoveNumberInitialWithSpace(claimAheadFirst.fullMoveNumber(), claimAheadFirst.havingMove());
 
-      final List<String> claimAheadSanList = new ArrayList<>();
-      for (final ClaimAhead claimAhead : claimAheadList) {
-        claimAheadSanList.add(claimAhead.halfMove().san());
+      final List<String> resultList = new ArrayList<>();
+      for (final HalfMove claimAhead : claimAheadList) {
+        final StringBuilder line = new StringBuilder();
+        line.append(fullMoveNumber);
+        line.append(" ");
+        line.append(claimAhead.san());
+        resultList.add(Nulls.toString(line));
       }
 
-      final String sanList = BasicUtility.calculateCommaSeparatedList(claimAheadSanList);
-      line.append(sanList);
-
-      result.add(Nulls.toString(line));
+      resultListList.add(resultList);
     }
 
-    return result;
+    return resultListList;
   }
 }
