@@ -11,8 +11,6 @@ import com.dlb.chess.board.Board;
 import com.dlb.chess.common.Nulls;
 import com.dlb.chess.common.constants.EnumConstants;
 import com.dlb.chess.common.model.HalfMove;
-import com.dlb.chess.report.Report;
-import com.dlb.chess.report.Reporter;
 import com.dlb.chess.test.ConfigurationTestConstants;
 import com.dlb.chess.test.common.utility.FileUtility;
 import com.dlb.chess.test.model.PgnTestCase;
@@ -67,14 +65,14 @@ public class GeneratePythonTestCases implements EnumConstants {
       for (final PgnTestCase testCase : testCaseList.list()) {
         logger.info("Processing game " + testCase.pgnName());
 
-        final Report report = Reporter.calculateReport(folderPath, testCase.pgnName());
         processPythonCodeLine("", counterList, codeLineList);
         processPythonCodeLine("    #" + testCase.pgnName(), counterList, codeLineList);
         processPythonCodeLine("    print(\"  Processing game " + testCase.pgnName() + "\")", counterList, codeLineList);
         processPythonCodeLine("    board = chess.Board()", counterList, codeLineList);
 
         final Board boardPlayAlong = new Board();
-        for (final HalfMove halfMove : report.board().getHalfMoveList()) {
+        final Board board = testCase.game(testCaseList.pgnTest());
+        for (final HalfMove halfMove : board.getHalfMoveList()) {
           boardPlayAlong.move(halfMove.moveSpecification());
           processPythonCodeLine("    board.push_san(\"" + halfMove.san() + "\")", counterList, codeLineList);
           final var isMadeByWhite = halfMove.havingMove().getIsWhite();
