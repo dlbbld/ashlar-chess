@@ -59,12 +59,4 @@ class RepetitionPrint {
     return resultList;
   }
 
-  private static List<String> calculateMoveNumberAndSanList(List<HalfMove> halfMoveList) {
-    final List<String> result = new ArrayList<>();
-    for (final HalfMove halfMove : halfMoveList) {
-      result.add(HalfMoveUtility.calculateMoveNumberAndSanWithSpace(halfMove));
-    }
-    return result;
-  }
-
 }
