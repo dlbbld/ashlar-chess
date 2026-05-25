@@ -956,13 +956,12 @@ public class Board {
 
   private HalfMove buildHalfMove(MoveSpecification moveSpecification) {
     final var halfMoveCount = getPerformedHalfMoveCount();
-    final var index = halfMoveCount - 1;
     final var halfMoveClock = getHalfMoveClock();
     final var fullMoveNumber = getLastPlayedFullMoveNumber();
     final var countRepetition = getRepetitionCount();
     final DynamicPosition dynamicPosition = getDynamicPosition();
     final Piece movingPiece = getMovingPiece();
-    return new HalfMove(index, halfMoveCount, fullMoveNumber, halfMoveClock, dynamicPosition, countRepetition, getSan(),
+    return new HalfMove(halfMoveCount, fullMoveNumber, halfMoveClock, dynamicPosition, countRepetition, getSan(),
         movingPiece, moveSpecification);
   }
 

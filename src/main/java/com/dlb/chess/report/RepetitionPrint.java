@@ -31,27 +31,27 @@ class RepetitionPrint {
 
     result.append(" (");
 
-    final String positionIdentifier = PositionIdentifierUtility.calculateIdentifier(repetitionMove.positionId());
-    result.append(positionIdentifier);
+    final String positionNumber = PositionIdentifierUtility.calculateIdentifier(repetitionMove.repetionSeriesId());
+    result.append(positionNumber);
     result.append(" - ");
     result.append(repetitionMove.halfMove().countRepetition());
     result.append("/");
-    result.append(repetitionMove.fold());
+    result.append(repetitionMove.totalRepetitionCount());
     result.append(")");
 
     return Nulls.toString(result);
   }
 
   private static List<RepetitionMove> calculateOutputRepetitionChronlogicallyModelList(
-      List<List<HalfMove>> repetitionList) {
+      List<List<HalfMove>> repetitionListList) {
 
     final List<RepetitionMove> resultList = new ArrayList<>();
-    var positionId = 0;
-    for (final List<HalfMove> list : repetitionList) {
-      positionId++;
-      final var fold = list.size();
-      for (final HalfMove halfMove : list) {
-        resultList.add(new RepetitionMove(positionId, fold, halfMove));
+    var repetionSeriesId = 0;
+    for (final List<HalfMove> repetionList : repetitionListList) {
+      repetionSeriesId++;
+      final var totalRepetitionCount = repetionList.size();
+      for (final HalfMove halfMove : repetionList) {
+        resultList.add(new RepetitionMove(repetionSeriesId, totalRepetitionCount, halfMove));
       }
     }
 
