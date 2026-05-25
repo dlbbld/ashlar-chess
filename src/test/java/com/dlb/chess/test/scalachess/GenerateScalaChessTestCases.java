@@ -23,8 +23,6 @@ import com.dlb.chess.model.PgnHalfMove;
 import com.dlb.chess.moves.CastlingUtility;
 import com.dlb.chess.moves.PromotionUtility;
 import com.dlb.chess.pgn.PgnGame;
-import com.dlb.chess.report.Report;
-import com.dlb.chess.report.Reporter;
 import com.dlb.chess.test.common.utility.FileUtility;
 import com.dlb.chess.test.model.PgnTestCase;
 import com.dlb.chess.test.model.PgnTestCaseList;
@@ -123,7 +121,6 @@ public class GenerateScalaChessTestCases implements EnumConstants {
 
         logger.info("Processing game " + testCase.pgnName());
 
-        final Report report = Reporter.calculateReport(testCaseList.pgnTest().getFolderPath(), testCase.pgnName());
         processScalaChessCodeLine("", counterList, codeLineList);
         processScalaChessCodeLine("  println(\"Declaring test case for " + testCase.pgnName() + "\")", counterList,
             codeLineList);
@@ -135,7 +132,8 @@ public class GenerateScalaChessTestCases implements EnumConstants {
             codeLineList);
 
         final Board boardPlayAlong = new Board();
-        final List<HalfMove> halfMoveList = report.board().getHalfMoveList();
+        final Board board = testCase.game(testCaseList.pgnTest());
+        final List<HalfMove> halfMoveList = board.getHalfMoveList();
         for (var i = 0; i < halfMoveList.size(); i++) {
           final HalfMove halfMove = Nulls.get(halfMoveList, i);
 
