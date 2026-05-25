@@ -8,9 +8,9 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 
 import com.dlb.chess.board.Board;
+import com.dlb.chess.common.Nulls;
 import com.dlb.chess.common.model.ClaimAhead;
 import com.dlb.chess.fen.constants.FenConstants;
-import com.dlb.chess.model.LegalMove;
 import com.dlb.chess.pgn.LenientPgnParser;
 import com.dlb.chess.pgn.PgnGame;
 import com.dlb.chess.pgn.PgnUtility;
@@ -149,9 +149,6 @@ class TestThreefoldClaimAheadUtility {
   }
 
   private static void addLastMove(Board board, List<ClaimAhead> claimAheadList) {
-    final LegalMove legalMove = board.getLastMove();
-    final var fullMoveNumber = board.getLastPlayedFullMoveNumber();
-    final String san = board.getSan();
-    claimAheadList.add(new ClaimAhead(legalMove, fullMoveNumber, san));
+    claimAheadList.add(new ClaimAhead(true, Nulls.getLast(board.getHalfMoveList())));
   }
 }

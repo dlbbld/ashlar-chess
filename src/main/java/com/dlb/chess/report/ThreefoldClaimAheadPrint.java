@@ -7,7 +7,6 @@ import com.dlb.chess.board.HalfMoveUtility;
 import com.dlb.chess.common.Nulls;
 import com.dlb.chess.common.model.ClaimAhead;
 import com.dlb.chess.common.utility.BasicUtility;
-import com.dlb.chess.model.LegalMove;
 
 class ThreefoldClaimAheadPrint {
 
@@ -18,16 +17,15 @@ class ThreefoldClaimAheadPrint {
     for (final List<ClaimAhead> claimAheadList : claimAheadListList) {
       final StringBuilder line = new StringBuilder();
 
-      // we designed the list to be not empty
+      // lists contains at least one ahead claim per construction
       final ClaimAhead claimAheadFirst = Nulls.getFirst(claimAheadList);
-      final LegalMove legalMoveFirst = claimAheadFirst.legalMove();
-      final String fullMoveNumber = HalfMoveUtility
-          .calculateFullMoveNumberInitialWithSpace(claimAheadFirst.fullMoveNumber(), legalMoveFirst.havingMove());
+      final String fullMoveNumber = HalfMoveUtility.calculateFullMoveNumberInitialWithSpace(
+          claimAheadFirst.halfMove().fullMoveNumber(), claimAheadFirst.halfMove().havingMove());
       line.append(fullMoveNumber);
 
       final List<String> claimAheadSanList = new ArrayList<>();
       for (final ClaimAhead claimAhead : claimAheadList) {
-        claimAheadSanList.add(claimAhead.san());
+        claimAheadSanList.add(claimAhead.halfMove().san());
       }
 
       final String sanList = BasicUtility.calculateCommaSeparatedList(claimAheadSanList);
