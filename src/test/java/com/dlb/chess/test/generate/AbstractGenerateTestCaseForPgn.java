@@ -1,17 +1,12 @@
 package com.dlb.chess.test.generate;
 
-import java.nio.file.Path;
-
 import com.dlb.chess.common.Nulls;
-import com.dlb.chess.report.Report;
-import com.dlb.chess.report.Reporter;
 import com.dlb.chess.test.model.PgnTestCase;
+import com.dlb.chess.test.pgn.setup.PgnTestCaseCatalog;
 
 public abstract class AbstractGenerateTestCaseForPgn {
 
-  static String generate(Path pgnFolderPath, String pgnName) throws Exception {
-
-    final Report report = Reporter.calculateReport(pgnFolderPath, pgnName);
+  static String generate(String pgnName) throws Exception {
 
     final StringBuilder result = new StringBuilder();
     result.append("list.add(new ").append(PgnTestCase.class.getSimpleName()).append("(");
@@ -22,7 +17,7 @@ public abstract class AbstractGenerateTestCaseForPgn {
     result.append("\"");
     result.append(", ");
 
-    final var fen = report.board().getFen();
+    final var fen = PgnTestCaseCatalog.findTestCase(pgnName).finalFen();
 
     result.append("\"");
     result.append(fen);

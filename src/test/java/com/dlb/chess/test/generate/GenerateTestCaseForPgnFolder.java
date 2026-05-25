@@ -39,7 +39,7 @@ public class GenerateTestCaseForPgnFolder extends AbstractGenerateTestCaseForPgn
         throw new IllegalArgumentException("All files in the folder must be valid PGN files and have the extension \""
             + ChessConstants.PGN_EXTENSION + "\". The file \"" + pgnName + " does not meet the extension expectation");
       }
-      final String testCaseValues = generate(pgnFolderPath, pgnName);
+      final String testCaseValues = generate(pgnName);
       System.out.println(testCaseValues);
     }
   }

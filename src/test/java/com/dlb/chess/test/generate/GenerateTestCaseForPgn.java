@@ -1,8 +1,5 @@
 package com.dlb.chess.test.generate;
 
-import com.dlb.chess.test.pgn.setup.PgnTestCaseCatalog;
-import com.dlb.chess.test.pgntest.enums.PgnTest;
-
 public class GenerateTestCaseForPgn extends AbstractGenerateTestCaseForPgn {
 
   // we assume for convenience the file is in one of the provided folders
@@ -13,8 +10,7 @@ public class GenerateTestCaseForPgn extends AbstractGenerateTestCaseForPgn {
   }
 
   private static void generateTestCaseForPgn(String pgnName) throws Exception {
-    final PgnTest pgnTest = PgnTestCaseCatalog.findPgnTestPgnNotListed(pgnName);
-    final String testCaseValues = generate(pgnTest.getFolderPath(), pgnName);
+    final String testCaseValues = generate(pgnName);
     System.out.println(testCaseValues);
   }
 }
