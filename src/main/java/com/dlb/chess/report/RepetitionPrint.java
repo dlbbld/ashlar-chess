@@ -11,9 +11,9 @@ import com.dlb.chess.common.utility.BasicUtility;
 
 class RepetitionPrint {
 
-  public static String calculateOutputRepetitionChronlogically(List<List<HalfMove>> repetitionList) {
+  public static String calculateOutputRepetitionChronologically(List<List<HalfMove>> repetitionList) {
 
-    final List<RepetitionMove> modelList = calculateOutputRepetitionChronlogicallyModelList(repetitionList);
+    final List<RepetitionMove> modelList = calculateOutputRepetitionChronologicallyModelList(repetitionList);
 
     final List<String> result = new ArrayList<>();
     for (final RepetitionMove repetitionMove : modelList) {
@@ -42,7 +42,7 @@ class RepetitionPrint {
     return Nulls.toString(result);
   }
 
-  private static List<RepetitionMove> calculateOutputRepetitionChronlogicallyModelList(
+  private static List<RepetitionMove> calculateOutputRepetitionChronologicallyModelList(
       List<List<HalfMove>> repetitionListList) {
 
     final List<RepetitionMove> resultList = new ArrayList<>();

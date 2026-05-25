@@ -81,7 +81,7 @@ public final class Reporter {
     if (repetitionListList.isEmpty()) {
       output.add(Message.getString("report.repetition.threefold.list.none"));
     } else {
-      final var listChronic = RepetitionPrint.calculateOutputRepetitionChronlogically(repetitionListList);
+      final var listChronic = RepetitionPrint.calculateOutputRepetitionChronologically(repetitionListList);
       output.add(listChronic);
     }
 
