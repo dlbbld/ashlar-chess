@@ -46,9 +46,6 @@ import com.dlb.chess.pgn.PgnUtility;
  */
 public final class Reporter {
 
-  private static final int REPETITION_COUNT_THRESHOLD = ChessConstants.THREEFOLD_REPETITION_RULE_THRESHOLD;
-  private static final int NO_PROGRESS_FULL_MOVE_COUNT_THRESHOLD = 25;
-
   private Reporter() {
   }
 
@@ -108,7 +105,7 @@ public final class Reporter {
     }
 
     final List<List<HalfMove>> repetitionListList = RepetitionUtility
-        .calculateRepetitionListList(board.getHalfMoveList(), REPETITION_COUNT_THRESHOLD);
+        .calculateRepetitionListList(board.getHalfMoveList(), ChessConstants.THREEFOLD_REPETITION_RULE_THRESHOLD);
     addMainSection(output, "report.repetition.threefold.list.title");
     if (repetitionListList.isEmpty()) {
       output.add(Message.getString("report.repetition.threefold.list.none"));
@@ -117,17 +114,8 @@ public final class Reporter {
       output.add(listChronic);
     }
 
-    // no progress move
     final List<List<NoProgressHalfMove>> noProgressMoveListList = NoProgressMoveUtility
-        .calculateNoProgressMoveRule(board, 2 * NO_PROGRESS_FULL_MOVE_COUNT_THRESHOLD);
-    addMainSection(output, "report.noProgressMove.sequence.title",
-        Nulls.valueOf(NO_PROGRESS_FULL_MOVE_COUNT_THRESHOLD));
-    if (noProgressMoveListList.isEmpty()) {
-      output.add(Message.getString("report.noProgressMove.sequence.none"));
-    } else {
-      final var list = NoProgressPrint.calculateOutputNoProgressMoveListList(noProgressMoveListList);
-      output.addAll(list);
-    }
+        .calculateNoProgressMoveRule(board, ChessConstants.FIFTY_MOVE_RULE_HALF_MOVE_CLOCK_THRESHOLD);
 
     addMainSection(output, "report.noProgressMove.fiftyMoves.title");
     final var hasFiftyMoveRule = calculateHasFiftyMoveRule(noProgressMoveListList);

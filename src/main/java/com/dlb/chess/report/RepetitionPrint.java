@@ -8,24 +8,8 @@ import com.dlb.chess.board.HalfMoveUtility;
 import com.dlb.chess.common.Nulls;
 import com.dlb.chess.common.model.HalfMove;
 import com.dlb.chess.common.utility.BasicUtility;
-import com.dlb.chess.messages.Message;
 
 class RepetitionPrint {
-
-  public static List<String> calculateOutputRepetition(List<List<HalfMove>> repetitionList) {
-    final List<String> resultList = new ArrayList<>();
-    for (final List<HalfMove> list : repetitionList) {
-      final var fold = list.size();
-      final String foldStr = Message.getString("report.repetition.fold", fold);
-
-      final String repetition = BasicUtility.calculateSpaceSeparatedList(calculateMoveNumberAndSanList(list));
-
-      final var repetionDescription = foldStr + ": " + repetition;
-
-      resultList.add(repetionDescription);
-    }
-    return resultList;
-  }
 
   public static String calculateOutputRepetitionChronlogically(List<List<HalfMove>> repetitionList) {
 
@@ -43,7 +27,7 @@ class RepetitionPrint {
 
     final StringBuilder result = new StringBuilder();
 
-    result.append(HalfMoveUtility.calculateMoveNumberAndSanWithoutSpace(repetitionMove.halfMove()));
+    result.append(HalfMoveUtility.calculateMoveNumberAndSanWithSpace(repetitionMove.halfMove()));
 
     result.append(" (");
 
@@ -78,7 +62,7 @@ class RepetitionPrint {
   private static List<String> calculateMoveNumberAndSanList(List<HalfMove> halfMoveList) {
     final List<String> result = new ArrayList<>();
     for (final HalfMove halfMove : halfMoveList) {
-      result.add(HalfMoveUtility.calculateMoveNumberAndSanWithoutSpace(halfMove));
+      result.add(HalfMoveUtility.calculateMoveNumberAndSanWithSpace(halfMove));
     }
     return result;
   }

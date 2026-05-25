@@ -7,8 +7,17 @@ import com.dlb.chess.test.pgntest.enums.PgnTest;
 public class PrintSinglePgnReport {
 
   public static void main(String[] args) throws Exception {
-    printReport("05_claim_for_own_move_correct_but_makes_move_on_board.pgn");
+    printReportForPgn();
+    System.out.println("=============================================");
+    printReportForPgnString();
 
+  }
+
+  private static void printReportForPgn() throws Exception {
+    printReport("05_claim_for_own_move_correct_but_makes_move_on_board.pgn");
+  }
+
+  private static void printReportForPgnString() {
     final var pgnString = """
         [Event "Rated Blitz game"]
             [Site "https://lichess.org/2PEOuq3S"]

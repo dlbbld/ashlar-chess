@@ -22,7 +22,7 @@ public class RepetitionRepresentation {
     result.append("repPos=").append(countRepetition).append(": ");
     for (var i = 0; i < halfMoveList.size(); i++) {
       final HalfMove halfMove = Nulls.get(halfMoveList, i);
-      result.append(HalfMoveUtility.calculateMoveNumberAndSanWithoutSpace(halfMove));
+      result.append(HalfMoveUtility.calculateMoveNumberAndSanWithSpace(halfMove));
       if (i <= halfMoveList.size() - 2) {
         result.append(" ");
       }

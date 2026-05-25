@@ -16,7 +16,7 @@ public record HalfMove(int index, int halfMoveCount, int fullMoveNumber, int hal
 
   @Override
   public String toString() {
-    return HalfMoveUtility.calculateMoveNumberAndSanWithoutSpace(this);
+    return HalfMoveUtility.calculateMoveNumberAndSanWithSpace(this);
   }
 
 }
