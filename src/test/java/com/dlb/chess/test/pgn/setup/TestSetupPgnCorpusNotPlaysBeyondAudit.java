@@ -17,10 +17,10 @@ import com.dlb.chess.test.pgn.parser.PgnCacheForStrictPgnParserTestCases;
 import com.dlb.chess.test.pgntest.enums.PgnTest;
 
 /**
- * Asserts the regular PGN test corpus contains no fixtures that play past one of the three enforced move-blocking
- * terminations (checkmate, stalemate, dead position by mutual insufficient material) — i.e. every file replays cleanly
- * under the strict-game invariant. Fivefold repetition, the 75-move rule, and quick-unwinnable dead positions are
- * queryable predicates in this library, not enforced terminations, so fixtures that continue past those thresholds
+ * Asserts the regular PGN test corpus contains no fixtures that play past a checkmate or stalemate — the two
+ * automatic terminations where the legal-move set is empty and any further move attempt cannot validate. Mutual
+ * insufficient material, fivefold repetition, the 75-move rule, and analyzer-driven dead positions are queryable
+ * predicates in this library, not blockers at the move pipeline, so fixtures that continue past those thresholds
  * replay cleanly and are not flagged. The class name states the expected outcome ("not plays beyond"); the test fails
  * if any leftover is found.
  *
@@ -69,9 +69,8 @@ class TestSetupPgnCorpusNotPlaysBeyondAudit {
     }
 
     final var report = new StringBuilder().append("Corpus audit: ").append(playsBeyondFiles.size()).append(" of ")
-        .append(totalFiles).append(" PGN files cannot be fully replayed under the strict-game ")
-        .append("invariant. They play past an enforced move-blocking termination (checkmate, stalemate, ")
-        .append("or dead position by mutual insufficient material). ")
+        .append(totalFiles).append(" PGN files cannot be fully replayed. They attempt a move past checkmate or ")
+        .append("stalemate, where the legal-move set is empty. ")
         .append("Either the PGN file contains an extra move past the termination that should be removed, ")
         .append("or the parser / move-pipeline has a regression that needs investigation:\n");
     for (final String entry : playsBeyondFiles) {

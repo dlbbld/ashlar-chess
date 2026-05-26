@@ -3,9 +3,9 @@ package com.dlb.chess.enums;
 public enum MoveCheck {
   SUCCESS,
 
-  // Top-of-pipeline rejection: the game has already ended by a move-blocking termination
-  // (checkmate, stalemate, mutual insufficient material). The specific reason is carried as a
-  // GameStatus payload on the thrown InvalidMoveException.
+  // Historical: pre-ungating, the validation pipeline threw with this reason on any board reaching
+  // checkmate, stalemate, or mutual insufficient material. The pipeline no longer gates on
+  // termination — this value is no longer produced by any throw site and is slated for removal.
   GAME_ALREADY_ENDED,
 
   MOVE_SPEC_NON_PAWN_PROMOTION_PIECE_SET,

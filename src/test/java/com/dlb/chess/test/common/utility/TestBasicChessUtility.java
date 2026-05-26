@@ -75,11 +75,9 @@ class TestBasicChessUtility {
   }
 
   // ---------------------------------------------------------------------------------------------
-  // calculateGameStatus precedence: move-blocking statuses take
-  // precedence over the queryable rule predicates (fivefold, 75-move) when both apply to the
-  // same position. Locks in the precedence ordering — without it, a KvK position with halfmove
-  // clock at 150 would resolve as SEVENTY_FIVE_MOVE_RULE (no longer auto-blocking) and the move
-  // pipeline would accept play through the dead position.
+  // calculateGameStatus precedence: when two or more termination predicates apply at the same
+  // position, the method returns the most-specific status. Pinned ordering: checkmate > stalemate
+  // > mutual insufficient material > fivefold > 75-move > single-side insufficient material.
   // ---------------------------------------------------------------------------------------------
 
   @SuppressWarnings("static-method")
@@ -87,7 +85,7 @@ class TestBasicChessUtility {
   void testCalculateGameStatusPrecedenceDeadPositionBeatsSeventyFiveMove() {
     // KvK position (insufficient material) with halfmove clock at the 75-move threshold.
     // Both isInsufficientMaterial() and isSeventyFiveMove() return true on this board; the
-    // returned status must be the hard blocker, not the queryable rule.
+    // returned status is the more specific of the two.
     final Board board = new Board("4k3/8/8/8/8/8/8/4K3 w - - 150 76");
     assertEquals(true, board.isInsufficientMaterial(), "precondition: insufficient material");
     assertEquals(true, board.isSeventyFiveMove(), "precondition: 75-move threshold reached");
@@ -96,8 +94,8 @@ class TestBasicChessUtility {
 
   @SuppressWarnings("static-method")
   @Test
-  void testCalculateGameStatusFivefoldFiresWhenNoHardBlocker() {
-    // Drive the board to fivefold by alternating knight moves. No hard blocker applies.
+  void testCalculateGameStatusFivefoldFiresWhenAlone() {
+    // Drive the board to fivefold by alternating knight moves. Only the fivefold predicate fires.
     final Board board = new Board();
     board.movesStrict("Nf3", "Nf6", "Ng1", "Ng8", "Nf3", "Nf6", "Ng1", "Ng8", "Nf3", "Nf6", "Ng1", "Ng8", "Nf3", "Nf6",
         "Ng1", "Ng8");
@@ -107,9 +105,9 @@ class TestBasicChessUtility {
 
   @SuppressWarnings("static-method")
   @Test
-  void testCalculateGameStatusSeventyFiveMoveFiresWhenNoHardBlocker() {
-    // FEN at the 75-move threshold with enough material for both sides — no hard blocker
-    // applies, so the queryable 75-move status is the most-specific answer.
+  void testCalculateGameStatusSeventyFiveMoveFiresWhenAlone() {
+    // FEN at the 75-move threshold with enough material for both sides — only the 75-move
+    // predicate fires.
     final Board board = new Board("4k3/8/4P3/8/8/8/2N1B3/3KQ2R w - - 150 76");
     assertEquals(true, board.isSeventyFiveMove(), "precondition: 75-move threshold reached");
     assertEquals(false, board.isInsufficientMaterial(), "precondition: not insufficient material");

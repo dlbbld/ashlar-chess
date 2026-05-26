@@ -39,16 +39,24 @@ public abstract class BasicChessUtility {
   }
 
   /**
-   * Returns the single most-specific {@link GameStatus} for the given board, with move-blocking statuses checked before
-   * cheap queryable draw predicates. Does <em>not</em> invoke any unwinnability analyzer:
-   * {@link GameStatus#DEAD_POSITION_UNWINNABLE_QUICK} is never returned. Callers that want the analyzer-driven
-   * dead-position verdict must call {@link Board#isDeadPositionQuick()} (or the full counterpart) directly.
+   * Current-position outcome query: returns the single most-specific {@link GameStatus} for the given board.
+   *
+   * <p>
+   * The library is permissive at the move pipeline — none of these statuses block further moves; callers poll this
+   * predicate to decide whether a game should be adjudicated as over. Does <em>not</em> invoke any unwinnability
+   * analyzer: {@link GameStatus#DEAD_POSITION_UNWINNABLE_QUICK} is never returned. Callers that want the
+   * analyzer-driven dead-position verdict must call {@link Board#isDeadPositionQuick()} (or the full counterpart)
+   * directly.
    */
   public static GameStatus calculateGameStatus(Board board) {
-
-    final GameStatus moveBlockingStatus = calculateMoveBlockingGameStatus(board);
-    if (moveBlockingStatus != GameStatus.ONGOING) {
-      return moveBlockingStatus;
+    if (board.isCheckmate()) {
+      return GameStatus.CHECKMATE;
+    }
+    if (board.isStalemate()) {
+      return GameStatus.STALEMATE;
+    }
+    if (board.isInsufficientMaterial()) {
+      return GameStatus.DEAD_POSITION_INSUFFICIENT_MATERIAL;
     }
     if (board.isFivefoldRepetition()) {
       return GameStatus.FIVE_FOLD_REPETITION_RULE;
@@ -61,24 +69,6 @@ public abstract class BasicChessUtility {
     }
     if (board.isInsufficientMaterial(Side.BLACK)) {
       return GameStatus.INSUFFICIENT_MATERIAL_BLACK_ONLY;
-    }
-    return GameStatus.ONGOING;
-  }
-
-  /**
-   * Returns only statuses that may block further move execution. This method deliberately avoids analyzer-driven
-   * dead-position queries, fivefold, and 75-move so the validation pipeline stays cheap and non-recursive.
-   */
-  public static GameStatus calculateMoveBlockingGameStatus(Board board) {
-
-    if (board.isCheckmate()) {
-      return GameStatus.CHECKMATE;
-    }
-    if (board.isStalemate()) {
-      return GameStatus.STALEMATE;
-    }
-    if (board.isInsufficientMaterial()) {
-      return GameStatus.DEAD_POSITION_INSUFFICIENT_MATERIAL;
     }
     return GameStatus.ONGOING;
   }

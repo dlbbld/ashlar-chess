@@ -1,35 +1,33 @@
 package com.dlb.chess.common.enums;
 
 /**
- * Status of a game (board with history). The three move-blocking terminations ({@link #CHECKMATE},
- * {@link #STALEMATE}, {@link #DEAD_POSITION_INSUFFICIENT_MATERIAL}) end the game permanently — no further moves are
- * accepted by the validation pipeline (see {@code ValidateNewMove} and {@code StrictSanParser}).
+ * Current-position outcome of a game (board with history). All values are queryable — none block further moves at the
+ * validation pipeline. Caller polls {@code BasicChessUtility.calculateGameStatus} or the specific {@code Board.is*}
+ * predicates to learn whether the game has reached an automatic termination, and decides whether to adjudicate. The
+ * library is permissive at the move pipeline for corpus and tooling compatibility (historical PGN databases routinely
+ * contain games whose recorded play continues a move or two past an automatic termination).
+ *
+ * <p>
+ * At {@link #CHECKMATE} and {@link #STALEMATE} the legal-move set is empty, so any further move attempt fails through
+ * ordinary legality (own-piece occupation, king-into-check, etc.) — not via a dedicated game-end gate.
+ *
+ * <p>
+ * {@link #DEAD_POSITION_INSUFFICIENT_MATERIAL} (FIDE 5.2.2 cheap detector — KK, KBK, KNK, KBKB-same-color) and
+ * {@link #DEAD_POSITION_UNWINNABLE_QUICK} (analyzer-driven, Ambrona's quick check — pawn walls and similar) are both
+ * queryable. {@link #DEAD_POSITION_INSUFFICIENT_MATERIAL} is the value {@code BasicChessUtility.calculateGameStatus}
+ * surfaces; {@link #DEAD_POSITION_UNWINNABLE_QUICK} is <em>not</em> returned by {@code calculateGameStatus} because
+ * that method intentionally avoids invoking the analyzer. Callers that want the analyzer-driven verdict invoke
+ * {@link com.dlb.chess.board.Board#isDeadPositionQuick()} directly.
  *
  * <p>
  * {@link #FIVE_FOLD_REPETITION_RULE} (FIDE 9.6.1) and {@link #SEVENTY_FIVE_MOVE_RULE} (FIDE 9.6.2) are FIDE-automatic
- * draw rules in the rulebook, but in this library they are surfaced as <em>queryable predicates</em> rather than
- * enforced at the move pipeline. The position itself is not necessarily drawn — mating material can still be present,
- * pawn moves and captures can still happen, and a later checkmate can still occur if play continues. The library is
- * permissive here for corpus and tooling compatibility (historical PGN databases routinely contain games whose
- * recorded play continues a move or two past the threshold); the caller decides whether to adjudicate the draw.
- * Consumers that want to surface the rule call {@link com.dlb.chess.board.Board#isFivefoldRepetition()} /
- * {@link com.dlb.chess.board.Board#isSeventyFiveMove()} themselves. See {@link #isAutomaticTermination()}.
+ * draw rules. The current position itself is not necessarily drawn — mating material can still be present, pawn moves
+ * and captures can still happen, and a later checkmate can still occur if play continues.
  *
  * <p>
  * The two single-side insufficient-material variants ({@link #INSUFFICIENT_MATERIAL_WHITE_ONLY},
  * {@link #INSUFFICIENT_MATERIAL_BLACK_ONLY}) are diagnostic states, not terminations: under FIDE 5.2.2 a dead position
- * requires that <em>neither</em> side can deliver checkmate. If one side still has mating material the game continues,
- * so these statuses do <em>not</em> block further moves — see {@link #isAutomaticTermination()}.
- *
- * <p>
- * The two dead-position values capture the FIDE 5.2.2 "no series of legal moves can lead to checkmate" rule via two
- * detection paths of different costs. {@link #DEAD_POSITION_INSUFFICIENT_MATERIAL} is the cheap detector that fires on
- * mechanical piece-count grounds (KK, KBK, KNK, KBKB-same-color) and still blocks moves; it is the value
- * {@code BasicChessUtility.calculateGameStatus} surfaces. {@link #DEAD_POSITION_UNWINNABLE_QUICK} names the
- * analyzer-driven dead-position verdict (Ambrona's quick unwinnability check — pawn walls and similar); it is
- * <em>not</em> returned by {@code calculateGameStatus} because that method intentionally avoids invoking the analyzer.
- * Callers that want the analyzer-driven verdict invoke {@link com.dlb.chess.board.Board#isDeadPositionQuick()}
- * directly; the value here is the status word the caller maps the verdict onto.
+ * requires that <em>neither</em> side can deliver checkmate. If one side still has mating material the game continues.
  *
  * <p>
  * Claimable draws (3-fold repetition, 50-move rule) are NOT represented here — they remain queryable on the board but
@@ -48,11 +46,13 @@ public enum GameStatus {
   ONGOING;
 
   /**
-   * Returns {@code true} iff this status is one of the three terminations that end the game permanently in this
-   * library: {@link #CHECKMATE}, {@link #STALEMATE}, {@link #DEAD_POSITION_INSUFFICIENT_MATERIAL}. {@link
-   * #DEAD_POSITION_UNWINNABLE_QUICK}, {@link #FIVE_FOLD_REPETITION_RULE}, and {@link #SEVENTY_FIVE_MOVE_RULE} are
-   * queryable predicates rather than enforced terminations and return {@code false} here. The single-side
-   * insufficient-material variants and {@link #ONGOING} also return {@code false}.
+   * Returns {@code true} for {@link #CHECKMATE}, {@link #STALEMATE}, and {@link #DEAD_POSITION_INSUFFICIENT_MATERIAL}.
+   *
+   * <p>
+   * Historical predicate from when the move pipeline enforced these three terminations as a hard gate. After the
+   * pipeline-ungating change none of these statuses block further moves, so this predicate no longer distinguishes
+   * "enforced" from "queryable" — kept temporarily for source compatibility and slated for removal in a follow-up
+   * cleanup that also retires {@code MoveCheck.GAME_ALREADY_ENDED} and the related exception payloads.
    */
   public boolean isAutomaticTermination() {
     return switch (this) {

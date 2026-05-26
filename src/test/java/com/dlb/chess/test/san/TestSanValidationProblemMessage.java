@@ -36,7 +36,10 @@ class TestSanValidationProblemMessage {
   private static final Set<SanValidationProblem> checkedProblems = new TreeSet<>();
   private static final Set<SanValidationProblem> FIXED_UNCHECKED_ENTRIES = Nulls
       .setOf(SanValidationProblem.UNKNOWN_ERROR, SanValidationProblem.NONE);
-  private static final Set<SanValidationProblem> TEMPORARILY_UNCHECKED_PROBLEMS = Nulls.setOf();
+  // GAME_ALREADY_ENDED is no longer produced by any throw site after the pipeline ungating; slated
+  // for removal in the follow-up cleanup. Excluded from the coverage assertion until then.
+  private static final Set<SanValidationProblem> TEMPORARILY_UNCHECKED_PROBLEMS = Nulls
+      .setOf(SanValidationProblem.GAME_ALREADY_ENDED);
 
   /**
    * When {@code true}, each test asserts the exact full exception message (useful while messages.properties is being
@@ -957,23 +960,6 @@ class TestSanValidationProblemMessage {
           "The move is check, but no symbol was specified.");
     }
 
-  }
-
-  // --- Game-end pre-check ---
-
-  @SuppressWarnings("static-method")
-  @Test
-  void testGameAlreadyEnded() {
-    // GAME_ALREADY_ENDED carries the specific GameStatus that ended the game. The SAN string is
-    // syntactically valid and would otherwise be parsed normally; the strict-pipeline check at
-    // the top of SanValidation rejects it because the game has already terminated.
-
-    // Mutual insufficient material (FIDE 5.2.2 dead position): K vs K.
-    {
-      final Board board = new Board("4k3/8/8/8/8/8/8/4K3 w - - 0 1");
-      checkException("Ke2", board, SanValidationProblem.GAME_ALREADY_ENDED,
-          "The game has already ended by DEAD_POSITION_INSUFFICIENT_MATERIAL - no further moves are accepted.");
-    }
   }
 
   /** Checks a SAN against the initial position. */

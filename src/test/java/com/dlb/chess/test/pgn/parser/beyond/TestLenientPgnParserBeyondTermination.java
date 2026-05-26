@@ -1,6 +1,7 @@
 package com.dlb.chess.test.pgn.parser.beyond;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.nio.file.Path;
@@ -8,33 +9,26 @@ import java.nio.file.Path;
 import org.junit.jupiter.api.Test;
 
 import com.dlb.chess.common.Nulls;
-import com.dlb.chess.common.enums.GameStatus;
 import com.dlb.chess.pgn.LenientPgnParser;
 import com.dlb.chess.pgn.LenientPgnParserValidationException;
-import com.dlb.chess.pgn.LenientPgnParserValidationProblem;
 import com.dlb.chess.san.SanValidationProblem;
 import com.dlb.chess.test.ConfigurationTestConstants;
 
 /**
- * Verifies that the lenient PGN parser rejects every fixture under {@code src/test/resources/pgnParser/common/beyond/}
- * and that the rejection reason carries the specific {@link GameStatus} that ended the game.
+ * Verifies the lenient PGN parser's behavior on fixtures that play past an automatic termination.
  *
  * <p>
- * Scope is the three enforced move-blocking terminations only: checkmate, stalemate, and dead position by mutual
- * insufficient material (each in a white-move and black-move variant). Fivefold repetition, the 75-move rule, and
- * analyzer-driven dead positions are queryable predicates in this library, not enforced at the move pipeline (see
- * {@link GameStatus#isAutomaticTermination()}); their "play past the threshold" cases are accepted by the parser,
- * exercised implicitly via the regular corpus, and pinned explicitly at the move-pipeline level.
+ * After the A1 ungating, no game-end gate fires at the move pipeline or SAN layer. The behavioral split per
+ * termination kind is:
  *
- * <p>
- * Each fixture has its own {@code @Test} method with the expected {@link GameStatus} pinned literally in the method
- * body. No runtime filename parsing.
- *
- * <p>
- * The lenient parser raises {@link LenientPgnParserValidationException} with
- * {@link LenientPgnParserValidationProblem#SAN} and {@link SanValidationProblem#GAME_ALREADY_ENDED}; the
- * {@link LenientPgnParserValidationException#getGameStatus()} accessor returns the specific termination cause, which is
- * asserted directly.
+ * <ul>
+ * <li>Checkmate / stalemate fixtures (01–04) — still rejected, but through ordinary legality: the move attempted past
+ * the mating / stalemating ply cannot match any legal move (the legal-move set is empty), so the lenient parser raises
+ * {@link LenientPgnParserValidationException}. The assertion is "rejected, but not via GAME_ALREADY_ENDED" — the
+ * specific failure reason depends on the attempted move and is intentionally not pinned.
+ * <li>Insufficient-material fixtures (05–06) — now accepted: mutual insufficient material is queryable only and the
+ * legal-move set is non-empty, so the moves played past the dead position validate normally and the parser succeeds.
+ * </ul>
  */
 @SuppressWarnings("null") // JUnit Assertions methods lack JDT null annotations
 class TestLenientPgnParserBeyondTermination {
@@ -45,47 +39,48 @@ class TestLenientPgnParserBeyondTermination {
   @SuppressWarnings("static-method")
   @Test
   void test01PlayBeyondCheckmateWithWhiteMove() {
-    assertRejectedWith("01_play_beyond_checkmate_with_white_move.pgn", GameStatus.CHECKMATE);
+    assertRejectedNotViaGameEnded("01_play_beyond_checkmate_with_white_move.pgn");
   }
 
   @SuppressWarnings("static-method")
   @Test
   void test02PlayBeyondCheckmateWithBlackMove() {
-    assertRejectedWith("02_play_beyond_checkmate_with_black_move.pgn", GameStatus.CHECKMATE);
+    assertRejectedNotViaGameEnded("02_play_beyond_checkmate_with_black_move.pgn");
   }
 
   @SuppressWarnings("static-method")
   @Test
   void test03PlayBeyondStalemateWithWhiteMove() {
-    assertRejectedWith("03_play_beyond_stalemate_with_white_move.pgn", GameStatus.STALEMATE);
+    assertRejectedNotViaGameEnded("03_play_beyond_stalemate_with_white_move.pgn");
   }
 
   @SuppressWarnings("static-method")
   @Test
   void test04PlayBeyondStalemateWithBlackMove() {
-    assertRejectedWith("04_play_beyond_stalemate_with_black_move.pgn", GameStatus.STALEMATE);
+    assertRejectedNotViaGameEnded("04_play_beyond_stalemate_with_black_move.pgn");
   }
 
   @SuppressWarnings("static-method")
   @Test
   void test05PlayBeyondInsufficientMaterialWithWhiteMove() {
-    assertRejectedWith("05_play_beyond_insufficient_material_with_white_move.pgn",
-        GameStatus.DEAD_POSITION_INSUFFICIENT_MATERIAL);
+    assertAccepted("05_play_beyond_insufficient_material_with_white_move.pgn");
   }
 
   @SuppressWarnings("static-method")
   @Test
   void test06PlayBeyondInsufficientMaterialWithBlackMove() {
-    assertRejectedWith("06_play_beyond_insufficient_material_with_black_move.pgn",
-        GameStatus.DEAD_POSITION_INSUFFICIENT_MATERIAL);
+    assertAccepted("06_play_beyond_insufficient_material_with_black_move.pgn");
   }
 
-  private static void assertRejectedWith(String pgnName, GameStatus expectedStatus) {
+  private static void assertRejectedNotViaGameEnded(String pgnName) {
     final LenientPgnParserValidationException e = assertThrows(LenientPgnParserValidationException.class,
         () -> LenientPgnParser.parse(BEYOND_FOLDER, pgnName));
+    assertNotEquals(SanValidationProblem.GAME_ALREADY_ENDED, e.getSanValidationProblem(),
+        "after A1 ungating no rejection should travel through the GAME_ALREADY_ENDED gate");
+  }
 
-    assertEquals(LenientPgnParserValidationProblem.SAN, e.getLenientPgnParserValidationProblem());
-    assertEquals(SanValidationProblem.GAME_ALREADY_ENDED, e.getSanValidationProblem());
-    assertEquals(expectedStatus, e.getGameStatus());
+  private static void assertAccepted(String pgnName) {
+    assertDoesNotThrow(() -> LenientPgnParser.parse(BEYOND_FOLDER, pgnName),
+        "insufficient material is queryable only; the parser must replay the full game");
   }
 }
