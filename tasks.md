@@ -10,7 +10,7 @@ Order within each section is the source of truth. Completed tasks move to **Done
 
 ---
 
-## Previous release — 14.0.0: drop auto-CHA-per-move; dead-position queries become request-based
+## Current release — 14.0.0: drop auto-CHA-per-move; dead-position queries become request-based
 
 ✅ Shipped 2026-05-24. Analyzer-driven dead-position detection no longer runs automatically on construction or every
 move, `DEAD_POSITION_UNWINNABLE_QUICK` is reportable but non-blocking, and the boolean `Board` constructor/config
@@ -50,13 +50,9 @@ The fivefold / 75-move counterpart shipped in **13.0.0** (the *reallow-play-beyo
 
 ---
 
-## Previous release — 13.0.0: reallow play beyond fivefold + 75-move
+## Future release — 15.0.0: make threefold and fifty-move report production grade and clean-up
 
-✅ Shipped 2026-05-24. Fivefold repetition (FIDE 9.6.1) and 75-move rule (FIDE 9.6.2) no longer enforced as automatic terminations at the move pipeline — both surface as queryable predicates on `Board`. FEN halfmove-clock-above-150 rejection dropped alongside as the matching serialized-form change. 98 of the 99 legacy fixtures previously parked under `pgnParser/legacy/common/beyond/` reactivated into the regular corpus with full `PgnTestCase` catalog metadata. The lone remaining fixture (KvK dead-position) stays parked for the next release.
 
-Driver: the python-chess cross-validation work surfaced concrete frictions — clean-chess's eager auto-termination forced skip guards in the oracle suite plus crashes in `canClaimThreefoldRepetitionRule()` / `canClaimFiftyMoveRule()` on auto-terminated positions. Dropping the auto-termination unblocked both.
-
-See `CHANGELOG.md` `[13.0.0]` entry for the full notable / breaking lists.
 
 ---
 
