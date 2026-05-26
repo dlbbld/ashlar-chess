@@ -10,7 +10,32 @@ Order within each section is the source of truth. Completed tasks move to **Done
 
 ---
 
-## Current release — 14.0.0: drop auto-CHA-per-move; dead-position queries become request-based
+## Current release — 15.0.0: termination is information, not enforcement
+
+✅ Shipped 2026-05-26. The move-validation pipeline no longer consults any game-end predicate. Checkmate, stalemate,
+mutual insufficient material, fivefold repetition, the 75-move rule, and analyzer-driven dead positions are all
+queryable artifacts the caller polls. At checkmate / stalemate the empty legal-move set is the natural barrier; at the
+other terminations legal moves still exist and play continues until the caller adjudicates.
+
+The release also replaced the `GameStatus` enum with a structured `Outcome` record (`Outcome(Termination, @Nullable Side
+winner)` — python-chess parity), reordered precedence to match python-chess (`mate → IM → stale → 75 → fivefold`),
+aligned `isFiftyMove` / `isSeventyFiveMove` with python-chess and FIDE (require legal moves to exist), and unlocked the
+python-chess import oracle to run unguarded across all 35,001 plies in the corpus. The `canClaimFiftyMoveRuleWithOwnMove`
+predicate follows the strict FIDE 9.3 reading — one deliberate divergence from python-chess at a constructed corner
+case where the only non-zeroing legal move at clock 99 delivers mate. python-chess's behavior at that edge is
+collateral from code reuse (not from documented intent — verified against blame and the maintainer's own tests, which
+pin the current-position-is-mate case but not the candidate-move-is-mate case).
+
+Supporting work shipped in the same release: `Reporter` slimmed to print-only (`Report` record deleted); `PgnTestCase`
+reduced to `(pgnName, finalFen)` and renamed `PgnFen` with ~1,400 catalog entries rewritten; internal `HalfMove`
+slimmed; initial-position repetition bug fixed; doc passes through `specification.md` §3.1, the board package-info,
+and the relevant test JavaDoc.
+
+See `CHANGELOG.md` `[15.0.0]` for the full Notable / Behavioral / Breaking breakdown including migration snippets.
+
+---
+
+## Released — 14.0.0: drop auto-CHA-per-move; dead-position queries become request-based
 
 ✅ Shipped 2026-05-24. Analyzer-driven dead-position detection no longer runs automatically on construction or every
 move, `DEAD_POSITION_UNWINNABLE_QUICK` is reportable but non-blocking, and the boolean `Board` constructor/config
@@ -52,7 +77,7 @@ The fivefold / 75-move counterpart shipped in **13.0.0** (the *reallow-play-beyo
 
 ---
 
-## Future release — 15.0.0: make threefold and fifty-move report production grade and clean-up
+## Future release — 16.0.0: make threefold and fifty-move report production grade and clean-up
 
 Do not start this immediately after the current release. This section exists so the follow-up work is captured, scoped,
 and not rediscovered chaotically later.
