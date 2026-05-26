@@ -12,6 +12,7 @@ import com.dlb.chess.common.Nulls;
 import com.dlb.chess.common.constants.ChessConstants;
 import com.dlb.chess.common.model.DynamicPosition;
 import com.dlb.chess.common.model.HalfMove;
+import com.dlb.chess.common.utility.BasicUtility;
 import com.dlb.chess.common.utility.RepetitionUtility;
 import com.dlb.chess.messages.Message;
 import com.dlb.chess.pgn.LenientPgnParser;
@@ -75,7 +76,8 @@ public final class Reporter {
       final var claimAheadListListPrint = ThreefoldClaimAheadPrint
           .calculateClaimAheadListListPrint(board.getHalfMoveList(), claimAheadListList, positionIdentifierMap);
       for (final List<String> resultAsLine : claimAheadListListPrint) {
-        output.addAll(resultAsLine);
+        final String line = BasicUtility.calculateSpaceSeparatedList(resultAsLine);
+        output.add(line);
       }
     }
 
@@ -85,9 +87,12 @@ public final class Reporter {
     if (repetitionListList.isEmpty()) {
       output.add(Message.getString("report.repetition.threefold.list.none"));
     } else {
-      final var listChronic = RepetitionPrint.calculateOutputRepetitionChronologically(repetitionListList,
-          positionIdentifierMap);
-      output.add(listChronic);
+      final var repetionListList = RepetitionPrint.calculateRepetitionPrint(repetitionListList, positionIdentifierMap);
+
+      for (final List<String> resultAsLine : repetionListList) {
+        final String line = BasicUtility.calculateSpaceSeparatedList(resultAsLine);
+        output.add(line);
+      }
     }
 
     final List<List<NoProgressHalfMove>> noProgressMoveListList = NoProgressMoveUtility

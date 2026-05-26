@@ -6,7 +6,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.dlb.chess.board.HalfMoveUtility;
 import com.dlb.chess.common.Nulls;
+import com.dlb.chess.common.exceptions.ProgrammingMistakeException;
 import com.dlb.chess.common.model.DynamicPosition;
 import com.dlb.chess.common.model.HalfMove;
 
@@ -68,5 +70,52 @@ abstract class PositionIdentifierUtility {
     Collections.reverse(result);
 
     return result;
+  }
+
+  static String getPositionIdentifier(DynamicPosition position, Map<DynamicPosition, String> positionIdentifierMap) {
+    if (!positionIdentifierMap.containsKey(position)) {
+      throw new ProgrammingMistakeException("position identifier map does not contain position: " + position);
+    }
+    return positionIdentifierMap.get(position);
+  }
+
+  private static String calculatePositionInformation(HalfMove repetitionSeriesMove, int totalRepetitionCount,
+      boolean isAddAsterisk, Map<DynamicPosition, String> positionIdentifierMap) {
+
+    final StringBuilder result = new StringBuilder();
+
+    result.append("(");
+
+    final String positionIdentifier = PositionIdentifierUtility
+        .getPositionIdentifier(repetitionSeriesMove.dynamicPosition(), positionIdentifierMap);
+
+    result.append(positionIdentifier);
+    if (isAddAsterisk) {
+      result.append("*");
+    }
+    result.append(" - ");
+    // result.append(repetitionSeriesMove.countRepetition());
+    // result.append("/");
+    result.append(totalRepetitionCount);
+    result.append(")");
+
+    return Nulls.toString(result);
+  }
+
+  static String calculateHalfMoveInformation(HalfMove halfMove, int totalRepetitionCount, boolean isAddAsterisk,
+      boolean isAddPositionInformation, Map<DynamicPosition, String> positionIdentifierMap) {
+    final StringBuilder result = new StringBuilder();
+
+    result.append(HalfMoveUtility.calculateMoveNumberAndSanWithSpace(halfMove));
+
+    if (isAddPositionInformation) {
+      result.append(" ");
+
+      final String positionInformation = calculatePositionInformation(halfMove, totalRepetitionCount, isAddAsterisk,
+          positionIdentifierMap);
+      result.append(positionInformation);
+    }
+
+    return Nulls.toString(result);
   }
 }
