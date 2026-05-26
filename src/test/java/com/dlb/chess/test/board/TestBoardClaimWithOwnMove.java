@@ -1,5 +1,6 @@
 package com.dlb.chess.test.board;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -18,6 +19,31 @@ class TestBoardClaimWithOwnMove {
 
     assertFalse(oneQuietMoveBeforeFiftyMoveRule.isFiftyMove());
     assertTrue(oneQuietMoveBeforeFiftyMoveRule.canClaimFiftyMoveRuleWithOwnMove());
+  }
+
+  @SuppressWarnings("static-method")
+  @Test
+  void isFiftyMoveFalseAtCheckmateEvenWhenClockPastThreshold() {
+    // White king a1 in mate from black queen a2 (protected by black king a3). Halfmove clock at
+    // 100 — past the 50-move threshold. Post-A1 / python-chess parity: isFiftyMove requires legal
+    // moves to exist, so a checkmate position with the clock past the threshold returns false.
+    // The 50-move rule cannot fire because checkmate is a higher-precedence termination.
+    final Board board = new Board("8/8/8/8/8/k7/q7/K7 w - - 100 60");
+    assertTrue(board.isCheckmate(), "precondition: position must be checkmate");
+    assertEquals(100, board.getHalfMoveClock(), "precondition: clock past 50-move threshold");
+    assertTrue(board.getLegalMoves().isEmpty(), "precondition: no legal moves");
+    assertFalse(board.isFiftyMove(), "isFiftyMove must be false at checkmate despite clock past threshold");
+    assertFalse(board.canClaimFiftyMoveRule(), "no draw to claim once the game has ended by mate");
+  }
+
+  @SuppressWarnings("static-method")
+  @Test
+  void isSeventyFiveMoveFalseAtCheckmateEvenWhenClockPastThreshold() {
+    // Same position semantics as above but with clock at 150 — past the 75-move threshold.
+    final Board board = new Board("8/8/8/8/8/k7/q7/K7 w - - 150 80");
+    assertTrue(board.isCheckmate(), "precondition: position must be checkmate");
+    assertEquals(150, board.getHalfMoveClock(), "precondition: clock past 75-move threshold");
+    assertFalse(board.isSeventyFiveMove(), "isSeventyFiveMove must be false at checkmate despite clock past threshold");
   }
 
   @SuppressWarnings("static-method")

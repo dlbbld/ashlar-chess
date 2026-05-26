@@ -489,11 +489,21 @@ public class Board {
   }
 
   public boolean canClaimFiftyMoveRuleWithOwnMove() {
-    final var halfMoveCounterNow = this.getHalfMoveClock();
-    if (halfMoveCounterNow >= 99) {
-      for (final LegalMove legalMove : getLegalMoves()) {
-        // we must not perform the move to check, which is crucial for performance reasons
-        if (!BasicChessUtility.calculateIsResetHalfMoveClock(legalMove)) {
+    if (getHalfMoveClock() < 99) {
+      return false;
+    }
+    for (final LegalMove legalMove : getLegalMoves()) {
+      // Mirror canClaimThreefoldRepetitionRuleWithOwnMove: push the candidate move and check the
+      // result via isFiftyMove(), which now (python-chess parity) requires legal moves to exist in
+      // the post-move position. If the candidate is a mate-in-one or stale-in-one, the post-move
+      // position has no legal moves, isFiftyMove() returns false, and no claim is available.
+      // Skip clock-resetting moves (pawn moves, captures) up front — they cannot satisfy the
+      // 50-move-without-progress condition after the push.
+      if (!BasicChessUtility.calculateIsResetHalfMoveClock(legalMove)) {
+        this.move(legalMove.moveSpecification());
+        final var fiftyMoveAfter = isFiftyMove();
+        this.unmove();
+        if (fiftyMoveAfter) {
           return true;
         }
       }
@@ -645,10 +655,11 @@ public class Board {
   /**
    * True iff the halfmove clock has reached the 75-move-rule threshold (FIDE 9.6.2) <em>and</em> the side to move has
    * at least one legal move. In this library the 75-move rule is surfaced as a queryable predicate rather than an
-   * enforced termination: the move pipeline does NOT reject moves on this condition, and once the threshold is crossed
-   * the predicate remains {@code true} for every subsequent halfmove until the clock is reset by a pawn move or
-   * capture. The legal-moves-exist clause aligns with the FIDE rule (the rule cannot fire at a checkmate / stalemate
-   * position; those are higher-precedence terminations) and with python-chess {@code is_seventyfive_moves()}.
+   * enforced termination: the move pipeline does NOT reject moves on this condition. Once the threshold is crossed the
+   * predicate remains {@code true} for every subsequent halfmove until either the clock is reset by a pawn move or
+   * capture, <em>or</em> the position becomes checkmate / stalemate (no legal moves — the game has ended by a
+   * higher-precedence termination, so the 75-move rule cannot also fire). The legal-moves-exist clause matches
+   * python-chess {@code is_seventyfive_moves()} and the FIDE reading.
    */
   public boolean isSeventyFiveMove() {
     return getHalfMoveClock() >= ChessConstants.SEVENTY_FIVE_MOVE_RULE_HALF_MOVE_CLOCK_THRESHOLD
