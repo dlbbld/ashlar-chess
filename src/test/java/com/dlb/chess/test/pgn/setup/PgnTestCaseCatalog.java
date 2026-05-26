@@ -63,14 +63,10 @@ public class PgnTestCaseCatalog {
       case SEVENTY_FIVE_BEYOND -> createTestCasesSeventyFiveBeyond();
       case LONG -> createTestCasesLong();
       case LONGEST_MATE -> createTestCasesLongestMate();
-      case BASIC_INSUFFICIENT_MATERIAL_BOTH -> createTestCasesBasicInsufficientMaterial(InsufficientMaterial.BOTH,
-          PgnTest.BASIC_INSUFFICIENT_MATERIAL_BOTH);
-      case BASIC_INSUFFICIENT_MATERIAL_ONLY_WHITE -> createTestCasesBasicInsufficientMaterial(
-          InsufficientMaterial.WHITE_ONLY, PgnTest.BASIC_INSUFFICIENT_MATERIAL_ONLY_WHITE);
-      case BASIC_INSUFFICIENT_MATERIAL_ONLY_BLACK -> createTestCasesBasicInsufficientMaterial(
-          InsufficientMaterial.BLACK_ONLY, PgnTest.BASIC_INSUFFICIENT_MATERIAL_ONLY_BLACK);
-      case BASIC_INSUFFICIENT_MATERIAL_NONE -> createTestCasesBasicInsufficientMaterial(InsufficientMaterial.NONE,
-          PgnTest.BASIC_INSUFFICIENT_MATERIAL_NONE);
+      case BASIC_INSUFFICIENT_MATERIAL_BOTH -> createTestCasesBasicInsufficientMaterialBoth();
+      case BASIC_INSUFFICIENT_MATERIAL_ONLY_WHITE -> createTestCasesBasicInsufficientMaterialOnlyWhite();
+      case BASIC_INSUFFICIENT_MATERIAL_ONLY_BLACK -> createTestCasesBasicInsufficientMaterialOnlyBlack();
+      case BASIC_INSUFFICIENT_MATERIAL_NONE -> createTestCasesBasicInsufficientMaterialNone();
       case BASIC_INTERVENING -> createTestCasesBasicIntervening();
       case BASIC_SEVENTY_FIVE -> createTestCasesBasicSeventyFive();
       case BASIC_STALEMATE -> createTestCasesBasicStalemate();
@@ -959,38 +955,18 @@ public class PgnTestCaseCatalog {
     return new PgnTestCaseList(PgnTest.BASIC_STALEMATE, list);
   }
 
-  private static PgnTestCaseList createTestCasesBasicInsufficientMaterial(InsufficientMaterial insufficientMaterial,
-      PgnTest pgnTest) {
+  private static PgnTestCaseList createTestCasesBasicInsufficientMaterialBoth() {
     final List<PgnTestCase> list = new ArrayList<>();
-
-    list.add(new PgnTestCase("insufficient_material_KBwBb_K.pgn", "", "", 3, 4, CheckmateOrStalemate.NA, 1,
-        InsufficientMaterial.BLACK_ONLY, "6k1/8/3K4/8/8/8/3BB3/8 b - - 0 33"));
-
-    list.add(new PgnTestCase("insufficient_material_KBwN_K.pgn", "", "", 3, 8, CheckmateOrStalemate.NA, 1,
-        InsufficientMaterial.BLACK_ONLY, "8/6k1/3K4/4N3/8/7B/8/8 w - - 0 36"));
-    list.add(new PgnTestCase("insufficient_material_KBbN_K.pgn", "", "", 3, 4, CheckmateOrStalemate.NA, 1,
-        InsufficientMaterial.BLACK_ONLY, "8/6k1/3K4/8/8/5N2/8/2B5 b - - 0 33"));
 
     list.add(new PgnTestCase("insufficient_material_KBw_K.pgn", "", "", 3, 4, CheckmateOrStalemate.NA, 1,
         InsufficientMaterial.BOTH, "8/8/3K2k1/8/8/8/8/5B2 b - - 0 33"));
     list.add(new PgnTestCase("insufficient_material_KBb_K.pgn", "", "", 3, 5, CheckmateOrStalemate.NA, 1,
         InsufficientMaterial.BOTH, "8/8/8/4k3/8/4K3/8/2B5 w - - 0 35"));
 
-    list.add(new PgnTestCase("insufficient_material_KBw_KBb.pgn", "", "", 3, 7, CheckmateOrStalemate.NA, 1,
-        InsufficientMaterial.NONE, "8/8/3b2k1/8/3K2B1/8/8/8 b - - 0 35"));
-    list.add(new PgnTestCase("insufficient_material_KBb_KBw.pgn", "", "", 3, 8, CheckmateOrStalemate.NA, 1,
-        InsufficientMaterial.NONE, "8/8/k3b3/8/5K2/8/8/2B5 b - - 0 35"));
-
     list.add(new PgnTestCase("insufficient_material_KBw_KBw.pgn", "", "", 3, 17, CheckmateOrStalemate.NA, 1,
         InsufficientMaterial.BOTH, "5K2/8/8/1B6/8/k7/6b1/8 w - - 0 39"));
     list.add(new PgnTestCase("insufficient_material_KBb_KBb.pgn", "", "", 3, 5, CheckmateOrStalemate.NA, 1,
         InsufficientMaterial.BOTH, "8/8/8/4k3/5b2/3K4/8/2B5 w - - 0 33"));
-
-    list.add(new PgnTestCase("insufficient_material_KN_KN.pgn", "", "", 3, 9, CheckmateOrStalemate.NA, 1,
-        InsufficientMaterial.NONE, "8/8/4K3/8/1n6/8/5k1N/8 w - - 0 37"));
-
-    list.add(new PgnTestCase("insufficient_material_KNN_K.pgn", "", "", 3, 4, CheckmateOrStalemate.NA, 1,
-        InsufficientMaterial.BLACK_ONLY, "5k2/8/5N2/2K5/8/5N2/8/8 w - - 0 34"));
 
     list.add(new PgnTestCase("insufficient_material_KN_K.pgn", "", "", 3, 4, CheckmateOrStalemate.NA, 1,
         InsufficientMaterial.BOTH, "4k3/8/8/2K5/8/5N2/8/8 w - - 0 35"));
@@ -1004,19 +980,8 @@ public class PgnTestCaseCatalog {
     list.add(new PgnTestCase("insufficient_material_K_KBb.pgn", "", "", 3, 4, CheckmateOrStalemate.NA, 1,
         InsufficientMaterial.BOTH, "8/8/8/2b5/2K5/8/4k3/8 w - - 0 34"));
 
-    list.add(new PgnTestCase("insufficient_material_K_KBwBb.pgn", "", "", 3, 6, CheckmateOrStalemate.NA, 1,
-        InsufficientMaterial.WHITE_ONLY, "4k3/8/8/4K3/8/b7/4b3/8 b - - 0 34"));
-
-    list.add(new PgnTestCase("insufficient_material_K_KBwN.pgn", "", "", 3, 6, CheckmateOrStalemate.NA, 1,
-        InsufficientMaterial.WHITE_ONLY, "4k3/8/8/2K1n3/8/8/4b3/8 b - - 0 35"));
-    list.add(new PgnTestCase("insufficient_material_K_KBbN.pgn", "", "", 3, 6, CheckmateOrStalemate.NA, 1,
-        InsufficientMaterial.WHITE_ONLY, "1n2k3/8/8/8/8/b4K2/8/8 b - - 0 33"));
-
     list.add(new PgnTestCase("insufficient_material_K_KN.pgn", "", "", 3, 6, CheckmateOrStalemate.NA, 1,
         InsufficientMaterial.BOTH, "4k3/8/8/1K2n3/8/8/8/8 b - - 0 36"));
-
-    list.add(new PgnTestCase("insufficient_material_K_KNN.pgn", "", "", 3, 6, CheckmateOrStalemate.NA, 1,
-        InsufficientMaterial.WHITE_ONLY, "1n2k3/8/3n4/8/8/8/3K4/8 b - - 0 35"));
 
     // more than two bishops one side same square and only kings - is insufficient
     // material
@@ -1028,90 +993,36 @@ public class PgnTestCaseCatalog {
         InsufficientMaterial.BOTH, "3k4/1b6/2b5/8/8/8/3K4/8 w - - 0 27"));
     list.add(new PgnTestCase("insufficient_material_K_KBbBb.pgn", "", "", 4, 6, CheckmateOrStalemate.NA, 1,
         InsufficientMaterial.BOTH, "5b2/3k4/8/8/5K2/2b5/8/8 b - - 0 25"));
+    return new PgnTestCaseList(PgnTest.BASIC_INSUFFICIENT_MATERIAL_BOTH, list);
+  }
 
-    // KN against king and single piece
-    list.add(new PgnTestCase("insufficient_material_KN_KR.pgn", "", "", 5, 2, CheckmateOrStalemate.NA, 1,
-        InsufficientMaterial.NONE, "7r/3k4/8/8/8/8/3K4/1N6 w - - 0 21"));
-    list.add(new PgnTestCase("insufficient_material_KN_KBw.pgn", "", "", 5, 3, CheckmateOrStalemate.NA, 1,
-        InsufficientMaterial.NONE, "8/k2b4/8/8/2K5/8/8/1N6 w - - 0 23"));
-    list.add(new PgnTestCase("insufficient_material_KN_KBb.pgn", "", "", 5, 3, CheckmateOrStalemate.NA, 1,
-        InsufficientMaterial.NONE, "5b2/8/3k4/8/8/4K3/8/1N6 w - - 0 24"));
+  private static PgnTestCaseList createTestCasesBasicInsufficientMaterialOnlyWhite() {
+    final List<PgnTestCase> list = new ArrayList<>();
+
+    list.add(new PgnTestCase("insufficient_material_K_KBwBb.pgn", "", "", 3, 6, CheckmateOrStalemate.NA, 1,
+        InsufficientMaterial.WHITE_ONLY, "4k3/8/8/4K3/8/b7/4b3/8 b - - 0 34"));
+
+    list.add(new PgnTestCase("insufficient_material_K_KBwN.pgn", "", "", 3, 6, CheckmateOrStalemate.NA, 1,
+        InsufficientMaterial.WHITE_ONLY, "4k3/8/8/2K1n3/8/8/4b3/8 b - - 0 35"));
+    list.add(new PgnTestCase("insufficient_material_K_KBbN.pgn", "", "", 3, 6, CheckmateOrStalemate.NA, 1,
+        InsufficientMaterial.WHITE_ONLY, "1n2k3/8/8/8/8/b4K2/8/8 b - - 0 33"));
+
+    list.add(new PgnTestCase("insufficient_material_K_KNN.pgn", "", "", 3, 6, CheckmateOrStalemate.NA, 1,
+        InsufficientMaterial.WHITE_ONLY, "1n2k3/8/3n4/8/8/8/3K4/8 b - - 0 35"));
     list.add(new PgnTestCase("insufficient_material_KN_KQ.pgn", "", "", 5, 3, CheckmateOrStalemate.NA, 1,
         InsufficientMaterial.WHITE_ONLY, "4k3/8/8/8/8/5K2/3q4/1N6 w - - 0 24"));
-    list.add(new PgnTestCase("insufficient_material_KN_KP.pgn", "", "", 5, 2, CheckmateOrStalemate.NA, 1,
-        InsufficientMaterial.NONE, "3k4/8/3p4/8/8/4K3/8/1N6 w - - 0 23"));
 
     // KBw against king and single piece
     list.add(new PgnTestCase("insufficient_material_KBw_KR.pgn", "", "", 5, 4, CheckmateOrStalemate.NA, 1,
         InsufficientMaterial.WHITE_ONLY, "r7/8/3K4/8/8/2k5/8/5B2 w - - 0 28"));
-    list.add(new PgnTestCase("insufficient_material_KBw_KN.pgn", "", "", 5, 3, CheckmateOrStalemate.NA, 1,
-        InsufficientMaterial.NONE, "1n6/8/8/2k1K3/8/8/8/5B2 w - - 0 26"));
     list.add(new PgnTestCase("insufficient_material_KBw_KQ.pgn", "", "", 5, 4, CheckmateOrStalemate.NA, 1,
         InsufficientMaterial.WHITE_ONLY, "3K4/8/8/4q3/k7/8/8/5B2 b - - 0 30"));
-    list.add(new PgnTestCase("insufficient_material_KBw_KP.pgn", "", "", 5, 3, CheckmateOrStalemate.NA, 1,
-        InsufficientMaterial.NONE, "8/8/8/2p1K3/8/1k6/8/5B2 w - - 0 27"));
 
     // KBb against king and single piece
     list.add(new PgnTestCase("insufficient_material_KBb_KR.pgn", "", "", 5, 3, CheckmateOrStalemate.NA, 1,
         InsufficientMaterial.WHITE_ONLY, "8/8/8/r7/k7/8/1K6/2B5 b - - 0 25"));
-    list.add(new PgnTestCase("insufficient_material_KBb_KN.pgn", "", "", 5, 4, CheckmateOrStalemate.NA, 1,
-        InsufficientMaterial.NONE, "1n6/8/8/8/4K3/1k6/1B6/8 b - - 3 27"));
     list.add(new PgnTestCase("insufficient_material_KBb_KQ.pgn", "", "", 5, 6, CheckmateOrStalemate.NA, 1,
         InsufficientMaterial.WHITE_ONLY, "8/8/8/2q5/8/2BK4/k7/8 b - - 0 28"));
-    list.add(new PgnTestCase("insufficient_material_KBb_KP.pgn", "", "", 5, 4, CheckmateOrStalemate.NA, 1,
-        InsufficientMaterial.NONE, "8/6B1/8/2p5/8/1k6/8/1K6 b - - 0 26"));
-
-    // King and single piece against KN
-    list.add(new PgnTestCase("insufficient_material_KR_KN.pgn", "", "", 5, 2, CheckmateOrStalemate.NA, 1,
-        InsufficientMaterial.NONE, "1n6/8/8/2k5/4K3/8/7R/8 b - - 0 22"));
-    // we have insufficientMaterial_KBw_KN already tested above
-    // we have insufficientMaterial_KBb_KN already tested above
-    list.add(new PgnTestCase("insufficient_material_KQ_KN.pgn", "", "", 5, 2, CheckmateOrStalemate.NA, 1,
-        InsufficientMaterial.BLACK_ONLY, "1n6/8/8/4Q3/k3K3/8/8/8 b - - 0 24"));
-    list.add(new PgnTestCase("insufficient_material_KQQ_KN.pgn", "", "", 5, 2, CheckmateOrStalemate.NA, 1,
-        InsufficientMaterial.BLACK_ONLY, "1n6/7Q/8/2Q5/8/k2K4/8/8 b - - 0 28"));
-    list.add(new PgnTestCase("insufficient_material_KP_KN.pgn", "", "", 5, 3, CheckmateOrStalemate.NA, 1,
-        InsufficientMaterial.NONE, "1n6/8/8/2k5/8/8/6KP/8 b - - 0 24"));
-
-    // King and single piece against KBw
-    list.add(new PgnTestCase("insufficient_material_KR_KBw.pgn", "", "", 5, 2, CheckmateOrStalemate.NA, 1,
-        InsufficientMaterial.BLACK_ONLY, "2b5/8/8/8/2k5/8/8/2K4R w - - 0 24"));
-    list.add(new PgnTestCase("insufficient_material_KR_KBwBw.pgn", "", "", 5, 2, CheckmateOrStalemate.NA, 1,
-        InsufficientMaterial.BLACK_ONLY, "2b5/8/8/1k6/3R4/8/4K3/1b6 b - - 0 26"));
-    // we have insufficientMaterial_KN_KBw already tested above
-    list.add(new PgnTestCase("insufficient_material_KQ_KBw.pgn", "", "", 5, 4, CheckmateOrStalemate.NA, 1,
-        InsufficientMaterial.BLACK_ONLY, "2b5/2Q5/8/8/8/k7/8/2K5 w - - 0 25"));
-    list.add(new PgnTestCase("insufficient_material_KQBw_KBw.pgn", "", "", 5, 4, CheckmateOrStalemate.NA, 1,
-        InsufficientMaterial.BLACK_ONLY, "4B3/8/1k6/8/4b3/2K5/7Q/8 w - - 0 30"));
-    list.add(new PgnTestCase("insufficient_material_KQQ_KBw.pgn", "", "", 5, 2, CheckmateOrStalemate.NA, 1,
-        InsufficientMaterial.BLACK_ONLY, "3Q4/2Q5/b7/8/k7/8/8/2K5 b - - 0 26"));
-    list.add(new PgnTestCase("insufficient_material_KQ_KBwBw.pgn", "", "", 5, 2, CheckmateOrStalemate.NA, 1,
-        InsufficientMaterial.BLACK_ONLY, "2b5/8/8/8/k7/8/K7/3b3Q b - - 0 27"));
-    list.add(new PgnTestCase("insufficient_material_KQQ_KBwBw.pgn", "", "", 5, 2, CheckmateOrStalemate.NA, 1,
-        InsufficientMaterial.BLACK_ONLY, "1Qb5/7Q/8/8/k7/2K5/8/3b4 b - - 0 30"));
-    list.add(new PgnTestCase("insufficient_material_KP_KBw.pgn", "", "", 5, 3, CheckmateOrStalemate.NA, 1,
-        InsufficientMaterial.NONE, "8/8/8/3P4/k5b1/8/8/2K5 w - - 0 27"));
-
-    // King and single piece against KBb
-    list.add(new PgnTestCase("insufficient_material_KR_KBb.pgn", "", "", 5, 2, CheckmateOrStalemate.NA, 1,
-        InsufficientMaterial.BLACK_ONLY, "8/5kb1/8/8/8/3K4/8/7R w - - 0 24"));
-    list.add(new PgnTestCase("insufficient_material_KR_KBbBb.pgn", "", "", 5, 2, CheckmateOrStalemate.NA, 1,
-        InsufficientMaterial.BLACK_ONLY, "5b2/8/6k1/8/8/R1K5/8/4b3 w - - 0 29"));
-
-    // we have insufficientMaterial_KN_KBb already tested above
-    list.add(new PgnTestCase("insufficient_material_KQ_KBb.pgn", "", "", 5, 2, CheckmateOrStalemate.NA, 1,
-        InsufficientMaterial.BLACK_ONLY, "8/8/7k/4Q3/8/b2K4/8/8 w - - 0 24"));
-    list.add(new PgnTestCase("insufficient_material_KQBb_KBb.pgn", "", "", 5, 5, CheckmateOrStalemate.NA, 1,
-        InsufficientMaterial.BLACK_ONLY, "5B2/3Q4/7b/3K3k/8/8/8/8 b - - 0 29"));
-    list.add(new PgnTestCase("insufficient_material_KQQ_KBb.pgn", "", "", 5, 4, CheckmateOrStalemate.NA, 1,
-        InsufficientMaterial.BLACK_ONLY, "4Qb2/6k1/8/8/Q7/3K4/8/8 w - - 0 29"));
-    list.add(new PgnTestCase("insufficient_material_KQ_KBbBb.pgn", "", "", 5, 3, CheckmateOrStalemate.NA, 1,
-        InsufficientMaterial.BLACK_ONLY, "5b2/7k/8/8/K7/1Q6/8/4b3 w - - 0 31"));
-    list.add(new PgnTestCase("insufficient_material_KQQ_KBbBb.pgn", "", "", 5, 6, CheckmateOrStalemate.NA, 1,
-        InsufficientMaterial.BLACK_ONLY, "5b2/Q7/8/8/7k/1K6/3Q4/4b3 w - - 0 34"));
-
-    list.add(new PgnTestCase("insufficient_material_KP_KBb.pgn", "", "", 5, 2, CheckmateOrStalemate.NA, 1,
-        InsufficientMaterial.NONE, "5b2/8/4P3/3K2k1/8/8/8/8 b - - 0 25"));
 
     list.add(new PgnTestCase("insufficient_material_KBw_KBwQ.pgn", "", "", 5, 2, CheckmateOrStalemate.NA, 1,
         InsufficientMaterial.WHITE_ONLY, "8/1b2q3/8/k4K2/8/8/8/5B2 w - - 0 25"));
@@ -1141,12 +1052,6 @@ public class PgnTestCaseCatalog {
         InsufficientMaterial.WHITE_ONLY, "8/3q4/8/8/k2B4/B5K1/3q4/8 b - - 0 29"));
     list.add(new PgnTestCase("insufficient_material_KBbBb_KR.pgn", "", "", 5, 4, CheckmateOrStalemate.NA, 1,
         InsufficientMaterial.WHITE_ONLY, "8/8/7B/k7/8/8/1B4r1/4K3 b - - 1 32"));
-    list.add(new PgnTestCase("insufficient_material_KBbQ_KBb.pgn", "", "", 5, 4, CheckmateOrStalemate.NA, 1,
-        InsufficientMaterial.BLACK_ONLY, "Q7/8/8/1k6/8/8/3K4/b1B5 w - - 0 28"));
-    list.add(new PgnTestCase("insufficient_material_KBbQR_KBb.pgn", "", "", 5, 4, CheckmateOrStalemate.NA, 1,
-        InsufficientMaterial.BLACK_ONLY, "3R3Q/8/7b/8/k7/8/4K3/2B5 b - - 0 31"));
-    list.add(new PgnTestCase("insufficient_material_KBbR_KBb.pgn", "", "", 5, 4, CheckmateOrStalemate.NA, 1,
-        InsufficientMaterial.BLACK_ONLY, "3R1b2/8/8/8/k7/8/4K3/2B5 w - - 0 33"));
     list.add(new PgnTestCase("insufficient_material_KBw_KQBw.pgn", "", "", 5, 4, CheckmateOrStalemate.NA, 1,
         InsufficientMaterial.WHITE_ONLY, "8/8/8/8/5q2/1k1B4/8/1b1K4 w - - 0 31"));
     list.add(new PgnTestCase("insufficient_material_KBw_KQQ.pgn", "", "", 5, 5, CheckmateOrStalemate.NA, 1,
@@ -1157,31 +1062,127 @@ public class PgnTestCaseCatalog {
         InsufficientMaterial.WHITE_ONLY, "q1B5/8/4B1q1/8/1k6/8/8/5K2 w - - 0 32"));
     list.add(new PgnTestCase("insufficient_material_KBwBw_KR.pgn", "", "", 5, 3, CheckmateOrStalemate.NA, 1,
         InsufficientMaterial.WHITE_ONLY, "r1B5/8/8/8/8/2k5/8/3K1B2 b - - 0 32"));
+    list.add(new PgnTestCase("insufficient_material_KN_KQQ.pgn", "", "", 5, 5, CheckmateOrStalemate.NA, 1,
+        InsufficientMaterial.WHITE_ONLY, "8/8/3k4/6q1/8/5K2/8/1Nq5 w - - 0 27"));
+    return new PgnTestCaseList(PgnTest.BASIC_INSUFFICIENT_MATERIAL_ONLY_WHITE, list);
+  }
+
+  private static PgnTestCaseList createTestCasesBasicInsufficientMaterialOnlyBlack() {
+    final List<PgnTestCase> list = new ArrayList<>();
+
+    list.add(new PgnTestCase("insufficient_material_KBwBb_K.pgn", "", "", 3, 4, CheckmateOrStalemate.NA, 1,
+        InsufficientMaterial.BLACK_ONLY, "6k1/8/3K4/8/8/8/3BB3/8 b - - 0 33"));
+
+    list.add(new PgnTestCase("insufficient_material_KBwN_K.pgn", "", "", 3, 8, CheckmateOrStalemate.NA, 1,
+        InsufficientMaterial.BLACK_ONLY, "8/6k1/3K4/4N3/8/7B/8/8 w - - 0 36"));
+    list.add(new PgnTestCase("insufficient_material_KBbN_K.pgn", "", "", 3, 4, CheckmateOrStalemate.NA, 1,
+        InsufficientMaterial.BLACK_ONLY, "8/6k1/3K4/8/8/5N2/8/2B5 b - - 0 33"));
+
+    list.add(new PgnTestCase("insufficient_material_KNN_K.pgn", "", "", 3, 4, CheckmateOrStalemate.NA, 1,
+        InsufficientMaterial.BLACK_ONLY, "5k2/8/5N2/2K5/8/5N2/8/8 w - - 0 34"));
+    // we have insufficientMaterial_KBw_KN already tested above
+    // we have insufficientMaterial_KBb_KN already tested above
+    list.add(new PgnTestCase("insufficient_material_KQ_KN.pgn", "", "", 5, 2, CheckmateOrStalemate.NA, 1,
+        InsufficientMaterial.BLACK_ONLY, "1n6/8/8/4Q3/k3K3/8/8/8 b - - 0 24"));
+    list.add(new PgnTestCase("insufficient_material_KQQ_KN.pgn", "", "", 5, 2, CheckmateOrStalemate.NA, 1,
+        InsufficientMaterial.BLACK_ONLY, "1n6/7Q/8/2Q5/8/k2K4/8/8 b - - 0 28"));
+
+    // King and single piece against KBw
+    list.add(new PgnTestCase("insufficient_material_KR_KBw.pgn", "", "", 5, 2, CheckmateOrStalemate.NA, 1,
+        InsufficientMaterial.BLACK_ONLY, "2b5/8/8/8/2k5/8/8/2K4R w - - 0 24"));
+    list.add(new PgnTestCase("insufficient_material_KR_KBwBw.pgn", "", "", 5, 2, CheckmateOrStalemate.NA, 1,
+        InsufficientMaterial.BLACK_ONLY, "2b5/8/8/1k6/3R4/8/4K3/1b6 b - - 0 26"));
+    // we have insufficientMaterial_KN_KBw already tested above
+    list.add(new PgnTestCase("insufficient_material_KQ_KBw.pgn", "", "", 5, 4, CheckmateOrStalemate.NA, 1,
+        InsufficientMaterial.BLACK_ONLY, "2b5/2Q5/8/8/8/k7/8/2K5 w - - 0 25"));
+    list.add(new PgnTestCase("insufficient_material_KQBw_KBw.pgn", "", "", 5, 4, CheckmateOrStalemate.NA, 1,
+        InsufficientMaterial.BLACK_ONLY, "4B3/8/1k6/8/4b3/2K5/7Q/8 w - - 0 30"));
+    list.add(new PgnTestCase("insufficient_material_KQQ_KBw.pgn", "", "", 5, 2, CheckmateOrStalemate.NA, 1,
+        InsufficientMaterial.BLACK_ONLY, "3Q4/2Q5/b7/8/k7/8/8/2K5 b - - 0 26"));
+    list.add(new PgnTestCase("insufficient_material_KQ_KBwBw.pgn", "", "", 5, 2, CheckmateOrStalemate.NA, 1,
+        InsufficientMaterial.BLACK_ONLY, "2b5/8/8/8/k7/8/K7/3b3Q b - - 0 27"));
+    list.add(new PgnTestCase("insufficient_material_KQQ_KBwBw.pgn", "", "", 5, 2, CheckmateOrStalemate.NA, 1,
+        InsufficientMaterial.BLACK_ONLY, "1Qb5/7Q/8/8/k7/2K5/8/3b4 b - - 0 30"));
+
+    // King and single piece against KBb
+    list.add(new PgnTestCase("insufficient_material_KR_KBb.pgn", "", "", 5, 2, CheckmateOrStalemate.NA, 1,
+        InsufficientMaterial.BLACK_ONLY, "8/5kb1/8/8/8/3K4/8/7R w - - 0 24"));
+    list.add(new PgnTestCase("insufficient_material_KR_KBbBb.pgn", "", "", 5, 2, CheckmateOrStalemate.NA, 1,
+        InsufficientMaterial.BLACK_ONLY, "5b2/8/6k1/8/8/R1K5/8/4b3 w - - 0 29"));
+
+    // we have insufficientMaterial_KN_KBb already tested above
+    list.add(new PgnTestCase("insufficient_material_KQ_KBb.pgn", "", "", 5, 2, CheckmateOrStalemate.NA, 1,
+        InsufficientMaterial.BLACK_ONLY, "8/8/7k/4Q3/8/b2K4/8/8 w - - 0 24"));
+    list.add(new PgnTestCase("insufficient_material_KQBb_KBb.pgn", "", "", 5, 5, CheckmateOrStalemate.NA, 1,
+        InsufficientMaterial.BLACK_ONLY, "5B2/3Q4/7b/3K3k/8/8/8/8 b - - 0 29"));
+    list.add(new PgnTestCase("insufficient_material_KQQ_KBb.pgn", "", "", 5, 4, CheckmateOrStalemate.NA, 1,
+        InsufficientMaterial.BLACK_ONLY, "4Qb2/6k1/8/8/Q7/3K4/8/8 w - - 0 29"));
+    list.add(new PgnTestCase("insufficient_material_KQ_KBbBb.pgn", "", "", 5, 3, CheckmateOrStalemate.NA, 1,
+        InsufficientMaterial.BLACK_ONLY, "5b2/7k/8/8/K7/1Q6/8/4b3 w - - 0 31"));
+    list.add(new PgnTestCase("insufficient_material_KQQ_KBbBb.pgn", "", "", 5, 6, CheckmateOrStalemate.NA, 1,
+        InsufficientMaterial.BLACK_ONLY, "5b2/Q7/8/8/7k/1K6/3Q4/4b3 w - - 0 34"));
+    list.add(new PgnTestCase("insufficient_material_KBbQ_KBb.pgn", "", "", 5, 4, CheckmateOrStalemate.NA, 1,
+        InsufficientMaterial.BLACK_ONLY, "Q7/8/8/1k6/8/8/3K4/b1B5 w - - 0 28"));
+    list.add(new PgnTestCase("insufficient_material_KBbQR_KBb.pgn", "", "", 5, 4, CheckmateOrStalemate.NA, 1,
+        InsufficientMaterial.BLACK_ONLY, "3R3Q/8/7b/8/k7/8/4K3/2B5 b - - 0 31"));
+    list.add(new PgnTestCase("insufficient_material_KBbR_KBb.pgn", "", "", 5, 4, CheckmateOrStalemate.NA, 1,
+        InsufficientMaterial.BLACK_ONLY, "3R1b2/8/8/8/k7/8/4K3/2B5 w - - 0 33"));
     list.add(new PgnTestCase("insufficient_material_KBwQ_KBw.pgn", "", "", 5, 4, CheckmateOrStalemate.NA, 1,
         InsufficientMaterial.BLACK_ONLY, "8/8/k7/8/6B1/5b2/3Q4/2K5 w - - 0 35"));
     list.add(new PgnTestCase("insufficient_material_KBwQR_KBw.pgn", "", "", 5, 3, CheckmateOrStalemate.NA, 1,
         InsufficientMaterial.BLACK_ONLY, "5R1Q/1b1B4/8/8/2k5/8/8/2K5 b - - 0 38"));
     list.add(new PgnTestCase("insufficient_material_KBwR_KBw.pgn", "", "", 3, 4, CheckmateOrStalemate.NA, 1,
         InsufficientMaterial.BLACK_ONLY, "1R6/8/3k4/8/5K2/7B/4b3/8 w - - 0 30"));
-    list.add(new PgnTestCase("insufficient_material_KN_KQQ.pgn", "", "", 5, 5, CheckmateOrStalemate.NA, 1,
-        InsufficientMaterial.WHITE_ONLY, "8/8/3k4/6q1/8/5K2/8/1Nq5 w - - 0 27"));
     list.add(new PgnTestCase("insufficient_material_KQR_KBb.pgn", "", "", 3, 6, CheckmateOrStalemate.NA, 1,
         InsufficientMaterial.BLACK_ONLY, "1R6/3k4/8/b7/8/8/5K2/1Q6 w - - 0 30"));
     list.add(new PgnTestCase("insufficient_material_KQR_KBw.pgn", "", "", 3, 2, CheckmateOrStalemate.NA, 1,
         InsufficientMaterial.BLACK_ONLY, "1R6/8/4k3/8/8/3b4/3Q4/4K3 w - - 0 27"));
-    return filterInsufficientMaterial(pgnTest, list, insufficientMaterial);
+    return new PgnTestCaseList(PgnTest.BASIC_INSUFFICIENT_MATERIAL_ONLY_BLACK, list);
   }
 
-  private static PgnTestCaseList filterInsufficientMaterial(PgnTest pgnTest, List<PgnTestCase> list,
-      InsufficientMaterial insufficientMaterial) {
-    final List<PgnTestCase> result = new ArrayList<>();
-    for (final PgnTestCase testCase : list) {
-      if (testCase.insufficientMaterial() == insufficientMaterial) {
-        result.add(testCase);
-      }
-    }
-    return new PgnTestCaseList(pgnTest, result);
+  private static PgnTestCaseList createTestCasesBasicInsufficientMaterialNone() {
+    final List<PgnTestCase> list = new ArrayList<>();
+
+    list.add(new PgnTestCase("insufficient_material_KBw_KBb.pgn", "", "", 3, 7, CheckmateOrStalemate.NA, 1,
+        InsufficientMaterial.NONE, "8/8/3b2k1/8/3K2B1/8/8/8 b - - 0 35"));
+    list.add(new PgnTestCase("insufficient_material_KBb_KBw.pgn", "", "", 3, 8, CheckmateOrStalemate.NA, 1,
+        InsufficientMaterial.NONE, "8/8/k3b3/8/5K2/8/8/2B5 b - - 0 35"));
+
+    list.add(new PgnTestCase("insufficient_material_KN_KN.pgn", "", "", 3, 9, CheckmateOrStalemate.NA, 1,
+        InsufficientMaterial.NONE, "8/8/4K3/8/1n6/8/5k1N/8 w - - 0 37"));
+
+    // KN against king and single piece
+    list.add(new PgnTestCase("insufficient_material_KN_KR.pgn", "", "", 5, 2, CheckmateOrStalemate.NA, 1,
+        InsufficientMaterial.NONE, "7r/3k4/8/8/8/8/3K4/1N6 w - - 0 21"));
+    list.add(new PgnTestCase("insufficient_material_KN_KBw.pgn", "", "", 5, 3, CheckmateOrStalemate.NA, 1,
+        InsufficientMaterial.NONE, "8/k2b4/8/8/2K5/8/8/1N6 w - - 0 23"));
+    list.add(new PgnTestCase("insufficient_material_KN_KBb.pgn", "", "", 5, 3, CheckmateOrStalemate.NA, 1,
+        InsufficientMaterial.NONE, "5b2/8/3k4/8/8/4K3/8/1N6 w - - 0 24"));
+    list.add(new PgnTestCase("insufficient_material_KN_KP.pgn", "", "", 5, 2, CheckmateOrStalemate.NA, 1,
+        InsufficientMaterial.NONE, "3k4/8/3p4/8/8/4K3/8/1N6 w - - 0 23"));
+    list.add(new PgnTestCase("insufficient_material_KBw_KN.pgn", "", "", 5, 3, CheckmateOrStalemate.NA, 1,
+        InsufficientMaterial.NONE, "1n6/8/8/2k1K3/8/8/8/5B2 w - - 0 26"));
+    list.add(new PgnTestCase("insufficient_material_KBw_KP.pgn", "", "", 5, 3, CheckmateOrStalemate.NA, 1,
+        InsufficientMaterial.NONE, "8/8/8/2p1K3/8/1k6/8/5B2 w - - 0 27"));
+    list.add(new PgnTestCase("insufficient_material_KBb_KN.pgn", "", "", 5, 4, CheckmateOrStalemate.NA, 1,
+        InsufficientMaterial.NONE, "1n6/8/8/8/4K3/1k6/1B6/8 b - - 3 27"));
+    list.add(new PgnTestCase("insufficient_material_KBb_KP.pgn", "", "", 5, 4, CheckmateOrStalemate.NA, 1,
+        InsufficientMaterial.NONE, "8/6B1/8/2p5/8/1k6/8/1K6 b - - 0 26"));
+
+    // King and single piece against KN
+    list.add(new PgnTestCase("insufficient_material_KR_KN.pgn", "", "", 5, 2, CheckmateOrStalemate.NA, 1,
+        InsufficientMaterial.NONE, "1n6/8/8/2k5/4K3/8/7R/8 b - - 0 22"));
+    list.add(new PgnTestCase("insufficient_material_KP_KN.pgn", "", "", 5, 3, CheckmateOrStalemate.NA, 1,
+        InsufficientMaterial.NONE, "1n6/8/8/2k5/8/8/6KP/8 b - - 0 24"));
+    list.add(new PgnTestCase("insufficient_material_KP_KBw.pgn", "", "", 5, 3, CheckmateOrStalemate.NA, 1,
+        InsufficientMaterial.NONE, "8/8/8/3P4/k5b1/8/8/2K5 w - - 0 27"));
+
+    list.add(new PgnTestCase("insufficient_material_KP_KBb.pgn", "", "", 5, 2, CheckmateOrStalemate.NA, 1,
+        InsufficientMaterial.NONE, "5b2/8/4P3/3K2k1/8/8/8/8 b - - 0 25"));
+    return new PgnTestCaseList(PgnTest.BASIC_INSUFFICIENT_MATERIAL_NONE, list);
   }
+
+
 
   private static PgnTestCaseList createTestCasesBasicThreefold() {
     final List<PgnTestCase> list = new ArrayList<>();
