@@ -36,7 +36,6 @@ class TestSanValidationProblemMessage {
   private static final Set<SanValidationProblem> checkedProblems = new TreeSet<>();
   private static final Set<SanValidationProblem> FIXED_UNCHECKED_ENTRIES = Nulls
       .setOf(SanValidationProblem.UNKNOWN_ERROR, SanValidationProblem.NONE);
-  private static final Set<SanValidationProblem> TEMPORARILY_UNCHECKED_PROBLEMS = Nulls.setOf();
 
   /**
    * When {@code true}, each test asserts the exact full exception message (useful while messages.properties is being
@@ -959,23 +958,6 @@ class TestSanValidationProblemMessage {
 
   }
 
-  // --- Game-end pre-check ---
-
-  @SuppressWarnings("static-method")
-  @Test
-  void testGameAlreadyEnded() {
-    // GAME_ALREADY_ENDED carries the specific GameStatus that ended the game. The SAN string is
-    // syntactically valid and would otherwise be parsed normally; the strict-pipeline check at
-    // the top of SanValidation rejects it because the game has already terminated.
-
-    // Mutual insufficient material (FIDE 5.2.2 dead position): K vs K.
-    {
-      final Board board = new Board("4k3/8/8/8/8/8/8/4K3 w - - 0 1");
-      checkException("Ke2", board, SanValidationProblem.GAME_ALREADY_ENDED,
-          "The game has already ended by DEAD_POSITION_INSUFFICIENT_MATERIAL - no further moves are accepted.");
-    }
-  }
-
   /** Checks a SAN against the initial position. */
   private static void checkException(String san, SanValidationProblem expectedProblem, String expectedMessage) {
     checkException(san, new Board(), expectedProblem, expectedMessage);
@@ -1003,7 +985,6 @@ class TestSanValidationProblemMessage {
   static void testCoverage() {
     final Set<SanValidationProblem> missingProblems = EnumSet.allOf(SanValidationProblem.class);
     missingProblems.removeAll(FIXED_UNCHECKED_ENTRIES);
-    missingProblems.removeAll(TEMPORARILY_UNCHECKED_PROBLEMS);
     missingProblems.removeAll(checkedProblems);
     final var missingProblemsMessage = missingProblems.stream().map(problem -> problem.name() + " is missing")
         .reduce((left, right) -> left + System.lineSeparator() + right).orElse("");

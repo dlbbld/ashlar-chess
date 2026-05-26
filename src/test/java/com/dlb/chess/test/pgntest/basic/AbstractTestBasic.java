@@ -19,7 +19,7 @@ import com.dlb.chess.model.LegalMove;
 import com.dlb.chess.model.LegalMoveKind;
 import com.dlb.chess.test.common.exceptions.SetupException;
 import com.dlb.chess.test.common.utility.FileUtility;
-import com.dlb.chess.test.model.PgnTestCase;
+import com.dlb.chess.test.model.PgnFen;
 import com.dlb.chess.test.model.PgnTestCaseList;
 import com.dlb.chess.test.pgn.setup.PgnTestCaseCatalog;
 import com.dlb.chess.test.pgntest.enums.PgnTest;
@@ -70,9 +70,9 @@ public abstract class AbstractTestBasic implements EnumConstants {
 
   }
 
-  private static List<String> calculatePgnNameList(List<PgnTestCase> testCaseList) {
+  private static List<String> calculatePgnNameList(List<PgnFen> testCaseList) {
     final List<String> result = new ArrayList<>();
-    for (final PgnTestCase testCase : testCaseList) {
+    for (final PgnFen testCase : testCaseList) {
       result.add(testCase.pgnName());
     }
     return result;

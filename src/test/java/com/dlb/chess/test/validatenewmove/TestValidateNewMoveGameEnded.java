@@ -1,70 +1,76 @@
 package com.dlb.chess.test.validatenewmove;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
 
 import com.dlb.chess.board.Board;
 import com.dlb.chess.common.constants.EnumConstants;
-import com.dlb.chess.common.enums.GameStatus;
 import com.dlb.chess.common.model.MoveSpecification;
-import com.dlb.chess.common.utility.BasicChessUtility;
 import com.dlb.chess.enums.MoveCheck;
 import com.dlb.chess.exceptions.InvalidMoveException;
 import com.dlb.chess.unwinnability.DeadPositionQuick;
 
 /**
- * Surface-level tests for the strict-pipeline game-end pre-check in
- * {@link com.dlb.chess.board.ValidateNewMove#validateNewMove}: one scenario per enforced move-blocking termination
- * ({@link GameStatus#CHECKMATE}, {@link GameStatus#STALEMATE}, {@link GameStatus#DEAD_POSITION_INSUFFICIENT_MATERIAL}).
- * Each verifies that any move attempted on a terminal-state board is rejected with {@link MoveCheck#GAME_ALREADY_ENDED}
- * and that the thrown {@link InvalidMoveException} carries the originating {@link GameStatus} as payload.
+ * Pins the library's posture at game-end states: termination is queryable, not enforced. None of the five automatic
+ * terminations — checkmate, stalemate, mutual insufficient material, fivefold repetition, 75-move rule — and none of
+ * the analyzer-driven dead positions block further move attempts at the validation pipeline.
  *
  * <p>
- * Fivefold, 75-move, and analyzer-driven dead positions are <em>not</em> enforced terminations in this library (see
- * {@link GameStatus#isAutomaticTermination()}); the move pipeline accepts further moves at and past those thresholds.
+ * At checkmate and stalemate the natural barrier is the empty legal-move set: any attempted move fails through ordinary
+ * move-legality checks (own-piece occupation, king-into-check, etc.), not via a dedicated game-end gate. At mutual
+ * insufficient material, fivefold, 75-move, and analyzer-driven dead positions, legal moves still exist and the
+ * pipeline accepts them — the caller polls {@code calculateOutcome} or the specific predicates to learn the game has
+ * reached an automatic termination.
  *
  * <p>
  * The companion {@code TestSanValidationGameEnded} mirrors this set against the SAN pipeline.
  */
 class TestValidateNewMoveGameEnded implements EnumConstants {
 
-  // --- CHECKMATE ---
+  // --- CHECKMATE: empty legal-move set; any move fails through ordinary legality ---
 
   @SuppressWarnings("static-method")
   @Test
-  void testGameEndedByCheckmate() {
+  void testCheckmateLegalMovesEmpty() {
     // Fool's mate: white is checkmated by black queen on h4.
     final Board board = new Board("rnb1kbnr/pppp1ppp/8/4p3/6Pq/5P2/PPPPP2P/RNBQKBNR w KQkq - 1 3");
-    check(board, new MoveSpecification(E1, E2), GameStatus.CHECKMATE);
+    assertTrue(board.isCheckmate(), "fool's mate position must be checkmate");
+    assertTrue(board.getLegalMoves().isEmpty(), "checkmate has no legal moves");
+
+    // The pipeline rejects any attempt via ordinary legality — not via a dedicated game-end gate.
+    // Ke2 fails because e2 is occupied by the white pawn.
+    rejectsWith(board, new MoveSpecification(E1, E2), MoveCheck.MOVEMENT_TO_SQUARE_OCCUPIED_BY_OWN_PIECE);
   }
 
-  // --- STALEMATE ---
+  // --- STALEMATE: empty legal-move set; any move fails through ordinary legality ---
 
   @SuppressWarnings("static-method")
   @Test
-  void testGameEndedByStalemate() {
-    // Classic K + Q stalemate: black king h8 has no legal move, no check, white to move.
-    // White-to-move queries; it's actually black-to-move stalemate so we set black-to-move
-    // and ask validation to reject any black move attempt.
+  void testStalemateLegalMovesEmpty() {
+    // Black king h8 has no legal move and is not in check.
     final Board board = new Board("7k/8/6Q1/8/8/8/8/K7 b - - 0 1");
-    check(board, new MoveSpecification(H8, G8), GameStatus.STALEMATE);
+    assertTrue(board.isStalemate(), "K+Q vs K position must be stalemate for black");
+    assertTrue(board.getLegalMoves().isEmpty(), "stalemate has no legal moves");
+
+    // Kg8 fails because g8 is attacked by the white queen on g6.
+    rejectsWith(board, new MoveSpecification(H8, G8), MoveCheck.KING_MOVES_TO_ATTACKED_EMPTY_SQUARE);
   }
 
-  // --- DEAD_POSITION_INSUFFICIENT_MATERIAL ---
+  // --- automatic terminations with non-empty legal-move set: pipeline accepts the move ---
 
   @SuppressWarnings("static-method")
   @Test
-  void testGameEndedByInsufficientMaterialBoth() {
-    // K vs K: dead position under FIDE 5.2.2.
+  void testMoveAcceptedAtInsufficientMaterialBoth() {
+    // K vs K: dead position under FIDE 5.2.2. The pipeline accepts further moves; the caller
+    // polls calculateOutcome / isInsufficientMaterial to learn the game has terminated.
     final Board board = new Board("4k3/8/8/8/8/8/8/4K3 w - - 0 1");
-    check(board, new MoveSpecification(E1, E2), GameStatus.DEAD_POSITION_INSUFFICIENT_MATERIAL);
+    assertTrue(board.isInsufficientMaterial(), "K vs K is mutual insufficient material");
+    assertDoesNotThrow(() -> board.move(new MoveSpecification(E1, E2)),
+        "insufficient material is queryable only; the pipeline must accept the move");
   }
-
-  // --- queryable-only predicates: pipeline does NOT block past these ---
 
   @SuppressWarnings("static-method")
   @Test
@@ -90,26 +96,11 @@ class TestValidateNewMoveGameEnded implements EnumConstants {
         "quick-unwinnable dead position is queryable only; the pipeline must accept the move");
   }
 
-  // --- precedence: hard blockers win when they coincide with queryable rules ---
-
-  @SuppressWarnings("static-method")
-  @Test
-  void testGameEndedByInsufficientMaterialOverridesSeventyFiveMove() {
-    // KvK with halfmove clock at the 75-move threshold. Both isInsufficientMaterial() and
-    // isSeventyFiveMove() are true — the move pipeline must still reject the move, and the
-    // payload must be the hard blocker (DEAD_POSITION_INSUFFICIENT_MATERIAL), not the
-    // queryable rule. Locks in the BasicChessUtility.calculateGameStatus precedence ordering
-    // at the move-pipeline layer.
-    final Board board = new Board("4k3/8/8/8/8/8/8/4K3 w - - 150 76");
-    check(board, new MoveSpecification(E1, E2), GameStatus.DEAD_POSITION_INSUFFICIENT_MATERIAL);
-  }
-
   @SuppressWarnings("static-method")
   @Test
   void testMoveAcceptedAtSeventyFiveMoveThreshold() {
     // FEN with halfmove clock at the 75-move threshold (150). isSeventyFiveMove() returns true,
-    // but the move pipeline accepts further moves — fivefold and 75-move are queryable, not
-    // enforced.
+    // but the pipeline accepts further moves.
     final Board board = new Board("4k3/8/4P3/8/8/8/2N1B3/3KQ2R w - - 150 76");
     assertTrue(board.isSeventyFiveMove(), "predicate must fire at threshold");
     assertDoesNotThrow(() -> board.move(new MoveSpecification(D1, D2)),
@@ -120,7 +111,7 @@ class TestValidateNewMoveGameEnded implements EnumConstants {
   @Test
   void testMoveAcceptedAtFivefoldThreshold() {
     // Drive the board to fivefold by alternating knight moves so the starting position recurs 5
-    // times. isFivefoldRepetition() returns true, but the move pipeline accepts further moves.
+    // times. isFivefoldRepetition() returns true, but the pipeline accepts further moves.
     final Board board = new Board();
     board.movesStrict("Nf3", "Nf6", "Ng1", "Ng8", "Nf3", "Nf6", "Ng1", "Ng8", "Nf3", "Nf6", "Ng1", "Ng8", "Nf3", "Nf6",
         "Ng1", "Ng8");
@@ -131,16 +122,17 @@ class TestValidateNewMoveGameEnded implements EnumConstants {
 
   // --- helpers ---
 
-  private static void check(Board board, MoveSpecification move, GameStatus expectedGameStatus) {
-    var isException = false;
+  /**
+   * Asserts that the move is rejected with the given {@link MoveCheck}.
+   */
+  private static void rejectsWith(Board board, MoveSpecification move, MoveCheck expected) {
+    var thrown = false;
     try {
       board.move(move);
     } catch (final InvalidMoveException e) {
-      isException = true;
-      assertEquals(MoveCheck.GAME_ALREADY_ENDED, e.getMoveCheck());
-      assertNotNull(e.getGameStatus(), "GAME_ALREADY_ENDED must carry a GameStatus payload");
-      assertEquals(expectedGameStatus, e.getGameStatus());
+      thrown = true;
+      assertEquals(expected, e.getMoveCheck());
     }
-    assertTrue(isException, "Expected InvalidMoveException with GAME_ALREADY_ENDED");
+    assertTrue(thrown, "expected InvalidMoveException");
   }
 }

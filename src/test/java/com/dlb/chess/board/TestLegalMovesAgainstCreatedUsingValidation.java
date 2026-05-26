@@ -20,14 +20,13 @@ import com.dlb.chess.board.enums.Side;
 import com.dlb.chess.board.enums.Square;
 import com.dlb.chess.common.Nulls;
 import com.dlb.chess.common.model.MoveSpecification;
-import com.dlb.chess.common.utility.BasicChessUtility;
 import com.dlb.chess.exceptions.InvalidMoveException;
 import com.dlb.chess.model.LegalMove;
 import com.dlb.chess.model.PgnHalfMove;
 import com.dlb.chess.pgn.PgnGame;
 import com.dlb.chess.squares.AbstractPotentialToSquares;
 import com.dlb.chess.test.RestrictTestConstants;
-import com.dlb.chess.test.model.PgnTestCase;
+import com.dlb.chess.test.model.PgnFen;
 import com.dlb.chess.test.model.PgnTestCaseList;
 import com.dlb.chess.test.pgn.parser.PgnCacheForStrictPgnParserTestCases;
 import com.dlb.chess.test.pgn.setup.PgnTestCaseCatalog;
@@ -55,7 +54,7 @@ class TestLegalMovesAgainstCreatedUsingValidation {
             continue;
         }
       }
-      for (final PgnTestCase testCase : testCaseList.list()) {
+      for (final PgnFen testCase : testCaseList.list()) {
         checkLegalMoves(testCaseList.pgnTest().getFolderPath(), testCase.pgnName());
       }
     }
@@ -78,15 +77,6 @@ class TestLegalMovesAgainstCreatedUsingValidation {
   }
 
   private static void checkLegalMoves(Board board) {
-
-    // Under the strict-game invariant, positions in move-blocking termination cannot accept
-    // any further move; ValidateNewMove rejects everything with GAME_ALREADY_ENDED. The
-    // bottom-up legal-move generator still reports geometrically-legal moves on such positions
-    // (e.g. king moves on a K-vs-K board), so the two sets cannot match here. This consistency
-    // check is meaningful only on ongoing positions.
-    if (BasicChessUtility.calculateMoveBlockingGameStatus(board).isAutomaticTermination()) {
-      return;
-    }
 
     final List<LegalMove> legalMovesActual = board.getLegalMoves();
 

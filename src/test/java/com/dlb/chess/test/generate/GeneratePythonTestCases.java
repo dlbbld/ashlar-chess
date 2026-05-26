@@ -11,12 +11,9 @@ import com.dlb.chess.board.Board;
 import com.dlb.chess.common.Nulls;
 import com.dlb.chess.common.constants.EnumConstants;
 import com.dlb.chess.common.model.HalfMove;
-import com.dlb.chess.common.utility.RepetitionUtility;
-import com.dlb.chess.report.Report;
-import com.dlb.chess.report.Reporter;
 import com.dlb.chess.test.ConfigurationTestConstants;
 import com.dlb.chess.test.common.utility.FileUtility;
-import com.dlb.chess.test.model.PgnTestCase;
+import com.dlb.chess.test.model.PgnFen;
 import com.dlb.chess.test.model.PgnTestCaseList;
 import com.dlb.chess.test.pgn.setup.PgnTestCaseCatalog;
 import com.dlb.chess.test.pgntest.constants.PgnTestConstants;
@@ -65,18 +62,17 @@ public class GeneratePythonTestCases implements EnumConstants {
       }
       processPythonCodeLine("  def test_" + folderIndication + "(self):", counterList, codeLineList);
       processPythonCodeLine("    print(\"Processing module " + folderIndication + "\")", counterList, codeLineList);
-      for (final PgnTestCase testCase : testCaseList.list()) {
+      for (final PgnFen testCase : testCaseList.list()) {
         logger.info("Processing game " + testCase.pgnName());
 
-        final Report report = Reporter.calculateReport(folderPath, testCase.pgnName());
         processPythonCodeLine("", counterList, codeLineList);
         processPythonCodeLine("    #" + testCase.pgnName(), counterList, codeLineList);
-        processPythonCodeLine("    print(\"  Processing game " + testCase.pgnName() + "\")", counterList,
-            codeLineList);
+        processPythonCodeLine("    print(\"  Processing game " + testCase.pgnName() + "\")", counterList, codeLineList);
         processPythonCodeLine("    board = chess.Board()", counterList, codeLineList);
 
         final Board boardPlayAlong = new Board();
-        for (final HalfMove halfMove : report.halfMoveList()) {
+        final Board board = testCase.game(testCaseList.pgnTest());
+        for (final HalfMove halfMove : board.getHalfMoveList()) {
           boardPlayAlong.move(halfMove.moveSpecification());
           processPythonCodeLine("    board.push_san(\"" + halfMove.san() + "\")", counterList, codeLineList);
           final var isMadeByWhite = halfMove.havingMove().getIsWhite();
@@ -116,19 +112,19 @@ public class GeneratePythonTestCases implements EnumConstants {
           processPythonCodeLine("    self.assertEqual(board.can_claim_fifty_moves(), "
               + convertJavaBooleanToPythonBoolean(canClaimFiftyMoveRule) + ")", counterList, codeLineList);
 
-          final var isTwoFoldRepetition = RepetitionUtility.getCountRepetition(halfMove) >= 2;
+          final var isTwoFoldRepetition = halfMove.countRepetition() >= 2;
           processPythonCodeLine("    self.assertEqual(board.is_repetition(2), "
               + convertJavaBooleanToPythonBoolean(isTwoFoldRepetition) + ")", counterList, codeLineList);
 
-          final var isThreeFoldRepetition = RepetitionUtility.getCountRepetition(halfMove) >= 3;
+          final var isThreeFoldRepetition = halfMove.countRepetition() >= 3;
           processPythonCodeLine("    self.assertEqual(board.is_repetition(), "
               + convertJavaBooleanToPythonBoolean(isThreeFoldRepetition) + ")", counterList, codeLineList);
 
-          final var isFourFoldRepetition = RepetitionUtility.getCountRepetition(halfMove) >= 4;
+          final var isFourFoldRepetition = halfMove.countRepetition() >= 4;
           processPythonCodeLine("    self.assertEqual(board.is_repetition(4), "
               + convertJavaBooleanToPythonBoolean(isFourFoldRepetition) + ")", counterList, codeLineList);
 
-          final var isFiveFoldRepetitionRule = RepetitionUtility.getCountRepetition(halfMove) >= 5;
+          final var isFiveFoldRepetitionRule = halfMove.countRepetition() >= 5;
           processPythonCodeLine("    self.assertEqual(board.is_fivefold_repetition(), "
               + convertJavaBooleanToPythonBoolean(isFiveFoldRepetitionRule) + ")", counterList, codeLineList);
 

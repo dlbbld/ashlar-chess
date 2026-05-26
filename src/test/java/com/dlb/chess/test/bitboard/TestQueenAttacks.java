@@ -16,7 +16,7 @@ import com.dlb.chess.board.enums.Side;
 import com.dlb.chess.board.enums.Square;
 import com.dlb.chess.common.Nulls;
 import com.dlb.chess.squares.SlidingAttacksTestOracle;
-import com.dlb.chess.test.model.PgnTestCase;
+import com.dlb.chess.test.model.PgnFen;
 import com.dlb.chess.test.model.PgnTestCaseList;
 import com.dlb.chess.test.pgn.setup.PgnTestCaseCatalog;
 import com.dlb.chess.test.pgntest.enums.PgnTest;
@@ -32,7 +32,7 @@ class TestQueenAttacks {
   void corpusEveryQueenAgrees() {
     for (final PgnTest pgnTest : PgnTest.values()) {
       final PgnTestCaseList testCaseList = PgnTestCaseCatalog.getTestList(pgnTest);
-      for (final PgnTestCase testCase : testCaseList.list()) {
+      for (final PgnFen testCase : testCaseList.list()) {
         final StaticPosition staticPosition = StaticPositionBridge.toStaticPosition(testCase.finalPosition().getBitboardPosition());
         final BitboardPosition bitboardPosition = StaticPositionBridge.fromStaticPosition(staticPosition);
         final long occupied = bitboardPosition.occupied();
@@ -43,7 +43,7 @@ class TestQueenAttacks {
   }
 
   private static void assertSideAgrees(long queens, Side side, StaticPosition staticPosition, long occupied,
-      PgnTestCase testCase) {
+      PgnFen testCase) {
     long remaining = queens;
     while (remaining != 0L) {
       final int squareOrdinal = Long.numberOfTrailingZeros(remaining);

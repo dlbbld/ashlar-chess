@@ -11,7 +11,7 @@ import com.dlb.chess.common.model.MoveSpecification;
 import com.dlb.chess.model.PgnHalfMove;
 import com.dlb.chess.pgn.PgnGame;
 import com.dlb.chess.san.StrictSanParser;
-import com.dlb.chess.test.model.PgnTestCase;
+import com.dlb.chess.test.model.PgnFen;
 import com.dlb.chess.test.model.PgnTestCaseList;
 import com.dlb.chess.test.pgn.parser.PgnCacheForStrictPgnParserTestCases;
 import com.dlb.chess.test.pgn.setup.PgnTestCaseCatalog;
@@ -57,7 +57,7 @@ class TestPerformMoveSanContract {
   @Test
   void testPlayedMoveSanMoveSpecRoundtrip() {
     for (final PgnTestCaseList testCaseList : PgnTestCaseCatalog.getParserIntegrationSmokeList()) {
-      for (final PgnTestCase testCase : testCaseList.list()) {
+      for (final PgnFen testCase : testCaseList.list()) {
         logger.info(testCase.pgnName());
         verifyProvidedSanToCalculatedSan(testCaseList, testCase);
       }
@@ -68,7 +68,7 @@ class TestPerformMoveSanContract {
   @Test
   void testAllLegalMovesSanMoveSpecRoundtrip() {
     for (final PgnTestCaseList testCaseList : PgnTestCaseCatalog.getParserIntegrationSmokeList()) {
-      for (final PgnTestCase testCase : testCaseList.list()) {
+      for (final PgnFen testCase : testCaseList.list()) {
         logger.info(testCase.pgnName());
         verifyCalculatedSanToCalculatedMoveSpecification(testCaseList, testCase);
       }
@@ -79,7 +79,7 @@ class TestPerformMoveSanContract {
    * Forward direction: for each played halfmove, derive MoveSpec from SAN, perform via SAN, then assert the played
    * LegalMove and the reconstructed SAN both match.
    */
-  private static void verifyProvidedSanToCalculatedSan(PgnTestCaseList testCaseList, PgnTestCase testCase) {
+  private static void verifyProvidedSanToCalculatedSan(PgnTestCaseList testCaseList, PgnFen testCase) {
     final PgnGame pgnGame = PgnCacheForStrictPgnParserTestCases.getPgn(testCaseList.pgnTest().getFolderPath(),
         testCase.pgnName());
     final Board board = new Board(pgnGame.startFen());
@@ -111,7 +111,7 @@ class TestPerformMoveSanContract {
    * unperform → derive MoveSpec from SAN at the original position → assert it equals the LegalMove's stored MoveSpec.
    */
   private static void verifyCalculatedSanToCalculatedMoveSpecification(PgnTestCaseList testCaseList,
-      PgnTestCase testCase) {
+      PgnFen testCase) {
     final PgnGame pgnGame = PgnCacheForStrictPgnParserTestCases.getPgn(testCaseList.pgnTest().getFolderPath(),
         testCase.pgnName());
     final Board board = new Board(pgnGame.startFen());

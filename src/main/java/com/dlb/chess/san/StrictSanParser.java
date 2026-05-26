@@ -4,12 +4,8 @@ import java.util.List;
 
 import com.dlb.chess.board.Board;
 import com.dlb.chess.board.enums.Side;
-import com.dlb.chess.common.Nulls;
-import com.dlb.chess.common.enums.GameStatus;
 import com.dlb.chess.common.exceptions.ProgrammingMistakeException;
 import com.dlb.chess.common.model.MoveSpecification;
-import com.dlb.chess.common.utility.BasicChessUtility;
-import com.dlb.chess.messages.Message;
 import com.dlb.chess.model.LegalMove;
 
 /**
@@ -32,8 +28,6 @@ public class StrictSanParser extends AbstractSan {
   }
 
   private static MoveSpecification parseTextInternal(String san, Board board) throws SanValidationException {
-    validateGameNotEnded(board);
-
     final var sanParse = SanValidateFormat.validateFormat(san);
 
     SanValidateNonMovement.validateNonMovement(sanParse);
@@ -64,18 +58,5 @@ public class StrictSanParser extends AbstractSan {
     SanValidateCheck.validateSanTerminalMarker(board, sanConversion.sanTerminalMarker(), moveSpecification);
 
     return moveSpecification;
-  }
-
-  /**
-   * SAN-pipeline mirror of {@code ValidateNewMove.validateGameNotEnded}: rejects SAN input on a board that has reached
-   * any move-blocking termination.
-   */
-  private static void validateGameNotEnded(Board board) throws SanValidationException {
-    final GameStatus gameStatus = BasicChessUtility.calculateMoveBlockingGameStatus(board);
-    if (!gameStatus.isAutomaticTermination()) {
-      return;
-    }
-    throw new SanValidationException(SanValidationProblem.GAME_ALREADY_ENDED,
-        Message.getString("validation.san.gameAlreadyEnded", Nulls.name(gameStatus)), gameStatus);
   }
 }

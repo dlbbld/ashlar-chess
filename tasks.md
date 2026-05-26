@@ -10,11 +10,13 @@ Order within each section is the source of truth. Completed tasks move to **Done
 
 ---
 
-## Previous release — 14.0.0: drop auto-CHA-per-move; dead-position queries become request-based
+## Current release — 14.0.0: drop auto-CHA-per-move; dead-position queries become request-based
 
 ✅ Shipped 2026-05-24. Analyzer-driven dead-position detection no longer runs automatically on construction or every
 move, `DEAD_POSITION_UNWINNABLE_QUICK` is reportable but non-blocking, and the boolean `Board` constructor/config
-overloads are removed. Structural insufficient material remains move-blocking.
+overloads are removed. Structural insufficient material remains move-blocking _at the time of this release_; the
+follow-up ungating in commits `d123759f` (A1) and `6d69c3e0` (A2) drops that too, leaving the move pipeline with no
+game-end gate and no `GAME_ALREADY_ENDED` plumbing.
 
 The construction we have today is too complicated and does work the library doesn't need. Today every `Board.move()` (and every `Board` constructor) runs the unwinnability quick analyzer on the new position and caches the verdict in `isDeadPositionUnwinnableQuickList`. The cached value drives `Board.isDeadPositionUnwinnableQuick()`, feeds `Board.isDeadPosition()` (alongside the cheap mechanical `isInsufficientMaterial`), and through `ValidateNewMove` causes the move pipeline to throw `MoveCheck.GAME_ALREADY_ENDED` with `GameStatus.DEAD_POSITION_UNWINNABLE_QUICK` if a consumer tries to play on. The whole apparatus exists to model FIDE 5.2.2 "dead position" as an automatic termination.
 
@@ -30,13 +32,13 @@ The fivefold / 75-move counterpart shipped in **13.0.0** (the *reallow-play-beyo
 
 **Step 1.2** — Reshape `Board.isDeadPosition()` and the `isDeadPosition*` family as pure on-demand queries that run the analyzer when called. `isDeadPositionQuick()` and `isDeadPositionFull()` are already that today (`Board` lines ~951 / ~999); the change is that `isDeadPosition()` joins them — it computes `isInsufficientMaterial() || isDeadPositionQuick().isDeadPosition()` at the call site instead of reading a cached field. Consumers that want the old "checked after every move" behavior call the query themselves in their move loop.
 
-**Step 1.3** — `ValidateNewMove` no longer rejects moves on `DEAD_POSITION_UNWINNABLE_QUICK`. Remove the corresponding check from the move-acceptance precondition. The surviving auto-terminators after this release: checkmate, stalemate, insufficient material. `MoveCheck.GAME_ALREADY_ENDED` continues to fire for those three.
+**Step 1.3** — `ValidateNewMove` no longer rejects moves on `DEAD_POSITION_UNWINNABLE_QUICK`. Remove the corresponding check from the move-acceptance precondition. The surviving auto-terminators after this release: checkmate, stalemate, insufficient material. `MoveCheck.GAME_ALREADY_ENDED` continues to fire for those three. _(Fully superseded by the follow-up release: A1 (`d123759f`) removed the gate for the remaining three; A2 (`6d69c3e0`) deleted the `GAME_ALREADY_ENDED` enum values, exception payloads, and message-bundle entry. The move pipeline now consults no game-end predicate and `GAME_ALREADY_ENDED` no longer exists.)_
 
 **Step 1.4** — Decide the `GameStatus.DEAD_POSITION_UNWINNABLE_QUICK` enum value's fate. Two options: keep it (returned by an explicit "what status is this position in" query, never thrown by the move pipeline) or drop it (the analyzer's `UnwinnabilityQuickVerdict` is the only place that concept lives). Recommend keep, narrowed in scope — `Board.calculateGameStatus()` maps the position to a status that can include `DEAD_POSITION_UNWINNABLE_QUICK`, but the move pipeline never throws it. Symmetric with how 13.0.0 handled `FIVE_FOLD_REPETITION_RULE` / `SEVENTY_FIVE_MOVE_RULE`.
 
 ### Phase 2 — Corpus and test cleanup
 
-**Step 2.1** — Reactivate the lone remaining legacy fixture `lastMoveAddedAccidentally/02_…_KvK.pgn` into the regular corpus (likely `pgn/realGames/lastMoveAddedAccidentally/`). Generate its `PgnTestCase` catalog entry via `GenerateTestCaseForPgn`; shrink `TestLegacyPgnParsePlaysBeyondAudit` to zero entries and delete the test class once empty. The `pgnParser/legacy/common/beyond/` tree disappears.
+**Step 2.1** — Reactivate the lone remaining legacy fixture `lastMoveAddedAccidentally/02_…_KvK.pgn` into the regular corpus (likely `pgn/realGames/lastMoveAddedAccidentally/`). Generate its `PgnFen` catalog entry via `GenerateTestCaseForPgn`; shrink `TestLegacyPgnParsePlaysBeyondAudit` to zero entries and delete the test class once empty. The `pgnParser/legacy/common/beyond/` tree disappears.
 
 **Step 2.2** — Any test that asserts on `GameStatus.DEAD_POSITION_UNWINNABLE_QUICK` being thrown from the move pipeline switches to asserting on the queryable predicate. Drop the 4 corresponding `test05`–`test06` (insufficient-material) play-beyond tests in `TestStrictPgnParserBeyondTermination` / `TestLenientPgnParserBeyondTermination` once dead-position termination is gone too — by then the `pgnParser/common/beyond/` folder is empty.
 
@@ -50,13 +52,69 @@ The fivefold / 75-move counterpart shipped in **13.0.0** (the *reallow-play-beyo
 
 ---
 
-## Previous release — 13.0.0: reallow play beyond fivefold + 75-move
+## Future release — 15.0.0: make threefold and fifty-move report production grade and clean-up
 
-✅ Shipped 2026-05-24. Fivefold repetition (FIDE 9.6.1) and 75-move rule (FIDE 9.6.2) no longer enforced as automatic terminations at the move pipeline — both surface as queryable predicates on `Board`. FEN halfmove-clock-above-150 rejection dropped alongside as the matching serialized-form change. 98 of the 99 legacy fixtures previously parked under `pgnParser/legacy/common/beyond/` reactivated into the regular corpus with full `PgnTestCase` catalog metadata. The lone remaining fixture (KvK dead-position) stays parked for the next release.
+Do not start this immediately after the current release. This section exists so the follow-up work is captured, scoped,
+and not rediscovered chaotically later.
 
-Driver: the python-chess cross-validation work surfaced concrete frictions — clean-chess's eager auto-termination forced skip guards in the oracle suite plus crashes in `canClaimThreefoldRepetitionRule()` / `canClaimFiftyMoveRule()` on auto-terminated positions. Dropping the auto-termination unblocked both.
+The release goal is to turn the repetition/no-progress report work from useful scaffolding into tested, object-level
+library behavior. The printout should become a view over analysis objects, not the place where chess/report logic lives.
 
-See `CHANGELOG.md` `[13.0.0]` entry for the full notable / breaking lists.
+### Phase 1 — Object-level repetition report model
+
+- [ ] Introduce a report/analysis object for threefold-existing-behind / threefold-and-beyond repetitions.
+- [ ] Introduce a report/analysis object for threefold claim-ahead opportunities.
+- [ ] Preserve the current printed report shape by deriving it from those objects.
+- [ ] Move repetition-line, initial-position inclusion, played-vs-hypothetical, and repetition-count decisions out of the print classes.
+- [ ] Keep print classes small: format already-calculated facts only.
+
+### Phase 2 — Test the report objects directly
+
+- [ ] Add direct unit tests for existing threefold-and-beyond analysis.
+- [ ] Add direct unit tests for threefold claim-ahead analysis.
+- [ ] Add regression coverage for the initial-position repetition case that was previously missing from the printout.
+- [ ] Add tests that compare the report printout against the object model, so formatting cannot silently diverge from the analysis.
+
+### Phase 3 — Add from-initial-placement and FEN-start coverage
+
+Create one focused test folder for positions that start counting from move one. The folder covers both the initial piece
+placement and games started from an explicit FEN.
+
+- [ ] Initial piece placement, White to move on move 1: run into threefold, fivefold, 50-move, and 75-move conditions from move one.
+- [ ] Initial piece placement, Black to move on move 1: same coverage, with special attention to fullmove numbering.
+- [ ] Non-initial FEN position, White to move on move 1: run into threefold, fivefold, 50-move, and 75-move conditions from move one.
+- [ ] Non-initial FEN position, Black to move on move 1: same coverage, with special attention to fullmove numbering.
+- [ ] For each fixture, assert the public query methods detect the condition.
+- [ ] For each fixture, assert the object-level report model contains the expected facts.
+- [ ] For each fixture, assert the printed report is derived correctly from the object-level facts.
+
+### Phase 4 — Finish the 50-move report output
+
+Reserved for manual implementation. The goal is to get comfortable with the report code by finishing the no-progress /
+50-move output on top of the object-level analysis shape, not inside presentation logic.
+
+- [ ] Finish the 50-move output.
+- [ ] Add direct tests for the 50-move report object.
+- [ ] Add printout tests derived from the object-level expected facts.
+
+### Phase 5 — Decommission `HalfMove`
+
+The short-term rule is: do not break the working repetition analysis casually. The release should first remove
+`HalfMove` from `Board` as stored mutable state, then decide whether it can disappear completely.
+
+- [ ] Remove stored `halfMoveList` from `Board`; derive temporary `HalfMove` rows from existing board history where needed.
+- [ ] Keep repetition/report behavior unchanged during that first removal.
+- [ ] Analyze whether the repetition/report objects can use narrower records instead of `HalfMove`.
+- [ ] If possible, replace `HalfMove` entirely with purpose-specific repetition/report rows.
+- [ ] Delete `HalfMove`, `HalfMoveUtility`, and related comparators once no longer needed.
+- [ ] If full deletion is not safe in this release, leave a precise follow-up note explaining the remaining dependency.
+
+### Phase 6 — Release hygiene
+
+- [ ] Keep the release scoped to report/repetition/no-progress cleanup.
+- [ ] Do not mix in the insufficient-material play-beyond release unless explicitly re-scoped.
+- [ ] Update `README.md`, `specification.md`, and `CHANGELOG.md` only for behavior or documented workflows that actually changed.
+- [ ] Run focused report/repetition tests first, then the full default profile before release.
 
 ---
 

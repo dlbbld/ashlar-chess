@@ -17,7 +17,7 @@ import com.dlb.chess.board.StaticPosition;
 import com.dlb.chess.board.enums.Side;
 import com.dlb.chess.board.enums.Square;
 import com.dlb.chess.common.Nulls;
-import com.dlb.chess.test.model.PgnTestCase;
+import com.dlb.chess.test.model.PgnFen;
 import com.dlb.chess.test.model.PgnTestCaseList;
 import com.dlb.chess.test.pgn.setup.PgnTestCaseCatalog;
 import com.dlb.chess.test.pgntest.enums.PgnTest;
@@ -35,7 +35,7 @@ class TestPawnCaptures {
   void corpusCapturesAgree() {
     for (final PgnTest pgnTest : PgnTest.values()) {
       final PgnTestCaseList testCaseList = PgnTestCaseCatalog.getTestList(pgnTest);
-      for (final PgnTestCase testCase : testCaseList.list()) {
+      for (final PgnFen testCase : testCaseList.list()) {
         final Board board = testCase.finalPosition();
         final StaticPosition staticPosition = StaticPositionBridge.toStaticPosition(board.getBitboardPosition());
         final BitboardPosition bitboardPosition = StaticPositionBridge.fromStaticPosition(staticPosition);
@@ -59,7 +59,7 @@ class TestPawnCaptures {
   }
 
   private static void assertCapturesAgree(StaticPosition staticPosition, long pawns, Side side, long opponentPieces,
-      long enPassantBit, Square enPassantSquare, PgnTestCase testCase) {
+      long enPassantBit, Square enPassantSquare, PgnFen testCase) {
     long remaining = pawns;
     while (remaining != 0L) {
       final int squareOrdinal = Long.numberOfTrailingZeros(remaining);

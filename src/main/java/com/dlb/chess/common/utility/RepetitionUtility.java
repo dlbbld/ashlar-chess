@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.eclipse.jdt.annotation.Nullable;
-
 import com.dlb.chess.common.HalfMoveListListComparator;
 import com.dlb.chess.common.Nulls;
 import com.dlb.chess.common.exceptions.ProgrammingMistakeException;
@@ -14,32 +12,6 @@ import com.dlb.chess.common.model.HalfMove;
 import com.dlb.chess.model.LegalMove;
 
 public abstract class RepetitionUtility {
-
-  /**
-   * Two dynamic positions are equal for FIDE threefold-repetition purposes when the piece placement, side to move,
-   * castling rights, and en-passant availability all match. Piece-placement equality goes through
-   * {@link com.dlb.chess.bitboard.BitboardPosition#equals(Object)} on the carried bitboard, which compares the 12
-   * per-piece bitboards directly. We do not override {@code equals} on {@link DynamicPosition} because elsewhere
-   * positions are compared by piece-arrangement only; this method is the authoritative repetition-comparison.
-   */
-  private static boolean equals(DynamicPosition dynamicPosition, @Nullable Object obj) {
-    if (dynamicPosition == obj) {
-      return true;
-    }
-    if (obj == null || dynamicPosition.getClass() != obj.getClass()) {
-      return false;
-    }
-    final var other = (DynamicPosition) obj;
-    return dynamicPosition.castlingRightWhite().equals(other.castlingRightWhite())
-        && dynamicPosition.castlingRightBlack().equals(other.castlingRightBlack())
-        && dynamicPosition.enPassantCaptureTargetSquare() == other.enPassantCaptureTargetSquare()
-        && dynamicPosition.havingMove() == other.havingMove()
-        && dynamicPosition.bitboardPosition().equals(other.bitboardPosition());
-  }
-
-  public static int getCountRepetition(HalfMove halfMove) {
-    return halfMove.countRepetition();
-  }
 
   public static int calculateCountRepetition(List<LegalMove> performedLegalMoveList,
       List<DynamicPosition> dynamicPositionList, DynamicPosition dynamicPosition) {
@@ -64,7 +36,7 @@ public abstract class RepetitionUtility {
         return countRepetition;
       }
       final DynamicPosition previousDynamicPosition = Nulls.get(dynamicPositionList, i);
-      if (equals(dynamicPosition, previousDynamicPosition)) {
+      if (dynamicPosition.equals(previousDynamicPosition)) {
         countRepetition++;
       }
     }
@@ -85,14 +57,14 @@ public abstract class RepetitionUtility {
       if (calculateIsContained(processed, searchDynamicPositionThreeFold)) {
         continue;
       }
-      final var countRepetition = getCountRepetition(searchHalfMoveThreeFold);
+      final var countRepetition = searchHalfMoveThreeFold.countRepetition();
 
       if (countRepetition == countRepetitionThreshold) {
-        // if we found a half move which is equal or above the required count, we sample all previous half-moves with
+        // if we found a half move which has the required count, we sample all half-moves with
         // the same dynamic position
         final List<HalfMove> halfMoveSameDynamicPositionList = new ArrayList<>();
         for (final HalfMove searchHalfMoveSameDynamicPosition : halfMoveList) {
-          if (equals(searchDynamicPositionThreeFold, searchHalfMoveSameDynamicPosition.dynamicPosition())) {
+          if (searchDynamicPositionThreeFold.equals(searchHalfMoveSameDynamicPosition.dynamicPosition())) {
             halfMoveSameDynamicPositionList.add(searchHalfMoveSameDynamicPosition);
           }
         }
@@ -108,7 +80,7 @@ public abstract class RepetitionUtility {
   private static boolean calculateIsContained(List<DynamicPosition> processedDynamicPositionList,
       DynamicPosition position) {
     for (final DynamicPosition processedDynamicPosition : processedDynamicPositionList) {
-      if (equals(processedDynamicPosition, position)) {
+      if (processedDynamicPosition.equals(position)) {
         return true;
       }
     }

@@ -17,7 +17,7 @@ import com.dlb.chess.board.enums.Side;
 import com.dlb.chess.board.enums.Square;
 import com.dlb.chess.common.model.MoveSpecification;
 import com.dlb.chess.model.LegalMove;
-import com.dlb.chess.test.model.PgnTestCase;
+import com.dlb.chess.test.model.PgnFen;
 import com.dlb.chess.test.model.PgnTestCaseList;
 import com.dlb.chess.test.pgn.setup.PgnTestCaseCatalog;
 import com.dlb.chess.test.pgntest.enums.PgnTest;
@@ -50,7 +50,7 @@ class TestBitboardPositionZobrist {
     final Map<Long, BitboardPosition> seen = new HashMap<>();
     for (final PgnTest pgnTest : PgnTest.values()) {
       final PgnTestCaseList testCaseList = PgnTestCaseCatalog.getTestList(pgnTest);
-      for (final PgnTestCase testCase : testCaseList.list()) {
+      for (final PgnFen testCase : testCaseList.list()) {
         final BitboardPosition position = StaticPositionBridge
             .fromStaticPosition(StaticPositionBridge.toStaticPosition(testCase.finalPosition().getBitboardPosition()));
         final var hash = position.zobristPieces();
@@ -69,7 +69,7 @@ class TestBitboardPositionZobrist {
     // Applying any legal move changes the piece placement, so the piece-placement hash must change too.
     for (final PgnTest pgnTest : PgnTest.values()) {
       final PgnTestCaseList testCaseList = PgnTestCaseCatalog.getTestList(pgnTest);
-      for (final PgnTestCase testCase : testCaseList.list()) {
+      for (final PgnFen testCase : testCaseList.list()) {
         final Board board = testCase.finalPosition();
         final BitboardPosition before = board.getBitboardPosition();
         final var beforeHash = before.zobristPieces();

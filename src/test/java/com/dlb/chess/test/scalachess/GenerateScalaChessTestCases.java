@@ -23,10 +23,8 @@ import com.dlb.chess.model.PgnHalfMove;
 import com.dlb.chess.moves.CastlingUtility;
 import com.dlb.chess.moves.PromotionUtility;
 import com.dlb.chess.pgn.PgnGame;
-import com.dlb.chess.report.Report;
-import com.dlb.chess.report.Reporter;
 import com.dlb.chess.test.common.utility.FileUtility;
-import com.dlb.chess.test.model.PgnTestCase;
+import com.dlb.chess.test.model.PgnFen;
 import com.dlb.chess.test.model.PgnTestCaseList;
 import com.dlb.chess.test.pgn.parser.PgnCacheForStrictPgnParserTestCases;
 import com.dlb.chess.test.pgn.setup.PgnTestCaseCatalog;
@@ -35,9 +33,9 @@ import com.dlb.chess.test.pgntest.enums.PgnTest;
 public class GenerateScalaChessTestCases implements EnumConstants {
 
   // if true test for folder is ignored
-  private static final boolean IS_GENERATE_FOR_ABC_XYZ_PGN_TTT_NAME = true;
-  private static final String GENERATE_ABC_XYZ_PGN_TTT_NAME = "insufficient_material_KBbBb_K.pgn";
-  private static final PgnTest GENERATE_ABC_XYZ_PGN_TTT_NAME_PGN_TEST = PgnTestCaseCatalog.findPgnTest(GENERATE_ABC_XYZ_PGN_TTT_NAME);
+  private static final boolean IS_GENERATE_FOR_PGN_NAME = true;
+  private static final String GENERATE_PGN_NAME = "insufficient_material_KBbBb_K.pgn";
+  private static final PgnTest GENERATE_PGN_NAME_PGN_TEST = PgnTestCaseCatalog.findPgnTest(GENERATE_PGN_NAME);
 
   // is ignored if test for file is true
   private static final boolean IS_GENERATE_ONLY_FOR_TEST_CASE = true;
@@ -48,7 +46,7 @@ public class GenerateScalaChessTestCases implements EnumConstants {
   private static final boolean IS_GAME_TO_INCLUDING_GAME = false;
   private static final boolean IS_GAME_FROM_INCLUDING_GAME = false;
 
-  private static final String GAME_TO_OR_FROM_ABC_XYZ_PGN_TTT_NAME = "insufficient_material_KBbBb_K.pgn";
+  private static final String GAME_TO_OR_FROM_PGN_NAME = "insufficient_material_KBbBb_K.pgn";
 
   private static final Logger logger = Nulls.getLogger(GenerateScalaChessTestCases.class);
 
@@ -84,7 +82,7 @@ public class GenerateScalaChessTestCases implements EnumConstants {
 
     for (final PgnTestCaseList testCaseList : PgnTestCaseCatalog.getRestrictedTestListList()) {
 
-      if (isContinueFolderLevel(IS_GENERATE_FOR_ABC_XYZ_PGN_TTT_NAME, IS_GENERATE_ONLY_FOR_TEST_CASE, testCaseList)) {
+      if (isContinueFolderLevel(IS_GENERATE_FOR_PGN_NAME, IS_GENERATE_ONLY_FOR_TEST_CASE, testCaseList)) {
         continue;
       }
 
@@ -98,7 +96,7 @@ public class GenerateScalaChessTestCases implements EnumConstants {
           continue;
       }
 
-      if (!IS_GENERATE_FOR_ABC_XYZ_PGN_TTT_NAME) {
+      if (!IS_GENERATE_FOR_PGN_NAME) {
         final Path folderPath = testCaseList.pgnTest().getFolderPath();
 
         logger.info("Processing folder " + folderPath);
@@ -108,22 +106,21 @@ public class GenerateScalaChessTestCases implements EnumConstants {
       }
 
       var isBefore = true;
-      for (final PgnTestCase testCase : testCaseList.list()) {
+      for (final PgnFen testCase : testCaseList.list()) {
 
         var isJustHitGame = false;
-        if (isBefore && GAME_TO_OR_FROM_ABC_XYZ_PGN_TTT_NAME.equals(testCase.pgnName())) {
+        if (isBefore && GAME_TO_OR_FROM_PGN_NAME.equals(testCase.pgnName())) {
           isBefore = false;
           isJustHitGame = true;
         }
 
-        if (isContinueFileLevel(IS_GENERATE_FOR_ABC_XYZ_PGN_TTT_NAME, IS_GAME_TO_INCLUDING_GAME, IS_GAME_FROM_INCLUDING_GAME,
+        if (isContinueFileLevel(IS_GENERATE_FOR_PGN_NAME, IS_GAME_TO_INCLUDING_GAME, IS_GAME_FROM_INCLUDING_GAME,
             testCase, isBefore, isJustHitGame)) {
           continue;
         }
 
         logger.info("Processing game " + testCase.pgnName());
 
-        final Report report = Reporter.calculateReport(testCaseList.pgnTest().getFolderPath(), testCase.pgnName());
         processScalaChessCodeLine("", counterList, codeLineList);
         processScalaChessCodeLine("  println(\"Declaring test case for " + testCase.pgnName() + "\")", counterList,
             codeLineList);
@@ -135,7 +132,8 @@ public class GenerateScalaChessTestCases implements EnumConstants {
             codeLineList);
 
         final Board boardPlayAlong = new Board();
-        final List<HalfMove> halfMoveList = report.halfMoveList();
+        final Board board = testCase.game(testCaseList.pgnTest());
+        final List<HalfMove> halfMoveList = board.getHalfMoveList();
         for (var i = 0; i < halfMoveList.size(); i++) {
           final HalfMove halfMove = Nulls.get(halfMoveList, i);
 
@@ -143,9 +141,8 @@ public class GenerateScalaChessTestCases implements EnumConstants {
           final var isMadeByWhite = halfMove.havingMove().getIsWhite();
           if (isMadeByWhite && halfMove.fullMoveNumber() % PRINT_MOVES_INTERVAL == 0) {
             final var moveDescription = halfMove.fullMoveNumber() + "." + halfMove.san();
-            processScalaChessCodeLine(
-                "    println(\"" + testCase.pgnName() + " - performed " + moveDescription + "\")", counterList,
-                codeLineList);
+            processScalaChessCodeLine("    println(\"" + testCase.pgnName() + " - performed " + moveDescription + "\")",
+                counterList, codeLineList);
           }
 
           final String uciForScala = convertMoveSpecificationToUciForScala(halfMove.havingMove(),
@@ -180,7 +177,7 @@ public class GenerateScalaChessTestCases implements EnumConstants {
   private static boolean isContinueFolderLevel(boolean isGenerateForFileOnly, boolean isGenerateForTestCaseOnly,
       PgnTestCaseList testCaseList) {
     if (isGenerateForFileOnly) {
-      if (testCaseList.pgnTest() != GENERATE_ABC_XYZ_PGN_TTT_NAME_PGN_TEST) {
+      if (testCaseList.pgnTest() != GENERATE_PGN_NAME_PGN_TEST) {
         return true;
       }
     } else if (isGenerateForTestCaseOnly && testCaseList.pgnTest() != GENERATE_TEST_CASE) {
@@ -191,9 +188,9 @@ public class GenerateScalaChessTestCases implements EnumConstants {
 
   // we calculate because if we put it directly into the method it can raise unused code warnings
   private static boolean isContinueFileLevel(boolean isGenerateForFileOnly, boolean isGameToIncludingGame,
-      boolean isGameFromIncludingGame, PgnTestCase testCase, boolean isBefore, boolean isJustHitGame) {
+      boolean isGameFromIncludingGame, PgnFen testCase, boolean isBefore, boolean isJustHitGame) {
     // code to only look at one specific game
-    if (isGenerateForFileOnly && !GENERATE_ABC_XYZ_PGN_TTT_NAME.equals(testCase.pgnName())) {
+    if (isGenerateForFileOnly && !GENERATE_PGN_NAME.equals(testCase.pgnName())) {
       return true;
     }
 

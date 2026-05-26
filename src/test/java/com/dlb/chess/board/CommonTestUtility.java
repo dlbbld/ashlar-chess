@@ -90,7 +90,6 @@ public abstract class CommonTestUtility implements EnumConstants {
       assertEquals(boardFirst.getDynamicPositionList(), boardSecond.getDynamicPositionList());
       assertEquals(boardFirst.getDynamicPosition(), boardSecond.getDynamicPosition());
 
-      assertEquals(boardFirst.getHalfMoveList(), boardSecond.getHalfMoveList());
       assertEquals(boardFirst.getPossibleMoveSpecificationList(), boardSecond.getPossibleMoveSpecificationList());
 
       assertEquals(boardFirst.getLegalMoves(), boardSecond.getLegalMoves());
@@ -176,7 +175,6 @@ public abstract class CommonTestUtility implements EnumConstants {
       assertEquals(boardFirst.getPerformedHalfMoveCount(), boardSecond.getPerformedHalfMoveCount());
       assertEquals(boardFirst.getDynamicPositionList(), boardSecond.getDynamicPositionList());
       assertEquals(boardFirst.getDynamicPosition(), boardSecond.getDynamicPosition());
-      assertEquals(boardFirst.getHalfMoveList(), boardSecond.getHalfMoveList());
       assertEquals(boardFirst.getPossibleMoveSpecificationList(), boardSecond.getPossibleMoveSpecificationList());
       assertEquals(boardFirst.getLegalMoves(), boardSecond.getLegalMoves());
       assertEquals(boardFirst.getPerformedMoveSpecificationList(), boardSecond.getPerformedMoveSpecificationList());

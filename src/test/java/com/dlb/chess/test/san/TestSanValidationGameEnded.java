@@ -2,55 +2,56 @@ package com.dlb.chess.test.san;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
 
 import com.dlb.chess.board.Board;
-import com.dlb.chess.common.enums.GameStatus;
-import com.dlb.chess.common.utility.BasicChessUtility;
 import com.dlb.chess.san.SanValidationException;
-import com.dlb.chess.san.SanValidationProblem;
 import com.dlb.chess.san.StrictSanParser;
 import com.dlb.chess.unwinnability.DeadPositionQuick;
 
 /**
- * Surface-level tests for the strict-pipeline game-end pre-check in {@link StrictSanParser#parseText}: one scenario per
- * enforced move-blocking termination ({@link GameStatus#CHECKMATE}, {@link GameStatus#STALEMATE},
- * {@link GameStatus#DEAD_POSITION_INSUFFICIENT_MATERIAL}). Each verifies that any SAN attempted on a terminal-state
- * board is rejected with {@link SanValidationProblem#GAME_ALREADY_ENDED} and that the thrown
- * {@link SanValidationException} carries the originating {@link GameStatus} as payload.
+ * SAN-pipeline mirror of {@code TestValidateNewMoveGameEnded}: pins the same queryable-only posture at game-end states.
+ * None of the five automatic terminations and none of the analyzer-driven dead positions block further SAN input.
  *
  * <p>
- * Fivefold, 75-move, and analyzer-driven dead positions are <em>not</em> enforced terminations in this library (see
- * {@link GameStatus#isAutomaticTermination()}); the SAN parser accepts further moves at and past those thresholds.
- *
- * <p>
- * The companion {@code TestValidateNewMoveGameEnded} mirrors this set against the MoveSpecification pipeline.
+ * At checkmate and stalemate the empty legal-move set causes SAN parsing to fail through ordinary legality, not via a
+ * dedicated game-end gate. At mutual insufficient material, fivefold, 75-move, and analyzer-driven dead positions, SAN
+ * input is accepted.
  */
 class TestSanValidationGameEnded {
 
+  // --- CHECKMATE / STALEMATE: empty legal-move set; SAN fails through ordinary legality ---
+
   @SuppressWarnings("static-method")
   @Test
-  void testGameEndedByCheckmate() {
-    // Fool's mate.
+  void testCheckmateSanRejectedThroughOrdinaryLegality() {
+    // Fool's mate. "Ke2" cannot match any legal move because the king has none.
     final Board board = new Board("rnb1kbnr/pppp1ppp/8/4p3/6Pq/5P2/PPPPP2P/RNBQKBNR w KQkq - 1 3");
-    check("Ke2", board, GameStatus.CHECKMATE);
+    assertTrue(board.isCheckmate(), "fool's mate position must be checkmate");
+    assertTrue(board.getLegalMoves().isEmpty(), "checkmate has no legal moves");
+    rejectsNotViaGameEnded("Ke2", board);
   }
 
   @SuppressWarnings("static-method")
   @Test
-  void testGameEndedByStalemate() {
+  void testStalemateSanRejectedThroughOrdinaryLegality() {
     final Board board = new Board("7k/8/6Q1/8/8/8/8/K7 b - - 0 1");
-    check("Kg8", board, GameStatus.STALEMATE);
+    assertTrue(board.isStalemate(), "K+Q vs K position must be stalemate for black");
+    assertTrue(board.getLegalMoves().isEmpty(), "stalemate has no legal moves");
+    rejectsNotViaGameEnded("Kg8", board);
   }
+
+  // --- automatic terminations with non-empty legal-move set: SAN accepted ---
 
   @SuppressWarnings("static-method")
   @Test
-  void testGameEndedByInsufficientMaterialBoth() {
+  void testSanAcceptedAtInsufficientMaterialBoth() {
     final Board board = new Board("4k3/8/8/8/8/8/8/4K3 w - - 0 1");
-    check("Ke2", board, GameStatus.DEAD_POSITION_INSUFFICIENT_MATERIAL);
+    assertTrue(board.isInsufficientMaterial(), "K vs K is mutual insufficient material");
+    assertDoesNotThrow(() -> StrictSanParser.parseText("Ke2", board),
+        "insufficient material is queryable only; the SAN parser must accept the move");
   }
 
   @SuppressWarnings("static-method")
@@ -74,8 +75,6 @@ class TestSanValidationGameEnded {
         "quick-unwinnable dead position is queryable only; the SAN parser must accept the move");
   }
 
-  // --- queryable-only predicates: SAN parser does NOT block past these ---
-
   @SuppressWarnings("static-method")
   @Test
   void testSanAcceptedAtSeventyFiveMoveThreshold() {
@@ -98,16 +97,14 @@ class TestSanValidationGameEnded {
 
   // --- helpers ---
 
-  private static void check(String san, Board board, GameStatus expectedGameStatus) {
-    var isException = false;
+  /** Asserts that SAN parsing is rejected. */
+  private static void rejectsNotViaGameEnded(String san, Board board) {
+    var thrown = false;
     try {
       StrictSanParser.parseText(san, board);
-    } catch (final SanValidationException e) {
-      isException = true;
-      assertEquals(SanValidationProblem.GAME_ALREADY_ENDED, e.getSanValidationProblem());
-      assertNotNull(e.getGameStatus(), "GAME_ALREADY_ENDED must carry a GameStatus payload");
-      assertEquals(expectedGameStatus, e.getGameStatus());
+    } catch (@SuppressWarnings("unused") final SanValidationException e) {
+      thrown = true;
     }
-    assertTrue(isException, "Expected SanValidationException with GAME_ALREADY_ENDED");
+    assertTrue(thrown, "expected SanValidationException");
   }
 }

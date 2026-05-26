@@ -22,7 +22,7 @@ import com.dlb.chess.common.Nulls;
 import com.dlb.chess.squares.KingNonCastlingEmptyBoardSquares;
 import com.dlb.chess.squares.KnightEmptyBoardSquares;
 import com.dlb.chess.squares.SlidingAttacksTestOracle;
-import com.dlb.chess.test.model.PgnTestCase;
+import com.dlb.chess.test.model.PgnFen;
 import com.dlb.chess.test.model.PgnTestCaseList;
 import com.dlb.chess.test.pgn.setup.PgnTestCaseCatalog;
 import com.dlb.chess.test.pgntest.enums.PgnTest;
@@ -40,7 +40,7 @@ class TestPseudoLegalMoves {
   void corpusKnightTargetsAgree() {
     for (final PgnTest pgnTest : PgnTest.values()) {
       final PgnTestCaseList testCaseList = PgnTestCaseCatalog.getTestList(pgnTest);
-      for (final PgnTestCase testCase : testCaseList.list()) {
+      for (final PgnFen testCase : testCaseList.list()) {
         final StaticPosition staticPosition = StaticPositionBridge.toStaticPosition(testCase.finalPosition().getBitboardPosition());
         final BitboardPosition bitboardPosition = StaticPositionBridge.fromStaticPosition(staticPosition);
         assertKnightTargetsAgree(staticPosition, bitboardPosition, Side.WHITE, testCase);
@@ -50,7 +50,7 @@ class TestPseudoLegalMoves {
   }
 
   private static void assertKnightTargetsAgree(StaticPosition staticPosition, BitboardPosition bitboardPosition,
-      Side side, PgnTestCase testCase) {
+      Side side, PgnFen testCase) {
     final long knights = side == Side.WHITE ? bitboardPosition.whiteKnights() : bitboardPosition.blackKnights();
     final long ownPieces = bitboardPosition.occupied(side);
     long remaining = knights;
@@ -70,7 +70,7 @@ class TestPseudoLegalMoves {
   void corpusKingTargetsAgree() {
     for (final PgnTest pgnTest : PgnTest.values()) {
       final PgnTestCaseList testCaseList = PgnTestCaseCatalog.getTestList(pgnTest);
-      for (final PgnTestCase testCase : testCaseList.list()) {
+      for (final PgnFen testCase : testCaseList.list()) {
         final StaticPosition staticPosition = StaticPositionBridge.toStaticPosition(testCase.finalPosition().getBitboardPosition());
         final BitboardPosition bitboardPosition = StaticPositionBridge.fromStaticPosition(staticPosition);
         assertKingTargetsAgree(staticPosition, bitboardPosition, Side.WHITE, testCase);
@@ -80,7 +80,7 @@ class TestPseudoLegalMoves {
   }
 
   private static void assertKingTargetsAgree(StaticPosition staticPosition, BitboardPosition bitboardPosition,
-      Side side, PgnTestCase testCase) {
+      Side side, PgnFen testCase) {
     final long kings = side == Side.WHITE ? bitboardPosition.whiteKings() : bitboardPosition.blackKings();
     final long ownPieces = bitboardPosition.occupied(side);
     long remaining = kings;
@@ -100,7 +100,7 @@ class TestPseudoLegalMoves {
   void corpusBishopTargetsAgree() {
     for (final PgnTest pgnTest : PgnTest.values()) {
       final PgnTestCaseList testCaseList = PgnTestCaseCatalog.getTestList(pgnTest);
-      for (final PgnTestCase testCase : testCaseList.list()) {
+      for (final PgnFen testCase : testCaseList.list()) {
         final StaticPosition staticPosition = StaticPositionBridge.toStaticPosition(testCase.finalPosition().getBitboardPosition());
         final BitboardPosition bitboardPosition = StaticPositionBridge.fromStaticPosition(staticPosition);
         assertBishopTargetsAgree(staticPosition, bitboardPosition, Side.WHITE, testCase);
@@ -110,7 +110,7 @@ class TestPseudoLegalMoves {
   }
 
   private static void assertBishopTargetsAgree(StaticPosition staticPosition, BitboardPosition bitboardPosition,
-      Side side, PgnTestCase testCase) {
+      Side side, PgnFen testCase) {
     final long bishops = side == Side.WHITE ? bitboardPosition.whiteBishops() : bitboardPosition.blackBishops();
     final long ownPieces = bitboardPosition.occupied(side);
     final long occupied = bitboardPosition.occupied();
@@ -133,7 +133,7 @@ class TestPseudoLegalMoves {
   void corpusRookTargetsAgree() {
     for (final PgnTest pgnTest : PgnTest.values()) {
       final PgnTestCaseList testCaseList = PgnTestCaseCatalog.getTestList(pgnTest);
-      for (final PgnTestCase testCase : testCaseList.list()) {
+      for (final PgnFen testCase : testCaseList.list()) {
         final StaticPosition staticPosition = StaticPositionBridge.toStaticPosition(testCase.finalPosition().getBitboardPosition());
         final BitboardPosition bitboardPosition = StaticPositionBridge.fromStaticPosition(staticPosition);
         assertRookTargetsAgree(staticPosition, bitboardPosition, Side.WHITE, testCase);
@@ -143,7 +143,7 @@ class TestPseudoLegalMoves {
   }
 
   private static void assertRookTargetsAgree(StaticPosition staticPosition, BitboardPosition bitboardPosition,
-      Side side, PgnTestCase testCase) {
+      Side side, PgnFen testCase) {
     final long rooks = side == Side.WHITE ? bitboardPosition.whiteRooks() : bitboardPosition.blackRooks();
     final long ownPieces = bitboardPosition.occupied(side);
     final long occupied = bitboardPosition.occupied();
@@ -166,7 +166,7 @@ class TestPseudoLegalMoves {
   void corpusQueenTargetsAgree() {
     for (final PgnTest pgnTest : PgnTest.values()) {
       final PgnTestCaseList testCaseList = PgnTestCaseCatalog.getTestList(pgnTest);
-      for (final PgnTestCase testCase : testCaseList.list()) {
+      for (final PgnFen testCase : testCaseList.list()) {
         final StaticPosition staticPosition = StaticPositionBridge.toStaticPosition(testCase.finalPosition().getBitboardPosition());
         final BitboardPosition bitboardPosition = StaticPositionBridge.fromStaticPosition(staticPosition);
         assertQueenTargetsAgree(staticPosition, bitboardPosition, Side.WHITE, testCase);
@@ -176,7 +176,7 @@ class TestPseudoLegalMoves {
   }
 
   private static void assertQueenTargetsAgree(StaticPosition staticPosition, BitboardPosition bitboardPosition,
-      Side side, PgnTestCase testCase) {
+      Side side, PgnFen testCase) {
     final long queens = side == Side.WHITE ? bitboardPosition.whiteQueens() : bitboardPosition.blackQueens();
     final long ownPieces = bitboardPosition.occupied(side);
     final long occupied = bitboardPosition.occupied();

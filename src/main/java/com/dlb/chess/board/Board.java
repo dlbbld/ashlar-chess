@@ -221,8 +221,8 @@ public class Board {
   /**
    * Constructs a {@code Board} from a FEN string, validated by the advanced FEN parser. Enforces structural and
    * rule-consistency checks (piece counts within physical bounds, no pawns on rank 1 or 8, castling rights consistent
-   * with king/rook static positions, en-passant target consistent with the side to move, halfmove clock consistent
-   * with the fullmove number, etc.). The halfmove clock itself is not capped — the FIDE 75-move rule is a queryable
+   * with king/rook static positions, en-passant target consistent with the side to move, halfmove clock consistent with
+   * the fullmove number, etc.). The halfmove clock itself is not capped — the FIDE 75-move rule is a queryable
    * predicate on {@code Board}, not enforced at FEN import. Does not prove full game reachability — see the
    * {@code com.dlb.chess.fen} package documentation for the full contract.
    */
@@ -488,14 +488,31 @@ public class Board {
     return Nulls.getLast(isStalemateList);
   }
 
+  /**
+   * Claim-ahead for FIDE 9.3: at halfmove clock &gt;= 99, the claim is available if at least one legal move would
+   * complete the 50 non-progress moves — i.e. is neither a pawn move nor a capture. FIDE 9.3 frames the claim as
+   * announced before the move is played; the 50 moves are about history; the outcome of the candidate move (whether
+   * it would deliver mate, stalemate, or continue the game) does not affect whether the no-progress condition has
+   * been met.
+   *
+   * <p>
+   * <em>Deliberate divergence from python-chess at one corner case.</em> python-chess's {@code can_claim_fifty_moves}
+   * pushes the candidate move and re-checks {@code is_fifty_moves} on the post-position; that reuse means the
+   * {@code any(legal_moves)} guard inside {@code is_fifty_moves} (which is deliberately there for the precedence
+   * stack when checking the <em>current</em> position) transitively rejects candidate moves that themselves deliver
+   * mate or stalemate. The maintainer's tests and docstrings document the deliberate intent for the current-position
+   * case (commit {@code 1064bf59}, with tests pinning "once checkmated, it is too late to claim" and "a stalemate is a
+   * draw"); they do not address the candidate-move-is-mate case, which falls out of code reuse rather than separate
+   * consideration. clean-chess takes the strict FIDE 9.3 reading at this edge; the practical impact is zero (the
+   * player would play the mate rather than claim) but the predicate is honest about what FIDE actually says.
+   */
   public boolean canClaimFiftyMoveRuleWithOwnMove() {
-    final var halfMoveCounterNow = this.getHalfMoveClock();
-    if (halfMoveCounterNow >= 99) {
-      for (final LegalMove legalMove : getLegalMoves()) {
-        // we must not perform the move to check, which is crucial for performance reasons
-        if (!BasicChessUtility.calculateIsResetHalfMoveClock(legalMove)) {
-          return true;
-        }
+    if (getHalfMoveClock() < 99) {
+      return false;
+    }
+    for (final LegalMove legalMove : getLegalMoves()) {
+      if (!BasicChessUtility.calculateIsResetHalfMoveClock(legalMove)) {
+        return true;
       }
     }
     return false;
@@ -625,11 +642,13 @@ public class Board {
   }
 
   /**
-   * True iff the halfmove clock has reached the 50-move-rule threshold (FIDE 9.3). This is the on-board predicate
-   * (claimable rule); the game continues until claimed.
+   * True iff the halfmove clock has reached the 50-move-rule threshold (FIDE 9.3) <em>and</em> the side to move has at
+   * least one legal move. This is the on-board predicate (claimable rule); the game continues until claimed. The
+   * legal-moves-exist clause aligns with the FIDE rule (no claim is possible if the game has already ended by mate or
+   * stalemate) and with python-chess {@code is_fifty_moves()}.
    */
   public boolean isFiftyMove() {
-    return getHalfMoveClock() >= ChessConstants.FIFTY_MOVE_RULE_HALF_MOVE_CLOCK_THRESHOLD;
+    return getHalfMoveClock() >= ChessConstants.FIFTY_MOVE_RULE_HALF_MOVE_CLOCK_THRESHOLD && !getLegalMoves().isEmpty();
   }
 
   /**
@@ -641,13 +660,17 @@ public class Board {
   }
 
   /**
-   * True iff the halfmove clock has reached the 75-move-rule threshold (FIDE 9.6.2). In this library the 75-move rule
-   * is surfaced as a queryable predicate rather than an enforced termination: the move pipeline does NOT reject moves
-   * on this condition, and the predicate remains {@code true} for every subsequent halfmove until the clock is reset
-   * by a pawn move or capture. Consumers that want to surface the rule call this predicate themselves.
+   * True iff the halfmove clock has reached the 75-move-rule threshold (FIDE 9.6.2) <em>and</em> the side to move has
+   * at least one legal move. In this library the 75-move rule is surfaced as a queryable predicate rather than an
+   * enforced termination: the move pipeline does NOT reject moves on this condition. Once the threshold is crossed the
+   * predicate remains {@code true} for every subsequent halfmove until either the clock is reset by a pawn move or
+   * capture, <em>or</em> the position becomes checkmate / stalemate (no legal moves — the game has ended by a
+   * higher-precedence termination, so the 75-move rule cannot also fire). The legal-moves-exist clause matches
+   * python-chess {@code is_seventyfive_moves()} and the FIDE reading.
    */
   public boolean isSeventyFiveMove() {
-    return getHalfMoveClock() >= ChessConstants.SEVENTY_FIVE_MOVE_RULE_HALF_MOVE_CLOCK_THRESHOLD;
+    return getHalfMoveClock() >= ChessConstants.SEVENTY_FIVE_MOVE_RULE_HALF_MOVE_CLOCK_THRESHOLD
+        && !getLegalMoves().isEmpty();
   }
 
   /**
@@ -658,6 +681,10 @@ public class Board {
    */
   public boolean isFivefoldRepetition() {
     return getRepetitionCount() >= ChessConstants.FIVEFOLD_REPETITION_RULE_THRESHOLD;
+  }
+
+  public ImmutableList<String> getSanList() {
+    return Nulls.copyOfList(sanList);
   }
 
   public String getSan() {
@@ -750,6 +777,10 @@ public class Board {
 
   public ImmutableList<HalfMove> getHalfMoveList() {
     return Nulls.copyOfList(halfMoveList);
+  }
+
+  public DynamicPosition getInitialDynamicPosition() {
+    return Nulls.getFirst(dynamicPositionList);
   }
 
   public DynamicPosition getDynamicPosition() {
@@ -956,16 +987,13 @@ public class Board {
 
   private HalfMove buildHalfMove(MoveSpecification moveSpecification) {
     final var halfMoveCount = getPerformedHalfMoveCount();
-    final var index = halfMoveCount - 1;
     final var halfMoveClock = getHalfMoveClock();
     final var fullMoveNumber = getLastPlayedFullMoveNumber();
-    final String fen = getFen();
-    final var isCapture = isCapture();
     final var countRepetition = getRepetitionCount();
     final DynamicPosition dynamicPosition = getDynamicPosition();
     final Piece movingPiece = getMovingPiece();
-    return new HalfMove(index, halfMoveCount, fullMoveNumber, halfMoveClock, isCapture, fen, dynamicPosition,
-        countRepetition, getSan(), movingPiece, moveSpecification);
+    return new HalfMove(halfMoveCount, fullMoveNumber, halfMoveClock, dynamicPosition, countRepetition, getSan(),
+        movingPiece, moveSpecification);
   }
 
 }

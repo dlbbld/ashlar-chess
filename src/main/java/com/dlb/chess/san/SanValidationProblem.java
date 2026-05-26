@@ -4,12 +4,6 @@ public enum SanValidationProblem {
   UNKNOWN_ERROR,
   NONE,
 
-  // Top-of-pipeline rejection: the game has already ended by an automatic FIDE termination
-  // (checkmate, stalemate, dead position by mutual insufficient material, dead position by
-  // Ambrona's quick unwinnability analyzer). The specific reason is carried as a GameStatus
-  // payload on the thrown SanValidationException.
-  GAME_ALREADY_ENDED,
-
   FORMAT_BLANK,
   FORMAT_FIRST_CHARACTER,
 

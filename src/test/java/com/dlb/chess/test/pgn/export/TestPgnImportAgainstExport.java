@@ -12,7 +12,7 @@ import com.dlb.chess.pgn.LenientPgnParser;
 import com.dlb.chess.pgn.PgnCreate;
 import com.dlb.chess.pgn.PgnGame;
 import com.dlb.chess.test.RestrictTestConstants;
-import com.dlb.chess.test.model.PgnTestCase;
+import com.dlb.chess.test.model.PgnFen;
 import com.dlb.chess.test.model.PgnTestCaseList;
 import com.dlb.chess.test.pgn.parser.PgnCacheForLenientPgnParserTestCases;
 import com.dlb.chess.test.pgn.setup.PgnTestCaseCatalog;
@@ -30,7 +30,7 @@ class TestPgnImportAgainstExport {
         ? PgnTestCaseCatalog.getExportRoundtripSmokeList()
         : PgnTestCaseCatalog.getRestrictedTestListList();
     for (final PgnTestCaseList testCaseList : source) {
-      for (final PgnTestCase testCase : testCaseList.list()) {
+      for (final PgnFen testCase : testCaseList.list()) {
         final String pgnName = testCase.pgnName();
 
         logger.info(pgnName);

@@ -14,7 +14,7 @@ import com.dlb.chess.board.enums.Square;
 import com.dlb.chess.common.model.MoveSpecification;
 import com.dlb.chess.model.LegalMove;
 import com.dlb.chess.moves.AbstractLegalMoves;
-import com.dlb.chess.test.model.PgnTestCase;
+import com.dlb.chess.test.model.PgnFen;
 import com.dlb.chess.test.model.PgnTestCaseList;
 import com.dlb.chess.test.pgn.setup.PgnTestCaseCatalog;
 import com.dlb.chess.test.pgntest.enums.PgnTest;
@@ -36,7 +36,7 @@ class TestBitboardLegalMoveFactory {
   void corpusEveryLegalMoveRoundTripsThroughFactory() {
     for (final PgnTest pgnTest : PgnTest.values()) {
       final PgnTestCaseList testCaseList = PgnTestCaseCatalog.getTestList(pgnTest);
-      for (final PgnTestCase testCase : testCaseList.list()) {
+      for (final PgnFen testCase : testCaseList.list()) {
         final Board board = testCase.finalPosition();
         final Side havingMove = board.getHavingMove();
         final BitboardPosition bitboardPosition = board.getBitboardPosition();

@@ -9,9 +9,8 @@ import com.dlb.chess.board.Board;
 import com.dlb.chess.board.HalfMoveUtility;
 import com.dlb.chess.board.enums.Side;
 import com.dlb.chess.common.Nulls;
-import com.dlb.chess.common.enums.GameStatus;
 import com.dlb.chess.common.exceptions.ProgrammingMistakeException;
-import com.dlb.chess.common.model.HalfMove;
+import com.dlb.chess.common.model.Outcome;
 import com.dlb.chess.common.utility.BasicChessUtility;
 import com.dlb.chess.common.utility.BasicUtility;
 import com.dlb.chess.enums.MoveSuffixAnnotation;
@@ -46,7 +45,7 @@ public class PgnCreate {
   }
 
   public static List<String> createPgnLines(PgnGame pgnGame, WriteMode writeMode) {
-    final PgnGame effective = writeMode == WriteMode.ARCHIVAL ? PgnArchivalNormalization.apply(pgnGame) : pgnGame;
+    final var effective = writeMode == WriteMode.ARCHIVAL ? PgnArchivalNormalization.apply(pgnGame) : pgnGame;
     return calculateFileLines(effective.tagList(), effective.pregameCommentary(), effective.startFen(),
         effective.halfMoveList(), effective.terminationMarker());
   }
@@ -55,8 +54,8 @@ public class PgnCreate {
     return text + "\n";
   }
 
-  private static List<String> calculateFileLines(List<Tag> tagList, PgnCommentary pregameCommentary,
-      Fen startFen, List<PgnHalfMove> halfMoveList, @Nullable ResultTagValue terminationMarker) {
+  private static List<String> calculateFileLines(List<Tag> tagList, PgnCommentary pregameCommentary, Fen startFen,
+      List<PgnHalfMove> halfMoveList, @Nullable ResultTagValue terminationMarker) {
 
     final List<String> fileLines = new ArrayList<>();
     for (final Tag tag : tagList) {
@@ -73,7 +72,7 @@ public class PgnCreate {
 
     // PgnCommentary is contract-validated (no `}`, no `\r`), so the value writes verbatim into {...}.
     final String pregameCommentaryValue = pregameCommentary.value();
-    final String terminationSuffix = terminationMarker != null ? " " + terminationMarker.getValue() : "";
+    final var terminationSuffix = terminationMarker != null ? " " + terminationMarker.getValue() : "";
     final String movetextIncludingPreGameCommentary;
     if (pregameCommentaryValue.isEmpty()) {
       movetextIncludingPreGameCommentary = moves + terminationSuffix;
@@ -97,15 +96,12 @@ public class PgnCreate {
     return fileLines;
   }
 
-  private static List<PgnHalfMove> calculatePgnHalfMoveList(List<HalfMove> boardHalfMoveList) {
+  private static List<PgnHalfMove> calculatePgnHalfMoveList(List<String> sanList) {
     final List<PgnHalfMove> halfMoveList = new ArrayList<>();
 
-    for (final HalfMove boardHalfMove : boardHalfMoveList) {
+    for (final String san : sanList) {
       PgnHalfMove halfMove;
-      if (boardHalfMove.havingMove() != Side.WHITE && boardHalfMove.havingMove() != Side.BLACK) {
-        throw new ProgrammingMistakeException("The program created an inconsistent alternating halfmove list");
-      }
-      halfMove = new PgnHalfMove(boardHalfMove.san(), MoveSuffixAnnotation.NONE, PgnCommentary.EMPTY);
+      halfMove = new PgnHalfMove(san, MoveSuffixAnnotation.NONE, PgnCommentary.EMPTY);
       halfMoveList.add(halfMove);
     }
 
@@ -113,22 +109,36 @@ public class PgnCreate {
   }
 
   private static ResultTagValue calculateResultTagValue(Board board) {
-    final GameStatus gameStatus = BasicChessUtility.calculateGameStatus(board);
-
-    return switch (gameStatus) {
-      case CHECKMATE -> switch (board.getHavingMove()) {
-        case WHITE -> ResultTagValue.BLACK_WON;
-        case BLACK -> ResultTagValue.WHITE_WON;
-        case NONE -> throw new IllegalArgumentException();
-        default -> throw new IllegalArgumentException();
-      };
-      // DEAD_POSITION_UNWINNABLE_QUICK is unreachable here because calculateGameStatus does not invoke the
-      // analyzer; grouped with the other drawing terminations to keep the switch exhaustive.
-      case FIVE_FOLD_REPETITION_RULE, DEAD_POSITION_INSUFFICIENT_MATERIAL, DEAD_POSITION_UNWINNABLE_QUICK -> ResultTagValue.DRAW;
-      case INSUFFICIENT_MATERIAL_WHITE_ONLY, INSUFFICIENT_MATERIAL_BLACK_ONLY, ONGOING -> ResultTagValue.ONGOING;
-      case SEVENTY_FIVE_MOVE_RULE, STALEMATE -> ResultTagValue.DRAW;
-      default -> throw new IllegalArgumentException();
-    };
+    final Outcome outcome = BasicChessUtility.calculateOutcome(board);
+    if (outcome == null) {
+      // Game is ongoing — including positions with one-sided insufficient material, which is a
+      // diagnostic state on the board (queryable via Board.isInsufficientMaterial(Side)) and not
+      // an automatic termination.
+      return ResultTagValue.ONGOING;
+    }
+    switch (outcome.termination()) {
+      case CHECKMATE: {
+        // Outcome's compact constructor guarantees winner() is non-null for CHECKMATE — the side
+        // that delivered mate.
+        final Side winner = outcome.winner();
+        if (winner == null) {
+          throw new ProgrammingMistakeException("Outcome invariant violated: CHECKMATE without winner");
+        }
+        switch (winner) {
+          case WHITE:
+            return ResultTagValue.WHITE_WON;
+          case BLACK:
+            return ResultTagValue.BLACK_WON;
+          case NONE:
+          default:
+            throw new IllegalArgumentException();
+        }
+      }
+      case STALEMATE, INSUFFICIENT_MATERIAL, FIVEFOLD_REPETITION, SEVENTY_FIVE_MOVES:
+        return ResultTagValue.DRAW;
+      default:
+        throw new IllegalArgumentException();
+    }
   }
 
   private static String calculateTagEntry(Tag tag) {
@@ -204,7 +214,7 @@ public class PgnCreate {
    */
   public static PgnGame createPgnGame(Board board, List<Tag> tagList) {
 
-    final List<PgnHalfMove> halfMoveList = calculatePgnHalfMoveList(board.getHalfMoveList());
+    final List<PgnHalfMove> halfMoveList = calculatePgnHalfMoveList(board.getSanList());
 
     return new PgnGame(Nulls.copyOfList(tagList), board.getInitialFen(), PgnCommentary.EMPTY,
         Nulls.copyOfList(halfMoveList), calculateResultTagValue(board));

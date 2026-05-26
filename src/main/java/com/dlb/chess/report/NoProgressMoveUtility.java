@@ -231,7 +231,7 @@ abstract class NoProgressMoveUtility {
     }
     for (var j = index + 1; j <= maxIndex; j++) {
       final HalfMove halfMove = Nulls.get(halfMoveList, j);
-      if (Reporter.calculateIsHalfMoveTerminatesNoProgressSequence(halfMove)) {
+      if (calculateIsHalfMoveTerminatesNoProgressSequence(halfMove)) {
         return j - 1;
       }
     }
@@ -249,4 +249,9 @@ abstract class NoProgressMoveUtility {
     // our logic no sequence will be found
     return firstHalfMove.halfMoveClock() == 0;
   }
+
+  private static boolean calculateIsHalfMoveTerminatesNoProgressSequence(HalfMove halfMove) {
+    return halfMove.halfMoveClock() == 0;
+  }
+
 }

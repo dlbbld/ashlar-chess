@@ -10,6 +10,10 @@ public abstract class HalfMoveUtility {
     return calculateMoveNumberAndSan(fullMoveNumber, havingMove, san, AddSpace.YES);
   }
 
+  public static String calculateMoveNumberAndSanWithSpace(HalfMove halfMove) {
+    return calculateMoveNumberAndSan(halfMove, AddSpace.YES);
+  }
+
   public static String calculateMoveNumberAndSanWithoutSpace(HalfMove halfMove) {
     return calculateMoveNumberAndSan(halfMove, AddSpace.NO);
   }

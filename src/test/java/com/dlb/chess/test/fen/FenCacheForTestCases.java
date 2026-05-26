@@ -10,7 +10,7 @@ import com.dlb.chess.fen.model.Fen;
 
 /**
  * Process-lifetime cache for the parsed {@link Fen} of a test fixture's final position. The corpus row carries the
- * final position as a FEN string ({@code PgnTestCase.finalFen()}); every call to {@code PgnTestCase.finalPosition()}
+ * final position as a FEN string ({@code PgnFen.finalFen()}); every call to {@code PgnFen.finalPosition()}
  * otherwise re-runs {@link FenParserAdvanced#parseFenAdvanced(String)} to build the board. Caching by FEN string also
  * deduplicates fixtures that happen to share a final position.
  *

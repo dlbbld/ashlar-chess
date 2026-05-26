@@ -1,86 +1,48 @@
 package com.dlb.chess.report;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
-import com.dlb.chess.board.HalfMoveUtility;
 import com.dlb.chess.common.Nulls;
+import com.dlb.chess.common.model.DynamicPosition;
 import com.dlb.chess.common.model.HalfMove;
-import com.dlb.chess.common.utility.BasicUtility;
-import com.dlb.chess.messages.Message;
 
 class RepetitionPrint {
 
-  public static List<String> calculateOutputRepetition(List<List<HalfMove>> repetitionList) {
-    final List<String> resultList = new ArrayList<>();
-    for (final List<HalfMove> list : repetitionList) {
-      final var fold = list.size();
-      final String foldStr = Message.getString("report.repetition.fold", fold);
+  public static List<List<String>> calculateRepetitionPrint(DynamicPosition initialDynamicPosition,
+      List<List<HalfMove>> repetitionListList, Map<DynamicPosition, String> positionIdentifierMap) {
 
-      final String repetition = BasicUtility.calculateSpaceSeparatedList(calculateMoveNumberAndSanList(list));
+    final List<List<String>> resultListList = new ArrayList<>();
 
-      final var repetionDescription = foldStr + ": " + repetition;
+    for (final List<HalfMove> repetitionList : repetitionListList) {
+      final List<String> resultList = new ArrayList<>();
 
-      resultList.add(repetionDescription);
-    }
-    return resultList;
-  }
+      final var isInitialRepetionRepeats = initialDynamicPosition
+          .equals(Nulls.getFirst(repetitionList).dynamicPosition());
 
-  public static String calculateOutputRepetitionChronlogically(List<List<HalfMove>> repetitionList) {
-
-    final List<RepetitionMove> modelList = calculateOutputRepetitionChronlogicallyModelList(repetitionList);
-
-    final List<String> result = new ArrayList<>();
-    for (final RepetitionMove repetitionMove : modelList) {
-      result.add(calculatePrint(repetitionMove));
-    }
-
-    return BasicUtility.calculateSpaceSeparatedList(result);
-  }
-
-  private static String calculatePrint(RepetitionMove repetitionMove) {
-
-    final StringBuilder result = new StringBuilder();
-
-    result.append(HalfMoveUtility.calculateMoveNumberAndSanWithoutSpace(repetitionMove.halfMove()));
-
-    result.append(" (");
-
-    final String positionIdentifier = PositionIdentifierUtility.calculateIdentifier(repetitionMove.positionId());
-    result.append(positionIdentifier);
-    result.append(" - ");
-    result.append(repetitionMove.halfMove().countRepetition());
-    result.append("/");
-    result.append(repetitionMove.fold());
-    result.append(")");
-
-    return Nulls.toString(result);
-  }
-
-  private static List<RepetitionMove> calculateOutputRepetitionChronlogicallyModelList(
-      List<List<HalfMove>> repetitionList) {
-
-    final List<RepetitionMove> resultList = new ArrayList<>();
-    var positionId = 0;
-    for (final List<HalfMove> list : repetitionList) {
-      positionId++;
-      final var fold = list.size();
-      for (final HalfMove halfMove : list) {
-        resultList.add(new RepetitionMove(positionId, fold, halfMove));
+      var totalRepetitionCount = repetitionList.size();
+      if (isInitialRepetionRepeats) {
+        totalRepetitionCount = repetitionList.size() + 1;
+      } else {
+        totalRepetitionCount = repetitionList.size();
       }
+
+      if (isInitialRepetionRepeats) {
+        resultList.add("[Initial position]");
+      }
+
+      for (var i = 0; i <= repetitionList.size() - 1; i++) {
+        final HalfMove repetitionHalfMove = Nulls.get(repetitionList, i);
+        final var isAddPositionInformation = i == repetitionList.size() - 1;
+        final String halfMoveInformation = PositionIdentifierUtility.calculateHalfMoveInformation(repetitionHalfMove,
+            totalRepetitionCount, false, isAddPositionInformation, positionIdentifierMap);
+        resultList.add(halfMoveInformation);
+      }
+      resultListList.add(resultList);
     }
 
-    Collections.sort(resultList);
-    return resultList;
-  }
-
-  private static List<String> calculateMoveNumberAndSanList(List<HalfMove> halfMoveList) {
-    final List<String> result = new ArrayList<>();
-    for (final HalfMove halfMove : halfMoveList) {
-      result.add(HalfMoveUtility.calculateMoveNumberAndSanWithoutSpace(halfMove));
-    }
-    return result;
+    return resultListList;
   }
 
 }

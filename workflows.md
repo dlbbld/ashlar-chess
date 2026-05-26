@@ -31,7 +31,7 @@ Two helpers under [`src/test/java/com/dlb/chess/test/generate/`](src/test/java/c
 Both emit lines of the shape:
 
 ```java
-list.add(new PgnTestCase("file.pgn", "rep-pattern", "no-progress-pattern", firstCapture, maxNoProgressSequence, CheckmateOrStalemate.X, repetitionCountFinalPosition, InsufficientMaterial.X, "endPositionFen"));
+list.add(new PgnFen("file.pgn", "endPositionFen"));
 ```
 
 Run from Eclipse (Run As → Java Application) or from the command line:
@@ -39,8 +39,6 @@ Run from Eclipse (Run As → Java Application) or from the command line:
 ```
 mvn -q exec:java -Dexec.mainClass=com.dlb.chess.test.generate.GenerateTestCaseForPgn -Dexec.classpathScope=test
 ```
-
-The generator replays the PGN via `Reporter.calculateReport`, so it surfaces parser / replay errors immediately — fix them at this step before paste-time.
 
 ### 3. Paste the entry into PgnTestCaseCatalog
 

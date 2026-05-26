@@ -14,11 +14,6 @@ class TestSanValidateKingLegal {
 
   // --- Not reachable, non-capturing ---
 
-  // Each test FEN includes a corner rook so that the position is not in mutual insufficient
-  // material (which would otherwise trigger the strict-pipeline GAME_ALREADY_ENDED check before
-  // SAN validation runs). The rook is placed where it neither attacks the king-mobility paths
-  // under test nor checks any king.
-
   @SuppressWarnings("static-method")
   @Test
   void testWhiteNotReachable() {

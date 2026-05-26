@@ -6,9 +6,8 @@ import com.dlb.chess.board.enums.Side;
 
 // only use half moves in lists, and then add them in order of play.
 // not used in sets per this design, so we don't need sorting.
-public record HalfMove(int index, int halfMoveCount, int fullMoveNumber, int halfMoveClock, boolean isCapture,
-    String fen, DynamicPosition dynamicPosition, int countRepetition, String san, Piece movingPiece,
-    MoveSpecification moveSpecification) {
+public record HalfMove(int halfMoveCount, int fullMoveNumber, int halfMoveClock, DynamicPosition dynamicPosition,
+    int countRepetition, String san, Piece movingPiece, MoveSpecification moveSpecification) {
 
   public Side havingMove() {
     return movingPiece.getSide();
@@ -16,7 +15,7 @@ public record HalfMove(int index, int halfMoveCount, int fullMoveNumber, int hal
 
   @Override
   public String toString() {
-    return HalfMoveUtility.calculateMoveNumberAndSanWithoutSpace(this);
+    return HalfMoveUtility.calculateMoveNumberAndSanWithSpace(this);
   }
 
 }

@@ -14,7 +14,7 @@ import com.dlb.chess.board.enums.Piece;
 import com.dlb.chess.board.enums.Side;
 import com.dlb.chess.board.enums.Square;
 import com.dlb.chess.squares.AbstractPotentialToSquares;
-import com.dlb.chess.test.model.PgnTestCase;
+import com.dlb.chess.test.model.PgnFen;
 import com.dlb.chess.test.model.PgnTestCaseList;
 import com.dlb.chess.test.pgn.setup.PgnTestCaseCatalog;
 import com.dlb.chess.test.pgntest.enums.PgnTest;
@@ -37,7 +37,7 @@ class TestBitboardPositionPotentialToSquares {
   void corpusPotentialToSquaresAgreeForBothSides() {
     for (final PgnTest pgnTest : PgnTest.values()) {
       final PgnTestCaseList testCaseList = PgnTestCaseCatalog.getTestList(pgnTest);
-      for (final PgnTestCase testCase : testCaseList.list()) {
+      for (final PgnFen testCase : testCaseList.list()) {
         final Board board = testCase.finalPosition();
         final StaticPosition staticPosition = StaticPositionBridge.toStaticPosition(board.getBitboardPosition());
         final BitboardPosition bitboardPosition = StaticPositionBridge.fromStaticPosition(staticPosition);
@@ -54,7 +54,7 @@ class TestBitboardPositionPotentialToSquares {
   }
 
   private static void assertSidePotentialToSquaresAgree(StaticPosition staticPosition, BitboardPosition bitboardPosition,
-      Side side, Square epTarget, long epBit, PgnTestCase testCase) {
+      Side side, Square epTarget, long epBit, PgnFen testCase) {
     for (final Square fromSquare : Square.REAL) {
       final Piece piece = staticPosition.get(fromSquare);
       if (piece == Piece.NONE || piece.getSide() != side) {

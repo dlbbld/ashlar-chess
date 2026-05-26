@@ -65,22 +65,25 @@ In short: share records and call static utilities from anywhere; never share a `
 
 ### 3.1 FIDE rule fidelity and game termination
 
-The library follows the FIDE Laws of Chess closely, distinguishing **automatic** terminations (the game is over in the model — no further moves accepted by the move pipeline) from **queryable** ones (the library exposes the predicate but does not enforce termination; the game continues until the caller decides) from **claimable** ones (the library exposes both the on-board and with-move predicates; the game continues until claimed):
+The library follows the FIDE Laws of Chess closely. Termination is **information, not enforcement**: the move-validation pipeline does not consult any game-end predicate, and every FIDE termination is surfaced as a queryable artifact the caller polls to decide whether to adjudicate. Termination modes:
+
+- **Automatic (queryable)** — FIDE ends the game; no claim required. Surfaced by `BasicChessUtility.calculateOutcome(Board)` as a non-null `Outcome` record carrying a `Termination` and the winner for checkmate. The move pipeline still accepts further input at these states; the natural barrier at checkmate / stalemate is the empty legal-move set, so any subsequent move attempt fails through ordinary legality.
+- **Claimable** — FIDE permits but does not require the side-to-move to claim the draw; the game continues until claimed. Surfaced via dedicated on-board and with-move predicates on `Board`, not via `Outcome`.
 
 | Rule | Mode | FIDE article |
 |---|---|---|
 | Checkmate | automatic | 5.1 |
-| Stalemate | automatic | 5.2.1 |
 | Insufficient material (structural) | automatic | 5.2.2 / 9.4 |
-| Dead position by quick unwinnability | queryable | 5.2.2 |
-| Fivefold repetition | queryable | 9.6.1 |
-| 75-move rule | queryable | 9.6.2 |
+| Stalemate | automatic | 5.2.1 |
+| 75-move rule | automatic | 9.6.2 |
+| Fivefold repetition | automatic | 9.6.1 |
+| Dead position by quick unwinnability | analyzer-driven, opt-in | 5.2.2 |
 | Threefold repetition | claimable | 9.2 |
 | 50-move rule | claimable | 9.3 |
 
-Once a position is automatically terminated, the board does not allow further moves; continuation past mandatory termination is a usage error. Insufficient material is detected by a fast structural test (king-vs-king, king + minor vs king, etc.). Analyzer-driven dead-position checks are caller-invoked queries.
+The automatic rows are listed in the precedence order `calculateOutcome` applies (python-chess parity): when two or more apply to the same position, the higher row wins. A KBvK stalemate, for instance, reports `INSUFFICIENT_MATERIAL`, not `STALEMATE`. Structural insufficient material is detected by a fast structural test (king-vs-king, king + minor vs king, etc.); analyzer-driven dead positions (FIDE 5.2.2 via the unwinnability analyzer) are intentionally not invoked by `calculateOutcome` — the analyzer would silently make every status query expensive — so callers that want that verdict call `Board.isDeadPositionQuick()` or `Board.isDeadPositionFull()` directly.
 
-Fivefold repetition (FIDE 9.6.1), the 75-move rule (FIDE 9.6.2), and analyzer-driven dead positions (FIDE 5.2.2) are surfaced as queryable predicates rather than enforced at the move pipeline. The library is permissive here for corpus and tooling compatibility; the caller decides whether to adjudicate the draw. Consumers that want to surface these states call `Board.isFivefoldRepetition()` / `Board.isSeventyFiveMove()` / `Board.isDeadPositionQuick()` / `Board.isDeadPositionFull()` themselves. The corresponding `GameStatus` values remain available through `BasicChessUtility.calculateGameStatus(...)` as diagnostic answers, with the automatic-termination statuses taking precedence when both apply to the same position.
+Single-side insufficient material (one side lacks mating material but the other does not) is a diagnostic state of the position, not a termination, and is not surfaced by `Outcome`. Callers query `Board.isInsufficientMaterial(Side)` directly when they need it.
 
 For the claimable rules, the library exposes both the **on-board** predicate (current position satisfies the rule) and the **with-move** predicate (some legal move would satisfy it), and produces analysis output that names which moves *would* satisfy the claim — surfacing missed claim opportunities that other libraries do not. Position equality follows the FIDE definition: same piece placement, same side to move, same castling rights, same en-passant possibilities.
 
@@ -147,10 +150,9 @@ Codes are not collapsed: each distinguishable deviation has its own code, and a 
 
 **API.** `LenientSanParser.parseText(String, ChessBoard)` returns a `LenientSanParserValidationResult` (move + forgiven items). `LenientSanParser.validateText(String, ChessBoard)` is the same call with the result discarded — convenience for yes/no checks. `Board.moveLenient(String)` returns the same result type so the convenience path also surfaces forgiven items.
 
-**Deliberate non-recoveries.** Three categories are rejected even by the lenient pipeline:
+**Deliberate non-recoveries.** Two categories are rejected even by the lenient pipeline:
 - **Mixed castling** (`0-O`, `O-0`) — no real-world tool emits this; allowing it would add parser complexity for zero practical value.
 - **Pawn `SPURIOUS_CAPTURE_MARKER`** — `dxe5` when e5 is empty has no clean string mutation that yields canonical SAN; the only "recovery" would silently swap the user's intended pawn (d-file) for a different one (e-file). That crosses the line from forgiving sloppiness to overriding intent.
-- **Game already terminated** — top-of-pipeline guard before the lenient layer engages, identical to strict; once a move-blocking termination is reached no further moves are accepted, lenient or otherwise.
 
 The strict pipeline remains the single source of chess-validation truth. Lenient is a thin input-shape transformation layer that reuses strict for everything else.
 

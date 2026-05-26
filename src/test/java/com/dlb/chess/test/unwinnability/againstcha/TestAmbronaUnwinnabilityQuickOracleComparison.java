@@ -19,7 +19,7 @@ import com.dlb.chess.common.exceptions.ProgrammingMistakeException;
 import com.dlb.chess.test.ConfigurationTestConstants;
 import com.dlb.chess.test.RestrictTestConstants;
 import com.dlb.chess.test.common.utility.FileUtility;
-import com.dlb.chess.test.model.PgnTestCase;
+import com.dlb.chess.test.model.PgnFen;
 import com.dlb.chess.test.model.PgnTestCaseList;
 import com.dlb.chess.test.pgn.setup.PgnTestCaseCatalog;
 import com.dlb.chess.test.pgntest.enums.PgnTest;
@@ -57,7 +57,7 @@ class TestAmbronaUnwinnabilityQuickOracleComparison {
       }
 
       final PgnTestCaseList testCaseList = PgnTestCaseCatalog.getTestList(pgnTest);
-      for (final PgnTestCase testCase : testCaseList.list()) {
+      for (final PgnFen testCase : testCaseList.list()) {
         logger.info(testCase.pgnName());
         final Board board = testCase.finalPosition();
         logger.info(testCase.pgnName());
@@ -79,7 +79,7 @@ class TestAmbronaUnwinnabilityQuickOracleComparison {
     assertTrue(failureList.isEmpty(), Nulls.join("\n", failureList));
   }
 
-  private static void check(PgnTestCase testCase, Side intendedWinner, UnwinnabilityQuickVerdict expected,
+  private static void check(PgnFen testCase, Side intendedWinner, UnwinnabilityQuickVerdict expected,
       UnwinnabilityQuickVerdict actual, List<String> failureList,
       Set<AcceptedDifference> remainingAcceptedDifferenceSet) {
     if (actual != expected) {

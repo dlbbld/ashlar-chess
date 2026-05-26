@@ -62,7 +62,7 @@ public final class LenientSanParser {
       final String reason = BasicUtility.getMessage(finalReject);
       throw new LenientSanParserValidationException(
           Message.getString("validation.san.lenient.parseFailed", text, reason), text,
-          finalReject.getSanValidationProblem(), finalReject.getGameStatus(), itemsWithoutCanonical(text, codes));
+          finalReject.getSanValidationProblem(), itemsWithoutCanonical(text, codes));
     }
 
     // Phase 3: compute the canonical-SAN equivalent and finalize the forgiven items.

@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Test;
 
 import com.dlb.chess.common.Nulls;
 import com.dlb.chess.test.librarycarlos.NullsCarlos;
-import com.dlb.chess.test.model.PgnTestCase;
+import com.dlb.chess.test.model.PgnFen;
 import com.dlb.chess.test.model.PgnTestCaseList;
 import com.dlb.chess.test.pgn.setup.PgnTestCaseCatalog;
 import com.dlb.chess.test.pgntest.enums.PgnTest;
@@ -35,7 +35,7 @@ class TestLibraryCarlosPerformancePass {
   void testPerformance() throws Exception {
     for (final PgnTest pgnTest : PGN_TEST_LIST) {
       final PgnTestCaseList testCaseList = PgnTestCaseCatalog.getTestList(pgnTest);
-      for (final PgnTestCase testCase : testCaseList.list()) {
+      for (final PgnFen testCase : testCaseList.list()) {
         final String pgnName = testCase.pgnName();
         logger.info(pgnName);
         final Path filePath = Nulls.pathResolve(pgnTest.getFolderPath(), pgnName);

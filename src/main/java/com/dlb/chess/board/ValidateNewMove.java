@@ -10,10 +10,8 @@ import com.dlb.chess.board.enums.Rank;
 import com.dlb.chess.board.enums.Side;
 import com.dlb.chess.board.enums.Square;
 import com.dlb.chess.common.constants.EnumConstants;
-import com.dlb.chess.common.enums.GameStatus;
 import com.dlb.chess.common.exceptions.ProgrammingMistakeException;
 import com.dlb.chess.common.model.MoveSpecification;
-import com.dlb.chess.common.utility.BasicChessUtility;
 import com.dlb.chess.enums.CastlingCheck;
 import com.dlb.chess.enums.KingSafetyCheck;
 import com.dlb.chess.enums.MoveCheck;
@@ -25,8 +23,6 @@ class ValidateNewMove implements EnumConstants {
 
   public static MoveCheck validateNewMove(Board board, MoveSpecification moveSpecification)
       throws InvalidMoveException {
-
-    validateGameNotEnded(board);
 
     if (CastlingUtility.calculateIsCastlingMove(moveSpecification)) {
       validateCastling(board, moveSpecification);
@@ -47,20 +43,6 @@ class ValidateNewMove implements EnumConstants {
     validateKingSafety(board, moveSpecification);
 
     return MoveCheck.SUCCESS;
-  }
-
-  /**
-   * Top-of-pipeline check: once any move-blocking termination has been reached the game has ended permanently and no
-   * further moves are accepted. See {@code com.dlb.chess.board} package-info for the enforced statuses and the
-   * queryable-rule exclusions.
-   */
-  private static void validateGameNotEnded(Board board) throws InvalidMoveException {
-    final GameStatus gameStatus = BasicChessUtility.calculateMoveBlockingGameStatus(board);
-    if (!gameStatus.isAutomaticTermination()) {
-      return;
-    }
-    throw new InvalidMoveException("the game has already ended by " + gameStatus, MoveCheck.GAME_ALREADY_ENDED,
-        gameStatus);
   }
 
   private static void validateCastling(Board board, MoveSpecification moveSpecification) throws InvalidMoveException {
