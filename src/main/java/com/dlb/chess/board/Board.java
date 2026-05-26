@@ -488,24 +488,24 @@ public class Board {
     return Nulls.getLast(isStalemateList);
   }
 
+  /**
+   * Claim-ahead for FIDE 9.3: at halfmove clock &gt;= 99, the claim is available if at least one legal move would
+   * complete the 50 non-progress moves — i.e. is neither a pawn move nor a capture. <em>Deliberate divergence from
+   * python-chess</em>: FIDE 9.3 frames the claim as announced before the move is played, and the 50 moves are about
+   * history; whether the candidate move would itself end the game (e.g. by checkmate) does not affect whether the
+   * 50-move-without-progress condition has been met. python-chess's {@code can_claim_fifty_moves} pushes the candidate
+   * and re-checks {@code is_fifty_moves} on the result, which under its precedence rule ("once checkmated, it is too
+   * late to claim") rejects mate-in-one candidates; clean-chess takes the strict FIDE reading and accepts them. The
+   * disagreement only surfaces at the constructed edge case where the only non-zeroing legal move at clock 99 delivers
+   * mate or stalemate; in real play the player would simply play the mate rather than claim.
+   */
   public boolean canClaimFiftyMoveRuleWithOwnMove() {
     if (getHalfMoveClock() < 99) {
       return false;
     }
     for (final LegalMove legalMove : getLegalMoves()) {
-      // Mirror canClaimThreefoldRepetitionRuleWithOwnMove: push the candidate move and check the
-      // result via isFiftyMove(), which now (python-chess parity) requires legal moves to exist in
-      // the post-move position. If the candidate is a mate-in-one or stale-in-one, the post-move
-      // position has no legal moves, isFiftyMove() returns false, and no claim is available.
-      // Skip clock-resetting moves (pawn moves, captures) up front — they cannot satisfy the
-      // 50-move-without-progress condition after the push.
       if (!BasicChessUtility.calculateIsResetHalfMoveClock(legalMove)) {
-        this.move(legalMove.moveSpecification());
-        final var fiftyMoveAfter = isFiftyMove();
-        this.unmove();
-        if (fiftyMoveAfter) {
-          return true;
-        }
+        return true;
       }
     }
     return false;

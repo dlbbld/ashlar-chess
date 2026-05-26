@@ -50,6 +50,16 @@ import com.dlb.chess.test.pgntest.enums.PgnTest;
  * <p>
  * Bucket coverage: PARSER_FROM_FEN plus all BASIC_* buckets plus the curated real-games / Wikipedia / WCC buckets.
  * Skipped per the release plan: CHA_*, edgeCases, random, MAX_*, MONSTER_*, REPETITION_QUIZ_*.
+ *
+ * <p>
+ * Known deliberate divergence from python-chess at one corner case, not surfaced by this corpus:
+ * {@code canClaimFiftyMoveRule} at a position where halfmove clock is 99 and the <em>only</em> non-zeroing legal move
+ * delivers checkmate. clean-chess follows the strict FIDE 9.3 reading (the claim is announced before the move; the 50
+ * moves are about history; the candidate move's outcome is incidental) and returns {@code true}; python-chess pushes
+ * the candidate and re-checks {@code is_fifty_moves}, finds the post-position mated, and returns {@code false}. See
+ * {@code TestBoardClaimWithOwnMove#canClaimFiftyMoveRuleWithOwnMoveTrueEvenWhenOnlyNonZeroingMoveIsMate} for the
+ * constructed position pinning the FIDE-strict semantic. No corpus fixture currently triggers this edge, so the
+ * oracle's {@code canClaimFifty} assertion runs at every ply without skip.
  */
 class TestPgnImportAgainstPythonChessOracle {
 
