@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 
 import com.dlb.chess.board.Board;
 import com.dlb.chess.board.enums.Side;
-import com.dlb.chess.common.enums.Outcome;
+import com.dlb.chess.common.model.Outcome;
 import com.dlb.chess.common.enums.Termination;
 import com.dlb.chess.common.utility.BasicChessUtility;
 

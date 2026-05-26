@@ -3,7 +3,7 @@ package com.dlb.chess.test.unwinnability.oracle.model;
 import org.eclipse.jdt.annotation.Nullable;
 
 import com.dlb.chess.board.enums.Side;
-import com.dlb.chess.common.enums.Outcome;
+import com.dlb.chess.common.model.Outcome;
 
 /**
  * Result of walking the unique-legal-move chain from a position. The chain terminates when one of these states is

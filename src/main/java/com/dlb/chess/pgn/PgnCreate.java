@@ -9,7 +9,8 @@ import com.dlb.chess.board.Board;
 import com.dlb.chess.board.HalfMoveUtility;
 import com.dlb.chess.board.enums.Side;
 import com.dlb.chess.common.Nulls;
-import com.dlb.chess.common.enums.Outcome;
+import com.dlb.chess.common.exceptions.ProgrammingMistakeException;
+import com.dlb.chess.common.model.Outcome;
 import com.dlb.chess.common.utility.BasicChessUtility;
 import com.dlb.chess.common.utility.BasicUtility;
 import com.dlb.chess.enums.MoveSuffixAnnotation;
@@ -116,12 +117,20 @@ public class PgnCreate {
       return ResultTagValue.ONGOING;
     }
     return switch (outcome.termination()) {
-      case CHECKMATE -> switch (board.getHavingMove()) {
-        case WHITE -> ResultTagValue.BLACK_WON;
-        case BLACK -> ResultTagValue.WHITE_WON;
-        case NONE -> throw new IllegalArgumentException();
-        default -> throw new IllegalArgumentException();
-      };
+      case CHECKMATE -> {
+        // Outcome's compact constructor guarantees winner() is non-null for CHECKMATE — the side
+        // that delivered mate.
+        final Side winner = outcome.winner();
+        if (winner == null) {
+          throw new ProgrammingMistakeException("Outcome invariant violated: CHECKMATE without winner");
+        }
+        yield switch (winner) {
+          case WHITE -> ResultTagValue.WHITE_WON;
+          case BLACK -> ResultTagValue.BLACK_WON;
+          case NONE -> throw new IllegalArgumentException();
+          default -> throw new IllegalArgumentException();
+        };
+      }
       case STALEMATE, INSUFFICIENT_MATERIAL, FIVEFOLD_REPETITION, SEVENTY_FIVE_MOVES -> ResultTagValue.DRAW;
     };
   }

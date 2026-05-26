@@ -14,7 +14,7 @@
  *
  * <p>
  * Callers poll {@link com.dlb.chess.common.utility.BasicChessUtility#calculateOutcome} for the current-position
- * outcome — it returns the most-specific {@link com.dlb.chess.common.enums.Outcome} for the board, or {@code null}
+ * outcome — it returns the most-specific {@link com.dlb.chess.common.model.Outcome} for the board, or {@code null}
  * when the game is ongoing. The five surfaced terminations are checkmate, mutual insufficient material, stalemate,
  * 75-move, and fivefold (in that precedence order; python-chess parity). The library is permissive at the move
  * pipeline for corpus and tooling compatibility (historical PGN databases routinely contain games whose recorded

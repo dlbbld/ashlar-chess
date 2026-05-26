@@ -2,7 +2,7 @@ package com.dlb.chess.test.unwinnability.oracle;
 
 import com.dlb.chess.board.Board;
 import com.dlb.chess.board.enums.Side;
-import com.dlb.chess.common.enums.Outcome;
+import com.dlb.chess.common.model.Outcome;
 import com.dlb.chess.common.utility.BasicChessUtility;
 import com.dlb.chess.model.LegalMove;
 import com.dlb.chess.test.unwinnability.oracle.enums.LimitedUnwinnabilityVerdict;
