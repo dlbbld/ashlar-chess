@@ -4,11 +4,6 @@ public enum SanValidationProblem {
   UNKNOWN_ERROR,
   NONE,
 
-  // Historical: pre-ungating, the SAN parser threw with this reason on any board reaching
-  // checkmate, stalemate, or mutual insufficient material. The parser no longer gates on
-  // termination — this value is no longer produced by any throw site and is slated for removal.
-  GAME_ALREADY_ENDED,
-
   FORMAT_BLANK,
   FORMAT_FIRST_CHARACTER,
 

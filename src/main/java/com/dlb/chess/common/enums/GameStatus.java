@@ -44,20 +44,4 @@ public enum GameStatus {
   FIVE_FOLD_REPETITION_RULE,
   SEVENTY_FIVE_MOVE_RULE,
   ONGOING;
-
-  /**
-   * Returns {@code true} for {@link #CHECKMATE}, {@link #STALEMATE}, and {@link #DEAD_POSITION_INSUFFICIENT_MATERIAL}.
-   *
-   * <p>
-   * Historical predicate from when the move pipeline enforced these three terminations as a hard gate. After the
-   * pipeline-ungating change none of these statuses block further moves, so this predicate no longer distinguishes
-   * "enforced" from "queryable" — kept temporarily for source compatibility and slated for removal in a follow-up
-   * cleanup that also retires {@code MoveCheck.GAME_ALREADY_ENDED} and the related exception payloads.
-   */
-  public boolean isAutomaticTermination() {
-    return switch (this) {
-      case CHECKMATE, STALEMATE, DEAD_POSITION_INSUFFICIENT_MATERIAL -> true;
-      case DEAD_POSITION_UNWINNABLE_QUICK, FIVE_FOLD_REPETITION_RULE, SEVENTY_FIVE_MOVE_RULE, INSUFFICIENT_MATERIAL_WHITE_ONLY, INSUFFICIENT_MATERIAL_BLACK_ONLY, ONGOING -> false;
-    };
-  }
 }

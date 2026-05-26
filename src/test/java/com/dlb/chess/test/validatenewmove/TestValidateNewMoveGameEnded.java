@@ -2,7 +2,6 @@ package com.dlb.chess.test.validatenewmove;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
@@ -123,18 +122,13 @@ class TestValidateNewMoveGameEnded implements EnumConstants {
 
   // --- helpers ---
 
-  /**
-   * Asserts that the move is rejected with the given {@link MoveCheck} — and crucially, not via the retired
-   * {@link MoveCheck#GAME_ALREADY_ENDED} gate.
-   */
+  /** Asserts that the move is rejected with the given {@link MoveCheck}. */
   private static void rejectsWith(Board board, MoveSpecification move, MoveCheck expected) {
     var thrown = false;
     try {
       board.move(move);
     } catch (final InvalidMoveException e) {
       thrown = true;
-      assertNotEquals(MoveCheck.GAME_ALREADY_ENDED, e.getMoveCheck(),
-          "after A1 ungating no rejection should travel through the GAME_ALREADY_ENDED gate");
       assertEquals(expected, e.getMoveCheck());
     }
     assertTrue(thrown, "expected InvalidMoveException");

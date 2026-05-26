@@ -36,10 +36,7 @@ class TestSanValidationProblemMessage {
   private static final Set<SanValidationProblem> checkedProblems = new TreeSet<>();
   private static final Set<SanValidationProblem> FIXED_UNCHECKED_ENTRIES = Nulls
       .setOf(SanValidationProblem.UNKNOWN_ERROR, SanValidationProblem.NONE);
-  // GAME_ALREADY_ENDED is no longer produced by any throw site after the pipeline ungating; slated
-  // for removal in the follow-up cleanup. Excluded from the coverage assertion until then.
-  private static final Set<SanValidationProblem> TEMPORARILY_UNCHECKED_PROBLEMS = Nulls
-      .setOf(SanValidationProblem.GAME_ALREADY_ENDED);
+  private static final Set<SanValidationProblem> TEMPORARILY_UNCHECKED_PROBLEMS = Nulls.setOf();
 
   /**
    * When {@code true}, each test asserts the exact full exception message (useful while messages.properties is being

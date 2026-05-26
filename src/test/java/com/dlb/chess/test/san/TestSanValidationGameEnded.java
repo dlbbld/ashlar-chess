@@ -2,14 +2,12 @@ package com.dlb.chess.test.san;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
 
 import com.dlb.chess.board.Board;
 import com.dlb.chess.san.SanValidationException;
-import com.dlb.chess.san.SanValidationProblem;
 import com.dlb.chess.san.StrictSanParser;
 import com.dlb.chess.unwinnability.DeadPositionQuick;
 
@@ -99,18 +97,13 @@ class TestSanValidationGameEnded {
 
   // --- helpers ---
 
-  /**
-   * Asserts that SAN parsing is rejected — and crucially, not via the retired
-   * {@link SanValidationProblem#GAME_ALREADY_ENDED} gate.
-   */
+  /** Asserts that SAN parsing is rejected. */
   private static void rejectsNotViaGameEnded(String san, Board board) {
     var thrown = false;
     try {
       StrictSanParser.parseText(san, board);
     } catch (final SanValidationException e) {
       thrown = true;
-      assertNotEquals(SanValidationProblem.GAME_ALREADY_ENDED, e.getSanValidationProblem(),
-          "after A1 ungating no rejection should travel through the GAME_ALREADY_ENDED gate");
     }
     assertTrue(thrown, "expected SanValidationException");
   }

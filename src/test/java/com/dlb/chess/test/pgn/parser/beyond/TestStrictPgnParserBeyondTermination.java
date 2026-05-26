@@ -1,7 +1,6 @@
 package com.dlb.chess.test.pgn.parser.beyond;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.nio.file.Path;
@@ -11,7 +10,6 @@ import org.junit.jupiter.api.Test;
 import com.dlb.chess.common.Nulls;
 import com.dlb.chess.pgn.StrictPgnParser;
 import com.dlb.chess.pgn.StrictPgnParserValidationException;
-import com.dlb.chess.san.SanValidationProblem;
 import com.dlb.chess.test.ConfigurationTestConstants;
 
 /**
@@ -62,10 +60,7 @@ class TestStrictPgnParserBeyondTermination {
   }
 
   private static void assertRejectedNotViaGameEnded(String pgnName) {
-    final StrictPgnParserValidationException e = assertThrows(StrictPgnParserValidationException.class,
-        () -> StrictPgnParser.parse(BEYOND_FOLDER, pgnName));
-    assertNotEquals(SanValidationProblem.GAME_ALREADY_ENDED, e.getSanValidationProblem(),
-        "after A1 ungating no rejection should travel through the GAME_ALREADY_ENDED gate");
+    assertThrows(StrictPgnParserValidationException.class, () -> StrictPgnParser.parse(BEYOND_FOLDER, pgnName));
   }
 
   private static void assertAccepted(String pgnName) {

@@ -742,7 +742,6 @@ public final class LenientPgnParser {
    * <p>
    * On a SAN-level failure the partial accumulator is included on the thrown
    * {@link LenientPgnParserValidationException} so callers see how many deviations were forgiven before the failure.
-   * The {@link com.dlb.chess.common.enums.GameStatus} from a {@code GAME_ALREADY_ENDED} reject is propagated unchanged.
    */
   private List<PgnHalfMove> replayBoardCanonicalizing(Fen startFen, List<PgnHalfMove> halfMoveList) {
     final Board board = new Board(startFen);
@@ -763,7 +762,7 @@ public final class LenientPgnParser {
             + messageSanValidationFailure;
         final SanValidationProblem underlying = e.getUnderlyingSanValidationProblem();
         throw new LenientPgnParserValidationException(LenientPgnParserValidationProblem.SAN,
-            underlying == null ? SanValidationProblem.UNKNOWN_ERROR : underlying, message, e.getGameStatus(),
+            underlying == null ? SanValidationProblem.UNKNOWN_ERROR : underlying, message,
             Nulls.copyOfList(sanForgivenItemsAccumulator), Nulls.copyOfList(tagForgivenItemsAccumulator));
       }
     }
