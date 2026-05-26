@@ -52,7 +52,67 @@ The fivefold / 75-move counterpart shipped in **13.0.0** (the *reallow-play-beyo
 
 ## Future release — 15.0.0: make threefold and fifty-move report production grade and clean-up
 
+Do not start this immediately after the current release. This section exists so the follow-up work is captured, scoped,
+and not rediscovered chaotically later.
 
+The release goal is to turn the repetition/no-progress report work from useful scaffolding into tested, object-level
+library behavior. The printout should become a view over analysis objects, not the place where chess/report logic lives.
+
+### Phase 1 — Object-level repetition report model
+
+- [ ] Introduce a report/analysis object for threefold-existing-behind / threefold-and-beyond repetitions.
+- [ ] Introduce a report/analysis object for threefold claim-ahead opportunities.
+- [ ] Preserve the current printed report shape by deriving it from those objects.
+- [ ] Move repetition-line, initial-position inclusion, played-vs-hypothetical, and repetition-count decisions out of the print classes.
+- [ ] Keep print classes small: format already-calculated facts only.
+
+### Phase 2 — Test the report objects directly
+
+- [ ] Add direct unit tests for existing threefold-and-beyond analysis.
+- [ ] Add direct unit tests for threefold claim-ahead analysis.
+- [ ] Add regression coverage for the initial-position repetition case that was previously missing from the printout.
+- [ ] Add tests that compare the report printout against the object model, so formatting cannot silently diverge from the analysis.
+
+### Phase 3 — Add from-initial-placement and FEN-start coverage
+
+Create one focused test folder for positions that start counting from move one. The folder covers both the initial piece
+placement and games started from an explicit FEN.
+
+- [ ] Initial piece placement, White to move on move 1: run into threefold, fivefold, 50-move, and 75-move conditions from move one.
+- [ ] Initial piece placement, Black to move on move 1: same coverage, with special attention to fullmove numbering.
+- [ ] Non-initial FEN position, White to move on move 1: run into threefold, fivefold, 50-move, and 75-move conditions from move one.
+- [ ] Non-initial FEN position, Black to move on move 1: same coverage, with special attention to fullmove numbering.
+- [ ] For each fixture, assert the public query methods detect the condition.
+- [ ] For each fixture, assert the object-level report model contains the expected facts.
+- [ ] For each fixture, assert the printed report is derived correctly from the object-level facts.
+
+### Phase 4 — Finish the 50-move report output
+
+Reserved for manual implementation. The goal is to get comfortable with the report code by finishing the no-progress /
+50-move output on top of the object-level analysis shape, not inside presentation logic.
+
+- [ ] Finish the 50-move output.
+- [ ] Add direct tests for the 50-move report object.
+- [ ] Add printout tests derived from the object-level expected facts.
+
+### Phase 5 — Decommission `HalfMove`
+
+The short-term rule is: do not break the working repetition analysis casually. The release should first remove
+`HalfMove` from `Board` as stored mutable state, then decide whether it can disappear completely.
+
+- [ ] Remove stored `halfMoveList` from `Board`; derive temporary `HalfMove` rows from existing board history where needed.
+- [ ] Keep repetition/report behavior unchanged during that first removal.
+- [ ] Analyze whether the repetition/report objects can use narrower records instead of `HalfMove`.
+- [ ] If possible, replace `HalfMove` entirely with purpose-specific repetition/report rows.
+- [ ] Delete `HalfMove`, `HalfMoveUtility`, and related comparators once no longer needed.
+- [ ] If full deletion is not safe in this release, leave a precise follow-up note explaining the remaining dependency.
+
+### Phase 6 — Release hygiene
+
+- [ ] Keep the release scoped to report/repetition/no-progress cleanup.
+- [ ] Do not mix in the insufficient-material play-beyond release unless explicitly re-scoped.
+- [ ] Update `README.md`, `specification.md`, and `CHANGELOG.md` only for behavior or documented workflows that actually changed.
+- [ ] Run focused report/repetition tests first, then the full default profile before release.
 
 ---
 
