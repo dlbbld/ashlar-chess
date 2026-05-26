@@ -490,14 +490,21 @@ public class Board {
 
   /**
    * Claim-ahead for FIDE 9.3: at halfmove clock &gt;= 99, the claim is available if at least one legal move would
-   * complete the 50 non-progress moves — i.e. is neither a pawn move nor a capture. <em>Deliberate divergence from
-   * python-chess</em>: FIDE 9.3 frames the claim as announced before the move is played, and the 50 moves are about
-   * history; whether the candidate move would itself end the game (e.g. by checkmate) does not affect whether the
-   * 50-move-without-progress condition has been met. python-chess's {@code can_claim_fifty_moves} pushes the candidate
-   * and re-checks {@code is_fifty_moves} on the result, which under its precedence rule ("once checkmated, it is too
-   * late to claim") rejects mate-in-one candidates; clean-chess takes the strict FIDE reading and accepts them. The
-   * disagreement only surfaces at the constructed edge case where the only non-zeroing legal move at clock 99 delivers
-   * mate or stalemate; in real play the player would simply play the mate rather than claim.
+   * complete the 50 non-progress moves — i.e. is neither a pawn move nor a capture. FIDE 9.3 frames the claim as
+   * announced before the move is played; the 50 moves are about history; the outcome of the candidate move (whether
+   * it would deliver mate, stalemate, or continue the game) does not affect whether the no-progress condition has
+   * been met.
+   *
+   * <p>
+   * <em>Deliberate divergence from python-chess at one corner case.</em> python-chess's {@code can_claim_fifty_moves}
+   * pushes the candidate move and re-checks {@code is_fifty_moves} on the post-position; that reuse means the
+   * {@code any(legal_moves)} guard inside {@code is_fifty_moves} (which is deliberately there for the precedence
+   * stack when checking the <em>current</em> position) transitively rejects candidate moves that themselves deliver
+   * mate or stalemate. The maintainer's tests and docstrings document the deliberate intent for the current-position
+   * case (commit {@code 1064bf59}, with tests pinning "once checkmated, it is too late to claim" and "a stalemate is a
+   * draw"); they do not address the candidate-move-is-mate case, which falls out of code reuse rather than separate
+   * consideration. clean-chess takes the strict FIDE 9.3 reading at this edge; the practical impact is zero (the
+   * player would play the mate rather than claim) but the predicate is honest about what FIDE actually says.
    */
   public boolean canClaimFiftyMoveRuleWithOwnMove() {
     if (getHalfMoveClock() < 99) {

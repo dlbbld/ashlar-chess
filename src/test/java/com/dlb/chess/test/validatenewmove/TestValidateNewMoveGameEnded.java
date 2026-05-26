@@ -22,8 +22,8 @@ import com.dlb.chess.unwinnability.DeadPositionQuick;
  * At checkmate and stalemate the natural barrier is the empty legal-move set: any attempted move fails through ordinary
  * move-legality checks (own-piece occupation, king-into-check, etc.), not via a dedicated game-end gate. At mutual
  * insufficient material, fivefold, 75-move, and analyzer-driven dead positions, legal moves still exist and the
- * pipeline accepts them — the caller polls {@code calculateOutcome} or the specific predicates to learn the game
- * has reached an automatic termination.
+ * pipeline accepts them — the caller polls {@code calculateOutcome} or the specific predicates to learn the game has
+ * reached an automatic termination.
  *
  * <p>
  * The companion {@code TestSanValidationGameEnded} mirrors this set against the SAN pipeline.
@@ -122,7 +122,9 @@ class TestValidateNewMoveGameEnded implements EnumConstants {
 
   // --- helpers ---
 
-  /** Asserts that the move is rejected with the given {@link MoveCheck}. */
+  /**
+   * Asserts that the move is rejected with the given {@link MoveCheck}.
+   */
   private static void rejectsWith(Board board, MoveSpecification move, MoveCheck expected) {
     var thrown = false;
     try {
