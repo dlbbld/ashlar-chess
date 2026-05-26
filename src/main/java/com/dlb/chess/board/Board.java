@@ -660,6 +660,10 @@ public class Board {
     return getRepetitionCount() >= ChessConstants.FIVEFOLD_REPETITION_RULE_THRESHOLD;
   }
 
+  public List<String> getSanList() {
+    return sanList;
+  }
+
   public String getSan() {
     if (isFirstMove()) {
       throw new IllegalStateException("There is no last move");

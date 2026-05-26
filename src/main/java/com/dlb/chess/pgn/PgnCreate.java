@@ -199,7 +199,7 @@ public class PgnCreate {
    */
   public static PgnGame createPgnGame(Board board, List<Tag> tagList) {
 
-    final List<PgnHalfMove> halfMoveList = calculatePgnHalfMoveList(board.getLegalMovesSan());
+    final List<PgnHalfMove> halfMoveList = calculatePgnHalfMoveList(board.getSanList());
 
     return new PgnGame(Nulls.copyOfList(tagList), board.getInitialFen(), PgnCommentary.EMPTY,
         Nulls.copyOfList(halfMoveList), calculateResultTagValue(board));
