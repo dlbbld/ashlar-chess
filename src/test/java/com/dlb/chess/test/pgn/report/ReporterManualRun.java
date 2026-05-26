@@ -7,12 +7,12 @@ import com.dlb.chess.test.pgntest.enums.PgnTest;
 public class ReporterManualRun {
 
   public static void main(String[] args) throws Exception {
-    System.out.println("=============================================");
-    printReportForPgn("fivefold_correct_potapov_adly_2018.pgn");
+    // System.out.println("=============================================");
+    // printReportForPgn("fivefold_correct_potapov_adly_2018.pgn");
     // System.out.println("=============================================");
     // printReportForPgn("02_fivefold_end_with_first_fivefold.pgn");
-    // System.out.println("=============================================");
-    // printReportForPgn("01_beyond_fivefold.pgn");
+    System.out.println("=============================================");
+    printReportForPgn("01_beyond_fivefold.pgn");
     // System.out.println("=============================================");
     // printReportForPgn("05_claim_for_own_move_correct_but_makes_move_on_board.pgn");
     // System.out.println("=============================================");

@@ -10,14 +10,28 @@ import com.dlb.chess.common.model.HalfMove;
 
 class RepetitionPrint {
 
-  public static List<List<String>> calculateRepetitionPrint(List<List<HalfMove>> repetitionListList,
-      Map<DynamicPosition, String> positionIdentifierMap) {
+  public static List<List<String>> calculateRepetitionPrint(DynamicPosition initialDynamicPosition,
+      List<List<HalfMove>> repetitionListList, Map<DynamicPosition, String> positionIdentifierMap) {
 
     final List<List<String>> resultListList = new ArrayList<>();
 
     for (final List<HalfMove> repetitionList : repetitionListList) {
       final List<String> resultList = new ArrayList<>();
-      final var totalRepetitionCount = repetitionList.size();
+
+      final var isInitialRepetionRepeats = initialDynamicPosition
+          .equals(Nulls.getFirst(repetitionList).dynamicPosition());
+
+      var totalRepetitionCount = repetitionList.size();
+      if (isInitialRepetionRepeats) {
+        totalRepetitionCount = repetitionList.size() + 1;
+      } else {
+        totalRepetitionCount = repetitionList.size();
+      }
+
+      if (isInitialRepetionRepeats) {
+        resultList.add("[Initial position]");
+      }
+
       for (var i = 0; i <= repetitionList.size() - 1; i++) {
         final HalfMove repetitionHalfMove = Nulls.get(repetitionList, i);
         final var isAddPositionInformation = i == repetitionList.size() - 1;

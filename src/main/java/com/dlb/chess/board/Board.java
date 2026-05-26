@@ -752,6 +752,10 @@ public class Board {
     return Nulls.copyOfList(halfMoveList);
   }
 
+  public DynamicPosition getInitialDynamicPosition() {
+    return Nulls.getFirst(dynamicPositionList);
+  }
+
   public DynamicPosition getDynamicPosition() {
     return Nulls.getLast(dynamicPositionList);
   }

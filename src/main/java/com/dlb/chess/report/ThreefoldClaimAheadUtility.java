@@ -1,9 +1,11 @@
 package com.dlb.chess.report;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import com.dlb.chess.board.Board;
+import com.dlb.chess.common.HalfMoveListListComparator;
 import com.dlb.chess.common.Nulls;
 import com.dlb.chess.common.model.HalfMove;
 import com.dlb.chess.fen.model.Fen;
@@ -24,6 +26,7 @@ abstract class ThreefoldClaimAheadUtility {
       board.move(legalMove.moveSpecification());
     }
     collectClaimAheadList(resultListList, board);
+    Collections.sort(resultListList, HalfMoveListListComparator.COMPARATOR);
     return resultListList;
   }
 

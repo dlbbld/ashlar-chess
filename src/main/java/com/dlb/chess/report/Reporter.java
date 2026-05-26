@@ -73,8 +73,8 @@ public final class Reporter {
     if (claimAheadListList.isEmpty()) {
       output.add(Message.getString("report.repetition.threefold.ahead.none"));
     } else {
-      final var claimAheadListListPrint = ThreefoldClaimAheadPrint
-          .calculateClaimAheadListListPrint(board.getHalfMoveList(), claimAheadListList, positionIdentifierMap);
+      final var claimAheadListListPrint = ThreefoldClaimAheadPrint.calculateClaimAheadListListPrint(
+          board.getInitialDynamicPosition(), board.getHalfMoveList(), claimAheadListList, positionIdentifierMap);
       for (final List<String> resultAsLine : claimAheadListListPrint) {
         final String line = BasicUtility.calculateSpaceSeparatedList(resultAsLine);
         output.add(line);
@@ -87,7 +87,8 @@ public final class Reporter {
     if (repetitionListList.isEmpty()) {
       output.add(Message.getString("report.repetition.threefold.list.none"));
     } else {
-      final var repetionListList = RepetitionPrint.calculateRepetitionPrint(repetitionListList, positionIdentifierMap);
+      final var repetionListList = RepetitionPrint.calculateRepetitionPrint(board.getInitialDynamicPosition(),
+          repetitionListList, positionIdentifierMap);
 
       for (final List<String> resultAsLine : repetionListList) {
         final String line = BasicUtility.calculateSpaceSeparatedList(resultAsLine);

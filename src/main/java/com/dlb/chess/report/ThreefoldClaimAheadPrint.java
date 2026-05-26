@@ -11,8 +11,9 @@ import com.google.common.collect.ImmutableList;
 
 class ThreefoldClaimAheadPrint {
 
-  public static List<List<String>> calculateClaimAheadListListPrint(ImmutableList<HalfMove> halfMoveListPlayed,
-      List<List<HalfMove>> claimAheadListList, Map<DynamicPosition, String> positionIdentifierMap) {
+  public static List<List<String>> calculateClaimAheadListListPrint(DynamicPosition initialDynamicPosition,
+      final ImmutableList<HalfMove> halfMoveListPlayed, List<List<HalfMove>> claimAheadListList,
+      Map<DynamicPosition, String> positionIdentifierMap) {
 
     final List<List<String>> resultListList = new ArrayList<>();
 
@@ -22,14 +23,28 @@ class ThreefoldClaimAheadPrint {
         final List<String> resultList = new ArrayList<>();
         final List<HalfMove> repetitionLine = calculateRepetitionLine(halfMoveListPlayed, claimAhead);
 
-        final var totalRepetitionCount = repetitionLine.size();
+        final var isInitialRepetionRepeats = initialDynamicPosition.equals(claimAhead.dynamicPosition());
+
+        var totalRepetitionCount = repetitionLine.size();
+        if (isInitialRepetionRepeats) {
+          totalRepetitionCount = repetitionLine.size() + 1;
+        } else {
+          totalRepetitionCount = repetitionLine.size();
+        }
+
+        if (isInitialRepetionRepeats) {
+          resultList.add("[Initial position]");
+        }
+
         final var hasBeenPlayed = halfMoveListPlayed.contains(claimAhead);
         for (var i = 0; i <= repetitionLine.size() - 1; i++) {
           final HalfMove repetitionLineHalfMove = Nulls.get(repetitionLine, i);
+
+          final var isAddAsterisk = i < repetitionLine.size() - 1 || hasBeenPlayed;
           final var isAddPositionInformation = i == repetitionLine.size() - 1;
 
           final String halfMoveInformation = PositionIdentifierUtility.calculateHalfMoveInformation(
-              repetitionLineHalfMove, totalRepetitionCount, hasBeenPlayed, isAddPositionInformation,
+              repetitionLineHalfMove, totalRepetitionCount, isAddAsterisk, isAddPositionInformation,
               positionIdentifierMap);
           resultList.add(halfMoveInformation);
         }
