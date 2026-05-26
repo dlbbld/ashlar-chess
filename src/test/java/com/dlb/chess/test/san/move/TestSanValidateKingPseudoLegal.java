@@ -28,8 +28,6 @@ class TestSanValidateKingPseudoLegal {
   @Test
   void testKingMovesNextToOpponentKing() {
     // White king e1, black king e3. Ke2 lands adjacent to the black king.
-    // Black rook on a8 is unrelated; it dates from when this test had to dodge a now-retired
-    // GAME_ALREADY_ENDED pre-check on mutual-insufficient-material positions.
     final Board board = new Board("r7/8/8/8/8/4k3/8/4K3 w - - 0 1");
     checkException("Ke2", board, SanValidationProblem.KING_MOVES_NEXT_TO_OPPONENT_KING);
   }

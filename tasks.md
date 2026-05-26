@@ -14,7 +14,9 @@ Order within each section is the source of truth. Completed tasks move to **Done
 
 ✅ Shipped 2026-05-24. Analyzer-driven dead-position detection no longer runs automatically on construction or every
 move, `DEAD_POSITION_UNWINNABLE_QUICK` is reportable but non-blocking, and the boolean `Board` constructor/config
-overloads are removed. Structural insufficient material remains move-blocking.
+overloads are removed. Structural insufficient material remains move-blocking _at the time of this release_; the
+follow-up ungating in commits `d123759f` (A1) and `6d69c3e0` (A2) drops that too, leaving the move pipeline with no
+game-end gate and no `GAME_ALREADY_ENDED` plumbing.
 
 The construction we have today is too complicated and does work the library doesn't need. Today every `Board.move()` (and every `Board` constructor) runs the unwinnability quick analyzer on the new position and caches the verdict in `isDeadPositionUnwinnableQuickList`. The cached value drives `Board.isDeadPositionUnwinnableQuick()`, feeds `Board.isDeadPosition()` (alongside the cheap mechanical `isInsufficientMaterial`), and through `ValidateNewMove` causes the move pipeline to throw `MoveCheck.GAME_ALREADY_ENDED` with `GameStatus.DEAD_POSITION_UNWINNABLE_QUICK` if a consumer tries to play on. The whole apparatus exists to model FIDE 5.2.2 "dead position" as an automatic termination.
 
@@ -30,7 +32,7 @@ The fivefold / 75-move counterpart shipped in **13.0.0** (the *reallow-play-beyo
 
 **Step 1.2** — Reshape `Board.isDeadPosition()` and the `isDeadPosition*` family as pure on-demand queries that run the analyzer when called. `isDeadPositionQuick()` and `isDeadPositionFull()` are already that today (`Board` lines ~951 / ~999); the change is that `isDeadPosition()` joins them — it computes `isInsufficientMaterial() || isDeadPositionQuick().isDeadPosition()` at the call site instead of reading a cached field. Consumers that want the old "checked after every move" behavior call the query themselves in their move loop.
 
-**Step 1.3** — `ValidateNewMove` no longer rejects moves on `DEAD_POSITION_UNWINNABLE_QUICK`. Remove the corresponding check from the move-acceptance precondition. The surviving auto-terminators after this release: checkmate, stalemate, insufficient material. `MoveCheck.GAME_ALREADY_ENDED` continues to fire for those three. _(Superseded by the follow-up A1 ungating in commit `d123759f`: the move pipeline no longer consults any game-end predicate; `GAME_ALREADY_ENDED` is no longer thrown by any code path. The enum values and exception payload plumbing remain temporarily and will be removed in A2.)_
+**Step 1.3** — `ValidateNewMove` no longer rejects moves on `DEAD_POSITION_UNWINNABLE_QUICK`. Remove the corresponding check from the move-acceptance precondition. The surviving auto-terminators after this release: checkmate, stalemate, insufficient material. `MoveCheck.GAME_ALREADY_ENDED` continues to fire for those three. _(Fully superseded by the follow-up release: A1 (`d123759f`) removed the gate for the remaining three; A2 (`6d69c3e0`) deleted the `GAME_ALREADY_ENDED` enum values, exception payloads, and message-bundle entry. The move pipeline now consults no game-end predicate and `GAME_ALREADY_ENDED` no longer exists.)_
 
 **Step 1.4** — Decide the `GameStatus.DEAD_POSITION_UNWINNABLE_QUICK` enum value's fate. Two options: keep it (returned by an explicit "what status is this position in" query, never thrown by the move pipeline) or drop it (the analyzer's `UnwinnabilityQuickVerdict` is the only place that concept lives). Recommend keep, narrowed in scope — `Board.calculateGameStatus()` maps the position to a status that can include `DEAD_POSITION_UNWINNABLE_QUICK`, but the move pipeline never throws it. Symmetric with how 13.0.0 handled `FIVE_FOLD_REPETITION_RULE` / `SEVENTY_FIVE_MOVE_RULE`.
 

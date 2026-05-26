@@ -36,7 +36,6 @@ class TestSanValidationProblemMessage {
   private static final Set<SanValidationProblem> checkedProblems = new TreeSet<>();
   private static final Set<SanValidationProblem> FIXED_UNCHECKED_ENTRIES = Nulls
       .setOf(SanValidationProblem.UNKNOWN_ERROR, SanValidationProblem.NONE);
-  private static final Set<SanValidationProblem> TEMPORARILY_UNCHECKED_PROBLEMS = Nulls.setOf();
 
   /**
    * When {@code true}, each test asserts the exact full exception message (useful while messages.properties is being
@@ -986,7 +985,6 @@ class TestSanValidationProblemMessage {
   static void testCoverage() {
     final Set<SanValidationProblem> missingProblems = EnumSet.allOf(SanValidationProblem.class);
     missingProblems.removeAll(FIXED_UNCHECKED_ENTRIES);
-    missingProblems.removeAll(TEMPORARILY_UNCHECKED_PROBLEMS);
     missingProblems.removeAll(checkedProblems);
     final var missingProblemsMessage = missingProblems.stream().map(problem -> problem.name() + " is missing")
         .reduce((left, right) -> left + System.lineSeparator() + right).orElse("");
