@@ -4,6 +4,8 @@ Releases from 3.3 onward. Earlier history is in git tags only.
 
 ## [Unreleased]
 
+## [15.0.0] - 2026-05-26
+
 The **termination-is-information release**. The move pipeline no longer consults any game-end predicate: checkmate, stalemate, mutual insufficient material, fivefold repetition, the 75-move rule, and analyzer-driven dead positions are all surfaced as queryable artifacts the caller polls to decide whether to adjudicate. At checkmate and stalemate the natural barrier is the empty legal-move set (a move attempt fails through ordinary legality); at the other terminations legal moves still exist and the pipeline accepts them. The `GameStatus` enum is replaced by a structured `Outcome` record carrying `Termination` and the winner — python-chess parity at the API boundary, the cross-validation oracle that's been the project's reference since 12.2.0. The motivation: clean-chess corpus and tooling already needed to replay historical PGN that continues a move or two past an automatic termination, the python-chess oracle returns terminations as information rather than enforcement, and the previous in-pipeline gate forced ugly workarounds in both the oracle harness and the lenient parser. Dropping the gate eliminates the impedance mismatch.
 
 ### Notable
