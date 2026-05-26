@@ -12,7 +12,7 @@ import com.dlb.chess.board.enums.Side;
 import com.dlb.chess.common.Nulls;
 import com.dlb.chess.test.RestrictTestConstants;
 import com.dlb.chess.test.common.utility.PgnExtensionUtility;
-import com.dlb.chess.test.model.PgnTestCase;
+import com.dlb.chess.test.model.PgnFen;
 import com.dlb.chess.test.model.PgnTestCaseList;
 import com.dlb.chess.test.pgn.setup.PgnTestCaseCatalog;
 import com.dlb.chess.test.pgntest.enums.PgnTest;
@@ -30,9 +30,9 @@ class TestUnwinnabilityFullWinnable {
   @SuppressWarnings("static-method")
   @Test
   void verdictsAreWinnable() {
-    for (final PgnTestCase testCaseHavingHelpmate : helpmateFixtures()) {
+    for (final PgnFen testCaseHavingHelpmate : helpmateFixtures()) {
       logger.info(testCaseHavingHelpmate.pgnName());
-      final PgnTestCase lichessTestCase = PgnTestCaseCatalog
+      final PgnFen lichessTestCase = PgnTestCaseCatalog
           .findTestCase(calculateCorrespondingLichessGame(testCaseHavingHelpmate.pgnName()));
       final Board board = lichessTestCase.finalPosition();
       final Side winner = board.getHavingMove();
@@ -41,7 +41,7 @@ class TestUnwinnabilityFullWinnable {
     }
   }
 
-  private static List<PgnTestCase> helpmateFixtures() {
+  private static List<PgnFen> helpmateFixtures() {
     final PgnTestCaseList testCaseHavingHelpmateList = PgnTestCaseCatalog
         .getTestList(PgnTest.CHA_LICHESS_QUICK_DEPTH_ABOVE_FOUR_WINNABLE_FOR_FLAGGING_WITH_HELPMATE);
     if (!RestrictTestConstants.IS_RESTRICT_UNWINNABLE_FULL_FOR_LICHESS_HELPMATE_TEST) {

@@ -8,7 +8,7 @@ import com.dlb.chess.common.Nulls;
 import com.dlb.chess.model.LegalMove;
 import com.dlb.chess.model.PgnHalfMove;
 import com.dlb.chess.pgn.PgnGame;
-import com.dlb.chess.test.model.PgnTestCase;
+import com.dlb.chess.test.model.PgnFen;
 import com.dlb.chess.test.model.PgnTestCaseList;
 import com.dlb.chess.test.pgn.parser.PgnCacheForStrictPgnParserTestCases;
 import com.dlb.chess.test.pgn.setup.PgnTestCaseCatalog;
@@ -101,7 +101,7 @@ public class HelpmateSearchBoardPerformanceSurvey {
   private static List<Setup> buildSetups(PgnTest pgnTest) {
     final List<Setup> result = new ArrayList<>();
     final PgnTestCaseList testCaseList = PgnTestCaseCatalog.getTestList(pgnTest);
-    for (final PgnTestCase testCase : testCaseList.list()) {
+    for (final PgnFen testCase : testCaseList.list()) {
       if (result.size() >= MAX_POSITIONS_PER_GROUP) {
         break;
       }

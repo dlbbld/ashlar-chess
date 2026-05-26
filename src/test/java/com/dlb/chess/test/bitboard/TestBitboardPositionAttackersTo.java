@@ -19,7 +19,7 @@ import com.dlb.chess.squares.KingNonCastlingEmptyBoardSquares;
 import com.dlb.chess.squares.KnightEmptyBoardSquares;
 import com.dlb.chess.squares.PawnDiagonalSquares;
 import com.dlb.chess.squares.SlidingAttacksTestOracle;
-import com.dlb.chess.test.model.PgnTestCase;
+import com.dlb.chess.test.model.PgnFen;
 import com.dlb.chess.test.model.PgnTestCaseList;
 import com.dlb.chess.test.pgn.setup.PgnTestCaseCatalog;
 import com.dlb.chess.test.pgntest.enums.PgnTest;
@@ -36,7 +36,7 @@ class TestBitboardPositionAttackersTo {
   void corpusAgreesAcrossSquaresAndSides() {
     for (final PgnTest pgnTest : PgnTest.values()) {
       final PgnTestCaseList testCaseList = PgnTestCaseCatalog.getTestList(pgnTest);
-      for (final PgnTestCase testCase : testCaseList.list()) {
+      for (final PgnFen testCase : testCaseList.list()) {
         final StaticPosition staticPosition = StaticPositionBridge.toStaticPosition(testCase.finalPosition().getBitboardPosition());
         final BitboardPosition bitboardPosition = StaticPositionBridge.fromStaticPosition(staticPosition);
         for (final Square target : Square.REAL) {
@@ -48,7 +48,7 @@ class TestBitboardPositionAttackersTo {
   }
 
   private static void assertSideAgrees(StaticPosition staticPosition, BitboardPosition bitboardPosition, Square target,
-      Side side, PgnTestCase testCase) {
+      Side side, PgnFen testCase) {
     final Set<Square> bitboardAttackers = BitboardPositionUtility
         .toSquareSet(bitboardPosition.attackersTo(target, side));
     final Set<Square> referenceAttackers = referenceAttackersTo(staticPosition, target, side);

@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Test;
 import com.dlb.chess.board.Board;
 import com.dlb.chess.board.enums.Piece;
 import com.dlb.chess.common.Nulls;
-import com.dlb.chess.test.model.PgnTestCase;
+import com.dlb.chess.test.model.PgnFen;
 import com.dlb.chess.test.model.PgnTestCaseList;
 import com.dlb.chess.test.pgn.setup.PgnTestCaseCatalog;
 import com.dlb.chess.test.pgntest.enums.PgnTest;
@@ -33,7 +33,7 @@ class TestBasicDoubleCheckBlack extends AbstractTestBasic {
   @Test
   void test() throws Exception {
     final PgnTestCaseList testCaseList = PgnTestCaseCatalog.getTestList(PgnTest.BASIC_DOUBLE_CHECK_BLACK);
-    for (final PgnTestCase testCase : testCaseList.list()) {
+    for (final PgnFen testCase : testCaseList.list()) {
       final Board board = testCase.game(testCaseList.pgnTest());
 
       logger.info(testCase.pgnName());

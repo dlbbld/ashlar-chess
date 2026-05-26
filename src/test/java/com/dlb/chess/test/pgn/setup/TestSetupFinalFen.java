@@ -11,12 +11,12 @@ import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 
 import com.dlb.chess.board.Board;
 import com.dlb.chess.common.Nulls;
-import com.dlb.chess.test.model.PgnTestCase;
+import com.dlb.chess.test.model.PgnFen;
 import com.dlb.chess.test.model.PgnTestCaseList;
 import com.dlb.chess.test.pgntest.enums.PgnTest;
 
 /**
- * On-demand audit that verifies every {@link PgnTestCase}'s cached {@code fen} matches the position actually reached by
+ * On-demand audit that verifies every {@link PgnFen}'s cached {@code fen} matches the position actually reached by
  * replaying its PGN. Disabled by default because it replays the full corpus.
  *
  * <p>
@@ -51,7 +51,7 @@ class TestSetupFinalFen {
 
     for (final PgnTest pgnTest : PgnTest.values()) {
       final PgnTestCaseList testCaseList = PgnTestCaseCatalog.getTestList(pgnTest);
-      for (final PgnTestCase testCase : testCaseList.list()) {
+      for (final PgnFen testCase : testCaseList.list()) {
         totalFixtures++;
         try {
           final Board board = testCase.game(pgnTest);

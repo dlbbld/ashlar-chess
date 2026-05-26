@@ -10,7 +10,7 @@ import com.dlb.chess.board.enums.Side;
 import com.dlb.chess.common.Nulls;
 import com.dlb.chess.common.constants.EnumConstants;
 import com.dlb.chess.test.RestrictTestConstants;
-import com.dlb.chess.test.model.PgnTestCase;
+import com.dlb.chess.test.model.PgnFen;
 import com.dlb.chess.test.model.PgnTestCaseList;
 import com.dlb.chess.test.pgn.setup.PgnTestCaseCatalog;
 
@@ -39,16 +39,16 @@ class TestInsufficientMaterial implements EnumConstants {
             continue;
         }
       }
-      for (final PgnTestCase testCase : testCaseList.list()) {
+      for (final PgnFen testCase : testCaseList.list()) {
         checkInsufficientMaterial(testCase);
       }
     }
   }
 
   // Insufficient material is a function of the position alone, not the path. Build a history-less board from the
-  // cached final FEN via PgnTestCase.finalPosition() — no PGN parse, no per-ply replay — and assert that the
+  // cached final FEN via PgnFen.finalPosition() — no PGN parse, no per-ply replay — and assert that the
   // mechanical bitboard-level computation agrees with the per-side Board predicate combined.
-  private static void checkInsufficientMaterial(PgnTestCase testCase) {
+  private static void checkInsufficientMaterial(PgnFen testCase) {
 
     logger.info(testCase.pgnName());
 

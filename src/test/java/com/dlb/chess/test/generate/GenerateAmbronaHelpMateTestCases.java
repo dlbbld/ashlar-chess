@@ -25,7 +25,7 @@ import com.dlb.chess.pgn.ResultTagValue;
 import com.dlb.chess.pgn.StandardTag;
 import com.dlb.chess.pgn.Tag;
 import com.dlb.chess.test.common.utility.PgnExtensionUtility;
-import com.dlb.chess.test.model.PgnTestCase;
+import com.dlb.chess.test.model.PgnFen;
 import com.dlb.chess.test.model.PgnTestCaseList;
 import com.dlb.chess.test.pgn.parser.PgnCacheForStrictPgnParserTestCases;
 import com.dlb.chess.test.pgn.setup.PgnTestCaseCatalog;
@@ -52,7 +52,7 @@ public class GenerateAmbronaHelpMateTestCases {
     populateHelpMateUci(havingHelpMate);
 
     final PgnTestCaseList testCaseList = PgnTestCaseCatalog.getTestList(PgnTest.CHA_LICHESS_QUICK_DEPTH_ABOVE_FOUR);
-    for (final PgnTestCase testCase : testCaseList.list()) {
+    for (final PgnFen testCase : testCaseList.list()) {
       final Path folderPath = testCaseList.pgnTest().getFolderPath();
       final Board board = testCase.game(testCaseList.pgnTest());
 

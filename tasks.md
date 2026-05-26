@@ -36,7 +36,7 @@ The fivefold / 75-move counterpart shipped in **13.0.0** (the *reallow-play-beyo
 
 ### Phase 2 — Corpus and test cleanup
 
-**Step 2.1** — Reactivate the lone remaining legacy fixture `lastMoveAddedAccidentally/02_…_KvK.pgn` into the regular corpus (likely `pgn/realGames/lastMoveAddedAccidentally/`). Generate its `PgnTestCase` catalog entry via `GenerateTestCaseForPgn`; shrink `TestLegacyPgnParsePlaysBeyondAudit` to zero entries and delete the test class once empty. The `pgnParser/legacy/common/beyond/` tree disappears.
+**Step 2.1** — Reactivate the lone remaining legacy fixture `lastMoveAddedAccidentally/02_…_KvK.pgn` into the regular corpus (likely `pgn/realGames/lastMoveAddedAccidentally/`). Generate its `PgnFen` catalog entry via `GenerateTestCaseForPgn`; shrink `TestLegacyPgnParsePlaysBeyondAudit` to zero entries and delete the test class once empty. The `pgnParser/legacy/common/beyond/` tree disappears.
 
 **Step 2.2** — Any test that asserts on `GameStatus.DEAD_POSITION_UNWINNABLE_QUICK` being thrown from the move pipeline switches to asserting on the queryable predicate. Drop the 4 corresponding `test05`–`test06` (insufficient-material) play-beyond tests in `TestStrictPgnParserBeyondTermination` / `TestLenientPgnParserBeyondTermination` once dead-position termination is gone too — by then the `pgnParser/common/beyond/` folder is empty.
 

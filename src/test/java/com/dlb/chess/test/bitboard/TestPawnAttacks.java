@@ -16,7 +16,7 @@ import com.dlb.chess.board.enums.Side;
 import com.dlb.chess.board.enums.Square;
 import com.dlb.chess.common.Nulls;
 import com.dlb.chess.squares.PawnDiagonalSquares;
-import com.dlb.chess.test.model.PgnTestCase;
+import com.dlb.chess.test.model.PgnFen;
 import com.dlb.chess.test.model.PgnTestCaseList;
 import com.dlb.chess.test.pgn.setup.PgnTestCaseCatalog;
 import com.dlb.chess.test.pgntest.enums.PgnTest;
@@ -68,7 +68,7 @@ class TestPawnAttacks {
   void corpusEveryPawnAgrees() {
     for (final PgnTest pgnTest : PgnTest.values()) {
       final PgnTestCaseList testCaseList = PgnTestCaseCatalog.getTestList(pgnTest);
-      for (final PgnTestCase testCase : testCaseList.list()) {
+      for (final PgnFen testCase : testCaseList.list()) {
         final StaticPosition staticPosition = StaticPositionBridge.toStaticPosition(testCase.finalPosition().getBitboardPosition());
         final BitboardPosition bitboardPosition = StaticPositionBridge.fromStaticPosition(staticPosition);
         assertSideAgrees(bitboardPosition.whitePawns(), Side.WHITE, testCase);
@@ -77,7 +77,7 @@ class TestPawnAttacks {
     }
   }
 
-  private static void assertSideAgrees(long pawns, Side side, PgnTestCase testCase) {
+  private static void assertSideAgrees(long pawns, Side side, PgnFen testCase) {
     long remaining = pawns;
     while (remaining != 0L) {
       final Square fromSquare = Nulls.get(Square.REAL, Long.numberOfTrailingZeros(remaining));

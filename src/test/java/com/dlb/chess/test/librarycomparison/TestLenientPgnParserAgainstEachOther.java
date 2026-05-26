@@ -15,7 +15,7 @@ import com.dlb.chess.model.PgnHalfMove;
 import com.dlb.chess.pgn.PgnGame;
 import com.dlb.chess.test.RestrictTestConstants;
 import com.dlb.chess.test.librarycarlos.pgn.parser.PgnParserLibraryCarlos;
-import com.dlb.chess.test.model.PgnTestCase;
+import com.dlb.chess.test.model.PgnFen;
 import com.dlb.chess.test.model.PgnTestCaseList;
 import com.dlb.chess.test.pgn.parser.PgnCacheForStrictPgnParserTestCases;
 import com.dlb.chess.test.pgn.parser.model.PgnSan;
@@ -32,7 +32,7 @@ class TestLenientPgnParserAgainstEachOther {
   @Test
   void test() throws Exception {
     for (final PgnTestCaseList testCaseList : PgnTestCaseCatalog.getRestrictedTestListList()) {
-      for (final PgnTestCase testCase : testCaseList.list()) {
+      for (final PgnFen testCase : testCaseList.list()) {
         if (RestrictTestConstants.IS_RESTRICT_PGN_LENIENT_PARSER_API_AGAINST_EACH_OTHER_TEST) {
           switch (testCaseList.pgnTest()) {
             case BASIC_CHECK_WHITE:

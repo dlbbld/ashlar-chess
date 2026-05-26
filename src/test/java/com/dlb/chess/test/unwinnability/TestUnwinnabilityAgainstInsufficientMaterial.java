@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 
 import com.dlb.chess.board.Board;
 import com.dlb.chess.board.enums.Side;
-import com.dlb.chess.test.model.PgnTestCase;
+import com.dlb.chess.test.model.PgnFen;
 import com.dlb.chess.test.pgn.setup.PgnTestCaseCatalog;
 import com.dlb.chess.test.pgntest.enums.PgnTest;
 import com.dlb.chess.unwinnability.UnwinnabilityFullVerdict;
@@ -34,7 +34,7 @@ class TestUnwinnabilityAgainstInsufficientMaterial {
   @SuppressWarnings("static-method")
   @Test
   void testBothSidesInsufficient() {
-    for (final PgnTestCase testCase : PgnTestCaseCatalog.getTestList(PgnTest.BASIC_INSUFFICIENT_MATERIAL_BOTH)
+    for (final PgnFen testCase : PgnTestCaseCatalog.getTestList(PgnTest.BASIC_INSUFFICIENT_MATERIAL_BOTH)
         .list()) {
       assertUnwinnable(testCase, Side.WHITE);
       assertUnwinnable(testCase, Side.BLACK);
@@ -44,7 +44,7 @@ class TestUnwinnabilityAgainstInsufficientMaterial {
   @SuppressWarnings("static-method")
   @Test
   void testOnlyWhiteInsufficient() {
-    for (final PgnTestCase testCase : PgnTestCaseCatalog.getTestList(PgnTest.BASIC_INSUFFICIENT_MATERIAL_ONLY_WHITE)
+    for (final PgnFen testCase : PgnTestCaseCatalog.getTestList(PgnTest.BASIC_INSUFFICIENT_MATERIAL_ONLY_WHITE)
         .list()) {
       assertUnwinnable(testCase, Side.WHITE);
     }
@@ -53,13 +53,13 @@ class TestUnwinnabilityAgainstInsufficientMaterial {
   @SuppressWarnings("static-method")
   @Test
   void testOnlyBlackInsufficient() {
-    for (final PgnTestCase testCase : PgnTestCaseCatalog.getTestList(PgnTest.BASIC_INSUFFICIENT_MATERIAL_ONLY_BLACK)
+    for (final PgnFen testCase : PgnTestCaseCatalog.getTestList(PgnTest.BASIC_INSUFFICIENT_MATERIAL_ONLY_BLACK)
         .list()) {
       assertUnwinnable(testCase, Side.BLACK);
     }
   }
 
-  private static void assertUnwinnable(PgnTestCase testCase, Side side) {
+  private static void assertUnwinnable(PgnFen testCase, Side side) {
     final Board board = testCase.finalPosition();
     final var message = testCase.pgnName() + " " + side;
     assertEquals(UnwinnabilityQuickVerdict.UNWINNABLE, UnwinnableQuickAnalyzer.unwinnableQuick(board, side).verdict(),

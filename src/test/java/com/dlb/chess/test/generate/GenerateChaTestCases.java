@@ -18,7 +18,7 @@ import com.dlb.chess.common.exceptions.FileSystemAccessException;
 import com.dlb.chess.model.PgnHalfMove;
 import com.dlb.chess.pgn.PgnGame;
 import com.dlb.chess.test.common.utility.FileUtility;
-import com.dlb.chess.test.model.PgnTestCase;
+import com.dlb.chess.test.model.PgnFen;
 import com.dlb.chess.test.model.PgnTestCaseList;
 import com.dlb.chess.test.pgn.parser.PgnCacheForStrictPgnParserTestCases;
 import com.dlb.chess.test.pgn.setup.PgnTestCaseCatalog;
@@ -47,7 +47,7 @@ public class GenerateChaTestCases implements EnumConstants {
         final Path folderPath = testCaseList.pgnTest().getFolderPath();
         logger.info("Processing folder " + folderPath);
 
-        for (final PgnTestCase testCase : testCaseList.list()) {
+        for (final PgnFen testCase : testCaseList.list()) {
           // if (!testList.getFolder().equals(PgnTest.BASIC_CHECKMATE)) {
           // continue;
           // }

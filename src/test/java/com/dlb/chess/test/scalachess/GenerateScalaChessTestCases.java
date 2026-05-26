@@ -24,7 +24,7 @@ import com.dlb.chess.moves.CastlingUtility;
 import com.dlb.chess.moves.PromotionUtility;
 import com.dlb.chess.pgn.PgnGame;
 import com.dlb.chess.test.common.utility.FileUtility;
-import com.dlb.chess.test.model.PgnTestCase;
+import com.dlb.chess.test.model.PgnFen;
 import com.dlb.chess.test.model.PgnTestCaseList;
 import com.dlb.chess.test.pgn.parser.PgnCacheForStrictPgnParserTestCases;
 import com.dlb.chess.test.pgn.setup.PgnTestCaseCatalog;
@@ -106,7 +106,7 @@ public class GenerateScalaChessTestCases implements EnumConstants {
       }
 
       var isBefore = true;
-      for (final PgnTestCase testCase : testCaseList.list()) {
+      for (final PgnFen testCase : testCaseList.list()) {
 
         var isJustHitGame = false;
         if (isBefore && GAME_TO_OR_FROM_PGN_NAME.equals(testCase.pgnName())) {
@@ -188,7 +188,7 @@ public class GenerateScalaChessTestCases implements EnumConstants {
 
   // we calculate because if we put it directly into the method it can raise unused code warnings
   private static boolean isContinueFileLevel(boolean isGenerateForFileOnly, boolean isGameToIncludingGame,
-      boolean isGameFromIncludingGame, PgnTestCase testCase, boolean isBefore, boolean isJustHitGame) {
+      boolean isGameFromIncludingGame, PgnFen testCase, boolean isBefore, boolean isJustHitGame) {
     // code to only look at one specific game
     if (isGenerateForFileOnly && !GENERATE_PGN_NAME.equals(testCase.pgnName())) {
       return true;

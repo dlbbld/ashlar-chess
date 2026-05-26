@@ -18,7 +18,7 @@ import com.dlb.chess.test.pgntest.enums.PgnTest;
  * round-trips, end-to-end pipeline tests). A position-only test that mistakenly chose {@code game(...)} scales as the
  * number of plies in the fixture.
  */
-public record PgnTestCase(String pgnName, String finalFen) {
+public record PgnFen(String pgnName, String finalFen) {
 
   public Board finalPosition() {
     return new Board(FenCacheForTestCases.getFen(finalFen()));

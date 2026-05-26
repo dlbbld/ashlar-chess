@@ -12,7 +12,7 @@ import com.dlb.chess.board.enums.Square;
 import com.dlb.chess.model.PgnHalfMove;
 import com.dlb.chess.moves.AbstractLegalMoves;
 import com.dlb.chess.pgn.PgnGame;
-import com.dlb.chess.test.model.PgnTestCase;
+import com.dlb.chess.test.model.PgnFen;
 import com.dlb.chess.test.model.PgnTestCaseList;
 import com.dlb.chess.test.pgn.parser.PgnCacheForStrictPgnParserTestCases;
 import com.dlb.chess.test.pgn.setup.PgnTestCaseCatalog;
@@ -61,7 +61,7 @@ public class MoveGenerationPerformanceSurvey {
   private static List<PositionPair> collectPositions(PgnTest pgnTest) {
     final List<PositionPair> result = new ArrayList<>();
     final PgnTestCaseList testCaseList = PgnTestCaseCatalog.getTestList(pgnTest);
-    for (final PgnTestCase testCase : testCaseList.list()) {
+    for (final PgnFen testCase : testCaseList.list()) {
       if (result.size() >= MAX_POSITIONS_PER_GROUP) {
         break;
       }

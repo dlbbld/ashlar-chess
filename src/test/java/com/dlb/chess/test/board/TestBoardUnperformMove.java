@@ -10,7 +10,7 @@ import com.dlb.chess.board.Board;
 import com.dlb.chess.common.Nulls;
 import com.dlb.chess.model.PgnHalfMove;
 import com.dlb.chess.pgn.PgnGame;
-import com.dlb.chess.test.model.PgnTestCase;
+import com.dlb.chess.test.model.PgnFen;
 import com.dlb.chess.test.model.PgnTestCaseList;
 import com.dlb.chess.test.pgn.parser.PgnCacheForStrictPgnParserTestCases;
 import com.dlb.chess.test.pgn.setup.PgnTestCaseCatalog;
@@ -61,7 +61,7 @@ class TestBoardUnperformMove {
     var halfMovesExercised = 0;
 
     for (final PgnTestCaseList testCaseList : PgnTestCaseCatalog.getParserIntegrationSmokeList()) {
-      for (final PgnTestCase testCase : testCaseList.list()) {
+      for (final PgnFen testCase : testCaseList.list()) {
         logger.info(testCase.pgnName());
         halfMovesExercised += runUnperformContractTest(testCaseList, testCase);
         pgnsExercised++;
@@ -79,7 +79,7 @@ class TestBoardUnperformMove {
    * immediately unperforms it on {@code actual}, then asserts {@code actual} equals the parallel forward-only
    * {@code expected} board. Returns the number of halfmoves verified.
    */
-  private static int runUnperformContractTest(PgnTestCaseList testCaseList, PgnTestCase testCase) {
+  private static int runUnperformContractTest(PgnTestCaseList testCaseList, PgnFen testCase) {
     final PgnGame pgnGame = PgnCacheForStrictPgnParserTestCases.getPgn(testCaseList.pgnTest().getFolderPath(),
         testCase.pgnName());
 

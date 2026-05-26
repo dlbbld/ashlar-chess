@@ -11,7 +11,7 @@ import com.dlb.chess.fen.constants.FenConstants;
 import com.dlb.chess.model.PgnHalfMove;
 import com.dlb.chess.pgn.PgnGame;
 import com.dlb.chess.test.RestrictTestConstants;
-import com.dlb.chess.test.model.PgnTestCase;
+import com.dlb.chess.test.model.PgnFen;
 import com.dlb.chess.test.model.PgnTestCaseList;
 import com.dlb.chess.test.pgn.parser.PgnCacheForStrictPgnParserTestCases;
 import com.dlb.chess.test.pgn.setup.PgnTestCaseCatalog;
@@ -27,7 +27,7 @@ class TestBoardAgainstEachOther {
   @Test
   void test() throws Exception {
     for (final PgnTestCaseList testCaseList : PgnTestCaseCatalog.getRestrictedTestListList()) {
-      for (final PgnTestCase testCase : testCaseList.list()) {
+      for (final PgnFen testCase : testCaseList.list()) {
         // takes 50 minutes with all test cases
         if (RestrictTestConstants.IS_RESTRICT_PGN_BOARD_API_AGAINST_EACH_OTHER_TEST) {
           switch (testCaseList.pgnTest()) {

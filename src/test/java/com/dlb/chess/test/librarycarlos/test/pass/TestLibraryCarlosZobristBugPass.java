@@ -12,7 +12,7 @@ import org.junit.jupiter.api.Test;
 
 import com.dlb.chess.common.Nulls;
 import com.dlb.chess.test.librarycarlos.NullsCarlos;
-import com.dlb.chess.test.model.PgnTestCase;
+import com.dlb.chess.test.model.PgnFen;
 import com.dlb.chess.test.model.PgnTestCaseList;
 import com.dlb.chess.test.pgn.setup.PgnTestCaseCatalog;
 import com.dlb.chess.test.pgntest.enums.PgnTest;
@@ -32,7 +32,7 @@ class TestLibraryCarlosZobristBugPass {
   void testFolder() throws Exception {
 
     final PgnTestCaseList testCaseList = PgnTestCaseCatalog.getTestList(PgnTest.MAX_MOVES);
-    for (final PgnTestCase testCase : testCaseList.list()) {
+    for (final PgnFen testCase : testCaseList.list()) {
       final Path pgnPath = Nulls.pathResolve(testCaseList.pgnTest().getFolderPath(), testCase.pgnName());
       logger.info(testCase.pgnName());
       testPrintingPosition(pgnPath);

@@ -31,7 +31,7 @@ Two helpers under [`src/test/java/com/dlb/chess/test/generate/`](src/test/java/c
 Both emit lines of the shape:
 
 ```java
-list.add(new PgnTestCase("file.pgn", "endPositionFen"));
+list.add(new PgnFen("file.pgn", "endPositionFen"));
 ```
 
 Run from Eclipse (Run As → Java Application) or from the command line:

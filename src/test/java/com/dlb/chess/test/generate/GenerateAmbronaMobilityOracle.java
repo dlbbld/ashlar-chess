@@ -20,14 +20,14 @@ import com.dlb.chess.common.Nulls;
 import com.dlb.chess.common.exceptions.FileSystemAccessException;
 import com.dlb.chess.common.utility.IoUtility;
 import com.dlb.chess.test.ConfigurationTestConstants;
-import com.dlb.chess.test.model.PgnTestCase;
+import com.dlb.chess.test.model.PgnFen;
 import com.dlb.chess.test.model.PgnTestCaseList;
 import com.dlb.chess.test.pgn.setup.PgnTestCaseCatalog;
 import com.dlb.chess.test.pgntest.enums.PgnTest;
 import com.dlb.chess.unwinnability.MobilityOracleFormatter;
 
 /**
- * Regenerates the Ambrona mobility oracle from the cached final FENs in {@link PgnTestCase}. Requires WSL with
+ * Regenerates the Ambrona mobility oracle from the cached final FENs in {@link PgnFen}. Requires WSL with
  * D3-Chess built and Stockfish installed; pass the WSL D3-Chess checkout root as the optional first argument when it is
  * not at the default location.
  */
@@ -85,7 +85,7 @@ public final class GenerateAmbronaMobilityOracle {
     final Set<String> fenSet = new LinkedHashSet<>();
     for (final PgnTest pgnTest : PgnTest.values()) {
       final PgnTestCaseList testCaseList = PgnTestCaseCatalog.getTestList(pgnTest);
-      for (final PgnTestCase testCase : testCaseList.list()) {
+      for (final PgnFen testCase : testCaseList.list()) {
         fenSet.add(testCase.finalFen());
       }
     }

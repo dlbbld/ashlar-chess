@@ -17,7 +17,7 @@ import com.dlb.chess.common.Nulls;
 import com.dlb.chess.common.exceptions.ProgrammingMistakeException;
 import com.dlb.chess.test.ConfigurationTestConstants;
 import com.dlb.chess.test.common.utility.FileUtility;
-import com.dlb.chess.test.model.PgnTestCase;
+import com.dlb.chess.test.model.PgnFen;
 import com.dlb.chess.test.model.PgnTestCaseList;
 import com.dlb.chess.test.pgn.setup.PgnTestCaseCatalog;
 import com.dlb.chess.test.pgntest.enums.PgnTest;
@@ -47,7 +47,7 @@ class TestAmbronaUnwinnabilityFullOracleComparison {
       }
 
       final PgnTestCaseList testCaseList = PgnTestCaseCatalog.getTestList(pgnTest);
-      for (final PgnTestCase testCase : testCaseList.list()) {
+      for (final PgnFen testCase : testCaseList.list()) {
         logger.info(testCase.pgnName());
         checkedPositionCount++;
         check(testCase, Side.WHITE, AmbronaUnwinnabilityOracle.get(testCase.finalFen()).fullWhite(), failureList,
@@ -68,7 +68,7 @@ class TestAmbronaUnwinnabilityFullOracleComparison {
     assertTrue(failureList.isEmpty(), formatFailureMessage(checkedPositionCount, failureList));
   }
 
-  private static void check(PgnTestCase testCase, Side intendedWinner, UnwinnabilityFullVerdict expected,
+  private static void check(PgnFen testCase, Side intendedWinner, UnwinnabilityFullVerdict expected,
       List<String> failureList, Set<AcceptedDifference> remainingAcceptedDifferenceSet) {
     final Board board = testCase.finalPosition();
     final UnwinnabilityFullVerdict actual = UnwinnableFullAnalyzer.unwinnableFull(board, intendedWinner).verdict();

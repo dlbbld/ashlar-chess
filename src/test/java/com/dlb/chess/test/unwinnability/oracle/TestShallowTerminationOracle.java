@@ -11,7 +11,7 @@ import org.junit.jupiter.api.Test;
 import com.dlb.chess.board.Board;
 import com.dlb.chess.board.enums.Side;
 import com.dlb.chess.common.Nulls;
-import com.dlb.chess.test.model.PgnTestCase;
+import com.dlb.chess.test.model.PgnFen;
 import com.dlb.chess.test.pgn.setup.PgnTestCaseCatalog;
 import com.dlb.chess.test.pgntest.enums.PgnTest;
 import com.dlb.chess.test.unwinnability.againstcha.AmbronaUnwinnabilityOracle;
@@ -48,9 +48,9 @@ class TestShallowTerminationOracle {
   @SuppressWarnings("static-method")
   @Test
   void testChaLichessDepthThreeFixtures() {
-    final List<PgnTestCase> fixtures = PgnTestCaseCatalog.getTestList(PgnTest.CHA_LICHESS_QUICK_DEPTH_THREE).list();
+    final List<PgnFen> fixtures = PgnTestCaseCatalog.getTestList(PgnTest.CHA_LICHESS_QUICK_DEPTH_THREE).list();
 
-    for (final PgnTestCase testCase : fixtures) {
+    for (final PgnFen testCase : fixtures) {
       logger.info(testCase.pgnName());
 
       final Board board = testCase.finalPosition();
@@ -72,9 +72,9 @@ class TestShallowTerminationOracle {
   @SuppressWarnings("static-method")
   @Test
   void testShallowTerminationCorpus() {
-    final List<PgnTestCase> fixtures = PgnTestCaseCatalog.getTestList(PgnTest.CHA_SHALLOW_TERMINATION).list();
+    final List<PgnFen> fixtures = PgnTestCaseCatalog.getTestList(PgnTest.CHA_SHALLOW_TERMINATION).list();
 
-    for (final PgnTestCase testCase : fixtures) {
+    for (final PgnFen testCase : fixtures) {
       logger.info(testCase.pgnName());
 
       final Board board = testCase.finalPosition();
