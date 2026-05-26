@@ -20,27 +20,13 @@ import com.dlb.chess.pgn.PgnGame;
 import com.dlb.chess.pgn.PgnUtility;
 
 /**
- * Generates game-level reports â€” threefold-repetition listings (including missed-claim-ahead opportunities),
- * no-progress (50/75-move-rule) sequences, and a printable summary â€” from a {@link Board} or a parsed PGN.
+ * Prints a human-readable, game-level summary of a {@link Board} or a parsed PGN to {@code stdout}: threefold-repetition
+ * listings, missed claim-ahead opportunities, and no-progress (50/75-move-rule) sequences.
  *
  * <p>
- * Two surfaces:
- *
- * <ul>
- * <li>{@code calculateReport(...)} returns a {@link com.dlb.chess.report.Report} record carrying all the analytical
- * data â€” repetition lists, threefold-claim-ahead slots, no-progress sequences. Use this for programmatic
- * inspection.</li>
- * <li>{@code printReport(...)} emits a human-readable summary to {@code stdout} via
- * {@link com.dlb.chess.messages.Message}. Use this for the kind of CLI-style output shown in the README examples.</li>
- * </ul>
- *
- * <p>
- * The report distinguishes the on-board predicates ("threefold has occurred") from the with-move predicates ("some
- * legal move would create a threefold position the side could claim before playing it"). The latter surfaces missed
- * claim opportunities other libraries don't.
- *
- * <p>
- * Final class with a private constructor â€” all entry points are static.
+ * The summary distinguishes on-board predicates ("threefold has occurred") from with-move predicates ("some legal move
+ * would create a threefold position the side could claim before playing it"). The latter surfaces missed claim
+ * opportunities other libraries don't.
  */
 public final class Reporter {
 
