@@ -147,10 +147,9 @@ Codes are not collapsed: each distinguishable deviation has its own code, and a 
 
 **API.** `LenientSanParser.parseText(String, ChessBoard)` returns a `LenientSanParserValidationResult` (move + forgiven items). `LenientSanParser.validateText(String, ChessBoard)` is the same call with the result discarded — convenience for yes/no checks. `Board.moveLenient(String)` returns the same result type so the convenience path also surfaces forgiven items.
 
-**Deliberate non-recoveries.** Three categories are rejected even by the lenient pipeline:
+**Deliberate non-recoveries.** Two categories are rejected even by the lenient pipeline:
 - **Mixed castling** (`0-O`, `O-0`) — no real-world tool emits this; allowing it would add parser complexity for zero practical value.
 - **Pawn `SPURIOUS_CAPTURE_MARKER`** — `dxe5` when e5 is empty has no clean string mutation that yields canonical SAN; the only "recovery" would silently swap the user's intended pawn (d-file) for a different one (e-file). That crosses the line from forgiving sloppiness to overriding intent.
-- **Game already terminated** — top-of-pipeline guard before the lenient layer engages, identical to strict; once a move-blocking termination is reached no further moves are accepted, lenient or otherwise.
 
 The strict pipeline remains the single source of chess-validation truth. Lenient is a thin input-shape transformation layer that reuses strict for everything else.
 
