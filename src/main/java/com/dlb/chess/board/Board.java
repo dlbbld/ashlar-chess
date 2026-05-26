@@ -660,8 +660,8 @@ public class Board {
     return getRepetitionCount() >= ChessConstants.FIVEFOLD_REPETITION_RULE_THRESHOLD;
   }
 
-  public List<String> getSanList() {
-    return sanList;
+  public ImmutableList<String> getSanList() {
+    return Nulls.copyOfList(sanList);
   }
 
   public String getSan() {
