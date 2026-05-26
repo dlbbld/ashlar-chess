@@ -335,11 +335,16 @@ public class PgnTestCaseCatalog {
     final List<PgnFen> list = new ArrayList<>();
 
     list.add(new PgnFen("01_white_moving_piece_rook.pgn", "rnbqkbnr/1ppppppp/8/p7/8/P7/RPPPPPPP/1NBQKBNR b Kkq - 1 2"));
-    list.add(new PgnFen("02_white_moving_piece_knight.pgn", "rnbqkbnr/pppppppp/8/8/8/2N5/PPPPPPPP/R1BQKBNR b KQkq - 1 1"));
-    list.add(new PgnFen("03_white_moving_piece_bishop.pgn", "rnbqkbnr/ppp1pppp/8/3p4/8/1P6/PBPPPPPP/RN1QKBNR b KQkq - 1 2"));
-    list.add(new PgnFen("04_white_moving_piece_queen.pgn", "rnbqkbnr/ppp1pppp/8/3p4/3P4/3Q4/PPP1PPPP/RNB1KBNR b KQkq - 1 2"));
-    list.add(new PgnFen("05_white_moving_piece_king.pgn", "rnbqkbnr/pppp1ppp/8/4p3/4P3/8/PPPPKPPP/RNBQ1BNR b kq - 1 2"));
-    list.add(new PgnFen("06_white_moving_piece_pawn.pgn", "rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq e3 0 1"));
+    list.add(
+        new PgnFen("02_white_moving_piece_knight.pgn", "rnbqkbnr/pppppppp/8/8/8/2N5/PPPPPPPP/R1BQKBNR b KQkq - 1 1"));
+    list.add(
+        new PgnFen("03_white_moving_piece_bishop.pgn", "rnbqkbnr/ppp1pppp/8/3p4/8/1P6/PBPPPPPP/RN1QKBNR b KQkq - 1 2"));
+    list.add(new PgnFen("04_white_moving_piece_queen.pgn",
+        "rnbqkbnr/ppp1pppp/8/3p4/3P4/3Q4/PPP1PPPP/RNB1KBNR b KQkq - 1 2"));
+    list.add(
+        new PgnFen("05_white_moving_piece_king.pgn", "rnbqkbnr/pppp1ppp/8/4p3/4P3/8/PPPPKPPP/RNBQ1BNR b kq - 1 2"));
+    list.add(
+        new PgnFen("06_white_moving_piece_pawn.pgn", "rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq e3 0 1"));
 
     return new PgnTestCaseList(PgnTest.BASIC_MOVING_PIECE_WHITE, list);
   }
@@ -347,12 +352,18 @@ public class PgnTestCaseCatalog {
   private static PgnTestCaseList createTestCasesBasicMovingPieceBlack() {
     final List<PgnFen> list = new ArrayList<>();
 
-    list.add(new PgnFen("01_black_moving_piece_rook.pgn", "rnbqkbn1/pppppppr/7p/8/3PP3/8/PPP2PPP/RNBQKBNR w KQq - 1 3"));
-    list.add(new PgnFen("02_black_moving_piece_knight.pgn", "rnbqkb1r/pppppppp/5n2/8/8/2N5/PPPPPPPP/R1BQKBNR w KQkq - 2 2"));
-    list.add(new PgnFen("03_black_moving_piece_bishop.pgn", "rnbqk1nr/ppppppbp/6p1/8/3PP3/8/PPP2PPP/RNBQKBNR w KQkq - 1 3"));
-    list.add(new PgnFen("04_black_moving_piece_queen.pgn", "rnb1kbnr/pppp1ppp/8/4p3/3PP2q/8/PPP2PPP/RNBQKBNR w KQkq - 1 3"));
-    list.add(new PgnFen("05_black_moving_piece_king.pgn", "rnbq1bnr/ppppkppp/8/4p3/3PP3/8/PPP2PPP/RNBQKBNR w KQ - 1 3"));
-    list.add(new PgnFen("06_black_moving_piece_pawn.pgn", "rnbqkbnr/pppp1ppp/8/4p3/4P3/8/PPPP1PPP/RNBQKBNR w KQkq e6 0 2"));
+    list.add(
+        new PgnFen("01_black_moving_piece_rook.pgn", "rnbqkbn1/pppppppr/7p/8/3PP3/8/PPP2PPP/RNBQKBNR w KQq - 1 3"));
+    list.add(
+        new PgnFen("02_black_moving_piece_knight.pgn", "rnbqkb1r/pppppppp/5n2/8/8/2N5/PPPPPPPP/R1BQKBNR w KQkq - 2 2"));
+    list.add(
+        new PgnFen("03_black_moving_piece_bishop.pgn", "rnbqk1nr/ppppppbp/6p1/8/3PP3/8/PPP2PPP/RNBQKBNR w KQkq - 1 3"));
+    list.add(
+        new PgnFen("04_black_moving_piece_queen.pgn", "rnb1kbnr/pppp1ppp/8/4p3/3PP2q/8/PPP2PPP/RNBQKBNR w KQkq - 1 3"));
+    list.add(
+        new PgnFen("05_black_moving_piece_king.pgn", "rnbq1bnr/ppppkppp/8/4p3/3PP3/8/PPP2PPP/RNBQKBNR w KQ - 1 3"));
+    list.add(
+        new PgnFen("06_black_moving_piece_pawn.pgn", "rnbqkbnr/pppp1ppp/8/4p3/4P3/8/PPPP1PPP/RNBQKBNR w KQkq e6 0 2"));
 
     return new PgnTestCaseList(PgnTest.BASIC_MOVING_PIECE_BLACK, list);
   }
@@ -360,30 +371,54 @@ public class PgnTestCaseCatalog {
   private static PgnTestCaseList createTestCasesBasicCaptureWhite() {
     final List<PgnFen> list = new ArrayList<>();
 
-    list.add(new PgnFen("01_white_capture_rook_rook.pgn", "1nbqkbnr/1ppppppp/1R6/p7/P7/8/1PPPPPPP/1NBQKBNR b Kk - 0 4"));
-    list.add(new PgnFen("02_white_capture_rook_knight.pgn", "r1bqkb1r/pppppppp/5n2/4R3/P7/8/1PPPPPPP/1NBQKBNR b Kkq - 0 4"));
-    list.add(new PgnFen("03_white_capture_rook_bishop.pgn", "rnbqk1nr/pppp1ppp/8/4p3/7P/R7/PPPPPPP1/RNBQKBN1 b Qkq - 0 3"));
-    list.add(new PgnFen("04_white_capture_rook_queen.pgn", "rnb1kbnr/pppp1ppp/8/4p2P/7R/8/PPPPPPP1/RNBQKBN1 b Qkq - 0 3"));
-    list.add(new PgnFen("05_white_capture_rook_pawn.pgn", "r1bqkbnr/2pppppp/2n5/pR6/P7/8/1PPPPPPP/1NBQKBNR b Kkq - 0 4"));
-    list.add(new PgnFen("06_white_capture_knight_rook.pgn", "N1bqkbnr/p1pppppp/8/1p6/3n4/8/PPPPPPPP/R1BQKBNR b KQk - 0 4"));
-    list.add(new PgnFen("07_white_capture_knight_knight.pgn", "r1bqkb1r/pppppppp/2n2N2/8/8/8/PPPPPPPP/R1BQKBNR b KQkq - 0 3"));
-    list.add(new PgnFen("08_white_capture_knight_bishop.pgn", "rnbqk1nr/pppp1ppp/3Np3/8/8/8/PPPPPPPP/R1BQKBNR b KQkq - 0 3"));
-    list.add(new PgnFen("09_white_capture_knight_queen.pgn", "rnb1kbnr/pppp1ppp/4pN2/8/8/8/PPPPPPPP/R1BQKBNR b KQkq - 0 3"));
-    list.add(new PgnFen("10_white_capture_knight_pawn.pgn", "rnbqkbnr/ppp1pppp/8/3N4/8/8/PPPPPPPP/R1BQKBNR b KQkq - 0 2"));
-    list.add(new PgnFen("11_white_capture_bishop_rook.pgn", "r1bqkbnB/pppppp1p/2n3p1/8/8/1P6/P1PPPPPP/RN1QKBNR b KQq - 0 3"));
-    list.add(new PgnFen("12_white_capture_bishop_knight.pgn", "r1bqkb1r/pppppppp/2n2B2/8/3P4/8/PPP1PPPP/RN1QKBNR b KQkq - 0 3"));
-    list.add(new PgnFen("13_white_capture_bishop_bishop.pgn", "rnbqk1nr/ppppppBp/6p1/8/8/1P6/P1PPPPPP/RN1QKBNR b KQkq - 0 3"));
-    list.add(new PgnFen("14_white_capture_bishop_queen.pgn", "rnb1kbnr/pppp1ppp/4pB2/8/8/1P6/P1PPPPPP/RN1QKBNR b KQkq - 0 3"));
-    list.add(new PgnFen("15_white_capture_bishop_pawn.pgn", "rnbqkbnr/pp2Bppp/3p4/2p5/8/3P4/PPP1PPPP/RN1QKBNR b KQkq - 0 3"));
-    list.add(new PgnFen("16_white_capture_queen_rook.pgn", "Qnbqkbnr/2pppppp/1p6/p7/8/4P3/PPPP1PPP/RNB1KBNR b KQk - 0 3"));
-    list.add(new PgnFen("17_white_capture_queen_knight.pgn", "r1bqkbnr/1ppppppp/2Q5/p7/8/2P5/PP1PPPPP/RNB1KBNR b KQkq - 0 3"));
-    list.add(new PgnFen("18_white_capture_queen_bishop.pgn", "rn1qkbnr/ppp1pppp/3p4/8/6Q1/4P3/PPPP1PPP/RNB1KBNR b KQkq - 0 3"));
-    list.add(new PgnFen("19_white_capture_queen_queen.pgn", "rnb1kbnr/pppp1ppp/4p3/8/7Q/4P3/PPPP1PPP/RNB1KBNR b KQkq - 0 3"));
-    list.add(new PgnFen("20_white_capture_queen_pawn.pgn", "r1bqkbnr/pppp1ppQ/2n5/4p3/8/4P3/PPPP1PPP/RNB1KBNR b KQkq - 0 3"));
-    list.add(new PgnFen("21_white_capture_king_rook.pgn", "1nbqkbnr/1ppppppp/8/p7/4P3/3K1N2/PPPP1PPP/RNBQ1B1R b k - 0 5"));
-    list.add(new PgnFen("22_white_capture_king_knight.pgn", "r1bqkb1r/pppppppp/5n2/8/3KP3/8/PPPP1PPP/RNBQ1BNR b kq - 0 4"));
-    list.add(new PgnFen("23_white_capture_king_bishop.pgn", "rnbqk2r/pppp1pp1/5n1p/4p3/1K2P3/8/PPPP1PPP/RNBQ1BNR b kq - 0 5"));
-    list.add(new PgnFen("24_white_capture_king_queen.pgn", "rnb1kbnr/pppp1ppp/8/4p3/4P3/P3K3/1PPP1PPP/RNBQ1BNR b kq - 0 4"));
+    list.add(
+        new PgnFen("01_white_capture_rook_rook.pgn", "1nbqkbnr/1ppppppp/1R6/p7/P7/8/1PPPPPPP/1NBQKBNR b Kk - 0 4"));
+    list.add(
+        new PgnFen("02_white_capture_rook_knight.pgn", "r1bqkb1r/pppppppp/5n2/4R3/P7/8/1PPPPPPP/1NBQKBNR b Kkq - 0 4"));
+    list.add(
+        new PgnFen("03_white_capture_rook_bishop.pgn", "rnbqk1nr/pppp1ppp/8/4p3/7P/R7/PPPPPPP1/RNBQKBN1 b Qkq - 0 3"));
+    list.add(
+        new PgnFen("04_white_capture_rook_queen.pgn", "rnb1kbnr/pppp1ppp/8/4p2P/7R/8/PPPPPPP1/RNBQKBN1 b Qkq - 0 3"));
+    list.add(
+        new PgnFen("05_white_capture_rook_pawn.pgn", "r1bqkbnr/2pppppp/2n5/pR6/P7/8/1PPPPPPP/1NBQKBNR b Kkq - 0 4"));
+    list.add(
+        new PgnFen("06_white_capture_knight_rook.pgn", "N1bqkbnr/p1pppppp/8/1p6/3n4/8/PPPPPPPP/R1BQKBNR b KQk - 0 4"));
+    list.add(new PgnFen("07_white_capture_knight_knight.pgn",
+        "r1bqkb1r/pppppppp/2n2N2/8/8/8/PPPPPPPP/R1BQKBNR b KQkq - 0 3"));
+    list.add(new PgnFen("08_white_capture_knight_bishop.pgn",
+        "rnbqk1nr/pppp1ppp/3Np3/8/8/8/PPPPPPPP/R1BQKBNR b KQkq - 0 3"));
+    list.add(
+        new PgnFen("09_white_capture_knight_queen.pgn", "rnb1kbnr/pppp1ppp/4pN2/8/8/8/PPPPPPPP/R1BQKBNR b KQkq - 0 3"));
+    list.add(
+        new PgnFen("10_white_capture_knight_pawn.pgn", "rnbqkbnr/ppp1pppp/8/3N4/8/8/PPPPPPPP/R1BQKBNR b KQkq - 0 2"));
+    list.add(new PgnFen("11_white_capture_bishop_rook.pgn",
+        "r1bqkbnB/pppppp1p/2n3p1/8/8/1P6/P1PPPPPP/RN1QKBNR b KQq - 0 3"));
+    list.add(new PgnFen("12_white_capture_bishop_knight.pgn",
+        "r1bqkb1r/pppppppp/2n2B2/8/3P4/8/PPP1PPPP/RN1QKBNR b KQkq - 0 3"));
+    list.add(new PgnFen("13_white_capture_bishop_bishop.pgn",
+        "rnbqk1nr/ppppppBp/6p1/8/8/1P6/P1PPPPPP/RN1QKBNR b KQkq - 0 3"));
+    list.add(new PgnFen("14_white_capture_bishop_queen.pgn",
+        "rnb1kbnr/pppp1ppp/4pB2/8/8/1P6/P1PPPPPP/RN1QKBNR b KQkq - 0 3"));
+    list.add(new PgnFen("15_white_capture_bishop_pawn.pgn",
+        "rnbqkbnr/pp2Bppp/3p4/2p5/8/3P4/PPP1PPPP/RN1QKBNR b KQkq - 0 3"));
+    list.add(
+        new PgnFen("16_white_capture_queen_rook.pgn", "Qnbqkbnr/2pppppp/1p6/p7/8/4P3/PPPP1PPP/RNB1KBNR b KQk - 0 3"));
+    list.add(new PgnFen("17_white_capture_queen_knight.pgn",
+        "r1bqkbnr/1ppppppp/2Q5/p7/8/2P5/PP1PPPPP/RNB1KBNR b KQkq - 0 3"));
+    list.add(new PgnFen("18_white_capture_queen_bishop.pgn",
+        "rn1qkbnr/ppp1pppp/3p4/8/6Q1/4P3/PPPP1PPP/RNB1KBNR b KQkq - 0 3"));
+    list.add(new PgnFen("19_white_capture_queen_queen.pgn",
+        "rnb1kbnr/pppp1ppp/4p3/8/7Q/4P3/PPPP1PPP/RNB1KBNR b KQkq - 0 3"));
+    list.add(new PgnFen("20_white_capture_queen_pawn.pgn",
+        "r1bqkbnr/pppp1ppQ/2n5/4p3/8/4P3/PPPP1PPP/RNB1KBNR b KQkq - 0 3"));
+    list.add(
+        new PgnFen("21_white_capture_king_rook.pgn", "1nbqkbnr/1ppppppp/8/p7/4P3/3K1N2/PPPP1PPP/RNBQ1B1R b k - 0 5"));
+    list.add(
+        new PgnFen("22_white_capture_king_knight.pgn", "r1bqkb1r/pppppppp/5n2/8/3KP3/8/PPPP1PPP/RNBQ1BNR b kq - 0 4"));
+    list.add(new PgnFen("23_white_capture_king_bishop.pgn",
+        "rnbqk2r/pppp1pp1/5n1p/4p3/1K2P3/8/PPPP1PPP/RNBQ1BNR b kq - 0 5"));
+    list.add(
+        new PgnFen("24_white_capture_king_queen.pgn", "rnb1kbnr/pppp1ppp/8/4p3/4P3/P3K3/1PPP1PPP/RNBQ1BNR b kq - 0 4"));
     list.add(new PgnFen("25_white_capture_king_pawn.pgn", "r1bqkbnr/pppnpppp/8/8/3KP3/8/PPPP1PPP/RNBQ1BNR b kq - 0 4"));
 
     return new PgnTestCaseList(PgnTest.BASIC_CAPTURE_WHITE, list);
@@ -392,31 +427,56 @@ public class PgnTestCaseCatalog {
   private static PgnTestCaseList createTestCasesBasicCaptureBlack() {
     final List<PgnFen> list = new ArrayList<>();
 
-    list.add(new PgnFen("01_black_capture_rook_rook.pgn", "1nbqkbnr/1ppppppp/8/p2r4/P7/8/1PPPPPPP/1NBQKBNR w Kk - 0 5"));
-    list.add(new PgnFen("02_black_capture_rook_knight.pgn", "1nbqkbnr/rppppppp/8/p7/8/8/PPPPPPPP/R1BQKBNR w KQk - 0 4"));
-    list.add(new PgnFen("03_black_capture_rook_bishop.pgn", "1nbqkbnr/1ppppppp/7r/p7/3P2P1/8/PPP1PP1P/RN1QKBNR w KQk - 0 4"));
-    list.add(new PgnFen("04_black_capture_rook_queen.pgn", "rnbqkbn1/ppppppp1/8/7r/4P2p/8/PPPP1PPP/RNB1KBNR w KQq - 0 4"));
-    list.add(new PgnFen("05_black_capture_rook_pawn.pgn", "rnbqkbn1/ppppppp1/3r4/7p/8/8/PPP1PPPP/RNBQKBNR w KQq - 0 4"));
-    list.add(new PgnFen("06_black_capture_knight_rook.pgn", "r1bqkbnr/pppppppp/8/8/2PPP3/8/PP1K1PPP/nNBQ1BNR w kq - 0 5"));
-    list.add(new PgnFen("07_black_capture_knight_knight.pgn", "r1bqkbnr/pppppppp/8/8/3PP3/2N5/PPP1KPPP/R1BQ1BnR w kq - 0 5"));
-    list.add(new PgnFen("08_black_capture_knight_bishop.pgn", "rnbqkb1r/pppppppp/8/8/PPPP4/8/4PPPP/RNBQKnNR w KQkq - 0 5"));
-    list.add(new PgnFen("09_black_capture_knight_queen.pgn", "rnbqkb1r/pppppppp/8/2P5/1P1P4/8/P3PPPP/RNBnKBNR w KQkq - 0 5"));
-    list.add(new PgnFen("10_black_capture_knight_pawn.pgn", "r1bqkbnr/pppppppp/8/8/3nP3/8/PPP2PPP/RNBQKBNR w KQkq - 0 3"));
-    list.add(new PgnFen("11_black_capture_bishop_rook.pgn", "rn1qkbnr/p1pppppp/1p6/4N3/8/6P1/PPPPPP1P/RNBQKB1b w Qkq - 0 4"));
-    list.add(new PgnFen("12_black_capture_bishop_knight.pgn", "rn1qkbnr/ppp1pppp/3p4/6N1/8/2P5/PP1PPPPP/RbBQKB1R w KQkq - 0 4"));
-    list.add(new PgnFen("13_black_capture_bishop_bishop.pgn", "rn1qkbnr/p1pppppp/1p6/4N3/8/4P3/PPPP1PPP/RNBQKb1R w KQkq - 0 4"));
-    list.add(new PgnFen("14_black_capture_bishop_queen.pgn", "rn1qkbnr/ppp1pppp/8/3p4/4P3/2N4P/PPPP1PP1/R1BbKBNR w KQkq - 0 4"));
-    list.add(new PgnFen("15_black_capture_bishop_pawn.pgn", "rn1qkbnr/ppp1pppp/8/3pP3/8/5P2/PPPP2bP/RNBQKBNR w KQkq - 0 4"));
-    list.add(new PgnFen("16_black_capture_queen_rook.pgn", "rnb1kbnr/pppp1ppp/4p3/8/8/BP6/P1PPPPPP/qN1QKBNR w Kkq - 0 4"));
-    list.add(new PgnFen("17_black_capture_queen_knight.pgn", "rnb1kbnr/ppp1pppp/8/3p2P1/7P/2P5/PP1PPP2/RqBQKBNR w KQkq - 0 5"));
-    list.add(new PgnFen("18_black_capture_queen_bishop.pgn", "rnb1kbnr/pppp1ppp/8/4p1q1/3P4/8/PPP1PPPP/RN1QKBNR w KQkq - 0 3"));
-    list.add(new PgnFen("19_black_capture_queen_queen.pgn", "rnb1kbnr/pppp1ppp/8/4p3/3P1q2/8/PPP1PPPP/RNB1KBNR w KQkq - 0 4"));
-    list.add(new PgnFen("20_black_capture_queen_pawn.pgn", "rnb1kbnr/pppp1ppp/8/3Np3/4P3/8/PPPP1qPP/R1BQKBNR w KQkq - 0 4"));
-    list.add(new PgnFen("21_black_capture_king_rook.pgn", "rnbq1bnr/ppp1pppp/7B/3p4/3P2N1/1P1Q4/P1P1PPPP/k3KBNR w K - 0 9"));
-    list.add(new PgnFen("22_black_capture_king_knight.pgn", "2bq1bnr/rpppp1pp/p1n2p2/3B1R1P/4P3/5P2/PPPP2P1/RNBQK1k1 w Q - 0 12"));
-    list.add(new PgnFen("23_black_capture_king_bishop.pgn", "rnbq1bnr/ppp1pppp/8/3p4/3P4/P1P2NPQ/1P2PPBP/RNk1K2R w KQ - 0 9"));
-    list.add(new PgnFen("24_black_capture_king_queen.pgn", "r1bq1bnr/pppppkpp/2n2p2/8/8/2P5/PP1PPPPP/RNB1KBNR w KQ - 0 4"));
-    list.add(new PgnFen("25_black_capture_king_pawn.pgn", "rnbq1b1r/ppp1pppp/1P3n2/3p4/3P4/5N2/k1PNPPPP/1RBQKB1R w K - 0 10"));
+    list.add(
+        new PgnFen("01_black_capture_rook_rook.pgn", "1nbqkbnr/1ppppppp/8/p2r4/P7/8/1PPPPPPP/1NBQKBNR w Kk - 0 5"));
+    list.add(
+        new PgnFen("02_black_capture_rook_knight.pgn", "1nbqkbnr/rppppppp/8/p7/8/8/PPPPPPPP/R1BQKBNR w KQk - 0 4"));
+    list.add(new PgnFen("03_black_capture_rook_bishop.pgn",
+        "1nbqkbnr/1ppppppp/7r/p7/3P2P1/8/PPP1PP1P/RN1QKBNR w KQk - 0 4"));
+    list.add(
+        new PgnFen("04_black_capture_rook_queen.pgn", "rnbqkbn1/ppppppp1/8/7r/4P2p/8/PPPP1PPP/RNB1KBNR w KQq - 0 4"));
+    list.add(
+        new PgnFen("05_black_capture_rook_pawn.pgn", "rnbqkbn1/ppppppp1/3r4/7p/8/8/PPP1PPPP/RNBQKBNR w KQq - 0 4"));
+    list.add(
+        new PgnFen("06_black_capture_knight_rook.pgn", "r1bqkbnr/pppppppp/8/8/2PPP3/8/PP1K1PPP/nNBQ1BNR w kq - 0 5"));
+    list.add(new PgnFen("07_black_capture_knight_knight.pgn",
+        "r1bqkbnr/pppppppp/8/8/3PP3/2N5/PPP1KPPP/R1BQ1BnR w kq - 0 5"));
+    list.add(
+        new PgnFen("08_black_capture_knight_bishop.pgn", "rnbqkb1r/pppppppp/8/8/PPPP4/8/4PPPP/RNBQKnNR w KQkq - 0 5"));
+    list.add(new PgnFen("09_black_capture_knight_queen.pgn",
+        "rnbqkb1r/pppppppp/8/2P5/1P1P4/8/P3PPPP/RNBnKBNR w KQkq - 0 5"));
+    list.add(
+        new PgnFen("10_black_capture_knight_pawn.pgn", "r1bqkbnr/pppppppp/8/8/3nP3/8/PPP2PPP/RNBQKBNR w KQkq - 0 3"));
+    list.add(new PgnFen("11_black_capture_bishop_rook.pgn",
+        "rn1qkbnr/p1pppppp/1p6/4N3/8/6P1/PPPPPP1P/RNBQKB1b w Qkq - 0 4"));
+    list.add(new PgnFen("12_black_capture_bishop_knight.pgn",
+        "rn1qkbnr/ppp1pppp/3p4/6N1/8/2P5/PP1PPPPP/RbBQKB1R w KQkq - 0 4"));
+    list.add(new PgnFen("13_black_capture_bishop_bishop.pgn",
+        "rn1qkbnr/p1pppppp/1p6/4N3/8/4P3/PPPP1PPP/RNBQKb1R w KQkq - 0 4"));
+    list.add(new PgnFen("14_black_capture_bishop_queen.pgn",
+        "rn1qkbnr/ppp1pppp/8/3p4/4P3/2N4P/PPPP1PP1/R1BbKBNR w KQkq - 0 4"));
+    list.add(
+        new PgnFen("15_black_capture_bishop_pawn.pgn", "rn1qkbnr/ppp1pppp/8/3pP3/8/5P2/PPPP2bP/RNBQKBNR w KQkq - 0 4"));
+    list.add(
+        new PgnFen("16_black_capture_queen_rook.pgn", "rnb1kbnr/pppp1ppp/4p3/8/8/BP6/P1PPPPPP/qN1QKBNR w Kkq - 0 4"));
+    list.add(new PgnFen("17_black_capture_queen_knight.pgn",
+        "rnb1kbnr/ppp1pppp/8/3p2P1/7P/2P5/PP1PPP2/RqBQKBNR w KQkq - 0 5"));
+    list.add(new PgnFen("18_black_capture_queen_bishop.pgn",
+        "rnb1kbnr/pppp1ppp/8/4p1q1/3P4/8/PPP1PPPP/RN1QKBNR w KQkq - 0 3"));
+    list.add(new PgnFen("19_black_capture_queen_queen.pgn",
+        "rnb1kbnr/pppp1ppp/8/4p3/3P1q2/8/PPP1PPPP/RNB1KBNR w KQkq - 0 4"));
+    list.add(
+        new PgnFen("20_black_capture_queen_pawn.pgn", "rnb1kbnr/pppp1ppp/8/3Np3/4P3/8/PPPP1qPP/R1BQKBNR w KQkq - 0 4"));
+    list.add(
+        new PgnFen("21_black_capture_king_rook.pgn", "rnbq1bnr/ppp1pppp/7B/3p4/3P2N1/1P1Q4/P1P1PPPP/k3KBNR w K - 0 9"));
+    list.add(new PgnFen("22_black_capture_king_knight.pgn",
+        "2bq1bnr/rpppp1pp/p1n2p2/3B1R1P/4P3/5P2/PPPP2P1/RNBQK1k1 w Q - 0 12"));
+    list.add(new PgnFen("23_black_capture_king_bishop.pgn",
+        "rnbq1bnr/ppp1pppp/8/3p4/3P4/P1P2NPQ/1P2PPBP/RNk1K2R w KQ - 0 9"));
+    list.add(
+        new PgnFen("24_black_capture_king_queen.pgn", "r1bq1bnr/pppppkpp/2n2p2/8/8/2P5/PP1PPPPP/RNB1KBNR w KQ - 0 4"));
+    list.add(new PgnFen("25_black_capture_king_pawn.pgn",
+        "rnbq1b1r/ppp1pppp/1P3n2/3p4/3P4/5N2/k1PNPPPP/1RBQKB1R w K - 0 10"));
 
     return new PgnTestCaseList(PgnTest.BASIC_CAPTURE_BLACK, list);
   }
@@ -466,14 +526,22 @@ public class PgnTestCaseCatalog {
   private static PgnTestCaseList createTestCasesBasicPromotionPieceWhite() {
     final List<PgnFen> list = new ArrayList<>();
 
-    list.add(new PgnFen("01_white_promotion_piece_capture_no_rook.pgn", "rRbqkbnr/p1pppppp/n7/7Q/2P5/8/P2PPPPP/RNB1KBNR b KQkq - 0 9"));
-    list.add(new PgnFen("02_white_promotion_piece_capture_no_knight.pgn", "rNbqkbnr/p1pppppp/n7/7Q/2P5/8/P2PPPPP/RNB1KBNR b KQkq - 0 9"));
-    list.add(new PgnFen("03_white_promotion_piece_capture_no_bishop.pgn", "rBbqkbnr/p1pppppp/n7/7Q/2P5/8/P2PPPPP/RNB1KBNR b KQkq - 0 9"));
-    list.add(new PgnFen("04_white_promotion_piece_capture_no_queen.pgn", "rQbqkbnr/p1pppppp/n7/7Q/2P5/8/P2PPPPP/RNB1KBNR b KQkq - 0 9"));
-    list.add(new PgnFen("05_white_promotion_piece_capture_yes_rook.pgn", "R2qkbnr/2pppppp/n7/8/8/8/1PPPPPPP/RNBQKBNR b KQk - 0 5"));
-    list.add(new PgnFen("06_white_promotion_piece_capture_yes_knight.pgn", "N2qkbnr/2pppppp/n7/8/8/8/1PPPPPPP/RNBQKBNR b KQk - 0 5"));
-    list.add(new PgnFen("07_white_promotion_piece_capture_yes_bishop.pgn", "B2qkbnr/2pppppp/n7/8/8/8/1PPPPPPP/RNBQKBNR b KQk - 0 5"));
-    list.add(new PgnFen("08_white_promotion_piece_capture_yes_queen.pgn", "Q2qkbnr/2pppppp/n7/8/8/8/1PPPPPPP/RNBQKBNR b KQk - 0 5"));
+    list.add(new PgnFen("01_white_promotion_piece_capture_no_rook.pgn",
+        "rRbqkbnr/p1pppppp/n7/7Q/2P5/8/P2PPPPP/RNB1KBNR b KQkq - 0 9"));
+    list.add(new PgnFen("02_white_promotion_piece_capture_no_knight.pgn",
+        "rNbqkbnr/p1pppppp/n7/7Q/2P5/8/P2PPPPP/RNB1KBNR b KQkq - 0 9"));
+    list.add(new PgnFen("03_white_promotion_piece_capture_no_bishop.pgn",
+        "rBbqkbnr/p1pppppp/n7/7Q/2P5/8/P2PPPPP/RNB1KBNR b KQkq - 0 9"));
+    list.add(new PgnFen("04_white_promotion_piece_capture_no_queen.pgn",
+        "rQbqkbnr/p1pppppp/n7/7Q/2P5/8/P2PPPPP/RNB1KBNR b KQkq - 0 9"));
+    list.add(new PgnFen("05_white_promotion_piece_capture_yes_rook.pgn",
+        "R2qkbnr/2pppppp/n7/8/8/8/1PPPPPPP/RNBQKBNR b KQk - 0 5"));
+    list.add(new PgnFen("06_white_promotion_piece_capture_yes_knight.pgn",
+        "N2qkbnr/2pppppp/n7/8/8/8/1PPPPPPP/RNBQKBNR b KQk - 0 5"));
+    list.add(new PgnFen("07_white_promotion_piece_capture_yes_bishop.pgn",
+        "B2qkbnr/2pppppp/n7/8/8/8/1PPPPPPP/RNBQKBNR b KQk - 0 5"));
+    list.add(new PgnFen("08_white_promotion_piece_capture_yes_queen.pgn",
+        "Q2qkbnr/2pppppp/n7/8/8/8/1PPPPPPP/RNBQKBNR b KQk - 0 5"));
 
     return new PgnTestCaseList(PgnTest.BASIC_PROMOTION_PIECE_WHITE, list);
   }
@@ -481,14 +549,22 @@ public class PgnTestCaseCatalog {
   private static PgnTestCaseList createTestCasesBasicPromotionPieceBlack() {
     final List<PgnFen> list = new ArrayList<>();
 
-    list.add(new PgnFen("01_black_promotion_piece_capture_no_rook.pgn", "rnb1kbnr/pppp1pp1/8/4p3/q7/7R/PPPPPPP1/RNBQKBNr w Qkq - 0 9"));
-    list.add(new PgnFen("02_black_promotion_piece_capture_no_knight.pgn", "rnb1kbnr/pppp1pp1/8/4p3/q7/7R/PPPPPPP1/RNBQKBNn w Qkq - 0 9"));
-    list.add(new PgnFen("03_black_promotion_piece_capture_no_bishop.pgn", "rnb1kbnr/pppp1pp1/8/4p3/q7/7R/PPPPPPP1/RNBQKBNb w Qkq - 0 9"));
-    list.add(new PgnFen("04_black_promotion_piece_capture_no_queen.pgn", "rnb1kbnr/pppp1pp1/8/4p3/q7/7R/PPPPPPP1/RNBQKBNq w Qkq - 0 9"));
-    list.add(new PgnFen("05_black_promotion_piece_capture_yes_rook.pgn", "rnbqkbnr/pppp1ppp/8/8/8/5NP1/P3PPBP/RNrQK2R w KQkq - 0 6"));
-    list.add(new PgnFen("06_black_promotion_piece_capture_yes_knight.pgn", "rnbqkbnr/pppp1ppp/8/8/8/5NP1/P3PPBP/RNnQK2R w KQkq - 0 6"));
-    list.add(new PgnFen("07_black_promotion_piece_capture_yes_bishop.pgn", "rnbqkbnr/pppp1ppp/8/8/8/5NP1/P3PPBP/RNbQK2R w KQkq - 0 6"));
-    list.add(new PgnFen("08_black_promotion_piece_capture_yes_queen.pgn", "rnbqkbnr/pppp1ppp/8/8/8/5NP1/P3PPBP/RNqQK2R w KQkq - 0 6"));
+    list.add(new PgnFen("01_black_promotion_piece_capture_no_rook.pgn",
+        "rnb1kbnr/pppp1pp1/8/4p3/q7/7R/PPPPPPP1/RNBQKBNr w Qkq - 0 9"));
+    list.add(new PgnFen("02_black_promotion_piece_capture_no_knight.pgn",
+        "rnb1kbnr/pppp1pp1/8/4p3/q7/7R/PPPPPPP1/RNBQKBNn w Qkq - 0 9"));
+    list.add(new PgnFen("03_black_promotion_piece_capture_no_bishop.pgn",
+        "rnb1kbnr/pppp1pp1/8/4p3/q7/7R/PPPPPPP1/RNBQKBNb w Qkq - 0 9"));
+    list.add(new PgnFen("04_black_promotion_piece_capture_no_queen.pgn",
+        "rnb1kbnr/pppp1pp1/8/4p3/q7/7R/PPPPPPP1/RNBQKBNq w Qkq - 0 9"));
+    list.add(new PgnFen("05_black_promotion_piece_capture_yes_rook.pgn",
+        "rnbqkbnr/pppp1ppp/8/8/8/5NP1/P3PPBP/RNrQK2R w KQkq - 0 6"));
+    list.add(new PgnFen("06_black_promotion_piece_capture_yes_knight.pgn",
+        "rnbqkbnr/pppp1ppp/8/8/8/5NP1/P3PPBP/RNnQK2R w KQkq - 0 6"));
+    list.add(new PgnFen("07_black_promotion_piece_capture_yes_bishop.pgn",
+        "rnbqkbnr/pppp1ppp/8/8/8/5NP1/P3PPBP/RNbQK2R w KQkq - 0 6"));
+    list.add(new PgnFen("08_black_promotion_piece_capture_yes_queen.pgn",
+        "rnbqkbnr/pppp1ppp/8/8/8/5NP1/P3PPBP/RNqQK2R w KQkq - 0 6"));
 
     return new PgnTestCaseList(PgnTest.BASIC_PROMOTION_PIECE_BLACK, list);
   }
@@ -554,23 +630,36 @@ public class PgnTestCaseCatalog {
   private static PgnTestCaseList createTestCasesBasicCheckWhite() {
     final List<PgnFen> list = new ArrayList<>();
 
-    list.add(new PgnFen("01_white_check_rook_direct_adjacent.pgn", "rnbq1bnr/pppp1ppp/3Rk3/4p3/P7/8/1PPPPPPP/1NBQKBNR b K - 5 4"));
-    list.add(new PgnFen("02_white_check_rook_direct_range.pgn", "rnbq1bnr/pppp1ppp/1R1k4/4p3/P7/8/1PPPPPPP/1NBQKBNR b K - 5 4"));
-    list.add(new PgnFen("03_white_check_rook_discover.pgn", "rnbqkb1r/ppp1pppp/3pn3/P2R4/Q7/2P5/1P1PPPPP/1NB1KBNR b Kkq - 10 8"));
-    list.add(new PgnFen("04_white_check_knight_direct.pgn", "rnbqkb1r/pppppppp/5N2/8/4n3/8/PPPPPPPP/R1BQKBNR b KQkq - 5 3"));
-    list.add(new PgnFen("05_white_check_knight_discover_orthogonal.pgn", "rnbq1bnr/pppp2pp/PN6/R4k2/4pp2/5N2/1PPPPPPP/2BQKB1R b K - 5 8"));
-    list.add(new PgnFen("06_white_check_knight_discover_diagonal.pgn", "r1bqkb1r/ppp1pppp/3p1n2/8/Q2n4/N1P5/PP1PPPPP/R1B1KBNR b KQkq - 7 5"));
-    list.add(new PgnFen("07_white_check_bishop_direct_adjacent.pgn", "rnbqkb1r/pppppBpp/5p1n/8/8/4P3/PPPP1PPP/RNBQK1NR b KQkq - 3 3"));
-    list.add(new PgnFen("08_white_check_bishop_direct_range.pgn", "rnbqkbnr/ppp1pppp/3p4/1B6/8/4P3/PPPP1PPP/RNBQK1NR b KQkq - 1 2"));
-    list.add(new PgnFen("09_white_check_bishop_discover.pgn", "r1bq1bnr/pppp1ppp/P1n5/R3k3/2B1p3/4P3/1PPP1PPP/1NBQK1NR b K - 4 7"));
+    list.add(new PgnFen("01_white_check_rook_direct_adjacent.pgn",
+        "rnbq1bnr/pppp1ppp/3Rk3/4p3/P7/8/1PPPPPPP/1NBQKBNR b K - 5 4"));
+    list.add(new PgnFen("02_white_check_rook_direct_range.pgn",
+        "rnbq1bnr/pppp1ppp/1R1k4/4p3/P7/8/1PPPPPPP/1NBQKBNR b K - 5 4"));
+    list.add(new PgnFen("03_white_check_rook_discover.pgn",
+        "rnbqkb1r/ppp1pppp/3pn3/P2R4/Q7/2P5/1P1PPPPP/1NB1KBNR b Kkq - 10 8"));
     list.add(
-        new PgnFen("10_white_check_queen_direct_orthogonal_adjacent.pgn", "r2qkb1r/pbppQppp/1pn2P2/8/8/8/PPP1PPPP/RNB1KBNR b KQkq - 3 6"));
-    list.add(new PgnFen("11_white_check_queen_direct_orthogonal_range.pgn", "r1bqkb1r/p1pp1ppp/1pn2P2/8/8/4Q3/PPP1PPPP/RNB1KBNR b KQkq - 1 5"));
-    list.add(
-        new PgnFen("12_white_check_queen_direct_diagonal_adjacent.pgn", "r1bqkbnr/pppppQpp/2n2p2/8/8/2P5/PP1PPPPP/RNB1KBNR b KQkq - 3 3"));
-    list.add(new PgnFen("13_white_check_queen_direct_diagonal_range.pgn", "rnbqkbnr/ppppp1pp/5p2/7Q/8/4P3/PPPP1PPP/RNB1KBNR b KQkq - 1 2"));
-    list.add(new PgnFen("14_white_check_king_discover_orthogonal.pgn", "rnbqkb1r/p1pp2pp/1p3Pn1/8/8/5K2/PPP2PPP/RNB1QBNR b kq - 3 8"));
-    list.add(new PgnFen("15_white_check_king_discover_diagonal.pgn", "r1bqkb1r/ppp1pppp/3p4/4n2n/QK6/2P5/PP1PPPPP/RNB2BNR b kq - 13 8"));
+        new PgnFen("04_white_check_knight_direct.pgn", "rnbqkb1r/pppppppp/5N2/8/4n3/8/PPPPPPPP/R1BQKBNR b KQkq - 5 3"));
+    list.add(new PgnFen("05_white_check_knight_discover_orthogonal.pgn",
+        "rnbq1bnr/pppp2pp/PN6/R4k2/4pp2/5N2/1PPPPPPP/2BQKB1R b K - 5 8"));
+    list.add(new PgnFen("06_white_check_knight_discover_diagonal.pgn",
+        "r1bqkb1r/ppp1pppp/3p1n2/8/Q2n4/N1P5/PP1PPPPP/R1B1KBNR b KQkq - 7 5"));
+    list.add(new PgnFen("07_white_check_bishop_direct_adjacent.pgn",
+        "rnbqkb1r/pppppBpp/5p1n/8/8/4P3/PPPP1PPP/RNBQK1NR b KQkq - 3 3"));
+    list.add(new PgnFen("08_white_check_bishop_direct_range.pgn",
+        "rnbqkbnr/ppp1pppp/3p4/1B6/8/4P3/PPPP1PPP/RNBQK1NR b KQkq - 1 2"));
+    list.add(new PgnFen("09_white_check_bishop_discover.pgn",
+        "r1bq1bnr/pppp1ppp/P1n5/R3k3/2B1p3/4P3/1PPP1PPP/1NBQK1NR b K - 4 7"));
+    list.add(new PgnFen("10_white_check_queen_direct_orthogonal_adjacent.pgn",
+        "r2qkb1r/pbppQppp/1pn2P2/8/8/8/PPP1PPPP/RNB1KBNR b KQkq - 3 6"));
+    list.add(new PgnFen("11_white_check_queen_direct_orthogonal_range.pgn",
+        "r1bqkb1r/p1pp1ppp/1pn2P2/8/8/4Q3/PPP1PPPP/RNB1KBNR b KQkq - 1 5"));
+    list.add(new PgnFen("12_white_check_queen_direct_diagonal_adjacent.pgn",
+        "r1bqkbnr/pppppQpp/2n2p2/8/8/2P5/PP1PPPPP/RNB1KBNR b KQkq - 3 3"));
+    list.add(new PgnFen("13_white_check_queen_direct_diagonal_range.pgn",
+        "rnbqkbnr/ppppp1pp/5p2/7Q/8/4P3/PPPP1PPP/RNB1KBNR b KQkq - 1 2"));
+    list.add(new PgnFen("14_white_check_king_discover_orthogonal.pgn",
+        "rnbqkb1r/p1pp2pp/1p3Pn1/8/8/5K2/PPP2PPP/RNB1QBNR b kq - 3 8"));
+    list.add(new PgnFen("15_white_check_king_discover_diagonal.pgn",
+        "r1bqkb1r/ppp1pppp/3p4/4n2n/QK6/2P5/PP1PPPPP/RNB2BNR b kq - 13 8"));
 
     return new PgnTestCaseList(PgnTest.BASIC_CHECK_WHITE, list);
   }
@@ -578,23 +667,36 @@ public class PgnTestCaseCatalog {
   private static PgnTestCaseList createTestCasesBasicCheckBlack() {
     final List<PgnFen> list = new ArrayList<>();
 
-    list.add(new PgnFen("01_black_check_rook_direct_adjacent.pgn", "1nbqkbnr/1ppppppp/8/p7/2rKP3/8/PPPP1PPP/RNBQ1BNR w k - 6 5"));
-    list.add(new PgnFen("02_black_check_rook_direct_range.pgn", "1nbqkbnr/1ppppppp/8/8/2N2P2/r4K2/PPPPP1PP/R1BQ1BNR w k - 3 6"));
-    list.add(new PgnFen("03_black_check_rook_discover.pgn", "2b1kbnr/pr1ppppp/2n5/q1p3B1/4N3/1p1P1NPP/PPP1PPB1/1R1QK2R w Kk - 1 10"));
-    list.add(new PgnFen("04_black_check_knight_direct.pgn", "r1bqkbnr/pppppppp/1N6/8/8/5n2/PPPPPPPP/R1BQKBNR w KQkq - 6 4"));
-    list.add(new PgnFen("05_black_check_knight_discover_orthogonal.pgn", "r1b1kbnr/ppp1pppp/4q1n1/3P4/8/1PN3N1/P1PP1PPP/R1BQKB1R w KQkq - 1 7"));
-    list.add(new PgnFen("06_black_check_knight_discover_diagonal.pgn", "rnb1kb1r/pp1ppppp/1qp1n3/8/8/2N2P1N/PPPPPKPP/R1BQ1B1R w kq - 4 7"));
-    list.add(new PgnFen("07_black_check_bishop_direct_adjacent.pgn", "rnbqk1nr/pppp1ppp/4p3/8/8/1PN2P2/P1PPPbPP/R1BQKBNR w KQkq - 1 4"));
-    list.add(new PgnFen("08_black_check_bishop_direct_range.pgn", "rn1qkbnr/pbpppppp/1p6/8/8/6PB/PPPPPPKP/RNBQ2NR w kq - 6 5"));
-    list.add(new PgnFen("09_black_check_bishop_discover.pgn", "rn2kbnr/ppp1qppp/8/8/6b1/2N2N2/PPPP1PPP/R1BQKB1R w KQkq - 4 6"));
+    list.add(new PgnFen("01_black_check_rook_direct_adjacent.pgn",
+        "1nbqkbnr/1ppppppp/8/p7/2rKP3/8/PPPP1PPP/RNBQ1BNR w k - 6 5"));
+    list.add(new PgnFen("02_black_check_rook_direct_range.pgn",
+        "1nbqkbnr/1ppppppp/8/8/2N2P2/r4K2/PPPPP1PP/R1BQ1BNR w k - 3 6"));
+    list.add(new PgnFen("03_black_check_rook_discover.pgn",
+        "2b1kbnr/pr1ppppp/2n5/q1p3B1/4N3/1p1P1NPP/PPP1PPB1/1R1QK2R w Kk - 1 10"));
     list.add(
-        new PgnFen("10_black_check_queen_direct_orthogonal_adjacent.pgn", "rnb1kbnr/ppp1pppp/3p4/8/3N4/2N1P3/PPPPqPPP/R1BQKB1R w KQkq - 6 5"));
-    list.add(new PgnFen("11_black_check_queen_direct_orthogonal_range.pgn", "rnb1kbnr/ppp1pppp/8/3Pq3/8/2N5/PPPP1PPP/R1BQKBNR w KQkq - 3 4"));
-    list.add(
-        new PgnFen("12_black_check_queen_direct_diagonal_adjacent.pgn", "rnb1kbnr/pppp1ppp/4p3/8/8/2NP1N2/PPPqPPPP/R1BQKB1R w KQkq - 4 4"));
-    list.add(new PgnFen("13_black_check_queen_direct_diagonal_range.pgn", "rnb1kbnr/pp1ppppp/1qp5/8/8/5P2/PPPPPKPP/RNBQ1BNR w kq - 2 3"));
-    list.add(new PgnFen("14_black_check_king_discover_orthogonal.pgn", "rn2qbnr/pppb1ppp/3k4/8/8/2NB1N2/PPPP1PPP/R1BQK2R w KQ - 8 8"));
-    list.add(new PgnFen("15_black_check_king_discover_diagonal.pgn", "rnbq2nr/pppp1p1p/4p1pb/8/3N2k1/1PNP4/PBPKPPPP/R2Q1B1R w - - 7 8"));
+        new PgnFen("04_black_check_knight_direct.pgn", "r1bqkbnr/pppppppp/1N6/8/8/5n2/PPPPPPPP/R1BQKBNR w KQkq - 6 4"));
+    list.add(new PgnFen("05_black_check_knight_discover_orthogonal.pgn",
+        "r1b1kbnr/ppp1pppp/4q1n1/3P4/8/1PN3N1/P1PP1PPP/R1BQKB1R w KQkq - 1 7"));
+    list.add(new PgnFen("06_black_check_knight_discover_diagonal.pgn",
+        "rnb1kb1r/pp1ppppp/1qp1n3/8/8/2N2P1N/PPPPPKPP/R1BQ1B1R w kq - 4 7"));
+    list.add(new PgnFen("07_black_check_bishop_direct_adjacent.pgn",
+        "rnbqk1nr/pppp1ppp/4p3/8/8/1PN2P2/P1PPPbPP/R1BQKBNR w KQkq - 1 4"));
+    list.add(new PgnFen("08_black_check_bishop_direct_range.pgn",
+        "rn1qkbnr/pbpppppp/1p6/8/8/6PB/PPPPPPKP/RNBQ2NR w kq - 6 5"));
+    list.add(new PgnFen("09_black_check_bishop_discover.pgn",
+        "rn2kbnr/ppp1qppp/8/8/6b1/2N2N2/PPPP1PPP/R1BQKB1R w KQkq - 4 6"));
+    list.add(new PgnFen("10_black_check_queen_direct_orthogonal_adjacent.pgn",
+        "rnb1kbnr/ppp1pppp/3p4/8/3N4/2N1P3/PPPPqPPP/R1BQKB1R w KQkq - 6 5"));
+    list.add(new PgnFen("11_black_check_queen_direct_orthogonal_range.pgn",
+        "rnb1kbnr/ppp1pppp/8/3Pq3/8/2N5/PPPP1PPP/R1BQKBNR w KQkq - 3 4"));
+    list.add(new PgnFen("12_black_check_queen_direct_diagonal_adjacent.pgn",
+        "rnb1kbnr/pppp1ppp/4p3/8/8/2NP1N2/PPPqPPPP/R1BQKB1R w KQkq - 4 4"));
+    list.add(new PgnFen("13_black_check_queen_direct_diagonal_range.pgn",
+        "rnb1kbnr/pp1ppppp/1qp5/8/8/5P2/PPPPPKPP/RNBQ1BNR w kq - 2 3"));
+    list.add(new PgnFen("14_black_check_king_discover_orthogonal.pgn",
+        "rn2qbnr/pppb1ppp/3k4/8/8/2NB1N2/PPPP1PPP/R1BQK2R w KQ - 8 8"));
+    list.add(new PgnFen("15_black_check_king_discover_diagonal.pgn",
+        "rnbq2nr/pppp1p1p/4p1pb/8/3N2k1/1PNP4/PBPKPPPP/R2Q1B1R w - - 7 8"));
 
     return new PgnTestCaseList(PgnTest.BASIC_CHECK_BLACK, list);
   }
@@ -628,15 +730,19 @@ public class PgnTestCaseCatalog {
     list.add(new PgnFen("02_white_checkmate_rook_direct_range.pgn", "1k5R/6R1/8/8/8/8/8/3RK3 b - - 4 101"));
     list.add(new PgnFen("03_white_checkmate_rook_discover.pgn", "2k5/R6R/4B3/7p/8/8/8/1R1RRK2 b - - 1 102"));
     list.add(new PgnFen("04_white_checkmate_knight_direct.pgn", "3k4/1Q6/2N5/7p/8/8/8/2RKR3 b - - 1 101"));
-    list.add(new PgnFen("05_white_checkmate_knight_discover_orthogonal.pgn", "3k4/8/5N2/4R3/8/6b1/3R4/2RK4 b - - 5 102"));
-    list.add(new PgnFen("06_white_checkmate_knight_discover_diagonal.pgn", "3k2N1/1R6/8/4R1B1/3b4/8/8/2RK4 b - - 5 102"));
+    list.add(
+        new PgnFen("05_white_checkmate_knight_discover_orthogonal.pgn", "3k4/8/5N2/4R3/8/6b1/3R4/2RK4 b - - 5 102"));
+    list.add(
+        new PgnFen("06_white_checkmate_knight_discover_diagonal.pgn", "3k2N1/1R6/8/4R1B1/3b4/8/8/2RK4 b - - 5 102"));
     list.add(new PgnFen("07_white_checkmate_bishop_direct_adjacent.pgn", "5B2/8/R4Q2/1k6/2B5/2K5/8/8 b - - 5 102"));
     list.add(new PgnFen("08_white_checkmate_bishop_direct_range.pgn", "5B2/8/R4Q2/3k4/8/2K2B2/8/8 b - - 5 102"));
     list.add(new PgnFen("09_white_checkmate_bishop_discover.pgn", "8/2B5/1R6/2k2Q2/7p/2K5/8/8 b - - 1 102"));
-    list.add(new PgnFen("10_white_checkmate_queen_direct_orthogonal_adjacent.pgn", "8/8/1RQ5/2k4p/5B2/2K5/8/8 b - - 1 101"));
+    list.add(
+        new PgnFen("10_white_checkmate_queen_direct_orthogonal_adjacent.pgn", "8/8/1RQ5/2k4p/5B2/2K5/8/8 b - - 1 101"));
     list.add(new PgnFen("11_white_checkmate_queen_direct_orthogonal_range.pgn", "8/k7/8/Q1K5/1R6/8/8/8 b - - 3 101"));
     list.add(new PgnFen("12_white_checkmate_queen_direct_diagonal_adjacent.pgn", "k7/1QK5/8/7R/1R6/8/8/8 b - - 5 102"));
-    list.add(new PgnFen("13_white_checkmate_queen_direct_diagonal_range.pgn", "8/2Q5/4k1K1/1R6/8/1Q6/8/4q3 b - - 1 101"));
+    list.add(
+        new PgnFen("13_white_checkmate_queen_direct_diagonal_range.pgn", "8/2Q5/4k1K1/1R6/8/1Q6/8/4q3 b - - 1 101"));
     list.add(new PgnFen("14_white_checkmate_king_discover_orthogonal.pgn", "Q7/4k2R/R6K/8/8/8/8/8 b - - 3 101"));
     list.add(new PgnFen("15_white_checkmate_king_discover_diagonal.pgn", "3k4/1K6/8/BN4p1/8/7B/8/4R3 b - - 1 102"));
 
@@ -655,10 +761,14 @@ public class PgnTestCaseCatalog {
     list.add(new PgnFen("07_black_checkmate_bishop_direct_adjacent.pgn", "4k3/P7/8/5r1r/8/8/q6b/6KN w - - 1 102"));
     list.add(new PgnFen("08_black_checkmate_bishop_direct_range.pgn", "Q7/8/8/2b1kr1r/8/8/q7/6K1 w - - 1 102"));
     list.add(new PgnFen("09_black_checkmate_bishop_discover.pgn", "6q1/P7/4k3/1B2br1r/8/8/8/6K1 w - - 5 103"));
-    list.add(new PgnFen("10_black_checkmate_queen_direct_orthogonal_adjacent.pgn", "1Q6/8/4k3/7r/8/8/r5q1/6K1 w - - 1 102"));
-    list.add(new PgnFen("11_black_checkmate_queen_direct_orthogonal_range.pgn", "1Q6/8/4k3/4nrqr/8/8/8/6K1 w - - 1 102"));
-    list.add(new PgnFen("12_black_checkmate_queen_direct_diagonal_adjacent.pgn", "Q7/8/4k3/4nr1r/8/8/5q2/6K1 w - - 1 102"));
-    list.add(new PgnFen("13_black_checkmate_queen_direct_diagonal_range.pgn", "Q7/8/1q2k3/3bnr1r/8/8/8/6K1 w - - 1 102"));
+    list.add(
+        new PgnFen("10_black_checkmate_queen_direct_orthogonal_adjacent.pgn", "1Q6/8/4k3/7r/8/8/r5q1/6K1 w - - 1 102"));
+    list.add(
+        new PgnFen("11_black_checkmate_queen_direct_orthogonal_range.pgn", "1Q6/8/4k3/4nrqr/8/8/8/6K1 w - - 1 102"));
+    list.add(
+        new PgnFen("12_black_checkmate_queen_direct_diagonal_adjacent.pgn", "Q7/8/4k3/4nr1r/8/8/5q2/6K1 w - - 1 102"));
+    list.add(
+        new PgnFen("13_black_checkmate_queen_direct_diagonal_range.pgn", "Q7/8/1q2k3/3bnr1r/8/8/8/6K1 w - - 1 102"));
     list.add(new PgnFen("14_black_checkmate_king_discover_orthogonal.pgn", "5q2/8/8/8/3kr3/3q4/N7/4K3 w - - 5 103"));
     list.add(new PgnFen("15_black_checkmate_king_discover_diagonal.pgn", "2K5/8/6N1/bnnn2k1/6b1/8/7b/8 w - - 5 103"));
 
@@ -667,21 +777,31 @@ public class PgnTestCaseCatalog {
 
   private static PgnTestCaseList createTestCasesBasicCheckmateVariousWhite() {
     final List<PgnFen> list = new ArrayList<>();
-    list.add(new PgnFen("01_checkmate_by_white_capture_yes.pgn", "1r1qkbnr/pbp2Qp1/2pp3p/4p1N1/4P3/8/PPPP1PPP/RNB1K2R b KQk - 0 8"));
-    list.add(new PgnFen("02_checkmate_by_white_capture_no.pgn", "r2qkbnr/pbpppQ1p/1pn3p1/4Np2/4P3/8/PPPP1PPP/RNB1KB1R b KQkq - 1 6"));
-    list.add(new PgnFen("03_checkmate_by_white_discover_check.pgn", "r1b2bnr/1ppp1ppp/p2Q4/4p3/4P2k/3P4/PPPBBPP1/RN2K1NR b Q - 19 18"));
-    list.add(new PgnFen("04_checkmate_fools_mate_by_white.pgn", "rnbqkbnr/ppppp2p/5p2/6pQ/4P3/2N5/PPPP1PPP/R1B1KBNR b KQkq - 1 3"));
-    list.add(new PgnFen("05_checkmate_scholars_mate_by_white.pgn", "r1bqk1nr/pppp1Qpp/2n5/2b1p3/2B1P3/8/PPPP1PPP/RNB1K1NR b KQkq - 0 4"));
+    list.add(new PgnFen("01_checkmate_by_white_capture_yes.pgn",
+        "1r1qkbnr/pbp2Qp1/2pp3p/4p1N1/4P3/8/PPPP1PPP/RNB1K2R b KQk - 0 8"));
+    list.add(new PgnFen("02_checkmate_by_white_capture_no.pgn",
+        "r2qkbnr/pbpppQ1p/1pn3p1/4Np2/4P3/8/PPPP1PPP/RNB1KB1R b KQkq - 1 6"));
+    list.add(new PgnFen("03_checkmate_by_white_discover_check.pgn",
+        "r1b2bnr/1ppp1ppp/p2Q4/4p3/4P2k/3P4/PPPBBPP1/RN2K1NR b Q - 19 18"));
+    list.add(new PgnFen("04_checkmate_fools_mate_by_white.pgn",
+        "rnbqkbnr/ppppp2p/5p2/6pQ/4P3/2N5/PPPP1PPP/R1B1KBNR b KQkq - 1 3"));
+    list.add(new PgnFen("05_checkmate_scholars_mate_by_white.pgn",
+        "r1bqk1nr/pppp1Qpp/2n5/2b1p3/2B1P3/8/PPPP1PPP/RNB1K1NR b KQkq - 0 4"));
     return new PgnTestCaseList(PgnTest.BASIC_CHECKMATE_VARIOUS_WHITE, list);
   }
 
   private static PgnTestCaseList createTestCasesBasicCheckmateVariousBlack() {
     final List<PgnFen> list = new ArrayList<>();
-    list.add(new PgnFen("01_checkmate_by_black_capture_yes.pgn", "rnb1kbnr/1p1p1pp1/p1B4p/2P5/8/P1N1q1PR/1PP1P3/R1BK2q1 w kq - 0 14"));
-    list.add(new PgnFen("02_checkmate_by_black_capture_no.pgn", "r7/ppp3pp/2N1k3/1B6/3np3/1b3n2/1P1b1PPP/RN1K3R w - - 7 21"));
-    list.add(new PgnFen("03_checkmate_by_black_discover_check.pgn", "1nbq4/1p1p2pk/7n/1N2pp1P/1p2Pb2/7N/r7/r2KQ2R w - - 0 21"));
-    list.add(new PgnFen("04_checkmate_fools_mate_by_black.pgn", "rnb1kbnr/pppp1ppp/8/4p3/6Pq/5P2/PPPPP2P/RNBQKBNR w KQkq - 1 3"));
-    list.add(new PgnFen("05_checkmate_scholars_mate_by_black.pgn", "rnb1k1nr/pppp1ppp/8/2b1p3/2B1P3/2NP4/PPP2qPP/R1BQK1NR w KQkq - 0 5"));
+    list.add(new PgnFen("01_checkmate_by_black_capture_yes.pgn",
+        "rnb1kbnr/1p1p1pp1/p1B4p/2P5/8/P1N1q1PR/1PP1P3/R1BK2q1 w kq - 0 14"));
+    list.add(new PgnFen("02_checkmate_by_black_capture_no.pgn",
+        "r7/ppp3pp/2N1k3/1B6/3np3/1b3n2/1P1b1PPP/RN1K3R w - - 7 21"));
+    list.add(new PgnFen("03_checkmate_by_black_discover_check.pgn",
+        "1nbq4/1p1p2pk/7n/1N2pp1P/1p2Pb2/7N/r7/r2KQ2R w - - 0 21"));
+    list.add(new PgnFen("04_checkmate_fools_mate_by_black.pgn",
+        "rnb1kbnr/pppp1ppp/8/4p3/6Pq/5P2/PPPPP2P/RNBQKBNR w KQkq - 1 3"));
+    list.add(new PgnFen("05_checkmate_scholars_mate_by_black.pgn",
+        "rnb1k1nr/pppp1ppp/8/2b1p3/2B1P3/2NP4/PPP2qPP/R1BQK1NR w KQkq - 0 5"));
     return new PgnTestCaseList(PgnTest.BASIC_CHECKMATE_VARIOUS_BLACK, list);
   }
 
@@ -689,8 +809,10 @@ public class PgnTestCaseCatalog {
     final List<PgnFen> list = new ArrayList<>();
 
     list.add(new PgnFen("01_white_double_check_checkmate_rook.pgn", "8/2rpp3/1R2k3/7R/8/8/B7/B3K3 b - - 3 101"));
-    list.add(new PgnFen("02_white_double_check_checkmate_knight_orthogonal.pgn", "8/4p3/3pk1n1/2N4R/8/8/4R3/4KQ2 b - - 3 101"));
-    list.add(new PgnFen("03_white_double_check_checkmate_knight_diagonal.pgn", "8/2pp1p2/2n1pk2/3N3R/8/8/1B4R1/4K3 b - - 3 101"));
+    list.add(new PgnFen("02_white_double_check_checkmate_knight_orthogonal.pgn",
+        "8/4p3/3pk1n1/2N4R/8/8/4R3/4KQ2 b - - 3 101"));
+    list.add(new PgnFen("03_white_double_check_checkmate_knight_diagonal.pgn",
+        "8/2pp1p2/2n1pk2/3N3R/8/8/1B4R1/4K3 b - - 3 101"));
     list.add(new PgnFen("04_white_double_check_checkmate_bishop.pgn", "8/3p1pp1/4pkn1/R7/7B/8/8/1B2KR2 b - - 3 101"));
 
     return new PgnTestCaseList(PgnTest.BASIC_CHECKMATE_DOUBLE_CHECK_WHITE, list);
@@ -700,8 +822,10 @@ public class PgnTestCaseCatalog {
     final List<PgnFen> list = new ArrayList<>();
 
     list.add(new PgnFen("01_black_double_check_checkmate_rook.pgn", "4k3/8/8/b7/8/8/R6r/1r2K3 w - - 3 102"));
-    list.add(new PgnFen("02_black_double_check_checkmate_knight_orthogonal.pgn", "3k4/8/4r3/8/8/5n2/R7/3NKBb1 w - - 3 102"));
-    list.add(new PgnFen("03_black_double_check_checkmate_knight_diagonal.pgn", "b4k2/6b1/3n4/8/4KP2/7r/Q7/8 w - - 3 102"));
+    list.add(
+        new PgnFen("02_black_double_check_checkmate_knight_orthogonal.pgn", "3k4/8/4r3/8/8/5n2/R7/3NKBb1 w - - 3 102"));
+    list.add(
+        new PgnFen("03_black_double_check_checkmate_knight_diagonal.pgn", "b4k2/6b1/3n4/8/4KP2/7r/Q7/8 w - - 3 102"));
     list.add(new PgnFen("04_black_double_check_checkmate_bishop.pgn", "1r2k3/8/8/2r5/4n3/8/3b4/2KRN3 w - - 3 102"));
 
     return new PgnTestCaseList(PgnTest.BASIC_CHECKMATE_DOUBLE_CHECK_BLACK, list);
@@ -710,7 +834,8 @@ public class PgnTestCaseCatalog {
   private static PgnTestCaseList createTestCasesBasicStalemate() {
     final List<PgnFen> list = new ArrayList<>();
     list.add(new PgnFen("01_stalemate_last_move_black.pgn", "r4knr/p2b1p2/3p4/p1pPp2p/P1PnP1pP/8/2q5/K7 w - - 0 26"));
-    list.add(new PgnFen("02_stalemate_last_move_white.pgn", "8/5Q2/1p3p1k/pP1p1Pp1/P1pPp1Pp/2P1P2P/8/RNB1KBNR b KQ - 0 24"));
+    list.add(
+        new PgnFen("02_stalemate_last_move_white.pgn", "8/5Q2/1p3p1k/pP1p1Pp1/P1pPp1Pp/2P1P2P/8/RNB1KBNR b KQ - 0 24"));
     return new PgnTestCaseList(PgnTest.BASIC_STALEMATE, list);
   }
 
@@ -857,132 +982,204 @@ public class PgnTestCaseCatalog {
     return new PgnTestCaseList(PgnTest.BASIC_INSUFFICIENT_MATERIAL_NONE, list);
   }
 
-
-
   private static PgnTestCaseList createTestCasesBasicThreefold() {
     final List<PgnFen> list = new ArrayList<>();
-    list.add(new PgnFen("01_threefold_moves_very_low_one_before_first_threefold.pgn", "rnbqkb1r/pppppppp/5n2/8/8/8/PPPPPPPP/RNBQKBNR b KQkq - 7 4"));
-    list.add(new PgnFen("02_threefold_moves_very_low_end_with_first_threefold.pgn", "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 8 5"));
+    list.add(new PgnFen("01_threefold_moves_very_low_one_before_first_threefold.pgn",
+        "rnbqkb1r/pppppppp/5n2/8/8/8/PPPPPPPP/RNBQKBNR b KQkq - 7 4"));
+    list.add(new PgnFen("02_threefold_moves_very_low_end_with_first_threefold.pgn",
+        "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 8 5"));
+    list.add(new PgnFen("03_threefold_moves_low_one_before_first_threefold.pgn",
+        "r1bqk2r/pppp1ppp/2n2n2/2b1p3/4P3/2N2N2/PPPP1PPP/R1BQKB1R b KQkq - 9 7"));
+    list.add(new PgnFen("04_threefold_moves_low_end_with_first_threefold.pgn",
+        "r1bqkb1r/pppp1ppp/2n2n2/4p3/4P3/2N2N2/PPPP1PPP/R1BQKB1R w KQkq - 10 8"));
+    list.add(new PgnFen("05_threefold_moves_medium_one_before_first_threefold.pgn",
+        "r1bq1rk1/pp1nbppp/2n1p3/1BppP3/3P1P2/2N1BN2/PPP3PP/R2QR1K1 w - - 14 13"));
+    list.add(new PgnFen("06_threefold_moves_medium_end_with_first_threefold.pgn",
+        "r1bq1rk1/pp1nbppp/2n1p3/1BppP3/3P1P2/2N1BN2/PPP3PP/R2Q1RK1 b - - 15 13"));
+    list.add(new PgnFen("07_threefold_moves_high_one_before_first_threefold.pgn",
+        "r4rk1/pp1b1pbp/q1n1p1p1/2ppPn2/P2P4/1P3NP1/2P1NPBP/R1BQ1RK1 b - - 10 17"));
+    list.add(new PgnFen("08_threefold_moves_high_end_with_first_threefold.pgn",
+        "r4rk1/pp1bnpbp/q1n1p1p1/2ppP3/P2P4/1P3NP1/2P1NPBP/R1BQ1RK1 w - - 11 18"));
+    list.add(new PgnFen("09_threefold_moves_very_high_one_before_first_threefold.pgn",
+        "1R4R1/5p1k/4p2p/3NP1pP/3r4/8/5PPK/8 w - - 11 49"));
+    list.add(new PgnFen("10_threefold_moves_very_high_end_with_first_threefold.pgn",
+        "1R5R/5p1k/4p2p/3NP1pP/3r4/8/5PPK/8 b - - 12 49"));
+    list.add(new PgnFen("11_threefold_castling_one_before_first_threefold.pgn",
+        "rnbqkb1r/1ppppppp/p7/8/3Nn3/8/PPPPPPPP/RNBQKB1R b KQk - 9 10"));
+    list.add(new PgnFen("12_threefold_castling_end_with_first_threefold.pgn",
+        "1nbqkb1r/rppppppp/p7/8/3Nn3/8/PPPPPPPP/RNBQKB1R w KQk - 10 11"));
+    list.add(new PgnFen("13_threefold_en_passant_capture_one_before_first_threefold.pgn",
+        "rnbqkb1r/ppp1pppp/5n2/3pP3/8/8/PPPP1PPP/RNBQKBNR w KQkq - 8 7"));
+    list.add(new PgnFen("14_threefold_en_passant_capture_end_with_first_threefold.pgn",
+        "rnbqkb1r/ppp1pppp/5n2/3pP3/2B5/8/PPPP1PPP/RNBQK1NR b KQkq - 9 7"));
+    list.add(new PgnFen("15_threefold_en_passant_capture_castling_one_before_first_threefold.pgn",
+        "rnbqkb1r/ppp1pppp/5n2/3pP3/8/8/PPPP1PPP/RNBQKBNR w KQ - 16 11"));
+    list.add(new PgnFen("16_threefold_en_passant_capture_castling_end_with_first_threefold.pgn",
+        "rnbqkb1r/ppp1pppp/5n2/3pP3/8/8/PPPP1PPP/RNBQKBNR w KQ - 20 13"));
+    list.add(new PgnFen("17_threefold_two_threefolds_end_with_threefold.pgn",
+        "rnbqkbnr/ppp2pp1/8/3pp2p/3PP2P/6P1/PPP2P2/RNBQKBNR b KQkq - 8 12"));
+    list.add(new PgnFen("18_threefold_two_threefolds_beyond.pgn",
+        "r1bqk1nr/2p3p1/ppnb1p2/3pp1Bp/1P1PP1QP/N1P3P1/P4P2/R3KBNR b KQkq - 1 17"));
+
+    list.add(new PgnFen("19_threefold_multiple_threefolds_end_with_threefold.pgn",
+        "rnbqkbnr/ppp2pp1/8/3pp2p/3PP2P/6P1/PPPB1P2/RN1QKBNR w KQkq - 11 16"));
+
+    list.add(new PgnFen("20_threefold_multiple_threefolds_beyond.pgn",
+        "2b1kbnr/Q4p2/2pq4/3ppP2/1n1PP3/5B2/1PP1N3/RNBQK1r1 w Qk - 0 30"));
+
+    list.add(new PgnFen("21_threefold_max_position_repetition_castling_end_with_first_threefold.pgn",
+        "rnbqkbnr/1ppp1pp1/8/p3p2p/P3P2P/8/1PPP1PP1/RNBQKBNR w - - 40 24"));
+
     list.add(
-        new PgnFen("03_threefold_moves_low_one_before_first_threefold.pgn", "r1bqk2r/pppp1ppp/2n2n2/2b1p3/4P3/2N2N2/PPPP1PPP/R1BQKB1R b KQkq - 9 7"));
-    list.add(new PgnFen("04_threefold_moves_low_end_with_first_threefold.pgn", "r1bqkb1r/pppp1ppp/2n2n2/4p3/4P3/2N2N2/PPPP1PPP/R1BQKB1R w KQkq - 10 8"));
-    list.add(new PgnFen("05_threefold_moves_medium_one_before_first_threefold.pgn", "r1bq1rk1/pp1nbppp/2n1p3/1BppP3/3P1P2/2N1BN2/PPP3PP/R2QR1K1 w - - 14 13"));
-    list.add(new PgnFen("06_threefold_moves_medium_end_with_first_threefold.pgn", "r1bq1rk1/pp1nbppp/2n1p3/1BppP3/3P1P2/2N1BN2/PPP3PP/R2Q1RK1 b - - 15 13"));
-    list.add(new PgnFen("07_threefold_moves_high_one_before_first_threefold.pgn", "r4rk1/pp1b1pbp/q1n1p1p1/2ppPn2/P2P4/1P3NP1/2P1NPBP/R1BQ1RK1 b - - 10 17"));
-    list.add(new PgnFen("08_threefold_moves_high_end_with_first_threefold.pgn", "r4rk1/pp1bnpbp/q1n1p1p1/2ppP3/P2P4/1P3NP1/2P1NPBP/R1BQ1RK1 w - - 11 18"));
-    list.add(new PgnFen("09_threefold_moves_very_high_one_before_first_threefold.pgn", "1R4R1/5p1k/4p2p/3NP1pP/3r4/8/5PPK/8 w - - 11 49"));
-    list.add(new PgnFen("10_threefold_moves_very_high_end_with_first_threefold.pgn", "1R5R/5p1k/4p2p/3NP1pP/3r4/8/5PPK/8 b - - 12 49"));
-    list.add(
-        new PgnFen("11_threefold_castling_one_before_first_threefold.pgn", "rnbqkb1r/1ppppppp/p7/8/3Nn3/8/PPPPPPPP/RNBQKB1R b KQk - 9 10"));
-    list.add(new PgnFen("12_threefold_castling_end_with_first_threefold.pgn", "1nbqkb1r/rppppppp/p7/8/3Nn3/8/PPPPPPPP/RNBQKB1R w KQk - 10 11"));
-    list.add(new PgnFen("13_threefold_en_passant_capture_one_before_first_threefold.pgn", "rnbqkb1r/ppp1pppp/5n2/3pP3/8/8/PPPP1PPP/RNBQKBNR w KQkq - 8 7"));
-    list.add(new PgnFen("14_threefold_en_passant_capture_end_with_first_threefold.pgn", "rnbqkb1r/ppp1pppp/5n2/3pP3/2B5/8/PPPP1PPP/RNBQK1NR b KQkq - 9 7"));
-    list.add(new PgnFen("15_threefold_en_passant_capture_castling_one_before_first_threefold.pgn", "rnbqkb1r/ppp1pppp/5n2/3pP3/8/8/PPPP1PPP/RNBQKBNR w KQ - 16 11"));
-    list.add(new PgnFen("16_threefold_en_passant_capture_castling_end_with_first_threefold.pgn", "rnbqkb1r/ppp1pppp/5n2/3pP3/8/8/PPPP1PPP/RNBQKBNR w KQ - 20 13"));
-    list.add(new PgnFen("17_threefold_two_threefolds_end_with_threefold.pgn", "rnbqkbnr/ppp2pp1/8/3pp2p/3PP2P/6P1/PPP2P2/RNBQKBNR b KQkq - 8 12"));
-    list.add(new PgnFen("18_threefold_two_threefolds_beyond.pgn", "r1bqk1nr/2p3p1/ppnb1p2/3pp1Bp/1P1PP1QP/N1P3P1/P4P2/R3KBNR b KQkq - 1 17"));
+        new PgnFen("22_threefold_max_position_repetition_castling_and_en_passant_capture_end_with_first_threefold.pgn",
+            "rnbqkbnr/2p1ppp1/p6p/1p1pP3/8/P6P/1PPP1PP1/RNBQKBNR w - - 44 27"));
 
-    list.add(new PgnFen("19_threefold_multiple_threefolds_end_with_threefold.pgn", "rnbqkbnr/ppp2pp1/8/3pp2p/3PP2P/6P1/PPPB1P2/RN1QKBNR w KQkq - 11 16"));
+    list.add(new PgnFen("24_threefold_max_visual_position_repetition_not_varying_end_with_first_threefold.pgn",
+        "rnbqkbnr/1pp1ppp1/8/p2pP2p/P6P/8/1PPP1PP1/RNBQKBNR w - - 90 50"));
+    list.add(new PgnFen("25_threefold_max_visual_position_repetition_varying_end_with_first_threefold.pgn",
+        "rnbqkbnr/1pp1ppp1/8/p2pP2p/P6P/8/1PPP1PP1/RNBQKBNR w - - 90 50"));
 
-    list.add(new PgnFen("20_threefold_multiple_threefolds_beyond.pgn", "2b1kbnr/Q4p2/2pq4/3ppP2/1n1PP3/5B2/1PP1N3/RNBQK1r1 w Qk - 0 30"));
+    list.add(new PgnFen("26_threefold_two_threefolds_not_varying_end_with_threefold.pgn",
+        "rnbqkbnr/1pp1ppp1/8/p2pP2p/P6P/8/1PPP1PP1/RNBQKBNR w - - 90 50"));
+    list.add(new PgnFen("26_threefold_two_threefolds_varying_end_with_threefold.pgn",
+        "rnbqkbnr/1pp1ppp1/8/p2pP2p/P6P/8/1PPP1PP1/RNBQKBNR w - - 90 50"));
 
-    list.add(new PgnFen("21_threefold_max_position_repetition_castling_end_with_first_threefold.pgn", "rnbqkbnr/1ppp1pp1/8/p3p2p/P3P2P/8/1PPP1PP1/RNBQKBNR w - - 40 24"));
+    list.add(new PgnFen("28_threefold_castling_right_lost_position_allows_castling_end_with_first_threefold.pgn",
+        "rnbqk2r/pppp1ppp/5n2/2b1p3/2B1P3/5N2/PPPP1PPP/RNBQK2R w kq - 16 10"));
+    list.add(new PgnFen("29_threefold_castling_right_lost_position_disallows_castling_end_with_first_threefold.pgn",
+        "rnbqkbnr/pppp1ppp/8/4p3/4P3/8/PPPP1PPP/RNBQKBNR w kq - 12 8"));
+    list.add(new PgnFen("30_threefold_castling_white_both_sides_lost_end_with_first_threefold.pgn",
+        "rnbqkbnr/pppp1ppp/8/4p3/4P3/8/PPPP1PPP/RNBQKBNR w - - 16 10"));
+    list.add(new PgnFen("31_threefold_castling_white_king_side_lost_end_with_first_threefold.pgn",
+        "rnbqkbnr/ppppppp1/8/7p/7P/8/PPPPPPP1/RNBQKBNR w Qkq - 16 10"));
+    list.add(new PgnFen("32_threefold_castling_white_queen_side_lost_end_with_first_threefold.pgn",
+        "rnbqkbnr/1ppppppp/8/p7/P7/8/1PPPPPPP/RNBQKBNR w Kkq - 16 10"));
 
-    list.add(new PgnFen("22_threefold_max_position_repetition_castling_and_en_passant_capture_end_with_first_threefold.pgn", "rnbqkbnr/2p1ppp1/p6p/1p1pP3/8/P6P/1PPP1PP1/RNBQKBNR w - - 44 27"));
+    list.add(new PgnFen("33_threefold_two_square_advance_no_pawn_same_rank_one_before_first_threefold.pgn",
+        "rnbqkb1r/pp2pppp/8/2pp4/4n3/2N1PN2/PPPP1PPP/R1BQKB1R b KQkq - 7 7"));
+    list.add(new PgnFen("34_threefold_two_square_advance_no_pawn_same_rank_end_with_first_threefold.pgn",
+        "rnbqkb1r/pp2pppp/5n2/2pp4/8/2N1PN2/PPPP1PPP/R1BQKB1R w KQkq - 8 8"));
+    list.add(new PgnFen("35_threefold_two_square_advance_no_pawn_same_rank_beyond.pgn",
+        "rn1qkb1r/pp1bppp1/5n2/1Bpp3p/P7/2N1PN2/1PPP1PPP/R1BQK2R w KQkq - 2 10"));
 
-    list.add(new PgnFen("24_threefold_max_visual_position_repetition_not_varying_end_with_first_threefold.pgn", "rnbqkbnr/1pp1ppp1/8/p2pP2p/P6P/8/1PPP1PP1/RNBQKBNR w - - 90 50"));
-    list.add(new PgnFen("25_threefold_max_visual_position_repetition_varying_end_with_first_threefold.pgn", "rnbqkbnr/1pp1ppp1/8/p2pP2p/P6P/8/1PPP1PP1/RNBQKBNR w - - 90 50"));
+    list.add(new PgnFen("36_threefold_en_passant_capture_situation_capture_allowed_yes_end_with_first_threefold.pgn",
+        "r1bqkbnr/ppp1pppp/2n5/3pP3/8/8/PPPP1PPP/RNBQKBNR w KQkq - 12 9"));
 
-    list.add(new PgnFen("26_threefold_two_threefolds_not_varying_end_with_threefold.pgn", "rnbqkbnr/1pp1ppp1/8/p2pP2p/P6P/8/1PPP1PP1/RNBQKBNR w - - 90 50"));
-    list.add(new PgnFen("26_threefold_two_threefolds_varying_end_with_threefold.pgn", "rnbqkbnr/1pp1ppp1/8/p2pP2p/P6P/8/1PPP1PP1/RNBQKBNR w - - 90 50"));
+    list.add(new PgnFen(
+        "38_threefold_en_passant_capture_situation_capture_allowed_no_leaving_own_king_in_check_mine_end_with_first_threefold.pgn",
+        "rnb1qbnr/ppp1kppp/4p3/1K1pP3/8/8/PPPP1PPP/RNBQ1BNR w - - 8 11"));
 
-    list.add(new PgnFen("28_threefold_castling_right_lost_position_allows_castling_end_with_first_threefold.pgn", "rnbqk2r/pppp1ppp/5n2/2b1p3/2B1P3/5N2/PPPP1PPP/RNBQK2R w kq - 16 10"));
-    list.add(
-        new PgnFen("29_threefold_castling_right_lost_position_disallows_castling_end_with_first_threefold.pgn", "rnbqkbnr/pppp1ppp/8/4p3/4P3/8/PPPP1PPP/RNBQKBNR w kq - 12 8"));
-    list.add(new PgnFen("30_threefold_castling_white_both_sides_lost_end_with_first_threefold.pgn", "rnbqkbnr/pppp1ppp/8/4p3/4P3/8/PPPP1PPP/RNBQKBNR w - - 16 10"));
-    list.add(new PgnFen("31_threefold_castling_white_king_side_lost_end_with_first_threefold.pgn", "rnbqkbnr/ppppppp1/8/7p/7P/8/PPPPPPP1/RNBQKBNR w Qkq - 16 10"));
-    list.add(new PgnFen("32_threefold_castling_white_queen_side_lost_end_with_first_threefold.pgn", "rnbqkbnr/1ppppppp/8/p7/P7/8/1PPPPPPP/RNBQKBNR w Kkq - 16 10"));
-
-    list.add(new PgnFen("33_threefold_two_square_advance_no_pawn_same_rank_one_before_first_threefold.pgn", "rnbqkb1r/pp2pppp/8/2pp4/4n3/2N1PN2/PPPP1PPP/R1BQKB1R b KQkq - 7 7"));
-    list.add(new PgnFen("34_threefold_two_square_advance_no_pawn_same_rank_end_with_first_threefold.pgn", "rnbqkb1r/pp2pppp/5n2/2pp4/8/2N1PN2/PPPP1PPP/R1BQKB1R w KQkq - 8 8"));
-    list.add(new PgnFen("35_threefold_two_square_advance_no_pawn_same_rank_beyond.pgn", "rn1qkb1r/pp1bppp1/5n2/1Bpp3p/P7/2N1PN2/1PPP1PPP/R1BQK2R w KQkq - 2 10"));
-
-    list.add(
-        new PgnFen("36_threefold_en_passant_capture_situation_capture_allowed_yes_end_with_first_threefold.pgn", "r1bqkbnr/ppp1pppp/2n5/3pP3/8/8/PPPP1PPP/RNBQKBNR w KQkq - 12 9"));
-
-    list.add(new PgnFen("38_threefold_en_passant_capture_situation_capture_allowed_no_leaving_own_king_in_check_mine_end_with_first_threefold.pgn", "rnb1qbnr/ppp1kppp/4p3/1K1pP3/8/8/PPPP1PPP/RNBQ1BNR w - - 8 11"));
-
-    list.add(new PgnFen("39_threefold_en_passant_capture_situation_capture_allowed_no_exposing_own_king_to_check_from_forum_end_with_first_threefold.pgn", "6k1/8/8/8/5Pp1/8/6R1/6K1 b - - 12 38"));
-    list.add(new PgnFen("40_threefold_en_passant_capture_situation_capture_allowed_no_leaving_own_king_in_check_from_forum_end_with_first_threefold.pgn", "8/8/8/8/3Pp3/8/R6k/K7 b - - 12 43"));
+    list.add(new PgnFen(
+        "39_threefold_en_passant_capture_situation_capture_allowed_no_exposing_own_king_to_check_from_forum_end_with_first_threefold.pgn",
+        "6k1/8/8/8/5Pp1/8/6R1/6K1 b - - 12 38"));
+    list.add(new PgnFen(
+        "40_threefold_en_passant_capture_situation_capture_allowed_no_leaving_own_king_in_check_from_forum_end_with_first_threefold.pgn",
+        "8/8/8/8/3Pp3/8/R6k/K7 b - - 12 43"));
 
     // Reactivated from pgnParser/legacy/common/beyond — filename says "threefold" but the game actually plays past
     // the first fivefold (the original test category was misleading).
-    list.add(new PgnFen("37_threefold_en_passant_capture_situation_capture_allowed_no_exposing_own_king_to_check_mine_end_with_first_threefold.pgn", "r1b1kb1r/ppp1qppp/2n2n2/3pP3/8/5N2/PPPP1PPP/RNBQKB1R w KQkq - 20 16"));
+    list.add(new PgnFen(
+        "37_threefold_en_passant_capture_situation_capture_allowed_no_exposing_own_king_to_check_mine_end_with_first_threefold.pgn",
+        "r1b1kb1r/ppp1qppp/2n2n2/3pP3/8/5N2/PPPP1PPP/RNBQKB1R w KQkq - 20 16"));
 
     return new PgnTestCaseList(PgnTest.BASIC_THREEFOLD, list);
   }
 
   private static PgnTestCaseList createTestCasesBasicFifty() {
     final List<PgnFen> list = new ArrayList<>();
-    list.add(new PgnFen("01_fifty_end_with_half_move_clock_99.pgn", "1r1nk2r/2pb1pp1/1p5Q/p2ppnbp/P3P2P/1R1PR2N/1PP2PP1/qBB1K1N1 b - - 99 56"));
-    list.add(new PgnFen("02_fifty_end_with_half_move_clock_100.pgn", "1r1nk2r/2pb1pp1/1p1n3Q/p2pp1bp/P3P2P/1R1PR2N/1PP2PP1/qBB1K1N1 w - - 100 57"));
-    list.add(new PgnFen("03_fifty_half_move_clock_99_then_checkmate_by_white_with_capture.pgn", "1rbqkb1r/pp1p1Qpp/2p5/3Bp3/PR1NP3/Bn2N3/2PP1PPP/5RK1 b k - 0 57"));
-    list.add(new PgnFen("04_fifty_half_move_clock_99_then_checkmate_by_black_with_capture.pgn", "4rrk1/pppbnppp/8/8/1n1N4/4bN2/PP1PPqPP/R1BQKB1R w - - 0 54"));
-    list.add(new PgnFen("05_fifty_half_move_clock_99_then_checkmate_by_white_without_capture_or_pawn_move.pgn", "1rbnk2r/pp1pQppp/1bp5/q2Bp3/PBRNP3/4N3/2PP1PPP/2R3K1 b k - 100 57"));
-    list.add(new PgnFen("06_fifty_half_move_clock_99_then_checkmate_by_black_without_capture_or_pawn_move.pgn", "rk6/ppp1Nppp/3r1n2/8/bn1Q4/4bN2/PP1PPPPP/R1BqKB1R w KQ - 100 54"));
-    list.add(new PgnFen("07_fifty_half_move_clock_99_then_stalemate_by_white_move.pgn", "k7/2R5/1Q3N2/5pP1/5P2/8/PPP1P3/K7 b - - 100 82"));
-    list.add(new PgnFen("08_fifty_half_move_clock_99_then_stalemate_by_black_move.pgn", "8/8/1p1p4/p1pPp1p1/P1P1P3/8/2q4r/K2k4 w - - 100 74"));
-    list.add(new PgnFen("09_fifty_bishop_walk_end_with_half_move_clock_110.pgn", "r1bqkbnr/ppp2ppp/1N6/3pp3/3PP3/1n6/PPP2PPP/R1BQKBNR w KQkq - 110 58"));
-    list.add(new PgnFen("10_fifty_half_move_clock_99_fifty_moves_claimable_yes.pgn", "r2qkbnr/pppb1ppp/1N6/n2pp1Q1/3PPB2/8/PPP2PPP/R3KBNR b KQkq - 99 52"));
-    list.add(new PgnFen("11_fifty_half_move_clock_99_fifty_moves_claimable_no_forced_capture.pgn", "r2qkbnr/pppbQppp/1N6/n2pp3/3PP3/4B3/PPP2PPP/R3KBNR b KQkq - 99 52"));
-    list.add(new PgnFen("12_fifty_half_move_clock_99_fifty_moves_claimable_no_forced_pawn_move.pgn", "1rb3n1/pppq1pp1/2n1r3/2bpp2p/3PP1Qk/4K2N/PPP2PPP/RNBB3R b - - 99 53"));
+    list.add(new PgnFen("01_fifty_end_with_half_move_clock_99.pgn",
+        "1r1nk2r/2pb1pp1/1p5Q/p2ppnbp/P3P2P/1R1PR2N/1PP2PP1/qBB1K1N1 b - - 99 56"));
+    list.add(new PgnFen("02_fifty_end_with_half_move_clock_100.pgn",
+        "1r1nk2r/2pb1pp1/1p1n3Q/p2pp1bp/P3P2P/1R1PR2N/1PP2PP1/qBB1K1N1 w - - 100 57"));
+    list.add(new PgnFen("03_fifty_half_move_clock_99_then_checkmate_by_white_with_capture.pgn",
+        "1rbqkb1r/pp1p1Qpp/2p5/3Bp3/PR1NP3/Bn2N3/2PP1PPP/5RK1 b k - 0 57"));
+    list.add(new PgnFen("04_fifty_half_move_clock_99_then_checkmate_by_black_with_capture.pgn",
+        "4rrk1/pppbnppp/8/8/1n1N4/4bN2/PP1PPqPP/R1BQKB1R w - - 0 54"));
+    list.add(new PgnFen("05_fifty_half_move_clock_99_then_checkmate_by_white_without_capture_or_pawn_move.pgn",
+        "1rbnk2r/pp1pQppp/1bp5/q2Bp3/PBRNP3/4N3/2PP1PPP/2R3K1 b k - 100 57"));
+    list.add(new PgnFen("06_fifty_half_move_clock_99_then_checkmate_by_black_without_capture_or_pawn_move.pgn",
+        "rk6/ppp1Nppp/3r1n2/8/bn1Q4/4bN2/PP1PPPPP/R1BqKB1R w KQ - 100 54"));
+    list.add(new PgnFen("07_fifty_half_move_clock_99_then_stalemate_by_white_move.pgn",
+        "k7/2R5/1Q3N2/5pP1/5P2/8/PPP1P3/K7 b - - 100 82"));
+    list.add(new PgnFen("08_fifty_half_move_clock_99_then_stalemate_by_black_move.pgn",
+        "8/8/1p1p4/p1pPp1p1/P1P1P3/8/2q4r/K2k4 w - - 100 74"));
+    list.add(new PgnFen("09_fifty_bishop_walk_end_with_half_move_clock_110.pgn",
+        "r1bqkbnr/ppp2ppp/1N6/3pp3/3PP3/1n6/PPP2PPP/R1BQKBNR w KQkq - 110 58"));
+    list.add(new PgnFen("10_fifty_half_move_clock_99_fifty_moves_claimable_yes.pgn",
+        "r2qkbnr/pppb1ppp/1N6/n2pp1Q1/3PPB2/8/PPP2PPP/R3KBNR b KQkq - 99 52"));
+    list.add(new PgnFen("11_fifty_half_move_clock_99_fifty_moves_claimable_no_forced_capture.pgn",
+        "r2qkbnr/pppbQppp/1N6/n2pp3/3PP3/4B3/PPP2PPP/R3KBNR b KQkq - 99 52"));
+    list.add(new PgnFen("12_fifty_half_move_clock_99_fifty_moves_claimable_no_forced_pawn_move.pgn",
+        "1rb3n1/pppq1pp1/2n1r3/2bpp2p/3PP1Qk/4K2N/PPP2PPP/RNBB3R b - - 99 53"));
     return new PgnTestCaseList(PgnTest.BASIC_FIFTY, list);
   }
 
   private static PgnTestCaseList createTestCasesBasicFivefold() {
     final List<PgnFen> list = new ArrayList<>();
-    list.add(new PgnFen("01_fivefold_one_before_first_fivefold.pgn", "r1bqk1nr/1pp2ppp/p1np4/2b1p3/2B1P3/3P1N1P/PPP2PP1/RNBQK2R w KQkq - 12 12"));
-    list.add(new PgnFen("02_fivefold_end_with_first_fivefold.pgn", "r1bqk1nr/1pp2ppp/p1np4/2b1p3/2B1P3/3P1N1P/PPP2PP1/RNBQK2R w KQkq - 16 14"));
-    list.add(new PgnFen("03_fivefold_one_before_first_fivefold.pgn", "r1b1k1nr/1ppq1ppp/p1np4/2b1p3/2B1P3/3P1N1P/PPP2PP1/RNBQK2R b KQkq - 15 13"));
+    list.add(new PgnFen("01_fivefold_one_before_first_fivefold.pgn",
+        "r1bqk1nr/1pp2ppp/p1np4/2b1p3/2B1P3/3P1N1P/PPP2PP1/RNBQK2R w KQkq - 12 12"));
+    list.add(new PgnFen("02_fivefold_end_with_first_fivefold.pgn",
+        "r1bqk1nr/1pp2ppp/p1np4/2b1p3/2B1P3/3P1N1P/PPP2PP1/RNBQK2R w KQkq - 16 14"));
+    list.add(new PgnFen("03_fivefold_one_before_first_fivefold.pgn",
+        "r1b1k1nr/1ppq1ppp/p1np4/2b1p3/2B1P3/3P1N1P/PPP2PP1/RNBQK2R b KQkq - 15 13"));
 
-    final var dyamicPositionRepetition = "repPos=5: 5...a6 7...Qd8 9...Qd8 11...Qd8 13...Qd8; repPos=4: 6.Bg5 8.Bg5 10.Bg5 12.Bg5; repPos=4: 6...Qd7 8...Qd7 10...Qd7 12...Qd7; repPos=4: 7.Bc1 9.Bc1 11.Bc1 13.Bc1";
+    list.add(new PgnFen("04_fivefold_end_with_first_fivefold.pgn",
+        "r1bqk1nr/1pp2ppp/p1np4/2b1p3/2B1P3/3P1N1P/PPP2PP1/RNBQK2R w KQkq - 16 14"));
+    list.add(new PgnFen("07_fivefold_max_position_repetitions_castling_end_with_first_fivefold.pgn",
+        "rnbqkbnr/1ppp1pp1/8/p3p2p/P3P2P/8/1PPP1PP1/RNBQKBNR w - - 48 28"));
 
-    list.add(new PgnFen("04_fivefold_end_with_first_fivefold.pgn", "r1bqk1nr/1pp2ppp/p1np4/2b1p3/2B1P3/3P1N1P/PPP2PP1/RNBQK2R w KQkq - 16 14"));
-    list.add(new PgnFen("07_fivefold_max_position_repetitions_castling_end_with_first_fivefold.pgn", "rnbqkbnr/1ppp1pp1/8/p3p2p/P3P2P/8/1PPP1PP1/RNBQKBNR w - - 48 28"));
-
-    list.add(new PgnFen("08_fivefold_max_position_repetitions_castling_and_en_passant_capture_end_with_first_fivefold.pgn", "rnbqkbnr/2p1ppp1/p6p/1p1pP3/8/P6P/1PPP1PP1/RNBQKBNR w - - 52 31"));
+    list.add(
+        new PgnFen("08_fivefold_max_position_repetitions_castling_and_en_passant_capture_end_with_first_fivefold.pgn",
+            "rnbqkbnr/2p1ppp1/p6p/1p1pP3/8/P6P/1PPP1PP1/RNBQKBNR w - - 52 31"));
 
     // Reactivated from pgnParser/legacy/common/beyond — play continues past first fivefold.
-    list.add(new PgnFen("05_fivefold_beyond.pgn", "r1bqk1nr/1pp2p1p/pbnp2p1/4p3/1PB1P3/P2P1N1P/2P2PP1/RNBQK2R w KQkq - 1 16"));
-    list.add(new PgnFen("06_fivefold_end_with_first_sixfold.pgn", "r1bqk1nr/1pp2ppp/p1np4/2b1p3/2B1P3/3P1N1P/PPP2PP1/RNBQK2R w KQkq - 20 16"));
+    list.add(new PgnFen("05_fivefold_beyond.pgn",
+        "r1bqk1nr/1pp2p1p/pbnp2p1/4p3/1PB1P3/P2P1N1P/2P2PP1/RNBQK2R w KQkq - 1 16"));
+    list.add(new PgnFen("06_fivefold_end_with_first_sixfold.pgn",
+        "r1bqk1nr/1pp2ppp/p1np4/2b1p3/2B1P3/3P1N1P/PPP2PP1/RNBQK2R w KQkq - 20 16"));
 
     return new PgnTestCaseList(PgnTest.BASIC_FIVEFOLD, list);
   }
 
   private static PgnTestCaseList createTestCasesBasicSeventyFive() {
     final List<PgnFen> list = new ArrayList<>();
-    list.add(new PgnFen("01_seventy_five_end_with_half_move_clock_149.pgn", "1r1n2r1/2pk1ppR/1pbn4/p2pp2p/P1B1P2P/1RKP1Q1N/1PP1NPP1/1qB3b1 b - - 149 81"));
-    list.add(new PgnFen("02_seventy_five_end_with_half_move_clock_150.pgn", "1rkn2r1/2p2ppR/1pbn4/p2pp2p/P1B1P2P/1RKP1Q1N/1PP1NPP1/1qB3b1 w - - 150 82"));
-    list.add(new PgnFen("11_seventy_five_half_move_clock_149_then_checkmate_by_white_with_capture.pgn", "5rrk/ppp2ppQ/3n1N2/2bbp3/n1qPB3/B1P5/PPN2PPP/1KR4R b - - 0 79"));
-    list.add(new PgnFen("12_seventy_five_half_move_clock_149_then_checkmate_by_black_with_capture.pgn", "2b4r/ppp1ppb1/kN1r3p/3p2p1/P2P2n1/3n1QP1/1PPBPP1q/R3NBRK w - - 0 79"));
-    list.add(
-        new PgnFen("13_seventy_five_half_move_clock_149_then_checkmate_by_white_without_capture_or_pawn_move.pgn", "4Q1k1/ppp2ppp/1b4rr/1n1bp3/1BqPB1N1/2P3n1/PPN2PPP/1KR4R b - - 150 79"));
-    list.add(
-        new PgnFen("14_seventy_five_half_move_clock_149_then_checkmate_by_black_without_capture_or_pawn_move.pgn", "3r1n1b/pppbpp2/k1r4p/3pQ1pK/Pn1P2q1/RNN3P1/1PPBPPBP/6R1 w - - 150 79"));
+    list.add(new PgnFen("01_seventy_five_end_with_half_move_clock_149.pgn",
+        "1r1n2r1/2pk1ppR/1pbn4/p2pp2p/P1B1P2P/1RKP1Q1N/1PP1NPP1/1qB3b1 b - - 149 81"));
+    list.add(new PgnFen("02_seventy_five_end_with_half_move_clock_150.pgn",
+        "1rkn2r1/2p2ppR/1pbn4/p2pp2p/P1B1P2P/1RKP1Q1N/1PP1NPP1/1qB3b1 w - - 150 82"));
+    list.add(new PgnFen("11_seventy_five_half_move_clock_149_then_checkmate_by_white_with_capture.pgn",
+        "5rrk/ppp2ppQ/3n1N2/2bbp3/n1qPB3/B1P5/PPN2PPP/1KR4R b - - 0 79"));
+    list.add(new PgnFen("12_seventy_five_half_move_clock_149_then_checkmate_by_black_with_capture.pgn",
+        "2b4r/ppp1ppb1/kN1r3p/3p2p1/P2P2n1/3n1QP1/1PPBPP1q/R3NBRK w - - 0 79"));
+    list.add(new PgnFen("13_seventy_five_half_move_clock_149_then_checkmate_by_white_without_capture_or_pawn_move.pgn",
+        "4Q1k1/ppp2ppp/1b4rr/1n1bp3/1BqPB1N1/2P3n1/PPN2PPP/1KR4R b - - 150 79"));
+    list.add(new PgnFen("14_seventy_five_half_move_clock_149_then_checkmate_by_black_without_capture_or_pawn_move.pgn",
+        "3r1n1b/pppbpp2/k1r4p/3pQ1pK/Pn1P2q1/RNN3P1/1PPBPPBP/6R1 w - - 150 79"));
 
-    list.add(new PgnFen("15_seventy_five_half_move_clock_149_then_stalemate_by_white_move.pgn", "8/4K3/1NB4P/p1pp3Q/PpP1k1p1/1P3pP1/1B3P2/3R2NR b - - 150 102"));
+    list.add(new PgnFen("15_seventy_five_half_move_clock_149_then_stalemate_by_white_move.pgn",
+        "8/4K3/1NB4P/p1pp3Q/PpP1k1p1/1P3pP1/1B3P2/3R2NR b - - 150 102"));
 
-    list.add(new PgnFen("16_seventy_five_half_move_clock_149_then_stalemate_by_black_move.pgn", "1r3n1r/kbp1n2p/1p2p2b/pP1pP1p1/P2P1pP1/5P2/5q2/7K w - - 150 97"));
+    list.add(new PgnFen("16_seventy_five_half_move_clock_149_then_stalemate_by_black_move.pgn",
+        "1r3n1r/kbp1n2p/1p2p2b/pP1pP1p1/P2P1pP1/5P2/5q2/7K w - - 150 97"));
 
     // Reactivated from pgnParser/legacy/common/beyond — play continues past first 75-move.
-    list.add(new PgnFen("03_seventy_five_end_with_half_move_clock_154.pgn", "1r1n2r1/k1p2ppR/1pbn4/pR1pp2p/P1B1P2P/1K1P1Q1N/1PP1NPP1/1qB3b1 w - - 154 84"));
-    list.add(new PgnFen("04_seventy_five_beyond_half_move_clock_154_end_with_half_move_clock_99.pgn", "3nrr2/kqp2pp1/1pb1BRn1/pQ2p1Np/P2RPB1P/3P1K2/1PP1NPPb/8 w - - 99 134"));
-    list.add(new PgnFen("05_seventy_five_beyond_half_move_clock_154_end_with_half_move_clock_100.pgn", "3nrr2/kqp2pp1/1pb1BRn1/p2Qp1Np/P2RPB1P/3P1K2/1PP1NPPb/8 b - - 100 134"));
-    list.add(new PgnFen("06_seventy_five_beyond_half_move_clock_154_end_with_half_move_clock_117.pgn", "2Qnrr2/k1pB1ppN/1p2R1n1/p2bp2p/P2RPB1P/3P1K2/1PPqNPPb/8 w - - 117 143"));
-    list.add(new PgnFen("07_seventy_five_beyond_half_move_clock_154_end_with_half_move_clock_149.pgn", "r3n2Q/k1p1rpp1/1p2RB2/p2bp1Np/P2RPn1P/3P1K2/1PPN1PPb/1B4q1 w - - 149 159"));
-    list.add(new PgnFen("08_seventy_five_beyond_half_move_clock_154_end_with_half_move_clock_150.pgn", "r3n3/k1p1rpp1/1p2RB1Q/p2bp1Np/P2RPn1P/3P1K2/1PPN1PPb/1B4q1 b - - 150 159"));
-    list.add(new PgnFen("09_seventy_five_beyond_half_move_clock_154_end_with_half_move_clock_178.pgn", "r2r1B1Q/1kp1Rpp1/1p3n2/p3p1Np/P2RPn1P/1b1P1K2/1PPN1PPb/1B2q3 b - - 178 173"));
-    list.add(new PgnFen("10_seventy_five_beyond_half_move_clock_154_beyond_half_move_clock_178_end_with_half_move_clock_10.pgn", "rn2RB2/2p2ppQ/kp1N2n1/p3p2p/P1r1P2P/1b1P1K1N/1PP2PPb/1B2q3 w - - 10 179"));
+    list.add(new PgnFen("03_seventy_five_end_with_half_move_clock_154.pgn",
+        "1r1n2r1/k1p2ppR/1pbn4/pR1pp2p/P1B1P2P/1K1P1Q1N/1PP1NPP1/1qB3b1 w - - 154 84"));
+    list.add(new PgnFen("04_seventy_five_beyond_half_move_clock_154_end_with_half_move_clock_99.pgn",
+        "3nrr2/kqp2pp1/1pb1BRn1/pQ2p1Np/P2RPB1P/3P1K2/1PP1NPPb/8 w - - 99 134"));
+    list.add(new PgnFen("05_seventy_five_beyond_half_move_clock_154_end_with_half_move_clock_100.pgn",
+        "3nrr2/kqp2pp1/1pb1BRn1/p2Qp1Np/P2RPB1P/3P1K2/1PP1NPPb/8 b - - 100 134"));
+    list.add(new PgnFen("06_seventy_five_beyond_half_move_clock_154_end_with_half_move_clock_117.pgn",
+        "2Qnrr2/k1pB1ppN/1p2R1n1/p2bp2p/P2RPB1P/3P1K2/1PPqNPPb/8 w - - 117 143"));
+    list.add(new PgnFen("07_seventy_five_beyond_half_move_clock_154_end_with_half_move_clock_149.pgn",
+        "r3n2Q/k1p1rpp1/1p2RB2/p2bp1Np/P2RPn1P/3P1K2/1PPN1PPb/1B4q1 w - - 149 159"));
+    list.add(new PgnFen("08_seventy_five_beyond_half_move_clock_154_end_with_half_move_clock_150.pgn",
+        "r3n3/k1p1rpp1/1p2RB1Q/p2bp1Np/P2RPn1P/3P1K2/1PPN1PPb/1B4q1 b - - 150 159"));
+    list.add(new PgnFen("09_seventy_five_beyond_half_move_clock_154_end_with_half_move_clock_178.pgn",
+        "r2r1B1Q/1kp1Rpp1/1p3n2/p3p1Np/P2RPn1P/1b1P1K2/1PPN1PPb/1B2q3 b - - 178 173"));
+    list.add(new PgnFen(
+        "10_seventy_five_beyond_half_move_clock_154_beyond_half_move_clock_178_end_with_half_move_clock_10.pgn",
+        "rn2RB2/2p2ppQ/kp1N2n1/p3p2p/P1r1P2P/1b1P1K1N/1PP2PPb/1B2q3 w - - 10 179"));
 
     return new PgnTestCaseList(PgnTest.BASIC_SEVENTY_FIVE, list);
   }
@@ -990,19 +1187,27 @@ public class PgnTestCaseCatalog {
   private static PgnTestCaseList createTestCasesBasicIntervening() {
     final List<PgnFen> list = new ArrayList<>();
 
-    list.add(new PgnFen("01_intervening_threefold_encapsulating_threefold.pgn", "rnbqkbnr/1ppp1ppp/p7/4p3/4P3/P7/1PPP1PPP/RNBQKBNR w KQkq - 0 11"));
+    list.add(new PgnFen("01_intervening_threefold_encapsulating_threefold.pgn",
+        "rnbqkbnr/1ppp1ppp/p7/4p3/4P3/P7/1PPP1PPP/RNBQKBNR w KQkq - 0 11"));
 
-    list.add(new PgnFen("03_intervening_fivefold_encapsulating_threefold.pgn", "rnbqkbnr/ppppp2p/8/5pp1/5PP1/8/PPPPP2P/RNBQKBNR w KQkq - 28 17"));
+    list.add(new PgnFen("03_intervening_fivefold_encapsulating_threefold.pgn",
+        "rnbqkbnr/ppppp2p/8/5pp1/5PP1/8/PPPPP2P/RNBQKBNR w KQkq - 28 17"));
 
-    list.add(new PgnFen("05_intervening_threefold_interlocked_threefold.pgn", "r1bqk1nr/p1pppp1p/1pn3pb/8/8/1PN3PB/P1PPPP1P/R1BQK1NR w KQkq - 16 11"));
+    list.add(new PgnFen("05_intervening_threefold_interlocked_threefold.pgn",
+        "r1bqk1nr/p1pppp1p/1pn3pb/8/8/1PN3PB/P1PPPP1P/R1BQK1NR w KQkq - 16 11"));
 
-    list.add(new PgnFen("06_intervening_threefold_interlocked_fivefold.pgn", "rnbqk1nr/p1pp1ppp/8/1pb1p3/1PB1P3/8/P1PP1PPP/RNBQK1NR w KQkq - 24 15"));
+    list.add(new PgnFen("06_intervening_threefold_interlocked_fivefold.pgn",
+        "rnbqk1nr/p1pp1ppp/8/1pb1p3/1PB1P3/8/P1PP1PPP/RNBQK1NR w KQkq - 24 15"));
 
     // Reactivated from pgnParser/legacy/common/beyond — play continues past first fivefold.
-    list.add(new PgnFen("02_intervening_threefold_encapsulating_fivefold.pgn", "r1bqkbnr/p2ppppp/2n5/1pp5/1PP5/2N5/P2PPPPP/R1BQKBNR w KQkq - 30 18"));
-    list.add(new PgnFen("04_intervening_fivefold_encapsulating_fivefold.pgn", "rnbqkb1r/pp1p1ppp/2p1pn2/8/8/2P1PN2/PP1P1PPP/RNBQKB1R w KQkq - 34 20"));
-    list.add(new PgnFen("07_intervening_fivefold_interlocked_threefold.pgn", "r1bqkb1r/ppp2ppp/2n5/3pp1N1/3PP1n1/2N5/PPP2PPP/R1BQKB1R w KQkq - 38 22"));
-    list.add(new PgnFen("08_intervening_fivefold_interlocked_fivefold.pgn", "rnq1kbnr/p1p1pp1p/bp4p1/3p4/3P4/BP4P1/P1P1PP1P/RNQ1KBNR w KQkq - 40 24"));
+    list.add(new PgnFen("02_intervening_threefold_encapsulating_fivefold.pgn",
+        "r1bqkbnr/p2ppppp/2n5/1pp5/1PP5/2N5/P2PPPPP/R1BQKBNR w KQkq - 30 18"));
+    list.add(new PgnFen("04_intervening_fivefold_encapsulating_fivefold.pgn",
+        "rnbqkb1r/pp1p1ppp/2p1pn2/8/8/2P1PN2/PP1P1PPP/RNBQKB1R w KQkq - 34 20"));
+    list.add(new PgnFen("07_intervening_fivefold_interlocked_threefold.pgn",
+        "r1bqkb1r/ppp2ppp/2n5/3pp1N1/3PP1n1/2N5/PPP2PPP/R1BQKB1R w KQkq - 38 22"));
+    list.add(new PgnFen("08_intervening_fivefold_interlocked_fivefold.pgn",
+        "rnq1kbnr/p1p1pp1p/bp4p1/3p4/3P4/BP4P1/P1P1PP1P/RNQ1KBNR w KQkq - 40 24"));
 
     return new PgnTestCaseList(PgnTest.BASIC_INTERVENING, list);
   }
@@ -1010,10 +1215,14 @@ public class PgnTestCaseCatalog {
   private static PgnTestCaseList createTestCasesBasicDoubleDraw() {
     final List<PgnFen> list = new ArrayList<>();
 
-    list.add(new PgnFen("01_double_draw_threefold_and_fifty_move.pgn", "rnbqkbnr/p1p2p1p/1p4p1/3pp3/3PP3/1P4P1/P1P2P1P/RNBQKBNR w KQkq - 100 55"));
-    list.add(new PgnFen("02_double_draw_threefold_and_seventy_five_move.pgn", "rnbqkbnr/p1p2p1p/1p4p1/3pp3/3PP3/1P4P1/P1P2P1P/RNBQKBNR w KQkq - 150 80"));
-    list.add(new PgnFen("03_double_draw_fivefold_and_fifty_move.pgn", "rnbqkbnr/p1p2p1p/1p4p1/3pp3/3PP3/1P4P1/P1P2P1P/RNBQKBNR w KQkq - 100 55"));
-    list.add(new PgnFen("04_double_draw_fivefold_and_seventy_five_move.pgn", "rnbqkbnr/p1p2p1p/1p4p1/3pp3/3PP3/1P4P1/P1P2P1P/RNBQKBNR w KQkq - 150 80"));
+    list.add(new PgnFen("01_double_draw_threefold_and_fifty_move.pgn",
+        "rnbqkbnr/p1p2p1p/1p4p1/3pp3/3PP3/1P4P1/P1P2P1P/RNBQKBNR w KQkq - 100 55"));
+    list.add(new PgnFen("02_double_draw_threefold_and_seventy_five_move.pgn",
+        "rnbqkbnr/p1p2p1p/1p4p1/3pp3/3PP3/1P4P1/P1P2P1P/RNBQKBNR w KQkq - 150 80"));
+    list.add(new PgnFen("03_double_draw_fivefold_and_fifty_move.pgn",
+        "rnbqkbnr/p1p2p1p/1p4p1/3pp3/3PP3/1P4P1/P1P2P1P/RNBQKBNR w KQkq - 100 55"));
+    list.add(new PgnFen("04_double_draw_fivefold_and_seventy_five_move.pgn",
+        "rnbqkbnr/p1p2p1p/1p4p1/3pp3/3PP3/1P4P1/P1P2P1P/RNBQKBNR w KQkq - 150 80"));
 
     return new PgnTestCaseList(PgnTest.BASIC_DOUBLE_DRAW, list);
 
@@ -1021,31 +1230,45 @@ public class PgnTestCaseCatalog {
 
   private static PgnTestCaseList createTestCasesBasicCastlingWhite() {
     final List<PgnFen> list = new ArrayList<>();
-    list.add(new PgnFen("01_white_castling_king_side.pgn", "r1bqk1nr/pppp1ppp/2n5/2b1p3/2B1P3/5N2/PPPP1PPP/RNBQ1RK1 b kq - 5 4"));
-    list.add(new PgnFen("02_white_castling_queen_side.pgn", "r2qkbnr/ppp2ppp/2n1p3/3p1b2/3P1B2/2NQ4/PPP1PPPP/2KR1BNR b kq - 1 5"));
+    list.add(new PgnFen("01_white_castling_king_side.pgn",
+        "r1bqk1nr/pppp1ppp/2n5/2b1p3/2B1P3/5N2/PPPP1PPP/RNBQ1RK1 b kq - 5 4"));
+    list.add(new PgnFen("02_white_castling_queen_side.pgn",
+        "r2qkbnr/ppp2ppp/2n1p3/3p1b2/3P1B2/2NQ4/PPP1PPPP/2KR1BNR b kq - 1 5"));
     return new PgnTestCaseList(PgnTest.BASIC_CASTLING_WHITE, list);
   }
 
   private static PgnTestCaseList createTestCasesBasicCastlingBlack() {
     final List<PgnFen> list = new ArrayList<>();
-    list.add(new PgnFen("01_black_castling_king_side.pgn", "r1bq1rk1/pppp1ppp/2n2n2/2b1p3/2B1P3/3P1N1P/PPP2PP1/RNBQK2R w KQ - 1 6"));
-    list.add(new PgnFen("02_black_castling_queen_side.pgn", "2kr1bnr/pppq1ppp/2n1p3/1B1p1b2/3P1B2/2N1PN2/PPP2PPP/R2QK2R w KQ - 4 7"));
+    list.add(new PgnFen("01_black_castling_king_side.pgn",
+        "r1bq1rk1/pppp1ppp/2n2n2/2b1p3/2B1P3/3P1N1P/PPP2PP1/RNBQK2R w KQ - 1 6"));
+    list.add(new PgnFen("02_black_castling_queen_side.pgn",
+        "2kr1bnr/pppq1ppp/2n1p3/1B1p1b2/3P1B2/2N1PN2/PPP2PPP/R2QK2R w KQ - 4 7"));
     return new PgnTestCaseList(PgnTest.BASIC_CASTLING_BLACK, list);
   }
 
   private static PgnTestCaseList createTestCasesBasicCastlingSpecialWhite() {
     final List<PgnFen> list = new ArrayList<>();
 
-    list.add(new PgnFen("01_white_castling_special_kingside_check.pgn", "rnbq1b1r/pppppkpp/8/PB5n/4p3/7N/1PPP2PP/RNBQ1RK1 b - - 2 8"));
-    list.add(new PgnFen("02_white_castling_special_kingside_checkmate.pgn", "rnbq1bnr/pppp1ppp/8/Q7/3PP3/1PBB1N1N/P1P2PPP/1k3RK1 b - - 6 21"));
-    list.add(new PgnFen("03_white_castling_special_kingside_fifty_move.pgn", "2Qqb3/5k1r/2B3p1/2NPBp2/P3n1p1/N7/1n5r/R4RK1 b - - 100 68"));
-    list.add(new PgnFen("04_white_castling_special_kingside_seventy_five_move.pgn", "B7/1bn1k1r1/4N1p1/3PBp2/P1N3p1/2q5/1n1Q3r/R4RK1 b - - 150 93"));
-    list.add(new PgnFen("05_white_castling_special_kingside_stalemate.pgn", "8/8/8/p5N1/P1PP4/R2Q2P1/1k3PBP/5RK1 b - - 6 36"));
-    list.add(new PgnFen("06_white_castling_special_queenside_check.pgn", "rnbq3r/pppk1pp1/4pn1p/7Q/5B2/5N2/PPP1PPPP/2KR1BNR b - - 3 8"));
-    list.add(new PgnFen("07_white_castling_special_queenside_checkmate.pgn", "rnb1qbnr/ppppp1pp/5p2/1B4N1/3PPBPP/2N2P2/PPPQ4/2KR3k b - - 2 14"));
-    list.add(new PgnFen("08_white_castling_special_queenside_fifty_move.pgn", "2b4Q/2qnk3/1Q3r2/p1p3b1/PpP2Pp1/1N2PNPp/1B2B2P/2KR3R b - - 100 66"));
-    list.add(new PgnFen("09_white_castling_special_queenside_seventy_five_move.pgn", "6Q1/3bk1r1/1q3n2/p1p1b1Q1/PpP2Pp1/1N2PNPp/1B2B2P/2KR3R b - - 150 91"));
-    list.add(new PgnFen("10_white_castling_special_queenside_stalemate.pgn", "8/8/4B1P1/pP6/P1p1P1PP/2N2Q2/1BPP3k/2KR4 b - - 2 35"));
+    list.add(new PgnFen("01_white_castling_special_kingside_check.pgn",
+        "rnbq1b1r/pppppkpp/8/PB5n/4p3/7N/1PPP2PP/RNBQ1RK1 b - - 2 8"));
+    list.add(new PgnFen("02_white_castling_special_kingside_checkmate.pgn",
+        "rnbq1bnr/pppp1ppp/8/Q7/3PP3/1PBB1N1N/P1P2PPP/1k3RK1 b - - 6 21"));
+    list.add(new PgnFen("03_white_castling_special_kingside_fifty_move.pgn",
+        "2Qqb3/5k1r/2B3p1/2NPBp2/P3n1p1/N7/1n5r/R4RK1 b - - 100 68"));
+    list.add(new PgnFen("04_white_castling_special_kingside_seventy_five_move.pgn",
+        "B7/1bn1k1r1/4N1p1/3PBp2/P1N3p1/2q5/1n1Q3r/R4RK1 b - - 150 93"));
+    list.add(new PgnFen("05_white_castling_special_kingside_stalemate.pgn",
+        "8/8/8/p5N1/P1PP4/R2Q2P1/1k3PBP/5RK1 b - - 6 36"));
+    list.add(new PgnFen("06_white_castling_special_queenside_check.pgn",
+        "rnbq3r/pppk1pp1/4pn1p/7Q/5B2/5N2/PPP1PPPP/2KR1BNR b - - 3 8"));
+    list.add(new PgnFen("07_white_castling_special_queenside_checkmate.pgn",
+        "rnb1qbnr/ppppp1pp/5p2/1B4N1/3PPBPP/2N2P2/PPPQ4/2KR3k b - - 2 14"));
+    list.add(new PgnFen("08_white_castling_special_queenside_fifty_move.pgn",
+        "2b4Q/2qnk3/1Q3r2/p1p3b1/PpP2Pp1/1N2PNPp/1B2B2P/2KR3R b - - 100 66"));
+    list.add(new PgnFen("09_white_castling_special_queenside_seventy_five_move.pgn",
+        "6Q1/3bk1r1/1q3n2/p1p1b1Q1/PpP2Pp1/1N2PNPp/1B2B2P/2KR3R b - - 150 91"));
+    list.add(new PgnFen("10_white_castling_special_queenside_stalemate.pgn",
+        "8/8/4B1P1/pP6/P1p1P1PP/2N2Q2/1BPP3k/2KR4 b - - 2 35"));
 
     return new PgnTestCaseList(PgnTest.BASIC_CASTLING_SPECIAL_WHITE, list);
   }
@@ -1053,16 +1276,26 @@ public class PgnTestCaseCatalog {
   private static PgnTestCaseList createTestCasesBasicCastlingSpecialBlack() {
     final List<PgnFen> list = new ArrayList<>();
 
-    list.add(new PgnFen("01_black_castling_special_kingside_check.pgn", "rnbq1rk1/ppppb2p/7n/8/8/8/PPPPPKPP/RNBQ1BNR w - - 2 6"));
-    list.add(new PgnFen("02_black_castling_special_kingside_checkmate.pgn", "K4rk1/p1pppp1p/6p1/np1n4/3b4/8/PPP1PPPP/RNBQ1BNR w - - 2 15"));
-    list.add(new PgnFen("03_black_castling_special_kingside_fifty_move.pgn", "5rk1/1Q2n3/R6p/8/1b1B1p1K/1P6/P1P5/RN1Q1BNb w - - 100 67"));
-    list.add(new PgnFen("04_black_castling_special_kingside_seventy_five_move.pgn", "5rk1/1Q2n3/R6p/1N6/3B1p1K/1Pb2b2/P1P5/R2Q1BN1 w - - 150 92"));
-    list.add(new PgnFen("05_black_castling_special_kingside_stalemate.pgn", "5rk1/K2n1pb1/2qp3p/pp2p1pP/6P1/8/8/8 w - - 2 31"));
-    list.add(new PgnFen("06_black_castling_special_queenside_check.pgn", "2kr1bnr/ppq2pp1/2n4p/5b2/5B2/2N5/PPPKPPPP/R2Q1BNR w - - 2 8"));
-    list.add(new PgnFen("07_black_castling_special_queenside_checkmate.pgn", "2kr3K/pbppq2p/1pn2p2/4p3/5Pn1/8/PPPPP1PP/RNBQ1BNR w - - 1 12"));
-    list.add(new PgnFen("08_black_castling_special_queenside_fifty_move.pgn", "2kr3r/q2b1p1p/2n2npB/p7/4P3/bQN3PN/1P3P1P/R3KB1R w K - 100 60"));
-    list.add(new PgnFen("09_black_castling_special_queenside_seventy_five_move.pgn", "2kr4/3b1prp/1qn2npB/p7/4P3/b1N3PN/QP3PBP/R3K1R1 w - - 150 85"));
-    list.add(new PgnFen("10_black_castling_special_queenside_stalemate.pgn", "2kr4/1bpp3K/1p3q2/pP2pP2/P5n1/3n4/8/8 w - - 15 42"));
+    list.add(new PgnFen("01_black_castling_special_kingside_check.pgn",
+        "rnbq1rk1/ppppb2p/7n/8/8/8/PPPPPKPP/RNBQ1BNR w - - 2 6"));
+    list.add(new PgnFen("02_black_castling_special_kingside_checkmate.pgn",
+        "K4rk1/p1pppp1p/6p1/np1n4/3b4/8/PPP1PPPP/RNBQ1BNR w - - 2 15"));
+    list.add(new PgnFen("03_black_castling_special_kingside_fifty_move.pgn",
+        "5rk1/1Q2n3/R6p/8/1b1B1p1K/1P6/P1P5/RN1Q1BNb w - - 100 67"));
+    list.add(new PgnFen("04_black_castling_special_kingside_seventy_five_move.pgn",
+        "5rk1/1Q2n3/R6p/1N6/3B1p1K/1Pb2b2/P1P5/R2Q1BN1 w - - 150 92"));
+    list.add(new PgnFen("05_black_castling_special_kingside_stalemate.pgn",
+        "5rk1/K2n1pb1/2qp3p/pp2p1pP/6P1/8/8/8 w - - 2 31"));
+    list.add(new PgnFen("06_black_castling_special_queenside_check.pgn",
+        "2kr1bnr/ppq2pp1/2n4p/5b2/5B2/2N5/PPPKPPPP/R2Q1BNR w - - 2 8"));
+    list.add(new PgnFen("07_black_castling_special_queenside_checkmate.pgn",
+        "2kr3K/pbppq2p/1pn2p2/4p3/5Pn1/8/PPPPP1PP/RNBQ1BNR w - - 1 12"));
+    list.add(new PgnFen("08_black_castling_special_queenside_fifty_move.pgn",
+        "2kr3r/q2b1p1p/2n2npB/p7/4P3/bQN3PN/1P3P1P/R3KB1R w K - 100 60"));
+    list.add(new PgnFen("09_black_castling_special_queenside_seventy_five_move.pgn",
+        "2kr4/3b1prp/1qn2npB/p7/4P3/b1N3PN/QP3PBP/R3K1R1 w - - 150 85"));
+    list.add(new PgnFen("10_black_castling_special_queenside_stalemate.pgn",
+        "2kr4/1bpp3K/1p3q2/pP2pP2/P5n1/3n4/8/8 w - - 15 42"));
 
     return new PgnTestCaseList(PgnTest.BASIC_CASTLING_SPECIAL_BLACK, list);
   }
@@ -1088,123 +1321,237 @@ public class PgnTestCaseCatalog {
   private static PgnTestCaseList createTestCasesParserFromFen() {
     final List<PgnFen> list = new ArrayList<>();
 
-    list.add(new PgnFen("from_fen_capture_first_move_half_move_clock_100_black_to_move.pgn", "k7/2R1Q3/5N2/5pP1/5P2/8/PPP1P3/K7 w - - 0 101"));
-    list.add(new PgnFen("from_fen_capture_first_move_half_move_clock_100_white_to_move.pgn", "1r1nk2r/2pb1pp1/1p1n3Q/p2pp1Np/P3P2P/1R1PR3/1PP2PP1/qBB1K1N1 b - - 0 100"));
-    list.add(new PgnFen("from_fen_capture_first_move_half_move_clock_101_black_to_move.pgn", "1r1nk2r/2p2pp1/1p1n3Q/p2pp1bp/P3P2P/1R1PR2b/1PP2PP1/qBB1K1N1 w - - 0 101"));
-    list.add(new PgnFen("from_fen_capture_first_move_half_move_clock_101_white_to_move.pgn", "1r1nk2r/2pb1pp1/1R1n3Q/p2pp1bp/P3P2P/3PR2N/1PP2PP1/qBB1K1N1 b - - 0 100"));
-    list.add(new PgnFen("from_fen_capture_first_move_half_move_clock_149_black_to_move.pgn", "1r1nk2r/2pb1pp1/1p5Q/p2ppnbp/q3P2P/1R1PR2N/1PP2PP1/1BB1K1N1 w - - 0 101"));
-    list.add(new PgnFen("from_fen_capture_first_move_half_move_clock_149_white_to_move.pgn", "1rbqkb1r/pp1p1ppp/2p5/3Bp3/PR2P3/BN2NQ2/2PP1PPP/5RK1 b k - 0 100"));
-    list.add(new PgnFen("from_fen_capture_first_move_half_move_clock_099_black_to_move.pgn", "1r1nk2r/2pb1pp1/1p5Q/p2ppnbp/P3P2P/1R1PR2N/1qP2PP1/1BB1K1N1 w - - 0 101"));
-    list.add(new PgnFen("from_fen_capture_first_move_half_move_clock_099_white_to_move.pgn", "1rbqkb1r/pR1p1ppp/2p5/3Bp3/P2NP3/Bn2NQ2/2PP1PPP/5RK1 b k - 0 100"));
-    list.add(new PgnFen("from_fen_capture_second_move_half_move_clock_100_black_to_move.pgn", "1k6/2R5/5N2/5pP1/5P2/Q7/PPP1P3/K7 b - - 0 101"));
-    list.add(new PgnFen("from_fen_capture_second_move_half_move_clock_100_white_to_move.pgn", "1r1nk2r/2p2pp1/1p1nb3/p2pp1bp/P3P2P/1R1PR2N/1PP2PP1/qBB1K1N1 w - - 0 101"));
-    list.add(new PgnFen("from_fen_capture_second_move_half_move_clock_101_black_to_move.pgn", "1r1nk2r/2pb1pQ1/1p1n4/p2pp1bp/P3P2P/qR1PR2N/1PP2PP1/1BB1K1N1 b - - 0 101"));
-    list.add(new PgnFen("from_fen_capture_second_move_half_move_clock_101_white_to_move.pgn", "1r1nk2r/2pb1pp1/1p1n3Q/p2pp2p/P3P2P/1R1Pb2N/1PP2PP1/qBB2KN1 w - - 0 101"));
-    list.add(new PgnFen("from_fen_capture_second_move_half_move_clock_099_black_to_move.pgn", "1r1nk2r/2pb1pp1/1p5Q/p2ppnbp/P3P2P/R2PR2N/1PP2PP1/1BB1K1N1 b - - 0 101"));
-    list.add(new PgnFen("from_fen_capture_second_move_half_move_clock_099_white_to_move.pgn", "1rbqkb1r/pp1p1p1p/2p2p2/3Bp3/PR1NP3/Bn2N3/2PP1PPP/5RK1 w k - 0 101"));
-    list.add(new PgnFen("from_fen_no_move_half_move_clock_100_black_to_move.pgn", "k7/2R1Q3/5N2/5pP1/5P2/8/PPP1P3/K7 b - - 100 100"));
-    list.add(new PgnFen("from_fen_no_move_half_move_clock_100_white_to_move.pgn", "1r1nk2r/2pb1pp1/1p1n3Q/p2pp1bp/P3P2P/1R1PR2N/1PP2PP1/qBB1K1N1 w - - 100 100"));
-    list.add(new PgnFen("from_fen_no_move_half_move_clock_101_black_to_move.pgn", "1r1nk2r/2pb1pp1/1p1n3Q/p2pp1bp/P3P2P/1R1PR2N/1PP2PP1/qBB1K1N1 b - - 101 100"));
-    list.add(new PgnFen("from_fen_no_move_half_move_clock_101_white_to_move.pgn", "1r1nk2r/2pb1pp1/1p1n3Q/p2pp1bp/P3P2P/1R1PR2N/1PP2PP1/qBB1K1N1 w - - 101 100"));
-    list.add(new PgnFen("from_fen_no_move_half_move_clock_149_black_to_move.pgn", "1r1nk2r/2pb1pp1/1p5Q/p2ppnbp/P3P2P/1R1PR2N/1PP2PP1/qBB1K1N1 b - - 149 100"));
-    list.add(new PgnFen("from_fen_no_move_half_move_clock_149_white_to_move.pgn", "1rbqkb1r/pp1p1ppp/2p5/3Bp3/PR1NP3/Bn2NQ2/2PP1PPP/5RK1 w k - 149 100"));
-    list.add(new PgnFen("from_fen_no_move_half_move_clock_150_black_to_move.pgn", "k7/2R1Q3/5N2/5pP1/5P2/8/PPP1P3/K7 b - - 150 100"));
-    list.add(new PgnFen("from_fen_no_move_half_move_clock_150_white_to_move.pgn", "1r1nk2r/2pb1pp1/1p1n3Q/p2pp1bp/P3P2P/1R1PR2N/1PP2PP1/qBB1K1N1 w - - 150 100"));
-    list.add(new PgnFen("from_fen_no_move_half_move_clock_099_black_to_move.pgn", "1r1nk2r/2pb1pp1/1p5Q/p2ppnbp/P3P2P/1R1PR2N/1PP2PP1/qBB1K1N1 b - - 99 100"));
-    list.add(new PgnFen("from_fen_no_move_half_move_clock_099_white_to_move.pgn", "1rbqkb1r/pp1p1ppp/2p5/3Bp3/PR1NP3/Bn2NQ2/2PP1PPP/5RK1 w k - 99 100"));
-    list.add(new PgnFen("from_fen_one_move_half_move_clock_100_black_to_move.pgn", "1k6/2R1Q3/5N2/5pP1/5P2/8/PPP1P3/K7 w - - 101 101"));
-    list.add(new PgnFen("from_fen_one_move_half_move_clock_100_white_to_move.pgn", "1r1nk2r/2pb1pp1/1p1nQ3/p2pp1bp/P3P2P/1R1PR2N/1PP2PP1/qBB1K1N1 b - - 101 100"));
-    list.add(new PgnFen("from_fen_one_move_half_move_clock_101_black_to_move.pgn", "1r1nk2r/2pb1pp1/1p1n3Q/p2pp1bp/P3P2P/qR1PR2N/1PP2PP1/1BB1K1N1 w - - 102 101"));
-    list.add(new PgnFen("from_fen_one_move_half_move_clock_101_white_to_move.pgn", "1r1nk2r/2pb1pp1/1p1n3Q/p2pp1bp/P3P2P/1R1PR2N/1PP2PP1/qBB2KN1 b - - 102 100"));
-    list.add(new PgnFen("from_fen_one_move_half_move_clock_149_black_to_move.pgn", "3nk2r/1rpb1pp1/1p5Q/p2ppnbp/P3P2P/1R1PR2N/1PP2PP1/qBB1K1N1 w - - 150 101"));
-    list.add(new PgnFen("from_fen_one_move_half_move_clock_149_white_to_move.pgn", "1rbqkb1r/pp1p1ppp/2p5/3Bp3/PR1NP3/Bn2NQ2/2PP1PPP/5R1K b k - 150 100"));
-    list.add(new PgnFen("from_fen_one_move_half_move_clock_099_black_to_move.pgn", "1r1nk2r/2pb1pp1/1p5Q/p2ppnbp/P3P2P/qR1PR2N/1PP2PP1/1BB1K1N1 w - - 100 101"));
-    list.add(new PgnFen("from_fen_one_move_half_move_clock_099_white_to_move.pgn", "1rbqkb1r/pp1p1ppp/2p2Q2/3Bp3/PR1NP3/Bn2N3/2PP1PPP/5RK1 b k - 100 100"));
-    list.add(new PgnFen("from_fen_pawn_first_move_half_move_clock_100_black_to_move.pgn", "k7/2R1Q3/5N2/6P1/5p2/5P2/PPP1P3/K7 w - - 0 101"));
-    list.add(new PgnFen("from_fen_pawn_first_move_half_move_clock_100_white_to_move.pgn", "1r1nk2r/2pb1pp1/1p1n3Q/p2pp1bp/P3P2P/1R1PR1PN/1PP2P2/qBB1K1N1 b - - 0 100"));
-    list.add(new PgnFen("from_fen_pawn_first_move_half_move_clock_101_black_to_move.pgn", "1r1nk2r/2pb2p1/1p1n3Q/p2pppbp/P3P2P/1R1PR2N/1PP2PP1/qBB1K1N1 w - f6 0 101"));
-    list.add(new PgnFen("from_fen_pawn_first_move_half_move_clock_101_white_to_move.pgn", "1r1nk2r/2pb1pp1/1p1n3Q/p2pp1bp/P2PP2P/1R2R2N/1PP2PP1/qBB1K1N1 b - - 0 100"));
-    list.add(new PgnFen("from_fen_pawn_first_move_half_move_clock_149_black_to_move.pgn", "1r1nk2r/2pb1pp1/7Q/pp1ppnbp/P3P2P/1R1PR2N/1PP2PP1/qBB1K1N1 w - - 0 101"));
-    list.add(new PgnFen("from_fen_pawn_first_move_half_move_clock_149_white_to_move.pgn", "1rbqkb1r/pp1p1ppp/2p5/P2Bp3/1R1NP3/Bn2NQ2/2PP1PPP/5RK1 b k - 0 100"));
-    list.add(new PgnFen("from_fen_pawn_first_move_half_move_clock_099_black_to_move.pgn", "1r1nk2r/2pb1pp1/7Q/pp1ppnbp/P3P2P/1R1PR2N/1PP2PP1/qBB1K1N1 w - - 0 101"));
-    list.add(new PgnFen("from_fen_pawn_first_move_half_move_clock_099_white_to_move.pgn", "1rbqkb1r/pp1p1ppp/2p5/3Bp3/PR1NP2P/Bn2NQ2/2PP1PP1/5RK1 b k h3 0 100"));
-    list.add(new PgnFen("from_fen_repetition_from_one_move_black_to_move_fivefold.pgn", "1n2kb1r/p2q1ppp/8/4p1B1/4P3/8/PPP2PPP/2KR4 w k - 17 26"));
-    list.add(new PgnFen("from_fen_repetition_from_one_move_black_to_move_fourfold.pgn", "1n2kb1r/p2q1ppp/8/4p1B1/4P3/8/PPP2PPP/2KR4 w k - 13 24"));
-    list.add(new PgnFen("from_fen_repetition_from_one_move_black_to_move_threefold.pgn", "1n2kb1r/p2q1ppp/8/4p1B1/4P3/8/PPP2PPP/2KR4 w k - 9 22"));
-    list.add(new PgnFen("from_fen_repetition_from_one_move_white_to_move_fivefold.pgn", "r1b2r2/pp1pk1pp/8/7q/Q2pP1n1/5N1P/PP3PP1/3R1RK1 b - - 17 25"));
-    list.add(new PgnFen("from_fen_repetition_from_one_move_white_to_move_fourfold.pgn", "r1b2r2/pp1pk1pp/8/7q/Q2pP1n1/5N1P/PP3PP1/3R1RK1 b - - 13 23"));
-    list.add(new PgnFen("from_fen_repetition_from_one_move_white_to_move_threefold.pgn", "r1b2r2/pp1pk1pp/8/7q/Q2pP1n1/5N1P/PP3PP1/3R1RK1 b - - 9 21"));
-    list.add(new PgnFen("from_fen_repetition_from_three_moves_black_to_move_fivefold.pgn", "rnb1kbnr/pppp1p1p/8/4N3/2B1Pp1q/6p1/PPPP2PP/RNBQ1K1R w kq - 16 15"));
-    list.add(new PgnFen("from_fen_repetition_from_three_moves_black_to_move_fourfold.pgn", "rnb1kbnr/pppp1p1p/8/4N3/2B1Pp1q/6p1/PPPP2PP/RNBQ1K1R w kq - 12 13"));
-    list.add(new PgnFen("from_fen_repetition_from_three_moves_black_to_move_threefold.pgn", "rnb1kbnr/pppp1p1p/8/4N3/2B1Pp1q/6p1/PPPP2PP/RNBQ1K1R w kq - 8 11"));
-    list.add(new PgnFen("from_fen_repetition_from_three_moves_white_to_move_fivefold.pgn", "r4rk1/p1pq1ppp/1pn1p3/1b2P3/1Pp2Pn1/2Q3P1/PB1NP1BP/R4RK1 b - - 16 22"));
-    list.add(new PgnFen("from_fen_repetition_from_three_moves_white_to_move_fourfold.pgn", "r4rk1/p1pq1ppp/1pn1p3/1b2P3/1Pp2Pn1/2Q3P1/PB1NP1BP/R4RK1 b - - 12 20"));
-    list.add(new PgnFen("from_fen_repetition_from_three_moves_white_to_move_threefold.pgn", "r4rk1/p1pq1ppp/1pn1p3/1b2P3/1Pp2Pn1/2Q3P1/PB1NP1BP/R4RK1 b - - 8 18"));
-    list.add(new PgnFen("from_fen_repetition_from_two_moves_black_to_move_fivefold.pgn", "r2qk2r/pppbnpp1/1bn4p/4p1N1/P1BP4/2N5/5PPP/R1BQR1K1 b kq - 16 21"));
-    list.add(new PgnFen("from_fen_repetition_from_two_moves_black_to_move_fourfold.pgn", "r2qk2r/pppbnpp1/1bn4p/4p1N1/P1BP4/2N5/5PPP/R1BQR1K1 b kq - 12 19"));
-    list.add(new PgnFen("from_fen_repetition_from_two_moves_black_to_move_threefold.pgn", "r2qk2r/pppbnpp1/1bn4p/4p1N1/P1BP4/2N5/5PPP/R1BQR1K1 b kq - 8 17"));
-    list.add(new PgnFen("from_fen_repetition_from_two_moves_white_to_move_fivefold.pgn", "r1q2rk1/3b1ppp/nb1p4/1p1Pp2n/1P2P3/4BN1P/1Q2RPP1/RB3NK1 w - - 18 32"));
-    list.add(new PgnFen("from_fen_repetition_from_two_moves_white_to_move_fourfold.pgn", "r1q2rk1/3b1ppp/nb1p4/1p1Pp2n/1P2P3/4BN1P/1Q2RPP1/RB3NK1 w - - 14 30"));
-    list.add(new PgnFen("from_fen_repetition_from_two_moves_white_to_move_threefold.pgn", "r1q2rk1/3b1ppp/nb1p4/1p1Pp2n/1P2P3/4BN1P/1Q2RPP1/RB3NK1 w - - 10 28"));
-    list.add(new PgnFen("from_fen_repetition_from_zero_moves_black_to_move_fivefold.pgn", "r2q2n1/1bpk1pp1/p2b3p/1p2pN2/P2PP3/R1P1Q3/1P1N1PPP/2B2RK1 b - - 16 63"));
-    list.add(new PgnFen("from_fen_repetition_from_zero_moves_black_to_move_fourfold.pgn", "r2q2n1/1bpk1pp1/p2b3p/1p2pN2/P2PP3/R1P1Q3/1P1N1PPP/2B2RK1 b - - 12 61"));
-    list.add(new PgnFen("from_fen_repetition_from_zero_moves_black_to_move_threefold.pgn", "r2q2n1/1bpk1pp1/p2b3p/1p2pN2/P2PP3/R1P1Q3/1P1N1PPP/2B2RK1 b - - 8 59"));
-    list.add(new PgnFen("from_fen_repetition_from_zero_moves_white_to_move_fivefold.pgn", "r1bqkb1r/1pp2ppp/p1p2n2/4p2Q/P3P3/8/1PPP1PPP/RNB1K1NR w KQkq - 26 58"));
-    list.add(new PgnFen("from_fen_repetition_from_zero_moves_white_to_move_fourfold.pgn", "r1bqkb1r/1pp2ppp/p1p2n2/4p2Q/P3P3/8/1PPP1PPP/RNB1K1NR w KQkq - 22 56"));
-    list.add(new PgnFen("from_fen_repetition_from_zero_moves_white_to_move_threefold.pgn", "r1bqkb1r/1pp2ppp/p1p2n2/4p2Q/P3P3/8/1PPP1PPP/RNB1K1NR w KQkq - 18 54"));
-    list.add(new PgnFen("from_fen_three_moves_half_move_clock_100_black_to_move.pgn", "2k5/3RQ3/5N2/5pP1/5P2/8/PPP1P3/K7 w - - 103 102"));
-    list.add(new PgnFen("from_fen_three_moves_half_move_clock_100_white_to_move.pgn", "1r1n1k1r/2pb1pp1/1p1nQ3/pR1pp1bp/P3P2P/3PR2N/1PP2PP1/qBB1K1N1 b - - 103 101"));
-    list.add(new PgnFen("from_fen_three_moves_half_move_clock_101_black_to_move.pgn", "1r2k2r/2pb1pp1/1pnn3Q/p2pp1bp/P3P2P/qR1P3N/1PP1RPP1/1BB1K1N1 w - - 104 102"));
-    list.add(new PgnFen("from_fen_three_moves_half_move_clock_101_white_to_move.pgn", "1r1n1k1r/2pb1pp1/1p1n3Q/p2pp1bp/P3P2P/1R1P1R1N/1PP2PP1/qBB2KN1 b - - 104 101"));
-    list.add(new PgnFen("from_fen_three_moves_half_move_clock_099_black_to_move.pgn", "1r2k2r/2pb1pp1/1p2n2Q/p2ppnbp/P3P2P/qR1PR2N/1PP1NPP1/1BB1K3 w - - 102 102"));
-    list.add(new PgnFen("from_fen_three_moves_half_move_clock_099_white_to_move.pgn", "1rb1kb1r/pp1pqppp/2p5/3Bp3/PR1NP3/Bn2NQ2/2PP1PPP/5RK1 b k - 102 101"));
-    list.add(new PgnFen("from_fen_two_moves_half_move_clock_100_black_to_move.pgn", "1k6/3RQ3/5N2/5pP1/5P2/8/PPP1P3/K7 b - - 102 101"));
-    list.add(new PgnFen("from_fen_two_moves_half_move_clock_100_white_to_move.pgn", "1r1n1k1r/2pb1pp1/1p1nQ3/p2pp1bp/P3P2P/1R1PR2N/1PP2PP1/qBB1K1N1 w - - 102 101"));
-    list.add(new PgnFen("from_fen_two_moves_half_move_clock_101_black_to_move.pgn", "1r1nk2r/2pb1pp1/1p1n3Q/p2pp1bp/P3P2P/qR1P3N/1PP1RPP1/1BB1K1N1 b - - 103 101"));
-    list.add(new PgnFen("from_fen_two_moves_half_move_clock_101_white_to_move.pgn", "1r1n1k1r/2pb1pp1/1p1n3Q/p2pp1bp/P3P2P/1R1PR2N/1PP2PP1/qBB2KN1 w - - 103 101"));
-    list.add(new PgnFen("from_fen_two_moves_half_move_clock_099_black_to_move.pgn", "1r1nk2r/2pb1pp1/1p5Q/p2ppnbp/P3P2P/qR1PR2N/1PP1NPP1/1BB1K3 b - - 101 101"));
-    list.add(new PgnFen("from_fen_two_moves_half_move_clock_099_white_to_move.pgn", "1rb1kb1r/pp1pqppp/2p2Q2/3Bp3/PR1NP3/Bn2N3/2PP1PPP/5RK1 w k - 101 101"));
+    list.add(new PgnFen("from_fen_capture_first_move_half_move_clock_100_black_to_move.pgn",
+        "k7/2R1Q3/5N2/5pP1/5P2/8/PPP1P3/K7 w - - 0 101"));
+    list.add(new PgnFen("from_fen_capture_first_move_half_move_clock_100_white_to_move.pgn",
+        "1r1nk2r/2pb1pp1/1p1n3Q/p2pp1Np/P3P2P/1R1PR3/1PP2PP1/qBB1K1N1 b - - 0 100"));
+    list.add(new PgnFen("from_fen_capture_first_move_half_move_clock_101_black_to_move.pgn",
+        "1r1nk2r/2p2pp1/1p1n3Q/p2pp1bp/P3P2P/1R1PR2b/1PP2PP1/qBB1K1N1 w - - 0 101"));
+    list.add(new PgnFen("from_fen_capture_first_move_half_move_clock_101_white_to_move.pgn",
+        "1r1nk2r/2pb1pp1/1R1n3Q/p2pp1bp/P3P2P/3PR2N/1PP2PP1/qBB1K1N1 b - - 0 100"));
+    list.add(new PgnFen("from_fen_capture_first_move_half_move_clock_149_black_to_move.pgn",
+        "1r1nk2r/2pb1pp1/1p5Q/p2ppnbp/q3P2P/1R1PR2N/1PP2PP1/1BB1K1N1 w - - 0 101"));
+    list.add(new PgnFen("from_fen_capture_first_move_half_move_clock_149_white_to_move.pgn",
+        "1rbqkb1r/pp1p1ppp/2p5/3Bp3/PR2P3/BN2NQ2/2PP1PPP/5RK1 b k - 0 100"));
+    list.add(new PgnFen("from_fen_capture_first_move_half_move_clock_099_black_to_move.pgn",
+        "1r1nk2r/2pb1pp1/1p5Q/p2ppnbp/P3P2P/1R1PR2N/1qP2PP1/1BB1K1N1 w - - 0 101"));
+    list.add(new PgnFen("from_fen_capture_first_move_half_move_clock_099_white_to_move.pgn",
+        "1rbqkb1r/pR1p1ppp/2p5/3Bp3/P2NP3/Bn2NQ2/2PP1PPP/5RK1 b k - 0 100"));
+    list.add(new PgnFen("from_fen_capture_second_move_half_move_clock_100_black_to_move.pgn",
+        "1k6/2R5/5N2/5pP1/5P2/Q7/PPP1P3/K7 b - - 0 101"));
+    list.add(new PgnFen("from_fen_capture_second_move_half_move_clock_100_white_to_move.pgn",
+        "1r1nk2r/2p2pp1/1p1nb3/p2pp1bp/P3P2P/1R1PR2N/1PP2PP1/qBB1K1N1 w - - 0 101"));
+    list.add(new PgnFen("from_fen_capture_second_move_half_move_clock_101_black_to_move.pgn",
+        "1r1nk2r/2pb1pQ1/1p1n4/p2pp1bp/P3P2P/qR1PR2N/1PP2PP1/1BB1K1N1 b - - 0 101"));
+    list.add(new PgnFen("from_fen_capture_second_move_half_move_clock_101_white_to_move.pgn",
+        "1r1nk2r/2pb1pp1/1p1n3Q/p2pp2p/P3P2P/1R1Pb2N/1PP2PP1/qBB2KN1 w - - 0 101"));
+    list.add(new PgnFen("from_fen_capture_second_move_half_move_clock_099_black_to_move.pgn",
+        "1r1nk2r/2pb1pp1/1p5Q/p2ppnbp/P3P2P/R2PR2N/1PP2PP1/1BB1K1N1 b - - 0 101"));
+    list.add(new PgnFen("from_fen_capture_second_move_half_move_clock_099_white_to_move.pgn",
+        "1rbqkb1r/pp1p1p1p/2p2p2/3Bp3/PR1NP3/Bn2N3/2PP1PPP/5RK1 w k - 0 101"));
+    list.add(new PgnFen("from_fen_no_move_half_move_clock_100_black_to_move.pgn",
+        "k7/2R1Q3/5N2/5pP1/5P2/8/PPP1P3/K7 b - - 100 100"));
+    list.add(new PgnFen("from_fen_no_move_half_move_clock_100_white_to_move.pgn",
+        "1r1nk2r/2pb1pp1/1p1n3Q/p2pp1bp/P3P2P/1R1PR2N/1PP2PP1/qBB1K1N1 w - - 100 100"));
+    list.add(new PgnFen("from_fen_no_move_half_move_clock_101_black_to_move.pgn",
+        "1r1nk2r/2pb1pp1/1p1n3Q/p2pp1bp/P3P2P/1R1PR2N/1PP2PP1/qBB1K1N1 b - - 101 100"));
+    list.add(new PgnFen("from_fen_no_move_half_move_clock_101_white_to_move.pgn",
+        "1r1nk2r/2pb1pp1/1p1n3Q/p2pp1bp/P3P2P/1R1PR2N/1PP2PP1/qBB1K1N1 w - - 101 100"));
+    list.add(new PgnFen("from_fen_no_move_half_move_clock_149_black_to_move.pgn",
+        "1r1nk2r/2pb1pp1/1p5Q/p2ppnbp/P3P2P/1R1PR2N/1PP2PP1/qBB1K1N1 b - - 149 100"));
+    list.add(new PgnFen("from_fen_no_move_half_move_clock_149_white_to_move.pgn",
+        "1rbqkb1r/pp1p1ppp/2p5/3Bp3/PR1NP3/Bn2NQ2/2PP1PPP/5RK1 w k - 149 100"));
+    list.add(new PgnFen("from_fen_no_move_half_move_clock_150_black_to_move.pgn",
+        "k7/2R1Q3/5N2/5pP1/5P2/8/PPP1P3/K7 b - - 150 100"));
+    list.add(new PgnFen("from_fen_no_move_half_move_clock_150_white_to_move.pgn",
+        "1r1nk2r/2pb1pp1/1p1n3Q/p2pp1bp/P3P2P/1R1PR2N/1PP2PP1/qBB1K1N1 w - - 150 100"));
+    list.add(new PgnFen("from_fen_no_move_half_move_clock_099_black_to_move.pgn",
+        "1r1nk2r/2pb1pp1/1p5Q/p2ppnbp/P3P2P/1R1PR2N/1PP2PP1/qBB1K1N1 b - - 99 100"));
+    list.add(new PgnFen("from_fen_no_move_half_move_clock_099_white_to_move.pgn",
+        "1rbqkb1r/pp1p1ppp/2p5/3Bp3/PR1NP3/Bn2NQ2/2PP1PPP/5RK1 w k - 99 100"));
+    list.add(new PgnFen("from_fen_one_move_half_move_clock_100_black_to_move.pgn",
+        "1k6/2R1Q3/5N2/5pP1/5P2/8/PPP1P3/K7 w - - 101 101"));
+    list.add(new PgnFen("from_fen_one_move_half_move_clock_100_white_to_move.pgn",
+        "1r1nk2r/2pb1pp1/1p1nQ3/p2pp1bp/P3P2P/1R1PR2N/1PP2PP1/qBB1K1N1 b - - 101 100"));
+    list.add(new PgnFen("from_fen_one_move_half_move_clock_101_black_to_move.pgn",
+        "1r1nk2r/2pb1pp1/1p1n3Q/p2pp1bp/P3P2P/qR1PR2N/1PP2PP1/1BB1K1N1 w - - 102 101"));
+    list.add(new PgnFen("from_fen_one_move_half_move_clock_101_white_to_move.pgn",
+        "1r1nk2r/2pb1pp1/1p1n3Q/p2pp1bp/P3P2P/1R1PR2N/1PP2PP1/qBB2KN1 b - - 102 100"));
+    list.add(new PgnFen("from_fen_one_move_half_move_clock_149_black_to_move.pgn",
+        "3nk2r/1rpb1pp1/1p5Q/p2ppnbp/P3P2P/1R1PR2N/1PP2PP1/qBB1K1N1 w - - 150 101"));
+    list.add(new PgnFen("from_fen_one_move_half_move_clock_149_white_to_move.pgn",
+        "1rbqkb1r/pp1p1ppp/2p5/3Bp3/PR1NP3/Bn2NQ2/2PP1PPP/5R1K b k - 150 100"));
+    list.add(new PgnFen("from_fen_one_move_half_move_clock_099_black_to_move.pgn",
+        "1r1nk2r/2pb1pp1/1p5Q/p2ppnbp/P3P2P/qR1PR2N/1PP2PP1/1BB1K1N1 w - - 100 101"));
+    list.add(new PgnFen("from_fen_one_move_half_move_clock_099_white_to_move.pgn",
+        "1rbqkb1r/pp1p1ppp/2p2Q2/3Bp3/PR1NP3/Bn2N3/2PP1PPP/5RK1 b k - 100 100"));
+    list.add(new PgnFen("from_fen_pawn_first_move_half_move_clock_100_black_to_move.pgn",
+        "k7/2R1Q3/5N2/6P1/5p2/5P2/PPP1P3/K7 w - - 0 101"));
+    list.add(new PgnFen("from_fen_pawn_first_move_half_move_clock_100_white_to_move.pgn",
+        "1r1nk2r/2pb1pp1/1p1n3Q/p2pp1bp/P3P2P/1R1PR1PN/1PP2P2/qBB1K1N1 b - - 0 100"));
+    list.add(new PgnFen("from_fen_pawn_first_move_half_move_clock_101_black_to_move.pgn",
+        "1r1nk2r/2pb2p1/1p1n3Q/p2pppbp/P3P2P/1R1PR2N/1PP2PP1/qBB1K1N1 w - f6 0 101"));
+    list.add(new PgnFen("from_fen_pawn_first_move_half_move_clock_101_white_to_move.pgn",
+        "1r1nk2r/2pb1pp1/1p1n3Q/p2pp1bp/P2PP2P/1R2R2N/1PP2PP1/qBB1K1N1 b - - 0 100"));
+    list.add(new PgnFen("from_fen_pawn_first_move_half_move_clock_149_black_to_move.pgn",
+        "1r1nk2r/2pb1pp1/7Q/pp1ppnbp/P3P2P/1R1PR2N/1PP2PP1/qBB1K1N1 w - - 0 101"));
+    list.add(new PgnFen("from_fen_pawn_first_move_half_move_clock_149_white_to_move.pgn",
+        "1rbqkb1r/pp1p1ppp/2p5/P2Bp3/1R1NP3/Bn2NQ2/2PP1PPP/5RK1 b k - 0 100"));
+    list.add(new PgnFen("from_fen_pawn_first_move_half_move_clock_099_black_to_move.pgn",
+        "1r1nk2r/2pb1pp1/7Q/pp1ppnbp/P3P2P/1R1PR2N/1PP2PP1/qBB1K1N1 w - - 0 101"));
+    list.add(new PgnFen("from_fen_pawn_first_move_half_move_clock_099_white_to_move.pgn",
+        "1rbqkb1r/pp1p1ppp/2p5/3Bp3/PR1NP2P/Bn2NQ2/2PP1PP1/5RK1 b k h3 0 100"));
+    list.add(new PgnFen("from_fen_repetition_from_one_move_black_to_move_fivefold.pgn",
+        "1n2kb1r/p2q1ppp/8/4p1B1/4P3/8/PPP2PPP/2KR4 w k - 17 26"));
+    list.add(new PgnFen("from_fen_repetition_from_one_move_black_to_move_fourfold.pgn",
+        "1n2kb1r/p2q1ppp/8/4p1B1/4P3/8/PPP2PPP/2KR4 w k - 13 24"));
+    list.add(new PgnFen("from_fen_repetition_from_one_move_black_to_move_threefold.pgn",
+        "1n2kb1r/p2q1ppp/8/4p1B1/4P3/8/PPP2PPP/2KR4 w k - 9 22"));
+    list.add(new PgnFen("from_fen_repetition_from_one_move_white_to_move_fivefold.pgn",
+        "r1b2r2/pp1pk1pp/8/7q/Q2pP1n1/5N1P/PP3PP1/3R1RK1 b - - 17 25"));
+    list.add(new PgnFen("from_fen_repetition_from_one_move_white_to_move_fourfold.pgn",
+        "r1b2r2/pp1pk1pp/8/7q/Q2pP1n1/5N1P/PP3PP1/3R1RK1 b - - 13 23"));
+    list.add(new PgnFen("from_fen_repetition_from_one_move_white_to_move_threefold.pgn",
+        "r1b2r2/pp1pk1pp/8/7q/Q2pP1n1/5N1P/PP3PP1/3R1RK1 b - - 9 21"));
+    list.add(new PgnFen("from_fen_repetition_from_three_moves_black_to_move_fivefold.pgn",
+        "rnb1kbnr/pppp1p1p/8/4N3/2B1Pp1q/6p1/PPPP2PP/RNBQ1K1R w kq - 16 15"));
+    list.add(new PgnFen("from_fen_repetition_from_three_moves_black_to_move_fourfold.pgn",
+        "rnb1kbnr/pppp1p1p/8/4N3/2B1Pp1q/6p1/PPPP2PP/RNBQ1K1R w kq - 12 13"));
+    list.add(new PgnFen("from_fen_repetition_from_three_moves_black_to_move_threefold.pgn",
+        "rnb1kbnr/pppp1p1p/8/4N3/2B1Pp1q/6p1/PPPP2PP/RNBQ1K1R w kq - 8 11"));
+    list.add(new PgnFen("from_fen_repetition_from_three_moves_white_to_move_fivefold.pgn",
+        "r4rk1/p1pq1ppp/1pn1p3/1b2P3/1Pp2Pn1/2Q3P1/PB1NP1BP/R4RK1 b - - 16 22"));
+    list.add(new PgnFen("from_fen_repetition_from_three_moves_white_to_move_fourfold.pgn",
+        "r4rk1/p1pq1ppp/1pn1p3/1b2P3/1Pp2Pn1/2Q3P1/PB1NP1BP/R4RK1 b - - 12 20"));
+    list.add(new PgnFen("from_fen_repetition_from_three_moves_white_to_move_threefold.pgn",
+        "r4rk1/p1pq1ppp/1pn1p3/1b2P3/1Pp2Pn1/2Q3P1/PB1NP1BP/R4RK1 b - - 8 18"));
+    list.add(new PgnFen("from_fen_repetition_from_two_moves_black_to_move_fivefold.pgn",
+        "r2qk2r/pppbnpp1/1bn4p/4p1N1/P1BP4/2N5/5PPP/R1BQR1K1 b kq - 16 21"));
+    list.add(new PgnFen("from_fen_repetition_from_two_moves_black_to_move_fourfold.pgn",
+        "r2qk2r/pppbnpp1/1bn4p/4p1N1/P1BP4/2N5/5PPP/R1BQR1K1 b kq - 12 19"));
+    list.add(new PgnFen("from_fen_repetition_from_two_moves_black_to_move_threefold.pgn",
+        "r2qk2r/pppbnpp1/1bn4p/4p1N1/P1BP4/2N5/5PPP/R1BQR1K1 b kq - 8 17"));
+    list.add(new PgnFen("from_fen_repetition_from_two_moves_white_to_move_fivefold.pgn",
+        "r1q2rk1/3b1ppp/nb1p4/1p1Pp2n/1P2P3/4BN1P/1Q2RPP1/RB3NK1 w - - 18 32"));
+    list.add(new PgnFen("from_fen_repetition_from_two_moves_white_to_move_fourfold.pgn",
+        "r1q2rk1/3b1ppp/nb1p4/1p1Pp2n/1P2P3/4BN1P/1Q2RPP1/RB3NK1 w - - 14 30"));
+    list.add(new PgnFen("from_fen_repetition_from_two_moves_white_to_move_threefold.pgn",
+        "r1q2rk1/3b1ppp/nb1p4/1p1Pp2n/1P2P3/4BN1P/1Q2RPP1/RB3NK1 w - - 10 28"));
+    list.add(new PgnFen("from_fen_repetition_from_zero_moves_black_to_move_fivefold.pgn",
+        "r2q2n1/1bpk1pp1/p2b3p/1p2pN2/P2PP3/R1P1Q3/1P1N1PPP/2B2RK1 b - - 16 63"));
+    list.add(new PgnFen("from_fen_repetition_from_zero_moves_black_to_move_fourfold.pgn",
+        "r2q2n1/1bpk1pp1/p2b3p/1p2pN2/P2PP3/R1P1Q3/1P1N1PPP/2B2RK1 b - - 12 61"));
+    list.add(new PgnFen("from_fen_repetition_from_zero_moves_black_to_move_threefold.pgn",
+        "r2q2n1/1bpk1pp1/p2b3p/1p2pN2/P2PP3/R1P1Q3/1P1N1PPP/2B2RK1 b - - 8 59"));
+    list.add(new PgnFen("from_fen_repetition_from_zero_moves_white_to_move_fivefold.pgn",
+        "r1bqkb1r/1pp2ppp/p1p2n2/4p2Q/P3P3/8/1PPP1PPP/RNB1K1NR w KQkq - 26 58"));
+    list.add(new PgnFen("from_fen_repetition_from_zero_moves_white_to_move_fourfold.pgn",
+        "r1bqkb1r/1pp2ppp/p1p2n2/4p2Q/P3P3/8/1PPP1PPP/RNB1K1NR w KQkq - 22 56"));
+    list.add(new PgnFen("from_fen_repetition_from_zero_moves_white_to_move_threefold.pgn",
+        "r1bqkb1r/1pp2ppp/p1p2n2/4p2Q/P3P3/8/1PPP1PPP/RNB1K1NR w KQkq - 18 54"));
+    list.add(new PgnFen("from_fen_three_moves_half_move_clock_100_black_to_move.pgn",
+        "2k5/3RQ3/5N2/5pP1/5P2/8/PPP1P3/K7 w - - 103 102"));
+    list.add(new PgnFen("from_fen_three_moves_half_move_clock_100_white_to_move.pgn",
+        "1r1n1k1r/2pb1pp1/1p1nQ3/pR1pp1bp/P3P2P/3PR2N/1PP2PP1/qBB1K1N1 b - - 103 101"));
+    list.add(new PgnFen("from_fen_three_moves_half_move_clock_101_black_to_move.pgn",
+        "1r2k2r/2pb1pp1/1pnn3Q/p2pp1bp/P3P2P/qR1P3N/1PP1RPP1/1BB1K1N1 w - - 104 102"));
+    list.add(new PgnFen("from_fen_three_moves_half_move_clock_101_white_to_move.pgn",
+        "1r1n1k1r/2pb1pp1/1p1n3Q/p2pp1bp/P3P2P/1R1P1R1N/1PP2PP1/qBB2KN1 b - - 104 101"));
+    list.add(new PgnFen("from_fen_three_moves_half_move_clock_099_black_to_move.pgn",
+        "1r2k2r/2pb1pp1/1p2n2Q/p2ppnbp/P3P2P/qR1PR2N/1PP1NPP1/1BB1K3 w - - 102 102"));
+    list.add(new PgnFen("from_fen_three_moves_half_move_clock_099_white_to_move.pgn",
+        "1rb1kb1r/pp1pqppp/2p5/3Bp3/PR1NP3/Bn2NQ2/2PP1PPP/5RK1 b k - 102 101"));
+    list.add(new PgnFen("from_fen_two_moves_half_move_clock_100_black_to_move.pgn",
+        "1k6/3RQ3/5N2/5pP1/5P2/8/PPP1P3/K7 b - - 102 101"));
+    list.add(new PgnFen("from_fen_two_moves_half_move_clock_100_white_to_move.pgn",
+        "1r1n1k1r/2pb1pp1/1p1nQ3/p2pp1bp/P3P2P/1R1PR2N/1PP2PP1/qBB1K1N1 w - - 102 101"));
+    list.add(new PgnFen("from_fen_two_moves_half_move_clock_101_black_to_move.pgn",
+        "1r1nk2r/2pb1pp1/1p1n3Q/p2pp1bp/P3P2P/qR1P3N/1PP1RPP1/1BB1K1N1 b - - 103 101"));
+    list.add(new PgnFen("from_fen_two_moves_half_move_clock_101_white_to_move.pgn",
+        "1r1n1k1r/2pb1pp1/1p1n3Q/p2pp1bp/P3P2P/1R1PR2N/1PP2PP1/qBB2KN1 w - - 103 101"));
+    list.add(new PgnFen("from_fen_two_moves_half_move_clock_099_black_to_move.pgn",
+        "1r1nk2r/2pb1pp1/1p5Q/p2ppnbp/P3P2P/qR1PR2N/1PP1NPP1/1BB1K3 b - - 101 101"));
+    list.add(new PgnFen("from_fen_two_moves_half_move_clock_099_white_to_move.pgn",
+        "1rb1kb1r/pp1pqppp/2p2Q2/3Bp3/PR1NP3/Bn2N3/2PP1PPP/5RK1 w k - 101 101"));
 
     // Reactivated from pgnParser/legacy/common/beyond — halfmove clocks at and above the 75-move threshold (150 / 151)
     // and sixfold-repetition variants. No longer rejected at FEN import or replay.
-    list.add(new PgnFen("from_fen_capture_first_move_half_move_clock_150_black_to_move.pgn", "k7/2q1Q3/5N2/5pP1/5P2/8/PPP1P3/K7 w - - 0 101"));
-    list.add(new PgnFen("from_fen_capture_first_move_half_move_clock_150_white_to_move.pgn", "1r1nk2r/2pb1pp1/1p1Q4/p2pp1bp/P3P2P/1R1PR2N/1PP2PP1/qBB1K1N1 b - - 0 100"));
-    list.add(new PgnFen("from_fen_capture_first_move_half_move_clock_151_black_to_move.pgn", "1r1nk2r/2pb1pp1/1p5Q/p2pp1bp/P3n2P/1R1PR2N/1PP2PP1/qBB1K1N1 w - - 0 101"));
-    list.add(new PgnFen("from_fen_capture_first_move_half_move_clock_151_white_to_move.pgn", "1r1nk2r/2pb1pp1/1p1n4/p2pp1bQ/P3P2P/1R1PR2N/1PP2PP1/qBB1K1N1 b - - 0 100"));
-    list.add(new PgnFen("from_fen_capture_second_move_half_move_clock_149_black_to_move.pgn", "3nk2r/1rpb1pp1/1Q6/p2ppnbp/P3P2P/1R1PR2N/1PP2PP1/qBB1K1N1 b - - 0 101"));
-    list.add(new PgnFen("from_fen_capture_second_move_half_move_clock_149_white_to_move.pgn", "1rbqkb1r/pp1p1ppp/8/3pp3/PR1NP3/Bn2NQ2/2PP1PPP/5R1K w k - 0 101"));
-    list.add(new PgnFen("from_fen_capture_second_move_half_move_clock_150_black_to_move.pgn", "1k6/2R5/5N2/5pP1/5P2/Qr6/PPP1P3/K7 b - - 0 101"));
-    list.add(new PgnFen("from_fen_capture_second_move_half_move_clock_150_white_to_move.pgn", "1r1nk2r/2pb1p2/1p1n3p/p2pp1bp/P3PN1P/1R1PR3/1PP2PP1/qBB1K1N1 w - - 0 101"));
-    list.add(new PgnFen("from_fen_capture_second_move_half_move_clock_151_black_to_move.pgn", "1r1nk2r/2pb1pp1/1p5Q/pR1pp1bp/P3P2P/3PR2N/1PP2PP1/qBB1K1N1 b - - 0 101"));
-    list.add(new PgnFen("from_fen_capture_second_move_half_move_clock_151_white_to_move.pgn", "1r1nk2r/2pb1pp1/1p1n3Q/p2pp2p/P3P2P/1R1PbN1N/1PP2PP1/qBB1K3 w - - 0 101"));
-    list.add(new PgnFen("from_fen_one_move_half_move_clock_150_black_to_move.pgn", "1k6/2R1Q3/5N2/5pP1/5P2/8/PPP1P3/K7 w - - 151 101"));
-    list.add(new PgnFen("from_fen_one_move_half_move_clock_150_white_to_move.pgn", "1r1nk2r/2pb1pp1/1p1n3Q/p2pp1bp/P3PN1P/1R1PR3/1PP2PP1/qBB1K1N1 b - - 151 100"));
-    list.add(new PgnFen("from_fen_one_move_half_move_clock_151_black_to_move.pgn", "1r1nk2r/2pb1pp1/1p5Q/pn1pp1bp/P3P2P/1R1PR2N/1PP2PP1/qBB1K1N1 w - - 152 101"));
-    list.add(new PgnFen("from_fen_one_move_half_move_clock_151_white_to_move.pgn", "1r1nk2r/2pb1pp1/1p1n3Q/p2pp1bp/P3P2P/1R1PRN1N/1PP2PP1/qBB1K3 b - - 152 100"));
-    list.add(new PgnFen("from_fen_pawn_first_move_half_move_clock_150_black_to_move.pgn", "k7/2R1Q3/5N2/6P1/5p2/5P2/PPP1P3/K7 w - - 0 101"));
-    list.add(new PgnFen("from_fen_pawn_first_move_half_move_clock_150_white_to_move.pgn", "1r1nk2r/2pb1pp1/1p1n3Q/p2pp1bp/P3P2P/1R1PR1PN/1PP2P2/qBB1K1N1 b - - 0 100"));
-    list.add(new PgnFen("from_fen_pawn_first_move_half_move_clock_151_black_to_move.pgn", "1r1nk2r/2pb1pp1/1p1n3Q/p3p1bp/P2pP2P/1R1PR2N/1PP2PP1/qBB1K1N1 w - - 0 101"));
-    list.add(new PgnFen("from_fen_pawn_first_move_half_move_clock_151_white_to_move.pgn", "1r1nk2r/2pb1pp1/1p1n3Q/p2pp1bp/P3P1PP/1R1PR2N/1PP2P2/qBB1K1N1 b - g3 0 100"));
-    list.add(new PgnFen("from_fen_repetition_from_one_move_black_to_move_sixfold.pgn", "1n2kb1r/p2q1ppp/8/4p1B1/4P3/8/PPP2PPP/2KR4 w k - 21 28"));
-    list.add(new PgnFen("from_fen_repetition_from_one_move_white_to_move_sixfold.pgn", "r1b2r2/pp1pk1pp/8/7q/Q2pP1n1/5N1P/PP3PP1/3R1RK1 b - - 21 27"));
-    list.add(new PgnFen("from_fen_repetition_from_three_moves_black_to_move_sixfold.pgn", "rnb1kbnr/pppp1p1p/8/4N3/2B1Pp1q/6p1/PPPP2PP/RNBQ1K1R w kq - 20 17"));
-    list.add(new PgnFen("from_fen_repetition_from_three_moves_white_to_move_sixfold.pgn", "r4rk1/p1pq1ppp/1pn1p3/1b2P3/1Pp2Pn1/2Q3P1/PB1NP1BP/R4RK1 b - - 20 24"));
-    list.add(new PgnFen("from_fen_repetition_from_two_moves_black_to_move_sixfold.pgn", "r2qk2r/pppbnpp1/1bn4p/4p1N1/P1BP4/2N5/5PPP/R1BQR1K1 b kq - 20 23"));
-    list.add(new PgnFen("from_fen_repetition_from_two_moves_white_to_move_sixfold.pgn", "r1q2rk1/3b1ppp/nb1p4/1p1Pp2n/1P2P3/4BN1P/1Q2RPP1/RB3NK1 w - - 22 34"));
-    list.add(new PgnFen("from_fen_repetition_from_zero_moves_black_to_move_sixfold.pgn", "r2q2n1/1bpk1pp1/p2b3p/1p2pN2/P2PP3/R1P1Q3/1P1N1PPP/2B2RK1 b - - 20 65"));
-    list.add(new PgnFen("from_fen_repetition_from_zero_moves_white_to_move_sixfold.pgn", "r1bqkb1r/1pp2ppp/p1p2n2/4p2Q/P3P3/8/1PPP1PPP/RNB1K1NR w KQkq - 30 60"));
-    list.add(new PgnFen("from_fen_three_moves_half_move_clock_149_black_to_move.pgn", "3nk2r/r1pb1pp1/1p5Q/p2ppnbp/P3P2P/1R1PR2N/1PP2PP1/qBBK2N1 w - - 152 102"));
-    list.add(new PgnFen("from_fen_three_moves_half_move_clock_149_white_to_move.pgn", "1rb1kb1r/pp1p1ppp/2p5/3Bp3/PR1NP2q/Bn2N3/2PP1PPP/3Q1R1K b k - 152 101"));
-    list.add(new PgnFen("from_fen_three_moves_half_move_clock_150_black_to_move.pgn", "k7/1R2Q3/5N2/5pP1/5P2/8/PPP1P3/K7 w - - 153 102"));
-    list.add(new PgnFen("from_fen_three_moves_half_move_clock_150_white_to_move.pgn", "1r1nk2r/1npb1pp1/1p5Q/p2pp1bp/P3P2P/1R1PR3/1PP1NPP1/qBB1K1N1 b - - 153 101"));
-    list.add(new PgnFen("from_fen_three_moves_half_move_clock_151_black_to_move.pgn", "1r1nk2r/2pb1pp1/1pQ5/p2pp1bp/P2nP2P/1R1PR2N/1PP2PP1/qBB1K1N1 w - - 154 102"));
-    list.add(new PgnFen("from_fen_three_moves_half_move_clock_151_white_to_move.pgn", "1r2k2r/1npb1pp1/1p1n3Q/p2pp1bp/P3P2P/1R1PR2N/1PP2PP1/qBB1K1N1 b - - 154 101"));
-    list.add(new PgnFen("from_fen_two_moves_half_move_clock_149_black_to_move.pgn", "3nk2r/1rpb1pp1/1p5Q/p2ppnbp/P3P2P/1R1PR2N/1PP2PP1/qBBK2N1 b - - 151 101"));
-    list.add(new PgnFen("from_fen_two_moves_half_move_clock_149_white_to_move.pgn", "1rb1kb1r/pp1p1ppp/2p5/3Bp3/PR1NP2q/Bn2NQ2/2PP1PPP/5R1K w k - 151 101"));
-    list.add(new PgnFen("from_fen_two_moves_half_move_clock_150_black_to_move.pgn", "1k6/1R2Q3/5N2/5pP1/5P2/8/PPP1P3/K7 b - - 152 101"));
-    list.add(new PgnFen("from_fen_two_moves_half_move_clock_150_white_to_move.pgn", "1r1nk2r/1npb1pp1/1p5Q/p2pp1bp/P3PN1P/1R1PR3/1PP2PP1/qBB1K1N1 w - - 152 101"));
-    list.add(new PgnFen("from_fen_two_moves_half_move_clock_151_black_to_move.pgn", "1r1nk2r/2pb1pp1/1pQ5/pn1pp1bp/P3P2P/1R1PR2N/1PP2PP1/qBB1K1N1 b - - 153 101"));
-    list.add(new PgnFen("from_fen_two_moves_half_move_clock_151_white_to_move.pgn", "1r2k2r/1npb1pp1/1p1n3Q/p2pp1bp/P3P2P/1R1PRN1N/1PP2PP1/qBB1K3 w - - 153 101"));
+    list.add(new PgnFen("from_fen_capture_first_move_half_move_clock_150_black_to_move.pgn",
+        "k7/2q1Q3/5N2/5pP1/5P2/8/PPP1P3/K7 w - - 0 101"));
+    list.add(new PgnFen("from_fen_capture_first_move_half_move_clock_150_white_to_move.pgn",
+        "1r1nk2r/2pb1pp1/1p1Q4/p2pp1bp/P3P2P/1R1PR2N/1PP2PP1/qBB1K1N1 b - - 0 100"));
+    list.add(new PgnFen("from_fen_capture_first_move_half_move_clock_151_black_to_move.pgn",
+        "1r1nk2r/2pb1pp1/1p5Q/p2pp1bp/P3n2P/1R1PR2N/1PP2PP1/qBB1K1N1 w - - 0 101"));
+    list.add(new PgnFen("from_fen_capture_first_move_half_move_clock_151_white_to_move.pgn",
+        "1r1nk2r/2pb1pp1/1p1n4/p2pp1bQ/P3P2P/1R1PR2N/1PP2PP1/qBB1K1N1 b - - 0 100"));
+    list.add(new PgnFen("from_fen_capture_second_move_half_move_clock_149_black_to_move.pgn",
+        "3nk2r/1rpb1pp1/1Q6/p2ppnbp/P3P2P/1R1PR2N/1PP2PP1/qBB1K1N1 b - - 0 101"));
+    list.add(new PgnFen("from_fen_capture_second_move_half_move_clock_149_white_to_move.pgn",
+        "1rbqkb1r/pp1p1ppp/8/3pp3/PR1NP3/Bn2NQ2/2PP1PPP/5R1K w k - 0 101"));
+    list.add(new PgnFen("from_fen_capture_second_move_half_move_clock_150_black_to_move.pgn",
+        "1k6/2R5/5N2/5pP1/5P2/Qr6/PPP1P3/K7 b - - 0 101"));
+    list.add(new PgnFen("from_fen_capture_second_move_half_move_clock_150_white_to_move.pgn",
+        "1r1nk2r/2pb1p2/1p1n3p/p2pp1bp/P3PN1P/1R1PR3/1PP2PP1/qBB1K1N1 w - - 0 101"));
+    list.add(new PgnFen("from_fen_capture_second_move_half_move_clock_151_black_to_move.pgn",
+        "1r1nk2r/2pb1pp1/1p5Q/pR1pp1bp/P3P2P/3PR2N/1PP2PP1/qBB1K1N1 b - - 0 101"));
+    list.add(new PgnFen("from_fen_capture_second_move_half_move_clock_151_white_to_move.pgn",
+        "1r1nk2r/2pb1pp1/1p1n3Q/p2pp2p/P3P2P/1R1PbN1N/1PP2PP1/qBB1K3 w - - 0 101"));
+    list.add(new PgnFen("from_fen_one_move_half_move_clock_150_black_to_move.pgn",
+        "1k6/2R1Q3/5N2/5pP1/5P2/8/PPP1P3/K7 w - - 151 101"));
+    list.add(new PgnFen("from_fen_one_move_half_move_clock_150_white_to_move.pgn",
+        "1r1nk2r/2pb1pp1/1p1n3Q/p2pp1bp/P3PN1P/1R1PR3/1PP2PP1/qBB1K1N1 b - - 151 100"));
+    list.add(new PgnFen("from_fen_one_move_half_move_clock_151_black_to_move.pgn",
+        "1r1nk2r/2pb1pp1/1p5Q/pn1pp1bp/P3P2P/1R1PR2N/1PP2PP1/qBB1K1N1 w - - 152 101"));
+    list.add(new PgnFen("from_fen_one_move_half_move_clock_151_white_to_move.pgn",
+        "1r1nk2r/2pb1pp1/1p1n3Q/p2pp1bp/P3P2P/1R1PRN1N/1PP2PP1/qBB1K3 b - - 152 100"));
+    list.add(new PgnFen("from_fen_pawn_first_move_half_move_clock_150_black_to_move.pgn",
+        "k7/2R1Q3/5N2/6P1/5p2/5P2/PPP1P3/K7 w - - 0 101"));
+    list.add(new PgnFen("from_fen_pawn_first_move_half_move_clock_150_white_to_move.pgn",
+        "1r1nk2r/2pb1pp1/1p1n3Q/p2pp1bp/P3P2P/1R1PR1PN/1PP2P2/qBB1K1N1 b - - 0 100"));
+    list.add(new PgnFen("from_fen_pawn_first_move_half_move_clock_151_black_to_move.pgn",
+        "1r1nk2r/2pb1pp1/1p1n3Q/p3p1bp/P2pP2P/1R1PR2N/1PP2PP1/qBB1K1N1 w - - 0 101"));
+    list.add(new PgnFen("from_fen_pawn_first_move_half_move_clock_151_white_to_move.pgn",
+        "1r1nk2r/2pb1pp1/1p1n3Q/p2pp1bp/P3P1PP/1R1PR2N/1PP2P2/qBB1K1N1 b - g3 0 100"));
+    list.add(new PgnFen("from_fen_repetition_from_one_move_black_to_move_sixfold.pgn",
+        "1n2kb1r/p2q1ppp/8/4p1B1/4P3/8/PPP2PPP/2KR4 w k - 21 28"));
+    list.add(new PgnFen("from_fen_repetition_from_one_move_white_to_move_sixfold.pgn",
+        "r1b2r2/pp1pk1pp/8/7q/Q2pP1n1/5N1P/PP3PP1/3R1RK1 b - - 21 27"));
+    list.add(new PgnFen("from_fen_repetition_from_three_moves_black_to_move_sixfold.pgn",
+        "rnb1kbnr/pppp1p1p/8/4N3/2B1Pp1q/6p1/PPPP2PP/RNBQ1K1R w kq - 20 17"));
+    list.add(new PgnFen("from_fen_repetition_from_three_moves_white_to_move_sixfold.pgn",
+        "r4rk1/p1pq1ppp/1pn1p3/1b2P3/1Pp2Pn1/2Q3P1/PB1NP1BP/R4RK1 b - - 20 24"));
+    list.add(new PgnFen("from_fen_repetition_from_two_moves_black_to_move_sixfold.pgn",
+        "r2qk2r/pppbnpp1/1bn4p/4p1N1/P1BP4/2N5/5PPP/R1BQR1K1 b kq - 20 23"));
+    list.add(new PgnFen("from_fen_repetition_from_two_moves_white_to_move_sixfold.pgn",
+        "r1q2rk1/3b1ppp/nb1p4/1p1Pp2n/1P2P3/4BN1P/1Q2RPP1/RB3NK1 w - - 22 34"));
+    list.add(new PgnFen("from_fen_repetition_from_zero_moves_black_to_move_sixfold.pgn",
+        "r2q2n1/1bpk1pp1/p2b3p/1p2pN2/P2PP3/R1P1Q3/1P1N1PPP/2B2RK1 b - - 20 65"));
+    list.add(new PgnFen("from_fen_repetition_from_zero_moves_white_to_move_sixfold.pgn",
+        "r1bqkb1r/1pp2ppp/p1p2n2/4p2Q/P3P3/8/1PPP1PPP/RNB1K1NR w KQkq - 30 60"));
+    list.add(new PgnFen("from_fen_three_moves_half_move_clock_149_black_to_move.pgn",
+        "3nk2r/r1pb1pp1/1p5Q/p2ppnbp/P3P2P/1R1PR2N/1PP2PP1/qBBK2N1 w - - 152 102"));
+    list.add(new PgnFen("from_fen_three_moves_half_move_clock_149_white_to_move.pgn",
+        "1rb1kb1r/pp1p1ppp/2p5/3Bp3/PR1NP2q/Bn2N3/2PP1PPP/3Q1R1K b k - 152 101"));
+    list.add(new PgnFen("from_fen_three_moves_half_move_clock_150_black_to_move.pgn",
+        "k7/1R2Q3/5N2/5pP1/5P2/8/PPP1P3/K7 w - - 153 102"));
+    list.add(new PgnFen("from_fen_three_moves_half_move_clock_150_white_to_move.pgn",
+        "1r1nk2r/1npb1pp1/1p5Q/p2pp1bp/P3P2P/1R1PR3/1PP1NPP1/qBB1K1N1 b - - 153 101"));
+    list.add(new PgnFen("from_fen_three_moves_half_move_clock_151_black_to_move.pgn",
+        "1r1nk2r/2pb1pp1/1pQ5/p2pp1bp/P2nP2P/1R1PR2N/1PP2PP1/qBB1K1N1 w - - 154 102"));
+    list.add(new PgnFen("from_fen_three_moves_half_move_clock_151_white_to_move.pgn",
+        "1r2k2r/1npb1pp1/1p1n3Q/p2pp1bp/P3P2P/1R1PR2N/1PP2PP1/qBB1K1N1 b - - 154 101"));
+    list.add(new PgnFen("from_fen_two_moves_half_move_clock_149_black_to_move.pgn",
+        "3nk2r/1rpb1pp1/1p5Q/p2ppnbp/P3P2P/1R1PR2N/1PP2PP1/qBBK2N1 b - - 151 101"));
+    list.add(new PgnFen("from_fen_two_moves_half_move_clock_149_white_to_move.pgn",
+        "1rb1kb1r/pp1p1ppp/2p5/3Bp3/PR1NP2q/Bn2NQ2/2PP1PPP/5R1K w k - 151 101"));
+    list.add(new PgnFen("from_fen_two_moves_half_move_clock_150_black_to_move.pgn",
+        "1k6/1R2Q3/5N2/5pP1/5P2/8/PPP1P3/K7 b - - 152 101"));
+    list.add(new PgnFen("from_fen_two_moves_half_move_clock_150_white_to_move.pgn",
+        "1r1nk2r/1npb1pp1/1p5Q/p2pp1bp/P3PN1P/1R1PR3/1PP2PP1/qBB1K1N1 w - - 152 101"));
+    list.add(new PgnFen("from_fen_two_moves_half_move_clock_151_black_to_move.pgn",
+        "1r1nk2r/2pb1pp1/1pQ5/pn1pp1bp/P3P2P/1R1PR2N/1PP2PP1/qBB1K1N1 b - - 153 101"));
+    list.add(new PgnFen("from_fen_two_moves_half_move_clock_151_white_to_move.pgn",
+        "1r2k2r/1npb1pp1/1p1n3Q/p2pp1bp/P3P2P/1R1PRN1N/1PP2PP1/qBB1K3 w - - 153 101"));
 
     return new PgnTestCaseList(PgnTest.PARSER_FROM_FEN, list);
   }
@@ -1212,12 +1559,18 @@ public class PgnTestCaseCatalog {
   private static PgnTestCaseList createTestCasesBasicNoProgressSequencesWhite() {
     final List<PgnFen> list = new ArrayList<>();
 
-    list.add(new PgnFen("01_white_from_fen_no_progress_fifty_reoccuring_fifty.pgn", "8/3p4/1kp1p3/8/2qQ3P/5PPK/8/8 b - - 100 150"));
-    list.add(new PgnFen("02_white_from_fen_no_progress_fifty_reoccuring_seventy_five.pgn", "2Q5/3p1q2/2pkp3/8/7P/5PPK/8/8 b - - 150 175"));
-    list.add(new PgnFen("03_white_from_fen_no_progress_fifty_reoccuring_above_fifty.pgn", "Q7/3p1q2/2pkp3/8/7P/5PPK/8/8 w - - 149 175"));
-    list.add(new PgnFen("09_white_from_fen_no_progress_above_fifty_reoccuring_fifty.pgn", "8/3p4/1kp1p3/8/2qQ3P/5PPK/8/8 b - - 100 150"));
-    list.add(new PgnFen("10_white_from_fen_no_progress_above_fifty_reoccuring_seventy_five.pgn", "2Q5/3p1q2/2pkp3/8/7P/5PPK/8/8 b - - 150 175"));
-    list.add(new PgnFen("11_white_from_fen_no_progress_above_fifty_reoccuring_above_fifty.pgn", "Q7/3p1q2/2pkp3/8/7P/5PPK/8/8 w - - 149 175"));
+    list.add(new PgnFen("01_white_from_fen_no_progress_fifty_reoccuring_fifty.pgn",
+        "8/3p4/1kp1p3/8/2qQ3P/5PPK/8/8 b - - 100 150"));
+    list.add(new PgnFen("02_white_from_fen_no_progress_fifty_reoccuring_seventy_five.pgn",
+        "2Q5/3p1q2/2pkp3/8/7P/5PPK/8/8 b - - 150 175"));
+    list.add(new PgnFen("03_white_from_fen_no_progress_fifty_reoccuring_above_fifty.pgn",
+        "Q7/3p1q2/2pkp3/8/7P/5PPK/8/8 w - - 149 175"));
+    list.add(new PgnFen("09_white_from_fen_no_progress_above_fifty_reoccuring_fifty.pgn",
+        "8/3p4/1kp1p3/8/2qQ3P/5PPK/8/8 b - - 100 150"));
+    list.add(new PgnFen("10_white_from_fen_no_progress_above_fifty_reoccuring_seventy_five.pgn",
+        "2Q5/3p1q2/2pkp3/8/7P/5PPK/8/8 b - - 150 175"));
+    list.add(new PgnFen("11_white_from_fen_no_progress_above_fifty_reoccuring_above_fifty.pgn",
+        "Q7/3p1q2/2pkp3/8/7P/5PPK/8/8 w - - 149 175"));
 
     return new PgnTestCaseList(PgnTest.BASIC_REPORT_NO_PROGRESS_SEQUENCES_WHITE, list);
   }
@@ -1225,12 +1578,18 @@ public class PgnTestCaseCatalog {
   private static PgnTestCaseList createTestCasesBasicNoProgressSequencesBlack() {
     final List<PgnFen> list = new ArrayList<>();
 
-    list.add(new PgnFen("01_black_from_fen_no_progress_fifty_reoccuring_fifty.pgn", "8/6p1/7k/6n1/2NQ4/4q3/2P1P3/1K6 w - - 100 151"));
-    list.add(new PgnFen("02_black_from_fen_no_progress_fifty_reoccuring_seventy_five.pgn", "8/6pk/8/6n1/2NQ4/4q3/1KP1P3/8 w - - 150 176"));
-    list.add(new PgnFen("03_black_from_fen_no_progress_fifty_reoccuring_above_fifty.pgn", "8/6pk/8/4q1n1/2NQ4/8/1KP1P3/8 b - - 149 175"));
-    list.add(new PgnFen("09_black_from_fen_no_progress_above_fifty_reoccuring_fifty.pgn", "8/6p1/7k/6n1/2NQ4/4q3/2P1P3/1K6 w - - 100 151"));
-    list.add(new PgnFen("10_black_from_fen_no_progress_above_fifty_reoccuring_seventy_five.pgn", "8/6pk/8/6n1/2NQ4/4q3/1KP1P3/8 w - - 150 176"));
-    list.add(new PgnFen("11_black_from_fen_no_progress_above_fifty_reoccuring_above_fifty.pgn", "8/6pk/8/4q1n1/2NQ4/8/1KP1P3/8 b - - 149 175"));
+    list.add(new PgnFen("01_black_from_fen_no_progress_fifty_reoccuring_fifty.pgn",
+        "8/6p1/7k/6n1/2NQ4/4q3/2P1P3/1K6 w - - 100 151"));
+    list.add(new PgnFen("02_black_from_fen_no_progress_fifty_reoccuring_seventy_five.pgn",
+        "8/6pk/8/6n1/2NQ4/4q3/1KP1P3/8 w - - 150 176"));
+    list.add(new PgnFen("03_black_from_fen_no_progress_fifty_reoccuring_above_fifty.pgn",
+        "8/6pk/8/4q1n1/2NQ4/8/1KP1P3/8 b - - 149 175"));
+    list.add(new PgnFen("09_black_from_fen_no_progress_above_fifty_reoccuring_fifty.pgn",
+        "8/6p1/7k/6n1/2NQ4/4q3/2P1P3/1K6 w - - 100 151"));
+    list.add(new PgnFen("10_black_from_fen_no_progress_above_fifty_reoccuring_seventy_five.pgn",
+        "8/6pk/8/6n1/2NQ4/4q3/1KP1P3/8 w - - 150 176"));
+    list.add(new PgnFen("11_black_from_fen_no_progress_above_fifty_reoccuring_above_fifty.pgn",
+        "8/6pk/8/4q1n1/2NQ4/8/1KP1P3/8 b - - 149 175"));
 
     return new PgnTestCaseList(PgnTest.BASIC_REPORT_NO_PROGRESS_SEQUENCES_BLACK, list);
   }
@@ -1262,7 +1621,8 @@ public class PgnTestCaseCatalog {
 
   private static PgnTestCaseList createTestCasesRandomCheckmate() {
     final List<PgnFen> list = new ArrayList<>();
-    list.add(new PgnFen("01_random_checkmate.pgn", "3qkbnr/pb1pp2p/p1r2p2/2p1P1pQ/7P/2P4N/PPNP1PP1/1RB1K2R b k - 3 12"));
+    list.add(
+        new PgnFen("01_random_checkmate.pgn", "3qkbnr/pb1pp2p/p1r2p2/2p1P1pQ/7P/2P4N/PPNP1PP1/1RB1K2R b k - 3 12"));
     list.add(new PgnFen("02_random_checkmate.pgn", "5k1Q/R4P2/8/p7/7P/4p2N/7K/3r4 b - - 2 82"));
     list.add(new PgnFen("03_random_checkmate.pgn", "2b5/8/K7/2q4p/5k2/8/8/8 w - - 13 180"));
     list.add(new PgnFen("04_random_checkmate.pgn", "5k2/8/1b6/7K/4p3/3R2q1/p6r/8 w - - 7 119"));
@@ -1338,26 +1698,34 @@ public class PgnTestCaseCatalog {
     final List<PgnFen> list = new ArrayList<>();
     list.add(new PgnFen("various_almtwali_vs_danielbaechli_2020.pgn", "6k1/4P2p/5K1P/8/8/8/8/8 b - - 0 114"));
     list.add(new PgnFen("various_krush_zatonski_2008.pgn", "6rk/1p1R1pqp/p1p4p/6rP/P7/5QP1/1P3P2/4R1K1 b - - 3 33"));
-    list.add(new PgnFen("various_krush_zatonski_2008_reconstructed.pgn", "r5qk/1R2Rprp/5Q1p/p6P/P7/2P3P1/5P2/6K1 w - - 11 47"));
+    list.add(new PgnFen("various_krush_zatonski_2008_reconstructed.pgn",
+        "r5qk/1R2Rprp/5Q1p/p6P/P7/2P3P1/5P2/6K1 w - - 11 47"));
     list.add(new PgnFen("various_rikikits_vs_demchenko_2016_amended.pgn", "7B/5p2/2k5/K3P3/1P6/3b4/8/8 b - - 103 163"));
     list.add(new PgnFen("various_demchenko_vs_verdenotte_2018_amended.pgn", "8/8/1r6/3B4/1k1K4/8/R7/8 w - - 107 142"));
-    list.add(new PgnFen("various_demchenko_vs_chesspanda123_2017_amended.pgn", "6R1/8/8/8/4B3/4K3/5r2/6k1 b - - 150 136"));
+    list.add(
+        new PgnFen("various_demchenko_vs_chesspanda123_2017_amended.pgn", "6R1/8/8/8/4B3/4K3/5r2/6k1 b - - 150 136"));
     list.add(new PgnFen("various_savic_vs_bueble_2020.pgn", "5k2/8/6K1/8/8/8/8/8 w - - 0 92"));
     list.add(new PgnFen("various_blatny_holzke_1997.pgn", "8/3R2bp/4n1p1/1p1k1pP1/5P1P/1K2P3/8/8 b - - 24 64"));
-    list.add(new PgnFen("various_gvetadze_milliet_2014.pgn", "2q2rk1/2r1b3/1p2p1Q1/4Pp2/8/3B4/1P3PPP/3R2K1 b - - 9 29"));
+    list.add(
+        new PgnFen("various_gvetadze_milliet_2014.pgn", "2q2rk1/2r1b3/1p2p1Q1/4Pp2/8/3B4/1P3PPP/3R2K1 b - - 9 29"));
     // O-O-O+ was played in this game!!!
     list.add(new PgnFen("various_hikaru_vs_penguingm1_2014.pgn", "2k5/1pp1r3/p5pp/2P5/1P6/P2pP1PP/4PK2/8 w - - 0 36"));
 
     // "threefold repetition" with initial en passant
-    list.add(new PgnFen("various_gmjoey1_vs_bugsbunny444_2013.pgn", "rn1q1rk1/pp1b4/4p1Q1/bN1pPp2/3P4/PpPB4/5PPP/R3K2R b KQ - 9 22"));
-    list.add(new PgnFen("various_gmjoey1_vs_tiohoracio_2015.pgn", "r1b2r2/1p3kpQ/4p3/4Pp2/p6R/2q5/P5PP/1R5K w - - 10 28"));
-    list.add(new PgnFen("various_gmjoey1_vs_dulerile_2018.pgn", "2R5/1k3p2/1p4p1/pP1b3p/P4B1P/6P1/1r6/5K2 w - - 10 50"));
+    list.add(new PgnFen("various_gmjoey1_vs_bugsbunny444_2013.pgn",
+        "rn1q1rk1/pp1b4/4p1Q1/bN1pPp2/3P4/PpPB4/5PPP/R3K2R b KQ - 9 22"));
+    list.add(
+        new PgnFen("various_gmjoey1_vs_tiohoracio_2015.pgn", "r1b2r2/1p3kpQ/4p3/4Pp2/p6R/2q5/P5PP/1R5K w - - 10 28"));
+    list.add(
+        new PgnFen("various_gmjoey1_vs_dulerile_2018.pgn", "2R5/1k3p2/1p4p1/pP1b3p/P4B1P/6P1/1r6/5K2 w - - 10 50"));
 
     // checkmating with castling
-    list.add(new PgnFen("various_lasker_vs_alan_thomas_1912.pgn", "rn3r2/pbppq1p1/1p2pN2/8/3P2NP/6P1/PPP1BP1R/2KR2k1 b - - 6 18"));
+    list.add(new PgnFen("various_lasker_vs_alan_thomas_1912.pgn",
+        "rn3r2/pbppq1p1/1p2pN2/8/3P2NP/6P1/PPP1BP1R/2KR2k1 b - - 6 18"));
 
     // fooling around as long as I could
-    list.add(new PgnFen("various_mickeymousetest_donaldducktest_2021.pgn", "rnbq1b1r/4k3/8/7N/4P2p/4n3/8/R1BQKBNR w - - 100 389"));
+    list.add(new PgnFen("various_mickeymousetest_donaldducktest_2021.pgn",
+        "rnbq1b1r/4k3/8/7N/4P2p/4n3/8/R1BQKBNR w - - 100 389"));
 
     list.add(new PgnFen("various_jobava_so_2017.pgn", "8/R3k3/8/6N1/5p1P/P1Pr4/1P2r3/2K5 b - - 8 41"));
 
@@ -1384,8 +1752,10 @@ public class PgnTestCaseCatalog {
     list.add(new PgnFen("various_grischuk_mamedyarov_2017.pgn", "8/8/8/8/4p3/4Bk1K/5Pr1/8 w - - 2 88"));
 
     // youtube video - why savic so angry?
-    list.add(new PgnFen("various_pranav_savic_2021_incomplete_speculative.pgn", "8/5k2/2R5/5p2/5P2/6P1/6K1/r7 w - - 73 101"));
-    list.add(new PgnFen("various_pranav_savic_2021_incomplete_speculative_from_last_capture.pgn", "8/5k2/2R5/5p2/5P2/6P1/6K1/r7 w - - 73 101"));
+    list.add(new PgnFen("various_pranav_savic_2021_incomplete_speculative.pgn",
+        "8/5k2/2R5/5p2/5P2/6P1/6K1/r7 w - - 73 101"));
+    list.add(new PgnFen("various_pranav_savic_2021_incomplete_speculative_from_last_capture.pgn",
+        "8/5k2/2R5/5p2/5P2/6P1/6K1/r7 w - - 73 101"));
 
     // repetition after promotion
     list.add(new PgnFen("various_keres_fischer_1962.pgn", "8/p4Q1k/1p6/1P6/8/7K/8/6q1 b - - 5 77"));
@@ -1395,7 +1765,8 @@ public class PgnTestCaseCatalog {
     list.add(new PgnFen("various_swiercz_karjakin_2015.pgn", "5R2/p3r3/P1R1pkp1/5p1p/5P1P/r5P1/4PK2/8 b - - 9 46"));
 
     // the threefold I did not see
-    list.add(new PgnFen("various_gwendolus_vs_danielbaechli_2022.pgn", "2k1r3/1p6/7R/3p4/1P1Bn3/2P2K2/P7/8 b - - 10 54"));
+    list.add(
+        new PgnFen("various_gwendolus_vs_danielbaechli_2022.pgn", "2k1r3/1p6/7R/3p4/1P1Bn3/2P2K2/P7/8 b - - 10 54"));
 
     // import on Lichess did not work
     list.add(new PgnFen("various_tal_bronstein_1961.pgn", "8/5p2/1p2p2p/6pk/r6q/4Q3/5P2/2R3K1 w - - 6 41"));
@@ -1408,19 +1779,28 @@ public class PgnTestCaseCatalog {
   private static PgnTestCaseList createTestCasesWcc201() {
     final List<PgnFen> list = new ArrayList<>();
 
-    list.add(new PgnFen("wcc_2021_round_01_nepomniachtchi_carlsen.pgn", "8/4r2p/p2rnkp1/2p2p2/2N4P/2PP1P2/2K2P2/R3R3 b - - 14 45"));
-    list.add(new PgnFen("wcc_2021_round_01_nepomniachtchi_carlsen_amended.pgn", "8/4r2p/p1r1nkp1/2p2p2/2N4P/2PP1P2/2K2P2/R3R3 w - - 15 46"));
+    list.add(new PgnFen("wcc_2021_round_01_nepomniachtchi_carlsen.pgn",
+        "8/4r2p/p2rnkp1/2p2p2/2N4P/2PP1P2/2K2P2/R3R3 b - - 14 45"));
+    list.add(new PgnFen("wcc_2021_round_01_nepomniachtchi_carlsen_amended.pgn",
+        "8/4r2p/p1r1nkp1/2p2p2/2N4P/2PP1P2/2K2P2/R3R3 w - - 15 46"));
     list.add(new PgnFen("wcc_2021_round_02_carlsen_nepomniachtchi.pgn", "8/6kp/7R/6Pp/r4P2/8/5K2/8 w - - 9 59"));
-    list.add(new PgnFen("wcc_2021_round_03_nepomniachtchi_carlsen.pgn", "8/3b4/7p/p1p1k3/P1p2p1P/2P2P2/2B2KP1/8 b - - 6 41"));
-    list.add(new PgnFen("wcc_2021_round_04_carlsen_nepomniachtchi.pgn", "r4nk1/4Rp1p/1p3Np1/1P1P2P1/8/p2r4/5P1P/R5K1 b - - 7 33"));
-    list.add(new PgnFen("wcc_2021_round_04_carlsen_nepomniachtchi_amended.pgn", "r4n2/4Rpkp/1p3Np1/1P1P2P1/8/p2r4/5P1P/R5K1 w - - 8 34"));
-    list.add(new PgnFen("wcc_2021_round_05_nepomniachtchi_carlsen.pgn", "4kb2/2p3p1/4np1p/4pN1P/4P1P1/2P1BP2/4K3/r2R4 b - - 14 43"));
-    list.add(new PgnFen("wcc_2021_round_05_nepomniachtchi_carlsen_amended.pgn", "4kb2/2p3p1/4np1p/4pN1P/4P1P1/2P1BP2/r3K3/3R4 w - - 15 44"));
+    list.add(new PgnFen("wcc_2021_round_03_nepomniachtchi_carlsen.pgn",
+        "8/3b4/7p/p1p1k3/P1p2p1P/2P2P2/2B2KP1/8 b - - 6 41"));
+    list.add(new PgnFen("wcc_2021_round_04_carlsen_nepomniachtchi.pgn",
+        "r4nk1/4Rp1p/1p3Np1/1P1P2P1/8/p2r4/5P1P/R5K1 b - - 7 33"));
+    list.add(new PgnFen("wcc_2021_round_04_carlsen_nepomniachtchi_amended.pgn",
+        "r4n2/4Rpkp/1p3Np1/1P1P2P1/8/p2r4/5P1P/R5K1 w - - 8 34"));
+    list.add(new PgnFen("wcc_2021_round_05_nepomniachtchi_carlsen.pgn",
+        "4kb2/2p3p1/4np1p/4pN1P/4P1P1/2P1BP2/4K3/r2R4 b - - 14 43"));
+    list.add(new PgnFen("wcc_2021_round_05_nepomniachtchi_carlsen_amended.pgn",
+        "4kb2/2p3p1/4np1p/4pN1P/4P1P1/2P1BP2/r3K3/3R4 w - - 15 44"));
     list.add(new PgnFen("wcc_2021_round_06_carlsen_nepomniachtchi.pgn", "3k4/5RN1/4P3/5P2/7K/8/8/6q1 b - - 2 136"));
     list.add(new PgnFen("wcc_2021_round_07_nepomniachtchi_carlsen.pgn", "8/R4pk1/6p1/7p/7P/2r3P1/5PK1/8 b - - 15 41"));
     list.add(new PgnFen("wcc_2021_round_08_carlsen_nepomniachtchi.pgn", "8/7k/8/3P4/6P1/1P2qQ1p/6P1/7K b - - 1 46"));
-    list.add(new PgnFen("wcc_2021_round_09_nepomniachtchi_carlsen.pgn", "r3b1k1/P4pp1/4p3/2N1P2p/7P/5Pn1/8/R5K1 w - - 1 40"));
-    list.add(new PgnFen("wcc_2021_round_10_carlsen_nepomniachtchi.pgn", "8/pp6/2pk1n2/3pN3/3P4/2P1K3/PP6/8 b - - 1 41"));
+    list.add(new PgnFen("wcc_2021_round_09_nepomniachtchi_carlsen.pgn",
+        "r3b1k1/P4pp1/4p3/2N1P2p/7P/5Pn1/8/R5K1 w - - 1 40"));
+    list.add(
+        new PgnFen("wcc_2021_round_10_carlsen_nepomniachtchi.pgn", "8/pp6/2pk1n2/3pN3/3P4/2P1K3/PP6/8 b - - 1 41"));
     list.add(new PgnFen("wcc_2021_round_11_nepomniachtchi_carlsen.pgn", "K7/5pk1/1R4p1/P1q5/5P2/4P3/8/8 w - - 7 50"));
 
     return new PgnTestCaseList(PgnTest.WCC2021, list);
@@ -1433,7 +1813,8 @@ public class PgnTestCaseCatalog {
 
     list.add(new PgnFen("fivefold_correct_miton_yakubboev_2018.pgn", "8/p7/1p2k2p/1P1r4/P1pK4/4P2P/8/2R5 w - - 23 47"));
     list.add(new PgnFen("fivefold_correct_potapov_adly_2018.pgn", "8/6rk/7p/p4Q2/8/Pr5P/3n1P2/3N3K b - - 24 51"));
-    list.add(new PgnFen("fivefold_correct_sethuraman_guseinov_2017.pgn", "1r6/1P3Rkp/3Np3/4P3/1r4p1/8/7P/7K b - - 16 59"));
+    list.add(
+        new PgnFen("fivefold_correct_sethuraman_guseinov_2017.pgn", "1r6/1P3Rkp/3Np3/4P3/1r4p1/8/7P/7K b - - 16 59"));
     list.add(new PgnFen("fivefold_correct_paichadze_ter-sahakyan_2019.pgn", "8/8/8/4k3/4r3/4KR2/8/8 w - - 18 67"));
     list.add(new PgnFen("fivefold_correct_robson_moranda_2019.pgn", "5k2/R5R1/3pp2p/4p3/4P2P/1r1r2PK/8/8 w - - 17 43"));
     return new PgnTestCaseList(PgnTest.FIVEFOLD_CORRECT, list);
@@ -1444,8 +1825,7 @@ public class PgnTestCaseCatalog {
     list.add(new PgnFen("fifty_general_adly_flores_2016.pgn", "1R2k3/8/4K3/8/8/8/8/8 b - - 0 144"));
     list.add(new PgnFen("fifty_general_cheparinov_anand_2018.pgn", "8/8/8/2KB4/k7/r7/8/1R6 b - - 138 130"));
     list.add(new PgnFen("fifty_general_giri_grischuk_2014.pgn", "8/8/3P1k2/3K4/8/8/8/8 b - - 1 156"));
-    list.add(
-        new PgnFen("fifty_general_carlsen_liem_2014.pgn", "8/5p2/Bp2pP1k/1p2P3/2b2K2/P1P5/8/8 b - - 102 103"));
+    list.add(new PgnFen("fifty_general_carlsen_liem_2014.pgn", "8/5p2/Bp2pP1k/1p2P3/2b2K2/P1P5/8/8 b - - 102 103"));
     list.add(new PgnFen("fifty_general_pruijssers_inarkiev_2015.pgn", "8/8/8/7P/8/6Pk/6r1/2R2K1r w - - 11 128"));
     list.add(new PgnFen("fifty_general_riazantsev_levin_2016.pgn", "5Rqk/8/6PP/8/5P2/5NK1/8/8 b - - 4 181"));
     list.add(new PgnFen("fifty_general_radjabov_deac_2016.pgn", "8/8/8/4k3/4pP2/4P1K1/r6R/8 b - f3 0 127"));
@@ -1457,7 +1837,8 @@ public class PgnTestCaseCatalog {
     list.add(new PgnFen("fifty_general_wang_wen_2018.pgn", "8/8/8/8/4BK2/1r6/7k/2R5 b - - 148 169"));
     list.add(new PgnFen("fifty_general_meier_dominguez_2018.pgn", "5R2/5P1k/3B3p/3K3P/8/8/8/8 b - - 0 115"));
     list.add(new PgnFen("fifty_general_bindrich_kovalev_2018.pgn", "8/8/8/6k1/1B5p/5K1P/7r/8 b - - 3 121"));
-    list.add(new PgnFen("fifty_general_jobava_salem_2018.pgn", "4k3/1q1b4/2p1p3/2p1Pp2/1BPp1Pp1/1PbP2Pp/2NN3P/2KQ4 b - - 0 93"));
+    list.add(new PgnFen("fifty_general_jobava_salem_2018.pgn",
+        "4k3/1q1b4/2p1p3/2p1Pp2/1BPp1Pp1/1PbP2Pp/2NN3P/2KQ4 b - - 0 93"));
     list.add(new PgnFen("fifty_general_sarana_chirila_2019.pgn", "8/7p/4k3/3NPb1P/3K4/8/8/8 b - - 66 150"));
     list.add(new PgnFen("fifty_general_topalov_dominguez_2019.pgn", "8/4p3/3p1k2/3P4/2P2pQ1/5P1K/8/7q w - - 15 109"));
     return new PgnTestCaseList(PgnTest.FIFTY_GENERAL, list);
@@ -1468,11 +1849,13 @@ public class PgnTestCaseCatalog {
 
     // because below 100 not displayed
     // 55.Nc4 (1) 103...Kh5 (98)
-    list.add(new PgnFen("fifty_pattern_098_start_white_demchenko_martinez_2019.pgn", "8/8/4p3/6nk/6p1/4N1P1/5PK1/8 w - - 98 104"));
+    list.add(new PgnFen("fifty_pattern_098_start_white_demchenko_martinez_2019.pgn",
+        "8/8/4p3/6nk/6p1/4N1P1/5PK1/8 w - - 98 104"));
 
     // because below 100 not displayed
     // 68...Rh2 (1) 117.Kd3 (98)
-    list.add(new PgnFen("fifty_pattern_098_start_black_sjugirov_inarkiev_2019.pgn", "8/8/8/8/r7/3K4/1R3N2/6k1 b - - 98 117"));
+    list.add(new PgnFen("fifty_pattern_098_start_black_sjugirov_inarkiev_2019.pgn",
+        "8/8/8/8/r7/3K4/1R3N2/6k1 b - - 98 117"));
 
     // because below 100 not displayed
     // 115.Kg2 (1) 163...Kc5 (98); 164.Kh1 (99)
@@ -1480,21 +1863,29 @@ public class PgnTestCaseCatalog {
 
     // because below 100 not displayed
     // 59...Bg6 (1) 108.Nb5 (98); 108...Bh5 (99)
-    list.add(new PgnFen("fifty_pattern_099_start_black_naroditsky_boruchovsky_2018.pgn", "8/6K1/5P2/1N2k2b/8/8/8/8 w - - 99 109"));
+    list.add(new PgnFen("fifty_pattern_099_start_black_naroditsky_boruchovsky_2018.pgn",
+        "8/6K1/5P2/1N2k2b/8/8/8/8 w - - 99 109"));
 
-    list.add(new PgnFen("fifty_pattern_100_start_white_baryshpolets_steingrimsson_2019.pgn", "1k6/4K3/6Q1/4q3/5n2/8/8/8 w - - 100 127"));
+    list.add(new PgnFen("fifty_pattern_100_start_white_baryshpolets_steingrimsson_2019.pgn",
+        "1k6/4K3/6Q1/4q3/5n2/8/8/8 w - - 100 127"));
 
-    list.add(new PgnFen("fifty_pattern_100_start_black_nakamura_radjabov_2014.pgn", "1kbb1r1r/2p2pp1/1p6/p1pNPn2/P1P2P1p/1P1R1N1P/5BPK/3R4 b - - 100 77"));
+    list.add(new PgnFen("fifty_pattern_100_start_black_nakamura_radjabov_2014.pgn",
+        "1kbb1r1r/2p2pp1/1p6/p1pNPn2/P1P2P1p/1P1R1N1P/5BPK/3R4 b - - 100 77"));
 
-    list.add(new PgnFen("fifty_pattern_101_start_white_nakamura_vachier-lagrave_2018.pgn", "8/5K2/8/6Bp/4p2P/4Pb2/8/5k2 b - - 101 122"));
+    list.add(new PgnFen("fifty_pattern_101_start_white_nakamura_vachier-lagrave_2018.pgn",
+        "8/5K2/8/6Bp/4p2P/4Pb2/8/5k2 b - - 101 122"));
 
-    list.add(new PgnFen("fifty_pattern_101_start_black_sevian_andriasian_2019.pgn", "2k5/7R/2K5/4N3/8/8/8/2r5 w - - 101 125"));
+    list.add(new PgnFen("fifty_pattern_101_start_black_sevian_andriasian_2019.pgn",
+        "2k5/7R/2K5/4N3/8/8/8/2r5 w - - 101 125"));
 
-    list.add(new PgnFen("fifty_pattern_101_start_black_grischuk_vachier-lagrave_2017.pgn", "R7/8/3kp3/3p4/3Pr3/3KP3/8/8 w - - 101 90"));
+    list.add(new PgnFen("fifty_pattern_101_start_black_grischuk_vachier-lagrave_2017.pgn",
+        "R7/8/3kp3/3p4/3Pr3/3KP3/8/8 w - - 101 90"));
 
-    list.add(new PgnFen("fifty_pattern_102_start_white_harikrishna_yu_2017.pgn", "8/8/1R1b3K/4k3/8/8/8/6r1 w - - 102 103"));
+    list.add(
+        new PgnFen("fifty_pattern_102_start_white_harikrishna_yu_2017.pgn", "8/8/1R1b3K/4k3/8/8/8/6r1 w - - 102 103"));
 
-    list.add(new PgnFen("fifty_pattern_102_start_black_riazantsev_deac_2017.pgn", "8/8/8/3nk3/R7/5K2/8/8 b - - 102 142"));
+    list.add(
+        new PgnFen("fifty_pattern_102_start_black_riazantsev_deac_2017.pgn", "8/8/8/3nk3/R7/5K2/8/8 b - - 102 142"));
 
     return new PgnTestCaseList(PgnTest.FIFTY_PATTERN, list);
   }
@@ -1502,73 +1893,112 @@ public class PgnTestCaseCatalog {
   private static PgnTestCaseList createTestCasesSeventyFiveCorrect() {
     final List<PgnFen> list = new ArrayList<>();
 
-    list.add(new PgnFen("seventy_five_correct_firouzja_demchenko_2019.pgn", "8/6k1/4R2p/4K1pP/5rP1/5P2/8/8 w - - 150 127"));
+    list.add(
+        new PgnFen("seventy_five_correct_firouzja_demchenko_2019.pgn", "8/6k1/4R2p/4K1pP/5rP1/5P2/8/8 w - - 150 127"));
     list.add(new PgnFen("seventy_five_correct_topalov_nakamura_2016.pgn", "6r1/8/8/8/5k2/R6K/3n4/8 w - - 150 133"));
-    list.add(new PgnFen("seventy_five_correct_yudasin_erenburg_2017.pgn", "4B3/4n3/8/2k2p2/6p1/4K1P1/8/8 w - - 150 198"));
+    list.add(
+        new PgnFen("seventy_five_correct_yudasin_erenburg_2017.pgn", "4B3/4n3/8/2k2p2/6p1/4K1P1/8/8 w - - 150 198"));
     return new PgnTestCaseList(PgnTest.SEVENTY_FIVE_CORRECT, list);
   }
 
   private static PgnTestCaseList createTestCasesEarlyDraw() {
     final List<PgnFen> list = new ArrayList<>();
-    list.add(new PgnFen("early_draw_grischuk_giri_2019.pgn", "r4rk1/p4pp1/np2p3/q5N1/3PP3/P7/5P1P/R2Q1KR1 b - - 10 22"));
-    list.add(new PgnFen("early_draw_karjakin_nepomniachtchi_2019.pgn", "rn1r2k1/1pqbppbp/2p2np1/pN6/8/4BNP1/PPQ1PPBP/R2R2K1 b - - 13 21"));
-    list.add(new PgnFen("early_draw_vachier-lagrave_aronian_2019.pgn", "5rk1/1np1q1pp/p1n1p3/Pr2p3/1pNpP3/1N1P3P/1PP2PP1/R2QR1K1 b - - 13 25"));
-    list.add(new PgnFen("early_draw_vachier-lagrave_ding_liren_2019.pgn", "r4rk1/bpp1n1pp/p2pp1q1/4p3/PP2Pn2/N1PPBN1P/R4PPK/3QR3 w - - 19 21"));
+    list.add(
+        new PgnFen("early_draw_grischuk_giri_2019.pgn", "r4rk1/p4pp1/np2p3/q5N1/3PP3/P7/5P1P/R2Q1KR1 b - - 10 22"));
+    list.add(new PgnFen("early_draw_karjakin_nepomniachtchi_2019.pgn",
+        "rn1r2k1/1pqbppbp/2p2np1/pN6/8/4BNP1/PPQ1PPBP/R2R2K1 b - - 13 21"));
+    list.add(new PgnFen("early_draw_vachier-lagrave_aronian_2019.pgn",
+        "5rk1/1np1q1pp/p1n1p3/Pr2p3/1pNpP3/1N1P3P/1PP2PP1/R2QR1K1 b - - 13 25"));
+    list.add(new PgnFen("early_draw_vachier-lagrave_ding_liren_2019.pgn",
+        "r4rk1/bpp1n1pp/p2pp1q1/4p3/PP2Pn2/N1PPBN1P/R4PPK/3QR3 w - - 19 21"));
     return new PgnTestCaseList(PgnTest.EARLY_DRAW, list);
   }
 
   private static PgnTestCaseList createTestCasesWikipediaThreefold() {
     final List<PgnFen> list = new ArrayList<>();
-    list.add(new PgnFen("wikipedia_threefold_2_0_1_spassky_fischer_1972_seventeenth.pgn", "8/1p2ppk1/p1np4/6p1/2R1P3/1P4KP/P1R1r1P1/8 b - - 7 45"));
-    list.add(new PgnFen("wikipedia_threefold_2_0_1_spassky_fischer_1972_seventeenth_changed.pgn", "8/1p2ppk1/p1np4/6p1/2R1P3/1P4KP/P1R3P1/4r3 w - - 8 46"));
-    list.add(new PgnFen("wikipedia_threefold_2_0_2_fischer_spassky_1972_eighteenth.pgn", "2r5/5R1Q/1kqr1p2/4p3/pP6/Pp4P1/1P5P/KR6 w - - 21 48"));
-    list.add(new PgnFen("wikipedia_threefold_2_0_2_fischer_spassky_1972_eighteenth_changed.pgn", "2r5/5R2/1kqr1p1Q/4p3/pP6/Pp4P1/1P5P/KR6 b - - 22 48"));
-    list.add(new PgnFen("wikipedia_threefold_2_1_fischer_petrosian_1971.pgn", "8/pp3p1k/2p2q1p/3r1P2/5R2/7P/P1P1QP2/7K b - - 10 34"));
-    list.add(new PgnFen("wikipedia_threefold_2_2_1_ponomariov_adams_2005_wijk_aan_zee.pgn", "7k/6p1/1p1p4/nP1p3p/3P4/R1P3rP/4K3/5B2 w - - 8 42"));
-    list.add(new PgnFen("wikipedia_threefold_2_2_1_ponomariov_adams_2005_wijk_aan_zee_changed.pgn", "7k/6p1/1p1p4/nP1p3p/3P4/R1P3rP/3K4/5B2 b - - 9 42"));
-    list.add(new PgnFen("wikipedia_threefold_2_2_2_adams_ponomariov_2005_sofia.pgn", "r7/p1r2ppp/6k1/3p4/6R1/4RP2/PP3P1P/1K6 b - - 10 27"));
-    list.add(new PgnFen("wikipedia_threefold_2_2_2_adams_ponomariov_2005_sofia_changed.pgn", "r7/p1r2ppp/5k2/3p4/6R1/4RP2/PP3P1P/1K6 w - - 11 28"));
-    list.add(new PgnFen("wikipedia_threefold_2_2_3_ponomariov_adams_2005_sofia.pgn", "3Q4/5pk1/7R/1p3Pp1/1P6/7P/6P1/4q2K w - - 7 53"));
-    list.add(new PgnFen("wikipedia_threefold_2_2_3_ponomariov_adams_2005_sofia_changed.pgn", "3Q4/5pk1/7R/1p2qPp1/1P6/7P/6PK/8 w - - 9 54"));
-    list.add(new PgnFen("wikipedia_threefold_2_3_capablanca_lasker_1921.pgn", "1Q3k2/p4p2/1p6/7R/3q4/1P2n3/P7/6K1 b - - 7 46"));
-    list.add(
-        new PgnFen("wikipedia_threefold_2_4_1_alekhine_lasker_1914.pgn", "r2q1r1k/p1p1b3/4pnQp/3p4/8/2NB4/PPP2PPP/R5K1 b - - 3 16"));
-    list.add(new PgnFen("wikipedia_threefold_2_4_1_alekhine_lasker_1914_changed.pgn", "r3qr1k/p1p1b3/4pn1Q/3p4/8/2NB4/PPP2PPP/R5K1 b - - 8 21"));
-    list.add(new PgnFen("wikipedia_threefold_2_4_2_lasker_alekhine_1914.pgn", "7r/2p1bppp/2p1k3/2P1n3/3QN3/5q2/PP3P1P/R1BR2K1 b - - 11 25"));
+    list.add(new PgnFen("wikipedia_threefold_2_0_1_spassky_fischer_1972_seventeenth.pgn",
+        "8/1p2ppk1/p1np4/6p1/2R1P3/1P4KP/P1R1r1P1/8 b - - 7 45"));
+    list.add(new PgnFen("wikipedia_threefold_2_0_1_spassky_fischer_1972_seventeenth_changed.pgn",
+        "8/1p2ppk1/p1np4/6p1/2R1P3/1P4KP/P1R3P1/4r3 w - - 8 46"));
+    list.add(new PgnFen("wikipedia_threefold_2_0_2_fischer_spassky_1972_eighteenth.pgn",
+        "2r5/5R1Q/1kqr1p2/4p3/pP6/Pp4P1/1P5P/KR6 w - - 21 48"));
+    list.add(new PgnFen("wikipedia_threefold_2_0_2_fischer_spassky_1972_eighteenth_changed.pgn",
+        "2r5/5R2/1kqr1p1Q/4p3/pP6/Pp4P1/1P5P/KR6 b - - 22 48"));
+    list.add(new PgnFen("wikipedia_threefold_2_1_fischer_petrosian_1971.pgn",
+        "8/pp3p1k/2p2q1p/3r1P2/5R2/7P/P1P1QP2/7K b - - 10 34"));
+    list.add(new PgnFen("wikipedia_threefold_2_2_1_ponomariov_adams_2005_wijk_aan_zee.pgn",
+        "7k/6p1/1p1p4/nP1p3p/3P4/R1P3rP/4K3/5B2 w - - 8 42"));
+    list.add(new PgnFen("wikipedia_threefold_2_2_1_ponomariov_adams_2005_wijk_aan_zee_changed.pgn",
+        "7k/6p1/1p1p4/nP1p3p/3P4/R1P3rP/3K4/5B2 b - - 9 42"));
+    list.add(new PgnFen("wikipedia_threefold_2_2_2_adams_ponomariov_2005_sofia.pgn",
+        "r7/p1r2ppp/6k1/3p4/6R1/4RP2/PP3P1P/1K6 b - - 10 27"));
+    list.add(new PgnFen("wikipedia_threefold_2_2_2_adams_ponomariov_2005_sofia_changed.pgn",
+        "r7/p1r2ppp/5k2/3p4/6R1/4RP2/PP3P1P/1K6 w - - 11 28"));
+    list.add(new PgnFen("wikipedia_threefold_2_2_3_ponomariov_adams_2005_sofia.pgn",
+        "3Q4/5pk1/7R/1p3Pp1/1P6/7P/6P1/4q2K w - - 7 53"));
+    list.add(new PgnFen("wikipedia_threefold_2_2_3_ponomariov_adams_2005_sofia_changed.pgn",
+        "3Q4/5pk1/7R/1p2qPp1/1P6/7P/6PK/8 w - - 9 54"));
+    list.add(new PgnFen("wikipedia_threefold_2_3_capablanca_lasker_1921.pgn",
+        "1Q3k2/p4p2/1p6/7R/3q4/1P2n3/P7/6K1 b - - 7 46"));
+    list.add(new PgnFen("wikipedia_threefold_2_4_1_alekhine_lasker_1914.pgn",
+        "r2q1r1k/p1p1b3/4pnQp/3p4/8/2NB4/PPP2PPP/R5K1 b - - 3 16"));
+    list.add(new PgnFen("wikipedia_threefold_2_4_1_alekhine_lasker_1914_changed.pgn",
+        "r3qr1k/p1p1b3/4pn1Q/3p4/8/2NB4/PPP2PPP/R5K1 b - - 8 21"));
+    list.add(new PgnFen("wikipedia_threefold_2_4_2_lasker_alekhine_1914.pgn",
+        "7r/2p1bppp/2p1k3/2P1n3/3QN3/5q2/PP3P1P/R1BR2K1 b - - 11 25"));
 
-    list.add(new PgnFen("wikipedia_threefold_2_5_korchnoi_portisch_1970_game_1.pgn", "1R6/5nk1/3r4/4p1pK/4P2p/7N/8/8 b - - 19 68"));
-    list.add(new PgnFen("wikipedia_threefold_2_5_korchnoi_portisch_1970_game_2.pgn", "2rr1k2/1b3pp1/pp2pq1p/2bP4/P7/2N5/BP2QPPP/3RR1K1 w - - 9 32"));
-    list.add(new PgnFen("wikipedia_threefold_2_5_korchnoi_portisch_1970_game_3.pgn", "3N2k1/8/8/pPn4p/1p5P/8/6P1/6K1 w - - 1 64"));
-    list.add(new PgnFen("wikipedia_threefold_2_5_portisch_korchnoi_1970_game_4.pgn", "2b1nrk1/p2p1npp/2q1p3/2N5/5P2/P5P1/1P3QBP/R3K2R b KQ - 10 25"));
-    list.add(new PgnFen("wikipedia_threefold_2_5_portisch_korchnoi_1970_game_4_changed.pgn", "2b1nrk1/p2p1npp/4p3/1qN5/5P2/P5P1/1P3QBP/R3K2R w KQ - 11 26"));
+    list.add(new PgnFen("wikipedia_threefold_2_5_korchnoi_portisch_1970_game_1.pgn",
+        "1R6/5nk1/3r4/4p1pK/4P2p/7N/8/8 b - - 19 68"));
+    list.add(new PgnFen("wikipedia_threefold_2_5_korchnoi_portisch_1970_game_2.pgn",
+        "2rr1k2/1b3pp1/pp2pq1p/2bP4/P7/2N5/BP2QPPP/3RR1K1 w - - 9 32"));
+    list.add(new PgnFen("wikipedia_threefold_2_5_korchnoi_portisch_1970_game_3.pgn",
+        "3N2k1/8/8/pPn4p/1p5P/8/6P1/6K1 w - - 1 64"));
+    list.add(new PgnFen("wikipedia_threefold_2_5_portisch_korchnoi_1970_game_4.pgn",
+        "2b1nrk1/p2p1npp/2q1p3/2N5/5P2/P5P1/1P3QBP/R3K2R b KQ - 10 25"));
+    list.add(new PgnFen("wikipedia_threefold_2_5_portisch_korchnoi_1970_game_4_changed.pgn",
+        "2b1nrk1/p2p1npp/4p3/1qN5/5P2/P5P1/1P3QBP/R3K2R w KQ - 11 26"));
 
-    list.add(new PgnFen("wikipedia_threefold_2_6_kasparov_deep_blue_1997.pgn", "8/pp4P1/8/8/1kp2N2/1n2R1P1/3r4/1K6 w - - 1 50"));
-    list.add(new PgnFen("wikipedia_threefold_2_6_kasparov_deep_blue_1997_changed.pgn", "6Q1/pp6/8/8/1kp2N2/1n2R1P1/3r4/1K6 b - - 8 54"));
-    list.add(new PgnFen("wikipedia_threefold_2_7_1_giuoco_piano.pgn", "r1bqrknQ/ppp3pB/3p1p2/3P4/6PR/8/PP3P1P/R5K1 b - - 10 22"));
-    list.add(new PgnFen("wikipedia_threefold_2_7_1_giuoco_piano_changed.pgn", "r1bqrknQ/ppp3pB/3p1p2/3P4/6PR/8/PP3P1P/R5K1 b - - 14 24"));
-    list.add(new PgnFen("wikipedia_threefold_2_7_2_pirc_defense.pgn", "rn1Nk2r/pp2p2p/3p2p1/1bp5/5Pn1/2N5/PPP2bPP/R1BQK2R w kq - 5 14"));
-    list.add(new PgnFen("wikipedia_threefold_2_7_2_pirc_defense_changed.pgn", "rn1Nk2r/pp2p2p/3p2p1/1bp5/5Pn1/2N5/PPPK1bPP/R1BQ3R b kq - 10 16"));
-    list.add(new PgnFen("wikipedia_threefold_3_1_karpov_miles_1986.pgn", "r3kb1r/5ppp/4p3/1N6/4P3/8/Pn1BK1PP/R6R b k - 9 26"));
-    list.add(new PgnFen("wikipedia_threefold_3_1_karpov_miles_1986_changed.pgn", "4kb1r/5ppp/4p3/1N6/r3P3/8/Pn1BK1PP/R6R w k - 10 27"));
-    list.add(new PgnFen("wikipedia_threefold_3_2_fischer_spassky_1972_twentieth.pgn", "8/8/3k2b1/1p2p2p/p2n2p1/P1K1N1P1/1PP4P/4N3 w - - 30 55"));
-    list.add(new PgnFen("wikipedia_threefold_3_2_fischer_spassky_1972_twentieth_changed.pgn", "8/8/3k2b1/1p2p2p/p2n2p1/P1K1N1P1/1PP4P/4N3 b - - 37 58"));
+    list.add(new PgnFen("wikipedia_threefold_2_6_kasparov_deep_blue_1997.pgn",
+        "8/pp4P1/8/8/1kp2N2/1n2R1P1/3r4/1K6 w - - 1 50"));
+    list.add(new PgnFen("wikipedia_threefold_2_6_kasparov_deep_blue_1997_changed.pgn",
+        "6Q1/pp6/8/8/1kp2N2/1n2R1P1/3r4/1K6 b - - 8 54"));
+    list.add(new PgnFen("wikipedia_threefold_2_7_1_giuoco_piano.pgn",
+        "r1bqrknQ/ppp3pB/3p1p2/3P4/6PR/8/PP3P1P/R5K1 b - - 10 22"));
+    list.add(new PgnFen("wikipedia_threefold_2_7_1_giuoco_piano_changed.pgn",
+        "r1bqrknQ/ppp3pB/3p1p2/3P4/6PR/8/PP3P1P/R5K1 b - - 14 24"));
+    list.add(new PgnFen("wikipedia_threefold_2_7_2_pirc_defense.pgn",
+        "rn1Nk2r/pp2p2p/3p2p1/1bp5/5Pn1/2N5/PPP2bPP/R1BQK2R w kq - 5 14"));
+    list.add(new PgnFen("wikipedia_threefold_2_7_2_pirc_defense_changed.pgn",
+        "rn1Nk2r/pp2p2p/3p2p1/1bp5/5Pn1/2N5/PPPK1bPP/R1BQ3R b kq - 10 16"));
+    list.add(new PgnFen("wikipedia_threefold_3_1_karpov_miles_1986.pgn",
+        "r3kb1r/5ppp/4p3/1N6/4P3/8/Pn1BK1PP/R6R b k - 9 26"));
+    list.add(new PgnFen("wikipedia_threefold_3_1_karpov_miles_1986_changed.pgn",
+        "4kb1r/5ppp/4p3/1N6/r3P3/8/Pn1BK1PP/R6R w k - 10 27"));
+    list.add(new PgnFen("wikipedia_threefold_3_2_fischer_spassky_1972_twentieth.pgn",
+        "8/8/3k2b1/1p2p2p/p2n2p1/P1K1N1P1/1PP4P/4N3 w - - 30 55"));
+    list.add(new PgnFen("wikipedia_threefold_3_2_fischer_spassky_1972_twentieth_changed.pgn",
+        "8/8/3k2b1/1p2p2p/p2n2p1/P1K1N1P1/1PP4P/4N3 b - - 37 58"));
     list.add(new PgnFen("wikipedia_threefold_4_1_pillsbury_burn_1898.pgn", "8/5Q2/8/P6p/7P/1q2p1P1/kp5K/8 w - - 2 91"));
 
     // Reactivated from pgnParser/legacy/common/beyond — Wikipedia 3-fold examples that actually play past 5-fold.
-    list.add(new PgnFen("wikipedia_threefold_4_0_1_pest_paris.pgn", "1r3rk1/p1b3pp/1np5/2N5/2pP4/2Nb4/PP2RPPP/R1B3K1 w - - 23 28"));
-    list.add(new PgnFen("wikipedia_threefold_4_0_1_pest_paris_six_fold.pgn", "1r3rk1/p1b3pp/1np5/5b2/2pPN3/2N5/PP2RPPP/R1B3K1 w - - 25 29"));
+    list.add(new PgnFen("wikipedia_threefold_4_0_1_pest_paris.pgn",
+        "1r3rk1/p1b3pp/1np5/2N5/2pP4/2Nb4/PP2RPPP/R1B3K1 w - - 23 28"));
+    list.add(new PgnFen("wikipedia_threefold_4_0_1_pest_paris_six_fold.pgn",
+        "1r3rk1/p1b3pp/1np5/5b2/2pPN3/2N5/PP2RPPP/R1B3K1 w - - 25 29"));
 
     return new PgnTestCaseList(PgnTest.WIKIPEDIA_THREEFOLD, list);
   }
 
   private static PgnTestCaseList createTestCasesWikipediaFiftyMove() {
     final List<PgnFen> list = new ArrayList<>();
-    list.add(new PgnFen("wikipedia_fifty_move_1_filipowicz_smederevac_1966.pgn", "4q3/r1br1nk1/1pb1p1p1/p1pnPp1p/P2p1P1P/NP1P1BPN/2PB3K/R3R2Q w - - 100 71"));
+    list.add(new PgnFen("wikipedia_fifty_move_1_filipowicz_smederevac_1966.pgn",
+        "4q3/r1br1nk1/1pb1p1p1/p1pnPp1p/P2p1P1P/NP1P1BPN/2PB3K/R3R2Q w - - 100 71"));
     list.add(new PgnFen("wikipedia_fifty_move_2_1_timman_lutz_1995.pgn", "8/7k/8/1r3KR1/5B2/8/8/8 w - - 105 122"));
     list.add(new PgnFen("wikipedia_fifty_move_2_2_karpov_kasparov_1991.pgn", "7k/4NK2/5r2/5BN1/8/8/8/8 w - - 103 115"));
-    list.add(new PgnFen("wikipedia_fifty_move_2_3_lputian_harutjunyan_2001.pgn", "7k/5q2/5Q1P/6P1/8/6K1/8/8 b - - 112 142"));
     list.add(
-        new PgnFen("wikipedia_fifty_move_2_4_nguyen_vachier-lagrave_2008.pgn", "4R3/kr6/2K5/2B5/8/8/8/8 b - - 100 121"));
+        new PgnFen("wikipedia_fifty_move_2_3_lputian_harutjunyan_2001.pgn", "7k/5q2/5Q1P/6P1/8/6K1/8/8 b - - 112 142"));
+    list.add(new PgnFen("wikipedia_fifty_move_2_4_nguyen_vachier-lagrave_2008.pgn",
+        "4R3/kr6/2K5/2B5/8/8/8/8 b - - 100 121"));
     return new PgnTestCaseList(PgnTest.WIKIPEDIA_FIFTY_MOVE, list);
   }
 
@@ -1582,19 +2012,27 @@ public class PgnTestCaseCatalog {
 
   private static PgnTestCaseList createTestBasicCaptureLastMove() {
     final List<PgnFen> list = new ArrayList<>();
-    list.add(new PgnFen("01_capture_last_move_none.pgn", "r1bq1rk1/1pp2p2/pbnp1n1p/3Np1p1/1PB1P1P1/P2P1N1P/2P2P2/R1BQK2R w KQ - 2 11"));
-    list.add(new PgnFen("02_capture_last_move_piece.pgn", "r1bq1rk1/1pp2p2/pbnp1N1p/4p1p1/1PB1P1P1/P2P1N1P/2P2P2/R1BQK2R b KQ - 0 11"));
-    list.add(new PgnFen("03_capture_last_move_en_passant.pgn", "r1bq1rk1/1p3p2/pbPp1n1p/n2Np1p1/4P1P1/PB1P1N1P/2P2P2/R1BQK2R b KQ - 0 13"));
-    list.add(new PgnFen("04_capture_last_move_mate.pgn", "r1b1n2k/1ppqNp1Q/pbnp3p/4pBp1/PP2P1P1/3P1N1P/2P2P2/R1B1K2R b KQ - 0 19"));
+    list.add(new PgnFen("01_capture_last_move_none.pgn",
+        "r1bq1rk1/1pp2p2/pbnp1n1p/3Np1p1/1PB1P1P1/P2P1N1P/2P2P2/R1BQK2R w KQ - 2 11"));
+    list.add(new PgnFen("02_capture_last_move_piece.pgn",
+        "r1bq1rk1/1pp2p2/pbnp1N1p/4p1p1/1PB1P1P1/P2P1N1P/2P2P2/R1BQK2R b KQ - 0 11"));
+    list.add(new PgnFen("03_capture_last_move_en_passant.pgn",
+        "r1bq1rk1/1p3p2/pbPp1n1p/n2Np1p1/4P1P1/PB1P1N1P/2P2P2/R1BQK2R b KQ - 0 13"));
+    list.add(new PgnFen("04_capture_last_move_mate.pgn",
+        "r1b1n2k/1ppqNp1Q/pbnp3p/4pBp1/PP2P1P1/3P1N1P/2P2P2/R1B1K2R b KQ - 0 19"));
     return new PgnTestCaseList(PgnTest.BASIC_CAPTURE_LAST_MOVE, list);
   }
 
   private static PgnTestCaseList createTestCasesBasicMaxNoProgress() {
     final List<PgnFen> list = new ArrayList<>();
-    list.add(new PgnFen("05_capture_last_move_piece_more_moves_max_no_progress_unchanged.pgn", "r1b1r2k/1ppq1p2/pbnp1N1p/4p1p1/1PB1P1PP/P2P1N2/2P2P2/R1BQK2R b KQ - 4 14"));
-    list.add(new PgnFen("06_capture_last_move_en_passant_capture_more_moves_max_no_progress_unchanged.pgn", "Q1b2r2/2b2pk1/p2p1nNp/n3p1p1/4P1P1/PB1P1N1P/2Q2P2/R1B1K2R b KQ - 4 18"));
-    list.add(new PgnFen("07_capture_last_move_piece_more_moves_max_no_progress_changed.pgn", "r1bq1r2/1pp2pk1/pbnp1N1p/4p1p1/1PB1P1P1/P2P1N1P/2P2P2/R1BQK2R w KQ - 9 16"));
-    list.add(new PgnFen("08_capture_last_move_en_passant_capture_more_moves_max_no_progress_changed.pgn", "r1bq1rk1/1p3p2/1bPp3p/p2Np1pn/B2NP1P1/P2Pn2P/2PQKP2/R1B3R1 b - - 9 19"));
+    list.add(new PgnFen("05_capture_last_move_piece_more_moves_max_no_progress_unchanged.pgn",
+        "r1b1r2k/1ppq1p2/pbnp1N1p/4p1p1/1PB1P1PP/P2P1N2/2P2P2/R1BQK2R b KQ - 4 14"));
+    list.add(new PgnFen("06_capture_last_move_en_passant_capture_more_moves_max_no_progress_unchanged.pgn",
+        "Q1b2r2/2b2pk1/p2p1nNp/n3p1p1/4P1P1/PB1P1N1P/2Q2P2/R1B1K2R b KQ - 4 18"));
+    list.add(new PgnFen("07_capture_last_move_piece_more_moves_max_no_progress_changed.pgn",
+        "r1bq1r2/1pp2pk1/pbnp1N1p/4p1p1/1PB1P1P1/P2P1N1P/2P2P2/R1BQK2R w KQ - 9 16"));
+    list.add(new PgnFen("08_capture_last_move_en_passant_capture_more_moves_max_no_progress_changed.pgn",
+        "r1bq1rk1/1p3p2/1bPp3p/p2Np1pn/B2NP1P1/P2Pn2P/2PQKP2/R1B3R1 b - - 9 19"));
     return new PgnTestCaseList(PgnTest.BASIC_REPORT_MAX_NO_PROGRESS, list);
   }
 
@@ -1605,28 +2043,40 @@ public class PgnTestCaseCatalog {
     list.add(new PgnFen("special_nigel_short_tweet_black_to_move.pgn", "K1n5/2k5/P7/8/8/8/8/8 b - - 0 44"));
 
     // king against all
-    list.add(new PgnFen("special_king_against_all_white_only_king_white_to_move.pgn", "rnbqkbnr/pppppppp/8/8/8/4K3/8/8 w kq - 8 33"));
-    list.add(new PgnFen("special_king_against_all_white_only_king_black_to_move.pgn", "rnbqkbnr/pppppppp/8/8/8/4K3/8/8 b kq - 9 33"));
-    list.add(new PgnFen("special_king_against_all_black_only_king_black_to_move.pgn", "8/8/3k4/8/8/8/PPPPPPPP/RNBQKBNR b KQ - 10 36"));
-    list.add(new PgnFen("special_king_against_all_black_only_king_white_to_move.pgn", "8/8/8/3k4/8/8/PPPPPPPP/RNBQKBNR w KQ - 11 37"));
+    list.add(new PgnFen("special_king_against_all_white_only_king_white_to_move.pgn",
+        "rnbqkbnr/pppppppp/8/8/8/4K3/8/8 w kq - 8 33"));
+    list.add(new PgnFen("special_king_against_all_white_only_king_black_to_move.pgn",
+        "rnbqkbnr/pppppppp/8/8/8/4K3/8/8 b kq - 9 33"));
+    list.add(new PgnFen("special_king_against_all_black_only_king_black_to_move.pgn",
+        "8/8/3k4/8/8/8/PPPPPPPP/RNBQKBNR b KQ - 10 36"));
+    list.add(new PgnFen("special_king_against_all_black_only_king_white_to_move.pgn",
+        "8/8/8/3k4/8/8/PPPPPPPP/RNBQKBNR w KQ - 11 37"));
 
     // norgaard buchanan
-    list.add(new PgnFen("special_norgaard_buchanan_strategems_2002_alive.pgn", "Bb2kb2/bKp1p1p1/1pP1P1P1/pP6/6P1/P7/8/8 b - - 2 46"));
-    list.add(new PgnFen("special_norgaard_buchanan_strategems_2002_alive_played_out.pgn", "1bK1kb2/b1p1pBp1/1pP1P1P1/1P4P1/p7/P7/8/8 b - - 1 57"));
+    list.add(new PgnFen("special_norgaard_buchanan_strategems_2002_alive.pgn",
+        "Bb2kb2/bKp1p1p1/1pP1P1P1/pP6/6P1/P7/8/8 b - - 2 46"));
+    list.add(new PgnFen("special_norgaard_buchanan_strategems_2002_alive_played_out.pgn",
+        "1bK1kb2/b1p1pBp1/1pP1P1P1/1P4P1/p7/P7/8/8 b - - 1 57"));
 
-    list.add(new PgnFen("special_norgaard_buchanan_strategems_2002_dead.pgn", "KbB1kb2/b1p1p1p1/1pP1P1P1/1P4P1/p7/P7/8/8 b - - 26 86"));
+    list.add(new PgnFen("special_norgaard_buchanan_strategems_2002_dead.pgn",
+        "KbB1kb2/b1p1p1p1/1pP1P1P1/1P4P1/p7/P7/8/8 b - - 26 86"));
 
     list.add(new PgnFen("special_forced_checkmate_white_only.pgn", "k1r5/2P5/KP6/P7/8/n7/6R1/7B w - - 0 50"));
 
-    list.add(new PgnFen("special_both_kings_blocked_on_the_side_with_pawns.pgn", "8/6p1/1p3pP1/1P3Ppk/1Pp3p1/KpP3P1/1P6/8 w - - 0 44"));
+    list.add(new PgnFen("special_both_kings_blocked_on_the_side_with_pawns.pgn",
+        "8/6p1/1p3pP1/1P3Ppk/1Pp3p1/KpP3P1/1P6/8 w - - 0 44"));
 
-    list.add(new PgnFen("special_both_kings_blocked_in_a_corner_with_pawns_and_bishop_pawn_moves_not_exhausted.pgn", "k1b5/1p1p4/1PpP4/8/8/1pPp4/1P1P4/K1B5 w - - 1 36"));
+    list.add(new PgnFen("special_both_kings_blocked_in_a_corner_with_pawns_and_bishop_pawn_moves_not_exhausted.pgn",
+        "k1b5/1p1p4/1PpP4/8/8/1pPp4/1P1P4/K1B5 w - - 1 36"));
 
-    list.add(new PgnFen("special_both_kings_blocked_in_a_corner_with_pawns_and_bishop_pawn_moves_exhausted.pgn", "k1b5/1p1p4/1P1P4/2p5/2P5/1p1p4/1P1P4/K1B5 w - - 0 37"));
+    list.add(new PgnFen("special_both_kings_blocked_in_a_corner_with_pawns_and_bishop_pawn_moves_exhausted.pgn",
+        "k1b5/1p1p4/1P1P4/2p5/2P5/1p1p4/1P1P4/K1B5 w - - 0 37"));
 
-    list.add(new PgnFen("special_white_king_blocked_in_a_corner_with_pawns_and_bishop_no_piece_capturable.pgn", "k7/8/8/8/2p5/1pPp4/1P1P4/K1B5 w - - 1 43"));
+    list.add(new PgnFen("special_white_king_blocked_in_a_corner_with_pawns_and_bishop_no_piece_capturable.pgn",
+        "k7/8/8/8/2p5/1pPp4/1P1P4/K1B5 w - - 1 43"));
 
-    list.add(new PgnFen("special_white_king_trapped_on_side_with_pawns_capturing_only_piece_stalemates.pgn", "k7/8/1p6/1P6/1Pp5/KpP5/1P6/8 w - - 0 37"));
+    list.add(new PgnFen("special_white_king_trapped_on_side_with_pawns_capturing_only_piece_stalemates.pgn",
+        "k7/8/1p6/1P6/1Pp5/KpP5/1P6/8 w - - 0 37"));
 
     return new PgnTestCaseList(PgnTest.SPECIAL, list);
   }
@@ -2180,9 +2630,11 @@ public class PgnTestCaseCatalog {
     list.add(new PgnFen("pawn_wall_bishop_5.pgn", "3B4/1b4k1/p1p1p3/P1P1Pp1p/5P1P/8/6K1/8 b - - 0 50"));
 
     // interlocked pawn structure: rank-3 own pawns attack the rank-4 chain elements (involved)
-    list.add(new PgnFen("pawn_wall_without_en_passant_capture_1.pgn", "4k3/8/8/p1p1p1p1/PpPpPpPp/1P1P1P1P/8/4K3 b - - 0 50"));
+    list.add(new PgnFen("pawn_wall_without_en_passant_capture_1.pgn",
+        "4k3/8/8/p1p1p1p1/PpPpPpPp/1P1P1P1P/8/4K3 b - - 0 50"));
 
-    list.add(new PgnFen("pawn_wall_without_en_passant_capture_2.pgn", "4k3/8/8/p1p1p1p1/P1PpPpPp/3P1P1P/8/4K3 b - - 0 50"));
+    list.add(
+        new PgnFen("pawn_wall_without_en_passant_capture_2.pgn", "4k3/8/8/p1p1p1p1/P1PpPpPp/3P1P1P/8/4K3 b - - 0 50"));
 
     list.add(new PgnFen("pawn_wall_without_en_passant_capture_3.pgn", "4k3/8/7p/p1p2p1P/P1P1pP2/4P3/8/4K3 b - - 0 50"));
 
@@ -2205,26 +2657,33 @@ public class PgnTestCaseCatalog {
     list.add(new PgnFen("pawn_wall_both_kings_on_black_side.pgn", "3k2K1/1p6/pPp2p1p/P1P2P1P/8/8/8/8 w - - 0 50"));
 
     // en-passant capture breaches the wall - the position is winnable
-    list.add(new PgnFen("pawn_wall_with_en_passant_capture_1.pgn", "4k3/8/8/p1p1p1p1/PpPpPpPp/1P1P1P1P/8/4K3 b - a3 0 50"));
+    list.add(
+        new PgnFen("pawn_wall_with_en_passant_capture_1.pgn", "4k3/8/8/p1p1p1p1/PpPpPpPp/1P1P1P1P/8/4K3 b - a3 0 50"));
 
-    list.add(new PgnFen("pawn_wall_with_en_passant_capture_2.pgn", "4k3/8/8/p1p1p1p1/P1PpPpPp/3P1P1P/8/4K3 b - e3 0 50"));
+    list.add(
+        new PgnFen("pawn_wall_with_en_passant_capture_2.pgn", "4k3/8/8/p1p1p1p1/P1PpPpPp/3P1P1P/8/4K3 b - e3 0 50"));
 
     list.add(new PgnFen("pawn_wall_with_en_passant_capture_3.pgn", "4k3/8/7p/p1p2p1P/P1P1pP2/4P3/8/4K3 b - f3 0 50"));
 
     // en-passant with bishops - legal en-passant capture breaches the wall
-    list.add(new PgnFen("pawn_wall_bishop_en_passant_capture_legal.pgn", "4k3/8/8/p1p1p3/P1P1Pp1p/1B3P1P/8/4K3 b - e3 0 50"));
+    list.add(new PgnFen("pawn_wall_bishop_en_passant_capture_legal.pgn",
+        "4k3/8/8/p1p1p3/P1P1Pp1p/1B3P1P/8/4K3 b - e3 0 50"));
 
     // Norgaard "dead position" - chain is not all-pawns-involved (floating pawns)
-    list.add(new PgnFen("pawn_wall_norgaard_additional_own_pawns_not_marched_up.pgn", "6k1/1p1p1p1p/1P1P1P1P/8/8/4K3/1P1P1P1P/8 w - - 0 39"));
+    list.add(new PgnFen("pawn_wall_norgaard_additional_own_pawns_not_marched_up.pgn",
+        "6k1/1p1p1p1p/1P1P1P1P/8/8/4K3/1P1P1P1P/8 w - - 0 39"));
 
     // TODO today's Ambrona website (full or quick) sees unwinnable for both sides
-    list.add(new PgnFen("pawn_wall_norgaard_additional_own_pawns_not_marched_up_with_opponent_pawns_between.pgn", "1k6/p1p1p1p1/P1P1P1P1/p1p1p1p1/8/8/P1P1P1P1/4K3 w - - 0 34"));
+    list.add(new PgnFen("pawn_wall_norgaard_additional_own_pawns_not_marched_up_with_opponent_pawns_between.pgn",
+        "1k6/p1p1p1p1/P1P1P1P1/p1p1p1p1/8/8/P1P1P1P1/4K3 w - - 0 34"));
 
     // Norgaard "beyond dead position" - chain has no a-file (resp. h-file) pawn, so it does not span
     // from leftmost to rightmost file; the geometric chain check rejects.
-    list.add(new PgnFen("pawn_wall_norgaard_additional_own_pawns_marched_up_example_1.pgn", "7k/1p1p1p1p/1P1P1P1P/1P1P1P1P/8/K7/8/8 b - - 100 688"));
+    list.add(new PgnFen("pawn_wall_norgaard_additional_own_pawns_marched_up_example_1.pgn",
+        "7k/1p1p1p1p/1P1P1P1P/1P1P1P1P/8/K7/8/8 b - - 100 688"));
 
-    list.add(new PgnFen("pawn_wall_norgaard_additional_own_pawns_marched_up_example_2.pgn", "k7/p1p1p1p1/P1P1P1P1/P1P1P1P1/8/8/6K1/8 b - - 100 883"));
+    list.add(new PgnFen("pawn_wall_norgaard_additional_own_pawns_marched_up_example_2.pgn",
+        "k7/p1p1p1p1/P1P1P1P1/P1P1P1P1/8/8/6K1/8 b - - 100 883"));
 
     return new PgnTestCaseList(PgnTest.CHA_PAWN_WALL_NO, list);
   }
@@ -2316,10 +2775,14 @@ public class PgnTestCaseCatalog {
   private static PgnTestCaseList createTestCasesLastMoveAddedAccidentally() {
     final List<PgnFen> list = new ArrayList<>();
 
-    list.add(new PgnFen("01_last_move_added_accidentally_result_white_win_last_move_white_draws.pgn", "8/6Pk/2b5/2P1K3/8/8/8/8 b - - 2 87"));
-    list.add(new PgnFen("02_last_move_added_accidentally_result_draw_one_move_in_KvK.pgn", "8/8/8/3K4/8/8/k7/8 w - - 0 69"));
-    list.add(new PgnFen("03_last_move_added_accidentally_result_draw_black_last_move_loses.pgn", "8/8/8/4k1pP/6K1/8/8/8 w - - 2 69"));
-    list.add(new PgnFen("04_last_move_added_accidentally_result_draw_black_last_move_loses.pgn", "8/P1R5/7p/4kppP/6P1/8/1K6/r7 w - - 10 66"));
+    list.add(new PgnFen("01_last_move_added_accidentally_result_white_win_last_move_white_draws.pgn",
+        "8/6Pk/2b5/2P1K3/8/8/8/8 b - - 2 87"));
+    list.add(
+        new PgnFen("02_last_move_added_accidentally_result_draw_one_move_in_KvK.pgn", "8/8/8/3K4/8/8/k7/8 w - - 0 69"));
+    list.add(new PgnFen("03_last_move_added_accidentally_result_draw_black_last_move_loses.pgn",
+        "8/8/8/4k1pP/6K1/8/8/8 w - - 2 69"));
+    list.add(new PgnFen("04_last_move_added_accidentally_result_draw_black_last_move_loses.pgn",
+        "8/P1R5/7p/4kppP/6P1/8/1K6/r7 w - - 10 66"));
 
     return new PgnTestCaseList(PgnTest.LAST_MOVE_ADDED_ACCIDENTALLY, list);
   }
@@ -2329,8 +2792,10 @@ public class PgnTestCaseCatalog {
 
     list.add(new PgnFen("01_white_max_piece_ten_rooks.pgn", "1R6/1R6/2R1kbR1/8/R7/2NB1N2/3BKR2/3Q4 b - - 0 85"));
     list.add(new PgnFen("02_white_max_piece_ten_knights.pgn", "8/kN6/NNN2b1p/2N5/N1N4R/2N5/n1QB1KB1/1R6 b - - 0 75"));
-    list.add(new PgnFen("03_white_max_piece_ten_bishops_nine_light_squared.pgn", "6Br/2k4p/4B3/3B2N1/5b2/1B1B1B2/4B1B1/2qK1B1R w - - 0 67"));
-    list.add(new PgnFen("04_white_max_piece_ten_bishops_nine_darks_squared.pgn", "6Br/2k4p/4B3/3B2N1/5b2/1B1B1B2/4B1B1/2qK1B1R w - - 0 67"));
+    list.add(new PgnFen("03_white_max_piece_ten_bishops_nine_light_squared.pgn",
+        "6Br/2k4p/4B3/3B2N1/5b2/1B1B1B2/4B1B1/2qK1B1R w - - 0 67"));
+    list.add(new PgnFen("04_white_max_piece_ten_bishops_nine_darks_squared.pgn",
+        "6Br/2k4p/4B3/3B2N1/5b2/1B1B1B2/4B1B1/2qK1B1R w - - 0 67"));
     list.add(new PgnFen("05_white_max_piece_nine_queens.pgn", "2Q2Q2/k7/bn5B/1Q6/3QQQ1K/Q7/8/5BNR b - - 4 72"));
 
     return new PgnTestCaseList(PgnTest.MAX_SAME_PIECE_PROMOTION_WHITE, list);
@@ -2340,9 +2805,12 @@ public class PgnTestCaseCatalog {
     final List<PgnFen> list = new ArrayList<>();
 
     list.add(new PgnFen("01_black_max_piece_ten_rooks.pgn", "2rk3r/2rbQ1b1/6r1/1n3r2/KB3r1r/nN6/3r3r/8 b - - 0 118"));
-    list.add(new PgnFen("02_black_max_piece_ten_knights.pgn", "r1bB1b1K/1BR1n1r1/Q3nnn1/1q3Nkn/1N1n2nn/nn6/8/2R5 w - - 42 130"));
-    list.add(new PgnFen("03_black_max_piece_ten_bishops_nine_light_squared.pgn", "1nb2bn1/5b2/5k2/3b1b2/1Rb3b1/2Pb4/r3b1b1/2K4r w - - 2 102"));
-    list.add(new PgnFen("04_black_max_piece_ten_bishops_nine_dark_squared.pgn", "4kb2/8/2n2n2/3b2b1/3b1b2/P1b1b2r/1b3bR1/7K w - - 0 96"));
+    list.add(new PgnFen("02_black_max_piece_ten_knights.pgn",
+        "r1bB1b1K/1BR1n1r1/Q3nnn1/1q3Nkn/1N1n2nn/nn6/8/2R5 w - - 42 130"));
+    list.add(new PgnFen("03_black_max_piece_ten_bishops_nine_light_squared.pgn",
+        "1nb2bn1/5b2/5k2/3b1b2/1Rb3b1/2Pb4/r3b1b1/2K4r w - - 2 102"));
+    list.add(new PgnFen("04_black_max_piece_ten_bishops_nine_dark_squared.pgn",
+        "4kb2/8/2n2n2/3b2b1/3b1b2/P1b1b2r/1b3bR1/7K w - - 0 96"));
     list.add(new PgnFen("05_black_max_piece_nine_queens.pgn", "r1b1qb1K/1n4r1/8/2n2k2/2Bq4/8/8/7q w - - 0 139"));
 
     return new PgnTestCaseList(PgnTest.MAX_SAME_PIECE_PROMOTION_BLACK, list);
@@ -2362,8 +2830,10 @@ public class PgnTestCaseCatalog {
   private static PgnTestCaseList createTestCasesDoubleCheckCheckmateBizarreWhite() {
     final List<PgnFen> list = new ArrayList<>();
 
-    list.add(new PgnFen("01_white_double_check_checkmate_bizarre_one_empty_square.pgn", "8/2B5/4NN2/2bNkN2/2NNNN2/8/8/4K3 b - - 1 100"));
-    list.add(new PgnFen("02_white_double_check_checkmate_bizarre_all_empty_squares.pgn", "8/2B2N2/7R/2b1k3/1R6/8/3R1R2/4K3 b - - 1 100"));
+    list.add(new PgnFen("01_white_double_check_checkmate_bizarre_one_empty_square.pgn",
+        "8/2B5/4NN2/2bNkN2/2NNNN2/8/8/4K3 b - - 1 100"));
+    list.add(new PgnFen("02_white_double_check_checkmate_bizarre_all_empty_squares.pgn",
+        "8/2B2N2/7R/2b1k3/1R6/8/3R1R2/4K3 b - - 1 100"));
 
     return new PgnTestCaseList(PgnTest.DOUBLE_CHECK_CHECKMATE_BIZARRE_CHECKMATE_WHITE, list);
   }
@@ -2371,8 +2841,10 @@ public class PgnTestCaseCatalog {
   private static PgnTestCaseList createTestCasesDoubleCheckCheckmateBizarreBlack() {
     final List<PgnFen> list = new ArrayList<>();
 
-    list.add(new PgnFen("01_black_double_check_checkmate_bizarre_one_empty_square.pgn", "1k6/3b4/nn2B3/nKn5/nnnn4/8/8/8 w - - 1 101"));
-    list.add(new PgnFen("02_black_double_check_checkmate_bizarre_all_empty_squares.pgn", "2rkr3/r7/3K4/r7/2n5/4B3/7b/8 w - - 1 101"));
+    list.add(new PgnFen("01_black_double_check_checkmate_bizarre_one_empty_square.pgn",
+        "1k6/3b4/nn2B3/nKn5/nnnn4/8/8/8 w - - 1 101"));
+    list.add(new PgnFen("02_black_double_check_checkmate_bizarre_all_empty_squares.pgn",
+        "2rkr3/r7/3K4/r7/2n5/4B3/7b/8 w - - 1 101"));
 
     return new PgnTestCaseList(PgnTest.DOUBLE_CHECK_CHECKMATE_BIZARRE_CHECKMATE_BLACK, list);
   }
@@ -2422,16 +2894,20 @@ public class PgnTestCaseCatalog {
   private static PgnTestCaseList createTestCasesRepetitionQuizOne() {
     final List<PgnFen> list = new ArrayList<>();
 
-    list.add(new PgnFen("01_claim_for_board_position_incorrect_initial_en_passant.pgn", "4R3/4b2p/3kn1p1/1p3pP1/5P2/3KP3/7P/8 w - - 8 75"));
+    list.add(new PgnFen("01_claim_for_board_position_incorrect_initial_en_passant.pgn",
+        "4R3/4b2p/3kn1p1/1p3pP1/5P2/3KP3/7P/8 w - - 8 75"));
     list.add(new PgnFen("02_claim_for_own_move_correct.pgn", "8/pp3p1k/2p2q1p/3r1P2/5R2/3Q3P/P1P2P2/7K w - - 7 74"));
-    list.add(new PgnFen("03_claim_for_own_move_incorrect_castling_right_lost_for_king_move.pgn", "rn1Nk2r/pp2p2p/3p2p1/1bp5/5Pn1/2N1b3/PPP3PP/R1BQK2R b kq - 8 15"));
+    list.add(new PgnFen("03_claim_for_own_move_incorrect_castling_right_lost_for_king_move.pgn",
+        "rn1Nk2r/pp2p2p/3p2p1/1bp5/5Pn1/2N1b3/PPP3PP/R1BQK2R b kq - 8 15"));
     list.add(new PgnFen("04_claim_for_own_move_incorrect.pgn", "R7/2q2p2/5k1Q/pp2r3/2p1P1P1/7P/6K1/8 b - - 6 73"));
-    list.add(new PgnFen("05_claim_for_own_move_correct_but_makes_move_on_board.pgn", "8/6k1/4KN2/3B4/8/8/8/8 b - - 18 74"));
-    list.add(new PgnFen("06_claim_for_board_position_correct.pgn", "r3qrk1/p1p1b3/4pn1Q/3p4/8/2NB4/PPP2PPP/R5K1 w - - 9 76"));
     list.add(
-        new PgnFen("07_claim_for_board_position_correct_but_touch_move.pgn", "3k4/8/2K5/2P5/8/8/8/8 b - - 8 74"));
+        new PgnFen("05_claim_for_own_move_correct_but_makes_move_on_board.pgn", "8/6k1/4KN2/3B4/8/8/8/8 b - - 18 74"));
+    list.add(new PgnFen("06_claim_for_board_position_correct.pgn",
+        "r3qrk1/p1p1b3/4pn1Q/3p4/8/2NB4/PPP2PPP/R5K1 w - - 9 76"));
+    list.add(new PgnFen("07_claim_for_board_position_correct_but_touch_move.pgn", "3k4/8/2K5/2P5/8/8/8/8 b - - 8 74"));
     list.add(new PgnFen("08_claim_for_own_move_correct.pgn", "3Q1k2/5p1p/1p2q3/2p5/6n1/4P3/PP2R3/6K1 b - - 7 74"));
-    list.add(new PgnFen("09_claim_for_board_position_incorrect_side_to_move_changed.pgn", "8/8/2k5/6r1/2B5/1KR5/8/8 b - - 10 75"));
+    list.add(new PgnFen("09_claim_for_board_position_incorrect_side_to_move_changed.pgn",
+        "8/8/2k5/6r1/2B5/1KR5/8/8 b - - 10 75"));
 
     return new PgnTestCaseList(PgnTest.REPETITION_QUIZ_ONE, list);
   }
@@ -2448,31 +2924,51 @@ public class PgnTestCaseCatalog {
 
   private static PgnTestCaseList createTestCasesBasicFromFenNoProgressBlack() {
     final List<PgnFen> list = new ArrayList<>();
-    list.add(new PgnFen("04_black_from_fen_no_progress_fifty_reoccuring_above_seventy_five.pgn", "1Q6/6pk/8/6n1/2N5/6q1/1KP1P3/8 w - - 158 180"));
-    list.add(new PgnFen("05_black_from_fen_no_progress_seventy_five_reoccuring_fifty.pgn", "8/6p1/7k/6n1/2NQ4/4q3/2P1P3/1K6 w - - 100 151"));
-    list.add(new PgnFen("06_black_from_fen_no_progress_seventy_five_reoccuring_seventy_five.pgn", "8/6pk/8/6n1/2NQ4/4q3/1KP1P3/8 w - - 150 176"));
-    list.add(new PgnFen("07_black_from_fen_no_progress_seventy_five_reoccuring_above_fifty.pgn", "8/6pk/8/4q1n1/2NQ4/8/1KP1P3/8 b - - 149 175"));
-    list.add(new PgnFen("08_black_from_fen_no_progress_seventy_five_reoccuring_above_seventy_five.pgn", "1Q6/6pk/8/6n1/2N5/6q1/1KP1P3/8 w - - 158 180"));
-    list.add(new PgnFen("12_black_from_fen_no_progress_above_fifty_reoccuring_above_seventy_five.pgn", "1Q6/6pk/8/6n1/2N5/6q1/1KP1P3/8 w - - 158 180"));
-    list.add(new PgnFen("13_black_from_fen_no_progress_above_seventy_five_reoccuring_fifty.pgn", "8/6p1/7k/6n1/2NQ4/4q3/2P1P3/1K6 w - - 100 151"));
-    list.add(new PgnFen("14_black_from_fen_no_progress_above_seventy_five_reoccuring_seventy_five.pgn", "8/6pk/8/6n1/2NQ4/4q3/1KP1P3/8 w - - 150 176"));
-    list.add(new PgnFen("15_black_from_fen_no_progress_above_seventy_five_reoccuring_above_fifty.pgn", "8/6pk/8/4q1n1/2NQ4/8/1KP1P3/8 b - - 149 175"));
-    list.add(new PgnFen("16_black_from_fen_no_progress_above_seventy_five_reoccuring_above_seventy_five.pgn", "1Q6/6pk/8/6n1/2N5/6q1/1KP1P3/8 w - - 158 180"));
+    list.add(new PgnFen("04_black_from_fen_no_progress_fifty_reoccuring_above_seventy_five.pgn",
+        "1Q6/6pk/8/6n1/2N5/6q1/1KP1P3/8 w - - 158 180"));
+    list.add(new PgnFen("05_black_from_fen_no_progress_seventy_five_reoccuring_fifty.pgn",
+        "8/6p1/7k/6n1/2NQ4/4q3/2P1P3/1K6 w - - 100 151"));
+    list.add(new PgnFen("06_black_from_fen_no_progress_seventy_five_reoccuring_seventy_five.pgn",
+        "8/6pk/8/6n1/2NQ4/4q3/1KP1P3/8 w - - 150 176"));
+    list.add(new PgnFen("07_black_from_fen_no_progress_seventy_five_reoccuring_above_fifty.pgn",
+        "8/6pk/8/4q1n1/2NQ4/8/1KP1P3/8 b - - 149 175"));
+    list.add(new PgnFen("08_black_from_fen_no_progress_seventy_five_reoccuring_above_seventy_five.pgn",
+        "1Q6/6pk/8/6n1/2N5/6q1/1KP1P3/8 w - - 158 180"));
+    list.add(new PgnFen("12_black_from_fen_no_progress_above_fifty_reoccuring_above_seventy_five.pgn",
+        "1Q6/6pk/8/6n1/2N5/6q1/1KP1P3/8 w - - 158 180"));
+    list.add(new PgnFen("13_black_from_fen_no_progress_above_seventy_five_reoccuring_fifty.pgn",
+        "8/6p1/7k/6n1/2NQ4/4q3/2P1P3/1K6 w - - 100 151"));
+    list.add(new PgnFen("14_black_from_fen_no_progress_above_seventy_five_reoccuring_seventy_five.pgn",
+        "8/6pk/8/6n1/2NQ4/4q3/1KP1P3/8 w - - 150 176"));
+    list.add(new PgnFen("15_black_from_fen_no_progress_above_seventy_five_reoccuring_above_fifty.pgn",
+        "8/6pk/8/4q1n1/2NQ4/8/1KP1P3/8 b - - 149 175"));
+    list.add(new PgnFen("16_black_from_fen_no_progress_above_seventy_five_reoccuring_above_seventy_five.pgn",
+        "1Q6/6pk/8/6n1/2N5/6q1/1KP1P3/8 w - - 158 180"));
     return new PgnTestCaseList(PgnTest.BASIC_FROM_FEN_NO_PROGRESS_BLACK, list);
   }
 
   private static PgnTestCaseList createTestCasesBasicFromFenNoProgressWhite() {
     final List<PgnFen> list = new ArrayList<>();
-    list.add(new PgnFen("04_white_from_fen_no_progress_fifty_reoccuring_above_seventy_five.pgn", "8/3pk3/2p1p3/8/7P/qQ3PP1/6K1/8 b - - 178 189"));
-    list.add(new PgnFen("05_white_from_fen_no_progress_seventy_five_reoccuring_fifty.pgn", "8/3p4/1kp1p3/8/2qQ3P/5PPK/8/8 b - - 100 150"));
-    list.add(new PgnFen("06_white_from_fen_no_progress_seventy_five_reoccuring_seventy_five.pgn", "2Q5/3p1q2/2pkp3/8/7P/5PPK/8/8 b - - 150 175"));
-    list.add(new PgnFen("07_white_from_fen_no_progress_seventy_five_reoccuring_above_fifty.pgn", "Q7/3p1q2/2pkp3/8/7P/5PPK/8/8 w - - 149 175"));
-    list.add(new PgnFen("08_white_from_fen_no_progress_seventy_five_reoccuring_above_seventy_five.pgn", "8/3pk3/2p1p3/8/7P/qQ3PP1/6K1/8 b - - 178 189"));
-    list.add(new PgnFen("12_white_from_fen_no_progress_above_fifty_reoccuring_above_seventy_five.pgn", "8/3pk3/2p1p3/8/7P/qQ3PP1/6K1/8 b - - 178 189"));
-    list.add(new PgnFen("13_white_from_fen_no_progress_above_seventy_five_reoccuring_fifty.pgn", "8/3p4/1kp1p3/8/2qQ3P/5PPK/8/8 b - - 100 150"));
-    list.add(new PgnFen("14_white_from_fen_no_progress_above_seventy_five_reoccuring_seventy_five.pgn", "2Q5/3p1q2/2pkp3/8/7P/5PPK/8/8 b - - 150 175"));
-    list.add(new PgnFen("15_white_from_fen_no_progress_above_seventy_five_reoccuring_above_fifty.pgn", "Q7/3p1q2/2pkp3/8/7P/5PPK/8/8 w - - 149 175"));
-    list.add(new PgnFen("16_white_from_fen_no_progress_above_seventy_five_reoccuring_above_seventy_five.pgn", "8/3pk3/2p1p3/8/7P/qQ3PP1/6K1/8 b - - 178 189"));
+    list.add(new PgnFen("04_white_from_fen_no_progress_fifty_reoccuring_above_seventy_five.pgn",
+        "8/3pk3/2p1p3/8/7P/qQ3PP1/6K1/8 b - - 178 189"));
+    list.add(new PgnFen("05_white_from_fen_no_progress_seventy_five_reoccuring_fifty.pgn",
+        "8/3p4/1kp1p3/8/2qQ3P/5PPK/8/8 b - - 100 150"));
+    list.add(new PgnFen("06_white_from_fen_no_progress_seventy_five_reoccuring_seventy_five.pgn",
+        "2Q5/3p1q2/2pkp3/8/7P/5PPK/8/8 b - - 150 175"));
+    list.add(new PgnFen("07_white_from_fen_no_progress_seventy_five_reoccuring_above_fifty.pgn",
+        "Q7/3p1q2/2pkp3/8/7P/5PPK/8/8 w - - 149 175"));
+    list.add(new PgnFen("08_white_from_fen_no_progress_seventy_five_reoccuring_above_seventy_five.pgn",
+        "8/3pk3/2p1p3/8/7P/qQ3PP1/6K1/8 b - - 178 189"));
+    list.add(new PgnFen("12_white_from_fen_no_progress_above_fifty_reoccuring_above_seventy_five.pgn",
+        "8/3pk3/2p1p3/8/7P/qQ3PP1/6K1/8 b - - 178 189"));
+    list.add(new PgnFen("13_white_from_fen_no_progress_above_seventy_five_reoccuring_fifty.pgn",
+        "8/3p4/1kp1p3/8/2qQ3P/5PPK/8/8 b - - 100 150"));
+    list.add(new PgnFen("14_white_from_fen_no_progress_above_seventy_five_reoccuring_seventy_five.pgn",
+        "2Q5/3p1q2/2pkp3/8/7P/5PPK/8/8 b - - 150 175"));
+    list.add(new PgnFen("15_white_from_fen_no_progress_above_seventy_five_reoccuring_above_fifty.pgn",
+        "Q7/3p1q2/2pkp3/8/7P/5PPK/8/8 w - - 149 175"));
+    list.add(new PgnFen("16_white_from_fen_no_progress_above_seventy_five_reoccuring_above_seventy_five.pgn",
+        "8/3pk3/2p1p3/8/7P/qQ3PP1/6K1/8 b - - 178 189"));
     return new PgnTestCaseList(PgnTest.BASIC_FROM_FEN_NO_PROGRESS_WHITE, list);
   }
 
@@ -2486,7 +2982,8 @@ public class PgnTestCaseCatalog {
 
   private static PgnTestCaseList createTestCasesSeventyFiveBeyond() {
     final List<PgnFen> list = new ArrayList<>();
-    list.add(new PgnFen("seventy_five_beyond_anton_guijarro_antipov_2015.pgn", "8/3n4/3P4/8/6k1/4n3/7K/8 w - - 171 148"));
+    list.add(
+        new PgnFen("seventy_five_beyond_anton_guijarro_antipov_2015.pgn", "8/3n4/3P4/8/6k1/4n3/7K/8 w - - 171 148"));
     list.add(new PgnFen("seventy_five_beyond_aronian_navara_2017.pgn", "8/3R4/5K1k/7p/7P/5b2/8/8 w - - 167 148"));
     list.add(new PgnFen("seventy_five_beyond_cheparinov_jones_2019.pgn", "8/8/6r1/K6R/2k5/8/2n5/8 w - - 152 145"));
     list.add(new PgnFen("seventy_five_beyond_moiseenko_radjabov_2016.pgn", "1k6/3R4/8/1K1N4/8/8/8/1r6 w - - 191 183"));

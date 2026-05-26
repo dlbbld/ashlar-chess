@@ -116,23 +116,29 @@ public class PgnCreate {
       // an automatic termination.
       return ResultTagValue.ONGOING;
     }
-    return switch (outcome.termination()) {
-      case CHECKMATE -> {
+    switch (outcome.termination()) {
+      case CHECKMATE: {
         // Outcome's compact constructor guarantees winner() is non-null for CHECKMATE — the side
         // that delivered mate.
         final Side winner = outcome.winner();
         if (winner == null) {
           throw new ProgrammingMistakeException("Outcome invariant violated: CHECKMATE without winner");
         }
-        yield switch (winner) {
-          case WHITE -> ResultTagValue.WHITE_WON;
-          case BLACK -> ResultTagValue.BLACK_WON;
-          case NONE -> throw new IllegalArgumentException();
-          default -> throw new IllegalArgumentException();
-        };
+        switch (winner) {
+          case WHITE:
+            return ResultTagValue.WHITE_WON;
+          case BLACK:
+            return ResultTagValue.BLACK_WON;
+          case NONE:
+          default:
+            throw new IllegalArgumentException();
+        }
       }
-      case STALEMATE, INSUFFICIENT_MATERIAL, FIVEFOLD_REPETITION, SEVENTY_FIVE_MOVES -> ResultTagValue.DRAW;
-    };
+      case STALEMATE, INSUFFICIENT_MATERIAL, FIVEFOLD_REPETITION, SEVENTY_FIVE_MOVES:
+        return ResultTagValue.DRAW;
+      default:
+        throw new IllegalArgumentException();
+    }
   }
 
   private static String calculateTagEntry(Tag tag) {

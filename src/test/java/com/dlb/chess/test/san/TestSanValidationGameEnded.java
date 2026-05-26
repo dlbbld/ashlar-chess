@@ -102,7 +102,7 @@ class TestSanValidationGameEnded {
     var thrown = false;
     try {
       StrictSanParser.parseText(san, board);
-    } catch (final SanValidationException e) {
+    } catch (@SuppressWarnings("unused") final SanValidationException e) {
       thrown = true;
     }
     assertTrue(thrown, "expected SanValidationException");

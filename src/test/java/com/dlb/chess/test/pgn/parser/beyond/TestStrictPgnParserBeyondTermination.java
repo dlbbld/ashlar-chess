@@ -17,7 +17,6 @@ import com.dlb.chess.test.ConfigurationTestConstants;
  * stalemate fixtures (01–04) are rejected through ordinary legality (legal-move set is empty, attempted move cannot
  * match), insufficient-material fixtures (05–06) are accepted (queryable only, legal moves exist).
  */
-@SuppressWarnings("null") // JUnit Assertions methods lack JDT null annotations
 class TestStrictPgnParserBeyondTermination {
 
   private static final Path BEYOND_FOLDER = Nulls.pathResolve(ConfigurationTestConstants.PROJECT_ROOT_FOLDER_PATH,

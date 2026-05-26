@@ -76,7 +76,7 @@ abstract class PositionIdentifierUtility {
     if (!positionIdentifierMap.containsKey(position)) {
       throw new ProgrammingMistakeException("position identifier map does not contain position: " + position);
     }
-    return positionIdentifierMap.get(position);
+    return Nulls.get(positionIdentifierMap, position);
   }
 
   private static String calculatePositionInformation(HalfMove repetitionSeriesMove, int totalRepetitionCount,

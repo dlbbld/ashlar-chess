@@ -16,8 +16,8 @@ import com.dlb.chess.test.ConfigurationTestConstants;
  * Verifies the lenient PGN parser's behavior on fixtures that play past an automatic termination.
  *
  * <p>
- * After the A1 ungating, no game-end gate fires at the move pipeline or SAN layer. The behavioral split per
- * termination kind is:
+ * After the A1 ungating, no game-end gate fires at the move pipeline or SAN layer. The behavioral split per termination
+ * kind is:
  *
  * <ul>
  * <li>Checkmate / stalemate fixtures (01–04) — still rejected, but through ordinary legality: the move attempted past
@@ -28,7 +28,6 @@ import com.dlb.chess.test.ConfigurationTestConstants;
  * legal-move set is non-empty, so the moves played past the dead position validate normally and the parser succeeds.
  * </ul>
  */
-@SuppressWarnings("null") // JUnit Assertions methods lack JDT null annotations
 class TestLenientPgnParserBeyondTermination {
 
   private static final Path BEYOND_FOLDER = Nulls.pathResolve(ConfigurationTestConstants.PROJECT_ROOT_FOLDER_PATH,
