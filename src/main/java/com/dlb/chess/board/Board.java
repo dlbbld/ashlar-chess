@@ -625,11 +625,13 @@ public class Board {
   }
 
   /**
-   * True iff the halfmove clock has reached the 50-move-rule threshold (FIDE 9.3). This is the on-board predicate
-   * (claimable rule); the game continues until claimed.
+   * True iff the halfmove clock has reached the 50-move-rule threshold (FIDE 9.3) <em>and</em> the side to move has at
+   * least one legal move. This is the on-board predicate (claimable rule); the game continues until claimed. The
+   * legal-moves-exist clause aligns with the FIDE rule (no claim is possible if the game has already ended by mate or
+   * stalemate) and with python-chess {@code is_fifty_moves()}.
    */
   public boolean isFiftyMove() {
-    return getHalfMoveClock() >= ChessConstants.FIFTY_MOVE_RULE_HALF_MOVE_CLOCK_THRESHOLD;
+    return getHalfMoveClock() >= ChessConstants.FIFTY_MOVE_RULE_HALF_MOVE_CLOCK_THRESHOLD && !getLegalMoves().isEmpty();
   }
 
   /**
@@ -641,13 +643,16 @@ public class Board {
   }
 
   /**
-   * True iff the halfmove clock has reached the 75-move-rule threshold (FIDE 9.6.2). In this library the 75-move rule
-   * is surfaced as a queryable predicate rather than an enforced termination: the move pipeline does NOT reject moves
-   * on this condition, and the predicate remains {@code true} for every subsequent halfmove until the clock is reset by
-   * a pawn move or capture. Consumers that want to surface the rule call this predicate themselves.
+   * True iff the halfmove clock has reached the 75-move-rule threshold (FIDE 9.6.2) <em>and</em> the side to move has
+   * at least one legal move. In this library the 75-move rule is surfaced as a queryable predicate rather than an
+   * enforced termination: the move pipeline does NOT reject moves on this condition, and once the threshold is crossed
+   * the predicate remains {@code true} for every subsequent halfmove until the clock is reset by a pawn move or
+   * capture. The legal-moves-exist clause aligns with the FIDE rule (the rule cannot fire at a checkmate / stalemate
+   * position; those are higher-precedence terminations) and with python-chess {@code is_seventyfive_moves()}.
    */
   public boolean isSeventyFiveMove() {
-    return getHalfMoveClock() >= ChessConstants.SEVENTY_FIVE_MOVE_RULE_HALF_MOVE_CLOCK_THRESHOLD;
+    return getHalfMoveClock() >= ChessConstants.SEVENTY_FIVE_MOVE_RULE_HALF_MOVE_CLOCK_THRESHOLD
+        && !getLegalMoves().isEmpty();
   }
 
   /**
