@@ -4,6 +4,49 @@ Releases from 3.3 onward. Earlier history is in git tags only.
 
 ## [Unreleased]
 
+The **termination-is-information release**. The move pipeline no longer consults any game-end predicate: checkmate, stalemate, mutual insufficient material, fivefold repetition, the 75-move rule, and analyzer-driven dead positions are all surfaced as queryable artifacts the caller polls to decide whether to adjudicate. At checkmate and stalemate the natural barrier is the empty legal-move set (a move attempt fails through ordinary legality); at the other terminations legal moves still exist and the pipeline accepts them. The `GameStatus` enum is replaced by a structured `Outcome` record carrying `Termination` and the winner — python-chess parity at the API boundary, the cross-validation oracle that's been the project's reference since 12.2.0. The motivation: clean-chess corpus and tooling already needed to replay historical PGN that continues a move or two past an automatic termination, the python-chess oracle returns terminations as information rather than enforcement, and the previous in-pipeline gate forced ugly workarounds in both the oracle harness and the lenient parser. Dropping the gate eliminates the impedance mismatch.
+
+### Notable
+
+- **Move pipeline ungated at all FIDE-automatic terminations.** Neither `ValidateNewMove.validateNewMove` (MoveSpecification pipeline) nor `StrictSanParser.parseText` (SAN pipeline) consults any termination predicate. The `validateGameNotEnded` pre-check is gone from both. At checkmate and stalemate the legal-move generator returns empty, so any attempted move fails through ordinary legality (own-piece occupation, king-into-check, etc.); at mutual insufficient material, fivefold, and 75-move the pipeline accepts further moves and the caller decides whether to adjudicate. Symmetric extension of 13.0.0 (which had already ungated fivefold and 75-move) and 14.0.0 (which had already ungated analyzer-driven dead positions); 15.0.0 closes the gap on the remaining three.
+- **`GameStatus` enum replaced by `Outcome` record + `Termination` enum.** `BasicChessUtility.calculateGameStatus(Board) → GameStatus` becomes `BasicChessUtility.calculateOutcome(Board) → @Nullable Outcome`. The record carries `(Termination termination, @Nullable Side winner)`; a compact constructor enforces the invariant that `winner` is non-null iff `termination == CHECKMATE`. python-chess `chess.Outcome(termination, winner)` parity. `Outcome` lives in `com.dlb.chess.common.model`; `Termination` in `com.dlb.chess.common.enums`.
+- **`Termination` enum has five values.** `CHECKMATE`, `INSUFFICIENT_MATERIAL`, `STALEMATE`, `SEVENTY_FIVE_MOVES`, `FIVEFOLD_REPETITION`. The `DEAD_POSITION_UNWINNABLE_QUICK` and single-side insufficient-material values from the old `GameStatus` are intentionally not represented: the analyzer-driven verdict remains accessible via `Board.isDeadPositionQuick()` / `isDeadPositionFull()` (invoking it from `calculateOutcome` would silently make every status query expensive), and single-side insufficient material is a diagnostic position state queryable via `Board.isInsufficientMaterial(Side)`, not an automatic termination.
+- **`calculateOutcome` precedence order reflects python-chess.** When two or more terminations apply at the same position, the precedence is `CHECKMATE > INSUFFICIENT_MATERIAL > STALEMATE > SEVENTY_FIVE_MOVES > FIVEFOLD_REPETITION`. The two precedence differences from the previous clean-chess `calculateGameStatus` ordering are: mutual insufficient material now beats stalemate (a KBvK stalemate, for instance, reports `INSUFFICIENT_MATERIAL` rather than `STALEMATE`), and 75-move now beats fivefold when both apply.
+- **`GAME_ALREADY_ENDED` machinery removed.** `MoveCheck.GAME_ALREADY_ENDED` and `SanValidationProblem.GAME_ALREADY_ENDED` enum values are deleted. The `@Nullable GameStatus` payload, third-argument constructor, and `getGameStatus()` getter are removed from `InvalidMoveException`, `SanValidationException`, `StrictPgnParserValidationException`, `LenientPgnParserValidationException`, and `LenientSanParserValidationException`. `GameStatus.isAutomaticTermination()` is gone with the enum. `validation.san.gameAlreadyEnded` is removed from `messages.properties`. The three downstream propagation hops (`StrictPgnParser`, `LenientPgnParser`, `LenientSanParser`) no longer pass a `GameStatus` along the chain.
+- **`Reporter` slimmed to a print-only surface.** The `Report` record carrying analytical data is removed; `Reporter` retains only `printReport(Board)` / `printReport(String pgn)` / `printReport(Path, String)` — human-readable summary to stdout. Programmatic consumers that previously inspected the `Report` fields now call the dedicated `Board` predicates and the analysis helpers in `com.dlb.chess.report` directly. Internal `HalfMove` model slimmed in the same pass. Pre-existing repetition report bug fixed (the initial position is now included in repetition-list output where it should have been all along).
+- **Test corpus shape: `PgnTestCase` reduced to `(pgnName, finalFen)` and renamed `PgnFen`.** The six non-FEN snapshot fields that existed to be compared against a report generated from the same FEN were self-referential regression — kept only the PGN filename and the cached final-position FEN. ~1400 catalog entries rewritten mechanically. `PgnTestCaseCatalog` and `PgnTestCaseList` type names kept (catalogs / lists *of* `PgnFen`). `BASIC_INSUFFICIENT_MATERIAL_*` registration split into four dedicated methods so the runtime `filterInsufficientMaterial` no longer reads the field.
+
+### Behavioral
+
+- **Outcome precedence change visible at simultaneous-condition positions.** A KBvK or KNvK stalemate position previously reported `STALEMATE` (the higher-precedence value in the old ordering); now it reports `INSUFFICIENT_MATERIAL`. A position simultaneously at the 150-halfmove threshold and at five identical positions previously reported `FIVE_FOLD_REPETITION_RULE`; now reports `SEVENTY_FIVE_MOVES`. Consumers that distinguished cases by the precise enum value will see different values at these tie positions; consumers that branch on "is it terminated, draw or win, and who won" via `Outcome` will see the same conclusion.
+- **Validation rejection reasons at checkmate / stalemate change shape.** Pre-15.0.0: any move attempted on a board at checkmate, stalemate, or mutual insufficient material was rejected with `InvalidMoveException(MoveCheck.GAME_ALREADY_ENDED, gameStatus)` / `SanValidationException(SanValidationProblem.GAME_ALREADY_ENDED, message, gameStatus)`. Post-15.0.0: that top-of-pipeline gate is gone. At checkmate and stalemate the attempted move now fails with the specific `MoveCheck` / `SanValidationProblem` that describes why the particular move is illegal (typically `MOVEMENT_TO_SQUARE_OCCUPIED_BY_OWN_PIECE`, `KING_MOVES_TO_ATTACKED_EMPTY_SQUARE`, or `ALL_BUT_KING_KING_LEFT_IN_CHECK`, depending on the move). At mutual insufficient material the move now succeeds.
+- **`PgnCreate.calculateResultTagValue`** unchanged in observable behavior. Internally now derives the winning side from `outcome.winner()` rather than inverting `board.getHavingMove()` — surfaces the structural benefit of the new type at the consumer.
+
+### Breaking
+
+- `com.dlb.chess.common.enums.GameStatus` deleted. Replaced by `com.dlb.chess.common.enums.Termination` (5 values, no `ONGOING` — `calculateOutcome` returns `null` for ongoing positions) and `com.dlb.chess.common.model.Outcome` (record).
+- `BasicChessUtility.calculateGameStatus(Board) → GameStatus` deleted. Replaced by `BasicChessUtility.calculateOutcome(Board) → @Nullable Outcome`. Migration:
+  ```java
+  // before
+  GameStatus status = BasicChessUtility.calculateGameStatus(board);
+  switch (status) { case CHECKMATE -> ...; case ONGOING -> ...; case INSUFFICIENT_MATERIAL_WHITE_ONLY -> ...; ... }
+
+  // after
+  Outcome outcome = BasicChessUtility.calculateOutcome(board);
+  if (outcome == null) {
+    // game ongoing; query board.isInsufficientMaterial(side) for the single-side diagnostic case
+  } else {
+    switch (outcome.termination()) { case CHECKMATE -> ...; case INSUFFICIENT_MATERIAL -> ...; ... }
+  }
+  ```
+- `MoveCheck.GAME_ALREADY_ENDED` enum value removed. Consumers that switched on this case can delete the branch; the case is no longer reachable.
+- `SanValidationProblem.GAME_ALREADY_ENDED` enum value removed. Same.
+- `InvalidMoveException(String, MoveCheck, GameStatus)` three-argument constructor removed; the corresponding `getGameStatus()` getter is gone. Equivalent constructors removed from `SanValidationException`, `StrictPgnParserValidationException`, `LenientPgnParserValidationException`, and `LenientSanParserValidationException`.
+- `GameStatus.isAutomaticTermination()` method removed (with the enum).
+- `validation.san.gameAlreadyEnded` message-bundle key removed from `messages.properties`. Custom message bundles can drop the entry.
+- `com.dlb.chess.report.Report` record deleted. `Reporter` is now print-only. Programmatic consumers should query the underlying analyses directly (`RepetitionUtility`, `NoProgressMoveUtility`, `ThreefoldClaimAheadUtility`, the `Board.is*` predicates, `BasicChessUtility.calculateOutcome`).
+- `com.dlb.chess.test.model.PgnTestCase` renamed to `com.dlb.chess.test.model.PgnFen` and reduced to two fields `(pgnName, finalFen)`. Test-tree only; consumers of the production API are unaffected.
+
 ## [14.0.0] - 2026-05-24
 
 The **dead-position-query release**. Analyzer-driven dead-position detection (`DEAD_POSITION_UNWINNABLE_QUICK`) no
