@@ -10,8 +10,6 @@ import com.dlb.chess.board.HalfMoveUtility;
 import com.dlb.chess.board.enums.Side;
 import com.dlb.chess.common.Nulls;
 import com.dlb.chess.common.enums.GameStatus;
-import com.dlb.chess.common.exceptions.ProgrammingMistakeException;
-import com.dlb.chess.common.model.HalfMove;
 import com.dlb.chess.common.utility.BasicChessUtility;
 import com.dlb.chess.common.utility.BasicUtility;
 import com.dlb.chess.enums.MoveSuffixAnnotation;
@@ -46,7 +44,7 @@ public class PgnCreate {
   }
 
   public static List<String> createPgnLines(PgnGame pgnGame, WriteMode writeMode) {
-    final PgnGame effective = writeMode == WriteMode.ARCHIVAL ? PgnArchivalNormalization.apply(pgnGame) : pgnGame;
+    final var effective = writeMode == WriteMode.ARCHIVAL ? PgnArchivalNormalization.apply(pgnGame) : pgnGame;
     return calculateFileLines(effective.tagList(), effective.pregameCommentary(), effective.startFen(),
         effective.halfMoveList(), effective.terminationMarker());
   }
@@ -55,8 +53,8 @@ public class PgnCreate {
     return text + "\n";
   }
 
-  private static List<String> calculateFileLines(List<Tag> tagList, PgnCommentary pregameCommentary,
-      Fen startFen, List<PgnHalfMove> halfMoveList, @Nullable ResultTagValue terminationMarker) {
+  private static List<String> calculateFileLines(List<Tag> tagList, PgnCommentary pregameCommentary, Fen startFen,
+      List<PgnHalfMove> halfMoveList, @Nullable ResultTagValue terminationMarker) {
 
     final List<String> fileLines = new ArrayList<>();
     for (final Tag tag : tagList) {
@@ -73,7 +71,7 @@ public class PgnCreate {
 
     // PgnCommentary is contract-validated (no `}`, no `\r`), so the value writes verbatim into {...}.
     final String pregameCommentaryValue = pregameCommentary.value();
-    final String terminationSuffix = terminationMarker != null ? " " + terminationMarker.getValue() : "";
+    final var terminationSuffix = terminationMarker != null ? " " + terminationMarker.getValue() : "";
     final String movetextIncludingPreGameCommentary;
     if (pregameCommentaryValue.isEmpty()) {
       movetextIncludingPreGameCommentary = moves + terminationSuffix;
@@ -97,15 +95,12 @@ public class PgnCreate {
     return fileLines;
   }
 
-  private static List<PgnHalfMove> calculatePgnHalfMoveList(List<HalfMove> boardHalfMoveList) {
+  private static List<PgnHalfMove> calculatePgnHalfMoveList(List<String> sanList) {
     final List<PgnHalfMove> halfMoveList = new ArrayList<>();
 
-    for (final HalfMove boardHalfMove : boardHalfMoveList) {
+    for (final String san : sanList) {
       PgnHalfMove halfMove;
-      if (boardHalfMove.havingMove() != Side.WHITE && boardHalfMove.havingMove() != Side.BLACK) {
-        throw new ProgrammingMistakeException("The program created an inconsistent alternating halfmove list");
-      }
-      halfMove = new PgnHalfMove(boardHalfMove.san(), MoveSuffixAnnotation.NONE, PgnCommentary.EMPTY);
+      halfMove = new PgnHalfMove(san, MoveSuffixAnnotation.NONE, PgnCommentary.EMPTY);
       halfMoveList.add(halfMove);
     }
 
@@ -204,7 +199,7 @@ public class PgnCreate {
    */
   public static PgnGame createPgnGame(Board board, List<Tag> tagList) {
 
-    final List<PgnHalfMove> halfMoveList = calculatePgnHalfMoveList(board.getHalfMoveList());
+    final List<PgnHalfMove> halfMoveList = calculatePgnHalfMoveList(board.getLegalMovesSan());
 
     return new PgnGame(Nulls.copyOfList(tagList), board.getInitialFen(), PgnCommentary.EMPTY,
         Nulls.copyOfList(halfMoveList), calculateResultTagValue(board));

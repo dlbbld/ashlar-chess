@@ -94,7 +94,7 @@ public class GenerateChaTestCases implements EnumConstants {
     line.append(";");
     line.append(board.getHavingMove());
 
-    final var isLastMove = halfMoveCounter == board.getHalfMoveList().size();
+    final var isLastMove = halfMoveCounter == board.getLegalMoves().size();
     line.append(";");
     line.append(isLastMove);
 

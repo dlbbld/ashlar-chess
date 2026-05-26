@@ -53,11 +53,11 @@ class TestBoardCopyCurrentPositionWithoutHistory {
     // no history
     assertEquals(0, actual.getPerformedHalfMoveCount());
     assertEquals(0, actual.getPerformedLegalMoveList().size());
-    assertEquals(0, actual.getHalfMoveList().size());
 
     // halfmove clock reset, everything else preserved
     assertEquals(0, actual.getHalfMoveClock());
-    assertEquals(StaticPositionBridge.toStaticPosition(source.getBitboardPosition()), StaticPositionBridge.toStaticPosition(actual.getBitboardPosition()));
+    assertEquals(StaticPositionBridge.toStaticPosition(source.getBitboardPosition()),
+        StaticPositionBridge.toStaticPosition(actual.getBitboardPosition()));
     assertEquals(source.getHavingMove(), actual.getHavingMove());
     assertEquals(source.getCastlingRightWhite(), actual.getCastlingRightWhite());
     assertEquals(source.getCastlingRightBlack(), actual.getCastlingRightBlack());
