@@ -22,7 +22,7 @@ import com.dlb.chess.unwinnability.DeadPositionQuick;
  * At checkmate and stalemate the natural barrier is the empty legal-move set: any attempted move fails through ordinary
  * move-legality checks (own-piece occupation, king-into-check, etc.), not via a dedicated game-end gate. At mutual
  * insufficient material, fivefold, 75-move, and analyzer-driven dead positions, legal moves still exist and the
- * pipeline accepts them — the caller polls {@code calculateGameStatus} or the specific predicates to learn the game
+ * pipeline accepts them — the caller polls {@code calculateOutcome} or the specific predicates to learn the game
  * has reached an automatic termination.
  *
  * <p>
@@ -65,7 +65,7 @@ class TestValidateNewMoveGameEnded implements EnumConstants {
   @Test
   void testMoveAcceptedAtInsufficientMaterialBoth() {
     // K vs K: dead position under FIDE 5.2.2. The pipeline accepts further moves; the caller
-    // polls calculateGameStatus / isInsufficientMaterial to learn the game has terminated.
+    // polls calculateOutcome / isInsufficientMaterial to learn the game has terminated.
     final Board board = new Board("4k3/8/8/8/8/8/8/4K3 w - - 0 1");
     assertTrue(board.isInsufficientMaterial(), "K vs K is mutual insufficient material");
     assertDoesNotThrow(() -> board.move(new MoveSpecification(E1, E2)),

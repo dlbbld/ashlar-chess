@@ -1,10 +1,13 @@
 package com.dlb.chess.common.utility;
 
+import org.eclipse.jdt.annotation.Nullable;
+
 import com.dlb.chess.board.Board;
 import com.dlb.chess.board.enums.Piece;
 import com.dlb.chess.board.enums.PieceType;
 import com.dlb.chess.board.enums.Side;
-import com.dlb.chess.common.enums.GameStatus;
+import com.dlb.chess.common.enums.Outcome;
+import com.dlb.chess.common.enums.Termination;
 import com.dlb.chess.model.LegalMove;
 
 public abstract class BasicChessUtility {
@@ -39,38 +42,39 @@ public abstract class BasicChessUtility {
   }
 
   /**
-   * Current-position outcome query: returns the single most-specific {@link GameStatus} for the given board.
+   * Current-position outcome query: returns the most-specific {@link Outcome} for the given board, or {@code null}
+   * when the game is ongoing.
    *
    * <p>
-   * The library is permissive at the move pipeline — none of these statuses block further moves; callers poll this
-   * predicate to decide whether a game should be adjudicated as over. Does <em>not</em> invoke any unwinnability
-   * analyzer: {@link GameStatus#DEAD_POSITION_UNWINNABLE_QUICK} is never returned. Callers that want the
-   * analyzer-driven dead-position verdict must call {@link Board#isDeadPositionQuick()} (or the full counterpart)
-   * directly.
+   * Precedence (python-chess parity): {@link Termination#CHECKMATE} → {@link Termination#INSUFFICIENT_MATERIAL} →
+   * {@link Termination#STALEMATE} → {@link Termination#SEVENTY_FIVE_MOVES} → {@link Termination#FIVEFOLD_REPETITION}.
+   * Returns the first matching condition under that order. The library is permissive at the move pipeline — none of
+   * these block further moves; callers poll this method to decide whether a game should be adjudicated as over.
+   *
+   * <p>
+   * Does <em>not</em> invoke any unwinnability analyzer. Callers that want the analyzer-driven dead-position verdict
+   * call {@link Board#isDeadPositionQuick()} (or the full counterpart) directly. Single-side insufficient-material
+   * states are diagnostic, not terminations, and are not surfaced here; callers query
+   * {@link Board#isInsufficientMaterial(Side)} directly.
    */
-  public static GameStatus calculateGameStatus(Board board) {
+  public static @Nullable Outcome calculateOutcome(Board board) {
     if (board.isCheckmate()) {
-      return GameStatus.CHECKMATE;
-    }
-    if (board.isStalemate()) {
-      return GameStatus.STALEMATE;
+      // Side to move is the loser; the other side delivered mate and is the winner.
+      return new Outcome(Termination.CHECKMATE, board.getHavingMove().getOppositeSide());
     }
     if (board.isInsufficientMaterial()) {
-      return GameStatus.DEAD_POSITION_INSUFFICIENT_MATERIAL;
+      return new Outcome(Termination.INSUFFICIENT_MATERIAL, null);
     }
-    if (board.isFivefoldRepetition()) {
-      return GameStatus.FIVE_FOLD_REPETITION_RULE;
+    if (board.isStalemate()) {
+      return new Outcome(Termination.STALEMATE, null);
     }
     if (board.isSeventyFiveMove()) {
-      return GameStatus.SEVENTY_FIVE_MOVE_RULE;
+      return new Outcome(Termination.SEVENTY_FIVE_MOVES, null);
     }
-    if (board.isInsufficientMaterial(Side.WHITE)) {
-      return GameStatus.INSUFFICIENT_MATERIAL_WHITE_ONLY;
+    if (board.isFivefoldRepetition()) {
+      return new Outcome(Termination.FIVEFOLD_REPETITION, null);
     }
-    if (board.isInsufficientMaterial(Side.BLACK)) {
-      return GameStatus.INSUFFICIENT_MATERIAL_BLACK_ONLY;
-    }
-    return GameStatus.ONGOING;
+    return null;
   }
 
   public static boolean calculateIsResetHalfMoveClock(LegalMove legalMove) {

@@ -2,6 +2,7 @@ package com.dlb.chess.test.unwinnability.oracle;
 
 import com.dlb.chess.board.Board;
 import com.dlb.chess.board.enums.Side;
+import com.dlb.chess.common.enums.Outcome;
 import com.dlb.chess.common.utility.BasicChessUtility;
 import com.dlb.chess.model.LegalMove;
 import com.dlb.chess.test.unwinnability.oracle.enums.LimitedUnwinnabilityVerdict;
@@ -100,22 +101,23 @@ public class ShallowTerminationOracle {
    * that case X may still be able to mate, so the search must continue.
    */
   private static NodeOutcome classifyTerminal(Board board, Side side) {
-    return switch (BasicChessUtility.calculateGameStatus(board)) {
-      case ONGOING -> NodeOutcome.UNRESOLVED;
+    final Outcome outcome = BasicChessUtility.calculateOutcome(board);
+    if (outcome == null) {
+      // Game ongoing for the calculateOutcome view, but one-sided insufficient material is a
+      // diagnostic state outside that view: if the side we're evaluating lacks mating material,
+      // that side cannot win — LOSS_OR_DRAW for them, UNRESOLVED for the opponent (the opponent
+      // may still win).
+      if (board.isInsufficientMaterial(side)) {
+        return NodeOutcome.LOSS_OR_DRAW;
+      }
+      return NodeOutcome.UNRESOLVED;
+    }
+    return switch (outcome.termination()) {
       case CHECKMATE ->
           // The side to move is in checkmate. If that's the side we're evaluating, they lost; otherwise
           // the side we're evaluating just delivered the mate — i.e. WIN.
           board.getHavingMove() == side ? NodeOutcome.LOSS_OR_DRAW : NodeOutcome.WIN;
-      case STALEMATE, FIVE_FOLD_REPETITION_RULE, SEVENTY_FIVE_MOVE_RULE, DEAD_POSITION_INSUFFICIENT_MATERIAL, DEAD_POSITION_UNWINNABLE_QUICK ->
-          // All drawing terminations: neither side wins. DEAD_POSITION_UNWINNABLE_QUICK is unreachable
-          // here because calculateGameStatus does not invoke the analyzer; grouped with the others to
-          // keep the switch exhaustive.
-          NodeOutcome.LOSS_OR_DRAW;
-      case INSUFFICIENT_MATERIAL_WHITE_ONLY ->
-          // Only White lacks the material to mate. Bad for White, fine for Black — Black may still win.
-          side == Side.WHITE ? NodeOutcome.LOSS_OR_DRAW : NodeOutcome.UNRESOLVED;
-      case INSUFFICIENT_MATERIAL_BLACK_ONLY -> side == Side.BLACK ? NodeOutcome.LOSS_OR_DRAW : NodeOutcome.UNRESOLVED;
-      default -> throw new IllegalArgumentException();
+      case STALEMATE, INSUFFICIENT_MATERIAL, SEVENTY_FIVE_MOVES, FIVEFOLD_REPETITION -> NodeOutcome.LOSS_OR_DRAW;
     };
   }
 }

@@ -6,7 +6,8 @@ import org.junit.jupiter.api.Test;
 
 import com.dlb.chess.board.Board;
 import com.dlb.chess.board.enums.Side;
-import com.dlb.chess.common.enums.GameStatus;
+import com.dlb.chess.common.enums.Outcome;
+import com.dlb.chess.common.enums.Termination;
 import com.dlb.chess.common.utility.BasicChessUtility;
 
 class TestBasicChessUtility {
@@ -75,42 +76,45 @@ class TestBasicChessUtility {
   }
 
   // ---------------------------------------------------------------------------------------------
-  // calculateGameStatus precedence: when two or more termination predicates apply at the same
-  // position, the method returns the most-specific status. Pinned ordering: checkmate > stalemate
-  // > mutual insufficient material > fivefold > 75-move > single-side insufficient material.
+  // calculateOutcome precedence: when two or more termination predicates apply at the same
+  // position, the method returns the most-specific outcome. Pinned ordering (python-chess parity):
+  // checkmate > insufficient material > stalemate > 75-move > fivefold.
   // ---------------------------------------------------------------------------------------------
 
   @SuppressWarnings("static-method")
   @Test
-  void testCalculateGameStatusPrecedenceDeadPositionBeatsSeventyFiveMove() {
+  void testCalculateOutcomePrecedenceInsufficientMaterialBeatsSeventyFiveMove() {
     // KvK position (insufficient material) with halfmove clock at the 75-move threshold.
     // Both isInsufficientMaterial() and isSeventyFiveMove() return true on this board; the
-    // returned status is the more specific of the two.
+    // returned outcome is the more specific of the two (IM precedes 75-move).
     final Board board = new Board("4k3/8/8/8/8/8/8/4K3 w - - 150 76");
     assertEquals(true, board.isInsufficientMaterial(), "precondition: insufficient material");
     assertEquals(true, board.isSeventyFiveMove(), "precondition: 75-move threshold reached");
-    assertEquals(GameStatus.DEAD_POSITION_INSUFFICIENT_MATERIAL, BasicChessUtility.calculateGameStatus(board));
+    final Outcome outcome = BasicChessUtility.calculateOutcome(board);
+    assertEquals(new Outcome(Termination.INSUFFICIENT_MATERIAL, null), outcome);
   }
 
   @SuppressWarnings("static-method")
   @Test
-  void testCalculateGameStatusFivefoldFiresWhenAlone() {
+  void testCalculateOutcomeFivefoldFiresWhenAlone() {
     // Drive the board to fivefold by alternating knight moves. Only the fivefold predicate fires.
     final Board board = new Board();
     board.movesStrict("Nf3", "Nf6", "Ng1", "Ng8", "Nf3", "Nf6", "Ng1", "Ng8", "Nf3", "Nf6", "Ng1", "Ng8", "Nf3", "Nf6",
         "Ng1", "Ng8");
     assertEquals(true, board.isFivefoldRepetition(), "precondition: fivefold threshold reached");
-    assertEquals(GameStatus.FIVE_FOLD_REPETITION_RULE, BasicChessUtility.calculateGameStatus(board));
+    final Outcome outcome = BasicChessUtility.calculateOutcome(board);
+    assertEquals(new Outcome(Termination.FIVEFOLD_REPETITION, null), outcome);
   }
 
   @SuppressWarnings("static-method")
   @Test
-  void testCalculateGameStatusSeventyFiveMoveFiresWhenAlone() {
+  void testCalculateOutcomeSeventyFiveMoveFiresWhenAlone() {
     // FEN at the 75-move threshold with enough material for both sides — only the 75-move
     // predicate fires.
     final Board board = new Board("4k3/8/4P3/8/8/8/2N1B3/3KQ2R w - - 150 76");
     assertEquals(true, board.isSeventyFiveMove(), "precondition: 75-move threshold reached");
     assertEquals(false, board.isInsufficientMaterial(), "precondition: not insufficient material");
-    assertEquals(GameStatus.SEVENTY_FIVE_MOVE_RULE, BasicChessUtility.calculateGameStatus(board));
+    final Outcome outcome = BasicChessUtility.calculateOutcome(board);
+    assertEquals(new Outcome(Termination.SEVENTY_FIVE_MOVES, null), outcome);
   }
 }

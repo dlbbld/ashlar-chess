@@ -9,7 +9,7 @@ import com.dlb.chess.board.Board;
 import com.dlb.chess.board.HalfMoveUtility;
 import com.dlb.chess.board.enums.Side;
 import com.dlb.chess.common.Nulls;
-import com.dlb.chess.common.enums.GameStatus;
+import com.dlb.chess.common.enums.Outcome;
 import com.dlb.chess.common.utility.BasicChessUtility;
 import com.dlb.chess.common.utility.BasicUtility;
 import com.dlb.chess.enums.MoveSuffixAnnotation;
@@ -108,21 +108,21 @@ public class PgnCreate {
   }
 
   private static ResultTagValue calculateResultTagValue(Board board) {
-    final GameStatus gameStatus = BasicChessUtility.calculateGameStatus(board);
-
-    return switch (gameStatus) {
+    final Outcome outcome = BasicChessUtility.calculateOutcome(board);
+    if (outcome == null) {
+      // Game is ongoing — including positions with one-sided insufficient material, which is a
+      // diagnostic state on the board (queryable via Board.isInsufficientMaterial(Side)) and not
+      // an automatic termination.
+      return ResultTagValue.ONGOING;
+    }
+    return switch (outcome.termination()) {
       case CHECKMATE -> switch (board.getHavingMove()) {
         case WHITE -> ResultTagValue.BLACK_WON;
         case BLACK -> ResultTagValue.WHITE_WON;
         case NONE -> throw new IllegalArgumentException();
         default -> throw new IllegalArgumentException();
       };
-      // DEAD_POSITION_UNWINNABLE_QUICK is unreachable here because calculateGameStatus does not invoke the
-      // analyzer; grouped with the other drawing terminations to keep the switch exhaustive.
-      case FIVE_FOLD_REPETITION_RULE, DEAD_POSITION_INSUFFICIENT_MATERIAL, DEAD_POSITION_UNWINNABLE_QUICK -> ResultTagValue.DRAW;
-      case INSUFFICIENT_MATERIAL_WHITE_ONLY, INSUFFICIENT_MATERIAL_BLACK_ONLY, ONGOING -> ResultTagValue.ONGOING;
-      case SEVENTY_FIVE_MOVE_RULE, STALEMATE -> ResultTagValue.DRAW;
-      default -> throw new IllegalArgumentException();
+      case STALEMATE, INSUFFICIENT_MATERIAL, FIVEFOLD_REPETITION, SEVENTY_FIVE_MOVES -> ResultTagValue.DRAW;
     };
   }
 

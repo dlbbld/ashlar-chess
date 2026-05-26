@@ -1,8 +1,10 @@
 package com.dlb.chess.test.unwinnability.oracle;
 
+import org.eclipse.jdt.annotation.Nullable;
+
 import com.dlb.chess.board.Board;
 import com.dlb.chess.board.enums.Side;
-import com.dlb.chess.common.enums.GameStatus;
+import com.dlb.chess.common.enums.Outcome;
 import com.dlb.chess.common.exceptions.ProgrammingMistakeException;
 import com.dlb.chess.common.utility.BasicChessUtility;
 import com.dlb.chess.common.utility.ListUtility;
@@ -79,24 +81,17 @@ public class ForcedLineOracle {
       countForcedHalfMoves++;
       final LegalMove legalMove = ListUtility.getOnly(board.getLegalMoves());
       board.move(legalMove.moveSpecification());
-      final GameStatus evaluation = BasicChessUtility.calculateGameStatus(board);
-      switch (BasicChessUtility.calculateGameStatus(board)) {
-        case CHECKMATE:
-        case FIVE_FOLD_REPETITION_RULE:
-        case DEAD_POSITION_INSUFFICIENT_MATERIAL:
-        case INSUFFICIENT_MATERIAL_WHITE_ONLY:
-        case INSUFFICIENT_MATERIAL_BLACK_ONLY:
-        case SEVENTY_FIVE_MOVE_RULE:
-        case STALEMATE:
-          final Side sideMadeLastMove = board.getHavingMove().getOppositeSide();
-          for (var i = 1; i <= countForcedHalfMoves; i++) {
-            board.unmove();
-          }
-          return new GameForced(evaluation, countForcedHalfMoves, sideMadeLastMove);
-        case ONGOING:
-          break;
-        default:
-          throw new IllegalArgumentException();
+      final Outcome outcome = BasicChessUtility.calculateOutcome(board);
+      // One-sided insufficient material is a diagnostic position state outside the Outcome view but
+      // a decisive signal for the forced-line oracle: the side that lacks material cannot win along
+      // this chain. Carry it explicitly on GameForced for calculateUnwinnabilityForced to consume.
+      final @Nullable Side singleSideIm = outcome == null ? singleSideInsufficientMaterial(board) : null;
+      if (outcome != null || singleSideIm != null) {
+        final Side sideMadeLastMove = board.getHavingMove().getOppositeSide();
+        for (var i = 1; i <= countForcedHalfMoves; i++) {
+          board.unmove();
+        }
+        return new GameForced(outcome, singleSideIm, countForcedHalfMoves, sideMadeLastMove);
       }
     }
 
@@ -104,29 +99,41 @@ public class ForcedLineOracle {
     for (var i = 1; i <= countForcedHalfMoves; i++) {
       board.unmove();
     }
-    return new GameForced(GameStatus.ONGOING, countForcedHalfMoves, sideMadeLastMove);
+    return new GameForced(null, null, countForcedHalfMoves, sideMadeLastMove);
+  }
+
+  private static @Nullable Side singleSideInsufficientMaterial(Board board) {
+    if (board.isInsufficientMaterial(Side.WHITE)) {
+      return Side.WHITE;
+    }
+    if (board.isInsufficientMaterial(Side.BLACK)) {
+      return Side.BLACK;
+    }
+    return null;
   }
 
   /**
    * Decodes the terminal status reached at the end of the forced single-move chain into a verdict for
-   * {@code sideToEvaluate}. CHECKMATE depends on which side delivered the mate (= {@code sideMadeLastMove}); the
-   * per-side insufficient-material variants depend on whether the colour with insufficient material <em>is</em>
-   * {@code sideToEvaluate} (then UNWINNABLE) or the opponent (then UNKNOWN — opponent's insufficient material doesn't
-   * decide our winnability either way from a forced chain alone).
+   * {@code sideToEvaluate}. CHECKMATE depends on which side delivered the mate (= {@code sideMadeLastMove}); single-side
+   * insufficient material depends on whether the colour with insufficient material <em>is</em> {@code sideToEvaluate}
+   * (then UNWINNABLE) or the opponent (then UNKNOWN — opponent's insufficient material doesn't decide our winnability
+   * either way from a forced chain alone).
    */
   private static LimitedUnwinnabilityVerdict calculateUnwinnabilityForced(GameForced gameForced, Side sideToEvaluate) {
-    final Side sideMadeLastMove = gameForced.sideMadeLastMove();
-    return switch (gameForced.gameStatus()) {
-      case CHECKMATE -> sideMadeLastMove == sideToEvaluate ? LimitedUnwinnabilityVerdict.WINNABLE
-          : LimitedUnwinnabilityVerdict.UNWINNABLE;
-      // DEAD_POSITION_UNWINNABLE_QUICK is unreachable here because calculateGameStatus does not invoke the
-      // analyzer; it is grouped with the other drawing terminations to keep the switch exhaustive.
-      case STALEMATE, DEAD_POSITION_INSUFFICIENT_MATERIAL, DEAD_POSITION_UNWINNABLE_QUICK, FIVE_FOLD_REPETITION_RULE, SEVENTY_FIVE_MOVE_RULE -> LimitedUnwinnabilityVerdict.UNWINNABLE;
-      case INSUFFICIENT_MATERIAL_WHITE_ONLY -> sideToEvaluate == Side.WHITE ? LimitedUnwinnabilityVerdict.UNWINNABLE
+    final Outcome outcome = gameForced.outcome();
+    final Side singleSideIm = gameForced.singleSideInsufficientMaterial();
+    if (outcome != null) {
+      return switch (outcome.termination()) {
+        case CHECKMATE -> gameForced.sideMadeLastMove() == sideToEvaluate ? LimitedUnwinnabilityVerdict.WINNABLE
+            : LimitedUnwinnabilityVerdict.UNWINNABLE;
+        case STALEMATE, INSUFFICIENT_MATERIAL, FIVEFOLD_REPETITION, SEVENTY_FIVE_MOVES -> LimitedUnwinnabilityVerdict.UNWINNABLE;
+      };
+    }
+    if (singleSideIm != null) {
+      return singleSideIm == sideToEvaluate ? LimitedUnwinnabilityVerdict.UNWINNABLE
           : LimitedUnwinnabilityVerdict.UNKNOWN;
-      case INSUFFICIENT_MATERIAL_BLACK_ONLY -> sideToEvaluate == Side.BLACK ? LimitedUnwinnabilityVerdict.UNWINNABLE
-          : LimitedUnwinnabilityVerdict.UNKNOWN;
-      case ONGOING -> LimitedUnwinnabilityVerdict.UNKNOWN;
-    };
+    }
+    // No outcome reached, no single-side IM along the forced chain — chain ended naturally.
+    return LimitedUnwinnabilityVerdict.UNKNOWN;
   }
 }
