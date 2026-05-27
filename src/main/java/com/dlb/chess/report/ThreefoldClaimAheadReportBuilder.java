@@ -9,6 +9,7 @@ import com.dlb.chess.common.HalfMoveListListComparator;
 import com.dlb.chess.common.Nulls;
 import com.dlb.chess.common.model.DynamicPosition;
 import com.dlb.chess.common.model.HalfMove;
+import com.dlb.chess.common.model.MoveSpecification;
 import com.dlb.chess.fen.model.Fen;
 import com.dlb.chess.model.LegalMove;
 import com.google.common.collect.ImmutableList;
@@ -55,11 +56,19 @@ abstract class ThreefoldClaimAheadReportBuilder {
   private static void collectClaimAheadsAtCurrentPly(List<List<HalfMove>> resultListList, Board replayBoard) {
     final List<HalfMove> claimAheadsAtThisPly = new ArrayList<>();
     for (final LegalMove legalMoveCheckAhead : replayBoard.getLegalMoves()) {
-      replayBoard.move(legalMoveCheckAhead.moveSpecification());
-      if (replayBoard.isThreefoldRepetition()) {
+      final MoveSpecification move = legalMoveCheckAhead.moveSpecification();
+      // Single source of truth: the report's per-move claim-ahead entries are exactly the moves
+      // for which Board.canClaimThreefoldRepetitionRuleFor returns true. Any future change to that
+      // predicate (e.g. tighter FIDE 9.2 semantics) is automatically reflected here without a
+      // parallel update.
+      if (replayBoard.canClaimThreefoldRepetitionRuleFor(move)) {
+        // The predicate did a transient push+unmove internally; re-push here to capture the
+        // produced HalfMove that the entry needs to carry. The duplicated push is intentional
+        // overhead — it keeps the predicate as the contract and the builder as a consumer of it.
+        replayBoard.move(move);
         claimAheadsAtThisPly.add(Nulls.getLast(replayBoard.getHalfMoveList()));
+        replayBoard.unmove();
       }
-      replayBoard.unmove();
     }
     if (!claimAheadsAtThisPly.isEmpty()) {
       resultListList.add(claimAheadsAtThisPly);
