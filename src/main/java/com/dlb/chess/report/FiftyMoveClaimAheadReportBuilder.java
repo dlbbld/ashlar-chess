@@ -45,7 +45,7 @@ abstract class FiftyMoveClaimAheadReportBuilder {
     final int initialFenClock = board.getInitialFen().halfMoveClock();
 
     final Board replayBoard = new Board(board.getInitialFen());
-    @Nullable SequenceStart currentStart = initialFenClock > 0 ? new InitialFenStart(initialFenClock) : null;
+    @Nullable SequenceStart currentStart = initialFenClock > 0 ? SequenceStart.initialFen(initialFenClock) : null;
 
     final List<LegalMove> performedLegalMoveList = board.getPerformedLegalMoveList();
     for (var i = 0; i < performedLegalMoveList.size(); i++) {
@@ -108,6 +108,6 @@ abstract class FiftyMoveClaimAheadReportBuilder {
     if (currentStart != null) {
       return currentStart;
     }
-    return new AfterResetStart(playedHalfMove);
+    return SequenceStart.afterReset(playedHalfMove);
   }
 }

@@ -1,6 +1,7 @@
 package com.dlb.chess.report;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
@@ -47,8 +48,8 @@ class TestFiftyMoveClaimAheadReportBuilder {
     assertEquals(1, report.entries().size(), "boundary collapse: many candidates at one ply produce exactly one entry");
 
     final FiftyMoveClaimAheadEntry entry = Nulls.get(report.entries(), 0);
-    assertTrue(entry.sequenceStart() instanceof AfterResetStart);
-    assertEquals("Ra3", ((AfterResetStart) entry.sequenceStart()).firstNonZeroingMove().san(),
+    assertFalse(entry.sequenceStart().isInitialFen());
+    assertEquals("Ra3", entry.sequenceStart().firstNonZeroingMoveOrThrow().san(),
         "sequence anchored at the first non-zeroing ply of the shuffle (Ra3)");
     // The boundary ply is Black's (the played history ended after a White move; Black to move next).
     assertEquals(Side.BLACK, entry.sideHavingMove(),
@@ -90,9 +91,9 @@ class TestFiftyMoveClaimAheadReportBuilder {
         "boundary collapse: a single missed-opportunity ply produces one entry regardless of how many alternatives existed");
 
     final FiftyMoveClaimAheadEntry entry = Nulls.get(report.entries(), 0);
-    assertTrue(entry.sequenceStart() instanceof InitialFenStart,
-        "FEN clock 98 inherited — sequence-start is InitialFenStart");
-    assertEquals(98, ((InitialFenStart) entry.sequenceStart()).initialClockValue());
+    assertTrue(entry.sequenceStart().isInitialFen(),
+        "FEN clock 98 inherited — sequence-start is the initial-FEN shape");
+    assertEquals(98, entry.sequenceStart().initialClockValue());
     assertEquals(Side.BLACK, entry.sideHavingMove(),
         "boundary ply is Black-to-move (White's Rg1 took clock from 98 to 99; Black's turn next, before the pawn push)");
   }
@@ -118,8 +119,8 @@ class TestFiftyMoveClaimAheadReportBuilder {
   @Test
   void multipleBoundariesAcrossDistinctSequencesAreOrderedChronologically() {
     // Two distinct sequences, each reaching clock 99 and then resetting via a pawn move. Each ply
-    // emits one boundary entry; the two entries should be ordered chronologically — InitialFenStart
-    // first (sentinel anchor -1), then the AfterResetStart sequence by its first-non-zeroing-ply
+    // emits one boundary entry; the two entries should be ordered chronologically — initial-FEN
+    // shape first (sentinel anchor -1), then the after-reset shape by its first-non-zeroing-ply
     // half-move count.
     //
     // Sequence 1: FEN clock 98 → Rg1 (clock 99) → a6 (pawn push, clock 0). Boundary at Black's ply.
@@ -141,12 +142,12 @@ class TestFiftyMoveClaimAheadReportBuilder {
     final FiftyMoveClaimAheadReport report = FiftyMoveClaimAheadReportBuilder.build(board);
     assertEquals(2, report.entries().size(), "two distinct boundaries — one per sequence");
 
-    // First entry: InitialFenStart anchor.
-    assertTrue(Nulls.get(report.entries(), 0).sequenceStart() instanceof InitialFenStart,
-        "chronological first: InitialFenStart-anchored boundary");
-    // Second entry: AfterResetStart anchor.
-    assertTrue(Nulls.get(report.entries(), 1).sequenceStart() instanceof AfterResetStart,
-        "chronological second: AfterResetStart-anchored boundary");
+    // First entry: initial-FEN-anchored boundary.
+    assertTrue(Nulls.get(report.entries(), 0).sequenceStart().isInitialFen(),
+        "chronological first: initial-FEN-anchored boundary");
+    // Second entry: after-reset-anchored boundary.
+    assertFalse(Nulls.get(report.entries(), 1).sequenceStart().isInitialFen(),
+        "chronological second: after-reset-anchored boundary");
     // Sort invariant: ascending half-move count.
     assertTrue(Nulls.get(report.entries(), 0).halfMoveCount() < Nulls.get(report.entries(), 1).halfMoveCount(),
         "entries sorted by chronological boundary half-move count");

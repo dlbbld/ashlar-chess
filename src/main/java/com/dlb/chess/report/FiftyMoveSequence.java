@@ -8,9 +8,9 @@ import com.dlb.chess.common.model.HalfMove;
  * One no-progress halfmove sequence that reached the 50-move-rule threshold (halfmove clock {@code >= 100}).
  *
  * <p>
- * {@code start} identifies how the sequence began ({@link InitialFenStart} when the starting FEN already had a
- * non-zero halfmove clock that the sequence inherits; {@link AfterResetStart} when the sequence began mid-game with
- * the first non-zeroing move after a reset).
+ * {@code start} identifies how the sequence began: an initial-FEN-anchored start (when the starting FEN already had a
+ * non-zero halfmove clock that the sequence inherits) or an after-reset start (when the sequence began mid-game with
+ * the first non-zeroing move after a reset). See {@link SequenceStart}.
  *
  * <p>
  * {@code endPly} is the last non-zeroing ply of the sequence, or {@code null} for the corner case where the starting
@@ -26,18 +26,17 @@ record FiftyMoveSequence(SequenceStart start, @Nullable HalfMove endPly) {
 
   /**
    * The sequence's final halfmove-clock value. Equal to {@code endPly.halfMoveClock()} when {@code endPly != null};
-   * otherwise the start's intrinsic clock value ({@code initialClockValue} for {@code InitialFenStart}, or {@code 1}
-   * for {@code AfterResetStart} though a one-ply {@code AfterResetStart} sequence can never reach the threshold and
-   * therefore never appears in the report).
+   * otherwise the start's intrinsic clock value ({@code initialClockValue} for an initial-FEN start, or {@code 1} for
+   * an after-reset start — though a one-ply after-reset sequence can never reach the threshold and therefore never
+   * appears in the report).
    */
   int finalClock() {
     if (endPly != null) {
       return endPly.halfMoveClock();
     }
-    if (start instanceof InitialFenStart initialFenStart) {
-      return initialFenStart.initialClockValue();
+    if (start.isInitialFen()) {
+      return start.initialClockValue();
     }
-    final AfterResetStart afterResetStart = (AfterResetStart) start;
-    return afterResetStart.firstNonZeroingMove().halfMoveClock();
+    return start.firstNonZeroingMoveOrThrow().halfMoveClock();
   }
 }

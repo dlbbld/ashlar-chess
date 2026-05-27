@@ -8,18 +8,17 @@ import com.dlb.chess.common.model.HalfMove;
  * stays consistent between the claim-ahead and sequence sections.
  *
  * <p>
- * Renders {@link InitialFenStart} as {@code [Starting position] (N)} where {@code N} is the starting FEN's halfmove
- * clock, and {@link AfterResetStart} as {@code <ply>.[..] <SAN> (1)} — the first non-zeroing move after a reset, with
+ * Renders an initial-FEN start as {@code [Starting position] (N)} where {@code N} is the starting FEN's halfmove
+ * clock, and an after-reset start as {@code <ply>.[..] <SAN> (1)} — the first non-zeroing move after a reset, with
  * its post-move halfmove-clock value of {@code 1} in parentheses.
  */
 abstract class SequenceStartFormat {
 
   static String format(SequenceStart start) {
-    if (start instanceof InitialFenStart initialFenStart) {
-      return "[Starting position] (" + initialFenStart.initialClockValue() + ")";
+    if (start.isInitialFen()) {
+      return "[Starting position] (" + start.initialClockValue() + ")";
     }
-    final AfterResetStart afterResetStart = (AfterResetStart) start;
-    final HalfMove firstMove = afterResetStart.firstNonZeroingMove();
+    final HalfMove firstMove = start.firstNonZeroingMoveOrThrow();
     return HalfMoveUtility.calculateMoveNumberAndSanWithSpace(firstMove) + " (" + firstMove.halfMoveClock() + ")";
   }
 }

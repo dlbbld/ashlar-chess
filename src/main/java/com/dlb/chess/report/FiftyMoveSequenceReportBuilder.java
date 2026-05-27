@@ -20,7 +20,7 @@ abstract class FiftyMoveSequenceReportBuilder {
    *
    * <p>
    * Special initial-FEN handling: if the starting FEN's halfmove clock is non-zero, a sequence is open from the
-   * beginning with {@link InitialFenStart}. If the FEN's clock alone already meets the threshold and the first played
+   * beginning with the initial-FEN-anchored {@link SequenceStart} shape. If the FEN's clock alone already meets the threshold and the first played
    * move resets it (or no halfmoves are played at all), the sequence is emitted with {@code endPly == null} —
    * the print layer renders only the start marker.
    */
@@ -31,7 +31,7 @@ abstract class FiftyMoveSequenceReportBuilder {
 
     final List<FiftyMoveSequence> sequences = new ArrayList<>();
 
-    @Nullable SequenceStart currentStart = initialFenClock > 0 ? new InitialFenStart(initialFenClock) : null;
+    @Nullable SequenceStart currentStart = initialFenClock > 0 ? SequenceStart.initialFen(initialFenClock) : null;
     @Nullable HalfMove currentEndPly = null;
 
     for (final HalfMove ply : halfMoveList) {
@@ -47,7 +47,7 @@ abstract class FiftyMoveSequenceReportBuilder {
       } else if (currentStart == null) {
         // First non-zeroing move after a reset (or after a fresh FEN with clock 0). By the
         // chess-engine invariant, this move's halfMoveClock is exactly 1.
-        currentStart = new AfterResetStart(ply);
+        currentStart = SequenceStart.afterReset(ply);
         currentEndPly = null;
       } else {
         // Sequence continues; extend the end marker.

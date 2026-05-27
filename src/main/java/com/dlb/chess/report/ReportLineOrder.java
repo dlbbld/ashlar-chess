@@ -36,9 +36,9 @@ abstract class ReportLineOrder {
 
   /**
    * Orders 50-move claim-ahead entries by (sequence-start-anchor, boundary half-move count). The sequence-start
-   * anchor is {@code -1} when the start is {@link InitialFenStart} (sorts before any played ply) or the
-   * {@code firstNonZeroingMove}'s half-move count when the start is {@link AfterResetStart}. This groups boundary
-   * entries by the run they belong to and orders within a run chronologically.
+   * anchor is {@code -1} for an initial-FEN start (sorts before any played ply) or the {@code firstNonZeroingMove}'s
+   * half-move count for an after-reset start. This groups boundary entries by the run they belong to and orders
+   * within a run chronologically.
    */
   static final Comparator<FiftyMoveClaimAheadEntry> FIFTY_MOVE_CLAIM_AHEAD_COMPARATOR = (a, b) -> {
     final int startCompare = Integer.compare(sequenceStartAnchor(a.sequenceStart()),
@@ -73,11 +73,10 @@ abstract class ReportLineOrder {
   }
 
   private static int sequenceStartAnchor(SequenceStart start) {
-    if (start instanceof InitialFenStart) {
+    if (start.isInitialFen()) {
       return -1;
     }
-    final AfterResetStart afterResetStart = (AfterResetStart) start;
-    return afterResetStart.firstNonZeroingMove().halfMoveCount();
+    return start.firstNonZeroingMoveOrThrow().halfMoveCount();
   }
 
   private static int compareKeys(List<Integer> a, List<Integer> b) {
