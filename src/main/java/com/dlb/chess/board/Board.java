@@ -20,6 +20,8 @@ import com.dlb.chess.common.constants.ChessConstants;
 import com.dlb.chess.common.constants.DynamicPositionConstants;
 import com.dlb.chess.common.enums.InsufficientMaterial;
 import com.dlb.chess.common.exceptions.ProgrammingMistakeException;
+import com.dlb.chess.common.model.ClaimRights;
+import com.dlb.chess.common.model.ClaimableMove;
 import com.dlb.chess.common.model.DynamicPosition;
 import com.dlb.chess.common.model.HalfMove;
 import com.dlb.chess.common.model.MoveSpecification;
@@ -41,6 +43,7 @@ import com.dlb.chess.san.LenientSanParserValidationResult;
 import com.dlb.chess.san.MoveToLan;
 import com.dlb.chess.san.MoveToSan;
 import com.dlb.chess.san.SanTerminalMarker;
+import com.dlb.chess.san.SanValidationException;
 import com.dlb.chess.san.StrictSanParser;
 import com.dlb.chess.san.StrictSanParserValidationResult;
 import com.dlb.chess.unwinnability.DeadPositionFull;
@@ -592,6 +595,95 @@ public class Board {
       }
     }
     return false;
+  }
+
+  /**
+   * SAN convenience overload of {@link #canClaimFiftyMoveRuleFor(MoveSpecification)}: parses {@code san} as strict
+   * canonical SAN against the current position and delegates. Returns {@code false} (rather than throwing) when
+   * {@code san} is malformed, ambiguous, or does not match a legal move on the current position — so callers can probe
+   * arbitrary strings without exception handling.
+   */
+  public boolean canClaimFiftyMoveRuleFor(String san) {
+    final @Nullable MoveSpecification parsed = parseSanQuietly(san);
+    if (parsed == null) {
+      return false;
+    }
+    return canClaimFiftyMoveRuleFor(parsed);
+  }
+
+  /**
+   * SAN convenience overload of {@link #canClaimThreefoldRepetitionRuleFor(MoveSpecification)}: parses {@code san} as
+   * strict canonical SAN against the current position and delegates. Returns {@code false} (rather than throwing) when
+   * {@code san} is malformed, ambiguous, or does not match a legal move on the current position.
+   */
+  public boolean canClaimThreefoldRepetitionRuleFor(String san) {
+    final @Nullable MoveSpecification parsed = parseSanQuietly(san);
+    if (parsed == null) {
+      return false;
+    }
+    return canClaimThreefoldRepetitionRuleFor(parsed);
+  }
+
+  private @Nullable MoveSpecification parseSanQuietly(String san) {
+    try {
+      return StrictSanParser.parseText(san, this).moveSpecification();
+    } catch (@SuppressWarnings("unused") final SanValidationException ignored) {
+      return null;
+    }
+  }
+
+  /**
+   * Returns the side-to-move's FIDE 9.3 (50-move) claim rights at the current position: one {@link ClaimableMove} per
+   * legal move that, if announced before being played, would entitle the announcer to claim a draw under the 50-move
+   * rule (halfmove clock would reach 100; move is neither a pawn move nor a capture).
+   *
+   * <p>
+   * Each candidate move is admitted via the per-move predicate {@link #canClaimFiftyMoveRuleFor(MoveSpecification)} —
+   * the single source of truth — so any future tightening of FIDE 9.3 semantics flows through automatically. Move
+   * order in the returned list matches {@link #getLegalMoves()} order. The board state is unchanged after the call.
+   */
+  public ClaimRights calculateFiftyMoveRuleClaimRights() {
+    return calculateClaimRights(/* threefoldRather */ false);
+  }
+
+  /**
+   * Returns the side-to-move's FIDE 9.2 (threefold repetition) claim rights at the current position: one
+   * {@link ClaimableMove} per legal move that, if announced before being played, would produce a position with at
+   * least three occurrences (including the announced-but-not-yet-played one).
+   *
+   * <p>
+   * Each candidate move is admitted via the per-move predicate
+   * {@link #canClaimThreefoldRepetitionRuleFor(MoveSpecification)} — the single source of truth. Move order matches
+   * {@link #getLegalMoves()} order. The board state is unchanged after the call.
+   */
+  public ClaimRights calculateThreefoldRepetitionRuleClaimRights() {
+    return calculateClaimRights(/* threefoldRather */ true);
+  }
+
+  /**
+   * Shared body for the two claim-rights calculations: iterates the current legal-moves list, applies the per-rule
+   * predicate, and for accepted moves captures the canonical SAN via a transient {@code move}/{@code unmove} pair. The
+   * SAN of the just-pushed move is read from {@link #getSan()} on the pushed board, then the push is reverted, so the
+   * board is in the same state when the method returns as when it was called.
+   */
+  private ClaimRights calculateClaimRights(boolean threefoldRather) {
+    final List<ClaimableMove> claimable = new ArrayList<>();
+    for (final LegalMove legalMove : getLegalMoves()) {
+      final MoveSpecification spec = legalMove.moveSpecification();
+      final boolean accepted = threefoldRather ? canClaimThreefoldRepetitionRuleFor(spec)
+          : canClaimFiftyMoveRuleFor(spec);
+      if (!accepted) {
+        continue;
+      }
+      // Capture canonical SAN of the candidate via transient push. Symmetric in shape with the
+      // claim-ahead report builders. For threefold the predicate also pushed-and-popped internally;
+      // this is a second push purely to read the resulting SAN.
+      this.move(spec);
+      final String san = getSan();
+      this.unmove();
+      claimable.add(new ClaimableMove(spec, san));
+    }
+    return new ClaimRights(!claimable.isEmpty(), claimable);
   }
 
   public int getHalfMoveClock() {
