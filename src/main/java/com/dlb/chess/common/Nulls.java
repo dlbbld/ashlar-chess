@@ -285,9 +285,9 @@ public class Nulls {
     return checkResult(Set.of(items));
   }
 
-  @SuppressWarnings({ "unchecked" })
-  public static <E> List<E> listOf(E... items) {
-    return checkResult(List.of(items));
+  @SafeVarargs
+  public static <E> ImmutableList<E> listOf(E... items) {
+    return checkResult(ImmutableList.copyOf(items));
   }
 
   public static <E extends Enum<E>> EnumSet<E> noneOf(Class<E> enumClass) {
