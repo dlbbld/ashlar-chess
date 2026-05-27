@@ -19,19 +19,11 @@ import com.dlb.chess.test.pgn.setup.PgnTestCaseCatalog;
 import com.dlb.chess.test.pgntest.enums.PgnTest;
 
 /**
- * Golden-output safety net for the Phase 1 report-model refactor.
+ * Golden stdout guard for {@link Reporter#printReport}: any change to the printed bytes fails the test.
  *
  * <p>
- * Locks in the exact stdout shape of {@link Reporter#printReport} across five representative scenarios. The refactor
- * extracts chess decisions (initial-position inclusion, played-vs-hypothetical, repetition counts, position-label
- * assignment) out of the print classes into analysis records; this test fails if any of that movement perturbs the
- * printed bytes.
- *
- * <p>
- * Goldens live under {@code src/test/resources/report/golden/} and are loaded as classpath resources. To regenerate
- * after an intentional output change, run with {@code -Dgolden.regenerate=true} from the project root — that mode
- * writes the goldens via the filesystem path and fails each test with an explicit "regenerated" message so the flag
- * cannot be accidentally committed in the green state.
+ * Regenerate goldens with {@code -Dgolden.regenerate=true}; that mode deliberately fails every test so the flag cannot
+ * be accidentally committed in the green state.
  */
 class TestReporterGoldenOutput {
 
