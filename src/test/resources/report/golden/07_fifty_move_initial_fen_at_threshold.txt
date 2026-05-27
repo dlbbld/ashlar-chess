@@ -1,7 +1,5 @@
 Valid threefold claims ahead (asterisk denotes also the last ahead move has been played):
-[Initial position] 2... Ng8 4... Ng8 (A - 3)
-1... Nf6 3... Nf6 5... Nf6 (B - 3)
-6... Ra7 8... Ra7 10... Ra7 (C - 3)
+None
 
 Threefolds and beyond:
 None
@@ -10,4 +8,4 @@ Valid fifty-move claims ahead (asterisk denotes also the last ahead move has bee
 None
 
 Fifty moves and beyond:
-None
+[Starting position] (100)

@@ -34,6 +34,21 @@ abstract class ReportLineOrder {
   static final Comparator<RepetitionGroup> REPETITION_GROUP_COMPARATOR = (a, b) -> compareKeys(
       repetitionGroupSortKey(a), repetitionGroupSortKey(b));
 
+  /**
+   * Orders 50-move claim-ahead entries by (sequence-start-anchor, claimAheadMove.halfMoveCount). The sequence-start
+   * anchor is {@code -1} when the start is {@link InitialFenStart} (sorts before any played ply) or the
+   * {@code firstNonZeroingMove}'s half-move count when the start is {@link AfterResetStart}. This groups entries by
+   * the run they advance and orders within a run by the candidate-move ply.
+   */
+  static final Comparator<FiftyMoveClaimAheadEntry> FIFTY_MOVE_CLAIM_AHEAD_COMPARATOR = (a, b) -> {
+    final int startCompare = Integer.compare(sequenceStartAnchor(a.sequenceStart()),
+        sequenceStartAnchor(b.sequenceStart()));
+    if (startCompare != 0) {
+      return startCompare;
+    }
+    return Integer.compare(a.claimAheadMove().halfMoveCount(), b.claimAheadMove().halfMoveCount());
+  };
+
   private static List<Integer> claimAheadSortKey(ClaimAheadEntry entry) {
     final List<Integer> key = new ArrayList<>();
     if (entry.includesInitialPosition()) {
@@ -55,6 +70,14 @@ abstract class ReportLineOrder {
       key.add(halfMove.halfMoveCount());
     }
     return key;
+  }
+
+  private static int sequenceStartAnchor(SequenceStart start) {
+    if (start instanceof InitialFenStart) {
+      return -1;
+    }
+    final AfterResetStart afterResetStart = (AfterResetStart) start;
+    return afterResetStart.firstNonZeroingMove().halfMoveCount();
   }
 
   private static int compareKeys(List<Integer> a, List<Integer> b) {

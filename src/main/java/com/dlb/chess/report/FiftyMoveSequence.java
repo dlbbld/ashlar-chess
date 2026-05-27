@@ -1,45 +1,43 @@
 package com.dlb.chess.report;
 
-import com.dlb.chess.common.Nulls;
-import com.google.common.collect.ImmutableList;
+import org.eclipse.jdt.annotation.Nullable;
+
+import com.dlb.chess.common.model.HalfMove;
 
 /**
- * One run of non-progress halfmoves that reached the 50-move-rule threshold (halfmove clock {@code >= 100}).
+ * One no-progress halfmove sequence that reached the 50-move-rule threshold (halfmove clock {@code >= 100}).
  *
  * <p>
- * {@code entries} carry the structure produced by {@link NoProgressMoveUtility}: the first entry marks where the
- * sequence started, an optional middle entry marks the ply at which the clock first reached 100 (for sequences that
- * extend past the threshold), and the last entry marks where the sequence ended (either by a clock-resetting move
- * being played or by the end of the played history).
+ * {@code start} identifies how the sequence began ({@link InitialFenStart} when the starting FEN already had a
+ * non-zero halfmove clock that the sequence inherits; {@link AfterResetStart} when the sequence began mid-game with
+ * the first non-zeroing move after a reset).
  *
  * <p>
- * Three shape possibilities, distinguished by the two flags:
- *
- * <ul>
- * <li><strong>Pure played</strong> ({@code includesInitialFen == false}, {@code thresholdReachedDuringInitialFen ==
- * false}): the sequence both starts and reaches threshold via played halfmoves. The familiar mid-game case.
- * <li><strong>Initial-FEN-continued</strong> ({@code includesInitialFen == true},
- * {@code thresholdReachedDuringInitialFen == false}): the initial FEN had a partial halfmove clock and the sequence
- * extended into play, reaching the threshold at a played halfmove.
- * <li><strong>Initial-FEN-at-threshold</strong> ({@code includesInitialFen == true},
- * {@code thresholdReachedDuringInitialFen == true}): the initial FEN's halfmove clock <em>already</em> met or
- * exceeded the threshold; the 50-move rule was met before any halfmoves were played. The sequence may continue past
- * the initial-FEN portion (if a non-zeroing legal move is played from the initial position) or it may not (if the
- * only legal moves zero the clock, e.g. the constructed corner where the only legal move is a capture).
- * </ul>
+ * {@code endPly} is the last non-zeroing ply of the sequence, or {@code null} for the corner case where the starting
+ * FEN's clock alone already met the threshold and no played halfmove extended the sequence (typically because the only
+ * legal move from the FEN-start is a capture, which resets the clock; rendered as start marker alone, no end marker).
  *
  * <p>
- * {@code finalSequenceLength} is the final halfmove-clock value reached by the sequence ({@code >= 100} by
- * construction — sequences below the threshold are not surfaced here).
+ * {@code finalClock()} derives the final halfmove-clock value from {@code endPly}'s clock when present, or from the
+ * start's value otherwise. By the threshold guarantee at construction time in the builder, {@code finalClock() >= 100}
+ * for every sequence in {@link FiftyMoveSequenceReport}.
  */
-record FiftyMoveSequence(ImmutableList<NoProgressHalfMove> entries, boolean includesInitialFen,
-    boolean thresholdReachedDuringInitialFen, int finalSequenceLength) {
+record FiftyMoveSequence(SequenceStart start, @Nullable HalfMove endPly) {
 
-  public FiftyMoveSequence {
-    entries = Nulls.copyOfList(entries);
-    if (thresholdReachedDuringInitialFen && !includesInitialFen) {
-      throw new IllegalArgumentException(
-          "thresholdReachedDuringInitialFen=true requires includesInitialFen=true");
+  /**
+   * The sequence's final halfmove-clock value. Equal to {@code endPly.halfMoveClock()} when {@code endPly != null};
+   * otherwise the start's intrinsic clock value ({@code initialClockValue} for {@code InitialFenStart}, or {@code 1}
+   * for {@code AfterResetStart} though a one-ply {@code AfterResetStart} sequence can never reach the threshold and
+   * therefore never appears in the report).
+   */
+  int finalClock() {
+    if (endPly != null) {
+      return endPly.halfMoveClock();
     }
+    if (start instanceof InitialFenStart initialFenStart) {
+      return initialFenStart.initialClockValue();
+    }
+    final AfterResetStart afterResetStart = (AfterResetStart) start;
+    return afterResetStart.firstNonZeroingMove().halfMoveClock();
   }
 }

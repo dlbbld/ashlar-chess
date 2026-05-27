@@ -33,7 +33,7 @@ class TestReportPrintoutDerivesFromObjectModel {
   private static final String CLAIM_AHEAD_HEADER_PREFIX = "Valid threefold claims ahead";
   private static final String EXISTING_HEADER_PREFIX = "Threefolds and beyond";
   private static final String FIFTY_CLAIM_AHEAD_HEADER_PREFIX = "Valid fifty-move claims ahead";
-  private static final String FIFTY_SEQUENCE_HEADER_PREFIX = "Fifty moves without capture";
+  private static final String FIFTY_SEQUENCE_HEADER_PREFIX = "Fifty moves and beyond";
   private static final String NONE_SENTINEL = "None";
 
   @SuppressWarnings("static-method")

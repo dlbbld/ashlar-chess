@@ -3,55 +3,40 @@ package com.dlb.chess.report;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.dlb.chess.board.enums.Side;
-import com.dlb.chess.common.constants.BasicConstants;
+import com.dlb.chess.board.HalfMoveUtility;
+import com.dlb.chess.common.model.HalfMove;
 
 abstract class FiftyMoveSequencePrint {
 
   /**
-   * Renders the 50-move-sequence report as one line of tokens per sequence. Format per sequence:
+   * Renders the 50-move-sequence report as one line per sequence. Format:
    *
    * <pre>
-   *   [Initial position] [50-move rule met by initial FEN] &lt;start&gt; ... &lt;threshold-marker&gt; ... &lt;end&gt; (length N)
+   *   &lt;sequence-start-marker&gt; - &lt;move-number&gt;.[..] &lt;SAN&gt; (&lt;final-clock&gt;)
    * </pre>
    *
    * <p>
-   * The {@code [Initial position]} marker appears only when {@code includesInitialFen} is set; the
-   * {@code [50-move rule met by initial FEN]} marker only when {@code thresholdReachedDuringInitialFen} is set.
-   * Played halfmove entries are rendered in standard {@code N.SAN} (White) or {@code N...SAN} (Black) form;
-   * synthetic before-game entries (used by the utility to mark the initial-FEN portion) are suppressed because the
-   * markers convey the same information without the verbose {@code (NA)} entries.
+   * The end-of-sequence token is omitted entirely for the corner case where the starting FEN's clock alone met the
+   * threshold and no halfmove extended the sequence — there the line is just the start marker, e.g.
+   * {@code [Starting position] (100)}.
    */
   static List<List<String>> render(FiftyMoveSequenceReport report) {
     final List<List<String>> resultListList = new ArrayList<>();
     for (final FiftyMoveSequence sequence : report.sequences()) {
-      resultListList.add(renderSequence(sequence));
+      final List<String> tokens = new ArrayList<>();
+      tokens.add(SequenceStartFormat.format(sequence.start()));
+      final HalfMove endPly = sequence.endPly();
+      if (endPly != null) {
+        tokens.add("-");
+        tokens.add(formatEndPly(endPly));
+      }
+      resultListList.add(tokens);
     }
     return resultListList;
   }
 
-  private static List<String> renderSequence(FiftyMoveSequence sequence) {
-    final List<String> tokens = new ArrayList<>();
-    if (sequence.includesInitialFen()) {
-      tokens.add("[Initial position]");
-    }
-    if (sequence.thresholdReachedDuringInitialFen()) {
-      tokens.add("[50-move rule met by initial FEN]");
-    }
-    for (final NoProgressHalfMove entry : sequence.entries()) {
-      if (BasicConstants.NA.equals(entry.san())) {
-        continue;
-      }
-      tokens.add(formatPlayed(entry));
-    }
-    tokens.add("(length " + sequence.finalSequenceLength() + ")");
-    return tokens;
-  }
-
-  private static String formatPlayed(NoProgressHalfMove entry) {
-    if (entry.sideMoved() == Side.WHITE) {
-      return entry.fullMoveNumber() + ". " + entry.san();
-    }
-    return entry.fullMoveNumber() + "... " + entry.san();
+  private static String formatEndPly(HalfMove endPly) {
+    final String movePart = HalfMoveUtility.calculateMoveNumberAndSanWithSpace(endPly);
+    return movePart + " (" + endPly.halfMoveClock() + ")";
   }
 }

@@ -1,6 +1,8 @@
 package com.dlb.chess.report;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
@@ -9,13 +11,16 @@ import com.dlb.chess.board.Board;
 
 /**
  * Direct unit tests for {@link FiftyMoveSequenceReportBuilder}: assertions against the {@link FiftyMoveSequenceReport}
- * record returned by the builder. Covers the three shape cases:
+ * record returned by the builder. Each sequence carries a {@link SequenceStart} (either {@link InitialFenStart} or
+ * {@link AfterResetStart}) and an optional {@code endPly}; the tests pin which variant is produced for each canonical
+ * shape:
  *
  * <ul>
- * <li>Pure played history (no initial-FEN contribution)
- * <li>Initial-FEN-continued (initial FEN had partial clock, threshold reached during play)
- * <li>Initial-FEN-at-threshold (initial FEN already at clock 100), with two sub-cases: no continuation possible, and
- * with continuation
+ * <li>Pure played history: {@link AfterResetStart} (game starts with FEN clock 0; the first non-zeroing move opens the
+ * sequence).
+ * <li>Initial-FEN-continued: {@link InitialFenStart} with a played {@code endPly} extending past the threshold.
+ * <li>Initial-FEN-already-at-threshold with no continuation: {@link InitialFenStart} with {@code endPly == null}.
+ * <li>Initial-FEN-already-at-threshold with continuation: {@link InitialFenStart} with a played {@code endPly}.
  * </ul>
  */
 class TestFiftyMoveSequenceReportBuilder {
@@ -31,14 +36,14 @@ class TestFiftyMoveSequenceReportBuilder {
         "no sequence reached the 50-move threshold in this short pawn-and-knight opening");
   }
 
-  // === Case A — pure played history ===
+  // === Pure played history ===
 
   @SuppressWarnings("static-method")
   @Test
   void purePlayedSequenceReachingThreshold() {
-    // 100 plies of knight shuffle from the initial position -> halfmove clock 100 at the end of
-    // the played history. Initial FEN's clock is 0, so the sequence starts at the first played
-    // halfmove.
+    // 100 plies of knight shuffle from the initial position. FEN clock is 0, so the sequence's
+    // start is AfterResetStart(firstNonZeroingMove). The first move is Nf3 — that's the sequence
+    // anchor.
     final Board board = new Board();
     for (var i = 0; i < 25; i++) {
       board.movesStrict("Nf3", "Nf6", "Ng1", "Ng8");
@@ -49,26 +54,27 @@ class TestFiftyMoveSequenceReportBuilder {
     assertEquals(1, report.sequences().size(), "exactly one no-progress sequence in this game");
 
     final FiftyMoveSequence sequence = report.sequences().get(0);
-    assertEquals(false, sequence.includesInitialFen(),
-        "case A: sequence starts at the first played halfmove, no initial-FEN contribution");
-    assertEquals(false, sequence.thresholdReachedDuringInitialFen(),
-        "case A: initial FEN clock was 0, well below threshold");
-    assertEquals(100, sequence.finalSequenceLength(), "sequence length at end equals the clock value");
+    assertTrue(sequence.start() instanceof AfterResetStart,
+        "pure-played: sequence starts at the first played non-zeroing move, no initial-FEN inheritance");
+    final AfterResetStart afterResetStart = (AfterResetStart) sequence.start();
+    assertEquals("Nf3", afterResetStart.firstNonZeroingMove().san(), "first non-zeroing move is Nf3 (white's first ply)");
+    assertEquals(1, afterResetStart.firstNonZeroingMove().halfMoveClock(),
+        "by construction the start move's halfmove clock is 1");
+    assertNotNull(sequence.endPly(), "sequence has played continuation — endPly must be present");
+    assertEquals(100, sequence.finalClock(), "final clock value at end of sequence equals played-history clock");
   }
 
-  // === Case B — initial-FEN-continued ===
+  // === Initial-FEN-continued ===
 
   @SuppressWarnings("static-method")
   @Test
   void initialFenContinuedSequenceReachingThreshold() {
-    // Initial FEN has halfmove clock 50 — half a 50-move rule run already accumulated, threshold
-    // not yet reached. Play 50 non-zeroing halfmoves to bring it to 100. The sequence's first
-    // marker is before-the-first-played-halfmove (initial FEN contribution), but the threshold
-    // itself is reached at a played halfmove.
+    // Initial FEN clock 50 — half a 50-move run already inherited. Play 50 non-zeroing halfmoves
+    // to bring it to 100. The sequence's start is InitialFenStart(50); the endPly is the played
+    // halfmove that completed the threshold (and possibly further).
     final Board board = new Board("4k3/8/8/8/8/8/8/R3K3 w - - 50 30");
     assertEquals(50, board.getHalfMoveClock(), "precondition: initial FEN at clock 50");
 
-    // 50 non-zeroing plies: 12 full rook+king shuffles (48 plies) + 2 extra plies.
     for (var i = 0; i < 12; i++) {
       board.movesStrict("Ra3", "Kd8", "Ra1", "Ke8");
     }
@@ -79,47 +85,46 @@ class TestFiftyMoveSequenceReportBuilder {
     assertEquals(1, report.sequences().size(), "one sequence — initial FEN continued into play");
 
     final FiftyMoveSequence sequence = report.sequences().get(0);
-    assertEquals(true, sequence.includesInitialFen(),
-        "case B: sequence starts before the first played halfmove (initial FEN had partial clock)");
-    assertEquals(false, sequence.thresholdReachedDuringInitialFen(),
-        "case B: initial FEN's clock was 50 — below threshold, reached during play");
-    assertEquals(100, sequence.finalSequenceLength());
+    assertTrue(sequence.start() instanceof InitialFenStart,
+        "initial-FEN-continued: sequence inherits the FEN's clock");
+    assertEquals(50, ((InitialFenStart) sequence.start()).initialClockValue(),
+        "InitialFenStart carries the FEN's clock value verbatim");
+    assertNotNull(sequence.endPly(), "sequence has played continuation — endPly must be present");
+    assertEquals(100, sequence.finalClock());
   }
 
-  // === Case C — initial-FEN-at-threshold ===
+  // === Initial-FEN-already-at-threshold ===
 
   @SuppressWarnings("static-method")
   @Test
   void initialFenAlreadyAtThresholdWithNoContinuation() {
-    // User-supplied special case: black queen on b2 caging the white king on a1; white's only
-    // legal move is Kxb2, which is a CAPTURE -> resets the clock. No continuation past the
-    // threshold. The 50-move rule has already been met by the initial FEN itself (halfmove clock
-    // 100), and the report must surface this as a sequence even with empty halfmove history.
+    // The user-supplied special case. Black queen on b2 caging white's king on a1; white's only
+    // legal move is Kxb2, a capture that resets the clock. No non-zeroing continuation possible.
+    // The sequence must still appear in the report with endPly == null — the print layer renders
+    // only the start marker, e.g. "[Starting position] (100)".
     final Board board = new Board("7k/8/8/8/8/8/1q6/K7 w - - 100 80");
-    assertEquals(100, board.getHalfMoveClock(), "precondition: initial FEN's clock already at threshold");
-    assertEquals(1, board.getLegalMoves().size(), "precondition: only one legal move (Kxb2, a capture)");
+    assertEquals(100, board.getHalfMoveClock(), "precondition: FEN clock already at threshold");
+    assertEquals(1, board.getLegalMoves().size(), "precondition: only Kxb2 legal");
 
     final FiftyMoveSequenceReport report = FiftyMoveSequenceReportBuilder.build(board);
     assertEquals(1, report.sequences().size(),
-        "the initial-FEN-already-at-threshold case must surface as a sequence even with no continuation");
+        "even with no continuation, an at-threshold initial FEN must surface as a sequence");
 
     final FiftyMoveSequence sequence = report.sequences().get(0);
-    assertEquals(true, sequence.includesInitialFen());
-    assertEquals(true, sequence.thresholdReachedDuringInitialFen(),
-        "case C: initial FEN's clock alone met the threshold (100 >= 100)");
-    assertEquals(100, sequence.finalSequenceLength(),
-        "sequence length equals the initial FEN's halfmove clock — no continuation possible from this position");
+    assertTrue(sequence.start() instanceof InitialFenStart);
+    assertEquals(100, ((InitialFenStart) sequence.start()).initialClockValue());
+    assertNull(sequence.endPly(),
+        "endPly is null when threshold is met by FEN alone with no non-zeroing continuation");
+    assertEquals(100, sequence.finalClock(), "finalClock derives from start when endPly is null");
   }
 
   @SuppressWarnings("static-method")
   @Test
   void initialFenAlreadyAtThresholdWithContinuation() {
-    // Sister case to the above: initial FEN already at clock 100 AND non-zeroing legal moves are
-    // available, so play continues past the threshold. King + rook vs king with the rook free to
-    // shuffle. The sequence still flags thresholdReachedDuringInitialFen because the threshold
-    // was met by the initial FEN itself; the played halfmoves just extend it.
+    // Sister case: FEN already at clock 100 AND non-zeroing legal moves available. Sequence's
+    // start is InitialFenStart(100); endPly extends past the threshold via the played plies.
     final Board board = new Board("4k3/8/8/8/8/8/8/R3K3 w - - 100 80");
-    assertEquals(100, board.getHalfMoveClock(), "precondition: initial FEN's clock already at threshold");
+    assertEquals(100, board.getHalfMoveClock(), "precondition: FEN clock already at threshold");
 
     board.movesStrict("Ra3", "Kd8", "Ra1", "Ke8");
 
@@ -127,11 +132,47 @@ class TestFiftyMoveSequenceReportBuilder {
     assertEquals(1, report.sequences().size(), "still one continuous no-progress sequence");
 
     final FiftyMoveSequence sequence = report.sequences().get(0);
-    assertEquals(true, sequence.includesInitialFen());
-    assertEquals(true, sequence.thresholdReachedDuringInitialFen(),
-        "case C: threshold met by initial FEN, even though play extends the sequence further");
-    assertTrue(sequence.finalSequenceLength() > 100,
-        "sequence length grew past 100 due to the four extra non-zeroing plies; got "
-            + sequence.finalSequenceLength());
+    assertTrue(sequence.start() instanceof InitialFenStart);
+    assertEquals(100, ((InitialFenStart) sequence.start()).initialClockValue());
+    assertNotNull(sequence.endPly(), "played plies extend the sequence — endPly must be present");
+    assertEquals(104, sequence.finalClock(), "four extra non-zeroing plies extend the clock past 100");
+  }
+
+  // === Mid-game reset opening a fresh sequence ===
+
+  @SuppressWarnings("static-method")
+  @Test
+  void midGameResetOpensFreshSequenceWithAfterResetStart() {
+    // Initial FEN clock 50 inherited, but the very first played move is a pawn push (resets the
+    // clock). The inherited InitialFenStart sequence ends below threshold and is not reported.
+    // Then 100 non-zeroing plies form a fresh sequence with AfterResetStart anchored at the first
+    // non-zeroing move after the pawn push. White rook lives on h1 so the rook shuffle does not
+    // collide with the white a-pawn after the push.
+    final Board board = new Board("4k3/p7/8/8/8/8/P7/4K2R w - - 50 30");
+    assertEquals(50, board.getHalfMoveClock(), "precondition: inherited clock 50");
+
+    board.movesStrict("a3"); // White pawn push resets clock
+    assertEquals(0, board.getHalfMoveClock(), "precondition: pawn push reset the clock");
+
+    // Black opens the new sequence with a non-zeroing king move (ply 1, clock 1).
+    board.movesStrict("Kd8");
+    // 99 more non-zeroing plies via Rg1/Ke8/Rh1/Kd8 cycle: 24 full cycles (96 plies) + 3 trailing.
+    for (var i = 0; i < 24; i++) {
+      board.movesStrict("Rg1", "Ke8", "Rh1", "Kd8");
+    }
+    board.movesStrict("Rg1", "Ke8", "Rh1");
+    assertEquals(100, board.getHalfMoveClock(), "precondition: fresh sequence reaches the threshold");
+
+    final FiftyMoveSequenceReport report = FiftyMoveSequenceReportBuilder.build(board);
+    assertEquals(1, report.sequences().size(),
+        "the inherited-FEN sequence ended below threshold (not reported); the fresh after-reset sequence reaches threshold");
+
+    final FiftyMoveSequence sequence = report.sequences().get(0);
+    assertTrue(sequence.start() instanceof AfterResetStart,
+        "mid-game start: AfterResetStart anchored at the first non-zeroing ply after the pawn push");
+    final AfterResetStart afterResetStart = (AfterResetStart) sequence.start();
+    assertEquals("Kd8", afterResetStart.firstNonZeroingMove().san(),
+        "first non-zeroing ply after the pawn push is Kd8");
+    assertEquals(100, sequence.finalClock());
   }
 }

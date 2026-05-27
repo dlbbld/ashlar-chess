@@ -14,6 +14,7 @@ import java.nio.file.Paths;
 
 import org.junit.jupiter.api.Test;
 
+import com.dlb.chess.board.Board;
 import com.dlb.chess.report.Reporter;
 import com.dlb.chess.test.pgn.setup.PgnTestCaseCatalog;
 import com.dlb.chess.test.pgntest.enums.PgnTest;
@@ -87,6 +88,24 @@ class TestReporterGoldenOutput {
     // by some other key would break a golden, not just slip silently into the printed report.
     final String actual = capturePgnFile("fivefold_correct_potapov_adly_2018.pgn");
     compareOrRegenerate(actual, "06_fivefold_correct_potapov_adly_2018.txt");
+  }
+
+  @SuppressWarnings("static-method")
+  @Test
+  void fiftyMoveInitialFenAtThresholdNoContinuation() {
+    // FEN with halfmove clock already at 100; black queen on b2 caging white's king on a1. The only
+    // legal move is Kxb2 — a capture, which resets the clock. The 50-move rule was met by the FEN
+    // itself; no claim-ahead is possible (the predicate rejects clock-resetting candidates) but
+    // the sequence-section must surface the threshold-met state with a bare start marker:
+    //
+    //   Fifty moves and beyond:
+    //   [Starting position] (100)
+    //
+    // Locks the special-case rendering — sequence-with-no-endPly — that's hard to test from any
+    // other entry point.
+    final Board board = new Board("7k/8/8/8/8/8/1q6/K7 w - - 100 80");
+    final String actual = captureStdout(() -> Reporter.printReport(board));
+    compareOrRegenerate(actual, "07_fifty_move_initial_fen_at_threshold.txt");
   }
 
   private static String capturePgnFile(String pgnName) {

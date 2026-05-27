@@ -8,8 +8,8 @@ Threefolds and beyond:
 2... d5 4... Bc8 6... Bc8 (A - 3)
 8. g3 10. Bc1 12. Bc1 (C - 3)
 
-Valid fifty-move claims ahead (asterisk denotes also the ahead move has been played):
+Valid fifty-move claims ahead (asterisk denotes also the last ahead move has been played):
 None
 
-Fifty moves without capture and pawn move - sequences:
+Fifty moves and beyond:
 None

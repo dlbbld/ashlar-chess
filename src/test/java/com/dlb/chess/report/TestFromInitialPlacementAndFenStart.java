@@ -337,7 +337,7 @@ class TestFromInitialPlacementAndFenStart {
    *          {@code true} here today.
    * @param expectedFiftyMoveSequenceReached
    *          {@code true} if a 50-move (or 75-move) non-progress stretch is expected and the
-   *          "Fifty moves without capture and pawn move - sequences" section should contain at least one sequence
+   *          "Fifty moves and beyond" section should contain at least one sequence
    *          line; {@code false} if the section should render the "None" sentinel (no 50-move stretch was reached in
    *          play). Threefold / fivefold tests pass {@code false} (8/16 plies are well below the 50-move threshold);
    *          50-move / 75-move tests pass {@code true}.
@@ -356,7 +356,7 @@ class TestFromInitialPlacementAndFenStart {
     }
 
     final List<String> fiftyMoveSequenceSection = extractSectionToEnd(lines,
-        "Fifty moves without capture and pawn move - sequences");
+        "Fifty moves and beyond");
     if (expectedFiftyMoveSequenceReached) {
       assertTrue(!fiftyMoveSequenceSection.isEmpty(), "fifty-move sequence section must have content");
       assertTrue(!(fiftyMoveSequenceSection.size() == 1 && "None".equals(fiftyMoveSequenceSection.get(0))),

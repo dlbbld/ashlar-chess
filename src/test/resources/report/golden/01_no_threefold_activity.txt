@@ -4,8 +4,8 @@ None
 Threefolds and beyond:
 None
 
-Valid fifty-move claims ahead (asterisk denotes also the ahead move has been played):
+Valid fifty-move claims ahead (asterisk denotes also the last ahead move has been played):
 None
 
-Fifty moves without capture and pawn move - sequences:
+Fifty moves and beyond:
 None

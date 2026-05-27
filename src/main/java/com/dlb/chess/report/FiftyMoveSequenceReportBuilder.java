@@ -3,53 +3,71 @@ package com.dlb.chess.report;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.jdt.annotation.Nullable;
+
 import com.dlb.chess.board.Board;
-import com.dlb.chess.common.Nulls;
 import com.dlb.chess.common.constants.ChessConstants;
+import com.dlb.chess.common.model.HalfMove;
 import com.google.common.collect.ImmutableList;
 
 abstract class FiftyMoveSequenceReportBuilder {
 
   /**
-   * Builds the 50-move-sequence report by wrapping the raw output of {@link NoProgressMoveUtility} into typed
-   * {@link FiftyMoveSequence} records.
+   * Walks the played history once, opening a new {@link SequenceStart} whenever the clock transitions to 1 (first
+   * non-zeroing move after a reset, or first non-zeroing move from a fresh FEN), closing the open sequence whenever a
+   * clock-resetting ply is encountered, and emitting only those sequences that reach the 50-move-rule threshold
+   * ({@code halfMoveClock >= 100}).
    *
    * <p>
-   * Always uses the FIDE 9.3 threshold (100 halfmoves). The underlying utility supports lower thresholds for future
-   * reporting flavors (e.g. half-progress sequences); this builder commits to the 50-move-rule threshold because the
-   * report is named after it.
-   *
-   * <p>
-   * Sets {@code includesInitialFen} for any sequence whose first marker is before the first played halfmove (the
-   * initial FEN's halfmove clock contributed to the sequence's start), and additionally sets
-   * {@code thresholdReachedDuringInitialFen} when the initial FEN's halfmove clock alone already met or exceeded the
-   * threshold. The two flags together let the print layer distinguish "initial-FEN-continued" from
-   * "initial-FEN-already-at-threshold" cases — the latter is surfaced even when no halfmoves are played from the
-   * initial position (e.g. when the only legal move is a capture and there is no continuation).
+   * Special initial-FEN handling: if the starting FEN's halfmove clock is non-zero, a sequence is open from the
+   * beginning with {@link InitialFenStart}. If the FEN's clock alone already meets the threshold and the first played
+   * move resets it (or no halfmoves are played at all), the sequence is emitted with {@code endPly == null} —
+   * the print layer renders only the start marker.
    */
   static FiftyMoveSequenceReport build(Board board) {
     final int threshold = ChessConstants.FIFTY_MOVE_RULE_HALF_MOVE_CLOCK_THRESHOLD;
-    final List<List<NoProgressHalfMove>> rawSequences = NoProgressMoveUtility.calculateNoProgressMoveRule(board,
-        threshold);
     final int initialFenClock = board.getInitialFen().halfMoveClock();
+    final ImmutableList<HalfMove> halfMoveList = board.getHalfMoveList();
 
     final List<FiftyMoveSequence> sequences = new ArrayList<>();
-    for (final List<NoProgressHalfMove> rawSequence : rawSequences) {
-      final NoProgressHalfMove first = Nulls.getFirst(rawSequence);
-      final NoProgressHalfMove last = Nulls.getLast(rawSequence);
-      // includesInitialFen: the sequence starts before the first played halfmove. The utility
-      // emits such markers with a non-positive performedHalfMoveCount when the initial FEN's
-      // halfmove clock contributed to the sequence's start.
-      final boolean includesInitialFen = first.performedHalfMoveCount() <= 0;
-      // thresholdReachedDuringInitialFen: the initial FEN's clock alone already met or exceeded
-      // the threshold — the rule was met without any played halfmoves contributing. This is the
-      // special case where the report must surface a sequence even if the played history is empty
-      // or the only legal continuation zeroes the clock.
-      final boolean thresholdReachedDuringInitialFen = includesInitialFen && initialFenClock >= threshold;
-      final int finalSequenceLength = last.sequenceLength();
-      sequences.add(new FiftyMoveSequence(ImmutableList.copyOf(rawSequence), includesInitialFen,
-          thresholdReachedDuringInitialFen, finalSequenceLength));
+
+    @Nullable SequenceStart currentStart = initialFenClock > 0 ? new InitialFenStart(initialFenClock) : null;
+    @Nullable HalfMove currentEndPly = null;
+
+    for (final HalfMove ply : halfMoveList) {
+      final int clock = ply.halfMoveClock();
+      if (clock == 0) {
+        // Clock-resetting move: closes any open sequence (without including this move). The
+        // resetting move itself does not start a new sequence; the NEXT non-zeroing move will.
+        if (currentStart != null) {
+          maybeEmit(sequences, currentStart, currentEndPly, threshold);
+        }
+        currentStart = null;
+        currentEndPly = null;
+      } else if (currentStart == null) {
+        // First non-zeroing move after a reset (or after a fresh FEN with clock 0). By the
+        // chess-engine invariant, this move's halfMoveClock is exactly 1.
+        currentStart = new AfterResetStart(ply);
+        currentEndPly = null;
+      } else {
+        // Sequence continues; extend the end marker.
+        currentEndPly = ply;
+      }
     }
+
+    // End of played history: close whatever is open.
+    if (currentStart != null) {
+      maybeEmit(sequences, currentStart, currentEndPly, threshold);
+    }
+
     return new FiftyMoveSequenceReport(ImmutableList.copyOf(sequences));
+  }
+
+  private static void maybeEmit(List<FiftyMoveSequence> sequences, SequenceStart start, @Nullable HalfMove endPly,
+      int threshold) {
+    final FiftyMoveSequence sequence = new FiftyMoveSequence(start, endPly);
+    if (sequence.finalClock() >= threshold) {
+      sequences.add(sequence);
+    }
   }
 }
