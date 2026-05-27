@@ -19,6 +19,7 @@ import com.dlb.chess.common.Nulls;
 import com.dlb.chess.common.constants.ChessConstants;
 import com.dlb.chess.common.constants.DynamicPositionConstants;
 import com.dlb.chess.common.enums.InsufficientMaterial;
+import com.dlb.chess.common.enums.Termination;
 import com.dlb.chess.common.exceptions.ProgrammingMistakeException;
 import com.dlb.chess.common.model.ClaimRights;
 import com.dlb.chess.common.model.ClaimableMove;
@@ -855,18 +856,18 @@ public class Board {
     final boolean deadPosition = isDeadPosition();
     final boolean fivefoldRepetition = isFivefoldRepetition();
     final boolean seventyFiveMove = isSeventyFiveMove();
-    final @Nullable Outcome outcome = BasicChessUtility.calculateOutcome(this);
+    final Outcome outcome = BasicChessUtility.calculateOutcome(this);
     return new GameEndFacts(checkmate, stalemate, insufficientMaterial, deadPosition, fivefoldRepetition,
         seventyFiveMove, outcome);
   }
 
   /**
-   * Convenience: {@code true} iff a termination condition fires on the current position (i.e. an {@link Outcome} is
-   * produced under the precedence stack). Equivalent to
-   * {@code BasicChessUtility.calculateOutcome(this) != null}.
+   * Convenience: {@code true} iff a termination condition fires on the current position (i.e. the projected
+   * {@link Outcome}'s termination is not {@link com.dlb.chess.common.enums.Termination#NONE}). Equivalent to
+   * {@code BasicChessUtility.calculateOutcome(this).termination() != Termination.NONE}.
    */
   public boolean isGameEnd() {
-    return BasicChessUtility.calculateOutcome(this) != null;
+    return BasicChessUtility.calculateOutcome(this).termination() != Termination.NONE;
   }
 
   public ImmutableList<String> getSanList() {

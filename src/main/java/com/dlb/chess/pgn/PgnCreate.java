@@ -110,13 +110,12 @@ public class PgnCreate {
 
   private static ResultTagValue calculateResultTagValue(Board board) {
     final Outcome outcome = BasicChessUtility.calculateOutcome(board);
-    if (outcome == null) {
-      // Game is ongoing — including positions with one-sided insufficient material, which is a
-      // diagnostic state on the board (queryable via Board.isInsufficientMaterial(Side)) and not
-      // an automatic termination.
-      return ResultTagValue.ONGOING;
-    }
     switch (outcome.termination()) {
+      case NONE:
+        // Game is ongoing — including positions with one-sided insufficient material, which is a
+        // diagnostic state on the board (queryable via Board.isInsufficientMaterial(Side)) and not
+        // an automatic termination.
+        return ResultTagValue.ONGOING;
       case CHECKMATE: {
         // Outcome's compact constructor guarantees winner() is WHITE or BLACK for CHECKMATE — the
         // side that delivered mate. Side.NONE is reserved for drawing terminations and cannot

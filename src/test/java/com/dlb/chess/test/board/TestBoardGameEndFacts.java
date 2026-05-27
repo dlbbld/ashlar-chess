@@ -2,8 +2,6 @@ package com.dlb.chess.test.board;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
@@ -47,7 +45,6 @@ class TestBoardGameEndFacts {
     assertFalse(facts.insufficientMaterial());
     assertFalse(facts.fivefoldRepetition());
 
-    assertNotNull(facts.outcome(), "outcome must be present");
     assertEquals(Termination.CHECKMATE, facts.outcome().termination(),
         "precedence: CHECKMATE outranks SEVENTY_FIVE_MOVES");
     assertEquals(Side.WHITE, facts.outcome().winner(), "white delivered mate");
@@ -73,7 +70,6 @@ class TestBoardGameEndFacts {
     assertFalse(facts.checkmate());
     assertFalse(facts.insufficientMaterial());
 
-    assertNotNull(facts.outcome());
     assertEquals(Termination.STALEMATE, facts.outcome().termination(),
         "precedence: STALEMATE outranks SEVENTY_FIVE_MOVES");
     assertEquals(Side.NONE, facts.outcome().winner(), "stalemate is a draw");
@@ -104,7 +100,6 @@ class TestBoardGameEndFacts {
     assertFalse(facts.stalemate());
     assertFalse(facts.insufficientMaterial(), "still 32 pieces on the board, not insufficient");
 
-    assertNotNull(facts.outcome());
     assertEquals(Termination.SEVENTY_FIVE_MOVES, facts.outcome().termination(),
         "precedence: SEVENTY_FIVE_MOVES outranks FIVEFOLD_REPETITION");
     assertEquals(Side.NONE, facts.outcome().winner());
@@ -134,19 +129,18 @@ class TestBoardGameEndFacts {
     assertFalse(facts.checkmate());
     assertFalse(facts.stalemate());
 
-    assertNotNull(facts.outcome());
     assertEquals(Termination.INSUFFICIENT_MATERIAL, facts.outcome().termination(),
         "precedence: INSUFFICIENT_MATERIAL outranks both SEVENTY_FIVE_MOVES and FIVEFOLD_REPETITION");
     assertEquals(Side.NONE, facts.outcome().winner());
   }
 
   // =============================================================================================
-  // Case 5 — no termination condition fires; outcome is absent
+  // Case 5 — no termination condition fires; outcome carries Termination.NONE
   // =============================================================================================
 
   @SuppressWarnings("static-method")
   @Test
-  void noEndAllFactsFalseOutcomeAbsent() {
+  void noEndAllFactsFalseOutcomeIsOngoing() {
     final Board board = new Board();
     board.movesStrict("e4", "e5", "Nf3", "Nf6");
 
@@ -157,7 +151,10 @@ class TestBoardGameEndFacts {
     assertFalse(facts.deadPosition());
     assertFalse(facts.fivefoldRepetition());
     assertFalse(facts.seventyFiveMove());
-    assertNull(facts.outcome(), "no termination condition → outcome absent");
+    assertEquals(Termination.NONE, facts.outcome().termination(),
+        "no termination condition → outcome.termination is Termination.NONE");
+    assertEquals(com.dlb.chess.board.enums.Side.NONE, facts.outcome().winner(),
+        "ongoing outcome's winner is Side.NONE");
     assertFalse(facts.isGameEnd());
     assertFalse(board.isGameEnd(), "Board.isGameEnd() agrees with the snapshot");
   }

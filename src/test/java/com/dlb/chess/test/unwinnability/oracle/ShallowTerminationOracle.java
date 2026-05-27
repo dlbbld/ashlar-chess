@@ -102,17 +102,17 @@ public class ShallowTerminationOracle {
    */
   private static NodeOutcome classifyTerminal(Board board, Side side) {
     final Outcome outcome = BasicChessUtility.calculateOutcome(board);
-    if (outcome == null) {
-      // Game ongoing for the calculateOutcome view, but one-sided insufficient material is a
-      // diagnostic state outside that view: if the side we're evaluating lacks mating material,
-      // that side cannot win — LOSS_OR_DRAW for them, UNRESOLVED for the opponent (the opponent
-      // may still win).
-      if (board.isInsufficientMaterial(side)) {
-        return NodeOutcome.LOSS_OR_DRAW;
-      }
-      return NodeOutcome.UNRESOLVED;
-    }
     return switch (outcome.termination()) {
+      case NONE -> {
+        // Game ongoing for the calculateOutcome view, but one-sided insufficient material is a
+        // diagnostic state outside that view: if the side we're evaluating lacks mating material,
+        // that side cannot win — LOSS_OR_DRAW for them, UNRESOLVED for the opponent (the opponent
+        // may still win).
+        if (board.isInsufficientMaterial(side)) {
+          yield NodeOutcome.LOSS_OR_DRAW;
+        }
+        yield NodeOutcome.UNRESOLVED;
+      }
       case CHECKMATE ->
           // The side to move is in checkmate. If that's the side we're evaluating, they lost; otherwise
           // the side we're evaluating just delivered the mate — i.e. WIN.

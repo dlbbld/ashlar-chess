@@ -4,8 +4,9 @@ import org.eclipse.jdt.annotation.Nullable;
 
 import com.dlb.chess.board.Board;
 import com.dlb.chess.board.enums.Side;
-import com.dlb.chess.common.model.Outcome;
+import com.dlb.chess.common.enums.Termination;
 import com.dlb.chess.common.exceptions.ProgrammingMistakeException;
+import com.dlb.chess.common.model.Outcome;
 import com.dlb.chess.common.utility.BasicChessUtility;
 import com.dlb.chess.common.utility.ListUtility;
 import com.dlb.chess.model.LegalMove;
@@ -82,11 +83,12 @@ public class ForcedLineOracle {
       final LegalMove legalMove = ListUtility.getOnly(board.getLegalMoves());
       board.move(legalMove.moveSpecification());
       final Outcome outcome = BasicChessUtility.calculateOutcome(board);
+      final boolean terminated = outcome.termination() != Termination.NONE;
       // One-sided insufficient material is a diagnostic position state outside the Outcome view but
       // a decisive signal for the forced-line oracle: the side that lacks material cannot win along
       // this chain. Carry it explicitly on GameForced for calculateUnwinnabilityForced to consume.
-      final @Nullable Side singleSideIm = outcome == null ? singleSideInsufficientMaterial(board) : null;
-      if (outcome != null || singleSideIm != null) {
+      final @Nullable Side singleSideIm = terminated ? null : singleSideInsufficientMaterial(board);
+      if (terminated || singleSideIm != null) {
         final Side sideMadeLastMove = board.getHavingMove().getOppositeSide();
         for (var i = 1; i <= countForcedHalfMoves; i++) {
           board.unmove();
@@ -99,7 +101,7 @@ public class ForcedLineOracle {
     for (var i = 1; i <= countForcedHalfMoves; i++) {
       board.unmove();
     }
-    return new GameForced(null, null, countForcedHalfMoves, sideMadeLastMove);
+    return new GameForced(Outcome.ONGOING, null, countForcedHalfMoves, sideMadeLastMove);
   }
 
   private static @Nullable Side singleSideInsufficientMaterial(Board board) {
@@ -122,11 +124,13 @@ public class ForcedLineOracle {
   private static LimitedUnwinnabilityVerdict calculateUnwinnabilityForced(GameForced gameForced, Side sideToEvaluate) {
     final Outcome outcome = gameForced.outcome();
     final Side singleSideIm = gameForced.singleSideInsufficientMaterial();
-    if (outcome != null) {
+    if (gameForced.hasTermination()) {
       return switch (outcome.termination()) {
         case CHECKMATE -> gameForced.sideMadeLastMove() == sideToEvaluate ? LimitedUnwinnabilityVerdict.WINNABLE
             : LimitedUnwinnabilityVerdict.UNWINNABLE;
         case STALEMATE, INSUFFICIENT_MATERIAL, FIVEFOLD_REPETITION, SEVENTY_FIVE_MOVES -> LimitedUnwinnabilityVerdict.UNWINNABLE;
+        case NONE -> throw new ProgrammingMistakeException(
+            "hasTermination() guard precludes Termination.NONE here");
       };
     }
     if (singleSideIm != null) {

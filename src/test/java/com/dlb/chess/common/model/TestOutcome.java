@@ -41,6 +41,30 @@ class TestOutcome {
     // No exception thrown — all four drawing terminations accept Side.NONE as the winner.
   }
 
+  // === ONGOING / Termination.NONE ===
+
+  @SuppressWarnings("static-method")
+  @Test
+  void ongoingTerminationAcceptsSideNone() {
+    final Outcome ongoing = new Outcome(Termination.NONE, Side.NONE);
+    assertEquals(Termination.NONE, ongoing.termination());
+    assertEquals(Side.NONE, ongoing.winner());
+  }
+
+  @SuppressWarnings("static-method")
+  @Test
+  void ongoingSingletonHasExpectedShape() {
+    assertEquals(Termination.NONE, Outcome.ONGOING.termination());
+    assertEquals(Side.NONE, Outcome.ONGOING.winner());
+  }
+
+  @SuppressWarnings("static-method")
+  @Test
+  void ongoingTerminationWithWinnerSideRejected() {
+    assertThrows(IllegalArgumentException.class, () -> new Outcome(Termination.NONE, Side.WHITE),
+        "Termination.NONE outcome requires winner == Side.NONE (no one has won an ongoing game)");
+  }
+
   // === null rejection ===
 
   @SuppressWarnings("static-method")
