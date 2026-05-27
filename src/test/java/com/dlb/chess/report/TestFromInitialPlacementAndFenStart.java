@@ -7,6 +7,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
@@ -16,7 +17,7 @@ import com.dlb.chess.common.constants.ChessConstants;
 
 /**
  * From-move-one coverage: positions that run into threefold, fivefold, 50-move, and 75-move rule conditions starting
- * from move 1, exercised in four "family" configurations:
+ * from move 1, exercised in four "family" configurations.
  *
  * <ul>
  * <li>Initial piece placement, White to move on move 1 (the conventional standard start).</li>
@@ -28,28 +29,27 @@ import com.dlb.chess.common.constants.ChessConstants;
  * <p>
  * Each fixture runs three-layered assertions: (a) the public {@code Board.is*} predicate fires; (b) the corresponding
  * report object model (where one exists — the threefold-existing report covers both threefold and fivefold via its
- * {@code totalRepetitionCount}; the 50/75-move conditions do not yet have a dedicated report record, so the model
- * layer is satisfied via the predicate alone) reflects the condition; (c) the printed {@link Reporter} output contains
- * the section header for the relevant condition.
+ * {@code totalRepetitionCount}; the 50/75-move conditions do not yet have a dedicated report record, so the model layer
+ * is satisfied via the predicate alone) reflects the condition; (c) the printed {@link Reporter} output contains the
+ * section header for the relevant condition.
  *
  * <p>
- * The Black-to-move-on-move-1 fixtures exercise FIDE fullmove-numbering correctness: when Black has the move at fullmove
- * 1, the fullmove counter increments after each Black move (not each White move), so the report's fullmove references
- * for repeated positions are shifted relative to the more usual White-first case.
+ * The Black-to-move-on-move-1 fixtures exercise FIDE fullmove-numbering correctness: when Black has the move at
+ * fullmove 1, the fullmove counter increments after each Black move (not each White move), so the report's fullmove
+ * references for repeated positions are shifted relative to the more usual White-first case.
  */
 class TestFromInitialPlacementAndFenStart {
 
   /**
    * Standard initial position with White to move. Default Board() constructor produces this.
    */
-  private static final String FEN_INITIAL_BLACK_TO_MOVE =
-      "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR b KQkq - 0 1";
+  private static final String FEN_INITIAL_BLACK_TO_MOVE = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR b KQkq - 0 1";
 
   /**
    * Non-initial FEN — two rooks plus king vs lone king. Plenty of room for non-pawn, non-capture shuffling. Castling
    * rights are intentionally absent ({@code -}): the first rook move would otherwise erase the king-side right,
-   * shifting the dynamic position between cycles 1 and 2 and forcing an extra cycle to reach threefold. With no
-   * rights, the shuffle returns to the exact same position every cycle. White to move at fullmove 1.
+   * shifting the dynamic position between cycles 1 and 2 and forcing an extra cycle to reach threefold. With no rights,
+   * the shuffle returns to the exact same position every cycle. White to move at fullmove 1.
    */
   private static final String FEN_KRR_K_WHITE_TO_MOVE = "4k3/8/8/8/8/8/8/R3K2R w - - 0 1";
 
@@ -122,8 +122,7 @@ class TestFromInitialPlacementAndFenStart {
     final Board board = new Board(FEN_INITIAL_BLACK_TO_MOVE);
     playKnightShuffleAsBlack(board, 4); // 16 plies
     assertFivefoldRepetition(board);
-    assertEquals(9, board.getFullMoveNumber(),
-        "Black-to-move-at-fullmove-1: 8 Black moves → fullmove 9");
+    assertEquals(9, board.getFullMoveNumber(), "Black-to-move-at-fullmove-1: 8 Black moves → fullmove 9");
     assertReporterOutput(board, /* threefoldSectionNonEmpty */ true, /* expectedFiftyMoveSequenceReached */ false);
   }
 
@@ -195,8 +194,7 @@ class TestFromInitialPlacementAndFenStart {
     final Board board = new Board(FEN_KRR_K_BLACK_TO_MOVE);
     playRookShuffleAsBlack(board, 2);
     assertThreefoldRepetition(board);
-    assertEquals(5, board.getFullMoveNumber(),
-        "Black-to-move-at-fullmove-1: 4 Black moves → fullmove 5");
+    assertEquals(5, board.getFullMoveNumber(), "Black-to-move-at-fullmove-1: 4 Black moves → fullmove 5");
     assertReporterOutput(board, /* threefoldSectionNonEmpty */ true, /* expectedFiftyMoveSequenceReached */ false);
   }
 
@@ -206,8 +204,7 @@ class TestFromInitialPlacementAndFenStart {
     final Board board = new Board(FEN_KRR_K_BLACK_TO_MOVE);
     playRookShuffleAsBlack(board, 4);
     assertFivefoldRepetition(board);
-    assertEquals(9, board.getFullMoveNumber(),
-        "Black-to-move-at-fullmove-1: 8 Black moves → fullmove 9");
+    assertEquals(9, board.getFullMoveNumber(), "Black-to-move-at-fullmove-1: 8 Black moves → fullmove 9");
     assertReporterOutput(board, /* threefoldSectionNonEmpty */ true, /* expectedFiftyMoveSequenceReached */ false);
   }
 
@@ -331,16 +328,16 @@ class TestFromInitialPlacementAndFenStart {
    * content of the threefold-existing section and the fifty-move sequence section (the two sections that fire as a
    * direct consequence of the shuffle test fixtures).
    *
-   * @param threefoldSectionNonEmpty
-   *          {@code true} if the threefold section is expected to contain repetition group lines (not the "None"
-   *          sentinel). All four families in this test set produce threefolds in their shuffle, so every test passes
-   *          {@code true} here today.
-   * @param expectedFiftyMoveSequenceReached
-   *          {@code true} if a 50-move (or 75-move) non-progress stretch is expected and the
-   *          "Fifty moves and beyond" section should contain at least one sequence
-   *          line; {@code false} if the section should render the "None" sentinel (no 50-move stretch was reached in
-   *          play). Threefold / fivefold tests pass {@code false} (8/16 plies are well below the 50-move threshold);
-   *          50-move / 75-move tests pass {@code true}.
+   * @param threefoldSectionNonEmpty         {@code true} if the threefold section is expected to contain repetition
+   *                                         group lines (not the "None" sentinel). All four families in this test set
+   *                                         produce threefolds in their shuffle, so every test passes {@code true} here
+   *                                         today.
+   * @param expectedFiftyMoveSequenceReached {@code true} if a 50-move (or 75-move) non-progress stretch is expected and
+   *                                         the "Fifty moves and beyond" section should contain at least one sequence
+   *                                         line; {@code false} if the section should render the "None" sentinel (no
+   *                                         50-move stretch was reached in play). Threefold / fivefold tests pass
+   *                                         {@code false} (8/16 plies are well below the 50-move threshold); 50-move /
+   *                                         75-move tests pass {@code true}.
    */
   private static void assertReporterOutput(Board board, boolean threefoldSectionNonEmpty,
       boolean expectedFiftyMoveSequenceReached) {
@@ -350,16 +347,15 @@ class TestFromInitialPlacementAndFenStart {
         "Valid fifty-move claims ahead");
     if (threefoldSectionNonEmpty) {
       assertTrue(!threefoldSection.isEmpty(), "threefold section must have content");
-      assertTrue(!(threefoldSection.size() == 1 && "None".equals(threefoldSection.get(0))),
+      assertTrue(((threefoldSection.size() != 1) || !"None".equals(threefoldSection.get(0))),
           () -> "threefold section must contain repetition group lines, not the 'None' sentinel; got:\n  "
               + String.join("\n  ", threefoldSection));
     }
 
-    final List<String> fiftyMoveSequenceSection = extractSectionToEnd(lines,
-        "Fifty moves and beyond");
+    final List<String> fiftyMoveSequenceSection = extractSectionToEnd(lines, "Fifty moves and beyond");
     if (expectedFiftyMoveSequenceReached) {
       assertTrue(!fiftyMoveSequenceSection.isEmpty(), "fifty-move sequence section must have content");
-      assertTrue(!(fiftyMoveSequenceSection.size() == 1 && "None".equals(fiftyMoveSequenceSection.get(0))),
+      assertTrue(((fiftyMoveSequenceSection.size() != 1) || !"None".equals(fiftyMoveSequenceSection.get(0))),
           () -> "fifty-move sequence section must contain sequence lines, not the 'None' sentinel; got:\n  "
               + String.join("\n  ", fiftyMoveSequenceSection));
     } else {
@@ -373,32 +369,30 @@ class TestFromInitialPlacementAndFenStart {
 
   private static List<String> captureReporter(Board board) {
     final ByteArrayOutputStream buffer = new ByteArrayOutputStream();
-    final PrintStream original = System.out;
+    final var original = System.out;
     try (PrintStream captured = new PrintStream(buffer, true, StandardCharsets.UTF_8)) {
       System.setOut(captured);
       Reporter.printReport(board);
     } finally {
       System.setOut(original);
     }
-    final String text = buffer.toString(StandardCharsets.UTF_8).replace("\r\n", "\n");
+    final var text = buffer.toString(StandardCharsets.UTF_8).replace("\r\n", "\n");
     final List<String> lines = new ArrayList<>();
-    for (final String line : text.split("\n", -1)) {
-      lines.add(line);
-    }
+    Collections.addAll(lines, text.split("\n", -1));
     return lines;
   }
 
   /**
    * Returns the non-blank content lines of the section starting at the line whose trimmed content begins with
-   * {@code sectionHeaderPrefix} (exclusive of the header itself) and ending immediately before the next section
-   * (a line whose trimmed content begins with {@code nextSectionHeaderPrefix}).
+   * {@code sectionHeaderPrefix} (exclusive of the header itself) and ending immediately before the next section (a line
+   * whose trimmed content begins with {@code nextSectionHeaderPrefix}).
    */
   private static List<String> extractSection(List<String> lines, String sectionHeaderPrefix,
       String nextSectionHeaderPrefix) {
     var inSection = false;
     final List<String> contents = new ArrayList<>();
     for (final String raw : lines) {
-      final String line = raw.trim();
+      final var line = raw.trim();
       if (!inSection && line.startsWith(sectionHeaderPrefix)) {
         inSection = true;
         continue;
@@ -425,7 +419,7 @@ class TestFromInitialPlacementAndFenStart {
     var inSection = false;
     final List<String> contents = new ArrayList<>();
     for (final String raw : lines) {
-      final String line = raw.trim();
+      final var line = raw.trim();
       if (!inSection && line.startsWith(sectionHeaderPrefix)) {
         inSection = true;
         continue;

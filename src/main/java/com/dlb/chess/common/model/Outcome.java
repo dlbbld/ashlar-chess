@@ -22,7 +22,9 @@ import com.dlb.chess.common.enums.Termination;
  */
 public record Outcome(Termination termination, Side winner) {
 
-  /** Singleton "no termination" outcome — returned by {@code calculateOutcome} for ongoing positions. */
+  /**
+   * Singleton "no termination" outcome — returned by {@code calculateOutcome} for ongoing positions.
+   */
   public static final Outcome ONGOING = new Outcome(Termination.NONE, Side.NONE);
 
   public Outcome {

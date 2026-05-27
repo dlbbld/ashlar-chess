@@ -12,13 +12,13 @@ import com.dlb.chess.common.model.Outcome;
  *
  * <ul>
  * <li>An automatic {@link Outcome} — {@code outcome.termination() != Termination.NONE} and
- *     {@code singleSideInsufficientMaterial} is null.
+ * {@code singleSideInsufficientMaterial} is null.
  * <li>A one-sided insufficient-material diagnostic state — {@code outcome} is {@link Outcome#ONGOING} and
- *     {@code singleSideInsufficientMaterial} is the side that lacks material. The chain stops here because the
- *     forced-line oracle treats it as a decisive signal (the side lacking material cannot win from a forced chain).
+ * {@code singleSideInsufficientMaterial} is the side that lacks material. The chain stops here because the forced-line
+ * oracle treats it as a decisive signal (the side lacking material cannot win from a forced chain).
  * <li>Branching resumes (more than one legal move available) without any termination triggering — {@code outcome} is
- *     {@link Outcome#ONGOING} and {@code singleSideInsufficientMaterial} is null, signalling "ongoing" from the
- *     oracle's perspective.
+ * {@link Outcome#ONGOING} and {@code singleSideInsufficientMaterial} is null, signalling "ongoing" from the oracle's
+ * perspective.
  * </ul>
  *
  * <p>
@@ -28,7 +28,9 @@ import com.dlb.chess.common.model.Outcome;
 public record GameForced(Outcome outcome, @Nullable Side singleSideInsufficientMaterial, int evaluatedPositions,
     Side sideMadeLastMove) {
 
-  /** Convenience: {@code true} iff an automatic termination was reached at the end of the forced chain. */
+  /**
+   * Convenience: {@code true} iff an automatic termination was reached at the end of the forced chain.
+   */
   public boolean hasTermination() {
     return outcome.termination() != Termination.NONE;
   }

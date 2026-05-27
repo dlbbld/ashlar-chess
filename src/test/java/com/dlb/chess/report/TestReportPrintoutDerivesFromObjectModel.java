@@ -7,6 +7,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
@@ -19,9 +20,10 @@ import com.dlb.chess.test.pgntest.enums.PgnTest;
 
 /**
  * Cross-checks that the printed report sections are <em>derivable</em> from the report objects — line counts, asterisk
- * counts, and the "None" sentinel correspond to the {@link ThreefoldClaimAheadReport} and {@link ThreefoldExistingReport}
- * contents. The point is to catch silent drift between the analysis layer (builders, records) and the presentation
- * layer (print classes); a regression in either side would break the correspondence the formatter relies on.
+ * counts, and the "None" sentinel correspond to the {@link ThreefoldClaimAheadReport} and
+ * {@link ThreefoldExistingReport} contents. The point is to catch silent drift between the analysis layer (builders,
+ * records) and the presentation layer (print classes); a regression in either side would break the correspondence the
+ * formatter relies on.
  *
  * <p>
  * Sister test to {@code TestReporterGoldenOutput}, which pins exact byte content. This test pins structural
@@ -95,8 +97,8 @@ class TestReportPrintoutDerivesFromObjectModel {
     } else {
       assertEquals(claimAhead.entries().size(), claimAheadSection.size(),
           "claim-ahead section must have one rendered line per ClaimAheadEntry");
-      final long asterisks = claimAheadSection.stream().filter(line -> line.contains("*")).count();
-      final long expectedAsterisks = claimAhead.entries().stream().filter(ClaimAheadEntry::hasBeenPlayed).count();
+      final var asterisks = claimAheadSection.stream().filter(line -> line.contains("*")).count();
+      final var expectedAsterisks = claimAhead.entries().stream().filter(ClaimAheadEntry::hasBeenPlayed).count();
       assertEquals(expectedAsterisks, asterisks,
           "asterisk count in printed claim-ahead lines must equal count of hasBeenPlayed entries");
     }
@@ -121,7 +123,7 @@ class TestReportPrintoutDerivesFromObjectModel {
       // No asterisks expected under the missed-opportunity filter: the actually-played move at the
       // boundary ply is by construction clock-resetting, so the non-zeroing candidate never coincides
       // with the played move.
-      final long asterisks = fiftyClaimAheadSection.stream().filter(line -> line.contains("*")).count();
+      final var asterisks = fiftyClaimAheadSection.stream().filter(line -> line.contains("*")).count();
       assertEquals(0, asterisks,
           "fifty-move claim-ahead lines never carry an asterisk under the missed-opportunity filter");
     }
@@ -137,21 +139,21 @@ class TestReportPrintoutDerivesFromObjectModel {
     }
   }
 
-  /** Captures System.out for one {@code Reporter.printReport(board)} invocation as a list of trimmed lines. */
+  /**
+   * Captures System.out for one {@code Reporter.printReport(board)} invocation as a list of trimmed lines.
+   */
   private static List<String> captureReporter(Board board) {
     final ByteArrayOutputStream buffer = new ByteArrayOutputStream();
-    final PrintStream original = System.out;
+    final var original = System.out;
     try (PrintStream captured = new PrintStream(buffer, true, StandardCharsets.UTF_8)) {
       System.setOut(captured);
       Reporter.printReport(board);
     } finally {
       System.setOut(original);
     }
-    final String text = buffer.toString(StandardCharsets.UTF_8).replace("\r\n", "\n");
+    final var text = buffer.toString(StandardCharsets.UTF_8).replace("\r\n", "\n");
     final List<String> lines = new ArrayList<>();
-    for (final String line : text.split("\n", -1)) {
-      lines.add(line);
-    }
+    Collections.addAll(lines, text.split("\n", -1));
     return lines;
   }
 
@@ -165,7 +167,7 @@ class TestReportPrintoutDerivesFromObjectModel {
     var inSection = false;
     final List<String> contents = new ArrayList<>();
     for (final String raw : lines) {
-      final String line = raw.trim();
+      final var line = raw.trim();
       if (!inSection && line.startsWith(sectionHeaderPrefix)) {
         inSection = true;
         continue;
@@ -192,7 +194,7 @@ class TestReportPrintoutDerivesFromObjectModel {
     var inSection = false;
     final List<String> contents = new ArrayList<>();
     for (final String raw : lines) {
-      final String line = raw.trim();
+      final var line = raw.trim();
       if (!inSection && line.startsWith(sectionHeaderPrefix)) {
         inSection = true;
         continue;

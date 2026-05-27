@@ -556,6 +556,19 @@ public class Board {
     return false;
   }
 
+  /**
+   * SAN convenience overload of {@link #canClaimThreefoldRepetitionRuleFor(MoveSpecification)}: parses {@code san} as
+   * strict canonical SAN against the current position and delegates. Returns {@code false} (rather than throwing) when
+   * {@code san} is malformed, ambiguous, or does not match a legal move on the current position.
+   */
+  public boolean canClaimThreefoldRepetitionRuleFor(String san) {
+    final @Nullable MoveSpecification parsed = parseSanQuietly(san);
+    if (parsed == null) {
+      return false;
+    }
+    return canClaimThreefoldRepetitionRuleFor(parsed);
+  }
+
   public boolean canClaimThreefoldRepetitionRuleWithOwnMove() {
     for (final LegalMove legalMove : getLegalMoves()) {
       // we must not check moves creating a position that never occurred so far
@@ -612,19 +625,6 @@ public class Board {
       return false;
     }
     return canClaimFiftyMoveRuleFor(parsed);
-  }
-
-  /**
-   * SAN convenience overload of {@link #canClaimThreefoldRepetitionRuleFor(MoveSpecification)}: parses {@code san} as
-   * strict canonical SAN against the current position and delegates. Returns {@code false} (rather than throwing) when
-   * {@code san} is malformed, ambiguous, or does not match a legal move on the current position.
-   */
-  public boolean canClaimThreefoldRepetitionRuleFor(String san) {
-    final @Nullable MoveSpecification parsed = parseSanQuietly(san);
-    if (parsed == null) {
-      return false;
-    }
-    return canClaimThreefoldRepetitionRuleFor(parsed);
   }
 
   private @Nullable MoveSpecification parseSanQuietly(String san) {
