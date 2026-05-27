@@ -91,7 +91,7 @@ class TestBasicChessUtility {
     assertEquals(true, board.isInsufficientMaterial(), "precondition: insufficient material");
     assertEquals(true, board.isSeventyFiveMove(), "precondition: 75-move threshold reached");
     final Outcome outcome = BasicChessUtility.calculateOutcome(board);
-    assertEquals(new Outcome(Termination.INSUFFICIENT_MATERIAL, null), outcome);
+    assertEquals(new Outcome(Termination.INSUFFICIENT_MATERIAL, Side.NONE), outcome);
   }
 
   @SuppressWarnings("static-method")
@@ -103,7 +103,7 @@ class TestBasicChessUtility {
         "Ng1", "Ng8");
     assertEquals(true, board.isFivefoldRepetition(), "precondition: fivefold threshold reached");
     final Outcome outcome = BasicChessUtility.calculateOutcome(board);
-    assertEquals(new Outcome(Termination.FIVEFOLD_REPETITION, null), outcome);
+    assertEquals(new Outcome(Termination.FIVEFOLD_REPETITION, Side.NONE), outcome);
   }
 
   @SuppressWarnings("static-method")
@@ -115,6 +115,6 @@ class TestBasicChessUtility {
     assertEquals(true, board.isSeventyFiveMove(), "precondition: 75-move threshold reached");
     assertEquals(false, board.isInsufficientMaterial(), "precondition: not insufficient material");
     final Outcome outcome = BasicChessUtility.calculateOutcome(board);
-    assertEquals(new Outcome(Termination.SEVENTY_FIVE_MOVES, null), outcome);
+    assertEquals(new Outcome(Termination.SEVENTY_FIVE_MOVES, Side.NONE), outcome);
   }
 }

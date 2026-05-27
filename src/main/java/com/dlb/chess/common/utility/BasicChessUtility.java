@@ -63,16 +63,16 @@ public abstract class BasicChessUtility {
       return new Outcome(Termination.CHECKMATE, board.getHavingMove().getOppositeSide());
     }
     if (board.isInsufficientMaterial()) {
-      return new Outcome(Termination.INSUFFICIENT_MATERIAL, null);
+      return new Outcome(Termination.INSUFFICIENT_MATERIAL, Side.NONE);
     }
     if (board.isStalemate()) {
-      return new Outcome(Termination.STALEMATE, null);
+      return new Outcome(Termination.STALEMATE, Side.NONE);
     }
     if (board.isSeventyFiveMove()) {
-      return new Outcome(Termination.SEVENTY_FIVE_MOVES, null);
+      return new Outcome(Termination.SEVENTY_FIVE_MOVES, Side.NONE);
     }
     if (board.isFivefoldRepetition()) {
-      return new Outcome(Termination.FIVEFOLD_REPETITION, null);
+      return new Outcome(Termination.FIVEFOLD_REPETITION, Side.NONE);
     }
     return null;
   }

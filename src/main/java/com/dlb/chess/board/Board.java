@@ -23,8 +23,10 @@ import com.dlb.chess.common.exceptions.ProgrammingMistakeException;
 import com.dlb.chess.common.model.ClaimRights;
 import com.dlb.chess.common.model.ClaimableMove;
 import com.dlb.chess.common.model.DynamicPosition;
+import com.dlb.chess.common.model.GameEndFacts;
 import com.dlb.chess.common.model.HalfMove;
 import com.dlb.chess.common.model.MoveSpecification;
+import com.dlb.chess.common.model.Outcome;
 import com.dlb.chess.common.ucimove.utility.UciMoveUtility;
 import com.dlb.chess.common.utility.BasicChessUtility;
 import com.dlb.chess.common.utility.RepetitionUtility;
@@ -800,8 +802,16 @@ public class Board {
    * legal-moves-exist clause aligns with the FIDE rule (no claim is possible if the game has already ended by mate or
    * stalemate) and with python-chess {@code is_fifty_moves()}.
    */
+  /**
+   * Raw condition predicate (FIDE 9.3 threshold): returns {@code true} iff the halfmove clock has reached the 50-move-
+   * rule threshold ({@code halfMoveClock >= 100}) on the current position. Reports the fact independently of any other
+   * game-end condition that may also hold — at a checkmate position with clock past 100, this still returns
+   * {@code true}. Game-end precedence belongs to {@link com.dlb.chess.common.utility.BasicChessUtility#calculateOutcome}
+   * and not to this predicate. (Deliberate divergence from python-chess at game-end positions, where
+   * {@code is_fifty_moves} folds in a precedence guard.)
+   */
   public boolean isFiftyMove() {
-    return getHalfMoveClock() >= ChessConstants.FIFTY_MOVE_RULE_HALF_MOVE_CLOCK_THRESHOLD && !getLegalMoves().isEmpty();
+    return getHalfMoveClock() >= ChessConstants.FIFTY_MOVE_RULE_HALF_MOVE_CLOCK_THRESHOLD;
   }
 
   /**
@@ -821,9 +831,16 @@ public class Board {
    * higher-precedence termination, so the 75-move rule cannot also fire). The legal-moves-exist clause matches
    * python-chess {@code is_seventyfive_moves()} and the FIDE reading.
    */
+  /**
+   * Raw condition predicate (FIDE 9.6.2 threshold): returns {@code true} iff the halfmove clock has reached the 75-
+   * move-rule threshold ({@code halfMoveClock >= 150}) on the current position. Reports the fact independently of any
+   * other game-end condition — at a checkmate position with clock past 150, this still returns {@code true}. Game-end
+   * precedence belongs to {@link com.dlb.chess.common.utility.BasicChessUtility#calculateOutcome} and not to this
+   * predicate. (Deliberate divergence from python-chess at game-end positions, where {@code is_seventyfive_moves}
+   * folds in a precedence guard.)
+   */
   public boolean isSeventyFiveMove() {
-    return getHalfMoveClock() >= ChessConstants.SEVENTY_FIVE_MOVE_RULE_HALF_MOVE_CLOCK_THRESHOLD
-        && !getLegalMoves().isEmpty();
+    return getHalfMoveClock() >= ChessConstants.SEVENTY_FIVE_MOVE_RULE_HALF_MOVE_CLOCK_THRESHOLD;
   }
 
   /**
@@ -834,6 +851,37 @@ public class Board {
    */
   public boolean isFivefoldRepetition() {
     return getRepetitionCount() >= ChessConstants.FIVEFOLD_REPETITION_RULE_THRESHOLD;
+  }
+
+  /**
+   * Rich snapshot of all game-end-relevant facts on the current position together with the precedence-projected
+   * {@link Outcome}. The fact booleans are independent and condition-only — each is the raw truth of its rule on the
+   * current board, not suppressed by any higher-precedence condition that may also hold. See {@link GameEndFacts} for
+   * the field-by-field semantics and the precedence rules used to project the {@code outcome} field.
+   *
+   * <p>
+   * Invokes the unwinnability quick analyzer to compute {@code deadPosition}; the cost is microseconds. Callers that
+   * do not need the analyzer-driven dead-position fact can call the individual condition predicates directly.
+   */
+  public GameEndFacts calculateGameEndFacts() {
+    final boolean checkmate = isCheckmate();
+    final boolean stalemate = isStalemate();
+    final boolean insufficientMaterial = isInsufficientMaterial();
+    final boolean deadPosition = isDeadPosition();
+    final boolean fivefoldRepetition = isFivefoldRepetition();
+    final boolean seventyFiveMove = isSeventyFiveMove();
+    final @Nullable Outcome outcome = BasicChessUtility.calculateOutcome(this);
+    return new GameEndFacts(checkmate, stalemate, insufficientMaterial, deadPosition, fivefoldRepetition,
+        seventyFiveMove, outcome);
+  }
+
+  /**
+   * Convenience: {@code true} iff a termination condition fires on the current position (i.e. an {@link Outcome} is
+   * produced under the precedence stack). Equivalent to
+   * {@code BasicChessUtility.calculateOutcome(this) != null}.
+   */
+  public boolean isGameEnd() {
+    return BasicChessUtility.calculateOutcome(this) != null;
   }
 
   public ImmutableList<String> getSanList() {
