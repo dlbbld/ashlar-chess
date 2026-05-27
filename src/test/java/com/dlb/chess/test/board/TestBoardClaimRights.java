@@ -2,6 +2,7 @@ package com.dlb.chess.test.board;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
@@ -13,6 +14,7 @@ import com.dlb.chess.board.Board;
 import com.dlb.chess.common.Nulls;
 import com.dlb.chess.common.constants.EnumConstants;
 import com.dlb.chess.common.model.ClaimRights;
+import com.dlb.chess.san.LenientSanParserValidationException;
 import com.dlb.chess.common.model.ClaimableMove;
 import com.dlb.chess.common.model.MoveSpecification;
 import com.dlb.chess.fen.constants.FenConstants;
@@ -163,7 +165,7 @@ class TestBoardClaimRights implements EnumConstants {
 
   @SuppressWarnings("static-method")
   @Test
-  void threefoldSanOverloadMatchesMoveSpecificationOverload() {
+  void threefoldSanOverloadMatchesMoveSpecificationOverload() throws LenientSanParserValidationException {
     final Board board = new Board();
     board.movesStrict("Nf3", "Nf6", "Ng1", "Ng8", "Nf3", "Nf6", "Ng1");
 
@@ -172,24 +174,30 @@ class TestBoardClaimRights implements EnumConstants {
         "SAN overload must agree with MoveSpecification overload for the same move");
     assertTrue(board.canClaimThreefoldRepetitionRuleFor("Ng8"));
 
-    // Illegal / malformed SAN inputs all return false rather than throwing.
-    assertFalse(board.canClaimThreefoldRepetitionRuleFor(""), "empty SAN returns false");
-    assertFalse(board.canClaimThreefoldRepetitionRuleFor("Ngarbage"), "malformed SAN returns false");
-    assertFalse(board.canClaimThreefoldRepetitionRuleFor("Qh5"),
-        "Qh5 is not a legal move from this position and must return false");
+    // Invalid SAN inputs throw rather than silently returning false. Empty SAN and malformed SAN
+    // throw SanValidationException from the lenient parser; a legal-shape SAN that doesn't match
+    // any current legal move throws IllegalArgumentException from the MoveSpecification overload.
+    assertThrows(LenientSanParserValidationException.class, () -> board.canClaimThreefoldRepetitionRuleFor(""),
+        "empty SAN must throw LenientSanParserValidationException");
+    assertThrows(LenientSanParserValidationException.class, () -> board.canClaimThreefoldRepetitionRuleFor("Ngarbage"),
+        "malformed SAN must throw LenientSanParserValidationException");
+    assertThrows(LenientSanParserValidationException.class, () -> board.canClaimThreefoldRepetitionRuleFor("Qh5"),
+        "Qh5 is not a legal move from this position and must throw via the SAN pipeline");
   }
 
   @SuppressWarnings("static-method")
   @Test
-  void fiftyMoveSanOverloadMatchesMoveSpecificationOverload() {
+  void fiftyMoveSanOverloadMatchesMoveSpecificationOverload() throws LenientSanParserValidationException {
     final Board board = new Board("7k/8/8/8/8/8/4K3/R7 w - - 99 51");
 
     assertEquals(board.canClaimFiftyMoveRuleFor(new MoveSpecification(A1, A2)), board.canClaimFiftyMoveRuleFor("Ra2"),
         "SAN overload must agree with MoveSpecification overload");
     assertTrue(board.canClaimFiftyMoveRuleFor("Ra2"));
 
-    assertFalse(board.canClaimFiftyMoveRuleFor(""), "empty SAN returns false");
-    assertFalse(board.canClaimFiftyMoveRuleFor("not a san"), "malformed SAN returns false");
+    assertThrows(LenientSanParserValidationException.class, () -> board.canClaimFiftyMoveRuleFor(""),
+        "empty SAN must throw LenientSanParserValidationException");
+    assertThrows(LenientSanParserValidationException.class, () -> board.canClaimFiftyMoveRuleFor("not a san"),
+        "malformed SAN must throw LenientSanParserValidationException");
   }
 
   // =============================================================================================
@@ -296,7 +304,7 @@ class TestBoardClaimRights implements EnumConstants {
 
   @SuppressWarnings("static-method")
   @Test
-  void boardStateUnchangedAfterClaimRightsQuery() {
+  void boardStateUnchangedAfterClaimRightsQuery() throws LenientSanParserValidationException {
     final Board board = new Board();
     board.movesStrict("Nf3", "Nf6", "Ng1", "Ng8", "Nf3", "Nf6", "Ng1");
 

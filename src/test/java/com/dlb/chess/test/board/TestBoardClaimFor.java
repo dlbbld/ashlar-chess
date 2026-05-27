@@ -1,6 +1,7 @@
 package com.dlb.chess.test.board;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
@@ -109,16 +110,15 @@ class TestBoardClaimFor implements EnumConstants {
 
   @SuppressWarnings("static-method")
   @Test
-  void fiftyMoveForReturnsFalseForIllegalMove() {
-    // Same boundary position as the WithOwnMove boundary fixture. Ra1-a9 is not a legal move (off
-    // the board even before considering legality semantics); pass a clearly nonsensical move spec
-    // that doesn't match any legal move, expect false. Use Ra1-h8 instead: legal as a board pattern
-    // (rook can move along rank or file) but obstructed by other pieces.
+  void fiftyMoveForThrowsForIllegalMove() {
+    // Same boundary position as the WithOwnMove boundary fixture. Ra1-h8 is geometrically a rook
+    // move but not legal (different rank and file from a1; rook moves only along one or the other).
+    // The per-move predicate now treats "not in the legal-moves set" as a loud failure — throws
+    // IllegalArgumentException rather than silently returning false.
     final Board board = new Board("7k/8/8/8/8/8/4K3/R7 w - - 99 51");
-    // Ra1-h8 is geometrically a rook move but not legal (different rank and file from a1; rook
-    // moves only along one or the other). Acts as a "not in the legal-moves set" probe.
-    assertFalse(board.canClaimFiftyMoveRuleFor(new MoveSpecification(A1, H8)),
-        "a move not in the legal-moves set is not a valid claim, even at clock 99");
+    assertThrows(IllegalArgumentException.class,
+        () -> board.canClaimFiftyMoveRuleFor(new MoveSpecification(A1, H8)),
+        "a move not in the legal-moves set must throw, not silently return false");
   }
 
   @SuppressWarnings("static-method")
@@ -183,13 +183,14 @@ class TestBoardClaimFor implements EnumConstants {
 
   @SuppressWarnings("static-method")
   @Test
-  void threefoldForReturnsFalseForIllegalMove() {
-    // Move not in the legal-moves set — predicate must return false rather than throwing.
+  void threefoldForThrowsForIllegalMove() {
+    // Move not in the legal-moves set — predicate now throws rather than silently returning false.
+    // F6-A1 is not a legal move from any piece on f6 (knight on f6 cannot reach a1).
     final Board board = new Board();
     board.movesStrict("Nf3", "Nf6", "Ng1", "Ng8", "Nf3", "Nf6", "Ng1");
-    // F6-A1 is not a legal move from any piece on f6 (knight on f6 cannot reach a1).
-    assertFalse(board.canClaimThreefoldRepetitionRuleFor(new MoveSpecification(F6, A1)),
-        "a move not in the legal-moves set is not a valid claim");
+    assertThrows(IllegalArgumentException.class,
+        () -> board.canClaimThreefoldRepetitionRuleFor(new MoveSpecification(F6, A1)),
+        "a move not in the legal-moves set must throw, not silently return false");
   }
 
   // =============================================================================================

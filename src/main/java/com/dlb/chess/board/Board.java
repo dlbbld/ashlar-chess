@@ -42,6 +42,7 @@ import com.dlb.chess.model.LegalMove;
 import com.dlb.chess.moves.CastlingUtility;
 import com.dlb.chess.moves.EnPassantCaptureUtility;
 import com.dlb.chess.san.LenientSanParser;
+import com.dlb.chess.san.LenientSanParserValidationException;
 import com.dlb.chess.san.LenientSanParserValidationResult;
 import com.dlb.chess.san.MoveToLan;
 import com.dlb.chess.san.MoveToSan;
@@ -542,29 +543,22 @@ public class Board {
    * under FIDE 9.3. (In practice the player would play the mate; the predicate is honest about what the rule says.)
    */
   public boolean canClaimFiftyMoveRuleFor(MoveSpecification move) {
+    final LegalMove legalMove = requireLegalMove(move);
     if (getHalfMoveClock() < 99) {
       return false;
     }
-    for (final LegalMove legalMove : getLegalMoves()) {
-      if (legalMove.moveSpecification().equals(move)) {
-        return !BasicChessUtility.calculateIsResetHalfMoveClock(legalMove);
-      }
-    }
-    return false;
+    return !BasicChessUtility.calculateIsResetHalfMoveClock(legalMove);
   }
 
   /**
-   * SAN convenience overload of {@link #canClaimFiftyMoveRuleFor(MoveSpecification)}: parses {@code san} as strict
-   * canonical SAN against the current position and delegates. Returns {@code false} (rather than throwing) when
-   * {@code san} is malformed, ambiguous, or does not match a legal move on the current position — so callers can probe
-   * arbitrary strings without exception handling.
+   * SAN convenience overload of {@link #canClaimFiftyMoveRuleFor(MoveSpecification)}: parses {@code san} via the
+   * lenient SAN pipeline against the current position and delegates. Throws on invalid input — {@link
+   * LenientSanParserValidationException} when {@code san} is unparseable / ambiguous / illegal under the lenient
+   * pipeline, and {@link IllegalArgumentException} (from the {@link MoveSpecification} overload) when the parsed move
+   * is not in the current legal-moves set.
    */
-  public boolean canClaimFiftyMoveRuleFor(String san) {
-    final var parsed = parseSanQuietly(san);
-    if (parsed == null) {
-      return false;
-    }
-    return canClaimFiftyMoveRuleFor(parsed);
+  public boolean canClaimFiftyMoveRuleFor(String san) throws LenientSanParserValidationException {
+    return canClaimFiftyMoveRuleFor(LenientSanParser.parseText(san, this).moveSpecification());
   }
 
   /**
@@ -582,31 +576,25 @@ public class Board {
    * {@link #canClaimFiftyMoveRuleFor} JavaDoc for the cross-library context with python-chess.
    */
   public boolean canClaimThreefoldRepetitionRuleFor(MoveSpecification move) {
-    for (final LegalMove legalMove : getLegalMoves()) {
-      if (legalMove.moveSpecification().equals(move)) {
-        if (BasicChessUtility.calculateIsResetHalfMoveClock(legalMove)) {
-          return false;
-        }
-        this.move(move);
-        final var threefold = isThreefoldRepetition();
-        this.unmove();
-        return threefold;
-      }
+    final LegalMove legalMove = requireLegalMove(move);
+    if (BasicChessUtility.calculateIsResetHalfMoveClock(legalMove)) {
+      return false;
     }
-    return false;
+    this.move(move);
+    final boolean threefold = isThreefoldRepetition();
+    this.unmove();
+    return threefold;
   }
 
   /**
-   * SAN convenience overload of {@link #canClaimThreefoldRepetitionRuleFor(MoveSpecification)}: parses {@code san} as
-   * strict canonical SAN against the current position and delegates. Returns {@code false} (rather than throwing) when
-   * {@code san} is malformed, ambiguous, or does not match a legal move on the current position.
+   * SAN convenience overload of {@link #canClaimThreefoldRepetitionRuleFor(MoveSpecification)}: parses {@code san} via
+   * the lenient SAN pipeline against the current position and delegates. Throws on invalid input — {@link
+   * LenientSanParserValidationException} when {@code san} is unparseable / ambiguous / illegal under the lenient
+   * pipeline, and {@link IllegalArgumentException} (from the {@link MoveSpecification} overload) when the parsed move
+   * is not in the current legal-moves set.
    */
-  public boolean canClaimThreefoldRepetitionRuleFor(String san) {
-    final var parsed = parseSanQuietly(san);
-    if (parsed == null) {
-      return false;
-    }
-    return canClaimThreefoldRepetitionRuleFor(parsed);
+  public boolean canClaimThreefoldRepetitionRuleFor(String san) throws LenientSanParserValidationException {
+    return canClaimThreefoldRepetitionRuleFor(LenientSanParser.parseText(san, this).moveSpecification());
   }
 
   public boolean canClaimThreefoldRepetitionRuleWithOwnMove() {
@@ -624,12 +612,19 @@ public class Board {
     return false;
   }
 
-  private @Nullable MoveSpecification parseSanQuietly(String san) {
-    try {
-      return StrictSanParser.parseText(san, this).moveSpecification();
-    } catch (@SuppressWarnings("unused") final SanValidationException ignored) {
-      return null;
+  /**
+   * Returns the {@link LegalMove} matching {@code move} in the current legal-moves set, throwing
+   * {@link IllegalArgumentException} if no match exists. Used by the per-move claim predicates to make "move not legal
+   * here" a loud, immediate failure rather than a silent {@code false}.
+   */
+  private LegalMove requireLegalMove(MoveSpecification move) {
+    for (final LegalMove legalMove : getLegalMoves()) {
+      if (legalMove.moveSpecification().equals(move)) {
+        return legalMove;
+      }
     }
+    throw new IllegalArgumentException(
+        "move " + move + " is not a legal move in the current position");
   }
 
   /**
