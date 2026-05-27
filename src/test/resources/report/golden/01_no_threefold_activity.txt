@@ -1,0 +1,8 @@
+Valid threefold claims ahead (asterisk denotes also the last ahead move has been played):
+None
+
+Threefolds and beyond:
+None
+
+Fifty moves without capture and pawn move:
+Yes
