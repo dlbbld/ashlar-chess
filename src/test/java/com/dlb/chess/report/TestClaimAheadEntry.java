@@ -8,7 +8,6 @@ import org.junit.jupiter.api.Test;
 import com.dlb.chess.board.Board;
 import com.dlb.chess.common.Nulls;
 import com.dlb.chess.common.model.HalfMove;
-import com.google.common.collect.ImmutableList;
 
 /**
  * Direct unit tests for the {@link ClaimAheadEntry} record. Covers the compact-constructor invariant
@@ -27,7 +26,7 @@ class TestClaimAheadEntry {
   @Test
   void compactConstructorRejectsInconsistentTotal() {
     final HalfMove move = firstPlayedHalfMove();
-    assertThrows(IllegalArgumentException.class, () -> new ClaimAheadEntry(move, false, ImmutableList.of(), false, 99),
+    assertThrows(IllegalArgumentException.class, () -> new ClaimAheadEntry(move, false, Nulls.listOf(), false, 99),
         "totalRepetitionCount disagreeing with priorOccurrences.size() + 1 must throw");
   }
 
@@ -35,7 +34,7 @@ class TestClaimAheadEntry {
   @Test
   void compactConstructorAcceptsConsistentTotalWithoutInitialPosition() {
     final HalfMove move = firstPlayedHalfMove();
-    final ClaimAheadEntry entry = new ClaimAheadEntry(move, false, ImmutableList.of(), false, 1);
+    final ClaimAheadEntry entry = new ClaimAheadEntry(move, false, Nulls.listOf(), false, 1);
     assertEquals(1, entry.totalRepetitionCount());
     assertEquals(0, entry.priorOccurrences().size());
     assertEquals(false, entry.includesInitialPosition());
@@ -48,7 +47,7 @@ class TestClaimAheadEntry {
     // priorOccurrences empty, includesInitialPosition true, claim-ahead move = the (n+1)th = 2nd occurrence overall:
     // 0 + 1 + 1 = 2.
     final HalfMove move = firstPlayedHalfMove();
-    final ClaimAheadEntry entry = new ClaimAheadEntry(move, false, ImmutableList.of(), true, 2);
+    final ClaimAheadEntry entry = new ClaimAheadEntry(move, false, Nulls.listOf(), true, 2);
     assertEquals(2, entry.totalRepetitionCount());
     assertEquals(true, entry.includesInitialPosition());
   }
@@ -60,7 +59,7 @@ class TestClaimAheadEntry {
     // mutation is impossible at the API level. The meaningful invariant is that the accessor
     // returns an unmodifiable list — calling add()/clear() throws.
     final HalfMove move = firstPlayedHalfMove();
-    final ClaimAheadEntry entry = new ClaimAheadEntry(move, true, ImmutableList.of(move), false, 2);
+    final ClaimAheadEntry entry = new ClaimAheadEntry(move, true, Nulls.listOf(move), false, 2);
     assertEquals(1, entry.priorOccurrences().size());
     assertThrows(UnsupportedOperationException.class, () -> entry.priorOccurrences().add(move),
         "exposed priorOccurrences must reject mutation");

@@ -2,7 +2,7 @@ package com.dlb.chess.common.model;
 
 import java.util.List;
 
-import com.google.common.collect.ImmutableList;
+import com.dlb.chess.common.Nulls;
 
 /**
  * Snapshot of the side-to-move's right to claim a draw under one specific FIDE rule (either 9.2 threefold or 9.3 fifty-
@@ -23,11 +23,10 @@ import com.google.common.collect.ImmutableList;
 public record ClaimRights(boolean canClaim, List<ClaimableMove> claimableMoves) {
 
   public ClaimRights {
-    claimableMoves = ImmutableList.copyOf(claimableMoves);
-    if (canClaim != !claimableMoves.isEmpty()) {
-      throw new IllegalArgumentException(
-          "canClaim must equal !claimableMoves.isEmpty(); got canClaim=" + canClaim + ", claimableMoves.size()="
-              + claimableMoves.size());
+    claimableMoves = Nulls.copyOfList(claimableMoves);
+    if (canClaim == claimableMoves.isEmpty()) {
+      throw new IllegalArgumentException("canClaim must equal !claimableMoves.isEmpty(); got canClaim=" + canClaim
+          + ", claimableMoves.size()=" + claimableMoves.size());
     }
   }
 }

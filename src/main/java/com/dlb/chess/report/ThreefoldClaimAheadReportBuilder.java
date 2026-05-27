@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.List;
 
 import com.dlb.chess.board.Board;
+import com.dlb.chess.common.Nulls;
 import com.dlb.chess.common.model.DynamicPosition;
 import com.dlb.chess.common.model.HalfMove;
 import com.dlb.chess.common.model.MoveSpecification;
@@ -21,9 +22,9 @@ abstract class ThreefoldClaimAheadReportBuilder {
    * <p>
    * Entries are ordered by {@link ReportLineOrder#CLAIM_AHEAD_COMPARATOR}: lexicographic on the displayed half-move-
    * count sequence ({@code priorOccurrences ++ claimAheadMove}, prefixed by a virtual {@code -1} when
-   * {@code includesInitialPosition} is true). Sequences that share earlier plies stay adjacent and progress
-   * length-3 → length-4 → length-5 (the shorter is a prefix of the longer in standard lex order). When the played
-   * history reaches the same dynamic position multiple times, the earlier claim-ahead boundary surfaces first.
+   * {@code includesInitialPosition} is true). Sequences that share earlier plies stay adjacent and progress length-3 →
+   * length-4 → length-5 (the shorter is a prefix of the longer in standard lex order). When the played history reaches
+   * the same dynamic position multiple times, the earlier claim-ahead boundary surfaces first.
    */
   static ThreefoldClaimAheadReport build(Board board) {
     final List<HalfMove> rawClaimAheads = replayAndCollectClaimAheads(board.getPerformedLegalMoveList(),
@@ -36,7 +37,7 @@ abstract class ThreefoldClaimAheadReportBuilder {
       entries.add(buildEntry(claimAheadMove, halfMoveListPlayed, initialDynamicPosition));
     }
     Collections.sort(entries, ReportLineOrder.CLAIM_AHEAD_COMPARATOR);
-    return new ThreefoldClaimAheadReport(ImmutableList.copyOf(entries));
+    return new ThreefoldClaimAheadReport(Nulls.copyOfList(entries));
   }
 
   private static List<HalfMove> replayAndCollectClaimAheads(List<LegalMove> performedLegalMoveList, Fen initialFen) {
@@ -71,8 +72,8 @@ abstract class ThreefoldClaimAheadReportBuilder {
   private static ClaimAheadEntry buildEntry(HalfMove claimAheadMove, ImmutableList<HalfMove> halfMoveListPlayed,
       DynamicPosition initialDynamicPosition) {
 
-    final boolean hasBeenPlayed = halfMoveListPlayed.contains(claimAheadMove);
-    final boolean includesInitialPosition = initialDynamicPosition.equals(claimAheadMove.dynamicPosition());
+    final var hasBeenPlayed = halfMoveListPlayed.contains(claimAheadMove);
+    final var includesInitialPosition = initialDynamicPosition.equals(claimAheadMove.dynamicPosition());
 
     final List<HalfMove> priorOccurrences = new ArrayList<>();
     for (final HalfMove played : halfMoveListPlayed) {
@@ -84,8 +85,8 @@ abstract class ThreefoldClaimAheadReportBuilder {
       }
     }
 
-    final int totalRepetitionCount = priorOccurrences.size() + 1 + (includesInitialPosition ? 1 : 0);
-    return new ClaimAheadEntry(claimAheadMove, hasBeenPlayed, ImmutableList.copyOf(priorOccurrences),
+    final var totalRepetitionCount = priorOccurrences.size() + 1 + (includesInitialPosition ? 1 : 0);
+    return new ClaimAheadEntry(claimAheadMove, hasBeenPlayed, Nulls.copyOfList(priorOccurrences),
         includesInitialPosition, totalRepetitionCount);
   }
 }

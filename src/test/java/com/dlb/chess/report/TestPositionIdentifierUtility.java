@@ -15,7 +15,6 @@ import com.dlb.chess.common.Nulls;
 import com.dlb.chess.common.constants.ChessConstants;
 import com.dlb.chess.common.model.DynamicPosition;
 import com.dlb.chess.common.model.HalfMove;
-import com.google.common.collect.ImmutableList;
 
 class TestPositionIdentifierUtility {
 
@@ -207,14 +206,14 @@ class TestPositionIdentifierUtility {
     // Synthetic claim-ahead report with one entry on positionAfterE4. The record's invariant only
     // checks the count math; the chess semantics of the entry don't matter for the label-assignment
     // contract under test.
-    final ClaimAheadEntry syntheticEntry = new ClaimAheadEntry(afterE4, false, ImmutableList.of(afterE4, afterE4),
-        false, 3);
-    final ThreefoldClaimAheadReport claimAhead = new ThreefoldClaimAheadReport(ImmutableList.of(syntheticEntry));
+    final ClaimAheadEntry syntheticEntry = new ClaimAheadEntry(afterE4, false, Nulls.listOf(afterE4, afterE4), false,
+        3);
+    final ThreefoldClaimAheadReport claimAhead = new ThreefoldClaimAheadReport(Nulls.listOf(syntheticEntry));
 
     // Synthetic existing report with one group on positionAfterE5 — a different position.
-    final RepetitionGroup syntheticGroup = new RepetitionGroup(positionAfterE5,
-        ImmutableList.of(afterE5, afterE5, afterE5), false, 3);
-    final ThreefoldExistingReport existing = new ThreefoldExistingReport(ImmutableList.of(syntheticGroup));
+    final RepetitionGroup syntheticGroup = new RepetitionGroup(positionAfterE5, Nulls.listOf(afterE5, afterE5, afterE5),
+        false, 3);
+    final ThreefoldExistingReport existing = new ThreefoldExistingReport(Nulls.listOf(syntheticGroup));
 
     final Map<DynamicPosition, String> map = PositionIdentifierUtility.calculatePositionIdentifierMap(claimAhead,
         existing);

@@ -9,7 +9,6 @@ import com.dlb.chess.board.Board;
 import com.dlb.chess.common.Nulls;
 import com.dlb.chess.common.model.DynamicPosition;
 import com.dlb.chess.common.model.HalfMove;
-import com.google.common.collect.ImmutableList;
 
 /**
  * Direct unit tests for the {@link RepetitionGroup} record. Covers the compact-constructor invariant
@@ -24,7 +23,7 @@ class TestRepetitionGroup {
     final HalfMove move = firstPlayedHalfMove();
     final DynamicPosition position = move.dynamicPosition();
     assertThrows(IllegalArgumentException.class,
-        () -> new RepetitionGroup(position, ImmutableList.of(move, move, move), false, 99),
+        () -> new RepetitionGroup(position, Nulls.listOf(move, move, move), false, 99),
         "totalRepetitionCount disagreeing with occurrences.size() + (initial ? 1 : 0) must throw");
   }
 
@@ -33,7 +32,7 @@ class TestRepetitionGroup {
   void compactConstructorAcceptsConsistentTotalWithoutInitialPosition() {
     final HalfMove move = firstPlayedHalfMove();
     final DynamicPosition position = move.dynamicPosition();
-    final RepetitionGroup group = new RepetitionGroup(position, ImmutableList.of(move, move, move), false, 3);
+    final RepetitionGroup group = new RepetitionGroup(position, Nulls.listOf(move, move, move), false, 3);
     assertEquals(3, group.totalRepetitionCount());
     assertEquals(3, group.occurrences().size());
     assertEquals(false, group.includesInitialPosition());
@@ -46,7 +45,7 @@ class TestRepetitionGroup {
     // Two played occurrences + 1 implicit initial-position occurrence = total 3 (the threefold).
     final HalfMove move = firstPlayedHalfMove();
     final DynamicPosition position = move.dynamicPosition();
-    final RepetitionGroup group = new RepetitionGroup(position, ImmutableList.of(move, move), true, 3);
+    final RepetitionGroup group = new RepetitionGroup(position, Nulls.listOf(move, move), true, 3);
     assertEquals(3, group.totalRepetitionCount());
     assertEquals(2, group.occurrences().size());
     assertEquals(true, group.includesInitialPosition());
@@ -60,7 +59,7 @@ class TestRepetitionGroup {
     // returns an unmodifiable list — calling add()/clear() throws.
     final HalfMove move = firstPlayedHalfMove();
     final DynamicPosition position = move.dynamicPosition();
-    final RepetitionGroup group = new RepetitionGroup(position, ImmutableList.of(move, move, move), false, 3);
+    final RepetitionGroup group = new RepetitionGroup(position, Nulls.listOf(move, move, move), false, 3);
     assertEquals(3, group.occurrences().size());
     assertThrows(UnsupportedOperationException.class, () -> group.occurrences().add(move),
         "exposed occurrences must reject mutation");

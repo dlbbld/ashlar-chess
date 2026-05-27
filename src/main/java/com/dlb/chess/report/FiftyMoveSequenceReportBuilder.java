@@ -6,6 +6,7 @@ import java.util.List;
 import org.eclipse.jdt.annotation.Nullable;
 
 import com.dlb.chess.board.Board;
+import com.dlb.chess.common.Nulls;
 import com.dlb.chess.common.constants.ChessConstants;
 import com.dlb.chess.common.model.HalfMove;
 import com.google.common.collect.ImmutableList;
@@ -20,22 +21,22 @@ abstract class FiftyMoveSequenceReportBuilder {
    *
    * <p>
    * Special initial-FEN handling: if the starting FEN's halfmove clock is non-zero, a sequence is open from the
-   * beginning with the initial-FEN-anchored {@link SequenceStart} shape. If the FEN's clock alone already meets the threshold and the first played
-   * move resets it (or no halfmoves are played at all), the sequence is emitted with {@code endPly == null} —
-   * the print layer renders only the start marker.
+   * beginning with the initial-FEN-anchored {@link SequenceStart} shape. If the FEN's clock alone already meets the
+   * threshold and the first played move resets it (or no halfmoves are played at all), the sequence is emitted with
+   * {@code endPly == null} — the print layer renders only the start marker.
    */
   static FiftyMoveSequenceReport build(Board board) {
-    final int threshold = ChessConstants.FIFTY_MOVE_RULE_HALF_MOVE_CLOCK_THRESHOLD;
-    final int initialFenClock = board.getInitialFen().halfMoveClock();
+    final var threshold = ChessConstants.FIFTY_MOVE_RULE_HALF_MOVE_CLOCK_THRESHOLD;
+    final var initialFenClock = board.getInitialFen().halfMoveClock();
     final ImmutableList<HalfMove> halfMoveList = board.getHalfMoveList();
 
     final List<FiftyMoveSequence> sequences = new ArrayList<>();
 
-    @Nullable SequenceStart currentStart = initialFenClock > 0 ? SequenceStart.initialFen(initialFenClock) : null;
+    @Nullable var currentStart = initialFenClock > 0 ? SequenceStart.initialFen(initialFenClock) : null;
     @Nullable HalfMove currentEndPly = null;
 
     for (final HalfMove ply : halfMoveList) {
-      final int clock = ply.halfMoveClock();
+      final var clock = ply.halfMoveClock();
       if (clock == 0) {
         // Clock-resetting move: closes any open sequence (without including this move). The
         // resetting move itself does not start a new sequence; the NEXT non-zeroing move will.
@@ -60,7 +61,7 @@ abstract class FiftyMoveSequenceReportBuilder {
       maybeEmit(sequences, currentStart, currentEndPly, threshold);
     }
 
-    return new FiftyMoveSequenceReport(ImmutableList.copyOf(sequences));
+    return new FiftyMoveSequenceReport(Nulls.copyOfList(sequences));
   }
 
   private static void maybeEmit(List<FiftyMoveSequence> sequences, SequenceStart start, @Nullable HalfMove endPly,
