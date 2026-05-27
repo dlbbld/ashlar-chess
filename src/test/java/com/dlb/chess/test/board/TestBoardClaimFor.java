@@ -167,4 +167,47 @@ class TestBoardClaimFor implements EnumConstants {
     assertFalse(board.canClaimThreefoldRepetitionRuleFor(new MoveSpecification(F6, A1)),
         "a move not in the legal-moves set is not a valid claim");
   }
+
+  // =============================================================================================
+  // canClaimDrawFor — composed convenience
+  // =============================================================================================
+
+  @SuppressWarnings("static-method")
+  @Test
+  void drawForReturnsTrueWhenOnlyFiftyMoveBranchTriggers() {
+    // Quiet rook move at clock 99: 50-move branch true, threefold branch false (fresh position).
+    final Board board = new Board("7k/8/8/8/8/8/4K3/R7 w - - 99 51");
+    assertTrue(board.canClaimFiftyMoveRuleFor(new MoveSpecification(A1, A2)),
+        "precondition: 50-move per-move predicate is true");
+    assertFalse(board.canClaimThreefoldRepetitionRuleFor(new MoveSpecification(A1, A2)),
+        "precondition: threefold per-move predicate is false");
+    assertTrue(board.canClaimDrawFor(new MoveSpecification(A1, A2)),
+        "composed convenience: true when either branch is true");
+  }
+
+  @SuppressWarnings("static-method")
+  @Test
+  void drawForReturnsTrueWhenOnlyThreefoldBranchTriggers() {
+    // 7-ply knight shuffle; Black's Ng8 creates threefold. Clock is small (around 7) so the 50-move
+    // branch is false. Composed convenience must still be true via the threefold branch.
+    final Board board = new Board();
+    board.movesStrict("Nf3", "Nf6", "Ng1", "Ng8", "Nf3", "Nf6", "Ng1");
+    final MoveSpecification ng8 = new MoveSpecification(F6, G8);
+    assertFalse(board.canClaimFiftyMoveRuleFor(ng8), "precondition: clock below 99");
+    assertTrue(board.canClaimThreefoldRepetitionRuleFor(ng8), "precondition: Ng8 creates threefold");
+    assertTrue(board.canClaimDrawFor(ng8), "composed convenience: true when either branch is true");
+  }
+
+  @SuppressWarnings("static-method")
+  @Test
+  void drawForReturnsFalseWhenNeitherBranchTriggers() {
+    // Fresh game, low clock, no repetition history. No claim available via either branch.
+    final Board board = new Board();
+    board.movesStrict("e4", "e5");
+    // 1.Nf3 from this position: legal, non-zeroing, but clock is 1 (after both pawn pushes the
+    // clock is 0; the Nf3 push would bring it to 1) -- well below 99. And the post-position is
+    // fresh, never seen before -- not threefold.
+    assertFalse(board.canClaimDrawFor(new MoveSpecification(G1, F3)),
+        "neither branch satisfies the claim");
+  }
 }

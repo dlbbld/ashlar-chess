@@ -956,6 +956,15 @@ public class Board {
     return canClaimThreefoldRepetitionRuleWithOwnMove();
   }
 
+  /**
+   * Per-move composed convenience: returns {@code true} iff {@code move}, when announced as the next move under FIDE
+   * 9.2 or 9.3, would entitle the announcer to claim a draw. Equivalent to
+   * {@code canClaimFiftyMoveRuleFor(move) || canClaimThreefoldRepetitionRuleFor(move)}.
+   */
+  public boolean canClaimDrawFor(MoveSpecification move) {
+    return canClaimFiftyMoveRuleFor(move) || canClaimThreefoldRepetitionRuleFor(move);
+  }
+
   public InsufficientMaterial calculateInsufficientMaterial() {
     if (isInsufficientMaterial()) {
       return InsufficientMaterial.BOTH;
