@@ -32,6 +32,34 @@ abstract class PositionIdentifierUtility {
     return result;
   }
 
+  /**
+   * Assigns a unique letter label per distinct position across both reports. Claim-ahead entries are visited first in
+   * their stored order, then any positions appearing only in the existing-repetition groups are appended. The
+   * claim-ahead-first ordering preserves the exact letter assignment of the legacy single-input overload, since today
+   * every threefold-reached position is also reachable as a claim-ahead opportunity. The second walk closes the latent
+   * throw-on-missing edge against future fixtures where that invariant might not hold.
+   */
+  public static Map<DynamicPosition, String> calculatePositionIdentifierMap(ThreefoldClaimAheadReport claimAhead,
+      ThreefoldExistingReport existing) {
+    final Map<DynamicPosition, String> result = new HashMap<>();
+    var positionNumber = 1;
+    for (final ClaimAheadEntry entry : claimAhead.entries()) {
+      final DynamicPosition position = entry.claimAheadMove().dynamicPosition();
+      if (!result.containsKey(position)) {
+        result.put(position, calculateIdentifier(positionNumber));
+        positionNumber++;
+      }
+    }
+    for (final RepetitionGroup group : existing.groups()) {
+      final DynamicPosition position = group.repeatedPosition();
+      if (!result.containsKey(position)) {
+        result.put(position, calculateIdentifier(positionNumber));
+        positionNumber++;
+      }
+    }
+    return result;
+  }
+
   static String calculateIdentifier(int positionNumber) {
 
     final List<Integer> representationList = calculateRepresentation(positionNumber - 1, BASE);
