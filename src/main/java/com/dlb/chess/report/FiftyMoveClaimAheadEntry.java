@@ -1,34 +1,37 @@
 package com.dlb.chess.report;
 
-import com.dlb.chess.common.model.HalfMove;
+import com.dlb.chess.board.enums.Side;
 
 /**
- * One missed 50-move claim-ahead opportunity: a non-zeroing legal move that, if played at the parent ply, would have
- * brought the halfmove clock to 100 and completed the FIDE 9.3 conditions for a draw claim — but was <em>not</em>
- * played, and the actually-played move at that ply broke the sequence (a pawn move or capture, or the game ended at
- * the boundary).
+ * One missed 50-move claim-ahead boundary: a ply at which the no-progress sequence's halfmove clock would be 99 going
+ * into the candidate move, the player had at least one non-zeroing legal move that would have brought clock to 100 and
+ * satisfied the FIDE 9.3 claim, but did not play one (the actually-played move was clock-resetting, or the game ended
+ * at the boundary).
  *
  * <p>
- * Only emitted when the no-progress sequence containing the parent ply did not reach clock 100 in the actual played
- * history. Once a sequence reaches the threshold (in actual play), all its claim-ahead candidates are intentionally
- * omitted — they're informationally redundant with the "Fifty moves and beyond" sequence row that already surfaces the
- * achieved threshold.
+ * Carries only the boundary's chronological position (sequence start, half-move count, full-move number, side having
+ * move) — NOT a specific candidate move. Multiple non-zeroing legal moves at the same boundary collapse into a single
+ * entry: listing all of them would be 30+ rows for one missed-opportunity ply with no informational gain over a single
+ * row stating that the opportunity existed. The print layer renders the candidate position as a placeholder token
+ * {@code [ahead claim possible]}.
  *
  * <p>
- * Unlike the threefold claim-ahead model there is no {@code hasBeenPlayed} flag: under the missed-opportunity filter,
- * the actually-played move at the boundary ply is by construction clock-resetting (otherwise the sequence would have
- * continued past 99), so the claim-ahead candidate — being non-zeroing by predicate — can never coincide with it.
- *
- * <p>
- * {@code claimAheadMove.halfMoveClock()} is always exactly 100 by construction; the print layer renders it inside the
- * trailing {@code (100)} token for parallelism with the sequence-report line shape.
+ * Only emitted when the no-progress sequence containing this boundary did not reach clock 100 in the actual played
+ * history. Sequences that did reach the threshold appear in {@link FiftyMoveSequenceReport} alone; their would-be
+ * claim-aheads are informationally redundant with that row.
  */
-record FiftyMoveClaimAheadEntry(SequenceStart sequenceStart, HalfMove claimAheadMove) {
+record FiftyMoveClaimAheadEntry(SequenceStart sequenceStart, int halfMoveCount, int fullMoveNumber,
+    Side sideHavingMove) {
 
   public FiftyMoveClaimAheadEntry {
-    if (claimAheadMove.halfMoveClock() != 100) {
-      throw new IllegalArgumentException(
-          "claimAheadMove.halfMoveClock must be 100 by construction; was " + claimAheadMove.halfMoveClock());
+    if (halfMoveCount < 1) {
+      throw new IllegalArgumentException("halfMoveCount must be >= 1; was " + halfMoveCount);
+    }
+    if (fullMoveNumber < 1) {
+      throw new IllegalArgumentException("fullMoveNumber must be >= 1; was " + fullMoveNumber);
+    }
+    if (sideHavingMove == Side.NONE) {
+      throw new IllegalArgumentException("sideHavingMove must be WHITE or BLACK");
     }
   }
 }

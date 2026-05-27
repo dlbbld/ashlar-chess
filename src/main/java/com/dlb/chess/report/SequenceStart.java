@@ -6,7 +6,7 @@ package com.dlb.chess.report;
  * legal move played after a clock-resetting ply ({@link AfterResetStart}).
  *
  * <p>
- * Together with {@code endPly} on {@link FiftyMoveSequence} and {@code claimAheadMove} on
+ * Together with {@code endPly} on {@link FiftyMoveSequence} and the boundary metadata on
  * {@link FiftyMoveClaimAheadEntry}, this carries the chronological position of the sequence in the played history,
  * which is what the printed report shows as the sequence's start marker.
  */

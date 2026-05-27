@@ -17,22 +17,28 @@ import com.google.common.collect.ImmutableList;
 abstract class FiftyMoveClaimAheadReportBuilder {
 
   /**
-   * Builds the 50-move claim-ahead report under the missed-opportunity filter: only those candidate moves are emitted
-   * where the sequence containing the parent ply did not, in the actual played history, reach the 50-move-rule
-   * threshold (halfmove clock 100). Sequences that did reach the threshold are surfaced by
-   * {@link FiftyMoveSequenceReportBuilder} alone; their claim-ahead candidates would be informationally redundant here.
+   * Builds the 50-move claim-ahead report under the missed-opportunity filter: only those boundary plies are emitted
+   * where the no-progress sequence containing the boundary did not, in the actual played history, reach the 50-move-
+   * rule threshold (halfmove clock 100). Sequences that did reach the threshold are surfaced by
+   * {@link FiftyMoveSequenceReportBuilder} alone; their would-be claim-aheads are informationally redundant here.
    *
    * <p>
    * Concretely, at any replay-ply where the position's halfmove clock equals 99, the builder asks: was the actually-
    * played move at this ply a clock-resetting move (pawn move or capture), or did the played history end here? If yes
-   * — the sequence is about to break (or has ended) without ever reaching clock 100 — every non-zeroing legal move at
-   * this ply is a missed claim-ahead, and one entry is emitted per such move. If no — the actually-played move was
-   * non-zeroing, so clock will advance to 100 and the sequence reaches threshold — no entries are emitted at this ply.
+   * — the sequence is about to break (or has ended) without ever reaching clock 100 — and at least one non-zeroing
+   * legal move exists at this ply, ONE entry is emitted (regardless of how many non-zeroing alternatives were
+   * available). If no — the actually-played move was non-zeroing, so clock will advance to 100 and the sequence reaches
+   * threshold — no entry is emitted at this ply.
+   *
+   * <p>
+   * One-entry-per-boundary collapse: at a clock-99 boundary with N >= 1 non-zeroing legal alternatives, listing all N
+   * would be 30+ rows for one ply with no informational gain over a single row stating the opportunity existed. The
+   * single entry carries only the boundary's chronological position; the print layer renders a {@code [ahead claim
+   * possible]} placeholder where a SAN would normally go.
    *
    * <p>
    * The {@link com.dlb.chess.board.Board#canClaimFiftyMoveRuleFor} per-move predicate remains the single source of
-   * truth for whether a candidate move qualifies; the missed-opportunity filter is an orthogonal restriction layered on
-   * top of it.
+   * truth for whether a candidate move qualifies as a 50-move claim.
    */
   static FiftyMoveClaimAheadReport build(Board board) {
     final List<FiftyMoveClaimAheadEntry> entries = new ArrayList<>();
@@ -46,26 +52,26 @@ abstract class FiftyMoveClaimAheadReportBuilder {
       final LegalMove nextPlayedMove = performedLegalMoveList.get(i);
       final boolean nextPlayedMoveBreaksSequence = BasicChessUtility.calculateIsResetHalfMoveClock(nextPlayedMove);
       if (nextPlayedMoveBreaksSequence) {
-        collectMissedClaimAheads(entries, replayBoard, currentStart);
+        emitBoundaryIfMissedOpportunity(entries, replayBoard, currentStart);
       }
       replayBoard.move(nextPlayedMove.moveSpecification());
       currentStart = updatedSequenceStart(currentStart, Nulls.getLast(replayBoard.getHalfMoveList()));
     }
     // Played history exhausted; the open sequence (if any) ends here without a further played move.
-    // If its clock is 99, the boundary ply is a missed opportunity by the same filter logic.
-    collectMissedClaimAheads(entries, replayBoard, currentStart);
+    // If its clock is 99, the boundary ply is a missed opportunity.
+    emitBoundaryIfMissedOpportunity(entries, replayBoard, currentStart);
 
     Collections.sort(entries, ReportLineOrder.FIFTY_MOVE_CLAIM_AHEAD_COMPARATOR);
     return new FiftyMoveClaimAheadReport(ImmutableList.copyOf(entries));
   }
 
   /**
-   * If the replay board sits at exactly the clock-99 boundary and the sequence at this ply is destined not to reach
-   * 100 (the caller guarantees this by only invoking immediately before a clock-resetting played move or at end-of-
-   * history), enumerates the non-zeroing legal moves and emits one {@link FiftyMoveClaimAheadEntry} per. A {@code null}
-   * {@code currentStart} indicates no active sequence (clock cannot be 99) and short-circuits.
+   * If the replay board sits at exactly the clock-99 boundary and at least one non-zeroing legal move exists
+   * (predicate accepts it), emits a single {@link FiftyMoveClaimAheadEntry} representing the boundary opportunity.
+   * Returns silently when no active sequence is open ({@code currentStart == null}) or the clock is not 99 or no
+   * non-zeroing legal alternative exists.
    */
-  private static void collectMissedClaimAheads(List<FiftyMoveClaimAheadEntry> entries, Board replayBoard,
+  private static void emitBoundaryIfMissedOpportunity(List<FiftyMoveClaimAheadEntry> entries, Board replayBoard,
       @Nullable SequenceStart currentStart) {
     if (currentStart == null) {
       return;
@@ -73,19 +79,25 @@ abstract class FiftyMoveClaimAheadReportBuilder {
     if (replayBoard.getHalfMoveClock() != 99) {
       return;
     }
+    if (!hasAnyNonZeroingClaimCandidate(replayBoard)) {
+      return;
+    }
+    // Boundary metadata: the upcoming ply's chronological position. The candidate move itself is
+    // not stored — the entry represents the boundary, not any single alternative move.
+    final int boundaryHalfMoveCount = replayBoard.getPerformedHalfMoveCount() + 1;
+    final int boundaryFullMoveNumber = replayBoard.getFullMoveNumber();
+    entries.add(new FiftyMoveClaimAheadEntry(currentStart, boundaryHalfMoveCount, boundaryFullMoveNumber,
+        replayBoard.getHavingMove()));
+  }
+
+  private static boolean hasAnyNonZeroingClaimCandidate(Board replayBoard) {
     for (final LegalMove legalMove : replayBoard.getLegalMoves()) {
       final MoveSpecification move = legalMove.moveSpecification();
-      if (!replayBoard.canClaimFiftyMoveRuleFor(move)) {
-        continue;
+      if (replayBoard.canClaimFiftyMoveRuleFor(move)) {
+        return true;
       }
-      // Capture the resulting HalfMove via a transient push; same shape as the threefold claim-ahead
-      // builder. The predicate itself does no push (50-move is a clock check, no resulting position
-      // needed), so this push is the only one.
-      replayBoard.move(move);
-      final HalfMove claimAheadMove = Nulls.getLast(replayBoard.getHalfMoveList());
-      replayBoard.unmove();
-      entries.add(new FiftyMoveClaimAheadEntry(currentStart, claimAheadMove));
     }
+    return false;
   }
 
   private static @Nullable SequenceStart updatedSequenceStart(@Nullable SequenceStart currentStart,

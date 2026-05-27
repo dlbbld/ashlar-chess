@@ -35,10 +35,10 @@ abstract class ReportLineOrder {
       repetitionGroupSortKey(a), repetitionGroupSortKey(b));
 
   /**
-   * Orders 50-move claim-ahead entries by (sequence-start-anchor, claimAheadMove.halfMoveCount). The sequence-start
+   * Orders 50-move claim-ahead entries by (sequence-start-anchor, boundary half-move count). The sequence-start
    * anchor is {@code -1} when the start is {@link InitialFenStart} (sorts before any played ply) or the
-   * {@code firstNonZeroingMove}'s half-move count when the start is {@link AfterResetStart}. This groups entries by
-   * the run they advance and orders within a run by the candidate-move ply.
+   * {@code firstNonZeroingMove}'s half-move count when the start is {@link AfterResetStart}. This groups boundary
+   * entries by the run they belong to and orders within a run chronologically.
    */
   static final Comparator<FiftyMoveClaimAheadEntry> FIFTY_MOVE_CLAIM_AHEAD_COMPARATOR = (a, b) -> {
     final int startCompare = Integer.compare(sequenceStartAnchor(a.sequenceStart()),
@@ -46,7 +46,7 @@ abstract class ReportLineOrder {
     if (startCompare != 0) {
       return startCompare;
     }
-    return Integer.compare(a.claimAheadMove().halfMoveCount(), b.claimAheadMove().halfMoveCount());
+    return Integer.compare(a.halfMoveCount(), b.halfMoveCount());
   };
 
   private static List<Integer> claimAheadSortKey(ClaimAheadEntry entry) {

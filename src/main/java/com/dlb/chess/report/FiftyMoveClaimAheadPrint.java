@@ -4,22 +4,26 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.dlb.chess.board.HalfMoveUtility;
-import com.dlb.chess.common.model.HalfMove;
 
 abstract class FiftyMoveClaimAheadPrint {
 
   /**
-   * Renders the missed-opportunity 50-move claim-ahead report as one line per entry. Format:
+   * Placeholder where a specific candidate's SAN would otherwise go. The 50-move claim-ahead section emits one entry
+   * per missed-opportunity boundary, not per alternative legal move, so the candidate position is rendered abstractly:
+   * the line states that an ahead-claim was possible at this ply, not which specific move would have triggered it.
+   */
+  private static final String CLAIM_AHEAD_POSSIBLE_PLACEHOLDER = "[ahead claim possible]";
+
+  /**
+   * Renders the missed-opportunity 50-move claim-ahead report as one line per boundary entry. Format:
    *
    * <pre>
-   *   &lt;sequence-start-marker&gt; - &lt;move-number&gt;.[..] &lt;SAN&gt; (100)
+   *   &lt;sequence-start-marker&gt; - &lt;move-number&gt;.[..] [ahead claim possible] (100)
    * </pre>
    *
    * <p>
-   * The resulting-clock token is always {@code (100)} by construction (the predicate only accepts candidates at clock
-   * 99, so the post-move clock is always 100) and is rendered for parallelism with the sequence-report line shape, not
-   * to disambiguate the value. No asterisk: under the missed-opportunity filter the candidate is by construction
-   * different from the actually-played move at the boundary ply.
+   * The trailing {@code (100)} is the post-candidate halfmove clock — always 100 by predicate construction, rendered
+   * for parallelism with the sequence-report line shape.
    */
   static List<List<String>> render(FiftyMoveClaimAheadReport report) {
     final List<List<String>> resultListList = new ArrayList<>();
@@ -27,14 +31,14 @@ abstract class FiftyMoveClaimAheadPrint {
       final List<String> tokens = new ArrayList<>();
       tokens.add(SequenceStartFormat.format(entry.sequenceStart()));
       tokens.add("-");
-      tokens.add(formatClaimAhead(entry.claimAheadMove()));
+      tokens.add(formatBoundary(entry));
       resultListList.add(tokens);
     }
     return resultListList;
   }
 
-  private static String formatClaimAhead(HalfMove claimAheadMove) {
-    return HalfMoveUtility.calculateMoveNumberAndSanWithSpace(claimAheadMove) + " ("
-        + claimAheadMove.halfMoveClock() + ")";
+  private static String formatBoundary(FiftyMoveClaimAheadEntry entry) {
+    return HalfMoveUtility.calculateMoveNumberAndSanWithSpace(entry.fullMoveNumber(), entry.sideHavingMove(),
+        CLAIM_AHEAD_POSSIBLE_PLACEHOLDER) + " (100)";
   }
 }
