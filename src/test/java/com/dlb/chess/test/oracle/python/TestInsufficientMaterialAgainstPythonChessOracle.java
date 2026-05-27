@@ -18,6 +18,7 @@ import com.dlb.chess.common.utility.BasicUtility;
 import com.dlb.chess.test.ConfigurationTestConstants;
 import com.dlb.chess.test.pgntest.constants.PgnTestConstants;
 import com.dlb.chess.test.pgntest.enums.PgnTest;
+import com.google.common.collect.ImmutableList;
 
 /**
  * Checks insufficient material assessment against python-chess.
@@ -54,7 +55,7 @@ class TestInsufficientMaterialAgainstPythonChessOracle {
   private static final Path ORACLE_ROOT = Nulls.pathResolve(ConfigurationTestConstants.PROJECT_ROOT_FOLDER_PATH,
       "src/test/resources/oracle/python-chess");
 
-  private static final List<PgnTest> BUCKETS = Nulls.listOf(PgnTest.BASIC_INSUFFICIENT_MATERIAL_BOTH,
+  private static final ImmutableList<PgnTest> BUCKETS = Nulls.listOf(PgnTest.BASIC_INSUFFICIENT_MATERIAL_BOTH,
       PgnTest.BASIC_INSUFFICIENT_MATERIAL_ONLY_WHITE, PgnTest.BASIC_INSUFFICIENT_MATERIAL_ONLY_BLACK,
       PgnTest.BASIC_INSUFFICIENT_MATERIAL_NONE);
 

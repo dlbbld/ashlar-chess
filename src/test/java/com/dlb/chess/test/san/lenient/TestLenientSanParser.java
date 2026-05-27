@@ -20,6 +20,7 @@ import com.dlb.chess.san.ForgivenItem;
 import com.dlb.chess.san.LenientSanParserValidationException;
 import com.dlb.chess.san.LenientSanParserValidationResult;
 import com.dlb.chess.san.LenientSanValidationProblem;
+import com.google.common.collect.ImmutableList;
 
 @SuppressWarnings("static-method")
 class TestLenientSanParser implements EnumConstants {
@@ -27,8 +28,8 @@ class TestLenientSanParser implements EnumConstants {
   // Italian-game opening that exercises pawn pushes, knight/bishop development, and castling.
   // Castling is the only move whose canonical SAN, LAN, and UCI representations all differ — the rest
   // give us pawn vs piece coverage in each notation form.
-  private static final List<String> ITALIAN_OPENING_SAN = Nulls.listOf("e4", "e5", "Nf3", "Nc6", "Bc4", "Bc5", "O-O",
-      "Nf6", "d3", "d6");
+  private static final ImmutableList<String> ITALIAN_OPENING_SAN = Nulls.listOf("e4", "e5", "Nf3", "Nc6", "Bc4", "Bc5",
+      "O-O", "Nf6", "d3", "d6");
 
   // ---------------------------------------------------------------------------
   // Three full-game tests (canonical SAN / UCI / LAN end-to-end).

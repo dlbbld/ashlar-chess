@@ -13,29 +13,30 @@ import com.dlb.chess.test.model.PgnTestCaseList;
 import com.dlb.chess.test.pgn.parser.PgnCacheForStrictPgnParserTestCases;
 import com.dlb.chess.test.pgn.setup.PgnTestCaseCatalog;
 import com.dlb.chess.test.pgntest.enums.PgnTest;
+import com.google.common.collect.ImmutableList;
 
 /**
  * Times {@link HelpmateSearchBoard}'s search-hot-path operations on the same corpus that
- * {@code MoveGenerationPerformanceSurvey} uses for the Board-path measurements. Captures the wins from Phase B
- * (mutable make/unmake), Phase C (per-depth {@link LegalMoveBuffer} via the sink-based generator), and Phase D
- * (exact structural {@link HelpmateSearchKey} cache key) end-to-end.
+ * {@code MoveGenerationPerformanceSurvey} uses for the Board-path measurements. Captures the wins from Phase B (mutable
+ * make/unmake), Phase C (per-depth {@link LegalMoveBuffer} via the sink-based generator), and Phase D (exact structural
+ * {@link HelpmateSearchKey} cache key) end-to-end.
  *
  * <p>
  * Two measurements per corpus, both per-root-move:
  * <ol>
- *   <li><strong>cycle</strong>: {@code move(spec)} followed immediately by {@code unmove()}. This is the inner loop
- *       of the helpmate search — every recursive call does exactly this for every legal move. Reports
- *       <em>microseconds per make/unmake pair</em>, which includes the post-make {@code refreshDerivedState} (sink
- *       generator filling the per-depth buffer + {@code isInCheck} snapshot).</li>
- *   <li><strong>cycle + key</strong>: same as above plus a {@link HelpmateSearchBoard#currentTranspositionKey()} call
- *       in the middle. Adds the per-node transposition-cache key construction that the search performs once per
- *       recursive call.</li>
+ * <li><strong>cycle</strong>: {@code move(spec)} followed immediately by {@code unmove()}. This is the inner loop of
+ * the helpmate search — every recursive call does exactly this for every legal move. Reports <em>microseconds per
+ * make/unmake pair</em>, which includes the post-make {@code refreshDerivedState} (sink generator filling the per-depth
+ * buffer + {@code isInCheck} snapshot).</li>
+ * <li><strong>cycle + key</strong>: same as above plus a {@link HelpmateSearchBoard#currentTranspositionKey()} call in
+ * the middle. Adds the per-node transposition-cache key construction that the search performs once per recursive
+ * call.</li>
  * </ol>
  *
  * <p>
  * {@link HelpmateSearchBoard} construction is outside the timing loop (mirrors real search: the analyzer constructs
- * once at the top, then runs many move/unmove cycles during recursion). Each timing iterates the same set of
- * pre-built search boards through {@code WARMUP_ROUNDS + MEASURE_ROUNDS} rounds.
+ * once at the top, then runs many move/unmove cycles during recursion). Each timing iterates the same set of pre-built
+ * search boards through {@code WARMUP_ROUNDS + MEASURE_ROUNDS} rounds.
  *
  * <p>
  * Not a unit test (no {@code @Test} method); run directly as a main class for diagnostic numbers.
@@ -46,7 +47,7 @@ public class HelpmateSearchBoardPerformanceSurvey {
   private static final int WARMUP_ROUNDS = 3;
   private static final int MEASURE_ROUNDS = 20;
 
-  private static final List<PgnTest> GROUPS = Nulls.listOf(PgnTest.MAX_MOVES, PgnTest.RANDOM_NO_REPETITION,
+  private static final ImmutableList<PgnTest> GROUPS = Nulls.listOf(PgnTest.MAX_MOVES, PgnTest.RANDOM_NO_REPETITION,
       PgnTest.WCC2021, PgnTest.CHA_LICHESS_QUICK_DEPTH_ABOVE_FOUR);
 
   public static void main(String[] args) {
@@ -105,8 +106,7 @@ public class HelpmateSearchBoardPerformanceSurvey {
       if (result.size() >= MAX_POSITIONS_PER_GROUP) {
         break;
       }
-      final PgnGame pgnGame = PgnCacheForStrictPgnParserTestCases.getPgn(pgnTest.getFolderPath(),
-          testCase.pgnName());
+      final PgnGame pgnGame = PgnCacheForStrictPgnParserTestCases.getPgn(pgnTest.getFolderPath(), testCase.pgnName());
       final Board board = new Board(pgnGame.startFen());
       addSetup(result, board);
       for (final PgnHalfMove halfMove : pgnGame.halfMoveList()) {

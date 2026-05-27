@@ -3,13 +3,12 @@ package com.dlb.chess.san;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-import java.util.List;
-
 import org.junit.jupiter.api.Test;
 
 import com.dlb.chess.board.enums.CastlingRightLoss;
 import com.dlb.chess.common.Nulls;
 import com.dlb.chess.enums.CastlingCheck;
+import com.google.common.collect.ImmutableList;
 
 /**
  * Lock-down tests for the bridge between {@link CastlingCheck} + {@link CastlingRightLoss} (internal pipeline
@@ -25,11 +24,11 @@ import com.dlb.chess.enums.CastlingCheck;
  */
 class TestCastlingCheckMapper {
 
-  private static final List<CastlingCheck> EXPECTED_CASTLING_CHECKS = Nulls.listOf(CastlingCheck.FINAL_NO_RIGHT,
-      CastlingCheck.TEMPORARY_SQUARES_NOT_EMPTY, CastlingCheck.TEMPORARY_KING_IN_CHECK,
+  private static final ImmutableList<CastlingCheck> EXPECTED_CASTLING_CHECKS = Nulls.listOf(
+      CastlingCheck.FINAL_NO_RIGHT, CastlingCheck.TEMPORARY_SQUARES_NOT_EMPTY, CastlingCheck.TEMPORARY_KING_IN_CHECK,
       CastlingCheck.TEMPORARY_KING_TRAVELS_THROUGH_CHECK, CastlingCheck.TEMPORARY_KING_ENDS_IN_CHECK);
 
-  private static final List<SanValidationProblem> EXPECTED_KING_CASTLING_PROBLEMS = Nulls.listOf(
+  private static final ImmutableList<SanValidationProblem> EXPECTED_KING_CASTLING_PROBLEMS = Nulls.listOf(
       SanValidationProblem.KING_CASTLING_FINAL_NO_RIGHT_KING_MOVED,
       SanValidationProblem.KING_CASTLING_FINAL_NO_RIGHT_ROOK_MOVED,
       SanValidationProblem.KING_CASTLING_FINAL_NO_RIGHT_ROOK_CAPTURED,
@@ -43,11 +42,11 @@ class TestCastlingCheckMapper {
   /**
    * Provenance values of {@link CastlingRightLoss} that correspond to a FINAL_NO_RIGHT failure.
    */
-  private static final List<CastlingRightLoss> EXPECTED_FINAL_NO_RIGHT_PROVENANCES = Nulls.listOf(
+  private static final ImmutableList<CastlingRightLoss> EXPECTED_FINAL_NO_RIGHT_PROVENANCES = Nulls.listOf(
       CastlingRightLoss.KING_MOVED, CastlingRightLoss.ROOK_MOVED, CastlingRightLoss.ROOK_CAPTURED,
       CastlingRightLoss.CASTLED, CastlingRightLoss.UNKNOWN_FEN_IMPORT);
 
-  private static final List<SanValidationProblem> EXPECTED_FINAL_NO_RIGHT_PROBLEMS = Nulls.listOf(
+  private static final ImmutableList<SanValidationProblem> EXPECTED_FINAL_NO_RIGHT_PROBLEMS = Nulls.listOf(
       SanValidationProblem.KING_CASTLING_FINAL_NO_RIGHT_KING_MOVED,
       SanValidationProblem.KING_CASTLING_FINAL_NO_RIGHT_ROOK_MOVED,
       SanValidationProblem.KING_CASTLING_FINAL_NO_RIGHT_ROOK_CAPTURED,

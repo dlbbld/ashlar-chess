@@ -21,6 +21,7 @@ import com.dlb.chess.pgn.StrictPgnParser;
 import com.dlb.chess.test.ConfigurationTestConstants;
 import com.dlb.chess.test.pgntest.constants.PgnTestConstants;
 import com.dlb.chess.test.pgntest.enums.PgnTest;
+import com.google.common.collect.ImmutableList;
 
 /**
  * Cross-validates clean-chess against python-chess for the PGN-import oracle across multiple {@link PgnTest} buckets.
@@ -68,7 +69,7 @@ class TestPgnImportAgainstPythonChessOracle {
   private static final Path ORACLE_ROOT = Nulls.pathResolve(ConfigurationTestConstants.PROJECT_ROOT_FOLDER_PATH,
       "src/test/resources/oracle/python-chess");
 
-  private static final List<PgnTest> BUCKETS = Nulls.listOf(PgnTest.PARSER_FROM_FEN,
+  private static final ImmutableList<PgnTest> BUCKETS = Nulls.listOf(PgnTest.PARSER_FROM_FEN,
       // basic — moving pieces / capture / en passant / promotion
       PgnTest.BASIC_MOVING_PIECE_WHITE, PgnTest.BASIC_MOVING_PIECE_BLACK, PgnTest.BASIC_CAPTURE_WHITE,
       PgnTest.BASIC_CAPTURE_BLACK, PgnTest.BASIC_CAPTURE_LAST_MOVE, PgnTest.BASIC_EN_PASSANT_CAPTURE_WHITE,
@@ -171,7 +172,7 @@ class TestPgnImportAgainstPythonChessOracle {
             // instead. Skip those predicate comparisons only here; everywhere else the predicates
             // still agree byte-for-byte. The Outcome layer matches python-chess regardless (the
             // precedence stack is applied uniformly there).
-            final boolean precedenceSuppressed = board.isCheckmate() || board.isStalemate()
+            final var precedenceSuppressed = board.isCheckmate() || board.isStalemate()
                 || board.isInsufficientMaterial();
             if (!precedenceSuppressed) {
               assertEquals(expected.isFivefoldRepetition(), board.isFivefoldRepetition(),
