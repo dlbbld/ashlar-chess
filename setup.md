@@ -80,6 +80,24 @@ The project develops on a single branch.
 3. Click the active development branch.
 4. Click **Check Out…** → **Check out as New Local Branch** → **Finish**.
 
+## 6. Optional: install Python for oracle regeneration
+
+The normal Maven test suite does not require Python. Python is only needed when PGN fixtures change and the committed python-chess oracle JSONL files must be regenerated.
+
+1. Install Python 3.
+2. From the repo root, install the pinned python-chess dependency:
+
+```
+pip install -r src/test/python/requirements.txt
+```
+
+The regeneration commands live in the generator module docstrings:
+
+```
+python src/test/python/generate_pgn_import_oracle.py
+python src/test/python/generate_move_gen_oracle.py
+```
+
 ---
 
 ## What you get for free after import

@@ -73,7 +73,7 @@ The long-running gates currently live in [`RestrictTestConstants`](src/test/java
 
 ### Running cross-validation oracles
 
-The python-chess oracle reads pre-generated `.jsonl` files committed under `src/test/resources/oracle/python-chess/`. `mvn test` consumes them; the Python generator is only re-run when fixtures are added or regenerated. See `src/test/python/README` and `specification.md` §6.1 for the generation procedure.
+The python-chess oracle reads pre-generated `.jsonl` files committed under `src/test/resources/oracle/python-chess/`. `mvn test` consumes them; the Python generator is only re-run when fixtures are added or regenerated. See `setup.md` and the generator module docstrings under `src/test/python/` for the regeneration procedure.
 
 ---
 

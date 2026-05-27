@@ -56,8 +56,6 @@ public enum PgnTest {
   BASIC_FROM_FEN_NO_PROGRESS_BLACK(false, "basic/fromFenNoProgress/black"),
   BASIC_FROM_FEN_NO_PROGRESS_WHITE(false, "basic/fromFenNoProgress/white"),
 
-  // skipped when testing against scalachess for cannot manage so long games in
-  // testing approach
   MAX_MOVES(false, "edgeCases/max/maxMoves"),
   MAX_SAME_PIECE_PROMOTION_WHITE(false, "edgeCases/max/maxPieces/white"),
   MAX_SAME_PIECE_PROMOTION_BLACK(false, "edgeCases/max/maxPieces/black"),
@@ -66,8 +64,6 @@ public enum PgnTest {
   DOUBLE_CHECK_CHECKMATE_BIZARRE_CHECKMATE_BLACK(false, "edgeCases/doubleCheckCheckmateBizarre/black"),
   SPECIAL(false, "edgeCases/special"),
 
-  // skipped when testing against scalachess for cannot manage so long games in
-  // testing approach
   RANDOM_NO_REPETITION(false, "random/noRepetition"),
 
   RANDOM_CHECKMATE(false, "random/checkmate"),

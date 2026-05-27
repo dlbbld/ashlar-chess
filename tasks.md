@@ -127,13 +127,13 @@ Partial. Storage decommission shipped; type retained as a derived compatibility 
 
 ---
 
-## Future release — python-chess primary cross-validation + PGN/FEN test coverage expansion
+## Completed — python-chess primary cross-validation + PGN/FEN test coverage expansion
 
-The third release. Reactivates the python-chess test path (currently dormant), makes python-chess the main move-test reference, and expands PGN import/export test coverage — especially the FEN-anchored cases that `chesslib` cannot exercise.
+Completed in 12.2.0. The release reactivated the python-chess test path, made python-chess the main move-test reference, and expanded PGN import/export test coverage — especially the FEN-anchored cases that `chesslib` cannot exercise.
 
 ### Context
 
-The project historically tested against python-chess via `GeneratePythonTestCases.java`, which generates a Python test script from clean-chess fixtures. **That generator exists in the codebase but there is no active test that runs the generated Python script** — the comparison pipeline is dormant. Reactivating it is part of this release.
+The project historically tested against python-chess via `GeneratePythonTestCases.java`, which generated a Python test script from clean-chess fixtures. That live-script path was replaced by the committed-JSONL oracle workflow; the obsolete Java generator has been deleted.
 
 Carlos's `chesslib` (`LibraryCarlosBoard`) cannot import PGN from a non-initial-position via the `FEN`/`SetUp` tags. That gap is why python-chess becomes the *primary* cross-validation reference after this release. `chesslib` is retained as a second witness — having two independent oracles is more valuable than having one.
 
@@ -144,34 +144,34 @@ Carlos's `chesslib` (`LibraryCarlosBoard`) cannot import PGN from a non-initial-
 - The Python script runs only when fixtures are added or regenerated, **not** during `mvn test`.
 - Chess outputs are deterministic per input; cached reference data doesn't go stale.
 
-### Discussion items to settle before coding
+### Discussion items settled
 
-- [ ] Inventory exactly what python-chess will be used as reference for: legal-move generation, SAN/LAN, FEN, repetition counts, fifty-move clock, threefold/fivefold, dead-position (does python-chess support this directly or via heuristic?), CHA-style unwinnability (it doesn't — that stays unique to clean-chess).
-- [ ] Decide: gradual migration (both `chesslib` and python-chess as references during transition) or hard cutover. Lean: gradual — keep `chesslib` as a second witness permanently.
-- [ ] Document the toolchain requirement: contributors need Python 3 + `pip install chess`. Goes in `setup.md`.
-- [ ] Plan the regeneration workflow: how is "I added a fixture; now regenerate the python-chess-expected outputs" triggered cleanly? Maven goal? Script? Make target?
+- [x] Inventory exactly what python-chess is used as reference for: legal-move generation, SAN/LAN, FEN, repetition counts, fifty-move clock, threefold/fivefold, check/checkmate/stalemate, and insufficient material. CHA-style unwinnability stays unique to clean-chess.
+- [x] Keep `chesslib` as a second witness permanently rather than hard-cutting it away.
+- [x] Document the toolchain requirement: contributors need Python 3 + `pip install -r src/test/python/requirements.txt`.
+- [x] Plan the regeneration workflow: run the Python generator scripts manually when fixtures change; `mvn test` consumes committed JSONL and does not invoke Python.
 
 ### Reactivation work
 
-- [ ] Audit `GeneratePythonTestCases.java` — current state, what it produces, what's still wired up after the dormancy period
-- [ ] Decide and document the file format for stored expected outputs (JSON? line-based? CSV?)
-- [ ] Refactor (or replace) the generator to produce the agreed format
-- [ ] Build the Java-side consumer: read the expected-outputs file, compare to clean-chess output, fail loudly on mismatch
-- [ ] Migrate at least one cross-validation test from `chesslib` to python-chess as a proof-of-concept
+- [x] Audit `GeneratePythonTestCases.java` — it produced an external `test_play_game.py` live test and was not part of the JSONL oracle workflow.
+- [x] Decide and document the stored expected-output format: one sorted JSON object per line.
+- [x] Replace the Java generator with Python generators under `src/test/python/`.
+- [x] Build the Java-side consumer: read the expected-outputs file, compare to clean-chess output, fail loudly on mismatch.
+- [x] Migrate cross-validation to python-chess with live Java tests over the committed oracle data.
 
 ### python-chess as primary reference
 
-- [ ] Migrate cross-validation tests from `chesslib` to python-chess for the surface python-chess covers
-- [ ] Keep `LibraryCarlosBoard` as a second oracle — do not delete; two independent witnesses is the right shape
+- [x] Migrate cross-validation tests from `chesslib` to python-chess for the surface python-chess covers.
+- [x] Keep `LibraryCarlosBoard` as a second oracle — do not delete; two independent witnesses is the right shape.
 
 ### PGN import/export test coverage expansion
 
 The area `chesslib` cannot test and python-chess can: PGN imported from a non-initial position via the `FEN`/`SetUp` tags. Currently the test corpus skews toward initial-position games; expanding here is overdue, and python-chess being primary makes it feasible for the first time.
 
-- [ ] Catalog the missing PGN-import-with-FEN test cases: short examples per side-to-move, per castling-right combination, per en-passant target square, per non-trivial half-move-clock / full-move-number
-- [ ] Cross-validate each against python-chess output
-- [ ] PGN export coverage: round-trip tests for PGN files that started with a non-initial `FEN` tag — both archival and semantic export modes
-- [ ] FEN export coverage: round-trip from python-chess-generated FEN strings (real-world FEN exporters produce inputs the strict parser may not love)
+- [x] Catalog the missing PGN-import-with-FEN test cases: short examples per side-to-move, castling-right combinations, en-passant targets, and non-trivial halfmove/fullmove counters.
+- [x] Cross-validate each against python-chess output.
+- [x] PGN export coverage: round-trip tests for PGN files that started with a non-initial `FEN` tag — both archival and semantic export modes.
+- [x] FEN export coverage: round-trip from python-chess-generated FEN strings.
 
 ---
 
@@ -182,7 +182,7 @@ The capstone release. Publish to Central only when the library has stabilised �
 ### Prerequisites — must be true before any Central work begins
 - [ ] DeepSquare release complete (Auto-CHA + Zobrist + pawn-wall classifier + foundational refactors)
 - [ ] Bitboard release complete (performance acceptable, differential-test harness green)
-- [ ] python-chess primary + PGN/FEN coverage release complete
+- [x] python-chess primary + PGN/FEN coverage release complete
 - [ ] Rename decision resolved — clean-chess → DeepSquare or final name. Once published, the artifactId is permanent
 - [ ] Every task that surfaces during the prerequisite releases has been addressed (re-evaluate this list at the moment of starting; the bar is "library is mature")
 
