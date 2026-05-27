@@ -565,6 +565,35 @@ public class Board {
     return false;
   }
 
+  /**
+   * Per-move FIDE 9.2 claim predicate: returns {@code true} iff {@code move} is legal on the current position AND
+   * playing it would produce a position that has occurred at least three times in the game (counting the new
+   * occurrence). The player announces {@code move} and claims the draw on that announcement; the move is not played.
+   *
+   * <p>
+   * Clock-resetting candidates (pawn moves and captures) are rejected without simulation — they produce a position
+   * that cannot have appeared before in the game, so they cannot satisfy the threefold condition. This matches the
+   * existing {@link #canClaimThreefoldRepetitionRuleWithOwnMove} short-circuit.
+   *
+   * <p>
+   * Per-move shape rather than the existence shape because FIDE 9.2 frames the claim as a per-move act. See the
+   * {@link #canClaimFiftyMoveRuleFor} JavaDoc for the cross-library context with python-chess.
+   */
+  public boolean canClaimThreefoldRepetitionRuleFor(MoveSpecification move) {
+    for (final LegalMove legalMove : getLegalMoves()) {
+      if (legalMove.moveSpecification().equals(move)) {
+        if (BasicChessUtility.calculateIsResetHalfMoveClock(legalMove)) {
+          return false;
+        }
+        this.move(move);
+        final boolean threefold = isThreefoldRepetition();
+        this.unmove();
+        return threefold;
+      }
+    }
+    return false;
+  }
+
   public int getHalfMoveClock() {
     return Nulls.getLast(halfMoveClockList);
   }

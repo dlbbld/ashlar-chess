@@ -105,4 +105,66 @@ class TestBoardClaimFor implements EnumConstants {
     assertTrue(board.canClaimFiftyMoveRuleFor(new MoveSpecification(A1, A2)),
         "FIDE 9.3: quiet non-zeroing legal move at clock 99 is a valid claim");
   }
+
+  // =============================================================================================
+  // canClaimThreefoldRepetitionRuleFor — FIDE 9.2 per-move
+  // =============================================================================================
+
+  @SuppressWarnings("static-method")
+  @Test
+  void threefoldForReturnsTrueWhenCandidateMoveCreatesThirdOccurrence() {
+    // 7-ply knight shuffle stops one ply before the initial position's 3rd occurrence; Black to
+    // move next. Black's knight is on f6; Ng8 returns to the initial position and triggers
+    // threefold. canClaimThreefoldRepetitionRuleFor(Ng8) must return true.
+    final Board board = new Board();
+    board.movesStrict("Nf3", "Nf6", "Ng1", "Ng8", "Nf3", "Nf6", "Ng1");
+    assertTrue(board.canClaimThreefoldRepetitionRuleFor(new MoveSpecification(F6, G8)),
+        "FIDE 9.2: Black's Ng8 creates the initial position's 3rd occurrence");
+  }
+
+  @SuppressWarnings("static-method")
+  @Test
+  void threefoldForReturnsFalseForLegalMoveThatDoesNotCreateThreefold() {
+    // Same position as above. Black's Nc6 (b8-c6) is a non-zeroing legal move but produces a
+    // brand-new position; not a threefold. Distinguishes the per-move predicate from the
+    // existence-shape predicate, which returns true here because Ng8 satisfies.
+    final Board board = new Board();
+    board.movesStrict("Nf3", "Nf6", "Ng1", "Ng8", "Nf3", "Nf6", "Ng1");
+    assertTrue(board.canClaimThreefoldRepetitionRuleWithOwnMove(),
+        "precondition: existence predicate is true (Ng8 satisfies)");
+    assertFalse(board.canClaimThreefoldRepetitionRuleFor(new MoveSpecification(B8, C6)),
+        "FIDE 9.2: Nc6 produces a new position, not a threefold");
+  }
+
+  @SuppressWarnings("static-method")
+  @Test
+  void threefoldForReturnsFalseForPawnMove() {
+    // Same fixture. Black's e7-e5 pawn push resets the clock and creates a position that has never
+    // occurred before in the game — cannot be a threefold.
+    final Board board = new Board();
+    board.movesStrict("Nf3", "Nf6", "Ng1", "Ng8", "Nf3", "Nf6", "Ng1");
+    assertFalse(board.canClaimThreefoldRepetitionRuleFor(new MoveSpecification(E7, E5)),
+        "FIDE 9.2: a pawn move creates a never-before-seen position; not a threefold");
+  }
+
+  @SuppressWarnings("static-method")
+  @Test
+  void threefoldForReturnsFalseForCapture() {
+    // Tiny position with a capture available. The capture produces a position with different
+    // material than any earlier position in the game; cannot satisfy threefold.
+    final Board board = new Board("4k3/8/8/8/3p4/4P3/4K3/8 w - - 0 1");
+    assertFalse(board.canClaimThreefoldRepetitionRuleFor(new MoveSpecification(E3, D4)),
+        "FIDE 9.2: a capture changes material; the resulting position cannot have occurred before");
+  }
+
+  @SuppressWarnings("static-method")
+  @Test
+  void threefoldForReturnsFalseForIllegalMove() {
+    // Move not in the legal-moves set — predicate must return false rather than throwing.
+    final Board board = new Board();
+    board.movesStrict("Nf3", "Nf6", "Ng1", "Ng8", "Nf3", "Nf6", "Ng1");
+    // F6-A1 is not a legal move from any piece on f6 (knight on f6 cannot reach a1).
+    assertFalse(board.canClaimThreefoldRepetitionRuleFor(new MoveSpecification(F6, A1)),
+        "a move not in the legal-moves set is not a valid claim");
+  }
 }
