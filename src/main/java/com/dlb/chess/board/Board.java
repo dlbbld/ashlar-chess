@@ -531,7 +531,7 @@ public class Board {
    * convenience derived from this one. python-chess also collapses to the existence shape ({@code
    * can_claim_fifty_moves()} takes no move parameter); the per-move predicate is the FIDE-faithful API that neither
    * library exposed historically. See the upstream python-chess issue filed during 15.0.0 work for the cross-library
-   * context.
+   * context: <a href="https://github.com/niklasf/python-chess/issues/1188">niklasf/python-chess#1188</a>.
    *
    * <p>
    * The move's chess effect — whether it would deliver checkmate, stalemate, or continue the game — does not affect

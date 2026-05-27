@@ -162,6 +162,8 @@ not as an arbiter's catch years later.
       FIDE-faithful shape and the existence predicate as the convenience.
 - [x] Reference the python-chess upstream issue (filed during 15.0.0 work) so a future contributor can see the
       cross-library context — both libraries had the same gap; clean-chess closes it here.
+      Issue: [niklasf/python-chess#1188](https://github.com/niklasf/python-chess/issues/1188); wired into
+      `Board.canClaimFiftyMoveRuleFor` JavaDoc, `specification.md` §3.1, and `CHANGELOG.md` `[15.0.0]`.
 
 ### Phase 6 — Decommission `HalfMove`
 

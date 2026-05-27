@@ -35,20 +35,44 @@ class TestBoardClaimFor implements EnumConstants {
     // (checkmate) does not affect whether the no-progress condition is met. Per-move predicate
     // makes this explicit at the API level.
     final Board board = new Board("6rk/6pp/7N/5p2/6p1/8/2q5/K7 w - - 99 60");
-    assertTrue(board.canClaimFiftyMoveRuleFor(new MoveSpecification(H6, F7)),
+    final MoveSpecification nf7 = new MoveSpecification(H6, F7);
+    assertTrue(board.canClaimFiftyMoveRuleFor(nf7),
         "FIDE 9.3: non-pawn non-capture knight move at clock 99 is a valid claim even though it delivers mate");
+
+    // Fixture-correctness check (sister to the stalemate test below): after Nf7 the post-position
+    // must actually be checkmate, not merely check or quiet. Pins the edge the predicate name
+    // promises to exercise; a regression that quietly degraded the fixture would now fail here.
+    board.move(nf7);
+    assertTrue(board.isCheckmate(),
+        "fixture must actually be checkmate after Nf7 — otherwise the 'candidate move is mate' edge is not covered");
   }
 
   @SuppressWarnings("static-method")
   @Test
   void fiftyMoveForReturnsTrueWhenCandidateMoveIsStalemate() {
-    // Black king h8 stuck on the corner by its own g7/h7 pawns. White king f6 plays Kf7, after
-    // which black is stalemated: g8 is now attacked by the white king on f7, the pawns block g7/h7.
-    // The Kf7 move is non-pawn, non-capture and at clock 99 — a valid 50-move claim under FIDE 9.3
-    // regardless of the post-position outcome.
-    final Board board = new Board("7k/6pp/5K2/8/8/8/8/8 w - - 99 60");
-    assertTrue(board.canClaimFiftyMoveRuleFor(new MoveSpecification(F6, F7)),
+    // Carefully constructed stalemate fixture. White: Ke7, Ph6. Black: Kh8, Ph7. After White plays
+    // Kf7, Black's king has no legal moves (g8 and g7 are both attacked by the white king on f7;
+    // g7 is additionally attacked by the white pawn on h6; h7 is occupied by Black's own pawn) and
+    // Black's pawn on h7 has no legal moves (h6 is blocked by the white pawn; there is no piece
+    // on g6 to capture). Black is not in check, so the resulting position is stalemate, not mate.
+    //
+    // The Kf7 move is non-pawn, non-capture and clock is 99 — a valid 50-move claim under FIDE 9.3
+    // regardless of the post-position outcome. The fixture-correctness assertions below pin both
+    // the per-move predicate result and the stalemate-ness of the post-position; a regression that
+    // accidentally let Black move (e.g. omitting the white pawn on h6 — which is exactly what the
+    // earlier "7k/6pp/5K2/..." fixture did, leaving Black with the legal pawn moves g5/g6/h5/h6)
+    // would now fail the post-move stalemate assertion rather than silently degrading the test
+    // to a quiet 50-move candidate.
+    final Board board = new Board("7k/4K2p/7P/8/8/8/8/8 w - - 99 60");
+    final MoveSpecification kf7 = new MoveSpecification(E7, F7);
+    assertTrue(board.canClaimFiftyMoveRuleFor(kf7),
         "FIDE 9.3: non-pawn non-capture king move at clock 99 is a valid claim even though it delivers stalemate");
+
+    // Fixture-correctness check: after Kf7 the post-position must actually be stalemate (not
+    // merely a quiet position). Pins the edge that the predicate name promises to exercise.
+    board.move(kf7);
+    assertTrue(board.isStalemate(),
+        "fixture must actually be stalemate after Kf7 — otherwise the 'candidate move is stalemate' edge is not covered");
   }
 
   @SuppressWarnings("static-method")
