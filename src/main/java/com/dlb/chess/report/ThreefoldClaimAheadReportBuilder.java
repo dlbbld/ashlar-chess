@@ -5,7 +5,6 @@ import java.util.Collections;
 import java.util.List;
 
 import com.dlb.chess.board.Board;
-import com.dlb.chess.common.Nulls;
 import com.dlb.chess.common.model.DynamicPosition;
 import com.dlb.chess.common.model.HalfMove;
 import com.dlb.chess.common.model.MoveSpecification;
@@ -63,7 +62,7 @@ abstract class ThreefoldClaimAheadReportBuilder {
         // produced HalfMove that the entry needs to carry. The duplicated push is intentional
         // overhead — it keeps the predicate as the contract and the builder as a consumer of it.
         replayBoard.move(move);
-        result.add(Nulls.getLast(replayBoard.getHalfMoveList()));
+        result.add(replayBoard.getLastHalfMove());
         replayBoard.unmove();
       }
     }

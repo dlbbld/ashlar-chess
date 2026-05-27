@@ -974,13 +974,26 @@ public class Board {
   public ImmutableList<HalfMove> getHalfMoveList() {
     final int plies = performedLegalMoveList.size();
     if (plies == 0) {
-      return ImmutableList.of();
+      return Nulls.listOf();
     }
     final List<HalfMove> result = new ArrayList<>(plies);
     for (var i = 0; i < plies; i++) {
       result.add(buildHalfMoveAtPly(i));
     }
     return ImmutableList.copyOf(result);
+  }
+
+  /**
+   * Derived {@link HalfMove} for the most recently played ply — {@code O(1)} reconstruction from the per-ply parallel
+   * stores. Use this instead of {@code Nulls.getLast(getHalfMoveList())} when only the last entry is needed, otherwise
+   * the full {@code O(plies)} reconstruction runs for every call. Throws {@link IllegalStateException} when no move has
+   * been played, matching {@link #getLastMove}.
+   */
+  public HalfMove getLastHalfMove() {
+    if (isFirstMove()) {
+      throw new IllegalStateException("There is no last half-move");
+    }
+    return buildHalfMoveAtPly(performedLegalMoveList.size() - 1);
   }
 
   public DynamicPosition getInitialDynamicPosition() {

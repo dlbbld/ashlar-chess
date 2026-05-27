@@ -7,7 +7,6 @@ import java.util.List;
 import org.eclipse.jdt.annotation.Nullable;
 
 import com.dlb.chess.board.Board;
-import com.dlb.chess.common.Nulls;
 import com.dlb.chess.common.model.HalfMove;
 import com.dlb.chess.common.model.MoveSpecification;
 import com.dlb.chess.common.utility.BasicChessUtility;
@@ -55,7 +54,7 @@ abstract class FiftyMoveClaimAheadReportBuilder {
         emitBoundaryIfMissedOpportunity(entries, replayBoard, currentStart);
       }
       replayBoard.move(nextPlayedMove.moveSpecification());
-      currentStart = updatedSequenceStart(currentStart, Nulls.getLast(replayBoard.getHalfMoveList()));
+      currentStart = updatedSequenceStart(currentStart, replayBoard.getLastHalfMove());
     }
     // Played history exhausted; the open sequence (if any) ends here without a further played move.
     // If its clock is 99, the boundary ply is a missed opportunity.
