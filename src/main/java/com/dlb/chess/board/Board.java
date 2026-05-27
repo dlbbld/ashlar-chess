@@ -518,6 +518,38 @@ public class Board {
     return false;
   }
 
+  /**
+   * Per-move FIDE 9.3 claim predicate: returns {@code true} iff {@code move} would, if announced as the next move,
+   * complete the 50 non-progress moves and is therefore a valid 50-move claim under FIDE 9.3. The conditions are: the
+   * move is legal on the current position, it is neither a pawn move nor a capture (so the halfmove clock would not
+   * reset), and the current halfmove clock is at least 99 (so playing {@code move} would push it to at least 100).
+   *
+   * <p>
+   * Per-move shape rather than the existence shape ({@link #canClaimFiftyMoveRuleWithOwnMove}) because FIDE 9.3 frames
+   * the claim as a per-move act — the player announces the specific move they intend to play and claims the draw on
+   * that announcement. The existence predicate answers "could any move satisfy the claim from here?", which is a
+   * convenience derived from this one. python-chess also collapses to the existence shape ({@code
+   * can_claim_fifty_moves()} takes no move parameter); the per-move predicate is the FIDE-faithful API that neither
+   * library exposed historically. See the upstream python-chess issue filed during 15.0.0 work for the cross-library
+   * context.
+   *
+   * <p>
+   * The move's chess effect — whether it would deliver checkmate, stalemate, or continue the game — does not affect
+   * whether the no-progress condition has been met. A non-pawn, non-capture mate-in-one at clock 99 is a valid claim
+   * under FIDE 9.3. (In practice the player would play the mate; the predicate is honest about what the rule says.)
+   */
+  public boolean canClaimFiftyMoveRuleFor(MoveSpecification move) {
+    if (getHalfMoveClock() < 99) {
+      return false;
+    }
+    for (final LegalMove legalMove : getLegalMoves()) {
+      if (legalMove.moveSpecification().equals(move)) {
+        return !BasicChessUtility.calculateIsResetHalfMoveClock(legalMove);
+      }
+    }
+    return false;
+  }
+
   public boolean canClaimThreefoldRepetitionRuleWithOwnMove() {
     for (final LegalMove legalMove : getLegalMoves()) {
       // we must not check moves creating a position that never occurred so far
