@@ -9,63 +9,31 @@ import com.dlb.chess.common.model.DynamicPosition;
 import com.dlb.chess.common.model.HalfMove;
 import com.google.common.collect.ImmutableList;
 
-class ThreefoldClaimAheadPrint {
+abstract class ThreefoldClaimAheadPrint {
 
-  public static List<List<String>> calculateClaimAheadListListPrint(DynamicPosition initialDynamicPosition,
-      final ImmutableList<HalfMove> halfMoveListPlayed, List<List<HalfMove>> claimAheadListList,
+  static List<List<String>> render(ThreefoldClaimAheadReport report,
       Map<DynamicPosition, String> positionIdentifierMap) {
 
     final List<List<String>> resultListList = new ArrayList<>();
-
-    for (final List<HalfMove> claimAheadList : claimAheadListList) {
-
-      for (final HalfMove claimAhead : claimAheadList) {
-        final List<String> resultList = new ArrayList<>();
-        final List<HalfMove> repetitionLine = calculateRepetitionLine(halfMoveListPlayed, claimAhead);
-
-        final var isInitialRepetionRepeats = initialDynamicPosition.equals(claimAhead.dynamicPosition());
-
-        var totalRepetitionCount = repetitionLine.size();
-        if (isInitialRepetionRepeats) {
-          totalRepetitionCount = repetitionLine.size() + 1;
-        } else {
-          totalRepetitionCount = repetitionLine.size();
-        }
-
-        if (isInitialRepetionRepeats) {
-          resultList.add("[Initial position]");
-        }
-
-        final var hasBeenPlayed = halfMoveListPlayed.contains(claimAhead);
-        for (var i = 0; i <= repetitionLine.size() - 1; i++) {
-          final HalfMove repetitionLineHalfMove = Nulls.get(repetitionLine, i);
-
-          final var isAddAsterisk = i < repetitionLine.size() - 1 || hasBeenPlayed;
-          final var isAddPositionInformation = i == repetitionLine.size() - 1;
-
-          final String halfMoveInformation = PositionIdentifierUtility.calculateHalfMoveInformation(
-              repetitionLineHalfMove, totalRepetitionCount, isAddAsterisk, isAddPositionInformation,
-              positionIdentifierMap);
-          resultList.add(halfMoveInformation);
-        }
-        resultListList.add(resultList);
+    for (final ClaimAheadEntry entry : report.entries()) {
+      final List<String> resultList = new ArrayList<>();
+      if (entry.includesInitialPosition()) {
+        resultList.add("[Initial position]");
       }
+
+      // The joined sequence is [priorOccurrences..., claimAheadMove]. claimAheadMove sits at lastIndex.
+      final ImmutableList<HalfMove> priorOccurrences = entry.priorOccurrences();
+      final int lastIndex = priorOccurrences.size();
+      for (int i = 0; i <= lastIndex; i++) {
+        final HalfMove halfMove = i < lastIndex ? Nulls.get(priorOccurrences, i) : entry.claimAheadMove();
+        final boolean isAddAsterisk = i < lastIndex || entry.hasBeenPlayed();
+        final boolean isAddPositionInformation = i == lastIndex;
+        final String halfMoveInformation = PositionIdentifierUtility.calculateHalfMoveInformation(halfMove,
+            entry.totalRepetitionCount(), isAddAsterisk, isAddPositionInformation, positionIdentifierMap);
+        resultList.add(halfMoveInformation);
+      }
+      resultListList.add(resultList);
     }
     return resultListList;
-  }
-
-  private static List<HalfMove> calculateRepetitionLine(ImmutableList<HalfMove> halfMoveListPlayed,
-      HalfMove claimAhead) {
-    final List<HalfMove> resultList = new ArrayList<>();
-    for (final HalfMove halfMovePlayed : halfMoveListPlayed) {
-      if (halfMovePlayed.halfMoveCount() >= claimAhead.halfMoveCount()) {
-        break;
-      }
-      if (halfMovePlayed.dynamicPosition().equals(claimAhead.dynamicPosition())) {
-        resultList.add(halfMovePlayed);
-      }
-    }
-    resultList.add(claimAhead);
-    return resultList;
   }
 }
