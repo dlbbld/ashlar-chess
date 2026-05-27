@@ -1,0 +1,15 @@
+Valid threefold claims ahead (asterisk denotes also the last ahead move has been played):
+2... d5 4... Bc8 6... Bc8 (A* - 3)
+3. Bb5+ 5. Bb5+ 7. Bb5+ (B - 3)
+8. g3 10. Bc1 12. Bc1 (C* - 3)
+8... Bb4+ 10... Bb4+ 12... Bb4+ (D - 3)
+
+Threefolds and beyond:
+2... d5 4... Bc8 6... Bc8 (A - 3)
+8. g3 10. Bc1 12. Bc1 (C - 3)
+
+Valid fifty-move claims ahead (only listed when the sequence does not reach the 50-move threshold in actual play):
+None
+
+Fifty moves and beyond:
+None

@@ -1,7 +1,5 @@
 package com.dlb.chess.common.utility;
 
-import org.eclipse.jdt.annotation.Nullable;
-
 import com.dlb.chess.board.Board;
 import com.dlb.chess.board.enums.Piece;
 import com.dlb.chess.board.enums.PieceType;
@@ -42,8 +40,9 @@ public abstract class BasicChessUtility {
   }
 
   /**
-   * Current-position outcome query: returns the most-specific {@link Outcome} for the given board, or {@code null}
-   * when the game is ongoing.
+   * Current-position outcome query: returns the most-specific {@link Outcome} for the given board. Returns
+   * {@link Outcome#ONGOING} (the singleton with {@code termination == Termination.NONE}) when no termination condition
+   * fires, so the return value is never {@code null}.
    *
    * <p>
    * Precedence (python-chess parity): {@link Termination#CHECKMATE} → {@link Termination#INSUFFICIENT_MATERIAL} →
@@ -57,24 +56,24 @@ public abstract class BasicChessUtility {
    * states are diagnostic, not terminations, and are not surfaced here; callers query
    * {@link Board#isInsufficientMaterial(Side)} directly.
    */
-  public static @Nullable Outcome calculateOutcome(Board board) {
+  public static Outcome calculateOutcome(Board board) {
     if (board.isCheckmate()) {
       // Side to move is the loser; the other side delivered mate and is the winner.
       return new Outcome(Termination.CHECKMATE, board.getHavingMove().getOppositeSide());
     }
     if (board.isInsufficientMaterial()) {
-      return new Outcome(Termination.INSUFFICIENT_MATERIAL, null);
+      return new Outcome(Termination.INSUFFICIENT_MATERIAL, Side.NONE);
     }
     if (board.isStalemate()) {
-      return new Outcome(Termination.STALEMATE, null);
+      return new Outcome(Termination.STALEMATE, Side.NONE);
     }
     if (board.isSeventyFiveMove()) {
-      return new Outcome(Termination.SEVENTY_FIVE_MOVES, null);
+      return new Outcome(Termination.SEVENTY_FIVE_MOVES, Side.NONE);
     }
     if (board.isFivefoldRepetition()) {
-      return new Outcome(Termination.FIVEFOLD_REPETITION, null);
+      return new Outcome(Termination.FIVEFOLD_REPETITION, Side.NONE);
     }
-    return null;
+    return Outcome.ONGOING;
   }
 
   public static boolean calculateIsResetHalfMoveClock(LegalMove legalMove) {

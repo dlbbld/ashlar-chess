@@ -10,74 +10,7 @@ Order within each section is the source of truth. Completed tasks move to **Done
 
 ---
 
-## Current release — 15.0.0: termination is information, not enforcement
-
-✅ Shipped 2026-05-26. The move-validation pipeline no longer consults any game-end predicate. Checkmate, stalemate,
-mutual insufficient material, fivefold repetition, the 75-move rule, and analyzer-driven dead positions are all
-queryable artifacts the caller polls. At checkmate / stalemate the empty legal-move set is the natural barrier; at the
-other terminations legal moves still exist and play continues until the caller adjudicates.
-
-The release also replaced the `GameStatus` enum with a structured `Outcome` record (`Outcome(Termination, @Nullable Side
-winner)` — python-chess parity), reordered precedence to match python-chess (`mate → IM → stale → 75 → fivefold`),
-aligned `isFiftyMove` / `isSeventyFiveMove` with python-chess and FIDE (require legal moves to exist), and unlocked the
-python-chess import oracle to run unguarded across all 35,001 plies in the corpus. The `canClaimFiftyMoveRuleWithOwnMove`
-predicate follows the strict FIDE 9.3 reading — one deliberate divergence from python-chess at a constructed corner
-case where the only non-zeroing legal move at clock 99 delivers mate. python-chess's behavior at that edge is
-collateral from code reuse (not from documented intent — verified against blame and the maintainer's own tests, which
-pin the current-position-is-mate case but not the candidate-move-is-mate case).
-
-Supporting work shipped in the same release: `Reporter` slimmed to print-only (`Report` record deleted); `PgnTestCase`
-reduced to `(pgnName, finalFen)` and renamed `PgnFen` with ~1,400 catalog entries rewritten; internal `HalfMove`
-slimmed; initial-position repetition bug fixed; doc passes through `specification.md` §3.1, the board package-info,
-and the relevant test JavaDoc.
-
-See `CHANGELOG.md` `[15.0.0]` for the full Notable / Behavioral / Breaking breakdown including migration snippets.
-
----
-
-## Released — 14.0.0: drop auto-CHA-per-move; dead-position queries become request-based
-
-✅ Shipped 2026-05-24. Analyzer-driven dead-position detection no longer runs automatically on construction or every
-move, `DEAD_POSITION_UNWINNABLE_QUICK` is reportable but non-blocking, and the boolean `Board` constructor/config
-overloads are removed. Structural insufficient material remains move-blocking _at the time of this release_; the
-follow-up ungating in commits `d123759f` (A1) and `6d69c3e0` (A2) drops that too, leaving the move pipeline with no
-game-end gate and no `GAME_ALREADY_ENDED` plumbing.
-
-The construction we have today is too complicated and does work the library doesn't need. Today every `Board.move()` (and every `Board` constructor) runs the unwinnability quick analyzer on the new position and caches the verdict in `isDeadPositionUnwinnableQuickList`. The cached value drives `Board.isDeadPositionUnwinnableQuick()`, feeds `Board.isDeadPosition()` (alongside the cheap mechanical `isInsufficientMaterial`), and through `ValidateNewMove` causes the move pipeline to throw `MoveCheck.GAME_ALREADY_ENDED` with `GameStatus.DEAD_POSITION_UNWINNABLE_QUICK` if a consumer tries to play on. The whole apparatus exists to model FIDE 5.2.2 "dead position" as an automatic termination.
-
-**The premise the auto-termination relies on is false in practice.** Playing on in a dead position is harmless: no win is reachable, the position can only resolve to a draw. In a real game the practical outcomes are all draws — flagfall in a dead position is a draw by adjudication, resignation in a dead position is a draw under current FIDE rules (no win available to the opponent), and the players can always agree to a draw. Nothing changes if they keep moving. So the library does not need to *enforce* dead-position termination at the move-pipeline boundary; it only needs to make it *queryable* so consumers that want to surface it can do so.
-
-The current eager-per-move construction also costs more than just complexity: it makes every move pay the analyzer cost (mitigated but not erased by the bitboard work), it adds a constructor flag (`detectDeadPositionUnwinnable`) that has to be threaded through every `Board` overload, it requires a recursion-suppression guard inside the analyzer when it builds throwaway sub-boards, and it leaks into the test corpus — one fixture remains parked in `pgnParser/legacy/common/beyond/` whenever the recorded game steps into a dead position even though the PGN is otherwise well-formed. The fix simplifies all of that.
-
-The fivefold / 75-move counterpart shipped in **13.0.0** (the *reallow-play-beyond* release): the same eager-termination pattern was dropped for those rules first, since (a) the same arguments applied symmetrically, (b) playing past those thresholds is the more common real-world situation (historical PGN corpora routinely contain games that do), and (c) the python-chess cross-validation work surfaced concrete frictions — `is_fifty_moves` / `is_seventyfive_moves` semantics differ at game-end positions because python-chess requires legal-moves-exist, and `canClaimThreefoldRepetitionRule()` / `canClaimFiftyMoveRule()` crash on auto-terminated positions because they internally simulate `Board.move()`. The dead-position drop here is the analogous step for FIDE 5.2.2.
-
-### Phase 1 — Drop auto-detection from `Board`
-
-**Step 1.1** — Remove the per-ply cache and computation. Drop `Board.isDeadPositionUnwinnableQuickList`, `Board.computeDeadPositionUnwinnableQuick()`, the `isDetectDeadPositionUnwinnable` field, every `Board` constructor overload that took the `detectDeadPositionUnwinnable` flag (including `copyCurrentPositionWithoutHistory(boolean)`), and the eager calls from `Board` constructors and `performMoveWithoutValidation`. `Board.isDeadPositionUnwinnableQuick()` as a stateful accessor is removed.
-
-**Step 1.2** — Reshape `Board.isDeadPosition()` and the `isDeadPosition*` family as pure on-demand queries that run the analyzer when called. `isDeadPositionQuick()` and `isDeadPositionFull()` are already that today (`Board` lines ~951 / ~999); the change is that `isDeadPosition()` joins them — it computes `isInsufficientMaterial() || isDeadPositionQuick().isDeadPosition()` at the call site instead of reading a cached field. Consumers that want the old "checked after every move" behavior call the query themselves in their move loop.
-
-**Step 1.3** — `ValidateNewMove` no longer rejects moves on `DEAD_POSITION_UNWINNABLE_QUICK`. Remove the corresponding check from the move-acceptance precondition. The surviving auto-terminators after this release: checkmate, stalemate, insufficient material. `MoveCheck.GAME_ALREADY_ENDED` continues to fire for those three. _(Fully superseded by the follow-up release: A1 (`d123759f`) removed the gate for the remaining three; A2 (`6d69c3e0`) deleted the `GAME_ALREADY_ENDED` enum values, exception payloads, and message-bundle entry. The move pipeline now consults no game-end predicate and `GAME_ALREADY_ENDED` no longer exists.)_
-
-**Step 1.4** — Decide the `GameStatus.DEAD_POSITION_UNWINNABLE_QUICK` enum value's fate. Two options: keep it (returned by an explicit "what status is this position in" query, never thrown by the move pipeline) or drop it (the analyzer's `UnwinnabilityQuickVerdict` is the only place that concept lives). Recommend keep, narrowed in scope — `Board.calculateGameStatus()` maps the position to a status that can include `DEAD_POSITION_UNWINNABLE_QUICK`, but the move pipeline never throws it. Symmetric with how 13.0.0 handled `FIVE_FOLD_REPETITION_RULE` / `SEVENTY_FIVE_MOVE_RULE`.
-
-### Phase 2 — Corpus and test cleanup
-
-**Step 2.1** — Reactivate the lone remaining legacy fixture `lastMoveAddedAccidentally/02_…_KvK.pgn` into the regular corpus (likely `pgn/realGames/lastMoveAddedAccidentally/`). Generate its `PgnFen` catalog entry via `GenerateTestCaseForPgn`; shrink `TestLegacyPgnParsePlaysBeyondAudit` to zero entries and delete the test class once empty. The `pgnParser/legacy/common/beyond/` tree disappears.
-
-**Step 2.2** — Any test that asserts on `GameStatus.DEAD_POSITION_UNWINNABLE_QUICK` being thrown from the move pipeline switches to asserting on the queryable predicate. Drop the 4 corresponding `test05`–`test06` (insufficient-material) play-beyond tests in `TestStrictPgnParserBeyondTermination` / `TestLenientPgnParserBeyondTermination` once dead-position termination is gone too — by then the `pgnParser/common/beyond/` folder is empty.
-
-**Step 2.3** — Remove the two skip guards in `TestPgnImportAgainstPythonChessOracle` and `TestInsufficientMaterialAgainstPythonChessOracle` that today work around the `canClaim*` crashes — once auto-termination is gone, the python-chess oracle should sweep cleanly at every position with no game-end carve-outs.
-
-**Step 2.4** — `specification.md` §3.1 rule-fidelity table: dead position moves from "automatic" to "queryable" (symmetric with what 13.0.0 did for fivefold / 75-move). Updated `Board` Javadocs for the `isDeadPosition*` family.
-
-### Phase 3 — Release artifacts
-
-**Step 3.1** — Version bump 13.0.0 → 14.0.0 (binary-incompatible: `Board` constructor signatures with the `detectDeadPositionUnwinnable` flag are removed). `CHANGELOG.md` entry above the 13.0.0 release. `tasks.md` section marked done.
-
----
-
-## Future release — 16.0.0: make threefold and fifty-move report production grade and clean-up
+## Current release — 16.0.0: make threefold and fifty-move report production grade and clean-up
 
 Do not start this immediately after the current release. This section exists so the follow-up work is captured, scoped,
 and not rediscovered chaotically later.
@@ -87,59 +20,110 @@ library behavior. The printout should become a view over analysis objects, not t
 
 ### Phase 1 — Object-level repetition report model
 
-- [ ] Introduce a report/analysis object for threefold-existing-behind / threefold-and-beyond repetitions.
-- [ ] Introduce a report/analysis object for threefold claim-ahead opportunities.
-- [ ] Preserve the current printed report shape by deriving it from those objects.
-- [ ] Move repetition-line, initial-position inclusion, played-vs-hypothetical, and repetition-count decisions out of the print classes.
-- [ ] Keep print classes small: format already-calculated facts only.
+- [x] Introduce a report/analysis object for threefold-existing-behind / threefold-and-beyond repetitions.
+- [x] Introduce a report/analysis object for threefold claim-ahead opportunities.
+- [x] Preserve the current printed report shape by deriving it from those objects.
+- [x] Move repetition-line, initial-position inclusion, played-vs-hypothetical, and repetition-count decisions out of the print classes.
+- [x] Keep print classes small: format already-calculated facts only.
 
 ### Phase 2 — Test the report objects directly
 
-- [ ] Add direct unit tests for existing threefold-and-beyond analysis.
-- [ ] Add direct unit tests for threefold claim-ahead analysis.
-- [ ] Add regression coverage for the initial-position repetition case that was previously missing from the printout.
-- [ ] Add tests that compare the report printout against the object model, so formatting cannot silently diverge from the analysis.
+- [x] Add direct unit tests for existing threefold-and-beyond analysis.
+- [x] Add direct unit tests for threefold claim-ahead analysis.
+- [x] Add regression coverage for the initial-position repetition case that was previously missing from the printout.
+- [x] Add tests that compare the report printout against the object model, so formatting cannot silently diverge from the analysis.
 
 ### Phase 3 — Add from-initial-placement and FEN-start coverage
 
 Create one focused test folder for positions that start counting from move one. The folder covers both the initial piece
 placement and games started from an explicit FEN.
 
-- [ ] Initial piece placement, White to move on move 1: run into threefold, fivefold, 50-move, and 75-move conditions from move one.
-- [ ] Initial piece placement, Black to move on move 1: same coverage, with special attention to fullmove numbering.
-- [ ] Non-initial FEN position, White to move on move 1: run into threefold, fivefold, 50-move, and 75-move conditions from move one.
-- [ ] Non-initial FEN position, Black to move on move 1: same coverage, with special attention to fullmove numbering.
-- [ ] For each fixture, assert the public query methods detect the condition.
-- [ ] For each fixture, assert the object-level report model contains the expected facts.
-- [ ] For each fixture, assert the printed report is derived correctly from the object-level facts.
+- [x] Initial piece placement, White to move on move 1: run into threefold, fivefold, 50-move, and 75-move conditions from move one.
+- [x] Initial piece placement, Black to move on move 1: same coverage, with special attention to fullmove numbering.
+- [x] Non-initial FEN position, White to move on move 1: run into threefold, fivefold, 50-move, and 75-move conditions from move one.
+- [x] Non-initial FEN position, Black to move on move 1: same coverage, with special attention to fullmove numbering.
+- [x] For each fixture, assert the public query methods detect the condition.
+- [x] For each fixture, assert the object-level report model contains the expected facts.
+- [x] For each fixture, assert the printed report is derived correctly from the object-level facts.
 
 ### Phase 4 — Finish the 50-move report output
 
-Reserved for manual implementation. The goal is to get comfortable with the report code by finishing the no-progress /
-50-move output on top of the object-level analysis shape, not inside presentation logic.
+Finished the no-progress / 50-move output on top of the object-level analysis shape, mirroring the threefold reports
+shipped in Phase 1. The 50-move shape required a two-flag distinction the threefold report does not have:
+`includesInitialFen` (the sequence starts in the initial FEN's recorded ply count) and `thresholdReachedDuringInitialFen`
+(the initial FEN's halfmove clock is already at the 50-move threshold — the "claim now or never" special case where the
+report must surface a sequence even though no play happened).
 
-- [ ] Finish the 50-move output.
-- [ ] Add direct tests for the 50-move report object.
-- [ ] Add printout tests derived from the object-level expected facts.
+- [x] Finish the 50-move output. `FiftyMoveClaimAheadReport` (per-move claims ahead, mirrors
+      `ThreefoldClaimAheadReport`) and `FiftyMoveSequenceReport` (the no-progress sequences the old single yes/no line
+      summarised, now itemised) are wired through `Reporter` as two new sections replacing the old yes/no line.
+- [x] Add direct tests for the 50-move report object. `TestFiftyMoveClaimAheadReportBuilder` (5 tests including the
+      "initial FEN already at threshold, only legal move is a capture" special case) and
+      `TestFiftyMoveSequenceReportBuilder` (5 tests covering pure-played, initial-FEN-continued, and
+      initial-FEN-at-threshold sequence shapes).
+- [x] Add printout tests derived from the object-level expected facts. `TestReportPrintoutDerivesFromObjectModel`
+      extended to assert correspondence between both new sections and their underlying report objects;
+      `TestReporterGoldenOutput` goldens regenerated for the new four-section layout.
 
-### Phase 5 — Decommission `HalfMove`
+### Phase 5 — Per-move claim API (FIDE 9.2 / 9.3 fidelity)
 
-The short-term rule is: do not break the working repetition analysis casually. The release should first remove
-`HalfMove` from `Board` as stored mutable state, then decide whether it can disappear completely.
+Currently both `canClaimFiftyMoveRule()` / `canClaimThreefoldRepetitionRule()` collapse to position-wide booleans: true
+if *any* legal move would satisfy the claim. FIDE 9.2 (threefold) and 9.3 (50-move) actually frame the claim as a
+per-move act — the player announces the specific move they intend to play and claims the draw on that announcement.
+clean-chess inherited the collapsed shape from python-chess, which has the same gap (`board.can_claim_fifty_moves()`
+takes no move parameter). The collapsed shape is what enabled the mate-edge bug fixed in 15.0.0
+(`canClaimFiftyMoveRuleWithOwnMove`); a per-move predicate would have surfaced the question naturally during design,
+not as an arbiter's catch years later.
 
-- [ ] Remove stored `halfMoveList` from `Board`; derive temporary `HalfMove` rows from existing board history where needed.
-- [ ] Keep repetition/report behavior unchanged during that first removal.
-- [ ] Analyze whether the repetition/report objects can use narrower records instead of `HalfMove`.
-- [ ] If possible, replace `HalfMove` entirely with purpose-specific repetition/report rows.
-- [ ] Delete `HalfMove`, `HalfMoveUtility`, and related comparators once no longer needed.
-- [ ] If full deletion is not safe in this release, leave a precise follow-up note explaining the remaining dependency.
+- [x] Add `Board.canClaimFiftyMoveRuleFor(MoveSpecification move)` — true iff `move` is legal, non-pawn, non-capture,
+      and `halfMoveClock >= 99`. Validates the FIDE 9.3 act of *this specific announced move* completing the 50.
+- [x] Add `Board.canClaimThreefoldRepetitionRuleFor(MoveSpecification move)` — true iff `move` is legal and the
+      resulting position is a threefold occurrence. Validates the FIDE 9.2 act for *this specific announced move*.
+- [x] Add `Board.canClaimDrawFor(MoveSpecification move)` — composed convenience (`canClaimFiftyMoveRuleFor(move) ||
+      canClaimThreefoldRepetitionRuleFor(move)`).
+- [x] Keep the existing existence predicates (`canClaimFiftyMoveRule`, `canClaimFiftyMoveRuleWithOwnMove`,
+      `canClaimThreefoldRepetitionRule`, `canClaimThreefoldRepetitionRuleWithOwnMove`, `canClaimDraw`) as convenience
+      shorthand. Their behavior at the existence level stays unchanged.
+- [x] Tests: pin the mate-in-one edge per-move — `canClaimFiftyMoveRuleFor(Nf7)` returns true on the FEN already used
+      in `TestBoardClaimWithOwnMove#canClaimFiftyMoveRuleWithOwnMoveTrueEvenWhenOnlyNonZeroingMoveIsMate`, even though
+      Nf7 is itself mate. Symmetric edge for stalemate.
+- [x] Tests: pin that a candidate move whose post-position is *not* the claimed condition returns false (e.g. a pawn
+      move resets the clock and is rejected by the 50-move per-move predicate even if other non-zeroing moves exist).
+- [x] Wire the per-move predicates into the threefold claim-ahead report object (Phase 1) so the report's per-move
+      entries are computed from a single source of truth.
+- [x] `specification.md` §3.1: update the "claimable rules" paragraph to mention the per-move predicate as the
+      FIDE-faithful shape and the existence predicate as the convenience.
+- [x] Reference the python-chess upstream issue (filed during 15.0.0 work) so a future contributor can see the
+      cross-library context — both libraries had the same gap; clean-chess closes it here.
+      Issue: [niklasf/python-chess#1188](https://github.com/niklasf/python-chess/issues/1188); wired into
+      `Board.canClaimFiftyMoveRuleFor` JavaDoc, `specification.md` §3.1, and `CHANGELOG.md` `[15.0.0]`.
 
-### Phase 6 — Release hygiene
+### Phase 6 — Decommission `HalfMove`
 
-- [ ] Keep the release scoped to report/repetition/no-progress cleanup.
-- [ ] Do not mix in the insufficient-material play-beyond release unless explicitly re-scoped.
-- [ ] Update `README.md`, `specification.md`, and `CHANGELOG.md` only for behavior or documented workflows that actually changed.
-- [ ] Run focused report/repetition tests first, then the full default profile before release.
+Partial. Storage decommission shipped; type retained as a derived compatibility row pending the report-layer rewrite.
+
+- [x] Remove stored `halfMoveList` from `Board`; derive temporary `HalfMove` rows from existing board history where needed.
+- [x] Keep repetition/report behavior unchanged during that first removal.
+- [ ] Analyze whether the repetition/report objects can use narrower records instead of `HalfMove`. _(deferred to next release)_
+- [ ] If possible, replace `HalfMove` entirely with purpose-specific repetition/report rows. _(deferred)_
+- [ ] Delete `HalfMove`, `HalfMoveUtility`, and related comparators once no longer needed. _(deferred)_
+- [x] Follow-up note: `HalfMove` survives as the row type consumed by the report builders and print classes
+      (`com.dlb.chess.report.*`) and by `RepetitionUtility.calculateRepetitionListList`. Replacing it requires designing
+      narrower report-local row types (a `RepetitionRow` and a `NoProgressRow`, roughly) and migrating the builders.
+      `Board.getHalfMoveList()` is kept as a derived `O(plies)` view; `Board.getLastHalfMove()` provides `O(1)` access
+      for the hot path in the claim-ahead replay builders.
+
+### Phase 7 — Release hygiene
+
+- [x] Keep the release scoped to report/repetition/no-progress cleanup. _(scope deliberately expanded to include the
+      per-move claim API, the `GameEndFacts` / `ClaimRights` rich snapshots, the facts-vs-Outcome predicate refactor,
+      and the `Termination.NONE` / non-null `Outcome` cleanup; these grew out of the report work and were grouped here
+      rather than deferred.)_
+- [x] Do not mix in the insufficient-material play-beyond release unless explicitly re-scoped.
+- [x] Update `README.md`, `specification.md`, and `CHANGELOG.md` only for behavior or documented workflows that actually
+      changed. _(`README.md` + `pom.xml` version bumped to 16.0.0; `CHANGELOG.md` entry written; `specification.md`
+      §3.1 touched during Phase 5 for the per-move claim shape.)_
+- [x] Run focused report/repetition tests first, then the full default profile before release.
 
 ---
 

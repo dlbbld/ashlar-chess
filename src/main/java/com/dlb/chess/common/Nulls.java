@@ -2,6 +2,7 @@ package com.dlb.chess.common;
 
 import java.io.File;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -162,6 +163,10 @@ public class Nulls {
     return checkResult(list[index]);
   }
 
+  public static Path pathsGet(final String first, String... more) {
+    return checkResult(Paths.get(first, more)); // not null by API
+  }
+
   public static Path pathOf(final String filePath) {
     return checkResult(Path.of(filePath)); // not null by API
   }
@@ -285,9 +290,9 @@ public class Nulls {
     return checkResult(Set.of(items));
   }
 
-  @SuppressWarnings({ "unchecked" })
-  public static <E> List<E> listOf(E... items) {
-    return checkResult(List.of(items));
+  @SafeVarargs
+  public static <E> ImmutableList<E> listOf(E... items) {
+    return checkResult(ImmutableList.copyOf(items));
   }
 
   public static <E extends Enum<E>> EnumSet<E> noneOf(Class<E> enumClass) {

@@ -11,9 +11,7 @@ import com.dlb.chess.board.Board;
 import com.dlb.chess.common.Nulls;
 import com.dlb.chess.common.constants.ChessConstants;
 import com.dlb.chess.common.model.DynamicPosition;
-import com.dlb.chess.common.model.HalfMove;
 import com.dlb.chess.common.utility.BasicUtility;
-import com.dlb.chess.common.utility.RepetitionUtility;
 import com.dlb.chess.messages.Message;
 import com.dlb.chess.pgn.LenientPgnParser;
 import com.dlb.chess.pgn.PgnGame;
@@ -51,48 +49,49 @@ public final class Reporter {
   private static List<String> calculateReportLines(Board board) {
     final @NonNull List<String> output = new ArrayList<>();
 
-    // repetition
-    addFirstMainSection(output, "report.repetition.threefold.ahead.title");
-    final List<List<HalfMove>> claimAheadListList = ThreefoldClaimAheadUtility.calculateClaimAheadListList(board);
+    final ThreefoldClaimAheadReport claimAhead = ThreefoldClaimAheadReportBuilder.build(board);
+    final ThreefoldExistingReport existing = ThreefoldExistingReportBuilder.build(board.getInitialDynamicPosition(),
+        board.getHalfMoveList(), ChessConstants.THREEFOLD_REPETITION_RULE_THRESHOLD);
     final Map<DynamicPosition, String> positionIdentifierMap = PositionIdentifierUtility
-        .calculatePositionIdentifierMap(claimAheadListList);
-    if (claimAheadListList.isEmpty()) {
+        .calculatePositionIdentifierMap(claimAhead, existing);
+
+    addFirstMainSection(output, "report.repetition.threefold.ahead.title");
+    if (claimAhead.entries().isEmpty()) {
       output.add(Message.getString("report.repetition.threefold.ahead.none"));
     } else {
-      final var claimAheadListListPrint = ThreefoldClaimAheadPrint.calculateClaimAheadListListPrint(
-          board.getInitialDynamicPosition(), board.getHalfMoveList(), claimAheadListList, positionIdentifierMap);
-      for (final List<String> resultAsLine : claimAheadListListPrint) {
-        final String line = BasicUtility.calculateSpaceSeparatedList(resultAsLine);
-        output.add(line);
-      }
+      appendLines(output, ThreefoldClaimAheadPrint.render(claimAhead, positionIdentifierMap));
     }
 
-    final List<List<HalfMove>> repetitionListList = RepetitionUtility
-        .calculateRepetitionListList(board.getHalfMoveList(), ChessConstants.THREEFOLD_REPETITION_RULE_THRESHOLD);
     addMainSection(output, "report.repetition.threefold.list.title");
-    if (repetitionListList.isEmpty()) {
+    if (existing.groups().isEmpty()) {
       output.add(Message.getString("report.repetition.threefold.list.none"));
     } else {
-      final var repetionListList = RepetitionPrint.calculateRepetitionPrint(board.getInitialDynamicPosition(),
-          repetitionListList, positionIdentifierMap);
-
-      for (final List<String> resultAsLine : repetionListList) {
-        final String line = BasicUtility.calculateSpaceSeparatedList(resultAsLine);
-        output.add(line);
-      }
+      appendLines(output, RepetitionPrint.render(existing, positionIdentifierMap));
     }
 
-    final List<List<NoProgressHalfMove>> noProgressMoveListList = NoProgressMoveUtility
-        .calculateNoProgressMoveRule(board, ChessConstants.FIFTY_MOVE_RULE_HALF_MOVE_CLOCK_THRESHOLD);
-
-    addMainSection(output, "report.noProgressMove.fiftyMoves.title");
-    if (noProgressMoveListList.isEmpty()) {
-      output.add(Message.getString("report.noProgressMove.fiftyMoves.yes"));
+    final FiftyMoveClaimAheadReport fiftyMoveClaimAhead = FiftyMoveClaimAheadReportBuilder.build(board);
+    addMainSection(output, "report.fiftyMove.ahead.title");
+    if (fiftyMoveClaimAhead.entries().isEmpty()) {
+      output.add(Message.getString("report.fiftyMove.ahead.none"));
     } else {
-      output.add(Message.getString("report.noProgressMove.fiftyMoves.no"));
+      appendLines(output, FiftyMoveClaimAheadPrint.render(fiftyMoveClaimAhead));
+    }
+
+    final FiftyMoveSequenceReport fiftyMoveSequence = FiftyMoveSequenceReportBuilder.build(board);
+    addMainSection(output, "report.fiftyMove.sequence.title");
+    if (fiftyMoveSequence.sequences().isEmpty()) {
+      output.add(Message.getString("report.fiftyMove.sequence.none"));
+    } else {
+      appendLines(output, FiftyMoveSequencePrint.render(fiftyMoveSequence));
     }
 
     return output;
+  }
+
+  private static void appendLines(List<String> output, List<List<String>> renderedLines) {
+    for (final List<String> resultAsLine : renderedLines) {
+      output.add(BasicUtility.calculateSpaceSeparatedList(resultAsLine));
+    }
   }
 
   private static void addFirstMainSection(List<String> output, String key) {

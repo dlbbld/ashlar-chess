@@ -1,0 +1,11 @@
+Valid threefold claims ahead (asterisk denotes also the last ahead move has been played):
+None
+
+Threefolds and beyond:
+None
+
+Valid fifty-move claims ahead (only listed when the sequence does not reach the 50-move threshold in actual play):
+None
+
+Fifty moves and beyond:
+[Starting position] (100)

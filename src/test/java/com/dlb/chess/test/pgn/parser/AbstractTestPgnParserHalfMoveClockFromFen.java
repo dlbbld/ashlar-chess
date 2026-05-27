@@ -18,6 +18,7 @@ import com.dlb.chess.test.model.PgnFen;
 import com.dlb.chess.test.model.PgnTestCaseList;
 import com.dlb.chess.test.pgn.setup.PgnTestCaseCatalog;
 import com.dlb.chess.test.pgntest.enums.PgnTest;
+import com.google.common.collect.ImmutableList;
 
 /**
  * Shared body for the strict and lenient FEN-initialization parser tests.
@@ -46,7 +47,7 @@ import com.dlb.chess.test.pgntest.enums.PgnTest;
 @SuppressWarnings("null") // BiFunction lacks JDT null annotations
 abstract class AbstractTestPgnParserHalfMoveClockFromFen {
 
-  private static final List<PgnTest> BUCKETS = Nulls.listOf(PgnTest.PARSER_FROM_FEN);
+  private static final ImmutableList<PgnTest> BUCKETS = Nulls.listOf(PgnTest.PARSER_FROM_FEN);
 
   protected static void runForBuckets(BiFunction<java.nio.file.Path, String, PgnGame> parse, Logger logger) {
     final List<String> failures = new ArrayList<>();

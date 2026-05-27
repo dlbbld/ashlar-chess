@@ -19,10 +19,15 @@ import com.dlb.chess.common.Nulls;
 import com.dlb.chess.common.constants.ChessConstants;
 import com.dlb.chess.common.constants.DynamicPositionConstants;
 import com.dlb.chess.common.enums.InsufficientMaterial;
+import com.dlb.chess.common.enums.Termination;
 import com.dlb.chess.common.exceptions.ProgrammingMistakeException;
+import com.dlb.chess.common.model.ClaimRights;
+import com.dlb.chess.common.model.ClaimableMove;
 import com.dlb.chess.common.model.DynamicPosition;
+import com.dlb.chess.common.model.GameEndFacts;
 import com.dlb.chess.common.model.HalfMove;
 import com.dlb.chess.common.model.MoveSpecification;
+import com.dlb.chess.common.model.Outcome;
 import com.dlb.chess.common.ucimove.utility.UciMoveUtility;
 import com.dlb.chess.common.utility.BasicChessUtility;
 import com.dlb.chess.common.utility.RepetitionUtility;
@@ -37,10 +42,12 @@ import com.dlb.chess.model.LegalMove;
 import com.dlb.chess.moves.CastlingUtility;
 import com.dlb.chess.moves.EnPassantCaptureUtility;
 import com.dlb.chess.san.LenientSanParser;
+import com.dlb.chess.san.LenientSanParserValidationException;
 import com.dlb.chess.san.LenientSanParserValidationResult;
 import com.dlb.chess.san.MoveToLan;
 import com.dlb.chess.san.MoveToSan;
 import com.dlb.chess.san.SanTerminalMarker;
+import com.dlb.chess.san.SanValidationException;
 import com.dlb.chess.san.StrictSanParser;
 import com.dlb.chess.san.StrictSanParserValidationResult;
 import com.dlb.chess.unwinnability.DeadPositionFull;
@@ -116,7 +123,10 @@ public class Board {
   private final List<Integer> repetitionCountList;
   private final List<String> sanList;
   private final List<String> lanList;
-  private final List<HalfMove> halfMoveList;
+  // halfMoveList intentionally NOT stored: HalfMove rows are derived on demand by getHalfMoveList()
+  // from the other per-ply parallel stores (performedLegalMoveList + sanList + halfMoveClockList +
+  // dynamicPositionList + repetitionCountList + initial-FEN fullmove anchor). Dropping the stored
+  // field eliminates one duplicated mutable list and removes HalfMove from Board's state model.
   private final List<CastlingRightLoss> whiteKingSideLossList;
   private final List<CastlingRightLoss> whiteQueenSideLossList;
   private final List<CastlingRightLoss> blackKingSideLossList;
@@ -189,9 +199,8 @@ public class Board {
     this.repetitionCountList.add(1);
 
     this.sanList = new ArrayList<>();
+    // halfMoveList intentionally not initialized — derived on demand from the parallel stores.
     this.lanList = new ArrayList<>();
-
-    this.halfMoveList = new ArrayList<>();
 
     this.whiteKingSideLossList = new ArrayList<>();
     this.whiteQueenSideLossList = new ArrayList<>();
@@ -408,9 +417,6 @@ public class Board {
     this.sanList.add(MoveToSan.calculateSanLastMove(moveToPerform, legalMovesBeforeLastHalfMove, sanTerminalMarker));
     this.lanList.add(MoveToLan.calculateLanLastMove(moveToPerform, sanTerminalMarker));
 
-    final HalfMove halfMove = buildHalfMove(moveSpecification);
-    this.halfMoveList.add(halfMove);
-
     return true;
 
   }
@@ -437,8 +443,6 @@ public class Board {
 
     this.sanList.remove(sanList.size() - 1);
     this.lanList.remove(lanList.size() - 1);
-
-    this.halfMoveList.remove(halfMoveList.size() - 1);
 
     this.whiteKingSideLossList.remove(whiteKingSideLossList.size() - 1);
     this.whiteQueenSideLossList.remove(whiteQueenSideLossList.size() - 1);
@@ -491,20 +495,20 @@ public class Board {
   /**
    * Claim-ahead for FIDE 9.3: at halfmove clock &gt;= 99, the claim is available if at least one legal move would
    * complete the 50 non-progress moves — i.e. is neither a pawn move nor a capture. FIDE 9.3 frames the claim as
-   * announced before the move is played; the 50 moves are about history; the outcome of the candidate move (whether
-   * it would deliver mate, stalemate, or continue the game) does not affect whether the no-progress condition has
-   * been met.
+   * announced before the move is played; the 50 moves are about history; the outcome of the candidate move (whether it
+   * would deliver mate, stalemate, or continue the game) does not affect whether the no-progress condition has been
+   * met.
    *
    * <p>
    * <em>Deliberate divergence from python-chess at one corner case.</em> python-chess's {@code can_claim_fifty_moves}
    * pushes the candidate move and re-checks {@code is_fifty_moves} on the post-position; that reuse means the
-   * {@code any(legal_moves)} guard inside {@code is_fifty_moves} (which is deliberately there for the precedence
-   * stack when checking the <em>current</em> position) transitively rejects candidate moves that themselves deliver
-   * mate or stalemate. The maintainer's tests and docstrings document the deliberate intent for the current-position
-   * case (commit {@code 1064bf59}, with tests pinning "once checkmated, it is too late to claim" and "a stalemate is a
+   * {@code any(legal_moves)} guard inside {@code is_fifty_moves} (which is deliberately there for the precedence stack
+   * when checking the <em>current</em> position) transitively rejects candidate moves that themselves deliver mate or
+   * stalemate. The maintainer's tests and docstrings document the deliberate intent for the current-position case
+   * (commit {@code 1064bf59}, with tests pinning "once checkmated, it is too late to claim" and "a stalemate is a
    * draw"); they do not address the candidate-move-is-mate case, which falls out of code reuse rather than separate
-   * consideration. clean-chess takes the strict FIDE 9.3 reading at this edge; the practical impact is zero (the
-   * player would play the mate rather than claim) but the predicate is honest about what FIDE actually says.
+   * consideration. clean-chess takes the strict FIDE 9.3 reading at this edge; the practical impact is zero (the player
+   * would play the mate rather than claim) but the predicate is honest about what FIDE actually says.
    */
   public boolean canClaimFiftyMoveRuleWithOwnMove() {
     if (getHalfMoveClock() < 99) {
@@ -516,6 +520,81 @@ public class Board {
       }
     }
     return false;
+  }
+
+  /**
+   * Per-move FIDE 9.3 claim predicate: returns {@code true} iff {@code move} would, if announced as the next move,
+   * complete the 50 non-progress moves and is therefore a valid 50-move claim under FIDE 9.3. The conditions are: the
+   * move is legal on the current position, it is neither a pawn move nor a capture (so the halfmove clock would not
+   * reset), and the current halfmove clock is at least 99 (so playing {@code move} would push it to at least 100).
+   *
+   * <p>
+   * Per-move shape rather than the existence shape ({@link #canClaimFiftyMoveRuleWithOwnMove}) because FIDE 9.3 frames
+   * the claim as a per-move act — the player announces the specific move they intend to play and claims the draw on
+   * that announcement. The existence predicate answers "could any move satisfy the claim from here?", which is a
+   * convenience derived from this one. python-chess also collapses to the existence shape ({@code
+   * can_claim_fifty_moves()} takes no move parameter); the per-move predicate is the FIDE-faithful API that neither
+   * library exposed historically. See the upstream python-chess issue filed during 15.0.0 work for the cross-library
+   * context: <a href="https://github.com/niklasf/python-chess/issues/1188">niklasf/python-chess#1188</a>.
+   *
+   * <p>
+   * The move's chess effect — whether it would deliver checkmate, stalemate, or continue the game — does not affect
+   * whether the no-progress condition has been met. A non-pawn, non-capture mate-in-one at clock 99 is a valid claim
+   * under FIDE 9.3. (In practice the player would play the mate; the predicate is honest about what the rule says.)
+   */
+  public boolean canClaimFiftyMoveRuleFor(MoveSpecification move) {
+    final LegalMove legalMove = requireLegalMove(move);
+    if (getHalfMoveClock() < 99) {
+      return false;
+    }
+    return !BasicChessUtility.calculateIsResetHalfMoveClock(legalMove);
+  }
+
+  /**
+   * SAN convenience overload of {@link #canClaimFiftyMoveRuleFor(MoveSpecification)}: parses {@code san} via the
+   * lenient SAN pipeline against the current position and delegates. Throws on invalid input — {@link
+   * LenientSanParserValidationException} when {@code san} is unparseable / ambiguous / illegal under the lenient
+   * pipeline, and {@link IllegalArgumentException} (from the {@link MoveSpecification} overload) when the parsed move
+   * is not in the current legal-moves set.
+   */
+  public boolean canClaimFiftyMoveRuleFor(String san) throws LenientSanParserValidationException {
+    return canClaimFiftyMoveRuleFor(LenientSanParser.parseText(san, this).moveSpecification());
+  }
+
+  /**
+   * Per-move FIDE 9.2 claim predicate: returns {@code true} iff {@code move} is legal on the current position AND
+   * playing it would produce a position that has occurred at least three times in the game (counting the new
+   * occurrence). The player announces {@code move} and claims the draw on that announcement; the move is not played.
+   *
+   * <p>
+   * Clock-resetting candidates (pawn moves and captures) are rejected without simulation — they produce a position that
+   * cannot have appeared before in the game, so they cannot satisfy the threefold condition. This matches the existing
+   * {@link #canClaimThreefoldRepetitionRuleWithOwnMove} short-circuit.
+   *
+   * <p>
+   * Per-move shape rather than the existence shape because FIDE 9.2 frames the claim as a per-move act. See the
+   * {@link #canClaimFiftyMoveRuleFor} JavaDoc for the cross-library context with python-chess.
+   */
+  public boolean canClaimThreefoldRepetitionRuleFor(MoveSpecification move) {
+    final LegalMove legalMove = requireLegalMove(move);
+    if (BasicChessUtility.calculateIsResetHalfMoveClock(legalMove)) {
+      return false;
+    }
+    this.move(move);
+    final boolean threefold = isThreefoldRepetition();
+    this.unmove();
+    return threefold;
+  }
+
+  /**
+   * SAN convenience overload of {@link #canClaimThreefoldRepetitionRuleFor(MoveSpecification)}: parses {@code san} via
+   * the lenient SAN pipeline against the current position and delegates. Throws on invalid input — {@link
+   * LenientSanParserValidationException} when {@code san} is unparseable / ambiguous / illegal under the lenient
+   * pipeline, and {@link IllegalArgumentException} (from the {@link MoveSpecification} overload) when the parsed move
+   * is not in the current legal-moves set.
+   */
+  public boolean canClaimThreefoldRepetitionRuleFor(String san) throws LenientSanParserValidationException {
+    return canClaimThreefoldRepetitionRuleFor(LenientSanParser.parseText(san, this).moveSpecification());
   }
 
   public boolean canClaimThreefoldRepetitionRuleWithOwnMove() {
@@ -531,6 +610,75 @@ public class Board {
       }
     }
     return false;
+  }
+
+  /**
+   * Returns the {@link LegalMove} matching {@code move} in the current legal-moves set, throwing
+   * {@link IllegalArgumentException} if no match exists. Used by the per-move claim predicates to make "move not legal
+   * here" a loud, immediate failure rather than a silent {@code false}.
+   */
+  private LegalMove requireLegalMove(MoveSpecification move) {
+    for (final LegalMove legalMove : getLegalMoves()) {
+      if (legalMove.moveSpecification().equals(move)) {
+        return legalMove;
+      }
+    }
+    throw new IllegalArgumentException(
+        "move " + move + " is not a legal move in the current position");
+  }
+
+  /**
+   * Returns the side-to-move's FIDE 9.3 (50-move) claim rights at the current position: one {@link ClaimableMove} per
+   * legal move that, if announced before being played, would entitle the announcer to claim a draw under the 50-move
+   * rule (halfmove clock would reach 100; move is neither a pawn move nor a capture).
+   *
+   * <p>
+   * Each candidate move is admitted via the per-move predicate {@link #canClaimFiftyMoveRuleFor(MoveSpecification)} —
+   * the single source of truth — so any future tightening of FIDE 9.3 semantics flows through automatically. Move order
+   * in the returned list matches {@link #getLegalMoves()} order. The board state is unchanged after the call.
+   */
+  public ClaimRights calculateFiftyMoveRuleClaimRights() {
+    return calculateClaimRights(/* threefoldRather */ false);
+  }
+
+  /**
+   * Returns the side-to-move's FIDE 9.2 (threefold repetition) claim rights at the current position: one
+   * {@link ClaimableMove} per legal move that, if announced before being played, would produce a position with at least
+   * three occurrences (including the announced-but-not-yet-played one).
+   *
+   * <p>
+   * Each candidate move is admitted via the per-move predicate
+   * {@link #canClaimThreefoldRepetitionRuleFor(MoveSpecification)} — the single source of truth. Move order matches
+   * {@link #getLegalMoves()} order. The board state is unchanged after the call.
+   */
+  public ClaimRights calculateThreefoldRepetitionRuleClaimRights() {
+    return calculateClaimRights(/* threefoldRather */ true);
+  }
+
+  /**
+   * Shared body for the two claim-rights calculations: iterates the current legal-moves list, applies the per-rule
+   * predicate, and for accepted moves captures the canonical SAN via a transient {@code move}/{@code unmove} pair. The
+   * SAN of the just-pushed move is read from {@link #getSan()} on the pushed board, then the push is reverted, so the
+   * board is in the same state when the method returns as when it was called.
+   */
+  private ClaimRights calculateClaimRights(boolean threefoldRather) {
+    final List<ClaimableMove> claimable = new ArrayList<>();
+    for (final LegalMove legalMove : getLegalMoves()) {
+      final MoveSpecification spec = legalMove.moveSpecification();
+      final var accepted = threefoldRather ? canClaimThreefoldRepetitionRuleFor(spec)
+          : canClaimFiftyMoveRuleFor(spec);
+      if (!accepted) {
+        continue;
+      }
+      // Capture canonical SAN of the candidate via transient push. Symmetric in shape with the
+      // claim-ahead report builders. For threefold the predicate also pushed-and-popped internally;
+      // this is a second push purely to read the resulting SAN.
+      this.move(spec);
+      final String san = getSan();
+      this.unmove();
+      claimable.add(new ClaimableMove(spec, san));
+    }
+    return new ClaimRights(!claimable.isEmpty(), claimable);
   }
 
   public int getHalfMoveClock() {
@@ -642,13 +790,15 @@ public class Board {
   }
 
   /**
-   * True iff the halfmove clock has reached the 50-move-rule threshold (FIDE 9.3) <em>and</em> the side to move has at
-   * least one legal move. This is the on-board predicate (claimable rule); the game continues until claimed. The
-   * legal-moves-exist clause aligns with the FIDE rule (no claim is possible if the game has already ended by mate or
-   * stalemate) and with python-chess {@code is_fifty_moves()}.
+   * Raw condition predicate (FIDE 9.3 threshold): returns {@code true} iff the halfmove clock has reached the 50-move-
+   * rule threshold ({@code halfMoveClock >= 100}) on the current position. Reports the fact independently of any other
+   * game-end condition that may also hold — at a checkmate position with clock past 100, this still returns
+   * {@code true}. Game-end precedence belongs to
+   * {@link com.dlb.chess.common.utility.BasicChessUtility#calculateOutcome} and not to this predicate. (Deliberate
+   * divergence from python-chess at game-end positions, where {@code is_fifty_moves} folds in a precedence guard.)
    */
   public boolean isFiftyMove() {
-    return getHalfMoveClock() >= ChessConstants.FIFTY_MOVE_RULE_HALF_MOVE_CLOCK_THRESHOLD && !getLegalMoves().isEmpty();
+    return getHalfMoveClock() >= ChessConstants.FIFTY_MOVE_RULE_HALF_MOVE_CLOCK_THRESHOLD;
   }
 
   /**
@@ -660,17 +810,15 @@ public class Board {
   }
 
   /**
-   * True iff the halfmove clock has reached the 75-move-rule threshold (FIDE 9.6.2) <em>and</em> the side to move has
-   * at least one legal move. In this library the 75-move rule is surfaced as a queryable predicate rather than an
-   * enforced termination: the move pipeline does NOT reject moves on this condition. Once the threshold is crossed the
-   * predicate remains {@code true} for every subsequent halfmove until either the clock is reset by a pawn move or
-   * capture, <em>or</em> the position becomes checkmate / stalemate (no legal moves — the game has ended by a
-   * higher-precedence termination, so the 75-move rule cannot also fire). The legal-moves-exist clause matches
-   * python-chess {@code is_seventyfive_moves()} and the FIDE reading.
+   * Raw condition predicate (FIDE 9.6.2 threshold): returns {@code true} iff the halfmove clock has reached the 75-
+   * move-rule threshold ({@code halfMoveClock >= 150}) on the current position. Reports the fact independently of any
+   * other game-end condition — at a checkmate position with clock past 150, this still returns {@code true}. Game-end
+   * precedence belongs to {@link com.dlb.chess.common.utility.BasicChessUtility#calculateOutcome} and not to this
+   * predicate. (Deliberate divergence from python-chess at game-end positions, where {@code is_seventyfive_moves} folds
+   * in a precedence guard.)
    */
   public boolean isSeventyFiveMove() {
-    return getHalfMoveClock() >= ChessConstants.SEVENTY_FIVE_MOVE_RULE_HALF_MOVE_CLOCK_THRESHOLD
-        && !getLegalMoves().isEmpty();
+    return getHalfMoveClock() >= ChessConstants.SEVENTY_FIVE_MOVE_RULE_HALF_MOVE_CLOCK_THRESHOLD;
   }
 
   /**
@@ -681,6 +829,37 @@ public class Board {
    */
   public boolean isFivefoldRepetition() {
     return getRepetitionCount() >= ChessConstants.FIVEFOLD_REPETITION_RULE_THRESHOLD;
+  }
+
+  /**
+   * Rich snapshot of all game-end-relevant facts on the current position together with the precedence-projected
+   * {@link Outcome}. The fact booleans are independent and condition-only — each is the raw truth of its rule on the
+   * current board, not suppressed by any higher-precedence condition that may also hold. See {@link GameEndFacts} for
+   * the field-by-field semantics and the precedence rules used to project the {@code outcome} field.
+   *
+   * <p>
+   * Invokes the unwinnability quick analyzer to compute {@code deadPosition}; the cost is microseconds. Callers that do
+   * not need the analyzer-driven dead-position fact can call the individual condition predicates directly.
+   */
+  public GameEndFacts calculateGameEndFacts() {
+    final var checkmate = isCheckmate();
+    final var stalemate = isStalemate();
+    final var insufficientMaterial = isInsufficientMaterial();
+    final var deadPosition = isDeadPosition();
+    final var fivefoldRepetition = isFivefoldRepetition();
+    final var seventyFiveMove = isSeventyFiveMove();
+    final Outcome outcome = BasicChessUtility.calculateOutcome(this);
+    return new GameEndFacts(checkmate, stalemate, insufficientMaterial, deadPosition, fivefoldRepetition,
+        seventyFiveMove, outcome);
+  }
+
+  /**
+   * Convenience: {@code true} iff a termination condition fires on the current position (i.e. the projected
+   * {@link Outcome}'s termination is not {@link com.dlb.chess.common.enums.Termination#NONE}). Equivalent to
+   * {@code BasicChessUtility.calculateOutcome(this).termination() != Termination.NONE}.
+   */
+  public boolean isGameEnd() {
+    return BasicChessUtility.calculateOutcome(this).termination() != Termination.NONE;
   }
 
   public ImmutableList<String> getSanList() {
@@ -775,8 +954,41 @@ public class Board {
     return Nulls.copyOfList(dynamicPositionList);
   }
 
+  /**
+   * Derived/compatibility view: reconstructs the played-move history as a {@link HalfMove} list from the per-ply
+   * parallel stores (performedLegalMoveList + sanList + halfMoveClockList + dynamicPositionList + repetitionCountList +
+   * the initial-FEN fullmove anchor). Board no longer maintains the list as state — each call builds a fresh list, so
+   * the operation is {@code O(plies)} per call rather than {@code O(1)}.
+   *
+   * <p>
+   * Kept as part of the public API in this release so consumers in {@code com.dlb.chess.report} and downstream code are
+   * not forced to migrate in one step. A future release may remove this method entirely as part of finishing the
+   * {@link HalfMove} decommission; callers that hold a long-lived reference should cache the returned list rather than
+   * calling this method per access.
+   */
   public ImmutableList<HalfMove> getHalfMoveList() {
-    return Nulls.copyOfList(halfMoveList);
+    final var plies = performedLegalMoveList.size();
+    if (plies == 0) {
+      return Nulls.listOf();
+    }
+    final List<HalfMove> result = new ArrayList<>(plies);
+    for (var i = 0; i < plies; i++) {
+      result.add(buildHalfMoveAtPly(i));
+    }
+    return Nulls.copyOfList(result);
+  }
+
+  /**
+   * Derived {@link HalfMove} for the most recently played ply — {@code O(1)} reconstruction from the per-ply parallel
+   * stores. Use this instead of {@code Nulls.getLast(getHalfMoveList())} when only the last entry is needed, otherwise
+   * the full {@code O(plies)} reconstruction runs for every call. Throws {@link IllegalStateException} when no move has
+   * been played, matching {@link #getLastMove}.
+   */
+  public HalfMove getLastHalfMove() {
+    if (isFirstMove()) {
+      throw new IllegalStateException("There is no last half-move");
+    }
+    return buildHalfMoveAtPly(performedLegalMoveList.size() - 1);
   }
 
   public DynamicPosition getInitialDynamicPosition() {
@@ -821,7 +1033,10 @@ public class Board {
 
   @Override
   public int hashCode() {
-    return Objects.hash(dynamicPositionList, halfMoveClockList, halfMoveList, initialFen, isCheckList, isCheckmateList,
+    // halfMoveList intentionally absent — it's now a derived view of the other per-ply lists, so it
+    // carries no information not already covered by sanList + dynamicPositionList +
+    // halfMoveClockList + repetitionCountList + performedLegalMoveList + initialFen.
+    return Objects.hash(dynamicPositionList, halfMoveClockList, initialFen, isCheckList, isCheckmateList,
         isStalemateList, lanList, legalMoveListPerPly, performedLegalMoveList, repetitionCountList, sanList);
   }
 
@@ -835,8 +1050,7 @@ public class Board {
     }
     final var other = (Board) obj;
     return Objects.equals(dynamicPositionList, other.dynamicPositionList)
-        && Objects.equals(halfMoveClockList, other.halfMoveClockList)
-        && Objects.equals(halfMoveList, other.halfMoveList) && Objects.equals(initialFen, other.initialFen)
+        && Objects.equals(halfMoveClockList, other.halfMoveClockList) && Objects.equals(initialFen, other.initialFen)
         && Objects.equals(isCheckList, other.isCheckList) && Objects.equals(isCheckmateList, other.isCheckmateList)
         && Objects.equals(isStalemateList, other.isStalemateList) && Objects.equals(lanList, other.lanList)
         && Objects.equals(legalMoveListPerPly, other.legalMoveListPerPly)
@@ -893,6 +1107,15 @@ public class Board {
       return true;
     }
     return canClaimThreefoldRepetitionRuleWithOwnMove();
+  }
+
+  /**
+   * Per-move composed convenience: returns {@code true} iff {@code move}, when announced as the next move under FIDE
+   * 9.2 or 9.3, would entitle the announcer to claim a draw. Equivalent to
+   * {@code canClaimFiftyMoveRuleFor(move) || canClaimThreefoldRepetitionRuleFor(move)}.
+   */
+  public boolean canClaimDrawFor(MoveSpecification move) {
+    return canClaimFiftyMoveRuleFor(move) || canClaimThreefoldRepetitionRuleFor(move);
   }
 
   public InsufficientMaterial calculateInsufficientMaterial() {
@@ -985,15 +1208,40 @@ public class Board {
     return Nulls.copyOfList(result);
   }
 
-  private HalfMove buildHalfMove(MoveSpecification moveSpecification) {
-    final var halfMoveCount = getPerformedHalfMoveCount();
-    final var halfMoveClock = getHalfMoveClock();
-    final var fullMoveNumber = getLastPlayedFullMoveNumber();
-    final var countRepetition = getRepetitionCount();
-    final DynamicPosition dynamicPosition = getDynamicPosition();
-    final Piece movingPiece = getMovingPiece();
-    return new HalfMove(halfMoveCount, fullMoveNumber, halfMoveClock, dynamicPosition, countRepetition, getSan(),
-        movingPiece, moveSpecification);
+  /**
+   * Reconstructs the {@link HalfMove} that was the result of the move at {@code plyIndex} (0-based) in the played
+   * history. Reads every field from the per-ply parallel stores: {@code performedLegalMoveList[plyIndex]} for the move
+   * specification and moving piece, {@code sanList[plyIndex]} for the SAN, and the three "+1-indexed" stores
+   * ({@code halfMoveClockList}, {@code dynamicPositionList}, {@code repetitionCountList} — each carries the initial-
+   * FEN state at index 0 and the after-ply-i state at index i+1) for the clock, position, and repetition count.
+   *
+   * <p>
+   * The full-move number derives from the initial FEN's fullmove + having-move anchors and the played ply index via the
+   * same {@link #calculateFullMoveNumber} helper that powers {@link #getLastPlayedFullMoveNumber}, just generalised to
+   * take an arbitrary historical {@code havingMove} / {@code halfMoveCount} pair instead of the current one.
+   */
+  private HalfMove buildHalfMoveAtPly(int plyIndex) {
+    final LegalMove legalMove = Nulls.get(performedLegalMoveList, plyIndex);
+    final var halfMoveCount = plyIndex + 1;
+    final int halfMoveClock = Nulls.get(halfMoveClockList, plyIndex + 1);
+    final int countRepetition = Nulls.get(repetitionCountList, plyIndex + 1);
+    final DynamicPosition dynamicPosition = Nulls.get(dynamicPositionList, plyIndex + 1);
+    final String san = Nulls.get(sanList, plyIndex);
+    final Piece movingPiece = legalMove.movingPiece();
+    final Side havingMoveAfter = movingPiece.getSide().getOppositeSide();
+    // Reuse the existing private fullmove helper; it returns the fullmove number for the side
+    // currently to move, so subtract 1 when that side is WHITE to recover the just-played move's
+    // fullmove number (matches getLastPlayedFullMoveNumber's adjustment).
+    final var fullMoveNumberOfNext = calculateFullMoveNumber(false, initialFen.fullMoveNumber(),
+        initialFen.havingMove(), havingMoveAfter, halfMoveCount);
+    final var fullMoveNumber = switch (havingMoveAfter) {
+      case WHITE -> fullMoveNumberOfNext - 1;
+      case BLACK -> fullMoveNumberOfNext;
+      case NONE -> throw new IllegalArgumentException();
+      default -> throw new IllegalArgumentException();
+    };
+    return new HalfMove(halfMoveCount, fullMoveNumber, halfMoveClock, dynamicPosition, countRepetition, san,
+        movingPiece, legalMove.moveSpecification());
   }
 
 }

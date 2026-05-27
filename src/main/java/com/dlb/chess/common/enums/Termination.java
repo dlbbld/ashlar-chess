@@ -1,11 +1,14 @@
 package com.dlb.chess.common.enums;
 
 /**
- * The cause of an automatic game termination — the {@code termination} field of {@link Outcome}.
+ * The cause of an automatic game termination — the {@code termination} field of
+ * {@link com.dlb.chess.common.model.Outcome}.
  *
  * <p>
- * Companion to {@link com.dlb.chess.common.utility.BasicChessUtility#calculateOutcome}, which surfaces one of these
- * five causes when the board is in an automatic termination state, or {@code null} when the game is ongoing.
+ * Companion to {@link com.dlb.chess.common.utility.BasicChessUtility#calculateOutcome}: the method surfaces one of
+ * these six values, with {@link #NONE} for ongoing positions where no termination condition fires. (Returning a
+ * non-null {@code Outcome} for every position lets callers branch on {@code termination} alone without a separate
+ * null check.)
  *
  * <p>
  * Analyzer-driven dead positions (FIDE 5.2.2 via {@link com.dlb.chess.board.Board#isDeadPositionQuick()} /
@@ -25,6 +28,8 @@ package com.dlb.chess.common.enums;
  */
 public enum Termination {
 
+  /** No termination condition fires on this position — the game is ongoing. */
+  NONE,
   CHECKMATE,
   INSUFFICIENT_MATERIAL,
   STALEMATE,

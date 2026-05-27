@@ -23,27 +23,34 @@ class TestBoardClaimWithOwnMove {
 
   @SuppressWarnings("static-method")
   @Test
-  void isFiftyMoveFalseAtCheckmateEvenWhenClockPastThreshold() {
+  void isFiftyMoveTrueAtCheckmateWhenClockPastThreshold() {
     // White king a1 in mate from black queen a2 (protected by black king a3). Halfmove clock at
-    // 100 — past the 50-move threshold. Post-A1 / python-chess parity: isFiftyMove requires legal
-    // moves to exist, so a checkmate position with the clock past the threshold returns false.
-    // The 50-move rule cannot fire because checkmate is a higher-precedence termination.
+    // 100 — past the 50-move threshold. Under the "facts are independent" rule, isFiftyMove
+    // reports the raw clock condition regardless of any higher-precedence condition that also
+    // holds. Precedence belongs to BasicChessUtility.calculateOutcome (which returns CHECKMATE
+    // here, since CHECKMATE outranks the 50-move row in the precedence stack). Deliberate
+    // divergence from python-chess at this corner.
     final Board board = new Board("8/8/8/8/8/k7/q7/K7 w - - 100 60");
     assertTrue(board.isCheckmate(), "precondition: position must be checkmate");
     assertEquals(100, board.getHalfMoveClock(), "precondition: clock past 50-move threshold");
     assertTrue(board.getLegalMoves().isEmpty(), "precondition: no legal moves");
-    assertFalse(board.isFiftyMove(), "isFiftyMove must be false at checkmate despite clock past threshold");
-    assertFalse(board.canClaimFiftyMoveRule(), "no draw to claim once the game has ended by mate");
+    assertTrue(board.isFiftyMove(),
+        "isFiftyMove must be true at clock 100 regardless of checkmate also holding — facts are independent");
+    assertTrue(board.canClaimFiftyMoveRule(),
+        "canClaimFiftyMoveRule delegates to the raw isFiftyMove predicate and inherits its independence");
   }
 
   @SuppressWarnings("static-method")
   @Test
-  void isSeventyFiveMoveFalseAtCheckmateEvenWhenClockPastThreshold() {
-    // Same position semantics as above but with clock at 150 — past the 75-move threshold.
+  void isSeventyFiveMoveTrueAtCheckmateWhenClockPastThreshold() {
+    // Same position semantics as above but with clock at 150 — past the 75-move threshold. Same
+    // "facts are independent" rule: isSeventyFiveMove reports the raw threshold fact even when
+    // checkmate also holds. calculateOutcome still returns CHECKMATE under the precedence stack.
     final Board board = new Board("8/8/8/8/8/k7/q7/K7 w - - 150 80");
     assertTrue(board.isCheckmate(), "precondition: position must be checkmate");
     assertEquals(150, board.getHalfMoveClock(), "precondition: clock past 75-move threshold");
-    assertFalse(board.isSeventyFiveMove(), "isSeventyFiveMove must be false at checkmate despite clock past threshold");
+    assertTrue(board.isSeventyFiveMove(),
+        "isSeventyFiveMove must be true at clock 150 regardless of checkmate also holding");
   }
 
   @SuppressWarnings("static-method")

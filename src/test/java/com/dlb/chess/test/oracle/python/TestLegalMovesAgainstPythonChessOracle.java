@@ -21,6 +21,7 @@ import com.dlb.chess.pgn.StrictPgnParser;
 import com.dlb.chess.test.ConfigurationTestConstants;
 import com.dlb.chess.test.pgntest.constants.PgnTestConstants;
 import com.dlb.chess.test.pgntest.enums.PgnTest;
+import com.google.common.collect.ImmutableList;
 
 /**
  * Cross-validates clean-chess's legal-move generator against python-chess's by replaying each PGN in the covered
@@ -55,14 +56,15 @@ class TestLegalMovesAgainstPythonChessOracle {
   private static final Path ORACLE_ROOT = Nulls.pathResolve(ConfigurationTestConstants.PROJECT_ROOT_FOLDER_PATH,
       "src/test/resources/oracle/python-chess/move-gen");
 
-  private static final List<PgnTest> BUCKETS = Nulls.listOf(PgnTest.PARSER_FROM_FEN, PgnTest.BASIC_MOVING_PIECE_WHITE,
-      PgnTest.BASIC_MOVING_PIECE_BLACK, PgnTest.BASIC_CAPTURE_WHITE, PgnTest.BASIC_CAPTURE_BLACK,
-      PgnTest.BASIC_CAPTURE_LAST_MOVE, PgnTest.BASIC_EN_PASSANT_CAPTURE_WHITE, PgnTest.BASIC_EN_PASSANT_CAPTURE_BLACK,
-      PgnTest.BASIC_PROMOTION_PIECE_WHITE, PgnTest.BASIC_PROMOTION_PIECE_BLACK, PgnTest.BASIC_PROMOTION_SQUARE_WHITE,
-      PgnTest.BASIC_PROMOTION_SQUARE_BLACK, PgnTest.BASIC_CHECK_WHITE, PgnTest.BASIC_CHECK_BLACK,
-      PgnTest.BASIC_DOUBLE_CHECK_WHITE, PgnTest.BASIC_DOUBLE_CHECK_BLACK, PgnTest.BASIC_CHECKMATE_DOUBLE_CHECK_WHITE,
-      PgnTest.BASIC_CHECKMATE_DOUBLE_CHECK_BLACK, PgnTest.BASIC_CASTLING_WHITE, PgnTest.BASIC_CASTLING_BLACK,
-      PgnTest.BASIC_CASTLING_SPECIAL_WHITE, PgnTest.BASIC_CASTLING_SPECIAL_BLACK);
+  private static final ImmutableList<PgnTest> BUCKETS = Nulls.listOf(PgnTest.PARSER_FROM_FEN,
+      PgnTest.BASIC_MOVING_PIECE_WHITE, PgnTest.BASIC_MOVING_PIECE_BLACK, PgnTest.BASIC_CAPTURE_WHITE,
+      PgnTest.BASIC_CAPTURE_BLACK, PgnTest.BASIC_CAPTURE_LAST_MOVE, PgnTest.BASIC_EN_PASSANT_CAPTURE_WHITE,
+      PgnTest.BASIC_EN_PASSANT_CAPTURE_BLACK, PgnTest.BASIC_PROMOTION_PIECE_WHITE, PgnTest.BASIC_PROMOTION_PIECE_BLACK,
+      PgnTest.BASIC_PROMOTION_SQUARE_WHITE, PgnTest.BASIC_PROMOTION_SQUARE_BLACK, PgnTest.BASIC_CHECK_WHITE,
+      PgnTest.BASIC_CHECK_BLACK, PgnTest.BASIC_DOUBLE_CHECK_WHITE, PgnTest.BASIC_DOUBLE_CHECK_BLACK,
+      PgnTest.BASIC_CHECKMATE_DOUBLE_CHECK_WHITE, PgnTest.BASIC_CHECKMATE_DOUBLE_CHECK_BLACK,
+      PgnTest.BASIC_CASTLING_WHITE, PgnTest.BASIC_CASTLING_BLACK, PgnTest.BASIC_CASTLING_SPECIAL_WHITE,
+      PgnTest.BASIC_CASTLING_SPECIAL_BLACK);
 
   @SuppressWarnings("static-method")
   @Test

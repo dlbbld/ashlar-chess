@@ -3,6 +3,7 @@ package com.dlb.chess.test.unwinnability.oracle.model;
 import org.eclipse.jdt.annotation.Nullable;
 
 import com.dlb.chess.board.enums.Side;
+import com.dlb.chess.common.enums.Termination;
 import com.dlb.chess.common.model.Outcome;
 
 /**
@@ -10,18 +11,27 @@ import com.dlb.chess.common.model.Outcome;
  * reached:
  *
  * <ul>
- * <li>An automatic {@link Outcome} — {@code outcome} is non-null and {@code singleSideInsufficientMaterial} is null.
- * <li>A one-sided insufficient-material diagnostic state — {@code outcome} is null and
- * {@code singleSideInsufficientMaterial} is the side that lacks material. The chain stops here because the
- * forced-line oracle treats it as a decisive signal (the side lacking material cannot win from a forced chain).
- * <li>Branching resumes (more than one legal move available) without any termination triggering — both fields are
- * null, signalling "ongoing" from the oracle's perspective.
+ * <li>An automatic {@link Outcome} — {@code outcome.termination() != Termination.NONE} and
+ * {@code singleSideInsufficientMaterial} is null.
+ * <li>A one-sided insufficient-material diagnostic state — {@code outcome} is {@link Outcome#ONGOING} and
+ * {@code singleSideInsufficientMaterial} is the side that lacks material. The chain stops here because the forced-line
+ * oracle treats it as a decisive signal (the side lacking material cannot win from a forced chain).
+ * <li>Branching resumes (more than one legal move available) without any termination triggering — {@code outcome} is
+ * {@link Outcome#ONGOING} and {@code singleSideInsufficientMaterial} is null, signalling "ongoing" from the oracle's
+ * perspective.
  * </ul>
  *
  * <p>
- * {@code outcome} and {@code singleSideInsufficientMaterial} are mutually exclusive (never both non-null in a single
- * record).
+ * {@code outcome.termination() != Termination.NONE} and {@code singleSideInsufficientMaterial != null} are mutually
+ * exclusive (never both true in a single record).
  */
-public record GameForced(@Nullable Outcome outcome, @Nullable Side singleSideInsufficientMaterial,
-    int evaluatedPositions, Side sideMadeLastMove) {
+public record GameForced(Outcome outcome, @Nullable Side singleSideInsufficientMaterial, int evaluatedPositions,
+    Side sideMadeLastMove) {
+
+  /**
+   * Convenience: {@code true} iff an automatic termination was reached at the end of the forced chain.
+   */
+  public boolean hasTermination() {
+    return outcome.termination() != Termination.NONE;
+  }
 }

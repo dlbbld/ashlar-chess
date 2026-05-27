@@ -110,20 +110,17 @@ public class PgnCreate {
 
   private static ResultTagValue calculateResultTagValue(Board board) {
     final Outcome outcome = BasicChessUtility.calculateOutcome(board);
-    if (outcome == null) {
-      // Game is ongoing — including positions with one-sided insufficient material, which is a
-      // diagnostic state on the board (queryable via Board.isInsufficientMaterial(Side)) and not
-      // an automatic termination.
-      return ResultTagValue.ONGOING;
-    }
     switch (outcome.termination()) {
+      case NONE:
+        // Game is ongoing — including positions with one-sided insufficient material, which is a
+        // diagnostic state on the board (queryable via Board.isInsufficientMaterial(Side)) and not
+        // an automatic termination.
+        return ResultTagValue.ONGOING;
       case CHECKMATE: {
-        // Outcome's compact constructor guarantees winner() is non-null for CHECKMATE — the side
-        // that delivered mate.
+        // Outcome's compact constructor guarantees winner() is WHITE or BLACK for CHECKMATE — the
+        // side that delivered mate. Side.NONE is reserved for drawing terminations and cannot
+        // appear here by the record's invariant.
         final Side winner = outcome.winner();
-        if (winner == null) {
-          throw new ProgrammingMistakeException("Outcome invariant violated: CHECKMATE without winner");
-        }
         switch (winner) {
           case WHITE:
             return ResultTagValue.WHITE_WON;
@@ -131,7 +128,8 @@ public class PgnCreate {
             return ResultTagValue.BLACK_WON;
           case NONE:
           default:
-            throw new IllegalArgumentException();
+            throw new ProgrammingMistakeException(
+                "Outcome invariant violated: CHECKMATE with winner=" + winner);
         }
       }
       case STALEMATE, INSUFFICIENT_MATERIAL, FIVEFOLD_REPETITION, SEVENTY_FIVE_MOVES:

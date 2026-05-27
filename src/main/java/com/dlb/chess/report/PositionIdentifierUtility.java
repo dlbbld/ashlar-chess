@@ -17,16 +17,29 @@ abstract class PositionIdentifierUtility {
   private static final int BASE = 26;
   private static final int ASCII_TABLE_BEFORE_UPPER_CASE_A_NUMBER = 64;
 
-  public static Map<DynamicPosition, String> calculatePositionIdentifierMap(List<List<HalfMove>> halfMoveListList) {
+  /**
+   * Assigns a unique letter label per distinct position across both reports. Claim-ahead entries are visited first in
+   * their stored order, then any positions appearing only in the existing-repetition groups are appended.
+   * Claim-ahead-first ordering matches the letter assignment users have seen in the printed report historically; the
+   * second walk closes the latent throw-on-missing edge against future fixtures where a threefold-reached position
+   * might not also appear as a claim-ahead opportunity.
+   */
+  public static Map<DynamicPosition, String> calculatePositionIdentifierMap(ThreefoldClaimAheadReport claimAhead,
+      ThreefoldExistingReport existing) {
     final Map<DynamicPosition, String> result = new HashMap<>();
     var positionNumber = 1;
-    for (final List<HalfMove> halfMoveList : halfMoveListList) {
-      for (final HalfMove halfMove : halfMoveList) {
-        final DynamicPosition position = halfMove.dynamicPosition();
-        if (!result.containsKey(position)) {
-          result.put(position, calculateIdentifier(positionNumber));
-          positionNumber++;
-        }
+    for (final ClaimAheadEntry entry : claimAhead.entries()) {
+      final DynamicPosition position = entry.claimAheadMove().dynamicPosition();
+      if (!result.containsKey(position)) {
+        result.put(position, calculateIdentifier(positionNumber));
+        positionNumber++;
+      }
+    }
+    for (final RepetitionGroup group : existing.groups()) {
+      final DynamicPosition position = group.repeatedPosition();
+      if (!result.containsKey(position)) {
+        result.put(position, calculateIdentifier(positionNumber));
+        positionNumber++;
       }
     }
     return result;
