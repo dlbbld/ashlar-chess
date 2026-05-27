@@ -118,11 +118,12 @@ class TestReportPrintoutDerivesFromObjectModel {
     } else {
       assertEquals(fiftyClaimAhead.entries().size(), fiftyClaimAheadSection.size(),
           "fifty-move claim-ahead section must have one rendered line per FiftyMoveClaimAheadEntry");
+      // No asterisks expected under the missed-opportunity filter: the actually-played move at the
+      // boundary ply is by construction clock-resetting, so the non-zeroing candidate never coincides
+      // with the played move.
       final long asterisks = fiftyClaimAheadSection.stream().filter(line -> line.contains("*")).count();
-      final long expectedAsterisks = fiftyClaimAhead.entries().stream().filter(FiftyMoveClaimAheadEntry::hasBeenPlayed)
-          .count();
-      assertEquals(expectedAsterisks, asterisks,
-          "asterisk count in printed fifty-move claim-ahead lines must equal count of hasBeenPlayed entries");
+      assertEquals(0, asterisks,
+          "fifty-move claim-ahead lines never carry an asterisk under the missed-opportunity filter");
     }
 
     // --- fifty-move sequence section ---

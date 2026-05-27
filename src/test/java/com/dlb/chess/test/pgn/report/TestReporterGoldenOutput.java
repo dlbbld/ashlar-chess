@@ -108,6 +108,22 @@ class TestReporterGoldenOutput {
     compareOrRegenerate(actual, "07_fifty_move_initial_fen_at_threshold.txt");
   }
 
+  @SuppressWarnings("static-method")
+  @Test
+  void fiftyMoveMissedClaimAheadWhenPawnPushBreaksSequence() {
+    // The missed-opportunity case: FEN clock 98, play one non-zeroing move (clock 99), then a pawn
+    // push resets the clock to 0. The sequence ends at clock 99 without reaching the threshold —
+    // so the "Valid fifty-move claims ahead" section lists every alternative non-zeroing legal move
+    // the player COULD have made at the boundary instead of the pawn push. The "Fifty moves and
+    // beyond" section is empty (no sequence reached 100).
+    //
+    // Locks the missed-opportunity output shape; previously no corpus or inline golden exercised it.
+    final Board board = new Board("4k3/p7/8/8/8/8/P7/4K2R w - - 98 80");
+    board.movesStrict("Rg1", "a6");
+    final String actual = captureStdout(() -> Reporter.printReport(board));
+    compareOrRegenerate(actual, "08_fifty_move_missed_claim_ahead.txt");
+  }
+
   private static String capturePgnFile(String pgnName) {
     final PgnTest pgnTest = PgnTestCaseCatalog.findPgnTestPgnNotListed(pgnName);
     return captureStdout(() -> Reporter.printReport(pgnTest.getFolderPath(), pgnName));

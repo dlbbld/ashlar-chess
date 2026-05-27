@@ -5,7 +5,7 @@ Valid threefold claims ahead (asterisk denotes also the last ahead move has been
 Threefolds and beyond:
 [Initial position] 2... Ng8 4... Ng8 (A - 3)
 
-Valid fifty-move claims ahead (asterisk denotes also the last ahead move has been played):
+Valid fifty-move claims ahead (only listed when the sequence does not reach the 50-move threshold in actual play):
 None
 
 Fifty moves and beyond:
