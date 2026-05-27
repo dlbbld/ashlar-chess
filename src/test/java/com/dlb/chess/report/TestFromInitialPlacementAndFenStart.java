@@ -13,6 +13,7 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 
 import com.dlb.chess.board.Board;
+import com.dlb.chess.common.Nulls;
 import com.dlb.chess.common.constants.ChessConstants;
 
 /**
@@ -347,7 +348,7 @@ class TestFromInitialPlacementAndFenStart {
         "Valid fifty-move claims ahead");
     if (threefoldSectionNonEmpty) {
       assertTrue(!threefoldSection.isEmpty(), "threefold section must have content");
-      assertTrue(((threefoldSection.size() != 1) || !"None".equals(threefoldSection.get(0))),
+      assertTrue(threefoldSection.size() != 1 || !"None".equals(threefoldSection.get(0)),
           () -> "threefold section must contain repetition group lines, not the 'None' sentinel; got:\n  "
               + String.join("\n  ", threefoldSection));
     }
@@ -355,7 +356,7 @@ class TestFromInitialPlacementAndFenStart {
     final List<String> fiftyMoveSequenceSection = extractSectionToEnd(lines, "Fifty moves and beyond");
     if (expectedFiftyMoveSequenceReached) {
       assertTrue(!fiftyMoveSequenceSection.isEmpty(), "fifty-move sequence section must have content");
-      assertTrue(((fiftyMoveSequenceSection.size() != 1) || !"None".equals(fiftyMoveSequenceSection.get(0))),
+      assertTrue(fiftyMoveSequenceSection.size() != 1 || !"None".equals(fiftyMoveSequenceSection.get(0)),
           () -> "fifty-move sequence section must contain sequence lines, not the 'None' sentinel; got:\n  "
               + String.join("\n  ", fiftyMoveSequenceSection));
     } else {
@@ -378,7 +379,7 @@ class TestFromInitialPlacementAndFenStart {
     }
     final var text = buffer.toString(StandardCharsets.UTF_8).replace("\r\n", "\n");
     final List<String> lines = new ArrayList<>();
-    Collections.addAll(lines, text.split("\n", -1));
+    Collections.addAll(lines, Nulls.split(text, "\n"));
     return lines;
   }
 

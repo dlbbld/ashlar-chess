@@ -2,6 +2,7 @@ package com.dlb.chess.common;
 
 import java.io.File;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -160,6 +161,10 @@ public class Nulls {
   @NonNull
   public static <E> E get(E[] list, int index) {
     return checkResult(list[index]);
+  }
+
+  public static Path pathsGet(final String first, String... more) {
+    return checkResult(Paths.get(first, more)); // not null by API
   }
 
   public static Path pathOf(final String filePath) {

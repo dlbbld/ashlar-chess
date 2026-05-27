@@ -33,13 +33,16 @@ class TestOutcome {
   @SuppressWarnings("static-method")
   @Test
   void drawingTerminationsAcceptSideNone() {
-    new Outcome(Termination.INSUFFICIENT_MATERIAL, Side.NONE);
-    new Outcome(Termination.STALEMATE, Side.NONE);
-    new Outcome(Termination.SEVENTY_FIVE_MOVES, Side.NONE);
-    new Outcome(Termination.FIVEFOLD_REPETITION, Side.NONE);
+    checkDrawingTermination(new Outcome(Termination.INSUFFICIENT_MATERIAL, Side.NONE));
+    checkDrawingTermination(new Outcome(Termination.STALEMATE, Side.NONE));
+    checkDrawingTermination(new Outcome(Termination.SEVENTY_FIVE_MOVES, Side.NONE));
+    checkDrawingTermination(new Outcome(Termination.FIVEFOLD_REPETITION, Side.NONE));
     // No exception thrown — all four drawing terminations accept Side.NONE as the winner.
   }
 
+  private static void checkDrawingTermination(Outcome outcome) {
+    assertEquals(Side.NONE, outcome.winner());
+  }
   // === ONGOING / Termination.NONE ===
 
   @SuppressWarnings("static-method")

@@ -5,16 +5,15 @@ import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 
 import org.junit.jupiter.api.Test;
 
 import com.dlb.chess.board.Board;
+import com.dlb.chess.common.Nulls;
 import com.dlb.chess.report.Reporter;
 import com.dlb.chess.test.pgn.setup.PgnTestCaseCatalog;
 import com.dlb.chess.test.pgntest.enums.PgnTest;
@@ -31,12 +30,12 @@ class TestReporterGoldenOutput {
   private static final boolean REGENERATE = Boolean.getBoolean("golden.regenerate");
 
   private static final String CLASSPATH_GOLDEN_ROOT = "/report/golden/";
-  private static final Path FILESYSTEM_GOLDEN_ROOT = Paths.get("src", "test", "resources", "report", "golden");
+  private static final Path FILESYSTEM_GOLDEN_ROOT = Nulls.pathsGet("src", "test", "resources", "report", "golden");
 
   @SuppressWarnings("static-method")
   @Test
   void noThreefoldActivity() {
-    final String pgn = """
+    final var pgn = """
         1. e4 e5 2. Nf3 Nf6 3. Bc4 Bc5
         """;
     final String actual = captureStdout(() -> Reporter.printReport(pgn));
@@ -98,8 +97,8 @@ class TestReporterGoldenOutput {
     // itself; no claim-ahead is possible (the predicate rejects clock-resetting candidates) but
     // the sequence-section must surface the threshold-met state with a bare start marker:
     //
-    //   Fifty moves and beyond:
-    //   [Starting position] (100)
+    // Fifty moves and beyond:
+    // [Starting position] (100)
     //
     // Locks the special-case rendering — sequence-with-no-endPly — that's hard to test from any
     // other entry point.
@@ -131,7 +130,7 @@ class TestReporterGoldenOutput {
 
   private static String captureStdout(Runnable action) {
     final ByteArrayOutputStream buffer = new ByteArrayOutputStream();
-    final PrintStream original = System.out;
+    final var original = System.out;
     final PrintStream captured = new PrintStream(buffer, true, StandardCharsets.UTF_8);
     System.setOut(captured);
     try {
@@ -152,14 +151,14 @@ class TestReporterGoldenOutput {
   }
 
   private static String readGolden(String goldenName) {
-    final String resourcePath = CLASSPATH_GOLDEN_ROOT + goldenName;
-    try (InputStream in = TestReporterGoldenOutput.class.getResourceAsStream(resourcePath)) {
+    final var resourcePath = CLASSPATH_GOLDEN_ROOT + goldenName;
+    try (var in = TestReporterGoldenOutput.class.getResourceAsStream(resourcePath)) {
       if (in == null) {
         throw new IllegalStateException("Golden resource not found on classpath: " + resourcePath
             + " — run with -Dgolden.regenerate=true to create it.");
       }
       return normaliseLineEndings(new String(in.readAllBytes(), StandardCharsets.UTF_8));
-    } catch (IOException e) {
+    } catch (final IOException e) {
       throw new IllegalStateException("Failed to read golden " + resourcePath, e);
     }
   }
@@ -168,12 +167,12 @@ class TestReporterGoldenOutput {
     try {
       Files.createDirectories(FILESYSTEM_GOLDEN_ROOT);
       Files.writeString(FILESYSTEM_GOLDEN_ROOT.resolve(goldenName), content, StandardCharsets.UTF_8);
-    } catch (IOException e) {
+    } catch (final IOException e) {
       throw new IllegalStateException("Failed to write golden " + goldenName, e);
     }
   }
 
   private static String normaliseLineEndings(String input) {
-    return input.replace("\r\n", "\n");
+    return Nulls.replace(input, "\r\n", "\n");
   }
 }

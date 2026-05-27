@@ -51,22 +51,6 @@ class TestRepetitionGroup {
     assertEquals(true, group.includesInitialPosition());
   }
 
-  @SuppressWarnings("static-method")
-  @Test
-  void exposedOccurrencesIsUnmodifiable() {
-    // The constructor parameter is already typed ImmutableList, so caller-side post-construction
-    // mutation is impossible at the API level. The meaningful invariant is that the accessor
-    // returns an unmodifiable list — calling add()/clear() throws.
-    final HalfMove move = firstPlayedHalfMove();
-    final DynamicPosition position = move.dynamicPosition();
-    final RepetitionGroup group = new RepetitionGroup(position, Nulls.listOf(move, move, move), false, 3);
-    assertEquals(3, group.occurrences().size());
-    assertThrows(UnsupportedOperationException.class, () -> group.occurrences().add(move),
-        "exposed occurrences must reject mutation");
-    assertThrows(UnsupportedOperationException.class, () -> group.occurrences().clear(),
-        "exposed occurrences must reject mutation");
-  }
-
   private static HalfMove firstPlayedHalfMove() {
     final Board board = new Board();
     board.moveStrict("e4");

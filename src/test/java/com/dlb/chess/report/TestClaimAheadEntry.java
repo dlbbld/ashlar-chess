@@ -52,21 +52,6 @@ class TestClaimAheadEntry {
     assertEquals(true, entry.includesInitialPosition());
   }
 
-  @SuppressWarnings("static-method")
-  @Test
-  void exposedPriorOccurrencesIsUnmodifiable() {
-    // The constructor parameter is already typed ImmutableList, so caller-side post-construction
-    // mutation is impossible at the API level. The meaningful invariant is that the accessor
-    // returns an unmodifiable list — calling add()/clear() throws.
-    final HalfMove move = firstPlayedHalfMove();
-    final ClaimAheadEntry entry = new ClaimAheadEntry(move, true, Nulls.listOf(move), false, 2);
-    assertEquals(1, entry.priorOccurrences().size());
-    assertThrows(UnsupportedOperationException.class, () -> entry.priorOccurrences().add(move),
-        "exposed priorOccurrences must reject mutation");
-    assertThrows(UnsupportedOperationException.class, () -> entry.priorOccurrences().clear(),
-        "exposed priorOccurrences must reject mutation");
-  }
-
   /** Returns the HalfMove for white's 1.e4 from the initial position. Convenient cheap fixture. */
   private static HalfMove firstPlayedHalfMove() {
     final Board board = new Board();

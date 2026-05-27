@@ -13,6 +13,7 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 
 import com.dlb.chess.board.Board;
+import com.dlb.chess.common.Nulls;
 import com.dlb.chess.common.constants.ChessConstants;
 import com.dlb.chess.pgn.PgnUtility;
 import com.dlb.chess.test.pgn.setup.PgnTestCaseCatalog;
@@ -153,7 +154,7 @@ class TestReportPrintoutDerivesFromObjectModel {
     }
     final var text = buffer.toString(StandardCharsets.UTF_8).replace("\r\n", "\n");
     final List<String> lines = new ArrayList<>();
-    Collections.addAll(lines, text.split("\n", -1));
+    Collections.addAll(lines, Nulls.split(text, "\n"));
     return lines;
   }
 
