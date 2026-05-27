@@ -7,14 +7,15 @@ import org.junit.jupiter.api.Test;
 
 import com.dlb.chess.board.Board;
 import com.dlb.chess.board.enums.Side;
+import com.dlb.chess.common.Nulls;
 
 /**
  * Direct unit tests for {@link FiftyMoveClaimAheadReportBuilder} under the missed-opportunity filter with boundary-
- * level collapse. Each {@link FiftyMoveClaimAheadEntry} now represents one clock-99 boundary at which the player had
- * at least one non-zeroing legal move available but the actually-played move broke the sequence (or the game ended at
- * the boundary). The number of alternative legal moves at the boundary does not affect the entry count — multiple
- * candidates collapse into one row per boundary, since listing all 30+ alternatives at a single ply would be noise
- * with no informational gain over a single "opportunity existed" row.
+ * level collapse. Each {@link FiftyMoveClaimAheadEntry} now represents one clock-99 boundary at which the player had at
+ * least one non-zeroing legal move available but the actually-played move broke the sequence (or the game ended at the
+ * boundary). The number of alternative legal moves at the boundary does not affect the entry count — multiple
+ * candidates collapse into one row per boundary, since listing all 30+ alternatives at a single ply would be noise with
+ * no informational gain over a single "opportunity existed" row.
  */
 class TestFiftyMoveClaimAheadReportBuilder {
 
@@ -40,14 +41,12 @@ class TestFiftyMoveClaimAheadReportBuilder {
     }
     board.movesStrict("Ra3", "Kd8", "Ra1");
     assertEquals(99, board.getHalfMoveClock(), "precondition: clock at 99, game ends here");
-    assertTrue(board.getLegalMoves().size() > 1,
-        "precondition: many alternative legal moves exist at the boundary");
+    assertTrue(board.getLegalMoves().size() > 1, "precondition: many alternative legal moves exist at the boundary");
 
     final FiftyMoveClaimAheadReport report = FiftyMoveClaimAheadReportBuilder.build(board);
-    assertEquals(1, report.entries().size(),
-        "boundary collapse: many candidates at one ply produce exactly one entry");
+    assertEquals(1, report.entries().size(), "boundary collapse: many candidates at one ply produce exactly one entry");
 
-    final FiftyMoveClaimAheadEntry entry = report.entries().get(0);
+    final FiftyMoveClaimAheadEntry entry = Nulls.get(report.entries(), 0);
     assertTrue(entry.sequenceStart() instanceof AfterResetStart);
     assertEquals("Ra3", ((AfterResetStart) entry.sequenceStart()).firstNonZeroingMove().san(),
         "sequence anchored at the first non-zeroing ply of the shuffle (Ra3)");
@@ -90,7 +89,7 @@ class TestFiftyMoveClaimAheadReportBuilder {
     assertEquals(1, report.entries().size(),
         "boundary collapse: a single missed-opportunity ply produces one entry regardless of how many alternatives existed");
 
-    final FiftyMoveClaimAheadEntry entry = report.entries().get(0);
+    final FiftyMoveClaimAheadEntry entry = Nulls.get(report.entries(), 0);
     assertTrue(entry.sequenceStart() instanceof InitialFenStart,
         "FEN clock 98 inherited — sequence-start is InitialFenStart");
     assertEquals(98, ((InitialFenStart) entry.sequenceStart()).initialClockValue());
@@ -106,8 +105,7 @@ class TestFiftyMoveClaimAheadReportBuilder {
     // non-zeroing legal moves are available.
     final Board boardNoCont = new Board("7k/8/8/8/8/8/1q6/K7 w - - 100 80");
     final FiftyMoveClaimAheadReport reportNoCont = FiftyMoveClaimAheadReportBuilder.build(boardNoCont);
-    assertEquals(0, reportNoCont.entries().size(),
-        "FEN at clock 100, no continuation: 0 entries (Kxb2 case)");
+    assertEquals(0, reportNoCont.entries().size(), "FEN at clock 100, no continuation: 0 entries (Kxb2 case)");
 
     final Board boardWithCont = new Board("4k3/8/8/8/8/8/8/R3K3 w - - 100 80");
     boardWithCont.movesStrict("Ra3", "Kd8", "Ra1", "Ke8");
@@ -144,14 +142,13 @@ class TestFiftyMoveClaimAheadReportBuilder {
     assertEquals(2, report.entries().size(), "two distinct boundaries — one per sequence");
 
     // First entry: InitialFenStart anchor.
-    assertTrue(report.entries().get(0).sequenceStart() instanceof InitialFenStart,
+    assertTrue(Nulls.get(report.entries(), 0).sequenceStart() instanceof InitialFenStart,
         "chronological first: InitialFenStart-anchored boundary");
     // Second entry: AfterResetStart anchor.
-    assertTrue(report.entries().get(1).sequenceStart() instanceof AfterResetStart,
+    assertTrue(Nulls.get(report.entries(), 1).sequenceStart() instanceof AfterResetStart,
         "chronological second: AfterResetStart-anchored boundary");
     // Sort invariant: ascending half-move count.
-    assertTrue(
-        report.entries().get(0).halfMoveCount() < report.entries().get(1).halfMoveCount(),
+    assertTrue(Nulls.get(report.entries(), 0).halfMoveCount() < Nulls.get(report.entries(), 1).halfMoveCount(),
         "entries sorted by chronological boundary half-move count");
   }
 }

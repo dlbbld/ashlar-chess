@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import org.junit.jupiter.api.Test;
 
 import com.dlb.chess.board.Board;
+import com.dlb.chess.common.Nulls;
 import com.dlb.chess.common.model.DynamicPosition;
 import com.dlb.chess.common.model.HalfMove;
 import com.google.common.collect.ImmutableList;
@@ -70,6 +71,6 @@ class TestRepetitionGroup {
   private static HalfMove firstPlayedHalfMove() {
     final Board board = new Board();
     board.moveStrict("e4");
-    return board.getHalfMoveList().get(0);
+    return Nulls.get(board.getHalfMoveList(), 0);
   }
 }

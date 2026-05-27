@@ -6,15 +6,16 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.Test;
 
 import com.dlb.chess.board.Board;
+import com.dlb.chess.common.Nulls;
 import com.dlb.chess.pgn.PgnUtility;
 import com.dlb.chess.test.pgn.setup.PgnTestCaseCatalog;
 import com.dlb.chess.test.pgntest.enums.PgnTest;
 
 /**
  * Direct unit tests for {@link ThreefoldClaimAheadReportBuilder}: assertions made directly against the
- * {@link ThreefoldClaimAheadReport} record returned by the builder. Pins the claim-ahead semantics (one entry per
- * legal move that would create a threefold position from the parent ply), the hasBeenPlayed asterisk distinction,
- * the includesInitialPosition flag, the totalRepetitionCount math, and the entry ordering.
+ * {@link ThreefoldClaimAheadReport} record returned by the builder. Pins the claim-ahead semantics (one entry per legal
+ * move that would create a threefold position from the parent ply), the hasBeenPlayed asterisk distinction, the
+ * includesInitialPosition flag, the totalRepetitionCount math, and the entry ordering.
  */
 class TestThreefoldClaimAheadReportBuilder {
 
@@ -40,7 +41,7 @@ class TestThreefoldClaimAheadReportBuilder {
     final ThreefoldClaimAheadReport report = ThreefoldClaimAheadReportBuilder.build(board);
     assertEquals(1, report.entries().size(), "exactly one claim-ahead opportunity");
 
-    final ClaimAheadEntry entry = report.entries().get(0);
+    final ClaimAheadEntry entry = Nulls.get(report.entries(), 0);
     assertEquals(false, entry.hasBeenPlayed(), "the claim-ahead move was not played");
     assertEquals(true, entry.includesInitialPosition(), "the claim-ahead position is the initial position");
     assertEquals(3, entry.totalRepetitionCount(), "threefold count after the claim-ahead would be 3");
@@ -84,12 +85,12 @@ class TestThreefoldClaimAheadReportBuilder {
     final ThreefoldClaimAheadReport report = ThreefoldClaimAheadReportBuilder.build(board);
     assertTrue(report.entries().size() >= 1, "fixture stops one ply before threefold; at least one claim-ahead");
 
-    boolean foundNonInitial = false;
+    var foundNonInitial = false;
     for (final ClaimAheadEntry entry : report.entries()) {
       if (!entry.includesInitialPosition()) {
         foundNonInitial = true;
         // Math invariant on the non-initial entry.
-        final int expected = entry.priorOccurrences().size() + 1;
+        final var expected = entry.priorOccurrences().size() + 1;
         assertEquals(expected, entry.totalRepetitionCount(),
             "non-initial: priorOccurrences.size + 1 (for claimAheadMove)");
       }
@@ -110,29 +111,28 @@ class TestThreefoldClaimAheadReportBuilder {
     final Board board = loadCorpusBoard("18_threefold_two_threefolds_beyond.pgn");
 
     final ThreefoldClaimAheadReport report = ThreefoldClaimAheadReportBuilder.build(board);
-    assertTrue(report.entries().size() >= 2,
-        "fixture exercises multiple claim-aheads across plies");
+    assertTrue(report.entries().size() >= 2, "fixture exercises multiple claim-aheads across plies");
 
     for (var i = 1; i < report.entries().size(); i++) {
-      final int index = i;
-      final ClaimAheadEntry prev = report.entries().get(i - 1);
-      final ClaimAheadEntry curr = report.entries().get(i);
+      final var index = i;
+      final ClaimAheadEntry prev = Nulls.get(report.entries(), i - 1);
+      final ClaimAheadEntry curr = Nulls.get(report.entries(), i);
       assertTrue(compareLexKey(prev, curr) <= 0,
           () -> "entries must be sorted lexicographically by displayed-ply sequence; violation at index " + index);
     }
   }
 
   /**
-   * Helper: builds the displayed-ply sort key for an entry (matching {@code ReportLineOrder}'s comparator) and
-   * compares lex-order. {@code -1} prefix for initial-position-inclusive entries; ties broken by sequence length
-   * (shorter first, since a prefix sorts before its extension).
+   * Helper: builds the displayed-ply sort key for an entry (matching {@code ReportLineOrder}'s comparator) and compares
+   * lex-order. {@code -1} prefix for initial-position-inclusive entries; ties broken by sequence length (shorter first,
+   * since a prefix sorts before its extension).
    */
   private static int compareLexKey(ClaimAheadEntry a, ClaimAheadEntry b) {
     final java.util.List<Integer> keyA = sortKey(a);
     final java.util.List<Integer> keyB = sortKey(b);
-    final int n = Math.min(keyA.size(), keyB.size());
+    final var n = Math.min(keyA.size(), keyB.size());
     for (var i = 0; i < n; i++) {
-      final int cmp = Integer.compare(keyA.get(i), keyB.get(i));
+      final var cmp = Integer.compare(keyA.get(i), keyB.get(i));
       if (cmp != 0) {
         return cmp;
       }

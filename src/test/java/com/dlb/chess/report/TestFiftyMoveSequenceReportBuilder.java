@@ -8,6 +8,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.Test;
 
 import com.dlb.chess.board.Board;
+import com.dlb.chess.common.Nulls;
 
 /**
  * Direct unit tests for {@link FiftyMoveSequenceReportBuilder}: assertions against the {@link FiftyMoveSequenceReport}
@@ -53,11 +54,12 @@ class TestFiftyMoveSequenceReportBuilder {
     final FiftyMoveSequenceReport report = FiftyMoveSequenceReportBuilder.build(board);
     assertEquals(1, report.sequences().size(), "exactly one no-progress sequence in this game");
 
-    final FiftyMoveSequence sequence = report.sequences().get(0);
+    final FiftyMoveSequence sequence = Nulls.get(report.sequences(), 0);
     assertTrue(sequence.start() instanceof AfterResetStart,
         "pure-played: sequence starts at the first played non-zeroing move, no initial-FEN inheritance");
-    final AfterResetStart afterResetStart = (AfterResetStart) sequence.start();
-    assertEquals("Nf3", afterResetStart.firstNonZeroingMove().san(), "first non-zeroing move is Nf3 (white's first ply)");
+    final var afterResetStart = (AfterResetStart) sequence.start();
+    assertEquals("Nf3", afterResetStart.firstNonZeroingMove().san(),
+        "first non-zeroing move is Nf3 (white's first ply)");
     assertEquals(1, afterResetStart.firstNonZeroingMove().halfMoveClock(),
         "by construction the start move's halfmove clock is 1");
     assertNotNull(sequence.endPly(), "sequence has played continuation — endPly must be present");
@@ -84,9 +86,8 @@ class TestFiftyMoveSequenceReportBuilder {
     final FiftyMoveSequenceReport report = FiftyMoveSequenceReportBuilder.build(board);
     assertEquals(1, report.sequences().size(), "one sequence — initial FEN continued into play");
 
-    final FiftyMoveSequence sequence = report.sequences().get(0);
-    assertTrue(sequence.start() instanceof InitialFenStart,
-        "initial-FEN-continued: sequence inherits the FEN's clock");
+    final FiftyMoveSequence sequence = Nulls.get(report.sequences(), 0);
+    assertTrue(sequence.start() instanceof InitialFenStart, "initial-FEN-continued: sequence inherits the FEN's clock");
     assertEquals(50, ((InitialFenStart) sequence.start()).initialClockValue(),
         "InitialFenStart carries the FEN's clock value verbatim");
     assertNotNull(sequence.endPly(), "sequence has played continuation — endPly must be present");
@@ -110,11 +111,10 @@ class TestFiftyMoveSequenceReportBuilder {
     assertEquals(1, report.sequences().size(),
         "even with no continuation, an at-threshold initial FEN must surface as a sequence");
 
-    final FiftyMoveSequence sequence = report.sequences().get(0);
+    final FiftyMoveSequence sequence = Nulls.get(report.sequences(), 0);
     assertTrue(sequence.start() instanceof InitialFenStart);
     assertEquals(100, ((InitialFenStart) sequence.start()).initialClockValue());
-    assertNull(sequence.endPly(),
-        "endPly is null when threshold is met by FEN alone with no non-zeroing continuation");
+    assertNull(sequence.endPly(), "endPly is null when threshold is met by FEN alone with no non-zeroing continuation");
     assertEquals(100, sequence.finalClock(), "finalClock derives from start when endPly is null");
   }
 
@@ -131,7 +131,7 @@ class TestFiftyMoveSequenceReportBuilder {
     final FiftyMoveSequenceReport report = FiftyMoveSequenceReportBuilder.build(board);
     assertEquals(1, report.sequences().size(), "still one continuous no-progress sequence");
 
-    final FiftyMoveSequence sequence = report.sequences().get(0);
+    final FiftyMoveSequence sequence = Nulls.get(report.sequences(), 0);
     assertTrue(sequence.start() instanceof InitialFenStart);
     assertEquals(100, ((InitialFenStart) sequence.start()).initialClockValue());
     assertNotNull(sequence.endPly(), "played plies extend the sequence — endPly must be present");
@@ -167,10 +167,10 @@ class TestFiftyMoveSequenceReportBuilder {
     assertEquals(1, report.sequences().size(),
         "the inherited-FEN sequence ended below threshold (not reported); the fresh after-reset sequence reaches threshold");
 
-    final FiftyMoveSequence sequence = report.sequences().get(0);
+    final FiftyMoveSequence sequence = Nulls.get(report.sequences(), 0);
     assertTrue(sequence.start() instanceof AfterResetStart,
         "mid-game start: AfterResetStart anchored at the first non-zeroing ply after the pawn push");
-    final AfterResetStart afterResetStart = (AfterResetStart) sequence.start();
+    final var afterResetStart = (AfterResetStart) sequence.start();
     assertEquals("Kd8", afterResetStart.firstNonZeroingMove().san(),
         "first non-zeroing ply after the pawn push is Kd8");
     assertEquals(100, sequence.finalClock());

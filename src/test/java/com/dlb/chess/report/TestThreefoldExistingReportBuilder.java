@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.Test;
 
 import com.dlb.chess.board.Board;
+import com.dlb.chess.common.Nulls;
 import com.dlb.chess.common.constants.ChessConstants;
 import com.dlb.chess.pgn.PgnUtility;
 import com.dlb.chess.test.pgn.setup.PgnTestCaseCatalog;
@@ -43,7 +44,7 @@ class TestThreefoldExistingReportBuilder {
     final ThreefoldExistingReport report = build(board);
     assertEquals(1, report.groups().size(), "exactly one repeated position");
 
-    final RepetitionGroup group = report.groups().get(0);
+    final RepetitionGroup group = Nulls.get(report.groups(), 0);
     assertEquals(true, group.includesInitialPosition(), "the repeated position is the initial position");
     assertEquals(3, group.totalRepetitionCount(), "threefold has been reached");
     assertEquals(2, group.occurrences().size(),
@@ -58,8 +59,8 @@ class TestThreefoldExistingReportBuilder {
     // (after-Nf3, after-Nf6, after-Ng1) will also have reached the threefold threshold by then and
     // appear as their own groups; the assertion targets only the initial-position group.
     final Board board = new Board();
-    board.movesStrict("Nf3", "Nf6", "Ng1", "Ng8", "Nf3", "Nf6", "Ng1", "Ng8",
-                      "Nf3", "Nf6", "Ng1", "Ng8", "Nf3", "Nf6", "Ng1", "Ng8");
+    board.movesStrict("Nf3", "Nf6", "Ng1", "Ng8", "Nf3", "Nf6", "Ng1", "Ng8", "Nf3", "Nf6", "Ng1", "Ng8", "Nf3", "Nf6",
+        "Ng1", "Ng8");
 
     final ThreefoldExistingReport report = build(board);
 
@@ -87,8 +88,11 @@ class TestThreefoldExistingReportBuilder {
 
     // Outer sort: groups ordered by the half-move count of each group's first occurrence.
     for (var i = 1; i < report.groups().size(); i++) {
-      final int prev = report.groups().get(i - 1).occurrences().get(0).halfMoveCount();
-      final int curr = report.groups().get(i).occurrences().get(0).halfMoveCount();
+      final RepetitionGroup prevGroup = Nulls.get(report.groups(), i - 1);
+      final var prev = Nulls.get(prevGroup.occurrences(), 0).halfMoveCount();
+
+      final RepetitionGroup currGroup = Nulls.get(report.groups(), i);
+      final var curr = Nulls.get(currGroup.occurrences(), 0).halfMoveCount();
       assertTrue(prev <= curr, "groups must be sorted by first-occurrence half-move count");
     }
 
@@ -96,7 +100,7 @@ class TestThreefoldExistingReportBuilder {
     // includesInitialPosition. The compact constructor enforces this, but pin it here too as a
     // shape-check on the builder's output.
     for (final RepetitionGroup group : report.groups()) {
-      final int expected = group.occurrences().size() + (group.includesInitialPosition() ? 1 : 0);
+      final var expected = group.occurrences().size() + (group.includesInitialPosition() ? 1 : 0);
       assertEquals(expected, group.totalRepetitionCount(), "totalRepetitionCount must match occurrences math");
       assertTrue(group.totalRepetitionCount() >= ChessConstants.THREEFOLD_REPETITION_RULE_THRESHOLD,
           "every group in the existing-threefold report must have reached the threefold threshold");

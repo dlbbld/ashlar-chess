@@ -10,6 +10,7 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 
 import com.dlb.chess.board.Board;
+import com.dlb.chess.common.Nulls;
 import com.dlb.chess.common.constants.EnumConstants;
 import com.dlb.chess.common.model.ClaimRights;
 import com.dlb.chess.common.model.ClaimableMove;
@@ -18,9 +19,9 @@ import com.dlb.chess.fen.constants.FenConstants;
 
 /**
  * Tests for {@link Board#calculateFiftyMoveRuleClaimRights()} and
- * {@link Board#calculateThreefoldRepetitionRuleClaimRights()}: the move-list variants of the FIDE 9.2 / 9.3 claim
- * APIs. Each {@link ClaimRights} pairs an existence boolean ({@code canClaim}) with the list of legal moves the side
- * to move could announce as a claim — defensively copied and ordered to match {@link Board#getLegalMoves()}.
+ * {@link Board#calculateThreefoldRepetitionRuleClaimRights()}: the move-list variants of the FIDE 9.2 / 9.3 claim APIs.
+ * Each {@link ClaimRights} pairs an existence boolean ({@code canClaim}) with the list of legal moves the side to move
+ * could announce as a claim — defensively copied and ordered to match {@link Board#getLegalMoves()}.
  *
  * <p>
  * The per-move predicates {@code canClaimFiftyMoveRuleFor} / {@code canClaimThreefoldRepetitionRuleFor} are the single
@@ -49,7 +50,7 @@ class TestBoardClaimRights implements EnumConstants {
     final ClaimRights rights = board.calculateFiftyMoveRuleClaimRights();
     assertTrue(rights.canClaim(), "at clock 99 every non-zeroing legal move is a 50-move claim candidate");
 
-    boolean foundRa2 = false;
+    var foundRa2 = false;
     for (final ClaimableMove claim : rights.claimableMoves()) {
       if (claim.moveSpecification().equals(new MoveSpecification(A1, A2))) {
         foundRa2 = true;
@@ -100,7 +101,7 @@ class TestBoardClaimRights implements EnumConstants {
     final ClaimRights rights = board.calculateFiftyMoveRuleClaimRights();
     assertTrue(rights.canClaim(), "mate-in-one at clock 99 remains a valid 50-move claim under strict FIDE 9.3");
 
-    boolean foundNf7 = false;
+    var foundNf7 = false;
     for (final ClaimableMove claim : rights.claimableMoves()) {
       if (claim.moveSpecification().equals(new MoveSpecification(H6, F7))) {
         foundNf7 = true;
@@ -129,7 +130,7 @@ class TestBoardClaimRights implements EnumConstants {
     assertTrue(rights.canClaim());
     assertEquals(1, rights.claimableMoves().size(), "only Ng8 creates the initial position's 3rd occurrence");
 
-    final ClaimableMove only = rights.claimableMoves().get(0);
+    final ClaimableMove only = Nulls.get(rights.claimableMoves(), 0);
     assertEquals(new MoveSpecification(F6, G8), only.moveSpecification());
     assertEquals("Ng8", only.san());
   }
@@ -183,8 +184,8 @@ class TestBoardClaimRights implements EnumConstants {
   void fiftyMoveSanOverloadMatchesMoveSpecificationOverload() {
     final Board board = new Board("7k/8/8/8/8/8/4K3/R7 w - - 99 51");
 
-    assertEquals(board.canClaimFiftyMoveRuleFor(new MoveSpecification(A1, A2)),
-        board.canClaimFiftyMoveRuleFor("Ra2"), "SAN overload must agree with MoveSpecification overload");
+    assertEquals(board.canClaimFiftyMoveRuleFor(new MoveSpecification(A1, A2)), board.canClaimFiftyMoveRuleFor("Ra2"),
+        "SAN overload must agree with MoveSpecification overload");
     assertTrue(board.canClaimFiftyMoveRuleFor("Ra2"));
 
     assertFalse(board.canClaimFiftyMoveRuleFor(""), "empty SAN returns false");
@@ -205,7 +206,7 @@ class TestBoardClaimRights implements EnumConstants {
     assertTrue(moves.size() > 0, "precondition: at least one claimable move");
 
     try {
-      moves.add(moves.get(0));
+      moves.add(Nulls.get(moves, 0));
       throw new AssertionError("expected UnsupportedOperationException — claimableMoves must be immutable");
     } catch (@SuppressWarnings("unused") final UnsupportedOperationException expected) {
       // OK
@@ -244,10 +245,9 @@ class TestBoardClaimRights implements EnumConstants {
 
     var lastFoundIndex = -1;
     for (final ClaimableMove claim : rights.claimableMoves()) {
-      final int idx = legalOrder.indexOf(claim.moveSpecification());
-      assertTrue(idx > lastFoundIndex,
-          "claimable move " + claim.san() + " (legal-move index " + idx
-              + ") must appear after the previously seen claimable (index " + lastFoundIndex + ")");
+      final var idx = legalOrder.indexOf(claim.moveSpecification());
+      assertTrue(idx > lastFoundIndex, "claimable move " + claim.san() + " (legal-move index " + idx
+          + ") must appear after the previously seen claimable (index " + lastFoundIndex + ")");
       lastFoundIndex = idx;
     }
   }
@@ -274,8 +274,7 @@ class TestBoardClaimRights implements EnumConstants {
 
     assertEquals(1, rights.claimableMoves().size(),
         "post-construction source mutations must not leak into the record's claimableMoves");
-    assertEquals(original, rights.claimableMoves().get(0),
-        "the originally-present entry must remain unchanged");
+    assertEquals(original, rights.claimableMoves().get(0), "the originally-present entry must remain unchanged");
   }
 
   @SuppressWarnings("static-method")
@@ -301,7 +300,7 @@ class TestBoardClaimRights implements EnumConstants {
     final Board board = new Board();
     board.movesStrict("Nf3", "Nf6", "Ng1", "Ng8", "Nf3", "Nf6", "Ng1");
 
-    final int halfMoveCountBefore = board.getPerformedHalfMoveCount();
+    final var halfMoveCountBefore = board.getPerformedHalfMoveCount();
     final String fenBefore = board.getFen();
 
     board.calculateFiftyMoveRuleClaimRights();

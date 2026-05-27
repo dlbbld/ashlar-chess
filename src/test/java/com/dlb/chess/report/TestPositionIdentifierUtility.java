@@ -4,12 +4,14 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
 import org.junit.jupiter.api.Test;
 
 import com.dlb.chess.board.Board;
+import com.dlb.chess.common.Nulls;
 import com.dlb.chess.common.constants.ChessConstants;
 import com.dlb.chess.common.model.DynamicPosition;
 import com.dlb.chess.common.model.HalfMove;
@@ -147,7 +149,7 @@ class TestPositionIdentifierUtility {
     final Map<DynamicPosition, String> map = PositionIdentifierUtility.calculatePositionIdentifierMap(claimAhead,
         existing);
 
-    final String initialLabel = map.get(board.getInitialDynamicPosition());
+    final String initialLabel = Nulls.get(map, board.getInitialDynamicPosition());
     assertTrue(initialLabel != null, "initial position must be present in the label map");
     assertEquals("A", initialLabel, "first distinct position seen in the claim-ahead walk gets label 'A'");
   }
@@ -161,8 +163,8 @@ class TestPositionIdentifierUtility {
     // (the natural overlap between claim-ahead and existing in this real-game fixture defeats a
     // direct ordering assertion).
     final Board board = new Board();
-    board.movesStrict("Nf3", "Nf6", "Ng1", "Ng8", "Nf3", "Nf6", "Ng1", "Ng8",
-                      "Nf3", "Nf6", "Ng1", "Ng8", "Nf3", "Nf6", "Ng1", "Ng8");
+    board.movesStrict("Nf3", "Nf6", "Ng1", "Ng8", "Nf3", "Nf6", "Ng1", "Ng8", "Nf3", "Nf6", "Ng1", "Ng8", "Nf3", "Nf6",
+        "Ng1", "Ng8");
 
     final ThreefoldClaimAheadReport claimAhead = ThreefoldClaimAheadReportBuilder.build(board);
     final ThreefoldExistingReport existing = ThreefoldExistingReportBuilder.build(board.getInitialDynamicPosition(),
@@ -173,9 +175,9 @@ class TestPositionIdentifierUtility {
     assertTrue(map.size() >= 2, "fivefold-of-initial shuffle drives multiple distinct repeated positions");
 
     final List<String> labels = new ArrayList<>(map.values());
-    labels.sort(null);
+    Collections.sort(labels);
     for (var i = 0; i < labels.size(); i++) {
-      final String expected = String.valueOf((char) ('A' + i));
+      final var expected = String.valueOf((char) ('A' + i));
       assertEquals(expected, labels.get(i),
           "labels must form a contiguous prefix A, B, C, ... with no gaps and no repeats");
     }
@@ -194,9 +196,9 @@ class TestPositionIdentifierUtility {
     // assign A to positionInExisting and would fail this test.)
     final Board board = new Board();
     board.moveStrict("e4");
-    final HalfMove afterE4 = board.getHalfMoveList().get(0);
+    final HalfMove afterE4 = Nulls.get(board.getHalfMoveList(), 0);
     board.moveStrict("e5");
-    final HalfMove afterE5 = board.getHalfMoveList().get(1);
+    final HalfMove afterE5 = Nulls.get(board.getHalfMoveList(), 1);
 
     final DynamicPosition positionAfterE4 = afterE4.dynamicPosition();
     final DynamicPosition positionAfterE5 = afterE5.dynamicPosition();

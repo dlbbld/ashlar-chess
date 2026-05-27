@@ -557,31 +557,17 @@ public class Board {
   }
 
   /**
-   * SAN convenience overload of {@link #canClaimThreefoldRepetitionRuleFor(MoveSpecification)}: parses {@code san} as
-   * strict canonical SAN against the current position and delegates. Returns {@code false} (rather than throwing) when
-   * {@code san} is malformed, ambiguous, or does not match a legal move on the current position.
+   * SAN convenience overload of {@link #canClaimFiftyMoveRuleFor(MoveSpecification)}: parses {@code san} as strict
+   * canonical SAN against the current position and delegates. Returns {@code false} (rather than throwing) when
+   * {@code san} is malformed, ambiguous, or does not match a legal move on the current position — so callers can probe
+   * arbitrary strings without exception handling.
    */
-  public boolean canClaimThreefoldRepetitionRuleFor(String san) {
+  public boolean canClaimFiftyMoveRuleFor(String san) {
     final @Nullable MoveSpecification parsed = parseSanQuietly(san);
     if (parsed == null) {
       return false;
     }
-    return canClaimThreefoldRepetitionRuleFor(parsed);
-  }
-
-  public boolean canClaimThreefoldRepetitionRuleWithOwnMove() {
-    for (final LegalMove legalMove : getLegalMoves()) {
-      // we must not check moves creating a position that never occurred so far
-      if (!BasicChessUtility.calculateIsResetHalfMoveClock(legalMove)) {
-        this.move(legalMove.moveSpecification());
-        if (isThreefoldRepetition()) {
-          this.unmove();
-          return true;
-        }
-        this.unmove();
-      }
-    }
-    return false;
+    return canClaimFiftyMoveRuleFor(parsed);
   }
 
   /**
@@ -614,17 +600,31 @@ public class Board {
   }
 
   /**
-   * SAN convenience overload of {@link #canClaimFiftyMoveRuleFor(MoveSpecification)}: parses {@code san} as strict
-   * canonical SAN against the current position and delegates. Returns {@code false} (rather than throwing) when
-   * {@code san} is malformed, ambiguous, or does not match a legal move on the current position — so callers can probe
-   * arbitrary strings without exception handling.
+   * SAN convenience overload of {@link #canClaimThreefoldRepetitionRuleFor(MoveSpecification)}: parses {@code san} as
+   * strict canonical SAN against the current position and delegates. Returns {@code false} (rather than throwing) when
+   * {@code san} is malformed, ambiguous, or does not match a legal move on the current position.
    */
-  public boolean canClaimFiftyMoveRuleFor(String san) {
+  public boolean canClaimThreefoldRepetitionRuleFor(String san) {
     final @Nullable MoveSpecification parsed = parseSanQuietly(san);
     if (parsed == null) {
       return false;
     }
-    return canClaimFiftyMoveRuleFor(parsed);
+    return canClaimThreefoldRepetitionRuleFor(parsed);
+  }
+
+  public boolean canClaimThreefoldRepetitionRuleWithOwnMove() {
+    for (final LegalMove legalMove : getLegalMoves()) {
+      // we must not check moves creating a position that never occurred so far
+      if (!BasicChessUtility.calculateIsResetHalfMoveClock(legalMove)) {
+        this.move(legalMove.moveSpecification());
+        if (isThreefoldRepetition()) {
+          this.unmove();
+          return true;
+        }
+        this.unmove();
+      }
+    }
+    return false;
   }
 
   private @Nullable MoveSpecification parseSanQuietly(String san) {
