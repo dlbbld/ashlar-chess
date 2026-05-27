@@ -100,10 +100,13 @@ class TestThreefoldClaimAheadReportBuilder {
 
   @SuppressWarnings("static-method")
   @Test
-  void entriesAreOrderedByClaimAheadHalfMoveCount() {
+  void entriesAreOrderedLexicographicallyByDisplayedSequence() {
     // 18_threefold_two_threefolds_beyond.pgn — long enough to expose claim-aheads at multiple
-    // plies. The builder sorts entries by (claimAheadMove.halfMoveCount(), legal-move-iteration
-    // order at that ply). Pin the outer monotonicity here.
+    // plies. The builder sorts entries lexicographically on the displayed half-move-count sequence
+    // (priorOccurrences ++ claimAheadMove, prefixed by virtual -1 when includesInitialPosition).
+    // Pin that lex order here: within a group of entries sharing an earlier-ply prefix, the
+    // shorter one (lower totalRepetitionCount) sorts first, and across groups, the entry whose
+    // first displayed ply is earlier sorts first.
     final Board board = loadCorpusBoard("18_threefold_two_threefolds_beyond.pgn");
 
     final ThreefoldClaimAheadReport report = ThreefoldClaimAheadReportBuilder.build(board);
@@ -111,10 +114,42 @@ class TestThreefoldClaimAheadReportBuilder {
         "fixture exercises multiple claim-aheads across plies");
 
     for (var i = 1; i < report.entries().size(); i++) {
-      final int prev = report.entries().get(i - 1).claimAheadMove().halfMoveCount();
-      final int curr = report.entries().get(i).claimAheadMove().halfMoveCount();
-      assertTrue(prev <= curr, "entries must be sorted by claimAheadMove.halfMoveCount()");
+      final int index = i;
+      final ClaimAheadEntry prev = report.entries().get(i - 1);
+      final ClaimAheadEntry curr = report.entries().get(i);
+      assertTrue(compareLexKey(prev, curr) <= 0,
+          () -> "entries must be sorted lexicographically by displayed-ply sequence; violation at index " + index);
     }
+  }
+
+  /**
+   * Helper: builds the displayed-ply sort key for an entry (matching {@code ReportLineOrder}'s comparator) and
+   * compares lex-order. {@code -1} prefix for initial-position-inclusive entries; ties broken by sequence length
+   * (shorter first, since a prefix sorts before its extension).
+   */
+  private static int compareLexKey(ClaimAheadEntry a, ClaimAheadEntry b) {
+    final java.util.List<Integer> keyA = sortKey(a);
+    final java.util.List<Integer> keyB = sortKey(b);
+    final int n = Math.min(keyA.size(), keyB.size());
+    for (var i = 0; i < n; i++) {
+      final int cmp = Integer.compare(keyA.get(i), keyB.get(i));
+      if (cmp != 0) {
+        return cmp;
+      }
+    }
+    return Integer.compare(keyA.size(), keyB.size());
+  }
+
+  private static java.util.List<Integer> sortKey(ClaimAheadEntry e) {
+    final java.util.List<Integer> key = new java.util.ArrayList<>();
+    if (e.includesInitialPosition()) {
+      key.add(-1);
+    }
+    for (final com.dlb.chess.common.model.HalfMove hm : e.priorOccurrences()) {
+      key.add(hm.halfMoveCount());
+    }
+    key.add(e.claimAheadMove().halfMoveCount());
+    return key;
   }
 
   private static Board loadCorpusBoard(String pgnName) {

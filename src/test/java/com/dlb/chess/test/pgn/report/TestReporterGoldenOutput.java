@@ -78,6 +78,17 @@ class TestReporterGoldenOutput {
     compareOrRegenerate(actual, "05_threefold_castling.txt");
   }
 
+  @SuppressWarnings("static-method")
+  @Test
+  void fivefoldCorrectPotapovAdly2018() {
+    // The only corpus fixture that produces multiple claim-ahead entries for the same dynamic
+    // position (length 3, 4, 5 of the A-group plus separate B / C groups). Locks in the line
+    // sort order so a future regression that ranks lines by claim-ahead-ply (the old shape) or
+    // by some other key would break a golden, not just slip silently into the printed report.
+    final String actual = capturePgnFile("fivefold_correct_potapov_adly_2018.pgn");
+    compareOrRegenerate(actual, "06_fivefold_correct_potapov_adly_2018.txt");
+  }
+
   private static String capturePgnFile(String pgnName) {
     final PgnTest pgnTest = PgnTestCaseCatalog.findPgnTestPgnNotListed(pgnName);
     return captureStdout(() -> Reporter.printReport(pgnTest.getFolderPath(), pgnName));

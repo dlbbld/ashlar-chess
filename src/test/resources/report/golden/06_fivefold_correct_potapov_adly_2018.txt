@@ -1,0 +1,16 @@
+Valid threefold claims ahead (asterisk denotes also the last ahead move has been played):
+43. Qf5+ 45. Qf5+ 47. Qf5+ (A* - 3)
+43. Qf5+ 45. Qf5+ 47. Qf5+ 49. Qf5+ (A* - 4)
+43. Qf5+ 45. Qf5+ 47. Qf5+ 49. Qf5+ 51. Qf5+ (A* - 5)
+43... Kh8 47... Kh8 49... Kh8 (B - 3)
+43... Kh8 47... Kh8 51... Kh8 (B - 3)
+45... Kg8 49... Kg8 51... Kg8 (C - 3)
+
+Threefolds and beyond:
+43. Qf5+ 45. Qf5+ 47. Qf5+ 49. Qf5+ 51. Qf5+ (A - 5)
+
+Valid fifty-move claims ahead (asterisk denotes also the ahead move has been played):
+None
+
+Fifty moves without capture and pawn move - sequences:
+None
