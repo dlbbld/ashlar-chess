@@ -85,7 +85,19 @@ The automatic rows are listed in the precedence order `calculateOutcome` applies
 
 Single-side insufficient material (one side lacks mating material but the other does not) is a diagnostic state of the position, not a termination, and is not surfaced by `Outcome`. Callers query `Board.isInsufficientMaterial(Side)` directly when they need it.
 
-For the claimable rules, the library exposes both the **on-board** predicate (current position satisfies the rule) and the **with-move** predicate (some legal move would satisfy it), and produces analysis output that names which moves *would* satisfy the claim — surfacing missed claim opportunities that other libraries do not. Position equality follows the FIDE definition: same piece placement, same side to move, same castling rights, same en-passant possibilities.
+For the claimable rules, the library exposes three predicate shapes per rule:
+
+1. **On-board** (`Board.isFiftyMove()`, `Board.isThreefoldRepetition()`) — the current position satisfies the rule.
+2. **With-move existence** (`Board.canClaimFiftyMoveRuleWithOwnMove()`, `Board.canClaimThreefoldRepetitionRuleWithOwnMove()`) — *some* legal move would satisfy the rule if played.
+3. **Per-move** (`Board.canClaimFiftyMoveRuleFor(MoveSpecification)`, `Board.canClaimThreefoldRepetitionRuleFor(MoveSpecification)`, composed `Board.canClaimDrawFor(MoveSpecification)`) — *this specific announced move* would satisfy the rule.
+
+The per-move shape is the FIDE-faithful API. FIDE 9.2 and 9.3 frame the claim as a per-move act: the player announces the move they intend to play and claims the draw on that announcement; the move is not played beyond the announcement. The on-board and with-move existence shapes are convenience derivations — yes/no answers about the current position or its legal-move set, without requiring the caller to name a candidate.
+
+clean-chess inherited the on-board and existence shapes from the python-chess reference oracle, which exposes those two but not a per-move predicate (`board.can_claim_fifty_moves()` takes no move parameter). The per-move shape was added in clean-chess release 16.0.0 to close the gap. python-chess's collapsed shape was also the cause of the candidate-move-is-mate edge that clean-chess took the strict FIDE 9.3 reading on in 15.0.0; the per-move predicate makes the corner case visible at the API surface rather than buried inside an existence check.
+
+The library produces analysis output that names which moves *would* satisfy the claim — surfacing missed claim opportunities that other libraries do not. The claim-ahead report's per-move entries are computed via the per-move predicate, so the report and the API share a single source of truth.
+
+Position equality follows the FIDE definition: same piece placement, same side to move, same castling rights, same en-passant possibilities.
 
 ### 3.2 Unwinnability — Chess Unwinnability Analyzer (CHA)
 

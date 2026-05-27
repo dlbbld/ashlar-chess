@@ -132,25 +132,25 @@ takes no move parameter). The collapsed shape is what enabled the mate-edge bug 
 (`canClaimFiftyMoveRuleWithOwnMove`); a per-move predicate would have surfaced the question naturally during design,
 not as an arbiter's catch years later.
 
-- [ ] Add `Board.canClaimFiftyMoveRuleFor(MoveSpecification move)` — true iff `move` is legal, non-pawn, non-capture,
+- [x] Add `Board.canClaimFiftyMoveRuleFor(MoveSpecification move)` — true iff `move` is legal, non-pawn, non-capture,
       and `halfMoveClock >= 99`. Validates the FIDE 9.3 act of *this specific announced move* completing the 50.
-- [ ] Add `Board.canClaimThreefoldRepetitionRuleFor(MoveSpecification move)` — true iff `move` is legal and the
+- [x] Add `Board.canClaimThreefoldRepetitionRuleFor(MoveSpecification move)` — true iff `move` is legal and the
       resulting position is a threefold occurrence. Validates the FIDE 9.2 act for *this specific announced move*.
-- [ ] Add `Board.canClaimDrawFor(MoveSpecification move)` — composed convenience (`canClaimFiftyMoveRuleFor(move) ||
+- [x] Add `Board.canClaimDrawFor(MoveSpecification move)` — composed convenience (`canClaimFiftyMoveRuleFor(move) ||
       canClaimThreefoldRepetitionRuleFor(move)`).
-- [ ] Keep the existing existence predicates (`canClaimFiftyMoveRule`, `canClaimFiftyMoveRuleWithOwnMove`,
+- [x] Keep the existing existence predicates (`canClaimFiftyMoveRule`, `canClaimFiftyMoveRuleWithOwnMove`,
       `canClaimThreefoldRepetitionRule`, `canClaimThreefoldRepetitionRuleWithOwnMove`, `canClaimDraw`) as convenience
       shorthand. Their behavior at the existence level stays unchanged.
-- [ ] Tests: pin the mate-in-one edge per-move — `canClaimFiftyMoveRuleFor(Nf7)` returns true on the FEN already used
+- [x] Tests: pin the mate-in-one edge per-move — `canClaimFiftyMoveRuleFor(Nf7)` returns true on the FEN already used
       in `TestBoardClaimWithOwnMove#canClaimFiftyMoveRuleWithOwnMoveTrueEvenWhenOnlyNonZeroingMoveIsMate`, even though
       Nf7 is itself mate. Symmetric edge for stalemate.
-- [ ] Tests: pin that a candidate move whose post-position is *not* the claimed condition returns false (e.g. a pawn
+- [x] Tests: pin that a candidate move whose post-position is *not* the claimed condition returns false (e.g. a pawn
       move resets the clock and is rejected by the 50-move per-move predicate even if other non-zeroing moves exist).
-- [ ] Wire the per-move predicates into the threefold claim-ahead report object (Phase 1) so the report's per-move
+- [x] Wire the per-move predicates into the threefold claim-ahead report object (Phase 1) so the report's per-move
       entries are computed from a single source of truth.
-- [ ] `specification.md` §3.1: update the "claimable rules" paragraph to mention the per-move predicate as the
+- [x] `specification.md` §3.1: update the "claimable rules" paragraph to mention the per-move predicate as the
       FIDE-faithful shape and the existence predicate as the convenience.
-- [ ] Reference the python-chess upstream issue (filed during 15.0.0 work) so a future contributor can see the
+- [x] Reference the python-chess upstream issue (filed during 15.0.0 work) so a future contributor can see the
       cross-library context — both libraries had the same gap; clean-chess closes it here.
 
 ### Phase 6 — Decommission `HalfMove`
