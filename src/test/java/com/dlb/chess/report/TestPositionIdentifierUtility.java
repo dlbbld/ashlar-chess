@@ -1,11 +1,17 @@
 package com.dlb.chess.report;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.junit.jupiter.api.Test;
+
+import com.dlb.chess.board.Board;
+import com.dlb.chess.common.constants.ChessConstants;
+import com.dlb.chess.common.model.DynamicPosition;
 
 class TestPositionIdentifierUtility {
 
@@ -100,5 +106,78 @@ class TestPositionIdentifierUtility {
 
   private static void checkIdentifer(String expected, int number) {
     assertEquals(expected, PositionIdentifierUtility.calculateIdentifier(number));
+  }
+
+  // -------------------------------------------------------------------------------------------
+  // calculatePositionIdentifierMap(claimAhead, existing) — added in Phase 1 when the print path
+  // moved off raw lists onto the report records. Tests assert the label-assignment contract:
+  // claim-ahead positions are visited first in their stored order; existing-only positions get
+  // appended labels; the same position appearing in both shares one label.
+  // -------------------------------------------------------------------------------------------
+
+  @SuppressWarnings("static-method")
+  @Test
+  void emptyReportsYieldEmptyMap() {
+    final Board board = new Board();
+    board.movesStrict("e4", "e5");
+    final ThreefoldClaimAheadReport claimAhead = ThreefoldClaimAheadReportBuilder.build(board);
+    final ThreefoldExistingReport existing = ThreefoldExistingReportBuilder.build(board.getInitialDynamicPosition(),
+        board.getHalfMoveList(), ChessConstants.THREEFOLD_REPETITION_RULE_THRESHOLD);
+
+    final Map<DynamicPosition, String> map = PositionIdentifierUtility.calculatePositionIdentifierMap(claimAhead,
+        existing);
+    assertEquals(0, map.size(), "no claim-aheads and no existing threefolds -> empty map");
+  }
+
+  @SuppressWarnings("static-method")
+  @Test
+  void claimAheadOverlapsExistingShareSingleLabel() {
+    // 8-ply knight shuffle: claim-ahead has the initial-position entry (Ng8 played at ply 8 with
+    // hasBeenPlayed == true); existing has the initial-position group. Same position in both
+    // reports -> the map must hold a single entry for that position, not two.
+    final Board board = new Board();
+    board.movesStrict("Nf3", "Nf6", "Ng1", "Ng8", "Nf3", "Nf6", "Ng1", "Ng8");
+
+    final ThreefoldClaimAheadReport claimAhead = ThreefoldClaimAheadReportBuilder.build(board);
+    final ThreefoldExistingReport existing = ThreefoldExistingReportBuilder.build(board.getInitialDynamicPosition(),
+        board.getHalfMoveList(), ChessConstants.THREEFOLD_REPETITION_RULE_THRESHOLD);
+
+    final Map<DynamicPosition, String> map = PositionIdentifierUtility.calculatePositionIdentifierMap(claimAhead,
+        existing);
+
+    final String initialLabel = map.get(board.getInitialDynamicPosition());
+    assertTrue(initialLabel != null, "initial position must be present in the label map");
+    assertEquals("A", initialLabel, "first distinct position seen in the claim-ahead walk gets label 'A'");
+  }
+
+  @SuppressWarnings("static-method")
+  @Test
+  void labelsAreAssignedABCInClaimAheadFirstOrder() {
+    // Long knight shuffle drives the report to multiple distinct repeated positions across both
+    // claim-ahead and existing reports. The label-assignment contract: visit claim-ahead entries
+    // first in their stored order, assigning A, B, C... to distinct positions; then walk existing
+    // and append labels for any positions only-seen-there. Assertion shape: labels form a contiguous
+    // {A..Z} prefix and each appears exactly once.
+    final Board board = new Board();
+    board.movesStrict("Nf3", "Nf6", "Ng1", "Ng8", "Nf3", "Nf6", "Ng1", "Ng8",
+                      "Nf3", "Nf6", "Ng1", "Ng8", "Nf3", "Nf6", "Ng1", "Ng8");
+
+    final ThreefoldClaimAheadReport claimAhead = ThreefoldClaimAheadReportBuilder.build(board);
+    final ThreefoldExistingReport existing = ThreefoldExistingReportBuilder.build(board.getInitialDynamicPosition(),
+        board.getHalfMoveList(), ChessConstants.THREEFOLD_REPETITION_RULE_THRESHOLD);
+
+    final Map<DynamicPosition, String> map = PositionIdentifierUtility.calculatePositionIdentifierMap(claimAhead,
+        existing);
+    assertTrue(map.size() >= 2, "fivefold-of-initial shuffle drives multiple distinct repeated positions");
+
+    // All labels are uppercase single letters (still inside the {A..Z} 26-position range for this
+    // fixture); each appears exactly once.
+    final List<String> labels = new ArrayList<>(map.values());
+    labels.sort(null);
+    for (var i = 0; i < labels.size(); i++) {
+      final String expected = String.valueOf((char) ('A' + i));
+      assertEquals(expected, labels.get(i),
+          "labels must form a contiguous prefix A, B, C, ... with no gaps and no repeats");
+    }
   }
 }
