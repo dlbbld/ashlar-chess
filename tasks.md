@@ -122,7 +122,38 @@ Reserved for manual implementation. The goal is to get comfortable with the repo
 - [ ] Add direct tests for the 50-move report object.
 - [ ] Add printout tests derived from the object-level expected facts.
 
-### Phase 5 — Decommission `HalfMove`
+### Phase 5 — Per-move claim API (FIDE 9.2 / 9.3 fidelity)
+
+Currently both `canClaimFiftyMoveRule()` / `canClaimThreefoldRepetitionRule()` collapse to position-wide booleans: true
+if *any* legal move would satisfy the claim. FIDE 9.2 (threefold) and 9.3 (50-move) actually frame the claim as a
+per-move act — the player announces the specific move they intend to play and claims the draw on that announcement.
+clean-chess inherited the collapsed shape from python-chess, which has the same gap (`board.can_claim_fifty_moves()`
+takes no move parameter). The collapsed shape is what enabled the mate-edge bug fixed in 15.0.0
+(`canClaimFiftyMoveRuleWithOwnMove`); a per-move predicate would have surfaced the question naturally during design,
+not as an arbiter's catch years later.
+
+- [ ] Add `Board.canClaimFiftyMoveRuleFor(MoveSpecification move)` — true iff `move` is legal, non-pawn, non-capture,
+      and `halfMoveClock >= 99`. Validates the FIDE 9.3 act of *this specific announced move* completing the 50.
+- [ ] Add `Board.canClaimThreefoldRepetitionRuleFor(MoveSpecification move)` — true iff `move` is legal and the
+      resulting position is a threefold occurrence. Validates the FIDE 9.2 act for *this specific announced move*.
+- [ ] Add `Board.canClaimDrawFor(MoveSpecification move)` — composed convenience (`canClaimFiftyMoveRuleFor(move) ||
+      canClaimThreefoldRepetitionRuleFor(move)`).
+- [ ] Keep the existing existence predicates (`canClaimFiftyMoveRule`, `canClaimFiftyMoveRuleWithOwnMove`,
+      `canClaimThreefoldRepetitionRule`, `canClaimThreefoldRepetitionRuleWithOwnMove`, `canClaimDraw`) as convenience
+      shorthand. Their behavior at the existence level stays unchanged.
+- [ ] Tests: pin the mate-in-one edge per-move — `canClaimFiftyMoveRuleFor(Nf7)` returns true on the FEN already used
+      in `TestBoardClaimWithOwnMove#canClaimFiftyMoveRuleWithOwnMoveTrueEvenWhenOnlyNonZeroingMoveIsMate`, even though
+      Nf7 is itself mate. Symmetric edge for stalemate.
+- [ ] Tests: pin that a candidate move whose post-position is *not* the claimed condition returns false (e.g. a pawn
+      move resets the clock and is rejected by the 50-move per-move predicate even if other non-zeroing moves exist).
+- [ ] Wire the per-move predicates into the threefold claim-ahead report object (Phase 1) so the report's per-move
+      entries are computed from a single source of truth.
+- [ ] `specification.md` §3.1: update the "claimable rules" paragraph to mention the per-move predicate as the
+      FIDE-faithful shape and the existence predicate as the convenience.
+- [ ] Reference the python-chess upstream issue (filed during 15.0.0 work) so a future contributor can see the
+      cross-library context — both libraries had the same gap; clean-chess closes it here.
+
+### Phase 6 — Decommission `HalfMove`
 
 The short-term rule is: do not break the working repetition analysis casually. The release should first remove
 `HalfMove` from `Board` as stored mutable state, then decide whether it can disappear completely.
@@ -134,7 +165,7 @@ The short-term rule is: do not break the working repetition analysis casually. T
 - [ ] Delete `HalfMove`, `HalfMoveUtility`, and related comparators once no longer needed.
 - [ ] If full deletion is not safe in this release, leave a precise follow-up note explaining the remaining dependency.
 
-### Phase 6 — Release hygiene
+### Phase 7 — Release hygiene
 
 - [ ] Keep the release scoped to report/repetition/no-progress cleanup.
 - [ ] Do not mix in the insufficient-material play-beyond release unless explicitly re-scoped.
