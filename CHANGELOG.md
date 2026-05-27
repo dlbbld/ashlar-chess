@@ -4,6 +4,36 @@ Releases from 3.3 onward. Earlier history is in git tags only.
 
 ## [Unreleased]
 
+## [16.0.0] - 2026-05-27
+
+The threefold and 50-move report becomes a first-class object model with print classes as a derived view. Per-move FIDE 9.2 / 9.3 claim API. New `GameEndFacts` snapshot pairs the raw condition booleans with the precedence-projected `Outcome`. `Outcome` is now never null. `HalfMove` is no longer stored on `Board`.
+
+### Notable
+
+- Object-level report model for threefold and 50-move: `ThreefoldClaimAheadReport`, `ThreefoldExistingReport`, `FiftyMoveClaimAheadReport`, `FiftyMoveSequenceReport` plus their builders. `Reporter.printReport` derives its sections from these objects.
+- Per-move claim API on `Board`: `canClaimFiftyMoveRuleFor(MoveSpecification|String)`, `canClaimThreefoldRepetitionRuleFor(MoveSpecification|String)`, `canClaimDrawFor(MoveSpecification)`. Throw on invalid input. SAN overloads use the lenient parser.
+- New records `ClaimableMove` and `ClaimRights`; `Board.calculateFiftyMoveRuleClaimRights()` and `Board.calculateThreefoldRepetitionRuleClaimRights()` return the list of claimable moves paired with canonical SAN.
+- New record `GameEndFacts`; `Board.calculateGameEndFacts()` returns the full snapshot, `Board.isGameEnd()` is the convenience boolean. Condition predicates report raw facts independent of precedence; `Outcome` is the projection.
+- `Termination.NONE` added; `Outcome.ONGOING` singleton; `BasicChessUtility.calculateOutcome` returns non-null. `Outcome.winner` is `Side` (with `Side.NONE` for non-checkmate) instead of `@Nullable Side`.
+- 50-move report output: per-ply claim-ahead boundary entries with placeholder rendering, missed-opportunity filter, sequences section mirrors the threefold "and beyond" section.
+- `Board.halfMoveList` removed from stored state. `getHalfMoveList()` is now a derived `O(plies)` view; new `getLastHalfMove()` for `O(1)` access. `HalfMove` the type is retained as a compatibility row.
+
+### Behavioral
+
+- `Board.isFiftyMove()` / `isSeventyFiveMove()`: report the raw clock-threshold condition. Previously returned `false` at game-end positions where a higher-precedence termination also held; now return `true`. `Outcome` precedence is unchanged.
+- Per-move claim predicates (new in 16.0.0) throw `IllegalArgumentException` for a `MoveSpecification` not in the legal-moves set and `LenientSanParserValidationException` for a SAN the lenient parser cannot resolve.
+- python-chess oracle harness skips the `isFiftyMove` / `isSeventyFiveMove` / `isFivefoldRepetition` / `canClaim*Rule` comparisons at positions where checkmate, stalemate, or insufficient material holds — the suppressed-predicate divergence is documented and contained.
+- Threefold claim-ahead lines sorted lexicographically by displayed half-move-count sequence; entries for the same dynamic position cluster together by length.
+
+### Breaking
+
+- `Termination` enum gains `NONE`. Exhaustive `switch` over `Termination` in downstream code needs a `NONE` arm.
+- `Outcome.winner`: `@Nullable Side` → `Side`. Construction sites passing `null` for non-checkmate outcomes must use `Side.NONE`.
+- `BasicChessUtility.calculateOutcome(Board)`: return type changes from `@Nullable Outcome` to `Outcome`. Ongoing positions return `Outcome.ONGOING` (`termination == Termination.NONE`); the `outcome == null` branch is no longer reachable.
+- `Board.isFiftyMove()` / `isSeventyFiveMove()` behaviour change at game-end positions (see Behavioral above).
+- Per-move claim predicates throw on invalid input rather than silently returning `false`.
+- `Reporter.printReport()` output format reshaped: the old single-line "Fifty moves without capture and pawn move: Yes/No" is replaced by two sections ("Valid fifty-move claims ahead", "Fifty moves and beyond"); threefold line order changed; section titles updated. Consumers parsing the printed output need to adapt.
+
 ## [15.0.0] - 2026-05-26
 
 The **termination-is-information release**. The move pipeline no longer consults any game-end predicate: checkmate, stalemate, mutual insufficient material, fivefold repetition, the 75-move rule, and analyzer-driven dead positions are all surfaced as queryable artifacts the caller polls to decide whether to adjudicate. At checkmate and stalemate the natural barrier is the empty legal-move set (a move attempt fails through ordinary legality); at the other terminations legal moves still exist and the pipeline accepts them. The `GameStatus` enum is replaced by a structured `Outcome` record carrying `Termination` and the winner — python-chess parity at the API boundary, the cross-validation oracle that's been the project's reference since 12.2.0. The motivation: clean-chess corpus and tooling already needed to replay historical PGN that continues a move or two past an automatic termination, the python-chess oracle returns terminations as information rather than enforcement, and the previous in-pipeline gate forced ugly workarounds in both the oracle harness and the lenient parser. Dropping the gate eliminates the impedance mismatch.

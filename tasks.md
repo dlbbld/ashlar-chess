@@ -20,31 +20,31 @@ library behavior. The printout should become a view over analysis objects, not t
 
 ### Phase 1 — Object-level repetition report model
 
-- [ ] Introduce a report/analysis object for threefold-existing-behind / threefold-and-beyond repetitions.
-- [ ] Introduce a report/analysis object for threefold claim-ahead opportunities.
-- [ ] Preserve the current printed report shape by deriving it from those objects.
-- [ ] Move repetition-line, initial-position inclusion, played-vs-hypothetical, and repetition-count decisions out of the print classes.
-- [ ] Keep print classes small: format already-calculated facts only.
+- [x] Introduce a report/analysis object for threefold-existing-behind / threefold-and-beyond repetitions.
+- [x] Introduce a report/analysis object for threefold claim-ahead opportunities.
+- [x] Preserve the current printed report shape by deriving it from those objects.
+- [x] Move repetition-line, initial-position inclusion, played-vs-hypothetical, and repetition-count decisions out of the print classes.
+- [x] Keep print classes small: format already-calculated facts only.
 
 ### Phase 2 — Test the report objects directly
 
-- [ ] Add direct unit tests for existing threefold-and-beyond analysis.
-- [ ] Add direct unit tests for threefold claim-ahead analysis.
-- [ ] Add regression coverage for the initial-position repetition case that was previously missing from the printout.
-- [ ] Add tests that compare the report printout against the object model, so formatting cannot silently diverge from the analysis.
+- [x] Add direct unit tests for existing threefold-and-beyond analysis.
+- [x] Add direct unit tests for threefold claim-ahead analysis.
+- [x] Add regression coverage for the initial-position repetition case that was previously missing from the printout.
+- [x] Add tests that compare the report printout against the object model, so formatting cannot silently diverge from the analysis.
 
 ### Phase 3 — Add from-initial-placement and FEN-start coverage
 
 Create one focused test folder for positions that start counting from move one. The folder covers both the initial piece
 placement and games started from an explicit FEN.
 
-- [ ] Initial piece placement, White to move on move 1: run into threefold, fivefold, 50-move, and 75-move conditions from move one.
-- [ ] Initial piece placement, Black to move on move 1: same coverage, with special attention to fullmove numbering.
-- [ ] Non-initial FEN position, White to move on move 1: run into threefold, fivefold, 50-move, and 75-move conditions from move one.
-- [ ] Non-initial FEN position, Black to move on move 1: same coverage, with special attention to fullmove numbering.
-- [ ] For each fixture, assert the public query methods detect the condition.
-- [ ] For each fixture, assert the object-level report model contains the expected facts.
-- [ ] For each fixture, assert the printed report is derived correctly from the object-level facts.
+- [x] Initial piece placement, White to move on move 1: run into threefold, fivefold, 50-move, and 75-move conditions from move one.
+- [x] Initial piece placement, Black to move on move 1: same coverage, with special attention to fullmove numbering.
+- [x] Non-initial FEN position, White to move on move 1: run into threefold, fivefold, 50-move, and 75-move conditions from move one.
+- [x] Non-initial FEN position, Black to move on move 1: same coverage, with special attention to fullmove numbering.
+- [x] For each fixture, assert the public query methods detect the condition.
+- [x] For each fixture, assert the object-level report model contains the expected facts.
+- [x] For each fixture, assert the printed report is derived correctly from the object-level facts.
 
 ### Phase 4 — Finish the 50-move report output
 
@@ -100,22 +100,30 @@ not as an arbiter's catch years later.
 
 ### Phase 6 — Decommission `HalfMove`
 
-The short-term rule is: do not break the working repetition analysis casually. The release should first remove
-`HalfMove` from `Board` as stored mutable state, then decide whether it can disappear completely.
+Partial. Storage decommission shipped; type retained as a derived compatibility row pending the report-layer rewrite.
 
-- [ ] Remove stored `halfMoveList` from `Board`; derive temporary `HalfMove` rows from existing board history where needed.
-- [ ] Keep repetition/report behavior unchanged during that first removal.
-- [ ] Analyze whether the repetition/report objects can use narrower records instead of `HalfMove`.
-- [ ] If possible, replace `HalfMove` entirely with purpose-specific repetition/report rows.
-- [ ] Delete `HalfMove`, `HalfMoveUtility`, and related comparators once no longer needed.
-- [ ] If full deletion is not safe in this release, leave a precise follow-up note explaining the remaining dependency.
+- [x] Remove stored `halfMoveList` from `Board`; derive temporary `HalfMove` rows from existing board history where needed.
+- [x] Keep repetition/report behavior unchanged during that first removal.
+- [ ] Analyze whether the repetition/report objects can use narrower records instead of `HalfMove`. _(deferred to next release)_
+- [ ] If possible, replace `HalfMove` entirely with purpose-specific repetition/report rows. _(deferred)_
+- [ ] Delete `HalfMove`, `HalfMoveUtility`, and related comparators once no longer needed. _(deferred)_
+- [x] Follow-up note: `HalfMove` survives as the row type consumed by the report builders and print classes
+      (`com.dlb.chess.report.*`) and by `RepetitionUtility.calculateRepetitionListList`. Replacing it requires designing
+      narrower report-local row types (a `RepetitionRow` and a `NoProgressRow`, roughly) and migrating the builders.
+      `Board.getHalfMoveList()` is kept as a derived `O(plies)` view; `Board.getLastHalfMove()` provides `O(1)` access
+      for the hot path in the claim-ahead replay builders.
 
 ### Phase 7 — Release hygiene
 
-- [ ] Keep the release scoped to report/repetition/no-progress cleanup.
-- [ ] Do not mix in the insufficient-material play-beyond release unless explicitly re-scoped.
-- [ ] Update `README.md`, `specification.md`, and `CHANGELOG.md` only for behavior or documented workflows that actually changed.
-- [ ] Run focused report/repetition tests first, then the full default profile before release.
+- [x] Keep the release scoped to report/repetition/no-progress cleanup. _(scope deliberately expanded to include the
+      per-move claim API, the `GameEndFacts` / `ClaimRights` rich snapshots, the facts-vs-Outcome predicate refactor,
+      and the `Termination.NONE` / non-null `Outcome` cleanup; these grew out of the report work and were grouped here
+      rather than deferred.)_
+- [x] Do not mix in the insufficient-material play-beyond release unless explicitly re-scoped.
+- [x] Update `README.md`, `specification.md`, and `CHANGELOG.md` only for behavior or documented workflows that actually
+      changed. _(`README.md` + `pom.xml` version bumped to 16.0.0; `CHANGELOG.md` entry written; `specification.md`
+      §3.1 touched during Phase 5 for the per-move claim shape.)_
+- [x] Run focused report/repetition tests first, then the full default profile before release.
 
 ---
 
