@@ -2,10 +2,6 @@ package com.dlb.chess.report;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
@@ -16,7 +12,7 @@ import com.google.common.collect.ImmutableList;
 /**
  * Direct unit tests for the {@link ClaimAheadEntry} record. Covers the compact-constructor invariant
  * ({@code totalRepetitionCount} must equal {@code priorOccurrences.size() + 1 + (includesInitialPosition ? 1 : 0)})
- * and the defensive copy of {@code priorOccurrences}.
+ * and the exposed-list immutability contract.
  */
 class TestClaimAheadEntry {
 
@@ -59,17 +55,17 @@ class TestClaimAheadEntry {
 
   @SuppressWarnings("static-method")
   @Test
-  void priorOccurrencesAreDefensivelyCopied() {
-    // Pass a mutable ArrayList, mutate it post-construction, verify the record's list is unaffected.
+  void exposedPriorOccurrencesIsUnmodifiable() {
+    // The constructor parameter is already typed ImmutableList, so caller-side post-construction
+    // mutation is impossible at the API level. The meaningful invariant is that the accessor
+    // returns an unmodifiable list — calling add()/clear() throws.
     final HalfMove move = firstPlayedHalfMove();
-    final List<HalfMove> mutable = new ArrayList<>();
-    mutable.add(move);
-    final ClaimAheadEntry entry = new ClaimAheadEntry(move, true, ImmutableList.copyOf(mutable), false, 2);
-    mutable.add(move);  // post-construction mutation of the source
-
-    assertEquals(1, entry.priorOccurrences().size(), "record list must reflect snapshot at construction time");
-    assertTrue(entry.priorOccurrences() instanceof ImmutableList,
-        "record list must be an ImmutableList so callers cannot mutate it");
+    final ClaimAheadEntry entry = new ClaimAheadEntry(move, true, ImmutableList.of(move), false, 2);
+    assertEquals(1, entry.priorOccurrences().size());
+    assertThrows(UnsupportedOperationException.class, () -> entry.priorOccurrences().add(move),
+        "exposed priorOccurrences must reject mutation");
+    assertThrows(UnsupportedOperationException.class, () -> entry.priorOccurrences().clear(),
+        "exposed priorOccurrences must reject mutation");
   }
 
   /** Returns the HalfMove for white's 1.e4 from the initial position. Convenient cheap fixture. */

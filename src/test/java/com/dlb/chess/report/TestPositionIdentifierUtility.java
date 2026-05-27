@@ -12,6 +12,8 @@ import org.junit.jupiter.api.Test;
 import com.dlb.chess.board.Board;
 import com.dlb.chess.common.constants.ChessConstants;
 import com.dlb.chess.common.model.DynamicPosition;
+import com.dlb.chess.common.model.HalfMove;
+import com.google.common.collect.ImmutableList;
 
 class TestPositionIdentifierUtility {
 
@@ -152,12 +154,12 @@ class TestPositionIdentifierUtility {
 
   @SuppressWarnings("static-method")
   @Test
-  void labelsAreAssignedABCInClaimAheadFirstOrder() {
+  void labelsFromRealReportsFormContiguousAlphabeticPrefix() {
     // Long knight shuffle drives the report to multiple distinct repeated positions across both
-    // claim-ahead and existing reports. The label-assignment contract: visit claim-ahead entries
-    // first in their stored order, assigning A, B, C... to distinct positions; then walk existing
-    // and append labels for any positions only-seen-there. Assertion shape: labels form a contiguous
-    // {A..Z} prefix and each appears exactly once.
+    // claim-ahead and existing reports. Sanity check: labels form a contiguous {A..Z} prefix with
+    // no gaps and no repeats. Does NOT pin claim-ahead-first ordering — see the next test for that
+    // (the natural overlap between claim-ahead and existing in this real-game fixture defeats a
+    // direct ordering assertion).
     final Board board = new Board();
     board.movesStrict("Nf3", "Nf6", "Ng1", "Ng8", "Nf3", "Nf6", "Ng1", "Ng8",
                       "Nf3", "Nf6", "Ng1", "Ng8", "Nf3", "Nf6", "Ng1", "Ng8");
@@ -170,8 +172,6 @@ class TestPositionIdentifierUtility {
         existing);
     assertTrue(map.size() >= 2, "fivefold-of-initial shuffle drives multiple distinct repeated positions");
 
-    // All labels are uppercase single letters (still inside the {A..Z} 26-position range for this
-    // fixture); each appears exactly once.
     final List<String> labels = new ArrayList<>(map.values());
     labels.sort(null);
     for (var i = 0; i < labels.size(); i++) {
@@ -179,5 +179,45 @@ class TestPositionIdentifierUtility {
       assertEquals(expected, labels.get(i),
           "labels must form a contiguous prefix A, B, C, ... with no gaps and no repeats");
     }
+  }
+
+  @SuppressWarnings("static-method")
+  @Test
+  void claimAheadPositionGetsLabelABeforeExistingOnlyPosition() {
+    // Pins the documented contract verbatim: "Claim-ahead entries are visited first in their stored
+    // order, then any positions appearing only in the existing-repetition groups are appended."
+    //
+    // Real games can't isolate this — the position that reaches threefold (existing) was also a
+    // claim-ahead at the prior ply, so the two reports overlap. Synthetic reports with distinct
+    // positions give the precise ordering assertion: positionInClaimAhead gets "A", positionInExisting
+    // gets "B" — and crucially NOT the reverse. (An implementation that walked existing first would
+    // assign A to positionInExisting and would fail this test.)
+    final Board board = new Board();
+    board.moveStrict("e4");
+    final HalfMove afterE4 = board.getHalfMoveList().get(0);
+    board.moveStrict("e5");
+    final HalfMove afterE5 = board.getHalfMoveList().get(1);
+
+    final DynamicPosition positionAfterE4 = afterE4.dynamicPosition();
+    final DynamicPosition positionAfterE5 = afterE5.dynamicPosition();
+    assertTrue(!positionAfterE4.equals(positionAfterE5), "fixture sanity: the two positions must differ");
+
+    // Synthetic claim-ahead report with one entry on positionAfterE4. The record's invariant only
+    // checks the count math; the chess semantics of the entry don't matter for the label-assignment
+    // contract under test.
+    final ClaimAheadEntry syntheticEntry = new ClaimAheadEntry(afterE4, false, ImmutableList.of(afterE4, afterE4),
+        false, 3);
+    final ThreefoldClaimAheadReport claimAhead = new ThreefoldClaimAheadReport(ImmutableList.of(syntheticEntry));
+
+    // Synthetic existing report with one group on positionAfterE5 — a different position.
+    final RepetitionGroup syntheticGroup = new RepetitionGroup(positionAfterE5,
+        ImmutableList.of(afterE5, afterE5, afterE5), false, 3);
+    final ThreefoldExistingReport existing = new ThreefoldExistingReport(ImmutableList.of(syntheticGroup));
+
+    final Map<DynamicPosition, String> map = PositionIdentifierUtility.calculatePositionIdentifierMap(claimAhead,
+        existing);
+
+    assertEquals("A", map.get(positionAfterE4), "claim-ahead position must be labelled first (A)");
+    assertEquals("B", map.get(positionAfterE5), "existing-only position must be labelled second (B)");
   }
 }
