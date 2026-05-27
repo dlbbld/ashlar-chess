@@ -115,12 +115,22 @@ placement and games started from an explicit FEN.
 
 ### Phase 4 — Finish the 50-move report output
 
-Reserved for manual implementation. The goal is to get comfortable with the report code by finishing the no-progress /
-50-move output on top of the object-level analysis shape, not inside presentation logic.
+Finished the no-progress / 50-move output on top of the object-level analysis shape, mirroring the threefold reports
+shipped in Phase 1. The 50-move shape required a two-flag distinction the threefold report does not have:
+`includesInitialFen` (the sequence starts in the initial FEN's recorded ply count) and `thresholdReachedDuringInitialFen`
+(the initial FEN's halfmove clock is already at the 50-move threshold — the "claim now or never" special case where the
+report must surface a sequence even though no play happened).
 
-- [ ] Finish the 50-move output.
-- [ ] Add direct tests for the 50-move report object.
-- [ ] Add printout tests derived from the object-level expected facts.
+- [x] Finish the 50-move output. `FiftyMoveClaimAheadReport` (per-move claims ahead, mirrors
+      `ThreefoldClaimAheadReport`) and `FiftyMoveSequenceReport` (the no-progress sequences the old single yes/no line
+      summarised, now itemised) are wired through `Reporter` as two new sections replacing the old yes/no line.
+- [x] Add direct tests for the 50-move report object. `TestFiftyMoveClaimAheadReportBuilder` (5 tests including the
+      "initial FEN already at threshold, only legal move is a capture" special case) and
+      `TestFiftyMoveSequenceReportBuilder` (5 tests covering pure-played, initial-FEN-continued, and
+      initial-FEN-at-threshold sequence shapes).
+- [x] Add printout tests derived from the object-level expected facts. `TestReportPrintoutDerivesFromObjectModel`
+      extended to assert correspondence between both new sections and their underlying report objects;
+      `TestReporterGoldenOutput` goldens regenerated for the new four-section layout.
 
 ### Phase 5 — Per-move claim API (FIDE 9.2 / 9.3 fidelity)
 

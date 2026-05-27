@@ -32,7 +32,8 @@ class TestReportPrintoutDerivesFromObjectModel {
 
   private static final String CLAIM_AHEAD_HEADER_PREFIX = "Valid threefold claims ahead";
   private static final String EXISTING_HEADER_PREFIX = "Threefolds and beyond";
-  private static final String FIFTY_HEADER_PREFIX = "Fifty moves without capture";
+  private static final String FIFTY_CLAIM_AHEAD_HEADER_PREFIX = "Valid fifty-move claims ahead";
+  private static final String FIFTY_SEQUENCE_HEADER_PREFIX = "Fifty moves without capture";
   private static final String NONE_SENTINEL = "None";
 
   @SuppressWarnings("static-method")
@@ -67,19 +68,25 @@ class TestReportPrintoutDerivesFromObjectModel {
   // --- helpers ---
 
   /**
-   * For the given board, builds the two report records and the captured Reporter output, then asserts every structural
+   * For the given board, builds the four report records and the captured Reporter output, then asserts every structural
    * invariant the print layer is expected to preserve.
    */
   private static void checkCorrespondence(Board board) {
     final ThreefoldClaimAheadReport claimAhead = ThreefoldClaimAheadReportBuilder.build(board);
     final ThreefoldExistingReport existing = ThreefoldExistingReportBuilder.build(board.getInitialDynamicPosition(),
         board.getHalfMoveList(), ChessConstants.THREEFOLD_REPETITION_RULE_THRESHOLD);
+    final FiftyMoveClaimAheadReport fiftyClaimAhead = FiftyMoveClaimAheadReportBuilder.build(board);
+    final FiftyMoveSequenceReport fiftySequence = FiftyMoveSequenceReportBuilder.build(board);
 
     final List<String> outputLines = captureReporter(board);
 
     final List<String> claimAheadSection = extractSection(outputLines, CLAIM_AHEAD_HEADER_PREFIX,
         EXISTING_HEADER_PREFIX);
-    final List<String> existingSection = extractSection(outputLines, EXISTING_HEADER_PREFIX, FIFTY_HEADER_PREFIX);
+    final List<String> existingSection = extractSection(outputLines, EXISTING_HEADER_PREFIX,
+        FIFTY_CLAIM_AHEAD_HEADER_PREFIX);
+    final List<String> fiftyClaimAheadSection = extractSection(outputLines, FIFTY_CLAIM_AHEAD_HEADER_PREFIX,
+        FIFTY_SEQUENCE_HEADER_PREFIX);
+    final List<String> fiftySequenceSection = extractSectionToEnd(outputLines, FIFTY_SEQUENCE_HEADER_PREFIX);
 
     // --- claim-ahead section ---
     if (claimAhead.entries().isEmpty()) {
@@ -101,6 +108,31 @@ class TestReportPrintoutDerivesFromObjectModel {
     } else {
       assertEquals(existing.groups().size(), existingSection.size(),
           "existing section must have one rendered line per RepetitionGroup");
+    }
+
+    // --- fifty-move claim-ahead section ---
+    if (fiftyClaimAhead.entries().isEmpty()) {
+      assertEquals(1, fiftyClaimAheadSection.size(),
+          "empty fifty-move claim-ahead must render exactly one 'None' line");
+      assertEquals(NONE_SENTINEL, fiftyClaimAheadSection.get(0));
+    } else {
+      assertEquals(fiftyClaimAhead.entries().size(), fiftyClaimAheadSection.size(),
+          "fifty-move claim-ahead section must have one rendered line per FiftyMoveClaimAheadEntry");
+      final long asterisks = fiftyClaimAheadSection.stream().filter(line -> line.contains("*")).count();
+      final long expectedAsterisks = fiftyClaimAhead.entries().stream().filter(FiftyMoveClaimAheadEntry::hasBeenPlayed)
+          .count();
+      assertEquals(expectedAsterisks, asterisks,
+          "asterisk count in printed fifty-move claim-ahead lines must equal count of hasBeenPlayed entries");
+    }
+
+    // --- fifty-move sequence section ---
+    if (fiftySequence.sequences().isEmpty()) {
+      assertEquals(1, fiftySequenceSection.size(),
+          "empty fifty-move sequence section must render exactly one 'None' line");
+      assertEquals(NONE_SENTINEL, fiftySequenceSection.get(0));
+    } else {
+      assertEquals(fiftySequence.sequences().size(), fiftySequenceSection.size(),
+          "fifty-move sequence section must have one rendered line per FiftyMoveSequence");
     }
   }
 
@@ -141,6 +173,30 @@ class TestReportPrintoutDerivesFromObjectModel {
         if (line.startsWith(nextSectionHeaderPrefix)) {
           break;
         }
+        if (line.isEmpty()) {
+          continue;
+        }
+        contents.add(line);
+      }
+    }
+    assertTrue(inSection, "section header '" + sectionHeaderPrefix + "' must appear in the captured output");
+    return contents;
+  }
+
+  /**
+   * Like {@link #extractSection} but for the final section — runs to the end of input rather than to a successor
+   * header.
+   */
+  private static List<String> extractSectionToEnd(List<String> lines, String sectionHeaderPrefix) {
+    var inSection = false;
+    final List<String> contents = new ArrayList<>();
+    for (final String raw : lines) {
+      final String line = raw.trim();
+      if (!inSection && line.startsWith(sectionHeaderPrefix)) {
+        inSection = true;
+        continue;
+      }
+      if (inSection) {
         if (line.isEmpty()) {
           continue;
         }

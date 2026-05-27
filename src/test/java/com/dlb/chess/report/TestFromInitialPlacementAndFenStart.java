@@ -69,7 +69,7 @@ class TestFromInitialPlacementAndFenStart {
     final Board board = new Board();
     playKnightShuffleAsWhite(board, 2); // 8 plies → initial position 3rd occurrence
     assertThreefoldRepetition(board);
-    assertReporterOutput(board, /* threefoldSectionNonEmpty */ true, /* expectedFiftyMoveLine */ "Yes");
+    assertReporterOutput(board, /* threefoldSectionNonEmpty */ true, /* expectedFiftyMoveSequenceReached */ false);
   }
 
   @SuppressWarnings("static-method")
@@ -78,7 +78,7 @@ class TestFromInitialPlacementAndFenStart {
     final Board board = new Board();
     playKnightShuffleAsWhite(board, 4); // 16 plies → fivefold of initial position
     assertFivefoldRepetition(board);
-    assertReporterOutput(board, /* threefoldSectionNonEmpty */ true, /* expectedFiftyMoveLine */ "Yes");
+    assertReporterOutput(board, /* threefoldSectionNonEmpty */ true, /* expectedFiftyMoveSequenceReached */ false);
   }
 
   @SuppressWarnings("static-method")
@@ -87,7 +87,7 @@ class TestFromInitialPlacementAndFenStart {
     final Board board = new Board();
     playKnightShuffleAsWhite(board, 25); // 100 plies → halfmove clock 100
     assertFiftyMoveOrClaimable(board);
-    assertReporterOutput(board, /* threefoldSectionNonEmpty */ true, /* expectedFiftyMoveLine */ "No");
+    assertReporterOutput(board, /* threefoldSectionNonEmpty */ true, /* expectedFiftyMoveSequenceReached */ true);
   }
 
   @SuppressWarnings("static-method")
@@ -96,7 +96,7 @@ class TestFromInitialPlacementAndFenStart {
     final Board board = new Board();
     playKnightShuffleAsWhite(board, 38); // 152 plies → halfmove clock 152 (past 150 threshold)
     assertSeventyFiveMove(board);
-    assertReporterOutput(board, /* threefoldSectionNonEmpty */ true, /* expectedFiftyMoveLine */ "No");
+    assertReporterOutput(board, /* threefoldSectionNonEmpty */ true, /* expectedFiftyMoveSequenceReached */ true);
   }
 
   // ===========================================================================================
@@ -113,7 +113,7 @@ class TestFromInitialPlacementAndFenStart {
     // counter is at 5 (incremented after each Black move).
     assertEquals(5, board.getFullMoveNumber(),
         "Black-to-move-at-fullmove-1: counter increments per Black move; 4 Black moves → fullmove 5");
-    assertReporterOutput(board, /* threefoldSectionNonEmpty */ true, /* expectedFiftyMoveLine */ "Yes");
+    assertReporterOutput(board, /* threefoldSectionNonEmpty */ true, /* expectedFiftyMoveSequenceReached */ false);
   }
 
   @SuppressWarnings("static-method")
@@ -124,7 +124,7 @@ class TestFromInitialPlacementAndFenStart {
     assertFivefoldRepetition(board);
     assertEquals(9, board.getFullMoveNumber(),
         "Black-to-move-at-fullmove-1: 8 Black moves → fullmove 9");
-    assertReporterOutput(board, /* threefoldSectionNonEmpty */ true, /* expectedFiftyMoveLine */ "Yes");
+    assertReporterOutput(board, /* threefoldSectionNonEmpty */ true, /* expectedFiftyMoveSequenceReached */ false);
   }
 
   @SuppressWarnings("static-method")
@@ -133,7 +133,7 @@ class TestFromInitialPlacementAndFenStart {
     final Board board = new Board(FEN_INITIAL_BLACK_TO_MOVE);
     playKnightShuffleAsBlack(board, 25); // 100 plies
     assertFiftyMoveOrClaimable(board);
-    assertReporterOutput(board, /* threefoldSectionNonEmpty */ true, /* expectedFiftyMoveLine */ "No");
+    assertReporterOutput(board, /* threefoldSectionNonEmpty */ true, /* expectedFiftyMoveSequenceReached */ true);
   }
 
   @SuppressWarnings("static-method")
@@ -142,7 +142,7 @@ class TestFromInitialPlacementAndFenStart {
     final Board board = new Board(FEN_INITIAL_BLACK_TO_MOVE);
     playKnightShuffleAsBlack(board, 38); // 152 plies
     assertSeventyFiveMove(board);
-    assertReporterOutput(board, /* threefoldSectionNonEmpty */ true, /* expectedFiftyMoveLine */ "No");
+    assertReporterOutput(board, /* threefoldSectionNonEmpty */ true, /* expectedFiftyMoveSequenceReached */ true);
   }
 
   // ===========================================================================================
@@ -155,7 +155,7 @@ class TestFromInitialPlacementAndFenStart {
     final Board board = new Board(FEN_KRR_K_WHITE_TO_MOVE);
     playRookShuffleAsWhite(board, 2);
     assertThreefoldRepetition(board);
-    assertReporterOutput(board, /* threefoldSectionNonEmpty */ true, /* expectedFiftyMoveLine */ "Yes");
+    assertReporterOutput(board, /* threefoldSectionNonEmpty */ true, /* expectedFiftyMoveSequenceReached */ false);
   }
 
   @SuppressWarnings("static-method")
@@ -164,7 +164,7 @@ class TestFromInitialPlacementAndFenStart {
     final Board board = new Board(FEN_KRR_K_WHITE_TO_MOVE);
     playRookShuffleAsWhite(board, 4);
     assertFivefoldRepetition(board);
-    assertReporterOutput(board, /* threefoldSectionNonEmpty */ true, /* expectedFiftyMoveLine */ "Yes");
+    assertReporterOutput(board, /* threefoldSectionNonEmpty */ true, /* expectedFiftyMoveSequenceReached */ false);
   }
 
   @SuppressWarnings("static-method")
@@ -173,7 +173,7 @@ class TestFromInitialPlacementAndFenStart {
     final Board board = new Board(FEN_KRR_K_WHITE_TO_MOVE);
     playRookShuffleAsWhite(board, 25);
     assertFiftyMoveOrClaimable(board);
-    assertReporterOutput(board, /* threefoldSectionNonEmpty */ true, /* expectedFiftyMoveLine */ "No");
+    assertReporterOutput(board, /* threefoldSectionNonEmpty */ true, /* expectedFiftyMoveSequenceReached */ true);
   }
 
   @SuppressWarnings("static-method")
@@ -182,7 +182,7 @@ class TestFromInitialPlacementAndFenStart {
     final Board board = new Board(FEN_KRR_K_WHITE_TO_MOVE);
     playRookShuffleAsWhite(board, 38);
     assertSeventyFiveMove(board);
-    assertReporterOutput(board, /* threefoldSectionNonEmpty */ true, /* expectedFiftyMoveLine */ "No");
+    assertReporterOutput(board, /* threefoldSectionNonEmpty */ true, /* expectedFiftyMoveSequenceReached */ true);
   }
 
   // ===========================================================================================
@@ -197,7 +197,7 @@ class TestFromInitialPlacementAndFenStart {
     assertThreefoldRepetition(board);
     assertEquals(5, board.getFullMoveNumber(),
         "Black-to-move-at-fullmove-1: 4 Black moves → fullmove 5");
-    assertReporterOutput(board, /* threefoldSectionNonEmpty */ true, /* expectedFiftyMoveLine */ "Yes");
+    assertReporterOutput(board, /* threefoldSectionNonEmpty */ true, /* expectedFiftyMoveSequenceReached */ false);
   }
 
   @SuppressWarnings("static-method")
@@ -208,7 +208,7 @@ class TestFromInitialPlacementAndFenStart {
     assertFivefoldRepetition(board);
     assertEquals(9, board.getFullMoveNumber(),
         "Black-to-move-at-fullmove-1: 8 Black moves → fullmove 9");
-    assertReporterOutput(board, /* threefoldSectionNonEmpty */ true, /* expectedFiftyMoveLine */ "Yes");
+    assertReporterOutput(board, /* threefoldSectionNonEmpty */ true, /* expectedFiftyMoveSequenceReached */ false);
   }
 
   @SuppressWarnings("static-method")
@@ -217,7 +217,7 @@ class TestFromInitialPlacementAndFenStart {
     final Board board = new Board(FEN_KRR_K_BLACK_TO_MOVE);
     playRookShuffleAsBlack(board, 25);
     assertFiftyMoveOrClaimable(board);
-    assertReporterOutput(board, /* threefoldSectionNonEmpty */ true, /* expectedFiftyMoveLine */ "No");
+    assertReporterOutput(board, /* threefoldSectionNonEmpty */ true, /* expectedFiftyMoveSequenceReached */ true);
   }
 
   @SuppressWarnings("static-method")
@@ -226,7 +226,7 @@ class TestFromInitialPlacementAndFenStart {
     final Board board = new Board(FEN_KRR_K_BLACK_TO_MOVE);
     playRookShuffleAsBlack(board, 38);
     assertSeventyFiveMove(board);
-    assertReporterOutput(board, /* threefoldSectionNonEmpty */ true, /* expectedFiftyMoveLine */ "No");
+    assertReporterOutput(board, /* threefoldSectionNonEmpty */ true, /* expectedFiftyMoveSequenceReached */ true);
   }
 
   // ===========================================================================================
@@ -327,25 +327,27 @@ class TestFromInitialPlacementAndFenStart {
   /**
    * Layer (c) — content-aware check of the printed report. Reporter always emits the section headers regardless of
    * whether any condition fired, so a header-presence test is too weak: a regression that quietly rendered "None" for
-   * the threefold section or the wrong yes/no line for the fifty-move section would still pass. This helper asserts
-   * the actual content of each section.
+   * the threefold section or for the fifty-move sequence section would still pass. This helper asserts the actual
+   * content of the threefold-existing section and the fifty-move sequence section (the two sections that fire as a
+   * direct consequence of the shuffle test fixtures).
    *
    * @param threefoldSectionNonEmpty
    *          {@code true} if the threefold section is expected to contain repetition group lines (not the "None"
    *          sentinel). All four families in this test set produce threefolds in their shuffle, so every test passes
    *          {@code true} here today.
-   * @param expectedFiftyMoveLine
-   *          the exact content line under the "Fifty moves..." section. Reporter prints "Yes" when
-   *          {@code noProgressMoveListList.isEmpty()} (no 50-move stretch reached) and "No" when the list is non-empty
-   *          (a 50-move stretch was reached). Threefold / fivefold tests expect "Yes" (8/16 plies are well below the
-   *          50-move threshold); 50-move / 75-move tests expect "No".
+   * @param expectedFiftyMoveSequenceReached
+   *          {@code true} if a 50-move (or 75-move) non-progress stretch is expected and the
+   *          "Fifty moves without capture and pawn move - sequences" section should contain at least one sequence
+   *          line; {@code false} if the section should render the "None" sentinel (no 50-move stretch was reached in
+   *          play). Threefold / fivefold tests pass {@code false} (8/16 plies are well below the 50-move threshold);
+   *          50-move / 75-move tests pass {@code true}.
    */
   private static void assertReporterOutput(Board board, boolean threefoldSectionNonEmpty,
-      String expectedFiftyMoveLine) {
+      boolean expectedFiftyMoveSequenceReached) {
     final List<String> lines = captureReporter(board);
 
     final List<String> threefoldSection = extractSection(lines, "Threefolds and beyond",
-        "Fifty moves without capture");
+        "Valid fifty-move claims ahead");
     if (threefoldSectionNonEmpty) {
       assertTrue(!threefoldSection.isEmpty(), "threefold section must have content");
       assertTrue(!(threefoldSection.size() == 1 && "None".equals(threefoldSection.get(0))),
@@ -353,12 +355,20 @@ class TestFromInitialPlacementAndFenStart {
               + String.join("\n  ", threefoldSection));
     }
 
-    final List<String> fiftyMoveSection = extractSectionToEnd(lines, "Fifty moves without capture");
-    assertEquals(1, fiftyMoveSection.size(),
-        () -> "fifty-move section must have exactly one content line; got:\n  "
-            + String.join("\n  ", fiftyMoveSection));
-    assertEquals(expectedFiftyMoveLine, fiftyMoveSection.get(0),
-        "fifty-move section content line must match expected yes/no value");
+    final List<String> fiftyMoveSequenceSection = extractSectionToEnd(lines,
+        "Fifty moves without capture and pawn move - sequences");
+    if (expectedFiftyMoveSequenceReached) {
+      assertTrue(!fiftyMoveSequenceSection.isEmpty(), "fifty-move sequence section must have content");
+      assertTrue(!(fiftyMoveSequenceSection.size() == 1 && "None".equals(fiftyMoveSequenceSection.get(0))),
+          () -> "fifty-move sequence section must contain sequence lines, not the 'None' sentinel; got:\n  "
+              + String.join("\n  ", fiftyMoveSequenceSection));
+    } else {
+      assertEquals(1, fiftyMoveSequenceSection.size(),
+          () -> "fifty-move sequence section must render exactly one 'None' line when no stretch was reached; got:\n  "
+              + String.join("\n  ", fiftyMoveSequenceSection));
+      assertEquals("None", fiftyMoveSequenceSection.get(0),
+          "fifty-move sequence section must show the 'None' sentinel when no 50-move stretch was reached");
+    }
   }
 
   private static List<String> captureReporter(Board board) {

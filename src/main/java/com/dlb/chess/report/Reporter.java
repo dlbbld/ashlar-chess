@@ -69,14 +69,20 @@ public final class Reporter {
       appendLines(output, RepetitionPrint.render(existing, positionIdentifierMap));
     }
 
-    final List<List<NoProgressHalfMove>> noProgressMoveListList = NoProgressMoveUtility
-        .calculateNoProgressMoveRule(board, ChessConstants.FIFTY_MOVE_RULE_HALF_MOVE_CLOCK_THRESHOLD);
-
-    addMainSection(output, "report.noProgressMove.fiftyMoves.title");
-    if (noProgressMoveListList.isEmpty()) {
-      output.add(Message.getString("report.noProgressMove.fiftyMoves.yes"));
+    final FiftyMoveClaimAheadReport fiftyMoveClaimAhead = FiftyMoveClaimAheadReportBuilder.build(board);
+    addMainSection(output, "report.fiftyMove.ahead.title");
+    if (fiftyMoveClaimAhead.entries().isEmpty()) {
+      output.add(Message.getString("report.fiftyMove.ahead.none"));
     } else {
-      output.add(Message.getString("report.noProgressMove.fiftyMoves.no"));
+      appendLines(output, FiftyMoveClaimAheadPrint.render(fiftyMoveClaimAhead));
+    }
+
+    final FiftyMoveSequenceReport fiftyMoveSequence = FiftyMoveSequenceReportBuilder.build(board);
+    addMainSection(output, "report.fiftyMove.sequence.title");
+    if (fiftyMoveSequence.sequences().isEmpty()) {
+      output.add(Message.getString("report.fiftyMove.sequence.none"));
+    } else {
+      appendLines(output, FiftyMoveSequencePrint.render(fiftyMoveSequence));
     }
 
     return output;
