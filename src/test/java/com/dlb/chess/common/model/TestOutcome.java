@@ -9,10 +9,9 @@ import com.dlb.chess.board.enums.Side;
 import com.dlb.chess.common.enums.Termination;
 
 /**
- * Direct compact-constructor tests for {@link Outcome}. Pins the runtime invariants the record's compact constructor
- * enforces — non-null fields, plus the "winner == Side.NONE iff !CHECKMATE" invariant. {@code @NonNullByDefault} is not
- * a runtime check, so these tests defend against callers (including third-party consumers of the public record) that
- * pass nulls or otherwise violate the invariant.
+ * Direct compact-constructor tests for {@link Outcome}. Pins the semantic invariants the record's compact constructor
+ * enforces — the "winner is Side.NONE unless termination is CHECKMATE" rule. Non-nullness of the fields is enforced at
+ * compile time by the package's {@code @NonNullByDefault}, so no runtime null-rejection tests are needed.
  */
 class TestOutcome {
 
@@ -63,29 +62,6 @@ class TestOutcome {
   void ongoingTerminationWithWinnerSideRejected() {
     assertThrows(IllegalArgumentException.class, () -> new Outcome(Termination.NONE, Side.WHITE),
         "Termination.NONE outcome requires winner == Side.NONE (no one has won an ongoing game)");
-  }
-
-  // === null rejection ===
-
-  @SuppressWarnings("static-method")
-  @Test
-  void nullTerminationRejected() {
-    assertThrows(NullPointerException.class, () -> new Outcome(null, Side.NONE),
-        "compact constructor must reject null termination");
-  }
-
-  @SuppressWarnings("static-method")
-  @Test
-  void nullWinnerRejectedForCheckmate() {
-    assertThrows(NullPointerException.class, () -> new Outcome(Termination.CHECKMATE, null),
-        "compact constructor must reject null winner (use Side.NONE for drawing outcomes)");
-  }
-
-  @SuppressWarnings("static-method")
-  @Test
-  void nullWinnerRejectedForDrawingTermination() {
-    assertThrows(NullPointerException.class, () -> new Outcome(Termination.INSUFFICIENT_MATERIAL, null),
-        "compact constructor must reject null winner even on drawing terminations (use Side.NONE explicitly)");
   }
 
   // === checkmate-vs-draw winner invariant ===

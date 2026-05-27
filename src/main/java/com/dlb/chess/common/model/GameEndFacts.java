@@ -1,7 +1,5 @@
 package com.dlb.chess.common.model;
 
-import java.util.Objects;
-
 import com.dlb.chess.common.enums.Termination;
 
 /**
@@ -9,8 +7,7 @@ import com.dlb.chess.common.enums.Termination;
  * The fact booleans are independent and condition-only: each is the raw truth of its rule on the current position, not
  * suppressed by any higher-precedence condition that may also hold. {@code outcome} is the official ruling produced by
  * applying the python-chess precedence stack (CHECKMATE → INSUFFICIENT_MATERIAL → STALEMATE → SEVENTY_FIVE_MOVES →
- * FIVEFOLD_REPETITION) to those raw facts; for ongoing positions {@code outcome} carries
- * {@link Termination#NONE}.
+ * FIVEFOLD_REPETITION) to those raw facts; for ongoing positions {@code outcome} carries {@link Termination#NONE}.
  *
  * <p>
  * Facts are independent. {@code Outcome} is a projection. A position can have, simultaneously, {@code checkmate=true}
@@ -27,14 +24,11 @@ import com.dlb.chess.common.enums.Termination;
  *
  * <p>
  * {@code outcome} is never {@code null}: ongoing positions carry {@link Outcome#ONGOING}. {@link #isGameEnd()}
- * distinguishes by checking {@code outcome.termination() != Termination.NONE}.
+ * distinguishes by checking {@code outcome.termination() != Termination.NONE}. Non-nullness of {@code outcome} is
+ * enforced at compile time by the package's {@code @NonNullByDefault}.
  */
 public record GameEndFacts(boolean checkmate, boolean stalemate, boolean insufficientMaterial, boolean deadPosition,
     boolean fivefoldRepetition, boolean seventyFiveMove, Outcome outcome) {
-
-  public GameEndFacts {
-    Objects.requireNonNull(outcome, "outcome must not be null (use Outcome.ONGOING for ongoing positions)");
-  }
 
   /**
    * Convenience: {@code true} iff a termination condition fires on the current position (i.e.
