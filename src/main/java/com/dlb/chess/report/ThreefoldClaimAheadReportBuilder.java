@@ -1,11 +1,16 @@
 package com.dlb.chess.report;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import com.dlb.chess.board.Board;
+import com.dlb.chess.common.HalfMoveListListComparator;
+import com.dlb.chess.common.Nulls;
 import com.dlb.chess.common.model.DynamicPosition;
 import com.dlb.chess.common.model.HalfMove;
+import com.dlb.chess.fen.model.Fen;
+import com.dlb.chess.model.LegalMove;
 import com.google.common.collect.ImmutableList;
 
 abstract class ThreefoldClaimAheadReportBuilder {
@@ -16,11 +21,12 @@ abstract class ThreefoldClaimAheadReportBuilder {
    *
    * <p>
    * Entries are ordered by {@code (claimAheadMove.halfMoveCount(), legal-move-iteration-order at that ply)}: the outer
-   * order comes from the sorted ply groups returned by the look-ahead replay, the inner order from
-   * {@code Board.getLegalMoves()} iteration at each ply.
+   * order comes from {@link HalfMoveListListComparator} sorting the look-ahead groups by first-element half-move
+   * count, the inner order from {@code Board.getLegalMoves()} iteration.
    */
   static ThreefoldClaimAheadReport build(Board board) {
-    final List<List<HalfMove>> rawClaimAheadListList = ThreefoldClaimAheadUtility.calculateClaimAheadListList(board);
+    final List<List<HalfMove>> rawClaimAheadListList = replayAndCollectClaimAheads(board.getPerformedLegalMoveList(),
+        board.getInitialFen());
     final ImmutableList<HalfMove> halfMoveListPlayed = board.getHalfMoveList();
     final DynamicPosition initialDynamicPosition = board.getInitialDynamicPosition();
 
@@ -31,6 +37,33 @@ abstract class ThreefoldClaimAheadReportBuilder {
       }
     }
     return new ThreefoldClaimAheadReport(ImmutableList.copyOf(entries));
+  }
+
+  private static List<List<HalfMove>> replayAndCollectClaimAheads(List<LegalMove> performedLegalMoveList,
+      Fen initialFen) {
+    final List<List<HalfMove>> resultListList = new ArrayList<>();
+    final Board replayBoard = new Board(initialFen);
+    for (final LegalMove legalMove : performedLegalMoveList) {
+      collectClaimAheadsAtCurrentPly(resultListList, replayBoard);
+      replayBoard.move(legalMove.moveSpecification());
+    }
+    collectClaimAheadsAtCurrentPly(resultListList, replayBoard);
+    Collections.sort(resultListList, HalfMoveListListComparator.COMPARATOR);
+    return resultListList;
+  }
+
+  private static void collectClaimAheadsAtCurrentPly(List<List<HalfMove>> resultListList, Board replayBoard) {
+    final List<HalfMove> claimAheadsAtThisPly = new ArrayList<>();
+    for (final LegalMove legalMoveCheckAhead : replayBoard.getLegalMoves()) {
+      replayBoard.move(legalMoveCheckAhead.moveSpecification());
+      if (replayBoard.isThreefoldRepetition()) {
+        claimAheadsAtThisPly.add(Nulls.getLast(replayBoard.getHalfMoveList()));
+      }
+      replayBoard.unmove();
+    }
+    if (!claimAheadsAtThisPly.isEmpty()) {
+      resultListList.add(claimAheadsAtThisPly);
+    }
   }
 
   private static ClaimAheadEntry buildEntry(HalfMove claimAheadMove, ImmutableList<HalfMove> halfMoveListPlayed,
