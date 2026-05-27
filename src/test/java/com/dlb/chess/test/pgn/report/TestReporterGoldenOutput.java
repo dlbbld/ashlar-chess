@@ -3,9 +3,7 @@ package com.dlb.chess.test.pgn.report;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -15,6 +13,7 @@ import org.junit.jupiter.api.Test;
 import com.dlb.chess.board.Board;
 import com.dlb.chess.common.Nulls;
 import com.dlb.chess.report.Reporter;
+import com.dlb.chess.test.common.utility.OutputCaptureUtility;
 import com.dlb.chess.test.pgn.setup.PgnTestCaseCatalog;
 import com.dlb.chess.test.pgntest.enums.PgnTest;
 
@@ -129,16 +128,7 @@ class TestReporterGoldenOutput {
   }
 
   private static String captureStdout(Runnable action) {
-    final ByteArrayOutputStream buffer = new ByteArrayOutputStream();
-    final var original = System.out;
-    final PrintStream captured = new PrintStream(buffer, true, StandardCharsets.UTF_8);
-    System.setOut(captured);
-    try {
-      action.run();
-    } finally {
-      System.setOut(original);
-    }
-    return normaliseLineEndings(buffer.toString(StandardCharsets.UTF_8));
+    return normaliseLineEndings(OutputCaptureUtility.captureStdout(action));
   }
 
   private static void compareOrRegenerate(String actual, String goldenName) {
@@ -173,6 +163,6 @@ class TestReporterGoldenOutput {
   }
 
   private static String normaliseLineEndings(String input) {
-    return Nulls.replace(input, "\r\n", "\n");
+    return OutputCaptureUtility.normaliseLineEndings(input);
   }
 }

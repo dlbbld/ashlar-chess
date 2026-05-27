@@ -32,7 +32,7 @@ abstract class FiftyMoveSequenceReportBuilder {
 
     final List<FiftyMoveSequence> sequences = new ArrayList<>();
 
-    @Nullable var currentStart = initialFenClock > 0 ? SequenceStart.initialFen(initialFenClock) : null;
+    var currentStart = initialSequenceStart(initialFenClock);
     @Nullable HalfMove currentEndPly = null;
 
     for (final HalfMove ply : halfMoveList) {
@@ -62,6 +62,10 @@ abstract class FiftyMoveSequenceReportBuilder {
     }
 
     return new FiftyMoveSequenceReport(Nulls.copyOfList(sequences));
+  }
+
+  private static @Nullable SequenceStart initialSequenceStart(int initialFenClock) {
+    return initialFenClock > 0 ? SequenceStart.initialFen(initialFenClock) : null;
   }
 
   private static void maybeEmit(List<FiftyMoveSequence> sequences, SequenceStart start, @Nullable HalfMove endPly,

@@ -560,7 +560,7 @@ public class Board {
    * arbitrary strings without exception handling.
    */
   public boolean canClaimFiftyMoveRuleFor(String san) {
-    final @Nullable var parsed = parseSanQuietly(san);
+    final var parsed = parseSanQuietly(san);
     if (parsed == null) {
       return false;
     }
@@ -602,7 +602,7 @@ public class Board {
    * {@code san} is malformed, ambiguous, or does not match a legal move on the current position.
    */
   public boolean canClaimThreefoldRepetitionRuleFor(String san) {
-    final @Nullable var parsed = parseSanQuietly(san);
+    final var parsed = parseSanQuietly(san);
     if (parsed == null) {
       return false;
     }

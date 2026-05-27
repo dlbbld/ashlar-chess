@@ -3,19 +3,15 @@ package com.dlb.chess.report;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.io.ByteArrayOutputStream;
-import java.io.PrintStream;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
 import com.dlb.chess.board.Board;
-import com.dlb.chess.common.Nulls;
 import com.dlb.chess.common.constants.ChessConstants;
 import com.dlb.chess.pgn.PgnUtility;
+import com.dlb.chess.test.common.utility.OutputCaptureUtility;
 import com.dlb.chess.test.pgn.setup.PgnTestCaseCatalog;
 import com.dlb.chess.test.pgntest.enums.PgnTest;
 
@@ -144,18 +140,7 @@ class TestReportPrintoutDerivesFromObjectModel {
    * Captures System.out for one {@code Reporter.printReport(board)} invocation as a list of trimmed lines.
    */
   private static List<String> captureReporter(Board board) {
-    final ByteArrayOutputStream buffer = new ByteArrayOutputStream();
-    final var original = System.out;
-    try (PrintStream captured = new PrintStream(buffer, true, StandardCharsets.UTF_8)) {
-      System.setOut(captured);
-      Reporter.printReport(board);
-    } finally {
-      System.setOut(original);
-    }
-    final var text = buffer.toString(StandardCharsets.UTF_8).replace("\r\n", "\n");
-    final List<String> lines = new ArrayList<>();
-    Collections.addAll(lines, Nulls.split(text, "\n"));
-    return lines;
+    return OutputCaptureUtility.captureStdoutLines(() -> Reporter.printReport(board));
   }
 
   /**
