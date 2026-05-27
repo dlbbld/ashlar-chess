@@ -797,12 +797,6 @@ public class Board {
   }
 
   /**
-   * True iff the halfmove clock has reached the 50-move-rule threshold (FIDE 9.3) <em>and</em> the side to move has at
-   * least one legal move. This is the on-board predicate (claimable rule); the game continues until claimed. The
-   * legal-moves-exist clause aligns with the FIDE rule (no claim is possible if the game has already ended by mate or
-   * stalemate) and with python-chess {@code is_fifty_moves()}.
-   */
-  /**
    * Raw condition predicate (FIDE 9.3 threshold): returns {@code true} iff the halfmove clock has reached the 50-move-
    * rule threshold ({@code halfMoveClock >= 100}) on the current position. Reports the fact independently of any other
    * game-end condition that may also hold — at a checkmate position with clock past 100, this still returns
@@ -822,15 +816,6 @@ public class Board {
     return getRepetitionCount() >= ChessConstants.THREEFOLD_REPETITION_RULE_THRESHOLD;
   }
 
-  /**
-   * True iff the halfmove clock has reached the 75-move-rule threshold (FIDE 9.6.2) <em>and</em> the side to move has
-   * at least one legal move. In this library the 75-move rule is surfaced as a queryable predicate rather than an
-   * enforced termination: the move pipeline does NOT reject moves on this condition. Once the threshold is crossed the
-   * predicate remains {@code true} for every subsequent halfmove until either the clock is reset by a pawn move or
-   * capture, <em>or</em> the position becomes checkmate / stalemate (no legal moves — the game has ended by a
-   * higher-precedence termination, so the 75-move rule cannot also fire). The legal-moves-exist clause matches
-   * python-chess {@code is_seventyfive_moves()} and the FIDE reading.
-   */
   /**
    * Raw condition predicate (FIDE 9.6.2 threshold): returns {@code true} iff the halfmove clock has reached the 75-
    * move-rule threshold ({@code halfMoveClock >= 150}) on the current position. Reports the fact independently of any
