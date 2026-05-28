@@ -7,7 +7,7 @@
  * A {@link io.github.dlbbld.ashlarchess.board.Board} represents a <em>game</em> - a position together with its move history - not
  * merely a position. The move-validation pipeline does <em>not</em> gate on game-end states: neither
  * {@link io.github.dlbbld.ashlarchess.board.ValidateNewMove#validateNewMove} (MoveSpecification pipeline) nor
- * {@code com.dlb.chess.san.StrictSanParser#parseText} (SAN pipeline) consults any termination predicate. At checkmate
+ * {@code io.github.dlbbld.ashlarchess.san.StrictSanParser#parseText} (SAN pipeline) consults any termination predicate. At checkmate
  * and stalemate the natural barrier is the empty legal-move set: any attempted move fails through ordinary legality
  * (own-piece occupation, king-into-check, etc.). At mutual insufficient material, fivefold repetition, the 75-move
  * rule, and analyzer-driven dead positions, legal moves still exist and the pipeline accepts them.
@@ -23,7 +23,7 @@
  * <p>
  * Single-side insufficient material (one side lacks mating material but the other does not) is a diagnostic position
  * state and is not surfaced by {@code calculateOutcome}. Callers that need it query
- * {@link io.github.dlbbld.ashlarchess.board.Board#isInsufficientMaterial(com.dlb.chess.board.enums.Side)} directly.
+ * {@link io.github.dlbbld.ashlarchess.board.Board#isInsufficientMaterial(io.github.dlbbld.ashlarchess.board.enums.Side)} directly.
  *
  * <p>
  * Analyzer-driven dead positions (FIDE 5.2.2 via the quick or full unwinnability analyzer) are <em>not</em> surfaced

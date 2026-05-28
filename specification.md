@@ -130,7 +130,7 @@ The lenient SAN pipeline (`LenientSanParser`, reached via `Board.moveLenient(Str
 
 **Principle: canonical-first.** A string that already parses as canonical SAN never receives a different meaning under lenient — strict is tried first; only on rejection does the lenient layer engage. So `bxc6` always means pawn capture from the b-file, even if a bishop on the b-file could also capture on c6.
 
-**Taxonomy — 21 codes** (`com.dlb.chess.san.enums.LenientSanValidationProblem`):
+**Taxonomy — 21 codes** (`io.github.dlbbld.ashlarchess.san.enums.LenientSanValidationProblem`):
 
 | Category | Code | Example |
 |---|---|---|
@@ -220,7 +220,7 @@ FEN handling sits on two orthogonal axes — *strict vs lenient* (syntactic axis
 
 ## 4. Architecture
 
-The top-level package `com.dlb.chess` is organised by concern:
+The top-level package `io.github.dlbbld.ashlarchess` is organised by concern:
 
 | Package | Responsibility |
 |---|---|
@@ -254,13 +254,13 @@ Piece placement has two independent representations in the codebase, by design.
 
 **`BitboardPosition`** (in `src/main/java/com/dlb/chess/bitboard/`) is the single piece-placement representation that production code sees. It is a 12-long record — one `long` per piece-and-side bitboard, little-endian rank-file with A1 at bit 0 — exposing move generation, attack queries, immutable make-move (`afterMove`), and a piece-only Zobrist hash. Everything in `src/main/` that needs to ask a question about pieces on squares asks `BitboardPosition`.
 
-**`StaticPosition`** (in `src/test/java/com/dlb/chess/board/`) is the 64-square mailbox reference implementation, accumulated over years of correctness-first work. It does not live in `src/main/` anymore — it was relocated, not deleted — and exists in `src/test/` strictly to act as the **permanent differential-test oracle** for the bitboard backend. Its consumer subtree relocated with it (`StaticPositionUtility`; `com.dlb.chess.squares.{Abstract,Bishop,Rook,Queen,Knight,King,Pawn}{AttackedSquares,PotentialToSquares,RangeSquares}`; `com.dlb.chess.moves.{Abstract,Bishop,Rook,Queen,Knight,King,Pawn}LegalMoves`; `UnwinnabilityMaterial`). The bridge methods `StaticPositionBridge.fromStaticPosition` / `toStaticPosition` (also in `src/test/java/com/dlb/chess/bitboard/`) round-trip between the two on the test side only.
+**`StaticPosition`** (in `src/test/java/com/dlb/chess/board/`) is the 64-square mailbox reference implementation, accumulated over years of correctness-first work. It does not live in `src/main/` anymore — it was relocated, not deleted — and exists in `src/test/` strictly to act as the **permanent differential-test oracle** for the bitboard backend. Its consumer subtree relocated with it (`StaticPositionUtility`; `io.github.dlbbld.ashlarchess.squares.{Abstract,Bishop,Rook,Queen,Knight,King,Pawn}{AttackedSquares,PotentialToSquares,RangeSquares}`; `io.github.dlbbld.ashlarchess.moves.{Abstract,Bishop,Rook,Queen,Knight,King,Pawn}LegalMoves`; `UnwinnabilityMaterial`). The bridge methods `StaticPositionBridge.fromStaticPosition` / `toStaticPosition` (also in `src/test/java/com/dlb/chess/bitboard/`) round-trip between the two on the test side only.
 
 The contract is **permanent project policy**, not transitional:
 
 - Every primitive on `BitboardPosition` is asserted against the relocated `StaticPosition` oracle across the full PGN/FEN corpus — every fixture × every legal move — on every release going forward. The corpus walks live in `src/test/java/com/dlb/chess/test/bitboard/` (`TestBitboardPositionAfterMove`, `TestBitboardPositionAttackedSquares`, `TestBitboardPositionLegalMoves`, `TestBitboardPositionZobrist`, etc.) and use `StaticPositionUtility.createPositionAfterMove` as the independent oracle.
 - `StaticPosition` and its consumer subtree are never deleted. A future bitboard optimisation (incremental Zobrist, magic bitboards, mutable make/unmake for the lean analyzer board) cannot land without the oracle keeping it honest.
-- The boundary is one-way: nothing in `src/main/` may import from `com.dlb.chess.board.StaticPosition` or any relocated consumer. Doc comments may cross-reference; code may not.
+- The boundary is one-way: nothing in `src/main/` may import from `io.github.dlbbld.ashlarchess.board.StaticPosition` or any relocated consumer. Doc comments may cross-reference; code may not.
 
 This is the project invariant in §2.1's "clarity over clever optimisation" — applied to representation. The bitboard exists for the production code path; the mailbox stays as the readable, audit-friendly second opinion that the bitboard is forever measured against.
 

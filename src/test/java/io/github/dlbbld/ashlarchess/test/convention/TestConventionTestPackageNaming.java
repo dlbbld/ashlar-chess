@@ -14,22 +14,22 @@ import io.github.dlbbld.ashlarchess.test.common.utility.FileUtility;
 
 /**
  * Convention test: every Java file under {@code src/test/java} must declare a package starting with
- * {@code com.dlb.chess}.
+ * {@code io.github.dlbbld.ashlarchess}.
  *
  * <p>
  * Two flavours of test live under this prefix:
  * <ul>
- * <li><b>Black-box / integration tests</b> under {@code com.dlb.chess.test.*}: exercise production code through its
- * public API. The majority of the suite lives here.</li>
- * <li><b>Same-package white-box tests</b> under {@code com.dlb.chess.<production-package>}: exercise package-private
- * production code that does not belong on the public API surface. Use sparingly - only when an internal class genuinely
- * needs test coverage that can't be achieved through the public surface.</li>
+ * <li><b>Black-box / integration tests</b> under {@code io.github.dlbbld.ashlarchess.test.*}: exercise production code
+ * through its public API. The majority of the suite lives here.</li>
+ * <li><b>Same-package white-box tests</b> under {@code io.github.dlbbld.ashlarchess.<production-package>}: exercise
+ * package-private production code that does not belong on the public API surface. Use sparingly - only when an internal
+ * class genuinely needs test coverage that can't be achieved through the public surface.</li>
  * </ul>
  *
  * <p>
  * The test-scope marker (this file is {@code src/test/java}) keeps the source-tree separation; the
- * {@code com.dlb.chess} prefix keeps the package tree single-rooted and prevents stray test files in unrelated
- * namespaces.
+ * {@code io.github.dlbbld.ashlarchess} prefix keeps the package tree single-rooted and prevents stray test files in
+ * unrelated namespaces.
  *
  * <p>
  * The package name is derived from the file's path under {@code src/test/java}; Java requires the {@code package}
@@ -40,7 +40,7 @@ class TestConventionTestPackageNaming {
   private static final Path TEST_JAVA_ROOT = Nulls.pathResolve(ConfigurationTestConstants.PROJECT_ROOT_FOLDER_PATH,
       "src/test/java");
 
-  private static final String REQUIRED_PACKAGE_PREFIX = "com.dlb.chess";
+  private static final String REQUIRED_PACKAGE_PREFIX = "io.github.dlbbld.ashlarchess";
 
   @SuppressWarnings("static-method")
   @Test

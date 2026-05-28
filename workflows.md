@@ -37,7 +37,7 @@ list.add(new PgnFen("file.pgn", "endPositionFen"));
 Run from Eclipse (Run As → Java Application) or from the command line:
 
 ```
-mvn -q exec:java -Dexec.mainClass=com.dlb.chess.test.generate.GenerateTestCaseForPgn -Dexec.classpathScope=test
+mvn -q exec:java -Dexec.mainClass=io.github.dlbbld.ashlarchess.test.generate.GenerateTestCaseForPgn -Dexec.classpathScope=test
 ```
 
 ### 3. Paste the entry into PgnTestCaseCatalog
@@ -62,7 +62,7 @@ The default `mvn test` runs the fast subset — most of the corpus, but with the
 
 | Command | Scope |
 | --- | --- |
-| `mvn test` | Default: most of the corpus, long-running audits gated off, `com.dlb.chess.test.unwinnability` excluded |
+| `mvn test` | Default: most of the corpus, long-running audits gated off, `io.github.dlbbld.ashlarchess.test.unwinnability` excluded |
 | `mvn test -Pfull` | Full regression suite. Sets `clean-chess.full=true`, which flips the [`RestrictTestConstants.IS_FULL`](src/test/java/com/dlb/chess/test/RestrictTestConstants.java) flag and re-enables the long-running audits. **Precondition for tagging a release.** |
 | `mvn test -Dtest=TestClassName` | Single test class |
 | `mvn test -Dtest=TestClassName#methodName` | Single test method |
@@ -85,7 +85,7 @@ Release tags follow strict semver and match the `<version>` in `pom.xml`. The re
 
 - Active branch is on the release-candidate state (worktree is clean; everything intended for the release is merged or committed).
 - `mvn test -Pfull` green from a clean checkout. **Required.**
-- JavaDoc gates green. **Required.** Both goals must run with `-Dshow=private` — many main classes (the `com.dlb.chess.report` records, package-private helpers) and all test classes are package-private, and at javadoc's default `protected` visibility doclint silently skips them, so stale `@link` / malformed HTML go uncaught:
+- JavaDoc gates green. **Required.** Both goals must run with `-Dshow=private` — many main classes (the `io.github.dlbbld.ashlarchess.report` records, package-private helpers) and all test classes are package-private, and at javadoc's default `protected` visibility doclint silently skips them, so stale `@link` / malformed HTML go uncaught:
   - `mvn javadoc:javadoc -Dshow=private` — all main docs.
   - `mvn javadoc:test-javadoc -Dshow=private` — all test docs.
   - (`mvn javadoc:jar` stays at default visibility — it ships only the public API.)

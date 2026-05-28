@@ -24,7 +24,7 @@ package io.github.dlbbld.ashlarchess.common.enums;
  * <p>
  * The single-side insufficient-material conditions (one side lacks mating material but the other does not) are a
  * diagnostic state of the board, not a termination, and are not represented here. Callers that need that information
- * query {@link io.github.dlbbld.ashlarchess.board.Board#isInsufficientMaterial(com.dlb.chess.board.enums.Side)} directly.
+ * query {@link io.github.dlbbld.ashlarchess.board.Board#isInsufficientMaterial(io.github.dlbbld.ashlarchess.board.enums.Side)} directly.
  */
 public enum Termination {
 

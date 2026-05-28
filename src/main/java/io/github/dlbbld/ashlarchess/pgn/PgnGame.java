@@ -19,7 +19,7 @@ import io.github.dlbbld.ashlarchess.model.PgnHalfMove;
  * Invariant: when a Result tag is present in {@link #tagList()} <em>and</em> {@link #terminationMarker()} is non-null,
  * the two must agree. The lenient and strict PGN parsers enforce this before constructing the {@code PgnGame} (via the
  * cross-signal consistency check); the {@code Board}-to-{@code PgnGame} path
- * ({@link PgnCreate#createPgnGame(com.dlb.chess.board.Board, java.util.List)}) is also guarded here by the compact
+ * ({@link PgnCreate#createPgnGame(io.github.dlbbld.ashlarchess.board.Board, java.util.List)}) is also guarded here by the compact
  * constructor - a caller that supplies a Result tag disagreeing with the board's game-status-derived marker triggers an
  * {@link IllegalArgumentException} rather than silently producing an internally inconsistent model that archival export
  * would then have to choose between.

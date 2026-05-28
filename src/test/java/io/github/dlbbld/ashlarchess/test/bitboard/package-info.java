@@ -5,7 +5,7 @@
  * <p>
  * Tests under this package iterate the corpus via {@link io.github.dlbbld.ashlarchess.test.pgn.setup.PgnTestCaseCatalog#getTestList}
  * and run both representations through the primitive under test, asserting agreement. Pure-unit-shaped bitboard tests
- * (no corpus walk) live alongside their subject under {@code com.dlb.chess.bitboard.*} instead.
+ * (no corpus walk) live alongside their subject under {@code io.github.dlbbld.ashlarchess.bitboard.*} instead.
  */
 @NonNullByDefault
 package io.github.dlbbld.ashlarchess.test.bitboard;

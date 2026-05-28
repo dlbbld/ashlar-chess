@@ -41,7 +41,7 @@
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<maven.compiler.release>17</maven.compiler.release>
 		<!--
-			Default test exclusion. Skips com.dlb.chess.test.unwinnability (~1 min)
+			Default test exclusion. Skips io.github.dlbbld.ashlarchess.test.unwinnability (~1 min)
 			during iterative work. The `full` profile keeps this exclusion for now;
 			override `-Dtest.excludes=` when explicitly running the unwinnability suite.
 		-->
@@ -131,7 +131,7 @@
 				<artifactId>maven-surefire-plugin</artifactId>
 				<version>3.5.5</version>
 				<!--
-					Default and full-profile test runs exclude com.dlb.chess.test.unwinnability
+					Default and full-profile test runs exclude io.github.dlbbld.ashlarchess.test.unwinnability
 					(~1 min of the ~2 min suite). The exclusion is property-driven; use
 					`-Dtest.excludes=` when explicitly running the unwinnability suite.
 				-->

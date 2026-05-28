@@ -43,7 +43,7 @@ JSONL schema (one record per line, keys sorted alphabetically):
   }
 
 This module is the schema source of truth; the Java side
-(com.dlb.chess.test.oracle.python.OracleRecord / OracleMove) mirrors it.
+(io.github.dlbbld.ashlarchess.test.oracle.python.OracleRecord / OracleMove) mirrors it.
 
 FEN convention: emitted via `board.fen(en_passant="fen")` so the en-passant target
 square is always written after a pawn double-step (PGN/Edwards 1994 §16.1.3.4),

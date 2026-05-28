@@ -72,7 +72,7 @@ import io.github.dlbbld.ashlarchess.unwinnability.UnwinnableQuickAnalyzer;
  * <ul>
  * <li>{@link #Board()} - start at the initial position.</li>
  * <li>{@link #Board(String)} - start at the position given by a FEN string. Validated by the advanced FEN parser; see
- * the {@code com.dlb.chess.fen} package documentation for the validation contract.</li>
+ * the {@code io.github.dlbbld.ashlarchess.fen} package documentation for the validation contract.</li>
  * <li>{@link #Board(Fen)} - start at a pre-parsed {@link Fen} value.</li>
  * </ul>
  *
@@ -233,7 +233,7 @@ public class Board {
    * with king/rook static positions, en-passant target consistent with the side to move, halfmove clock consistent with
    * the fullmove number, etc.). The halfmove clock itself is not capped - the FIDE 75-move rule is a queryable
    * predicate on {@code Board}, not enforced at FEN import. Does not prove full game reachability - see the
-   * {@code com.dlb.chess.fen} package documentation for the full contract.
+   * {@code io.github.dlbbld.ashlarchess.fen} package documentation for the full contract.
    */
   public Board(String fen) {
     this(FenParserAdvanced.parseFenAdvanced(fen));
@@ -960,7 +960,7 @@ public class Board {
    * the operation is {@code O(plies)} per call rather than {@code O(1)}.
    *
    * <p>
-   * Kept as part of the public API in this release so consumers in {@code com.dlb.chess.report} and downstream code are
+   * Kept as part of the public API in this release so consumers in {@code io.github.dlbbld.ashlarchess.report} and downstream code are
    * not forced to migrate in one step. A future release may remove this method entirely as part of finishing the
    * {@link HalfMove} decommission; callers that hold a long-lived reference should cache the returned list rather than
    * calling this method per access.

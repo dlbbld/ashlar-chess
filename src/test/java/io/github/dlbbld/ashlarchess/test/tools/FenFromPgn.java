@@ -18,7 +18,7 @@ import io.github.dlbbld.ashlarchess.pgn.PgnUtility;
  *
  * <pre>{@code
  * mvn -q exec:java -Dexec.classpathScope=test \
- *     -Dexec.mainClass=com.dlb.chess.test.tools.FenFromPgn \
+ *     -Dexec.mainClass=io.github.dlbbld.ashlarchess.test.tools.FenFromPgn \
  *     -Dexec.args="src/test/resources/pgn/path/to/fixture.pgn"
  * }</pre>
  *

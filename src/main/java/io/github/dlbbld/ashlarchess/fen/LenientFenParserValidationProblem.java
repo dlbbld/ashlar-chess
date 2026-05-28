@@ -28,7 +28,7 @@ public enum LenientFenParserValidationProblem {
    * The normalised FEN passed raw parsing but {@link FenParserAdvanced} rejected it for a structural or
    * rule-consistency issue (piece counts, kings, castling rights inconsistent with piece placement, illegal en-passant
    * target, etc.). The lenient layer does not forgive semantic invariants - a FEN with a king missing still fails. The
-   * underlying {@link com.dlb.chess.common.enums.FenAdvancedValidationProblem} is on the result.
+   * underlying {@link io.github.dlbbld.ashlarchess.common.enums.FenAdvancedValidationProblem} is on the result.
    */
   ADVANCED_INVALID,
 

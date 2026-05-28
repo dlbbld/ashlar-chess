@@ -27,7 +27,7 @@ import io.github.dlbbld.ashlarchess.test.pgntest.enums.PgnTest;
 /**
  * Differential test for {@link BitboardPosition#attackersTo(Square, Side)}. There is no direct production counterpart,
  * so the reference is derived: walk every own-side piece and ask whether its per-piece attack set contains the target
- * square, using the existing reference attack functions from {@code com.dlb.chess.squares}.
+ * square, using the existing reference attack functions from {@code io.github.dlbbld.ashlarchess.squares}.
  */
 class TestBitboardPositionAttackersTo {
 
