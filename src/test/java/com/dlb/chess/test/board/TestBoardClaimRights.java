@@ -14,10 +14,10 @@ import com.dlb.chess.board.Board;
 import com.dlb.chess.common.Nulls;
 import com.dlb.chess.common.constants.EnumConstants;
 import com.dlb.chess.common.model.ClaimRights;
-import com.dlb.chess.san.LenientSanParserValidationException;
 import com.dlb.chess.common.model.ClaimableMove;
 import com.dlb.chess.common.model.MoveSpecification;
 import com.dlb.chess.fen.constants.FenConstants;
+import com.dlb.chess.san.LenientSanParserValidationException;
 
 /**
  * Tests for {@link Board#calculateFiftyMoveRuleClaimRights()} and

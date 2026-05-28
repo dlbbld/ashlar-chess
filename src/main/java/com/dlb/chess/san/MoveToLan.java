@@ -16,14 +16,14 @@ public class MoveToLan extends AbstractSan {
    *
    * <p>
    * LAN grammar this class emits:
-   * 
+   *
    * <pre>
    * &lt;LAN piece move&gt; ::= &lt;piece symbol&gt;&lt;from square&gt;('-'|'x')&lt;to square&gt;
    * &lt;LAN pawn move&gt;  ::= &lt;from square&gt;('-'|'x')&lt;to square&gt;[<promoted to>]
    * &lt;LAN castle&gt;     ::= 'O-O' | 'O-O-O'
    * &lt;promoted to&gt;    ::= '=' ('N' | 'B' | 'R' | 'Q')
    * </pre>
-   * 
+   *
    * Plus the terminal marker ({@code +} for check, {@code #} for checkmate) appended to every move shape including
    * castling. Matches python-chess {@code board.lan(move)}.
    */

@@ -145,7 +145,7 @@ public final class GenerateAmbronaMobilityOracle {
       if (resultLine == null) {
         throw new IllegalStateException("Ambrona mobility runner stopped before finishing " + fen);
       }
-      if (resultLine.equals("END\t" + fen)) {
+      if (("END\t" + fen).equals(resultLine)) {
         return;
       }
       validateResultLine(resultLine, fen);

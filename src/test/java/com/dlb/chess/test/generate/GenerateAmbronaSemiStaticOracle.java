@@ -145,7 +145,7 @@ public final class GenerateAmbronaSemiStaticOracle {
       if (resultLine == null) {
         throw new IllegalStateException("Ambrona semistatic runner stopped before finishing " + fen);
       }
-      if (resultLine.equals("END\t" + fen)) {
+      if (("END\t" + fen).equals(resultLine)) {
         return;
       }
       validateResultLine(resultLine, fen);
