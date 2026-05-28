@@ -619,7 +619,7 @@ public final class LenientPgnParser {
   /**
    * Validates that the Result tag value (if present) matches the movetext termination marker (if present). This is the
    * only result-related cross-check the lenient parser performs; both signals are preserved independently on the parse
-   * model (Result tag on the tag list, termination marker on {@link PgnGame#terminationMarker}).
+   * model (Result tag on the tag list, termination marker on {@link PgnGame#terminationMarker()}).
    */
   private static void validateResultConsistency(List<Tag> tagList, @Nullable ResultTagValue terminationResult) {
     if (!TagUtility.hasResult(tagList) || terminationResult == null) {
