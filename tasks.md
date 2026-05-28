@@ -10,7 +10,7 @@ Order within each section is the source of truth. Completed tasks move to **Done
 
 ---
 
-## Current release — publish to Maven Central
+## Current release 17.0.0 — publish to Maven Central
 
 The capstone release. Publish to Central only when the library has stabilised - every
 prior release done, identity questions settled, and any tasks that surface during the
@@ -49,6 +49,7 @@ where it is cheap (no consumers exist yet).
 - [x] Rename decision resolved: ashlar-chess is the final name (executed in Step 0 + below)
 - [x] DeepSquare / Bitboard / python-chess prior releases complete
 - [ ] Mention that chesslib is used for testing
+- [ ] Update README.md (jitpack no longer used)
 - [ ] Final maturity re-check at publish time
 
 ### pom.xml — coordinates + metadata (do now on this branch)
