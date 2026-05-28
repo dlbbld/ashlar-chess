@@ -9,7 +9,7 @@ import com.dlb.chess.common.model.MoveSpecification;
 import com.dlb.chess.enums.MoveCheck;
 
 /**
- * Surface-level smoke tests for {@link com.dlb.chess.board.ValidateNewMove#validateNewMove}: one representative
+ * Surface-level smoke tests for {@code ValidateNewMove#validateNewMove}: one representative
  * scenario per public {@link MoveCheck} failure value, exercising the full pipeline (Board -> ValidateNewMove ->
  * InvalidMoveException -> MoveCheck).
  *
