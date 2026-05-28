@@ -1,6 +1,0 @@
-package com.dlb.chess.fen.model;
-
-public record FenRaw(String piecePlacement, String havingMove, String castlingRightBothStr,
-    String enPassantCaptureTargetSquare, String halfMoveClock, String fullMoveNumber) {
-
-}

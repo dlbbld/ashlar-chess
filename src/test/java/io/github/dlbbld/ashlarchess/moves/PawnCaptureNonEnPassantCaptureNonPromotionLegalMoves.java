@@ -1,0 +1,50 @@
+package io.github.dlbbld.ashlarchess.moves;
+
+import java.util.Set;
+import java.util.TreeSet;
+
+import io.github.dlbbld.ashlarchess.board.StaticPosition;
+import io.github.dlbbld.ashlarchess.board.enums.Piece;
+import io.github.dlbbld.ashlarchess.board.enums.PieceType;
+import io.github.dlbbld.ashlarchess.board.enums.Rank;
+import io.github.dlbbld.ashlarchess.board.enums.Side;
+import io.github.dlbbld.ashlarchess.board.enums.Square;
+import io.github.dlbbld.ashlarchess.common.exceptions.ProgrammingMistakeException;
+import io.github.dlbbld.ashlarchess.common.model.MoveSpecification;
+import io.github.dlbbld.ashlarchess.common.utility.StaticPositionUtility;
+import io.github.dlbbld.ashlarchess.model.LegalMove;
+import io.github.dlbbld.ashlarchess.model.LegalMoveKind;
+import io.github.dlbbld.ashlarchess.squares.PawnDiagonalSquares;
+
+class PawnCaptureNonEnPassantCaptureNonPromotionLegalMoves extends PawnLegalMoves {
+
+  public static Set<LegalMove> calculateLegalMoves(StaticPosition staticPosition, Side havingMove, Square fromSquare) {
+
+    final Piece movingPiece = staticPosition.get(fromSquare);
+    checkPiece(havingMove, movingPiece, PAWN);
+
+    final Set<LegalMove> legalMoveSet = new TreeSet<>();
+    final Set<Square> diagonalSquareToSet = PawnDiagonalSquares.getPawnDiagonalSquares(havingMove, fromSquare);
+    for (final Square diagonalSquareTo : diagonalSquareToSet) {
+      if (!Rank.calculateIsPromotionRank(havingMove, diagonalSquareTo.getRank())
+          && staticPosition.isOpponentPiece(diagonalSquareTo, havingMove)) {
+        final MoveSpecification moveSpecification = new MoveSpecification(fromSquare, diagonalSquareTo);
+        if (!StaticPositionUtility.calculateIsKingAttackedAfterMove(staticPosition, havingMove, moveSpecification)) {
+
+          final Piece pieceCaptured = staticPosition.get(diagonalSquareTo);
+          if (pieceCaptured.getPieceType() != PieceType.KING) {
+            final LegalMove legalMove = new LegalMove(moveSpecification, movingPiece, pieceCaptured,
+                LegalMoveKind.NORMAL);
+            legalMoveSet.add(legalMove);
+          }
+        }
+      }
+    }
+
+    if (legalMoveSet.size() > 2) {
+      throw new ProgrammingMistakeException("A pawn can not have more than two possibilities to capture");
+    }
+    return legalMoveSet;
+  }
+
+}

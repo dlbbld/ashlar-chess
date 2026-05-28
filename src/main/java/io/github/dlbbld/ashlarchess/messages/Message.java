@@ -1,0 +1,54 @@
+package io.github.dlbbld.ashlarchess.messages;
+
+import java.text.MessageFormat;
+import java.util.ResourceBundle;
+
+import io.github.dlbbld.ashlarchess.common.Nulls;
+import io.github.dlbbld.ashlarchess.common.constants.ConfigurationConstants;
+import io.github.dlbbld.ashlarchess.common.exceptions.ProgrammingMistakeException;
+
+public class Message {
+
+  @SuppressWarnings("null")
+  private static final ResourceBundle RESOURCE_BUNDLE = ResourceBundle
+      .getBundle(Message.class.getPackageName() + ".messages");
+
+  private Message() {
+  }
+
+  @SuppressWarnings("null")
+  public static String getString(String key) {
+    return Nulls.normalizeSpace(RESOURCE_BUNDLE.getString(key));
+  }
+
+  public static String getString(String key, String arg1) {
+    return getString(key, new String[] { arg1 });
+  }
+
+  public static String getString(String key, int arg1) {
+    return getString(key, new String[] { String.valueOf(arg1) });
+  }
+
+  public static String getString(String key, String arg1, String arg2) {
+    return getString(key, new String[] { arg1, arg2 });
+  }
+
+  public static String getString(String key, String arg1, String arg2, String arg3) {
+    return getString(key, new String[] { arg1, arg2, arg3 });
+  }
+
+  public static String getString(String key, String arg1, String arg2, String arg3, String arg4) {
+    return getString(key, new String[] { arg1, arg2, arg3, arg4 });
+  }
+
+  private static String getString(String key, String[] argArray) {
+    final String pattern = RESOURCE_BUNDLE.getString(key);
+    final MessageFormat messageWithWildcards = new MessageFormat(pattern, ConfigurationConstants.LOCALE);
+    final String messageWithWildcardsSubstituted = messageWithWildcards.format(argArray);
+    if (messageWithWildcardsSubstituted == null) {
+      throw new ProgrammingMistakeException("Assuming the method never returns null");
+    }
+    return Nulls.normalizeSpace(messageWithWildcardsSubstituted);
+  }
+
+}
