@@ -10,63 +10,114 @@ Order within each section is the source of truth. Completed tasks move to **Done
 
 ---
 
-## Current release — Clean-up release mainly remove old test generators and var operator - 16.1.0
+## Current release — publish to Maven Central
 
-Already done in CHANGELOG.md
+The capstone release. Publish to Central only when the library has stabilised - every
+prior release done, identity questions settled, and any tasks that surface during the
+prerequisite work itself addressed first. Maven Central artifacts are immutable: once
+published, a groupId+artifactId+version triple lives forever in the public record, and
+the Java package names become part of the public API contract. The bar for moving from
+JitPack to Central is "we are confident this artifact represents the project well,
+indefinitely."
 
-[x] Fix JavaDoc code in test classes and private main classes
-[x] Use explicit local variable types
-[x] Document how to use clean-chess on flag fall and resign in README.md
+Identity decision (settled): the project's full public identity becomes `ashlar-chess`
+everywhere it is the project's own to name - GitHub repo `dlbbld/ashlar-chess`,
+coordinate `io.github.dlbbld:ashlar-chess`, Java packages `io.github.dlbbld.ashlarchess.*`.
+The old `com.dlb.chess` package is dropped: it reverse-maps to `dlb.com`, a domain owned
+by a third party, so it was never a namespace this project could legitimately claim. All
+identity churn is done on this branch, before the first Central publish - the one window
+where it is cheap (no consumers exist yet).
 
-## Future release — publish to Maven Central
+### Step 0 — Repository rename (do now, on this branch)
+- [ ] Rename GitHub repo `dlbbld/clean-chess` -> `dlbbld/ashlar-chess` (Settings -> repository name)
+- [ ] `git remote set-url origin https://github.com/dlbbld/ashlar-chess.git` in the main
+      checkout (covers worktrees - they share repo config; optional, redirects work)
+- [ ] Keep the LOCAL directory `C:\Users\danie\git\clean-chess` unchanged - only the
+      GitHub remote is renamed (Eclipse project + worktree paths key off the local name)
+- Cautions: never recreate a `dlbbld/clean-chess` repo later (breaks redirects); do not
+  cut a JitPack release while `main` still says `clean-chess` - finish the PR first.
 
-The capstone release. Publish to Central only when the library has stabilised — every prior release done, identity questions settled, and any tasks that surface during the prerequisite work itself addressed first. Maven Central artifacts are immutable: once published, an artifactId+version pair lives forever in the public record. The bar for moving from JitPack to Central is therefore "we are confident this artifact represents the project well, indefinitely."
+### Prerequisites
+- [ ] Add SPDX header to each Java file. ASCII-only per coding-conventions.md, so the
+      two-line GPL form uses `Baechli`, not the umlaut:
+        // Copyright (C) 2020-2026 Daniel Baechli
+        // SPDX-License-Identifier: GPL-3.0-only
+      (SPDX-only is the lighter alternative if you prefer no copyright line in source.)
+      Java-only phase - if SPDX is later extended to XML/properties/Markdown, each file
+      type needs its own comment syntax, NOT `//`.
+- [ ] Eclipse template adding the chosen header on every new Java class
+- [x] Rename decision resolved: ashlar-chess is the final name (executed in Step 0 + below)
+- [x] DeepSquare / Bitboard / python-chess prior releases complete
+- [ ] Mention that chesslib is used for testing
+- [ ] Final maturity re-check at publish time
 
-### Prerequisites — must be true before any Central work begins
-- [ ] Add line "// SPDX-License-Identifier: GPL-3.0-only" to each file
-- [ ] Add Eclipse setting adding the obligate first line for every new Java class
-- [x] Documented: how to use clean-chess on flag fall and resign in README.md
-- [x] DeepSquare release complete (Auto-CHA + Zobrist + pawn-wall classifier + foundational refactors)
-- [x] Bitboard release complete (performance acceptable, differential-test harness green)
-- [x] python-chess primary + PGN/FEN coverage release complete
-- [x] Rename decision resolved: ashlar-chess is the final name.
-- [ ] Every task that surfaces during the prerequisite releases has been addressed (re-evaluate this list at the moment of starting; the bar is "library is mature")
+### pom.xml — coordinates + metadata (do now on this branch)
+- [ ] `<groupId>` `com.github.dlbbld` -> `io.github.dlbbld`
+- [ ] `<artifactId>` `clean-chess` -> `ashlar-chess`
+- [ ] Add `<name>ashlar-chess</name>`, `<description>`, `<url>` (github.com/dlbbld/ashlar-chess)
+- [ ] Add `<inceptionYear>2020</inceptionYear>`
+- [ ] Add `<licenses>` (GPL-3.0-only, full URL, distribution=repo)
+- [ ] Add `<developers>`
+- [ ] Add `<scm>` -> ashlar-chess connection/developerConnection/url
+- `<version>` already valid semver - no change
 
-### Sonatype Central Portal setup
+### Java package rename — `com.dlb.chess.*` -> `io.github.dlbbld.ashlarchess.*` (do now, own phase)
+- [ ] Eclipse Refactor -> Rename Package with "rename subpackages" across the WHOLE project
+      (src/main AND src/test - the relocated StaticPosition oracle is also under com.dlb.chess)
+- [ ] Each `package-info.java` (with `@NonNullByDefault`) moves with its package - verify none lost
+- [ ] Sweep NON-Java references (refactor will not catch these):
+      - log4j2 config (logger names / package paths)
+      - checkstyle.xml + suppressions (package-scoped rules / regex paths)
+      - src/main/resources + src/test/resources (any package path or key)
+      - reflection string literals (Class.forName, getResource by package path)
+      - test-fixture resource paths + generated-test-case references
+      - README / Javadoc / specification.md / coding-conventions.md / workflows.md snippets
+- [ ] Verify: full profile green (`mvn -Pfull -Dtest.excludes= test`) + javadoc:
+        mvn javadoc:javadoc -Dshow=private
+        mvn javadoc:test-javadoc -Dshow=private
+
+### Copyright alignment (do now)
+- [ ] LICENSE copyright `2024-2026` -> `2020-2026` (LICENSE/README keep the umlaut spelling)
+- [ ] SPDX/copyright headers (prerequisite above) applied consistently after the package rename
+
+### pom.xml — required plugins (all in a new `release` profile)
+- [ ] central-publishing-maven-plugin (`extensions=true`; in the `release` profile with
+      signing + javadoc + sources, so `mvn -Prelease deploy` is the only Central-aware command)
+- [ ] maven-gpg-plugin (sign)
+- [ ] maven-javadoc-plugin `jar` execution (plugin already configured globally for validation;
+      add the jar goal in the profile)
+- [ ] move maven-source-plugin's `jar` execution into the `release` profile too (currently
+      global) - keeps normal `mvn package` Java-only and the whole release bundle in one place
+
+### README / docs (this branch)
+- [ ] Replace project-name mentions clean-chess -> ashlar-chess
+- (JitPack-block -> Central-snippet swap stays a publish-time task below)
+
+### Sonatype Central Portal setup (publish time, manual - your account)
 - [ ] Create Sonatype Central account at https://central.sonatype.com, sign in via GitHub
-- [ ] Verify the `io.github.dlbbld` namespace (auto-verified for GitHub-signed-in users — no domain needed)
-- [ ] Generate a GPG key, publish it to a public keyserver (e.g. `keyserver.ubuntu.com`), record the keyID
-- [ ] Configure `~/.m2/settings.xml` with Sonatype Portal credentials and GPG passphrase
-
-### `pom.xml` — Central-required metadata
-- [ ] `<groupId>` → `io.github.dlbbld` (currently `com.github.dlbbld`, the JitPack convention)
-- [ ] `<version>` → strict semver (`4.x` → `4.x.0`)
-- [ ] Add `<name>`, `<description>`, `<url>` (link to GitHub repo)
-- [ ] Add `<licenses>` block (GPL v3, with full URL)
-- [ ] Add `<developers>` block
-- [ ] Add `<scm>` block (`connection`, `developerConnection`, `url`)
-
-### `pom.xml` — required plugins
-- [ ] `central-publishing-maven-plugin` (the new Sonatype Portal plugin — *not* the deprecated `nexus-staging-maven-plugin` / OSSRH that older tutorials still document)
-- [ ] `maven-gpg-plugin` for artifact signing
-- [ ] `maven-javadoc-plugin` to produce a javadoc jar (`maven-source-plugin` is already present)
+- [ ] Confirm the `io.github.dlbbld` namespace is verified. GitHub sign-in usually
+      auto-provisions it; if not, follow Sonatype's GitHub namespace verification flow.
+- [ ] Generate a GPG key, publish to a public keyserver, record the keyID
+- [ ] Configure `~/.m2/settings.xml` with Portal credentials + GPG passphrase
 
 ### JAR-content audit at publish time
-Whatever ships in the first Central artifact is in the public record forever. Re-audit at publish time.
+- [ ] Re-audit `src/main/resources` end-to-end (nothing dev/test/env-specific should ship)
+- [ ] Re-audit `src/main/java` for classes that should be package-private
+- [ ] Safety net for any stray test-fixture message keys or similar
 
-- [ ] Re-audit `src/main/resources` end-to-end: anything developer-facing, test-only, or environment-specific should not ship
-- [ ] Re-audit `src/main/java` for any utility classes that should have been package-private rather than public (folds the residual API-surface work in if not already done by the API-surface release)
-- [ ] (The test-fixture message keys are handled in the cleanup follow-through release; this audit is the safety net for anything similar that surfaces between now and publish)
-
-### First publish + workflow
-- [ ] Update README: drop the JitPack `<repositories>` block, leave only the plain Maven dependency snippet (no extra repository declarations needed for Central)
-- [ ] Drop the JitPack URL and any related framing from README and other docs
-- [ ] First publish via the Central Portal — staged release, manual approval the first time
-- [ ] Verify the artifact appears at https://central.sonatype.com/artifact/io.github.dlbbld/...
-- [ ] Document the per-release workflow (version bump → tag → `mvn deploy` → Portal release) in `setup.md` under a new "Releasing" section, or in a dedicated `release.md`
+### First publish + workflow (publish time)
+- [ ] README: drop the JitPack `<repositories>` block, leave only the plain Maven snippet
+- [ ] Drop the JitPack URL and related framing from README and other docs
+- [ ] Pre-deploy checks before touching Central:
+        mvn -Prelease help:active-profiles   # confirm the `release` profile is active
+        mvn -Prelease verify                 # confirm signing / javadoc jar / source jar wiring
+- [ ] First publish via the Central Portal - staged release, manual approval the first time
+- [ ] Verify the artifact at https://central.sonatype.com/artifact/io.github.dlbbld/ashlar-chess
+- [ ] Document the per-release workflow (version bump -> tag -> `mvn -Prelease deploy` ->
+      Portal release) in `setup.md` ("Releasing" section) or a dedicated `release.md`
 
 ### Post-publish
-- [ ] Decide whether JitPack stays available in parallel (free, harmless) or should be deprecated by removing the JitPack publish hook
+- [ ] Decide whether JitPack stays available in parallel (free, harmless) or is deprecated
 - [ ] (Optional) Add a Maven Central status badge to the README
 
 ---
