@@ -6,16 +6,18 @@ Releases from 3.3 onward. Earlier history is in git tags only.
 
 ## [16.1.0] - 2026-05-28
 
-Test-scaffolding cleanup plus a source-encoding repair. Removes one-shot and superseded test-data generators and dormant external-library cross-validation harnesses from the test tree, and fixes double-encoded mojibake while normalizing smart punctuation to ASCII. `src/main` edits are comments/javadoc only; no API, behaviour, or output change.
+Clean-up release. Removes superseded test scaffolding, drops `var` (local-variable type inference) for explicit types, normalizes source to ASCII, hardens the JavaDoc validation gate, and adds game-adjudication documentation. No public API, behaviour, or output change.
 
 ### Internal
 
-- Removed superseded test generators: `GeneratePythonTestCases` (replaced by the committed-JSONL python-chess oracle in 12.2.0), `GenerateScalaChessTestCases`, `GenerateAmbronaHelpMateTestCases`, `GenerateChaTestCases`, `GenerateChaLichessReport`, `GenerateLibraryCarlosInsufficientMaterialTestCases`, `GeneratePgnInformationUtility`, `GeneratePiecePositions`.
-- Removed dormant single-use cross-validation scaffolding: the `com.dlb.chess.test.scalachess` and `com.dlb.chess.test.chessbase` packages and the `com.dlb.chess.test.unwinnability.lichess` subtree (FEN and PGN check harnesses).
-- `TestUciMoveUtility` no longer depends on the removed `GenerateScalaChessTestCases`; its ScalaChess UCI-encoding helper is inlined. The test still runs unchanged.
-- `PgnTest`: removed two stale ScalaChess-related comments; no enum values changed.
-- Docs: `setup.md` adds an optional python-chess oracle-regeneration section; `tasks.md` marks the 12.2.0 python-chess cross-validation release complete; `workflows.md` reference corrected.
-- Source-encoding cleanup: repaired ~180 double-encoded (UTF-8-read-as-Windows-1252) mojibake sequences in comments/javadoc, and normalized smart punctuation (em/en-dashes, curly quotes, arrows, section sign, ellipsis) to ASCII across the source tree. Comments and cosmetic log/exception/assertion-message strings only. Intentional non-ASCII preserved: `LenientFenParser`'s Unicode-dash recognition table, `TestLenientFenParser`'s non-standard-dash FEN inputs, and the UTF-8 round-trip / commentary test corpora; the one corrupt test-data name restored to proper `í` (`Víkingaklubburinn`).
+- Removed superseded test generators and dormant cross-validation scaffolding: `GeneratePythonTestCases` (replaced by the 12.2.0 committed-JSONL python-chess oracle), `GenerateScalaChessTestCases`, `GenerateAmbronaHelpMateTestCases`, `GenerateChaTestCases`, `GenerateChaLichessReport`, `GenerateLibraryCarlosInsufficientMaterialTestCases`, `GeneratePgnInformationUtility`, `GeneratePiecePositions`, and the `com.dlb.chess.test.scalachess`, `com.dlb.chess.test.chessbase`, and `com.dlb.chess.test.unwinnability.lichess` subtrees. `TestUciMoveUtility` inlines the one helper it borrowed; `PgnTest` enum values unchanged.
+- Dropped `var` across the codebase: all locals now carry explicit types (interface types preferred, `java.util` references unqualified). Explicit types read better in technical code, notably the bitboard layer where `long` / `int` width is load-bearing. The Eclipse "Use 'var' where possible" cleanup is disabled in the checked-in profile so it cannot recur. Source-style only; no semantic effect.
+- Normalized source to ASCII: repaired ~180 double-encoded (UTF-8-read-as-Windows-1252) mojibake sequences and converted smart punctuation (em/en-dashes, curly quotes, arrows, section sign, ellipsis) to ASCII in comments and cosmetic strings. Intentional non-ASCII preserved: `LenientFenParser`'s Unicode-dash table, `TestLenientFenParser`'s non-standard-dash FEN inputs, and the UTF-8 round-trip / commentary test corpora. New `coding-conventions.md` rule: Java source is ASCII-only.
+- Hardened the JavaDoc validation gate: both `mvn javadoc:javadoc -Dshow=private` and `mvn javadoc:test-javadoc -Dshow=private` now run as release gates (`-Dshow=private` is required because many report records and all test classes are package-private, which doclint skips at default visibility). Fixed every stale, broken, or unreachable reference this surfaced - deleted-class and relocated-class links, links from main to test classes, malformed HTML, and record-component / package-private links that resolved to unreachable members (now public accessors or `{@code}`). Recorded in the pom and the `workflows.md` release pre-flight.
+
+### Documentation
+
+- README: new game-adjudication section covering flag-fall, resignation, and dead-position-during-play, a "Not supported" section, and the unwinnability / dead-position API with examples. clean-chess surfaces terminations as queryable facts; the caller adjudicates.
 
 ## [16.0.0] - 2026-05-27
 
