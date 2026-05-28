@@ -22,7 +22,7 @@ class TestLimitedUnwinnabilityOracle {
   @SuppressWarnings("static-method")
   @Test
   void testHelpmate() {
-    final var pgnName = "07_helpmate3_white_to_move.pgn";
+    final String pgnName = "07_helpmate3_white_to_move.pgn";
 
     final PgnTest pgnTest = PgnTestCaseCatalog.findPgnTestPgnNotListed(pgnName);
     final PgnGame pgnGame = LenientPgnParser.parse(pgnTest.getFolderPath(), pgnName);
@@ -38,7 +38,7 @@ class TestLimitedUnwinnabilityOracle {
   @SuppressWarnings("static-method")
   @Test
   void testForced() {
-    final var pgnName = "01_forced_checkmate.pgn";
+    final String pgnName = "01_forced_checkmate.pgn";
 
     final PgnTest pgnTest = PgnTestCaseCatalog.findPgnTestPgnNotListed(pgnName);
     final PgnGame pgnGame = LenientPgnParser.parse(pgnTest.getFolderPath(), pgnName);
@@ -54,7 +54,7 @@ class TestLimitedUnwinnabilityOracle {
   @SuppressWarnings("static-method")
   @Test
   void testPawnWall() {
-    final var pgnName = "pawn_wall_ambrona_lichess_Ob5ozxgG.pgn";
+    final String pgnName = "pawn_wall_ambrona_lichess_Ob5ozxgG.pgn";
 
     final PgnTest pgnTest = PgnTestCaseCatalog.findPgnTestPgnNotListed(pgnName);
     final PgnGame pgnGame = LenientPgnParser.parse(pgnTest.getFolderPath(), pgnName);

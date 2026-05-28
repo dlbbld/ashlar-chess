@@ -49,7 +49,7 @@ class TestLenientSanParser implements EnumConstants {
   void testGameInUciNotation() {
     final List<String> uciMoves = computeUciForms(ITALIAN_OPENING_SAN);
     final Board board = new Board();
-    var sawUciCode = false;
+      boolean sawUciCode = false;
     for (final String uci : uciMoves) {
       final LenientSanParserValidationResult result = board.moveLenient(uci);
       if (containsCode(result, LenientSanValidationProblem.UCI_NOTATION)) {
@@ -71,7 +71,7 @@ class TestLenientSanParser implements EnumConstants {
     }
 
     final Board board = new Board();
-    var sawLongAlgebraic = false;
+      boolean sawLongAlgebraic = false;
     for (final String lan : lanMoves) {
       final LenientSanParserValidationResult result = board.moveLenient(lan);
       if (containsCode(result, LenientSanValidationProblem.LONG_ALGEBRAIC_NOTATION)) {

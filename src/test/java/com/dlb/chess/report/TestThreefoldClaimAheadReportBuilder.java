@@ -85,12 +85,12 @@ class TestThreefoldClaimAheadReportBuilder {
     final ThreefoldClaimAheadReport report = ThreefoldClaimAheadReportBuilder.build(board);
     assertTrue(report.entries().size() >= 1, "fixture stops one ply before threefold; at least one claim-ahead");
 
-    var foundNonInitial = false;
+      boolean foundNonInitial = false;
     for (final ClaimAheadEntry entry : report.entries()) {
       if (!entry.includesInitialPosition()) {
         foundNonInitial = true;
         // Math invariant on the non-initial entry.
-        final var expected = entry.priorOccurrences().size() + 1;
+        final int expected = entry.priorOccurrences().size() + 1;
         assertEquals(expected, entry.totalRepetitionCount(),
             "non-initial: priorOccurrences.size + 1 (for claimAheadMove)");
       }
@@ -113,8 +113,8 @@ class TestThreefoldClaimAheadReportBuilder {
     final ThreefoldClaimAheadReport report = ThreefoldClaimAheadReportBuilder.build(board);
     assertTrue(report.entries().size() >= 2, "fixture exercises multiple claim-aheads across plies");
 
-    for (var i = 1; i < report.entries().size(); i++) {
-      final var index = i;
+    for (int i = 1; i < report.entries().size(); i++) {
+      final int index = i;
       final ClaimAheadEntry prev = Nulls.get(report.entries(), i - 1);
       final ClaimAheadEntry curr = Nulls.get(report.entries(), i);
       assertTrue(compareLexKey(prev, curr) <= 0,
@@ -130,9 +130,9 @@ class TestThreefoldClaimAheadReportBuilder {
   private static int compareLexKey(ClaimAheadEntry a, ClaimAheadEntry b) {
     final java.util.List<Integer> keyA = sortKey(a);
     final java.util.List<Integer> keyB = sortKey(b);
-    final var n = Math.min(keyA.size(), keyB.size());
-    for (var i = 0; i < n; i++) {
-      final var cmp = Integer.compare(keyA.get(i), keyB.get(i));
+    final int n = Math.min(keyA.size(), keyB.size());
+    for (int i = 0; i < n; i++) {
+      final int cmp = Integer.compare(keyA.get(i), keyB.get(i));
       if (cmp != 0) {
         return cmp;
       }

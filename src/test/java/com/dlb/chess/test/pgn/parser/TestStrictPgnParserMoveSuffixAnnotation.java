@@ -44,7 +44,7 @@ class TestStrictPgnParserMoveSuffixAnnotation {
 
   private static void checkMoveSuffixAnnotationException(String pgnName,
       StrictPgnParserValidationProblem expectedProblem) {
-    var isException = false;
+      boolean isException = false;
     try {
       PgnCacheForStrictPgnParserTestCases.getPgn(PGN_TEST_MOVE_SUFFIX_ANNOTATION_EXCEPTION_FOLDER_PATH, pgnName);
     } catch (final StrictPgnParserValidationException pre) {
@@ -88,7 +88,7 @@ class TestStrictPgnParserMoveSuffixAnnotation {
   }
 
   private static void checkCombinedException(String pgnName, StrictPgnParserValidationProblem expectedProblem) {
-    var isException = false;
+      boolean isException = false;
     try {
       PgnCacheForStrictPgnParserTestCases.getPgn(PGN_TEST_COMBINED_EXCEPTION_FOLDER_PATH, pgnName);
     } catch (final StrictPgnParserValidationException pre) {

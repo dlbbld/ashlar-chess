@@ -36,7 +36,7 @@ class TestCommentaryLenient {
   @SuppressWarnings("static-method")
   @Test
   void v01_pregameCommentaryLongNoLinebreaks() {
-    final var pregameCommentary = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.";
+    final String pregameCommentary = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.";
     assertTrue(pregameCommentary.length() > PgnCreate.MAX_LINE_LENGTH);
     final PgnGame file = LenientPgnParser
         .parseText(PgnTestHelper.header("*") + "{" + pregameCommentary + "} 1. e4 e5 *\n\n");
@@ -51,7 +51,7 @@ class TestCommentaryLenient {
   @SuppressWarnings("static-method")
   @Test
   void v01_pregameCommentaryLongWithLinebreaks() {
-    final var pregameCommentary = """
+    final String pregameCommentary = """
         Lorem ipsum dolor sit amet,
         consectetur adipiscing elit,
         sed do eiusmod
@@ -72,7 +72,7 @@ class TestCommentaryLenient {
   @SuppressWarnings("static-method")
   @Test
   void v01_pregameCommentaryOnlySpaces() {
-    final var pregameCommentary = "   ";
+    final String pregameCommentary = "   ";
     final PgnGame file = LenientPgnParser
         .parseText(PgnTestHelper.header("*") + "{" + pregameCommentary + "} 1. e4 e5 *\n\n");
     assertEquals(pregameCommentary, file.pregameCommentary().value());
@@ -380,7 +380,7 @@ class TestCommentaryLenient {
   // -------------------------------------------------------------------------------------------------
 
   private static void expectError(String pgnText, LenientPgnParserValidationProblem expected) {
-    var isException = false;
+      boolean isException = false;
     try {
       LenientPgnParser.parseText(pgnText);
     } catch (final LenientPgnParserValidationException e) {

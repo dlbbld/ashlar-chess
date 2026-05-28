@@ -153,15 +153,15 @@ final class PawnWallKingWalkOracle {
    */
   private static EnumSet<Square> kingNeighbours(Square square) {
     final EnumSet<Square> neighbours = Nulls.noneOf(Square.class);
-    final var fileNumber = square.getFile().getNumber();
-    final var rankNumber = square.getRank().getNumber();
-    for (var df = -1; df <= 1; df++) {
-      for (var dr = -1; dr <= 1; dr++) {
+    final int fileNumber = square.getFile().getNumber();
+    final int rankNumber = square.getRank().getNumber();
+    for (int df = -1; df <= 1; df++) {
+      for (int dr = -1; dr <= 1; dr++) {
         if (df == 0 && dr == 0) {
           continue;
         }
-        final var newFile = fileNumber + df;
-        final var newRank = rankNumber + dr;
+        final int newFile = fileNumber + df;
+        final int newRank = rankNumber + dr;
         if (newFile < 1 || newFile > 8 || newRank < 1 || newRank > 8) {
           continue;
         }

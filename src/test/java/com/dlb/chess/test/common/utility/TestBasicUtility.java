@@ -24,7 +24,7 @@ class TestBasicUtility {
     checkIntervalException(99, -97);
 
     // do this 1000 times
-    for (var i = 1; i <= 1000; i++) {
+    for (int i = 1; i <= 1000; i++) {
       checkInterval(0, 0);
       checkInterval(0, 1);
       checkInterval(1, 1);
@@ -45,10 +45,10 @@ class TestBasicUtility {
 
     // check we hit all number from 0 to 10
     // with assumption it happens before Integer.MAX_VALUE
-    for (var i = 0; i <= 10; i++) {
-      var isFound = false;
-      for (var repeat = 1; repeat <= Integer.MAX_VALUE; repeat++) {
-        final var generated = RandomUtility.calculateRandomNumber(0, 10);
+    for (int i = 0; i <= 10; i++) {
+        boolean isFound = false;
+      for (int repeat = 1; repeat <= Integer.MAX_VALUE; repeat++) {
+        final int generated = RandomUtility.calculateRandomNumber(0, 10);
         if (generated == i) {
           isFound = true;
           break;
@@ -59,13 +59,13 @@ class TestBasicUtility {
   }
 
   private static void checkInterval(int leftBoundInclusive, int rightBoundInclusive) {
-    final var value = RandomUtility.calculateRandomNumber(leftBoundInclusive, rightBoundInclusive);
+    final int value = RandomUtility.calculateRandomNumber(leftBoundInclusive, rightBoundInclusive);
     assertTrue(leftBoundInclusive <= value);
     assertTrue(value <= rightBoundInclusive);
   }
 
   private static void checkIntervalException(int leftBoundInclusive, int rightBoundInclusive) {
-    var isException = false;
+      boolean isException = false;
     try {
       RandomUtility.calculateRandomNumber(leftBoundInclusive, rightBoundInclusive);
     } catch (@SuppressWarnings("unused") final IllegalArgumentException e) {
@@ -77,7 +77,7 @@ class TestBasicUtility {
   @SuppressWarnings("static-method")
   @Test
   void testConvertToString() {
-    final var expected = """
+    final String expected = """
         line 1
 
         line 3""";

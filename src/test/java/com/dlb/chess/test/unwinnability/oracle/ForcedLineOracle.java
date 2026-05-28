@@ -77,7 +77,7 @@ public class ForcedLineOracle {
   static GameForced evaluateForcedLine(Board board) {
     // we check position after series of forced moves
     // we cannot use early returns for after evaluation we need to undo the moves
-    var countForcedHalfMoves = 0;
+      int countForcedHalfMoves = 0;
     while (board.getLegalMoves().size() == 1) {
       countForcedHalfMoves++;
       final LegalMove legalMove = ListUtility.getOnly(board.getLegalMoves());
@@ -90,7 +90,7 @@ public class ForcedLineOracle {
       final @Nullable Side singleSideIm = terminated ? null : singleSideInsufficientMaterial(board);
       if (terminated || singleSideIm != null) {
         final Side sideMadeLastMove = board.getHavingMove().getOppositeSide();
-        for (var i = 1; i <= countForcedHalfMoves; i++) {
+        for (int i = 1; i <= countForcedHalfMoves; i++) {
           board.unmove();
         }
         return new GameForced(outcome, singleSideIm, countForcedHalfMoves, sideMadeLastMove);
@@ -98,7 +98,7 @@ public class ForcedLineOracle {
     }
 
     final Side sideMadeLastMove = board.getHavingMove().getOppositeSide();
-    for (var i = 1; i <= countForcedHalfMoves; i++) {
+    for (int i = 1; i <= countForcedHalfMoves; i++) {
       board.unmove();
     }
     return new GameForced(Outcome.ONGOING, null, countForcedHalfMoves, sideMadeLastMove);

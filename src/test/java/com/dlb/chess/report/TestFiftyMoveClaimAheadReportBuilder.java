@@ -37,7 +37,7 @@ class TestFiftyMoveClaimAheadReportBuilder {
     // The boundary at the final position has many non-zeroing legal moves available (king + rook
     // shuffle), but the new collapse model emits exactly ONE entry - the missed-opportunity ply.
     final Board board = new Board("4k3/8/8/8/8/8/8/R3K3 w - - 0 30");
-    for (var i = 0; i < 24; i++) {
+    for (int i = 0; i < 24; i++) {
       board.movesStrict("Ra3", "Kd8", "Ra1", "Ke8");
     }
     board.movesStrict("Ra3", "Kd8", "Ra1");
@@ -62,7 +62,7 @@ class TestFiftyMoveClaimAheadReportBuilder {
     // Same fixture but play one MORE non-zeroing move so clock crosses 99 -> 100. Sequence reached
     // threshold; the missed-opportunity filter suppresses the boundary entry entirely.
     final Board board = new Board("4k3/8/8/8/8/8/8/R3K3 w - - 0 30");
-    for (var i = 0; i < 25; i++) {
+    for (int i = 0; i < 25; i++) {
       board.movesStrict("Ra3", "Kd8", "Ra1", "Ke8");
     }
     assertEquals(100, board.getHalfMoveClock(), "precondition: 100-ply shuffle reaches the threshold");
@@ -130,7 +130,7 @@ class TestFiftyMoveClaimAheadReportBuilder {
     board.movesStrict("Rg1", "a6");
     // Now drive a fresh sequence to clock 99.
     board.movesStrict("Kd1");
-    for (var i = 0; i < 24; i++) {
+    for (int i = 0; i < 24; i++) {
       board.movesStrict("Kd8", "Ke1", "Ke8", "Kd1");
     }
     board.movesStrict("Kd8", "Ke1");

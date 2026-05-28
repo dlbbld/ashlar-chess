@@ -20,7 +20,7 @@ class TestPgnExportPreview {
   void testInitial() {
 
     {
-      final var expected = """
+      final String expected = """
           [Event "?"]
           [Site "?"]
           [Date "????.??.??"]
@@ -44,7 +44,7 @@ class TestPgnExportPreview {
     }
 
     {
-      final var expected = """
+      final String expected = """
           [Event "?"]
           [Site "?"]
           [Date "????.??.??"]
@@ -57,7 +57,7 @@ class TestPgnExportPreview {
 
           """;
 
-      final var pgnImport = """
+      final String pgnImport = """
           e4 e5 Nf3 Nc6""";
 
       final List<String> actualLineList = convertFromTextBlock(pgnImport);
@@ -70,7 +70,7 @@ class TestPgnExportPreview {
     }
 
     {
-      final var expected = """
+      final String expected = """
           [Event "Zuerich Open"]
           [Site "?"]
           [Date "????.??.??"]
@@ -83,7 +83,7 @@ class TestPgnExportPreview {
 
           """;
 
-      final var pgnImport = """
+      final String pgnImport = """
           [Event "Zuerich Open"]
           e4 e5 Nf3 Nc6 1-0""";
 
@@ -97,7 +97,7 @@ class TestPgnExportPreview {
     }
 
     {
-      final var expected = """
+      final String expected = """
           [Event "Zuerich Open"]
           [Site "?"]
           [Date "2000.01.01"]
@@ -110,7 +110,7 @@ class TestPgnExportPreview {
 
           """;
 
-      final var pgnImport = """
+      final String pgnImport = """
           [Result "1/2-1/2"]
           [Date "2000.01.01"]
           [Event "Zuerich Open"]
@@ -131,7 +131,7 @@ class TestPgnExportPreview {
   void testFromPositionWhiteStart() {
 
     {
-      final var expected = """
+      final String expected = """
           [Event "?"]
           [Site "?"]
           [Date "????.??.??"]
@@ -146,7 +146,7 @@ class TestPgnExportPreview {
 
           """;
 
-      final var pgnImport = """
+      final String pgnImport = """
           [FEN "r1b2r2/pp1pk1pp/8/7q/3pP1n1/5N1P/PPQ2PP1/3R1RK1 w - - 0 17"]
           Qa4 Rb8 Qc4 Ra8 """;
 
@@ -160,7 +160,7 @@ class TestPgnExportPreview {
     }
 
     {
-      final var expected = """
+      final String expected = """
           [Event "?"]
           [Site "?"]
           [Date "????.??.??"]
@@ -175,7 +175,7 @@ class TestPgnExportPreview {
 
           """;
 
-      final var pgnImport = """
+      final String pgnImport = """
           [Black "Mickey Mouse"]
           [White "Donald Duck"]
           [FEN "r1b2r2/pp1pk1pp/8/7q/3pP1n1/5N1P/PPQ2PP1/3R1RK1 w - - 0 17"]
@@ -196,7 +196,7 @@ class TestPgnExportPreview {
   void testFromPositionBlackStart() {
 
     {
-      final var expected = """
+      final String expected = """
           [Event "?"]
           [Site "?"]
           [Date "????.??.??"]
@@ -211,7 +211,7 @@ class TestPgnExportPreview {
 
           """;
 
-      final var pgnImport = """
+      final String pgnImport = """
           [Result "1-0"]
           [FEN "1n2kb1r/p4ppp/4q3/4p1B1/4P3/8/PPP2PPP/2KR4 b k - 0 17"]
           Qd7 Re1 Na6 Rd1 Nb8 Kb1 Be7 Kc1 """;
@@ -226,7 +226,7 @@ class TestPgnExportPreview {
     }
 
     {
-      final var expected = """
+      final String expected = """
           [Event "?"]
           [Site "?"]
           [Date "2011.12.31"]
@@ -241,7 +241,7 @@ class TestPgnExportPreview {
 
           """;
 
-      final var pgnImport = """
+      final String pgnImport = """
           [Date "2011.12.31"]
           [Round "13"]
           [FEN "1n2kb1r/p4ppp/4q3/4p1B1/4P3/8/PPP2PPP/2KR4 b k - 0 17"]

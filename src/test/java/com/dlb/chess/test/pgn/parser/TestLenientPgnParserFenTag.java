@@ -26,7 +26,7 @@ class TestLenientPgnParserFenTag {
     // The position passes lenient FEN normalisation (it's syntactically a six-field FEN) but FenParserAdvanced
     // rejects it for the missing black king. The lenient PGN parser must surface this as FEN_TAG_INVALID
     // rather than UNKNOWN_ERROR.
-    final var pgn = """
+    final String pgn = """
         [Event "Test"]
         [Result "*"]
         [SetUp "1"]
@@ -46,7 +46,7 @@ class TestLenientPgnParserFenTag {
   void test02_fenTagUnparseableFailsAsFenTagInvalid() {
     // The FEN tag is too garbled for the lenient normalisation pipeline to recover (only one field present).
     // The lenient PGN parser must surface this as FEN_TAG_INVALID rather than UNKNOWN_ERROR.
-    final var pgn = """
+    final String pgn = """
         [Event "Test"]
         [Result "*"]
         [SetUp "1"]
@@ -66,7 +66,7 @@ class TestLenientPgnParserFenTag {
     // A FEN tag with deviations the lenient FEN layer forgives (missing fullmove number, uppercase side-to-move)
     // produces a valid lenient PGN parse - the FEN-level forgiveness is applied silently at the PGN-parser
     // level, by design.
-    final var pgn = """
+    final String pgn = """
         [Event "Test"]
         [Result "*"]
         [SetUp "1"]

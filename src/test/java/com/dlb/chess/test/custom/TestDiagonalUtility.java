@@ -45,7 +45,7 @@ class TestDiagonalUtility implements EnumConstants {
     }
 
     // now we calculate the diagonal
-    var diagonalSquare = mostLeftSquare;
+      Square diagonalSquare = mostLeftSquare;
     diagonal.add(diagonalSquare);
     while (Square.calculateHasRightDiagonalSquare(WHITE, diagonalSquare)) {
       diagonalSquare = Square.calculateRightDiagonalSquare(WHITE, diagonalSquare);
@@ -67,7 +67,7 @@ class TestDiagonalUtility implements EnumConstants {
     }
 
     // now we calculate the diagonal
-    var diagonalSquare = mostLeftSquare;
+      Square diagonalSquare = mostLeftSquare;
     diagonal.add(diagonalSquare);
     while (Square.calculateHasLeftDiagonalSquare(BLACK, diagonalSquare)) {
       diagonalSquare = Square.calculateLeftDiagonalSquare(BLACK, diagonalSquare);
@@ -80,20 +80,20 @@ class TestDiagonalUtility implements EnumConstants {
 
     final List<Square> diagonal = new ArrayList<>();
 
-    final var leftNumberOfSquares = Math.min(square.getFile().getNumber(), square.getRank().getNumber()) - 1;
-    final var rightNumberOfSquares = Math.min(9 - square.getFile().getNumber(), 9 - square.getRank().getNumber()) - 1;
+    final int leftNumberOfSquares = Math.min(square.getFile().getNumber(), square.getRank().getNumber()) - 1;
+    final int rightNumberOfSquares = Math.min(9 - square.getFile().getNumber(), 9 - square.getRank().getNumber()) - 1;
 
-    final var startingFileNumber = square.getFile().getNumber() - leftNumberOfSquares;
-    final var startingRankNumber = square.getRank().getNumber() - leftNumberOfSquares;
+    final int startingFileNumber = square.getFile().getNumber() - leftNumberOfSquares;
+    final int startingRankNumber = square.getRank().getNumber() - leftNumberOfSquares;
 
-    final var endFileNumber = square.getFile().getNumber() + rightNumberOfSquares;
+    final int endFileNumber = square.getFile().getNumber() + rightNumberOfSquares;
 
     if (startingFileNumber > endFileNumber) {
       throw new SetupException("That is not possible");
     }
 
-    var rankNumber = startingRankNumber;
-    for (var fileNumber = startingFileNumber; fileNumber <= endFileNumber; fileNumber++) {
+      int rankNumber = startingRankNumber;
+    for (int fileNumber = startingFileNumber; fileNumber <= endFileNumber; fileNumber++) {
       final Square diagonalSquare = Square.calculate(fileNumber, rankNumber);
       diagonal.add(diagonalSquare);
       rankNumber++;
@@ -106,22 +106,22 @@ class TestDiagonalUtility implements EnumConstants {
 
     final List<Square> diagonal = new ArrayList<>();
 
-    final var fileNumber = square.getFile().getNumber();
-    final var rankNumber = square.getRank().getNumber();
+    final int fileNumber = square.getFile().getNumber();
+    final int rankNumber = square.getRank().getNumber();
 
-    final var leftNumberOfSquares = Math.min(fileNumber, 9 - rankNumber) - 1;
-    final var rightNumberOfSquares = Math.min(9 - fileNumber, rankNumber) - 1;
+    final int leftNumberOfSquares = Math.min(fileNumber, 9 - rankNumber) - 1;
+    final int rightNumberOfSquares = Math.min(9 - fileNumber, rankNumber) - 1;
 
-    final var startingFileNumber = fileNumber - leftNumberOfSquares;
-    final var startingRankNumber = rankNumber + leftNumberOfSquares;
-    final var endFileNumber = fileNumber + rightNumberOfSquares;
+    final int startingFileNumber = fileNumber - leftNumberOfSquares;
+    final int startingRankNumber = rankNumber + leftNumberOfSquares;
+    final int endFileNumber = fileNumber + rightNumberOfSquares;
 
     if (startingFileNumber > endFileNumber) {
       throw new SetupException("That is not possible");
     }
 
-    var rankNumberProcess = startingRankNumber;
-    for (var fileNumberProcess = startingFileNumber; fileNumberProcess <= endFileNumber; fileNumberProcess++) {
+      int rankNumberProcess = startingRankNumber;
+    for (int fileNumberProcess = startingFileNumber; fileNumberProcess <= endFileNumber; fileNumberProcess++) {
       final Square diagonalSquare = Square.calculate(fileNumberProcess, rankNumberProcess);
       diagonal.add(diagonalSquare);
       rankNumberProcess--;

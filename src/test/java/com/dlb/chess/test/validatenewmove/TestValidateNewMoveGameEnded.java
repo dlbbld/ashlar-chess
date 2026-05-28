@@ -126,7 +126,7 @@ class TestValidateNewMoveGameEnded implements EnumConstants {
    * Asserts that the move is rejected with the given {@link MoveCheck}.
    */
   private static void rejectsWith(Board board, MoveSpecification move, MoveCheck expected) {
-    var thrown = false;
+      boolean thrown = false;
     try {
       board.move(move);
     } catch (final InvalidMoveException e) {

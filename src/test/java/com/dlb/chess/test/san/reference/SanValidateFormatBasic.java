@@ -21,15 +21,15 @@ public abstract class SanValidateFormatBasic {
       return false;
     }
 
-    var countX = 0;
-    var countEquals = 0;
-    var equalsIndex = -1;
-    var countCheckOrCheckmate = 0;
-    var countK = 0;
-    var countRnbq = 0;
-    var countDigits = 0;
-    var countFiles = 0;
-    for (var i = 0; i < san.length(); i++) {
+      int countX = 0;
+      int countEquals = 0;
+      int equalsIndex = -1;
+      int countCheckOrCheckmate = 0;
+      int countK = 0;
+      int countRnbq = 0;
+      int countDigits = 0;
+      int countFiles = 0;
+    for (int i = 0; i < san.length(); i++) {
       switch (san.charAt(i)) {
         case 'x' -> countX++;
         case '=' -> {

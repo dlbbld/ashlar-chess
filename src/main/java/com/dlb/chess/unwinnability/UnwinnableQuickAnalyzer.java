@@ -39,8 +39,8 @@ public class UnwinnableQuickAnalyzer {
 
     // 1: advance the position as long as there is only one legal move
     // if position is advanced cannot use the provided mobility solution if any
-    var isCanUseMobilitySolution = true;
-    var countHalfmoves = 0;
+      boolean isCanUseMobilitySolution = true;
+      int countHalfmoves = 0;
     final List<UciMove> forcedMoveLine = new ArrayList<>();
     final Set<DynamicPosition> forcedPositionSet = new HashSet<>();
     while (forcedPositionSet.add(board.getDynamicPosition())) {
@@ -80,7 +80,7 @@ public class UnwinnableQuickAnalyzer {
     // 2: perform a depth-first search over the tree of variations of pos and interrupt the
     // search if (i) checkmate is found for player c or (ii) depth D is reached
     final String invariantTwo = board.getFen();
-    final var checkmateSearchResult = FindHelpMateInterrupt.calculateHelpmate(board, c);
+    final FindHelpmateAnalysis checkmateSearchResult = FindHelpMateInterrupt.calculateHelpmate(board, c);
     if (!invariantTwo.equals(board.getFen())) {
       throw new ProgrammingMistakeException("Board was changed");
     }
@@ -128,9 +128,9 @@ public class UnwinnableQuickAnalyzer {
     }
 
     if (IS_ALIGN_QUICK_WITH_AMBRONA_REFERENCE_IMPLEMENTATION) {
-      var isUnwinnable = false;
-      final var hasOnlyPawnsAndBishops = calculateHasOnlyPawnsBishopsAndKings(board.getBitboardPosition());
-      final var isBlockedCandidate = calculateIsBlockedCandidate(board.getBitboardPosition());
+        boolean isUnwinnable = false;
+      final boolean hasOnlyPawnsAndBishops = calculateHasOnlyPawnsBishopsAndKings(board.getBitboardPosition());
+      final boolean isBlockedCandidate = calculateIsBlockedCandidate(board.getBitboardPosition());
       if (isBlockedCandidate && hasOnlyPawnsAndBishops) {
         final MobilitySolution mobilitySolution = Mobility.mobility(board);
         isUnwinnable = UnwinnableSemiStatic.unwinnableSemiStatic(board, c, mobilitySolution);
@@ -142,7 +142,7 @@ public class UnwinnableQuickAnalyzer {
       }
 
       final MovedKings movedKings = new MovedKings();
-      final var isDynamicSearchCandidate = hasOnlyPawnsAndBishops && board.getLegalMoves().size() <= 8;
+      final boolean isDynamicSearchCandidate = hasOnlyPawnsAndBishops && board.getLegalMoves().size() <= 8;
       if (!isUnwinnable && isDynamicSearchCandidate) {
         isUnwinnable = calculateIsDynamicallyUnwinnable(board, c, 7, movedKings, new HashMap<>());
       }
@@ -201,7 +201,7 @@ public class UnwinnableQuickAnalyzer {
       return false;
     }
 
-    final var cacheKey = new DynamicSearchKey(board.getDynamicPosition(), depth);
+    final DynamicSearchKey cacheKey = new DynamicSearchKey(board.getDynamicPosition(), depth);
     if (transpositionMap.containsKey(cacheKey)) {
       return Nulls.get(transpositionMap, cacheKey);
     }
@@ -211,7 +211,7 @@ public class UnwinnableQuickAnalyzer {
         movedKings.value |= board.getHavingMove() == Side.WHITE ? 2 : 1;
       }
       board.move(legalMove.moveSpecification());
-      final var isUnwinnable = calculateIsDynamicallyUnwinnable(board, intendedWinner, depth - 1, movedKings,
+      final boolean isUnwinnable = calculateIsDynamicallyUnwinnable(board, intendedWinner, depth - 1, movedKings,
           transpositionMap);
       board.unmove();
       if (!isUnwinnable) {
@@ -232,7 +232,7 @@ public class UnwinnableQuickAnalyzer {
     for (final LegalMove legalMove : board.getLegalMoves()) {
       board.move(legalMove.moveSpecification());
       final MobilitySolution mobilitySolution = Mobility.mobility(board);
-      final var isUnwinnable = UnwinnableSemiStatic.unwinnableSemiStatic(board, intendedWinner, mobilitySolution);
+      final boolean isUnwinnable = UnwinnableSemiStatic.unwinnableSemiStatic(board, intendedWinner, mobilitySolution);
       board.unmove();
       if (!isUnwinnable) {
         return false;
@@ -285,7 +285,7 @@ public class UnwinnableQuickAnalyzer {
   }
 
   private static void unperformHalfmoves(Board board, int countHalfmoves) {
-    for (var i = 1; i <= countHalfmoves; i++) {
+    for (int i = 1; i <= countHalfmoves; i++) {
       board.unmove();
     }
   }

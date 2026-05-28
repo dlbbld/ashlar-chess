@@ -21,7 +21,7 @@ public class TestLenientPgnParserUtf8 {
   @SuppressWarnings("static-method")
   @Test
   void test1() {
-    final var pgn = """
+    final String pgn = """
         [Event "Live Chess ä, ö, ü, ß"]
         [Site "Chess.com 你好"]
         [Date "2020.07.11"]
@@ -59,7 +59,7 @@ public class TestLenientPgnParserUtf8 {
   void test2() {
     // intentionally not formatting nicely
     // to additionally check comparing logical content
-    final var pgn = """
+    final String pgn = """
         [Site "ñ, á, é, í, ó, ú, ¡, ¿ Chess.com 你好"]
         [Event "é, è, ê, ë, à, â, ç Live Chess ä, ö, ü, ß"]
         [White "à, è, é, ì, ò, ù almtwali नमस्ते"]
@@ -103,7 +103,7 @@ public class TestLenientPgnParserUtf8 {
   void test3() {
     // intentionally not formatting nicely
     // to additionally check comparing logical content
-    final var pgn = """
+    final String pgn = """
                [Event "é, è, ê, ë, à, â, ç ≤, ≥Live Chess ä, ö, ü, ß"]
         [Site "ñ, á, é, í, ó, ú, ¡, ¿ Chess.com 你好"]
         [White "à, è, é, ì, ò, ù almtwali नमस्ते ∞∞∞"]

@@ -78,7 +78,7 @@ abstract class UnwinnabilityMaterial implements EnumConstants {
   // --- aggregate shape checks ---
 
   static boolean calculateHasKingOnly(Side side, StaticPosition staticPosition) {
-    var countKing = 0;
+      int countKing = 0;
     for (final Square boardSquare : Square.REAL) {
       final Piece pieceOnSquare = staticPosition.get(boardSquare);
       if (pieceOnSquare == Piece.NONE || pieceOnSquare.getSide() != side) {
@@ -94,8 +94,8 @@ abstract class UnwinnabilityMaterial implements EnumConstants {
   }
 
   static boolean calculateHasKingAndKnightOnly(Side side, StaticPosition staticPosition) {
-    var countKing = 0;
-    var countKnights = 0;
+      int countKing = 0;
+      int countKnights = 0;
     for (final Square boardSquare : Square.REAL) {
       final Piece pieceOnSquare = staticPosition.get(boardSquare);
       if (pieceOnSquare == Piece.NONE || pieceOnSquare.getSide() != side) {
@@ -144,7 +144,7 @@ abstract class UnwinnabilityMaterial implements EnumConstants {
 
   private static int countPieces(Side side, StaticPosition staticPosition, PieceType pieceType) {
     final Piece piece = Piece.calculate(side, pieceType);
-    var total = 0;
+      int total = 0;
     for (final Square boardSquare : Square.REAL) {
       if (staticPosition.get(boardSquare) == piece) {
         total++;
@@ -155,7 +155,7 @@ abstract class UnwinnabilityMaterial implements EnumConstants {
 
   private static int countBishops(Side side, StaticPosition staticPosition, SquareType squareType) {
     final Piece bishop = Piece.calculate(side, PieceType.BISHOP);
-    var total = 0;
+      int total = 0;
     for (final Square boardSquare : Square.REAL) {
       if (staticPosition.get(boardSquare) == bishop && boardSquare.getSquareType() == squareType) {
         total++;

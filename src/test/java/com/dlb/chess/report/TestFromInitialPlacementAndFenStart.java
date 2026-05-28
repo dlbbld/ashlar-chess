@@ -233,7 +233,7 @@ class TestFromInitialPlacementAndFenStart {
    * occurred 3 times; {@code cycles == 4} produces 16 plies and 5 occurrences; and so on.
    */
   private static void playKnightShuffleAsWhite(Board board, int cycles) {
-    for (var i = 0; i < cycles; i++) {
+    for (int i = 0; i < cycles; i++) {
       board.movesStrict("Nf3", "Nf6", "Ng1", "Ng8");
     }
   }
@@ -242,7 +242,7 @@ class TestFromInitialPlacementAndFenStart {
    * Mirror for the Black-to-move-at-fullmove-1 case: each cycle is {@code Nf6 Nf3 Ng8 Ng1} (Black moves first).
    */
   private static void playKnightShuffleAsBlack(Board board, int cycles) {
-    for (var i = 0; i < cycles; i++) {
+    for (int i = 0; i < cycles; i++) {
       board.movesStrict("Nf6", "Nf3", "Ng8", "Ng1");
     }
   }
@@ -253,13 +253,13 @@ class TestFromInitialPlacementAndFenStart {
    * exact starting state after each cycle (no first-cycle rights erasure to shift the dynamic position).
    */
   private static void playRookShuffleAsWhite(Board board, int cycles) {
-    for (var i = 0; i < cycles; i++) {
+    for (int i = 0; i < cycles; i++) {
       board.movesStrict("Rg1", "Kd8", "Rh1", "Ke8");
     }
   }
 
   private static void playRookShuffleAsBlack(Board board, int cycles) {
-    for (var i = 0; i < cycles; i++) {
+    for (int i = 0; i < cycles; i++) {
       board.movesStrict("Kd8", "Rg1", "Ke8", "Rh1");
     }
   }
@@ -276,7 +276,7 @@ class TestFromInitialPlacementAndFenStart {
         board.getHalfMoveList(), ChessConstants.THREEFOLD_REPETITION_RULE_THRESHOLD);
     assertTrue(report.groups().size() >= 1, "threefold report must surface at least one group");
 
-    var anyAtThreefold = false;
+      boolean anyAtThreefold = false;
     for (final RepetitionGroup group : report.groups()) {
       if (group.totalRepetitionCount() >= ChessConstants.THREEFOLD_REPETITION_RULE_THRESHOLD) {
         anyAtThreefold = true;
@@ -293,7 +293,7 @@ class TestFromInitialPlacementAndFenStart {
     final ThreefoldExistingReport report = ThreefoldExistingReportBuilder.build(board.getInitialDynamicPosition(),
         board.getHalfMoveList(), ChessConstants.THREEFOLD_REPETITION_RULE_THRESHOLD);
 
-    var anyAtFivefold = false;
+      boolean anyAtFivefold = false;
     for (final RepetitionGroup group : report.groups()) {
       if (group.totalRepetitionCount() >= ChessConstants.FIVEFOLD_REPETITION_RULE_THRESHOLD) {
         anyAtFivefold = true;
@@ -375,10 +375,10 @@ class TestFromInitialPlacementAndFenStart {
    */
   private static List<String> extractSection(List<String> lines, String sectionHeaderPrefix,
       String nextSectionHeaderPrefix) {
-    var inSection = false;
+      boolean inSection = false;
     final List<String> contents = new ArrayList<>();
     for (final String raw : lines) {
-      final var line = raw.trim();
+      final String line = raw.trim();
       if (!inSection && line.startsWith(sectionHeaderPrefix)) {
         inSection = true;
         continue;
@@ -402,10 +402,10 @@ class TestFromInitialPlacementAndFenStart {
    * header.
    */
   private static List<String> extractSectionToEnd(List<String> lines, String sectionHeaderPrefix) {
-    var inSection = false;
+      boolean inSection = false;
     final List<String> contents = new ArrayList<>();
     for (final String raw : lines) {
-      final var line = raw.trim();
+      final String line = raw.trim();
       if (!inSection && line.startsWith(sectionHeaderPrefix)) {
         inSection = true;
         continue;

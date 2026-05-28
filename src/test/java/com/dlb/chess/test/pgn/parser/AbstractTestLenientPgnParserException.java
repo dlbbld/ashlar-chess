@@ -21,7 +21,7 @@ public abstract class AbstractTestLenientPgnParserException extends AbstractTest
 
   private static void checkParse(Path pgnTestFolderPath, String pgnName,
       LenientPgnParserValidationProblem expectedProblemParser, SanValidationProblem expectedProblemSan) {
-    var isException = false;
+      boolean isException = false;
     try {
       LenientPgnParser.parse(pgnTestFolderPath, pgnName);
     } catch (final LenientPgnParserValidationException e) {

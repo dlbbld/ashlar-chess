@@ -15,7 +15,7 @@ class TestBasicFile implements EnumConstants {
   @SuppressWarnings("static-method")
   @Test
   void testCount() throws Exception {
-    var totalFiles = 0;
+      int totalFiles = 0;
     for (@SuppressWarnings("unused") final File file : File.REAL) {
       totalFiles++;
     }

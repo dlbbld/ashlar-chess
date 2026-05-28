@@ -22,7 +22,7 @@ abstract class SanValidateFormatPawn extends AbstractSan {
           Message.getString("validation.san.format.pawn.noSecondCharacter"));
     }
 
-    final var secondChar = core.charAt(1);
+    final char secondChar = core.charAt(1);
 
     if (SanValidateFormat.isRankDigit(secondChar)) {
       return parsePawnForwardMove(core, sanTerminalMarker);
@@ -36,9 +36,9 @@ abstract class SanValidateFormatPawn extends AbstractSan {
   }
 
   private static SanParse parsePawnForwardMove(final String core, final SanTerminalMarker sanTerminalMarker) {
-    final var length = core.length();
-    final var firstChar = core.charAt(0);
-    final var secondChar = core.charAt(1);
+    final int length = core.length();
+    final char firstChar = core.charAt(0);
+    final char secondChar = core.charAt(1);
 
     if (!isAnyPromotionRank(secondChar)) {
       // non promotion e.g. d3
@@ -64,7 +64,7 @@ abstract class SanValidateFormatPawn extends AbstractSan {
           Message.getString("validation.san.format.pawn.forward.promotion.noPromotionSymbol"));
     }
 
-    final var thirdChar = core.charAt(2);
+    final char thirdChar = core.charAt(2);
 
     // wrong promotion symbol
     if (!isPromotionSymbol(thirdChar)) {
@@ -79,7 +79,7 @@ abstract class SanValidateFormatPawn extends AbstractSan {
           Message.getString("validation.san.format.pawn.forward.promotion.noPromotionPiece"));
     }
 
-    final var fourthChar = core.charAt(3);
+    final char fourthChar = core.charAt(3);
 
     // wrong promotion piece
     if (!NotationPromotionPiece.exists(fourthChar)) {
@@ -101,8 +101,8 @@ abstract class SanValidateFormatPawn extends AbstractSan {
   }
 
   private static SanParse parsePawnCaptureMove(final String core, final SanTerminalMarker sanTerminalMarker) {
-    final var length = core.length();
-    final var firstChar = core.charAt(0);
+    final int length = core.length();
+    final char firstChar = core.charAt(0);
 
     // too short
     if (length == 2) {
@@ -110,7 +110,7 @@ abstract class SanValidateFormatPawn extends AbstractSan {
           Message.getString("validation.san.format.pawn.capture.noFile"));
     }
 
-    final var thirdChar = core.charAt(2);
+    final char thirdChar = core.charAt(2);
 
     // file check
     if (!SanValidateFormat.isFileLetter(thirdChar)) {
@@ -124,7 +124,7 @@ abstract class SanValidateFormatPawn extends AbstractSan {
           Message.getString("validation.san.format.pawn.capture.noRank"));
     }
 
-    final var fourthChar = core.charAt(3);
+    final char fourthChar = core.charAt(3);
 
     // rank check
     if (!SanValidateFormat.isRankDigit(fourthChar)) {
@@ -156,7 +156,7 @@ abstract class SanValidateFormatPawn extends AbstractSan {
           Message.getString("validation.san.format.pawn.capture.promotion.noPromotionSymbol"));
     }
 
-    final var fifthChar = core.charAt(4);
+    final char fifthChar = core.charAt(4);
 
     // wrong promotion symbol
     if (!isPromotionSymbol(fifthChar)) {
@@ -171,7 +171,7 @@ abstract class SanValidateFormatPawn extends AbstractSan {
           Message.getString("validation.san.format.pawn.capture.promotion.noPromotionPiece"));
     }
 
-    final var sixthChar = core.charAt(5);
+    final char sixthChar = core.charAt(5);
 
     // wrong promotion piece
     if (!NotationPromotionPiece.exists(sixthChar)) {

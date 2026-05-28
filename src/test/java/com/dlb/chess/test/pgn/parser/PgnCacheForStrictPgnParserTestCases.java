@@ -21,7 +21,7 @@ public class PgnCacheForStrictPgnParserTestCases {
     }
 
     // Construct the full path to the PGN file
-    final var pgnPath = Nulls.pathResolve(pgnFolderPath, pgnName);
+    final Path pgnPath = Nulls.pathResolve(pgnFolderPath, pgnName);
 
     // Convert to a canonical String for cache lookups
     @SuppressWarnings("null") final @NonNull String key = pgnPath.toAbsolutePath().toString();

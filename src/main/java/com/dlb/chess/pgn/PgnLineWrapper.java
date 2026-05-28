@@ -22,7 +22,7 @@ abstract class PgnLineWrapper {
     final List<String> result = new ArrayList<>();
     StringBuilder wrappedLine = new StringBuilder();
     wrappedLine.append(Nulls.get(atoms, 0));
-    for (var i = 1; i < atoms.size(); i++) {
+    for (int i = 1; i < atoms.size(); i++) {
       final String atom = Nulls.get(atoms, i);
       if (wrappedLine.length() + 1 + atom.length() <= lineLength) {
         wrappedLine.append(" ").append(atom);
@@ -43,16 +43,16 @@ abstract class PgnLineWrapper {
    */
   private static List<String> splitIntoAtoms(String line) {
     final List<String> atoms = new ArrayList<>();
-    final var len = line.length();
-    var i = 0;
+    final int len = line.length();
+      int i = 0;
     while (i < len) {
-      final var c = line.charAt(i);
+      final char c = line.charAt(i);
       if (c == ' ') {
         i++;
         continue;
       }
       if (c == '{') {
-        var j = i + 1;
+          int j = i + 1;
         while (j < len && line.charAt(j) != '}') {
           j++;
         }
@@ -66,7 +66,7 @@ abstract class PgnLineWrapper {
         }
         continue;
       }
-      var j = i;
+        int j = i;
       while (j < len && line.charAt(j) != ' ' && line.charAt(j) != '{') {
         j++;
       }

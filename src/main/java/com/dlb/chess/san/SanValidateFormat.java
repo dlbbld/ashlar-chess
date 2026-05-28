@@ -32,16 +32,16 @@ public abstract class SanValidateFormat extends AbstractSan {
     }
 
     // Strip the optional trailing check (+) or checkmate (#) symbol to get the core SAN string
-    final var last = san.charAt(san.length() - 1);
-    final var sanTerminalMarker = parseSanTerminalMarker(last);
-    final var core = sanTerminalMarker == SanTerminalMarker.NONE ? san : san.substring(0, san.length() - 1);
+    final char last = san.charAt(san.length() - 1);
+    final SanTerminalMarker sanTerminalMarker = parseSanTerminalMarker(last);
+    final String core = sanTerminalMarker == SanTerminalMarker.NONE ? san : san.substring(0, san.length() - 1);
 
     if (core.isEmpty()) {
       throw new SanValidationException(SanValidationProblem.FORMAT_FIRST_CHARACTER,
           Message.getString("validation.san.format.firstCharacter", Nulls.toString(last)));
     }
 
-    final var first = core.charAt(0);
+    final char first = core.charAt(0);
 
     // Dispatch on the first character to the appropriate parser
     if (first == 'O') {
@@ -75,7 +75,7 @@ public abstract class SanValidateFormat extends AbstractSan {
    * check/checkmate symbol has already been stripped into {@code sanTerminalMarker}.
    */
   private static SanParse parseCastling(final String core, final SanTerminalMarker sanTerminalMarker) {
-    final var sanConversion = new SanConversion(PieceType.NONE, File.NONE, Rank.NONE, Square.NONE,
+    final SanConversion sanConversion = new SanConversion(PieceType.NONE, File.NONE, Rank.NONE, Square.NONE,
         PromotionPieceType.NONE, sanTerminalMarker);
     if (CastlingConstants.SAN_CASTLING_QUEEN_SIDE.equals(core)) {
       return new SanParse(SanFormat.KING_CASTLING_QUEEN_SIDE, sanConversion);

@@ -8,13 +8,13 @@ import org.apache.logging.log4j.Logger;
 public class PrintDuration {
 
   public static void printDuration(List<Long> milliSecondsList, Logger logger) {
-    final var numberOfTests = milliSecondsList.size();
-    var totalmilliSeconds = 0D;
+    final int numberOfTests = milliSecondsList.size();
+      double totalmilliSeconds = 0D;
     for (final Long milliSecondsTest : milliSecondsList) {
       totalmilliSeconds += milliSecondsTest;
     }
 
-    final var averageMilliSecondsPerTest = totalmilliSeconds / numberOfTests;
+    final double averageMilliSecondsPerTest = totalmilliSeconds / numberOfTests;
 
     logger.printf(Level.INFO, "Average test duration milliseconds: %f (%d tests)", averageMilliSecondsPerTest,
         numberOfTests);

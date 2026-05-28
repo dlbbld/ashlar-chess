@@ -188,18 +188,18 @@ public class PawnWallGeometricAnalyzer {
 
   private static boolean calculateIsHasPawnWallAfterPrecheck(Board board) {
     // check pawn wall line
-    final var hasPawnWallWhite = calculateHasPawnWallLine(board, Side.WHITE);
+    final boolean hasPawnWallWhite = calculateHasPawnWallLine(board, Side.WHITE);
     if (!hasPawnWallWhite) {
       return false;
     }
 
-    final var hasPawnWallBlack = calculateHasPawnWallLine(board, Side.BLACK);
+    final boolean hasPawnWallBlack = calculateHasPawnWallLine(board, Side.BLACK);
     if (!hasPawnWallBlack) {
       return false;
     }
 
     // check if both kings are on their side of the board
-    final var isKingBehindPawnWallWhite = calculateIsKingBehindPawnWall(board, Side.WHITE);
+    final boolean isKingBehindPawnWallWhite = calculateIsKingBehindPawnWall(board, Side.WHITE);
     if (!isKingBehindPawnWallWhite) {
       return false;
     }
@@ -402,11 +402,11 @@ public class PawnWallGeometricAnalyzer {
       throw new ProgrammingMistakeException("We are not expecting this to happen, as we only allow legal positions");
     }
 
-    final var direction = side == Side.WHITE ? 1 : -1;
-    final var promotionRankNumber = Rank.calculatePromotionRank(side).getNumber();
-    final var fileNumber = square.getFile().getNumber();
+    final int direction = side == Side.WHITE ? 1 : -1;
+    final int promotionRankNumber = Rank.calculatePromotionRank(side).getNumber();
+    final int fileNumber = square.getFile().getNumber();
 
-    for (var rankNumber = square.getRank().getNumber()
+    for (int rankNumber = square.getRank().getNumber()
         + direction; rankNumber != promotionRankNumber; rankNumber += direction) {
       final Square squareAhead = Square.calculate(fileNumber, rankNumber);
       if (staticPosition.isPawn(squareAhead)) {
@@ -674,8 +674,8 @@ public class PawnWallGeometricAnalyzer {
     while (!queue.isEmpty()) {
       @SuppressWarnings("null") final Square current = queue.poll();
       for (final int[] dir : BISHOP_DIAGONALS) {
-        var file = current.getFile().getNumber();
-        var rank = current.getRank().getNumber();
+          int file = current.getFile().getNumber();
+          int rank = current.getRank().getNumber();
         while (true) {
           file += dir[0];
           rank += dir[1];

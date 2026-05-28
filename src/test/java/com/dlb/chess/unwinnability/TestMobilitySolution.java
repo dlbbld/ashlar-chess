@@ -482,7 +482,7 @@ class TestMobilitySolution implements EnumConstants {
   }
 
   private static int calculateNumberOfPieces(StaticPosition staticPosition) {
-    var counter = 0;
+      int counter = 0;
     for (final Square square : Square.REAL) {
       if (!staticPosition.isEmpty(square)) {
         counter++;

@@ -84,7 +84,7 @@ class TestPgnExportBoardArchival {
   void boardFromNonInitialPositionArchivalEmitsSetUpAndFen() {
     // Caller passes a tagList already containing FEN+SetUp for a custom starting position, then makes moves on
     // the board. Archival export must preserve the position-encoding tags.
-    final var customFen = "r1b2r2/pp1pk1pp/8/7q/3pP1n1/5N1P/PPQ2PP1/3R1RK1 w - - 0 17";
+    final String customFen = "r1b2r2/pp1pk1pp/8/7q/3pP1n1/5N1P/PPQ2PP1/3R1RK1 w - - 0 17";
     final Board board = new Board(customFen);
     board.moveStrict("Qa4");
 
@@ -111,8 +111,8 @@ class TestPgnExportBoardArchival {
 
     final String archivalOutput = PgnCreate.createPgnString(pgnGame, WriteMode.ARCHIVAL);
 
-    final var eventIdx = archivalOutput.indexOf("[" + StandardTag.EVENT.getName() + " ");
-    final var resultIdx = archivalOutput.indexOf("[" + StandardTag.RESULT.getName() + " ");
+    final int eventIdx = archivalOutput.indexOf("[" + StandardTag.EVENT.getName() + " ");
+    final int resultIdx = archivalOutput.indexOf("[" + StandardTag.RESULT.getName() + " ");
 
     assertTrue(eventIdx >= 0);
     assertTrue(resultIdx > eventIdx);

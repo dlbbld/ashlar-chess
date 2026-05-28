@@ -63,10 +63,10 @@ class TestInsufficientMaterialAgainstPythonChessOracle {
   @Test
   void insufficientMaterialAgainstPythonChessOracle() throws IOException {
     final List<String> failures = new ArrayList<>();
-    var totalFixtures = 0;
-    final var perBucketFixtureCounts = new int[BUCKETS.size()];
+      int totalFixtures = 0;
+    final int[] perBucketFixtureCounts = new int[BUCKETS.size()];
 
-    for (var bucketIdx = 0; bucketIdx < BUCKETS.size(); bucketIdx++) {
+    for (int bucketIdx = 0; bucketIdx < BUCKETS.size(); bucketIdx++) {
       final PgnTest bucket = Nulls.get(BUCKETS, bucketIdx);
       final Path jsonlPath = jsonlPathFor(bucket);
       LOGGER.info("Bucket {} -> {}", bucket, jsonlPath);
@@ -105,8 +105,8 @@ class TestInsufficientMaterialAgainstPythonChessOracle {
       fail("No fixtures iterated - bucket wiring is broken");
     }
 
-    final var summary = new StringBuilder().append("Insufficient-material final-position cross-validation: ");
-    for (var i = 0; i < BUCKETS.size(); i++) {
+    final StringBuilder summary = new StringBuilder().append("Insufficient-material final-position cross-validation: ");
+    for (int i = 0; i < BUCKETS.size(); i++) {
       if (i > 0) {
         summary.append(", ");
       }

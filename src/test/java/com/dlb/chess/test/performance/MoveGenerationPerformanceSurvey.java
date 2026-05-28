@@ -44,9 +44,9 @@ public class MoveGenerationPerformanceSurvey {
   }
 
   private static Measurement measureBitboard(List<PositionPair> positionList) {
-    var moveCount = 0L;
-    final var start = System.nanoTime();
-    for (var round = 0; round < MEASURE_ROUNDS; round++) {
+      long moveCount = 0L;
+    final long start = System.nanoTime();
+    for (int round = 0; round < MEASURE_ROUNDS; round++) {
       for (final PositionPair position : positionList) {
         final Board board = position.cleanChessBoard();
         final Square ep = board.getEnPassantCaptureTargetSquare();
@@ -81,13 +81,13 @@ public class MoveGenerationPerformanceSurvey {
 
   private static void addPosition(List<PositionPair> result, Board cleanChessBoard) {
     final String fen = cleanChessBoard.getFen();
-    final var chessLibBoard = new com.github.bhlangonijr.chesslib.Board();
+    final com.github.bhlangonijr.chesslib.Board chessLibBoard = new com.github.bhlangonijr.chesslib.Board();
     chessLibBoard.loadFromFen(fen);
     result.add(new PositionPair(new Board(fen), chessLibBoard));
   }
 
   private static void warmup(List<PositionPair> positionList) {
-    for (var i = 0; i < WARMUP_ROUNDS; i++) {
+    for (int i = 0; i < WARMUP_ROUNDS; i++) {
       measureBitboard(positionList);
       measureReference(positionList);
       measureChessLib(positionList);
@@ -95,9 +95,9 @@ public class MoveGenerationPerformanceSurvey {
   }
 
   private static Measurement measureReference(List<PositionPair> positionList) {
-    var moveCount = 0L;
-    final var start = System.nanoTime();
-    for (var round = 0; round < MEASURE_ROUNDS; round++) {
+      long moveCount = 0L;
+    final long start = System.nanoTime();
+    for (int round = 0; round < MEASURE_ROUNDS; round++) {
       for (final PositionPair position : positionList) {
         final Board board = position.cleanChessBoard();
         moveCount += AbstractLegalMoves.calculateLegalMoves(
@@ -109,9 +109,9 @@ public class MoveGenerationPerformanceSurvey {
   }
 
   private static Measurement measureChessLib(List<PositionPair> positionList) {
-    var moveCount = 0L;
-    final var start = System.nanoTime();
-    for (var round = 0; round < MEASURE_ROUNDS; round++) {
+      long moveCount = 0L;
+    final long start = System.nanoTime();
+    for (int round = 0; round < MEASURE_ROUNDS; round++) {
       for (final PositionPair position : positionList) {
         moveCount += generateChessLibLegalMoves(position.chessLibBoard()).size();
       }
@@ -132,9 +132,9 @@ public class MoveGenerationPerformanceSurvey {
   private static void printResult(PgnTest pgnTest, int positionCount, Measurement bitboard, Measurement reference,
       Measurement chessLib) {
     final double denominator = positionCount * MEASURE_ROUNDS;
-    final var bitboardUs = bitboard.nanoseconds() / denominator / 1000.0;
-    final var referenceUs = reference.nanoseconds() / denominator / 1000.0;
-    final var chessLibUs = chessLib.nanoseconds() / denominator / 1000.0;
+    final double bitboardUs = bitboard.nanoseconds() / denominator / 1000.0;
+    final double referenceUs = reference.nanoseconds() / denominator / 1000.0;
+    final double chessLibUs = chessLib.nanoseconds() / denominator / 1000.0;
 
     System.out.printf("%s%n", pgnTest);
     System.out.printf("  positions: %,d%n", positionCount);

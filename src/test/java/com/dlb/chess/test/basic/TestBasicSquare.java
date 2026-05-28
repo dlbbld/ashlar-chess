@@ -13,7 +13,7 @@ class TestBasicSquare implements EnumConstants {
   @SuppressWarnings("static-method")
   @Test
   void testCount() throws Exception {
-    var totalSquares = 0;
+      int totalSquares = 0;
     for (@SuppressWarnings("unused") final Square square : Square.REAL) {
       totalSquares++;
     }

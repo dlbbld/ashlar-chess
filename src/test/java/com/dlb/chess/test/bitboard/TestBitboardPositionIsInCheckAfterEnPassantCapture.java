@@ -64,10 +64,10 @@ class TestBitboardPositionIsInCheckAfterEnPassantCapture {
         final BitboardPosition bitboardPosition = new Board(epCase.fen()).getBitboardPosition();
         final MoveSpecification moveSpec = new MoveSpecification(epCase.fromSquare(), epCase.toSquare());
 
-        final var reference = bitboardPosition.afterMove(moveSpec, epCase.mover()).isInCheck(epCase.mover());
-        final var squareOverload = bitboardPosition.isInCheckAfterEnPassantCapture(epCase.fromSquare(),
+        final boolean reference = bitboardPosition.afterMove(moveSpec, epCase.mover()).isInCheck(epCase.mover());
+        final boolean squareOverload = bitboardPosition.isInCheckAfterEnPassantCapture(epCase.fromSquare(),
             epCase.toSquare(), epCase.mover());
-        final var moveSpecOverload = bitboardPosition.isInCheckAfterEnPassantCapture(moveSpec, epCase.mover());
+        final boolean moveSpecOverload = bitboardPosition.isInCheckAfterEnPassantCapture(moveSpec, epCase.mover());
 
         assertEquals(reference, squareOverload, "Square-overload must agree with afterMove(...).isInCheck(...)");
         assertEquals(reference, moveSpecOverload, "MoveSpecification-overload must agree with reference");

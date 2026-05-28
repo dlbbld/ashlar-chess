@@ -147,17 +147,17 @@ public class Board {
     // values used in the following not to be get from board methods!!!
     final Side initialHavingMove = initialFenUse.havingMove();
     final CastlingRight initialCastlingRight = CastlingUtility.getCastlingRight(initialFenUse, initialHavingMove);
-    final var initialEnPassantCaptureTargetSquare = initialFenUse.enPassantCaptureTargetSquare();
+    final Square initialEnPassantCaptureTargetSquare = initialFenUse.enPassantCaptureTargetSquare();
 
     this.initialFen = initialFenUse;
 
     final BitboardPosition initialBitboardPosition = initialFenUse.bitboardPosition();
-    final var initialEnPassantBit = initialEnPassantCaptureTargetSquare == Square.NONE ? 0L
+    final long initialEnPassantBit = initialEnPassantCaptureTargetSquare == Square.NONE ? 0L
         : 1L << initialEnPassantCaptureTargetSquare.ordinal();
 
     // Normalize: keep the target square on DynamicPosition only when an opposing pawn can actually capture there.
     // The raw FEN-spec square is preserved on Board (see getEnPassantCaptureTargetSquare()) for FEN export.
-    final var initialNormalizedEnPassantCaptureTargetSquare = calculateIsEnPassantCapturePossible(
+    final Square initialNormalizedEnPassantCaptureTargetSquare = calculateIsEnPassantCapturePossible(
         initialEnPassantCaptureTargetSquare, initialHavingMove, initialBitboardPosition)
             ? initialEnPassantCaptureTargetSquare
             : Square.NONE;
@@ -169,15 +169,15 @@ public class Board {
     this.legalMoveListPerPly.add(legalMoves);
 
     this.isCheckList = new ArrayList<>();
-    final var isCheck = initialBitboardPosition.isInCheck(initialHavingMove);
+    final boolean isCheck = initialBitboardPosition.isInCheck(initialHavingMove);
     this.isCheckList.add(isCheck);
 
     this.isCheckmateList = new ArrayList<>();
-    final var isCheckmate = isCheck && legalMoves.isEmpty();
+    final boolean isCheckmate = isCheck && legalMoves.isEmpty();
     this.isCheckmateList.add(isCheckmate);
 
     this.isStalemateList = new ArrayList<>();
-    final var isStalemate = !isCheck && legalMoves.isEmpty();
+    final boolean isStalemate = !isCheck && legalMoves.isEmpty();
     this.isStalemateList.add(isStalemate);
 
     this.dynamicPositionList = new ArrayList<>();
@@ -354,13 +354,13 @@ public class Board {
         .calculateCastlingRightBoth(beforeCastlingRightWhite, beforeCastlingRightBlack, moveToPerform);
     final CastlingRight afterCastlingRightHavingMove = CastlingUtility.getCastlingRight(afterCastlingRightBoth,
         afterHavingMove);
-    final var afterEnPassantCaptureTargetSquare = EnPassantCaptureUtility
+    final Square afterEnPassantCaptureTargetSquare = EnPassantCaptureUtility
         .calculateEnPassantCaptureTargetSquare(moveToPerform);
 
     final BitboardPosition afterBitboardPosition = beforeBitboardPosition.afterMove(moveSpecification, havingMove);
 
     // Normalize for DynamicPosition; see initial-position construction site for the rationale.
-    final var afterNormalizedEnPassantCaptureTargetSquare = calculateIsEnPassantCapturePossible(
+    final Square afterNormalizedEnPassantCaptureTargetSquare = calculateIsEnPassantCapturePossible(
         afterEnPassantCaptureTargetSquare, afterHavingMove, afterBitboardPosition) ? afterEnPassantCaptureTargetSquare
             : Square.NONE;
 
@@ -377,7 +377,7 @@ public class Board {
     // now changing board class state, so performing the move!
     this.performedLegalMoveList.add(moveToPerform);
 
-    final var afterEnPassantBit = afterEnPassantCaptureTargetSquare == Square.NONE ? 0L
+    final long afterEnPassantBit = afterEnPassantCaptureTargetSquare == Square.NONE ? 0L
         : 1L << afterEnPassantCaptureTargetSquare.ordinal();
 
     // now we have a depencency on instruction execution: the move must be performed before calling the legal moves
@@ -385,16 +385,16 @@ public class Board {
         .calculateLegalMoves(afterBitboardPosition, afterHavingMove, afterCastlingRightHavingMove, afterEnPassantBit);
     this.legalMoveListPerPly.add(legalMovesAfterMove);
 
-    final var isCheck = afterBitboardPosition.isInCheck(afterHavingMove);
+    final boolean isCheck = afterBitboardPosition.isInCheck(afterHavingMove);
     this.isCheckList.add(isCheck);
 
-    final var isCheckmate = isCheck && legalMovesAfterMove.isEmpty();
+    final boolean isCheckmate = isCheck && legalMovesAfterMove.isEmpty();
     this.isCheckmateList.add(isCheckmate);
 
-    final var isStalemate = !isCheck && legalMovesAfterMove.isEmpty();
+    final boolean isStalemate = !isCheck && legalMovesAfterMove.isEmpty();
     this.isStalemateList.add(isStalemate);
 
-    final var newDynamicPosition = new DynamicPosition(afterHavingMove, afterBitboardPosition,
+    final DynamicPosition newDynamicPosition = new DynamicPosition(afterHavingMove, afterBitboardPosition,
         afterNormalizedEnPassantCaptureTargetSquare, afterCastlingRightBoth.castlingRightWhite(),
         afterCastlingRightBoth.castlingRightBlack());
     this.dynamicPositionList.add(newDynamicPosition);
@@ -404,7 +404,7 @@ public class Board {
     this.halfMoveClockList.add(calculateNewHalfMoveClock(lastHalfMoveClock));
 
     // timely dependency - dynamic position list must be updated
-    final var newRepetitionCount = RepetitionUtility.calculateCountRepetition(performedLegalMoveList,
+    final int newRepetitionCount = RepetitionUtility.calculateCountRepetition(performedLegalMoveList,
         dynamicPositionList, newDynamicPosition);
     this.repetitionCountList.add(newRepetitionCount);
 
@@ -580,7 +580,7 @@ public class Board {
       return false;
     }
     this.move(move);
-    final var threefold = isThreefoldRepetition();
+    final boolean threefold = isThreefoldRepetition();
     this.unmove();
     return threefold;
   }
@@ -663,7 +663,7 @@ public class Board {
     final List<ClaimableMove> claimable = new ArrayList<>();
     for (final LegalMove legalMove : getLegalMoves()) {
       final MoveSpecification spec = legalMove.moveSpecification();
-      final var accepted = threefoldRather ? canClaimThreefoldRepetitionRuleFor(spec) : canClaimFiftyMoveRuleFor(spec);
+      final boolean accepted = threefoldRather ? canClaimThreefoldRepetitionRuleFor(spec) : canClaimFiftyMoveRuleFor(spec);
       if (!accepted) {
         continue;
       }
@@ -735,7 +735,7 @@ public class Board {
     if (isFirstMove()) {
       throw new IllegalStateException("There is no last move");
     }
-    final var fullMoveNumber = calculateFullMoveNumber(isFirstMove(), initialFen.fullMoveNumber(),
+    final int fullMoveNumber = calculateFullMoveNumber(isFirstMove(), initialFen.fullMoveNumber(),
         initialFen.havingMove(), getHavingMove(), getPerformedHalfMoveCount());
 
     return switch (getHavingMove()) {
@@ -839,12 +839,12 @@ public class Board {
    * not need the analyzer-driven dead-position fact can call the individual condition predicates directly.
    */
   public GameEndFacts calculateGameEndFacts() {
-    final var checkmate = isCheckmate();
-    final var stalemate = isStalemate();
-    final var insufficientMaterial = isInsufficientMaterial();
-    final var deadPosition = isDeadPosition();
-    final var fivefoldRepetition = isFivefoldRepetition();
-    final var seventyFiveMove = isSeventyFiveMove();
+    final boolean checkmate = isCheckmate();
+    final boolean stalemate = isStalemate();
+    final boolean insufficientMaterial = isInsufficientMaterial();
+    final boolean deadPosition = isDeadPosition();
+    final boolean fivefoldRepetition = isFivefoldRepetition();
+    final boolean seventyFiveMove = isSeventyFiveMove();
     final Outcome outcome = BasicChessUtility.calculateOutcome(this);
     return new GameEndFacts(checkmate, stalemate, insufficientMaterial, deadPosition, fivefoldRepetition,
         seventyFiveMove, outcome);
@@ -964,12 +964,12 @@ public class Board {
    * calling this method per access.
    */
   public ImmutableList<HalfMove> getHalfMoveList() {
-    final var plies = performedLegalMoveList.size();
+    final int plies = performedLegalMoveList.size();
     if (plies == 0) {
       return Nulls.listOf();
     }
     final List<HalfMove> result = new ArrayList<>(plies);
-    for (var i = 0; i < plies; i++) {
+    for (int i = 0; i < plies; i++) {
       result.add(buildHalfMoveAtPly(i));
     }
     return Nulls.copyOfList(result);
@@ -1017,8 +1017,8 @@ public class Board {
   }
 
   private static void checkIsEven(int intValue) {
-    final var valueFloor = intValue / 2;
-    final var valueRounded = (int) StrictMath.round(intValue / 2.0);
+    final int valueFloor = intValue / 2;
+    final int valueRounded = (int) StrictMath.round(intValue / 2.0);
     if (valueFloor != valueRounded) {
       throw new ProgrammingMistakeException("The programmer overlooked something");
     }
@@ -1045,7 +1045,7 @@ public class Board {
     if (obj == null || getClass() != obj.getClass()) {
       return false;
     }
-    final var other = (Board) obj;
+    final Board other = (Board) obj;
     return Objects.equals(dynamicPositionList, other.dynamicPositionList)
         && Objects.equals(halfMoveClockList, other.halfMoveClockList) && Objects.equals(initialFen, other.initialFen)
         && Objects.equals(isCheckList, other.isCheckList) && Objects.equals(isCheckmateList, other.isCheckmateList)
@@ -1219,7 +1219,7 @@ public class Board {
    */
   private HalfMove buildHalfMoveAtPly(int plyIndex) {
     final LegalMove legalMove = Nulls.get(performedLegalMoveList, plyIndex);
-    final var halfMoveCount = plyIndex + 1;
+    final int halfMoveCount = plyIndex + 1;
     final int halfMoveClock = Nulls.get(halfMoveClockList, plyIndex + 1);
     final int countRepetition = Nulls.get(repetitionCountList, plyIndex + 1);
     final DynamicPosition dynamicPosition = Nulls.get(dynamicPositionList, plyIndex + 1);
@@ -1229,9 +1229,9 @@ public class Board {
     // Reuse the existing private fullmove helper; it returns the fullmove number for the side
     // currently to move, so subtract 1 when that side is WHITE to recover the just-played move's
     // fullmove number (matches getLastPlayedFullMoveNumber's adjustment).
-    final var fullMoveNumberOfNext = calculateFullMoveNumber(false, initialFen.fullMoveNumber(),
+    final int fullMoveNumberOfNext = calculateFullMoveNumber(false, initialFen.fullMoveNumber(),
         initialFen.havingMove(), havingMoveAfter, halfMoveCount);
-    final var fullMoveNumber = switch (havingMoveAfter) {
+    final int fullMoveNumber = switch (havingMoveAfter) {
       case WHITE -> fullMoveNumberOfNext - 1;
       case BLACK -> fullMoveNumberOfNext;
       case NONE -> throw new IllegalArgumentException();

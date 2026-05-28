@@ -24,9 +24,9 @@ public abstract class AbstractCheckAgainstCha {
 
     final List<String> fileLineList = FileUtility.readFileLines(fenAnalysisFilePath);
     for (final String fileLine : fileLineList) {
-      final var fileLineItemArray = Nulls.split(fileLine, ";");
+      final String[] fileLineItemArray = Nulls.split(fileLine, ";");
 
-      final var fileLineItemList = Nulls.asList(fileLineItemArray);
+      final List<String> fileLineItemList = Nulls.asList(fileLineItemArray);
 
       final String fenStrRaw = Nulls.get(fileLineItemList, 0);
 
@@ -39,24 +39,24 @@ public abstract class AbstractCheckAgainstCha {
         throw new IllegalArgumentException("Illegal FEN of \"" + fenStr + "\" for " + fve.getMessage() + " was found");
       }
 
-      final var lichessGameId = Nulls.get(fileLineItemList, 1);
+      final String lichessGameId = Nulls.get(fileLineItemList, 1);
 
-      final var chaModeStr = Nulls.get(fileLineItemList, 2);
+      final String chaModeStr = Nulls.get(fileLineItemList, 2);
       if (!UnwinnabilityMode.exists(chaModeStr)) {
         throw new IllegalArgumentException("Illegal identifier of \"" + chaModeStr + "\" was found");
       }
       final UnwinnabilityMode chaMode = UnwinnabilityMode.calculate(chaModeStr);
 
-      final var winnerStr = Nulls.get(fileLineItemList, 3);
-      final var winner = switch (winnerStr) {
+      final String winnerStr = Nulls.get(fileLineItemList, 3);
+      final Side winner = switch (winnerStr) {
         case "w" -> Side.WHITE;
         case "b" -> Side.BLACK;
         default -> throw new IllegalArgumentException("Illegal winning side of \"" + winnerStr + "\" was found");
       };
 
-      final var result = Nulls.get(fileLineItemList, 4);
+      final String result = Nulls.get(fileLineItemList, 4);
 
-      final var mateLine = Nulls.get(fileLineItemList, 5);
+      final String mateLine = Nulls.get(fileLineItemList, 5);
 
       resultList.add(new UnwinnabilityRawRead(fen, lichessGameId, chaMode, winner, result, mateLine));
     }

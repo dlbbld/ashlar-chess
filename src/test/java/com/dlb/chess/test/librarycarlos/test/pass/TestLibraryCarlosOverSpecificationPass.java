@@ -51,7 +51,7 @@ class TestLibraryCarlosOverSpecificationPass {
   void testSanParseExceptionOnOverspecification() throws Exception {
     {
       final MoveList moveList = new MoveList("4k3/8/8/8/1b6/2N5/8/4K1N1 w - - 0 1");
-      var isException = false;
+        boolean isException = false;
       try {
         moveList.addSanMove("Nge2", false, true);
       } catch (@SuppressWarnings("unused") final MoveConversionException e) {

@@ -26,17 +26,17 @@ abstract class FiftyMoveSequenceReportBuilder {
    * {@code endPly == null} - the print layer renders only the start marker.
    */
   static FiftyMoveSequenceReport build(Board board) {
-    final var threshold = ChessConstants.FIFTY_MOVE_RULE_HALF_MOVE_CLOCK_THRESHOLD;
-    final var initialFenClock = board.getInitialFen().halfMoveClock();
+    final int threshold = ChessConstants.FIFTY_MOVE_RULE_HALF_MOVE_CLOCK_THRESHOLD;
+    final int initialFenClock = board.getInitialFen().halfMoveClock();
     final ImmutableList<HalfMove> halfMoveList = board.getHalfMoveList();
 
     final List<FiftyMoveSequence> sequences = new ArrayList<>();
 
-    var currentStart = initialSequenceStart(initialFenClock);
+      SequenceStart currentStart = initialSequenceStart(initialFenClock);
     @Nullable HalfMove currentEndPly = null;
 
     for (final HalfMove ply : halfMoveList) {
-      final var clock = ply.halfMoveClock();
+      final int clock = ply.halfMoveClock();
       if (clock == 0) {
         // Clock-resetting move: closes any open sequence (without including this move). The
         // resetting move itself does not start a new sequence; the NEXT non-zeroing move will.

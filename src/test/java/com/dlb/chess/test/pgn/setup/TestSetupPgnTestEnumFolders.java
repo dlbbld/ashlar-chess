@@ -44,7 +44,7 @@ class TestSetupPgnTestEnumFolders {
       return;
     }
 
-    final var report = new StringBuilder().append(violations.size())
+    final StringBuilder report = new StringBuilder().append(violations.size())
         .append(" PgnTest enum value(s) point to a missing folder:\n");
     for (final String violation : violations) {
       report.append("  ").append(violation).append('\n');

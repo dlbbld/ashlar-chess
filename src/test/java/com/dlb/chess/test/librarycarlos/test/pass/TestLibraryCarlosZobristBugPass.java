@@ -7,6 +7,8 @@ import java.nio.file.Path;
 import java.util.Set;
 import java.util.TreeSet;
 
+import com.github.bhlangonijr.chesslib.MoveBackup;
+import com.github.bhlangonijr.chesslib.game.Game;
 import org.apache.logging.log4j.Logger;
 import org.junit.jupiter.api.Test;
 
@@ -42,13 +44,13 @@ class TestLibraryCarlosZobristBugPass {
 
   private static void testPrintingPosition(Path pgnPath) throws Exception {
 
-    final var pgn = new PgnHolder(pgnPath.toAbsolutePath().toString());
+    final PgnHolder pgn = new PgnHolder(pgnPath.toAbsolutePath().toString());
 
     pgn.loadPgn();
-    final var game = Nulls.getFirst(NullsCarlos.getGames(pgn));
+    final Game game = Nulls.getFirst(NullsCarlos.getGames(pgn));
     game.loadMoveText();
 
-    final var moves = game.getHalfMoves();
+    final MoveList moves = game.getHalfMoves();
     final Board board = new Board();
 
     final Set<String> positionIdentifierSet = new TreeSet<>();
@@ -75,7 +77,7 @@ class TestLibraryCarlosZobristBugPass {
 
     final PgnHolder pgn = new PgnHolder(pgnPath.toAbsolutePath().toString());
     pgn.loadPgn();
-    final var game = Nulls.getFirst(NullsCarlos.getGames(pgn));
+    final Game game = Nulls.getFirst(NullsCarlos.getGames(pgn));
     game.loadMoveText();
 
     final Board board = new Board();
@@ -90,10 +92,10 @@ class TestLibraryCarlosZobristBugPass {
 
     identifier.append(board.getSideToMove()).append("_");
 
-    var isEnPassantCapturePossible = false;
+      boolean isEnPassantCapturePossible = false;
     for (final Move legalMove : MoveGenerator.generateLegalMoves(board)) {
       board.doMove(legalMove);
-      final var moveBackup = board.getBackup().getLast();
+      final MoveBackup moveBackup = board.getBackup().getLast();
       if (moveBackup.isEnPassantMove()) {
         isEnPassantCapturePossible = true;
         board.undoMove();
@@ -106,8 +108,8 @@ class TestLibraryCarlosZobristBugPass {
     identifier.append(board.getCastleRight().get(Side.WHITE)).append("/");
     identifier.append(board.getCastleRight().get(Side.BLACK)).append("_");
 
-    final var fen = board.getFen();
-    final var staticPosition = fen.substring(0, fen.indexOf(" "));
+    final String fen = board.getFen();
+    final String staticPosition = fen.substring(0, fen.indexOf(" "));
 
     identifier.append(staticPosition);
 

@@ -35,11 +35,11 @@ public class MoveToSan extends AbstractSan {
 
     final List<LegalMove> legalMovesForPieceAndToSquare = filterLegalMovesCandidates(legalMovesForMovingPiece,
         moveSpecification.toSquare());
-    final var numberOfLegalMovesFromSameFile = calculateNumberOfLegalMovesFromFile(
+    final int numberOfLegalMovesFromSameFile = calculateNumberOfLegalMovesFromFile(
         moveSpecification.fromSquare().getFile(), legalMovesForPieceAndToSquare);
-    final var numberOfLegalMovesFromSameRank = calculateNumberOfLegalMovesFromRank(
+    final int numberOfLegalMovesFromSameRank = calculateNumberOfLegalMovesFromRank(
         moveSpecification.fromSquare().getRank(), legalMovesForPieceAndToSquare);
-    final var hasOtherFilesHavingLegalMoves = calculateHasOtherFilesHavingLegalMoves(
+    final boolean hasOtherFilesHavingLegalMoves = calculateHasOtherFilesHavingLegalMoves(
         moveSpecification.fromSquare().getFile(), legalMovesForPieceAndToSquare);
 
     if (hasOtherFilesHavingLegalMoves) {
@@ -86,14 +86,14 @@ public class MoveToSan extends AbstractSan {
           "Something is wrong, a non castling move always specifies a piece to be moved");
     }
 
-    final var pieceLetter = String.valueOf(movingPiece.getPieceType().getLetter());
+    final String pieceLetter = String.valueOf(movingPiece.getPieceType().getLetter());
     final Square fromSquare = moveSpecification.fromSquare();
     final File fromFile = fromSquare.getFile();
     final Rank fromRank = fromSquare.getRank();
-    final var fromFileLetter = String.valueOf(fromFile.getLetter());
-    final var fromRankNumber = fromRank.getNumber();
+    final String fromFileLetter = String.valueOf(fromFile.getLetter());
+    final int fromRankNumber = fromRank.getNumber();
     final String toSquareName = moveSpecification.toSquare().getName();
-    final var isCapture = lastMove.pieceCaptured() != Piece.NONE;
+    final boolean isCapture = lastMove.pieceCaptured() != Piece.NONE;
 
     final StringBuilder buildSan = new StringBuilder();
 
@@ -105,7 +105,7 @@ public class MoveToSan extends AbstractSan {
           }
           buildSan.append(toSquareName);
         } else {
-          final var promotionPieceLetter = moveSpecification.promotionPieceType().getPieceType().getLetter();
+          final char promotionPieceLetter = moveSpecification.promotionPieceType().getPieceType().getLetter();
           if (isCapture) {
             buildSan.append(fromFileLetter).append(SanSymbol.CAPTURE.getSymbol());
           }

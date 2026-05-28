@@ -58,7 +58,7 @@ class GoingToCorner implements EnumConstants {
   private static Square calculateTargetSquare(Side winner, BitboardPosition bitboardPosition, Goal goal, Piece p) {
     Square target;
 
-    final var isDarkCorner = UnwinnabilityMaterialBitboard.calculateHasDarkSquareBishops(winner, bitboardPosition)
+    final boolean isDarkCorner = UnwinnabilityMaterialBitboard.calculateHasDarkSquareBishops(winner, bitboardPosition)
         || UnwinnabilityMaterialBitboard.calculateHasLightSquareBishops(winner.getOppositeSide(), bitboardPosition)
             && UnwinnabilityMaterialBitboard.calculateHasNoBishops(winner, bitboardPosition);
 

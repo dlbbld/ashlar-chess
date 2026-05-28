@@ -20,12 +20,12 @@ public class GenerateTestCaseForPgnFolder extends AbstractGenerateTestCaseForPgn
   }
 
   private static void generateTestCaseForFolder(Path pgnFolderPath) throws Exception {
-    final var folder = pgnFolderPath.toFile();
+    final File folder = pgnFolderPath.toFile();
     if (!folder.isDirectory()) {
       throw new IllegalArgumentException("\"" + pgnFolderPath + "\" is not a directory");
     }
 
-    final var filesList = folder.listFiles();
+    final File[] filesList = folder.listFiles();
     if (filesList == null) {
       throw new FileSystemAccessException("File list retrieval for \"" + pgnFolderPath + "\" failed");
     }

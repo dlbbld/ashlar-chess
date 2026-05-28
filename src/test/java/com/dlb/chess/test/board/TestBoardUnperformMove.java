@@ -57,8 +57,8 @@ class TestBoardUnperformMove {
   @SuppressWarnings("static-method")
   @Test
   void test() {
-    var pgnsExercised = 0;
-    var halfMovesExercised = 0;
+      int pgnsExercised = 0;
+      int halfMovesExercised = 0;
 
     for (final PgnTestCaseList testCaseList : PgnTestCaseCatalog.getParserIntegrationSmokeList()) {
       for (final PgnFen testCase : testCaseList.list()) {
@@ -86,7 +86,7 @@ class TestBoardUnperformMove {
     final Board expected = new Board(pgnGame.startFen());
     final Board actual = new Board(pgnGame.startFen());
 
-    var halfMoveIndex = 0;
+      int halfMoveIndex = 0;
     for (final PgnHalfMove halfMove : pgnGame.halfMoveList()) {
       halfMoveIndex++;
       final String san = halfMove.san();

@@ -1,5 +1,6 @@
 package com.dlb.chess.fen;
 
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.eclipse.jdt.annotation.NonNull;
@@ -13,9 +14,9 @@ public class FenParserRaw {
   }
 
   public static FenRaw parseFenRaw(String fen) throws FenRawValidationException {
-    final var regExp = "^([^ ]+) ([^ ]+) ([^ ]+) ([^ ]+) ([^ ]+) ([^ ]+)$";
-    final var pattern = Pattern.compile(regExp);
-    final var matcher = pattern.matcher(fen);
+    final String regExp = "^([^ ]+) ([^ ]+) ([^ ]+) ([^ ]+) ([^ ]+) ([^ ]+)$";
+    final Pattern pattern = Pattern.compile(regExp);
+    final Matcher matcher = pattern.matcher(fen);
     if (!matcher.find()) {
       throw new FenRawValidationException("The format could not be identifed as valid FEN format");
     }

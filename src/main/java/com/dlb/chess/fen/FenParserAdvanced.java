@@ -2,6 +2,7 @@ package com.dlb.chess.fen;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.eclipse.jdt.annotation.NonNull;
@@ -52,7 +53,7 @@ public class FenParserAdvanced implements EnumConstants {
       throw new FenAdvancedValidationException(FenAdvancedValidationProblem.INVALID_FORMAT, message);
     }
 
-    final var piecePlacement = fenRaw.piecePlacement();
+    final String piecePlacement = fenRaw.piecePlacement();
     final BitboardPosition bitboardPosition = validatePiecePlacement(piecePlacement);
     validateNumberOfPieces(bitboardPosition);
 
@@ -60,7 +61,7 @@ public class FenParserAdvanced implements EnumConstants {
 
     validatePawnRankNotGroundRank(bitboardPosition);
 
-    final var havingMoveCheck = fenRaw.havingMove();
+    final String havingMoveCheck = fenRaw.havingMove();
     final Side havingMove = validateHavingMove(havingMoveCheck);
 
     if (bitboardPosition.isInCheck(havingMove.getOppositeSide())) {
@@ -68,18 +69,18 @@ public class FenParserAdvanced implements EnumConstants {
           "the king of the opposing player is in check");
     }
 
-    final var castlingRightBothStr = fenRaw.castlingRightBothStr();
+    final String castlingRightBothStr = fenRaw.castlingRightBothStr();
     final CastlingRightBoth castlingRightBoth = validateCastlingRightBoth(bitboardPosition, castlingRightBothStr);
 
-    final var enPassantCaptureTargetSquareStr = fenRaw.enPassantCaptureTargetSquare();
+    final String enPassantCaptureTargetSquareStr = fenRaw.enPassantCaptureTargetSquare();
     final Square enPassantCaptureTargetSquare = validateEnPassantCaptureTargetSquare(bitboardPosition,
         enPassantCaptureTargetSquareStr, havingMove);
 
-    final var halfMoveClockStr = fenRaw.halfMoveClock();
-    final var halfMoveClock = validateHalfMoveClock(halfMoveClockStr, enPassantCaptureTargetSquare);
+    final String halfMoveClockStr = fenRaw.halfMoveClock();
+    final int halfMoveClock = validateHalfMoveClock(halfMoveClockStr, enPassantCaptureTargetSquare);
 
-    final var fullMoveNumberStr = fenRaw.fullMoveNumber();
-    final var fullMoveNumber = validateFullMoveNumber(fullMoveNumberStr);
+    final String fullMoveNumberStr = fenRaw.fullMoveNumber();
+    final int fullMoveNumber = validateFullMoveNumber(fullMoveNumberStr);
 
     validateHalfMoveClockAgainstFullMoveNumber(halfMoveClock, fullMoveNumber, havingMove);
 
@@ -99,7 +100,7 @@ public class FenParserAdvanced implements EnumConstants {
    */
   private static void validateHalfMoveClockAgainstFullMoveNumber(int halfMoveClock, int fullMoveNumber, Side havingMove)
       throws FenAdvancedValidationException {
-    final var maximumPossibleHalfMoveClock = 2 * (fullMoveNumber - 1) + (havingMove == BLACK ? 1 : 0);
+    final int maximumPossibleHalfMoveClock = 2 * (fullMoveNumber - 1) + (havingMove == BLACK ? 1 : 0);
     if (halfMoveClock > maximumPossibleHalfMoveClock) {
       throw new FenAdvancedValidationException(
           FenAdvancedValidationProblem.INVALID_HALF_MOVE_CLOCK_TOO_BIG_RELATIVE_TO_FULL_MOVE_NUMBER,
@@ -122,23 +123,23 @@ public class FenParserAdvanced implements EnumConstants {
 
     // we check for empty ranks before the rank count, so we can avoid counting
     // empty ranks
-    final var matcherEmptyRank = PATTERN_EMPTY_RANK.matcher(piecePlacement);
+    final Matcher matcherEmptyRank = PATTERN_EMPTY_RANK.matcher(piecePlacement);
     if (matcherEmptyRank.find()) {
       throw new FenAdvancedValidationException(FenAdvancedValidationProblem.INVALID_POSITION_EMPTY_RANK,
           "it contains empty ranks");
     }
 
-    final var rankDescriptionList = piecePlacement.split("/");
+    final String[] rankDescriptionList = piecePlacement.split("/");
 
     if (rankDescriptionList.length != 8) {
       throw new FenAdvancedValidationException(FenAdvancedValidationProblem.INVALID_POSITION_NUMBER_OF_RANKS,
           "it does not specify eight ranks");
     }
 
-    var rankNumber = 0;
+      int rankNumber = 0;
     for (final String rankDescription : rankDescriptionList) {
       rankNumber++;
-      final var matcherRank = PATTERN_RANK.matcher(rankDescription);
+      final Matcher matcherRank = PATTERN_RANK.matcher(rankDescription);
       if (!matcherRank.find()) {
         throw new FenAdvancedValidationException(FenAdvancedValidationProblem.INVALID_POSITION_UNKNOWN_CHAR,
             "the rank " + rankNumber + " contains invalid chars");
@@ -165,18 +166,18 @@ public class FenParserAdvanced implements EnumConstants {
     // file a..h. Convert to bitboard: square ordinal in little-endian rank-file order is rank*8 + file with
     // rank 0..7 (rank 1 = 0). For pieceList index i: rank-from-top = i / 8 (0 = rank 8), file = i % 8 (0 = a).
     // So square ordinal = (7 - i/8) * 8 + (i % 8) = (7 - i / 8) * 8 + i % 8.
-    var whitePawns = 0L;
-    var whiteRooks = 0L;
-    var whiteKnights = 0L;
-    var whiteBishops = 0L;
-    var whiteQueens = 0L;
-    var whiteKings = 0L;
-    var blackPawns = 0L;
-    var blackRooks = 0L;
-    var blackKnights = 0L;
-    var blackBishops = 0L;
-    var blackQueens = 0L;
-    var blackKings = 0L;
+      long whitePawns = 0L;
+      long whiteRooks = 0L;
+      long whiteKnights = 0L;
+      long whiteBishops = 0L;
+      long whiteQueens = 0L;
+      long whiteKings = 0L;
+      long blackPawns = 0L;
+      long blackRooks = 0L;
+      long blackKnights = 0L;
+      long blackBishops = 0L;
+      long blackQueens = 0L;
+      long blackKings = 0L;
     for (int i = 0; i < 64; i++) {
       final Piece piece = Nulls.get(pieceList, i);
       if (piece == Piece.NONE) {
@@ -214,7 +215,7 @@ public class FenParserAdvanced implements EnumConstants {
       if (BasicConstants.BLANK.equals(letter)) {
         rankPieceList.add(Piece.NONE);
       } else {
-        final var letterChar = letter.charAt(0);
+        final char letterChar = letter.charAt(0);
         if (!FenPieceSymbol.exists(letterChar)) {
           throw new ProgrammingMistakeException(
               "An unknown piece was found which was not filtered before by regular expression");
@@ -236,14 +237,14 @@ public class FenParserAdvanced implements EnumConstants {
   private static List<String> validateEvaluatedLength(String rankDescription) throws FenAdvancedValidationException {
     final List<String> squareDescriptionList = new ArrayList<>();
 
-    var countEvaluatedLength = 0;
+      int countEvaluatedLength = 0;
 
-    for (var i = 0; i < rankDescription.length(); i++) {
+    for (int i = 0; i < rankDescription.length(); i++) {
       final String currentChar = Nulls.substring(rankDescription, i, i + 1);
       try {
-        final var numberOfEmptyFields = Integer.parseInt(currentChar);
+        final int numberOfEmptyFields = Integer.parseInt(currentChar);
         countEvaluatedLength += numberOfEmptyFields;
-        for (var j = 1; j <= numberOfEmptyFields; j++) {
+        for (int j = 1; j <= numberOfEmptyFields; j++) {
           squareDescriptionList.add(BasicConstants.BLANK);
         }
       } catch (@SuppressWarnings("unused") final NumberFormatException e) {
@@ -282,21 +283,21 @@ public class FenParserAdvanced implements EnumConstants {
   private static CastlingRightBoth validateCastlingRightBoth(String castlingRightBothStr)
       throws FenAdvancedValidationException {
 
-    final var hasK = castlingRightBothStr.contains("K");
-    final var hasQ = castlingRightBothStr.contains("Q");
-    final var hask = castlingRightBothStr.contains("k");
-    final var hasq = castlingRightBothStr.contains("q");
+    final boolean hasK = castlingRightBothStr.contains("K");
+    final boolean hasQ = castlingRightBothStr.contains("Q");
+    final boolean hask = castlingRightBothStr.contains("k");
+    final boolean hasq = castlingRightBothStr.contains("q");
 
-    final var expected = (hasK ? "K" : "") + (hasQ ? "Q" : "") + (hask ? "k" : "") + (hasq ? "q" : "");
+    final String expected = (hasK ? "K" : "") + (hasQ ? "Q" : "") + (hask ? "k" : "") + (hasq ? "q" : "");
     if (expected.isEmpty() && !"-".equals(castlingRightBothStr)
         || !expected.isEmpty() && !expected.equals(castlingRightBothStr)) {
       throw new FenAdvancedValidationException(FenAdvancedValidationProblem.INVALID_CASTLING_RIGHT_RANGE,
           "the castling right part of \"" + castlingRightBothStr + "\" is not valid");
     }
 
-    final var white = hasK && hasQ ? CastlingRight.KING_AND_QUEEN_SIDE
+    final CastlingRight white = hasK && hasQ ? CastlingRight.KING_AND_QUEEN_SIDE
         : hasK ? CastlingRight.KING_SIDE : hasQ ? CastlingRight.QUEEN_SIDE : CastlingRight.NONE;
-    final var black = hask && hasq ? CastlingRight.KING_AND_QUEEN_SIDE
+    final CastlingRight black = hask && hasq ? CastlingRight.KING_AND_QUEEN_SIDE
         : hask ? CastlingRight.KING_SIDE : hasq ? CastlingRight.QUEEN_SIDE : CastlingRight.NONE;
 
     return new CastlingRightBoth(white, black);
@@ -317,10 +318,10 @@ public class FenParserAdvanced implements EnumConstants {
       return Square.NONE;
     }
     if (enPassantCaptureTargetSquare.length() == 2) {
-      final var fileLetter = enPassantCaptureTargetSquare.charAt(0);
+      final char fileLetter = enPassantCaptureTargetSquare.charAt(0);
       if (File.exists(fileLetter)) {
         final File file = File.calculateFile(fileLetter);
-        final var rankLetter = enPassantCaptureTargetSquare.charAt(1);
+        final char rankLetter = enPassantCaptureTargetSquare.charAt(1);
 
         if (Rank.exists(rankLetter)) {
           final Rank rank = Rank.calculateRank(rankLetter);
@@ -370,10 +371,10 @@ public class FenParserAdvanced implements EnumConstants {
     // that must come after checking if pawn has potentially advanced two squares
     final Square startingSquare = Square.calculateBehindSquare(oppositeSide, enPassantCaptureTargetSquare);
     final Piece pieceOnStartingSquare = bitboardPosition.get(startingSquare);
-    final var isStartingSquareEmpty = pieceOnStartingSquare != Piece.NONE;
+    final boolean isStartingSquareEmpty = pieceOnStartingSquare != Piece.NONE;
 
     final Piece pieceOnEnPassantCaptureTargetSquare = bitboardPosition.get(enPassantCaptureTargetSquare);
-    final var isEnPassantCaptureTargetSquareEmpty = pieceOnEnPassantCaptureTargetSquare != Piece.NONE;
+    final boolean isEnPassantCaptureTargetSquareEmpty = pieceOnEnPassantCaptureTargetSquare != Piece.NONE;
 
     if (isStartingSquareEmpty && isEnPassantCaptureTargetSquareEmpty) {
       throw new FenAdvancedValidationException(FenAdvancedValidationProblem.INVALID_EN_PASSANT_CAPTURE_BOTH_NOT_EMPTY,
@@ -410,7 +411,7 @@ public class FenParserAdvanced implements EnumConstants {
 
   private static int validateHalfMoveClock(String halfMoveClockStr, Square enPassantCaptureTargetSquare)
       throws FenAdvancedValidationException {
-    final var halfMoveClock = validateHalfMoveClock(halfMoveClockStr);
+    final int halfMoveClock = validateHalfMoveClock(halfMoveClockStr);
     validateHalfMoveClock(halfMoveClock, enPassantCaptureTargetSquare);
     return halfMoveClock;
   }
@@ -473,9 +474,9 @@ public class FenParserAdvanced implements EnumConstants {
     for (final Side sideToCheck : sideToCheckList) {
       final CastlingRight sideCastlingRight = CastlingUtility.getCastlingRight(castlingRightBoth, sideToCheck);
 
-      final var isKingSideCastlingOriginalPosition = CastlingUtility
+      final boolean isKingSideCastlingOriginalPosition = CastlingUtility
           .calculateKingSideCastlingIsOriginalPosition(bitboardPosition, sideToCheck);
-      final var isQueenSideCastlingOriginalPosition = CastlingUtility
+      final boolean isQueenSideCastlingOriginalPosition = CastlingUtility
           .calculateQueenSideCastlingIsOriginalPosition(bitboardPosition, sideToCheck);
 
       final FenAdvancedValidationProblem parseFenCheck = calculateParseFenCheck(sideToCheck, sideCastlingRight,
@@ -567,7 +568,7 @@ public class FenParserAdvanced implements EnumConstants {
   private static void validateWhiteNumberOfPieces(BitboardPosition bitboardPosition)
       throws FenAdvancedValidationException {
     // kings
-    final var numberOfKings = FenMaterialCount.calculateNumberOfPieces(Side.WHITE, bitboardPosition, PieceType.KING);
+    final int numberOfKings = FenMaterialCount.calculateNumberOfPieces(Side.WHITE, bitboardPosition, PieceType.KING);
     if (numberOfKings > ChessConstants.NUMBER_OF_KINGS) {
       throw new FenAdvancedValidationException(FenAdvancedValidationProblem.INVALID_WHITE_TOO_MANY_KINGS,
           "there is more than one white king");
@@ -578,35 +579,35 @@ public class FenParserAdvanced implements EnumConstants {
     }
 
     // pawns
-    final var numberOfPawns = FenMaterialCount.calculateNumberOfPieces(Side.WHITE, bitboardPosition, PieceType.PAWN);
+    final int numberOfPawns = FenMaterialCount.calculateNumberOfPieces(Side.WHITE, bitboardPosition, PieceType.PAWN);
     if (numberOfPawns > ChessConstants.INITIAL_NUMBER_OF_PAWNS) {
       throw new FenAdvancedValidationException(FenAdvancedValidationProblem.INVALID_WHITE_TOO_MANY_PAWNS,
           "there are too many white pawns");
     }
 
-    final var numberOfPossiblePromotions = ChessConstants.INITIAL_NUMBER_OF_PAWNS - numberOfPawns;
+    final int numberOfPossiblePromotions = ChessConstants.INITIAL_NUMBER_OF_PAWNS - numberOfPawns;
 
     // rooks
-    final var numberOfRooks = FenMaterialCount.calculateNumberOfPieces(Side.WHITE, bitboardPosition, PieceType.ROOK);
-    final var numberOfRooksPromoted = numberOfRooks - ChessConstants.INITIAL_NUMBER_OF_ROOKS;
+    final int numberOfRooks = FenMaterialCount.calculateNumberOfPieces(Side.WHITE, bitboardPosition, PieceType.ROOK);
+    final int numberOfRooksPromoted = numberOfRooks - ChessConstants.INITIAL_NUMBER_OF_ROOKS;
     if (numberOfRooksPromoted > numberOfPossiblePromotions) {
       throw new FenAdvancedValidationException(FenAdvancedValidationProblem.INVALID_WHITE_TOO_MANY_ROOKS,
           "there are too many white rooks");
     }
 
     // knights
-    final var numberOfKnights = FenMaterialCount.calculateNumberOfPieces(Side.WHITE, bitboardPosition,
+    final int numberOfKnights = FenMaterialCount.calculateNumberOfPieces(Side.WHITE, bitboardPosition,
         PieceType.KNIGHT);
-    final var numberOfKnightsPromoted = numberOfKnights - ChessConstants.INITIAL_NUMBER_OF_KNIGHTS;
+    final int numberOfKnightsPromoted = numberOfKnights - ChessConstants.INITIAL_NUMBER_OF_KNIGHTS;
     if (numberOfKnightsPromoted > numberOfPossiblePromotions) {
       throw new FenAdvancedValidationException(FenAdvancedValidationProblem.INVALID_WHITE_TOO_MANY_KNIGHTS,
           "there are too many white knights");
     }
 
     // light square bishops
-    final var numberOfLightSquareBishops = FenMaterialCount.calculateNumberOfBishops(Side.WHITE, bitboardPosition,
+    final int numberOfLightSquareBishops = FenMaterialCount.calculateNumberOfBishops(Side.WHITE, bitboardPosition,
         SquareType.LIGHT_SQUARE);
-    final var numberOfLightSquareBishopsPromoted = numberOfLightSquareBishops
+    final int numberOfLightSquareBishopsPromoted = numberOfLightSquareBishops
         - ChessConstants.INITIAL_NUMBER_OF_LIGHT_SQUARE_BISHOPS;
     if (numberOfLightSquareBishopsPromoted > numberOfPossiblePromotions) {
       throw new FenAdvancedValidationException(FenAdvancedValidationProblem.INVALID_WHITE_TOO_MANY_LIGHT_SQUARE_BISHOPS,
@@ -614,9 +615,9 @@ public class FenParserAdvanced implements EnumConstants {
     }
 
     // dark square bishops
-    final var numberOfDarkSquareBishops = FenMaterialCount.calculateNumberOfBishops(Side.WHITE, bitboardPosition,
+    final int numberOfDarkSquareBishops = FenMaterialCount.calculateNumberOfBishops(Side.WHITE, bitboardPosition,
         SquareType.DARK_SQUARE);
-    final var numberOfDarkSquareBishopsPromoted = numberOfDarkSquareBishops
+    final int numberOfDarkSquareBishopsPromoted = numberOfDarkSquareBishops
         - ChessConstants.INITIAL_NUMBER_OF_DARK_SQUARE_BISHOPS;
     if (numberOfDarkSquareBishopsPromoted > numberOfPossiblePromotions) {
       throw new FenAdvancedValidationException(FenAdvancedValidationProblem.INVALID_WHITE_TOO_MANY_DARK_SQUARE_BISHOPS,
@@ -624,8 +625,8 @@ public class FenParserAdvanced implements EnumConstants {
     }
 
     // queens
-    final var numberOfQueens = FenMaterialCount.calculateNumberOfPieces(Side.WHITE, bitboardPosition, PieceType.QUEEN);
-    final var numberOfQueensPromoted = numberOfQueens - ChessConstants.INITIAL_NUMBER_OF_QUEENS;
+    final int numberOfQueens = FenMaterialCount.calculateNumberOfPieces(Side.WHITE, bitboardPosition, PieceType.QUEEN);
+    final int numberOfQueensPromoted = numberOfQueens - ChessConstants.INITIAL_NUMBER_OF_QUEENS;
     if (numberOfQueensPromoted > numberOfPossiblePromotions) {
       throw new FenAdvancedValidationException(FenAdvancedValidationProblem.INVALID_WHITE_TOO_MANY_QUEENS,
           "there are too many white queens");
@@ -636,7 +637,7 @@ public class FenParserAdvanced implements EnumConstants {
       throws FenAdvancedValidationException {
     // copy/replace code of white
     // kings
-    final var numberOfKings = FenMaterialCount.calculateNumberOfPieces(Side.BLACK, bitboardPosition, PieceType.KING);
+    final int numberOfKings = FenMaterialCount.calculateNumberOfPieces(Side.BLACK, bitboardPosition, PieceType.KING);
     if (numberOfKings > ChessConstants.NUMBER_OF_KINGS) {
       throw new FenAdvancedValidationException(FenAdvancedValidationProblem.INVALID_BLACK_TOO_MANY_KINGS,
           "there is more than one black king");
@@ -647,35 +648,35 @@ public class FenParserAdvanced implements EnumConstants {
     }
 
     // pawns
-    final var numberOfPawns = FenMaterialCount.calculateNumberOfPieces(Side.BLACK, bitboardPosition, PieceType.PAWN);
+    final int numberOfPawns = FenMaterialCount.calculateNumberOfPieces(Side.BLACK, bitboardPosition, PieceType.PAWN);
     if (numberOfPawns > ChessConstants.INITIAL_NUMBER_OF_PAWNS) {
       throw new FenAdvancedValidationException(FenAdvancedValidationProblem.INVALID_BLACK_TOO_MANY_PAWNS,
           "there are too many black pawns");
     }
 
-    final var numberOfPossiblePromotions = ChessConstants.INITIAL_NUMBER_OF_PAWNS - numberOfPawns;
+    final int numberOfPossiblePromotions = ChessConstants.INITIAL_NUMBER_OF_PAWNS - numberOfPawns;
 
     // rooks
-    final var numberOfRooks = FenMaterialCount.calculateNumberOfPieces(Side.BLACK, bitboardPosition, PieceType.ROOK);
-    final var numberOfRooksPromoted = numberOfRooks - ChessConstants.INITIAL_NUMBER_OF_ROOKS;
+    final int numberOfRooks = FenMaterialCount.calculateNumberOfPieces(Side.BLACK, bitboardPosition, PieceType.ROOK);
+    final int numberOfRooksPromoted = numberOfRooks - ChessConstants.INITIAL_NUMBER_OF_ROOKS;
     if (numberOfRooksPromoted > numberOfPossiblePromotions) {
       throw new FenAdvancedValidationException(FenAdvancedValidationProblem.INVALID_BLACK_TOO_MANY_ROOKS,
           "there are too many black rooks");
     }
 
     // knights
-    final var numberOfKnights = FenMaterialCount.calculateNumberOfPieces(Side.BLACK, bitboardPosition,
+    final int numberOfKnights = FenMaterialCount.calculateNumberOfPieces(Side.BLACK, bitboardPosition,
         PieceType.KNIGHT);
-    final var numberOfKnightsPromoted = numberOfKnights - ChessConstants.INITIAL_NUMBER_OF_KNIGHTS;
+    final int numberOfKnightsPromoted = numberOfKnights - ChessConstants.INITIAL_NUMBER_OF_KNIGHTS;
     if (numberOfKnightsPromoted > numberOfPossiblePromotions) {
       throw new FenAdvancedValidationException(FenAdvancedValidationProblem.INVALID_BLACK_TOO_MANY_KNIGHTS,
           "there are too many black knights");
     }
 
     // light square bishops
-    final var numberOfLightSquareBishops = FenMaterialCount.calculateNumberOfBishops(Side.BLACK, bitboardPosition,
+    final int numberOfLightSquareBishops = FenMaterialCount.calculateNumberOfBishops(Side.BLACK, bitboardPosition,
         SquareType.LIGHT_SQUARE);
-    final var numberOfLightSquareBishopsPromoted = numberOfLightSquareBishops
+    final int numberOfLightSquareBishopsPromoted = numberOfLightSquareBishops
         - ChessConstants.INITIAL_NUMBER_OF_LIGHT_SQUARE_BISHOPS;
     if (numberOfLightSquareBishopsPromoted > numberOfPossiblePromotions) {
       throw new FenAdvancedValidationException(FenAdvancedValidationProblem.INVALID_BLACK_TOO_MANY_LIGHT_SQUARE_BISHOPS,
@@ -683,9 +684,9 @@ public class FenParserAdvanced implements EnumConstants {
     }
 
     // dark square bishops
-    final var numberOfDarkSquareBishops = FenMaterialCount.calculateNumberOfBishops(Side.BLACK, bitboardPosition,
+    final int numberOfDarkSquareBishops = FenMaterialCount.calculateNumberOfBishops(Side.BLACK, bitboardPosition,
         SquareType.DARK_SQUARE);
-    final var numberOfDarkSquareBishopsPromoted = numberOfDarkSquareBishops
+    final int numberOfDarkSquareBishopsPromoted = numberOfDarkSquareBishops
         - ChessConstants.INITIAL_NUMBER_OF_DARK_SQUARE_BISHOPS;
     if (numberOfDarkSquareBishopsPromoted > numberOfPossiblePromotions) {
       throw new FenAdvancedValidationException(FenAdvancedValidationProblem.INVALID_BLACK_TOO_MANY_DARK_SQUARE_BISHOPS,
@@ -693,8 +694,8 @@ public class FenParserAdvanced implements EnumConstants {
     }
 
     // queens
-    final var numberOfQueens = FenMaterialCount.calculateNumberOfPieces(Side.BLACK, bitboardPosition, PieceType.QUEEN);
-    final var numberOfQueensPromoted = numberOfQueens - ChessConstants.INITIAL_NUMBER_OF_QUEENS;
+    final int numberOfQueens = FenMaterialCount.calculateNumberOfPieces(Side.BLACK, bitboardPosition, PieceType.QUEEN);
+    final int numberOfQueensPromoted = numberOfQueens - ChessConstants.INITIAL_NUMBER_OF_QUEENS;
     if (numberOfQueensPromoted > numberOfPossiblePromotions) {
       throw new FenAdvancedValidationException(FenAdvancedValidationProblem.INVALID_BLACK_TOO_MANY_QUEENS,
           "there are too many black queens");

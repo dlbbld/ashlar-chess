@@ -87,7 +87,7 @@ class TestBoardGameEndFacts {
     // position has occurred 39 times. Both fivefold and 75-move fire; neither checkmate, stalemate,
     // nor insufficient material applies (full piece complement). Precedence resolves to 75-move.
     final Board board = new Board();
-    for (var i = 0; i < 38; i++) {
+    for (int i = 0; i < 38; i++) {
       board.movesStrict("Nf3", "Nf6", "Ng1", "Ng8");
     }
     assertEquals(152, board.getHalfMoveClock(), "precondition: 38 shuffle cycles -> clock 152");
@@ -116,7 +116,7 @@ class TestBoardGameEndFacts {
     // and fivefold the starting position. Multiple facts simultaneously true; precedence resolves
     // to INSUFFICIENT_MATERIAL (it outranks 75-move and fivefold).
     final Board board = new Board("4k3/8/8/8/8/8/8/4K3 w - - 0 1");
-    for (var i = 0; i < 38; i++) {
+    for (int i = 0; i < 38; i++) {
       board.movesStrict("Kd2", "Kd8", "Ke1", "Ke8");
     }
     assertEquals(152, board.getHalfMoveClock(), "precondition: 38 king-shuffle cycles -> clock 152");

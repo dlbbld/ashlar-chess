@@ -28,15 +28,15 @@ public class StrictSanParser extends AbstractSan {
   }
 
   private static MoveSpecification parseTextInternal(String san, Board board) throws SanValidationException {
-    final var sanParse = SanValidateFormat.validateFormat(san);
+    final SanParse sanParse = SanValidateFormat.validateFormat(san);
 
     SanValidateNonMovement.validateNonMovement(sanParse);
 
     final Side havingMove = board.getHavingMove();
     SanValidateMovement.validateMovement(sanParse, havingMove);
 
-    final var sanFormat = sanParse.sanFormat();
-    final var sanConversion = sanParse.sanConversion();
+    final SanFormat sanFormat = sanParse.sanFormat();
+    final SanConversion sanConversion = sanParse.sanConversion();
 
     SanValidatePieceExists.validatePieceExists(havingMove, sanFormat, sanConversion, sanConversion.movingPieceType(),
         board.getBitboardPosition());

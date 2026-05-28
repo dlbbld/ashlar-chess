@@ -14,7 +14,7 @@ public abstract class AbstractTestFenRoundtrip implements EnumConstants {
     final Board boardPlayMoves = new Board(initialFen);
 
     Board previousBoardFromFen = null;
-    for (var i = 0; i < moveList.size(); i++) {
+    for (int i = 0; i < moveList.size(); i++) {
       final MoveSpecification move = Nulls.get(moveList, i);
       boardPlayMoves.move(move);
       if (previousBoardFromFen != null) {

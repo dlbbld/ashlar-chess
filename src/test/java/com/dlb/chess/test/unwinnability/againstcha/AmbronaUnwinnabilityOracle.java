@@ -34,13 +34,13 @@ public final class AmbronaUnwinnabilityOracle {
     if (lineList.isEmpty()) {
       throw new ProgrammingMistakeException("The Ambrona unwinnability oracle file is empty");
     }
-    final var expectedHeader = "fen\tfullWhite\tfullBlack\tquickWhite\tquickBlack";
+    final String expectedHeader = "fen\tfullWhite\tfullBlack\tquickWhite\tquickBlack";
     if (!expectedHeader.equals(Nulls.get(lineList, 0))) {
       throw new ProgrammingMistakeException("Unexpected Ambrona unwinnability oracle header");
     }
 
     final Map<String, AmbronaUnwinnabilityVerdicts> result = new HashMap<>();
-    for (var i = 1; i < lineList.size(); i++) {
+    for (int i = 1; i < lineList.size(); i++) {
       final String line = Nulls.get(lineList, i);
       final String[] itemArray = Nulls.split(line, "\t");
       if (itemArray.length != 5) {
@@ -50,7 +50,7 @@ public final class AmbronaUnwinnabilityOracle {
       if (result.containsKey(fen)) {
         throw new ProgrammingMistakeException("Duplicate Ambrona unwinnability oracle row for FEN: " + fen);
       }
-      final var verdicts = new AmbronaUnwinnabilityVerdicts(UnwinnabilityFullVerdict.valueOf(Nulls.get(itemArray, 1)),
+      final AmbronaUnwinnabilityVerdicts verdicts = new AmbronaUnwinnabilityVerdicts(UnwinnabilityFullVerdict.valueOf(Nulls.get(itemArray, 1)),
           UnwinnabilityFullVerdict.valueOf(Nulls.get(itemArray, 2)),
           UnwinnabilityQuickVerdict.valueOf(Nulls.get(itemArray, 3)),
           UnwinnabilityQuickVerdict.valueOf(Nulls.get(itemArray, 4)));

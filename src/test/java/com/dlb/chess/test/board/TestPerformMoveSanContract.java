@@ -86,10 +86,10 @@ class TestPerformMoveSanContract {
         testCase.pgnName());
     final Board board = new Board(pgnGame.startFen());
 
-    var halfMoveIndex = 0;
+      int halfMoveIndex = 0;
     for (final PgnHalfMove halfMove : pgnGame.halfMoveList()) {
       halfMoveIndex++;
-      final var hmi = halfMoveIndex;
+      final int hmi = halfMoveIndex;
       final String expectedProvidedSan = halfMove.san();
 
       final MoveSpecification expectedCalculatedMoveSpecification = StrictSanParser

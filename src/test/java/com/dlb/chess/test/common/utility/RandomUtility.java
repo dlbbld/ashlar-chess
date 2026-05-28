@@ -15,7 +15,7 @@ public abstract class RandomUtility {
     if (minimumInclusive > maximumInclusive) {
       throw new IllegalArgumentException();
     }
-    final var maximumExclusive = maximumInclusive + 1;
+    final int maximumExclusive = maximumInclusive + 1;
     return random.nextInt(maximumExclusive - minimumInclusive) + minimumInclusive;
   }
 }

@@ -59,7 +59,7 @@ class TestConventionTestPackageNaming {
     }
 
     if (!violations.isEmpty()) {
-      final var report = new StringBuilder().append(violations.size())
+      final StringBuilder report = new StringBuilder().append(violations.size())
           .append(" file(s) under src/test/java declare a package outside ").append(REQUIRED_PACKAGE_PREFIX)
           .append(":\n");
       for (final String v : violations) {
@@ -70,7 +70,7 @@ class TestConventionTestPackageNaming {
   }
 
   private static String derivePackageName(Path javaFile) {
-    final var parent = javaFile.getParent();
+    final Path parent = javaFile.getParent();
     if (parent == null) {
       return "";
     }

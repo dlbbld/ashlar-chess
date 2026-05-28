@@ -30,7 +30,7 @@ class TestUnwinnabilityMaterialBitboard {
       for (final PgnFen testCase : testCaseList.list()) {
         final StaticPosition sp = StaticPositionBridge.toStaticPosition(testCase.finalPosition().getBitboardPosition());
         final BitboardPosition bp = StaticPositionBridge.fromStaticPosition(sp);
-        final var tag = " in fixture " + testCase.pgnName();
+        final String tag = " in fixture " + testCase.pgnName();
 
         // Any-side existence checks.
         assertEquals(UnwinnabilityMaterial.calculateHasRook(sp), UnwinnabilityMaterialBitboard.calculateHasRook(bp),
@@ -41,7 +41,7 @@ class TestUnwinnabilityMaterialBitboard {
             "calculateHasQueen (any side)" + tag);
 
         for (final Side side : Side.REAL) {
-          final var sideTag = " side=" + side + tag;
+          final String sideTag = " side=" + side + tag;
           assertEquals(UnwinnabilityMaterial.calculateHasRook(side, sp),
               UnwinnabilityMaterialBitboard.calculateHasRook(side, bp), "calculateHasRook" + sideTag);
           assertEquals(UnwinnabilityMaterial.calculateHasKnight(side, sp),

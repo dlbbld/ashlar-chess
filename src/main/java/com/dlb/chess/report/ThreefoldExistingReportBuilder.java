@@ -24,8 +24,8 @@ abstract class ThreefoldExistingReportBuilder {
     final List<RepetitionGroup> groups = new ArrayList<>();
     for (final List<HalfMove> rawGroup : rawGroups) {
       final DynamicPosition repeatedPosition = Nulls.getFirst(rawGroup).dynamicPosition();
-      final var includesInitialPosition = initialDynamicPosition.equals(repeatedPosition);
-      final var totalRepetitionCount = rawGroup.size() + (includesInitialPosition ? 1 : 0);
+      final boolean includesInitialPosition = initialDynamicPosition.equals(repeatedPosition);
+      final int totalRepetitionCount = rawGroup.size() + (includesInitialPosition ? 1 : 0);
       groups.add(new RepetitionGroup(repeatedPosition, Nulls.copyOfList(rawGroup), includesInitialPosition,
           totalRepetitionCount));
     }

@@ -98,7 +98,7 @@ abstract class SanValidateMovementRnbq extends AbstractSan implements EnumConsta
       }
     }
 
-    final var rankText = Nulls.valueOf(fromRank.getNumber());
+    final String rankText = Nulls.valueOf(fromRank.getNumber());
     switch (movingPieceType) {
       case ROOK -> throw new SanValidationException(SanValidationProblem.MOVEMENT_RNBQ_FROM_RANK,
           Message.getString("validation.san.movement.rnbq.from.rank.rook", rankText, toSquare.getName()));

@@ -1,5 +1,6 @@
 package com.dlb.chess.pgn;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -19,7 +20,7 @@ final class PgnReader {
   }
 
   static String readPgn(Path filePath) {
-    final var file = filePath.toFile();
+    final File file = filePath.toFile();
     if (!file.exists()) {
       throw new FileSystemAccessException("File \"" + filePath + "\" was not found.");
     }

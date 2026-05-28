@@ -89,7 +89,7 @@ class TestStrictPgnParserNotSanException extends AbstractTestStrictPgnParserExce
   }
 
   private static void checkException(String pgnName, StrictPgnParserValidationProblem expected) {
-    var isException = false;
+      boolean isException = false;
     try {
       StrictPgnParser.parse(PGN_TEST_FOLDER_PATH, pgnName);
     } catch (final StrictPgnParserValidationException e) {

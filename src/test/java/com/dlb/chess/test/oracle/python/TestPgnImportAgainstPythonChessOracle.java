@@ -98,8 +98,8 @@ class TestPgnImportAgainstPythonChessOracle {
   @Test
   void pgnImportAgainstPythonChessOracle() throws IOException {
     final List<String> failures = new ArrayList<>();
-    var totalFixtures = 0;
-    var totalPlies = 0;
+      int totalFixtures = 0;
+      int totalPlies = 0;
 
     for (final PgnTest bucket : BUCKETS) {
       final Path jsonlPath = jsonlPathFor(bucket);
@@ -127,13 +127,13 @@ class TestPgnImportAgainstPythonChessOracle {
         }
 
         final Board board = new Board(pgnGame.startFen());
-        for (var ply = 0; ply < pgnGame.halfMoveList().size(); ply++) {
+        for (int ply = 0; ply < pgnGame.halfMoveList().size(); ply++) {
           totalPlies++;
           final PgnHalfMove halfMove = Nulls.get(pgnGame.halfMoveList(), ply);
           final OracleMove expected = Nulls.get(record.moves(), ply);
           board.moveStrict(halfMove.san());
 
-          final var plyLabel = ply + 1;
+          final int plyLabel = ply + 1;
           try {
             assertEquals(expected.fenAfter(), board.getFen(),
                 () -> bucket + " / " + record.pgn() + " ply " + plyLabel + " - FEN after move mismatch");
@@ -172,7 +172,7 @@ class TestPgnImportAgainstPythonChessOracle {
             // instead. Skip those predicate comparisons only here; everywhere else the predicates
             // still agree byte-for-byte. The Outcome layer matches python-chess regardless (the
             // precedence stack is applied uniformly there).
-            final var precedenceSuppressed = board.isCheckmate() || board.isStalemate()
+            final boolean precedenceSuppressed = board.isCheckmate() || board.isStalemate()
                 || board.isInsufficientMaterial();
             if (!precedenceSuppressed) {
               assertEquals(expected.isFivefoldRepetition(), board.isFivefoldRepetition(),

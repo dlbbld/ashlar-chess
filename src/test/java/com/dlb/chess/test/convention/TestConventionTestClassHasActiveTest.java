@@ -67,7 +67,7 @@ class TestConventionTestClassHasActiveTest {
     }
 
     if (!violations.isEmpty()) {
-      final var report = new StringBuilder().append(violations.size())
+      final StringBuilder report = new StringBuilder().append(violations.size())
           .append(" Test-prefixed class(es) under src/test/java contain no @Test annotation:\n");
       for (final String violation : violations) {
         report.append("  ").append(violation).append('\n');

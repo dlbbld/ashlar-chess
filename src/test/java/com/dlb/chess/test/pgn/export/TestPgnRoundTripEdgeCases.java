@@ -31,7 +31,7 @@ class TestPgnRoundTripEdgeCases {
     // PGN spec section 8.1.2: inside a tag string, a literal " is encoded as \" and a literal \ is encoded as
     // \\. The tokenizer unescapes; the exporter must re-escape. Without the fix, semantic export emitted the
     // raw unescaped characters inside the quotes, producing an invalid PGN that re-parsing rejected.
-    final var pgn = """
+    final String pgn = """
         [Event "A \\"Quote\\" and slash \\\\"]
         [Site "?"]
         [Date "????.??.??"]
@@ -63,7 +63,7 @@ class TestPgnRoundTripEdgeCases {
     // semantic export threw from PgnLineWrapper because the empty movetext string was passed to the wrap
     // helper (which rejects empty input). The fix: semantic export skips the wrap call when there is no
     // movetext content, producing tag section + separator + trailing blank.
-    final var pgn = """
+    final String pgn = """
         [Event "Spring Classic"]
         [White "Alice"]
 

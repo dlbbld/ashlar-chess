@@ -54,8 +54,8 @@ class TestInsufficientMaterial implements EnumConstants {
 
     final Board board = testCase.finalPosition();
 
-    final var isInsufficientMaterialDirectlyCalculated = calculateIsInsufficientMaterial(board.getBitboardPosition());
-    final var isInsufficientMaterialDerived = board.isInsufficientMaterial(Side.WHITE)
+    final boolean isInsufficientMaterialDirectlyCalculated = calculateIsInsufficientMaterial(board.getBitboardPosition());
+    final boolean isInsufficientMaterialDerived = board.isInsufficientMaterial(Side.WHITE)
         && board.isInsufficientMaterial(Side.BLACK);
 
     assertEquals(isInsufficientMaterialDirectlyCalculated, isInsufficientMaterialDerived);

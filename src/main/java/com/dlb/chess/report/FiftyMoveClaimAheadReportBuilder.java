@@ -41,14 +41,14 @@ abstract class FiftyMoveClaimAheadReportBuilder {
    */
   static FiftyMoveClaimAheadReport build(Board board) {
     final List<FiftyMoveClaimAheadEntry> entries = new ArrayList<>();
-    final var initialFenClock = board.getInitialFen().halfMoveClock();
+    final int initialFenClock = board.getInitialFen().halfMoveClock();
 
     final Board replayBoard = new Board(board.getInitialFen());
-    var currentStart = initialSequenceStart(initialFenClock);
+      SequenceStart currentStart = initialSequenceStart(initialFenClock);
 
     final List<LegalMove> performedLegalMoveList = board.getPerformedLegalMoveList();
     for (final LegalMove nextPlayedMove : performedLegalMoveList) {
-      final var nextPlayedMoveBreaksSequence = BasicChessUtility.calculateIsResetHalfMoveClock(nextPlayedMove);
+      final boolean nextPlayedMoveBreaksSequence = BasicChessUtility.calculateIsResetHalfMoveClock(nextPlayedMove);
       if (nextPlayedMoveBreaksSequence) {
         emitBoundaryIfMissedOpportunity(entries, replayBoard, currentStart);
       }
@@ -86,8 +86,8 @@ abstract class FiftyMoveClaimAheadReportBuilder {
     }
     // Boundary metadata: the upcoming ply's chronological position. The candidate move itself is
     // not stored - the entry represents the boundary, not any single alternative move.
-    final var boundaryHalfMoveCount = replayBoard.getPerformedHalfMoveCount() + 1;
-    final var boundaryFullMoveNumber = replayBoard.getFullMoveNumber();
+    final int boundaryHalfMoveCount = replayBoard.getPerformedHalfMoveCount() + 1;
+    final int boundaryFullMoveNumber = replayBoard.getFullMoveNumber();
     entries.add(new FiftyMoveClaimAheadEntry(currentStart, boundaryHalfMoveCount, boundaryFullMoveNumber,
         replayBoard.getHavingMove()));
   }

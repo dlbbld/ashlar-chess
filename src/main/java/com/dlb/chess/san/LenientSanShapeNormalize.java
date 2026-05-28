@@ -40,15 +40,15 @@ final class LenientSanShapeNormalize {
       return text;
     }
 
-    final var castlingNormalized = tryNormalizeCastling(text, board, codes);
+    final String castlingNormalized = tryNormalizeCastling(text, board, codes);
     if (castlingNormalized != null) {
       return castlingNormalized;
     }
 
-    final var lastChar = text.charAt(text.length() - 1);
-    final var hasTerminalMarker = lastChar == '+' || lastChar == '#';
-    final var terminalMarker = hasTerminalMarker ? Nulls.valueOf(lastChar) : "";
-    var body = hasTerminalMarker ? Nulls.substring(text, 0, text.length() - 1) : text;
+    final char lastChar = text.charAt(text.length() - 1);
+    final boolean hasTerminalMarker = lastChar == '+' || lastChar == '#';
+    final String terminalMarker = hasTerminalMarker ? Nulls.valueOf(lastChar) : "";
+      String body = hasTerminalMarker ? Nulls.substring(text, 0, text.length() - 1) : text;
 
     body = stripExplicitPawnLetter(body, codes);
     // Case fixes run early so downstream steps (UCI/LAN translation, pawn-missing-x, promotion-equals)
@@ -65,15 +65,15 @@ final class LenientSanShapeNormalize {
 
   private static @Nullable String tryNormalizeCastling(String text, Board board,
       List<LenientSanValidationProblem> codes) {
-    final var lastChar = text.charAt(text.length() - 1);
-    final var hasTerminalMarker = lastChar == '+' || lastChar == '#';
-    final var marker = hasTerminalMarker ? Nulls.valueOf(lastChar) : "";
-    final var body = hasTerminalMarker ? Nulls.substring(text, 0, text.length() - 1) : text;
+    final char lastChar = text.charAt(text.length() - 1);
+    final boolean hasTerminalMarker = lastChar == '+' || lastChar == '#';
+    final String marker = hasTerminalMarker ? Nulls.valueOf(lastChar) : "";
+    final String body = hasTerminalMarker ? Nulls.substring(text, 0, text.length() - 1) : text;
 
     // Classic O-O / 0-0 / mixed forms. Three or five characters with hyphens and zero-or-O at every other position.
     if (matchesCastlingZeroOPattern(body)) {
-      final var hasO = body.indexOf('O') >= 0;
-      final var hasZero = body.indexOf('0') >= 0;
+      final boolean hasO = body.indexOf('O') >= 0;
+      final boolean hasZero = body.indexOf('0') >= 0;
       if (hasO && hasZero) {
         throw new LenientSanParserValidationException(
             Message.getString("validation.san.lenient.mixedCastlingZeroAndO", text), text, null,
@@ -88,7 +88,7 @@ final class LenientSanShapeNormalize {
     }
 
     // UCI king-castling: e1g1 / e1c1 / e8g8 / e8c8 with the king actually on the e-file home square.
-    final var uciCastling = tryTranslateUciCastling(body, board);
+    final String uciCastling = tryTranslateUciCastling(body, board);
     if (uciCastling != null) {
       codes.add(LenientSanValidationProblem.UCI_NOTATION);
       return uciCastling + marker;
@@ -156,10 +156,10 @@ final class LenientSanShapeNormalize {
     if (body.indexOf('-') >= 0) {
       final String dehyphenated = Nulls.replace(body, "-", "");
       codes.add(LenientSanValidationProblem.LONG_ALGEBRAIC_NOTATION);
-      final var translated = tryTranslateUciShape(dehyphenated, board);
+      final String translated = tryTranslateUciShape(dehyphenated, board);
       return translated != null ? translated : dehyphenated;
     }
-    final var translated = tryTranslateUciShape(body, board);
+    final String translated = tryTranslateUciShape(body, board);
     if (translated != null) {
       codes.add(LenientSanValidationProblem.UCI_NOTATION);
       return translated;
@@ -198,7 +198,7 @@ final class LenientSanShapeNormalize {
     final StringBuilder out = new StringBuilder();
     if (pieceType == PieceType.PAWN) {
       // Pawn SAN: forward "<file><rank>", capture "<fromFile>x<toFile><toRank>", optional "=<P>"
-      final var isCapture = body.charAt(0) != body.charAt(2);
+      final boolean isCapture = body.charAt(0) != body.charAt(2);
       if (isCapture) {
         out.append(body.charAt(0)).append('x').append(body.charAt(2)).append(body.charAt(3));
       } else {
@@ -228,15 +228,15 @@ final class LenientSanShapeNormalize {
   }
 
   private static String insertMissingPromotionEquals(String body, List<LenientSanValidationProblem> codes) {
-    final var len = body.length();
+    final int len = body.length();
     if (len < 3) {
       return body;
     }
-    final var last = body.charAt(len - 1);
+    final char last = body.charAt(len - 1);
     if (!isPromotionPieceLetterAnyCase(last)) {
       return body;
     }
-    final var prev = body.charAt(len - 2);
+    final char prev = body.charAt(len - 2);
     if (prev != '1' && prev != '8' || body.charAt(len - 3) == '=') {
       return body;
     }
@@ -262,11 +262,11 @@ final class LenientSanShapeNormalize {
   }
 
   private static String caseFixLowercasePromotionPiece(String body, List<LenientSanValidationProblem> codes) {
-    final var eq = body.lastIndexOf('=');
+    final int eq = body.lastIndexOf('=');
     if (eq < 0 || eq != body.length() - 2) {
       return body;
     }
-    final var piece = body.charAt(eq + 1);
+    final char piece = body.charAt(eq + 1);
     if (piece == 'r' || piece == 'n' || piece == 'b' || piece == 'q') {
       codes.add(LenientSanValidationProblem.LOWERCASE_PROMOTION_PIECE);
       return Nulls.substring(body, 0, eq + 1) + Character.toUpperCase(piece);
@@ -278,7 +278,7 @@ final class LenientSanShapeNormalize {
     if (body.isEmpty()) {
       return body;
     }
-    final var first = body.charAt(0);
+    final char first = body.charAt(0);
     if (first == 'n' || first == 'r' || first == 'q' || first == 'k') {
       codes.add(LenientSanValidationProblem.LOWERCASE_PIECE_LETTER);
       return Character.toUpperCase(first) + Nulls.substring(body, 1);
@@ -312,9 +312,9 @@ final class LenientSanShapeNormalize {
 
   private static String caseFixUppercaseFileLetters(String body, List<LenientSanValidationProblem> codes) {
     final StringBuilder out = new StringBuilder(body.length());
-    var changed = false;
-    for (var i = 0; i < body.length(); i++) {
-      final var c = body.charAt(i);
+      boolean changed = false;
+    for (int i = 0; i < body.length(); i++) {
+      final char c = body.charAt(i);
       if (i == 0) {
         // Position 0 may be a piece letter (P, R, N, B, Q, K) OR a file letter for pawn / UCI / LAN forms.
         // A, C, D, E, F, G, H are unambiguously file letters (no piece uses these). B is ambiguous (file b

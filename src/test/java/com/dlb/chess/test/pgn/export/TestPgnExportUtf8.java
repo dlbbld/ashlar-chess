@@ -30,7 +30,7 @@ public class TestPgnExportUtf8 {
   @SuppressWarnings("static-method")
   @Test
   void test() {
-    final var pgn = """
+    final String pgn = """
         [Event "Live Chess ä, ö, ü, ß"]
         [Site "Chess.com 你好"]
         [Date "2020.07.11"]

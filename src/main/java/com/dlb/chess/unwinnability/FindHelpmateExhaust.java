@@ -66,7 +66,7 @@ class FindHelpmateExhaust {
     this.isCanExhaust = true;
     this.moveEvaluationList = new ArrayList<>();
 
-    final var findHelpmate = findHelpmate(board, 0, maxDepth, 0, false);
+    final FindHelpmateRecursionResult findHelpmate = findHelpmate(board, 0, maxDepth, 0, false);
 
     if (!invariantPosition.equals(board.getDynamicPosition())
         || invariantEnPassantCaptureTargetSquare != board.getEnPassantCaptureTargetSquare()) {
@@ -113,7 +113,7 @@ class FindHelpmateExhaust {
     // receiving checkmate in the position then return false
 
     // set d := limits.max-depth - depth
-    final var movesLeft = maxDepth - depth;
+    final int movesLeft = maxDepth - depth;
 
     final HelpmateSearchKey cacheKey = board.currentTranspositionKey();
     // 5: if (pos,D) in table with D >= d then return false (-> pos was already analyzed)
@@ -158,7 +158,7 @@ class FindHelpmateExhaust {
         score = score == ScoreResult.REWARD ? ScoreResult.NORMAL : score;
       }
 
-      var newDepth = depth + 1;
+        int newDepth = depth + 1;
       switch (score) {
         case REWARD:
           newDepth = newDepth - 1;
@@ -178,7 +178,7 @@ class FindHelpmateExhaust {
       if (IS_DEBUG) {
         final String uciMoveStr = UciMoveUtility
             .convertMoveSpecificationToUci(legalMove.havingMove(), legalMove.moveSpecification()).text();
-        final var out = uciMoveStr + " " + newDepth;
+        final String out = uciMoveStr + " " + newDepth;
         logger.debug(out);
         evalCounter++;
         final String evaluateStockfishFen = calculateStockfishFen(board);
@@ -199,12 +199,12 @@ class FindHelpmateExhaust {
 
       moveEvaluationList.add(legalMove);
 
-      final var isProgress = score == ScoreResult.REWARD;
+      final boolean isProgress = score == ScoreResult.REWARD;
 
       // 3: increase cnt
       localNodeCount++;
 
-      final var findHelpmate = findHelpmate(board, newDepth, maxDepth, actualDepth + 1, isProgress);
+      final FindHelpmateRecursionResult findHelpmate = findHelpmate(board, newDepth, maxDepth, actualDepth + 1, isProgress);
       board.unmove();
       switch (findHelpmate) {
         case TRUE:

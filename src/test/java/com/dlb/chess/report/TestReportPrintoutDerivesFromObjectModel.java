@@ -94,8 +94,8 @@ class TestReportPrintoutDerivesFromObjectModel {
     } else {
       assertEquals(claimAhead.entries().size(), claimAheadSection.size(),
           "claim-ahead section must have one rendered line per ClaimAheadEntry");
-      final var asterisks = claimAheadSection.stream().filter(line -> line.contains("*")).count();
-      final var expectedAsterisks = claimAhead.entries().stream().filter(ClaimAheadEntry::hasBeenPlayed).count();
+      final long asterisks = claimAheadSection.stream().filter(line -> line.contains("*")).count();
+      final long expectedAsterisks = claimAhead.entries().stream().filter(ClaimAheadEntry::hasBeenPlayed).count();
       assertEquals(expectedAsterisks, asterisks,
           "asterisk count in printed claim-ahead lines must equal count of hasBeenPlayed entries");
     }
@@ -120,7 +120,7 @@ class TestReportPrintoutDerivesFromObjectModel {
       // No asterisks expected under the missed-opportunity filter: the actually-played move at the
       // boundary ply is by construction clock-resetting, so the non-zeroing candidate never coincides
       // with the played move.
-      final var asterisks = fiftyClaimAheadSection.stream().filter(line -> line.contains("*")).count();
+      final long asterisks = fiftyClaimAheadSection.stream().filter(line -> line.contains("*")).count();
       assertEquals(0, asterisks,
           "fifty-move claim-ahead lines never carry an asterisk under the missed-opportunity filter");
     }
@@ -150,10 +150,10 @@ class TestReportPrintoutDerivesFromObjectModel {
    */
   private static List<String> extractSection(List<String> lines, String sectionHeaderPrefix,
       String nextSectionHeaderPrefix) {
-    var inSection = false;
+      boolean inSection = false;
     final List<String> contents = new ArrayList<>();
     for (final String raw : lines) {
-      final var line = raw.trim();
+      final String line = raw.trim();
       if (!inSection && line.startsWith(sectionHeaderPrefix)) {
         inSection = true;
         continue;
@@ -177,10 +177,10 @@ class TestReportPrintoutDerivesFromObjectModel {
    * header.
    */
   private static List<String> extractSectionToEnd(List<String> lines, String sectionHeaderPrefix) {
-    var inSection = false;
+      boolean inSection = false;
     final List<String> contents = new ArrayList<>();
     for (final String raw : lines) {
-      final var line = raw.trim();
+      final String line = raw.trim();
       if (!inSection && line.startsWith(sectionHeaderPrefix)) {
         inSection = true;
         continue;

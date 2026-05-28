@@ -38,7 +38,7 @@ abstract class SanValidateStaticallyStrictHelpers {
 
   static void appendMoveWithFile(Set<String> set, Square toSquare, com.dlb.chess.board.enums.File file,
       PieceType pieceType) {
-    final var fileLetterUpperCase = Character.toUpperCase(file.getLetter());
+    final char fileLetterUpperCase = Character.toUpperCase(file.getLetter());
     set.add(String.valueOf(pieceType.getLetter()) + fileLetterUpperCase + toSquare.getName().toUpperCase());
   }
 

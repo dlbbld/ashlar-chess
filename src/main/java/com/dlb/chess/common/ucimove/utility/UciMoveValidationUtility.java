@@ -101,7 +101,7 @@ public abstract class UciMoveValidationUtility implements EnumConstants {
     uciMove.append(fromSquare.getName());
     uciMove.append(toSquare.getName());
     if (promotionPieceType != PromotionPieceType.NONE) {
-      final var promotionPieceTypeLetterLowerCase = Character
+      final char promotionPieceTypeLetterLowerCase = Character
           .toLowerCase(promotionPieceType.getPieceType().getLetter());
       uciMove.append(promotionPieceTypeLetterLowerCase);
     }

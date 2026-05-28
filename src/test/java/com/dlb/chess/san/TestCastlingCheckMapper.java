@@ -78,7 +78,7 @@ class TestCastlingCheckMapper {
   @SuppressWarnings("static-method")
   @Test
   void testParityCount() {
-    final var expectedProblemCount = EXPECTED_CASTLING_CHECKS.size() - 1 + EXPECTED_FINAL_NO_RIGHT_PROVENANCES.size();
+    final int expectedProblemCount = EXPECTED_CASTLING_CHECKS.size() - 1 + EXPECTED_FINAL_NO_RIGHT_PROVENANCES.size();
     assertEquals(expectedProblemCount, EXPECTED_KING_CASTLING_PROBLEMS.size(),
         "|KING_CASTLING_*| must equal (|CastlingCheck refusal| - 1) + |FINAL_NO_RIGHT provenances|");
   }
@@ -86,7 +86,7 @@ class TestCastlingCheckMapper {
   @SuppressWarnings("static-method")
   @Test
   void testFinalNoRightMappingMatchesProvenanceOrder() {
-    for (var i = 0; i < EXPECTED_FINAL_NO_RIGHT_PROVENANCES.size(); i++) {
+    for (int i = 0; i < EXPECTED_FINAL_NO_RIGHT_PROVENANCES.size(); i++) {
       assertEquals(Nulls.get(EXPECTED_FINAL_NO_RIGHT_PROBLEMS, i),
           CastlingCheckMapper.map(CastlingCheck.FINAL_NO_RIGHT, Nulls.get(EXPECTED_FINAL_NO_RIGHT_PROVENANCES, i)),
           "FINAL_NO_RIGHT mapping mismatch for provenance " + Nulls.get(EXPECTED_FINAL_NO_RIGHT_PROVENANCES, i));
@@ -97,9 +97,9 @@ class TestCastlingCheckMapper {
   @Test
   void testTemporaryMappingMatchesExpectedOrder() {
     // The TEMPORARY entries in EXPECTED_KING_CASTLING_PROBLEMS start after the 5 FINAL entries.
-    final var temporaryStartIndex = EXPECTED_FINAL_NO_RIGHT_PROVENANCES.size();
-    final var temporaryCastlingChecks = EXPECTED_CASTLING_CHECKS.subList(1, EXPECTED_CASTLING_CHECKS.size());
-    for (var i = 0; i < temporaryCastlingChecks.size(); i++) {
+    final int temporaryStartIndex = EXPECTED_FINAL_NO_RIGHT_PROVENANCES.size();
+    final ImmutableList<CastlingCheck> temporaryCastlingChecks = EXPECTED_CASTLING_CHECKS.subList(1, EXPECTED_CASTLING_CHECKS.size());
+    for (int i = 0; i < temporaryCastlingChecks.size(); i++) {
       assertEquals(Nulls.get(EXPECTED_KING_CASTLING_PROBLEMS, temporaryStartIndex + i),
           CastlingCheckMapper.map(Nulls.get(temporaryCastlingChecks, i), CastlingRightLoss.NOT_LOST),
           "TEMPORARY mapping mismatch at position " + i);

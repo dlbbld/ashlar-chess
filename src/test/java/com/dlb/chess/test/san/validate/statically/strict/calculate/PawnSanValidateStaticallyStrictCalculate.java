@@ -24,16 +24,16 @@ public class PawnSanValidateStaticallyStrictCalculate extends AbstractSanValidat
 
     final List<String> enumNameList = calculateEnumNameList(side);
     for (final String enumName : enumNameList) {
-      final var parse = enumName.toLowerCase();
+      final String parse = enumName.toLowerCase();
       File fromFile;
-      final var fromRank = Rank.NONE;
-      final var toSquare = switch (parse.length()) {
+      final Rank fromRank = Rank.NONE;
+      final Square toSquare = switch (parse.length()) {
         case 3 -> {
           fromFile = File.NONE;
           yield Square.calculate(Nulls.substring(parse, 1));
         }
         case 4 -> {
-          final var fileLetter = parse.charAt(1);
+          final char fileLetter = parse.charAt(1);
           fromFile = File.calculateFile(fileLetter);
           yield Square.calculate(Nulls.substring(parse, 2));
         }
@@ -41,7 +41,7 @@ public class PawnSanValidateStaticallyStrictCalculate extends AbstractSanValidat
             "The length of the " + PAWN.getName() + " enum for " + side.getName() + " does not meet the expectation");
       };
       final SanValidationFromTo model = new SanValidationFromTo(fromFile, fromRank, toSquare);
-      final var isCapture = fromFile != File.NONE;
+      final boolean isCapture = fromFile != File.NONE;
       if (Rank.calculateIsPromotionRank(side, toSquare.getRank())) {
         populatePawnPromotionMap(sanValidateMap, model, isCapture);
       } else {

@@ -43,8 +43,8 @@ class TestHelpmateSearchKey {
   void keyEqualityMirrorsDynamicPositionAcrossRecursiveWalk() {
     for (final Scenario scenario : SCENARIOS) {
       try {
-        final var board1 = boardFrom(scenario.fen());
-        final var board2 = boardFrom(scenario.fen());
+        final Board board1 = boardFrom(scenario.fen());
+        final Board board2 = boardFrom(scenario.fen());
         final HelpmateSearchBoard search1 = HelpmateSearchBoard.from(board1);
         final HelpmateSearchBoard search2 = HelpmateSearchBoard.from(board2);
         assertParityAtRoot(search1, search2);

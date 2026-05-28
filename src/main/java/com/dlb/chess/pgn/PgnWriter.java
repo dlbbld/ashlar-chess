@@ -1,5 +1,6 @@
 package com.dlb.chess.pgn;
 
+import java.io.BufferedWriter;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -78,7 +79,7 @@ public class PgnWriter {
     } catch (final IOException ioe) {
       throw new FileSystemAccessException("Deleting existing file \"" + filePath + "\" failed.", ioe);
     }
-    try (var writer = Files.newBufferedWriter(filePath, StandardCharsets.UTF_8)) {
+    try (BufferedWriter writer = Files.newBufferedWriter(filePath, StandardCharsets.UTF_8)) {
       for (final String line : lineList) {
         writer.write(line);
         writer.write("\n");

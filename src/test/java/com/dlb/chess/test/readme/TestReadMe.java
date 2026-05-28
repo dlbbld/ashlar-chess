@@ -71,7 +71,7 @@ class TestReadMe {
     board.moveStrict("e4");
     board.movesStrict("e5", "Bc4");
 
-    final var newMove = new MoveSpecification(Square.F8, Square.C5);
+    final MoveSpecification newMove = new MoveSpecification(Square.F8, Square.C5);
     board.move(newMove);
 
     board.unmove();
@@ -105,7 +105,7 @@ class TestReadMe {
   @Test
   @SuppressWarnings("static-method")
   void lenientParserAcceptsLooseReadmeFormat() {
-    final var pgn = """
+    final String pgn = """
         [ Event "Spring Classic"]
 
         1. e4 e5   2. Nf3
@@ -124,7 +124,7 @@ class TestReadMe {
   @Test
   @SuppressWarnings("static-method")
   void lenientParserCreatesExportFormat() {
-    final var pgn = """
+    final String pgn = """
                 [Black "Jane Doe"]
                 [White "John Doe"]
                 [ Event "Spring Classic"]
@@ -150,7 +150,7 @@ class TestReadMe {
   @Test
   @SuppressWarnings("static-method")
   void lenientParserReportsInvalidSan() {
-    final var pgn = """
+    final String pgn = """
         [ Event "Spring Classic"]
 
         1. e4 e5   2. Nf4
@@ -170,7 +170,7 @@ class TestReadMe {
   @Test
   @SuppressWarnings("static-method")
   void strictParserAcceptsStrictReadmeFormat() {
-    final var pgn = """
+    final String pgn = """
         [Event "Spring Classic"]
         [Site "Somewhere"]
         [Date "2024.01.01"]
@@ -193,7 +193,7 @@ class TestReadMe {
   @Test
   @SuppressWarnings("static-method")
   void strictParserRejectsLenientTagSyntax() {
-    final var pgn = """
+    final String pgn = """
         [ Event "Spring Classic"]
 
         1. e4 e5 2. Nf3 Nf6 3. Bc4 Bc5
@@ -215,7 +215,7 @@ class TestReadMe {
     // PGN spec section 8.1.1 makes the Seven Tag Roster an archival-storage concern only. Strict parsing requires
     // the Result tag (so its value can match the termination marker) but accepts a PGN that omits other roster
     // entries. Archival output is opt-in via WriteMode.ARCHIVAL on PgnWriter.
-    final var pgn = """
+    final String pgn = """
         [Event "Spring Classic"]
         [Result "*"]
 
@@ -229,7 +229,7 @@ class TestReadMe {
   @Test
   @SuppressWarnings("static-method")
   void strictParserRejectsMissingResultTag() {
-    final var pgn = """
+    final String pgn = """
         [Event "Spring Classic"]
 
         1. e4 e5 2. Nf3 Nf6 3. Bc4 Bc5 *
@@ -260,7 +260,7 @@ class TestReadMe {
   @Test
   @SuppressWarnings("static-method")
   void lenientValidationExamplesReturnExpectedResults() {
-    final var validPgn = """
+    final String validPgn = """
         [ Event "Spring Classic"]
 
         1. e4 e5   2. Nf3
@@ -270,7 +270,7 @@ class TestReadMe {
     final LenientPgnParserValidationResult validResult = LenientPgnParser.validateText(validPgn);
     assertTrue(validResult.isValid());
 
-    final var invalidPgn = """
+    final String invalidPgn = """
         [ Event "Spring Classic"]
 
         1. e4 e5   2. Nf3
@@ -287,7 +287,7 @@ class TestReadMe {
   @Test
   @SuppressWarnings("static-method")
   void lenientPgnSanTolerancesExampleReturnsExpectedForgivenItems() {
-    final var pgn = """
+    final String pgn = """
         [Event "?"]
         [Site "?"]
         [Date "?"]
@@ -314,7 +314,7 @@ class TestReadMe {
   @Test
   @SuppressWarnings("static-method")
   void strictValidationExamplesReturnExpectedResults() {
-    final var validPgn = """
+    final String validPgn = """
         [Event "Spring Classic"]
         [Site "Somewhere"]
         [Date "2024.01.01"]
@@ -329,7 +329,7 @@ class TestReadMe {
     final StrictPgnParserValidationResult validResult = StrictPgnParser.validateText(validPgn);
     assertTrue(validResult.isValid());
 
-    final var invalidPgn = """
+    final String invalidPgn = """
         [Event "Spring Classic"]
         [Site "Somewhere"]
         [Date "2024.01.01"]

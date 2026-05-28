@@ -15,7 +15,7 @@ class Score {
   // Inputs: position, legal move in the position
   // Output: Normal, Reward, or Punish (variation score)
   public static ScoreResult score(Side color, Side havingMove, BitboardPosition bitboardPosition, LegalMove legalMove) {
-    var variation = ScoreResult.NORMAL;
+      ScoreResult variation = ScoreResult.NORMAL;
 
     // 1: if it is the intended winner's turn in pos then
     if (havingMove == color) {
@@ -36,12 +36,12 @@ class Score {
 
       // Note: We are not immediately returning the value when evaluated as in the PDF, but also evaluating the
       // later condition as in the code. Must be checked what is todot.
-      final var isNeedLoserPromotion = FindHelpmateExhaust.calculateIsNeedLoserPromotion(color, bitboardPosition);
+      final boolean isNeedLoserPromotion = FindHelpmateExhaust.calculateIsNeedLoserPromotion(color, bitboardPosition);
       if (isNeedLoserPromotion) {
         // 6: if m is a promotion to a queen or rook then return Punish
         // Note: we implement the code with differences to the PDF for this case
-        final var isHeavyPromotion = calculateIsPromotionToHeavyPiece(legalMove);
-        final var isPawnMove = calculateIsPawnMove(legalMove);
+        final boolean isHeavyPromotion = calculateIsPromotionToHeavyPiece(legalMove);
+        final boolean isPawnMove = calculateIsPawnMove(legalMove);
         // 7: else if m is a pawn move then return Reward
         // Note: the code does not uphelp this
         variation = isPawnMove && !isHeavyPromotion ? ScoreResult.REWARD : ScoreResult.PUNISH;

@@ -14,6 +14,8 @@ import com.dlb.chess.test.pgn.parser.PgnCacheForLenientPgnParserTestCases;
 import com.dlb.chess.test.pgn.parser.PgnCacheForStrictPgnParserTestCases;
 import com.dlb.chess.test.pgn.setup.PgnTestCaseCatalog;
 
+import java.util.List;
+
 class TestStrictPgnParserAgainstLenientPgnParser {
 
   private static final Logger logger = Nulls.getLogger(TestStrictPgnParserAgainstLenientPgnParser.class);
@@ -23,7 +25,7 @@ class TestStrictPgnParserAgainstLenientPgnParser {
   void test() {
     // true (default) -> curated parser-integration smoke subset (~45 files).
     // false -> full ALL_EXCEPT_LONGEST_POSSIBLE corpus for a pre-release / regression sweep.
-    final var source = RestrictTestConstants.IS_RESTRICT_PGN_STRICT_AGAINST_LENIENT_TEST
+    final List<PgnTestCaseList> source = RestrictTestConstants.IS_RESTRICT_PGN_STRICT_AGAINST_LENIENT_TEST
         ? PgnTestCaseCatalog.getParserIntegrationSmokeList()
         : PgnTestCaseCatalog.getRestrictedTestListList();
     for (final PgnTestCaseList testCaseList : source) {

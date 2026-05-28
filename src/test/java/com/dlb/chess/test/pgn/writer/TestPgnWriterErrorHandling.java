@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.nio.file.Path;
 
+import com.dlb.chess.pgn.PgnGame;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
@@ -19,7 +20,7 @@ class TestPgnWriterErrorHandling {
   @Test
   void testWritePgnPropagatesFileSystemAccessException(@TempDir Path tempFolder) {
     final Path filePath = Nulls.pathResolve(tempFolder, "missing/game.pgn");
-    final var pgnGame = PgnCreate.createPgnGame(new Board());
+    final PgnGame pgnGame = PgnCreate.createPgnGame(new Board());
 
     assertThrows(FileSystemAccessException.class, () -> PgnWriter.writePgn(pgnGame, filePath));
   }

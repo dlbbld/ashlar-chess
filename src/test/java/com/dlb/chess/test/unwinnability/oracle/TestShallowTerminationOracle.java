@@ -36,7 +36,7 @@ class TestShallowTerminationOracle {
   @SuppressWarnings("static-method")
   @Test
   void testFen() {
-    final var fen = "rnbq1bnr/pppp2pp/PN6/R4k2/4pp2/5N2/1PPPPPPP/2BQKB1R b K - 5 8";
+    final String fen = "rnbq1bnr/pppp2pp/PN6/R4k2/4pp2/5N2/1PPPPPPP/2BQKB1R b K - 5 8";
     final Board board = new Board(fen);
 
     assertEquals(LimitedUnwinnabilityVerdict.WINNABLE,

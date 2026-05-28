@@ -43,7 +43,7 @@ class Reachability {
   }
 
   public int calculateVariableCountSetToOne() {
-    var count = 0;
+      int count = 0;
     for (final Entry<Side, EnumMap<Square, VariableState>> mapEntryMap : Nulls.entrySet(reachabilityMap)) {
       final EnumMap<Square, VariableState> mapEntry = Nulls.get(reachabilityMap, Nulls.getKey(mapEntryMap));
       for (final Entry<Square, VariableState> entry : mapEntry.entrySet()) {

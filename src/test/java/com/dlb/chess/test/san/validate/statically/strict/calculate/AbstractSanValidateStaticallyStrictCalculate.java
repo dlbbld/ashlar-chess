@@ -11,6 +11,7 @@ import com.dlb.chess.common.Nulls;
 import com.dlb.chess.common.constants.EnumConstants;
 import com.dlb.chess.common.exceptions.ProgrammingMistakeException;
 import com.dlb.chess.san.SanConversion;
+import com.dlb.chess.san.SanFormat;
 import com.dlb.chess.san.SanParse;
 import com.dlb.chess.san.SanTerminalMarker;
 import com.dlb.chess.test.san.SanCalculate;
@@ -20,7 +21,7 @@ public abstract class AbstractSanValidateStaticallyStrictCalculate implements En
 
   public static SanValidationFromTo calculateFromFileAndOrRankTo(String enumName, PieceType movingPieceType) {
 
-    final var parse = enumName.toLowerCase();
+    final String parse = enumName.toLowerCase();
     File fromFile;
     Rank fromRank;
     Square toSquare;
@@ -31,7 +32,7 @@ public abstract class AbstractSanValidateStaticallyStrictCalculate implements En
         toSquare = Square.calculate(Nulls.substring(parse, 1));
         break;
       case 4:
-        final var checkLetter = parse.charAt(1);
+        final char checkLetter = parse.charAt(1);
 
         if (File.exists(checkLetter)) {
           fromFile = File.calculateFile(checkLetter);
@@ -95,7 +96,7 @@ public abstract class AbstractSanValidateStaticallyStrictCalculate implements En
 
     final String san = SanCalculate.calculateSan(fromFile, fromRank, toSquare, promotionPieceType, isCapture,
         sanTerminalMarker, movingPieceType);
-    final var sanFormat = SanCalculate.calculateSanFormat(isCapture, fromFile, fromRank, movingPieceType,
+    final SanFormat sanFormat = SanCalculate.calculateSanFormat(isCapture, fromFile, fromRank, movingPieceType,
         promotionPieceType);
     final SanParse sanParse = new SanParse(sanFormat,
         new SanConversion(movingPieceType, fromFile, fromRank, toSquare, promotionPieceType, sanTerminalMarker));

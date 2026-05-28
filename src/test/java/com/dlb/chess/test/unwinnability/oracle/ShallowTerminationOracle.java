@@ -68,8 +68,8 @@ public class ShallowTerminationOracle {
     }
 
     // Cooperative scan: play every legal move, collect what each subtree reports.
-    var anyChildIsWin = false;
-    var everyChildIsLossOrDraw = true;
+      boolean anyChildIsWin = false;
+      boolean everyChildIsLossOrDraw = true;
 
     for (final LegalMove move : board.getLegalMoves()) {
       board.move(move.moveSpecification());

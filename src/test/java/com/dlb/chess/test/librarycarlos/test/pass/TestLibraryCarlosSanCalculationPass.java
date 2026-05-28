@@ -28,8 +28,8 @@ class TestLibraryCarlosSanCalculationPass {
   private static String calculateSan(Board board) {
     final MoveList moveList = new MoveList();
     moveList.addAll(calculateMoveList(board));
-    final var sanArray = moveList.toSanArray();
-    @SuppressWarnings("null") final var last = Nulls.getLast(sanArray);
+    final String[] sanArray = moveList.toSanArray();
+    @SuppressWarnings("null") final String last = Nulls.getLast(sanArray);
     return last;
   }
 

@@ -87,7 +87,7 @@ class TestPgnExportRoundTripAgainstPythonChessOracle {
   @Test
   void pgnExportRoundTripAgainstPythonChessOracle() throws IOException {
     final @NonNull List<String> failures = new ArrayList<>();
-    var totalFixtures = 0;
+      int totalFixtures = 0;
 
     for (final PgnTest bucket : BUCKETS) {
       final Path jsonlPath = jsonlPathFor(bucket);
@@ -146,7 +146,7 @@ class TestPgnExportRoundTripAgainstPythonChessOracle {
 
   private static void verify(OracleRecord record, List<String> expectedUcis, PgnGame parsed, String stage,
       PgnTest bucket, List<String> failures) {
-    final var label = bucket + " / " + record.pgn() + " [" + stage + "]";
+    final String label = bucket + " / " + record.pgn() + " [" + stage + "]";
 
     try {
       assertEquals(record.startFen(), parsed.startFen().fen(), () -> label + " - startFen mismatch");

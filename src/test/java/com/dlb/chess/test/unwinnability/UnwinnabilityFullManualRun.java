@@ -13,7 +13,7 @@ public class UnwinnabilityFullManualRun {
 
   public static void main(String[] args) {
 
-    final var pgnName = "01_m1_white_to_move.pgn";
+    final String pgnName = "01_m1_white_to_move.pgn";
 
     final PgnTest pgnTest = PgnTestCaseCatalog.findPgnTestPgnNotListed(pgnName);
     final PgnGame pgnGame = LenientPgnParser.parse(pgnTest.getFolderPath(), pgnName);

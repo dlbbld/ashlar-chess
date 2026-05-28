@@ -89,7 +89,7 @@ public abstract class AbstractTestBasic implements EnumConstants {
     assertFalse(board.isCheckmate());
     assertFalse(board.isStalemate());
 
-    final var moveSpecification = new MoveSpecification(fromSquare, toSquare);
+    final MoveSpecification moveSpecification = new MoveSpecification(fromSquare, toSquare);
     // Callers in this PGN-test suite never set up pawn promotions or en-passant captures via checkCapture; the
     // moving piece is always a sliding piece or knight, so the kind is NORMAL.
     final LegalMove expected = new LegalMove(moveSpecification, movingPiece, capturedPiece, LegalMoveKind.NORMAL);
@@ -102,7 +102,7 @@ public abstract class AbstractTestBasic implements EnumConstants {
     assertFalse(board.isCheckmate());
     assertFalse(board.isStalemate());
 
-    final var moveSpecification = new MoveSpecification(fromSquare, toSquare);
+    final MoveSpecification moveSpecification = new MoveSpecification(fromSquare, toSquare);
     final LegalMove expected = new LegalMove(moveSpecification, movingPiece, Piece.NONE, LegalMoveKind.NORMAL);
     assertEquals(expected, board.getLastMove());
   }
@@ -113,7 +113,7 @@ public abstract class AbstractTestBasic implements EnumConstants {
     assertTrue(board.isCheckmate());
     assertFalse(board.isStalemate());
 
-    final var moveSpecification = new MoveSpecification(fromSquare, toSquare);
+    final MoveSpecification moveSpecification = new MoveSpecification(fromSquare, toSquare);
     final LegalMove expected = new LegalMove(moveSpecification, movingPiece, Piece.NONE, LegalMoveKind.NORMAL);
     assertEquals(expected, board.getLastMove());
   }
@@ -139,10 +139,10 @@ public abstract class AbstractTestBasic implements EnumConstants {
     assertTrue(calculateIsEnPassantCaptureLastMove(board));
     assertEquals(Square.NONE, board.getEnPassantCaptureTargetSquare());
 
-    final var moveSpecification = new MoveSpecification(fromSquare, toSquare);
+    final MoveSpecification moveSpecification = new MoveSpecification(fromSquare, toSquare);
     final Piece movingPiece = Piece.calculatePawnPiece(side);
     final Piece capturedPiece = Piece.calculatePawnPiece(side.getOppositeSide());
-    final var expected = new LegalMove(moveSpecification, movingPiece, capturedPiece, LegalMoveKind.EN_PASSANT_CAPTURE);
+    final LegalMove expected = new LegalMove(moveSpecification, movingPiece, capturedPiece, LegalMoveKind.EN_PASSANT_CAPTURE);
 
     assertEquals(expected, lastMoveEnPassantCapture);
   }
@@ -159,7 +159,7 @@ public abstract class AbstractTestBasic implements EnumConstants {
     assertFalse(board.isCheckmate());
     assertFalse(board.isStalemate());
 
-    final var moveSpecification = new MoveSpecification(fromSquare, toSquare);
+    final MoveSpecification moveSpecification = new MoveSpecification(fromSquare, toSquare);
     final LegalMove expected = new LegalMove(moveSpecification, movingPiece, Piece.NONE, kind);
     assertEquals(expected, board.getLastMove());
 
@@ -177,14 +177,14 @@ public abstract class AbstractTestBasic implements EnumConstants {
     assertFalse(board.isCheckmate());
     assertFalse(board.isStalemate());
 
-    final var moveSpecification = new MoveSpecification(fromSquare, toSquare, promotionPieceType);
+    final MoveSpecification moveSpecification = new MoveSpecification(fromSquare, toSquare, promotionPieceType);
     final Piece movingPiece = Piece.calculatePawnPiece(side);
     final LegalMove expected = new LegalMove(moveSpecification, movingPiece, capturedPiece, LegalMoveKind.PROMOTION);
     assertEquals(expected, board.getLastMove());
   }
 
   static void checkCastle(Side side, CastlingMove castlingMove, Board board) {
-    final var moveSpecification = new MoveSpecification(castlingMove);
+    final MoveSpecification moveSpecification = new MoveSpecification(castlingMove);
     final LegalMove expected = new LegalMove(moveSpecification, Piece.calculateKingPiece(side), Piece.NONE,
         LegalMoveKind.CASTLING);
     assertEquals(expected, board.getLastMove());

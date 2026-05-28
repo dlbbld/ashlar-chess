@@ -29,7 +29,7 @@ class TestKnightDistance implements EnumConstants {
   void distanceIsDefinedForAllBoardSquares() {
     for (final Square fromSquare : Square.REAL) {
       for (final Square toSquare : Square.REAL) {
-        final var distance = KnightDistance.distance(fromSquare, toSquare);
+        final int distance = KnightDistance.distance(fromSquare, toSquare);
         assertTrue(distance >= 0);
         assertEquals(distance, KnightDistance.distance(toSquare, fromSquare));
       }

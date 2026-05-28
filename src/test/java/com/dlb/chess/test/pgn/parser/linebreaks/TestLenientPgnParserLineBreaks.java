@@ -19,7 +19,7 @@ public class TestLenientPgnParserLineBreaks {
   @SuppressWarnings("static-method")
   @Test
   void test() {
-    final var pgn = """
+    final String pgn = """
                 [Event "World Blitz Championship"]
                 [Site "St Petersburg RUS"]
                 [Date "2018.12.29"]

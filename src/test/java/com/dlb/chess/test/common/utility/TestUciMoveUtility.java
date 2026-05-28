@@ -123,7 +123,7 @@ class TestUciMoveUtility {
   }
 
   private static void checkUciMoveToSan(List<UciMoveTest> list) {
-    final var board = new Board();
+    final Board board = new Board();
 
     for (final UciMoveTest test : list) {
       final UciMove uciMove = UciMoveValidationUtility.lookup(test.uciMoveStr());

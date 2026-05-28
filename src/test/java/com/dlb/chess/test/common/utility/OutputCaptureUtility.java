@@ -11,7 +11,7 @@ public abstract class OutputCaptureUtility {
 
   public static String captureStdout(Runnable action) {
     final ByteArrayOutputStream buffer = new ByteArrayOutputStream();
-    final var original = System.out;
+    final PrintStream original = System.out;
     try (PrintStream captured = new PrintStream(buffer, true, StandardCharsets.UTF_8)) {
       System.setOut(captured);
       action.run();

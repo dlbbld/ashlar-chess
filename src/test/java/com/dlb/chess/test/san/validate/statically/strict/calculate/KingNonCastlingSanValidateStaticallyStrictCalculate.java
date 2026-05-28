@@ -20,8 +20,8 @@ public class KingNonCastlingSanValidateStaticallyStrictCalculate extends Abstrac
 
     for (final String enumName : KingNonCastlingSanValidateStaticallyStrict.VALUES) {
       final String parse = Nulls.toLowerCase(enumName);
-      final var fromFile = File.NONE;
-      final var fromRank = Rank.NONE;
+      final File fromFile = File.NONE;
+      final Rank fromRank = Rank.NONE;
       final Square toSquare = Square.calculate(Nulls.substring(parse, 1));
 
       final SanValidationFromTo model = new SanValidationFromTo(fromFile, fromRank, toSquare);

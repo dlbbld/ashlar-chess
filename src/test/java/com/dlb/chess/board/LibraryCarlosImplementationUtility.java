@@ -6,11 +6,8 @@ import com.dlb.chess.board.enums.Side;
 import com.dlb.chess.board.enums.SquareType;
 import com.dlb.chess.test.librarycarlos.NullsCarlos;
 import com.dlb.chess.test.librarycomparison.utility.EnumConversionUtility;
-import com.github.bhlangonijr.chesslib.Bitboard;
+import com.github.bhlangonijr.chesslib.*;
 import com.github.bhlangonijr.chesslib.Board;
-import com.github.bhlangonijr.chesslib.MoveBackup;
-import com.github.bhlangonijr.chesslib.Rank;
-import com.github.bhlangonijr.chesslib.Square;
 import com.github.bhlangonijr.chesslib.move.Move;
 import com.github.bhlangonijr.chesslib.move.MoveGenerator;
 import com.github.bhlangonijr.chesslib.move.MoveGeneratorException;
@@ -68,8 +65,8 @@ public abstract class LibraryCarlosImplementationUtility {
   }
 
   private static boolean calculateIsPawnInitialTwoSquaresAdvance(MoveBackup moveBackup) {
-    final var movingPiece = moveBackup.getMovingPiece();
-    final var move = moveBackup.getMove();
+    final Piece movingPiece = moveBackup.getMovingPiece();
+    final Move move = moveBackup.getMove();
     if (movingPiece == com.github.bhlangonijr.chesslib.Piece.WHITE_PAWN) {
       return move.getFrom().getRank() == Rank.RANK_2 && move.getTo().getRank() == Rank.RANK_4;
     }
@@ -123,8 +120,8 @@ public abstract class LibraryCarlosImplementationUtility {
     // king and knight
     final Side oppositeSide = side.getOppositeSide();
     if (calculateHasPiece(side, com.github.bhlangonijr.chesslib.PieceType.KNIGHT, board)) {
-      final var numberOfPieces = calculateNumberOfPieces(side, board);
-      final var hasAtMostTwoPieces = numberOfPieces <= 2;
+      final int numberOfPieces = calculateNumberOfPieces(side, board);
+      final boolean hasAtMostTwoPieces = numberOfPieces <= 2;
       if (hasAtMostTwoPieces) {
         return !calculateHasPiece(oppositeSide, com.github.bhlangonijr.chesslib.PieceType.PAWN, board)
             && !calculateHasPiece(oppositeSide, com.github.bhlangonijr.chesslib.PieceType.KNIGHT, board)
@@ -136,14 +133,14 @@ public abstract class LibraryCarlosImplementationUtility {
 
     // now we have at most king and zeor or more bishops left
     if (calculateHasPiece(side, com.github.bhlangonijr.chesslib.PieceType.BISHOP, board)) {
-      final var hasLightSquareBishop = calculateHasBishopForColorSquare(side, SquareType.LIGHT_SQUARE, board);
-      final var hasDarkSquareBishop = calculateHasBishopForColorSquare(side, SquareType.DARK_SQUARE, board);
+      final boolean hasLightSquareBishop = calculateHasBishopForColorSquare(side, SquareType.LIGHT_SQUARE, board);
+      final boolean hasDarkSquareBishop = calculateHasBishopForColorSquare(side, SquareType.DARK_SQUARE, board);
       if (hasLightSquareBishop && hasDarkSquareBishop) {
         return false;
       }
-      final var hasLightSquareBishopOpponent = calculateHasBishopForColorSquare(oppositeSide, SquareType.LIGHT_SQUARE,
+      final boolean hasLightSquareBishopOpponent = calculateHasBishopForColorSquare(oppositeSide, SquareType.LIGHT_SQUARE,
           board);
-      final var hasDarkSquareBishopOpponent = calculateHasBishopForColorSquare(oppositeSide, SquareType.DARK_SQUARE,
+      final boolean hasDarkSquareBishopOpponent = calculateHasBishopForColorSquare(oppositeSide, SquareType.DARK_SQUARE,
           board);
 
       if (hasLightSquareBishop && hasDarkSquareBishopOpponent || hasDarkSquareBishop && hasLightSquareBishopOpponent) {

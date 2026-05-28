@@ -51,7 +51,7 @@ class TestHelpmateSearchBoardMakeUnmakeRoundTrip {
   void everyLegalMoveRoundTrips() {
     for (final Scenario scenario : SCENARIOS) {
       try {
-        final var board = boardFrom(scenario.fen());
+        final Board board = boardFrom(scenario.fen());
         final HelpmateSearchBoard searchBoard = HelpmateSearchBoard.from(board);
         assertRoundTripsRecursively(searchBoard, scenario.depth());
       } catch (final AssertionError | RuntimeException e) {
@@ -77,9 +77,9 @@ class TestHelpmateSearchBoardMakeUnmakeRoundTrip {
       final List<LegalMove> beforeLegalMoves = List.copyOf(searchBoard.getLegalMoves());
       final Side beforeHavingMove = searchBoard.getHavingMove();
       final Square beforeRawEp = searchBoard.getEnPassantCaptureTargetSquare();
-      final var beforeCheck = searchBoard.isCheck();
-      final var beforeCheckmate = searchBoard.isCheckmate();
-      final var beforeStalemate = searchBoard.isStalemate();
+      final boolean beforeCheck = searchBoard.isCheck();
+      final boolean beforeCheckmate = searchBoard.isCheckmate();
+      final boolean beforeStalemate = searchBoard.isStalemate();
 
       searchBoard.move(legalMove.moveSpecification());
       assertRoundTripsRecursively(searchBoard, depth - 1);

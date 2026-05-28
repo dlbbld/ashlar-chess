@@ -986,7 +986,7 @@ class TestSanValidationProblemMessage {
     final Set<SanValidationProblem> missingProblems = EnumSet.allOf(SanValidationProblem.class);
     missingProblems.removeAll(FIXED_UNCHECKED_ENTRIES);
     missingProblems.removeAll(checkedProblems);
-    final var missingProblemsMessage = missingProblems.stream().map(problem -> problem.name() + " is missing")
+    final String missingProblemsMessage = missingProblems.stream().map(problem -> problem.name() + " is missing")
         .reduce((left, right) -> left + System.lineSeparator() + right).orElse("");
     assertTrue(missingProblems.isEmpty(), missingProblemsMessage);
   }

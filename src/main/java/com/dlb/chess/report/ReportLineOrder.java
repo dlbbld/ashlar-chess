@@ -81,7 +81,7 @@ abstract class ReportLineOrder {
 
   private static int compareKeys(List<Integer> a, List<Integer> b) {
     final int common = Math.min(a.size(), b.size());
-    for (var i = 0; i < common; i++) {
+    for (int i = 0; i < common; i++) {
       final int cmp = Integer.compare(a.get(i), b.get(i));
       if (cmp != 0) {
         return cmp;

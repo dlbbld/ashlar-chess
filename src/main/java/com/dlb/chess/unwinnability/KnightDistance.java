@@ -25,7 +25,7 @@ final class KnightDistance {
   }
 
   private static int[][] createDistanceTable() {
-    final var result = new int[SQUARE_COUNT][SQUARE_COUNT];
+    final int[][] result = new int[SQUARE_COUNT][SQUARE_COUNT];
     for (final Square fromSquare : Square.REAL) {
       result[toIndex(fromSquare)] = calculateDistancesFrom(fromSquare);
     }
@@ -33,7 +33,7 @@ final class KnightDistance {
   }
 
   private static int[] calculateDistancesFrom(Square fromSquare) {
-    final var distances = new int[SQUARE_COUNT];
+    final int[] distances = new int[SQUARE_COUNT];
     Arrays.fill(distances, -1);
 
     final Queue<Square> queue = new ArrayDeque<>();
@@ -42,15 +42,15 @@ final class KnightDistance {
 
     while (!queue.isEmpty()) {
       final Square current = Nulls.remove(queue);
-      final var nextDistance = distances[toIndex(current)] + 1;
-      for (var i = 0; i < FILE_OFFSETS.length; i++) {
-        final var fileNumber = current.getFile().getNumber() + FILE_OFFSETS[i];
-        final var rankNumber = current.getRank().getNumber() + RANK_OFFSETS[i];
+      final int nextDistance = distances[toIndex(current)] + 1;
+      for (int i = 0; i < FILE_OFFSETS.length; i++) {
+        final int fileNumber = current.getFile().getNumber() + FILE_OFFSETS[i];
+        final int rankNumber = current.getRank().getNumber() + RANK_OFFSETS[i];
         if (!isBoardSquare(fileNumber, rankNumber)) {
           continue;
         }
         final Square next = Square.calculate(fileNumber, rankNumber);
-        final var nextIndex = toIndex(next);
+        final int nextIndex = toIndex(next);
         if (distances[nextIndex] != -1) {
           continue;
         }

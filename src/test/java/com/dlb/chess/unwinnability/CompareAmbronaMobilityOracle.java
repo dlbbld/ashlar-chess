@@ -41,8 +41,8 @@ public final class CompareAmbronaMobilityOracle {
 
   public static MobilityOracleComparison compare() throws Exception {
     final Map<String, List<String>> expectedByFen = readExpectedByFen();
-    var fenDifferenceCount = 0;
-    var rowDifferenceCount = 0;
+      int fenDifferenceCount = 0;
+      int rowDifferenceCount = 0;
     final List<String> differentFenList = new ArrayList<>();
     final List<String> printedDifferenceList = new ArrayList<>();
 
@@ -50,7 +50,7 @@ public final class CompareAmbronaMobilityOracle {
       final String fen = Nulls.getKey(entry);
       final List<String> expectedRows = Nulls.getValue(entry);
       final List<String> actualRows = MobilityOracleFormatter.calculateRows(fen);
-      final var differenceCount = countDifferences(expectedRows, actualRows, printedDifferenceList);
+      final int differenceCount = countDifferences(expectedRows, actualRows, printedDifferenceList);
       if (differenceCount != 0) {
         fenDifferenceCount++;
         differentFenList.add(fen);
@@ -68,7 +68,7 @@ public final class CompareAmbronaMobilityOracle {
     }
 
     final Map<String, List<String>> expectedByFen = new LinkedHashMap<>();
-    for (var i = 1; i < lineList.size(); i++) {
+    for (int i = 1; i < lineList.size(); i++) {
       final String line = Nulls.get(lineList, i);
       final String[] itemArray = Nulls.split(line, "\t");
       if (itemArray.length != 5) {
@@ -85,11 +85,11 @@ public final class CompareAmbronaMobilityOracle {
 
   private static int countDifferences(List<String> expectedRows, List<String> actualRows,
       List<String> printedDifferenceList) {
-    var differenceCount = 0;
-    final var maxSize = Math.max(expectedRows.size(), actualRows.size());
-    for (var i = 0; i < maxSize; i++) {
-      final var expectedRow = i < expectedRows.size() ? Nulls.get(expectedRows, i) : "<missing>";
-      final var actualRow = i < actualRows.size() ? Nulls.get(actualRows, i) : "<missing>";
+      int differenceCount = 0;
+    final int maxSize = Math.max(expectedRows.size(), actualRows.size());
+    for (int i = 0; i < maxSize; i++) {
+      final String expectedRow = i < expectedRows.size() ? Nulls.get(expectedRows, i) : "<missing>";
+      final String actualRow = i < actualRows.size() ? Nulls.get(actualRows, i) : "<missing>";
       if (!expectedRow.equals(actualRow)) {
         differenceCount++;
         if (printedDifferenceList.size() < MAX_PRINTED_DIFFERENCES) {

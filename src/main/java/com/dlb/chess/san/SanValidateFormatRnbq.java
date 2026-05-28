@@ -36,14 +36,14 @@ abstract class SanValidateFormatRnbq extends AbstractSan {
 
   static SanParse parseRnbqMove(final String core, final SanTerminalMarker sanTerminalMarker) {
     // core[0] is the piece letter, already validated to be R/N/B/Q by the dispatcher in SanValidateFormat.
-    final var piece = parsePieceLetter(core.charAt(0));
+    final PieceType piece = parsePieceLetter(core.charAt(0));
 
     // pos 1: second character - file letter, rank digit, or the capture symbol 'x'
     if (core.length() == 1) {
       throw new SanValidationException(SanValidationProblem.FORMAT_RNBQ_NO_SECOND_CHARACTER,
           Message.getString("validation.san.format.rnbq.noSecondCharacter"));
     }
-    final var c1 = core.charAt(1);
+    final char c1 = core.charAt(1);
 
     if (c1 == 'x') {
       return parseCaptureNoDisambig(core, sanTerminalMarker, piece);
@@ -69,7 +69,7 @@ abstract class SanValidateFormatRnbq extends AbstractSan {
       throw new SanValidationException(SanValidationProblem.FORMAT_RNBQ_CAPTURE_NO_DESTINATION_FILE,
           Message.getString("validation.san.format.rnbq.capture.noDestinationFile"));
     }
-    final var c2 = core.charAt(2);
+    final char c2 = core.charAt(2);
     if (!SanValidateFormat.isFileLetter(c2)) {
       throw new SanValidationException(SanValidationProblem.FORMAT_RNBQ_CAPTURE_WRONG_DESTINATION_FILE,
           Message.getString("validation.san.format.rnbq.capture.wrongDestinationFile", Nulls.toString(c2)));
@@ -80,7 +80,7 @@ abstract class SanValidateFormatRnbq extends AbstractSan {
       throw new SanValidationException(SanValidationProblem.FORMAT_RNBQ_CAPTURE_NO_DESTINATION_RANK,
           Message.getString("validation.san.format.rnbq.capture.noDestinationRank"));
     }
-    final var c3 = core.charAt(3);
+    final char c3 = core.charAt(3);
     if (!SanValidateFormat.isRankDigit(c3)) {
       throw new SanValidationException(SanValidationProblem.FORMAT_RNBQ_CAPTURE_WRONG_DESTINATION_RANK,
           Message.getString("validation.san.format.rnbq.capture.wrongDestinationRank", Nulls.toString(c3)));
@@ -92,7 +92,7 @@ abstract class SanValidateFormatRnbq extends AbstractSan {
           Message.getString("validation.san.format.rnbq.capture.overlength"));
     }
 
-    final var toSquare = Square.calculate(SanValidateFormat.parseFile(c2), SanValidateFormat.parseRank(c3));
+    final Square toSquare = Square.calculate(SanValidateFormat.parseFile(c2), SanValidateFormat.parseRank(c3));
     return new SanParse(pieceMoveSanFormat(false, false, true),
         new SanConversion(piece, File.NONE, Rank.NONE, toSquare, PromotionPieceType.NONE, sanTerminalMarker));
   }
@@ -107,7 +107,7 @@ abstract class SanValidateFormatRnbq extends AbstractSan {
       throw new SanValidationException(SanValidationProblem.FORMAT_RNBQ_RANK_NO_THIRD_CHARACTER,
           Message.getString("validation.san.format.rnbq.rank.noThirdCharacter"));
     }
-    final var c2 = core.charAt(2);
+    final char c2 = core.charAt(2);
 
     if (c2 == 'x') {
       return parseCaptureRank(core, sanTerminalMarker, piece, fromRank);
@@ -127,7 +127,7 @@ abstract class SanValidateFormatRnbq extends AbstractSan {
       throw new SanValidationException(SanValidationProblem.FORMAT_RNBQ_NON_CAPTURE_RANK_NO_DESTINATION_RANK,
           Message.getString("validation.san.format.rnbq.nonCapture.rank.noDestinationRank"));
     }
-    final var c3 = core.charAt(3);
+    final char c3 = core.charAt(3);
     if (!SanValidateFormat.isRankDigit(c3)) {
       throw new SanValidationException(SanValidationProblem.FORMAT_RNBQ_NON_CAPTURE_RANK_WRONG_DESTINATION_RANK,
           Message.getString("validation.san.format.rnbq.nonCapture.rank.wrongDestinationRank", Nulls.toString(c3)));
@@ -138,7 +138,7 @@ abstract class SanValidateFormatRnbq extends AbstractSan {
           Message.getString("validation.san.format.rnbq.nonCapture.rank.overlength"));
     }
 
-    final var toSquare = Square.calculate(toFile, SanValidateFormat.parseRank(c3));
+    final Square toSquare = Square.calculate(toFile, SanValidateFormat.parseRank(c3));
     return new SanParse(pieceMoveSanFormat(false, true, false),
         new SanConversion(piece, File.NONE, fromRank, toSquare, PromotionPieceType.NONE, sanTerminalMarker));
   }
@@ -151,7 +151,7 @@ abstract class SanValidateFormatRnbq extends AbstractSan {
       throw new SanValidationException(SanValidationProblem.FORMAT_RNBQ_CAPTURE_RANK_NO_DESTINATION_FILE,
           Message.getString("validation.san.format.rnbq.capture.rank.noDestinationFile"));
     }
-    final var c3 = core.charAt(3);
+    final char c3 = core.charAt(3);
     if (!SanValidateFormat.isFileLetter(c3)) {
       throw new SanValidationException(SanValidationProblem.FORMAT_RNBQ_CAPTURE_RANK_WRONG_DESTINATION_FILE,
           Message.getString("validation.san.format.rnbq.capture.rank.wrongDestinationFile", Nulls.toString(c3)));
@@ -162,7 +162,7 @@ abstract class SanValidateFormatRnbq extends AbstractSan {
       throw new SanValidationException(SanValidationProblem.FORMAT_RNBQ_CAPTURE_RANK_NO_DESTINATION_RANK,
           Message.getString("validation.san.format.rnbq.capture.rank.noDestinationRank"));
     }
-    final var c4 = core.charAt(4);
+    final char c4 = core.charAt(4);
     if (!SanValidateFormat.isRankDigit(c4)) {
       throw new SanValidationException(SanValidationProblem.FORMAT_RNBQ_CAPTURE_RANK_WRONG_DESTINATION_RANK,
           Message.getString("validation.san.format.rnbq.capture.rank.wrongDestinationRank", Nulls.toString(c4)));
@@ -173,7 +173,7 @@ abstract class SanValidateFormatRnbq extends AbstractSan {
           Message.getString("validation.san.format.rnbq.capture.rank.overlength"));
     }
 
-    final var toSquare = Square.calculate(SanValidateFormat.parseFile(c3), SanValidateFormat.parseRank(c4));
+    final Square toSquare = Square.calculate(SanValidateFormat.parseFile(c3), SanValidateFormat.parseRank(c4));
     return new SanParse(pieceMoveSanFormat(false, true, true),
         new SanConversion(piece, File.NONE, fromRank, toSquare, PromotionPieceType.NONE, sanTerminalMarker));
   }
@@ -188,7 +188,7 @@ abstract class SanValidateFormatRnbq extends AbstractSan {
       throw new SanValidationException(SanValidationProblem.FORMAT_RNBQ_FILE_NO_THIRD_CHARACTER,
           Message.getString("validation.san.format.rnbq.file.noThirdCharacter"));
     }
-    final var c2 = core.charAt(2);
+    final char c2 = core.charAt(2);
 
     if (c2 == 'x') {
       return parseCaptureFile(core, sanTerminalMarker, piece, firstFile);
@@ -211,7 +211,7 @@ abstract class SanValidateFormatRnbq extends AbstractSan {
       throw new SanValidationException(SanValidationProblem.FORMAT_RNBQ_NON_CAPTURE_FILE_NO_DESTINATION_RANK,
           Message.getString("validation.san.format.rnbq.nonCapture.file.noDestinationRank"));
     }
-    final var c3 = core.charAt(3);
+    final char c3 = core.charAt(3);
     if (!SanValidateFormat.isRankDigit(c3)) {
       throw new SanValidationException(SanValidationProblem.FORMAT_RNBQ_NON_CAPTURE_FILE_WRONG_DESTINATION_RANK,
           Message.getString("validation.san.format.rnbq.nonCapture.file.wrongDestinationRank", Nulls.toString(c3)));
@@ -222,7 +222,7 @@ abstract class SanValidateFormatRnbq extends AbstractSan {
           Message.getString("validation.san.format.rnbq.nonCapture.file.overlength"));
     }
 
-    final var toSquare = Square.calculate(toFile, SanValidateFormat.parseRank(c3));
+    final Square toSquare = Square.calculate(toFile, SanValidateFormat.parseRank(c3));
     return new SanParse(pieceMoveSanFormat(true, false, false),
         new SanConversion(piece, fromFile, Rank.NONE, toSquare, PromotionPieceType.NONE, sanTerminalMarker));
   }
@@ -235,7 +235,7 @@ abstract class SanValidateFormatRnbq extends AbstractSan {
       throw new SanValidationException(SanValidationProblem.FORMAT_RNBQ_CAPTURE_FILE_NO_DESTINATION_FILE,
           Message.getString("validation.san.format.rnbq.capture.file.noDestinationFile"));
     }
-    final var c3 = core.charAt(3);
+    final char c3 = core.charAt(3);
     if (!SanValidateFormat.isFileLetter(c3)) {
       throw new SanValidationException(SanValidationProblem.FORMAT_RNBQ_CAPTURE_FILE_WRONG_DESTINATION_FILE,
           Message.getString("validation.san.format.rnbq.capture.file.wrongDestinationFile", Nulls.toString(c3)));
@@ -246,7 +246,7 @@ abstract class SanValidateFormatRnbq extends AbstractSan {
       throw new SanValidationException(SanValidationProblem.FORMAT_RNBQ_CAPTURE_FILE_NO_DESTINATION_RANK,
           Message.getString("validation.san.format.rnbq.capture.file.noDestinationRank"));
     }
-    final var c4 = core.charAt(4);
+    final char c4 = core.charAt(4);
     if (!SanValidateFormat.isRankDigit(c4)) {
       throw new SanValidationException(SanValidationProblem.FORMAT_RNBQ_CAPTURE_FILE_WRONG_DESTINATION_RANK,
           Message.getString("validation.san.format.rnbq.capture.file.wrongDestinationRank", Nulls.toString(c4)));
@@ -257,7 +257,7 @@ abstract class SanValidateFormatRnbq extends AbstractSan {
           Message.getString("validation.san.format.rnbq.capture.file.overlength"));
     }
 
-    final var toSquare = Square.calculate(SanValidateFormat.parseFile(c3), SanValidateFormat.parseRank(c4));
+    final Square toSquare = Square.calculate(SanValidateFormat.parseFile(c3), SanValidateFormat.parseRank(c4));
     return new SanParse(pieceMoveSanFormat(true, false, true),
         new SanConversion(piece, fromFile, Rank.NONE, toSquare, PromotionPieceType.NONE, sanTerminalMarker));
   }
@@ -270,14 +270,14 @@ abstract class SanValidateFormatRnbq extends AbstractSan {
       final PieceType piece, final File firstFile, final Rank firstRank) {
     // Length 3: interpret as plain destination Ra1 - firstFile/firstRank are the destination square.
     if (core.length() == 3) {
-      final var toSquare = Square.calculate(firstFile, firstRank);
+      final Square toSquare = Square.calculate(firstFile, firstRank);
       return new SanParse(pieceMoveSanFormat(false, false, false),
           new SanConversion(piece, File.NONE, Rank.NONE, toSquare, PromotionPieceType.NONE, sanTerminalMarker));
     }
 
     // Length > 3: commit to source-square interpretation - firstFile/firstRank become the source square,
     // and pos 3 must be either the destination file (non-capture) or 'x' (capture).
-    final var c3 = core.charAt(3);
+    final char c3 = core.charAt(3);
 
     if (c3 == 'x') {
       return parseCaptureSquare(core, sanTerminalMarker, piece, firstFile, firstRank);
@@ -298,7 +298,7 @@ abstract class SanValidateFormatRnbq extends AbstractSan {
       throw new SanValidationException(SanValidationProblem.FORMAT_RNBQ_NON_CAPTURE_SQUARE_NO_DESTINATION_RANK,
           Message.getString("validation.san.format.rnbq.nonCapture.square.noDestinationRank"));
     }
-    final var c4 = core.charAt(4);
+    final char c4 = core.charAt(4);
     if (!SanValidateFormat.isRankDigit(c4)) {
       throw new SanValidationException(SanValidationProblem.FORMAT_RNBQ_NON_CAPTURE_SQUARE_WRONG_DESTINATION_RANK,
           Message.getString("validation.san.format.rnbq.nonCapture.square.wrongDestinationRank", Nulls.toString(c4)));
@@ -309,7 +309,7 @@ abstract class SanValidateFormatRnbq extends AbstractSan {
           Message.getString("validation.san.format.rnbq.nonCapture.square.overlength"));
     }
 
-    final var toSquare = Square.calculate(toFile, SanValidateFormat.parseRank(c4));
+    final Square toSquare = Square.calculate(toFile, SanValidateFormat.parseRank(c4));
     return new SanParse(pieceMoveSanFormat(true, true, false),
         new SanConversion(piece, fromFile, fromRank, toSquare, PromotionPieceType.NONE, sanTerminalMarker));
   }
@@ -322,7 +322,7 @@ abstract class SanValidateFormatRnbq extends AbstractSan {
       throw new SanValidationException(SanValidationProblem.FORMAT_RNBQ_CAPTURE_SQUARE_NO_DESTINATION_FILE,
           Message.getString("validation.san.format.rnbq.capture.square.noDestinationFile"));
     }
-    final var c4 = core.charAt(4);
+    final char c4 = core.charAt(4);
     if (!SanValidateFormat.isFileLetter(c4)) {
       throw new SanValidationException(SanValidationProblem.FORMAT_RNBQ_CAPTURE_SQUARE_WRONG_DESTINATION_FILE,
           Message.getString("validation.san.format.rnbq.capture.square.wrongDestinationFile", Nulls.toString(c4)));
@@ -333,7 +333,7 @@ abstract class SanValidateFormatRnbq extends AbstractSan {
       throw new SanValidationException(SanValidationProblem.FORMAT_RNBQ_CAPTURE_SQUARE_NO_DESTINATION_RANK,
           Message.getString("validation.san.format.rnbq.capture.square.noDestinationRank"));
     }
-    final var c5 = core.charAt(5);
+    final char c5 = core.charAt(5);
     if (!SanValidateFormat.isRankDigit(c5)) {
       throw new SanValidationException(SanValidationProblem.FORMAT_RNBQ_CAPTURE_SQUARE_WRONG_DESTINATION_RANK,
           Message.getString("validation.san.format.rnbq.capture.square.wrongDestinationRank", Nulls.toString(c5)));
@@ -344,7 +344,7 @@ abstract class SanValidateFormatRnbq extends AbstractSan {
           Message.getString("validation.san.format.rnbq.capture.square.overlength"));
     }
 
-    final var toSquare = Square.calculate(SanValidateFormat.parseFile(c4), SanValidateFormat.parseRank(c5));
+    final Square toSquare = Square.calculate(SanValidateFormat.parseFile(c4), SanValidateFormat.parseRank(c5));
     return new SanParse(pieceMoveSanFormat(true, true, true),
         new SanConversion(piece, fromFile, fromRank, toSquare, PromotionPieceType.NONE, sanTerminalMarker));
   }

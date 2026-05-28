@@ -46,7 +46,7 @@ class TestFiftyMoveSequenceReportBuilder {
     // start is the after-reset shape, anchored at firstNonZeroingMove. The first move is Nf3 - that's the sequence
     // anchor.
     final Board board = new Board();
-    for (var i = 0; i < 25; i++) {
+    for (int i = 0; i < 25; i++) {
       board.movesStrict("Nf3", "Nf6", "Ng1", "Ng8");
     }
     assertEquals(100, board.getHalfMoveClock(), "precondition: 100-ply knight shuffle reaches the threshold");
@@ -76,7 +76,7 @@ class TestFiftyMoveSequenceReportBuilder {
     final Board board = new Board("4k3/8/8/8/8/8/8/R3K3 w - - 50 30");
     assertEquals(50, board.getHalfMoveClock(), "precondition: initial FEN at clock 50");
 
-    for (var i = 0; i < 12; i++) {
+    for (int i = 0; i < 12; i++) {
       board.movesStrict("Ra3", "Kd8", "Ra1", "Ke8");
     }
     board.movesStrict("Ra3", "Kd8");
@@ -156,7 +156,7 @@ class TestFiftyMoveSequenceReportBuilder {
     // Black opens the new sequence with a non-zeroing king move (ply 1, clock 1).
     board.movesStrict("Kd8");
     // 99 more non-zeroing plies via Rg1/Ke8/Rh1/Kd8 cycle: 24 full cycles (96 plies) + 3 trailing.
-    for (var i = 0; i < 24; i++) {
+    for (int i = 0; i < 24; i++) {
       board.movesStrict("Rg1", "Ke8", "Rh1", "Kd8");
     }
     board.movesStrict("Rg1", "Ke8", "Rh1");

@@ -29,7 +29,7 @@ public enum NotationPromotionPiece {
   }
 
   public static boolean existsIgnoreCase(char promotionPieceLetter) {
-    final var promotionPieceLetterUpperCase = Character.toUpperCase(promotionPieceLetter);
+    final char promotionPieceLetterUpperCase = Character.toUpperCase(promotionPieceLetter);
     return exists(promotionPieceLetterUpperCase);
   }
 
@@ -49,7 +49,7 @@ public enum NotationPromotionPiece {
     if (!existsIgnoreCase(promotionPieceLetter)) {
       throw new IllegalArgumentException("For this letter ignoring case no corresponding enum exists");
     }
-    final var promotionPieceLetterUpperCase = Character.toUpperCase(promotionPieceLetter);
+    final char promotionPieceLetterUpperCase = Character.toUpperCase(promotionPieceLetter);
     return calculate(promotionPieceLetterUpperCase);
   }
 }

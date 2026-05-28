@@ -32,12 +32,12 @@ class TestLibraryCarlosHashPass {
   }
 
   private static void processFileList(PgnTest pgnTest) throws Exception {
-    final var folder = pgnTest.getFolderPath().toFile();
+    final File folder = pgnTest.getFolderPath().toFile();
     if (!folder.isDirectory()) {
       throw new SetupException("\"" + pgnTest.getFolderPath() + "\" is not a directory");
     }
 
-    final var filesList = folder.listFiles();
+    final File[] filesList = folder.listFiles();
     if (filesList == null) {
       throw new FileSystemAccessException("The files in directory " + pgnTest.getFolderPath() + " could not be read");
     }
@@ -45,8 +45,8 @@ class TestLibraryCarlosHashPass {
     logger.info("Completion progress will be displayed every " + SHOW_COMPLETION_PROGRESS_NUMBER_OF_PROCESSED_FILES
         + " processed files");
 
-    var numberOfFilesProcessed = 0;
-    final var numberOfFilesToProcess = filesList.length;
+      int numberOfFilesProcessed = 0;
+    final int numberOfFilesToProcess = filesList.length;
     logger.info("*** Total " + numberOfFilesToProcess + " files to process ***");
 
     for (final File file : filesList) {
@@ -74,7 +74,7 @@ class TestLibraryCarlosHashPass {
     final PgnHolder pgn = new PgnHolder(path);
     pgn.loadPgn();
 
-    var numberOfInconsistencies = 0;
+      int numberOfInconsistencies = 0;
 
     for (final Game game : pgn.getGames()) {
       game.loadMoveText();
@@ -83,7 +83,7 @@ class TestLibraryCarlosHashPass {
       final Map<String, Integer> map2 = new TreeMap<>();
       final Map<String, Long> map3 = new TreeMap<>();
       final Board board = new Board();
-      var i = 0;
+        int i = 0;
       for (final Move move : game.getHalfMoves()) {
         board.doMove(move);
         assertEquals(board.getIncrementalHashKey(), board.getZobristKey());
@@ -97,7 +97,7 @@ class TestLibraryCarlosHashPass {
         s.append(board.getIncrementalHashKey());
         s.append("\n");
         map.merge(board.getIncrementalHashKey(), 1, Integer::sum);
-        final var key = board.getPositionId();
+        final String key = board.getPositionId();
         map2.merge(key, 1, Integer::sum);
         map3.put(key, board.getIncrementalHashKey());
       }

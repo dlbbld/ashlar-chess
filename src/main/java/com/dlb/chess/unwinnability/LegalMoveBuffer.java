@@ -43,7 +43,7 @@ final class LegalMoveBuffer extends AbstractList<LegalMove> {
    */
   void append(LegalMove move) {
     if (size == moves.length) {
-      final var grown = new LegalMove[moves.length * 2];
+      final LegalMove[] grown = new LegalMove[moves.length * 2];
       System.arraycopy(moves, 0, grown, 0, moves.length);
       moves = grown;
     }
@@ -56,7 +56,7 @@ final class LegalMoveBuffer extends AbstractList<LegalMove> {
     if (index < 0 || index >= size) {
       throw new IndexOutOfBoundsException(index);
     }
-    final var move = moves[index];
+    final LegalMove move = moves[index];
     if (move == null) {
       throw new IllegalStateException("Buffer slot " + index + " is null");
     }

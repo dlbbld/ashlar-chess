@@ -16,9 +16,9 @@ final class NewlineNormalization {
       return source;
     }
     final StringBuilder result = new StringBuilder(source.length());
-    final var len = source.length();
-    for (var i = 0; i < len; i++) {
-      final var c = source.charAt(i);
+    final int len = source.length();
+    for (int i = 0; i < len; i++) {
+      final char c = source.charAt(i);
       if (c == '\r') {
         result.append('\n');
         // Skip the LF half of a CRLF pair.

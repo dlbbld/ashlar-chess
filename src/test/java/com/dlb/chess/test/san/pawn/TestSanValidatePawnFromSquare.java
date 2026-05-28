@@ -191,7 +191,7 @@ class TestSanValidatePawnFromSquare {
   }
 
   private static void checkValid(String san, Board board) {
-    var isException = false;
+      boolean isException = false;
     try {
       StrictSanParser.parseText(san, board);
     } catch (@SuppressWarnings("unused") final SanValidationException e) {

@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -34,7 +35,7 @@ class TestReporterGoldenOutput {
   @SuppressWarnings("static-method")
   @Test
   void noThreefoldActivity() {
-    final var pgn = """
+    final String pgn = """
         1. e4 e5 2. Nf3 Nf6 3. Bc4 Bc5
         """;
     final String actual = captureStdout(() -> Reporter.printReport(pgn));
@@ -141,8 +142,8 @@ class TestReporterGoldenOutput {
   }
 
   private static String readGolden(String goldenName) {
-    final var resourcePath = CLASSPATH_GOLDEN_ROOT + goldenName;
-    try (var in = TestReporterGoldenOutput.class.getResourceAsStream(resourcePath)) {
+    final String resourcePath = CLASSPATH_GOLDEN_ROOT + goldenName;
+    try (InputStream in = TestReporterGoldenOutput.class.getResourceAsStream(resourcePath)) {
       if (in == null) {
         throw new IllegalStateException("Golden resource not found on classpath: " + resourcePath
             + " - run with -Dgolden.regenerate=true to create it.");

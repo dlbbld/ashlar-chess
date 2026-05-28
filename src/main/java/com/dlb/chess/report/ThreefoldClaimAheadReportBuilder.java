@@ -72,8 +72,8 @@ abstract class ThreefoldClaimAheadReportBuilder {
   private static ClaimAheadEntry buildEntry(HalfMove claimAheadMove, ImmutableList<HalfMove> halfMoveListPlayed,
       DynamicPosition initialDynamicPosition) {
 
-    final var hasBeenPlayed = halfMoveListPlayed.contains(claimAheadMove);
-    final var includesInitialPosition = initialDynamicPosition.equals(claimAheadMove.dynamicPosition());
+    final boolean hasBeenPlayed = halfMoveListPlayed.contains(claimAheadMove);
+    final boolean includesInitialPosition = initialDynamicPosition.equals(claimAheadMove.dynamicPosition());
 
     final List<HalfMove> priorOccurrences = new ArrayList<>();
     for (final HalfMove played : halfMoveListPlayed) {
@@ -85,7 +85,7 @@ abstract class ThreefoldClaimAheadReportBuilder {
       }
     }
 
-    final var totalRepetitionCount = priorOccurrences.size() + 1 + (includesInitialPosition ? 1 : 0);
+    final int totalRepetitionCount = priorOccurrences.size() + 1 + (includesInitialPosition ? 1 : 0);
     return new ClaimAheadEntry(claimAheadMove, hasBeenPlayed, Nulls.copyOfList(priorOccurrences),
         includesInitialPosition, totalRepetitionCount);
   }

@@ -70,8 +70,8 @@ class TestLegalMovesAgainstPythonChessOracle {
   @Test
   void legalMovesAgainstPythonChessOracle() throws IOException {
     final List<String> failures = new ArrayList<>();
-    var totalFixtures = 0;
-    var totalPositions = 0;
+      int totalFixtures = 0;
+      int totalPositions = 0;
 
     for (final PgnTest bucket : BUCKETS) {
       final Path jsonlPath = jsonlPathFor(bucket);
@@ -87,7 +87,7 @@ class TestLegalMovesAgainstPythonChessOracle {
       for (final LegalMovesRecord record : records) {
         totalFixtures++;
         final PgnGame pgnGame = StrictPgnParser.parse(folderPath, record.pgn());
-        final var halfMoveCount = pgnGame.halfMoveList().size();
+        final int halfMoveCount = pgnGame.halfMoveList().size();
 
         try {
           assertEquals(halfMoveCount + 1, record.perPly().size(),
@@ -98,12 +98,12 @@ class TestLegalMovesAgainstPythonChessOracle {
         }
 
         final Board board = new Board(pgnGame.startFen());
-        for (var ply = 0; ply <= halfMoveCount; ply++) {
+        for (int ply = 0; ply <= halfMoveCount; ply++) {
           totalPositions++;
           final LegalMovesPly expectedPly = Nulls.get(record.perPly(), ply);
           final List<String> actualSorted = sortedCopy(board.getLegalMovesUci());
 
-          final var positionLabel = ply;
+          final int positionLabel = ply;
           try {
             assertEquals(expectedPly.legalMovesUci(), actualSorted, () -> bucket + " / " + record.pgn() + " position "
                 + positionLabel + " - legal-move set mismatch (clean-chess vs python-chess)");

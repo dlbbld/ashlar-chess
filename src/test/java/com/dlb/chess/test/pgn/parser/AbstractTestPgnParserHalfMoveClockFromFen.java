@@ -51,7 +51,7 @@ abstract class AbstractTestPgnParserHalfMoveClockFromFen {
 
   protected static void runForBuckets(BiFunction<java.nio.file.Path, String, PgnGame> parse, Logger logger) {
     final List<String> failures = new ArrayList<>();
-    var totalFixtures = 0;
+      int totalFixtures = 0;
 
     for (final PgnTest bucket : BUCKETS) {
       final PgnTestCaseList testCaseList = PgnTestCaseCatalog.getTestList(bucket);
@@ -80,7 +80,7 @@ abstract class AbstractTestPgnParserHalfMoveClockFromFen {
       fail("No fixtures iterated - bucket wiring is broken");
     }
     if (!failures.isEmpty()) {
-      final var report = new StringBuilder().append(failures.size()).append(" of ").append(totalFixtures)
+      final StringBuilder report = new StringBuilder().append(failures.size()).append(" of ").append(totalFixtures)
           .append(" PARSER_FROM_FEN* fixtures produced an unexpected final FEN:\n");
       for (final String f : failures) {
         report.append("  ").append(f).append('\n');

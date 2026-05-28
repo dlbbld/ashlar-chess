@@ -5096,7 +5096,7 @@ class TestLegalMovesForPiecesLegalPosition implements EnumConstants {
   }
 
   private static void checkExceptionRook(StaticPosition staticPosition, Side havingMove, Square fromSquare) {
-    var isCorrectException = false;
+      boolean isCorrectException = false;
     try {
       RookLegalMoves.calculateRookLegalMoves(staticPosition, havingMove, fromSquare);
     } catch (@SuppressWarnings("unused") final IllegalArgumentException iae) {
@@ -5106,7 +5106,7 @@ class TestLegalMovesForPiecesLegalPosition implements EnumConstants {
   }
 
   private static void checkExceptionKnight(StaticPosition staticPosition, Side havingMove, Square fromSquare) {
-    var isCorrectException = false;
+      boolean isCorrectException = false;
     try {
       KnightLegalMoves.calculateKnightLegalMoves(staticPosition, havingMove, fromSquare);
     } catch (@SuppressWarnings("unused") final IllegalArgumentException iae) {
@@ -5116,7 +5116,7 @@ class TestLegalMovesForPiecesLegalPosition implements EnumConstants {
   }
 
   private static void checkExceptionBishop(StaticPosition staticPosition, Side havingMove, Square fromSquare) {
-    var isCorrectException = false;
+      boolean isCorrectException = false;
     try {
       BishopLegalMoves.calculateBishopLegalMoves(staticPosition, havingMove, fromSquare);
     } catch (@SuppressWarnings("unused") final IllegalArgumentException iae) {
@@ -5126,7 +5126,7 @@ class TestLegalMovesForPiecesLegalPosition implements EnumConstants {
   }
 
   private static void checkExceptionQueen(StaticPosition staticPosition, Side havingMove, Square fromSquare) {
-    var isCorrectException = false;
+      boolean isCorrectException = false;
     try {
       QueenLegalMoves.calculateQueenLegalMoves(staticPosition, havingMove, fromSquare);
     } catch (@SuppressWarnings("unused") final IllegalArgumentException iae) {
@@ -5137,7 +5137,7 @@ class TestLegalMovesForPiecesLegalPosition implements EnumConstants {
 
   private static void checkExceptionKing(StaticPosition staticPosition, CastlingRight castlingRight, Side havingMove,
       Square fromSquare) {
-    var isCorrectException = false;
+      boolean isCorrectException = false;
     try {
       KingLegalMoves.calculateKingLegalMoves(staticPosition, castlingRight, havingMove, fromSquare);
     } catch (@SuppressWarnings("unused") final IllegalArgumentException iae) {
@@ -5148,7 +5148,7 @@ class TestLegalMovesForPiecesLegalPosition implements EnumConstants {
 
   private static void checkExceptionPawn(StaticPosition staticPosition, Square enPassantCaptureTargetSquare,
       Side havingMove, Square fromSquare) {
-    var isCorrectException = false;
+      boolean isCorrectException = false;
     try {
       PawnLegalMoves.calculatePawnLegalMoves(staticPosition, enPassantCaptureTargetSquare, havingMove, fromSquare);
     } catch (@SuppressWarnings("unused") final IllegalArgumentException iae) {

@@ -117,7 +117,7 @@ class TestSanValidateFormatFailureOracleComplement {
     assumeFalse(RestrictTestConstants.IS_EXCLUDE_LONG_RUNNING_SAN_VALIDATE_FORMAT_FAILURE_ORACLE_COMPLEMENT_TEST);
 
     final Set<String> validSanSet = Nulls.keySet(SanValidateStaticallyFormat.getSanValidationMap());
-    final var startTime = System.currentTimeMillis();
+    final long startTime = System.currentTimeMillis();
 
     // Single-element array: the idiomatic Java way to hold a mutable long counter
     // that is updated deep inside a recursive method without using instance state.
@@ -125,7 +125,7 @@ class TestSanValidateFormatFailureOracleComplement {
 
     generateAllCandidates(san -> checkCandidate(san, validSanSet, totalChecked, startTime));
 
-    final var totalElapsed = System.currentTimeMillis() - startTime;
+    final long totalElapsed = System.currentTimeMillis() - startTime;
     System.out.println("Completeness test done. Total checks: " + String.format("%,d", totalChecked[0])
         + ", total elapsed: " + String.format("%.1f", totalElapsed / 1000.0) + " s");
   }
@@ -154,8 +154,8 @@ class TestSanValidateFormatFailureOracleComplement {
     if (CASTLING_MOVES.contains(san)) {
       return true;
     }
-    for (var i = 0; i < san.length(); i++) {
-      final var c = san.charAt(i);
+    for (int i = 0; i < san.length(); i++) {
+      final char c = san.charAt(i);
       if (c >= CHAR_CATEGORY.length || CHAR_CATEGORY[c] == -1) {
         return false;
       }
@@ -213,7 +213,7 @@ class TestSanValidateFormatFailureOracleComplement {
       }
       // Prune: do not exceed the maximum allowed occurrences for this character's category.
       // Note: every character in ALPHABET has a valid category (CHAR_CATEGORY != -1).
-      final var category = CHAR_CATEGORY[c];
+      final int category = CHAR_CATEGORY[c];
       if (categoryCounts[category] < CAT_MAX[category]) {
         buffer[length] = c;
         categoryCounts[category]++;
@@ -254,7 +254,7 @@ class TestSanValidateFormatFailureOracleComplement {
 
     totalChecked[0]++;
     if (totalChecked[0] % PRINT_INTERVAL == 0) {
-      final var elapsed = System.currentTimeMillis() - startTime;
+      final long elapsed = System.currentTimeMillis() - startTime;
       System.out.println("Processed: " + String.format("%,d", totalChecked[0]) + ", elapsed: "
           + String.format("%.1f", elapsed / 1000.0) + " s - current SAN: " + san);
     }

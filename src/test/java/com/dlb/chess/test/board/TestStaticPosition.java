@@ -15,7 +15,7 @@ class TestStaticPosition {
 
     final Board board = new Board();
 
-    final var expected = """
+    final String expected = """
         rnbqkbnr
         pppppppp
         ........
@@ -37,7 +37,7 @@ class TestStaticPosition {
 
     board.movesStrict("e4", "e5", "Bc4", "Bc5", "Nf3", "Nc6");
 
-    final var expected = """
+    final String expected = """
         r.bqk.nr
         pppp.ppp
         ..n.....
@@ -57,7 +57,7 @@ class TestStaticPosition {
 
     final Board board = new Board("8/p4p1k/1pp2p1p/3p3P/1K1P1rP1/2P1n1R1/2P1r3/6R1 w - - 0 39");
 
-    final var expected = """
+    final String expected = """
         ........
         p....p.k
         .pp..p.p

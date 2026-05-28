@@ -77,7 +77,7 @@ class KingCastlingLegalMoves extends KingLegalMoves {
 
   private static CastlingCheck calculateQueenSideCastlingCheck(StaticPosition staticPosition, Side havingMove,
       CastlingRight castlingRight) {
-    final var hasLostCastlingRight = castlingRight != CastlingRight.KING_AND_QUEEN_SIDE
+    final boolean hasLostCastlingRight = castlingRight != CastlingRight.KING_AND_QUEEN_SIDE
         && castlingRight != CastlingRight.QUEEN_SIDE;
     if (hasLostCastlingRight) {
       return CastlingCheck.FINAL_NO_RIGHT;
@@ -94,7 +94,7 @@ class KingCastlingLegalMoves extends KingLegalMoves {
 
   private static CastlingCheck calculateKingSideCastlingCheck(StaticPosition staticPosition, Side havingMove,
       CastlingRight castlingRight) {
-    final var hasLostCastlingRight = castlingRight != CastlingRight.KING_AND_QUEEN_SIDE
+    final boolean hasLostCastlingRight = castlingRight != CastlingRight.KING_AND_QUEEN_SIDE
         && castlingRight != CastlingRight.KING_SIDE;
     if (hasLostCastlingRight) {
       return CastlingCheck.FINAL_NO_RIGHT;

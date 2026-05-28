@@ -321,84 +321,84 @@ class TestSanValidateFormat {
 
     // (1a) pawnNonCapturingNonPromotionMoves d3 not d8
     {
-      final var expectedSanFormat = SanFormat.PAWN_NON_CAPTURING_NON_PROMOTION;
-      final var expectedSanConversion = new SanConversion(PieceType.PAWN, File.NONE, Rank.NONE, Square.D3,
+      final SanFormat expectedSanFormat = SanFormat.PAWN_NON_CAPTURING_NON_PROMOTION;
+      final SanConversion expectedSanConversion = new SanConversion(PieceType.PAWN, File.NONE, Rank.NONE, Square.D3,
           PromotionPieceType.NONE, SanTerminalMarker.NONE);
-      final var san = "d3";
+      final String san = "d3";
       checkValid(expectedSanFormat, expectedSanConversion, san);
     }
     {
-      final var expectedSanFormat = SanFormat.PAWN_NON_CAPTURING_PROMOTION;
-      final var expectedSanConversion = new SanConversion(PieceType.PAWN, File.NONE, Rank.NONE, Square.D8,
+      final SanFormat expectedSanFormat = SanFormat.PAWN_NON_CAPTURING_PROMOTION;
+      final SanConversion expectedSanConversion = new SanConversion(PieceType.PAWN, File.NONE, Rank.NONE, Square.D8,
           PromotionPieceType.KNIGHT, SanTerminalMarker.NONE);
-      final var san = "d8=N";
+      final String san = "d8=N";
       checkValid(expectedSanFormat, expectedSanConversion, san);
     }
     {
-      final var expectedSanFormat = SanFormat.PAWN_NON_CAPTURING_PROMOTION;
-      final var expectedSanConversion = new SanConversion(PieceType.PAWN, File.NONE, Rank.NONE, Square.D1,
+      final SanFormat expectedSanFormat = SanFormat.PAWN_NON_CAPTURING_PROMOTION;
+      final SanConversion expectedSanConversion = new SanConversion(PieceType.PAWN, File.NONE, Rank.NONE, Square.D1,
           PromotionPieceType.QUEEN, SanTerminalMarker.NONE);
-      final var san = "d1=Q";
+      final String san = "d1=Q";
       checkValid(expectedSanFormat, expectedSanConversion, san);
     }
     // (1b) pawnCapturingNonPromotionMoves dxe5 not dxe8
     {
-      final var expectedSanFormat = SanFormat.PAWN_CAPTURING_NON_PROMOTION;
-      final var expectedSanConversion = new SanConversion(PieceType.PAWN, File.FILE_D, Rank.NONE, Square.E5,
+      final SanFormat expectedSanFormat = SanFormat.PAWN_CAPTURING_NON_PROMOTION;
+      final SanConversion expectedSanConversion = new SanConversion(PieceType.PAWN, File.FILE_D, Rank.NONE, Square.E5,
           PromotionPieceType.NONE, SanTerminalMarker.NONE);
-      final var san = "dxe5";
+      final String san = "dxe5";
       checkValid(expectedSanFormat, expectedSanConversion, san);
     }
     {
-      final var expectedSanFormat = SanFormat.PAWN_CAPTURING_PROMOTION;
-      final var expectedSanConversion = new SanConversion(PieceType.PAWN, File.FILE_D, Rank.NONE, Square.E8,
+      final SanFormat expectedSanFormat = SanFormat.PAWN_CAPTURING_PROMOTION;
+      final SanConversion expectedSanConversion = new SanConversion(PieceType.PAWN, File.FILE_D, Rank.NONE, Square.E8,
           PromotionPieceType.QUEEN, SanTerminalMarker.NONE);
-      final var san = "dxe8=Q";
+      final String san = "dxe8=Q";
       checkValid(expectedSanFormat, expectedSanConversion, san);
     }
     {
-      final var expectedSanFormat = SanFormat.PAWN_CAPTURING_PROMOTION;
-      final var expectedSanConversion = new SanConversion(PieceType.PAWN, File.FILE_D, Rank.NONE, Square.E1,
+      final SanFormat expectedSanFormat = SanFormat.PAWN_CAPTURING_PROMOTION;
+      final SanConversion expectedSanConversion = new SanConversion(PieceType.PAWN, File.FILE_D, Rank.NONE, Square.E1,
           PromotionPieceType.QUEEN, SanTerminalMarker.NONE);
-      final var san = "dxe1=Q";
+      final String san = "dxe1=Q";
       checkValid(expectedSanFormat, expectedSanConversion, san);
     }
     // (1c) pawnNonCapturingPromotionMoves d8=Q
     {
-      final var expectedSanFormat = SanFormat.PAWN_NON_CAPTURING_PROMOTION;
-      final var expectedSanConversion = new SanConversion(PieceType.PAWN, File.NONE, Rank.NONE, Square.D8,
+      final SanFormat expectedSanFormat = SanFormat.PAWN_NON_CAPTURING_PROMOTION;
+      final SanConversion expectedSanConversion = new SanConversion(PieceType.PAWN, File.NONE, Rank.NONE, Square.D8,
           PromotionPieceType.QUEEN, SanTerminalMarker.NONE);
-      final var san = "d8=Q";
+      final String san = "d8=Q";
       checkValid(expectedSanFormat, expectedSanConversion, san);
     }
     {
-      final var expectedSanFormat = SanFormat.PAWN_NON_CAPTURING_PROMOTION;
-      final var expectedSanConversion = new SanConversion(PieceType.PAWN, File.NONE, Rank.NONE, Square.D1,
+      final SanFormat expectedSanFormat = SanFormat.PAWN_NON_CAPTURING_PROMOTION;
+      final SanConversion expectedSanConversion = new SanConversion(PieceType.PAWN, File.NONE, Rank.NONE, Square.D1,
           PromotionPieceType.QUEEN, SanTerminalMarker.NONE);
-      final var san = "d1=Q";
+      final String san = "d1=Q";
       checkValid(expectedSanFormat, expectedSanConversion, san);
     }
     {
-      final var san = "d7=Q";
+      final String san = "d7=Q";
       checkException(san, SanValidationProblem.FORMAT_PAWN_FORWARD_NON_PROMOTION_OVERLENGTH);
     }
     // (1d) pawnCapturingPromotionMoves dxe8=Q
     {
-      final var expectedSanFormat = SanFormat.PAWN_CAPTURING_PROMOTION;
-      final var expectedSanConversion = new SanConversion(PieceType.PAWN, File.FILE_D, Rank.NONE, Square.E8,
+      final SanFormat expectedSanFormat = SanFormat.PAWN_CAPTURING_PROMOTION;
+      final SanConversion expectedSanConversion = new SanConversion(PieceType.PAWN, File.FILE_D, Rank.NONE, Square.E8,
           PromotionPieceType.QUEEN, SanTerminalMarker.NONE);
-      final var san = "dxe8=Q";
+      final String san = "dxe8=Q";
       checkValid(expectedSanFormat, expectedSanConversion, san);
     }
     {
-      final var expectedSanFormat = SanFormat.PAWN_CAPTURING_PROMOTION;
-      final var expectedSanConversion = new SanConversion(PieceType.PAWN, File.FILE_D, Rank.NONE, Square.E1,
+      final SanFormat expectedSanFormat = SanFormat.PAWN_CAPTURING_PROMOTION;
+      final SanConversion expectedSanConversion = new SanConversion(PieceType.PAWN, File.FILE_D, Rank.NONE, Square.E1,
           PromotionPieceType.QUEEN, SanTerminalMarker.NONE);
-      final var san = "dxe1=Q";
+      final String san = "dxe1=Q";
       checkValid(expectedSanFormat, expectedSanConversion, san);
     }
     {
-      final var san = "dxe7=Q";
+      final String san = "dxe7=Q";
       checkException(san, SanValidationProblem.FORMAT_PAWN_CAPTURE_NON_PROMOTION_OVERLENGTH);
     }
     // (2a) queenNonCapturingMoves Qe5, Qae5, Q2e5, Qc3e5
@@ -545,7 +545,7 @@ class TestSanValidateFormat {
   private static void checkValid(SanFormat expectedSanFormat, SanConversion expectedSanConversion, String san) {
     final SanParse expectedSanExtract = new SanParse(expectedSanFormat, expectedSanConversion);
 
-    final var calculatedSanExtract = SanValidateFormat.validateFormat(san);
+    final SanParse calculatedSanExtract = SanValidateFormat.validateFormat(san);
     assertEquals(expectedSanExtract, calculatedSanExtract);
     assertEquals(validateFormatReference(san), calculatedSanExtract);
   }

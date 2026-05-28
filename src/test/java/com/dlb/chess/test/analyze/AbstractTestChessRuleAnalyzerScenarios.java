@@ -34,14 +34,14 @@ import com.dlb.chess.exceptions.InvalidMoveException;
 public abstract class AbstractTestChessRuleAnalyzerScenarios implements EnumConstants {
 
   static void check(Board board, MoveSpecification move, MoveCheck expectedMoveCheck) {
-    final var expectedMc = toMovementCheck(expectedMoveCheck);
+    final MovementCheck expectedMc = toMovementCheck(expectedMoveCheck);
     if (expectedMc != null) {
       final MovementCheck actual = ChessRuleAnalyzer.analyzeMovement(board.getBitboardPosition(), board.getHavingMove(),
           board.getEnPassantCaptureTargetSquare(), move);
       assertEquals(expectedMc, actual);
       return;
     }
-    final var expectedKs = toKingSafetyCheck(expectedMoveCheck);
+    final KingSafetyCheck expectedKs = toKingSafetyCheck(expectedMoveCheck);
     if (expectedKs != null) {
       // king-safety presupposes movement passes
       final MovementCheck actualMc = ChessRuleAnalyzer.analyzeMovement(board.getBitboardPosition(),
@@ -53,7 +53,7 @@ public abstract class AbstractTestChessRuleAnalyzerScenarios implements EnumCons
       return;
     }
     // fallback: spec-coherence or castling - exercise via the surface
-    var isException = false;
+      boolean isException = false;
     try {
       board.move(move);
     } catch (final InvalidMoveException e) {

@@ -83,7 +83,7 @@ public final class ChessRuleAnalyzer implements EnumConstants {
         || !bitboardPosition.afterMove(moveSpecification, havingMove).isInCheck(havingMove)) {
       return KingSafetyCheck.SUCCESS;
     }
-    final var wasInCheck = bitboardPosition.isInCheck(havingMove);
+    final boolean wasInCheck = bitboardPosition.isInCheck(havingMove);
     return wasInCheck ? KingSafetyCheck.NON_KING_LEFT_IN_CHECK : KingSafetyCheck.NON_KING_EXPOSED_TO_CHECK;
   }
 
@@ -93,8 +93,8 @@ public final class ChessRuleAnalyzer implements EnumConstants {
     final Square toSquare = moveSpecification.toSquare();
     final Piece movingPiece = bitboardPosition.get(fromSquare);
 
-    final var isForwardMove = calculateIsPawnEmptyBoardMove(havingMove, fromSquare, toSquare);
-    final var isDiagonalMove = PawnDiagonalMoveUtility.calculateIsPawnDiagonalMove(havingMove, fromSquare, toSquare);
+    final boolean isForwardMove = calculateIsPawnEmptyBoardMove(havingMove, fromSquare, toSquare);
+    final boolean isDiagonalMove = PawnDiagonalMoveUtility.calculateIsPawnDiagonalMove(havingMove, fromSquare, toSquare);
 
     if (!isForwardMove && !isDiagonalMove) {
       return MovementCheck.NOT_POSSIBLE;
@@ -118,8 +118,8 @@ public final class ChessRuleAnalyzer implements EnumConstants {
       MoveSpecification moveSpecification) {
     final Square toSquare = moveSpecification.toSquare();
     final Square jumpOverSquare = Square.calculateJumpOverSquare(havingMove, toSquare);
-    final var jumpOverSquareIsEmpty = bitboardPosition.isEmpty(jumpOverSquare);
-    final var toSquareIsEmpty = bitboardPosition.isEmpty(toSquare);
+    final boolean jumpOverSquareIsEmpty = bitboardPosition.isEmpty(jumpOverSquare);
+    final boolean toSquareIsEmpty = bitboardPosition.isEmpty(toSquare);
 
     if (!jumpOverSquareIsEmpty) {
       if (!toSquareIsEmpty) {

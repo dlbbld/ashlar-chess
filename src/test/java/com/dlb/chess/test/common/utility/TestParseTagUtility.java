@@ -148,7 +148,7 @@ class TestParseTagUtility {
   // -------------------------------------------------------------------------------------------------
 
   private static void checkTagFormat(String tagLine, boolean isValid) {
-    final var isException = tryParseReturnIsException(tagLine);
+    final boolean isException = tryParseReturnIsException(tagLine);
     if (isValid) {
       assertFalse(isException, "Expected tag to parse cleanly: " + tagLine);
     } else {
@@ -168,7 +168,7 @@ class TestParseTagUtility {
   }
 
   private static void checkException(String tagLine, StrictPgnParserValidationProblem expected) {
-    var isException = false;
+      boolean isException = false;
     try {
       StrictPgnParser.parseText(buildMinimalPgn(tagLine));
     } catch (final StrictPgnParserValidationException e) {
@@ -198,7 +198,7 @@ class TestParseTagUtility {
     sb.append(subjectTagLine).append('\n');
     for (final String roster : Arrays.asList("Event", "Site", "Date", "Round", "White", "Black", "Result")) {
       if (!roster.equals(subjectName)) {
-        final var placeholder = "Result".equals(roster) ? "*" : "?";
+        final String placeholder = "Result".equals(roster) ? "*" : "?";
         sb.append('[').append(roster).append(" \"").append(placeholder).append("\"]\n");
       }
     }
@@ -212,12 +212,12 @@ class TestParseTagUtility {
    * because the parser errors before template wholeness matters.
    */
   private static String extractTagName(String tagLine) {
-    final var open = tagLine.indexOf('[');
+    final int open = tagLine.indexOf('[');
     if (open == -1) {
       return "";
     }
-    final var afterOpen = open + 1;
-    final var space = tagLine.indexOf(' ', afterOpen);
+    final int afterOpen = open + 1;
+    final int space = tagLine.indexOf(' ', afterOpen);
     if (space == -1) {
       return "";
     }

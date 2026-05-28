@@ -263,7 +263,7 @@ class TestFenParserAdvanced implements EnumConstants {
   @Test
   void testParseFenMaxValues() {
 
-    final var aboveMaxValue = Long.valueOf(Integer.MAX_VALUE) + 1;
+    final long aboveMaxValue = Long.valueOf(Integer.MAX_VALUE) + 1;
 
     // half-move clock
 
@@ -432,7 +432,7 @@ class TestFenParserAdvanced implements EnumConstants {
   }
 
   private static void checkParseFenException(String fen, FenAdvancedValidationProblem expected) {
-    var actual = FenAdvancedValidationProblem.SUCCESS;
+      FenAdvancedValidationProblem actual = FenAdvancedValidationProblem.SUCCESS;
     try {
       FenParserAdvanced.parseFenAdvanced(fen);
     } catch (final FenAdvancedValidationException e) {
@@ -442,7 +442,7 @@ class TestFenParserAdvanced implements EnumConstants {
   }
 
   private static void checkParseFenSuccess(String fen) {
-    var isException = false;
+      boolean isException = false;
     try {
       FenParserAdvanced.parseFenAdvanced(fen);
     } catch (@SuppressWarnings("unused") final FenAdvancedValidationException e) {

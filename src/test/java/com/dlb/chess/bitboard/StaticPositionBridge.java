@@ -27,25 +27,25 @@ public final class StaticPositionBridge {
   }
 
   public static BitboardPosition fromStaticPosition(StaticPosition staticPosition) {
-    var whitePawns = 0L;
-    var whiteRooks = 0L;
-    var whiteKnights = 0L;
-    var whiteBishops = 0L;
-    var whiteQueens = 0L;
-    var whiteKings = 0L;
-    var blackPawns = 0L;
-    var blackRooks = 0L;
-    var blackKnights = 0L;
-    var blackBishops = 0L;
-    var blackQueens = 0L;
-    var blackKings = 0L;
+      long whitePawns = 0L;
+      long whiteRooks = 0L;
+      long whiteKnights = 0L;
+      long whiteBishops = 0L;
+      long whiteQueens = 0L;
+      long whiteKings = 0L;
+      long blackPawns = 0L;
+      long blackRooks = 0L;
+      long blackKnights = 0L;
+      long blackBishops = 0L;
+      long blackQueens = 0L;
+      long blackKings = 0L;
 
     for (final Square square : Square.REAL) {
       final Piece piece = staticPosition.get(square);
       if (piece == Piece.NONE) {
         continue;
       }
-      final var bit = 1L << square.ordinal();
+      final long bit = 1L << square.ordinal();
       switch (piece) {
         case WHITE_PAWN -> whitePawns |= bit;
         case WHITE_ROOK -> whiteRooks |= bit;
@@ -90,9 +90,9 @@ public final class StaticPositionBridge {
   }
 
   private static void collectOccupiedSquares(List<UpdateSquare> updates, long bitboard, Piece piece) {
-    var remaining = bitboard;
+      long remaining = bitboard;
     while (remaining != 0L) {
-      final var squareOrdinal = Long.numberOfTrailingZeros(remaining);
+      final int squareOrdinal = Long.numberOfTrailingZeros(remaining);
       updates.add(new UpdateSquare(Nulls.get(Square.REAL, squareOrdinal), piece));
       remaining &= remaining - 1L;
     }

@@ -295,7 +295,7 @@ public class PgnTestCaseCatalog {
    */
   private static PgnTestCaseList filterBucket(PgnTest pgnTest, String... wantedFileNames) {
     final Set<String> wanted = new TreeSet<>();
-    for (var i = 0; i < wantedFileNames.length; i++) {
+    for (int i = 0; i < wantedFileNames.length; i++) {
       wanted.add(Nulls.get(wantedFileNames, i));
     }
     final List<PgnFen> filtered = new ArrayList<>();
@@ -323,7 +323,7 @@ public class PgnTestCaseCatalog {
     for (final PgnTestCaseList testCaseList : testCaseListList) {
       for (final PgnFen testCase : testCaseList.list()) {
         final String pgnName = testCase.pgnName();
-        final var isNotContained = !fileNames.add(pgnName);
+        final boolean isNotContained = !fileNames.add(pgnName);
         if (isNotContained) {
           throw new ProgrammingMistakeException("The PGN test cases files names are not unique");
         }

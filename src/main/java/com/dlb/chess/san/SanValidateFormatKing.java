@@ -41,7 +41,7 @@ abstract class SanValidateFormatKing extends AbstractSan {
           Message.getString("validation.san.format.king.nonCastling.nonCapture.noDestinationFile"));
     }
 
-    final var secondChar = core.charAt(1);
+    final char secondChar = core.charAt(1);
 
     if (!SanValidateFormat.isFileLetter(secondChar)) {
       throw new SanValidationException(SanValidationProblem.FORMAT_KING_NON_CASTLING_NON_CAPTURE_WRONG_DESTINATION_FILE,
@@ -55,14 +55,14 @@ abstract class SanValidateFormatKing extends AbstractSan {
 
   private static SanParse parseKingNonCaptureMove(final String core, final SanTerminalMarker sanTerminalMarker) {
     // core[0]='K', core[1]=file letter. Expect rank digit next.
-    final var secondChar = core.charAt(1);
+    final char secondChar = core.charAt(1);
 
     if (core.length() == 2) {
       throw new SanValidationException(SanValidationProblem.FORMAT_KING_NON_CASTLING_NON_CAPTURE_NO_DESTINATION_RANK,
           Message.getString("validation.san.format.king.nonCastling.nonCapture.noDestinationRank"));
     }
 
-    final var thirdChar = core.charAt(2);
+    final char thirdChar = core.charAt(2);
 
     // Third char must be a rank digit. Anything else (another file letter, 'x', etc.) falls into the same generic
     // "wrong destination rank" bucket; detecting file-disambiguation specifically adds no user value beyond what
@@ -97,7 +97,7 @@ abstract class SanValidateFormatKing extends AbstractSan {
           Message.getString("validation.san.format.king.nonCastling.capture.noDestinationFile"));
     }
 
-    final var thirdChar = core.charAt(2);
+    final char thirdChar = core.charAt(2);
 
     if (!SanValidateFormat.isFileLetter(thirdChar)) {
       throw new SanValidationException(SanValidationProblem.FORMAT_KING_NON_CASTLING_CAPTURE_WRONG_DESTINATION_FILE,
@@ -111,7 +111,7 @@ abstract class SanValidateFormatKing extends AbstractSan {
           Message.getString("validation.san.format.king.nonCastling.capture.noDestinationRank"));
     }
 
-    final var fourthChar = core.charAt(3);
+    final char fourthChar = core.charAt(3);
 
     if (!SanValidateFormat.isRankDigit(fourthChar)) {
       throw new SanValidationException(SanValidationProblem.FORMAT_KING_NON_CASTLING_CAPTURE_WRONG_DESTINATION_RANK,

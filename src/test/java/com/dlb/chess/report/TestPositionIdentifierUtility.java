@@ -175,8 +175,8 @@ class TestPositionIdentifierUtility {
 
     final List<String> labels = new ArrayList<>(map.values());
     Collections.sort(labels);
-    for (var i = 0; i < labels.size(); i++) {
-      final var expected = String.valueOf((char) ('A' + i));
+    for (int i = 0; i < labels.size(); i++) {
+      final String expected = String.valueOf((char) ('A' + i));
       assertEquals(expected, labels.get(i),
           "labels must form a contiguous prefix A, B, C, ... with no gaps and no repeats");
     }

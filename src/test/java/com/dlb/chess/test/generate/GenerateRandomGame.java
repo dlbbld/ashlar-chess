@@ -34,14 +34,14 @@ public class GenerateRandomGame {
     final Board board = new Board();
 
     List<MoveSpecification> legalMoves = board.getPossibleMoveSpecificationList();
-    var numberOfMoveOptions = legalMoves.size();
+      int numberOfMoveOptions = legalMoves.size();
     List<MoveSpecification> moveOptionList = new ArrayList<>(legalMoves);
 
-    var halfMoveNumberLastPossibleTermination = -1;
-    var numberOfHalfMovesPerformed = 0;
+      int halfMoveNumberLastPossibleTermination = -1;
+      int numberOfHalfMovesPerformed = 0;
     while (numberOfMoveOptions != 0) {
       if (numberOfMoveOptions != 0) {
-        final var randomMoveNumberIndex = RandomUtility.calculateRandomNumber(0, numberOfMoveOptions - 1);
+        final int randomMoveNumberIndex = RandomUtility.calculateRandomNumber(0, numberOfMoveOptions - 1);
         final MoveSpecification moveSpecification = Nulls.get(moveOptionList, randomMoveNumberIndex);
         board.move(moveSpecification);
         numberOfHalfMovesPerformed++;
@@ -99,7 +99,7 @@ public class GenerateRandomGame {
 
     if (halfMoveNumberLastPossibleTermination != -1) {
       System.out.println("No more non terminating moves - we have a termination option");
-      for (var i = numberOfHalfMovesPerformed; i >= halfMoveNumberLastPossibleTermination; i--) {
+      for (int i = numberOfHalfMovesPerformed; i >= halfMoveNumberLastPossibleTermination; i--) {
         board.unmove();
       }
       // now we should have at least one checkmate move
@@ -108,7 +108,7 @@ public class GenerateRandomGame {
       for (final MoveSpecification moveSpecification : legalMoves) {
         board.move(moveSpecification);
 
-        var isTerminationMoveFound = false;
+          boolean isTerminationMoveFound = false;
         switch (findRandomGame) {
           case CHECKMATE:
             if (board.isCheckmate()) {
@@ -155,13 +155,13 @@ public class GenerateRandomGame {
     final Board board = new Board();
 
     List<MoveSpecification> legalMoves = board.getPossibleMoveSpecificationList();
-    var numberOfMoveOptions = legalMoves.size();
+      int numberOfMoveOptions = legalMoves.size();
     List<MoveSpecification> moveOptionList = new ArrayList<>(legalMoves);
 
-    var numberOfHalfMovesPerformed = 0;
+      int numberOfHalfMovesPerformed = 0;
     while (numberOfMoveOptions != 0) {
       if (numberOfMoveOptions != 0) {
-        final var randomMoveNumberIndex = RandomUtility.calculateRandomNumber(0, numberOfMoveOptions - 1);
+        final int randomMoveNumberIndex = RandomUtility.calculateRandomNumber(0, numberOfMoveOptions - 1);
         final MoveSpecification moveSpecification = Nulls.get(moveOptionList, randomMoveNumberIndex);
         board.move(moveSpecification);
         numberOfHalfMovesPerformed++;
@@ -194,14 +194,14 @@ public class GenerateRandomGame {
     final Board board = new Board();
 
     List<MoveSpecification> legalMoves = board.getPossibleMoveSpecificationList();
-    var numberOfMoveOptions = legalMoves.size();
+      int numberOfMoveOptions = legalMoves.size();
     List<MoveSpecification> moveOptionList = new ArrayList<>(legalMoves);
 
-    var isFiftyReached = false;
-    var numberOfHalfMovesPerformed = 0;
+      boolean isFiftyReached = false;
+      int numberOfHalfMovesPerformed = 0;
     while (numberOfMoveOptions != 0) {
       if (numberOfMoveOptions != 0) {
-        final var randomMoveNumberIndex = RandomUtility.calculateRandomNumber(0, numberOfMoveOptions - 1);
+        final int randomMoveNumberIndex = RandomUtility.calculateRandomNumber(0, numberOfMoveOptions - 1);
         final MoveSpecification moveSpecification = Nulls.get(moveOptionList, randomMoveNumberIndex);
         board.move(moveSpecification);
         if (!isFiftyReached && board.isFiftyMove()) {
@@ -249,7 +249,7 @@ public class GenerateRandomGame {
   }
 
   private static void generateRepetition(int repetitionNumber, int numberOfTries) {
-    for (var i = 1; i <= numberOfTries; i++) {
+    for (int i = 1; i <= numberOfTries; i++) {
       System.out.println("Try " + i + " of " + numberOfTries);
       if (generateRepetition(repetitionNumber)) {
         System.out.println("Find result");
@@ -262,16 +262,16 @@ public class GenerateRandomGame {
     final Board board = new Board();
 
     List<MoveSpecification> legalMoves = board.getPossibleMoveSpecificationList();
-    var numberOfMoveOptions = legalMoves.size();
+      int numberOfMoveOptions = legalMoves.size();
     List<MoveSpecification> moveOptionList = new ArrayList<>(legalMoves);
 
-    var isRepetitionReached = false;
+      boolean isRepetitionReached = false;
     // we need to intialize to something other than null, the below value is not meaning ful
     DynamicPosition repetitionPosition = board.getDynamicPosition();
-    var numberOfHalfMovesPerformed = 0;
+      int numberOfHalfMovesPerformed = 0;
     while (numberOfMoveOptions != 0) {
       {
-        final var randomMoveNumberIndex = RandomUtility.calculateRandomNumber(0, numberOfMoveOptions - 1);
+        final int randomMoveNumberIndex = RandomUtility.calculateRandomNumber(0, numberOfMoveOptions - 1);
         final MoveSpecification moveSpecification = Nulls.get(moveOptionList, randomMoveNumberIndex);
         board.move(moveSpecification);
         if (!isRepetitionReached && board.getRepetitionCount() == 2) {
@@ -325,7 +325,7 @@ public class GenerateRandomGame {
 
   private static String calculateMoveList(List<HalfMove> halfMoveList) {
     final StringBuilder moveList = new StringBuilder();
-    for (var i = 0; i < halfMoveList.size(); i++) {
+    for (int i = 0; i < halfMoveList.size(); i++) {
       final HalfMove halfMove = Nulls.get(halfMoveList, i);
       // after black move if following white move
       if (i > 0 && i % 2 == 0) {

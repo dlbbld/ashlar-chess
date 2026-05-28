@@ -45,7 +45,7 @@ public class PgnCreate {
   }
 
   public static List<String> createPgnLines(PgnGame pgnGame, WriteMode writeMode) {
-    final var effective = writeMode == WriteMode.ARCHIVAL ? PgnArchivalNormalization.apply(pgnGame) : pgnGame;
+    final PgnGame effective = writeMode == WriteMode.ARCHIVAL ? PgnArchivalNormalization.apply(pgnGame) : pgnGame;
     return calculateFileLines(effective.tagList(), effective.pregameCommentary(), effective.startFen(),
         effective.halfMoveList(), effective.terminationMarker());
   }
@@ -72,7 +72,7 @@ public class PgnCreate {
 
     // PgnCommentary is contract-validated (no `}`, no `\r`), so the value writes verbatim into {...}.
     final String pregameCommentaryValue = pregameCommentary.value();
-    final var terminationSuffix = terminationMarker != null ? " " + terminationMarker.getValue() : "";
+    final String terminationSuffix = terminationMarker != null ? " " + terminationMarker.getValue() : "";
     final String movetextIncludingPreGameCommentary;
     if (pregameCommentaryValue.isEmpty()) {
       movetextIncludingPreGameCommentary = moves + terminationSuffix;
@@ -162,18 +162,18 @@ public class PgnCreate {
 
     final StringBuilder result = new StringBuilder();
 
-    var currentFullMoveNumber = fullMoveNumber;
+      int currentFullMoveNumber = fullMoveNumber;
     Side currentHavingMove = havingMove;
-    var isFirstMove = true;
+      boolean isFirstMove = true;
     // T-002 / PGN spec section 8.2.2 case 1: commentary on White's move forces "N..." before the next Black move.
-    var priorCommentaryAttached = false;
+      boolean priorCommentaryAttached = false;
     for (final PgnHalfMove halfMove : halfMoveList) {
 
       // Emit the move-number indicator in the three required cases: first half-move, before any White move, or
       // before a Black move that follows commentary on White's move (T-002).
       if (isFirstMove) {
         isFirstMove = false;
-        final var fullMoveNumberPart = HalfMoveUtility.calculateFullMoveNumberInitialWithoutSpace(fullMoveNumber,
+        final String fullMoveNumberPart = HalfMoveUtility.calculateFullMoveNumberInitialWithoutSpace(fullMoveNumber,
             currentHavingMove);
         result.append(fullMoveNumberPart);
       } else if (currentHavingMove == Side.WHITE) {

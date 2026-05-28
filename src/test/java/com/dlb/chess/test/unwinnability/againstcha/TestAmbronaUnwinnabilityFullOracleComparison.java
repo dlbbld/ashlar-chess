@@ -39,7 +39,7 @@ class TestAmbronaUnwinnabilityFullOracleComparison {
   void chaPositionsExceptLichessHelpmatesMatchFullOracle() {
     final Set<AcceptedDifference> remainingAcceptedDifferenceSet = readAcceptedDifferenceSet();
     final List<String> failureList = new ArrayList<>();
-    var checkedPositionCount = 0;
+      int checkedPositionCount = 0;
 
     for (final PgnTest pgnTest : PgnTest.values()) {
       if (!AbstractCheckAgainstCha.isUseTestForCha(pgnTest)) {
@@ -73,7 +73,7 @@ class TestAmbronaUnwinnabilityFullOracleComparison {
     final Board board = testCase.finalPosition();
     final UnwinnabilityFullVerdict actual = UnwinnableFullAnalyzer.unwinnableFull(board, intendedWinner).verdict();
     if (actual != expected) {
-      final var difference = new AcceptedDifference(testCase.pgnName(), intendedWinner, expected, actual,
+      final AcceptedDifference difference = new AcceptedDifference(testCase.pgnName(), intendedWinner, expected, actual,
           testCase.finalFen());
       if (!remainingAcceptedDifferenceSet.remove(difference)) {
         failureList.add(testCase.pgnName() + " " + intendedWinner + " expected " + expected + " actual " + actual
@@ -89,13 +89,13 @@ class TestAmbronaUnwinnabilityFullOracleComparison {
     }
 
     final Set<AcceptedDifference> result = new HashSet<>();
-    for (var i = 1; i < lineList.size(); i++) {
+    for (int i = 1; i < lineList.size(); i++) {
       final String line = Nulls.get(lineList, i);
       final String[] itemArray = Nulls.split(line, "\t");
       if (itemArray.length != 6) {
         throw new ProgrammingMistakeException("Invalid full unwinnability accepted-differences row: " + line);
       }
-      final var difference = new AcceptedDifference(Nulls.get(itemArray, 0), Side.valueOf(Nulls.get(itemArray, 1)),
+      final AcceptedDifference difference = new AcceptedDifference(Nulls.get(itemArray, 0), Side.valueOf(Nulls.get(itemArray, 1)),
           UnwinnabilityFullVerdict.valueOf(Nulls.get(itemArray, 2)),
           UnwinnabilityFullVerdict.valueOf(Nulls.get(itemArray, 3)), Nulls.get(itemArray, 4));
       if (!result.add(difference)) {

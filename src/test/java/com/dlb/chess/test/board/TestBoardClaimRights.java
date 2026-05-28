@@ -8,6 +8,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.dlb.chess.model.LegalMove;
 import org.junit.jupiter.api.Test;
 
 import com.dlb.chess.board.Board;
@@ -52,7 +53,7 @@ class TestBoardClaimRights implements EnumConstants {
     final ClaimRights rights = board.calculateFiftyMoveRuleClaimRights();
     assertTrue(rights.canClaim(), "at clock 99 every non-zeroing legal move is a 50-move claim candidate");
 
-    var foundRa2 = false;
+      boolean foundRa2 = false;
     for (final ClaimableMove claim : rights.claimableMoves()) {
       if (claim.moveSpecification().equals(new MoveSpecification(A1, A2))) {
         foundRa2 = true;
@@ -103,7 +104,7 @@ class TestBoardClaimRights implements EnumConstants {
     final ClaimRights rights = board.calculateFiftyMoveRuleClaimRights();
     assertTrue(rights.canClaim(), "mate-in-one at clock 99 remains a valid 50-move claim under strict FIDE 9.3");
 
-    var foundNf7 = false;
+      boolean foundNf7 = false;
     for (final ClaimableMove claim : rights.claimableMoves()) {
       if (claim.moveSpecification().equals(new MoveSpecification(H6, F7))) {
         foundNf7 = true;
@@ -247,13 +248,13 @@ class TestBoardClaimRights implements EnumConstants {
     assertTrue(rights.claimableMoves().size() >= 2, "precondition: at least two candidates exist");
 
     final List<MoveSpecification> legalOrder = new java.util.ArrayList<>();
-    for (final var legal : board.getLegalMoves()) {
+    for (final LegalMove legal : board.getLegalMoves()) {
       legalOrder.add(legal.moveSpecification());
     }
 
-    var lastFoundIndex = -1;
+      int lastFoundIndex = -1;
     for (final ClaimableMove claim : rights.claimableMoves()) {
-      final var idx = legalOrder.indexOf(claim.moveSpecification());
+      final int idx = legalOrder.indexOf(claim.moveSpecification());
       assertTrue(idx > lastFoundIndex, "claimable move " + claim.san() + " (legal-move index " + idx
           + ") must appear after the previously seen claimable (index " + lastFoundIndex + ")");
       lastFoundIndex = idx;
@@ -308,7 +309,7 @@ class TestBoardClaimRights implements EnumConstants {
     final Board board = new Board();
     board.movesStrict("Nf3", "Nf6", "Ng1", "Ng8", "Nf3", "Nf6", "Ng1");
 
-    final var halfMoveCountBefore = board.getPerformedHalfMoveCount();
+    final int halfMoveCountBefore = board.getPerformedHalfMoveCount();
     final String fenBefore = board.getFen();
 
     board.calculateFiftyMoveRuleClaimRights();

@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import java.util.List;
 import java.util.Set;
 
+import com.dlb.chess.common.model.MoveSpecification;
 import org.eclipse.jdt.annotation.Nullable;
 import org.junit.jupiter.api.Test;
 
@@ -84,7 +85,7 @@ class TestHelpmateSearchBoard {
   void representativeTreesMatchBoardState() {
     for (final SearchCase scenario : SCENARIOS) {
       try {
-        final var board = boardFrom(scenario.fen());
+        final Board board = boardFrom(scenario.fen());
         assertSearchTreeMatchesBoard(board, scenario.depth());
       } catch (final AssertionError | RuntimeException e) {
         throw new AssertionError(
@@ -112,7 +113,7 @@ class TestHelpmateSearchBoard {
     }
     final List<LegalMove> legalMoves = board.getLegalMoves();
     for (final LegalMove legalMove : legalMoves) {
-      final var moveSpecification = legalMove.moveSpecification();
+      final MoveSpecification moveSpecification = legalMove.moveSpecification();
       board.move(moveSpecification);
       searchBoard.move(moveSpecification);
       assertMatchesBoard(board, searchBoard);

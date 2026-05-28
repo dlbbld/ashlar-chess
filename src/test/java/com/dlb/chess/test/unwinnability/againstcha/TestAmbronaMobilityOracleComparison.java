@@ -12,7 +12,7 @@ class TestAmbronaMobilityOracleComparison {
   @SuppressWarnings("static-method")
   @Test
   void currentMobilityComparisonMatchesKnownBaseline() throws Exception {
-    final var comparison = CompareAmbronaMobilityOracle.compare();
+    final CompareAmbronaMobilityOracle.MobilityOracleComparison comparison = CompareAmbronaMobilityOracle.compare();
 
     assertEquals(1249, comparison.comparedFenCount());
     assertEquals(0, comparison.fenDifferenceCount());
