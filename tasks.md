@@ -29,10 +29,10 @@ identity churn is done on this branch, before the first Central publish - the on
 where it is cheap (no consumers exist yet).
 
 ### Step 0 — Repository rename (do now, on this branch)
-- [ ] Rename GitHub repo `dlbbld/clean-chess` -> `dlbbld/ashlar-chess` (Settings -> repository name)
-- [ ] `git remote set-url origin https://github.com/dlbbld/ashlar-chess.git` in the main
+- [x] Rename GitHub repo `dlbbld/clean-chess` -> `dlbbld/ashlar-chess` (Settings -> repository name)
+- [x] `git remote set-url origin https://github.com/dlbbld/ashlar-chess.git` in the main
       checkout (covers worktrees - they share repo config; optional, redirects work)
-- [ ] Keep the LOCAL directory `C:\Users\danie\git\clean-chess` unchanged - only the
+- [x] Keep the LOCAL directory `C:\Users\danie\git\clean-chess` unchanged - only the
       GitHub remote is renamed (Eclipse project + worktree paths key off the local name)
 - Cautions: never recreate a `dlbbld/clean-chess` repo later (breaks redirects); do not
   cut a JitPack release while `main` still says `clean-chess` - finish the PR first.
