@@ -3,6 +3,7 @@ package com.dlb.chess.unwinnability;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
@@ -35,7 +36,7 @@ class FindHelpmateExhaust {
   private static final int LOCAL_NODES_BOUND = 10000;
 
   private final Side color;
-  private final HashMap<HelpmateSearchKey, Integer> transpositionMap = new HashMap<>();
+  private final Map<HelpmateSearchKey, Integer> transpositionMap = new HashMap<>();
 
   private int localNodeCount = 0;
 
