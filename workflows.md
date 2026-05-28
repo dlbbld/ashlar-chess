@@ -63,7 +63,7 @@ The default `mvn test` runs the fast subset — most of the corpus, but with the
 | Command | Scope |
 | --- | --- |
 | `mvn test` | Default: most of the corpus, long-running audits gated off, `io.github.dlbbld.ashlarchess.test.unwinnability` excluded |
-| `mvn test -Pfull` | Full regression suite. Sets `clean-chess.full=true`, which flips the [`RestrictTestConstants.IS_FULL`](src/test/java/io/github/dlbbld/ashlarchess/test/RestrictTestConstants.java) flag and re-enables the long-running audits. **Precondition for tagging a release.** |
+| `mvn test -Pfull` | Full regression suite. Sets `ashlar-chess.full=true`, which flips the [`RestrictTestConstants.IS_FULL`](src/test/java/io/github/dlbbld/ashlarchess/test/RestrictTestConstants.java) flag and re-enables the long-running audits. **Precondition for tagging a release.** |
 | `mvn test -Dtest=TestClassName` | Single test class |
 | `mvn test -Dtest=TestClassName#methodName` | Single test method |
 | `mvn test -Dtest.excludes=` | Override the default exclusion (re-enable the unwinnability suite) |
@@ -134,7 +134,7 @@ The tag is unannotated (matches the convention of prior tags) — no signing req
 
 ### 4. Post-release
 
-If publishing to a registry (JitPack picks up tags automatically; Maven Central is the future destination), verify the artifact resolves at the published coordinates before announcing.
+Verify the artifact resolves at the published Maven Central coordinates before announcing.
 
 ### Version bumps
 

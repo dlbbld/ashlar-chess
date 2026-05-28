@@ -26,23 +26,13 @@ UTF-8 byte-order marks (BOM) are accepted by the lenient parser (stripped on inp
 
 # Using ashlar-chess as a dependency
 
-Requires JDK 17 or later at runtime. Available via the [JitPack](https://jitpack.io) repository.
+Requires JDK 17 or later at runtime. Published to Maven Central.
 
 ## Maven
 
 ```xml
-<repositories>
-  ...
-  <repository>
-    <id>jitpack.io</id>
-    <url>https://jitpack.io</url>
-  </repository>
-</repositories>
-```
-
-```xml
 <dependency>
-  <groupId>com.github.dlbbld</groupId>
+  <groupId>io.github.dlbbld</groupId>
   <artifactId>ashlar-chess</artifactId>
   <version>17.0.0</version>
 </dependency>
@@ -52,16 +42,11 @@ Requires JDK 17 or later at runtime. Available via the [JitPack](https://jitpack
 
 ```groovy
 repositories {
-    ...
-    maven { url 'https://jitpack.io' }
+    mavenCentral()
 }
-```
 
-```groovy
 dependencies {
-    ...
-    implementation 'com.github.dlbbld:ashlar-chess:17.0.0'
-    ...
+    implementation 'io.github.dlbbld:ashlar-chess:17.0.0'
 }
 ```
 

@@ -50,7 +50,7 @@ where it is cheap (no consumers exist yet).
 - [x] Rename decision resolved: ashlar-chess is the final name (executed in Step 0 + below)
 - [x] DeepSquare / Bitboard / python-chess prior releases complete
 - [x] Mention that chesslib is used for testing
-- [ ] Update README.md (jitpack no longer used)
+- [x] Update README.md (jitpack no longer used)
 - [ ] Final maturity re-check at publish time
 
 ### pom.xml — coordinates + metadata (do now on this branch)
@@ -90,6 +90,9 @@ where it is cheap (no consumers exist yet).
       add the jar goal in the profile)
 - [ ] move maven-source-plugin's `jar` execution into the `release` profile too (currently
       global) - keeps normal `mvn package` Java-only and the whole release bundle in one place
+- [ ] keep the jitpack `<repositories>` block (needed for the chesslib test dependency, which is
+      not on Maven Central) but ensure the Central-published pom carries no `<repositories>` -
+      flatten-maven-plugin or a build-only profile
 
 ### README / docs (this branch)
 - [x] Replace project-name mentions clean-chess -> ashlar-chess
@@ -108,8 +111,8 @@ where it is cheap (no consumers exist yet).
 - [ ] Safety net for any stray test-fixture message keys or similar
 
 ### First publish + workflow (publish time)
-- [ ] README: drop the JitPack `<repositories>` block, leave only the plain Maven snippet
-- [ ] Drop the JitPack URL and related framing from README and other docs
+- [x] README: drop the JitPack `<repositories>` block, leave only the plain Maven snippet
+- [x] Drop the JitPack URL and related framing from README and other docs
 - [ ] Pre-deploy checks before touching Central:
         .\tools\java-license-headers.ps1 -Check
         mvn -Prelease help:active-profiles   # confirm the `release` profile is active
@@ -120,7 +123,8 @@ where it is cheap (no consumers exist yet).
       Portal release) in `setup.md` ("Releasing" section) or a dedicated `release.md`
 
 ### Post-publish
-- [ ] Decide whether JitPack stays available in parallel (free, harmless) or is deprecated
+- [x] Decide whether JitPack stays available in parallel (free, harmless) or is deprecated
+      -> deprecated; Maven Central is the single supported repository (old JitPack releases remain but are unsupported)
 - [ ] (Optional) Add a Maven Central status badge to the README
 
 ---

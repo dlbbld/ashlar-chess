@@ -324,6 +324,6 @@ The full suite is a Maven profile:
 mvn test -Pfull -Dtest.excludes=
 ```
 
-`-Pfull` sets the `clean-chess.full` system property, which flips every gate inside `RestrictTestConstants` and switches `PgnTestInclusion` to `ALL` (including the longest-possible-game corpus). `-Dtest.excludes=` clears the default unwinnability-suite exclusion.
+`-Pfull` sets the `ashlar-chess.full` system property, which flips every gate inside `RestrictTestConstants` and switches `PgnTestInclusion` to `ALL` (including the longest-possible-game corpus). `-Dtest.excludes=` clears the default unwinnability-suite exclusion.
 
 **Release-time requirement:** before tagging a release, run `mvn test -Pfull -Dtest.excludes=` and confirm green. The default suite is *not* sufficient to certify a release.

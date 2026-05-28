@@ -8,11 +8,11 @@ import io.github.dlbbld.ashlarchess.test.pgntest.enums.PgnTestInclusion;
 public abstract class RestrictTestConstants {
 
   /**
-   * Master switch driven by the {@code clean-chess.full} system property. Set to {@code true} via Maven profile
+   * Master switch driven by the {@code ashlar-chess.full} system property. Set to {@code true} via Maven profile
    * {@code -Pfull} to run the full heavy test suite. Default: {@code false} - restricted, fast suite for normal
    * iteration. Required to be {@code true} before tagging a release (see {@code specification.md} section 6).
    */
-  private static final boolean IS_FULL = Boolean.getBoolean("clean-chess.full");
+  private static final boolean IS_FULL = Boolean.getBoolean("ashlar-chess.full");
 
   /**
    * Master gate for all {@code IS_RESTRICT_PGN_*_TEST} flags below. Driven by {@link #IS_FULL}: in full mode the master

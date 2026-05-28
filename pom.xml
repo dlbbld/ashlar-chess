@@ -187,7 +187,7 @@
 		<!--
 			Heavy regression suite. Default test runs use a restricted subset (see
 			RestrictTestConstants) so iteration is fast; this profile flips the
-			master `clean-chess.full` system property and switches every restriction
+			master `ashlar-chess.full` system property and switches every restriction
 			off. Required before tagging a release.
 		-->
 		<profile>
@@ -199,7 +199,7 @@
 						<artifactId>maven-surefire-plugin</artifactId>
 						<configuration>
 							<systemPropertyVariables>
-								<clean-chess.full>true</clean-chess.full>
+								<ashlar-chess.full>true</ashlar-chess.full>
 							</systemPropertyVariables>
 						</configuration>
 					</plugin>
