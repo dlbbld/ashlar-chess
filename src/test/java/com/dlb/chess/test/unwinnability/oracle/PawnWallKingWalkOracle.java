@@ -23,19 +23,19 @@ import com.dlb.chess.common.utility.StaticPositionUtility;
  * <p>
  * The production {@link PawnWallGeometricAnalyzer} predicate uses a geometric chain check. This oracle is the second
  * opinion: a king-walk BFS asking whether the side's king can reach the opposing king's square through passable squares
- * — i.e. whether the wall is a genuine separator between the two kings.
+ * - i.e. whether the wall is a genuine separator between the two kings.
  *
  * <p>
  * <b>Passable squares</b>: empty squares; squares occupied by same-side non-pawn pieces (they can move out of the way
  * in a future move, opponent cooperating); squares occupied by undefended opposing pawns (the king captures them and
  * continues from the captured square); squares occupied by opposing non-pawn pieces (king captures). The opposing
- * king's square is treated as the BFS target — if the king's reach extends to it, the wall isn't a separator.
+ * king's square is treated as the BFS target - if the king's reach extends to it, the wall isn't a separator.
  *
  * <p>
  * <b>Impassable squares</b>: squares occupied by same-side pawns (locked in a wall configuration); squares attacked by
  * any opposing pawn still on the board. The "attacked" check covers both empty attacked squares (king can't enter
  * check) and opposing pawns defended by another opposing pawn (the defender's attack also hits the defended pawn's
- * square — capture would be re-captured).
+ * square - capture would be re-captured).
  *
  * <p>
  * <b>Dynamic capture model</b>: the oracle iterates to a fixed point. Each round computes opposing-pawn attacks from
@@ -46,7 +46,7 @@ import com.dlb.chess.common.utility.StaticPositionUtility;
  *
  * <p>
  * See {@code pawn-wall-soundness.md} for the full design and the asymmetric agreement contract
- * ({@code geometric_YES ⟹ BFS_YES}).
+ * ({@code geometric_YES => BFS_YES}).
  */
 final class PawnWallKingWalkOracle {
 
@@ -55,7 +55,7 @@ final class PawnWallKingWalkOracle {
 
   /**
    * Returns {@code true} iff the king of {@code side} cannot reach the opposing king's square through any sequence of
-   * king moves and captures of undefended opposing pawns — i.e. the wall topologically separates the two kings under
+   * king moves and captures of undefended opposing pawns - i.e. the wall topologically separates the two kings under
    * the helpmate-cooperation movement model, considering dynamic capture effects on opposing-pawn attacks.
    */
   static boolean isKingTrappedBehindPermanentBarrier(Board board, Side side) {

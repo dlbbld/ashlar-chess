@@ -91,7 +91,7 @@ public class FenParserAdvanced implements EnumConstants {
    * Half-move clock cannot exceed the maximum number of half-moves that have been played by the start of the given
    * full-move number. With {@code havingMove == WHITE} the maximum is {@code 2 * (fullMoveNumber - 1)}; with
    * {@code havingMove == BLACK} the count includes White's half-move on the current full-move, so the maximum is
-   * {@code 2 * (fullMoveNumber - 1) + 1}. Violations are physical impossibilities — a FEN like {@code ... 15 1} (15
+   * {@code 2 * (fullMoveNumber - 1) + 1}. Violations are physical impossibilities - a FEN like {@code ... 15 1} (15
    * half-moves played, claiming move 1) cannot arise from a real game. The lenient FEN parser auto-corrects this by
    * bumping {@code fullMoveNumber} up to {@code halfMoveClock} rounded up to the next multiple of ten (a generous
    * reserve over the strict minimum; the round-numbered value signals a reconstructed placeholder) and surfaces the
@@ -357,7 +357,7 @@ public class FenParserAdvanced implements EnumConstants {
     // StaticPosition predicate read `A || (B && C)` due to Java operator precedence, which let some wrong-side or
     // wrong-piece-type FENs slip past this check and trip an exception further down (in the rewind step). The
     // bitboard rewind is strict (withRelocatedPiece preconditions piece presence) so the loose predicate now
-    // surfaces as an unchecked IllegalArgumentException — fixed here to throw the right typed validation exception.
+    // surfaces as an unchecked IllegalArgumentException - fixed here to throw the right typed validation exception.
     final Piece pieceOnTwoAdvanceSquare = bitboardPosition.get(pawnTwoAdvanceSquare);
     if (pieceOnTwoAdvanceSquare == Piece.NONE || pieceOnTwoAdvanceSquare.getSide() != oppositeSide
         || pieceOnTwoAdvanceSquare.getPieceType() != PAWN) {

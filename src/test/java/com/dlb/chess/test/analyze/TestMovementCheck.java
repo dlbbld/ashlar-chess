@@ -18,7 +18,7 @@ import com.dlb.chess.enums.MovementCheck;
 /**
  * Per-{@link MovementCheck}-value tests for {@link ChessRuleAnalyzer#analyzeMovement}. Each enum value (including
  * {@code SUCCESS}) has at least one test method exercising it. An {@code @AfterAll} hook verifies the entire enum is
- * covered — adding a new value without a test fails the build.
+ * covered - adding a new value without a test fails the build.
  */
 class TestMovementCheck implements EnumConstants {
 
@@ -155,7 +155,7 @@ class TestMovementCheck implements EnumConstants {
   @SuppressWarnings("static-method")
   @Test
   void testKingMovesToAttackedEmptySquare() {
-    // king moves to f1, attacked by black rook on f8 — empty destination
+    // king moves to f1, attacked by black rook on f8 - empty destination
     check("4kr2/8/8/8/8/8/8/4K3 w - - 0 1", new MoveSpecification(E1, F1),
         MovementCheck.KING_MOVES_TO_ATTACKED_EMPTY_SQUARE);
   }

@@ -16,7 +16,7 @@ import com.dlb.chess.test.pgn.setup.PgnTestCaseCatalog;
 import com.dlb.chess.test.pgntest.enums.PgnTest;
 
 /**
- * Cross-checks that the printed report sections are <em>derivable</em> from the report objects — line counts, asterisk
+ * Cross-checks that the printed report sections are <em>derivable</em> from the report objects - line counts, asterisk
  * counts, and the "None" sentinel correspond to the {@link ThreefoldClaimAheadReport} and
  * {@link ThreefoldExistingReport} contents. The point is to catch silent drift between the analysis layer (builders,
  * records) and the presentation layer (print classes); a regression in either side would break the correspondence the
@@ -24,7 +24,7 @@ import com.dlb.chess.test.pgntest.enums.PgnTest;
  *
  * <p>
  * Sister test to {@code TestReporterGoldenOutput}, which pins exact byte content. This test pins structural
- * correspondence — a formatting wording change that preserves structure will not break this test, but a logic change
+ * correspondence - a formatting wording change that preserves structure will not break this test, but a logic change
  * that drops or adds entries silently will.
  */
 class TestReportPrintoutDerivesFromObjectModel {
@@ -173,7 +173,7 @@ class TestReportPrintoutDerivesFromObjectModel {
   }
 
   /**
-   * Like {@link #extractSection} but for the final section — runs to the end of input rather than to a successor
+   * Like {@link #extractSection} but for the final section - runs to the end of input rather than to a successor
    * header.
    */
   private static List<String> extractSectionToEnd(List<String> lines, String sectionHeaderPrefix) {

@@ -44,7 +44,7 @@ class TestReporterGoldenOutput {
   @SuppressWarnings("static-method")
   @Test
   void claimAheadOnlyInitial() {
-    // 1. Nf3 Nf6 2. Ng1 Ng8 3. Nf3 Nf6 4. Ng1 — Black has not played 4...Ng8 yet, so the
+    // 1. Nf3 Nf6 2. Ng1 Ng8 3. Nf3 Nf6 4. Ng1 - Black has not played 4...Ng8 yet, so the
     // initial-position third occurrence is one ply ahead. Pure claim-ahead.
     final String actual = capturePgnFile("01_threefold_moves_very_low_one_before_first_threefold.pgn");
     compareOrRegenerate(actual, "02_claim_ahead_only_initial.txt");
@@ -53,7 +53,7 @@ class TestReporterGoldenOutput {
   @SuppressWarnings("static-method")
   @Test
   void threefoldReachedInitial() {
-    // 1. Nf3 Nf6 2. Ng1 Ng8 3. Nf3 Nf6 4. Ng1 Ng8 — third occurrence of the initial position
+    // 1. Nf3 Nf6 2. Ng1 Ng8 3. Nf3 Nf6 4. Ng1 Ng8 - third occurrence of the initial position
     // is on the board. The 15.0.0 regression case for initial-position repetition.
     final String actual = capturePgnFile("02_threefold_moves_very_low_end_with_first_threefold.pgn");
     compareOrRegenerate(actual, "03_threefold_reached_initial.txt");
@@ -62,7 +62,7 @@ class TestReporterGoldenOutput {
   @SuppressWarnings("static-method")
   @Test
   void threefoldBeyond() {
-    // Two threefolds reached, then many moves continue beyond — exercises the "and beyond"
+    // Two threefolds reached, then many moves continue beyond - exercises the "and beyond"
     // capture and multi-group sorting.
     final String actual = capturePgnFile("18_threefold_two_threefolds_beyond.pgn");
     compareOrRegenerate(actual, "04_threefold_beyond.txt");
@@ -71,7 +71,7 @@ class TestReporterGoldenOutput {
   @SuppressWarnings("static-method")
   @Test
   void threefoldCastling() {
-    // Threefold involving castling rights — different position-identity code path than the
+    // Threefold involving castling rights - different position-identity code path than the
     // pure knight-shuffle fixtures.
     final String actual = capturePgnFile("11_threefold_castling_one_before_first_threefold.pgn");
     compareOrRegenerate(actual, "05_threefold_castling.txt");
@@ -92,14 +92,14 @@ class TestReporterGoldenOutput {
   @Test
   void fiftyMoveInitialFenAtThresholdNoContinuation() {
     // FEN with halfmove clock already at 100; black queen on b2 caging white's king on a1. The only
-    // legal move is Kxb2 — a capture, which resets the clock. The 50-move rule was met by the FEN
+    // legal move is Kxb2 - a capture, which resets the clock. The 50-move rule was met by the FEN
     // itself; no claim-ahead is possible (the predicate rejects clock-resetting candidates) but
     // the sequence-section must surface the threshold-met state with a bare start marker:
     //
     // Fifty moves and beyond:
     // [Starting position] (100)
     //
-    // Locks the special-case rendering — sequence-with-no-endPly — that's hard to test from any
+    // Locks the special-case rendering - sequence-with-no-endPly - that's hard to test from any
     // other entry point.
     final Board board = new Board("7k/8/8/8/8/8/1q6/K7 w - - 100 80");
     final String actual = captureStdout(() -> Reporter.printReport(board));
@@ -110,7 +110,7 @@ class TestReporterGoldenOutput {
   @Test
   void fiftyMoveMissedClaimAheadWhenPawnPushBreaksSequence() {
     // The missed-opportunity case: FEN clock 98, play one non-zeroing move (clock 99), then a pawn
-    // push resets the clock to 0. The sequence ends at clock 99 without reaching the threshold —
+    // push resets the clock to 0. The sequence ends at clock 99 without reaching the threshold -
     // so the "Valid fifty-move claims ahead" section lists every alternative non-zeroing legal move
     // the player COULD have made at the boundary instead of the pawn push. The "Fifty moves and
     // beyond" section is empty (no sequence reached 100).
@@ -134,7 +134,7 @@ class TestReporterGoldenOutput {
   private static void compareOrRegenerate(String actual, String goldenName) {
     if (REGENERATE) {
       writeGolden(goldenName, actual);
-      fail("Regenerated golden " + goldenName + " — rerun without -Dgolden.regenerate=true to verify.");
+      fail("Regenerated golden " + goldenName + " - rerun without -Dgolden.regenerate=true to verify.");
     }
     final String expected = readGolden(goldenName);
     assertEquals(expected, actual);
@@ -145,7 +145,7 @@ class TestReporterGoldenOutput {
     try (var in = TestReporterGoldenOutput.class.getResourceAsStream(resourcePath)) {
       if (in == null) {
         throw new IllegalStateException("Golden resource not found on classpath: " + resourcePath
-            + " — run with -Dgolden.regenerate=true to create it.");
+            + " - run with -Dgolden.regenerate=true to create it.");
       }
       return normaliseLineEndings(new String(in.readAllBytes(), StandardCharsets.UTF_8));
     } catch (final IOException e) {

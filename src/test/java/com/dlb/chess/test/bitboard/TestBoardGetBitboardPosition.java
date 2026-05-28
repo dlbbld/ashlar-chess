@@ -21,7 +21,7 @@ import com.dlb.chess.common.utility.StaticPositionUtility;
  * {@link Board#getBitboardPosition()} integration tests. Step 3 of the switchover release removed the cached
  * StaticPosition from {@code DynamicPosition} (the bitboard is the single source of truth on the data path now;
  * {@code Board.getStaticPosition()} survives as an on-demand derived view of the cached bitboard), so the Step 1.2
- * parallel-cache invariant cannot be asserted by reading {@code Board.getStaticPosition()} anymore — that would be
+ * parallel-cache invariant cannot be asserted by reading {@code Board.getStaticPosition()} anymore - that would be
  * tautological (mailbox derived from the very bitboard we want to verify). The cache-correctness invariant is still
  * meaningful and is asserted here against a <em>genuinely independent</em> oracle: a StaticPosition maintained in
  * the test by applying {@link StaticPositionUtility#createPositionAfterMove} for every move played on the
@@ -48,7 +48,7 @@ class TestBoardGetBitboardPosition {
   void handPlayedMoveAndUnmoveKeepsBitboardInSync() throws Exception {
     // Hand-played opening (e4, e5, Nf3, Nc6, Bb5) plus full unmove walk back to initial. At each intermediate
     // state the bitboard cache must equal fromStaticPosition(independentlyMaintainedSP). The independent SP is
-    // built by applying StaticPositionUtility.createPositionAfterMove move-by-move — no bitboard involved in
+    // built by applying StaticPositionUtility.createPositionAfterMove move-by-move - no bitboard involved in
     // computing the reference. This is the cache-correctness invariant from Step 1.2, expressed against a truly
     // independent oracle now that the Board-side StaticPosition cache is gone.
     final Board board = new Board();

@@ -12,9 +12,9 @@ import com.google.common.collect.ImmutableList;
  * Outcome of a lenient PGN parse-with-validation. On success, {@link #pgnGame} carries the parsed model and the two
  * forgiven-items channels list every deviation the lenient layer tolerated without rejecting:
  * <ul>
- * <li>{@link #sanForgivenItems} — SAN-level deviations during movetext replay (e.g. {@code e2-e4} normalised to
+ * <li>{@link #sanForgivenItems} - SAN-level deviations during movetext replay (e.g. {@code e2-e4} normalised to
  * {@code e4}, redundant disambiguation, bogus check suffix).</li>
- * <li>{@link #tagForgivenItems} — tag-level deviations in the header (e.g. missing Seven Tag Roster entries, Result tag
+ * <li>{@link #tagForgivenItems} - tag-level deviations in the header (e.g. missing Seven Tag Roster entries, Result tag
  * absent, FEN without SetUp). The parse model preserves all inputs as-given; archival-mode export via
  * {@code WriteMode.ARCHIVAL} is the path that produces a normalised PGN.</li>
  * </ul>

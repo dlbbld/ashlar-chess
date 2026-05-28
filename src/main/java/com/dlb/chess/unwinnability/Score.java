@@ -17,7 +17,7 @@ class Score {
   public static ScoreResult score(Side color, Side havingMove, BitboardPosition bitboardPosition, LegalMove legalMove) {
     var variation = ScoreResult.NORMAL;
 
-    // 1: if it is the intended winnerâ€™s turn in pos then
+    // 1: if it is the intended winner's turn in pos then
     if (havingMove == color) {
       // 2: if m is a capture or m is a pawn push or Going-to-corner(pos, m, Win) then
       // 3: return Reward
@@ -25,7 +25,7 @@ class Score {
           || GoingToCorner.goingToCorner(color, bitboardPosition, legalMove, Goal.WIN)) {
         return ScoreResult.REWARD;
       }
-      // 4: else ( -> It is the intended loserâ€™s turn in pos)
+      // 4: else ( -> It is the intended loser's turn in pos)
     } else {
 
       // 5: if the intended winner has just a knight and the intended loser has just pawns

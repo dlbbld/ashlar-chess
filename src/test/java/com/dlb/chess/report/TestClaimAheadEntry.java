@@ -17,7 +17,7 @@ import com.dlb.chess.common.model.HalfMove;
 class TestClaimAheadEntry {
 
   /**
-   * Boundary case: a claim-ahead that is itself the initial-position third occurrence — no prior played occurrences
+   * Boundary case: a claim-ahead that is itself the initial-position third occurrence - no prior played occurrences
    * yet, includes initial = true, total = 0 + 1 + 1 = 2... no wait, that's the 2nd occurrence count. Total of 3 means
    * one prior occurrence on the board plus the initial position plus the claim-ahead. The invariant doesn't care about
    * chess validity, only about the field consistency.

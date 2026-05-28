@@ -23,7 +23,7 @@ abstract class FiftyMoveSequenceReportBuilder {
    * Special initial-FEN handling: if the starting FEN's halfmove clock is non-zero, a sequence is open from the
    * beginning with the initial-FEN-anchored {@link SequenceStart} shape. If the FEN's clock alone already meets the
    * threshold and the first played move resets it (or no halfmoves are played at all), the sequence is emitted with
-   * {@code endPly == null} — the print layer renders only the start marker.
+   * {@code endPly == null} - the print layer renders only the start marker.
    */
   static FiftyMoveSequenceReport build(Board board) {
     final var threshold = ChessConstants.FIFTY_MOVE_RULE_HALF_MOVE_CLOCK_THRESHOLD;

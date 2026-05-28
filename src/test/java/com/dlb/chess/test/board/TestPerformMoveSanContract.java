@@ -17,7 +17,7 @@ import com.dlb.chess.test.pgn.parser.PgnCacheForStrictPgnParserTestCases;
 import com.dlb.chess.test.pgn.setup.PgnTestCaseCatalog;
 
 /**
- * Verifies the SAN ↔ MoveSpecification consistency that {@link com.dlb.chess.board.Board#performMove(String)
+ * Verifies the SAN <-> MoveSpecification consistency that {@link com.dlb.chess.board.Board#performMove(String)
  * Board.moveStrict(String)} relies on: once {@link SanValidation#validateSan SanValidation.validateSan} has produced a
  * MoveSpecification from a SAN, that MoveSpec is the canonical representation of the move and round-trips both ways.
  * The board therefore performs the move with no further re-validation of the spec.
@@ -45,7 +45,7 @@ import com.dlb.chess.test.pgn.setup.PgnTestCaseCatalog;
  * <h2>Scope and runtime</h2>
  *
  * <p>
- * Iterates the parser-integration smoke list (~45 PGNs spanning every major parser code path — standard moves,
+ * Iterates the parser-integration smoke list (~45 PGNs spanning every major parser code path - standard moves,
  * captures, en passant, promotion, castling, check, checkmate, custom starting positions). The reverse test is the
  * slower of the two but completes in seconds.
  */
@@ -98,17 +98,17 @@ class TestPerformMoveSanContract {
       final MoveSpecification actualStoredMoveSpecification = board.getLastMove().moveSpecification();
       assertEquals(expectedCalculatedMoveSpecification, actualStoredMoveSpecification,
           () -> testCase.pgnName() + ": halfmove " + hmi + " (" + expectedProvidedSan
-              + ") — MoveSpec derived from SAN does not match the LegalMove's MoveSpec after perform");
+              + ") - MoveSpec derived from SAN does not match the LegalMove's MoveSpec after perform");
 
       final String actualCalculatedSan = board.getSan();
       assertEquals(expectedProvidedSan, actualCalculatedSan, () -> testCase.pgnName() + ": halfmove " + hmi + " ("
-          + expectedProvidedSan + ") — SAN reconstructed from LegalMove does not match the original PGN SAN");
+          + expectedProvidedSan + ") - SAN reconstructed from LegalMove does not match the original PGN SAN");
     }
   }
 
   /**
-   * Reverse direction: at each position, for every legal move (not just the played one), perform → capture SAN →
-   * unperform → derive MoveSpec from SAN at the original position → assert it equals the LegalMove's stored MoveSpec.
+   * Reverse direction: at each position, for every legal move (not just the played one), perform -> capture SAN ->
+   * unperform -> derive MoveSpec from SAN at the original position -> assert it equals the LegalMove's stored MoveSpec.
    */
   private static void verifyCalculatedSanToCalculatedMoveSpecification(PgnTestCaseList testCaseList,
       PgnFen testCase) {

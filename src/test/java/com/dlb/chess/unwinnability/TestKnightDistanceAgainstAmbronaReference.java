@@ -10,14 +10,14 @@ import com.dlb.chess.common.constants.EnumConstants;
 /**
  * Cross-validates the BFS-based {@link KnightDistance} against an independent reference port of the closed-form
  * rank/file-distance algorithm from Miguel Ambrona's <em>D3-Chess</em> ({@code src/util.cpp},
- * {@code KnightDistance::knight_distance}). The two implementations use entirely different approaches Ã¢â‚¬â€ graph
- * search vs. table lookup with corner exception Ã¢â‚¬â€ so agreement on every one of the 64Ãƒâ€”64 = 4096 ordered
+ * {@code KnightDistance::knight_distance}). The two implementations use entirely different approaches - graph
+ * search vs. table lookup with corner exception - so agreement on every one of the 64x64 = 4096 ordered
  * square pairs is strong evidence that both are correct.
  *
  * <p>
  * The reference algorithm: for two squares, take the minimum and maximum of the file-distance and rank-distance. Three
  * small lookup tables map the (min, max) pair to the knight distance, partitioned by parity. One exceptional case
- * (corner adjacent-diagonal, e.g. {@code a8 Ã¢â€ â€ b7}) cannot be derived from the tables and returns 4 explicitly.
+ * (corner adjacent-diagonal, e.g. {@code a8 <-> b7}) cannot be derived from the tables and returns 4 explicitly.
  *
  * <p>
  * Source: <a href="https://github.com/miguel-ambrona/D3-Chess">D3-Chess</a> (GPL v3).
@@ -48,14 +48,14 @@ class TestKnightDistanceAgainstAmbronaReference implements EnumConstants {
     final var idxFirst = Math.min(fileDist, rankDist);
     final var idxSecond = Math.max(fileDist, rankDist);
 
-    // Corner exception: a knight needs 4 moves to reach the diagonally adjacent square of a corner (a8 Ã¢â€ â€ b7
+    // Corner exception: a knight needs 4 moves to reach the diagonally adjacent square of a corner (a8 <-> b7
     // etc.).
     // The table lookup would say 2; override.
     if (idxFirst == 1 && idxSecond == 1 && (isCorner(x) || isCorner(y))) {
       return 4;
     }
 
-    // Same parity (both even or both odd) Ã¢â‚¬â€ tables 1 and 2 in util.cpp.
+    // Same parity (both even or both odd) - tables 1 and 2 in util.cpp.
     if (idxFirst % 2 == idxSecond % 2) {
       if (idxFirst == 0 && idxSecond == 0) {
         return 0;
@@ -78,7 +78,7 @@ class TestKnightDistanceAgainstAmbronaReference implements EnumConstants {
       return 4;
     }
 
-    // Different parity Ã¢â‚¬â€ table 3 in util.cpp.
+    // Different parity - table 3 in util.cpp.
     if (idxSecond == 7) {
       return 5;
     }

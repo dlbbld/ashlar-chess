@@ -24,8 +24,8 @@ import com.dlb.chess.test.unwinnability.oracle.model.GameForced;
  * isolation:
  *
  * <ul>
- * <li>{@code ForcedLineOracle} — tested against {@code PgnTest.BASIC_FORCED}.</li>
- * <li>{@code ShallowTerminationOracle} — tested against {@code PgnTest.CHA_SHALLOW_TERMINATION}.</li>
+ * <li>{@code ForcedLineOracle} - tested against {@code PgnTest.BASIC_FORCED}.</li>
+ * <li>{@code ShallowTerminationOracle} - tested against {@code PgnTest.CHA_SHALLOW_TERMINATION}.</li>
  * </ul>
  *
  * <p>
@@ -118,7 +118,7 @@ public class ForcedLineOracle {
    * Decodes the terminal status reached at the end of the forced single-move chain into a verdict for
    * {@code sideToEvaluate}. CHECKMATE depends on which side delivered the mate (= {@code sideMadeLastMove}); single-side
    * insufficient material depends on whether the colour with insufficient material <em>is</em> {@code sideToEvaluate}
-   * (then UNWINNABLE) or the opponent (then UNKNOWN — opponent's insufficient material doesn't decide our winnability
+   * (then UNWINNABLE) or the opponent (then UNKNOWN - opponent's insufficient material doesn't decide our winnability
    * either way from a forced chain alone).
    */
   private static LimitedUnwinnabilityVerdict calculateUnwinnabilityForced(GameForced gameForced, Side sideToEvaluate) {
@@ -137,7 +137,7 @@ public class ForcedLineOracle {
       return singleSideIm == sideToEvaluate ? LimitedUnwinnabilityVerdict.UNWINNABLE
           : LimitedUnwinnabilityVerdict.UNKNOWN;
     }
-    // No outcome reached, no single-side IM along the forced chain — chain ended naturally.
+    // No outcome reached, no single-side IM along the forced chain - chain ended naturally.
     return LimitedUnwinnabilityVerdict.UNKNOWN;
   }
 }

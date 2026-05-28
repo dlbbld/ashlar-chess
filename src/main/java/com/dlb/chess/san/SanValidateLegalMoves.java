@@ -246,7 +246,7 @@ abstract class SanValidateLegalMoves extends AbstractSan implements EnumConstant
   }
 
   /**
-   * Bitboard sibling of the reference {@code ChessRuleAnalyzer.analyzeKing} king-safety branch — called only after SAN
+   * Bitboard sibling of the reference {@code ChessRuleAnalyzer.analyzeKing} king-safety branch - called only after SAN
    * validation has established that the king move (own king to {@code toSquare}) is pseudo-legal but not legal
    * (king-unsafe after the move). Returns the {@link MovementCheck} that classifies why. Precedence matches the
    * reference: NEXT_TO_OPPONENT_KING wins first, then CAPTURES_GUARDED_PIECE (opponent piece on destination), then

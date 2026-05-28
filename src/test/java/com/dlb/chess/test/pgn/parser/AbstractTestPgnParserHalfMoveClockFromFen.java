@@ -34,7 +34,7 @@ import com.google.common.collect.ImmutableList;
  *
  * <p>
  * The second step is the actual parser-mechanics check: the registered FEN encodes the expected final halfmove clock
- * and full-move number, so divergence pinpoints either a bad FEN-tag → board-state initialization or a bad clock
+ * and full-move number, so divergence pinpoints either a bad FEN-tag -> board-state initialization or a bad clock
  * progression through subsequent moves.
  *
  * <p>
@@ -69,7 +69,7 @@ abstract class AbstractTestPgnParserHalfMoveClockFromFen {
 
         try {
           assertEquals(testCase.finalFen(), board.getFen(),
-              () -> bucket + " / " + pgnName + " — final FEN mismatch (halfmove-clock or move-number drift)");
+              () -> bucket + " / " + pgnName + " - final FEN mismatch (halfmove-clock or move-number drift)");
         } catch (final AssertionError e) {
           failures.add(BasicUtility.getMessage(e));
         }
@@ -77,7 +77,7 @@ abstract class AbstractTestPgnParserHalfMoveClockFromFen {
     }
 
     if (totalFixtures == 0) {
-      fail("No fixtures iterated — bucket wiring is broken");
+      fail("No fixtures iterated - bucket wiring is broken");
     }
     if (!failures.isEmpty()) {
       final var report = new StringBuilder().append(failures.size()).append(" of ").append(totalFixtures)

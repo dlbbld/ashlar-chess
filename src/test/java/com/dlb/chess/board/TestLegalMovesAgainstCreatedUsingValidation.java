@@ -84,10 +84,10 @@ class TestLegalMovesAgainstCreatedUsingValidation {
 
     final Set<MoveSpecification> moveSpecificationsFromValidation = calculateMoveSpecificationsFromValidation(board);
 
-    // Comparing the MoveSpecification sets is the meaningful invariant — it verifies that the bottom-up legal-move
+    // Comparing the MoveSpecification sets is the meaningful invariant - it verifies that the bottom-up legal-move
     // generator and the validation pipeline agree on which moves are legal. Comparing the LegalMove sets would only
     // verify that two derivation paths produce the same derived data (moving piece, captured piece, en-passant role)
-    // for the same MoveSpecification — internal consistency, not chess correctness — and would require exposing
+    // for the same MoveSpecification - internal consistency, not chess correctness - and would require exposing
     // Board.calculateLegalMove publicly, which the rule pipeline has no business letting outside callers touch.
     assertEquals(moveSpecificationsFromValidation, moveSpecificationsBottomUp);
   }

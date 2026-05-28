@@ -158,7 +158,7 @@ public final class ChessRuleAnalyzer implements EnumConstants {
     if (capturedPiece.getSide() == havingMove) {
       return MovementCheck.PAWN_DIAGONAL_OWN_PIECE;
     }
-    // opponent piece on diagonal target — pseudo-legal capture
+    // opponent piece on diagonal target - pseudo-legal capture
     return MovementCheck.SUCCESS;
   }
 
@@ -226,7 +226,7 @@ public final class ChessRuleAnalyzer implements EnumConstants {
     if (pieceOnToSquare != Piece.NONE && pieceOnToSquare.getSide() == havingMove.getOppositeSide()) {
       return MovementCheck.KING_CAPTURES_GUARDED_PIECE;
     }
-    // Empty destination, attacked after move — discriminated from KING_CAPTURES_GUARDED_PIECE.
+    // Empty destination, attacked after move - discriminated from KING_CAPTURES_GUARDED_PIECE.
     return MovementCheck.KING_MOVES_TO_ATTACKED_EMPTY_SQUARE;
   }
 

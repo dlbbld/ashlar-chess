@@ -24,7 +24,7 @@ import com.dlb.chess.test.pgntest.enums.PgnTest;
 /**
  * Differential test for {@link PawnAttacks}: per side, the precomputed bitboard table must agree with the existing
  * {@link PawnDiagonalSquares}-backed reference for every legal pawn from-square (ranks 2-7). The bitboard table is
- * geometric across all 64 squares — including ranks 1 and 8, where {@code PawnDiagonalSquares} returns an empty set
+ * geometric across all 64 squares - including ranks 1 and 8, where {@code PawnDiagonalSquares} returns an empty set
  * by its "pawns only legally exist on ranks 2-7" convention. That intentional divergence enables the reverse-attack
  * identity used by {@link com.dlb.chess.bitboard.BitboardPosition#attackersTo} for targets on the back ranks.
  */

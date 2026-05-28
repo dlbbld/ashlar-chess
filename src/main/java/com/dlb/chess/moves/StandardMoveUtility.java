@@ -13,7 +13,7 @@ public abstract class StandardMoveUtility implements EnumConstants {
   /**
    * Produces the {@link UpdateSquare} list for a non-castling, non-EP, non-promotion piece movement: the from-square
    * becomes empty, the to-square gets the moving piece. Takes the moving piece explicitly (caller has access to it
-   * via whatever board representation it carries — the helper is position-representation-neutral).
+   * via whatever board representation it carries - the helper is position-representation-neutral).
    */
   public static List<UpdateSquare> performStandardMovements(Piece movingPiece, MoveSpecification moveSpecification) {
     final List<UpdateSquare> result = new ArrayList<>();

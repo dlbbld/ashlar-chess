@@ -26,7 +26,7 @@ import com.google.common.collect.ImmutableList;
 class TestLenientSanParser implements EnumConstants {
 
   // Italian-game opening that exercises pawn pushes, knight/bishop development, and castling.
-  // Castling is the only move whose canonical SAN, LAN, and UCI representations all differ — the rest
+  // Castling is the only move whose canonical SAN, LAN, and UCI representations all differ - the rest
   // give us pawn vs piece coverage in each notation form.
   private static final ImmutableList<String> ITALIAN_OPENING_SAN = Nulls.listOf("e4", "e5", "Nf3", "Nc6", "Bc4", "Bc5",
       "O-O", "Nf6", "d3", "d6");
@@ -110,7 +110,7 @@ class TestLenientSanParser implements EnumConstants {
 
   @Test
   void testSpuriousCheckSuffix() {
-    // 1.e4+ — pawn push that's not a check.
+    // 1.e4+ - pawn push that's not a check.
     final Board board = new Board();
     final LenientSanParserValidationResult result = board.moveLenient("e4+");
     assertExactlyOneCode(result, LenientSanValidationProblem.SPURIOUS_CHECK_SUFFIX);
@@ -119,7 +119,7 @@ class TestLenientSanParser implements EnumConstants {
 
   @Test
   void testSpuriousCheckmateSuffix() {
-    // 1.e4# — pawn push that's not mate.
+    // 1.e4# - pawn push that's not mate.
     final Board board = new Board();
     final LenientSanParserValidationResult result = board.moveLenient("e4#");
     assertExactlyOneCode(result, LenientSanValidationProblem.SPURIOUS_CHECKMATE_SUFFIX);
@@ -150,7 +150,7 @@ class TestLenientSanParser implements EnumConstants {
 
   @Test
   void testMissingCaptureMarker() {
-    // After 1.e4 e5 2.Nf3 d6 3.Nxe5 — knight capture on e5. Lenient: "Ne5" without x.
+    // After 1.e4 e5 2.Nf3 d6 3.Nxe5 - knight capture on e5. Lenient: "Ne5" without x.
     final Board board = new Board();
     board.moveStrict("e4");
     board.moveStrict("e5");
@@ -163,7 +163,7 @@ class TestLenientSanParser implements EnumConstants {
 
   @Test
   void testSpuriousCaptureMarker() {
-    // 1.e4 e5 2.Bxc4 — bishop to c4 is not a capture (c4 is empty).
+    // 1.e4 e5 2.Bxc4 - bishop to c4 is not a capture (c4 is empty).
     final Board board = new Board();
     board.moveStrict("e4");
     board.moveStrict("e5");
@@ -174,7 +174,7 @@ class TestLenientSanParser implements EnumConstants {
 
   @Test
   void testOverspecifiedFileDisambiguation() {
-    // After 1.e4, black plays "Nbc6" — only Nb8 can reach c6, file disambig is unnecessary.
+    // After 1.e4, black plays "Nbc6" - only Nb8 can reach c6, file disambig is unnecessary.
     final Board board = new Board();
     board.moveStrict("e4");
     final LenientSanParserValidationResult result = board.moveLenient("Nbc6");
@@ -195,7 +195,7 @@ class TestLenientSanParser implements EnumConstants {
   void testNonStandardRankDisambiguation() {
     // Two white rooks (d1 and a4); both can reach a1, but only the d1 rook is on rank 1.
     // Canonical SAN: "Rda1" (file disambig). User input "R1a1" (rank disambig) uniquely identifies the move
-    // but is non-canonical — strict throws NON_STANDARD_SPECIFIED_RNBQ_RANK_INSTEAD_OF_FILE; lenient resolves to
+    // but is non-canonical - strict throws NON_STANDARD_SPECIFIED_RNBQ_RANK_INSTEAD_OF_FILE; lenient resolves to
     // "Rda1" by board lookup.
     final Board board = new Board("7k/8/8/8/R7/8/8/3R3K w - - 0 1");
     final LenientSanParserValidationResult result = board.moveLenient("R1a1");
@@ -214,7 +214,7 @@ class TestLenientSanParser implements EnumConstants {
 
   @Test
   void testLongAlgebraicNotation() {
-    // 1.e2-e4 — pawn move with explicit from-square and hyphen.
+    // 1.e2-e4 - pawn move with explicit from-square and hyphen.
     final Board board = new Board();
     final LenientSanParserValidationResult result = board.moveLenient("e2-e4");
     assertContainsCode(result, LenientSanValidationProblem.LONG_ALGEBRAIC_NOTATION);
@@ -223,7 +223,7 @@ class TestLenientSanParser implements EnumConstants {
 
   @Test
   void testUciNotation() {
-    // 1.e2e4 — pawn UCI form (no hyphen, no piece letter).
+    // 1.e2e4 - pawn UCI form (no hyphen, no piece letter).
     final Board board = new Board();
     final LenientSanParserValidationResult result = board.moveLenient("e2e4");
     assertExactlyOneCode(result, LenientSanValidationProblem.UCI_NOTATION);
@@ -247,7 +247,7 @@ class TestLenientSanParser implements EnumConstants {
 
   @Test
   void testExplicitPawnLetter() {
-    // 1.Pe4 — explicit pawn letter prefix.
+    // 1.Pe4 - explicit pawn letter prefix.
     final Board board = new Board();
     final LenientSanParserValidationResult result = board.moveLenient("Pe4");
     assertExactlyOneCode(result, LenientSanValidationProblem.EXPLICIT_PAWN_LETTER);
@@ -265,7 +265,7 @@ class TestLenientSanParser implements EnumConstants {
 
   @Test
   void testLowercasePieceLetter() {
-    // 1.nf3 — lowercase knight letter.
+    // 1.nf3 - lowercase knight letter.
     final Board board = new Board();
     final LenientSanParserValidationResult result = board.moveLenient("nf3");
     assertExactlyOneCode(result, LenientSanValidationProblem.LOWERCASE_PIECE_LETTER);
@@ -274,7 +274,7 @@ class TestLenientSanParser implements EnumConstants {
 
   @Test
   void testUppercaseFileLetter() {
-    // 1.NF3 — uppercase file letter.
+    // 1.NF3 - uppercase file letter.
     final Board board = new Board();
     final LenientSanParserValidationResult result = board.moveLenient("NF3");
     assertExactlyOneCode(result, LenientSanValidationProblem.UPPERCASE_FILE_LETTER);
@@ -283,7 +283,7 @@ class TestLenientSanParser implements EnumConstants {
 
   @Test
   void testUppercaseCaptureMarker() {
-    // 1.e4 e5 2.Nf3 d6 3.NXe5 — uppercase X.
+    // 1.e4 e5 2.Nf3 d6 3.NXe5 - uppercase X.
     final Board board = new Board();
     board.moveStrict("e4");
     board.moveStrict("e5");
@@ -304,7 +304,7 @@ class TestLenientSanParser implements EnumConstants {
   }
 
   // ---------------------------------------------------------------------------
-  // Regression tests — bugs surfaced post-merge.
+  // Regression tests - bugs surfaced post-merge.
   // ---------------------------------------------------------------------------
 
   @Test
@@ -349,7 +349,7 @@ class TestLenientSanParser implements EnumConstants {
 
   @Test
   void testLowercaseBishopCaptureNonAdjacentFile() {
-    // Regression: "bxf7" after 1.e4 e5 2.Bc4 Nc6 was treated as b-file pawn capture (illegal — non-adjacent)
+    // Regression: "bxf7" after 1.e4 e5 2.Bc4 Nc6 was treated as b-file pawn capture (illegal - non-adjacent)
     // and rejected. The b-pawn cannot reach f7 geometrically, so the user must mean a lowercase bishop
     // capture. Should resolve to canonical "Bxf7+" (the move is also check) with LOWERCASE_PIECE_LETTER and
     // MISSING_CHECK_SUFFIX.
@@ -390,12 +390,12 @@ class TestLenientSanParser implements EnumConstants {
   }
 
   // ---------------------------------------------------------------------------
-  // Combination tests — multiple codes on one move.
+  // Combination tests - multiple codes on one move.
   // ---------------------------------------------------------------------------
 
   @Test
   void testCombinationLowercasePieceAndOverspecifiedFile() {
-    // After 1.e4, black plays "nbc6" — lowercase n + unnecessary file disambig.
+    // After 1.e4, black plays "nbc6" - lowercase n + unnecessary file disambig.
     final Board board = new Board();
     board.moveStrict("e4");
     final LenientSanParserValidationResult result = board.moveLenient("nbc6");
@@ -422,7 +422,7 @@ class TestLenientSanParser implements EnumConstants {
 
   @Test
   void testCombinationUciAndOverspecifiedSquare() {
-    // 1.g1f3 — UCI knight move. After UCI translation gives "Ng1f3"; Phase 2 strips overspec to "Nf3".
+    // 1.g1f3 - UCI knight move. After UCI translation gives "Ng1f3"; Phase 2 strips overspec to "Nf3".
     final Board board = new Board();
     final LenientSanParserValidationResult result = board.moveLenient("g1f3");
     assertContainsCode(result, LenientSanValidationProblem.UCI_NOTATION);

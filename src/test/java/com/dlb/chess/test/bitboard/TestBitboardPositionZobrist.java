@@ -38,14 +38,14 @@ class TestBitboardPositionZobrist {
     assertEquals(a, b);
     assertEquals(a.zobristPieces(), b.zobristPieces());
 
-    // EMPTY_POSITION twice — both 0L (XOR of nothing).
+    // EMPTY_POSITION twice - both 0L (XOR of nothing).
     assertEquals(0L, BitboardPosition.EMPTY_POSITION.zobristPieces());
   }
 
   @SuppressWarnings("static-method")
   @Test
   void corpusNoCollisionsAndConsistent() {
-    // Build a hash → position map walking the corpus. If two positions are equal, their hashes must be equal
+    // Build a hash -> position map walking the corpus. If two positions are equal, their hashes must be equal
     // (consistency). If two hashes are equal, their positions must be equal (no collisions in this corpus).
     final Map<Long, BitboardPosition> seen = new HashMap<>();
     for (final PgnTest pgnTest : PgnTest.values()) {
@@ -88,7 +88,7 @@ class TestBitboardPositionZobrist {
   @Test
   void afterMoveHashMatchesFreshRecomputation() {
     // The hash of afterMove(...) must equal a fresh recomputation off the same position (consistency under the
-    // make-move pipeline — sets up the incremental-Zobrist work in Phase 8.3).
+    // make-move pipeline - sets up the incremental-Zobrist work in Phase 8.3).
     final MoveSpecification e2e4 = new MoveSpecification(Square.E2, Square.E4);
     final BitboardPosition after = BitboardPosition.INITIAL_POSITION.afterMove(e2e4, Side.WHITE);
     assertEquals(after.zobristPieces(),

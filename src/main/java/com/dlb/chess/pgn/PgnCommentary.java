@@ -3,7 +3,7 @@ package com.dlb.chess.pgn;
 import com.dlb.chess.common.exceptions.PgnCommentaryValidationException;
 
 /**
- * Value object for PGN commentary content. Construction validates the contract — see specification.md (Commentary
+ * Value object for PGN commentary content. Construction validates the contract - see specification.md (Commentary
  * contract).
  */
 public record PgnCommentary(String value) {
@@ -18,12 +18,12 @@ public record PgnCommentary(String value) {
     for (var i = 0; i < value.length();) {
       final var cp = value.codePointAt(i);
 
-      // `}` would terminate the {...} grammar on export. `{` is allowed (PGN spec §8.2.5).
+      // `}` would terminate the {...} grammar on export. `{` is allowed (PGN spec section 8.2.5).
       if (cp == '}') {
         throw new PgnCommentaryValidationException(formatBraceProblem(value, i));
       }
 
-      // `\t` and `\n` are the only permitted control characters. `\r` is rejected — T-005 normalises CR to
+      // `\t` and `\n` are the only permitted control characters. `\r` is rejected - T-005 normalises CR to
       // LF at the parser input, so the model invariant is "no CR ever".
       if (cp != '\t' && cp != '\n') {
         final var type = Character.getType(cp);

@@ -18,7 +18,7 @@ import com.dlb.chess.test.pgntest.enums.PgnTest;
 
 /**
  * Differential test for {@link BitboardPosition#isInCheck(Side)}: per fixture and per side, the bitboard check
- * detection must agree with {@code StaticPositionUtility.calculateIsCheck} — which is exactly what the production
+ * detection must agree with {@code StaticPositionUtility.calculateIsCheck} - which is exactly what the production
  * {@code Board.isCheck()} reads. Corpus positions always have both kings, so the reference's "no king" precondition
  * is satisfied throughout the corpus walk.
  */

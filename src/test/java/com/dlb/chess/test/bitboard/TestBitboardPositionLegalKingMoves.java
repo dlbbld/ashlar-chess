@@ -70,7 +70,7 @@ class TestBitboardPositionLegalKingMoves {
   @SuppressWarnings("static-method")
   @Test
   void initialPositionKingsHaveNoTargets() {
-    // In the initial position the king is surrounded by own pieces — no pseudo-legal squares to begin with.
+    // In the initial position the king is surrounded by own pieces - no pseudo-legal squares to begin with.
     assertEquals(0L, BitboardPosition.INITIAL_POSITION.legalKingTargets(Side.WHITE));
     assertEquals(0L, BitboardPosition.INITIAL_POSITION.legalKingTargets(Side.BLACK));
   }

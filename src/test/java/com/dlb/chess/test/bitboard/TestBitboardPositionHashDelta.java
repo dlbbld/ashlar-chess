@@ -21,7 +21,7 @@ import com.dlb.chess.test.pgntest.enums.PgnTest;
 /**
  * Differential test for {@link BitboardPosition#hashDelta}: applying the XOR delta to the before-hash must match
  * the full Zobrist recomputation on the after-position. Validates the incremental Zobrist update across every fixture
- * × every legal move shape (normal, capture, en-passant, all four promotion targets, castling).
+ * x every legal move shape (normal, capture, en-passant, all four promotion targets, castling).
  */
 class TestBitboardPositionHashDelta {
 

@@ -23,7 +23,7 @@ public abstract class FileUtility {
 
   /**
    * Reads the entire contents of a file as a single UTF-8 string, preserving line terminators exactly as they appear on
-   * disk. Complements {@link #readFileLines(Path)} — use this when the parser needs to see the raw source (for example
+   * disk. Complements {@link #readFileLines(Path)} - use this when the parser needs to see the raw source (for example
    * to detect a missing trailing newline).
    */
   public static String readFileAsString(Path filePath) {

@@ -4,7 +4,7 @@ package com.dlb.chess.bitboard;
  * Rook attacks via classical ray loops. {@link #attacks(int, long)} returns the bitboard of squares a rook on
  * {@code squareOrdinal} attacks given an {@code occupied}-mask of all pieces on the board. Each of the four
  * orthogonal rays (N, S, E, W) accumulates target bits until the ray falls off the edge or hits an occupied square
- * (the blocker bit is included before stopping) — matching the existing reference's "isAllowOwnPiece = true" attack
+ * (the blocker bit is included before stopping) - matching the existing reference's "isAllowOwnPiece = true" attack
  * semantics.
  *
  * <p>

@@ -68,7 +68,7 @@ class TestPgnDeficientEndToEnd {
     assertTrue(semantic.contains("[White \"Alice\"]"));
     assertTrue(semantic.contains("[FEN \"r1b2r2/pp1pk1pp/8/7q/3pP1n1/5N1P/PPQ2PP1/3R1RK1 w - - 0 17\"]"));
 
-    // No fabrication on the semantic path — missing tags stay missing.
+    // No fabrication on the semantic path - missing tags stay missing.
     assertFalse(semantic.contains("[" + StandardTag.SITE.getName() + " "));
     assertFalse(semantic.contains("[" + StandardTag.DATE.getName() + " "));
     assertFalse(semantic.contains("[" + StandardTag.ROUND.getName() + " "));

@@ -32,7 +32,7 @@ class TestThreefoldClaimAheadReportBuilder {
   @SuppressWarnings("static-method")
   @Test
   void claimAheadNotPlayedOnInitialPosition() {
-    // 1. Nf3 Nf6 2. Ng1 Ng8 3. Nf3 Nf6 4. Ng1 — 7 plies, black to move next; black's Ng8 would
+    // 1. Nf3 Nf6 2. Ng1 Ng8 3. Nf3 Nf6 4. Ng1 - 7 plies, black to move next; black's Ng8 would
     // bring the initial position to its third occurrence (claim-ahead). The game stops here, so
     // black did NOT play Ng8 -> hasBeenPlayed == false.
     final Board board = new Board();
@@ -77,7 +77,7 @@ class TestThreefoldClaimAheadReportBuilder {
   @SuppressWarnings("static-method")
   @Test
   void claimAheadOnNonInitialPositionFromCorpus() {
-    // 11_threefold_castling_one_before_first_threefold.pgn — threefold position involves castling
+    // 11_threefold_castling_one_before_first_threefold.pgn - threefold position involves castling
     // rights, so it differs from the initial position. The fixture stops one ply before the third
     // occurrence -> at least one claim-ahead exists, includesInitialPosition == false.
     final Board board = loadCorpusBoard("11_threefold_castling_one_before_first_threefold.pgn");
@@ -102,7 +102,7 @@ class TestThreefoldClaimAheadReportBuilder {
   @SuppressWarnings("static-method")
   @Test
   void entriesAreOrderedLexicographicallyByDisplayedSequence() {
-    // 18_threefold_two_threefolds_beyond.pgn — long enough to expose claim-aheads at multiple
+    // 18_threefold_two_threefolds_beyond.pgn - long enough to expose claim-aheads at multiple
     // plies. The builder sorts entries lexicographically on the displayed half-move-count sequence
     // (priorOccurrences ++ claimAheadMove, prefixed by virtual -1 when includesInitialPosition).
     // Pin that lex order here: within a group of entries sharing an earlier-ply prefix, the

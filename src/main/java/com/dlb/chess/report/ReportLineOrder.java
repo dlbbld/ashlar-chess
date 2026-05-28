@@ -15,7 +15,7 @@ import com.dlb.chess.common.model.HalfMove;
  * <li>Lines whose displayed plies share an earlier-position prefix stay grouped together. For a single dynamic
  * position whose repetition crosses the threefold threshold, then continues to fourfold and fivefold, the
  * length-3 / length-4 / length-5 claim-ahead lines all share the same opening plies and therefore sit adjacent
- * — and in increasing-length order, because a shorter sequence is a prefix of the longer one.</li>
+ * - and in increasing-length order, because a shorter sequence is a prefix of the longer one.</li>
  * <li>Lines that include the initial position sort before lines that do not. The "[Initial position]" marker is
  * conceptually before any played ply; the sort key represents it as a virtual half-move count of {@code -1},
  * lower than any real ply.</li>

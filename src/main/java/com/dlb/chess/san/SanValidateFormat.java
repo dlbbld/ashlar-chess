@@ -14,10 +14,10 @@ import com.dlb.chess.messages.Message;
  * checkmate marker already stripped) to the appropriate piece-type parser:
  *
  * <pre>
- *   O            Ã¢â€ â€™ {@link #parseCastling}
- *   aÃ¢â‚¬â€œh          Ã¢â€ â€™ {@link SanValidateFormatPawn#parsePawnMove}
- *   K            Ã¢â€ â€™ {@link SanValidateFormatKing#parseKingMove}
- *   R, N, B, Q   Ã¢â€ â€™ {@link SanValidateFormatRnbq#parseRnbqMove}
+ *   O            -> {@link #parseCastling}
+ *   a-h          -> {@link SanValidateFormatPawn#parsePawnMove}
+ *   K            -> {@link SanValidateFormatKing#parseKingMove}
+ *   R, N, B, Q   -> {@link SanValidateFormatRnbq#parseRnbqMove}
  * </pre>
  */
 public abstract class SanValidateFormat extends AbstractSan {

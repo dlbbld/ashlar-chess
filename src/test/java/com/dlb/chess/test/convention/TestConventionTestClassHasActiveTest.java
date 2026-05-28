@@ -18,7 +18,7 @@ import com.dlb.chess.test.common.utility.FileUtility;
  * at least one {@code @Test} annotation.
  *
  * <p>
- * Rationale: the {@code Test} prefix at every import site is a promise — readers expect a runnable JUnit class. A
+ * Rationale: the {@code Test} prefix at every import site is a promise - readers expect a runnable JUnit class. A
  * {@code Test}-named class with no {@code @Test} is either a misplaced utility (which should be renamed to
  * {@code Generate*}/{@code Run*}/etc.) or a class whose test methods got their annotations stripped during a refactor
  * and silently stopped running. Either is drift worth catching at setup time.
@@ -35,7 +35,7 @@ import com.dlb.chess.test.common.utility.FileUtility;
  * one is enough to make a {@code Test}-prefixed class non-empty.
  *
  * <p>
- * The test class itself satisfies the invariant — its name starts with {@code Test} and it has a plain {@code @Test}
+ * The test class itself satisfies the invariant - its name starts with {@code Test} and it has a plain {@code @Test}
  * above {@link #everyTestPrefixedClassDeclaresAtLeastOneTestMethod()}.
  */
 class TestConventionTestClassHasActiveTest {

@@ -26,7 +26,7 @@ class TestPgnCreate {
   }
 
   // -------------------------------------------------------------------------------------------------
-  // T-002 — exporter always emits "N..." indicator after intervening commentary on White's move
+  // T-002 - exporter always emits "N..." indicator after intervening commentary on White's move
   //
   // Mirrors python-chess's `force_movenumber` flag. The lenient parser accepts the indicator-less form on import,
   // but on export we always emit it so the round-trip output also satisfies strict validation.

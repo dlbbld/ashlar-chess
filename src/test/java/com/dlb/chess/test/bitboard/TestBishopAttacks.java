@@ -24,7 +24,7 @@ import com.dlb.chess.test.pgntest.enums.PgnTest;
 /**
  * Differential test for {@link BishopAttacks}: for every bishop on every fixture in the corpus, the bitboard ray-loop
  * result must agree with {@code BishopAttackedSquares} (reached via {@link SlidingAttacksTestOracle}). Unlike the
- * non-sliding attacks, this is genuinely position-dependent — the corpus walk exercises a wide range of blocker
+ * non-sliding attacks, this is genuinely position-dependent - the corpus walk exercises a wide range of blocker
  * patterns.
  */
 class TestBishopAttacks {
@@ -62,7 +62,7 @@ class TestBishopAttacks {
   @SuppressWarnings("static-method")
   @Test
   void emptyBoardFromCenterMatchesReference() {
-    // Bishop on D4 on an otherwise empty board — verifies the empty-board diagonal pattern via the production
+    // Bishop on D4 on an otherwise empty board - verifies the empty-board diagonal pattern via the production
     // reference rather than a hand-written expected set (no tautological self-test).
     final StaticPosition staticPosition = StaticPosition.EMPTY_POSITION
         .createChangedPosition(Square.D4, com.dlb.chess.board.enums.Piece.WHITE_BISHOP);

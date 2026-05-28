@@ -48,7 +48,7 @@ final class LenientSanRecover {
         final SanValidationProblem strictCode = e.getSanValidationProblem();
         final var lenientCode = mapToLenientCode(strictCode);
         if (lenientCode == null || emitted.contains(lenientCode)) {
-          // Same code would fire twice â€” defensive bail-out; shouldn't happen because each mutation
+          // Same code would fire twice - defensive bail-out; shouldn't happen because each mutation
           // strictly reduces the set of applicable strict codes.
           throw e;
         }
@@ -70,7 +70,7 @@ final class LenientSanRecover {
       case CHECK_SYMBOL_BUT_CHECKMATE -> LenientSanValidationProblem.WRONG_CHECK_SUFFIX_FOR_CHECKMATE;
       case CHECKMATE_SYMBOL_BUT_CHECK_ONLY -> LenientSanValidationProblem.WRONG_CHECKMATE_SUFFIX_FOR_CHECK;
 
-      // Capture-marker mismatches (piece moves only â€” pawn variants are not auto-recoverable)
+      // Capture-marker mismatches (piece moves only - pawn variants are not auto-recoverable)
       case DESTINATION_RNBQK_EMPTY_CAPTURE_SYMBOL -> LenientSanValidationProblem.SPURIOUS_CAPTURE_MARKER;
       case DESTINATION_RNBQK_OPPONENT_NON_KING_NO_CAPTURE_SYMBOL -> LenientSanValidationProblem.MISSING_CAPTURE_MARKER;
 
@@ -180,7 +180,7 @@ final class LenientSanRecover {
 
   /**
    * Rewrites a rank-disambiguated SAN move to its canonical file-disambiguated form. Used when strict rejects with
-   * {@link SanValidationProblem#NON_STANDARD_SPECIFIED_RNBQ_RANK_INSTEAD_OF_FILE} â€” the move is uniquely identified
+   * {@link SanValidationProblem#NON_STANDARD_SPECIFIED_RNBQ_RANK_INSTEAD_OF_FILE} - the move is uniquely identified
    * by the user's rank disambig, but canonical SAN prefers file disambig when both forms work. We look up the from-file
    * of the unique matching legal move and substitute it for the rank character.
    */

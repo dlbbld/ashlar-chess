@@ -10,7 +10,7 @@ import com.dlb.chess.board.enums.Side;
  *
  * <p>
  * Carries only the boundary's chronological position (sequence start, half-move count, full-move number, side having
- * move) — NOT a specific candidate move. Multiple non-zeroing legal moves at the same boundary collapse into a single
+ * move) - NOT a specific candidate move. Multiple non-zeroing legal moves at the same boundary collapse into a single
  * entry: listing all of them would be 30+ rows for one missed-opportunity ply with no informational gain over a single
  * row stating that the opportunity existed. The print layer renders the candidate position as a placeholder token
  * {@code [ahead claim possible]}.

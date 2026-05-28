@@ -16,7 +16,7 @@ import com.dlb.chess.test.pgntest.enums.PgnTest;
 
 /**
  * Differential round-trip test: for every fixture in the corpus, converting the {@link StaticPosition} to
- * {@link BitboardPosition} and back must reproduce the original. This is the spine of the bitboard release —
+ * {@link BitboardPosition} and back must reproduce the original. This is the spine of the bitboard release -
  * every later step depends on the two representations being faithful inverses of each other.
  */
 class TestBitboardPositionRoundTrip {
@@ -56,7 +56,7 @@ class TestBitboardPositionRoundTrip {
   @SuppressWarnings("static-method")
   @Test
   void constructorRejectsOverlappingBitboards() {
-    // A1 claimed by both whitePawns and whiteRooks — the compact constructor must reject.
+    // A1 claimed by both whitePawns and whiteRooks - the compact constructor must reject.
     final long a1Bit = 1L << Square.A1.ordinal();
     assertThrows(IllegalArgumentException.class,
         () -> new BitboardPosition(a1Bit, a1Bit, 0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L));

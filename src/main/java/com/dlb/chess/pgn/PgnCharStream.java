@@ -2,7 +2,7 @@ package com.dlb.chess.pgn;
 
 /**
  * Forward-only character stream with one-based line/column tracking for error messages. Newline normalisation (CRLF/CR
- * → LF) is the parser's responsibility — see {@code NewlineNormalization}.
+ * -> LF) is the parser's responsibility - see {@code NewlineNormalization}.
  */
 final class PgnCharStream {
 
@@ -43,7 +43,7 @@ final class PgnCharStream {
       line++;
       column = 1;
     } else if (c == CARRIAGE_RETURN) {
-      // Defensive — parsers normalise CR/CRLF to LF before construction, so this branch is normally unreached.
+      // Defensive - parsers normalise CR/CRLF to LF before construction, so this branch is normally unreached.
       if (peek() != LINE_FEED) {
         line++;
         column = 1;

@@ -4,7 +4,7 @@ import com.dlb.chess.board.enums.Square;
 
 /**
  * Precomputed king-attack table (non-castling). For any square {@code sq}, {@link #attacks(Square)} returns the
- * bitboard of the 3–8 squares a king on {@code sq} attacks on an otherwise empty board. Castling targets live on
+ * bitboard of the 3-8 squares a king on {@code sq} attacks on an otherwise empty board. Castling targets live on
  * {@link com.dlb.chess.board.Board} together with the castling-rights state and are intentionally not part of this
  * geometric layer. Differential-tested bit-exact against
  * {@code KingNonCastlingEmptyBoardSquares.getKingSquares} (the {@code StaticPosition}-layer table, test-side

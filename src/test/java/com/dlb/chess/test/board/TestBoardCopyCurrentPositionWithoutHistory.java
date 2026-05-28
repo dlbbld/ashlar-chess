@@ -45,7 +45,7 @@ class TestBoardCopyCurrentPositionWithoutHistory {
   }
 
   /**
-   * Same piece arrangement, side-to-move, castling rights, en-passant target square and fullmove number — but
+   * Same piece arrangement, side-to-move, castling rights, en-passant target square and fullmove number - but
    * <em>no</em> move history (no fivefold tracking) and the halfmove clock reset to zero (no seventy-five-move). See
    * the contract documented on {@code Board.copyCurrentPositionWithoutHistory}.
    */

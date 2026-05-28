@@ -6,7 +6,7 @@ Releases from 3.3 onward. Earlier history is in git tags only.
 
 ## [16.1.0] - 2026-05-28
 
-Test-scaffolding cleanup. Removes one-shot and superseded test-data generators and dormant external-library cross-validation harnesses from the test tree. No `src/main` change; no API, behaviour, or output change.
+Test-scaffolding cleanup plus a source-encoding repair. Removes one-shot and superseded test-data generators and dormant external-library cross-validation harnesses from the test tree, and fixes double-encoded mojibake while normalizing smart punctuation to ASCII. `src/main` edits are comments/javadoc only; no API, behaviour, or output change.
 
 ### Internal
 
@@ -15,6 +15,7 @@ Test-scaffolding cleanup. Removes one-shot and superseded test-data generators a
 - `TestUciMoveUtility` no longer depends on the removed `GenerateScalaChessTestCases`; its ScalaChess UCI-encoding helper is inlined. The test still runs unchanged.
 - `PgnTest`: removed two stale ScalaChess-related comments; no enum values changed.
 - Docs: `setup.md` adds an optional python-chess oracle-regeneration section; `tasks.md` marks the 12.2.0 python-chess cross-validation release complete; `workflows.md` reference corrected.
+- Source-encoding cleanup: repaired ~180 double-encoded (UTF-8-read-as-Windows-1252) mojibake sequences in comments/javadoc, and normalized smart punctuation (em/en-dashes, curly quotes, arrows, section sign, ellipsis) to ASCII across the source tree. Comments and cosmetic log/exception/assertion-message strings only. Intentional non-ASCII preserved: `LenientFenParser`'s Unicode-dash recognition table, `TestLenientFenParser`'s non-standard-dash FEN inputs, and the UTF-8 round-trip / commentary test corpora; the one corrupt test-data name restored to proper `í` (`Víkingaklubburinn`).
 
 ## [16.0.0] - 2026-05-27
 

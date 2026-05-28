@@ -2,14 +2,14 @@ package com.dlb.chess.pgn;
 
 import com.dlb.chess.common.Nulls;
 
-/** Normalises CRLF and lone CR to LF — see specification.md (Newline handling). */
+/** Normalises CRLF and lone CR to LF - see specification.md (Newline handling). */
 final class NewlineNormalization {
 
   private NewlineNormalization() {
   }
 
   /**
-   * Returns {@code source} unchanged if it has no {@code \r}; otherwise returns a copy with every CR/CRLF → LF.
+   * Returns {@code source} unchanged if it has no {@code \r}; otherwise returns a copy with every CR/CRLF -> LF.
    */
   public static String toLf(String source) {
     if (source.indexOf('\r') < 0) {

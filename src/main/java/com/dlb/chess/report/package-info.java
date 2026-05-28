@@ -5,7 +5,7 @@
  *
  * <p>
  * Distinguishes the on-board predicates ("threefold has occurred") from the with-move predicates ("some legal move
- * would create a threefold position the side could claim before playing it") — the latter is the missed-claim feature.
+ * would create a threefold position the side could claim before playing it") - the latter is the missed-claim feature.
  *
  * <p>
  * Internally, analysis records carry the facts and print classes format them. The records are package-private; only

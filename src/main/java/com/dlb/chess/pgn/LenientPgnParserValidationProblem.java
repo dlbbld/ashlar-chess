@@ -4,7 +4,7 @@ public enum LenientPgnParserValidationProblem {
   UNKNOWN_ERROR,
   OK,
   /**
-   * The PGN input is empty — zero bytes, only the UTF-8 BOM, or whitespace-only (spaces, tabs, newlines in any
+   * The PGN input is empty - zero bytes, only the UTF-8 BOM, or whitespace-only (spaces, tabs, newlines in any
    * combination). Even the lenient parser refuses to fabricate a game out of no signal. Symmetric with
    * {@link StrictPgnParserValidationProblem#FILE_EMPTY}. Callers who genuinely want the initial position have
    * {@code new Board()}.

@@ -22,7 +22,7 @@ import com.dlb.chess.test.common.utility.FileUtility;
  * <li><b>Black-box / integration tests</b> under {@code com.dlb.chess.test.*}: exercise production code through its
  * public API. The majority of the suite lives here.</li>
  * <li><b>Same-package white-box tests</b> under {@code com.dlb.chess.<production-package>}: exercise package-private
- * production code that does not belong on the public API surface. Use sparingly — only when an internal class genuinely
+ * production code that does not belong on the public API surface. Use sparingly - only when an internal class genuinely
  * needs test coverage that can't be achieved through the public surface.</li>
  * </ul>
  *

@@ -160,7 +160,7 @@ final class PgnTokenizer {
         stream.read();
         return new PgnToken(PgnTokenType.BRACE_COMMENT, Nulls.toString(text), line, column);
       }
-      // PGN spec §8.2.5: an inner `{` is content, not a nested-comment opener. Only `}` closes a comment.
+      // PGN spec section 8.2.5: an inner `{` is content, not a nested-comment opener. Only `}` closes a comment.
       text.append((char) stream.read());
     }
   }
@@ -235,7 +235,7 @@ final class PgnTokenizer {
       text.append((char) stream.read());
     }
     if (text.length() == 0) {
-      // Unrecognised single character — consume it so we always make progress. The parser surfaces the rejection.
+      // Unrecognised single character - consume it so we always make progress. The parser surfaces the rejection.
       text.append((char) stream.read());
     }
     return new PgnToken(PgnTokenType.SYMBOL, Nulls.toString(text), line, column);

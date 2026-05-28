@@ -20,7 +20,7 @@ import com.dlb.chess.pgn.TagUtility;
 import com.dlb.chess.pgn.WriteMode;
 
 /**
- * The {@link PgnCreate#createPgnGame(Board)} path produces a minimal honest model — no STR fabrication. Archival export
+ * The {@link PgnCreate#createPgnGame(Board)} path produces a minimal honest model - no STR fabrication. Archival export
  * ({@link WriteMode#ARCHIVAL}) is the opt-in path that fills the Seven Tag Roster, synthesises a Result tag from the
  * termination marker, and emits PGN spec section 8.1.1-conformant output. This test exercises that archival path on
  * Board-derived inputs.
@@ -121,14 +121,14 @@ class TestPgnExportBoardArchival {
   @SuppressWarnings("static-method")
   @Test
   void semanticOutputForInitialBoardIsTagless() {
-    // Counterpart to the archival path: semantic mode of an initial-position Board emits a tag-less PGN — just
+    // Counterpart to the archival path: semantic mode of an initial-position Board emits a tag-less PGN - just
     // the movetext and termination marker. Honest preservation of "no caller-provided tags."
     final Board board = new Board();
     final PgnGame pgnGame = PgnCreate.createPgnGame(board);
 
     final String semanticOutput = PgnCreate.createPgnString(pgnGame, WriteMode.SEMANTIC);
 
-    // Tag section is empty — no '[' appears in the output, no STR placeholders.
+    // Tag section is empty - no '[' appears in the output, no STR placeholders.
     assertFalse(semanticOutput.contains("[" + StandardTag.EVENT.getName() + " "));
     assertFalse(semanticOutput.contains("[" + StandardTag.RESULT.getName() + " "));
     // Termination marker is still emitted (carried by the parse model's terminationMarker field).
@@ -144,7 +144,7 @@ class TestPgnExportBoardArchival {
     // The PgnGame invariant: when a Result tag is present in tagList AND terminationMarker is non-null, the
     // two must agree. The Board-to-PgnGame path derives terminationMarker from the board's game status; if the
     // caller supplies a Result tag with a different value, the compact constructor of PgnGame catches the
-    // inconsistency and throws — rather than silently producing a model that archival export would then have
+    // inconsistency and throws - rather than silently producing a model that archival export would then have
     // to choose between when emitting the Result tag vs the termination marker.
     final Board boardWonByWhite = new Board();
     boardWonByWhite.moveStrict("e4");

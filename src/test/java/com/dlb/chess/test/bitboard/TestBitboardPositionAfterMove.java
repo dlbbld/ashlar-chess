@@ -20,7 +20,7 @@ import com.dlb.chess.test.pgn.setup.PgnTestCaseCatalog;
 import com.dlb.chess.test.pgntest.enums.PgnTest;
 
 /**
- * The second spine assertion: for every fixture × every legal move, the bitboard's
+ * The second spine assertion: for every fixture x every legal move, the bitboard's
  * {@link BitboardPosition#afterMove(MoveSpecification, Side)} must produce the same piece placement as the
  * reference {@code StaticPositionUtility.createPositionAfterMove}. Covers all move shapes (normal, capture,
  * en-passant, all four promotion targets, both castling sides) on every position the corpus walks through.

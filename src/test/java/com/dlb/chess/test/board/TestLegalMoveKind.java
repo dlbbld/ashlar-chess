@@ -34,7 +34,7 @@ class TestLegalMoveKind {
   @Test
   void testPawnTwoSquareAdvanceForPawnInitialDoublePush() {
     final Board board = new Board();
-    // 1.e4 from the initial position — white pawn e2 → e4 is a two-square advance.
+    // 1.e4 from the initial position - white pawn e2 -> e4 is a two-square advance.
     final LegalMove e2ToE4 = findLegalMoveByFromTo(board, Square.E2, Square.E4);
     assertEquals(LegalMoveKind.PAWN_TWO_SQUARE_ADVANCE, e2ToE4.kind());
   }
@@ -43,7 +43,7 @@ class TestLegalMoveKind {
   @Test
   void testNormalForPawnSingleAdvance() {
     final Board board = new Board();
-    // 1.e3 is a one-square advance, not two-square — kind NORMAL.
+    // 1.e3 is a one-square advance, not two-square - kind NORMAL.
     final LegalMove e2ToE3 = findLegalMoveByFromTo(board, Square.E2, Square.E3);
     assertEquals(LegalMoveKind.NORMAL, e2ToE3.kind());
   }
@@ -51,7 +51,7 @@ class TestLegalMoveKind {
   @SuppressWarnings("static-method")
   @Test
   void testEnPassantCaptureAfterTwoSquareAdvance() {
-    // Classic en-passant setup: 1.e4 Nf6 2.e5 d5 — now white's e5 pawn can capture d-pawn en passant.
+    // Classic en-passant setup: 1.e4 Nf6 2.e5 d5 - now white's e5 pawn can capture d-pawn en passant.
     final Board board = new Board();
     board.movesStrict("e4", "Nf6", "e5", "d5");
     final LegalMove exd6 = findLegalMoveByFromTo(board, Square.E5, Square.D6);
@@ -72,7 +72,7 @@ class TestLegalMoveKind {
   @SuppressWarnings("static-method")
   @Test
   void testCastlingForKingSideCastle() {
-    // Quick king-side castling setup for white: 1.e4 e5 2.Nf3 Nc6 3.Bc4 Bc5 — now white can castle short.
+    // Quick king-side castling setup for white: 1.e4 e5 2.Nf3 Nc6 3.Bc4 Bc5 - now white can castle short.
     final Board board = new Board();
     board.movesStrict("e4", "e5", "Nf3", "Nc6", "Bc4", "Bc5");
     final LegalMove castling = findLegalMoveByCastlingMove(board, CastlingMove.KING_SIDE);
@@ -82,7 +82,7 @@ class TestLegalMoveKind {
   @SuppressWarnings("static-method")
   @Test
   void testPromotionForPawnReachingPromotionRank() {
-    // Custom position: white pawn on a7 with empty a8 — any of the four promotion moves carries kind PROMOTION.
+    // Custom position: white pawn on a7 with empty a8 - any of the four promotion moves carries kind PROMOTION.
     final Board board = new Board("4k3/P7/8/8/8/8/8/4K3 w - - 0 1");
     final LegalMove promotion = findFirstLegalMoveFromSquare(board, Square.A7);
     assertEquals(LegalMoveKind.PROMOTION, promotion.kind());

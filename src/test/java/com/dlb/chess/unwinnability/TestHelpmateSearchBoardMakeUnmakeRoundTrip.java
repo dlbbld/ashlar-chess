@@ -26,7 +26,7 @@ import com.google.common.collect.ImmutableList;
  * <p>
  * "Observable fields" per the Phase B gate spec: 12 piece bitboards (via {@link BitboardPosition#equals}), side to
  * move, raw EP target, normalized EP target (via {@link DynamicPosition#enPassantCaptureTargetSquare}), castling rights
- * both sides, the {@code legalMoves} list (ordered equality — this is self-comparison of the same ply before make and
+ * both sides, the {@code legalMoves} list (ordered equality - this is self-comparison of the same ply before make and
  * after unmake, so ordered list equality is the right contract), and the cached derived flags ({@code isCheck} /
  * {@code isCheckmate} / {@code isStalemate}).
  */

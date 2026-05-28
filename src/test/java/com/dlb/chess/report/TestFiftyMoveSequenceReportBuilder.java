@@ -43,7 +43,7 @@ class TestFiftyMoveSequenceReportBuilder {
   @Test
   void purePlayedSequenceReachingThreshold() {
     // 100 plies of knight shuffle from the initial position. FEN clock is 0, so the sequence's
-    // start is the after-reset shape, anchored at firstNonZeroingMove. The first move is Nf3 — that's the sequence
+    // start is the after-reset shape, anchored at firstNonZeroingMove. The first move is Nf3 - that's the sequence
     // anchor.
     final Board board = new Board();
     for (var i = 0; i < 25; i++) {
@@ -61,7 +61,7 @@ class TestFiftyMoveSequenceReportBuilder {
         "first non-zeroing move is Nf3 (white's first ply)");
     assertEquals(1, sequence.start().firstNonZeroingMoveOrThrow().halfMoveClock(),
         "by construction the start move's halfmove clock is 1");
-    assertNotNull(sequence.endPly(), "sequence has played continuation — endPly must be present");
+    assertNotNull(sequence.endPly(), "sequence has played continuation - endPly must be present");
     assertEquals(100, sequence.finalClock(), "final clock value at end of sequence equals played-history clock");
   }
 
@@ -70,7 +70,7 @@ class TestFiftyMoveSequenceReportBuilder {
   @SuppressWarnings("static-method")
   @Test
   void initialFenContinuedSequenceReachingThreshold() {
-    // Initial FEN clock 50 — half a 50-move run already inherited. Play 50 non-zeroing halfmoves
+    // Initial FEN clock 50 - half a 50-move run already inherited. Play 50 non-zeroing halfmoves
     // to bring it to 100. The sequence's start is InitialFenStart(50); the endPly is the played
     // halfmove that completed the threshold (and possibly further).
     final Board board = new Board("4k3/8/8/8/8/8/8/R3K3 w - - 50 30");
@@ -83,14 +83,14 @@ class TestFiftyMoveSequenceReportBuilder {
     assertEquals(100, board.getHalfMoveClock(), "precondition: clock now at threshold via played continuation");
 
     final FiftyMoveSequenceReport report = FiftyMoveSequenceReportBuilder.build(board);
-    assertEquals(1, report.sequences().size(), "one sequence — initial FEN continued into play");
+    assertEquals(1, report.sequences().size(), "one sequence - initial FEN continued into play");
 
     final FiftyMoveSequence sequence = Nulls.get(report.sequences(), 0);
     assertTrue(sequence.start().isInitialFen(),
         "initial-FEN-continued: sequence inherits the FEN's clock");
     assertEquals(50, sequence.start().initialClockValue(),
         "the initial-FEN start carries the FEN's clock value verbatim");
-    assertNotNull(sequence.endPly(), "sequence has played continuation — endPly must be present");
+    assertNotNull(sequence.endPly(), "sequence has played continuation - endPly must be present");
     assertEquals(100, sequence.finalClock());
   }
 
@@ -101,7 +101,7 @@ class TestFiftyMoveSequenceReportBuilder {
   void initialFenAlreadyAtThresholdWithNoContinuation() {
     // The user-supplied special case. Black queen on b2 caging white's king on a1; white's only
     // legal move is Kxb2, a capture that resets the clock. No non-zeroing continuation possible.
-    // The sequence must still appear in the report with endPly == null — the print layer renders
+    // The sequence must still appear in the report with endPly == null - the print layer renders
     // only the start marker, e.g. "[Starting position] (100)".
     final Board board = new Board("7k/8/8/8/8/8/1q6/K7 w - - 100 80");
     assertEquals(100, board.getHalfMoveClock(), "precondition: FEN clock already at threshold");
@@ -135,7 +135,7 @@ class TestFiftyMoveSequenceReportBuilder {
     final FiftyMoveSequence sequence = Nulls.get(report.sequences(), 0);
     assertTrue(sequence.start().isInitialFen());
     assertEquals(100, sequence.start().initialClockValue());
-    assertNotNull(sequence.endPly(), "played plies extend the sequence — endPly must be present");
+    assertNotNull(sequence.endPly(), "played plies extend the sequence - endPly must be present");
     assertEquals(104, sequence.finalClock(), "four extra non-zeroing plies extend the clock past 100");
   }
 

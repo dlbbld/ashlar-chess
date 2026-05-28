@@ -164,7 +164,7 @@ class TestValidateNewMoveCastlingLost implements EnumConstants {
   @SuppressWarnings("static-method")
   @Test
   void testFenImportAllRights() {
-    // FEN with all castling rights — no losses
+    // FEN with all castling rights - no losses
     final Board board = new Board("r3k2r/pppppppp/8/8/8/8/PPPPPPPP/R3K2R w KQkq - 0 1");
 
     assertEquals(CastlingRight.KING_AND_QUEEN_SIDE, board.getCastlingRightWhite());

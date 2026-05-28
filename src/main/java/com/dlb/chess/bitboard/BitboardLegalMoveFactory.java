@@ -25,11 +25,11 @@ import com.google.common.collect.ImmutableList;
  * the {@link LegalMoveKind} from the move shape:
  *
  * <ul>
- * <li>{@link LegalMoveKind#CASTLING} — when {@code moveSpec.castlingMove()} is non-NONE.</li>
- * <li>{@link LegalMoveKind#PROMOTION} — when {@code moveSpec.promotionPieceType()} is non-NONE.</li>
- * <li>{@link LegalMoveKind#PAWN_TWO_SQUARE_ADVANCE} — pawn moving two ranks.</li>
- * <li>{@link LegalMoveKind#EN_PASSANT_CAPTURE} — pawn moving diagonally onto an empty square.</li>
- * <li>{@link LegalMoveKind#NORMAL} — everything else.</li>
+ * <li>{@link LegalMoveKind#CASTLING} - when {@code moveSpec.castlingMove()} is non-NONE.</li>
+ * <li>{@link LegalMoveKind#PROMOTION} - when {@code moveSpec.promotionPieceType()} is non-NONE.</li>
+ * <li>{@link LegalMoveKind#PAWN_TWO_SQUARE_ADVANCE} - pawn moving two ranks.</li>
+ * <li>{@link LegalMoveKind#EN_PASSANT_CAPTURE} - pawn moving diagonally onto an empty square.</li>
+ * <li>{@link LegalMoveKind#NORMAL} - everything else.</li>
  * </ul>
  *
  * <p>
@@ -103,7 +103,7 @@ public final class BitboardLegalMoveFactory {
    * Sink-based variant of {@link #calculateLegalMoves}: emits the same {@link LegalMove}s to {@code sink} but in the
    * underlying move generator's natural traversal order (non-castling first, then castling king-side / queen-side),
    * rather than {@link LegalMove#compareTo} order. No {@link Set} / {@link TreeSet} / {@link ImmutableList} is
-   * allocated by this method — the search hot path passes a per-depth reusable buffer's {@code add} method as the
+   * allocated by this method - the search hot path passes a per-depth reusable buffer's {@code add} method as the
    * sink. The order-sorting set-based {@link #calculateLegalMoves} wraps this with a {@link TreeSet}-collecting sink
    * so Board's public-API contract is preserved unchanged.
    */

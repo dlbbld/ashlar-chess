@@ -22,7 +22,7 @@ import com.dlb.chess.test.pgntest.enums.PgnTest;
 /**
  * Differential test for {@link BitboardPosition#attackedSquares(Side)}: for every fixture and every side, the
  * bitboard's union of all piece attacks must agree, square-for-square, with
- * {@link AbstractAttackedSquares#calculateAttackedSquares}. This is the first composed bitboard primitive — exercises
+ * {@link AbstractAttackedSquares#calculateAttackedSquares}. This is the first composed bitboard primitive - exercises
  * the whole Phase 2 + Phase 3 stack together.
  */
 class TestBitboardPositionAttackedSquares {

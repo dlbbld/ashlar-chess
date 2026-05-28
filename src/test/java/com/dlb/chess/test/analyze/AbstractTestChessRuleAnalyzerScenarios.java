@@ -19,11 +19,11 @@ import com.dlb.chess.exceptions.InvalidMoveException;
  * dispatches:
  * <ul>
  * <li>movement-category and king-specific MoveChecks ({@code MOVEMENT_*}, {@code KING_CAPTURES_GUARDED_PIECE},
- * {@code KING_MOVES_NEXT_TO_OPPONENT_KING}) — call {@link ChessRuleAnalyzer#analyzeMovement} directly and assert the
+ * {@code KING_MOVES_NEXT_TO_OPPONENT_KING}) - call {@link ChessRuleAnalyzer#analyzeMovement} directly and assert the
  * translated MovementCheck;</li>
- * <li>king-safety MoveChecks ({@code KING_KING_*}, {@code ALL_BUT_KING_KING_*}) — call
+ * <li>king-safety MoveChecks ({@code KING_KING_*}, {@code ALL_BUT_KING_KING_*}) - call
  * {@link ChessRuleAnalyzer#analyzeKingSafety} directly and assert the translated KingSafetyCheck;</li>
- * <li>spec-coherence and castling MoveChecks ({@code MOVE_SPEC_*}, {@code KING_CASTLING_*}) — fall back to
+ * <li>spec-coherence and castling MoveChecks ({@code MOVE_SPEC_*}, {@code KING_CASTLING_*}) - fall back to
  * {@code Board.move} and assert the InvalidMoveException's MoveCheck. These are not in analyzer territory.</li>
  * </ul>
  *
@@ -52,7 +52,7 @@ public abstract class AbstractTestChessRuleAnalyzerScenarios implements EnumCons
       assertEquals(expectedKs, actualKs);
       return;
     }
-    // fallback: spec-coherence or castling — exercise via the surface
+    // fallback: spec-coherence or castling - exercise via the surface
     var isException = false;
     try {
       board.move(move);

@@ -14,8 +14,8 @@ import com.dlb.chess.test.ConfigurationTestConstants;
 
 /**
  * Strict-parser counterpart of {@link TestLenientPgnParserBeyondTermination}. Same behavioral split: checkmate /
- * stalemate fixtures (01–04) are rejected through ordinary legality (legal-move set is empty, attempted move cannot
- * match), insufficient-material fixtures (05–06) are accepted (queryable only, legal moves exist).
+ * stalemate fixtures (01-04) are rejected through ordinary legality (legal-move set is empty, attempted move cannot
+ * match), insufficient-material fixtures (05-06) are accepted (queryable only, legal moves exist).
  */
 class TestStrictPgnParserBeyondTermination {
 

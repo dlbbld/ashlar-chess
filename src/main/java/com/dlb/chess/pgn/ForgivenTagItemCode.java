@@ -2,7 +2,7 @@ package com.dlb.chess.pgn;
 
 /**
  * Tag-level deviations the lenient PGN parser accepts. Surfaced on the validation result so consumers can see what the
- * parser tolerated without rejecting. None of these deviations alter the parsed model — the parser preserves input as
+ * parser tolerated without rejecting. None of these deviations alter the parsed model - the parser preserves input as
  * given; archival-mode export {@code WriteMode.ARCHIVAL} is the path that produces a normalised PGN.
  */
 public enum ForgivenTagItemCode {

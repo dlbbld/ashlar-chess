@@ -25,7 +25,7 @@ import com.google.common.collect.ImmutableList;
  * Two measurements per corpus, both per-root-move:
  * <ol>
  * <li><strong>cycle</strong>: {@code move(spec)} followed immediately by {@code unmove()}. This is the inner loop of
- * the helpmate search — every recursive call does exactly this for every legal move. Reports <em>microseconds per
+ * the helpmate search - every recursive call does exactly this for every legal move. Reports <em>microseconds per
  * make/unmake pair</em>, which includes the post-make {@code refreshDerivedState} (sink generator filling the per-depth
  * buffer + {@code isInCheck} snapshot).</li>
  * <li><strong>cycle + key</strong>: same as above plus a {@link HelpmateSearchBoard#currentTranspositionKey()} call in

@@ -23,7 +23,7 @@ class TestStrictPgnParserMoveSuffixAnnotation {
       .pathResolve(PgnTestConstants.STRICT_PGN_PARSER_TEST_ROOT_FOLDER_PATH, "moveSuffixAnnotation");
 
   // -------------------------------------------------------------------------------------------------
-  // Move-suffix annotation — exception and success
+  // Move-suffix annotation - exception and success
   // -------------------------------------------------------------------------------------------------
 
   private static final Path PGN_TEST_MOVE_SUFFIX_ANNOTATION_EXCEPTION_FOLDER_PATH = Nulls
@@ -32,12 +32,12 @@ class TestStrictPgnParserMoveSuffixAnnotation {
   @SuppressWarnings("static-method")
   @Test
   void testMoveSuffixAnnotationException() {
-    // 01: `e4!!!` — three !/? characters lex as one suffix token; the resulting "!!!" fails validation.
+    // 01: `e4!!!` - three !/? characters lex as one suffix token; the resulting "!!!" fails validation.
     checkMoveSuffixAnnotationException("01_example.pgn",
         StrictPgnParserValidationProblem.MOVETEXT_MOVE_SUFFIX_ANNOTATION_INVALID);
-    // 02: `e5!x` — `!` then letter with no space. Tokenises as SUFFIX + SYMBOL, surfaces as UNEXPECTED_FORMAT.
+    // 02: `e5!x` - `!` then letter with no space. Tokenises as SUFFIX + SYMBOL, surfaces as UNEXPECTED_FORMAT.
     checkMoveSuffixAnnotationException("02_example.pgn", StrictPgnParserValidationProblem.MOVETEXT_UNEXPECTED_FORMAT);
-    // 03: `Qxf7#!?!` — trailing `!?!` lex as one suffix token; "!?!" fails validation.
+    // 03: `Qxf7#!?!` - trailing `!?!` lex as one suffix token; "!?!" fails validation.
     checkMoveSuffixAnnotationException("03_example.pgn",
         StrictPgnParserValidationProblem.MOVETEXT_MOVE_SUFFIX_ANNOTATION_INVALID);
   }
@@ -74,7 +74,7 @@ class TestStrictPgnParserMoveSuffixAnnotation {
   }
 
   // -------------------------------------------------------------------------------------------------
-  // Combined (SAN + suffix + commentary) — exception (non-commentary subset) and success
+  // Combined (SAN + suffix + commentary) - exception (non-commentary subset) and success
   // -------------------------------------------------------------------------------------------------
 
   private static final Path PGN_TEST_COMBINED_EXCEPTION_FOLDER_PATH = Nulls.pathResolve(PGN_CUSTOM_TEST_FOLDER_PATH,

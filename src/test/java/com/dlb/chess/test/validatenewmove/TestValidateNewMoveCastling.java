@@ -9,7 +9,7 @@ import com.dlb.chess.enums.MoveCheck;
 class TestValidateNewMoveCastling extends AbstractTestValidateNewMove {
 
   // NOTE: the former testKingOrRookNotOnRequiredSquare was deleted. The "king or rook not on
-  // required square" signal is no longer user-facing — it has been consolidated into
+  // required square" signal is no longer user-facing - it has been consolidated into
   // CASTLING_PRIORITY_2_FINAL_NO_CASTLING_RIGHT_ON_THIS_SIDE (if right is lost) or elevated to
   // ProgrammingMistakeException (if the board state is inconsistent).
 

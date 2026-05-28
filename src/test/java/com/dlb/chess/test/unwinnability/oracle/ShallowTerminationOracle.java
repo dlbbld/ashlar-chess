@@ -13,7 +13,7 @@ import com.dlb.chess.test.unwinnability.oracle.enums.LimitedUnwinnabilityVerdict
  * {@code UNWINNABLE})? If neither, the verdict is {@code UNKNOWN}.
  *
  * <p>
- * The search is cooperative — both sides are allowed to play any legal move. A single WIN-leaf anywhere in the 3-ply
+ * The search is cooperative - both sides are allowed to play any legal move. A single WIN-leaf anywhere in the 3-ply
  * tree is enough to conclude {@code WINNABLE} for the side that delivered the mate.
  *
  * <p>
@@ -22,8 +22,8 @@ import com.dlb.chess.test.unwinnability.oracle.enums.LimitedUnwinnabilityVerdict
  * the side that lacks the material).
  *
  * <p>
- * This oracle deliberately does <em>not</em> walk the forced unique-move chain — that's {@link ForcedLineOracle}'s job.
- * Neither does it know about pawn walls — that's the pawn-wall analyzer. {@link LimitedUnwinnabilityOracle} composes
+ * This oracle deliberately does <em>not</em> walk the forced unique-move chain - that's {@link ForcedLineOracle}'s job.
+ * Neither does it know about pawn walls - that's the pawn-wall analyzer. {@link LimitedUnwinnabilityOracle} composes
  * the three.
  */
 public class ShallowTerminationOracle {
@@ -56,7 +56,7 @@ public class ShallowTerminationOracle {
 
   private static NodeOutcome scan(Board board, Side side, int depth) {
 
-    // If this position is already terminal, report its outcome — no need to descend.
+    // If this position is already terminal, report its outcome - no need to descend.
     final NodeOutcome terminalOutcome = classifyTerminal(board, side);
     if (terminalOutcome != NodeOutcome.UNRESOLVED) {
       return terminalOutcome;
@@ -97,7 +97,7 @@ public class ShallowTerminationOracle {
 
   /**
    * Classifies a single position as terminal-and-WIN, terminal-and-LOSS_OR_DRAW, or non-terminal ({@code UNRESOLVED}).
-   * "Non-terminal for side X" includes one-sided insufficient material when X is not the side lacking material — in
+   * "Non-terminal for side X" includes one-sided insufficient material when X is not the side lacking material - in
    * that case X may still be able to mate, so the search must continue.
    */
   private static NodeOutcome classifyTerminal(Board board, Side side) {
@@ -106,7 +106,7 @@ public class ShallowTerminationOracle {
       case NONE -> {
         // Game ongoing for the calculateOutcome view, but one-sided insufficient material is a
         // diagnostic state outside that view: if the side we're evaluating lacks mating material,
-        // that side cannot win — LOSS_OR_DRAW for them, UNRESOLVED for the opponent (the opponent
+        // that side cannot win - LOSS_OR_DRAW for them, UNRESOLVED for the opponent (the opponent
         // may still win).
         if (board.isInsufficientMaterial(side)) {
           yield NodeOutcome.LOSS_OR_DRAW;
@@ -115,7 +115,7 @@ public class ShallowTerminationOracle {
       }
       case CHECKMATE ->
           // The side to move is in checkmate. If that's the side we're evaluating, they lost; otherwise
-          // the side we're evaluating just delivered the mate — i.e. WIN.
+          // the side we're evaluating just delivered the mate - i.e. WIN.
           board.getHavingMove() == side ? NodeOutcome.LOSS_OR_DRAW : NodeOutcome.WIN;
       case STALEMATE, INSUFFICIENT_MATERIAL, SEVENTY_FIVE_MOVES, FIVEFOLD_REPETITION -> NodeOutcome.LOSS_OR_DRAW;
     };

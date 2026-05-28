@@ -20,7 +20,7 @@ class TestHelpmateSearchBoard {
   // hot-path release). Each fixture pins a specific move-generation / state-tracking category so
   // that a regression surfaces by fixture name, not by "whatever the corpus happened to pick."
   // The recursive walker below exercises every legal move at every node to the listed depth,
-  // asserting Board ⇄ HelpmateSearchBoard parity on state, derived flags, and legal-move order.
+  // asserting Board <-> HelpmateSearchBoard parity on state, derived flags, and legal-move order.
 
   // Broad-tree fixtures.
   /** Initial position: opening-tree breadth at depth 2 covers most simple move kinds. */
@@ -28,29 +28,29 @@ class TestHelpmateSearchBoard {
   /** All four castling rights live; both sides can castle in the tree. */
   private static final SearchCase SCENARIO_ALL_FOUR_CASTLING_RIGHTS = new SearchCase("all-four-castling-rights",
       "r3k2r/8/8/8/8/8/8/R3K2R w KQkq - 0 1", 1);
-  /** Legal en passant: the normalized EP target survives — black dxe3 is legal. */
+  /** Legal en passant: the normalized EP target survives - black dxe3 is legal. */
   private static final SearchCase SCENARIO_LEGAL_EN_PASSANT = new SearchCase("legal-en-passant",
       "8/8/8/8/3pP3/8/8/K6k b - e3 0 1", 2);
-  /** Illegal EP normalization: rank-4 rook x-rays the king through the EP pair → EP target normalizes to NONE. */
+  /** Illegal EP normalization: rank-4 rook x-rays the king through the EP pair -> EP target normalizes to NONE. */
   private static final SearchCase SCENARIO_ILLEGAL_EN_PASSANT_NORMALIZATION = new SearchCase(
       "illegal-en-passant-normalization", "8/8/8/8/k2pP2R/8/8/7K b - e3 0 1", 1);
   /** Both sides promote in the tree (Q/R/B/N branches on either side). */
   private static final SearchCase SCENARIO_BOTH_SIDES_PROMOTE = new SearchCase("both-sides-promote",
       "7k/P7/8/8/8/8/7p/K7 w - - 0 1", 1);
 
-  // Terminal-flag fixtures (depth 0 — root assertion only).
+  // Terminal-flag fixtures (depth 0 - root assertion only).
   /**
-   * Checkmate terminal: back-rank Qg7# — pins {@code isCheckmate} at the root node.
+   * Checkmate terminal: back-rank Qg7# - pins {@code isCheckmate} at the root node.
    */
   private static final SearchCase SCENARIO_CHECKMATE_TERMINAL = new SearchCase("checkmate-terminal",
       "7k/6Q1/6K1/8/8/8/8/8 b - - 0 1", 0);
   /**
-   * Stalemate terminal: Black king h8, White Qf7 controls all king-flight squares — pins {@code isStalemate}.
+   * Stalemate terminal: Black king h8, White Qf7 controls all king-flight squares - pins {@code isStalemate}.
    */
   private static final SearchCase SCENARIO_STALEMATE_TERMINAL = new SearchCase("stalemate-terminal",
       "7k/5Q2/6K1/8/8/8/8/8 b - - 0 1", 0);
 
-  // Check-evasion fixtures (Phase-A additions). Hand-constructed minimal positions — no exotic
+  // Check-evasion fixtures (Phase-A additions). Hand-constructed minimal positions - no exotic
   // motifs, just enough material to pin the legal-move filter under each check pattern.
   /**
    * Single check from a rook on a clear file: black king e8 checked by Re2; only king-evasion moves are legal (no
@@ -60,7 +60,7 @@ class TestHelpmateSearchBoard {
       "check-with-king-only-evasions", "4k3/8/8/8/8/8/4R3/4K3 b - - 0 1", 3);
   /**
    * Double check: black king e8 attacked simultaneously by Nc7 (knight reach) and Re1 (e-file). Black has a rook on c3
-   * whose pseudo-legal moves must all be filtered — the double-check rule mandates king-only response. Verifies that
+   * whose pseudo-legal moves must all be filtered - the double-check rule mandates king-only response. Verifies that
    * the legal-move generator rejects every non-king move under double check.
    */
   private static final SearchCase SCENARIO_DOUBLE_CHECK_KING_ONLY = new SearchCase("double-check-king-only",
@@ -68,7 +68,7 @@ class TestHelpmateSearchBoard {
   /**
    * En passant capture as a check response: white king c4 in direct check from black pawn d5 (just played d7-d5). The
    * legal-move list must include exd6 e.p. (which removes the checker) alongside the king-evasion squares. Exercises
-   * the EP-probe × check-evasion interaction — the EP candidate must survive both the "post-EP king safety" probe AND
+   * the EP-probe x check-evasion interaction - the EP candidate must survive both the "post-EP king safety" probe AND
    * the check-evasion filter.
    */
   private static final SearchCase SCENARIO_EN_PASSANT_RESOLVES_CHECK = new SearchCase("en-passant-resolves-check",

@@ -142,7 +142,7 @@ class TestPgnExportPreGameCommentary {
   }
 
   // -------------------------------------------------------------------------------------------------
-  // Round-trip property: parse(export(parse(text))) ≡ parse(text). T-005 normalises CR/CRLF to LF.
+  // Round-trip property: parse(export(parse(text))) == parse(text). T-005 normalises CR/CRLF to LF.
   // -------------------------------------------------------------------------------------------------
 
   @SuppressWarnings("static-method")

@@ -19,7 +19,7 @@ import com.dlb.chess.fen.model.Fen;
 import com.dlb.chess.model.PgnHalfMove;
 
 /**
- * PGN serialisation entry points. The library defaults to {@link WriteMode#SEMANTIC} — emits the parse model as-given
+ * PGN serialisation entry points. The library defaults to {@link WriteMode#SEMANTIC} - emits the parse model as-given
  * without inventing content. {@link WriteMode#ARCHIVAL} runs the model through {@link PgnArchivalNormalization} first
  * to produce a PGN spec section 8.1.1-conformant artifact.
  */
@@ -112,12 +112,12 @@ public class PgnCreate {
     final Outcome outcome = BasicChessUtility.calculateOutcome(board);
     switch (outcome.termination()) {
       case NONE:
-        // Game is ongoing — including positions with one-sided insufficient material, which is a
+        // Game is ongoing - including positions with one-sided insufficient material, which is a
         // diagnostic state on the board (queryable via Board.isInsufficientMaterial(Side)) and not
         // an automatic termination.
         return ResultTagValue.ONGOING;
       case CHECKMATE: {
-        // Outcome's compact constructor guarantees winner() is WHITE or BLACK for CHECKMATE — the
+        // Outcome's compact constructor guarantees winner() is WHITE or BLACK for CHECKMATE - the
         // side that delivered mate. Side.NONE is reserved for drawing terminations and cannot
         // appear here by the record's invariant.
         final Side winner = outcome.winner();
@@ -150,7 +150,7 @@ public class PgnCreate {
   /**
    * Inverse of the tokeniser's tag-string unescape (see {@code PgnTokenizer.readTagValueString}). PGN spec section
    * 8.1.2 defines two escapes inside a string token: a backslash represents a literal backslash and a backslash
-   * followed by a quote represents a literal quote. Other characters do not require escaping. Order matters — backslash
+   * followed by a quote represents a literal quote. Other characters do not require escaping. Order matters - backslash
    * must be doubled before quotes are escaped, otherwise the backslash introduced by quote-escaping would itself be
    * re-escaped.
    */
@@ -207,7 +207,7 @@ public class PgnCreate {
 
   /**
    * Creates a PgnGame from a Board with a caller-supplied tag list. The tag list is preserved verbatim (no fabrication,
-   * no sort). The termination marker is derived from the board's game-status — semantic-mode export will emit it as the
+   * no sort). The termination marker is derived from the board's game-status - semantic-mode export will emit it as the
    * movetext trailer; archival-mode export will also synthesise a Result tag from it.
    */
   public static PgnGame createPgnGame(Board board, List<Tag> tagList) {
@@ -221,7 +221,7 @@ public class PgnCreate {
   /**
    * Creates a PgnGame from a Board with no caller-supplied tags. The tag list is the minimal honest shape: empty when
    * the board started from the initial position, or just SetUp+FEN when from a non-initial position. STR fabrication
-   * does not happen here — callers who want a spec section 8.1.1-conformant artifact pass {@link WriteMode#ARCHIVAL} to
+   * does not happen here - callers who want a spec section 8.1.1-conformant artifact pass {@link WriteMode#ARCHIVAL} to
    * {@link PgnWriter} or {@link #createPgnString(PgnGame, WriteMode)}.
    */
   public static PgnGame createPgnGame(Board board) {

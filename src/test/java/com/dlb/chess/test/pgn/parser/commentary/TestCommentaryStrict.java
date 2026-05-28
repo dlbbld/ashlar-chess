@@ -15,18 +15,18 @@ import com.dlb.chess.pgn.StrictPgnParserValidationProblem;
  * Commentary delimiter validation for StrictPgnParser. Three delimiter rules:
  *
  * <ul>
- * <li>R1 — every opening delimiter must have a matching closing delimiter (else unclosed-commentary error).
- * <li>R3 — a closing delimiter outside any open commentary is a stray-close error.
- * <li>R4 — a commentary delimiter where a SAN half-move is expected is rejected.
+ * <li>R1 - every opening delimiter must have a matching closing delimiter (else unclosed-commentary error).
+ * <li>R3 - a closing delimiter outside any open commentary is a stray-close error.
+ * <li>R4 - a commentary delimiter where a SAN half-move is expected is rejected.
  * </ul>
  *
  * <p>
- * (R2 — nesting — was retired by T-003; an inner opening delimiter is now content per PGN spec §8.2.5.)
+ * (R2 - nesting - was retired by T-003; an inner opening delimiter is now content per PGN spec section 8.2.5.)
  */
 class TestCommentaryStrict {
 
   // -------------------------------------------------------------------------------------------------
-  // Valid cases — structural acceptance and commentary-text assertions
+  // Valid cases - structural acceptance and commentary-text assertions
   // -------------------------------------------------------------------------------------------------
 
   @SuppressWarnings("static-method")
@@ -117,7 +117,7 @@ class TestCommentaryStrict {
   }
 
   // -------------------------------------------------------------------------------------------------
-  // R1 — unclosed commentary (start brace without matching close)
+  // R1 - unclosed commentary (start brace without matching close)
   // -------------------------------------------------------------------------------------------------
 
   @SuppressWarnings("static-method")
@@ -135,7 +135,7 @@ class TestCommentaryStrict {
   }
 
   // -------------------------------------------------------------------------------------------------
-  // T-003 — an inner opening delimiter is content (PGN spec §8.2.5). Only the closing delimiter closes a comment.
+  // T-003 - an inner opening delimiter is content (PGN spec section 8.2.5). Only the closing delimiter closes a comment.
   // -------------------------------------------------------------------------------------------------
 
   @SuppressWarnings("static-method")
@@ -168,7 +168,7 @@ class TestCommentaryStrict {
   }
 
   // -------------------------------------------------------------------------------------------------
-  // R3 — stray closing brace outside any open commentary
+  // R3 - stray closing brace outside any open commentary
   // -------------------------------------------------------------------------------------------------
 
   @SuppressWarnings("static-method")
@@ -193,7 +193,7 @@ class TestCommentaryStrict {
   }
 
   // -------------------------------------------------------------------------------------------------
-  // R4 — brace at SAN-expected position
+  // R4 - brace at SAN-expected position
   // -------------------------------------------------------------------------------------------------
 
   @SuppressWarnings("static-method")
@@ -213,13 +213,13 @@ class TestCommentaryStrict {
   @SuppressWarnings("static-method")
   @Test
   void r3_strayCloseAtSanExpectedPosition() {
-    // Broken-delimiter lexical errors take precedence over the positional R4 — this case is R3, not R4.
+    // Broken-delimiter lexical errors take precedence over the positional R4 - this case is R3, not R4.
     expectError(header("*") + "1. } e4 e5 *\n\n",
         StrictPgnParserValidationProblem.MOVETEXT_COMMENTARY_END_BRACE_WITHOUT_START_BRACE);
   }
 
   // -------------------------------------------------------------------------------------------------
-  // Post-termination content — commentary may not appear after the game termination marker
+  // Post-termination content - commentary may not appear after the game termination marker
   // -------------------------------------------------------------------------------------------------
 
   @SuppressWarnings("static-method")
@@ -271,7 +271,7 @@ class TestCommentaryStrict {
   @SuppressWarnings("static-method")
   @Test
   void carriageReturnInPreGameCommentaryIsNormalisedToLf() {
-    // T-005: lone CR → LF at parser input.
+    // T-005: lone CR -> LF at parser input.
     final PgnGame file = StrictPgnParser.parseText(header("*") + "{a\rb} 1. e4 e5 *\n\n");
     assertEquals("a\nb", file.pregameCommentary().value());
   }
@@ -293,7 +293,7 @@ class TestCommentaryStrict {
   @SuppressWarnings("static-method")
   @Test
   void otherControlCharInCommentaryIsRejected() {
-    // Bell character (U+0007), Cc category (other than \t \n \r) — rejected per the Unicode contract.
+    // Bell character (U+0007), Cc category (other than \t \n \r) - rejected per the Unicode contract.
     expectError(header("*") + "1. e4 {ab} e5 *\n\n",
         StrictPgnParserValidationProblem.MOVETEXT_COMMENTARY_CONTAINS_FORBIDDEN_CHARACTER);
   }
@@ -313,8 +313,8 @@ class TestCommentaryStrict {
   }
 
   // -------------------------------------------------------------------------------------------------
-  // T-002 — strict requires "N..." before a Black move when commentary intervened on White's move
-  // (PGN spec §8.2.2 case 1). Lenient accepts both forms; see TestCommentaryLenient.
+  // T-002 - strict requires "N..." before a Black move when commentary intervened on White's move
+  // (PGN spec section 8.2.2 case 1). Lenient accepts both forms; see TestCommentaryLenient.
   // -------------------------------------------------------------------------------------------------
 
   @SuppressWarnings("static-method")
@@ -358,7 +358,7 @@ class TestCommentaryStrict {
   @SuppressWarnings("static-method")
   @Test
   void t002_indicatorNotRequiredWhenCommentaryIsOnBlackMove() {
-    // Commentary on Black's move does not trigger T-002 — the next move (White) carries its own move number anyway.
+    // Commentary on Black's move does not trigger T-002 - the next move (White) carries its own move number anyway.
     final PgnGame file = StrictPgnParser.parseText(header("*") + "1. e4 e5 {after-black} 2. Nf3 *\n\n");
     assertEquals("after-black", Nulls.get(file.halfMoveList(), 1).commentary().value());
     assertEquals("Nf3", Nulls.get(file.halfMoveList(), 2).san());

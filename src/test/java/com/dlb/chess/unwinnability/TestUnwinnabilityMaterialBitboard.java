@@ -17,7 +17,7 @@ import com.dlb.chess.test.pgntest.enums.PgnTest;
 /**
  * Differential test pairing {@link UnwinnabilityMaterialBitboard} (production) against {@link UnwinnabilityMaterial}
  * (StaticPosition reference oracle). For every fixture in the corpus, every bitboard-keyed predicate must agree with
- * its StaticPosition-keyed counterpart. Guards against drift between the two surfaces — and will continue to do so once
+ * its StaticPosition-keyed counterpart. Guards against drift between the two surfaces - and will continue to do so once
  * {@link UnwinnabilityMaterial} relocates to {@code src/test/} alongside the rest of the StaticPosition layer.
  */
 class TestUnwinnabilityMaterialBitboard {

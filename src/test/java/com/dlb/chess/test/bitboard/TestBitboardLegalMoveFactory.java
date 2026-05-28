@@ -25,7 +25,7 @@ import com.dlb.chess.test.pgntest.enums.PgnTest;
  * record (same moving piece, captured piece, and {@link com.dlb.chess.model.LegalMoveKind}).
  *
  * <p>
- * The reference is {@link AbstractLegalMoves#calculateLegalMoves} directly — NOT
+ * The reference is {@link AbstractLegalMoves#calculateLegalMoves} directly - NOT
  * {@code board.getLegalMoves()}, which since Switchover Step 2.2 ({@code a235d363}) is produced via this very
  * factory. Using {@code board.getLegalMoves()} as the oracle here would make the test self-referential.
  */

@@ -16,10 +16,10 @@ import com.dlb.chess.common.model.MoveSpecification;
 /**
  * Twelve-bitboard piece-placement representation: one {@code long} per real {@link com.dlb.chess.board.enums.Piece}
  * value, each bit indexed by {@link com.dlb.chess.board.enums.Square#ordinal()} (little-endian rank-file:
- * {@code A1 = 0, B1 = 1, …, H8 = 63}). Field order matches the {@link com.dlb.chess.board.enums.Piece#REAL} enum order.
+ * {@code A1 = 0, B1 = 1, ..., H8 = 63}). Field order matches the {@link com.dlb.chess.board.enums.Piece#REAL} enum order.
  *
  * <p>
- * <b>Construction invariant:</b> the twelve piece bitboards are pairwise disjoint — no square may carry two pieces. The
+ * <b>Construction invariant:</b> the twelve piece bitboards are pairwise disjoint - no square may carry two pieces. The
  * compact constructor enforces this, so any reachable {@code BitboardPosition} is guaranteed consistent under every
  * query method. Attempting to construct one with overlapping bitboards is rejected with
  * {@link IllegalArgumentException}.
@@ -163,9 +163,9 @@ public record BitboardPosition(long whitePawns, long whiteRooks, long whiteKnigh
    *
    * <p>
    * For pawns, includes forward advances (single + double when applicable) and diagonal captures against opponent
-   * pieces — <em>excluding</em> the opponent king (matching the reference) — and to the EP target square. For other
+   * pieces - <em>excluding</em> the opponent king (matching the reference) - and to the EP target square. For other
    * pieces, includes the standard pseudo-legal target set: own pieces are blocked, opponent pieces are capturable
-   * (including the opponent king at this level — king-capture filtering happens at the legal-move-classification
+   * (including the opponent king at this level - king-capture filtering happens at the legal-move-classification
    * level, not here).
    *
    * <p>
@@ -190,7 +190,7 @@ public record BitboardPosition(long whitePawns, long whiteRooks, long whiteKnigh
       case ROOK -> RookMoves.targets(fromOrdinal, occupied(), ownPieces);
       case QUEEN -> QueenMoves.targets(fromOrdinal, occupied(), ownPieces);
       case PAWN -> pawnPotentialTargets(fromSquare, fromOrdinal, side, enPassantBit);
-      case NONE -> throw new IllegalStateException("Unreachable — Piece.NONE filtered above");
+      case NONE -> throw new IllegalStateException("Unreachable - Piece.NONE filtered above");
       default -> throw new IllegalArgumentException();
     };
     return BitboardPositionUtility.toSquareSet(targets);
@@ -283,7 +283,7 @@ public record BitboardPosition(long whitePawns, long whiteRooks, long whiteKnigh
 
   /**
    * Returns {@code true} if {@code side}'s king is attacked by any of the opposite side's pieces. A position with no
-   * king of the queried side returns {@code false} (no king to be in check) — the reference's
+   * king of the queried side returns {@code false} (no king to be in check) - the reference's
    * {@code StaticPositionUtility.calculateIsCheck} throws in that case, so callers comparing against the reference
    * should restrict comparisons to positions where the king of the queried side exists.
    */
@@ -300,7 +300,7 @@ public record BitboardPosition(long whitePawns, long whiteRooks, long whiteKnigh
 
   /**
    * Bitboard of legal non-castling king target squares for {@code side}. A target is legal iff (a) it is a pseudo-legal
-   * target — surrounding square not occupied by own piece — and (b) it is not attacked by the opposite side after the
+   * target - surrounding square not occupied by own piece - and (b) it is not attacked by the opposite side after the
    * king vacates its current square. The "king vacates" part is essential: a slider that the king was blocking would,
    * post-move, project its ray through the king's old square onto squares the king might try to move to (the XRAY
    * case). The implementation removes own kings from the occupied mask before computing opponent attacks.
@@ -335,7 +335,7 @@ public record BitboardPosition(long whitePawns, long whiteRooks, long whiteKnigh
   /**
    * Pin ray for the piece on {@code pinnedSquare} relative to {@code side}'s king: the squares from king (exclusive) to
    * pinner (inclusive) along the line through {@code pinnedSquare}. Returns {@code 0L} if the piece is not pinned. The
-   * pinned piece's legal-move filter is {@code pseudoLegal & pinRay(pinnedSquare, side)} — the piece may move along the
+   * pinned piece's legal-move filter is {@code pseudoLegal & pinRay(pinnedSquare, side)} - the piece may move along the
    * pin line (capturing the pinner is allowed; vacating the line is not).
    *
    * <p>
@@ -438,7 +438,7 @@ public record BitboardPosition(long whitePawns, long whiteRooks, long whiteKnigh
 
   /**
    * Full legal non-castling move generation. Returns the set of legal {@link MoveSpecification}s for {@code side}'s
-   * pieces excluding castling — castling lives on {@link com.dlb.chess.board.Board} together with the castling- rights
+   * pieces excluding castling - castling lives on {@link com.dlb.chess.board.Board} together with the castling- rights
    * state. The {@code enPassantBit} parameter is the single-bit bitboard of the en-passant target square (or {@code 0L}
    * if no EP is available to {@code side}); the bitboard layer is stateless about whose turn it is.
    *
@@ -459,7 +459,7 @@ public record BitboardPosition(long whitePawns, long whiteRooks, long whiteKnigh
   /**
    * Sink-based variant of {@link #legalMoves(Side, long)}: emits the same legal {@link MoveSpecification}s to
    * {@code sink} as {@code legalMoves} would put into its returned set, but in the move generator's natural traversal
-   * order rather than {@link MoveSpecification#compareTo} order — no intermediate {@link Set} / {@link TreeSet} is
+   * order rather than {@link MoveSpecification#compareTo} order - no intermediate {@link Set} / {@link TreeSet} is
    * allocated. The set-based {@link #legalMoves(Side, long)} wraps this with a {@link TreeSet}-collecting sink so
    * the existing public contract is preserved verbatim. Used by the helpmate search hot path to fill a per-depth
    * reusable move buffer without allocating a sorted-set scaffold per ply.
@@ -647,11 +647,11 @@ public record BitboardPosition(long whitePawns, long whiteRooks, long whiteKnigh
    *
    * <p>
    * Castling rights, en-passant target square, side-to-move, and the halfmove / fullmove counters are intentionally NOT
-   * updated here — they live on {@link com.dlb.chess.board.Board} / {@link com.dlb.chess.common.model.DynamicPosition}.
+   * updated here - they live on {@link com.dlb.chess.board.Board} / {@link com.dlb.chess.common.model.DynamicPosition}.
    * This is the piece-placement-only equivalent of {@code StaticPositionUtility.createPositionAfterMove}.
    *
    * <p>
-   * The bitboard layer is intentionally stateless about whose turn it is. Callers pass {@code movingSide} explicitly —
+   * The bitboard layer is intentionally stateless about whose turn it is. Callers pass {@code movingSide} explicitly -
    * for castling, this determines which king/rook pair moves; for non-castling moves, it determines the promotion
    * piece's side and the direction of en-passant capture.
    */
@@ -736,7 +736,7 @@ public record BitboardPosition(long whitePawns, long whiteRooks, long whiteKnigh
   /**
    * Returns a new {@code BitboardPosition} in which {@code piece} is relocated from {@code from} to {@code to}.
    * Pre: {@code from} carries {@code piece}, {@code to} is empty. Used for hypothetical-position construction
-   * outside the regular move pipeline — e.g. FEN-level validation rewinding a pawn two-square advance to its
+   * outside the regular move pipeline - e.g. FEN-level validation rewinding a pawn two-square advance to its
    * starting square to check the prior position's legality.
    */
   public BitboardPosition withRelocatedPiece(Piece piece, Square from, Square to) {
@@ -794,7 +794,7 @@ public record BitboardPosition(long whitePawns, long whiteRooks, long whiteKnigh
 
   /**
    * Piece-placement Zobrist hash: XOR of {@link ZobristKeys#pieceSquare} for every (piece, square) pair currently on
-   * the board. Side-to-move, castling rights, and en-passant target are intentionally NOT mixed in — those state pieces
+   * the board. Side-to-move, castling rights, and en-passant target are intentionally NOT mixed in - those state pieces
    * live on {@code Board} / {@code DynamicPosition} and their Zobrist contributions belong there.
    */
   public long zobristPieces() {
@@ -939,7 +939,7 @@ public record BitboardPosition(long whitePawns, long whiteRooks, long whiteKnigh
    * <p>
    * Allocation-free: derives the post-EP occupied mask by XORing single-bit deltas off the current state and runs the
    * standard piece-type-by-piece-type attack check against {@code mover}'s king square. This is the non-allocating
-   * equivalent of {@code afterMove(epMoveSpec, mover).isInCheck(mover)} for the EP-specific case — used by EP
+   * equivalent of {@code afterMove(epMoveSpec, mover).isInCheck(mover)} for the EP-specific case - used by EP
    * normalization probes in the helpmate search where allocating a fresh {@link BitboardPosition} for every EP
    * candidate adds up across the recursion. Differential-tested bit-exact against the {@code afterMove(...).isInCheck}
    * reference on every EP candidate in the fixture set.

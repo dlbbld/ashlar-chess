@@ -58,9 +58,9 @@ import com.dlb.chess.unwinnability.UnwinnableQuickAnalyzer;
 import com.google.common.collect.ImmutableList;
 
 /**
- * The library's central type â€” a chess <em>game</em>, not merely a position. A {@code Board} carries the position
+ * The library's central type - a chess <em>game</em>, not merely a position. A {@code Board} carries the position
  * <strong>plus</strong> the move history from its initial FEN: every halfmove ever performed, the legal-move set after
- * each, the halfmove clock, repetition counts, castling-right loss reasons, derived SAN/LAN strings â€” everything
+ * each, the halfmove clock, repetition counts, castling-right loss reasons, derived SAN/LAN strings - everything
  * needed to answer rule-level questions about the game so far.
  *
  * <h2>Construction</h2>
@@ -69,10 +69,10 @@ import com.google.common.collect.ImmutableList;
  * Three constructors:
  *
  * <ul>
- * <li>{@link #Board()} â€” start at the initial position.</li>
- * <li>{@link #Board(String)} â€” start at the position given by a FEN string. Validated by the advanced FEN parser; see
+ * <li>{@link #Board()} - start at the initial position.</li>
+ * <li>{@link #Board(String)} - start at the position given by a FEN string. Validated by the advanced FEN parser; see
  * the {@code com.dlb.chess.fen} package documentation for the validation contract.</li>
- * <li>{@link #Board(Fen)} â€” start at a pre-parsed {@link Fen} value.</li>
+ * <li>{@link #Board(Fen)} - start at a pre-parsed {@link Fen} value.</li>
  * </ul>
  *
  * <h2>Mutating the game</h2>
@@ -93,7 +93,7 @@ import com.google.common.collect.ImmutableList;
  * Beyond move execution, {@code Board} exposes the standard rule-level predicates: {@link #isCheckmate()},
  * {@link #isStalemate()}, {@link #isThreefoldRepetition()}, {@link #isFiftyMove()}, {@link #isFivefoldRepetition()},
  * {@link #isSeventyFiveMove()}, plus the unwinnability/dead-position pair ({@code isUnwinnableQuick},
- * {@code isUnwinnableFull}, {@code isDeadPositionQuick}, {@code isDeadPositionFull} â€” the library's flagship CHA
+ * {@code isUnwinnableFull}, {@code isDeadPositionQuick}, {@code isDeadPositionFull} - the library's flagship CHA
  * feature; see {@link com.dlb.chess.unwinnability}). Position-state accessors return Guava
  * {@code ImmutableList}/{@code ImmutableSet}; mutation is exclusively via {@code move}/{@code unmove}.
  *
@@ -107,7 +107,7 @@ import com.google.common.collect.ImmutableList;
  * {@code Board} is mutable and <strong>not thread-safe</strong>. Use one {@code Board} per thread, or synchronize
  * externally. {@link #equals(Object)} and {@link #hashCode()} reflect the current game state, so a {@code Board} placed
  * in a {@link java.util.HashMap} or {@link java.util.HashSet} and then mutated will violate the collection's invariants
- * â€” don't do that.
+ * - don't do that.
  */
 public class Board {
 
@@ -198,7 +198,7 @@ public class Board {
     this.repetitionCountList.add(1);
 
     this.sanList = new ArrayList<>();
-    // halfMoveList intentionally not initialized — derived on demand from the parallel stores.
+    // halfMoveList intentionally not initialized - derived on demand from the parallel stores.
     this.lanList = new ArrayList<>();
 
     this.whiteKingSideLossList = new ArrayList<>();
@@ -230,8 +230,8 @@ public class Board {
    * Constructs a {@code Board} from a FEN string, validated by the advanced FEN parser. Enforces structural and
    * rule-consistency checks (piece counts within physical bounds, no pawns on rank 1 or 8, castling rights consistent
    * with king/rook static positions, en-passant target consistent with the side to move, halfmove clock consistent with
-   * the fullmove number, etc.). The halfmove clock itself is not capped — the FIDE 75-move rule is a queryable
-   * predicate on {@code Board}, not enforced at FEN import. Does not prove full game reachability — see the
+   * the fullmove number, etc.). The halfmove clock itself is not capped - the FIDE 75-move rule is a queryable
+   * predicate on {@code Board}, not enforced at FEN import. Does not prove full game reachability - see the
    * {@code com.dlb.chess.fen} package documentation for the full contract.
    */
   public Board(String fen) {
@@ -493,7 +493,7 @@ public class Board {
 
   /**
    * Claim-ahead for FIDE 9.3: at halfmove clock &gt;= 99, the claim is available if at least one legal move would
-   * complete the 50 non-progress moves — i.e. is neither a pawn move nor a capture. FIDE 9.3 frames the claim as
+   * complete the 50 non-progress moves - i.e. is neither a pawn move nor a capture. FIDE 9.3 frames the claim as
    * announced before the move is played; the 50 moves are about history; the outcome of the candidate move (whether it
    * would deliver mate, stalemate, or continue the game) does not affect whether the no-progress condition has been
    * met.
@@ -529,7 +529,7 @@ public class Board {
    *
    * <p>
    * Per-move shape rather than the existence shape ({@link #canClaimFiftyMoveRuleWithOwnMove}) because FIDE 9.3 frames
-   * the claim as a per-move act — the player announces the specific move they intend to play and claims the draw on
+   * the claim as a per-move act - the player announces the specific move they intend to play and claims the draw on
    * that announcement. The existence predicate answers "could any move satisfy the claim from here?", which is a
    * convenience derived from this one. python-chess also collapses to the existence shape ({@code
    * can_claim_fifty_moves()} takes no move parameter); the per-move predicate is the FIDE-faithful API that neither
@@ -537,7 +537,7 @@ public class Board {
    * context: <a href="https://github.com/niklasf/python-chess/issues/1188">niklasf/python-chess#1188</a>.
    *
    * <p>
-   * The move's chess effect — whether it would deliver checkmate, stalemate, or continue the game — does not affect
+   * The move's chess effect - whether it would deliver checkmate, stalemate, or continue the game - does not affect
    * whether the no-progress condition has been met. A non-pawn, non-capture mate-in-one at clock 99 is a valid claim
    * under FIDE 9.3. (In practice the player would play the mate; the predicate is honest about what the rule says.)
    */
@@ -551,7 +551,7 @@ public class Board {
 
   /**
    * SAN convenience overload of {@link #canClaimFiftyMoveRuleFor(MoveSpecification)}: parses {@code san} via the
-   * lenient SAN pipeline against the current position and delegates. Throws on invalid input —
+   * lenient SAN pipeline against the current position and delegates. Throws on invalid input -
    * {@link LenientSanParserValidationException} when {@code san} is unparseable / ambiguous / illegal under the lenient
    * pipeline, and {@link IllegalArgumentException} (from the {@link MoveSpecification} overload) when the parsed move
    * is not in the current legal-moves set.
@@ -566,7 +566,7 @@ public class Board {
    * occurrence). The player announces {@code move} and claims the draw on that announcement; the move is not played.
    *
    * <p>
-   * Clock-resetting candidates (pawn moves and captures) are rejected without simulation — they produce a position that
+   * Clock-resetting candidates (pawn moves and captures) are rejected without simulation - they produce a position that
    * cannot have appeared before in the game, so they cannot satisfy the threefold condition. This matches the existing
    * {@link #canClaimThreefoldRepetitionRuleWithOwnMove} short-circuit.
    *
@@ -587,7 +587,7 @@ public class Board {
 
   /**
    * SAN convenience overload of {@link #canClaimThreefoldRepetitionRuleFor(MoveSpecification)}: parses {@code san} via
-   * the lenient SAN pipeline against the current position and delegates. Throws on invalid input —
+   * the lenient SAN pipeline against the current position and delegates. Throws on invalid input -
    * {@link LenientSanParserValidationException} when {@code san} is unparseable / ambiguous / illegal under the lenient
    * pipeline, and {@link IllegalArgumentException} (from the {@link MoveSpecification} overload) when the parsed move
    * is not in the current legal-moves set.
@@ -631,8 +631,8 @@ public class Board {
    * rule (halfmove clock would reach 100; move is neither a pawn move nor a capture).
    *
    * <p>
-   * Each candidate move is admitted via the per-move predicate {@link #canClaimFiftyMoveRuleFor(MoveSpecification)} —
-   * the single source of truth — so any future tightening of FIDE 9.3 semantics flows through automatically. Move order
+   * Each candidate move is admitted via the per-move predicate {@link #canClaimFiftyMoveRuleFor(MoveSpecification)} -
+   * the single source of truth - so any future tightening of FIDE 9.3 semantics flows through automatically. Move order
    * in the returned list matches {@link #getLegalMoves()} order. The board state is unchanged after the call.
    */
   public ClaimRights calculateFiftyMoveRuleClaimRights() {
@@ -646,7 +646,7 @@ public class Board {
    *
    * <p>
    * Each candidate move is admitted via the per-move predicate
-   * {@link #canClaimThreefoldRepetitionRuleFor(MoveSpecification)} — the single source of truth. Move order matches
+   * {@link #canClaimThreefoldRepetitionRuleFor(MoveSpecification)} - the single source of truth. Move order matches
    * {@link #getLegalMoves()} order. The board state is unchanged after the call.
    */
   public ClaimRights calculateThreefoldRepetitionRuleClaimRights() {
@@ -789,7 +789,7 @@ public class Board {
   /**
    * Raw condition predicate (FIDE 9.3 threshold): returns {@code true} iff the halfmove clock has reached the 50-move-
    * rule threshold ({@code halfMoveClock >= 100}) on the current position. Reports the fact independently of any other
-   * game-end condition that may also hold — at a checkmate position with clock past 100, this still returns
+   * game-end condition that may also hold - at a checkmate position with clock past 100, this still returns
    * {@code true}. Game-end precedence belongs to
    * {@link com.dlb.chess.common.utility.BasicChessUtility#calculateOutcome} and not to this predicate. (Deliberate
    * divergence from python-chess at game-end positions, where {@code is_fifty_moves} folds in a precedence guard.)
@@ -809,7 +809,7 @@ public class Board {
   /**
    * Raw condition predicate (FIDE 9.6.2 threshold): returns {@code true} iff the halfmove clock has reached the 75-
    * move-rule threshold ({@code halfMoveClock >= 150}) on the current position. Reports the fact independently of any
-   * other game-end condition — at a checkmate position with clock past 150, this still returns {@code true}. Game-end
+   * other game-end condition - at a checkmate position with clock past 150, this still returns {@code true}. Game-end
    * precedence belongs to {@link com.dlb.chess.common.utility.BasicChessUtility#calculateOutcome} and not to this
    * predicate. (Deliberate divergence from python-chess at game-end positions, where {@code is_seventyfive_moves} folds
    * in a precedence guard.)
@@ -830,7 +830,7 @@ public class Board {
 
   /**
    * Rich snapshot of all game-end-relevant facts on the current position together with the precedence-projected
-   * {@link Outcome}. The fact booleans are independent and condition-only — each is the raw truth of its rule on the
+   * {@link Outcome}. The fact booleans are independent and condition-only - each is the raw truth of its rule on the
    * current board, not suppressed by any higher-precedence condition that may also hold. See {@link GameEndFacts} for
    * the field-by-field semantics and the precedence rules used to project the {@code outcome} field.
    *
@@ -954,7 +954,7 @@ public class Board {
   /**
    * Derived/compatibility view: reconstructs the played-move history as a {@link HalfMove} list from the per-ply
    * parallel stores (performedLegalMoveList + sanList + halfMoveClockList + dynamicPositionList + repetitionCountList +
-   * the initial-FEN fullmove anchor). Board no longer maintains the list as state — each call builds a fresh list, so
+   * the initial-FEN fullmove anchor). Board no longer maintains the list as state - each call builds a fresh list, so
    * the operation is {@code O(plies)} per call rather than {@code O(1)}.
    *
    * <p>
@@ -976,7 +976,7 @@ public class Board {
   }
 
   /**
-   * Derived {@link HalfMove} for the most recently played ply — {@code O(1)} reconstruction from the per-ply parallel
+   * Derived {@link HalfMove} for the most recently played ply - {@code O(1)} reconstruction from the per-ply parallel
    * stores. Use this instead of {@code Nulls.getLast(getHalfMoveList())} when only the last entry is needed, otherwise
    * the full {@code O(plies)} reconstruction runs for every call. Throws {@link IllegalStateException} when no move has
    * been played, matching {@link #getLastMove}.
@@ -1030,7 +1030,7 @@ public class Board {
 
   @Override
   public int hashCode() {
-    // halfMoveList intentionally absent — it's now a derived view of the other per-ply lists, so it
+    // halfMoveList intentionally absent - it's now a derived view of the other per-ply lists, so it
     // carries no information not already covered by sanList + dynamicPositionList +
     // halfMoveClockList + repetitionCountList + performedLegalMoveList + initialFen.
     return Objects.hash(dynamicPositionList, halfMoveClockList, initialFen, isCheckList, isCheckmateList,
@@ -1209,7 +1209,7 @@ public class Board {
    * Reconstructs the {@link HalfMove} that was the result of the move at {@code plyIndex} (0-based) in the played
    * history. Reads every field from the per-ply parallel stores: {@code performedLegalMoveList[plyIndex]} for the move
    * specification and moving piece, {@code sanList[plyIndex]} for the SAN, and the three "+1-indexed" stores
-   * ({@code halfMoveClockList}, {@code dynamicPositionList}, {@code repetitionCountList} — each carries the initial-
+   * ({@code halfMoveClockList}, {@code dynamicPositionList}, {@code repetitionCountList} - each carries the initial-
    * FEN state at index 0 and the after-ply-i state at index i+1) for the clock, position, and repetition count.
    *
    * <p>

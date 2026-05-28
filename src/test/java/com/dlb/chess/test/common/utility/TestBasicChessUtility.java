@@ -109,7 +109,7 @@ class TestBasicChessUtility {
   @SuppressWarnings("static-method")
   @Test
   void testCalculateOutcomeSeventyFiveMoveFiresWhenAlone() {
-    // FEN at the 75-move threshold with enough material for both sides — only the 75-move
+    // FEN at the 75-move threshold with enough material for both sides - only the 75-move
     // predicate fires.
     final Board board = new Board("4k3/8/4P3/8/8/8/2N1B3/3KQ2R w - - 150 76");
     assertEquals(true, board.isSeventyFiveMove(), "precondition: 75-move threshold reached");

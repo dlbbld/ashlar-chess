@@ -6,7 +6,7 @@ import com.dlb.chess.common.exceptions.ProgrammingMistakeException;
 //
 // "King safety" here means: after the move is made, is the own king attacked?
 //
-// For king moves, the analyzer's analyzeKingSafety early-returns SUCCESS — king-attack-after-move
+// For king moves, the analyzer's analyzeKingSafety early-returns SUCCESS - king-attack-after-move
 // is a movement question for the king (handled by analyzeMovement via KING_CAPTURES_GUARDED_PIECE
 // and KING_MOVES_TO_ATTACKED_EMPTY_SQUARE). The was-in-check vs not-in-check distinction is
 // only meaningful for non-king pieces, where it tracks two different mechanics (failure to

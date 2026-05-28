@@ -17,7 +17,7 @@ import com.dlb.chess.test.pgn.parser.PgnCacheForStrictPgnParserTestCases;
 import com.dlb.chess.test.pgntest.enums.PgnTest;
 
 /**
- * Asserts the regular PGN test corpus contains no fixtures that play past a checkmate or stalemate — the two
+ * Asserts the regular PGN test corpus contains no fixtures that play past a checkmate or stalemate - the two
  * automatic terminations where the legal-move set is empty and any further move attempt cannot validate. Mutual
  * insufficient material, fivefold repetition, the 75-move rule, and analyzer-driven dead positions are queryable
  * predicates in this library, not blockers at the move pipeline, so fixtures that continue past those thresholds
@@ -27,7 +27,7 @@ import com.dlb.chess.test.pgntest.enums.PgnTest;
  * <h2>Scope and runtime</h2>
  *
  * <p>
- * Iterates every category in {@link PgnTest} (including {@code LONGEST_POSSIBLE}) — the full corpus, not the
+ * Iterates every category in {@link PgnTest} (including {@code LONGEST_POSSIBLE}) - the full corpus, not the
  * restricted/smoke subsets, because corpus debt anywhere is corpus debt. The full sweep takes a few minutes; the test
  * is gated behind {@link RestrictTestConstants#IS_EXCLUDE_LONG_RUNNING_PGN_CORPUS_NOT_PLAYS_BEYOND_AUDIT} and skipped
  * via {@code assumeFalse} during routine runs. Flip the flag to {@code false} locally to run.
@@ -58,7 +58,7 @@ class TestSetupPgnCorpusNotPlaysBeyondAudit {
           // (FenAdvancedValidationException, wrapped) cases as runtime exceptions; collect
           // both. Catching the broader RuntimeException keeps the audit robust against future
           // exception subtypes that also indicate the same "cannot replay" outcome.
-          playsBeyondFiles.add(pgnTest.name() + " / " + pgnName + "  —  " + e.getMessage());
+          playsBeyondFiles.add(pgnTest.name() + " / " + pgnName + "  -  " + e.getMessage());
         }
       }
     }

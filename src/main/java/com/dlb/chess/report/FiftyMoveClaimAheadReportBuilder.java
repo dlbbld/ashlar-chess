@@ -23,10 +23,10 @@ abstract class FiftyMoveClaimAheadReportBuilder {
    *
    * <p>
    * Concretely, at any replay-ply where the position's halfmove clock equals 99, the builder asks: was the actually-
-   * played move at this ply a clock-resetting move (pawn move or capture), or did the played history end here? If yes —
-   * the sequence is about to break (or has ended) without ever reaching clock 100 — and at least one non-zeroing legal
+   * played move at this ply a clock-resetting move (pawn move or capture), or did the played history end here? If yes -
+   * the sequence is about to break (or has ended) without ever reaching clock 100 - and at least one non-zeroing legal
    * move exists at this ply, ONE entry is emitted (regardless of how many non-zeroing alternatives were available). If
-   * no — the actually-played move was non-zeroing, so clock will advance to 100 and the sequence reaches threshold — no
+   * no - the actually-played move was non-zeroing, so clock will advance to 100 and the sequence reaches threshold - no
    * entry is emitted at this ply.
    *
    * <p>
@@ -85,7 +85,7 @@ abstract class FiftyMoveClaimAheadReportBuilder {
       return;
     }
     // Boundary metadata: the upcoming ply's chronological position. The candidate move itself is
-    // not stored — the entry represents the boundary, not any single alternative move.
+    // not stored - the entry represents the boundary, not any single alternative move.
     final var boundaryHalfMoveCount = replayBoard.getPerformedHalfMoveCount() + 1;
     final var boundaryFullMoveNumber = replayBoard.getFullMoveNumber();
     entries.add(new FiftyMoveClaimAheadEntry(currentStart, boundaryHalfMoveCount, boundaryFullMoveNumber,

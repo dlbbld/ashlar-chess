@@ -14,8 +14,8 @@ import com.dlb.chess.test.common.utility.DiagonalLineUtility;
 /**
  * Shared utilities for the SAN-validator strict-mode lookup tables: per-piece classes populate their
  * {@code static final ImmutableSet<String> VALUES} at class load time by calling these helpers. The string format
- * mirrors what the (now-deleted) {@code Generate*SanValidateStrict} scripts emitted as enum constants — e.g.
- * {@code "N1A2"} (piece-letter + rank-disambig + target square) — so the {@code *Calculate} consumers parse the same
+ * mirrors what the (now-deleted) {@code Generate*SanValidateStrict} scripts emitted as enum constants - e.g.
+ * {@code "N1A2"} (piece-letter + rank-disambig + target square) - so the {@code *Calculate} consumers parse the same
  * shape.
  */
 abstract class SanValidateStaticallyStrictHelpers {

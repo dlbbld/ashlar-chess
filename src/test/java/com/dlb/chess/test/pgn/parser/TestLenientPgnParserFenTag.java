@@ -12,10 +12,10 @@ import com.dlb.chess.pgn.LenientPgnParserValidationProblem;
 import com.dlb.chess.pgn.LenientPgnParserValidationResult;
 
 /**
- * The lenient PGN parser routes the FEN tag through {@code LenientFenParser}. When that fails — either because the FEN
+ * The lenient PGN parser routes the FEN tag through {@code LenientFenParser}. When that fails - either because the FEN
  * tag value cannot be normalised to a parseable FEN at all (the unrecoverable case), or because the normalised FEN
  * fails strict semantic validation (a position with a missing king, an impossible double-check, an illegal en-passant
- * target, etc.) — the failure is surfaced as a typed {@link LenientPgnParserValidationProblem#FEN_TAG_INVALID}, not the
+ * target, etc.) - the failure is surfaced as a typed {@link LenientPgnParserValidationProblem#FEN_TAG_INVALID}, not the
  * generic {@code UNKNOWN_ERROR}.
  */
 @SuppressWarnings("static-method")
@@ -64,7 +64,7 @@ class TestLenientPgnParserFenTag {
   @Test
   void test03_fenTagWithDeficientButRecoverableValueParsesCleanly() {
     // A FEN tag with deviations the lenient FEN layer forgives (missing fullmove number, uppercase side-to-move)
-    // produces a valid lenient PGN parse — the FEN-level forgiveness is applied silently at the PGN-parser
+    // produces a valid lenient PGN parse - the FEN-level forgiveness is applied silently at the PGN-parser
     // level, by design.
     final var pgn = """
         [Event "Test"]

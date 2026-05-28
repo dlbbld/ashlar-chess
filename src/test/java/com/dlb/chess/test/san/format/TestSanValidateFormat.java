@@ -27,23 +27,23 @@ class TestSanValidateFormat {
     checkException("+", SanValidationProblem.FORMAT_FIRST_CHARACTER);
     checkException("#", SanValidationProblem.FORMAT_FIRST_CHARACTER);
 
-    // d3 â€” replace first char with valid non-file, second char with valid non-digit
+    // d3 - replace first char with valid non-file, second char with valid non-digit
     checkException("=3", SanValidationProblem.FORMAT_FIRST_CHARACTER);
     checkException("dd", SanValidationProblem.FORMAT_PAWN_WRONG_SECOND_CHARACTER);
 
-    // dxe5 â€” invalid first, second, third, fourth chars
+    // dxe5 - invalid first, second, third, fourth chars
     checkException("+xe5", SanValidationProblem.FORMAT_FIRST_CHARACTER);
     checkException("d=e5", SanValidationProblem.FORMAT_PAWN_WRONG_SECOND_CHARACTER);
     checkException("dx15", SanValidationProblem.FORMAT_PAWN_CAPTURE_WRONG_FILE);
     checkException("dxeR", SanValidationProblem.FORMAT_PAWN_CAPTURE_WRONG_RANK);
 
-    // d8=Q â€” invalid first, second (rank), structure, promotion piece
+    // d8=Q - invalid first, second (rank), structure, promotion piece
     checkException("18=Q", SanValidationProblem.FORMAT_FIRST_CHARACTER);
     checkException("dd=Q", SanValidationProblem.FORMAT_PAWN_WRONG_SECOND_CHARACTER);
     checkException("d8xQ", SanValidationProblem.FORMAT_PAWN_FORWARD_PROMOTION_WRONG_PROMOTION_SYMBOL);
     checkException("d8=K", SanValidationProblem.FORMAT_PAWN_FORWARD_PROMOTION_WRONG_PROMOTION_PIECE);
 
-    // dxe8=Q â€” invalid chars replaced with valid SAN chars
+    // dxe8=Q - invalid chars replaced with valid SAN chars
     checkException("1xe8=Q", SanValidationProblem.FORMAT_FIRST_CHARACTER);
     checkException("d=e8=Q", SanValidationProblem.FORMAT_PAWN_WRONG_SECOND_CHARACTER);
     checkException("dxa=Q", SanValidationProblem.FORMAT_PAWN_CAPTURE_WRONG_RANK);

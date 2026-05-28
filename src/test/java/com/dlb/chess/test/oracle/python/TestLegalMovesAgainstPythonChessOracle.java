@@ -34,14 +34,14 @@ import com.google.common.collect.ImmutableList;
  * {@code src/test/resources/oracle/python-chess/move-gen/<folderPart>.jsonl}.
  *
  * <p>
- * This is a separate oracle from {@link TestPgnImportAgainstPythonChessOracle} — that test answers "did we import this
+ * This is a separate oracle from {@link TestPgnImportAgainstPythonChessOracle} - that test answers "did we import this
  * PGN the same way as python-chess?", this one answers "does our legal-move generator match at every position?". Both
  * questions matter; merging them would conflate the import surface and the move-generation surface.
  *
  * <p>
  * Bucket coverage is intentionally narrower than the PGN-import oracle: move-rule-mechanics buckets only (piece moves,
  * captures, en passant, promotion, check, double check, castling, plus parserFenMechanics for the unusual FEN-load
- * positions). Long-game corpora are excluded to keep the JSONL file sizes proportional to the value delivered — move
+ * positions). Long-game corpora are excluded to keep the JSONL file sizes proportional to the value delivered - move
  * generation is already heavily exercised by the internal differential-test layer against the relocated
  * {@code StaticPosition} oracle.
  *
@@ -75,11 +75,11 @@ class TestLegalMovesAgainstPythonChessOracle {
 
     for (final PgnTest bucket : BUCKETS) {
       final Path jsonlPath = jsonlPathFor(bucket);
-      LOGGER.info("Bucket {} → {}", bucket, jsonlPath);
+      LOGGER.info("Bucket {} -> {}", bucket, jsonlPath);
 
       final List<LegalMovesRecord> records = LegalMovesJsonlReader.readAll(jsonlPath);
       if (records.isEmpty()) {
-        failures.add(bucket + " — oracle file is empty or missing: " + jsonlPath);
+        failures.add(bucket + " - oracle file is empty or missing: " + jsonlPath);
         continue;
       }
 
@@ -91,7 +91,7 @@ class TestLegalMovesAgainstPythonChessOracle {
 
         try {
           assertEquals(halfMoveCount + 1, record.perPly().size(),
-              () -> bucket + " / " + record.pgn() + " — perPly length should be halfMoveCount + 1");
+              () -> bucket + " / " + record.pgn() + " - perPly length should be halfMoveCount + 1");
         } catch (final AssertionError e) {
           failures.add(BasicUtility.getMessage(e));
           continue;
@@ -106,7 +106,7 @@ class TestLegalMovesAgainstPythonChessOracle {
           final var positionLabel = ply;
           try {
             assertEquals(expectedPly.legalMovesUci(), actualSorted, () -> bucket + " / " + record.pgn() + " position "
-                + positionLabel + " — legal-move set mismatch (clean-chess vs python-chess)");
+                + positionLabel + " - legal-move set mismatch (clean-chess vs python-chess)");
           } catch (final AssertionError e) {
             failures.add(BasicUtility.getMessage(e));
           }
@@ -120,7 +120,7 @@ class TestLegalMovesAgainstPythonChessOracle {
     }
 
     if (totalFixtures == 0) {
-      fail("No fixtures iterated — bucket wiring is broken");
+      fail("No fixtures iterated - bucket wiring is broken");
     }
     LOGGER.info("Cross-validated legal moves at {} positions across {} fixtures in {} buckets", totalPositions,
         totalFixtures, BUCKETS.size());

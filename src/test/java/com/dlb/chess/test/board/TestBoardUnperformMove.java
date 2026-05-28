@@ -26,17 +26,17 @@ import com.dlb.chess.test.pgn.setup.PgnTestCaseCatalog;
  * For each PGN, two independent boards are kept side-by-side:
  *
  * <ul>
- * <li>{@code expected} — only ever moves <em>forward</em>. It serves as the oracle; its state after halfmove
+ * <li>{@code expected} - only ever moves <em>forward</em>. It serves as the oracle; its state after halfmove
  * {@code i-1} is the canonical pre-halfmove-{@code i} state, produced solely by {@code performMove} (independent of
  * {@code unperformMove}, the unit under test).</li>
- * <li>{@code actual} — performs and then unperforms each halfmove, then is asserted to equal {@code expected}, then
+ * <li>{@code actual} - performs and then unperforms each halfmove, then is asserted to equal {@code expected}, then
  * advanced by performing the move so the next iteration starts in lockstep.</li>
  * </ul>
  *
  * <p>
  * Equality is determined by {@link EqualsBuilder#reflectionEquals(Object, Object)}: every declared field on
  * {@code Board} (including all per-halfmove history lists) is compared. New fields added to {@code Board} in the future
- * are picked up automatically — the test does not need to be updated when {@code Board}'s state representation grows.
+ * are picked up automatically - the test does not need to be updated when {@code Board}'s state representation grows.
  *
  * <h2>Scope</h2>
  *
@@ -69,7 +69,7 @@ class TestBoardUnperformMove {
     }
 
     if (pgnsExercised == 0) {
-      fail("No basic PGNs were exercised — test or corpus is mis-configured");
+      fail("No basic PGNs were exercised - test or corpus is mis-configured");
     }
     logger.info("TestBoardUnperformMove: {} basic PGNs verified ({} halfmoves).", pgnsExercised, halfMovesExercised);
   }

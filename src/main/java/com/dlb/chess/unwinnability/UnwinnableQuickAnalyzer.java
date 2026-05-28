@@ -251,7 +251,7 @@ public class UnwinnableQuickAnalyzer {
     return Long.bitCount((bitboardPosition.whitePawns() << 8) & bitboardPosition.blackPawns());
   }
 
-  // Mask matching the reference: ranks 1..6 (1-indexed) for white, ranks 3..8 for black — i.e. excludes
+  // Mask matching the reference: ranks 1..6 (1-indexed) for white, ranks 3..8 for black - i.e. excludes
   // the rank-immediately-before-promotion on the respective side. 0-indexed: white < rank 7, black > rank 2.
   private static final long WHITE_LONELY_RANK_MASK = 0x0000FFFFFFFFFFFFL; // bits 0..47 = ranks 1..6 (0-indexed)
   private static final long BLACK_LONELY_RANK_MASK = 0xFFFFFFFFFFFF0000L; // bits 16..63 = ranks 3..8 (0-indexed)

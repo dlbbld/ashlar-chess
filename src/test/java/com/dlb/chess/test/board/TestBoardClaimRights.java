@@ -23,7 +23,7 @@ import com.dlb.chess.fen.constants.FenConstants;
  * Tests for {@link Board#calculateFiftyMoveRuleClaimRights()} and
  * {@link Board#calculateThreefoldRepetitionRuleClaimRights()}: the move-list variants of the FIDE 9.2 / 9.3 claim APIs.
  * Each {@link ClaimRights} pairs an existence boolean ({@code canClaim}) with the list of legal moves the side to move
- * could announce as a claim — defensively copied and ordered to match {@link Board#getLegalMoves()}.
+ * could announce as a claim - defensively copied and ordered to match {@link Board#getLegalMoves()}.
  *
  * <p>
  * The per-move predicates {@code canClaimFiftyMoveRuleFor} / {@code canClaimThreefoldRepetitionRuleFor} are the single
@@ -32,7 +32,7 @@ import com.dlb.chess.fen.constants.FenConstants;
 class TestBoardClaimRights implements EnumConstants {
 
   // =============================================================================================
-  // calculateFiftyMoveRuleClaimRights — FIDE 9.3
+  // calculateFiftyMoveRuleClaimRights - FIDE 9.3
   // =============================================================================================
 
   @SuppressWarnings("static-method")
@@ -116,7 +116,7 @@ class TestBoardClaimRights implements EnumConstants {
   }
 
   // =============================================================================================
-  // calculateThreefoldRepetitionRuleClaimRights — FIDE 9.2
+  // calculateThreefoldRepetitionRuleClaimRights - FIDE 9.2
   // =============================================================================================
 
   @SuppressWarnings("static-method")
@@ -141,7 +141,7 @@ class TestBoardClaimRights implements EnumConstants {
   @Test
   void threefoldNonRepeatingLegalMoveExcluded() {
     // Same fixture; the non-repeating move Nb8-c6 is legal but does not create threefold. Must
-    // therefore not appear in the claimable list — and the list as a whole has exactly one entry.
+    // therefore not appear in the claimable list - and the list as a whole has exactly one entry.
     final Board board = new Board();
     board.movesStrict("Nf3", "Nf6", "Ng1", "Ng8", "Nf3", "Nf6", "Ng1");
 
@@ -201,7 +201,7 @@ class TestBoardClaimRights implements EnumConstants {
   }
 
   // =============================================================================================
-  // Object behavior — defensive copy, canClaim invariant, board immutability
+  // Object behavior - defensive copy, canClaim invariant, board immutability
   // =============================================================================================
 
   @SuppressWarnings("static-method")
@@ -215,7 +215,7 @@ class TestBoardClaimRights implements EnumConstants {
 
     try {
       moves.add(Nulls.get(moves, 0));
-      throw new AssertionError("expected UnsupportedOperationException — claimableMoves must be immutable");
+      throw new AssertionError("expected UnsupportedOperationException - claimableMoves must be immutable");
     } catch (@SuppressWarnings("unused") final UnsupportedOperationException expected) {
       // OK
     }
@@ -240,7 +240,7 @@ class TestBoardClaimRights implements EnumConstants {
   @Test
   void claimableMovesOrderFollowsLegalMovesOrder() {
     // At clock 99 with a quiet rook+king position, multiple non-zeroing legal moves all qualify.
-    // The claimable list must follow getLegalMoves() iteration order — i.e., the indices of
+    // The claimable list must follow getLegalMoves() iteration order - i.e., the indices of
     // claimable moves into the legal-moves list are strictly ascending.
     final Board board = new Board("7k/8/8/8/8/8/4K3/R7 w - - 99 51");
     final ClaimRights rights = board.calculateFiftyMoveRuleClaimRights();
@@ -264,7 +264,7 @@ class TestBoardClaimRights implements EnumConstants {
   @Test
   void constructorDefensivelyCopiesSourceListNonEmptyPath() {
     // Sister to returnedListIsImmutable: that test proves the EXPOSED list rejects mutation.
-    // This one proves the constructor decouples the record from the SOURCE list — i.e., the
+    // This one proves the constructor decouples the record from the SOURCE list - i.e., the
     // compact constructor's ImmutableList.copyOf is actually copying, not aliasing. Build a
     // mutable source, construct ClaimRights, then mutate the source after construction and
     // assert the record's view is unchanged.
@@ -275,7 +275,7 @@ class TestBoardClaimRights implements EnumConstants {
     final ClaimRights rights = new ClaimRights(true, mutableSource);
     assertEquals(1, rights.claimableMoves().size(), "precondition: one entry after construction");
 
-    // Mutate the source AFTER construction — the record must not reflect these changes.
+    // Mutate the source AFTER construction - the record must not reflect these changes.
     mutableSource.clear();
     mutableSource.add(new ClaimableMove(new MoveSpecification(A1, B1), "Rb1"));
     mutableSource.add(new ClaimableMove(new MoveSpecification(A1, C1), "Rc1"));
@@ -292,7 +292,7 @@ class TestBoardClaimRights implements EnumConstants {
     // a ClaimRights, then add to the source. The record must remain empty (and canClaim==false).
     final List<ClaimableMove> mutableSource = new ArrayList<>();
     final ClaimRights rights = new ClaimRights(false, mutableSource);
-    assertFalse(rights.canClaim(), "precondition: empty source → canClaim==false");
+    assertFalse(rights.canClaim(), "precondition: empty source -> canClaim==false");
     assertEquals(0, rights.claimableMoves().size());
 
     mutableSource.add(new ClaimableMove(new MoveSpecification(A1, A2), "Ra2"));

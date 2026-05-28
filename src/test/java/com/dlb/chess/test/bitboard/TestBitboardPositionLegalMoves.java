@@ -31,7 +31,7 @@ import com.dlb.chess.test.pgntest.enums.PgnTest;
  * promotion expansion are exercised together.
  *
  * <p>
- * The reference is {@code AbstractLegalMoves.calculateLegalMoves} directly — NOT {@code board.getLegalMoves()},
+ * The reference is {@code AbstractLegalMoves.calculateLegalMoves} directly - NOT {@code board.getLegalMoves()},
  * which since Switchover Step 2.2 ({@code a235d363}) is produced by the bitboard pipeline itself. Using
  * {@code board.getLegalMoves()} as the oracle here would make the test self-referential and unable to detect
  * bitboard-side regressions. The StaticPosition-backed reference path must stay independent of the bitboard until
@@ -82,7 +82,7 @@ class TestBitboardPositionLegalMoves {
   @SuppressWarnings("static-method")
   @Test
   void initialPositionHasTwentyMoves() {
-    // Initial position has exactly 20 legal moves for white: 16 pawn moves (8 × single+double push) + 4 knight moves.
+    // Initial position has exactly 20 legal moves for white: 16 pawn moves (8 x single+double push) + 4 knight moves.
     final Set<MoveSpecification> whiteMoves = BitboardPosition.INITIAL_POSITION.legalMoves(Side.WHITE, 0L);
     assertEquals(20, whiteMoves.size(), "white legal moves from initial position");
     final Set<MoveSpecification> blackMoves = BitboardPosition.INITIAL_POSITION.legalMoves(Side.BLACK, 0L);

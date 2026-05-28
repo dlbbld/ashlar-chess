@@ -23,7 +23,7 @@ import com.dlb.chess.test.pgntest.enums.PgnTest;
 
 /**
  * Differential test for {@link PawnMoves#pushes}. The reference oracle is computed in test code directly from
- * {@link StaticPosition} using 1-indexed file/rank arithmetic and {@code Square.calculate} — structurally different
+ * {@link StaticPosition} using 1-indexed file/rank arithmetic and {@code Square.calculate} - structurally different
  * from the bitboard implementation's 0-indexed shift+mask, so the two implementations are independent enough that
  * agreement is a real signal.
  */

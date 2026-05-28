@@ -30,7 +30,7 @@ import com.dlb.chess.test.pgntest.enums.PgnTest;
 /**
  * Differential test for the per-piece pseudo-legal target generators ({@link KnightMoves}, {@link KingMoves},
  * {@link BishopMoves}, {@link RookMoves}, {@link QueenMoves}). The reference is the corresponding attack set
- * (already includes own pieces as "defended" / blocker squares) with own-piece-occupied squares removed —
+ * (already includes own pieces as "defended" / blocker squares) with own-piece-occupied squares removed -
  * exactly what the bitboard generators compute as {@code attacks(...) & ~ownPieces}.
  */
 class TestPseudoLegalMoves {

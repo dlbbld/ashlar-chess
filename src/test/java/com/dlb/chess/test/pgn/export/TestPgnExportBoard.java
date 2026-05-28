@@ -13,7 +13,7 @@ import com.dlb.chess.pgn.PgnUtility;
 import com.dlb.chess.pgn.ResultTagValue;
 
 /**
- * Verifies that {@link PgnCreate#createPgnGame(Board)} produces the minimal honest model — no STR fabrication — and
+ * Verifies that {@link PgnCreate#createPgnGame(Board)} produces the minimal honest model - no STR fabrication - and
  * that the model round-trips through the parser back to the source board. STR fabrication is exercised separately in
  * {@code TestPgnExportBoardArchival} (the archival-mode path that does fill the Seven Tag Roster).
  */

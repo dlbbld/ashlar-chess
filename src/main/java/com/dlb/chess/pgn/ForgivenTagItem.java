@@ -11,7 +11,7 @@ import com.google.common.collect.ImmutableList;
  * @param code    the typed deviation classifier
  * @param tagName the standard tag the diagnostic is about (e.g. {@code "Event"}, {@code "Result"}, {@code "SetUp"},
  *                {@code "FEN"}), or {@code ""} if the diagnostic spans multiple tags
- * @param detail  supplementary context — e.g. the termination-marker value for
+ * @param detail  supplementary context - e.g. the termination-marker value for
  *                {@link ForgivenTagItemCode#RESULT_TAG_MISSING_BUT_TERMINATION_MARKER_PRESENT}, or {@code ""} when no
  *                extra context is needed
  */

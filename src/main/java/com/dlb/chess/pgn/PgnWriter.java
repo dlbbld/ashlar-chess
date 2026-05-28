@@ -12,13 +12,13 @@ import com.dlb.chess.common.exceptions.FileSystemAccessException;
 
 /**
  * Serialises a {@link PgnGame} (or a {@link Board}) to a PGN file on disk. All overloads default to
- * {@link WriteMode#SEMANTIC} — honest preservation of what the parse model contains. Callers who need a PGN spec
+ * {@link WriteMode#SEMANTIC} - honest preservation of what the parse model contains. Callers who need a PGN spec
  * section 8.1.1-conformant artifact pass {@link WriteMode#ARCHIVAL} explicitly.
  */
 public class PgnWriter {
 
   // -------------------------------------------------------------------------------------------------
-  // PgnGame entry points — semantic default, explicit-mode overloads
+  // PgnGame entry points - semantic default, explicit-mode overloads
   // -------------------------------------------------------------------------------------------------
 
   public static void writePgn(PgnGame pgnGame, String pgnPath) {
@@ -47,7 +47,7 @@ public class PgnWriter {
   }
 
   // -------------------------------------------------------------------------------------------------
-  // Board entry points — semantic default, explicit-mode overloads
+  // Board entry points - semantic default, explicit-mode overloads
   // -------------------------------------------------------------------------------------------------
 
   public static void writePgn(Board board, List<Tag> tagList, Path folderPath, String pgnName) {

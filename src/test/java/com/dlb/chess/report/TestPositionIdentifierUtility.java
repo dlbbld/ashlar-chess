@@ -112,7 +112,7 @@ class TestPositionIdentifierUtility {
   }
 
   // -------------------------------------------------------------------------------------------
-  // calculatePositionIdentifierMap(claimAhead, existing) — added in Phase 1 when the print path
+  // calculatePositionIdentifierMap(claimAhead, existing) - added in Phase 1 when the print path
   // moved off raw lists onto the report records. Tests assert the label-assignment contract:
   // claim-ahead positions are visited first in their stored order; existing-only positions get
   // appended labels; the same position appearing in both shares one label.
@@ -158,7 +158,7 @@ class TestPositionIdentifierUtility {
   void labelsFromRealReportsFormContiguousAlphabeticPrefix() {
     // Long knight shuffle drives the report to multiple distinct repeated positions across both
     // claim-ahead and existing reports. Sanity check: labels form a contiguous {A..Z} prefix with
-    // no gaps and no repeats. Does NOT pin claim-ahead-first ordering — see the next test for that
+    // no gaps and no repeats. Does NOT pin claim-ahead-first ordering - see the next test for that
     // (the natural overlap between claim-ahead and existing in this real-game fixture defeats a
     // direct ordering assertion).
     final Board board = new Board();
@@ -188,10 +188,10 @@ class TestPositionIdentifierUtility {
     // Pins the documented contract verbatim: "Claim-ahead entries are visited first in their stored
     // order, then any positions appearing only in the existing-repetition groups are appended."
     //
-    // Real games can't isolate this — the position that reaches threefold (existing) was also a
+    // Real games can't isolate this - the position that reaches threefold (existing) was also a
     // claim-ahead at the prior ply, so the two reports overlap. Synthetic reports with distinct
     // positions give the precise ordering assertion: positionInClaimAhead gets "A", positionInExisting
-    // gets "B" — and crucially NOT the reverse. (An implementation that walked existing first would
+    // gets "B" - and crucially NOT the reverse. (An implementation that walked existing first would
     // assign A to positionInExisting and would fail this test.)
     final Board board = new Board();
     board.moveStrict("e4");
@@ -210,7 +210,7 @@ class TestPositionIdentifierUtility {
         3);
     final ThreefoldClaimAheadReport claimAhead = new ThreefoldClaimAheadReport(Nulls.listOf(syntheticEntry));
 
-    // Synthetic existing report with one group on positionAfterE5 — a different position.
+    // Synthetic existing report with one group on positionAfterE5 - a different position.
     final RepetitionGroup syntheticGroup = new RepetitionGroup(positionAfterE5, Nulls.listOf(afterE5, afterE5, afterE5),
         false, 3);
     final ThreefoldExistingReport existing = new ThreefoldExistingReport(Nulls.listOf(syntheticGroup));

@@ -95,7 +95,7 @@ class TestHelpmateSearchKey {
 
   // ---------------------------- Positive controls ----------------------------
 
-  /** Different sideToMove → different keys. */
+  /** Different sideToMove -> different keys. */
   @SuppressWarnings("static-method")
   @Test
   void differentSideToMoveProducesDifferentKey() {
@@ -107,7 +107,7 @@ class TestHelpmateSearchKey {
     assertNotEquals(whiteToMove, blackToMove);
   }
 
-  /** Different normalized EP target → different keys. */
+  /** Different normalized EP target -> different keys. */
   @SuppressWarnings("static-method")
   @Test
   void differentNormalizedEpProducesDifferentKey() {
@@ -119,7 +119,7 @@ class TestHelpmateSearchKey {
     assertNotEquals(withEp, withoutEp);
   }
 
-  /** Different white castling rights → different keys. */
+  /** Different white castling rights -> different keys. */
   @SuppressWarnings("static-method")
   @Test
   void differentWhiteCastlingRightsProducesDifferentKey() {
@@ -130,7 +130,7 @@ class TestHelpmateSearchKey {
     assertNotEquals(both, whiteQueenSideOnly);
   }
 
-  /** Different black castling rights → different keys. */
+  /** Different black castling rights -> different keys. */
   @SuppressWarnings("static-method")
   @Test
   void differentBlackCastlingRightsProducesDifferentKey() {
@@ -141,7 +141,7 @@ class TestHelpmateSearchKey {
     assertNotEquals(both, blackKingSideOnly);
   }
 
-  /** Different piece bitboard (white pawn position) → different keys. */
+  /** Different piece bitboard (white pawn position) -> different keys. */
   @SuppressWarnings("static-method")
   @Test
   void differentPiecePlacementProducesDifferentKey() {

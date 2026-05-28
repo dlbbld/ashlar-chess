@@ -26,21 +26,21 @@ import com.dlb.chess.moves.EnPassantCaptureUtility;
  * castling rights for both sides as mutable instance fields. {@link #move(MoveSpecification)} mutates the bitboards in
  * place; {@link #unmove()} pops a snapshot off a growable, pre-allocated stack of mutable {@link UndoState} objects.
  * The legal-move generator emits directly into a per-depth {@link LegalMoveBuffer} via
- * {@link BitboardLegalMoveFactory#calculateLegalMovesInto} — no per-move {@code Set} / {@code ImmutableList} allocation
+ * {@link BitboardLegalMoveFactory#calculateLegalMovesInto} - no per-move {@code Set} / {@code ImmutableList} allocation
  * along the search hot path.
  *
  * <p>
  * {@link BitboardPosition} stays immutable (it remains a record); the mutation is local to this package-private search
  * board. Per the layer-discipline rule, the search board calls the shared bitboard layer for move generation (the sink
  * overload {@link BitboardLegalMoveFactory#calculateLegalMovesInto}) and for the EP normalization probe
- * ({@link BitboardPosition#isInCheckAfterEnPassantCapture}) — no private parallel engine. One {@link BitboardPosition}
+ * ({@link BitboardPosition#isInCheckAfterEnPassantCapture}) - no private parallel engine. One {@link BitboardPosition}
  * snapshot is still built per {@code refreshDerivedState} call for the {@code isInCheck} query; the snapshot is
  * local-scope and the surrounding cached flags ({@code isCheckmate} / {@code isStalemate}) are derived from it together
  * with {@link LegalMoveBuffer#isEmpty}.
  *
  * <p>
  * Getters that expose record-shaped snapshots ({@link #getBitboardPosition}, {@link #getDynamicPosition}) construct a
- * fresh record on each call — they exist for the lock-step Board parity test and for debugging, not for the search hot
+ * fresh record on each call - they exist for the lock-step Board parity test and for debugging, not for the search hot
  * path. Internal callers read the mutable fields directly.
  */
 final class HelpmateSearchBoard {
@@ -115,7 +115,7 @@ final class HelpmateSearchBoard {
     undoTop++;
     // The parent's buffer at undoTop-1 is preserved untouched; we write into buffersByDepth[undoTop] in step 8.
 
-    // 2. Identify the move (movingPiece, capturedPiece, kind) from current mutable state — no snapshot allocation.
+    // 2. Identify the move (movingPiece, capturedPiece, kind) from current mutable state - no snapshot allocation.
     final LegalMove moveToPerform = identifyLegalMove(moveSpecification);
 
     // 3. Mutate the piece bitboards in place.
@@ -133,7 +133,7 @@ final class HelpmateSearchBoard {
     // 6. Update raw EP target (a pawn 2-square advance sets it; everything else clears it).
     enPassantCaptureTargetSquare = EnPassantCaptureUtility.calculateEnPassantCaptureTargetSquare(moveToPerform);
 
-    // 7. Normalize EP — NONE if no opposing pawn can legally execute the EP capture.
+    // 7. Normalize EP - NONE if no opposing pawn can legally execute the EP capture.
     normalizedEnPassantCaptureTargetSquare = computeNormalizedEnPassantCaptureTargetSquare();
 
     // 8. Refresh derived state: fill the per-depth legal-move buffer and recompute cached check / mate flags.
@@ -159,7 +159,7 @@ final class HelpmateSearchBoard {
 
   /**
    * Exact structural transposition-cache key for the current search-board state. Constructed directly from the mutable
-   * piece bitboards and per-move auxiliary state — one record allocation per call, no nested {@link BitboardPosition}
+   * piece bitboards and per-move auxiliary state - one record allocation per call, no nested {@link BitboardPosition}
    * (the twelve piece bitboards are inlined in {@link HelpmateSearchKey}). Equivalent in equality semantics to
    * {@link #getDynamicPosition()}{@code .equals}, but without the nested-record allocation cost. See
    * {@link HelpmateSearchKey} for the included / excluded field list.
@@ -410,7 +410,7 @@ final class HelpmateSearchBoard {
   }
 
   /**
-   * Applies {@code moveToPerform} to the piece bitboards in place — mirrors {@link BitboardPosition#afterMove}.
+   * Applies {@code moveToPerform} to the piece bitboards in place - mirrors {@link BitboardPosition#afterMove}.
    */
   private void applyMoveInPlace(LegalMove moveToPerform) {
     final MoveSpecification moveSpec = moveToPerform.moveSpecification();

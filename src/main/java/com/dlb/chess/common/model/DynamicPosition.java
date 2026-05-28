@@ -22,7 +22,7 @@ public record DynamicPosition(Side havingMove, BitboardPosition bitboardPosition
   /**
    * Convenience predicate preserved for source compatibility with the previous shape of this record (which carried an
    * {@code isEnPassantCapturePossible} boolean instead of the target square). Returns {@code true} iff
-   * {@link #enPassantCaptureTargetSquare()} is not {@link Square#NONE} — i.e. there is an opposing pawn that can
+   * {@link #enPassantCaptureTargetSquare()} is not {@link Square#NONE} - i.e. there is an opposing pawn that can
    * actually capture en passant in this position.
    */
   public boolean isEnPassantCapturePossible() {

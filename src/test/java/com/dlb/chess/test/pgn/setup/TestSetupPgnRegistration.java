@@ -21,7 +21,7 @@ import com.dlb.chess.test.pgntest.enums.PgnTest;
  * exactly.
  *
  * <p>
- * Rationale: the test corpus is driven by the registry — a PGN file with no expected-value entry is invisible to every
+ * Rationale: the test corpus is driven by the registry - a PGN file with no expected-value entry is invisible to every
  * corpus-iterating test, and a registered entry without a disk file would fail mid-run rather than at setup time.
  * Comparing the two sets up front surfaces either kind of drift with enough information to fix it (the set of orphan
  * file names on each side).

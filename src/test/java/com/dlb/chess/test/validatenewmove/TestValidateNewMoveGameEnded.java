@@ -15,14 +15,14 @@ import com.dlb.chess.unwinnability.DeadPositionQuick;
 
 /**
  * Pins the library's posture at game-end states: termination is queryable, not enforced. None of the five automatic
- * terminations — checkmate, stalemate, mutual insufficient material, fivefold repetition, 75-move rule — and none of
+ * terminations - checkmate, stalemate, mutual insufficient material, fivefold repetition, 75-move rule - and none of
  * the analyzer-driven dead positions block further move attempts at the validation pipeline.
  *
  * <p>
  * At checkmate and stalemate the natural barrier is the empty legal-move set: any attempted move fails through ordinary
  * move-legality checks (own-piece occupation, king-into-check, etc.), not via a dedicated game-end gate. At mutual
  * insufficient material, fivefold, 75-move, and analyzer-driven dead positions, legal moves still exist and the
- * pipeline accepts them — the caller polls {@code calculateOutcome} or the specific predicates to learn the game has
+ * pipeline accepts them - the caller polls {@code calculateOutcome} or the specific predicates to learn the game has
  * reached an automatic termination.
  *
  * <p>
@@ -40,7 +40,7 @@ class TestValidateNewMoveGameEnded implements EnumConstants {
     assertTrue(board.isCheckmate(), "fool's mate position must be checkmate");
     assertTrue(board.getLegalMoves().isEmpty(), "checkmate has no legal moves");
 
-    // The pipeline rejects any attempt via ordinary legality — not via a dedicated game-end gate.
+    // The pipeline rejects any attempt via ordinary legality - not via a dedicated game-end gate.
     // Ke2 fails because e2 is occupied by the white pawn.
     rejectsWith(board, new MoveSpecification(E1, E2), MoveCheck.MOVEMENT_TO_SQUARE_OCCUPIED_BY_OWN_PIECE);
   }

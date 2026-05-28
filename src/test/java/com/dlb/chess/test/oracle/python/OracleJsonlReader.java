@@ -14,7 +14,7 @@ import com.dlb.chess.common.Nulls;
 /**
  * Reads a python-chess-generated oracle JSONL file into {@link OracleRecord} values. One JSON object per line; objects
  * match the shape emitted by {@code src/test/python/generate_parser_fen_mechanics_oracle.py}. The embedded JSON parser
- * covers exactly the value types that script emits — strings, integers, booleans, arrays, objects — and is intended for
+ * covers exactly the value types that script emits - strings, integers, booleans, arrays, objects - and is intended for
  * the test path only; do not generalise it.
  */
 @SuppressWarnings("unchecked")
