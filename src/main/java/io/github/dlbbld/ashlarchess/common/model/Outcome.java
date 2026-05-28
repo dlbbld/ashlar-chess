@@ -5,8 +5,8 @@ import io.github.dlbbld.ashlarchess.common.enums.Termination;
 
 /**
  * The current-position outcome of a game: how it ended (or {@link Termination#NONE} if it has not) and who, if anyone,
- * won. Produced by {@link io.github.dlbbld.ashlarchess.common.utility.BasicChessUtility#calculateOutcome}; the {@link #ONGOING}
- * sentinel is returned for positions where no termination condition fires.
+ * won. Produced by {@link io.github.dlbbld.ashlarchess.common.utility.BasicChessUtility#calculateOutcome}; the
+ * {@link #ONGOING} sentinel is returned for positions where no termination condition fires.
  *
  * <p>
  * Invariant enforced by the compact constructor: {@code winner} is {@link Side#NONE} unless {@code termination} is

@@ -14,10 +14,11 @@ import io.github.dlbbld.ashlarchess.common.Nulls;
 import io.github.dlbbld.ashlarchess.common.model.MoveSpecification;
 
 /**
- * Twelve-bitboard piece-placement representation: one {@code long} per real {@link io.github.dlbbld.ashlarchess.board.enums.Piece}
- * value, each bit indexed by {@link io.github.dlbbld.ashlarchess.board.enums.Square#ordinal()} (little-endian rank-file:
- * {@code A1 = 0, B1 = 1, ..., H8 = 63}). Field order matches the {@link io.github.dlbbld.ashlarchess.board.enums.Piece#REAL} enum
- * order.
+ * Twelve-bitboard piece-placement representation: one {@code long} per real
+ * {@link io.github.dlbbld.ashlarchess.board.enums.Piece} value, each bit indexed by
+ * {@link io.github.dlbbld.ashlarchess.board.enums.Square#ordinal()} (little-endian rank-file:
+ * {@code A1 = 0, B1 = 1, ..., H8 = 63}). Field order matches the
+ * {@link io.github.dlbbld.ashlarchess.board.enums.Piece#REAL} enum order.
  *
  * <p>
  * <b>Construction invariant:</b> the twelve piece bitboards are pairwise disjoint - no square may carry two pieces. The
@@ -438,9 +439,10 @@ public record BitboardPosition(long whitePawns, long whiteRooks, long whiteKnigh
 
   /**
    * Full legal non-castling move generation. Returns the set of legal {@link MoveSpecification}s for {@code side}'s
-   * pieces excluding castling - castling lives on {@link io.github.dlbbld.ashlarchess.board.Board} together with the castling- rights
-   * state. The {@code enPassantBit} parameter is the single-bit bitboard of the en-passant target square (or {@code 0L}
-   * if no EP is available to {@code side}); the bitboard layer is stateless about whose turn it is.
+   * pieces excluding castling - castling lives on {@link io.github.dlbbld.ashlarchess.board.Board} together with the
+   * castling- rights state. The {@code enPassantBit} parameter is the single-bit bitboard of the en-passant target
+   * square (or {@code 0L} if no EP is available to {@code side}); the bitboard layer is stateless about whose turn it
+   * is.
    *
    * <p>
    * Algorithm: generate the king's legal targets via {@link #legalKingTargets}; if double check, only king moves are
@@ -647,8 +649,9 @@ public record BitboardPosition(long whitePawns, long whiteRooks, long whiteKnigh
    *
    * <p>
    * Castling rights, en-passant target square, side-to-move, and the halfmove / fullmove counters are intentionally NOT
-   * updated here - they live on {@link io.github.dlbbld.ashlarchess.board.Board} / {@link io.github.dlbbld.ashlarchess.common.model.DynamicPosition}.
-   * This is the piece-placement-only equivalent of {@code StaticPositionUtility.createPositionAfterMove}.
+   * updated here - they live on {@link io.github.dlbbld.ashlarchess.board.Board} /
+   * {@link io.github.dlbbld.ashlarchess.common.model.DynamicPosition}. This is the piece-placement-only equivalent of
+   * {@code StaticPositionUtility.createPositionAfterMove}.
    *
    * <p>
    * The bitboard layer is intentionally stateless about whose turn it is. Callers pass {@code movingSide} explicitly -

@@ -7,17 +7,18 @@
  * <p>
  * Two parser entry points sit on top of a shared validation core:
  * <ul>
- * <li>{@link io.github.dlbbld.ashlarchess.san.StrictSanParser#parseText(String, io.github.dlbbld.ashlarchess.board.Board)} - canonical SAN only.
- * Reached from {@link io.github.dlbbld.ashlarchess.board.Board#moveStrict(String)}.
- * <li>{@link io.github.dlbbld.ashlarchess.san.LenientSanParser#parseText(String, io.github.dlbbld.ashlarchess.board.Board)} - accepts a defined set
- * of forgivable deviations from canonical SAN. Reached from {@link io.github.dlbbld.ashlarchess.board.Board#moveLenient(String)}. See
- * {@code specification.md} section 3.3.1 for the taxonomy.
+ * <li>{@link io.github.dlbbld.ashlarchess.san.StrictSanParser#parseText(String, io.github.dlbbld.ashlarchess.board.Board)}
+ * - canonical SAN only. Reached from {@link io.github.dlbbld.ashlarchess.board.Board#moveStrict(String)}.
+ * <li>{@link io.github.dlbbld.ashlarchess.san.LenientSanParser#parseText(String, io.github.dlbbld.ashlarchess.board.Board)}
+ * - accepts a defined set of forgivable deviations from canonical SAN. Reached from
+ * {@link io.github.dlbbld.ashlarchess.board.Board#moveLenient(String)}. See {@code specification.md} section 3.3.1 for
+ * the taxonomy.
  * </ul>
  *
  * <p>
- * Generation goes the other direction: {@link io.github.dlbbld.ashlarchess.san.MoveToSan} produces canonical SAN for a played move
- * (with minimal disambiguation and the correct check/checkmate suffix); {@link io.github.dlbbld.ashlarchess.san.MoveToLan} produces
- * long algebraic notation.
+ * Generation goes the other direction: {@link io.github.dlbbld.ashlarchess.san.MoveToSan} produces canonical SAN for a
+ * played move (with minimal disambiguation and the correct check/checkmate suffix);
+ * {@link io.github.dlbbld.ashlarchess.san.MoveToLan} produces long algebraic notation.
  *
  * <p>
  * Format-level checks and movement-level (legal-move, king-safety) checks both live in this package.

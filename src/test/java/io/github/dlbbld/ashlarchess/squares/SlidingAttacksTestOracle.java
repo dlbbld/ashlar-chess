@@ -9,8 +9,8 @@ import io.github.dlbbld.ashlarchess.board.enums.Square;
 /**
  * Test-only public bridge that exposes the package-private sliding-attack reference classes
  * ({@link BishopAttackedSquares}, {@link RookAttackedSquares}, {@link QueenAttackedSquares}) so the bitboard
- * differential tests under {@code io.github.dlbbld.ashlarchess.test.bitboard} can call them. Lives under {@code src/test/} so it is
- * not part of the production API surface.
+ * differential tests under {@code io.github.dlbbld.ashlarchess.test.bitboard} can call them. Lives under
+ * {@code src/test/} so it is not part of the production API surface.
  */
 public final class SlidingAttacksTestOracle {
 

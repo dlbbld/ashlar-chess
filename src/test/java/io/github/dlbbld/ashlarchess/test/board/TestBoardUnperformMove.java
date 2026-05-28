@@ -16,9 +16,9 @@ import io.github.dlbbld.ashlarchess.test.pgn.parser.PgnCacheForStrictPgnParserTe
 import io.github.dlbbld.ashlarchess.test.pgn.setup.PgnTestCaseCatalog;
 
 /**
- * Verifies the {@link io.github.dlbbld.ashlarchess.board.Board#unmove} contract: after performing a move and immediately unperforming
- * it, the board must be in exactly the same state it was in before the move. Run across every halfmove of every PGN in
- * the basic test corpus.
+ * Verifies the {@link io.github.dlbbld.ashlarchess.board.Board#unmove} contract: after performing a move and
+ * immediately unperforming it, the board must be in exactly the same state it was in before the move. Run across every
+ * halfmove of every PGN in the basic test corpus.
  *
  * <h2>Design</h2>
  *
@@ -41,9 +41,9 @@ import io.github.dlbbld.ashlarchess.test.pgn.setup.PgnTestCaseCatalog;
  * <h2>Scope</h2>
  *
  * <p>
- * Iterates every {@link io.github.dlbbld.ashlarchess.test.pgntest.enums.PgnTest} category marked basic, no cap on files per folder.
- * {@code PARSER_FROM_FEN} fixtures (custom start positions) are included so the contract is verified beyond the
- * standard initial position too.
+ * Iterates every {@link io.github.dlbbld.ashlarchess.test.pgntest.enums.PgnTest} category marked basic, no cap on files
+ * per folder. {@code PARSER_FROM_FEN} fixtures (custom start positions) are included so the contract is verified beyond
+ * the standard initial position too.
  *
  * <p>
  * The regular corpus is asserted to contain only fixtures that fully replay under the strict-game invariant (see

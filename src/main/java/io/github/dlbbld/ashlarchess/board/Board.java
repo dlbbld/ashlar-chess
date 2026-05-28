@@ -258,8 +258,8 @@ public class Board {
    * contradict the piece placement still fails. Callers who need to see the list of tolerated deviations should invoke
    * {@link LenientFenParser#validateText(String)} directly.
    *
-   * @throws io.github.dlbbld.ashlarchess.fen.LenientFenParserValidationException when the input cannot be recovered or fails the
-   *                                                               strict semantic checks
+   * @throws io.github.dlbbld.ashlarchess.fen.LenientFenParserValidationException when the input cannot be recovered or
+   *                                                                              fails the strict semantic checks
    */
   public static Board fromFenLenient(String fen) {
     return new Board(LenientFenParser.parseText(fen));
@@ -283,8 +283,8 @@ public class Board {
    * {@link MoveSpecification}; for callers that only need success / fail, the absence of a thrown exception is the
    * answer. Use {@link #moveLenient(String)} when parsing real-world PGN that may contain forgivable deviations.
    *
-   * @throws io.github.dlbbld.ashlarchess.san.SanValidationException if {@code san} is not canonical SAN, or is canonical but does not
-   *                                                  represent a legal move
+   * @throws io.github.dlbbld.ashlarchess.san.SanValidationException if {@code san} is not canonical SAN, or is
+   *                                                                 canonical but does not represent a legal move
    */
   public StrictSanParserValidationResult moveStrict(String san) {
     final StrictSanParserValidationResult result = StrictSanParser.parseText(san, this);
@@ -303,8 +303,9 @@ public class Board {
    * {@link LenientSanParserValidationResult} carries the resolved {@code MoveSpecification} together with one
    * {@code ForgivenItem} per deviation that was forgiven; on canonical input the forgiven-items list is empty.
    *
-   * @throws io.github.dlbbld.ashlarchess.san.LenientSanParserValidationException if the input cannot be resolved to a legal move even
-   *                                                               after applying every supported tolerance
+   * @throws io.github.dlbbld.ashlarchess.san.LenientSanParserValidationException if the input cannot be resolved to a
+   *                                                                              legal move even after applying every
+   *                                                                              supported tolerance
    */
   public LenientSanParserValidationResult moveLenient(String san) {
     final LenientSanParserValidationResult result = LenientSanParser.parseText(san, this);
@@ -793,8 +794,9 @@ public class Board {
    * rule threshold ({@code halfMoveClock >= 100}) on the current position. Reports the fact independently of any other
    * game-end condition that may also hold - at a checkmate position with clock past 100, this still returns
    * {@code true}. Game-end precedence belongs to
-   * {@link io.github.dlbbld.ashlarchess.common.utility.BasicChessUtility#calculateOutcome} and not to this predicate. (Deliberate
-   * divergence from python-chess at game-end positions, where {@code is_fifty_moves} folds in a precedence guard.)
+   * {@link io.github.dlbbld.ashlarchess.common.utility.BasicChessUtility#calculateOutcome} and not to this predicate.
+   * (Deliberate divergence from python-chess at game-end positions, where {@code is_fifty_moves} folds in a precedence
+   * guard.)
    */
   public boolean isFiftyMove() {
     return getHalfMoveClock() >= ChessConstants.FIFTY_MOVE_RULE_HALF_MOVE_CLOCK_THRESHOLD;
@@ -812,9 +814,9 @@ public class Board {
    * Raw condition predicate (FIDE 9.6.2 threshold): returns {@code true} iff the halfmove clock has reached the 75-
    * move-rule threshold ({@code halfMoveClock >= 150}) on the current position. Reports the fact independently of any
    * other game-end condition - at a checkmate position with clock past 150, this still returns {@code true}. Game-end
-   * precedence belongs to {@link io.github.dlbbld.ashlarchess.common.utility.BasicChessUtility#calculateOutcome} and not to this
-   * predicate. (Deliberate divergence from python-chess at game-end positions, where {@code is_seventyfive_moves} folds
-   * in a precedence guard.)
+   * precedence belongs to {@link io.github.dlbbld.ashlarchess.common.utility.BasicChessUtility#calculateOutcome} and
+   * not to this predicate. (Deliberate divergence from python-chess at game-end positions, where
+   * {@code is_seventyfive_moves} folds in a precedence guard.)
    */
   public boolean isSeventyFiveMove() {
     return getHalfMoveClock() >= ChessConstants.SEVENTY_FIVE_MOVE_RULE_HALF_MOVE_CLOCK_THRESHOLD;
@@ -854,8 +856,8 @@ public class Board {
 
   /**
    * Convenience: {@code true} iff a termination condition fires on the current position (i.e. the projected
-   * {@link Outcome}'s termination is not {@link io.github.dlbbld.ashlarchess.common.enums.Termination#NONE}). Equivalent to
-   * {@code BasicChessUtility.calculateOutcome(this).termination() != Termination.NONE}.
+   * {@link Outcome}'s termination is not {@link io.github.dlbbld.ashlarchess.common.enums.Termination#NONE}).
+   * Equivalent to {@code BasicChessUtility.calculateOutcome(this).termination() != Termination.NONE}.
    */
   public boolean isGameEnd() {
     return BasicChessUtility.calculateOutcome(this).termination() != Termination.NONE;
@@ -960,10 +962,10 @@ public class Board {
    * the operation is {@code O(plies)} per call rather than {@code O(1)}.
    *
    * <p>
-   * Kept as part of the public API in this release so consumers in {@code io.github.dlbbld.ashlarchess.report} and downstream code are
-   * not forced to migrate in one step. A future release may remove this method entirely as part of finishing the
-   * {@link HalfMove} decommission; callers that hold a long-lived reference should cache the returned list rather than
-   * calling this method per access.
+   * Kept as part of the public API in this release so consumers in {@code io.github.dlbbld.ashlarchess.report} and
+   * downstream code are not forced to migrate in one step. A future release may remove this method entirely as part of
+   * finishing the {@link HalfMove} decommission; callers that hold a long-lived reference should cache the returned
+   * list rather than calling this method per access.
    */
   public ImmutableList<HalfMove> getHalfMoveList() {
     final int plies = performedLegalMoveList.size();

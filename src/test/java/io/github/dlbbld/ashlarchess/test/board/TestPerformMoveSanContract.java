@@ -18,9 +18,10 @@ import io.github.dlbbld.ashlarchess.test.pgn.setup.PgnTestCaseCatalog;
 
 /**
  * Verifies the round-trip consistency between SAN and MoveSpecification that
- * {@link io.github.dlbbld.ashlarchess.board.Board#moveStrict(String)} relies on: once {@link io.github.dlbbld.ashlarchess.san.StrictSanParser}'s
- * {@code parseText} has produced a MoveSpecification from a SAN, that MoveSpec is the canonical representation of the
- * move and round-trips both ways. The board therefore performs the move with no further re-validation of the spec.
+ * {@link io.github.dlbbld.ashlarchess.board.Board#moveStrict(String)} relies on: once
+ * {@link io.github.dlbbld.ashlarchess.san.StrictSanParser}'s {@code parseText} has produced a MoveSpecification from a
+ * SAN, that MoveSpec is the canonical representation of the move and round-trips both ways. The board therefore
+ * performs the move with no further re-validation of the spec.
  *
  * <h2>Forward (played moves)</h2>
  *
@@ -39,9 +40,9 @@ import io.github.dlbbld.ashlarchess.test.pgn.setup.PgnTestCaseCatalog;
  * <p>
  * At each played halfmove: perform it, then capture both the stored MoveSpec
  * ({@code board.getLastMove().moveSpecification()}) and the board's canonical SAN ({@code board.getSan()});
- * {@link io.github.dlbbld.ashlarchess.board.Board#unmove} back to the prior position and re-derive a MoveSpec from that canonical SAN
- * via {@code StrictSanParser.parseText}. The re-derived MoveSpec must equal the stored one - the SAN the board emits
- * round-trips back to the same move.
+ * {@link io.github.dlbbld.ashlarchess.board.Board#unmove} back to the prior position and re-derive a MoveSpec from that
+ * canonical SAN via {@code StrictSanParser.parseText}. The re-derived MoveSpec must equal the stored one - the SAN the
+ * board emits round-trips back to the same move.
  *
  * <h2>Scope and runtime</h2>
  *

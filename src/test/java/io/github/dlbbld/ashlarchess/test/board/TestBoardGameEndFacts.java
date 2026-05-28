@@ -13,9 +13,9 @@ import io.github.dlbbld.ashlarchess.common.model.GameEndFacts;
 
 /**
  * Tests for {@link Board#calculateGameEndFacts()} and {@link Board#isGameEnd()} - the rich game-end snapshot that pairs
- * all condition-only facts with the precedence-projected {@link io.github.dlbbld.ashlarchess.common.model.Outcome}. Pins the "facts
- * are independent, outcome is a projection" architecture: multiple facts may be simultaneously true at a single
- * position; the {@code outcome} field reports the python-chess precedence stack's verdict.
+ * all condition-only facts with the precedence-projected {@link io.github.dlbbld.ashlarchess.common.model.Outcome}.
+ * Pins the "facts are independent, outcome is a projection" architecture: multiple facts may be simultaneously true at
+ * a single position; the {@code outcome} field reports the python-chess precedence stack's verdict.
  *
  * <p>
  * Sister to {@code TestBasicChessUtility} which pins the precedence rules directly on {@code calculateOutcome}; this

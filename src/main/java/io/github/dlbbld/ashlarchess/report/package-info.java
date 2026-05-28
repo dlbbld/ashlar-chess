@@ -1,7 +1,7 @@
 /**
- * Game-level reports about a {@link io.github.dlbbld.ashlarchess.board.Board}: threefold-repetition listings (including the
- * missed-claim-ahead opportunities other libraries don't surface) and no-progress (50/75-move-rule) sequences, rendered
- * as a human-readable summary to {@code stdout} via {@link io.github.dlbbld.ashlarchess.report.Reporter}.
+ * Game-level reports about a {@link io.github.dlbbld.ashlarchess.board.Board}: threefold-repetition listings (including
+ * the missed-claim-ahead opportunities other libraries don't surface) and no-progress (50/75-move-rule) sequences,
+ * rendered as a human-readable summary to {@code stdout} via {@link io.github.dlbbld.ashlarchess.report.Reporter}.
  *
  * <p>
  * Distinguishes the on-board predicates ("threefold has occurred") from the with-move predicates ("some legal move

@@ -11,10 +11,10 @@ import io.github.dlbbld.ashlarchess.unwinnability.UnwinnabilityMaterialBitboard;
 
 /**
  * StaticPosition-backed material predicates used by the unwinnability/helpmate analysis. Reference implementations of
- * the same predicates that {@link UnwinnabilityMaterialBitboard} computes from a {@link io.github.dlbbld.ashlarchess.bitboard
- * .BitboardPosition}. This class is the differential-test oracle - production callers all consume the bitboard sibling.
- * When Phase 6 of the switchover lands and the StaticPosition subtree relocates to {@code src/test/}, this class moves
- * with it as a single {@code git mv}.
+ * the same predicates that {@link UnwinnabilityMaterialBitboard} computes from a
+ * {@link io.github.dlbbld.ashlarchess.bitboard .BitboardPosition}. This class is the differential-test oracle -
+ * production callers all consume the bitboard sibling. When Phase 6 of the switchover lands and the StaticPosition
+ * subtree relocates to {@code src/test/}, this class moves with it as a single {@code git mv}.
  */
 abstract class UnwinnabilityMaterial implements EnumConstants {
 

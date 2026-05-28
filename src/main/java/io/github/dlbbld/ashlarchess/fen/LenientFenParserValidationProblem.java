@@ -2,8 +2,8 @@ package io.github.dlbbld.ashlarchess.fen;
 
 /**
  * Top-level outcome categories from the lenient FEN parser. The richer downstream classifiers
- * ({@link io.github.dlbbld.ashlarchess.common.enums.FenAdvancedValidationProblem}) are surfaced separately on the validation result so
- * callers can switch on the specific failure mode without parsing the message.
+ * ({@link io.github.dlbbld.ashlarchess.common.enums.FenAdvancedValidationProblem}) are surfaced separately on the
+ * validation result so callers can switch on the specific failure mode without parsing the message.
  */
 public enum LenientFenParserValidationProblem {
 

@@ -595,8 +595,10 @@ public final class LenientPgnParser {
   }
 
   private static boolean isAllowedLenientSanCharacter(char c) {
-    if (io.github.dlbbld.ashlarchess.fen.FenPieceSymbol.exists(c) || io.github.dlbbld.ashlarchess.board.enums.File.exists(c)
-        || io.github.dlbbld.ashlarchess.board.enums.Rank.exists(c) || io.github.dlbbld.ashlarchess.san.SanSymbol.exists(c)) {
+    if (io.github.dlbbld.ashlarchess.fen.FenPieceSymbol.exists(c)
+        || io.github.dlbbld.ashlarchess.board.enums.File.exists(c)
+        || io.github.dlbbld.ashlarchess.board.enums.Rank.exists(c)
+        || io.github.dlbbld.ashlarchess.san.SanSymbol.exists(c)) {
       return true;
     }
     // Lenient additions: uppercase file letter (UPPERCASE_FILE_LETTER), uppercase capture marker

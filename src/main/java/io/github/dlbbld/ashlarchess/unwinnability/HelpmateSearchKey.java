@@ -9,9 +9,9 @@ import io.github.dlbbld.ashlarchess.common.model.DynamicPosition;
  * Exact structural transposition-cache key for {@link FindHelpmateExhaust}'s search, built directly from
  * {@link HelpmateSearchBoard}'s mutable piece bitboards and per-move auxiliary state. Equivalent in semantics to
  * {@link DynamicPosition} - same fields, same equality contract - but constructed without the nested
- * {@link io.github.dlbbld.ashlarchess.bitboard.BitboardPosition} record allocation that {@code DynamicPosition} carries: the twelve
- * piece bitboards are inlined as record components so that {@link HelpmateSearchBoard#currentTranspositionKey()} costs
- * exactly one record allocation per cache touch.
+ * {@link io.github.dlbbld.ashlarchess.bitboard.BitboardPosition} record allocation that {@code DynamicPosition}
+ * carries: the twelve piece bitboards are inlined as record components so that
+ * {@link HelpmateSearchBoard#currentTranspositionKey()} costs exactly one record allocation per cache touch.
  *
  * <p>
  * <strong>Fields and semantics:</strong>

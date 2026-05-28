@@ -591,8 +591,10 @@ public final class StrictPgnParser {
   private static void validateSanCharacters(String san) {
     for (int i = 0; i < san.length(); i++) {
       final char c = san.charAt(i);
-      if (!io.github.dlbbld.ashlarchess.fen.FenPieceSymbol.exists(c) && !io.github.dlbbld.ashlarchess.board.enums.File.exists(c)
-          && !io.github.dlbbld.ashlarchess.board.enums.Rank.exists(c) && !io.github.dlbbld.ashlarchess.san.SanSymbol.exists(c)) {
+      if (!io.github.dlbbld.ashlarchess.fen.FenPieceSymbol.exists(c)
+          && !io.github.dlbbld.ashlarchess.board.enums.File.exists(c)
+          && !io.github.dlbbld.ashlarchess.board.enums.Rank.exists(c)
+          && !io.github.dlbbld.ashlarchess.san.SanSymbol.exists(c)) {
         throw movetextError(StrictPgnParserValidationProblem.MOVETEXT_SAN_CHARACTER_INVALID,
             "The movetext is invalid because a SAN contains an invalid character of \"" + c + "\".");
       }

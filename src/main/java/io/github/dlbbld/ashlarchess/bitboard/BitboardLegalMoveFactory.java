@@ -118,8 +118,9 @@ public final class BitboardLegalMoveFactory {
   /**
    * Emits the legal castling moves for {@code havingMove} (king-side and queen-side, in that order) to {@code sink},
    * using {@link CastlingUtility}'s bitboard-overload castling checks. Moved here from {@code KingCastlingLegalMoves}
-   * so the production legal-move pipeline does not depend on the relocated {@code io.github.dlbbld.ashlarchess.moves.*LegalMoves}
-   * subtree (which lives in {@code src/test/} as the differential-test oracle).
+   * so the production legal-move pipeline does not depend on the relocated
+   * {@code io.github.dlbbld.ashlarchess.moves.*LegalMoves} subtree (which lives in {@code src/test/} as the
+   * differential-test oracle).
    */
   private static void emitCastlingLegalMoves(Consumer<LegalMove> sink, BitboardPosition bitboardPosition,
       Side havingMove, CastlingRight castlingRight) {

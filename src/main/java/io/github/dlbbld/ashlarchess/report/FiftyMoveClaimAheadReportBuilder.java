@@ -36,8 +36,8 @@ abstract class FiftyMoveClaimAheadReportBuilder {
    * possible]} placeholder where a SAN would normally go.
    *
    * <p>
-   * The {@link io.github.dlbbld.ashlarchess.board.Board#canClaimFiftyMoveRuleFor} per-move predicate remains the single source of
-   * truth for whether a candidate move qualifies as a 50-move claim.
+   * The {@link io.github.dlbbld.ashlarchess.board.Board#canClaimFiftyMoveRuleFor} per-move predicate remains the single
+   * source of truth for whether a candidate move qualifies as a 50-move claim.
    */
   static FiftyMoveClaimAheadReport build(Board board) {
     final List<FiftyMoveClaimAheadEntry> entries = new ArrayList<>();

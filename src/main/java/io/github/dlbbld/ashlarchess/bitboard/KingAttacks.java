@@ -5,9 +5,10 @@ import io.github.dlbbld.ashlarchess.board.enums.Square;
 /**
  * Precomputed king-attack table (non-castling). For any square {@code sq}, {@link #attacks(Square)} returns the
  * bitboard of the 3-8 squares a king on {@code sq} attacks on an otherwise empty board. Castling targets live on
- * {@link io.github.dlbbld.ashlarchess.board.Board} together with the castling-rights state and are intentionally not part of this
- * geometric layer. Differential-tested bit-exact against {@code KingNonCastlingEmptyBoardSquares.getKingSquares} (the
- * {@code StaticPosition}-layer table, test-side since the 11.0.0 role-inversion release).
+ * {@link io.github.dlbbld.ashlarchess.board.Board} together with the castling-rights state and are intentionally not
+ * part of this geometric layer. Differential-tested bit-exact against
+ * {@code KingNonCastlingEmptyBoardSquares.getKingSquares} (the {@code StaticPosition}-layer table, test-side since the
+ * 11.0.0 role-inversion release).
  */
 public final class KingAttacks {
 

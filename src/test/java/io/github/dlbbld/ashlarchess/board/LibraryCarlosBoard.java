@@ -564,7 +564,8 @@ public class LibraryCarlosBoard {
   }
 
   public io.github.dlbbld.ashlarchess.bitboard.BitboardPosition getBitboardPositionBeforeLastMove() {
-    return io.github.dlbbld.ashlarchess.bitboard.StaticPositionBridge.fromStaticPosition(getStaticPositionBeforeLastMove());
+    return io.github.dlbbld.ashlarchess.bitboard.StaticPositionBridge
+        .fromStaticPosition(getStaticPositionBeforeLastMove());
   }
 
   public boolean movesStrict(String... sanArray) {
