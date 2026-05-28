@@ -9,7 +9,7 @@ import com.dlb.chess.common.exceptions.ProgrammingMistakeException;
 abstract class PgnLineWrapper {
 
   /**
-   * Wraps {@code line} into <= {@code lineLength}-char lines, splitting on spaces - except inside {@code {...}} brace
+   * Wraps {@code line} into at most {@code lineLength}-char lines, splitting on spaces - except inside {@code {...}} brace
    * comments, which are atomic. A brace region longer than {@code lineLength} is emitted on its own line rather than
    * broken: spaces inside commentary are content, not wrap candidates. The 79-char export-format guideline is a soft
    * target, matching python-chess.

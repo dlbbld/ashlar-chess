@@ -19,7 +19,7 @@ public class MoveToLan extends AbstractSan {
    *
    * <pre>
    * &lt;LAN piece move&gt; ::= &lt;piece symbol&gt;&lt;from square&gt;('-'|'x')&lt;to square&gt;
-   * &lt;LAN pawn move&gt;  ::= &lt;from square&gt;('-'|'x')&lt;to square&gt;[<promoted to>]
+   * &lt;LAN pawn move&gt;  ::= &lt;from square&gt;('-'|'x')&lt;to square&gt;[&lt;promoted to&gt;]
    * &lt;LAN castle&gt;     ::= 'O-O' | 'O-O-O'
    * &lt;promoted to&gt;    ::= '=' ('N' | 'B' | 'R' | 'Q')
    * </pre>

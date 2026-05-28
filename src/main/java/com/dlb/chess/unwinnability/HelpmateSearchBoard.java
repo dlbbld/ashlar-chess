@@ -299,7 +299,7 @@ final class HelpmateSearchBoard {
    * Identifies movingPiece, capturedPiece, and {@link LegalMoveKind} from the current mutable state. Mirrors the tiny
    * piece-lookup logic in {@code BitboardLegalMoveFactory.toLegalMove} but reads directly from the mutable piece
    * bitboards so the hot path does not pay for a {@link BitboardPosition} snapshot per move. Same semantics; the
-   * differential coverage comes from {@link TestHelpmateSearchBoard}'s lock-step Board parity.
+   * differential coverage comes from {@code TestHelpmateSearchBoard}'s lock-step Board parity.
    */
   private LegalMove identifyLegalMove(MoveSpecification moveSpec) {
     if (moveSpec.castlingMove() != CastlingMove.NONE) {

@@ -136,14 +136,15 @@
 					Javadoc is NOT bound to the package phase. Regular edit-compile cycles
 					(mvn test-compile, mvn package -DskipTests) stay fast and Java-only.
 					Run javadoc explicitly when touching docs / API signatures:
-						mvn javadoc:javadoc                      # validate main API docs
-						mvn javadoc:test-javadoc -Dshow=private  # validate TEST docs (test classes are
-						                                         # package-private, so -Dshow=private is
-						                                         # required for doclint to lint them)
-						mvn javadoc:jar                          # produce the javadoc jar
-					Strict doclint below makes broken @link references and malformed HTML fail the
-					build when javadoc is invoked; the same config applies to test-javadoc, so the
-					gate covers test JavaDoc too. Sharp but opt-in.
+						mvn javadoc:javadoc -Dshow=private       # validate ALL main docs
+						mvn javadoc:test-javadoc -Dshow=private  # validate ALL test docs
+						mvn javadoc:jar                          # produce the public-API javadoc jar
+					Both validation goals need -Dshow=private: many main classes (report records,
+					helpers) and all test classes are package-private, and at javadoc's default
+					visibility (protected) doclint silently SKIPS them - stale @link / malformed
+					HTML then go uncaught. javadoc:jar stays at default: it ships the public API.
+					Strict doclint (all,-missing, failOnError) makes broken refs / malformed HTML
+					fail the build. Sharp but opt-in.
 				-->
 				<configuration>
 					<source>17</source>

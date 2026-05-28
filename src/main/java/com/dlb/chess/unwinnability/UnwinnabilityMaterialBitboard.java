@@ -10,11 +10,8 @@ import com.dlb.chess.common.constants.EnumConstants;
  * {@link UnwinnableQuickAnalyzer}, {@link FindHelpmateExhaust}, and {@link GoingToCorner} consume this class.
  *
  * <p>
- * The sibling {@link UnwinnabilityMaterial} carries the StaticPosition-backed reference implementations of the same
- * predicates; that class is the differential-test oracle and will relocate to {@code src/test/} alongside the rest of
- * the StaticPosition layer when Phase 6 of the switchover lands. Splitting the two surfaces into separate classes
- * (rather than overloads on one class) keeps that future relocation a single {@code git mv}, and satisfies the
- * Checkstyle overload-adjacency rule without resorting to suppressions or semantically odd reordering.
+ * The StaticPosition-backed reference implementations of the same predicates live in the test tree as the permanent
+ * differential-test oracle; this bitboard class is the production surface.
  */
 abstract class UnwinnabilityMaterialBitboard implements EnumConstants {
 
