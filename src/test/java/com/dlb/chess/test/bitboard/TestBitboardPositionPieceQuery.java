@@ -59,7 +59,8 @@ class TestBitboardPositionPieceQuery {
     for (final PgnTest pgnTest : PgnTest.values()) {
       final PgnTestCaseList testCaseList = PgnTestCaseCatalog.getTestList(pgnTest);
       for (final PgnFen testCase : testCaseList.list()) {
-        final StaticPosition staticPosition = StaticPositionBridge.toStaticPosition(testCase.finalPosition().getBitboardPosition());
+        final StaticPosition staticPosition = StaticPositionBridge
+            .toStaticPosition(testCase.finalPosition().getBitboardPosition());
         final BitboardPosition bitboardPosition = StaticPositionBridge.fromStaticPosition(staticPosition);
         for (final Square square : Square.REAL) {
           assertEquals(staticPosition.get(square), bitboardPosition.get(square),

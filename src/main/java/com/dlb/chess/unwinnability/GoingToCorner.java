@@ -34,7 +34,7 @@ class GoingToCorner implements EnumConstants {
       fromSquare = m.moveSpecification().fromSquare();
     }
 
-    // 2: if P.type not in {K,N} then return false ( -> We focus on ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œslowÃƒÂ¢Ã¢â€šÂ¬Ã‚Â (non-sliding)
+    // 2: if P.type not in {K,N} then return false ( -> We focus on "slow" (non-sliding)
     // pieces
     // that could take several turns to reach the desired square)
     if (movingPiece.getPieceType() != PieceType.KING && movingPiece.getPieceType() != PieceType.KNIGHT) {
@@ -58,7 +58,7 @@ class GoingToCorner implements EnumConstants {
   private static Square calculateTargetSquare(Side winner, BitboardPosition bitboardPosition, Goal goal, Piece p) {
     Square target;
 
-    final var isDarkCorner = UnwinnabilityMaterialBitboard.calculateHasDarkSquareBishops(winner, bitboardPosition)
+    final boolean isDarkCorner = UnwinnabilityMaterialBitboard.calculateHasDarkSquareBishops(winner, bitboardPosition)
         || UnwinnabilityMaterialBitboard.calculateHasLightSquareBishops(winner.getOppositeSide(), bitboardPosition)
             && UnwinnabilityMaterialBitboard.calculateHasNoBishops(winner, bitboardPosition);
 

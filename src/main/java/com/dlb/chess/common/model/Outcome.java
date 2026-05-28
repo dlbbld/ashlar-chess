@@ -10,7 +10,7 @@ import com.dlb.chess.common.enums.Termination;
  *
  * <p>
  * Invariant enforced by the compact constructor: {@code winner} is {@link Side#NONE} unless {@code termination} is
- * {@link Termination#CHECKMATE}. For checkmate, {@code winner} is {@link Side#WHITE} or {@link Side#BLACK} — the side
+ * {@link Termination#CHECKMATE}. For checkmate, {@code winner} is {@link Side#WHITE} or {@link Side#BLACK} - the side
  * that delivered mate (i.e. <em>not</em> the side to move). Non-nullness of the fields is enforced at compile time by
  * the package's {@code @NonNullByDefault}.
  *
@@ -23,7 +23,7 @@ import com.dlb.chess.common.enums.Termination;
 public record Outcome(Termination termination, Side winner) {
 
   /**
-   * Singleton "no termination" outcome — returned by {@code calculateOutcome} for ongoing positions.
+   * Singleton "no termination" outcome - returned by {@code calculateOutcome} for ongoing positions.
    */
   public static final Outcome ONGOING = new Outcome(Termination.NONE, Side.NONE);
 

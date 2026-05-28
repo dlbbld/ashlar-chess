@@ -17,13 +17,13 @@ abstract class ThreefoldClaimAheadReportBuilder {
 
   /**
    * Builds the claim-ahead report by replaying the game on an internal fresh board. The {@code board} argument is
-   * read-only — never receives {@code move} or {@code unmove} calls.
+   * read-only - never receives {@code move} or {@code unmove} calls.
    *
    * <p>
    * Entries are ordered by {@link ReportLineOrder#CLAIM_AHEAD_COMPARATOR}: lexicographic on the displayed half-move-
    * count sequence ({@code priorOccurrences ++ claimAheadMove}, prefixed by a virtual {@code -1} when
-   * {@code includesInitialPosition} is true). Sequences that share earlier plies stay adjacent and progress length-3 →
-   * length-4 → length-5 (the shorter is a prefix of the longer in standard lex order). When the played history reaches
+   * {@code includesInitialPosition} is true). Sequences that share earlier plies stay adjacent and progress length-3 ->
+   * length-4 -> length-5 (the shorter is a prefix of the longer in standard lex order). When the played history reaches
    * the same dynamic position multiple times, the earlier claim-ahead boundary surfaces first.
    */
   static ThreefoldClaimAheadReport build(Board board) {
@@ -61,7 +61,7 @@ abstract class ThreefoldClaimAheadReportBuilder {
       if (replayBoard.canClaimThreefoldRepetitionRuleFor(move)) {
         // The predicate did a transient push+unmove internally; re-push here to capture the
         // produced HalfMove that the entry needs to carry. The duplicated push is intentional
-        // overhead — it keeps the predicate as the contract and the builder as a consumer of it.
+        // overhead - it keeps the predicate as the contract and the builder as a consumer of it.
         replayBoard.move(move);
         result.add(replayBoard.getLastHalfMove());
         replayBoard.unmove();
@@ -72,8 +72,8 @@ abstract class ThreefoldClaimAheadReportBuilder {
   private static ClaimAheadEntry buildEntry(HalfMove claimAheadMove, ImmutableList<HalfMove> halfMoveListPlayed,
       DynamicPosition initialDynamicPosition) {
 
-    final var hasBeenPlayed = halfMoveListPlayed.contains(claimAheadMove);
-    final var includesInitialPosition = initialDynamicPosition.equals(claimAheadMove.dynamicPosition());
+    final boolean hasBeenPlayed = halfMoveListPlayed.contains(claimAheadMove);
+    final boolean includesInitialPosition = initialDynamicPosition.equals(claimAheadMove.dynamicPosition());
 
     final List<HalfMove> priorOccurrences = new ArrayList<>();
     for (final HalfMove played : halfMoveListPlayed) {
@@ -85,7 +85,7 @@ abstract class ThreefoldClaimAheadReportBuilder {
       }
     }
 
-    final var totalRepetitionCount = priorOccurrences.size() + 1 + (includesInitialPosition ? 1 : 0);
+    final int totalRepetitionCount = priorOccurrences.size() + 1 + (includesInitialPosition ? 1 : 0);
     return new ClaimAheadEntry(claimAheadMove, hasBeenPlayed, Nulls.copyOfList(priorOccurrences),
         includesInitialPosition, totalRepetitionCount);
   }

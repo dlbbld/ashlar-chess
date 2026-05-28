@@ -17,7 +17,7 @@ abstract class FiftyMoveSequencePrint {
    *
    * <p>
    * The end-of-sequence token is omitted entirely for the corner case where the starting FEN's clock alone met the
-   * threshold and no halfmove extended the sequence — there the line is just the start marker, e.g.
+   * threshold and no halfmove extended the sequence - there the line is just the start marker, e.g.
    * {@code [Starting position] (100)}.
    */
   static List<List<String>> render(FiftyMoveSequenceReport report) {

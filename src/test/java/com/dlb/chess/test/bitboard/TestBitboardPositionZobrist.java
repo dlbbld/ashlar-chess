@@ -38,14 +38,14 @@ class TestBitboardPositionZobrist {
     assertEquals(a, b);
     assertEquals(a.zobristPieces(), b.zobristPieces());
 
-    // EMPTY_POSITION twice — both 0L (XOR of nothing).
+    // EMPTY_POSITION twice - both 0L (XOR of nothing).
     assertEquals(0L, BitboardPosition.EMPTY_POSITION.zobristPieces());
   }
 
   @SuppressWarnings("static-method")
   @Test
   void corpusNoCollisionsAndConsistent() {
-    // Build a hash → position map walking the corpus. If two positions are equal, their hashes must be equal
+    // Build a hash -> position map walking the corpus. If two positions are equal, their hashes must be equal
     // (consistency). If two hashes are equal, their positions must be equal (no collisions in this corpus).
     final Map<Long, BitboardPosition> seen = new HashMap<>();
     for (final PgnTest pgnTest : PgnTest.values()) {
@@ -53,7 +53,7 @@ class TestBitboardPositionZobrist {
       for (final PgnFen testCase : testCaseList.list()) {
         final BitboardPosition position = StaticPositionBridge
             .fromStaticPosition(StaticPositionBridge.toStaticPosition(testCase.finalPosition().getBitboardPosition()));
-        final var hash = position.zobristPieces();
+        final long hash = position.zobristPieces();
         if (seen.containsKey(hash)) {
           final @Nullable BitboardPosition existing = seen.get(hash);
           assertEquals(position, existing,
@@ -72,7 +72,7 @@ class TestBitboardPositionZobrist {
       for (final PgnFen testCase : testCaseList.list()) {
         final Board board = testCase.finalPosition();
         final BitboardPosition before = board.getBitboardPosition();
-        final var beforeHash = before.zobristPieces();
+        final long beforeHash = before.zobristPieces();
         final Side havingMove = board.getHavingMove();
         for (final LegalMove legalMove : board.getLegalMoves()) {
           final MoveSpecification spec = legalMove.moveSpecification();
@@ -88,7 +88,7 @@ class TestBitboardPositionZobrist {
   @Test
   void afterMoveHashMatchesFreshRecomputation() {
     // The hash of afterMove(...) must equal a fresh recomputation off the same position (consistency under the
-    // make-move pipeline — sets up the incremental-Zobrist work in Phase 8.3).
+    // make-move pipeline - sets up the incremental-Zobrist work in Phase 8.3).
     final MoveSpecification e2e4 = new MoveSpecification(Square.E2, Square.E4);
     final BitboardPosition after = BitboardPosition.INITIAL_POSITION.afterMove(e2e4, Side.WHITE);
     assertEquals(after.zobristPieces(),

@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
+import com.dlb.chess.bitboard.BitboardPosition;
 import org.eclipse.jdt.annotation.NonNull;
 
 import com.dlb.chess.bitboard.StaticPositionBridge;
@@ -62,7 +63,7 @@ public class LibraryCarlosBoard {
 
   public boolean move(MoveSpecification moveSpecification) {
     final Side havingMove = getHavingMove();
-    final var result = board.doMove(MoveConversionUtility.convertMoveSpecification(havingMove, moveSpecification));
+    final boolean result = board.doMove(MoveConversionUtility.convertMoveSpecification(havingMove, moveSpecification));
     populateMoveHistory(moveSpecification);
     return result;
   }
@@ -83,9 +84,9 @@ public class LibraryCarlosBoard {
   }
 
   private MoveSpecification calculateLastMoveSpecification() {
-    final var moveBackup = board.getBackup().getLast();
+    final MoveBackup moveBackup = board.getBackup().getLast();
     @SuppressWarnings("null") @NonNull final Move move = moveBackup.getMove();
-    final var havingMove = NullsCarlos.getSideToMove(moveBackup);
+    final com.github.bhlangonijr.chesslib.Side havingMove = NullsCarlos.getSideToMove(moveBackup);
     final com.github.bhlangonijr.chesslib.Square fromSquare = NullsCarlos.getFrom(move);
     com.github.bhlangonijr.chesslib.Piece movingPiece;
     if (moveBackup.isCastleMove()) {
@@ -106,9 +107,10 @@ public class LibraryCarlosBoard {
     final MoveBackup moveBackup = NullsCarlos.getLast(this.board);
     final LegalMove legalMove = calculateLegalMove(moveSpecification, moveBackup);
     performedLegalMoveList.add(legalMove);
-    final var normalizedEnPassantCaptureTargetSquare = isEnPassantCapturePossible() ? getEnPassantCaptureTargetSquare()
+    final Square normalizedEnPassantCaptureTargetSquare = isEnPassantCapturePossible()
+        ? getEnPassantCaptureTargetSquare()
         : Square.NONE;
-    final var bitboardPosition = StaticPositionBridge.fromStaticPosition(getStaticPosition());
+    final BitboardPosition bitboardPosition = StaticPositionBridge.fromStaticPosition(getStaticPosition());
     dynamicPositionList.add(new DynamicPosition(getHavingMove(), bitboardPosition,
         normalizedEnPassantCaptureTargetSquare, getCastlingRightWhite(), getCastlingRightBlack()));
 
@@ -127,13 +129,13 @@ public class LibraryCarlosBoard {
   }
 
   public boolean canClaimFiftyMoveRuleWithOwnMove() {
-    final var halfMoveClock = getHalfMoveClock();
+    final int halfMoveClock = getHalfMoveClock();
     if (halfMoveClock == 99) {
       final List<Move> legalMoveList = LibraryCarlosImplementationUtility.generateLegalMoves(this.board);
       // need to check if there is a legal move which has half move clock 100
       for (final Move legalMove : legalMoveList) {
         board.doMove(legalMove);
-        final var halfMoveClockAfterNextHalfMove = getHalfMoveClock();
+        final int halfMoveClockAfterNextHalfMove = getHalfMoveClock();
         if (halfMoveClockAfterNextHalfMove == 100 && !board.isMated() && !board.isStaleMate()) {
           board.undoMove();
           return true;
@@ -174,11 +176,11 @@ public class LibraryCarlosBoard {
 
   @SuppressWarnings("null")
   public int getRepetitionCount() {
-    var rep = 1;
+    int rep = 1;
     final List<Long> history = board.getHistory();
-    final var historySize = board.getHistory().size();
+    final int historySize = board.getHistory().size();
     final long lastKey = history.get(historySize - 1);
-    for (var i = 0; i <= historySize - 2; i++) {
+    for (int i = 0; i <= historySize - 2; i++) {
       final long currentKey = history.get(i);
       if (currentKey == lastKey) {
         rep++;
@@ -211,7 +213,7 @@ public class LibraryCarlosBoard {
     }
 
     final MoveBackup lastMoveBackup = NullsCarlos.getLast(board);
-    final var sanTest = lastMoveBackup.getMove().getSan();
+    final String sanTest = lastMoveBackup.getMove().getSan();
     if (sanTest != null) {
       return sanTest;
     }
@@ -219,8 +221,8 @@ public class LibraryCarlosBoard {
     final MoveList moveList = new MoveList();
     moveList.addAll(calculateMoveList(this.board));
     try {
-      final var sanArray = moveList.toSanArray();
-      @SuppressWarnings("null") final var last = Nulls.getLast(sanArray);
+      final String[] sanArray = moveList.toSanArray();
+      @SuppressWarnings("null") final String last = Nulls.getLast(sanArray);
       return last;
     } catch (final MoveConversionException e) {
       throw new RuntimeException("San generation in Carlos's API failed", e);
@@ -257,8 +259,8 @@ public class LibraryCarlosBoard {
     final StringBuilder lan = new StringBuilder();
     // need to workaround a bug that after promotion the piece move is given as promoted piece
     if (!calculateIsPawnMove(moveBackup)) {
-      final var movingPieceFenSymbol = movingPiece.getFenSymbol();
-      final var movingPieceSymbol = movingPieceFenSymbol.toUpperCase();
+      final String movingPieceFenSymbol = movingPiece.getFenSymbol();
+      final String movingPieceSymbol = movingPieceFenSymbol.toUpperCase();
       lan.append(movingPieceSymbol);
     }
     lan.append(move.getFrom().toString().toLowerCase());
@@ -268,9 +270,9 @@ public class LibraryCarlosBoard {
     lan.append(move.getTo().toString().toLowerCase());
     if (calculateIsPromotion(moveBackup)) {
       lan.append(SanSymbol.PROMOTION.getSymbol());
-      final var promotionPiece = move.getPromotion();
-      final var promotionPieceFenSymbol = promotionPiece.getFenSymbol();
-      final var promotionPieceSymbol = promotionPieceFenSymbol.toUpperCase();
+      final com.github.bhlangonijr.chesslib.Piece promotionPiece = move.getPromotion();
+      final String promotionPieceFenSymbol = promotionPiece.getFenSymbol();
+      final String promotionPieceSymbol = promotionPieceFenSymbol.toUpperCase();
       lan.append(promotionPieceSymbol);
     }
 
@@ -410,7 +412,7 @@ public class LibraryCarlosBoard {
     final List<MoveBackup> moveBackupList = new ArrayList<>();
     for (final Move move : legalMoveList) {
       board.doMove(move);
-      final var moveBackup = board.getBackup().getLast();
+      final MoveBackup moveBackup = board.getBackup().getLast();
       board.undoMove();
       moveBackupList.add(moveBackup);
     }
@@ -485,8 +487,8 @@ public class LibraryCarlosBoard {
       return false;
     }
     final Move move = NullsCarlos.getMove(moveBackup);
-    final var fromRank = move.getFrom().getRank().ordinal();
-    final var toRank = move.getTo().getRank().ordinal();
+    final int fromRank = move.getFrom().getRank().ordinal();
+    final int toRank = move.getTo().getRank().ordinal();
     return Math.abs(fromRank - toRank) == 2;
   }
 
@@ -548,7 +550,7 @@ public class LibraryCarlosBoard {
     if (isFirstMove()) {
       throw new ProgrammingMistakeException("The method cannot be called if no move was yet made");
     }
-    final var lastMove = board.undoMove();
+    final Move lastMove = board.undoMove();
     final StaticPosition staticPosition = getStaticPosition();
     board.doMove(lastMove);
     return staticPosition;
@@ -616,10 +618,10 @@ public class LibraryCarlosBoard {
   }
 
   private HalfMove buildHalfMove(MoveSpecification moveSpecification) {
-    final var halfMoveCount = getPerformedHalfMoveCount();
-    final var halfMoveClock = getHalfMoveClock();
-    final var fullMoveNumber = getFullMoveNumber();
-    final var countRepetition = getRepetitionCount();
+    final int halfMoveCount = getPerformedHalfMoveCount();
+    final int halfMoveClock = getHalfMoveClock();
+    final int fullMoveNumber = getFullMoveNumber();
+    final int countRepetition = getRepetitionCount();
     final DynamicPosition dynamicPosition = getDynamicPosition();
     final Piece movingPiece = getMovingPiece();
     return new HalfMove(halfMoveCount, fullMoveNumber, halfMoveClock, dynamicPosition, countRepetition, getSan(),

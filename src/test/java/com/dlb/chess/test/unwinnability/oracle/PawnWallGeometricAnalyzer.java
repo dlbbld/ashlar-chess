@@ -35,12 +35,12 @@ public class PawnWallGeometricAnalyzer {
    * The verdict requires the position to satisfy:
    *
    * <ol>
-   * <li>The chain check ({@link #calculateHasPawnWall(Board)}) — orthogonally-adjacent barrier squares span the board
+   * <li>The chain check ({@link #calculateHasPawnWall(Board)}) - orthogonally-adjacent barrier squares span the board
    * from leftmost file to rightmost file, and both kings sit on opposite sides of the chain.</li>
-   * <li>The all-pawns-involved check ({@link #areAllPawnsInvolvedInPawnWall(Board)}) — every pawn on the board is
+   * <li>The all-pawns-involved check ({@link #areAllPawnsInvolvedInPawnWall(Board)}) - every pawn on the board is
    * either a chain element (if it's an own-side pawn at a chain-included square) or provides at least one chain attack
-   * square (if it's an opposing pawn attacking a chain element). Floating pawns — those not contributing to the barrier
-   * — admit helpmates where the king captures the floater (or allows the opposing king to capture it) and a promotion
+   * square (if it's an opposing pawn attacking a chain element). Floating pawns - those not contributing to the barrier
+   * - admit helpmates where the king captures the floater (or allows the opposing king to capture it) and a promotion
    * follows. Without this check, positions like {@code 7k/8/1p6/1Pp5/2Pp4/pB1Pp1p1/P1B1P1P1/3B2K1 b - -} would slip
    * through: the chain {@code a5-b5-b4-c4-c3-d3-d2-e2-f2-g2-h2} is pawn/attack-only but the floating
    * {@code a2}/{@code a3} pair (White's outside pawn + the Black pawn it interacts with) makes the position
@@ -188,18 +188,18 @@ public class PawnWallGeometricAnalyzer {
 
   private static boolean calculateIsHasPawnWallAfterPrecheck(Board board) {
     // check pawn wall line
-    final var hasPawnWallWhite = calculateHasPawnWallLine(board, Side.WHITE);
+    final boolean hasPawnWallWhite = calculateHasPawnWallLine(board, Side.WHITE);
     if (!hasPawnWallWhite) {
       return false;
     }
 
-    final var hasPawnWallBlack = calculateHasPawnWallLine(board, Side.BLACK);
+    final boolean hasPawnWallBlack = calculateHasPawnWallLine(board, Side.BLACK);
     if (!hasPawnWallBlack) {
       return false;
     }
 
     // check if both kings are on their side of the board
-    final var isKingBehindPawnWallWhite = calculateIsKingBehindPawnWall(board, Side.WHITE);
+    final boolean isKingBehindPawnWallWhite = calculateIsKingBehindPawnWall(board, Side.WHITE);
     if (!isKingBehindPawnWallWhite) {
       return false;
     }
@@ -402,11 +402,11 @@ public class PawnWallGeometricAnalyzer {
       throw new ProgrammingMistakeException("We are not expecting this to happen, as we only allow legal positions");
     }
 
-    final var direction = side == Side.WHITE ? 1 : -1;
-    final var promotionRankNumber = Rank.calculatePromotionRank(side).getNumber();
-    final var fileNumber = square.getFile().getNumber();
+    final int direction = side == Side.WHITE ? 1 : -1;
+    final int promotionRankNumber = Rank.calculatePromotionRank(side).getNumber();
+    final int fileNumber = square.getFile().getNumber();
 
-    for (var rankNumber = square.getRank().getNumber()
+    for (int rankNumber = square.getRank().getNumber()
         + direction; rankNumber != promotionRankNumber; rankNumber += direction) {
       final Square squareAhead = Square.calculate(fileNumber, rankNumber);
       if (staticPosition.isPawn(squareAhead)) {
@@ -662,7 +662,7 @@ public class PawnWallGeometricAnalyzer {
   /**
    * BFS the bishop's transitive diagonal reach from {@code bishopSquare} on the current position. A square is in the
    * returned set if the bishop can stand on it after some sequence of legal bishop moves (sliding through empty squares
-   * only; opponent pieces can be the terminal square — captured; own pieces block the ray).
+   * only; opponent pieces can be the terminal square - captured; own pieces block the ray).
    */
   private static Set<Square> calculateBishopReach(StaticPosition staticPosition, Square bishopSquare, Side side) {
     final Set<Square> reachable = new TreeSet<>();
@@ -674,8 +674,8 @@ public class PawnWallGeometricAnalyzer {
     while (!queue.isEmpty()) {
       @SuppressWarnings("null") final Square current = queue.poll();
       for (final int[] dir : BISHOP_DIAGONALS) {
-        var file = current.getFile().getNumber();
-        var rank = current.getRank().getNumber();
+        int file = current.getFile().getNumber();
+        int rank = current.getRank().getNumber();
         while (true) {
           file += dir[0];
           rank += dir[1];
@@ -686,7 +686,7 @@ public class PawnWallGeometricAnalyzer {
           final Piece pieceOnNext = staticPosition.get(next);
           if (pieceOnNext != Piece.NONE) {
             if (pieceOnNext.getSide() != side) {
-              // opponent piece — bishop can capture (terminal); ray stops here
+              // opponent piece - bishop can capture (terminal); ray stops here
               reachable.add(next);
             }
             break;

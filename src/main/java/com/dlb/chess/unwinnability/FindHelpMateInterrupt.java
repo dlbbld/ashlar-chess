@@ -43,7 +43,7 @@ class FindHelpMateInterrupt {
 
   private static FindHelpMateInterruptResult calculateHelpmate(HelpmateSearchBoard board, Side c, int currentDepth,
       List<LegalMove> mateList) {
-    final var isIntendedWinnerHavingCheckmate = board.isCheckmate() && board.getHavingMove() == c.getOppositeSide();
+    final boolean isIntendedWinnerHavingCheckmate = board.isCheckmate() && board.getHavingMove() == c.getOppositeSide();
     if (isIntendedWinnerHavingCheckmate) {
       return FindHelpMateInterruptResult.TRUE;
     }
@@ -63,7 +63,7 @@ class FindHelpMateInterrupt {
         }
 
         mateList.add(legalMove);
-        final var hasCheckmate = calculateHelpmate(board, c, currentDepth + 1, mateList);
+        final FindHelpMateInterruptResult hasCheckmate = calculateHelpmate(board, c, currentDepth + 1, mateList);
         board.unmove();
         switch (hasCheckmate) {
           case TRUE -> {

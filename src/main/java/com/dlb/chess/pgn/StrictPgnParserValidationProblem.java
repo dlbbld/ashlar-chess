@@ -4,11 +4,10 @@ public enum StrictPgnParserValidationProblem {
   UNKNOWN_ERROR,
   OK,
   /**
-   * The PGN input is empty — zero bytes, only the UTF-8 BOM, or whitespace-only (spaces, tabs, newlines in any
+   * The PGN input is empty - zero bytes, only the UTF-8 BOM, or whitespace-only (spaces, tabs, newlines in any
    * combination). The strict parser refuses these inputs at the top of the structural pre-scan because they carry no
-   * signal — the {@code FILE_EMPTY_LINE_*} diagnostics are about the strict two-blank-lines layout and don't apply
-   * when there's nothing to lay out in the first place. Symmetric with
-   * {@link LenientPgnParserValidationProblem#FILE_EMPTY}.
+   * signal - the {@code FILE_EMPTY_LINE_*} diagnostics are about the strict two-blank-lines layout and don't apply when
+   * there's nothing to lay out in the first place. Symmetric with {@link LenientPgnParserValidationProblem#FILE_EMPTY}.
    */
   FILE_EMPTY,
   FILE_EMPTY_LINE_CANNOT_START_WITH,

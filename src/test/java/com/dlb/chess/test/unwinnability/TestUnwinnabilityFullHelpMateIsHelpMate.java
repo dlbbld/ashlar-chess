@@ -55,7 +55,7 @@ class TestUnwinnabilityFullHelpMateIsHelpMate {
   }
 
   private static void assertHelpmateLine(String fen, Side winner, List<UciMove> mateLine) {
-    final var board = new Board(fen);
+    final Board board = new Board(fen);
     for (final UciMove uciMove : mateLine) {
       board.move(UciMoveUtility.convertUciMoveToMoveSpecification(board, uciMove));
     }
@@ -64,7 +64,7 @@ class TestUnwinnabilityFullHelpMateIsHelpMate {
   }
 
   private static String calculateCorrespondingLichessGame(String lichessGameHelpmate) {
-    var withoutExtension = PgnExtensionUtility.removePgnExtension(lichessGameHelpmate);
+    String withoutExtension = PgnExtensionUtility.removePgnExtension(lichessGameHelpmate);
     withoutExtension = Nulls.replace(withoutExtension, "_helpmate", "");
     return PgnExtensionUtility.addPgnExtension(withoutExtension);
   }

@@ -16,7 +16,7 @@ import com.google.common.collect.ImmutableList;
 /**
  * Differential test for {@link BitboardPosition#isInCheckAfterEnPassantCapture(Square, Square, Side)}: per fixture and
  * per legal EP capture, the allocation-free predicate must agree with the reference
- * {@code afterMove(moveSpec, mover).isInCheck(mover)} — which IS the production EP king-safety probe inside
+ * {@code afterMove(moveSpec, mover).isInCheck(mover)} - which IS the production EP king-safety probe inside
  * {@link com.dlb.chess.bitboard.BitboardPosition#legalMoves(Side, long)}'s pawn handler today. The
  * {@code MoveSpecification} overload is exercised in parallel to confirm the two surfaces stay in lock-step.
  *
@@ -33,23 +33,23 @@ import com.google.common.collect.ImmutableList;
  */
 class TestBitboardPositionIsInCheckAfterEnPassantCapture {
 
-  /** Black dxe3 EP — both kings far away, no check. Expected: not in check after. */
+  /** Black dxe3 EP - both kings far away, no check. Expected: not in check after. */
   private static final EpCase LEGAL_EP_BLACK = new EpCase("legal-ep-black", "8/8/8/8/3pP3/8/8/K6k b - e3 0 1",
       Square.D4, Square.E3, Side.BLACK);
 
-  /** Black dxe3 EP — Ra4...h4 line opens behind both EP-removed pawns, hitting Ka4. Expected: in check after. */
+  /** Black dxe3 EP - Ra4...h4 line opens behind both EP-removed pawns, hitting Ka4. Expected: in check after. */
   private static final EpCase ILLEGAL_EP_BLACK_RANK_ROOK = new EpCase("illegal-ep-black-rank-rook",
       "8/8/8/8/k2pP2R/8/8/7K b - e3 0 1", Square.D4, Square.E3, Side.BLACK);
 
-  /** White exd6 EP — both kings far away, no check. Expected: not in check after. */
+  /** White exd6 EP - both kings far away, no check. Expected: not in check after. */
   private static final EpCase LEGAL_EP_WHITE = new EpCase("legal-ep-white", "4k3/8/8/3pP3/8/8/8/4K3 w - d6 0 1",
       Square.E5, Square.D6, Side.WHITE);
 
-  /** White exd6 EP — rank-5 line opens behind both EP-removed pawns, black Rh5 hits white Ka5. Expected: in check. */
+  /** White exd6 EP - rank-5 line opens behind both EP-removed pawns, black Rh5 hits white Ka5. Expected: in check. */
   private static final EpCase ILLEGAL_EP_WHITE_RANK_ROOK = new EpCase("illegal-ep-white-rank-rook",
       "4k3/8/8/K2pP2r/8/8/8/8 w - d6 0 1", Square.E5, Square.D6, Side.WHITE);
 
-  /** White exd6 EP — capturing pawn was checking Kc4; EP removes it and resolves the check. Expected: not in check. */
+  /** White exd6 EP - capturing pawn was checking Kc4; EP removes it and resolves the check. Expected: not in check. */
   private static final EpCase EP_RESOLVES_CHECK = new EpCase("ep-resolves-check", "4k3/8/8/3pP3/2K5/8/8/8 w - d6 0 1",
       Square.E5, Square.D6, Side.WHITE);
 
@@ -64,10 +64,10 @@ class TestBitboardPositionIsInCheckAfterEnPassantCapture {
         final BitboardPosition bitboardPosition = new Board(epCase.fen()).getBitboardPosition();
         final MoveSpecification moveSpec = new MoveSpecification(epCase.fromSquare(), epCase.toSquare());
 
-        final var reference = bitboardPosition.afterMove(moveSpec, epCase.mover()).isInCheck(epCase.mover());
-        final var squareOverload = bitboardPosition.isInCheckAfterEnPassantCapture(epCase.fromSquare(),
+        final boolean reference = bitboardPosition.afterMove(moveSpec, epCase.mover()).isInCheck(epCase.mover());
+        final boolean squareOverload = bitboardPosition.isInCheckAfterEnPassantCapture(epCase.fromSquare(),
             epCase.toSquare(), epCase.mover());
-        final var moveSpecOverload = bitboardPosition.isInCheckAfterEnPassantCapture(moveSpec, epCase.mover());
+        final boolean moveSpecOverload = bitboardPosition.isInCheckAfterEnPassantCapture(moveSpec, epCase.mover());
 
         assertEquals(reference, squareOverload, "Square-overload must agree with afterMove(...).isInCheck(...)");
         assertEquals(reference, moveSpecOverload, "MoveSpecification-overload must agree with reference");

@@ -27,7 +27,7 @@ record FiftyMoveSequence(SequenceStart start, @Nullable HalfMove endPly) {
   /**
    * The sequence's final halfmove-clock value. Equal to {@code endPly.halfMoveClock()} when {@code endPly != null};
    * otherwise the start's intrinsic clock value ({@code initialClockValue} for an initial-FEN start, or {@code 1} for
-   * an after-reset start — though a one-ply after-reset sequence can never reach the threshold and therefore never
+   * an after-reset start - though a one-ply after-reset sequence can never reach the threshold and therefore never
    * appears in the report).
    */
   int finalClock() {

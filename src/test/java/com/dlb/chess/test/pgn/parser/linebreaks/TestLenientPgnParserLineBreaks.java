@@ -19,7 +19,7 @@ public class TestLenientPgnParserLineBreaks {
   @SuppressWarnings("static-method")
   @Test
   void test() {
-    final var pgn = """
+    final String pgn = """
                 [Event "World Blitz Championship"]
                 [Site "St Petersburg RUS"]
                 [Date "2018.12.29"]
@@ -79,7 +79,7 @@ public class TestLenientPgnParserLineBreaks {
 
     // The on-disk fixtures use a different tag order than the inline expected (ECO is placed after EventDate
     // there). The lenient parser preserves input order, so direct PgnGame equality fails. Archival
-    // normalisation sorts both into canonical order — the right lens for "these inputs are equivalent."
+    // normalisation sorts both into canonical order - the right lens for "these inputs are equivalent."
     assertEquals(PgnCreate.createPgnString(pgnGameExpected, WriteMode.ARCHIVAL),
         PgnCreate.createPgnString(pgnGameActual, WriteMode.ARCHIVAL));
   }

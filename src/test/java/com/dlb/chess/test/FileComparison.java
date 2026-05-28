@@ -19,9 +19,9 @@ public class FileComparison {
     logger.info("Testing " + pgnExpectedPath + " against " + pgnActualPath);
 
     try {
-      final var expectedAsIs = Files.readString(pgnExpectedPath, Charset.forName("UTF-8"));
+      final String expectedAsIs = Files.readString(pgnExpectedPath, Charset.forName("UTF-8"));
       final String expectedConverted = convertWindowsToUnixLineEndings(expectedAsIs);
-      final var actualAsIs = Files.readString(pgnActualPath, Charset.forName("UTF-8"));
+      final String actualAsIs = Files.readString(pgnActualPath, Charset.forName("UTF-8"));
       return expectedConverted.equals(actualAsIs);
     } catch (final IOException e) {
       logger.error("Error while comparing files: " + e.getMessage());

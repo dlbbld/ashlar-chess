@@ -40,7 +40,7 @@ Requires JDK 17 or later at runtime. Available via the [JitPack](https://jitpack
 <dependency>
   <groupId>com.github.dlbbld</groupId>
   <artifactId>clean-chess</artifactId>
-  <version>16.0.0</version>
+  <version>16.1.0</version>
 </dependency>
 ```
 
@@ -56,7 +56,7 @@ repositories {
 ```groovy
 dependencies {
     ...
-    implementation 'com.github.dlbbld:clean-chess:16.0.0'
+    implementation 'com.github.dlbbld:clean-chess:16.1.0'
     ...
 }
 ```
@@ -230,6 +230,82 @@ even if the opponent cooperates. If the position is unwinnable for both players,
 > **Note:** quick/full dead-position detection is caller-invoked. `Board` does not run the quick analyzer during
 > construction or after each move; callers that want to adjudicate analyzer-driven dead positions can query
 > `Board.isDeadPositionQuick()` / `Board.isDeadPositionFull()` or the side-specific unwinnability APIs.
+
+# Game adjudication
+The game-ending logic is easiest to understand when written out directly. First decide which player would otherwise
+win, then run the material-only check, then run the CHA quick position check.
+
+## Flagfall
+Under [FIDE 6.9](https://handbook.fide.com/chapter/e012023), a player who runs out of time loses, unless the opponent
+cannot checkmate by any possible series of legal moves. The recommended procedure is:
+
+```text
+on flagfall(flaggingPlayer):
+    wouldBeWinner = opponent(flaggingPlayer)
+
+    if board.isInsufficientMaterial(wouldBeWinner):
+        return draw
+
+    if board.isUnwinnableQuick(wouldBeWinner) == UNWINNABLE:
+        return draw
+
+    return loss for flaggingPlayer
+```
+
+The insufficient-material check is material-wise and very quick. It covers the standard cases such as a lone kings, or a
+king and bishop against a lone king.
+
+The unwinnable-quick check is position-wise. It is the CHA extension that also sees blocked positions such as pawn walls.
+If it returns `UNWINNABLE`, the game is drawn. Otherwise, the flagging player loses.
+
+`Board.isUnwinnableFull(Side)` can additionally be used for analysis, studies, or offline review. It is not the
+recommended live-game path because it performs a bounded search, can take much longer in rare positions, and can return
+`UNDETERMINED`.
+
+## Resignation
+Under [FIDE 5.1.2](https://handbook.fide.com/chapter/e012023), resignation has the same exception as flagfall: the game
+is drawn if the opponent cannot checkmate by any possible series of legal moves. So a resignation should run exactly the
+same test and report exactly the same result:
+
+```text
+on resignation(resigningPlayer):
+    return adjudicate as for flagfall(resigningPlayer)
+```
+
+If the opponent has insufficient material, the game is a draw. If the opponent is `UNWINNABLE` by the quick analyzer, the
+game is also a draw. Otherwise, the resigning player loses.
+
+## Dead position during play
+Under [FIDE 5.2.2](https://handbook.fide.com/chapter/e012023), the game is drawn as soon as a dead position arises:
+neither player can checkmate by any possible series of legal moves.
+
+The standard material-only dead positions should still be checked during play:
+
+```text
+after each move:
+    if board.isInsufficientMaterial():
+        return draw
+```
+
+With this library, a server could additionally check for position-wise dead positions detected by CHA quick, for example
+blocked pawn walls:
+
+```text
+after each move:
+    if board.isDeadPositionQuick() == DEAD_POSITION:
+        return draw
+```
+
+This quick check is computationally practical, but my recommendation for live games is not to run the CHA dead-position
+check after every move. These positions are rare. It is enough to check them at the end of the game, especially when a
+player flags or resigns. This cannot be unfair: once a game has entered a dead position, no later legal play can make it
+winnable again. If the players continue in a blocked position until flagfall, resignation, or draw agreement, the
+adjudication above still returns a draw.
+
+The trade-off is timing, not outcome. Checking during play gives the exact FIDE 5.2.2 termination point; checking at the
+end preserves the final result.
+
+# Unwinnability API
 
 ## Methods
 The library provides an implementation of CHA. So for both situations, there is a quick and a full method.

@@ -50,7 +50,7 @@ public final class StrictPgnParser {
   }
 
   public static PgnGame parse(Path pgnPath) {
-    // Read raw bytes â€” line-based reconstruction would hide whether the source's trailing newline is actually
+    // Read raw bytes - line-based reconstruction would hide whether the source's trailing newline is actually
     // present.
     return parseText(PgnReader.readPgn(pgnPath));
   }
@@ -120,7 +120,7 @@ public final class StrictPgnParser {
   @SuppressWarnings("null")
   private static @NonNull String unexpectedValidationErrorMessage(RuntimeException e) {
     final @Nullable String nullableReason = e.getMessage();
-    final var reason = nullableReason == null ? "" : nullableReason;
+    final String reason = nullableReason == null ? "" : nullableReason;
     return "An unexpected error occurred during validation. Reason: " + reason;
   }
 
@@ -136,7 +136,7 @@ public final class StrictPgnParser {
 
     final ResultTagValue resultTagValue = validateResultTagValue(tagList);
     final SetUpTagValue setUpTagValue = validateTagSetUpValue(tagList);
-    final var isStartFromPosition = setUpTagValue == SetUpTagValue.START_FROM_SETUP_POSITION;
+    final boolean isStartFromPosition = setUpTagValue == SetUpTagValue.START_FROM_SETUP_POSITION;
     final Fen startFen = calculateStartFen(tagList, isStartFromPosition);
 
     final MovetextOutcome movetext = parseMovetext(startFen, resultTagValue);
@@ -206,7 +206,7 @@ public final class StrictPgnParser {
     final PgnToken valueToken = tokenizer.next();
     if (valueToken.type() == PgnTokenType.TAG_VALUE_STRING_UNTERMINATED) {
       // If the unterminated content ends with `]` the source had `["Tag "value]` (closing quote missing but bracket
-      // present) â†’ unterminated-string error; otherwise the bracket itself is missing.
+      // present) -> unterminated-string error; otherwise the bracket itself is missing.
       final String content = valueToken.text();
       if (!content.isEmpty() && content.charAt(content.length() - 1) == ']') {
         throw tagFormatError(StrictPgnParserValidationProblem.TAG_FORMAT_INVALID,
@@ -237,8 +237,8 @@ public final class StrictPgnParser {
   }
 
   private static void validateTagNameCharacters(String name) {
-    for (var i = 0; i < name.length(); i++) {
-      final var c = name.charAt(i);
+    for (int i = 0; i < name.length(); i++) {
+      final char c = name.charAt(i);
       if (!isAsciiLetterOrDigit(c) && c != '_' && c != '+' && c != '#' && c != '=' && c != ':' && c != '-') {
         throw tagFormatError(StrictPgnParserValidationProblem.TAG_FORMAT_INVALID,
             "The tag name contains an invalid character \"" + c + "\".");
@@ -255,8 +255,8 @@ public final class StrictPgnParser {
   }
 
   private static void validateUniqueTagNames(List<Tag> tagList) {
-    for (var i = 0; i < tagList.size(); i++) {
-      for (var j = i + 1; j < tagList.size(); j++) {
+    for (int i = 0; i < tagList.size(); i++) {
+      for (int j = i + 1; j < tagList.size(); j++) {
         if (Nulls.get(tagList, i).name().equals(Nulls.get(tagList, j).name())) {
           throw new StrictPgnParserValidationException(StrictPgnParserValidationProblem.TAG_NAME_NOT_UNIQUE,
               SanValidationProblem.NONE, "The tag name must be unique. The tag name \"" + Nulls.get(tagList, i).name()
@@ -303,7 +303,7 @@ public final class StrictPgnParser {
   }
 
   private static void validateTagFenValue(List<Tag> tagList, SetUpTagValue setUpTagValue) {
-    final var hasFen = TagUtility.hasFen(tagList);
+    final boolean hasFen = TagUtility.hasFen(tagList);
     switch (setUpTagValue) {
       case NONE, START_FROM_INITIAL_POSITION -> {
         if (hasFen) {
@@ -343,7 +343,7 @@ public final class StrictPgnParser {
 
   private MovetextOutcome parseMovetext(Fen startFen, ResultTagValue resultTagValue) {
     // Pregame commentary (optional).
-    var pregameCommentary = PgnCommentary.EMPTY;
+    PgnCommentary pregameCommentary = PgnCommentary.EMPTY;
     if (isBraceToken(tokenizer.peek().type())) {
       pregameCommentary = consumeCommentaryOrThrow();
       expectSpaceAfterComment();
@@ -351,10 +351,10 @@ public final class StrictPgnParser {
 
     final List<PgnHalfMove> halfMoves = new ArrayList<>();
     Side havingMove = startFen.havingMove();
-    var fullMoveNumber = startFen.fullMoveNumber();
-    var isFirstMove = true;
+    int fullMoveNumber = startFen.fullMoveNumber();
+    boolean isFirstMove = true;
 
-    // Zero-move game: just <space><terminator> after the (optional) pregame commentary â€” no move numbers, no SANs.
+    // Zero-move game: just <space><terminator> after the (optional) pregame commentary - no move numbers, no SANs.
     if (tokenizer.peek().type() == PgnTokenType.SPACES && tokenizer.peek().text().length() == 1
         && tokenizer.peekNext().type() == PgnTokenType.TERMINATION_MARKER) {
       tokenizer.next();
@@ -363,8 +363,8 @@ public final class StrictPgnParser {
       return new MovetextOutcome(halfMoves, pregameCommentary);
     }
 
-    // T-002 / PGN spec Â§8.2.2 case 1: commentary on White's move forces "N..." before the next Black move.
-    var priorCommentaryAttached = false;
+    // T-002 / PGN spec section 8.2.2 case 1: commentary on White's move forces "N..." before the next Black move.
+    boolean priorCommentaryAttached = false;
 
     while (true) {
       if (tokenizer.peek().type() == PgnTokenType.TERMINATION_MARKER) {
@@ -403,10 +403,10 @@ public final class StrictPgnParser {
 
       final SanAndSuffix sanAndSuffix = parseSanAndSuffix();
 
-      // Trailing blank line at this position â†’ file has no termination marker; report specifically.
+      // Trailing blank line at this position -> file has no termination marker; report specifically.
       expectInterTokenSeparatorOrMissingTermination(resultTagValue);
 
-      var commentary = PgnCommentary.EMPTY;
+      PgnCommentary commentary = PgnCommentary.EMPTY;
       if (isBraceToken(tokenizer.peek().type())) {
         commentary = consumeCommentaryOrThrow();
         expectSpaceAfterComment();
@@ -435,7 +435,7 @@ public final class StrictPgnParser {
         try {
           return new PgnCommentary(token.text());
         } catch (final PgnCommentaryValidationException pcve) {
-          // Defensive â€” the tokenizer cannot produce `}` here (handled as separate types), so unreachable in
+          // Defensive - the tokenizer cannot produce `}` here (handled as separate types), so unreachable in
           // practice.
           final String message = BasicUtility.getMessage(pcve);
           throw movetextError(StrictPgnParserValidationProblem.MOVETEXT_COMMENTARY_CONTAINS_FORBIDDEN_CHARACTER,
@@ -498,7 +498,7 @@ public final class StrictPgnParser {
         throw movetextError(StrictPgnParserValidationProblem.MOVETEXT_COMMENTARY_END_BRACE_WITHOUT_START_BRACE,
             "A closing brace } was found with no matching opening brace.");
       default:
-        // Not a broken brace â€” caller handles.
+        // Not a broken brace - caller handles.
     }
   }
 
@@ -543,7 +543,7 @@ public final class StrictPgnParser {
     validateSanCharacters(san);
     validateSanLength(san);
 
-    var suffix = MoveSuffixAnnotation.NONE;
+    MoveSuffixAnnotation suffix = MoveSuffixAnnotation.NONE;
     if (tokenizer.peek().type() == PgnTokenType.MOVE_SUFFIX_ANNOTATION) {
       final PgnToken suffixToken = tokenizer.next();
       if (!MoveSuffixAnnotation.exists(suffixToken.text())) {
@@ -589,8 +589,8 @@ public final class StrictPgnParser {
   }
 
   private static void validateSanCharacters(String san) {
-    for (var i = 0; i < san.length(); i++) {
-      final var c = san.charAt(i);
+    for (int i = 0; i < san.length(); i++) {
+      final char c = san.charAt(i);
       if (!com.dlb.chess.fen.FenPieceSymbol.exists(c) && !com.dlb.chess.board.enums.File.exists(c)
           && !com.dlb.chess.board.enums.Rank.exists(c) && !com.dlb.chess.san.SanSymbol.exists(c)) {
         throw movetextError(StrictPgnParserValidationProblem.MOVETEXT_SAN_CHARACTER_INVALID,
@@ -626,14 +626,14 @@ public final class StrictPgnParser {
     final Board board = new Board(startFen);
     for (final PgnHalfMove halfMove : halfMoveList) {
       final Side side = board.getHavingMove();
-      final var fullMoveNumber = board.getFullMoveNumber();
+      final int fullMoveNumber = board.getFullMoveNumber();
       try {
         board.moveStrict(halfMove.san());
       } catch (final SanValidationException e) {
         final String moveNumberAndSan = HalfMoveUtility.calculateMoveNumberAndSanWithSpace(fullMoveNumber, side,
             halfMove.san());
         final String messageSanValidationFailure = BasicUtility.getMessage(e);
-        final var message = "The validation for " + moveNumberAndSan + " failed. Reason: "
+        final String message = "The validation for " + moveNumberAndSan + " failed. Reason: "
             + messageSanValidationFailure;
         throw new StrictPgnParserValidationException(StrictPgnParserValidationProblem.SAN, e.getSanValidationProblem(),
             message);
@@ -642,7 +642,7 @@ public final class StrictPgnParser {
   }
 
   private static Fen calculateStartFen(List<Tag> tagList, boolean isStartFromPosition) {
-    final var startFenStr = isStartFromPosition ? TagUtility.readFen(tagList) : FenConstants.FEN_INITIAL_STR;
+    final String startFenStr = isStartFromPosition ? TagUtility.readFen(tagList) : FenConstants.FEN_INITIAL_STR;
     return FenParserAdvanced.parseFenAdvanced(startFenStr);
   }
 

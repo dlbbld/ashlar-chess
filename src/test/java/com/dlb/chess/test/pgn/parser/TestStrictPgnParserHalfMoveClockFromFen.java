@@ -14,7 +14,7 @@ import com.dlb.chess.pgn.StrictPgnParser;
  *
  * <p>
  * See {@link AbstractTestPgnParserHalfMoveClockFromFen} for the iteration body and the exact assertion shape. Runs
- * every cycle (no gate) — this is core parser coverage.
+ * every cycle (no gate) - this is core parser coverage.
  */
 class TestStrictPgnParserHalfMoveClockFromFen extends AbstractTestPgnParserHalfMoveClockFromFen {
 

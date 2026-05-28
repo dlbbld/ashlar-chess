@@ -10,7 +10,7 @@ package com.dlb.chess.san;
  * lenient parser surfaces every applicable code; consumers decide whether to silently accept or warn.
  *
  * <p>
- * Codes are grouped by category. The grouping has no runtime meaning — it is for human readability only.
+ * Codes are grouped by category. The grouping has no runtime meaning - it is for human readability only.
  */
 public enum LenientSanValidationProblem {
 

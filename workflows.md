@@ -73,7 +73,7 @@ The long-running gates currently live in [`RestrictTestConstants`](src/test/java
 
 ### Running cross-validation oracles
 
-The python-chess oracle reads pre-generated `.jsonl` files committed under `src/test/resources/oracle/python-chess/`. `mvn test` consumes them; the Python generator is only re-run when fixtures are added or regenerated. See `src/test/python/README` and `specification.md` §6.1 for the generation procedure.
+The python-chess oracle reads pre-generated `.jsonl` files committed under `src/test/resources/oracle/python-chess/`. `mvn test` consumes them; the Python generator is only re-run when fixtures are added or regenerated. See `setup.md` and the generator module docstrings under `src/test/python/` for the regeneration procedure.
 
 ---
 
@@ -85,6 +85,10 @@ Release tags follow strict semver and match the `<version>` in `pom.xml`. The re
 
 - Active branch is on the release-candidate state (worktree is clean; everything intended for the release is merged or committed).
 - `mvn test -Pfull` green from a clean checkout. **Required.**
+- JavaDoc gates green. **Required.** Both goals must run with `-Dshow=private` — many main classes (the `com.dlb.chess.report` records, package-private helpers) and all test classes are package-private, and at javadoc's default `protected` visibility doclint silently skips them, so stale `@link` / malformed HTML go uncaught:
+  - `mvn javadoc:javadoc -Dshow=private` — all main docs.
+  - `mvn javadoc:test-javadoc -Dshow=private` — all test docs.
+  - (`mvn javadoc:jar` stays at default visibility — it ships only the public API.)
 - All tasks for the release are marked done in `tasks.md`.
 
 ### 2. Update artifacts

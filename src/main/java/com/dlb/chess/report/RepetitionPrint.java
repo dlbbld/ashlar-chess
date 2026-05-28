@@ -11,8 +11,7 @@ import com.google.common.collect.ImmutableList;
 
 abstract class RepetitionPrint {
 
-  static List<List<String>> render(ThreefoldExistingReport report,
-      Map<DynamicPosition, String> positionIdentifierMap) {
+  static List<List<String>> render(ThreefoldExistingReport report, Map<DynamicPosition, String> positionIdentifierMap) {
 
     final List<List<String>> resultListList = new ArrayList<>();
     for (final RepetitionGroup group : report.groups()) {

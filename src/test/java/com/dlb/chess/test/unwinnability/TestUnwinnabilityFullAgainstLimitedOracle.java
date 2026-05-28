@@ -68,7 +68,7 @@ class TestUnwinnabilityFullAgainstLimitedOracle {
     switch (unwinnableFull) {
       case WINNABLE -> assertNotEquals(LimitedUnwinnabilityVerdict.UNWINNABLE, verdict);
       case UNWINNABLE -> {
-        final var isIncomplete = verdict == LimitedUnwinnabilityVerdict.UNWINNABLE
+        final boolean isIncomplete = verdict == LimitedUnwinnabilityVerdict.UNWINNABLE
             || verdict == LimitedUnwinnabilityVerdict.UNKNOWN;
         assertTrue(isIncomplete);
       }

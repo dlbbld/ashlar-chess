@@ -28,7 +28,7 @@ abstract class BoardMaterial implements EnumConstants {
   }
 
   static boolean calculateHasKingOnly(Side side, BitboardPosition bitboardPosition) {
-    var countKing = 0;
+    int countKing = 0;
     for (final Square boardSquare : Square.REAL) {
       final Piece pieceOnSquare = bitboardPosition.get(boardSquare);
       if (pieceOnSquare == Piece.NONE || pieceOnSquare.getSide() != side) {
@@ -53,8 +53,8 @@ abstract class BoardMaterial implements EnumConstants {
 
   private static boolean calculateHasKingAndAnotherPieceOnly(Side side, PieceType anotherPieceType,
       BitboardPosition bitboardPosition) {
-    var countKing = 0;
-    var countAnotherPieces = 0;
+    int countKing = 0;
+    int countAnotherPieces = 0;
     for (final Square boardSquare : Square.REAL) {
       final Piece pieceOnSquare = bitboardPosition.get(boardSquare);
       if (pieceOnSquare == Piece.NONE || pieceOnSquare.getSide() != side) {

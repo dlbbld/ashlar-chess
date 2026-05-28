@@ -61,9 +61,9 @@ final class PgnTokenizer {
       return new PgnToken(PgnTokenType.EOF, "", stream.line(), stream.column());
     }
 
-    final var line = stream.line();
-    final var column = stream.column();
-    final var c = stream.peek();
+    final int line = stream.line();
+    final int column = stream.column();
+    final int c = stream.peek();
 
     switch (c) {
       case '\r':
@@ -101,7 +101,7 @@ final class PgnTokenizer {
   }
 
   private PgnToken readNewline(int line, int column) {
-    final var first = stream.read();
+    final int first = stream.read();
     final StringBuilder text = new StringBuilder();
     text.append((char) first);
     if (first == '\r' && stream.peek() == '\n') {
@@ -121,9 +121,9 @@ final class PgnTokenizer {
   private PgnToken readTagValueString(int line, int column) {
     stream.read(); // opening quote
     final StringBuilder text = new StringBuilder();
-    var terminated = false;
+    boolean terminated = false;
     while (true) {
-      final var c = stream.peek();
+      final int c = stream.peek();
       if (c == CHAR_EOF || c == '\n' || c == '\r') {
         break;
       }
@@ -134,7 +134,7 @@ final class PgnTokenizer {
       }
       if (c == '\\') {
         stream.read();
-        final var escaped = stream.peek();
+        final int escaped = stream.peek();
         if (escaped == '\\' || escaped == '"') {
           text.append((char) stream.read());
         } else {
@@ -152,7 +152,7 @@ final class PgnTokenizer {
     stream.read(); // opening brace
     final StringBuilder text = new StringBuilder();
     while (true) {
-      final var c = stream.peek();
+      final int c = stream.peek();
       if (c == CHAR_EOF) {
         return new PgnToken(PgnTokenType.BRACE_COMMENT_UNCLOSED, Nulls.toString(text), line, column);
       }
@@ -160,7 +160,7 @@ final class PgnTokenizer {
         stream.read();
         return new PgnToken(PgnTokenType.BRACE_COMMENT, Nulls.toString(text), line, column);
       }
-      // PGN spec §8.2.5: an inner `{` is content, not a nested-comment opener. Only `}` closes a comment.
+      // PGN spec section 8.2.5: an inner `{` is content, not a nested-comment opener. Only `}` closes a comment.
       text.append((char) stream.read());
     }
   }
@@ -170,7 +170,7 @@ final class PgnTokenizer {
     // MOVETEXT_MOVE_SUFFIX_ANNOTATION_INVALID rather than misdiagnosing as a spacing error.
     final StringBuilder text = new StringBuilder();
     while (true) {
-      final var c = stream.peek();
+      final int c = stream.peek();
       if (c != '!' && c != '?') {
         break;
       }
@@ -184,7 +184,7 @@ final class PgnTokenizer {
     while (isAsciiDigit(stream.peek())) {
       text.append((char) stream.read());
     }
-    final var next = stream.peek();
+    final int next = stream.peek();
     if (next == '.') {
       return readMoveNumberDots(line, column, text);
     }
@@ -196,7 +196,7 @@ final class PgnTokenizer {
 
   private PgnToken readMoveNumberDots(int line, int column, StringBuilder digits) {
     final StringBuilder text = new StringBuilder(digits);
-    var dotCount = 0;
+    int dotCount = 0;
     while (stream.peek() == '.') {
       text.append((char) stream.read());
       dotCount++;
@@ -210,7 +210,7 @@ final class PgnTokenizer {
   private PgnToken readTerminationAfterDigits(int line, int column, StringBuilder digits) {
     final StringBuilder text = new StringBuilder(digits);
     while (true) {
-      final var c = stream.peek();
+      final int c = stream.peek();
       if (c != '-' && c != '/' && !isAsciiDigit(c)) {
         break;
       }
@@ -228,14 +228,14 @@ final class PgnTokenizer {
   private PgnToken readSymbol(int line, int column) {
     final StringBuilder text = new StringBuilder();
     while (true) {
-      final var c = stream.peek();
+      final int c = stream.peek();
       if (c == CHAR_EOF || isWordBreak(c)) {
         break;
       }
       text.append((char) stream.read());
     }
     if (text.length() == 0) {
-      // Unrecognised single character — consume it so we always make progress. The parser surfaces the rejection.
+      // Unrecognised single character - consume it so we always make progress. The parser surfaces the rejection.
       text.append((char) stream.read());
     }
     return new PgnToken(PgnTokenType.SYMBOL, Nulls.toString(text), line, column);

@@ -20,10 +20,10 @@ import com.dlb.chess.test.pgn.setup.PgnTestCaseCatalog;
 import com.dlb.chess.test.pgntest.enums.PgnTest;
 
 /**
- * The second spine assertion: for every fixture × every legal move, the bitboard's
- * {@link BitboardPosition#afterMove(MoveSpecification, Side)} must produce the same piece placement as the
- * reference {@code StaticPositionUtility.createPositionAfterMove}. Covers all move shapes (normal, capture,
- * en-passant, all four promotion targets, both castling sides) on every position the corpus walks through.
+ * The second spine assertion: for every fixture x every legal move, the bitboard's
+ * {@link BitboardPosition#afterMove(MoveSpecification, Side)} must produce the same piece placement as the reference
+ * {@code StaticPositionUtility.createPositionAfterMove}. Covers all move shapes (normal, capture, en-passant, all four
+ * promotion targets, both castling sides) on every position the corpus walks through.
  */
 class TestBitboardPositionAfterMove {
 
@@ -55,8 +55,8 @@ class TestBitboardPositionAfterMove {
   @Test
   void initialPositionAfterEFourMatchesReference() {
     final MoveSpecification e2e4 = new MoveSpecification(Square.E2, Square.E4);
-    final StaticPosition referenceAfter = StaticPositionUtility
-        .createPositionAfterMove(StaticPosition.INITIAL_POSITION, Side.WHITE, e2e4);
+    final StaticPosition referenceAfter = StaticPositionUtility.createPositionAfterMove(StaticPosition.INITIAL_POSITION,
+        Side.WHITE, e2e4);
     final BitboardPosition expectedAfter = StaticPositionBridge.fromStaticPosition(referenceAfter);
     final BitboardPosition bitboardAfter = BitboardPosition.INITIAL_POSITION.afterMove(e2e4, Side.WHITE);
     assertEquals(expectedAfter, bitboardAfter);
@@ -65,7 +65,7 @@ class TestBitboardPositionAfterMove {
   @SuppressWarnings("static-method")
   @Test
   void noneSideThrows() {
-    assertThrows(IllegalArgumentException.class, () -> BitboardPosition.INITIAL_POSITION
-        .afterMove(new MoveSpecification(Square.E2, Square.E4), Side.NONE));
+    assertThrows(IllegalArgumentException.class,
+        () -> BitboardPosition.INITIAL_POSITION.afterMove(new MoveSpecification(Square.E2, Square.E4), Side.NONE));
   }
 }

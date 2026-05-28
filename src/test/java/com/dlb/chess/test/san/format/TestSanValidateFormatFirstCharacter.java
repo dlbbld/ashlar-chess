@@ -60,7 +60,7 @@ class TestSanValidateFormatFirstCharacter {
   @SuppressWarnings("static-method")
   @Test
   void testInvalidLowercasePieceLetters() {
-    // lowercase piece letters are not valid starts — only uppercase R, N, B, Q, K
+    // lowercase piece letters are not valid starts - only uppercase R, N, B, Q, K
     checkException("nf3", SanValidationProblem.FORMAT_FIRST_CHARACTER);
     checkException("qd1", SanValidationProblem.FORMAT_FIRST_CHARACTER);
     checkException("re1", SanValidationProblem.FORMAT_FIRST_CHARACTER);
@@ -105,7 +105,7 @@ class TestSanValidateFormatFirstCharacter {
   }
 
   private static void checkValid(String san) {
-    var isException = false;
+    boolean isException = false;
     try {
       SanValidateFormat.validateFormat(san);
     } catch (@SuppressWarnings("unused") final SanValidationException e) {

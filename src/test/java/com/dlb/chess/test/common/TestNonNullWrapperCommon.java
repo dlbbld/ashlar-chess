@@ -13,7 +13,7 @@ class TestNonNullWrapperCommon {
   @Test
   void test() {
 
-    final var pgn = """
+    final String pgn = """
         line 1
 
         line 3
@@ -29,7 +29,7 @@ class TestNonNullWrapperCommon {
   @Test
   void testNormalizeSpace() {
 
-    final var expected = "The knight is good in the attack.";
+    final String expected = "The knight is good in the attack.";
 
     assertEquals(expected, Nulls.normalizeSpace("  The knight is good in the attack."));
     assertEquals(expected, Nulls.normalizeSpace("The knight is good in the attack.  "));

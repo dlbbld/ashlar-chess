@@ -55,12 +55,12 @@ class TestSanValidateFormatFailureOracleComplement {
   private static final int PRINT_INTERVAL = 100_000;
 
   // ---------------------------------------------------------------------------
-  // Character categories — every character in ALPHABET belongs to exactly one
+  // Character categories - every character in ALPHABET belongs to exactly one
   // category. A category has a maximum number of occurrences allowed in any
   // single SAN string; the generator prunes branches that would exceed it.
   // ---------------------------------------------------------------------------
-  private static final int CAT_FILE = 0; // a–h (file letters, max 2: from-file + to-file)
-  private static final int CAT_DIGIT = 1; // 1–8 (rank digits, max 2: from-rank + to-rank)
+  private static final int CAT_FILE = 0; // a-h (file letters, max 2: from-file + to-file)
+  private static final int CAT_DIGIT = 1; // 1-8 (rank digits, max 2: from-rank + to-rank)
   private static final int CAT_RNBQ = 2; // R,N,B,Q (non-king piece letter, max 1)
   private static final int CAT_K = 3; // K (king letter, max 1)
   private static final int CAT_X = 4; // x (capture symbol, max 1)
@@ -74,10 +74,10 @@ class TestSanValidateFormatFailureOracleComplement {
   // Fast lookup tables indexed by char value (ASCII only).
   // CHAR_CATEGORY maps a character to its category index (-1 = uncategorised).
   // VALID_FIRST_CHAR marks which characters may legally open a SAN string
-  // (file letters a–h, or piece letters R/N/B/Q/K).
+  // (file letters a-h, or piece letters R/N/B/Q/K).
   // ---------------------------------------------------------------------------
 
-  /** Maps ASCII char value → category index; -1 for characters not in ALPHABET. */
+  /** Maps ASCII char value -> category index; -1 for characters not in ALPHABET. */
   private static final int[] CHAR_CATEGORY = new int[128];
 
   /**
@@ -117,7 +117,7 @@ class TestSanValidateFormatFailureOracleComplement {
     assumeFalse(RestrictTestConstants.IS_EXCLUDE_LONG_RUNNING_SAN_VALIDATE_FORMAT_FAILURE_ORACLE_COMPLEMENT_TEST);
 
     final Set<String> validSanSet = Nulls.keySet(SanValidateStaticallyFormat.getSanValidationMap());
-    final var startTime = System.currentTimeMillis();
+    final long startTime = System.currentTimeMillis();
 
     // Single-element array: the idiomatic Java way to hold a mutable long counter
     // that is updated deep inside a recursive method without using instance state.
@@ -125,14 +125,14 @@ class TestSanValidateFormatFailureOracleComplement {
 
     generateAllCandidates(san -> checkCandidate(san, validSanSet, totalChecked, startTime));
 
-    final var totalElapsed = System.currentTimeMillis() - startTime;
+    final long totalElapsed = System.currentTimeMillis() - startTime;
     System.out.println("Completeness test done. Total checks: " + String.format("%,d", totalChecked[0])
         + ", total elapsed: " + String.format("%.1f", totalElapsed / 1000.0) + " s");
   }
 
   /**
    * Asserts that the candidate generator produces every SAN in the static SAN map that is within the generator's scope
-   * — i.e. castling moves plus SANs whose characters all lie in {@link #ALPHABET} (excluding terminal markers
+   * - i.e. castling moves plus SANs whose characters all lie in {@link #ALPHABET} (excluding terminal markers
    * {@code +}/{@code #}). Without this guarantee, the failure oracle complement test could silently miss bugs where
    * {@link SanValidateFormat#validateFormat} rejects valid SANs that the generator never exercises.
    */
@@ -154,8 +154,8 @@ class TestSanValidateFormatFailureOracleComplement {
     if (CASTLING_MOVES.contains(san)) {
       return true;
     }
-    for (var i = 0; i < san.length(); i++) {
-      final var c = san.charAt(i);
+    for (int i = 0; i < san.length(); i++) {
+      final char c = san.charAt(i);
       if (c >= CHAR_CATEGORY.length || CHAR_CATEGORY[c] == -1) {
         return false;
       }
@@ -213,7 +213,7 @@ class TestSanValidateFormatFailureOracleComplement {
       }
       // Prune: do not exceed the maximum allowed occurrences for this character's category.
       // Note: every character in ALPHABET has a valid category (CHAR_CATEGORY != -1).
-      final var category = CHAR_CATEGORY[c];
+      final int category = CHAR_CATEGORY[c];
       if (categoryCounts[category] < CAT_MAX[category]) {
         buffer[length] = c;
         categoryCounts[category]++;
@@ -238,7 +238,7 @@ class TestSanValidateFormatFailureOracleComplement {
       isValid = false;
     }
 
-    // Anything rejected by the coarse basic check must also be rejected by validateFormat itself — basic is a
+    // Anything rejected by the coarse basic check must also be rejected by validateFormat itself - basic is a
     // strict superset filter, so its rejection is sufficient evidence for non-acceptance.
     if (!SanValidateFormatBasic.isBasicFormatValid(san)) {
       assertFalse(isValid, "isBasicFormatValid rejects \"" + san + "\" but validateFormat accepts it");
@@ -254,7 +254,7 @@ class TestSanValidateFormatFailureOracleComplement {
 
     totalChecked[0]++;
     if (totalChecked[0] % PRINT_INTERVAL == 0) {
-      final var elapsed = System.currentTimeMillis() - startTime;
+      final long elapsed = System.currentTimeMillis() - startTime;
       System.out.println("Processed: " + String.format("%,d", totalChecked[0]) + ", elapsed: "
           + String.format("%.1f", elapsed / 1000.0) + " s - current SAN: " + san);
     }

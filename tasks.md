@@ -10,180 +10,26 @@ Order within each section is the source of truth. Completed tasks move to **Done
 
 ---
 
-## Current release — 16.0.0: make threefold and fifty-move report production grade and clean-up
+## Current release — Clean-up release mainly remove old test generators and var operator - 16.1.0
 
-Do not start this immediately after the current release. This section exists so the follow-up work is captured, scoped,
-and not rediscovered chaotically later.
+Already done in CHANGELOG.md
 
-The release goal is to turn the repetition/no-progress report work from useful scaffolding into tested, object-level
-library behavior. The printout should become a view over analysis objects, not the place where chess/report logic lives.
-
-### Phase 1 — Object-level repetition report model
-
-- [x] Introduce a report/analysis object for threefold-existing-behind / threefold-and-beyond repetitions.
-- [x] Introduce a report/analysis object for threefold claim-ahead opportunities.
-- [x] Preserve the current printed report shape by deriving it from those objects.
-- [x] Move repetition-line, initial-position inclusion, played-vs-hypothetical, and repetition-count decisions out of the print classes.
-- [x] Keep print classes small: format already-calculated facts only.
-
-### Phase 2 — Test the report objects directly
-
-- [x] Add direct unit tests for existing threefold-and-beyond analysis.
-- [x] Add direct unit tests for threefold claim-ahead analysis.
-- [x] Add regression coverage for the initial-position repetition case that was previously missing from the printout.
-- [x] Add tests that compare the report printout against the object model, so formatting cannot silently diverge from the analysis.
-
-### Phase 3 — Add from-initial-placement and FEN-start coverage
-
-Create one focused test folder for positions that start counting from move one. The folder covers both the initial piece
-placement and games started from an explicit FEN.
-
-- [x] Initial piece placement, White to move on move 1: run into threefold, fivefold, 50-move, and 75-move conditions from move one.
-- [x] Initial piece placement, Black to move on move 1: same coverage, with special attention to fullmove numbering.
-- [x] Non-initial FEN position, White to move on move 1: run into threefold, fivefold, 50-move, and 75-move conditions from move one.
-- [x] Non-initial FEN position, Black to move on move 1: same coverage, with special attention to fullmove numbering.
-- [x] For each fixture, assert the public query methods detect the condition.
-- [x] For each fixture, assert the object-level report model contains the expected facts.
-- [x] For each fixture, assert the printed report is derived correctly from the object-level facts.
-
-### Phase 4 — Finish the 50-move report output
-
-Finished the no-progress / 50-move output on top of the object-level analysis shape, mirroring the threefold reports
-shipped in Phase 1. The 50-move shape required a two-flag distinction the threefold report does not have:
-`includesInitialFen` (the sequence starts in the initial FEN's recorded ply count) and `thresholdReachedDuringInitialFen`
-(the initial FEN's halfmove clock is already at the 50-move threshold — the "claim now or never" special case where the
-report must surface a sequence even though no play happened).
-
-- [x] Finish the 50-move output. `FiftyMoveClaimAheadReport` (per-move claims ahead, mirrors
-      `ThreefoldClaimAheadReport`) and `FiftyMoveSequenceReport` (the no-progress sequences the old single yes/no line
-      summarised, now itemised) are wired through `Reporter` as two new sections replacing the old yes/no line.
-- [x] Add direct tests for the 50-move report object. `TestFiftyMoveClaimAheadReportBuilder` (5 tests including the
-      "initial FEN already at threshold, only legal move is a capture" special case) and
-      `TestFiftyMoveSequenceReportBuilder` (5 tests covering pure-played, initial-FEN-continued, and
-      initial-FEN-at-threshold sequence shapes).
-- [x] Add printout tests derived from the object-level expected facts. `TestReportPrintoutDerivesFromObjectModel`
-      extended to assert correspondence between both new sections and their underlying report objects;
-      `TestReporterGoldenOutput` goldens regenerated for the new four-section layout.
-
-### Phase 5 — Per-move claim API (FIDE 9.2 / 9.3 fidelity)
-
-Currently both `canClaimFiftyMoveRule()` / `canClaimThreefoldRepetitionRule()` collapse to position-wide booleans: true
-if *any* legal move would satisfy the claim. FIDE 9.2 (threefold) and 9.3 (50-move) actually frame the claim as a
-per-move act — the player announces the specific move they intend to play and claims the draw on that announcement.
-clean-chess inherited the collapsed shape from python-chess, which has the same gap (`board.can_claim_fifty_moves()`
-takes no move parameter). The collapsed shape is what enabled the mate-edge bug fixed in 15.0.0
-(`canClaimFiftyMoveRuleWithOwnMove`); a per-move predicate would have surfaced the question naturally during design,
-not as an arbiter's catch years later.
-
-- [x] Add `Board.canClaimFiftyMoveRuleFor(MoveSpecification move)` — true iff `move` is legal, non-pawn, non-capture,
-      and `halfMoveClock >= 99`. Validates the FIDE 9.3 act of *this specific announced move* completing the 50.
-- [x] Add `Board.canClaimThreefoldRepetitionRuleFor(MoveSpecification move)` — true iff `move` is legal and the
-      resulting position is a threefold occurrence. Validates the FIDE 9.2 act for *this specific announced move*.
-- [x] Add `Board.canClaimDrawFor(MoveSpecification move)` — composed convenience (`canClaimFiftyMoveRuleFor(move) ||
-      canClaimThreefoldRepetitionRuleFor(move)`).
-- [x] Keep the existing existence predicates (`canClaimFiftyMoveRule`, `canClaimFiftyMoveRuleWithOwnMove`,
-      `canClaimThreefoldRepetitionRule`, `canClaimThreefoldRepetitionRuleWithOwnMove`, `canClaimDraw`) as convenience
-      shorthand. Their behavior at the existence level stays unchanged.
-- [x] Tests: pin the mate-in-one edge per-move — `canClaimFiftyMoveRuleFor(Nf7)` returns true on the FEN already used
-      in `TestBoardClaimWithOwnMove#canClaimFiftyMoveRuleWithOwnMoveTrueEvenWhenOnlyNonZeroingMoveIsMate`, even though
-      Nf7 is itself mate. Symmetric edge for stalemate.
-- [x] Tests: pin that a candidate move whose post-position is *not* the claimed condition returns false (e.g. a pawn
-      move resets the clock and is rejected by the 50-move per-move predicate even if other non-zeroing moves exist).
-- [x] Wire the per-move predicates into the threefold claim-ahead report object (Phase 1) so the report's per-move
-      entries are computed from a single source of truth.
-- [x] `specification.md` §3.1: update the "claimable rules" paragraph to mention the per-move predicate as the
-      FIDE-faithful shape and the existence predicate as the convenience.
-- [x] Reference the python-chess upstream issue (filed during 15.0.0 work) so a future contributor can see the
-      cross-library context — both libraries had the same gap; clean-chess closes it here.
-      Issue: [niklasf/python-chess#1188](https://github.com/niklasf/python-chess/issues/1188); wired into
-      `Board.canClaimFiftyMoveRuleFor` JavaDoc, `specification.md` §3.1, and `CHANGELOG.md` `[15.0.0]`.
-
-### Phase 6 — Decommission `HalfMove`
-
-Partial. Storage decommission shipped; type retained as a derived compatibility row pending the report-layer rewrite.
-
-- [x] Remove stored `halfMoveList` from `Board`; derive temporary `HalfMove` rows from existing board history where needed.
-- [x] Keep repetition/report behavior unchanged during that first removal.
-- [ ] Analyze whether the repetition/report objects can use narrower records instead of `HalfMove`. _(deferred to next release)_
-- [ ] If possible, replace `HalfMove` entirely with purpose-specific repetition/report rows. _(deferred)_
-- [ ] Delete `HalfMove`, `HalfMoveUtility`, and related comparators once no longer needed. _(deferred)_
-- [x] Follow-up note: `HalfMove` survives as the row type consumed by the report builders and print classes
-      (`com.dlb.chess.report.*`) and by `RepetitionUtility.calculateRepetitionListList`. Replacing it requires designing
-      narrower report-local row types (a `RepetitionRow` and a `NoProgressRow`, roughly) and migrating the builders.
-      `Board.getHalfMoveList()` is kept as a derived `O(plies)` view; `Board.getLastHalfMove()` provides `O(1)` access
-      for the hot path in the claim-ahead replay builders.
-
-### Phase 7 — Release hygiene
-
-- [x] Keep the release scoped to report/repetition/no-progress cleanup. _(scope deliberately expanded to include the
-      per-move claim API, the `GameEndFacts` / `ClaimRights` rich snapshots, the facts-vs-Outcome predicate refactor,
-      and the `Termination.NONE` / non-null `Outcome` cleanup; these grew out of the report work and were grouped here
-      rather than deferred.)_
-- [x] Do not mix in the insufficient-material play-beyond release unless explicitly re-scoped.
-- [x] Update `README.md`, `specification.md`, and `CHANGELOG.md` only for behavior or documented workflows that actually
-      changed. _(`README.md` + `pom.xml` version bumped to 16.0.0; `CHANGELOG.md` entry written; `specification.md`
-      §3.1 touched during Phase 5 for the per-move claim shape.)_
-- [x] Run focused report/repetition tests first, then the full default profile before release.
-
----
-
-## Future release — python-chess primary cross-validation + PGN/FEN test coverage expansion
-
-The third release. Reactivates the python-chess test path (currently dormant), makes python-chess the main move-test reference, and expands PGN import/export test coverage — especially the FEN-anchored cases that `chesslib` cannot exercise.
-
-### Context
-
-The project historically tested against python-chess via `GeneratePythonTestCases.java`, which generates a Python test script from clean-chess fixtures. **That generator exists in the codebase but there is no active test that runs the generated Python script** — the comparison pipeline is dormant. Reactivating it is part of this release.
-
-Carlos's `chesslib` (`LibraryCarlosBoard`) cannot import PGN from a non-initial-position via the `FEN`/`SetUp` tags. That gap is why python-chess becomes the *primary* cross-validation reference after this release. `chesslib` is retained as a second witness — having two independent oracles is more valuable than having one.
-
-### Pattern recommendation — generation-based, not live invocation
-
-- A Python script using python-chess generates expected outputs (legal moves, FEN, SAN, LAN, repetition counts, halfmove clock, dead-position verdicts) for a battery of fixtures, writes to a fixed file path.
-- Java tests read the file and compare to clean-chess output.
-- The Python script runs only when fixtures are added or regenerated, **not** during `mvn test`.
-- Chess outputs are deterministic per input; cached reference data doesn't go stale.
-
-### Discussion items to settle before coding
-
-- [ ] Inventory exactly what python-chess will be used as reference for: legal-move generation, SAN/LAN, FEN, repetition counts, fifty-move clock, threefold/fivefold, dead-position (does python-chess support this directly or via heuristic?), CHA-style unwinnability (it doesn't — that stays unique to clean-chess).
-- [ ] Decide: gradual migration (both `chesslib` and python-chess as references during transition) or hard cutover. Lean: gradual — keep `chesslib` as a second witness permanently.
-- [ ] Document the toolchain requirement: contributors need Python 3 + `pip install chess`. Goes in `setup.md`.
-- [ ] Plan the regeneration workflow: how is "I added a fixture; now regenerate the python-chess-expected outputs" triggered cleanly? Maven goal? Script? Make target?
-
-### Reactivation work
-
-- [ ] Audit `GeneratePythonTestCases.java` — current state, what it produces, what's still wired up after the dormancy period
-- [ ] Decide and document the file format for stored expected outputs (JSON? line-based? CSV?)
-- [ ] Refactor (or replace) the generator to produce the agreed format
-- [ ] Build the Java-side consumer: read the expected-outputs file, compare to clean-chess output, fail loudly on mismatch
-- [ ] Migrate at least one cross-validation test from `chesslib` to python-chess as a proof-of-concept
-
-### python-chess as primary reference
-
-- [ ] Migrate cross-validation tests from `chesslib` to python-chess for the surface python-chess covers
-- [ ] Keep `LibraryCarlosBoard` as a second oracle — do not delete; two independent witnesses is the right shape
-
-### PGN import/export test coverage expansion
-
-The area `chesslib` cannot test and python-chess can: PGN imported from a non-initial position via the `FEN`/`SetUp` tags. Currently the test corpus skews toward initial-position games; expanding here is overdue, and python-chess being primary makes it feasible for the first time.
-
-- [ ] Catalog the missing PGN-import-with-FEN test cases: short examples per side-to-move, per castling-right combination, per en-passant target square, per non-trivial half-move-clock / full-move-number
-- [ ] Cross-validate each against python-chess output
-- [ ] PGN export coverage: round-trip tests for PGN files that started with a non-initial `FEN` tag — both archival and semantic export modes
-- [ ] FEN export coverage: round-trip from python-chess-generated FEN strings (real-world FEN exporters produce inputs the strict parser may not love)
-
----
+[x] Fix JavaDoc code in test classes and private main classes
+[x] Use explicit local variable types
+[x] Document how to use clean-chess on flag fall and resign in README.md
 
 ## Future release — publish to Maven Central
 
 The capstone release. Publish to Central only when the library has stabilised — every prior release done, identity questions settled, and any tasks that surface during the prerequisite work itself addressed first. Maven Central artifacts are immutable: once published, an artifactId+version pair lives forever in the public record. The bar for moving from JitPack to Central is therefore "we are confident this artifact represents the project well, indefinitely."
 
 ### Prerequisites — must be true before any Central work begins
-- [ ] DeepSquare release complete (Auto-CHA + Zobrist + pawn-wall classifier + foundational refactors)
-- [ ] Bitboard release complete (performance acceptable, differential-test harness green)
-- [ ] python-chess primary + PGN/FEN coverage release complete
-- [ ] Rename decision resolved — clean-chess → DeepSquare or final name. Once published, the artifactId is permanent
+- [ ] Add line "// SPDX-License-Identifier: GPL-3.0-only" to each file
+- [ ] Add Eclipse setting adding the obligate first line for every new Java class
+- [x] Documented: how to use clean-chess on flag fall and resign in README.md
+- [x] DeepSquare release complete (Auto-CHA + Zobrist + pawn-wall classifier + foundational refactors)
+- [x] Bitboard release complete (performance acceptable, differential-test harness green)
+- [x] python-chess primary + PGN/FEN coverage release complete
+- [x] Rename decision resolved: ashlar-chess is the final name.
 - [ ] Every task that surfaces during the prerequisite releases has been addressed (re-evaluate this list at the moment of starting; the bar is "library is mature")
 
 ### Sonatype Central Portal setup

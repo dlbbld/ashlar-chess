@@ -3,6 +3,7 @@ package com.dlb.chess.common;
 import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -278,7 +279,7 @@ public class Nulls {
    * non-null, so the implicit array conversion warns.
    */
   public static List<String> argsAsList(String[] args) {
-    final List<String> result = new java.util.ArrayList<>(args.length);
+    final List<String> result = new ArrayList<>(args.length);
     for (final @Nullable String arg : args) {
       result.add(checkResult(arg));
     }

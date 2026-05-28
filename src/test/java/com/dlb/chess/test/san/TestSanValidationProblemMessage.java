@@ -22,7 +22,7 @@ import com.dlb.chess.san.StrictSanParser;
  *
  * <ol>
  * <li>exercises a SAN string (plus board position, where relevant) that produces that exact problem code, and</li>
- * <li>asserts the full exception message — both static messages and parameter-substituted messages (e.g.
+ * <li>asserts the full exception message - both static messages and parameter-substituted messages (e.g.
  * {@code ''{0}''}) are verified against the expected final string, so message templates and their interpolation are
  * covered in one place.</li>
  * </ol>
@@ -39,7 +39,7 @@ class TestSanValidationProblemMessage {
 
   /**
    * When {@code true}, each test asserts the exact full exception message (useful while messages.properties is being
-   * built up, to lock down wording and parameter interpolation). When stable, flip to {@code false} — only the problem
+   * built up, to lock down wording and parameter interpolation). When stable, flip to {@code false} - only the problem
    * code is then checked, so message wording can be freely edited in the resource bundle without breaking tests.
    */
   private static final boolean IS_CHECK_MESSAGE = true;
@@ -129,7 +129,7 @@ class TestSanValidationProblemMessage {
     checkException("O-", SanValidationProblem.FORMAT_KING_CASTLING,
         "When the value starts with 'O', it must be either castling king-side (O-O) or castling queen-side (O-O-O).");
 
-    // king non castling non capture — destination file (second character when not 'x')
+    // king non castling non capture - destination file (second character when not 'x')
     checkException("K", SanValidationProblem.FORMAT_KING_NON_CASTLING_NON_CAPTURE_NO_DESTINATION_FILE,
         "For a king non-castling non-capturing move, after the king letter a file letter (a-h) is expected for the destination file, but was not provided.");
 
@@ -140,7 +140,7 @@ class TestSanValidationProblemMessage {
     checkException("K2e5", SanValidationProblem.FORMAT_KING_NON_CASTLING_NON_CAPTURE_WRONG_DESTINATION_FILE,
         "For a king non-castling non-capturing move, after the king letter a file letter (a-h) is expected for the destination file, but is '2'.");
 
-    // king non castling non capture — destination rank
+    // king non castling non capture - destination rank
     checkException("Ke", SanValidationProblem.FORMAT_KING_NON_CASTLING_NON_CAPTURE_NO_DESTINATION_RANK,
         "For a king non-castling non-capturing move, after the destination file a rank digit (1-8) is expected for the destination rank, but was not provided.");
 
@@ -195,7 +195,7 @@ class TestSanValidationProblemMessage {
         "For a piece move (R, N, B, Q), the second character must be a file letter (a-h),"
             + " a rank digit (1-8), or the capture symbol (x), but is '='.");
 
-    // --- Rx... — capture, no disambiguation ---
+    // --- Rx... - capture, no disambiguation ---
 
     checkException("Qx", SanValidationProblem.FORMAT_RNBQ_CAPTURE_NO_DESTINATION_FILE,
         "For a piece move with no disambiguation and capturing, after the capture symbol a file letter (a-h)"
@@ -217,7 +217,7 @@ class TestSanValidationProblemMessage {
         "A piece move with no disambiguation and capturing must have exactly 4 characters"
             + " (excluding check/checkmate symbol).");
 
-    // --- R[rank]... — rank branch (pos 2 expects 'x' or file letter) ---
+    // --- R[rank]... - rank branch (pos 2 expects 'x' or file letter) ---
 
     checkException("Q2", SanValidationProblem.FORMAT_RNBQ_RANK_NO_THIRD_CHARACTER,
         "After the source-rank digit, a file letter (destination file for a non-capturing move)"
@@ -227,7 +227,7 @@ class TestSanValidationProblemMessage {
         "After the source-rank digit, a file letter (destination file for a non-capturing move)"
             + " or the capture symbol (x) is expected, but is '='.");
 
-    // R[rank][toFile][toRank] — non-capture rank disambiguation
+    // R[rank][toFile][toRank] - non-capture rank disambiguation
     checkException("Q2a", SanValidationProblem.FORMAT_RNBQ_NON_CAPTURE_RANK_NO_DESTINATION_RANK,
         "For a piece move with rank disambiguation and non-capturing, after the destination file a rank digit"
             + " (1-8) is expected for the destination rank, but was not provided.");
@@ -240,7 +240,7 @@ class TestSanValidationProblemMessage {
         "A piece move with rank disambiguation and non-capturing must have exactly 4 characters"
             + " (excluding check/checkmate symbol).");
 
-    // R[rank]x[toFile][toRank] — capture rank disambiguation
+    // R[rank]x[toFile][toRank] - capture rank disambiguation
     checkException("Q2x", SanValidationProblem.FORMAT_RNBQ_CAPTURE_RANK_NO_DESTINATION_FILE,
         "For a piece move with rank disambiguation and capturing, after the capture symbol a file letter (a-h)"
             + " is expected for the destination file, but was not provided.");
@@ -261,7 +261,7 @@ class TestSanValidationProblemMessage {
         "A piece move with rank disambiguation and capturing must have exactly 5 characters"
             + " (excluding check/checkmate symbol).");
 
-    // --- R[file]... — file branch (3-way ambiguity at pos 2) ---
+    // --- R[file]... - file branch (3-way ambiguity at pos 2) ---
 
     checkException("Qa", SanValidationProblem.FORMAT_RNBQ_FILE_NO_THIRD_CHARACTER,
         "After the file letter, a rank digit (destination rank), another file letter (destination file when"
@@ -271,7 +271,7 @@ class TestSanValidationProblemMessage {
         "After the file letter, a rank digit (destination rank), another file letter (destination file when"
             + " a source file is being specified), or the capture symbol (x) is expected, but is '='.");
 
-    // R[fromFile][toFile][toRank] — non-capture file disambiguation
+    // R[fromFile][toFile][toRank] - non-capture file disambiguation
     checkException("Qab", SanValidationProblem.FORMAT_RNBQ_NON_CAPTURE_FILE_NO_DESTINATION_RANK,
         "For a piece move with file disambiguation and non-capturing, after the destination file a rank digit"
             + " (1-8) is expected for the destination rank, but was not provided.");
@@ -284,7 +284,7 @@ class TestSanValidationProblemMessage {
         "A piece move with file disambiguation and non-capturing must have exactly 4 characters"
             + " (excluding check/checkmate symbol).");
 
-    // R[fromFile]x[toFile][toRank] — capture file disambiguation
+    // R[fromFile]x[toFile][toRank] - capture file disambiguation
     checkException("Qax", SanValidationProblem.FORMAT_RNBQ_CAPTURE_FILE_NO_DESTINATION_FILE,
         "For a piece move with file disambiguation and capturing, after the capture symbol a file letter (a-h)"
             + " is expected for the destination file, but was not provided.");
@@ -305,14 +305,14 @@ class TestSanValidationProblemMessage {
         "A piece move with file disambiguation and capturing must have exactly 5 characters"
             + " (excluding check/checkmate symbol).");
 
-    // --- R[file][rank]... — ambiguous: Ra1 (length 3, valid) or source-square prefix (length > 3) ---
+    // --- R[file][rank]... - ambiguous: Ra1 (length 3, valid) or source-square prefix (length > 3) ---
 
     // When a fourth char is present we commit to source-square. It must be 'x' (capture) or a file letter.
     checkException("Qa1=", SanValidationProblem.FORMAT_RNBQ_SQUARE_WRONG_THIRD_CHARACTER,
         "After the source square, a file letter (destination file) or the capture symbol (x) is expected,"
             + " but is '='.");
 
-    // R[fromFile][fromRank][toFile][toRank] — non-capture square disambiguation
+    // R[fromFile][fromRank][toFile][toRank] - non-capture square disambiguation
     checkException("Qa1b", SanValidationProblem.FORMAT_RNBQ_NON_CAPTURE_SQUARE_NO_DESTINATION_RANK,
         "For a piece move with square disambiguation and non-capturing, after the destination file a rank digit"
             + " (1-8) is expected for the destination rank, but was not provided.");
@@ -325,7 +325,7 @@ class TestSanValidationProblemMessage {
         "A piece move with square disambiguation and non-capturing must have exactly 5 characters"
             + " (excluding check/checkmate symbol).");
 
-    // R[fromFile][fromRank]x[toFile][toRank] — capture square disambiguation
+    // R[fromFile][fromRank]x[toFile][toRank] - capture square disambiguation
     checkException("Qa1x", SanValidationProblem.FORMAT_RNBQ_CAPTURE_SQUARE_NO_DESTINATION_FILE,
         "For a piece move with square disambiguation and capturing, after the capture symbol a file letter (a-h)"
             + " is expected for the destination file, but was not provided.");
@@ -434,7 +434,7 @@ class TestSanValidationProblemMessage {
           "The pawn cannot capture on square c3 because it is occupied by an own piece.");
     }
 
-    // DESTINATION_PAWN_CAPTURE_KING: legal position — white pawn e2 doesn't attack d5; SAN "exd5" would target
+    // DESTINATION_PAWN_CAPTURE_KING: legal position - white pawn e2 doesn't attack d5; SAN "exd5" would target
     // d5 where the black king sits. Movement layer passes (file change adjacent, rank progression OK), exists check
     // passes (pawn on e-file), destination check fires because d5 has opponent king.
     {
@@ -507,7 +507,7 @@ class TestSanValidationProblemMessage {
     }
 
     // KING_CASTLING_FINAL_NO_RIGHT_ROOK_CAPTURED: black bishop on b7 captures white's h1 rook via
-    // Bxg2-Bxh1. White then attempts O-O — king-side rook has been captured.
+    // Bxg2-Bxh1. White then attempts O-O - king-side rook has been captured.
     {
       final Board board = new Board();
       board.movesStrict("a3", "b6", "a4", "Bb7", "a5", "Bxg2", "a6", "Bxh1");
@@ -516,7 +516,7 @@ class TestSanValidationProblemMessage {
     }
 
     // KING_CASTLING_FINAL_NO_RIGHT_CASTLED: white castles king-side; after black's reply, white
-    // tries O-O-O — all castling rights are lost via having already castled.
+    // tries O-O-O - all castling rights are lost via having already castled.
     {
       final Board board = new Board();
       board.movesStrict("e4", "e5", "Nf3", "Nc6", "Bc4", "Bc5", "O-O", "Nf6");
@@ -570,7 +570,7 @@ class TestSanValidationProblemMessage {
     // (which can only advance to e3 or e4).
     checkException("e5", SanValidationProblem.NOT_REACHABLE_PAWN_NON_CAPTURING, "No pawn can reach square e5.");
 
-    // NOT_REACHABLE_PAWN_CAPTURING: black pawn on d5, white c-pawn still on c2 — cxd5 cannot reach
+    // NOT_REACHABLE_PAWN_CAPTURING: black pawn on d5, white c-pawn still on c2 - cxd5 cannot reach
     // (c2 can only capture diagonally on b3 or d3).
     {
       final Board board = new Board("rnbqkbnr/ppp1pppp/8/3p4/8/8/PPPPPPPP/RNBQKBNR w - - 0 2");
@@ -625,7 +625,7 @@ class TestSanValidationProblemMessage {
           "No rook on rank 7 can reach square b4.");
     }
 
-    // NOT_REACHABLE_RNBQ_SQUARE: explicit source square a7, target b4 — not a rook move.
+    // NOT_REACHABLE_RNBQ_SQUARE: explicit source square a7, target b4 - not a rook move.
     {
       final Board board = new Board("7k/R7/8/P7/8/8/8/6K1 w - - 0 1");
       checkException("Ra7a2", board, SanValidationProblem.NOT_REACHABLE_RNBQ_SQUARE,
@@ -831,7 +831,7 @@ class TestSanValidationProblemMessage {
     // OVERSPECIFIED_RNBQ_SQUARE_FILE_NOT_NECESSARY: two rooks on a-file (a7, a2), both can reach
     // a5; Ra7a5 uses square disambiguation where rank alone would have disambiguated (file alone
     // does not, but once the file is implied by the destination, rank remains the only needed
-    // piece of disambiguating information — hence square is over-specified).
+    // piece of disambiguating information - hence square is over-specified).
     {
       final Board board = new Board("7k/R7/8/8/8/8/R7/6K1 w - - 0 1");
       checkException("Ra7a5", board, SanValidationProblem.OVERSPECIFIED_RNBQ_SQUARE_FILE_NOT_NECESSARY,
@@ -861,7 +861,7 @@ class TestSanValidationProblemMessage {
     }
 
     // INSUFFICIENTLY_SPECIFIED_RNBQ_FILE_MUST_USE_RANK: two rooks on the a-file (a7, a2), both
-    // can reach a5; Raa5 (file disambig) is ambiguous — rank or square must be used.
+    // can reach a5; Raa5 (file disambig) is ambiguous - rank or square must be used.
     {
       final Board board = new Board("7k/R7/8/8/8/8/R7/6K1 w - - 0 1");
       checkException("Raa5", board, SanValidationProblem.INSUFFICIENTLY_SPECIFIED_RNBQ_FILE_RANK_REQUIRED,
@@ -869,7 +869,7 @@ class TestSanValidationProblemMessage {
               + " To move a piece from that file, please specify the rank instead.");
     }
 
-    // INSUFFICIENTLY_SPECIFIED_RNBQ_FILE_MUST_USE_RANK_OR_SQUARE: non-rook (queen) variant — two
+    // INSUFFICIENTLY_SPECIFIED_RNBQ_FILE_MUST_USE_RANK_OR_SQUARE: non-rook (queen) variant - two
     // queens on the b-file (b5, b2) can reach b4, and another queen (c4) on another file also
     // reaches b4; Qbb4 is ambiguous (and this non-rook branch fires).
     {
@@ -881,7 +881,7 @@ class TestSanValidationProblemMessage {
     }
 
     // INSUFFICIENTLY_SPECIFIED_RNBQ_RANK_MUST_USE_FILE: two rooks on rank 3 (a3, h3), both can
-    // reach d3; R3d3 (rank disambig) is ambiguous — file or square must be used.
+    // reach d3; R3d3 (rank disambig) is ambiguous - file or square must be used.
     {
       final Board board = new Board("7k/8/8/8/8/R3R3/8/6K1 w - - 0 1");
       checkException("R3d3", board, SanValidationProblem.INSUFFICIENTLY_SPECIFIED_RNBQ_RANK_FILE_REQUIRED,
@@ -889,7 +889,7 @@ class TestSanValidationProblemMessage {
               + " To move a piece from that rank, please specify the file instead.");
     }
 
-    // INSUFFICIENTLY_SPECIFIED_RNBQ_RANK_MUST_USE_FILE_OR_SQUARE: non-rook (queen) variant — two
+    // INSUFFICIENTLY_SPECIFIED_RNBQ_RANK_MUST_USE_FILE_OR_SQUARE: non-rook (queen) variant - two
     // queens on rank 4 (b4, g4) can reach d4, and another queen (d7) on another rank also
     // reaches d4; Q4d4 is ambiguous (non-rook branch).
     {
@@ -916,7 +916,7 @@ class TestSanValidationProblemMessage {
   @Test
   void testCheckCheckmateSymbol() {
 
-    // CHECKMATE_SYMBOL_BUT_CHECK_ONLY: K+Q vs K — Qe7 gives check only (Kxe7 saves, queen undefended),
+    // CHECKMATE_SYMBOL_BUT_CHECK_ONLY: K+Q vs K - Qe7 gives check only (Kxe7 saves, queen undefended),
     // but the SAN uses the checkmate symbol '#'.
     {
       final Board board = new Board("4k3/Q7/8/8/8/8/8/4K3 w - - 0 1");
@@ -929,7 +929,7 @@ class TestSanValidationProblemMessage {
     checkException("e4#", SanValidationProblem.CHECKMATE_SYMBOL_BUT_NO_CHECK,
         "The move is neither check nor checkmate, but the checkmate symbol (#) was specified.");
 
-    // CHECK_SYMBOL_BUT_CHECKMATE: back-rank mate — Rb8 is checkmate (black king g8 trapped by own pawns
+    // CHECK_SYMBOL_BUT_CHECKMATE: back-rank mate - Rb8 is checkmate (black king g8 trapped by own pawns
     // f7/g7/h7), but the SAN uses the check symbol '+'.
     {
       final Board board = new Board("6k1/5ppp/8/8/8/8/8/1R5K w - - 0 1");
@@ -942,14 +942,14 @@ class TestSanValidationProblemMessage {
     checkException("e4+", SanValidationProblem.CHECK_SYMBOL_BUT_NO_CHECK,
         "The move is neither check nor checkmate, but the check symbol (+) was specified.");
 
-    // NO_SYMBOL_BUT_CHECKMATE: back-rank mate — Rb8 is checkmate, but the SAN carries no symbol.
+    // NO_SYMBOL_BUT_CHECKMATE: back-rank mate - Rb8 is checkmate, but the SAN carries no symbol.
     {
       final Board board = new Board("6k1/5ppp/8/8/8/8/8/1R5K w - - 0 1");
       checkException("Rb8", board, SanValidationProblem.NO_SYMBOL_BUT_CHECKMATE,
           "The move is checkmate, but no symbol was specified.");
     }
 
-    // NO_SYMBOL_BUT_CHECK: K+Q vs K — Qe7 gives check, but the SAN carries no symbol.
+    // NO_SYMBOL_BUT_CHECK: K+Q vs K - Qe7 gives check, but the SAN carries no symbol.
     {
       final Board board = new Board("4k3/Q7/8/8/8/8/8/4K3 w - - 0 1");
       checkException("Qe7", board, SanValidationProblem.NO_SYMBOL_BUT_CHECK,
@@ -986,7 +986,7 @@ class TestSanValidationProblemMessage {
     final Set<SanValidationProblem> missingProblems = EnumSet.allOf(SanValidationProblem.class);
     missingProblems.removeAll(FIXED_UNCHECKED_ENTRIES);
     missingProblems.removeAll(checkedProblems);
-    final var missingProblemsMessage = missingProblems.stream().map(problem -> problem.name() + " is missing")
+    final String missingProblemsMessage = missingProblems.stream().map(problem -> problem.name() + " is missing")
         .reduce((left, right) -> left + System.lineSeparator() + right).orElse("");
     assertTrue(missingProblems.isEmpty(), missingProblemsMessage);
   }

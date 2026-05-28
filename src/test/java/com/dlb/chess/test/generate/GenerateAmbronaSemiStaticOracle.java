@@ -27,9 +27,9 @@ import com.dlb.chess.test.pgntest.enums.PgnTest;
 import com.dlb.chess.unwinnability.SemiStaticOracleFormatter;
 
 /**
- * Regenerates the Ambrona semistatic oracle from the cached final FENs in {@link PgnFen}. Requires WSL with
- * D3-Chess built and Stockfish installed; pass the WSL D3-Chess checkout root as the optional first argument when it is
- * not at the default location.
+ * Regenerates the Ambrona semistatic oracle from the cached final FENs in {@link PgnFen}. Requires WSL with D3-Chess
+ * built and Stockfish installed; pass the WSL D3-Chess checkout root as the optional first argument when it is not at
+ * the default location.
  */
 public final class GenerateAmbronaSemiStaticOracle {
 
@@ -109,12 +109,13 @@ public final class GenerateAmbronaSemiStaticOracle {
     final List<String> result = new ArrayList<>();
 
     try (InputStream errorStream = IoUtility.getErrorStream(process)) {
-      try (BufferedWriter writer = new BufferedWriter(
-          new OutputStreamWriter(IoUtility.getOutputStream(process), StandardCharsets.UTF_8));
-          BufferedReader reader = new BufferedReader(new InputStreamReader(IoUtility.getInputStream(process),
-              StandardCharsets.UTF_8))) {
+      try (
+          BufferedWriter writer = new BufferedWriter(
+              new OutputStreamWriter(IoUtility.getOutputStream(process), StandardCharsets.UTF_8));
+          BufferedReader reader = new BufferedReader(
+              new InputStreamReader(IoUtility.getInputStream(process), StandardCharsets.UTF_8))) {
 
-        var processed = 0;
+        int processed = 0;
         for (final String fen : fenList) {
           writer.write(fen);
           writer.write('\n');
@@ -144,7 +145,7 @@ public final class GenerateAmbronaSemiStaticOracle {
       if (resultLine == null) {
         throw new IllegalStateException("Ambrona semistatic runner stopped before finishing " + fen);
       }
-      if (resultLine.equals("END\t" + fen)) {
+      if (("END\t" + fen).equals(resultLine)) {
         return;
       }
       validateResultLine(resultLine, fen);

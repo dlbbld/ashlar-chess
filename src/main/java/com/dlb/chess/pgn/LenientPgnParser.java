@@ -27,14 +27,14 @@ import com.dlb.chess.san.SanValidationProblem;
  * Lenient PGN parser. Permissive inter-token rules: any whitespace separates tokens, move-number indicators are
  * consumed and ignored, termination marker is optional, space before suffixes is tolerated. Tag-list contents are
  * preserved as given (missing seven-tag-roster entries, FEN without SetUp, Result tag absent, redundant
- * initial-position FEN/SetUp) — no fabrication into the parse model. Tag-level deviations surface via
+ * initial-position FEN/SetUp) - no fabrication into the parse model. Tag-level deviations surface via
  * {@code tagForgivenItems} on the validation result; archival output is opt-in via {@code WriteMode.ARCHIVAL} on
  * {@code PgnWriter}. Independent validation pipeline from {@link StrictPgnParser}.
  */
 public final class LenientPgnParser {
 
   private static final int SAN_MIN_LENGTH = 2;
-  // Bumped from 7 to 9 to admit the longest lenient SAN forms â€” e.g. pawn LAN promotion with hyphen and check
+  // Bumped from 7 to 9 to admit the longest lenient SAN forms - e.g. pawn LAN promotion with hyphen and check
   // ("e7-e8=Q+" is 8 chars).
   private static final int SAN_MAX_LENGTH = 9;
 
@@ -139,7 +139,7 @@ public final class LenientPgnParser {
   @SuppressWarnings("null")
   private static @NonNull String unexpectedValidationErrorMessage(RuntimeException e) {
     final @Nullable String nullableReason = e.getMessage();
-    final var reason = nullableReason == null ? "" : nullableReason;
+    final String reason = nullableReason == null ? "" : nullableReason;
     return "An unexpected error occurred during validation. Reason: " + reason;
   }
 
@@ -155,7 +155,7 @@ public final class LenientPgnParser {
   // -------------------------------------------------------------------------------------------------
 
   private PgnGame parseInternal() {
-    // Empty-input rejection. Lenient leniency is about recovering signal from imperfect PGN text — it does not
+    // Empty-input rejection. Lenient leniency is about recovering signal from imperfect PGN text - it does not
     // fabricate a game out of zero input. "Empty" here includes whitespace-only (spaces, tabs, newlines) on top
     // of strictly zero-length: a file containing nothing but whitespace carries no signal either. Callers who
     // really want the initial position have {@code new Board()}.
@@ -179,7 +179,7 @@ public final class LenientPgnParser {
     validateTagSetUpValue(tagList);
     // Lenient policy: presence of the FEN tag drives the setup-from-position decision. SetUp/FEN coupling
     // deviations are preserved in the tag list as-given; they surface as tag-level forgiven items below.
-    final var isStartFromPosition = TagUtility.hasFen(tagList);
+    final boolean isStartFromPosition = TagUtility.hasFen(tagList);
 
     final Fen startFen = calculateStartFen(tagList, isStartFromPosition);
 
@@ -221,10 +221,10 @@ public final class LenientPgnParser {
    * Returns true if line {@code lineNumber} (1-based) contains {@code [} or {@code ]}.
    */
   private boolean currentLineContainsTagBracket(int lineNumber) {
-    var index = 0;
-    var currentLine = 1;
+    int index = 0;
+    int currentLine = 1;
     while (currentLine < lineNumber && index < source.length()) {
-      final var c = source.charAt(index);
+      final char c = source.charAt(index);
       if (c == '\r') {
         currentLine++;
         if (index + 1 < source.length() && source.charAt(index + 1) == '\n') {
@@ -236,7 +236,7 @@ public final class LenientPgnParser {
       index++;
     }
     while (index < source.length()) {
-      final var c = source.charAt(index);
+      final char c = source.charAt(index);
       if (c == '\n' || c == '\r') {
         break;
       }
@@ -280,8 +280,8 @@ public final class LenientPgnParser {
     if (name.isEmpty()) {
       throw tagFormatError("Tag name must not be empty.");
     }
-    for (var i = 0; i < name.length(); i++) {
-      final var c = name.charAt(i);
+    for (int i = 0; i < name.length(); i++) {
+      final char c = name.charAt(i);
       if (!isAsciiLetterOrDigit(c) && c != '_' && c != '+' && c != '#' && c != '=' && c != ':' && c != '-') {
         throw tagFormatError("The tag name contains an invalid character \"" + c + "\".");
       }
@@ -289,8 +289,8 @@ public final class LenientPgnParser {
   }
 
   private static void validateUniqueTagNames(List<Tag> tagList) {
-    for (var i = 0; i < tagList.size(); i++) {
-      for (var j = i + 1; j < tagList.size(); j++) {
+    for (int i = 0; i < tagList.size(); i++) {
+      for (int j = i + 1; j < tagList.size(); j++) {
         if (Nulls.get(tagList, i).name().equals(Nulls.get(tagList, j).name())) {
           throw new LenientPgnParserValidationException(LenientPgnParserValidationProblem.TAG_NAME_NOT_UNIQUE,
               SanValidationProblem.NONE, "The tag name must be unique. The tag name \"" + Nulls.get(tagList, i).name()
@@ -341,7 +341,7 @@ public final class LenientPgnParser {
   }
 
   private MovetextOutcome parseMovetext() {
-    var pregameCommentary = PgnCommentary.EMPTY;
+    PgnCommentary pregameCommentary = PgnCommentary.EMPTY;
     final List<PgnHalfMove> halfMoves = new ArrayList<>();
     @Nullable ResultTagValue terminationResult = null;
 
@@ -384,13 +384,13 @@ public final class LenientPgnParser {
         }
         final PgnToken suffixToken = tokenizer.next();
         final MoveSuffixAnnotation suffix = parseMoveSuffix(suffixToken.text());
-        final var last = halfMoves.size() - 1;
+        final int last = halfMoves.size() - 1;
         final PgnHalfMove previous = Nulls.get(halfMoves, last);
         halfMoves.set(last, new PgnHalfMove(previous.san(), suffix, previous.commentary()));
         continue;
       }
       if (type == PgnTokenType.SYMBOL) {
-        // Tolerate spaced move-number indicators like `1 . e4` and `1 ... e5` â€” see consumedSpacedMoveNumber.
+        // Tolerate spaced move-number indicators like `1 . e4` and `1 ... e5` - see consumedSpacedMoveNumber.
         if (consumedSpacedMoveNumber(peek)) {
           continue;
         }
@@ -398,8 +398,8 @@ public final class LenientPgnParser {
         halfMoves.add(halfMove);
         skipInsignificantWhitespace();
         if (isBraceToken(tokenizer.peek().type())) {
-          final var commentary = consumeCommentaryOrThrow();
-          final var last = halfMoves.size() - 1;
+          final PgnCommentary commentary = consumeCommentaryOrThrow();
+          final int last = halfMoves.size() - 1;
           final PgnHalfMove previous = Nulls.get(halfMoves, last);
           halfMoves.set(last, new PgnHalfMove(previous.san(), previous.moveSuffixAnnotation(), commentary));
         }
@@ -421,7 +421,7 @@ public final class LenientPgnParser {
     if (!isPurelyDigits(digitsPeek.text())) {
       return false;
     }
-    // Pattern 1 â€” digits + SPACES + dots-only symbol. Committing to consume the digits is safe because a lone
+    // Pattern 1 - digits + SPACES + dots-only symbol. Committing to consume the digits is safe because a lone
     // digits symbol is not a valid SAN; the length-error path below catches the no-dots case.
     final PgnTokenType next = tokenizer.peekNext().type();
     if (next == PgnTokenType.SPACES) {
@@ -435,7 +435,7 @@ public final class LenientPgnParser {
       throw movetextError(LenientPgnParserValidationProblem.EXCEPTION_CAUGHT_FROM_STRICT_VALIDATION,
           "The movetext contains the SAN '" + digitsPeek.text() + "' with an invalid SAN length.");
     }
-    // Pattern 2 â€” digits + dots-only SYMBOL with no separating SPACES. Rare; tokenizer normally coalesces these.
+    // Pattern 2 - digits + dots-only SYMBOL with no separating SPACES. Rare; tokenizer normally coalesces these.
     if (next == PgnTokenType.SYMBOL && isAllDots(tokenizer.peekNext().text())) {
       tokenizer.next(); // digits
       tokenizer.next(); // dots
@@ -448,8 +448,8 @@ public final class LenientPgnParser {
     if (text.isEmpty()) {
       return false;
     }
-    for (var i = 0; i < text.length(); i++) {
-      final var c = text.charAt(i);
+    for (int i = 0; i < text.length(); i++) {
+      final char c = text.charAt(i);
       if (c < '0' || c > '9') {
         return false;
       }
@@ -461,7 +461,7 @@ public final class LenientPgnParser {
     if (text.isEmpty()) {
       return false;
     }
-    for (var i = 0; i < text.length(); i++) {
+    for (int i = 0; i < text.length(); i++) {
       if (text.charAt(i) != '.') {
         return false;
       }
@@ -486,7 +486,7 @@ public final class LenientPgnParser {
     validateSanCharacters(san);
     validateSanLength(san);
 
-    var suffix = MoveSuffixAnnotation.NONE;
+    MoveSuffixAnnotation suffix = MoveSuffixAnnotation.NONE;
     // Allow whitespace between SAN and suffix annotation (`e4 !!`).
     skipInlineWhitespace();
     if (tokenizer.peek().type() == PgnTokenType.MOVE_SUFFIX_ANNOTATION) {
@@ -510,7 +510,7 @@ public final class LenientPgnParser {
         try {
           return new PgnCommentary(token.text());
         } catch (final PgnCommentaryValidationException pcve) {
-          // Defensive â€” the tokenizer cannot produce `}` here (handled as separate types), so unreachable in
+          // Defensive - the tokenizer cannot produce `}` here (handled as separate types), so unreachable in
           // practice.
           final String message = BasicUtility.getMessage(pcve);
           throw movetextError(LenientPgnParserValidationProblem.MOVETEXT_COMMENTARY_CONTAINS_FORBIDDEN_CHARACTER,
@@ -565,7 +565,7 @@ public final class LenientPgnParser {
         throw movetextError(LenientPgnParserValidationProblem.MOVETEXT_COMMENTARY_END_BRACE_WITHOUT_START_BRACE,
             "A closing brace } was found with no matching opening brace.");
       default:
-        // Not a broken brace â€” caller handles.
+        // Not a broken brace - caller handles.
     }
   }
 
@@ -583,8 +583,8 @@ public final class LenientPgnParser {
   }
 
   private static void validateSanCharacters(String san) {
-    for (var i = 0; i < san.length(); i++) {
-      final var c = san.charAt(i);
+    for (int i = 0; i < san.length(); i++) {
+      final char c = san.charAt(i);
       if (isAllowedLenientSanCharacter(c)) {
         continue;
       }
@@ -619,7 +619,7 @@ public final class LenientPgnParser {
   /**
    * Validates that the Result tag value (if present) matches the movetext termination marker (if present). This is the
    * only result-related cross-check the lenient parser performs; both signals are preserved independently on the parse
-   * model (Result tag on the tag list, termination marker on {@link PgnGame#terminationMarker}).
+   * model (Result tag on the tag list, termination marker on {@link PgnGame#terminationMarker()}).
    */
   private static void validateResultConsistency(List<Tag> tagList, @Nullable ResultTagValue terminationResult) {
     if (!TagUtility.hasResult(tagList) || terminationResult == null) {
@@ -659,7 +659,7 @@ public final class LenientPgnParser {
    * Result tag and termination-marker interaction. Emits {@code RESULT_TAG_MISSING_BUT_TERMINATION_MARKER_PRESENT} when
    * only the marker was given (with the marker value on {@code detail}), or
    * {@code RESULT_TAG_AND_TERMINATION_MARKER_BOTH_MISSING} when neither was given. When the Result tag is present,
-   * nothing is recorded — the value is already in the tag list (and {@link #validateResultConsistency} has already
+   * nothing is recorded - the value is already in the tag list (and {@link #validateResultConsistency} has already
    * cross-checked it against the marker if both are present).
    */
   private void recordResultAndTerminationMarkerItems(List<Tag> tagList, @Nullable ResultTagValue terminationResult) {
@@ -685,7 +685,7 @@ public final class LenientPgnParser {
    * {@code REDUNDANT_FEN_AND_SETUP_FOR_INITIAL_POSITION}.</li>
    * </ul>
    * The first two cases are exclusive of each other. The third can fire alongside neither, since it requires FEN
-   * presence — when it fires, the SetUp tag may or may not be present (both shapes are equally redundant).
+   * presence - when it fires, the SetUp tag may or may not be present (both shapes are equally redundant).
    */
   private void recordSetUpFenCouplingItems(List<Tag> tagList, Fen startFen) {
     final boolean hasFen = TagUtility.hasFen(tagList);
@@ -748,7 +748,7 @@ public final class LenientPgnParser {
     final List<PgnHalfMove> canonicalList = new ArrayList<>(halfMoveList.size());
     for (final PgnHalfMove halfMove : halfMoveList) {
       final Side side = board.getHavingMove();
-      final var fullMoveNumber = board.getFullMoveNumber();
+      final int fullMoveNumber = board.getFullMoveNumber();
       try {
         final LenientSanParserValidationResult result = board.moveLenient(halfMove.san());
         sanForgivenItemsAccumulator.addAll(result.forgivenItems());
@@ -758,7 +758,7 @@ public final class LenientPgnParser {
         final String moveNumberAndSan = HalfMoveUtility.calculateMoveNumberAndSanWithSpace(fullMoveNumber, side,
             halfMove.san());
         final String messageSanValidationFailure = BasicUtility.getMessage(e);
-        final var message = "The validation for " + moveNumberAndSan + " failed. Reason: "
+        final String message = "The validation for " + moveNumberAndSan + " failed. Reason: "
             + messageSanValidationFailure;
         final SanValidationProblem underlying = e.getUnderlyingSanValidationProblem();
         throw new LenientPgnParserValidationException(LenientPgnParserValidationProblem.SAN,
@@ -770,8 +770,8 @@ public final class LenientPgnParser {
   }
 
   private static Fen calculateStartFen(List<Tag> tagList, boolean isStartFromPosition) {
-    final var startFenStr = isStartFromPosition ? TagUtility.readFen(tagList) : FenConstants.FEN_INITIAL_STR;
-    // Lenient PGN parser routes the FEN tag through the lenient FEN parser too — symmetry with movetext leniency
+    final String startFenStr = isStartFromPosition ? TagUtility.readFen(tagList) : FenConstants.FEN_INITIAL_STR;
+    // Lenient PGN parser routes the FEN tag through the lenient FEN parser too - symmetry with movetext leniency
     // means deficient FEN tags (extra whitespace, missing counters, speculative fullMoveNumber on a non-initial
     // position) parse cleanly. The lenient layer only forgives syntactic deviations; structural / rule-consistency
     // violations still propagate as FenAdvancedValidationException via LenientFenParserValidationException.

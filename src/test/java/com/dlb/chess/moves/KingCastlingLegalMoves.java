@@ -19,15 +19,15 @@ import com.dlb.chess.squares.AbstractAttackedSquares;
 import com.google.common.collect.ImmutableList;
 
 /**
- * Test-side StaticPosition legal-move generator for castling. Re-implements the castling check on the mailbox
- * surface ({@code StaticPosition.get(Square)} + {@link AbstractAttackedSquares}) end-to-end — it is the
- * differential-test oracle for the bitboard castling pipeline ({@code BitboardLegalMoveFactory} inlines its own
- * castling generation against {@code CastlingUtility}'s bitboard methods), so this class must not delegate to that
- * pipeline. Both sides agreeing on every fixture is the spine assertion for castling.
+ * Test-side StaticPosition legal-move generator for castling. Re-implements the castling check on the mailbox surface
+ * ({@code StaticPosition.get(Square)} + {@link AbstractAttackedSquares}) end-to-end - it is the differential-test
+ * oracle for the bitboard castling pipeline ({@code BitboardLegalMoveFactory} inlines its own castling generation
+ * against {@code CastlingUtility}'s bitboard methods), so this class must not delegate to that pipeline. Both sides
+ * agreeing on every fixture is the spine assertion for castling.
  */
 class KingCastlingLegalMoves extends KingLegalMoves {
 
-  // Required-empty corridor and king-travel/king-destination squares — duplicated test-side so the StaticPosition
+  // Required-empty corridor and king-travel/king-destination squares - duplicated test-side so the StaticPosition
   // overload does not borrow them from the production CastlingUtility (which would weaken the oracle).
 
   private static final ImmutableList<Square> WHITE_QUEEN_SIDE_CASTLING_REQUIRED_EMPTY_SQUARE_LIST = constructListSquare(
@@ -77,7 +77,7 @@ class KingCastlingLegalMoves extends KingLegalMoves {
 
   private static CastlingCheck calculateQueenSideCastlingCheck(StaticPosition staticPosition, Side havingMove,
       CastlingRight castlingRight) {
-    final var hasLostCastlingRight = castlingRight != CastlingRight.KING_AND_QUEEN_SIDE
+    final boolean hasLostCastlingRight = castlingRight != CastlingRight.KING_AND_QUEEN_SIDE
         && castlingRight != CastlingRight.QUEEN_SIDE;
     if (hasLostCastlingRight) {
       return CastlingCheck.FINAL_NO_RIGHT;
@@ -94,7 +94,7 @@ class KingCastlingLegalMoves extends KingLegalMoves {
 
   private static CastlingCheck calculateKingSideCastlingCheck(StaticPosition staticPosition, Side havingMove,
       CastlingRight castlingRight) {
-    final var hasLostCastlingRight = castlingRight != CastlingRight.KING_AND_QUEEN_SIDE
+    final boolean hasLostCastlingRight = castlingRight != CastlingRight.KING_AND_QUEEN_SIDE
         && castlingRight != CastlingRight.KING_SIDE;
     if (hasLostCastlingRight) {
       return CastlingCheck.FINAL_NO_RIGHT;

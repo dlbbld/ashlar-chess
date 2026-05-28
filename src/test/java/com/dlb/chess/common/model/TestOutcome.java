@@ -10,7 +10,7 @@ import com.dlb.chess.common.enums.Termination;
 
 /**
  * Direct compact-constructor tests for {@link Outcome}. Pins the semantic invariants the record's compact constructor
- * enforces — the "winner is Side.NONE unless termination is CHECKMATE" rule. Non-nullness of the fields is enforced at
+ * enforces - the "winner is Side.NONE unless termination is CHECKMATE" rule. Non-nullness of the fields is enforced at
  * compile time by the package's {@code @NonNullByDefault}, so no runtime null-rejection tests are needed.
  */
 class TestOutcome {
@@ -37,7 +37,7 @@ class TestOutcome {
     checkDrawingTermination(new Outcome(Termination.STALEMATE, Side.NONE));
     checkDrawingTermination(new Outcome(Termination.SEVENTY_FIVE_MOVES, Side.NONE));
     checkDrawingTermination(new Outcome(Termination.FIVEFOLD_REPETITION, Side.NONE));
-    // No exception thrown — all four drawing terminations accept Side.NONE as the winner.
+    // No exception thrown - all four drawing terminations accept Side.NONE as the winner.
   }
 
   private static void checkDrawingTermination(Outcome outcome) {

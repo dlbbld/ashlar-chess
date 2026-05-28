@@ -35,23 +35,23 @@ public class KingCastlingSanValidateStaticallyStrictCalculate extends AbstractSa
 
   private static void initializeKingSideNoCheck(Map<String, SanParse> sanCastlingMap) {
     final String san = CastlingConstants.SAN_CASTLING_KING_SIDE;
-    final var model = new SanParse(SanFormat.KING_CASTLING_KING_SIDE, new SanConversion(PieceType.NONE, FILE_NONE,
+    final SanParse model = new SanParse(SanFormat.KING_CASTLING_KING_SIDE, new SanConversion(PieceType.NONE, FILE_NONE,
         RANK_NONE, Square.NONE, PromotionPieceType.NONE, SanTerminalMarker.NONE));
     sanCastlingMap.put(san, model);
 
   }
 
   private static void initializeKingSideCheckmate(Map<String, SanParse> sanCastlingMap) {
-    final var san = CastlingConstants.SAN_CASTLING_KING_SIDE + SanSymbol.CHECKMATE.getSymbol();
-    final var model = new SanParse(SanFormat.KING_CASTLING_KING_SIDE, new SanConversion(PieceType.NONE, FILE_NONE,
+    final String san = CastlingConstants.SAN_CASTLING_KING_SIDE + SanSymbol.CHECKMATE.getSymbol();
+    final SanParse model = new SanParse(SanFormat.KING_CASTLING_KING_SIDE, new SanConversion(PieceType.NONE, FILE_NONE,
         RANK_NONE, Square.NONE, PromotionPieceType.NONE, SanTerminalMarker.CHECKMATE));
     sanCastlingMap.put(san, model);
 
   }
 
   private static void initializeKingSideCheck(Map<String, SanParse> sanCastlingMap) {
-    final var san = CastlingConstants.SAN_CASTLING_KING_SIDE + SanSymbol.CHECK.getSymbol();
-    final var model = new SanParse(SanFormat.KING_CASTLING_KING_SIDE, new SanConversion(PieceType.NONE, FILE_NONE,
+    final String san = CastlingConstants.SAN_CASTLING_KING_SIDE + SanSymbol.CHECK.getSymbol();
+    final SanParse model = new SanParse(SanFormat.KING_CASTLING_KING_SIDE, new SanConversion(PieceType.NONE, FILE_NONE,
         RANK_NONE, Square.NONE, PromotionPieceType.NONE, SanTerminalMarker.CHECK));
     sanCastlingMap.put(san, model);
 
@@ -65,22 +65,22 @@ public class KingCastlingSanValidateStaticallyStrictCalculate extends AbstractSa
 
   private static void initializeQueenSideNoCheck(Map<String, SanParse> sanCastlingMap) {
     final String san = CastlingConstants.SAN_CASTLING_QUEEN_SIDE;
-    final var model = new SanParse(SanFormat.KING_CASTLING_QUEEN_SIDE, new SanConversion(PieceType.NONE, FILE_NONE,
+    final SanParse model = new SanParse(SanFormat.KING_CASTLING_QUEEN_SIDE, new SanConversion(PieceType.NONE, FILE_NONE,
         RANK_NONE, Square.NONE, PromotionPieceType.NONE, SanTerminalMarker.NONE));
     sanCastlingMap.put(san, model);
 
   }
 
   private static void initializeQueenSideCheckmate(Map<String, SanParse> sanCastlingMap) {
-    final var san = CastlingConstants.SAN_CASTLING_QUEEN_SIDE + SanSymbol.CHECKMATE.getSymbol();
-    final var model = new SanParse(SanFormat.KING_CASTLING_QUEEN_SIDE, new SanConversion(PieceType.NONE, FILE_NONE,
+    final String san = CastlingConstants.SAN_CASTLING_QUEEN_SIDE + SanSymbol.CHECKMATE.getSymbol();
+    final SanParse model = new SanParse(SanFormat.KING_CASTLING_QUEEN_SIDE, new SanConversion(PieceType.NONE, FILE_NONE,
         RANK_NONE, Square.NONE, PromotionPieceType.NONE, SanTerminalMarker.CHECKMATE));
     sanCastlingMap.put(san, model);
   }
 
   private static void initializeQueenSideCheck(Map<String, SanParse> sanCastlingMap) {
-    final var san = CastlingConstants.SAN_CASTLING_QUEEN_SIDE + SanSymbol.CHECK.getSymbol();
-    final var model = new SanParse(SanFormat.KING_CASTLING_QUEEN_SIDE, new SanConversion(PieceType.NONE, FILE_NONE,
+    final String san = CastlingConstants.SAN_CASTLING_QUEEN_SIDE + SanSymbol.CHECK.getSymbol();
+    final SanParse model = new SanParse(SanFormat.KING_CASTLING_QUEEN_SIDE, new SanConversion(PieceType.NONE, FILE_NONE,
         RANK_NONE, Square.NONE, PromotionPieceType.NONE, SanTerminalMarker.CHECK));
     sanCastlingMap.put(san, model);
   }

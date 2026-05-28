@@ -200,14 +200,14 @@ class TestFenParserAdvanced implements EnumConstants {
 
     // Regression: opponent NON-PAWN on the two-advance square (white knight on e4 when the claimed e2-e4
     // pawn advance would put a white pawn there for black-to-move EP). The original predicate read
-    // `A || (B && C)` due to Java operator precedence — A and B&&C both false here (right side, wrong piece
+    // `A || (B && C)` due to Java operator precedence - A and B&&C both false here (right side, wrong piece
     // type), so the FEN slipped past validation and tripped an unchecked IllegalArgumentException in the
     // bitboard rewind (withRelocatedPiece preconditions the piece's presence). Fixed predicate `A || B || C`
     // throws the right typed exception.
     checkParseFenException("rnbqkb1r/pppp1ppp/8/3n4/4N3/8/PPPP1PPP/RNBQKB1R b KQkq e3 0 3",
         FenAdvancedValidationProblem.INVALID_EN_PASSANT_CAPTURE_TARGET_SQUARE_NO_PAWN_AFTER);
     // Regression: OWN-side pawn on the two-advance square (white pawn on d5 with white-to-move and EP target
-    // d6 — d6 is black's EP target square, so the two-advance square is d5; a white pawn there is the wrong
+    // d6 - d6 is black's EP target square, so the two-advance square is d5; a white pawn there is the wrong
     // side). The original predicate accepted this case because B&&C was false (B = wrong side true, but C =
     // not a pawn false). Fixed predicate throws.
     checkParseFenException("rnbqkb1r/p1pppppp/8/3P4/8/8/PPPP1PPP/RNBQKBNR w KQkq d6 0 3",
@@ -263,7 +263,7 @@ class TestFenParserAdvanced implements EnumConstants {
   @Test
   void testParseFenMaxValues() {
 
-    final var aboveMaxValue = Long.valueOf(Integer.MAX_VALUE) + 1;
+    final long aboveMaxValue = Long.valueOf(Integer.MAX_VALUE) + 1;
 
     // half-move clock
 
@@ -271,7 +271,7 @@ class TestFenParserAdvanced implements EnumConstants {
     checkParseFenException("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - " + aboveMaxValue + " 100",
         FenAdvancedValidationProblem.INVALID_HALF_MOVE_CLOCK_RANGE);
 
-    // Halfmove clock at and above the 75-move rule threshold (150) is accepted — the 75-move rule
+    // Halfmove clock at and above the 75-move rule threshold (150) is accepted - the 75-move rule
     // is surfaced as a queryable predicate, not enforced at FEN import, so a position with
     // halfmove clock above 150 is a legitimate FEN.
     checkParseFenSuccess("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - "
@@ -432,7 +432,7 @@ class TestFenParserAdvanced implements EnumConstants {
   }
 
   private static void checkParseFenException(String fen, FenAdvancedValidationProblem expected) {
-    var actual = FenAdvancedValidationProblem.SUCCESS;
+    FenAdvancedValidationProblem actual = FenAdvancedValidationProblem.SUCCESS;
     try {
       FenParserAdvanced.parseFenAdvanced(fen);
     } catch (final FenAdvancedValidationException e) {
@@ -442,7 +442,7 @@ class TestFenParserAdvanced implements EnumConstants {
   }
 
   private static void checkParseFenSuccess(String fen) {
-    var isException = false;
+    boolean isException = false;
     try {
       FenParserAdvanced.parseFenAdvanced(fen);
     } catch (@SuppressWarnings("unused") final FenAdvancedValidationException e) {

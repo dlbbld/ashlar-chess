@@ -16,7 +16,7 @@ class TestSanValidateFormatKingDisambiguation {
   @SuppressWarnings("static-method")
   @Test
   void testFileNonCapturing() {
-    // Kae5 — king with file disambiguation, non-capturing
+    // Kae5 - king with file disambiguation, non-capturing
     checkException("Kae5", SanValidationProblem.FORMAT_KING_NON_CASTLING_NON_CAPTURE_WRONG_DESTINATION_RANK);
     checkException("Kae5+", SanValidationProblem.FORMAT_KING_NON_CASTLING_NON_CAPTURE_WRONG_DESTINATION_RANK);
     checkException("Kae5#", SanValidationProblem.FORMAT_KING_NON_CASTLING_NON_CAPTURE_WRONG_DESTINATION_RANK);
@@ -25,7 +25,7 @@ class TestSanValidateFormatKingDisambiguation {
   @SuppressWarnings("static-method")
   @Test
   void testFileCapturing() {
-    // Kaxe5 — king with file disambiguation, capturing
+    // Kaxe5 - king with file disambiguation, capturing
     checkException("Kaxe5", SanValidationProblem.FORMAT_KING_NON_CASTLING_NON_CAPTURE_WRONG_DESTINATION_RANK);
     checkException("Kaxe5+", SanValidationProblem.FORMAT_KING_NON_CASTLING_NON_CAPTURE_WRONG_DESTINATION_RANK);
     checkException("Kaxe5#", SanValidationProblem.FORMAT_KING_NON_CASTLING_NON_CAPTURE_WRONG_DESTINATION_RANK);
@@ -36,7 +36,7 @@ class TestSanValidateFormatKingDisambiguation {
   @SuppressWarnings("static-method")
   @Test
   void testRankNonCapturing() {
-    // K2f3 — king with rank disambiguation, non-capturing
+    // K2f3 - king with rank disambiguation, non-capturing
     checkException("K2f3", SanValidationProblem.FORMAT_KING_NON_CASTLING_NON_CAPTURE_WRONG_DESTINATION_FILE);
     checkException("K2f3+", SanValidationProblem.FORMAT_KING_NON_CASTLING_NON_CAPTURE_WRONG_DESTINATION_FILE);
     checkException("K2f3#", SanValidationProblem.FORMAT_KING_NON_CASTLING_NON_CAPTURE_WRONG_DESTINATION_FILE);
@@ -45,7 +45,7 @@ class TestSanValidateFormatKingDisambiguation {
   @SuppressWarnings("static-method")
   @Test
   void testRankCapturing() {
-    // K2xf3 — king with rank disambiguation, capturing
+    // K2xf3 - king with rank disambiguation, capturing
     checkException("K2xf3", SanValidationProblem.FORMAT_KING_NON_CASTLING_NON_CAPTURE_WRONG_DESTINATION_FILE);
     checkException("K2xf3+", SanValidationProblem.FORMAT_KING_NON_CASTLING_NON_CAPTURE_WRONG_DESTINATION_FILE);
     checkException("K2xf3#", SanValidationProblem.FORMAT_KING_NON_CASTLING_NON_CAPTURE_WRONG_DESTINATION_FILE);
@@ -56,7 +56,7 @@ class TestSanValidateFormatKingDisambiguation {
   @SuppressWarnings("static-method")
   @Test
   void testSquareNonCapturing() {
-    // Ka2b3 — king with square disambiguation, non-capturing
+    // Ka2b3 - king with square disambiguation, non-capturing
     checkException("Ka2b3", SanValidationProblem.FORMAT_KING_NON_CASTLING_NON_CAPTURE_OVERLENGTH);
     checkException("Ka2b3+", SanValidationProblem.FORMAT_KING_NON_CASTLING_NON_CAPTURE_OVERLENGTH);
     checkException("Ka2b3#", SanValidationProblem.FORMAT_KING_NON_CASTLING_NON_CAPTURE_OVERLENGTH);
@@ -65,7 +65,7 @@ class TestSanValidateFormatKingDisambiguation {
   @SuppressWarnings("static-method")
   @Test
   void testSquareCapturing() {
-    // Ka2xb3 — king with square disambiguation, capturing
+    // Ka2xb3 - king with square disambiguation, capturing
     checkException("Ka2xb3", SanValidationProblem.FORMAT_KING_NON_CASTLING_NON_CAPTURE_OVERLENGTH);
     checkException("Ka2xb3+", SanValidationProblem.FORMAT_KING_NON_CASTLING_NON_CAPTURE_OVERLENGTH);
     checkException("Ka2xb3#", SanValidationProblem.FORMAT_KING_NON_CASTLING_NON_CAPTURE_OVERLENGTH);

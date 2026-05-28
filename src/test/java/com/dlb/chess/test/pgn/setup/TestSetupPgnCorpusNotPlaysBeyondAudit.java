@@ -17,17 +17,17 @@ import com.dlb.chess.test.pgn.parser.PgnCacheForStrictPgnParserTestCases;
 import com.dlb.chess.test.pgntest.enums.PgnTest;
 
 /**
- * Asserts the regular PGN test corpus contains no fixtures that play past a checkmate or stalemate — the two
- * automatic terminations where the legal-move set is empty and any further move attempt cannot validate. Mutual
- * insufficient material, fivefold repetition, the 75-move rule, and analyzer-driven dead positions are queryable
- * predicates in this library, not blockers at the move pipeline, so fixtures that continue past those thresholds
- * replay cleanly and are not flagged. The class name states the expected outcome ("not plays beyond"); the test fails
- * if any leftover is found.
+ * Asserts the regular PGN test corpus contains no fixtures that play past a checkmate or stalemate - the two automatic
+ * terminations where the legal-move set is empty and any further move attempt cannot validate. Mutual insufficient
+ * material, fivefold repetition, the 75-move rule, and analyzer-driven dead positions are queryable predicates in this
+ * library, not blockers at the move pipeline, so fixtures that continue past those thresholds replay cleanly and are
+ * not flagged. The class name states the expected outcome ("not plays beyond"); the test fails if any leftover is
+ * found.
  *
  * <h2>Scope and runtime</h2>
  *
  * <p>
- * Iterates every category in {@link PgnTest} (including {@code LONGEST_POSSIBLE}) — the full corpus, not the
+ * Iterates every category in {@link PgnTest} (including {@code LONGEST_POSSIBLE}) - the full corpus, not the
  * restricted/smoke subsets, because corpus debt anywhere is corpus debt. The full sweep takes a few minutes; the test
  * is gated behind {@link RestrictTestConstants#IS_EXCLUDE_LONG_RUNNING_PGN_CORPUS_NOT_PLAYS_BEYOND_AUDIT} and skipped
  * via {@code assumeFalse} during routine runs. Flip the flag to {@code false} locally to run.
@@ -43,7 +43,7 @@ class TestSetupPgnCorpusNotPlaysBeyondAudit {
         "Long-running corpus audit excluded by IS_EXCLUDE_LONG_RUNNING_PGN_CORPUS_NOT_PLAYS_BEYOND_AUDIT");
 
     final List<String> playsBeyondFiles = new ArrayList<>();
-    var totalFiles = 0;
+    int totalFiles = 0;
 
     for (final PgnTest pgnTest : PgnTest.values()) {
       final PgnTestCaseList testCaseList = PgnTestCaseCatalog.getTestList(pgnTest);
@@ -58,7 +58,7 @@ class TestSetupPgnCorpusNotPlaysBeyondAudit {
           // (FenAdvancedValidationException, wrapped) cases as runtime exceptions; collect
           // both. Catching the broader RuntimeException keeps the audit robust against future
           // exception subtypes that also indicate the same "cannot replay" outcome.
-          playsBeyondFiles.add(pgnTest.name() + " / " + pgnName + "  —  " + e.getMessage());
+          playsBeyondFiles.add(pgnTest.name() + " / " + pgnName + "  -  " + e.getMessage());
         }
       }
     }
@@ -68,8 +68,9 @@ class TestSetupPgnCorpusNotPlaysBeyondAudit {
       return;
     }
 
-    final var report = new StringBuilder().append("Corpus audit: ").append(playsBeyondFiles.size()).append(" of ")
-        .append(totalFiles).append(" PGN files cannot be fully replayed. They attempt a move past checkmate or ")
+    final StringBuilder report = new StringBuilder().append("Corpus audit: ").append(playsBeyondFiles.size())
+        .append(" of ").append(totalFiles)
+        .append(" PGN files cannot be fully replayed. They attempt a move past checkmate or ")
         .append("stalemate, where the legal-move set is empty. ")
         .append("Either the PGN file contains an extra move past the termination that should be removed, ")
         .append("or the parser / move-pipeline has a regression that needs investigation:\n");

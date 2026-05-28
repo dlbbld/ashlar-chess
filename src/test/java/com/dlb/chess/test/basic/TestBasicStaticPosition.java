@@ -33,8 +33,8 @@ class TestBasicStaticPosition implements EnumConstants {
   void testInitialPosition() throws Exception {
     // FEN parser now produces BitboardPosition; derive StaticPosition via the test-oracle bridge for the
     // structural assertion against the reference StaticPosition.INITIAL_POSITION constant.
-    final StaticPosition staticInitialPositionActual = StaticPositionBridge.toStaticPosition(
-        FenParserAdvanced.parseFenAdvanced(FenConstants.FEN_INITIAL_STR).bitboardPosition());
+    final StaticPosition staticInitialPositionActual = StaticPositionBridge
+        .toStaticPosition(FenParserAdvanced.parseFenAdvanced(FenConstants.FEN_INITIAL_STR).bitboardPosition());
 
     assertEquals(StaticPosition.INITIAL_POSITION, staticInitialPositionActual);
   }
@@ -62,7 +62,7 @@ class TestBasicStaticPosition implements EnumConstants {
   @Test
   void testBoardUseNoneSquareForClearMethod() {
     final StaticPosition emptyPosition = StaticPosition.EMPTY_POSITION;
-    var isCorrectException = false;
+    boolean isCorrectException = false;
     try {
       emptyPosition.createChangedPosition(Square.NONE);
     } catch (@SuppressWarnings("unused") final IllegalArgumentException e) {
@@ -77,7 +77,7 @@ class TestBasicStaticPosition implements EnumConstants {
     final StaticPosition emptyPosition = StaticPosition.EMPTY_POSITION;
 
     for (final Piece piece : Piece.REAL) {
-      var isCorrectException = false;
+      boolean isCorrectException = false;
       try {
         emptyPosition.createChangedPosition(Square.NONE, piece);
       } catch (@SuppressWarnings("unused") final IllegalArgumentException e) {
@@ -93,7 +93,7 @@ class TestBasicStaticPosition implements EnumConstants {
     final StaticPosition emptyPosition = StaticPosition.EMPTY_POSITION;
 
     for (final Square square : Square.REAL) {
-      var isCorrectException = false;
+      boolean isCorrectException = false;
       try {
         emptyPosition.createChangedPosition(square, Piece.NONE);
       } catch (@SuppressWarnings("unused") final IllegalArgumentException e) {

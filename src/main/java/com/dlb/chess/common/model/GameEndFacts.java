@@ -6,7 +6,7 @@ import com.dlb.chess.common.enums.Termination;
  * Snapshot of all game-end-relevant facts at a single position, together with the precedence-projected {@link Outcome}.
  * The fact booleans are independent and condition-only: each is the raw truth of its rule on the current position, not
  * suppressed by any higher-precedence condition that may also hold. {@code outcome} is the official ruling produced by
- * applying the python-chess precedence stack (CHECKMATE → INSUFFICIENT_MATERIAL → STALEMATE → SEVENTY_FIVE_MOVES →
+ * applying the python-chess precedence stack (CHECKMATE -> INSUFFICIENT_MATERIAL -> STALEMATE -> SEVENTY_FIVE_MOVES ->
  * FIVEFOLD_REPETITION) to those raw facts; for ongoing positions {@code outcome} carries {@link Termination#NONE}.
  *
  * <p>

@@ -54,14 +54,14 @@ class ValidateNewMove implements EnumConstants {
     final Side havingMove = board.getHavingMove();
 
     final CastlingMove castlingMove = moveSpecification.castlingMove();
-    final var castlingCheck = switch (castlingMove) {
+    final CastlingCheck castlingCheck = switch (castlingMove) {
       case KING_SIDE -> CastlingUtility.calculateKingSideCastlingCheck(board.getBitboardPosition(), havingMove,
           board.getCastlingRight(havingMove));
       case QUEEN_SIDE -> CastlingUtility.calculateQueenSideCastlingCheck(board.getBitboardPosition(), havingMove,
           board.getCastlingRight(havingMove));
       case NONE -> throw new IllegalArgumentException();
     };
-    final var castlingRightLoss = castlingCheck == CastlingCheck.FINAL_NO_RIGHT
+    final CastlingRightLoss castlingRightLoss = castlingCheck == CastlingCheck.FINAL_NO_RIGHT
         ? board.getCastlingRightLoss(havingMove, castlingMove)
         : CastlingRightLoss.NOT_LOST;
     switch (castlingCheck) {

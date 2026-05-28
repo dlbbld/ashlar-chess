@@ -1,5 +1,6 @@
 package com.dlb.chess.test.common.utility;
 
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -23,11 +24,11 @@ public abstract class FileUtility {
 
   /**
    * Reads the entire contents of a file as a single UTF-8 string, preserving line terminators exactly as they appear on
-   * disk. Complements {@link #readFileLines(Path)} — use this when the parser needs to see the raw source (for example
+   * disk. Complements {@link #readFileLines(Path)} - use this when the parser needs to see the raw source (for example
    * to detect a missing trailing newline).
    */
   public static String readFileAsString(Path filePath) {
-    final var file = filePath.toFile();
+    final File file = filePath.toFile();
     if (!file.exists()) {
       throw new FileSystemAccessException("File \"" + filePath + "\" was not found.");
     }
@@ -52,7 +53,7 @@ public abstract class FileUtility {
   public static List<String> readFileLines(Path filePath) {
     final List<String> fileLines = new ArrayList<>();
 
-    final var file = filePath.toFile();
+    final File file = filePath.toFile();
 
     if (!file.exists()) {
       throw new FileSystemAccessException("File \"" + filePath + "\" was not found.");
@@ -94,7 +95,7 @@ public abstract class FileUtility {
 
   public static void writeFile(Path filePath, List<String> lineList) {
     deleteFile(filePath);
-    try (var writer = Files.newBufferedWriter(filePath, StandardCharsets.UTF_8)) {
+    try (BufferedWriter writer = Files.newBufferedWriter(filePath, StandardCharsets.UTF_8)) {
       for (final String line : lineList) {
         writer.write(line);
         writer.write("\n");
@@ -119,11 +120,12 @@ public abstract class FileUtility {
       writeFile(filePath, lineList);
     } else {
 
-      final var file = filePath.toFile();
+      final File file = filePath.toFile();
       if (!file.isFile()) {
         throw new IllegalArgumentException("\"" + filePath + "\" is not a file");
       }
-      try (var writer = Files.newBufferedWriter(filePath, StandardCharsets.UTF_8, StandardOpenOption.APPEND)) {
+      try (BufferedWriter writer = Files.newBufferedWriter(filePath, StandardCharsets.UTF_8,
+          StandardOpenOption.APPEND)) {
         for (final String line : lineList) {
           writer.write(line);
           writer.write("\n");
@@ -167,12 +169,12 @@ public abstract class FileUtility {
   }
 
   public static void deleteFilesInDirectory(Path folderPath) {
-    final var folder = folderPath.toFile();
+    final File folder = folderPath.toFile();
     if (!folder.isDirectory()) {
       throw new IllegalArgumentException("\"" + folderPath + "\" is not a directory");
     }
 
-    final var filesList = folder.listFiles();
+    final File[] filesList = folder.listFiles();
     if (filesList == null) {
       throw new FileSystemAccessException("File list retrieval for \"" + folderPath + "\" failed");
     }
@@ -181,7 +183,7 @@ public abstract class FileUtility {
       if (file == null) {
         throw new ProgrammingMistakeException("Wrong assumption about API behaviour");
       }
-      final var path = file.toPath();
+      final Path path = file.toPath();
       try {
         Files.delete(path);
       } catch (final NoSuchFileException nsfe) {
@@ -214,11 +216,11 @@ public abstract class FileUtility {
 
   public static List<String> readFileNameList(Path folderPath) {
     final List<String> result = new ArrayList<>();
-    final var folder = folderPath.toFile();
+    final File folder = folderPath.toFile();
     if (!folder.isDirectory()) {
       throw new IllegalArgumentException("\"" + folderPath + "\" is not a directory");
     }
-    final var filesList = folder.listFiles();
+    final File[] filesList = folder.listFiles();
     if (filesList == null) {
       throw new FileSystemAccessException("File list retrieval for \"" + folderPath + "\" failed");
     }

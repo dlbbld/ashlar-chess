@@ -11,7 +11,7 @@ abstract class ValidateMoveNumberUtility {
 
   public static <E extends OrthogonalRange> void validateOrthogonalMoveNumber(ImmutableMap<Square, E> mapOfListList,
       int numberOfExpectedMoves) {
-    var numberOfActualMoves = 0;
+    int numberOfActualMoves = 0;
     for (final E bishopRange : mapOfListList.values()) {
       numberOfActualMoves += calculateOrthogonalMoves(bishopRange);
     }
@@ -21,7 +21,7 @@ abstract class ValidateMoveNumberUtility {
   }
 
   private static int calculateOrthogonalMoves(OrthogonalRange moves) {
-    var total = 0;
+    int total = 0;
     total += moves.squareListNorth().size();
     total += moves.squareListEast().size();
     total += moves.squareListSouth().size();
@@ -31,7 +31,7 @@ abstract class ValidateMoveNumberUtility {
 
   public static <E extends DiagonalRange> void validateDiagonalMovesNumber(ImmutableMap<Square, E> mapOfListList,
       int numberOfExpectedMoves) {
-    var numberOfActualMoves = 0;
+    int numberOfActualMoves = 0;
     for (final E bishopRange : mapOfListList.values()) {
       numberOfActualMoves += calculateDiagonalMovesNumber(bishopRange);
     }
@@ -41,7 +41,7 @@ abstract class ValidateMoveNumberUtility {
   }
 
   private static int calculateDiagonalMovesNumber(DiagonalRange moves) {
-    var total = 0;
+    int total = 0;
     total += moves.squareListNorthEast().size();
     total += moves.squareListSouthEast().size();
     total += moves.squareListSouthWest().size();
@@ -50,7 +50,7 @@ abstract class ValidateMoveNumberUtility {
   }
 
   public static void validateMapOfSet(ImmutableMap<Square, ImmutableSet<Square>> mapOfSet, int numberOfExpectedMoves) {
-    var numberOfActualMoves = 0;
+    int numberOfActualMoves = 0;
     for (final Set<Square> set : mapOfSet.values()) {
       numberOfActualMoves += set.size();
     }

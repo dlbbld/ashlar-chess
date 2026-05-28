@@ -3,10 +3,14 @@ package com.dlb.chess.report;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.junit.jupiter.api.Test;
 
 import com.dlb.chess.board.Board;
 import com.dlb.chess.common.Nulls;
+import com.dlb.chess.common.model.HalfMove;
 import com.dlb.chess.pgn.PgnUtility;
 import com.dlb.chess.test.pgn.setup.PgnTestCaseCatalog;
 import com.dlb.chess.test.pgntest.enums.PgnTest;
@@ -32,7 +36,7 @@ class TestThreefoldClaimAheadReportBuilder {
   @SuppressWarnings("static-method")
   @Test
   void claimAheadNotPlayedOnInitialPosition() {
-    // 1. Nf3 Nf6 2. Ng1 Ng8 3. Nf3 Nf6 4. Ng1 — 7 plies, black to move next; black's Ng8 would
+    // 1. Nf3 Nf6 2. Ng1 Ng8 3. Nf3 Nf6 4. Ng1 - 7 plies, black to move next; black's Ng8 would
     // bring the initial position to its third occurrence (claim-ahead). The game stops here, so
     // black did NOT play Ng8 -> hasBeenPlayed == false.
     final Board board = new Board();
@@ -77,7 +81,7 @@ class TestThreefoldClaimAheadReportBuilder {
   @SuppressWarnings("static-method")
   @Test
   void claimAheadOnNonInitialPositionFromCorpus() {
-    // 11_threefold_castling_one_before_first_threefold.pgn — threefold position involves castling
+    // 11_threefold_castling_one_before_first_threefold.pgn - threefold position involves castling
     // rights, so it differs from the initial position. The fixture stops one ply before the third
     // occurrence -> at least one claim-ahead exists, includesInitialPosition == false.
     final Board board = loadCorpusBoard("11_threefold_castling_one_before_first_threefold.pgn");
@@ -85,12 +89,12 @@ class TestThreefoldClaimAheadReportBuilder {
     final ThreefoldClaimAheadReport report = ThreefoldClaimAheadReportBuilder.build(board);
     assertTrue(report.entries().size() >= 1, "fixture stops one ply before threefold; at least one claim-ahead");
 
-    var foundNonInitial = false;
+    boolean foundNonInitial = false;
     for (final ClaimAheadEntry entry : report.entries()) {
       if (!entry.includesInitialPosition()) {
         foundNonInitial = true;
         // Math invariant on the non-initial entry.
-        final var expected = entry.priorOccurrences().size() + 1;
+        final int expected = entry.priorOccurrences().size() + 1;
         assertEquals(expected, entry.totalRepetitionCount(),
             "non-initial: priorOccurrences.size + 1 (for claimAheadMove)");
       }
@@ -102,7 +106,7 @@ class TestThreefoldClaimAheadReportBuilder {
   @SuppressWarnings("static-method")
   @Test
   void entriesAreOrderedLexicographicallyByDisplayedSequence() {
-    // 18_threefold_two_threefolds_beyond.pgn — long enough to expose claim-aheads at multiple
+    // 18_threefold_two_threefolds_beyond.pgn - long enough to expose claim-aheads at multiple
     // plies. The builder sorts entries lexicographically on the displayed half-move-count sequence
     // (priorOccurrences ++ claimAheadMove, prefixed by virtual -1 when includesInitialPosition).
     // Pin that lex order here: within a group of entries sharing an earlier-ply prefix, the
@@ -113,8 +117,8 @@ class TestThreefoldClaimAheadReportBuilder {
     final ThreefoldClaimAheadReport report = ThreefoldClaimAheadReportBuilder.build(board);
     assertTrue(report.entries().size() >= 2, "fixture exercises multiple claim-aheads across plies");
 
-    for (var i = 1; i < report.entries().size(); i++) {
-      final var index = i;
+    for (int i = 1; i < report.entries().size(); i++) {
+      final int index = i;
       final ClaimAheadEntry prev = Nulls.get(report.entries(), i - 1);
       final ClaimAheadEntry curr = Nulls.get(report.entries(), i);
       assertTrue(compareLexKey(prev, curr) <= 0,
@@ -128,11 +132,11 @@ class TestThreefoldClaimAheadReportBuilder {
    * since a prefix sorts before its extension).
    */
   private static int compareLexKey(ClaimAheadEntry a, ClaimAheadEntry b) {
-    final java.util.List<Integer> keyA = sortKey(a);
-    final java.util.List<Integer> keyB = sortKey(b);
-    final var n = Math.min(keyA.size(), keyB.size());
-    for (var i = 0; i < n; i++) {
-      final var cmp = Integer.compare(keyA.get(i), keyB.get(i));
+    final List<Integer> keyA = sortKey(a);
+    final List<Integer> keyB = sortKey(b);
+    final int n = Math.min(keyA.size(), keyB.size());
+    for (int i = 0; i < n; i++) {
+      final int cmp = Integer.compare(keyA.get(i), keyB.get(i));
       if (cmp != 0) {
         return cmp;
       }
@@ -140,12 +144,12 @@ class TestThreefoldClaimAheadReportBuilder {
     return Integer.compare(keyA.size(), keyB.size());
   }
 
-  private static java.util.List<Integer> sortKey(ClaimAheadEntry e) {
-    final java.util.List<Integer> key = new java.util.ArrayList<>();
+  private static List<Integer> sortKey(ClaimAheadEntry e) {
+    final List<Integer> key = new ArrayList<>();
     if (e.includesInitialPosition()) {
       key.add(-1);
     }
-    for (final com.dlb.chess.common.model.HalfMove hm : e.priorOccurrences()) {
+    for (final HalfMove hm : e.priorOccurrences()) {
       key.add(hm.halfMoveCount());
     }
     key.add(e.claimAheadMove().halfMoveCount());

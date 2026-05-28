@@ -3,6 +3,7 @@ package com.dlb.chess.fen;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 
 import com.dlb.chess.common.Nulls;
 import com.dlb.chess.common.enums.FenAdvancedValidationProblem;
@@ -66,7 +67,7 @@ public final class LenientFenParser {
       return new LenientFenParserValidationResult(e.getLenientFenParserValidationProblem(),
           e.getFenAdvancedValidationProblem(), BasicUtility.getMessage(e), null, e.getForgivenItemsAccumulated());
     } catch (final RuntimeException e) {
-      final var message = "An unexpected error occurred during lenient FEN validation. Reason: "
+      final String message = "An unexpected error occurred during lenient FEN validation. Reason: "
           + (e.getMessage() == null ? "" : e.getMessage());
       return new LenientFenParserValidationResult(LenientFenParserValidationProblem.UNKNOWN_ERROR,
           FenAdvancedValidationProblem.SUCCESS, message, null, ForgivenFenItem.EMPTY_LIST);
@@ -111,17 +112,17 @@ public final class LenientFenParser {
    * known to have six well-formed fields with parseable integer counters and a valid side-to-move letter.
    */
   private static String autoCorrectHalfMoveClockInconsistency(String canonical, List<ForgivenFenItem> accumulator) {
-    final var fields = canonical.split(" ");
-    final var halfMoveClock = Integer.parseInt(fields[4]);
+    final String[] fields = canonical.split(" ");
+    final int halfMoveClock = Integer.parseInt(fields[4]);
     // Round up to the next multiple of ten strictly greater than halfMoveClock. For halfMoveClock = 15 the result
     // is 20; for halfMoveClock = 20 it is 30. Always at least 10 (when halfMoveClock = 0, though that case never
     // triggers a violation). The strict-minimum value would be ((halfMoveClock + 1) / 2 + 1) for white-to-move
     // and (halfMoveClock / 2 + 1) for black-to-move; the reserve value is always strictly greater than that
     // minimum, satisfying the consistency check with room to spare.
-    final var reserveFullMoveNumber = (halfMoveClock / 10 + 1) * 10;
-    final var oldFullMoveNumber = fields[5];
+    final int reserveFullMoveNumber = (halfMoveClock / 10 + 1) * 10;
+    final String oldFullMoveNumber = fields[5];
     fields[5] = Integer.toString(reserveFullMoveNumber);
-    final var corrected = String.join(" ", fields);
+    final String corrected = String.join(" ", fields);
     accumulator.add(new ForgivenFenItem(ForgivenFenItemCode.HALF_MOVE_CLOCK_INCONSISTENT_WITH_FULL_MOVE_NUMBER,
         oldFullMoveNumber, Nulls.toString(fields[5])));
     return Nulls.toString(corrected);
@@ -166,9 +167,9 @@ public final class LenientFenParser {
     // 4. Collapse multi-space runs to single space.
     if (working.contains("  ")) {
       final StringBuilder collapsed = new StringBuilder(working.length());
-      var prevWasSpace = false;
-      for (var i = 0; i < working.length(); i++) {
-        final var c = working.charAt(i);
+      boolean prevWasSpace = false;
+      for (int i = 0; i < working.length(); i++) {
+        final char c = working.charAt(i);
         if (c == ' ') {
           if (!prevWasSpace) {
             collapsed.append(c);
@@ -184,7 +185,7 @@ public final class LenientFenParser {
     }
 
     // 5. Split into fields.
-    final var fieldsArray = working.isEmpty() ? new String[0] : working.split(" ");
+    final String[] fieldsArray = working.isEmpty() ? new String[0] : working.split(" ");
     if (fieldsArray.length < 4) {
       throw new LenientFenParserValidationException(LenientFenParserValidationProblem.UNRECOVERABLE,
           "The input has " + fieldsArray.length + " whitespace-separated fields; a FEN needs at least four (piece"
@@ -195,8 +196,8 @@ public final class LenientFenParser {
     final List<String> fields = new ArrayList<>();
     Collections.addAll(fields, fieldsArray);
     if (fields.size() > 6) {
-      final var dropped = fields.subList(6, fields.size());
-      final var droppedJoined = String.join(" ", dropped);
+      final List<String> dropped = fields.subList(6, fields.size());
+      final String droppedJoined = String.join(" ", dropped);
       // Single TRAILING_GARBAGE_TOKEN item carrying the joined drop in `original`.
       accumulator
           .add(new ForgivenFenItem(ForgivenFenItemCode.TRAILING_GARBAGE_TOKEN, Nulls.toString(droppedJoined), ""));
@@ -226,7 +227,7 @@ public final class LenientFenParser {
   private static void normaliseSideToMove(List<String> fields, List<ForgivenFenItem> accumulator) {
     final String field = Nulls.get(fields, 1);
     if ("W".equals(field) || "B".equals(field)) {
-      final var canonical = field.toLowerCase(java.util.Locale.ROOT);
+      final String canonical = field.toLowerCase(Locale.ROOT);
       fields.set(1, canonical);
       accumulator.add(new ForgivenFenItem(ForgivenFenItemCode.UPPERCASE_SIDE_TO_MOVE, field, canonical));
     }
@@ -240,9 +241,9 @@ public final class LenientFenParser {
     // Field must contain only letters from {K, Q, k, q}, each at most once. The lenient layer normalises ORDER
     // but does not collapse DUPLICATES — a field like "KKKQkq" is a transcription error, not a recognised
     // deviation pattern, and is left for the strict parser to reject as INVALID_CASTLING_RIGHT_RANGE.
-    var seen = 0;
-    for (var i = 0; i < field.length(); i++) {
-      final var c = field.charAt(i);
+    int seen = 0;
+    for (int i = 0; i < field.length(); i++) {
+      final char c = field.charAt(i);
       final int bit;
       switch (c) {
         case 'K':
@@ -267,10 +268,10 @@ public final class LenientFenParser {
       }
       seen |= bit;
     }
-    final var hasK = field.indexOf('K') >= 0;
-    final var hasQ = field.indexOf('Q') >= 0;
-    final var haslowerK = field.indexOf('k') >= 0;
-    final var haslowerQ = field.indexOf('q') >= 0;
+    final boolean hasK = field.indexOf('K') >= 0;
+    final boolean hasQ = field.indexOf('Q') >= 0;
+    final boolean haslowerK = field.indexOf('k') >= 0;
+    final boolean haslowerQ = field.indexOf('q') >= 0;
     final StringBuilder canonical = new StringBuilder();
     if (hasK) {
       canonical.append('K');
@@ -298,7 +299,7 @@ public final class LenientFenParser {
     // character that is one of the known dash code points. (We do not strip dashes mid-square because that would
     // never match a chess square anyway.)
     if (field.length() == 1 && isNonStandardDash(field.charAt(0))) {
-      final var original = field;
+      final String original = field;
       field = "-";
       fields.set(3, field);
       accumulator.add(new ForgivenFenItem(ForgivenFenItemCode.EN_PASSANT_NON_STANDARD_DASH, original, field));
@@ -307,11 +308,11 @@ public final class LenientFenParser {
 
     // Uppercase target square (e.g. "E3"): lowercase the file letter. The rank digit is unaffected.
     if (field.length() == 2) {
-      final var file = field.charAt(0);
+      final char file = field.charAt(0);
       if (file >= 'A' && file <= 'H') {
-        final var original = field;
-        final var rank = field.charAt(1);
-        final var canonical = "" + (char) (file - 'A' + 'a') + rank;
+        final String original = field;
+        final char rank = field.charAt(1);
+        final String canonical = "" + (char) (file - 'A' + 'a') + rank;
         fields.set(3, canonical);
         accumulator.add(new ForgivenFenItem(ForgivenFenItemCode.EN_PASSANT_UPPERCASE, original, canonical));
       }
@@ -347,7 +348,7 @@ public final class LenientFenParser {
    * True iff {@code s} contains any character from {@code charsToMatch}.
    */
   private static boolean containsAny(String s, String charsToMatch) {
-    for (var i = 0; i < s.length(); i++) {
+    for (int i = 0; i < s.length(); i++) {
       if (charsToMatch.indexOf(s.charAt(i)) >= 0) {
         return true;
       }

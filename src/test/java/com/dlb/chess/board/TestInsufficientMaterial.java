@@ -46,7 +46,7 @@ class TestInsufficientMaterial implements EnumConstants {
   }
 
   // Insufficient material is a function of the position alone, not the path. Build a history-less board from the
-  // cached final FEN via PgnFen.finalPosition() — no PGN parse, no per-ply replay — and assert that the
+  // cached final FEN via PgnFen.finalPosition() - no PGN parse, no per-ply replay - and assert that the
   // mechanical bitboard-level computation agrees with the per-side Board predicate combined.
   private static void checkInsufficientMaterial(PgnFen testCase) {
 
@@ -54,8 +54,9 @@ class TestInsufficientMaterial implements EnumConstants {
 
     final Board board = testCase.finalPosition();
 
-    final var isInsufficientMaterialDirectlyCalculated = calculateIsInsufficientMaterial(board.getBitboardPosition());
-    final var isInsufficientMaterialDerived = board.isInsufficientMaterial(Side.WHITE)
+    final boolean isInsufficientMaterialDirectlyCalculated = calculateIsInsufficientMaterial(
+        board.getBitboardPosition());
+    final boolean isInsufficientMaterialDerived = board.isInsufficientMaterial(Side.WHITE)
         && board.isInsufficientMaterial(Side.BLACK);
 
     assertEquals(isInsufficientMaterialDirectlyCalculated, isInsufficientMaterialDerived);

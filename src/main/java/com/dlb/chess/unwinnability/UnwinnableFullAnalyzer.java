@@ -41,16 +41,16 @@ public class UnwinnableFullAnalyzer {
 
     // add optimization from code
     // if position is advanced cannot use the provided mobility solution if any
-    var isCanUseMobilitySolution = true;
-    var isForcedMove = board.getLegalMoves().size() == 1;
-    var totalForcedMoves = 0;
+    boolean isCanUseMobilitySolution = true;
+    boolean isForcedMove = board.getLegalMoves().size() == 1;
+    int totalForcedMoves = 0;
     final List<UciMove> forcedMoveLine = new ArrayList<>();
     final Set<DynamicPosition> forcedPositionSet = new HashSet<>();
     while (isForcedMove && forcedPositionSet.add(board.getDynamicPosition())) {
       isCanUseMobilitySolution = false;
       final LegalMove onlyLegalMove = Nulls.getFirst(board.getLegalMoves());
-      forcedMoveLine.add(UciMoveUtility.convertMoveSpecificationToUci(onlyLegalMove.havingMove(),
-          onlyLegalMove.moveSpecification()));
+      forcedMoveLine.add(
+          UciMoveUtility.convertMoveSpecificationToUci(onlyLegalMove.havingMove(), onlyLegalMove.moveSpecification()));
       board.move(onlyLegalMove.moveSpecification());
       isForcedMove = board.getLegalMoves().size() == 1;
       totalForcedMoves++;
@@ -72,11 +72,11 @@ public class UnwinnableFullAnalyzer {
     final FindHelpmateExhaust findHelpmate = new FindHelpmateExhaust(winner);
 
     // 2: for every d in N do ( -> Iterative deepening)
-    var globalNodeCount = 0;
-    for (var maxDepth = 2; maxDepth <= MAX_DEPTH; maxDepth++) {
+    int globalNodeCount = 0;
+    for (int maxDepth = 2; maxDepth <= MAX_DEPTH; maxDepth++) {
       // 3: set bd Find-Helpmatec(pos, 0, maxDepth = d) (global nodesBound = bound(d))
 
-      final var helpmateAnalysis = findHelpmate.calculateHelpmate(board, maxDepth);
+      final FindHelpmateAnalysis helpmateAnalysis = findHelpmate.calculateHelpmate(board, maxDepth);
 
       globalNodeCount += helpmateAnalysis.localNodesCount();
 
@@ -108,7 +108,7 @@ public class UnwinnableFullAnalyzer {
   }
 
   private static void undoForcedMoves(Board board, int totalForcedMoves) {
-    for (var i = 1; i <= totalForcedMoves; i++) {
+    for (int i = 1; i <= totalForcedMoves; i++) {
       board.unmove();
     }
   }

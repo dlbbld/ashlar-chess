@@ -33,7 +33,8 @@ class TestRookAttacks {
     for (final PgnTest pgnTest : PgnTest.values()) {
       final PgnTestCaseList testCaseList = PgnTestCaseCatalog.getTestList(pgnTest);
       for (final PgnFen testCase : testCaseList.list()) {
-        final StaticPosition staticPosition = StaticPositionBridge.toStaticPosition(testCase.finalPosition().getBitboardPosition());
+        final StaticPosition staticPosition = StaticPositionBridge
+            .toStaticPosition(testCase.finalPosition().getBitboardPosition());
         final BitboardPosition bitboardPosition = StaticPositionBridge.fromStaticPosition(staticPosition);
         final long occupied = bitboardPosition.occupied();
         assertSideAgrees(bitboardPosition.whiteRooks(), Side.WHITE, staticPosition, occupied, testCase);
@@ -60,8 +61,8 @@ class TestRookAttacks {
   @SuppressWarnings("static-method")
   @Test
   void emptyBoardFromCenterMatchesReference() {
-    final StaticPosition staticPosition = StaticPosition.EMPTY_POSITION
-        .createChangedPosition(Square.D4, com.dlb.chess.board.enums.Piece.WHITE_ROOK);
+    final StaticPosition staticPosition = StaticPosition.EMPTY_POSITION.createChangedPosition(Square.D4,
+        com.dlb.chess.board.enums.Piece.WHITE_ROOK);
     final BitboardPosition bitboardPosition = StaticPositionBridge.fromStaticPosition(staticPosition);
     final Set<Square> bitboardAttacks = BitboardPositionUtility
         .toSquareSet(RookAttacks.attacks(Square.D4.ordinal(), bitboardPosition.occupied()));

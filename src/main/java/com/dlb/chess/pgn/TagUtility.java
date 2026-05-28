@@ -3,6 +3,7 @@ package com.dlb.chess.pgn;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.eclipse.jdt.annotation.NonNull;
@@ -102,8 +103,8 @@ public abstract class TagUtility {
   }
 
   static Tag calculateTag(String tagLine) {
-    final var pattern = Pattern.compile(TAG_PATTERN);
-    final var matcher = pattern.matcher(tagLine);
+    final Pattern pattern = Pattern.compile(TAG_PATTERN);
+    final Matcher matcher = pattern.matcher(tagLine);
     // check all occurance
     if (matcher.matches()) {
       @SuppressWarnings("null") @NonNull final String tagName = matcher.group(1);
@@ -166,8 +167,8 @@ public abstract class TagUtility {
 
   public static void removeTag(List<Tag> tagList, StandardTag tag) {
 
-    var indexFound = -1;
-    var index = -1;
+    int indexFound = -1;
+    int index = -1;
     for (final Tag tagCandidate : tagList) {
       index++;
       if (tagCandidate.name().equals(tag.getName())) {

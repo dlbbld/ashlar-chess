@@ -4,8 +4,8 @@ import com.dlb.chess.board.Board;
 import com.dlb.chess.board.enums.Piece;
 import com.dlb.chess.board.enums.PieceType;
 import com.dlb.chess.board.enums.Side;
-import com.dlb.chess.common.model.Outcome;
 import com.dlb.chess.common.enums.Termination;
+import com.dlb.chess.common.model.Outcome;
 import com.dlb.chess.model.LegalMove;
 
 public abstract class BasicChessUtility {
@@ -45,9 +45,9 @@ public abstract class BasicChessUtility {
    * fires, so the return value is never {@code null}.
    *
    * <p>
-   * Precedence (python-chess parity): {@link Termination#CHECKMATE} → {@link Termination#INSUFFICIENT_MATERIAL} →
-   * {@link Termination#STALEMATE} → {@link Termination#SEVENTY_FIVE_MOVES} → {@link Termination#FIVEFOLD_REPETITION}.
-   * Returns the first matching condition under that order. The library is permissive at the move pipeline — none of
+   * Precedence (python-chess parity): {@link Termination#CHECKMATE} -> {@link Termination#INSUFFICIENT_MATERIAL} ->
+   * {@link Termination#STALEMATE} -> {@link Termination#SEVENTY_FIVE_MOVES} -> {@link Termination#FIVEFOLD_REPETITION}.
+   * Returns the first matching condition under that order. The library is permissive at the move pipeline - none of
    * these block further moves; callers poll this method to decide whether a game should be adjudicated as over.
    *
    * <p>

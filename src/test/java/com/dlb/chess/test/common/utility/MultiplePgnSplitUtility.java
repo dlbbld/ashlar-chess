@@ -1,5 +1,6 @@
 package com.dlb.chess.test.common.utility;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
@@ -26,15 +27,15 @@ public final class MultiplePgnSplitUtility {
 
     logger.printf(Level.INFO, "Processing file %s", multiplePgnPath);
 
-    var writtenFileCounter = 0;
-    var chess960Counter = 0;
-    final var fenCounter = 0;
-    var blankLineCounter = 0;
-    var isChess960 = false;
-    var isFen = false;
+    int writtenFileCounter = 0;
+    int chess960Counter = 0;
+    final int fenCounter = 0;
+    int blankLineCounter = 0;
+    boolean isChess960 = false;
+    boolean isFen = false;
     List<String> currentFileLines = new ArrayList<>();
 
-    final var file = multiplePgnPath.toFile();
+    final File file = multiplePgnPath.toFile();
     if (!file.isFile()) {
       throw new IllegalArgumentException("\"" + multiplePgnPath + "\" is not a file");
     }
@@ -86,7 +87,7 @@ public final class MultiplePgnSplitUtility {
   }
 
   private static String padNumber(int number, int totalFiles) {
-    final var maxDigits = (int) StrictMath.floor(StrictMath.log10(totalFiles)) + 1;
+    final int maxDigits = (int) StrictMath.floor(StrictMath.log10(totalFiles)) + 1;
     final StringBuilder padded = new StringBuilder();
     padded.append(number);
     while (padded.length() < maxDigits) {

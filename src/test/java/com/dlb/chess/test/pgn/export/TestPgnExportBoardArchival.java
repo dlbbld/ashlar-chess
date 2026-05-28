@@ -4,6 +4,8 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.eclipse.jdt.annotation.NonNull;
@@ -20,7 +22,7 @@ import com.dlb.chess.pgn.TagUtility;
 import com.dlb.chess.pgn.WriteMode;
 
 /**
- * The {@link PgnCreate#createPgnGame(Board)} path produces a minimal honest model — no STR fabrication. Archival export
+ * The {@link PgnCreate#createPgnGame(Board)} path produces a minimal honest model - no STR fabrication. Archival export
  * ({@link WriteMode#ARCHIVAL}) is the opt-in path that fills the Seven Tag Roster, synthesises a Result tag from the
  * termination marker, and emits PGN spec section 8.1.1-conformant output. This test exercises that archival path on
  * Board-derived inputs.
@@ -84,11 +86,11 @@ class TestPgnExportBoardArchival {
   void boardFromNonInitialPositionArchivalEmitsSetUpAndFen() {
     // Caller passes a tagList already containing FEN+SetUp for a custom starting position, then makes moves on
     // the board. Archival export must preserve the position-encoding tags.
-    final var customFen = "r1b2r2/pp1pk1pp/8/7q/3pP1n1/5N1P/PPQ2PP1/3R1RK1 w - - 0 17";
+    final String customFen = "r1b2r2/pp1pk1pp/8/7q/3pP1n1/5N1P/PPQ2PP1/3R1RK1 w - - 0 17";
     final Board board = new Board(customFen);
     board.moveStrict("Qa4");
 
-    final List<Tag> tagList = new java.util.ArrayList<>();
+    final List<Tag> tagList = new ArrayList<>();
     tagList.add(new Tag(StandardTag.SET_UP.getName(), "1"));
     tagList.add(new Tag(StandardTag.FEN.getName(), customFen));
 
@@ -111,8 +113,8 @@ class TestPgnExportBoardArchival {
 
     final String archivalOutput = PgnCreate.createPgnString(pgnGame, WriteMode.ARCHIVAL);
 
-    final var eventIdx = archivalOutput.indexOf("[" + StandardTag.EVENT.getName() + " ");
-    final var resultIdx = archivalOutput.indexOf("[" + StandardTag.RESULT.getName() + " ");
+    final int eventIdx = archivalOutput.indexOf("[" + StandardTag.EVENT.getName() + " ");
+    final int resultIdx = archivalOutput.indexOf("[" + StandardTag.RESULT.getName() + " ");
 
     assertTrue(eventIdx >= 0);
     assertTrue(resultIdx > eventIdx);
@@ -121,14 +123,14 @@ class TestPgnExportBoardArchival {
   @SuppressWarnings("static-method")
   @Test
   void semanticOutputForInitialBoardIsTagless() {
-    // Counterpart to the archival path: semantic mode of an initial-position Board emits a tag-less PGN — just
+    // Counterpart to the archival path: semantic mode of an initial-position Board emits a tag-less PGN - just
     // the movetext and termination marker. Honest preservation of "no caller-provided tags."
     final Board board = new Board();
     final PgnGame pgnGame = PgnCreate.createPgnGame(board);
 
     final String semanticOutput = PgnCreate.createPgnString(pgnGame, WriteMode.SEMANTIC);
 
-    // Tag section is empty — no '[' appears in the output, no STR placeholders.
+    // Tag section is empty - no '[' appears in the output, no STR placeholders.
     assertFalse(semanticOutput.contains("[" + StandardTag.EVENT.getName() + " "));
     assertFalse(semanticOutput.contains("[" + StandardTag.RESULT.getName() + " "));
     // Termination marker is still emitted (carried by the parse model's terminationMarker field).
@@ -144,7 +146,7 @@ class TestPgnExportBoardArchival {
     // The PgnGame invariant: when a Result tag is present in tagList AND terminationMarker is non-null, the
     // two must agree. The Board-to-PgnGame path derives terminationMarker from the board's game status; if the
     // caller supplies a Result tag with a different value, the compact constructor of PgnGame catches the
-    // inconsistency and throws — rather than silently producing a model that archival export would then have
+    // inconsistency and throws - rather than silently producing a model that archival export would then have
     // to choose between when emitting the Result tag vs the termination marker.
     final Board boardWonByWhite = new Board();
     boardWonByWhite.moveStrict("e4");
@@ -159,7 +161,7 @@ class TestPgnExportBoardArchival {
     // Nulls.copyOfList wraps List.of with the @NonNull-annotated immutable list shape JDT requires for the
     // {@code createPgnGame(Board, List<Tag>)} parameter.
     @SuppressWarnings("null") final List<Tag> contradictoryTagList = Nulls
-        .copyOfList(java.util.Collections.singletonList(new Tag(StandardTag.RESULT.getName(), "0-1")));
+        .copyOfList(Collections.singletonList(new Tag(StandardTag.RESULT.getName(), "0-1")));
     assertThrows(IllegalArgumentException.class, () -> PgnCreate.createPgnGame(boardWonByWhite, contradictoryTagList));
   }
 }

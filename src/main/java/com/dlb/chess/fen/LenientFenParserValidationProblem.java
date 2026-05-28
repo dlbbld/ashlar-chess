@@ -11,7 +11,7 @@ public enum LenientFenParserValidationProblem {
   OK,
 
   /**
-   * Input could not be normalised into something parseable by {@link FenParserRaw} — e.g. empty, blank, or contains too
+   * Input could not be normalised into something parseable by {@link FenParserRaw} - e.g. empty, blank, or contains too
    * few fields after lenient normalisation to be a FEN. This is the failure mode for inputs that are not recognisably
    * FEN at all.
    */
@@ -19,7 +19,7 @@ public enum LenientFenParserValidationProblem {
 
   /**
    * Lenient normalisation produced a six-field FEN but {@link FenParserRaw} rejected it (lexical-format failure after
-   * normalisation). Rare — the lenient layer's normalisation pipeline should not produce raw-invalid output. Surfaces
+   * normalisation). Rare - the lenient layer's normalisation pipeline should not produce raw-invalid output. Surfaces
    * when the input contains characters or shapes the normaliser does not understand.
    */
   RAW_INVALID,
@@ -27,7 +27,7 @@ public enum LenientFenParserValidationProblem {
   /**
    * The normalised FEN passed raw parsing but {@link FenParserAdvanced} rejected it for a structural or
    * rule-consistency issue (piece counts, kings, castling rights inconsistent with piece placement, illegal en-passant
-   * target, etc.). The lenient layer does not forgive semantic invariants — a FEN with a king missing still fails. The
+   * target, etc.). The lenient layer does not forgive semantic invariants - a FEN with a king missing still fails. The
    * underlying {@link com.dlb.chess.common.enums.FenAdvancedValidationProblem} is on the result.
    */
   ADVANCED_INVALID,

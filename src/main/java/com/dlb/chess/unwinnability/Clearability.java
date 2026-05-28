@@ -28,7 +28,7 @@ class Clearability {
   }
 
   public int calculateVariableCountSetToOne() {
-    var count = 0;
+    int count = 0;
     for (final Entry<PiecePlacement, VariableState> entry : clearabilityMap.entrySet()) {
       if (entry.getValue() == VariableState.ONE) {
         count++;
@@ -61,7 +61,7 @@ class Clearability {
     // TreeSet for ordering
     for (final PiecePlacement piecePlacement : new TreeSet<>(clearabilityMap.keySet())) {
       final VariableState variableState = Nulls.get(clearabilityMap, piecePlacement);
-      final var pieceDescription = new StringBuilder();
+      final StringBuilder pieceDescription = new StringBuilder();
       pieceDescription.append(piecePlacement.toString());
       pieceDescription.append(": ");
       pieceDescription.append(variableState.getDescription());

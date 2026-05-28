@@ -42,9 +42,9 @@ public class Message {
   }
 
   private static String getString(String key, String[] argArray) {
-    final var pattern = RESOURCE_BUNDLE.getString(key);
+    final String pattern = RESOURCE_BUNDLE.getString(key);
     final MessageFormat messageWithWildcards = new MessageFormat(pattern, ConfigurationConstants.LOCALE);
-    final var messageWithWildcardsSubstituted = messageWithWildcards.format(argArray);
+    final String messageWithWildcardsSubstituted = messageWithWildcards.format(argArray);
     if (messageWithWildcardsSubstituted == null) {
       throw new ProgrammingMistakeException("Assuming the method never returns null");
     }

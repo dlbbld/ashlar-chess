@@ -17,14 +17,14 @@ import com.dlb.chess.common.model.MoveSpecification;
  *
  * <p>
  * Sister test to {@link TestBoardClaimWithOwnMove}, which exercises the existence-shape predicates ("does any legal
- * move satisfy the claim?"). FIDE 9.2 and 9.3 actually frame the claim as a per-move act — the player announces the
+ * move satisfy the claim?"). FIDE 9.2 and 9.3 actually frame the claim as a per-move act - the player announces the
  * specific move they intend to play and claims the draw on that announcement. The per-move predicates are the
  * FIDE-faithful API; the existence predicates are convenience shorthand derived from them.
  */
 class TestBoardClaimFor implements EnumConstants {
 
   // =============================================================================================
-  // canClaimFiftyMoveRuleFor — FIDE 9.3 per-move
+  // canClaimFiftyMoveRuleFor - FIDE 9.3 per-move
   // =============================================================================================
 
   @SuppressWarnings("static-method")
@@ -45,7 +45,7 @@ class TestBoardClaimFor implements EnumConstants {
     // promises to exercise; a regression that quietly degraded the fixture would now fail here.
     board.move(nf7);
     assertTrue(board.isCheckmate(),
-        "fixture must actually be checkmate after Nf7 — otherwise the 'candidate move is mate' edge is not covered");
+        "fixture must actually be checkmate after Nf7 - otherwise the 'candidate move is mate' edge is not covered");
   }
 
   @SuppressWarnings("static-method")
@@ -57,10 +57,10 @@ class TestBoardClaimFor implements EnumConstants {
     // Black's pawn on h7 has no legal moves (h6 is blocked by the white pawn; there is no piece
     // on g6 to capture). Black is not in check, so the resulting position is stalemate, not mate.
     //
-    // The Kf7 move is non-pawn, non-capture and clock is 99 — a valid 50-move claim under FIDE 9.3
+    // The Kf7 move is non-pawn, non-capture and clock is 99 - a valid 50-move claim under FIDE 9.3
     // regardless of the post-position outcome. The fixture-correctness assertions below pin both
     // the per-move predicate result and the stalemate-ness of the post-position; a regression that
-    // accidentally let Black move (e.g. omitting the white pawn on h6 — which is exactly what the
+    // accidentally let Black move (e.g. omitting the white pawn on h6 - which is exactly what the
     // earlier "7k/6pp/5K2/..." fixture did, leaving Black with the legal pawn moves g5/g6/h5/h6)
     // would now fail the post-move stalemate assertion rather than silently degrading the test
     // to a quiet 50-move candidate.
@@ -73,7 +73,7 @@ class TestBoardClaimFor implements EnumConstants {
     // merely a quiet position). Pins the edge that the predicate name promises to exercise.
     board.move(kf7);
     assertTrue(board.isStalemate(),
-        "fixture must actually be stalemate after Kf7 — otherwise the 'candidate move is stalemate' edge is not covered");
+        "fixture must actually be stalemate after Kf7 - otherwise the 'candidate move is stalemate' edge is not covered");
   }
 
   @SuppressWarnings("static-method")
@@ -89,7 +89,7 @@ class TestBoardClaimFor implements EnumConstants {
   @SuppressWarnings("static-method")
   @Test
   void fiftyMoveForReturnsFalseForCapture() {
-    // White rook a1 has a quiet move (e.g. Ra2) — but the per-move predicate is asked about Ra8,
+    // White rook a1 has a quiet move (e.g. Ra2) - but the per-move predicate is asked about Ra8,
     // a hypothetical capture of the black king from the same position with a black piece on a8.
     // The capture would reset the clock, so it does not satisfy the claim.
     // Use a position where white can capture a non-king black piece on the back rank.
@@ -101,7 +101,7 @@ class TestBoardClaimFor implements EnumConstants {
   @SuppressWarnings("static-method")
   @Test
   void fiftyMoveForReturnsFalseWhenClockBelowBoundary() {
-    // Clock 98 — one shy of the 99-required boundary. Even a non-pawn non-capture rook move
+    // Clock 98 - one shy of the 99-required boundary. Even a non-pawn non-capture rook move
     // cannot satisfy the claim from here.
     final Board board = new Board("7k/8/8/8/8/8/4K3/R7 w - - 98 50");
     assertFalse(board.canClaimFiftyMoveRuleFor(new MoveSpecification(A1, A2)),
@@ -113,25 +113,24 @@ class TestBoardClaimFor implements EnumConstants {
   void fiftyMoveForThrowsForIllegalMove() {
     // Same boundary position as the WithOwnMove boundary fixture. Ra1-h8 is geometrically a rook
     // move but not legal (different rank and file from a1; rook moves only along one or the other).
-    // The per-move predicate now treats "not in the legal-moves set" as a loud failure — throws
+    // The per-move predicate now treats "not in the legal-moves set" as a loud failure - throws
     // IllegalArgumentException rather than silently returning false.
     final Board board = new Board("7k/8/8/8/8/8/4K3/R7 w - - 99 51");
-    assertThrows(IllegalArgumentException.class,
-        () -> board.canClaimFiftyMoveRuleFor(new MoveSpecification(A1, H8)),
+    assertThrows(IllegalArgumentException.class, () -> board.canClaimFiftyMoveRuleFor(new MoveSpecification(A1, H8)),
         "a move not in the legal-moves set must throw, not silently return false");
   }
 
   @SuppressWarnings("static-method")
   @Test
   void fiftyMoveForReturnsTrueForQuietRookMoveAtBoundary() {
-    // Sanity baseline: the obvious "yes" case. Rook move at clock 99 → claim valid.
+    // Sanity baseline: the obvious "yes" case. Rook move at clock 99 -> claim valid.
     final Board board = new Board("7k/8/8/8/8/8/4K3/R7 w - - 99 51");
     assertTrue(board.canClaimFiftyMoveRuleFor(new MoveSpecification(A1, A2)),
         "FIDE 9.3: quiet non-zeroing legal move at clock 99 is a valid claim");
   }
 
   // =============================================================================================
-  // canClaimThreefoldRepetitionRuleFor — FIDE 9.2 per-move
+  // canClaimThreefoldRepetitionRuleFor - FIDE 9.2 per-move
   // =============================================================================================
 
   @SuppressWarnings("static-method")
@@ -164,7 +163,7 @@ class TestBoardClaimFor implements EnumConstants {
   @Test
   void threefoldForReturnsFalseForPawnMove() {
     // Same fixture. Black's e7-e5 pawn push resets the clock and creates a position that has never
-    // occurred before in the game — cannot be a threefold.
+    // occurred before in the game - cannot be a threefold.
     final Board board = new Board();
     board.movesStrict("Nf3", "Nf6", "Ng1", "Ng8", "Nf3", "Nf6", "Ng1");
     assertFalse(board.canClaimThreefoldRepetitionRuleFor(new MoveSpecification(E7, E5)),
@@ -184,7 +183,7 @@ class TestBoardClaimFor implements EnumConstants {
   @SuppressWarnings("static-method")
   @Test
   void threefoldForThrowsForIllegalMove() {
-    // Move not in the legal-moves set — predicate now throws rather than silently returning false.
+    // Move not in the legal-moves set - predicate now throws rather than silently returning false.
     // F6-A1 is not a legal move from any piece on f6 (knight on f6 cannot reach a1).
     final Board board = new Board();
     board.movesStrict("Nf3", "Nf6", "Ng1", "Ng8", "Nf3", "Nf6", "Ng1");
@@ -194,7 +193,7 @@ class TestBoardClaimFor implements EnumConstants {
   }
 
   // =============================================================================================
-  // canClaimDrawFor — composed convenience
+  // canClaimDrawFor - composed convenience
   // =============================================================================================
 
   @SuppressWarnings("static-method")
@@ -232,7 +231,6 @@ class TestBoardClaimFor implements EnumConstants {
     // 1.Nf3 from this position: legal, non-zeroing, but clock is 1 (after both pawn pushes the
     // clock is 0; the Nf3 push would bring it to 1) -- well below 99. And the post-position is
     // fresh, never seen before -- not threefold.
-    assertFalse(board.canClaimDrawFor(new MoveSpecification(G1, F3)),
-        "neither branch satisfies the claim");
+    assertFalse(board.canClaimDrawFor(new MoveSpecification(G1, F3)), "neither branch satisfies the claim");
   }
 }

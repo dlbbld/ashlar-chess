@@ -4,6 +4,21 @@ Releases from 3.3 onward. Earlier history is in git tags only.
 
 ## [Unreleased]
 
+## [16.1.0] - 2026-05-28
+
+Clean-up release. Removes superseded test scaffolding, drops `var` (local-variable type inference) for explicit types, normalizes source to ASCII, hardens the JavaDoc validation gate, and adds game-adjudication documentation. No public API, behaviour, or output change.
+
+### Internal
+
+- Removed superseded test generators and dormant cross-validation scaffolding: `GeneratePythonTestCases` (replaced by the 12.2.0 committed-JSONL python-chess oracle), `GenerateScalaChessTestCases`, `GenerateAmbronaHelpMateTestCases`, `GenerateChaTestCases`, `GenerateChaLichessReport`, `GenerateLibraryCarlosInsufficientMaterialTestCases`, `GeneratePgnInformationUtility`, `GeneratePiecePositions`, and the `com.dlb.chess.test.scalachess`, `com.dlb.chess.test.chessbase`, and `com.dlb.chess.test.unwinnability.lichess` subtrees. `TestUciMoveUtility` inlines the one helper it borrowed; `PgnTest` enum values unchanged.
+- Dropped `var` across the codebase: all locals now carry explicit types (interface types preferred, `java.util` references unqualified). Explicit types read better in technical code, notably the bitboard layer where `long` / `int` width is load-bearing. The Eclipse "Use 'var' where possible" cleanup is disabled in the checked-in profile so it cannot recur. Source-style only; no semantic effect.
+- Normalized source to ASCII: repaired ~180 double-encoded (UTF-8-read-as-Windows-1252) mojibake sequences and converted smart punctuation (em/en-dashes, curly quotes, arrows, section sign, ellipsis) to ASCII in comments and cosmetic strings. Intentional non-ASCII preserved: `LenientFenParser`'s Unicode-dash table, `TestLenientFenParser`'s non-standard-dash FEN inputs, and the UTF-8 round-trip / commentary test corpora. New `coding-conventions.md` rule: Java source is ASCII-only.
+- Hardened the JavaDoc validation gate: both `mvn javadoc:javadoc -Dshow=private` and `mvn javadoc:test-javadoc -Dshow=private` now run as release gates (`-Dshow=private` is required because many report records and all test classes are package-private, which doclint skips at default visibility). Fixed every stale, broken, or unreachable reference this surfaced - deleted-class and relocated-class links, links from main to test classes, malformed HTML, and record-component / package-private links that resolved to unreachable members (now public accessors or `{@code}`). Recorded in the pom and the `workflows.md` release pre-flight.
+
+### Documentation
+
+- README: new game-adjudication section covering flag-fall, resignation, and dead-position-during-play, a "Not supported" section, and the unwinnability / dead-position API with examples. clean-chess surfaces terminations as queryable facts; the caller adjudicates.
+
 ## [16.0.0] - 2026-05-27
 
 The threefold and 50-move report becomes a first-class object model with print classes as a derived view. Per-move FIDE 9.2 / 9.3 claim API. New `GameEndFacts` snapshot pairs the raw condition booleans with the precedence-projected `Outcome`. `Outcome` is now never null. `HalfMove` is no longer stored on `Board`.

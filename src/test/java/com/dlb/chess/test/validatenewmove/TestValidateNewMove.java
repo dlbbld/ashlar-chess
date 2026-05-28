@@ -9,9 +9,9 @@ import com.dlb.chess.common.model.MoveSpecification;
 import com.dlb.chess.enums.MoveCheck;
 
 /**
- * Surface-level smoke tests for {@link com.dlb.chess.board.ValidateNewMove#validateNewMove}: one representative
- * scenario per public {@link MoveCheck} failure value, exercising the full pipeline (Board → ValidateNewMove →
- * InvalidMoveException → MoveCheck).
+ * Surface-level smoke tests for {@code ValidateNewMove#validateNewMove}: one representative scenario per public
+ * {@link MoveCheck} failure value, exercising the full pipeline (Board -> ValidateNewMove -> InvalidMoveException ->
+ * MoveCheck).
  *
  * <p>
  * Comprehensive scenario coverage lives in {@code TestChessRuleAnalyzerScenarios} (analyzer-level tests).
@@ -21,7 +21,7 @@ import com.dlb.chess.enums.MoveCheck;
  */
 class TestValidateNewMove extends AbstractTestValidateNewMove {
 
-  // --- MOVE_SPEC_* (spec coherence — surface only, not analyzer territory) ---
+  // --- MOVE_SPEC_* (spec coherence - surface only, not analyzer territory) ---
 
   @SuppressWarnings("static-method")
   @Test
@@ -56,7 +56,7 @@ class TestValidateNewMove extends AbstractTestValidateNewMove {
         MoveCheck.MOVE_SPEC_PAWN_PROMOTION_NO_PROMOTION_PIECE);
   }
 
-  // --- MOVEMENT_* (representative samples — comprehensive coverage in TestMovementCheck) ---
+  // --- MOVEMENT_* (representative samples - comprehensive coverage in TestMovementCheck) ---
 
   @SuppressWarnings("static-method")
   @Test
@@ -150,7 +150,7 @@ class TestValidateNewMove extends AbstractTestValidateNewMove {
         MoveCheck.ALL_BUT_KING_KING_EXPOSED_TO_CHECK);
   }
 
-  // --- KING_CASTLING_* (one representative per family — comprehensive coverage in TestValidateNewMoveCastling) ---
+  // --- KING_CASTLING_* (one representative per family - comprehensive coverage in TestValidateNewMoveCastling) ---
 
   @SuppressWarnings("static-method")
   @Test

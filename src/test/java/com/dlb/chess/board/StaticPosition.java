@@ -40,7 +40,7 @@ public record StaticPosition(Piece a8, Piece b8, Piece c8, Piece d8, Piece e8, P
 
   @Override
   public String toString() {
-    final var output = new StringBuilder();
+    final StringBuilder output = new StringBuilder();
 
     output.append(calculateSquareLetter(a8));
     output.append(calculateSquareLetter(b8));

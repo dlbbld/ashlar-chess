@@ -40,8 +40,8 @@ class TestUnwinnabilityQuickForLichessGames {
 
         logger.info(testCase.pgnName());
 
-        final UnwinnabilityQuickVerdict unwinnableQuickNotHavingMove = UnwinnableQuickAnalyzer.unwinnableQuick(board,
-            board.getHavingMove().getOppositeSide()).verdict();
+        final UnwinnabilityQuickVerdict unwinnableQuickNotHavingMove = UnwinnableQuickAnalyzer
+            .unwinnableQuick(board, board.getHavingMove().getOppositeSide()).verdict();
         assertEquals(UnwinnabilityQuickVerdict.UNWINNABLE, unwinnableQuickNotHavingMove);
 
         final AmbronaUnwinnabilityVerdicts ambronaVerdict = AmbronaUnwinnabilityOracle.get(board.getFen());

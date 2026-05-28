@@ -32,7 +32,8 @@ class TestBitboardPositionOccupied {
     for (final PgnTest pgnTest : PgnTest.values()) {
       final PgnTestCaseList testCaseList = PgnTestCaseCatalog.getTestList(pgnTest);
       for (final PgnFen testCase : testCaseList.list()) {
-        final StaticPosition staticPosition = StaticPositionBridge.toStaticPosition(testCase.finalPosition().getBitboardPosition());
+        final StaticPosition staticPosition = StaticPositionBridge
+            .toStaticPosition(testCase.finalPosition().getBitboardPosition());
         final BitboardPosition bitboardPosition = StaticPositionBridge.fromStaticPosition(staticPosition);
         final Set<Square> fromBitboard = BitboardPositionUtility.toSquareSet(bitboardPosition.occupied());
         final Set<Square> fromReference = referenceOccupied(staticPosition);
@@ -47,7 +48,8 @@ class TestBitboardPositionOccupied {
     for (final PgnTest pgnTest : PgnTest.values()) {
       final PgnTestCaseList testCaseList = PgnTestCaseCatalog.getTestList(pgnTest);
       for (final PgnFen testCase : testCaseList.list()) {
-        final StaticPosition staticPosition = StaticPositionBridge.toStaticPosition(testCase.finalPosition().getBitboardPosition());
+        final StaticPosition staticPosition = StaticPositionBridge
+            .toStaticPosition(testCase.finalPosition().getBitboardPosition());
         final BitboardPosition bitboardPosition = StaticPositionBridge.fromStaticPosition(staticPosition);
         assertSideAgrees(staticPosition, bitboardPosition, Side.WHITE, testCase);
         assertSideAgrees(staticPosition, bitboardPosition, Side.BLACK, testCase);
@@ -85,7 +87,8 @@ class TestBitboardPositionOccupied {
   @SuppressWarnings("static-method")
   @Test
   void initialAndEmptyConstantsAgreeOnTotal() {
-    final Set<Square> initialOccupied = BitboardPositionUtility.toSquareSet(BitboardPosition.INITIAL_POSITION.occupied());
+    final Set<Square> initialOccupied = BitboardPositionUtility
+        .toSquareSet(BitboardPosition.INITIAL_POSITION.occupied());
     assertEquals(referenceOccupied(StaticPosition.INITIAL_POSITION), initialOccupied);
     assertEquals(0L, BitboardPosition.EMPTY_POSITION.occupied());
   }

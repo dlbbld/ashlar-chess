@@ -108,7 +108,7 @@ class MobilitySolution {
           reachable.add(square);
         }
       }
-      final var pieceDescription = new StringBuilder();
+      final StringBuilder pieceDescription = new StringBuilder();
       pieceDescription.append(piecePlacement.toString());
       final String squareList = BasicUtility.calculateSquareList(reachable);
       pieceDescription.append(": ");

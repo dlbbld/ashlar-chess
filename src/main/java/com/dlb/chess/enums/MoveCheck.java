@@ -34,7 +34,7 @@ public enum MoveCheck {
   KING_MOVES_NEXT_TO_OPPONENT_KING,
   KING_MOVES_TO_ATTACKED_EMPTY_SQUARE,
 
-  // castling refusal reasons — FINAL means the castling right is lost permanently, with the
+  // castling refusal reasons - FINAL means the castling right is lost permanently, with the
   // suffix naming why the right was lost; TEMPORARY means the board state blocks castling now
   // but castling may become possible again. The castling cases are overlapping so we check in
   // order numbered.

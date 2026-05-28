@@ -47,6 +47,21 @@ For tests, prefer descriptive test names and assertions over class-level JavaDoc
 
 Rule of thumb: if an AI or IDE could regenerate the comment from the code, the comment is a maintenance liability.
 
+## ASCII-only source
+
+Java source files are ASCII-only. This applies to comments, JavaDoc, and string literals: use plain ASCII rather than "smart" Unicode punctuation. Replace em/en-dashes with `-`, curly quotes with straight `"`/`'`, ellipsis with `...`, arrows (`->`, `<->`, `=>`) with their ASCII forms, the section sign with `section`, and the multiplication sign with `x`.
+
+Rationale: non-ASCII punctuation is silently prone to double-encoding mojibake — a file read as Windows-1252 and re-saved as UTF-8 turns `—` into `â€"` and corrupts the source without any compiler complaint. Keeping source ASCII removes the entire failure mode. (The 16.1.0 release repaired ~180 such sequences and normalized the tree.)
+
+The only permitted non-ASCII is where a character is *functionally* the subject under test or a runtime feature, not incidental typography. The current exceptions, which must stay non-ASCII:
+
+- `LenientFenParser` — the Unicode-dash recognition table (the parser exists to forgive real Unicode dashes in FEN input).
+- `TestLenientFenParser` — non-standard-dash FEN inputs that exercise that table.
+- The UTF-8 round-trip / commentary corpora: `TestFileUtility`, `TestPgnExportUtf8`, `TestLenientPgnParserUtf8`, `TestPgnCommentary`.
+- Genuine letters in proper nouns inside test data (e.g. `í` in a player name).
+
+When non-ASCII is genuinely required, it should be obviously intentional test/feature data — never a stray em-dash or curly quote in prose.
+
 ## Eclipse compiler warnings
 
 All code must compile under the project's Eclipse JDT compiler settings with **zero warnings**. Many diagnostics are configured as errors rather than warnings — null-annotation violations, unused imports, missing `@Override`, raw types, etc. Treat the warning ceiling as a hard rule, not a guideline: fix the cause, do not silence with `@SuppressWarnings` unless the reason is genuinely localized and documented inline.

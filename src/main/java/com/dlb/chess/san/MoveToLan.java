@@ -11,17 +11,20 @@ import com.dlb.chess.moves.PromotionUtility;
 public class MoveToLan extends AbstractSan {
 
   /**
-   * LAN non-capture separator between from and to squares. Captures use {@link SanSymbol#CAPTURE} ({@code 'x'}) instead;
-   * castling emits {@code O-O} / {@code O-O-O} without per-square components.
+   * LAN non-capture separator between from and to squares. Captures use {@link SanSymbol#CAPTURE} ({@code 'x'})
+   * instead; castling emits {@code O-O} / {@code O-O-O} without per-square components.
    *
    * <p>
    * LAN grammar this class emits:
+   *
    * <pre>
    * &lt;LAN piece move&gt; ::= &lt;piece symbol&gt;&lt;from square&gt;('-'|'x')&lt;to square&gt;
-   * &lt;LAN pawn move&gt;  ::= &lt;from square&gt;('-'|'x')&lt;to square&gt;[<promoted to>]
+   * &lt;LAN pawn move&gt;  ::= &lt;from square&gt;('-'|'x')&lt;to square&gt;[&lt;promoted to&gt;]
    * &lt;LAN castle&gt;     ::= 'O-O' | 'O-O-O'
    * &lt;promoted to&gt;    ::= '=' ('N' | 'B' | 'R' | 'Q')
    * </pre>
+   *
+   * <p>
    * Plus the terminal marker ({@code +} for check, {@code #} for checkmate) appended to every move shape including
    * castling. Matches python-chess {@code board.lan(move)}.
    */
@@ -46,14 +49,14 @@ public class MoveToLan extends AbstractSan {
     final Piece movingPiece = lastMove.movingPiece();
     final String fromSquareName = moveSpecification.fromSquare().getName();
     final String toSquareName = moveSpecification.toSquare().getName();
-    final var isCapture = lastMove.pieceCaptured() != Piece.NONE;
+    final boolean isCapture = lastMove.pieceCaptured() != Piece.NONE;
     switch (movingPiece.getPieceType()) {
       case PAWN:
         buildSan.append(fromSquareName);
         buildSan.append(isCapture ? SanSymbol.CAPTURE.getSymbol() : LAN_NON_CAPTURE_SEPARATOR);
         buildSan.append(toSquareName);
         if (PromotionUtility.calculateIsPromotion(moveSpecification)) {
-          final var promotionPieceLetter = moveSpecification.promotionPieceType().getPieceType().getLetter();
+          final char promotionPieceLetter = moveSpecification.promotionPieceType().getPieceType().getLetter();
           buildSan.append(SanSymbol.PROMOTION.getSymbol());
           buildSan.append(promotionPieceLetter);
         }
@@ -63,7 +66,7 @@ public class MoveToLan extends AbstractSan {
       case BISHOP:
       case QUEEN:
       case KING:
-        final var pieceLetter = String.valueOf(movingPiece.getPieceType().getLetter());
+        final String pieceLetter = String.valueOf(movingPiece.getPieceType().getLetter());
         buildSan.append(pieceLetter);
         buildSan.append(fromSquareName);
         buildSan.append(isCapture ? SanSymbol.CAPTURE.getSymbol() : LAN_NON_CAPTURE_SEPARATOR);

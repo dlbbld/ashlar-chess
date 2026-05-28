@@ -218,7 +218,7 @@ public class PgnTestCaseCatalog {
   //
   // The strict-vs-lenient parser comparison and the export/import roundtrip tests are sweeps over the PGN corpus.
   // Using every basic fixture (~591 files across 23 buckets) for these is an order of magnitude more work than
-  // needed for their purpose — detailed feature coverage already exists in the dedicated parser, SAN, and basic
+  // needed for their purpose - detailed feature coverage already exists in the dedicated parser, SAN, and basic
   // tests. These two curated lists keep broad diversity (piece movement, capture, en passant, promotion, castling,
   // check, checkmate, stalemate, custom starting positions) without iterating hundreds of near-identical variants.
   //
@@ -230,7 +230,7 @@ public class PgnTestCaseCatalog {
   private static final List<PgnTestCaseList> exportRoundtripSmokeList = buildExportRoundtripSmokeList();
 
   /**
-   * Smoke subset used by {@code TestStrictPgnParserAgainstLenientPgnParser} — broad enough to exercise every major
+   * Smoke subset used by {@code TestStrictPgnParserAgainstLenientPgnParser} - broad enough to exercise every major
    * parser code path (piece movement, capture, en passant, promotion, castling with check/checkmate, checkmate by
    * various pieces, stalemate, custom starting position via FEN, repetition-sensitive en passant setup). About 45 files
    * in total rather than ~591.
@@ -240,7 +240,7 @@ public class PgnTestCaseCatalog {
   }
 
   /**
-   * Smoke subset used by {@code TestPgnExportIdempotency} and {@code TestPgnImportAgainstExport} — tighter than the
+   * Smoke subset used by {@code TestPgnExportIdempotency} and {@code TestPgnImportAgainstExport} - tighter than the
    * parser smoke set because export tests only vary over structural shape, not chess-rule details. About 20 files
    * covering ordinary SAN movement, promotion, castling, en passant, and custom starting position.
    */
@@ -250,7 +250,7 @@ public class PgnTestCaseCatalog {
 
   private static List<PgnTestCaseList> buildParserIntegrationSmokeList() {
     final List<PgnTestCaseList> result = new ArrayList<>();
-    // Small buckets — keep whole.
+    // Small buckets - keep whole.
     result.add(getTestList(PgnTest.BASIC_MOVING_PIECE_WHITE));
     result.add(getTestList(PgnTest.BASIC_PROMOTION_PIECE_WHITE));
     result.add(getTestList(PgnTest.BASIC_STALEMATE));
@@ -290,12 +290,12 @@ public class PgnTestCaseCatalog {
 
   /**
    * Builds a {@link PgnTestCaseList} for the given bucket containing only the entries whose file name is in
-   * {@code wantedFileNames}. Fails fast with a precise message if any requested file is missing from the bucket —
+   * {@code wantedFileNames}. Fails fast with a precise message if any requested file is missing from the bucket -
    * catches fixture renames the first time the class is loaded rather than mid test-run.
    */
   private static PgnTestCaseList filterBucket(PgnTest pgnTest, String... wantedFileNames) {
     final Set<String> wanted = new TreeSet<>();
-    for (var i = 0; i < wantedFileNames.length; i++) {
+    for (int i = 0; i < wantedFileNames.length; i++) {
       wanted.add(Nulls.get(wantedFileNames, i));
     }
     final List<PgnFen> filtered = new ArrayList<>();
@@ -323,7 +323,7 @@ public class PgnTestCaseCatalog {
     for (final PgnTestCaseList testCaseList : testCaseListList) {
       for (final PgnFen testCase : testCaseList.list()) {
         final String pgnName = testCase.pgnName();
-        final var isNotContained = !fileNames.add(pgnName);
+        final boolean isNotContained = !fileNames.add(pgnName);
         if (isNotContained) {
           throw new ProgrammingMistakeException("The PGN test cases files names are not unique");
         }
@@ -850,7 +850,7 @@ public class PgnTestCaseCatalog {
 
     list.add(new PgnFen("insufficient_material_KN_K.pgn", "4k3/8/8/2K5/8/5N2/8/8 w - - 0 35"));
 
-    // K vs K reached on the last halfmove via captures — game ends at dead position, no moves past.
+    // K vs K reached on the last halfmove via captures - game ends at dead position, no moves past.
     list.add(new PgnFen("insufficient_material_K_K.pgn", "2K5/8/8/8/8/8/4k3/8 b - - 0 38"));
 
     list.add(new PgnFen("insufficient_material_K_KBw.pgn", "2b5/8/2k5/8/4K3/8/8/8 b - - 0 34"));
@@ -1076,7 +1076,7 @@ public class PgnTestCaseCatalog {
         "40_threefold_en_passant_capture_situation_capture_allowed_no_leaving_own_king_in_check_from_forum_end_with_first_threefold.pgn",
         "8/8/8/8/3Pp3/8/R6k/K7 b - - 12 43"));
 
-    // Reactivated from pgnParser/legacy/common/beyond — filename says "threefold" but the game actually plays past
+    // Reactivated from pgnParser/legacy/common/beyond - filename says "threefold" but the game actually plays past
     // the first fivefold (the original test category was misleading).
     list.add(new PgnFen(
         "37_threefold_en_passant_capture_situation_capture_allowed_no_exposing_own_king_to_check_mine_end_with_first_threefold.pgn",
@@ -1132,7 +1132,7 @@ public class PgnTestCaseCatalog {
         new PgnFen("08_fivefold_max_position_repetitions_castling_and_en_passant_capture_end_with_first_fivefold.pgn",
             "rnbqkbnr/2p1ppp1/p6p/1p1pP3/8/P6P/1PPP1PP1/RNBQKBNR w - - 52 31"));
 
-    // Reactivated from pgnParser/legacy/common/beyond — play continues past first fivefold.
+    // Reactivated from pgnParser/legacy/common/beyond - play continues past first fivefold.
     list.add(new PgnFen("05_fivefold_beyond.pgn",
         "r1bqk1nr/1pp2p1p/pbnp2p1/4p3/1PB1P3/P2P1N1P/2P2PP1/RNBQK2R w KQkq - 1 16"));
     list.add(new PgnFen("06_fivefold_end_with_first_sixfold.pgn",
@@ -1162,7 +1162,7 @@ public class PgnTestCaseCatalog {
     list.add(new PgnFen("16_seventy_five_half_move_clock_149_then_stalemate_by_black_move.pgn",
         "1r3n1r/kbp1n2p/1p2p2b/pP1pP1p1/P2P1pP1/5P2/5q2/7K w - - 150 97"));
 
-    // Reactivated from pgnParser/legacy/common/beyond — play continues past first 75-move.
+    // Reactivated from pgnParser/legacy/common/beyond - play continues past first 75-move.
     list.add(new PgnFen("03_seventy_five_end_with_half_move_clock_154.pgn",
         "1r1n2r1/k1p2ppR/1pbn4/pR1pp2p/P1B1P2P/1K1P1Q1N/1PP1NPP1/1qB3b1 w - - 154 84"));
     list.add(new PgnFen("04_seventy_five_beyond_half_move_clock_154_end_with_half_move_clock_99.pgn",
@@ -1199,7 +1199,7 @@ public class PgnTestCaseCatalog {
     list.add(new PgnFen("06_intervening_threefold_interlocked_fivefold.pgn",
         "rnbqk1nr/p1pp1ppp/8/1pb1p3/1PB1P3/8/P1PP1PPP/RNBQK1NR w KQkq - 24 15"));
 
-    // Reactivated from pgnParser/legacy/common/beyond — play continues past first fivefold.
+    // Reactivated from pgnParser/legacy/common/beyond - play continues past first fivefold.
     list.add(new PgnFen("02_intervening_threefold_encapsulating_fivefold.pgn",
         "r1bqkbnr/p2ppppp/2n5/1pp5/1PP5/2N5/P2PPPPP/R1BQKBNR w KQkq - 30 18"));
     list.add(new PgnFen("04_intervening_fivefold_encapsulating_fivefold.pgn",
@@ -1474,7 +1474,7 @@ public class PgnTestCaseCatalog {
     list.add(new PgnFen("from_fen_two_moves_half_move_clock_099_white_to_move.pgn",
         "1rb1kb1r/pp1pqppp/2p2Q2/3Bp3/PR1NP3/Bn2N3/2PP1PPP/5RK1 w k - 101 101"));
 
-    // Reactivated from pgnParser/legacy/common/beyond — halfmove clocks at and above the 75-move threshold (150 / 151)
+    // Reactivated from pgnParser/legacy/common/beyond - halfmove clocks at and above the 75-move threshold (150 / 151)
     // and sixfold-repetition variants. No longer rejected at FEN import or replay.
     list.add(new PgnFen("from_fen_capture_first_move_half_move_clock_150_black_to_move.pgn",
         "k7/2q1Q3/5N2/5pP1/5P2/8/PPP1P3/K7 w - - 0 101"));
@@ -1610,7 +1610,7 @@ public class PgnTestCaseCatalog {
 
     list.add(new PgnFen("05_random_no_repetition.pgn", "4k3/8/3B4/8/8/8/4q3/K7 b - - 79 182"));
 
-    // Reactivated from pgnParser/legacy/common/beyond — long random games crossing 75-move.
+    // Reactivated from pgnParser/legacy/common/beyond - long random games crossing 75-move.
     list.add(new PgnFen("01_random_no_repetition.pgn", "7K/8/8/8/8/1R6/8/k7 w - - 1968 1146"));
     list.add(new PgnFen("02_random_no_repetition.pgn", "8/8/8/8/1k6/8/4r3/7K b - - 1400 880"));
     list.add(new PgnFen("03_random_no_repetition.pgn", "7k/3K4/8/8/8/6R1/8/8 w - - 704 458"));
@@ -1980,7 +1980,7 @@ public class PgnTestCaseCatalog {
         "8/8/3k2b1/1p2p2p/p2n2p1/P1K1N1P1/1PP4P/4N3 b - - 37 58"));
     list.add(new PgnFen("wikipedia_threefold_4_1_pillsbury_burn_1898.pgn", "8/5Q2/8/P6p/7P/1q2p1P1/kp5K/8 w - - 2 91"));
 
-    // Reactivated from pgnParser/legacy/common/beyond — Wikipedia 3-fold examples that actually play past 5-fold.
+    // Reactivated from pgnParser/legacy/common/beyond - Wikipedia 3-fold examples that actually play past 5-fold.
     list.add(new PgnFen("wikipedia_threefold_4_0_1_pest_paris.pgn",
         "1r3rk1/p1b3pp/1np5/2N5/2pP4/2Nb4/PP2RPPP/R1B3K1 w - - 23 28"));
     list.add(new PgnFen("wikipedia_threefold_4_0_1_pest_paris_six_fold.pgn",

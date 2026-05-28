@@ -8,6 +8,8 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 
 import com.dlb.chess.board.Board;
+import com.dlb.chess.board.enums.Side;
+import com.dlb.chess.common.constants.CastlingConstants;
 import com.dlb.chess.common.model.MoveSpecification;
 import com.dlb.chess.common.ucimove.utility.UciMoveUtility;
 import com.dlb.chess.common.ucimove.utility.UciMoveValidationUtility;
@@ -15,7 +17,6 @@ import com.dlb.chess.model.LegalMove;
 import com.dlb.chess.model.UciMove;
 import com.dlb.chess.moves.CastlingUtility;
 import com.dlb.chess.test.custom.model.UciMoveTest;
-import com.dlb.chess.test.scalachess.GenerateScalaChessTestCases;
 
 class TestUciMoveUtility {
 
@@ -97,8 +98,7 @@ class TestUciMoveUtility {
           .text();
       assertEquals(test.uciMoveStr(), actualUci);
 
-      final String actualUciForScala = GenerateScalaChessTestCases
-          .convertMoveSpecificationToUciForScala(lastMove.havingMove(), moveSpecification);
+      final String actualUciForScala = convertMoveSpecificationToUciForScala(lastMove.havingMove(), moveSpecification);
       if (CastlingUtility.calculateIsCastlingMove(moveSpecification)) {
         // O-O or O-O-O as provided in the san is expected
         assertEquals(test.san(), actualUciForScala);
@@ -123,7 +123,7 @@ class TestUciMoveUtility {
   }
 
   private static void checkUciMoveToSan(List<UciMoveTest> list) {
-    final var board = new Board();
+    final Board board = new Board();
 
     for (final UciMoveTest test : list) {
       final UciMove uciMove = UciMoveValidationUtility.lookup(test.uciMoveStr());
@@ -133,4 +133,16 @@ class TestUciMoveUtility {
     }
   }
 
+  private static String convertMoveSpecificationToUciForScala(Side havingMove, MoveSpecification moveSpecification) {
+    if (CastlingUtility.calculateIsCastlingMove(moveSpecification)) {
+      return switch (moveSpecification.castlingMove()) {
+        case KING_SIDE -> CastlingConstants.SAN_CASTLING_KING_SIDE;
+        case QUEEN_SIDE -> CastlingConstants.SAN_CASTLING_QUEEN_SIDE;
+        case NONE -> throw new IllegalArgumentException();
+        default -> throw new IllegalArgumentException();
+      };
+    }
+
+    return UciMoveUtility.convertMoveSpecificationToUci(havingMove, moveSpecification).text();
+  }
 }

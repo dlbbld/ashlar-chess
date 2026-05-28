@@ -56,9 +56,9 @@ public final class CompareAmbronaSemiStaticOracle {
    */
   public static SemiStaticOracleComparison compare(int maxFens) throws Exception {
     final Map<String, List<String>> expectedByFen = readExpectedByFen();
-    var fenDifferenceCount = 0;
-    var rowDifferenceCount = 0;
-    var comparedFenCount = 0;
+    int fenDifferenceCount = 0;
+    int rowDifferenceCount = 0;
+    int comparedFenCount = 0;
     final List<String> differentFenList = new ArrayList<>();
     final List<String> printedDifferenceList = new ArrayList<>();
     final Map<String, Integer> differenceCountByKind = new TreeMap<>();
@@ -70,7 +70,7 @@ public final class CompareAmbronaSemiStaticOracle {
       final String fen = Nulls.getKey(entry);
       final List<String> expectedRows = Nulls.getValue(entry);
       final List<String> actualRows = SemiStaticOracleFormatter.calculateRows(fen);
-      final var differenceCount = countDifferences(expectedRows, actualRows, printedDifferenceList,
+      final int differenceCount = countDifferences(expectedRows, actualRows, printedDifferenceList,
           differenceCountByKind);
       if (differenceCount != 0) {
         fenDifferenceCount++;
@@ -91,7 +91,7 @@ public final class CompareAmbronaSemiStaticOracle {
     }
 
     final Map<String, List<String>> expectedByFen = new LinkedHashMap<>();
-    for (var i = 1; i < lineList.size(); i++) {
+    for (int i = 1; i < lineList.size(); i++) {
       final String line = Nulls.get(lineList, i);
       final String[] itemArray = Nulls.split(line, "\t");
       if (itemArray.length != 5) {
@@ -108,11 +108,11 @@ public final class CompareAmbronaSemiStaticOracle {
 
   private static int countDifferences(List<String> expectedRows, List<String> actualRows,
       List<String> printedDifferenceList, Map<String, Integer> differenceCountByKind) {
-    var differenceCount = 0;
-    final var maxSize = Math.max(expectedRows.size(), actualRows.size());
-    for (var i = 0; i < maxSize; i++) {
-      final var expectedRow = i < expectedRows.size() ? Nulls.get(expectedRows, i) : "<missing>";
-      final var actualRow = i < actualRows.size() ? Nulls.get(actualRows, i) : "<missing>";
+    int differenceCount = 0;
+    final int maxSize = Math.max(expectedRows.size(), actualRows.size());
+    for (int i = 0; i < maxSize; i++) {
+      final String expectedRow = i < expectedRows.size() ? Nulls.get(expectedRows, i) : "<missing>";
+      final String actualRow = i < actualRows.size() ? Nulls.get(actualRows, i) : "<missing>";
       if (!expectedRow.equals(actualRow)) {
         differenceCount++;
         final String kind = calculateKind(expectedRow, actualRow);
@@ -126,7 +126,7 @@ public final class CompareAmbronaSemiStaticOracle {
   }
 
   private static String calculateKind(String expectedRow, String actualRow) {
-    final var sourceRow = "<missing>".equals(expectedRow) ? actualRow : expectedRow;
+    final String sourceRow = "<missing>".equals(expectedRow) ? actualRow : expectedRow;
     final String[] itemArray = Nulls.split(sourceRow, "\t");
     if (itemArray.length != 5) {
       return "<unknown>";

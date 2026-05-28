@@ -17,7 +17,7 @@ import com.dlb.chess.test.pgntest.enums.PgnTest;
 /**
  * Differential test pairing {@link UnwinnabilityMaterialBitboard} (production) against {@link UnwinnabilityMaterial}
  * (StaticPosition reference oracle). For every fixture in the corpus, every bitboard-keyed predicate must agree with
- * its StaticPosition-keyed counterpart. Guards against drift between the two surfaces — and will continue to do so once
+ * its StaticPosition-keyed counterpart. Guards against drift between the two surfaces - and will continue to do so once
  * {@link UnwinnabilityMaterial} relocates to {@code src/test/} alongside the rest of the StaticPosition layer.
  */
 class TestUnwinnabilityMaterialBitboard {
@@ -30,7 +30,7 @@ class TestUnwinnabilityMaterialBitboard {
       for (final PgnFen testCase : testCaseList.list()) {
         final StaticPosition sp = StaticPositionBridge.toStaticPosition(testCase.finalPosition().getBitboardPosition());
         final BitboardPosition bp = StaticPositionBridge.fromStaticPosition(sp);
-        final var tag = " in fixture " + testCase.pgnName();
+        final String tag = " in fixture " + testCase.pgnName();
 
         // Any-side existence checks.
         assertEquals(UnwinnabilityMaterial.calculateHasRook(sp), UnwinnabilityMaterialBitboard.calculateHasRook(bp),
@@ -41,7 +41,7 @@ class TestUnwinnabilityMaterialBitboard {
             "calculateHasQueen (any side)" + tag);
 
         for (final Side side : Side.REAL) {
-          final var sideTag = " side=" + side + tag;
+          final String sideTag = " side=" + side + tag;
           assertEquals(UnwinnabilityMaterial.calculateHasRook(side, sp),
               UnwinnabilityMaterialBitboard.calculateHasRook(side, bp), "calculateHasRook" + sideTag);
           assertEquals(UnwinnabilityMaterial.calculateHasKnight(side, sp),

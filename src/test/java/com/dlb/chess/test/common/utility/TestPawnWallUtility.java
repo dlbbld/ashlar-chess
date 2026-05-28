@@ -397,11 +397,11 @@ class TestPawnWallUtility extends PawnWallGeometricAnalyzer {
     // blocked pawns with bishops; bishop on h2 trapped by own pawns, cannot reach any black pawn
     testHelperLichess("5k2/8/3p4/3p1p1p/p1pP1P1P/PpP2K2/1P5B/8 w - - 20 67", true);
 
-    // Known false positive — deferred to the Auto-CHA / DeepSquare release (see tasks.md). The bishop-reachability
+    // Known false positive - deferred to the Auto-CHA / DeepSquare release (see tasks.md). The bishop-reachability
     // check correctly determines no white bishop can capture any black pawn, so the local pawn-wall predicate fires.
     // But the position is not a pawn wall: the white king can walk g1 -> f1 -> e1 -> d2 -> c3 -> b2 -> a3 and capture
     // the undefended a3 pawn, breaching the wall. Resolving this requires king-reachability with capture-of-undefended
-    // pawns plus possibly bishop maneuvering to clear king paths — essentially partial CHA.
+    // pawns plus possibly bishop maneuvering to clear king paths - essentially partial CHA.
     // testHelperLichess("7k/8/1p6/1Pp5/2Pp4/pB1Pp1p1/P1B1P1P1/3B2K1 b - - 0 1", false);
 
     testHelperLichess("8/4k3/4b3/1p1p1p1p/1P1P1P1P/8/8/7K w - - 46 78", true); // blocked pawns with bishops

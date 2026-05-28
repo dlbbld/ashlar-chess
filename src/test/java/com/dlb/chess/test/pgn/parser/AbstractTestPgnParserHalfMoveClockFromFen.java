@@ -34,7 +34,7 @@ import com.google.common.collect.ImmutableList;
  *
  * <p>
  * The second step is the actual parser-mechanics check: the registered FEN encodes the expected final halfmove clock
- * and full-move number, so divergence pinpoints either a bad FEN-tag → board-state initialization or a bad clock
+ * and full-move number, so divergence pinpoints either a bad FEN-tag -> board-state initialization or a bad clock
  * progression through subsequent moves.
  *
  * <p>
@@ -51,7 +51,7 @@ abstract class AbstractTestPgnParserHalfMoveClockFromFen {
 
   protected static void runForBuckets(BiFunction<java.nio.file.Path, String, PgnGame> parse, Logger logger) {
     final List<String> failures = new ArrayList<>();
-    var totalFixtures = 0;
+    int totalFixtures = 0;
 
     for (final PgnTest bucket : BUCKETS) {
       final PgnTestCaseList testCaseList = PgnTestCaseCatalog.getTestList(bucket);
@@ -69,7 +69,7 @@ abstract class AbstractTestPgnParserHalfMoveClockFromFen {
 
         try {
           assertEquals(testCase.finalFen(), board.getFen(),
-              () -> bucket + " / " + pgnName + " — final FEN mismatch (halfmove-clock or move-number drift)");
+              () -> bucket + " / " + pgnName + " - final FEN mismatch (halfmove-clock or move-number drift)");
         } catch (final AssertionError e) {
           failures.add(BasicUtility.getMessage(e));
         }
@@ -77,10 +77,10 @@ abstract class AbstractTestPgnParserHalfMoveClockFromFen {
     }
 
     if (totalFixtures == 0) {
-      fail("No fixtures iterated — bucket wiring is broken");
+      fail("No fixtures iterated - bucket wiring is broken");
     }
     if (!failures.isEmpty()) {
-      final var report = new StringBuilder().append(failures.size()).append(" of ").append(totalFixtures)
+      final StringBuilder report = new StringBuilder().append(failures.size()).append(" of ").append(totalFixtures)
           .append(" PARSER_FROM_FEN* fixtures produced an unexpected final FEN:\n");
       for (final String f : failures) {
         report.append("  ").append(f).append('\n');

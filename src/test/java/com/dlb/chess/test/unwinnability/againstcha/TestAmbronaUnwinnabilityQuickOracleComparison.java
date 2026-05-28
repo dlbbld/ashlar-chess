@@ -62,13 +62,13 @@ class TestAmbronaUnwinnabilityQuickOracleComparison {
         final Board board = testCase.finalPosition();
         logger.info(testCase.pgnName());
 
-        final UnwinnabilityQuickVerdict unwinnableQuickWhite = UnwinnableQuickAnalyzer.unwinnableQuick(board,
-            Side.WHITE).verdict();
+        final UnwinnabilityQuickVerdict unwinnableQuickWhite = UnwinnableQuickAnalyzer
+            .unwinnableQuick(board, Side.WHITE).verdict();
         check(testCase, Side.WHITE, AmbronaUnwinnabilityOracle.get(testCase.finalFen()).quickWhite(),
             unwinnableQuickWhite, failureList, remainingAcceptedDifferenceSet);
 
-        final UnwinnabilityQuickVerdict unwinnableQuickBlack = UnwinnableQuickAnalyzer.unwinnableQuick(board,
-            Side.BLACK).verdict();
+        final UnwinnabilityQuickVerdict unwinnableQuickBlack = UnwinnableQuickAnalyzer
+            .unwinnableQuick(board, Side.BLACK).verdict();
         check(testCase, Side.BLACK, AmbronaUnwinnabilityOracle.get(testCase.finalFen()).quickBlack(),
             unwinnableQuickBlack, failureList, remainingAcceptedDifferenceSet);
       }
@@ -83,7 +83,7 @@ class TestAmbronaUnwinnabilityQuickOracleComparison {
       UnwinnabilityQuickVerdict actual, List<String> failureList,
       Set<AcceptedDifference> remainingAcceptedDifferenceSet) {
     if (actual != expected) {
-      final var difference = new AcceptedDifference(testCase.pgnName(), intendedWinner, expected, actual,
+      final AcceptedDifference difference = new AcceptedDifference(testCase.pgnName(), intendedWinner, expected, actual,
           testCase.finalFen());
       if (!remainingAcceptedDifferenceSet.remove(difference)) {
         failureList.add(
@@ -99,14 +99,14 @@ class TestAmbronaUnwinnabilityQuickOracleComparison {
     }
 
     final Set<AcceptedDifference> result = new HashSet<>();
-    for (var i = 1; i < lineList.size(); i++) {
+    for (int i = 1; i < lineList.size(); i++) {
       final String line = Nulls.get(lineList, i);
       final String[] itemArray = Nulls.split(line, "\t");
       if (itemArray.length != 6) {
         throw new ProgrammingMistakeException("Invalid quick unwinnability accepted-differences row: " + line);
       }
-      final var difference = new AcceptedDifference(Nulls.get(itemArray, 0), Side.valueOf(Nulls.get(itemArray, 1)),
-          UnwinnabilityQuickVerdict.valueOf(Nulls.get(itemArray, 2)),
+      final AcceptedDifference difference = new AcceptedDifference(Nulls.get(itemArray, 0),
+          Side.valueOf(Nulls.get(itemArray, 1)), UnwinnabilityQuickVerdict.valueOf(Nulls.get(itemArray, 2)),
           UnwinnabilityQuickVerdict.valueOf(Nulls.get(itemArray, 3)), Nulls.get(itemArray, 4));
       if (!result.add(difference)) {
         throw new ProgrammingMistakeException("Duplicate quick unwinnability accepted-differences row: " + line);

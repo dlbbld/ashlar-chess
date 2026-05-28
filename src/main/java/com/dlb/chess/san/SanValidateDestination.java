@@ -34,7 +34,7 @@ abstract class SanValidateDestination extends AbstractSan implements EnumConstan
 
   private static void validatePawnDestination(Board board, Side havingMove, SanFormat sanFormat,
       SanConversion sanConversion, Square toSquare, Piece pieceOnToSquare) {
-    final var isCapture = sanFormat.isCapture();
+    final boolean isCapture = sanFormat.isCapture();
 
     if (pieceOnToSquare != Piece.NONE) {
       // own piece on destination
@@ -79,7 +79,7 @@ abstract class SanValidateDestination extends AbstractSan implements EnumConstan
 
   private static void validateRnbqkDestination(Side havingMove, SanFormat sanFormat, Square toSquare,
       Piece pieceOnToSquare) {
-    final var isCapture = sanFormat.isCapture();
+    final boolean isCapture = sanFormat.isCapture();
 
     if (pieceOnToSquare != Piece.NONE) {
       // own piece on destination

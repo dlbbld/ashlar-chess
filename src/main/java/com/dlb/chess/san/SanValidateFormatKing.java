@@ -41,7 +41,7 @@ abstract class SanValidateFormatKing extends AbstractSan {
           Message.getString("validation.san.format.king.nonCastling.nonCapture.noDestinationFile"));
     }
 
-    final var secondChar = core.charAt(1);
+    final char secondChar = core.charAt(1);
 
     if (!SanValidateFormat.isFileLetter(secondChar)) {
       throw new SanValidationException(SanValidationProblem.FORMAT_KING_NON_CASTLING_NON_CAPTURE_WRONG_DESTINATION_FILE,
@@ -49,20 +49,20 @@ abstract class SanValidateFormatKing extends AbstractSan {
               Nulls.toString(secondChar)));
     }
 
-    // K[file]... Ã¢â‚¬â€ non-capturing path continues with the destination rank
+    // K[file]... - non-capturing path continues with the destination rank
     return parseKingNonCaptureMove(core, sanTerminalMarker);
   }
 
   private static SanParse parseKingNonCaptureMove(final String core, final SanTerminalMarker sanTerminalMarker) {
     // core[0]='K', core[1]=file letter. Expect rank digit next.
-    final var secondChar = core.charAt(1);
+    final char secondChar = core.charAt(1);
 
     if (core.length() == 2) {
       throw new SanValidationException(SanValidationProblem.FORMAT_KING_NON_CASTLING_NON_CAPTURE_NO_DESTINATION_RANK,
           Message.getString("validation.san.format.king.nonCastling.nonCapture.noDestinationRank"));
     }
 
-    final var thirdChar = core.charAt(2);
+    final char thirdChar = core.charAt(2);
 
     // Third char must be a rank digit. Anything else (another file letter, 'x', etc.) falls into the same generic
     // "wrong destination rank" bucket; detecting file-disambiguation specifically adds no user value beyond what
@@ -73,7 +73,7 @@ abstract class SanValidateFormatKing extends AbstractSan {
               Nulls.toString(thirdChar)));
     }
 
-    // K[file][rank] Ã¢â‚¬â€ valid destination, length 3 expected
+    // K[file][rank] - valid destination, length 3 expected
     if (core.length() == 3) {
       return new SanParse(SanFormat.KING_NON_CASTLING_NON_CAPTURING,
           new SanConversion(PieceType.KING, File.NONE, Rank.NONE,
@@ -81,7 +81,7 @@ abstract class SanValidateFormatKing extends AbstractSan {
               PromotionPieceType.NONE, sanTerminalMarker));
     }
 
-    // Length > 3 after valid K[file][rank] Ã¢â‚¬â€ overlength. Square-disambiguation attempts like "Ka2b3" also land
+    // Length > 3 after valid K[file][rank] - overlength. Square-disambiguation attempts like "Ka2b3" also land
     // here;
     // the generic overlength message is sufficient since the user can see the move already has 4+ chars.
     throw new SanValidationException(SanValidationProblem.FORMAT_KING_NON_CASTLING_NON_CAPTURE_OVERLENGTH,
@@ -97,7 +97,7 @@ abstract class SanValidateFormatKing extends AbstractSan {
           Message.getString("validation.san.format.king.nonCastling.capture.noDestinationFile"));
     }
 
-    final var thirdChar = core.charAt(2);
+    final char thirdChar = core.charAt(2);
 
     if (!SanValidateFormat.isFileLetter(thirdChar)) {
       throw new SanValidationException(SanValidationProblem.FORMAT_KING_NON_CASTLING_CAPTURE_WRONG_DESTINATION_FILE,
@@ -111,7 +111,7 @@ abstract class SanValidateFormatKing extends AbstractSan {
           Message.getString("validation.san.format.king.nonCastling.capture.noDestinationRank"));
     }
 
-    final var fourthChar = core.charAt(3);
+    final char fourthChar = core.charAt(3);
 
     if (!SanValidateFormat.isRankDigit(fourthChar)) {
       throw new SanValidationException(SanValidationProblem.FORMAT_KING_NON_CASTLING_CAPTURE_WRONG_DESTINATION_RANK,
@@ -119,7 +119,7 @@ abstract class SanValidateFormatKing extends AbstractSan {
               Nulls.toString(fourthChar)));
     }
 
-    // Valid Kx[file][rank] Ã¢â‚¬â€ length 4 expected
+    // Valid Kx[file][rank] - length 4 expected
     if (core.length() == 4) {
       return new SanParse(SanFormat.KING_NON_CASTLING_CAPTURING,
           new SanConversion(PieceType.KING, File.NONE, Rank.NONE,
@@ -127,7 +127,7 @@ abstract class SanValidateFormatKing extends AbstractSan {
               PromotionPieceType.NONE, sanTerminalMarker));
     }
 
-    // Length > 4 after valid Kx[file][rank] Ã¢â‚¬â€ always overlength
+    // Length > 4 after valid Kx[file][rank] - always overlength
     throw new SanValidationException(SanValidationProblem.FORMAT_KING_NON_CASTLING_CAPTURE_OVERLENGTH,
         Message.getString("validation.san.format.king.nonCastling.capture.overlength"));
   }

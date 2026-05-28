@@ -20,9 +20,9 @@ import com.dlb.chess.unwinnability.UnwinnableQuickAnalyzer;
  * independent second opinions.
  *
  * <ol>
- * <li>{@link PawnWallKingWalkOracle} — verifies the king-walk reading of the position (neither king can reach the
+ * <li>{@link PawnWallKingWalkOracle} - verifies the king-walk reading of the position (neither king can reach the
  * opposing king's square through any sequence of legal moves).</li>
- * <li>{@link UnwinnableQuickAnalyzer} — Ambrona's quick unwinnability check; verifies the position is unwinnable for
+ * <li>{@link UnwinnableQuickAnalyzer} - Ambrona's quick unwinnability check; verifies the position is unwinnable for
  * both sides.</li>
  * </ol>
  *
@@ -30,8 +30,8 @@ import com.dlb.chess.unwinnability.UnwinnableQuickAnalyzer;
  * Contract (see {@code pawn-wall-soundness.md}):
  *
  * <ul>
- * <li>{@code geometric_YES} ⟹ {@code BFS_YES} (king-walk soundness — must hold).</li>
- * <li>{@code geometric_YES} ⟹ {@code UnwinnableQuick == UNWINNABLE} for both sides (Ambrona-confirmed unwinnability —
+ * <li>{@code geometric_YES} => {@code BFS_YES} (king-walk soundness - must hold).</li>
+ * <li>{@code geometric_YES} => {@code UnwinnableQuick == UNWINNABLE} for both sides (Ambrona-confirmed unwinnability -
  * must hold).</li>
  * <li>The reverse implications are not required; both second opinions are allowed to detect more positions than the
  * geometric check.</li>
@@ -39,7 +39,7 @@ import com.dlb.chess.unwinnability.UnwinnableQuickAnalyzer;
  *
  * <p>
  * The {@code UnwinnableQuick} cross-check is the main soundness gate. Per the user's framing: the pawn-wall detection
- * is a geometric side product — Ambrona's analyzer is the canonical unwinnability oracle. If the geometric check says
+ * is a geometric side product - Ambrona's analyzer is the canonical unwinnability oracle. If the geometric check says
  * YES on a position where {@code UnwinnableQuick} disagrees, the geometric check has a false positive worth
  * investigating.
  *
@@ -79,11 +79,9 @@ class TestPawnWallGeometricAnalyzer {
           "yes/ fixture must return geometric YES: " + testCase.pgnName() + " - " + testCase.finalFen());
       // Soundness gate 1: king-walk BFS must agree both kings are trapped.
       assertTrue(PawnWallKingWalkOracle.isKingTrappedBehindPermanentBarrier(board, Side.WHITE),
-          "Geometric YES but BFS says White king is not trapped: " + testCase.pgnName() + " - "
-              + testCase.finalFen());
+          "Geometric YES but BFS says White king is not trapped: " + testCase.pgnName() + " - " + testCase.finalFen());
       assertTrue(PawnWallKingWalkOracle.isKingTrappedBehindPermanentBarrier(board, Side.BLACK),
-          "Geometric YES but BFS says Black king is not trapped: " + testCase.pgnName() + " - "
-              + testCase.finalFen());
+          "Geometric YES but BFS says Black king is not trapped: " + testCase.pgnName() + " - " + testCase.finalFen());
       // Soundness gate 2: Ambrona's quick unwinnability check must agree the position is unwinnable for both sides.
       assertEquals(UnwinnabilityQuickVerdict.UNWINNABLE,
           UnwinnableQuickAnalyzer.unwinnableQuick(board, Side.WHITE).verdict(),

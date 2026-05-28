@@ -25,19 +25,19 @@ class TestSanValidateFormatSuccessOracle {
   @SuppressWarnings("static-method")
   @Test
   void testSuccessOracle() {
-    final var tBuildStart = System.currentTimeMillis();
+    final long tBuildStart = System.currentTimeMillis();
     final Map<String, SanParse> map = SanValidateStaticallyFormat.getSanValidationMap();
-    final var tBuildEnd = System.currentTimeMillis();
+    final long tBuildEnd = System.currentTimeMillis();
     System.out.println("Oracle size: " + map.size() + ", build time: " + (tBuildEnd - tBuildStart) + " ms");
 
-    final var tLoopStart = System.currentTimeMillis();
+    final long tLoopStart = System.currentTimeMillis();
     for (final Map.Entry<String, SanParse> entry : Nulls.entrySet(map)) {
       final String san = Nulls.getKey(entry);
       final SanParse expected = Nulls.getValue(entry);
       final SanParse actual = SanValidateFormat.validateFormat(san);
       assertEquals(expected, actual, "validateFormat result differs from static map for SAN: \"" + san + "\"");
     }
-    final var tLoopEnd = System.currentTimeMillis();
+    final long tLoopEnd = System.currentTimeMillis();
     System.out.println("Loop time: " + (tLoopEnd - tLoopStart) + " ms");
   }
 

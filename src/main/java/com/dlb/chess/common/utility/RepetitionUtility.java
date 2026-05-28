@@ -24,10 +24,10 @@ public abstract class RepetitionUtility {
       throw new ProgrammingMistakeException("Something went wrong with the list size");
     }
 
-    var countRepetition = 1;
+    int countRepetition = 1;
 
     // we use the same index for moves and position on purpose
-    for (var i = performedLegalMoveList.size() - 1; i >= 0; i--) {
+    for (int i = performedLegalMoveList.size() - 1; i >= 0; i--) {
       final LegalMove lastLegalMove = Nulls.get(performedLegalMoveList, i);
       if (BasicChessUtility.calculateIsResetHalfMoveClock(lastLegalMove)) {
         // if pawn move or capture the positions before cannot equal the current position
@@ -57,7 +57,7 @@ public abstract class RepetitionUtility {
       if (calculateIsContained(processed, searchDynamicPositionThreeFold)) {
         continue;
       }
-      final var countRepetition = searchHalfMoveThreeFold.countRepetition();
+      final int countRepetition = searchHalfMoveThreeFold.countRepetition();
 
       if (countRepetition == countRepetitionThreshold) {
         // if we found a half move which has the required count, we sample all half-moves with

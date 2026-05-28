@@ -8,22 +8,23 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.dlb.chess.model.LegalMove;
 import org.junit.jupiter.api.Test;
 
 import com.dlb.chess.board.Board;
 import com.dlb.chess.common.Nulls;
 import com.dlb.chess.common.constants.EnumConstants;
 import com.dlb.chess.common.model.ClaimRights;
-import com.dlb.chess.san.LenientSanParserValidationException;
 import com.dlb.chess.common.model.ClaimableMove;
 import com.dlb.chess.common.model.MoveSpecification;
 import com.dlb.chess.fen.constants.FenConstants;
+import com.dlb.chess.san.LenientSanParserValidationException;
 
 /**
  * Tests for {@link Board#calculateFiftyMoveRuleClaimRights()} and
  * {@link Board#calculateThreefoldRepetitionRuleClaimRights()}: the move-list variants of the FIDE 9.2 / 9.3 claim APIs.
  * Each {@link ClaimRights} pairs an existence boolean ({@code canClaim}) with the list of legal moves the side to move
- * could announce as a claim — defensively copied and ordered to match {@link Board#getLegalMoves()}.
+ * could announce as a claim - defensively copied and ordered to match {@link Board#getLegalMoves()}.
  *
  * <p>
  * The per-move predicates {@code canClaimFiftyMoveRuleFor} / {@code canClaimThreefoldRepetitionRuleFor} are the single
@@ -32,7 +33,7 @@ import com.dlb.chess.fen.constants.FenConstants;
 class TestBoardClaimRights implements EnumConstants {
 
   // =============================================================================================
-  // calculateFiftyMoveRuleClaimRights — FIDE 9.3
+  // calculateFiftyMoveRuleClaimRights - FIDE 9.3
   // =============================================================================================
 
   @SuppressWarnings("static-method")
@@ -52,7 +53,7 @@ class TestBoardClaimRights implements EnumConstants {
     final ClaimRights rights = board.calculateFiftyMoveRuleClaimRights();
     assertTrue(rights.canClaim(), "at clock 99 every non-zeroing legal move is a 50-move claim candidate");
 
-    var foundRa2 = false;
+    boolean foundRa2 = false;
     for (final ClaimableMove claim : rights.claimableMoves()) {
       if (claim.moveSpecification().equals(new MoveSpecification(A1, A2))) {
         foundRa2 = true;
@@ -103,7 +104,7 @@ class TestBoardClaimRights implements EnumConstants {
     final ClaimRights rights = board.calculateFiftyMoveRuleClaimRights();
     assertTrue(rights.canClaim(), "mate-in-one at clock 99 remains a valid 50-move claim under strict FIDE 9.3");
 
-    var foundNf7 = false;
+    boolean foundNf7 = false;
     for (final ClaimableMove claim : rights.claimableMoves()) {
       if (claim.moveSpecification().equals(new MoveSpecification(H6, F7))) {
         foundNf7 = true;
@@ -116,7 +117,7 @@ class TestBoardClaimRights implements EnumConstants {
   }
 
   // =============================================================================================
-  // calculateThreefoldRepetitionRuleClaimRights — FIDE 9.2
+  // calculateThreefoldRepetitionRuleClaimRights - FIDE 9.2
   // =============================================================================================
 
   @SuppressWarnings("static-method")
@@ -141,7 +142,7 @@ class TestBoardClaimRights implements EnumConstants {
   @Test
   void threefoldNonRepeatingLegalMoveExcluded() {
     // Same fixture; the non-repeating move Nb8-c6 is legal but does not create threefold. Must
-    // therefore not appear in the claimable list — and the list as a whole has exactly one entry.
+    // therefore not appear in the claimable list - and the list as a whole has exactly one entry.
     final Board board = new Board();
     board.movesStrict("Nf3", "Nf6", "Ng1", "Ng8", "Nf3", "Nf6", "Ng1");
 
@@ -201,7 +202,7 @@ class TestBoardClaimRights implements EnumConstants {
   }
 
   // =============================================================================================
-  // Object behavior — defensive copy, canClaim invariant, board immutability
+  // Object behavior - defensive copy, canClaim invariant, board immutability
   // =============================================================================================
 
   @SuppressWarnings("static-method")
@@ -215,7 +216,7 @@ class TestBoardClaimRights implements EnumConstants {
 
     try {
       moves.add(Nulls.get(moves, 0));
-      throw new AssertionError("expected UnsupportedOperationException — claimableMoves must be immutable");
+      throw new AssertionError("expected UnsupportedOperationException - claimableMoves must be immutable");
     } catch (@SuppressWarnings("unused") final UnsupportedOperationException expected) {
       // OK
     }
@@ -240,20 +241,20 @@ class TestBoardClaimRights implements EnumConstants {
   @Test
   void claimableMovesOrderFollowsLegalMovesOrder() {
     // At clock 99 with a quiet rook+king position, multiple non-zeroing legal moves all qualify.
-    // The claimable list must follow getLegalMoves() iteration order — i.e., the indices of
+    // The claimable list must follow getLegalMoves() iteration order - i.e., the indices of
     // claimable moves into the legal-moves list are strictly ascending.
     final Board board = new Board("7k/8/8/8/8/8/4K3/R7 w - - 99 51");
     final ClaimRights rights = board.calculateFiftyMoveRuleClaimRights();
     assertTrue(rights.claimableMoves().size() >= 2, "precondition: at least two candidates exist");
 
-    final List<MoveSpecification> legalOrder = new java.util.ArrayList<>();
-    for (final var legal : board.getLegalMoves()) {
+    final List<MoveSpecification> legalOrder = new ArrayList<>();
+    for (final LegalMove legal : board.getLegalMoves()) {
       legalOrder.add(legal.moveSpecification());
     }
 
-    var lastFoundIndex = -1;
+    int lastFoundIndex = -1;
     for (final ClaimableMove claim : rights.claimableMoves()) {
-      final var idx = legalOrder.indexOf(claim.moveSpecification());
+      final int idx = legalOrder.indexOf(claim.moveSpecification());
       assertTrue(idx > lastFoundIndex, "claimable move " + claim.san() + " (legal-move index " + idx
           + ") must appear after the previously seen claimable (index " + lastFoundIndex + ")");
       lastFoundIndex = idx;
@@ -264,7 +265,7 @@ class TestBoardClaimRights implements EnumConstants {
   @Test
   void constructorDefensivelyCopiesSourceListNonEmptyPath() {
     // Sister to returnedListIsImmutable: that test proves the EXPOSED list rejects mutation.
-    // This one proves the constructor decouples the record from the SOURCE list — i.e., the
+    // This one proves the constructor decouples the record from the SOURCE list - i.e., the
     // compact constructor's ImmutableList.copyOf is actually copying, not aliasing. Build a
     // mutable source, construct ClaimRights, then mutate the source after construction and
     // assert the record's view is unchanged.
@@ -275,7 +276,7 @@ class TestBoardClaimRights implements EnumConstants {
     final ClaimRights rights = new ClaimRights(true, mutableSource);
     assertEquals(1, rights.claimableMoves().size(), "precondition: one entry after construction");
 
-    // Mutate the source AFTER construction — the record must not reflect these changes.
+    // Mutate the source AFTER construction - the record must not reflect these changes.
     mutableSource.clear();
     mutableSource.add(new ClaimableMove(new MoveSpecification(A1, B1), "Rb1"));
     mutableSource.add(new ClaimableMove(new MoveSpecification(A1, C1), "Rc1"));
@@ -292,7 +293,7 @@ class TestBoardClaimRights implements EnumConstants {
     // a ClaimRights, then add to the source. The record must remain empty (and canClaim==false).
     final List<ClaimableMove> mutableSource = new ArrayList<>();
     final ClaimRights rights = new ClaimRights(false, mutableSource);
-    assertFalse(rights.canClaim(), "precondition: empty source → canClaim==false");
+    assertFalse(rights.canClaim(), "precondition: empty source -> canClaim==false");
     assertEquals(0, rights.claimableMoves().size());
 
     mutableSource.add(new ClaimableMove(new MoveSpecification(A1, A2), "Ra2"));
@@ -308,7 +309,7 @@ class TestBoardClaimRights implements EnumConstants {
     final Board board = new Board();
     board.movesStrict("Nf3", "Nf6", "Ng1", "Ng8", "Nf3", "Nf6", "Ng1");
 
-    final var halfMoveCountBefore = board.getPerformedHalfMoveCount();
+    final int halfMoveCountBefore = board.getPerformedHalfMoveCount();
     final String fenBefore = board.getFen();
 
     board.calculateFiftyMoveRuleClaimRights();

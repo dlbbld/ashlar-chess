@@ -73,13 +73,13 @@ class UnwinnableSemiStatic {
       }
 
       final Set<Square> neighbourSet = KingNonCastlingEmptyBoardSquares.getKingSquares(matingSquare);
-      final var isActiveWinnerKing = visitors(neighbourSet, c, false, mobilitySolution)
+      final boolean isActiveWinnerKing = visitors(neighbourSet, c, false, mobilitySolution)
           .contains(calculateKing(c, mobilitySolution));
       if (calculateHasTwoDiagonals(checkingSquareSet) && matingBishopSet.size() < 2 && !isActiveWinnerKing) {
         continue;
       }
 
-      var isUnblockable = false;
+      boolean isUnblockable = false;
       for (final Square escapingSquare : escapingSquareSet) {
         if (removeKings(visitors(Nulls.setOf(escapingSquare), c.getOppositeSide(), false, mobilitySolution))
             .isEmpty()) {
@@ -93,7 +93,7 @@ class UnwinnableSemiStatic {
       }
 
       final Set<PiecePlacement> blockerSet = visitors(escapingSquareSet, c.getOppositeSide(), false, mobilitySolution);
-      final var blockerCount = (isActiveWinnerKing ? 1 : 0) + removeKings(blockerSet).size();
+      final int blockerCount = (isActiveWinnerKing ? 1 : 0) + removeKings(blockerSet).size();
       if (escapingSquareSet.size() <= blockerCount) {
         return false;
       }
@@ -111,7 +111,7 @@ class UnwinnableSemiStatic {
   private static Set<PiecePlacement> visitors(Set<Square> region, Side side, boolean expandedPawnRegion,
       MobilitySolution mobilitySolution) {
     final Set<PiecePlacement> result = new TreeSet<>();
-    final var isIgnorePawns = SemiStaticFunctions
+    final boolean isIgnorePawns = SemiStaticFunctions
         .region(calculateKing(side.getOppositeSide(), mobilitySolution), mobilitySolution).size() > 1;
 
     for (final PiecePlacement piecePlacement : mobilitySolution.getPiecePlacementSet()) {
@@ -172,8 +172,8 @@ class UnwinnableSemiStatic {
         if (squareA == squareB) {
           continue;
         }
-        final var fileDistance = Math.abs(squareA.getFile().getNumber() - squareB.getFile().getNumber());
-        final var rankDistance = Math.abs(squareA.getRank().getNumber() - squareB.getRank().getNumber());
+        final int fileDistance = Math.abs(squareA.getFile().getNumber() - squareB.getFile().getNumber());
+        final int rankDistance = Math.abs(squareA.getRank().getNumber() - squareB.getRank().getNumber());
         if (fileDistance == 2 && rankDistance == 0 || fileDistance == 0 && rankDistance == 2) {
           return true;
         }

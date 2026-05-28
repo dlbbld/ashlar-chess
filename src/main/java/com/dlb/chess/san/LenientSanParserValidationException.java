@@ -10,7 +10,7 @@ import com.google.common.collect.ImmutableList;
 /**
  * Thrown when the lenient SAN parser cannot resolve the input to a legal move even after applying every supported
  * tolerance. Carries the original text, the deepest underlying strict-pipeline reason (when the failure originated
- * there), and any forgiven items the lenient layer had already accumulated before the failure point — so the consumer
+ * there), and any forgiven items the lenient layer had already accumulated before the failure point - so the consumer
  * can see how far the parse got.
  */
 @SuppressWarnings("null")
@@ -43,8 +43,8 @@ public class LenientSanParserValidationException extends UsageException {
   }
 
   /**
-   * The forgiven items the lenient parser had already accumulated before failing. Useful for diagnostics — shows
-   * which tolerances applied before the input became unrecoverable.
+   * The forgiven items the lenient parser had already accumulated before failing. Useful for diagnostics - shows which
+   * tolerances applied before the input became unrecoverable.
    */
   public @NonNull ImmutableList<@NonNull ForgivenItem> getForgivenItemsAccumulated() {
     return forgivenItemsAccumulated;

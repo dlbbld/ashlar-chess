@@ -19,12 +19,13 @@ class TestAmbronaSemiStaticOracleComparison {
   @SuppressWarnings("static-method")
   @Test
   void currentSemiStaticComparisonMatchesKnownBaseline() throws Exception {
-    final var maxFens = RestrictTestConstants.IS_RESTRICT_AMBRONA_SEMISTATIC_ORACLE_COMPARISON_TEST
+    final int maxFens = RestrictTestConstants.IS_RESTRICT_AMBRONA_SEMISTATIC_ORACLE_COMPARISON_TEST
         ? MAX_FENS_IN_SMOKE_MODE
         : Integer.MAX_VALUE;
-    final var comparison = CompareAmbronaSemiStaticOracle.compare(maxFens);
+    final CompareAmbronaSemiStaticOracle.SemiStaticOracleComparison comparison = CompareAmbronaSemiStaticOracle
+        .compare(maxFens);
 
-    final var expectedFenCount = RestrictTestConstants.IS_RESTRICT_AMBRONA_SEMISTATIC_ORACLE_COMPARISON_TEST
+    final int expectedFenCount = RestrictTestConstants.IS_RESTRICT_AMBRONA_SEMISTATIC_ORACLE_COMPARISON_TEST
         ? MAX_FENS_IN_SMOKE_MODE
         : TOTAL_FENS_IN_ORACLE;
     assertEquals(expectedFenCount, comparison.comparedFenCount());

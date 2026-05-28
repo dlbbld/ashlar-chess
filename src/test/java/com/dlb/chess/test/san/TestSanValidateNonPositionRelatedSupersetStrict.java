@@ -30,7 +30,7 @@ class TestSanValidateNonPositionRelatedSupersetStrict extends AbstractTestSanVal
 
     boolean isRuntimeException;
     try {
-      final var sanParse = SanValidateFormat.validateFormat(san);
+      final SanParse sanParse = SanValidateFormat.validateFormat(san);
       assertEquals(sanParse, staticResult);
       isRuntimeException = false;
     } catch (@SuppressWarnings("unused") final SanValidationException e) {

@@ -41,7 +41,7 @@ abstract class SanValidateMovementPawn extends AbstractSan implements EnumConsta
   }
 
   private static void validatePawnDestinationRank(Side havingMove, Rank destinationRank) {
-    final var isInvalid = !Rank.calculateIsValidRank(havingMove, destinationRank);
+    final boolean isInvalid = !Rank.calculateIsValidRank(havingMove, destinationRank);
     if (isInvalid) {
       throw new SanValidationException(SanValidationProblem.MOVEMENT_PAWN_FORWARD_BACKWARDS,
           Message.getString("validation.san.movement.pawn.forward.backwards"));
@@ -49,9 +49,9 @@ abstract class SanValidateMovementPawn extends AbstractSan implements EnumConsta
   }
 
   private static void validatePawnCapturingDiagonal(Side havingMove, File fromFile, File toFile) {
-    final var isAdjacentLeft = File.calculateHasLeftFile(havingMove, fromFile)
+    final boolean isAdjacentLeft = File.calculateHasLeftFile(havingMove, fromFile)
         && File.calculateLeftFile(havingMove, fromFile) == toFile;
-    final var isAdjacentRight = File.calculateHasRightFile(havingMove, fromFile)
+    final boolean isAdjacentRight = File.calculateHasRightFile(havingMove, fromFile)
         && File.calculateRightFile(havingMove, fromFile) == toFile;
 
     if (!isAdjacentLeft && !isAdjacentRight) {

@@ -27,8 +27,8 @@ import com.dlb.chess.test.pgntest.enums.PgnTest;
  * }</pre>
  *
  * <p>
- * Every mismatch is reported on the test failure message: PGN filename, the {@link PgnTest} it belongs to, the
- * expected (cached) FEN, and the actual (replayed) FEN. Apply fixes by editing the matching literal in
+ * Every mismatch is reported on the test failure message: PGN filename, the {@link PgnTest} it belongs to, the expected
+ * (cached) FEN, and the actual (replayed) FEN. Apply fixes by editing the matching literal in
  * {@code PgnTestCaseCatalog}.
  */
 class TestSetupFinalFen {
@@ -43,8 +43,8 @@ class TestSetupFinalFen {
   void auditCachedFenAgainstPgnReplay() {
     final List<String> mismatches = new ArrayList<>();
     final List<String> errors = new ArrayList<>();
-    var totalFixtures = 0;
-    final var totalFixturesToCheck = countFixtures();
+    int totalFixtures = 0;
+    final int totalFixturesToCheck = countFixtures();
 
     logger.info("Auditing cached final FENs for {} fixtures across {} PgnTest folders.", totalFixturesToCheck,
         PgnTest.values().length);
@@ -94,7 +94,7 @@ class TestSetupFinalFen {
   }
 
   private static int countFixtures() {
-    var result = 0;
+    int result = 0;
     for (final PgnTest pgnTest : PgnTest.values()) {
       result += PgnTestCaseCatalog.getTestList(pgnTest).list().size();
     }

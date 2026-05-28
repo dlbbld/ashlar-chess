@@ -15,7 +15,7 @@ final class StrictFileStructurePreScan {
   }
 
   static void validate(String source) {
-    // Empty-input rejection covers both strictly-empty (zero bytes / BOM-only) and whitespace-only — any
+    // Empty-input rejection covers both strictly-empty (zero bytes / BOM-only) and whitespace-only - any
     // combination of spaces, tabs, and newlines with no other content. Both shapes carry no signal; the
     // FILE_EMPTY_LINE_* diagnostics below are about the strict two-blank-lines layout and don't apply when
     // there's nothing to lay out in the first place.
@@ -23,28 +23,28 @@ final class StrictFileStructurePreScan {
       throw error(StrictPgnParserValidationProblem.FILE_EMPTY, "The PGN is empty.");
     }
 
-    final var first = source.charAt(0);
+    final char first = source.charAt(0);
     if (first == '\n' || first == '\r') {
       throw error(StrictPgnParserValidationProblem.FILE_EMPTY_LINE_CANNOT_START_WITH,
           "The PGN cannot start with an empty line.");
     }
 
-    final var length = source.length();
-    final var endsOnNewline = endsOnNewline(source);
+    final int length = source.length();
+    final boolean endsOnNewline = endsOnNewline(source);
     if (!endsOnNewline) {
       throw error(StrictPgnParserValidationProblem.FILE_EMPTY_LINE_MUST_END_WITH,
           "The PGN must end with an empty line.");
     }
 
     // Count blank lines (a line with no content chars) and detect adjacency in one forward walk.
-    var blankCount = 0;
-    var previousBlankLineNumber = -1;
-    var currentLineNumber = 1;
-    var currentLineContentChars = 0;
-    var adjacentDetected = false;
+    int blankCount = 0;
+    int previousBlankLineNumber = -1;
+    int currentLineNumber = 1;
+    int currentLineContentChars = 0;
+    boolean adjacentDetected = false;
 
-    for (var i = 0; i < length; i++) {
-      final var c = source.charAt(i);
+    for (int i = 0; i < length; i++) {
+      final char c = source.charAt(i);
       if (c == '\r') {
         if (i + 1 < length && source.charAt(i + 1) == '\n') {
           i++;
@@ -84,7 +84,7 @@ final class StrictFileStructurePreScan {
   }
 
   private static boolean endsOnNewline(String source) {
-    final var last = source.charAt(source.length() - 1);
+    final char last = source.charAt(source.length() - 1);
     return last == '\n' || last == '\r';
   }
 

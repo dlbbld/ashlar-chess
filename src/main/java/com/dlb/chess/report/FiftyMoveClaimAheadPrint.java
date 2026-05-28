@@ -22,7 +22,7 @@ abstract class FiftyMoveClaimAheadPrint {
    * </pre>
    *
    * <p>
-   * The trailing {@code (100)} is the post-candidate halfmove clock — always 100 by predicate construction, rendered
+   * The trailing {@code (100)} is the post-candidate halfmove clock - always 100 by predicate construction, rendered
    * for parallelism with the sequence-report line shape.
    */
   static List<List<String>> render(FiftyMoveClaimAheadReport report) {

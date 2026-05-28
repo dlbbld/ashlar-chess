@@ -21,11 +21,11 @@ class TestLibraryCarlosHashKeyPass {
     final Move e7e5 = new Move(Square.E7, Square.E5);
     board.doMove(e2e4);
     board.doMove(e7e5);
-    final var hashKeyAsIs = board.getIncrementalHashKey();
+    final long hashKeyAsIs = board.getIncrementalHashKey();
 
     board.undoMove();
     board.doMove(e7e5);
-    final var hashKeyAsAfterRedo = board.getIncrementalHashKey();
+    final long hashKeyAsAfterRedo = board.getIncrementalHashKey();
     assertEquals(hashKeyAsIs, hashKeyAsAfterRedo);
 
   }
@@ -43,11 +43,11 @@ class TestLibraryCarlosHashKeyPass {
 
     for (final Move move : MoveGenerator.generateLegalMoves(board)) {
       board.doMove(move);
-      final var hashKeyAsIs = board.getIncrementalHashKey();
+      final long hashKeyAsIs = board.getIncrementalHashKey();
 
       board.undoMove();
       board.doMove(move);
-      final var hashKeyAsAfterRedo = board.getIncrementalHashKey();
+      final long hashKeyAsAfterRedo = board.getIncrementalHashKey();
 
       assertEquals(hashKeyAsIs, hashKeyAsAfterRedo);
 

@@ -25,7 +25,7 @@ import com.dlb.chess.test.common.utility.OutputCaptureUtility;
  *
  * <p>
  * Each fixture runs three-layered assertions: (a) the public {@code Board.is*} predicate fires; (b) the corresponding
- * report object model (where one exists — the threefold-existing report covers both threefold and fivefold via its
+ * report object model (where one exists - the threefold-existing report covers both threefold and fivefold via its
  * {@code totalRepetitionCount}; the 50/75-move conditions do not yet have a dedicated report record, so the model layer
  * is satisfied via the predicate alone) reflects the condition; (c) the printed {@link Reporter} output contains the
  * section header for the relevant condition.
@@ -43,7 +43,7 @@ class TestFromInitialPlacementAndFenStart {
   private static final String FEN_INITIAL_BLACK_TO_MOVE = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR b KQkq - 0 1";
 
   /**
-   * Non-initial FEN — two rooks plus king vs lone king. Plenty of room for non-pawn, non-capture shuffling. Castling
+   * Non-initial FEN - two rooks plus king vs lone king. Plenty of room for non-pawn, non-capture shuffling. Castling
    * rights are intentionally absent ({@code -}): the first rook move would otherwise erase the king-side right,
    * shifting the dynamic position between cycles 1 and 2 and forcing an extra cycle to reach threefold. With no rights,
    * the shuffle returns to the exact same position every cycle. White to move at fullmove 1.
@@ -57,14 +57,14 @@ class TestFromInitialPlacementAndFenStart {
   private static final String FEN_KRR_K_BLACK_TO_MOVE = "4k3/8/8/8/8/8/8/R3K2R b - - 0 1";
 
   // ===========================================================================================
-  // Family A — initial piece placement, White to move on move 1
+  // Family A - initial piece placement, White to move on move 1
   // ===========================================================================================
 
   @SuppressWarnings("static-method")
   @Test
   void threefoldFromInitialWhiteToMove() {
     final Board board = new Board();
-    playKnightShuffleAsWhite(board, 2); // 8 plies → initial position 3rd occurrence
+    playKnightShuffleAsWhite(board, 2); // 8 plies -> initial position 3rd occurrence
     assertThreefoldRepetition(board);
     assertReporterOutput(board, /* threefoldSectionNonEmpty */ true, /* expectedFiftyMoveSequenceReached */ false);
   }
@@ -73,7 +73,7 @@ class TestFromInitialPlacementAndFenStart {
   @Test
   void fivefoldFromInitialWhiteToMove() {
     final Board board = new Board();
-    playKnightShuffleAsWhite(board, 4); // 16 plies → fivefold of initial position
+    playKnightShuffleAsWhite(board, 4); // 16 plies -> fivefold of initial position
     assertFivefoldRepetition(board);
     assertReporterOutput(board, /* threefoldSectionNonEmpty */ true, /* expectedFiftyMoveSequenceReached */ false);
   }
@@ -82,7 +82,7 @@ class TestFromInitialPlacementAndFenStart {
   @Test
   void fiftyMoveFromInitialWhiteToMove() {
     final Board board = new Board();
-    playKnightShuffleAsWhite(board, 25); // 100 plies → halfmove clock 100
+    playKnightShuffleAsWhite(board, 25); // 100 plies -> halfmove clock 100
     assertFiftyMoveOrClaimable(board);
     assertReporterOutput(board, /* threefoldSectionNonEmpty */ true, /* expectedFiftyMoveSequenceReached */ true);
   }
@@ -91,13 +91,13 @@ class TestFromInitialPlacementAndFenStart {
   @Test
   void seventyFiveMoveFromInitialWhiteToMove() {
     final Board board = new Board();
-    playKnightShuffleAsWhite(board, 38); // 152 plies → halfmove clock 152 (past 150 threshold)
+    playKnightShuffleAsWhite(board, 38); // 152 plies -> halfmove clock 152 (past 150 threshold)
     assertSeventyFiveMove(board);
     assertReporterOutput(board, /* threefoldSectionNonEmpty */ true, /* expectedFiftyMoveSequenceReached */ true);
   }
 
   // ===========================================================================================
-  // Family B — initial piece placement, Black to move on move 1 (special fullmove numbering)
+  // Family B - initial piece placement, Black to move on move 1 (special fullmove numbering)
   // ===========================================================================================
 
   @SuppressWarnings("static-method")
@@ -109,7 +109,7 @@ class TestFromInitialPlacementAndFenStart {
     // Fullmove numbering: with Black starting at fullmove 1, after 8 plies (4 cycles of Nf6/Nf3/Ng8/Ng1) the fullmove
     // counter is at 5 (incremented after each Black move).
     assertEquals(5, board.getFullMoveNumber(),
-        "Black-to-move-at-fullmove-1: counter increments per Black move; 4 Black moves → fullmove 5");
+        "Black-to-move-at-fullmove-1: counter increments per Black move; 4 Black moves -> fullmove 5");
     assertReporterOutput(board, /* threefoldSectionNonEmpty */ true, /* expectedFiftyMoveSequenceReached */ false);
   }
 
@@ -119,7 +119,7 @@ class TestFromInitialPlacementAndFenStart {
     final Board board = new Board(FEN_INITIAL_BLACK_TO_MOVE);
     playKnightShuffleAsBlack(board, 4); // 16 plies
     assertFivefoldRepetition(board);
-    assertEquals(9, board.getFullMoveNumber(), "Black-to-move-at-fullmove-1: 8 Black moves → fullmove 9");
+    assertEquals(9, board.getFullMoveNumber(), "Black-to-move-at-fullmove-1: 8 Black moves -> fullmove 9");
     assertReporterOutput(board, /* threefoldSectionNonEmpty */ true, /* expectedFiftyMoveSequenceReached */ false);
   }
 
@@ -142,7 +142,7 @@ class TestFromInitialPlacementAndFenStart {
   }
 
   // ===========================================================================================
-  // Family C — non-initial FEN, White to move on move 1
+  // Family C - non-initial FEN, White to move on move 1
   // ===========================================================================================
 
   @SuppressWarnings("static-method")
@@ -182,7 +182,7 @@ class TestFromInitialPlacementAndFenStart {
   }
 
   // ===========================================================================================
-  // Family D — non-initial FEN, Black to move on move 1 (special fullmove numbering)
+  // Family D - non-initial FEN, Black to move on move 1 (special fullmove numbering)
   // ===========================================================================================
 
   @SuppressWarnings("static-method")
@@ -191,7 +191,7 @@ class TestFromInitialPlacementAndFenStart {
     final Board board = new Board(FEN_KRR_K_BLACK_TO_MOVE);
     playRookShuffleAsBlack(board, 2);
     assertThreefoldRepetition(board);
-    assertEquals(5, board.getFullMoveNumber(), "Black-to-move-at-fullmove-1: 4 Black moves → fullmove 5");
+    assertEquals(5, board.getFullMoveNumber(), "Black-to-move-at-fullmove-1: 4 Black moves -> fullmove 5");
     assertReporterOutput(board, /* threefoldSectionNonEmpty */ true, /* expectedFiftyMoveSequenceReached */ false);
   }
 
@@ -201,7 +201,7 @@ class TestFromInitialPlacementAndFenStart {
     final Board board = new Board(FEN_KRR_K_BLACK_TO_MOVE);
     playRookShuffleAsBlack(board, 4);
     assertFivefoldRepetition(board);
-    assertEquals(9, board.getFullMoveNumber(), "Black-to-move-at-fullmove-1: 8 Black moves → fullmove 9");
+    assertEquals(9, board.getFullMoveNumber(), "Black-to-move-at-fullmove-1: 8 Black moves -> fullmove 9");
     assertReporterOutput(board, /* threefoldSectionNonEmpty */ true, /* expectedFiftyMoveSequenceReached */ false);
   }
 
@@ -233,7 +233,7 @@ class TestFromInitialPlacementAndFenStart {
    * occurred 3 times; {@code cycles == 4} produces 16 plies and 5 occurrences; and so on.
    */
   private static void playKnightShuffleAsWhite(Board board, int cycles) {
-    for (var i = 0; i < cycles; i++) {
+    for (int i = 0; i < cycles; i++) {
       board.movesStrict("Nf3", "Nf6", "Ng1", "Ng8");
     }
   }
@@ -242,7 +242,7 @@ class TestFromInitialPlacementAndFenStart {
    * Mirror for the Black-to-move-at-fullmove-1 case: each cycle is {@code Nf6 Nf3 Ng8 Ng1} (Black moves first).
    */
   private static void playKnightShuffleAsBlack(Board board, int cycles) {
-    for (var i = 0; i < cycles; i++) {
+    for (int i = 0; i < cycles; i++) {
       board.movesStrict("Nf6", "Nf3", "Ng8", "Ng1");
     }
   }
@@ -253,13 +253,13 @@ class TestFromInitialPlacementAndFenStart {
    * exact starting state after each cycle (no first-cycle rights erasure to shift the dynamic position).
    */
   private static void playRookShuffleAsWhite(Board board, int cycles) {
-    for (var i = 0; i < cycles; i++) {
+    for (int i = 0; i < cycles; i++) {
       board.movesStrict("Rg1", "Kd8", "Rh1", "Ke8");
     }
   }
 
   private static void playRookShuffleAsBlack(Board board, int cycles) {
-    for (var i = 0; i < cycles; i++) {
+    for (int i = 0; i < cycles; i++) {
       board.movesStrict("Kd8", "Rg1", "Ke8", "Rh1");
     }
   }
@@ -276,7 +276,7 @@ class TestFromInitialPlacementAndFenStart {
         board.getHalfMoveList(), ChessConstants.THREEFOLD_REPETITION_RULE_THRESHOLD);
     assertTrue(report.groups().size() >= 1, "threefold report must surface at least one group");
 
-    var anyAtThreefold = false;
+    boolean anyAtThreefold = false;
     for (final RepetitionGroup group : report.groups()) {
       if (group.totalRepetitionCount() >= ChessConstants.THREEFOLD_REPETITION_RULE_THRESHOLD) {
         anyAtThreefold = true;
@@ -293,7 +293,7 @@ class TestFromInitialPlacementAndFenStart {
     final ThreefoldExistingReport report = ThreefoldExistingReportBuilder.build(board.getInitialDynamicPosition(),
         board.getHalfMoveList(), ChessConstants.THREEFOLD_REPETITION_RULE_THRESHOLD);
 
-    var anyAtFivefold = false;
+    boolean anyAtFivefold = false;
     for (final RepetitionGroup group : report.groups()) {
       if (group.totalRepetitionCount() >= ChessConstants.FIVEFOLD_REPETITION_RULE_THRESHOLD) {
         anyAtFivefold = true;
@@ -319,7 +319,7 @@ class TestFromInitialPlacementAndFenStart {
   }
 
   /**
-   * Layer (c) — content-aware check of the printed report. Reporter always emits the section headers regardless of
+   * Layer (c) - content-aware check of the printed report. Reporter always emits the section headers regardless of
    * whether any condition fired, so a header-presence test is too weak: a regression that quietly rendered "None" for
    * the threefold section or for the fifty-move sequence section would still pass. This helper asserts the actual
    * content of the threefold-existing section and the fifty-move sequence section (the two sections that fire as a
@@ -375,10 +375,10 @@ class TestFromInitialPlacementAndFenStart {
    */
   private static List<String> extractSection(List<String> lines, String sectionHeaderPrefix,
       String nextSectionHeaderPrefix) {
-    var inSection = false;
+    boolean inSection = false;
     final List<String> contents = new ArrayList<>();
     for (final String raw : lines) {
-      final var line = raw.trim();
+      final String line = raw.trim();
       if (!inSection && line.startsWith(sectionHeaderPrefix)) {
         inSection = true;
         continue;
@@ -398,14 +398,14 @@ class TestFromInitialPlacementAndFenStart {
   }
 
   /**
-   * Like {@link #extractSection} but for the final section — runs to the end of input rather than to a successor
+   * Like {@link #extractSection} but for the final section - runs to the end of input rather than to a successor
    * header.
    */
   private static List<String> extractSectionToEnd(List<String> lines, String sectionHeaderPrefix) {
-    var inSection = false;
+    boolean inSection = false;
     final List<String> contents = new ArrayList<>();
     for (final String raw : lines) {
-      final var line = raw.trim();
+      final String line = raw.trim();
       if (!inSection && line.startsWith(sectionHeaderPrefix)) {
         inSection = true;
         continue;

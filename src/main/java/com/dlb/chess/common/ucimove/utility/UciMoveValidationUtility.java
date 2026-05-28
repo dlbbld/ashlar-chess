@@ -29,7 +29,7 @@ public abstract class UciMoveValidationUtility implements EnumConstants {
     final List<UciMove> uciMoveList = new ArrayList<>();
     final Map<String, UciMove> uciMoveTextLookup = new TreeMap<>();
 
-    // Non-promotion moves: every square × {rook, bishop, knight} empty-board reach
+    // Non-promotion moves: every square x {rook, bishop, knight} empty-board reach
     for (final Square fromSquare : Square.REAL) {
       for (final PieceType pieceType : List.of(ROOK, BISHOP, KNIGHT)) {
         final Set<EmptyBoardMove> moveSet = AbstractEmptyBoardSquares.calculateNonPawnEmptyBoardMoves(pieceType,
@@ -101,7 +101,7 @@ public abstract class UciMoveValidationUtility implements EnumConstants {
     uciMove.append(fromSquare.getName());
     uciMove.append(toSquare.getName());
     if (promotionPieceType != PromotionPieceType.NONE) {
-      final var promotionPieceTypeLetterLowerCase = Character
+      final char promotionPieceTypeLetterLowerCase = Character
           .toLowerCase(promotionPieceType.getPieceType().getLetter());
       uciMove.append(promotionPieceTypeLetterLowerCase);
     }

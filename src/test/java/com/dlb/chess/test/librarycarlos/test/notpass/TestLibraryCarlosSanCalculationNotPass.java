@@ -22,7 +22,7 @@ class TestLibraryCarlosSanCalculationNotPass {
   @Test
   void testWithFen() throws Exception {
     final Board board = new Board();
-    final var fen = "8/8/3KP3/5P2/8/3p4/3kp3/8 w - - 0 100";
+    final String fen = "8/8/3KP3/5P2/8/3p4/3kp3/8 w - - 0 100";
     board.loadFromFen(fen);
 
     board.doMove(new Move(Square.E6, Square.E5));
@@ -42,8 +42,8 @@ class TestLibraryCarlosSanCalculationNotPass {
   private static String calculateSan(Board board) {
     final MoveList moveList = new MoveList();
     moveList.addAll(calculateMoveList(board));
-    final var sanArray = moveList.toSanArray();
-    @SuppressWarnings("null") final var last = Nulls.getLast(sanArray);
+    final String[] sanArray = moveList.toSanArray();
+    @SuppressWarnings("null") final String last = Nulls.getLast(sanArray);
     return last;
   }
 

@@ -59,14 +59,14 @@ class TestUnwinnabilityQuickAgainstLimitedOracle {
 
         final LimitedUnwinnabilityVerdict verdictWhite = LimitedUnwinnabilityOracle.calculateUnwinnability(board,
             Side.WHITE);
-        final UnwinnabilityQuickVerdict unwinnableQuickWhite = UnwinnableQuickAnalyzer.unwinnableQuick(board,
-            Side.WHITE).verdict();
+        final UnwinnabilityQuickVerdict unwinnableQuickWhite = UnwinnableQuickAnalyzer
+            .unwinnableQuick(board, Side.WHITE).verdict();
         check(verdictWhite, unwinnableQuickWhite);
 
         final LimitedUnwinnabilityVerdict verdictBlack = LimitedUnwinnabilityOracle.calculateUnwinnability(board,
             Side.BLACK);
-        final UnwinnabilityQuickVerdict unwinnableQuickBlack = UnwinnableQuickAnalyzer.unwinnableQuick(board,
-            Side.BLACK).verdict();
+        final UnwinnabilityQuickVerdict unwinnableQuickBlack = UnwinnableQuickAnalyzer
+            .unwinnableQuick(board, Side.BLACK).verdict();
 
         check(verdictBlack, unwinnableQuickBlack);
       }

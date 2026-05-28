@@ -25,8 +25,8 @@ import com.dlb.chess.test.pgntest.enums.PgnTest;
 /**
  * Differential test for {@link BitboardPosition#pinnedPieces(Side)}. The reference oracle is built from
  * {@link StaticPosition}: count the opposite-side sliders that attack the king before removing a candidate piece;
- * remove the piece; count again. If the set strictly grew, the piece was pinned (independently of whether the king
- * was already in check). The oracle uses the existing reference slider-attack functions via
+ * remove the piece; count again. If the set strictly grew, the piece was pinned (independently of whether the king was
+ * already in check). The oracle uses the existing reference slider-attack functions via
  * {@link SlidingAttacksTestOracle}, so my bitboard pin detection is being compared against an independently-derived
  * implementation.
  */
@@ -38,7 +38,8 @@ class TestBitboardPositionPins {
     for (final PgnTest pgnTest : PgnTest.values()) {
       final PgnTestCaseList testCaseList = PgnTestCaseCatalog.getTestList(pgnTest);
       for (final PgnFen testCase : testCaseList.list()) {
-        final StaticPosition staticPosition = StaticPositionBridge.toStaticPosition(testCase.finalPosition().getBitboardPosition());
+        final StaticPosition staticPosition = StaticPositionBridge
+            .toStaticPosition(testCase.finalPosition().getBitboardPosition());
         final BitboardPosition bitboardPosition = StaticPositionBridge.fromStaticPosition(staticPosition);
         assertSideAgrees(staticPosition, bitboardPosition, Side.WHITE, testCase);
         assertSideAgrees(staticPosition, bitboardPosition, Side.BLACK, testCase);
@@ -50,8 +51,7 @@ class TestBitboardPositionPins {
       PgnFen testCase) {
     final Set<Square> bitboardPinned = BitboardPositionUtility.toSquareSet(bitboardPosition.pinnedPieces(side));
     final Set<Square> referencePinned = referencePinnedPieces(staticPosition, side);
-    assertEquals(referencePinned, bitboardPinned,
-        side + " pinnedPieces in fixture " + testCase.pgnName());
+    assertEquals(referencePinned, bitboardPinned, side + " pinnedPieces in fixture " + testCase.pgnName());
   }
 
   private static Set<Square> referencePinnedPieces(StaticPosition staticPosition, Side side) {
@@ -85,7 +85,8 @@ class TestBitboardPositionPins {
     return Square.NONE;
   }
 
-  private static Set<Square> enemySliderAttackersToKing(StaticPosition staticPosition, Square kingSquare, Side ownSide) {
+  private static Set<Square> enemySliderAttackersToKing(StaticPosition staticPosition, Square kingSquare,
+      Side ownSide) {
     final Set<Square> attackers = new TreeSet<>();
     final Side opp = ownSide.getOppositeSide();
     for (final Square sliderSquare : Square.REAL) {
@@ -126,6 +127,7 @@ class TestBitboardPositionPins {
   void noneSideThrows() {
     assertThrows(IllegalArgumentException.class, () -> BitboardPosition.INITIAL_POSITION.pinnedPieces(Side.NONE));
     assertThrows(IllegalArgumentException.class, () -> BitboardPosition.INITIAL_POSITION.pinRay(Square.E2, Side.NONE));
-    assertThrows(IllegalArgumentException.class, () -> BitboardPosition.INITIAL_POSITION.pinRay(Square.NONE, Side.WHITE));
+    assertThrows(IllegalArgumentException.class,
+        () -> BitboardPosition.INITIAL_POSITION.pinRay(Square.NONE, Side.WHITE));
   }
 }

@@ -1,8 +1,8 @@
 package com.dlb.chess.bitboard;
 
 /**
- * Pseudo-legal rook target squares: the rook's classical-ray attack pattern (which already includes the first
- * blocker square in each direction) minus own-piece-occupied squares.
+ * Pseudo-legal rook target squares: the rook's classical-ray attack pattern (which already includes the first blocker
+ * square in each direction) minus own-piece-occupied squares.
  */
 public final class RookMoves {
 

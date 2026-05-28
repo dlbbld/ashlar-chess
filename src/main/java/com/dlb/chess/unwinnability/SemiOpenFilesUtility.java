@@ -9,19 +9,19 @@ import com.dlb.chess.common.constants.EnumConstants;
 
 abstract class SemiOpenFilesUtility implements EnumConstants {
 
-  // Pawns legally live only on ranks 2-7 (0-indexed 1-6) — bits 8-55. Mask out ranks 1 and 8 defensively.
+  // Pawns legally live only on ranks 2-7 (0-indexed 1-6) - bits 8-55. Mask out ranks 1 and 8 defensively.
   private static final long PAWN_RANK_MASK = 0x00FFFFFFFFFFFF00L;
 
-  // Single A-file mask (bits a1, a2, ..., a8) — shifted by file index to mask other files.
+  // Single A-file mask (bits a1, a2, ..., a8) - shifted by file index to mask other files.
   private static final long A_FILE_MASK = 0x0101010101010101L;
 
   /**
-   * True iff there is at least one file on which {@code side} has a "semi-open" property — i.e. the first pawn
+   * True iff there is at least one file on which {@code side} has a "semi-open" property - i.e. the first pawn
    * encountered walking from {@code side}'s point of view down the file is one of {@code side}'s own pawns. For white
    * the walk starts at rank 7; for black at rank 2.
    *
    * <p>
-   * Restricted to ranks 2-7 — pawns on rank 1 / rank 8 are illegal and ignored even if the caller's bitboard somehow
+   * Restricted to ranks 2-7 - pawns on rank 1 / rank 8 are illegal and ignored even if the caller's bitboard somehow
    * has bits there.
    */
   public static boolean calculateHasSemiOpenFile(BitboardPosition bitboardPosition) {
@@ -46,10 +46,10 @@ abstract class SemiOpenFilesUtility implements EnumConstants {
   }
 
   /**
-   * True iff {@code sideHavingSemiOpenFile} has a semi-open {@code file} — i.e. the first pawn encountered walking
-   * from that side's point of view down the file is one of that side's own pawns. For white the walk starts at rank
-   * 7 (look for the highest pawn bit on the file); for black at rank 2 (look for the lowest pawn bit on the file).
-   * Pawns on rank 1 / rank 8 are ignored defensively.
+   * True iff {@code sideHavingSemiOpenFile} has a semi-open {@code file} - i.e. the first pawn encountered walking from
+   * that side's point of view down the file is one of that side's own pawns. For white the walk starts at rank 7 (look
+   * for the highest pawn bit on the file); for black at rank 2 (look for the lowest pawn bit on the file). Pawns on
+   * rank 1 / rank 8 are ignored defensively.
    */
   public static boolean calculateIsSemiOpenFile(BitboardPosition bitboardPosition, File file,
       Side sideHavingSemiOpenFile) {

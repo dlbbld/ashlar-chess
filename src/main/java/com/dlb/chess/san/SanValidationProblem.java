@@ -59,54 +59,54 @@ public enum SanValidationProblem {
   FORMAT_RNBQ_NO_SECOND_CHARACTER,
   FORMAT_RNBQ_WRONG_SECOND_CHARACTER,
 
-  // rnbq — rank branch (second char is a rank digit): third char must be 'x' (capture) or a file letter (non-capture)
+  // rnbq - rank branch (second char is a rank digit): third char must be 'x' (capture) or a file letter (non-capture)
   FORMAT_RNBQ_RANK_NO_THIRD_CHARACTER,
   FORMAT_RNBQ_RANK_WRONG_THIRD_CHARACTER,
 
-  // rnbq — file branch (second char is a file letter): third char must be a rank digit, a file letter, or 'x'
+  // rnbq - file branch (second char is a file letter): third char must be a rank digit, a file letter, or 'x'
   FORMAT_RNBQ_FILE_NO_THIRD_CHARACTER,
   FORMAT_RNBQ_FILE_WRONG_THIRD_CHARACTER,
 
-  // rnbq — square branch (second + third chars form [file][rank], a fourth char is present): must be file or 'x'
+  // rnbq - square branch (second + third chars form [file][rank], a fourth char is present): must be file or 'x'
   FORMAT_RNBQ_SQUARE_WRONG_THIRD_CHARACTER,
 
-  // rnbq non-capture — rank disambiguation (e.g. R2a1)
+  // rnbq non-capture - rank disambiguation (e.g. R2a1)
   FORMAT_RNBQ_NON_CAPTURE_RANK_NO_DESTINATION_RANK,
   FORMAT_RNBQ_NON_CAPTURE_RANK_WRONG_DESTINATION_RANK,
   FORMAT_RNBQ_NON_CAPTURE_RANK_OVERLENGTH,
 
-  // rnbq non-capture — file disambiguation (e.g. Rba1)
+  // rnbq non-capture - file disambiguation (e.g. Rba1)
   FORMAT_RNBQ_NON_CAPTURE_FILE_NO_DESTINATION_RANK,
   FORMAT_RNBQ_NON_CAPTURE_FILE_WRONG_DESTINATION_RANK,
   FORMAT_RNBQ_NON_CAPTURE_FILE_OVERLENGTH,
 
-  // rnbq non-capture — square disambiguation (e.g. Rb2a1)
+  // rnbq non-capture - square disambiguation (e.g. Rb2a1)
   FORMAT_RNBQ_NON_CAPTURE_SQUARE_NO_DESTINATION_RANK,
   FORMAT_RNBQ_NON_CAPTURE_SQUARE_WRONG_DESTINATION_RANK,
   FORMAT_RNBQ_NON_CAPTURE_SQUARE_OVERLENGTH,
 
-  // rnbq capture — no disambiguation (e.g. Rxa1)
+  // rnbq capture - no disambiguation (e.g. Rxa1)
   FORMAT_RNBQ_CAPTURE_NO_DESTINATION_FILE,
   FORMAT_RNBQ_CAPTURE_WRONG_DESTINATION_FILE,
   FORMAT_RNBQ_CAPTURE_NO_DESTINATION_RANK,
   FORMAT_RNBQ_CAPTURE_WRONG_DESTINATION_RANK,
   FORMAT_RNBQ_CAPTURE_OVERLENGTH,
 
-  // rnbq capture — rank disambiguation (e.g. R2xa1)
+  // rnbq capture - rank disambiguation (e.g. R2xa1)
   FORMAT_RNBQ_CAPTURE_RANK_NO_DESTINATION_FILE,
   FORMAT_RNBQ_CAPTURE_RANK_WRONG_DESTINATION_FILE,
   FORMAT_RNBQ_CAPTURE_RANK_NO_DESTINATION_RANK,
   FORMAT_RNBQ_CAPTURE_RANK_WRONG_DESTINATION_RANK,
   FORMAT_RNBQ_CAPTURE_RANK_OVERLENGTH,
 
-  // rnbq capture — file disambiguation (e.g. Rbxa1)
+  // rnbq capture - file disambiguation (e.g. Rbxa1)
   FORMAT_RNBQ_CAPTURE_FILE_NO_DESTINATION_FILE,
   FORMAT_RNBQ_CAPTURE_FILE_WRONG_DESTINATION_FILE,
   FORMAT_RNBQ_CAPTURE_FILE_NO_DESTINATION_RANK,
   FORMAT_RNBQ_CAPTURE_FILE_WRONG_DESTINATION_RANK,
   FORMAT_RNBQ_CAPTURE_FILE_OVERLENGTH,
 
-  // rnbq capture — square disambiguation (e.g. Rb2xa1)
+  // rnbq capture - square disambiguation (e.g. Rb2xa1)
   FORMAT_RNBQ_CAPTURE_SQUARE_NO_DESTINATION_FILE,
   FORMAT_RNBQ_CAPTURE_SQUARE_WRONG_DESTINATION_FILE,
   FORMAT_RNBQ_CAPTURE_SQUARE_NO_DESTINATION_RANK,
@@ -186,7 +186,7 @@ public enum SanValidationProblem {
   KING_EXPOSED_TO_CHECK_RNBQ_RANK_MULTIPLE,
   KING_EXPOSED_TO_CHECK_RNBQ_SQUARE,
 
-  // King-only safety reasons (replace LEFT/EXPOSED for king moves — see MovementCheck for rationale).
+  // King-only safety reasons (replace LEFT/EXPOSED for king moves - see MovementCheck for rationale).
   KING_CAPTURES_GUARDED_PIECE,
   KING_MOVES_NEXT_TO_OPPONENT_KING,
   KING_MOVES_TO_ATTACKED_EMPTY_SQUARE,

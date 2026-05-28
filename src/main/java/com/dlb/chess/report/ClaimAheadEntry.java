@@ -5,8 +5,8 @@ import com.dlb.chess.common.model.HalfMove;
 import com.google.common.collect.ImmutableList;
 
 /**
- * One legal move that would, if played from its parent position, create a threefold-repetition position the side
- * could claim before playing the move.
+ * One legal move that would, if played from its parent position, create a threefold-repetition position the side could
+ * claim before playing the move.
  *
  * <p>
  * {@code priorOccurrences} are the played half-moves at which the position appeared before {@code claimAheadMove} and
@@ -16,8 +16,8 @@ import com.google.common.collect.ImmutableList;
  * not present in {@code priorOccurrences}. The compact constructor enforces this invariant.
  *
  * <p>
- * {@code hasBeenPlayed} is true when the same half-move appears in the played history — meaning the side actually
- * made the claim-ahead-able move on the board. The reporter marks such entries with an asterisk.
+ * {@code hasBeenPlayed} is true when the same half-move appears in the played history - meaning the side actually made
+ * the claim-ahead-able move on the board. The reporter marks such entries with an asterisk.
  */
 record ClaimAheadEntry(HalfMove claimAheadMove, boolean hasBeenPlayed, ImmutableList<HalfMove> priorOccurrences,
     boolean includesInitialPosition, int totalRepetitionCount) {

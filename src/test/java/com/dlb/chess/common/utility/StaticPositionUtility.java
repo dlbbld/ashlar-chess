@@ -25,7 +25,8 @@ import com.google.common.collect.ImmutableList;
 
 public abstract class StaticPositionUtility implements EnumConstants {
 
-  // En-passant (from, to) patterns — test-side duplicate of EnPassantCaptureUtility's WHITE/BLACK_EN_PASSANT_CAPTURE_FROM_TO
+  // En-passant (from, to) patterns - test-side duplicate of EnPassantCaptureUtility's
+  // WHITE/BLACK_EN_PASSANT_CAPTURE_FROM_TO
   // constants. Mirrored here so the StaticPosition EP-detection oracle does not borrow the production constants
   // (the differential test would then not catch a bitboard EP-detection regression that mistakenly agreed with a
   // bad production constant). Same rationale as the castling oracle duplication in KingCastlingLegalMoves.
@@ -94,12 +95,12 @@ public abstract class StaticPositionUtility implements EnumConstants {
 
   public static String calculatePiecePlacement(StaticPosition staticPosition) {
     final StringBuilder piecePlacement = new StringBuilder();
-    for (var rankNumber = 8; rankNumber >= 1; rankNumber--) {
-      var consecutiveEmptySquares = 0;
-      for (var fileNumber = 1; fileNumber <= 8; fileNumber++) {
+    for (int rankNumber = 8; rankNumber >= 1; rankNumber--) {
+      int consecutiveEmptySquares = 0;
+      for (int fileNumber = 1; fileNumber <= 8; fileNumber++) {
         final Square square = Square.calculate(fileNumber, rankNumber);
         final Piece pieceOnSquare = staticPosition.get(square);
-        final var isEmptySquare = pieceOnSquare == Piece.NONE;
+        final boolean isEmptySquare = pieceOnSquare == Piece.NONE;
         if (isEmptySquare) {
           consecutiveEmptySquares++;
           if (fileNumber == 8) {
@@ -154,7 +155,7 @@ public abstract class StaticPositionUtility implements EnumConstants {
 
   // EP-capture predicate on the mailbox surface end-to-end. Mirror of EnPassantCaptureUtility's bitboard variant
   // (calculateIsPotentialEnPassantCapture(BitboardPosition, MoveSpecification)). Duplicated test-side so the
-  // StaticPosition oracle does not bridge through BitboardPosition for EP detection — that would weaken the oracle
+  // StaticPosition oracle does not bridge through BitboardPosition for EP detection - that would weaken the oracle
   // for after-move / king-safety checks that depend on whether a move was EP. Same independence rationale as the
   // castling oracle re-implementation in KingCastlingLegalMoves.
   private static boolean calculateIsPotentialEnPassantCaptureStaticPosition(StaticPosition staticPosition,

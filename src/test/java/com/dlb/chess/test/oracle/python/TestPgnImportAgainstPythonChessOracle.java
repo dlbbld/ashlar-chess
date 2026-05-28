@@ -36,13 +36,13 @@ import com.google.common.collect.ImmutableList;
  *
  * <p>
  * The oracle is regenerated only when the PGN fixtures or the recorded fields change; {@code mvn test} does not invoke
- * Python. The generator script is the schema source of truth — see the module docstring of
+ * Python. The generator script is the schema source of truth - see the module docstring of
  * {@code src/test/python/generate_pgn_import_oracle.py} for the per-record JSON shape, the reproducibility install
  * command, and the version of python-chess that produced the committed oracle.
  *
  * <p>
  * FEN convention: the oracle is emitted with python-chess's {@code board.fen(en_passant="fen")} option so that the
- * en-passant target square is written after every pawn double-step (PGN/Edwards 1994 §16.1.3.4), matching what
+ * en-passant target square is written after every pawn double-step (PGN/Edwards 1994 section 16.1.3.4), matching what
  * clean-chess writes. python-chess's default omits the e.p. target when no capture is legal next move (X-FEN / Lichess
  * / Stockfish de-facto); cross-validating against that default would surface a FEN-emission convention disagreement on
  * every double-step-without-capturer fixture, which is a separate decision from the PGN-import correctness this test
@@ -70,22 +70,22 @@ class TestPgnImportAgainstPythonChessOracle {
       "src/test/resources/oracle/python-chess");
 
   private static final ImmutableList<PgnTest> BUCKETS = Nulls.listOf(PgnTest.PARSER_FROM_FEN,
-      // basic — moving pieces / capture / en passant / promotion
+      // basic - moving pieces / capture / en passant / promotion
       PgnTest.BASIC_MOVING_PIECE_WHITE, PgnTest.BASIC_MOVING_PIECE_BLACK, PgnTest.BASIC_CAPTURE_WHITE,
       PgnTest.BASIC_CAPTURE_BLACK, PgnTest.BASIC_CAPTURE_LAST_MOVE, PgnTest.BASIC_EN_PASSANT_CAPTURE_WHITE,
       PgnTest.BASIC_EN_PASSANT_CAPTURE_BLACK, PgnTest.BASIC_PROMOTION_PIECE_WHITE, PgnTest.BASIC_PROMOTION_PIECE_BLACK,
       PgnTest.BASIC_PROMOTION_SQUARE_WHITE, PgnTest.BASIC_PROMOTION_SQUARE_BLACK,
-      // basic — check / checkmate / double check / stalemate
+      // basic - check / checkmate / double check / stalemate
       PgnTest.BASIC_CHECK_WHITE, PgnTest.BASIC_CHECK_BLACK, PgnTest.BASIC_CHECKMATE_WHITE,
       PgnTest.BASIC_CHECKMATE_BLACK, PgnTest.BASIC_CHECKMATE_VARIOUS_WHITE, PgnTest.BASIC_CHECKMATE_VARIOUS_BLACK,
       PgnTest.BASIC_DOUBLE_CHECK_WHITE, PgnTest.BASIC_DOUBLE_CHECK_BLACK, PgnTest.BASIC_CHECKMATE_DOUBLE_CHECK_WHITE,
       PgnTest.BASIC_CHECKMATE_DOUBLE_CHECK_BLACK, PgnTest.BASIC_STALEMATE,
-      // basic — insufficient material / repetition / fifty / seventy-five
+      // basic - insufficient material / repetition / fifty / seventy-five
       PgnTest.BASIC_INSUFFICIENT_MATERIAL_BOTH, PgnTest.BASIC_INSUFFICIENT_MATERIAL_ONLY_WHITE,
       PgnTest.BASIC_INSUFFICIENT_MATERIAL_ONLY_BLACK, PgnTest.BASIC_INSUFFICIENT_MATERIAL_NONE, PgnTest.BASIC_THREEFOLD,
       PgnTest.BASIC_FIFTY, PgnTest.BASIC_FIVEFOLD, PgnTest.BASIC_SEVENTY_FIVE, PgnTest.BASIC_INTERVENING,
       PgnTest.BASIC_DOUBLE_DRAW,
-      // basic — castling / forced / report
+      // basic - castling / forced / report
       PgnTest.BASIC_CASTLING_WHITE, PgnTest.BASIC_CASTLING_BLACK, PgnTest.BASIC_CASTLING_SPECIAL_WHITE,
       PgnTest.BASIC_CASTLING_SPECIAL_BLACK, PgnTest.BASIC_FORCED, PgnTest.BASIC_REPORT_NO_PROGRESS_SEQUENCES_WHITE,
       PgnTest.BASIC_REPORT_NO_PROGRESS_SEQUENCES_BLACK, PgnTest.BASIC_REPORT_REPETITION,
@@ -98,16 +98,16 @@ class TestPgnImportAgainstPythonChessOracle {
   @Test
   void pgnImportAgainstPythonChessOracle() throws IOException {
     final List<String> failures = new ArrayList<>();
-    var totalFixtures = 0;
-    var totalPlies = 0;
+    int totalFixtures = 0;
+    int totalPlies = 0;
 
     for (final PgnTest bucket : BUCKETS) {
       final Path jsonlPath = jsonlPathFor(bucket);
-      LOGGER.info("Bucket {} → {}", bucket, jsonlPath);
+      LOGGER.info("Bucket {} -> {}", bucket, jsonlPath);
 
       final List<OracleRecord> records = OracleJsonlReader.readAll(jsonlPath);
       if (records.isEmpty()) {
-        failures.add(bucket + " — oracle file is empty or missing: " + jsonlPath);
+        failures.add(bucket + " - oracle file is empty or missing: " + jsonlPath);
         continue;
       }
 
@@ -118,73 +118,73 @@ class TestPgnImportAgainstPythonChessOracle {
 
         try {
           assertEquals(record.startFen(), pgnGame.startFen().fen(),
-              () -> bucket + " / " + record.pgn() + " — startFen mismatch (clean-chess vs python-chess)");
+              () -> bucket + " / " + record.pgn() + " - startFen mismatch (clean-chess vs python-chess)");
           assertEquals(record.moves().size(), pgnGame.halfMoveList().size(),
-              () -> bucket + " / " + record.pgn() + " — half-move count mismatch (clean-chess vs python-chess)");
+              () -> bucket + " / " + record.pgn() + " - half-move count mismatch (clean-chess vs python-chess)");
         } catch (final AssertionError e) {
           failures.add(BasicUtility.getMessage(e));
           continue;
         }
 
         final Board board = new Board(pgnGame.startFen());
-        for (var ply = 0; ply < pgnGame.halfMoveList().size(); ply++) {
+        for (int ply = 0; ply < pgnGame.halfMoveList().size(); ply++) {
           totalPlies++;
           final PgnHalfMove halfMove = Nulls.get(pgnGame.halfMoveList(), ply);
           final OracleMove expected = Nulls.get(record.moves(), ply);
           board.moveStrict(halfMove.san());
 
-          final var plyLabel = ply + 1;
+          final int plyLabel = ply + 1;
           try {
             assertEquals(expected.fenAfter(), board.getFen(),
-                () -> bucket + " / " + record.pgn() + " ply " + plyLabel + " — FEN after move mismatch");
+                () -> bucket + " / " + record.pgn() + " ply " + plyLabel + " - FEN after move mismatch");
             assertEquals(expected.halfmoveClock(), board.getHalfMoveClock(),
-                () -> bucket + " / " + record.pgn() + " ply " + plyLabel + " — halfmove clock mismatch");
+                () -> bucket + " / " + record.pgn() + " ply " + plyLabel + " - halfmove clock mismatch");
             assertEquals(expected.fullmoveNumber(), board.getFullMoveNumber(),
-                () -> bucket + " / " + record.pgn() + " ply " + plyLabel + " — fullmove number mismatch");
+                () -> bucket + " / " + record.pgn() + " ply " + plyLabel + " - fullmove number mismatch");
             assertEquals(expected.isCheck(), board.isCheck(),
-                () -> bucket + " / " + record.pgn() + " ply " + plyLabel + " — isCheck mismatch");
+                () -> bucket + " / " + record.pgn() + " ply " + plyLabel + " - isCheck mismatch");
             assertEquals(expected.isCheckmate(), board.isCheckmate(),
-                () -> bucket + " / " + record.pgn() + " ply " + plyLabel + " — isCheckmate mismatch");
+                () -> bucket + " / " + record.pgn() + " ply " + plyLabel + " - isCheckmate mismatch");
             assertEquals(expected.isStalemate(), board.isStalemate(),
-                () -> bucket + " / " + record.pgn() + " ply " + plyLabel + " — isStalemate mismatch");
-            // Slice 7 — clean-chess's regenerated canonical SAN (board.getSan()) vs python-chess's regenerated
+                () -> bucket + " / " + record.pgn() + " ply " + plyLabel + " - isStalemate mismatch");
+            // Slice 7 - clean-chess's regenerated canonical SAN (board.getSan()) vs python-chess's regenerated
             // canonical SAN (board.san(move) before push, recorded as expected.san()). Comparing canonical-vs-
             // canonical sidesteps stylistic differences in the source PGN's input SAN.
             assertEquals(expected.san(), board.getSan(),
-                () -> bucket + " / " + record.pgn() + " ply " + plyLabel + " — canonical SAN mismatch");
+                () -> bucket + " / " + record.pgn() + " ply " + plyLabel + " - canonical SAN mismatch");
             assertEquals(expected.lan(), board.getLan(),
-                () -> bucket + " / " + record.pgn() + " ply " + plyLabel + " — canonical LAN mismatch");
+                () -> bucket + " / " + record.pgn() + " ply " + plyLabel + " - canonical LAN mismatch");
             assertEquals(expected.isInsufficientMaterial(), board.isInsufficientMaterial(),
-                () -> bucket + " / " + record.pgn() + " ply " + plyLabel + " — isInsufficientMaterial mismatch");
+                () -> bucket + " / " + record.pgn() + " ply " + plyLabel + " - isInsufficientMaterial mismatch");
             assertEquals(expected.hasInsufficientMaterialWhite(), board.isInsufficientMaterial(Side.WHITE),
-                () -> bucket + " / " + record.pgn() + " ply " + plyLabel + " — isInsufficientMaterial(WHITE) mismatch");
+                () -> bucket + " / " + record.pgn() + " ply " + plyLabel + " - isInsufficientMaterial(WHITE) mismatch");
             assertEquals(expected.hasInsufficientMaterialBlack(), board.isInsufficientMaterial(Side.BLACK),
-                () -> bucket + " / " + record.pgn() + " ply " + plyLabel + " — isInsufficientMaterial(BLACK) mismatch");
+                () -> bucket + " / " + record.pgn() + " ply " + plyLabel + " - isInsufficientMaterial(BLACK) mismatch");
             assertEquals(expected.isRepetition2(), board.getRepetitionCount() >= 2,
-                () -> bucket + " / " + record.pgn() + " ply " + plyLabel + " — isRepetition(2) mismatch");
+                () -> bucket + " / " + record.pgn() + " ply " + plyLabel + " - isRepetition(2) mismatch");
             assertEquals(expected.isRepetition3(), board.getRepetitionCount() >= 3,
-                () -> bucket + " / " + record.pgn() + " ply " + plyLabel + " — isRepetition(3) mismatch");
+                () -> bucket + " / " + record.pgn() + " ply " + plyLabel + " - isRepetition(3) mismatch");
             assertEquals(expected.isRepetition4(), board.getRepetitionCount() >= 4,
-                () -> bucket + " / " + record.pgn() + " ply " + plyLabel + " — isRepetition(4) mismatch");
+                () -> bucket + " / " + record.pgn() + " ply " + plyLabel + " - isRepetition(4) mismatch");
             // Precedence-suppression exclusion: at positions where python-chess applies a
             // game-end precedence guard to the 50-/75-/fivefold-rule predicates (i.e. when a
             // higher-precedence termination already holds), clean-chess returns the raw fact
             // instead. Skip those predicate comparisons only here; everywhere else the predicates
             // still agree byte-for-byte. The Outcome layer matches python-chess regardless (the
             // precedence stack is applied uniformly there).
-            final var precedenceSuppressed = board.isCheckmate() || board.isStalemate()
+            final boolean precedenceSuppressed = board.isCheckmate() || board.isStalemate()
                 || board.isInsufficientMaterial();
             if (!precedenceSuppressed) {
               assertEquals(expected.isFivefoldRepetition(), board.isFivefoldRepetition(),
-                  () -> bucket + " / " + record.pgn() + " ply " + plyLabel + " — isFivefoldRepetition mismatch");
+                  () -> bucket + " / " + record.pgn() + " ply " + plyLabel + " - isFivefoldRepetition mismatch");
               assertEquals(expected.isFiftyMoves(), board.isFiftyMove(),
-                  () -> bucket + " / " + record.pgn() + " ply " + plyLabel + " — isFiftyMoves mismatch");
+                  () -> bucket + " / " + record.pgn() + " ply " + plyLabel + " - isFiftyMoves mismatch");
               assertEquals(expected.isSeventyFiveMoves(), board.isSeventyFiveMove(),
-                  () -> bucket + " / " + record.pgn() + " ply " + plyLabel + " — isSeventyFiveMoves mismatch");
+                  () -> bucket + " / " + record.pgn() + " ply " + plyLabel + " - isSeventyFiveMoves mismatch");
               assertEquals(expected.canClaimThreefold(), board.canClaimThreefoldRepetitionRule(),
-                  () -> bucket + " / " + record.pgn() + " ply " + plyLabel + " — canClaimThreefold mismatch");
+                  () -> bucket + " / " + record.pgn() + " ply " + plyLabel + " - canClaimThreefold mismatch");
               assertEquals(expected.canClaimFifty(), board.canClaimFiftyMoveRule(),
-                  () -> bucket + " / " + record.pgn() + " ply " + plyLabel + " — canClaimFifty mismatch");
+                  () -> bucket + " / " + record.pgn() + " ply " + plyLabel + " - canClaimFifty mismatch");
             }
           } catch (final AssertionError e) {
             failures.add(BasicUtility.getMessage(e));
@@ -193,7 +193,7 @@ class TestPgnImportAgainstPythonChessOracle {
 
         try {
           assertEquals(record.finalFen(), board.getFen(),
-              () -> bucket + " / " + record.pgn() + " — final FEN mismatch");
+              () -> bucket + " / " + record.pgn() + " - final FEN mismatch");
         } catch (final AssertionError e) {
           failures.add(BasicUtility.getMessage(e));
         }
@@ -201,7 +201,7 @@ class TestPgnImportAgainstPythonChessOracle {
     }
 
     if (totalFixtures == 0) {
-      fail("No fixtures iterated — bucket wiring is broken");
+      fail("No fixtures iterated - bucket wiring is broken");
     }
     LOGGER.info("Cross-validated {} fixtures across {} buckets ({} plies)", totalFixtures, BUCKETS.size(), totalPlies);
 

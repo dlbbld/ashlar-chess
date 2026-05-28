@@ -41,7 +41,7 @@ public abstract class SanValidateFormatReference {
     final SanFormatProperties properties = Nulls.get(SanFormatPropertiesMap.MAP, sanFormat);
 
     // length
-    final var formatLength = properties.length();
+    final int formatLength = properties.length();
     // additional check or checkmate symbol allowed
     if (san.length() != formatLength && san.length() != formatLength + 1
         || san.length() == formatLength + 1 && !calculateIsAllowedLastChar(san)) {
@@ -56,7 +56,7 @@ public abstract class SanValidateFormatReference {
       if (!san.startsWith(CastlingConstants.SAN_CASTLING_QUEEN_SIDE)) {
         return SanConversionCheck.IS_NO_MATCH;
       }
-      final var sanConversion = new SanConversion(PieceType.NONE, File.NONE, Rank.NONE, Square.NONE,
+      final SanConversion sanConversion = new SanConversion(PieceType.NONE, File.NONE, Rank.NONE, Square.NONE,
           PromotionPieceType.NONE, sanTerminalMarker);
       return new SanConversionCheck(true, sanConversion);
     }
@@ -65,18 +65,18 @@ public abstract class SanValidateFormatReference {
       if (!san.startsWith(CastlingConstants.SAN_CASTLING_KING_SIDE)) {
         return SanConversionCheck.IS_NO_MATCH;
       }
-      final var sanConversion = new SanConversion(PieceType.NONE, File.NONE, Rank.NONE, Square.NONE,
+      final SanConversion sanConversion = new SanConversion(PieceType.NONE, File.NONE, Rank.NONE, Square.NONE,
           PromotionPieceType.NONE, sanTerminalMarker);
       return new SanConversionCheck(true, sanConversion);
     }
 
     // movingPieceType: for pawn it is fixed; for RNBQ/king it comes from the first character.
     final PieceType movingPieceType;
-    final var movingPieceTypeIndex = properties.movingPieceTypeIndex();
+    final int movingPieceTypeIndex = properties.movingPieceTypeIndex();
     if (properties.isPawn()) {
       movingPieceType = PieceType.PAWN;
     } else {
-      final var checkMovingPieceTypeLetter = san.charAt(movingPieceTypeIndex);
+      final char checkMovingPieceTypeLetter = san.charAt(movingPieceTypeIndex);
       if (!NotationMovingPiece.exists(checkMovingPieceTypeLetter)) {
         return SanConversionCheck.IS_NO_MATCH;
       }
@@ -89,9 +89,9 @@ public abstract class SanValidateFormatReference {
 
     // fromFileIndex
     final File fromFile;
-    final var fromFileIndex = properties.fromFileIndex();
+    final int fromFileIndex = properties.fromFileIndex();
     if (fromFileIndex != -1) {
-      final var checkLetter = san.charAt(fromFileIndex);
+      final char checkLetter = san.charAt(fromFileIndex);
       if (!File.exists(checkLetter)) {
         return SanConversionCheck.IS_NO_MATCH;
       }
@@ -102,9 +102,9 @@ public abstract class SanValidateFormatReference {
 
     // fromRankIndex
     final Rank fromRank;
-    final var fromRankIndex = properties.fromRankIndex();
+    final int fromRankIndex = properties.fromRankIndex();
     if (fromRankIndex != -1) {
-      final var checkLetter = san.charAt(fromRankIndex);
+      final char checkLetter = san.charAt(fromRankIndex);
       if (!Rank.exists(checkLetter)) {
         return SanConversionCheck.IS_NO_MATCH;
       }
@@ -114,9 +114,9 @@ public abstract class SanValidateFormatReference {
     }
 
     // captureSymbolIndex
-    final var captureSymbolIndex = properties.captureSymbolIndex();
+    final int captureSymbolIndex = properties.captureSymbolIndex();
     if (captureSymbolIndex != -1) {
-      final var checkLetter = san.charAt(captureSymbolIndex);
+      final char checkLetter = san.charAt(captureSymbolIndex);
       if (SanSymbol.CAPTURE.getSymbol() != checkLetter) {
         return SanConversionCheck.IS_NO_MATCH;
       }
@@ -124,9 +124,9 @@ public abstract class SanValidateFormatReference {
 
     // toFileIndex
     final File toFile;
-    final var toFileIndex = properties.toFileIndex();
+    final int toFileIndex = properties.toFileIndex();
     if (toFileIndex != -1) {
-      final var checkLetter = san.charAt(toFileIndex);
+      final char checkLetter = san.charAt(toFileIndex);
       if (!File.exists(checkLetter)) {
         return SanConversionCheck.IS_NO_MATCH;
       }
@@ -137,9 +137,9 @@ public abstract class SanValidateFormatReference {
 
     // toRankIndex
     final Rank toRank;
-    final var toRankIndex = properties.toRankIndex();
+    final int toRankIndex = properties.toRankIndex();
     if (toRankIndex != -1) {
-      final var checkLetter = san.charAt(toRankIndex);
+      final char checkLetter = san.charAt(toRankIndex);
       if (!Rank.exists(checkLetter)) {
         return SanConversionCheck.IS_NO_MATCH;
       }
@@ -159,9 +159,9 @@ public abstract class SanValidateFormatReference {
     }
 
     // promotionSymbolIndex
-    final var promotionSymbolIndex = properties.promotionSymbolIndex();
+    final int promotionSymbolIndex = properties.promotionSymbolIndex();
     if (promotionSymbolIndex != -1) {
-      final var checkLetter = san.charAt(promotionSymbolIndex);
+      final char checkLetter = san.charAt(promotionSymbolIndex);
       if (SanSymbol.PROMOTION.getSymbol() != checkLetter) {
         return SanConversionCheck.IS_NO_MATCH;
       }
@@ -169,9 +169,9 @@ public abstract class SanValidateFormatReference {
 
     // promotionPieceTypeIndex
     final PromotionPieceType promotionPieceType;
-    final var promotionPieceTypeIndex = properties.promotionPieceTypeIndex();
+    final int promotionPieceTypeIndex = properties.promotionPieceTypeIndex();
     if (promotionPieceTypeIndex != -1) {
-      final var checkPromotionPieceTypeLetter = san.charAt(promotionPieceTypeIndex);
+      final char checkPromotionPieceTypeLetter = san.charAt(promotionPieceTypeIndex);
       if (!NotationPromotionPiece.exists(checkPromotionPieceTypeLetter)) {
         return SanConversionCheck.IS_NO_MATCH;
       }
@@ -189,8 +189,8 @@ public abstract class SanValidateFormatReference {
       throw new ProgrammingMistakeException(
           "Incorrect file/rank calculation - either file and rank are both set for non-castling moves or both not set for castling moves");
     }
-    final var sanConversion = new SanConversion(movingPieceType, fromFile, fromRank, toSquare, promotionPieceType,
-        sanTerminalMarker);
+    final SanConversion sanConversion = new SanConversion(movingPieceType, fromFile, fromRank, toSquare,
+        promotionPieceType, sanTerminalMarker);
     return new SanConversionCheck(true, sanConversion);
   }
 
@@ -215,7 +215,7 @@ public abstract class SanValidateFormatReference {
   }
 
   private static boolean calculateIsAllowedLastChar(String san) {
-    final var lastLetter = san.charAt(san.length() - 1);
+    final char lastLetter = san.charAt(san.length() - 1);
     return lastLetter == SanSymbol.CHECK.getSymbol() || lastLetter == SanSymbol.CHECKMATE.getSymbol();
   }
 
@@ -223,7 +223,7 @@ public abstract class SanValidateFormatReference {
     if (san.length() != formatLength + 1) {
       return SanTerminalMarker.NONE;
     }
-    final var lastLetter = san.charAt(san.length() - 1);
+    final char lastLetter = san.charAt(san.length() - 1);
     if (SanSymbol.CHECK.getSymbol() == lastLetter) {
       return SanTerminalMarker.CHECK;
     }

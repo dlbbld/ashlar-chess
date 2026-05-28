@@ -24,8 +24,8 @@ import com.dlb.chess.test.unwinnability.oracle.model.GameForced;
  * isolation:
  *
  * <ul>
- * <li>{@code ForcedLineOracle} — tested against {@code PgnTest.BASIC_FORCED}.</li>
- * <li>{@code ShallowTerminationOracle} — tested against {@code PgnTest.CHA_SHALLOW_TERMINATION}.</li>
+ * <li>{@code ForcedLineOracle} - tested against {@code PgnTest.BASIC_FORCED}.</li>
+ * <li>{@code ShallowTerminationOracle} - tested against {@code PgnTest.CHA_SHALLOW_TERMINATION}.</li>
  * </ul>
  *
  * <p>
@@ -77,7 +77,7 @@ public class ForcedLineOracle {
   static GameForced evaluateForcedLine(Board board) {
     // we check position after series of forced moves
     // we cannot use early returns for after evaluation we need to undo the moves
-    var countForcedHalfMoves = 0;
+    int countForcedHalfMoves = 0;
     while (board.getLegalMoves().size() == 1) {
       countForcedHalfMoves++;
       final LegalMove legalMove = ListUtility.getOnly(board.getLegalMoves());
@@ -90,7 +90,7 @@ public class ForcedLineOracle {
       final @Nullable Side singleSideIm = terminated ? null : singleSideInsufficientMaterial(board);
       if (terminated || singleSideIm != null) {
         final Side sideMadeLastMove = board.getHavingMove().getOppositeSide();
-        for (var i = 1; i <= countForcedHalfMoves; i++) {
+        for (int i = 1; i <= countForcedHalfMoves; i++) {
           board.unmove();
         }
         return new GameForced(outcome, singleSideIm, countForcedHalfMoves, sideMadeLastMove);
@@ -98,7 +98,7 @@ public class ForcedLineOracle {
     }
 
     final Side sideMadeLastMove = board.getHavingMove().getOppositeSide();
-    for (var i = 1; i <= countForcedHalfMoves; i++) {
+    for (int i = 1; i <= countForcedHalfMoves; i++) {
       board.unmove();
     }
     return new GameForced(Outcome.ONGOING, null, countForcedHalfMoves, sideMadeLastMove);
@@ -116,10 +116,10 @@ public class ForcedLineOracle {
 
   /**
    * Decodes the terminal status reached at the end of the forced single-move chain into a verdict for
-   * {@code sideToEvaluate}. CHECKMATE depends on which side delivered the mate (= {@code sideMadeLastMove}); single-side
-   * insufficient material depends on whether the colour with insufficient material <em>is</em> {@code sideToEvaluate}
-   * (then UNWINNABLE) or the opponent (then UNKNOWN — opponent's insufficient material doesn't decide our winnability
-   * either way from a forced chain alone).
+   * {@code sideToEvaluate}. CHECKMATE depends on which side delivered the mate (= {@code sideMadeLastMove});
+   * single-side insufficient material depends on whether the colour with insufficient material <em>is</em>
+   * {@code sideToEvaluate} (then UNWINNABLE) or the opponent (then UNKNOWN - opponent's insufficient material doesn't
+   * decide our winnability either way from a forced chain alone).
    */
   private static LimitedUnwinnabilityVerdict calculateUnwinnabilityForced(GameForced gameForced, Side sideToEvaluate) {
     final Outcome outcome = gameForced.outcome();
@@ -129,15 +129,14 @@ public class ForcedLineOracle {
         case CHECKMATE -> gameForced.sideMadeLastMove() == sideToEvaluate ? LimitedUnwinnabilityVerdict.WINNABLE
             : LimitedUnwinnabilityVerdict.UNWINNABLE;
         case STALEMATE, INSUFFICIENT_MATERIAL, FIVEFOLD_REPETITION, SEVENTY_FIVE_MOVES -> LimitedUnwinnabilityVerdict.UNWINNABLE;
-        case NONE -> throw new ProgrammingMistakeException(
-            "hasTermination() guard precludes Termination.NONE here");
+        case NONE -> throw new ProgrammingMistakeException("hasTermination() guard precludes Termination.NONE here");
       };
     }
     if (singleSideIm != null) {
       return singleSideIm == sideToEvaluate ? LimitedUnwinnabilityVerdict.UNWINNABLE
           : LimitedUnwinnabilityVerdict.UNKNOWN;
     }
-    // No outcome reached, no single-side IM along the forced chain — chain ended naturally.
+    // No outcome reached, no single-side IM along the forced chain - chain ended naturally.
     return LimitedUnwinnabilityVerdict.UNKNOWN;
   }
 }

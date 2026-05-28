@@ -14,11 +14,11 @@ class TestLibraryCarlosInsufficientMaterialPass {
   void testExceptedTrueAndTrue() throws Exception {
 
     // KBvKB with bishop on same color field is a draw
-    final var bishopOnSameColorSquares = "8/8/8/4k3/5b2/3K4/8/2B5 w - - 0 1";
+    final String bishopOnSameColorSquares = "8/8/8/4k3/5b2/3K4/8/2B5 w - - 0 1";
     assertTrue(isInsufficientMaterial(bishopOnSameColorSquares));
 
     // KBBvK with bishop on same color field is a draw
-    final var whiteTwoBishopsOnSameColorSquares = "B3k3/8/8/8/8/8/8/4KB2 w - - 0 1";
+    final String whiteTwoBishopsOnSameColorSquares = "B3k3/8/8/8/8/8/8/4KB2 w - - 0 1";
     assertTrue(isInsufficientMaterial(whiteTwoBishopsOnSameColorSquares));
 
     // KBBvKBBB with bishop on same color field is a draw
@@ -30,7 +30,7 @@ class TestLibraryCarlosInsufficientMaterialPass {
   void testExceptedFalseAndFalse() throws Exception {
 
     // KBvKB with bishop on different color field is not a draw
-    final var bishopOnDifferentColorSquares = "8/8/8/4k3/5b2/3K4/2B5/8 w - - 0 1";
+    final String bishopOnDifferentColorSquares = "8/8/8/4k3/5b2/3K4/2B5/8 w - - 0 1";
     assertFalse(isInsufficientMaterial(bishopOnDifferentColorSquares));
 
   }

@@ -6,8 +6,8 @@ public abstract class RestrictTestConstants {
 
   /**
    * Master switch driven by the {@code clean-chess.full} system property. Set to {@code true} via Maven profile
-   * {@code -Pfull} to run the full heavy test suite. Default: {@code false} — restricted, fast suite for normal
-   * iteration. Required to be {@code true} before tagging a release (see {@code specification.md} §6).
+   * {@code -Pfull} to run the full heavy test suite. Default: {@code false} - restricted, fast suite for normal
+   * iteration. Required to be {@code true} before tagging a release (see {@code specification.md} section 6).
    */
   private static final boolean IS_FULL = Boolean.getBoolean("clean-chess.full");
 
@@ -19,7 +19,7 @@ public abstract class RestrictTestConstants {
    */
   public static final boolean IS_RESTRICT_PGN = !IS_FULL;
 
-  // PGN tests — iterate over PGN test case lists. Each flag is the conjunction of its own restriction and the
+  // PGN tests - iterate over PGN test case lists. Each flag is the conjunction of its own restriction and the
   // master gate above, so the master flips every individual restriction simultaneously.
   public static final boolean IS_RESTRICT_PGN_BOARD_API_AGAINST_EACH_OTHER_TEST = true && IS_RESTRICT_PGN;
   public static final boolean IS_RESTRICT_PGN_FEN_PARSER_ALL_TEST = true && IS_RESTRICT_PGN;
@@ -44,7 +44,7 @@ public abstract class RestrictTestConstants {
   public static final PgnTestInclusion PGN_TEST_INCLUSION = IS_FULL ? PgnTestInclusion.ALL
       : PgnTestInclusion.ALL_EXCEPT_LONGEST_POSSIBLE;
 
-  // Long running tests — excluded entirely via JUnit assumeFalse. Driven by the master switch.
+  // Long running tests - excluded entirely via JUnit assumeFalse. Driven by the master switch.
   public static final boolean IS_EXCLUDE_LONG_RUNNING_SAN_VALIDATE_FORMAT_FAILURE_ORACLE_COMPLEMENT_TEST = !IS_FULL;
 
   // TestUnwinnabilityFull.testPgnExpected analyzes one heavy PGN (~10 seconds). Only useful

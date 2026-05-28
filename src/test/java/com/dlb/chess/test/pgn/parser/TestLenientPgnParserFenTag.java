@@ -12,10 +12,10 @@ import com.dlb.chess.pgn.LenientPgnParserValidationProblem;
 import com.dlb.chess.pgn.LenientPgnParserValidationResult;
 
 /**
- * The lenient PGN parser routes the FEN tag through {@code LenientFenParser}. When that fails — either because the FEN
+ * The lenient PGN parser routes the FEN tag through {@code LenientFenParser}. When that fails - either because the FEN
  * tag value cannot be normalised to a parseable FEN at all (the unrecoverable case), or because the normalised FEN
  * fails strict semantic validation (a position with a missing king, an impossible double-check, an illegal en-passant
- * target, etc.) — the failure is surfaced as a typed {@link LenientPgnParserValidationProblem#FEN_TAG_INVALID}, not the
+ * target, etc.) - the failure is surfaced as a typed {@link LenientPgnParserValidationProblem#FEN_TAG_INVALID}, not the
  * generic {@code UNKNOWN_ERROR}.
  */
 @SuppressWarnings("static-method")
@@ -26,7 +26,7 @@ class TestLenientPgnParserFenTag {
     // The position passes lenient FEN normalisation (it's syntactically a six-field FEN) but FenParserAdvanced
     // rejects it for the missing black king. The lenient PGN parser must surface this as FEN_TAG_INVALID
     // rather than UNKNOWN_ERROR.
-    final var pgn = """
+    final String pgn = """
         [Event "Test"]
         [Result "*"]
         [SetUp "1"]
@@ -46,7 +46,7 @@ class TestLenientPgnParserFenTag {
   void test02_fenTagUnparseableFailsAsFenTagInvalid() {
     // The FEN tag is too garbled for the lenient normalisation pipeline to recover (only one field present).
     // The lenient PGN parser must surface this as FEN_TAG_INVALID rather than UNKNOWN_ERROR.
-    final var pgn = """
+    final String pgn = """
         [Event "Test"]
         [Result "*"]
         [SetUp "1"]
@@ -64,9 +64,9 @@ class TestLenientPgnParserFenTag {
   @Test
   void test03_fenTagWithDeficientButRecoverableValueParsesCleanly() {
     // A FEN tag with deviations the lenient FEN layer forgives (missing fullmove number, uppercase side-to-move)
-    // produces a valid lenient PGN parse — the FEN-level forgiveness is applied silently at the PGN-parser
+    // produces a valid lenient PGN parse - the FEN-level forgiveness is applied silently at the PGN-parser
     // level, by design.
-    final var pgn = """
+    final String pgn = """
         [Event "Test"]
         [Result "*"]
         [SetUp "1"]

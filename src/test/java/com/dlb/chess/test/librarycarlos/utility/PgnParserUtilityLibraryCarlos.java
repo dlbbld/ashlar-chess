@@ -16,7 +16,7 @@ public class PgnParserUtilityLibraryCarlos {
 
     final Path pgnPath = Nulls.pathResolve(pgnFolderPath, pgnName);
 
-    final var pgnHolder = new PgnHolder(pgnPath.toAbsolutePath().toString());
+    final PgnHolder pgnHolder = new PgnHolder(pgnPath.toAbsolutePath().toString());
     try {
       pgnHolder.loadPgn();
     } catch (final Exception e) {

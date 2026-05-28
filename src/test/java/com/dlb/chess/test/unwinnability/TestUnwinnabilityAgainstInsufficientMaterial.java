@@ -34,8 +34,7 @@ class TestUnwinnabilityAgainstInsufficientMaterial {
   @SuppressWarnings("static-method")
   @Test
   void testBothSidesInsufficient() {
-    for (final PgnFen testCase : PgnTestCaseCatalog.getTestList(PgnTest.BASIC_INSUFFICIENT_MATERIAL_BOTH)
-        .list()) {
+    for (final PgnFen testCase : PgnTestCaseCatalog.getTestList(PgnTest.BASIC_INSUFFICIENT_MATERIAL_BOTH).list()) {
       assertUnwinnable(testCase, Side.WHITE);
       assertUnwinnable(testCase, Side.BLACK);
     }
@@ -61,7 +60,7 @@ class TestUnwinnabilityAgainstInsufficientMaterial {
 
   private static void assertUnwinnable(PgnFen testCase, Side side) {
     final Board board = testCase.finalPosition();
-    final var message = testCase.pgnName() + " " + side;
+    final String message = testCase.pgnName() + " " + side;
     assertEquals(UnwinnabilityQuickVerdict.UNWINNABLE, UnwinnableQuickAnalyzer.unwinnableQuick(board, side).verdict(),
         message);
     assertEquals(UnwinnabilityFullVerdict.UNWINNABLE, UnwinnableFullAnalyzer.unwinnableFull(board, side).verdict(),

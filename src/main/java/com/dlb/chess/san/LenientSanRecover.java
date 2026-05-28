@@ -41,14 +41,14 @@ final class LenientSanRecover {
     emitted.addAll(codes);
 
     String current = candidate;
-    for (var i = 0; i < MAX_ITERATIONS; i++) {
+    for (int i = 0; i < MAX_ITERATIONS; i++) {
       try {
         return StrictSanParser.parseText(current, board).moveSpecification();
       } catch (final SanValidationException e) {
         final SanValidationProblem strictCode = e.getSanValidationProblem();
-        final var lenientCode = mapToLenientCode(strictCode);
+        final LenientSanValidationProblem lenientCode = mapToLenientCode(strictCode);
         if (lenientCode == null || emitted.contains(lenientCode)) {
-          // Same code would fire twice â€” defensive bail-out; shouldn't happen because each mutation
+          // Same code would fire twice - defensive bail-out; shouldn't happen because each mutation
           // strictly reduces the set of applicable strict codes.
           throw e;
         }
@@ -70,7 +70,7 @@ final class LenientSanRecover {
       case CHECK_SYMBOL_BUT_CHECKMATE -> LenientSanValidationProblem.WRONG_CHECK_SUFFIX_FOR_CHECKMATE;
       case CHECKMATE_SYMBOL_BUT_CHECK_ONLY -> LenientSanValidationProblem.WRONG_CHECKMATE_SUFFIX_FOR_CHECK;
 
-      // Capture-marker mismatches (piece moves only â€” pawn variants are not auto-recoverable)
+      // Capture-marker mismatches (piece moves only - pawn variants are not auto-recoverable)
       case DESTINATION_RNBQK_EMPTY_CAPTURE_SYMBOL -> LenientSanValidationProblem.SPURIOUS_CAPTURE_MARKER;
       case DESTINATION_RNBQK_OPPONENT_NON_KING_NO_CAPTURE_SYMBOL -> LenientSanValidationProblem.MISSING_CAPTURE_MARKER;
 
@@ -117,7 +117,7 @@ final class LenientSanRecover {
     if (s.isEmpty()) {
       return s;
     }
-    final var last = s.charAt(s.length() - 1);
+    final char last = s.charAt(s.length() - 1);
     if (last == '+' || last == '#') {
       return Nulls.substring(s, 0, s.length() - 1);
     }
@@ -125,7 +125,7 @@ final class LenientSanRecover {
   }
 
   private static String stripCaptureMarker(String s) {
-    final var x = s.indexOf('x');
+    final int x = s.indexOf('x');
     if (x < 0) {
       throw new ProgrammingMistakeException("stripCaptureMarker called with no 'x' in input: " + s);
     }
@@ -146,7 +146,7 @@ final class LenientSanRecover {
       throw new ProgrammingMistakeException("insertCaptureMarker called with body too short: " + s);
     }
     // Insert 'x' immediately before the destination square (last 2 chars of body).
-    final var destStart = body.length() - 2;
+    final int destStart = body.length() - 2;
     return Nulls.substring(body, 0, destStart) + "x" + Nulls.substring(body, destStart) + marker;
   }
 
@@ -180,9 +180,9 @@ final class LenientSanRecover {
 
   /**
    * Rewrites a rank-disambiguated SAN move to its canonical file-disambiguated form. Used when strict rejects with
-   * {@link SanValidationProblem#NON_STANDARD_SPECIFIED_RNBQ_RANK_INSTEAD_OF_FILE} â€” the move is uniquely identified
-   * by the user's rank disambig, but canonical SAN prefers file disambig when both forms work. We look up the from-file
-   * of the unique matching legal move and substitute it for the rank character.
+   * {@link SanValidationProblem#NON_STANDARD_SPECIFIED_RNBQ_RANK_INSTEAD_OF_FILE} - the move is uniquely identified by
+   * the user's rank disambig, but canonical SAN prefers file disambig when both forms work. We look up the from-file of
+   * the unique matching legal move and substitute it for the rank character.
    */
   private static String rewriteRankAsFile(String s, Board board) {
     final BodyAndMarker split = splitMarker(s);
@@ -190,8 +190,8 @@ final class LenientSanRecover {
     if (body.length() < 4) {
       throw new ProgrammingMistakeException("rewriteRankAsFile body too short: " + s);
     }
-    final var pieceLetter = body.charAt(0);
-    final var rankDigit = body.charAt(1);
+    final char pieceLetter = body.charAt(0);
+    final char rankDigit = body.charAt(1);
     final PieceType pieceType = NotationMovingPiece.calculate(pieceLetter).getPieceType();
     final Rank fromRank = Rank.calculateRank(rankDigit);
     final Square toSquare = Square.calculate(File.calculateFile(body.charAt(body.length() - 2)),
@@ -220,7 +220,7 @@ final class LenientSanRecover {
 
   private static BodyAndMarker splitMarker(String s) {
     if (!s.isEmpty()) {
-      final var last = s.charAt(s.length() - 1);
+      final char last = s.charAt(s.length() - 1);
       if (last == '+' || last == '#') {
         return new BodyAndMarker(Nulls.substring(s, 0, s.length() - 1), Nulls.valueOf(last));
       }

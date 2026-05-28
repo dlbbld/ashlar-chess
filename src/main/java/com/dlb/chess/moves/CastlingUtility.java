@@ -342,7 +342,7 @@ public abstract class CastlingUtility implements EnumConstants {
     if (legalMove.movingPiece().getPieceType() != ROOK) {
       return false;
     }
-    final var rookOriginalSquare = switch (legalMove.havingMove()) {
+    final Square rookOriginalSquare = switch (legalMove.havingMove()) {
       case BLACK -> CastlingConstants.BLACK_ROOK_QUEEN_SIDE_CASTLING_FROM;
       case WHITE -> CastlingConstants.WHITE_ROOK_QUEEN_SIDE_CASTLING_FROM;
       case NONE -> throw new IllegalArgumentException();
@@ -354,7 +354,7 @@ public abstract class CastlingUtility implements EnumConstants {
     if (legalMove.movingPiece().getPieceType() != ROOK) {
       return false;
     }
-    final var rookOriginalSquare = switch (legalMove.havingMove()) {
+    final Square rookOriginalSquare = switch (legalMove.havingMove()) {
       case BLACK -> CastlingConstants.BLACK_ROOK_KING_SIDE_CASTLING_FROM;
       case WHITE -> CastlingConstants.WHITE_ROOK_KING_SIDE_CASTLING_FROM;
       case NONE -> throw new IllegalArgumentException();
@@ -364,7 +364,7 @@ public abstract class CastlingUtility implements EnumConstants {
 
   private static boolean calculateHasCapturedOpponentRookQueenSide(LegalMove legalMove) {
     if (legalMove.pieceCaptured() != Piece.NONE && legalMove.pieceCaptured().getPieceType() == ROOK) {
-      final var rookOpponentOriginalSquare = switch (legalMove.havingMove()) {
+      final Square rookOpponentOriginalSquare = switch (legalMove.havingMove()) {
         case BLACK -> CastlingConstants.WHITE_ROOK_QUEEN_SIDE_CASTLING_FROM;
         case WHITE -> CastlingConstants.BLACK_ROOK_QUEEN_SIDE_CASTLING_FROM;
         case NONE -> throw new IllegalArgumentException();
@@ -376,7 +376,7 @@ public abstract class CastlingUtility implements EnumConstants {
 
   private static boolean calculateHasCapturedOpponentRookKingSide(LegalMove legalMove) {
     if (legalMove.pieceCaptured() != Piece.NONE && legalMove.pieceCaptured().getPieceType() == ROOK) {
-      final var rookOpponentOriginalSquare = switch (legalMove.havingMove()) {
+      final Square rookOpponentOriginalSquare = switch (legalMove.havingMove()) {
         case BLACK -> CastlingConstants.WHITE_ROOK_KING_SIDE_CASTLING_FROM;
         case WHITE -> CastlingConstants.BLACK_ROOK_KING_SIDE_CASTLING_FROM;
         case NONE -> throw new IllegalArgumentException();
@@ -399,24 +399,24 @@ public abstract class CastlingUtility implements EnumConstants {
   // StaticPosition variants moved out entirely: production callers (Board.move() and
   // BitboardLegalMoveFactory.calculateLegalMoves) already used the bitboard overloads after 10.0.0 Step 4, and the
   // test-side StaticPosition castling check now lives in KingCastlingLegalMoves (re-implemented end-to-end on the
-  // mailbox surface as an independent oracle — it does not call back into this class).
+  // mailbox surface as an independent oracle - it does not call back into this class).
 
   public static CastlingCheck calculateQueenSideCastlingCheck(BitboardPosition bitboardPosition, Side havingMove,
       CastlingRight castlingRight) {
 
-    final var hasLostCastlingRight = castlingRight != CastlingRight.KING_AND_QUEEN_SIDE
+    final boolean hasLostCastlingRight = castlingRight != CastlingRight.KING_AND_QUEEN_SIDE
         && castlingRight != CastlingRight.QUEEN_SIDE;
     if (hasLostCastlingRight) {
       return CastlingCheck.FINAL_NO_RIGHT;
     }
 
-    final var isOriginalPosition = calculateQueenSideCastlingIsOriginalPosition(bitboardPosition, havingMove);
+    final boolean isOriginalPosition = calculateQueenSideCastlingIsOriginalPosition(bitboardPosition, havingMove);
     if (!isOriginalPosition) {
       throw new ProgrammingMistakeException(
           "Castling right held but king or rook not on required square (inconsistent board state).");
     }
 
-    final var isEmptySquaresBetweenRookAndKing = calculateQueenSideCastlingIsEmptySquaresBetweenRookAndKing(
+    final boolean isEmptySquaresBetweenRookAndKing = calculateQueenSideCastlingIsEmptySquaresBetweenRookAndKing(
         bitboardPosition, havingMove);
     if (!isEmptySquaresBetweenRookAndKing) {
       return CastlingCheck.TEMPORARY_SQUARES_NOT_EMPTY;
@@ -428,19 +428,19 @@ public abstract class CastlingUtility implements EnumConstants {
   public static CastlingCheck calculateKingSideCastlingCheck(BitboardPosition bitboardPosition, Side havingMove,
       CastlingRight castlingRight) {
 
-    final var hasLostCastlingRight = castlingRight != CastlingRight.KING_AND_QUEEN_SIDE
+    final boolean hasLostCastlingRight = castlingRight != CastlingRight.KING_AND_QUEEN_SIDE
         && castlingRight != CastlingRight.KING_SIDE;
     if (hasLostCastlingRight) {
       return CastlingCheck.FINAL_NO_RIGHT;
     }
 
-    final var isOriginalPosition = calculateKingSideCastlingIsOriginalPosition(bitboardPosition, havingMove);
+    final boolean isOriginalPosition = calculateKingSideCastlingIsOriginalPosition(bitboardPosition, havingMove);
     if (!isOriginalPosition) {
       throw new ProgrammingMistakeException(
           "Castling right held but king or rook not on required square (inconsistent board state).");
     }
 
-    final var isEmptySquaresBetweenRookAndKing = calculateKingSideCastlingIsEmptySquaresBetweenRookAndKing(
+    final boolean isEmptySquaresBetweenRookAndKing = calculateKingSideCastlingIsEmptySquaresBetweenRookAndKing(
         bitboardPosition, havingMove);
     if (!isEmptySquaresBetweenRookAndKing) {
       return CastlingCheck.TEMPORARY_SQUARES_NOT_EMPTY;

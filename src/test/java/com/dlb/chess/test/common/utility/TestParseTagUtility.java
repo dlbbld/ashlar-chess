@@ -37,7 +37,7 @@ class TestParseTagUtility {
     checkTagFormat("[White \"Alpha \"]", true);
     checkTagFormat("[White \" Alpha \"]", true);
     checkTagFormat("[White \"\"]", true);
-    checkTagFormat("[WhiteTeam \"VÃ­kingaklubburinn\"]", true);
+    checkTagFormat("[WhiteTeam \"Víkingaklubburinn\"]", true);
 
     checkTagFormat("x[White \"Alpha Zero\"]", false);
     checkTagFormat("White \"Alpha Zero\"]", false);
@@ -71,13 +71,13 @@ class TestParseTagUtility {
 
     checkTagValues("[Event \"Live Chess\"]", "Event", "Live Chess");
 
-    // Arbitrary custom tag values without any validation of the value contents — the parser only enforces the
+    // Arbitrary custom tag values without any validation of the value contents - the parser only enforces the
     // surrounding format, not the value semantics.
     checkTagValues("[Custom \"0\"]", "Custom", "0");
     checkTagValues("[Custom \"1\"]", "Custom", "1");
     checkTagValues("[Custom \"abc\"]", "Custom", "abc");
 
-    // FEN and SetUp are tested together via the fromCustomPosition corpus — they cannot be exercised in isolation
+    // FEN and SetUp are tested together via the fromCustomPosition corpus - they cannot be exercised in isolation
     // through this minimal-PGN helper because the strict parser requires SetUp=1 to accept a FEN tag, and removes
     // the FEN tag from the output when the FEN equals the initial position. See TestStrictPgnParserFromCustomPosition
     // for end-to-end coverage.
@@ -93,11 +93,11 @@ class TestParseTagUtility {
   @SuppressWarnings("static-method")
   @Test
   void testTagNameLength() {
-    // 254 and 255 characters — accepted.
+    // 254 and 255 characters - accepted.
     checkTagFormat("[" + repeatedName(254) + " \"tagNameValue\"]", true);
     checkTagFormat("[" + repeatedName(255) + " \"tagNameValue\"]", true);
 
-    // 256, 257 and 357 characters — rejected with the dedicated length error.
+    // 256, 257 and 357 characters - rejected with the dedicated length error.
     checkTagFormat("[" + repeatedName(256) + " \"tagNameValue\"]", false);
     checkTagNameLength("[" + repeatedName(256) + " \"tagNameValue\"]");
 
@@ -144,11 +144,11 @@ class TestParseTagUtility {
   }
 
   // -------------------------------------------------------------------------------------------------
-  // Helpers — embed the subject tag in a minimal PGN and drive StrictPgnParser end-to-end
+  // Helpers - embed the subject tag in a minimal PGN and drive StrictPgnParser end-to-end
   // -------------------------------------------------------------------------------------------------
 
   private static void checkTagFormat(String tagLine, boolean isValid) {
-    final var isException = tryParseReturnIsException(tagLine);
+    final boolean isException = tryParseReturnIsException(tagLine);
     if (isValid) {
       assertFalse(isException, "Expected tag to parse cleanly: " + tagLine);
     } else {
@@ -168,7 +168,7 @@ class TestParseTagUtility {
   }
 
   private static void checkException(String tagLine, StrictPgnParserValidationProblem expected) {
-    var isException = false;
+    boolean isException = false;
     try {
       StrictPgnParser.parseText(buildMinimalPgn(tagLine));
     } catch (final StrictPgnParserValidationException e) {
@@ -198,7 +198,7 @@ class TestParseTagUtility {
     sb.append(subjectTagLine).append('\n');
     for (final String roster : Arrays.asList("Event", "Site", "Date", "Round", "White", "Black", "Result")) {
       if (!roster.equals(subjectName)) {
-        final var placeholder = "Result".equals(roster) ? "*" : "?";
+        final String placeholder = "Result".equals(roster) ? "*" : "?";
         sb.append('[').append(roster).append(" \"").append(placeholder).append("\"]\n");
       }
     }
@@ -207,17 +207,17 @@ class TestParseTagUtility {
   }
 
   /**
-   * Naive tag-name extraction — returns whatever sits between the opening {@code [} and the first whitespace, or the
+   * Naive tag-name extraction - returns whatever sits between the opening {@code [} and the first whitespace, or the
    * empty string if the line doesn't look like a tag at all. For malformed inputs we don't care what this returns
    * because the parser errors before template wholeness matters.
    */
   private static String extractTagName(String tagLine) {
-    final var open = tagLine.indexOf('[');
+    final int open = tagLine.indexOf('[');
     if (open == -1) {
       return "";
     }
-    final var afterOpen = open + 1;
-    final var space = tagLine.indexOf(' ', afterOpen);
+    final int afterOpen = open + 1;
+    final int space = tagLine.indexOf(' ', afterOpen);
     if (space == -1) {
       return "";
     }

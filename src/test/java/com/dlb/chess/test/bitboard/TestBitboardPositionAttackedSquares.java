@@ -22,7 +22,7 @@ import com.dlb.chess.test.pgntest.enums.PgnTest;
 /**
  * Differential test for {@link BitboardPosition#attackedSquares(Side)}: for every fixture and every side, the
  * bitboard's union of all piece attacks must agree, square-for-square, with
- * {@link AbstractAttackedSquares#calculateAttackedSquares}. This is the first composed bitboard primitive — exercises
+ * {@link AbstractAttackedSquares#calculateAttackedSquares}. This is the first composed bitboard primitive - exercises
  * the whole Phase 2 + Phase 3 stack together.
  */
 class TestBitboardPositionAttackedSquares {
@@ -33,7 +33,8 @@ class TestBitboardPositionAttackedSquares {
     for (final PgnTest pgnTest : PgnTest.values()) {
       final PgnTestCaseList testCaseList = PgnTestCaseCatalog.getTestList(pgnTest);
       for (final PgnFen testCase : testCaseList.list()) {
-        final StaticPosition staticPosition = StaticPositionBridge.toStaticPosition(testCase.finalPosition().getBitboardPosition());
+        final StaticPosition staticPosition = StaticPositionBridge
+            .toStaticPosition(testCase.finalPosition().getBitboardPosition());
         final BitboardPosition bitboardPosition = StaticPositionBridge.fromStaticPosition(staticPosition);
         assertSideAgrees(staticPosition, bitboardPosition, Side.WHITE, testCase);
         assertSideAgrees(staticPosition, bitboardPosition, Side.BLACK, testCase);
@@ -45,8 +46,7 @@ class TestBitboardPositionAttackedSquares {
       PgnFen testCase) {
     final Set<Square> bitboardAttacks = BitboardPositionUtility.toSquareSet(bitboardPosition.attackedSquares(side));
     final Set<Square> referenceAttacks = AbstractAttackedSquares.calculateAttackedSquares(staticPosition, side);
-    assertEquals(referenceAttacks, bitboardAttacks,
-        side + " attackedSquares in fixture " + testCase.pgnName());
+    assertEquals(referenceAttacks, bitboardAttacks, side + " attackedSquares in fixture " + testCase.pgnName());
   }
 
   @SuppressWarnings("static-method")

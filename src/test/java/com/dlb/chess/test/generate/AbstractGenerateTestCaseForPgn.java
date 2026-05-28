@@ -17,7 +17,7 @@ public abstract class AbstractGenerateTestCaseForPgn {
     result.append("\"");
     result.append(", ");
 
-    final var fen = PgnTestCaseCatalog.findTestCase(pgnName).finalFen();
+    final String fen = PgnTestCaseCatalog.findTestCase(pgnName).finalFen();
 
     result.append("\"");
     result.append(fen);

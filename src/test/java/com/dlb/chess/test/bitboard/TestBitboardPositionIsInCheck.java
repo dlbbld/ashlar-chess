@@ -18,9 +18,9 @@ import com.dlb.chess.test.pgntest.enums.PgnTest;
 
 /**
  * Differential test for {@link BitboardPosition#isInCheck(Side)}: per fixture and per side, the bitboard check
- * detection must agree with {@code StaticPositionUtility.calculateIsCheck} — which is exactly what the production
- * {@code Board.isCheck()} reads. Corpus positions always have both kings, so the reference's "no king" precondition
- * is satisfied throughout the corpus walk.
+ * detection must agree with {@code StaticPositionUtility.calculateIsCheck} - which is exactly what the production
+ * {@code Board.isCheck()} reads. Corpus positions always have both kings, so the reference's "no king" precondition is
+ * satisfied throughout the corpus walk.
  */
 class TestBitboardPositionIsInCheck {
 
@@ -30,7 +30,8 @@ class TestBitboardPositionIsInCheck {
     for (final PgnTest pgnTest : PgnTest.values()) {
       final PgnTestCaseList testCaseList = PgnTestCaseCatalog.getTestList(pgnTest);
       for (final PgnFen testCase : testCaseList.list()) {
-        final StaticPosition staticPosition = StaticPositionBridge.toStaticPosition(testCase.finalPosition().getBitboardPosition());
+        final StaticPosition staticPosition = StaticPositionBridge
+            .toStaticPosition(testCase.finalPosition().getBitboardPosition());
         final BitboardPosition bitboardPosition = StaticPositionBridge.fromStaticPosition(staticPosition);
 
         final boolean bbWhite = bitboardPosition.isInCheck(Side.WHITE);

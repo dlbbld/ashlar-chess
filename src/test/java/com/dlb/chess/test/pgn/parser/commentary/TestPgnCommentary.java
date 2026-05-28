@@ -136,7 +136,7 @@ class TestPgnCommentary {
   void supplementaryCharacterEmojiIsAccepted() {
     // U+1F600 (grinning face) is encoded as a surrogate pair in UTF-16. Validator must iterate by code point,
     // not by char, otherwise each surrogate half would be rejected as Cs.
-    final var emoji = "♔ 😀";
+    final String emoji = "♔ 😀";
     assertEquals(emoji, new PgnCommentary(emoji).value());
   }
 
@@ -163,7 +163,7 @@ class TestPgnCommentary {
   @Test
   void formatCharacterIsAccepted() {
     // Zero-width joiner (U+200D), Cf category — invisible but legitimate text content.
-    final var withZwj = "a‍b";
+    final String withZwj = "a‍b";
     assertEquals(withZwj, new PgnCommentary(withZwj).value());
   }
 
@@ -171,7 +171,7 @@ class TestPgnCommentary {
   @Test
   void unicodeLineSeparatorIsAccepted() {
     // U+2028 (LINE SEPARATOR), Zl category. Not a control character; valid text.
-    final var withLs = "a b";
+    final String withLs = "a b";
     assertEquals(withLs, new PgnCommentary(withLs).value());
   }
 
@@ -182,7 +182,8 @@ class TestPgnCommentary {
   @SuppressWarnings("static-method")
   @Test
   void bellControlCharacterIsRejected() {
-    final var thrown = assertThrows(PgnCommentaryValidationException.class, () -> new PgnCommentary("ab"));
+    final PgnCommentaryValidationException thrown = assertThrows(PgnCommentaryValidationException.class,
+        () -> new PgnCommentary("ab"));
     org.junit.jupiter.api.Assertions.assertTrue(thrown.getMessage().contains("control character"),
         "Message should name the offending category: " + thrown.getMessage());
   }
@@ -213,8 +214,9 @@ class TestPgnCommentary {
   @SuppressWarnings("static-method")
   @Test
   void loneHighSurrogateIsRejected() {
-    final var commentary = "a" + Character.toString(Character.MIN_HIGH_SURROGATE) + "b";
-    final var thrown = assertThrows(PgnCommentaryValidationException.class, () -> new PgnCommentary(commentary));
+    final String commentary = "a" + Character.toString(Character.MIN_HIGH_SURROGATE) + "b";
+    final PgnCommentaryValidationException thrown = assertThrows(PgnCommentaryValidationException.class,
+        () -> new PgnCommentary(commentary));
     org.junit.jupiter.api.Assertions.assertTrue(thrown.getMessage().contains("surrogate"),
         "Message should name the offending category: " + thrown.getMessage());
   }
@@ -222,7 +224,7 @@ class TestPgnCommentary {
   @SuppressWarnings("static-method")
   @Test
   void loneLowSurrogateIsRejected() {
-    final var commentary = "a" + Character.toString(Character.MIN_LOW_SURROGATE) + "b";
+    final String commentary = "a" + Character.toString(Character.MIN_LOW_SURROGATE) + "b";
     assertThrows(PgnCommentaryValidationException.class, () -> new PgnCommentary(commentary));
   }
 
@@ -230,7 +232,8 @@ class TestPgnCommentary {
   @Test
   void privateUseAreaCharacterIsRejected() {
     // U+E000 — start of the BMP private-use area.
-    final var thrown = assertThrows(PgnCommentaryValidationException.class, () -> new PgnCommentary("ab"));
+    final PgnCommentaryValidationException thrown = assertThrows(PgnCommentaryValidationException.class,
+        () -> new PgnCommentary("ab"));
     org.junit.jupiter.api.Assertions.assertTrue(thrown.getMessage().contains("private-use"),
         "Message should name the offending category: " + thrown.getMessage());
   }
@@ -251,14 +254,15 @@ class TestPgnCommentary {
   @Test
   void openingBraceIsAllowedInContent() {
     // T-003: `{` survives validation and round-trips verbatim. Only `}` would terminate the {...} grammar.
-    final var commentary = new PgnCommentary("a { b");
+    final PgnCommentary commentary = new PgnCommentary("a { b");
     org.junit.jupiter.api.Assertions.assertEquals("a { b", commentary.value());
   }
 
   @SuppressWarnings("static-method")
   @Test
   void closingBraceIsRejected() {
-    final var thrown = assertThrows(PgnCommentaryValidationException.class, () -> new PgnCommentary("a } b"));
+    final PgnCommentaryValidationException thrown = assertThrows(PgnCommentaryValidationException.class,
+        () -> new PgnCommentary("a } b"));
     org.junit.jupiter.api.Assertions.assertTrue(thrown.getMessage().contains("closing brace"),
         "Message should name the offending character: " + thrown.getMessage());
   }
@@ -267,7 +271,7 @@ class TestPgnCommentary {
   @Test
   void openingBraceAtStartIsAllowedInContent() {
     // T-003: `{` at any position is content, not an error. Round-trips verbatim.
-    final var commentary = new PgnCommentary("{commentary");
+    final PgnCommentary commentary = new PgnCommentary("{commentary");
     org.junit.jupiter.api.Assertions.assertEquals("{commentary", commentary.value());
   }
 

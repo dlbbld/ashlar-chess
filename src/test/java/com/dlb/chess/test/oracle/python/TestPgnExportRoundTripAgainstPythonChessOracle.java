@@ -87,15 +87,15 @@ class TestPgnExportRoundTripAgainstPythonChessOracle {
   @Test
   void pgnExportRoundTripAgainstPythonChessOracle() throws IOException {
     final @NonNull List<String> failures = new ArrayList<>();
-    var totalFixtures = 0;
+    int totalFixtures = 0;
 
     for (final PgnTest bucket : BUCKETS) {
       final Path jsonlPath = jsonlPathFor(bucket);
-      LOGGER.info("Bucket {} → {}", bucket, jsonlPath);
+      LOGGER.info("Bucket {} -> {}", bucket, jsonlPath);
 
       final List<OracleRecord> records = OracleJsonlReader.readAll(jsonlPath);
       if (records.isEmpty()) {
-        failures.add(bucket + " — oracle file is empty or missing: " + jsonlPath);
+        failures.add(bucket + " - oracle file is empty or missing: " + jsonlPath);
         continue;
       }
 
@@ -115,7 +115,7 @@ class TestPgnExportRoundTripAgainstPythonChessOracle {
           final PgnGame semanticReparsed = StrictPgnParser.parseText(semantic);
           verify(record, expectedUcis, semanticReparsed, "semantic-round-trip", bucket, failures);
         } catch (final RuntimeException e) {
-          failures.add(bucket + " / " + record.pgn() + " — semantic round-trip threw: " + e.getMessage());
+          failures.add(bucket + " / " + record.pgn() + " - semantic round-trip threw: " + e.getMessage());
         }
 
         final String archival = PgnCreate.createPgnString(original, WriteMode.ARCHIVAL);
@@ -123,15 +123,15 @@ class TestPgnExportRoundTripAgainstPythonChessOracle {
           final PgnGame archivalReparsed = StrictPgnParser.parseText(archival);
           verify(record, expectedUcis, archivalReparsed, "archival-round-trip", bucket, failures);
         } catch (final RuntimeException e) {
-          failures.add(bucket + " / " + record.pgn() + " — archival round-trip threw: " + e.getMessage());
+          failures.add(bucket + " / " + record.pgn() + " - archival round-trip threw: " + e.getMessage());
         }
       }
     }
 
     if (totalFixtures == 0) {
-      fail("No fixtures iterated — bucket wiring is broken");
+      fail("No fixtures iterated - bucket wiring is broken");
     }
-    LOGGER.info("Round-trip cross-validated {} fixtures × 2 modes across {} buckets", totalFixtures, BUCKETS.size());
+    LOGGER.info("Round-trip cross-validated {} fixtures x 2 modes across {} buckets", totalFixtures, BUCKETS.size());
 
     if (!failures.isEmpty()) {
       final StringBuilder report = new StringBuilder();
@@ -146,11 +146,11 @@ class TestPgnExportRoundTripAgainstPythonChessOracle {
 
   private static void verify(OracleRecord record, List<String> expectedUcis, PgnGame parsed, String stage,
       PgnTest bucket, List<String> failures) {
-    final var label = bucket + " / " + record.pgn() + " [" + stage + "]";
+    final String label = bucket + " / " + record.pgn() + " [" + stage + "]";
 
     try {
-      assertEquals(record.startFen(), parsed.startFen().fen(), () -> label + " — startFen mismatch");
-      assertEquals(expectedUcis.size(), parsed.halfMoveList().size(), () -> label + " — half-move count mismatch");
+      assertEquals(record.startFen(), parsed.startFen().fen(), () -> label + " - startFen mismatch");
+      assertEquals(expectedUcis.size(), parsed.halfMoveList().size(), () -> label + " - half-move count mismatch");
     } catch (final AssertionError e) {
       failures.add(BasicUtility.getMessage(e));
       return;
@@ -166,8 +166,8 @@ class TestPgnExportRoundTripAgainstPythonChessOracle {
     }
 
     try {
-      assertEquals(expectedUcis, actualUcis, () -> label + " — played UCI sequence mismatch");
-      assertEquals(record.finalFen(), board.getFen(), () -> label + " — finalFen mismatch");
+      assertEquals(expectedUcis, actualUcis, () -> label + " - played UCI sequence mismatch");
+      assertEquals(record.finalFen(), board.getFen(), () -> label + " - finalFen mismatch");
     } catch (final AssertionError e) {
       failures.add(BasicUtility.getMessage(e));
     }

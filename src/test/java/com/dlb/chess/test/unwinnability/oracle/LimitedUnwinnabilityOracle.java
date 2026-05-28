@@ -9,9 +9,9 @@ import com.dlb.chess.test.unwinnability.oracle.enums.LimitedUnwinnabilityVerdict
  * verdict any of them reports.
  *
  * <ol>
- * <li>{@link ForcedLineOracle} — walks the unique-legal-move chain to any depth.</li>
- * <li>{@link ShallowTerminationOracle} — bounded 1/2/3-half-move scan over all legal moves.</li>
- * <li>{@link PawnWallGeometricAnalyzer} — geometric pawn-wall check; a YES verdict implies UNWINNABLE for both
+ * <li>{@link ForcedLineOracle} - walks the unique-legal-move chain to any depth.</li>
+ * <li>{@link ShallowTerminationOracle} - bounded 1/2/3-half-move scan over all legal moves.</li>
+ * <li>{@link PawnWallGeometricAnalyzer} - geometric pawn-wall check; a YES verdict implies UNWINNABLE for both
  * sides.</li>
  * </ol>
  *

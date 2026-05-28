@@ -25,7 +25,7 @@ import com.google.common.collect.ImmutableList;
  * Two measurements per corpus, both per-root-move:
  * <ol>
  * <li><strong>cycle</strong>: {@code move(spec)} followed immediately by {@code unmove()}. This is the inner loop of
- * the helpmate search — every recursive call does exactly this for every legal move. Reports <em>microseconds per
+ * the helpmate search - every recursive call does exactly this for every legal move. Reports <em>microseconds per
  * make/unmake pair</em>, which includes the post-make {@code refreshDerivedState} (sink generator filling the per-depth
  * buffer + {@code isInCheck} snapshot).</li>
  * <li><strong>cycle + key</strong>: same as above plus a {@link HelpmateSearchBoard#currentTranspositionKey()} call in
@@ -63,9 +63,9 @@ public class HelpmateSearchBoardPerformanceSurvey {
   }
 
   private static Measurement measureCycle(List<Setup> setupList) {
-    var moveCount = 0L;
-    final var start = System.nanoTime();
-    for (var round = 0; round < MEASURE_ROUNDS; round++) {
+    long moveCount = 0L;
+    final long start = System.nanoTime();
+    for (int round = 0; round < MEASURE_ROUNDS; round++) {
       for (final Setup setup : setupList) {
         final HelpmateSearchBoard searchBoard = setup.searchBoard();
         for (final LegalMove legalMove : setup.rootMoves()) {
@@ -79,9 +79,9 @@ public class HelpmateSearchBoardPerformanceSurvey {
   }
 
   private static Measurement measureCycleWithKey(List<Setup> setupList) {
-    var moveCount = 0L;
-    final var start = System.nanoTime();
-    for (var round = 0; round < MEASURE_ROUNDS; round++) {
+    long moveCount = 0L;
+    final long start = System.nanoTime();
+    for (int round = 0; round < MEASURE_ROUNDS; round++) {
       for (final Setup setup : setupList) {
         final HelpmateSearchBoard searchBoard = setup.searchBoard();
         for (final LegalMove legalMove : setup.rootMoves()) {
@@ -121,7 +121,7 @@ public class HelpmateSearchBoardPerformanceSurvey {
   }
 
   private static void addSetup(List<Setup> result, Board sourceBoard) {
-    final var fenBoard = new Board(sourceBoard.getFen());
+    final Board fenBoard = new Board(sourceBoard.getFen());
     final HelpmateSearchBoard searchBoard = HelpmateSearchBoard.from(fenBoard);
     final List<LegalMove> rootMoves = List.copyOf(searchBoard.getLegalMoves());
     if (rootMoves.isEmpty()) {
@@ -132,18 +132,18 @@ public class HelpmateSearchBoardPerformanceSurvey {
   }
 
   private static void warmup(List<Setup> setupList) {
-    for (var i = 0; i < WARMUP_ROUNDS; i++) {
+    for (int i = 0; i < WARMUP_ROUNDS; i++) {
       measureCycle(setupList);
       measureCycleWithKey(setupList);
     }
   }
 
   private static void printResult(PgnTest pgnTest, List<Setup> setupList, Measurement cycle, Measurement cycleWithKey) {
-    final var totalRootMoves = setupList.stream().mapToInt(s -> s.rootMoves().size()).sum();
+    final int totalRootMoves = setupList.stream().mapToInt(s -> s.rootMoves().size()).sum();
     final double denominator = totalRootMoves * (long) MEASURE_ROUNDS;
-    final var cycleUs = cycle.nanoseconds() / denominator / 1000.0;
-    final var cycleWithKeyUs = cycleWithKey.nanoseconds() / denominator / 1000.0;
-    final var keyOverheadUs = cycleWithKeyUs - cycleUs;
+    final double cycleUs = cycle.nanoseconds() / denominator / 1000.0;
+    final double cycleWithKeyUs = cycleWithKey.nanoseconds() / denominator / 1000.0;
+    final double keyOverheadUs = cycleWithKeyUs - cycleUs;
 
     System.out.printf("%s%n", pgnTest);
     System.out.printf("  positions: %,d  root moves: %,d%n", setupList.size(), totalRootMoves);

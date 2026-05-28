@@ -21,9 +21,9 @@ import com.dlb.chess.test.pgn.setup.PgnTestCaseCatalog;
 import com.dlb.chess.test.pgntest.enums.PgnTest;
 
 /**
- * Differential test for {@link KingAttacks}: the precomputed bitboard table must agree, for every from-square, with
- * the existing {@link KingNonCastlingEmptyBoardSquares}-backed reference. Geometric, position-independent. Castling
- * targets are intentionally out of scope at this layer and not tested here.
+ * Differential test for {@link KingAttacks}: the precomputed bitboard table must agree, for every from-square, with the
+ * existing {@link KingNonCastlingEmptyBoardSquares}-backed reference. Geometric, position-independent. Castling targets
+ * are intentionally out of scope at this layer and not tested here.
  */
 class TestKingAttacks {
 
@@ -43,7 +43,8 @@ class TestKingAttacks {
     for (final PgnTest pgnTest : PgnTest.values()) {
       final PgnTestCaseList testCaseList = PgnTestCaseCatalog.getTestList(pgnTest);
       for (final PgnFen testCase : testCaseList.list()) {
-        final StaticPosition staticPosition = StaticPositionBridge.toStaticPosition(testCase.finalPosition().getBitboardPosition());
+        final StaticPosition staticPosition = StaticPositionBridge
+            .toStaticPosition(testCase.finalPosition().getBitboardPosition());
         final BitboardPosition bitboardPosition = StaticPositionBridge.fromStaticPosition(staticPosition);
         long kings = bitboardPosition.whiteKings() | bitboardPosition.blackKings();
         while (kings != 0L) {

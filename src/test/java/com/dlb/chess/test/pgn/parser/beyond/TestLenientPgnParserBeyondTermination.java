@@ -20,11 +20,11 @@ import com.dlb.chess.test.ConfigurationTestConstants;
  * kind is:
  *
  * <ul>
- * <li>Checkmate / stalemate fixtures (01–04) — still rejected, but through ordinary legality: the move attempted past
+ * <li>Checkmate / stalemate fixtures (01-04) - still rejected, but through ordinary legality: the move attempted past
  * the mating / stalemating ply cannot match any legal move (the legal-move set is empty), so the lenient parser raises
  * {@link LenientPgnParserValidationException}. The specific failure reason depends on the attempted move and is
  * intentionally not pinned.
- * <li>Insufficient-material fixtures (05–06) — now accepted: mutual insufficient material is queryable only and the
+ * <li>Insufficient-material fixtures (05-06) - now accepted: mutual insufficient material is queryable only and the
  * legal-move set is non-empty, so the moves played past the dead position validate normally and the parser succeeds.
  * </ul>
  */

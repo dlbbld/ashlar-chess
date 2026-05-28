@@ -48,7 +48,7 @@ class TestUnwinnabilityQuickHelpMateIsHelpMate {
   }
 
   private static void assertHelpmateLine(String fen, Side winner, List<UciMove> mateLine) {
-    final var board = new Board(fen);
+    final Board board = new Board(fen);
     for (final UciMove uciMove : mateLine) {
       board.move(UciMoveUtility.convertUciMoveToMoveSpecification(board, uciMove));
     }

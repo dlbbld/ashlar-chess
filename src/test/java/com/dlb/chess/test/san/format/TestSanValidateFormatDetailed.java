@@ -21,7 +21,7 @@ class TestSanValidateFormatDetailed {
     checkValid("d3");
     checkValid("dxe5");
 
-    // invalid: "dz" — 'z' is not a valid SAN character
+    // invalid: "dz" - 'z' is not a valid SAN character
     checkException("dz", SanValidationProblem.FORMAT_PAWN_WRONG_SECOND_CHARACTER);
     checkException("dR", SanValidationProblem.FORMAT_PAWN_WRONG_SECOND_CHARACTER);
   }
@@ -30,7 +30,7 @@ class TestSanValidateFormatDetailed {
   @Test
   void testPawnSecondCharacterLength4() {
     // length 4 pawn, second char neither x nor equals at position 2
-    // "dae5" — countFiles > 2 (d, a, e)
+    // "dae5" - countFiles > 2 (d, a, e)
     checkException("dae5", SanValidationProblem.FORMAT_PAWN_WRONG_SECOND_CHARACTER);
   }
 
@@ -39,14 +39,14 @@ class TestSanValidateFormatDetailed {
   @SuppressWarnings("static-method")
   @Test
   void testPawnCaptureToFile() {
-    // "dx95" — '9' is not a valid SAN character
+    // "dx95" - '9' is not a valid SAN character
     checkException("dx95", SanValidationProblem.FORMAT_PAWN_CAPTURE_WRONG_FILE);
   }
 
   @SuppressWarnings("static-method")
   @Test
   void testPawnCaptureToRank() {
-    // "dxea" — countFiles > 2 (d, e, a)
+    // "dxea" - countFiles > 2 (d, e, a)
     checkException("dxea", SanValidationProblem.FORMAT_PAWN_CAPTURE_WRONG_RANK);
   }
 
@@ -55,28 +55,28 @@ class TestSanValidateFormatDetailed {
   @SuppressWarnings("static-method")
   @Test
   void testPawnPromotionRank() {
-    // "da=Q" — second char 'a' is not a rank digit (non-capturing promotion path)
+    // "da=Q" - second char 'a' is not a rank digit (non-capturing promotion path)
     checkException("da=Q", SanValidationProblem.FORMAT_PAWN_WRONG_SECOND_CHARACTER);
   }
 
   @SuppressWarnings("static-method")
   @Test
   void testPawnPromotionCaptureStructure() {
-    // "dabcde" — countFiles > 2 (d,a,b,c,d,e)
+    // "dabcde" - countFiles > 2 (d,a,b,c,d,e)
     checkException("dabcde", SanValidationProblem.FORMAT_PAWN_WRONG_SECOND_CHARACTER);
   }
 
   @SuppressWarnings("static-method")
   @Test
   void testPawnPromotionCaptureToFile() {
-    // "dx9e=Q" — '9' is not a valid SAN character
+    // "dx9e=Q" - '9' is not a valid SAN character
     checkException("dx9e=Q", SanValidationProblem.FORMAT_PAWN_CAPTURE_WRONG_FILE);
   }
 
   @SuppressWarnings("static-method")
   @Test
   void testPawnPromotionCaptureToRank() {
-    // "dxea=Q" — countFiles > 2 (d, e, a)
+    // "dxea=Q" - countFiles > 2 (d, e, a)
     checkException("dxea=Q", SanValidationProblem.FORMAT_PAWN_CAPTURE_WRONG_RANK);
   }
 
@@ -139,9 +139,9 @@ class TestSanValidateFormatDetailed {
   @SuppressWarnings("static-method")
   @Test
   void testPawnLength() {
-    // length 3 starting with file — not a valid pawn length
+    // length 3 starting with file - not a valid pawn length
     checkException("d3e", SanValidationProblem.FORMAT_PAWN_FORWARD_NON_PROMOTION_OVERLENGTH);
-    // length 5 starting with file — not a valid pawn length
+    // length 5 starting with file - not a valid pawn length
     checkException("dxe5Q", SanValidationProblem.FORMAT_PAWN_CAPTURE_NON_PROMOTION_OVERLENGTH);
   }
 
@@ -150,32 +150,32 @@ class TestSanValidateFormatDetailed {
   @SuppressWarnings("static-method")
   @Test
   void testKingDestination() {
-    // "K9e" — '9' is not a file letter, 'x', or valid rank digit (1-8)
+    // "K9e" - '9' is not a file letter, 'x', or valid rank digit (1-8)
     checkException("K9e", SanValidationProblem.FORMAT_KING_NON_CASTLING_NON_CAPTURE_WRONG_DESTINATION_FILE);
-    // "KR5" — 'R' is not a file letter, 'x', or rank digit
+    // "KR5" - 'R' is not a file letter, 'x', or rank digit
     checkException("KR5", SanValidationProblem.FORMAT_KING_NON_CASTLING_NON_CAPTURE_WRONG_DESTINATION_FILE);
   }
 
   @SuppressWarnings("static-method")
   @Test
   void testKingSecondCharacter() {
-    // "Kae5" — length 4 king, third char 'e' is not a rank digit
+    // "Kae5" - length 4 king, third char 'e' is not a rank digit
     checkException("Kae5", SanValidationProblem.FORMAT_KING_NON_CASTLING_NON_CAPTURE_WRONG_DESTINATION_RANK);
   }
 
   @SuppressWarnings("static-method")
   @Test
   void testKingCaptureDestination() {
-    // "Kx9e" — after 'x', '9' is not a file letter for the destination
+    // "Kx9e" - after 'x', '9' is not a file letter for the destination
     checkException("Kx9e", SanValidationProblem.FORMAT_KING_NON_CASTLING_CAPTURE_WRONG_DESTINATION_FILE);
   }
 
   @SuppressWarnings("static-method")
   @Test
   void testKingLength() {
-    // "Ke" — too short, missing destination rank
+    // "Ke" - too short, missing destination rank
     checkException("Ke", SanValidationProblem.FORMAT_KING_NON_CASTLING_NON_CAPTURE_NO_DESTINATION_RANK);
-    // "Kxe5a" — too long, valid Kxe5 with an extra char
+    // "Kxe5a" - too long, valid Kxe5 with an extra char
     checkException("Kxe5a", SanValidationProblem.FORMAT_KING_NON_CASTLING_CAPTURE_OVERLENGTH);
   }
 
@@ -184,35 +184,35 @@ class TestSanValidateFormatDetailed {
   @SuppressWarnings("static-method")
   @Test
   void testPieceDestination() {
-    // "QeR" — length 3, after 'e' (file letter) the third char 'R' is neither rank, file, nor 'x'
+    // "QeR" - length 3, after 'e' (file letter) the third char 'R' is neither rank, file, nor 'x'
     checkException("QeR", SanValidationProblem.FORMAT_RNBQ_FILE_WRONG_THIRD_CHARACTER);
   }
 
   @SuppressWarnings("static-method")
   @Test
   void testPieceLength() {
-    // "Qe" — length 2, file branch has no third character
+    // "Qe" - length 2, file branch has no third character
     checkException("Qe", SanValidationProblem.FORMAT_RNBQ_FILE_NO_THIRD_CHARACTER);
   }
 
   @SuppressWarnings("static-method")
   @Test
   void testPieceMiddle1() {
-    // "Q=e5" — second char '=' is not a valid second character
+    // "Q=e5" - second char '=' is not a valid second character
     checkException("Q=e5", SanValidationProblem.FORMAT_RNBQ_WRONG_SECOND_CHARACTER);
   }
 
   @SuppressWarnings("static-method")
   @Test
   void testPieceMiddle2() {
-    // "Qabe5" — file-branch, non-capture file disambig; 'e' at pos 3 is not a rank digit
+    // "Qabe5" - file-branch, non-capture file disambig; 'e' at pos 3 is not a rank digit
     checkException("Qabe5", SanValidationProblem.FORMAT_RNBQ_NON_CAPTURE_FILE_WRONG_DESTINATION_RANK);
   }
 
   @SuppressWarnings("static-method")
   @Test
   void testPieceMiddle3() {
-    // "Qa3ae5" — file[rank] prefix commits to source-square; 'e' at pos 4 is not a rank digit
+    // "Qa3ae5" - file[rank] prefix commits to source-square; 'e' at pos 4 is not a rank digit
     checkException("Qa3ae5", SanValidationProblem.FORMAT_RNBQ_NON_CAPTURE_SQUARE_WRONG_DESTINATION_RANK);
   }
 
@@ -225,11 +225,11 @@ class TestSanValidateFormatDetailed {
     checkValid("O-O");
     checkValid("O-O-O");
 
-    // invalid: "O-O-" — starts with O but is neither O-O nor O-O-O
+    // invalid: "O-O-" - starts with O but is neither O-O nor O-O-O
     checkException("O-O-", SanValidationProblem.FORMAT_KING_CASTLING);
-    // "O-" — too short
+    // "O-" - too short
     checkException("O-", SanValidationProblem.FORMAT_KING_CASTLING);
-    // "O" — just O
+    // "O" - just O
     checkException("O", SanValidationProblem.FORMAT_KING_CASTLING);
   }
 
@@ -249,7 +249,7 @@ class TestSanValidateFormatDetailed {
   }
 
   private static void checkValid(String san) {
-    var isException = false;
+    boolean isException = false;
     try {
       SanValidateFormat.validateFormat(san);
     } catch (@SuppressWarnings("unused") final SanValidationException e) {

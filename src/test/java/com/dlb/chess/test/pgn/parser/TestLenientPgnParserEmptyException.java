@@ -10,7 +10,7 @@ import com.dlb.chess.san.SanValidationProblem;
 import com.dlb.chess.test.pgntest.constants.PgnTestConstants;
 
 /**
- * Covers the lenient parser's rejection of input that carries no signal at all — strictly empty bytes, or whitespace-
+ * Covers the lenient parser's rejection of input that carries no signal at all - strictly empty bytes, or whitespace-
  * only files (any combination of spaces, tabs, newlines). Both shapes collapse to
  * {@link LenientPgnParserValidationProblem#FILE_EMPTY}.
  */

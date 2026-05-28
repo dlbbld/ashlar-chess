@@ -8,9 +8,9 @@ import com.dlb.chess.common.model.HalfMove;
  * stays consistent between the claim-ahead and sequence sections.
  *
  * <p>
- * Renders an initial-FEN start as {@code [Starting position] (N)} where {@code N} is the starting FEN's halfmove
- * clock, and an after-reset start as {@code <ply>.[..] <SAN> (1)} — the first non-zeroing move after a reset, with
- * its post-move halfmove-clock value of {@code 1} in parentheses.
+ * Renders an initial-FEN start as {@code [Starting position] (N)} where {@code N} is the starting FEN's halfmove clock,
+ * and an after-reset start as {@code <ply>.[..] <SAN> (1)} - the first non-zeroing move after a reset, with its
+ * post-move halfmove-clock value of {@code 1} in parentheses.
  */
 abstract class SequenceStartFormat {
 

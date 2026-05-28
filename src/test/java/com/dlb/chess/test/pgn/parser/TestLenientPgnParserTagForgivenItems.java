@@ -24,7 +24,7 @@ class TestLenientPgnParserTagForgivenItems {
   void test01_strTagMissingEmitsOneItemPerMissingStrTagExceptResult() {
     // Only Result + Event provided; Site/Date/Round/White/Black are missing. Result has its own dedicated codes
     // and is never emitted by STR_TAG_MISSING. So we expect five items.
-    final var pgn = """
+    final String pgn = """
         [Event "Spring Classic"]
         [Result "*"]
 
@@ -43,7 +43,7 @@ class TestLenientPgnParserTagForgivenItems {
 
   @Test
   void test02_resultTagMissingButTerminationMarkerPresentEmitsCodeWithMarkerValueInDetail() {
-    final var pgn = """
+    final String pgn = """
         [Event "?"]
         [Site "?"]
         [Date "????.??.??"]
@@ -62,7 +62,7 @@ class TestLenientPgnParserTagForgivenItems {
 
   @Test
   void test03_resultAndTerminationMarkerBothMissingEmitsCode() {
-    final var pgn = """
+    final String pgn = """
         [Event "?"]
         [Site "?"]
         [Date "????.??.??"]
@@ -81,7 +81,7 @@ class TestLenientPgnParserTagForgivenItems {
 
   @Test
   void test04_setUpTagMissingButFenPresentEmitsCode() {
-    final var pgn = """
+    final String pgn = """
         [Event "?"]
         [Site "?"]
         [Date "????.??.??"]
@@ -101,7 +101,7 @@ class TestLenientPgnParserTagForgivenItems {
 
   @Test
   void test05_setUpTagPresentButFenMissingEmitsCode() {
-    final var pgn = """
+    final String pgn = """
         [Event "?"]
         [Site "?"]
         [Date "????.??.??"]
@@ -123,7 +123,7 @@ class TestLenientPgnParserTagForgivenItems {
   void test06_redundantFenAndSetUpForInitialPositionEmitsCode() {
     // FEN value describes the initial position; the FEN+SetUp pair is redundant since the initial position is the
     // implicit default. The parse model preserves the tags; archival-mode export drops them.
-    final var pgn = """
+    final String pgn = """
         [Event "?"]
         [Site "?"]
         [Date "????.??.??"]
@@ -145,7 +145,7 @@ class TestLenientPgnParserTagForgivenItems {
 
   @Test
   void test07_canonicalInputEmitsNoTagForgivenItems() {
-    final var pgn = """
+    final String pgn = """
         [Event "Spring Classic"]
         [Site "Somewhere"]
         [Date "2024.01.01"]

@@ -23,10 +23,10 @@ import com.dlb.chess.test.pgn.setup.PgnTestCaseCatalog;
 import com.dlb.chess.test.pgntest.enums.PgnTest;
 
 /**
- * Differential test for {@link PawnMoves#captures}. Regular captures = diagonal-forward squares occupied by an
- * opponent piece; en-passant = diagonal-forward square equal to the en-passant target (only relevant to the side
- * to move on the fixture board). The reference oracle is derived from {@link StaticPosition#isOpponentPiece} plus a
- * direct EP-target comparison.
+ * Differential test for {@link PawnMoves#captures}. Regular captures = diagonal-forward squares occupied by an opponent
+ * piece; en-passant = diagonal-forward square equal to the en-passant target (only relevant to the side to move on the
+ * fixture board). The reference oracle is derived from {@link StaticPosition#isOpponentPiece} plus a direct EP-target
+ * comparison.
  */
 class TestPawnCaptures {
 
@@ -44,9 +44,11 @@ class TestPawnCaptures {
 
         // EP is only available to the side to move on the fixture board; the other side gets 0L.
         final long epForWhite = (havingMove == Side.WHITE && boardEpTarget != Square.NONE)
-            ? (1L << boardEpTarget.ordinal()) : 0L;
+            ? (1L << boardEpTarget.ordinal())
+            : 0L;
         final long epForBlack = (havingMove == Side.BLACK && boardEpTarget != Square.NONE)
-            ? (1L << boardEpTarget.ordinal()) : 0L;
+            ? (1L << boardEpTarget.ordinal())
+            : 0L;
         final Square epForWhiteSquare = epForWhite == 0L ? Square.NONE : boardEpTarget;
         final Square epForBlackSquare = epForBlack == 0L ? Square.NONE : boardEpTarget;
 

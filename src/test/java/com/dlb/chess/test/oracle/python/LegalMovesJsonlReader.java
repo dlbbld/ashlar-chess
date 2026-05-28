@@ -1,5 +1,6 @@
 package com.dlb.chess.test.oracle.python;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -26,7 +27,7 @@ public final class LegalMovesJsonlReader {
 
   public static List<LegalMovesRecord> readAll(Path jsonlPath) throws IOException {
     final List<LegalMovesRecord> records = new ArrayList<>();
-    try (var reader = Files.newBufferedReader(jsonlPath, StandardCharsets.UTF_8)) {
+    try (BufferedReader reader = Files.newBufferedReader(jsonlPath, StandardCharsets.UTF_8)) {
       String line;
       while ((line = reader.readLine()) != null) {
         if (line.isBlank()) {
@@ -39,8 +40,8 @@ public final class LegalMovesJsonlReader {
   }
 
   private static LegalMovesRecord toRecord(Map<String, Object> obj) {
-    final var pgn = (String) obj.get("pgn");
-    final var rawPlies = (List<Object>) obj.get("perPly");
+    final String pgn = (String) obj.get("pgn");
+    final List<Object> rawPlies = (List<Object>) obj.get("perPly");
     final List<LegalMovesPly> perPly = new ArrayList<>(rawPlies.size());
     for (final Object raw : rawPlies) {
       perPly.add(toPly((Map<String, Object>) raw));
@@ -49,7 +50,7 @@ public final class LegalMovesJsonlReader {
   }
 
   private static LegalMovesPly toPly(Map<String, Object> obj) {
-    final var rawList = (List<Object>) obj.get("legalMovesUci");
+    final List<Object> rawList = (List<Object>) obj.get("legalMovesUci");
     final List<String> uci = new ArrayList<>(rawList.size());
     for (final Object o : rawList) {
       uci.add((String) o);

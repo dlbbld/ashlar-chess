@@ -9,7 +9,7 @@ import com.dlb.chess.pgn.WriteMode;
 public abstract class AbstractTestLenientPgnParser {
 
   /**
-   * Asserts that two parse models are equivalent under archival normalisation — i.e. once both are fed through
+   * Asserts that two parse models are equivalent under archival normalisation - i.e. once both are fed through
    * {@link WriteMode#ARCHIVAL} export they produce the same PGN string. Use this instead of full {@code PgnGame}
    * equality when comparing a lenient-parsed deficient variant against its strict-parsed canonical reference: the
    * parsers now preserve input as given, so direct equality fails wherever the inputs differ in tag presence, tag

@@ -26,21 +26,21 @@ import com.dlb.chess.moves.EnPassantCaptureUtility;
  * castling rights for both sides as mutable instance fields. {@link #move(MoveSpecification)} mutates the bitboards in
  * place; {@link #unmove()} pops a snapshot off a growable, pre-allocated stack of mutable {@link UndoState} objects.
  * The legal-move generator emits directly into a per-depth {@link LegalMoveBuffer} via
- * {@link BitboardLegalMoveFactory#calculateLegalMovesInto} — no per-move {@code Set} / {@code ImmutableList} allocation
+ * {@link BitboardLegalMoveFactory#calculateLegalMovesInto} - no per-move {@code Set} / {@code ImmutableList} allocation
  * along the search hot path.
  *
  * <p>
  * {@link BitboardPosition} stays immutable (it remains a record); the mutation is local to this package-private search
  * board. Per the layer-discipline rule, the search board calls the shared bitboard layer for move generation (the sink
  * overload {@link BitboardLegalMoveFactory#calculateLegalMovesInto}) and for the EP normalization probe
- * ({@link BitboardPosition#isInCheckAfterEnPassantCapture}) — no private parallel engine. One {@link BitboardPosition}
+ * ({@link BitboardPosition#isInCheckAfterEnPassantCapture}) - no private parallel engine. One {@link BitboardPosition}
  * snapshot is still built per {@code refreshDerivedState} call for the {@code isInCheck} query; the snapshot is
  * local-scope and the surrounding cached flags ({@code isCheckmate} / {@code isStalemate}) are derived from it together
  * with {@link LegalMoveBuffer#isEmpty}.
  *
  * <p>
  * Getters that expose record-shaped snapshots ({@link #getBitboardPosition}, {@link #getDynamicPosition}) construct a
- * fresh record on each call — they exist for the lock-step Board parity test and for debugging, not for the search hot
+ * fresh record on each call - they exist for the lock-step Board parity test and for debugging, not for the search hot
  * path. Internal callers read the mutable fields directly.
  */
 final class HelpmateSearchBoard {
@@ -91,7 +91,7 @@ final class HelpmateSearchBoard {
     this.castlingRightBlack = castlingRightBlack;
     this.undoStack = new UndoState[INITIAL_UNDO_CAPACITY];
     this.buffersByDepth = new LegalMoveBuffer[INITIAL_UNDO_CAPACITY];
-    for (var i = 0; i < this.undoStack.length; i++) {
+    for (int i = 0; i < this.undoStack.length; i++) {
       this.undoStack[i] = new UndoState();
       this.buffersByDepth[i] = new LegalMoveBuffer();
     }
@@ -115,7 +115,7 @@ final class HelpmateSearchBoard {
     undoTop++;
     // The parent's buffer at undoTop-1 is preserved untouched; we write into buffersByDepth[undoTop] in step 8.
 
-    // 2. Identify the move (movingPiece, capturedPiece, kind) from current mutable state — no snapshot allocation.
+    // 2. Identify the move (movingPiece, capturedPiece, kind) from current mutable state - no snapshot allocation.
     final LegalMove moveToPerform = identifyLegalMove(moveSpecification);
 
     // 3. Mutate the piece bitboards in place.
@@ -133,7 +133,7 @@ final class HelpmateSearchBoard {
     // 6. Update raw EP target (a pawn 2-square advance sets it; everything else clears it).
     enPassantCaptureTargetSquare = EnPassantCaptureUtility.calculateEnPassantCaptureTargetSquare(moveToPerform);
 
-    // 7. Normalize EP — NONE if no opposing pawn can legally execute the EP capture.
+    // 7. Normalize EP - NONE if no opposing pawn can legally execute the EP capture.
     normalizedEnPassantCaptureTargetSquare = computeNormalizedEnPassantCaptureTargetSquare();
 
     // 8. Refresh derived state: fill the per-depth legal-move buffer and recompute cached check / mate flags.
@@ -159,7 +159,7 @@ final class HelpmateSearchBoard {
 
   /**
    * Exact structural transposition-cache key for the current search-board state. Constructed directly from the mutable
-   * piece bitboards and per-move auxiliary state — one record allocation per call, no nested {@link BitboardPosition}
+   * piece bitboards and per-move auxiliary state - one record allocation per call, no nested {@link BitboardPosition}
    * (the twelve piece bitboards are inlined in {@link HelpmateSearchKey}). Equivalent in equality semantics to
    * {@link #getDynamicPosition()}{@code .equals}, but without the nested-record allocation cost. See
    * {@link HelpmateSearchKey} for the included / excluded field list.
@@ -281,13 +281,13 @@ final class HelpmateSearchBoard {
   }
 
   private void growStacks() {
-    final var oldLen = undoStack.length;
-    final var newLen = oldLen * 2;
-    final var grownUndo = new UndoState[newLen];
-    final var grownBuffers = new LegalMoveBuffer[newLen];
+    final int oldLen = undoStack.length;
+    final int newLen = oldLen * 2;
+    final UndoState[] grownUndo = new UndoState[newLen];
+    final LegalMoveBuffer[] grownBuffers = new LegalMoveBuffer[newLen];
     System.arraycopy(undoStack, 0, grownUndo, 0, oldLen);
     System.arraycopy(buffersByDepth, 0, grownBuffers, 0, oldLen);
-    for (var i = oldLen; i < newLen; i++) {
+    for (int i = oldLen; i < newLen; i++) {
       grownUndo[i] = new UndoState();
       grownBuffers[i] = new LegalMoveBuffer();
     }
@@ -299,11 +299,11 @@ final class HelpmateSearchBoard {
    * Identifies movingPiece, capturedPiece, and {@link LegalMoveKind} from the current mutable state. Mirrors the tiny
    * piece-lookup logic in {@code BitboardLegalMoveFactory.toLegalMove} but reads directly from the mutable piece
    * bitboards so the hot path does not pay for a {@link BitboardPosition} snapshot per move. Same semantics; the
-   * differential coverage comes from {@link TestHelpmateSearchBoard}'s lock-step Board parity.
+   * differential coverage comes from {@code TestHelpmateSearchBoard}'s lock-step Board parity.
    */
   private LegalMove identifyLegalMove(MoveSpecification moveSpec) {
     if (moveSpec.castlingMove() != CastlingMove.NONE) {
-      final var kingPiece = havingMove == Side.WHITE ? Piece.WHITE_KING : Piece.BLACK_KING;
+      final Piece kingPiece = havingMove == Side.WHITE ? Piece.WHITE_KING : Piece.BLACK_KING;
       return new LegalMove(moveSpec, kingPiece, Piece.NONE, LegalMoveKind.CASTLING);
     }
 
@@ -314,10 +314,10 @@ final class HelpmateSearchBoard {
       throw new IllegalArgumentException("No piece on the from-square " + from.getName());
     }
 
-    final var isPawn = movingPiece.getPieceType() == PieceType.PAWN;
-    final var diagonalPawnMove = isPawn && from.getFile() != to.getFile();
+    final boolean isPawn = movingPiece.getPieceType() == PieceType.PAWN;
+    final boolean diagonalPawnMove = isPawn && from.getFile() != to.getFile();
     final Piece toPiece = pieceAt(to);
-    final var toEmpty = toPiece == Piece.NONE;
+    final boolean toEmpty = toPiece == Piece.NONE;
 
     final Piece capturedPiece;
     if (!toEmpty) {
@@ -346,7 +346,7 @@ final class HelpmateSearchBoard {
    * Returns the piece on {@code square} from the mutable bitboards. Mirrors {@link BitboardPosition#get(Square)}.
    */
   private Piece pieceAt(Square square) {
-    final var bit = 1L << square.ordinal();
+    final long bit = 1L << square.ordinal();
     if ((whitePawns & bit) != 0L) {
       return Piece.WHITE_PAWN;
     }
@@ -410,7 +410,7 @@ final class HelpmateSearchBoard {
   }
 
   /**
-   * Applies {@code moveToPerform} to the piece bitboards in place — mirrors {@link BitboardPosition#afterMove}.
+   * Applies {@code moveToPerform} to the piece bitboards in place - mirrors {@link BitboardPosition#afterMove}.
    */
   private void applyMoveInPlace(LegalMove moveToPerform) {
     final MoveSpecification moveSpec = moveToPerform.moveSpecification();
@@ -422,21 +422,21 @@ final class HelpmateSearchBoard {
     final Square to = moveSpec.toSquare();
     final Piece movingPiece = moveToPerform.movingPiece();
     final Piece capturedPiece = moveToPerform.pieceCaptured();
-    final var fromBit = 1L << from.ordinal();
-    final var toBit = 1L << to.ordinal();
+    final long fromBit = 1L << from.ordinal();
+    final long toBit = 1L << to.ordinal();
 
     final long capturedBit;
     if (capturedPiece == Piece.NONE) {
       capturedBit = 0L;
     } else if (moveToPerform.kind() == LegalMoveKind.EN_PASSANT_CAPTURE) {
-      final var capturedOrdinal = havingMove == Side.WHITE ? to.ordinal() - 8 : to.ordinal() + 8;
+      final int capturedOrdinal = havingMove == Side.WHITE ? to.ordinal() - 8 : to.ordinal() + 8;
       capturedBit = 1L << capturedOrdinal;
     } else {
       capturedBit = toBit;
     }
 
     final PromotionPieceType promotion = moveSpec.promotionPieceType();
-    final var destPiece = promotion == PromotionPieceType.NONE ? movingPiece
+    final Piece destPiece = promotion == PromotionPieceType.NONE ? movingPiece
         : Piece.calculate(havingMove, promotion.getPieceType());
 
     togglePieceBit(movingPiece, fromBit);
@@ -472,8 +472,8 @@ final class HelpmateSearchBoard {
       rookFromOrdinal = Square.A8.ordinal();
       rookToOrdinal = Square.D8.ordinal();
     }
-    final var kingPiece = movingSide == Side.WHITE ? Piece.WHITE_KING : Piece.BLACK_KING;
-    final var rookPiece = movingSide == Side.WHITE ? Piece.WHITE_ROOK : Piece.BLACK_ROOK;
+    final Piece kingPiece = movingSide == Side.WHITE ? Piece.WHITE_KING : Piece.BLACK_KING;
+    final Piece rookPiece = movingSide == Side.WHITE ? Piece.WHITE_ROOK : Piece.BLACK_ROOK;
     togglePieceBit(kingPiece, 1L << kingFromOrdinal);
     togglePieceBit(kingPiece, 1L << kingToOrdinal);
     togglePieceBit(rookPiece, 1L << rookFromOrdinal);
@@ -496,12 +496,12 @@ final class HelpmateSearchBoard {
     final Square squareBehind = Square.calculateBehindSquare(havingMove, enPassantCaptureTargetSquare);
     final Piece ownPawn = Piece.calculate(havingMove, PieceType.PAWN);
 
-    final var hasRight = Square.calculateHasRightSquare(havingMove, squareBehind);
-    final var hasLeft = Square.calculateHasLeftSquare(havingMove, squareBehind);
-    final var candidateRight = hasRight ? Square.calculateRightSquare(havingMove, squareBehind) : Square.NONE;
-    final var candidateLeft = hasLeft ? Square.calculateLeftSquare(havingMove, squareBehind) : Square.NONE;
-    final var hasRightPawn = hasRight && pieceAt(candidateRight) == ownPawn;
-    final var hasLeftPawn = hasLeft && pieceAt(candidateLeft) == ownPawn;
+    final boolean hasRight = Square.calculateHasRightSquare(havingMove, squareBehind);
+    final boolean hasLeft = Square.calculateHasLeftSquare(havingMove, squareBehind);
+    final Square candidateRight = hasRight ? Square.calculateRightSquare(havingMove, squareBehind) : Square.NONE;
+    final Square candidateLeft = hasLeft ? Square.calculateLeftSquare(havingMove, squareBehind) : Square.NONE;
+    final boolean hasRightPawn = hasRight && pieceAt(candidateRight) == ownPawn;
+    final boolean hasLeftPawn = hasLeft && pieceAt(candidateLeft) == ownPawn;
 
     if (!hasRightPawn && !hasLeftPawn) {
       return Square.NONE;
@@ -520,10 +520,10 @@ final class HelpmateSearchBoard {
   }
 
   private void refreshDerivedState() {
-    final var currentBuffer = buffersByDepth[undoTop];
+    final LegalMoveBuffer currentBuffer = buffersByDepth[undoTop];
     currentBuffer.reset();
     final BitboardPosition snapshot = getBitboardPosition();
-    final var enPassantBit = enPassantCaptureTargetSquare == Square.NONE ? 0L
+    final long enPassantBit = enPassantCaptureTargetSquare == Square.NONE ? 0L
         : 1L << enPassantCaptureTargetSquare.ordinal();
     BitboardLegalMoveFactory.calculateLegalMovesInto(currentBuffer::append, snapshot, havingMove,
         getCastlingRight(havingMove), enPassantBit);

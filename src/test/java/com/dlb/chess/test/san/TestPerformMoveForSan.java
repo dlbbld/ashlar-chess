@@ -17,7 +17,7 @@ class TestPerformMoveForSan implements EnumConstants {
   @Test
   void testLastChar() {
 
-    var isException = false;
+    boolean isException = false;
 
     try {
       final Board board = new Board();
@@ -72,7 +72,7 @@ class TestPerformMoveForSan implements EnumConstants {
   @SuppressWarnings("static-method")
   @Test
   void testCalculateMoveSpecificationForSan() {
-    var isException = false;
+    boolean isException = false;
 
     try {
       final Board board = new Board();
@@ -108,7 +108,7 @@ class TestPerformMoveForSan implements EnumConstants {
   @Test
   void testFileRankSpecificationValid() {
 
-    var isException = false;
+    boolean isException = false;
 
     try {
 

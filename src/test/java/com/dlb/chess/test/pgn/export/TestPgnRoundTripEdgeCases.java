@@ -17,9 +17,9 @@ import com.dlb.chess.pgn.WriteMode;
  * {@code parse -> semantic-write -> parse} without information loss or invalid output.
  *
  * <ul>
- * <li>Tag values containing the two escape-required characters from PGN spec section 8.1.2 (backslash and quote) — the
+ * <li>Tag values containing the two escape-required characters from PGN spec section 8.1.2 (backslash and quote) - the
  * tokenizer unescapes on read, so the exporter must re-escape on write.</li>
- * <li>A tags-only PGN with no movetext and no termination marker — the lenient parser accepts this shape, semantic
+ * <li>A tags-only PGN with no movetext and no termination marker - the lenient parser accepts this shape, semantic
  * export must produce a well-formed (re-parseable) PGN, not throw because the movetext string is empty.</li>
  * </ul>
  */
@@ -31,7 +31,7 @@ class TestPgnRoundTripEdgeCases {
     // PGN spec section 8.1.2: inside a tag string, a literal " is encoded as \" and a literal \ is encoded as
     // \\. The tokenizer unescapes; the exporter must re-escape. Without the fix, semantic export emitted the
     // raw unescaped characters inside the quotes, producing an invalid PGN that re-parsing rejected.
-    final var pgn = """
+    final String pgn = """
         [Event "A \\"Quote\\" and slash \\\\"]
         [Site "?"]
         [Date "????.??.??"]
@@ -59,11 +59,11 @@ class TestPgnRoundTripEdgeCases {
 
   @Test
   void test02_tagsOnlyPgnRoundTripsViaSemanticExport() {
-    // Lenient parser accepts a PGN with tags only — no movetext, no termination marker. Without the fix,
+    // Lenient parser accepts a PGN with tags only - no movetext, no termination marker. Without the fix,
     // semantic export threw from PgnLineWrapper because the empty movetext string was passed to the wrap
     // helper (which rejects empty input). The fix: semantic export skips the wrap call when there is no
     // movetext content, producing tag section + separator + trailing blank.
-    final var pgn = """
+    final String pgn = """
         [Event "Spring Classic"]
         [White "Alice"]
 
@@ -86,7 +86,7 @@ class TestPgnRoundTripEdgeCases {
 
   /**
    * Extracts the {@link PgnGame} from a successful validation result, asserting non-null. Gives the JDT null-flow
-   * analysis the narrowed type it needs at the use site — {@code LenientPgnParserValidationResult
+   * analysis the narrowed type it needs at the use site - {@code LenientPgnParserValidationResult
    * .pgnGame()} is declared {@code @Nullable} (it carries {@code null} on failure), and JDT does not infer non-null
    * from {@code isValid()} alone.
    */

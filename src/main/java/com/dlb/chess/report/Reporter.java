@@ -18,8 +18,8 @@ import com.dlb.chess.pgn.PgnGame;
 import com.dlb.chess.pgn.PgnUtility;
 
 /**
- * Prints a human-readable, game-level summary of a {@link Board} or a parsed PGN to {@code stdout}: threefold-repetition
- * listings, missed claim-ahead opportunities, and no-progress (50/75-move-rule) sequences.
+ * Prints a human-readable, game-level summary of a {@link Board} or a parsed PGN to {@code stdout}:
+ * threefold-repetition listings, missed claim-ahead opportunities, and no-progress (50/75-move-rule) sequences.
  *
  * <p>
  * The summary distinguishes on-board predicates ("threefold has occurred") from with-move predicates ("some legal move

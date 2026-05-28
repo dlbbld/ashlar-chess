@@ -1,5 +1,6 @@
 package com.dlb.chess.test.oracle.python;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -14,7 +15,7 @@ import com.dlb.chess.common.Nulls;
 /**
  * Reads a python-chess-generated oracle JSONL file into {@link OracleRecord} values. One JSON object per line; objects
  * match the shape emitted by {@code src/test/python/generate_parser_fen_mechanics_oracle.py}. The embedded JSON parser
- * covers exactly the value types that script emits — strings, integers, booleans, arrays, objects — and is intended for
+ * covers exactly the value types that script emits - strings, integers, booleans, arrays, objects - and is intended for
  * the test path only; do not generalise it.
  */
 @SuppressWarnings("unchecked")
@@ -25,7 +26,7 @@ public final class OracleJsonlReader {
 
   public static List<OracleRecord> readAll(Path jsonlPath) throws IOException {
     final List<OracleRecord> records = new ArrayList<>();
-    try (var reader = Files.newBufferedReader(jsonlPath, StandardCharsets.UTF_8)) {
+    try (BufferedReader reader = Files.newBufferedReader(jsonlPath, StandardCharsets.UTF_8)) {
       String line;
       while ((line = reader.readLine()) != null) {
         if (line.isBlank()) {
@@ -38,10 +39,10 @@ public final class OracleJsonlReader {
   }
 
   private static OracleRecord toRecord(Map<String, Object> obj) {
-    final var pgn = (String) obj.get("pgn");
-    final var startFen = (String) obj.get("startFen");
-    final var finalFen = (String) obj.get("finalFen");
-    final var rawMoves = (List<Object>) obj.get("moves");
+    final String pgn = (String) obj.get("pgn");
+    final String startFen = (String) obj.get("startFen");
+    final String finalFen = (String) obj.get("finalFen");
+    final List<Object> rawMoves = (List<Object>) obj.get("moves");
     final List<OracleMove> moves = new ArrayList<>(rawMoves.size());
     for (final Object raw : rawMoves) {
       moves.add(toMove((Map<String, Object>) raw));
@@ -81,7 +82,7 @@ public final class OracleJsonlReader {
 
   private static Object parseValue(Cursor c) {
     c.skipWhitespace();
-    final var ch = c.peek();
+    final char ch = c.peek();
     return switch (ch) {
       case '{' -> parseObject(c);
       case '[' -> parseArray(c);
@@ -108,7 +109,7 @@ public final class OracleJsonlReader {
       final Object value = parseValue(c);
       out.put(key, value);
       c.skipWhitespace();
-      final var sep = c.peek();
+      final char sep = c.peek();
       if (sep == ',') {
         c.advance();
         continue;
@@ -132,7 +133,7 @@ public final class OracleJsonlReader {
     while (true) {
       out.add(parseValue(c));
       c.skipWhitespace();
-      final var sep = c.peek();
+      final char sep = c.peek();
       if (sep == ',') {
         c.advance();
         continue;
@@ -149,12 +150,12 @@ public final class OracleJsonlReader {
     c.expect('"');
     final StringBuilder sb = new StringBuilder();
     while (true) {
-      final var ch = c.next();
+      final char ch = c.next();
       if (ch == '"') {
         return Nulls.toString(sb);
       }
       if (ch == '\\') {
-        final var esc = c.next();
+        final char esc = c.next();
         switch (esc) {
           case '"' -> sb.append('"');
           case '\\' -> sb.append('\\');
@@ -165,7 +166,7 @@ public final class OracleJsonlReader {
           case 'r' -> sb.append('\r');
           case 't' -> sb.append('\t');
           case 'u' -> {
-            final var code = Integer.parseInt(c.take(4), 16);
+            final int code = Integer.parseInt(c.take(4), 16);
             sb.append((char) code);
           }
           default -> throw new IllegalArgumentException("bad escape '\\" + esc + "' at position " + c.position());
@@ -186,7 +187,7 @@ public final class OracleJsonlReader {
   }
 
   private static Integer parseInteger(Cursor c) {
-    final var start = c.position();
+    final int start = c.position();
     if (c.peek() == '-') {
       c.advance();
     }
@@ -222,7 +223,7 @@ public final class OracleJsonlReader {
     }
 
     char next() {
-      final var ch = peek();
+      final char ch = peek();
       pos++;
       return ch;
     }
@@ -256,7 +257,7 @@ public final class OracleJsonlReader {
 
     void skipWhitespace() {
       while (pos < text.length()) {
-        final var ch = text.charAt(pos);
+        final char ch = text.charAt(pos);
         if (ch == ' ' || ch == '\t' || ch == '\n' || ch == '\r') {
           pos++;
           continue;

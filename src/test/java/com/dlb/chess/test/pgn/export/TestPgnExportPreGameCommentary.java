@@ -17,7 +17,7 @@ class TestPgnExportPreGameCommentary {
   @Test
   void testFromImportStrictHasMoves() {
 
-    final var pregameCommentary = "This is the pregame commentary.";
+    final String pregameCommentary = "This is the pregame commentary.";
 
     final PgnGame fileImport = StrictPgnParser
         .parseText(PgnTestHelper.header("*") + "{" + pregameCommentary + "}" + " 1. e4 e5 *\n\n");
@@ -35,7 +35,7 @@ class TestPgnExportPreGameCommentary {
   @Test
   void testFromImportStrictHasNoMoves() {
 
-    final var pregameCommentary = "This is the pregame commentary.";
+    final String pregameCommentary = "This is the pregame commentary.";
 
     final PgnGame fileImport = StrictPgnParser
         .parseText(PgnTestHelper.header("*") + "{" + pregameCommentary + "}" + " *\n\n");
@@ -53,7 +53,7 @@ class TestPgnExportPreGameCommentary {
   @Test
   void testFromImportStrictLong() {
 
-    final var pregameCommentary = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.";
+    final String pregameCommentary = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.";
     assertTrue(pregameCommentary.length() > PgnCreate.MAX_LINE_LENGTH);
 
     final PgnGame fileImport = StrictPgnParser
@@ -72,7 +72,7 @@ class TestPgnExportPreGameCommentary {
   @Test
   void testFromImportStrictWithLinebreakIsPreservedThroughRoundTrip() {
 
-    final var pregameCommentary = "This is the pregame\ncommentary.";
+    final String pregameCommentary = "This is the pregame\ncommentary.";
 
     final PgnGame fileImport = StrictPgnParser
         .parseText(PgnTestHelper.header("*") + "{" + pregameCommentary + "}" + " 1. e4 e5 *\n\n");
@@ -90,7 +90,7 @@ class TestPgnExportPreGameCommentary {
   @Test
   void testFromImportLenientHasMoves() {
 
-    final var pregameCommentary = "This is the pregame commentary.";
+    final String pregameCommentary = "This is the pregame commentary.";
 
     final PgnGame fileImport = LenientPgnParser
         .parseText(PgnTestHelper.header("*") + "{" + pregameCommentary + "}" + " 1. e4 e5 *\n\n");
@@ -108,7 +108,7 @@ class TestPgnExportPreGameCommentary {
   @Test
   void testFromImportLenientHasNoMoves() {
 
-    final var pregameCommentary = "This is the pregame" + " commentary.";
+    final String pregameCommentary = "This is the pregame" + " commentary.";
 
     final PgnGame fileImport = LenientPgnParser
         .parseText(PgnTestHelper.header("*") + "{" + pregameCommentary + "}" + " *\n\n");
@@ -126,7 +126,7 @@ class TestPgnExportPreGameCommentary {
   @Test
   void testFromImportLenientLong() {
 
-    final var pregameCommentary = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.";
+    final String pregameCommentary = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.";
     assertTrue(pregameCommentary.length() > PgnCreate.MAX_LINE_LENGTH);
 
     final PgnGame fileImport = LenientPgnParser
@@ -142,7 +142,7 @@ class TestPgnExportPreGameCommentary {
   }
 
   // -------------------------------------------------------------------------------------------------
-  // Round-trip property: parse(export(parse(text))) ≡ parse(text). T-005 normalises CR/CRLF to LF.
+  // Round-trip property: parse(export(parse(text))) == parse(text). T-005 normalises CR/CRLF to LF.
   // -------------------------------------------------------------------------------------------------
 
   @SuppressWarnings("static-method")

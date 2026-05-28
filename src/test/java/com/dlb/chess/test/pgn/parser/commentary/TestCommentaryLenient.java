@@ -22,7 +22,7 @@ import com.dlb.chess.test.PgnTestHelper;
 class TestCommentaryLenient {
 
   // -------------------------------------------------------------------------------------------------
-  // Valid cases — structural acceptance and commentary-text assertions
+  // Valid cases - structural acceptance and commentary-text assertions
   // -------------------------------------------------------------------------------------------------
 
   @SuppressWarnings("static-method")
@@ -36,7 +36,7 @@ class TestCommentaryLenient {
   @SuppressWarnings("static-method")
   @Test
   void v01_pregameCommentaryLongNoLinebreaks() {
-    final var pregameCommentary = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.";
+    final String pregameCommentary = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.";
     assertTrue(pregameCommentary.length() > PgnCreate.MAX_LINE_LENGTH);
     final PgnGame file = LenientPgnParser
         .parseText(PgnTestHelper.header("*") + "{" + pregameCommentary + "} 1. e4 e5 *\n\n");
@@ -45,13 +45,13 @@ class TestCommentaryLenient {
   }
 
   /**
-   * Per the commentary contract, lenient preserves source bytes verbatim — the embedded newlines from the Java
+   * Per the commentary contract, lenient preserves source bytes verbatim - the embedded newlines from the Java
    * text-block stay in the model exactly as written. No trim, no substitution.
    */
   @SuppressWarnings("static-method")
   @Test
   void v01_pregameCommentaryLongWithLinebreaks() {
-    final var pregameCommentary = """
+    final String pregameCommentary = """
         Lorem ipsum dolor sit amet,
         consectetur adipiscing elit,
         sed do eiusmod
@@ -72,7 +72,7 @@ class TestCommentaryLenient {
   @SuppressWarnings("static-method")
   @Test
   void v01_pregameCommentaryOnlySpaces() {
-    final var pregameCommentary = "   ";
+    final String pregameCommentary = "   ";
     final PgnGame file = LenientPgnParser
         .parseText(PgnTestHelper.header("*") + "{" + pregameCommentary + "} 1. e4 e5 *\n\n");
     assertEquals(pregameCommentary, file.pregameCommentary().value());
@@ -131,7 +131,7 @@ class TestCommentaryLenient {
 
   /**
    * Per the commentary contract, the PGN spec allows newlines inside {@code {...}} commentary. Lenient (like strict)
-   * preserves source bytes verbatim. The previous lenient-side substitution of newline-to-space has been removed — tabs
+   * preserves source bytes verbatim. The previous lenient-side substitution of newline-to-space has been removed - tabs
    * and line breaks are valid commentary content per spec, not whitespace to be normalised.
    */
   @SuppressWarnings("static-method")
@@ -159,7 +159,7 @@ class TestCommentaryLenient {
   }
 
   // -------------------------------------------------------------------------------------------------
-  // R1 — unclosed commentary
+  // R1 - unclosed commentary
   // -------------------------------------------------------------------------------------------------
 
   @SuppressWarnings("static-method")
@@ -177,7 +177,7 @@ class TestCommentaryLenient {
   }
 
   // -------------------------------------------------------------------------------------------------
-  // T-003 — inner `{` is content (PGN spec §8.2.5), same as strict.
+  // T-003 - inner `{` is content (PGN spec section 8.2.5), same as strict.
   // -------------------------------------------------------------------------------------------------
 
   @SuppressWarnings("static-method")
@@ -209,7 +209,7 @@ class TestCommentaryLenient {
   }
 
   // -------------------------------------------------------------------------------------------------
-  // R3 — stray closing brace
+  // R3 - stray closing brace
   // -------------------------------------------------------------------------------------------------
 
   @SuppressWarnings("static-method")
@@ -234,7 +234,7 @@ class TestCommentaryLenient {
   }
 
   // -------------------------------------------------------------------------------------------------
-  // R4 — brace at SAN-expected position
+  // R4 - brace at SAN-expected position
   // -------------------------------------------------------------------------------------------------
 
   @SuppressWarnings("static-method")
@@ -260,7 +260,7 @@ class TestCommentaryLenient {
   }
 
   // -------------------------------------------------------------------------------------------------
-  // Post-termination content — same rule as strict
+  // Post-termination content - same rule as strict
   // -------------------------------------------------------------------------------------------------
 
   @SuppressWarnings("static-method")
@@ -305,7 +305,7 @@ class TestCommentaryLenient {
   @SuppressWarnings("static-method")
   @Test
   void carriageReturnInMoveCommentaryIsNormalisedToLf() {
-    // T-005: lone CR → LF at parser input.
+    // T-005: lone CR -> LF at parser input.
     final PgnGame file = LenientPgnParser.parseText(PgnTestHelper.header("*") + "1. e4 {a\rb} e5 *\n\n");
     assertEquals("a\nb", Nulls.get(file.halfMoveList(), 0).commentary().value());
   }
@@ -341,13 +341,13 @@ class TestCommentaryLenient {
   @SuppressWarnings("static-method")
   @Test
   void otherControlCharInCommentaryIsRejected() {
-    // Bell (U+0007), Cc category (other than \t \n \r) — rejected per the Unicode contract.
+    // Bell (U+0007), Cc category (other than \t \n \r) - rejected per the Unicode contract.
     expectError(PgnTestHelper.header("*") + "1. e4 {ab} e5 *\n\n",
         LenientPgnParserValidationProblem.MOVETEXT_COMMENTARY_CONTAINS_FORBIDDEN_CHARACTER);
   }
 
   // -------------------------------------------------------------------------------------------------
-  // T-002 — lenient accepts both forms (with and without "N..."). Strict requires it; see TestCommentaryStrict.
+  // T-002 - lenient accepts both forms (with and without "N..."). Strict requires it; see TestCommentaryStrict.
   // -------------------------------------------------------------------------------------------------
 
   @SuppressWarnings("static-method")
@@ -380,7 +380,7 @@ class TestCommentaryLenient {
   // -------------------------------------------------------------------------------------------------
 
   private static void expectError(String pgnText, LenientPgnParserValidationProblem expected) {
-    var isException = false;
+    boolean isException = false;
     try {
       LenientPgnParser.parseText(pgnText);
     } catch (final LenientPgnParserValidationException e) {

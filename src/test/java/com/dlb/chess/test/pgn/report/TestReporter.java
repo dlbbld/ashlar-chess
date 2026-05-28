@@ -9,7 +9,7 @@ class TestReporter {
   @SuppressWarnings("static-method")
   @Test
   void printReportDoesNotThrowOnSimpleGame() {
-    final var pgn = """
+    final String pgn = """
         1. e4 e5 2. Nf3 Nf6 3. Bc4 Bc5
         """;
     Reporter.printReport(pgn);

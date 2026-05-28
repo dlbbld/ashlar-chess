@@ -19,11 +19,11 @@ import com.dlb.chess.exceptions.InvalidMoveException;
  * dispatches:
  * <ul>
  * <li>movement-category and king-specific MoveChecks ({@code MOVEMENT_*}, {@code KING_CAPTURES_GUARDED_PIECE},
- * {@code KING_MOVES_NEXT_TO_OPPONENT_KING}) — call {@link ChessRuleAnalyzer#analyzeMovement} directly and assert the
+ * {@code KING_MOVES_NEXT_TO_OPPONENT_KING}) - call {@link ChessRuleAnalyzer#analyzeMovement} directly and assert the
  * translated MovementCheck;</li>
- * <li>king-safety MoveChecks ({@code KING_KING_*}, {@code ALL_BUT_KING_KING_*}) — call
+ * <li>king-safety MoveChecks ({@code KING_KING_*}, {@code ALL_BUT_KING_KING_*}) - call
  * {@link ChessRuleAnalyzer#analyzeKingSafety} directly and assert the translated KingSafetyCheck;</li>
- * <li>spec-coherence and castling MoveChecks ({@code MOVE_SPEC_*}, {@code KING_CASTLING_*}) — fall back to
+ * <li>spec-coherence and castling MoveChecks ({@code MOVE_SPEC_*}, {@code KING_CASTLING_*}) - fall back to
  * {@code Board.move} and assert the InvalidMoveException's MoveCheck. These are not in analyzer territory.</li>
  * </ul>
  *
@@ -34,26 +34,26 @@ import com.dlb.chess.exceptions.InvalidMoveException;
 public abstract class AbstractTestChessRuleAnalyzerScenarios implements EnumConstants {
 
   static void check(Board board, MoveSpecification move, MoveCheck expectedMoveCheck) {
-    final var expectedMc = toMovementCheck(expectedMoveCheck);
+    final MovementCheck expectedMc = toMovementCheck(expectedMoveCheck);
     if (expectedMc != null) {
       final MovementCheck actual = ChessRuleAnalyzer.analyzeMovement(board.getBitboardPosition(), board.getHavingMove(),
           board.getEnPassantCaptureTargetSquare(), move);
       assertEquals(expectedMc, actual);
       return;
     }
-    final var expectedKs = toKingSafetyCheck(expectedMoveCheck);
+    final KingSafetyCheck expectedKs = toKingSafetyCheck(expectedMoveCheck);
     if (expectedKs != null) {
       // king-safety presupposes movement passes
-      final MovementCheck actualMc = ChessRuleAnalyzer.analyzeMovement(board.getBitboardPosition(), board.getHavingMove(),
-          board.getEnPassantCaptureTargetSquare(), move);
+      final MovementCheck actualMc = ChessRuleAnalyzer.analyzeMovement(board.getBitboardPosition(),
+          board.getHavingMove(), board.getEnPassantCaptureTargetSquare(), move);
       assertEquals(MovementCheck.SUCCESS, actualMc, "movement should pass before king-safety check");
       final KingSafetyCheck actualKs = ChessRuleAnalyzer.analyzeKingSafety(board.getBitboardPosition(),
           board.getHavingMove(), move);
       assertEquals(expectedKs, actualKs);
       return;
     }
-    // fallback: spec-coherence or castling — exercise via the surface
-    var isException = false;
+    // fallback: spec-coherence or castling - exercise via the surface
+    boolean isException = false;
     try {
       board.move(move);
     } catch (final InvalidMoveException e) {

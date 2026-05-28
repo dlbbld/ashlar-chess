@@ -25,7 +25,7 @@ public class ReporterManualRun {
   }
 
   private static void printReportForPgnString() {
-    final var pgnString = """
+    final String pgnString = """
         [Event "Rated Blitz game"]
             [Site "https://lichess.org/2PEOuq3S"]
             [Date "2022.07.31"]
