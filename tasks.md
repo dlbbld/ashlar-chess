@@ -16,14 +16,16 @@ Already done in CHANGELOG.md
 
 [x] Fix JavaDoc code in test classes and private main classes
 [x] Use explicit local variable types
-[ ] Document how to use clean-chess on flag fall and resign in README.md
+[x] Document how to use clean-chess on flag fall and resign in README.md
 
 ## Future release — publish to Maven Central
 
 The capstone release. Publish to Central only when the library has stabilised — every prior release done, identity questions settled, and any tasks that surface during the prerequisite work itself addressed first. Maven Central artifacts are immutable: once published, an artifactId+version pair lives forever in the public record. The bar for moving from JitPack to Central is therefore "we are confident this artifact represents the project well, indefinitely."
 
 ### Prerequisites — must be true before any Central work begins
-- [ ] Documented: how to use clean-chess on flag fall and resign in README.md
+- [ ] Add line "// SPDX-License-Identifier: GPL-3.0-only" to each file
+- [ ] Add Eclipse setting adding the obligate first line for every new Java class
+- [x] Documented: how to use clean-chess on flag fall and resign in README.md
 - [x] DeepSquare release complete (Auto-CHA + Zobrist + pawn-wall classifier + foundational refactors)
 - [x] Bitboard release complete (performance acceptable, differential-test harness green)
 - [x] python-chess primary + PGN/FEN coverage release complete
