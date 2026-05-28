@@ -3,10 +3,14 @@ package com.dlb.chess.report;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.junit.jupiter.api.Test;
 
 import com.dlb.chess.board.Board;
 import com.dlb.chess.common.Nulls;
+import com.dlb.chess.common.model.HalfMove;
 import com.dlb.chess.pgn.PgnUtility;
 import com.dlb.chess.test.pgn.setup.PgnTestCaseCatalog;
 import com.dlb.chess.test.pgntest.enums.PgnTest;
@@ -128,8 +132,8 @@ class TestThreefoldClaimAheadReportBuilder {
    * since a prefix sorts before its extension).
    */
   private static int compareLexKey(ClaimAheadEntry a, ClaimAheadEntry b) {
-    final java.util.List<Integer> keyA = sortKey(a);
-    final java.util.List<Integer> keyB = sortKey(b);
+    final List<Integer> keyA = sortKey(a);
+    final List<Integer> keyB = sortKey(b);
     final int n = Math.min(keyA.size(), keyB.size());
     for (int i = 0; i < n; i++) {
       final int cmp = Integer.compare(keyA.get(i), keyB.get(i));
@@ -140,12 +144,12 @@ class TestThreefoldClaimAheadReportBuilder {
     return Integer.compare(keyA.size(), keyB.size());
   }
 
-  private static java.util.List<Integer> sortKey(ClaimAheadEntry e) {
-    final java.util.List<Integer> key = new java.util.ArrayList<>();
+  private static List<Integer> sortKey(ClaimAheadEntry e) {
+    final List<Integer> key = new ArrayList<>();
     if (e.includesInitialPosition()) {
       key.add(-1);
     }
-    for (final com.dlb.chess.common.model.HalfMove hm : e.priorOccurrences()) {
+    for (final HalfMove hm : e.priorOccurrences()) {
       key.add(hm.halfMoveCount());
     }
     key.add(e.claimAheadMove().halfMoveCount());

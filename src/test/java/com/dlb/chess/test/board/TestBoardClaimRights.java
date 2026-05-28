@@ -247,7 +247,7 @@ class TestBoardClaimRights implements EnumConstants {
     final ClaimRights rights = board.calculateFiftyMoveRuleClaimRights();
     assertTrue(rights.claimableMoves().size() >= 2, "precondition: at least two candidates exist");
 
-    final List<MoveSpecification> legalOrder = new java.util.ArrayList<>();
+    final List<MoveSpecification> legalOrder = new ArrayList<>();
     for (final LegalMove legal : board.getLegalMoves()) {
       legalOrder.add(legal.moveSpecification());
     }
