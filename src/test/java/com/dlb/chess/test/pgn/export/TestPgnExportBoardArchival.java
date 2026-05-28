@@ -4,6 +4,8 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.eclipse.jdt.annotation.NonNull;
@@ -88,7 +90,7 @@ class TestPgnExportBoardArchival {
     final Board board = new Board(customFen);
     board.moveStrict("Qa4");
 
-    final List<Tag> tagList = new java.util.ArrayList<>();
+    final List<Tag> tagList = new ArrayList<>();
     tagList.add(new Tag(StandardTag.SET_UP.getName(), "1"));
     tagList.add(new Tag(StandardTag.FEN.getName(), customFen));
 
@@ -159,7 +161,7 @@ class TestPgnExportBoardArchival {
     // Nulls.copyOfList wraps List.of with the @NonNull-annotated immutable list shape JDT requires for the
     // {@code createPgnGame(Board, List<Tag>)} parameter.
     @SuppressWarnings("null") final List<Tag> contradictoryTagList = Nulls
-        .copyOfList(java.util.Collections.singletonList(new Tag(StandardTag.RESULT.getName(), "0-1")));
+        .copyOfList(Collections.singletonList(new Tag(StandardTag.RESULT.getName(), "0-1")));
     assertThrows(IllegalArgumentException.class, () -> PgnCreate.createPgnGame(boardWonByWhite, contradictoryTagList));
   }
 }

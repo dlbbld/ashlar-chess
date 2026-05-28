@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.Set;
+import java.util.TreeSet;
 
 import org.junit.jupiter.api.Test;
 
@@ -55,7 +56,7 @@ class TestBitboardPositionLegalKingMoves {
     final Set<Square> bitboardTargets = BitboardPositionUtility.toSquareSet(bitboardPosition.legalKingTargets(side));
 
     // For each own king, ask the reference. Union the answers (handles the multi-king edge case symmetrically).
-    final Set<Square> referenceTargets = new java.util.TreeSet<>();
+    final Set<Square> referenceTargets = new TreeSet<>();
     long remaining = ownKings;
     while (remaining != 0L) {
       final Square kingSquare = Nulls.get(Square.REAL, Long.numberOfTrailingZeros(remaining));

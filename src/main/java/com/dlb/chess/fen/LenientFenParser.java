@@ -3,6 +3,7 @@ package com.dlb.chess.fen;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 
 import com.dlb.chess.common.Nulls;
 import com.dlb.chess.common.enums.FenAdvancedValidationProblem;
@@ -226,7 +227,7 @@ public final class LenientFenParser {
   private static void normaliseSideToMove(List<String> fields, List<ForgivenFenItem> accumulator) {
     final String field = Nulls.get(fields, 1);
     if ("W".equals(field) || "B".equals(field)) {
-      final String canonical = field.toLowerCase(java.util.Locale.ROOT);
+      final String canonical = field.toLowerCase(Locale.ROOT);
       fields.set(1, canonical);
       accumulator.add(new ForgivenFenItem(ForgivenFenItemCode.UPPERCASE_SIDE_TO_MOVE, field, canonical));
     }
