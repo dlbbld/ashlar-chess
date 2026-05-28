@@ -46,10 +46,10 @@ abstract class SemiOpenFilesUtility implements EnumConstants {
   }
 
   /**
-   * True iff {@code sideHavingSemiOpenFile} has a semi-open {@code file} - i.e. the first pawn encountered walking
-   * from that side's point of view down the file is one of that side's own pawns. For white the walk starts at rank
-   * 7 (look for the highest pawn bit on the file); for black at rank 2 (look for the lowest pawn bit on the file).
-   * Pawns on rank 1 / rank 8 are ignored defensively.
+   * True iff {@code sideHavingSemiOpenFile} has a semi-open {@code file} - i.e. the first pawn encountered walking from
+   * that side's point of view down the file is one of that side's own pawns. For white the walk starts at rank 7 (look
+   * for the highest pawn bit on the file); for black at rank 2 (look for the lowest pawn bit on the file). Pawns on
+   * rank 1 / rank 8 are ignored defensively.
    */
   public static boolean calculateIsSemiOpenFile(BitboardPosition bitboardPosition, File file,
       Side sideHavingSemiOpenFile) {

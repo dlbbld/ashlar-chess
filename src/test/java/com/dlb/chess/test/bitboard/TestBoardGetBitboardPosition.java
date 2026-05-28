@@ -23,16 +23,16 @@ import com.dlb.chess.common.utility.StaticPositionUtility;
  * {@code Board.getStaticPosition()} survives as an on-demand derived view of the cached bitboard), so the Step 1.2
  * parallel-cache invariant cannot be asserted by reading {@code Board.getStaticPosition()} anymore - that would be
  * tautological (mailbox derived from the very bitboard we want to verify). The cache-correctness invariant is still
- * meaningful and is asserted here against a <em>genuinely independent</em> oracle: a StaticPosition maintained in
- * the test by applying {@link StaticPositionUtility#createPositionAfterMove} for every move played on the
- * {@code Board}. The bitboard cache must match {@code fromStaticPosition} of this independently-maintained
- * StaticPosition at every step.
+ * meaningful and is asserted here against a <em>genuinely independent</em> oracle: a StaticPosition maintained in the
+ * test by applying {@link StaticPositionUtility#createPositionAfterMove} for every move played on the {@code Board}.
+ * The bitboard cache must match {@code fromStaticPosition} of this independently-maintained StaticPosition at every
+ * step.
  *
  * <p>
  * Corpus-wide cache verification is no longer needed at this level: every other bitboard differential test
  * ({@code TestBitboardPositionLegalMoves}, {@code TestBitboardPositionAfterMove},
- * {@code TestBitboardPositionAttackedSquares}, etc.) exercises {@code board.getBitboardPosition()} on every fixture
- * and asserts it against the StaticPosition reference; a stale cache would fail those.
+ * {@code TestBitboardPositionAttackedSquares}, etc.) exercises {@code board.getBitboardPosition()} on every fixture and
+ * asserts it against the StaticPosition reference; a stale cache would fail those.
  */
 class TestBoardGetBitboardPosition {
 

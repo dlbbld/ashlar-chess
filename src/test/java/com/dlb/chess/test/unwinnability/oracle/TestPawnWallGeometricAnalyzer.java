@@ -79,11 +79,9 @@ class TestPawnWallGeometricAnalyzer {
           "yes/ fixture must return geometric YES: " + testCase.pgnName() + " - " + testCase.finalFen());
       // Soundness gate 1: king-walk BFS must agree both kings are trapped.
       assertTrue(PawnWallKingWalkOracle.isKingTrappedBehindPermanentBarrier(board, Side.WHITE),
-          "Geometric YES but BFS says White king is not trapped: " + testCase.pgnName() + " - "
-              + testCase.finalFen());
+          "Geometric YES but BFS says White king is not trapped: " + testCase.pgnName() + " - " + testCase.finalFen());
       assertTrue(PawnWallKingWalkOracle.isKingTrappedBehindPermanentBarrier(board, Side.BLACK),
-          "Geometric YES but BFS says Black king is not trapped: " + testCase.pgnName() + " - "
-              + testCase.finalFen());
+          "Geometric YES but BFS says Black king is not trapped: " + testCase.pgnName() + " - " + testCase.finalFen());
       // Soundness gate 2: Ambrona's quick unwinnability check must agree the position is unwinnable for both sides.
       assertEquals(UnwinnabilityQuickVerdict.UNWINNABLE,
           UnwinnableQuickAnalyzer.unwinnableQuick(board, Side.WHITE).verdict(),

@@ -19,11 +19,11 @@ import com.dlb.chess.squares.AbstractAttackedSquares;
 import com.google.common.collect.ImmutableList;
 
 /**
- * Test-side StaticPosition legal-move generator for castling. Re-implements the castling check on the mailbox
- * surface ({@code StaticPosition.get(Square)} + {@link AbstractAttackedSquares}) end-to-end - it is the
- * differential-test oracle for the bitboard castling pipeline ({@code BitboardLegalMoveFactory} inlines its own
- * castling generation against {@code CastlingUtility}'s bitboard methods), so this class must not delegate to that
- * pipeline. Both sides agreeing on every fixture is the spine assertion for castling.
+ * Test-side StaticPosition legal-move generator for castling. Re-implements the castling check on the mailbox surface
+ * ({@code StaticPosition.get(Square)} + {@link AbstractAttackedSquares}) end-to-end - it is the differential-test
+ * oracle for the bitboard castling pipeline ({@code BitboardLegalMoveFactory} inlines its own castling generation
+ * against {@code CastlingUtility}'s bitboard methods), so this class must not delegate to that pipeline. Both sides
+ * agreeing on every fixture is the spine assertion for castling.
  */
 class KingCastlingLegalMoves extends KingLegalMoves {
 

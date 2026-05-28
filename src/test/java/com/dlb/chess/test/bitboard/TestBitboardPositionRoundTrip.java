@@ -16,8 +16,8 @@ import com.dlb.chess.test.pgntest.enums.PgnTest;
 
 /**
  * Differential round-trip test: for every fixture in the corpus, converting the {@link StaticPosition} to
- * {@link BitboardPosition} and back must reproduce the original. This is the spine of the bitboard release -
- * every later step depends on the two representations being faithful inverses of each other.
+ * {@link BitboardPosition} and back must reproduce the original. This is the spine of the bitboard release - every
+ * later step depends on the two representations being faithful inverses of each other.
  */
 class TestBitboardPositionRoundTrip {
 
@@ -45,7 +45,8 @@ class TestBitboardPositionRoundTrip {
     for (final PgnTest pgnTest : PgnTest.values()) {
       final PgnTestCaseList testCaseList = PgnTestCaseCatalog.getTestList(pgnTest);
       for (final PgnFen testCase : testCaseList.list()) {
-        final StaticPosition staticPosition = StaticPositionBridge.toStaticPosition(testCase.finalPosition().getBitboardPosition());
+        final StaticPosition staticPosition = StaticPositionBridge
+            .toStaticPosition(testCase.finalPosition().getBitboardPosition());
         final BitboardPosition bitboardPosition = StaticPositionBridge.fromStaticPosition(staticPosition);
         assertEquals(staticPosition, StaticPositionBridge.toStaticPosition(bitboardPosition),
             "round-trip mismatch for fixture " + testCase.pgnName());

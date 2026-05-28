@@ -24,8 +24,7 @@ import com.dlb.chess.test.pgntest.enums.PgnTest;
  * Differential test for {@link BitboardPosition#legalKingTargets(Side)}: for every king on every fixture, the
  * bitboard's legal-non-castling target set must agree with the reference
  * {@code KingNonCastlingLegalMoves.calculateKingNonCastlingLegalMoves} (reached via {@link LegalMovesTestOracle}).
- * Castling targets are intentionally out of scope here; they live on {@code Board} together with castling-rights
- * state.
+ * Castling targets are intentionally out of scope here; they live on {@code Board} together with castling-rights state.
  */
 class TestBitboardPositionLegalKingMoves {
 
@@ -35,7 +34,8 @@ class TestBitboardPositionLegalKingMoves {
     for (final PgnTest pgnTest : PgnTest.values()) {
       final PgnTestCaseList testCaseList = PgnTestCaseCatalog.getTestList(pgnTest);
       for (final PgnFen testCase : testCaseList.list()) {
-        final StaticPosition staticPosition = StaticPositionBridge.toStaticPosition(testCase.finalPosition().getBitboardPosition());
+        final StaticPosition staticPosition = StaticPositionBridge
+            .toStaticPosition(testCase.finalPosition().getBitboardPosition());
         final BitboardPosition bitboardPosition = StaticPositionBridge.fromStaticPosition(staticPosition);
         assertSideAgrees(staticPosition, bitboardPosition, Side.WHITE, testCase);
         assertSideAgrees(staticPosition, bitboardPosition, Side.BLACK, testCase);
@@ -63,8 +63,7 @@ class TestBitboardPositionLegalKingMoves {
       remaining &= remaining - 1L;
     }
 
-    assertEquals(referenceTargets, bitboardTargets,
-        side + " legalKingTargets in fixture " + testCase.pgnName());
+    assertEquals(referenceTargets, bitboardTargets, side + " legalKingTargets in fixture " + testCase.pgnName());
   }
 
   @SuppressWarnings("static-method")
@@ -85,7 +84,6 @@ class TestBitboardPositionLegalKingMoves {
   @SuppressWarnings("static-method")
   @Test
   void noneSideThrows() {
-    assertThrows(IllegalArgumentException.class,
-        () -> BitboardPosition.INITIAL_POSITION.legalKingTargets(Side.NONE));
+    assertThrows(IllegalArgumentException.class, () -> BitboardPosition.INITIAL_POSITION.legalKingTargets(Side.NONE));
   }
 }

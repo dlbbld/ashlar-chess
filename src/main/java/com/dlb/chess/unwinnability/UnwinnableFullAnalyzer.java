@@ -49,8 +49,8 @@ public class UnwinnableFullAnalyzer {
     while (isForcedMove && forcedPositionSet.add(board.getDynamicPosition())) {
       isCanUseMobilitySolution = false;
       final LegalMove onlyLegalMove = Nulls.getFirst(board.getLegalMoves());
-      forcedMoveLine.add(UciMoveUtility.convertMoveSpecificationToUci(onlyLegalMove.havingMove(),
-          onlyLegalMove.moveSpecification()));
+      forcedMoveLine.add(
+          UciMoveUtility.convertMoveSpecificationToUci(onlyLegalMove.havingMove(), onlyLegalMove.moveSpecification()));
       board.move(onlyLegalMove.moveSpecification());
       isForcedMove = board.getLegalMoves().size() == 1;
       totalForcedMoves++;

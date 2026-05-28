@@ -255,7 +255,8 @@ class FindHelpmateExhaust {
     for (final SquareType squareType : SquareType.REAL) {
       if (UnwinnabilityMaterialBitboard.calculateHasKingAndBishopsOnly(color, bitboardPosition, squareType)
           && UnwinnabilityMaterialBitboard.calculateHasNoKnights(color.getOppositeSide(), bitboardPosition)
-          && UnwinnabilityMaterialBitboard.calculateHasNoBishops(color, bitboardPosition, squareType.getOppositeSquareType())
+          && UnwinnabilityMaterialBitboard.calculateHasNoBishops(color, bitboardPosition,
+              squareType.getOppositeSquareType())
           && UnwinnabilityMaterialBitboard.calculateHasNoPawns(color.getOppositeSide(), bitboardPosition)) {
         return true;
       }

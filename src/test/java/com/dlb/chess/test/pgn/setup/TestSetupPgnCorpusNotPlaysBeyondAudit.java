@@ -17,12 +17,12 @@ import com.dlb.chess.test.pgn.parser.PgnCacheForStrictPgnParserTestCases;
 import com.dlb.chess.test.pgntest.enums.PgnTest;
 
 /**
- * Asserts the regular PGN test corpus contains no fixtures that play past a checkmate or stalemate - the two
- * automatic terminations where the legal-move set is empty and any further move attempt cannot validate. Mutual
- * insufficient material, fivefold repetition, the 75-move rule, and analyzer-driven dead positions are queryable
- * predicates in this library, not blockers at the move pipeline, so fixtures that continue past those thresholds
- * replay cleanly and are not flagged. The class name states the expected outcome ("not plays beyond"); the test fails
- * if any leftover is found.
+ * Asserts the regular PGN test corpus contains no fixtures that play past a checkmate or stalemate - the two automatic
+ * terminations where the legal-move set is empty and any further move attempt cannot validate. Mutual insufficient
+ * material, fivefold repetition, the 75-move rule, and analyzer-driven dead positions are queryable predicates in this
+ * library, not blockers at the move pipeline, so fixtures that continue past those thresholds replay cleanly and are
+ * not flagged. The class name states the expected outcome ("not plays beyond"); the test fails if any leftover is
+ * found.
  *
  * <h2>Scope and runtime</h2>
  *

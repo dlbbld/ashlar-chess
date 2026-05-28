@@ -33,8 +33,8 @@ class TestBasicStaticPosition implements EnumConstants {
   void testInitialPosition() throws Exception {
     // FEN parser now produces BitboardPosition; derive StaticPosition via the test-oracle bridge for the
     // structural assertion against the reference StaticPosition.INITIAL_POSITION constant.
-    final StaticPosition staticInitialPositionActual = StaticPositionBridge.toStaticPosition(
-        FenParserAdvanced.parseFenAdvanced(FenConstants.FEN_INITIAL_STR).bitboardPosition());
+    final StaticPosition staticInitialPositionActual = StaticPositionBridge
+        .toStaticPosition(FenParserAdvanced.parseFenAdvanced(FenConstants.FEN_INITIAL_STR).bitboardPosition());
 
     assertEquals(StaticPosition.INITIAL_POSITION, staticInitialPositionActual);
   }

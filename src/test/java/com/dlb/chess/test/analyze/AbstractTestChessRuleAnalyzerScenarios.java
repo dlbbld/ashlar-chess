@@ -44,8 +44,8 @@ public abstract class AbstractTestChessRuleAnalyzerScenarios implements EnumCons
     final var expectedKs = toKingSafetyCheck(expectedMoveCheck);
     if (expectedKs != null) {
       // king-safety presupposes movement passes
-      final MovementCheck actualMc = ChessRuleAnalyzer.analyzeMovement(board.getBitboardPosition(), board.getHavingMove(),
-          board.getEnPassantCaptureTargetSquare(), move);
+      final MovementCheck actualMc = ChessRuleAnalyzer.analyzeMovement(board.getBitboardPosition(),
+          board.getHavingMove(), board.getEnPassantCaptureTargetSquare(), move);
       assertEquals(MovementCheck.SUCCESS, actualMc, "movement should pass before king-safety check");
       final KingSafetyCheck actualKs = ChessRuleAnalyzer.analyzeKingSafety(board.getBitboardPosition(),
           board.getHavingMove(), move);

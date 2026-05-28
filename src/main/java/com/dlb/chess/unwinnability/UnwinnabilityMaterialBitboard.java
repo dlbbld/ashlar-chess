@@ -115,7 +115,8 @@ abstract class UnwinnabilityMaterialBitboard implements EnumConstants {
     final long sideKings = side == Side.WHITE ? bitboardPosition.whiteKings() : bitboardPosition.blackKings();
     final long sideKnights = side == Side.WHITE ? bitboardPosition.whiteKnights() : bitboardPosition.blackKnights();
     final long sideOccupancy = bitboardPosition.occupied(side);
-    return sideOccupancy == (sideKings | sideKnights) && Long.bitCount(sideKings) == 1 && Long.bitCount(sideKnights) == 1;
+    return sideOccupancy == (sideKings | sideKnights) && Long.bitCount(sideKings) == 1
+        && Long.bitCount(sideKnights) == 1;
   }
 
   static boolean calculateHasKingAndBishopsOnly(Side side, BitboardPosition bitboardPosition, SquareType squareType) {

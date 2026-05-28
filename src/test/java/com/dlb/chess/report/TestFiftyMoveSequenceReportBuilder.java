@@ -86,8 +86,7 @@ class TestFiftyMoveSequenceReportBuilder {
     assertEquals(1, report.sequences().size(), "one sequence - initial FEN continued into play");
 
     final FiftyMoveSequence sequence = Nulls.get(report.sequences(), 0);
-    assertTrue(sequence.start().isInitialFen(),
-        "initial-FEN-continued: sequence inherits the FEN's clock");
+    assertTrue(sequence.start().isInitialFen(), "initial-FEN-continued: sequence inherits the FEN's clock");
     assertEquals(50, sequence.start().initialClockValue(),
         "the initial-FEN start carries the FEN's clock value verbatim");
     assertNotNull(sequence.endPly(), "sequence has played continuation - endPly must be present");
@@ -114,8 +113,7 @@ class TestFiftyMoveSequenceReportBuilder {
     final FiftyMoveSequence sequence = Nulls.get(report.sequences(), 0);
     assertTrue(sequence.start().isInitialFen());
     assertEquals(100, sequence.start().initialClockValue());
-    assertNull(sequence.endPly(),
-        "endPly is null when threshold is met by FEN alone with no non-zeroing continuation");
+    assertNull(sequence.endPly(), "endPly is null when threshold is met by FEN alone with no non-zeroing continuation");
     assertEquals(100, sequence.finalClock(), "finalClock derives from start when endPly is null");
   }
 

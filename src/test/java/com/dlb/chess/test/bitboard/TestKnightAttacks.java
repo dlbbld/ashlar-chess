@@ -23,8 +23,8 @@ import com.dlb.chess.test.pgntest.enums.PgnTest;
 /**
  * Differential test for {@link KnightAttacks}: the precomputed bitboard table must agree, for every from-square, with
  * the existing {@link KnightEmptyBoardSquares}-backed reference. The geometric pattern is position-independent, so the
- * direct per-square test is exhaustive; the corpus walk additionally exercises the harness shape that every later
- * step will reuse.
+ * direct per-square test is exhaustive; the corpus walk additionally exercises the harness shape that every later step
+ * will reuse.
  */
 class TestKnightAttacks {
 
@@ -44,7 +44,8 @@ class TestKnightAttacks {
     for (final PgnTest pgnTest : PgnTest.values()) {
       final PgnTestCaseList testCaseList = PgnTestCaseCatalog.getTestList(pgnTest);
       for (final PgnFen testCase : testCaseList.list()) {
-        final StaticPosition staticPosition = StaticPositionBridge.toStaticPosition(testCase.finalPosition().getBitboardPosition());
+        final StaticPosition staticPosition = StaticPositionBridge
+            .toStaticPosition(testCase.finalPosition().getBitboardPosition());
         final BitboardPosition bitboardPosition = StaticPositionBridge.fromStaticPosition(staticPosition);
         long knights = bitboardPosition.whiteKnights() | bitboardPosition.blackKnights();
         while (knights != 0L) {

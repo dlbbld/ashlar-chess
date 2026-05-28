@@ -98,8 +98,7 @@ class TestUciMoveUtility {
           .text();
       assertEquals(test.uciMoveStr(), actualUci);
 
-      final String actualUciForScala = convertMoveSpecificationToUciForScala(lastMove.havingMove(),
-          moveSpecification);
+      final String actualUciForScala = convertMoveSpecificationToUciForScala(lastMove.havingMove(), moveSpecification);
       if (CastlingUtility.calculateIsCastlingMove(moveSpecification)) {
         // O-O or O-O-O as provided in the san is expected
         assertEquals(test.san(), actualUciForScala);

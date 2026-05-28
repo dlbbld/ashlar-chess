@@ -116,10 +116,10 @@ public class ForcedLineOracle {
 
   /**
    * Decodes the terminal status reached at the end of the forced single-move chain into a verdict for
-   * {@code sideToEvaluate}. CHECKMATE depends on which side delivered the mate (= {@code sideMadeLastMove}); single-side
-   * insufficient material depends on whether the colour with insufficient material <em>is</em> {@code sideToEvaluate}
-   * (then UNWINNABLE) or the opponent (then UNKNOWN - opponent's insufficient material doesn't decide our winnability
-   * either way from a forced chain alone).
+   * {@code sideToEvaluate}. CHECKMATE depends on which side delivered the mate (= {@code sideMadeLastMove});
+   * single-side insufficient material depends on whether the colour with insufficient material <em>is</em>
+   * {@code sideToEvaluate} (then UNWINNABLE) or the opponent (then UNKNOWN - opponent's insufficient material doesn't
+   * decide our winnability either way from a forced chain alone).
    */
   private static LimitedUnwinnabilityVerdict calculateUnwinnabilityForced(GameForced gameForced, Side sideToEvaluate) {
     final Outcome outcome = gameForced.outcome();
@@ -129,8 +129,7 @@ public class ForcedLineOracle {
         case CHECKMATE -> gameForced.sideMadeLastMove() == sideToEvaluate ? LimitedUnwinnabilityVerdict.WINNABLE
             : LimitedUnwinnabilityVerdict.UNWINNABLE;
         case STALEMATE, INSUFFICIENT_MATERIAL, FIVEFOLD_REPETITION, SEVENTY_FIVE_MOVES -> LimitedUnwinnabilityVerdict.UNWINNABLE;
-        case NONE -> throw new ProgrammingMistakeException(
-            "hasTermination() guard precludes Termination.NONE here");
+        case NONE -> throw new ProgrammingMistakeException("hasTermination() guard precludes Termination.NONE here");
       };
     }
     if (singleSideIm != null) {

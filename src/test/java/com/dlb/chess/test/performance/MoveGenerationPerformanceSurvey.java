@@ -51,8 +51,8 @@ public class MoveGenerationPerformanceSurvey {
         final Board board = position.cleanChessBoard();
         final Square ep = board.getEnPassantCaptureTargetSquare();
         final long enPassantBit = ep == Square.NONE ? 0L : 1L << ep.ordinal();
-        moveCount += BitboardLegalMoveFactory.calculateLegalMoves(board.getBitboardPosition(),
-            board.getHavingMove(), board.getCastlingRight(board.getHavingMove()), enPassantBit).size();
+        moveCount += BitboardLegalMoveFactory.calculateLegalMoves(board.getBitboardPosition(), board.getHavingMove(),
+            board.getCastlingRight(board.getHavingMove()), enPassantBit).size();
       }
     }
     return new Measurement(System.nanoTime() - start, moveCount);
@@ -65,8 +65,7 @@ public class MoveGenerationPerformanceSurvey {
       if (result.size() >= MAX_POSITIONS_PER_GROUP) {
         break;
       }
-      final PgnGame pgnGame = PgnCacheForStrictPgnParserTestCases.getPgn(pgnTest.getFolderPath(),
-          testCase.pgnName());
+      final PgnGame pgnGame = PgnCacheForStrictPgnParserTestCases.getPgn(pgnTest.getFolderPath(), testCase.pgnName());
       final Board board = new Board(pgnGame.startFen());
       addPosition(result, board);
       for (final PgnHalfMove halfMove : pgnGame.halfMoveList()) {
@@ -101,7 +100,8 @@ public class MoveGenerationPerformanceSurvey {
     for (var round = 0; round < MEASURE_ROUNDS; round++) {
       for (final PositionPair position : positionList) {
         final Board board = position.cleanChessBoard();
-        moveCount += AbstractLegalMoves.calculateLegalMoves(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), board.getHavingMove(),
+        moveCount += AbstractLegalMoves.calculateLegalMoves(
+            StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), board.getHavingMove(),
             board.getCastlingRight(board.getHavingMove()), board.getEnPassantCaptureTargetSquare()).size();
       }
     }
@@ -141,7 +141,8 @@ public class MoveGenerationPerformanceSurvey {
     System.out.printf("  generated moves: bitboard=%,d reference=%,d chesslib=%,d%n", bitboard.moveCount(),
         reference.moveCount(), chessLib.moveCount());
     System.out.printf("  bitboard (12.0.0): %.3f us/position  (%.1fx ChessLib)%n", bitboardUs, bitboardUs / chessLibUs);
-    System.out.printf("  reference oracle:  %.3f us/position  (%.1fx ChessLib)%n", referenceUs, referenceUs / chessLibUs);
+    System.out.printf("  reference oracle:  %.3f us/position  (%.1fx ChessLib)%n", referenceUs,
+        referenceUs / chessLibUs);
     System.out.printf("  ChessLib:          %.3f us/position%n%n", chessLibUs);
   }
 

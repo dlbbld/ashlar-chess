@@ -7,8 +7,8 @@ package com.dlb.chess.common.enums;
  * <p>
  * Companion to {@link com.dlb.chess.common.utility.BasicChessUtility#calculateOutcome}: the method surfaces one of
  * these six values, with {@link #NONE} for ongoing positions where no termination condition fires. (Returning a
- * non-null {@code Outcome} for every position lets callers branch on {@code termination} alone without a separate
- * null check.)
+ * non-null {@code Outcome} for every position lets callers branch on {@code termination} alone without a separate null
+ * check.)
  *
  * <p>
  * Analyzer-driven dead positions (FIDE 5.2.2 via {@link com.dlb.chess.board.Board#isDeadPositionQuick()} /

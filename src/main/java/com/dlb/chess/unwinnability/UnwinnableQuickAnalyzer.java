@@ -71,8 +71,8 @@ public class UnwinnableQuickAnalyzer {
 
       isCanUseMobilitySolution = false;
       final LegalMove legalMove = Nulls.getFirst(board.getLegalMoves());
-      forcedMoveLine.add(UciMoveUtility.convertMoveSpecificationToUci(legalMove.havingMove(),
-          legalMove.moveSpecification()));
+      forcedMoveLine
+          .add(UciMoveUtility.convertMoveSpecificationToUci(legalMove.havingMove(), legalMove.moveSpecification()));
       board.move(legalMove.moveSpecification());
       countHalfmoves++;
     }
@@ -182,8 +182,8 @@ public class UnwinnableQuickAnalyzer {
 
   private static boolean calculateIsAlmostOnlyPawnsBishopsAndKings(BitboardPosition bitboardPosition) {
     final long heavyPieces = bitboardPosition.whiteKnights() | bitboardPosition.blackKnights()
-        | bitboardPosition.whiteRooks() | bitboardPosition.blackRooks()
-        | bitboardPosition.whiteQueens() | bitboardPosition.blackQueens();
+        | bitboardPosition.whiteRooks() | bitboardPosition.blackRooks() | bitboardPosition.whiteQueens()
+        | bitboardPosition.blackQueens();
     return Long.bitCount(heavyPieces) <= 1;
   }
 

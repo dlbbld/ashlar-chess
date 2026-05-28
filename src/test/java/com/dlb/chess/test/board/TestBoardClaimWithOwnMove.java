@@ -72,8 +72,7 @@ class TestBoardClaimWithOwnMove {
     assertFalse(board.isFiftyMove(), "precondition: current-position predicate is below threshold");
     assertTrue(board.canClaimFiftyMoveRuleWithOwnMove(),
         "FIDE 9.3: claim is valid because a non-pawn, non-capture legal move exists (Nf7)");
-    assertTrue(board.canClaimFiftyMoveRule(),
-        "FIDE 9.3: composed predicate must also be true");
+    assertTrue(board.canClaimFiftyMoveRule(), "FIDE 9.3: composed predicate must also be true");
   }
 
   @SuppressWarnings("static-method")

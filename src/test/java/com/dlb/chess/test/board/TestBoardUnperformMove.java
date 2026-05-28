@@ -103,11 +103,9 @@ class TestBoardUnperformMove {
     return halfMoveIndex;
   }
 
-  private static void assertBoardsEqual(Board expected, Board actual, String pgnName, int halfMoveIndex,
-      String san) {
+  private static void assertBoardsEqual(Board expected, Board actual, String pgnName, int halfMoveIndex, String san) {
     if (!EqualsBuilder.reflectionEquals(expected, actual)) {
-      fail("Boards differ in " + pgnName + " after perform+unperform of halfmove " + halfMoveIndex + " (" + san
-          + ")");
+      fail("Boards differ in " + pgnName + " after perform+unperform of halfmove " + halfMoveIndex + " (" + san + ")");
     }
   }
 }

@@ -9,8 +9,8 @@ import com.dlb.chess.board.enums.Square;
 import com.dlb.chess.model.LegalMove;
 
 /**
- * Test-only public bridge that exposes the package-private legal-move generators under {@code com.dlb.chess.moves}
- * so the bitboard differential tests under {@code com.dlb.chess.test.bitboard} can call them. Lives under
+ * Test-only public bridge that exposes the package-private legal-move generators under {@code com.dlb.chess.moves} so
+ * the bitboard differential tests under {@code com.dlb.chess.test.bitboard} can call them. Lives under
  * {@code src/test/} so it is not part of the production API surface.
  */
 public final class LegalMovesTestOracle {

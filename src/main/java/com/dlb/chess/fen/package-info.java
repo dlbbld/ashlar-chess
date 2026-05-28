@@ -1,7 +1,7 @@
 /**
  * FEN (Forsyth-Edwards Notation) parsing, validation, and generation. Three parser entry points across the
- * strict-vs-lenient (syntactic) and raw-vs-advanced (semantic) axes - see {@code specification.md} section 3.3.3 for the
- * contract table.
+ * strict-vs-lenient (syntactic) and raw-vs-advanced (semantic) axes - see {@code specification.md} section 3.3.3 for
+ * the contract table.
  *
  * <ul>
  * <li>{@link com.dlb.chess.fen.FenParserRaw} - basic structural parsing. One regex: six non-empty space-separated

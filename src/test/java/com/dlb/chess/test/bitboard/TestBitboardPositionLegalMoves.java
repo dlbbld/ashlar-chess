@@ -31,15 +31,15 @@ import com.dlb.chess.test.pgntest.enums.PgnTest;
  * promotion expansion are exercised together.
  *
  * <p>
- * The reference is {@code AbstractLegalMoves.calculateLegalMoves} directly - NOT {@code board.getLegalMoves()},
- * which since Switchover Step 2.2 ({@code a235d363}) is produced by the bitboard pipeline itself. Using
+ * The reference is {@code AbstractLegalMoves.calculateLegalMoves} directly - NOT {@code board.getLegalMoves()}, which
+ * since Switchover Step 2.2 ({@code a235d363}) is produced by the bitboard pipeline itself. Using
  * {@code board.getLegalMoves()} as the oracle here would make the test self-referential and unable to detect
- * bitboard-side regressions. The StaticPosition-backed reference path must stay independent of the bitboard until
- * the relocation phase moves it to {@code src/test/}.
+ * bitboard-side regressions. The StaticPosition-backed reference path must stay independent of the bitboard until the
+ * relocation phase moves it to {@code src/test/}.
  *
  * <p>
- * Castling moves are excluded because they live on {@link Board} with the castling-rights state; the bitboard layer
- * is intentionally castling-stateless.
+ * Castling moves are excluded because they live on {@link Board} with the castling-rights state; the bitboard layer is
+ * intentionally castling-stateless.
  */
 class TestBitboardPositionLegalMoves {
 
@@ -99,7 +99,6 @@ class TestBitboardPositionLegalMoves {
   @SuppressWarnings("static-method")
   @Test
   void noneSideThrows() {
-    assertThrows(IllegalArgumentException.class,
-        () -> BitboardPosition.INITIAL_POSITION.legalMoves(Side.NONE, 0L));
+    assertThrows(IllegalArgumentException.class, () -> BitboardPosition.INITIAL_POSITION.legalMoves(Side.NONE, 0L));
   }
 }

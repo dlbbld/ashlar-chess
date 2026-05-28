@@ -62,13 +62,13 @@ class TestAmbronaUnwinnabilityQuickOracleComparison {
         final Board board = testCase.finalPosition();
         logger.info(testCase.pgnName());
 
-        final UnwinnabilityQuickVerdict unwinnableQuickWhite = UnwinnableQuickAnalyzer.unwinnableQuick(board,
-            Side.WHITE).verdict();
+        final UnwinnabilityQuickVerdict unwinnableQuickWhite = UnwinnableQuickAnalyzer
+            .unwinnableQuick(board, Side.WHITE).verdict();
         check(testCase, Side.WHITE, AmbronaUnwinnabilityOracle.get(testCase.finalFen()).quickWhite(),
             unwinnableQuickWhite, failureList, remainingAcceptedDifferenceSet);
 
-        final UnwinnabilityQuickVerdict unwinnableQuickBlack = UnwinnableQuickAnalyzer.unwinnableQuick(board,
-            Side.BLACK).verdict();
+        final UnwinnabilityQuickVerdict unwinnableQuickBlack = UnwinnableQuickAnalyzer
+            .unwinnableQuick(board, Side.BLACK).verdict();
         check(testCase, Side.BLACK, AmbronaUnwinnabilityOracle.get(testCase.finalFen()).quickBlack(),
             unwinnableQuickBlack, failureList, remainingAcceptedDifferenceSet);
       }

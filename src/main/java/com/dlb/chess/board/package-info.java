@@ -13,16 +13,16 @@
  * rule, and analyzer-driven dead positions, legal moves still exist and the pipeline accepts them.
  *
  * <p>
- * Callers poll {@link com.dlb.chess.common.utility.BasicChessUtility#calculateOutcome} for the current-position
- * outcome - it returns the most-specific {@link com.dlb.chess.common.model.Outcome} for the board, or {@code null}
- * when the game is ongoing. The five surfaced terminations are checkmate, mutual insufficient material, stalemate,
- * 75-move, and fivefold (in that precedence order; python-chess parity). The library is permissive at the move
- * pipeline for corpus and tooling compatibility (historical PGN databases routinely contain games whose recorded
- * play continues a move or two past an automatic termination); the caller decides whether to adjudicate.
+ * Callers poll {@link com.dlb.chess.common.utility.BasicChessUtility#calculateOutcome} for the current-position outcome
+ * - it returns the most-specific {@link com.dlb.chess.common.model.Outcome} for the board, or {@code null} when the
+ * game is ongoing. The five surfaced terminations are checkmate, mutual insufficient material, stalemate, 75-move, and
+ * fivefold (in that precedence order; python-chess parity). The library is permissive at the move pipeline for corpus
+ * and tooling compatibility (historical PGN databases routinely contain games whose recorded play continues a move or
+ * two past an automatic termination); the caller decides whether to adjudicate.
  *
  * <p>
- * Single-side insufficient material (one side lacks mating material but the other does not) is a diagnostic
- * position state and is not surfaced by {@code calculateOutcome}. Callers that need it query
+ * Single-side insufficient material (one side lacks mating material but the other does not) is a diagnostic position
+ * state and is not surfaced by {@code calculateOutcome}. Callers that need it query
  * {@link com.dlb.chess.board.Board#isInsufficientMaterial(com.dlb.chess.board.enums.Side)} directly.
  *
  * <p>
@@ -33,9 +33,9 @@
  * directly.
  *
  * <p>
- * The claimable draws (FIDE 9.2 3-fold, FIDE 9.3 50-move) are intentionally not surfaced by
- * {@code calculateOutcome}: a player may decline to claim and continue playing. They remain queryable on the board
- * via the dedicated {@code canClaim*} predicates.
+ * The claimable draws (FIDE 9.2 3-fold, FIDE 9.3 50-move) are intentionally not surfaced by {@code calculateOutcome}: a
+ * player may decline to claim and continue playing. They remain queryable on the board via the dedicated
+ * {@code canClaim*} predicates.
  */
 @NonNullByDefault
 package com.dlb.chess.board;

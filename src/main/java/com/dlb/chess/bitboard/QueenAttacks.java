@@ -2,8 +2,8 @@ package com.dlb.chess.bitboard;
 
 /**
  * Queen attacks: the union of the bishop and rook attack patterns from the same square. Delegates to
- * {@link BishopAttacks} and {@link RookAttacks}; the union is the only thing that makes a queen a queen at the
- * bitboard layer.
+ * {@link BishopAttacks} and {@link RookAttacks}; the union is the only thing that makes a queen a queen at the bitboard
+ * layer.
  */
 public final class QueenAttacks {
 

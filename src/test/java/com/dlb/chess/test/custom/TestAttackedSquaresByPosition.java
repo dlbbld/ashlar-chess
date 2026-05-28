@@ -59,8 +59,8 @@ class TestAttackedSquaresByPosition implements EnumConstants {
 
     // The relocated reference oracle (AbstractAttackedSquares) takes StaticPosition; derive it on demand from
     // Fen's bitboard via the test-oracle bridge.
-    final Set<Square> actualSquareSet = AbstractAttackedSquares.calculateAttackedSquares(
-        StaticPositionBridge.toStaticPosition(fen.bitboardPosition()), fen.havingMove());
+    final Set<Square> actualSquareSet = AbstractAttackedSquares
+        .calculateAttackedSquares(StaticPositionBridge.toStaticPosition(fen.bitboardPosition()), fen.havingMove());
 
     final Set<String> expected = new TreeSet<>();
     for (final String square : expectedSquareList) {

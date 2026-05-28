@@ -25,9 +25,9 @@ import com.dlb.chess.test.pgn.setup.PgnTestCaseCatalog;
 import com.dlb.chess.test.pgntest.enums.PgnTest;
 
 /**
- * Differential test for {@link BitboardPosition#attackersTo(Square, Side)}. There is no direct production
- * counterpart, so the reference is derived: walk every own-side piece and ask whether its per-piece attack set
- * contains the target square, using the existing reference attack functions from {@code com.dlb.chess.squares}.
+ * Differential test for {@link BitboardPosition#attackersTo(Square, Side)}. There is no direct production counterpart,
+ * so the reference is derived: walk every own-side piece and ask whether its per-piece attack set contains the target
+ * square, using the existing reference attack functions from {@code com.dlb.chess.squares}.
  */
 class TestBitboardPositionAttackersTo {
 
@@ -37,7 +37,8 @@ class TestBitboardPositionAttackersTo {
     for (final PgnTest pgnTest : PgnTest.values()) {
       final PgnTestCaseList testCaseList = PgnTestCaseCatalog.getTestList(pgnTest);
       for (final PgnFen testCase : testCaseList.list()) {
-        final StaticPosition staticPosition = StaticPositionBridge.toStaticPosition(testCase.finalPosition().getBitboardPosition());
+        final StaticPosition staticPosition = StaticPositionBridge
+            .toStaticPosition(testCase.finalPosition().getBitboardPosition());
         final BitboardPosition bitboardPosition = StaticPositionBridge.fromStaticPosition(staticPosition);
         for (final Square target : Square.REAL) {
           assertSideAgrees(staticPosition, bitboardPosition, target, Side.WHITE, testCase);

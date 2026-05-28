@@ -128,8 +128,7 @@ public class PgnCreate {
             return ResultTagValue.BLACK_WON;
           case NONE:
           default:
-            throw new ProgrammingMistakeException(
-                "Outcome invariant violated: CHECKMATE with winner=" + winner);
+            throw new ProgrammingMistakeException("Outcome invariant violated: CHECKMATE with winner=" + winner);
         }
       }
       case STALEMATE, INSUFFICIENT_MATERIAL, FIVEFOLD_REPETITION, SEVENTY_FIVE_MOVES:

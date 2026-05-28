@@ -10,9 +10,9 @@ import com.dlb.chess.common.constants.EnumConstants;
 /**
  * Cross-validates the BFS-based {@link KnightDistance} against an independent reference port of the closed-form
  * rank/file-distance algorithm from Miguel Ambrona's <em>D3-Chess</em> ({@code src/util.cpp},
- * {@code KnightDistance::knight_distance}). The two implementations use entirely different approaches - graph
- * search vs. table lookup with corner exception - so agreement on every one of the 64x64 = 4096 ordered
- * square pairs is strong evidence that both are correct.
+ * {@code KnightDistance::knight_distance}). The two implementations use entirely different approaches - graph search
+ * vs. table lookup with corner exception - so agreement on every one of the 64x64 = 4096 ordered square pairs is strong
+ * evidence that both are correct.
  *
  * <p>
  * The reference algorithm: for two squares, take the minimum and maximum of the file-distance and rank-distance. Three

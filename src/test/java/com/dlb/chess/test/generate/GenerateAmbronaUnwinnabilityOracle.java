@@ -26,9 +26,9 @@ import com.dlb.chess.test.pgn.setup.PgnTestCaseCatalog;
 import com.dlb.chess.test.pgntest.enums.PgnTest;
 
 /**
- * Regenerates the Ambrona unwinnability oracle from the cached final FENs in {@link PgnFen}. Requires WSL with
- * D3-Chess built and Stockfish installed; pass the WSL D3-Chess checkout root as the optional first argument when it is
- * not at the default location.
+ * Regenerates the Ambrona unwinnability oracle from the cached final FENs in {@link PgnFen}. Requires WSL with D3-Chess
+ * built and Stockfish installed; pass the WSL D3-Chess checkout root as the optional first argument when it is not at
+ * the default location.
  */
 public final class GenerateAmbronaUnwinnabilityOracle {
 
@@ -108,10 +108,11 @@ public final class GenerateAmbronaUnwinnabilityOracle {
     final List<String> result = new ArrayList<>();
 
     try (InputStream errorStream = IoUtility.getErrorStream(process)) {
-      try (BufferedWriter writer = new BufferedWriter(
-          new OutputStreamWriter(IoUtility.getOutputStream(process), StandardCharsets.UTF_8));
-          BufferedReader reader = new BufferedReader(new InputStreamReader(IoUtility.getInputStream(process),
-              StandardCharsets.UTF_8))) {
+      try (
+          BufferedWriter writer = new BufferedWriter(
+              new OutputStreamWriter(IoUtility.getOutputStream(process), StandardCharsets.UTF_8));
+          BufferedReader reader = new BufferedReader(
+              new InputStreamReader(IoUtility.getInputStream(process), StandardCharsets.UTF_8))) {
 
         var processed = 0;
         for (final String fen : fenList) {

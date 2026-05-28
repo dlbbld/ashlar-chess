@@ -116,8 +116,7 @@ class TestBoardClaimFor implements EnumConstants {
     // The per-move predicate now treats "not in the legal-moves set" as a loud failure - throws
     // IllegalArgumentException rather than silently returning false.
     final Board board = new Board("7k/8/8/8/8/8/4K3/R7 w - - 99 51");
-    assertThrows(IllegalArgumentException.class,
-        () -> board.canClaimFiftyMoveRuleFor(new MoveSpecification(A1, H8)),
+    assertThrows(IllegalArgumentException.class, () -> board.canClaimFiftyMoveRuleFor(new MoveSpecification(A1, H8)),
         "a move not in the legal-moves set must throw, not silently return false");
   }
 
@@ -232,7 +231,6 @@ class TestBoardClaimFor implements EnumConstants {
     // 1.Nf3 from this position: legal, non-zeroing, but clock is 1 (after both pawn pushes the
     // clock is 0; the Nf3 push would bring it to 1) -- well below 99. And the post-position is
     // fresh, never seen before -- not threefold.
-    assertFalse(board.canClaimDrawFor(new MoveSpecification(G1, F3)),
-        "neither branch satisfies the claim");
+    assertFalse(board.canClaimDrawFor(new MoveSpecification(G1, F3)), "neither branch satisfies the claim");
   }
 }

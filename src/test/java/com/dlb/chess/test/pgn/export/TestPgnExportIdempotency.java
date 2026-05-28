@@ -43,8 +43,7 @@ class TestPgnExportIdempotency {
 
         assertEquals(importedPgn, exportedLinesImportedPgn);
 
-        final List<String> exportedLinesImportedPgnExportedLines = PgnCreate
-            .createPgnLines(exportedLinesImportedPgn);
+        final List<String> exportedLinesImportedPgnExportedLines = PgnCreate.createPgnLines(exportedLinesImportedPgn);
 
         assertEquals(exportedLines, exportedLinesImportedPgnExportedLines);
 

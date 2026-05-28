@@ -11,16 +11,15 @@ import com.dlb.chess.common.Nulls;
 
 /**
  * Test-side bridge between the bitboard production layer and the {@link StaticPosition} reference oracle. Lives in
- * {@code src/test/} because {@link StaticPosition} lives in {@code src/test/} too (as the permanent
- * differential-test oracle, per the Project Invariant). Production code in {@code src/main/} never references
- * {@link StaticPosition}, so these bridge methods cannot live alongside the other utilities in
- * {@link BitboardPositionUtility} on the production side - they would re-introduce the {@code StaticPosition}
- * import that the relocation removed.
+ * {@code src/test/} because {@link StaticPosition} lives in {@code src/test/} too (as the permanent differential-test
+ * oracle, per the Project Invariant). Production code in {@code src/main/} never references {@link StaticPosition}, so
+ * these bridge methods cannot live alongside the other utilities in {@link BitboardPositionUtility} on the production
+ * side - they would re-introduce the {@code StaticPosition} import that the relocation removed.
  *
  * <p>
- * Round-tripping a {@code StaticPosition} through {@link #fromStaticPosition} followed by
- * {@link #toStaticPosition} reproduces the original; round-tripping a {@code BitboardPosition} likewise. The
- * differential-test harness depends on these inverses being faithful - see {@code TestBitboardPositionRoundTrip}.
+ * Round-tripping a {@code StaticPosition} through {@link #fromStaticPosition} followed by {@link #toStaticPosition}
+ * reproduces the original; round-tripping a {@code BitboardPosition} likewise. The differential-test harness depends on
+ * these inverses being faithful - see {@code TestBitboardPositionRoundTrip}.
  */
 public final class StaticPositionBridge {
 

@@ -1,8 +1,8 @@
 /**
  * Bitboard piece-placement representation. The single piece-placement representation that production code consumes,
- * paired with the {@code StaticPosition} mailbox representation that lives test-side (under {@code src/test/}) as
- * the permanent differential-test oracle. Every primitive in this package is asserted bit-exact against the
- * corresponding {@code StaticPosition}-based code on the full PGN/FEN corpus, on every release going forward - see
+ * paired with the {@code StaticPosition} mailbox representation that lives test-side (under {@code src/test/}) as the
+ * permanent differential-test oracle. Every primitive in this package is asserted bit-exact against the corresponding
+ * {@code StaticPosition}-based code on the full PGN/FEN corpus, on every release going forward - see
  * {@code specification.md} section 4.1 and section 6.1.
  *
  * <p>

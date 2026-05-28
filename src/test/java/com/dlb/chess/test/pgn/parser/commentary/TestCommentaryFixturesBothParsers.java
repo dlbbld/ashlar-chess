@@ -219,8 +219,7 @@ class TestCommentaryFixturesBothParsers {
     assertEquals(SanValidationProblem.NONE, result.problemSan());
   }
 
-  private static void assertLenientRejects(Path folder, String pgnName,
-      LenientPgnParserValidationProblem expected) {
+  private static void assertLenientRejects(Path folder, String pgnName, LenientPgnParserValidationProblem expected) {
     var isException = false;
     try {
       LenientPgnParser.parse(folder, pgnName);

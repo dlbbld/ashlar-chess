@@ -16,7 +16,8 @@ import com.dlb.chess.common.model.MoveSpecification;
 /**
  * Twelve-bitboard piece-placement representation: one {@code long} per real {@link com.dlb.chess.board.enums.Piece}
  * value, each bit indexed by {@link com.dlb.chess.board.enums.Square#ordinal()} (little-endian rank-file:
- * {@code A1 = 0, B1 = 1, ..., H8 = 63}). Field order matches the {@link com.dlb.chess.board.enums.Piece#REAL} enum order.
+ * {@code A1 = 0, B1 = 1, ..., H8 = 63}). Field order matches the {@link com.dlb.chess.board.enums.Piece#REAL} enum
+ * order.
  *
  * <p>
  * <b>Construction invariant:</b> the twelve piece bitboards are pairwise disjoint - no square may carry two pieces. The
@@ -26,9 +27,9 @@ import com.dlb.chess.common.model.MoveSpecification;
  *
  * <p>
  * Built alongside {@code StaticPosition} and verified bit-exact against it via differential testing across the full
- * PGN/FEN corpus. After the role-inversion release, {@code StaticPosition} lives in {@code src/test/} as the
- * permanent differential-test oracle; this record is the production representation. See {@code tasks.md} and the
- * package-level Javadoc for the governing Project Invariant.
+ * PGN/FEN corpus. After the role-inversion release, {@code StaticPosition} lives in {@code src/test/} as the permanent
+ * differential-test oracle; this record is the production representation. See {@code tasks.md} and the package-level
+ * Javadoc for the governing Project Invariant.
  */
 public record BitboardPosition(long whitePawns, long whiteRooks, long whiteKnights, long whiteBishops, long whiteQueens,
     long whiteKings, long blackPawns, long blackRooks, long blackKnights, long blackBishops, long blackQueens,
@@ -47,25 +48,24 @@ public record BitboardPosition(long whitePawns, long whiteRooks, long whiteKnigh
   }
 
   // Initial position bit layout (little-endian rank-file: A1 = bit 0, H8 = bit 63):
-  //   white pawns on rank 2 (bits 8-15)        -> 0x000000000000FF00L
-  //   white rooks   on a1, h1   (bits 0, 7)    -> 0x0000000000000081L
-  //   white knights on b1, g1   (bits 1, 6)    -> 0x0000000000000042L
-  //   white bishops on c1, f1   (bits 2, 5)    -> 0x0000000000000024L
-  //   white queen   on d1       (bit 3)        -> 0x0000000000000008L
-  //   white king    on e1       (bit 4)        -> 0x0000000000000010L
-  //   black pawns on rank 7 (bits 48-55)       -> 0x00FF000000000000L
-  //   black rooks   on a8, h8   (bits 56, 63)  -> 0x8100000000000000L
-  //   black knights on b8, g8   (bits 57, 62)  -> 0x4200000000000000L
-  //   black bishops on c8, f8   (bits 58, 61)  -> 0x2400000000000000L
-  //   black queen   on d8       (bit 59)       -> 0x0800000000000000L
-  //   black king    on e8       (bit 60)       -> 0x1000000000000000L
-  public static final BitboardPosition INITIAL_POSITION = new BitboardPosition(0x000000000000FF00L,
-      0x0000000000000081L, 0x0000000000000042L, 0x0000000000000024L, 0x0000000000000008L, 0x0000000000000010L,
-      0x00FF000000000000L, 0x8100000000000000L, 0x4200000000000000L, 0x2400000000000000L, 0x0800000000000000L,
-      0x1000000000000000L);
+  // white pawns on rank 2 (bits 8-15) -> 0x000000000000FF00L
+  // white rooks on a1, h1 (bits 0, 7) -> 0x0000000000000081L
+  // white knights on b1, g1 (bits 1, 6) -> 0x0000000000000042L
+  // white bishops on c1, f1 (bits 2, 5) -> 0x0000000000000024L
+  // white queen on d1 (bit 3) -> 0x0000000000000008L
+  // white king on e1 (bit 4) -> 0x0000000000000010L
+  // black pawns on rank 7 (bits 48-55) -> 0x00FF000000000000L
+  // black rooks on a8, h8 (bits 56, 63) -> 0x8100000000000000L
+  // black knights on b8, g8 (bits 57, 62) -> 0x4200000000000000L
+  // black bishops on c8, f8 (bits 58, 61) -> 0x2400000000000000L
+  // black queen on d8 (bit 59) -> 0x0800000000000000L
+  // black king on e8 (bit 60) -> 0x1000000000000000L
+  public static final BitboardPosition INITIAL_POSITION = new BitboardPosition(0x000000000000FF00L, 0x0000000000000081L,
+      0x0000000000000042L, 0x0000000000000024L, 0x0000000000000008L, 0x0000000000000010L, 0x00FF000000000000L,
+      0x8100000000000000L, 0x4200000000000000L, 0x2400000000000000L, 0x0800000000000000L, 0x1000000000000000L);
 
-  public static final BitboardPosition EMPTY_POSITION = new BitboardPosition(0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L,
-      0L, 0L);
+  public static final BitboardPosition EMPTY_POSITION = new BitboardPosition(0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L,
+      0L);
 
   public Piece get(Square square) {
     final var bit = bitFor(square);
@@ -165,8 +165,8 @@ public record BitboardPosition(long whitePawns, long whiteRooks, long whiteKnigh
    * For pawns, includes forward advances (single + double when applicable) and diagonal captures against opponent
    * pieces - <em>excluding</em> the opponent king (matching the reference) - and to the EP target square. For other
    * pieces, includes the standard pseudo-legal target set: own pieces are blocked, opponent pieces are capturable
-   * (including the opponent king at this level - king-capture filtering happens at the legal-move-classification
-   * level, not here).
+   * (including the opponent king at this level - king-capture filtering happens at the legal-move-classification level,
+   * not here).
    *
    * <p>
    * Returns an empty set if {@code fromSquare} is empty. {@code enPassantBit} is the single-bit bitboard of the EP
@@ -460,9 +460,9 @@ public record BitboardPosition(long whitePawns, long whiteRooks, long whiteKnigh
    * Sink-based variant of {@link #legalMoves(Side, long)}: emits the same legal {@link MoveSpecification}s to
    * {@code sink} as {@code legalMoves} would put into its returned set, but in the move generator's natural traversal
    * order rather than {@link MoveSpecification#compareTo} order - no intermediate {@link Set} / {@link TreeSet} is
-   * allocated. The set-based {@link #legalMoves(Side, long)} wraps this with a {@link TreeSet}-collecting sink so
-   * the existing public contract is preserved verbatim. Used by the helpmate search hot path to fill a per-depth
-   * reusable move buffer without allocating a sorted-set scaffold per ply.
+   * allocated. The set-based {@link #legalMoves(Side, long)} wraps this with a {@link TreeSet}-collecting sink so the
+   * existing public contract is preserved verbatim. Used by the helpmate search hot path to fill a per-depth reusable
+   * move buffer without allocating a sorted-set scaffold per ply.
    */
   public void legalMovesInto(Consumer<MoveSpecification> sink, Side side, long enPassantBit) {
     if (side != Side.WHITE && side != Side.BLACK) {
@@ -516,8 +516,8 @@ public record BitboardPosition(long whitePawns, long whiteRooks, long whiteKnigh
             RookMoves.targets(fromOrdinal, occ, ownPieces) & combinedMask);
         case QUEEN -> emitTargetsAsMoves(sink, fromSquare,
             QueenMoves.targets(fromOrdinal, occ, ownPieces) & combinedMask);
-        case PAWN -> emitPawnMoves(sink, fromSquare, fromOrdinal, side, occ, opponentPieces, enPassantBit,
-            combinedMask, checkers, checkerCount, kingOrdinal, pinFilter);
+        case PAWN -> emitPawnMoves(sink, fromSquare, fromOrdinal, side, occ, opponentPieces, enPassantBit, combinedMask,
+            checkers, checkerCount, kingOrdinal, pinFilter);
         default -> throw new IllegalArgumentException();
       }
       remaining &= remaining - 1L;
@@ -734,10 +734,10 @@ public record BitboardPosition(long whitePawns, long whiteRooks, long whiteKnigh
   }
 
   /**
-   * Returns a new {@code BitboardPosition} in which {@code piece} is relocated from {@code from} to {@code to}.
-   * Pre: {@code from} carries {@code piece}, {@code to} is empty. Used for hypothetical-position construction
-   * outside the regular move pipeline - e.g. FEN-level validation rewinding a pawn two-square advance to its
-   * starting square to check the prior position's legality.
+   * Returns a new {@code BitboardPosition} in which {@code piece} is relocated from {@code from} to {@code to}. Pre:
+   * {@code from} carries {@code piece}, {@code to} is empty. Used for hypothetical-position construction outside the
+   * regular move pipeline - e.g. FEN-level validation rewinding a pawn two-square advance to its starting square to
+   * check the prior position's legality.
    */
   public BitboardPosition withRelocatedPiece(Piece piece, Square from, Square to) {
     if (piece == Piece.NONE) {
@@ -933,8 +933,8 @@ public record BitboardPosition(long whitePawns, long whiteRooks, long whiteKnigh
    * Returns {@code true} if {@code mover}'s king would be in check after applying an en-passant capture from
    * {@code fromSquare} to {@code enPassantTargetSquare}. The capturing pawn vacates {@code fromSquare} and lands on
    * {@code enPassantTargetSquare}; the captured opposing pawn is removed from the square one rank behind
-   * {@code enPassantTargetSquare} (rank 5 for a {@link Side#WHITE} move to rank 6; rank 4 for a {@link Side#BLACK}
-   * move to rank 3).
+   * {@code enPassantTargetSquare} (rank 5 for a {@link Side#WHITE} move to rank 6; rank 4 for a {@link Side#BLACK} move
+   * to rank 3).
    *
    * <p>
    * Allocation-free: derives the post-EP occupied mask by XORing single-bit deltas off the current state and runs the
@@ -946,10 +946,10 @@ public record BitboardPosition(long whitePawns, long whiteRooks, long whiteKnigh
    *
    * <p>
    * Preconditions (not validated): {@code fromSquare} carries a {@code mover}-side pawn; {@code enPassantTargetSquare}
-   * is on the correct rank for a {@code mover} EP target (rank 6 for {@link Side#WHITE}, rank 3 for {@link Side#BLACK});
-   * the square one rank behind {@code enPassantTargetSquare} carries an opposing pawn. If these don't hold, the
-   * returned value is undefined. The method does validate that the {@link Square} / {@link Side} inputs are real (not
-   * {@link Square#NONE} / {@link Side#NONE}).
+   * is on the correct rank for a {@code mover} EP target (rank 6 for {@link Side#WHITE}, rank 3 for
+   * {@link Side#BLACK}); the square one rank behind {@code enPassantTargetSquare} carries an opposing pawn. If these
+   * don't hold, the returned value is undefined. The method does validate that the {@link Square} / {@link Side} inputs
+   * are real (not {@link Square#NONE} / {@link Side#NONE}).
    */
   public boolean isInCheckAfterEnPassantCapture(Square fromSquare, Square enPassantTargetSquare, Side mover) {
     if (fromSquare == Square.NONE || enPassantTargetSquare == Square.NONE) {

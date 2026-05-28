@@ -9,11 +9,11 @@ import com.dlb.chess.board.enums.SquareType;
 import com.dlb.chess.common.constants.EnumConstants;
 
 /**
- * StaticPosition-backed material predicates used by the unwinnability/helpmate analysis. Reference implementations
- * of the same predicates that {@link UnwinnabilityMaterialBitboard} computes from a {@link com.dlb.chess.bitboard
- * .BitboardPosition}. This class is the differential-test oracle - production callers all consume the bitboard
- * sibling. When Phase 6 of the switchover lands and the StaticPosition subtree relocates to {@code src/test/}, this
- * class moves with it as a single {@code git mv}.
+ * StaticPosition-backed material predicates used by the unwinnability/helpmate analysis. Reference implementations of
+ * the same predicates that {@link UnwinnabilityMaterialBitboard} computes from a {@link com.dlb.chess.bitboard
+ * .BitboardPosition}. This class is the differential-test oracle - production callers all consume the bitboard sibling.
+ * When Phase 6 of the switchover lands and the StaticPosition subtree relocates to {@code src/test/}, this class moves
+ * with it as a single {@code git mv}.
  */
 abstract class UnwinnabilityMaterial implements EnumConstants {
 

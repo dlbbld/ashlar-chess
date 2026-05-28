@@ -12,15 +12,15 @@ import com.dlb.chess.common.enums.Termination;
 import com.dlb.chess.common.model.GameEndFacts;
 
 /**
- * Tests for {@link Board#calculateGameEndFacts()} and {@link Board#isGameEnd()} - the rich game-end snapshot that
- * pairs all condition-only facts with the precedence-projected {@link com.dlb.chess.common.model.Outcome}. Pins the
- * "facts are independent, outcome is a projection" architecture: multiple facts may be simultaneously true at a single
+ * Tests for {@link Board#calculateGameEndFacts()} and {@link Board#isGameEnd()} - the rich game-end snapshot that pairs
+ * all condition-only facts with the precedence-projected {@link com.dlb.chess.common.model.Outcome}. Pins the "facts
+ * are independent, outcome is a projection" architecture: multiple facts may be simultaneously true at a single
  * position; the {@code outcome} field reports the python-chess precedence stack's verdict.
  *
  * <p>
  * Sister to {@code TestBasicChessUtility} which pins the precedence rules directly on {@code calculateOutcome}; this
- * test verifies the same precedence flows through the {@code GameEndFacts} snapshot, plus the independence of the
- * raw fact booleans.
+ * test verifies the same precedence flows through the {@code GameEndFacts} snapshot, plus the independence of the raw
+ * fact booleans.
  */
 class TestBoardGameEndFacts {
 

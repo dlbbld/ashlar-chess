@@ -180,9 +180,9 @@ final class LenientSanRecover {
 
   /**
    * Rewrites a rank-disambiguated SAN move to its canonical file-disambiguated form. Used when strict rejects with
-   * {@link SanValidationProblem#NON_STANDARD_SPECIFIED_RNBQ_RANK_INSTEAD_OF_FILE} - the move is uniquely identified
-   * by the user's rank disambig, but canonical SAN prefers file disambig when both forms work. We look up the from-file
-   * of the unique matching legal move and substitute it for the rank character.
+   * {@link SanValidationProblem#NON_STANDARD_SPECIFIED_RNBQ_RANK_INSTEAD_OF_FILE} - the move is uniquely identified by
+   * the user's rank disambig, but canonical SAN prefers file disambig when both forms work. We look up the from-file of
+   * the unique matching legal move and substitute it for the rank character.
    */
   private static String rewriteRankAsFile(String s, Board board) {
     final BodyAndMarker split = splitMarker(s);

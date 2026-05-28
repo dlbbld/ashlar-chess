@@ -22,8 +22,8 @@ import com.dlb.chess.test.pgntest.enums.PgnTest;
 /**
  * Differential test: {@link BitboardPosition#potentialToSquares(Square, long)} must agree set-equal with
  * {@link AbstractPotentialToSquares#calculatePotentialToSquare(StaticPosition, Square, Side, Square)} for every own
- * piece on every fixture in the corpus, for both sides. This pins the bitboard pseudo-legal-target surface used by
- * the SAN error-reporting layer against the StaticPosition-backed reference.
+ * piece on every fixture in the corpus, for both sides. This pins the bitboard pseudo-legal-target surface used by the
+ * SAN error-reporting layer against the StaticPosition-backed reference.
  *
  * <p>
  * Covers all six piece types via the side-to-move's pieces and the side-not-to-move's pieces (so the EP target square
@@ -53,8 +53,8 @@ class TestBitboardPositionPotentialToSquares {
     }
   }
 
-  private static void assertSidePotentialToSquaresAgree(StaticPosition staticPosition, BitboardPosition bitboardPosition,
-      Side side, Square epTarget, long epBit, PgnFen testCase) {
+  private static void assertSidePotentialToSquaresAgree(StaticPosition staticPosition,
+      BitboardPosition bitboardPosition, Side side, Square epTarget, long epBit, PgnFen testCase) {
     for (final Square fromSquare : Square.REAL) {
       final Piece piece = staticPosition.get(fromSquare);
       if (piece == Piece.NONE || piece.getSide() != side) {

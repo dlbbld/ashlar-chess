@@ -41,9 +41,9 @@ public abstract class AbstractLegalMoves implements EnumConstants {
   }
 
   /**
-   * Public bridge to {@link KingCastlingLegalMoves}. Returns only the castling legal moves for {@code havingMove}
-   * given the current castling rights. Reference-layer entry point used by the corpus differential tests
-   * comparing this StaticPosition-shaped pipeline against {@code BitboardLegalMoveFactory}.
+   * Public bridge to {@link KingCastlingLegalMoves}. Returns only the castling legal moves for {@code havingMove} given
+   * the current castling rights. Reference-layer entry point used by the corpus differential tests comparing this
+   * StaticPosition-shaped pipeline against {@code BitboardLegalMoveFactory}.
    */
   public static Set<LegalMove> calculateCastlingLegalMoves(StaticPosition staticPosition, Side havingMove,
       CastlingRight castlingRight) {

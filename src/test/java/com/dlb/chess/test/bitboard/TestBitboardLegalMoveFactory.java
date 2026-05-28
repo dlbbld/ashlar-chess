@@ -20,14 +20,14 @@ import com.dlb.chess.test.pgn.setup.PgnTestCaseCatalog;
 import com.dlb.chess.test.pgntest.enums.PgnTest;
 
 /**
- * Differential test for {@link BitboardLegalMoveFactory#toLegalMove}: for every legal move on every corpus fixture,
- * the converter applied to the move's {@link MoveSpecification} must reproduce the reference's {@link LegalMove}
- * record (same moving piece, captured piece, and {@link com.dlb.chess.model.LegalMoveKind}).
+ * Differential test for {@link BitboardLegalMoveFactory#toLegalMove}: for every legal move on every corpus fixture, the
+ * converter applied to the move's {@link MoveSpecification} must reproduce the reference's {@link LegalMove} record
+ * (same moving piece, captured piece, and {@link com.dlb.chess.model.LegalMoveKind}).
  *
  * <p>
- * The reference is {@link AbstractLegalMoves#calculateLegalMoves} directly - NOT
- * {@code board.getLegalMoves()}, which since Switchover Step 2.2 ({@code a235d363}) is produced via this very
- * factory. Using {@code board.getLegalMoves()} as the oracle here would make the test self-referential.
+ * The reference is {@link AbstractLegalMoves#calculateLegalMoves} directly - NOT {@code board.getLegalMoves()}, which
+ * since Switchover Step 2.2 ({@code a235d363}) is produced via this very factory. Using {@code board.getLegalMoves()}
+ * as the oracle here would make the test self-referential.
  */
 class TestBitboardLegalMoveFactory {
 
@@ -40,13 +40,13 @@ class TestBitboardLegalMoveFactory {
         final Board board = testCase.finalPosition();
         final Side havingMove = board.getHavingMove();
         final BitboardPosition bitboardPosition = board.getBitboardPosition();
-        for (final LegalMove referenceMove : AbstractLegalMoves.calculateLegalMoves(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()),
-            havingMove, board.getCastlingRight(havingMove), board.getEnPassantCaptureTargetSquare())) {
+        for (final LegalMove referenceMove : AbstractLegalMoves.calculateLegalMoves(
+            StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), havingMove,
+            board.getCastlingRight(havingMove), board.getEnPassantCaptureTargetSquare())) {
           final LegalMove converted = BitboardLegalMoveFactory.toLegalMove(bitboardPosition,
               referenceMove.moveSpecification(), havingMove);
-          assertEquals(referenceMove, converted,
-              "converted LegalMove disagrees with reference for "
-                  + referenceMove.moveSpecification() + " in fixture " + testCase.pgnName());
+          assertEquals(referenceMove, converted, "converted LegalMove disagrees with reference for "
+              + referenceMove.moveSpecification() + " in fixture " + testCase.pgnName());
         }
       }
     }
@@ -66,7 +66,7 @@ class TestBitboardLegalMoveFactory {
   @SuppressWarnings("static-method")
   @Test
   void noneSideThrows() {
-    assertThrows(IllegalArgumentException.class, () -> BitboardLegalMoveFactory.toLegalMove(
-        BitboardPosition.INITIAL_POSITION, new MoveSpecification(Square.E2, Square.E4), Side.NONE));
+    assertThrows(IllegalArgumentException.class, () -> BitboardLegalMoveFactory
+        .toLegalMove(BitboardPosition.INITIAL_POSITION, new MoveSpecification(Square.E2, Square.E4), Side.NONE));
   }
 }

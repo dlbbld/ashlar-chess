@@ -23,9 +23,9 @@ record RepetitionGroup(DynamicPosition repeatedPosition, ImmutableList<HalfMove>
     occurrences = Nulls.copyOfList(occurrences);
     final int expectedTotal = occurrences.size() + (includesInitialPosition ? 1 : 0);
     if (totalRepetitionCount != expectedTotal) {
-      throw new IllegalArgumentException("totalRepetitionCount " + totalRepetitionCount
-          + " disagrees with occurrences.size()=" + occurrences.size()
-          + " and includesInitialPosition=" + includesInitialPosition);
+      throw new IllegalArgumentException(
+          "totalRepetitionCount " + totalRepetitionCount + " disagrees with occurrences.size()=" + occurrences.size()
+              + " and includesInitialPosition=" + includesInitialPosition);
     }
   }
 }

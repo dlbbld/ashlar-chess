@@ -9,8 +9,8 @@ import com.dlb.chess.common.Nulls;
 import com.dlb.chess.fen.FenPieceSymbol;
 
 /**
- * Production-side bitboard utility methods that have no dependency on the {@code StaticPosition} reference layer.
- * The {@code StaticPosition} <-> {@code BitboardPosition} bridge methods live in
+ * Production-side bitboard utility methods that have no dependency on the {@code StaticPosition} reference layer. The
+ * {@code StaticPosition} <-> {@code BitboardPosition} bridge methods live in
  * {@code com.dlb.chess.bitboard.StaticPositionBridge} (under {@code src/test/}), since {@code StaticPosition} itself
  * relocated to {@code src/test/} as the permanent differential-test oracle.
  */
@@ -21,8 +21,8 @@ public final class BitboardPositionUtility {
 
   /**
    * Returns the FEN piece-placement string for {@code bitboardPosition} - the first space-separated field of a FEN
-   * string. Format: rank 8 first, ranks separated by "/", consecutive empty squares within a rank collapsed to a
-   * digit, pieces as {@link FenPieceSymbol} letters (uppercase = white, lowercase = black).
+   * string. Format: rank 8 first, ranks separated by "/", consecutive empty squares within a rank collapsed to a digit,
+   * pieces as {@link FenPieceSymbol} letters (uppercase = white, lowercase = black).
    */
   public static String calculatePiecePlacement(BitboardPosition bitboardPosition) {
     final StringBuilder piecePlacement = new StringBuilder();

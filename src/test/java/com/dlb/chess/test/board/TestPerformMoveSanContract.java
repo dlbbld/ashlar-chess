@@ -110,8 +110,7 @@ class TestPerformMoveSanContract {
    * Reverse direction: at each position, for every legal move (not just the played one), perform -> capture SAN ->
    * unperform -> derive MoveSpec from SAN at the original position -> assert it equals the LegalMove's stored MoveSpec.
    */
-  private static void verifyCalculatedSanToCalculatedMoveSpecification(PgnTestCaseList testCaseList,
-      PgnFen testCase) {
+  private static void verifyCalculatedSanToCalculatedMoveSpecification(PgnTestCaseList testCaseList, PgnFen testCase) {
     final PgnGame pgnGame = PgnCacheForStrictPgnParserTestCases.getPgn(testCaseList.pgnTest().getFolderPath(),
         testCase.pgnName());
     final Board board = new Board(pgnGame.startFen());

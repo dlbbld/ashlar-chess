@@ -27,8 +27,8 @@ import com.dlb.chess.test.pgntest.enums.PgnTest;
  * }</pre>
  *
  * <p>
- * Every mismatch is reported on the test failure message: PGN filename, the {@link PgnTest} it belongs to, the
- * expected (cached) FEN, and the actual (replayed) FEN. Apply fixes by editing the matching literal in
+ * Every mismatch is reported on the test failure message: PGN filename, the {@link PgnTest} it belongs to, the expected
+ * (cached) FEN, and the actual (replayed) FEN. Apply fixes by editing the matching literal in
  * {@code PgnTestCaseCatalog}.
  */
 class TestSetupFinalFen {

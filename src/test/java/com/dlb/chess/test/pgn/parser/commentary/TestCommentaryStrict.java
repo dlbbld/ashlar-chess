@@ -135,7 +135,8 @@ class TestCommentaryStrict {
   }
 
   // -------------------------------------------------------------------------------------------------
-  // T-003 - an inner opening delimiter is content (PGN spec section 8.2.5). Only the closing delimiter closes a comment.
+  // T-003 - an inner opening delimiter is content (PGN spec section 8.2.5). Only the closing delimiter closes a
+  // comment.
   // -------------------------------------------------------------------------------------------------
 
   @SuppressWarnings("static-method")

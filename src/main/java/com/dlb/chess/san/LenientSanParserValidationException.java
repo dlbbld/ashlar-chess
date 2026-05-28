@@ -43,8 +43,8 @@ public class LenientSanParserValidationException extends UsageException {
   }
 
   /**
-   * The forgiven items the lenient parser had already accumulated before failing. Useful for diagnostics - shows
-   * which tolerances applied before the input became unrecoverable.
+   * The forgiven items the lenient parser had already accumulated before failing. Useful for diagnostics - shows which
+   * tolerances applied before the input became unrecoverable.
    */
   public @NonNull ImmutableList<@NonNull ForgivenItem> getForgivenItemsAccumulated() {
     return forgivenItemsAccumulated;

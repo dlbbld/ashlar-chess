@@ -10,8 +10,8 @@ import com.dlb.chess.common.Nulls;
  * <p>
  * {@link #pushes} returns single + double forward pushes (no captures). Single push lands one rank forward iff that
  * square is empty; double push lands two ranks forward iff the pawn is on its starting rank and both intermediate and
- * target squares are empty. Promotion targets are included in the push bitboard - the caller distinguishes promotion
- * at the move-generation layer.
+ * target squares are empty. Promotion targets are included in the push bitboard - the caller distinguishes promotion at
+ * the move-generation layer.
  *
  * <p>
  * {@link #captures} returns regular diagonal captures plus en-passant. Regular captures are the diagonal-forward

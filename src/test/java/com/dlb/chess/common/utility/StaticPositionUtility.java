@@ -25,7 +25,8 @@ import com.google.common.collect.ImmutableList;
 
 public abstract class StaticPositionUtility implements EnumConstants {
 
-  // En-passant (from, to) patterns - test-side duplicate of EnPassantCaptureUtility's WHITE/BLACK_EN_PASSANT_CAPTURE_FROM_TO
+  // En-passant (from, to) patterns - test-side duplicate of EnPassantCaptureUtility's
+  // WHITE/BLACK_EN_PASSANT_CAPTURE_FROM_TO
   // constants. Mirrored here so the StaticPosition EP-detection oracle does not borrow the production constants
   // (the differential test would then not catch a bitboard EP-detection regression that mistakenly agreed with a
   // bad production constant). Same rationale as the castling oracle duplication in KingCastlingLegalMoves.

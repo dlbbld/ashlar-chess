@@ -35,7 +35,8 @@ class TestBishopAttacks {
     for (final PgnTest pgnTest : PgnTest.values()) {
       final PgnTestCaseList testCaseList = PgnTestCaseCatalog.getTestList(pgnTest);
       for (final PgnFen testCase : testCaseList.list()) {
-        final StaticPosition staticPosition = StaticPositionBridge.toStaticPosition(testCase.finalPosition().getBitboardPosition());
+        final StaticPosition staticPosition = StaticPositionBridge
+            .toStaticPosition(testCase.finalPosition().getBitboardPosition());
         final BitboardPosition bitboardPosition = StaticPositionBridge.fromStaticPosition(staticPosition);
         final long occupied = bitboardPosition.occupied();
         assertSideAgrees(bitboardPosition.whiteBishops(), Side.WHITE, staticPosition, occupied, testCase);
@@ -64,8 +65,8 @@ class TestBishopAttacks {
   void emptyBoardFromCenterMatchesReference() {
     // Bishop on D4 on an otherwise empty board - verifies the empty-board diagonal pattern via the production
     // reference rather than a hand-written expected set (no tautological self-test).
-    final StaticPosition staticPosition = StaticPosition.EMPTY_POSITION
-        .createChangedPosition(Square.D4, com.dlb.chess.board.enums.Piece.WHITE_BISHOP);
+    final StaticPosition staticPosition = StaticPosition.EMPTY_POSITION.createChangedPosition(Square.D4,
+        com.dlb.chess.board.enums.Piece.WHITE_BISHOP);
     final BitboardPosition bitboardPosition = StaticPositionBridge.fromStaticPosition(staticPosition);
     final Set<Square> bitboardAttacks = BitboardPositionUtility
         .toSquareSet(BishopAttacks.attacks(Square.D4.ordinal(), bitboardPosition.occupied()));

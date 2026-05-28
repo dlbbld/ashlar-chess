@@ -54,8 +54,7 @@ public class PgnWriter {
     writePgn(board, tagList, folderPath, pgnName, WriteMode.SEMANTIC);
   }
 
-  public static void writePgn(Board board, List<Tag> tagList, Path folderPath, String pgnName,
-      WriteMode writeMode) {
+  public static void writePgn(Board board, List<Tag> tagList, Path folderPath, String pgnName, WriteMode writeMode) {
     final PgnGame pgnGame = PgnCreate.createPgnGame(board, tagList);
     writePgn(pgnGame, folderPath, pgnName, writeMode);
   }

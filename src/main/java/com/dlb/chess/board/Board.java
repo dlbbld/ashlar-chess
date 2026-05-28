@@ -60,8 +60,8 @@ import com.google.common.collect.ImmutableList;
 /**
  * The library's central type - a chess <em>game</em>, not merely a position. A {@code Board} carries the position
  * <strong>plus</strong> the move history from its initial FEN: every halfmove ever performed, the legal-move set after
- * each, the halfmove clock, repetition counts, castling-right loss reasons, derived SAN/LAN strings - everything
- * needed to answer rule-level questions about the game so far.
+ * each, the halfmove clock, repetition counts, castling-right loss reasons, derived SAN/LAN strings - everything needed
+ * to answer rule-level questions about the game so far.
  *
  * <h2>Construction</h2>
  *

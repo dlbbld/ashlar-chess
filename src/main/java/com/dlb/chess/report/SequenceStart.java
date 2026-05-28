@@ -5,17 +5,17 @@ import org.eclipse.jdt.annotation.Nullable;
 import com.dlb.chess.common.model.HalfMove;
 
 /**
- * The START of a 50-move-rule no-progress sequence. Either the sequence inherits an existing halfmove-clock value
- * from the starting FEN (build with {@link #initialFen(int)}), or it began with the first non-zeroing legal move
- * played after a clock-resetting ply (build with {@link #afterReset(HalfMove)}).
+ * The START of a 50-move-rule no-progress sequence. Either the sequence inherits an existing halfmove-clock value from
+ * the starting FEN (build with {@link #initialFen(int)}), or it began with the first non-zeroing legal move played
+ * after a clock-resetting ply (build with {@link #afterReset(HalfMove)}).
  *
  * <p>
  * The two shapes share one record with a boolean discriminator. The compact constructor enforces that exactly one of
  * the two payload fields is populated:
  * <ul>
  * <li>{@code isInitialFen == true}: {@code initialClockValue >= 0}, {@code firstNonZeroingMove == null}.</li>
- * <li>{@code isInitialFen == false}: {@code initialClockValue == 0} (unused), {@code firstNonZeroingMove != null}
- *     with {@code halfMoveClock == 1} by chess-engine invariant.</li>
+ * <li>{@code isInitialFen == false}: {@code initialClockValue == 0} (unused), {@code firstNonZeroingMove != null} with
+ * {@code halfMoveClock == 1} by chess-engine invariant.</li>
  * </ul>
  */
 record SequenceStart(boolean isInitialFen, int initialClockValue, @Nullable HalfMove firstNonZeroingMove) {
@@ -33,9 +33,8 @@ record SequenceStart(boolean isInitialFen, int initialClockValue, @Nullable Half
         throw new IllegalArgumentException("isInitialFen=false requires firstNonZeroingMove != null");
       }
       if (firstNonZeroingMove.halfMoveClock() != 1) {
-        throw new IllegalArgumentException(
-            "firstNonZeroingMove must have halfMoveClock == 1 by construction; was "
-                + firstNonZeroingMove.halfMoveClock());
+        throw new IllegalArgumentException("firstNonZeroingMove must have halfMoveClock == 1 by construction; was "
+            + firstNonZeroingMove.halfMoveClock());
       }
       if (initialClockValue != 0) {
         throw new IllegalArgumentException(
@@ -54,9 +53,9 @@ record SequenceStart(boolean isInitialFen, int initialClockValue, @Nullable Half
   }
 
   /**
-   * Returns {@code firstNonZeroingMove} guaranteed non-null. Throws if called on an initial-FEN start, where the
-   * field is null by invariant. Consumers that have already branched on {@link #isInitialFen()} use this to avoid
-   * a manual null-check that JDT cannot infer through the discriminator.
+   * Returns {@code firstNonZeroingMove} guaranteed non-null. Throws if called on an initial-FEN start, where the field
+   * is null by invariant. Consumers that have already branched on {@link #isInitialFen()} use this to avoid a manual
+   * null-check that JDT cannot infer through the discriminator.
    */
   HalfMove firstNonZeroingMoveOrThrow() {
     if (firstNonZeroingMove == null) {
