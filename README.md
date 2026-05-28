@@ -12,6 +12,10 @@ It is built for correctness and comprehension — for example, it produces meani
 
 For the design philosophy, architecture, and rule-level decisions, see [specification.md](specification.md).
 
+clean-chess includes a Java port of the Chess Unwinnability Analyzer (CHA) by Miguel Ambrona, used for unwinnability and dead-position detection.
+
+The test suite also cross-validates selected behavior against external chess libraries, currently python-chess as the primary oracle and chesslib by Carlos B. Langonijr as a secondary witness. These libraries are used for testing only and are not runtime dependencies of clean-chess.
+
 ## Not supported
 
 - PGN move variations
@@ -221,16 +225,6 @@ The numbers in parentheses are the number of full moves. So "0.5" is one halfmov
 The halfmove series always indicates the first halfmove with (0.5), fifty halfmoves with (50), and seventy-five halfmoves if reached as (75) 
 and finally, the last halfmove in the series.
 
-# Unwinnability and dead position
-The library implements the [Chess Unwinnability Analyzer (CHA)](https://github.com/miguel-ambrona/D3-Chess). As such, everything here achieved is due to CHA. Also, all relevant examples below are from the [CHA](https://github.com/miguel-ambrona/D3-Chess), which elaborates on the subject in every aspect.
-
-A position is unwinnable for a player if there is no legal sequence that can end with that player giving checkmate,
-even if the opponent cooperates. If the position is unwinnable for both players, it's a dead position.
-
-> **Note:** quick/full dead-position detection is caller-invoked. `Board` does not run the quick analyzer during
-> construction or after each move; callers that want to adjudicate analyzer-driven dead positions can query
-> `Board.isDeadPositionQuick()` / `Board.isDeadPositionFull()` or the side-specific unwinnability APIs.
-
 # Game adjudication
 The game-ending logic is easiest to understand when written out directly. First decide which player would otherwise
 win, then run the material-only check, then run the CHA quick position check.
@@ -306,6 +300,15 @@ The trade-off is timing, not outcome. Checking during play gives the exact FIDE 
 end preserves the final result.
 
 # Unwinnability API
+
+The library implements the [Chess Unwinnability Analyzer (CHA)](https://github.com/miguel-ambrona/D3-Chess). As such, everything here achieved is due to CHA. Also, all relevant examples below are from the [CHA](https://github.com/miguel-ambrona/D3-Chess), which elaborates on the subject in every aspect.
+
+A position is unwinnable for a player if there is no legal sequence that can end with that player giving checkmate,
+even if the opponent cooperates. If the position is unwinnable for both players, it's a dead position.
+
+> **Note:** quick/full dead-position detection is caller-invoked. `Board` does not run the quick analyzer during
+> construction or after each move; callers that want to adjudicate analyzer-driven dead positions can query
+> `Board.isDeadPositionQuick()` / `Board.isDeadPositionFull()` or the side-specific unwinnability APIs.
 
 ## Methods
 The library provides an implementation of CHA. So for both situations, there is a quick and a full method.
