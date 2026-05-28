@@ -135,11 +135,15 @@
 				<!--
 					Javadoc is NOT bound to the package phase. Regular edit-compile cycles
 					(mvn test-compile, mvn package -DskipTests) stay fast and Java-only.
-					Run javadoc explicitly when touching public docs / API signatures:
-						mvn javadoc:javadoc        # validate only
-						mvn javadoc:jar            # produce the javadoc jar
-					Strict doclint below makes broken @link references fail the build when
-					javadoc is invoked, so the gate is sharp but opt-in.
+					Run javadoc explicitly when touching docs / API signatures:
+						mvn javadoc:javadoc                      # validate main API docs
+						mvn javadoc:test-javadoc -Dshow=private  # validate TEST docs (test classes are
+						                                         # package-private, so -Dshow=private is
+						                                         # required for doclint to lint them)
+						mvn javadoc:jar                          # produce the javadoc jar
+					Strict doclint below makes broken @link references and malformed HTML fail the
+					build when javadoc is invoked; the same config applies to test-javadoc, so the
+					gate covers test JavaDoc too. Sharp but opt-in.
 				-->
 				<configuration>
 					<source>17</source>

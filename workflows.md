@@ -85,6 +85,9 @@ Release tags follow strict semver and match the `<version>` in `pom.xml`. The re
 
 - Active branch is on the release-candidate state (worktree is clean; everything intended for the release is merged or committed).
 - `mvn test -Pfull` green from a clean checkout. **Required.**
+- JavaDoc gates green. **Required.** Run both — the doclint config (`all,-missing`, `failOnError`) is shared, but the goals cover different sources:
+  - `mvn javadoc:javadoc` — main API docs.
+  - `mvn javadoc:test-javadoc -Dshow=private` — test docs. The `-Dshow=private` is mandatory: test classes are package-private, so without it doclint silently skips them and stale `@link` / malformed HTML in test JavaDoc go uncaught.
 - All tasks for the release are marked done in `tasks.md`.
 
 ### 2. Update artifacts

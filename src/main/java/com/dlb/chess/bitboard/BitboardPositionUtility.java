@@ -10,7 +10,7 @@ import com.dlb.chess.fen.FenPieceSymbol;
 
 /**
  * Production-side bitboard utility methods that have no dependency on the {@code StaticPosition} reference layer. The
- * {@code StaticPosition} <-> {@code BitboardPosition} bridge methods live in
+ * bridge methods between {@code StaticPosition} and {@code BitboardPosition} live in
  * {@code com.dlb.chess.bitboard.StaticPositionBridge} (under {@code src/test/}), since {@code StaticPosition} itself
  * relocated to {@code src/test/} as the permanent differential-test oracle.
  */
