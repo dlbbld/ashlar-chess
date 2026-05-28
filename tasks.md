@@ -38,13 +38,14 @@ where it is cheap (no consumers exist yet).
   cut a JitPack release while `main` still says `clean-chess` - finish the PR first.
 
 ### Prerequisites
-- [ ] Add SPDX header to each Java file. ASCII-only per coding-conventions.md, so the
+- [x] Add SPDX header to each Java file. ASCII-only per coding-conventions.md, so the
       two-line GPL form uses `Baechli`, not the umlaut:
         // Copyright (C) 2020-2026 Daniel Baechli
         // SPDX-License-Identifier: GPL-3.0-only
       (SPDX-only is the lighter alternative if you prefer no copyright line in source.)
       Java-only phase - if SPDX is later extended to XML/properties/Markdown, each file
       type needs its own comment syntax, NOT `//`.
+- [x] Add `tools/java-license-headers.ps1` to check/fix the exact Java header before releases
 - [ ] Eclipse template adding the chosen header on every new Java class
 - [x] Rename decision resolved: ashlar-chess is the final name (executed in Step 0 + below)
 - [x] DeepSquare / Bitboard / python-chess prior releases complete
@@ -79,7 +80,7 @@ where it is cheap (no consumers exist yet).
 
 ### Copyright alignment (do now)
 - [x] LICENSE copyright `2024-2026` -> `2020-2026` (LICENSE/README keep the umlaut spelling)
-- [ ] SPDX/copyright headers (prerequisite above) applied consistently after the package rename
+- [x] SPDX/copyright headers (prerequisite above) applied consistently after the package rename
 
 ### pom.xml — required plugins (all in a new `release` profile)
 - [ ] central-publishing-maven-plugin (`extensions=true`; in the `release` profile with
@@ -110,6 +111,7 @@ where it is cheap (no consumers exist yet).
 - [ ] README: drop the JitPack `<repositories>` block, leave only the plain Maven snippet
 - [ ] Drop the JitPack URL and related framing from README and other docs
 - [ ] Pre-deploy checks before touching Central:
+        .\tools\java-license-headers.ps1 -Check
         mvn -Prelease help:active-profiles   # confirm the `release` profile is active
         mvn -Prelease verify                 # confirm signing / javadoc jar / source jar wiring
 - [ ] First publish via the Central Portal - staged release, manual approval the first time

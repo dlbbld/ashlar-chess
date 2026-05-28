@@ -84,6 +84,7 @@ Release tags follow strict semver and match the `<version>` in `pom.xml`. The re
 ### 1. Pre-flight
 
 - Active branch is on the release-candidate state (worktree is clean; everything intended for the release is merged or committed).
+- Java license headers exact: `.\tools\java-license-headers.ps1 -Check`. Use `-Fix` before committing if the check reports drift.
 - `mvn test -Pfull` green from a clean checkout. **Required.**
 - JavaDoc gates green. **Required.** Both goals must run with `-Dshow=private` — many main classes (the `io.github.dlbbld.ashlarchess.report` records, package-private helpers) and all test classes are package-private, and at javadoc's default `protected` visibility doclint silently skips them, so stale `@link` / malformed HTML go uncaught:
   - `mvn javadoc:javadoc -Dshow=private` — all main docs.
