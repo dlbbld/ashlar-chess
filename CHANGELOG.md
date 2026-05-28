@@ -4,6 +4,18 @@ Releases from 3.3 onward. Earlier history is in git tags only.
 
 ## [Unreleased]
 
+## [16.1.0] - 2026-05-28
+
+Test-scaffolding cleanup. Removes one-shot and superseded test-data generators and dormant external-library cross-validation harnesses from the test tree. No `src/main` change; no API, behaviour, or output change.
+
+### Internal
+
+- Removed superseded test generators: `GeneratePythonTestCases` (replaced by the committed-JSONL python-chess oracle in 12.2.0), `GenerateScalaChessTestCases`, `GenerateAmbronaHelpMateTestCases`, `GenerateChaTestCases`, `GenerateChaLichessReport`, `GenerateLibraryCarlosInsufficientMaterialTestCases`, `GeneratePgnInformationUtility`, `GeneratePiecePositions`.
+- Removed dormant single-use cross-validation scaffolding: the `com.dlb.chess.test.scalachess` and `com.dlb.chess.test.chessbase` packages and the `com.dlb.chess.test.unwinnability.lichess` subtree (FEN and PGN check harnesses).
+- `TestUciMoveUtility` no longer depends on the removed `GenerateScalaChessTestCases`; its ScalaChess UCI-encoding helper is inlined. The test still runs unchanged.
+- `PgnTest`: removed two stale ScalaChess-related comments; no enum values changed.
+- Docs: `setup.md` adds an optional python-chess oracle-regeneration section; `tasks.md` marks the 12.2.0 python-chess cross-validation release complete; `workflows.md` reference corrected.
+
 ## [16.0.0] - 2026-05-27
 
 The threefold and 50-move report becomes a first-class object model with print classes as a derived view. Per-move FIDE 9.2 / 9.3 claim API. New `GameEndFacts` snapshot pairs the raw condition booleans with the precedence-projected `Outcome`. `Outcome` is now never null. `HalfMove` is no longer stored on `Board`.
