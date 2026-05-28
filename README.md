@@ -779,7 +779,7 @@ Checks whether a PGN adheres to the export format per the PGN specification.
 
 # License
 
-Copyright (C) 2024-2026  Daniel Bächli
+Copyright (C) 2020-2026  Daniel Bächli
 
 clean-chess is free software, licensed under the GNU General Public License, version 3 (GPL v3). See [LICENSE](LICENSE) for the full text.
 

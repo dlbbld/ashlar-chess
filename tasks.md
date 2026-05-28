@@ -48,25 +48,25 @@ where it is cheap (no consumers exist yet).
 - [ ] Eclipse template adding the chosen header on every new Java class
 - [x] Rename decision resolved: ashlar-chess is the final name (executed in Step 0 + below)
 - [x] DeepSquare / Bitboard / python-chess prior releases complete
-- [ ] Mention that chesslib is used for testing
+- [x] Mention that chesslib is used for testing
 - [ ] Update README.md (jitpack no longer used)
 - [ ] Final maturity re-check at publish time
 
 ### pom.xml — coordinates + metadata (do now on this branch)
-- [ ] `<groupId>` `com.github.dlbbld` -> `io.github.dlbbld`
-- [ ] `<artifactId>` `clean-chess` -> `ashlar-chess`
-- [ ] Add `<name>ashlar-chess</name>`, `<description>`, `<url>` (github.com/dlbbld/ashlar-chess)
-- [ ] Add `<inceptionYear>2020</inceptionYear>`
-- [ ] Add `<licenses>` (GPL-3.0-only, full URL, distribution=repo)
-- [ ] Add `<developers>`
-- [ ] Add `<scm>` -> ashlar-chess connection/developerConnection/url
+- [x] `<groupId>` `com.github.dlbbld` -> `io.github.dlbbld`
+- [x] `<artifactId>` `clean-chess` -> `ashlar-chess`
+- [x] Add `<name>ashlar-chess</name>`, `<description>`, `<url>` (github.com/dlbbld/ashlar-chess)
+- [x] Add `<inceptionYear>2020</inceptionYear>`
+- [x] Add `<licenses>` (GPL-3.0-only, full URL, distribution=repo)
+- [x] Add `<developers>`
+- [x] Add `<scm>` -> ashlar-chess connection/developerConnection/url
 - `<version>` already valid semver - no change
 
 ### Java package rename — `com.dlb.chess.*` -> `io.github.dlbbld.ashlarchess.*` (do now, own phase)
-- [ ] Eclipse Refactor -> Rename Package with "rename subpackages" across the WHOLE project
+- [x] Eclipse Refactor -> Rename Package with "rename subpackages" across the WHOLE project
       (src/main AND src/test - the relocated StaticPosition oracle is also under com.dlb.chess)
-- [ ] Each `package-info.java` (with `@NonNullByDefault`) moves with its package - verify none lost
-- [ ] Sweep NON-Java references (refactor will not catch these):
+- [x] Each `package-info.java` (with `@NonNullByDefault`) moves with its package - verify none lost
+- [x] Sweep NON-Java references (refactor will not catch these):
       - log4j2 config (logger names / package paths)
       - checkstyle.xml + suppressions (package-scoped rules / regex paths)
       - src/main/resources + src/test/resources (any package path or key)
@@ -78,7 +78,7 @@ where it is cheap (no consumers exist yet).
         mvn javadoc:test-javadoc -Dshow=private
 
 ### Copyright alignment (do now)
-- [ ] LICENSE copyright `2024-2026` -> `2020-2026` (LICENSE/README keep the umlaut spelling)
+- [x] LICENSE copyright `2024-2026` -> `2020-2026` (LICENSE/README keep the umlaut spelling)
 - [ ] SPDX/copyright headers (prerequisite above) applied consistently after the package rename
 
 ### pom.xml — required plugins (all in a new `release` profile)

@@ -41,9 +41,9 @@ mvn test -Pfull
 
 ## Where to put new work
 
-- Production rule code: `src/main/java/com/dlb/chess/<package>/`
+- Production rule code: `src/main/java/io/github/dlbbld/ashlarchess/<package>/`
 - Test fixtures: `src/test/resources/pgn/<category>/`
-- Test code: `src/test/java/com/dlb/chess/test/<package>/`
+- Test code: `src/test/java/io/github/dlbbld/ashlarchess/test/<package>/`
 
 For concrete procedures — adding a PGN test fixture, running test subsets, cutting a release — see **[workflows.md](workflows.md)**.
 

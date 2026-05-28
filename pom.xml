@@ -45,7 +45,7 @@
 			during iterative work. The `full` profile keeps this exclusion for now;
 			override `-Dtest.excludes=` when explicitly running the unwinnability suite.
 		-->
-		<test.excludes>com/dlb/chess/test/unwinnability/**/*.java</test.excludes>
+		<test.excludes>io/github/dlbbld/ashlarchess/test/unwinnability/**/*.java</test.excludes>
 	</properties>
 
 	<repositories>
