@@ -33,21 +33,21 @@ import io.github.dlbbld.ashlarchess.test.pgntest.constants.PgnTestConstants;
 import io.github.dlbbld.ashlarchess.test.pgntest.enums.PgnTest;
 
 /**
- * Cross-validates that clean-chess's PGN exporter preserves semantic content under round-trip, using the python-chess
+ * Cross-validates that ashlar-chess's PGN exporter preserves semantic content under round-trip, using the python-chess
  * PGN-import oracle (slice 2 onward) as the ground-truth reference.
  *
  * <p>
- * For each fixture: parses the original PGN with clean-chess, plays it through to extract the played UCI sequence, then
+ * For each fixture: parses the original PGN with ashlar-chess, plays it through to extract the played UCI sequence, then
  * emits the parsed game in each {@link WriteMode} ({@code SEMANTIC} and {@code ARCHIVAL}), re-parses the emitted string
- * with clean-chess, and asserts that the re-played UCI sequence and bounding FENs (start and final) still match what
+ * with ashlar-chess, and asserts that the re-played UCI sequence and bounding FENs (start and final) still match what
  * python-chess sees on the source PGN. The python-chess oracle data lives in
  * {@code src/test/resources/oracle/python-chess/<folderPart>.jsonl}; this test does not introduce a new oracle file.
  *
  * <p>
- * Semantic round-trip equivalence (the user's framing): python-chess, if it could re-parse clean-chess's emitted PGN,
+ * Semantic round-trip equivalence (the user's framing): python-chess, if it could re-parse ashlar-chess's emitted PGN,
  * would see the same move UCI sequence, the same starting position, and the same ending position as it does on the
- * source. We assert this transitively: the import oracle establishes that clean-chess's parse of the source agrees with
- * python-chess (slice 2); this slice extends that to "and clean-chess's emit round-trips to the same UCI / FEN sequence
+ * source. We assert this transitively: the import oracle establishes that ashlar-chess's parse of the source agrees with
+ * python-chess (slice 2); this slice extends that to "and ashlar-chess's emit round-trips to the same UCI / FEN sequence
  * under both modes." If both conditions hold, python-chess's parse of either the source or the round-tripped artifact
  * would yield the same content.
  *

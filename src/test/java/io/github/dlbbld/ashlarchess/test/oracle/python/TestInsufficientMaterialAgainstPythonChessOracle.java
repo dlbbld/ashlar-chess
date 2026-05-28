@@ -28,7 +28,7 @@ import io.github.dlbbld.ashlarchess.test.pgntest.enums.PgnTest;
  * Checks insufficient material assessment against python-chess.
  *
  * <p>
- * Focused cross-validation of clean-chess's {@code InsufficientMaterialUtility} against python-chess's
+ * Focused cross-validation of ashlar-chess's {@code InsufficientMaterialUtility} against python-chess's
  * {@code board.is_insufficient_material()} and {@code board.has_insufficient_material(color)} on the <strong>final
  * position</strong> of every PGN in the four core insufficient-material buckets:
  *
@@ -117,7 +117,7 @@ class TestInsufficientMaterialAgainstPythonChessOracle {
       summary.append(Nulls.get(BUCKETS, i).name().replace("BASIC_INSUFFICIENT_MATERIAL_", "")).append('=')
           .append(perBucketFixtureCounts[i]);
     }
-    summary.append(" - ").append(totalFixtures).append(" fixtures total; clean-chess InsufficientMaterialUtility")
+    summary.append(" - ").append(totalFixtures).append(" fixtures total; ashlar-chess InsufficientMaterialUtility")
         .append(" vs python-chess 1.11.2");
     LOGGER.info(Nulls.toString(summary));
 

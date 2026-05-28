@@ -1,7 +1,7 @@
-clean-chess
+ashlar-chess
 ===========
 
-clean-chess is a Java chess library focused on rule correctness and reproducibility.
+ashlar-chess is a Java chess library focused on rule correctness and reproducibility.
 It implements SAN, FEN, and PGN parsing, validation, and export with a strict/lenient parser pair,
 and includes a Java port of the [Chess Unwinnability Analyzer (CHA)](https://github.com/miguel-ambrona/D3-Chess) as a flagship feature.
 
@@ -12,9 +12,9 @@ It is built for correctness and comprehension — for example, it produces meani
 
 For the design philosophy, architecture, and rule-level decisions, see [specification.md](specification.md).
 
-clean-chess includes a Java port of the Chess Unwinnability Analyzer (CHA) by Miguel Ambrona, used for unwinnability and dead-position detection.
+ashlar-chess includes a Java port of the Chess Unwinnability Analyzer (CHA) by Miguel Ambrona, used for unwinnability and dead-position detection.
 
-The test suite also cross-validates selected behavior against external chess libraries, currently python-chess as the primary oracle and chesslib by Ben-Hur Carlos Vieira Langoni Junior as a secondary witness. These libraries are used for testing only and are not runtime dependencies of clean-chess.
+The test suite also cross-validates selected behavior against external chess libraries, currently python-chess as the primary oracle and chesslib by Ben-Hur Carlos Vieira Langoni Junior as a secondary witness. These libraries are used for testing only and are not runtime dependencies of ashlar-chess.
 
 ## Not supported
 
@@ -24,7 +24,7 @@ The test suite also cross-validates selected behavior against external chess lib
 
 UTF-8 byte-order marks (BOM) are accepted by the lenient parser (stripped on input) and rejected by the strict parser. PGN move suffix annotations (`!`, `?`, `!!`, `??`, `!?`, `?!`) are fully parsed, modeled, and round-tripped on export by both parsers.
 
-# Using clean-chess as a dependency
+# Using ashlar-chess as a dependency
 
 Requires JDK 17 or later at runtime. Available via the [JitPack](https://jitpack.io) repository.
 
@@ -43,7 +43,7 @@ Requires JDK 17 or later at runtime. Available via the [JitPack](https://jitpack
 ```xml
 <dependency>
   <groupId>com.github.dlbbld</groupId>
-  <artifactId>clean-chess</artifactId>
+  <artifactId>ashlar-chess</artifactId>
   <version>17.0.0</version>
 </dependency>
 ```
@@ -60,7 +60,7 @@ repositories {
 ```groovy
 dependencies {
     ...
-    implementation 'com.github.dlbbld:clean-chess:17.0.0'
+    implementation 'com.github.dlbbld:ashlar-chess:17.0.0'
     ...
 }
 ```
@@ -68,8 +68,8 @@ dependencies {
 # Building from source
 
 ```
-$ git clone git@github.com:dlbbld/clean-chess.git
-$ cd clean-chess/
+$ git clone git@github.com:dlbbld/ashlar-chess.git
+$ cd ashlar-chess/
 $ mvn clean compile package install
 ```
 
@@ -445,7 +445,7 @@ Positions can also often be dead due to forced moves.
 ### Lenient PGN parser
 The common PGN parser — reads the file with best effort. For example, the space after `[` below is ignored. See the [Not supported](#not-supported) section above for what neither parser accepts.
 
-clean-chess ships **lenient parsers for all three input languages it consumes** — SAN, PGN, and FEN. Each one applies a typed syntactic-tolerance pass and surfaces tolerated deviations as forgiven items on the validation result, then delegates the heavy lifting to the corresponding strict parser. The PGN flavour (described in this section) routes its SAN tokens through the lenient SAN layer and its `FEN` tag through the lenient FEN layer, so a single lenient PGN parse picks up deviations across all three languages. The lenient FEN layer is reachable directly via `Board.fromFenLenient(String)` for callers that consume FEN strings outside the PGN context (engine output, lichess/chess.com exports, hand-edited fixtures); see `specification.md` §3.3.3 for the strict-vs-lenient × raw-vs-advanced contract and the full `ForgivenFenItemCode` taxonomy.
+ashlar-chess ships **lenient parsers for all three input languages it consumes** — SAN, PGN, and FEN. Each one applies a typed syntactic-tolerance pass and surfaces tolerated deviations as forgiven items on the validation result, then delegates the heavy lifting to the corresponding strict parser. The PGN flavour (described in this section) routes its SAN tokens through the lenient SAN layer and its `FEN` tag through the lenient FEN layer, so a single lenient PGN parse picks up deviations across all three languages. The lenient FEN layer is reachable directly via `Board.fromFenLenient(String)` for callers that consume FEN strings outside the PGN context (engine output, lichess/chess.com exports, hand-edited fixtures); see `specification.md` §3.3.3 for the strict-vs-lenient × raw-vs-advanced contract and the full `ForgivenFenItemCode` taxonomy.
 
 In addition to structural tolerances (whitespace, missing tags, optional termination markers), the lenient parser accepts a defined set of SAN deviations from canonical — see [PGN SAN tolerances](#pgn-san-tolerances) below.
 
@@ -781,6 +781,6 @@ Checks whether a PGN adheres to the export format per the PGN specification.
 
 Copyright (C) 2020-2026  Daniel Bächli
 
-clean-chess is free software, licensed under the GNU General Public License, version 3 (GPL v3). See [LICENSE](LICENSE) for the full text.
+ashlar-chess is free software, licensed under the GNU General Public License, version 3 (GPL v3). See [LICENSE](LICENSE) for the full text.
 
 The unwinnability and dead-position detection is a Java port of the [Chess Unwinnability Analyzer (CHA)](https://github.com/miguel-ambrona/D3-Chess) by Miguel Ambrona, also licensed under GPL v3.

@@ -97,7 +97,7 @@ Release tags follow strict semver and match the `<version>` in `pom.xml`. The re
 Update the version string in three places (single change, no version drift):
 
 - [`pom.xml`](pom.xml) line 9 — `<version>X.Y.Z</version>`
-- [`README.md`](README.md) — both the Maven `<version>` snippet and the Gradle `implementation '...:clean-chess:X.Y.Z'` snippet
+- [`README.md`](README.md) — both the Maven `<version>` snippet and the Gradle `implementation '...:ashlar-chess:X.Y.Z'` snippet
 
 Add the `CHANGELOG.md` entry above `[Unreleased]`, following the established format:
 

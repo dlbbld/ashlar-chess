@@ -38,7 +38,7 @@ public final class GenerateAmbronaUnwinnabilityOracle {
   private static final Logger logger = Nulls.getLogger(GenerateAmbronaUnwinnabilityOracle.class);
 
   private static final String D3_CHESS_PATH_PROPERTY = "ambrona.d3.path";
-  private static final String WSL_RUNNER_PATH = "/tmp/clean-chess-ambrona-oracle/cha-oracle";
+  private static final String WSL_RUNNER_PATH = "/tmp/ashlar-chess-ambrona-oracle/cha-oracle";
   private static final int PROGRESS_LOG_INTERVAL = 25;
 
   private static final Path CPP_SOURCE_PATH = Nulls.pathResolve(ConfigurationTestConstants.PROJECT_ROOT_FOLDER_PATH,
@@ -97,7 +97,7 @@ public final class GenerateAmbronaUnwinnabilityOracle {
   private static void buildRunner(String d3ChessRoot) throws Exception {
     final String cppSourcePath = windowsPathToWsl(CPP_SOURCE_PATH);
     final String quotedD3ChessRoot = shellQuote(d3ChessRoot);
-    final String command = "mkdir -p /tmp/clean-chess-ambrona-oracle && g++ -o " + shellQuote(WSL_RUNNER_PATH) + " "
+    final String command = "mkdir -p /tmp/ashlar-chess-ambrona-oracle && g++ -o " + shellQuote(WSL_RUNNER_PATH) + " "
         + shellQuote(cppSourcePath) + " " + quotedD3ChessRoot + "/src/util.cpp " + quotedD3ChessRoot
         + "/src/semistatic.cpp " + quotedD3ChessRoot + "/src/dynamic.cpp " + quotedD3ChessRoot + "/src/cha.cpp "
         + "-lpthread -O3 -I/usr/local/include/stockfish -I" + quotedD3ChessRoot + "/src -lstockfish";

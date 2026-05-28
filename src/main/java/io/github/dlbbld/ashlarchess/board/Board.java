@@ -511,7 +511,7 @@ public class Board {
    * stalemate. The maintainer's tests and docstrings document the deliberate intent for the current-position case
    * (commit {@code 1064bf59}, with tests pinning "once checkmated, it is too late to claim" and "a stalemate is a
    * draw"); they do not address the candidate-move-is-mate case, which falls out of code reuse rather than separate
-   * consideration. clean-chess takes the strict FIDE 9.3 reading at this edge; the practical impact is zero (the player
+   * consideration. ashlar-chess takes the strict FIDE 9.3 reading at this edge; the practical impact is zero (the player
    * would play the mate rather than claim) but the predicate is honest about what FIDE actually says.
    */
   public boolean canClaimFiftyMoveRuleWithOwnMove() {

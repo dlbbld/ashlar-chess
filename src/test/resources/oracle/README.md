@@ -84,7 +84,7 @@ LD_LIBRARY_PATH=/usr/local/lib ./cha
 
 ## Regenerate the oracle
 
-Run this from the clean-chess checkout on Windows:
+Run this from the ashlar-chess checkout on Windows:
 
 ```powershell
 mvn -q org.codehaus.mojo:exec-maven-plugin:3.6.2:java "-Dexec.classpathScope=test" "-Dexec.mainClass=io.github.dlbbld.ashlarchess.test.generate.GenerateAmbronaUnwinnabilityOracle"

@@ -65,7 +65,7 @@ class TestBoardClaimWithOwnMove {
     //
     // Deliberate divergence from python-chess. FIDE 9.3 frames the 50-move claim as announced
     // before the move is played; the 50 moves are about history, and whether the candidate move
-    // itself would end the game is incidental to the rule. clean-chess takes the strict FIDE
+    // itself would end the game is incidental to the rule. ashlar-chess takes the strict FIDE
     // reading: at clock >= 99, the existence of any non-pawn, non-capture legal move satisfies
     // the claim, regardless of what that move does. python-chess rejects this case (it pushes
     // the move and re-checks is_fifty_moves on the post-position, where checkmate has zero legal

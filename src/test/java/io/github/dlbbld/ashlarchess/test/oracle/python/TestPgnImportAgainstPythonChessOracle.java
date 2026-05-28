@@ -28,7 +28,7 @@ import io.github.dlbbld.ashlarchess.test.pgntest.constants.PgnTestConstants;
 import io.github.dlbbld.ashlarchess.test.pgntest.enums.PgnTest;
 
 /**
- * Cross-validates clean-chess against python-chess for the PGN-import oracle across multiple {@link PgnTest} buckets.
+ * Cross-validates ashlar-chess against python-chess for the PGN-import oracle across multiple {@link PgnTest} buckets.
  *
  * <p>
  * For each covered bucket, reads the bucket's committed JSONL oracle (one record per PGN) under
@@ -47,7 +47,7 @@ import io.github.dlbbld.ashlarchess.test.pgntest.enums.PgnTest;
  * <p>
  * FEN convention: the oracle is emitted with python-chess's {@code board.fen(en_passant="fen")} option so that the
  * en-passant target square is written after every pawn double-step (PGN/Edwards 1994 section 16.1.3.4), matching what
- * clean-chess writes. python-chess's default omits the e.p. target when no capture is legal next move (X-FEN / Lichess
+ * ashlar-chess writes. python-chess's default omits the e.p. target when no capture is legal next move (X-FEN / Lichess
  * / Stockfish de-facto); cross-validating against that default would surface a FEN-emission convention disagreement on
  * every double-step-without-capturer fixture, which is a separate decision from the PGN-import correctness this test
  * targets.
@@ -59,7 +59,7 @@ import io.github.dlbbld.ashlarchess.test.pgntest.enums.PgnTest;
  * <p>
  * Known deliberate divergence from python-chess at one corner case, not surfaced by this corpus:
  * {@code canClaimFiftyMoveRule} at a position where halfmove clock is 99 and the <em>only</em> non-zeroing legal move
- * delivers checkmate. clean-chess follows the strict FIDE 9.3 reading (the claim is announced before the move; the 50
+ * delivers checkmate. ashlar-chess follows the strict FIDE 9.3 reading (the claim is announced before the move; the 50
  * moves are about history; the candidate move's outcome is incidental) and returns {@code true}; python-chess pushes
  * the candidate and re-checks {@code is_fifty_moves}, finds the post-position mated, and returns {@code false}. See
  * {@code TestBoardClaimWithOwnMove#canClaimFiftyMoveRuleWithOwnMoveTrueEvenWhenOnlyNonZeroingMoveIsMate} for the
@@ -122,9 +122,9 @@ class TestPgnImportAgainstPythonChessOracle {
 
         try {
           assertEquals(record.startFen(), pgnGame.startFen().fen(),
-              () -> bucket + " / " + record.pgn() + " - startFen mismatch (clean-chess vs python-chess)");
+              () -> bucket + " / " + record.pgn() + " - startFen mismatch (ashlar-chess vs python-chess)");
           assertEquals(record.moves().size(), pgnGame.halfMoveList().size(),
-              () -> bucket + " / " + record.pgn() + " - half-move count mismatch (clean-chess vs python-chess)");
+              () -> bucket + " / " + record.pgn() + " - half-move count mismatch (ashlar-chess vs python-chess)");
         } catch (final AssertionError e) {
           failures.add(BasicUtility.getMessage(e));
           continue;
@@ -151,7 +151,7 @@ class TestPgnImportAgainstPythonChessOracle {
                 () -> bucket + " / " + record.pgn() + " ply " + plyLabel + " - isCheckmate mismatch");
             assertEquals(expected.isStalemate(), board.isStalemate(),
                 () -> bucket + " / " + record.pgn() + " ply " + plyLabel + " - isStalemate mismatch");
-            // Slice 7 - clean-chess's regenerated canonical SAN (board.getSan()) vs python-chess's regenerated
+            // Slice 7 - ashlar-chess's regenerated canonical SAN (board.getSan()) vs python-chess's regenerated
             // canonical SAN (board.san(move) before push, recorded as expected.san()). Comparing canonical-vs-
             // canonical sidesteps stylistic differences in the source PGN's input SAN.
             assertEquals(expected.san(), board.getSan(),
@@ -172,7 +172,7 @@ class TestPgnImportAgainstPythonChessOracle {
                 () -> bucket + " / " + record.pgn() + " ply " + plyLabel + " - isRepetition(4) mismatch");
             // Precedence-suppression exclusion: at positions where python-chess applies a
             // game-end precedence guard to the 50-/75-/fivefold-rule predicates (i.e. when a
-            // higher-precedence termination already holds), clean-chess returns the raw fact
+            // higher-precedence termination already holds), ashlar-chess returns the raw fact
             // instead. Skip those predicate comparisons only here; everywhere else the predicates
             // still agree byte-for-byte. The Outcome layer matches python-chess regardless (the
             // precedence stack is applied uniformly there).

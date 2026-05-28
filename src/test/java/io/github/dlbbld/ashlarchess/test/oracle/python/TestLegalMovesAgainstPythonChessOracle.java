@@ -28,7 +28,7 @@ import io.github.dlbbld.ashlarchess.test.pgntest.constants.PgnTestConstants;
 import io.github.dlbbld.ashlarchess.test.pgntest.enums.PgnTest;
 
 /**
- * Cross-validates clean-chess's legal-move generator against python-chess's by replaying each PGN in the covered
+ * Cross-validates ashlar-chess's legal-move generator against python-chess's by replaying each PGN in the covered
  * move-rule-mechanics buckets and asserting set-equality on the legal-move set at every visited position.
  *
  * <p>
@@ -110,7 +110,7 @@ class TestLegalMovesAgainstPythonChessOracle {
           final int positionLabel = ply;
           try {
             assertEquals(expectedPly.legalMovesUci(), actualSorted, () -> bucket + " / " + record.pgn() + " position "
-                + positionLabel + " - legal-move set mismatch (clean-chess vs python-chess)");
+                + positionLabel + " - legal-move set mismatch (ashlar-chess vs python-chess)");
           } catch (final AssertionError e) {
             failures.add(BasicUtility.getMessage(e));
           }

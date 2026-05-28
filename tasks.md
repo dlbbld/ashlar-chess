@@ -6,7 +6,7 @@ Order within each section is the source of truth. Completed tasks move to **Done
 
 ## The story when releases are done
 
-*clean-chess started as a correctness-first reference implementation, built from the FIDE rules without consulting existing libraries. It found correctness bugs in python-chess and ScalaChess along the way. Once the rules were stable, a bitboard backend was added alongside the reference layer and verified bit-exact against it. Production then switched to the bitboard path; the reference layer was relocated into the test tree and remains as the permanent differential-test oracle. Cross-validation against python-chess was reactivated as primary, with `chesslib` retained as a second witness. Only then published to Maven Central.*
+*ashlar-chess started as a correctness-first reference implementation, built from the FIDE rules without consulting existing libraries. It found correctness bugs in python-chess and ScalaChess along the way. Once the rules were stable, a bitboard backend was added alongside the reference layer and verified bit-exact against it. Production then switched to the bitboard path; the reference layer was relocated into the test tree and remains as the permanent differential-test oracle. Cross-validation against python-chess was reactivated as primary, with `chesslib` retained as a second witness. Only then published to Maven Central.*
 
 ---
 
@@ -92,7 +92,7 @@ where it is cheap (no consumers exist yet).
       global) - keeps normal `mvn package` Java-only and the whole release bundle in one place
 
 ### README / docs (this branch)
-- [ ] Replace project-name mentions clean-chess -> ashlar-chess
+- [x] Replace project-name mentions clean-chess -> ashlar-chess
 - (JitPack-block -> Central-snippet swap stays a publish-time task below)
 
 ### Sonatype Central Portal setup (publish time, manual - your account)

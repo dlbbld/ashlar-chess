@@ -1,10 +1,10 @@
-# Contributing to clean-chess
+# Contributing to ashlar-chess
 
 Thanks for your interest in contributing.
 
 ## Getting set up
 
-clean-chess is developed in Eclipse with Checkstyle, Maven, and project-specific JDT compiler / formatter / save-actions settings — all checked into the repo. See **[setup.md](setup.md)** for the full installation procedure (JDK 17, Eclipse, Checkstyle plug-in, project import).
+ashlar-chess is developed in Eclipse with Checkstyle, Maven, and project-specific JDT compiler / formatter / save-actions settings — all checked into the repo. See **[setup.md](setup.md)** for the full installation procedure (JDK 17, Eclipse, Checkstyle plug-in, project import).
 
 The project also builds and tests cleanly from the command line: `mvn clean test` works from any plain JDK 17 install.
 
