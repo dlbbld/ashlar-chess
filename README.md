@@ -14,7 +14,7 @@ For the design philosophy, architecture, and rule-level decisions, see [specific
 
 clean-chess includes a Java port of the Chess Unwinnability Analyzer (CHA) by Miguel Ambrona, used for unwinnability and dead-position detection.
 
-The test suite also cross-validates selected behavior against external chess libraries, currently python-chess as the primary oracle and chesslib by Carlos B. Langonijr as a secondary witness. These libraries are used for testing only and are not runtime dependencies of clean-chess.
+The test suite also cross-validates selected behavior against external chess libraries, currently python-chess as the primary oracle and chesslib by Ben-Hur Carlos Vieira Langoni Junior as a secondary witness. These libraries are used for testing only and are not runtime dependencies of clean-chess.
 
 ## Not supported
 
