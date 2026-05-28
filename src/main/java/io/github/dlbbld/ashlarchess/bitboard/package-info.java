@@ -1,3 +1,6 @@
+// Copyright (C) 2020-2026 Daniel Baechli
+// SPDX-License-Identifier: GPL-3.0-only
+
 /**
  * Bitboard piece-placement representation. The single piece-placement representation that production code consumes,
  * paired with the {@code StaticPosition} mailbox representation that lives test-side (under {@code src/test/}) as the

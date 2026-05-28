@@ -1,3 +1,6 @@
+// Copyright (C) 2020-2026 Daniel Baechli
+// SPDX-License-Identifier: GPL-3.0-only
+
 /**
  * Differential tests asserting that {@link io.github.dlbbld.ashlarchess.bitboard.BitboardPosition} agrees bit-exact
  * with {@link io.github.dlbbld.ashlarchess.board.StaticPosition} across the full PGN/FEN corpus, primitive by

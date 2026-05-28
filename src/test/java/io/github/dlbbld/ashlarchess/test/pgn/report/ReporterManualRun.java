@@ -1,3 +1,6 @@
+// Copyright (C) 2020-2026 Daniel Baechli
+// SPDX-License-Identifier: GPL-3.0-only
+
 package io.github.dlbbld.ashlarchess.test.pgn.report;
 
 import io.github.dlbbld.ashlarchess.report.Reporter;

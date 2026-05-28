@@ -1,3 +1,6 @@
+// Copyright (C) 2020-2026 Daniel Baechli
+// SPDX-License-Identifier: GPL-3.0-only
+
 /**
  * Game-level reports about a {@link io.github.dlbbld.ashlarchess.board.Board}: threefold-repetition listings (including
  * the missed-claim-ahead opportunities other libraries don't surface) and no-progress (50/75-move-rule) sequences,

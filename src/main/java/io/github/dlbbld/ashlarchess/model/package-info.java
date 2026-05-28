@@ -1,3 +1,6 @@
+// Copyright (C) 2020-2026 Daniel Baechli
+// SPDX-License-Identifier: GPL-3.0-only
+
 /**
  * Cross-cutting model types - small immutable value objects (records) used across the rule pipelines.
  *

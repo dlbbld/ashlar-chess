@@ -1,3 +1,6 @@
+// Copyright (C) 2020-2026 Daniel Baechli
+// SPDX-License-Identifier: GPL-3.0-only
+
 package io.github.dlbbld.ashlarchess.common.ucimove.utility;
 
 import io.github.dlbbld.ashlarchess.board.Board;

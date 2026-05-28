@@ -1,3 +1,6 @@
+// Copyright (C) 2020-2026 Daniel Baechli
+// SPDX-License-Identifier: GPL-3.0-only
+
 /**
  * SAN (Standard Algebraic Notation) parsing, validation, and generation. Validates a candidate SAN string against the
  * current legal-move set, with diagnostic-quality error messages classifying every failure mode (wrong file, wrong

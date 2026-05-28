@@ -1,3 +1,6 @@
+// Copyright (C) 2020-2026 Daniel Baechli
+// SPDX-License-Identifier: GPL-3.0-only
+
 /**
  * Pipeline-level domain enums shared across SAN and movement validation. Distinct from {@code board.enums} (which holds
  * basic chess primitives like {@link io.github.dlbbld.ashlarchess.board.enums.Side},
