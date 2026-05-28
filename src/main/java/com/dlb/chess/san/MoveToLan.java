@@ -24,6 +24,7 @@ public class MoveToLan extends AbstractSan {
    * &lt;promoted to&gt;    ::= '=' ('N' | 'B' | 'R' | 'Q')
    * </pre>
    *
+   * <p>
    * Plus the terminal marker ({@code +} for check, {@code #} for checkmate) appended to every move shape including
    * castling. Matches python-chess {@code board.lan(move)}.
    */

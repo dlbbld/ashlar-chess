@@ -6,6 +6,7 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import org.apache.logging.log4j.Logger;
+import org.eclipse.jdt.annotation.NonNull;
 
 import com.dlb.chess.bitboard.BitboardPosition;
 import com.dlb.chess.board.Board;
@@ -44,7 +45,7 @@ class Mobility {
       occupied &= occupied - 1L;
     }
 
-    final MobilitySolution mobility = new MobilitySolution();
+    final @NonNull MobilitySolution mobility = new MobilitySolution();
     for (final PiecePlacement piecePlacement : piecePlacementList) {
       for (final Square square : Square.REAL) {
         mobility.put(piecePlacement, square, VariableState.ZERO);
@@ -52,13 +53,13 @@ class Mobility {
     }
 
     // CP := 0
-    final Clearability clearability = new Clearability();
+    final @NonNull Clearability clearability = new Clearability();
     for (final PiecePlacement piecePlacement : piecePlacementList) {
       clearability.put(piecePlacement, VariableState.ZERO);
     }
 
     // Rcs := 0
-    final Reachability reachability = new Reachability();
+    final @NonNull Reachability reachability = new Reachability();
     for (final Side side : Side.REAL) {
       for (final Square square : Square.REAL) {
         reachability.put(side, square, VariableState.ZERO);
