@@ -4,9 +4,37 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>com.github.dlbbld</groupId>
-	<artifactId>clean-chess</artifactId>
+	<groupId>io.github.dlbbld</groupId>
+	<artifactId>ashlar-chess</artifactId>
 	<version>17.0.0</version>
+
+	<name>ashlar-chess</name>
+	<description>A Java chess library for rule correctness and reproducibility.</description>
+	<url>https://github.com/dlbbld/ashlar-chess</url>
+	<inceptionYear>2020</inceptionYear>
+
+	<licenses>
+		<license>
+			<name>GNU General Public License v3.0 only</name>
+			<url>https://www.gnu.org/licenses/gpl-3.0.txt</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
+
+	<developers>
+		<developer>
+			<id>dlbbld</id>
+			<name>Daniel Bächli</name>
+			<url>https://github.com/dlbbld</url>
+		</developer>
+	</developers>
+
+	<scm>
+		<connection>scm:git:https://github.com/dlbbld/ashlar-chess.git</connection>
+		<developerConnection>scm:git:git@github.com:dlbbld/ashlar-chess.git</developerConnection>
+		<url>https://github.com/dlbbld/ashlar-chess</url>
+		<tag>HEAD</tag>
+	</scm>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
