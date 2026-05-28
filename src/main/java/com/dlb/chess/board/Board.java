@@ -47,7 +47,6 @@ import com.dlb.chess.san.LenientSanParserValidationResult;
 import com.dlb.chess.san.MoveToLan;
 import com.dlb.chess.san.MoveToSan;
 import com.dlb.chess.san.SanTerminalMarker;
-import com.dlb.chess.san.SanValidationException;
 import com.dlb.chess.san.StrictSanParser;
 import com.dlb.chess.san.StrictSanParserValidationResult;
 import com.dlb.chess.unwinnability.DeadPositionFull;
@@ -552,8 +551,8 @@ public class Board {
 
   /**
    * SAN convenience overload of {@link #canClaimFiftyMoveRuleFor(MoveSpecification)}: parses {@code san} via the
-   * lenient SAN pipeline against the current position and delegates. Throws on invalid input — {@link
-   * LenientSanParserValidationException} when {@code san} is unparseable / ambiguous / illegal under the lenient
+   * lenient SAN pipeline against the current position and delegates. Throws on invalid input —
+   * {@link LenientSanParserValidationException} when {@code san} is unparseable / ambiguous / illegal under the lenient
    * pipeline, and {@link IllegalArgumentException} (from the {@link MoveSpecification} overload) when the parsed move
    * is not in the current legal-moves set.
    */
@@ -581,15 +580,15 @@ public class Board {
       return false;
     }
     this.move(move);
-    final boolean threefold = isThreefoldRepetition();
+    final var threefold = isThreefoldRepetition();
     this.unmove();
     return threefold;
   }
 
   /**
    * SAN convenience overload of {@link #canClaimThreefoldRepetitionRuleFor(MoveSpecification)}: parses {@code san} via
-   * the lenient SAN pipeline against the current position and delegates. Throws on invalid input — {@link
-   * LenientSanParserValidationException} when {@code san} is unparseable / ambiguous / illegal under the lenient
+   * the lenient SAN pipeline against the current position and delegates. Throws on invalid input —
+   * {@link LenientSanParserValidationException} when {@code san} is unparseable / ambiguous / illegal under the lenient
    * pipeline, and {@link IllegalArgumentException} (from the {@link MoveSpecification} overload) when the parsed move
    * is not in the current legal-moves set.
    */
@@ -623,8 +622,7 @@ public class Board {
         return legalMove;
       }
     }
-    throw new IllegalArgumentException(
-        "move " + move + " is not a legal move in the current position");
+    throw new IllegalArgumentException("move " + move + " is not a legal move in the current position");
   }
 
   /**
@@ -665,8 +663,7 @@ public class Board {
     final List<ClaimableMove> claimable = new ArrayList<>();
     for (final LegalMove legalMove : getLegalMoves()) {
       final MoveSpecification spec = legalMove.moveSpecification();
-      final var accepted = threefoldRather ? canClaimThreefoldRepetitionRuleFor(spec)
-          : canClaimFiftyMoveRuleFor(spec);
+      final var accepted = threefoldRather ? canClaimThreefoldRepetitionRuleFor(spec) : canClaimFiftyMoveRuleFor(spec);
       if (!accepted) {
         continue;
       }
