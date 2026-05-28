@@ -167,8 +167,8 @@ public abstract class TagUtility {
 
   public static void removeTag(List<Tag> tagList, StandardTag tag) {
 
-      int indexFound = -1;
-      int index = -1;
+    int indexFound = -1;
+    int index = -1;
     for (final Tag tagCandidate : tagList) {
       index++;
       if (tagCandidate.name().equals(tag.getName())) {

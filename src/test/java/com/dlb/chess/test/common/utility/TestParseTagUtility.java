@@ -168,7 +168,7 @@ class TestParseTagUtility {
   }
 
   private static void checkException(String tagLine, StrictPgnParserValidationProblem expected) {
-      boolean isException = false;
+    boolean isException = false;
     try {
       StrictPgnParser.parseText(buildMinimalPgn(tagLine));
     } catch (final StrictPgnParserValidationException e) {

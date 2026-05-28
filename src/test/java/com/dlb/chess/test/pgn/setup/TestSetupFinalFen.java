@@ -43,7 +43,7 @@ class TestSetupFinalFen {
   void auditCachedFenAgainstPgnReplay() {
     final List<String> mismatches = new ArrayList<>();
     final List<String> errors = new ArrayList<>();
-      int totalFixtures = 0;
+    int totalFixtures = 0;
     final int totalFixturesToCheck = countFixtures();
 
     logger.info("Auditing cached final FENs for {} fixtures across {} PgnTest folders.", totalFixturesToCheck,
@@ -94,7 +94,7 @@ class TestSetupFinalFen {
   }
 
   private static int countFixtures() {
-      int result = 0;
+    int result = 0;
     for (final PgnTest pgnTest : PgnTest.values()) {
       result += PgnTestCaseCatalog.getTestList(pgnTest).list().size();
     }

@@ -189,8 +189,8 @@ public abstract class SanValidateFormatReference {
       throw new ProgrammingMistakeException(
           "Incorrect file/rank calculation - either file and rank are both set for non-castling moves or both not set for castling moves");
     }
-    final SanConversion sanConversion = new SanConversion(movingPieceType, fromFile, fromRank, toSquare, promotionPieceType,
-        sanTerminalMarker);
+    final SanConversion sanConversion = new SanConversion(movingPieceType, fromFile, fromRank, toSquare,
+        promotionPieceType, sanTerminalMarker);
     return new SanConversionCheck(true, sanConversion);
   }
 

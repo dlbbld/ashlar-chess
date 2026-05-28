@@ -142,7 +142,8 @@ public abstract class AbstractTestBasic implements EnumConstants {
     final MoveSpecification moveSpecification = new MoveSpecification(fromSquare, toSquare);
     final Piece movingPiece = Piece.calculatePawnPiece(side);
     final Piece capturedPiece = Piece.calculatePawnPiece(side.getOppositeSide());
-    final LegalMove expected = new LegalMove(moveSpecification, movingPiece, capturedPiece, LegalMoveKind.EN_PASSANT_CAPTURE);
+    final LegalMove expected = new LegalMove(moveSpecification, movingPiece, capturedPiece,
+        LegalMoveKind.EN_PASSANT_CAPTURE);
 
     assertEquals(expected, lastMoveEnPassantCapture);
   }

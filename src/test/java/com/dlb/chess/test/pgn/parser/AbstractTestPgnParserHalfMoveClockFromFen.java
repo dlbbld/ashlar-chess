@@ -51,7 +51,7 @@ abstract class AbstractTestPgnParserHalfMoveClockFromFen {
 
   protected static void runForBuckets(BiFunction<java.nio.file.Path, String, PgnGame> parse, Logger logger) {
     final List<String> failures = new ArrayList<>();
-      int totalFixtures = 0;
+    int totalFixtures = 0;
 
     for (final PgnTest bucket : BUCKETS) {
       final PgnTestCaseList testCaseList = PgnTestCaseCatalog.getTestList(bucket);

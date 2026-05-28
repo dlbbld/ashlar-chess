@@ -21,14 +21,14 @@ public abstract class SanValidateFormatBasic {
       return false;
     }
 
-      int countX = 0;
-      int countEquals = 0;
-      int equalsIndex = -1;
-      int countCheckOrCheckmate = 0;
-      int countK = 0;
-      int countRnbq = 0;
-      int countDigits = 0;
-      int countFiles = 0;
+    int countX = 0;
+    int countEquals = 0;
+    int equalsIndex = -1;
+    int countCheckOrCheckmate = 0;
+    int countK = 0;
+    int countRnbq = 0;
+    int countDigits = 0;
+    int countFiles = 0;
     for (int i = 0; i < san.length(); i++) {
       switch (san.charAt(i)) {
         case 'x' -> countX++;

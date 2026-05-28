@@ -432,7 +432,7 @@ class TestFenParserAdvanced implements EnumConstants {
   }
 
   private static void checkParseFenException(String fen, FenAdvancedValidationProblem expected) {
-      FenAdvancedValidationProblem actual = FenAdvancedValidationProblem.SUCCESS;
+    FenAdvancedValidationProblem actual = FenAdvancedValidationProblem.SUCCESS;
     try {
       FenParserAdvanced.parseFenAdvanced(fen);
     } catch (final FenAdvancedValidationException e) {
@@ -442,7 +442,7 @@ class TestFenParserAdvanced implements EnumConstants {
   }
 
   private static void checkParseFenSuccess(String fen) {
-      boolean isException = false;
+    boolean isException = false;
     try {
       FenParserAdvanced.parseFenAdvanced(fen);
     } catch (@SuppressWarnings("unused") final FenAdvancedValidationException e) {

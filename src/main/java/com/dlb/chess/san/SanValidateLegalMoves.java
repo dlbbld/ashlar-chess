@@ -468,7 +468,7 @@ abstract class SanValidateLegalMoves extends AbstractSan implements EnumConstant
   }
 
   private static int countPiecesOfType(BitboardPosition bitboardPosition, Side havingMove, PieceType pieceType) {
-      int count = 0;
+    int count = 0;
     for (final Square square : Square.REAL) {
       if (bitboardPosition.isOwnPiece(square, havingMove, pieceType)) {
         count++;
@@ -479,7 +479,7 @@ abstract class SanValidateLegalMoves extends AbstractSan implements EnumConstant
 
   private static int countPiecesOfTypeOnFile(BitboardPosition bitboardPosition, Side havingMove, PieceType pieceType,
       File file) {
-      int count = 0;
+    int count = 0;
     for (final Square square : Square.REAL) {
       if (square.getFile() == file && bitboardPosition.isOwnPiece(square, havingMove, pieceType)) {
         count++;
@@ -490,7 +490,7 @@ abstract class SanValidateLegalMoves extends AbstractSan implements EnumConstant
 
   private static int countPiecesOfTypeOnRank(BitboardPosition bitboardPosition, Side havingMove, PieceType pieceType,
       Rank rank) {
-      int count = 0;
+    int count = 0;
     for (final Square square : Square.REAL) {
       if (square.getRank() == rank && bitboardPosition.isOwnPiece(square, havingMove, pieceType)) {
         count++;
@@ -904,7 +904,7 @@ abstract class SanValidateLegalMoves extends AbstractSan implements EnumConstant
 
   private static File calculateOnlyPossibleFile(List<LegalMove> legalMovesForSanValidation,
       SanConversion sanConversion) {
-      int countMatches = 0;
+    int countMatches = 0;
     for (final LegalMove legalMove : legalMovesForSanValidation) {
       if (legalMove.moveSpecification().fromSquare().getRank() == sanConversion.fromRank()) {
         countMatches++;

@@ -44,7 +44,7 @@ public class MoveGenerationPerformanceSurvey {
   }
 
   private static Measurement measureBitboard(List<PositionPair> positionList) {
-      long moveCount = 0L;
+    long moveCount = 0L;
     final long start = System.nanoTime();
     for (int round = 0; round < MEASURE_ROUNDS; round++) {
       for (final PositionPair position : positionList) {
@@ -95,7 +95,7 @@ public class MoveGenerationPerformanceSurvey {
   }
 
   private static Measurement measureReference(List<PositionPair> positionList) {
-      long moveCount = 0L;
+    long moveCount = 0L;
     final long start = System.nanoTime();
     for (int round = 0; round < MEASURE_ROUNDS; round++) {
       for (final PositionPair position : positionList) {
@@ -109,7 +109,7 @@ public class MoveGenerationPerformanceSurvey {
   }
 
   private static Measurement measureChessLib(List<PositionPair> positionList) {
-      long moveCount = 0L;
+    long moveCount = 0L;
     final long start = System.nanoTime();
     for (int round = 0; round < MEASURE_ROUNDS; round++) {
       for (final PositionPair position : positionList) {

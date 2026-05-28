@@ -64,7 +64,7 @@ class TestUnwinnabilityFullHelpMateIsHelpMate {
   }
 
   private static String calculateCorrespondingLichessGame(String lichessGameHelpmate) {
-      String withoutExtension = PgnExtensionUtility.removePgnExtension(lichessGameHelpmate);
+    String withoutExtension = PgnExtensionUtility.removePgnExtension(lichessGameHelpmate);
     withoutExtension = Nulls.replace(withoutExtension, "_helpmate", "");
     return PgnExtensionUtility.addPgnExtension(withoutExtension);
   }

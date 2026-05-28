@@ -663,7 +663,8 @@ public class Board {
     final List<ClaimableMove> claimable = new ArrayList<>();
     for (final LegalMove legalMove : getLegalMoves()) {
       final MoveSpecification spec = legalMove.moveSpecification();
-      final boolean accepted = threefoldRather ? canClaimThreefoldRepetitionRuleFor(spec) : canClaimFiftyMoveRuleFor(spec);
+      final boolean accepted = threefoldRather ? canClaimThreefoldRepetitionRuleFor(spec)
+          : canClaimFiftyMoveRuleFor(spec);
       if (!accepted) {
         continue;
       }

@@ -138,8 +138,8 @@ public abstract class LibraryCarlosImplementationUtility {
       if (hasLightSquareBishop && hasDarkSquareBishop) {
         return false;
       }
-      final boolean hasLightSquareBishopOpponent = calculateHasBishopForColorSquare(oppositeSide, SquareType.LIGHT_SQUARE,
-          board);
+      final boolean hasLightSquareBishopOpponent = calculateHasBishopForColorSquare(oppositeSide,
+          SquareType.LIGHT_SQUARE, board);
       final boolean hasDarkSquareBishopOpponent = calculateHasBishopForColorSquare(oppositeSide, SquareType.DARK_SQUARE,
           board);
 

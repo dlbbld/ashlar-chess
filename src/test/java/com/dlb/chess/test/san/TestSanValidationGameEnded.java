@@ -99,7 +99,7 @@ class TestSanValidationGameEnded {
 
   /** Asserts that SAN parsing is rejected. */
   private static void rejectsNotViaGameEnded(String san, Board board) {
-      boolean thrown = false;
+    boolean thrown = false;
     try {
       StrictSanParser.parseText(san, board);
     } catch (@SuppressWarnings("unused") final SanValidationException e) {

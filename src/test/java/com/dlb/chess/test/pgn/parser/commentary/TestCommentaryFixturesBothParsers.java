@@ -203,7 +203,7 @@ class TestCommentaryFixturesBothParsers {
   }
 
   private static void assertStrictRejects(Path folder, String pgnName, StrictPgnParserValidationProblem expected) {
-      boolean isException = false;
+    boolean isException = false;
     try {
       StrictPgnParser.parse(folder, pgnName);
     } catch (final StrictPgnParserValidationException e) {
@@ -220,7 +220,7 @@ class TestCommentaryFixturesBothParsers {
   }
 
   private static void assertLenientRejects(Path folder, String pgnName, LenientPgnParserValidationProblem expected) {
-      boolean isException = false;
+    boolean isException = false;
     try {
       LenientPgnParser.parse(folder, pgnName);
     } catch (final LenientPgnParserValidationException e) {

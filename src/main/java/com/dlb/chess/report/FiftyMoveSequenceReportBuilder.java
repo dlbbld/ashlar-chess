@@ -32,7 +32,7 @@ abstract class FiftyMoveSequenceReportBuilder {
 
     final List<FiftyMoveSequence> sequences = new ArrayList<>();
 
-      SequenceStart currentStart = initialSequenceStart(initialFenClock);
+    SequenceStart currentStart = initialSequenceStart(initialFenClock);
     @Nullable HalfMove currentEndPly = null;
 
     for (final HalfMove ply : halfMoveList) {

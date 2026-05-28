@@ -107,7 +107,8 @@ public class LibraryCarlosBoard {
     final MoveBackup moveBackup = NullsCarlos.getLast(this.board);
     final LegalMove legalMove = calculateLegalMove(moveSpecification, moveBackup);
     performedLegalMoveList.add(legalMove);
-    final Square normalizedEnPassantCaptureTargetSquare = isEnPassantCapturePossible() ? getEnPassantCaptureTargetSquare()
+    final Square normalizedEnPassantCaptureTargetSquare = isEnPassantCapturePossible()
+        ? getEnPassantCaptureTargetSquare()
         : Square.NONE;
     final BitboardPosition bitboardPosition = StaticPositionBridge.fromStaticPosition(getStaticPosition());
     dynamicPositionList.add(new DynamicPosition(getHavingMove(), bitboardPosition,
@@ -175,7 +176,7 @@ public class LibraryCarlosBoard {
 
   @SuppressWarnings("null")
   public int getRepetitionCount() {
-      int rep = 1;
+    int rep = 1;
     final List<Long> history = board.getHistory();
     final int historySize = board.getHistory().size();
     final long lastKey = history.get(historySize - 1);

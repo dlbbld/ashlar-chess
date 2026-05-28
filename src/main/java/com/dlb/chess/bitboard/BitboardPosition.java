@@ -240,9 +240,9 @@ public record BitboardPosition(long whitePawns, long whiteRooks, long whiteKnigh
     final long queens = white ? whiteQueens : blackQueens;
     final long kings = white ? whiteKings : blackKings;
 
-      long attacks = 0L;
+    long attacks = 0L;
 
-      long remaining = pawns;
+    long remaining = pawns;
     while (remaining != 0L) {
       attacks |= PawnAttacks.attacks(Nulls.get(Square.REAL, Long.numberOfTrailingZeros(remaining)), side);
       remaining &= remaining - 1L;
@@ -322,8 +322,8 @@ public record BitboardPosition(long whitePawns, long whiteRooks, long whiteKnigh
     final long occupiedWithoutOwnKings = occupied() ^ ownKings;
     final long opponentAttacks = attackedSquares(side.getOppositeSide(), occupiedWithoutOwnKings);
 
-      long legalTargets = 0L;
-      long remaining = ownKings;
+    long legalTargets = 0L;
+    long remaining = ownKings;
     while (remaining != 0L) {
       final Square kingSquare = Nulls.get(Square.REAL, Long.numberOfTrailingZeros(remaining));
       legalTargets |= KingMoves.targets(kingSquare, ownPieces) & ~opponentAttacks;
@@ -377,8 +377,8 @@ public record BitboardPosition(long whitePawns, long whiteRooks, long whiteKnigh
     final int rankStep = Integer.signum(rankDiff);
     final long occ = occupied();
 
-      int file = kingFile + fileStep;
-      int rank = kingRank + rankStep;
+    int file = kingFile + fileStep;
+    int rank = kingRank + rankStep;
     while (file != pinnedFile || rank != pinnedRank) {
       if ((occ & 1L << rank * 8 + file) != 0L) {
         return 0L;
@@ -423,8 +423,8 @@ public record BitboardPosition(long whitePawns, long whiteRooks, long whiteKnigh
       return 0L;
     }
     final long ownNonKings = occupied(side) & ~ownKings;
-      long pinned = 0L;
-      long remaining = ownNonKings;
+    long pinned = 0L;
+    long remaining = ownNonKings;
     while (remaining != 0L) {
       final long pieceBit = Long.lowestOneBit(remaining);
       final Square pieceSquare = Nulls.get(Square.REAL, Long.numberOfTrailingZeros(pieceBit));
@@ -499,7 +499,7 @@ public record BitboardPosition(long whitePawns, long whiteRooks, long whiteKnigh
     final long occ = occupied();
     final long opponentPieces = occupied(side.getOppositeSide());
 
-      long remaining = ownNonKings;
+    long remaining = ownNonKings;
     while (remaining != 0L) {
       final int fromOrdinal = Long.numberOfTrailingZeros(remaining);
       final Square fromSquare = Nulls.get(Square.REAL, fromOrdinal);
@@ -530,7 +530,7 @@ public record BitboardPosition(long whitePawns, long whiteRooks, long whiteKnigh
     final long pushTargets = PawnMoves.pushes(fromOrdinal, occ, side) & combinedMask;
     final long regularCaptureTargets = PawnMoves.captures(fromOrdinal, opponentPieces, 0L, side) & combinedMask;
 
-      long epCaptureTarget = 0L;
+    long epCaptureTarget = 0L;
     if (enPassantBit != 0L) {
       final long pawnDiagonalAttacks = PawnAttacks.attacks(fromSquare, side);
       if ((pawnDiagonalAttacks & enPassantBit) != 0L) {
@@ -581,7 +581,7 @@ public record BitboardPosition(long whitePawns, long whiteRooks, long whiteKnigh
   }
 
   private static void emitTargetsAsMoves(Consumer<MoveSpecification> sink, Square fromSquare, long targets) {
-      long remaining = targets;
+    long remaining = targets;
     while (remaining != 0L) {
       final Square toSquare = Nulls.get(Square.REAL, Long.numberOfTrailingZeros(remaining));
       sink.accept(new MoveSpecification(fromSquare, toSquare));
@@ -590,7 +590,7 @@ public record BitboardPosition(long whitePawns, long whiteRooks, long whiteKnigh
   }
 
   private static void emitPawnTargetsWithPromotion(Consumer<MoveSpecification> sink, Square fromSquare, long targets) {
-      long remaining = targets;
+    long remaining = targets;
     while (remaining != 0L) {
       final int toOrdinal = Long.numberOfTrailingZeros(remaining);
       final Square toSquare = Nulls.get(Square.REAL, toOrdinal);
@@ -628,9 +628,9 @@ public record BitboardPosition(long whitePawns, long whiteRooks, long whiteKnigh
     }
     final int fileStep = Integer.signum(fileDiff);
     final int rankStep = Integer.signum(rankDiff);
-      long result = 0L;
-      int file = file1 + fileStep;
-      int rank = rank1 + rankStep;
+    long result = 0L;
+    int file = file1 + fileStep;
+    int rank = rank1 + rankStep;
     while (file != file2 || rank != rank2) {
       result |= 1L << rank * 8 + file;
       file += fileStep;
@@ -798,7 +798,7 @@ public record BitboardPosition(long whitePawns, long whiteRooks, long whiteKnigh
    * live on {@code Board} / {@code DynamicPosition} and their Zobrist contributions belong there.
    */
   public long zobristPieces() {
-      long hash = 0L;
+    long hash = 0L;
     hash ^= zobristForPiece(whitePawns, Piece.WHITE_PAWN);
     hash ^= zobristForPiece(whiteRooks, Piece.WHITE_ROOK);
     hash ^= zobristForPiece(whiteKnights, Piece.WHITE_KNIGHT);
@@ -858,7 +858,7 @@ public record BitboardPosition(long whitePawns, long whiteRooks, long whiteKnigh
     final Piece destPiece = promotion == PromotionPieceType.NONE ? movingPiece
         : Piece.calculate(movingSide, promotion.getPieceType());
 
-      long delta = ZobristKeys.pieceSquare(movingPiece, from);
+    long delta = ZobristKeys.pieceSquare(movingPiece, from);
     if (capturedPiece != Piece.NONE) {
       delta ^= ZobristKeys.pieceSquare(capturedPiece, capturedSquare);
     }
@@ -901,8 +901,8 @@ public record BitboardPosition(long whitePawns, long whiteRooks, long whiteKnigh
   }
 
   private static long zobristForPiece(long bitboard, Piece piece) {
-      long hash = 0L;
-      long remaining = bitboard;
+    long hash = 0L;
+    long remaining = bitboard;
     while (remaining != 0L) {
       hash ^= ZobristKeys.pieceSquare(piece, Nulls.get(Square.REAL, Long.numberOfTrailingZeros(remaining)));
       remaining &= remaining - 1L;
@@ -917,9 +917,9 @@ public record BitboardPosition(long whitePawns, long whiteRooks, long whiteKnigh
     final int pinnerRank = pinnerOrdinal / 8;
     final int fileStep = Integer.signum(pinnerFile - kingFile);
     final int rankStep = Integer.signum(pinnerRank - kingRank);
-      long result = 0L;
-      int file = kingFile + fileStep;
-      int rank = kingRank + rankStep;
+    long result = 0L;
+    int file = kingFile + fileStep;
+    int rank = kingRank + rankStep;
     while (file != pinnerFile || rank != pinnerRank) {
       result |= 1L << rank * 8 + file;
       file += fileStep;
@@ -996,7 +996,7 @@ public record BitboardPosition(long whitePawns, long whiteRooks, long whiteKnigh
     final long queens = white ? whiteQueens : blackQueens;
     final long kings = white ? whiteKings : blackKings;
 
-      long attackers = 0L;
+    long attackers = 0L;
     attackers |= pawns & PawnAttacks.attacks(square, side.getOppositeSide());
     attackers |= knights & KnightAttacks.attacks(square);
     attackers |= bishops & BishopAttacks.attacks(squareOrdinal, occ);

@@ -53,7 +53,7 @@ public abstract class AbstractTestChessRuleAnalyzerScenarios implements EnumCons
       return;
     }
     // fallback: spec-coherence or castling - exercise via the surface
-      boolean isException = false;
+    boolean isException = false;
     try {
       board.move(move);
     } catch (final InvalidMoveException e) {

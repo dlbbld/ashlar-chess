@@ -2648,7 +2648,7 @@ class TestPotentialToSquares implements EnumConstants {
   }
 
   private static void checkExceptionRook(StaticPosition staticPosition, Square fromSquare, Side havingMove) {
-      boolean isCorrectException = false;
+    boolean isCorrectException = false;
     try {
       RookPotentialToSquares.calculateRookPotentialToSquares(staticPosition, fromSquare, havingMove);
     } catch (@SuppressWarnings("unused") final IllegalArgumentException iae) {
@@ -2658,7 +2658,7 @@ class TestPotentialToSquares implements EnumConstants {
   }
 
   private static void checkExceptionKnight(StaticPosition staticPosition, Square fromSquare, Side havingMove) {
-      boolean isCorrectException = false;
+    boolean isCorrectException = false;
     try {
       KnightPotentialToSquares.calculateKnightPotentialToSquares(staticPosition, fromSquare, havingMove);
     } catch (@SuppressWarnings("unused") final IllegalArgumentException iae) {
@@ -2668,7 +2668,7 @@ class TestPotentialToSquares implements EnumConstants {
   }
 
   private static void checkExceptionBishop(StaticPosition staticPosition, Square fromSquare, Side havingMove) {
-      boolean isCorrectException = false;
+    boolean isCorrectException = false;
     try {
       BishopPotentialToSquares.calculateBishopPotentialToSquares(staticPosition, fromSquare, havingMove);
     } catch (@SuppressWarnings("unused") final IllegalArgumentException iae) {
@@ -2678,7 +2678,7 @@ class TestPotentialToSquares implements EnumConstants {
   }
 
   private static void checkExceptionQueen(StaticPosition staticPosition, Square fromSquare, Side havingMove) {
-      boolean isCorrectException = false;
+    boolean isCorrectException = false;
     try {
       QueenPotentialToSquares.calculateQueenPotentialToSquares(staticPosition, fromSquare, havingMove);
     } catch (@SuppressWarnings("unused") final IllegalArgumentException iae) {
@@ -2688,7 +2688,7 @@ class TestPotentialToSquares implements EnumConstants {
   }
 
   private static void checkExceptionKingNonCastling(StaticPosition staticPosition, Square fromSquare, Side havingMove) {
-      boolean isCorrectException = false;
+    boolean isCorrectException = false;
     try {
       KingNonCastlingPotentialToSquares.calculateKingNonCastlingPotentialToSquares(staticPosition, fromSquare,
           havingMove);
@@ -2700,7 +2700,7 @@ class TestPotentialToSquares implements EnumConstants {
 
   private static void checkExceptionPawn(StaticPosition staticPosition, Square enPassantCaptureTargetSquare,
       Square fromSquare, Side havingMove) {
-      boolean isCorrectException = false;
+    boolean isCorrectException = false;
     try {
       PawnPotentialToSquares.calculatePawnPotentialToSquares(staticPosition, enPassantCaptureTargetSquare, fromSquare,
           havingMove);

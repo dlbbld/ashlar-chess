@@ -45,7 +45,7 @@ class TestLibraryCarlosHashPass {
     logger.info("Completion progress will be displayed every " + SHOW_COMPLETION_PROGRESS_NUMBER_OF_PROCESSED_FILES
         + " processed files");
 
-      int numberOfFilesProcessed = 0;
+    int numberOfFilesProcessed = 0;
     final int numberOfFilesToProcess = filesList.length;
     logger.info("*** Total " + numberOfFilesToProcess + " files to process ***");
 
@@ -74,7 +74,7 @@ class TestLibraryCarlosHashPass {
     final PgnHolder pgn = new PgnHolder(path);
     pgn.loadPgn();
 
-      int numberOfInconsistencies = 0;
+    int numberOfInconsistencies = 0;
 
     for (final Game game : pgn.getGames()) {
       game.loadMoveText();
@@ -83,7 +83,7 @@ class TestLibraryCarlosHashPass {
       final Map<String, Integer> map2 = new TreeMap<>();
       final Map<String, Long> map3 = new TreeMap<>();
       final Board board = new Board();
-        int i = 0;
+      int i = 0;
       for (final Move move : game.getHalfMoves()) {
         board.doMove(move);
         assertEquals(board.getIncrementalHashKey(), board.getZobristKey());

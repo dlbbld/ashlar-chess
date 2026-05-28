@@ -45,7 +45,7 @@ class TestDiagonalUtility implements EnumConstants {
     }
 
     // now we calculate the diagonal
-      Square diagonalSquare = mostLeftSquare;
+    Square diagonalSquare = mostLeftSquare;
     diagonal.add(diagonalSquare);
     while (Square.calculateHasRightDiagonalSquare(WHITE, diagonalSquare)) {
       diagonalSquare = Square.calculateRightDiagonalSquare(WHITE, diagonalSquare);
@@ -67,7 +67,7 @@ class TestDiagonalUtility implements EnumConstants {
     }
 
     // now we calculate the diagonal
-      Square diagonalSquare = mostLeftSquare;
+    Square diagonalSquare = mostLeftSquare;
     diagonal.add(diagonalSquare);
     while (Square.calculateHasLeftDiagonalSquare(BLACK, diagonalSquare)) {
       diagonalSquare = Square.calculateLeftDiagonalSquare(BLACK, diagonalSquare);
@@ -92,7 +92,7 @@ class TestDiagonalUtility implements EnumConstants {
       throw new SetupException("That is not possible");
     }
 
-      int rankNumber = startingRankNumber;
+    int rankNumber = startingRankNumber;
     for (int fileNumber = startingFileNumber; fileNumber <= endFileNumber; fileNumber++) {
       final Square diagonalSquare = Square.calculate(fileNumber, rankNumber);
       diagonal.add(diagonalSquare);
@@ -120,7 +120,7 @@ class TestDiagonalUtility implements EnumConstants {
       throw new SetupException("That is not possible");
     }
 
-      int rankNumberProcess = startingRankNumber;
+    int rankNumberProcess = startingRankNumber;
     for (int fileNumberProcess = startingFileNumber; fileNumberProcess <= endFileNumber; fileNumberProcess++) {
       final Square diagonalSquare = Square.calculate(fileNumberProcess, rankNumberProcess);
       diagonal.add(diagonalSquare);

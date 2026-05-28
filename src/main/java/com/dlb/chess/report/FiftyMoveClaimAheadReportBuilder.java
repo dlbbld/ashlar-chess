@@ -44,7 +44,7 @@ abstract class FiftyMoveClaimAheadReportBuilder {
     final int initialFenClock = board.getInitialFen().halfMoveClock();
 
     final Board replayBoard = new Board(board.getInitialFen());
-      SequenceStart currentStart = initialSequenceStart(initialFenClock);
+    SequenceStart currentStart = initialSequenceStart(initialFenClock);
 
     final List<LegalMove> performedLegalMoveList = board.getPerformedLegalMoveList();
     for (final LegalMove nextPlayedMove : performedLegalMoveList) {

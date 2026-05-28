@@ -105,7 +105,7 @@ class TestSanValidateFormatFirstCharacter {
   }
 
   private static void checkValid(String san) {
-      boolean isException = false;
+    boolean isException = false;
     try {
       SanValidateFormat.validateFormat(san);
     } catch (@SuppressWarnings("unused") final SanValidationException e) {

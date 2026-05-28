@@ -382,7 +382,7 @@ class TestCommentaryStrict {
   }
 
   private static void expectError(String pgnText, StrictPgnParserValidationProblem expected) {
-      boolean isException = false;
+    boolean isException = false;
     try {
       StrictPgnParser.parseText(pgnText);
     } catch (final StrictPgnParserValidationException e) {

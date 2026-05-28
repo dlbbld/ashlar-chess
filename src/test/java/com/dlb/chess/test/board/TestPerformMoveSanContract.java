@@ -20,8 +20,7 @@ import com.dlb.chess.test.pgn.setup.PgnTestCaseCatalog;
  * Verifies the round-trip consistency between SAN and MoveSpecification that
  * {@link com.dlb.chess.board.Board#moveStrict(String)} relies on: once {@link com.dlb.chess.san.StrictSanParser}'s
  * {@code parseText} has produced a MoveSpecification from a SAN, that MoveSpec is the canonical representation of the
- * move and round-trips both ways.
- * The board therefore performs the move with no further re-validation of the spec.
+ * move and round-trips both ways. The board therefore performs the move with no further re-validation of the spec.
  *
  * <h2>Forward (played moves)</h2>
  *
@@ -86,7 +85,7 @@ class TestPerformMoveSanContract {
         testCase.pgnName());
     final Board board = new Board(pgnGame.startFen());
 
-      int halfMoveIndex = 0;
+    int halfMoveIndex = 0;
     for (final PgnHalfMove halfMove : pgnGame.halfMoveList()) {
       halfMoveIndex++;
       final int hmi = halfMoveIndex;

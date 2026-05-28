@@ -30,7 +30,7 @@ class TestStrictPgnParserSanException extends AbstractTestStrictPgnParserExcepti
   }
 
   private static void checkException(String pgnName, SanValidationProblem expected) {
-      boolean isException = false;
+    boolean isException = false;
     try {
       StrictPgnParser.parse(PGN_TEST_FOLDER_PATH, pgnName);
     } catch (final StrictPgnParserValidationException e) {

@@ -27,12 +27,12 @@ public final class MultiplePgnSplitUtility {
 
     logger.printf(Level.INFO, "Processing file %s", multiplePgnPath);
 
-      int writtenFileCounter = 0;
-      int chess960Counter = 0;
+    int writtenFileCounter = 0;
+    int chess960Counter = 0;
     final int fenCounter = 0;
-      int blankLineCounter = 0;
-      boolean isChess960 = false;
-      boolean isFen = false;
+    int blankLineCounter = 0;
+    boolean isChess960 = false;
+    boolean isFen = false;
     List<String> currentFileLines = new ArrayList<>();
 
     final File file = multiplePgnPath.toFile();

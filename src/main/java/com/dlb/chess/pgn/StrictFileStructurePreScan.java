@@ -37,11 +37,11 @@ final class StrictFileStructurePreScan {
     }
 
     // Count blank lines (a line with no content chars) and detect adjacency in one forward walk.
-      int blankCount = 0;
-      int previousBlankLineNumber = -1;
-      int currentLineNumber = 1;
-      int currentLineContentChars = 0;
-      boolean adjacentDetected = false;
+    int blankCount = 0;
+    int previousBlankLineNumber = -1;
+    int currentLineNumber = 1;
+    int currentLineContentChars = 0;
+    boolean adjacentDetected = false;
 
     for (int i = 0; i < length; i++) {
       final char c = source.charAt(i);

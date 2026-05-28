@@ -77,7 +77,7 @@ public class ForcedLineOracle {
   static GameForced evaluateForcedLine(Board board) {
     // we check position after series of forced moves
     // we cannot use early returns for after evaluation we need to undo the moves
-      int countForcedHalfMoves = 0;
+    int countForcedHalfMoves = 0;
     while (board.getLegalMoves().size() == 1) {
       countForcedHalfMoves++;
       final LegalMove legalMove = ListUtility.getOnly(board.getLegalMoves());

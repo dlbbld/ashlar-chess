@@ -63,7 +63,7 @@ public class HelpmateSearchBoardPerformanceSurvey {
   }
 
   private static Measurement measureCycle(List<Setup> setupList) {
-      long moveCount = 0L;
+    long moveCount = 0L;
     final long start = System.nanoTime();
     for (int round = 0; round < MEASURE_ROUNDS; round++) {
       for (final Setup setup : setupList) {
@@ -79,7 +79,7 @@ public class HelpmateSearchBoardPerformanceSurvey {
   }
 
   private static Measurement measureCycleWithKey(List<Setup> setupList) {
-      long moveCount = 0L;
+    long moveCount = 0L;
     final long start = System.nanoTime();
     for (int round = 0; round < MEASURE_ROUNDS; round++) {
       for (final Setup setup : setupList) {

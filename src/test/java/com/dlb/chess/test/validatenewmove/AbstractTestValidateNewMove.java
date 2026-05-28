@@ -12,7 +12,7 @@ import com.dlb.chess.exceptions.InvalidMoveException;
 public abstract class AbstractTestValidateNewMove implements EnumConstants {
 
   static void check(Board board, MoveSpecification move, MoveCheck expectedMoveCheck) {
-      boolean isException = false;
+    boolean isException = false;
     try {
       board.move(move);
     } catch (final InvalidMoveException e) {

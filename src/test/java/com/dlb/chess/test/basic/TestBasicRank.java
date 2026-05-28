@@ -15,7 +15,7 @@ class TestBasicRank implements EnumConstants {
   @SuppressWarnings("static-method")
   @Test
   void testCount() throws Exception {
-      int totalRanks = 0;
+    int totalRanks = 0;
     for (@SuppressWarnings("unused") final Rank rank : Rank.REAL) {
       totalRanks++;
     }

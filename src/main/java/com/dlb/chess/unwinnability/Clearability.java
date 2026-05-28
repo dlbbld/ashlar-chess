@@ -28,7 +28,7 @@ class Clearability {
   }
 
   public int calculateVariableCountSetToOne() {
-      int count = 0;
+    int count = 0;
     for (final Entry<PiecePlacement, VariableState> entry : clearabilityMap.entrySet()) {
       if (entry.getValue() == VariableState.ONE) {
         count++;

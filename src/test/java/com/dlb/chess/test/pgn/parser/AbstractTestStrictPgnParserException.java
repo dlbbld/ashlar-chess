@@ -21,7 +21,7 @@ public abstract class AbstractTestStrictPgnParserException {
 
   private static void checkParse(Path pgnTestFolderPath, String pgnName,
       StrictPgnParserValidationProblem expectedProblemParser, SanValidationProblem expectedProblemSan) {
-      boolean isException = false;
+    boolean isException = false;
     try {
       StrictPgnParser.parse(pgnTestFolderPath, pgnName);
     } catch (final StrictPgnParserValidationException e) {

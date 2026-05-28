@@ -276,7 +276,7 @@ class TestFromInitialPlacementAndFenStart {
         board.getHalfMoveList(), ChessConstants.THREEFOLD_REPETITION_RULE_THRESHOLD);
     assertTrue(report.groups().size() >= 1, "threefold report must surface at least one group");
 
-      boolean anyAtThreefold = false;
+    boolean anyAtThreefold = false;
     for (final RepetitionGroup group : report.groups()) {
       if (group.totalRepetitionCount() >= ChessConstants.THREEFOLD_REPETITION_RULE_THRESHOLD) {
         anyAtThreefold = true;
@@ -293,7 +293,7 @@ class TestFromInitialPlacementAndFenStart {
     final ThreefoldExistingReport report = ThreefoldExistingReportBuilder.build(board.getInitialDynamicPosition(),
         board.getHalfMoveList(), ChessConstants.THREEFOLD_REPETITION_RULE_THRESHOLD);
 
-      boolean anyAtFivefold = false;
+    boolean anyAtFivefold = false;
     for (final RepetitionGroup group : report.groups()) {
       if (group.totalRepetitionCount() >= ChessConstants.FIVEFOLD_REPETITION_RULE_THRESHOLD) {
         anyAtFivefold = true;
@@ -375,7 +375,7 @@ class TestFromInitialPlacementAndFenStart {
    */
   private static List<String> extractSection(List<String> lines, String sectionHeaderPrefix,
       String nextSectionHeaderPrefix) {
-      boolean inSection = false;
+    boolean inSection = false;
     final List<String> contents = new ArrayList<>();
     for (final String raw : lines) {
       final String line = raw.trim();
@@ -402,7 +402,7 @@ class TestFromInitialPlacementAndFenStart {
    * header.
    */
   private static List<String> extractSectionToEnd(List<String> lines, String sectionHeaderPrefix) {
-      boolean inSection = false;
+    boolean inSection = false;
     final List<String> contents = new ArrayList<>();
     for (final String raw : lines) {
       final String line = raw.trim();

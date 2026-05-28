@@ -48,7 +48,7 @@ final class LenientSanShapeNormalize {
     final char lastChar = text.charAt(text.length() - 1);
     final boolean hasTerminalMarker = lastChar == '+' || lastChar == '#';
     final String terminalMarker = hasTerminalMarker ? Nulls.valueOf(lastChar) : "";
-      String body = hasTerminalMarker ? Nulls.substring(text, 0, text.length() - 1) : text;
+    String body = hasTerminalMarker ? Nulls.substring(text, 0, text.length() - 1) : text;
 
     body = stripExplicitPawnLetter(body, codes);
     // Case fixes run early so downstream steps (UCI/LAN translation, pawn-missing-x, promotion-equals)
@@ -312,7 +312,7 @@ final class LenientSanShapeNormalize {
 
   private static String caseFixUppercaseFileLetters(String body, List<LenientSanValidationProblem> codes) {
     final StringBuilder out = new StringBuilder(body.length());
-      boolean changed = false;
+    boolean changed = false;
     for (int i = 0; i < body.length(); i++) {
       final char c = body.charAt(i);
       if (i == 0) {

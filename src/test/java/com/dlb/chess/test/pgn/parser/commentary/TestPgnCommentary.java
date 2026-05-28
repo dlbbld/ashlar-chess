@@ -182,7 +182,8 @@ class TestPgnCommentary {
   @SuppressWarnings("static-method")
   @Test
   void bellControlCharacterIsRejected() {
-    final PgnCommentaryValidationException thrown = assertThrows(PgnCommentaryValidationException.class, () -> new PgnCommentary("ab"));
+    final PgnCommentaryValidationException thrown = assertThrows(PgnCommentaryValidationException.class,
+        () -> new PgnCommentary("ab"));
     org.junit.jupiter.api.Assertions.assertTrue(thrown.getMessage().contains("control character"),
         "Message should name the offending category: " + thrown.getMessage());
   }
@@ -214,7 +215,8 @@ class TestPgnCommentary {
   @Test
   void loneHighSurrogateIsRejected() {
     final String commentary = "a" + Character.toString(Character.MIN_HIGH_SURROGATE) + "b";
-    final PgnCommentaryValidationException thrown = assertThrows(PgnCommentaryValidationException.class, () -> new PgnCommentary(commentary));
+    final PgnCommentaryValidationException thrown = assertThrows(PgnCommentaryValidationException.class,
+        () -> new PgnCommentary(commentary));
     org.junit.jupiter.api.Assertions.assertTrue(thrown.getMessage().contains("surrogate"),
         "Message should name the offending category: " + thrown.getMessage());
   }
@@ -230,7 +232,8 @@ class TestPgnCommentary {
   @Test
   void privateUseAreaCharacterIsRejected() {
     // U+E000 — start of the BMP private-use area.
-    final PgnCommentaryValidationException thrown = assertThrows(PgnCommentaryValidationException.class, () -> new PgnCommentary("ab"));
+    final PgnCommentaryValidationException thrown = assertThrows(PgnCommentaryValidationException.class,
+        () -> new PgnCommentary("ab"));
     org.junit.jupiter.api.Assertions.assertTrue(thrown.getMessage().contains("private-use"),
         "Message should name the offending category: " + thrown.getMessage());
   }
@@ -258,7 +261,8 @@ class TestPgnCommentary {
   @SuppressWarnings("static-method")
   @Test
   void closingBraceIsRejected() {
-    final PgnCommentaryValidationException thrown = assertThrows(PgnCommentaryValidationException.class, () -> new PgnCommentary("a } b"));
+    final PgnCommentaryValidationException thrown = assertThrows(PgnCommentaryValidationException.class,
+        () -> new PgnCommentary("a } b"));
     org.junit.jupiter.api.Assertions.assertTrue(thrown.getMessage().contains("closing brace"),
         "Message should name the offending character: " + thrown.getMessage());
   }

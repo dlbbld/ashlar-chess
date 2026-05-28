@@ -15,7 +15,7 @@ class Score {
   // Inputs: position, legal move in the position
   // Output: Normal, Reward, or Punish (variation score)
   public static ScoreResult score(Side color, Side havingMove, BitboardPosition bitboardPosition, LegalMove legalMove) {
-      ScoreResult variation = ScoreResult.NORMAL;
+    ScoreResult variation = ScoreResult.NORMAL;
 
     // 1: if it is the intended winner's turn in pos then
     if (havingMove == color) {

@@ -88,7 +88,7 @@ class TestFenParserRaw {
   }
 
   private static void checkException(String fen) {
-      boolean isException = false;
+    boolean isException = false;
     try {
       FenParserRaw.parseFenRaw(fen);
     } catch (@SuppressWarnings("unused") final FenRawValidationException e) {

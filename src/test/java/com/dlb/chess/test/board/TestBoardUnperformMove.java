@@ -16,9 +16,9 @@ import com.dlb.chess.test.pgn.parser.PgnCacheForStrictPgnParserTestCases;
 import com.dlb.chess.test.pgn.setup.PgnTestCaseCatalog;
 
 /**
- * Verifies the {@link com.dlb.chess.board.Board#unmove} contract: after performing a move and immediately
- * unperforming it, the board must be in exactly the same state it was in before the move. Run across every halfmove of
- * every PGN in the basic test corpus.
+ * Verifies the {@link com.dlb.chess.board.Board#unmove} contract: after performing a move and immediately unperforming
+ * it, the board must be in exactly the same state it was in before the move. Run across every halfmove of every PGN in
+ * the basic test corpus.
  *
  * <h2>Design</h2>
  *
@@ -57,8 +57,8 @@ class TestBoardUnperformMove {
   @SuppressWarnings("static-method")
   @Test
   void test() {
-      int pgnsExercised = 0;
-      int halfMovesExercised = 0;
+    int pgnsExercised = 0;
+    int halfMovesExercised = 0;
 
     for (final PgnTestCaseList testCaseList : PgnTestCaseCatalog.getParserIntegrationSmokeList()) {
       for (final PgnFen testCase : testCaseList.list()) {
@@ -86,7 +86,7 @@ class TestBoardUnperformMove {
     final Board expected = new Board(pgnGame.startFen());
     final Board actual = new Board(pgnGame.startFen());
 
-      int halfMoveIndex = 0;
+    int halfMoveIndex = 0;
     for (final PgnHalfMove halfMove : pgnGame.halfMoveList()) {
       halfMoveIndex++;
       final String san = halfMove.san();

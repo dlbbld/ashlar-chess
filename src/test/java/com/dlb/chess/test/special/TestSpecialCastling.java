@@ -61,7 +61,7 @@ class TestSpecialCastling implements EnumConstants {
   }
 
   private static void checkException(Board board, String san) {
-      boolean isCorrectException = false;
+    boolean isCorrectException = false;
     try {
       board.moveStrict(san);
     } catch (@SuppressWarnings("unused") final SanValidationException sve) {

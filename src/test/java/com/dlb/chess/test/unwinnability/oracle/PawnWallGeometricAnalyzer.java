@@ -674,8 +674,8 @@ public class PawnWallGeometricAnalyzer {
     while (!queue.isEmpty()) {
       @SuppressWarnings("null") final Square current = queue.poll();
       for (final int[] dir : BISHOP_DIAGONALS) {
-          int file = current.getFile().getNumber();
-          int rank = current.getRank().getNumber();
+        int file = current.getFile().getNumber();
+        int rank = current.getRank().getNumber();
         while (true) {
           file += dir[0];
           rank += dir[1];

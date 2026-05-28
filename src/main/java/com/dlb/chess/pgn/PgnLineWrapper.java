@@ -9,10 +9,10 @@ import com.dlb.chess.common.exceptions.ProgrammingMistakeException;
 abstract class PgnLineWrapper {
 
   /**
-   * Wraps {@code line} into at most {@code lineLength}-char lines, splitting on spaces - except inside {@code {...}} brace
-   * comments, which are atomic. A brace region longer than {@code lineLength} is emitted on its own line rather than
-   * broken: spaces inside commentary are content, not wrap candidates. The 79-char export-format guideline is a soft
-   * target, matching python-chess.
+   * Wraps {@code line} into at most {@code lineLength}-char lines, splitting on spaces - except inside {@code {...}}
+   * brace comments, which are atomic. A brace region longer than {@code lineLength} is emitted on its own line rather
+   * than broken: spaces inside commentary are content, not wrap candidates. The 79-char export-format guideline is a
+   * soft target, matching python-chess.
    */
   static List<String> calculateWrappedLines(String line, int lineLength) {
     final List<String> atoms = splitIntoAtoms(line);
@@ -44,7 +44,7 @@ abstract class PgnLineWrapper {
   private static List<String> splitIntoAtoms(String line) {
     final List<String> atoms = new ArrayList<>();
     final int len = line.length();
-      int i = 0;
+    int i = 0;
     while (i < len) {
       final char c = line.charAt(i);
       if (c == ' ') {
@@ -52,7 +52,7 @@ abstract class PgnLineWrapper {
         continue;
       }
       if (c == '{') {
-          int j = i + 1;
+        int j = i + 1;
         while (j < len && line.charAt(j) != '}') {
           j++;
         }
@@ -66,7 +66,7 @@ abstract class PgnLineWrapper {
         }
         continue;
       }
-        int j = i;
+      int j = i;
       while (j < len && line.charAt(j) != ' ' && line.charAt(j) != '{') {
         j++;
       }

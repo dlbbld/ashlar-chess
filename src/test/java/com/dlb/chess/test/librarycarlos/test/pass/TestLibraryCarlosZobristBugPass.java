@@ -92,7 +92,7 @@ class TestLibraryCarlosZobristBugPass {
 
     identifier.append(board.getSideToMove()).append("_");
 
-      boolean isEnPassantCapturePossible = false;
+    boolean isEnPassantCapturePossible = false;
     for (final Move legalMove : MoveGenerator.generateLegalMoves(board)) {
       board.doMove(legalMove);
       final MoveBackup moveBackup = board.getBackup().getLast();

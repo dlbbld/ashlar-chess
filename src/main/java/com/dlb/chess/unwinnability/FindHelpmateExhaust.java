@@ -158,7 +158,7 @@ class FindHelpmateExhaust {
         score = score == ScoreResult.REWARD ? ScoreResult.NORMAL : score;
       }
 
-        int newDepth = depth + 1;
+      int newDepth = depth + 1;
       switch (score) {
         case REWARD:
           newDepth = newDepth - 1;
@@ -204,7 +204,8 @@ class FindHelpmateExhaust {
       // 3: increase cnt
       localNodeCount++;
 
-      final FindHelpmateRecursionResult findHelpmate = findHelpmate(board, newDepth, maxDepth, actualDepth + 1, isProgress);
+      final FindHelpmateRecursionResult findHelpmate = findHelpmate(board, newDepth, maxDepth, actualDepth + 1,
+          isProgress);
       board.unmove();
       switch (findHelpmate) {
         case TRUE:

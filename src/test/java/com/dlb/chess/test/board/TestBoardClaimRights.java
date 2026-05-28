@@ -53,7 +53,7 @@ class TestBoardClaimRights implements EnumConstants {
     final ClaimRights rights = board.calculateFiftyMoveRuleClaimRights();
     assertTrue(rights.canClaim(), "at clock 99 every non-zeroing legal move is a 50-move claim candidate");
 
-      boolean foundRa2 = false;
+    boolean foundRa2 = false;
     for (final ClaimableMove claim : rights.claimableMoves()) {
       if (claim.moveSpecification().equals(new MoveSpecification(A1, A2))) {
         foundRa2 = true;
@@ -104,7 +104,7 @@ class TestBoardClaimRights implements EnumConstants {
     final ClaimRights rights = board.calculateFiftyMoveRuleClaimRights();
     assertTrue(rights.canClaim(), "mate-in-one at clock 99 remains a valid 50-move claim under strict FIDE 9.3");
 
-      boolean foundNf7 = false;
+    boolean foundNf7 = false;
     for (final ClaimableMove claim : rights.claimableMoves()) {
       if (claim.moveSpecification().equals(new MoveSpecification(H6, F7))) {
         foundNf7 = true;
@@ -252,7 +252,7 @@ class TestBoardClaimRights implements EnumConstants {
       legalOrder.add(legal.moveSpecification());
     }
 
-      int lastFoundIndex = -1;
+    int lastFoundIndex = -1;
     for (final ClaimableMove claim : rights.claimableMoves()) {
       final int idx = legalOrder.indexOf(claim.moveSpecification());
       assertTrue(idx > lastFoundIndex, "claimable move " + claim.san() + " (legal-move index " + idx

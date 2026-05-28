@@ -39,8 +39,8 @@ public class UnwinnableQuickAnalyzer {
 
     // 1: advance the position as long as there is only one legal move
     // if position is advanced cannot use the provided mobility solution if any
-      boolean isCanUseMobilitySolution = true;
-      int countHalfmoves = 0;
+    boolean isCanUseMobilitySolution = true;
+    int countHalfmoves = 0;
     final List<UciMove> forcedMoveLine = new ArrayList<>();
     final Set<DynamicPosition> forcedPositionSet = new HashSet<>();
     while (forcedPositionSet.add(board.getDynamicPosition())) {
@@ -128,7 +128,7 @@ public class UnwinnableQuickAnalyzer {
     }
 
     if (IS_ALIGN_QUICK_WITH_AMBRONA_REFERENCE_IMPLEMENTATION) {
-        boolean isUnwinnable = false;
+      boolean isUnwinnable = false;
       final boolean hasOnlyPawnsAndBishops = calculateHasOnlyPawnsBishopsAndKings(board.getBitboardPosition());
       final boolean isBlockedCandidate = calculateIsBlockedCandidate(board.getBitboardPosition());
       if (isBlockedCandidate && hasOnlyPawnsAndBishops) {

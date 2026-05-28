@@ -9,7 +9,7 @@ public class PrintDuration {
 
   public static void printDuration(List<Long> milliSecondsList, Logger logger) {
     final int numberOfTests = milliSecondsList.size();
-      double totalmilliSeconds = 0D;
+    double totalmilliSeconds = 0D;
     for (final Long milliSecondsTest : milliSecondsList) {
       totalmilliSeconds += milliSecondsTest;
     }

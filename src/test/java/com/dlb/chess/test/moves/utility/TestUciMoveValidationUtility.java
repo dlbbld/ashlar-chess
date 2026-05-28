@@ -42,10 +42,10 @@ class TestUciMoveValidationUtility {
   @Test
   void testNumberOfUciMoves() {
     // total: 1968
-      int total = 0;
+    int total = 0;
 
     // rook: 896
-      int rook = 0;
+    int rook = 0;
     // for each square there are 7 moves along the file and rank
     rook += 64 * (7 + 7);
     assertEquals(896, rook);
@@ -53,7 +53,7 @@ class TestUciMoveValidationUtility {
     total += rook;
 
     // bishop: 560
-      int bishop = 0;
+    int bishop = 0;
     // first outer quadrat
     bishop += (8 + 6 + 8 + 6) * 7;
 
@@ -70,7 +70,7 @@ class TestUciMoveValidationUtility {
     total += bishop;
 
     // knight: 336
-      int knight = 0;
+    int knight = 0;
     // edges
     knight += 4 * 2;
 
@@ -93,7 +93,7 @@ class TestUciMoveValidationUtility {
     total += knight;
 
     // pawn promotion: 176
-      int pawnPromotionWhite = 0;
+    int pawnPromotionWhite = 0;
     // straight promotion
     pawnPromotionWhite += 8;
     // left diagonal promotion

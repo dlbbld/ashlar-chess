@@ -96,7 +96,7 @@ public abstract class StaticPositionUtility implements EnumConstants {
   public static String calculatePiecePlacement(StaticPosition staticPosition) {
     final StringBuilder piecePlacement = new StringBuilder();
     for (int rankNumber = 8; rankNumber >= 1; rankNumber--) {
-        int consecutiveEmptySquares = 0;
+      int consecutiveEmptySquares = 0;
       for (int fileNumber = 1; fileNumber <= 8; fileNumber++) {
         final Square square = Square.calculate(fileNumber, rankNumber);
         final Piece pieceOnSquare = staticPosition.get(square);

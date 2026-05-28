@@ -121,7 +121,7 @@ final class PgnTokenizer {
   private PgnToken readTagValueString(int line, int column) {
     stream.read(); // opening quote
     final StringBuilder text = new StringBuilder();
-      boolean terminated = false;
+    boolean terminated = false;
     while (true) {
       final int c = stream.peek();
       if (c == CHAR_EOF || c == '\n' || c == '\r') {
@@ -196,7 +196,7 @@ final class PgnTokenizer {
 
   private PgnToken readMoveNumberDots(int line, int column, StringBuilder digits) {
     final StringBuilder text = new StringBuilder(digits);
-      int dotCount = 0;
+    int dotCount = 0;
     while (stream.peek() == '.') {
       text.append((char) stream.read());
       dotCount++;

@@ -115,7 +115,7 @@ public final class GenerateAmbronaMobilityOracle {
           BufferedReader reader = new BufferedReader(
               new InputStreamReader(IoUtility.getInputStream(process), StandardCharsets.UTF_8))) {
 
-          int processed = 0;
+        int processed = 0;
         for (final String fen : fenList) {
           writer.write(fen);
           writer.write('\n');

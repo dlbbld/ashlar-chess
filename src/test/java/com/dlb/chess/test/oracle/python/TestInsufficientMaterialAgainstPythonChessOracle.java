@@ -63,7 +63,7 @@ class TestInsufficientMaterialAgainstPythonChessOracle {
   @Test
   void insufficientMaterialAgainstPythonChessOracle() throws IOException {
     final List<String> failures = new ArrayList<>();
-      int totalFixtures = 0;
+    int totalFixtures = 0;
     final int[] perBucketFixtureCounts = new int[BUCKETS.size()];
 
     for (int bucketIdx = 0; bucketIdx < BUCKETS.size(); bucketIdx++) {

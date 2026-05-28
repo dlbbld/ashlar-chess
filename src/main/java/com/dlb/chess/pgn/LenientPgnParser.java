@@ -221,8 +221,8 @@ public final class LenientPgnParser {
    * Returns true if line {@code lineNumber} (1-based) contains {@code [} or {@code ]}.
    */
   private boolean currentLineContainsTagBracket(int lineNumber) {
-      int index = 0;
-      int currentLine = 1;
+    int index = 0;
+    int currentLine = 1;
     while (currentLine < lineNumber && index < source.length()) {
       final char c = source.charAt(index);
       if (c == '\r') {
@@ -341,7 +341,7 @@ public final class LenientPgnParser {
   }
 
   private MovetextOutcome parseMovetext() {
-      PgnCommentary pregameCommentary = PgnCommentary.EMPTY;
+    PgnCommentary pregameCommentary = PgnCommentary.EMPTY;
     final List<PgnHalfMove> halfMoves = new ArrayList<>();
     @Nullable ResultTagValue terminationResult = null;
 
@@ -486,7 +486,7 @@ public final class LenientPgnParser {
     validateSanCharacters(san);
     validateSanLength(san);
 
-      MoveSuffixAnnotation suffix = MoveSuffixAnnotation.NONE;
+    MoveSuffixAnnotation suffix = MoveSuffixAnnotation.NONE;
     // Allow whitespace between SAN and suffix annotation (`e4 !!`).
     skipInlineWhitespace();
     if (tokenizer.peek().type() == PgnTokenType.MOVE_SUFFIX_ANNOTATION) {

@@ -98,8 +98,8 @@ class TestPgnImportAgainstPythonChessOracle {
   @Test
   void pgnImportAgainstPythonChessOracle() throws IOException {
     final List<String> failures = new ArrayList<>();
-      int totalFixtures = 0;
-      int totalPlies = 0;
+    int totalFixtures = 0;
+    int totalPlies = 0;
 
     for (final PgnTest bucket : BUCKETS) {
       final Path jsonlPath = jsonlPathFor(bucket);

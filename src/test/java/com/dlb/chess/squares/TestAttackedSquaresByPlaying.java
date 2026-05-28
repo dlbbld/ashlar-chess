@@ -2549,7 +2549,7 @@ class TestAttackedSquaresByPlaying implements EnumConstants {
   }
 
   private static void checkExceptionRook(StaticPosition staticPosition, Square fromSquare, Side havingMove) {
-      boolean isCorrectException = false;
+    boolean isCorrectException = false;
     try {
       RookAttackedSquares.calculateRookAttackedSquares(staticPosition, fromSquare, havingMove);
     } catch (@SuppressWarnings("unused") final IllegalArgumentException iae) {
@@ -2559,7 +2559,7 @@ class TestAttackedSquaresByPlaying implements EnumConstants {
   }
 
   private static void checkExceptionKnight(StaticPosition staticPosition, Square fromSquare, Side havingMove) {
-      boolean isCorrectException = false;
+    boolean isCorrectException = false;
     try {
       KnightAttackedSquares.calculateKnightAttackedSquares(staticPosition, fromSquare, havingMove);
     } catch (@SuppressWarnings("unused") final IllegalArgumentException iae) {
@@ -2569,7 +2569,7 @@ class TestAttackedSquaresByPlaying implements EnumConstants {
   }
 
   private static void checkExceptionBishop(StaticPosition staticPosition, Square fromSquare, Side havingMove) {
-      boolean isCorrectException = false;
+    boolean isCorrectException = false;
     try {
       BishopAttackedSquares.calculateBishopAttackedSquares(staticPosition, fromSquare, havingMove);
     } catch (@SuppressWarnings("unused") final IllegalArgumentException iae) {
@@ -2579,7 +2579,7 @@ class TestAttackedSquaresByPlaying implements EnumConstants {
   }
 
   private static void checkExceptionQueen(StaticPosition staticPosition, Square fromSquare, Side havingMove) {
-      boolean isCorrectException = false;
+    boolean isCorrectException = false;
     try {
       QueenAttackedSquares.calculateQueenAttackedSquares(staticPosition, fromSquare, havingMove);
     } catch (@SuppressWarnings("unused") final IllegalArgumentException iae) {
@@ -2589,7 +2589,7 @@ class TestAttackedSquaresByPlaying implements EnumConstants {
   }
 
   private static void checkExceptionKingNonCastling(StaticPosition staticPosition, Square fromSquare, Side havingMove) {
-      boolean isCorrectException = false;
+    boolean isCorrectException = false;
     try {
       KingNonCastlingAttackedSquares.calculateKingNonCastlingAttackedSquares(staticPosition, fromSquare, havingMove);
     } catch (@SuppressWarnings("unused") final IllegalArgumentException iae) {
@@ -2599,7 +2599,7 @@ class TestAttackedSquaresByPlaying implements EnumConstants {
   }
 
   private static void checkExceptionPawn(StaticPosition staticPosition, Square fromSquare, Side havingMove) {
-      boolean isCorrectException = false;
+    boolean isCorrectException = false;
     try {
       PawnAttackedSquares.calculatePawnAttackedSquares(staticPosition, fromSquare, havingMove);
     } catch (@SuppressWarnings("unused") final IllegalArgumentException iae) {

@@ -166,7 +166,7 @@ public final class LenientFenParser {
     // 4. Collapse multi-space runs to single space.
     if (working.contains("  ")) {
       final StringBuilder collapsed = new StringBuilder(working.length());
-        boolean prevWasSpace = false;
+      boolean prevWasSpace = false;
       for (int i = 0; i < working.length(); i++) {
         final char c = working.charAt(i);
         if (c == ' ') {
@@ -240,7 +240,7 @@ public final class LenientFenParser {
     // Field must contain only letters from {K, Q, k, q}, each at most once. The lenient layer normalises ORDER
     // but does not collapse DUPLICATES — a field like "KKKQkq" is a transcription error, not a recognised
     // deviation pattern, and is left for the strict parser to reject as INVALID_CASTLING_RIGHT_RANGE.
-      int seen = 0;
+    int seen = 0;
     for (int i = 0; i < field.length(); i++) {
       final char c = field.charAt(i);
       final int bit;

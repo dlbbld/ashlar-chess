@@ -24,7 +24,7 @@ public abstract class RepetitionUtility {
       throw new ProgrammingMistakeException("Something went wrong with the list size");
     }
 
-      int countRepetition = 1;
+    int countRepetition = 1;
 
     // we use the same index for moves and position on purpose
     for (int i = performedLegalMoveList.size() - 1; i >= 0; i--) {

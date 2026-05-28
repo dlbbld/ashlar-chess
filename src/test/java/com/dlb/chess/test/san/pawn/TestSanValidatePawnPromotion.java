@@ -144,7 +144,7 @@ class TestSanValidatePawnPromotion {
   }
 
   private static void checkValid(String san, Board board) {
-      boolean isException = false;
+    boolean isException = false;
     try {
       StrictSanParser.parseText(san, board);
     } catch (@SuppressWarnings("unused") final SanValidationException e) {

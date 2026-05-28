@@ -343,7 +343,7 @@ public final class StrictPgnParser {
 
   private MovetextOutcome parseMovetext(Fen startFen, ResultTagValue resultTagValue) {
     // Pregame commentary (optional).
-      PgnCommentary pregameCommentary = PgnCommentary.EMPTY;
+    PgnCommentary pregameCommentary = PgnCommentary.EMPTY;
     if (isBraceToken(tokenizer.peek().type())) {
       pregameCommentary = consumeCommentaryOrThrow();
       expectSpaceAfterComment();
@@ -351,8 +351,8 @@ public final class StrictPgnParser {
 
     final List<PgnHalfMove> halfMoves = new ArrayList<>();
     Side havingMove = startFen.havingMove();
-      int fullMoveNumber = startFen.fullMoveNumber();
-      boolean isFirstMove = true;
+    int fullMoveNumber = startFen.fullMoveNumber();
+    boolean isFirstMove = true;
 
     // Zero-move game: just <space><terminator> after the (optional) pregame commentary - no move numbers, no SANs.
     if (tokenizer.peek().type() == PgnTokenType.SPACES && tokenizer.peek().text().length() == 1
@@ -364,7 +364,7 @@ public final class StrictPgnParser {
     }
 
     // T-002 / PGN spec section 8.2.2 case 1: commentary on White's move forces "N..." before the next Black move.
-      boolean priorCommentaryAttached = false;
+    boolean priorCommentaryAttached = false;
 
     while (true) {
       if (tokenizer.peek().type() == PgnTokenType.TERMINATION_MARKER) {
@@ -406,7 +406,7 @@ public final class StrictPgnParser {
       // Trailing blank line at this position -> file has no termination marker; report specifically.
       expectInterTokenSeparatorOrMissingTermination(resultTagValue);
 
-        PgnCommentary commentary = PgnCommentary.EMPTY;
+      PgnCommentary commentary = PgnCommentary.EMPTY;
       if (isBraceToken(tokenizer.peek().type())) {
         commentary = consumeCommentaryOrThrow();
         expectSpaceAfterComment();
@@ -543,7 +543,7 @@ public final class StrictPgnParser {
     validateSanCharacters(san);
     validateSanLength(san);
 
-      MoveSuffixAnnotation suffix = MoveSuffixAnnotation.NONE;
+    MoveSuffixAnnotation suffix = MoveSuffixAnnotation.NONE;
     if (tokenizer.peek().type() == PgnTokenType.MOVE_SUFFIX_ANNOTATION) {
       final PgnToken suffixToken = tokenizer.next();
       if (!MoveSuffixAnnotation.exists(suffixToken.text())) {

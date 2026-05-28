@@ -27,18 +27,18 @@ public final class StaticPositionBridge {
   }
 
   public static BitboardPosition fromStaticPosition(StaticPosition staticPosition) {
-      long whitePawns = 0L;
-      long whiteRooks = 0L;
-      long whiteKnights = 0L;
-      long whiteBishops = 0L;
-      long whiteQueens = 0L;
-      long whiteKings = 0L;
-      long blackPawns = 0L;
-      long blackRooks = 0L;
-      long blackKnights = 0L;
-      long blackBishops = 0L;
-      long blackQueens = 0L;
-      long blackKings = 0L;
+    long whitePawns = 0L;
+    long whiteRooks = 0L;
+    long whiteKnights = 0L;
+    long whiteBishops = 0L;
+    long whiteQueens = 0L;
+    long whiteKings = 0L;
+    long blackPawns = 0L;
+    long blackRooks = 0L;
+    long blackKnights = 0L;
+    long blackBishops = 0L;
+    long blackQueens = 0L;
+    long blackKings = 0L;
 
     for (final Square square : Square.REAL) {
       final Piece piece = staticPosition.get(square);
@@ -90,7 +90,7 @@ public final class StaticPositionBridge {
   }
 
   private static void collectOccupiedSquares(List<UpdateSquare> updates, long bitboard, Piece piece) {
-      long remaining = bitboard;
+    long remaining = bitboard;
     while (remaining != 0L) {
       final int squareOrdinal = Long.numberOfTrailingZeros(remaining);
       updates.add(new UpdateSquare(Nulls.get(Square.REAL, squareOrdinal), piece));

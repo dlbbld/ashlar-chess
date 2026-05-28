@@ -87,7 +87,7 @@ class TestPgnExportRoundTripAgainstPythonChessOracle {
   @Test
   void pgnExportRoundTripAgainstPythonChessOracle() throws IOException {
     final @NonNull List<String> failures = new ArrayList<>();
-      int totalFixtures = 0;
+    int totalFixtures = 0;
 
     for (final PgnTest bucket : BUCKETS) {
       final Path jsonlPath = jsonlPathFor(bucket);

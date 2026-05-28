@@ -79,7 +79,7 @@ class UnwinnableSemiStatic {
         continue;
       }
 
-        boolean isUnblockable = false;
+      boolean isUnblockable = false;
       for (final Square escapingSquare : escapingSquareSet) {
         if (removeKings(visitors(Nulls.setOf(escapingSquare), c.getOppositeSide(), false, mobilitySolution))
             .isEmpty()) {

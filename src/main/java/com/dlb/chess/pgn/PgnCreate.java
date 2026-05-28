@@ -162,11 +162,11 @@ public class PgnCreate {
 
     final StringBuilder result = new StringBuilder();
 
-      int currentFullMoveNumber = fullMoveNumber;
+    int currentFullMoveNumber = fullMoveNumber;
     Side currentHavingMove = havingMove;
-      boolean isFirstMove = true;
+    boolean isFirstMove = true;
     // T-002 / PGN spec section 8.2.2 case 1: commentary on White's move forces "N..." before the next Black move.
-      boolean priorCommentaryAttached = false;
+    boolean priorCommentaryAttached = false;
     for (final PgnHalfMove halfMove : halfMoveList) {
 
       // Emit the move-number indicator in the three required cases: first half-move, before any White move, or

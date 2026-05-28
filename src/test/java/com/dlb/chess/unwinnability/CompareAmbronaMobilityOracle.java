@@ -41,8 +41,8 @@ public final class CompareAmbronaMobilityOracle {
 
   public static MobilityOracleComparison compare() throws Exception {
     final Map<String, List<String>> expectedByFen = readExpectedByFen();
-      int fenDifferenceCount = 0;
-      int rowDifferenceCount = 0;
+    int fenDifferenceCount = 0;
+    int rowDifferenceCount = 0;
     final List<String> differentFenList = new ArrayList<>();
     final List<String> printedDifferenceList = new ArrayList<>();
 
@@ -85,7 +85,7 @@ public final class CompareAmbronaMobilityOracle {
 
   private static int countDifferences(List<String> expectedRows, List<String> actualRows,
       List<String> printedDifferenceList) {
-      int differenceCount = 0;
+    int differenceCount = 0;
     final int maxSize = Math.max(expectedRows.size(), actualRows.size());
     for (int i = 0; i < maxSize; i++) {
       final String expectedRow = i < expectedRows.size() ? Nulls.get(expectedRows, i) : "<missing>";

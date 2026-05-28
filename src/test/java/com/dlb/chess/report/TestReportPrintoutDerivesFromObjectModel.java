@@ -150,7 +150,7 @@ class TestReportPrintoutDerivesFromObjectModel {
    */
   private static List<String> extractSection(List<String> lines, String sectionHeaderPrefix,
       String nextSectionHeaderPrefix) {
-      boolean inSection = false;
+    boolean inSection = false;
     final List<String> contents = new ArrayList<>();
     for (final String raw : lines) {
       final String line = raw.trim();
@@ -177,7 +177,7 @@ class TestReportPrintoutDerivesFromObjectModel {
    * header.
    */
   private static List<String> extractSectionToEnd(List<String> lines, String sectionHeaderPrefix) {
-      boolean inSection = false;
+    boolean inSection = false;
     final List<String> contents = new ArrayList<>();
     for (final String raw : lines) {
       final String line = raw.trim();

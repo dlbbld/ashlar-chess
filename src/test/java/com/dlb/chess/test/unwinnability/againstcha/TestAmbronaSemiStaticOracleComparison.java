@@ -22,7 +22,8 @@ class TestAmbronaSemiStaticOracleComparison {
     final int maxFens = RestrictTestConstants.IS_RESTRICT_AMBRONA_SEMISTATIC_ORACLE_COMPARISON_TEST
         ? MAX_FENS_IN_SMOKE_MODE
         : Integer.MAX_VALUE;
-    final CompareAmbronaSemiStaticOracle.SemiStaticOracleComparison comparison = CompareAmbronaSemiStaticOracle.compare(maxFens);
+    final CompareAmbronaSemiStaticOracle.SemiStaticOracleComparison comparison = CompareAmbronaSemiStaticOracle
+        .compare(maxFens);
 
     final int expectedFenCount = RestrictTestConstants.IS_RESTRICT_AMBRONA_SEMISTATIC_ORACLE_COMPARISON_TEST
         ? MAX_FENS_IN_SMOKE_MODE

@@ -94,7 +94,8 @@ public final class ChessRuleAnalyzer implements EnumConstants {
     final Piece movingPiece = bitboardPosition.get(fromSquare);
 
     final boolean isForwardMove = calculateIsPawnEmptyBoardMove(havingMove, fromSquare, toSquare);
-    final boolean isDiagonalMove = PawnDiagonalMoveUtility.calculateIsPawnDiagonalMove(havingMove, fromSquare, toSquare);
+    final boolean isDiagonalMove = PawnDiagonalMoveUtility.calculateIsPawnDiagonalMove(havingMove, fromSquare,
+        toSquare);
 
     if (!isForwardMove && !isDiagonalMove) {
       return MovementCheck.NOT_POSSIBLE;

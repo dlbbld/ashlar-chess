@@ -136,7 +136,7 @@ public class FenParserAdvanced implements EnumConstants {
           "it does not specify eight ranks");
     }
 
-      int rankNumber = 0;
+    int rankNumber = 0;
     for (final String rankDescription : rankDescriptionList) {
       rankNumber++;
       final Matcher matcherRank = PATTERN_RANK.matcher(rankDescription);
@@ -166,18 +166,18 @@ public class FenParserAdvanced implements EnumConstants {
     // file a..h. Convert to bitboard: square ordinal in little-endian rank-file order is rank*8 + file with
     // rank 0..7 (rank 1 = 0). For pieceList index i: rank-from-top = i / 8 (0 = rank 8), file = i % 8 (0 = a).
     // So square ordinal = (7 - i/8) * 8 + (i % 8) = (7 - i / 8) * 8 + i % 8.
-      long whitePawns = 0L;
-      long whiteRooks = 0L;
-      long whiteKnights = 0L;
-      long whiteBishops = 0L;
-      long whiteQueens = 0L;
-      long whiteKings = 0L;
-      long blackPawns = 0L;
-      long blackRooks = 0L;
-      long blackKnights = 0L;
-      long blackBishops = 0L;
-      long blackQueens = 0L;
-      long blackKings = 0L;
+    long whitePawns = 0L;
+    long whiteRooks = 0L;
+    long whiteKnights = 0L;
+    long whiteBishops = 0L;
+    long whiteQueens = 0L;
+    long whiteKings = 0L;
+    long blackPawns = 0L;
+    long blackRooks = 0L;
+    long blackKnights = 0L;
+    long blackBishops = 0L;
+    long blackQueens = 0L;
+    long blackKings = 0L;
     for (int i = 0; i < 64; i++) {
       final Piece piece = Nulls.get(pieceList, i);
       if (piece == Piece.NONE) {
@@ -237,7 +237,7 @@ public class FenParserAdvanced implements EnumConstants {
   private static List<String> validateEvaluatedLength(String rankDescription) throws FenAdvancedValidationException {
     final List<String> squareDescriptionList = new ArrayList<>();
 
-      int countEvaluatedLength = 0;
+    int countEvaluatedLength = 0;
 
     for (int i = 0; i < rankDescription.length(); i++) {
       final String currentChar = Nulls.substring(rankDescription, i, i + 1);

@@ -124,7 +124,8 @@ public abstract class FileUtility {
       if (!file.isFile()) {
         throw new IllegalArgumentException("\"" + filePath + "\" is not a file");
       }
-      try (BufferedWriter writer = Files.newBufferedWriter(filePath, StandardCharsets.UTF_8, StandardOpenOption.APPEND)) {
+      try (BufferedWriter writer = Files.newBufferedWriter(filePath, StandardCharsets.UTF_8,
+          StandardOpenOption.APPEND)) {
         for (final String line : lineList) {
           writer.write(line);
           writer.write("\n");

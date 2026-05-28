@@ -46,7 +46,7 @@ class TestBasicUtility {
     // check we hit all number from 0 to 10
     // with assumption it happens before Integer.MAX_VALUE
     for (int i = 0; i <= 10; i++) {
-        boolean isFound = false;
+      boolean isFound = false;
       for (int repeat = 1; repeat <= Integer.MAX_VALUE; repeat++) {
         final int generated = RandomUtility.calculateRandomNumber(0, 10);
         if (generated == i) {
@@ -65,7 +65,7 @@ class TestBasicUtility {
   }
 
   private static void checkIntervalException(int leftBoundInclusive, int rightBoundInclusive) {
-      boolean isException = false;
+    boolean isException = false;
     try {
       RandomUtility.calculateRandomNumber(leftBoundInclusive, rightBoundInclusive);
     } catch (@SuppressWarnings("unused") final IllegalArgumentException e) {

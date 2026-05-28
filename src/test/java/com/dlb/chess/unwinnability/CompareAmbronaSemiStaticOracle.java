@@ -56,9 +56,9 @@ public final class CompareAmbronaSemiStaticOracle {
    */
   public static SemiStaticOracleComparison compare(int maxFens) throws Exception {
     final Map<String, List<String>> expectedByFen = readExpectedByFen();
-      int fenDifferenceCount = 0;
-      int rowDifferenceCount = 0;
-      int comparedFenCount = 0;
+    int fenDifferenceCount = 0;
+    int rowDifferenceCount = 0;
+    int comparedFenCount = 0;
     final List<String> differentFenList = new ArrayList<>();
     final List<String> printedDifferenceList = new ArrayList<>();
     final Map<String, Integer> differenceCountByKind = new TreeMap<>();
@@ -108,7 +108,7 @@ public final class CompareAmbronaSemiStaticOracle {
 
   private static int countDifferences(List<String> expectedRows, List<String> actualRows,
       List<String> printedDifferenceList, Map<String, Integer> differenceCountByKind) {
-      int differenceCount = 0;
+    int differenceCount = 0;
     final int maxSize = Math.max(expectedRows.size(), actualRows.size());
     for (int i = 0; i < maxSize; i++) {
       final String expectedRow = i < expectedRows.size() ? Nulls.get(expectedRows, i) : "<missing>";

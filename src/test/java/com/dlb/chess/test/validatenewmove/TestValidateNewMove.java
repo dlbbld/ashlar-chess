@@ -9,9 +9,9 @@ import com.dlb.chess.common.model.MoveSpecification;
 import com.dlb.chess.enums.MoveCheck;
 
 /**
- * Surface-level smoke tests for {@code ValidateNewMove#validateNewMove}: one representative
- * scenario per public {@link MoveCheck} failure value, exercising the full pipeline (Board -> ValidateNewMove ->
- * InvalidMoveException -> MoveCheck).
+ * Surface-level smoke tests for {@code ValidateNewMove#validateNewMove}: one representative scenario per public
+ * {@link MoveCheck} failure value, exercising the full pipeline (Board -> ValidateNewMove -> InvalidMoveException ->
+ * MoveCheck).
  *
  * <p>
  * Comprehensive scenario coverage lives in {@code TestChessRuleAnalyzerScenarios} (analyzer-level tests).

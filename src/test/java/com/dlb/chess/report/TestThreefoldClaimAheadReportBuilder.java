@@ -85,7 +85,7 @@ class TestThreefoldClaimAheadReportBuilder {
     final ThreefoldClaimAheadReport report = ThreefoldClaimAheadReportBuilder.build(board);
     assertTrue(report.entries().size() >= 1, "fixture stops one ply before threefold; at least one claim-ahead");
 
-      boolean foundNonInitial = false;
+    boolean foundNonInitial = false;
     for (final ClaimAheadEntry entry : report.entries()) {
       if (!entry.includesInitialPosition()) {
         foundNonInitial = true;

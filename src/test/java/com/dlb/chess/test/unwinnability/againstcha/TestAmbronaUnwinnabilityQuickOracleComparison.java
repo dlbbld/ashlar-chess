@@ -105,8 +105,8 @@ class TestAmbronaUnwinnabilityQuickOracleComparison {
       if (itemArray.length != 6) {
         throw new ProgrammingMistakeException("Invalid quick unwinnability accepted-differences row: " + line);
       }
-      final AcceptedDifference difference = new AcceptedDifference(Nulls.get(itemArray, 0), Side.valueOf(Nulls.get(itemArray, 1)),
-          UnwinnabilityQuickVerdict.valueOf(Nulls.get(itemArray, 2)),
+      final AcceptedDifference difference = new AcceptedDifference(Nulls.get(itemArray, 0),
+          Side.valueOf(Nulls.get(itemArray, 1)), UnwinnabilityQuickVerdict.valueOf(Nulls.get(itemArray, 2)),
           UnwinnabilityQuickVerdict.valueOf(Nulls.get(itemArray, 3)), Nulls.get(itemArray, 4));
       if (!result.add(difference)) {
         throw new ProgrammingMistakeException("Duplicate quick unwinnability accepted-differences row: " + line);

@@ -41,9 +41,9 @@ public class UnwinnableFullAnalyzer {
 
     // add optimization from code
     // if position is advanced cannot use the provided mobility solution if any
-      boolean isCanUseMobilitySolution = true;
-      boolean isForcedMove = board.getLegalMoves().size() == 1;
-      int totalForcedMoves = 0;
+    boolean isCanUseMobilitySolution = true;
+    boolean isForcedMove = board.getLegalMoves().size() == 1;
+    int totalForcedMoves = 0;
     final List<UciMove> forcedMoveLine = new ArrayList<>();
     final Set<DynamicPosition> forcedPositionSet = new HashSet<>();
     while (isForcedMove && forcedPositionSet.add(board.getDynamicPosition())) {
@@ -72,7 +72,7 @@ public class UnwinnableFullAnalyzer {
     final FindHelpmateExhaust findHelpmate = new FindHelpmateExhaust(winner);
 
     // 2: for every d in N do ( -> Iterative deepening)
-      int globalNodeCount = 0;
+    int globalNodeCount = 0;
     for (int maxDepth = 2; maxDepth <= MAX_DEPTH; maxDepth++) {
       // 3: set bd Find-Helpmatec(pos, 0, maxDepth = d) (global nodesBound = bound(d))
 

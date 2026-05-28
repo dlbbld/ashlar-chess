@@ -39,7 +39,7 @@ class TestAmbronaUnwinnabilityFullOracleComparison {
   void chaPositionsExceptLichessHelpmatesMatchFullOracle() {
     final Set<AcceptedDifference> remainingAcceptedDifferenceSet = readAcceptedDifferenceSet();
     final List<String> failureList = new ArrayList<>();
-      int checkedPositionCount = 0;
+    int checkedPositionCount = 0;
 
     for (final PgnTest pgnTest : PgnTest.values()) {
       if (!AbstractCheckAgainstCha.isUseTestForCha(pgnTest)) {
@@ -95,8 +95,8 @@ class TestAmbronaUnwinnabilityFullOracleComparison {
       if (itemArray.length != 6) {
         throw new ProgrammingMistakeException("Invalid full unwinnability accepted-differences row: " + line);
       }
-      final AcceptedDifference difference = new AcceptedDifference(Nulls.get(itemArray, 0), Side.valueOf(Nulls.get(itemArray, 1)),
-          UnwinnabilityFullVerdict.valueOf(Nulls.get(itemArray, 2)),
+      final AcceptedDifference difference = new AcceptedDifference(Nulls.get(itemArray, 0),
+          Side.valueOf(Nulls.get(itemArray, 1)), UnwinnabilityFullVerdict.valueOf(Nulls.get(itemArray, 2)),
           UnwinnabilityFullVerdict.valueOf(Nulls.get(itemArray, 3)), Nulls.get(itemArray, 4));
       if (!result.add(difference)) {
         throw new ProgrammingMistakeException("Duplicate full unwinnability accepted-differences row: " + line);

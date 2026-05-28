@@ -43,7 +43,7 @@ class TestSetupPgnCorpusNotPlaysBeyondAudit {
         "Long-running corpus audit excluded by IS_EXCLUDE_LONG_RUNNING_PGN_CORPUS_NOT_PLAYS_BEYOND_AUDIT");
 
     final List<String> playsBeyondFiles = new ArrayList<>();
-      int totalFiles = 0;
+    int totalFiles = 0;
 
     for (final PgnTest pgnTest : PgnTest.values()) {
       final PgnTestCaseList testCaseList = PgnTestCaseCatalog.getTestList(pgnTest);
@@ -68,8 +68,9 @@ class TestSetupPgnCorpusNotPlaysBeyondAudit {
       return;
     }
 
-    final StringBuilder report = new StringBuilder().append("Corpus audit: ").append(playsBeyondFiles.size()).append(" of ")
-        .append(totalFiles).append(" PGN files cannot be fully replayed. They attempt a move past checkmate or ")
+    final StringBuilder report = new StringBuilder().append("Corpus audit: ").append(playsBeyondFiles.size())
+        .append(" of ").append(totalFiles)
+        .append(" PGN files cannot be fully replayed. They attempt a move past checkmate or ")
         .append("stalemate, where the legal-move set is empty. ")
         .append("Either the PGN file contains an extra move past the termination that should be removed, ")
         .append("or the parser / move-pipeline has a regression that needs investigation:\n");

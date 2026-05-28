@@ -27,7 +27,7 @@ abstract class PositionIdentifierUtility {
   public static Map<DynamicPosition, String> calculatePositionIdentifierMap(ThreefoldClaimAheadReport claimAhead,
       ThreefoldExistingReport existing) {
     final Map<DynamicPosition, String> result = new HashMap<>();
-      int positionNumber = 1;
+    int positionNumber = 1;
     for (final ClaimAheadEntry entry : claimAhead.entries()) {
       final DynamicPosition position = entry.claimAheadMove().dynamicPosition();
       if (!result.containsKey(position)) {
@@ -67,10 +67,10 @@ abstract class PositionIdentifierUtility {
   static List<Integer> calculateRepresentation(int number, int base) {
     final List<Integer> result = new ArrayList<>();
 
-      int workingNumber = number;
+    int workingNumber = number;
     double workingNumberToDoubleForDivision = workingNumber;
-      int multiplies = (int) Math.floor(workingNumberToDoubleForDivision / base);
-      int remainder = workingNumber % base;
+    int multiplies = (int) Math.floor(workingNumberToDoubleForDivision / base);
+    int remainder = workingNumber % base;
     result.add(remainder);
     while (multiplies > 0) {
       workingNumber = (workingNumber - remainder) / base;

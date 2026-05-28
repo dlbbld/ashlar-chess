@@ -98,7 +98,8 @@ class TestCastlingCheckMapper {
   void testTemporaryMappingMatchesExpectedOrder() {
     // The TEMPORARY entries in EXPECTED_KING_CASTLING_PROBLEMS start after the 5 FINAL entries.
     final int temporaryStartIndex = EXPECTED_FINAL_NO_RIGHT_PROVENANCES.size();
-    final ImmutableList<CastlingCheck> temporaryCastlingChecks = EXPECTED_CASTLING_CHECKS.subList(1, EXPECTED_CASTLING_CHECKS.size());
+    final ImmutableList<CastlingCheck> temporaryCastlingChecks = EXPECTED_CASTLING_CHECKS.subList(1,
+        EXPECTED_CASTLING_CHECKS.size());
     for (int i = 0; i < temporaryCastlingChecks.size(); i++) {
       assertEquals(Nulls.get(EXPECTED_KING_CASTLING_PROBLEMS, temporaryStartIndex + i),
           CastlingCheckMapper.map(Nulls.get(temporaryCastlingChecks, i), CastlingRightLoss.NOT_LOST),

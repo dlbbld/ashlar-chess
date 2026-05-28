@@ -70,15 +70,15 @@ class Mobility {
       mobility.put(piecePlacement, piecePlacement.squareOriginal(), VariableState.ONE);
     }
 
-      int whiteMovements = 0;
-      int blackMovements = 0;
-      Square whiteExtraKingSquare = calculateKingSquare(piecePlacementList, Side.WHITE);
-      Square blackExtraKingSquare = calculateKingSquare(piecePlacementList, Side.BLACK);
-      int round = 0;
-      boolean isNewVariablesAreSetToOne = true;
+    int whiteMovements = 0;
+    int blackMovements = 0;
+    Square whiteExtraKingSquare = calculateKingSquare(piecePlacementList, Side.WHITE);
+    Square blackExtraKingSquare = calculateKingSquare(piecePlacementList, Side.BLACK);
+    int round = 0;
+    boolean isNewVariablesAreSetToOne = true;
     while (isNewVariablesAreSetToOne) {
       round++;
-        boolean isFirstRoundCaptureDeferred = false;
+      boolean isFirstRoundCaptureDeferred = false;
       final int totalVariableCountSetToOneBefore = calculateTotalVariableCountSetToOne(mobility, clearability,
           reachability);
       // 3: for every variable V in X_arrow that is still set to 0 do
@@ -91,7 +91,7 @@ class Mobility {
       for (final PiecePlacement candidateClearability : clearability.calculateEntriesWithValueZero()) {
 
         // clearable by moving
-          boolean isClearabilityForMoving = false;
+        boolean isClearabilityForMoving = false;
         for (final Square evaluateToSquare : Square.REAL) {
           if (evaluateToSquare == candidateClearability.squareOriginal()) {
             continue;
@@ -137,7 +137,8 @@ class Mobility {
           if (mobility.get(candidatePiecePlacement, candidateToSquare) == VariableState.ONE) {
             continue;
           }
-          final MobilitySolutionVariable candidateMobility = new MobilitySolutionVariable(candidatePiecePlacement, candidateToSquare);
+          final MobilitySolutionVariable candidateMobility = new MobilitySolutionVariable(candidatePiecePlacement,
+              candidateToSquare);
           final PieceType candidatePieceType = candidatePiecePlacement.pieceType();
 
           if (candidatePieceType == PieceType.PAWN) {

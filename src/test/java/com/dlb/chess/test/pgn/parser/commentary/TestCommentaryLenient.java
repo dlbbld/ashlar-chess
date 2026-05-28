@@ -380,7 +380,7 @@ class TestCommentaryLenient {
   // -------------------------------------------------------------------------------------------------
 
   private static void expectError(String pgnText, LenientPgnParserValidationProblem expected) {
-      boolean isException = false;
+    boolean isException = false;
     try {
       LenientPgnParser.parseText(pgnText);
     } catch (final LenientPgnParserValidationException e) {

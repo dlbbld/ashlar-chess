@@ -26,7 +26,7 @@ class TestLibraryCarlosSuggestions {
     board.doMove(new Move("d2d4", Side.WHITE)); // ok pseudo LAN works
     board.undoMove();
 
-      boolean isException = false;
+    boolean isException = false;
     try {
       board.doMove(new Move("d4", Side.WHITE)); // throws exception
     } catch (@SuppressWarnings("unused") final Exception e) {
@@ -57,7 +57,7 @@ class TestLibraryCarlosSuggestions {
       final MoveList moveList = new MoveList();
       moveList.loadFromSan("1. d4 e6 2. Nc3 Bb4 3. Nf3 Nc6 4. Ng5 h6 5. Nge4");
 
-        boolean isException = false;
+      boolean isException = false;
       try {
         final Board board = new Board();
         for (final Move element : moveList) {
