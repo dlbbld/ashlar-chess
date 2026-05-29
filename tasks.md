@@ -133,7 +133,8 @@ where it is cheap (no consumers exist yet).
       -> clean; the only shipped resource is messages/messages.properties (runtime SAN-validation /
          report strings). No dev/test/env-specific files.
 - [x] Re-audit `src/main/java` for classes that should be package-private
-      -> 96/252 top-level types package-private after this pass. The 16 public bitboard types split into:
+      -> 96/252 top-level types package-private after this pass. The original 16 bitboard types now split into
+         (15 remain public; ZobristKeys was tightened):
          (a) 4 genuine cross-package production API (BitboardPosition, BitboardPositionUtility,
          BitboardLegalMoveFactory, KingAttacks) - must stay public, no JPMS; (b) 11 generators
          (non-king *Attacks + *Moves) public so corpus-walk differential tests in test.bitboard can call
