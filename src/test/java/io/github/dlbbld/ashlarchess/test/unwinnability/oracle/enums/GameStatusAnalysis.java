@@ -1,0 +1,17 @@
+// Copyright (C) 2020-2026 Daniel Baechli
+// SPDX-License-Identifier: GPL-3.0-only
+
+package io.github.dlbbld.ashlarchess.test.unwinnability.oracle.enums;
+
+public enum GameStatusAnalysis {
+
+  WHITE_DELIVERS_CHECKMATE,
+  BLACK_DELIVERS_CHECKMATE,
+  STALEMATE,
+  DEAD_POSITION_INSUFFICIENT_MATERIAL,
+  FIVE_FOLD_REPETITION_RULE,
+  SEVENTY_FIVE_MOVE_RULE,
+  INSUFFICIENT_MATERIAL_WHITE_ONLY,
+  INSUFFICIENT_MATERIAL_BLACK_ONLY,
+  OTHER
+}

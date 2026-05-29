@@ -1,0 +1,83 @@
+// Copyright (C) 2020-2026 Daniel Baechli
+// SPDX-License-Identifier: GPL-3.0-only
+
+package io.github.dlbbld.ashlarchess.test.pgn.parser.beyond;
+
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
+import java.nio.file.Path;
+
+import org.junit.jupiter.api.Test;
+
+import io.github.dlbbld.ashlarchess.common.Nulls;
+import io.github.dlbbld.ashlarchess.pgn.LenientPgnParser;
+import io.github.dlbbld.ashlarchess.pgn.LenientPgnParserValidationException;
+import io.github.dlbbld.ashlarchess.test.ConfigurationTestConstants;
+
+/**
+ * Verifies the lenient PGN parser's behavior on fixtures that play past an automatic termination.
+ *
+ * <p>
+ * After the A1 ungating, no game-end gate fires at the move pipeline or SAN layer. The behavioral split per termination
+ * kind is:
+ *
+ * <ul>
+ * <li>Checkmate / stalemate fixtures (01-04) - still rejected, but through ordinary legality: the move attempted past
+ * the mating / stalemating ply cannot match any legal move (the legal-move set is empty), so the lenient parser raises
+ * {@link LenientPgnParserValidationException}. The specific failure reason depends on the attempted move and is
+ * intentionally not pinned.
+ * <li>Insufficient-material fixtures (05-06) - now accepted: mutual insufficient material is queryable only and the
+ * legal-move set is non-empty, so the moves played past the dead position validate normally and the parser succeeds.
+ * </ul>
+ */
+class TestLenientPgnParserBeyondTermination {
+
+  private static final Path BEYOND_FOLDER = Nulls.pathResolve(ConfigurationTestConstants.PROJECT_ROOT_FOLDER_PATH,
+      "src/test/resources/pgnParser/common/beyond");
+
+  @SuppressWarnings("static-method")
+  @Test
+  void test01PlayBeyondCheckmateWithWhiteMove() {
+    assertRejectedNotViaGameEnded("01_play_beyond_checkmate_with_white_move.pgn");
+  }
+
+  @SuppressWarnings("static-method")
+  @Test
+  void test02PlayBeyondCheckmateWithBlackMove() {
+    assertRejectedNotViaGameEnded("02_play_beyond_checkmate_with_black_move.pgn");
+  }
+
+  @SuppressWarnings("static-method")
+  @Test
+  void test03PlayBeyondStalemateWithWhiteMove() {
+    assertRejectedNotViaGameEnded("03_play_beyond_stalemate_with_white_move.pgn");
+  }
+
+  @SuppressWarnings("static-method")
+  @Test
+  void test04PlayBeyondStalemateWithBlackMove() {
+    assertRejectedNotViaGameEnded("04_play_beyond_stalemate_with_black_move.pgn");
+  }
+
+  @SuppressWarnings("static-method")
+  @Test
+  void test05PlayBeyondInsufficientMaterialWithWhiteMove() {
+    assertAccepted("05_play_beyond_insufficient_material_with_white_move.pgn");
+  }
+
+  @SuppressWarnings("static-method")
+  @Test
+  void test06PlayBeyondInsufficientMaterialWithBlackMove() {
+    assertAccepted("06_play_beyond_insufficient_material_with_black_move.pgn");
+  }
+
+  private static void assertRejectedNotViaGameEnded(String pgnName) {
+    assertThrows(LenientPgnParserValidationException.class, () -> LenientPgnParser.parse(BEYOND_FOLDER, pgnName));
+  }
+
+  private static void assertAccepted(String pgnName) {
+    assertDoesNotThrow(() -> LenientPgnParser.parse(BEYOND_FOLDER, pgnName),
+        "insufficient material is queryable only; the parser must replay the full game");
+  }
+}

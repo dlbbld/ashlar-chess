@@ -1,12 +1,12 @@
-# clean-chess — Specification
+# ashlar-chess — Specification
 
-The **technical specification** for clean-chess: design goals, architecture, philosophy, and the rule-level decisions that make the library what it is. Meant for someone (including future-self) who needs to understand *why* the library is shaped the way it is. User-facing documentation lives in `README.md`.
+The **technical specification** for ashlar-chess: design goals, architecture, philosophy, and the rule-level decisions that make the library what it is. Meant for someone (including future-self) who needs to understand *why* the library is shaped the way it is. User-facing documentation lives in `README.md`.
 
 ---
 
 ## 1. Purpose & non-goals
 
-clean-chess is a Java chess library focused on **rule correctness and reproducibility**. Its flagship feature is a Java port of Miguel Ambrona's [Chess Unwinnability Analyzer (CHA)](https://github.com/miguel-ambrona/D3-Chess), to the author's knowledge the only published algorithm that decides unwinnability and dead-position questions correctly across all positions.
+ashlar-chess is a Java chess library focused on **rule correctness and reproducibility**. Its flagship feature is a Java port of Miguel Ambrona's [Chess Unwinnability Analyzer (CHA)](https://github.com/miguel-ambrona/D3-Chess), to the author's knowledge the only published algorithm that decides unwinnability and dead-position questions correctly across all positions.
 
 The library is **not**:
 
@@ -22,11 +22,11 @@ In spirit it is a **proof-of-concept**: that the FIDE Laws of Chess can be imple
 
 ### 2.1 Clarity and reproducibility over clever optimisation
 
-Other Java chess libraries are correct too — clean-chess does not claim a correctness advantage over them. What differs is **implementation style**: the project deliberately prefers straightforward, reproducible code paths over complex optimisations that buy speed at the cost of being expert-only to read or audit.
+Other Java chess libraries are correct too — ashlar-chess does not claim a correctness advantage over them. What differs is **implementation style**: the project deliberately prefers straightforward, reproducible code paths over complex optimisations that buy speed at the cost of being expert-only to read or audit.
 
 Two concrete examples:
 
-- **Move history stores derived facts directly.** Whether a move was a two-square pawn advance or an en passant capture is recorded in the move history rather than recomputed from the position when needed. Engines like Stockfish compute these on demand because the savings matter at engine speeds. clean-chess stores them because the resulting code is shorter, more obviously correct, and easier to maintain.
+- **Move history stores derived facts directly.** Whether a move was a two-square pawn advance or an en passant capture is recorded in the move history rather than recomputed from the position when needed. Engines like Stockfish compute these on demand because the savings matter at engine speeds. ashlar-chess stores them because the resulting code is shorter, more obviously correct, and easier to maintain.
 - **Position repetition uses direct position equality, not Zobrist hashing.** Zobrist hashing is the standard fast technique and works correctly when implemented carefully — but it is empirically a frequent source of subtle bugs (this author helped fix a Zobrist bug in another open-source chess library before this rule was adopted here). Direct equality is slower, but harder to get wrong.
 
 These choices cost performance and pay clarity. Most position-level questions still resolve in microseconds and full unwinnability searches in seconds. Where the FIDE Laws are ambiguous, the library follows the most rule-faithful reading.
@@ -93,7 +93,7 @@ For the claimable rules, the library exposes three predicate shapes per rule:
 
 The per-move shape is the FIDE-faithful API. FIDE 9.2 and 9.3 frame the claim as a per-move act: the player announces the move they intend to play and claims the draw on that announcement; the move is not played beyond the announcement. The on-board and with-move existence shapes are convenience derivations — yes/no answers about the current position or its legal-move set, without requiring the caller to name a candidate.
 
-clean-chess inherited the on-board and existence shapes from the python-chess reference oracle, which exposes those two but not a per-move predicate (`board.can_claim_fifty_moves()` takes no move parameter). The per-move shape was added in clean-chess release 16.0.0 to close the gap. python-chess's collapsed shape was also the cause of the candidate-move-is-mate edge that clean-chess took the strict FIDE 9.3 reading on in 15.0.0; the per-move predicate makes the corner case visible at the API surface rather than buried inside an existence check. Cross-library context tracked upstream at [niklasf/python-chess#1188](https://github.com/niklasf/python-chess/issues/1188).
+ashlar-chess inherited the on-board and existence shapes from the python-chess reference oracle, which exposes those two but not a per-move predicate (`board.can_claim_fifty_moves()` takes no move parameter). The per-move shape was added in ashlar-chess release 16.0.0 to close the gap. python-chess's collapsed shape was also the cause of the candidate-move-is-mate edge that ashlar-chess took the strict FIDE 9.3 reading on in 15.0.0; the per-move predicate makes the corner case visible at the API surface rather than buried inside an existence check. Cross-library context tracked upstream at [niklasf/python-chess#1188](https://github.com/niklasf/python-chess/issues/1188).
 
 The library produces analysis output that names which moves *would* satisfy the claim — surfacing missed claim opportunities that other libraries do not. The claim-ahead report's per-move entries are computed via the per-move predicate, so the report and the API share a single source of truth.
 
@@ -103,7 +103,7 @@ Position equality follows the FIDE definition: same piece placement, same side t
 
 The library's **flagship feature**. A position is *unwinnable for a side* if that side has no theoretical mating sequence assuming worst-case play by the opponent. A *dead position* is one unwinnable for both sides. Insufficient material covers the trivial cases; positions like blocked pawn walls, certain wrong-bishop endgames, and many forced-only-moves continuations are dead but not insufficient — and most chess libraries get them wrong.
 
-Miguel Ambrona's CHA is, to the author's knowledge, the only published algorithm that decides these cases correctly across the full range of positions. clean-chess implements it in Java, in two variants:
+Miguel Ambrona's CHA is, to the author's knowledge, the only published algorithm that decides these cases correctly across the full range of positions. ashlar-chess implements it in Java, in two variants:
 
 - **Quick** — microsecond-scale, structural, three-valued: `WINNABLE`, `UNWINNABLE`, `POSSIBLY_WINNABLE`. The third value is a deliberate honesty signal.
 - **Full** — deep search, three-valued: `WINNABLE`, `UNWINNABLE`, `UNDETERMINED`. The undetermined case is bounded by a 500 000-position limit; most positions resolve well below that.
@@ -130,7 +130,7 @@ The lenient SAN pipeline (`LenientSanParser`, reached via `Board.moveLenient(Str
 
 **Principle: canonical-first.** A string that already parses as canonical SAN never receives a different meaning under lenient — strict is tried first; only on rejection does the lenient layer engage. So `bxc6` always means pawn capture from the b-file, even if a bishop on the b-file could also capture on c6.
 
-**Taxonomy — 21 codes** (`com.dlb.chess.san.enums.LenientSanValidationProblem`):
+**Taxonomy — 21 codes** (`io.github.dlbbld.ashlarchess.san.enums.LenientSanValidationProblem`):
 
 | Category | Code | Example |
 |---|---|---|
@@ -214,13 +214,13 @@ FEN handling sits on two orthogonal axes — *strict vs lenient* (syntactic axis
 
 **`LenientPgnParser` routes the FEN tag through `LenientFenParser`.** Lenient PGN parsing accepts a deficient FEN tag (e.g. a "speculative-fullMoveNumber" position) for symmetry with movetext leniency; the FEN-level forgiveness is applied silently at the PGN-parser level. Strict PGN parsing reads the FEN tag through strict advanced parsing — a strict-parseable PGN must carry a strict-parseable FEN.
 
-**What is intentionally *not* a strict invariant.** A test-only class historically guarded a second rule alongside the half-move-clock-vs-full-move-number consistency: `fullMoveNumber == 1` had to mean the initial position (or, for black-to-move, one of the 20 after-first-half-move positions). That rule was dropped entirely when the consistency check was promoted into `FenParserAdvanced` — many real-world FEN exporters emit `fullMoveNumber = 1` as a placeholder for positions whose actual move number is unknown (chess.com / Lichess "speculative from last capture" exports, ChessBase legacy snapshots), and rejecting them at the strict level would be hostile to the libraries clean-chess interoperates with. The half-move-clock consistency check absorbs the only physically-impossible half of the historic rule; the placeholder-fullMoveNumber half is accepted at both strict and lenient levels.
+**What is intentionally *not* a strict invariant.** A test-only class historically guarded a second rule alongside the half-move-clock-vs-full-move-number consistency: `fullMoveNumber == 1` had to mean the initial position (or, for black-to-move, one of the 20 after-first-half-move positions). That rule was dropped entirely when the consistency check was promoted into `FenParserAdvanced` — many real-world FEN exporters emit `fullMoveNumber = 1` as a placeholder for positions whose actual move number is unknown (chess.com / Lichess "speculative from last capture" exports, ChessBase legacy snapshots), and rejecting them at the strict level would be hostile to the libraries ashlar-chess interoperates with. The half-move-clock consistency check absorbs the only physically-impossible half of the historic rule; the placeholder-fullMoveNumber half is accepted at both strict and lenient levels.
 
 ---
 
 ## 4. Architecture
 
-The top-level package `com.dlb.chess` is organised by concern:
+The top-level package `io.github.dlbbld.ashlarchess` is organised by concern:
 
 | Package | Responsibility |
 |---|---|
@@ -252,15 +252,15 @@ Packages depend in roughly that order (top to bottom).
 
 Piece placement has two independent representations in the codebase, by design.
 
-**`BitboardPosition`** (in `src/main/java/com/dlb/chess/bitboard/`) is the single piece-placement representation that production code sees. It is a 12-long record — one `long` per piece-and-side bitboard, little-endian rank-file with A1 at bit 0 — exposing move generation, attack queries, immutable make-move (`afterMove`), and a piece-only Zobrist hash. Everything in `src/main/` that needs to ask a question about pieces on squares asks `BitboardPosition`.
+**`BitboardPosition`** (in `src/main/java/io/github/dlbbld/ashlarchess/bitboard/`) is the single piece-placement representation that production code sees. It is a 12-long record — one `long` per piece-and-side bitboard, little-endian rank-file with A1 at bit 0 — exposing move generation, attack queries, immutable make-move (`afterMove`), and a piece-only Zobrist hash. Everything in `src/main/` that needs to ask a question about pieces on squares asks `BitboardPosition`.
 
-**`StaticPosition`** (in `src/test/java/com/dlb/chess/board/`) is the 64-square mailbox reference implementation, accumulated over years of correctness-first work. It does not live in `src/main/` anymore — it was relocated, not deleted — and exists in `src/test/` strictly to act as the **permanent differential-test oracle** for the bitboard backend. Its consumer subtree relocated with it (`StaticPositionUtility`; `com.dlb.chess.squares.{Abstract,Bishop,Rook,Queen,Knight,King,Pawn}{AttackedSquares,PotentialToSquares,RangeSquares}`; `com.dlb.chess.moves.{Abstract,Bishop,Rook,Queen,Knight,King,Pawn}LegalMoves`; `UnwinnabilityMaterial`). The bridge methods `StaticPositionBridge.fromStaticPosition` / `toStaticPosition` (also in `src/test/java/com/dlb/chess/bitboard/`) round-trip between the two on the test side only.
+**`StaticPosition`** (in `src/test/java/io/github/dlbbld/ashlarchess/board/`) is the 64-square mailbox reference implementation, accumulated over years of correctness-first work. It does not live in `src/main/` anymore — it was relocated, not deleted — and exists in `src/test/` strictly to act as the **permanent differential-test oracle** for the bitboard backend. Its consumer subtree relocated with it (`StaticPositionUtility`; `io.github.dlbbld.ashlarchess.squares.{Abstract,Bishop,Rook,Queen,Knight,King,Pawn}{AttackedSquares,PotentialToSquares,RangeSquares}`; `io.github.dlbbld.ashlarchess.moves.{Abstract,Bishop,Rook,Queen,Knight,King,Pawn}LegalMoves`; `UnwinnabilityMaterial`). The bridge methods `StaticPositionBridge.fromStaticPosition` / `toStaticPosition` (also in `src/test/java/io/github/dlbbld/ashlarchess/bitboard/`) round-trip between the two on the test side only.
 
 The contract is **permanent project policy**, not transitional:
 
-- Every primitive on `BitboardPosition` is asserted against the relocated `StaticPosition` oracle across the full PGN/FEN corpus — every fixture × every legal move — on every release going forward. The corpus walks live in `src/test/java/com/dlb/chess/test/bitboard/` (`TestBitboardPositionAfterMove`, `TestBitboardPositionAttackedSquares`, `TestBitboardPositionLegalMoves`, `TestBitboardPositionZobrist`, etc.) and use `StaticPositionUtility.createPositionAfterMove` as the independent oracle.
+- Every primitive on `BitboardPosition` is asserted against the relocated `StaticPosition` oracle across the full PGN/FEN corpus — every fixture × every legal move — on every release going forward. The corpus walks live in `src/test/java/io/github/dlbbld/ashlarchess/test/bitboard/` (`TestBitboardPositionAfterMove`, `TestBitboardPositionAttackedSquares`, `TestBitboardPositionLegalMoves`, `TestBitboardPositionZobrist`, etc.) and use `StaticPositionUtility.createPositionAfterMove` as the independent oracle.
 - `StaticPosition` and its consumer subtree are never deleted. A future bitboard optimisation (incremental Zobrist, magic bitboards, mutable make/unmake for the lean analyzer board) cannot land without the oracle keeping it honest.
-- The boundary is one-way: nothing in `src/main/` may import from `com.dlb.chess.board.StaticPosition` or any relocated consumer. Doc comments may cross-reference; code may not.
+- The boundary is one-way: nothing in `src/main/` may import from `io.github.dlbbld.ashlarchess.board.StaticPosition` or any relocated consumer. Doc comments may cross-reference; code may not.
 
 This is the project invariant in §2.1's "clarity over clever optimisation" — applied to representation. The bitboard exists for the production code path; the mailbox stays as the readable, audit-friendly second opinion that the bitboard is forever measured against.
 
@@ -277,7 +277,7 @@ The PGN specification's strict export format implies that brace commentary shoul
 - The export format itself is explicitly noted in the spec as **not fully defined**.
 - The strict prohibition on non-printing characters in the spec applies to **string tokens** (tag values), not to brace commentary content. The commentary case is silent.
 
-clean-chess takes the more permissive (and more useful) reading: **`\t` and `\n` inside `{...}` commentary are content**, preserved verbatim through `parse → export → parse`. The rationale is round-trip fidelity for real-world PGN, where comments often carry multi-line annotation. This matches python-chess.
+ashlar-chess takes the more permissive (and more useful) reading: **`\t` and `\n` inside `{...}` commentary are content**, preserved verbatim through `parse → export → parse`. The rationale is round-trip fidelity for real-world PGN, where comments often carry multi-line annotation. This matches python-chess.
 
 The library still rejects malformed Unicode (lone surrogates, unassigned code points) and other control characters; the deviation is specifically about tab and LF. CR / CRLF are normalised to LF on input, so the model never carries CR directly.
 
@@ -285,7 +285,7 @@ The library still rejects malformed Unicode (lone surrogates, unassigned code po
 
 The PGN specification defines brace commentary attached to half-moves but **does not formally specify a "pre-game" commentary slot** — commentary that appears between the tag pair section and the first move. python-chess exposes this as `Game.comment`; Lichess supports it on import.
 
-clean-chess follows the same convention: `PgnGame.pregameCommentary()` carries any `{...}` content found before the first half-move, validated under the same commentary contract as move-attached commentary. This is an additive extension rather than a contradiction — a PGN that uses pre-game commentary remains well-formed for any reader that ignores it.
+ashlar-chess follows the same convention: `PgnGame.pregameCommentary()` carries any `{...}` content found before the first half-move, validated under the same commentary contract as move-attached commentary. This is an additive extension rather than a contradiction — a PGN that uses pre-game commentary remains well-formed for any reader that ignores it.
 
 ### 5.3 Conformance for everything else
 
@@ -295,7 +295,7 @@ The rest of the library's PGN handling follows the specification: brace-grammar 
 
 ## 6. Testing strategy
 
-clean-chess relies on a large regression test suite:
+ashlar-chess relies on a large regression test suite:
 
 - **Broad coverage by code area** — every package has dedicated tests; rule-level decisions have multi-fixture parameterised tests.
 - **Edge-case fixtures** — positions and games chosen to stress the rule engine: 75-move-rule games, fivefold-repetition games, dead positions, near-misses, long forced sequences.
@@ -312,7 +312,7 @@ A specific testing pattern, called out because it is permanent project policy (s
 - Compute the reference answer from `StaticPosition` / `StaticPositionUtility` independently.
 - Assert the two agree exactly. For `afterMove`, walk both forward over every legal move in every fixture position. For `zobristPieces()`, also assert that distinct corpus positions hash distinctly (no collisions observed) and that any legal move changes the hash.
 
-The corpus-walking tests live in `src/test/java/com/dlb/chess/test/bitboard/`. A new primitive on `BitboardPosition` is not considered complete until its corpus walk lands alongside it.
+The corpus-walking tests live in `src/test/java/io/github/dlbbld/ashlarchess/test/bitboard/`. A new primitive on `BitboardPosition` is not considered complete until its corpus walk lands alongside it.
 
 ### 6.2 Restricted vs full suite
 
@@ -324,6 +324,6 @@ The full suite is a Maven profile:
 mvn test -Pfull -Dtest.excludes=
 ```
 
-`-Pfull` sets the `clean-chess.full` system property, which flips every gate inside `RestrictTestConstants` and switches `PgnTestInclusion` to `ALL` (including the longest-possible-game corpus). `-Dtest.excludes=` clears the default unwinnability-suite exclusion.
+`-Pfull` sets the `ashlar-chess.full` system property, which flips every gate inside `RestrictTestConstants` and switches `PgnTestInclusion` to `ALL` (including the longest-possible-game corpus). `-Dtest.excludes=` clears the default unwinnability-suite exclusion.
 
 **Release-time requirement:** before tagging a release, run `mvn test -Pfull -Dtest.excludes=` and confirm green. The default suite is *not* sufficient to certify a release.

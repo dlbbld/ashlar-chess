@@ -1,2 +1,4 @@
 /bin/
 /target/
+# flatten-maven-plugin output (release profile); regenerated, never committed
+/.flattened-pom.xml

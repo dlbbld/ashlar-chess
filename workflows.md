@@ -6,11 +6,11 @@ Concrete how-tos for recurring tasks. See [CONTRIBUTING.md](CONTRIBUTING.md) for
 
 ## Adding a new PGN test fixture
 
-The test corpus lives under `src/test/resources/pgn/<category>/`. Every PGN on disk must have a corresponding entry in [`PgnTestCaseCatalog`](src/test/java/com/dlb/chess/test/pgn/setup/PgnTestCaseCatalog.java) — the [`TestSetupPgnRegistration`](src/test/java/com/dlb/chess/test/pgn/setup/TestSetupPgnRegistration.java) test asserts the two stay in sync. Adding a fixture is therefore a three-step procedure: place the file, generate the catalog entry, paste it in.
+The test corpus lives under `src/test/resources/pgn/<category>/`. Every PGN on disk must have a corresponding entry in [`PgnTestCaseCatalog`](src/test/java/io/github/dlbbld/ashlarchess/test/pgn/setup/PgnTestCaseCatalog.java) — the [`TestSetupPgnRegistration`](src/test/java/io/github/dlbbld/ashlarchess/test/pgn/setup/TestSetupPgnRegistration.java) test asserts the two stay in sync. Adding a fixture is therefore a three-step procedure: place the file, generate the catalog entry, paste it in.
 
 ### 1. Place the PGN file
 
-Pick the right `<category>` folder. The taxonomy is documented by the [`PgnTest`](src/test/java/com/dlb/chess/test/pgntest/enums/PgnTest.java) enum — each entry maps a logical category to a folder under `src/test/resources/pgn/`. Common buckets:
+Pick the right `<category>` folder. The taxonomy is documented by the [`PgnTest`](src/test/java/io/github/dlbbld/ashlarchess/test/pgntest/enums/PgnTest.java) enum — each entry maps a logical category to a folder under `src/test/resources/pgn/`. Common buckets:
 
 - `basic/<feature>/` — focused unit fixtures per rule feature (checkmate, fivefold, intervening, etc.)
 - `realGames/<category>/` — real-game PGNs
@@ -23,10 +23,10 @@ If no existing category fits, add one — see [_Adding a new corpus category_](#
 
 ### 2. Generate the catalog entry
 
-Two helpers under [`src/test/java/com/dlb/chess/test/generate/`](src/test/java/com/dlb/chess/test/generate/):
+Two helpers under [`src/test/java/io/github/dlbbld/ashlarchess/test/generate/`](src/test/java/io/github/dlbbld/ashlarchess/test/generate/):
 
-- [`GenerateTestCaseForPgn`](src/test/java/com/dlb/chess/test/generate/GenerateTestCaseForPgn.java) — emit the catalog line for a single PGN file. Set the file-name constant in the class, run `main`.
-- [`GenerateTestCaseForPgnFolder`](src/test/java/com/dlb/chess/test/generate/GenerateTestCaseForPgnFolder.java) — emit catalog lines for every PGN in a folder. Set the `PGN_FOLDER_PATH` to the target `PgnTest` enum value, run `main`.
+- [`GenerateTestCaseForPgn`](src/test/java/io/github/dlbbld/ashlarchess/test/generate/GenerateTestCaseForPgn.java) — emit the catalog line for a single PGN file. Set the file-name constant in the class, run `main`.
+- [`GenerateTestCaseForPgnFolder`](src/test/java/io/github/dlbbld/ashlarchess/test/generate/GenerateTestCaseForPgnFolder.java) — emit catalog lines for every PGN in a folder. Set the `PGN_FOLDER_PATH` to the target `PgnTest` enum value, run `main`.
 
 Both emit lines of the shape:
 
@@ -37,12 +37,12 @@ list.add(new PgnFen("file.pgn", "endPositionFen"));
 Run from Eclipse (Run As → Java Application) or from the command line:
 
 ```
-mvn -q exec:java -Dexec.mainClass=com.dlb.chess.test.generate.GenerateTestCaseForPgn -Dexec.classpathScope=test
+mvn -q exec:java -Dexec.mainClass=io.github.dlbbld.ashlarchess.test.generate.GenerateTestCaseForPgn -Dexec.classpathScope=test
 ```
 
 ### 3. Paste the entry into PgnTestCaseCatalog
 
-Find the `createTestCases<Category>` function matching the target `PgnTest` enum value in [`PgnTestCaseCatalog.java`](src/test/java/com/dlb/chess/test/pgn/setup/PgnTestCaseCatalog.java). Append the generated `list.add(...)` line in the natural sort order of the existing entries.
+Find the `createTestCases<Category>` function matching the target `PgnTest` enum value in [`PgnTestCaseCatalog.java`](src/test/java/io/github/dlbbld/ashlarchess/test/pgn/setup/PgnTestCaseCatalog.java). Append the generated `list.add(...)` line in the natural sort order of the existing entries.
 
 Run `mvn test -Dtest=TestSetupPgnRegistration` to confirm the corpus-vs-registry diff is now empty.
 
@@ -50,7 +50,7 @@ Run `mvn test -Dtest=TestSetupPgnRegistration` to confirm the corpus-vs-registry
 
 If the target folder doesn't yet exist in `PgnTest`:
 
-1. Add a new enum entry to [`PgnTest.java`](src/test/java/com/dlb/chess/test/pgntest/enums/PgnTest.java) — `MY_NEW_CATEGORY(false, "path/under/pgn")`. The first argument (`isBasicTest`) is `true` only for the per-feature unit buckets under `basic/`.
+1. Add a new enum entry to [`PgnTest.java`](src/test/java/io/github/dlbbld/ashlarchess/test/pgntest/enums/PgnTest.java) — `MY_NEW_CATEGORY(false, "path/under/pgn")`. The first argument (`isBasicTest`) is `true` only for the per-feature unit buckets under `basic/`.
 2. Add a `case MY_NEW_CATEGORY -> createTestCasesMyNewCategory();` line to the `switch` in `PgnTestCaseCatalog.calculateTestCaseList`. The `default` branch throws, so the `case` must be present before the test sources will compile.
 3. Add a `createTestCasesMyNewCategory()` function returning `new PgnTestCaseList(PgnTest.MY_NEW_CATEGORY, list)`. Use `GenerateTestCaseForPgnFolder` to populate `list`.
 
@@ -62,14 +62,14 @@ The default `mvn test` runs the fast subset — most of the corpus, but with the
 
 | Command | Scope |
 | --- | --- |
-| `mvn test` | Default: most of the corpus, long-running audits gated off, `com.dlb.chess.test.unwinnability` excluded |
-| `mvn test -Pfull` | Full regression suite. Sets `clean-chess.full=true`, which flips the [`RestrictTestConstants.IS_FULL`](src/test/java/com/dlb/chess/test/RestrictTestConstants.java) flag and re-enables the long-running audits. **Precondition for tagging a release.** |
+| `mvn test` | Default: most of the corpus, long-running audits gated off, `io.github.dlbbld.ashlarchess.test.unwinnability` excluded |
+| `mvn test -Pfull` | Full regression suite. Sets `ashlar-chess.full=true`, which flips the [`RestrictTestConstants.IS_FULL`](src/test/java/io/github/dlbbld/ashlarchess/test/RestrictTestConstants.java) flag and re-enables the long-running audits. **Precondition for tagging a release.** |
 | `mvn test -Dtest=TestClassName` | Single test class |
 | `mvn test -Dtest=TestClassName#methodName` | Single test method |
 | `mvn test -Dtest.excludes=` | Override the default exclusion (re-enable the unwinnability suite) |
 | `mvn test -Pfull -Dtest.excludes=` | True full-suite run — full profile *plus* the unwinnability suite |
 
-The long-running gates currently live in [`RestrictTestConstants`](src/test/java/com/dlb/chess/test/RestrictTestConstants.java) as `IS_EXCLUDE_LONG_RUNNING_*` constants. Each is driven by `!IS_FULL`, so flipping the `full` profile is the standard way to enable them.
+The long-running gates currently live in [`RestrictTestConstants`](src/test/java/io/github/dlbbld/ashlarchess/test/RestrictTestConstants.java) as `IS_EXCLUDE_LONG_RUNNING_*` constants. Each is driven by `!IS_FULL`, so flipping the `full` profile is the standard way to enable them.
 
 ### Running cross-validation oracles
 
@@ -84,8 +84,9 @@ Release tags follow strict semver and match the `<version>` in `pom.xml`. The re
 ### 1. Pre-flight
 
 - Active branch is on the release-candidate state (worktree is clean; everything intended for the release is merged or committed).
+- Java license headers exact: `.\tools\java-license-headers.ps1 -Check`. Use `-Fix` before committing if the check reports drift.
 - `mvn test -Pfull` green from a clean checkout. **Required.**
-- JavaDoc gates green. **Required.** Both goals must run with `-Dshow=private` — many main classes (the `com.dlb.chess.report` records, package-private helpers) and all test classes are package-private, and at javadoc's default `protected` visibility doclint silently skips them, so stale `@link` / malformed HTML go uncaught:
+- JavaDoc gates green. **Required.** Both goals must run with `-Dshow=private` — many main classes (the `io.github.dlbbld.ashlarchess.report` records, package-private helpers) and all test classes are package-private, and at javadoc's default `protected` visibility doclint silently skips them, so stale `@link` / malformed HTML go uncaught:
   - `mvn javadoc:javadoc -Dshow=private` — all main docs.
   - `mvn javadoc:test-javadoc -Dshow=private` — all test docs.
   - (`mvn javadoc:jar` stays at default visibility — it ships only the public API.)
@@ -96,7 +97,7 @@ Release tags follow strict semver and match the `<version>` in `pom.xml`. The re
 Update the version string in three places (single change, no version drift):
 
 - [`pom.xml`](pom.xml) line 9 — `<version>X.Y.Z</version>`
-- [`README.md`](README.md) — both the Maven `<version>` snippet and the Gradle `implementation '...:clean-chess:X.Y.Z'` snippet
+- [`README.md`](README.md) — both the Maven `<version>` snippet and the Gradle `implementation '...:ashlar-chess:X.Y.Z'` snippet
 
 Add the `CHANGELOG.md` entry above `[Unreleased]`, following the established format:
 
@@ -131,9 +132,34 @@ git push origin X.Y.Z
 
 The tag is unannotated (matches the convention of prior tags) — no signing required by repo policy.
 
-### 4. Post-release
+### 4. Publish to Maven Central
 
-If publishing to a registry (JitPack picks up tags automatically; Maven Central is the future destination), verify the artifact resolves at the published coordinates before announcing.
+Distribution is the Sonatype Central Portal via `central-publishing-maven-plugin`, wired into the `release` profile alongside GPG signing and the sources / javadoc jars. `mvn -Prelease deploy` is the only Central-aware command — it builds + signs the main / sources / javadoc jars and uploads a single staged deployment.
+
+Pre-deploy checks (no upload):
+
+```
+.\tools\java-license-headers.ps1 -Check   # header drift
+mvn -Prelease help:active-profiles         # confirm the `release` profile is active
+mvn -Prelease verify                       # build + GPG-sign + sources/javadoc jars; full dry run of the bundle
+```
+
+`verify` and `deploy` need the GPG signing passphrase. It is **not** stored on disk — gpg-agent / Pinentry prompts for it at sign time. The signing key (`6A4D42B96FD6045B`, RSA 4096) must be in the local keyring and published to `keyserver.ubuntu.com`; Portal credentials (user token) live in `~/.m2/settings.xml` under `<server><id>central</id>`.
+
+Deploy:
+
+```
+mvn -Prelease deploy                       # uploads a staged deployment to the Central Portal
+```
+
+`autoPublish=false`, so the upload **stages** but does not go live. Approve it manually at <https://central.sonatype.com/publishing/deployments>:
+
+- **First release:** review the staged contents (the main + sources + javadoc jars, their `.asc` signatures, and the flattened POM) before releasing. Releasing is the one immutable, irreversible step — once released, the `groupId:artifactId:version` triple is permanent and cannot be changed or unpublished.
+
+### 5. Post-release
+
+- Verify the artifact resolves at <https://central.sonatype.com/artifact/io.github.dlbbld/ashlar-chess> before announcing (index propagation can take minutes to a couple of hours).
+- Archive the shipped release in `tasks.md`: move its section to **Done** at the bottom (or collapse it to a one-line "X.Y.Z — published YYYY-MM-DD, see CHANGELOG"). The recurring procedure lives here in workflows.md and the consumer-facing summary in CHANGELOG.md, so the granular one-time checklist can be pruned without losing anything.
 
 ### Version bumps
 

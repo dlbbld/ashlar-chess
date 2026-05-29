@@ -84,23 +84,23 @@ LD_LIBRARY_PATH=/usr/local/lib ./cha
 
 ## Regenerate the oracle
 
-Run this from the clean-chess checkout on Windows:
+Run this from the ashlar-chess checkout on Windows:
 
 ```powershell
-mvn -q org.codehaus.mojo:exec-maven-plugin:3.6.2:java "-Dexec.classpathScope=test" "-Dexec.mainClass=com.dlb.chess.test.generate.GenerateAmbronaUnwinnabilityOracle"
+mvn -q org.codehaus.mojo:exec-maven-plugin:3.6.2:java "-Dexec.classpathScope=test" "-Dexec.mainClass=io.github.dlbbld.ashlarchess.test.generate.GenerateAmbronaUnwinnabilityOracle"
 ```
 
 By default the generator asks WSL for `$HOME/D3-Chess`. If D3-Chess lives
 somewhere else inside Ubuntu, pass that path as the only Java argument:
 
 ```powershell
-mvn -q org.codehaus.mojo:exec-maven-plugin:3.6.2:java "-Dexec.classpathScope=test" "-Dexec.mainClass=com.dlb.chess.test.generate.GenerateAmbronaUnwinnabilityOracle" "-Dexec.args=/home/<user>/D3-Chess"
+mvn -q org.codehaus.mojo:exec-maven-plugin:3.6.2:java "-Dexec.classpathScope=test" "-Dexec.mainClass=io.github.dlbbld.ashlarchess.test.generate.GenerateAmbronaUnwinnabilityOracle" "-Dexec.args=/home/<user>/D3-Chess"
 ```
 
 Equivalent system-property form:
 
 ```powershell
-mvn -q org.codehaus.mojo:exec-maven-plugin:3.6.2:java "-Dexec.classpathScope=test" "-Dexec.mainClass=com.dlb.chess.test.generate.GenerateAmbronaUnwinnabilityOracle" "-Dambrona.d3.path=/home/<user>/D3-Chess"
+mvn -q org.codehaus.mojo:exec-maven-plugin:3.6.2:java "-Dexec.classpathScope=test" "-Dexec.mainClass=io.github.dlbbld.ashlarchess.test.generate.GenerateAmbronaUnwinnabilityOracle" "-Dambrona.d3.path=/home/<user>/D3-Chess"
 ```
 
 The unwinnability generator compiles `tools/ambrona-oracle/cha_oracle.cpp` into `/tmp` inside
@@ -110,7 +110,7 @@ WSL, streams every distinct final FEN to it, and rewrites
 To regenerate the mobility oracle, run:
 
 ```powershell
-mvn -q org.codehaus.mojo:exec-maven-plugin:3.6.2:java "-Dexec.classpathScope=test" "-Dexec.mainClass=com.dlb.chess.test.generate.GenerateAmbronaMobilityOracle"
+mvn -q org.codehaus.mojo:exec-maven-plugin:3.6.2:java "-Dexec.classpathScope=test" "-Dexec.mainClass=io.github.dlbbld.ashlarchess.test.generate.GenerateAmbronaMobilityOracle"
 ```
 
 The optional D3-Chess path argument and `ambrona.d3.path` system property work
@@ -120,7 +120,7 @@ the same way as for the unwinnability oracle. The mobility generator compiles
 To regenerate the semistatic oracle, run:
 
 ```powershell
-mvn -q org.codehaus.mojo:exec-maven-plugin:3.6.2:java "-Dexec.classpathScope=test" "-Dexec.mainClass=com.dlb.chess.test.generate.GenerateAmbronaSemiStaticOracle"
+mvn -q org.codehaus.mojo:exec-maven-plugin:3.6.2:java "-Dexec.classpathScope=test" "-Dexec.mainClass=io.github.dlbbld.ashlarchess.test.generate.GenerateAmbronaSemiStaticOracle"
 ```
 
 The optional D3-Chess path argument and `ambrona.d3.path` system property work
@@ -131,14 +131,14 @@ To compare the generated mobility oracle against the Java mobility
 implementation without turning the mismatch report into a JUnit failure, run:
 
 ```powershell
-mvn -q org.codehaus.mojo:exec-maven-plugin:3.6.2:java "-Dexec.classpathScope=test" "-Dexec.mainClass=com.dlb.chess.unwinnability.CompareAmbronaMobilityOracle"
+mvn -q org.codehaus.mojo:exec-maven-plugin:3.6.2:java "-Dexec.classpathScope=test" "-Dexec.mainClass=io.github.dlbbld.ashlarchess.unwinnability.CompareAmbronaMobilityOracle"
 ```
 
 To compare the generated semistatic oracle without turning the mismatch report
 into a JUnit failure, run:
 
 ```powershell
-mvn -q org.codehaus.mojo:exec-maven-plugin:3.6.2:java "-Dexec.classpathScope=test" "-Dexec.mainClass=com.dlb.chess.unwinnability.CompareAmbronaSemiStaticOracle"
+mvn -q org.codehaus.mojo:exec-maven-plugin:3.6.2:java "-Dexec.classpathScope=test" "-Dexec.mainClass=io.github.dlbbld.ashlarchess.unwinnability.CompareAmbronaSemiStaticOracle"
 ```
 
 The corresponding JUnit baseline tests live in the unwinnability test package,

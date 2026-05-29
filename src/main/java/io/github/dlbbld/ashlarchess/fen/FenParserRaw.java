@@ -1,0 +1,38 @@
+// Copyright (C) 2020-2026 Daniel Baechli
+// SPDX-License-Identifier: GPL-3.0-only
+
+package io.github.dlbbld.ashlarchess.fen;
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import org.eclipse.jdt.annotation.NonNull;
+
+import io.github.dlbbld.ashlarchess.common.exceptions.FenRawValidationException;
+import io.github.dlbbld.ashlarchess.fen.model.FenRaw;
+
+public class FenParserRaw {
+
+  private FenParserRaw() {
+  }
+
+  public static FenRaw parseFenRaw(String fen) throws FenRawValidationException {
+    final String regExp = "^([^ ]+) ([^ ]+) ([^ ]+) ([^ ]+) ([^ ]+) ([^ ]+)$";
+    final Pattern pattern = Pattern.compile(regExp);
+    final Matcher matcher = pattern.matcher(fen);
+    if (!matcher.find()) {
+      throw new FenRawValidationException("The format could not be identifed as valid FEN format");
+    }
+    // the regular expressions assures that these matches are not empty
+    @SuppressWarnings("null") @NonNull final String piecePlacement = matcher.group(1);
+    @SuppressWarnings("null") @NonNull final String havingMove = matcher.group(2);
+    @SuppressWarnings("null") @NonNull final String castlingRight = matcher.group(3);
+    @SuppressWarnings("null") @NonNull final String enPassantCaptureTargetSquare = matcher.group(4);
+    @SuppressWarnings("null") @NonNull final String halfMoveClock = matcher.group(5);
+    @SuppressWarnings("null") @NonNull final String fullMoveNumber = matcher.group(6);
+
+    return new FenRaw(piecePlacement, havingMove, castlingRight, enPassantCaptureTargetSquare, halfMoveClock,
+        fullMoveNumber);
+  }
+
+}

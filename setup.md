@@ -1,6 +1,6 @@
 # Setup
 
-How to clone, build, and contribute to clean-chess in Eclipse.
+How to clone, build, and contribute to ashlar-chess in Eclipse.
 
 The project ships its own Checkstyle config and Eclipse JDT compiler / formatter / cleanup / save-actions settings. Once you have Eclipse, the JDK, and the Checkstyle plug-in in place, importing the project pulls those settings in automatically. No manual file copies, no `.epf` import.
 
@@ -35,7 +35,7 @@ Click **Apply and Close**.
 
 ## 3. Install Java
 
-clean-chess targets **JDK 17** (`maven.compiler.release` in `pom.xml`).
+ashlar-chess targets **JDK 17** (`maven.compiler.release` in `pom.xml`).
 
 ### Install
 
@@ -59,12 +59,12 @@ Install the Checkstyle plug-in from **Eclipse Marketplace** using all defaults.
 
 > The Checkstyle rules are checked into this repo (`checkstyle.xml`, `checkstyle-suppressions.xml`, `checkstyle-xpath-suppressions.xml`). Once the project is imported, the plug-in picks them up automatically — no manual XML copy required.
 
-## 5. Import clean-chess
+## 5. Import ashlar-chess
 
 1. **File → Import… → Git → Projects from Git (with smart import)**.
 2. Click **Next**, then **Clone URI**.
 3. Enter:
-   - URI: `https://github.com/dlbbld/clean-chess.git`
+   - URI: `https://github.com/dlbbld/ashlar-chess.git`
    - User name: your GitHub user name
    - Password: your GitHub personal access token (PAT)
 

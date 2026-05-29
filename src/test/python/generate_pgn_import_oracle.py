@@ -43,13 +43,13 @@ JSONL schema (one record per line, keys sorted alphabetically):
   }
 
 This module is the schema source of truth; the Java side
-(com.dlb.chess.test.oracle.python.OracleRecord / OracleMove) mirrors it.
+(io.github.dlbbld.ashlarchess.test.oracle.python.OracleRecord / OracleMove) mirrors it.
 
 FEN convention: emitted via `board.fen(en_passant="fen")` so the en-passant target
 square is always written after a pawn double-step (PGN/Edwards 1994 §16.1.3.4),
-matching clean-chess. python-chess's default `board.fen()` omits the e.p. target
+matching ashlar-chess. python-chess's default `board.fen()` omits the e.p. target
 when no capture is legal next move (Stockfish / Lichess / X-FEN de-facto), which
-would disagree with clean-chess on every fixture where a pawn just double-stepped
+would disagree with ashlar-chess on every fixture where a pawn just double-stepped
 without an adjacent opposing pawn.
 
 Bucket coverage: PARSER_FROM_FEN plus all BASIC_* buckets plus the curated

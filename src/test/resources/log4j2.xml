@@ -10,7 +10,7 @@
     </Console>
   </Appenders>
   <Loggers>
-    <Logger name="com.dlb" level="info" additivity="false">
+    <Logger name="io.github.dlbbld.ashlarchess" level="info" additivity="false">
       <AppenderRef ref="LogToConsole" />
     </Logger>
     <Root level="error">

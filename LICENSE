@@ -1,5 +1,5 @@
-clean-chess — a Java chess library for rule correctness and reproducibility
-Copyright (C) 2024-2026  Daniel Bächli
+ashlar-chess — a Java chess library for rule correctness and reproducibility
+Copyright (C) 2020-2026  Daniel Bächli
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -16,6 +16,10 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 The unwinnability and dead-position detection is a Java port of the
 Chess Unwinnability Analyzer (CHA) by Miguel Ambrona,
 <https://github.com/miguel-ambrona/D3-Chess>, also licensed under GPL v3.
+
+The test suite uses python-chess and chesslib by Ben-Hur Carlos Vieira Langoni Junior as
+external validation witnesses. They are test-only dependencies and are not
+part of the runtime artifact.
 
 ================================================================================
                     GNU GENERAL PUBLIC LICENSE

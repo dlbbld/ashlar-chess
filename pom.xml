@@ -4,20 +4,49 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>com.github.dlbbld</groupId>
-	<artifactId>clean-chess</artifactId>
-	<version>16.1.0</version>
+	<groupId>io.github.dlbbld</groupId>
+	<artifactId>ashlar-chess</artifactId>
+	<version>17.0.0</version>
+
+	<name>ashlar-chess</name>
+	<description>A Java chess library for rule correctness and reproducibility.</description>
+	<url>https://github.com/dlbbld/ashlar-chess</url>
+	<inceptionYear>2020</inceptionYear>
+
+	<licenses>
+		<license>
+			<name>GNU General Public License v3.0 only</name>
+			<url>https://www.gnu.org/licenses/gpl-3.0.txt</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
+
+	<developers>
+		<developer>
+			<id>dlbbld</id>
+			<name>Daniel Bächli</name>
+			<email>daniel.baechli@gmail.com</email>
+			<url>https://github.com/dlbbld</url>
+		</developer>
+	</developers>
+
+	<scm>
+		<connection>scm:git:https://github.com/dlbbld/ashlar-chess.git</connection>
+		<developerConnection>scm:git:git@github.com:dlbbld/ashlar-chess.git</developerConnection>
+		<url>https://github.com/dlbbld/ashlar-chess</url>
+		<tag>HEAD</tag>
+	</scm>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<maven.compiler.release>17</maven.compiler.release>
 		<!--
-			Default test exclusion. Skips com.dlb.chess.test.unwinnability (~1 min)
+			Default test exclusion. Skips io.github.dlbbld.ashlarchess.test.unwinnability (~1 min)
 			during iterative work. The `full` profile keeps this exclusion for now;
 			override `-Dtest.excludes=` when explicitly running the unwinnability suite.
 		-->
-		<test.excludes>com/dlb/chess/test/unwinnability/**/*.java</test.excludes>
+		<test.excludes>io/github/dlbbld/ashlarchess/test/unwinnability/**/*.java</test.excludes>
 	</properties>
 
 	<repositories>
@@ -89,6 +118,13 @@
 				<version>3.4.2</version>
 				<configuration>
 					<archive>
+						<!--
+							Omit META-INF/maven/.../pom.xml + pom.properties from the jar. The
+							deployed POM is the flattened one (compile deps only); the embedded
+							descriptor would otherwise be the original POM, leaking the JitPack
+							repo and test-only dependencies into the published artifact.
+						-->
+						<addMavenDescriptor>false</addMavenDescriptor>
 						<manifestEntries>
 							<Implementation-Title>${project.artifactId}</Implementation-Title>
 							<Implementation-Version>${project.version}</Implementation-Version>
@@ -103,7 +139,7 @@
 				<artifactId>maven-surefire-plugin</artifactId>
 				<version>3.5.5</version>
 				<!--
-					Default and full-profile test runs exclude com.dlb.chess.test.unwinnability
+					Default and full-profile test runs exclude io.github.dlbbld.ashlarchess.test.unwinnability
 					(~1 min of the ~2 min suite). The exclusion is property-driven; use
 					`-Dtest.excludes=` when explicitly running the unwinnability suite.
 				-->
@@ -112,20 +148,6 @@
 						<exclude>${test.excludes}</exclude>
 					</excludes>
 				</configuration>
-			</plugin>
-
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-source-plugin</artifactId>
-				<version>3.4.0</version>
-				<executions>
-					<execution>
-						<id>attach-sources</id>
-						<goals>
-							<goal>jar</goal>
-						</goals>
-					</execution>
-				</executions>
 			</plugin>
 
 			<plugin>
@@ -159,7 +181,7 @@
 		<!--
 			Heavy regression suite. Default test runs use a restricted subset (see
 			RestrictTestConstants) so iteration is fast; this profile flips the
-			master `clean-chess.full` system property and switches every restriction
+			master `ashlar-chess.full` system property and switches every restriction
 			off. Required before tagging a release.
 		-->
 		<profile>
@@ -171,8 +193,130 @@
 						<artifactId>maven-surefire-plugin</artifactId>
 						<configuration>
 							<systemPropertyVariables>
-								<clean-chess.full>true</clean-chess.full>
+								<ashlar-chess.full>true</ashlar-chess.full>
 							</systemPropertyVariables>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+
+		<!--
+			Release profile. Adds everything Maven Central requires but that normal
+			iteration does not: GPG signatures, the sources jar, the public-API javadoc
+			jar, a flattened pom (strips build-only elements such as <repositories>), and
+			the central-publishing-maven-plugin that uploads to the Central Portal. The
+			only Central-aware command is `mvn -Prelease deploy`; every other build stays
+			Java-only and fast. autoPublish is false, so a deployment stages in the Portal
+			for manual review instead of going live automatically.
+		-->
+		<profile>
+			<id>release</id>
+			<build>
+				<plugins>
+					<!-- Sources jar (moved here so plain `mvn package` stays Java-only). -->
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-source-plugin</artifactId>
+						<version>3.4.0</version>
+						<executions>
+							<execution>
+								<id>attach-sources</id>
+								<goals>
+									<goal>jar</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+
+					<!--
+						Public-API javadoc jar. Inherits the global maven-javadoc-plugin
+						configuration (strict doclint, failOnError) at default visibility, so
+						it ships only the public API.
+					-->
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-javadoc-plugin</artifactId>
+						<executions>
+							<execution>
+								<id>attach-javadocs</id>
+								<goals>
+									<goal>jar</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+
+					<!--
+						Detached GPG signatures (.asc) for every artifact. No passphrase is
+						configured here: gpg-agent / Pinentry supplies it at deploy time.
+					-->
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-gpg-plugin</artifactId>
+						<version>3.2.7</version>
+						<executions>
+							<execution>
+								<id>sign-artifacts</id>
+								<phase>verify</phase>
+								<goals>
+									<goal>sign</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+
+					<!--
+						Flattened pom for publishing. oss mode keeps the Central-required
+						metadata (name, description, url, licenses, developers, scm) while
+						dropping build-only elements - notably the jitpack <repositories>
+						block, which consumers must never inherit.
+					-->
+					<plugin>
+						<groupId>org.codehaus.mojo</groupId>
+						<artifactId>flatten-maven-plugin</artifactId>
+						<version>1.6.0</version>
+						<configuration>
+							<flattenMode>oss</flattenMode>
+							<!--
+								oss mode keeps <repositories> by default; force-remove it so the
+								jitpack entry (a build-only need for the chesslib test dependency)
+								never reaches consumers.
+							-->
+							<pomElements>
+								<repositories>remove</repositories>
+							</pomElements>
+						</configuration>
+						<executions>
+							<execution>
+								<id>flatten</id>
+								<phase>process-resources</phase>
+								<goals>
+									<goal>flatten</goal>
+								</goals>
+							</execution>
+							<execution>
+								<id>flatten-clean</id>
+								<phase>clean</phase>
+								<goals>
+									<goal>clean</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+
+					<!--
+						Uploads the signed bundle to the Central Portal. publishingServerId
+						matches the <server><id>central</id> entry in ~/.m2/settings.xml.
+					-->
+					<plugin>
+						<groupId>org.sonatype.central</groupId>
+						<artifactId>central-publishing-maven-plugin</artifactId>
+						<version>0.7.0</version>
+						<extensions>true</extensions>
+						<configuration>
+							<publishingServerId>central</publishingServerId>
+							<autoPublish>false</autoPublish>
 						</configuration>
 					</plugin>
 				</plugins>

@@ -1,0 +1,24 @@
+// Copyright (C) 2020-2026 Daniel Baechli
+// SPDX-License-Identifier: GPL-3.0-only
+
+package io.github.dlbbld.ashlarchess.test.common.utility;
+
+import java.util.Random;
+
+public abstract class RandomUtility {
+
+  // recommended by SonarLint to reuse
+  private static final Random RANDOM = new Random();
+
+  public static int calculateRandomNumber(int minimumInclusive, int maximumInclusive) {
+    return calculateRandomNumber(minimumInclusive, maximumInclusive, RANDOM);
+  }
+
+  public static int calculateRandomNumber(int minimumInclusive, int maximumInclusive, Random random) {
+    if (minimumInclusive > maximumInclusive) {
+      throw new IllegalArgumentException();
+    }
+    final int maximumExclusive = maximumInclusive + 1;
+    return random.nextInt(maximumExclusive - minimumInclusive) + minimumInclusive;
+  }
+}
