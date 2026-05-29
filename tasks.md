@@ -74,6 +74,13 @@ where it is cheap (no consumers exist yet).
       - reflection string literals (Class.forName, getResource by package path)
       - test-fixture resource paths + generated-test-case references
       - README / Javadoc / specification.md / coding-conventions.md / workflows.md snippets
+      FOLLOW-UP FIX: the ResourceBundle backing file was missed on the first pass - it
+      was still at src/main/resources/com/dlb/chess/messages/messages.properties while
+      Message loads it by package name (io.github.dlbbld.ashlarchess.messages.messages),
+      so it failed at runtime with MissingResourceException. Moved (git mv) to
+      src/main/resources/io/github/dlbbld/ashlarchess/messages/messages.properties.
+      Verified: TestSanValidationProblemMessage green (22/22). No other src refs to the
+      old package path remain.
 - [ ] Verify: full profile green (`mvn -Pfull -Dtest.excludes= test`) + javadoc:
         mvn javadoc:javadoc -Dshow=private
         mvn javadoc:test-javadoc -Dshow=private
