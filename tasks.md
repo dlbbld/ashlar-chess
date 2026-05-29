@@ -133,13 +133,21 @@ where it is cheap (no consumers exist yet).
       -> clean; the only shipped resource is messages/messages.properties (runtime SAN-validation /
          report strings). No dev/test/env-specific files.
 - [x] Re-audit `src/main/java` for classes that should be package-private
-      -> 95/252 top-level types already package-private. The bitboard generator classes are public by
-         deliberate, documented design (corpus-walk differential tests in test.bitboard call them); see
-         test/.../test/bitboard/package-info.java. API surface is intentional - kept public, no churn.
+      -> 96/252 top-level types package-private after this pass. The 16 public bitboard types split into:
+         (a) 4 genuine cross-package production API (BitboardPosition, BitboardPositionUtility,
+         BitboardLegalMoveFactory, KingAttacks) - must stay public, no JPMS; (b) 11 generators
+         (non-king *Attacks + *Moves) public so corpus-walk differential tests in test.bitboard can call
+         them as the bitboard side of the StaticPosition-oracle comparison - deliberate, documented
+         design (see test/.../test/bitboard/package-info.java), kept public; (c) ZobristKeys - had zero
+         external refs (only BitboardPosition uses it in-package), so tightened to package-private.
 - [x] Safety net for any stray test-fixture message keys or similar
       -> clean; no test-fixture keys leaked into messages.properties. The lone main-tree System.out is
          the documented Reporter.printReport stdout API; the lone TODO (dead Lemma 5/6 predicates) has
          since been removed.
+- [x] Strip the embedded original POM from the jar
+      -> maven-jar-plugin addMavenDescriptor=false. Deployed POM is the flattened one (compile deps
+         only); the embedded META-INF/maven/.../pom.xml would otherwise carry the JitPack repo and
+         junit/chesslib test deps into the published artifact. Verified absent in a clean build.
 
 ### First publish + workflow (publish time)
 - [x] README: drop the JitPack `<repositories>` block, leave only the plain Maven snippet

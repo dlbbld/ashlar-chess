@@ -24,7 +24,7 @@ import io.github.dlbbld.ashlarchess.board.enums.Square;
  * keys -> same hashes across JVM runs. This matters for transposition keys persisted across processes (e.g.,
  * helpmate-search caches).
  */
-public final class ZobristKeys {
+final class ZobristKeys {
 
   // Arbitrary fixed seed: stable hashes across runs without relying on any external secret.
   private static final long SEED = 0xC0FFEE_1234_ABCDL;
@@ -45,7 +45,7 @@ public final class ZobristKeys {
   private ZobristKeys() {
   }
 
-  public static long pieceSquare(Piece piece, Square square) {
+  static long pieceSquare(Piece piece, Square square) {
     if (piece == Piece.NONE) {
       throw new IllegalArgumentException("Piece.NONE has no Zobrist key");
     }

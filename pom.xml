@@ -118,6 +118,13 @@
 				<version>3.4.2</version>
 				<configuration>
 					<archive>
+						<!--
+							Omit META-INF/maven/.../pom.xml + pom.properties from the jar. The
+							deployed POM is the flattened one (compile deps only); the embedded
+							descriptor would otherwise be the original POM, leaking the JitPack
+							repo and test-only dependencies into the published artifact.
+						-->
+						<addMavenDescriptor>false</addMavenDescriptor>
 						<manifestEntries>
 							<Implementation-Title>${project.artifactId}</Implementation-Title>
 							<Implementation-Version>${project.version}</Implementation-Version>
