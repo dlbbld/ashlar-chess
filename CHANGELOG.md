@@ -5,7 +5,7 @@ Releases from 3.3 onward. Earlier history is in git tags only.
 ## [Unreleased]
 
 
-## [17.0.0]
+## [17.0.0] - 2026-05-29
 
 The **first Maven Central release**. Renamed the project from clean-chess to ashlar-chess, and the base package com.dlb.chess → io.github.dlbbld.ashlarchess (the old package namespace reverse-mapped to a domain not controlled by the project). Earlier entries use the new names for consistency; releases before 17.0.0 shipped as clean-chess / com.dlb.chess and were distributed via JitPack.
 
