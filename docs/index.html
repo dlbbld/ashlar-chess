@@ -1,0 +1,308 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Ashlar Chess</title>
+  <meta name="description" content="A correctness-first Java chess rules library with strict/lenient PGN/SAN parsing, fine-grained validation, PGN writing, and flagfall adjudication using CHA.">
+  <style>
+    :root {
+      color-scheme: light;
+      --ink: #141414;
+      --muted: #5d646b;
+      --paper: #ffffff;
+      --panel: #f4f6f7;
+      --line: #d7dcdf;
+      --green: #1f7a4d;
+      --green-dark: #155b39;
+      --gold: #b48a25;
+      --square-light: #ece5d9;
+      --square-dark: #5c745c;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      background: var(--paper);
+      color: var(--ink);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-size: 17px;
+      line-height: 1.6;
+      letter-spacing: 0;
+    }
+
+    a {
+      color: var(--green-dark);
+      text-decoration-thickness: 0.08em;
+      text-underline-offset: 0.18em;
+    }
+
+    .wrap {
+      width: min(1120px, calc(100% - 40px));
+      margin: 0 auto;
+    }
+
+    .masthead {
+      position: relative;
+      overflow: hidden;
+      border-bottom: 1px solid var(--line);
+      background:
+        linear-gradient(90deg, rgba(255, 255, 255, 0.96) 0%, rgba(255, 255, 255, 0.88) 52%, rgba(255, 255, 255, 0.68) 100%),
+        conic-gradient(from 90deg, var(--square-light) 25%, var(--square-dark) 0 50%, var(--square-light) 0 75%, var(--square-dark) 0) 0 0 / 96px 96px;
+    }
+
+    .hero {
+      min-height: 72vh;
+      display: grid;
+      align-content: center;
+      padding: 72px 0 52px;
+    }
+
+    .eyebrow {
+      margin: 0 0 18px;
+      color: var(--green-dark);
+      font-size: 0.86rem;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      max-width: 850px;
+      margin: 0;
+      font-size: clamp(3.2rem, 8vw, 6.8rem);
+      line-height: 0.92;
+      font-weight: 820;
+    }
+
+    .tagline {
+      max-width: 790px;
+      margin: 30px 0 0;
+      font-size: clamp(1.25rem, 2vw, 1.7rem);
+      line-height: 1.4;
+      color: #25282a;
+      overflow-wrap: break-word;
+    }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 34px;
+    }
+
+    .button {
+      display: inline-flex;
+      min-height: 44px;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid var(--ink);
+      border-radius: 6px;
+      padding: 9px 16px;
+      background: var(--ink);
+      color: #ffffff;
+      font-weight: 700;
+      text-decoration: none;
+    }
+
+    .button.secondary {
+      background: rgba(255, 255, 255, 0.72);
+      color: var(--ink);
+    }
+
+    .button:hover,
+    .button:focus-visible {
+      outline: 3px solid rgba(31, 122, 77, 0.24);
+      outline-offset: 2px;
+    }
+
+    main {
+      padding: 54px 0 72px;
+    }
+
+    .section {
+      display: grid;
+      grid-template-columns: minmax(180px, 280px) 1fr;
+      gap: 34px;
+      padding: 42px 0;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .section:last-child {
+      border-bottom: 0;
+    }
+
+    h2 {
+      margin: 0;
+      font-size: 1.04rem;
+      line-height: 1.3;
+      color: var(--green-dark);
+      text-transform: uppercase;
+    }
+
+    .section p {
+      max-width: 760px;
+      margin: 0;
+    }
+
+    .section p + p {
+      margin-top: 16px;
+    }
+
+    .features {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+      max-width: 830px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .feature {
+      min-height: 118px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 18px;
+      background: var(--panel);
+    }
+
+    .feature strong {
+      display: block;
+      margin-bottom: 6px;
+      color: var(--ink);
+    }
+
+    .feature span {
+      color: var(--muted);
+    }
+
+    .cha {
+      border-left: 5px solid var(--gold);
+      padding-left: 22px;
+    }
+
+    footer {
+      border-top: 1px solid var(--line);
+      padding: 24px 0;
+      color: var(--muted);
+      font-size: 0.94rem;
+    }
+
+    @media (max-width: 760px) {
+      .wrap {
+        width: min(1120px, calc(100% - 28px));
+      }
+
+      .hero {
+        min-height: 64vh;
+        padding: 54px 0 42px;
+      }
+
+      .eyebrow {
+        font-size: 0.75rem;
+        overflow-wrap: break-word;
+      }
+
+      h1 {
+        max-width: 100%;
+        font-size: clamp(2.35rem, 11vw, 3rem);
+        line-height: 1;
+      }
+
+      .actions {
+        align-items: stretch;
+        flex-direction: column;
+      }
+
+      .button {
+        width: 100%;
+      }
+
+      .section {
+        grid-template-columns: 1fr;
+        gap: 14px;
+        padding: 34px 0;
+      }
+
+      .features {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .wrap {
+        width: min(360px, calc(100% - 28px));
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="masthead">
+    <div class="wrap hero">
+      <p class="eyebrow">Correctness-first Java chess rules library</p>
+      <h1>Ashlar Chess</h1>
+      <p class="tagline">Strict/lenient PGN/SAN parsing, fine-grained validation, PGN writing, and flagfall adjudication using CHA.</p>
+      <nav class="actions" aria-label="Project links">
+        <a class="button" href="https://github.com/dlbbld/ashlar-chess">GitHub</a>
+        <a class="button secondary" href="https://github.com/dlbbld/ashlar-chess#readme">README</a>
+        <a class="button secondary" href="https://central.sonatype.com/artifact/io.github.dlbbld/ashlar-chess">Maven Central</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <section class="section" aria-labelledby="what-it-is">
+      <h2 id="what-it-is">What It Is</h2>
+      <div>
+        <p>Ashlar Chess is a from-scratch Java library for chess rules and notation. It began as a programming exercise and matured into a focused library for positions, games, PGN/SAN handling, validation, and reproducible rule logic.</p>
+        <p>It is not a chess engine. It does not try to choose strong moves. Its concern is whether chess data is legal, well-formed, explainable, and handled consistently.</p>
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="interesting">
+      <h2 id="interesting">What Stands Out</h2>
+      <ul class="features">
+        <li class="feature">
+          <strong>Strict and lenient parsing</strong>
+          <span>PGN and SAN can be accepted generously or checked against a stricter interpretation.</span>
+        </li>
+        <li class="feature">
+          <strong>Fine-grained validation</strong>
+          <span>Validation is designed to explain what went wrong, not only that input failed.</span>
+        </li>
+        <li class="feature">
+          <strong>Reproducible rule logic</strong>
+          <span>Game and position handling are built for correctness, testability, and repeatable results.</span>
+        </li>
+        <li class="feature">
+          <strong>PGN writing</strong>
+          <span>Validated game data can be written back into a clear, stable PGN form.</span>
+        </li>
+      </ul>
+    </section>
+
+    <section class="section" aria-labelledby="cha">
+      <h2 id="cha">CHA</h2>
+      <div class="cha">
+        <p>CHA, the Chess Helpmate Analyzer, deserves special mention. Miguel Ambrona's implementation lives at <a href="https://github.com/miguel-ambrona/D3-Chess">miguel-ambrona/D3-Chess</a>, with the project page at <a href="https://chasolver.org/">chasolver.org</a>.</p>
+        <p>It addresses a real gap in chess software: after a player flags, can the non-flagging side still win by any legal continuation?</p>
+        <p>The algorithm is built on a mathematically proven insight into chess mobility. Its quick unwinnability analysis makes that rule practical for software use, resolving ordinary cases extremely fast and reserving deeper analysis for rare positions that need it.</p>
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="distribution">
+      <h2 id="distribution">Distribution</h2>
+      <div>
+        <p>Published for Java 17+ as <a href="https://central.sonatype.com/artifact/io.github.dlbbld/ashlar-chess">io.github.dlbbld:ashlar-chess</a>.</p>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="wrap">Copyright &copy; 2020-2026 Daniel B&auml;chli. Licensed under GPL-3.0-only.</div>
+  </footer>
+</body>
+</html>
