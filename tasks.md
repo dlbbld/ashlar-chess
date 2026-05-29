@@ -129,9 +129,17 @@ where it is cheap (no consumers exist yet).
       -> GPG passphrase NOT stored on disk; signing uses gpg-agent / Pinentry at deploy time
 
 ### JAR-content audit at publish time
-- [ ] Re-audit `src/main/resources` end-to-end (nothing dev/test/env-specific should ship)
-- [ ] Re-audit `src/main/java` for classes that should be package-private
-- [ ] Safety net for any stray test-fixture message keys or similar
+- [x] Re-audit `src/main/resources` end-to-end (nothing dev/test/env-specific should ship)
+      -> clean; the only shipped resource is messages/messages.properties (runtime SAN-validation /
+         report strings). No dev/test/env-specific files.
+- [x] Re-audit `src/main/java` for classes that should be package-private
+      -> 95/252 top-level types already package-private. The bitboard generator classes are public by
+         deliberate, documented design (corpus-walk differential tests in test.bitboard call them); see
+         test/.../test/bitboard/package-info.java. API surface is intentional - kept public, no churn.
+- [x] Safety net for any stray test-fixture message keys or similar
+      -> clean; no test-fixture keys leaked into messages.properties. The lone main-tree System.out is
+         the documented Reporter.printReport stdout API; the lone TODO (dead Lemma 5/6 predicates) has
+         since been removed.
 
 ### First publish + workflow (publish time)
 - [x] README: drop the JitPack `<repositories>` block, leave only the plain Maven snippet
