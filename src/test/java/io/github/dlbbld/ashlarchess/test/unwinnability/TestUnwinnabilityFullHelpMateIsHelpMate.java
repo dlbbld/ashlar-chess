@@ -16,7 +16,6 @@ import io.github.dlbbld.ashlarchess.board.enums.Side;
 import io.github.dlbbld.ashlarchess.common.Nulls;
 import io.github.dlbbld.ashlarchess.common.ucimove.utility.UciMoveUtility;
 import io.github.dlbbld.ashlarchess.model.UciMove;
-import io.github.dlbbld.ashlarchess.test.RestrictTestConstants;
 import io.github.dlbbld.ashlarchess.test.common.utility.PgnExtensionUtility;
 import io.github.dlbbld.ashlarchess.test.model.PgnFen;
 import io.github.dlbbld.ashlarchess.test.model.PgnTestCaseList;
@@ -28,9 +27,6 @@ import io.github.dlbbld.ashlarchess.unwinnability.UnwinnableFullAnalyzer;
 class TestUnwinnabilityFullHelpMateIsHelpMate {
 
   private static final Logger logger = Nulls.getLogger(TestUnwinnabilityFullHelpMateIsHelpMate.class);
-
-  /** Cap on files tested when the smoke restriction is active. */
-  private static final int MAX_FILES = 10;
 
   @SuppressWarnings("static-method")
   @Test
@@ -50,11 +46,7 @@ class TestUnwinnabilityFullHelpMateIsHelpMate {
   private static List<PgnFen> helpmateFixtures() {
     final PgnTestCaseList testCaseHavingHelpmateList = PgnTestCaseCatalog
         .getTestList(PgnTest.CHA_LICHESS_QUICK_DEPTH_ABOVE_FOUR_WINNABLE_FOR_FLAGGING_WITH_HELPMATE);
-    if (!RestrictTestConstants.IS_RESTRICT_UNWINNABLE_FULL_FOR_LICHESS_HELPMATE_TEST) {
-      return testCaseHavingHelpmateList.list();
-    }
-    return Nulls.subList(testCaseHavingHelpmateList.list(), 0,
-        Math.min(MAX_FILES, testCaseHavingHelpmateList.list().size()));
+    return testCaseHavingHelpmateList.list();
   }
 
   private static void assertHelpmateLine(String fen, Side winner, List<UciMove> mateLine) {
