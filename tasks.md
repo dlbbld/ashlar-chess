@@ -108,7 +108,9 @@ where it is cheap (no consumers exist yet).
 - [x] Publish the public key to a keyserver and confirm it resolves:
         gpg --keyserver keyserver.ubuntu.com --send-keys 6A4D42B96FD6045B
         gpg --keyserver keyserver.ubuntu.com --recv-keys 6A4D42B96FD6045B   # verify round-trip
-- [ ] Configure `~/.m2/settings.xml` with Portal credentials + GPG passphrase
+- [x] Configure `~/.m2/settings.xml` with Portal credentials (`<server><id>central</id>` =
+      generated user token; matches central-publishing-maven-plugin's default publishingServerId)
+      -> GPG passphrase NOT stored on disk; signing uses gpg-agent / Pinentry at deploy time
 
 ### JAR-content audit at publish time
 - [ ] Re-audit `src/main/resources` end-to-end (nothing dev/test/env-specific should ship)
