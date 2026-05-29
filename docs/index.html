@@ -289,7 +289,7 @@
       <div class="cha">
         <p>CHA, the Chess Unwinnability Analyzer, deserves special mention. Miguel Ambrona's implementation lives at <a href="https://github.com/miguel-ambrona/D3-Chess">miguel-ambrona/D3-Chess</a>, with the project page at <a href="https://chasolver.org/">chasolver.org</a>.</p>
         <p>It gives software a decision procedure for a difficult rule question: does any legal continuation allow a chosen player to give checkmate?</p>
-        <p>That matters after a flagfall. Under FIDE Article 6.9, the timeout is not a loss if the opponent cannot checkmate by any possible legal sequence. It also matters for FIDE Article 5.2.2, where a game ends immediately once the position is dead, meaning unwinnable for both players.</p>
+        <p>That matters after a flagfall or resignation. Under FIDE Article 6.9, a timeout is not a loss if the opponent cannot checkmate by any possible legal sequence; under Article 5.1.2, the same condition can turn a resignation into a draw. It also matters for Article 5.2.2, where a game ends immediately once the position is dead, meaning unwinnable for both players.</p>
         <p>CHA makes these rules practical. Its quick unwinnability analysis brings exact adjudication within reach for rare but real positions that chess software has historically been unable to decide both reliably and fast enough.</p>
       </div>
     </section>
