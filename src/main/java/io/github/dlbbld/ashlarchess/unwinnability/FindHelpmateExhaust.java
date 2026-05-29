@@ -239,36 +239,6 @@ class FindHelpmateExhaust {
     transpositionMap.put(cacheKey, movesLeft);
   }
 
-  // TODO: these two lemma predicates are declared but not yet wired into the helpmate-search /
-  // unwinnability-evaluation flow. They encode the "intended winner has only K+N and intended loser has nothing
-  // useful" (Lemma 5) and "intended winner has only K + same-coloured bishops and intended loser has neither
-  // knights nor opposite-coloured bishops" (Lemma 6) sufficient-unwinnable conditions. Find the right call site
-  // in FindHelpmateExhaust / UnwinnableFullAnalyzer and connect them.
-  static boolean calculateIsUnwinnableAccordingLemma5(Side color, BitboardPosition bitboardPosition) {
-    if (UnwinnabilityMaterialBitboard.calculateHasKingAndKnightOnly(color, bitboardPosition)) {
-      if (UnwinnabilityMaterialBitboard.calculateHasNoKnights(color.getOppositeSide(), bitboardPosition)
-          && UnwinnabilityMaterialBitboard.calculateHasNoBishops(color.getOppositeSide(), bitboardPosition)
-          && UnwinnabilityMaterialBitboard.calculateHasNoRooks(color.getOppositeSide(), bitboardPosition)
-          && UnwinnabilityMaterialBitboard.calculateHasNoPawns(color.getOppositeSide(), bitboardPosition)) {
-        return true;
-      }
-    }
-    return false;
-  }
-
-  static boolean calculateIsUnwinnableAccordingLemma6(Side color, BitboardPosition bitboardPosition) {
-    for (final SquareType squareType : SquareType.REAL) {
-      if (UnwinnabilityMaterialBitboard.calculateHasKingAndBishopsOnly(color, bitboardPosition, squareType)
-          && UnwinnabilityMaterialBitboard.calculateHasNoKnights(color.getOppositeSide(), bitboardPosition)
-          && UnwinnabilityMaterialBitboard.calculateHasNoBishops(color, bitboardPosition,
-              squareType.getOppositeSquareType())
-          && UnwinnabilityMaterialBitboard.calculateHasNoPawns(color.getOppositeSide(), bitboardPosition)) {
-        return true;
-      }
-    }
-    return false;
-  }
-
   static boolean calculateIsNeedLoserPromotion(Side winner, BitboardPosition bitboardPosition) {
     if (calculateIsKnightNeedsPromotion(winner, bitboardPosition)) {
       return true;
