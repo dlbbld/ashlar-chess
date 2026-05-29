@@ -81,9 +81,12 @@ where it is cheap (no consumers exist yet).
       src/main/resources/io/github/dlbbld/ashlarchess/messages/messages.properties.
       Verified: TestSanValidationProblemMessage green (22/22). No other src refs to the
       old package path remain.
-- [ ] Verify: full profile green (`mvn -Pfull -Dtest.excludes= test`) + javadoc:
+- [x] Verify: full profile green (`mvn -Pfull -Dtest.excludes= test`) + javadoc:
         mvn javadoc:javadoc -Dshow=private
         mvn javadoc:test-javadoc -Dshow=private
+      -> full suite green after the messages-bundle fix: 1266 tests, 0 failures/errors,
+         1 skipped (incl. unwinnability via -Dtest.excludes=). Both javadoc gates green
+         (no errors/warnings) - no stale @link refs from the rename.
 
 ### Copyright alignment (do now)
 - [x] LICENSE copyright `2024-2026` -> `2020-2026` (LICENSE/README keep the umlaut spelling)
