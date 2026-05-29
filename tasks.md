@@ -83,16 +83,22 @@ where it is cheap (no consumers exist yet).
 - [x] SPDX/copyright headers (prerequisite above) applied consistently after the package rename
 
 ### pom.xml — required plugins (all in a new `release` profile)
-- [ ] central-publishing-maven-plugin (`extensions=true`; in the `release` profile with
+- [x] central-publishing-maven-plugin (`extensions=true`; in the `release` profile with
       signing + javadoc + sources, so `mvn -Prelease deploy` is the only Central-aware command)
-- [ ] maven-gpg-plugin (sign)
-- [ ] maven-javadoc-plugin `jar` execution (plugin already configured globally for validation;
-      add the jar goal in the profile)
-- [ ] move maven-source-plugin's `jar` execution into the `release` profile too (currently
+      -> version 0.7.0, publishingServerId `central`, autoPublish=false (stages for manual review)
+- [x] maven-gpg-plugin (sign) -> version 3.2.7, sign goal bound to `verify`; no passphrase in
+      the pom (gpg-agent / Pinentry supplies it at deploy time)
+- [x] maven-javadoc-plugin `jar` execution (plugin already configured globally for validation;
+      add the jar goal in the profile) -> `attach-javadocs`, inherits global doclint/failOnError
+- [x] move maven-source-plugin's `jar` execution into the `release` profile too (currently
       global) - keeps normal `mvn package` Java-only and the whole release bundle in one place
-- [ ] keep the jitpack `<repositories>` block (needed for the chesslib test dependency, which is
+- [x] keep the jitpack `<repositories>` block (needed for the chesslib test dependency, which is
       not on Maven Central) but ensure the Central-published pom carries no `<repositories>` -
       flatten-maven-plugin or a build-only profile
+      -> flatten-maven-plugin 1.6.0, oss mode + `<pomElements><repositories>remove`. Verified:
+         `mvn -Prelease -DskipTests package` is green; .flattened-pom.xml keeps name/description/
+         url/licenses/developers/scm and the 4 compile deps, drops test deps and <repositories>.
+         (signing/deploy not exercised here - they need the passphrase + live Portal upload)
 
 ### README / docs (this branch)
 - [x] Replace project-name mentions clean-chess -> ashlar-chess

@@ -145,20 +145,6 @@
 
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-source-plugin</artifactId>
-				<version>3.4.0</version>
-				<executions>
-					<execution>
-						<id>attach-sources</id>
-						<goals>
-							<goal>jar</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-javadoc-plugin</artifactId>
 				<version>3.11.2</version>
 				<!--
@@ -202,6 +188,128 @@
 							<systemPropertyVariables>
 								<ashlar-chess.full>true</ashlar-chess.full>
 							</systemPropertyVariables>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+
+		<!--
+			Release profile. Adds everything Maven Central requires but that normal
+			iteration does not: GPG signatures, the sources jar, the public-API javadoc
+			jar, a flattened pom (strips build-only elements such as <repositories>), and
+			the central-publishing-maven-plugin that uploads to the Central Portal. The
+			only Central-aware command is `mvn -Prelease deploy`; every other build stays
+			Java-only and fast. autoPublish is false, so a deployment stages in the Portal
+			for manual review instead of going live automatically.
+		-->
+		<profile>
+			<id>release</id>
+			<build>
+				<plugins>
+					<!-- Sources jar (moved here so plain `mvn package` stays Java-only). -->
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-source-plugin</artifactId>
+						<version>3.4.0</version>
+						<executions>
+							<execution>
+								<id>attach-sources</id>
+								<goals>
+									<goal>jar</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+
+					<!--
+						Public-API javadoc jar. Inherits the global maven-javadoc-plugin
+						configuration (strict doclint, failOnError) at default visibility, so
+						it ships only the public API.
+					-->
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-javadoc-plugin</artifactId>
+						<executions>
+							<execution>
+								<id>attach-javadocs</id>
+								<goals>
+									<goal>jar</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+
+					<!--
+						Detached GPG signatures (.asc) for every artifact. No passphrase is
+						configured here: gpg-agent / Pinentry supplies it at deploy time.
+					-->
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-gpg-plugin</artifactId>
+						<version>3.2.7</version>
+						<executions>
+							<execution>
+								<id>sign-artifacts</id>
+								<phase>verify</phase>
+								<goals>
+									<goal>sign</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+
+					<!--
+						Flattened pom for publishing. oss mode keeps the Central-required
+						metadata (name, description, url, licenses, developers, scm) while
+						dropping build-only elements - notably the jitpack <repositories>
+						block, which consumers must never inherit.
+					-->
+					<plugin>
+						<groupId>org.codehaus.mojo</groupId>
+						<artifactId>flatten-maven-plugin</artifactId>
+						<version>1.6.0</version>
+						<configuration>
+							<flattenMode>oss</flattenMode>
+							<!--
+								oss mode keeps <repositories> by default; force-remove it so the
+								jitpack entry (a build-only need for the chesslib test dependency)
+								never reaches consumers.
+							-->
+							<pomElements>
+								<repositories>remove</repositories>
+							</pomElements>
+						</configuration>
+						<executions>
+							<execution>
+								<id>flatten</id>
+								<phase>process-resources</phase>
+								<goals>
+									<goal>flatten</goal>
+								</goals>
+							</execution>
+							<execution>
+								<id>flatten-clean</id>
+								<phase>clean</phase>
+								<goals>
+									<goal>clean</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+
+					<!--
+						Uploads the signed bundle to the Central Portal. publishingServerId
+						matches the <server><id>central</id> entry in ~/.m2/settings.xml.
+					-->
+					<plugin>
+						<groupId>org.sonatype.central</groupId>
+						<artifactId>central-publishing-maven-plugin</artifactId>
+						<version>0.7.0</version>
+						<extensions>true</extensions>
+						<configuration>
+							<publishingServerId>central</publishingServerId>
+							<autoPublish>false</autoPublish>
 						</configuration>
 					</plugin>
 				</plugins>
