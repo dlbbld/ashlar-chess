@@ -46,7 +46,7 @@ where it is cheap (no consumers exist yet).
       Java-only phase - if SPDX is later extended to XML/properties/Markdown, each file
       type needs its own comment syntax, NOT `//`.
 - [x] Add `tools/java-license-headers.ps1` to check/fix the exact Java header before releases
-- [ ] Eclipse template adding the chosen header on every new Java class
+- [x] Eclipse template adding the chosen header on every new Java class (obsolete as adds second maintenance location)
 - [x] Rename decision resolved: ashlar-chess is the final name (executed in Step 0 + below)
 - [x] DeepSquare / Bitboard / python-chess prior releases complete
 - [x] Mention that chesslib is used for testing
