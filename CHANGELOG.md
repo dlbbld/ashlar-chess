@@ -7,7 +7,15 @@ Releases from 3.3 onward. Earlier history is in git tags only.
 
 ## [17.0.0]
 
-Renamed the project from clean-chess to ashlar-chess, and the base package com.dlb.chess → io.github.dlbbld.ashlarchess (the old package namespace reverse-mapped to a domain not controlled by the project). Earlier entries use the new names for consistency; releases before 17.0.0 shipped as clean-chess / com.dlb.chess.
+The **first Maven Central release**. Renamed the project from clean-chess to ashlar-chess, and the base package com.dlb.chess → io.github.dlbbld.ashlarchess (the old package namespace reverse-mapped to a domain not controlled by the project). Earlier entries use the new names for consistency; releases before 17.0.0 shipped as clean-chess / com.dlb.chess and were distributed via JitPack.
+
+### Notable
+
+- Published to Maven Central at coordinate `io.github.dlbbld:ashlar-chess`. Java 17+ baseline (`maven.compiler.release` = 17). JitPack is deprecated as a distribution channel — existing JitPack builds remain but are unsupported.
+
+### Breaking
+
+- Project and base-package rename: `com.dlb.chess.*` → `io.github.dlbbld.ashlarchess.*` across the entire public API; every downstream import changes. The Maven coordinate changes from `com.github.dlbbld:clean-chess` (JitPack) to `io.github.dlbbld:ashlar-chess` (Maven Central).
 
 ## [16.1.0] - 2026-05-28
 

@@ -132,9 +132,34 @@ git push origin X.Y.Z
 
 The tag is unannotated (matches the convention of prior tags) — no signing required by repo policy.
 
-### 4. Post-release
+### 4. Publish to Maven Central
 
-Verify the artifact resolves at the published Maven Central coordinates before announcing.
+Distribution is the Sonatype Central Portal via `central-publishing-maven-plugin`, wired into the `release` profile alongside GPG signing and the sources / javadoc jars. `mvn -Prelease deploy` is the only Central-aware command — it builds + signs the main / sources / javadoc jars and uploads a single staged deployment.
+
+Pre-deploy checks (no upload):
+
+```
+.\tools\java-license-headers.ps1 -Check   # header drift
+mvn -Prelease help:active-profiles         # confirm the `release` profile is active
+mvn -Prelease verify                       # build + GPG-sign + sources/javadoc jars; full dry run of the bundle
+```
+
+`verify` and `deploy` need the GPG signing passphrase. It is **not** stored on disk — gpg-agent / Pinentry prompts for it at sign time. The signing key (`6A4D42B96FD6045B`, RSA 4096) must be in the local keyring and published to `keyserver.ubuntu.com`; Portal credentials (user token) live in `~/.m2/settings.xml` under `<server><id>central</id>`.
+
+Deploy:
+
+```
+mvn -Prelease deploy                       # uploads a staged deployment to the Central Portal
+```
+
+`autoPublish=false`, so the upload **stages** but does not go live. Approve it manually at <https://central.sonatype.com/publishing/deployments>:
+
+- **First release:** review the staged contents (the main + sources + javadoc jars, their `.asc` signatures, and the flattened POM) before releasing. Releasing is the one immutable, irreversible step — once released, the `groupId:artifactId:version` triple is permanent and cannot be changed or unpublished.
+
+### 5. Post-release
+
+- Verify the artifact resolves at <https://central.sonatype.com/artifact/io.github.dlbbld/ashlar-chess> before announcing (index propagation can take minutes to a couple of hours).
+- Archive the shipped release in `tasks.md`: move its section to **Done** at the bottom (or collapse it to a one-line "X.Y.Z — published YYYY-MM-DD, see CHANGELOG"). The recurring procedure lives here in workflows.md and the consumer-facing summary in CHANGELOG.md, so the granular one-time checklist can be pruned without losing anything.
 
 ### Version bumps
 

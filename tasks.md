@@ -158,8 +158,12 @@ where it is cheap (no consumers exist yet).
         mvn -Prelease verify                 # confirm signing / javadoc jar / source jar wiring
 - [ ] First publish via the Central Portal - staged release, manual approval the first time
 - [ ] Verify the artifact at https://central.sonatype.com/artifact/io.github.dlbbld/ashlar-chess
-- [ ] Document the per-release workflow (version bump -> tag -> `mvn -Prelease deploy` ->
-      Portal release) in `setup.md` ("Releasing" section) or a dedicated `release.md`
+- [x] Document the per-release workflow (version bump -> tag -> `mvn -Prelease deploy` ->
+      Portal release)
+      -> updated workflows.md "Cutting a release" (the existing recurring-procedure doc; not a new
+         release.md). Added step 4 "Publish to Maven Central" (pre-deploy checks, gpg-agent passphrase
+         note, `mvn -Prelease deploy`, autoPublish=false manual Portal approval) and renumbered
+         post-release to step 5 with the artifact-verify URL + the tasks.md archive convention.
 
 ### Post-publish
 - [x] Decide whether JitPack stays available in parallel (free, harmless) or is deprecated
