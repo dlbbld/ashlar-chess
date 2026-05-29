@@ -99,13 +99,13 @@ where it is cheap (no consumers exist yet).
 - (JitPack-block -> Central-snippet swap stays a publish-time task below)
 
 ### Sonatype Central Portal setup (publish time, manual - your account)
-- [ ] Create Sonatype Central account at https://central.sonatype.com, sign in via GitHub
-- [ ] Confirm the `io.github.dlbbld` namespace is verified. GitHub sign-in usually
+- [x] Create Sonatype Central account at https://central.sonatype.com, sign in via GitHub
+- [x] Confirm the `io.github.dlbbld` namespace is verified. GitHub sign-in usually
       auto-provisions it; if not, follow Sonatype's GitHub namespace verification flow.
 - [x] Generate a GPG key, record the keyID
       -> RSA 4096 [SC], uid "Daniel Bächli <daniel.baechli@gmail.com>", created 2026-05-29
       -> key ID 6A4D42B96FD6045B
-- [ ] Publish the public key to a keyserver and confirm it resolves:
+- [x] Publish the public key to a keyserver and confirm it resolves:
         gpg --keyserver keyserver.ubuntu.com --send-keys 6A4D42B96FD6045B
         gpg --keyserver keyserver.ubuntu.com --recv-keys 6A4D42B96FD6045B   # verify round-trip
 - [ ] Configure `~/.m2/settings.xml` with Portal credentials + GPG passphrase
