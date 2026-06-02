@@ -59,30 +59,53 @@ class GoingToCorner implements EnumConstants {
   }
 
   private static Square calculateTargetSquare(Side winner, BitboardPosition bitboardPosition, Goal goal, Piece p) {
-    Square target;
-
     final boolean isDarkCorner = UnwinnabilityMaterialBitboard.calculateHasDarkSquareBishops(winner, bitboardPosition)
         || UnwinnabilityMaterialBitboard.calculateHasLightSquareBishops(winner.getOppositeSide(), bitboardPosition)
             && UnwinnabilityMaterialBitboard.calculateHasNoBishops(winner, bitboardPosition);
 
-    if (isDarkCorner) {
-      // 4: set target := if goal = Win then (P.type=K)?h6 : h8 else (P.type =K)?h8 : g8
-      target = goal == Goal.WIN ? p.getPieceType() == KING ? H6 : H8 : p.getPieceType() == KING ? H8 : G8;
-
-      // 5: else ( -> The target corner is set to be a8)
-    } else {
-      // 6: set target := if goal = Win then (P.type=K)?a6 : a8 else (P.type =K)?a8 : b8
-      target = goal == Goal.WIN ? p.getPieceType() == KING ? A6 : A8 : p.getPieceType() == KING ? A8 : B8;
-    }
-
-    // 7: if the intended winner has the black pieces then
+    Square target = calculateTargetSquare(isDarkCorner, goal, p.getPieceType());
     if (winner == BLACK) {
       // 8: set target := (flip-rank  flip-file)(target) . Flip the target with respect to the
       // center of the board (a8 becomes h1, and h8 becomes a1)
-      //
       target = Square.flip(target);
     }
 
     return target;
+  }
+
+  private static Square calculateTargetSquare(boolean isDarkCorner, Goal goal, PieceType pieceType) {
+    if (isDarkCorner) {
+      // 4: set target := if goal = Win then (P.type=K)?h6 : h8 else (P.type =K)?h8 : g8
+      switch (goal) {
+        case WIN:
+          if (pieceType == KING) {
+            return H6;
+          }
+          return H8;
+        case LOSE:
+          if (pieceType == KING) {
+            return H8;
+          }
+          return G8;
+        default:
+          throw new IllegalArgumentException();
+      }
+    }
+    // 5: else ( -> The target corner is set to be a8)
+    // 6: set target := if goal = Win then (P.type=K)?a6 : a8 else (P.type =K)?a8 : b8
+    switch (goal) {
+      case WIN:
+        if (pieceType == KING) {
+          return A6;
+        }
+        return A8;
+      case LOSE:
+        if (pieceType == KING) {
+          return A8;
+        }
+        return B8;
+      default:
+        throw new IllegalArgumentException();
+    }
   }
 }
