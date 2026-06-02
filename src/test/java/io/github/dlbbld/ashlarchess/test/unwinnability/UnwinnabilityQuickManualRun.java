@@ -5,22 +5,19 @@ package io.github.dlbbld.ashlarchess.test.unwinnability;
 
 import io.github.dlbbld.ashlarchess.board.Board;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
-import io.github.dlbbld.ashlarchess.pgn.LenientPgnParser;
-import io.github.dlbbld.ashlarchess.pgn.PgnGame;
-import io.github.dlbbld.ashlarchess.pgn.PgnUtility;
-import io.github.dlbbld.ashlarchess.test.pgn.setup.PgnTestCaseCatalog;
-import io.github.dlbbld.ashlarchess.test.pgntest.enums.PgnTest;
 import io.github.dlbbld.ashlarchess.unwinnability.UnwinnableQuickAnalyzer;
 
 public class UnwinnabilityQuickManualRun {
 
   public static void main(String[] args) {
 
-    final String pgnName = "05_helpmate2_white_to_move.pgn";
+    // final String pgnName = "05_helpmate2_white_to_move.pgn";
+    //
+    // final PgnTest pgnTest = PgnTestCaseCatalog.findPgnTestPgnNotListed(pgnName);
+    // final PgnGame pgnGame = LenientPgnParser.parse(pgnTest.getFolderPath(), pgnName);
+    // final Board board = PgnUtility.calculateBoard(pgnGame);
 
-    final PgnTest pgnTest = PgnTestCaseCatalog.findPgnTestPgnNotListed(pgnName);
-    final PgnGame pgnGame = LenientPgnParser.parse(pgnTest.getFolderPath(), pgnName);
-    final Board board = PgnUtility.calculateBoard(pgnGame);
+    final Board board = new Board("4k3/8/8/8/8/8/8/R3K3 b - - 0 100");
 
     System.out.println("White quick: " + UnwinnableQuickAnalyzer.unwinnableQuick(board, Side.WHITE));
 

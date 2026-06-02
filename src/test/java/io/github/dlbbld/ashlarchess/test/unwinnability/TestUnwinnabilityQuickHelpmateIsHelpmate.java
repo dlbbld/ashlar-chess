@@ -21,9 +21,9 @@ import io.github.dlbbld.ashlarchess.test.pgn.setup.PgnTestCaseCatalog;
 import io.github.dlbbld.ashlarchess.unwinnability.UnwinnabilityQuickAnalysis;
 import io.github.dlbbld.ashlarchess.unwinnability.UnwinnableQuickAnalyzer;
 
-class TestUnwinnabilityQuickHelpMateIsHelpMate {
+class TestUnwinnabilityQuickHelpmateIsHelpmate {
 
-  private static final Logger logger = Nulls.getLogger(TestUnwinnabilityQuickHelpMateIsHelpMate.class);
+  private static final Logger logger = Nulls.getLogger(TestUnwinnabilityQuickHelpmateIsHelpmate.class);
 
   @SuppressWarnings("static-method")
   @Test

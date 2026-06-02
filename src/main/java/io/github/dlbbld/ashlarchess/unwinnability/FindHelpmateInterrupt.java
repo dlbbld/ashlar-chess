@@ -16,11 +16,11 @@ import io.github.dlbbld.ashlarchess.common.ucimove.utility.UciMoveUtility;
 import io.github.dlbbld.ashlarchess.model.LegalMove;
 import io.github.dlbbld.ashlarchess.model.UciMove;
 
-class FindHelpMateInterrupt {
+class FindHelpmateInterrupt {
 
   private static final boolean IS_DEBUG = false;
 
-  private static final Logger logger = Nulls.getLogger(FindHelpMateInterrupt.class);
+  private static final Logger logger = Nulls.getLogger(FindHelpmateInterrupt.class);
 
   // Our quick algorithm is extremely light, requiring only a few microseconds on average per
   // position. It is also sound, but not complete. However, as we detail in Section 5, with an
@@ -34,7 +34,7 @@ class FindHelpMateInterrupt {
 
   private static FindHelpmateAnalysis calculateHelpmate(HelpmateSearchBoard board, Side c) {
     final List<LegalMove> mateList = new ArrayList<>();
-    final FindHelpMateInterruptResult result = calculateHelpmate(board, c, 0, mateList);
+    final FindHelpmateInterruptResult result = calculateHelpmate(board, c, 0, mateList);
 
     return switch (result) {
       case TRUE -> new FindHelpmateAnalysis(FindHelpmateResult.YES, 0, convertLegalMoveList(mateList));
@@ -44,11 +44,11 @@ class FindHelpMateInterrupt {
     };
   }
 
-  private static FindHelpMateInterruptResult calculateHelpmate(HelpmateSearchBoard board, Side c, int currentDepth,
+  private static FindHelpmateInterruptResult calculateHelpmate(HelpmateSearchBoard board, Side c, int currentDepth,
       List<LegalMove> mateList) {
     final boolean isIntendedWinnerHavingCheckmate = board.isCheckmate() && board.getHavingMove() == c.getOppositeSide();
     if (isIntendedWinnerHavingCheckmate) {
-      return FindHelpMateInterruptResult.TRUE;
+      return FindHelpmateInterruptResult.TRUE;
     }
 
     // Per the paper / Ambrona issue thread: 75-move and 5-fold repetition do not apply when adjudicating
@@ -66,15 +66,15 @@ class FindHelpMateInterrupt {
         }
 
         mateList.add(legalMove);
-        final FindHelpMateInterruptResult hasCheckmate = calculateHelpmate(board, c, currentDepth + 1, mateList);
+        final FindHelpmateInterruptResult hasCheckmate = calculateHelpmate(board, c, currentDepth + 1, mateList);
         board.unmove();
         switch (hasCheckmate) {
           case TRUE -> {
-            return FindHelpMateInterruptResult.TRUE;
+            return FindHelpmateInterruptResult.TRUE;
           }
           case INTERRUPTED -> {
             mateList.remove(mateList.size() - 1);
-            return FindHelpMateInterruptResult.INTERRUPTED;
+            return FindHelpmateInterruptResult.INTERRUPTED;
           }
           case FALSE -> mateList.remove(mateList.size() - 1);
           default -> throw new IllegalArgumentException();
@@ -83,9 +83,9 @@ class FindHelpMateInterrupt {
     }
     // search could have continued
     if (currentDepth == D) {
-      return FindHelpMateInterruptResult.INTERRUPTED;
+      return FindHelpmateInterruptResult.INTERRUPTED;
     }
-    return FindHelpMateInterruptResult.FALSE;
+    return FindHelpmateInterruptResult.FALSE;
   }
 
   private static List<UciMove> convertLegalMoveList(List<LegalMove> moveProgressList) {

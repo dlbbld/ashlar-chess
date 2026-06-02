@@ -83,7 +83,7 @@ public class UnwinnableQuickAnalyzer {
     // 2: perform a depth-first search over the tree of variations of pos and interrupt the
     // search if (i) checkmate is found for player c or (ii) depth D is reached
     final String invariantTwo = board.getFen();
-    final FindHelpmateAnalysis checkmateSearchResult = FindHelpMateInterrupt.calculateHelpmate(board, c);
+    final FindHelpmateAnalysis checkmateSearchResult = FindHelpmateInterrupt.calculateHelpmate(board, c);
     if (!invariantTwo.equals(board.getFen())) {
       throw new ProgrammingMistakeException("Board was changed");
     }

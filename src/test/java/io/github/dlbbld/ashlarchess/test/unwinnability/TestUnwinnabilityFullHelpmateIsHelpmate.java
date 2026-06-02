@@ -24,9 +24,9 @@ import io.github.dlbbld.ashlarchess.test.pgntest.enums.PgnTest;
 import io.github.dlbbld.ashlarchess.unwinnability.UnwinnabilityFullAnalysis;
 import io.github.dlbbld.ashlarchess.unwinnability.UnwinnableFullAnalyzer;
 
-class TestUnwinnabilityFullHelpMateIsHelpMate {
+class TestUnwinnabilityFullHelpmateIsHelpmate {
 
-  private static final Logger logger = Nulls.getLogger(TestUnwinnabilityFullHelpMateIsHelpMate.class);
+  private static final Logger logger = Nulls.getLogger(TestUnwinnabilityFullHelpmateIsHelpmate.class);
 
   @SuppressWarnings("static-method")
   @Test
