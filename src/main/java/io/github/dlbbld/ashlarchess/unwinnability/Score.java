@@ -18,8 +18,6 @@ class Score {
   // Inputs: position, legal move in the position
   // Output: Normal, Reward, or Punish (variation score)
   public static ScoreResult score(Side color, Side havingMove, BitboardPosition bitboardPosition, LegalMove legalMove) {
-    ScoreResult variation = ScoreResult.NORMAL;
-
     // 1: if it is the intended winner's turn in pos then
     if (havingMove == color) {
       // 2: if m is a capture or m is a pawn push or Going-to-corner(pos, m, Win) then
@@ -43,27 +41,30 @@ class Score {
       if (isNeedLoserPromotion) {
         // 6: if m is a promotion to a queen or rook then return Punish
         // Note: we implement the code with differences to the PDF for this case
-        final boolean isHeavyPromotion = calculateIsPromotionToHeavyPiece(legalMove);
-        final boolean isPawnMove = calculateIsPawnMove(legalMove);
-        // 7: else if m is a pawn move then return Reward
-        // Note: the code does not uphelp this
-        variation = isPawnMove && !isHeavyPromotion ? ScoreResult.REWARD : ScoreResult.PUNISH;
+        if (calculateIsPromotionToHeavyPiece(legalMove)) {
+          return ScoreResult.PUNISH;
+        }
+        if (calculateIsPawnMove(legalMove)) {
+          return ScoreResult.REWARD;
+        }
+        // here we follow CHA 2.6.1 implementation and not the spec so we can use CHA 2.6.1 as oracle
+        return ScoreResult.PUNISH;
       }
 
       // 8: if Going-to-corner(pos, m, Lose) then return Reward
       if (GoingToCorner.goingToCorner(color, bitboardPosition, legalMove, Goal.LOSE)) {
-        variation = ScoreResult.REWARD;
+        return ScoreResult.REWARD;
       }
 
       // 9: if m is a capture then return Punish
       if (calculateIsCapture(legalMove)) {
-        variation = ScoreResult.PUNISH;
+        return ScoreResult.PUNISH;
       }
     }
 
     // 10: return Normal ( -> The default output if none of the above conditions hold)
     // Note: Not what the code is doing
-    return variation;
+    return ScoreResult.NORMAL;
   }
 
   private static boolean calculateIsCapture(LegalMove legalMove) {
