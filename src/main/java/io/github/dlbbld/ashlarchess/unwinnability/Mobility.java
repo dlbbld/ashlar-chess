@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
-import org.apache.logging.log4j.Logger;
 import org.eclipse.jdt.annotation.NonNull;
 
 import io.github.dlbbld.ashlarchess.bitboard.BitboardPosition;
@@ -24,8 +23,6 @@ import io.github.dlbbld.ashlarchess.common.utility.BasicUtility;
 
 //Figure 7 Mobility algorithm.
 class Mobility {
-
-  private static final Logger logger = Nulls.getLogger(Mobility.class);
 
   // Inputs: a position
   // Output: mobility solution {MP!s}P in pos,s in S

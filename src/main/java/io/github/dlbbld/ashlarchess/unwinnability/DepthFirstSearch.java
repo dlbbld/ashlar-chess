@@ -6,18 +6,13 @@ package io.github.dlbbld.ashlarchess.unwinnability;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.logging.log4j.Logger;
-
 import io.github.dlbbld.ashlarchess.board.Board;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
-import io.github.dlbbld.ashlarchess.common.Nulls;
 import io.github.dlbbld.ashlarchess.common.ucimove.utility.UciMoveUtility;
 import io.github.dlbbld.ashlarchess.model.LegalMove;
 import io.github.dlbbld.ashlarchess.model.UciMove;
 
 class DepthFirstSearch {
-
-  private static final Logger logger = Nulls.getLogger(DepthFirstSearch.class);
 
   // Our quick algorithm is extremely light, requiring only a few microseconds on average per
   // position. It is also sound, but not complete. However, as we detail in Section 5, with an
