@@ -82,25 +82,46 @@ class TestScore implements EnumConstants {
     assertEquals(ScoreResult.REWARD, score(Side.WHITE, new Board("4k3/8/8/8/7p/8/p7/1N2K3 b - - 0 1"), H4, H3));
   }
 
-  // ----- Known deviations from the PDF (characterized; assert current behaviour). -----
+  // ----- Going-to-corner vs capture precedence, and need-loser-promotion interactions (CHA 2.6.1 values). -----
 
-  // PDF Figure 12 step 8 returns Reward as soon as the move is going-to-corner, and CHA's find_mate uses
-  // `if going_to_square ... else if capture ...`, so a loser move that is BOTH going-to-corner AND a capture is Reward.
-  // Our Score uses two independent ifs (going-to-corner sets Reward, then capture overrides to Punish), so it yields
-  // Punish. Likely a bug (else-if vs if). Kxd5 captures the rook while stepping toward a8.
+  // Corner wins over capture: a loser move that is BOTH going-to-corner AND a capture scores Reward, because CHA uses
+  // `if going_to_square ... else if capture ...` (the PDF agrees via its step-8-before-step-9 early returns). Kxd5
+  // captures the rook while stepping toward a8.
   @SuppressWarnings("static-method")
   @Test
-  void loserGoingToCornerAndCaptureIsPunish_deviatesFromSpecAndCha() {
-    assertEquals(ScoreResult.PUNISH, score(Side.WHITE, new Board("8/8/8/3R4/4k3/8/8/4K3 b - - 0 1"), E4, D5));
+  void loserGoingToCornerAndCaptureIsReward() {
+    assertEquals(ScoreResult.REWARD, score(Side.WHITE, new Board("8/8/8/3R4/4k3/8/8/4K3 b - - 0 1"), E4, D5));
   }
 
-  // Under need-loser-promotion, the PDF (steps 5-7) only scores a promotion-to-Q/R (Punish) or a pawn move (Reward),
-  // and otherwise falls through to step 8/9/10. A quiet loser king move would therefore be Normal in the PDF. CHA's
-  // code sets the base to Punish for any non-pawn move (`movedPiece == PAWN ? ... : PUNISH`), and our Score matches CHA.
+  // Need-loser-promotion sets a base (Punish for a non-pawn move), but going-to-corner still overrides it: a loser
+  // king walking to the corner scores Reward.
+  @SuppressWarnings("static-method")
+  @Test
+  void loserMustPromoteKingTowardCornerIsReward() {
+    assertEquals(ScoreResult.REWARD, score(Side.WHITE, new Board("4k3/7p/8/8/8/8/8/1N2K3 b - - 0 1"), E8, D7));
+  }
+
+  // Need-loser-promotion: a pawn CAPTURE. CHA's base Reward (pawn) is overridden to Punish by the capture branch.
+  // Deviates from the PDF-literal step 7 (Reward for any pawn move); we follow CHA. b4xc3 takes the knight.
+  @SuppressWarnings("static-method")
+  @Test
+  void loserMustPromotePawnCaptureIsPunish_followsChaNotPdf() {
+    assertEquals(ScoreResult.PUNISH, score(Side.WHITE, new Board("4k3/8/8/8/1p6/2N5/8/4K3 b - - 0 1"), B4, C3));
+  }
+
+  // Need-loser-promotion: a quiet non-pawn move keeps the base Punish (no corner, no capture). Deviates from the
+  // PDF-literal, which falls through to Normal; we follow CHA.
   @SuppressWarnings("static-method")
   @Test
   void loserMustPromoteQuietKingMoveIsPunish_followsChaNotPdf() {
     assertEquals(ScoreResult.PUNISH, score(Side.WHITE, new Board("4k3/8/8/8/8/8/p7/1N2K3 b - - 0 1"), E8, E7));
+  }
+
+  // No need-loser-promotion: a quiet loser move (no corner, no capture) keeps the base Normal.
+  @SuppressWarnings("static-method")
+  @Test
+  void loserQuietMoveWithoutPromotionPressureIsNormal() {
+    assertEquals(ScoreResult.NORMAL, score(Side.WHITE, new Board("4k3/8/8/8/8/8/8/R3K3 b - - 0 1"), E8, F8));
   }
 
   private static ScoreResult score(Side winner, Board board, Square from, Square to) {
