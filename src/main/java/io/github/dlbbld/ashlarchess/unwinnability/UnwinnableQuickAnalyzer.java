@@ -24,7 +24,7 @@ import io.github.dlbbld.ashlarchess.model.UciMove;
 
 public class UnwinnableQuickAnalyzer {
 
-  private static final boolean IS_ALIGN_QUICK_WITH_AMBRONA_REFERENCE_IMPLEMENTATION = true;
+  private static final boolean IS_ALIGN_QUICK_WITH_AMBRONA_CHA_2_6_1 = true;
 
   public static UnwinnabilityQuickAnalysis unwinnableQuick(Board board, Side c) {
     return unwinnableQuick(board, c, false, new MobilitySolution());
@@ -130,7 +130,7 @@ public class UnwinnableQuickAnalyzer {
       }
     }
 
-    if (IS_ALIGN_QUICK_WITH_AMBRONA_REFERENCE_IMPLEMENTATION) {
+    if (IS_ALIGN_QUICK_WITH_AMBRONA_CHA_2_6_1) {
       boolean isUnwinnable = false;
       final boolean hasOnlyPawnsAndBishops = calculateHasOnlyPawnsBishopsAndKings(board.getBitboardPosition());
       final boolean isBlockedCandidate = calculateIsBlockedCandidate(board.getBitboardPosition());
