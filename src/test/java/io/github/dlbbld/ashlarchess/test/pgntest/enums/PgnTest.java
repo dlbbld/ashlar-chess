@@ -106,6 +106,7 @@ public enum PgnTest {
   CHA_BASIC_MATE_HELPMATE_04(false, "cha/basicCheckmate/helpmate04"),
   CHA_BASIC_MATE_HELPMATE_10(false, "cha/basicCheckmate/helpmate10"),
   CHA_BASIC_MATE_HELPMATE_AROUND_MAX(false, "cha/basicCheckmate/helpmateAroundMax"),
+  CHA_BASIC_CHECKMATE_REACHABILITY(false, "cha/basicCheckmateReachability"),
 
   LAST_MOVE_ADDED_ACCIDENTALLY(false, "realGames/lastMoveAddedAccidentally"),
 
