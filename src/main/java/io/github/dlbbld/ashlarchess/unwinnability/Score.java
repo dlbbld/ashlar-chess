@@ -48,7 +48,12 @@ class Score {
           return ScoreResult.PUNISH;
         }
         if (calculateIsPawnMove(legalMove)) {
-          return ScoreResult.REWARD;
+          if (!calculateIsCapture(legalMove)) {
+            return ScoreResult.REWARD;
+          }
+          // Spec for this case returns REWARD, CHA 2.6.1 returns PUNISH
+          // we follow CHA 2.6.1 so we can use it as oracle
+          return ScoreResult.PUNISH;
         }
       }
 
@@ -61,11 +66,6 @@ class Score {
       if (calculateIsCapture(legalMove)) {
         return ScoreResult.PUNISH;
       }
-
-      // Spec for this case returns NORMAL, as it just falls through. The CHA 2.6.1 assigns the previously assigned
-      // value of PUNISH in the is pawn move branch.
-      // we follow CHA 2.6.1 so we can use it as oracle
-      return ScoreResult.PUNISH;
     }
 
     // 10: return Normal ( -> The default output if none of the above conditions hold)
