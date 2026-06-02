@@ -6,7 +6,6 @@ package io.github.dlbbld.ashlarchess.unwinnability;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
 
 import io.github.dlbbld.ashlarchess.board.Board;
@@ -17,8 +16,6 @@ import io.github.dlbbld.ashlarchess.model.LegalMove;
 import io.github.dlbbld.ashlarchess.model.UciMove;
 
 class DepthFirstSearch {
-
-  private static final boolean IS_DEBUG = false;
 
   private static final Logger logger = Nulls.getLogger(DepthFirstSearch.class);
 
@@ -39,14 +36,15 @@ class DepthFirstSearch {
     return switch (result) {
       case HAS_HELPMATE -> new DepthFirstSearchAnalysis(DepthFirstSearchResult.HAS_HELPMATE, 0,
           convertLegalMoveList(mateList));
-      case HAS_NO_HELPMATE -> new DepthFirstSearchAnalysis(DepthFirstSearchResult.HAS_NO_HELPMATE, 0, new ArrayList<>());
+      case HAS_NO_HELPMATE -> new DepthFirstSearchAnalysis(DepthFirstSearchResult.HAS_NO_HELPMATE, 0,
+          new ArrayList<>());
       case INTERRUPTED -> new DepthFirstSearchAnalysis(DepthFirstSearchResult.UNKNOWN, 0, new ArrayList<>());
       default -> throw new IllegalArgumentException();
     };
   }
 
-  private static DepthFirstSearchRecursionResult performDepthFirstSearch(HelpmateSearchBoard board, Side c, int currentDepth,
-      List<LegalMove> mateList) {
+  private static DepthFirstSearchRecursionResult performDepthFirstSearch(HelpmateSearchBoard board, Side c,
+      int currentDepth, List<LegalMove> mateList) {
     final boolean isIntendedWinnerHavingCheckmate = board.isCheckmate() && board.getHavingMove() == c.getOppositeSide();
     if (isIntendedWinnerHavingCheckmate) {
       return DepthFirstSearchRecursionResult.HAS_HELPMATE;
@@ -60,14 +58,10 @@ class DepthFirstSearch {
 
       for (final LegalMove legalMove : board.getLegalMoves()) {
         board.move(legalMove.moveSpecification());
-        if (IS_DEBUG) {
-          final UciMove uciMove = UciMoveUtility.convertMoveSpecificationToUci(legalMove.havingMove(),
-              legalMove.moveSpecification());
-          logger.printf(Level.DEBUG, "%s - %d", uciMove.text(), currentDepth + 1);
-        }
 
         mateList.add(legalMove);
-        final DepthFirstSearchRecursionResult hasCheckmate = performDepthFirstSearch(board, c, currentDepth + 1, mateList);
+        final DepthFirstSearchRecursionResult hasCheckmate = performDepthFirstSearch(board, c, currentDepth + 1,
+            mateList);
         board.unmove();
         switch (hasCheckmate) {
           case HAS_HELPMATE -> {

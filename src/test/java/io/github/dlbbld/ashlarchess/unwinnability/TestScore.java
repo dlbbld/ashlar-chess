@@ -21,7 +21,8 @@ import io.github.dlbbld.ashlarchess.model.LegalMoveKind;
 // so they stay green and will flag if the implementation changes.
 class TestScore implements EnumConstants {
 
-  // ----- Intended winner to move (Figure 12, steps 1-3): capture / advanced pawn push / going-to-corner -> Reward. -----
+  // ----- Intended winner to move (Figure 12, steps 1-3): capture / advanced pawn push / going-to-corner -> Reward.
+  // -----
 
   @SuppressWarnings("static-method")
   @Test
@@ -105,7 +106,7 @@ class TestScore implements EnumConstants {
   // Deviates from the PDF-literal step 7 (Reward for any pawn move); we follow CHA. b4xc3 takes the knight.
   @SuppressWarnings("static-method")
   @Test
-  void loserMustPromotePawnCaptureIsPunish_followsChaNotPdf() {
+  void loserMustPromotePawnCaptureIsPunishFollowsChaNotPdf() {
     assertEquals(ScoreResult.PUNISH, score(Side.WHITE, new Board("4k3/8/8/8/1p6/2N5/8/4K3 b - - 0 1"), B4, C3));
   }
 
@@ -113,7 +114,7 @@ class TestScore implements EnumConstants {
   // PDF-literal, which falls through to Normal; we follow CHA.
   @SuppressWarnings("static-method")
   @Test
-  void loserMustPromoteQuietKingMoveIsPunish_followsChaNotPdf() {
+  void loserMustPromoteQuietKingMoveIsPunishFollowsChaNotPdf() {
     assertEquals(ScoreResult.PUNISH, score(Side.WHITE, new Board("4k3/8/8/8/8/8/p7/1N2K3 b - - 0 1"), E8, E7));
   }
 
@@ -128,7 +129,8 @@ class TestScore implements EnumConstants {
     return Score.score(winner, board.getHavingMove(), board.getBitboardPosition(), move(board, from, to));
   }
 
-  private static ScoreResult scorePromotion(Side winner, Board board, Square from, Square to, PromotionPieceType promo) {
+  private static ScoreResult scorePromotion(Side winner, Board board, Square from, Square to,
+      PromotionPieceType promo) {
     return Score.score(winner, board.getHavingMove(), board.getBitboardPosition(), promotion(board, from, to, promo));
   }
 

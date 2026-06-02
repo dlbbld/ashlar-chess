@@ -12,9 +12,7 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
 
 import io.github.dlbbld.ashlarchess.bitboard.BitboardPosition;
-import io.github.dlbbld.ashlarchess.bitboard.BitboardPositionUtility;
 import io.github.dlbbld.ashlarchess.board.Board;
-import io.github.dlbbld.ashlarchess.board.enums.CastlingRight;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
 import io.github.dlbbld.ashlarchess.board.enums.Square;
 import io.github.dlbbld.ashlarchess.board.enums.SquareType;
@@ -31,8 +29,6 @@ import io.github.dlbbld.ashlarchess.model.UciMove;
 //limits of the search. The Score routine is defined in Figure 12 (Appendix A).
 class FindHelpmate {
 
-  private static final boolean IS_DEBUG = false;
-
   private static final Logger logger = Nulls.getLogger(FindHelpmate.class);
 
   // empirically enough
@@ -43,8 +39,6 @@ class FindHelpmate {
 
   private int localNodeCount = 0;
 
-  private int evalCounter = 0;
-  private final List<String> evalFenList = new ArrayList<>();
   private boolean isCanExhaust = true;
   private List<LegalMove> moveEvaluationList = new ArrayList<>();
 
@@ -75,13 +69,6 @@ class FindHelpmate {
     if (!invariantPosition.equals(board.getDynamicPosition())
         || invariantEnPassantCaptureTargetSquare != board.getEnPassantCaptureTargetSquare()) {
       throw new ProgrammingMistakeException("Board was changed");
-    }
-
-    if (IS_DEBUG) {
-      logger.printf(Level.DEBUG, "Evaluated %d FEN positions", evalFenList.size());
-      for (final String fen : evalFenList) {
-        logger.debug(fen);
-      }
     }
 
     switch (findHelpmate) {
@@ -179,25 +166,6 @@ class FindHelpmate {
           throw new IllegalArgumentException();
       }
 
-      if (IS_DEBUG) {
-        final String uciMoveStr = UciMoveUtility
-            .convertMoveSpecificationToUci(legalMove.havingMove(), legalMove.moveSpecification()).text();
-        final String out = uciMoveStr + " " + newDepth;
-        logger.debug(out);
-        evalCounter++;
-        final String evaluateStockfishFen = calculateStockfishFen(board);
-
-        if (evaluateStockfishFen.startsWith("r1bqkb1r/pppppppp/8/8/5P2/8/2n3P1/n1K5 w kq")) {
-          logger.debug("Reached debug FEN marker");
-        }
-
-        if (evalCounter == 3527) {
-          logger.debug("Reached debug evaluation counter marker");
-        }
-
-        evalFenList.add(evaluateStockfishFen);
-      }
-
       // 9: if Find-Helpmatec(pos.move(m), depth+1, maxDepth+inc) then return true
       board.move(legalMove.moveSpecification());
 
@@ -278,87 +246,6 @@ class FindHelpmate {
       result.add(UciMoveUtility.convertMoveSpecificationToUci(legalMove.havingMove(), legalMove.moveSpecification()));
     }
     return result;
-  }
-
-  private static String calculateStockfishFen(HelpmateSearchBoard board) {
-
-    final Square enPassantCaptureTargetSquare = calculateIsEraseEnPassantCaptureTargetSquare(board) ? Square.NONE
-        : board.getEnPassantCaptureTargetSquare();
-
-    final StringBuilder fenSquareErased = new StringBuilder();
-
-    fenSquareErased.append(BitboardPositionUtility.calculatePiecePlacement(board.getBitboardPosition()));
-    fenSquareErased.append(" ");
-
-    fenSquareErased.append(board.getHavingMove() == Side.WHITE ? "w" : "b");
-    fenSquareErased.append(" ");
-
-    appendCastlingRights(fenSquareErased, board.getCastlingRight(Side.WHITE), board.getCastlingRight(Side.BLACK));
-    fenSquareErased.append(" ");
-
-    if (enPassantCaptureTargetSquare == Square.NONE) {
-      fenSquareErased.append("-");
-    } else {
-      fenSquareErased.append(enPassantCaptureTargetSquare.getName().toLowerCase());
-    }
-    fenSquareErased.append(" ");
-
-    fenSquareErased.append("0");
-    fenSquareErased.append(" ");
-
-    fenSquareErased.append("1");
-
-    return Nulls.toString(fenSquareErased);
-  }
-
-  private static void appendCastlingRights(StringBuilder fen, CastlingRight whiteCastlingRight,
-      CastlingRight blackCastlingRight) {
-    if (whiteCastlingRight == CastlingRight.NONE && blackCastlingRight == CastlingRight.NONE) {
-      fen.append("-");
-      return;
-    }
-    switch (whiteCastlingRight) {
-      case KING_AND_QUEEN_SIDE -> fen.append("KQ");
-      case KING_SIDE -> fen.append("K");
-      case QUEEN_SIDE -> fen.append("Q");
-      case NONE -> {
-        // no characters for NONE; the all-NONE case is short-circuited above
-      }
-      default -> throw new IllegalArgumentException();
-    }
-    switch (blackCastlingRight) {
-      case KING_AND_QUEEN_SIDE -> fen.append("kq");
-      case KING_SIDE -> fen.append("k");
-      case QUEEN_SIDE -> fen.append("q");
-      case NONE -> {
-        // no characters for NONE; the all-NONE case is short-circuited above
-      }
-      default -> throw new IllegalArgumentException();
-    }
-  }
-
-  private static boolean calculateIsEraseEnPassantCaptureTargetSquare(HelpmateSearchBoard board) {
-    final Square enPassantCaptureTargetSquare = board.getEnPassantCaptureTargetSquare();
-
-    if (enPassantCaptureTargetSquare == Square.NONE) {
-      return false;
-    }
-
-    // The just-double-pushed (opponent) pawn sits one rank ahead of the EP target from the OPPONENT's perspective
-    // (= one rank back from the EP target from the side-to-move's perspective). The EP capture is realisable iff a
-    // side-to-move pawn sits on either file-adjacent square on the same rank as that opponent pawn.
-    final Square pawnTwoAdvanceSquare = Square.calculateAheadSquare(board.getHavingMove().getOppositeSide(),
-        enPassantCaptureTargetSquare);
-    final int pawnOrdinal = pawnTwoAdvanceSquare.ordinal();
-    final int pawnFile = pawnOrdinal % 8;
-    final long pawnBit = 1L << pawnOrdinal;
-    final long leftAdjacent = pawnFile > 0 ? pawnBit >>> 1 : 0L;
-    final long rightAdjacent = pawnFile < 7 ? pawnBit << 1 : 0L;
-    final long adjacentSameRank = leftAdjacent | rightAdjacent;
-    final BitboardPosition bitboardPosition = board.getBitboardPosition();
-    final long sideToMovePawns = board.getHavingMove() == Side.WHITE ? bitboardPosition.whitePawns()
-        : bitboardPosition.blackPawns();
-    return (adjacentSameRank & sideToMovePawns) == 0L;
   }
 
 }
