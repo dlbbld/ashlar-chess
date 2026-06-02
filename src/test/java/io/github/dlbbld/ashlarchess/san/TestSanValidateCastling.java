@@ -10,9 +10,6 @@ import org.junit.jupiter.api.Test;
 import io.github.dlbbld.ashlarchess.board.Board;
 import io.github.dlbbld.ashlarchess.board.enums.CastlingRightLoss;
 import io.github.dlbbld.ashlarchess.enums.CastlingCheck;
-import io.github.dlbbld.ashlarchess.san.CastlingCheckMapper;
-import io.github.dlbbld.ashlarchess.san.SanValidationException;
-import io.github.dlbbld.ashlarchess.san.StrictSanParser;
 
 class TestSanValidateCastling {
 

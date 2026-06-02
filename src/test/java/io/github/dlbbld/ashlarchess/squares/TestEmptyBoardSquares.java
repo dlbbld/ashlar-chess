@@ -17,15 +17,6 @@ import com.google.common.collect.ImmutableList;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
 import io.github.dlbbld.ashlarchess.board.enums.Square;
 import io.github.dlbbld.ashlarchess.common.constants.EnumConstants;
-import io.github.dlbbld.ashlarchess.squares.BishopEmptyBoardSquares;
-import io.github.dlbbld.ashlarchess.squares.BishopRange;
-import io.github.dlbbld.ashlarchess.squares.KingNonCastlingEmptyBoardSquares;
-import io.github.dlbbld.ashlarchess.squares.KnightEmptyBoardSquares;
-import io.github.dlbbld.ashlarchess.squares.PawnAnyAdvanceEmptyBoardSquares;
-import io.github.dlbbld.ashlarchess.squares.QueenEmptyBoardSquares;
-import io.github.dlbbld.ashlarchess.squares.QueenRange;
-import io.github.dlbbld.ashlarchess.squares.RookEmptyBoardSquares;
-import io.github.dlbbld.ashlarchess.squares.RookRange;
 
 class TestEmptyBoardSquares implements EnumConstants {
 

@@ -10,7 +10,6 @@ import io.github.dlbbld.ashlarchess.board.enums.Side;
 import io.github.dlbbld.ashlarchess.board.enums.Square;
 import io.github.dlbbld.ashlarchess.board.enums.SquareType;
 import io.github.dlbbld.ashlarchess.common.constants.EnumConstants;
-import io.github.dlbbld.ashlarchess.unwinnability.UnwinnabilityMaterialBitboard;
 
 /**
  * StaticPosition-backed material predicates used by the unwinnability/helpmate analysis. Reference implementations of

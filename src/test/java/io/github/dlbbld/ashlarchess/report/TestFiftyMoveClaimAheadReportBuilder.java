@@ -12,9 +12,6 @@ import org.junit.jupiter.api.Test;
 import io.github.dlbbld.ashlarchess.board.Board;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
 import io.github.dlbbld.ashlarchess.common.Nulls;
-import io.github.dlbbld.ashlarchess.report.FiftyMoveClaimAheadEntry;
-import io.github.dlbbld.ashlarchess.report.FiftyMoveClaimAheadReport;
-import io.github.dlbbld.ashlarchess.report.FiftyMoveClaimAheadReportBuilder;
 
 /**
  * Direct unit tests for {@link FiftyMoveClaimAheadReportBuilder} under the missed-opportunity filter with boundary-

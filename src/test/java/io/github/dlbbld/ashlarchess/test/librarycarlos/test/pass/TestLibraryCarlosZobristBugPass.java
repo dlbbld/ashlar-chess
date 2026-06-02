@@ -10,13 +10,13 @@ import java.nio.file.Path;
 import java.util.Set;
 import java.util.TreeSet;
 
-import com.github.bhlangonijr.chesslib.MoveBackup;
-import com.github.bhlangonijr.chesslib.game.Game;
 import org.apache.logging.log4j.Logger;
 import org.junit.jupiter.api.Test;
 
 import com.github.bhlangonijr.chesslib.Board;
+import com.github.bhlangonijr.chesslib.MoveBackup;
 import com.github.bhlangonijr.chesslib.Side;
+import com.github.bhlangonijr.chesslib.game.Game;
 import com.github.bhlangonijr.chesslib.move.Move;
 import com.github.bhlangonijr.chesslib.move.MoveGenerator;
 import com.github.bhlangonijr.chesslib.move.MoveList;

@@ -11,7 +11,6 @@ import org.junit.jupiter.api.Test;
 import io.github.dlbbld.ashlarchess.board.Board;
 import io.github.dlbbld.ashlarchess.common.Nulls;
 import io.github.dlbbld.ashlarchess.common.model.HalfMove;
-import io.github.dlbbld.ashlarchess.report.ClaimAheadEntry;
 
 /**
  * Direct unit tests for the {@link ClaimAheadEntry} record. Covers the compact-constructor invariant

@@ -12,7 +12,6 @@ import io.github.dlbbld.ashlarchess.board.enums.File;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
 import io.github.dlbbld.ashlarchess.common.constants.EnumConstants;
 import io.github.dlbbld.ashlarchess.fen.constants.FenConstants;
-import io.github.dlbbld.ashlarchess.unwinnability.SemiOpenFilesUtility;
 
 class TestSemiOpenFilesUtility implements EnumConstants {
 

@@ -15,9 +15,6 @@ import io.github.dlbbld.ashlarchess.board.Board;
 import io.github.dlbbld.ashlarchess.common.Nulls;
 import io.github.dlbbld.ashlarchess.common.model.HalfMove;
 import io.github.dlbbld.ashlarchess.pgn.PgnUtility;
-import io.github.dlbbld.ashlarchess.report.ClaimAheadEntry;
-import io.github.dlbbld.ashlarchess.report.ThreefoldClaimAheadReport;
-import io.github.dlbbld.ashlarchess.report.ThreefoldClaimAheadReportBuilder;
 import io.github.dlbbld.ashlarchess.test.pgn.setup.PgnTestCaseCatalog;
 import io.github.dlbbld.ashlarchess.test.pgntest.enums.PgnTest;
 

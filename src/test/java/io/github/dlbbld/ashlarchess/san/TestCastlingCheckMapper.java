@@ -13,8 +13,6 @@ import com.google.common.collect.ImmutableList;
 import io.github.dlbbld.ashlarchess.board.enums.CastlingRightLoss;
 import io.github.dlbbld.ashlarchess.common.Nulls;
 import io.github.dlbbld.ashlarchess.enums.CastlingCheck;
-import io.github.dlbbld.ashlarchess.san.CastlingCheckMapper;
-import io.github.dlbbld.ashlarchess.san.SanValidationProblem;
 
 /**
  * Lock-down tests for the bridge between {@link CastlingCheck} + {@link CastlingRightLoss} (internal pipeline

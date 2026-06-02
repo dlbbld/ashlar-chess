@@ -10,9 +10,6 @@ import io.github.dlbbld.ashlarchess.board.StaticPosition;
 import io.github.dlbbld.ashlarchess.board.enums.Piece;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
 import io.github.dlbbld.ashlarchess.board.enums.Square;
-import io.github.dlbbld.ashlarchess.squares.PawnDiagonalSquares;
-import io.github.dlbbld.ashlarchess.squares.PawnOneAdvanceEmptyBoardSquares;
-import io.github.dlbbld.ashlarchess.squares.PawnTwoAdvanceEmptyBoardSquares;
 
 public class PawnPotentialToSquares extends AbstractPotentialToSquares {
 

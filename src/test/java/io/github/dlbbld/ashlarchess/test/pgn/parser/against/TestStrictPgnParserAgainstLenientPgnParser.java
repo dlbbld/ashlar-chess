@@ -5,6 +5,8 @@ package io.github.dlbbld.ashlarchess.test.pgn.parser.against;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import java.util.List;
+
 import org.apache.logging.log4j.Logger;
 import org.junit.jupiter.api.Test;
 
@@ -16,8 +18,6 @@ import io.github.dlbbld.ashlarchess.test.model.PgnTestCaseList;
 import io.github.dlbbld.ashlarchess.test.pgn.parser.PgnCacheForLenientPgnParserTestCases;
 import io.github.dlbbld.ashlarchess.test.pgn.parser.PgnCacheForStrictPgnParserTestCases;
 import io.github.dlbbld.ashlarchess.test.pgn.setup.PgnTestCaseCatalog;
-
-import java.util.List;
 
 class TestStrictPgnParserAgainstLenientPgnParser {
 

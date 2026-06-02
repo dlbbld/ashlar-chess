@@ -22,9 +22,6 @@ import io.github.dlbbld.ashlarchess.board.StaticPosition;
 import io.github.dlbbld.ashlarchess.board.enums.Square;
 import io.github.dlbbld.ashlarchess.common.Nulls;
 import io.github.dlbbld.ashlarchess.common.constants.EnumConstants;
-import io.github.dlbbld.ashlarchess.unwinnability.Mobility;
-import io.github.dlbbld.ashlarchess.unwinnability.MobilitySolution;
-import io.github.dlbbld.ashlarchess.unwinnability.PiecePlacement;
 
 class TestMobilitySolution implements EnumConstants {
 

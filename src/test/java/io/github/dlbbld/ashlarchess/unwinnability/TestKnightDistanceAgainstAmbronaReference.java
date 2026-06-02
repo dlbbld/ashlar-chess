@@ -9,7 +9,6 @@ import org.junit.jupiter.api.Test;
 
 import io.github.dlbbld.ashlarchess.board.enums.Square;
 import io.github.dlbbld.ashlarchess.common.constants.EnumConstants;
-import io.github.dlbbld.ashlarchess.unwinnability.KnightDistance;
 
 /**
  * Cross-validates the BFS-based {@link KnightDistance} against an independent reference port of the closed-form
