@@ -72,7 +72,7 @@ public class UnwinnableFullAnalyzer {
     }
 
     // we must instantiate the class here to share the transposition table between calls
-    final FindHelpmateExhaust findHelpmate = new FindHelpmateExhaust(winner);
+    final FindHelpmate findHelpmate = new FindHelpmate(winner);
 
     // 2: for every d in N do ( -> Iterative deepening)
     int globalNodeCount = 0;
@@ -88,12 +88,12 @@ public class UnwinnableFullAnalyzer {
       }
 
       switch (helpmateAnalysis.findHelpmateResult()) {
-        case YES:
+        case HAS_HELPMATE:
           // 4: if bd = true then return Winnable
           undoForcedMoves(board, totalForcedMoves);
           return new UnwinnabilityFullAnalysis(UnwinnabilityFullVerdict.WINNABLE,
               prependForcedMoves(forcedMoveLine, helpmateAnalysis.mateLine()));
-        case NO:
+        case HAS_NO_HELPMATE:
           // 5: else if the search was not interrupted (in step 4 of Figure 5) then
           // 6: return Unwinnable
           undoForcedMoves(board, totalForcedMoves);

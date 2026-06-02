@@ -29,11 +29,11 @@ import io.github.dlbbld.ashlarchess.model.UciMove;
 //the intended winner, is found or false otherwise. The base call should be done on depth = 0,
 //cnt = 0, and an empty table. The value of maxDepth and nodesBound can be chosen to set the
 //limits of the search. The Score routine is defined in Figure 12 (Appendix A).
-class FindHelpmateExhaust {
+class FindHelpmate {
 
   private static final boolean IS_DEBUG = false;
 
-  private static final Logger logger = Nulls.getLogger(FindHelpmateExhaust.class);
+  private static final Logger logger = Nulls.getLogger(FindHelpmate.class);
 
   // empirically enough
   private static final int LOCAL_NODES_BOUND = 10000;
@@ -48,7 +48,7 @@ class FindHelpmateExhaust {
   private boolean isCanExhaust = true;
   private List<LegalMove> moveEvaluationList = new ArrayList<>();
 
-  public FindHelpmateExhaust(Side side) {
+  public FindHelpmate(Side side) {
     this.color = side;
   }
 
@@ -85,12 +85,12 @@ class FindHelpmateExhaust {
     }
 
     switch (findHelpmate) {
-      case TRUE:
-        return new FindHelpmateAnalysis(FindHelpmateResult.YES, localNodeCount,
+      case HELPMATE_FOUND:
+        return new FindHelpmateAnalysis(FindHelpmateResult.HAS_HELPMATE, localNodeCount,
             convertLegalMoveList(moveEvaluationList));
-      case FALSE:
+      case HELPMATE_NOT_FOUND:
         if (isCanExhaust) {
-          return new FindHelpmateAnalysis(FindHelpmateResult.NO, localNodeCount, new ArrayList<>());
+          return new FindHelpmateAnalysis(FindHelpmateResult.HAS_NO_HELPMATE, localNodeCount, new ArrayList<>());
         }
         return new FindHelpmateAnalysis(FindHelpmateResult.UNKNOWN, localNodeCount, new ArrayList<>());
       default:
@@ -105,7 +105,7 @@ class FindHelpmateExhaust {
 
     // 1: if the intended winner is checkmating their opponent in pos then return true
     if (board.getHavingMove() == color.getOppositeSide() && board.isCheckmate()) {
-      return FindHelpmateRecursionResult.TRUE;
+      return FindHelpmateRecursionResult.HELPMATE_FOUND;
     }
 
     // 2: if the intended winner has just the king or the position is unwinnable according
@@ -122,7 +122,7 @@ class FindHelpmateExhaust {
     final HelpmateSearchKey cacheKey = board.currentTranspositionKey();
     // 5: if (pos,D) in table with D >= d then return false (-> pos was already analyzed)
     if (calculateIsInTranspositionTableWithEnoughDepth(cacheKey, movesLeft)) {
-      return FindHelpmateRecursionResult.FALSE;
+      return FindHelpmateRecursionResult.HELPMATE_NOT_FOUND;
     }
 
     // 4: if cnt > nodesBound or d < 0 then return false (-> The search limits are exceeded)
@@ -131,7 +131,7 @@ class FindHelpmateExhaust {
       if (isCanExhaust) {
         isCanExhaust = false;
       }
-      return FindHelpmateRecursionResult.FALSE;
+      return FindHelpmateRecursionResult.HELPMATE_NOT_FOUND;
     }
 
     // 6: store (pos,D) in table
@@ -145,7 +145,7 @@ class FindHelpmateExhaust {
     if (UnwinnabilityMaterialBitboard.calculateHasKingOnly(color, bitboardPosition)
         || UnwinnabilityMaterialBitboard.calculateHasNoPawns(color.getOppositeSide(), bitboardPosition)
             && calculateIsNeedLoserPromotion(color, bitboardPosition)) {
-      return FindHelpmateRecursionResult.FALSE;
+      return FindHelpmateRecursionResult.HELPMATE_NOT_FOUND;
     }
 
     // 7: for every legal move m in pos do:
@@ -212,9 +212,9 @@ class FindHelpmateExhaust {
           isProgress);
       board.unmove();
       switch (findHelpmate) {
-        case TRUE:
+        case HELPMATE_FOUND:
           return findHelpmate;
-        case FALSE:
+        case HELPMATE_NOT_FOUND:
           // continue
           break;
         default:
@@ -224,7 +224,7 @@ class FindHelpmateExhaust {
     }
 
     // 10: return false (-> No mate was found after exploring every legal move)
-    return FindHelpmateRecursionResult.FALSE;
+    return FindHelpmateRecursionResult.HELPMATE_NOT_FOUND;
 
   }
 

@@ -40,7 +40,7 @@ class Score {
 
       // Spec for this case uses early returns which is semantically different than the assignments CHA 2.6.1 uses.
       // We follow CHA 2.6.1 so we can use it as oracle.
-      final boolean isNeedLoserPromotion = FindHelpmateExhaust.calculateIsNeedLoserPromotion(color, bitboardPosition);
+      final boolean isNeedLoserPromotion = FindHelpmate.calculateIsNeedLoserPromotion(color, bitboardPosition);
       if (isNeedLoserPromotion) {
         variation = calculateIsPawnMove(legalMove) && !calculateIsPromotionToHeavyPiece(legalMove) ? ScoreResult.REWARD
             : ScoreResult.PUNISH; // CHA's base ternary

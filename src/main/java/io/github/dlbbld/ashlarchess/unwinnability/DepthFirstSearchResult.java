@@ -3,8 +3,8 @@
 
 package io.github.dlbbld.ashlarchess.unwinnability;
 
-enum FindHelpmateInterruptResult {
-  TRUE,
-  FALSE,
-  INTERRUPTED
+enum DepthFirstSearchResult {
+  HAS_HELPMATE,
+  HAS_NO_HELPMATE,
+  UNKNOWN
 }

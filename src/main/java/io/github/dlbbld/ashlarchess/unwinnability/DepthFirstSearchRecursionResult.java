@@ -3,7 +3,8 @@
 
 package io.github.dlbbld.ashlarchess.unwinnability;
 
-enum FindHelpmateRecursionResult {
-  HELPMATE_FOUND,
-  HELPMATE_NOT_FOUND,
+enum DepthFirstSearchRecursionResult {
+  HAS_HELPMATE,
+  HAS_NO_HELPMATE,
+  INTERRUPTED
 }

@@ -10,7 +10,7 @@ import io.github.dlbbld.ashlarchess.common.constants.EnumConstants;
 
 /**
  * Bitboard-backed material predicates used by the unwinnability/helpmate analysis. Production callers in
- * {@link UnwinnableQuickAnalyzer}, {@link FindHelpmateExhaust}, and {@link GoingToCorner} consume this class.
+ * {@link UnwinnableQuickAnalyzer}, {@link FindHelpmate}, and {@link GoingToCorner} consume this class.
  *
  * <p>
  * The StaticPosition-backed reference implementations of the same predicates live in the test tree as the permanent

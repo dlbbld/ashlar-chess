@@ -16,11 +16,11 @@ import io.github.dlbbld.ashlarchess.common.ucimove.utility.UciMoveUtility;
 import io.github.dlbbld.ashlarchess.model.LegalMove;
 import io.github.dlbbld.ashlarchess.model.UciMove;
 
-class FindHelpmateInterrupt {
+class DepthFirstSearch {
 
   private static final boolean IS_DEBUG = false;
 
-  private static final Logger logger = Nulls.getLogger(FindHelpmateInterrupt.class);
+  private static final Logger logger = Nulls.getLogger(DepthFirstSearch.class);
 
   // Our quick algorithm is extremely light, requiring only a few microseconds on average per
   // position. It is also sound, but not complete. However, as we detail in Section 5, with an
@@ -28,27 +28,28 @@ class FindHelpmateInterrupt {
   // Database except three were correctly identified by Unwinnablequick.
   private static final int D = 9;
 
-  public static FindHelpmateAnalysis calculateHelpmate(Board board, Side c) {
-    return calculateHelpmate(HelpmateSearchBoard.from(board), c);
+  public static DepthFirstSearchAnalysis performDepthFirstSearch(Board board, Side c) {
+    return performDepthFirstSearch(HelpmateSearchBoard.from(board), c);
   }
 
-  private static FindHelpmateAnalysis calculateHelpmate(HelpmateSearchBoard board, Side c) {
+  private static DepthFirstSearchAnalysis performDepthFirstSearch(HelpmateSearchBoard board, Side c) {
     final List<LegalMove> mateList = new ArrayList<>();
-    final FindHelpmateInterruptResult result = calculateHelpmate(board, c, 0, mateList);
+    final DepthFirstSearchRecursionResult result = performDepthFirstSearch(board, c, 0, mateList);
 
     return switch (result) {
-      case TRUE -> new FindHelpmateAnalysis(FindHelpmateResult.YES, 0, convertLegalMoveList(mateList));
-      case FALSE -> new FindHelpmateAnalysis(FindHelpmateResult.NO, 0, new ArrayList<>());
-      case INTERRUPTED -> new FindHelpmateAnalysis(FindHelpmateResult.UNKNOWN, 0, new ArrayList<>());
+      case HAS_HELPMATE -> new DepthFirstSearchAnalysis(DepthFirstSearchResult.HAS_HELPMATE, 0,
+          convertLegalMoveList(mateList));
+      case HAS_NO_HELPMATE -> new DepthFirstSearchAnalysis(DepthFirstSearchResult.HAS_NO_HELPMATE, 0, new ArrayList<>());
+      case INTERRUPTED -> new DepthFirstSearchAnalysis(DepthFirstSearchResult.UNKNOWN, 0, new ArrayList<>());
       default -> throw new IllegalArgumentException();
     };
   }
 
-  private static FindHelpmateInterruptResult calculateHelpmate(HelpmateSearchBoard board, Side c, int currentDepth,
+  private static DepthFirstSearchRecursionResult performDepthFirstSearch(HelpmateSearchBoard board, Side c, int currentDepth,
       List<LegalMove> mateList) {
     final boolean isIntendedWinnerHavingCheckmate = board.isCheckmate() && board.getHavingMove() == c.getOppositeSide();
     if (isIntendedWinnerHavingCheckmate) {
-      return FindHelpmateInterruptResult.TRUE;
+      return DepthFirstSearchRecursionResult.HAS_HELPMATE;
     }
 
     // Per the paper / Ambrona issue thread: 75-move and 5-fold repetition do not apply when adjudicating
@@ -66,26 +67,26 @@ class FindHelpmateInterrupt {
         }
 
         mateList.add(legalMove);
-        final FindHelpmateInterruptResult hasCheckmate = calculateHelpmate(board, c, currentDepth + 1, mateList);
+        final DepthFirstSearchRecursionResult hasCheckmate = performDepthFirstSearch(board, c, currentDepth + 1, mateList);
         board.unmove();
         switch (hasCheckmate) {
-          case TRUE -> {
-            return FindHelpmateInterruptResult.TRUE;
+          case HAS_HELPMATE -> {
+            return DepthFirstSearchRecursionResult.HAS_HELPMATE;
           }
           case INTERRUPTED -> {
             mateList.remove(mateList.size() - 1);
-            return FindHelpmateInterruptResult.INTERRUPTED;
+            return DepthFirstSearchRecursionResult.INTERRUPTED;
           }
-          case FALSE -> mateList.remove(mateList.size() - 1);
+          case HAS_NO_HELPMATE -> mateList.remove(mateList.size() - 1);
           default -> throw new IllegalArgumentException();
         }
       }
     }
     // search could have continued
     if (currentDepth == D) {
-      return FindHelpmateInterruptResult.INTERRUPTED;
+      return DepthFirstSearchRecursionResult.INTERRUPTED;
     }
-    return FindHelpmateInterruptResult.FALSE;
+    return DepthFirstSearchRecursionResult.HAS_NO_HELPMATE;
   }
 
   private static List<UciMove> convertLegalMoveList(List<LegalMove> moveProgressList) {

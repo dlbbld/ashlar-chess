@@ -83,20 +83,20 @@ public class UnwinnableQuickAnalyzer {
     // 2: perform a depth-first search over the tree of variations of pos and interrupt the
     // search if (i) checkmate is found for player c or (ii) depth D is reached
     final String invariantTwo = board.getFen();
-    final FindHelpmateAnalysis checkmateSearchResult = FindHelpmateInterrupt.calculateHelpmate(board, c);
+    final DepthFirstSearchAnalysis checkmateSearchResult = DepthFirstSearch.performDepthFirstSearch(board, c);
     if (!invariantTwo.equals(board.getFen())) {
       throw new ProgrammingMistakeException("Board was changed");
     }
 
-    switch (checkmateSearchResult.findHelpmateResult()) {
-      case YES:
+    switch (checkmateSearchResult.depthFirstSearchResult()) {
+      case HAS_HELPMATE:
         // 3: if checkmate was found on the previous search then return Winnable
         unperformHalfmoves(board, countHalfmoves);
         if (!invariant.equals(board.getFen())) {
           throw new ProgrammingMistakeException("Board was changed");
         }
         return winnableAnalysis(forcedMoveLine, checkmateSearchResult.mateLine());
-      case NO:
+      case HAS_NO_HELPMATE:
         // 4: else if the search was not interrupted then return Unwinnable
         unperformHalfmoves(board, countHalfmoves);
         if (!invariant.equals(board.getFen())) {
