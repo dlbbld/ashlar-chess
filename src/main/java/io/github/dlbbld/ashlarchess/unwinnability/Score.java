@@ -22,6 +22,9 @@ class Score {
     if (havingMove == color) {
       // 2: if m is a capture or m is a pawn push or Going-to-corner(pos, m, Win) then
       // 3: return Reward
+
+      // spec uses pawn push, CHA 2.6.1 uses advanced pawn push
+      // we follow CHA 2.6.1 so we can use it as oracle
       if (calculateIsCapture(legalMove) || calculateIsAdvancedPawnPush(legalMove)
           || GoingToCorner.goingToCorner(color, bitboardPosition, legalMove, Goal.WIN)) {
         return ScoreResult.REWARD;
@@ -47,8 +50,6 @@ class Score {
         if (calculateIsPawnMove(legalMove)) {
           return ScoreResult.REWARD;
         }
-        // here we follow CHA 2.6.1 implementation and not the spec so we can use CHA 2.6.1 as oracle
-        return ScoreResult.PUNISH;
       }
 
       // 8: if Going-to-corner(pos, m, Lose) then return Reward
@@ -60,6 +61,11 @@ class Score {
       if (calculateIsCapture(legalMove)) {
         return ScoreResult.PUNISH;
       }
+
+      // Spec for this case returns NORMAL, as it just falls through. The CHA 2.6.1 assigns the previously assigned
+      // value of PUNISH in the is pawn move branch.
+      // we follow CHA 2.6.1 so we can use it as oracle
+      return ScoreResult.PUNISH;
     }
 
     // 10: return Normal ( -> The default output if none of the above conditions hold)
