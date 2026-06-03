@@ -10,7 +10,16 @@ Order within each section is the source of truth. Completed tasks move to **Done
 
 ---
 
-## Current release 17.0.0 — publish to Maven Central
+## Current release 18.0.0 — endgame theorem + unwinnability API
+
+Breaking release. Adds the basic-checkmate-reachability theorem shortcut in the full analyzer, realigns the quick
+analyzer to a faithful two-valued port of CHA 2.6.1, and simplifies the dead-position / game-end API (drops the
+`DeadPosition*` enums, the `GameEndFacts` record, and the `Board.isDeadPosition*` / `isGameEnd` methods; splits the full
+`WINNABLE` verdict). See CHANGELOG `[18.0.0]` for the full list. Tag + Central deploy follow the workflows.md procedure.
+
+---
+
+## Released 17.0.0 — published 2026-05-29 to Maven Central (see CHANGELOG)
 
 The capstone release. Publish to Central only when the library has stabilised - every
 prior release done, identity questions settled, and any tasks that surface during the

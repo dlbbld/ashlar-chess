@@ -5,6 +5,28 @@ Releases from 3.3 onward. Earlier history is in git tags only.
 ## [Unreleased]
 
 
+## [18.0.0] - 2026-06-04
+
+Adds a proved basic-checkmate-reachability theorem that decides elementary endgames in the full unwinnability analysis without searching, realigns the quick analyzer to a faithful two-valued port of CHA 2.6.1, and simplifies the dead-position / game-end surface. Several public unwinnability types change shape.
+
+### Notable
+
+- Basic-checkmate-reachability theorem. For the elementary mating-material classes KRvK, KQvK, KBBvK (opposite-coloured bishops), KBNvK, KRvKB, and KRvKN (and their colour-reversed forms), the full analyzer decides winnability directly from a finite-state theorem proved by exhaustive retrograde enumeration, instead of running the helpmate search. Faster, and always decisive on these classes. A theorem-decided win reports the new `WINNABLE_BY_THEOREM` verdict and carries no mate line.
+- The quick analyzer is now a faithful two-valued port of CHA 2.6.1's `quick_analysis`: it proves unwinnability or leaves it open, and never claims winnability. It no longer runs the paper's depth-bounded helpmate search.
+
+### Breaking
+
+- `UnwinnabilityQuickVerdict` is now two-valued: `UNWINNABLE`, `POSSIBLY_WINNABLE`. The `WINNABLE` constant is removed (the quick analyzer never returned it). `UnwinnabilityQuickAnalysis` now carries the verdict only; its `mateLine` component is removed.
+- `UnwinnabilityFullVerdict.WINNABLE` is split into `WINNABLE_HELPMATE` (the search found a cooperative mate; the analysis carries the mate line) and `WINNABLE_BY_THEOREM` (certified by the basic-checkmate theorem; no line). A `boolean isWinnable()` helper covers both.
+- Dead-position queries move from `Board` to no-side analyzer overloads that reuse the verdict enums (`UNWINNABLE` means dead). Removed `Board.isDeadPosition()`, `Board.isDeadPositionQuick()`, and `Board.isDeadPositionFull()`; use `UnwinnableQuickAnalyzer.unwinnableQuick(board)` (returns `UnwinnabilityQuickVerdict`) and `UnwinnableFullAnalyzer.unwinnableFull(board)` (returns `UnwinnabilityFullVerdict`). The `DeadPositionQuick` and `DeadPositionFull` enums are removed.
+- Removed the `GameEndFacts` record and `Board.calculateGameEndFacts()` (added in 16.0.0). Read the raw rule predicates from `Board` directly (`isCheckmate()`, `isStalemate()`, `isInsufficientMaterial()`, `isFivefoldRepetition()`, `isSeventyFiveMove()`) and the projected ruling from `BasicChessUtility.calculateOutcome(board)`. Removed `Board.isGameEnd()`; use `BasicChessUtility.calculateOutcome(board).termination() != Termination.NONE`.
+
+### Internal
+
+- Fixed a latent `HelpmateSearchBoard` buffer-array overflow when the helpmate search descends past 128 plies (the per-depth buffer array was indexed one slot deeper than the grow guard reserved).
+- Regenerated the Ambrona unwinnability oracle from CHA 2.6.1; the quick and full verdicts now match CHA across the whole differential corpus.
+- Rewrote the `Score` (FUN22 Figure 12) loser branch to CHA's accumulator shape and added spec tests for `Score` and Going-to-corner (Figure 13). Internal helpmate-search classes renamed for spec compliance.
+
 ## [17.0.0] - 2026-05-29
 
 The **first Maven Central release**. Renamed the project from clean-chess to ashlar-chess, and the base package com.dlb.chess → io.github.dlbbld.ashlarchess (the old package namespace reverse-mapped to a domain not controlled by the project). Earlier entries use the new names for consistency; releases before 17.0.0 shipped as clean-chess / com.dlb.chess and were distributed via JitPack.

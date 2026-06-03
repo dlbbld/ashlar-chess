@@ -34,7 +34,7 @@ Requires JDK 17 or later at runtime. Published to Maven Central.
 <dependency>
   <groupId>io.github.dlbbld</groupId>
   <artifactId>ashlar-chess</artifactId>
-  <version>17.0.0</version>
+  <version>18.0.0</version>
 </dependency>
 ```
 
@@ -46,7 +46,7 @@ repositories {
 }
 
 dependencies {
-    implementation 'io.github.dlbbld:ashlar-chess:17.0.0'
+    implementation 'io.github.dlbbld:ashlar-chess:18.0.0'
 }
 ```
 
