@@ -78,7 +78,7 @@ class TestSanValidateRnbqRankPseudoLegal {
     // b4 pinned along c3-b4-a5 (bishop a5), d4 pinned along c3-d4-e5 (bishop e5).
     // Both can reach c5 but each would expose king.
     // Black pawn on h7 breaks the otherwise mutual same-color-bishops-only material configuration
-    // so the position is not in DEAD_POSITION_INSUFFICIENT_MATERIAL. h7 does not interact with the test.
+    // so the position is not insufficient material. h7 does not interact with the test.
     final Board board = new Board("k7/7p/8/b3b3/1B1B4/2K5/8/8 w - - 0 1");
     checkException("B4c5", board, SanValidationProblem.KING_EXPOSED_TO_CHECK_RNBQ_RANK_MULTIPLE);
   }
@@ -90,7 +90,7 @@ class TestSanValidateRnbqRankPseudoLegal {
     // b5 pinned along c6-b5-a4 (bishop a4), d5 pinned along c6-d5-e4 (bishop e4).
     // Both can reach c4 but each would expose king.
     // White pawn on h2 breaks the otherwise mutual same-color-bishops-only material configuration
-    // so the position is not in DEAD_POSITION_INSUFFICIENT_MATERIAL. h2 does not interact with the test.
+    // so the position is not insufficient material. h2 does not interact with the test.
     final Board board = new Board("8/8/2k5/1b1b4/B3B3/8/7P/K7 b - - 0 1");
     checkException("B5c4", board, SanValidationProblem.KING_EXPOSED_TO_CHECK_RNBQ_RANK_MULTIPLE);
   }
