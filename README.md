@@ -382,15 +382,15 @@ the bounded search may return UNDETERMINED.
 ```java
   final Board board = new Board("q4r2/pR3pkp/1p2p1p1/4P3/6P1/1P3Q2/1Pr2PK1/3R4 b - - 3 29");
   System.out.println(board.isUnwinnableQuick(Side.WHITE)); // POSSIBLY_WINNABLE
-  System.out.println(board.isUnwinnableFull(Side.WHITE)); // WINNABLE
+  System.out.println(board.isUnwinnableFull(Side.WHITE)); // WINNABLE_HELPMATE
 ```
 
-#### Positions the quick algorithm does not see
-The following is an example of a position where the quick algorithm says POSSIBLY_WINNABLE, but the position is winnable. [Game](https://lichess.org/bKHPqNEw#81)
+#### Blocked positions the quick algorithm proves
+The quick algorithm (a port of CHA 2.6.1) also proves many blocked and fortress positions, not only material-based ones. Here White's bishop and pawns are blocked and cannot make progress against the cornered black king, so the position is unwinnable for White - and the quick algorithm already decides it. [Game](https://lichess.org/bKHPqNEw#81)
 
 ```java
   final Board board = new Board("1k6/1P5p/BP3p2/1P6/8/8/5PKP/8 b - - 0 41");
-  System.out.println(board.isUnwinnableQuick(Side.WHITE)); // POSSIBLY_WINNABLE
+  System.out.println(board.isUnwinnableQuick(Side.WHITE)); // UNWINNABLE
   System.out.println(board.isUnwinnableFull(Side.WHITE)); // UNWINNABLE
 ```
 
@@ -403,8 +403,8 @@ The most straightforward dead position is when one player already has insufficie
 [Position](https://lichess.org/analysis/8/8/3kn3/8/2K5/8/8/8_w_-_-_0_50)
 ```java
   final Board board = new Board("8/8/3kn3/8/2K5/8/8/8 w - - 0 50");
-  System.out.println(board.isDeadPositionQuick()); // DEAD_POSITION
-  System.out.println(board.isDeadPositionFull()); // DEAD_POSITION
+  System.out.println(UnwinnableQuickAnalyzer.unwinnableQuick(board)); // UNWINNABLE (dead)
+  System.out.println(UnwinnableFullAnalyzer.unwinnableFull(board)); // UNWINNABLE (dead)
 ```
 
 #### Pawn walls
@@ -413,8 +413,8 @@ Pawn walls are dead positions, but most common chess libraries do not detect the
 
 ```java
   final Board board = new Board("8/6b1/1p3k2/1Pp1p1p1/2P1PpP1/5P2/8/5K2 b - - 11 61");
-  System.out.println(board.isDeadPositionQuick()); // DEAD_POSITION
-  System.out.println(board.isDeadPositionFull()); // DEAD_POSITION
+  System.out.println(UnwinnableQuickAnalyzer.unwinnableQuick(board)); // UNWINNABLE (dead)
+  System.out.println(UnwinnableFullAnalyzer.unwinnableFull(board)); // UNWINNABLE (dead)
 ```
 
 #### Forced moves
@@ -423,8 +423,8 @@ Positions can also often be dead due to forced moves.
 
 ```java
   final Board board = new Board("k7/P1K5/8/8/8/8/8/8 b - - 2 58");
-  System.out.println(board.isDeadPositionQuick()); // DEAD_POSITION
-  System.out.println(board.isDeadPositionFull()); // DEAD_POSITION
+  System.out.println(UnwinnableQuickAnalyzer.unwinnableQuick(board)); // UNWINNABLE (dead)
+  System.out.println(UnwinnableFullAnalyzer.unwinnableFull(board)); // UNWINNABLE (dead)
 ```
 
 # PGN functionality
