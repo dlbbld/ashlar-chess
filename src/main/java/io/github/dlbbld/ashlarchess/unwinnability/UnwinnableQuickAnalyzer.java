@@ -26,7 +26,29 @@ import io.github.dlbbld.ashlarchess.model.LegalMove;
 // deeper retry for restricted pawn/bishop positions (CHA comment: "TODO: remove if too ad hoc for capturing bKHPqNEw").
 public class UnwinnableQuickAnalyzer {
 
+  /** Quick unwinnability for one intended winner: "can this side ever deliver checkmate?" */
   public static UnwinnabilityQuickAnalysis unwinnableQuick(Board input, Side c) {
+    return new UnwinnabilityQuickAnalysis(toPublicVerdict(unwinnableQuickInternal(input, c).verdict()));
+  }
+
+  /**
+   * Dead-position-quick check for the whole position (no intended winner): {@code UNWINNABLE} means the position is dead
+   * - neither side can deliver checkmate by any sequence of legal moves - and {@code POSSIBLY_WINNABLE} means it is not
+   * provably dead. This is the quick, during-the-game counterpart to {@link UnwinnableFullAnalyzer#unwinnableFull(Board)},
+   * the complete check suggested at game end (resignation or flag-fall). Short-circuits: it stops as soon as one side is
+   * not provably unwinnable.
+   */
+  public static UnwinnabilityQuickVerdict unwinnableQuick(Board board) {
+    if (unwinnableQuick(board, Side.WHITE).verdict() != UnwinnabilityQuickVerdict.UNWINNABLE) {
+      return UnwinnabilityQuickVerdict.POSSIBLY_WINNABLE;
+    }
+    if (unwinnableQuick(board, Side.BLACK).verdict() != UnwinnabilityQuickVerdict.UNWINNABLE) {
+      return UnwinnabilityQuickVerdict.POSSIBLY_WINNABLE;
+    }
+    return UnwinnabilityQuickVerdict.UNWINNABLE;
+  }
+
+  static UnwinnabilityQuickAnalysisInternal unwinnableQuickInternal(Board input, Side c) {
     final Board board = copyCurrentPositionForQuickSearch(input);
     final String invariant = board.getFen();
 
@@ -44,7 +66,17 @@ public class UnwinnableQuickAnalyzer {
     if (!invariant.equals(board.getFen())) {
       throw new ProgrammingMistakeException("Board was changed");
     }
-    return analysis(isUnwinnable ? UnwinnabilityQuickVerdict.UNWINNABLE : UnwinnabilityQuickVerdict.POSSIBLY_WINNABLE);
+    return analysisInternal(isUnwinnable ? UnwinnabilityQuickVerdictInternal.UNWINNABLE
+        : UnwinnabilityQuickVerdictInternal.POSSIBLY_WINNABLE);
+  }
+
+  // The quick search never advertises winnability on the public API; an internally established WINNABLE collapses to
+  // POSSIBLY_WINNABLE.
+  private static UnwinnabilityQuickVerdict toPublicVerdict(UnwinnabilityQuickVerdictInternal verdict) {
+    return switch (verdict) {
+      case UNWINNABLE -> UnwinnabilityQuickVerdict.UNWINNABLE;
+      case WINNABLE, POSSIBLY_WINNABLE -> UnwinnabilityQuickVerdict.POSSIBLY_WINNABLE;
+    };
   }
 
   // Mirrors the body of DYNAMIC::quick_analysis: an unconditional depth-7 dynamic search, an ad hoc deeper depth-15
@@ -181,8 +213,8 @@ public class UnwinnableQuickAnalyzer {
     return new Board(fen);
   }
 
-  private static UnwinnabilityQuickAnalysis analysis(UnwinnabilityQuickVerdict verdict) {
-    return new UnwinnabilityQuickAnalysis(verdict, new ArrayList<>());
+  private static UnwinnabilityQuickAnalysisInternal analysisInternal(UnwinnabilityQuickVerdictInternal verdict) {
+    return new UnwinnabilityQuickAnalysisInternal(verdict, new ArrayList<>());
   }
 
   private static void unperformHalfmoves(Board board, int countHalfmoves) {

@@ -91,9 +91,6 @@ class TestUnwinnabilityQuickAgainstLimitedOracle {
     }
 
     switch (unwinnableQuick) {
-      case WINNABLE:
-        assertNotEquals(LimitedUnwinnabilityVerdict.UNWINNABLE, verdict);
-        break;
       case UNWINNABLE:
         assertNotEquals(LimitedUnwinnabilityVerdict.WINNABLE, verdict);
         break;

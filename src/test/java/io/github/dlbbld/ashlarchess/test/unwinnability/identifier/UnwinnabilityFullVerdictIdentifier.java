@@ -18,7 +18,7 @@ public final class UnwinnabilityFullVerdictIdentifier {
 
   public static String getIdentifier(UnwinnabilityFullVerdict verdict) {
     return switch (verdict) {
-      case WINNABLE -> "winnable";
+      case WINNABLE_HELPMATE, WINNABLE_BY_THEOREM -> "winnable";
       case UNWINNABLE -> "unwinnable";
       case UNDETERMINED -> "undetermined";
     };

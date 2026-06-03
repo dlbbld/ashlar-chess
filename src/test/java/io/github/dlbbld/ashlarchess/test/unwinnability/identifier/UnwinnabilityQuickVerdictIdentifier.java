@@ -7,12 +7,12 @@ import io.github.dlbbld.ashlarchess.unwinnability.UnwinnabilityQuickVerdict;
 
 /**
  * Test-side mapping between {@link UnwinnabilityQuickVerdict} values and the lowercase string identifiers emitted by
- * Ambrona's CHA C binary ({@code "winnable"}, {@code "unwinnable"}, {@code "undetermined"}). Used only when reading raw
- * CHA output for cross-checks against the Java port; not part of the production API.
+ * Ambrona's CHA C binary ({@code "unwinnable"}, {@code "undetermined"}). Used only when reading raw CHA output for
+ * cross-checks against the Java port; not part of the production API.
  *
  * <p>
  * Note that {@link UnwinnabilityQuickVerdict#POSSIBLY_WINNABLE} maps to {@code "undetermined"} because that is the
- * label CHA's quick analyzer emits for the same three-valued judgment.
+ * label CHA's quick analyzer emits for the same two-valued judgment.
  */
 public final class UnwinnabilityQuickVerdictIdentifier {
 
@@ -21,7 +21,6 @@ public final class UnwinnabilityQuickVerdictIdentifier {
 
   public static String getIdentifier(UnwinnabilityQuickVerdict verdict) {
     return switch (verdict) {
-      case WINNABLE -> "winnable";
       case UNWINNABLE -> "unwinnable";
       case POSSIBLY_WINNABLE -> "undetermined";
     };

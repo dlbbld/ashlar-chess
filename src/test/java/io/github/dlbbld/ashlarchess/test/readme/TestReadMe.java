@@ -33,10 +33,10 @@ import io.github.dlbbld.ashlarchess.pgn.StrictPgnParserValidationResult;
 import io.github.dlbbld.ashlarchess.pgn.Tag;
 import io.github.dlbbld.ashlarchess.pgn.WriteMode;
 import io.github.dlbbld.ashlarchess.san.SanValidationProblem;
-import io.github.dlbbld.ashlarchess.unwinnability.DeadPositionFull;
-import io.github.dlbbld.ashlarchess.unwinnability.DeadPositionQuick;
 import io.github.dlbbld.ashlarchess.unwinnability.UnwinnabilityFullVerdict;
 import io.github.dlbbld.ashlarchess.unwinnability.UnwinnabilityQuickVerdict;
+import io.github.dlbbld.ashlarchess.unwinnability.UnwinnableFullAnalyzer;
+import io.github.dlbbld.ashlarchess.unwinnability.UnwinnableQuickAnalyzer;
 
 class TestReadMe {
 
@@ -50,7 +50,7 @@ class TestReadMe {
     assertUnwinnability("5r1k/6P1/7K/5q2/8/8/8/8 b - - 0 51", Side.WHITE, UnwinnabilityQuickVerdict.UNWINNABLE,
         UnwinnabilityFullVerdict.UNWINNABLE);
     assertUnwinnability("q4r2/pR3pkp/1p2p1p1/4P3/6P1/1P3Q2/1Pr2PK1/3R4 b - - 3 29", Side.WHITE,
-        UnwinnabilityQuickVerdict.POSSIBLY_WINNABLE, UnwinnabilityFullVerdict.WINNABLE);
+        UnwinnabilityQuickVerdict.POSSIBLY_WINNABLE, UnwinnabilityFullVerdict.WINNABLE_HELPMATE);
     assertUnwinnability("1k6/1P5p/BP3p2/1P6/8/8/5PKP/8 b - - 0 41", Side.WHITE, UnwinnabilityQuickVerdict.UNWINNABLE,
         UnwinnabilityFullVerdict.UNWINNABLE);
   }
@@ -58,12 +58,12 @@ class TestReadMe {
   @Test
   @SuppressWarnings("static-method")
   void deadPositionExamplesReturnExpectedResults() {
-    assertDeadPosition("8/8/3kn3/8/2K5/8/8/8 w - - 0 50", DeadPositionQuick.DEAD_POSITION,
-        DeadPositionFull.DEAD_POSITION);
-    assertDeadPosition("8/6b1/1p3k2/1Pp1p1p1/2P1PpP1/5P2/8/5K2 b - - 11 61", DeadPositionQuick.DEAD_POSITION,
-        DeadPositionFull.DEAD_POSITION);
-    assertDeadPosition("k7/P1K5/8/8/8/8/8/8 b - - 2 58", DeadPositionQuick.DEAD_POSITION,
-        DeadPositionFull.DEAD_POSITION);
+    assertDeadPosition("8/8/3kn3/8/2K5/8/8/8 w - - 0 50", UnwinnabilityQuickVerdict.UNWINNABLE,
+        UnwinnabilityFullVerdict.UNWINNABLE);
+    assertDeadPosition("8/6b1/1p3k2/1Pp1p1p1/2P1PpP1/5P2/8/5K2 b - - 11 61", UnwinnabilityQuickVerdict.UNWINNABLE,
+        UnwinnabilityFullVerdict.UNWINNABLE);
+    assertDeadPosition("k7/P1K5/8/8/8/8/8/8 b - - 2 58", UnwinnabilityQuickVerdict.UNWINNABLE,
+        UnwinnabilityFullVerdict.UNWINNABLE);
   }
 
   @Test
@@ -364,10 +364,11 @@ class TestReadMe {
     assertEquals(expectedFull, board.isUnwinnableFull(side));
   }
 
-  private static void assertDeadPosition(String fen, DeadPositionQuick expectedQuick, DeadPositionFull expectedFull) {
+  private static void assertDeadPosition(String fen, UnwinnabilityQuickVerdict expectedQuick,
+      UnwinnabilityFullVerdict expectedFull) {
     final Board board = new Board(fen);
-    assertEquals(expectedQuick, board.isDeadPositionQuick());
-    assertEquals(expectedFull, board.isDeadPositionFull());
+    assertEquals(expectedQuick, UnwinnableQuickAnalyzer.unwinnableQuick(board));
+    assertEquals(expectedFull, UnwinnableFullAnalyzer.unwinnableFull(board));
   }
 
   private static String tagValue(PgnGame pgnGame, String name) {

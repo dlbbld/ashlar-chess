@@ -4,7 +4,6 @@
 package io.github.dlbbld.ashlarchess.test.unwinnability;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 import org.junit.jupiter.api.Test;
 
@@ -15,18 +14,13 @@ import io.github.dlbbld.ashlarchess.test.pgn.setup.PgnTestCaseCatalog;
 import io.github.dlbbld.ashlarchess.test.pgntest.enums.PgnTest;
 import io.github.dlbbld.ashlarchess.unwinnability.UnwinnabilityQuickVerdict;
 
-// Basic-endgame helpmate-reachability theorem, White holding the mating material, checked against the
-// quick analyzer. Quick is sound but not complete, so two separate things are asserted:
-//
-//   1. Soundness (must always hold): quick never contradicts the theorem - never UNWINNABLE on a
-//      winnable position, never WINNABLE on an unwinnable one.
-//
-//   2. Current decisiveness (characterization of a KNOWN GAP): quick decides only the forced-capture
-//      (unwinnable) positions, via forced-move advancement into insufficient material. On the winnable
-//      positions it returns POSSIBLY_WINNABLE, because our quick search is a flat depth-9 DFS that lacks
-//      the FUN22 reward / Going-to-corner heuristic (Figures 5, 12, 13) and so cannot reach the far
-//      helpmate. When that heuristic is ported, the winnable cases will become WINNABLE; flip the
-//      expectation below at that point.
+// Basic-endgame helpmate-reachability theorem, White holding the mating material, checked against the quick analyzer.
+// The quick analysis is two-valued (UNWINNABLE / POSSIBLY_WINNABLE) and never claims winnability, so it both stays
+// sound and characterizes a known gap:
+//   - Forced-capture (theorem-unwinnable) positions: quick proves UNWINNABLE, by advancing the single forced capture
+//     into insufficient material.
+//   - Winnable positions: quick returns POSSIBLY_WINNABLE - it only proves unwinnability and never searches for the far
+//     helpmate, so it never contradicts the theorem (never UNWINNABLE on a winnable position).
 class TestUnwinnabilityQuickBasicCheckmateReachability {
 
   @SuppressWarnings("static-method")
@@ -38,14 +32,9 @@ class TestUnwinnabilityQuickBasicCheckmateReachability {
           && testCase.pgnName().contains("black_forced_to_capture");
       final UnwinnabilityQuickVerdict quick = board.isUnwinnableQuick(Side.WHITE);
 
-      if (theoremUnwinnable) {
-        assertNotEquals(UnwinnabilityQuickVerdict.WINNABLE, quick, testCase.pgnName());
-        assertEquals(UnwinnabilityQuickVerdict.UNWINNABLE, quick, testCase.pgnName());
-      } else {
-        assertNotEquals(UnwinnabilityQuickVerdict.UNWINNABLE, quick, testCase.pgnName());
-        // KNOWN GAP: theorem says WINNABLE; quick cannot decide it yet (see class comment).
-        assertEquals(UnwinnabilityQuickVerdict.POSSIBLY_WINNABLE, quick, testCase.pgnName());
-      }
+      final UnwinnabilityQuickVerdict expected = theoremUnwinnable ? UnwinnabilityQuickVerdict.UNWINNABLE
+          : UnwinnabilityQuickVerdict.POSSIBLY_WINNABLE;
+      assertEquals(expected, quick, testCase.pgnName());
     }
   }
 }

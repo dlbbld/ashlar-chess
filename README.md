@@ -271,7 +271,7 @@ blocked pawn walls:
 
 ```text
 after each move:
-    if board.isDeadPositionQuick() == DEAD_POSITION:
+    if UnwinnableQuickAnalyzer.unwinnableQuick(board) == UNWINNABLE:
         return draw
 ```
 
@@ -291,9 +291,10 @@ The library implements the [Chess Unwinnability Analyzer (CHA)](https://github.c
 A position is unwinnable for a player if there is no legal sequence that can end with that player giving checkmate,
 even if the opponent cooperates. If the position is unwinnable for both players, it's a dead position.
 
-> **Note:** quick/full dead-position detection is caller-invoked. `Board` does not run the quick analyzer during
-> construction or after each move; callers that want to adjudicate analyzer-driven dead positions can query
-> `Board.isDeadPositionQuick()` / `Board.isDeadPositionFull()` or the side-specific unwinnability APIs.
+> **Note:** quick/full dead-position detection is caller-invoked. `Board` does not run the analyzer during
+> construction or after each move; callers that want to adjudicate analyzer-driven dead positions call the no-side
+> overloads `UnwinnableQuickAnalyzer.unwinnableQuick(board)` / `UnwinnableFullAnalyzer.unwinnableFull(board)`, or the
+> side-specific `Board.isUnwinnableQuick(Side)` / `Board.isUnwinnableFull(Side)`.
 
 ## Methods
 The library provides an implementation of CHA. So for both situations, there is a quick and a full method.
@@ -302,33 +303,36 @@ The quick method is speedy by design but might miss some corrections. The full m
 returns WINNABLE or UNWINNABLE; bounded search may return UNDETERMINED.
 
 ### Unwinnability
-The quick method has three return values:
+The quick method has two return values:
 * UNWINNABLE - the position is not winnable by the player
-* WINNABLE - the position is winnable by the player
-* POSSIBLY_WINNABLE - the position is most likely winnable by the player, but it might also be unwinnable in some rare cases
+* POSSIBLY_WINNABLE - not proven unwinnable; most likely winnable, but it might be unwinnable in some rare cases
 
+The quick method never claims winnability - proving a concrete win is the full method's job.
 `Board.isUnwinnableQuick(Side)` returns this verdict directly. `UnwinnableQuickAnalyzer.unwinnableQuick(...)` returns
-`UnwinnabilityQuickAnalysis`, which includes the verdict and the helpmate line when the quick result is `WINNABLE`.
+`UnwinnabilityQuickAnalysis` (the verdict only).
 
-The full method also has three return values:
+The full method has four return values:
+* WINNABLE_HELPMATE - winnable, with a concrete cooperative mate line
+* WINNABLE_BY_THEOREM - winnable, certified by the basic-checkmate-reachability theorem (no line)
 * UNWINNABLE - the position is not winnable by the player
-* WINNABLE - the position is winnable by the player
 * UNDETERMINED - the limits in the code interrupted the search
 
 Performance: The limit regarding "UNDETERMINED" is 500'000 positions. It takes around one minute to reach. Most positions evaluate below one second. 
 
 ### Dead position
-The quick method has three return values:
-* DEAD_POSITION - the position is a dead position
-* NON_DEAD_POSITION - the position is not a dead position
-* POSSIBLY_NON_DEAD_POSITION - the position is most likely a non-dead position, but it might also be a dead position in some rare cases
+A position is dead when it is unwinnable for both players. The no-side overloads check this and reuse the same verdict
+enums, so there is no separate dead-position type.
 
-The full method also has three return values:
-* DEAD_POSITION - the position is a dead position
-* NON_DEAD_POSITION - the position is not a dead position
+`UnwinnableQuickAnalyzer.unwinnableQuick(board)` returns an `UnwinnabilityQuickVerdict`:
+* UNWINNABLE - the position is dead (neither side can mate)
+* POSSIBLY_WINNABLE - not provably dead
+
+`UnwinnableFullAnalyzer.unwinnableFull(board)` returns an `UnwinnabilityFullVerdict`:
+* WINNABLE_HELPMATE / WINNABLE_BY_THEOREM - not dead (one side can win)
+* UNWINNABLE - the position is dead
 * UNDETERMINED - the limits in the code interrupted the search
 
-Performance: The comment from the Unwinnablity section for UNDETERMINED applies here. However, it checks both sides so that it can take double the time.
+Performance: The comment from the Unwinnability section for UNDETERMINED applies here. However, it checks both sides so that it can take double the time.
 
 ## Examples
 

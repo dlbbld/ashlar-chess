@@ -81,7 +81,7 @@ The library follows the FIDE Laws of Chess closely. Termination is **information
 | Threefold repetition | claimable | 9.2 |
 | 50-move rule | claimable | 9.3 |
 
-The automatic rows are listed in the precedence order `calculateOutcome` applies (python-chess parity): when two or more apply to the same position, the higher row wins. A KBvK stalemate, for instance, reports `INSUFFICIENT_MATERIAL`, not `STALEMATE`. Structural insufficient material is detected by a fast structural test (king-vs-king, king + minor vs king, etc.); analyzer-driven dead positions (FIDE 5.2.2 via the unwinnability analyzer) are intentionally not invoked by `calculateOutcome` — the analyzer would silently make every status query expensive — so callers that want that verdict call `Board.isDeadPositionQuick()` or `Board.isDeadPositionFull()` directly.
+The automatic rows are listed in the precedence order `calculateOutcome` applies (python-chess parity): when two or more apply to the same position, the higher row wins. A KBvK stalemate, for instance, reports `INSUFFICIENT_MATERIAL`, not `STALEMATE`. Structural insufficient material is detected by a fast structural test (king-vs-king, king + minor vs king, etc.); analyzer-driven dead positions (FIDE 5.2.2 via the unwinnability analyzer) are intentionally not invoked by `calculateOutcome` — the analyzer would silently make every status query expensive — so callers that want that verdict call the no-side overloads `UnwinnableQuickAnalyzer.unwinnableQuick(board)` or `UnwinnableFullAnalyzer.unwinnableFull(board)` directly.
 
 Single-side insufficient material (one side lacks mating material but the other does not) is a diagnostic state of the position, not a termination, and is not surfaced by `Outcome`. Callers query `Board.isInsufficientMaterial(Side)` directly when they need it.
 
@@ -105,16 +105,16 @@ The library's **flagship feature**. A position is *unwinnable for a side* if tha
 
 Miguel Ambrona's CHA is, to the author's knowledge, the only published algorithm that decides these cases correctly across the full range of positions. ashlar-chess implements it in Java, in two variants:
 
-- **Quick** — microsecond-scale, structural, three-valued: `WINNABLE`, `UNWINNABLE`, `POSSIBLY_WINNABLE`. The third value is a deliberate honesty signal.
-- **Full** — deep search, three-valued: `WINNABLE`, `UNWINNABLE`, `UNDETERMINED`. The undetermined case is bounded by a 500 000-position limit; most positions resolve well below that.
+- **Quick** — microsecond-scale, structural, two-valued: `UNWINNABLE` or `POSSIBLY_WINNABLE`. It proves unwinnability or leaves it open, and never claims winnability.
+- **Full** — deep search, four-valued: `WINNABLE_HELPMATE` (a concrete mate line was found), `WINNABLE_BY_THEOREM` (winnability certified by the basic-checkmate-reachability theorem, no line), `UNWINNABLE`, or `UNDETERMINED`. The undetermined case is bounded by a 500 000-position limit; most positions resolve well below that.
 
-`Dead position` is the symmetric notion with the analogous three-valued return.
+`Dead position` is the symmetric whole-position notion, checked by the no-side overloads `UnwinnableQuickAnalyzer.unwinnableQuick(board)` and `UnwinnableFullAnalyzer.unwinnableFull(board)`, which reuse the same verdict enums (`UNWINNABLE` = dead).
 
-The direct side-specific analyzers return analysis records. For `WINNABLE`, those records carry a helpmate line that
-can be replayed from the input position; the `Board.isUnwinnableQuick(Side)` and `Board.isUnwinnableFull(Side)`
-convenience methods expose only the verdict.
+The direct side-specific analyzers return analysis records. Only `WINNABLE_HELPMATE` carries a helpmate line that can be
+replayed from the input position; the `Board.isUnwinnableQuick(Side)` and `Board.isUnwinnableFull(Side)` convenience
+methods expose only the verdict.
 
-Side-specific quick/full unwinnability queries are caller-invoked. Dead-position quick/full queries on `Board` are also caller-invoked; no analyzer runs automatically during construction or move execution.
+Side-specific quick/full unwinnability queries and whole-position dead-position queries are caller-invoked; no analyzer runs automatically during construction or move execution.
 
 ### 3.3 SAN, FEN, PGN
 

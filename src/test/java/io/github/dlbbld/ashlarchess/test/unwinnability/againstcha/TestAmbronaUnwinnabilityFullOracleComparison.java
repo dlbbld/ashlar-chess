@@ -75,7 +75,7 @@ class TestAmbronaUnwinnabilityFullOracleComparison {
       List<String> failureList, Set<AcceptedDifference> remainingAcceptedDifferenceSet) {
     final Board board = testCase.finalPosition();
     final UnwinnabilityFullVerdict actual = UnwinnableFullAnalyzer.unwinnableFull(board, intendedWinner).verdict();
-    if (actual != expected) {
+    if (!isSameVerdict(actual, expected)) {
       final AcceptedDifference difference = new AcceptedDifference(testCase.pgnName(), intendedWinner, expected, actual,
           testCase.finalFen());
       if (!remainingAcceptedDifferenceSet.remove(difference)) {
@@ -83,6 +83,12 @@ class TestAmbronaUnwinnabilityFullOracleComparison {
             + " FEN " + testCase.finalFen());
       }
     }
+  }
+
+  // CHA does not distinguish the WINNABLE_HELPMATE / WINNABLE_BY_THEOREM split, so a winnable oracle verdict matches
+  // either of ours.
+  private static boolean isSameVerdict(UnwinnabilityFullVerdict actual, UnwinnabilityFullVerdict expected) {
+    return actual == expected || (actual.isWinnable() && expected.isWinnable());
   }
 
   private static Set<AcceptedDifference> readAcceptedDifferenceSet() {

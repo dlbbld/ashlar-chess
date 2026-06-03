@@ -14,7 +14,8 @@ import io.github.dlbbld.ashlarchess.common.constants.EnumConstants;
 import io.github.dlbbld.ashlarchess.common.model.MoveSpecification;
 import io.github.dlbbld.ashlarchess.enums.MoveCheck;
 import io.github.dlbbld.ashlarchess.exceptions.InvalidMoveException;
-import io.github.dlbbld.ashlarchess.unwinnability.DeadPositionQuick;
+import io.github.dlbbld.ashlarchess.unwinnability.UnwinnabilityQuickVerdict;
+import io.github.dlbbld.ashlarchess.unwinnability.UnwinnableQuickAnalyzer;
 
 /**
  * Pins the library's posture at game-end states: termination is queryable, not enforced. None of the five automatic
@@ -82,7 +83,7 @@ class TestValidateNewMoveGameEnded implements EnumConstants {
     // and locked pawns; the cheap insufficient-material detector stays quiet because pawns are
     // present, but the CHA quick analyzer classifies the position as dead.
     final Board board = new Board("4k3/8/8/p1p1p1p1/P1P1P1P1/8/8/4K3 w - - 0 50");
-    assertEquals(DeadPositionQuick.DEAD_POSITION, board.isDeadPositionQuick());
+    assertEquals(UnwinnabilityQuickVerdict.UNWINNABLE, UnwinnableQuickAnalyzer.unwinnableQuick(board));
     assertDoesNotThrow(() -> board.move(new MoveSpecification(E1, D1)),
         "quick-unwinnable dead position is queryable only; the pipeline must accept the move");
   }
@@ -94,7 +95,7 @@ class TestValidateNewMoveGameEnded implements EnumConstants {
     // h-pawn still on h2 (one rank back). White's h3 push completes the lock.
     final Board board = new Board("4k3/8/8/p1p1p1p1/PpPpPpPp/1P1P1P2/7P/4K3 w - - 0 49");
     board.moveStrict("h3");
-    assertEquals(DeadPositionQuick.DEAD_POSITION, board.isDeadPositionQuick());
+    assertEquals(UnwinnabilityQuickVerdict.UNWINNABLE, UnwinnableQuickAnalyzer.unwinnableQuick(board));
     assertDoesNotThrow(() -> board.move(new MoveSpecification(E8, D8)),
         "quick-unwinnable dead position is queryable only; the pipeline must accept the move");
   }

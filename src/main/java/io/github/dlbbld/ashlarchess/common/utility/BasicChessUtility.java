@@ -55,7 +55,7 @@ public abstract class BasicChessUtility {
    *
    * <p>
    * Does <em>not</em> invoke any unwinnability analyzer. Callers that want the analyzer-driven dead-position verdict
-   * call {@link Board#isDeadPositionQuick()} (or the full counterpart) directly. Single-side insufficient-material
+   * call the no-side overload of the quick or full unwinnability analyzer directly. Single-side insufficient-material
    * states are diagnostic, not terminations, and are not surfaced here; callers query
    * {@link Board#isInsufficientMaterial(Side)} directly.
    */

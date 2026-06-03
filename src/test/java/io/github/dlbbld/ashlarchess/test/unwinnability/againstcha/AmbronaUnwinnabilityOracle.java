@@ -54,12 +54,18 @@ public final class AmbronaUnwinnabilityOracle {
         throw new ProgrammingMistakeException("Duplicate Ambrona unwinnability oracle row for FEN: " + fen);
       }
       final AmbronaUnwinnabilityVerdicts verdicts = new AmbronaUnwinnabilityVerdicts(
-          UnwinnabilityFullVerdict.valueOf(Nulls.get(itemArray, 1)),
-          UnwinnabilityFullVerdict.valueOf(Nulls.get(itemArray, 2)),
+          parseChaFullVerdict(Nulls.get(itemArray, 1)), parseChaFullVerdict(Nulls.get(itemArray, 2)),
           UnwinnabilityQuickVerdict.valueOf(Nulls.get(itemArray, 3)),
           UnwinnabilityQuickVerdict.valueOf(Nulls.get(itemArray, 4)));
       result.put(fen, verdicts);
     }
     return result;
+  }
+
+  // CHA's full vocabulary has a single "WINNABLE"; the WINNABLE_HELPMATE / WINNABLE_BY_THEOREM split is ours, not CHA's.
+  // Map CHA's token to a canonical winnable value - oracle comparisons group the two via isWinnable().
+  private static UnwinnabilityFullVerdict parseChaFullVerdict(String token) {
+    return "WINNABLE".equals(token) ? UnwinnabilityFullVerdict.WINNABLE_HELPMATE
+        : UnwinnabilityFullVerdict.valueOf(token);
   }
 }

@@ -16,24 +16,25 @@
  *
  * <ul>
  * <li><strong>Quick</strong> ({@link io.github.dlbbld.ashlarchess.unwinnability.UnwinnableQuickAnalyzer}) -
- * microsecond-scale, structural, three-valued: {@code WINNABLE}, {@code UNWINNABLE}, {@code POSSIBLY_WINNABLE}. The
- * third value is a deliberate honesty signal - the quick algorithm is sound but not complete.</li>
+ * microsecond-scale, structural, two-valued: {@code UNWINNABLE} or {@code POSSIBLY_WINNABLE}. It is sound but not
+ * complete - it proves unwinnability or leaves it open, and never claims winnability.</li>
  * <li><strong>Full</strong> ({@link io.github.dlbbld.ashlarchess.unwinnability.UnwinnableFullAnalyzer}) - deep search,
- * three-valued: {@code WINNABLE}, {@code UNWINNABLE}, {@code UNDETERMINED}. The undetermined case is bounded by a
- * 500&nbsp;000-position limit; most positions resolve well below it.</li>
+ * four-valued: {@code WINNABLE_HELPMATE} (a concrete mate line was found), {@code WINNABLE_BY_THEOREM} (winnability
+ * certified by the basic-checkmate-reachability theorem, no line), {@code UNWINNABLE}, or {@code UNDETERMINED}. The
+ * undetermined case is bounded by a 500&nbsp;000-position limit; most positions resolve well below it.</li>
  * </ul>
  *
  * <p>
- * Dead-position detection is the symmetric notion with analogous three-valued returns
- * ({@link io.github.dlbbld.ashlarchess.unwinnability.DeadPositionQuick},
- * {@link io.github.dlbbld.ashlarchess.unwinnability.DeadPositionFull}).
+ * Dead-position detection is the symmetric whole-position notion: the no-side analyzer overloads
+ * {@link io.github.dlbbld.ashlarchess.unwinnability.UnwinnableQuickAnalyzer#unwinnableQuick(io.github.dlbbld.ashlarchess.board.Board)}
+ * and {@link io.github.dlbbld.ashlarchess.unwinnability.UnwinnableFullAnalyzer#unwinnableFull(io.github.dlbbld.ashlarchess.board.Board)}
+ * reuse the same verdict enums, with {@code UNWINNABLE} meaning dead (neither side can mate).
  *
  * <h2>Analyzer entry points</h2>
  *
  * <p>
- * The analyzers run only when a caller asks for a side-specific answer or a dead-position query on
- * {@link io.github.dlbbld.ashlarchess.board.Board}. No analyzer is run automatically during board construction or move
- * execution.
+ * The analyzers run only when a caller asks for a side-specific answer or a whole-position dead-position query. No
+ * analyzer is run automatically during board construction or move execution.
  *
  * <p>
  * See {@code specification.md} section 3.2 for the full design rationale.

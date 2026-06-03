@@ -3,7 +3,7 @@
 
 package io.github.dlbbld.ashlarchess.test.unwinnability;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
 
@@ -19,7 +19,6 @@ import io.github.dlbbld.ashlarchess.test.model.PgnTestCaseList;
 import io.github.dlbbld.ashlarchess.test.pgn.setup.PgnTestCaseCatalog;
 import io.github.dlbbld.ashlarchess.test.pgntest.enums.PgnTest;
 import io.github.dlbbld.ashlarchess.unwinnability.UnwinnabilityFullAnalysis;
-import io.github.dlbbld.ashlarchess.unwinnability.UnwinnabilityFullVerdict;
 import io.github.dlbbld.ashlarchess.unwinnability.UnwinnableFullAnalyzer;
 
 class TestUnwinnabilityFullWinnable {
@@ -36,7 +35,7 @@ class TestUnwinnabilityFullWinnable {
       final Board board = lichessTestCase.finalPosition();
       final Side winner = board.getHavingMove();
       final UnwinnabilityFullAnalysis analysis = UnwinnableFullAnalyzer.unwinnableFull(board, winner);
-      assertEquals(UnwinnabilityFullVerdict.WINNABLE, analysis.verdict(), testCaseHavingHelpmate.pgnName());
+      assertTrue(analysis.verdict().isWinnable(), testCaseHavingHelpmate.pgnName());
     }
   }
 
