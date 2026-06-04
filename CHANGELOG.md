@@ -5,7 +5,7 @@ Releases from 3.3 onward. Earlier history is in git tags only.
 ## [Unreleased]
 
 
-## [18.0.0] - 2026-06-04
+## [18.0.0] - Endgame theorem and unwinnability API - 2026-06-04
 
 Adds a proved basic-checkmate-reachability theorem that decides elementary endgames in the full unwinnability analysis without searching, realigns the quick analyzer to a faithful two-valued port of CHA 2.6.1, and simplifies the dead-position / game-end surface. Several public unwinnability types change shape.
 
