@@ -80,13 +80,14 @@ The python-chess oracle reads pre-generated `.jsonl` files committed under `src/
 ## Cutting a release
 
 Release tags follow strict semver and match the `<version>` in `pom.xml`. The procedure is GitHub-PR-based, and the
-order is load-bearing: a release title is chosen first and reused verbatim everywhere; artifacts are bumped before any
+order is load-bearing: the working tree is cleared of Eclipse warnings, a release title is chosen up front and reused
+verbatim everywhere; artifacts are bumped before any
 gate runs; the full release bundle is built and signed **on the branch** before the PR, so a packaging/signing failure
 is fixed there rather than after the merge (direct pushes to `main` are not allowed, so a late failure forces a
 brand-new branch + PR); the version bump must reach `main` before the tag; the tag must exist before the published
 binary is built; and the irreversible Central Portal publish is always the very last step.
 
-**Order at a glance:** name the release -> update artifacts on a branch -> push -> pre-flight (full tests + javadoc +
+**Order at a glance:** clear Eclipse warnings -> name the release -> update artifacts on a branch -> push -> pre-flight (full tests + javadoc +
 headers) -> `mvn -Prelease verify` (build+sign dry-run, on the branch, no upload) -> open the PR (titled with the
 release title) -> merge to `main` -> delete the branch -> tag `main` (annotated, message = release title) ->
 `mvn -Prelease deploy` (stages) -> review + publish on the Central Portal (irreversible) -> GitHub Release (version as
@@ -94,15 +95,30 @@ the title field, release title as the notes H1).
 
 The detailed procedure:
 
-### 1. Define the release title
+### 1. Clear Eclipse warnings and info messages
+
+A release ships from a clean compiler state. Before anything else, the project must have **zero Eclipse / JDT warnings
+and zero info messages** in the Problems view. Warnings that accumulated during development are fixed here, as part of
+cutting the release - not left as a later chore.
+
+- **Warnings** - unused imports / locals, raw types, missing `@Override`, dead code, narrowing conversions, and the
+  like. Resolve every one.
+- **Info messages** - most often the JDT null-analysis note "A default nullness annotation has not been specified",
+  raised when a package lacks its `package-info.java` carrying `@NonNullByDefault`. Add the missing file rather than
+  suppressing the message; suppression hides the next real gap too.
+
+If the project is already clean, confirm it and move on - there is nothing to fix, which is the state to aim for at
+every release.
+
+### 2. Define the release title
 
 Choose one short, human-readable **release title** for this version (for example "Endgame theorem and unwinnability
 API"). It is set once, here, and then reused verbatim in four places so every surface tells the same story:
 
-1. the `CHANGELOG.md` header (step 2),
-2. the PR title and the PR body's leading `## ` H2 (step 5),
-3. the annotated tag's message (step 6),
-4. the GitHub Release notes (step 8) - as the leading `# ` H1 of the body.
+1. the `CHANGELOG.md` header (step 3),
+2. the PR title and the PR body's leading `## ` H2 (step 6),
+3. the annotated tag's message (step 7),
+4. the GitHub Release notes (step 9) - as the leading `# ` H1 of the body.
 
 Keep the version and the release title in **separate slots**; never concatenate them into one string (no
 "X.Y.Z Release Title" - it reads as clutter). The version lives where Git and GitHub attach it structurally (the
@@ -112,7 +128,7 @@ human-readable heading shown next to it. So the PR title is the release title al
 
 The `tasks.md` "current release" heading is a good source - it already carries a one-line description of the release.
 
-### 2. Update artifacts
+### 3. Update artifacts
 
 Artifacts go next, so every gate below runs against the actual release version. Update the version string (single
 change, no version drift):
@@ -145,9 +161,9 @@ Move the relevant `tasks.md` section to **Done** at the bottom of the file.
 
 Commit these on a release branch and push the branch - this is the content the PR ships. Do **not** tag yet.
 
-### 3. Pre-flight
+### 4. Pre-flight
 
-Run on the release branch, with the artifacts from step 2 already committed:
+Run on the release branch, with the artifacts from step 3 already committed:
 
 - Worktree is clean; everything intended for the release is committed.
 - Java license headers exact: `.\tools\java-license-headers.ps1 -Check`. Use `-Fix` before committing if the check reports drift.
@@ -158,7 +174,7 @@ Run on the release branch, with the artifacts from step 2 already committed:
   - (`mvn javadoc:jar` stays at default visibility — it ships only the public API.)
 - All tasks for the release are marked done in `tasks.md`.
 
-### 4. Release build dry-run (on the branch, before the PR)
+### 5. Release build dry-run (on the branch, before the PR)
 
 **This is the step that must happen on the branch.** Build and GPG-sign the full release bundle locally with **no
 upload**, so any packaging/signing failure is caught while it can still be fixed on the branch with another commit.
@@ -170,28 +186,28 @@ mvn -Prelease help:active-profiles   # confirm the `release` profile is active
 mvn -Prelease verify                 # build + GPG-sign main/sources/javadoc jars; full dry run of the bundle (no upload)
 ```
 
-`verify` (and `deploy` in step 7) need the GPG signing passphrase. It is **not** stored on disk — gpg-agent / Pinentry prompts for it at sign time. The signing key (`6A4D42B96FD6045B`, RSA 4096) must be in the local keyring and published to `keyserver.ubuntu.com`; Portal credentials (user token) live in `~/.m2/settings.xml` under `<server><id>central</id>`.
+`verify` (and `deploy` in step 8) need the GPG signing passphrase. It is **not** stored on disk — gpg-agent / Pinentry prompts for it at sign time. The signing key (`6A4D42B96FD6045B`, RSA 4096) must be in the local keyring and published to `keyserver.ubuntu.com`; Portal credentials (user token) live in `~/.m2/settings.xml` under `<server><id>central</id>`.
 
 If `verify` fails, fix it on the branch (new commit), then re-run pre-flight + this dry-run. Only open the PR once this is green.
 
-### 5. Open the PR and merge to main
+### 6. Open the PR and merge to main
 
 The branch is now fully validated (pre-flight + release dry-run green). Done on the GitHub website, no command line needed:
 
-- Open a pull request from the release branch into `main`. **PR title field = the release title** from step 1 (no
+- Open a pull request from the release branch into `main`. **PR title field = the release title** from step 2 (no
   version), and the **body opens with `## <release title>`** as its leading heading - the same release-notes structure
-  as step 8, one heading level down because the PR already has its own title field above the body.
+  as step 9, one heading level down because the PR already has its own title field above the body.
 - Review, then **merge** it. After merging, **delete the branch**.
 
 The version bump must be on `main` (carried in by the merge) before you tag, so the tag and the published artifact
 reference the exact same commit. Do not tag the release branch.
 
-### 6. Tag the release on main
+### 7. Tag the release on main
 
 The tag goes on `main`, after the merge.
 
 - Pull `main` locally so your checkout is exactly the merged release commit.
-- Create an **annotated** tag `X.Y.Z` on `main`'s HEAD whose **message is the release title** from step 1, then push it.
+- Create an **annotated** tag `X.Y.Z` on `main`'s HEAD whose **message is the release title** from step 2, then push it.
   In Eclipse: Git Repositories view -> the repo -> right-click `Tags` -> Create Tag (or right-click the commit in
   History -> Create Tag); enter `X.Y.Z` as the tag name and the **release title** in the message/description field, then
   Push Tags. Equivalent command line: `git tag -a X.Y.Z -m "Release Title" && git push origin X.Y.Z`.
@@ -201,13 +217,13 @@ The tag goes on `main`, after the merge.
 Tag **before** the Maven deploy in the next step: the artifact is built from this commit, so the tag and the published
 jar are provably the same source.
 
-### 7. Publish to Maven Central
+### 8. Publish to Maven Central
 
 Run from your local `main` checkout at the tag you just created - the artifact must be built from the tagged commit.
-The release bundle was already built and signed on the branch in step 4, so this step is just **stage -> review ->
+The release bundle was already built and signed on the branch in step 5, so this step is just **stage -> review ->
 publish**, and only the final publish is irreversible.
 
-Distribution is the Sonatype Central Portal via `central-publishing-maven-plugin`, wired into the `release` profile alongside GPG signing and the sources / javadoc jars. `mvn -Prelease deploy` is the only Central-aware command — it builds + signs the main / sources / javadoc jars and uploads a single staged deployment. (It prompts for the same GPG passphrase as the step-4 dry-run.)
+Distribution is the Sonatype Central Portal via `central-publishing-maven-plugin`, wired into the `release` profile alongside GPG signing and the sources / javadoc jars. `mvn -Prelease deploy` is the only Central-aware command — it builds + signs the main / sources / javadoc jars and uploads a single staged deployment. (It prompts for the same GPG passphrase as the step-5 dry-run.)
 
 ```
 mvn -Prelease deploy                 # uploads a staged deployment to the Central Portal
@@ -217,19 +233,19 @@ mvn -Prelease deploy                 # uploads a staged deployment to the Centra
 
 - Review the staged contents (the main + sources + javadoc jars, their `.asc` signatures, and the flattened POM) before releasing. Releasing is the one immutable, irreversible step — once released, the `groupId:artifactId:version` triple is permanent and cannot be changed or unpublished.
 
-### 8. GitHub Release
+### 9. GitHub Release
 
-Create the GitHub Release for the tag you pushed in step 6 (GitHub website -> Releases -> Draft a new release):
+Create the GitHub Release for the tag you pushed in step 7 (GitHub website -> Releases -> Draft a new release):
 
 - **Choose the existing tag** `X.Y.Z` (do not create a new one - it already exists on `main`).
 - **Release title field = `X.Y.Z`** (the version; GitHub also defaults the title to the tag if left blank). This echoes
   the tag label rather than repeating the release title.
-- **Notes body opens with `# <release title>`** - the release title from step 1 as the body's leading H1, followed by
+- **Notes body opens with `# <release title>`** - the release title from step 2 as the body's leading H1, followed by
   the `CHANGELOG.md` `[X.Y.Z]` notes (summary + Notable / Behavioral / Breaking). The page then reads "X.Y.Z" as the
   release heading with the descriptive release title as the first H1 of the notes beneath it. The GitHub Release is the
   public, human-facing copy of the changelog entry; keep the two consistent.
 
-### 9. Post-release
+### 10. Post-release
 
 - Verify the artifact resolves at <https://central.sonatype.com/artifact/io.github.dlbbld/ashlar-chess> before announcing (index propagation can take minutes to a couple of hours).
 - Archive the shipped release in `tasks.md`: move its section to **Done** at the bottom (or collapse it to a one-line "X.Y.Z — published YYYY-MM-DD, see CHANGELOG"). The recurring procedure lives here in workflows.md and the consumer-facing summary in CHANGELOG.md, so the granular one-time checklist can be pruned without losing anything.
