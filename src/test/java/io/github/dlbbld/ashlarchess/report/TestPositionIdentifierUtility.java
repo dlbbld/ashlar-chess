@@ -18,13 +18,6 @@ import io.github.dlbbld.ashlarchess.common.Nulls;
 import io.github.dlbbld.ashlarchess.common.constants.ChessConstants;
 import io.github.dlbbld.ashlarchess.common.model.DynamicPosition;
 import io.github.dlbbld.ashlarchess.common.model.HalfMove;
-import io.github.dlbbld.ashlarchess.report.ClaimAheadEntry;
-import io.github.dlbbld.ashlarchess.report.PositionIdentifierUtility;
-import io.github.dlbbld.ashlarchess.report.RepetitionGroup;
-import io.github.dlbbld.ashlarchess.report.ThreefoldClaimAheadReport;
-import io.github.dlbbld.ashlarchess.report.ThreefoldClaimAheadReportBuilder;
-import io.github.dlbbld.ashlarchess.report.ThreefoldExistingReport;
-import io.github.dlbbld.ashlarchess.report.ThreefoldExistingReportBuilder;
 
 class TestPositionIdentifierUtility {
 

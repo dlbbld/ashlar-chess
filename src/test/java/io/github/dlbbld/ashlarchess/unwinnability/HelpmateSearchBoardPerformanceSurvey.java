@@ -18,9 +18,6 @@ import io.github.dlbbld.ashlarchess.test.model.PgnTestCaseList;
 import io.github.dlbbld.ashlarchess.test.pgn.parser.PgnCacheForStrictPgnParserTestCases;
 import io.github.dlbbld.ashlarchess.test.pgn.setup.PgnTestCaseCatalog;
 import io.github.dlbbld.ashlarchess.test.pgntest.enums.PgnTest;
-import io.github.dlbbld.ashlarchess.unwinnability.HelpmateSearchBoard;
-import io.github.dlbbld.ashlarchess.unwinnability.HelpmateSearchKey;
-import io.github.dlbbld.ashlarchess.unwinnability.LegalMoveBuffer;
 
 /**
  * Times {@link HelpmateSearchBoard}'s search-hot-path operations on the same corpus that

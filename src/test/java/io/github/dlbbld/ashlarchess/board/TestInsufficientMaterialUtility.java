@@ -9,8 +9,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.Test;
 
 import io.github.dlbbld.ashlarchess.bitboard.BitboardPosition;
-import io.github.dlbbld.ashlarchess.board.Board;
-import io.github.dlbbld.ashlarchess.board.InsufficientMaterialUtility;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
 
 class TestInsufficientMaterialUtility {

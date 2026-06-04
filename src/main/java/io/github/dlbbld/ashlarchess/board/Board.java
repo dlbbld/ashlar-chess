@@ -24,15 +24,12 @@ import io.github.dlbbld.ashlarchess.common.Nulls;
 import io.github.dlbbld.ashlarchess.common.constants.ChessConstants;
 import io.github.dlbbld.ashlarchess.common.constants.DynamicPositionConstants;
 import io.github.dlbbld.ashlarchess.common.enums.InsufficientMaterial;
-import io.github.dlbbld.ashlarchess.common.enums.Termination;
 import io.github.dlbbld.ashlarchess.common.exceptions.ProgrammingMistakeException;
 import io.github.dlbbld.ashlarchess.common.model.ClaimRights;
 import io.github.dlbbld.ashlarchess.common.model.ClaimableMove;
 import io.github.dlbbld.ashlarchess.common.model.DynamicPosition;
-import io.github.dlbbld.ashlarchess.common.model.GameEndFacts;
 import io.github.dlbbld.ashlarchess.common.model.HalfMove;
 import io.github.dlbbld.ashlarchess.common.model.MoveSpecification;
-import io.github.dlbbld.ashlarchess.common.model.Outcome;
 import io.github.dlbbld.ashlarchess.common.ucimove.utility.UciMoveUtility;
 import io.github.dlbbld.ashlarchess.common.utility.BasicChessUtility;
 import io.github.dlbbld.ashlarchess.common.utility.RepetitionUtility;
@@ -54,8 +51,6 @@ import io.github.dlbbld.ashlarchess.san.MoveToSan;
 import io.github.dlbbld.ashlarchess.san.SanTerminalMarker;
 import io.github.dlbbld.ashlarchess.san.StrictSanParser;
 import io.github.dlbbld.ashlarchess.san.StrictSanParserValidationResult;
-import io.github.dlbbld.ashlarchess.unwinnability.DeadPositionFull;
-import io.github.dlbbld.ashlarchess.unwinnability.DeadPositionQuick;
 import io.github.dlbbld.ashlarchess.unwinnability.UnwinnabilityFullVerdict;
 import io.github.dlbbld.ashlarchess.unwinnability.UnwinnabilityQuickVerdict;
 import io.github.dlbbld.ashlarchess.unwinnability.UnwinnableFullAnalyzer;
@@ -96,9 +91,9 @@ import io.github.dlbbld.ashlarchess.unwinnability.UnwinnableQuickAnalyzer;
  * <p>
  * Beyond move execution, {@code Board} exposes the standard rule-level predicates: {@link #isCheckmate()},
  * {@link #isStalemate()}, {@link #isThreefoldRepetition()}, {@link #isFiftyMove()}, {@link #isFivefoldRepetition()},
- * {@link #isSeventyFiveMove()}, plus the unwinnability/dead-position pair ({@code isUnwinnableQuick},
- * {@code isUnwinnableFull}, {@code isDeadPositionQuick}, {@code isDeadPositionFull} - the library's flagship CHA
- * feature; see {@link io.github.dlbbld.ashlarchess.unwinnability}). Position-state accessors return Guava
+ * {@link #isSeventyFiveMove()}, plus the side-specific unwinnability predicates ({@code isUnwinnableQuick},
+ * {@code isUnwinnableFull}) - the library's flagship CHA feature. Whole-position dead-position checks (no intended
+ * winner) live on the analyzers; see {@link io.github.dlbbld.ashlarchess.unwinnability}. Position-state accessors return Guava
  * {@code ImmutableList}/{@code ImmutableSet}; mutation is exclusively via {@code move}/{@code unmove}.
  *
  * <p>
@@ -835,37 +830,6 @@ public class Board {
     return getRepetitionCount() >= ChessConstants.FIVEFOLD_REPETITION_RULE_THRESHOLD;
   }
 
-  /**
-   * Rich snapshot of all game-end-relevant facts on the current position together with the precedence-projected
-   * {@link Outcome}. The fact booleans are independent and condition-only - each is the raw truth of its rule on the
-   * current board, not suppressed by any higher-precedence condition that may also hold. See {@link GameEndFacts} for
-   * the field-by-field semantics and the precedence rules used to project the {@code outcome} field.
-   *
-   * <p>
-   * Invokes the unwinnability quick analyzer to compute {@code deadPosition}; the cost is microseconds. Callers that do
-   * not need the analyzer-driven dead-position fact can call the individual condition predicates directly.
-   */
-  public GameEndFacts calculateGameEndFacts() {
-    final boolean checkmate = isCheckmate();
-    final boolean stalemate = isStalemate();
-    final boolean insufficientMaterial = isInsufficientMaterial();
-    final boolean deadPosition = isDeadPosition();
-    final boolean fivefoldRepetition = isFivefoldRepetition();
-    final boolean seventyFiveMove = isSeventyFiveMove();
-    final Outcome outcome = BasicChessUtility.calculateOutcome(this);
-    return new GameEndFacts(checkmate, stalemate, insufficientMaterial, deadPosition, fivefoldRepetition,
-        seventyFiveMove, outcome);
-  }
-
-  /**
-   * Convenience: {@code true} iff a termination condition fires on the current position (i.e. the projected
-   * {@link Outcome}'s termination is not {@link io.github.dlbbld.ashlarchess.common.enums.Termination#NONE}).
-   * Equivalent to {@code BasicChessUtility.calculateOutcome(this).termination() != Termination.NONE}.
-   */
-  public boolean isGameEnd() {
-    return BasicChessUtility.calculateOutcome(this).termination() != Termination.NONE;
-  }
-
   public ImmutableList<String> getSanList() {
     return Nulls.copyOfList(sanList);
   }
@@ -1133,46 +1097,6 @@ public class Board {
       return InsufficientMaterial.BLACK_ONLY;
     }
     return InsufficientMaterial.NONE;
-  }
-
-  public DeadPositionQuick isDeadPositionQuick() {
-    final UnwinnabilityQuickVerdict unwinnableWhite = UnwinnableQuickAnalyzer.unwinnableQuick(this, Side.WHITE)
-        .verdict();
-    final UnwinnabilityQuickVerdict unwinnableBlack = UnwinnableQuickAnalyzer.unwinnableQuick(this, Side.BLACK)
-        .verdict();
-    if (unwinnableWhite == UnwinnabilityQuickVerdict.UNWINNABLE
-        && unwinnableBlack == UnwinnabilityQuickVerdict.UNWINNABLE) {
-      return DeadPositionQuick.DEAD_POSITION;
-    }
-    if (unwinnableWhite == UnwinnabilityQuickVerdict.WINNABLE
-        && unwinnableBlack == UnwinnabilityQuickVerdict.WINNABLE) {
-      return DeadPositionQuick.NON_DEAD_POSITION;
-    }
-    return DeadPositionQuick.POSSIBLY_NON_DEAD_POSITION;
-  }
-
-  /**
-   * FIDE 5.2.2 dead position: either both sides insufficient material (cheap, exact) or both sides UNWINNABLE per the
-   * quick analyzer. The cheap predicate short-circuits the expensive one.
-   */
-  public boolean isDeadPosition() {
-    return isInsufficientMaterial() || isDeadPositionQuick() == DeadPositionQuick.DEAD_POSITION;
-  }
-
-  public DeadPositionFull isDeadPositionFull() {
-    final UnwinnabilityFullVerdict unwinnableWhite = UnwinnableFullAnalyzer.unwinnableFull(this, Side.WHITE).verdict();
-    if (unwinnableWhite == UnwinnabilityFullVerdict.WINNABLE) {
-      return DeadPositionFull.NON_DEAD_POSITION;
-    }
-    final UnwinnabilityFullVerdict unwinnableBlack = UnwinnableFullAnalyzer.unwinnableFull(this, Side.BLACK).verdict();
-    if (unwinnableBlack == UnwinnabilityFullVerdict.WINNABLE) {
-      return DeadPositionFull.NON_DEAD_POSITION;
-    }
-    if (unwinnableWhite == UnwinnabilityFullVerdict.UNWINNABLE
-        && unwinnableBlack == UnwinnabilityFullVerdict.UNWINNABLE) {
-      return DeadPositionFull.DEAD_POSITION;
-    }
-    return DeadPositionFull.UNDETERMINED;
   }
 
   public UnwinnabilityQuickVerdict isUnwinnableQuick(Side side) {

@@ -33,9 +33,8 @@
  * <p>
  * Analyzer-driven dead positions (FIDE 5.2.2 via the quick or full unwinnability analyzer) are <em>not</em> surfaced
  * via {@code calculateOutcome} - invoking the analyzer from that method would silently make every status query
- * expensive. Callers that want the analyzer-driven verdict invoke
- * {@link io.github.dlbbld.ashlarchess.board.Board#isDeadPositionQuick()} or
- * {@link io.github.dlbbld.ashlarchess.board.Board#isDeadPositionFull()} directly.
+ * expensive. Callers that want the analyzer-driven verdict invoke the no-side overload of the quick or full
+ * unwinnability analyzer in {@link io.github.dlbbld.ashlarchess.unwinnability} directly.
  *
  * <p>
  * The claimable draws (FIDE 9.2 3-fold, FIDE 9.3 50-move) are intentionally not surfaced by {@code calculateOutcome}: a

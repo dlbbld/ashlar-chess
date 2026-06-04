@@ -1,20 +1,26 @@
 ashlar-chess
 ===========
 
-ashlar-chess is a Java chess library focused on rule correctness and reproducibility.
+ashlar-chess is a Java chess library focused on rule correctness, production usability, and reproducible validation.
 It implements SAN, FEN, and PGN parsing, validation, and export with a strict/lenient parser pair,
 and includes a Java port of the [Chess Unwinnability Analyzer (CHA)](https://github.com/miguel-ambrona/D3-Chess) as a flagship feature.
 
-It's not a chess engine — it does not calculate best moves for a given position.
+It's not a chess engine - it does not calculate best moves for a given position.
 
-It's also not built for performance; if you need fast move generation, use for example Stockfish.
-It is built for correctness and comprehension — for example, it produces meaningful messages for SAN, FEN, and PGN validation.
+It is also not a move-generation benchmark library. The public `Board` is a rich game object: it keeps the position,
+move history, legal moves per ply, SAN/LAN strings, repetition counts, halfmove clocks, and castling-right facts needed
+for rule-level queries and reports. That rich state is backed by bitboards for piece placement and move generation.
+The CHA full-search hot path is deliberately leaner: it uses mutable bitboards and make/unmake state because cooperative
+mate search needs the best practical performance the design can provide.
+
+The library is built for correctness and comprehension - for example, it produces meaningful messages for SAN, FEN, and
+PGN validation.
 
 For the design philosophy, architecture, and rule-level decisions, see [specification.md](specification.md).
 
-ashlar-chess includes a Java port of the Chess Unwinnability Analyzer (CHA) by Miguel Ambrona, used for unwinnability and dead-position detection.
+The CHA port is used for unwinnability and dead-position detection.
 
-The test suite also cross-validates selected behavior against external chess libraries, currently python-chess as the primary oracle and chesslib by Ben-Hur Carlos Vieira Langoni Junior as a secondary witness. These libraries are used for testing only and are not runtime dependencies of ashlar-chess.
+The test suite also cross-validates selected behavior against external chess libraries, currently python-chess as the primary oracle and [chesslib](https://github.com/bhlangonijr/chesslib) by Ben-Hur Carlos Vieira Langoni Junior as a secondary witness. These libraries are used for testing only and are not runtime dependencies of ashlar-chess.
 
 ## Not supported
 
@@ -34,7 +40,7 @@ Requires JDK 17 or later at runtime. Published to Maven Central.
 <dependency>
   <groupId>io.github.dlbbld</groupId>
   <artifactId>ashlar-chess</artifactId>
-  <version>17.0.0</version>
+  <version>18.0.0</version>
 </dependency>
 ```
 
@@ -46,7 +52,7 @@ repositories {
 }
 
 dependencies {
-    implementation 'io.github.dlbbld:ashlar-chess:17.0.0'
+    implementation 'io.github.dlbbld:ashlar-chess:18.0.0'
 }
 ```
 
@@ -271,7 +277,7 @@ blocked pawn walls:
 
 ```text
 after each move:
-    if board.isDeadPositionQuick() == DEAD_POSITION:
+    if UnwinnableQuickAnalyzer.unwinnableQuick(board) == UNWINNABLE:
         return draw
 ```
 
@@ -291,44 +297,49 @@ The library implements the [Chess Unwinnability Analyzer (CHA)](https://github.c
 A position is unwinnable for a player if there is no legal sequence that can end with that player giving checkmate,
 even if the opponent cooperates. If the position is unwinnable for both players, it's a dead position.
 
-> **Note:** quick/full dead-position detection is caller-invoked. `Board` does not run the quick analyzer during
-> construction or after each move; callers that want to adjudicate analyzer-driven dead positions can query
-> `Board.isDeadPositionQuick()` / `Board.isDeadPositionFull()` or the side-specific unwinnability APIs.
+> **Note:** quick/full dead-position detection is caller-invoked. `Board` does not run the analyzer during
+> construction or after each move; callers that want to adjudicate analyzer-driven dead positions call the no-side
+> overloads `UnwinnableQuickAnalyzer.unwinnableQuick(board)` / `UnwinnableFullAnalyzer.unwinnableFull(board)`, or the
+> side-specific `Board.isUnwinnableQuick(Side)` / `Board.isUnwinnableFull(Side)`.
 
 ## Methods
 The library provides an implementation of CHA. So for both situations, there is a quick and a full method.
 
 The quick method is speedy by design but might miss some corrections. The full method is slower and complete when it
-returns WINNABLE or UNWINNABLE; bounded search may return UNDETERMINED.
+returns one of the winnable verdicts or UNWINNABLE; bounded search may return UNDETERMINED.
 
 ### Unwinnability
-The quick method has three return values:
+The quick method has two return values:
 * UNWINNABLE - the position is not winnable by the player
-* WINNABLE - the position is winnable by the player
-* POSSIBLY_WINNABLE - the position is most likely winnable by the player, but it might also be unwinnable in some rare cases
+* POSSIBLY_WINNABLE - not proven unwinnable; most likely winnable, but it might be unwinnable in some rare cases
 
+The quick method never claims winnability - proving a concrete win is the full method's job.
 `Board.isUnwinnableQuick(Side)` returns this verdict directly. `UnwinnableQuickAnalyzer.unwinnableQuick(...)` returns
-`UnwinnabilityQuickAnalysis`, which includes the verdict and the helpmate line when the quick result is `WINNABLE`.
+`UnwinnabilityQuickAnalysis` (the verdict only).
 
-The full method also has three return values:
+The full method has four return values:
+* WINNABLE_HELPMATE - winnable, with a concrete cooperative mate line
+* WINNABLE_BY_THEOREM - winnable, certified by the [basic-helmpate-existence](https://github.com/dlbbld/basic-helpmate-existence) theorem (no line). This adds nothing substantially new to CHA and does not change CHA outcome
+in any way, it is only trying an alternative approach for some material cases.
 * UNWINNABLE - the position is not winnable by the player
-* WINNABLE - the position is winnable by the player
 * UNDETERMINED - the limits in the code interrupted the search
 
 Performance: The limit regarding "UNDETERMINED" is 500'000 positions. It takes around one minute to reach. Most positions evaluate below one second. 
 
 ### Dead position
-The quick method has three return values:
-* DEAD_POSITION - the position is a dead position
-* NON_DEAD_POSITION - the position is not a dead position
-* POSSIBLY_NON_DEAD_POSITION - the position is most likely a non-dead position, but it might also be a dead position in some rare cases
+A position is dead when it is unwinnable for both players. The no-side overloads check this and reuse the same verdict
+enums, so there is no separate dead-position type.
 
-The full method also has three return values:
-* DEAD_POSITION - the position is a dead position
-* NON_DEAD_POSITION - the position is not a dead position
+`UnwinnableQuickAnalyzer.unwinnableQuick(board)` returns an `UnwinnabilityQuickVerdict`:
+* UNWINNABLE - the position is dead (neither side can mate)
+* POSSIBLY_WINNABLE - not provably dead
+
+`UnwinnableFullAnalyzer.unwinnableFull(board)` returns an `UnwinnabilityFullVerdict`:
+* WINNABLE_HELPMATE / WINNABLE_BY_THEOREM - not dead (one side can win)
+* UNWINNABLE - the position is dead
 * UNDETERMINED - the limits in the code interrupted the search
 
-Performance: The comment from the Unwinnablity section for UNDETERMINED applies here. However, it checks both sides so that it can take double the time.
+Performance: The comment from the Unwinnability section for UNDETERMINED applies here. However, it checks both sides so that it can take double the time.
 
 ## Examples
 
@@ -346,17 +357,6 @@ For example, if White flags with the king and rook against the lone king of Blac
   System.out.println(board.isUnwinnableFull(Side.BLACK)); // UNWINNABLE
 ```
 
-#### Pawn walls
-Pawn walls are blocked positions, both players cannot mate and cannot make progress, so they are dead positions. They are not detected
-by most common chess libraries. 
-[Game](https://lichess.org/c3ew66ZV#123)
-
-```java
-  final Board board = new Board("8/8/3k4/1p2p1p1/pP1pP1P1/P2P4/1K6/8 b - - 32 62");
-  System.out.println(board.isUnwinnableQuick(Side.BLACK)); // UNWINNABLE
-  System.out.println(board.isUnwinnableFull(Side.BLACK)); // UNWINNABLE
-```
-
 #### Forced moves
 There are everyday situations mainly in lower time controls like Bullet, where the game could only continue with a few
 forced moves, and the game outcome is determined. Here Black flags, but there is no game continuation possible where
@@ -369,6 +369,17 @@ White could have won.
   System.out.println(board.isUnwinnableFull(Side.WHITE)); // UNWINNABLE
 ```
 
+#### Pawn walls
+Pawn walls are blocked positions, both players cannot mate and cannot make progress, so they are dead positions. They are not detected
+by most common chess libraries. 
+[Game](https://lichess.org/c3ew66ZV#123)
+
+```java
+  final Board board = new Board("8/8/3k4/1p2p1p1/pP1pP1P1/P2P4/1K6/8 b - - 32 62");
+  System.out.println(board.isUnwinnableQuick(Side.BLACK)); // UNWINNABLE
+  System.out.println(board.isUnwinnableFull(Side.BLACK)); // UNWINNABLE
+```
+
 #### Common positions
 When there are still a lot of pieces on the board, so a mate is very likely, the quick algorithm says POSSIBLY_WINNABLE.
 It makes an educated guess only. In this example, the full algorithm calculates an actual mate; in harder positions,
@@ -378,15 +389,15 @@ the bounded search may return UNDETERMINED.
 ```java
   final Board board = new Board("q4r2/pR3pkp/1p2p1p1/4P3/6P1/1P3Q2/1Pr2PK1/3R4 b - - 3 29");
   System.out.println(board.isUnwinnableQuick(Side.WHITE)); // POSSIBLY_WINNABLE
-  System.out.println(board.isUnwinnableFull(Side.WHITE)); // WINNABLE
+  System.out.println(board.isUnwinnableFull(Side.WHITE)); // WINNABLE_HELPMATE
 ```
 
-#### Positions the quick algorithm does not see
-The following is an example of a position where the quick algorithm says POSSIBLY_WINNABLE, but the position is winnable. [Game](https://lichess.org/bKHPqNEw#81)
+#### Blocked positions the quick algorithm proves
+The quick algorithm (a port of CHA 2.6.1) also proves many blocked and fortress positions, not only material-based ones. Here White's bishop and pawns are blocked and cannot make progress against the cornered black king, so the position is unwinnable for White - and the quick algorithm already decides it. [Game](https://lichess.org/bKHPqNEw#81)
 
 ```java
   final Board board = new Board("1k6/1P5p/BP3p2/1P6/8/8/5PKP/8 b - - 0 41");
-  System.out.println(board.isUnwinnableQuick(Side.WHITE)); // POSSIBLY_WINNABLE
+  System.out.println(board.isUnwinnableQuick(Side.WHITE)); // UNWINNABLE
   System.out.println(board.isUnwinnableFull(Side.WHITE)); // UNWINNABLE
 ```
 
@@ -399,8 +410,8 @@ The most straightforward dead position is when one player already has insufficie
 [Position](https://lichess.org/analysis/8/8/3kn3/8/2K5/8/8/8_w_-_-_0_50)
 ```java
   final Board board = new Board("8/8/3kn3/8/2K5/8/8/8 w - - 0 50");
-  System.out.println(board.isDeadPositionQuick()); // DEAD_POSITION
-  System.out.println(board.isDeadPositionFull()); // DEAD_POSITION
+  System.out.println(UnwinnableQuickAnalyzer.unwinnableQuick(board)); // UNWINNABLE (dead)
+  System.out.println(UnwinnableFullAnalyzer.unwinnableFull(board)); // UNWINNABLE (dead)
 ```
 
 #### Pawn walls
@@ -409,8 +420,8 @@ Pawn walls are dead positions, but most common chess libraries do not detect the
 
 ```java
   final Board board = new Board("8/6b1/1p3k2/1Pp1p1p1/2P1PpP1/5P2/8/5K2 b - - 11 61");
-  System.out.println(board.isDeadPositionQuick()); // DEAD_POSITION
-  System.out.println(board.isDeadPositionFull()); // DEAD_POSITION
+  System.out.println(UnwinnableQuickAnalyzer.unwinnableQuick(board)); // UNWINNABLE (dead)
+  System.out.println(UnwinnableFullAnalyzer.unwinnableFull(board)); // UNWINNABLE (dead)
 ```
 
 #### Forced moves
@@ -419,8 +430,8 @@ Positions can also often be dead due to forced moves.
 
 ```java
   final Board board = new Board("k7/P1K5/8/8/8/8/8/8 b - - 2 58");
-  System.out.println(board.isDeadPositionQuick()); // DEAD_POSITION
-  System.out.println(board.isDeadPositionFull()); // DEAD_POSITION
+  System.out.println(UnwinnableQuickAnalyzer.unwinnableQuick(board)); // UNWINNABLE (dead)
+  System.out.println(UnwinnableFullAnalyzer.unwinnableFull(board)); // UNWINNABLE (dead)
 ```
 
 # PGN functionality

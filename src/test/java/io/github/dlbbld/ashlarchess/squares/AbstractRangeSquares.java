@@ -16,8 +16,6 @@ import io.github.dlbbld.ashlarchess.board.enums.PieceType;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
 import io.github.dlbbld.ashlarchess.board.enums.Square;
 import io.github.dlbbld.ashlarchess.enums.SquareOccupation;
-import io.github.dlbbld.ashlarchess.squares.DiagonalRange;
-import io.github.dlbbld.ashlarchess.squares.OrthogonalRange;
 
 /**
  * Calculated to defined as all squares the piece can move to, being empty, occupied by an opponent piece or by

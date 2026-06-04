@@ -3,10 +3,8 @@
 
 package io.github.dlbbld.ashlarchess.unwinnability;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -17,182 +15,99 @@ import io.github.dlbbld.ashlarchess.board.enums.Side;
 import io.github.dlbbld.ashlarchess.common.Nulls;
 import io.github.dlbbld.ashlarchess.common.exceptions.ProgrammingMistakeException;
 import io.github.dlbbld.ashlarchess.common.model.DynamicPosition;
-import io.github.dlbbld.ashlarchess.common.ucimove.utility.UciMoveUtility;
 import io.github.dlbbld.ashlarchess.fen.model.Fen;
 import io.github.dlbbld.ashlarchess.model.LegalMove;
-import io.github.dlbbld.ashlarchess.model.UciMove;
 
+// Faithful port of CHA 2.6.1 DYNAMIC::quick_analysis (the deployed -quick), NOT the paper's Figure 10. It is
+// deliberately 2-valued: it returns UNWINNABLE when it can prove the position dead for the intended winner, and
+// otherwise POSSIBLY_WINNABLE (CHA's "undetermined -> guessed winnable"). It never returns WINNABLE; finding a
+// helpmate is the job of the full analyzer. The depth-7 search is unconditional; the depth-15 pass is CHA's ad hoc
+// deeper retry for restricted pawn/bishop positions (CHA comment: "TODO: remove if too ad hoc for capturing bKHPqNEw").
 public class UnwinnableQuickAnalyzer {
 
-  private static final boolean IS_ALIGN_QUICK_WITH_AMBRONA_REFERENCE_IMPLEMENTATION = true;
-
-  public static UnwinnabilityQuickAnalysis unwinnableQuick(Board board, Side c) {
-    return unwinnableQuick(board, c, false, new MobilitySolution());
+  /**
+   * Quick unwinnability for one intended winner.
+   *
+   * <p>
+   * It answer the question "can this side ever deliver checkmate?"
+   */
+  public static UnwinnabilityQuickAnalysis unwinnableQuick(Board input, Side c) {
+    return new UnwinnabilityQuickAnalysis(calculateUnwinnabilityQuickVerdict(input, c));
   }
 
   /**
-   * Runs the algorithm on a fresh history-less board built from the caller's FEN. The caller's board is not mutated,
-   * and repetition history is intentionally ignored for the conservative quick check.
+   * Dead-position-quick check for the whole position (no intended winner): {@code UNWINNABLE} means the position is
+   * dead - neither side can deliver checkmate by any sequence of legal moves - and {@code POSSIBLY_WINNABLE} means it
+   * is not provably dead. This is the quick, during-the-game counterpart to
+   * {@link UnwinnableFullAnalyzer#unwinnableFull(Board)}, the complete check suggested at game end (resignation or
+   * flag-fall). Short-circuits: it stops as soon as one side is not provably unwinnable.
    */
-  public static UnwinnabilityQuickAnalysis unwinnableQuick(Board input, Side c, boolean isHasMobilitySolution,
-      MobilitySolution calculatedMobilitySolution) {
-    final Board board = copyCurrentPositionForQuickSearch(input);
+  public static UnwinnabilityQuickVerdict unwinnableQuick(Board board) {
+    if (unwinnableQuick(board, Side.WHITE).verdict() != UnwinnabilityQuickVerdict.UNWINNABLE) {
+      return UnwinnabilityQuickVerdict.POSSIBLY_WINNABLE;
+    }
+    if (unwinnableQuick(board, Side.BLACK).verdict() != UnwinnabilityQuickVerdict.UNWINNABLE) {
+      return UnwinnabilityQuickVerdict.POSSIBLY_WINNABLE;
+    }
+    return UnwinnabilityQuickVerdict.UNWINNABLE;
+  }
 
+  private static UnwinnabilityQuickVerdict calculateUnwinnabilityQuickVerdict(Board input, Side c) {
+    final Board board = copyCurrentPositionForQuickSearch(input);
     final String invariant = board.getFen();
 
-    // 1: advance the position as long as there is only one legal move
-    // if position is advanced cannot use the provided mobility solution if any
-    boolean isCanUseMobilitySolution = true;
+    // CHA trivial_progress: advance the position while there is exactly one legal move.
     int countHalfmoves = 0;
-    final List<UciMove> forcedMoveLine = new ArrayList<>();
     final Set<DynamicPosition> forcedPositionSet = new HashSet<>();
-    while (forcedPositionSet.add(board.getDynamicPosition())) {
-      if (board.isCheckmate()) {
-        // crucial, store the side before undoing moves, as it can change with undoing moves!!
-        final Side sideBeingCheckmated = board.getHavingMove();
-        unperformHalfmoves(board, countHalfmoves);
-        if (!invariant.equals(board.getFen())) {
-          throw new ProgrammingMistakeException("Board was changed");
-        }
-        if (sideBeingCheckmated == c) {
-          return analysis(UnwinnabilityQuickVerdict.UNWINNABLE);
-        }
-        return winnableAnalysis(forcedMoveLine);
-      }
-
-      if (board.isInsufficientMaterial(c) || board.isStalemate()) {
-        unperformHalfmoves(board, countHalfmoves);
-        if (!invariant.equals(board.getFen())) {
-          throw new ProgrammingMistakeException("Board was changed");
-        }
-        return analysis(UnwinnabilityQuickVerdict.UNWINNABLE);
-      }
-
-      if (board.getLegalMoves().size() != 1) {
-        break;
-      }
-
-      isCanUseMobilitySolution = false;
-      final LegalMove legalMove = Nulls.getFirst(board.getLegalMoves());
-      forcedMoveLine
-          .add(UciMoveUtility.convertMoveSpecificationToUci(legalMove.havingMove(), legalMove.moveSpecification()));
-      board.move(legalMove.moveSpecification());
+    while (board.getLegalMoves().size() == 1 && forcedPositionSet.add(board.getDynamicPosition())) {
+      board.move(Nulls.getFirst(board.getLegalMoves()).moveSpecification());
       countHalfmoves++;
     }
 
-    // 2: perform a depth-first search over the tree of variations of pos and interrupt the
-    // search if (i) checkmate is found for player c or (ii) depth D is reached
-    final String invariantTwo = board.getFen();
-    final FindHelpmateAnalysis checkmateSearchResult = FindHelpMateInterrupt.calculateHelpmate(board, c);
-    if (!invariantTwo.equals(board.getFen())) {
-      throw new ProgrammingMistakeException("Board was changed");
-    }
+    final boolean isUnwinnable = calculateIsQuickUnwinnable(board, c);
 
-    switch (checkmateSearchResult.findHelpmateResult()) {
-      case YES:
-        // 3: if checkmate was found on the previous search then return Winnable
-        unperformHalfmoves(board, countHalfmoves);
-        if (!invariant.equals(board.getFen())) {
-          throw new ProgrammingMistakeException("Board was changed");
-        }
-        return winnableAnalysis(forcedMoveLine, checkmateSearchResult.mateLine());
-      case NO:
-        // 4: else if the search was not interrupted then return Unwinnable
-        unperformHalfmoves(board, countHalfmoves);
-        if (!invariant.equals(board.getFen())) {
-          throw new ProgrammingMistakeException("Board was changed");
-        }
-        return analysis(UnwinnabilityQuickVerdict.UNWINNABLE);
-      case UNKNOWN:
-        break;
-      default:
-        throw new IllegalArgumentException();
-    }
-
-    // 5: else if the position only contains pieces of type P,B,K and there are no semi-open
-    // files in the position then
-    if (calculateHasOnlyPawnsBishopsAndKings(board.getBitboardPosition())
-        && !SemiOpenFilesUtility.calculateHasSemiOpenFile(board.getBitboardPosition())) {
-
-      // 6: if true UnwinnableSS(pos, c, Mobility(pos)) then return Unwinnable
-      final MobilitySolution mobilitySolution;
-      if (isHasMobilitySolution && isCanUseMobilitySolution) {
-        mobilitySolution = calculatedMobilitySolution;
-      } else {
-        mobilitySolution = Mobility.mobility(board);
-      }
-      if (UnwinnableSemiStatic.unwinnableSemiStatic(board, c, mobilitySolution)) {
-        unperformHalfmoves(board, countHalfmoves);
-        if (!invariant.equals(board.getFen())) {
-          throw new ProgrammingMistakeException("Board was changed");
-        }
-        return analysis(UnwinnabilityQuickVerdict.UNWINNABLE);
-      }
-    }
-
-    if (IS_ALIGN_QUICK_WITH_AMBRONA_REFERENCE_IMPLEMENTATION) {
-      boolean isUnwinnable = false;
-      final boolean hasOnlyPawnsAndBishops = calculateHasOnlyPawnsBishopsAndKings(board.getBitboardPosition());
-      final boolean isBlockedCandidate = calculateIsBlockedCandidate(board.getBitboardPosition());
-      if (isBlockedCandidate && hasOnlyPawnsAndBishops) {
-        final MobilitySolution mobilitySolution = Mobility.mobility(board);
-        isUnwinnable = UnwinnableSemiStatic.unwinnableSemiStatic(board, c, mobilitySolution);
-      }
-
-      if (isBlockedCandidate && !isUnwinnable && calculateIsAlmostOnlyPawnsBishopsAndKings(board.getBitboardPosition())
-          && (board.isCheck() || UnwinnabilityMaterialBitboard.calculateHasKnight(board.getBitboardPosition()))) {
-        isUnwinnable = calculateIsUnwinnableAfterOneMove(board, c);
-      }
-
-      final MovedKings movedKings = new MovedKings();
-      final boolean isDynamicSearchCandidate = hasOnlyPawnsAndBishops && board.getLegalMoves().size() <= 8;
-      if (!isUnwinnable && isDynamicSearchCandidate) {
-        isUnwinnable = calculateIsDynamicallyUnwinnable(board, c, 7, movedKings, new HashMap<>());
-      }
-      if (!isUnwinnable && isDynamicSearchCandidate && movedKings.value != 3) {
-        isUnwinnable = calculateIsDynamicallyUnwinnable(board, c, 15, movedKings, new HashMap<>());
-      }
-
-      if (isUnwinnable) {
-        unperformHalfmoves(board, countHalfmoves);
-        if (!invariant.equals(board.getFen())) {
-          throw new ProgrammingMistakeException("Board was changed");
-        }
-        return analysis(UnwinnabilityQuickVerdict.UNWINNABLE);
-      }
-    }
-
-    // 7: return PossiblyWinnable ( -> Unwinnability could not be determined)
     unperformHalfmoves(board, countHalfmoves);
     if (!invariant.equals(board.getFen())) {
       throw new ProgrammingMistakeException("Board was changed");
     }
-    return analysis(UnwinnabilityQuickVerdict.POSSIBLY_WINNABLE);
+    return isUnwinnable ? UnwinnabilityQuickVerdict.UNWINNABLE : UnwinnabilityQuickVerdict.POSSIBLY_WINNABLE;
   }
 
-  private static boolean calculateHasOnlyPawnsBishopsAndKings(BitboardPosition bitboardPosition) {
-    return !UnwinnabilityMaterialBitboard.calculateHasRook(bitboardPosition)
-        && !UnwinnabilityMaterialBitboard.calculateHasKnight(bitboardPosition)
-        && !UnwinnabilityMaterialBitboard.calculateHasQueen(bitboardPosition);
+  // Mirrors the body of DYNAMIC::quick_analysis: an unconditional depth-7 dynamic search, an ad hoc deeper depth-15
+  // retry, then the blocked-position semi-static checks. Returns true only when one of them proves unwinnability.
+  private static boolean calculateIsQuickUnwinnable(Board board, Side c) {
+    final BitboardPosition bitboardPosition = board.getBitboardPosition();
+    final boolean hasOnlyPawnsAndBishops = calculateHasOnlyPawnsBishopsAndKings(bitboardPosition);
+    final MovedKings movedKings = new MovedKings();
+
+    boolean isUnwinnable = calculateIsDynamicallyUnwinnable(board, c, 7, movedKings, new HashMap<>());
+
+    if (!isUnwinnable && hasOnlyPawnsAndBishops && movedKings.value != 3 && board.getLegalMoves().size() <= 8) {
+      isUnwinnable = calculateIsDynamicallyUnwinnable(board, c, 15, movedKings, new HashMap<>());
+    }
+
+    final boolean isBlockedCandidate = calculateIsBlockedCandidate(bitboardPosition);
+
+    if (isBlockedCandidate && !isUnwinnable && hasOnlyPawnsAndBishops) {
+      isUnwinnable = UnwinnableSemiStatic.unwinnableSemiStatic(board, c, Mobility.mobility(board));
+    }
+
+    if (isBlockedCandidate && !isUnwinnable && calculateIsAlmostOnlyPawnsBishopsAndKings(bitboardPosition)
+        && (board.isCheck() || UnwinnabilityMaterialBitboard.calculateHasKnight(bitboardPosition))) {
+      isUnwinnable = calculateIsUnwinnableAfterOneMove(board, c);
+    }
+
+    return isUnwinnable;
   }
 
-  private static Board copyCurrentPositionForQuickSearch(Board input) {
-    final Fen fen = new Fen(input.getFen(), input.getBitboardPosition(), input.getHavingMove(),
-        input.getCastlingRightWhite(), input.getCastlingRightBlack(), input.getEnPassantCaptureTargetSquare(), 0,
-        input.getFullMoveNumber());
-    return new Board(fen);
-  }
-
-  private static boolean calculateIsAlmostOnlyPawnsBishopsAndKings(BitboardPosition bitboardPosition) {
-    final long heavyPieces = bitboardPosition.whiteKnights() | bitboardPosition.blackKnights()
-        | bitboardPosition.whiteRooks() | bitboardPosition.blackRooks() | bitboardPosition.whiteQueens()
-        | bitboardPosition.blackQueens();
-    return Long.bitCount(heavyPieces) <= 1;
-  }
-
+  // CHA dynamically_unwinnable: returns true iff every line, within the depth bound, reaches a position that is
+  // impossible to win for the intended winner (or a checkmate of the intended winner). A transposition map memoizes
+  // the (position, depth) verdict; the boolean result is unaffected by it, though movedKings may be under-counted on
+  // a cache hit (only relevant to the ad hoc depth-15 gate).
   private static boolean calculateIsDynamicallyUnwinnable(Board board, Side intendedWinner, int depth,
       MovedKings movedKings, Map<DynamicSearchKey, Boolean> transpositionMap) {
-    if (board.isInsufficientMaterial(intendedWinner)) {
+    // impossible_to_win: winner has just the king, or the loser must promote but has no pawns (Lemmas 5/6).
+    if (UnwinnabilityMaterialBitboard.calculateIsInsufficientMaterial(intendedWinner, board.getBitboardPosition())) {
       return true;
     }
 
@@ -227,6 +142,7 @@ public class UnwinnableQuickAnalyzer {
     return true;
   }
 
+  // CHA is_unwinnable_after_one_move: unwinnable if every legal move leads to a semi-statically unwinnable position.
   private static boolean calculateIsUnwinnableAfterOneMove(Board board, Side intendedWinner) {
     if (board.getLegalMoves().isEmpty()) {
       return !board.isCheck() || board.getHavingMove() == intendedWinner;
@@ -244,20 +160,31 @@ public class UnwinnableQuickAnalyzer {
     return true;
   }
 
+  private static boolean calculateHasOnlyPawnsBishopsAndKings(BitboardPosition bitboardPosition) {
+    return !UnwinnabilityMaterialBitboard.calculateHasRook(bitboardPosition)
+        && !UnwinnabilityMaterialBitboard.calculateHasKnight(bitboardPosition)
+        && !UnwinnabilityMaterialBitboard.calculateHasQueen(bitboardPosition);
+  }
+
+  private static boolean calculateIsAlmostOnlyPawnsBishopsAndKings(BitboardPosition bitboardPosition) {
+    final long heavyPieces = bitboardPosition.whiteKnights() | bitboardPosition.blackKnights()
+        | bitboardPosition.whiteRooks() | bitboardPosition.blackRooks() | bitboardPosition.whiteQueens()
+        | bitboardPosition.blackQueens();
+    return Long.bitCount(heavyPieces) <= 1;
+  }
+
   private static boolean calculateIsBlockedCandidate(BitboardPosition bitboardPosition) {
     return calculateNumberOfBlockedPawns(bitboardPosition) >= 1 && !calculateHasLonelyPawns(bitboardPosition);
   }
 
   private static int calculateNumberOfBlockedPawns(BitboardPosition bitboardPosition) {
     // A white pawn one rank below a black pawn = the white pawn's bit shifted up 8 lands on a black pawn.
-    // popcount of that intersection = number of such (white, black) blocking pairs (counted once per pair).
     return Long.bitCount((bitboardPosition.whitePawns() << 8) & bitboardPosition.blackPawns());
   }
 
-  // Mask matching the reference: ranks 1..6 (1-indexed) for white, ranks 3..8 for black - i.e. excludes
-  // the rank-immediately-before-promotion on the respective side. 0-indexed: white < rank 7, black > rank 2.
-  private static final long WHITE_LONELY_RANK_MASK = 0x0000FFFFFFFFFFFFL; // bits 0..47 = ranks 1..6 (0-indexed)
-  private static final long BLACK_LONELY_RANK_MASK = 0xFFFFFFFFFFFF0000L; // bits 16..63 = ranks 3..8 (0-indexed)
+  // Mask matching the reference: white < rank 7, black > rank 2 (0-indexed).
+  private static final long WHITE_LONELY_RANK_MASK = 0x0000FFFFFFFFFFFFL;
+  private static final long BLACK_LONELY_RANK_MASK = 0xFFFFFFFFFFFF0000L;
 
   private static boolean calculateHasLonelyPawns(BitboardPosition bitboardPosition) {
     final int whitePawnFileMask = projectToFiles(bitboardPosition.whitePawns() & WHITE_LONELY_RANK_MASK);
@@ -273,18 +200,11 @@ public class UnwinnableQuickAnalyzer {
     return (int) (result & 0xFFL);
   }
 
-  private static UnwinnabilityQuickAnalysis analysis(UnwinnabilityQuickVerdict verdict) {
-    return new UnwinnabilityQuickAnalysis(verdict, new ArrayList<>());
-  }
-
-  private static UnwinnabilityQuickAnalysis winnableAnalysis(List<UciMove> mateLine) {
-    return new UnwinnabilityQuickAnalysis(UnwinnabilityQuickVerdict.WINNABLE, new ArrayList<>(mateLine));
-  }
-
-  private static UnwinnabilityQuickAnalysis winnableAnalysis(List<UciMove> forcedMoveLine, List<UciMove> helpmateLine) {
-    final List<UciMove> mateLine = new ArrayList<>(forcedMoveLine);
-    mateLine.addAll(helpmateLine);
-    return winnableAnalysis(mateLine);
+  private static Board copyCurrentPositionForQuickSearch(Board input) {
+    final Fen fen = new Fen(input.getFen(), input.getBitboardPosition(), input.getHavingMove(),
+        input.getCastlingRightWhite(), input.getCastlingRightBlack(), input.getEnPassantCaptureTargetSquare(), 0,
+        input.getFullMoveNumber());
+    return new Board(fen);
   }
 
   private static void unperformHalfmoves(Board board, int countHalfmoves) {

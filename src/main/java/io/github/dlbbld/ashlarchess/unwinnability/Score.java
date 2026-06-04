@@ -19,14 +19,16 @@ class Score {
   // Output: Normal, Reward, or Punish (variation score)
   public static ScoreResult score(Side color, Side havingMove, BitboardPosition bitboardPosition, LegalMove legalMove) {
     ScoreResult variation = ScoreResult.NORMAL;
-
     // 1: if it is the intended winner's turn in pos then
     if (havingMove == color) {
       // 2: if m is a capture or m is a pawn push or Going-to-corner(pos, m, Win) then
       // 3: return Reward
+
+      // Spec uses pawn push, CHA 2.6.1 uses advanced pawn push.
+      // We follow CHA 2.6.1 so we can use it as oracle.
       if (calculateIsCapture(legalMove) || calculateIsAdvancedPawnPush(legalMove)
           || GoingToCorner.goingToCorner(color, bitboardPosition, legalMove, Goal.WIN)) {
-        return ScoreResult.REWARD;
+        variation = ScoreResult.REWARD;
       }
       // 4: else ( -> It is the intended loser's turn in pos)
     } else {
@@ -35,34 +37,20 @@ class Score {
       // and/or queens or the intended winner has just bishops of the same square color and
       // the intended loser does not have knights or bishops of the opposite color then ( -> The
       // conditions of Lemma 5 or Lemma 6 apply (ignoring the pawn-freeness condition))
-      //
 
-      // Note: We are not immediately returning the value when evaluated as in the PDF, but also evaluating the
-      // later condition as in the code. Must be checked what is todot.
-      final boolean isNeedLoserPromotion = FindHelpmateExhaust.calculateIsNeedLoserPromotion(color, bitboardPosition);
+      // Spec for this case uses early returns which is semantically different than the assignments CHA 2.6.1 uses.
+      // We follow CHA 2.6.1 so we can use it as oracle.
+      final boolean isNeedLoserPromotion = FindHelpmate.calculateIsNeedLoserPromotion(color, bitboardPosition);
       if (isNeedLoserPromotion) {
-        // 6: if m is a promotion to a queen or rook then return Punish
-        // Note: we implement the code with differences to the PDF for this case
-        final boolean isHeavyPromotion = calculateIsPromotionToHeavyPiece(legalMove);
-        final boolean isPawnMove = calculateIsPawnMove(legalMove);
-        // 7: else if m is a pawn move then return Reward
-        // Note: the code does not uphelp this
-        variation = isPawnMove && !isHeavyPromotion ? ScoreResult.REWARD : ScoreResult.PUNISH;
+        variation = calculateIsPawnMove(legalMove) && !calculateIsPromotionToHeavyPiece(legalMove) ? ScoreResult.REWARD
+            : ScoreResult.PUNISH; // CHA's base ternary
       }
-
-      // 8: if Going-to-corner(pos, m, Lose) then return Reward
       if (GoingToCorner.goingToCorner(color, bitboardPosition, legalMove, Goal.LOSE)) {
         variation = ScoreResult.REWARD;
-      }
-
-      // 9: if m is a capture then return Punish
-      if (calculateIsCapture(legalMove)) {
+      } else if (calculateIsCapture(legalMove)) { // else-if = corner wins over capture
         variation = ScoreResult.PUNISH;
       }
     }
-
-    // 10: return Normal ( -> The default output if none of the above conditions hold)
-    // Note: Not what the code is doing
     return variation;
   }
 

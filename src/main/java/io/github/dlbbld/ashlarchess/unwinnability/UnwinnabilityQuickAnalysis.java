@@ -3,9 +3,9 @@
 
 package io.github.dlbbld.ashlarchess.unwinnability;
 
-import java.util.List;
-
-import io.github.dlbbld.ashlarchess.model.UciMove;
-
-public record UnwinnabilityQuickAnalysis(UnwinnabilityQuickVerdict verdict, List<UciMove> mateLine) {
+/**
+ * Public result of the quick unwinnability analysis: the two-valued verdict only. No mate line is exposed - the quick
+ * analysis never advertises a winning sequence.
+ */
+public record UnwinnabilityQuickAnalysis(UnwinnabilityQuickVerdict verdict) {
 }

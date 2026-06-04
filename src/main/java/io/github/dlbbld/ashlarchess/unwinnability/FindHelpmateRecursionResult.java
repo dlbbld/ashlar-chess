@@ -4,6 +4,6 @@
 package io.github.dlbbld.ashlarchess.unwinnability;
 
 enum FindHelpmateRecursionResult {
-  TRUE,
-  FALSE,
+  HELPMATE_FOUND,
+  HELPMATE_NOT_FOUND,
 }

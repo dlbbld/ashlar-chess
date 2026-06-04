@@ -10,8 +10,6 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
-import io.github.dlbbld.ashlarchess.pgn.PgnLineWrapper;
-
 class TestPgnLineWrapper {
 
   @SuppressWarnings("static-method")

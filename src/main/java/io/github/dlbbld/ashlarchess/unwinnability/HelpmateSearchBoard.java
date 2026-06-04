@@ -110,8 +110,11 @@ final class HelpmateSearchBoard {
   }
 
   void move(MoveSpecification moveSpecification) {
-    // 1. Snapshot current state into the undo stack (grow if needed).
-    if (undoTop == undoStack.length) {
+    // 1. Snapshot current state into the undo stack (grow if needed). Step 8 (refreshDerivedState) writes
+    //    buffersByDepth[undoTop] AFTER the undoTop++ below, so that buffer slot must also be in range; the buffer
+    //    array is indexed one deeper than the undo slot saved here, hence the +1. Growing one ply early keeps
+    //    buffersByDepth[undoTop] valid without a separate, larger buffer array.
+    if (undoTop + 1 == undoStack.length) {
       growStacks();
     }
     saveUndoState(undoStateAt(undoTop));

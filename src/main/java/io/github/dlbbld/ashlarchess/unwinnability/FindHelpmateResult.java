@@ -4,7 +4,7 @@
 package io.github.dlbbld.ashlarchess.unwinnability;
 
 enum FindHelpmateResult {
-  YES,
-  NO,
+  HAS_HELPMATE,
+  HAS_NO_HELPMATE,
   UNKNOWN
 }

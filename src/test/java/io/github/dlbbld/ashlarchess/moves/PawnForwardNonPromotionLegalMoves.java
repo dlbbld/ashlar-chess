@@ -15,7 +15,6 @@ import io.github.dlbbld.ashlarchess.common.model.MoveSpecification;
 import io.github.dlbbld.ashlarchess.common.utility.StaticPositionUtility;
 import io.github.dlbbld.ashlarchess.model.LegalMove;
 import io.github.dlbbld.ashlarchess.model.LegalMoveKind;
-import io.github.dlbbld.ashlarchess.moves.EnPassantCaptureUtility;
 import io.github.dlbbld.ashlarchess.squares.PawnPotentialToSquares;
 
 class PawnForwardNonPromotionLegalMoves extends PawnLegalMoves {

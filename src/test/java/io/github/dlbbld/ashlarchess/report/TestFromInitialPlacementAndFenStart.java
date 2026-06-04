@@ -13,10 +13,6 @@ import org.junit.jupiter.api.Test;
 
 import io.github.dlbbld.ashlarchess.board.Board;
 import io.github.dlbbld.ashlarchess.common.constants.ChessConstants;
-import io.github.dlbbld.ashlarchess.report.RepetitionGroup;
-import io.github.dlbbld.ashlarchess.report.Reporter;
-import io.github.dlbbld.ashlarchess.report.ThreefoldExistingReport;
-import io.github.dlbbld.ashlarchess.report.ThreefoldExistingReportBuilder;
 import io.github.dlbbld.ashlarchess.test.common.utility.OutputCaptureUtility;
 
 /**

@@ -16,7 +16,6 @@ import io.github.dlbbld.ashlarchess.test.model.PgnFen;
 import io.github.dlbbld.ashlarchess.test.model.PgnTestCaseList;
 import io.github.dlbbld.ashlarchess.test.pgn.setup.PgnTestCaseCatalog;
 import io.github.dlbbld.ashlarchess.test.pgntest.enums.PgnTest;
-import io.github.dlbbld.ashlarchess.unwinnability.UnwinnabilityMaterialBitboard;
 
 /**
  * Differential test pairing {@link UnwinnabilityMaterialBitboard} (production) against {@link UnwinnabilityMaterial}

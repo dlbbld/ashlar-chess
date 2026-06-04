@@ -9,8 +9,6 @@ import java.util.TreeSet;
 import io.github.dlbbld.ashlarchess.board.StaticPosition;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
 import io.github.dlbbld.ashlarchess.board.enums.Square;
-import io.github.dlbbld.ashlarchess.squares.QueenEmptyBoardSquares;
-import io.github.dlbbld.ashlarchess.squares.QueenRange;
 
 class QueenRangeSquares extends AbstractRangeSquares {
 

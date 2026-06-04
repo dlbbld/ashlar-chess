@@ -6,7 +6,6 @@ package io.github.dlbbld.ashlarchess.board;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import io.github.dlbbld.ashlarchess.bitboard.StaticPositionBridge;
-import io.github.dlbbld.ashlarchess.board.Board;
 import io.github.dlbbld.ashlarchess.common.constants.EnumConstants;
 
 public abstract class CommonTestUtility implements EnumConstants {

@@ -13,11 +13,6 @@ import io.github.dlbbld.ashlarchess.board.enums.PieceType;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
 import io.github.dlbbld.ashlarchess.board.enums.Square;
 import io.github.dlbbld.ashlarchess.common.Nulls;
-import io.github.dlbbld.ashlarchess.unwinnability.Mobility;
-import io.github.dlbbld.ashlarchess.unwinnability.MobilitySolution;
-import io.github.dlbbld.ashlarchess.unwinnability.PiecePlacement;
-import io.github.dlbbld.ashlarchess.unwinnability.SemiStaticFunctions;
-import io.github.dlbbld.ashlarchess.unwinnability.UnwinnableSemiStatic;
 
 public final class SemiStaticOracleFormatter {
 

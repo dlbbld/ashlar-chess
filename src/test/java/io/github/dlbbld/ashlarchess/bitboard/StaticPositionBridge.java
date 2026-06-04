@@ -6,8 +6,6 @@ package io.github.dlbbld.ashlarchess.bitboard;
 import java.util.ArrayList;
 import java.util.List;
 
-import io.github.dlbbld.ashlarchess.bitboard.BitboardPosition;
-import io.github.dlbbld.ashlarchess.bitboard.BitboardPositionUtility;
 import io.github.dlbbld.ashlarchess.board.StaticPosition;
 import io.github.dlbbld.ashlarchess.board.enums.Piece;
 import io.github.dlbbld.ashlarchess.board.enums.Square;

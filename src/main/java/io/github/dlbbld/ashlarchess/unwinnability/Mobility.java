@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
-import org.apache.logging.log4j.Logger;
 import org.eclipse.jdt.annotation.NonNull;
 
 import io.github.dlbbld.ashlarchess.bitboard.BitboardPosition;
@@ -24,10 +23,6 @@ import io.github.dlbbld.ashlarchess.common.utility.BasicUtility;
 
 //Figure 7 Mobility algorithm.
 class Mobility {
-
-  private static final boolean IS_DEBUG = false;
-
-  private static final Logger logger = Nulls.getLogger(Mobility.class);
 
   // Inputs: a position
   // Output: mobility solution {MP!s}P in pos,s in S
@@ -193,9 +188,6 @@ class Mobility {
       isNewVariablesAreSetToOne = totalVariableCountSetToOneAfter > totalVariableCountSetToOneBefore
           || isFirstRoundCaptureDeferred;
     }
-    if (IS_DEBUG) {
-      debug(clearability, reachability, mobility);
-    }
 
     // 6: return {MP -> s}P in pos, s in S
     return mobility;
@@ -244,12 +236,6 @@ class Mobility {
 
     }
     return result;
-  }
-
-  private static void debug(Clearability clearability, Reachability reachability, MobilitySolution mobility) {
-    logger.info(clearability.print());
-    logger.info(reachability.print());
-    logger.info(mobility.print());
   }
 
   private static int calculateTotalVariableCountSetToOne(MobilitySolution mps, Clearability cp, Reachability rcs) {

@@ -12,7 +12,6 @@ import io.github.dlbbld.ashlarchess.board.Board;
 import io.github.dlbbld.ashlarchess.common.Nulls;
 import io.github.dlbbld.ashlarchess.common.model.DynamicPosition;
 import io.github.dlbbld.ashlarchess.common.model.HalfMove;
-import io.github.dlbbld.ashlarchess.report.RepetitionGroup;
 
 /**
  * Direct unit tests for the {@link RepetitionGroup} record. Covers the compact-constructor invariant

@@ -8,8 +8,6 @@ import java.util.Set;
 import io.github.dlbbld.ashlarchess.board.StaticPosition;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
 import io.github.dlbbld.ashlarchess.board.enums.Square;
-import io.github.dlbbld.ashlarchess.squares.BishopEmptyBoardSquares;
-import io.github.dlbbld.ashlarchess.squares.BishopRange;
 
 class BishopRangeSquares extends AbstractRangeSquares {
 

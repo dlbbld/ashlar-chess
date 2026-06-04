@@ -95,10 +95,6 @@ class TestShallowTerminationOracle {
         assertTrue(verdictCalculation == LimitedUnwinnabilityVerdict.UNWINNABLE
             || verdictCalculation == LimitedUnwinnabilityVerdict.UNKNOWN);
         break;
-      case WINNABLE:
-        assertTrue(verdictCalculation == LimitedUnwinnabilityVerdict.WINNABLE
-            || verdictCalculation == LimitedUnwinnabilityVerdict.UNKNOWN);
-        break;
       case POSSIBLY_WINNABLE:
         // anything goes
         break;

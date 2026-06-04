@@ -6,34 +6,39 @@ The **technical specification** for ashlar-chess: design goals, architecture, ph
 
 ## 1. Purpose & non-goals
 
-ashlar-chess is a Java chess library focused on **rule correctness and reproducibility**. Its flagship feature is a Java port of Miguel Ambrona's [Chess Unwinnability Analyzer (CHA)](https://github.com/miguel-ambrona/D3-Chess), to the author's knowledge the only published algorithm that decides unwinnability and dead-position questions correctly across all positions.
+ashlar-chess is a Java chess library focused on **rule correctness, production usability, and reproducible validation**. Its flagship feature is a Java port of Miguel Ambrona's [Chess Unwinnability Analyzer (CHA)](https://github.com/miguel-ambrona/D3-Chess), to the author's knowledge the only published algorithm that decides unwinnability and dead-position questions correctly across all positions.
 
 The library is **not**:
 
 - A chess engine — it does not search for best moves.
-- A performance-first library — move generation is not optimised for raw throughput.
+- A move-generation benchmark library — performance matters, but the public API is shaped around rule fidelity, diagnostics, and reproducible behaviour rather than raw nodes per second.
 - A complete tournament-management toolkit — clock handling, draw-offer state machines, and similar interactive concerns belong outside the library (scope of the companion `dumb-chessboard` project).
 
-In spirit it is a **proof-of-concept**: that the FIDE Laws of Chess can be implemented in Java at a high level of programming quality while remaining a usable library.
+In spirit it is now a **production-usable rule library**: built from scratch for auditability, but using optimized runtime representations where the library needs state-of-the-art hot-path performance to compete with real chess software expectations.
 
 ---
 
 ## 2. Philosophy
 
-### 2.1 Clarity and reproducibility over clever optimisation
+### 2.1 Correctness first, optimized runtime, reproducible tests
 
-Other Java chess libraries are correct too — ashlar-chess does not claim a correctness advantage over them. What differs is **implementation style**: the project deliberately prefers straightforward, reproducible code paths over complex optimisations that buy speed at the cost of being expert-only to read or audit.
+Other Java chess libraries are correct too — ashlar-chess does not claim a correctness advantage over them. What differs is the engineering contract: production code may use optimized representations, but every optimized rule primitive must remain explainable and be backed by an independent reference path or external oracle.
 
-Two concrete examples:
+The project moved in phases. The first implementation was correctness-first and mailbox-shaped (`StaticPosition`), deliberately easy to inspect. That implementation was not thrown away when production moved to bitboards; it was relocated into `src/test/` and promoted to the permanent differential-test oracle. Reproducibility therefore now lives primarily in the tests and fixtures, while production code is allowed to be faster. This is the core bargain: the runtime can be optimized, mutable, and competitive where it must be, because the from-scratch reference path remains highly tested and close enough to the rules to keep the optimized path honest.
+
+Concrete examples:
 
 - **Move history stores derived facts directly.** Whether a move was a two-square pawn advance or an en passant capture is recorded in the move history rather than recomputed from the position when needed. Engines like Stockfish compute these on demand because the savings matter at engine speeds. ashlar-chess stores them because the resulting code is shorter, more obviously correct, and easier to maintain.
-- **Position repetition uses direct position equality, not Zobrist hashing.** Zobrist hashing is the standard fast technique and works correctly when implemented carefully — but it is empirically a frequent source of subtle bugs (this author helped fix a Zobrist bug in another open-source chess library before this rule was adopted here). Direct equality is slower, but harder to get wrong.
+- **Production piece placement is bitboard-based.** `BitboardPosition` is the runtime representation for piece placement, move generation, attack queries, and piece hashing. It exists because a production library cannot stay credible if basic position questions are orders of magnitude slower than the surrounding ecosystem.
+- **The public board stays rich.** `Board` is a game-state object, not the lean search representation. It keeps per-ply legal moves, check flags, dynamic positions, halfmove clocks, repetition counts, SAN/LAN strings, and castling-right loss facts so rule queries, reports, FEN/PGN output, and `unmove` are direct and auditable. Its current position is bitboard-backed, but the object deliberately carries more game history than a performance-only board would.
+- **The full unwinnability search uses a mutable search board.** `HelpmateSearchBoard` owns mutable bitboards, make/unmake stacks, per-depth legal-move buffers, and an exact transposition key. This is a deliberate performance trade-off in the search hot path, contained inside the unwinnability package and tested against `Board`.
+- **Repetition and public state still prefer transparent semantics.** Position equality follows the FIDE definition directly. Zobrist exists as a bitboard helper, but semantic repetition logic remains rooted in the actual dynamic position fields, not in trusting a hash as the rule fact.
 
-These choices cost performance and pay clarity. Most position-level questions still resolve in microseconds and full unwinnability searches in seconds. Where the FIDE Laws are ambiguous, the library follows the most rule-faithful reading.
+The resulting rule is: optimize where production use needs it, but make the optimization answer to a readable oracle. Where the FIDE Laws are ambiguous, the library follows the most rule-faithful reading.
 
 ### 2.2 Functional style and compile-time guarantees
 
-The codebase is written in as functional a style as Java reasonably permits: records, immutable value objects, pure helpers; mutable state is confined to a small number of well-defined classes (notably `Board`). The aspirational target is Haskell — total functions and types that make illegal states unrepresentable. Where Java forces compromise (mutable accessors, nullable JDK return types), the compromises are localised and crossed with explicit annotations.
+The codebase is written in as functional a style as Java reasonably permits: records, immutable value objects, pure helpers. Mutable state is confined to a small number of well-defined classes: `Board` for the public game state, and package-private search machinery such as `HelpmateSearchBoard` where the full unwinnability search needs make/unmake performance. The aspirational target is Haskell — total functions and types that make illegal states unrepresentable. Where Java forces compromise (mutable accessors, nullable JDK return types, search-hot-path mutation), the compromises are localised and crossed with explicit annotations and tests.
 
 Concretely:
 
@@ -54,7 +59,7 @@ The library makes only modest thread-safety guarantees, all of them honest about
 
 - **`Board` is mutable and not thread-safe.** Use one `Board` per thread, or synchronize externally. `Board.equals` / `Board.hashCode` reflect current game state, so a `Board` placed in a `HashMap` or `HashSet` and then mutated will violate the collection's invariants.
 - **Records are immutable and thread-safe.** `Fen`, `PgnGame`, `PgnHalfMove`, `MoveSpecification`, `PgnCommentary`, `Tag`, `Report`, etc. — once constructed, they can be freely shared.
-- **Static utility classes are stateless and thread-safe.** `Reporter`, `PgnCreate`, `KnightDistance`, `StaticPositionUtility`, `BasicChessUtility`, the various `*Validation` and `*Utility` classes — all entry points are static methods on stateless classes. Multiple threads can call them concurrently.
+- **Static utility classes are stateless and thread-safe.** `Reporter`, `PgnCreate`, `KnightDistance`, `BasicChessUtility`, the various `*Validation` and `*Utility` classes — all entry points are static methods on stateless classes. Multiple threads can call them concurrently.
 - **Parsers expose stateless static entry points.** `StrictPgnParser.parseText(String)` / `StrictPgnParser.parse(Path)` and the lenient counterparts construct a fresh parser instance per call internally; the parser instances themselves carry per-parse state and should not be shared. Stick to the static entry points.
 
 In short: share records and call static utilities from anywhere; never share a `Board`.
@@ -81,7 +86,7 @@ The library follows the FIDE Laws of Chess closely. Termination is **information
 | Threefold repetition | claimable | 9.2 |
 | 50-move rule | claimable | 9.3 |
 
-The automatic rows are listed in the precedence order `calculateOutcome` applies (python-chess parity): when two or more apply to the same position, the higher row wins. A KBvK stalemate, for instance, reports `INSUFFICIENT_MATERIAL`, not `STALEMATE`. Structural insufficient material is detected by a fast structural test (king-vs-king, king + minor vs king, etc.); analyzer-driven dead positions (FIDE 5.2.2 via the unwinnability analyzer) are intentionally not invoked by `calculateOutcome` — the analyzer would silently make every status query expensive — so callers that want that verdict call `Board.isDeadPositionQuick()` or `Board.isDeadPositionFull()` directly.
+The automatic rows are listed in the precedence order `calculateOutcome` applies (python-chess parity): when two or more apply to the same position, the higher row wins. A KBvK stalemate, for instance, reports `INSUFFICIENT_MATERIAL`, not `STALEMATE`. Structural insufficient material is detected by a fast structural test (king-vs-king, king + minor vs king, etc.); analyzer-driven dead positions (FIDE 5.2.2 via the unwinnability analyzer) are intentionally not invoked by `calculateOutcome` — the analyzer would silently make every status query expensive — so callers that want that verdict call the no-side overloads `UnwinnableQuickAnalyzer.unwinnableQuick(board)` or `UnwinnableFullAnalyzer.unwinnableFull(board)` directly.
 
 Single-side insufficient material (one side lacks mating material but the other does not) is a diagnostic state of the position, not a termination, and is not surfaced by `Outcome`. Callers query `Board.isInsufficientMaterial(Side)` directly when they need it.
 
@@ -105,16 +110,16 @@ The library's **flagship feature**. A position is *unwinnable for a side* if tha
 
 Miguel Ambrona's CHA is, to the author's knowledge, the only published algorithm that decides these cases correctly across the full range of positions. ashlar-chess implements it in Java, in two variants:
 
-- **Quick** — microsecond-scale, structural, three-valued: `WINNABLE`, `UNWINNABLE`, `POSSIBLY_WINNABLE`. The third value is a deliberate honesty signal.
-- **Full** — deep search, three-valued: `WINNABLE`, `UNWINNABLE`, `UNDETERMINED`. The undetermined case is bounded by a 500 000-position limit; most positions resolve well below that.
+- **Quick** — microsecond-scale, structural, two-valued: `UNWINNABLE` or `POSSIBLY_WINNABLE`. It proves unwinnability or leaves it open, and never claims winnability.
+- **Full** — deep search, four-valued: `WINNABLE_HELPMATE` (a concrete mate line was found), `WINNABLE_BY_THEOREM` (winnability certified by the basic-helpmate-existence theorem, no line), `UNWINNABLE`, or `UNDETERMINED`. The undetermined case is bounded by a 500 000-position limit; most positions resolve well below that.
 
-`Dead position` is the symmetric notion with the analogous three-valued return.
+`Dead position` is the symmetric whole-position notion, checked by the no-side overloads `UnwinnableQuickAnalyzer.unwinnableQuick(board)` and `UnwinnableFullAnalyzer.unwinnableFull(board)`, which reuse the same verdict enums (`UNWINNABLE` = dead).
 
-The direct side-specific analyzers return analysis records. For `WINNABLE`, those records carry a helpmate line that
-can be replayed from the input position; the `Board.isUnwinnableQuick(Side)` and `Board.isUnwinnableFull(Side)`
-convenience methods expose only the verdict.
+The direct side-specific analyzers return analysis records. Only `WINNABLE_HELPMATE` carries a helpmate line that can be
+replayed from the input position; the `Board.isUnwinnableQuick(Side)` and `Board.isUnwinnableFull(Side)` convenience
+methods expose only the verdict.
 
-Side-specific quick/full unwinnability queries are caller-invoked. Dead-position quick/full queries on `Board` are also caller-invoked; no analyzer runs automatically during construction or move execution.
+Side-specific quick/full unwinnability queries and whole-position dead-position queries are caller-invoked; no analyzer runs automatically during construction or move execution.
 
 ### 3.3 SAN, FEN, PGN
 
@@ -254,15 +259,19 @@ Piece placement has two independent representations in the codebase, by design.
 
 **`BitboardPosition`** (in `src/main/java/io/github/dlbbld/ashlarchess/bitboard/`) is the single piece-placement representation that production code sees. It is a 12-long record — one `long` per piece-and-side bitboard, little-endian rank-file with A1 at bit 0 — exposing move generation, attack queries, immutable make-move (`afterMove`), and a piece-only Zobrist hash. Everything in `src/main/` that needs to ask a question about pieces on squares asks `BitboardPosition`.
 
+**`Board`** remains a deliberately rich public game object. It stores the initial FEN plus parallel per-ply state: performed legal moves, generated legal moves, check/checkmate/stalemate facts, dynamic positions whose piece placement is `BitboardPosition`, halfmove clocks, repetition counts, SAN/LAN output strings, and castling-right loss reasons. That is more memory and bookkeeping than a lean engine board, but it is the right trade-off for a rule library: public queries and reports can read already-established game facts, and the history needed for FIDE rules is explicit.
+
+**`HelpmateSearchBoard`** is the intentional hot-path exception. The complete unwinnability search performs deep cooperative-mate exploration, so it uses a package-private mutable board with twelve mutable bitboards, make/unmake, reusable undo stacks, per-depth legal-move buffers, and an exact structural transposition key. This is not a second public representation and not a private chess engine: it is a contained search board built on the same bitboard move-generation layer, with lock-step tests against `Board`.
+
 **`StaticPosition`** (in `src/test/java/io/github/dlbbld/ashlarchess/board/`) is the 64-square mailbox reference implementation, accumulated over years of correctness-first work. It does not live in `src/main/` anymore — it was relocated, not deleted — and exists in `src/test/` strictly to act as the **permanent differential-test oracle** for the bitboard backend. Its consumer subtree relocated with it (`StaticPositionUtility`; `io.github.dlbbld.ashlarchess.squares.{Abstract,Bishop,Rook,Queen,Knight,King,Pawn}{AttackedSquares,PotentialToSquares,RangeSquares}`; `io.github.dlbbld.ashlarchess.moves.{Abstract,Bishop,Rook,Queen,Knight,King,Pawn}LegalMoves`; `UnwinnabilityMaterial`). The bridge methods `StaticPositionBridge.fromStaticPosition` / `toStaticPosition` (also in `src/test/java/io/github/dlbbld/ashlarchess/bitboard/`) round-trip between the two on the test side only.
 
 The contract is **permanent project policy**, not transitional:
 
 - Every primitive on `BitboardPosition` is asserted against the relocated `StaticPosition` oracle across the full PGN/FEN corpus — every fixture × every legal move — on every release going forward. The corpus walks live in `src/test/java/io/github/dlbbld/ashlarchess/test/bitboard/` (`TestBitboardPositionAfterMove`, `TestBitboardPositionAttackedSquares`, `TestBitboardPositionLegalMoves`, `TestBitboardPositionZobrist`, etc.) and use `StaticPositionUtility.createPositionAfterMove` as the independent oracle.
-- `StaticPosition` and its consumer subtree are never deleted. A future bitboard optimisation (incremental Zobrist, magic bitboards, mutable make/unmake for the lean analyzer board) cannot land without the oracle keeping it honest.
+- `StaticPosition` and its consumer subtree are never deleted. Future bitboard optimisations (incremental Zobrist, magic bitboards, more search-board hot-path work) cannot land without the oracle keeping them honest.
 - The boundary is one-way: nothing in `src/main/` may import from `io.github.dlbbld.ashlarchess.board.StaticPosition` or any relocated consumer. Doc comments may cross-reference; code may not.
 
-This is the project invariant in §2.1's "clarity over clever optimisation" — applied to representation. The bitboard exists for the production code path; the mailbox stays as the readable, audit-friendly second opinion that the bitboard is forever measured against.
+This is the project invariant in §2.1 applied to representation. The bitboard exists for the production code path; mutable search bitboards exist where the full analyzer needs them; the mailbox stays as the readable, audit-friendly second opinion that the optimized path is forever measured against.
 
 ---
 

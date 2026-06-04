@@ -19,7 +19,7 @@ import io.github.dlbbld.ashlarchess.board.Board;
  * part of position identity, and the en-passant target square is normalised away when no opposing pawn can actually
  * capture there.
  */
-class TestFindHelpmateExhaustTranspositionKey {
+class TestFindHelpmateTranspositionKey {
 
   @SuppressWarnings("static-method")
   @Test

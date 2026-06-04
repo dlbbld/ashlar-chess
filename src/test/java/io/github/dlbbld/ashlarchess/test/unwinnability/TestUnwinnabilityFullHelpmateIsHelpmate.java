@@ -22,11 +22,12 @@ import io.github.dlbbld.ashlarchess.test.model.PgnTestCaseList;
 import io.github.dlbbld.ashlarchess.test.pgn.setup.PgnTestCaseCatalog;
 import io.github.dlbbld.ashlarchess.test.pgntest.enums.PgnTest;
 import io.github.dlbbld.ashlarchess.unwinnability.UnwinnabilityFullAnalysis;
+import io.github.dlbbld.ashlarchess.unwinnability.UnwinnabilityFullVerdict;
 import io.github.dlbbld.ashlarchess.unwinnability.UnwinnableFullAnalyzer;
 
-class TestUnwinnabilityFullHelpMateIsHelpMate {
+class TestUnwinnabilityFullHelpmateIsHelpmate {
 
-  private static final Logger logger = Nulls.getLogger(TestUnwinnabilityFullHelpMateIsHelpMate.class);
+  private static final Logger logger = Nulls.getLogger(TestUnwinnabilityFullHelpmateIsHelpmate.class);
 
   @SuppressWarnings("static-method")
   @Test
@@ -39,6 +40,8 @@ class TestUnwinnabilityFullHelpMateIsHelpMate {
       final String fen = lichessTestCase.finalFen();
       final Side winner = board.getHavingMove();
       final UnwinnabilityFullAnalysis analysis = UnwinnableFullAnalyzer.unwinnableFull(board, winner);
+      // A searched winnable verdict must be WINNABLE_HELPMATE and carry a line; pin that before replaying it.
+      assertEquals(UnwinnabilityFullVerdict.WINNABLE_HELPMATE, analysis.verdict(), fen);
       assertHelpmateLine(fen, winner, analysis.mateLine());
     }
   }

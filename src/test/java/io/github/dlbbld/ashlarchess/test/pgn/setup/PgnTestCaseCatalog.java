@@ -97,6 +97,7 @@ public class PgnTestCaseCatalog {
       case CHA_BASIC_MATE_HELPMATE_04 -> createTestCasesBasicMateHelpmate04();
       case CHA_BASIC_MATE_HELPMATE_10 -> createTestCasesBasicMateHelpmate10();
       case CHA_BASIC_MATE_HELPMATE_AROUND_MAX -> createTestCasesBasicMateHelpmateAroundMax();
+      case CHA_BASIC_HELPMATE_EXISTENCE_THEOREM -> createTestCasesBasicHelpmateExistenceTheorem();
       case RANDOM_CHECKMATE -> createTestCasesRandomCheckmate();
       case RANDOM_FIFTY -> createTestCasesRandomFifty();
       case RANDOM_FIVEFOLD -> createTestCasesRandomFivefold();
@@ -2573,6 +2574,39 @@ public class PgnTestCaseCatalog {
     list.add(new PgnFen("lichess_mf4MFw9v.pgn", "8/8/8/8/pp6/k1p5/1qQ5/K7 w - - 2 72"));
 
     return new PgnTestCaseList(PgnTest.CHA_LICHESS_QUICK_DEPTH_FOUR, list);
+  }
+
+  // Basic-endgame helpmate-reachability theorem fixtures (KRvK, KQvK, KBBvK opposite, KBNvK, KRvKB, KRvKN). Three per
+  // class: White to move (winnable), Black to move forced to capture a White piece (unwinnable), Black to move not
+  // forced to capture (winnable). Moveless position fixtures; the end FEN equals the SetUp FEN.
+  private static PgnTestCaseList createTestCasesBasicHelpmateExistenceTheorem() {
+    final List<PgnFen> list = new ArrayList<>();
+
+    list.add(new PgnFen("01_krvk_white_to_move.pgn", "4k3/8/8/8/8/8/8/R3K3 w - - 0 1"));
+    list.add(new PgnFen("02_krvk_black_forced_to_capture.pgn", "k7/R1K5/8/8/8/8/8/8 b - - 0 1"));
+    list.add(new PgnFen("03_krvk_black_not_forced_to_capture.pgn", "4k3/8/8/8/8/8/8/R3K3 b - - 0 1"));
+
+    list.add(new PgnFen("04_kqvk_white_to_move.pgn", "4k3/8/8/8/8/8/8/Q3K3 w - - 0 1"));
+    list.add(new PgnFen("05_kqvk_black_forced_to_capture.pgn", "k7/Q1K5/8/8/8/8/8/8 b - - 0 1"));
+    list.add(new PgnFen("06_kqvk_black_not_forced_to_capture.pgn", "4k3/8/8/8/8/8/8/Q3K3 b - - 0 1"));
+
+    list.add(new PgnFen("07_kbbvk_white_to_move.pgn", "4k3/8/8/8/8/8/8/2B1KB2 w - - 0 1"));
+    list.add(new PgnFen("08_kbbvk_black_forced_to_capture.pgn", "kB6/8/B1K5/8/8/8/8/8 b - - 0 1"));
+    list.add(new PgnFen("09_kbbvk_black_not_forced_to_capture.pgn", "4k3/8/8/8/8/8/8/2B1KB2 b - - 0 1"));
+
+    list.add(new PgnFen("10_kbnvk_white_to_move.pgn", "4k3/8/8/8/8/8/8/4KBN1 w - - 0 1"));
+    list.add(new PgnFen("11_kbnvk_black_forced_to_capture.pgn", "kN6/8/BK6/8/8/8/8/8 b - - 0 1"));
+    list.add(new PgnFen("12_kbnvk_black_not_forced_to_capture.pgn", "4k3/8/8/8/8/8/8/4KBN1 b - - 0 1"));
+
+    list.add(new PgnFen("13_krvkb_white_to_move.pgn", "2b1k3/8/8/8/8/8/8/R3K3 w - - 0 1"));
+    list.add(new PgnFen("14_krvkb_black_forced_to_capture.pgn", "k7/R1K5/8/8/8/8/8/7b b - - 0 1"));
+    list.add(new PgnFen("15_krvkb_black_not_forced_to_capture.pgn", "2b1k3/8/8/8/8/8/8/R3K3 b - - 0 1"));
+
+    list.add(new PgnFen("16_krvkn_white_to_move.pgn", "1n2k3/8/8/8/8/8/8/R3K3 w - - 0 1"));
+    list.add(new PgnFen("17_krvkn_black_forced_to_capture.pgn", "k7/R1K5/8/8/8/8/8/7n b - - 0 1"));
+    list.add(new PgnFen("18_krvkn_black_not_forced_to_capture.pgn", "1n2k3/8/8/8/8/8/8/R3K3 b - - 0 1"));
+
+    return new PgnTestCaseList(PgnTest.CHA_BASIC_HELPMATE_EXISTENCE_THEOREM, list);
   }
 
   private static PgnTestCaseList createTestCasesChaAmbrona() {
