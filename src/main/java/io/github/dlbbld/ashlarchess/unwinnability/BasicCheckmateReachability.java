@@ -17,9 +17,9 @@ import io.github.dlbbld.ashlarchess.model.LegalMove;
  *
  * <p>
  * The theorem was proved by exhaustive retrograde enumeration of the local legal state graph for each covered material
- * class in the sibling project {@code dlbbld/basic-checkmate-reachability}. Let {@code W} be the side holding the
- * mating material (the intended winner here) and {@code L} the defender. For every ongoing legal position in a covered
- * class:
+ * class in the sibling project basic-helpmate-existence (https://github.com/dlbbld/basic-helpmate-existence, tag
+ * 1.0.0). Let {@code W} be the side holding the mating material (the intended winner here) and {@code L} the defender.
+ * For every ongoing legal position in a covered class:
  * <ol>
  * <li>If {@code W} is to move, {@code W} has a helpmate (winnable for {@code W}).</li>
  * <li>If {@code L} is to move, {@code W} has a helpmate unless {@code L} has one or two legal moves and every legal
