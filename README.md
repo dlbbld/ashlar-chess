@@ -12,9 +12,9 @@ It is built for correctness and comprehension — for example, it produces meani
 
 For the design philosophy, architecture, and rule-level decisions, see [specification.md](specification.md).
 
-ashlar-chess includes a Java port of the Chess Unwinnability Analyzer (CHA) by Miguel Ambrona, used for unwinnability and dead-position detection.
+ashlar-chess includes a Java port of the [Chess Unwinnability Analyzer (CHA)](https://github.com/miguel-ambrona/D3-Chess) by Miguel Ambrona, used for unwinnability and dead-position detection.
 
-The test suite also cross-validates selected behavior against external chess libraries, currently python-chess as the primary oracle and chesslib by Ben-Hur Carlos Vieira Langoni Junior as a secondary witness. These libraries are used for testing only and are not runtime dependencies of ashlar-chess.
+The test suite also cross-validates selected behavior against external chess libraries, currently python-chess as the primary oracle and [chesslib](https://github.com/bhlangonijr/chesslib) by Ben-Hur Carlos Vieira Langoni Junior as a secondary witness. These libraries are used for testing only and are not runtime dependencies of ashlar-chess.
 
 ## Not supported
 
@@ -313,7 +313,8 @@ The quick method never claims winnability - proving a concrete win is the full m
 
 The full method has four return values:
 * WINNABLE_HELPMATE - winnable, with a concrete cooperative mate line
-* WINNABLE_BY_THEOREM - winnable, certified by the basic-checkmate-reachability theorem (no line)
+* WINNABLE_BY_THEOREM - winnable, certified by the [basic-helmpate-existence](https://github.com/dlbbld/basic-helpmate-existence) theorem (no line). This adds nothing substantially new to CHA and does not change CHA outcome
+in any way, it is only trying an alternative approach for some material cases.
 * UNWINNABLE - the position is not winnable by the player
 * UNDETERMINED - the limits in the code interrupted the search
 
@@ -350,17 +351,6 @@ For example, if White flags with the king and rook against the lone king of Blac
   System.out.println(board.isUnwinnableFull(Side.BLACK)); // UNWINNABLE
 ```
 
-#### Pawn walls
-Pawn walls are blocked positions, both players cannot mate and cannot make progress, so they are dead positions. They are not detected
-by most common chess libraries. 
-[Game](https://lichess.org/c3ew66ZV#123)
-
-```java
-  final Board board = new Board("8/8/3k4/1p2p1p1/pP1pP1P1/P2P4/1K6/8 b - - 32 62");
-  System.out.println(board.isUnwinnableQuick(Side.BLACK)); // UNWINNABLE
-  System.out.println(board.isUnwinnableFull(Side.BLACK)); // UNWINNABLE
-```
-
 #### Forced moves
 There are everyday situations mainly in lower time controls like Bullet, where the game could only continue with a few
 forced moves, and the game outcome is determined. Here Black flags, but there is no game continuation possible where
@@ -371,6 +361,17 @@ White could have won.
   final Board board = new Board("5r1k/6P1/7K/5q2/8/8/8/8 b - - 0 51");
   System.out.println(board.isUnwinnableQuick(Side.WHITE)); // UNWINNABLE
   System.out.println(board.isUnwinnableFull(Side.WHITE)); // UNWINNABLE
+```
+
+#### Pawn walls
+Pawn walls are blocked positions, both players cannot mate and cannot make progress, so they are dead positions. They are not detected
+by most common chess libraries. 
+[Game](https://lichess.org/c3ew66ZV#123)
+
+```java
+  final Board board = new Board("8/8/3k4/1p2p1p1/pP1pP1P1/P2P4/1K6/8 b - - 32 62");
+  System.out.println(board.isUnwinnableQuick(Side.BLACK)); // UNWINNABLE
+  System.out.println(board.isUnwinnableFull(Side.BLACK)); // UNWINNABLE
 ```
 
 #### Common positions
