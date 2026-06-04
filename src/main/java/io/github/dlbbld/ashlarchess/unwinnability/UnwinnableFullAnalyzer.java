@@ -94,10 +94,10 @@ public class UnwinnableFullAnalyzer {
       return new UnwinnabilityFullAnalysis(UnwinnabilityFullVerdict.UNWINNABLE, new ArrayList<>());
     }
 
-    // Basic-checkmate-reachability theorem: for elementary mating material, decide winnability directly instead of
+    // Basic-helpmate-existence theorem: for elementary mating material, decide winnability directly instead of
     // searching for a cooperative mate. The verdict is certified by the theorem, so no mate line accompanies a
-    // winnable result (see BasicCheckmateReachability).
-    switch (BasicCheckmateReachability.decide(board, winner)) {
+    // winnable result (see BasicHelpmateExistenceTheorem).
+    switch (BasicHelpmateExistenceTheorem.decide(board, winner)) {
       case WINNABLE:
         undoForcedMoves(board, totalForcedMoves);
         return new UnwinnabilityFullAnalysis(UnwinnabilityFullVerdict.WINNABLE_BY_THEOREM, new ArrayList<>());

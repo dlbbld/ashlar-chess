@@ -12,7 +12,7 @@ import io.github.dlbbld.ashlarchess.board.enums.Side;
 import io.github.dlbbld.ashlarchess.model.LegalMove;
 
 /**
- * Finite-state basic-checkmate-reachability theorem, used as a sound shortcut inside the complete unwinnability
+ * Finite-state basic-helpmate-existence theorem, used as a sound shortcut inside the complete unwinnability
  * analysis so it does not have to rediscover a long cooperative mating line for elementary material.
  *
  * <p>
@@ -45,9 +45,9 @@ import io.github.dlbbld.ashlarchess.model.LegalMove;
  * callers receive a {@code WINNABLE_BY_THEOREM} verdict without a move line. This is intentional: the line is not needed
  * for the dead-position verdict and would otherwise require the very search this shortcut avoids.
  */
-abstract class BasicCheckmateReachability {
+abstract class BasicHelpmateExistenceTheorem {
 
-  private BasicCheckmateReachability() {
+  private BasicHelpmateExistenceTheorem() {
   }
 
   /**
@@ -55,27 +55,27 @@ abstract class BasicCheckmateReachability {
    * not in a covered class with {@code winner} as the mating side, or is a terminal (checkmate/stalemate) position
    * better handled by the regular analysis.
    */
-  static BasicCheckmateReachabilityResult decide(Board board, Side winner) {
+  static BasicHelpmateExistenceTheoremResult decide(Board board, Side winner) {
     final BitboardPosition position = board.getBitboardPosition();
     if (!isCoveredClass(position, winner)) {
-      return BasicCheckmateReachabilityResult.NOT_APPLICABLE;
+      return BasicHelpmateExistenceTheoremResult.NOT_APPLICABLE;
     }
 
     if (board.getHavingMove() == winner) {
       // W to move: W has a helpmate.
-      return BasicCheckmateReachabilityResult.WINNABLE;
+      return BasicHelpmateExistenceTheoremResult.WINNABLE;
     }
 
     // L to move. Leave genuine terminals to the regular path.
     if (board.isCheckmate() || board.isStalemate()) {
-      return BasicCheckmateReachabilityResult.NOT_APPLICABLE;
+      return BasicHelpmateExistenceTheoremResult.NOT_APPLICABLE;
     }
 
     final List<LegalMove> legalMoves = board.getLegalMoves();
 
     // With three or more legal moves the forced-capture exception cannot apply: W has a helpmate.
     if (legalMoves.size() >= 3) {
-      return BasicCheckmateReachabilityResult.WINNABLE;
+      return BasicHelpmateExistenceTheoremResult.WINNABLE;
     }
 
     // One or two legal moves: winnable unless every legal first move captures one of W's pieces.
@@ -83,12 +83,12 @@ abstract class BasicCheckmateReachability {
       final Piece capturedPiece = legalMove.pieceCaptured();
       if (capturedPiece == Piece.NONE || capturedPiece.getSide() != winner) {
         // This move preserves W's mating material, so W has a helpmate.
-        return BasicCheckmateReachabilityResult.WINNABLE;
+        return BasicHelpmateExistenceTheoremResult.WINNABLE;
       }
     }
 
     // Every legal first move captures W's mating material: the reduced position is insufficient for W.
-    return BasicCheckmateReachabilityResult.UNWINNABLE;
+    return BasicHelpmateExistenceTheoremResult.UNWINNABLE;
   }
 
   private static boolean isCoveredClass(BitboardPosition position, Side winner) {

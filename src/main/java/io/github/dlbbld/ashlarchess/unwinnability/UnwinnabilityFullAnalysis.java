@@ -13,7 +13,7 @@ import io.github.dlbbld.ashlarchess.model.UciMove;
  *
  * <p>
  * The mate line is present only for {@code WINNABLE_HELPMATE} (the helpmate search found a concrete cooperative mate).
- * It is empty for {@code WINNABLE_BY_THEOREM} (winnability certified by the basic-checkmate-reachability theorem without
+ * It is empty for {@code WINNABLE_BY_THEOREM} (winnability certified by the basic-helpmate-existence theorem without
  * searching for a sequence), and for {@code UNWINNABLE} and {@code UNDETERMINED}.
  */
 public record UnwinnabilityFullAnalysis(UnwinnabilityFullVerdict verdict, List<UciMove> mateLine) {

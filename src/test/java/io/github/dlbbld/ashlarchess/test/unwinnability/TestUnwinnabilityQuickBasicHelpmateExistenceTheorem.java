@@ -21,12 +21,12 @@ import io.github.dlbbld.ashlarchess.unwinnability.UnwinnabilityQuickVerdict;
 //     into insufficient material.
 //   - Winnable positions: quick returns POSSIBLY_WINNABLE - it only proves unwinnability and never searches for the far
 //     helpmate, so it never contradicts the theorem (never UNWINNABLE on a winnable position).
-class TestUnwinnabilityQuickBasicCheckmateReachability {
+class TestUnwinnabilityQuickBasicHelpmateExistenceTheorem {
 
   @SuppressWarnings("static-method")
   @Test
   void quickIsSoundAndDecidesOnlyForcedCaptures() {
-    for (final PgnFen testCase : PgnTestCaseCatalog.getTestList(PgnTest.CHA_BASIC_CHECKMATE_REACHABILITY).list()) {
+    for (final PgnFen testCase : PgnTestCaseCatalog.getTestList(PgnTest.CHA_BASIC_HELPMATE_EXISTENCE_THEOREM).list()) {
       final Board board = testCase.finalPosition();
       final boolean theoremUnwinnable = board.getHavingMove() == Side.BLACK
           && testCase.pgnName().contains("black_forced_to_capture");

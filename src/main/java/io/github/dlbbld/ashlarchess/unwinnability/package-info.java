@@ -20,7 +20,7 @@
  * complete - it proves unwinnability or leaves it open, and never claims winnability.</li>
  * <li><strong>Full</strong> ({@link io.github.dlbbld.ashlarchess.unwinnability.UnwinnableFullAnalyzer}) - deep search,
  * four-valued: {@code WINNABLE_HELPMATE} (a concrete mate line was found), {@code WINNABLE_BY_THEOREM} (winnability
- * certified by the basic-checkmate-reachability theorem, no line), {@code UNWINNABLE}, or {@code UNDETERMINED}. The
+ * certified by the basic-helpmate-existence theorem, no line), {@code UNWINNABLE}, or {@code UNDETERMINED}. The
  * undetermined case is bounded by a 500&nbsp;000-position limit; most positions resolve well below it.</li>
  * </ul>
  *

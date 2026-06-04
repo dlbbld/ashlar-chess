@@ -7,11 +7,11 @@ Releases from 3.3 onward. Earlier history is in git tags only.
 
 ## [18.0.0] - Endgame theorem and unwinnability API - 2026-06-04
 
-Adds a proved basic-checkmate-reachability theorem that decides elementary endgames in the full unwinnability analysis without searching, realigns the quick analyzer to a faithful two-valued port of CHA 2.6.1, and simplifies the dead-position / game-end surface. Several public unwinnability types change shape.
+Adds a proved basic-helpmate-existence theorem that decides elementary endgames in the full unwinnability analysis without searching, realigns the quick analyzer to a faithful two-valued port of CHA 2.6.1, and simplifies the dead-position / game-end surface. Several public unwinnability types change shape.
 
 ### Notable
 
-- Basic-checkmate-reachability theorem. For the elementary mating-material classes KRvK, KQvK, KBBvK (opposite-coloured bishops), KBNvK, KRvKB, and KRvKN (and their colour-reversed forms), the full analyzer decides winnability directly from a finite-state theorem proved by exhaustive retrograde enumeration, instead of running the helpmate search. Faster, and always decisive on these classes. A theorem-decided win reports the new `WINNABLE_BY_THEOREM` verdict and carries no mate line.
+- Basic-helpmate-existence theorem. For the elementary mating-material classes KRvK, KQvK, KBBvK (opposite-coloured bishops), KBNvK, KRvKB, and KRvKN (and their colour-reversed forms), the full analyzer decides winnability directly from a finite-state theorem proved by exhaustive retrograde enumeration, instead of running the helpmate search. Faster, and always decisive on these classes. A theorem-decided win reports the new `WINNABLE_BY_THEOREM` verdict and carries no mate line.
 - The quick analyzer is now a faithful two-valued port of CHA 2.6.1's `quick_analysis`: it proves unwinnability or leaves it open, and never claims winnability. It no longer runs the paper's depth-bounded helpmate search.
 
 ### Breaking

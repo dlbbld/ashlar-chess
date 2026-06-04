@@ -13,7 +13,7 @@ Live planning only: current release work, backlog, and obsolete decisions. Shipp
 
 ## Current release 18.0.0 — endgame theorem + unwinnability API
 
-Breaking release. Adds the basic-checkmate-reachability theorem shortcut in the full analyzer, realigns the quick
+Breaking release. Adds the basic-helpmate-existence theorem shortcut in the full analyzer, realigns the quick
 analyzer to a faithful two-valued port of CHA 2.6.1, and simplifies the dead-position / game-end API (drops the
 `DeadPosition*` enums, the `GameEndFacts` record, and the `Board.isDeadPosition*` / `isGameEnd` methods; splits the full
 `WINNABLE` verdict). See CHANGELOG `[18.0.0]` for the full list. Tag + Central deploy follow the workflows.md procedure.

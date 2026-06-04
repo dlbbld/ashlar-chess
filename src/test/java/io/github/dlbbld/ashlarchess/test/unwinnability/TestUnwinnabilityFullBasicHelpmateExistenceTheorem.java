@@ -20,12 +20,12 @@ import io.github.dlbbld.ashlarchess.unwinnability.UnwinnabilityFullVerdict;
 //   White to move                                   -> White has a helpmate -> WINNABLE_BY_THEOREM
 //   Black to move, forced to capture White material  -> no helpmate         -> UNWINNABLE
 //   Black to move, not forced to capture             -> White has a helpmate -> WINNABLE_BY_THEOREM
-class TestUnwinnabilityFullBasicCheckmateReachability {
+class TestUnwinnabilityFullBasicHelpmateExistenceTheorem {
 
   @SuppressWarnings("static-method")
   @Test
   void fullVerdictMatchesTheorem() {
-    for (final PgnFen testCase : PgnTestCaseCatalog.getTestList(PgnTest.CHA_BASIC_CHECKMATE_REACHABILITY).list()) {
+    for (final PgnFen testCase : PgnTestCaseCatalog.getTestList(PgnTest.CHA_BASIC_HELPMATE_EXISTENCE_THEOREM).list()) {
       final Board board = testCase.finalPosition();
       final UnwinnabilityFullVerdict expected = board.getHavingMove() == Side.BLACK
           && testCase.pgnName().contains("black_forced_to_capture") ? UnwinnabilityFullVerdict.UNWINNABLE
