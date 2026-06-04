@@ -5,8 +5,7 @@ package io.github.dlbbld.ashlarchess.unwinnability;
 
 /**
  * Public result of the quick unwinnability analysis: the two-valued verdict only. No mate line is exposed - the quick
- * analysis never advertises a winning sequence (any internally computed line stays in
- * {@code UnwinnabilityQuickAnalysisInternal}).
+ * analysis never advertises a winning sequence.
  */
 public record UnwinnabilityQuickAnalysis(UnwinnabilityQuickVerdict verdict) {
 }

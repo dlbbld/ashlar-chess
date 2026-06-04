@@ -3,7 +3,6 @@
 
 package io.github.dlbbld.ashlarchess.unwinnability;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -33,7 +32,7 @@ public class UnwinnableQuickAnalyzer {
    * It answer the question "can this side ever deliver checkmate?"
    */
   public static UnwinnabilityQuickAnalysis unwinnableQuick(Board input, Side c) {
-    return new UnwinnabilityQuickAnalysis(toPublicVerdict(unwinnableQuickInternal(input, c).verdict()));
+    return new UnwinnabilityQuickAnalysis(calculateUnwinnabilityQuickVerdict(input, c));
   }
 
   /**
@@ -53,7 +52,7 @@ public class UnwinnableQuickAnalyzer {
     return UnwinnabilityQuickVerdict.UNWINNABLE;
   }
 
-  static UnwinnabilityQuickAnalysisInternal unwinnableQuickInternal(Board input, Side c) {
+  private static UnwinnabilityQuickVerdict calculateUnwinnabilityQuickVerdict(Board input, Side c) {
     final Board board = copyCurrentPositionForQuickSearch(input);
     final String invariant = board.getFen();
 
@@ -71,17 +70,7 @@ public class UnwinnableQuickAnalyzer {
     if (!invariant.equals(board.getFen())) {
       throw new ProgrammingMistakeException("Board was changed");
     }
-    return analysisInternal(isUnwinnable ? UnwinnabilityQuickVerdictInternal.UNWINNABLE
-        : UnwinnabilityQuickVerdictInternal.POSSIBLY_WINNABLE);
-  }
-
-  // The quick search never advertises winnability on the public API; an internally established WINNABLE collapses to
-  // POSSIBLY_WINNABLE.
-  private static UnwinnabilityQuickVerdict toPublicVerdict(UnwinnabilityQuickVerdictInternal verdict) {
-    return switch (verdict) {
-      case UNWINNABLE -> UnwinnabilityQuickVerdict.UNWINNABLE;
-      case WINNABLE, POSSIBLY_WINNABLE -> UnwinnabilityQuickVerdict.POSSIBLY_WINNABLE;
-    };
+    return isUnwinnable ? UnwinnabilityQuickVerdict.UNWINNABLE : UnwinnabilityQuickVerdict.POSSIBLY_WINNABLE;
   }
 
   // Mirrors the body of DYNAMIC::quick_analysis: an unconditional depth-7 dynamic search, an ad hoc deeper depth-15
@@ -216,10 +205,6 @@ public class UnwinnableQuickAnalyzer {
         input.getCastlingRightWhite(), input.getCastlingRightBlack(), input.getEnPassantCaptureTargetSquare(), 0,
         input.getFullMoveNumber());
     return new Board(fen);
-  }
-
-  private static UnwinnabilityQuickAnalysisInternal analysisInternal(UnwinnabilityQuickVerdictInternal verdict) {
-    return new UnwinnabilityQuickAnalysisInternal(verdict, new ArrayList<>());
   }
 
   private static void unperformHalfmoves(Board board, int countHalfmoves) {

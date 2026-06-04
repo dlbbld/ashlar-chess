@@ -17,9 +17,9 @@ import io.github.dlbbld.ashlarchess.model.LegalMove;
  *
  * <p>
  * The theorem was proved by exhaustive retrograde enumeration of the local legal state graph for each covered material
- * class in the sibling project {@code dlbbld/basic-checkmate-reachability}. Let {@code W} be the side holding the
- * mating material (the intended winner here) and {@code L} the defender. For every ongoing legal position in a covered
- * class:
+ * class in the sibling project basic-helpmate-existence (https://github.com/dlbbld/basic-helpmate-existence, tag
+ * 1.0.0). Let {@code W} be the side holding the mating material (the intended winner here) and {@code L} the defender.
+ * For every ongoing legal position in a covered class:
  * <ol>
  * <li>If {@code W} is to move, {@code W} has a helpmate (winnable for {@code W}).</li>
  * <li>If {@code L} is to move, {@code W} has a helpmate unless {@code L} has one or two legal moves and every legal
@@ -42,8 +42,8 @@ import io.github.dlbbld.ashlarchess.model.LegalMove;
  *
  * <p>
  * <b>No witness line.</b> A winnable decision here is certified by the theorem, not by an explicit mating sequence, so
- * callers receive a {@code WINNABLE} verdict without a move line. This is intentional: the line is not needed for the
- * dead-position verdict and would otherwise require the very search this shortcut avoids.
+ * callers receive a {@code WINNABLE_BY_THEOREM} verdict without a move line. This is intentional: the line is not needed
+ * for the dead-position verdict and would otherwise require the very search this shortcut avoids.
  */
 abstract class BasicCheckmateReachability {
 

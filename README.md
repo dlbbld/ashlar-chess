@@ -300,7 +300,7 @@ even if the opponent cooperates. If the position is unwinnable for both players,
 The library provides an implementation of CHA. So for both situations, there is a quick and a full method.
 
 The quick method is speedy by design but might miss some corrections. The full method is slower and complete when it
-returns WINNABLE or UNWINNABLE; bounded search may return UNDETERMINED.
+returns one of the winnable verdicts or UNWINNABLE; bounded search may return UNDETERMINED.
 
 ### Unwinnability
 The quick method has two return values:
