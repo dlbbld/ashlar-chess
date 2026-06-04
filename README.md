@@ -1,18 +1,24 @@
 ashlar-chess
 ===========
 
-ashlar-chess is a Java chess library focused on rule correctness and reproducibility.
+ashlar-chess is a Java chess library focused on rule correctness, production usability, and reproducible validation.
 It implements SAN, FEN, and PGN parsing, validation, and export with a strict/lenient parser pair,
 and includes a Java port of the [Chess Unwinnability Analyzer (CHA)](https://github.com/miguel-ambrona/D3-Chess) as a flagship feature.
 
-It's not a chess engine — it does not calculate best moves for a given position.
+It's not a chess engine - it does not calculate best moves for a given position.
 
-It's also not built for performance; if you need fast move generation, use for example Stockfish.
-It is built for correctness and comprehension — for example, it produces meaningful messages for SAN, FEN, and PGN validation.
+It is also not a move-generation benchmark library. The public `Board` is a rich game object: it keeps the position,
+move history, legal moves per ply, SAN/LAN strings, repetition counts, halfmove clocks, and castling-right facts needed
+for rule-level queries and reports. That rich state is backed by bitboards for piece placement and move generation.
+The CHA full-search hot path is deliberately leaner: it uses mutable bitboards and make/unmake state because cooperative
+mate search needs the best practical performance the design can provide.
+
+The library is built for correctness and comprehension - for example, it produces meaningful messages for SAN, FEN, and
+PGN validation.
 
 For the design philosophy, architecture, and rule-level decisions, see [specification.md](specification.md).
 
-ashlar-chess includes a Java port of the [Chess Unwinnability Analyzer (CHA)](https://github.com/miguel-ambrona/D3-Chess) by Miguel Ambrona, used for unwinnability and dead-position detection.
+The CHA port is used for unwinnability and dead-position detection.
 
 The test suite also cross-validates selected behavior against external chess libraries, currently python-chess as the primary oracle and [chesslib](https://github.com/bhlangonijr/chesslib) by Ben-Hur Carlos Vieira Langoni Junior as a secondary witness. These libraries are used for testing only and are not runtime dependencies of ashlar-chess.
 
