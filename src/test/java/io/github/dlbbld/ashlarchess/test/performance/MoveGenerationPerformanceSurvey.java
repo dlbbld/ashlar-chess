@@ -23,6 +23,7 @@ import io.github.dlbbld.ashlarchess.test.model.PgnTestCaseList;
 import io.github.dlbbld.ashlarchess.test.pgn.parser.PgnCacheForStrictPgnParserTestCases;
 import io.github.dlbbld.ashlarchess.test.pgn.setup.PgnTestCaseCatalog;
 import io.github.dlbbld.ashlarchess.test.pgntest.enums.PgnTest;
+import io.github.dlbbld.ashlarchess.unwinnability.HelpmateSearchBoardPerformanceProbe;
 
 public class MoveGenerationPerformanceSurvey {
 
@@ -40,10 +41,11 @@ public class MoveGenerationPerformanceSurvey {
       warmup(positionList);
 
       final Measurement boardBackend = measureBoardBackend(positionList);
+      final Measurement helpmateSearchBoard = measureHelpmateSearchBoard(positionList);
       final Measurement reference = measureReference(positionList);
       final Measurement chessLib = measureChessLib(positionList);
 
-      printResult(pgnTestNotNull, positionList.size(), boardBackend, reference, chessLib);
+      printResult(pgnTestNotNull, positionList.size(), boardBackend, helpmateSearchBoard, reference, chessLib);
     }
   }
 
@@ -57,6 +59,18 @@ public class MoveGenerationPerformanceSurvey {
         final long enPassantBit = ep == Square.NONE ? 0L : 1L << ep.ordinal();
         moveCount += BitboardLegalMoveFactory.calculateLegalMoves(board.getBitboardPosition(), board.getHavingMove(),
             board.getCastlingRight(board.getHavingMove()), enPassantBit).size();
+      }
+    }
+    return new Measurement(System.nanoTime() - start, moveCount);
+  }
+
+  private static Measurement measureHelpmateSearchBoard(List<PositionPair> positionList) {
+    final HelpmateSearchBoardPerformanceProbe probe = new HelpmateSearchBoardPerformanceProbe();
+    long moveCount = 0L;
+    final long start = System.nanoTime();
+    for (int round = 0; round < MEASURE_ROUNDS; round++) {
+      for (final PositionPair position : positionList) {
+        moveCount += probe.calculateLegalMoveCount(position.ashlarBoard());
       }
     }
     return new Measurement(System.nanoTime() - start, moveCount);
@@ -93,6 +107,7 @@ public class MoveGenerationPerformanceSurvey {
   private static void warmup(List<PositionPair> positionList) {
     for (int i = 0; i < WARMUP_ROUNDS; i++) {
       measureBoardBackend(positionList);
+      measureHelpmateSearchBoard(positionList);
       measureReference(positionList);
       measureChessLib(positionList);
     }
@@ -133,19 +148,22 @@ public class MoveGenerationPerformanceSurvey {
     }
   }
 
-  private static void printResult(PgnTest pgnTest, int positionCount, Measurement boardBackend, Measurement reference,
-      Measurement chessLib) {
+  private static void printResult(PgnTest pgnTest, int positionCount, Measurement boardBackend,
+      Measurement helpmateSearchBoard, Measurement reference, Measurement chessLib) {
     final double denominator = positionCount * MEASURE_ROUNDS;
     final double boardBackendUs = boardBackend.nanoseconds() / denominator / 1000.0;
+    final double helpmateSearchBoardUs = helpmateSearchBoard.nanoseconds() / denominator / 1000.0;
     final double referenceUs = reference.nanoseconds() / denominator / 1000.0;
     final double chessLibUs = chessLib.nanoseconds() / denominator / 1000.0;
 
     System.out.printf("%s%n", pgnTest);
     System.out.printf("  positions: %,d%n", positionCount);
-    System.out.printf("  generated moves: boardBackend=%,d reference=%,d chesslib=%,d%n", boardBackend.moveCount(),
-        reference.moveCount(), chessLib.moveCount());
+    System.out.printf("  generated moves: boardBackend=%,d helpmateSearchBoard=%,d reference=%,d chesslib=%,d%n",
+        boardBackend.moveCount(), helpmateSearchBoard.moveCount(), reference.moveCount(), chessLib.moveCount());
     System.out.printf("  Board backend: %.3f us/position  (%.1fx ChessLib)%n", boardBackendUs,
         boardBackendUs / chessLibUs);
+    System.out.printf("  HelpmateSearchBoard buffer path: %.3f us/position  (%.1fx ChessLib)%n",
+        helpmateSearchBoardUs, helpmateSearchBoardUs / chessLibUs);
     System.out.printf("  reference oracle: %.3f us/position  (%.1fx ChessLib)%n", referenceUs,
         referenceUs / chessLibUs);
     System.out.printf("  ChessLib: %.3f us/position%n%n", chessLibUs);
