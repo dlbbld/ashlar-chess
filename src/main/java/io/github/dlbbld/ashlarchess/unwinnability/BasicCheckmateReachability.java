@@ -42,8 +42,8 @@ import io.github.dlbbld.ashlarchess.model.LegalMove;
  *
  * <p>
  * <b>No witness line.</b> A winnable decision here is certified by the theorem, not by an explicit mating sequence, so
- * callers receive a {@code WINNABLE} verdict without a move line. This is intentional: the line is not needed for the
- * dead-position verdict and would otherwise require the very search this shortcut avoids.
+ * callers receive a {@code WINNABLE_BY_THEOREM} verdict without a move line. This is intentional: the line is not needed
+ * for the dead-position verdict and would otherwise require the very search this shortcut avoids.
  */
 abstract class BasicCheckmateReachability {
 
