@@ -79,7 +79,15 @@ The python-chess oracle reads pre-generated `.jsonl` files committed under `src/
 
 ## Cutting a release
 
-Release tags follow strict semver and match the `<version>` in `pom.xml`. The release procedure:
+Release tags follow strict semver and match the `<version>` in `pom.xml`. The procedure is GitHub-PR-based, and the
+order matters for three reasons: the version bump must land on `main` (via the merge) before the tag, the tag must
+exist before the Maven artifact is built, and the irreversible Central Portal publish is always the very last step.
+
+**Order at a glance:** prepare on a branch -> open the PR -> merge to `main` -> delete the branch -> tag `main` ->
+`mvn -Prelease deploy` (stages, reversible) -> review + publish on the Central Portal (irreversible). Tag and binary
+end up built from the same commit, and nothing public is created until the final publish.
+
+The detailed procedure:
 
 ### 1. Pre-flight
 
@@ -120,19 +128,37 @@ Browse prior entries in `CHANGELOG.md` for the tone and depth.
 
 Move the relevant `tasks.md` section to **Done** at the bottom of the file.
 
-### 3. Commit + tag + push
+Commit these on a release branch and push the branch - this is the content the PR ships. Do **not** tag yet.
 
-```
-git add pom.xml README.md CHANGELOG.md tasks.md
-git commit -m "X.Y.Z release artifacts: pom + README + CHANGELOG"
-git tag X.Y.Z
-git push origin <branch>
-git push origin X.Y.Z
-```
+### 3. Open the PR and merge to main
 
-The tag is unannotated (matches the convention of prior tags) — no signing required by repo policy.
+Done on the GitHub website, no command line needed:
 
-### 4. Publish to Maven Central
+- Open a pull request from the release branch into `main`.
+- Review, then **merge** it. After merging, **delete the branch**.
+
+The version bump must be on `main` (carried in by the merge) before you tag, so the tag and the published artifact
+reference the exact same commit. Do not tag the release branch.
+
+### 4. Tag the release on main
+
+The tag goes on `main`, after the merge.
+
+- Pull `main` locally so your checkout is exactly the merged release commit.
+- Create the tag `X.Y.Z` on `main`'s HEAD and push the tag. In Eclipse: Git Repositories view -> the repo -> right-click
+  `Tags` -> Create Tag (or right-click the commit in History -> Create Tag), then Push Tags. Equivalent command line:
+  `git tag X.Y.Z && git push origin X.Y.Z`.
+- The tag is unannotated (matches the convention of prior tags) - no signing required by repo policy.
+
+Tag **before** the Maven deploy in the next step: the artifact is built from this commit, so the tag and the published
+jar are provably the same source.
+
+### 5. Publish to Maven Central
+
+Run this from your local `main` checkout at the tag you just created - the artifact must be built from the tagged
+commit. The sub-steps run in order: **dry-run the build locally (`mvn -Prelease verify`, no upload) -> stage the
+deployment (`mvn -Prelease deploy`) -> review the staged contents on the Portal -> publish**. Only the final publish is
+irreversible, so it is always last; everything before it can be discarded and redone from the same tag.
 
 Distribution is the Sonatype Central Portal via `central-publishing-maven-plugin`, wired into the `release` profile alongside GPG signing and the sources / javadoc jars. `mvn -Prelease deploy` is the only Central-aware command — it builds + signs the main / sources / javadoc jars and uploads a single staged deployment.
 
@@ -156,7 +182,7 @@ mvn -Prelease deploy                       # uploads a staged deployment to the 
 
 - **First release:** review the staged contents (the main + sources + javadoc jars, their `.asc` signatures, and the flattened POM) before releasing. Releasing is the one immutable, irreversible step — once released, the `groupId:artifactId:version` triple is permanent and cannot be changed or unpublished.
 
-### 5. Post-release
+### 6. Post-release
 
 - Verify the artifact resolves at <https://central.sonatype.com/artifact/io.github.dlbbld/ashlar-chess> before announcing (index propagation can take minutes to a couple of hours).
 - Archive the shipped release in `tasks.md`: move its section to **Done** at the bottom (or collapse it to a one-line "X.Y.Z — published YYYY-MM-DD, see CHANGELOG"). The recurring procedure lives here in workflows.md and the consumer-facing summary in CHANGELOG.md, so the granular one-time checklist can be pruned without losing anything.
