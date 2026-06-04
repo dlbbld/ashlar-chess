@@ -4,6 +4,33 @@ Releases from 3.3 onward. Earlier history is in git tags only.
 
 ## [Unreleased]
 
+### Testing
+
+- **scalachess added as a third differential oracle (legal-move generation).** scalachess
+  (lichess.org's rules engine) joins python-chess (primary) and chesslib (second witness). A
+  scala-cli generator (`tools/scalachess-oracle/generate_legal_moves_oracle.scala`) replays the
+  same 22 move-rule-mechanics buckets and writes per-position legal-UCI sets to committed JSONL
+  under `src/test/resources/oracle/scalachess/move-gen/`, consumed by the new
+  `TestLegalMovesAgainstScalachessOracle`. scalachess is resolved from JitPack
+  (`com.github.lichess-org.scalachess:scalachess_3:17.15.5`, JDK 21) entirely out-of-process;
+  `mvn` never invokes it. ashlar-chess and scalachess agree on every legal-move set across 338
+  fixtures / 3801 positions; the committed oracle is byte-identical to the python-chess move-gen
+  oracle on shared fixtures after normalising scalachess's king-to-rook castling encoding (and
+  its duplicate listing of each castle).
+- **scalachess insufficient-material oracle.** A second scala-cli generator
+  (`tools/scalachess-oracle/generate_insufficient_material_oracle.scala`) records scalachess's
+  combined and per-side insufficient-material verdicts on the final position of the four core
+  insufficient-material buckets (84 fixtures), mapping scalachess's side-to-move-relative
+  player/opponent framing to absolute white/black. Read position-only (no replay) by the new
+  `TestInsufficientMaterialAgainstScalachessOracle` via the provider-neutral
+  `io.github.dlbbld.ashlarchess.test.oracle.insufficientmaterial` reader. ashlar-chess and
+  scalachess agree on all 84; scalachess and python-chess agree on all 84 - a third witness on a
+  subtle predicate. Claim-ahead predicates are intentionally excluded (scalachess has no native
+  query for them; python-chess and chesslib cover those).
+- **Provider-neutral oracle readers.** Extracted the shared JSONL line parser to
+  `io.github.dlbbld.ashlarchess.test.oracle.JsonLineParser`, and moved the move-gen reader and
+  records to the provider-neutral `io.github.dlbbld.ashlarchess.test.oracle.movegen` package,
+  now shared by the python-chess and scalachess tests (different JSONL roots, same schema).
 
 ## [18.0.0] - Endgame theorem and unwinnability API - 2026-06-04
 

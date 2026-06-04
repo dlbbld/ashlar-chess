@@ -20,7 +20,7 @@ For the design philosophy, architecture, and rule-level decisions, see [specific
 
 The CHA port is used for unwinnability and dead-position detection.
 
-The test suite also cross-validates selected behavior against external chess libraries, currently python-chess as the primary oracle and [chesslib](https://github.com/bhlangonijr/chesslib) by Ben-Hur Carlos Vieira Langoni Junior as a secondary witness. These libraries are used for testing only and are not runtime dependencies of ashlar-chess.
+The test suite also cross-validates selected behavior against external chess libraries: python-chess as the primary oracle, [chesslib](https://github.com/bhlangonijr/chesslib) by Ben-Hur Carlos Vieira Langoni Junior as a secondary witness, and [scalachess](https://github.com/lichess-org/scalachess) (lichess.org's rules engine) as a third witness for legal-move generation and insufficient material. These libraries are used for testing only and are not runtime dependencies of ashlar-chess.
 
 ## Not supported
 

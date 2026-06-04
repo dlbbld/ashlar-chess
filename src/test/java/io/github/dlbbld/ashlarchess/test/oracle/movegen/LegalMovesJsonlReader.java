@@ -1,7 +1,7 @@
 // Copyright (C) 2020-2026 Daniel Baechli
 // SPDX-License-Identifier: GPL-3.0-only
 
-package io.github.dlbbld.ashlarchess.test.oracle.python;
+package io.github.dlbbld.ashlarchess.test.oracle.movegen;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -13,14 +13,16 @@ import java.util.List;
 import java.util.Map;
 
 import io.github.dlbbld.ashlarchess.common.Nulls;
+import io.github.dlbbld.ashlarchess.test.oracle.JsonLineParser;
 
 /**
- * Reads a python-chess-generated move-generation oracle JSONL file into {@link LegalMovesRecord} values. One JSON
- * object per line; objects match the shape emitted by {@code src/test/python/generate_move_gen_oracle.py}.
+ * Reads a move-generation oracle JSONL file into {@link LegalMovesRecord} values. One JSON object per line; objects
+ * match the shape emitted by the move-generation oracle generators - {@code src/test/python/generate_move_gen_oracle.py}
+ * (python-chess) and {@code tools/scalachess-oracle/generate_legal_moves_oracle.scala} (scalachess), which share this
+ * schema. Provider-neutral by design: the same reader serves both oracles, differing only in the JSONL root path.
  *
  * <p>
- * Reuses the JSON parser embedded in {@link OracleJsonlReader} via the package-visible
- * {@link OracleJsonlReader#parseLineToObject(String)} hook.
+ * JSON parsing is delegated to the shared {@link JsonLineParser}.
  */
 @SuppressWarnings("unchecked")
 public final class LegalMovesJsonlReader {
@@ -36,7 +38,7 @@ public final class LegalMovesJsonlReader {
         if (line.isBlank()) {
           continue;
         }
-        records.add(toRecord(OracleJsonlReader.parseLineToObject(line)));
+        records.add(toRecord(JsonLineParser.parseLineToObject(line)));
       }
     }
     return Nulls.copyOfList(records);

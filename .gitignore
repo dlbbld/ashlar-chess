@@ -2,3 +2,6 @@
 /target/
 # flatten-maven-plugin output (release profile); regenerated, never committed
 /.flattened-pom.xml
+# scala-cli build cache / BSP config for the out-of-process scalachess oracle generator
+.scala-build/
+.bsp/

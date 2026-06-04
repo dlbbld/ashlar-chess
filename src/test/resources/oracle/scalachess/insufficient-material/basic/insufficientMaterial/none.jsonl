@@ -1,0 +1,15 @@
+{"fen":"8/8/k3b3/8/5K2/8/8/2B5 b - - 0 35","hasInsufficientMaterialBlack":false,"hasInsufficientMaterialWhite":false,"isInsufficientMaterial":false,"pgn":"insufficient_material_KBb_KBw.pgn"}
+{"fen":"1n6/8/8/8/4K3/1k6/1B6/8 b - - 3 27","hasInsufficientMaterialBlack":false,"hasInsufficientMaterialWhite":false,"isInsufficientMaterial":false,"pgn":"insufficient_material_KBb_KN.pgn"}
+{"fen":"8/6B1/8/2p5/8/1k6/8/1K6 b - - 0 26","hasInsufficientMaterialBlack":false,"hasInsufficientMaterialWhite":false,"isInsufficientMaterial":false,"pgn":"insufficient_material_KBb_KP.pgn"}
+{"fen":"8/8/3b2k1/8/3K2B1/8/8/8 b - - 0 35","hasInsufficientMaterialBlack":false,"hasInsufficientMaterialWhite":false,"isInsufficientMaterial":false,"pgn":"insufficient_material_KBw_KBb.pgn"}
+{"fen":"1n6/8/8/2k1K3/8/8/8/5B2 w - - 0 26","hasInsufficientMaterialBlack":false,"hasInsufficientMaterialWhite":false,"isInsufficientMaterial":false,"pgn":"insufficient_material_KBw_KN.pgn"}
+{"fen":"8/8/8/2p1K3/8/1k6/8/5B2 w - - 0 27","hasInsufficientMaterialBlack":false,"hasInsufficientMaterialWhite":false,"isInsufficientMaterial":false,"pgn":"insufficient_material_KBw_KP.pgn"}
+{"fen":"5b2/8/3k4/8/8/4K3/8/1N6 w - - 0 24","hasInsufficientMaterialBlack":false,"hasInsufficientMaterialWhite":false,"isInsufficientMaterial":false,"pgn":"insufficient_material_KN_KBb.pgn"}
+{"fen":"8/k2b4/8/8/2K5/8/8/1N6 w - - 0 23","hasInsufficientMaterialBlack":false,"hasInsufficientMaterialWhite":false,"isInsufficientMaterial":false,"pgn":"insufficient_material_KN_KBw.pgn"}
+{"fen":"8/8/4K3/8/1n6/8/5k1N/8 w - - 0 37","hasInsufficientMaterialBlack":false,"hasInsufficientMaterialWhite":false,"isInsufficientMaterial":false,"pgn":"insufficient_material_KN_KN.pgn"}
+{"fen":"3k4/8/3p4/8/8/4K3/8/1N6 w - - 0 23","hasInsufficientMaterialBlack":false,"hasInsufficientMaterialWhite":false,"isInsufficientMaterial":false,"pgn":"insufficient_material_KN_KP.pgn"}
+{"fen":"7r/3k4/8/8/8/8/3K4/1N6 w - - 0 21","hasInsufficientMaterialBlack":false,"hasInsufficientMaterialWhite":false,"isInsufficientMaterial":false,"pgn":"insufficient_material_KN_KR.pgn"}
+{"fen":"5b2/8/4P3/3K2k1/8/8/8/8 b - - 0 25","hasInsufficientMaterialBlack":false,"hasInsufficientMaterialWhite":false,"isInsufficientMaterial":false,"pgn":"insufficient_material_KP_KBb.pgn"}
+{"fen":"8/8/8/3P4/k5b1/8/8/2K5 w - - 0 27","hasInsufficientMaterialBlack":false,"hasInsufficientMaterialWhite":false,"isInsufficientMaterial":false,"pgn":"insufficient_material_KP_KBw.pgn"}
+{"fen":"1n6/8/8/2k5/8/8/6KP/8 b - - 0 24","hasInsufficientMaterialBlack":false,"hasInsufficientMaterialWhite":false,"isInsufficientMaterial":false,"pgn":"insufficient_material_KP_KN.pgn"}
+{"fen":"1n6/8/8/2k5/4K3/8/7R/8 b - - 0 22","hasInsufficientMaterialBlack":false,"hasInsufficientMaterialWhite":false,"isInsufficientMaterial":false,"pgn":"insufficient_material_KR_KN.pgn"}

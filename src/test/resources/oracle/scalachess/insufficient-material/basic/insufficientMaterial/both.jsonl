@@ -1,0 +1,13 @@
+{"fen":"5B2/8/2k5/8/8/1K6/8/2B5 b - - 0 36","hasInsufficientMaterialBlack":true,"hasInsufficientMaterialWhite":true,"isInsufficientMaterial":true,"pgn":"insufficient_material_KBbBb_K.pgn"}
+{"fen":"8/8/8/4k3/8/4K3/8/2B5 w - - 0 35","hasInsufficientMaterialBlack":true,"hasInsufficientMaterialWhite":true,"isInsufficientMaterial":true,"pgn":"insufficient_material_KBb_K.pgn"}
+{"fen":"8/8/8/4k3/5b2/3K4/8/2B5 w - - 0 33","hasInsufficientMaterialBlack":true,"hasInsufficientMaterialWhite":true,"isInsufficientMaterial":true,"pgn":"insufficient_material_KBb_KBb.pgn"}
+{"fen":"2B5/3B4/8/6K1/8/1k6/8/8 w - - 0 32","hasInsufficientMaterialBlack":true,"hasInsufficientMaterialWhite":true,"isInsufficientMaterial":true,"pgn":"insufficient_material_KBwBw_K.pgn"}
+{"fen":"8/8/3K2k1/8/8/8/8/5B2 b - - 0 33","hasInsufficientMaterialBlack":true,"hasInsufficientMaterialWhite":true,"isInsufficientMaterial":true,"pgn":"insufficient_material_KBw_K.pgn"}
+{"fen":"5K2/8/8/1B6/8/k7/6b1/8 w - - 0 39","hasInsufficientMaterialBlack":true,"hasInsufficientMaterialWhite":true,"isInsufficientMaterial":true,"pgn":"insufficient_material_KBw_KBw.pgn"}
+{"fen":"4k3/8/8/2K5/8/5N2/8/8 w - - 0 35","hasInsufficientMaterialBlack":true,"hasInsufficientMaterialWhite":true,"isInsufficientMaterial":true,"pgn":"insufficient_material_KN_K.pgn"}
+{"fen":"2K5/8/8/8/8/8/4k3/8 b - - 0 38","hasInsufficientMaterialBlack":true,"hasInsufficientMaterialWhite":true,"isInsufficientMaterial":true,"pgn":"insufficient_material_K_K.pgn"}
+{"fen":"8/8/8/2b5/2K5/8/4k3/8 w - - 0 34","hasInsufficientMaterialBlack":true,"hasInsufficientMaterialWhite":true,"isInsufficientMaterial":true,"pgn":"insufficient_material_K_KBb.pgn"}
+{"fen":"5b2/3k4/8/8/5K2/2b5/8/8 b - - 0 25","hasInsufficientMaterialBlack":true,"hasInsufficientMaterialWhite":true,"isInsufficientMaterial":true,"pgn":"insufficient_material_K_KBbBb.pgn"}
+{"fen":"2b5/8/2k5/8/4K3/8/8/8 b - - 0 34","hasInsufficientMaterialBlack":true,"hasInsufficientMaterialWhite":true,"isInsufficientMaterial":true,"pgn":"insufficient_material_K_KBw.pgn"}
+{"fen":"3k4/1b6/2b5/8/8/8/3K4/8 w - - 0 27","hasInsufficientMaterialBlack":true,"hasInsufficientMaterialWhite":true,"isInsufficientMaterial":true,"pgn":"insufficient_material_K_KBwBw.pgn"}
+{"fen":"4k3/8/8/1K2n3/8/8/8/8 b - - 0 36","hasInsufficientMaterialBlack":true,"hasInsufficientMaterialWhite":true,"isInsufficientMaterial":true,"pgn":"insufficient_material_K_KN.pgn"}

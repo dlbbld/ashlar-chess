@@ -1,7 +1,7 @@
 // Copyright (C) 2020-2026 Daniel Baechli
 // SPDX-License-Identifier: GPL-3.0-only
 
-package io.github.dlbbld.ashlarchess.test.oracle.python;
+package io.github.dlbbld.ashlarchess.test.oracle.scalachess;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
@@ -31,37 +31,32 @@ import io.github.dlbbld.ashlarchess.test.pgntest.constants.PgnTestConstants;
 import io.github.dlbbld.ashlarchess.test.pgntest.enums.PgnTest;
 
 /**
- * Cross-validates ashlar-chess's legal-move generator against python-chess's by replaying each PGN in the covered
+ * Cross-validates ashlar-chess's legal-move generator against scalachess's by replaying each PGN in the covered
  * move-rule-mechanics buckets and asserting set-equality on the legal-move set at every visited position.
  *
  * <p>
- * For each fixture: parses the PGN, walks the board through the played sequence, and at each ply (including ply 0
- * before any move and the position after the final move) asserts that the sorted UCI set of
- * {@code board.getLegalMovesUci()} equals the python-chess set recorded in the JSONL oracle under
- * {@code src/test/resources/oracle/python-chess/move-gen/<folderPart>.jsonl}.
+ * scalachess (lichess.org's rules engine) is the third differential oracle, after python-chess (primary) and chesslib
+ * (second witness). It shares the move-generation oracle schema and reader with the python-chess path
+ * ({@link io.github.dlbbld.ashlarchess.test.oracle.movegen}); only the JSONL root differs. The committed oracle is
+ * byte-identical to the python-chess oracle wherever the two share a fixture - scalachess and python-chess agree on
+ * every legal-move set in this corpus - so this test adds an independent witness rather than new coverage.
  *
  * <p>
- * This is a separate oracle from {@link TestPgnImportAgainstPythonChessOracle} - that test answers "did we import this
- * PGN the same way as python-chess?", this one answers "does our legal-move generator match at every position?". Both
- * questions matter; merging them would conflate the import surface and the move-generation surface.
+ * For each fixture: parses the PGN, walks the board through the played sequence, and at each ply (including ply 0 before
+ * any move and the position after the final move) asserts that the sorted UCI set of {@code board.getLegalMovesUci()}
+ * equals the scalachess set recorded in the JSONL oracle under
+ * {@code src/test/resources/oracle/scalachess/move-gen/<folderPart>.jsonl}.
  *
  * <p>
- * Bucket coverage is intentionally narrower than the PGN-import oracle: move-rule-mechanics buckets only (piece moves,
- * captures, en passant, promotion, check, double check, castling, plus parserFenMechanics for the unusual FEN-load
- * positions). Long-game corpora are excluded to keep the JSONL file sizes proportional to the value delivered - move
- * generation is already heavily exercised by the internal differential-test layer against the relocated
- * {@code StaticPosition} oracle.
- *
- * <p>
- * See {@code src/test/python/generate_move_gen_oracle.py} module docstring for the schema source of truth, the
- * reproducibility install command, and the version of python-chess that produced the committed oracle.
+ * See {@code tools/scalachess-oracle/generate_legal_moves_oracle.scala} for the generator, the pinned scalachess
+ * version of record, and the JitPack resolver / JDK 21 setup that produced the committed oracle.
  */
-class TestLegalMovesAgainstPythonChessOracle {
+class TestLegalMovesAgainstScalachessOracle {
 
-  private static final Logger LOGGER = Nulls.getLogger(TestLegalMovesAgainstPythonChessOracle.class);
+  private static final Logger LOGGER = Nulls.getLogger(TestLegalMovesAgainstScalachessOracle.class);
 
   private static final Path ORACLE_ROOT = Nulls.pathResolve(ConfigurationTestConstants.PROJECT_ROOT_FOLDER_PATH,
-      "src/test/resources/oracle/python-chess/move-gen");
+      "src/test/resources/oracle/scalachess/move-gen");
 
   private static final ImmutableList<PgnTest> BUCKETS = Nulls.listOf(PgnTest.PARSER_FROM_FEN,
       PgnTest.BASIC_MOVING_PIECE_WHITE, PgnTest.BASIC_MOVING_PIECE_BLACK, PgnTest.BASIC_CAPTURE_WHITE,
@@ -75,7 +70,7 @@ class TestLegalMovesAgainstPythonChessOracle {
 
   @SuppressWarnings("static-method")
   @Test
-  void legalMovesAgainstPythonChessOracle() throws IOException {
+  void legalMovesAgainstScalachessOracle() throws IOException {
     final List<String> failures = new ArrayList<>();
     int totalFixtures = 0;
     int totalPositions = 0;
@@ -113,7 +108,7 @@ class TestLegalMovesAgainstPythonChessOracle {
           final int positionLabel = ply;
           try {
             assertEquals(expectedPly.legalMovesUci(), actualSorted, () -> bucket + " / " + record.pgn() + " position "
-                + positionLabel + " - legal-move set mismatch (ashlar-chess vs python-chess)");
+                + positionLabel + " - legal-move set mismatch (ashlar-chess vs scalachess)");
           } catch (final AssertionError e) {
             failures.add(BasicUtility.getMessage(e));
           }
