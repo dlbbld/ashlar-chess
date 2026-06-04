@@ -76,6 +76,7 @@ class TestUnwinnabilityFullAgainstLimitedOracle {
         assertTrue(isIncomplete);
       }
       case UNDETERMINED -> assertEquals(LimitedUnwinnabilityVerdict.UNKNOWN, verdict);
+      default -> throw new IllegalArgumentException();
     }
   }
 

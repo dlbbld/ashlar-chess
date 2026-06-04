@@ -26,17 +26,22 @@ import io.github.dlbbld.ashlarchess.model.LegalMove;
 // deeper retry for restricted pawn/bishop positions (CHA comment: "TODO: remove if too ad hoc for capturing bKHPqNEw").
 public class UnwinnableQuickAnalyzer {
 
-  /** Quick unwinnability for one intended winner: "can this side ever deliver checkmate?" */
+  /**
+   * Quick unwinnability for one intended winner.
+   *
+   * <p>
+   * It answer the question "can this side ever deliver checkmate?"
+   */
   public static UnwinnabilityQuickAnalysis unwinnableQuick(Board input, Side c) {
     return new UnwinnabilityQuickAnalysis(toPublicVerdict(unwinnableQuickInternal(input, c).verdict()));
   }
 
   /**
-   * Dead-position-quick check for the whole position (no intended winner): {@code UNWINNABLE} means the position is dead
-   * - neither side can deliver checkmate by any sequence of legal moves - and {@code POSSIBLY_WINNABLE} means it is not
-   * provably dead. This is the quick, during-the-game counterpart to {@link UnwinnableFullAnalyzer#unwinnableFull(Board)},
-   * the complete check suggested at game end (resignation or flag-fall). Short-circuits: it stops as soon as one side is
-   * not provably unwinnable.
+   * Dead-position-quick check for the whole position (no intended winner): {@code UNWINNABLE} means the position is
+   * dead - neither side can deliver checkmate by any sequence of legal moves - and {@code POSSIBLY_WINNABLE} means it
+   * is not provably dead. This is the quick, during-the-game counterpart to
+   * {@link UnwinnableFullAnalyzer#unwinnableFull(Board)}, the complete check suggested at game end (resignation or
+   * flag-fall). Short-circuits: it stops as soon as one side is not provably unwinnable.
    */
   public static UnwinnabilityQuickVerdict unwinnableQuick(Board board) {
     if (unwinnableQuick(board, Side.WHITE).verdict() != UnwinnabilityQuickVerdict.UNWINNABLE) {
