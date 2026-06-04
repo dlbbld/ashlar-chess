@@ -100,7 +100,7 @@ Choose one short, human-readable **release title** for this version (for example
 API"). It is set once, here, and then reused verbatim in four places so every surface tells the same story:
 
 1. the `CHANGELOG.md` header (step 2),
-2. the PR title (step 5),
+2. the PR title and the PR body's leading `## ` H2 (step 5),
 3. the annotated tag's message (step 6),
 4. the GitHub Release notes (step 8) - as the leading `# ` H1 of the body.
 
@@ -178,7 +178,9 @@ If `verify` fails, fix it on the branch (new commit), then re-run pre-flight + t
 
 The branch is now fully validated (pre-flight + release dry-run green). Done on the GitHub website, no command line needed:
 
-- Open a pull request from the release branch into `main`. **PR title = the release title** from step 1.
+- Open a pull request from the release branch into `main`. **PR title field = the release title** from step 1 (no
+  version), and the **body opens with `## <release title>`** as its leading heading - the same release-notes structure
+  as step 8, one heading level down because the PR already has its own title field above the body.
 - Review, then **merge** it. After merging, **delete the branch**.
 
 The version bump must be on `main` (carried in by the merge) before you tag, so the tag and the published artifact
