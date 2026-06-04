@@ -47,7 +47,8 @@ mvn test -Pfull
 
 For concrete procedures — adding a PGN test fixture, running test subsets, cutting a release — see **[workflows.md](workflows.md)**.
 
-Open issues / pull requests against the active development branch (currently `lenient_san_validation`). The `main` branch tracks the most recent shipped release.
+Open issues / pull requests against the active development branch. The `main` branch tracks the most recent shipped
+release.
 
 ## Active and planned work
 
