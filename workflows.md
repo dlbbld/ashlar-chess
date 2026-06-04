@@ -89,8 +89,8 @@ binary is built; and the irreversible Central Portal publish is always the very 
 **Order at a glance:** name the release -> update artifacts on a branch -> push -> pre-flight (full tests + javadoc +
 headers) -> `mvn -Prelease verify` (build+sign dry-run, on the branch, no upload) -> open the PR (titled with the
 release title) -> merge to `main` -> delete the branch -> tag `main` (annotated, message = release title) ->
-`mvn -Prelease deploy` (stages) -> review + publish on the Central Portal (irreversible) -> GitHub Release (titled with
-the release title).
+`mvn -Prelease deploy` (stages) -> review + publish on the Central Portal (irreversible) -> GitHub Release (version as
+the title field, release title as the notes H1).
 
 The detailed procedure:
 
@@ -102,7 +102,13 @@ API"). It is set once, here, and then reused verbatim in four places so every su
 1. the `CHANGELOG.md` header (step 2),
 2. the PR title (step 5),
 3. the annotated tag's message (step 6),
-4. the GitHub Release title (step 8).
+4. the GitHub Release notes (step 8) - as the leading `# ` H1 of the body.
+
+Keep the version and the release title in **separate slots**; never concatenate them into one string (no
+"X.Y.Z Release Title" - it reads as clutter). The version lives where Git and GitHub attach it structurally (the
+`[X.Y.Z]` `CHANGELOG.md` bracket, the annotated tag, the GitHub Release *title field*); the release title is the
+human-readable heading shown next to it. So the PR title is the release title alone, and the GitHub Release sets its
+*title field* to the version while the notes body opens with the release title as an H1.
 
 The `tasks.md` "current release" heading is a good source - it already carries a one-line description of the release.
 
@@ -214,9 +220,11 @@ mvn -Prelease deploy                 # uploads a staged deployment to the Centra
 Create the GitHub Release for the tag you pushed in step 6 (GitHub website -> Releases -> Draft a new release):
 
 - **Choose the existing tag** `X.Y.Z` (do not create a new one - it already exists on `main`).
-- **Release title = the release title** from step 1. GitHub shows the tag `X.Y.Z` as the version label and this title as
-  the heading, so the page reads "X.Y.Z" with the release title beneath it.
-- **Notes:** the `CHANGELOG.md` `[X.Y.Z]` body (summary + Notable / Behavioral / Breaking). The GitHub Release is the
+- **Release title field = `X.Y.Z`** (the version; GitHub also defaults the title to the tag if left blank). This echoes
+  the tag label rather than repeating the release title.
+- **Notes body opens with `# <release title>`** - the release title from step 1 as the body's leading H1, followed by
+  the `CHANGELOG.md` `[X.Y.Z]` notes (summary + Notable / Behavioral / Breaking). The page then reads "X.Y.Z" as the
+  release heading with the descriptive release title as the first H1 of the notes beneath it. The GitHub Release is the
   public, human-facing copy of the changelog entry; keep the two consistent.
 
 ### 9. Post-release
