@@ -39,20 +39,20 @@ public class MoveGenerationPerformanceSurvey {
       final List<PositionPair> positionList = collectPositions(pgnTestNotNull);
       warmup(positionList);
 
-      final Measurement bitboard = measureBitboard(positionList);
+      final Measurement boardBackend = measureBoardBackend(positionList);
       final Measurement reference = measureReference(positionList);
       final Measurement chessLib = measureChessLib(positionList);
 
-      printResult(pgnTestNotNull, positionList.size(), bitboard, reference, chessLib);
+      printResult(pgnTestNotNull, positionList.size(), boardBackend, reference, chessLib);
     }
   }
 
-  private static Measurement measureBitboard(List<PositionPair> positionList) {
+  private static Measurement measureBoardBackend(List<PositionPair> positionList) {
     long moveCount = 0L;
     final long start = System.nanoTime();
     for (int round = 0; round < MEASURE_ROUNDS; round++) {
       for (final PositionPair position : positionList) {
-        final Board board = position.cleanChessBoard();
+        final Board board = position.ashlarBoard();
         final Square ep = board.getEnPassantCaptureTargetSquare();
         final long enPassantBit = ep == Square.NONE ? 0L : 1L << ep.ordinal();
         moveCount += BitboardLegalMoveFactory.calculateLegalMoves(board.getBitboardPosition(), board.getHavingMove(),
@@ -83,8 +83,8 @@ public class MoveGenerationPerformanceSurvey {
     return result;
   }
 
-  private static void addPosition(List<PositionPair> result, Board cleanChessBoard) {
-    final String fen = cleanChessBoard.getFen();
+  private static void addPosition(List<PositionPair> result, Board ashlarBoard) {
+    final String fen = ashlarBoard.getFen();
     final com.github.bhlangonijr.chesslib.Board chessLibBoard = new com.github.bhlangonijr.chesslib.Board();
     chessLibBoard.loadFromFen(fen);
     result.add(new PositionPair(new Board(fen), chessLibBoard));
@@ -92,7 +92,7 @@ public class MoveGenerationPerformanceSurvey {
 
   private static void warmup(List<PositionPair> positionList) {
     for (int i = 0; i < WARMUP_ROUNDS; i++) {
-      measureBitboard(positionList);
+      measureBoardBackend(positionList);
       measureReference(positionList);
       measureChessLib(positionList);
     }
@@ -103,7 +103,7 @@ public class MoveGenerationPerformanceSurvey {
     final long start = System.nanoTime();
     for (int round = 0; round < MEASURE_ROUNDS; round++) {
       for (final PositionPair position : positionList) {
-        final Board board = position.cleanChessBoard();
+        final Board board = position.ashlarBoard();
         moveCount += AbstractLegalMoves.calculateLegalMoves(
             StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), board.getHavingMove(),
             board.getCastlingRight(board.getHavingMove()), board.getEnPassantCaptureTargetSquare()).size();
@@ -133,24 +133,25 @@ public class MoveGenerationPerformanceSurvey {
     }
   }
 
-  private static void printResult(PgnTest pgnTest, int positionCount, Measurement bitboard, Measurement reference,
+  private static void printResult(PgnTest pgnTest, int positionCount, Measurement boardBackend, Measurement reference,
       Measurement chessLib) {
     final double denominator = positionCount * MEASURE_ROUNDS;
-    final double bitboardUs = bitboard.nanoseconds() / denominator / 1000.0;
+    final double boardBackendUs = boardBackend.nanoseconds() / denominator / 1000.0;
     final double referenceUs = reference.nanoseconds() / denominator / 1000.0;
     final double chessLibUs = chessLib.nanoseconds() / denominator / 1000.0;
 
     System.out.printf("%s%n", pgnTest);
     System.out.printf("  positions: %,d%n", positionCount);
-    System.out.printf("  generated moves: bitboard=%,d reference=%,d chesslib=%,d%n", bitboard.moveCount(),
+    System.out.printf("  generated moves: boardBackend=%,d reference=%,d chesslib=%,d%n", boardBackend.moveCount(),
         reference.moveCount(), chessLib.moveCount());
-    System.out.printf("  bitboard (12.0.0): %.3f us/position  (%.1fx ChessLib)%n", bitboardUs, bitboardUs / chessLibUs);
-    System.out.printf("  reference oracle:  %.3f us/position  (%.1fx ChessLib)%n", referenceUs,
+    System.out.printf("  Board backend: %.3f us/position  (%.1fx ChessLib)%n", boardBackendUs,
+        boardBackendUs / chessLibUs);
+    System.out.printf("  reference oracle: %.3f us/position  (%.1fx ChessLib)%n", referenceUs,
         referenceUs / chessLibUs);
-    System.out.printf("  ChessLib:          %.3f us/position%n%n", chessLibUs);
+    System.out.printf("  ChessLib: %.3f us/position%n%n", chessLibUs);
   }
 
-  private record PositionPair(Board cleanChessBoard, com.github.bhlangonijr.chesslib.Board chessLibBoard) {
+  private record PositionPair(Board ashlarBoard, com.github.bhlangonijr.chesslib.Board chessLibBoard) {
 
   }
 
