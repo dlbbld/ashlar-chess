@@ -5,6 +5,8 @@ ashlar-chess is a Java chess library focused on rule correctness, production usa
 It implements SAN, FEN, and PGN parsing, validation, and export with a strict/lenient parser pair,
 and includes a Java port of the [Chess Unwinnability Analyzer (CHA)](https://github.com/miguel-ambrona/D3-Chess) as a flagship feature.
 
+## Scope
+
 It's not a chess engine - it does not calculate best moves for a given position.
 
 It is also not a move-generation benchmark library. The public `Board` is a rich game object: it keeps the position,
@@ -13,6 +15,10 @@ for rule-level queries and reports. That rich state is backed by bitboards for p
 The CHA full-search hot path is deliberately leaner: it uses mutable bitboards and make/unmake state because cooperative
 mate search needs the best practical performance the design can provide.
 
+PGN input has a few limitations - see [Limitations](#limitations) under PGN functionality.
+
+## Correctness and design
+
 The library is built for correctness and comprehension - for example, it produces meaningful messages for SAN, FEN, and
 PGN validation.
 
@@ -20,15 +26,9 @@ For the design philosophy, architecture, and rule-level decisions, see [specific
 
 The CHA port is used for unwinnability and dead-position detection.
 
+## Testing
+
 The test suite also cross-validates selected behavior against external chess libraries, currently python-chess as the primary oracle and [chesslib](https://github.com/bhlangonijr/chesslib) by Ben-Hur Carlos Vieira Langoni Junior as a secondary witness. These libraries are used for testing only and are not runtime dependencies of ashlar-chess.
-
-## Not supported
-
-- PGN move variations
-- PGN Numeric Annotation Glyphs (NAGs, e.g. `$1`, `$10`)
-- Multi-game PGN files (one game per file)
-
-UTF-8 byte-order marks (BOM) are accepted by the lenient parser (stripped on input) and rejected by the strict parser. PGN move suffix annotations (`!`, `?`, `!!`, `??`, `!?`, `?!`) are fully parsed, modeled, and round-tripped on export by both parsers.
 
 # Using ashlar-chess as a dependency
 
@@ -288,10 +288,18 @@ Positions can also often be dead due to forced moves.
 
 # PGN functionality
 
+## Limitations
+
+- PGN move variations
+- PGN Numeric Annotation Glyphs (NAGs, e.g. `$1`, `$10`)
+- Multi-game PGN files (one game per file)
+
+UTF-8 byte-order marks (BOM) are accepted by the lenient parser (stripped on input) and rejected by the strict parser. PGN move suffix annotations (`!`, `?`, `!!`, `??`, `!?`, `?!`) are fully parsed, modeled, and round-tripped on export by both parsers.
+
 ## PGN parser
 
 ### Lenient PGN parser
-The common PGN parser — reads the file with best effort. For example, the space after `[` below is ignored. See the [Not supported](#not-supported) section above for what neither parser accepts.
+The common PGN parser — reads the file with best effort. For example, the space after `[` below is ignored. See the [Limitations](#limitations) section above for what neither parser accepts.
 
 ashlar-chess ships **lenient parsers for all three input languages it consumes** — SAN, PGN, and FEN. Each one applies a typed syntactic-tolerance pass and surfaces tolerated deviations as forgiven items on the validation result, then delegates the heavy lifting to the corresponding strict parser. The PGN flavour (described in this section) routes its SAN tokens through the lenient SAN layer and its `FEN` tag through the lenient FEN layer, so a single lenient PGN parse picks up deviations across all three languages. The lenient FEN layer is reachable directly via `Board.fromFenLenient(String)` for callers that consume FEN strings outside the PGN context (engine output, lichess/chess.com exports, hand-edited fixtures); see `specification.md` §3.3.3 for the strict-vs-lenient × raw-vs-advanced contract and the full `ForgivenFenItemCode` taxonomy.
 
