@@ -311,8 +311,9 @@ even if the opponent cooperates. If the position is unwinnable for both players,
 ## Methods
 The library provides an implementation of CHA. So for both situations, there is a quick and a full method.
 
-The quick method is speedy by design but might miss some corrections. The full method is slower and complete when it
-returns one of the winnable verdicts or UNWINNABLE; bounded search may return UNDETERMINED.
+The quick method is designed to prove unwinnability cheaply. In Ambrona's full paper, the quick routine identified 90,543 of the 90,546 unfairly classified Lichess timeout games found by the full algorithm, missing only three (see [white paper](https://chasolver.org/FUN22-full.pdf). It is sound but not complete: when it returns `UNWINNABLE`, the position is proven unwinnable; when it returns `POSSIBLY_WINNABLE`, it simply leaves the question open.
+
+The full method is the stronger analysis. It first applies CHA's static unwinnability reasoning and then, when needed, searches for a cooperative mate. That search is much more expensive by nature, so this implementation bounds it at 500,000 nodes and reports `UNDETERMINED` if the bound is exhausted. The current corpus pins one such position.
 
 ### Unwinnability
 The quick method has two return values:
