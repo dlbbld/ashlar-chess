@@ -189,6 +189,16 @@ on flagfall(flaggingPlayer):
   unwinnability fixtures.
 - Minor release (additive API); depends on the Task 1 README pipeline for the example wiring.
 
+### Converge `TestReadMe` with the generated README examples
+
+Cleanup left from the 18.1.0 README mechanization (per the "generator is source of truth" decision). Every example
+body now lives in `ReadmeExamples`, and `TestReadmeUpToDate` + the generator guarantee each README snippet compiles and
+prints exactly what it shows. `TestReadMe` still re-implements those same examples with hand-coded assertions. Slim it
+to only the behavioral assertions **not** visible in README output - parser problem-enum checks, `halfMoveList` sizes,
+the file write/parse round-trip - and drop the now-redundant ones the drift guard covers (unwinnability / dead-position
+verdicts, `isCheckmate`, `isValid`). First confirm the kept assertions aren't already covered by the dedicated
+parser / unwinnability suites; if they are, `TestReadMe` can retire entirely.
+
 ### Records carry data, not behavior — sweep for violations
 The project rule (documented in `coding-conventions.md`): records carry data; domain logic that operates on them lives in dedicated utility / service classes. Permitted on a record: compact-constructor validation, `Comparable` when ordering is intrinsic, and language-provided `equals` / `hashCode` / `toString`. Domain-operation methods are not.
 Example: `StaticPosition`: the record carries multiple non-data methods — `createChangedPosition` etc.
