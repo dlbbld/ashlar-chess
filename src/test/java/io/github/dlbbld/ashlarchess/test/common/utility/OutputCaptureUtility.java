@@ -10,6 +10,7 @@ import java.nio.charset.StandardCharsets;
 import com.google.common.collect.ImmutableList;
 
 import io.github.dlbbld.ashlarchess.common.Nulls;
+import io.github.dlbbld.ashlarchess.common.utility.IoUtility;
 
 public abstract class OutputCaptureUtility {
 
@@ -22,7 +23,7 @@ public abstract class OutputCaptureUtility {
     } finally {
       System.setOut(original);
     }
-    return utf8String(buffer);
+    return IoUtility.toString(buffer);
   }
 
   public static ImmutableList<String> captureStdoutLines(Runnable action) {
@@ -37,8 +38,4 @@ public abstract class OutputCaptureUtility {
     return Nulls.replace(text, "\r\n", "\n");
   }
 
-  @SuppressWarnings("null")
-  private static String utf8String(ByteArrayOutputStream buffer) {
-    return buffer.toString(StandardCharsets.UTF_8);
-  }
 }

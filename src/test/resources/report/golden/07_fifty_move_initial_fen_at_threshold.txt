@@ -8,4 +8,4 @@ Valid fifty-move claims ahead (only listed when the sequence does not reach the 
 None
 
 Fifty moves and beyond:
-[Starting position] (100)
+[Starting position] (50/50)

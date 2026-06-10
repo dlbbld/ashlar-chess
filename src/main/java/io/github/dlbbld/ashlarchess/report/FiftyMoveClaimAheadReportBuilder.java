@@ -10,6 +10,7 @@ import java.util.List;
 import org.eclipse.jdt.annotation.Nullable;
 
 import io.github.dlbbld.ashlarchess.board.Board;
+import io.github.dlbbld.ashlarchess.board.enums.Side;
 import io.github.dlbbld.ashlarchess.common.Nulls;
 import io.github.dlbbld.ashlarchess.common.model.HalfMove;
 import io.github.dlbbld.ashlarchess.common.model.MoveSpecification;
@@ -45,6 +46,7 @@ abstract class FiftyMoveClaimAheadReportBuilder {
   static FiftyMoveClaimAheadReport build(Board board) {
     final List<FiftyMoveClaimAheadEntry> entries = new ArrayList<>();
     final int initialFenClock = board.getInitialFen().halfMoveClock();
+    final Side initialFenSideToMove = board.getInitialFen().havingMove();
 
     final Board replayBoard = new Board(board.getInitialFen());
     SequenceStart currentStart = initialSequenceStart(initialFenClock);
@@ -53,14 +55,14 @@ abstract class FiftyMoveClaimAheadReportBuilder {
     for (final LegalMove nextPlayedMove : performedLegalMoveList) {
       final boolean nextPlayedMoveBreaksSequence = BasicChessUtility.calculateIsResetHalfMoveClock(nextPlayedMove);
       if (nextPlayedMoveBreaksSequence) {
-        emitBoundaryIfMissedOpportunity(entries, replayBoard, currentStart);
+        emitBoundaryIfMissedOpportunity(entries, replayBoard, currentStart, initialFenClock, initialFenSideToMove);
       }
       replayBoard.move(nextPlayedMove.moveSpecification());
       currentStart = updatedSequenceStart(currentStart, replayBoard.getLastHalfMove());
     }
     // Played history exhausted; the open sequence (if any) ends here without a further played move.
     // If its clock is 99, the boundary ply is a missed opportunity.
-    emitBoundaryIfMissedOpportunity(entries, replayBoard, currentStart);
+    emitBoundaryIfMissedOpportunity(entries, replayBoard, currentStart, initialFenClock, initialFenSideToMove);
 
     Collections.sort(entries, ReportLineOrder.FIFTY_MOVE_CLAIM_AHEAD_COMPARATOR);
     return new FiftyMoveClaimAheadReport(Nulls.copyOfList(entries));
@@ -77,7 +79,7 @@ abstract class FiftyMoveClaimAheadReportBuilder {
    * legal alternative exists.
    */
   private static void emitBoundaryIfMissedOpportunity(List<FiftyMoveClaimAheadEntry> entries, Board replayBoard,
-      @Nullable SequenceStart currentStart) {
+      @Nullable SequenceStart currentStart, int initialFenClock, Side initialFenSideToMove) {
     if (currentStart == null) {
       return;
     }
@@ -91,8 +93,9 @@ abstract class FiftyMoveClaimAheadReportBuilder {
     // not stored - the entry represents the boundary, not any single alternative move.
     final int boundaryHalfMoveCount = replayBoard.getPerformedHalfMoveCount() + 1;
     final int boundaryFullMoveNumber = replayBoard.getFullMoveNumber();
+    final Side startingSide = SequenceStartFormat.startingSide(currentStart, initialFenClock, initialFenSideToMove);
     entries.add(new FiftyMoveClaimAheadEntry(currentStart, boundaryHalfMoveCount, boundaryFullMoveNumber,
-        replayBoard.getHavingMove()));
+        replayBoard.getHavingMove(), startingSide));
   }
 
   private static boolean hasAnyNonZeroingClaimCandidate(Board replayBoard) {

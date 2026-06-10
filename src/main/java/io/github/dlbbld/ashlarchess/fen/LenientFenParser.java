@@ -127,8 +127,8 @@ public final class LenientFenParser {
     fields[5] = Integer.toString(reserveFullMoveNumber);
     final String corrected = String.join(" ", fields);
     accumulator.add(new ForgivenFenItem(ForgivenFenItemCode.HALF_MOVE_CLOCK_INCONSISTENT_WITH_FULL_MOVE_NUMBER,
-        oldFullMoveNumber, Nulls.toString(fields[5])));
-    return Nulls.toString(corrected);
+        oldFullMoveNumber, fields[5]));
+    return corrected;
   }
 
   // -------------------------------------------------------------------------------------------------
@@ -202,8 +202,7 @@ public final class LenientFenParser {
       final List<String> dropped = fields.subList(6, fields.size());
       final String droppedJoined = String.join(" ", dropped);
       // Single TRAILING_GARBAGE_TOKEN item carrying the joined drop in `original`.
-      accumulator
-          .add(new ForgivenFenItem(ForgivenFenItemCode.TRAILING_GARBAGE_TOKEN, Nulls.toString(droppedJoined), ""));
+      accumulator.add(new ForgivenFenItem(ForgivenFenItemCode.TRAILING_GARBAGE_TOKEN, droppedJoined, ""));
       while (fields.size() > 6) {
         fields.remove(fields.size() - 1);
       }
@@ -340,11 +339,11 @@ public final class LenientFenParser {
    * extracted as a helper so the call site reads symmetrically with {@link #stripTrailing(String)}.
    */
   private static String stripLeading(String s) {
-    return Nulls.toString(s.stripLeading());
+    return s.stripLeading();
   }
 
   private static String stripTrailing(String s) {
-    return Nulls.toString(s.stripTrailing());
+    return s.stripTrailing();
   }
 
   /**

@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import io.github.dlbbld.ashlarchess.board.HalfMoveUtility;
+import io.github.dlbbld.ashlarchess.common.constants.ChessConstants;
 
 abstract class FiftyMoveClaimAheadPrint {
 
@@ -21,18 +22,19 @@ abstract class FiftyMoveClaimAheadPrint {
    * Renders the missed-opportunity 50-move claim-ahead report as one line per boundary entry. Format:
    *
    * <pre>
-   *   &lt;sequence-start-marker&gt; - &lt;move-number&gt;.[..] [ahead claim possible] (100)
+   *   &lt;sequence-start&gt; (W/B) - &lt;move-number&gt;.[..] [ahead claim possible] (50/50)
    * </pre>
    *
    * <p>
-   * The trailing {@code (100)} is the post-candidate halfmove clock - always 100 by predicate construction, rendered
-   * for parallelism with the sequence-report line shape.
+   * The trailing {@code (50/50)} is the would-be move count after the candidate claim - always 50 moves by each player
+   * by predicate construction (the candidate brings the clock to 100), shown in the same per-player vocabulary as the
+   * sequence report.
    */
   static List<List<String>> render(FiftyMoveClaimAheadReport report) {
     final List<List<String>> resultListList = new ArrayList<>();
     for (final FiftyMoveClaimAheadEntry entry : report.entries()) {
       final List<String> tokens = new ArrayList<>();
-      tokens.add(SequenceStartFormat.format(entry.sequenceStart()));
+      tokens.add(SequenceStartFormat.startAnchor(entry.sequenceStart(), entry.startingSide()));
       tokens.add("-");
       tokens.add(formatBoundary(entry));
       resultListList.add(tokens);
@@ -41,7 +43,8 @@ abstract class FiftyMoveClaimAheadPrint {
   }
 
   private static String formatBoundary(FiftyMoveClaimAheadEntry entry) {
+    final int wouldBeClock = ChessConstants.FIFTY_MOVE_RULE_HALF_MOVE_CLOCK_THRESHOLD;
     return HalfMoveUtility.calculateMoveNumberAndSanWithSpace(entry.fullMoveNumber(), entry.sideHavingMove(),
-        CLAIM_AHEAD_POSSIBLE_PLACEHOLDER) + " (100)";
+        CLAIM_AHEAD_POSSIBLE_PLACEHOLDER) + " " + SequenceStartFormat.counts(wouldBeClock, entry.startingSide());
   }
 }

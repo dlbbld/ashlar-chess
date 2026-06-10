@@ -18,6 +18,7 @@ import java.util.Map.Entry;
 import java.util.Queue;
 import java.util.Scanner;
 import java.util.Set;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
@@ -71,6 +72,10 @@ public class Nulls {
     return checkResult(list.remove(index));
   }
 
+  public static String toString(String[] stringArray) {
+    return checkResult(stringArray.toString());
+  }
+
   public static String toString(StringBuilder stringBuilder) {
     return checkResult(stringBuilder.toString());
   }
@@ -79,8 +84,8 @@ public class Nulls {
     return checkResult(Character.toString(c));
   }
 
-  public static String toString(Object obj) {
-    return checkResult(obj.toString());
+  public static String toString(Path path) {
+    return checkResult(path.toString());
   }
 
   public static String substring(String string, int beginIndex) {
@@ -101,6 +106,10 @@ public class Nulls {
 
   public static String replace(String string, char oldChar, char newChar) {
     return checkResult(string.replace(oldChar, newChar));
+  }
+
+  public static String replaceAll(Matcher matcher, String replacement) {
+    return checkResult(matcher.replaceAll(replacement));
   }
 
   public static String toLowerCase(String string) {
