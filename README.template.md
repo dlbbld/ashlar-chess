@@ -67,21 +67,7 @@ $ mvn clean compile package install
 For the full Eclipse contributor workflow (project import, Checkstyle, formatter, save actions), see [setup.md](setup.md).
 
 # Basic usage example
-```java
-  final Board board = new Board();
-
-  board.moveStrict("e4"); // specifying the SAN
-  board.movesStrict("e5", "Bc4"); // specifying multiple SAN's
-
-  final var newMove = new MoveSpecification(Square.F8, Square.C5);
-  board.move(newMove); // move specification without SAN
-
-  board.unmove(); // undoes last move
-
-  board.movesStrict("Bc5", "Qf3", "h6", "Qxf7#");
-
-  System.out.println(board.isCheckmate()); // true
-```
+<!-- readme:code id=basic-usage -->
 
 # Motivation for the chess library
 Below I write my motivation for programming this chess library.
@@ -269,11 +255,7 @@ These are treated correctly by all standard chess libraries.
 For example, if White flags with the king and rook against the lone king of Black. Then, Black cannot potentially mate with the king alone.
 [Position](https://lichess.org/analysis/8/8/4k3/3R4/2K5/8/8/8_w_-_-_0_50)
 
-```java
-  final Board board = new Board("8/8/4k3/3R4/2K5/8/8/8 w - - 0 50");
-  System.out.println(board.isUnwinnableQuick(Side.BLACK)); // UNWINNABLE
-  System.out.println(board.isUnwinnableFull(Side.BLACK)); // UNWINNABLE
-```
+<!-- readme:code id=unwinnable-insufficient-material -->
 
 #### Forced moves
 There are everyday situations mainly in lower time controls like Bullet, where the game could only continue with a few
@@ -281,22 +263,14 @@ forced moves, and the game outcome is determined. Here Black flags, but there is
 White could have won.
 [Game](https://lichess.org/OawUhnkq#101)
 
-```java
-  final Board board = new Board("5r1k/6P1/7K/5q2/8/8/8/8 b - - 0 51");
-  System.out.println(board.isUnwinnableQuick(Side.WHITE)); // UNWINNABLE
-  System.out.println(board.isUnwinnableFull(Side.WHITE)); // UNWINNABLE
-```
+<!-- readme:code id=unwinnable-forced-moves -->
 
 #### Pawn walls
 Pawn walls are blocked positions, both players cannot mate and cannot make progress, so they are dead positions. They are not detected
 by most common chess libraries.
 [Game](https://lichess.org/c3ew66ZV#123)
 
-```java
-  final Board board = new Board("8/8/3k4/1p2p1p1/pP1pP1P1/P2P4/1K6/8 b - - 32 62");
-  System.out.println(board.isUnwinnableQuick(Side.BLACK)); // UNWINNABLE
-  System.out.println(board.isUnwinnableFull(Side.BLACK)); // UNWINNABLE
-```
+<!-- readme:code id=unwinnable-pawn-walls -->
 
 #### Common positions
 When there are still a lot of pieces on the board, so a mate is very likely, the quick algorithm says POSSIBLY_WINNABLE.
@@ -304,20 +278,12 @@ It makes an educated guess only. In this example, the full algorithm calculates 
 the bounded search may return UNDETERMINED.
 [Game](https://lichess.org/SCKpvJQX#57)
 
-```java
-  final Board board = new Board("q4r2/pR3pkp/1p2p1p1/4P3/6P1/1P3Q2/1Pr2PK1/3R4 b - - 3 29");
-  System.out.println(board.isUnwinnableQuick(Side.WHITE)); // POSSIBLY_WINNABLE
-  System.out.println(board.isUnwinnableFull(Side.WHITE)); // WINNABLE_HELPMATE
-```
+<!-- readme:code id=unwinnable-common-positions -->
 
 #### Blocked positions the quick algorithm proves
 The quick algorithm (a port of CHA 2.6.1) also proves many blocked and fortress positions, not only material-based ones. Here White's bishop and pawns are blocked and cannot make progress against the cornered black king, so the position is unwinnable for White - and the quick algorithm already decides it. [Game](https://lichess.org/bKHPqNEw#81)
 
-```java
-  final Board board = new Board("1k6/1P5p/BP3p2/1P6/8/8/5PKP/8 b - - 0 41");
-  System.out.println(board.isUnwinnableQuick(Side.WHITE)); // UNWINNABLE
-  System.out.println(board.isUnwinnableFull(Side.WHITE)); // UNWINNABLE
-```
+<!-- readme:code id=unwinnable-blocked-quick -->
 
 ### Dead positions
 Because dead positions are just unwinnable positions for both sides, there is not much more substantially to say.
@@ -326,31 +292,19 @@ Because dead positions are just unwinnable positions for both sides, there is no
 The most straightforward dead position is when one player already has insufficient material, and the other becomes insufficient due to capture. All chess libraries detect this case.
 
 [Position](https://lichess.org/analysis/8/8/3kn3/8/2K5/8/8/8_w_-_-_0_50)
-```java
-  final Board board = new Board("8/8/3kn3/8/2K5/8/8/8 w - - 0 50");
-  System.out.println(UnwinnableQuickAnalyzer.unwinnableQuick(board)); // UNWINNABLE (dead)
-  System.out.println(UnwinnableFullAnalyzer.unwinnableFull(board)); // UNWINNABLE (dead)
-```
+<!-- readme:code id=dead-insufficient-material -->
 
 #### Pawn walls
 Pawn walls are dead positions, but most common chess libraries do not detect them. Here is another example.
 [Game](https://lichess.org/V08kX4kz#121)
 
-```java
-  final Board board = new Board("8/6b1/1p3k2/1Pp1p1p1/2P1PpP1/5P2/8/5K2 b - - 11 61");
-  System.out.println(UnwinnableQuickAnalyzer.unwinnableQuick(board)); // UNWINNABLE (dead)
-  System.out.println(UnwinnableFullAnalyzer.unwinnableFull(board)); // UNWINNABLE (dead)
-```
+<!-- readme:code id=dead-pawn-walls -->
 
 #### Forced moves
 Positions can also often be dead due to forced moves.
 [Game](https://lichess.org/8FUSHxUV#115)
 
-```java
-  final Board board = new Board("k7/P1K5/8/8/8/8/8/8 b - - 2 58");
-  System.out.println(UnwinnableQuickAnalyzer.unwinnableQuick(board)); // UNWINNABLE (dead)
-  System.out.println(UnwinnableFullAnalyzer.unwinnableFull(board)); // UNWINNABLE (dead)
-```
+<!-- readme:code id=dead-forced-moves -->
 
 # PGN functionality
 

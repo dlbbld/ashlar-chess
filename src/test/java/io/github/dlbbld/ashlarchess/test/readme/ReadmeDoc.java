@@ -10,29 +10,37 @@ import java.io.PrintStream;
 import java.io.StringReader;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
+import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Deque;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import io.github.dlbbld.ashlarchess.test.common.utility.FileUtility;
 
 /**
- * Renders {@code README.md} from {@code README.template.md}. For each registered {@link ReadmeExamples} example the
- * template carries two placeholder lines - {@code <!-- readme:code id=ID -->} and {@code <!-- readme:output id=ID -->} -
- * which are replaced by, respectively, the verbatim source slice of the matching method (its {@code // <readme:ID>} ...
- * {@code // </readme:ID>} region, de-indented) wrapped in a {@code java} fence, and the output that method prints when
- * run, wrapped in a plain fence. Every other template line passes through unchanged.
+ * Renders {@code README.md} from {@code README.template.md}. For each registered {@link ReadmeExample} the template
+ * carries placeholder lines that are replaced by generated content; every other template line passes through verbatim:
+ *
+ * <ul>
+ * <li>{@code <!-- readme:code id=ID -->} - the verbatim source slice of the example's {@code // <readme:ID>} ...
+ * {@code // </readme:ID>} region (de-indented), wrapped in a {@code java} fence. Within the slice, each
+ * {@code [out]} marker is replaced by the next line the example printed, so short results show inline (any trailing
+ * gloss text after the marker, e.g. {@code (dead)}, is preserved).</li>
+ * <li>{@code <!-- readme:output id=ID -->} - the example's remaining captured output (lines not consumed by an inline
+ * {@code [out]} marker), wrapped in a plain fence. Used for multi-line outputs such as a printed report or PGN.</li>
+ * </ul>
  *
  * <p>
  * Because the shown code is sliced from compiled source and the shown output is captured from running it, a rendered
  * README is correct by construction. {@code TestReadmeUpToDate} pins the committed file to a fresh render; run
- * {@link GenerateReadme} to regenerate after editing the template or an example.
- *
- * <p>
- * Paths are relative to the module root (the working directory under Maven), matching the project's other generators.
+ * {@link GenerateReadme} to regenerate after editing the template or an example. Paths are relative to the module root
+ * (the working directory under Maven).
  */
 public final class ReadmeDoc {
 
@@ -44,24 +52,39 @@ public final class ReadmeDoc {
   private static final Pattern PLACEHOLDER = Pattern
       .compile("^\\s*<!--\\s*readme:(code|output)\\s+id=([A-Za-z0-9-]+)\\s*-->\\s*$");
 
+  /** Inline marker in an example, replaced by the next captured output line (any trailing gloss text is kept). */
+  private static final String OUT_TOKEN = "[out]";
+
+  /** Volatile output (today's date in a generated PGN) is normalised so renders are reproducible. */
+  private static final Pattern DATE_TAG = Pattern.compile("\\[Date \"\\d{4}\\.\\d{2}\\.\\d{2}\"\\]");
+
   private ReadmeDoc() {
   }
 
   /** Renders the README as a list of lines (no trailing line terminators), ready to compare or write. */
   public static List<String> generate() {
-    final Map<String, Runnable> examples = ReadmeExamples.examples();
     final List<String> sourceLines = FileUtility.readFileLines(EXAMPLES_SOURCE_PATH);
+    final List<String> templateLines = FileUtility.readFileLines(TEMPLATE_PATH);
+    final Set<String> outputPlaceholderIds = collectOutputPlaceholderIds(templateLines);
 
     final Map<String, List<String>> codeById = new LinkedHashMap<>();
     final Map<String, List<String>> outputById = new LinkedHashMap<>();
-    for (final Map.Entry<String, Runnable> entry : examples.entrySet()) {
-      final String id = entry.getKey();
-      codeById.put(id, sliceSource(sourceLines, id));
-      outputById.put(id, captureOutput(entry.getValue()));
+    for (final ReadmeExample example : ReadmeExamples.examples()) {
+      final String id = example.id();
+      final List<String> captured = example.run() ? normalizeVolatile(captureOutput(example.body()))
+          : new ArrayList<String>();
+      final Deque<String> remaining = new ArrayDeque<>(captured);
+      codeById.put(id, substituteInlineOutputs(sliceSource(sourceLines, id), remaining, id));
+      final List<String> blockOutput = new ArrayList<>(remaining);
+      if (!blockOutput.isEmpty() && !outputPlaceholderIds.contains(id)) {
+        throw new IllegalStateException("README example \"" + id
+            + "\" produced output with no " + OUT_TOKEN + " marker and no output placeholder to show it.");
+      }
+      outputById.put(id, blockOutput);
     }
 
     final List<String> result = new ArrayList<>();
-    for (final String line : FileUtility.readFileLines(TEMPLATE_PATH)) {
+    for (final String line : templateLines) {
       final Matcher matcher = PLACEHOLDER.matcher(line);
       if (!matcher.matches()) {
         result.add(line);
@@ -84,6 +107,38 @@ public final class ReadmeDoc {
   /** Renders and writes {@code README.md}. */
   public static void writeReadme() {
     FileUtility.writeFile(README_PATH, generate());
+  }
+
+  private static Set<String> collectOutputPlaceholderIds(List<String> templateLines) {
+    final Set<String> ids = new HashSet<>();
+    for (final String line : templateLines) {
+      final Matcher matcher = PLACEHOLDER.matcher(line);
+      if (matcher.matches() && "output".equals(matcher.group(1))) {
+        final String id = matcher.group(2);
+        if (id != null) {
+          ids.add(id);
+        }
+      }
+    }
+    return ids;
+  }
+
+  private static List<String> substituteInlineOutputs(List<String> code, Deque<String> remaining, String id) {
+    final List<String> result = new ArrayList<>();
+    for (final String line : code) {
+      final int index = line.indexOf(OUT_TOKEN);
+      if (index < 0) {
+        result.add(line);
+        continue;
+      }
+      final String value = remaining.poll();
+      if (value == null) {
+        throw new IllegalStateException(
+            "README example \"" + id + "\" has more " + OUT_TOKEN + " markers than printed output lines.");
+      }
+      result.add(line.substring(0, index) + value + line.substring(index + OUT_TOKEN.length()));
+    }
+    return result;
   }
 
   private static List<String> requireExample(Map<String, List<String>> byId, String id, String kind) {
@@ -136,6 +191,14 @@ public final class ReadmeDoc {
     final List<String> result = new ArrayList<>();
     for (final String line : lines) {
       result.add(line.isBlank() ? "" : line.substring(minIndent));
+    }
+    return result;
+  }
+
+  private static List<String> normalizeVolatile(List<String> lines) {
+    final List<String> result = new ArrayList<>();
+    for (final String line : lines) {
+      result.add(DATE_TAG.matcher(line).replaceAll(Matcher.quoteReplacement("[Date \"<today>\"]")));
     }
     return result;
   }

@@ -3,10 +3,15 @@
 
 package io.github.dlbbld.ashlarchess.test.readme;
 
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.List;
 
+import io.github.dlbbld.ashlarchess.board.Board;
+import io.github.dlbbld.ashlarchess.board.enums.Side;
+import io.github.dlbbld.ashlarchess.board.enums.Square;
+import io.github.dlbbld.ashlarchess.common.model.MoveSpecification;
 import io.github.dlbbld.ashlarchess.report.Reporter;
+import io.github.dlbbld.ashlarchess.unwinnability.UnwinnableFullAnalyzer;
+import io.github.dlbbld.ashlarchess.unwinnability.UnwinnableQuickAnalyzer;
 
 /**
  * Source of truth for the runnable code examples shown in {@code README.md}. Each method is one README example: the
@@ -28,16 +33,23 @@ public final class ReadmeExamples {
   }
 
   /**
-   * The registered examples, keyed by the id used in the source markers and the {@code README.template.md}
-   * placeholders. Insertion order is preserved for stable iteration but does not affect placement - the template
-   * controls where each example renders.
+   * The registered examples, each identified by the id used in its source markers and its {@code README.template.md}
+   * placeholders. Order is for readability only - the template controls where each example renders.
    */
-  public static Map<String, Runnable> examples() {
-    final Map<String, Runnable> examples = new LinkedHashMap<>();
-    examples.put("threefold-claim-ahead", ReadmeExamples::threefoldClaimAhead);
-    examples.put("threefold-on-board", ReadmeExamples::threefoldOnBoard);
-    examples.put("fifty-move", ReadmeExamples::fiftyMove);
-    return examples;
+  public static List<ReadmeExample> examples() {
+    return List.of(
+        new ReadmeExample("threefold-claim-ahead", ReadmeExamples::threefoldClaimAhead, true),
+        new ReadmeExample("threefold-on-board", ReadmeExamples::threefoldOnBoard, true),
+        new ReadmeExample("fifty-move", ReadmeExamples::fiftyMove, true),
+        new ReadmeExample("basic-usage", ReadmeExamples::basicUsage, true),
+        new ReadmeExample("unwinnable-insufficient-material", ReadmeExamples::unwinnableInsufficientMaterial, true),
+        new ReadmeExample("unwinnable-forced-moves", ReadmeExamples::unwinnableForcedMoves, true),
+        new ReadmeExample("unwinnable-pawn-walls", ReadmeExamples::unwinnablePawnWalls, true),
+        new ReadmeExample("unwinnable-common-positions", ReadmeExamples::unwinnableCommonPositions, true),
+        new ReadmeExample("unwinnable-blocked-quick", ReadmeExamples::unwinnableBlockedQuick, true),
+        new ReadmeExample("dead-insufficient-material", ReadmeExamples::deadInsufficientMaterial, true),
+        new ReadmeExample("dead-pawn-walls", ReadmeExamples::deadPawnWalls, true),
+        new ReadmeExample("dead-forced-moves", ReadmeExamples::deadForcedMoves, true));
   }
 
   public static void threefoldClaimAhead() {
@@ -90,5 +102,87 @@ public final class ReadmeExamples {
         Rf6+""";
     Reporter.printReport(pgn);
     // </readme:fifty-move>
+  }
+
+  public static void basicUsage() {
+    // <readme:basic-usage>
+    final Board board = new Board();
+
+    board.moveStrict("e4"); // specifying the SAN
+    board.movesStrict("e5", "Bc4"); // specifying multiple SAN's
+
+    final MoveSpecification newMove = new MoveSpecification(Square.F8, Square.C5);
+    board.move(newMove); // move specification without SAN
+
+    board.unmove(); // undoes last move
+
+    board.movesStrict("Bc5", "Qf3", "h6", "Qxf7#");
+
+    System.out.println(board.isCheckmate()); // [out]
+    // </readme:basic-usage>
+  }
+
+  public static void unwinnableInsufficientMaterial() {
+    // <readme:unwinnable-insufficient-material>
+    final Board board = new Board("8/8/4k3/3R4/2K5/8/8/8 w - - 0 50");
+    System.out.println(board.isUnwinnableQuick(Side.BLACK)); // [out]
+    System.out.println(board.isUnwinnableFull(Side.BLACK)); // [out]
+    // </readme:unwinnable-insufficient-material>
+  }
+
+  public static void unwinnableForcedMoves() {
+    // <readme:unwinnable-forced-moves>
+    final Board board = new Board("5r1k/6P1/7K/5q2/8/8/8/8 b - - 0 51");
+    System.out.println(board.isUnwinnableQuick(Side.WHITE)); // [out]
+    System.out.println(board.isUnwinnableFull(Side.WHITE)); // [out]
+    // </readme:unwinnable-forced-moves>
+  }
+
+  public static void unwinnablePawnWalls() {
+    // <readme:unwinnable-pawn-walls>
+    final Board board = new Board("8/8/3k4/1p2p1p1/pP1pP1P1/P2P4/1K6/8 b - - 32 62");
+    System.out.println(board.isUnwinnableQuick(Side.BLACK)); // [out]
+    System.out.println(board.isUnwinnableFull(Side.BLACK)); // [out]
+    // </readme:unwinnable-pawn-walls>
+  }
+
+  public static void unwinnableCommonPositions() {
+    // <readme:unwinnable-common-positions>
+    final Board board = new Board("q4r2/pR3pkp/1p2p1p1/4P3/6P1/1P3Q2/1Pr2PK1/3R4 b - - 3 29");
+    System.out.println(board.isUnwinnableQuick(Side.WHITE)); // [out]
+    System.out.println(board.isUnwinnableFull(Side.WHITE)); // [out]
+    // </readme:unwinnable-common-positions>
+  }
+
+  public static void unwinnableBlockedQuick() {
+    // <readme:unwinnable-blocked-quick>
+    final Board board = new Board("1k6/1P5p/BP3p2/1P6/8/8/5PKP/8 b - - 0 41");
+    System.out.println(board.isUnwinnableQuick(Side.WHITE)); // [out]
+    System.out.println(board.isUnwinnableFull(Side.WHITE)); // [out]
+    // </readme:unwinnable-blocked-quick>
+  }
+
+  public static void deadInsufficientMaterial() {
+    // <readme:dead-insufficient-material>
+    final Board board = new Board("8/8/3kn3/8/2K5/8/8/8 w - - 0 50");
+    System.out.println(UnwinnableQuickAnalyzer.unwinnableQuick(board)); // [out] (dead)
+    System.out.println(UnwinnableFullAnalyzer.unwinnableFull(board)); // [out] (dead)
+    // </readme:dead-insufficient-material>
+  }
+
+  public static void deadPawnWalls() {
+    // <readme:dead-pawn-walls>
+    final Board board = new Board("8/6b1/1p3k2/1Pp1p1p1/2P1PpP1/5P2/8/5K2 b - - 11 61");
+    System.out.println(UnwinnableQuickAnalyzer.unwinnableQuick(board)); // [out] (dead)
+    System.out.println(UnwinnableFullAnalyzer.unwinnableFull(board)); // [out] (dead)
+    // </readme:dead-pawn-walls>
+  }
+
+  public static void deadForcedMoves() {
+    // <readme:dead-forced-moves>
+    final Board board = new Board("k7/P1K5/8/8/8/8/8/8 b - - 2 58");
+    System.out.println(UnwinnableQuickAnalyzer.unwinnableQuick(board)); // [out] (dead)
+    System.out.println(UnwinnableFullAnalyzer.unwinnableFull(board)); // [out] (dead)
+    // </readme:dead-forced-moves>
   }
 }
