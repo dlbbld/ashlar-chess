@@ -392,22 +392,22 @@ System.out.println(UnwinnableQuickAnalyzer.unwinnableQuick(board)); // UNWINNABL
 System.out.println(UnwinnableFullAnalyzer.unwinnableFull(board)); // UNWINNABLE (dead)
 ```
 
-#### Pawn walls
-Pawn walls are dead positions, but most common chess libraries do not detect them. Here is another example.
-[Game](https://lichess.org/V08kX4kz#121)
-
-```java
-final Board board = new Board("8/6b1/1p3k2/1Pp1p1p1/2P1PpP1/5P2/8/5K2 b - - 11 61");
-System.out.println(UnwinnableQuickAnalyzer.unwinnableQuick(board)); // UNWINNABLE (dead)
-System.out.println(UnwinnableFullAnalyzer.unwinnableFull(board)); // UNWINNABLE (dead)
-```
-
 #### Forced moves
 Positions can also often be dead due to forced moves.
 [Game](https://lichess.org/8FUSHxUV#115)
 
 ```java
 final Board board = new Board("k7/P1K5/8/8/8/8/8/8 b - - 2 58");
+System.out.println(UnwinnableQuickAnalyzer.unwinnableQuick(board)); // UNWINNABLE (dead)
+System.out.println(UnwinnableFullAnalyzer.unwinnableFull(board)); // UNWINNABLE (dead)
+```
+
+#### Pawn walls
+Pawn walls are dead positions, but most common chess libraries do not detect them. Here is another example.
+[Game](https://lichess.org/V08kX4kz#121)
+
+```java
+final Board board = new Board("8/6b1/1p3k2/1Pp1p1p1/2P1PpP1/5P2/8/5K2 b - - 11 61");
 System.out.println(UnwinnableQuickAnalyzer.unwinnableQuick(board)); // UNWINNABLE (dead)
 System.out.println(UnwinnableFullAnalyzer.unwinnableFull(board)); // UNWINNABLE (dead)
 ```
