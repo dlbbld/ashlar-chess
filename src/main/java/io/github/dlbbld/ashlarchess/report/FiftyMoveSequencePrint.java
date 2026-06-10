@@ -40,7 +40,7 @@ abstract class FiftyMoveSequencePrint {
   private static List<String> renderSequence(FiftyMoveSequence sequence) {
     final Side startingSide = sequence.startingSide();
     final Map<Integer, String> anchorByClock = new LinkedHashMap<>();
-    anchorByClock.putIfAbsent(Integer.valueOf(startClock(sequence.start())),
+    anchorByClock.putIfAbsent(startClock(sequence.start()),
         SequenceStartFormat.startAnchor(sequence.start(), startingSide));
     addPlyAnchor(anchorByClock, sequence.fiftyMoveThresholdPly(), startingSide);
     addPlyAnchor(anchorByClock, sequence.seventyFiveMoveThresholdPly(), startingSide);
@@ -58,7 +58,7 @@ abstract class FiftyMoveSequencePrint {
 
   private static void addPlyAnchor(Map<Integer, String> anchorByClock, @Nullable HalfMove ply, Side startingSide) {
     if (ply != null) {
-      anchorByClock.putIfAbsent(Integer.valueOf(ply.halfMoveClock()), SequenceStartFormat.plyAnchor(ply, startingSide));
+      anchorByClock.putIfAbsent(ply.halfMoveClock(), SequenceStartFormat.plyAnchor(ply, startingSide));
     }
   }
 

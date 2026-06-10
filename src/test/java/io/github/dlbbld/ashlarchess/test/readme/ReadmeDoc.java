@@ -53,14 +53,14 @@ public final class ReadmeDoc {
   private static final Path EXAMPLES_SOURCE_PATH = Nulls
       .pathOf("src/test/java/io/github/dlbbld/ashlarchess/test/readme/ReadmeExamples.java");
 
-  private static final Pattern PLACEHOLDER = Pattern
+  private static final Pattern PLACEHOLDER = Nulls
       .compile("^\\s*<!--\\s*readme:(code|output)\\s+id=([A-Za-z0-9-]+)\\s*-->\\s*$");
 
   /** Inline marker in an example, replaced by the next captured output line (any trailing gloss text is kept). */
   private static final String OUT_TOKEN = "[out]";
 
   /** Volatile output (today's date in a generated PGN) is normalised so renders are reproducible. */
-  private static final Pattern DATE_TAG = Pattern.compile("\\[Date \"\\d{4}\\.\\d{2}\\.\\d{2}\"\\]");
+  private static final Pattern DATE_TAG = Nulls.compile("\\[Date \"\\d{4}\\.\\d{2}\\.\\d{2}\"\\]");
 
   private ReadmeDoc() {
   }
@@ -138,23 +138,22 @@ public final class ReadmeDoc {
         result.add(line);
         continue;
       }
-      final String value = remaining.poll();
-      if (value == null) {
+      if (remaining.isEmpty()) {
         throw new IllegalStateException(
             "README example \"" + id + "\" has more " + OUT_TOKEN + " markers than printed output lines.");
       }
+      final String value = Nulls.remove(remaining);
       result.add(line.substring(0, index) + value + line.substring(index + OUT_TOKEN.length()));
     }
     return result;
   }
 
   private static List<String> requireExample(Map<String, List<String>> byId, String id, String kind) {
-    final List<String> block = Nulls.get(byId, id);
-    if (block == null) {
+    if (!byId.containsKey(id)) {
       throw new IllegalStateException(
           "README " + kind + " placeholder references id \"" + id + "\", which has no registered example.");
     }
-    return block;
+    return Nulls.get(byId, id);
   }
 
   private static void appendFenced(List<String> result, String openingFence, List<String> body) {

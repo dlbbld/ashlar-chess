@@ -21,7 +21,7 @@ import io.github.dlbbld.ashlarchess.test.common.utility.FileUtility;
  */
 class TestReadmeUpToDate {
 
-  private static final Path README_PATH = Path.of("README.md");
+  private static final Path README_PATH = Nulls.pathOf("README.md");
 
   @SuppressWarnings("static-method")
   @Test
