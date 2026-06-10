@@ -69,27 +69,10 @@ For the full Eclipse contributor workflow (project import, Checkstyle, formatter
 # Basic usage example
 <!-- readme:code id=basic-usage -->
 
-# Motivation for the chess library
-Below I write my motivation for programming this chess library.
+# History
+Initially I needed a chess library that detects threefold repetitions and the fifty-move rule - not just for the current position, but across the whole game, including possible claims ahead. Finding none that did this, I started implementing it, and along the way it grew into a programming exercise in its own right, focused above all on correctness.
 
-## Threefold repetition and fifty-moves
-When I wanted to check a game for the occurrence of a threefold repetition or the fifty moves, I could not find any software
-providing a reasonable way to do it.
-
-The only way to check this I found in dozens of chess programs is playing through the game move by move, and the software then announces threefold for fifty moves if it occurs.
-
-To check a game for possible threefold claims on the next move, so possibly the player missed a chance to claim threefold, I found nothing, nada, nothing at all.
-
-For this reason, I implemented a report which shows the threefolds and fifty moves in a game.
-
-## Unwinnability and dead position
-Current chess programs cannot correctly determine unwinnability and dead positions for all positions, and as a result, the game result for some games is incorrect.
-The [Chess Unwinnability Analyzer (CHA)](https://github.com/miguel-ambrona/D3-Chess) provides an algorithm to close the gap. I implemented the algorithm in Java.
-
-## Java chess library
-There are several Java chess libraries, but because this chess library is about game-deciding situations of having a potential draw or not, I did not
-want to rely on other chess libraries, for I want to be sure that what I have is 100% correct. Because I heavily rely on tests and PGNs are indispensable in tests, I implemented a PGN reader and writer. And because these tests must be accurate, I spent a lot of time making the PGN reader
-accurate for every situation.
+That threefold and fifty-move reporting was my personal missing piece; the Java port of the [Chess Unwinnability Analyzer (CHA)](https://github.com/miguel-ambrona/D3-Chess) is one I consider objectively missing - something every major chess program should have. From filling those gaps the name arises naturally: an ashlar is a finely cut stone that fits exactly into a wall.
 
 # Threefold repetition and fifty-moves
 ## Threefold repetition claim ahead
