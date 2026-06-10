@@ -104,48 +104,44 @@ Output:
 Each bracket gives the moves by each player since the last capture or pawn move, written `(White/Black)`. The line marks the start of the run, the move where it reaches **fifty moves by each player** - from there a draw is claimable - and where it ends; a run reaching `75/75` would be an automatic draw. Here the run reaches `50/50` at `113. Ng5` and continues to `51/52`, so a draw was claimable on each of those last moves.
 
 # Game adjudication
-The game-ending logic is easiest to understand when written out directly. First decide which player would otherwise
-win, then run the material-only check, then run the CHA quick position check.
+Flag-fall and resignation are the terminations where a player loses by an external event - subject to one FIDE
+exception: the game is instead a **draw** when the opponent could not have checkmated by any possible series of legal
+moves. `Adjudicator` applies that rule for you. You only decide which player would otherwise win - the opponent of the
+one who flagged or resigned - and it returns the verdict.
+
+Each event has a **quick** and a **full** variant:
+
+* **quick** - rules `DRAW` or `LOSS`, from the fast `Board.isUnwinnableQuick(Side)` analyzer. It draws only when it can
+  *prove* the opponent cannot win; otherwise the flag stands. Latency is bounded - the right choice during live play.
+* **full** - rules `DRAW`, `LOSS`, or `UNDETERMINED`, from the complete `Board.isUnwinnableFull(Side)` analyzer. It
+  additionally *proves* wins and reports `UNDETERMINED` only when its bounded search runs out (rare). The recommended
+  check at game end, where the extra cost is negligible.
 
 ## Flagfall
 Under [FIDE 6.9](https://handbook.fide.com/chapter/e012023), a player who runs out of time loses, unless the opponent
-cannot checkmate by any possible series of legal moves. The recommended procedure is:
+cannot checkmate by any possible series of legal moves. The quick variant is the live-play path:
 
-```text
-on flagfall(flaggingPlayer):
-    wouldBeWinner = opponent(flaggingPlayer)
+<!-- readme:code id=adjudication-flagfall-quick -->
 
-    if board.isInsufficientMaterial(wouldBeWinner):
-        return draw
+A single call covers the material-only draws (a lone king, king and bishop against a lone king, ...) as a subset and -
+being a port of CHA - the blocked, non-material draws such as pawn walls as well. When it cannot prove a draw it rules a
+`LOSS`: the practical "no draw could be shown, so the flag stands".
 
-    if board.isUnwinnableQuick(wouldBeWinner) == UNWINNABLE:
-        return draw
+How safe is that quick ruling? In Ambrona's Lichess evaluation of CHA, out of 90,546 positions that are genuinely
+unwinnable the quick (semi-static) analysis proves all but three directly - **90,543 of 90,546, about 99.99%**. The tiny
+remainder is exactly what the full variant is for:
 
-    return loss for flaggingPlayer
-```
+<!-- readme:code id=adjudication-flagfall-full -->
 
-The insufficient-material check is material-wise and very quick. It covers the standard cases such as a lone kings, or a
-king and bishop against a lone king.
-
-The unwinnable-quick check is position-wise. It is the CHA extension that also sees blocked positions such as pawn walls.
-If it returns `UNWINNABLE`, the game is drawn. Otherwise, the flagging player loses.
-
-`Board.isUnwinnableFull(Side)` can additionally be used for analysis, studies, or offline review. It is not the
-recommended live-game path because it performs a bounded search, can take much longer in rare positions, and can return
-`UNDETERMINED`.
+The full variant draws on a proven dead position, rules a `LOSS` on a proven win, and returns `UNDETERMINED` only when
+its bounded search is exhausted - the one corpus position above is the sole such case here. Use it at game end, or for
+analysis, studies, and offline review.
 
 ## Resignation
-Under [FIDE 5.1.2](https://handbook.fide.com/chapter/e012023), resignation has the same exception as flagfall: the game
-is drawn if the opponent cannot checkmate by any possible series of legal moves. So a resignation should run exactly the
-same test and report exactly the same result:
+Under [FIDE 5.1.2](https://handbook.fide.com/chapter/e012023), resignation carries the identical exception, so it
+adjudicates exactly like a flag-fall - same test, same result, in both the quick and full variants:
 
-```text
-on resignation(resigningPlayer):
-    return adjudicate as for flagfall(resigningPlayer)
-```
-
-If the opponent has insufficient material, the game is a draw. If the opponent is `UNWINNABLE` by the quick analyzer, the
-game is also a draw. Otherwise, the resigning player loses.
+<!-- readme:code id=adjudication-resignation -->
 
 ## Dead position during play
 Under [FIDE 5.2.2](https://handbook.fide.com/chapter/e012023), the game is drawn as soon as a dead position arises:
@@ -168,18 +164,19 @@ after each move:
         return draw
 ```
 
-This quick check is computationally practical, but my recommendation for live games is not to run the CHA dead-position
-check after every move. These positions are rare. It is enough to check them at the end of the game, especially when a
-player flags or resigns. This cannot be unfair: once a game has entered a dead position, no later legal play can make it
-winnable again. If the players continue in a blocked position until flagfall, resignation, or draw agreement, the
-adjudication above still returns a draw.
+The quick check is computationally unproblematic after every move.
+For live games my personal preference is still not to run the CHA quick dead-position
+check after every move. The reason is that dead positions not due to insufficient material are rare.
+Only performing the check after flag fall or resignation will not alter the game result. Once a game has entered
+ a dead position, no later legal move can make it winnable again. If the players continue in a blocked position until flagfall, resignation, or draw agreement, the adjudication above still returns a draw.
 
 The trade-off is timing, not outcome. Checking during play gives the exact FIDE 5.2.2 termination point; checking at the
 end preserves the final result.
 
 # Unwinnability API
 
-The library implements the [Chess Unwinnability Analyzer (CHA)](https://github.com/miguel-ambrona/D3-Chess). As such, everything here achieved is due to CHA. Also, all relevant examples below are from the [CHA](https://github.com/miguel-ambrona/D3-Chess), which elaborates on the subject in every aspect.
+The library implements the [Chess Unwinnability Analyzer (CHA)](https://github.com/miguel-ambrona/D3-Chess). The project
+page [CHA](https://github.com/miguel-ambrona/D3-Chess), which elaborates on the subject in every aspect.
 
 A position is unwinnable for a player if there is no legal sequence that can end with that player giving checkmate,
 even if the opponent cooperates. If the position is unwinnable for both players, it's a dead position.

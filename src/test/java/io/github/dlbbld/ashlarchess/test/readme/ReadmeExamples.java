@@ -5,6 +5,7 @@ package io.github.dlbbld.ashlarchess.test.readme;
 
 import java.util.List;
 
+import io.github.dlbbld.ashlarchess.adjudication.Adjudicator;
 import io.github.dlbbld.ashlarchess.board.Board;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
 import io.github.dlbbld.ashlarchess.board.enums.Square;
@@ -53,6 +54,9 @@ public final class ReadmeExamples {
     return Nulls.listOf(new ReadmeExample("threefold-claim-ahead", ReadmeExamples::threefoldClaimAhead, true),
         new ReadmeExample("threefold-on-board", ReadmeExamples::threefoldOnBoard, true),
         new ReadmeExample("fifty-move", ReadmeExamples::fiftyMove, true),
+        new ReadmeExample("adjudication-flagfall-quick", ReadmeExamples::adjudicationFlagfallQuick, true),
+        new ReadmeExample("adjudication-flagfall-full", ReadmeExamples::adjudicationFlagfallFull, true),
+        new ReadmeExample("adjudication-resignation", ReadmeExamples::adjudicationResignation, true),
         new ReadmeExample("basic-usage", ReadmeExamples::basicUsage, true),
         new ReadmeExample("unwinnable-insufficient-material", ReadmeExamples::unwinnableInsufficientMaterial, true),
         new ReadmeExample("unwinnable-forced-moves", ReadmeExamples::unwinnableForcedMoves, true),
@@ -132,6 +136,49 @@ public final class ReadmeExamples {
         Rf6+""";
     Reporter.printReport(pgn);
     // </readme:fifty-move>
+  }
+
+  public static void adjudicationFlagfallQuick() {
+    // <readme:adjudication-flagfall-quick>
+    // A flag falls: rule draw-or-loss with the bounded, live-play-safe quick analyzer.
+
+    // White flags with only a lone king opposing the rook: the would-be winner
+    // (Black) cannot mate, so the game is drawn, not lost.
+    final Board loneKing = new Board("8/8/4k3/3R4/2K5/8/8/8 w - - 0 50");
+    System.out.println(Adjudicator.adjudicateFlagfallQuick(loneKing, Side.WHITE)); // [out]
+
+    // White flags behind a blocked pawn wall: Black can never break through, so
+    // the quick analyzer draws this non-material position too.
+    final Board pawnWall = new Board("8/8/3k4/1p2p1p1/pP1pP1P1/P2P4/1K6/8 b - - 32 62");
+    System.out.println(Adjudicator.adjudicateFlagfallQuick(pawnWall, Side.WHITE)); // [out]
+
+    // Black flags with both sides still able to play for a win: the flag stands.
+    final Board winnable = new Board("q4r2/pR3pkp/1p2p1p1/4P3/6P1/1P3Q2/1Pr2PK1/3R4 b - - 3 29");
+    System.out.println(Adjudicator.adjudicateFlagfallQuick(winnable, Side.BLACK)); // [out]
+    // </readme:adjudication-flagfall-quick>
+  }
+
+  public static void adjudicationFlagfallFull() {
+    // <readme:adjudication-flagfall-full>
+    // The full analyzer additionally proves wins and may report UNDETERMINED.
+
+    // Black flags in a position the full search proves White can win: a real loss.
+    final Board provenWin = new Board("q4r2/pR3pkp/1p2p1p1/4P3/6P1/1P3Q2/1Pr2PK1/3R4 b - - 3 29");
+    System.out.println(Adjudicator.adjudicateFlagfallFull(provenWin, Side.BLACK)); // [out]
+
+    // White flags in the rare position whose full search exhausts its node bound.
+    final Board undecided = new Board("2b5/1p6/pPp3k1/2Pp3p/P2PpBpP/4P1P1/5K2/8 b - - 46 59");
+    System.out.println(Adjudicator.adjudicateFlagfallFull(undecided, Side.WHITE)); // [out]
+    // </readme:adjudication-flagfall-full>
+  }
+
+  public static void adjudicationResignation() {
+    // <readme:adjudication-resignation>
+    // Resignation carries the identical FIDE exception, so it adjudicates exactly like a flag-fall.
+    final Board board = new Board("8/8/4k3/3R4/2K5/8/8/8 w - - 0 50");
+    System.out.println(Adjudicator.adjudicateResignationQuick(board, Side.WHITE)); // [out]
+    System.out.println(Adjudicator.adjudicateResignationFull(board, Side.WHITE)); // [out]
+    // </readme:adjudication-resignation>
   }
 
   public static void basicUsage() {
