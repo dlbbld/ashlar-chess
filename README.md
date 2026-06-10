@@ -302,7 +302,7 @@ in any way, it is only trying an alternative approach for some material cases.
 * UNWINNABLE - the position is not winnable by the player
 * UNDETERMINED - the limits in the code interrupted the search
 
-Performance: The limit regarding "UNDETERMINED" is 500'000 positions. It takes around one minute to reach. Most positions evaluate below one second.
+Performance: The limit regarding "UNDETERMINED" is 500'000 positions. It takes around one to two seconds to reach. Most positions evaluate in milliseconds.
 
 ### Dead position
 A position is dead when it is unwinnable for both players. The no-side overloads check this and reuse the same verdict

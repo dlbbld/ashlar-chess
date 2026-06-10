@@ -215,18 +215,21 @@ on flagfall(flaggingPlayer):
     return loss for flaggingPlayer
 ```
 
-- **New public API (done).** `Adjudicator.adjudicateFlagfall(Board, Side)` and `adjudicateResignation(Board, Side)`
-  (the latter delegates) in a new `io.github.dlbbld.ashlarchess.adjudication` package. Returns the winning `Side` - the
-  flagger's opponent when decisive, or `Side.NONE` for a draw (mirroring `Outcome.winner`). Chose a new package because
-  `common.utility` already depends on `unwinnability`, so housing it there would create a package cycle.
-- **No new rule logic (done)** - it composes the existing surface: `Board.isInsufficientMaterial(Side)` (cheap) then
-  `Board.isUnwinnableQuick(Side) == UNWINNABLE` (CHA quick). Exactly the procedure the README already prescribes.
+- **New public API (done).** `Adjudicator` (new `io.github.dlbbld.ashlarchess.adjudication` package) exposes
+  `adjudicateFlagfall{Quick,Full}(Board, Side)` and `adjudicateResignation{Quick,Full}(Board, Side)` (resignation
+  delegates to flag-fall). Returns `AdjudicationResult`: the **quick** variant rules only `DRAW` / `LOSS` (fast, from
+  `isUnwinnableQuick`); the **full** variant adds `UNDETERMINED` (from the complete `isUnwinnableFull`). New package
+  avoids a `common.utility` <-> `unwinnability` cycle.
+- **No new rule logic (done)** - composes `Board.isUnwinnableQuick(Side)` (quick) / `Board.isUnwinnableFull(Side)`
+  (full). The quick analyzer already includes the insufficient-material check, so no separate material call is needed.
+  Quick `POSSIBLY_WINNABLE` -> `LOSS` (no draw could be shown); full `WINNABLE_*` -> `LOSS`, `UNWINNABLE` -> `DRAW`,
+  `UNDETERMINED` -> `UNDETERMINED`.
 - **README.** Replace the `on flagfall(...)` / `on resignation(...)` pseudocode blocks with real compiled examples
   wired into the generator (`ReadmeExamples` + placeholders), so the adjudication snippet compiles and shows real
   output like every other example. The dead-position-during-play blocks can get the same treatment or stay
   illustrative.
-- **Tests (done).** `TestAdjudicator` covers all three branches (insufficient-material draw, quick-unwinnable draw,
-  decisive loss) plus resignation == flagfall and `Side.NONE` rejection, using README example FENs.
+- **Tests (done).** `TestAdjudicator` covers quick (DRAW / LOSS) and full (DRAW / LOSS / UNDETERMINED - the last via
+  the one node-bound-exhausting corpus position), resignation == flag-fall, and `Side.NONE` rejection.
 - Minor release (additive API); depends on the Task 1 README pipeline for the example wiring.
 
 ### Converge `TestReadMe` with the generated README examples
