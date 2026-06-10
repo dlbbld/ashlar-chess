@@ -197,9 +197,12 @@ consistency, the README report prose + examples (regenerate via the Task 1 pipel
 
 ### Implement the flagfall / resignation adjudication method (then de-pseudocode the README)
 
-**Follow-up after the report-terminology task.** The README "Game adjudication" section currently gives the flagfall /
-resignation procedure only as ` ```text ` pseudocode. Implement it as a real, public library method, then replace the
-pseudocode with a generated, compiled README example (Task 1 pipeline).
+**Status: method + tests done** (`io.github.dlbbld.ashlarchess.adjudication.Adjudicator` + `TestAdjudicator`, fast
+suite green). The README de-pseudocode below is the only remaining step.
+
+The README "Game adjudication" section currently gives the flagfall / resignation procedure only as ` ```text `
+pseudocode. The method is now real; the remaining work is to replace the pseudocode with a generated, compiled README
+example (Task 1 pipeline).
 
 The suggested procedure is already written out in the README, per FIDE 6.9 (flagfall) and 5.1.2 (resignation, which
 adjudicates exactly as flagfall):
@@ -212,19 +215,18 @@ on flagfall(flaggingPlayer):
     return loss for flaggingPlayer
 ```
 
-- **New public API.** A method taking a `Board` + the flagging/resigning `Side` and returning the adjudicated result
-  (draw, or loss-for-the-flagger). Decide the return shape - reuse `Outcome` / `Termination`, or a small dedicated
-  adjudication result. One entry point serves both flagfall and resignation (resignation == flagfall). Lives in a
-  utility/service class, not on a record (coding-conventions rule).
-- **No new rule logic** - it composes the existing surface: `Board.isInsufficientMaterial(Side)` (cheap) then
-  `Board.isUnwinnableQuick(Side)` / `UnwinnableQuickAnalyzer.unwinnableQuick(...)` (CHA quick). Exactly the procedure
-  the README already prescribes.
+- **New public API (done).** `Adjudicator.adjudicateFlagfall(Board, Side)` and `adjudicateResignation(Board, Side)`
+  (the latter delegates) in a new `io.github.dlbbld.ashlarchess.adjudication` package. Returns the winning `Side` - the
+  flagger's opponent when decisive, or `Side.NONE` for a draw (mirroring `Outcome.winner`). Chose a new package because
+  `common.utility` already depends on `unwinnability`, so housing it there would create a package cycle.
+- **No new rule logic (done)** - it composes the existing surface: `Board.isInsufficientMaterial(Side)` (cheap) then
+  `Board.isUnwinnableQuick(Side) == UNWINNABLE` (CHA quick). Exactly the procedure the README already prescribes.
 - **README.** Replace the `on flagfall(...)` / `on resignation(...)` pseudocode blocks with real compiled examples
   wired into the generator (`ReadmeExamples` + placeholders), so the adjudication snippet compiles and shows real
   output like every other example. The dead-position-during-play blocks can get the same treatment or stay
   illustrative.
-- **Tests** across the cases (insufficient-material draw, unwinnable-quick draw, ordinary loss), reusing the
-  unwinnability fixtures.
+- **Tests (done).** `TestAdjudicator` covers all three branches (insufficient-material draw, quick-unwinnable draw,
+  decisive loss) plus resignation == flagfall and `Side.NONE` rejection, using README example FENs.
 - Minor release (additive API); depends on the Task 1 README pipeline for the example wiring.
 
 ### Converge `TestReadMe` with the generated README examples
