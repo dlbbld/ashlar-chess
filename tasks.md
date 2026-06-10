@@ -71,9 +71,38 @@ the founding observation:
 Condense the three sub-sections (threefold / fifty-move, unwinnability / dead-position, Java-library rationale) around
 that thesis; keep the substance, cut the throat-clearing.
 
-### Task 3 fifty-move report - move numbering
+### Task 3 (cosmetic) — fifty-/seventy-five-move report: per-player move numbering
 
-Don't use halfmoves in the report, when we talk about moves in chess we mean fullmoves (but don't mention full moves neither). TBD - we add like "50/50" the "moves completed each" or "White 50 moves / Black 50 moves".
+The report must speak in moves, never halfmoves (and without ever saying "fullmove"). Each anchor of a no-progress
+sequence is annotated with `(White/Black)` = moves by each side since the last capture or pawn move. Show the start,
+each threshold crossed (`50/50` opens the 50-move claim; `75/75` forces a draw), and the end. The span from `50/50` to
+the end is the window of claimable draws - the report's whole point.
+
+Worked example - the README fifty-move example changes from
+
+```
+Fifty moves and beyond:
+63... Rg8 (1) - 114... Rf6+ (103)
+```
+
+to
+
+```
+Fifty moves and beyond:
+63... Rg8 (0/1) - 113. Ng5 (50/50) - 114... Rf6+ (51/52)
+```
+
+- **Counts.** For a played ply at halfmove clock `c` made by side `X`: `X = (c+1)/2`, the other side `c/2` (integer
+  division). At a threshold (`c` even) they are equal; at start/end (`c` odd) they differ by one - which is the real
+  claimable-window information, not noise.
+- **Header** defines the convention once: "`(White/Black)` = moves by each player since the last capture or pawn move;
+  `50/50` opens the 50-move claim, `75/75` forces a draw."
+- **Code** (not just README): [`FiftyMoveSequencePrint`](src/main/java/io/github/dlbbld/ashlarchess/report/FiftyMoveSequencePrint.java)
+  emits start + end with the halfmove clock today; rewrite it to per-player counts and insert the threshold anchor(s).
+  [`FiftyMoveSequence`](src/main/java/io/github/dlbbld/ashlarchess/report/FiftyMoveSequence.java) + its builder must
+  capture the played ply at clock 100 (and 150). Dedup when a threshold coincides with the end. The `initialFen`
+  start-anchor derives its starting side from a played ply.
+- Regenerate the README example through the Task 1 pipeline; update the report-format tests.
 
 ### Task 4 (major, non-cosmetic) — extend the unwinnability theorem to lone-bishop / lone-knight winners
 

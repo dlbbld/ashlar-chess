@@ -95,13 +95,13 @@ Output:
 The repetitions are indicated in order as occurred on the board. As different positions can repeat, letters A, B, C etc., indicate the different positions in the order of the first occurrence.
 
 ## Fifty-moves
-According to [Wikipedia](https://en.wikipedia.org/wiki/Fifty-move_rule#Karpov_vs._Kasparov,_1991), the next game ends with a series above fifty moves without capture and pawn move. The number of halfmoves without capture and pawn moves are in the brackets. (1) for the series start, (100) - fifty moves reached, (103) - end of series.
+According to [Wikipedia](https://en.wikipedia.org/wiki/Fifty-move_rule#Karpov_vs._Kasparov,_1991), the next game ends with a run of more than fifty moves without a capture or pawn move.
 
 <!-- readme:code id=fifty-move -->
 
 Output:
 <!-- readme:output id=fifty-move -->
-The number in parentheses is the halfmove clock - the count of consecutive halfmoves without a capture or pawn move. The line gives the first halfmove of the sequence and, after the dash, the last.
+Each bracket gives the moves by each player since the last capture or pawn move, written `(White/Black)`. The line marks the start of the run, the move where it reaches **fifty moves by each player** - from there a draw is claimable - and where it ends; a run reaching `75/75` would be an automatic draw. Here the run reaches `50/50` at `113. Ng5` and continues to `51/52`, so a draw was claimable on each of those last moves.
 
 # Game adjudication
 The game-ending logic is easiest to understand when written out directly. First decide which player would otherwise
