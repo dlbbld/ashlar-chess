@@ -39,8 +39,8 @@ class TestReadmeUpToDate {
         "README.md is out of date - run GenerateReadme to regenerate it from README.template.md.\n");
     final int max = Math.max(expected.size(), actual.size());
     for (int i = 0; i < max; i++) {
-      final String expectedLine = i < expected.size() ? expected.get(i) : "<no such line>";
-      final String actualLine = i < actual.size() ? actual.get(i) : "<no such line>";
+      final String expectedLine = i < expected.size() ? Nulls.get(expected, i) : "<no such line>";
+      final String actualLine = i < actual.size() ? Nulls.get(actual, i) : "<no such line>";
       if (!expectedLine.equals(actualLine)) {
         message.append("First difference at line ").append(i + 1).append(":\n");
         message.append("  rendered: ").append(expectedLine).append('\n');

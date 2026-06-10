@@ -146,7 +146,7 @@ public final class ReadmeDoc {
   }
 
   private static List<String> requireExample(Map<String, List<String>> byId, String id, String kind) {
-    final List<String> block = byId.get(id);
+    final List<String> block = Nulls.get(byId, id);
     if (block == null) {
       throw new IllegalStateException(
           "README " + kind + " placeholder references id \"" + id + "\", which has no registered example.");
@@ -166,7 +166,7 @@ public final class ReadmeDoc {
     int start = -1;
     int end = -1;
     for (int i = 0; i < sourceLines.size(); i++) {
-      final String trimmed = sourceLines.get(i).trim();
+      final String trimmed = Nulls.get(sourceLines, i).trim();
       if (trimmed.equals(startMarker)) {
         start = i;
       } else if (trimmed.equals(endMarker)) {
@@ -201,7 +201,7 @@ public final class ReadmeDoc {
 
   private static List<String> stripTrailingBlanks(List<String> lines) {
     final List<String> result = new ArrayList<>(lines);
-    while (!result.isEmpty() && result.get(result.size() - 1).isBlank()) {
+    while (!result.isEmpty() && Nulls.get(result, result.size() - 1).isBlank()) {
       result.remove(result.size() - 1);
     }
     return result;
@@ -218,13 +218,14 @@ public final class ReadmeDoc {
   private static List<String> captureOutput(Runnable body) {
     final ByteArrayOutputStream buffer = new ByteArrayOutputStream();
     final PrintStream previous = System.out;
-    final PrintStream capture = new PrintStream(buffer, true, StandardCharsets.UTF_8);
-    try {
-      System.setOut(capture);
-      body.run();
-    } finally {
-      System.setOut(previous);
-      capture.close();
+    try (PrintStream capture = new PrintStream(buffer, true, StandardCharsets.UTF_8)) {
+      try {
+        System.setOut(capture);
+        body.run();
+      } finally {
+        System.setOut(previous);
+        capture.close();
+      }
     }
     return toLines(buffer.toString(StandardCharsets.UTF_8));
   }
