@@ -90,7 +90,7 @@ That threefold and fifty-move reporting was my personal missing piece; the Java 
 
 # Threefold repetition and fifty-moves
 ## Threefold repetition claim ahead
-The following game ended with a threefold repetition claim ahead according to [Wikipedia](https://en.wikipedia.org/wiki/Threefold_repetition#Portisch_versus_Korchnoi,_1970):
+The following game ended with a threefold repetition claim ahead according to [Wikipedia](https://en.wikipedia.org/wiki/Threefold_repetition#Portisch_vs._Korchnoi,_1970):
 
 ```java
 final String pgn = """
@@ -119,7 +119,7 @@ Black could have claimed a threefold on the 25th move with writing (but not play
 followed by a dot (for example, 20. Ra2). Possible claims for Black are along the move number followed by three dots (for example, 25... Qb5).
 
 ## Threefold repetition on the board
-The following game contains a threefold repetition according to [Wikipedia](https://en.wikipedia.org/wiki/Threefold_repetition#Capablanca_versus_Lasker,_1921):
+The following game contains a threefold repetition according to [Wikipedia](https://en.wikipedia.org/wiki/Threefold_repetition#Capablanca_vs._Lasker,_1921):
 
 ```java
 final String pgn = """
