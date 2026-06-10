@@ -6,7 +6,7 @@
 
 	<groupId>io.github.dlbbld</groupId>
 	<artifactId>ashlar-chess</artifactId>
-	<version>18.0.0</version>
+	<version>18.1.0</version>
 
 	<name>ashlar-chess</name>
 	<description>A Java chess library for rule correctness and reproducibility.</description>
