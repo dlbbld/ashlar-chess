@@ -24,33 +24,8 @@ procedure.
 scalachess is **out of scope** for 18.1.0 — it was a one-time correctness check that has served its purpose; see
 [_scalachess as a permanent differential oracle_](#scalachess-as-a-permanent-differential-oracle) under Obsolete.
 
-### Task 3 (major, non-cosmetic) — extend the unwinnability theorem to lone-bishop / lone-knight winners
 
-Build Miguel Ambrona's proofs (his PDF / written assessment of the CHA algorithm) for two additional material classes
-into the full unwinnability analysis: the intended winner holding **only K+B** and **only K+N**. These are
-"insufficient material for the side to win" classes — the proof characterises exactly when that side has no helpmate
-(unwinnable) versus the exceptional positions where one still exists.
-
-- Mechanism mirrors the 18.0.0 theorem in
-  [`BasicHelpmateExistenceTheorem`](src/main/java/io/github/dlbbld/ashlarchess/unwinnability/BasicHelpmateExistenceTheorem.java)
-  (covered classes today: KRvK, KQvK, KBBvK opposite-coloured, KBNvK, KRvKB, KRvKN). Extend `isCoveredClass` / `decide`
-  to the two new classes, or add a sibling theorem, wired into
-  [`UnwinnableFullAnalyzer`](src/main/java/io/github/dlbbld/ashlarchess/unwinnability/UnwinnableFullAnalyzer.java) the
-  same way. A theorem-decided unwinnable position reports the existing `UNWINNABLE` verdict — no new enum value.
-- Transcribe the exact case conditions from Ambrona's PDF during implementation — **do not guess them**. Record the
-  proof reference (author, document, version/date) in the class JavaDoc next to the existing basic-helpmate-existence
-  citation.
-- **Deviation from python-chess.** This makes ashlar more decisive than python-chess's lone-side
-  `has_insufficient_material` heuristic on these classes; the cross-validation oracle will disagree on the affected
-  positions. Handle exactly as prior documented divergences (cf. the 15.0.0 fifty-move-claim corner case): a contained,
-  documented skip-guard or accepted-difference entry in the python-chess (and scalachess) insufficient-material /
-  unwinnability oracle harness, with the rationale spelled out in the test and in the CHANGELOG `Behavioral` section.
-- **New test cases.** Add fixtures covering both the proved-unwinnable and the exceptional-still-winnable sub-cases for
-  K+B-only and K+N-only winners. Follow the workflows.md "Adding a new PGN test fixture" procedure (or position-only
-  fixtures where a PGN replay is not needed, as the focused insufficient-material oracle already does). Pin the theorem
-  decision against the search-based path on representative FENs.
-
-### Task 1 (cosmetic) — doctest the README: every snippet compiles and prints exactly what is shown
+### done - Task 1 (cosmetic) — doctest the README: every snippet compiles and prints exactly what is shown
 
 **Hard requirement (from the user).** Every code example in the README must be real, compilable Java that — run with
 the inputs shown — produces *exactly* the output cited beneath it. No hand-copied code, no hand-typed output. The
@@ -85,7 +60,7 @@ Edge cases (not every example is deterministic, self-contained Java):
 - **Pseudocode blocks** — the game-adjudication `on flagfall(…)` blocks are ` ```text ` pseudocode, not Java; out of
   scope for compilation.
 
-### Task 2 (cosmetic) — tighten the motivation into a charter
+### done - Task 2 (cosmetic) — tighten the motivation into a charter
 
 The README "Motivation for the chess library" section is long-winded. Replace the lead with a tight charter capturing
 the founding observation:
@@ -95,6 +70,40 @@ the founding observation:
 
 Condense the three sub-sections (threefold / fifty-move, unwinnability / dead-position, Java-library rationale) around
 that thesis; keep the substance, cut the throat-clearing.
+
+### Task 3 fifty-move report - move numbering
+
+Don't use halfmoves in the report, when we talk about moves in chess we mean fullmoves (but don't mention full moves neither). TBD - we add like "50/50" the "moves completed each" or "White 50 moves / Black 50 moves".
+
+### Task 4 (major, non-cosmetic) — extend the unwinnability theorem to lone-bishop / lone-knight winners
+
+Build Miguel Ambrona's proofs (his PDF / written assessment of the CHA algorithm) for two additional material classes
+into the full unwinnability analysis: the intended winner holding **only K+B** and **only K+N**. These are
+"insufficient material for the side to win" classes — the proof characterises exactly when that side has no helpmate
+(unwinnable) versus the exceptional positions where one still exists.
+
+- Mechanism mirrors the 18.0.0 theorem in
+  [`BasicHelpmateExistenceTheorem`](src/main/java/io/github/dlbbld/ashlarchess/unwinnability/BasicHelpmateExistenceTheorem.java)
+  (covered classes today: KRvK, KQvK, KBBvK opposite-coloured, KBNvK, KRvKB, KRvKN). Extend `isCoveredClass` / `decide`
+  to the two new classes, or add a sibling theorem, wired into
+  [`UnwinnableFullAnalyzer`](src/main/java/io/github/dlbbld/ashlarchess/unwinnability/UnwinnableFullAnalyzer.java) the
+  same way. A theorem-decided unwinnable position reports the existing `UNWINNABLE` verdict — no new enum value.
+- Transcribe the exact case conditions from Ambrona's PDF during implementation — **do not guess them**. Record the
+  proof reference (author, document, version/date) in the class JavaDoc next to the existing basic-helpmate-existence
+  citation.
+- **Deviation from python-chess.** This makes ashlar more decisive than python-chess's lone-side
+  `has_insufficient_material` heuristic on these classes; the cross-validation oracle will disagree on the affected
+  positions. Handle exactly as prior documented divergences (cf. the 15.0.0 fifty-move-claim corner case): a contained,
+  documented skip-guard or accepted-difference entry in the python-chess (and scalachess) insufficient-material /
+  unwinnability oracle harness, with the rationale spelled out in the test and in the CHANGELOG `Behavioral` section.
+- **New test cases.** Add fixtures covering both the proved-unwinnable and the exceptional-still-winnable sub-cases for
+  K+B-only and K+N-only winners. Follow the workflows.md "Adding a new PGN test fixture" procedure (or position-only
+  fixtures where a PGN replay is not needed, as the focused insufficient-material oracle already does). Pin the theorem
+  decision against the search-based path on representative FENs.
+
+### Task 5 adjudication - implement adjudication methods
+
+Implement suggested adjudication methods in the README.md and then add the effective code in the REAMDE.md.
 
 ### Release notes
 
