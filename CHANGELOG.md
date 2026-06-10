@@ -5,6 +5,23 @@ Releases from 3.3 onward. Earlier history is in git tags only.
 ## [Unreleased]
 
 
+## [18.1.0] - Adjudication API - 2026-06-11
+
+Adds a public adjudication API for the two external game-ending events - flag-fall and resignation - that applies the FIDE "opponent cannot win" draw exception for you, and changes the fifty-move report to count in moves by each player rather than halfmoves. The release is additive: no public type changes shape.
+
+### Notable
+
+- New `io.github.dlbbld.ashlarchess.adjudication` package. `Adjudicator` adjudicates a flag-fall ([FIDE 6.9](https://handbook.fide.com/chapter/e012023)) or resignation ([FIDE 5.1.2](https://handbook.fide.com/chapter/e012023)): the event is a loss unless the would-be winner cannot checkmate by any series of legal moves, in which case it is a draw. Each event has a quick variant (rules `DRAW` / `LOSS` from the fast analyzer - bounded latency, for live play) and a full variant (adds `UNDETERMINED` from the complete analyzer, for game-end and offline use). Verdicts are the new `AdjudicationResult` enum (`DRAW`, `LOSS`, `UNDETERMINED`).
+- The README is now generated from `README.template.md` plus executed example source: every shown snippet provably compiles and every shown output is captured from running it, and a drift test fails the build if the committed README does not match a fresh render.
+
+### Behavioral
+
+- The fifty-move report (`Reporter`) now expresses every no-progress run's counts as moves by each player, written `(White/Black)`, instead of a single halfmove count - matching the FIDE "moves by each player" wording (claimable at `50/50`, automatic draw at `75/75`). Consumers that snapshot or parse the printed report text will see the new format.
+
+### Internal
+
+- Compiler-warning cleanup: reduced the visibility of package-internal helpers (including two `InsufficientMaterialUtility` bishop predicates) and supplied an explicit charset to `IoUtility`'s stream-to-string conversion.
+
 ## [18.0.0] - Endgame theorem and unwinnability API - 2026-06-04
 
 Adds a proved basic-helpmate-existence theorem that decides elementary endgames in the full unwinnability analysis without searching, realigns the quick analyzer to a faithful two-valued port of CHA 2.6.1, and simplifies the dead-position / game-end surface. Several public unwinnability types change shape.
