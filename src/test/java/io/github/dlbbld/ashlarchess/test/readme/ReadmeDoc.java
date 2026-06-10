@@ -21,7 +21,10 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.eclipse.jdt.annotation.NonNull;
+
 import io.github.dlbbld.ashlarchess.common.Nulls;
+import io.github.dlbbld.ashlarchess.common.utility.IoUtility;
 import io.github.dlbbld.ashlarchess.test.common.utility.FileUtility;
 
 /**
@@ -210,7 +213,9 @@ public final class ReadmeDoc {
   private static List<String> normalizeVolatile(List<String> lines) {
     final List<String> result = new ArrayList<>();
     for (final String line : lines) {
-      result.add(DATE_TAG.matcher(line).replaceAll(Matcher.quoteReplacement("[Date \"<today>\"]")));
+      @SuppressWarnings("null") final @NonNull String replacement = Matcher.quoteReplacement("[Date \"<today>\"]");
+      @SuppressWarnings("null") final @NonNull Matcher matcher = DATE_TAG.matcher(line);
+      result.add(Nulls.replaceAll(matcher, replacement));
     }
     return result;
   }
@@ -227,7 +232,7 @@ public final class ReadmeDoc {
         capture.close();
       }
     }
-    return toLines(buffer.toString(StandardCharsets.UTF_8));
+    return toLines(IoUtility.toString(buffer));
   }
 
   private static List<String> toLines(String text) {

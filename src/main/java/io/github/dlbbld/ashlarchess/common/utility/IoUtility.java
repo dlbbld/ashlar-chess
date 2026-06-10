@@ -3,9 +3,11 @@
 
 package io.github.dlbbld.ashlarchess.common.utility;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.charset.StandardCharsets;
 
 import org.eclipse.jdt.annotation.Owning;
 
@@ -51,4 +53,8 @@ public abstract class IoUtility {
     return result;
   }
 
+  @SuppressWarnings("null")
+  public static String toString(ByteArrayOutputStream stream) {
+    return stream.toString(StandardCharsets.UTF_8);
+  }
 }
