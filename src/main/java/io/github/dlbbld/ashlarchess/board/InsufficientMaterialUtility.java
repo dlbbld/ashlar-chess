@@ -47,11 +47,11 @@ abstract class InsufficientMaterialUtility implements EnumConstants {
     return true;
   }
 
-  public static boolean calculateHasZeroOrMultipleLightSquareBishopOnly(Side side, BitboardPosition bitboardPosition) {
+  static boolean calculateHasZeroOrMultipleLightSquareBishopOnly(Side side, BitboardPosition bitboardPosition) {
     return calculateHasZeroOrMultipleSquareBishopOnlyForSpecifiedColor(side, bitboardPosition, SquareType.LIGHT_SQUARE);
   }
 
-  public static boolean calculateHasZeroOrMultipleDarkSquareBishopOnly(Side side, BitboardPosition bitboardPosition) {
+  static boolean calculateHasZeroOrMultipleDarkSquareBishopOnly(Side side, BitboardPosition bitboardPosition) {
     return calculateHasZeroOrMultipleSquareBishopOnlyForSpecifiedColor(side, bitboardPosition, SquareType.DARK_SQUARE);
   }
 
