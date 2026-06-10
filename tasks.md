@@ -157,6 +157,38 @@ output.
 `FiftyMoveClaimAheadPrint`, the `report.fiftyMove.*` message-bundle titles, the threefold prints for vocabulary
 consistency, the README report prose + examples (regenerate via the Task 1 pipeline), and new report-format tests.
 
+### Implement the flagfall / resignation adjudication method (then de-pseudocode the README)
+
+**Follow-up after the report-terminology task.** The README "Game adjudication" section currently gives the flagfall /
+resignation procedure only as ` ```text ` pseudocode. Implement it as a real, public library method, then replace the
+pseudocode with a generated, compiled README example (Task 1 pipeline).
+
+The suggested procedure is already written out in the README, per FIDE 6.9 (flagfall) and 5.1.2 (resignation, which
+adjudicates exactly as flagfall):
+
+```
+on flagfall(flaggingPlayer):
+    wouldBeWinner = opponent(flaggingPlayer)
+    if board.isInsufficientMaterial(wouldBeWinner): return draw            # material-only, cheap
+    if board.isUnwinnableQuick(wouldBeWinner) == UNWINNABLE: return draw   # CHA quick, position-wise
+    return loss for flaggingPlayer
+```
+
+- **New public API.** A method taking a `Board` + the flagging/resigning `Side` and returning the adjudicated result
+  (draw, or loss-for-the-flagger). Decide the return shape - reuse `Outcome` / `Termination`, or a small dedicated
+  adjudication result. One entry point serves both flagfall and resignation (resignation == flagfall). Lives in a
+  utility/service class, not on a record (coding-conventions rule).
+- **No new rule logic** - it composes the existing surface: `Board.isInsufficientMaterial(Side)` (cheap) then
+  `Board.isUnwinnableQuick(Side)` / `UnwinnableQuickAnalyzer.unwinnableQuick(...)` (CHA quick). Exactly the procedure
+  the README already prescribes.
+- **README.** Replace the `on flagfall(...)` / `on resignation(...)` pseudocode blocks with real compiled examples
+  wired into the generator (`ReadmeExamples` + placeholders), so the adjudication snippet compiles and shows real
+  output like every other example. The dead-position-during-play blocks can get the same treatment or stay
+  illustrative.
+- **Tests** across the cases (insufficient-material draw, unwinnable-quick draw, ordinary loss), reusing the
+  unwinnability fixtures.
+- Minor release (additive API); depends on the Task 1 README pipeline for the example wiring.
+
 ### Records carry data, not behavior — sweep for violations
 The project rule (documented in `coding-conventions.md`): records carry data; domain logic that operates on them lives in dedicated utility / service classes. Permitted on a record: compact-constructor validation, `Comparable` when ordering is intrinsic, and language-provided `equals` / `hashCode` / `toString`. Domain-operation methods are not.
 Example: `StaticPosition`: the record carries multiple non-data methods — `createChangedPosition` etc.
