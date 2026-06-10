@@ -128,6 +128,35 @@ Release details live in **CHANGELOG.md** `[17.0.0]`; the repeatable release proc
 
 Items here are not assigned to any release. Captured so they don't get lost; revisit if/when scope or motivation aligns.
 
+### Report terminology: speak FIDE "moves by each player", not halfmoves or fullmove decimals
+
+**Next up after the 18.1.0 README mechanization (Task 1).** Surfaced while mechanizing the README report output: the
+printed 50-move (and 75-move) report leaks engine-internal units. The bracketed counts are currently the halfmove clock
+(`63... Rg8 (1) - 114... Rf6+ (103)`); an earlier form used fullmove decimals (`(0.5) / (50) / (51.5)`). Neither is how
+the laws of chess speak.
+
+**Principle.** `fullmove number` (PGN-spec move numbering) and `halfmove` (ply) are *internal* terms - fine in the
+application internals and in PGN validation (where PGN move numbers are official), but they must not leak into
+user-facing report prose/output. FIDE Articles 9.3.1 / 9.3.2 / 9.6.2 frame the rules as "50 moves by each player" and
+"75 moves ... by each player". The reporter should translate the precise internal units (`halfMoveClock`, ply, PGN
+fullmove number) into that law-shaped vocabulary at the print boundary - keep the internals precise, change only the
+output.
+
+**Proposed report shape** (repository-owned, non-breaking - `Reporter` is print-only):
+
+- Fifty-move sequence:
+  `63... Rg8 - 113. Ng5 (50 moves by each player) - 114... Rf6+ (White 51, Black 52)`
+  - normal chess move labels for the moves; the legal threshold named exactly as the law ("50 moves by each player");
+    per-player counts after the threshold, not pseudo-fullmove decimals.
+- Fifty-move claim-ahead: `113. Ng5 (would complete 50 moves by each player)`.
+- Seventy-five-move: `138... Rc1 (75 moves by each player)`.
+- Start the sequence at the start move (not `0/0`); the load-bearing moments are "threshold reached" and "sequence
+  ends". (A fully tabular `0/0 ... 50/50` per-player diagnostic mode was considered and deferred unless wanted.)
+
+**Touch points.** [`FiftyMoveSequencePrint`](src/main/java/io/github/dlbbld/ashlarchess/report/FiftyMoveSequencePrint.java),
+`FiftyMoveClaimAheadPrint`, the `report.fiftyMove.*` message-bundle titles, the threefold prints for vocabulary
+consistency, the README report prose + examples (regenerate via the Task 1 pipeline), and new report-format tests.
+
 ### Records carry data, not behavior — sweep for violations
 The project rule (documented in `coding-conventions.md`): records carry data; domain logic that operates on them lives in dedicated utility / service classes. Permitted on a record: compact-constructor validation, `Comparable` when ordering is intrinsic, and language-provided `equals` / `hashCode` / `toString`. Domain-operation methods are not.
 Example: `StaticPosition`: the record carries multiple non-data methods — `createChangedPosition` etc.
