@@ -93,23 +93,10 @@ abstract class FiftyMoveSequenceReportBuilder {
   private static void maybeEmit(List<FiftyMoveSequence> sequences, SequenceStart start, @Nullable HalfMove fiftyPly,
       @Nullable HalfMove seventyFivePly, @Nullable HalfMove endPly, int threshold, int initialFenClock,
       Side initialFenSideToMove) {
-    final Side startingSide = calculateStartingSide(start, initialFenClock, initialFenSideToMove);
+    final Side startingSide = SequenceStartFormat.startingSide(start, initialFenClock, initialFenSideToMove);
     final FiftyMoveSequence sequence = new FiftyMoveSequence(start, fiftyPly, seventyFivePly, endPly, startingSide);
     if (sequence.finalClock() >= threshold) {
       sequences.add(sequence);
     }
-  }
-
-  /**
-   * The side that made the first ply of the run. For an after-reset start it is the first non-zeroing move's side.
-   * For an initial-FEN start the run began before the loaded position, so it is recovered from the FEN's side to move
-   * and clock parity: the FEN's side to move makes run-ply {@code initialFenClock + 1}, and plies alternate, so the
-   * first run-ply was made by the FEN's side to move when the clock is even, and by the opposite side when odd.
-   */
-  private static Side calculateStartingSide(SequenceStart start, int initialFenClock, Side initialFenSideToMove) {
-    if (!start.isInitialFen()) {
-      return start.firstNonZeroingMoveOrThrow().havingMove();
-    }
-    return initialFenClock % 2 == 0 ? initialFenSideToMove : initialFenSideToMove.getOppositeSide();
   }
 }

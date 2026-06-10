@@ -10,7 +10,6 @@ import java.util.Map;
 
 import org.eclipse.jdt.annotation.Nullable;
 
-import io.github.dlbbld.ashlarchess.board.HalfMoveUtility;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
 import io.github.dlbbld.ashlarchess.common.model.HalfMove;
 
@@ -28,8 +27,7 @@ abstract class FiftyMoveSequencePrint {
    * The threshold anchors are the moves at which the clock reached 100 / 150 - where the 50-move claim becomes
    * available and the 75-move rule forces a draw. The span from the 50/50 anchor to the end is the window of claimable
    * draws. Anchors are de-duplicated by clock, so a threshold that coincides with the end (or with an at-threshold
-   * initial-FEN start) renders once. The start marker is {@code [Starting position]} for an initial-FEN start, or the
-   * first non-zeroing move otherwise; an initial-FEN start with no played continuation renders as the start alone.
+   * initial-FEN start) renders once. An initial-FEN start with no played continuation renders as the start alone.
    */
   static List<List<String>> render(FiftyMoveSequenceReport report) {
     final List<List<String>> resultListList = new ArrayList<>();
@@ -40,50 +38,31 @@ abstract class FiftyMoveSequencePrint {
   }
 
   private static List<String> renderSequence(FiftyMoveSequence sequence) {
-    final Map<Integer, String> labelByClock = new LinkedHashMap<>();
-    labelByClock.putIfAbsent(Integer.valueOf(startClock(sequence.start())), startLabel(sequence.start()));
-    addPlyAnchor(labelByClock, sequence.fiftyMoveThresholdPly());
-    addPlyAnchor(labelByClock, sequence.seventyFiveMoveThresholdPly());
-    addPlyAnchor(labelByClock, sequence.endPly());
+    final Side startingSide = sequence.startingSide();
+    final Map<Integer, String> anchorByClock = new LinkedHashMap<>();
+    anchorByClock.putIfAbsent(Integer.valueOf(startClock(sequence.start())),
+        SequenceStartFormat.startAnchor(sequence.start(), startingSide));
+    addPlyAnchor(anchorByClock, sequence.fiftyMoveThresholdPly(), startingSide);
+    addPlyAnchor(anchorByClock, sequence.seventyFiveMoveThresholdPly(), startingSide);
+    addPlyAnchor(anchorByClock, sequence.endPly(), startingSide);
 
     final List<String> tokens = new ArrayList<>();
-    for (final Map.Entry<Integer, String> anchor : labelByClock.entrySet()) {
+    for (final String anchor : anchorByClock.values()) {
       if (!tokens.isEmpty()) {
         tokens.add("-");
       }
-      tokens.add(anchor.getValue() + " " + counts(anchor.getKey().intValue(), sequence.startingSide()));
+      tokens.add(anchor);
     }
     return tokens;
   }
 
-  private static void addPlyAnchor(Map<Integer, String> labelByClock, @Nullable HalfMove ply) {
+  private static void addPlyAnchor(Map<Integer, String> anchorByClock, @Nullable HalfMove ply, Side startingSide) {
     if (ply != null) {
-      labelByClock.putIfAbsent(Integer.valueOf(ply.halfMoveClock()),
-          HalfMoveUtility.calculateMoveNumberAndSanWithSpace(ply));
+      anchorByClock.putIfAbsent(Integer.valueOf(ply.halfMoveClock()), SequenceStartFormat.plyAnchor(ply, startingSide));
     }
   }
 
   private static int startClock(SequenceStart start) {
     return start.isInitialFen() ? start.initialClockValue() : start.firstNonZeroingMoveOrThrow().halfMoveClock();
-  }
-
-  private static String startLabel(SequenceStart start) {
-    if (start.isInitialFen()) {
-      return "[Starting position]";
-    }
-    return HalfMoveUtility.calculateMoveNumberAndSanWithSpace(start.firstNonZeroingMoveOrThrow());
-  }
-
-  /**
-   * Splits a halfmove clock into {@code (White/Black)} move counts. The starting side made {@code (clock+1)/2} of the
-   * run's moves, the other side {@code clock/2}; at a threshold (even clock) they are equal, at start/end (odd clock)
-   * they differ by one.
-   */
-  private static String counts(int clock, Side startingSide) {
-    final int starterCount = (clock + 1) / 2;
-    final int otherCount = clock / 2;
-    final int white = startingSide == Side.WHITE ? starterCount : otherCount;
-    final int black = startingSide == Side.BLACK ? starterCount : otherCount;
-    return "(" + white + "/" + black + ")";
   }
 }

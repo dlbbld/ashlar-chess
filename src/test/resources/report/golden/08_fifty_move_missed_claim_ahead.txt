@@ -5,7 +5,7 @@ Threefolds and beyond:
 None
 
 Valid fifty-move claims ahead (only listed when the sequence does not reach the 50-move threshold in actual play):
-[Starting position] (98) - 80... [ahead claim possible] (100)
+[Starting position] (49/49) - 80... [ahead claim possible] (50/50)
 
 Fifty moves and beyond:
 None
