@@ -9,7 +9,17 @@ import io.github.dlbbld.ashlarchess.board.Board;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
 import io.github.dlbbld.ashlarchess.board.enums.Square;
 import io.github.dlbbld.ashlarchess.common.model.MoveSpecification;
+import io.github.dlbbld.ashlarchess.pgn.LenientPgnParser;
+import io.github.dlbbld.ashlarchess.pgn.LenientPgnParserValidationException;
+import io.github.dlbbld.ashlarchess.pgn.LenientPgnParserValidationResult;
+import io.github.dlbbld.ashlarchess.pgn.PgnCreate;
+import io.github.dlbbld.ashlarchess.pgn.PgnGame;
+import io.github.dlbbld.ashlarchess.pgn.PgnUtility;
+import io.github.dlbbld.ashlarchess.pgn.StrictPgnParser;
+import io.github.dlbbld.ashlarchess.pgn.StrictPgnParserValidationException;
+import io.github.dlbbld.ashlarchess.pgn.WriteMode;
 import io.github.dlbbld.ashlarchess.report.Reporter;
+import io.github.dlbbld.ashlarchess.san.ForgivenItem;
 import io.github.dlbbld.ashlarchess.unwinnability.UnwinnableFullAnalyzer;
 import io.github.dlbbld.ashlarchess.unwinnability.UnwinnableQuickAnalyzer;
 
@@ -49,7 +59,16 @@ public final class ReadmeExamples {
         new ReadmeExample("unwinnable-blocked-quick", ReadmeExamples::unwinnableBlockedQuick, true),
         new ReadmeExample("dead-insufficient-material", ReadmeExamples::deadInsufficientMaterial, true),
         new ReadmeExample("dead-pawn-walls", ReadmeExamples::deadPawnWalls, true),
-        new ReadmeExample("dead-forced-moves", ReadmeExamples::deadForcedMoves, true));
+        new ReadmeExample("dead-forced-moves", ReadmeExamples::deadForcedMoves, true),
+        new ReadmeExample("pgn-lenient-valid", ReadmeExamples::pgnLenientValid, true),
+        new ReadmeExample("pgn-lenient-export-transform", ReadmeExamples::pgnLenientExportTransform, true),
+        new ReadmeExample("pgn-san-tolerances", ReadmeExamples::pgnSanTolerances, true),
+        new ReadmeExample("pgn-lenient-invalid", ReadmeExamples::pgnLenientInvalid, true),
+        new ReadmeExample("pgn-lenient-file-parsing", ReadmeExamples::pgnLenientFileParsing, false),
+        new ReadmeExample("pgn-strict-valid", ReadmeExamples::pgnStrictValid, true),
+        new ReadmeExample("pgn-strict-invalid-syntax", ReadmeExamples::pgnStrictInvalidSyntax, true),
+        new ReadmeExample("pgn-strict-invalid-form", ReadmeExamples::pgnStrictInvalidForm, true),
+        new ReadmeExample("pgn-strict-file-parsing", ReadmeExamples::pgnStrictFileParsing, false));
   }
 
   public static void threefoldClaimAhead() {
@@ -184,5 +203,145 @@ public final class ReadmeExamples {
     System.out.println(UnwinnableQuickAnalyzer.unwinnableQuick(board)); // [out] (dead)
     System.out.println(UnwinnableFullAnalyzer.unwinnableFull(board)); // [out] (dead)
     // </readme:dead-forced-moves>
+  }
+
+  public static void pgnLenientValid() {
+    // <readme:pgn-lenient-valid>
+    final String pgn = """
+        [ Event "Spring Classic"]
+
+        1. e4 e5   2. Nf3
+        Nf6
+          3. Bc4 Bc5
+        """;
+    final PgnGame pgnGame = LenientPgnParser.parseText(pgn);
+    final Board board = PgnUtility.calculateBoard(pgnGame);
+    board.moveStrict("a3");
+    // </readme:pgn-lenient-valid>
+  }
+
+  public static void pgnLenientExportTransform() {
+    // <readme:pgn-lenient-export-transform>
+    final String pgn = """
+        [Black "Jane Doe"]
+        [White "John Doe"]
+        [ Event "Spring Classic"]
+
+        1. e4 e5   2. Nf3
+        Nf6
+        3. Bc4 Bc5
+        """;
+    final PgnGame pgnGame = LenientPgnParser.parseText(pgn);
+    System.out.println(PgnCreate.createPgnString(pgnGame, WriteMode.ARCHIVAL));
+    // </readme:pgn-lenient-export-transform>
+  }
+
+  public static void pgnSanTolerances() {
+    // <readme:pgn-san-tolerances>
+    final String pgn = """
+        [Event "?"]
+        [Site "?"]
+        [Date "?"]
+        [Round "?"]
+        [White "?"]
+        [Black "?"]
+        [Result "*"]
+
+        1. e4 e5 2. Nf3 Nc6 3. Bc4 Bc5 4. 0-0 nf6 *
+        """;
+    final LenientPgnParserValidationResult result = LenientPgnParser.validateText(pgn);
+    System.out.println(result.isValid());
+    for (final ForgivenItem item : result.sanForgivenItems()) {
+      System.out.println(item.code() + ": " + item.originalToken() + " -> " + item.canonicalSan());
+    }
+    // </readme:pgn-san-tolerances>
+  }
+
+  public static void pgnLenientInvalid() {
+    // <readme:pgn-lenient-invalid>
+    final String pgn = """
+        [ Event "Spring Classic"]
+
+        1. e4 e5   2. Nf4
+        Nf6
+          3. Bc4 Bc5
+        """;
+    try {
+      final PgnGame pgnGame = LenientPgnParser.parseText(pgn);
+      System.out.println(PgnUtility.calculateBoard(pgnGame).isCheck()); // not reached
+    } catch (final LenientPgnParserValidationException e) {
+      System.out.println(e.getMessage());
+    }
+    // </readme:pgn-lenient-invalid>
+  }
+
+  public static void pgnLenientFileParsing() {
+    // <readme:pgn-lenient-file-parsing>
+    final PgnGame pgnGame = LenientPgnParser.parse("C:\\temp\\myFile.pgn");
+    final Board board = PgnUtility.calculateBoard(pgnGame);
+    System.out.println(board.isCheckmate());
+    // </readme:pgn-lenient-file-parsing>
+  }
+
+  public static void pgnStrictValid() {
+    // <readme:pgn-strict-valid>
+    final String pgn = """
+        [Event "Spring Classic"]
+        [Site "Somewhere"]
+        [Date "2024.01.01"]
+        [Round "1"]
+        [White "Player1"]
+        [Black "Player2"]
+        [Result "*"]
+
+        1. e4 e5 2. Nf3 Nf6 3. Bc4 Bc5 *
+
+        """;
+    final PgnGame pgnGame = StrictPgnParser.parseText(pgn);
+    final Board board = PgnUtility.calculateBoard(pgnGame);
+    board.moveStrict("a3");
+    // </readme:pgn-strict-valid>
+  }
+
+  public static void pgnStrictInvalidSyntax() {
+    // <readme:pgn-strict-invalid-syntax>
+    final String pgn = """
+        [ Event "Spring Classic"]
+
+        1. e4 e5 2. Nf3 Nf6 3. Bc4 Bc5
+
+        """;
+    try {
+      final PgnGame pgnGame = StrictPgnParser.parseText(pgn);
+      System.out.println(PgnUtility.calculateBoard(pgnGame).isCheck()); // not reached
+    } catch (final StrictPgnParserValidationException e) {
+      System.out.println(e.getMessage());
+    }
+    // </readme:pgn-strict-invalid-syntax>
+  }
+
+  public static void pgnStrictInvalidForm() {
+    // <readme:pgn-strict-invalid-form>
+    final String pgn = """
+        [Event "Spring Classic"]
+
+        1. e4 e5 2. Nf3 Nf6 3. Bc4 Bc5 *
+
+        """;
+    try {
+      final PgnGame pgnGame = StrictPgnParser.parseText(pgn);
+      System.out.println(PgnUtility.calculateBoard(pgnGame).isCheck()); // not reached
+    } catch (final StrictPgnParserValidationException e) {
+      System.out.println(e.getMessage());
+    }
+    // </readme:pgn-strict-invalid-form>
+  }
+
+  public static void pgnStrictFileParsing() {
+    // <readme:pgn-strict-file-parsing>
+    final PgnGame pgnGame = StrictPgnParser.parse("C:\\temp\\myFile.pgn");
+    final Board board = PgnUtility.calculateBoard(pgnGame);
+    System.out.println(board.isThreefoldRepetition());
+    // </readme:pgn-strict-file-parsing>
   }
 }

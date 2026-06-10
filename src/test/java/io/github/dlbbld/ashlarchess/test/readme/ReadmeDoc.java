@@ -71,7 +71,8 @@ public final class ReadmeDoc {
     final Map<String, List<String>> outputById = new LinkedHashMap<>();
     for (final ReadmeExample example : ReadmeExamples.examples()) {
       final String id = example.id();
-      final List<String> captured = example.run() ? normalizeVolatile(captureOutput(example.body()))
+      final List<String> captured = example.run()
+          ? stripTrailingBlanks(normalizeVolatile(captureOutput(example.body())))
           : new ArrayList<String>();
       final Deque<String> remaining = new ArrayDeque<>(captured);
       codeById.put(id, substituteInlineOutputs(sliceSource(sourceLines, id), remaining, id));
@@ -191,6 +192,14 @@ public final class ReadmeDoc {
     final List<String> result = new ArrayList<>();
     for (final String line : lines) {
       result.add(line.isBlank() ? "" : line.substring(minIndent));
+    }
+    return result;
+  }
+
+  private static List<String> stripTrailingBlanks(List<String> lines) {
+    final List<String> result = new ArrayList<>(lines);
+    while (!result.isEmpty() && result.get(result.size() - 1).isBlank()) {
+      result.remove(result.size() - 1);
     }
     return result;
   }

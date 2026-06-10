@@ -443,18 +443,16 @@ In addition to structural tolerances (whitespace, missing tags, optional termina
 #### PGN valid
 
 ```java
-   final var pgn = """
-        [ Event "Spring Classic"]
+final String pgn = """
+    [ Event "Spring Classic"]
 
-        1. e4 e5   2. Nf3
-        Nf6
-          3. Bc4 Bc5
-                """;
-
-    final PgnGame pgnGame = LenientPgnParser.parseText(pgn);
-    final Board board = PgnUtility.calculateBoardPerLastMove(pgnGame);
-    board.moveStrict("a3");
-
+    1. e4 e5   2. Nf3
+    Nf6
+      3. Bc4 Bc5
+    """;
+final PgnGame pgnGame = LenientPgnParser.parseText(pgn);
+final Board board = PgnUtility.calculateBoard(pgnGame);
+board.moveStrict("a3");
 ```
 
 #### PGN transformation to export format
@@ -462,28 +460,30 @@ In addition to structural tolerances (whitespace, missing tags, optional termina
 The parser does a bit more than a standard parser should do. It converts the imported PGN to a PGN object which when exported will adhere to the export format. That is it for example adds missing tags and sorts them if necessary.
 
 ```java
-    final var pgn = """
-                [Black "Jane Doe"]
-                [White "John Doe"]
-                [ Event "Spring Classic"]
+final String pgn = """
+    [Black "Jane Doe"]
+    [White "John Doe"]
+    [ Event "Spring Classic"]
 
-                1. e4 e5   2. Nf3
-                Nf6
-                3. Bc4 Bc5
-        """;
+    1. e4 e5   2. Nf3
+    Nf6
+    3. Bc4 Bc5
+    """;
+final PgnGame pgnGame = LenientPgnParser.parseText(pgn);
+System.out.println(PgnCreate.createPgnString(pgnGame, WriteMode.ARCHIVAL));
+```
 
-    final PgnGame pgnGame = LenientPgnParser.parseText(pgn);
-    System.out.println(PgnCreate.createPgnString(pgnGame));
-    // [Event "Spring Classic"]
-    // [Site "?"]
-    // [Date "?"]
-    // [Round "?"]
-    // [White "John Doe"]
-    // [Black "Jane Doe"]
-    // [Result "*"]
-    //
-    // 1. e4 e5 2. Nf3 Nf6 3. Bc4 Bc5 *
-    //
+Output:
+```
+[Event "Spring Classic"]
+[Site "?"]
+[Date "????.??.??"]
+[Round "?"]
+[White "John Doe"]
+[Black "Jane Doe"]
+[Result "*"]
+
+1. e4 e5 2. Nf3 Nf6 3. Bc4 Bc5 *
 ```
 
 #### PGN SAN tolerances
@@ -499,24 +499,29 @@ The lenient PGN parser accepts SAN moves that deviate from canonical SAN in any 
 - **Case**: lowercase piece letter (`nf3`), uppercase file letter (`NF3`), uppercase capture marker (`BXe5`), lowercase promotion piece (`e8=q`)
 
 ```java
-    final var pgn = """
-        [Event "?"]
-        [Site "?"]
-        [Date "?"]
-        [Round "?"]
-        [White "?"]
-        [Black "?"]
-        [Result "*"]
+final String pgn = """
+    [Event "?"]
+    [Site "?"]
+    [Date "?"]
+    [Round "?"]
+    [White "?"]
+    [Black "?"]
+    [Result "*"]
 
-        1. e4 e5 2. Nf3 Nc6 3. Bc4 Bc5 4. 0-0 nf6 *
-                """;
-    final LenientPgnParserValidationResult result = LenientPgnParser.validateText(pgn);
-    System.out.println(result.isValid()); // true
-    for (final ForgivenItem item : result.sanForgivenItems()) {
-      System.out.println(item.code() + ": " + item.originalToken() + " -> " + item.canonicalSan());
-    }
-    // ZERO_INSTEAD_OF_O_CASTLING: 0-0 -> O-O
-    // LOWERCASE_PIECE_LETTER: nf6 -> Nf6
+    1. e4 e5 2. Nf3 Nc6 3. Bc4 Bc5 4. 0-0 nf6 *
+    """;
+final LenientPgnParserValidationResult result = LenientPgnParser.validateText(pgn);
+System.out.println(result.isValid());
+for (final ForgivenItem item : result.sanForgivenItems()) {
+  System.out.println(item.code() + ": " + item.originalToken() + " -> " + item.canonicalSan());
+}
+```
+
+Output:
+```
+true
+ZERO_INSTEAD_OF_O_CASTLING: 0-0 -> O-O
+LOWERCASE_PIECE_LETTER: nf6 -> Nf6
 ```
 
 The strict pipeline that performs the actual chess validation is reused unchanged; the lenient layer only translates input shape and recovers from a defined set of strict rejections. A move that's not a legal chess move (regardless of how it was written) is still rejected.
@@ -526,32 +531,32 @@ The strict pipeline that performs the actual chess validation is reused unchange
 When parsing fails, error messages are designed to be as descriptive as possible.
 
 ```java
-    final var pgn = """
-        [ Event "Spring Classic"]
+final String pgn = """
+    [ Event "Spring Classic"]
 
-        1. e4 e5   2. Nf4
-        Nf6
-          3. Bc4 Bc5
-                """;
+    1. e4 e5   2. Nf4
+    Nf6
+      3. Bc4 Bc5
+    """;
+try {
+  final PgnGame pgnGame = LenientPgnParser.parseText(pgn);
+  System.out.println(PgnUtility.calculateBoard(pgnGame).isCheck()); // not reached
+} catch (final LenientPgnParserValidationException e) {
+  System.out.println(e.getMessage());
+}
+```
 
-    final PgnGame pgnGame;
-    try {
-      pgnGame = LenientPgnParser.parseText(pgn);
-      System.out.println(PgnUtility.calculateBoardPerLastMove(pgnGame).isCheck()); // not reached
-    } catch (final LenientPgnParserValidationException e) {
-      System.out.println(e.getMessage());
-      // The validation for 2. Nf4 failed. Reason: The move specification is invalid because there is no knight which
-      // can move to square f4.
-      return;
-    }
+Output:
+```
+The validation for 2. Nf4 failed. Reason: The lenient SAN parser could not parse 'Nf4': No knight can reach square f4.
 ```
 
 #### File parsing
 
 ```java
-    final PgnGame pgnGame = LenientPgnParser.parse("C:\\temp\\myFile.pgn");
-    final Board board = PgnUtility.calculateBoardPerLastMove(pgnGame);
-    System.out.println(board.isCheckmate());
+final PgnGame pgnGame = LenientPgnParser.parse("C:\\temp\\myFile.pgn");
+final Board board = PgnUtility.calculateBoard(pgnGame);
+System.out.println(board.isCheckmate());
 ```
 
 ### Strict PGN parser
@@ -560,70 +565,73 @@ The strict PGN parser does not allow inconsistencies as the lenient PGN parser. 
 #### PGN valid
 
 ```java
-    final var pgn = """
-        [Event "Spring Classic"]
-        [Site "Somewhere"]
-        [Date "2024.01.01"]
-        [Round "1"]
-        [White "Player1"]
-        [Black "Player2"]
-        [Result "*"]
+final String pgn = """
+    [Event "Spring Classic"]
+    [Site "Somewhere"]
+    [Date "2024.01.01"]
+    [Round "1"]
+    [White "Player1"]
+    [Black "Player2"]
+    [Result "*"]
 
-        1. e4 e5 2. Nf3 Nf6 3. Bc4 Bc5 *
-        """;
+    1. e4 e5 2. Nf3 Nf6 3. Bc4 Bc5 *
 
-    final PgnGame pgnGame = StrictPgnParser.parseText(pgn);
-    final Board board = PgnUtility.calculateBoardPerLastMove(pgnGame);
-    board.moveStrict("a3");
+    """;
+final PgnGame pgnGame = StrictPgnParser.parseText(pgn);
+final Board board = PgnUtility.calculateBoard(pgnGame);
+board.moveStrict("a3");
 ```
 
 #### PGN invalid syntax
 
 ```java
-    final var pgn = """
-        [ Event "Spring Classic"]
+final String pgn = """
+    [ Event "Spring Classic"]
 
-        1. e4 e5 2. Nf3 Nf6 3. Bc4 Bc5
-        """;
+    1. e4 e5 2. Nf3 Nf6 3. Bc4 Bc5
 
-    final PgnGame pgnGame;
-    try {
-      pgnGame = StrictPgnParser.parseText(pgn);
-      System.out.println(PgnUtility.calculateBoardPerLastMove(pgnGame).isCheck()); // not reached
-    } catch (final StrictPgnParserValidationException e) {
-      System.out.println(e.getMessage());
-      // The left square bracket [ must be followed by the tag name, but a space was found.
-      return;
-    }
+    """;
+try {
+  final PgnGame pgnGame = StrictPgnParser.parseText(pgn);
+  System.out.println(PgnUtility.calculateBoard(pgnGame).isCheck()); // not reached
+} catch (final StrictPgnParserValidationException e) {
+  System.out.println(e.getMessage());
+}
+```
+
+Output:
+```
+The left square bracket [ must be followed by the tag name, but a space was found.
 ```
 
 #### PGN invalid form
 
 ```java
-    final var pgn = """
-        [Event "Spring Classic"]
+final String pgn = """
+    [Event "Spring Classic"]
 
-        1. e4 e5 2. Nf3 Nf6 3. Bc4 Bc5
-        """;
+    1. e4 e5 2. Nf3 Nf6 3. Bc4 Bc5 *
 
-    final PgnGame pgnGame;
-    try {
-      pgnGame = StrictPgnParser.parseText(pgn);
-      System.out.println(PgnUtility.calculateBoardPerLastMove(pgnGame).isCheck()); // not reached
-    } catch (final StrictPgnParserValidationException e) {
-      System.out.println(e.getMessage());
-      // Not all tags from the seven tag roster (Event, Site, Date, Round, White, Black, Result) are set. The first not
-      // found tag is "Site".
-      return;
-    }
+    """;
+try {
+  final PgnGame pgnGame = StrictPgnParser.parseText(pgn);
+  System.out.println(PgnUtility.calculateBoard(pgnGame).isCheck()); // not reached
+} catch (final StrictPgnParserValidationException e) {
+  System.out.println(e.getMessage());
+}
+```
+
+Output:
+```
+The Result tag is required. PGN spec section 8.1.1 archival storage requires the full seven tag roster, but the strict parser only enforces the semantic essentials: a Result tag (whose value must match the termination marker) and the SetUp/FEN coupling. Other roster tags are archival-storage concerns only.
 ```
 
 #### File parsing
 
 ```java
-    final PgnGame pgnGame = StrictPgnParser.parse("C:\\temp\\myFile.pgn");
-    final Board board = PgnUtility.calculateBoardPerLastMove(pgnGame);
-    System.out.println(board.isThreefoldRepetition());
+final PgnGame pgnGame = StrictPgnParser.parse("C:\\temp\\myFile.pgn");
+final Board board = PgnUtility.calculateBoard(pgnGame);
+System.out.println(board.isThreefoldRepetition());
 ```
 
 ## PGN creation
