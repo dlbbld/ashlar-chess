@@ -104,7 +104,7 @@ Fifty moves and beyond:
   start-anchor derives its starting side from a played ply.
 - Regenerate the README example through the Task 1 pipeline; update the report-format tests.
 
-### Task 4 (major, non-cosmetic) — extend the unwinnability theorem to lone-bishop / lone-knight winners
+### obsolete (already done) - Task 4 (major, non-cosmetic) — extend the unwinnability theorem to lone-bishop / lone-knight winners
 
 Build Miguel Ambrona's proofs (his PDF / written assessment of the CHA algorithm) for two additional material classes
 into the full unwinnability analysis: the intended winner holding **only K+B** and **only K+N**. These are
@@ -130,7 +130,7 @@ into the full unwinnability analysis: the intended winner holding **only K+B** a
   fixtures where a PGN replay is not needed, as the focused insufficient-material oracle already does). Pin the theorem
   decision against the search-based path on representative FENs.
 
-### Task 5 adjudication - implement adjudication methods
+### done - Task 5 adjudication - implement adjudication methods
 
 Implement suggested adjudication methods in the README.md and then add the effective code in the REAMDE.md.
 
