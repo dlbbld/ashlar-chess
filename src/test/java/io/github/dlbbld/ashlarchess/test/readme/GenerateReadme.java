@@ -8,7 +8,7 @@ package io.github.dlbbld.ashlarchess.test.readme;
  * editing the template or an example:
  *
  * <pre>
- * mvn -q exec:java -Dexec.mainClass=io.github.dlbbld.ashlarchess.test.readme.GenerateReadme -Dexec.classpathScope=test
+ * mvn -q test-compile exec:java -Dexec.mainClass=io.github.dlbbld.ashlarchess.test.readme.GenerateReadme -Dexec.classpathScope=test
  * </pre>
  *
  * {@code TestReadmeUpToDate} fails the build if the committed README differs from a fresh render.

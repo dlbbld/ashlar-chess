@@ -209,9 +209,7 @@ None
 Fifty moves and beyond:
 63... Rg8 (1) - 114... Rf6+ (103)
 ```
-The numbers in parentheses are the number of full moves. So "0.5" is one halfmove, "50" is 100 halfmoves and "51.5" is 103 halfmoves.
-The halfmove series always indicates the first halfmove with (0.5), fifty halfmoves with (50), and seventy-five halfmoves if reached as (75) 
-and finally, the last halfmove in the series.
+The number in parentheses is the halfmove clock - the count of consecutive halfmoves without a capture or pawn move. The line gives the first halfmove of the sequence and, after the dash, the last.
 
 # Game adjudication
 The game-ending logic is easiest to understand when written out directly. First decide which player would otherwise
@@ -321,7 +319,7 @@ in any way, it is only trying an alternative approach for some material cases.
 * UNWINNABLE - the position is not winnable by the player
 * UNDETERMINED - the limits in the code interrupted the search
 
-Performance: The limit regarding "UNDETERMINED" is 500'000 positions. It takes around one minute to reach. Most positions evaluate below one second. 
+Performance: The limit regarding "UNDETERMINED" is 500'000 positions. It takes around one minute to reach. Most positions evaluate below one second.
 
 ### Dead position
 A position is dead when it is unwinnable for both players. The no-side overloads check this and reuse the same verdict
@@ -368,7 +366,7 @@ White could have won.
 
 #### Pawn walls
 Pawn walls are blocked positions, both players cannot mate and cannot make progress, so they are dead positions. They are not detected
-by most common chess libraries. 
+by most common chess libraries.
 [Game](https://lichess.org/c3ew66ZV#123)
 
 ```java
@@ -432,9 +430,9 @@ Positions can also often be dead due to forced moves.
 ```
 
 # PGN functionality
-      
+
 ## PGN parser
-      
+
 ### Lenient PGN parser
 The common PGN parser — reads the file with best effort. For example, the space after `[` below is ignored. See the [Not supported](#not-supported) section above for what neither parser accepts.
 
@@ -485,7 +483,7 @@ The parser does a bit more than a standard parser should do. It converts the imp
     // [Result "*"]
     //
     // 1. e4 e5 2. Nf3 Nf6 3. Bc4 Bc5 *
-    // 
+    //
 ```
 
 #### PGN SAN tolerances
@@ -578,7 +576,7 @@ The strict PGN parser does not allow inconsistencies as the lenient PGN parser. 
     final Board board = PgnUtility.calculateBoardPerLastMove(pgnGame);
     board.moveStrict("a3");
 ```
-    
+
 #### PGN invalid syntax
 
 ```java
@@ -627,7 +625,7 @@ The strict PGN parser does not allow inconsistencies as the lenient PGN parser. 
     final Board board = PgnUtility.calculateBoardPerLastMove(pgnGame);
     System.out.println(board.isThreefoldRepetition());
 ```
-      
+
 ## PGN creation
 
 ### Create PGN for game
@@ -678,7 +676,7 @@ A PGN can be written to the file system as below.
     final PgnGame pgnGame = PgnCreate.createPgnGame(board);
     PgnWriter.writePgn(pgnGame, "C:\\temp\\myFile.pgn");
 ```
-    
+
 ## PGN validation
 
 ### PGN lenient validation
@@ -762,7 +760,7 @@ Checks whether a PGN adheres to the export format per the PGN specification.
     System.out.println(result.message());
     // The movetext does not continue with move number "3. " as expected
 ```
-    
+
 #### File validation
 
 ```java
