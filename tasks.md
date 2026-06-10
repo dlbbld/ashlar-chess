@@ -17,8 +17,9 @@ Minor release. The non-cosmetic core extends the full analyzer's basic-helpmate-
 material classes proved by Miguel Ambrona (the CHA author): the side intending to win holding **only king + bishop** or
 **only king + knight**, so the full analyzer decides their unwinnability directly from the proof instead of by
 cooperative-mate search. The rest is README work: regenerate the now-stale repetition / fifty-move report output and
-move the README onto a template-plus-generator pipeline so that output can never silently drift again, and tighten the
-long-winded motivation into a one-paragraph charter. Cut + Central deploy follow the workflows.md procedure.
+move the README onto a template + generator pipeline so every snippet provably compiles and prints exactly the output
+shown, and tighten the long-winded motivation into a one-paragraph charter. Cut + Central deploy follow the workflows.md
+procedure.
 
 scalachess is **out of scope** for 18.1.0 — it was a one-time correctness check that has served its purpose; see
 [_scalachess as a permanent differential oracle_](#scalachess-as-a-permanent-differential-oracle) under Obsolete.
@@ -49,24 +50,40 @@ into the full unwinnability analysis: the intended winner holding **only K+B** a
   fixtures where a PGN replay is not needed, as the focused insufficient-material oracle already does). Pin the theorem
   decision against the search-based path on representative FENs.
 
-### Task 1 (cosmetic) — regenerate the report output and move the README onto a template + generator
+### Task 1 (cosmetic) — doctest the README: every snippet compiles and prints exactly what is shown
 
-The repetition and fifty-move `Reporter.printReport` output blocks in the README (§"Threefold repetition and
-fifty-moves") are stale — the printed format changed in 16.0.0 and is still maturing. Rather than hand-edit them,
-introduce a README pipeline:
+**Hard requirement (from the user).** Every code example in the README must be real, compilable Java that — run with
+the inputs shown — produces *exactly* the output cited beneath it. No hand-copied code, no hand-typed output. The
+repetition / fifty-move `Reporter.printReport` blocks (§"Threefold repetition and fifty-moves") are the immediate
+trigger (stale since the 16.0.0 format change, still maturing), but the guarantee applies to every real-Java example.
+The mechanism is the author's choice; what matters is that "it compiles" is enforced by `javac` and "it prints this" is
+enforced by actually running it.
 
-- A checked-in template (proposed `README.template.md`) holding the prose plus typed placeholders for every
-  code-generated output block.
-- A Java generator (proposed `src/test/java/io/github/dlbbld/ashlarchess/test/generate/GenerateReadme.java`, mirroring
-  the existing `GenerateTestCaseForPgn*` helpers) that runs each example against the live library, captures stdout,
-  substitutes it into the template, and writes `README.md`.
-- `README.md` becomes a generated artifact: edit the template, regenerate. A drift guard (a test asserting `README.md`
-  equals a fresh regeneration, mirroring `TestSetupPgnRegistration`'s corpus-vs-registry assertion) keeps the two in
-  sync as the report format finalises.
+Decided approach — generate the README from compiled, executed example source (this is what makes the guarantee real
+rather than aspirational):
 
-Open design point to confirm during implementation: how the example snippets are sourced — a generator-owned registry
-of runnable examples vs. extracting from real test methods. Default to the generator-owned registry unless we prefer
-doctest-style extraction.
+- One real test-tree source of example methods (e.g. `io.github.dlbbld.ashlarchess.test.readme.ReadmeExamples`), one
+  method per README example, written as ordinary compilable Java and emitting output via captured `System.out` (or a
+  returned string). Region markers (e.g. `// <readme:threefold-claim-ahead> … // </readme:…>`) delimit the slice shown
+  in the README; imports and the method/class wrapper are compiled but elided from the display.
+- A checked-in `README.template.md` holds the prose plus a placeholder per example (code slot + output slot).
+- `GenerateReadme` (test-tree `main`, mirroring the `GenerateTestCaseForPgn*` helpers) runs each example, captures its
+  output, slices the marked source, and writes `README.md` = template with both substituted.
+- Drift guard: a JUnit test regenerates in-memory and asserts equality with the committed `README.md` (same pattern as
+  `TestSetupPgnRegistration`). The build then fails on any hand-edit of `README.md`, or any API/output change that
+  wasn't regenerated — so the compile-and-output guarantee is enforced every run, not trusted.
+
+Edge cases (not every example is deterministic, self-contained Java):
+- **Inline `// result` outputs** (`System.out.println(board.isCheckmate()); // true`) vs. **separate fenced output
+  blocks** (the report examples). Both must be generated; the inline form substitutes the captured value into the
+  trailing comment.
+- **Non-deterministic output** — `PgnCreate` emits `[Date "<today>"]`. Normalize (inject a fixed date, or keep the
+  `<today>` placeholder) so regeneration is stable.
+- **Filesystem side effects** — `PgnWriter.writePgn(…, "C:\\temp\\…")` / `parse("C:\\temp\\…")` compile but can't run
+  against a literal path. Run against a generator-managed temp path while displaying an illustrative one, or mark them
+  compile-only (compiled, no output asserted).
+- **Pseudocode blocks** — the game-adjudication `on flagfall(…)` blocks are ` ```text ` pseudocode, not Java; out of
+  scope for compilation.
 
 ### Task 2 (cosmetic) — tighten the motivation into a charter
 
