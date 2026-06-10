@@ -18,7 +18,9 @@ import io.github.dlbbld.ashlarchess.common.model.HalfMove;
  */
 abstract class SequenceStartFormat {
 
-  /** The start anchor: {@code [Starting position] (W/B)} for an initial-FEN start, else {@code <first move> (W/B)}. */
+  /**
+   * The start anchor: {@code [Starting position] (W/B)} for an initial-FEN start, else {@code <first move> (W/B)}.
+   */
   static String startAnchor(SequenceStart start, Side startingSide) {
     if (start.isInitialFen()) {
       return "[Starting position] " + counts(start.initialClockValue(), startingSide);
@@ -26,12 +28,16 @@ abstract class SequenceStartFormat {
     return plyAnchor(start.firstNonZeroingMoveOrThrow(), startingSide);
   }
 
-  /** A played-ply anchor: {@code <move> (W/B)}. */
+  /**
+   * A played-ply anchor: {@code <move> (W/B)}.
+   */
   static String plyAnchor(HalfMove ply, Side startingSide) {
     return HalfMoveUtility.calculateMoveNumberAndSanWithSpace(ply) + " " + counts(ply.halfMoveClock(), startingSide);
   }
 
-  /** The {@code (White/Black)} move counts for a halfmove clock, given the side that started the run. */
+  /**
+   * The {@code (White/Black)} move counts for a halfmove clock, given the side that started the run.
+   */
   static String counts(int clock, Side startingSide) {
     final int starterCount = (clock + 1) / 2;
     final int otherCount = clock / 2;

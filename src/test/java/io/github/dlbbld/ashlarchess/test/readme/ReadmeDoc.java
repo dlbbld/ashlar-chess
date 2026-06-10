@@ -21,6 +21,7 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import io.github.dlbbld.ashlarchess.common.Nulls;
 import io.github.dlbbld.ashlarchess.test.common.utility.FileUtility;
 
 /**
@@ -29,9 +30,9 @@ import io.github.dlbbld.ashlarchess.test.common.utility.FileUtility;
  *
  * <ul>
  * <li>{@code <!-- readme:code id=ID -->} - the verbatim source slice of the example's {@code // <readme:ID>} ...
- * {@code // </readme:ID>} region (de-indented), wrapped in a {@code java} fence. Within the slice, each
- * {@code [out]} marker is replaced by the next line the example printed, so short results show inline (any trailing
- * gloss text after the marker, e.g. {@code (dead)}, is preserved).</li>
+ * {@code // </readme:ID>} region (de-indented), wrapped in a {@code java} fence. Within the slice, each {@code [out]}
+ * marker is replaced by the next line the example printed, so short results show inline (any trailing gloss text after
+ * the marker, e.g. {@code (dead)}, is preserved).</li>
  * <li>{@code <!-- readme:output id=ID -->} - the example's remaining captured output (lines not consumed by an inline
  * {@code [out]} marker), wrapped in a plain fence. Used for multi-line outputs such as a printed report or PGN.</li>
  * </ul>
@@ -44,10 +45,10 @@ import io.github.dlbbld.ashlarchess.test.common.utility.FileUtility;
  */
 public final class ReadmeDoc {
 
-  private static final Path TEMPLATE_PATH = Path.of("README.template.md");
-  private static final Path README_PATH = Path.of("README.md");
-  private static final Path EXAMPLES_SOURCE_PATH = Path
-      .of("src/test/java/io/github/dlbbld/ashlarchess/test/readme/ReadmeExamples.java");
+  private static final Path TEMPLATE_PATH = Nulls.pathOf("README.template.md");
+  private static final Path README_PATH = Nulls.pathOf("README.md");
+  private static final Path EXAMPLES_SOURCE_PATH = Nulls
+      .pathOf("src/test/java/io/github/dlbbld/ashlarchess/test/readme/ReadmeExamples.java");
 
   private static final Pattern PLACEHOLDER = Pattern
       .compile("^\\s*<!--\\s*readme:(code|output)\\s+id=([A-Za-z0-9-]+)\\s*-->\\s*$");
@@ -73,13 +74,13 @@ public final class ReadmeDoc {
       final String id = example.id();
       final List<String> captured = example.run()
           ? stripTrailingBlanks(normalizeVolatile(captureOutput(example.body())))
-          : new ArrayList<String>();
+          : new ArrayList<>();
       final Deque<String> remaining = new ArrayDeque<>(captured);
       codeById.put(id, substituteInlineOutputs(sliceSource(sourceLines, id), remaining, id));
       final List<String> blockOutput = new ArrayList<>(remaining);
       if (!blockOutput.isEmpty() && !outputPlaceholderIds.contains(id)) {
-        throw new IllegalStateException("README example \"" + id
-            + "\" produced output with no " + OUT_TOKEN + " marker and no output placeholder to show it.");
+        throw new IllegalStateException("README example \"" + id + "\" produced output with no " + OUT_TOKEN
+            + " marker and no output placeholder to show it.");
       }
       outputById.put(id, blockOutput);
     }
@@ -105,7 +106,9 @@ public final class ReadmeDoc {
     return result;
   }
 
-  /** Renders and writes {@code README.md}. */
+  /**
+   * Renders and writes {@code README.md}.
+   */
   public static void writeReadme() {
     FileUtility.writeFile(README_PATH, generate());
   }
@@ -175,7 +178,7 @@ public final class ReadmeDoc {
       throw new IllegalStateException(
           "Source markers // <readme:" + id + "> ... // </readme:" + id + "> not found in " + EXAMPLES_SOURCE_PATH);
     }
-    return dedent(sourceLines.subList(start + 1, end));
+    return dedent(Nulls.subList(sourceLines, start + 1, end));
   }
 
   private static List<String> dedent(List<String> lines) {
@@ -191,7 +194,7 @@ public final class ReadmeDoc {
     }
     final List<String> result = new ArrayList<>();
     for (final String line : lines) {
-      result.add(line.isBlank() ? "" : line.substring(minIndent));
+      result.add(line.isBlank() ? "" : Nulls.substring(line, minIndent));
     }
     return result;
   }

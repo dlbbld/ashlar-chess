@@ -8,6 +8,7 @@ import java.util.List;
 import io.github.dlbbld.ashlarchess.board.Board;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
 import io.github.dlbbld.ashlarchess.board.enums.Square;
+import io.github.dlbbld.ashlarchess.common.Nulls;
 import io.github.dlbbld.ashlarchess.common.model.MoveSpecification;
 import io.github.dlbbld.ashlarchess.pgn.LenientPgnParser;
 import io.github.dlbbld.ashlarchess.pgn.LenientPgnParserValidationException;
@@ -32,12 +33,12 @@ import io.github.dlbbld.ashlarchess.unwinnability.UnwinnableQuickAnalyzer;
  *
  * <p>
  * {@link ReadmeDoc} performs the slicing and capture; {@code TestReadmeUpToDate} fails the build unless the committed
- * {@code README.md} matches a fresh render. Together these guarantee that every shown snippet is real, compiled code and
- * every shown output is exactly what that code printed - the README cannot drift from the library.
+ * {@code README.md} matches a fresh render. Together these guarantee that every shown snippet is real, compiled code
+ * and every shown output is exactly what that code printed - the README cannot drift from the library.
  *
  * <p>
- * {@link #examples()} maps each example id (matching its markers and its {@code README.template.md} placeholders) to the
- * method that produces it.
+ * {@link #examples()} maps each example id (matching its markers and its {@code README.template.md} placeholders) to
+ * the method that produces it.
  */
 public final class ReadmeExamples {
 
@@ -49,8 +50,7 @@ public final class ReadmeExamples {
    * placeholders. Order is for readability only - the template controls where each example renders.
    */
   public static List<ReadmeExample> examples() {
-    return List.of(
-        new ReadmeExample("threefold-claim-ahead", ReadmeExamples::threefoldClaimAhead, true),
+    return Nulls.listOf(new ReadmeExample("threefold-claim-ahead", ReadmeExamples::threefoldClaimAhead, true),
         new ReadmeExample("threefold-on-board", ReadmeExamples::threefoldOnBoard, true),
         new ReadmeExample("fifty-move", ReadmeExamples::fiftyMove, true),
         new ReadmeExample("basic-usage", ReadmeExamples::basicUsage, true),
