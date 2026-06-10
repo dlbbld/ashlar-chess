@@ -15,8 +15,10 @@ import io.github.dlbbld.ashlarchess.pgn.LenientPgnParserValidationResult;
 import io.github.dlbbld.ashlarchess.pgn.PgnCreate;
 import io.github.dlbbld.ashlarchess.pgn.PgnGame;
 import io.github.dlbbld.ashlarchess.pgn.PgnUtility;
+import io.github.dlbbld.ashlarchess.pgn.PgnWriter;
 import io.github.dlbbld.ashlarchess.pgn.StrictPgnParser;
 import io.github.dlbbld.ashlarchess.pgn.StrictPgnParserValidationException;
+import io.github.dlbbld.ashlarchess.pgn.StrictPgnParserValidationResult;
 import io.github.dlbbld.ashlarchess.pgn.WriteMode;
 import io.github.dlbbld.ashlarchess.report.Reporter;
 import io.github.dlbbld.ashlarchess.san.ForgivenItem;
@@ -68,7 +70,16 @@ public final class ReadmeExamples {
         new ReadmeExample("pgn-strict-valid", ReadmeExamples::pgnStrictValid, true),
         new ReadmeExample("pgn-strict-invalid-syntax", ReadmeExamples::pgnStrictInvalidSyntax, true),
         new ReadmeExample("pgn-strict-invalid-form", ReadmeExamples::pgnStrictInvalidForm, true),
-        new ReadmeExample("pgn-strict-file-parsing", ReadmeExamples::pgnStrictFileParsing, false));
+        new ReadmeExample("pgn-strict-file-parsing", ReadmeExamples::pgnStrictFileParsing, false),
+        new ReadmeExample("pgn-create-game", ReadmeExamples::pgnCreateGame, true),
+        new ReadmeExample("pgn-format", ReadmeExamples::pgnFormat, true),
+        new ReadmeExample("pgn-export", ReadmeExamples::pgnExport, false),
+        new ReadmeExample("pgn-lenient-validation-valid", ReadmeExamples::pgnLenientValidationValid, true),
+        new ReadmeExample("pgn-lenient-validation-invalid", ReadmeExamples::pgnLenientValidationInvalid, true),
+        new ReadmeExample("pgn-lenient-validation-file", ReadmeExamples::pgnLenientValidationFile, false),
+        new ReadmeExample("pgn-strict-validation-valid", ReadmeExamples::pgnStrictValidationValid, true),
+        new ReadmeExample("pgn-strict-validation-invalid", ReadmeExamples::pgnStrictValidationInvalid, true),
+        new ReadmeExample("pgn-strict-validation-file", ReadmeExamples::pgnStrictValidationFile, false));
   }
 
   public static void threefoldClaimAhead() {
@@ -343,5 +354,119 @@ public final class ReadmeExamples {
     final Board board = PgnUtility.calculateBoard(pgnGame);
     System.out.println(board.isThreefoldRepetition());
     // </readme:pgn-strict-file-parsing>
+  }
+
+  public static void pgnCreateGame() {
+    // <readme:pgn-create-game>
+    final Board board = new Board();
+    board.movesStrict("e4", "e5", "Nf3", "Nf6", "Bc4", "Bc5");
+
+    final PgnGame pgnGame = PgnCreate.createPgnGame(board);
+    System.out.println(PgnCreate.createPgnString(pgnGame, WriteMode.ARCHIVAL));
+    // </readme:pgn-create-game>
+  }
+
+  public static void pgnFormat() {
+    // <readme:pgn-format>
+    final Board board = new Board();
+    board.movesStrict("e4", "e5", "Nf3", "Nf6", "Bc4", "Bc5");
+
+    final PgnGame pgnGame = PgnCreate.createPgnGame(board);
+    final String pgnString = PgnCreate.createPgnString(pgnGame, WriteMode.ARCHIVAL);
+    System.out.println(LenientPgnParser.validateText(pgnString).isValid()); // [out]
+    System.out.println(StrictPgnParser.validateText(pgnString).isValid()); // [out]
+    // </readme:pgn-format>
+  }
+
+  public static void pgnExport() {
+    // <readme:pgn-export>
+    final Board board = new Board();
+    board.movesStrict("e4", "e5", "Nf3", "Nf6", "Bc4", "Bc5");
+
+    final PgnGame pgnGame = PgnCreate.createPgnGame(board);
+    PgnWriter.writePgn(pgnGame, "C:\\temp\\myFile.pgn", WriteMode.ARCHIVAL);
+    // </readme:pgn-export>
+  }
+
+  public static void pgnLenientValidationValid() {
+    // <readme:pgn-lenient-validation-valid>
+    final String pgn = """
+        [ Event "Spring Classic"]
+
+        1. e4 e5   2. Nf3
+        Nf6
+          3. Bc4 Bc5
+        """;
+    final LenientPgnParserValidationResult result = LenientPgnParser.validateText(pgn);
+    System.out.println(result.isValid()); // [out]
+    // </readme:pgn-lenient-validation-valid>
+  }
+
+  public static void pgnLenientValidationInvalid() {
+    // <readme:pgn-lenient-validation-invalid>
+    final String pgn = """
+        [ Event "Spring Classic"]
+
+        1. e4 e5   2. Nf3
+        Nf6
+          3. Bc4 Bc5 4. Y1
+        """;
+    final LenientPgnParserValidationResult result = LenientPgnParser.validateText(pgn);
+    System.out.println(result.isValid());
+    System.out.println(result.message());
+    // </readme:pgn-lenient-validation-invalid>
+  }
+
+  public static void pgnLenientValidationFile() {
+    // <readme:pgn-lenient-validation-file>
+    final LenientPgnParserValidationResult result = LenientPgnParser.validate("C:\\temp\\myFile.pgn");
+    System.out.println(result.isValid());
+    // </readme:pgn-lenient-validation-file>
+  }
+
+  public static void pgnStrictValidationValid() {
+    // <readme:pgn-strict-validation-valid>
+    final String pgn = """
+        [Event "Spring Classic"]
+        [Site "Somewhere"]
+        [Date "2024.01.01"]
+        [Round "1"]
+        [White "Player1"]
+        [Black "Player2"]
+        [Result "*"]
+
+        1. e4 e5 2. Nf3 Nf6 3. Bc4 Bc5 *
+
+        """;
+    final StrictPgnParserValidationResult result = StrictPgnParser.validateText(pgn);
+    System.out.println(result.isValid()); // [out]
+    // </readme:pgn-strict-validation-valid>
+  }
+
+  public static void pgnStrictValidationInvalid() {
+    // <readme:pgn-strict-validation-invalid>
+    final String pgn = """
+        [Event "Spring Classic"]
+        [Site "Somewhere"]
+        [Date "2024.01.01"]
+        [Round "1"]
+        [White "Player1"]
+        [Black "Player2"]
+        [Result "*"]
+
+        1. e4 e5 2. Nf3 Nf6 2. Bc4 Bc5 *
+
+        """;
+    final StrictPgnParserValidationResult result = StrictPgnParser.validateText(pgn);
+    System.out.println(result.isValid());
+    System.out.println(result.message());
+    // </readme:pgn-strict-validation-invalid>
+  }
+
+  public static void pgnStrictValidationFile() {
+    // <readme:pgn-strict-validation-file>
+    final StrictPgnParserValidationResult result = StrictPgnParser.validate("C:\\temp\\myFile.pgn");
+    System.out.println(result.isValid());
+    // </readme:pgn-strict-validation-file>
   }
 }

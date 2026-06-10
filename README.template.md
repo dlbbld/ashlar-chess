@@ -393,50 +393,22 @@ Output:
 
 You can create the PGN for a game played in the library or export an imported PGN.
 
-```java
-    final Board board = new Board();
-    board.movesStrict("e4", "e5", "Nf3", "Nf6", "Bc4", "Bc5");
+<!-- readme:code id=pgn-create-game -->
 
-    final PgnGame pgnGame = PgnCreate.createPgnGame(board);
-    System.out.println(PgnCreate.createPgnString(pgnGame));
-    // [Event "?"]
-    // [Site "?"]
-    // [Date "<today>"]
-    // [Round "?"]
-    // [White "?"]
-    // [Black "?"]
-    // [Result "*"]
-    //
-    // 1. e4 e5 2. Nf3 Nf6 3. Bc4 Bc5 *
-    //
-```
+Output:
+<!-- readme:output id=pgn-create-game -->
 
 ### PGN format
 
 The PGN is created in the unique export format as defined by the PGN specification so passes validation by the lenient and strict PGN parser.
 
-```java
-    final Board board = new Board();
-    board.movesStrict("e4", "e5", "Nf3", "Nf6", "Bc4", "Bc5");
-
-    final PgnGame pgnGame = PgnCreate.createPgnGame(board);
-
-    final String pgnString = PgnCreate.createPgnString(pgnGame);
-    System.out.println(LenientPgnParser.validateText(pgnString).isValid()); // true
-    System.out.println(StrictPgnParser.validateText(pgnString).isValid()); // true
-```
+<!-- readme:code id=pgn-format -->
 
 ## PGN export
 
 A PGN can be written to the file system as below.
 
-```java
-    final Board board = new Board();
-    board.movesStrict("e4", "e5", "Nf3", "Nf6", "Bc4", "Bc5");
-
-    final PgnGame pgnGame = PgnCreate.createPgnGame(board);
-    PgnWriter.writePgn(pgnGame, "C:\\temp\\myFile.pgn");
-```
+<!-- readme:code id=pgn-export -->
 
 ## PGN validation
 
@@ -445,40 +417,18 @@ Checks whether a PGN can be parsed using the PGN lenient parser.
 
 #### PGN valid
 
-```java
-    final var pgn = """
-        [ Event "Spring Classic"]
-
-        1. e4 e5   2. Nf3
-        Nf6
-          3. Bc4 Bc5
-                """;
-    final LenientPgnParserValidationResult result = LenientPgnParser.validateText(pgn);
-    System.out.println(result.isValid()); // true
-```
+<!-- readme:code id=pgn-lenient-validation-valid -->
 
 #### PGN invalid
 
-```java
-    final var pgn = """
-        [ Event "Spring Classic"]
+<!-- readme:code id=pgn-lenient-validation-invalid -->
 
-        1. e4 e5   2. Nf3
-        Nf6
-          3. Bc4 Bc5 4. Y1
-                """;
-    final LenientPgnParserValidationResult result = LenientPgnParser.validateText(pgn);
-    System.out.println(result.isValid()); // false
-    System.out.println(result.message());
-    // The movetext is invalid because a SAN contains an invalid character of "Y".
-```
+Output:
+<!-- readme:output id=pgn-lenient-validation-invalid -->
 
 #### File validation
 
-```java
-    final LenientPgnParserValidationResult result = LenientPgnParser.validate("C:\\temp\\myFile.pgn");
-    System.out.println(result.isValid());
-```
+<!-- readme:code id=pgn-lenient-validation-file -->
 
 ### PGN strict validation
 
@@ -486,48 +436,18 @@ Checks whether a PGN adheres to the export format per the PGN specification.
 
 #### PGN valid
 
-```java
-    final var pgn = """
-        [Event "Spring Classic"]
-        [Site "Somewhere"]
-        [Date "2024.01.01"]
-        [Round "1"]
-        [White "Player1"]
-        [Black "Player2"]
-        [Result "*"]
-
-        1. e4 e5 2. Nf3 Nf6 3. Bc4 Bc5 *
-        """;
-    final StrictPgnParserValidationResult result = StrictPgnParser.validateText(pgn);
-    System.out.println(result.isValid()); // true
-```
+<!-- readme:code id=pgn-strict-validation-valid -->
 
 #### PGN invalid
 
-```java
-    final var pgn = """
-        [Event "Spring Classic"]
-        [Site "Somewhere"]
-        [Date "2024.01.01"]
-        [Round "1"]
-        [White "Player1"]
-        [Black "Player2"]
-        [Result "*"]
+<!-- readme:code id=pgn-strict-validation-invalid -->
 
-        1. e4 e5 2. Nf3 Nf6 2. Bc4 Bc5 *
-        """;
-    final StrictPgnParserValidationResult result = StrictPgnParser.validateText(pgn);
-    System.out.println(result.isValid()); // false
-    System.out.println(result.message());
-    // The movetext does not continue with move number "3. " as expected
-```
+Output:
+<!-- readme:output id=pgn-strict-validation-invalid -->
 
 #### File validation
 
-```java
-    final StrictPgnParserValidationResult result = StrictPgnParser.validate("C:\\temp\\myFile.pgn");
-    System.out.println(result.isValid());
-```
+<!-- readme:code id=pgn-strict-validation-file -->
 
 # License
 
