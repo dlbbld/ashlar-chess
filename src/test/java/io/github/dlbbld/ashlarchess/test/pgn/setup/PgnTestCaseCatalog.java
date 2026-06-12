@@ -2726,7 +2726,7 @@ public class PgnTestCaseCatalog {
   }
 
   // Test fixtures for ShallowTerminationOracle. Each fixture exercises a specific depth (1, 2, or 3) at which the
-  // oracle should first find a terminal status, plus a control (no termination within 3 plies). Tests both
+  // oracle should first find a terminal status, plus a control (no termination within 3 moves). Tests both
   // White-to-move and Black-to-move variants with independent (non-mirror) positions.
   private static PgnTestCaseList createTestCasesShallowTermination() {
     final List<PgnFen> list = new ArrayList<>();

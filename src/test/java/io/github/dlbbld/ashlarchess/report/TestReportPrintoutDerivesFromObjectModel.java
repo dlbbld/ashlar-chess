@@ -50,8 +50,8 @@ class TestReportPrintoutDerivesFromObjectModel {
   @SuppressWarnings("static-method")
   @Test
   void threefoldReachedOnInitialPosition() {
-    // 8-ply knight shuffle: initial-position threefold on the board. Claim-ahead detected at the
-    // prior ply -> hasBeenPlayed == true -> asterisk in the output.
+    // 8-move knight shuffle: initial-position threefold on the board. Claim-ahead detected at the
+    // prior move -> hasBeenPlayed == true -> asterisk in the output.
     final Board board = new Board();
     board.movesStrict("Nf3", "Nf6", "Ng1", "Ng8", "Nf3", "Nf6", "Ng1", "Ng8");
 
@@ -121,7 +121,7 @@ class TestReportPrintoutDerivesFromObjectModel {
       assertEquals(fiftyClaimAhead.entries().size(), fiftyClaimAheadSection.size(),
           "fifty-move claim-ahead section must have one rendered line per FiftyMoveClaimAheadEntry");
       // No asterisks expected under the missed-opportunity filter: the actually-played move at the
-      // boundary ply is by construction clock-resetting, so the non-zeroing candidate never coincides
+      // boundary move is by construction clock-resetting, so the non-zeroing candidate never coincides
       // with the played move.
       final long asterisks = fiftyClaimAheadSection.stream().filter(line -> line.contains("*")).count();
       assertEquals(0, asterisks,

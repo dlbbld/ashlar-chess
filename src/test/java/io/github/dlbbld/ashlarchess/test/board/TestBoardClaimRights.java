@@ -125,8 +125,8 @@ class TestBoardClaimRights implements EnumConstants {
 
   @SuppressWarnings("static-method")
   @Test
-  void threefoldExactlyOneClaimAheadAfterSevenPlyKnightShuffle() {
-    // 7-ply knight shuffle: Nf3 Nf6 Ng1 Ng8 Nf3 Nf6 Ng1. Black to move. Only Ng8 returns to the
+  void threefoldExactlyOneClaimAheadAfterSevenMoveKnightShuffle() {
+    // 7-move knight shuffle: Nf3 Nf6 Ng1 Ng8 Nf3 Nf6 Ng1. Black to move. Only Ng8 returns to the
     // initial position for the 3rd time; all other Black moves either reset the clock (pawn moves)
     // or produce a fresh position.
     final Board board = new Board();

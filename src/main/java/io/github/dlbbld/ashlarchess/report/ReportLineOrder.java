@@ -9,23 +9,23 @@ import java.util.List;
 
 /**
  * Lexicographic ordering for printed report lines in the threefold sections. Each line corresponds to a sequence of
- * half-move counts (the displayed plies, optionally preceded by a virtual "[Initial position]" marker). The comparator
+ * half-move counts (the displayed moves, optionally preceded by a virtual "[Initial position]" marker). The comparator
  * orders lines by that sequence in standard lex order, so:
  *
  * <ul>
- * <li>Lines whose displayed plies share an earlier-position prefix stay grouped together. For a single dynamic position
+ * <li>Lines whose displayed moves share an earlier-position prefix stay grouped together. For a single dynamic position
  * whose repetition crosses the threefold threshold, then continues to fourfold and fivefold, the length-3 / length-4 /
- * length-5 claim-ahead lines all share the same opening plies and therefore sit adjacent - and in increasing-length
+ * length-5 claim-ahead lines all share the same opening moves and therefore sit adjacent - and in increasing-length
  * order, because a shorter sequence is a prefix of the longer one.</li>
  * <li>Lines that include the initial position sort before lines that do not. The "[Initial position]" marker is
- * conceptually before any played ply; the sort key represents it as a virtual half-move count of {@code -1}, lower than
- * any real ply.</li>
+ * conceptually before any played move; the sort key represents it as a virtual half-move count of {@code -1}, lower than
+ * any real move.</li>
  * </ul>
  *
  * <p>
- * Used by {@link ThreefoldClaimAheadReportBuilder} (one entry per claim-ahead candidate move; displayed plies are
+ * Used by {@link ThreefoldClaimAheadReportBuilder} (one entry per claim-ahead candidate move; displayed moves are
  * {@code priorOccurrences ++ claimAheadMove}) and by {@link ThreefoldExistingReportBuilder} (one group per repeated
- * position; displayed plies are {@code occurrences}).
+ * position; displayed moves are {@code occurrences}).
  */
 abstract class ReportLineOrder {
 
@@ -37,7 +37,7 @@ abstract class ReportLineOrder {
 
   /**
    * Orders 50-move claim-ahead entries by (sequence-start-anchor, boundary half-move count). The sequence-start anchor
-   * is {@code -1} for an initial-FEN start (sorts before any played ply) or the {@code firstNonZeroingMove}'s half-move
+   * is {@code -1} for an initial-FEN start (sorts before any played move) or the {@code firstNonZeroingMove}'s half-move
    * count for an after-reset start. This groups boundary entries by the run they belong to and orders within a run
    * chronologically.
    */

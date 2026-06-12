@@ -6,7 +6,7 @@ package io.github.dlbbld.ashlarchess.report;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
 
 /**
- * One missed 50-move claim-ahead boundary: a ply at which the no-progress sequence's halfmove clock would be 99 going
+ * One missed 50-move claim-ahead boundary: a move at which the no-progress sequence's halfmove clock would be 99 going
  * into the candidate move, the player had at least one non-zeroing legal move that would have brought clock to 100 and
  * satisfied the FIDE 9.3 claim, but did not play one (the actually-played move was clock-resetting, or the game ended
  * at the boundary).
@@ -14,7 +14,7 @@ import io.github.dlbbld.ashlarchess.board.enums.Side;
  * <p>
  * Carries only the boundary's chronological position (sequence start, half-move count, full-move number, side having
  * move) - NOT a specific candidate move. Multiple non-zeroing legal moves at the same boundary collapse into a single
- * entry: listing all of them would be 30+ rows for one missed-opportunity ply with no informational gain over a single
+ * entry: listing all of them would be 30+ rows for one missed-opportunity move with no informational gain over a single
  * row stating that the opportunity existed. The print layer renders the candidate position as a placeholder token
  * {@code [ahead claim possible]}.
  *

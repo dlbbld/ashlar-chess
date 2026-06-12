@@ -139,7 +139,7 @@ class TestBoardClaimFor implements EnumConstants {
   @SuppressWarnings("static-method")
   @Test
   void threefoldForReturnsTrueWhenCandidateMoveCreatesThirdOccurrence() {
-    // 7-ply knight shuffle stops one ply before the initial position's 3rd occurrence; Black to
+    // 7-move knight shuffle stops one move before the initial position's 3rd occurrence; Black to
     // move next. Black's knight is on f6; Ng8 returns to the initial position and triggers
     // threefold. canClaimThreefoldRepetitionRuleFor(Ng8) must return true.
     final Board board = new Board();
@@ -215,7 +215,7 @@ class TestBoardClaimFor implements EnumConstants {
   @SuppressWarnings("static-method")
   @Test
   void drawForReturnsTrueWhenOnlyThreefoldBranchTriggers() {
-    // 7-ply knight shuffle; Black's Ng8 creates threefold. Clock is small (around 7) so the 50-move
+    // 7-move knight shuffle; Black's Ng8 creates threefold. Clock is small (around 7) so the 50-move
     // branch is false. Composed convenience must still be true via the threefold branch.
     final Board board = new Board();
     board.movesStrict("Nf3", "Nf6", "Ng1", "Ng8", "Nf3", "Nf6", "Ng1");

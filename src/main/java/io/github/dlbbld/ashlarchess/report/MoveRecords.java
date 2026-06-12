@@ -14,8 +14,8 @@ import io.github.dlbbld.ashlarchess.common.model.MoveSpecification;
 import io.github.dlbbld.ashlarchess.model.LegalMove;
 
 /**
- * Builds {@link MoveRecord} rows for a played game. Replaces the former {@code Board.getHalfMoveList()} /
- * {@code getLastHalfMove()} bridge: the report layer reconstructs the rows here from {@link Board}'s public per-move
+ * Builds {@link MoveRecord} rows for a played game. Replaces the former {@code Board.getMoveList()} /
+ * {@code getLastMove()} bridge: the report layer reconstructs the rows here from {@link Board}'s public per-move
  * accessors rather than Board pre-bundling them. {@link #played(Board)} replays from the initial FEN, so it is
  * {@code O(moves * legal-move-generation)} - intended for report building, not hot paths.
  */

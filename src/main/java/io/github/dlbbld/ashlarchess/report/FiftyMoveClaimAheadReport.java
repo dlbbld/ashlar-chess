@@ -15,7 +15,7 @@ import io.github.dlbbld.ashlarchess.common.Nulls;
  * alone.
  *
  * <p>
- * One-entry-per-boundary collapse: multiple non-zeroing legal alternatives at the same boundary ply produce a single
+ * One-entry-per-boundary collapse: multiple non-zeroing legal alternatives at the same boundary move produce a single
  * entry, not one per alternative. The print layer renders the candidate position as a {@code [ahead claim possible]}
  * placeholder.
  *

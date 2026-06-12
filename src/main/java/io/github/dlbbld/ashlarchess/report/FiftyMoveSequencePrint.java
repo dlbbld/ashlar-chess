@@ -41,9 +41,9 @@ abstract class FiftyMoveSequencePrint {
     final Map<Integer, String> anchorByClock = new LinkedHashMap<>();
     anchorByClock.putIfAbsent(startClock(sequence.start()),
         SequenceStartFormat.startAnchor(sequence.start(), startingSide));
-    addPlyAnchor(anchorByClock, sequence.fiftyMoveThresholdPly(), startingSide);
-    addPlyAnchor(anchorByClock, sequence.seventyFiveMoveThresholdPly(), startingSide);
-    addPlyAnchor(anchorByClock, sequence.endPly(), startingSide);
+    addMoveAnchor(anchorByClock, sequence.fiftyMoveThresholdMove(), startingSide);
+    addMoveAnchor(anchorByClock, sequence.seventyFiveMoveThresholdMove(), startingSide);
+    addMoveAnchor(anchorByClock, sequence.endMove(), startingSide);
 
     final List<String> tokens = new ArrayList<>();
     for (final String anchor : anchorByClock.values()) {
@@ -55,9 +55,9 @@ abstract class FiftyMoveSequencePrint {
     return tokens;
   }
 
-  private static void addPlyAnchor(Map<Integer, String> anchorByClock, @Nullable MoveRecord ply, Side startingSide) {
-    if (ply != null) {
-      anchorByClock.putIfAbsent(ply.halfMoveClock(), SequenceStartFormat.plyAnchor(ply, startingSide));
+  private static void addMoveAnchor(Map<Integer, String> anchorByClock, @Nullable MoveRecord move, Side startingSide) {
+    if (move != null) {
+      anchorByClock.putIfAbsent(move.halfMoveClock(), SequenceStartFormat.moveAnchor(move, startingSide));
     }
   }
 

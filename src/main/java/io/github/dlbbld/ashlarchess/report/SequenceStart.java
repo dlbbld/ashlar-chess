@@ -8,7 +8,7 @@ import org.eclipse.jdt.annotation.Nullable;
 /**
  * The START of a 50-move-rule no-progress sequence. Either the sequence inherits an existing halfmove-clock value from
  * the starting FEN (build with {@link #initialFen(int)}), or it began with the first non-zeroing legal move played
- * after a clock-resetting ply (build with {@link #afterReset(MoveRecord)}).
+ * after a clock-resetting move (build with {@link #afterReset(MoveRecord)}).
  *
  * <p>
  * The two shapes share one record with a boolean discriminator. The compact constructor enforces that exactly one of

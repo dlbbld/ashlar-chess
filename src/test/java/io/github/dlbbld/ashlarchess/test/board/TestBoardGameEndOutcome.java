@@ -77,7 +77,7 @@ class TestBoardGameEndOutcome {
   @SuppressWarnings("static-method")
   @Test
   void fivefoldAndSeventyFiveMoveFactsBothTrueOutcomeIsSeventyFiveMove() {
-    // 38 cycles of "Nf3 Nf6 Ng1 Ng8" from the initial position: 152 plies, clock 152, the initial position has occurred
+    // 38 cycles of "Nf3 Nf6 Ng1 Ng8" from the initial position: 152 moves, clock 152, the initial position has occurred
     // 39 times. Both fivefold and 75-move fire; neither checkmate, stalemate, nor insufficient material applies (full
     // piece complement). Precedence resolves to 75-move.
     final Board board = new Board();

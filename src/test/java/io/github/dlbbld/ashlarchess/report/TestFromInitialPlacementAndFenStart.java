@@ -67,7 +67,7 @@ class TestFromInitialPlacementAndFenStart {
   @Test
   void threefoldFromInitialWhiteToMove() {
     final Board board = new Board();
-    playKnightShuffleAsWhite(board, 2); // 8 plies -> initial position 3rd occurrence
+    playKnightShuffleAsWhite(board, 2); // 8 moves -> initial position 3rd occurrence
     assertThreefoldRepetition(board);
     assertReporterOutput(board, /* threefoldSectionNonEmpty */ true, /* expectedFiftyMoveSequenceReached */ false);
   }
@@ -76,7 +76,7 @@ class TestFromInitialPlacementAndFenStart {
   @Test
   void fivefoldFromInitialWhiteToMove() {
     final Board board = new Board();
-    playKnightShuffleAsWhite(board, 4); // 16 plies -> fivefold of initial position
+    playKnightShuffleAsWhite(board, 4); // 16 moves -> fivefold of initial position
     assertFivefoldRepetition(board);
     assertReporterOutput(board, /* threefoldSectionNonEmpty */ true, /* expectedFiftyMoveSequenceReached */ false);
   }
@@ -85,7 +85,7 @@ class TestFromInitialPlacementAndFenStart {
   @Test
   void fiftyMoveFromInitialWhiteToMove() {
     final Board board = new Board();
-    playKnightShuffleAsWhite(board, 25); // 100 plies -> halfmove clock 100
+    playKnightShuffleAsWhite(board, 25); // 100 moves -> halfmove clock 100
     assertFiftyMoveOrClaimable(board);
     assertReporterOutput(board, /* threefoldSectionNonEmpty */ true, /* expectedFiftyMoveSequenceReached */ true);
   }
@@ -94,7 +94,7 @@ class TestFromInitialPlacementAndFenStart {
   @Test
   void seventyFiveMoveFromInitialWhiteToMove() {
     final Board board = new Board();
-    playKnightShuffleAsWhite(board, 38); // 152 plies -> halfmove clock 152 (past 150 threshold)
+    playKnightShuffleAsWhite(board, 38); // 152 moves -> halfmove clock 152 (past 150 threshold)
     assertSeventyFiveMove(board);
     assertReporterOutput(board, /* threefoldSectionNonEmpty */ true, /* expectedFiftyMoveSequenceReached */ true);
   }
@@ -107,9 +107,9 @@ class TestFromInitialPlacementAndFenStart {
   @Test
   void threefoldFromInitialBlackToMove() {
     final Board board = new Board(FEN_INITIAL_BLACK_TO_MOVE);
-    playKnightShuffleAsBlack(board, 2); // 8 plies; Black moves first each cycle
+    playKnightShuffleAsBlack(board, 2); // 8 moves; Black moves first each cycle
     assertThreefoldRepetition(board);
-    // Fullmove numbering: with Black starting at fullmove 1, after 8 plies (4 cycles of Nf6/Nf3/Ng8/Ng1) the fullmove
+    // Fullmove numbering: with Black starting at fullmove 1, after 8 moves (4 cycles of Nf6/Nf3/Ng8/Ng1) the fullmove
     // counter is at 5 (incremented after each Black move).
     assertEquals(5, board.getFullMoveNumber(),
         "Black-to-move-at-fullmove-1: counter increments per Black move; 4 Black moves -> fullmove 5");
@@ -120,7 +120,7 @@ class TestFromInitialPlacementAndFenStart {
   @Test
   void fivefoldFromInitialBlackToMove() {
     final Board board = new Board(FEN_INITIAL_BLACK_TO_MOVE);
-    playKnightShuffleAsBlack(board, 4); // 16 plies
+    playKnightShuffleAsBlack(board, 4); // 16 moves
     assertFivefoldRepetition(board);
     assertEquals(9, board.getFullMoveNumber(), "Black-to-move-at-fullmove-1: 8 Black moves -> fullmove 9");
     assertReporterOutput(board, /* threefoldSectionNonEmpty */ true, /* expectedFiftyMoveSequenceReached */ false);
@@ -130,7 +130,7 @@ class TestFromInitialPlacementAndFenStart {
   @Test
   void fiftyMoveFromInitialBlackToMove() {
     final Board board = new Board(FEN_INITIAL_BLACK_TO_MOVE);
-    playKnightShuffleAsBlack(board, 25); // 100 plies
+    playKnightShuffleAsBlack(board, 25); // 100 moves
     assertFiftyMoveOrClaimable(board);
     assertReporterOutput(board, /* threefoldSectionNonEmpty */ true, /* expectedFiftyMoveSequenceReached */ true);
   }
@@ -139,7 +139,7 @@ class TestFromInitialPlacementAndFenStart {
   @Test
   void seventyFiveMoveFromInitialBlackToMove() {
     final Board board = new Board(FEN_INITIAL_BLACK_TO_MOVE);
-    playKnightShuffleAsBlack(board, 38); // 152 plies
+    playKnightShuffleAsBlack(board, 38); // 152 moves
     assertSeventyFiveMove(board);
     assertReporterOutput(board, /* threefoldSectionNonEmpty */ true, /* expectedFiftyMoveSequenceReached */ true);
   }
@@ -231,9 +231,9 @@ class TestFromInitialPlacementAndFenStart {
   // ===========================================================================================
 
   /**
-   * Plays {@code cycles} repetitions of the four-ply knight shuffle {@code Nf3 Nf6 Ng1 Ng8} from the initial position.
-   * Each cycle returns to the initial position, so {@code cycles == 2} produces 8 plies and the initial position has
-   * occurred 3 times; {@code cycles == 4} produces 16 plies and 5 occurrences; and so on.
+   * Plays {@code cycles} repetitions of the four-move knight shuffle {@code Nf3 Nf6 Ng1 Ng8} from the initial position.
+   * Each cycle returns to the initial position, so {@code cycles == 2} produces 8 moves and the initial position has
+   * occurred 3 times; {@code cycles == 4} produces 16 moves and 5 occurrences; and so on.
    */
   private static void playKnightShuffleAsWhite(Board board, int cycles) {
     for (int i = 0; i < cycles; i++) {
@@ -251,7 +251,7 @@ class TestFromInitialPlacementAndFenStart {
   }
 
   /**
-   * Plays {@code cycles} repetitions of the four-ply rook shuffle {@code Rg1 Kd8 Rh1 Ke8} starting from the
+   * Plays {@code cycles} repetitions of the four-move rook shuffle {@code Rg1 Kd8 Rh1 Ke8} starting from the
    * {@code FEN_KRR_K_WHITE_TO_MOVE} position. Castling rights are absent in the FEN, so the position returns to the
    * exact starting state after each cycle (no first-cycle rights erasure to shift the dynamic position).
    */
@@ -336,7 +336,7 @@ class TestFromInitialPlacementAndFenStart {
    *                                         the "Fifty moves and beyond" section should contain at least one sequence
    *                                         line; {@code false} if the section should render the "None" sentinel (no
    *                                         50-move stretch was reached in play). Threefold / fivefold tests pass
-   *                                         {@code false} (8/16 plies are well below the 50-move threshold); 50-move /
+   *                                         {@code false} (8/16 moves are well below the 50-move threshold); 50-move /
    *                                         75-move tests pass {@code true}.
    */
   private static void assertReporterOutput(Board board, boolean threefoldSectionNonEmpty,

@@ -119,11 +119,11 @@ class TestThreefoldExistingReportBuilder {
     final Board board = loadCorpusBoard("11_threefold_castling_one_before_first_threefold.pgn");
 
     final ThreefoldExistingReport report = build(board);
-    // The fixture file name says "one_before_first_threefold" - meaning the position is one ply
+    // The fixture file name says "one_before_first_threefold" - meaning the position is one move
     // away from third occurrence and has not yet been reached. So the existing-report should be
     // empty; the claim-ahead report would have an entry. That pins the boundary semantic.
     assertEquals(0, report.groups().size(),
-        "fixture stops one ply before third occurrence; threefold not yet on the board");
+        "fixture stops one move before third occurrence; threefold not yet on the board");
   }
 
   private static ThreefoldExistingReport build(Board board) {

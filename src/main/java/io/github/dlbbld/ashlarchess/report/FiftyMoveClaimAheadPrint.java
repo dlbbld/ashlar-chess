@@ -14,7 +14,7 @@ abstract class FiftyMoveClaimAheadPrint {
   /**
    * Placeholder where a specific candidate's SAN would otherwise go. The 50-move claim-ahead section emits one entry
    * per missed-opportunity boundary, not per alternative legal move, so the candidate position is rendered abstractly:
-   * the line states that an ahead-claim was possible at this ply, not which specific move would have triggered it.
+   * the line states that an ahead-claim was possible at this move, not which specific move would have triggered it.
    */
   private static final String CLAIM_AHEAD_POSSIBLE_PLACEHOLDER = "[ahead claim possible]";
 

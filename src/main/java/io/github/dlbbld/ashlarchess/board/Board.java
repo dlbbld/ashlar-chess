@@ -120,8 +120,8 @@ public class Board {
   private final List<Integer> repetitionCountList;
   private final List<String> sanList;
   private final List<String> lanList;
-  // halfMoveList intentionally NOT stored: the recorded-move rows are derived on demand by
-  // report.MoveRecords from the other per-ply parallel stores (performedLegalMoveList + sanList +
+  // moveList intentionally NOT stored: the recorded-move rows are derived on demand by
+  // report.MoveRecords from the other per-move parallel stores (performedLegalMoveList + sanList +
   // halfMoveClockList + dynamicPositionList + repetitionCountList + initial-FEN fullmove anchor).
   // Dropping the stored field eliminates one duplicated mutable list and keeps the recorded-move
   // type out of Board's state model.
@@ -197,7 +197,7 @@ public class Board {
     this.repetitionCountList.add(1);
 
     this.sanList = new ArrayList<>();
-    // halfMoveList intentionally not initialized - derived on demand from the parallel stores.
+    // moveList intentionally not initialized - derived on demand from the parallel stores.
     this.lanList = new ArrayList<>();
 
     this.whiteKingSideLossList = new ArrayList<>();
@@ -964,7 +964,7 @@ public class Board {
 
   @Override
   public int hashCode() {
-    // halfMoveList intentionally absent - it's now a derived view of the other per-ply lists, so it
+    // moveList intentionally absent - it's now a derived view of the other per-move lists, so it
     // carries no information not already covered by sanList + dynamicPositionList +
     // halfMoveClockList + repetitionCountList + performedLegalMoveList + initialFen.
     return Objects.hash(dynamicPositionList, halfMoveClockList, initialFen, isCheckList, isCheckmateList,

@@ -91,8 +91,8 @@ class TestBoardClaimWithOwnMove {
   @Test
   void canClaimThreefoldRepetitionRuleWithOwnMoveWhenMoveCreatesThirdOccurrence() {
     final Board board = new Board();
-    // 10-ply knight shuffle bringing each side's knight back twice. After ply 10 the position
-    // "Black to move, Nf3, Nb8, pawns e4/e5" has 2 occurrences (after plies 3 and 7). White
+    // 10-move knight shuffle bringing each side's knight back twice. After move 10 the position
+    // "Black to move, Nf3, Nb8, pawns e4/e5" has 2 occurrences (after moves 3 and 7). White
     // plays Nf3 to produce its third occurrence, triggering threefold.
     board.movesStrict("e4", "e5", "Nf3", "Nc6", "Ng1", "Nb8", "Nf3", "Nc6", "Ng5", "Nb8");
 
@@ -108,7 +108,7 @@ class TestBoardClaimWithOwnMove {
   @Test
   void cannotClaimThreefoldRepetitionRuleWithOwnMoveWhenNoMoveCreatesThirdOccurrence() {
     final Board board = new Board();
-    // First 7 plies of the same shuffle. After ply 7 Black is on move; "Black to move, Nf3,
+    // First 7 moves of the same shuffle. After move 7 Black is on move; "Black to move, Nf3,
     // Nb8, pawns e4/e5" has reached its 2nd occurrence. No Black move can produce a third
     // occurrence of any position. Black's Nc6 reaches "White to move, Nf3, Nc6, pawns e4/e5",
     // which has only 1 prior occurrence.

@@ -137,7 +137,7 @@ class TestPositionIdentifierUtility {
   @SuppressWarnings("static-method")
   @Test
   void claimAheadOverlapsExistingShareSingleLabel() {
-    // 8-ply knight shuffle: claim-ahead has the initial-position entry (Ng8 played at ply 8 with
+    // 8-move knight shuffle: claim-ahead has the initial-position entry (Ng8 played at move 8 with
     // hasBeenPlayed == true); existing has the initial-position group. Same position in both
     // reports -> the map must hold a single entry for that position, not two.
     final Board board = new Board();
@@ -191,7 +191,7 @@ class TestPositionIdentifierUtility {
     // order, then any positions appearing only in the existing-repetition groups are appended."
     //
     // Real games can't isolate this - the position that reaches threefold (existing) was also a
-    // claim-ahead at the prior ply, so the two reports overlap. Synthetic reports with distinct
+    // claim-ahead at the prior move, so the two reports overlap. Synthetic reports with distinct
     // positions give the precise ordering assertion: positionInClaimAhead gets "A", positionInExisting
     // gets "B" - and crucially NOT the reverse. (An implementation that walked existing first would
     // assign A to positionInExisting and would fail this test.)

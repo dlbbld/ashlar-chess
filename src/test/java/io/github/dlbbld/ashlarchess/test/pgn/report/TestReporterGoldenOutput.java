@@ -49,7 +49,7 @@ class TestReporterGoldenOutput {
   @Test
   void claimAheadOnlyInitial() {
     // 1. Nf3 Nf6 2. Ng1 Ng8 3. Nf3 Nf6 4. Ng1 - Black has not played 4...Ng8 yet, so the
-    // initial-position third occurrence is one ply ahead. Pure claim-ahead.
+    // initial-position third occurrence is one move ahead. Pure claim-ahead.
     final String actual = capturePgnFile("01_threefold_moves_very_low_one_before_first_threefold.pgn");
     compareOrRegenerate(actual, "02_claim_ahead_only_initial.txt");
   }
@@ -86,7 +86,7 @@ class TestReporterGoldenOutput {
   void fivefoldCorrectPotapovAdly2018() {
     // The only corpus fixture that produces multiple claim-ahead entries for the same dynamic
     // position (length 3, 4, 5 of the A-group plus separate B / C groups). Locks in the line
-    // sort order so a future regression that ranks lines by claim-ahead-ply (the old shape) or
+    // sort order so a future regression that ranks lines by claim-ahead-move (the old shape) or
     // by some other key would break a golden, not just slip silently into the printed report.
     final String actual = capturePgnFile("fivefold_correct_potapov_adly_2018.pgn");
     compareOrRegenerate(actual, "06_fivefold_correct_potapov_adly_2018.txt");
@@ -103,7 +103,7 @@ class TestReporterGoldenOutput {
     // Fifty moves and beyond:
     // [Starting position] (100)
     //
-    // Locks the special-case rendering - sequence-with-no-endPly - that's hard to test from any
+    // Locks the special-case rendering - sequence-with-no-endMove - that's hard to test from any
     // other entry point.
     final Board board = new Board("7k/8/8/8/8/8/1q6/K7 w - - 100 80");
     final String actual = captureStdout(() -> Reporter.printReport(board));

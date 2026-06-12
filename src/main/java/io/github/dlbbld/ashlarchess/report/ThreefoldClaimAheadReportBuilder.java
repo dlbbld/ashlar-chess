@@ -25,7 +25,7 @@ abstract class ThreefoldClaimAheadReportBuilder {
    * <p>
    * Entries are ordered by {@link ReportLineOrder#CLAIM_AHEAD_COMPARATOR}: lexicographic on the displayed half-move-
    * count sequence ({@code priorOccurrences ++ claimAheadMove}, prefixed by a virtual {@code -1} when
-   * {@code includesInitialPosition} is true). Sequences that share earlier plies stay adjacent and progress length-3 ->
+   * {@code includesInitialPosition} is true). Sequences that share earlier moves stay adjacent and progress length-3 ->
    * length-4 -> length-5 (the shorter is a prefix of the longer in standard lex order). When the played history reaches
    * the same dynamic position multiple times, the earlier claim-ahead boundary surfaces first.
    */
@@ -47,14 +47,14 @@ abstract class ThreefoldClaimAheadReportBuilder {
     final List<MoveRecord> result = new ArrayList<>();
     final Board replayBoard = new Board(initialFen);
     for (final LegalMove legalMove : performedLegalMoveList) {
-      collectClaimAheadsAtCurrentPly(result, replayBoard);
+      collectClaimAheadsAtCurrentMove(result, replayBoard);
       replayBoard.move(legalMove.moveSpecification());
     }
-    collectClaimAheadsAtCurrentPly(result, replayBoard);
+    collectClaimAheadsAtCurrentMove(result, replayBoard);
     return result;
   }
 
-  private static void collectClaimAheadsAtCurrentPly(List<MoveRecord> result, Board replayBoard) {
+  private static void collectClaimAheadsAtCurrentMove(List<MoveRecord> result, Board replayBoard) {
     for (final LegalMove legalMoveCheckAhead : replayBoard.getLegalMoves()) {
       final MoveSpecification move = legalMoveCheckAhead.moveSpecification();
       // Single source of truth: the report's per-move claim-ahead entries are exactly the moves
