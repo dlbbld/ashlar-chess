@@ -108,7 +108,7 @@ public class FenParserAdvanced implements EnumConstants {
       throw new FenAdvancedValidationException(
           FenAdvancedValidationProblem.INVALID_HALF_MOVE_CLOCK_TOO_BIG_RELATIVE_TO_FULL_MOVE_NUMBER,
           "the halfmove clock \"" + halfMoveClock + "\" is greater than the maximum possible halfmove clock \""
-              + maximumPossibleHalfMoveClock + "\" for the specified fullmove counter of " + fullMoveNumber);
+              + maximumPossibleHalfMoveClock + "\" for the specified fullmove number of " + fullMoveNumber);
     }
   }
 
@@ -445,22 +445,22 @@ public class FenParserAdvanced implements EnumConstants {
       fullMoveNumber = Integer.parseInt(fullMoveNumberStr);
     } catch (@SuppressWarnings("unused") final NumberFormatException e) {
       throw new FenAdvancedValidationException(FenAdvancedValidationProblem.INVALID_FULL_MOVE_NUMBER_RANGE,
-          "the fullmove counter of \"" + fullMoveNumberStr + "\" is not an integer value");
+          "the fullmove number of \"" + fullMoveNumberStr + "\" is not an integer value");
     }
 
     if (fullMoveNumber < 0) {
       throw new FenAdvancedValidationException(FenAdvancedValidationProblem.INVALID_FULL_MOVE_NUMBER_NEGATIVE,
-          "the fullmove counter of \"" + fullMoveNumberStr + "\" cannot be negative");
+          "the fullmove number of \"" + fullMoveNumberStr + "\" cannot be negative");
     }
 
     if (fullMoveNumber == 0) {
       throw new FenAdvancedValidationException(FenAdvancedValidationProblem.INVALID_FULL_MOVE_NUMBER_ZERO,
-          "the fullmove counter cannot be zero");
+          "the fullmove number cannot be zero");
     }
 
     if (fullMoveNumber > FenConstants.MAX_FULL_MOVE_NUMBER) {
       throw new FenAdvancedValidationException(FenAdvancedValidationProblem.INVALID_FULL_MOVE_NUMBER_TOO_BIG_ABSOLUT,
-          "the fullmove counter of " + fullMoveNumber + " is above the maximum supported value of "
+          "the fullmove number of " + fullMoveNumber + " is above the maximum supported value of "
               + FenConstants.MAX_FULL_MOVE_NUMBER + "");
     }
 

@@ -33,7 +33,7 @@ class TestLibraryCarlosFenValidationNotPass {
     // castling field contains non possible value for position
     assertTrue(testIsValid("4k3/8/8/8/8/8/8/4KR2 w K - 0 1"));
 
-    // halfmove counter contains non possible value (too big in regard to fullMoveNumber)
+    // halfmove clock contains non possible value (too big in regard to fullMoveNumber)
     assertTrue(testIsValid("4k3/8/8/8/8/8/8/4KR2 w K - 500 50"));
 
   }

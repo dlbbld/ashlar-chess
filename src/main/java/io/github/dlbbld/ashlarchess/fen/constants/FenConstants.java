@@ -29,7 +29,7 @@ public class FenConstants implements EnumConstants {
 
   static final String PIECE_PLACEMENT_AFTER_E4_E5 = "rnbqkbnr/pppp1ppp/8/4p3/4P3/8/PPPP1PPP/RNBQKBNR";
 
-  // we set the max fullmove counter so that the halfmove clock still fits in the int range
+  // we set the max fullmove number so that the halfmove clock still fits in the int range
   public static final int MAX_FULL_MOVE_NUMBER = (Integer.MAX_VALUE - 1) / 2;
 
   public static final Fen FEN_INITIAL = new Fen(FEN_INITIAL_STR, BitboardPosition.INITIAL_POSITION, WHITE,

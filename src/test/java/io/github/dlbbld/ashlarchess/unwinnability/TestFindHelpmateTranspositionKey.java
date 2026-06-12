@@ -15,7 +15,7 @@ import io.github.dlbbld.ashlarchess.board.Board;
  *
  * <p>
  * The helpmate search keys its visited-position map on {@code DynamicPosition}. The properties tested here are the ones
- * that distinguish {@code DynamicPosition} from a raw FEN-equality test: the halfmove and fullmove counters are not
+ * that distinguish {@code DynamicPosition} from a raw FEN-equality test: the halfmove clock and fullmove number are not
  * part of position identity, and the en-passant target square is normalised away when no opposing pawn can actually
  * capture there.
  */

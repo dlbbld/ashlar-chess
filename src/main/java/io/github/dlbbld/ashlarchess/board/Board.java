@@ -250,7 +250,7 @@ public class Board {
 
   /**
    * Constructs a {@code Board} from a FEN string via {@link LenientFenParser}. The lenient layer applies a
-   * syntactic-tolerance pass (whitespace, casing, missing halfmove/fullmove counters, non-canonical castling order,
+   * syntactic-tolerance pass (whitespace, casing, missing halfmove clock and fullmove number, non-canonical castling order,
    * non-ASCII dashes, trailing garbage) before delegating to {@link FenParserAdvanced}. Strict semantic invariants are
    * unchanged: a FEN with a missing king, a pawn on rank 1, an impossible double-check, or castling rights that
    * contradict the piece placement still fails. Callers who need to see the list of tolerated deviations should invoke

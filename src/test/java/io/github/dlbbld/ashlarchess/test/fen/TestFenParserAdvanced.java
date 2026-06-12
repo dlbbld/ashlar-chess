@@ -250,7 +250,7 @@ class TestFenParserAdvanced implements EnumConstants {
     checkParseFenException("rnbqkb1r/ppp1pppp/5n2/3pP3/8/8/PPPP1PPP/RNBQKBNR w KQkq d6 2 3",
         FenAdvancedValidationProblem.INVALID_HALF_MOVE_CLOCK_NOT_ZERO_BUT_EN_PASSANT_CAPTURE_TARGET_SQUARE_SET);
 
-    // fullmove counter
+    // fullmove number
     checkParseFenException("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 x",
         FenAdvancedValidationProblem.INVALID_FULL_MOVE_NUMBER_RANGE);
 

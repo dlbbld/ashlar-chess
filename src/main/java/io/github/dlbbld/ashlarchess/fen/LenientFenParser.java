@@ -140,7 +140,7 @@ public final class LenientFenParser {
    * accumulator. Returns the canonical six-field FEN string ready for {@link FenParserRaw} / {@link FenParserAdvanced}.
    * Throws {@link LenientFenParserValidationException} with {@link LenientFenParserValidationProblem#UNRECOVERABLE}
    * when the input has fewer than four fields after normalisation (cannot recover to a FEN with a defaulted
-   * halfmove/fullmove pair).
+   * halfmove clock and fullmove number).
    */
   private static String normalise(String fen, List<ForgivenFenItem> accumulator) {
     String working = fen;

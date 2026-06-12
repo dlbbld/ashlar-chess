@@ -651,7 +651,7 @@ public record BitboardPosition(long whitePawns, long whiteRooks, long whiteKnigh
    * the piece-movement part of castling (king and rook both move).
    *
    * <p>
-   * Castling rights, en-passant target square, side-to-move, and the halfmove / fullmove counters are intentionally NOT
+   * Castling rights, en-passant target square, side-to-move, and the halfmove clock and fullmove number are intentionally NOT
    * updated here - they live on {@link io.github.dlbbld.ashlarchess.board.Board} /
    * {@link io.github.dlbbld.ashlarchess.common.model.DynamicPosition}. This is the piece-placement-only equivalent of
    * {@code StaticPositionUtility.createPositionAfterMove}.
