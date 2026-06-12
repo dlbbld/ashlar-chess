@@ -11,7 +11,7 @@ import org.junit.jupiter.api.Test;
 import io.github.dlbbld.ashlarchess.board.Board;
 import io.github.dlbbld.ashlarchess.common.Nulls;
 import io.github.dlbbld.ashlarchess.common.model.MoveSpecification;
-import io.github.dlbbld.ashlarchess.model.PgnHalfMove;
+import io.github.dlbbld.ashlarchess.model.PgnMove;
 import io.github.dlbbld.ashlarchess.pgn.PgnGame;
 import io.github.dlbbld.ashlarchess.san.StrictSanParser;
 import io.github.dlbbld.ashlarchess.test.model.PgnFen;
@@ -90,7 +90,7 @@ class TestPerformMoveSanContract {
     final Board board = new Board(pgnGame.startFen());
 
     int halfMoveIndex = 0;
-    for (final PgnHalfMove halfMove : pgnGame.halfMoveList()) {
+    for (final PgnMove halfMove : pgnGame.moveList()) {
       halfMoveIndex++;
       final int hmi = halfMoveIndex;
       final String expectedProvidedSan = halfMove.san();
@@ -120,7 +120,7 @@ class TestPerformMoveSanContract {
         testCase.pgnName());
     final Board board = new Board(pgnGame.startFen());
 
-    for (final PgnHalfMove halfMove : pgnGame.halfMoveList()) {
+    for (final PgnMove halfMove : pgnGame.moveList()) {
       board.moveStrict(halfMove.san());
       final MoveSpecification expectedStoredMoveSpecification = board.getLastMove().moveSpecification();
       final String calculatedSan = board.getSan();

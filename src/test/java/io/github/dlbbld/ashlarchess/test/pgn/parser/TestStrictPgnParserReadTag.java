@@ -13,7 +13,7 @@ import org.junit.jupiter.api.Test;
 
 import io.github.dlbbld.ashlarchess.common.Nulls;
 import io.github.dlbbld.ashlarchess.fen.constants.FenConstants;
-import io.github.dlbbld.ashlarchess.model.PgnHalfMove;
+import io.github.dlbbld.ashlarchess.model.PgnMove;
 import io.github.dlbbld.ashlarchess.pgn.PgnGame;
 import io.github.dlbbld.ashlarchess.pgn.StandardTag;
 import io.github.dlbbld.ashlarchess.pgn.TagUtility;
@@ -21,9 +21,9 @@ import io.github.dlbbld.ashlarchess.test.pgntest.constants.PgnTestConstants;
 
 class TestStrictPgnParserReadTag {
 
-  private static List<String> calculateSanList(List<PgnHalfMove> halfMoveList) {
+  private static List<String> calculateSanList(List<PgnMove> moveList) {
     final List<String> sanList = new ArrayList<>();
-    for (final PgnHalfMove halfMove : halfMoveList) {
+    for (final PgnMove halfMove : moveList) {
       sanList.add(halfMove.san());
     }
     return sanList;
@@ -62,11 +62,11 @@ class TestStrictPgnParserReadTag {
     {
       final PgnGame pgnGame = PgnCacheForStrictPgnParserTestCases.getPgn(PGN_TEST_FOLDER_PATH,
           "03_example_white_last_move_short.pgn");
-      final List<String> halfMoveList = new ArrayList<>();
-      halfMoveList.add("Nf3");
-      halfMoveList.add("Nf6");
-      halfMoveList.add("c4");
-      assertEquals(halfMoveList, calculateSanList(pgnGame.halfMoveList()));
+      final List<String> moveList = new ArrayList<>();
+      moveList.add("Nf3");
+      moveList.add("Nf6");
+      moveList.add("c4");
+      assertEquals(moveList, calculateSanList(pgnGame.moveList()));
 
       assertEquals(FenConstants.FEN_INITIAL, pgnGame.startFen());
     }
@@ -74,12 +74,12 @@ class TestStrictPgnParserReadTag {
     {
       final PgnGame pgnGame = PgnCacheForStrictPgnParserTestCases.getPgn(PGN_TEST_FOLDER_PATH,
           "04_example_black_last_move_short.pgn");
-      final List<String> halfMoveList = new ArrayList<>();
-      halfMoveList.add("Nf3");
-      halfMoveList.add("Nf6");
-      halfMoveList.add("c4");
-      halfMoveList.add("c5");
-      assertEquals(halfMoveList, calculateSanList(pgnGame.halfMoveList()));
+      final List<String> moveList = new ArrayList<>();
+      moveList.add("Nf3");
+      moveList.add("Nf6");
+      moveList.add("c4");
+      moveList.add("c5");
+      assertEquals(moveList, calculateSanList(pgnGame.moveList()));
 
       assertEquals(FenConstants.FEN_INITIAL, pgnGame.startFen());
     }

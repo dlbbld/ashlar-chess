@@ -14,7 +14,7 @@ import org.junit.jupiter.api.Test;
 
 import io.github.dlbbld.ashlarchess.board.Board;
 import io.github.dlbbld.ashlarchess.common.utility.BasicUtility;
-import io.github.dlbbld.ashlarchess.model.PgnHalfMove;
+import io.github.dlbbld.ashlarchess.model.PgnMove;
 import io.github.dlbbld.ashlarchess.pgn.PgnGame;
 import io.github.dlbbld.ashlarchess.test.pgn.parser.PgnCacheForStrictPgnParserTestCases;
 import io.github.dlbbld.ashlarchess.test.pgntest.enums.PgnTest;
@@ -1007,7 +1007,7 @@ class TestLegalMovesForGames {
   private static void generateGame(PgnTest pgnTest, String pgnName) {
     final PgnGame pgnGame = PgnCacheForStrictPgnParserTestCases.getPgn(pgnTest.getFolderPath(), pgnName);
     final Board board = new Board();
-    for (final PgnHalfMove move : pgnGame.halfMoveList()) {
+    for (final PgnMove move : pgnGame.moveList()) {
       board.moveStrict(move.san());
       final String san = board.getSan();
       final String legalMoveList = BasicUtility.calculateCommaSeparatedList(new ArrayList<>(board.getLegalMovesSan()));

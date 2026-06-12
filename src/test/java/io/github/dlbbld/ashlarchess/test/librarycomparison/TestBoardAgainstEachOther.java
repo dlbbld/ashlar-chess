@@ -11,7 +11,7 @@ import io.github.dlbbld.ashlarchess.board.CommonTestUtility;
 import io.github.dlbbld.ashlarchess.board.LibraryCarlosBoard;
 import io.github.dlbbld.ashlarchess.common.Nulls;
 import io.github.dlbbld.ashlarchess.fen.constants.FenConstants;
-import io.github.dlbbld.ashlarchess.model.PgnHalfMove;
+import io.github.dlbbld.ashlarchess.model.PgnMove;
 import io.github.dlbbld.ashlarchess.pgn.PgnGame;
 import io.github.dlbbld.ashlarchess.test.RestrictTestConstants;
 import io.github.dlbbld.ashlarchess.test.model.PgnFen;
@@ -61,7 +61,7 @@ class TestBoardAgainstEachOther {
         final Board board = new Board();
         final LibraryCarlosBoard carlosBoard = new LibraryCarlosBoard();
 
-        for (final PgnHalfMove pgnHalfMove : pgnGame.halfMoveList()) {
+        for (final PgnMove pgnHalfMove : pgnGame.moveList()) {
 
           final String san = pgnHalfMove.san();
           board.moveStrict(san);

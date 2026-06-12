@@ -15,7 +15,7 @@ import io.github.dlbbld.ashlarchess.bitboard.BitboardLegalMoveFactory;
 import io.github.dlbbld.ashlarchess.bitboard.StaticPositionBridge;
 import io.github.dlbbld.ashlarchess.board.Board;
 import io.github.dlbbld.ashlarchess.board.enums.Square;
-import io.github.dlbbld.ashlarchess.model.PgnHalfMove;
+import io.github.dlbbld.ashlarchess.model.PgnMove;
 import io.github.dlbbld.ashlarchess.moves.AbstractLegalMoves;
 import io.github.dlbbld.ashlarchess.pgn.PgnGame;
 import io.github.dlbbld.ashlarchess.test.model.PgnFen;
@@ -86,7 +86,7 @@ public class MoveGenerationPerformanceSurvey {
       final PgnGame pgnGame = PgnCacheForStrictPgnParserTestCases.getPgn(pgnTest.getFolderPath(), testCase.pgnName());
       final Board board = new Board(pgnGame.startFen());
       addPosition(result, board);
-      for (final PgnHalfMove halfMove : pgnGame.halfMoveList()) {
+      for (final PgnMove halfMove : pgnGame.moveList()) {
         board.moveStrict(halfMove.san());
         addPosition(result, board);
         if (result.size() >= MAX_POSITIONS_PER_GROUP) {

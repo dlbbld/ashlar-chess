@@ -48,7 +48,7 @@ final class PgnArchivalNormalization {
     fillMissingSevenTagRoster(tagList);
     Collections.sort(tagList);
 
-    return new PgnGame(Nulls.copyOfList(tagList), startFen, input.pregameCommentary(), input.halfMoveList(), marker);
+    return new PgnGame(Nulls.copyOfList(tagList), startFen, input.pregameCommentary(), input.moveList(), marker);
   }
 
   /**

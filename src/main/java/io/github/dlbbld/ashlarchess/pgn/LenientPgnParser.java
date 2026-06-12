@@ -20,7 +20,7 @@ import io.github.dlbbld.ashlarchess.enums.MoveSuffixAnnotation;
 import io.github.dlbbld.ashlarchess.fen.LenientFenParser;
 import io.github.dlbbld.ashlarchess.fen.constants.FenConstants;
 import io.github.dlbbld.ashlarchess.fen.model.Fen;
-import io.github.dlbbld.ashlarchess.model.PgnHalfMove;
+import io.github.dlbbld.ashlarchess.model.PgnMove;
 import io.github.dlbbld.ashlarchess.san.ForgivenItem;
 import io.github.dlbbld.ashlarchess.san.LenientSanParserValidationException;
 import io.github.dlbbld.ashlarchess.san.LenientSanParserValidationResult;
@@ -193,10 +193,10 @@ public final class LenientPgnParser {
     recordResultAndTerminationMarkerItems(tagList, movetext.terminationResult());
     recordSetUpFenCouplingItems(tagList, startFen);
 
-    final List<PgnHalfMove> canonicalHalfMoveList = replayBoardCanonicalizing(startFen, movetext.halfMoveList());
+    final List<PgnMove> canonicalMoveList = replayBoardCanonicalizing(startFen, movetext.moveList());
 
     return new PgnGame(Nulls.copyOfList(tagList), startFen, movetext.pregameCommentary(),
-        Nulls.copyOfList(canonicalHalfMoveList), movetext.terminationResult());
+        Nulls.copyOfList(canonicalMoveList), movetext.terminationResult());
   }
 
   // -------------------------------------------------------------------------------------------------
@@ -339,13 +339,13 @@ public final class LenientPgnParser {
   // Movetext section
   // -------------------------------------------------------------------------------------------------
 
-  private record MovetextOutcome(List<PgnHalfMove> halfMoveList, PgnCommentary pregameCommentary,
+  private record MovetextOutcome(List<PgnMove> moveList, PgnCommentary pregameCommentary,
       @Nullable ResultTagValue terminationResult) {
   }
 
   private MovetextOutcome parseMovetext() {
     PgnCommentary pregameCommentary = PgnCommentary.EMPTY;
-    final List<PgnHalfMove> halfMoves = new ArrayList<>();
+    final List<PgnMove> halfMoves = new ArrayList<>();
     @Nullable ResultTagValue terminationResult = null;
 
     skipInsignificantWhitespace();
@@ -388,8 +388,8 @@ public final class LenientPgnParser {
         final PgnToken suffixToken = tokenizer.next();
         final MoveSuffixAnnotation suffix = parseMoveSuffix(suffixToken.text());
         final int last = halfMoves.size() - 1;
-        final PgnHalfMove previous = Nulls.get(halfMoves, last);
-        halfMoves.set(last, new PgnHalfMove(previous.san(), suffix, previous.commentary()));
+        final PgnMove previous = Nulls.get(halfMoves, last);
+        halfMoves.set(last, new PgnMove(previous.san(), suffix, previous.commentary()));
         continue;
       }
       if (type == PgnTokenType.SYMBOL) {
@@ -397,14 +397,14 @@ public final class LenientPgnParser {
         if (consumedSpacedMoveNumber(peek)) {
           continue;
         }
-        final PgnHalfMove halfMove = parseHalfMoveLenient();
+        final PgnMove halfMove = parseHalfMoveLenient();
         halfMoves.add(halfMove);
         skipInsignificantWhitespace();
         if (isBraceToken(tokenizer.peek().type())) {
           final PgnCommentary commentary = consumeCommentaryOrThrow();
           final int last = halfMoves.size() - 1;
-          final PgnHalfMove previous = Nulls.get(halfMoves, last);
-          halfMoves.set(last, new PgnHalfMove(previous.san(), previous.moveSuffixAnnotation(), commentary));
+          final PgnMove previous = Nulls.get(halfMoves, last);
+          halfMoves.set(last, new PgnMove(previous.san(), previous.moveSuffixAnnotation(), commentary));
         }
         continue;
       }
@@ -472,7 +472,7 @@ public final class LenientPgnParser {
     return true;
   }
 
-  private PgnHalfMove parseHalfMoveLenient() {
+  private PgnMove parseHalfMoveLenient() {
     final PgnToken sanToken = tokenizer.next();
     final StringBuilder sanBuilder = new StringBuilder(sanToken.text());
 
@@ -496,7 +496,7 @@ public final class LenientPgnParser {
       suffix = parseMoveSuffix(tokenizer.next().text());
     }
 
-    return new PgnHalfMove(san, suffix, PgnCommentary.EMPTY);
+    return new PgnMove(san, suffix, PgnCommentary.EMPTY);
   }
 
   private static boolean isBareCheckOrMate(String text) {
@@ -748,17 +748,17 @@ public final class LenientPgnParser {
    * On a SAN-level failure the partial accumulator is included on the thrown
    * {@link LenientPgnParserValidationException} so callers see how many deviations were forgiven before the failure.
    */
-  private List<PgnHalfMove> replayBoardCanonicalizing(Fen startFen, List<PgnHalfMove> halfMoveList) {
+  private List<PgnMove> replayBoardCanonicalizing(Fen startFen, List<PgnMove> moveList) {
     final Board board = new Board(startFen);
-    final List<PgnHalfMove> canonicalList = new ArrayList<>(halfMoveList.size());
-    for (final PgnHalfMove halfMove : halfMoveList) {
+    final List<PgnMove> canonicalList = new ArrayList<>(moveList.size());
+    for (final PgnMove halfMove : moveList) {
       final Side side = board.getHavingMove();
       final int fullMoveNumber = board.getFullMoveNumber();
       try {
         final LenientSanParserValidationResult result = board.moveLenient(halfMove.san());
         sanForgivenItemsAccumulator.addAll(result.forgivenItems());
         final String canonicalSan = board.getSan();
-        canonicalList.add(new PgnHalfMove(canonicalSan, halfMove.moveSuffixAnnotation(), halfMove.commentary()));
+        canonicalList.add(new PgnMove(canonicalSan, halfMove.moveSuffixAnnotation(), halfMove.commentary()));
       } catch (final LenientSanParserValidationException e) {
         final String moveNumberAndSan = HalfMoveUtility.calculateMoveNumberAndSanWithSpace(fullMoveNumber, side,
             halfMove.san());

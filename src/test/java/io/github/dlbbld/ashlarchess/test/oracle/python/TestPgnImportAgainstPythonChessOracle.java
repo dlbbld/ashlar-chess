@@ -20,7 +20,7 @@ import io.github.dlbbld.ashlarchess.board.Board;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
 import io.github.dlbbld.ashlarchess.common.Nulls;
 import io.github.dlbbld.ashlarchess.common.utility.BasicUtility;
-import io.github.dlbbld.ashlarchess.model.PgnHalfMove;
+import io.github.dlbbld.ashlarchess.model.PgnMove;
 import io.github.dlbbld.ashlarchess.pgn.PgnGame;
 import io.github.dlbbld.ashlarchess.pgn.StrictPgnParser;
 import io.github.dlbbld.ashlarchess.test.ConfigurationTestConstants;
@@ -123,7 +123,7 @@ class TestPgnImportAgainstPythonChessOracle {
         try {
           assertEquals(record.startFen(), pgnGame.startFen().fen(),
               () -> bucket + " / " + record.pgn() + " - startFen mismatch (ashlar-chess vs python-chess)");
-          assertEquals(record.moves().size(), pgnGame.halfMoveList().size(),
+          assertEquals(record.moves().size(), pgnGame.moveList().size(),
               () -> bucket + " / " + record.pgn() + " - half-move count mismatch (ashlar-chess vs python-chess)");
         } catch (final AssertionError e) {
           failures.add(BasicUtility.getMessage(e));
@@ -131,9 +131,9 @@ class TestPgnImportAgainstPythonChessOracle {
         }
 
         final Board board = new Board(pgnGame.startFen());
-        for (int ply = 0; ply < pgnGame.halfMoveList().size(); ply++) {
+        for (int ply = 0; ply < pgnGame.moveList().size(); ply++) {
           totalPlies++;
-          final PgnHalfMove halfMove = Nulls.get(pgnGame.halfMoveList(), ply);
+          final PgnMove halfMove = Nulls.get(pgnGame.moveList(), ply);
           final OracleMove expected = Nulls.get(record.moves(), ply);
           board.moveStrict(halfMove.san());
 

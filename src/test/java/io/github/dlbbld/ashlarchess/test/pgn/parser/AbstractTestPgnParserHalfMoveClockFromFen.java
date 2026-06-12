@@ -17,7 +17,7 @@ import com.google.common.collect.ImmutableList;
 import io.github.dlbbld.ashlarchess.board.Board;
 import io.github.dlbbld.ashlarchess.common.Nulls;
 import io.github.dlbbld.ashlarchess.common.utility.BasicUtility;
-import io.github.dlbbld.ashlarchess.model.PgnHalfMove;
+import io.github.dlbbld.ashlarchess.model.PgnMove;
 import io.github.dlbbld.ashlarchess.pgn.PgnGame;
 import io.github.dlbbld.ashlarchess.test.model.PgnFen;
 import io.github.dlbbld.ashlarchess.test.model.PgnTestCaseList;
@@ -67,7 +67,7 @@ abstract class AbstractTestPgnParserHalfMoveClockFromFen {
         final PgnGame pgnGame = parse.apply(bucket.getFolderPath(), pgnName);
 
         final Board board = new Board(pgnGame.startFen());
-        for (final PgnHalfMove halfMove : pgnGame.halfMoveList()) {
+        for (final PgnMove halfMove : pgnGame.moveList()) {
           board.moveStrict(halfMove.san());
         }
 

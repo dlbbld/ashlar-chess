@@ -6,7 +6,7 @@ package io.github.dlbbld.ashlarchess.pgn;
 import java.nio.file.Path;
 
 import io.github.dlbbld.ashlarchess.board.Board;
-import io.github.dlbbld.ashlarchess.model.PgnHalfMove;
+import io.github.dlbbld.ashlarchess.model.PgnMove;
 
 public abstract class PgnUtility {
 
@@ -17,7 +17,7 @@ public abstract class PgnUtility {
 
     final Board board = new Board(pgnGame.startFen());
 
-    for (final PgnHalfMove halfMove : pgnGame.halfMoveList()) {
+    for (final PgnMove halfMove : pgnGame.moveList()) {
       final String san = halfMove.san();
       board.moveStrict(san);
     }

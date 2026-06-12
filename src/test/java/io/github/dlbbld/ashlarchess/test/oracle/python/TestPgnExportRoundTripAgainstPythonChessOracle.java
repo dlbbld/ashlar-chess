@@ -22,7 +22,7 @@ import io.github.dlbbld.ashlarchess.common.Nulls;
 import io.github.dlbbld.ashlarchess.common.ucimove.utility.UciMoveUtility;
 import io.github.dlbbld.ashlarchess.common.utility.BasicUtility;
 import io.github.dlbbld.ashlarchess.model.LegalMove;
-import io.github.dlbbld.ashlarchess.model.PgnHalfMove;
+import io.github.dlbbld.ashlarchess.model.PgnMove;
 import io.github.dlbbld.ashlarchess.model.UciMove;
 import io.github.dlbbld.ashlarchess.pgn.PgnCreate;
 import io.github.dlbbld.ashlarchess.pgn.PgnGame;
@@ -154,15 +154,15 @@ class TestPgnExportRoundTripAgainstPythonChessOracle {
 
     try {
       assertEquals(record.startFen(), parsed.startFen().fen(), () -> label + " - startFen mismatch");
-      assertEquals(expectedUcis.size(), parsed.halfMoveList().size(), () -> label + " - half-move count mismatch");
+      assertEquals(expectedUcis.size(), parsed.moveList().size(), () -> label + " - half-move count mismatch");
     } catch (final AssertionError e) {
       failures.add(BasicUtility.getMessage(e));
       return;
     }
 
     final Board board = new Board(parsed.startFen());
-    final List<String> actualUcis = new ArrayList<>(parsed.halfMoveList().size());
-    for (final PgnHalfMove halfMove : parsed.halfMoveList()) {
+    final List<String> actualUcis = new ArrayList<>(parsed.moveList().size());
+    for (final PgnMove halfMove : parsed.moveList()) {
       board.moveStrict(halfMove.san());
       final LegalMove last = board.getLastMove();
       final UciMove uci = UciMoveUtility.convertMoveSpecificationToUci(last.havingMove(), last.moveSpecification());

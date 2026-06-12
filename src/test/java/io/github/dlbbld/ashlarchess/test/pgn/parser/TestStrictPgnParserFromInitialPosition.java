@@ -13,7 +13,7 @@ import org.junit.jupiter.api.Test;
 import io.github.dlbbld.ashlarchess.board.Board;
 import io.github.dlbbld.ashlarchess.common.Nulls;
 import io.github.dlbbld.ashlarchess.fen.constants.FenConstants;
-import io.github.dlbbld.ashlarchess.model.PgnHalfMove;
+import io.github.dlbbld.ashlarchess.model.PgnMove;
 import io.github.dlbbld.ashlarchess.pgn.PgnGame;
 import io.github.dlbbld.ashlarchess.test.pgntest.constants.PgnTestConstants;
 
@@ -70,7 +70,7 @@ class TestStrictPgnParserFromInitialPosition {
 
     final Board actual = new Board();
 
-    for (final PgnHalfMove halfMove : pgnGame.halfMoveList()) {
+    for (final PgnMove halfMove : pgnGame.moveList()) {
       actual.moveStrict(halfMove.san());
     }
 

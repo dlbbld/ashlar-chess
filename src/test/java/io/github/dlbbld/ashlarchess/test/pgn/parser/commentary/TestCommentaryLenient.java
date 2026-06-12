@@ -33,7 +33,7 @@ class TestCommentaryLenient {
   void v01_pregameCommentaryOnly() {
     final PgnGame file = LenientPgnParser.parseText(PgnTestHelper.header("*") + "{opening remark} 1. e4 e5 *\n\n");
     assertEquals("opening remark", file.pregameCommentary().value());
-    assertEquals(2, file.halfMoveList().size());
+    assertEquals(2, file.moveList().size());
   }
 
   @SuppressWarnings("static-method")
@@ -44,7 +44,7 @@ class TestCommentaryLenient {
     final PgnGame file = LenientPgnParser
         .parseText(PgnTestHelper.header("*") + "{" + pregameCommentary + "} 1. e4 e5 *\n\n");
     assertEquals(pregameCommentary, file.pregameCommentary().value());
-    assertEquals(2, file.halfMoveList().size());
+    assertEquals(2, file.moveList().size());
   }
 
   /**
@@ -69,7 +69,7 @@ class TestCommentaryLenient {
     final PgnGame file = LenientPgnParser
         .parseText(PgnTestHelper.header("*") + "{" + pregameCommentary + "} 1. e4 e5 *\n\n");
     assertEquals(pregameCommentary, file.pregameCommentary().value());
-    assertEquals(2, file.halfMoveList().size());
+    assertEquals(2, file.moveList().size());
   }
 
   @SuppressWarnings("static-method")
@@ -79,14 +79,14 @@ class TestCommentaryLenient {
     final PgnGame file = LenientPgnParser
         .parseText(PgnTestHelper.header("*") + "{" + pregameCommentary + "} 1. e4 e5 *\n\n");
     assertEquals(pregameCommentary, file.pregameCommentary().value());
-    assertEquals(2, file.halfMoveList().size());
+    assertEquals(2, file.moveList().size());
   }
 
   @SuppressWarnings("static-method")
   @Test
   void v02_trailingCommentaryAfterWhiteMove() {
     final PgnGame file = LenientPgnParser.parseText(PgnTestHelper.header("*") + "1. e4 {good opening} e5 *\n\n");
-    assertEquals("good opening", Nulls.get(file.halfMoveList(), 0).commentary().value());
+    assertEquals("good opening", Nulls.get(file.moveList(), 0).commentary().value());
   }
 
   @SuppressWarnings("static-method")
@@ -94,7 +94,7 @@ class TestCommentaryLenient {
   void v03_trailingCommentaryAfterBlackMove() {
     final PgnGame file = LenientPgnParser
         .parseText(PgnTestHelper.header("*") + "1. e4 e5 {symmetric} 2. Nf3 Nc6 *\n\n");
-    assertEquals("symmetric", Nulls.get(file.halfMoveList(), 1).commentary().value());
+    assertEquals("symmetric", Nulls.get(file.moveList(), 1).commentary().value());
   }
 
   @SuppressWarnings("static-method")
@@ -102,10 +102,10 @@ class TestCommentaryLenient {
   void v04_commentaryAfterEveryHalfMove() {
     final PgnGame file = LenientPgnParser
         .parseText(PgnTestHelper.header("*") + "1. e4 {a} e5 {b} 2. Nf3 {c} Nc6 {d} *\n\n");
-    assertEquals("a", Nulls.get(file.halfMoveList(), 0).commentary().value());
-    assertEquals("b", Nulls.get(file.halfMoveList(), 1).commentary().value());
-    assertEquals("c", Nulls.get(file.halfMoveList(), 2).commentary().value());
-    assertEquals("d", Nulls.get(file.halfMoveList(), 3).commentary().value());
+    assertEquals("a", Nulls.get(file.moveList(), 0).commentary().value());
+    assertEquals("b", Nulls.get(file.moveList(), 1).commentary().value());
+    assertEquals("c", Nulls.get(file.moveList(), 2).commentary().value());
+    assertEquals("d", Nulls.get(file.moveList(), 3).commentary().value());
   }
 
   @SuppressWarnings("static-method")
@@ -114,14 +114,14 @@ class TestCommentaryLenient {
     final PgnGame file = LenientPgnParser
         .parseText(PgnTestHelper.header("*") + "{intro} 1. e4 {after-1-white} e5 *\n\n");
     assertEquals("intro", file.pregameCommentary().value());
-    assertEquals("after-1-white", Nulls.get(file.halfMoveList(), 0).commentary().value());
+    assertEquals("after-1-white", Nulls.get(file.moveList(), 0).commentary().value());
   }
 
   @SuppressWarnings("static-method")
   @Test
   void v06_emptyCommentary() {
     final PgnGame file = LenientPgnParser.parseText(PgnTestHelper.header("*") + "1. e4 {} e5 *\n\n");
-    assertEquals("", Nulls.get(file.halfMoveList(), 0).commentary().value());
+    assertEquals("", Nulls.get(file.moveList(), 0).commentary().value());
   }
 
   @SuppressWarnings("static-method")
@@ -129,7 +129,7 @@ class TestCommentaryLenient {
   void v07_commentaryWithPunctuationButNoBraces() {
     final PgnGame file = LenientPgnParser
         .parseText(PgnTestHelper.header("*") + "1. e4 {special chars !? + # - / .} e5 *\n\n");
-    assertEquals("special chars !? + # - / .", Nulls.get(file.halfMoveList(), 0).commentary().value());
+    assertEquals("special chars !? + # - / .", Nulls.get(file.moveList(), 0).commentary().value());
   }
 
   /**
@@ -141,16 +141,16 @@ class TestCommentaryLenient {
   @Test
   void v08_multilineCommentaryPreservedVerbatim() {
     final PgnGame file = LenientPgnParser.parseText(PgnTestHelper.header("*") + "1. e4 {line one\nline two} e5 *\n\n");
-    assertEquals("line one\nline two", Nulls.get(file.halfMoveList(), 0).commentary().value());
+    assertEquals("line one\nline two", Nulls.get(file.moveList(), 0).commentary().value());
   }
 
   @SuppressWarnings("static-method")
   @Test
   void v09_commentaryAfterSuffixAnnotation() {
     final PgnGame file = LenientPgnParser.parseText(PgnTestHelper.header("*") + "1. e4!? {spicy} e5 *\n\n");
-    assertEquals("spicy", Nulls.get(file.halfMoveList(), 0).commentary().value());
+    assertEquals("spicy", Nulls.get(file.moveList(), 0).commentary().value());
     assertEquals(io.github.dlbbld.ashlarchess.enums.MoveSuffixAnnotation.INTERESTING_MOVE,
-        Nulls.get(file.halfMoveList(), 0).moveSuffixAnnotation());
+        Nulls.get(file.moveList(), 0).moveSuffixAnnotation());
   }
 
   @SuppressWarnings("static-method")
@@ -158,7 +158,7 @@ class TestCommentaryLenient {
   void v10_zeroMoveGameWithPreGameCommentaryOnly() {
     final PgnGame file = LenientPgnParser.parseText(PgnTestHelper.header("*") + "{no moves played} *\n\n");
     assertEquals("no moves played", file.pregameCommentary().value());
-    assertEquals(0, file.halfMoveList().size());
+    assertEquals(0, file.moveList().size());
   }
 
   // -------------------------------------------------------------------------------------------------
@@ -194,14 +194,14 @@ class TestCommentaryLenient {
   @Test
   void t003_openBraceInTrailingCommentaryIsContent() {
     final PgnGame file = LenientPgnParser.parseText(PgnTestHelper.header("*") + "1. e4 {outer {inner} e5 *\n\n");
-    assertEquals("outer {inner", Nulls.get(file.halfMoveList(), 0).commentary().value());
+    assertEquals("outer {inner", Nulls.get(file.moveList(), 0).commentary().value());
   }
 
   @SuppressWarnings("static-method")
   @Test
   void t003_openBraceImmediatelyAtStartOfContent() {
     final PgnGame file = LenientPgnParser.parseText(PgnTestHelper.header("*") + "1. e4 {{nested right away} e5 *\n\n");
-    assertEquals("{nested right away", Nulls.get(file.halfMoveList(), 0).commentary().value());
+    assertEquals("{nested right away", Nulls.get(file.moveList(), 0).commentary().value());
   }
 
   @SuppressWarnings("static-method")
@@ -302,7 +302,7 @@ class TestCommentaryLenient {
   @Test
   void tabInMoveCommentaryIsPreservedVerbatim() {
     final PgnGame file = LenientPgnParser.parseText(PgnTestHelper.header("*") + "1. e4 {a\tb} e5 *\n\n");
-    assertEquals("a\tb", Nulls.get(file.halfMoveList(), 0).commentary().value());
+    assertEquals("a\tb", Nulls.get(file.moveList(), 0).commentary().value());
   }
 
   @SuppressWarnings("static-method")
@@ -310,21 +310,21 @@ class TestCommentaryLenient {
   void carriageReturnInMoveCommentaryIsNormalisedToLf() {
     // T-005: lone CR -> LF at parser input.
     final PgnGame file = LenientPgnParser.parseText(PgnTestHelper.header("*") + "1. e4 {a\rb} e5 *\n\n");
-    assertEquals("a\nb", Nulls.get(file.halfMoveList(), 0).commentary().value());
+    assertEquals("a\nb", Nulls.get(file.moveList(), 0).commentary().value());
   }
 
   @SuppressWarnings("static-method")
   @Test
   void crlfInMoveCommentaryIsNormalisedToLf() {
     final PgnGame file = LenientPgnParser.parseText(PgnTestHelper.header("*") + "1. e4 {a\r\nb} e5 *\n\n");
-    assertEquals("a\nb", Nulls.get(file.halfMoveList(), 0).commentary().value());
+    assertEquals("a\nb", Nulls.get(file.moveList(), 0).commentary().value());
   }
 
   @SuppressWarnings("static-method")
   @Test
   void consecutiveTabsArePreservedVerbatim() {
     final PgnGame file = LenientPgnParser.parseText(PgnTestHelper.header("*") + "1. e4 {a\t\tb} e5 *\n\n");
-    assertEquals("a\t\tb", Nulls.get(file.halfMoveList(), 0).commentary().value());
+    assertEquals("a\t\tb", Nulls.get(file.moveList(), 0).commentary().value());
   }
 
   @SuppressWarnings("static-method")
@@ -338,7 +338,7 @@ class TestCommentaryLenient {
   @Test
   void doubleSpacesInSourceArePreservedAsIs() {
     final PgnGame file = LenientPgnParser.parseText(PgnTestHelper.header("*") + "1. e4 {a  b} e5 *\n\n");
-    assertEquals("a  b", Nulls.get(file.halfMoveList(), 0).commentary().value());
+    assertEquals("a  b", Nulls.get(file.moveList(), 0).commentary().value());
   }
 
   @SuppressWarnings("static-method")
@@ -357,16 +357,16 @@ class TestCommentaryLenient {
   @Test
   void t002_acceptCanonicalMoveNumberAfterCommentaryOnWhite() {
     final PgnGame file = LenientPgnParser.parseText(PgnTestHelper.header("*") + "1. e4 {after-white} 1... e5 *\n\n");
-    assertEquals("after-white", Nulls.get(file.halfMoveList(), 0).commentary().value());
-    assertEquals("e5", Nulls.get(file.halfMoveList(), 1).san());
+    assertEquals("after-white", Nulls.get(file.moveList(), 0).commentary().value());
+    assertEquals("e5", Nulls.get(file.moveList(), 1).san());
   }
 
   @SuppressWarnings("static-method")
   @Test
   void t002_acceptMissingMoveNumberAfterCommentaryOnWhite() {
     final PgnGame file = LenientPgnParser.parseText(PgnTestHelper.header("*") + "1. e4 {after-white} e5 *\n\n");
-    assertEquals("after-white", Nulls.get(file.halfMoveList(), 0).commentary().value());
-    assertEquals("e5", Nulls.get(file.halfMoveList(), 1).san());
+    assertEquals("after-white", Nulls.get(file.moveList(), 0).commentary().value());
+    assertEquals("e5", Nulls.get(file.moveList(), 1).san());
   }
 
   @SuppressWarnings("static-method")
@@ -374,8 +374,8 @@ class TestCommentaryLenient {
   void t002_acceptMissingMoveNumberAfterCommentaryAtHigherFullMoveNumber() {
     final PgnGame file = LenientPgnParser
         .parseText(PgnTestHelper.header("*") + "1. e4 e5 2. Nf3 {after-white-2} Nc6 *\n\n");
-    assertEquals("after-white-2", Nulls.get(file.halfMoveList(), 2).commentary().value());
-    assertEquals("Nc6", Nulls.get(file.halfMoveList(), 3).san());
+    assertEquals("after-white-2", Nulls.get(file.moveList(), 2).commentary().value());
+    assertEquals("Nc6", Nulls.get(file.moveList(), 3).san());
   }
 
   // -------------------------------------------------------------------------------------------------
@@ -399,9 +399,9 @@ class TestCommentaryLenient {
   void v11_commentaryWithLinebreaks() {
     final PgnGame file = LenientPgnParser
         .parseText(PgnTestHelper.header("*") + "1. e4!? {spicy\n" + "groovy}" + " e5 *\n\n");
-    assertEquals("spicy\ngroovy", Nulls.get(file.halfMoveList(), 0).commentary().value());
+    assertEquals("spicy\ngroovy", Nulls.get(file.moveList(), 0).commentary().value());
     assertEquals(io.github.dlbbld.ashlarchess.enums.MoveSuffixAnnotation.INTERESTING_MOVE,
-        Nulls.get(file.halfMoveList(), 0).moveSuffixAnnotation());
+        Nulls.get(file.moveList(), 0).moveSuffixAnnotation());
   }
 
 }

@@ -20,7 +20,7 @@ import com.google.common.collect.ImmutableList;
 import io.github.dlbbld.ashlarchess.board.Board;
 import io.github.dlbbld.ashlarchess.common.Nulls;
 import io.github.dlbbld.ashlarchess.common.utility.BasicUtility;
-import io.github.dlbbld.ashlarchess.model.PgnHalfMove;
+import io.github.dlbbld.ashlarchess.model.PgnMove;
 import io.github.dlbbld.ashlarchess.pgn.PgnGame;
 import io.github.dlbbld.ashlarchess.pgn.StrictPgnParser;
 import io.github.dlbbld.ashlarchess.test.ConfigurationTestConstants;
@@ -91,7 +91,7 @@ class TestLegalMovesAgainstPythonChessOracle {
       for (final LegalMovesRecord record : records) {
         totalFixtures++;
         final PgnGame pgnGame = StrictPgnParser.parse(folderPath, record.pgn());
-        final int halfMoveCount = pgnGame.halfMoveList().size();
+        final int halfMoveCount = pgnGame.moveList().size();
 
         try {
           assertEquals(halfMoveCount + 1, record.perPly().size(),
@@ -116,7 +116,7 @@ class TestLegalMovesAgainstPythonChessOracle {
           }
 
           if (ply < halfMoveCount) {
-            final PgnHalfMove halfMove = Nulls.get(pgnGame.halfMoveList(), ply);
+            final PgnMove halfMove = Nulls.get(pgnGame.moveList(), ply);
             board.moveStrict(halfMove.san());
           }
         }

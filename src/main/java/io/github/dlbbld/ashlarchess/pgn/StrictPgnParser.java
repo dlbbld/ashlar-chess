@@ -21,7 +21,7 @@ import io.github.dlbbld.ashlarchess.enums.MoveSuffixAnnotation;
 import io.github.dlbbld.ashlarchess.fen.FenParserAdvanced;
 import io.github.dlbbld.ashlarchess.fen.constants.FenConstants;
 import io.github.dlbbld.ashlarchess.fen.model.Fen;
-import io.github.dlbbld.ashlarchess.model.PgnHalfMove;
+import io.github.dlbbld.ashlarchess.model.PgnMove;
 import io.github.dlbbld.ashlarchess.san.SanValidationException;
 import io.github.dlbbld.ashlarchess.san.SanValidationProblem;
 
@@ -145,10 +145,10 @@ public final class StrictPgnParser {
     final MovetextOutcome movetext = parseMovetext(startFen, resultTagValue);
     expectOnlyTrailingWhitespaceUntilEof();
 
-    validateBoardPerLastMove(startFen, movetext.halfMoveList());
+    validateBoardPerLastMove(startFen, movetext.moveList());
 
     return new PgnGame(Nulls.copyOfList(tagList), startFen, movetext.pregameCommentary(),
-        Nulls.copyOfList(movetext.halfMoveList()), resultTagValue);
+        Nulls.copyOfList(movetext.moveList()), resultTagValue);
   }
 
   // -------------------------------------------------------------------------------------------------
@@ -341,7 +341,7 @@ public final class StrictPgnParser {
   // Movetext section
   // -------------------------------------------------------------------------------------------------
 
-  private record MovetextOutcome(List<PgnHalfMove> halfMoveList, PgnCommentary pregameCommentary) {
+  private record MovetextOutcome(List<PgnMove> moveList, PgnCommentary pregameCommentary) {
   }
 
   private MovetextOutcome parseMovetext(Fen startFen, ResultTagValue resultTagValue) {
@@ -352,7 +352,7 @@ public final class StrictPgnParser {
       expectSpaceAfterComment();
     }
 
-    final List<PgnHalfMove> halfMoves = new ArrayList<>();
+    final List<PgnMove> halfMoves = new ArrayList<>();
     Side havingMove = startFen.havingMove();
     int fullMoveNumber = startFen.fullMoveNumber();
     boolean isFirstMove = true;
@@ -418,7 +418,7 @@ public final class StrictPgnParser {
         priorCommentaryAttached = false;
       }
 
-      halfMoves.add(new PgnHalfMove(sanAndSuffix.san(), sanAndSuffix.suffix(), commentary));
+      halfMoves.add(new PgnMove(sanAndSuffix.san(), sanAndSuffix.suffix(), commentary));
 
       isFirstMove = false;
       if (havingMove == Side.BLACK) {
@@ -623,13 +623,13 @@ public final class StrictPgnParser {
   // Board replay & post-processing
   // -------------------------------------------------------------------------------------------------
 
-  private static void validateBoardPerLastMove(Fen startFen, List<PgnHalfMove> halfMoveList) {
+  private static void validateBoardPerLastMove(Fen startFen, List<PgnMove> moveList) {
     // Strict parsing enforces PGN syntax + move legality + the cheap FIDE terminations
     // (checkmate / stalemate / mutual insufficient material). Fivefold repetition, the 75-move rule, and
     // analyzer-driven dead positions are queryable predicates on Board; historical PGN corpora routinely contain games
     // whose recorded play continues past such states.
     final Board board = new Board(startFen);
-    for (final PgnHalfMove halfMove : halfMoveList) {
+    for (final PgnMove halfMove : moveList) {
       final Side side = board.getHavingMove();
       final int fullMoveNumber = board.getFullMoveNumber();
       try {

@@ -14,7 +14,7 @@ import org.junit.jupiter.api.Test;
 
 import io.github.dlbbld.ashlarchess.common.Nulls;
 import io.github.dlbbld.ashlarchess.fen.model.Fen;
-import io.github.dlbbld.ashlarchess.model.PgnHalfMove;
+import io.github.dlbbld.ashlarchess.model.PgnMove;
 import io.github.dlbbld.ashlarchess.pgn.PgnGame;
 import io.github.dlbbld.ashlarchess.test.RestrictTestConstants;
 import io.github.dlbbld.ashlarchess.test.librarycarlos.pgn.parser.PgnParserLibraryCarlos;
@@ -70,7 +70,7 @@ class TestLenientPgnParserAgainstEachOther {
     final Fen startFen = pgnGame.startFen();
 
     final List<String> sanList = new ArrayList<>();
-    for (final PgnHalfMove pgnHalfMove : pgnGame.halfMoveList()) {
+    for (final PgnMove pgnHalfMove : pgnGame.moveList()) {
       sanList.add(pgnHalfMove.san());
     }
     return new PgnSan(startFen.fen(), sanList);

@@ -19,7 +19,7 @@ import io.github.dlbbld.ashlarchess.common.utility.BasicUtility;
 import io.github.dlbbld.ashlarchess.enums.MoveSuffixAnnotation;
 import io.github.dlbbld.ashlarchess.fen.constants.FenConstants;
 import io.github.dlbbld.ashlarchess.fen.model.Fen;
-import io.github.dlbbld.ashlarchess.model.PgnHalfMove;
+import io.github.dlbbld.ashlarchess.model.PgnMove;
 
 /**
  * PGN serialisation entry points. The library defaults to {@link WriteMode#SEMANTIC} - emits the parse model as-given
@@ -50,7 +50,7 @@ public class PgnCreate {
   public static List<String> createPgnLines(PgnGame pgnGame, WriteMode writeMode) {
     final PgnGame effective = writeMode == WriteMode.ARCHIVAL ? PgnArchivalNormalization.apply(pgnGame) : pgnGame;
     return calculateFileLines(effective.tagList(), effective.pregameCommentary(), effective.startFen(),
-        effective.halfMoveList(), effective.terminationMarker());
+        effective.moveList(), effective.terminationMarker());
   }
 
   private static String appendEmptyLine(String text) {
@@ -58,7 +58,7 @@ public class PgnCreate {
   }
 
   private static List<String> calculateFileLines(List<Tag> tagList, PgnCommentary pregameCommentary, Fen startFen,
-      List<PgnHalfMove> halfMoveList, @Nullable ResultTagValue terminationMarker) {
+      List<PgnMove> moveList, @Nullable ResultTagValue terminationMarker) {
 
     final List<String> fileLines = new ArrayList<>();
     for (final Tag tag : tagList) {
@@ -71,7 +71,7 @@ public class PgnCreate {
     }
 
     final String moves = calculateMovetextWithoutGameTerminationMarker(startFen.fullMoveNumber(), startFen.havingMove(),
-        halfMoveList);
+        moveList);
 
     // PgnCommentary is contract-validated (no `}`, no `\r`), so the value writes verbatim into {...}.
     final String pregameCommentaryValue = pregameCommentary.value();
@@ -99,16 +99,16 @@ public class PgnCreate {
     return fileLines;
   }
 
-  private static List<PgnHalfMove> calculatePgnHalfMoveList(List<String> sanList) {
-    final List<PgnHalfMove> halfMoveList = new ArrayList<>();
+  private static List<PgnMove> calculatePgnMoveList(List<String> sanList) {
+    final List<PgnMove> moveList = new ArrayList<>();
 
     for (final String san : sanList) {
-      PgnHalfMove halfMove;
-      halfMove = new PgnHalfMove(san, MoveSuffixAnnotation.NONE, PgnCommentary.EMPTY);
-      halfMoveList.add(halfMove);
+      PgnMove halfMove;
+      halfMove = new PgnMove(san, MoveSuffixAnnotation.NONE, PgnCommentary.EMPTY);
+      moveList.add(halfMove);
     }
 
-    return halfMoveList;
+    return moveList;
   }
 
   private static ResultTagValue calculateResultTagValue(Board board) {
@@ -161,7 +161,7 @@ public class PgnCreate {
   }
 
   private static String calculateMovetextWithoutGameTerminationMarker(int fullMoveNumber, Side havingMove,
-      List<PgnHalfMove> halfMoveList) {
+      List<PgnMove> moveList) {
 
     final StringBuilder result = new StringBuilder();
 
@@ -170,7 +170,7 @@ public class PgnCreate {
     boolean isFirstMove = true;
     // T-002 / PGN spec section 8.2.2 case 1: commentary on White's move forces "N..." before the next Black move.
     boolean priorCommentaryAttached = false;
-    for (final PgnHalfMove halfMove : halfMoveList) {
+    for (final PgnMove halfMove : moveList) {
 
       // Emit the move-number indicator in the three required cases: first half-move, before any White move, or
       // before a Black move that follows commentary on White's move (T-002).
@@ -214,10 +214,10 @@ public class PgnCreate {
    */
   public static PgnGame createPgnGame(Board board, List<Tag> tagList) {
 
-    final List<PgnHalfMove> halfMoveList = calculatePgnHalfMoveList(board.getSanList());
+    final List<PgnMove> moveList = calculatePgnMoveList(board.getSanList());
 
     return new PgnGame(Nulls.copyOfList(tagList), board.getInitialFen(), PgnCommentary.EMPTY,
-        Nulls.copyOfList(halfMoveList), calculateResultTagValue(board));
+        Nulls.copyOfList(moveList), calculateResultTagValue(board));
   }
 
   /**

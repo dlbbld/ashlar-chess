@@ -11,7 +11,7 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 
 import io.github.dlbbld.ashlarchess.common.Nulls;
-import io.github.dlbbld.ashlarchess.model.PgnHalfMove;
+import io.github.dlbbld.ashlarchess.model.PgnMove;
 import io.github.dlbbld.ashlarchess.pgn.PgnGame;
 import io.github.dlbbld.ashlarchess.pgn.StrictPgnParser;
 
@@ -49,8 +49,8 @@ class TestStrictPgnParserMovetextWithoutCommentary {
   private static void checkInitialWithoutCommentary(String movetextPart, List<String> expectedSanList) {
     final PgnGame file = StrictPgnParser.parseText(header() + movetextPart + " *\n\n");
     assertEquals("", file.pregameCommentary().value());
-    assertEquals(expectedSanList, calculateSanList(file.halfMoveList()));
-    for (final io.github.dlbbld.ashlarchess.model.PgnHalfMove halfMove : file.halfMoveList()) {
+    assertEquals(expectedSanList, calculateSanList(file.moveList()));
+    for (final io.github.dlbbld.ashlarchess.model.PgnMove halfMove : file.moveList()) {
       assertEquals("", halfMove.commentary().value(), "Expected no commentary on " + halfMove.san());
     }
   }
@@ -69,9 +69,9 @@ class TestStrictPgnParserMovetextWithoutCommentary {
         """;
   }
 
-  private static List<String> calculateSanList(List<PgnHalfMove> halfMoveList) {
+  private static List<String> calculateSanList(List<PgnMove> moveList) {
     final List<String> sanList = new ArrayList<>();
-    for (final PgnHalfMove halfMove : halfMoveList) {
+    for (final PgnMove halfMove : moveList) {
       sanList.add(halfMove.san());
     }
     return sanList;

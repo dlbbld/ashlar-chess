@@ -121,7 +121,7 @@ class TestReadMe {
     board.moveStrict("a3");
 
     assertEquals("Spring Classic", tagValue(pgnGame, "Event"));
-    assertEquals(6, pgnGame.halfMoveList().size());
+    assertEquals(6, pgnGame.moveList().size());
   }
 
   @Test
@@ -190,7 +190,7 @@ class TestReadMe {
     final Board board = PgnUtility.calculateBoard(pgnGame);
     board.moveStrict("a3");
 
-    assertEquals(6, pgnGame.halfMoveList().size());
+    assertEquals(6, pgnGame.moveList().size());
   }
 
   @Test

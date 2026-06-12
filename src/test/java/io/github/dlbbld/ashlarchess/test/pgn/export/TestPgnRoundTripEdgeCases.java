@@ -83,7 +83,7 @@ class TestPgnRoundTripEdgeCases {
     assertTrue(reparseResult.isValid(), () -> "expected valid re-parse; got: " + reparseResult.message());
     final PgnGame reparsed = pgnGameOf(reparseResult);
     assertEquals(parsed.tagList(), reparsed.tagList());
-    assertTrue(reparsed.halfMoveList().isEmpty());
+    assertTrue(reparsed.moveList().isEmpty());
     assertEquals(null, reparsed.terminationMarker());
   }
 

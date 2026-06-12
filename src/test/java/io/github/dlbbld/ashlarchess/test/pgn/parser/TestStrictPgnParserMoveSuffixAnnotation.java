@@ -14,7 +14,7 @@ import org.junit.jupiter.api.Test;
 
 import io.github.dlbbld.ashlarchess.common.Nulls;
 import io.github.dlbbld.ashlarchess.enums.MoveSuffixAnnotation;
-import io.github.dlbbld.ashlarchess.model.PgnHalfMove;
+import io.github.dlbbld.ashlarchess.model.PgnMove;
 import io.github.dlbbld.ashlarchess.pgn.PgnGame;
 import io.github.dlbbld.ashlarchess.pgn.StrictPgnParserValidationException;
 import io.github.dlbbld.ashlarchess.pgn.StrictPgnParserValidationProblem;
@@ -73,7 +73,7 @@ class TestStrictPgnParserMoveSuffixAnnotation {
       List<MoveSuffixAnnotation> moveSuffixAnnotationListExpected) {
     final PgnGame pgnGame = PgnCacheForStrictPgnParserTestCases
         .getPgn(PGN_TEST_MOVE_SUFFIX_ANNOTATION_SUCCESS_FOLDER_PATH, pgnName);
-    assertEquals(moveSuffixAnnotationListExpected, calculateMoveSuffixAnnotationList(pgnGame.halfMoveList()));
+    assertEquals(moveSuffixAnnotationListExpected, calculateMoveSuffixAnnotationList(pgnGame.moveList()));
   }
 
   // -------------------------------------------------------------------------------------------------
@@ -121,30 +121,30 @@ class TestStrictPgnParserMoveSuffixAnnotation {
       List<String> commentaryListExpected) {
     final PgnGame pgnGame = PgnCacheForStrictPgnParserTestCases.getPgn(PGN_TEST_COMBINED_SUCCESS_FOLDER_PATH, pgnName);
     assertEquals(pregameCommentaryExpected, pgnGame.pregameCommentary().value());
-    assertEquals(sanListExpected, calculateSanList(pgnGame.halfMoveList()));
-    assertEquals(moveSuffixAnnotationListExpected, calculateMoveSuffixAnnotationList(pgnGame.halfMoveList()));
-    assertEquals(commentaryListExpected, calculateCommentaryList(pgnGame.halfMoveList()));
+    assertEquals(sanListExpected, calculateSanList(pgnGame.moveList()));
+    assertEquals(moveSuffixAnnotationListExpected, calculateMoveSuffixAnnotationList(pgnGame.moveList()));
+    assertEquals(commentaryListExpected, calculateCommentaryList(pgnGame.moveList()));
   }
 
-  private static List<String> calculateSanList(List<PgnHalfMove> halfMoveList) {
+  private static List<String> calculateSanList(List<PgnMove> moveList) {
     final List<String> sanList = new ArrayList<>();
-    for (final PgnHalfMove halfMove : halfMoveList) {
+    for (final PgnMove halfMove : moveList) {
       sanList.add(halfMove.san());
     }
     return sanList;
   }
 
-  private static List<MoveSuffixAnnotation> calculateMoveSuffixAnnotationList(List<PgnHalfMove> halfMoveList) {
+  private static List<MoveSuffixAnnotation> calculateMoveSuffixAnnotationList(List<PgnMove> moveList) {
     final List<MoveSuffixAnnotation> moveSuffixAnnotationList = new ArrayList<>();
-    for (final PgnHalfMove halfMove : halfMoveList) {
+    for (final PgnMove halfMove : moveList) {
       moveSuffixAnnotationList.add(halfMove.moveSuffixAnnotation());
     }
     return moveSuffixAnnotationList;
   }
 
-  private static List<String> calculateCommentaryList(List<PgnHalfMove> halfMoveList) {
+  private static List<String> calculateCommentaryList(List<PgnMove> moveList) {
     final List<String> commentaryList = new ArrayList<>();
-    for (final PgnHalfMove halfMove : halfMoveList) {
+    for (final PgnMove halfMove : moveList) {
       commentaryList.add(halfMove.commentary().value());
     }
     return commentaryList;

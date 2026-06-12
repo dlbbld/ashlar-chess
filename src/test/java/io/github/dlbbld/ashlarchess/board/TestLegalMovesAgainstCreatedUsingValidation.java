@@ -25,7 +25,7 @@ import io.github.dlbbld.ashlarchess.common.Nulls;
 import io.github.dlbbld.ashlarchess.common.model.MoveSpecification;
 import io.github.dlbbld.ashlarchess.exceptions.InvalidMoveException;
 import io.github.dlbbld.ashlarchess.model.LegalMove;
-import io.github.dlbbld.ashlarchess.model.PgnHalfMove;
+import io.github.dlbbld.ashlarchess.model.PgnMove;
 import io.github.dlbbld.ashlarchess.pgn.PgnGame;
 import io.github.dlbbld.ashlarchess.squares.AbstractPotentialToSquares;
 import io.github.dlbbld.ashlarchess.test.RestrictTestConstants;
@@ -72,7 +72,7 @@ class TestLegalMovesAgainstCreatedUsingValidation {
     final Board board = new Board(pgnGame.startFen());
     checkLegalMoves(board);
 
-    for (final PgnHalfMove halfMove : pgnGame.halfMoveList()) {
+    for (final PgnMove halfMove : pgnGame.moveList()) {
       board.moveStrict(halfMove.san());
       checkLegalMoves(board);
     }

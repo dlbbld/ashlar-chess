@@ -11,7 +11,7 @@ import org.junit.jupiter.api.Test;
 
 import io.github.dlbbld.ashlarchess.board.Board;
 import io.github.dlbbld.ashlarchess.common.Nulls;
-import io.github.dlbbld.ashlarchess.model.PgnHalfMove;
+import io.github.dlbbld.ashlarchess.model.PgnMove;
 import io.github.dlbbld.ashlarchess.pgn.PgnGame;
 import io.github.dlbbld.ashlarchess.test.model.PgnFen;
 import io.github.dlbbld.ashlarchess.test.model.PgnTestCaseList;
@@ -90,7 +90,7 @@ class TestBoardUnperformMove {
     final Board actual = new Board(pgnGame.startFen());
 
     int halfMoveIndex = 0;
-    for (final PgnHalfMove halfMove : pgnGame.halfMoveList()) {
+    for (final PgnMove halfMove : pgnGame.moveList()) {
       halfMoveIndex++;
       final String san = halfMove.san();
 

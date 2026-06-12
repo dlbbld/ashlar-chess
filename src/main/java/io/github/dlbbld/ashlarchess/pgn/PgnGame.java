@@ -10,7 +10,7 @@ import com.google.common.collect.ImmutableList;
 
 import io.github.dlbbld.ashlarchess.common.Nulls;
 import io.github.dlbbld.ashlarchess.fen.model.Fen;
-import io.github.dlbbld.ashlarchess.model.PgnHalfMove;
+import io.github.dlbbld.ashlarchess.model.PgnMove;
 
 /**
  * Parsed PGN model. Reflects what the source actually contained - tag presence/absence and tag order are preserved by
@@ -32,12 +32,12 @@ import io.github.dlbbld.ashlarchess.model.PgnHalfMove;
  */
 @SuppressWarnings("null")
 public record PgnGame(@NonNull ImmutableList<@NonNull Tag> tagList, @NonNull Fen startFen,
-    @NonNull PgnCommentary pregameCommentary, @NonNull ImmutableList<@NonNull PgnHalfMove> halfMoveList,
+    @NonNull PgnCommentary pregameCommentary, @NonNull ImmutableList<@NonNull PgnMove> moveList,
     @Nullable ResultTagValue terminationMarker) {
 
   public PgnGame {
     tagList = Nulls.copyOfList(tagList);
-    halfMoveList = Nulls.copyOfList(halfMoveList);
+    moveList = Nulls.copyOfList(moveList);
     if (terminationMarker != null && TagUtility.hasResult(tagList)) {
       final String resultValue = TagUtility.readResult(tagList);
       if (ResultTagValue.exists(resultValue)) {
