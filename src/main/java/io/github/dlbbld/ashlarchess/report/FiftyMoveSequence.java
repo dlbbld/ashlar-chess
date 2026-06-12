@@ -8,7 +8,7 @@ import org.eclipse.jdt.annotation.Nullable;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
 
 /**
- * One no-progress halfmove sequence that reached the 50-move-rule threshold (halfmove clock {@code >= 100}).
+ * One no-progress move sequence that reached the 50-move-rule threshold (halfmove clock {@code >= 100}).
  *
  * <p>
  * {@code start} identifies how the sequence began: an initial-FEN-anchored start (when the starting FEN already had a

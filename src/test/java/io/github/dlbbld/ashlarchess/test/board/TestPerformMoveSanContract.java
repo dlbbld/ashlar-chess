@@ -29,7 +29,7 @@ import io.github.dlbbld.ashlarchess.test.pgn.setup.PgnTestCaseCatalog;
  * <h2>Forward (played moves)</h2>
  *
  * <p>
- * For each halfmove of each PGN: derive the MoveSpec via {@code StrictSanParser.parseText(san, board)} <em>before</em>
+ * For each move of each PGN: derive the MoveSpec via {@code StrictSanParser.parseText(san, board)} <em>before</em>
  * performing, then perform via {@code board.moveStrict(san)} and assert:
  *
  * <ol>
@@ -41,7 +41,7 @@ import io.github.dlbbld.ashlarchess.test.pgn.setup.PgnTestCaseCatalog;
  * <h2>Reverse (canonical SAN back to MoveSpecification)</h2>
  *
  * <p>
- * At each played halfmove: perform it, then capture both the stored MoveSpec
+ * At each played move: perform it, then capture both the stored MoveSpec
  * ({@code board.getLastMove().moveSpecification()}) and the board's canonical SAN ({@code board.getSan()});
  * {@link io.github.dlbbld.ashlarchess.board.Board#unmove} back to the prior position and re-derive a MoveSpec from that
  * canonical SAN via {@code StrictSanParser.parseText}. The re-derived MoveSpec must equal the stored one - the SAN the
@@ -81,7 +81,7 @@ class TestPerformMoveSanContract {
   }
 
   /**
-   * Forward direction: for each played halfmove, derive MoveSpec from SAN, perform via SAN, then assert the played
+   * Forward direction: for each played move, derive MoveSpec from SAN, perform via SAN, then assert the played
    * LegalMove and the reconstructed SAN both match.
    */
   private static void verifyProvidedSanToCalculatedSan(PgnTestCaseList testCaseList, PgnFen testCase) {

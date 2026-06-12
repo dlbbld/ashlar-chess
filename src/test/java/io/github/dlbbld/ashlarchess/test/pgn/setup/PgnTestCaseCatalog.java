@@ -854,7 +854,7 @@ public class PgnTestCaseCatalog {
 
     list.add(new PgnFen("insufficient_material_KN_K.pgn", "4k3/8/8/2K5/8/5N2/8/8 w - - 0 35"));
 
-    // K vs K reached on the last halfmove via captures - game ends at dead position, no moves past.
+    // K vs K reached on the last move via captures - game ends at dead position, no moves past.
     list.add(new PgnFen("insufficient_material_K_K.pgn", "2K5/8/8/8/8/8/4k3/8 b - - 0 38"));
 
     list.add(new PgnFen("insufficient_material_K_KBw.pgn", "2b5/8/2k5/8/4K3/8/8/8 b - - 0 34"));

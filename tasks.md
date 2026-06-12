@@ -114,9 +114,10 @@ parallel; 2b and 2d are the move-domain core.
 
 1. identifiers: `rg -g '*.java' -g '!**/librarycarlos/**' -g '!**/oracle/python/**' '[Hh]alfMove' src | rg -v 'halfMoveClock|HalfMoveClock|getHalfMoves\(|getHalfMoveCounter|countForcedHalfMoves'` -> must be empty.
 2. bare ply: `rg -g '*.java' -g '!**/oracle/python/**' -g '!**/unwinnability/**' -g '!**/bitboard/**' '\bply\b|\bplies\b|PerPly' src` -> must be empty.
-3. prose + docs: `rg -i -g '*.java' -g '*.md' -g '!**/librarycarlos/**' -g '!**/oracle/python/**' -g '!CHANGELOG.md' 'half[- ]move|per[- ]ply|PgnHalfMove' .` -> remaining hits must be KEEP-only.
+3. prose + docs: `rg -i -g '*.java' -g '*.md' -g '!**/librarycarlos/**' -g '!**/oracle/python/**' -g '!CHANGELOG.md' 'half[- ]?moves?|per[- ]ply|PgnHalfMove' .` -> remaining hits must be KEEP-only.
 
-Scan 3 (the `half[- ]move` separator form) catches the prose the camelCase scans miss - PGN validation messages, report /
+Scan 3 (`half[- ]?moves?` - the optional separator catches `half-move`, `half move`, AND unseparated `halfmove` /
+`halfmoves`) catches the prose the camelCase scans miss - PGN validation messages, report /
 PGN JavaDocs, `specification.md`, `README*.md`. Its only allowed remaining hits are KEEP zones: the FEN **half-move
 clock** family (any line about the clock / full-move-number consistency), engine-search "half-move tree" / "per-ply"
 prose, the chesslib-mirror docs, and this plan file. (`halfMoveClock` / `fullMoveNumber` / `PlyCount` stay by design.)

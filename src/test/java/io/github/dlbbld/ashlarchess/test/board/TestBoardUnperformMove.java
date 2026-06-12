@@ -21,7 +21,7 @@ import io.github.dlbbld.ashlarchess.test.pgn.setup.PgnTestCaseCatalog;
 /**
  * Verifies the {@link io.github.dlbbld.ashlarchess.board.Board#unmove} contract: after performing a move and
  * immediately unperforming it, the board must be in exactly the same state it was in before the move. Run across every
- * halfmove of every PGN in the basic test corpus.
+ * move of every PGN in the basic test corpus.
  *
  * <h2>Design</h2>
  *
@@ -29,16 +29,16 @@ import io.github.dlbbld.ashlarchess.test.pgn.setup.PgnTestCaseCatalog;
  * For each PGN, two independent boards are kept side-by-side:
  *
  * <ul>
- * <li>{@code expected} - only ever moves <em>forward</em>. It serves as the oracle; its state after halfmove
- * {@code i-1} is the canonical pre-halfmove-{@code i} state, produced solely by {@code move} (independent of
+ * <li>{@code expected} - only ever moves <em>forward</em>. It serves as the oracle; its state after move
+ * {@code i-1} is the canonical pre-move-{@code i} state, produced solely by {@code move} (independent of
  * {@code unmove}, the unit under test).</li>
- * <li>{@code actual} - performs and then unperforms each halfmove, then is asserted to equal {@code expected}, then
+ * <li>{@code actual} - performs and then unperforms each move, then is asserted to equal {@code expected}, then
  * advanced by performing the move so the next iteration starts in lockstep.</li>
  * </ul>
  *
  * <p>
  * Equality is determined by {@link EqualsBuilder#reflectionEquals(Object, Object, String...)}: every declared field on
- * {@code Board} (including all per-halfmove history lists) is compared. New fields added to {@code Board} in the future
+ * {@code Board} (including all per-move history lists) is compared. New fields added to {@code Board} in the future
  * are picked up automatically - the test does not need to be updated when {@code Board}'s state representation grows.
  *
  * <h2>Scope</h2>

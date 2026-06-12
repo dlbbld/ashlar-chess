@@ -73,9 +73,9 @@ class TestFiftyMoveSequenceReportBuilder {
   @SuppressWarnings("static-method")
   @Test
   void initialFenContinuedSequenceReachingThreshold() {
-    // Initial FEN clock 50 - half a 50-move run already inherited. Play 50 non-zeroing halfmoves
+    // Initial FEN clock 50 - half a 50-move run already inherited. Play 50 non-zeroing moves
     // to bring it to 100. The sequence's start is InitialFenStart(50); the endMove is the played
-    // halfmove that completed the threshold (and possibly further).
+    // move that completed the threshold (and possibly further).
     final Board board = new Board("4k3/8/8/8/8/8/8/R3K3 w - - 50 30");
     assertEquals(50, board.getHalfMoveClock(), "precondition: initial FEN at clock 50");
 

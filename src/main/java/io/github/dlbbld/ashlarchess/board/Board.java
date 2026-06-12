@@ -57,7 +57,7 @@ import io.github.dlbbld.ashlarchess.unwinnability.UnwinnableQuickAnalyzer;
 
 /**
  * The library's central type - a chess <em>game</em>, not merely a position. A {@code Board} carries the position
- * <strong>plus</strong> the move history from its initial FEN: every halfmove ever performed, the legal-move set after
+ * <strong>plus</strong> the move history from its initial FEN: every move ever performed, the legal-move set after
  * each, the halfmove clock, repetition counts, castling-right loss reasons, derived SAN/LAN strings - everything needed
  * to answer rule-level questions about the game so far.
  *
@@ -421,7 +421,7 @@ public class Board {
   }
 
   /**
-   * Undoes the most recently played halfmove, restoring the board to the state immediately before that move. Throws if
+   * Undoes the most recently played move, restoring the board to the state immediately before that move. Throws if
    * no move has been played from the initial FEN.
    */
   public void unmove() {
