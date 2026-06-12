@@ -61,9 +61,9 @@ class TestBoardAgainstEachOther {
         final Board board = new Board();
         final LibraryCarlosBoard carlosBoard = new LibraryCarlosBoard();
 
-        for (final PgnMove pgnHalfMove : pgnGame.moveList()) {
+        for (final PgnMove pgnMove : pgnGame.moveList()) {
 
-          final String san = pgnHalfMove.san();
+          final String san = pgnMove.san();
           board.moveStrict(san);
           carlosBoard.moveStrict(san);
 

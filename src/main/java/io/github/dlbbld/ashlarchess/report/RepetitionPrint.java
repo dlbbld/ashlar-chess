@@ -26,9 +26,9 @@ abstract class RepetitionPrint {
       for (int i = 0; i < occurrences.size(); i++) {
         final MoveRecord halfMove = Nulls.get(occurrences, i);
         final boolean isAddPositionInformation = i == occurrences.size() - 1;
-        final String halfMoveInformation = PositionIdentifierUtility.calculateHalfMoveInformation(halfMove,
+        final String moveInformation = PositionIdentifierUtility.calculateMoveInformation(halfMove,
             group.totalRepetitionCount(), false, isAddPositionInformation, positionIdentifierMap);
-        resultList.add(halfMoveInformation);
+        resultList.add(moveInformation);
       }
       resultListList.add(resultList);
     }

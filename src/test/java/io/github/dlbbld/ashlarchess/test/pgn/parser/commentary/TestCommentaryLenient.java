@@ -99,7 +99,7 @@ class TestCommentaryLenient {
 
   @SuppressWarnings("static-method")
   @Test
-  void v04_commentaryAfterEveryHalfMove() {
+  void v04_commentaryAfterEveryMove() {
     final PgnGame file = LenientPgnParser
         .parseText(PgnTestHelper.header("*") + "1. e4 {a} e5 {b} 2. Nf3 {c} Nc6 {d} *\n\n");
     assertEquals("a", Nulls.get(file.moveList(), 0).commentary().value());

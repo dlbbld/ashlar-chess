@@ -108,13 +108,13 @@ abstract class FiftyMoveClaimAheadReportBuilder {
   }
 
   private static @Nullable SequenceStart updatedSequenceStart(@Nullable SequenceStart currentStart,
-      MoveRecord playedHalfMove) {
-    if (playedHalfMove.halfMoveClock() == 0) {
+      MoveRecord playedMove) {
+    if (playedMove.halfMoveClock() == 0) {
       return null;
     }
     if (currentStart != null) {
       return currentStart;
     }
-    return SequenceStart.afterReset(playedHalfMove);
+    return SequenceStart.afterReset(playedMove);
   }
 }

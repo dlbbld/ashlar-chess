@@ -111,7 +111,7 @@ public class Board {
 
   private final Fen initialFen;
   private final List<LegalMove> performedLegalMoveList;
-  private final List<ImmutableList<LegalMove>> legalMoveListPerPly;
+  private final List<ImmutableList<LegalMove>> legalMoveListPerMove;
   private final List<Boolean> isCheckList;
   private final List<Boolean> isCheckmateList;
   private final List<Boolean> isStalemateList;
@@ -162,10 +162,10 @@ public class Board {
             : Square.NONE;
 
     this.performedLegalMoveList = new ArrayList<>();
-    this.legalMoveListPerPly = new ArrayList<>();
+    this.legalMoveListPerMove = new ArrayList<>();
     final ImmutableList<LegalMove> legalMoves = BitboardLegalMoveFactory.calculateLegalMoves(initialBitboardPosition,
         initialHavingMove, initialCastlingRight, initialEnPassantBit);
-    this.legalMoveListPerPly.add(legalMoves);
+    this.legalMoveListPerMove.add(legalMoves);
 
     this.isCheckList = new ArrayList<>();
     final boolean isCheck = initialBitboardPosition.isInCheck(initialHavingMove);
@@ -383,7 +383,7 @@ public class Board {
     // now we have a depencency on instruction execution: the move must be performed before calling the legal moves
     final ImmutableList<LegalMove> legalMovesAfterMove = BitboardLegalMoveFactory
         .calculateLegalMoves(afterBitboardPosition, afterHavingMove, afterCastlingRightHavingMove, afterEnPassantBit);
-    this.legalMoveListPerPly.add(legalMovesAfterMove);
+    this.legalMoveListPerMove.add(legalMovesAfterMove);
 
     final boolean isCheck = afterBitboardPosition.isInCheck(afterHavingMove);
     this.isCheckList.add(isCheck);
@@ -408,12 +408,12 @@ public class Board {
         dynamicPositionList, newDynamicPosition);
     this.repetitionCountList.add(newRepetitionCount);
 
-    final ImmutableList<LegalMove> legalMovesBeforeLastHalfMove = Nulls.get(legalMoveListPerPly,
-        legalMoveListPerPly.size() - 2);
+    final ImmutableList<LegalMove> legalMovesBeforeLastMove = Nulls.get(legalMoveListPerMove,
+        legalMoveListPerMove.size() - 2);
 
     final SanTerminalMarker sanTerminalMarker = SanTerminalMarker.calculate(isCheck, isCheckmate);
 
-    this.sanList.add(MoveToSan.calculateSanLastMove(moveToPerform, legalMovesBeforeLastHalfMove, sanTerminalMarker));
+    this.sanList.add(MoveToSan.calculateSanLastMove(moveToPerform, legalMovesBeforeLastMove, sanTerminalMarker));
     this.lanList.add(MoveToLan.calculateLanLastMove(moveToPerform, sanTerminalMarker));
 
     return true;
@@ -430,7 +430,7 @@ public class Board {
     }
 
     this.performedLegalMoveList.remove(performedLegalMoveList.size() - 1);
-    this.legalMoveListPerPly.remove(legalMoveListPerPly.size() - 1);
+    this.legalMoveListPerMove.remove(legalMoveListPerMove.size() - 1);
 
     this.isCheckList.remove(isCheckList.size() - 1);
     this.isCheckmateList.remove(isCheckmateList.size() - 1);
@@ -458,7 +458,7 @@ public class Board {
   }
 
   public ImmutableList<LegalMove> getLegalMoves() {
-    return Nulls.getLast(legalMoveListPerPly);
+    return Nulls.getLast(legalMoveListPerMove);
   }
 
   public ImmutableList<MoveSpecification> getPerformedMoveSpecificationList() {
@@ -968,7 +968,7 @@ public class Board {
     // carries no information not already covered by sanList + dynamicPositionList +
     // halfMoveClockList + repetitionCountList + performedLegalMoveList + initialFen.
     return Objects.hash(dynamicPositionList, halfMoveClockList, initialFen, isCheckList, isCheckmateList,
-        isStalemateList, lanList, legalMoveListPerPly, performedLegalMoveList, repetitionCountList, sanList);
+        isStalemateList, lanList, legalMoveListPerMove, performedLegalMoveList, repetitionCountList, sanList);
   }
 
   @Override
@@ -984,7 +984,7 @@ public class Board {
         && Objects.equals(halfMoveClockList, other.halfMoveClockList) && Objects.equals(initialFen, other.initialFen)
         && Objects.equals(isCheckList, other.isCheckList) && Objects.equals(isCheckmateList, other.isCheckmateList)
         && Objects.equals(isStalemateList, other.isStalemateList) && Objects.equals(lanList, other.lanList)
-        && Objects.equals(legalMoveListPerPly, other.legalMoveListPerPly)
+        && Objects.equals(legalMoveListPerMove, other.legalMoveListPerMove)
         && Objects.equals(performedLegalMoveList, other.performedLegalMoveList)
         && Objects.equals(repetitionCountList, other.repetitionCountList) && Objects.equals(sanList, other.sanList);
   }

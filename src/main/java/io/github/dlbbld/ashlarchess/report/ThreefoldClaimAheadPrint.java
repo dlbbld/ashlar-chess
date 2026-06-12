@@ -31,9 +31,9 @@ abstract class ThreefoldClaimAheadPrint {
         final MoveRecord halfMove = i < lastIndex ? Nulls.get(priorOccurrences, i) : entry.claimAheadMove();
         final boolean isAddAsterisk = i < lastIndex || entry.hasBeenPlayed();
         final boolean isAddPositionInformation = i == lastIndex;
-        final String halfMoveInformation = PositionIdentifierUtility.calculateHalfMoveInformation(halfMove,
+        final String moveInformation = PositionIdentifierUtility.calculateMoveInformation(halfMove,
             entry.totalRepetitionCount(), isAddAsterisk, isAddPositionInformation, positionIdentifierMap);
-        resultList.add(halfMoveInformation);
+        resultList.add(moveInformation);
       }
       resultListList.add(resultList);
     }

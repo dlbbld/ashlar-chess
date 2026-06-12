@@ -397,8 +397,8 @@ public final class LenientPgnParser {
         if (consumedSpacedMoveNumber(peek)) {
           continue;
         }
-        final PgnMove halfMove = parseHalfMoveLenient();
-        halfMoves.add(halfMove);
+        final PgnMove move = parseMoveLenient();
+        halfMoves.add(move);
         skipInsignificantWhitespace();
         if (isBraceToken(tokenizer.peek().type())) {
           final PgnCommentary commentary = consumeCommentaryOrThrow();
@@ -472,7 +472,7 @@ public final class LenientPgnParser {
     return true;
   }
 
-  private PgnMove parseHalfMoveLenient() {
+  private PgnMove parseMoveLenient() {
     final PgnToken sanToken = tokenizer.next();
     final StringBuilder sanBuilder = new StringBuilder(sanToken.text());
 

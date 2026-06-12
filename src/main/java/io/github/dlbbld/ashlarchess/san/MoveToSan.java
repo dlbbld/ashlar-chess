@@ -20,7 +20,7 @@ import io.github.dlbbld.ashlarchess.moves.PromotionUtility;
 
 public class MoveToSan extends AbstractSan {
 
-  public static String calculateSanLastMove(LegalMove lastMove, List<LegalMove> legalMovesBeforeLastHalfMove,
+  public static String calculateSanLastMove(LegalMove lastMove, List<LegalMove> legalMovesBeforeLastMove,
       SanTerminalMarker sanTerminalMarker) {
 
     // first - check if castling move
@@ -28,7 +28,7 @@ public class MoveToSan extends AbstractSan {
     if (CastlingUtility.calculateIsCastlingMove(moveSpecification)) {
       return calculateSanLastMoveCastling(moveSpecification, sanTerminalMarker);
     }
-    return calculateSanLastMoveNonCastling(lastMove, legalMovesBeforeLastHalfMove, sanTerminalMarker);
+    return calculateSanLastMoveNonCastling(lastMove, legalMovesBeforeLastMove, sanTerminalMarker);
   }
 
   private static SanSourceSpecification calculateSourceSpecification(LegalMove legalMove,
@@ -80,7 +80,7 @@ public class MoveToSan extends AbstractSan {
   }
 
   private static String calculateSanLastMoveNonCastling(LegalMove lastMove,
-      List<LegalMove> legalMovesBeforeLastHalfMove, SanTerminalMarker sanTerminalMarker) {
+      List<LegalMove> legalMovesBeforeLastMove, SanTerminalMarker sanTerminalMarker) {
 
     final MoveSpecification moveSpecification = lastMove.moveSpecification();
     final Piece movingPiece = lastMove.movingPiece();
@@ -122,7 +122,7 @@ public class MoveToSan extends AbstractSan {
         buildSan.append(pieceLetter);
 
         final List<LegalMove> legalMovesForMovingPiece = calculateLegalMovesForMovingPiece(lastMove.movingPiece(),
-            legalMovesBeforeLastHalfMove);
+            legalMovesBeforeLastMove);
 
         final SanSourceSpecification sourceSpecification = calculateSourceSpecification(lastMove,
             legalMovesForMovingPiece);

@@ -117,18 +117,18 @@ abstract class PositionIdentifierUtility {
     return Nulls.toString(result);
   }
 
-  static String calculateHalfMoveInformation(MoveRecord halfMove, int totalRepetitionCount, boolean isAddAsterisk,
+  static String calculateMoveInformation(MoveRecord move, int totalRepetitionCount, boolean isAddAsterisk,
       boolean isAddPositionInformation, Map<DynamicPosition, String> positionIdentifierMap) {
     final StringBuilder result = new StringBuilder();
 
     result.append(
-        MoveNumberFormat.calculateMoveNumberAndSanWithSpace(halfMove.fullMoveNumber(), halfMove.havingMove(),
-            halfMove.san()));
+        MoveNumberFormat.calculateMoveNumberAndSanWithSpace(move.fullMoveNumber(), move.havingMove(),
+            move.san()));
 
     if (isAddPositionInformation) {
       result.append(" ");
 
-      final String positionInformation = calculatePositionInformation(halfMove, totalRepetitionCount, isAddAsterisk,
+      final String positionInformation = calculatePositionInformation(move, totalRepetitionCount, isAddAsterisk,
           positionIdentifierMap);
       result.append(positionInformation);
     }

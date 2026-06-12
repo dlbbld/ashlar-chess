@@ -63,7 +63,7 @@ class TestCommentaryStrict {
 
   @SuppressWarnings("static-method")
   @Test
-  void v04_commentaryAfterEveryHalfMove() {
+  void v04_commentaryAfterEveryMove() {
     final PgnGame file = StrictPgnParser.parseText(header("*") + "1. e4 {a} 1... e5 {b} 2. Nf3 {c} 2... Nc6 {d} *\n\n");
     assertEquals("a", Nulls.get(file.moveList(), 0).commentary().value());
     assertEquals("b", Nulls.get(file.moveList(), 1).commentary().value());

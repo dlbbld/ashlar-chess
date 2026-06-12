@@ -41,16 +41,16 @@ public class GenerateRandomGame {
     int numberOfMoveOptions = legalMoves.size();
     List<MoveSpecification> moveOptionList = new ArrayList<>(legalMoves);
 
-    int halfMoveNumberLastPossibleTermination = -1;
-    int numberOfHalfMovesPerformed = 0;
+    int moveNumberLastPossibleTermination = -1;
+    int numberOfMovesPerformed = 0;
     while (numberOfMoveOptions != 0) {
       if (numberOfMoveOptions != 0) {
         final int randomMoveNumberIndex = RandomUtility.calculateRandomNumber(0, numberOfMoveOptions - 1);
         final MoveSpecification moveSpecification = Nulls.get(moveOptionList, randomMoveNumberIndex);
         board.move(moveSpecification);
-        numberOfHalfMovesPerformed++;
-        if (numberOfHalfMovesPerformed == 1 || numberOfHalfMovesPerformed % 100 == 0) {
-          System.out.println("Number of half-moves performed: " + numberOfHalfMovesPerformed);
+        numberOfMovesPerformed++;
+        if (numberOfMovesPerformed == 1 || numberOfMovesPerformed % 100 == 0) {
+          System.out.println("Number of moves performed: " + numberOfMovesPerformed);
         }
         legalMoves = board.getPossibleMoveSpecificationList();
       }
@@ -61,27 +61,27 @@ public class GenerateRandomGame {
         switch (findRandomGame) {
           case CHECKMATE:
             if (board.isCheckmate()) {
-              halfMoveNumberLastPossibleTermination = numberOfHalfMovesPerformed + 1;
-              System.out.println("Found checkmate option for half-move " + halfMoveNumberLastPossibleTermination);
+              moveNumberLastPossibleTermination = numberOfMovesPerformed + 1;
+              System.out.println("Found checkmate option for move " + moveNumberLastPossibleTermination);
             }
             break;
           case FIFTY_MOVE_RULE:
             if (board.isFiftyMove()) {
-              halfMoveNumberLastPossibleTermination = numberOfHalfMovesPerformed + 1;
-              System.out.println("Found fifty-move rule option for half-move " + halfMoveNumberLastPossibleTermination);
+              moveNumberLastPossibleTermination = numberOfMovesPerformed + 1;
+              System.out.println("Found fifty-move rule option for move " + moveNumberLastPossibleTermination);
             }
             break;
           case INSUFFICIENT_MATERIAL:
             if (board.isInsufficientMaterial()) {
-              halfMoveNumberLastPossibleTermination = numberOfHalfMovesPerformed + 1;
+              moveNumberLastPossibleTermination = numberOfMovesPerformed + 1;
               System.out
-                  .println("Found insufficient material option for half-move " + halfMoveNumberLastPossibleTermination);
+                  .println("Found insufficient material option for move " + moveNumberLastPossibleTermination);
             }
             break;
           case STALEMATE:
             if (board.isStalemate()) {
-              halfMoveNumberLastPossibleTermination = numberOfHalfMovesPerformed + 1;
-              System.out.println("Found stalemate option for half-move " + halfMoveNumberLastPossibleTermination);
+              moveNumberLastPossibleTermination = numberOfMovesPerformed + 1;
+              System.out.println("Found stalemate option for move " + moveNumberLastPossibleTermination);
             }
             break;
           case THREEFOLD_REPETITION_RULE:
@@ -101,9 +101,9 @@ public class GenerateRandomGame {
       numberOfMoveOptions = moveOptionList.size();
     }
 
-    if (halfMoveNumberLastPossibleTermination != -1) {
+    if (moveNumberLastPossibleTermination != -1) {
       System.out.println("No more non terminating moves - we have a termination option");
-      for (int i = numberOfHalfMovesPerformed; i >= halfMoveNumberLastPossibleTermination; i--) {
+      for (int i = numberOfMovesPerformed; i >= moveNumberLastPossibleTermination; i--) {
         board.unmove();
       }
       // now we should have at least one checkmate move
@@ -162,15 +162,15 @@ public class GenerateRandomGame {
     int numberOfMoveOptions = legalMoves.size();
     List<MoveSpecification> moveOptionList = new ArrayList<>(legalMoves);
 
-    int numberOfHalfMovesPerformed = 0;
+    int numberOfMovesPerformed = 0;
     while (numberOfMoveOptions != 0) {
       if (numberOfMoveOptions != 0) {
         final int randomMoveNumberIndex = RandomUtility.calculateRandomNumber(0, numberOfMoveOptions - 1);
         final MoveSpecification moveSpecification = Nulls.get(moveOptionList, randomMoveNumberIndex);
         board.move(moveSpecification);
-        numberOfHalfMovesPerformed++;
-        if (numberOfHalfMovesPerformed == 1 || numberOfHalfMovesPerformed % 100 == 0) {
-          System.out.println("Number of half-moves performed: " + numberOfHalfMovesPerformed);
+        numberOfMovesPerformed++;
+        if (numberOfMovesPerformed == 1 || numberOfMovesPerformed % 100 == 0) {
+          System.out.println("Number of moves performed: " + numberOfMovesPerformed);
         }
         legalMoves = board.getPossibleMoveSpecificationList();
       }
@@ -202,7 +202,7 @@ public class GenerateRandomGame {
     List<MoveSpecification> moveOptionList = new ArrayList<>(legalMoves);
 
     boolean isFiftyReached = false;
-    int numberOfHalfMovesPerformed = 0;
+    int numberOfMovesPerformed = 0;
     while (numberOfMoveOptions != 0) {
       if (numberOfMoveOptions != 0) {
         final int randomMoveNumberIndex = RandomUtility.calculateRandomNumber(0, numberOfMoveOptions - 1);
@@ -212,9 +212,9 @@ public class GenerateRandomGame {
           isFiftyReached = true;
           System.out.println("Reached fifty move");
         }
-        numberOfHalfMovesPerformed++;
-        if (numberOfHalfMovesPerformed == 1 || numberOfHalfMovesPerformed % 100 == 0) {
-          System.out.println("Number of half-moves performed: " + numberOfHalfMovesPerformed);
+        numberOfMovesPerformed++;
+        if (numberOfMovesPerformed == 1 || numberOfMovesPerformed % 100 == 0) {
+          System.out.println("Number of moves performed: " + numberOfMovesPerformed);
         }
 
         if (board.isSeventyFiveMove()) {
@@ -272,7 +272,7 @@ public class GenerateRandomGame {
     boolean isRepetitionReached = false;
     // we need to intialize to something other than null, the below value is not meaning ful
     DynamicPosition repetitionPosition = board.getDynamicPosition();
-    int numberOfHalfMovesPerformed = 0;
+    int numberOfMovesPerformed = 0;
     while (numberOfMoveOptions != 0) {
       {
         final int randomMoveNumberIndex = RandomUtility.calculateRandomNumber(0, numberOfMoveOptions - 1);
@@ -283,9 +283,9 @@ public class GenerateRandomGame {
           repetitionPosition = board.getDynamicPosition();
           System.out.println("Reached first repetition");
         }
-        numberOfHalfMovesPerformed++;
-        if (numberOfHalfMovesPerformed == 1 || numberOfHalfMovesPerformed % 100 == 0) {
-          System.out.println("Number of half-moves performed: " + numberOfHalfMovesPerformed);
+        numberOfMovesPerformed++;
+        if (numberOfMovesPerformed == 1 || numberOfMovesPerformed % 100 == 0) {
+          System.out.println("Number of moves performed: " + numberOfMovesPerformed);
         }
 
         if (board.getRepetitionCount() == repetitionNumber) {

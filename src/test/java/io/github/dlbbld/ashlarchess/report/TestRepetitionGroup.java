@@ -22,7 +22,7 @@ class TestRepetitionGroup {
   @SuppressWarnings("static-method")
   @Test
   void compactConstructorRejectsInconsistentTotal() {
-    final MoveRecord move = firstPlayedHalfMove();
+    final MoveRecord move = firstPlayedMove();
     final DynamicPosition position = move.dynamicPosition();
     assertThrows(IllegalArgumentException.class,
         () -> new RepetitionGroup(position, Nulls.listOf(move, move, move), false, 99),
@@ -32,7 +32,7 @@ class TestRepetitionGroup {
   @SuppressWarnings("static-method")
   @Test
   void compactConstructorAcceptsConsistentTotalWithoutInitialPosition() {
-    final MoveRecord move = firstPlayedHalfMove();
+    final MoveRecord move = firstPlayedMove();
     final DynamicPosition position = move.dynamicPosition();
     final RepetitionGroup group = new RepetitionGroup(position, Nulls.listOf(move, move, move), false, 3);
     assertEquals(3, group.totalRepetitionCount());
@@ -45,7 +45,7 @@ class TestRepetitionGroup {
   @Test
   void compactConstructorAcceptsConsistentTotalWithInitialPosition() {
     // Two played occurrences + 1 implicit initial-position occurrence = total 3 (the threefold).
-    final MoveRecord move = firstPlayedHalfMove();
+    final MoveRecord move = firstPlayedMove();
     final DynamicPosition position = move.dynamicPosition();
     final RepetitionGroup group = new RepetitionGroup(position, Nulls.listOf(move, move), true, 3);
     assertEquals(3, group.totalRepetitionCount());
@@ -53,7 +53,7 @@ class TestRepetitionGroup {
     assertEquals(true, group.includesInitialPosition());
   }
 
-  private static MoveRecord firstPlayedHalfMove() {
+  private static MoveRecord firstPlayedMove() {
     final Board board = new Board();
     board.moveStrict("e4");
     return Nulls.get(MoveRecords.played(board), 0);
