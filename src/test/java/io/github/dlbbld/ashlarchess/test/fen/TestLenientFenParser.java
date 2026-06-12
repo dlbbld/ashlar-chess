@@ -74,7 +74,7 @@ class TestLenientFenParser {
 
   @Test
   void test07_missingFullmoveNumber() {
-    // Five-field FEN — halfmove present, fullmove absent.
+    // Five-field FEN — halfmove clock present, fullmove number absent.
     final String deviating = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0";
     assertExactlyOneCode(deviating, ForgivenFenItemCode.MISSING_FULLMOVE_NUMBER);
   }
@@ -111,7 +111,7 @@ class TestLenientFenParser {
 
   @Test
   void test12_trailingGarbageToken() {
-    final String deviating = INITIAL_CANONICAL + " extra-token-after-fullmove";
+    final String deviating = INITIAL_CANONICAL + " extra-token-after-fullmove-number";
     assertExactlyOneCode(deviating, ForgivenFenItemCode.TRAILING_GARBAGE_TOKEN);
   }
 
@@ -155,7 +155,7 @@ class TestLenientFenParser {
   @Test
   void test16_endToEndDeficientFen() {
     // Realistic engine-output deficient FEN: leading whitespace, tab separators, uppercase side, non-canonical
-    // castling order, em-dash en-passant, missing fullmove (5-field).
+    // castling order, em-dash en-passant, missing fullmove number (5-field).
     final String deviating = "  rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR\tW\tqkQK\t—\t0";
     final LenientFenParserValidationResult result = LenientFenParser.validateText(deviating);
     assertTrue(result.isValid(), () -> "expected valid; got: " + result.message());

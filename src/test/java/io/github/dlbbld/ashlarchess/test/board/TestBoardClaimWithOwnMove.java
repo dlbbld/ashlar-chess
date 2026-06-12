@@ -17,7 +17,7 @@ class TestBoardClaimWithOwnMove {
   @Test
   void canClaimFiftyMoveRuleWithOwnMoveAtBoundary() {
     // fullMoveNumber must be consistent with halfMoveClock per FenParserAdvanced
-    // (clock <= 2 * (fullmove - 1) for White to move); 99 clock requires fullmove >= 51.
+    // (clock <= 2 * (fullmove number - 1) for White to move); 99 clock requires fullmove number >= 51.
     final Board oneQuietMoveBeforeFiftyMoveRule = new Board("7k/8/8/8/8/8/4K3/R7 w - - 99 51");
 
     assertFalse(oneQuietMoveBeforeFiftyMoveRule.isFiftyMove());

@@ -32,7 +32,7 @@ import io.github.dlbbld.ashlarchess.test.pgntest.enums.PgnTest;
  *
  * <ol>
  * <li>the parser accepts the file (no exception),</li>
- * <li>replaying the parsed halfmove sequence on a {@link Board} starting from the parsed {@code startFen} reaches the
+ * <li>replaying the parsed move sequence on a {@link Board} starting from the parsed {@code startFen} reaches the
  * FEN recorded as the registered test case's {@code fen()}.</li>
  * </ol>
  *

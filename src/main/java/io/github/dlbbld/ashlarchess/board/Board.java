@@ -122,7 +122,7 @@ public class Board {
   private final List<String> lanList;
   // moveList intentionally NOT stored: the recorded-move rows are derived on demand by
   // report.MoveRecords from the other per-move parallel stores (performedLegalMoveList + sanList +
-  // halfMoveClockList + dynamicPositionList + repetitionCountList + initial-FEN fullmove anchor).
+  // halfMoveClockList + dynamicPositionList + repetitionCountList + initial-FEN fullmove number anchor).
   // Dropping the stored field eliminates one duplicated mutable list and keeps the recorded-move
   // type out of Board's state model.
   private final List<CastlingRightLoss> whiteKingSideLossList;

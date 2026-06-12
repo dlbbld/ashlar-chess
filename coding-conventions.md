@@ -26,7 +26,7 @@ One player's action is a **move**. Use `move`, `played move`, `moveIndex` (0-bas
 
 Do not use standalone `halfmove`, `half-move`, `half move`, `ply`, or `plies` for a played move. The only exceptions are explicitly protocol- or engine-scoped:
 
-- **FEN/PGN protocol counters.** In prose, use the standards spelling `halfmove clock` and `fullmove number`. In Java identifiers, keep normal Java word boundaries: `halfMoveClock`, `fullMoveNumber`, `HALF_MOVE_CLOCK`, `FULL_MOVE_NUMBER`. This is an intentional split: prose follows the protocol field name; code follows Java naming.
+- **FEN/PGN protocol counters.** In prose, use the standards spelling `halfmove clock` and `fullmove number`, with `halfmove` / `fullmove` always one word — including standalone and plural uses (`halfmoves`, `fullmoves`) — never `half move` / `full move` / `half-move` / `full-move`. In Java identifiers, keep normal Java word boundaries: `halfMoveClock`, `fullMoveNumber`, `HALF_MOVE_CLOCK`, `FULL_MOVE_NUMBER`. This is an intentional split: prose follows the protocol field name; code follows Java naming.
 - **PGN `PlyCount` tag.** Keep `PlyCount` / `StandardTag.PLY_COUNT` because that is the tag name.
 - **Engine/search internals.** `ply` is allowed for search depth, per-depth buffers, make/unmake stacks, and engine-style prose such as "3-ply search". Do not let it leak into `Board`, move history, PGN model, or report vocabulary.
 - **External mirrors.** Test fixtures or adapters that deliberately mirror an external library or data contract may keep that source's vocabulary, for example python-chess `perPly` data or chesslib half-move naming.

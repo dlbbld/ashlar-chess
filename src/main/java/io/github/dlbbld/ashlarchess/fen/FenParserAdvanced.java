@@ -94,7 +94,7 @@ public class FenParserAdvanced implements EnumConstants {
   /**
    * Halfmove clock cannot exceed the maximum number of halfmoves that have been played by the start of the given
    * fullmove number. With {@code havingMove == WHITE} the maximum is {@code 2 * (fullMoveNumber - 1)}; with
-   * {@code havingMove == BLACK} the count includes White's halfmove on the current fullmove, so the maximum is
+   * {@code havingMove == BLACK} the count includes White's halfmove on the current fullmove number, so the maximum is
    * {@code 2 * (fullMoveNumber - 1) + 1}. Violations are physical impossibilities - a FEN like {@code ... 15 1} (15
    * halfmoves played, claiming move 1) cannot arise from a real game. The lenient FEN parser auto-corrects this by
    * bumping {@code fullMoveNumber} up to {@code halfMoveClock} rounded up to the next multiple of ten (a generous

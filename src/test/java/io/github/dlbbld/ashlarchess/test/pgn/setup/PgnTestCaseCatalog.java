@@ -1738,7 +1738,7 @@ public class PgnTestCaseCatalog {
 
     // knight-bishop checkmate in blitz unsuccessful
 
-    // 75-move-rule exceeded by 116.5 full moves - no arbiter call
+    // 75-move-rule exceeded by 116.5 fullmoves - no arbiter call
     list.add(new PgnFen("various_anikonov_zhigalko_2018.pgn", "2R5/4r3/8/1k1n4/8/5K2/8/8 w - - 126 167"));
 
     // KRvKRB played over fifty moves, under seventy-five moves
