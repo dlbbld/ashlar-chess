@@ -26,13 +26,13 @@ public enum ForgivenFenItemCode {
    * Four-field FEN - halfmove clock and fullmove number both absent (common in engine output, e.g. Stockfish UCI
    * {@code position fen ...}). Defaulted to {@code 0 1}.
    */
-  MISSING_HALFMOVE_AND_FULLMOVE,
+  MISSING_HALF_MOVE_CLOCK_AND_FULL_MOVE_NUMBER,
 
   /**
    * Five-field FEN - fullmove number absent but halfmove clock present. Defaulted to {@code 1} for the missing
    * fullmove number.
    */
-  MISSING_FULLMOVE_NUMBER,
+  MISSING_FULL_MOVE_NUMBER,
 
   /**
    * Side-to-move letter in uppercase ({@code W} or {@code B}) normalised to lowercase.

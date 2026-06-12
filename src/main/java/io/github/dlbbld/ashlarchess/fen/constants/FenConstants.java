@@ -35,7 +35,7 @@ public class FenConstants implements EnumConstants {
   public static final Fen FEN_INITIAL = new Fen(FEN_INITIAL_STR, BitboardPosition.INITIAL_POSITION, WHITE,
       CastlingRight.KING_AND_QUEEN_SIDE, CastlingRight.KING_AND_QUEEN_SIDE, Square.NONE, 0, 1);
 
-  public static final ImmutableList<String> POSSIBLE_FEN_AFTER_FIRST_HALF_MOVE;
+  public static final ImmutableList<String> POSSIBLE_FEN_AFTER_FIRST_MOVE;
 
   static {
     @SuppressWarnings("null") final @NonNull List<String> fenAfterFirstMoveList = Arrays.asList(
@@ -59,7 +59,7 @@ public class FenConstants implements EnumConstants {
         "rnbqkbnr/pppppppp/8/8/8/5N2/PPPPPPPP/RNBQKB1R b KQkq - 1 1",
         "rnbqkbnr/pppppppp/8/8/8/7N/PPPPPPPP/RNBQKB1R b KQkq - 1 1");
 
-    POSSIBLE_FEN_AFTER_FIRST_HALF_MOVE = Nulls.copyOfList(fenAfterFirstMoveList);
+    POSSIBLE_FEN_AFTER_FIRST_MOVE = Nulls.copyOfList(fenAfterFirstMoveList);
   }
 
 }

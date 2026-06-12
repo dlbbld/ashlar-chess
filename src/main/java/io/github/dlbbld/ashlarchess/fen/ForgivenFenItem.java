@@ -16,7 +16,7 @@ import com.google.common.collect.ImmutableList;
  * @param original  the deviating fragment as the user wrote it (e.g. the uppercase {@code W} for
  *                  {@link ForgivenFenItemCode#UPPERCASE_SIDE_TO_MOVE}, or the dropped trailing token for
  *                  {@link ForgivenFenItemCode#TRAILING_GARBAGE_TOKEN}). Empty if the deviation does not reference a
- *                  specific fragment (e.g. {@link ForgivenFenItemCode#MISSING_HALFMOVE_AND_FULLMOVE}).
+ *                  specific fragment (e.g. {@link ForgivenFenItemCode#MISSING_HALF_MOVE_CLOCK_AND_FULL_MOVE_NUMBER}).
  * @param canonical the canonical equivalent the parser substituted, or empty if the normalisation is a deletion
  *                  (whitespace-stripping, dropping trailing garbage)
  */

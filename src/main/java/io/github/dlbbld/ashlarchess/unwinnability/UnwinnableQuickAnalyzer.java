@@ -57,16 +57,16 @@ public class UnwinnableQuickAnalyzer {
     final String invariant = board.getFen();
 
     // CHA trivial_progress: advance the position while there is exactly one legal move.
-    int countHalfmoves = 0;
+    int countPlies = 0;
     final Set<DynamicPosition> forcedPositionSet = new HashSet<>();
     while (board.getLegalMoves().size() == 1 && forcedPositionSet.add(board.getDynamicPosition())) {
       board.move(Nulls.getFirst(board.getLegalMoves()).moveSpecification());
-      countHalfmoves++;
+      countPlies++;
     }
 
     final boolean isUnwinnable = calculateIsQuickUnwinnable(board, c);
 
-    unperformHalfmoves(board, countHalfmoves);
+    unperformPlies(board, countPlies);
     if (!invariant.equals(board.getFen())) {
       throw new ProgrammingMistakeException("Board was changed");
     }
@@ -207,8 +207,8 @@ public class UnwinnableQuickAnalyzer {
     return new Board(fen);
   }
 
-  private static void unperformHalfmoves(Board board, int countHalfmoves) {
-    for (int i = 1; i <= countHalfmoves; i++) {
+  private static void unperformPlies(Board board, int countPlies) {
+    for (int i = 1; i <= countPlies; i++) {
       board.unmove();
     }
   }

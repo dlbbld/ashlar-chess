@@ -18,10 +18,10 @@ class TestFenConstants {
 
   @SuppressWarnings("static-method")
   @Test
-  void testFirstHalfmove() {
+  void testFirstMove() {
 
     // first we put the hardcoded constants in a set
-    final Set<String> hardCodedFenSet = new TreeSet<>(FenConstants.POSSIBLE_FEN_AFTER_FIRST_HALF_MOVE);
+    final Set<String> hardCodedFenSet = new TreeSet<>(FenConstants.POSSIBLE_FEN_AFTER_FIRST_MOVE);
 
     // second we calculate what we expect them to be
     final Set<String> calculatedFenSet = new TreeSet<>();

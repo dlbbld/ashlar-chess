@@ -212,10 +212,10 @@ public final class LenientFenParser {
     if (fields.size() == 4) {
       fields.add("0");
       fields.add("1");
-      accumulator.add(new ForgivenFenItem(ForgivenFenItemCode.MISSING_HALFMOVE_AND_FULLMOVE, "", "0 1"));
+      accumulator.add(new ForgivenFenItem(ForgivenFenItemCode.MISSING_HALF_MOVE_CLOCK_AND_FULL_MOVE_NUMBER, "", "0 1"));
     } else if (fields.size() == 5) {
       fields.add("1");
-      accumulator.add(new ForgivenFenItem(ForgivenFenItemCode.MISSING_FULLMOVE_NUMBER, "", "1"));
+      accumulator.add(new ForgivenFenItem(ForgivenFenItemCode.MISSING_FULL_MOVE_NUMBER, "", "1"));
     }
 
     // 8. Field-level normalisation.
