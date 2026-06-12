@@ -11,7 +11,6 @@ import com.google.common.collect.ImmutableList;
 
 import io.github.dlbbld.ashlarchess.common.Nulls;
 import io.github.dlbbld.ashlarchess.common.model.DynamicPosition;
-import io.github.dlbbld.ashlarchess.common.model.HalfMove;
 
 abstract class ThreefoldClaimAheadPrint {
 
@@ -26,10 +25,10 @@ abstract class ThreefoldClaimAheadPrint {
       }
 
       // The joined sequence is [priorOccurrences..., claimAheadMove]. claimAheadMove sits at lastIndex.
-      final ImmutableList<HalfMove> priorOccurrences = entry.priorOccurrences();
+      final ImmutableList<MoveRecord> priorOccurrences = entry.priorOccurrences();
       final int lastIndex = priorOccurrences.size();
       for (int i = 0; i <= lastIndex; i++) {
-        final HalfMove halfMove = i < lastIndex ? Nulls.get(priorOccurrences, i) : entry.claimAheadMove();
+        final MoveRecord halfMove = i < lastIndex ? Nulls.get(priorOccurrences, i) : entry.claimAheadMove();
         final boolean isAddAsterisk = i < lastIndex || entry.hasBeenPlayed();
         final boolean isAddPositionInformation = i == lastIndex;
         final String halfMoveInformation = PositionIdentifierUtility.calculateHalfMoveInformation(halfMove,

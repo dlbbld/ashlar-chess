@@ -6,7 +6,6 @@ package io.github.dlbbld.ashlarchess.report;
 import org.eclipse.jdt.annotation.Nullable;
 
 import io.github.dlbbld.ashlarchess.board.enums.Side;
-import io.github.dlbbld.ashlarchess.common.model.HalfMove;
 
 /**
  * One no-progress halfmove sequence that reached the 50-move-rule threshold (halfmove clock {@code >= 100}).
@@ -37,8 +36,8 @@ import io.github.dlbbld.ashlarchess.common.model.HalfMove;
  * start's value otherwise. By the threshold guarantee at construction time in the builder, {@code finalClock() >= 100}
  * for every sequence in {@link FiftyMoveSequenceReport}.
  */
-record FiftyMoveSequence(SequenceStart start, @Nullable HalfMove fiftyMoveThresholdPly,
-    @Nullable HalfMove seventyFiveMoveThresholdPly, @Nullable HalfMove endPly, Side startingSide) {
+record FiftyMoveSequence(SequenceStart start, @Nullable MoveRecord fiftyMoveThresholdPly,
+    @Nullable MoveRecord seventyFiveMoveThresholdPly, @Nullable MoveRecord endPly, Side startingSide) {
 
   /**
    * The sequence's final halfmove-clock value. Equal to {@code endPly.halfMoveClock()} when {@code endPly != null};

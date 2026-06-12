@@ -10,7 +10,6 @@ import org.junit.jupiter.api.Test;
 
 import io.github.dlbbld.ashlarchess.board.Board;
 import io.github.dlbbld.ashlarchess.common.Nulls;
-import io.github.dlbbld.ashlarchess.common.model.HalfMove;
 
 /**
  * Direct unit tests for the {@link ClaimAheadEntry} record. Covers the compact-constructor invariant
@@ -28,7 +27,7 @@ class TestClaimAheadEntry {
   @SuppressWarnings("static-method")
   @Test
   void compactConstructorRejectsInconsistentTotal() {
-    final HalfMove move = firstPlayedHalfMove();
+    final MoveRecord move = firstPlayedHalfMove();
     assertThrows(IllegalArgumentException.class, () -> new ClaimAheadEntry(move, false, Nulls.listOf(), false, 99),
         "totalRepetitionCount disagreeing with priorOccurrences.size() + 1 must throw");
   }
@@ -36,7 +35,7 @@ class TestClaimAheadEntry {
   @SuppressWarnings("static-method")
   @Test
   void compactConstructorAcceptsConsistentTotalWithoutInitialPosition() {
-    final HalfMove move = firstPlayedHalfMove();
+    final MoveRecord move = firstPlayedHalfMove();
     final ClaimAheadEntry entry = new ClaimAheadEntry(move, false, Nulls.listOf(), false, 1);
     assertEquals(1, entry.totalRepetitionCount());
     assertEquals(0, entry.priorOccurrences().size());
@@ -49,16 +48,16 @@ class TestClaimAheadEntry {
   void compactConstructorAcceptsConsistentTotalWithInitialPosition() {
     // priorOccurrences empty, includesInitialPosition true, claim-ahead move = the (n+1)th = 2nd occurrence overall:
     // 0 + 1 + 1 = 2.
-    final HalfMove move = firstPlayedHalfMove();
+    final MoveRecord move = firstPlayedHalfMove();
     final ClaimAheadEntry entry = new ClaimAheadEntry(move, false, Nulls.listOf(), true, 2);
     assertEquals(2, entry.totalRepetitionCount());
     assertEquals(true, entry.includesInitialPosition());
   }
 
-  /** Returns the HalfMove for white's 1.e4 from the initial position. Convenient cheap fixture. */
-  private static HalfMove firstPlayedHalfMove() {
+  /** Returns the MoveRecord for white's 1.e4 from the initial position. Convenient cheap fixture. */
+  private static MoveRecord firstPlayedHalfMove() {
     final Board board = new Board();
     board.moveStrict("e4");
-    return Nulls.get(board.getHalfMoveList(), 0);
+    return Nulls.get(MoveRecords.played(board), 0);
   }
 }

@@ -5,12 +5,10 @@ package io.github.dlbbld.ashlarchess.report;
 
 import org.eclipse.jdt.annotation.Nullable;
 
-import io.github.dlbbld.ashlarchess.common.model.HalfMove;
-
 /**
  * The START of a 50-move-rule no-progress sequence. Either the sequence inherits an existing halfmove-clock value from
  * the starting FEN (build with {@link #initialFen(int)}), or it began with the first non-zeroing legal move played
- * after a clock-resetting ply (build with {@link #afterReset(HalfMove)}).
+ * after a clock-resetting ply (build with {@link #afterReset(MoveRecord)}).
  *
  * <p>
  * The two shapes share one record with a boolean discriminator. The compact constructor enforces that exactly one of
@@ -21,7 +19,7 @@ import io.github.dlbbld.ashlarchess.common.model.HalfMove;
  * {@code halfMoveClock == 1} by chess-engine invariant.</li>
  * </ul>
  */
-record SequenceStart(boolean isInitialFen, int initialClockValue, @Nullable HalfMove firstNonZeroingMove) {
+record SequenceStart(boolean isInitialFen, int initialClockValue, @Nullable MoveRecord firstNonZeroingMove) {
 
   public SequenceStart {
     if (isInitialFen) {
@@ -51,7 +49,7 @@ record SequenceStart(boolean isInitialFen, int initialClockValue, @Nullable Half
     return new SequenceStart(true, initialClockValue, null);
   }
 
-  static SequenceStart afterReset(HalfMove firstNonZeroingMove) {
+  static SequenceStart afterReset(MoveRecord firstNonZeroingMove) {
     return new SequenceStart(false, 0, firstNonZeroingMove);
   }
 
@@ -60,7 +58,7 @@ record SequenceStart(boolean isInitialFen, int initialClockValue, @Nullable Half
    * is null by invariant. Consumers that have already branched on {@link #isInitialFen()} use this to avoid a manual
    * null-check that JDT cannot infer through the discriminator.
    */
-  HalfMove firstNonZeroingMoveOrThrow() {
+  MoveRecord firstNonZeroingMoveOrThrow() {
     if (firstNonZeroingMove == null) {
       throw new IllegalStateException("firstNonZeroingMove is null on an initial-FEN sequence start");
     }

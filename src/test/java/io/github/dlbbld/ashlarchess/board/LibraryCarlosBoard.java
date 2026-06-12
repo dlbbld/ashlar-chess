@@ -32,13 +32,13 @@ import io.github.dlbbld.ashlarchess.common.constants.ChessConstants;
 import io.github.dlbbld.ashlarchess.common.constants.DynamicPositionConstants;
 import io.github.dlbbld.ashlarchess.common.exceptions.ProgrammingMistakeException;
 import io.github.dlbbld.ashlarchess.common.model.DynamicPosition;
-import io.github.dlbbld.ashlarchess.common.model.HalfMove;
 import io.github.dlbbld.ashlarchess.common.model.MoveSpecification;
 import io.github.dlbbld.ashlarchess.fen.constants.FenConstants;
 import io.github.dlbbld.ashlarchess.fen.model.Fen;
 import io.github.dlbbld.ashlarchess.model.LegalMove;
 import io.github.dlbbld.ashlarchess.model.LegalMoveKind;
 import io.github.dlbbld.ashlarchess.moves.EnPassantCaptureUtility;
+import io.github.dlbbld.ashlarchess.report.MoveRecord;
 import io.github.dlbbld.ashlarchess.san.SanSymbol;
 import io.github.dlbbld.ashlarchess.san.SanTerminalMarker;
 import io.github.dlbbld.ashlarchess.test.librarycarlos.NullsCarlos;
@@ -53,7 +53,7 @@ public class LibraryCarlosBoard {
   private int performedHalfMoveCount;
   private final List<LegalMove> performedLegalMoveList;
   private final List<DynamicPosition> dynamicPositionList;
-  private final List<HalfMove> halfMoveList;
+  private final List<MoveRecord> halfMoveList;
 
   public LibraryCarlosBoard() {
 
@@ -119,7 +119,7 @@ public class LibraryCarlosBoard {
         normalizedEnPassantCaptureTargetSquare, getCastlingRightWhite(), getCastlingRightBlack()));
 
     // ATTENTION: timely dependency, must be after the above code is very very dangerous
-    final HalfMove halfMove = buildHalfMove(moveSpecification);
+    final MoveRecord halfMove = buildHalfMove(moveSpecification);
     halfMoveList.add(halfMove);
   }
 
@@ -382,7 +382,7 @@ public class LibraryCarlosBoard {
     return Nulls.copyOfList(dynamicPositionList);
   }
 
-  public ImmutableList<HalfMove> getHalfMoveList() {
+  public ImmutableList<MoveRecord> getHalfMoveList() {
     return Nulls.copyOfList(halfMoveList);
   }
 
@@ -622,14 +622,14 @@ public class LibraryCarlosBoard {
     return Nulls.copyOfList(result);
   }
 
-  private HalfMove buildHalfMove(MoveSpecification moveSpecification) {
+  private MoveRecord buildHalfMove(MoveSpecification moveSpecification) {
     final int halfMoveCount = getPerformedHalfMoveCount();
     final int halfMoveClock = getHalfMoveClock();
     final int fullMoveNumber = getFullMoveNumber();
     final int countRepetition = getRepetitionCount();
     final DynamicPosition dynamicPosition = getDynamicPosition();
     final Piece movingPiece = getMovingPiece();
-    return new HalfMove(halfMoveCount, fullMoveNumber, halfMoveClock, dynamicPosition, countRepetition, getSan(),
+    return new MoveRecord(halfMoveCount, fullMoveNumber, halfMoveClock, dynamicPosition, countRepetition, getSan(),
         movingPiece, moveSpecification);
   }
 }

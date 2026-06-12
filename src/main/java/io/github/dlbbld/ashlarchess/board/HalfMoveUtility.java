@@ -5,24 +5,11 @@ package io.github.dlbbld.ashlarchess.board;
 
 import io.github.dlbbld.ashlarchess.board.enums.AddSpace;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
-import io.github.dlbbld.ashlarchess.common.model.HalfMove;
 
 public abstract class HalfMoveUtility {
 
   public static String calculateMoveNumberAndSanWithSpace(int fullMoveNumber, Side havingMove, String san) {
     return calculateMoveNumberAndSan(fullMoveNumber, havingMove, san, AddSpace.YES);
-  }
-
-  public static String calculateMoveNumberAndSanWithSpace(HalfMove halfMove) {
-    return calculateMoveNumberAndSan(halfMove, AddSpace.YES);
-  }
-
-  public static String calculateMoveNumberAndSanWithoutSpace(HalfMove halfMove) {
-    return calculateMoveNumberAndSan(halfMove, AddSpace.NO);
-  }
-
-  private static String calculateMoveNumberAndSan(HalfMove halfMove, AddSpace addSpace) {
-    return calculateFullMoveNumberInitial(halfMove.fullMoveNumber(), halfMove.havingMove(), addSpace) + halfMove.san();
   }
 
   private static String calculateMoveNumberAndSan(int fullMoveNumber, Side havingMove, String san, AddSpace addSpace) {

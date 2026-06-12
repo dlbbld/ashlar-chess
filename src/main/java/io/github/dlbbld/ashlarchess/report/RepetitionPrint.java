@@ -11,7 +11,6 @@ import com.google.common.collect.ImmutableList;
 
 import io.github.dlbbld.ashlarchess.common.Nulls;
 import io.github.dlbbld.ashlarchess.common.model.DynamicPosition;
-import io.github.dlbbld.ashlarchess.common.model.HalfMove;
 
 abstract class RepetitionPrint {
 
@@ -23,9 +22,9 @@ abstract class RepetitionPrint {
       if (group.includesInitialPosition()) {
         resultList.add("[Initial position]");
       }
-      final ImmutableList<HalfMove> occurrences = group.occurrences();
+      final ImmutableList<MoveRecord> occurrences = group.occurrences();
       for (int i = 0; i < occurrences.size(); i++) {
-        final HalfMove halfMove = Nulls.get(occurrences, i);
+        final MoveRecord halfMove = Nulls.get(occurrences, i);
         final boolean isAddPositionInformation = i == occurrences.size() - 1;
         final String halfMoveInformation = PositionIdentifierUtility.calculateHalfMoveInformation(halfMove,
             group.totalRepetitionCount(), false, isAddPositionInformation, positionIdentifierMap);

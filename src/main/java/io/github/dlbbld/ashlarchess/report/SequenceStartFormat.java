@@ -5,7 +5,6 @@ package io.github.dlbbld.ashlarchess.report;
 
 import io.github.dlbbld.ashlarchess.board.HalfMoveUtility;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
-import io.github.dlbbld.ashlarchess.common.model.HalfMove;
 
 /**
  * Shared per-player anchor helpers for the 50-move report, used by both the sequence print and the claim-ahead print so
@@ -31,8 +30,9 @@ abstract class SequenceStartFormat {
   /**
    * A played-ply anchor: {@code <move> (W/B)}.
    */
-  static String plyAnchor(HalfMove ply, Side startingSide) {
-    return HalfMoveUtility.calculateMoveNumberAndSanWithSpace(ply) + " " + counts(ply.halfMoveClock(), startingSide);
+  static String plyAnchor(MoveRecord ply, Side startingSide) {
+    return HalfMoveUtility.calculateMoveNumberAndSanWithSpace(ply.fullMoveNumber(), ply.havingMove(), ply.san()) + " "
+        + counts(ply.halfMoveClock(), startingSide);
   }
 
   /**

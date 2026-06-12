@@ -14,7 +14,6 @@ import io.github.dlbbld.ashlarchess.board.Board;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
 import io.github.dlbbld.ashlarchess.common.Nulls;
 import io.github.dlbbld.ashlarchess.common.constants.ChessConstants;
-import io.github.dlbbld.ashlarchess.common.model.HalfMove;
 
 abstract class FiftyMoveSequenceReportBuilder {
 
@@ -37,16 +36,16 @@ abstract class FiftyMoveSequenceReportBuilder {
     final int seventyFiveThreshold = ChessConstants.SEVENTY_FIVE_MOVE_RULE_HALF_MOVE_CLOCK_THRESHOLD;
     final int initialFenClock = board.getInitialFen().halfMoveClock();
     final Side initialFenSideToMove = board.getInitialFen().havingMove();
-    final ImmutableList<HalfMove> halfMoveList = board.getHalfMoveList();
+    final ImmutableList<MoveRecord> halfMoveList = MoveRecords.played(board);
 
     final List<FiftyMoveSequence> sequences = new ArrayList<>();
 
     SequenceStart currentStart = initialSequenceStart(initialFenClock);
-    @Nullable HalfMove currentEndPly = null;
-    @Nullable HalfMove currentFiftyPly = null;
-    @Nullable HalfMove currentSeventyFivePly = null;
+    @Nullable MoveRecord currentEndPly = null;
+    @Nullable MoveRecord currentFiftyPly = null;
+    @Nullable MoveRecord currentSeventyFivePly = null;
 
-    for (final HalfMove ply : halfMoveList) {
+    for (final MoveRecord ply : halfMoveList) {
       final int clock = ply.halfMoveClock();
       if (clock == 0) {
         // Clock-resetting move: closes any open sequence (without including this move). The
@@ -90,8 +89,8 @@ abstract class FiftyMoveSequenceReportBuilder {
     return initialFenClock > 0 ? SequenceStart.initialFen(initialFenClock) : null;
   }
 
-  private static void maybeEmit(List<FiftyMoveSequence> sequences, SequenceStart start, @Nullable HalfMove fiftyPly,
-      @Nullable HalfMove seventyFivePly, @Nullable HalfMove endPly, int threshold, int initialFenClock,
+  private static void maybeEmit(List<FiftyMoveSequence> sequences, SequenceStart start, @Nullable MoveRecord fiftyPly,
+      @Nullable MoveRecord seventyFivePly, @Nullable MoveRecord endPly, int threshold, int initialFenClock,
       Side initialFenSideToMove) {
     final Side startingSide = SequenceStartFormat.startingSide(start, initialFenClock, initialFenSideToMove);
     final FiftyMoveSequence sequence = new FiftyMoveSequence(start, fiftyPly, seventyFivePly, endPly, startingSide);

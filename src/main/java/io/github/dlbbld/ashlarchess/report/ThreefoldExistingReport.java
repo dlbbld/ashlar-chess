@@ -11,8 +11,8 @@ import io.github.dlbbld.ashlarchess.common.Nulls;
  * All positions that reached the threefold-repetition threshold in the played history.
  *
  * <p>
- * Groups are ordered by the half-move count of each group's first occurrence (matching
- * {@code HalfMoveListListComparator.COMPARATOR} on the legacy {@code List<List<HalfMove>>} output).
+ * Groups are ordered by the half-move count of each group's first occurrence (matching the inlined first-occurrence
+ * sort in {@link RepetitionGrouping#calculateRepetitionListList} on the {@code List<List<MoveRecord>>} output).
  */
 record ThreefoldExistingReport(ImmutableList<RepetitionGroup> groups) {
 

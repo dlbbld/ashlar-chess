@@ -127,7 +127,7 @@ class TestThreefoldExistingReportBuilder {
   }
 
   private static ThreefoldExistingReport build(Board board) {
-    return ThreefoldExistingReportBuilder.build(board.getInitialDynamicPosition(), board.getHalfMoveList(),
+    return ThreefoldExistingReportBuilder.build(board.getInitialDynamicPosition(), MoveRecords.played(board),
         ChessConstants.THREEFOLD_REPETITION_RULE_THRESHOLD);
   }
 

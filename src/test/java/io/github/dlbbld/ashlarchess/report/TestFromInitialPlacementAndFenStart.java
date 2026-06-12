@@ -276,7 +276,7 @@ class TestFromInitialPlacementAndFenStart {
     assertTrue(board.isThreefoldRepetition(), "Board.isThreefoldRepetition predicate must fire");
 
     final ThreefoldExistingReport report = ThreefoldExistingReportBuilder.build(board.getInitialDynamicPosition(),
-        board.getHalfMoveList(), ChessConstants.THREEFOLD_REPETITION_RULE_THRESHOLD);
+        MoveRecords.played(board), ChessConstants.THREEFOLD_REPETITION_RULE_THRESHOLD);
     assertTrue(report.groups().size() >= 1, "threefold report must surface at least one group");
 
     boolean anyAtThreefold = false;
@@ -294,7 +294,7 @@ class TestFromInitialPlacementAndFenStart {
     assertTrue(board.isFivefoldRepetition(), "Board.isFivefoldRepetition predicate must fire");
 
     final ThreefoldExistingReport report = ThreefoldExistingReportBuilder.build(board.getInitialDynamicPosition(),
-        board.getHalfMoveList(), ChessConstants.THREEFOLD_REPETITION_RULE_THRESHOLD);
+        MoveRecords.played(board), ChessConstants.THREEFOLD_REPETITION_RULE_THRESHOLD);
 
     boolean anyAtFivefold = false;
     for (final RepetitionGroup group : report.groups()) {

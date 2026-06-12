@@ -13,7 +13,6 @@ import org.junit.jupiter.api.Test;
 
 import io.github.dlbbld.ashlarchess.board.Board;
 import io.github.dlbbld.ashlarchess.common.Nulls;
-import io.github.dlbbld.ashlarchess.common.model.HalfMove;
 import io.github.dlbbld.ashlarchess.pgn.PgnUtility;
 import io.github.dlbbld.ashlarchess.test.pgn.setup.PgnTestCaseCatalog;
 import io.github.dlbbld.ashlarchess.test.pgntest.enums.PgnTest;
@@ -62,7 +61,7 @@ class TestThreefoldClaimAheadReportBuilder {
   void claimAheadPlayedOnInitialPositionMarkedHasBeenPlayed() {
     // Extend the previous game by playing the claim-ahead move. Black plays 4...Ng8 -> initial
     // position for the 3rd time on the board. The claim-ahead detected at the prior ply now
-    // matches a played HalfMove -> hasBeenPlayed == true (the asterisked case).
+    // matches a played MoveRecord -> hasBeenPlayed == true (the asterisked case).
     final Board board = new Board();
     board.movesStrict("Nf3", "Nf6", "Ng1", "Ng8", "Nf3", "Nf6", "Ng1", "Ng8");
 
@@ -152,7 +151,7 @@ class TestThreefoldClaimAheadReportBuilder {
     if (e.includesInitialPosition()) {
       key.add(-1);
     }
-    for (final HalfMove hm : e.priorOccurrences()) {
+    for (final MoveRecord hm : e.priorOccurrences()) {
       key.add(hm.halfMoveCount());
     }
     key.add(e.claimAheadMove().halfMoveCount());

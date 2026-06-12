@@ -7,8 +7,6 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
-import io.github.dlbbld.ashlarchess.common.model.HalfMove;
-
 /**
  * Lexicographic ordering for printed report lines in the threefold sections. Each line corresponds to a sequence of
  * half-move counts (the displayed plies, optionally preceded by a virtual "[Initial position]" marker). The comparator
@@ -57,7 +55,7 @@ abstract class ReportLineOrder {
     if (entry.includesInitialPosition()) {
       key.add(-1);
     }
-    for (final HalfMove halfMove : entry.priorOccurrences()) {
+    for (final MoveRecord halfMove : entry.priorOccurrences()) {
       key.add(halfMove.halfMoveCount());
     }
     key.add(entry.claimAheadMove().halfMoveCount());
@@ -69,7 +67,7 @@ abstract class ReportLineOrder {
     if (group.includesInitialPosition()) {
       key.add(-1);
     }
-    for (final HalfMove halfMove : group.occurrences()) {
+    for (final MoveRecord halfMove : group.occurrences()) {
       key.add(halfMove.halfMoveCount());
     }
     return key;

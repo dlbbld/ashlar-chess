@@ -12,7 +12,6 @@ import org.eclipse.jdt.annotation.Nullable;
 import io.github.dlbbld.ashlarchess.board.Board;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
 import io.github.dlbbld.ashlarchess.common.Nulls;
-import io.github.dlbbld.ashlarchess.common.model.HalfMove;
 import io.github.dlbbld.ashlarchess.common.model.MoveSpecification;
 import io.github.dlbbld.ashlarchess.common.utility.BasicChessUtility;
 import io.github.dlbbld.ashlarchess.model.LegalMove;
@@ -58,7 +57,7 @@ abstract class FiftyMoveClaimAheadReportBuilder {
         emitBoundaryIfMissedOpportunity(entries, replayBoard, currentStart, initialFenClock, initialFenSideToMove);
       }
       replayBoard.move(nextPlayedMove.moveSpecification());
-      currentStart = updatedSequenceStart(currentStart, replayBoard.getLastHalfMove());
+      currentStart = updatedSequenceStart(currentStart, MoveRecords.lastPlayed(replayBoard));
     }
     // Played history exhausted; the open sequence (if any) ends here without a further played move.
     // If its clock is 99, the boundary ply is a missed opportunity.
@@ -109,7 +108,7 @@ abstract class FiftyMoveClaimAheadReportBuilder {
   }
 
   private static @Nullable SequenceStart updatedSequenceStart(@Nullable SequenceStart currentStart,
-      HalfMove playedHalfMove) {
+      MoveRecord playedHalfMove) {
     if (playedHalfMove.halfMoveClock() == 0) {
       return null;
     }

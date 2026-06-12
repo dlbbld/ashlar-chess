@@ -9,8 +9,6 @@ import java.util.List;
 
 import io.github.dlbbld.ashlarchess.common.Nulls;
 import io.github.dlbbld.ashlarchess.common.model.DynamicPosition;
-import io.github.dlbbld.ashlarchess.common.model.HalfMove;
-import io.github.dlbbld.ashlarchess.common.utility.RepetitionUtility;
 
 abstract class ThreefoldExistingReportBuilder {
 
@@ -20,12 +18,12 @@ abstract class ThreefoldExistingReportBuilder {
    * {@code -1} prefix when the repeated position is the initial position. In practice that puts initial-position groups
    * before non-initial groups, then orders the rest by the first played occurrence of each group.
    */
-  static ThreefoldExistingReport build(DynamicPosition initialDynamicPosition, List<HalfMove> halfMoveList,
+  static ThreefoldExistingReport build(DynamicPosition initialDynamicPosition, List<MoveRecord> moveRecordList,
       int threshold) {
 
-    final List<List<HalfMove>> rawGroups = RepetitionUtility.calculateRepetitionListList(halfMoveList, threshold);
+    final List<List<MoveRecord>> rawGroups = RepetitionGrouping.calculateRepetitionListList(moveRecordList, threshold);
     final List<RepetitionGroup> groups = new ArrayList<>();
-    for (final List<HalfMove> rawGroup : rawGroups) {
+    for (final List<MoveRecord> rawGroup : rawGroups) {
       final DynamicPosition repeatedPosition = Nulls.getFirst(rawGroup).dynamicPosition();
       final boolean includesInitialPosition = initialDynamicPosition.equals(repeatedPosition);
       final int totalRepetitionCount = rawGroup.size() + (includesInitialPosition ? 1 : 0);

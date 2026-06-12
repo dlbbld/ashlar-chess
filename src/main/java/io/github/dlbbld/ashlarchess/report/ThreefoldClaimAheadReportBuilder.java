@@ -12,7 +12,6 @@ import com.google.common.collect.ImmutableList;
 import io.github.dlbbld.ashlarchess.board.Board;
 import io.github.dlbbld.ashlarchess.common.Nulls;
 import io.github.dlbbld.ashlarchess.common.model.DynamicPosition;
-import io.github.dlbbld.ashlarchess.common.model.HalfMove;
 import io.github.dlbbld.ashlarchess.common.model.MoveSpecification;
 import io.github.dlbbld.ashlarchess.fen.model.Fen;
 import io.github.dlbbld.ashlarchess.model.LegalMove;
@@ -31,21 +30,21 @@ abstract class ThreefoldClaimAheadReportBuilder {
    * the same dynamic position multiple times, the earlier claim-ahead boundary surfaces first.
    */
   static ThreefoldClaimAheadReport build(Board board) {
-    final List<HalfMove> rawClaimAheads = replayAndCollectClaimAheads(board.getPerformedLegalMoveList(),
+    final List<MoveRecord> rawClaimAheads = replayAndCollectClaimAheads(board.getPerformedLegalMoveList(),
         board.getInitialFen());
-    final ImmutableList<HalfMove> halfMoveListPlayed = board.getHalfMoveList();
+    final ImmutableList<MoveRecord> moveRecordListPlayed = MoveRecords.played(board);
     final DynamicPosition initialDynamicPosition = board.getInitialDynamicPosition();
 
     final List<ClaimAheadEntry> entries = new ArrayList<>();
-    for (final HalfMove claimAheadMove : rawClaimAheads) {
-      entries.add(buildEntry(claimAheadMove, halfMoveListPlayed, initialDynamicPosition));
+    for (final MoveRecord claimAheadMove : rawClaimAheads) {
+      entries.add(buildEntry(claimAheadMove, moveRecordListPlayed, initialDynamicPosition));
     }
     Collections.sort(entries, ReportLineOrder.CLAIM_AHEAD_COMPARATOR);
     return new ThreefoldClaimAheadReport(Nulls.copyOfList(entries));
   }
 
-  private static List<HalfMove> replayAndCollectClaimAheads(List<LegalMove> performedLegalMoveList, Fen initialFen) {
-    final List<HalfMove> result = new ArrayList<>();
+  private static List<MoveRecord> replayAndCollectClaimAheads(List<LegalMove> performedLegalMoveList, Fen initialFen) {
+    final List<MoveRecord> result = new ArrayList<>();
     final Board replayBoard = new Board(initialFen);
     for (final LegalMove legalMove : performedLegalMoveList) {
       collectClaimAheadsAtCurrentPly(result, replayBoard);
@@ -55,7 +54,7 @@ abstract class ThreefoldClaimAheadReportBuilder {
     return result;
   }
 
-  private static void collectClaimAheadsAtCurrentPly(List<HalfMove> result, Board replayBoard) {
+  private static void collectClaimAheadsAtCurrentPly(List<MoveRecord> result, Board replayBoard) {
     for (final LegalMove legalMoveCheckAhead : replayBoard.getLegalMoves()) {
       final MoveSpecification move = legalMoveCheckAhead.moveSpecification();
       // Single source of truth: the report's per-move claim-ahead entries are exactly the moves
@@ -64,23 +63,23 @@ abstract class ThreefoldClaimAheadReportBuilder {
       // parallel update.
       if (replayBoard.canClaimThreefoldRepetitionRuleFor(move)) {
         // The predicate did a transient push+unmove internally; re-push here to capture the
-        // produced HalfMove that the entry needs to carry. The duplicated push is intentional
+        // produced MoveRecord that the entry needs to carry. The duplicated push is intentional
         // overhead - it keeps the predicate as the contract and the builder as a consumer of it.
         replayBoard.move(move);
-        result.add(replayBoard.getLastHalfMove());
+        result.add(MoveRecords.lastPlayed(replayBoard));
         replayBoard.unmove();
       }
     }
   }
 
-  private static ClaimAheadEntry buildEntry(HalfMove claimAheadMove, ImmutableList<HalfMove> halfMoveListPlayed,
+  private static ClaimAheadEntry buildEntry(MoveRecord claimAheadMove, ImmutableList<MoveRecord> moveRecordListPlayed,
       DynamicPosition initialDynamicPosition) {
 
-    final boolean hasBeenPlayed = halfMoveListPlayed.contains(claimAheadMove);
+    final boolean hasBeenPlayed = moveRecordListPlayed.contains(claimAheadMove);
     final boolean includesInitialPosition = initialDynamicPosition.equals(claimAheadMove.dynamicPosition());
 
-    final List<HalfMove> priorOccurrences = new ArrayList<>();
-    for (final HalfMove played : halfMoveListPlayed) {
+    final List<MoveRecord> priorOccurrences = new ArrayList<>();
+    for (final MoveRecord played : moveRecordListPlayed) {
       if (played.halfMoveCount() >= claimAheadMove.halfMoveCount()) {
         break;
       }

@@ -7,7 +7,6 @@ import com.google.common.collect.ImmutableList;
 
 import io.github.dlbbld.ashlarchess.common.Nulls;
 import io.github.dlbbld.ashlarchess.common.model.DynamicPosition;
-import io.github.dlbbld.ashlarchess.common.model.HalfMove;
 
 /**
  * One position that reached the threefold-repetition threshold in the played history.
@@ -20,7 +19,7 @@ import io.github.dlbbld.ashlarchess.common.model.HalfMove;
  * {@code totalRepetitionCount == occurrences.size() + (includesInitialPosition ? 1 : 0)} so an inconsistent group
  * cannot exist.
  */
-record RepetitionGroup(DynamicPosition repeatedPosition, ImmutableList<HalfMove> occurrences,
+record RepetitionGroup(DynamicPosition repeatedPosition, ImmutableList<MoveRecord> occurrences,
     boolean includesInitialPosition, int totalRepetitionCount) {
 
   public RepetitionGroup {

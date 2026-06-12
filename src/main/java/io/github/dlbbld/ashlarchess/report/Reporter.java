@@ -54,7 +54,7 @@ public final class Reporter {
 
     final ThreefoldClaimAheadReport claimAhead = ThreefoldClaimAheadReportBuilder.build(board);
     final ThreefoldExistingReport existing = ThreefoldExistingReportBuilder.build(board.getInitialDynamicPosition(),
-        board.getHalfMoveList(), ChessConstants.THREEFOLD_REPETITION_RULE_THRESHOLD);
+        MoveRecords.played(board), ChessConstants.THREEFOLD_REPETITION_RULE_THRESHOLD);
     final Map<DynamicPosition, String> positionIdentifierMap = PositionIdentifierUtility
         .calculatePositionIdentifierMap(claimAhead, existing);
 

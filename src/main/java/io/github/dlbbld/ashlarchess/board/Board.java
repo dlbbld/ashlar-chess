@@ -28,7 +28,6 @@ import io.github.dlbbld.ashlarchess.common.exceptions.ProgrammingMistakeExceptio
 import io.github.dlbbld.ashlarchess.common.model.ClaimRights;
 import io.github.dlbbld.ashlarchess.common.model.ClaimableMove;
 import io.github.dlbbld.ashlarchess.common.model.DynamicPosition;
-import io.github.dlbbld.ashlarchess.common.model.HalfMove;
 import io.github.dlbbld.ashlarchess.common.model.MoveSpecification;
 import io.github.dlbbld.ashlarchess.common.ucimove.utility.UciMoveUtility;
 import io.github.dlbbld.ashlarchess.common.utility.BasicChessUtility;
@@ -121,10 +120,11 @@ public class Board {
   private final List<Integer> repetitionCountList;
   private final List<String> sanList;
   private final List<String> lanList;
-  // halfMoveList intentionally NOT stored: HalfMove rows are derived on demand by getHalfMoveList()
-  // from the other per-ply parallel stores (performedLegalMoveList + sanList + halfMoveClockList +
-  // dynamicPositionList + repetitionCountList + initial-FEN fullmove anchor). Dropping the stored
-  // field eliminates one duplicated mutable list and removes HalfMove from Board's state model.
+  // halfMoveList intentionally NOT stored: the recorded-move rows are derived on demand by
+  // report.MoveRecords from the other per-ply parallel stores (performedLegalMoveList + sanList +
+  // halfMoveClockList + dynamicPositionList + repetitionCountList + initial-FEN fullmove anchor).
+  // Dropping the stored field eliminates one duplicated mutable list and keeps the recorded-move
+  // type out of Board's state model.
   private final List<CastlingRightLoss> whiteKingSideLossList;
   private final List<CastlingRightLoss> whiteQueenSideLossList;
   private final List<CastlingRightLoss> blackKingSideLossList;
@@ -922,43 +922,6 @@ public class Board {
     return Nulls.copyOfList(dynamicPositionList);
   }
 
-  /**
-   * Derived/compatibility view: reconstructs the played-move history as a {@link HalfMove} list from the per-ply
-   * parallel stores (performedLegalMoveList + sanList + halfMoveClockList + dynamicPositionList + repetitionCountList +
-   * the initial-FEN fullmove anchor). Board no longer maintains the list as state - each call builds a fresh list, so
-   * the operation is {@code O(plies)} per call rather than {@code O(1)}.
-   *
-   * <p>
-   * Kept as part of the public API in this release so consumers in {@code io.github.dlbbld.ashlarchess.report} and
-   * downstream code are not forced to migrate in one step. A future release may remove this method entirely as part of
-   * finishing the {@link HalfMove} decommission; callers that hold a long-lived reference should cache the returned
-   * list rather than calling this method per access.
-   */
-  public ImmutableList<HalfMove> getHalfMoveList() {
-    final int plies = performedLegalMoveList.size();
-    if (plies == 0) {
-      return Nulls.listOf();
-    }
-    final List<HalfMove> result = new ArrayList<>(plies);
-    for (int i = 0; i < plies; i++) {
-      result.add(buildHalfMoveAtPly(i));
-    }
-    return Nulls.copyOfList(result);
-  }
-
-  /**
-   * Derived {@link HalfMove} for the most recently played ply - {@code O(1)} reconstruction from the per-ply parallel
-   * stores. Use this instead of {@code Nulls.getLast(getHalfMoveList())} when only the last entry is needed, otherwise
-   * the full {@code O(plies)} reconstruction runs for every call. Throws {@link IllegalStateException} when no move has
-   * been played, matching {@link #getLastMove}.
-   */
-  public HalfMove getLastHalfMove() {
-    if (isFirstMove()) {
-      throw new IllegalStateException("There is no last half-move");
-    }
-    return buildHalfMoveAtPly(performedLegalMoveList.size() - 1);
-  }
-
   public DynamicPosition getInitialDynamicPosition() {
     return Nulls.getFirst(dynamicPositionList);
   }
@@ -1134,42 +1097,6 @@ public class Board {
       result.add(uci);
     }
     return Nulls.copyOfList(result);
-  }
-
-  /**
-   * Reconstructs the {@link HalfMove} that was the result of the move at {@code plyIndex} (0-based) in the played
-   * history. Reads every field from the per-ply parallel stores: {@code performedLegalMoveList[plyIndex]} for the move
-   * specification and moving piece, {@code sanList[plyIndex]} for the SAN, and the three "+1-indexed" stores
-   * ({@code halfMoveClockList}, {@code dynamicPositionList}, {@code repetitionCountList} - each carries the initial-
-   * FEN state at index 0 and the after-ply-i state at index i+1) for the clock, position, and repetition count.
-   *
-   * <p>
-   * The full-move number derives from the initial FEN's fullmove + having-move anchors and the played ply index via the
-   * same {@link #calculateFullMoveNumber} helper that powers {@link #getLastPlayedFullMoveNumber}, just generalised to
-   * take an arbitrary historical {@code havingMove} / {@code halfMoveCount} pair instead of the current one.
-   */
-  private HalfMove buildHalfMoveAtPly(int plyIndex) {
-    final LegalMove legalMove = Nulls.get(performedLegalMoveList, plyIndex);
-    final int halfMoveCount = plyIndex + 1;
-    final int halfMoveClock = Nulls.get(halfMoveClockList, plyIndex + 1);
-    final int countRepetition = Nulls.get(repetitionCountList, plyIndex + 1);
-    final DynamicPosition dynamicPosition = Nulls.get(dynamicPositionList, plyIndex + 1);
-    final String san = Nulls.get(sanList, plyIndex);
-    final Piece movingPiece = legalMove.movingPiece();
-    final Side havingMoveAfter = movingPiece.getSide().getOppositeSide();
-    // Reuse the existing private fullmove helper; it returns the fullmove number for the side
-    // currently to move, so subtract 1 when that side is WHITE to recover the just-played move's
-    // fullmove number (matches getLastPlayedFullMoveNumber's adjustment).
-    final int fullMoveNumberOfNext = calculateFullMoveNumber(false, initialFen.fullMoveNumber(),
-        initialFen.havingMove(), havingMoveAfter, halfMoveCount);
-    final int fullMoveNumber = switch (havingMoveAfter) {
-      case WHITE -> fullMoveNumberOfNext - 1;
-      case BLACK -> fullMoveNumberOfNext;
-      case NONE -> throw new IllegalArgumentException();
-      default -> throw new IllegalArgumentException();
-    };
-    return new HalfMove(halfMoveCount, fullMoveNumber, halfMoveClock, dynamicPosition, countRepetition, san,
-        movingPiece, legalMove.moveSpecification());
   }
 
 }

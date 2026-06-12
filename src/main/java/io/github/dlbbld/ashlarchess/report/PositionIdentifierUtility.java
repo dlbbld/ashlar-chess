@@ -13,7 +13,6 @@ import io.github.dlbbld.ashlarchess.board.HalfMoveUtility;
 import io.github.dlbbld.ashlarchess.common.Nulls;
 import io.github.dlbbld.ashlarchess.common.exceptions.ProgrammingMistakeException;
 import io.github.dlbbld.ashlarchess.common.model.DynamicPosition;
-import io.github.dlbbld.ashlarchess.common.model.HalfMove;
 
 abstract class PositionIdentifierUtility {
 
@@ -95,7 +94,7 @@ abstract class PositionIdentifierUtility {
     return Nulls.get(positionIdentifierMap, position);
   }
 
-  private static String calculatePositionInformation(HalfMove repetitionSeriesMove, int totalRepetitionCount,
+  private static String calculatePositionInformation(MoveRecord repetitionSeriesMove, int totalRepetitionCount,
       boolean isAddAsterisk, Map<DynamicPosition, String> positionIdentifierMap) {
 
     final StringBuilder result = new StringBuilder();
@@ -118,11 +117,13 @@ abstract class PositionIdentifierUtility {
     return Nulls.toString(result);
   }
 
-  static String calculateHalfMoveInformation(HalfMove halfMove, int totalRepetitionCount, boolean isAddAsterisk,
+  static String calculateHalfMoveInformation(MoveRecord halfMove, int totalRepetitionCount, boolean isAddAsterisk,
       boolean isAddPositionInformation, Map<DynamicPosition, String> positionIdentifierMap) {
     final StringBuilder result = new StringBuilder();
 
-    result.append(HalfMoveUtility.calculateMoveNumberAndSanWithSpace(halfMove));
+    result.append(
+        HalfMoveUtility.calculateMoveNumberAndSanWithSpace(halfMove.fullMoveNumber(), halfMove.havingMove(),
+            halfMove.san()));
 
     if (isAddPositionInformation) {
       result.append(" ");

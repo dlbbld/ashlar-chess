@@ -17,7 +17,6 @@ import io.github.dlbbld.ashlarchess.board.Board;
 import io.github.dlbbld.ashlarchess.common.Nulls;
 import io.github.dlbbld.ashlarchess.common.constants.ChessConstants;
 import io.github.dlbbld.ashlarchess.common.model.DynamicPosition;
-import io.github.dlbbld.ashlarchess.common.model.HalfMove;
 
 class TestPositionIdentifierUtility {
 
@@ -128,7 +127,7 @@ class TestPositionIdentifierUtility {
     board.movesStrict("e4", "e5");
     final ThreefoldClaimAheadReport claimAhead = ThreefoldClaimAheadReportBuilder.build(board);
     final ThreefoldExistingReport existing = ThreefoldExistingReportBuilder.build(board.getInitialDynamicPosition(),
-        board.getHalfMoveList(), ChessConstants.THREEFOLD_REPETITION_RULE_THRESHOLD);
+        MoveRecords.played(board), ChessConstants.THREEFOLD_REPETITION_RULE_THRESHOLD);
 
     final Map<DynamicPosition, String> map = PositionIdentifierUtility.calculatePositionIdentifierMap(claimAhead,
         existing);
@@ -146,7 +145,7 @@ class TestPositionIdentifierUtility {
 
     final ThreefoldClaimAheadReport claimAhead = ThreefoldClaimAheadReportBuilder.build(board);
     final ThreefoldExistingReport existing = ThreefoldExistingReportBuilder.build(board.getInitialDynamicPosition(),
-        board.getHalfMoveList(), ChessConstants.THREEFOLD_REPETITION_RULE_THRESHOLD);
+        MoveRecords.played(board), ChessConstants.THREEFOLD_REPETITION_RULE_THRESHOLD);
 
     final Map<DynamicPosition, String> map = PositionIdentifierUtility.calculatePositionIdentifierMap(claimAhead,
         existing);
@@ -170,7 +169,7 @@ class TestPositionIdentifierUtility {
 
     final ThreefoldClaimAheadReport claimAhead = ThreefoldClaimAheadReportBuilder.build(board);
     final ThreefoldExistingReport existing = ThreefoldExistingReportBuilder.build(board.getInitialDynamicPosition(),
-        board.getHalfMoveList(), ChessConstants.THREEFOLD_REPETITION_RULE_THRESHOLD);
+        MoveRecords.played(board), ChessConstants.THREEFOLD_REPETITION_RULE_THRESHOLD);
 
     final Map<DynamicPosition, String> map = PositionIdentifierUtility.calculatePositionIdentifierMap(claimAhead,
         existing);
@@ -198,9 +197,9 @@ class TestPositionIdentifierUtility {
     // assign A to positionInExisting and would fail this test.)
     final Board board = new Board();
     board.moveStrict("e4");
-    final HalfMove afterE4 = Nulls.get(board.getHalfMoveList(), 0);
+    final MoveRecord afterE4 = Nulls.get(MoveRecords.played(board), 0);
     board.moveStrict("e5");
-    final HalfMove afterE5 = Nulls.get(board.getHalfMoveList(), 1);
+    final MoveRecord afterE5 = Nulls.get(MoveRecords.played(board), 1);
 
     final DynamicPosition positionAfterE4 = afterE4.dynamicPosition();
     final DynamicPosition positionAfterE5 = afterE5.dynamicPosition();
