@@ -56,7 +56,7 @@ class TestFiftyMoveClaimAheadReportBuilder {
         "sequence anchored at the first non-zeroing move of the shuffle (Ra3)");
     // The boundary move is Black's (the played history ended after a White move; Black to move next).
     assertEquals(Side.BLACK, entry.sideHavingMove(),
-        "the boundary move is Black-to-move (White just played the 99th half-move)");
+        "the boundary move is Black-to-move (White just played the 99th move)");
   }
 
   @SuppressWarnings("static-method")
@@ -124,7 +124,7 @@ class TestFiftyMoveClaimAheadReportBuilder {
     // Two distinct sequences, each reaching clock 99 and then resetting via a pawn move. Each move
     // emits one boundary entry; the two entries should be ordered chronologically - initial-FEN
     // shape first (sentinel anchor -1), then the after-reset shape by its first-non-zeroing-move
-    // half-move count.
+    // move count.
     //
     // Sequence 1: FEN clock 98 -> Rg1 (clock 99) -> a6 (pawn push, clock 0). Boundary at Black's move.
     // Sequence 2 (after the reset): play 99 non-zeroing moves to reach clock 99, then a pawn push
@@ -151,8 +151,8 @@ class TestFiftyMoveClaimAheadReportBuilder {
     // Second entry: after-reset-anchored boundary.
     assertFalse(Nulls.get(report.entries(), 1).sequenceStart().isInitialFen(),
         "chronological second: after-reset-anchored boundary");
-    // Sort invariant: ascending half-move count.
+    // Sort invariant: ascending move count.
     assertTrue(Nulls.get(report.entries(), 0).performedMoveCount() < Nulls.get(report.entries(), 1).performedMoveCount(),
-        "entries sorted by chronological boundary half-move count");
+        "entries sorted by chronological boundary move count");
   }
 }

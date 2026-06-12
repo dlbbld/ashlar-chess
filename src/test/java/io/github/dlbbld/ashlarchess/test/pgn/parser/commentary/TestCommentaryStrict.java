@@ -20,7 +20,7 @@ import io.github.dlbbld.ashlarchess.pgn.StrictPgnParserValidationProblem;
  * <ul>
  * <li>R1 - every opening delimiter must have a matching closing delimiter (else unclosed-commentary error).
  * <li>R3 - a closing delimiter outside any open commentary is a stray-close error.
- * <li>R4 - a commentary delimiter where a SAN half-move is expected is rejected.
+ * <li>R4 - a commentary delimiter where a SAN move is expected is rejected.
  * </ul>
  *
  * <p>

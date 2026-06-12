@@ -11,7 +11,7 @@ import io.github.dlbbld.ashlarchess.model.PgnMove;
 public abstract class PgnUtility {
 
   /**
-   * Replays the half-moves of {@code pgnGame} on a fresh board and returns the resulting state.
+   * Replays the moves of {@code pgnGame} on a fresh board and returns the resulting state.
    */
   public static Board calculateBoard(PgnGame pgnGame) {
 

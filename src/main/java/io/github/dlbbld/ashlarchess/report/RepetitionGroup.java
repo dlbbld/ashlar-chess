@@ -12,7 +12,7 @@ import io.github.dlbbld.ashlarchess.common.model.DynamicPosition;
  * One position that reached the threefold-repetition threshold in the played history.
  *
  * <p>
- * {@code occurrences} are the played half-moves at which the position appeared, in chronological order.
+ * {@code occurrences} are the played moves at which the position appeared, in chronological order.
  * {@code includesInitialPosition} is true when the position equals the game's initial position - in that case the
  * initial position itself is a hidden prior occurrence not present in {@code occurrences}, and the report formatter
  * prepends a "[Initial position]" marker. The compact constructor enforces

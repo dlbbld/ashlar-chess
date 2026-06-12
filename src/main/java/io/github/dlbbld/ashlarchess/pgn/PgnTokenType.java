@@ -31,7 +31,7 @@ enum PgnTokenType {
 
   /**
    * Generic PGN symbol token - letters, digits, and the continuation punctuation set. The parser decides by context
-   * whether a given symbol is a tag name, a SAN half-move, or something else.
+   * whether a given symbol is a tag name, a SAN move, or something else.
    */
   SYMBOL,
 

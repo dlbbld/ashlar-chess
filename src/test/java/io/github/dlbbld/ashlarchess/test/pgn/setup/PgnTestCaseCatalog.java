@@ -1733,7 +1733,7 @@ public class PgnTestCaseCatalog {
 
     list.add(new PgnFen("various_jobava_so_2017.pgn", "8/R3k3/8/6N1/5p1P/P1Pr4/1P2r3/2K5 b - - 8 41"));
 
-    // fifty-move claim but only 67 half-moves
+    // fifty-move claim but only 67 moves
     list.add(new PgnFen("various_gunina_harika_2019.pgn", "R7/1n6/2K5/8/8/8/2k5/8 b - - 67 101"));
 
     // knight-bishop checkmate in blitz unsuccessful

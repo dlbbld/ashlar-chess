@@ -90,7 +90,7 @@ public class FenBoard implements EnumConstants {
     fen.append(board.getHalfMoveClock());
     fen.append(" ");
 
-    // full move number (of next half move)
+    // full move number (of next move)
     fen.append(board.getFullMoveNumber());
 
     return Nulls.toString(fen);

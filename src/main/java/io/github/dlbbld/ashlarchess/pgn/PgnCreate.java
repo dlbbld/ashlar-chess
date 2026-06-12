@@ -85,7 +85,7 @@ public class PgnCreate {
       movetextIncludingPreGameCommentary = "{" + pregameCommentaryValue + "}" + " " + moves + terminationSuffix;
     }
 
-    // Lenient parses can produce a PgnGame with no pregame commentary, no half-moves, and no termination marker
+    // Lenient parses can produce a PgnGame with no pregame commentary, no moves, and no termination marker
     // (a tags-only PGN). The movetext string is then empty; PgnLineWrapper rejects empty input, so skip the
     // wrap call and leave the movetext section blank. The output stays structurally well-formed (tag section,
     // separator, trailing blank) and re-parses cleanly under the lenient parser.

@@ -10,7 +10,7 @@ and includes a Java port of the [Chess Unwinnability Analyzer (CHA)](https://git
 It's not a chess engine - it does not calculate best moves for a given position.
 
 It is also not a move-generation benchmark library. The public `Board` is a rich game object: it keeps the position,
-move history, legal moves per ply, SAN/LAN strings, repetition counts, halfmove clocks, and castling-right facts needed
+move history, per-move legal moves, SAN/LAN strings, repetition counts, halfmove clocks, and castling-right facts needed
 for rule-level queries and reports. That rich state is backed by bitboards for piece placement and move generation.
 The CHA full-search hot path is deliberately leaner: it uses mutable bitboards and make/unmake state because cooperative
 mate search needs the best practical performance the design can provide.

@@ -9,7 +9,7 @@ import java.util.List;
 
 /**
  * Lexicographic ordering for printed report lines in the threefold sections. Each line corresponds to a sequence of
- * half-move counts (the displayed moves, optionally preceded by a virtual "[Initial position]" marker). The comparator
+ * move counts (the displayed moves, optionally preceded by a virtual "[Initial position]" marker). The comparator
  * orders lines by that sequence in standard lex order, so:
  *
  * <ul>
@@ -18,7 +18,7 @@ import java.util.List;
  * length-5 claim-ahead lines all share the same opening moves and therefore sit adjacent - and in increasing-length
  * order, because a shorter sequence is a prefix of the longer one.</li>
  * <li>Lines that include the initial position sort before lines that do not. The "[Initial position]" marker is
- * conceptually before any played move; the sort key represents it as a virtual half-move count of {@code -1}, lower than
+ * conceptually before any played move; the sort key represents it as a virtual move count of {@code -1}, lower than
  * any real move.</li>
  * </ul>
  *
@@ -36,8 +36,8 @@ abstract class ReportLineOrder {
       b) -> compareKeys(repetitionGroupSortKey(a), repetitionGroupSortKey(b));
 
   /**
-   * Orders 50-move claim-ahead entries by (sequence-start-anchor, boundary half-move count). The sequence-start anchor
-   * is {@code -1} for an initial-FEN start (sorts before any played move) or the {@code firstNonZeroingMove}'s half-move
+   * Orders 50-move claim-ahead entries by (sequence-start-anchor, boundary move count). The sequence-start anchor
+   * is {@code -1} for an initial-FEN start (sorts before any played move) or the {@code firstNonZeroingMove}'s move
    * count for an after-reset start. This groups boundary entries by the run they belong to and orders within a run
    * chronologically.
    */

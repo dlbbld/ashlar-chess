@@ -30,7 +30,7 @@ Concrete examples:
 
 - **Move history stores derived facts directly.** Whether a move was a two-square pawn advance or an en passant capture is recorded in the move history rather than recomputed from the position when needed. Engines like Stockfish compute these on demand because the savings matter at engine speeds. ashlar-chess stores them because the resulting code is shorter, more obviously correct, and easier to maintain.
 - **Production piece placement is bitboard-based.** `BitboardPosition` is the runtime representation for piece placement, move generation, attack queries, and piece hashing. It exists because a production library cannot stay credible if basic position questions are orders of magnitude slower than the surrounding ecosystem.
-- **The public board stays rich.** `Board` is a game-state object, not the lean search representation. It keeps per-ply legal moves, check flags, dynamic positions, halfmove clocks, repetition counts, SAN/LAN strings, and castling-right loss facts so rule queries, reports, FEN/PGN output, and `unmove` are direct and auditable. Its current position is bitboard-backed, but the object deliberately carries more game history than a performance-only board would.
+- **The public board stays rich.** `Board` is a game-state object, not the lean search representation. It keeps per-move legal moves, check flags, dynamic positions, halfmove clocks, repetition counts, SAN/LAN strings, and castling-right loss facts so rule queries, reports, FEN/PGN output, and `unmove` are direct and auditable. Its current position is bitboard-backed, but the object deliberately carries more game history than a performance-only board would.
 - **The full unwinnability search uses a mutable search board.** `HelpmateSearchBoard` owns mutable bitboards, make/unmake stacks, per-depth legal-move buffers, and an exact transposition key. This is a deliberate performance trade-off in the search hot path, contained inside the unwinnability package and tested against `Board`.
 - **Repetition and public state still prefer transparent semantics.** Position equality follows the FIDE definition directly. Zobrist exists as a bitboard helper, but semantic repetition logic remains rooted in the actual dynamic position fields, not in trusting a hash as the rule fact.
 
@@ -42,7 +42,7 @@ The codebase is written in as functional a style as Java reasonably permits: rec
 
 Concretely:
 
-- **Records as value objects** (`PgnCommentary`, `Fen`, `Tag`, `PgnHalfMove`, `PgnGame`, `MoveSpecification`). Where a record carries a non-trivial textual or grammatical contract — `PgnCommentary` is the load-bearing example — the compact constructor enforces it, and downstream code does not re-validate. For records whose invariants are field-level (`Fen`, `Tag`, `PgnHalfMove`), validation lives one layer out, at the parser/factory boundary (`FenParserAdvanced`, `LenientPgnParser`, `StrictPgnParser`); a record never holds something that came in from outside the library without first passing through one of those entry points. `PgnGame`'s compact constructor performs defensive copies of its list components so the immutability claim holds end-to-end. The end result is the same — errors at construction time — but the boundary is occasionally one method out from the record itself.
+- **Records as value objects** (`PgnCommentary`, `Fen`, `Tag`, `PgnMove`, `PgnGame`, `MoveSpecification`). Where a record carries a non-trivial textual or grammatical contract — `PgnCommentary` is the load-bearing example — the compact constructor enforces it, and downstream code does not re-validate. For records whose invariants are field-level (`Fen`, `Tag`, `PgnMove`), validation lives one layer out, at the parser/factory boundary (`FenParserAdvanced`, `LenientPgnParser`, `StrictPgnParser`); a record never holds something that came in from outside the library without first passing through one of those entry points. `PgnGame`'s compact constructor performs defensive copies of its list components so the immutability claim holds end-to-end. The end result is the same — errors at construction time — but the boundary is occasionally one method out from the record itself.
 - **Heavy enum use** for closed domains (`Side`, `Piece`, `Square`, `File`, `Rank`, `MoveSuffixAnnotation`, `ResultTagValue`, etc.) — the compiler enforces exhaustive `switch` handling.
 - **Eclipse JDT null annotations** (`@NonNull` / `@Nullable`) used pervasively, with the build configured so violations are errors. Null is a typed concern, not a runtime accident.
 - **No reflection in the rule core.** What the type system says is what runs.
@@ -58,7 +58,7 @@ When validation fails, the library produces messages a human can act on. Each pr
 The library makes only modest thread-safety guarantees, all of them honest about the underlying types:
 
 - **`Board` is mutable and not thread-safe.** Use one `Board` per thread, or synchronize externally. `Board.equals` / `Board.hashCode` reflect current game state, so a `Board` placed in a `HashMap` or `HashSet` and then mutated will violate the collection's invariants.
-- **Records are immutable and thread-safe.** `Fen`, `PgnGame`, `PgnHalfMove`, `MoveSpecification`, `PgnCommentary`, `Tag`, `Report`, etc. — once constructed, they can be freely shared.
+- **Records are immutable and thread-safe.** `Fen`, `PgnGame`, `PgnMove`, `MoveSpecification`, `PgnCommentary`, `Tag`, `Report`, etc. — once constructed, they can be freely shared.
 - **Static utility classes are stateless and thread-safe.** `Reporter`, `PgnCreate`, `KnightDistance`, `BasicChessUtility`, the various `*Validation` and `*Utility` classes — all entry points are static methods on stateless classes. Multiple threads can call them concurrently.
 - **Parsers expose stateless static entry points.** `StrictPgnParser.parseText(String)` / `StrictPgnParser.parse(Path)` and the lenient counterparts construct a fresh parser instance per call internally; the parser instances themselves carry per-parse state and should not be shared. Stick to the static entry points.
 
@@ -259,7 +259,7 @@ Piece placement has two independent representations in the codebase, by design.
 
 **`BitboardPosition`** (in `src/main/java/io/github/dlbbld/ashlarchess/bitboard/`) is the single piece-placement representation that production code sees. It is a 12-long record — one `long` per piece-and-side bitboard, little-endian rank-file with A1 at bit 0 — exposing move generation, attack queries, immutable make-move (`afterMove`), and a piece-only Zobrist hash. Everything in `src/main/` that needs to ask a question about pieces on squares asks `BitboardPosition`.
 
-**`Board`** remains a deliberately rich public game object. It stores the initial FEN plus parallel per-ply state: performed legal moves, generated legal moves, check/checkmate/stalemate facts, dynamic positions whose piece placement is `BitboardPosition`, halfmove clocks, repetition counts, SAN/LAN output strings, and castling-right loss reasons. That is more memory and bookkeeping than a lean engine board, but it is the right trade-off for a rule library: public queries and reports can read already-established game facts, and the history needed for FIDE rules is explicit.
+**`Board`** remains a deliberately rich public game object. It stores the initial FEN plus parallel per-move state: performed legal moves, generated legal moves, check/checkmate/stalemate facts, dynamic positions whose piece placement is `BitboardPosition`, halfmove clocks, repetition counts, SAN/LAN output strings, and castling-right loss reasons. That is more memory and bookkeeping than a lean engine board, but it is the right trade-off for a rule library: public queries and reports can read already-established game facts, and the history needed for FIDE rules is explicit.
 
 **`HelpmateSearchBoard`** is the intentional hot-path exception. The complete unwinnability search performs deep cooperative-mate exploration, so it uses a package-private mutable board with twelve mutable bitboards, make/unmake, reusable undo stacks, per-depth legal-move buffers, and an exact structural transposition key. This is not a second public representation and not a private chess engine: it is a contained search board built on the same bitboard move-generation layer, with lock-step tests against `Board`.
 
@@ -292,9 +292,9 @@ The library still rejects malformed Unicode (lone surrogates, unassigned code po
 
 ### 5.2 Pre-game commentary
 
-The PGN specification defines brace commentary attached to half-moves but **does not formally specify a "pre-game" commentary slot** — commentary that appears between the tag pair section and the first move. python-chess exposes this as `Game.comment`; Lichess supports it on import.
+The PGN specification defines brace commentary attached to moves but **does not formally specify a "pre-game" commentary slot** — commentary that appears between the tag pair section and the first move. python-chess exposes this as `Game.comment`; Lichess supports it on import.
 
-ashlar-chess follows the same convention: `PgnGame.pregameCommentary()` carries any `{...}` content found before the first half-move, validated under the same commentary contract as move-attached commentary. This is an additive extension rather than a contradiction — a PGN that uses pre-game commentary remains well-formed for any reader that ignores it.
+ashlar-chess follows the same convention: `PgnGame.pregameCommentary()` carries any `{...}` content found before the first move, validated under the same commentary contract as move-attached commentary. This is an additive extension rather than a contradiction — a PGN that uses pre-game commentary remains well-formed for any reader that ignores it.
 
 ### 5.3 Conformance for everything else
 
@@ -308,7 +308,7 @@ ashlar-chess relies on a large regression test suite:
 
 - **Broad coverage by code area** — every package has dedicated tests; rule-level decisions have multi-fixture parameterised tests.
 - **Edge-case fixtures** — positions and games chosen to stress the rule engine: 75-move-rule games, fivefold-repetition games, dead positions, near-misses, long forced sequences.
-- **Long and random games** — hundreds of half-moves, including imported real-world games and synthetic stress tests; generated games surface bugs that targeted fixtures miss.
+- **Long and random games** — hundreds of moves, including imported real-world games and synthetic stress tests; generated games surface bugs that targeted fixtures miss.
 - **Cross-library validation** — selected fixtures are processed by other chess libraries; disagreements surface as test failures and have, in the past, led to bug reports against those libraries.
 
 The test suite is the project's safety net. Refactors are expected to leave the test count unchanged or growing; if they don't, the change is suspect.

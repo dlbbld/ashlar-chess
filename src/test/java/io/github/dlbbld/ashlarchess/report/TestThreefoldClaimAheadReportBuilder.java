@@ -109,7 +109,7 @@ class TestThreefoldClaimAheadReportBuilder {
   @Test
   void entriesAreOrderedLexicographicallyByDisplayedSequence() {
     // 18_threefold_two_threefolds_beyond.pgn - long enough to expose claim-aheads at multiple
-    // moves. The builder sorts entries lexicographically on the displayed half-move-count sequence
+    // moves. The builder sorts entries lexicographically on the displayed move-count sequence
     // (priorOccurrences ++ claimAheadMove, prefixed by virtual -1 when includesInitialPosition).
     // Pin that lex order here: within a group of entries sharing an earlier-move prefix, the
     // shorter one (lower totalRepetitionCount) sorts first, and across groups, the entry whose

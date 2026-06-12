@@ -44,7 +44,7 @@ class TestStrictPgnParserMovetextWithoutCommentary {
 
   /**
    * Verifies that the given movetext body, wrapped in a minimal seven-tag-roster PGN with a trailing termination
-   * marker, produces the expected ordered half-move SAN list and leaves every half-move's commentary empty.
+   * marker, produces the expected ordered move SAN list and leaves every move's commentary empty.
    */
   private static void checkInitialWithoutCommentary(String movetextPart, List<String> expectedSanList) {
     final PgnGame file = StrictPgnParser.parseText(header() + movetextPart + " *\n\n");
