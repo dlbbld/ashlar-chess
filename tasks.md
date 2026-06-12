@@ -11,6 +11,162 @@ Live planning only: current release work, backlog, and obsolete decisions. Shipp
 
 ---
 
+## 19.0.0 — Retire `HalfMove`, records carry data (breaking; in progress)
+
+Current release work, and a **breaking** (major) release: it renames/removes public API (`HalfMove` -> `MoveRecord`,
+`PgnHalfMove` -> `PgnMove`, `PgnGame.halfMoveList` -> `moveList`, `Board.getHalfMoveList` / `getLastHalfMove` /
+`getPerformedHalfMoveCount`, `DynamicPosition.isEnPassantCapturePossible`, the enum `toMoveCheck` conversions). Three
+tasks, ordered. Task 2 (terminology) governs the naming used in Tasks 1 and 3.
+Release procedure lives in **workflows.md**; ship notes archive to **CHANGELOG.md** `[19.0.0]` on release.
+
+### Task 1 - Retire `HalfMove`; build `MoveRecord` in the report layer
+
+**Status: done** - shipped on this branch (commits `7b9008d`, `6931557`). `MoveRecord` / `MoveRecords` /
+`RepetitionGrouping` are package-private in `report`; the `Board` bridge and `HalfMoveListListComparator` are gone; full
+suite green. The behavior-strip of `MoveRecord.havingMove()` / `toString()` was deferred to Task 3 as planned.
+
+Shipped design (notes kept brief; the pre-implementation plan is in the commits): `MoveRecords` rebuilds the
+play-history rows by replaying and snapshotting `Board`'s existing public per-move accessors - no `Board` bridge and no
+new `Board` primitives - and the repetition grouping moved to `report.RepetitionGrouping` to avoid a `common -> report`
+cycle. Deferred to Task 3 (as planned): strip `MoveRecord.havingMove()` / `toString()` so it is a pure data record.
+
+### Task 2 - A played turn is a "move", not a "ply" or "half move" (scoped vocabulary)
+
+Vocabulary is scoped by layer, not banned globally: the public chess model speaks chess; PGN/FEN counters keep their
+protocol names; engine internals may speak engine. One player's action is a **move** - never a "half move" (reads as a
+second kind of move beside `LegalMove`) and, in the move/history/report layers, never a "ply". This rule governs the
+naming in Tasks 1 and 3.
+
+- **Move-domain language** (board history, PGN model, reports, repetition / claim-ahead output, public API, general
+  docs): `move`, `played move`, `moveIndex` (0-based array index), `performedMoveCount`. No `*HalfMove*` or `*Ply*`
+  identifiers here. Note the 1-based per-record ordinal that was `HalfMove.halfMoveCount()` is the *same* concept as the
+  board total at a point - both become `performedMoveCount`, **not** `moveIndex` (which is reserved for the 0-based
+  array index).
+- **Protocol / rule-counter names, kept verbatim** (FEN/PGN/standard-tag vocabulary, not domain "moves"): `halfMoveClock`
+  (FEN no-progress counter), `fullMoveNumber` (PGN move number), and the literal `PlyCount` supplemental tag -
+  `StandardTag.PLY_COUNT` and the `"PlyCount"` tag string stay exactly as the spec spells them.
+- **Engine / search language - the only place `ply` survives**: helpmate / search-tree depth, make/unmake stacks,
+  per-search-level buffers (`UndoState`, `LegalMoveBuffer`, `HelpmateSearchBoard`, "3-ply scan", ...). After Task 1 there
+  is no `ply`-named *identifier* left in the search code - only descriptive prose - so this layer needs no edits; the
+  idiomatic "N-ply" wording stays as-is.
+
+**The sweep, as independent sub-passes.** Each compiles and passes the default `mvn -o -q test` on its own (per
+`agents.md`; reserve `mvn -Pfull test` for the final / release sign-off); land each as its own commit. Counts are
+post-Task-1 (verified by inventory). 2a and 2c are fully independent of the rest and of each other - do them first or in
+parallel; 2b and 2d are the move-domain core.
+
+- **2a. PGN model: `PgnHalfMove` -> `PgnMove` (the big one; public, breaking).** `PgnHalfMove` is the SAN movetext item
+  (san + suffix annotation + commentary), public API in `model`, ~82 references across ~26 files - the PGN parsers
+  (`StrictPgnParser`, `LenientPgnParser`), `PgnCreate`, `PgnUtility`, `PgnGame`, `model/package-info`, and ~18 test
+  files. Rename the type to `PgnMove`; rename `PgnGame`'s public component `halfMoveList` -> `moveList` (its accessor
+  `pgnGame.halfMoveList()` -> `moveList()` ripples through the parsers, `TestReadMe`, and the python-oracle tests).
+  Rationale: the PGN spec calls these "chess moves", not halfmoves; "halfmove" is FEN-clock / `PlyCount` vocabulary.
+- **2b. Move-count: `halfMoveCount` -> `performedMoveCount`, `getPerformedHalfMoveCount` -> `getPerformedMoveCount`**
+  (the 1-based played-move ordinal; `Board` method is public, breaking). Sites: `Board.getPerformedHalfMoveCount()`
+  (callers in `CommonTestUtility`, `TestBoardClaimRights`, `TestBoardCopyCurrentPositionWithoutHistory`,
+  `GenerateRandomGame`, Board-internal); the `MoveRecord` component `halfMoveCount` (accessor used by `ReportLineOrder`,
+  `ThreefoldClaimAheadReportBuilder`, `RepetitionGrouping`, `SequenceStart`, report tests); the `FiftyMoveClaimAheadEntry`
+  component `halfMoveCount` (+ its compact-constructor guard message); the `int halfMoveCount` parameters in
+  `Board.calculateFullMoveNumber(...)` and `BasicChessUtility.calculateSideMoved(...)`; and the test double
+  `LibraryCarlosBoard.performedHalfMoveCount` + its getter. `halfMoveClock` stays everywhere (FEN field).
+- **2c. `HalfMoveUtility` -> a move-number-format name (rename only; do NOT relocate).** It formats a PGN-style
+  move-number-plus-SAN label and is **shared by both `pgn` and `report`** (`StrictPgnParser`, `LenientPgnParser`,
+  `PgnCreate` + `SequenceStartFormat`, `PositionIdentifierUtility`, `FiftyMoveClaimAheadPrint`, `MoveRecord`), so it must
+  stay in a neutral package (currently `board`; `common.utility` is the other candidate) - moving it into `report` would
+  create a `pgn -> report` dependency. ~7 caller files. The misnomer is only the class name (it formats a *move*'s
+  number); the method names (`calculateMoveNumberAndSan...`) are already move-shaped and stay. Suggested name
+  `MoveNumberFormat` (confirm during execution).
+- **2d. Report-internal `ply` -> `move` (package-private; non-breaking).** Record components
+  `FiftyMoveSequence.{fiftyMoveThresholdPly, seventyFiveMoveThresholdPly, endPly}` -> `{fiftyMoveThresholdMove,
+  seventyFiveMoveThresholdMove, endMove}`; helpers `SequenceStartFormat.plyAnchor` -> `moveAnchor` and
+  `FiftyMoveSequencePrint.addPlyAnchor` -> `addMoveAnchor`; the `ply`-named locals in `FiftyMoveSequenceReportBuilder` /
+  `FiftyMoveSequencePrint` / `SequenceStartFormat` -> `move`; and "ply"/"plies" -> "move"/"moves" in the report-package
+  JavaDoc/comments and report test comments.
+- **2e. Stragglers + docs.** `TestReadMe` `halfMoveList()` -> `moveList()` rides with 2a; "ply"/"plies" prose in
+  `PgnFen`, `TestInsufficientMaterial`, and report tests -> "move(s)"; the "Converge `TestReadMe`" backlog item's
+  `halfMoveList` reference updates with 2a.
+
+**KEEP - do not touch** (protocol / engine vocabulary, not domain "moves"):
+
+- FEN/PGN spec terms: `halfMoveClock`, `fullMoveNumber`, `StandardTag.PLY_COUNT` / the `"PlyCount"` tag string.
+- Engine/search `ply` prose - all descriptive, no identifiers (`UndoState`, `LegalMoveBuffer`, `HelpmateSearchBoard`,
+  `BitboardPosition` per-ply move-buffer note, `ShallowTerminationOracle` / `TestShallowTerminationOracle` "3-ply",
+  `TestHelpmateSearchBoardMakeUnmakeRoundTrip`).
+- **python-chess oracle (`test/oracle/python`) - a protocol-mirror zone.** The JSON-mapped names `LegalMovesPly` /
+  `LegalMovesRecord.perPly()` and the `"perPly"` key read by `LegalMovesJsonlReader` mirror python-chess's own data
+  contract. Extend the same exception to this package's *incidental* oracle-comparison vocabulary - local `ply` /
+  `plyLabel` variables and "ply N" diagnostic messages (e.g. `TestPgnImportAgainstPythonChessOracle`). **Decision: keep
+  `ply` throughout `test/oracle/python`** so the comparison reads in the source's terms; do not rename to `moveIndex` /
+  `moveNumber` there.
+
+**Verification.** After all sub-passes, run the wide scan and confirm every hit is on the allowlist - anything else is a
+missed rename:
+`rg -n 'PgnHalfMove|HalfMoveUtility|[Hh]alfMoveCount|[Hh]alfMoveList|ThresholdPly|endPly|addPlyAnchor|plyAnchor|\bply\b|\bplies\b' src`
+Allowed residual hits, two zones only: (1) bare `ply`/`plies` prose in the engine/search files (`UndoState`,
+`LegalMoveBuffer`, `HelpmateSearchBoard`, `BitboardPosition`, the `*ShallowTerminationOracle` pair,
+`TestHelpmateSearchBoardMakeUnmakeRoundTrip`); (2) the `test/oracle/python` protocol-mirror zone (`LegalMovesPly`,
+`perPly`, its `ply` locals/messages). Everything else must be zero - any `PgnHalfMove`, `HalfMoveUtility`,
+`*HalfMoveCount` (incl. `getPerformedHalfMoveCount` / `performedHalfMoveCount`), `*halfMoveList`, `*ThresholdPly`,
+`endPly`, `plyAnchor` / `addPlyAnchor`. (`halfMoveClock` / `fullMoveNumber` / `PlyCount` do not match the pattern by
+design.) This is the largest mechanical change of 19.0.0 (~30+ files across `pgn` / `board` / `report` / tests).
+
+### Task 3 - Records carry data, not behavior (records + enums cleanup)
+
+The project rule (`coding-conventions.md`): records carry data; domain logic that operates on them lives in dedicated
+utility/service classes. A full sweep found the production record layer already ~95% compliant - the actionable set is
+small and mostly low-risk.
+
+**Confirmed moves:**
+
+- **`StaticPosition.createChangedPosition` (3 overloads) + the private `checkUpdateSquare`** -> `StaticPositionUtility`
+  (test util; already exists and already wraps it). It simulates a state change - the rule's clearest category and its
+  own named counter-example (`afterMove` -> `Utility.createPositionAfterMove`). Keep the lightweight query predicates
+  (`get`, `isEmpty`, `isOwnPiece`, `isPawn`, ...) on the record. ~170 call-site edits, mechanical and concentrated in
+  `TestPerformMoveMainlyStaticPositionState` (test-only, low risk).
+- **`DynamicPosition.isEnPassantCapturePossible()`** -> `EnPassantCaptureUtility` (a home exists). The
+  attribute-vs-computed smell: a `field != NONE` check dressed as a property. ~7 call sites; public-API removal (fits the
+  breaking release).
+- **Enum `toMoveCheck` conversions** (`KingSafetyCheck`, `CastlingCheck`, `MovementCheck`) -> consolidate into translator
+  utilities. The `TestKingSafetyCheckTranslator` / `TestMovementCheckTranslator` tests already exist with no main class,
+  and `CastlingCheckMapper` is the precedent. ~10 call sites (mostly `ValidateNewMove`).
+- **Strip behavior from `MoveRecord`** (was `HalfMove`): `havingMove()` and `toString()` (delegates to `HalfMoveUtility`)
+  come off the record - closes this record's own violation and links back to Task 1.
+
+**Documented exception (no code-behavior change):**
+
+- **`BitboardPosition` stays as-is.** It deliberately carries the move-generation / king-safety engine (`afterMove`,
+  `legalMoves`, `attackedSquares`, `pinRay`, `pinnedPieces`, ...) on the record for hot-path allocation reasons. Add a
+  note to `coding-conventions.md` (and a one-line pointer in the class JavaDoc) marking it a conscious, bounded exception
+  - not a licence to add domain methods to other records. No extraction.
+
+**Borderline, decide during execution (lean keep):** the trivial `isValid()` predicates on the parser validation
+results; `havingMove()` on `LegalMove` (mirrors `DynamicPosition`'s real `havingMove()` component). `Square.flip()`
+(heavy geometry, one caller) is a minor optional move to a board-geometry utility.
+
+**Breaking:** `DynamicPosition.isEnPassantCapturePossible()` and the enum `toMoveCheck()` removals; the StaticPosition
+work is test-only.
+
+### Cleanup (done) - dead code and test-only-production relocations
+
+Surface-trimming done during the 19.0.0 cycle, alongside the HalfMove/records work:
+
+- **Deleted dead production types.** `BoardUtility` + `CheckmateOrStalemate` (commit `93f59cf8`) and
+  `SemiOpenFilesUtility` (commit `af7013b7`). `SemiOpenFilesUtility` was orphaned by the 18.0.0 CHA 2.6.1 realignment of
+  the quick unwinnability analyzer - its only referent was its own self-test; the first pair had no caller at all. All
+  recoverable from git history.
+- **Relocated test-only support from `main` into the test tree** (commit `e48082a6`): `StandardMoveUtility` (`moves`),
+  `LegalMoveCalculation` (`model`), `SquareOccupation` (`enums`), `IoUtility` (`common.utility`). None had a
+  production-code caller - only the reference-oracle, README-doc-capture, and generator test layers used them. Each keeps
+  its package (caller imports unchanged); three were public API, so dropping them from the published surface is part of
+  the breaking bump. The dangling `{@link SquareOccupation}` in `enums/package-info.java` was dropped for strict doclint.
+  This completes the reference-layer relocation: test `StaticPositionUtility`'s call into `StandardMoveUtility` is now
+  test -> test. Follow-up (commit `5cf7e1d8`): `PseudoLegalMove` relocated too - moving `LegalMoveCalculation` (its only
+  referent) orphaned it, the expected cascade.
+- A reference-count scan over `src/main` found no fully-unreferenced production type. Caveat: relocating a test-only type
+  can newly orphan its dependencies (as `PseudoLegalMove` showed), so re-scan after each relocation.
+
+---
+
 ## Released 18.1.0 — Adjudication API (see CHANGELOG)
 
 Shipped. Minor release: a new public `adjudication` package (`Adjudicator` / `AdjudicationResult`) for flag-fall and
@@ -69,6 +225,9 @@ output.
 `FiftyMoveClaimAheadPrint`, the `report.fiftyMove.*` message-bundle titles, the threefold prints for vocabulary
 consistency, the README report prose + examples (regenerate via the Task 1 pipeline), and new report-format tests.
 
+**Related.** The 19.0.0 `HalfMove` -> `MoveRecord` rename fixes the *type/concept* leak; this item remains the separate
+*print-output* vocabulary fix and naturally follows it.
+
 ### Implement the flagfall / resignation adjudication method (then de-pseudocode the README)
 
 **Status: method + tests done** (`io.github.dlbbld.ashlarchess.adjudication.Adjudicator` + `TestAdjudicator`, fast
@@ -115,10 +274,6 @@ to only the behavioral assertions **not** visible in README output - parser prob
 the file write/parse round-trip - and drop the now-redundant ones the drift guard covers (unwinnability / dead-position
 verdicts, `isCheckmate`, `isValid`). First confirm the kept assertions aren't already covered by the dedicated
 parser / unwinnability suites; if they are, `TestReadMe` can retire entirely.
-
-### Records carry data, not behavior — sweep for violations
-The project rule (documented in `coding-conventions.md`): records carry data; domain logic that operates on them lives in dedicated utility / service classes. Permitted on a record: compact-constructor validation, `Comparable` when ordering is intrinsic, and language-provided `equals` / `hashCode` / `toString`. Domain-operation methods are not.
-Example: `StaticPosition`: the record carries multiple non-data methods — `createChangedPosition` etc.
 
 ### Maven Central badge for README
 
