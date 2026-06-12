@@ -19,9 +19,9 @@ import io.github.dlbbld.ashlarchess.model.LegalMove;
  * accessors rather than Board pre-bundling them. {@link #played(Board)} replays from the initial FEN, so it is
  * {@code O(moves * legal-move-generation)} - intended for report building, not hot paths.
  */
-public abstract class MoveRecords {
+abstract class MoveRecords {
 
-  public static ImmutableList<MoveRecord> played(Board board) {
+  static ImmutableList<MoveRecord> played(Board board) {
     final ImmutableList<MoveSpecification> moves = board.getPerformedMoveSpecificationList();
     final Board replay = new Board(board.getInitialFen());
     final List<MoveRecord> result = new ArrayList<>(moves.size());
@@ -32,7 +32,7 @@ public abstract class MoveRecords {
     return Nulls.copyOfList(result);
   }
 
-  public static MoveRecord lastPlayed(Board board) {
+  static MoveRecord lastPlayed(Board board) {
     if (board.getPerformedHalfMoveCount() == 0) {
       throw new IllegalStateException("There is no last move");
     }

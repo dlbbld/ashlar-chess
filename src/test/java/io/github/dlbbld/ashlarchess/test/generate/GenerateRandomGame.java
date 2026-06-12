@@ -7,13 +7,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import io.github.dlbbld.ashlarchess.board.Board;
+import io.github.dlbbld.ashlarchess.board.enums.Side;
 import io.github.dlbbld.ashlarchess.common.Nulls;
 import io.github.dlbbld.ashlarchess.common.constants.ChessConstants;
 import io.github.dlbbld.ashlarchess.common.exceptions.ProgrammingMistakeException;
 import io.github.dlbbld.ashlarchess.common.model.DynamicPosition;
 import io.github.dlbbld.ashlarchess.common.model.MoveSpecification;
-import io.github.dlbbld.ashlarchess.report.MoveRecord;
-import io.github.dlbbld.ashlarchess.report.MoveRecords;
 import io.github.dlbbld.ashlarchess.test.common.utility.RandomUtility;
 import io.github.dlbbld.ashlarchess.test.librarycomparison.enums.FindRandomGame;
 import io.github.dlbbld.ashlarchess.unwinnability.UnwinnabilityQuickVerdict;
@@ -145,7 +144,7 @@ public class GenerateRandomGame {
         if (isTerminationMoveFound) {
           System.out.println("A game with " + board.getPerformedHalfMoveCount() / 2.0 + " moves ending in "
               + findRandomGame + " was generated");
-          final String moveList = calculateMoveList(MoveRecords.played(board));
+          final String moveList = calculateMoveList(board);
           System.out.println(moveList);
           break;
         }
@@ -189,7 +188,7 @@ public class GenerateRandomGame {
     }
 
     System.out.println("A game with " + board.getPerformedHalfMoveCount() / 2.0 + " moves was generated");
-    final String moveList = calculateMoveList(MoveRecords.played(board));
+    final String moveList = calculateMoveList(board);
     System.out.println(moveList);
   }
 
@@ -221,7 +220,7 @@ public class GenerateRandomGame {
         if (board.isSeventyFiveMove()) {
           System.out.println("A game with " + board.getPerformedHalfMoveCount() / 2.0
               + " moves ending with seventy-five-move rule was generated");
-          final String moveList = calculateMoveList(MoveRecords.played(board));
+          final String moveList = calculateMoveList(board);
           System.out.println(moveList);
           return;
         }
@@ -292,7 +291,7 @@ public class GenerateRandomGame {
         if (board.getRepetitionCount() == repetitionNumber) {
           System.out.println("A game with " + board.getPerformedHalfMoveCount() / 2.0 + " moves ending with "
               + repetitionNumber + " repetitions was generated");
-          final String moveList = calculateMoveList(MoveRecords.played(board));
+          final String moveList = calculateMoveList(board);
           System.out.println(moveList);
           return true;
         }
@@ -328,22 +327,25 @@ public class GenerateRandomGame {
     return false;
   }
 
-  private static String calculateMoveList(List<MoveRecord> halfMoveList) {
+  private static String calculateMoveList(Board board) {
     final StringBuilder moveList = new StringBuilder();
-    for (int i = 0; i < halfMoveList.size(); i++) {
-      final MoveRecord halfMove = Nulls.get(halfMoveList, i);
+    final List<MoveSpecification> moves = board.getPerformedMoveSpecificationList();
+    final Board replay = new Board(board.getInitialFen());
+    for (int i = 0; i < moves.size(); i++) {
+      replay.move(Nulls.get(moves, i));
       // after black move if following white move
       if (i > 0 && i % 2 == 0) {
         moveList.append(" ");
       }
-      if (halfMove.havingMove().getIsWhite()) {
-        moveList.append(halfMove.fullMoveNumber()).append(". ");
-      } else if (halfMove.havingMove().getIsBlack()) {
+      final Side havingMove = replay.getMovingPiece().getSide();
+      if (havingMove.getIsWhite()) {
+        moveList.append(replay.getLastPlayedFullMoveNumber()).append(". ");
+      } else if (havingMove.getIsBlack()) {
         moveList.append(" ");
       } else {
         throw new ProgrammingMistakeException("That should never happen");
       }
-      moveList.append(halfMove.san());
+      moveList.append(replay.getSan());
     }
 
     return Nulls.toString(moveList);

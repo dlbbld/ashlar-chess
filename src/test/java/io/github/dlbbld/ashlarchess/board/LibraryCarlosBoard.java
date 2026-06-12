@@ -38,7 +38,6 @@ import io.github.dlbbld.ashlarchess.fen.model.Fen;
 import io.github.dlbbld.ashlarchess.model.LegalMove;
 import io.github.dlbbld.ashlarchess.model.LegalMoveKind;
 import io.github.dlbbld.ashlarchess.moves.EnPassantCaptureUtility;
-import io.github.dlbbld.ashlarchess.report.MoveRecord;
 import io.github.dlbbld.ashlarchess.san.SanSymbol;
 import io.github.dlbbld.ashlarchess.san.SanTerminalMarker;
 import io.github.dlbbld.ashlarchess.test.librarycarlos.NullsCarlos;
@@ -53,7 +52,6 @@ public class LibraryCarlosBoard {
   private int performedHalfMoveCount;
   private final List<LegalMove> performedLegalMoveList;
   private final List<DynamicPosition> dynamicPositionList;
-  private final List<MoveRecord> halfMoveList;
 
   public LibraryCarlosBoard() {
 
@@ -61,7 +59,6 @@ public class LibraryCarlosBoard {
     performedLegalMoveList = new ArrayList<>();
     dynamicPositionList = new ArrayList<>();
     dynamicPositionList.add(DynamicPositionConstants.INITIAL);
-    halfMoveList = new ArrayList<>();
 
   }
 
@@ -117,10 +114,6 @@ public class LibraryCarlosBoard {
     final BitboardPosition bitboardPosition = StaticPositionBridge.fromStaticPosition(getStaticPosition());
     dynamicPositionList.add(new DynamicPosition(getHavingMove(), bitboardPosition,
         normalizedEnPassantCaptureTargetSquare, getCastlingRightWhite(), getCastlingRightBlack()));
-
-    // ATTENTION: timely dependency, must be after the above code is very very dangerous
-    final MoveRecord halfMove = buildHalfMove(moveSpecification);
-    halfMoveList.add(halfMove);
   }
 
   public void unmove() {
@@ -129,7 +122,6 @@ public class LibraryCarlosBoard {
     performedHalfMoveCount--;
     performedLegalMoveList.remove(performedLegalMoveList.size() - 1);
     dynamicPositionList.remove(dynamicPositionList.size() - 1);
-    halfMoveList.remove(halfMoveList.size() - 1);
   }
 
   public boolean canClaimFiftyMoveRuleWithOwnMove() {
@@ -382,10 +374,6 @@ public class LibraryCarlosBoard {
     return Nulls.copyOfList(dynamicPositionList);
   }
 
-  public ImmutableList<MoveRecord> getHalfMoveList() {
-    return Nulls.copyOfList(halfMoveList);
-  }
-
   public DynamicPosition getDynamicPosition() {
     return Nulls.getLast(dynamicPositionList);
   }
@@ -620,16 +608,5 @@ public class LibraryCarlosBoard {
       this.unmove();
     }
     return Nulls.copyOfList(result);
-  }
-
-  private MoveRecord buildHalfMove(MoveSpecification moveSpecification) {
-    final int halfMoveCount = getPerformedHalfMoveCount();
-    final int halfMoveClock = getHalfMoveClock();
-    final int fullMoveNumber = getFullMoveNumber();
-    final int countRepetition = getRepetitionCount();
-    final DynamicPosition dynamicPosition = getDynamicPosition();
-    final Piece movingPiece = getMovingPiece();
-    return new MoveRecord(halfMoveCount, fullMoveNumber, halfMoveClock, dynamicPosition, countRepetition, getSan(),
-        movingPiece, moveSpecification);
   }
 }
