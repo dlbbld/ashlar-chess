@@ -21,7 +21,7 @@ import io.github.dlbbld.ashlarchess.test.common.utility.OutputCaptureUtility;
  *
  * <ul>
  * <li>Initial piece placement, White to move on move 1 (the conventional standard start).</li>
- * <li>Initial piece placement, Black to move on move 1 (synthetic FEN where Black has the move at fullmove 1).</li>
+ * <li>Initial piece placement, Black to move on move 1 (synthetic FEN where Black has the move at fullmove number 1).</li>
  * <li>Non-initial FEN position, White to move on move 1.</li>
  * <li>Non-initial FEN position, Black to move on move 1.</li>
  * </ul>
@@ -35,7 +35,7 @@ import io.github.dlbbld.ashlarchess.test.common.utility.OutputCaptureUtility;
  *
  * <p>
  * The Black-to-move-on-move-1 fixtures exercise FIDE fullmove numbering correctness: when Black has the move at
- * fullmove 1, the fullmove number increments after each Black move (not each White move), so the report's fullmove
+ * fullmove number 1, the fullmove number increments after each Black move (not each White move), so the report's fullmove
  * references for repeated positions are shifted relative to the more usual White-first case.
  */
 class TestFromInitialPlacementAndFenStart {
@@ -49,12 +49,12 @@ class TestFromInitialPlacementAndFenStart {
    * Non-initial FEN - two rooks plus king vs lone king. Plenty of room for non-pawn, non-capture shuffling. Castling
    * rights are intentionally absent ({@code -}): the first rook move would otherwise erase the king-side right,
    * shifting the dynamic position between cycles 1 and 2 and forcing an extra cycle to reach threefold. With no rights,
-   * the shuffle returns to the exact same position every cycle. White to move at fullmove 1.
+   * the shuffle returns to the exact same position every cycle. White to move at fullmove number 1.
    */
   private static final String FEN_KRR_K_WHITE_TO_MOVE = "4k3/8/8/8/8/8/8/R3K2R w - - 0 1";
 
   /**
-   * Same piece placement and (absence of) rights as above but Black has the move at fullmove 1. Synthetic but valid;
+   * Same piece placement and (absence of) rights as above but Black has the move at fullmove number 1. Synthetic but valid;
    * the predicates and report model do not care that the position is reachable from the standard start.
    */
   private static final String FEN_KRR_K_BLACK_TO_MOVE = "4k3/8/8/8/8/8/8/R3K2R b - - 0 1";
@@ -109,10 +109,9 @@ class TestFromInitialPlacementAndFenStart {
     final Board board = new Board(FEN_INITIAL_BLACK_TO_MOVE);
     playKnightShuffleAsBlack(board, 2); // 8 moves; Black moves first each cycle
     assertThreefoldRepetition(board);
-    // Fullmove numbering: with Black starting at fullmove 1, after 8 moves (4 cycles of Nf6/Nf3/Ng8/Ng1) the fullmove
-    // counter is at 5 (incremented after each Black move).
-    assertEquals(5, board.getFullMoveNumber(),
-        "Black-to-move-at-fullmove-1: counter increments per Black move; 4 Black moves -> fullmove 5");
+    // Fullmove numbering: with Black starting at fullmove number 1, after 8 moves (4 cycles of Nf6/Nf3/Ng8/Ng1) the
+    // fullmove number is at 5 (incremented after each Black move).
+    assertEquals(5, board.getFullMoveNumber());
     assertReporterOutput(board, /* threefoldSectionNonEmpty */ true, /* expectedFiftyMoveSequenceReached */ false);
   }
 
@@ -122,7 +121,7 @@ class TestFromInitialPlacementAndFenStart {
     final Board board = new Board(FEN_INITIAL_BLACK_TO_MOVE);
     playKnightShuffleAsBlack(board, 4); // 16 moves
     assertFivefoldRepetition(board);
-    assertEquals(9, board.getFullMoveNumber(), "Black-to-move-at-fullmove-1: 8 Black moves -> fullmove 9");
+    assertEquals(9, board.getFullMoveNumber());
     assertReporterOutput(board, /* threefoldSectionNonEmpty */ true, /* expectedFiftyMoveSequenceReached */ false);
   }
 
@@ -194,7 +193,7 @@ class TestFromInitialPlacementAndFenStart {
     final Board board = new Board(FEN_KRR_K_BLACK_TO_MOVE);
     playRookShuffleAsBlack(board, 2);
     assertThreefoldRepetition(board);
-    assertEquals(5, board.getFullMoveNumber(), "Black-to-move-at-fullmove-1: 4 Black moves -> fullmove 5");
+    assertEquals(5, board.getFullMoveNumber());
     assertReporterOutput(board, /* threefoldSectionNonEmpty */ true, /* expectedFiftyMoveSequenceReached */ false);
   }
 
@@ -204,7 +203,7 @@ class TestFromInitialPlacementAndFenStart {
     final Board board = new Board(FEN_KRR_K_BLACK_TO_MOVE);
     playRookShuffleAsBlack(board, 4);
     assertFivefoldRepetition(board);
-    assertEquals(9, board.getFullMoveNumber(), "Black-to-move-at-fullmove-1: 8 Black moves -> fullmove 9");
+    assertEquals(9, board.getFullMoveNumber());
     assertReporterOutput(board, /* threefoldSectionNonEmpty */ true, /* expectedFiftyMoveSequenceReached */ false);
   }
 
@@ -242,7 +241,7 @@ class TestFromInitialPlacementAndFenStart {
   }
 
   /**
-   * Mirror for the Black-to-move-at-fullmove-1 case: each cycle is {@code Nf6 Nf3 Ng8 Ng1} (Black moves first).
+   * Mirror for the Black-to-move-on-move-1 case: each cycle is {@code Nf6 Nf3 Ng8 Ng1} (Black moves first).
    */
   private static void playKnightShuffleAsBlack(Board board, int cycles) {
     for (int i = 0; i < cycles; i++) {
