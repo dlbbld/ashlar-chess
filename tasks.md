@@ -32,6 +32,16 @@ cycle. Deferred to Task 3 (as planned): strip `MoveRecord.havingMove()` / `toStr
 
 ### Task 2 - A played turn is a "move", not a "ply" or "half move" (scoped vocabulary)
 
+**Status: done** - shipped on this branch in six commits: `8bf4fb57` (`PgnHalfMove` -> `PgnMove`, `PgnGame.halfMoveList`
+-> `moveList`), `2807b355` (`halfMoveCount` / `getPerformedHalfMoveCount` -> `performedMoveCount`), `317f9a9f`
+(`HalfMoveUtility` -> `MoveNumberFormat`), `30d907d8` (report `ply` -> `move`), and `b615cd84` + `bbc6aaf7` (the residual
+`halfMove` method/variable/local names the first allowlist grep missed). Default suite green. The narrow allowlist grep
+originally written below proved insufficient twice - it misses bare `halfMove` locals and `PerPly`; the *comprehensive*
+gate that actually proved completeness is in **Verification** below. KEEP zones that emerged in practice: the FEN
+`halfMoveClock` family; the `test/librarycarlos/**` package (mirrors chesslib's "half move" vocabulary, just as
+`oracle/python` mirrors python-chess's "ply"); `ForcedLineOracle.countForcedHalfMoves`; and the external chesslib
+`getHalfMoves()` / `getHalfMoveCounter()`.
+
 Vocabulary is scoped by layer, not banned globally: the public chess model speaks chess; PGN/FEN counters keep their
 protocol names; engine internals may speak engine. One player's action is a **move** - never a "half move" (reads as a
 second kind of move beside `LegalMove`) and, in the move/history/report layers, never a "ply". This rule governs the
@@ -99,16 +109,16 @@ parallel; 2b and 2d are the move-domain core.
   `ply` throughout `test/oracle/python`** so the comparison reads in the source's terms; do not rename to `moveIndex` /
   `moveNumber` there.
 
-**Verification.** After all sub-passes, run the wide scan and confirm every hit is on the allowlist - anything else is a
-missed rename:
-`rg -n 'PgnHalfMove|HalfMoveUtility|[Hh]alfMoveCount|[Hh]alfMoveList|ThresholdPly|endPly|addPlyAnchor|plyAnchor|\bply\b|\bplies\b' src`
-Allowed residual hits, two zones only: (1) bare `ply`/`plies` prose in the engine/search files (`UndoState`,
-`LegalMoveBuffer`, `HelpmateSearchBoard`, `BitboardPosition`, the `*ShallowTerminationOracle` pair,
-`TestHelpmateSearchBoardMakeUnmakeRoundTrip`); (2) the `test/oracle/python` protocol-mirror zone (`LegalMovesPly`,
-`perPly`, its `ply` locals/messages). Everything else must be zero - any `PgnHalfMove`, `HalfMoveUtility`,
-`*HalfMoveCount` (incl. `getPerformedHalfMoveCount` / `performedHalfMoveCount`), `*halfMoveList`, `*ThresholdPly`,
-`endPly`, `plyAnchor` / `addPlyAnchor`. (`halfMoveClock` / `fullMoveNumber` / `PlyCount` do not match the pattern by
-design.) This is the largest mechanical change of 19.0.0 (~30+ files across `pgn` / `board` / `report` / tests).
+**Verification (comprehensive - the narrow earlier form missed bare `halfMove` locals and `PerPly`).** Two greps must
+BOTH return zero hits:
+
+1. `rg -g '*.java' -g '!**/librarycarlos/**' -g '!**/oracle/python/**' '[Hh]alfMove' src | rg -v 'halfMoveClock|HalfMoveClock|getHalfMoves\(|getHalfMoveCounter|countForcedHalfMoves'`
+2. `rg -g '*.java' -g '!**/oracle/python/**' -g '!**/unwinnability/**' -g '!**/bitboard/**' '\bply\b|\bplies\b|PerPly' src`
+
+The first excludes the FEN-clock family and the chesslib-mirror / python-oracle / `ForcedLineOracle` KEEP zones; the
+second excludes engine-search prose. Empty output from both means the move vocabulary is fully purged. (`halfMoveClock` /
+`fullMoveNumber` / `PlyCount` stay by design.) This was the largest mechanical change of 19.0.0 (~50 files across `pgn` /
+`board` / `report` / tests).
 
 ### Task 3 - Records carry data, not behavior (records + enums cleanup)
 
