@@ -11,7 +11,7 @@ import io.github.dlbbld.ashlarchess.common.model.MoveSpecification;
 
 // A recorded played move: the move plus the state it produced and its game numbering. Built by MoveRecords from a Board.
 // only use in lists, added in order of play; not used in sets per this design, so no sorting needed.
-record MoveRecord(int halfMoveCount, int fullMoveNumber, int halfMoveClock, DynamicPosition dynamicPosition,
+record MoveRecord(int performedMoveCount, int fullMoveNumber, int halfMoveClock, DynamicPosition dynamicPosition,
     int countRepetition, String san, Piece movingPiece, MoveSpecification moveSpecification) {
 
   public Side havingMove() {

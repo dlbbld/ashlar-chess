@@ -23,12 +23,12 @@ import io.github.dlbbld.ashlarchess.board.enums.Side;
  * history. Sequences that did reach the threshold appear in {@link FiftyMoveSequenceReport} alone; their would-be
  * claim-aheads are informationally redundant with that row.
  */
-record FiftyMoveClaimAheadEntry(SequenceStart sequenceStart, int halfMoveCount, int fullMoveNumber,
+record FiftyMoveClaimAheadEntry(SequenceStart sequenceStart, int performedMoveCount, int fullMoveNumber,
     Side sideHavingMove, Side startingSide) {
 
   public FiftyMoveClaimAheadEntry {
-    if (halfMoveCount < 1) {
-      throw new IllegalArgumentException("halfMoveCount must be >= 1; was " + halfMoveCount);
+    if (performedMoveCount < 1) {
+      throw new IllegalArgumentException("performedMoveCount must be >= 1; was " + performedMoveCount);
     }
     if (fullMoveNumber < 1) {
       throw new IllegalArgumentException("fullMoveNumber must be >= 1; was " + fullMoveNumber);

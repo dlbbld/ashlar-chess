@@ -38,8 +38,8 @@ abstract class RepetitionGrouping {
         processed.add(searchDynamicPositionThreeFold);
       }
     }
-    list.sort((firstList, secondList) -> Integer.compare(Nulls.getFirst(firstList).halfMoveCount(),
-        Nulls.getFirst(secondList).halfMoveCount()));
+    list.sort((firstList, secondList) -> Integer.compare(Nulls.getFirst(firstList).performedMoveCount(),
+        Nulls.getFirst(secondList).performedMoveCount()));
     return list;
   }
 

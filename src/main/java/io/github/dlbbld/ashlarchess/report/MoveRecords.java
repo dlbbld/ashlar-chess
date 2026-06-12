@@ -33,11 +33,11 @@ abstract class MoveRecords {
   }
 
   static MoveRecord lastPlayed(Board board) {
-    if (board.getPerformedHalfMoveCount() == 0) {
+    if (board.getPerformedMoveCount() == 0) {
       throw new IllegalStateException("There is no last move");
     }
     final LegalMove last = board.getLastMove();
-    return new MoveRecord(board.getPerformedHalfMoveCount(), board.getLastPlayedFullMoveNumber(),
+    return new MoveRecord(board.getPerformedMoveCount(), board.getLastPlayedFullMoveNumber(),
         board.getHalfMoveClock(), board.getDynamicPosition(), board.getRepetitionCount(), board.getSan(),
         last.movingPiece(), last.moveSpecification());
   }

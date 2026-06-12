@@ -152,7 +152,7 @@ class TestFiftyMoveClaimAheadReportBuilder {
     assertFalse(Nulls.get(report.entries(), 1).sequenceStart().isInitialFen(),
         "chronological second: after-reset-anchored boundary");
     // Sort invariant: ascending half-move count.
-    assertTrue(Nulls.get(report.entries(), 0).halfMoveCount() < Nulls.get(report.entries(), 1).halfMoveCount(),
+    assertTrue(Nulls.get(report.entries(), 0).performedMoveCount() < Nulls.get(report.entries(), 1).performedMoveCount(),
         "entries sorted by chronological boundary half-move count");
   }
 }

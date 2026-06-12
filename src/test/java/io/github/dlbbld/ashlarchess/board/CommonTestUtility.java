@@ -86,7 +86,7 @@ public abstract class CommonTestUtility implements EnumConstants {
     // assertEquals(boardFirst.getCastlingRight(BLACK), boardSecond.getCastlingRight(BLACK));
 
     if (isIncludeHistory) {
-      assertEquals(boardFirst.getPerformedHalfMoveCount(), boardSecond.getPerformedHalfMoveCount());
+      assertEquals(boardFirst.getPerformedMoveCount(), boardSecond.getPerformedMoveCount());
     }
 
     if (isIncludeHistory) {
@@ -175,7 +175,7 @@ public abstract class CommonTestUtility implements EnumConstants {
     assertEquals(boardFirst.getCastlingRightBlack(), boardSecond.getCastlingRightBlack());
 
     if (isIncludeHistory) {
-      assertEquals(boardFirst.getPerformedHalfMoveCount(), boardSecond.getPerformedHalfMoveCount());
+      assertEquals(boardFirst.getPerformedMoveCount(), boardSecond.getPerformedMoveCount());
       assertEquals(boardFirst.getDynamicPositionList(), boardSecond.getDynamicPositionList());
       assertEquals(boardFirst.getDynamicPosition(), boardSecond.getDynamicPosition());
       assertEquals(boardFirst.getPossibleMoveSpecificationList(), boardSecond.getPossibleMoveSpecificationList());

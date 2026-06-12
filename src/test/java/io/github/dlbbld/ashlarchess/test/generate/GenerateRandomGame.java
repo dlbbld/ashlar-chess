@@ -142,7 +142,7 @@ public class GenerateRandomGame {
 
         }
         if (isTerminationMoveFound) {
-          System.out.println("A game with " + board.getPerformedHalfMoveCount() / 2.0 + " moves ending in "
+          System.out.println("A game with " + board.getPerformedMoveCount() / 2.0 + " moves ending in "
               + findRandomGame + " was generated");
           final String moveList = calculateMoveList(board);
           System.out.println(moveList);
@@ -187,7 +187,7 @@ public class GenerateRandomGame {
       numberOfMoveOptions = moveOptionList.size();
     }
 
-    System.out.println("A game with " + board.getPerformedHalfMoveCount() / 2.0 + " moves was generated");
+    System.out.println("A game with " + board.getPerformedMoveCount() / 2.0 + " moves was generated");
     final String moveList = calculateMoveList(board);
     System.out.println(moveList);
   }
@@ -218,7 +218,7 @@ public class GenerateRandomGame {
         }
 
         if (board.isSeventyFiveMove()) {
-          System.out.println("A game with " + board.getPerformedHalfMoveCount() / 2.0
+          System.out.println("A game with " + board.getPerformedMoveCount() / 2.0
               + " moves ending with seventy-five-move rule was generated");
           final String moveList = calculateMoveList(board);
           System.out.println(moveList);
@@ -289,7 +289,7 @@ public class GenerateRandomGame {
         }
 
         if (board.getRepetitionCount() == repetitionNumber) {
-          System.out.println("A game with " + board.getPerformedHalfMoveCount() / 2.0 + " moves ending with "
+          System.out.println("A game with " + board.getPerformedMoveCount() / 2.0 + " moves ending with "
               + repetitionNumber + " repetitions was generated");
           final String moveList = calculateMoveList(board);
           System.out.println(moveList);

@@ -312,7 +312,7 @@ class TestBoardClaimRights implements EnumConstants {
     final Board board = new Board();
     board.movesStrict("Nf3", "Nf6", "Ng1", "Ng8", "Nf3", "Nf6", "Ng1");
 
-    final int halfMoveCountBefore = board.getPerformedHalfMoveCount();
+    final int performedMoveCountBefore = board.getPerformedMoveCount();
     final String fenBefore = board.getFen();
 
     board.calculateFiftyMoveRuleClaimRights();
@@ -320,7 +320,7 @@ class TestBoardClaimRights implements EnumConstants {
     board.canClaimFiftyMoveRuleFor("Ng8");
     board.canClaimThreefoldRepetitionRuleFor("Ng8");
 
-    assertEquals(halfMoveCountBefore, board.getPerformedHalfMoveCount(),
+    assertEquals(performedMoveCountBefore, board.getPerformedMoveCount(),
         "queries must not alter the played-move count");
     assertEquals(fenBefore, board.getFen(), "queries must not alter the position (FEN unchanged)");
   }

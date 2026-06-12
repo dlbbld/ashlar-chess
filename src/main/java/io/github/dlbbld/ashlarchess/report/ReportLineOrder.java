@@ -47,7 +47,7 @@ abstract class ReportLineOrder {
     if (startCompare != 0) {
       return startCompare;
     }
-    return Integer.compare(a.halfMoveCount(), b.halfMoveCount());
+    return Integer.compare(a.performedMoveCount(), b.performedMoveCount());
   };
 
   private static List<Integer> claimAheadSortKey(ClaimAheadEntry entry) {
@@ -56,9 +56,9 @@ abstract class ReportLineOrder {
       key.add(-1);
     }
     for (final MoveRecord halfMove : entry.priorOccurrences()) {
-      key.add(halfMove.halfMoveCount());
+      key.add(halfMove.performedMoveCount());
     }
-    key.add(entry.claimAheadMove().halfMoveCount());
+    key.add(entry.claimAheadMove().performedMoveCount());
     return key;
   }
 
@@ -68,7 +68,7 @@ abstract class ReportLineOrder {
       key.add(-1);
     }
     for (final MoveRecord halfMove : group.occurrences()) {
-      key.add(halfMove.halfMoveCount());
+      key.add(halfMove.performedMoveCount());
     }
     return key;
   }
@@ -77,7 +77,7 @@ abstract class ReportLineOrder {
     if (start.isInitialFen()) {
       return -1;
     }
-    return start.firstNonZeroingMoveOrThrow().halfMoveCount();
+    return start.firstNonZeroingMoveOrThrow().performedMoveCount();
   }
 
   private static int compareKeys(List<Integer> a, List<Integer> b) {

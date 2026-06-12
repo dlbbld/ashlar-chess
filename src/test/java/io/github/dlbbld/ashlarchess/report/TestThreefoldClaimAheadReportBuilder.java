@@ -152,9 +152,9 @@ class TestThreefoldClaimAheadReportBuilder {
       key.add(-1);
     }
     for (final MoveRecord hm : e.priorOccurrences()) {
-      key.add(hm.halfMoveCount());
+      key.add(hm.performedMoveCount());
     }
-    key.add(e.claimAheadMove().halfMoveCount());
+    key.add(e.claimAheadMove().performedMoveCount());
     return key;
   }
 

@@ -13,15 +13,15 @@ import io.github.dlbbld.ashlarchess.model.LegalMove;
 
 public abstract class BasicChessUtility {
 
-  public static Side calculateSideMoved(Side havingMoveInitial, int halfMoveCount) {
+  public static Side calculateSideMoved(Side havingMoveInitial, int performedMoveCount) {
     switch (havingMoveInitial) {
       case BLACK:
-        if (halfMoveCount % 2 == 0) {
+        if (performedMoveCount % 2 == 0) {
           return Side.WHITE;
         }
         return Side.BLACK;
       case WHITE:
-        if (halfMoveCount % 2 == 0) {
+        if (performedMoveCount % 2 == 0) {
           return Side.BLACK;
         }
         return Side.WHITE;
@@ -33,10 +33,10 @@ public abstract class BasicChessUtility {
   }
 
   public static int calculateFullMoveNumber(Side havingMoveInitial, int fullMoveNumberInitial,
-      int performedHalfMoveCount) {
+      int performedMoveCount) {
     return switch (havingMoveInitial) {
-      case BLACK -> fullMoveNumberInitial + (int) StrictMath.floor(performedHalfMoveCount / 2.0);
-      case WHITE -> fullMoveNumberInitial + (int) StrictMath.floor((performedHalfMoveCount - 1) / 2.0);
+      case BLACK -> fullMoveNumberInitial + (int) StrictMath.floor(performedMoveCount / 2.0);
+      case WHITE -> fullMoveNumberInitial + (int) StrictMath.floor((performedMoveCount - 1) / 2.0);
       case NONE -> throw new IllegalArgumentException();
       default -> throw new IllegalArgumentException();
     };

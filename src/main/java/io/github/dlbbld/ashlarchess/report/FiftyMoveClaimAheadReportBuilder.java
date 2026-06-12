@@ -90,10 +90,10 @@ abstract class FiftyMoveClaimAheadReportBuilder {
     }
     // Boundary metadata: the upcoming ply's chronological position. The candidate move itself is
     // not stored - the entry represents the boundary, not any single alternative move.
-    final int boundaryHalfMoveCount = replayBoard.getPerformedHalfMoveCount() + 1;
+    final int boundaryPerformedMoveCount = replayBoard.getPerformedMoveCount() + 1;
     final int boundaryFullMoveNumber = replayBoard.getFullMoveNumber();
     final Side startingSide = SequenceStartFormat.startingSide(currentStart, initialFenClock, initialFenSideToMove);
-    entries.add(new FiftyMoveClaimAheadEntry(currentStart, boundaryHalfMoveCount, boundaryFullMoveNumber,
+    entries.add(new FiftyMoveClaimAheadEntry(currentStart, boundaryPerformedMoveCount, boundaryFullMoveNumber,
         replayBoard.getHavingMove(), startingSide));
   }
 

@@ -80,7 +80,7 @@ abstract class ThreefoldClaimAheadReportBuilder {
 
     final List<MoveRecord> priorOccurrences = new ArrayList<>();
     for (final MoveRecord played : moveRecordListPlayed) {
-      if (played.halfMoveCount() >= claimAheadMove.halfMoveCount()) {
+      if (played.performedMoveCount() >= claimAheadMove.performedMoveCount()) {
         break;
       }
       if (played.dynamicPosition().equals(claimAheadMove.dynamicPosition())) {

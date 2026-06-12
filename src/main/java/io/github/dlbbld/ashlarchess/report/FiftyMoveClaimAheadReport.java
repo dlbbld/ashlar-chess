@@ -20,7 +20,7 @@ import io.github.dlbbld.ashlarchess.common.Nulls;
  * placeholder.
  *
  * <p>
- * Entries are ordered by {@code (sequenceStart-anchor, halfMoveCount)} via
+ * Entries are ordered by {@code (sequenceStart-anchor, performedMoveCount)} via
  * {@link ReportLineOrder#FIFTY_MOVE_CLAIM_AHEAD_COMPARATOR}.
  */
 record FiftyMoveClaimAheadReport(ImmutableList<FiftyMoveClaimAheadEntry> entries) {

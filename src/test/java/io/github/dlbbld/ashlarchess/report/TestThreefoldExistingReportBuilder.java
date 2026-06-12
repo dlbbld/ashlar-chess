@@ -92,10 +92,10 @@ class TestThreefoldExistingReportBuilder {
     // Outer sort: groups ordered by the half-move count of each group's first occurrence.
     for (int i = 1; i < report.groups().size(); i++) {
       final RepetitionGroup prevGroup = Nulls.get(report.groups(), i - 1);
-      final int prev = Nulls.get(prevGroup.occurrences(), 0).halfMoveCount();
+      final int prev = Nulls.get(prevGroup.occurrences(), 0).performedMoveCount();
 
       final RepetitionGroup currGroup = Nulls.get(report.groups(), i);
-      final int curr = Nulls.get(currGroup.occurrences(), 0).halfMoveCount();
+      final int curr = Nulls.get(currGroup.occurrences(), 0).performedMoveCount();
       assertTrue(prev <= curr, "groups must be sorted by first-occurrence half-move count");
     }
 

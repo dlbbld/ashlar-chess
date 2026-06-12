@@ -49,13 +49,13 @@ public class LibraryCarlosBoard {
 
   private final Board board = new Board();
 
-  private int performedHalfMoveCount;
+  private int performedMoveCount;
   private final List<LegalMove> performedLegalMoveList;
   private final List<DynamicPosition> dynamicPositionList;
 
   public LibraryCarlosBoard() {
 
-    performedHalfMoveCount = 0;
+    performedMoveCount = 0;
     performedLegalMoveList = new ArrayList<>();
     dynamicPositionList = new ArrayList<>();
     dynamicPositionList.add(DynamicPositionConstants.INITIAL);
@@ -103,7 +103,7 @@ public class LibraryCarlosBoard {
   }
 
   private void populateMoveHistory(MoveSpecification moveSpecification) {
-    performedHalfMoveCount++;
+    performedMoveCount++;
 
     final MoveBackup moveBackup = NullsCarlos.getLast(this.board);
     final LegalMove legalMove = calculateLegalMove(moveSpecification, moveBackup);
@@ -119,7 +119,7 @@ public class LibraryCarlosBoard {
   public void unmove() {
     board.undoMove();
 
-    performedHalfMoveCount--;
+    performedMoveCount--;
     performedLegalMoveList.remove(performedLegalMoveList.size() - 1);
     dynamicPositionList.remove(dynamicPositionList.size() - 1);
   }
@@ -366,8 +366,8 @@ public class LibraryCarlosBoard {
     };
   }
 
-  public int getPerformedHalfMoveCount() {
-    return performedHalfMoveCount;
+  public int getPerformedMoveCount() {
+    return performedMoveCount;
   }
 
   public ImmutableList<DynamicPosition> getDynamicPositionList() {

@@ -737,7 +737,7 @@ public class Board {
       throw new IllegalStateException("There is no last move");
     }
     final int fullMoveNumber = calculateFullMoveNumber(isFirstMove(), initialFen.fullMoveNumber(),
-        initialFen.havingMove(), getHavingMove(), getPerformedHalfMoveCount());
+        initialFen.havingMove(), getHavingMove(), getPerformedMoveCount());
 
     return switch (getHavingMove()) {
       case WHITE -> fullMoveNumber - 1;
@@ -748,7 +748,7 @@ public class Board {
   }
 
   private static int calculateFullMoveNumber(boolean isFirstMove, int initialFenFullMoveNumber,
-      Side initialFenHavingMove, Side havingMove, int halfMoveCount) {
+      Side initialFenHavingMove, Side havingMove, int performedMoveCount) {
     if (isFirstMove) {
       return initialFenFullMoveNumber;
     }
@@ -757,13 +757,13 @@ public class Board {
       case WHITE -> switch (initialFenHavingMove) {
         case BLACK -> {
           // must be even
-          checkIsEven(halfMoveCount + 1);
-          yield (halfMoveCount + 1) / 2 + initialFenFullMoveNumber;
+          checkIsEven(performedMoveCount + 1);
+          yield (performedMoveCount + 1) / 2 + initialFenFullMoveNumber;
         }
         case WHITE -> {
           // must be even
-          checkIsEven(halfMoveCount);
-          yield halfMoveCount / 2 + initialFenFullMoveNumber;
+          checkIsEven(performedMoveCount);
+          yield performedMoveCount / 2 + initialFenFullMoveNumber;
         }
         case NONE -> throw new IllegalArgumentException();
         default -> throw new IllegalArgumentException();
@@ -771,13 +771,13 @@ public class Board {
       case BLACK -> switch (initialFenHavingMove) {
         case BLACK -> {
           // must be even
-          checkIsEven(halfMoveCount);
-          yield halfMoveCount / 2 + initialFenFullMoveNumber;
+          checkIsEven(performedMoveCount);
+          yield performedMoveCount / 2 + initialFenFullMoveNumber;
         }
         case WHITE -> {
           // must be even
-          checkIsEven(halfMoveCount - 1);
-          yield (halfMoveCount - 1) / 2 + initialFenFullMoveNumber;
+          checkIsEven(performedMoveCount - 1);
+          yield (performedMoveCount - 1) / 2 + initialFenFullMoveNumber;
         }
         case NONE -> throw new IllegalArgumentException();
         default -> throw new IllegalArgumentException();
@@ -914,7 +914,7 @@ public class Board {
     return false;
   }
 
-  public int getPerformedHalfMoveCount() {
+  public int getPerformedMoveCount() {
     return performedLegalMoveList.size();
   }
 
@@ -1023,7 +1023,7 @@ public class Board {
 
   public int getFullMoveNumber() {
     return calculateFullMoveNumber(isFirstMove(), initialFen.fullMoveNumber(), initialFen.havingMove(), getHavingMove(),
-        getPerformedHalfMoveCount());
+        getPerformedMoveCount());
   }
 
   public boolean canClaimFiftyMoveRule() {
