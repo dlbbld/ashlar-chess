@@ -17,8 +17,8 @@ public abstract class PgnUtility {
 
     final Board board = new Board(pgnGame.startFen());
 
-    for (final PgnMove halfMove : pgnGame.moveList()) {
-      final String san = halfMove.san();
+    for (final PgnMove move : pgnGame.moveList()) {
+      final String san = move.san();
       board.moveStrict(san);
     }
 

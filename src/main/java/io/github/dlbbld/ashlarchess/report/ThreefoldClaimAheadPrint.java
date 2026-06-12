@@ -28,10 +28,10 @@ abstract class ThreefoldClaimAheadPrint {
       final ImmutableList<MoveRecord> priorOccurrences = entry.priorOccurrences();
       final int lastIndex = priorOccurrences.size();
       for (int i = 0; i <= lastIndex; i++) {
-        final MoveRecord halfMove = i < lastIndex ? Nulls.get(priorOccurrences, i) : entry.claimAheadMove();
+        final MoveRecord move = i < lastIndex ? Nulls.get(priorOccurrences, i) : entry.claimAheadMove();
         final boolean isAddAsterisk = i < lastIndex || entry.hasBeenPlayed();
         final boolean isAddPositionInformation = i == lastIndex;
-        final String moveInformation = PositionIdentifierUtility.calculateMoveInformation(halfMove,
+        final String moveInformation = PositionIdentifierUtility.calculateMoveInformation(move,
             entry.totalRepetitionCount(), isAddAsterisk, isAddPositionInformation, positionIdentifierMap);
         resultList.add(moveInformation);
       }

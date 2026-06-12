@@ -24,9 +24,9 @@ abstract class RepetitionPrint {
       }
       final ImmutableList<MoveRecord> occurrences = group.occurrences();
       for (int i = 0; i < occurrences.size(); i++) {
-        final MoveRecord halfMove = Nulls.get(occurrences, i);
+        final MoveRecord move = Nulls.get(occurrences, i);
         final boolean isAddPositionInformation = i == occurrences.size() - 1;
-        final String moveInformation = PositionIdentifierUtility.calculateMoveInformation(halfMove,
+        final String moveInformation = PositionIdentifierUtility.calculateMoveInformation(move,
             group.totalRepetitionCount(), false, isAddPositionInformation, positionIdentifierMap);
         resultList.add(moveInformation);
       }

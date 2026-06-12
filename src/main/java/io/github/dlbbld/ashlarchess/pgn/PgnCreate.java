@@ -103,9 +103,9 @@ public class PgnCreate {
     final List<PgnMove> moveList = new ArrayList<>();
 
     for (final String san : sanList) {
-      PgnMove halfMove;
-      halfMove = new PgnMove(san, MoveSuffixAnnotation.NONE, PgnCommentary.EMPTY);
-      moveList.add(halfMove);
+      PgnMove move;
+      move = new PgnMove(san, MoveSuffixAnnotation.NONE, PgnCommentary.EMPTY);
+      moveList.add(move);
     }
 
     return moveList;
@@ -170,9 +170,9 @@ public class PgnCreate {
     boolean isFirstMove = true;
     // T-002 / PGN spec section 8.2.2 case 1: commentary on White's move forces "N..." before the next Black move.
     boolean priorCommentaryAttached = false;
-    for (final PgnMove halfMove : moveList) {
+    for (final PgnMove move : moveList) {
 
-      // Emit the move-number indicator in the three required cases: first half-move, before any White move, or
+      // Emit the move-number indicator in the three required cases: first move, before any White move, or
       // before a Black move that follows commentary on White's move (T-002).
       if (isFirstMove) {
         isFirstMove = false;
@@ -185,13 +185,13 @@ public class PgnCreate {
         result.append(" ").append(currentFullMoveNumber).append("...");
       }
 
-      final String san = halfMove.san();
+      final String san = move.san();
       result.append(" ").append(san);
-      if (halfMove.moveSuffixAnnotation() != MoveSuffixAnnotation.NONE) {
-        result.append(halfMove.moveSuffixAnnotation().getSuffix());
+      if (move.moveSuffixAnnotation() != MoveSuffixAnnotation.NONE) {
+        result.append(move.moveSuffixAnnotation().getSuffix());
       }
 
-      final String commentaryValue = halfMove.commentary().value();
+      final String commentaryValue = move.commentary().value();
       if (!commentaryValue.isEmpty()) {
         result.append(" {").append(commentaryValue).append('}');
         priorCommentaryAttached = true;

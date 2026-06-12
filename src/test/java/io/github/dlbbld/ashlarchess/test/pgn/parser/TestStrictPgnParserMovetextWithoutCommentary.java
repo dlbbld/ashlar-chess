@@ -50,8 +50,8 @@ class TestStrictPgnParserMovetextWithoutCommentary {
     final PgnGame file = StrictPgnParser.parseText(header() + movetextPart + " *\n\n");
     assertEquals("", file.pregameCommentary().value());
     assertEquals(expectedSanList, calculateSanList(file.moveList()));
-    for (final io.github.dlbbld.ashlarchess.model.PgnMove halfMove : file.moveList()) {
-      assertEquals("", halfMove.commentary().value(), "Expected no commentary on " + halfMove.san());
+    for (final io.github.dlbbld.ashlarchess.model.PgnMove move : file.moveList()) {
+      assertEquals("", move.commentary().value(), "Expected no commentary on " + move.san());
     }
   }
 
@@ -71,8 +71,8 @@ class TestStrictPgnParserMovetextWithoutCommentary {
 
   private static List<String> calculateSanList(List<PgnMove> moveList) {
     final List<String> sanList = new ArrayList<>();
-    for (final PgnMove halfMove : moveList) {
-      sanList.add(halfMove.san());
+    for (final PgnMove move : moveList) {
+      sanList.add(move.san());
     }
     return sanList;
   }

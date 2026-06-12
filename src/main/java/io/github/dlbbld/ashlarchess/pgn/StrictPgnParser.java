@@ -352,7 +352,7 @@ public final class StrictPgnParser {
       expectSpaceAfterComment();
     }
 
-    final List<PgnMove> halfMoves = new ArrayList<>();
+    final List<PgnMove> moves = new ArrayList<>();
     Side havingMove = startFen.havingMove();
     int fullMoveNumber = startFen.fullMoveNumber();
     boolean isFirstMove = true;
@@ -363,7 +363,7 @@ public final class StrictPgnParser {
       tokenizer.next();
       final PgnToken terminator = tokenizer.next();
       validateTermination(terminator, resultTagValue);
-      return new MovetextOutcome(halfMoves, pregameCommentary);
+      return new MovetextOutcome(moves, pregameCommentary);
     }
 
     // T-002 / PGN spec section 8.2.2 case 1: commentary on White's move forces "N..." before the next Black move.
@@ -373,7 +373,7 @@ public final class StrictPgnParser {
       if (tokenizer.peek().type() == PgnTokenType.TERMINATION_MARKER) {
         final PgnToken terminator = tokenizer.next();
         validateTermination(terminator, resultTagValue);
-        return new MovetextOutcome(halfMoves, pregameCommentary);
+        return new MovetextOutcome(moves, pregameCommentary);
       }
 
       // Non-initial Black move: with prior commentary, "N..." indicator is required (T-002); without, forbidden.
@@ -418,7 +418,7 @@ public final class StrictPgnParser {
         priorCommentaryAttached = false;
       }
 
-      halfMoves.add(new PgnMove(sanAndSuffix.san(), sanAndSuffix.suffix(), commentary));
+      moves.add(new PgnMove(sanAndSuffix.san(), sanAndSuffix.suffix(), commentary));
 
       isFirstMove = false;
       if (havingMove == Side.BLACK) {
@@ -629,14 +629,14 @@ public final class StrictPgnParser {
     // analyzer-driven dead positions are queryable predicates on Board; historical PGN corpora routinely contain games
     // whose recorded play continues past such states.
     final Board board = new Board(startFen);
-    for (final PgnMove halfMove : moveList) {
+    for (final PgnMove move : moveList) {
       final Side side = board.getHavingMove();
       final int fullMoveNumber = board.getFullMoveNumber();
       try {
-        board.moveStrict(halfMove.san());
+        board.moveStrict(move.san());
       } catch (final SanValidationException e) {
         final String moveNumberAndSan = MoveNumberFormat.calculateMoveNumberAndSanWithSpace(fullMoveNumber, side,
-            halfMove.san());
+            move.san());
         final String messageSanValidationFailure = BasicUtility.getMessage(e);
         final String message = "The validation for " + moveNumberAndSan + " failed. Reason: "
             + messageSanValidationFailure;

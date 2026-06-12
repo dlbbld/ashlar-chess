@@ -55,8 +55,8 @@ abstract class ReportLineOrder {
     if (entry.includesInitialPosition()) {
       key.add(-1);
     }
-    for (final MoveRecord halfMove : entry.priorOccurrences()) {
-      key.add(halfMove.performedMoveCount());
+    for (final MoveRecord move : entry.priorOccurrences()) {
+      key.add(move.performedMoveCount());
     }
     key.add(entry.claimAheadMove().performedMoveCount());
     return key;
@@ -67,8 +67,8 @@ abstract class ReportLineOrder {
     if (group.includesInitialPosition()) {
       key.add(-1);
     }
-    for (final MoveRecord halfMove : group.occurrences()) {
-      key.add(halfMove.performedMoveCount());
+    for (final MoveRecord move : group.occurrences()) {
+      key.add(move.performedMoveCount());
     }
     return key;
   }

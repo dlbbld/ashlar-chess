@@ -345,12 +345,12 @@ public final class LenientPgnParser {
 
   private MovetextOutcome parseMovetext() {
     PgnCommentary pregameCommentary = PgnCommentary.EMPTY;
-    final List<PgnMove> halfMoves = new ArrayList<>();
+    final List<PgnMove> moves = new ArrayList<>();
     @Nullable ResultTagValue terminationResult = null;
 
     skipInsignificantWhitespace();
     // Pregame-commentary slot: exactly one commentary allowed before the first move. Additional braces before any
-    // half-move fall through to the main loop and are reported as R4 (brace at SAN-expected position).
+    // move fall through to the main loop and are reported as R4 (brace at SAN-expected position).
     if (isBraceToken(tokenizer.peek().type())) {
       pregameCommentary = consumeCommentaryOrThrow();
     }
@@ -378,18 +378,18 @@ public final class LenientPgnParser {
       if (isBraceToken(type)) {
         throwIfBrokenBrace(peek);
         throw movetextError(LenientPgnParserValidationProblem.MOVETEXT_COMMENTARY_NOT_ALLOWED_IN_SAN,
-            "A commentary brace cannot occur where a SAN half-move is expected.");
+            "A commentary brace cannot occur where a SAN move is expected.");
       }
       if (type == PgnTokenType.MOVE_SUFFIX_ANNOTATION) {
-        if (halfMoves.isEmpty()) {
+        if (moves.isEmpty()) {
           tokenizer.next();
           continue;
         }
         final PgnToken suffixToken = tokenizer.next();
         final MoveSuffixAnnotation suffix = parseMoveSuffix(suffixToken.text());
-        final int last = halfMoves.size() - 1;
-        final PgnMove previous = Nulls.get(halfMoves, last);
-        halfMoves.set(last, new PgnMove(previous.san(), suffix, previous.commentary()));
+        final int last = moves.size() - 1;
+        final PgnMove previous = Nulls.get(moves, last);
+        moves.set(last, new PgnMove(previous.san(), suffix, previous.commentary()));
         continue;
       }
       if (type == PgnTokenType.SYMBOL) {
@@ -398,13 +398,13 @@ public final class LenientPgnParser {
           continue;
         }
         final PgnMove move = parseMoveLenient();
-        halfMoves.add(move);
+        moves.add(move);
         skipInsignificantWhitespace();
         if (isBraceToken(tokenizer.peek().type())) {
           final PgnCommentary commentary = consumeCommentaryOrThrow();
-          final int last = halfMoves.size() - 1;
-          final PgnMove previous = Nulls.get(halfMoves, last);
-          halfMoves.set(last, new PgnMove(previous.san(), previous.moveSuffixAnnotation(), commentary));
+          final int last = moves.size() - 1;
+          final PgnMove previous = Nulls.get(moves, last);
+          moves.set(last, new PgnMove(previous.san(), previous.moveSuffixAnnotation(), commentary));
         }
         continue;
       }
@@ -413,7 +413,7 @@ public final class LenientPgnParser {
           "Unexpected token \"" + peek.text() + "\" at line " + peek.line() + ".");
     }
 
-    return new MovetextOutcome(halfMoves, pregameCommentary, terminationResult);
+    return new MovetextOutcome(moves, pregameCommentary, terminationResult);
   }
 
   /**
@@ -751,17 +751,17 @@ public final class LenientPgnParser {
   private List<PgnMove> replayBoardCanonicalizing(Fen startFen, List<PgnMove> moveList) {
     final Board board = new Board(startFen);
     final List<PgnMove> canonicalList = new ArrayList<>(moveList.size());
-    for (final PgnMove halfMove : moveList) {
+    for (final PgnMove move : moveList) {
       final Side side = board.getHavingMove();
       final int fullMoveNumber = board.getFullMoveNumber();
       try {
-        final LenientSanParserValidationResult result = board.moveLenient(halfMove.san());
+        final LenientSanParserValidationResult result = board.moveLenient(move.san());
         sanForgivenItemsAccumulator.addAll(result.forgivenItems());
         final String canonicalSan = board.getSan();
-        canonicalList.add(new PgnMove(canonicalSan, halfMove.moveSuffixAnnotation(), halfMove.commentary()));
+        canonicalList.add(new PgnMove(canonicalSan, move.moveSuffixAnnotation(), move.commentary()));
       } catch (final LenientSanParserValidationException e) {
         final String moveNumberAndSan = MoveNumberFormat.calculateMoveNumberAndSanWithSpace(fullMoveNumber, side,
-            halfMove.san());
+            move.san());
         final String messageSanValidationFailure = BasicUtility.getMessage(e);
         final String message = "The validation for " + moveNumberAndSan + " failed. Reason: "
             + messageSanValidationFailure;

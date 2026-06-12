@@ -89,11 +89,11 @@ class TestPerformMoveSanContract {
         testCase.pgnName());
     final Board board = new Board(pgnGame.startFen());
 
-    int halfMoveIndex = 0;
-    for (final PgnMove halfMove : pgnGame.moveList()) {
-      halfMoveIndex++;
-      final int hmi = halfMoveIndex;
-      final String expectedProvidedSan = halfMove.san();
+    int moveIndex = 0;
+    for (final PgnMove move : pgnGame.moveList()) {
+      moveIndex++;
+      final int hmi = moveIndex;
+      final String expectedProvidedSan = move.san();
 
       final MoveSpecification expectedCalculatedMoveSpecification = StrictSanParser
           .parseText(expectedProvidedSan, board).moveSpecification();
@@ -102,11 +102,11 @@ class TestPerformMoveSanContract {
 
       final MoveSpecification actualStoredMoveSpecification = board.getLastMove().moveSpecification();
       assertEquals(expectedCalculatedMoveSpecification, actualStoredMoveSpecification,
-          () -> testCase.pgnName() + ": halfmove " + hmi + " (" + expectedProvidedSan
+          () -> testCase.pgnName() + ": move " + hmi + " (" + expectedProvidedSan
               + ") - MoveSpec derived from SAN does not match the LegalMove's MoveSpec after perform");
 
       final String actualCalculatedSan = board.getSan();
-      assertEquals(expectedProvidedSan, actualCalculatedSan, () -> testCase.pgnName() + ": halfmove " + hmi + " ("
+      assertEquals(expectedProvidedSan, actualCalculatedSan, () -> testCase.pgnName() + ": move " + hmi + " ("
           + expectedProvidedSan + ") - SAN reconstructed from LegalMove does not match the original PGN SAN");
     }
   }
@@ -120,15 +120,15 @@ class TestPerformMoveSanContract {
         testCase.pgnName());
     final Board board = new Board(pgnGame.startFen());
 
-    for (final PgnMove halfMove : pgnGame.moveList()) {
-      board.moveStrict(halfMove.san());
+    for (final PgnMove move : pgnGame.moveList()) {
+      board.moveStrict(move.san());
       final MoveSpecification expectedStoredMoveSpecification = board.getLastMove().moveSpecification();
       final String calculatedSan = board.getSan();
       board.unmove();
       final MoveSpecification actualCalculatedMoveSpecification = StrictSanParser.parseText(calculatedSan, board)
           .moveSpecification();
       assertEquals(expectedStoredMoveSpecification, actualCalculatedMoveSpecification);
-      board.moveStrict(halfMove.san());
+      board.moveStrict(move.san());
     }
   }
 

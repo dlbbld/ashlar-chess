@@ -86,8 +86,8 @@ public class MoveGenerationPerformanceSurvey {
       final PgnGame pgnGame = PgnCacheForStrictPgnParserTestCases.getPgn(pgnTest.getFolderPath(), testCase.pgnName());
       final Board board = new Board(pgnGame.startFen());
       addPosition(result, board);
-      for (final PgnMove halfMove : pgnGame.moveList()) {
-        board.moveStrict(halfMove.san());
+      for (final PgnMove move : pgnGame.moveList()) {
+        board.moveStrict(move.san());
         addPosition(result, board);
         if (result.size() >= MAX_POSITIONS_PER_GROUP) {
           break;

@@ -23,8 +23,8 @@ class TestStrictPgnParserReadTag {
 
   private static List<String> calculateSanList(List<PgnMove> moveList) {
     final List<String> sanList = new ArrayList<>();
-    for (final PgnMove halfMove : moveList) {
-      sanList.add(halfMove.san());
+    for (final PgnMove move : moveList) {
+      sanList.add(move.san());
     }
     return sanList;
   }

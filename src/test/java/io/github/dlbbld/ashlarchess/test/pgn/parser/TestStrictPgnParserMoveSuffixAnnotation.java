@@ -128,24 +128,24 @@ class TestStrictPgnParserMoveSuffixAnnotation {
 
   private static List<String> calculateSanList(List<PgnMove> moveList) {
     final List<String> sanList = new ArrayList<>();
-    for (final PgnMove halfMove : moveList) {
-      sanList.add(halfMove.san());
+    for (final PgnMove move : moveList) {
+      sanList.add(move.san());
     }
     return sanList;
   }
 
   private static List<MoveSuffixAnnotation> calculateMoveSuffixAnnotationList(List<PgnMove> moveList) {
     final List<MoveSuffixAnnotation> moveSuffixAnnotationList = new ArrayList<>();
-    for (final PgnMove halfMove : moveList) {
-      moveSuffixAnnotationList.add(halfMove.moveSuffixAnnotation());
+    for (final PgnMove move : moveList) {
+      moveSuffixAnnotationList.add(move.moveSuffixAnnotation());
     }
     return moveSuffixAnnotationList;
   }
 
   private static List<String> calculateCommentaryList(List<PgnMove> moveList) {
     final List<String> commentaryList = new ArrayList<>();
-    for (final PgnMove halfMove : moveList) {
-      commentaryList.add(halfMove.commentary().value());
+    for (final PgnMove move : moveList) {
+      commentaryList.add(move.commentary().value());
     }
     return commentaryList;
   }

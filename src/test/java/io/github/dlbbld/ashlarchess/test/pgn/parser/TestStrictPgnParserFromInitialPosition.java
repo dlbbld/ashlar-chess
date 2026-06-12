@@ -70,8 +70,8 @@ class TestStrictPgnParserFromInitialPosition {
 
     final Board actual = new Board();
 
-    for (final PgnMove halfMove : pgnGame.moveList()) {
-      actual.moveStrict(halfMove.san());
+    for (final PgnMove move : pgnGame.moveList()) {
+      actual.moveStrict(move.san());
     }
 
     final Board expected = new Board();

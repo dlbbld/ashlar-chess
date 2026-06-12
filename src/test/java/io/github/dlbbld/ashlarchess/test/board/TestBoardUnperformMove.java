@@ -61,12 +61,12 @@ class TestBoardUnperformMove {
   @Test
   void test() {
     int pgnsExercised = 0;
-    int halfMovesExercised = 0;
+    int movesExercised = 0;
 
     for (final PgnTestCaseList testCaseList : PgnTestCaseCatalog.getParserIntegrationSmokeList()) {
       for (final PgnFen testCase : testCaseList.list()) {
         logger.info(testCase.pgnName());
-        halfMovesExercised += runUnperformContractTest(testCaseList, testCase);
+        movesExercised += runUnperformContractTest(testCaseList, testCase);
         pgnsExercised++;
       }
     }
@@ -74,13 +74,13 @@ class TestBoardUnperformMove {
     if (pgnsExercised == 0) {
       fail("No basic PGNs were exercised - test or corpus is mis-configured");
     }
-    logger.info("TestBoardUnperformMove: {} basic PGNs verified ({} halfmoves).", pgnsExercised, halfMovesExercised);
+    logger.info("TestBoardUnperformMove: {} basic PGNs verified ({} moves).", pgnsExercised, movesExercised);
   }
 
   /**
-   * Runs the perform/unperform contract test for a single PGN: for each halfmove the PGN records, performs and
+   * Runs the perform/unperform contract test for a single PGN: for each move the PGN records, performs and
    * immediately unperforms it on {@code actual}, then asserts {@code actual} equals the parallel forward-only
-   * {@code expected} board. Returns the number of halfmoves verified.
+   * {@code expected} board. Returns the number of moves verified.
    */
   private static int runUnperformContractTest(PgnTestCaseList testCaseList, PgnFen testCase) {
     final PgnGame pgnGame = PgnCacheForStrictPgnParserTestCases.getPgn(testCaseList.pgnTest().getFolderPath(),
@@ -89,26 +89,26 @@ class TestBoardUnperformMove {
     final Board expected = new Board(pgnGame.startFen());
     final Board actual = new Board(pgnGame.startFen());
 
-    int halfMoveIndex = 0;
-    for (final PgnMove halfMove : pgnGame.moveList()) {
-      halfMoveIndex++;
-      final String san = halfMove.san();
+    int moveIndex = 0;
+    for (final PgnMove move : pgnGame.moveList()) {
+      moveIndex++;
+      final String san = move.san();
 
       // Test: perform then unperform on actual; it must return to the pre-move state.
       actual.moveStrict(san);
       actual.unmove();
-      assertBoardsEqual(expected, actual, testCase.pgnName(), halfMoveIndex, san);
+      assertBoardsEqual(expected, actual, testCase.pgnName(), moveIndex, san);
 
       // Advance both boards by the (now-unperformed) move so the next iteration starts in lockstep.
       expected.moveStrict(san);
       actual.moveStrict(san);
     }
-    return halfMoveIndex;
+    return moveIndex;
   }
 
-  private static void assertBoardsEqual(Board expected, Board actual, String pgnName, int halfMoveIndex, String san) {
+  private static void assertBoardsEqual(Board expected, Board actual, String pgnName, int moveIndex, String san) {
     if (!EqualsBuilder.reflectionEquals(expected, actual)) {
-      fail("Boards differ in " + pgnName + " after perform+unperform of halfmove " + halfMoveIndex + " (" + san + ")");
+      fail("Boards differ in " + pgnName + " after perform+unperform of move " + moveIndex + " (" + san + ")");
     }
   }
 }
