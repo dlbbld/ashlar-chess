@@ -79,7 +79,7 @@ public final class LenientFenParser {
 
   /**
    * Shared internal pipeline: normalise then delegate, with a single auto-correction retry for the
-   * half-move-clock-vs-full-move-number consistency check (the only strict invariant the lenient layer recovers from).
+   * halfmove clock vs fullmove number consistency check (the only strict invariant the lenient layer recovers from).
    * The accumulator is populated by both successful and failed paths so the exception (and the validation result
    * derived from it) carries every transformation that fired before the failure point.
    */

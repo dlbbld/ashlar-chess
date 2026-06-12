@@ -240,7 +240,7 @@ class TestFenParserAdvanced implements EnumConstants {
     checkParseFenException("1b2k3/8/5p1p/4pP1P/p1p1P3/P1P3K1/8/8 w - e6 0 50",
         FenAdvancedValidationProblem.INVALID_EN_PASSANT_CAPTURE_PREVIOUS_POSITION_ILLEGAL);
 
-    // half-move clock
+    // halfmove clock
     checkParseFenException("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - x 1",
         FenAdvancedValidationProblem.INVALID_HALF_MOVE_CLOCK_RANGE);
 
@@ -250,7 +250,7 @@ class TestFenParserAdvanced implements EnumConstants {
     checkParseFenException("rnbqkb1r/ppp1pppp/5n2/3pP3/8/8/PPPP1PPP/RNBQKBNR w KQkq d6 2 3",
         FenAdvancedValidationProblem.INVALID_HALF_MOVE_CLOCK_NOT_ZERO_BUT_EN_PASSANT_CAPTURE_TARGET_SQUARE_SET);
 
-    // full move counter
+    // fullmove counter
     checkParseFenException("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 x",
         FenAdvancedValidationProblem.INVALID_FULL_MOVE_NUMBER_RANGE);
 
@@ -268,7 +268,7 @@ class TestFenParserAdvanced implements EnumConstants {
 
     final long aboveMaxValue = Long.valueOf(Integer.MAX_VALUE) + 1;
 
-    // half-move clock
+    // halfmove clock
 
     // outside integer parsing range
     checkParseFenException("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - " + aboveMaxValue + " 100",
@@ -298,16 +298,16 @@ class TestFenParserAdvanced implements EnumConstants {
   @SuppressWarnings("static-method")
   @Test
   void testParseFenExceptionHalfMoveClockTooBigRelativeToFullMoveNumber() {
-    // Half-move clock cannot exceed the maximum number of half-moves played by the start of the given
-    // full-move number. A FEN like "... 3 2 with white to move" claims 3 half-moves have been played but the
-    // counter is still on move 2 (max half-moves at start of move 2 for white = 2). Physical impossibility.
-    // White to move, max half-moves = 2 * (fullMoveNumber - 1).
+    // Halfmove clock cannot exceed the maximum number of halfmoves played by the start of the given
+    // fullmove number. A FEN like "... 3 2 with white to move" claims 3 halfmoves have been played but the
+    // counter is still on move 2 (max halfmoves at start of move 2 for white = 2). Physical impossibility.
+    // White to move, max halfmoves = 2 * (fullMoveNumber - 1).
     checkParseFenException("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 3 2",
         FenAdvancedValidationProblem.INVALID_HALF_MOVE_CLOCK_TOO_BIG_RELATIVE_TO_FULL_MOVE_NUMBER);
-    // Black to move, max half-moves = 2 * (fullMoveNumber - 1) + 1 = 3 for move 2.
+    // Black to move, max halfmoves = 2 * (fullMoveNumber - 1) + 1 = 3 for move 2.
     checkParseFenException("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR b KQkq - 4 2",
         FenAdvancedValidationProblem.INVALID_HALF_MOVE_CLOCK_TOO_BIG_RELATIVE_TO_FULL_MOVE_NUMBER);
-    // Mid-range: hmc=20 on fullMoveNumber=10 white means 20 half-moves on move 10 white, max is 18.
+    // Mid-range: hmc=20 on fullMoveNumber=10 white means 20 halfmoves on move 10 white, max is 18.
     checkParseFenException("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 20 10",
         FenAdvancedValidationProblem.INVALID_HALF_MOVE_CLOCK_TOO_BIG_RELATIVE_TO_FULL_MOVE_NUMBER);
     // Boundary: hmc=2 on fullMoveNumber=2 white is valid (max = 2).

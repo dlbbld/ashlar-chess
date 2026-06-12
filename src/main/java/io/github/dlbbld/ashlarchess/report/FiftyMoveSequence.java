@@ -32,7 +32,7 @@ import io.github.dlbbld.ashlarchess.board.enums.Side;
  * the print layer split any anchor's clock into per-player (White/Black) move counts.
  *
  * <p>
- * {@code finalClock()} derives the final halfmove-clock value from {@code endMove}'s clock when present, or from the
+ * {@code finalClock()} derives the final halfmove clock value from {@code endMove}'s clock when present, or from the
  * start's value otherwise. By the threshold guarantee at construction time in the builder, {@code finalClock() >= 100}
  * for every sequence in {@link FiftyMoveSequenceReport}.
  */
@@ -40,7 +40,7 @@ record FiftyMoveSequence(SequenceStart start, @Nullable MoveRecord fiftyMoveThre
     @Nullable MoveRecord seventyFiveMoveThresholdMove, @Nullable MoveRecord endMove, Side startingSide) {
 
   /**
-   * The sequence's final halfmove-clock value. Equal to {@code endMove.halfMoveClock()} when {@code endMove != null};
+   * The sequence's final halfmove clock value. Equal to {@code endMove.halfMoveClock()} when {@code endMove != null};
    * otherwise the start's intrinsic clock value ({@code initialClockValue} for an initial-FEN start, or {@code 1} for
    * an after-reset start - though a one-move after-reset sequence can never reach the threshold and therefore never
    * appears in the report).

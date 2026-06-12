@@ -11,7 +11,7 @@ import io.github.dlbbld.ashlarchess.model.LegalMove;
 import io.github.dlbbld.ashlarchess.test.unwinnability.oracle.enums.LimitedUnwinnabilityVerdict;
 
 /**
- * Test-only oracle answering one question: in a depth-3 half-move tree from the given position, is there any path that
+ * Test-only oracle answering one question: in a depth-3 ply tree from the given position, is there any path that
  * checkmates the loser (for {@code WINNABLE}), or do every single path resolve to a draw or self-loss (for
  * {@code UNWINNABLE})? If neither, the verdict is {@code UNKNOWN}.
  *

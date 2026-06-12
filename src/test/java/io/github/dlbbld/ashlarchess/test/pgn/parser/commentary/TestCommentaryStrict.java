@@ -331,7 +331,7 @@ class TestCommentaryStrict {
   @SuppressWarnings("static-method")
   @Test
   void t002_rejectMissingMoveNumberAfterCommentaryOnWhiteHigherFullMoveNumber() {
-    // Verifies the indicator is the current full-move number, not hardcoded to "1".
+    // Verifies the indicator is the current fullmove number, not hardcoded to "1".
     expectError(header("*") + "1. e4 e5 2. Nf3 {after-white-2} Nc6 *\n\n",
         StrictPgnParserValidationProblem.MOVETEXT_MOVE_NUMBER_REQUIRED_AFTER_COMMENTARY);
   }

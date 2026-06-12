@@ -139,7 +139,7 @@ class TestLenientFenParser {
 
   @Test
   void test15_halfMoveClockInconsistentWithFullMoveNumber() {
-    // halfMoveClock=15, fullMoveNumber=1, white-to-move: physically impossible (max half-moves at move 1 = 0).
+    // halfMoveClock=15, fullMoveNumber=1, white-to-move: physically impossible (max halfmoves at move 1 = 0).
     // Lenient parser bumps fullMoveNumber up to halfMoveClock rounded up to the next multiple of 10 (20 here),
     // a generous reserve over the strict minimum of 9 — the round-numbered placeholder signals a reconstructed
     // value rather than a measured one.

@@ -92,11 +92,11 @@ public class FenParserAdvanced implements EnumConstants {
   }
 
   /**
-   * Half-move clock cannot exceed the maximum number of half-moves that have been played by the start of the given
-   * full-move number. With {@code havingMove == WHITE} the maximum is {@code 2 * (fullMoveNumber - 1)}; with
-   * {@code havingMove == BLACK} the count includes White's half-move on the current full-move, so the maximum is
+   * Halfmove clock cannot exceed the maximum number of halfmoves that have been played by the start of the given
+   * fullmove number. With {@code havingMove == WHITE} the maximum is {@code 2 * (fullMoveNumber - 1)}; with
+   * {@code havingMove == BLACK} the count includes White's halfmove on the current fullmove, so the maximum is
    * {@code 2 * (fullMoveNumber - 1) + 1}. Violations are physical impossibilities - a FEN like {@code ... 15 1} (15
-   * half-moves played, claiming move 1) cannot arise from a real game. The lenient FEN parser auto-corrects this by
+   * halfmoves played, claiming move 1) cannot arise from a real game. The lenient FEN parser auto-corrects this by
    * bumping {@code fullMoveNumber} up to {@code halfMoveClock} rounded up to the next multiple of ten (a generous
    * reserve over the strict minimum; the round-numbered value signals a reconstructed placeholder) and surfaces the
    * deviation via {@code ForgivenFenItemCode.HALF_MOVE_CLOCK_INCONSISTENT_WITH_FULL_MOVE_NUMBER}.
@@ -107,8 +107,8 @@ public class FenParserAdvanced implements EnumConstants {
     if (halfMoveClock > maximumPossibleHalfMoveClock) {
       throw new FenAdvancedValidationException(
           FenAdvancedValidationProblem.INVALID_HALF_MOVE_CLOCK_TOO_BIG_RELATIVE_TO_FULL_MOVE_NUMBER,
-          "the half-move clock \"" + halfMoveClock + "\" is greater than the maximum possible half-move clock \""
-              + maximumPossibleHalfMoveClock + "\" for the specified full-move counter of " + fullMoveNumber);
+          "the halfmove clock \"" + halfMoveClock + "\" is greater than the maximum possible halfmove clock \""
+              + maximumPossibleHalfMoveClock + "\" for the specified fullmove counter of " + fullMoveNumber);
     }
   }
 
@@ -425,7 +425,7 @@ public class FenParserAdvanced implements EnumConstants {
       halfMoveClock = Integer.parseInt(halfMoveClockStr);
     } catch (@SuppressWarnings("unused") final NumberFormatException e) {
       throw new FenAdvancedValidationException(FenAdvancedValidationProblem.INVALID_HALF_MOVE_CLOCK_RANGE,
-          "the half-move clock part of \"" + halfMoveClockStr + "\" is not an integer value");
+          "the halfmove clock part of \"" + halfMoveClockStr + "\" is not an integer value");
     }
     return halfMoveClock;
   }
@@ -435,7 +435,7 @@ public class FenParserAdvanced implements EnumConstants {
     if (enPassantCaptureTargetSquare != Square.NONE && halfMoveClock != 0) {
       throw new FenAdvancedValidationException(
           FenAdvancedValidationProblem.INVALID_HALF_MOVE_CLOCK_NOT_ZERO_BUT_EN_PASSANT_CAPTURE_TARGET_SQUARE_SET,
-          "the half-move clock is \"" + halfMoveClock + "\" must be zero if en passant target square is set");
+          "the halfmove clock is \"" + halfMoveClock + "\" must be zero if en passant target square is set");
     }
   }
 
@@ -445,22 +445,22 @@ public class FenParserAdvanced implements EnumConstants {
       fullMoveNumber = Integer.parseInt(fullMoveNumberStr);
     } catch (@SuppressWarnings("unused") final NumberFormatException e) {
       throw new FenAdvancedValidationException(FenAdvancedValidationProblem.INVALID_FULL_MOVE_NUMBER_RANGE,
-          "the full move counter of \"" + fullMoveNumberStr + "\" is not an integer value");
+          "the fullmove counter of \"" + fullMoveNumberStr + "\" is not an integer value");
     }
 
     if (fullMoveNumber < 0) {
       throw new FenAdvancedValidationException(FenAdvancedValidationProblem.INVALID_FULL_MOVE_NUMBER_NEGATIVE,
-          "the full move counter of \"" + fullMoveNumberStr + "\" cannot be negative");
+          "the fullmove counter of \"" + fullMoveNumberStr + "\" cannot be negative");
     }
 
     if (fullMoveNumber == 0) {
       throw new FenAdvancedValidationException(FenAdvancedValidationProblem.INVALID_FULL_MOVE_NUMBER_ZERO,
-          "the full move counter cannot be zero");
+          "the fullmove counter cannot be zero");
     }
 
     if (fullMoveNumber > FenConstants.MAX_FULL_MOVE_NUMBER) {
       throw new FenAdvancedValidationException(FenAdvancedValidationProblem.INVALID_FULL_MOVE_NUMBER_TOO_BIG_ABSOLUT,
-          "the full move counter of " + fullMoveNumber + " is above the maximum supported value of "
+          "the fullmove counter of " + fullMoveNumber + " is above the maximum supported value of "
               + FenConstants.MAX_FULL_MOVE_NUMBER + "");
     }
 

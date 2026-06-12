@@ -128,7 +128,7 @@ public class LibraryCarlosBoard {
     final int halfMoveClock = getHalfMoveClock();
     if (halfMoveClock == 99) {
       final List<Move> legalMoveList = LibraryCarlosImplementationUtility.generateLegalMoves(this.board);
-      // need to check if there is a legal move which has half move clock 100
+      // need to check if there is a legal move which has halfmove clock 100
       for (final Move legalMove : legalMoveList) {
         board.doMove(legalMove);
         final int halfMoveClockAfterNextHalfMove = getHalfMoveClock();

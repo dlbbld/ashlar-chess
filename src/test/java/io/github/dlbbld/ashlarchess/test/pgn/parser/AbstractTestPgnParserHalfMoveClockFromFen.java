@@ -38,7 +38,7 @@ import io.github.dlbbld.ashlarchess.test.pgntest.enums.PgnTest;
  *
  * <p>
  * The second step is the actual parser-mechanics check: the registered FEN encodes the expected final halfmove clock
- * and full-move number, so divergence pinpoints either a bad FEN-tag -> board-state initialization or a bad clock
+ * and fullmove number, so divergence pinpoints either a bad FEN-tag -> board-state initialization or a bad clock
  * progression through subsequent moves.
  *
  * <p>
@@ -73,7 +73,7 @@ abstract class AbstractTestPgnParserHalfMoveClockFromFen {
 
         try {
           assertEquals(testCase.finalFen(), board.getFen(),
-              () -> bucket + " / " + pgnName + " - final FEN mismatch (halfmove-clock or move-number drift)");
+              () -> bucket + " / " + pgnName + " - final FEN mismatch (halfmove clock or move-number drift)");
         } catch (final AssertionError e) {
           failures.add(BasicUtility.getMessage(e));
         }

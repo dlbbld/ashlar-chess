@@ -34,7 +34,7 @@ import io.github.dlbbld.ashlarchess.test.common.utility.OutputCaptureUtility;
  * section header for the relevant condition.
  *
  * <p>
- * The Black-to-move-on-move-1 fixtures exercise FIDE fullmove-numbering correctness: when Black has the move at
+ * The Black-to-move-on-move-1 fixtures exercise FIDE fullmove numbering correctness: when Black has the move at
  * fullmove 1, the fullmove counter increments after each Black move (not each White move), so the report's fullmove
  * references for repeated positions are shifted relative to the more usual White-first case.
  */

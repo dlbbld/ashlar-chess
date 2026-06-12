@@ -63,7 +63,7 @@ class TestPgnCreate {
   @SuppressWarnings("static-method")
   @Test
   void t002_exportEmitsMoveNumberAtHigherFullMoveNumber() {
-    // The indicator carries the current full-move number. Verify it matches the move number in question, not "1".
+    // The indicator carries the current fullmove number. Verify it matches the move number in question, not "1".
     final String inputWithoutIndicator = PgnTestHelper.header("*") + "1. e4 e5 2. Nf3 {after-white-2} Nc6 *\n\n";
     final String expectedExport = PgnTestHelper.header("*") + "1. e4 e5 2. Nf3 {after-white-2} 2... Nc6 *\n\n";
 
