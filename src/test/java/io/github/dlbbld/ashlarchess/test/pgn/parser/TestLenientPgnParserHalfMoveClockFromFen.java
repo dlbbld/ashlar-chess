@@ -11,7 +11,7 @@ import io.github.dlbbld.ashlarchess.pgn.LenientPgnParser;
 
 /**
  * Verifies that the lenient PGN parser correctly initializes board state from a {@code [FEN]} tag and updates the
- * halfmove clock and move number through every recorded halfmove. Iterates {@code parserMechanics/fromFen} and
+ * halfmove clock and move number through every recorded move. Iterates {@code parserMechanics/fromFen} and
  * {@code parserMechanics/fromFenNoProgress}, asserting the parsed-and-replayed final FEN matches the registered
  * expected FEN.
  *

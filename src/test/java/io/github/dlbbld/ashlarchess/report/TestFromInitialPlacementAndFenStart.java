@@ -35,8 +35,8 @@ import io.github.dlbbld.ashlarchess.test.common.utility.OutputCaptureUtility;
  *
  * <p>
  * The Black-to-move-on-move-1 fixtures exercise FIDE fullmove numbering correctness: when Black has the move at
- * fullmove number 1, the fullmove number increments after each Black move (not each White move), so the report's fullmove
- * references for repeated positions are shifted relative to the more usual White-first case.
+ * fullmove number 1, the fullmove number increments after each Black move (not each White move), so the report's
+ * fullmove number references for repeated positions are shifted relative to the more usual White-first case.
  */
 class TestFromInitialPlacementAndFenStart {
 
