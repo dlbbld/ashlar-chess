@@ -109,16 +109,18 @@ parallel; 2b and 2d are the move-domain core.
   `ply` throughout `test/oracle/python`** so the comparison reads in the source's terms; do not rename to `moveIndex` /
   `moveNumber` there.
 
-**Verification (comprehensive - the narrow earlier form missed bare `halfMove` locals and `PerPly`).** Two greps must
-BOTH return zero hits:
+**Verification (comprehensive - earlier forms missed bare `halfMove` locals, `PerPly`, AND hyphenated `half-move` /
+`per-ply` *prose* in comments/JavaDocs/messages/docs).** Run three scans over `*.java` AND `*.md` (docs included):
 
-1. `rg -g '*.java' -g '!**/librarycarlos/**' -g '!**/oracle/python/**' '[Hh]alfMove' src | rg -v 'halfMoveClock|HalfMoveClock|getHalfMoves\(|getHalfMoveCounter|countForcedHalfMoves'`
-2. `rg -g '*.java' -g '!**/oracle/python/**' -g '!**/unwinnability/**' -g '!**/bitboard/**' '\bply\b|\bplies\b|PerPly' src`
+1. identifiers: `rg -g '*.java' -g '!**/librarycarlos/**' -g '!**/oracle/python/**' '[Hh]alfMove' src | rg -v 'halfMoveClock|HalfMoveClock|getHalfMoves\(|getHalfMoveCounter|countForcedHalfMoves'` -> must be empty.
+2. bare ply: `rg -g '*.java' -g '!**/oracle/python/**' -g '!**/unwinnability/**' -g '!**/bitboard/**' '\bply\b|\bplies\b|PerPly' src` -> must be empty.
+3. prose + docs: `rg -i -g '*.java' -g '*.md' -g '!**/librarycarlos/**' -g '!**/oracle/python/**' -g '!CHANGELOG.md' 'half[- ]move|per[- ]ply|PgnHalfMove' .` -> remaining hits must be KEEP-only.
 
-The first excludes the FEN-clock family and the chesslib-mirror / python-oracle / `ForcedLineOracle` KEEP zones; the
-second excludes engine-search prose. Empty output from both means the move vocabulary is fully purged. (`halfMoveClock` /
-`fullMoveNumber` / `PlyCount` stay by design.) This was the largest mechanical change of 19.0.0 (~50 files across `pgn` /
-`board` / `report` / tests).
+Scan 3 (the `half[- ]move` separator form) catches the prose the camelCase scans miss - PGN validation messages, report /
+PGN JavaDocs, `specification.md`, `README*.md`. Its only allowed remaining hits are KEEP zones: the FEN **half-move
+clock** family (any line about the clock / full-move-number consistency), engine-search "half-move tree" / "per-ply"
+prose, the chesslib-mirror docs, and this plan file. (`halfMoveClock` / `fullMoveNumber` / `PlyCount` stay by design.)
+This was the largest mechanical change of 19.0.0.
 
 ### Task 3 - Records carry data, not behavior (records + enums cleanup)
 

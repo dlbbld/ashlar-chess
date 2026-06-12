@@ -514,7 +514,7 @@ public final class StrictPgnParser {
               + resultTagValue.getValue() + "\".");
     }
     expectInterTokenSpace(StrictPgnParserValidationProblem.MOVETEXT_UNEXPECTED_FORMAT,
-        "A half-move must be followed by a single space before the next token.");
+        "A move must be followed by a single space before the next token.");
   }
 
   private void expectInterTokenSpace(StrictPgnParserValidationProblem problem, String message) {
@@ -535,7 +535,7 @@ public final class StrictPgnParser {
     if (isBraceToken(token.type())) {
       throwIfBrokenBrace(token);
       throw movetextError(StrictPgnParserValidationProblem.MOVETEXT_COMMENTARY_NOT_ALLOWED_IN_SAN,
-          "A commentary brace cannot occur where a SAN half-move is expected.");
+          "A commentary brace cannot occur where a SAN move is expected.");
     }
     if (token.type() != PgnTokenType.SYMBOL) {
       throw movetextError(StrictPgnParserValidationProblem.MOVETEXT_SAN_EMPTY,
