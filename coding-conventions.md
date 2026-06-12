@@ -20,6 +20,19 @@ Enforced by:
 
 **JUnit method references.** Avoid hardcoded method names as string arguments in JUnit annotations (e.g. `@MethodSource("supplierName")`). Prefer the no-argument `@MethodSource` (which picks up a static method with the same name as the test) or `@ArgumentsSource(Provider.class)` — both are compiler-checked. The string form silently drifts from the method name under refactor and is only caught at test runtime. Allow only where the alternatives are materially worse.
 
+## Chess naming
+
+One player's action is a **move**. Use `move`, `played move`, `moveIndex` (0-based list index), and `performedMoveCount` (1-based count of played moves) in the domain model, move history, reports, PGN parsing/writing, tests, JavaDoc, and user-facing messages.
+
+Do not use standalone `halfmove`, `half-move`, `half move`, `ply`, or `plies` for a played move. The only exceptions are explicitly protocol- or engine-scoped:
+
+- **FEN/PGN protocol counters.** In prose, use the standards spelling `halfmove clock` and `fullmove number`. In Java identifiers, keep normal Java word boundaries: `halfMoveClock`, `fullMoveNumber`, `HALF_MOVE_CLOCK`, `FULL_MOVE_NUMBER`. This is an intentional split: prose follows the protocol field name; code follows Java naming.
+- **PGN `PlyCount` tag.** Keep `PlyCount` / `StandardTag.PLY_COUNT` because that is the tag name.
+- **Engine/search internals.** `ply` is allowed for search depth, per-depth buffers, make/unmake stacks, and engine-style prose such as "3-ply search". Do not let it leak into `Board`, move history, PGN model, or report vocabulary.
+- **External mirrors.** Test fixtures or adapters that deliberately mirror an external library or data contract may keep that source's vocabulary, for example python-chess `perPly` data or chesslib half-move naming.
+
+When in doubt, ask whether the term names a public chess-library concept or a protocol field. Public concept: `move`. Protocol field: `halfmove clock` / `fullmove number` in prose, `halfMoveClock` / `fullMoveNumber` in code.
+
 ## Records carry data, not behavior
 
 Records are immutable value objects (the M in MVC). Computational and business logic that operates on them lives in dedicated utility/service classes — never on the record itself.
