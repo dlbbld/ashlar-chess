@@ -9,7 +9,7 @@ import java.util.List;
 import org.eclipse.jdt.annotation.Nullable;
 
 import io.github.dlbbld.ashlarchess.board.Board;
-import io.github.dlbbld.ashlarchess.board.HalfMoveUtility;
+import io.github.dlbbld.ashlarchess.board.MoveNumberFormat;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
 import io.github.dlbbld.ashlarchess.common.Nulls;
 import io.github.dlbbld.ashlarchess.common.exceptions.ProgrammingMistakeException;
@@ -176,7 +176,7 @@ public class PgnCreate {
       // before a Black move that follows commentary on White's move (T-002).
       if (isFirstMove) {
         isFirstMove = false;
-        final String fullMoveNumberPart = HalfMoveUtility.calculateFullMoveNumberInitialWithoutSpace(fullMoveNumber,
+        final String fullMoveNumberPart = MoveNumberFormat.calculateFullMoveNumberInitialWithoutSpace(fullMoveNumber,
             currentHavingMove);
         result.append(fullMoveNumberPart);
       } else if (currentHavingMove == Side.WHITE) {

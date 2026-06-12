@@ -3,7 +3,7 @@
 
 package io.github.dlbbld.ashlarchess.report;
 
-import io.github.dlbbld.ashlarchess.board.HalfMoveUtility;
+import io.github.dlbbld.ashlarchess.board.MoveNumberFormat;
 import io.github.dlbbld.ashlarchess.board.enums.Piece;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
 import io.github.dlbbld.ashlarchess.common.model.DynamicPosition;
@@ -20,6 +20,6 @@ record MoveRecord(int performedMoveCount, int fullMoveNumber, int halfMoveClock,
 
   @Override
   public String toString() {
-    return HalfMoveUtility.calculateMoveNumberAndSanWithSpace(fullMoveNumber, havingMove(), san);
+    return MoveNumberFormat.calculateMoveNumberAndSanWithSpace(fullMoveNumber, havingMove(), san);
   }
 }

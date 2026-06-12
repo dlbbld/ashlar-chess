@@ -11,7 +11,7 @@ import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 
 import io.github.dlbbld.ashlarchess.board.Board;
-import io.github.dlbbld.ashlarchess.board.HalfMoveUtility;
+import io.github.dlbbld.ashlarchess.board.MoveNumberFormat;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
 import io.github.dlbbld.ashlarchess.common.Nulls;
 import io.github.dlbbld.ashlarchess.common.exceptions.PgnCommentaryValidationException;
@@ -380,7 +380,7 @@ public final class StrictPgnParser {
       if (!isFirstMove && havingMove == Side.BLACK) {
         if (priorCommentaryAttached) {
           final PgnToken token = tokenizer.peek();
-          final String expected = HalfMoveUtility.calculateFullMoveNumberInitialWithoutSpace(fullMoveNumber,
+          final String expected = MoveNumberFormat.calculateFullMoveNumberInitialWithoutSpace(fullMoveNumber,
               Side.BLACK);
           if (token.type() != PgnTokenType.MOVE_NUMBER_BLACK || !token.text().equals(expected)) {
             throw movetextError(StrictPgnParserValidationProblem.MOVETEXT_MOVE_NUMBER_REQUIRED_AFTER_COMMENTARY,
@@ -561,7 +561,7 @@ public final class StrictPgnParser {
 
   private void expectMoveNumber(int expectedNumber, Side havingMove, boolean isFirstMove) {
     final PgnToken token = tokenizer.peek();
-    final String expected = HalfMoveUtility.calculateFullMoveNumberInitialWithoutSpace(expectedNumber, havingMove);
+    final String expected = MoveNumberFormat.calculateFullMoveNumberInitialWithoutSpace(expectedNumber, havingMove);
 
     if (havingMove == Side.BLACK) {
       if (!isFirstMove) {
@@ -635,7 +635,7 @@ public final class StrictPgnParser {
       try {
         board.moveStrict(halfMove.san());
       } catch (final SanValidationException e) {
-        final String moveNumberAndSan = HalfMoveUtility.calculateMoveNumberAndSanWithSpace(fullMoveNumber, side,
+        final String moveNumberAndSan = MoveNumberFormat.calculateMoveNumberAndSanWithSpace(fullMoveNumber, side,
             halfMove.san());
         final String messageSanValidationFailure = BasicUtility.getMessage(e);
         final String message = "The validation for " + moveNumberAndSan + " failed. Reason: "

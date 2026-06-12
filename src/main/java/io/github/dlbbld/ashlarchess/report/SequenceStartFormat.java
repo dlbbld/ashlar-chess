@@ -3,7 +3,7 @@
 
 package io.github.dlbbld.ashlarchess.report;
 
-import io.github.dlbbld.ashlarchess.board.HalfMoveUtility;
+import io.github.dlbbld.ashlarchess.board.MoveNumberFormat;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
 
 /**
@@ -31,7 +31,7 @@ abstract class SequenceStartFormat {
    * A played-ply anchor: {@code <move> (W/B)}.
    */
   static String plyAnchor(MoveRecord ply, Side startingSide) {
-    return HalfMoveUtility.calculateMoveNumberAndSanWithSpace(ply.fullMoveNumber(), ply.havingMove(), ply.san()) + " "
+    return MoveNumberFormat.calculateMoveNumberAndSanWithSpace(ply.fullMoveNumber(), ply.havingMove(), ply.san()) + " "
         + counts(ply.halfMoveClock(), startingSide);
   }
 

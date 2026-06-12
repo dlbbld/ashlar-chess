@@ -6,7 +6,7 @@ package io.github.dlbbld.ashlarchess.report;
 import java.util.ArrayList;
 import java.util.List;
 
-import io.github.dlbbld.ashlarchess.board.HalfMoveUtility;
+import io.github.dlbbld.ashlarchess.board.MoveNumberFormat;
 import io.github.dlbbld.ashlarchess.common.constants.ChessConstants;
 
 abstract class FiftyMoveClaimAheadPrint {
@@ -44,7 +44,7 @@ abstract class FiftyMoveClaimAheadPrint {
 
   private static String formatBoundary(FiftyMoveClaimAheadEntry entry) {
     final int wouldBeClock = ChessConstants.FIFTY_MOVE_RULE_HALF_MOVE_CLOCK_THRESHOLD;
-    return HalfMoveUtility.calculateMoveNumberAndSanWithSpace(entry.fullMoveNumber(), entry.sideHavingMove(),
+    return MoveNumberFormat.calculateMoveNumberAndSanWithSpace(entry.fullMoveNumber(), entry.sideHavingMove(),
         CLAIM_AHEAD_POSSIBLE_PLACEHOLDER) + " " + SequenceStartFormat.counts(wouldBeClock, entry.startingSide());
   }
 }

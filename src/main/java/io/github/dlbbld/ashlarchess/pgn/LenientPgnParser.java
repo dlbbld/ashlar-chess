@@ -11,7 +11,7 @@ import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 
 import io.github.dlbbld.ashlarchess.board.Board;
-import io.github.dlbbld.ashlarchess.board.HalfMoveUtility;
+import io.github.dlbbld.ashlarchess.board.MoveNumberFormat;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
 import io.github.dlbbld.ashlarchess.common.Nulls;
 import io.github.dlbbld.ashlarchess.common.exceptions.PgnCommentaryValidationException;
@@ -760,7 +760,7 @@ public final class LenientPgnParser {
         final String canonicalSan = board.getSan();
         canonicalList.add(new PgnMove(canonicalSan, halfMove.moveSuffixAnnotation(), halfMove.commentary()));
       } catch (final LenientSanParserValidationException e) {
-        final String moveNumberAndSan = HalfMoveUtility.calculateMoveNumberAndSanWithSpace(fullMoveNumber, side,
+        final String moveNumberAndSan = MoveNumberFormat.calculateMoveNumberAndSanWithSpace(fullMoveNumber, side,
             halfMove.san());
         final String messageSanValidationFailure = BasicUtility.getMessage(e);
         final String message = "The validation for " + moveNumberAndSan + " failed. Reason: "

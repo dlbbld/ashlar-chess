@@ -9,7 +9,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import io.github.dlbbld.ashlarchess.board.HalfMoveUtility;
+import io.github.dlbbld.ashlarchess.board.MoveNumberFormat;
 import io.github.dlbbld.ashlarchess.common.Nulls;
 import io.github.dlbbld.ashlarchess.common.exceptions.ProgrammingMistakeException;
 import io.github.dlbbld.ashlarchess.common.model.DynamicPosition;
@@ -122,7 +122,7 @@ abstract class PositionIdentifierUtility {
     final StringBuilder result = new StringBuilder();
 
     result.append(
-        HalfMoveUtility.calculateMoveNumberAndSanWithSpace(halfMove.fullMoveNumber(), halfMove.havingMove(),
+        MoveNumberFormat.calculateMoveNumberAndSanWithSpace(halfMove.fullMoveNumber(), halfMove.havingMove(),
             halfMove.san()));
 
     if (isAddPositionInformation) {
