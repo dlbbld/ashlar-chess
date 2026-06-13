@@ -40,6 +40,7 @@ import io.github.dlbbld.ashlarchess.model.LegalMoveKind;
 import io.github.dlbbld.ashlarchess.moves.EnPassantCaptureUtility;
 import io.github.dlbbld.ashlarchess.san.SanSymbol;
 import io.github.dlbbld.ashlarchess.san.SanTerminalMarker;
+import io.github.dlbbld.ashlarchess.san.SanTerminalMarkerUtility;
 import io.github.dlbbld.ashlarchess.test.librarycarlos.NullsCarlos;
 import io.github.dlbbld.ashlarchess.test.librarycarlos.utility.MoveConversionUtility;
 import io.github.dlbbld.ashlarchess.test.librarycomparison.utility.BoardConversionUtitlity;
@@ -272,8 +273,8 @@ public class LibraryCarlosBoard {
       lan.append(promotionPieceSymbol);
     }
 
-    final SanTerminalMarker sanTerminalMarker = SanTerminalMarker.calculate(isCheck(), isCheckmate());
-    sanTerminalMarker.append(lan);
+    final SanTerminalMarker sanTerminalMarker = SanTerminalMarkerUtility.calculate(isCheck(), isCheckmate());
+    SanTerminalMarkerUtility.appendTo(lan, sanTerminalMarker);
 
     return Nulls.toString(lan);
   }

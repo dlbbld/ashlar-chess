@@ -106,7 +106,7 @@ public final class LenientSanParser {
     }
 
     board.move(moveSpecification);
-    final SanTerminalMarker marker = SanTerminalMarker.calculate(board.isCheck(), board.isCheckmate());
+    final SanTerminalMarker marker = SanTerminalMarkerUtility.calculate(board.isCheck(), board.isCheckmate());
     board.unmove();
 
     return MoveToSan.calculateSanLastMove(matching, legalMovesBefore, marker);

@@ -13,6 +13,7 @@ import io.github.dlbbld.ashlarchess.common.constants.EnumConstants;
 import io.github.dlbbld.ashlarchess.san.SanFormat;
 import io.github.dlbbld.ashlarchess.san.SanSymbol;
 import io.github.dlbbld.ashlarchess.san.SanTerminalMarker;
+import io.github.dlbbld.ashlarchess.san.SanTerminalMarkerUtility;
 
 public class SanCalculate implements EnumConstants {
 
@@ -41,7 +42,7 @@ public class SanCalculate implements EnumConstants {
       san.append(promotionPieceType.getPieceType().getLetter());
     }
 
-    sanTerminalMarker.append(san);
+    SanTerminalMarkerUtility.appendTo(san, sanTerminalMarker);
 
     return Nulls.toString(san);
   }

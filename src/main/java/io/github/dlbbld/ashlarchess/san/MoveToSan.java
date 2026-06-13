@@ -75,7 +75,7 @@ public class MoveToSan extends AbstractSan {
       default -> throw new IllegalArgumentException();
     }
 
-    sanTerminalMarker.append(buildSan);
+    SanTerminalMarkerUtility.appendTo(buildSan, sanTerminalMarker);
     return Nulls.toString(buildSan);
   }
 
@@ -161,7 +161,7 @@ public class MoveToSan extends AbstractSan {
       default:
         throw new IllegalArgumentException();
     }
-    sanTerminalMarker.append(buildSan);
+    SanTerminalMarkerUtility.appendTo(buildSan, sanTerminalMarker);
     return Nulls.toString(buildSan);
   }
 

@@ -48,6 +48,7 @@ import io.github.dlbbld.ashlarchess.san.LenientSanParserValidationResult;
 import io.github.dlbbld.ashlarchess.san.MoveToLan;
 import io.github.dlbbld.ashlarchess.san.MoveToSan;
 import io.github.dlbbld.ashlarchess.san.SanTerminalMarker;
+import io.github.dlbbld.ashlarchess.san.SanTerminalMarkerUtility;
 import io.github.dlbbld.ashlarchess.san.StrictSanParser;
 import io.github.dlbbld.ashlarchess.san.StrictSanParserValidationResult;
 import io.github.dlbbld.ashlarchess.unwinnability.UnwinnabilityFullVerdict;
@@ -411,7 +412,7 @@ public class Board {
     final ImmutableList<LegalMove> legalMovesBeforeLastMove = Nulls.get(legalMoveListPerMove,
         legalMoveListPerMove.size() - 2);
 
-    final SanTerminalMarker sanTerminalMarker = SanTerminalMarker.calculate(isCheck, isCheckmate);
+    final SanTerminalMarker sanTerminalMarker = SanTerminalMarkerUtility.calculate(isCheck, isCheckmate);
 
     this.sanList.add(MoveToSan.calculateSanLastMove(moveToPerform, legalMovesBeforeLastMove, sanTerminalMarker));
     this.lanList.add(MoveToLan.calculateLanLastMove(moveToPerform, sanTerminalMarker));
