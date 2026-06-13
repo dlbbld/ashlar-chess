@@ -91,18 +91,18 @@ class TestLegalMovesAgainstPythonChessOracle {
       for (final LegalMovesRecord record : records) {
         totalFixtures++;
         final PgnGame pgnGame = StrictPgnParser.parse(folderPath, record.pgn());
-        final int halfMoveCount = pgnGame.moveList().size();
+        final int plyCount = pgnGame.moveList().size();
 
         try {
-          assertEquals(halfMoveCount + 1, record.perPly().size(),
-              () -> bucket + " / " + record.pgn() + " - perPly length should be halfMoveCount + 1");
+          assertEquals(plyCount + 1, record.perPly().size(),
+              () -> bucket + " / " + record.pgn() + " - perPly length should be plyCount + 1");
         } catch (final AssertionError e) {
           failures.add(BasicUtility.getMessage(e));
           continue;
         }
 
         final Board board = new Board(pgnGame.startFen());
-        for (int ply = 0; ply <= halfMoveCount; ply++) {
+        for (int ply = 0; ply <= plyCount; ply++) {
           totalPositions++;
           final LegalMovesPly expectedPly = Nulls.get(record.perPly(), ply);
           final List<String> actualSorted = sortedCopy(board.getLegalMovesUci());
@@ -115,9 +115,9 @@ class TestLegalMovesAgainstPythonChessOracle {
             failures.add(BasicUtility.getMessage(e));
           }
 
-          if (ply < halfMoveCount) {
-            final PgnMove halfMove = Nulls.get(pgnGame.moveList(), ply);
-            board.moveStrict(halfMove.san());
+          if (ply < plyCount) {
+            final PgnMove move = Nulls.get(pgnGame.moveList(), ply);
+            board.moveStrict(move.san());
           }
         }
       }

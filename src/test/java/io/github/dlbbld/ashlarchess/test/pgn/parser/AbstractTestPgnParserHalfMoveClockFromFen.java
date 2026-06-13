@@ -67,8 +67,8 @@ abstract class AbstractTestPgnParserHalfMoveClockFromFen {
         final PgnGame pgnGame = parse.apply(bucket.getFolderPath(), pgnName);
 
         final Board board = new Board(pgnGame.startFen());
-        for (final PgnMove halfMove : pgnGame.moveList()) {
-          board.moveStrict(halfMove.san());
+        for (final PgnMove move : pgnGame.moveList()) {
+          board.moveStrict(move.san());
         }
 
         try {

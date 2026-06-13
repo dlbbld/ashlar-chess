@@ -133,9 +133,9 @@ class TestPgnImportAgainstPythonChessOracle {
         final Board board = new Board(pgnGame.startFen());
         for (int ply = 0; ply < pgnGame.moveList().size(); ply++) {
           totalPlies++;
-          final PgnMove halfMove = Nulls.get(pgnGame.moveList(), ply);
+          final PgnMove move = Nulls.get(pgnGame.moveList(), ply);
           final OracleMove expected = Nulls.get(record.moves(), ply);
-          board.moveStrict(halfMove.san());
+          board.moveStrict(move.san());
 
           final int plyLabel = ply + 1;
           try {
