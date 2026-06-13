@@ -116,6 +116,14 @@ parallel; 2b and 2d are the move-domain core.
 2. bare ply: `rg -g '*.java' -g '!**/oracle/python/**' -g '!**/unwinnability/**' -g '!**/bitboard/**' '\bply\b|\bplies\b|PerPly' src` -> must be empty.
 3. prose + docs: `rg -i -g '*.java' -g '*.md' -g '!**/librarycarlos/**' -g '!**/oracle/python/**' -g '!CHANGELOG.md' 'half[- ]?moves?|per[- ]ply|PgnHalfMove' .` -> remaining hits must be KEEP-only.
 
+**Scan 1 has a filename blind spot - do not trust it alone.** Its `rg -v 'halfMoveClock|HalfMoveClock|...'`
+allowlist filters each `path:content` line, so it also drops any line whose *path* (not just content) contains an
+allowlisted token - e.g. a file named `*HalfMoveClock*` masks its own `halfMove` locals. This hid the move-domain
+`halfMove` local in `AbstractTestPgnParserHalfMoveClockFromFen` until commit `def426fe` (2026-06-13); only Scan 3
+surfaced it, via the path. Catch this class with a path-agnostic identifier scan:
+`rg -g '*.java' -g '!**/librarycarlos/**' '\bhalfMove\b|\bHalfMove\b|halfMoveCount|halfMoveList' src` -> empty
+(KEEP: `halfMoveClock`, python-chess's `halfmoveClock()` data field, `getHalfMoves`, `countForcedHalfMoves`).
+
 Scan 3 (`half[- ]?moves?` - the optional separator catches `half-move`, `half move`, AND unseparated `halfmove` /
 `halfmoves`) catches the prose the camelCase scans miss - PGN validation messages, report /
 PGN JavaDocs, `specification.md`, `README*.md`. Its only allowed remaining hits are KEEP zones: the FEN **half-move
