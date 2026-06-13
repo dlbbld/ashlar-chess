@@ -122,7 +122,7 @@ abstract class PositionIdentifierUtility {
     final StringBuilder result = new StringBuilder();
 
     result.append(
-        MoveNumberFormat.calculateMoveNumberAndSanWithSpace(move.fullMoveNumber(), move.havingMove(),
+        MoveNumberFormat.calculateMoveNumberAndSanWithSpace(move.fullMoveNumber(), move.movingPiece().getSide(),
             move.san()));
 
     if (isAddPositionInformation) {

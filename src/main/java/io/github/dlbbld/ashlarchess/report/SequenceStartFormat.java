@@ -31,8 +31,8 @@ abstract class SequenceStartFormat {
    * A played-move anchor: {@code <move> (W/B)}.
    */
   static String moveAnchor(MoveRecord move, Side startingSide) {
-    return MoveNumberFormat.calculateMoveNumberAndSanWithSpace(move.fullMoveNumber(), move.havingMove(), move.san()) + " "
-        + counts(move.halfMoveClock(), startingSide);
+    return MoveNumberFormat.calculateMoveNumberAndSanWithSpace(move.fullMoveNumber(), move.movingPiece().getSide(),
+        move.san()) + " " + counts(move.halfMoveClock(), startingSide);
   }
 
   /**
@@ -54,7 +54,7 @@ abstract class SequenceStartFormat {
    */
   static Side startingSide(SequenceStart start, int initialFenClock, Side initialFenSideToMove) {
     if (!start.isInitialFen()) {
-      return start.firstNonZeroingMoveOrThrow().havingMove();
+      return start.firstNonZeroingMoveOrThrow().movingPiece().getSide();
     }
     return initialFenClock % 2 == 0 ? initialFenSideToMove : initialFenSideToMove.getOppositeSide();
   }
