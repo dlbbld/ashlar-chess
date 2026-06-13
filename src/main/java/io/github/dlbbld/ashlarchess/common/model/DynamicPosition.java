@@ -21,14 +21,4 @@ import io.github.dlbbld.ashlarchess.board.enums.Square;
  */
 public record DynamicPosition(Side havingMove, BitboardPosition bitboardPosition, Square enPassantCaptureTargetSquare,
     CastlingRight castlingRightWhite, CastlingRight castlingRightBlack) {
-
-  /**
-   * Convenience predicate preserved for source compatibility with the previous shape of this record (which carried an
-   * {@code isEnPassantCapturePossible} boolean instead of the target square). Returns {@code true} iff
-   * {@link #enPassantCaptureTargetSquare()} is not {@link Square#NONE} - i.e. there is an opposing pawn that can
-   * actually capture en passant in this position.
-   */
-  public boolean isEnPassantCapturePossible() {
-    return enPassantCaptureTargetSquare != Square.NONE;
-  }
 }
