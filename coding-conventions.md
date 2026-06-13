@@ -50,6 +50,10 @@ Not allowed on records:
 - **Convenience constructors that hide validation logic in non-canonical paths.** Validation belongs in the canonical compact constructor, not scattered across overloads — otherwise a caller can bypass validation by reaching for the canonical constructor directly.
 - **Methods that simulate state changes** (records are values, not actors).
 
+Documented exception:
+
+- **`BitboardPosition` deliberately carries its move-generation / king-safety engine** (`afterMove`, `legalMoves`, `attackedSquares`, `isInCheck`, `pinRay`, `pinnedPieces`, …) on the record. This is a conscious, bounded exception made for hot-path allocation reasons on the production move-generation path — the engine reads the twelve `long` fields directly without a wrapper object per call. It is **not** a licence to add domain methods to other records: no other record should follow this pattern without the same measured hot-path justification.
+
 ## JavaDoc and comments
 
 JavaDoc should document contracts that are not obvious from the declaration: public API semantics, invariants, rule decisions, edge cases, and non-obvious test intent.

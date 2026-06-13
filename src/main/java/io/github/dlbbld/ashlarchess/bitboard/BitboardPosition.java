@@ -34,6 +34,13 @@ import io.github.dlbbld.ashlarchess.common.model.MoveSpecification;
  * PGN/FEN corpus. After the role-inversion release, {@code StaticPosition} lives in {@code src/test/} as the permanent
  * differential-test oracle; this record is the production representation. See {@code tasks.md} and the package-level
  * Javadoc for the governing Project Invariant.
+ *
+ * <p>
+ * <b>Deliberate "records carry data" exception:</b> unlike every other record in the codebase, this one carries its
+ * move-generation / king-safety engine ({@code afterMove}, {@code legalMoves}, {@code attackedSquares},
+ * {@code isInCheck}, {@code pinRay}, {@code pinnedPieces}, …) rather than delegating to a utility, for hot-path
+ * allocation reasons on the production move-generation path. This is a conscious, bounded exception - see
+ * {@code coding-conventions.md} - and not a pattern to copy onto other records.
  */
 public record BitboardPosition(long whitePawns, long whiteRooks, long whiteKnights, long whiteBishops, long whiteQueens,
     long whiteKings, long blackPawns, long blackRooks, long blackKnights, long blackBishops, long blackQueens,
