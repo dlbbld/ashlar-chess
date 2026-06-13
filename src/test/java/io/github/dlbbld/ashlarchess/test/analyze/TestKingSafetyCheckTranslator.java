@@ -8,13 +8,14 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import org.junit.jupiter.api.Test;
 
+import io.github.dlbbld.ashlarchess.analyze.KingSafetyCheckTranslator;
 import io.github.dlbbld.ashlarchess.common.exceptions.ProgrammingMistakeException;
 import io.github.dlbbld.ashlarchess.enums.KingSafetyCheck;
 import io.github.dlbbld.ashlarchess.enums.MoveCheck;
 
 /**
- * Lock-down test for {@link KingSafetyCheck#toMoveCheck()}. Ensures the translator stays exhaustive over all failure
- * values and that SUCCESS is rejected as a refusal-reason translation.
+ * Lock-down test for {@link KingSafetyCheckTranslator#toMoveCheck(KingSafetyCheck)}. Ensures the translator stays
+ * exhaustive over all failure values and that SUCCESS is rejected as a refusal-reason translation.
  */
 class TestKingSafetyCheckTranslator {
 
@@ -25,7 +26,7 @@ class TestKingSafetyCheckTranslator {
       if (check == KingSafetyCheck.SUCCESS) {
         continue;
       }
-      final MoveCheck translated = check.toMoveCheck();
+      final MoveCheck translated = KingSafetyCheckTranslator.toMoveCheck(check);
       assertNotNull(translated, "translator returned null for " + check);
     }
   }
@@ -33,6 +34,6 @@ class TestKingSafetyCheckTranslator {
   @SuppressWarnings("static-method")
   @Test
   void testSuccessThrows() {
-    assertThrows(ProgrammingMistakeException.class, KingSafetyCheck.SUCCESS::toMoveCheck);
+    assertThrows(ProgrammingMistakeException.class, () -> KingSafetyCheckTranslator.toMoveCheck(KingSafetyCheck.SUCCESS));
   }
 }

@@ -3,7 +3,10 @@
 
 package io.github.dlbbld.ashlarchess.board;
 
+import io.github.dlbbld.ashlarchess.analyze.CastlingCheckTranslator;
 import io.github.dlbbld.ashlarchess.analyze.ChessRuleAnalyzer;
+import io.github.dlbbld.ashlarchess.analyze.KingSafetyCheckTranslator;
+import io.github.dlbbld.ashlarchess.analyze.MovementCheckTranslator;
 import io.github.dlbbld.ashlarchess.board.enums.CastlingMove;
 import io.github.dlbbld.ashlarchess.board.enums.CastlingRight;
 import io.github.dlbbld.ashlarchess.board.enums.CastlingRightLoss;
@@ -72,21 +75,22 @@ class ValidateNewMove implements EnumConstants {
         final CastlingRight castlingRight = board.getCastlingRight(havingMove);
         if (castlingRight == CastlingRight.NONE) {
           throw new InvalidMoveException("there are no castling rights anymore on both sides",
-              castlingCheck.toMoveCheck(castlingRightLoss));
+              CastlingCheckTranslator.toMoveCheck(castlingCheck, castlingRightLoss));
         }
         throw new InvalidMoveException("there is no castling right anymore on this side",
-            castlingCheck.toMoveCheck(castlingRightLoss));
+            CastlingCheckTranslator.toMoveCheck(castlingCheck, castlingRightLoss));
       case TEMPORARY_SQUARES_NOT_EMPTY:
         throw new InvalidMoveException("not all squares between the rook and the king are empty",
-            castlingCheck.toMoveCheck(castlingRightLoss));
+            CastlingCheckTranslator.toMoveCheck(castlingCheck, castlingRightLoss));
       case TEMPORARY_KING_IN_CHECK:
         throw new InvalidMoveException("castling is not possible because the king is in check",
-            castlingCheck.toMoveCheck(castlingRightLoss));
+            CastlingCheckTranslator.toMoveCheck(castlingCheck, castlingRightLoss));
       case TEMPORARY_KING_TRAVELS_THROUGH_CHECK:
         throw new InvalidMoveException("the king would travel over a field that is in check",
-            castlingCheck.toMoveCheck(castlingRightLoss));
+            CastlingCheckTranslator.toMoveCheck(castlingCheck, castlingRightLoss));
       case TEMPORARY_KING_ENDS_IN_CHECK:
-        throw new InvalidMoveException("the king would end in check", castlingCheck.toMoveCheck(castlingRightLoss));
+        throw new InvalidMoveException("the king would end in check",
+            CastlingCheckTranslator.toMoveCheck(castlingCheck, castlingRightLoss));
       case SUCCESS:
         // valid castling
         break;
@@ -143,7 +147,7 @@ class ValidateNewMove implements EnumConstants {
       return;
     }
     throw new InvalidMoveException(movementMessage(movementCheck, board, moveSpecification),
-        movementCheck.toMoveCheck());
+        MovementCheckTranslator.toMoveCheck(movementCheck));
   }
 
   private static String movementMessage(MovementCheck check, Board board, MoveSpecification moveSpecification) {
@@ -183,7 +187,8 @@ class ValidateNewMove implements EnumConstants {
     if (kingSafetyCheck == KingSafetyCheck.SUCCESS) {
       return;
     }
-    throw new InvalidMoveException(kingSafetyMessage(kingSafetyCheck), kingSafetyCheck.toMoveCheck());
+    throw new InvalidMoveException(kingSafetyMessage(kingSafetyCheck),
+        KingSafetyCheckTranslator.toMoveCheck(kingSafetyCheck));
   }
 
   private static String kingSafetyMessage(KingSafetyCheck check) {

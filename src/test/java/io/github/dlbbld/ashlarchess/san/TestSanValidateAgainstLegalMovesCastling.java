@@ -8,6 +8,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
 
+import io.github.dlbbld.ashlarchess.analyze.CastlingCheckTranslator;
 import io.github.dlbbld.ashlarchess.board.Board;
 import io.github.dlbbld.ashlarchess.board.enums.CastlingRightLoss;
 import io.github.dlbbld.ashlarchess.enums.CastlingCheck;
@@ -144,7 +145,7 @@ class TestSanValidateAgainstLegalMovesCastling {
     } catch (final SanValidationException e) {
       isException = true;
       assertEquals(CastlingCheckMapper.map(expectedCastlingCheck, expectedLoss), e.getSanValidationProblem());
-      assertEquals(expectedCastlingCheck.toMoveCheck(expectedLoss), e.getMoveCheck());
+      assertEquals(CastlingCheckTranslator.toMoveCheck(expectedCastlingCheck, expectedLoss), e.getMoveCheck());
       assertEquals(expectedLoss, e.getCastlingRightLoss());
     }
     assertTrue(isException);

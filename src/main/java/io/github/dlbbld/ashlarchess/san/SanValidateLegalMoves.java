@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
+import io.github.dlbbld.ashlarchess.analyze.CastlingCheckTranslator;
 import io.github.dlbbld.ashlarchess.bitboard.BitboardPosition;
 import io.github.dlbbld.ashlarchess.bitboard.KingAttacks;
 import io.github.dlbbld.ashlarchess.board.Board;
@@ -414,7 +415,7 @@ abstract class SanValidateLegalMoves extends AbstractSan implements EnumConstant
     }
 
     throw new SanValidationException(CastlingCheckMapper.map(castlingCheck, castlingRightLoss), message,
-        castlingCheck.toMoveCheck(castlingRightLoss), castlingRightLoss);
+        CastlingCheckTranslator.toMoveCheck(castlingCheck, castlingRightLoss), castlingRightLoss);
   }
 
   private static KingSafetyCheck calculatePseudoLegalKingSafety(BitboardPosition bitboardPosition, Side havingMove) {
