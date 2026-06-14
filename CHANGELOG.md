@@ -5,6 +5,59 @@ Releases from 3.3 onward. Earlier history is in git tags only.
 ## [Unreleased]
 
 
+## [19.0.0] - Retire HalfMove; records and enums carry data - 2026-06-14
+
+A surface-only release. It retires the `HalfMove` concept, replaces the "halfmove" / "ply" vocabulary with "move" across the public model and reports, and applies a "data carriers, not behavior" pass that moves computed, translation, and factory logic off records and enums into dedicated utility / translator classes. No rule, parser, or analysis behavior changes — every verdict and every report is identical to 18.1.0; what changes is the shape of the API. It is heavily binary-incompatible, so the breaking list is long, but most migrations are a single type rename or a `Type.method(x)` → `TypeUtility.method(x)` call-site change.
+
+### Notable
+
+- **Records and enums are now data carriers.** A new rule in `coding-conventions.md` draws the line: records and enums hold data; computational, translation, and factory logic lives in dedicated `*Utility` / `*Translator` classes. `BitboardPosition` is the one documented exception — it carries its move-generation / king-safety engine on the record for hot-path allocation reasons.
+- **`HalfMove` is retired.** The played-move row is now `MoveRecord`, rebuilt inside the report layer from `Board`'s existing per-move accessors; the public PGN movetext type is `PgnMove`.
+- **"Move" is the consistent term** for one player's action across the public model, move history, and reports. "halfmove" and "ply" now appear only where they are protocol- or engine-correct: FEN/PGN counters (`halfMoveClock`, the `PlyCount` tag) and the engine/search internals.
+- Added a Maven Central version badge to the README.
+
+### Behavioral
+
+- None. Move legality, SAN/FEN/PGN parsing and export, unwinnability and adjudication verdicts, and all report output are unchanged from 18.1.0. This release changes only the public type/method surface.
+
+### Breaking
+
+PGN model:
+
+- `PgnHalfMove` renamed to `PgnMove`.
+- `PgnGame.halfMoveList()` renamed to `PgnGame.moveList()` (record component and accessor).
+
+`Board`:
+
+- `getPerformedHalfMoveCount()` renamed to `getPerformedMoveCount()`.
+- Removed `getHalfMoveList()` and `getLastHalfMove()`; the played-move list is no longer exposed on `Board`. It is rebuilt inside the `report` layer, and `PgnCreate.createPgnGame(board).moveList()` returns the played moves as `PgnMove`s.
+- `HalfMove` is gone from the public API (its replacement, `MoveRecord`, is package-private to `report`).
+
+Formatting / model:
+
+- `HalfMoveUtility` renamed to `MoveNumberFormat`.
+- `DynamicPosition.isEnPassantCapturePossible()` removed — test `enPassantCaptureTargetSquare() != Square.NONE` directly.
+
+FEN:
+
+- `ForgivenFenItemCode.MISSING_HALFMOVE_AND_FULLMOVE` → `MISSING_HALF_MOVE_CLOCK_AND_FULL_MOVE_NUMBER`; `MISSING_FULLMOVE_NUMBER` → `MISSING_FULL_MOVE_NUMBER`.
+- `FenConstants.POSSIBLE_FEN_AFTER_FIRST_HALF_MOVE` renamed to `POSSIBLE_FEN_AFTER_FIRST_MOVE`.
+
+Enum behavior moved to utilities (the "enums carry data" pass) — each former `Enum.method(...)` is now `EnumUtility.method(enum, ...)`:
+
+- `KingSafetyCheck` / `MovementCheck` / `CastlingCheck` `toMoveCheck(...)` → `analyze.{KingSafetyCheck,MovementCheck,CastlingCheck}Translator.toMoveCheck(...)`.
+- `Piece.calculate{Rook,Knight,Bishop,Queen,King,Pawn}Piece(Side)` and `Piece.calculate(Side, PieceType)`, plus the duplicate `PieceType.calculate(Side, PieceType)`, consolidated into `board.enums.PieceUtility`. `PromotionPieceType.calculate(Side, PromotionPieceType)` → `board.enums.PromotionPieceTypeUtility.calculate(...)`.
+- `Square.flip`, `getPromotionRank`, `calculateJumpOverSquare`, `calculateEnPassantCaptureTargetSquareList`, and the king / queen-side-rook / king-side-rook original-square methods → `board.enums.SquareUtility`.
+- `Rank`'s side-relative rule methods (ground / promotion / pawn-initial / two-square-advance / en-passant ranks and per-side validity) → `board.enums.RankUtility`.
+- `FenSideSymbol.calculate(Side)` and `FenPieceSymbol.calculate(Piece)` → `fen.{FenSideSymbol,FenPieceSymbol}Utility` (the `calculate(char)` self-parse stays on the enum).
+- `SanTerminalMarker.calculate(...)` / `append(...)` → `san.SanTerminalMarkerUtility`; `SanFormat.isCapture()` → `san.SanFormatUtility.isCapture(...)`.
+
+Removed from the published jar:
+
+- Deleted unused types `BoardUtility`, `CheckmateOrStalemate`, and `SemiOpenFilesUtility`.
+- Relocated test-only support out of `main` (public, but used only by the test / oracle layers): `StandardMoveUtility`, `LegalMoveCalculation`, `SquareOccupation`, `IoUtility`, `PseudoLegalMove`.
+
+
 ## [18.1.0] - Adjudication API - 2026-06-11
 
 Adds a public adjudication API for the two external game-ending events - flag-fall and resignation - that applies the FIDE "opponent cannot win" draw exception for you, and changes the fifty-move report to count in moves by each player rather than halfmoves. The release is additive: no public type changes shape.
