@@ -10,10 +10,10 @@ import org.junit.jupiter.api.Test;
 
 import io.github.dlbbld.ashlarchess.bitboard.StaticPositionBridge;
 import io.github.dlbbld.ashlarchess.board.StaticPosition;
-import io.github.dlbbld.ashlarchess.common.utility.StaticPositionUtility;
 import io.github.dlbbld.ashlarchess.board.enums.Piece;
 import io.github.dlbbld.ashlarchess.board.enums.Square;
 import io.github.dlbbld.ashlarchess.common.constants.EnumConstants;
+import io.github.dlbbld.ashlarchess.common.utility.StaticPositionUtility;
 import io.github.dlbbld.ashlarchess.fen.FenParserAdvanced;
 import io.github.dlbbld.ashlarchess.fen.constants.FenConstants;
 

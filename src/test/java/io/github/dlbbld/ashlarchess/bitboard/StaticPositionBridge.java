@@ -7,11 +7,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import io.github.dlbbld.ashlarchess.board.StaticPosition;
-import io.github.dlbbld.ashlarchess.common.utility.StaticPositionUtility;
 import io.github.dlbbld.ashlarchess.board.enums.Piece;
 import io.github.dlbbld.ashlarchess.board.enums.Square;
 import io.github.dlbbld.ashlarchess.board.model.UpdateSquare;
 import io.github.dlbbld.ashlarchess.common.Nulls;
+import io.github.dlbbld.ashlarchess.common.utility.StaticPositionUtility;
 
 /**
  * Test-side bridge between the bitboard production layer and the {@link StaticPosition} reference oracle. Lives in
