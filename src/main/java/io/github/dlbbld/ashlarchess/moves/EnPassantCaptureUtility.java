@@ -15,6 +15,7 @@ import com.google.common.collect.Maps;
 
 import io.github.dlbbld.ashlarchess.bitboard.BitboardPosition;
 import io.github.dlbbld.ashlarchess.board.enums.Piece;
+import io.github.dlbbld.ashlarchess.board.enums.PieceUtility;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
 import io.github.dlbbld.ashlarchess.board.enums.Square;
 import io.github.dlbbld.ashlarchess.board.model.UpdateSquare;
@@ -239,7 +240,7 @@ public abstract class EnPassantCaptureUtility implements EnumConstants {
 
     // pawn move: from square becomes empty; on to square is the moved pawn (always a pawn of havingMove).
     result.add(new UpdateSquare(moveSpecification.fromSquare()));
-    result.add(new UpdateSquare(moveSpecification.toSquare(), Piece.calculatePawnPiece(havingMove)));
+    result.add(new UpdateSquare(moveSpecification.toSquare(), PieceUtility.calculatePawnPiece(havingMove)));
 
     // remove the captured pawn (one rank back from the to-square, same file)
     final Square squareOfCapturedPawnForEnPassantCapture = calculateSquareOfCapturedPawnForEnPassantCapture(havingMove,

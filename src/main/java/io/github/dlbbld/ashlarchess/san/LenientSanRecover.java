@@ -12,6 +12,7 @@ import org.eclipse.jdt.annotation.Nullable;
 import io.github.dlbbld.ashlarchess.board.Board;
 import io.github.dlbbld.ashlarchess.board.enums.File;
 import io.github.dlbbld.ashlarchess.board.enums.Piece;
+import io.github.dlbbld.ashlarchess.board.enums.PieceUtility;
 import io.github.dlbbld.ashlarchess.board.enums.PieceType;
 import io.github.dlbbld.ashlarchess.board.enums.Rank;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
@@ -200,7 +201,7 @@ final class LenientSanRecover {
     final Square toSquare = Square.calculate(File.calculateFile(body.charAt(body.length() - 2)),
         Rank.calculateRank(body.charAt(body.length() - 1)));
     final Side havingMove = board.getHavingMove();
-    final Piece movingPiece = PieceType.calculate(havingMove, pieceType);
+    final Piece movingPiece = PieceUtility.calculate(havingMove, pieceType);
 
     @Nullable LegalMove match = null;
     for (final LegalMove lm : board.getLegalMoves()) {

@@ -11,6 +11,7 @@ import io.github.dlbbld.ashlarchess.board.Board;
 import io.github.dlbbld.ashlarchess.board.enums.CastlingMove;
 import io.github.dlbbld.ashlarchess.board.enums.CastlingRight;
 import io.github.dlbbld.ashlarchess.board.enums.Piece;
+import io.github.dlbbld.ashlarchess.board.enums.PieceUtility;
 import io.github.dlbbld.ashlarchess.board.enums.PieceType;
 import io.github.dlbbld.ashlarchess.board.enums.PromotionPieceType;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
@@ -443,7 +444,7 @@ final class HelpmateSearchBoard {
 
     final PromotionPieceType promotion = moveSpec.promotionPieceType();
     final Piece destPiece = promotion == PromotionPieceType.NONE ? movingPiece
-        : Piece.calculate(havingMove, promotion.getPieceType());
+        : PieceUtility.calculate(havingMove, promotion.getPieceType());
 
     togglePieceBit(movingPiece, fromBit);
     togglePieceBit(capturedPiece, capturedBit);
@@ -500,7 +501,7 @@ final class HelpmateSearchBoard {
       throw new ProgrammingMistakeException();
     }
     final Square squareBehind = Square.calculateBehindSquare(havingMove, enPassantCaptureTargetSquare);
-    final Piece ownPawn = Piece.calculate(havingMove, PieceType.PAWN);
+    final Piece ownPawn = PieceUtility.calculate(havingMove, PieceType.PAWN);
 
     final boolean hasRight = Square.calculateHasRightSquare(havingMove, squareBehind);
     final boolean hasLeft = Square.calculateHasLeftSquare(havingMove, squareBehind);

@@ -17,6 +17,7 @@ import io.github.dlbbld.ashlarchess.board.enums.CastlingMove;
 import io.github.dlbbld.ashlarchess.board.enums.CastlingRight;
 import io.github.dlbbld.ashlarchess.board.enums.CastlingRightLoss;
 import io.github.dlbbld.ashlarchess.board.enums.Piece;
+import io.github.dlbbld.ashlarchess.board.enums.PieceUtility;
 import io.github.dlbbld.ashlarchess.board.enums.PieceType;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
 import io.github.dlbbld.ashlarchess.board.enums.Square;
@@ -889,7 +890,7 @@ public class Board {
       throw new ProgrammingMistakeException();
     }
     final Square squareBehind = Square.calculateBehindSquare(havingMove, enPassantCaptureTargetSquare);
-    final Piece ownPawn = Piece.calculate(havingMove, PieceType.PAWN);
+    final Piece ownPawn = PieceUtility.calculate(havingMove, PieceType.PAWN);
 
     // capture move from right square
     if (Square.calculateHasRightSquare(havingMove, squareBehind)) {

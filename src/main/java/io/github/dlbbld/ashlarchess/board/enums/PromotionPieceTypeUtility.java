@@ -31,6 +31,33 @@ public final class PromotionPieceTypeUtility {
     return Integer.compare(rank(firstPromotionPieceType), rank(secondPromotionPieceType));
   }
 
+  /**
+   * Constructs the concrete {@link Piece} that a pawn of {@code havingMove} becomes when promoting to
+   * {@code promotionPieceType}.
+   */
+  public static Piece calculate(Side havingMove, PromotionPieceType promotionPieceType) {
+    return switch (havingMove) {
+      case BLACK -> switch (promotionPieceType) {
+        case ROOK -> Piece.BLACK_ROOK;
+        case KNIGHT -> Piece.BLACK_KNIGHT;
+        case BISHOP -> Piece.BLACK_BISHOP;
+        case QUEEN -> Piece.BLACK_QUEEN;
+        case NONE -> throw new IllegalArgumentException();
+        default -> throw new IllegalArgumentException();
+      };
+      case WHITE -> switch (promotionPieceType) {
+        case ROOK -> Piece.WHITE_ROOK;
+        case KNIGHT -> Piece.WHITE_KNIGHT;
+        case BISHOP -> Piece.WHITE_BISHOP;
+        case QUEEN -> Piece.WHITE_QUEEN;
+        case NONE -> throw new IllegalArgumentException();
+        default -> throw new IllegalArgumentException();
+      };
+      case NONE -> throw new IllegalArgumentException();
+      default -> throw new IllegalArgumentException();
+    };
+  }
+
   private static int rank(PromotionPieceType promotionPieceType) {
     return switch (promotionPieceType) {
       case QUEEN -> 0;

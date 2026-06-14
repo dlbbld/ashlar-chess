@@ -17,6 +17,7 @@ import io.github.dlbbld.ashlarchess.board.enums.CastlingRight;
 import io.github.dlbbld.ashlarchess.board.enums.CastlingRightLoss;
 import io.github.dlbbld.ashlarchess.board.enums.File;
 import io.github.dlbbld.ashlarchess.board.enums.Piece;
+import io.github.dlbbld.ashlarchess.board.enums.PieceUtility;
 import io.github.dlbbld.ashlarchess.board.enums.PieceType;
 import io.github.dlbbld.ashlarchess.board.enums.Rank;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
@@ -132,7 +133,7 @@ abstract class SanValidateLegalMoves extends AbstractSan implements EnumConstant
     }
 
     final PieceType pieceType = sanConversion.movingPieceType();
-    final Piece piece = PieceType.calculate(havingMove, pieceType);
+    final Piece piece = PieceUtility.calculate(havingMove, pieceType);
 
     final List<LegalMove> legalMovesForMovingPiece = MoveToSan.calculateLegalMovesForMovingPiece(piece,
         board.getLegalMoves());

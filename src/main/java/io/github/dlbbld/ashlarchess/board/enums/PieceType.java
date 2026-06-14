@@ -41,33 +41,6 @@ public enum PieceType {
     this.name = name;
   }
 
-  public static Piece calculate(Side havingMove, PieceType pieceType) {
-    return switch (havingMove) {
-      case BLACK -> switch (pieceType) {
-        case PAWN -> Piece.BLACK_PAWN;
-        case ROOK -> Piece.BLACK_ROOK;
-        case KNIGHT -> Piece.BLACK_KNIGHT;
-        case BISHOP -> Piece.BLACK_BISHOP;
-        case QUEEN -> Piece.BLACK_QUEEN;
-        case KING -> Piece.BLACK_KING;
-        case NONE -> throw new IllegalArgumentException();
-        default -> throw new IllegalArgumentException();
-      };
-      case WHITE -> switch (pieceType) {
-        case PAWN -> Piece.WHITE_PAWN;
-        case ROOK -> Piece.WHITE_ROOK;
-        case KNIGHT -> Piece.WHITE_KNIGHT;
-        case BISHOP -> Piece.WHITE_BISHOP;
-        case QUEEN -> Piece.WHITE_QUEEN;
-        case KING -> Piece.WHITE_KING;
-        case NONE -> throw new IllegalArgumentException();
-        default -> throw new IllegalArgumentException();
-      };
-      case NONE -> throw new IllegalArgumentException();
-      default -> throw new IllegalArgumentException();
-    };
-  }
-
   private void check() {
     if (this == NONE) {
       throw new NonePointerException();

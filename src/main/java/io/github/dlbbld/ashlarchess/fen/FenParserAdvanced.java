@@ -14,6 +14,7 @@ import io.github.dlbbld.ashlarchess.bitboard.BitboardPosition;
 import io.github.dlbbld.ashlarchess.board.enums.CastlingRight;
 import io.github.dlbbld.ashlarchess.board.enums.File;
 import io.github.dlbbld.ashlarchess.board.enums.Piece;
+import io.github.dlbbld.ashlarchess.board.enums.PieceUtility;
 import io.github.dlbbld.ashlarchess.board.enums.PieceType;
 import io.github.dlbbld.ashlarchess.board.enums.Rank;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
@@ -400,7 +401,7 @@ public class FenParserAdvanced implements EnumConstants {
     // previous check are necessary for this check: rewind the opponent's pawn two-square advance and verify
     // that havingMove was not already in check in that prior position. Bitboard-wise this is: relocate the
     // opponent pawn from the two-advance square back to its starting square; then ask isInCheck(havingMove).
-    final Piece opponentPawn = Piece.calculatePawnPiece(oppositeSide);
+    final Piece opponentPawn = PieceUtility.calculatePawnPiece(oppositeSide);
     final BitboardPosition bitboardPositionBeforeTwoSquareAdvance = bitboardPosition.withRelocatedPiece(opponentPawn,
         pawnTwoAdvanceSquare, startingSquare);
 

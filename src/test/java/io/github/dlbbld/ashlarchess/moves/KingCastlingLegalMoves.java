@@ -14,6 +14,7 @@ import com.google.common.collect.ImmutableList;
 import io.github.dlbbld.ashlarchess.board.StaticPosition;
 import io.github.dlbbld.ashlarchess.board.enums.CastlingRight;
 import io.github.dlbbld.ashlarchess.board.enums.Piece;
+import io.github.dlbbld.ashlarchess.board.enums.PieceUtility;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
 import io.github.dlbbld.ashlarchess.board.enums.Square;
 import io.github.dlbbld.ashlarchess.common.constants.CastlingConstants;
@@ -115,23 +116,23 @@ class KingCastlingLegalMoves extends KingLegalMoves {
 
   private static boolean calculateQueenSideCastlingIsOriginalPosition(StaticPosition staticPosition, Side havingMove) {
     final Square kingOriginalSquare = Square.calculateKingOriginalSquare(havingMove);
-    final Piece kingPiece = Piece.calculateKingPiece(havingMove);
+    final Piece kingPiece = PieceUtility.calculateKingPiece(havingMove);
     if (staticPosition.get(kingOriginalSquare) != kingPiece) {
       return false;
     }
     final Square rookOriginalSquare = Square.calculateQueenSideRookOriginalSquare(havingMove);
-    final Piece rookPiece = Piece.calculateRookPiece(havingMove);
+    final Piece rookPiece = PieceUtility.calculateRookPiece(havingMove);
     return staticPosition.get(rookOriginalSquare) == rookPiece;
   }
 
   private static boolean calculateKingSideCastlingIsOriginalPosition(StaticPosition staticPosition, Side havingMove) {
     final Square kingOriginalSquare = Square.calculateKingOriginalSquare(havingMove);
-    final Piece kingPiece = Piece.calculateKingPiece(havingMove);
+    final Piece kingPiece = PieceUtility.calculateKingPiece(havingMove);
     if (staticPosition.get(kingOriginalSquare) != kingPiece) {
       return false;
     }
     final Square rookOriginalSquare = Square.calculateKingSideRookOriginalSquare(havingMove);
-    final Piece rookPiece = Piece.calculateRookPiece(havingMove);
+    final Piece rookPiece = PieceUtility.calculateRookPiece(havingMove);
     return staticPosition.get(rookOriginalSquare) == rookPiece;
   }
 
