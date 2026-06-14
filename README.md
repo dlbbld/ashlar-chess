@@ -1,6 +1,8 @@
 ashlar-chess
 ===========
 
+[![Maven Central](https://img.shields.io/maven-central/v/io.github.dlbbld/ashlar-chess.svg)](https://central.sonatype.com/artifact/io.github.dlbbld/ashlar-chess)
+
 ashlar-chess is a Java chess library focused on rule correctness, production usability, and reproducible validation.
 It implements SAN, FEN, and PGN parsing, validation, and export with a strict/lenient parser pair,
 and includes a Java port of the [Chess Unwinnability Analyzer (CHA)](https://github.com/miguel-ambrona/D3-Chess) as a flagship feature.
