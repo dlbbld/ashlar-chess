@@ -121,9 +121,8 @@ abstract class PositionIdentifierUtility {
       boolean isAddPositionInformation, Map<DynamicPosition, String> positionIdentifierMap) {
     final StringBuilder result = new StringBuilder();
 
-    result.append(
-        MoveNumberFormat.calculateMoveNumberAndSanWithSpace(move.fullMoveNumber(), move.movingPiece().getSide(),
-            move.san()));
+    result.append(MoveNumberFormat.calculateMoveNumberAndSanWithSpace(move.fullMoveNumber(),
+        move.movingPiece().getSide(), move.san()));
 
     if (isAddPositionInformation) {
       result.append(" ");

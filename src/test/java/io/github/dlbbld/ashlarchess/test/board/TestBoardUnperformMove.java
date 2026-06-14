@@ -29,17 +29,17 @@ import io.github.dlbbld.ashlarchess.test.pgn.setup.PgnTestCaseCatalog;
  * For each PGN, two independent boards are kept side-by-side:
  *
  * <ul>
- * <li>{@code expected} - only ever moves <em>forward</em>. It serves as the oracle; its state after move
- * {@code i-1} is the canonical pre-move-{@code i} state, produced solely by {@code move} (independent of
- * {@code unmove}, the unit under test).</li>
+ * <li>{@code expected} - only ever moves <em>forward</em>. It serves as the oracle; its state after move {@code i-1} is
+ * the canonical pre-move-{@code i} state, produced solely by {@code move} (independent of {@code unmove}, the unit
+ * under test).</li>
  * <li>{@code actual} - performs and then unperforms each move, then is asserted to equal {@code expected}, then
  * advanced by performing the move so the next iteration starts in lockstep.</li>
  * </ul>
  *
  * <p>
  * Equality is determined by {@link EqualsBuilder#reflectionEquals(Object, Object, String...)}: every declared field on
- * {@code Board} (including all per-move history lists) is compared. New fields added to {@code Board} in the future
- * are picked up automatically - the test does not need to be updated when {@code Board}'s state representation grows.
+ * {@code Board} (including all per-move history lists) is compared. New fields added to {@code Board} in the future are
+ * picked up automatically - the test does not need to be updated when {@code Board}'s state representation grows.
  *
  * <h2>Scope</h2>
  *
@@ -78,9 +78,9 @@ class TestBoardUnperformMove {
   }
 
   /**
-   * Runs the perform/unperform contract test for a single PGN: for each move the PGN records, performs and
-   * immediately unperforms it on {@code actual}, then asserts {@code actual} equals the parallel forward-only
-   * {@code expected} board. Returns the number of moves verified.
+   * Runs the perform/unperform contract test for a single PGN: for each move the PGN records, performs and immediately
+   * unperforms it on {@code actual}, then asserts {@code actual} equals the parallel forward-only {@code expected}
+   * board. Returns the number of moves verified.
    */
   private static int runUnperformContractTest(PgnTestCaseList testCaseList, PgnFen testCase) {
     final PgnGame pgnGame = PgnCacheForStrictPgnParserTestCases.getPgn(testCaseList.pgnTest().getFolderPath(),

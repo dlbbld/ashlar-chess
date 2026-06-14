@@ -58,7 +58,8 @@ class TestGoingToCorner implements EnumConstants {
     assertTrue(corner(Side.WHITE, board, E8, D7, Goal.LOSE), "e8-d7 steps toward a8");
   }
 
-  // 10: knight. Landing on the target corner (a8) is distance 0, the minimum, so it is always progress; leaving it never
+  // 10: knight. Landing on the target corner (a8) is distance 0, the minimum, so it is always progress; leaving it
+  // never
   // is. (Avoids hand-computing the irregular knight-distance table.)
   @SuppressWarnings("static-method")
   @Test

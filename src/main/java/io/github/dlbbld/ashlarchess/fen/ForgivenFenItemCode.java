@@ -29,8 +29,8 @@ public enum ForgivenFenItemCode {
   MISSING_HALF_MOVE_CLOCK_AND_FULL_MOVE_NUMBER,
 
   /**
-   * Five-field FEN - fullmove number absent but halfmove clock present. Defaulted to {@code 1} for the missing
-   * fullmove number.
+   * Five-field FEN - fullmove number absent but halfmove clock present. Defaulted to {@code 1} for the missing fullmove
+   * number.
    */
   MISSING_FULL_MOVE_NUMBER,
 

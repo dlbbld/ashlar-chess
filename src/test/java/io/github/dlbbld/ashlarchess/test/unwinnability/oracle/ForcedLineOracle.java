@@ -74,8 +74,7 @@ public class ForcedLineOracle {
   /**
    * Walks the unique-legal-move chain from the current position. Mutates the board during the walk and undoes all moves
    * before returning, leaving the board unchanged. Returns a {@link GameForced} carrying the terminal status (if any)
-   * reached at the end of the chain, the number of forced plies walked, and which side made the last move in the
-   * chain.
+   * reached at the end of the chain, the number of forced plies walked, and which side made the last move in the chain.
    */
   static GameForced evaluateForcedLine(Board board) {
     // we check position after series of forced moves

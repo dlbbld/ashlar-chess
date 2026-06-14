@@ -173,7 +173,8 @@ class TestLenientFenParser {
   void test17_stockfishUciStylePositionAfterFenPrint() {
     // Pattern from Stockfish-style UCI position emitters: the `position fen ...` line frequently appears with
     // a four-field FEN (no counters) and tab-padded fields when piped through `bestmove`/`info` interleaved
-    // output. Combination should pass cleanly with MISSING_HALF_MOVE_CLOCK_AND_FULL_MOVE_NUMBER plus TAB_OR_NEWLINE_AS_SEPARATOR.
+    // output. Combination should pass cleanly with MISSING_HALF_MOVE_CLOCK_AND_FULL_MOVE_NUMBER plus
+    // TAB_OR_NEWLINE_AS_SEPARATOR.
     final String deviating = "r1bqkb1r/pppp1ppp/2n2n2/4p3/2B1P3/5N2/PPPP1PPP/RNBQK2R\tw\tKQkq\t-";
     final LenientFenParserValidationResult result = LenientFenParser.validateText(deviating);
     assertTrue(result.isValid(), () -> "expected valid; got: " + result.message());

@@ -69,8 +69,8 @@ class TestBishopAttacks {
   void emptyBoardFromCenterMatchesReference() {
     // Bishop on D4 on an otherwise empty board - verifies the empty-board diagonal pattern via the production
     // reference rather than a hand-written expected set (no tautological self-test).
-    final StaticPosition staticPosition = StaticPositionUtility.createChangedPosition(StaticPosition.EMPTY_POSITION, Square.D4,
-        io.github.dlbbld.ashlarchess.board.enums.Piece.WHITE_BISHOP);
+    final StaticPosition staticPosition = StaticPositionUtility.createChangedPosition(StaticPosition.EMPTY_POSITION,
+        Square.D4, io.github.dlbbld.ashlarchess.board.enums.Piece.WHITE_BISHOP);
     final BitboardPosition bitboardPosition = StaticPositionBridge.fromStaticPosition(staticPosition);
     final Set<Square> bitboardAttacks = BitboardPositionUtility
         .toSquareSet(BishopAttacks.attacks(Square.D4.ordinal(), bitboardPosition.occupied()));

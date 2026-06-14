@@ -38,12 +38,12 @@ public class UnwinnableFullAnalyzer {
   }
 
   /**
-   * Dead-position-full check for the whole position (no intended winner): a winnable verdict
-   * ({@code WINNABLE_HELPMATE} / {@code WINNABLE_BY_THEOREM}) means the position is not dead because that side can win;
-   * {@code UNWINNABLE} means dead - neither side can deliver checkmate by any sequence of legal moves; {@code UNDETERMINED}
-   * means it could not be decided within the search bound. This complete check is suggested at game end (resignation or
-   * flag-fall); during the game prefer the cheaper {@link UnwinnableQuickAnalyzer#unwinnableQuick(Board)}. Short-circuits:
-   * it stops as soon as one side is found winnable.
+   * Dead-position-full check for the whole position (no intended winner): a winnable verdict ({@code WINNABLE_HELPMATE}
+   * / {@code WINNABLE_BY_THEOREM}) means the position is not dead because that side can win; {@code UNWINNABLE} means
+   * dead - neither side can deliver checkmate by any sequence of legal moves; {@code UNDETERMINED} means it could not
+   * be decided within the search bound. This complete check is suggested at game end (resignation or flag-fall); during
+   * the game prefer the cheaper {@link UnwinnableQuickAnalyzer#unwinnableQuick(Board)}. Short-circuits: it stops as
+   * soon as one side is found winnable.
    */
   public static UnwinnabilityFullVerdict unwinnableFull(Board board) {
     final UnwinnabilityFullVerdict white = unwinnableFull(board, Side.WHITE).verdict();

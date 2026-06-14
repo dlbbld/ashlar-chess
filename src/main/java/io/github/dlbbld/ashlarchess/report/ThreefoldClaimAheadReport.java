@@ -12,8 +12,8 @@ import io.github.dlbbld.ashlarchess.common.Nulls;
  * side actually played (asterisked in the report) and those that remained hypothetical.
  *
  * <p>
- * Entries are ordered by {@code (claimAheadMove.performedMoveCount(), legal-move-iteration-order at that move)}, matching the
- * legacy outer sort (the comparator on the first element of each move's claim group) and the inner order
+ * Entries are ordered by {@code (claimAheadMove.performedMoveCount(), legal-move-iteration-order at that move)},
+ * matching the legacy outer sort (the comparator on the first element of each move's claim group) and the inner order
  * (Board.getLegalMoves() iteration).
  */
 record ThreefoldClaimAheadReport(ImmutableList<ClaimAheadEntry> entries) {

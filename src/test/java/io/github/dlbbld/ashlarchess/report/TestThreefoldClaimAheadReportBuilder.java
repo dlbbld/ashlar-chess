@@ -129,9 +129,9 @@ class TestThreefoldClaimAheadReportBuilder {
   }
 
   /**
-   * Helper: builds the displayed-move sort key for an entry (matching {@code ReportLineOrder}'s comparator) and compares
-   * lex-order. {@code -1} prefix for initial-position-inclusive entries; ties broken by sequence length (shorter first,
-   * since a prefix sorts before its extension).
+   * Helper: builds the displayed-move sort key for an entry (matching {@code ReportLineOrder}'s comparator) and
+   * compares lex-order. {@code -1} prefix for initial-position-inclusive entries; ties broken by sequence length
+   * (shorter first, since a prefix sorts before its extension).
    */
   private static int compareLexKey(ClaimAheadEntry a, ClaimAheadEntry b) {
     final List<Integer> keyA = sortKey(a);

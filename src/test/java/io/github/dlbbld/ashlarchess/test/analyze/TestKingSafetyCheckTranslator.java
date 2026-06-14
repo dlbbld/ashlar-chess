@@ -34,6 +34,7 @@ class TestKingSafetyCheckTranslator {
   @SuppressWarnings("static-method")
   @Test
   void testSuccessThrows() {
-    assertThrows(ProgrammingMistakeException.class, () -> KingSafetyCheckTranslator.toMoveCheck(KingSafetyCheck.SUCCESS));
+    assertThrows(ProgrammingMistakeException.class,
+        () -> KingSafetyCheckTranslator.toMoveCheck(KingSafetyCheck.SUCCESS));
   }
 }

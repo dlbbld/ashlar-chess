@@ -79,8 +79,8 @@ public class MoveToSan extends AbstractSan {
     return Nulls.toString(buildSan);
   }
 
-  private static String calculateSanLastMoveNonCastling(LegalMove lastMove,
-      List<LegalMove> legalMovesBeforeLastMove, SanTerminalMarker sanTerminalMarker) {
+  private static String calculateSanLastMoveNonCastling(LegalMove lastMove, List<LegalMove> legalMovesBeforeLastMove,
+      SanTerminalMarker sanTerminalMarker) {
 
     final MoveSpecification moveSpecification = lastMove.moveSpecification();
     final Piece movingPiece = lastMove.movingPiece();

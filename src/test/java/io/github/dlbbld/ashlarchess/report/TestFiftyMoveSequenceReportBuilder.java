@@ -116,7 +116,8 @@ class TestFiftyMoveSequenceReportBuilder {
     final FiftyMoveSequence sequence = Nulls.get(report.sequences(), 0);
     assertTrue(sequence.start().isInitialFen());
     assertEquals(100, sequence.start().initialClockValue());
-    assertNull(sequence.endMove(), "endMove is null when threshold is met by FEN alone with no non-zeroing continuation");
+    assertNull(sequence.endMove(),
+        "endMove is null when threshold is met by FEN alone with no non-zeroing continuation");
     assertEquals(100, sequence.finalClock(), "finalClock derives from start when endMove is null");
   }
 

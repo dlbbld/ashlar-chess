@@ -65,8 +65,8 @@ class TestQueenAttacks {
   @SuppressWarnings("static-method")
   @Test
   void emptyBoardFromCenterMatchesReference() {
-    final StaticPosition staticPosition = StaticPositionUtility.createChangedPosition(StaticPosition.EMPTY_POSITION, Square.D4,
-        io.github.dlbbld.ashlarchess.board.enums.Piece.WHITE_QUEEN);
+    final StaticPosition staticPosition = StaticPositionUtility.createChangedPosition(StaticPosition.EMPTY_POSITION,
+        Square.D4, io.github.dlbbld.ashlarchess.board.enums.Piece.WHITE_QUEEN);
     final BitboardPosition bitboardPosition = StaticPositionBridge.fromStaticPosition(staticPosition);
     final Set<Square> bitboardAttacks = BitboardPositionUtility
         .toSquareSet(QueenAttacks.attacks(Square.D4.ordinal(), bitboardPosition.occupied()));

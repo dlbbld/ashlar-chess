@@ -18,8 +18,8 @@ import io.github.dlbbld.ashlarchess.common.Nulls;
  * level collapse. Each {@link FiftyMoveClaimAheadEntry} now represents one clock-99 boundary at which the player had at
  * least one non-zeroing legal move available but the actually-played move broke the sequence (or the game ended at the
  * boundary). The number of alternative legal moves at the boundary does not affect the entry count - multiple
- * candidates collapse into one row per boundary, since listing all 30+ alternatives at a single move would be noise with
- * no informational gain over a single "opportunity existed" row.
+ * candidates collapse into one row per boundary, since listing all 30+ alternatives at a single move would be noise
+ * with no informational gain over a single "opportunity existed" row.
  */
 class TestFiftyMoveClaimAheadReportBuilder {
 
@@ -48,7 +48,8 @@ class TestFiftyMoveClaimAheadReportBuilder {
     assertTrue(board.getLegalMoves().size() > 1, "precondition: many alternative legal moves exist at the boundary");
 
     final FiftyMoveClaimAheadReport report = FiftyMoveClaimAheadReportBuilder.build(board);
-    assertEquals(1, report.entries().size(), "boundary collapse: many candidates at one move produce exactly one entry");
+    assertEquals(1, report.entries().size(),
+        "boundary collapse: many candidates at one move produce exactly one entry");
 
     final FiftyMoveClaimAheadEntry entry = Nulls.get(report.entries(), 0);
     assertFalse(entry.sequenceStart().isInitialFen());
@@ -152,7 +153,8 @@ class TestFiftyMoveClaimAheadReportBuilder {
     assertFalse(Nulls.get(report.entries(), 1).sequenceStart().isInitialFen(),
         "chronological second: after-reset-anchored boundary");
     // Sort invariant: ascending move count.
-    assertTrue(Nulls.get(report.entries(), 0).performedMoveCount() < Nulls.get(report.entries(), 1).performedMoveCount(),
+    assertTrue(
+        Nulls.get(report.entries(), 0).performedMoveCount() < Nulls.get(report.entries(), 1).performedMoveCount(),
         "entries sorted by chronological boundary move count");
   }
 }

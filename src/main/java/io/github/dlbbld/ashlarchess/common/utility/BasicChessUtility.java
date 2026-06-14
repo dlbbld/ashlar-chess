@@ -32,8 +32,7 @@ public abstract class BasicChessUtility {
 
   }
 
-  public static int calculateFullMoveNumber(Side havingMoveInitial, int fullMoveNumberInitial,
-      int performedMoveCount) {
+  public static int calculateFullMoveNumber(Side havingMoveInitial, int fullMoveNumberInitial, int performedMoveCount) {
     return switch (havingMoveInitial) {
       case BLACK -> fullMoveNumberInitial + (int) StrictMath.floor(performedMoveCount / 2.0);
       case WHITE -> fullMoveNumberInitial + (int) StrictMath.floor((performedMoveCount - 1) / 2.0);

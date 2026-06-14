@@ -12,8 +12,8 @@ import io.github.dlbbld.ashlarchess.board.enums.Side;
 import io.github.dlbbld.ashlarchess.model.LegalMove;
 
 /**
- * Finite-state basic-helpmate-existence theorem, used as a sound shortcut inside the complete unwinnability
- * analysis so it does not have to rediscover a long cooperative mating line for elementary material.
+ * Finite-state basic-helpmate-existence theorem, used as a sound shortcut inside the complete unwinnability analysis so
+ * it does not have to rediscover a long cooperative mating line for elementary material.
  *
  * <p>
  * The theorem was proved by exhaustive retrograde enumeration of the local legal state graph for each covered material
@@ -29,21 +29,21 @@ import io.github.dlbbld.ashlarchess.model.LegalMove;
  *
  * <p>
  * Covered classes (with {@code W} holding the mating material): KRvK, KQvK, KBBvK with opposite-coloured bishops,
- * KBNvK, KRvKB, and KRvKN, plus the colour-reversed statements by symmetry. The decision matches the operational
- * recipe in section 10 of the project's exposition.
+ * KBNvK, KRvKB, and KRvKN, plus the colour-reversed statements by symmetry. The decision matches the operational recipe
+ * in section 10 of the project's exposition.
  *
  * <p>
  * <b>Legality assumption.</b> The theorem holds for strictly game-legal positions, which is exactly the domain of the
  * FIDE dead-position and timeout rules this analyzer serves. The enumeration found a small number of retro-illegal
- * local states (for example the KBNvK position {@code 8/8/8/8/2N5/8/k1K5/1B6 b}) where the winnable conclusion would
- * be wrong; such positions cannot arise in a game and a strictly legal root cannot reach them, so they are outside the
+ * local states (for example the KBNvK position {@code 8/8/8/8/2N5/8/k1K5/1B6 b}) where the winnable conclusion would be
+ * wrong; such positions cannot arise in a game and a strictly legal root cannot reach them, so they are outside the
  * intended input domain. The forced-capture (unwinnable) direction is a pure material-reduction argument and is sound
  * on any input.
  *
  * <p>
  * <b>No witness line.</b> A winnable decision here is certified by the theorem, not by an explicit mating sequence, so
- * callers receive a {@code WINNABLE_BY_THEOREM} verdict without a move line. This is intentional: the line is not needed
- * for the dead-position verdict and would otherwise require the very search this shortcut avoids.
+ * callers receive a {@code WINNABLE_BY_THEOREM} verdict without a move line. This is intentional: the line is not
+ * needed for the dead-position verdict and would otherwise require the very search this shortcut avoids.
  */
 abstract class BasicHelpmateExistenceTheorem {
 
@@ -130,8 +130,7 @@ abstract class BasicHelpmateExistenceTheorem {
 
   private static boolean isKingBishopKnightOnly(Side side, BitboardPosition position) {
     return count(bishops(side, position)) == 1 && count(knights(side, position)) == 1
-        && count(rooks(side, position)) == 0 && count(queens(side, position)) == 0
-        && count(pawns(side, position)) == 0;
+        && count(rooks(side, position)) == 0 && count(queens(side, position)) == 0 && count(pawns(side, position)) == 0;
   }
 
   private static boolean isKingAndSingleBishopOnly(Side side, BitboardPosition position) {

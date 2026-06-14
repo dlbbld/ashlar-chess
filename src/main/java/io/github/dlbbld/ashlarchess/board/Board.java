@@ -94,8 +94,8 @@ import io.github.dlbbld.ashlarchess.unwinnability.UnwinnableQuickAnalyzer;
  * {@link #isStalemate()}, {@link #isThreefoldRepetition()}, {@link #isFiftyMove()}, {@link #isFivefoldRepetition()},
  * {@link #isSeventyFiveMove()}, plus the side-specific unwinnability predicates ({@code isUnwinnableQuick},
  * {@code isUnwinnableFull}) - the library's flagship CHA feature. Whole-position dead-position checks (no intended
- * winner) live on the analyzers; see {@link io.github.dlbbld.ashlarchess.unwinnability}. Position-state accessors return Guava
- * {@code ImmutableList}/{@code ImmutableSet}; mutation is exclusively via {@code move}/{@code unmove}.
+ * winner) live on the analyzers; see {@link io.github.dlbbld.ashlarchess.unwinnability}. Position-state accessors
+ * return Guava {@code ImmutableList}/{@code ImmutableSet}; mutation is exclusively via {@code move}/{@code unmove}.
  *
  * <p>
  * For game-level reports (threefold-claim-ahead, repetition listings, no-progress sequences), use
@@ -252,11 +252,11 @@ public class Board {
 
   /**
    * Constructs a {@code Board} from a FEN string via {@link LenientFenParser}. The lenient layer applies a
-   * syntactic-tolerance pass (whitespace, casing, missing halfmove clock and fullmove number, non-canonical castling order,
-   * non-ASCII dashes, trailing garbage) before delegating to {@link FenParserAdvanced}. Strict semantic invariants are
-   * unchanged: a FEN with a missing king, a pawn on rank 1, an impossible double-check, or castling rights that
-   * contradict the piece placement still fails. Callers who need to see the list of tolerated deviations should invoke
-   * {@link LenientFenParser#validateText(String)} directly.
+   * syntactic-tolerance pass (whitespace, casing, missing halfmove clock and fullmove number, non-canonical castling
+   * order, non-ASCII dashes, trailing garbage) before delegating to {@link FenParserAdvanced}. Strict semantic
+   * invariants are unchanged: a FEN with a missing king, a pawn on rank 1, an impossible double-check, or castling
+   * rights that contradict the piece placement still fails. Callers who need to see the list of tolerated deviations
+   * should invoke {@link LenientFenParser#validateText(String)} directly.
    *
    * @throws io.github.dlbbld.ashlarchess.fen.LenientFenParserValidationException when the input cannot be recovered or
    *                                                                              fails the strict semantic checks
@@ -423,8 +423,8 @@ public class Board {
   }
 
   /**
-   * Undoes the most recently played move, restoring the board to the state immediately before that move. Throws if
-   * no move has been played from the initial FEN.
+   * Undoes the most recently played move, restoring the board to the state immediately before that move. Throws if no
+   * move has been played from the initial FEN.
    */
   public void unmove() {
     if (isFirstMove()) {
@@ -508,8 +508,8 @@ public class Board {
    * stalemate. The maintainer's tests and docstrings document the deliberate intent for the current-position case
    * (commit {@code 1064bf59}, with tests pinning "once checkmated, it is too late to claim" and "a stalemate is a
    * draw"); they do not address the candidate-move-is-mate case, which falls out of code reuse rather than separate
-   * consideration. ashlar-chess takes the strict FIDE 9.3 reading at this edge; the practical impact is zero (the player
-   * would play the mate rather than claim) but the predicate is honest about what FIDE actually says.
+   * consideration. ashlar-chess takes the strict FIDE 9.3 reading at this edge; the practical impact is zero (the
+   * player would play the mate rather than claim) but the predicate is honest about what FIDE actually says.
    */
   public boolean canClaimFiftyMoveRuleWithOwnMove() {
     if (getHalfMoveClock() < 99) {

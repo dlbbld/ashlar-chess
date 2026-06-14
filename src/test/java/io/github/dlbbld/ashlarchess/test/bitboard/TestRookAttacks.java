@@ -65,8 +65,8 @@ class TestRookAttacks {
   @SuppressWarnings("static-method")
   @Test
   void emptyBoardFromCenterMatchesReference() {
-    final StaticPosition staticPosition = StaticPositionUtility.createChangedPosition(StaticPosition.EMPTY_POSITION, Square.D4,
-        io.github.dlbbld.ashlarchess.board.enums.Piece.WHITE_ROOK);
+    final StaticPosition staticPosition = StaticPositionUtility.createChangedPosition(StaticPosition.EMPTY_POSITION,
+        Square.D4, io.github.dlbbld.ashlarchess.board.enums.Piece.WHITE_ROOK);
     final BitboardPosition bitboardPosition = StaticPositionBridge.fromStaticPosition(staticPosition);
     final Set<Square> bitboardAttacks = BitboardPositionUtility
         .toSquareSet(RookAttacks.attacks(Square.D4.ordinal(), bitboardPosition.occupied()));

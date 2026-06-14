@@ -26,11 +26,11 @@ abstract class FiftyMoveClaimAheadReportBuilder {
    *
    * <p>
    * Concretely, at any replay-move where the position's halfmove clock equals 99, the builder asks: was the actually-
-   * played move at this move a clock-resetting move (pawn move or capture), or did the played history end here? If yes -
-   * the sequence is about to break (or has ended) without ever reaching clock 100 - and at least one non-zeroing legal
-   * move exists at this move, ONE entry is emitted (regardless of how many non-zeroing alternatives were available). If
-   * no - the actually-played move was non-zeroing, so clock will advance to 100 and the sequence reaches threshold - no
-   * entry is emitted at this move.
+   * played move at this move a clock-resetting move (pawn move or capture), or did the played history end here? If yes
+   * - the sequence is about to break (or has ended) without ever reaching clock 100 - and at least one non-zeroing
+   * legal move exists at this move, ONE entry is emitted (regardless of how many non-zeroing alternatives were
+   * available). If no - the actually-played move was non-zeroing, so clock will advance to 100 and the sequence reaches
+   * threshold - no entry is emitted at this move.
    *
    * <p>
    * One-entry-per-boundary collapse: at a clock-99 boundary with N >= 1 non-zeroing legal alternatives, listing all N

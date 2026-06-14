@@ -17,9 +17,9 @@ import io.github.dlbbld.ashlarchess.board.enums.Side;
  *
  * <p>
  * {@code fiftyMoveThresholdMove} and {@code seventyFiveMoveThresholdMove} are the played moves at which the clock first
- * reached 100 and 150 - i.e. 50 and 75 moves by each player - or {@code null} when no played move crossed that threshold
- * (it was inherited from the starting FEN, or, for 75, never reached). They anchor the "claims open" (50/50) and
- * "automatic draw" (75/75) points in the printed report.
+ * reached 100 and 150 - i.e. 50 and 75 moves by each player - or {@code null} when no played move crossed that
+ * threshold (it was inherited from the starting FEN, or, for 75, never reached). They anchor the "claims open" (50/50)
+ * and "automatic draw" (75/75) points in the printed report.
  *
  * <p>
  * {@code endMove} is the last non-zeroing move of the sequence, or {@code null} for the corner case where the starting

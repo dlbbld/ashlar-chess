@@ -19,8 +19,8 @@ import io.github.dlbbld.ashlarchess.unwinnability.UnwinnableQuickAnalyzer;
 
 /**
  * Game-end semantics. The raw rule predicates on {@link Board} are independent - several may be true at one position -
- * while {@link BasicChessUtility#calculateOutcome(Board)} projects them through the python-chess precedence stack into a
- * single {@link Outcome}. These tests pin that independence and the projection together.
+ * while {@link BasicChessUtility#calculateOutcome(Board)} projects them through the python-chess precedence stack into
+ * a single {@link Outcome}. These tests pin that independence and the projection together.
  *
  * <p>
  * {@code calculateOutcome} stays cheap and never invokes a CHA / dead-position analyzer; the analyzer-driven dead

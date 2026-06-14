@@ -29,7 +29,8 @@ public abstract class PromotionUtility implements EnumConstants {
     final List<UpdateSquare> result = new ArrayList<>();
 
     result.add(new UpdateSquare(moveSpecification.fromSquare()));
-    final Piece promotionPiece = PromotionPieceTypeUtility.calculate(havingMove, moveSpecification.promotionPieceType());
+    final Piece promotionPiece = PromotionPieceTypeUtility.calculate(havingMove,
+        moveSpecification.promotionPieceType());
     result.add(new UpdateSquare(moveSpecification.toSquare(), promotionPiece));
 
     return result;

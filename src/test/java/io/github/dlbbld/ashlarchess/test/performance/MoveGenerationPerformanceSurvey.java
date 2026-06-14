@@ -162,8 +162,8 @@ public class MoveGenerationPerformanceSurvey {
         boardBackend.moveCount(), helpmateSearchBoard.moveCount(), reference.moveCount(), chessLib.moveCount());
     System.out.printf("  Board backend: %.3f us/position  (%.1fx ChessLib)%n", boardBackendUs,
         boardBackendUs / chessLibUs);
-    System.out.printf("  HelpmateSearchBoard buffer path: %.3f us/position  (%.1fx ChessLib)%n",
-        helpmateSearchBoardUs, helpmateSearchBoardUs / chessLibUs);
+    System.out.printf("  HelpmateSearchBoard buffer path: %.3f us/position  (%.1fx ChessLib)%n", helpmateSearchBoardUs,
+        helpmateSearchBoardUs / chessLibUs);
     System.out.printf("  reference oracle: %.3f us/position  (%.1fx ChessLib)%n", referenceUs,
         referenceUs / chessLibUs);
     System.out.printf("  ChessLib: %.3f us/position%n%n", chessLibUs);

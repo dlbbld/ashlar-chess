@@ -739,10 +739,10 @@ public final class LenientPgnParser {
   // -------------------------------------------------------------------------------------------------
 
   /**
-   * Replays each move on a fresh board via {@link Board#moveLenient}, accumulates SAN-level forgiven items into
-   * the parser-instance accumulator, and returns a copy of the move list with the canonical SAN substituted (so
-   * the resulting {@link PgnGame} compares equal to a strict-parsed file built from the same canonical moves).
-   * Move-suffix annotations and commentaries are carried through unchanged.
+   * Replays each move on a fresh board via {@link Board#moveLenient}, accumulates SAN-level forgiven items into the
+   * parser-instance accumulator, and returns a copy of the move list with the canonical SAN substituted (so the
+   * resulting {@link PgnGame} compares equal to a strict-parsed file built from the same canonical moves). Move-suffix
+   * annotations and commentaries are carried through unchanged.
    *
    * <p>
    * On a SAN-level failure the partial accumulator is included on the thrown

@@ -31,8 +31,8 @@ import io.github.dlbbld.ashlarchess.common.model.DynamicPosition;
  * </ul>
  *
  * <p>
- * <strong>Explicitly NOT part of the key:</strong> raw EP target, halfmove clock and fullmove number, cached check flags
- * ({@code isCheck} / {@code isCheckmate} / {@code isStalemate}), legal-move buffer contents, or any derived /
+ * <strong>Explicitly NOT part of the key:</strong> raw EP target, halfmove clock and fullmove number, cached check
+ * flags ({@code isCheck} / {@code isCheckmate} / {@code isStalemate}), legal-move buffer contents, or any derived /
  * search-local state. The key is over the search node's <em>inputs</em>, not its outputs.
  *
  * <p>

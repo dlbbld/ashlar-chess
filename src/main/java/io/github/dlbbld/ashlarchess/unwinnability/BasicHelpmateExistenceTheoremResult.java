@@ -9,5 +9,7 @@ package io.github.dlbbld.ashlarchess.unwinnability;
  * analysis should handle, so the caller must continue with the ordinary search.
  */
 enum BasicHelpmateExistenceTheoremResult {
-  WINNABLE, UNWINNABLE, NOT_APPLICABLE;
+  WINNABLE,
+  UNWINNABLE,
+  NOT_APPLICABLE;
 }

@@ -21,7 +21,8 @@ import io.github.dlbbld.ashlarchess.test.common.utility.OutputCaptureUtility;
  *
  * <ul>
  * <li>Initial piece placement, White to move on move 1 (the conventional standard start).</li>
- * <li>Initial piece placement, Black to move on move 1 (synthetic FEN where Black has the move at fullmove number 1).</li>
+ * <li>Initial piece placement, Black to move on move 1 (synthetic FEN where Black has the move at fullmove number
+ * 1).</li>
  * <li>Non-initial FEN position, White to move on move 1.</li>
  * <li>Non-initial FEN position, Black to move on move 1.</li>
  * </ul>
@@ -54,8 +55,8 @@ class TestFromInitialPlacementAndFenStart {
   private static final String FEN_KRR_K_WHITE_TO_MOVE = "4k3/8/8/8/8/8/8/R3K2R w - - 0 1";
 
   /**
-   * Same piece placement and (absence of) rights as above but Black has the move at fullmove number 1. Synthetic but valid;
-   * the predicates and report model do not care that the position is reachable from the standard start.
+   * Same piece placement and (absence of) rights as above but Black has the move at fullmove number 1. Synthetic but
+   * valid; the predicates and report model do not care that the position is reachable from the standard start.
    */
   private static final String FEN_KRR_K_BLACK_TO_MOVE = "4k3/8/8/8/8/8/8/R3K2R b - - 0 1";
 

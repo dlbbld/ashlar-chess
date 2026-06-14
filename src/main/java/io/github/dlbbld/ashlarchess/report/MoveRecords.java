@@ -37,8 +37,8 @@ abstract class MoveRecords {
       throw new IllegalStateException("There is no last move");
     }
     final LegalMove last = board.getLastMove();
-    return new MoveRecord(board.getPerformedMoveCount(), board.getLastPlayedFullMoveNumber(),
-        board.getHalfMoveClock(), board.getDynamicPosition(), board.getRepetitionCount(), board.getSan(),
-        last.movingPiece(), last.moveSpecification());
+    return new MoveRecord(board.getPerformedMoveCount(), board.getLastPlayedFullMoveNumber(), board.getHalfMoveClock(),
+        board.getDynamicPosition(), board.getRepetitionCount(), board.getSan(), last.movingPiece(),
+        last.moveSpecification());
   }
 }

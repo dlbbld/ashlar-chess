@@ -74,8 +74,7 @@ public class GenerateRandomGame {
           case INSUFFICIENT_MATERIAL:
             if (board.isInsufficientMaterial()) {
               moveNumberLastPossibleTermination = numberOfMovesPerformed + 1;
-              System.out
-                  .println("Found insufficient material option for move " + moveNumberLastPossibleTermination);
+              System.out.println("Found insufficient material option for move " + moveNumberLastPossibleTermination);
             }
             break;
           case STALEMATE:
@@ -92,8 +91,8 @@ public class GenerateRandomGame {
 
         }
         if (!board.isCheckmate() && !board.isStalemate()
-            && UnwinnableQuickAnalyzer.unwinnableQuick(board) != UnwinnabilityQuickVerdict.UNWINNABLE && board.getRepetitionCount() == 1
-            && !board.isFiftyMove()) {
+            && UnwinnableQuickAnalyzer.unwinnableQuick(board) != UnwinnabilityQuickVerdict.UNWINNABLE
+            && board.getRepetitionCount() == 1 && !board.isFiftyMove()) {
           moveOptionList.add(moveSpecification);
         }
         board.unmove();
@@ -142,8 +141,8 @@ public class GenerateRandomGame {
 
         }
         if (isTerminationMoveFound) {
-          System.out.println("A game with " + board.getPerformedMoveCount() / 2.0 + " moves ending in "
-              + findRandomGame + " was generated");
+          System.out.println("A game with " + board.getPerformedMoveCount() / 2.0 + " moves ending in " + findRandomGame
+              + " was generated");
           final String moveList = calculateMoveList(board);
           System.out.println(moveList);
           break;
@@ -179,7 +178,8 @@ public class GenerateRandomGame {
       for (final MoveSpecification moveSpecification : legalMoves) {
         board.move(moveSpecification);
         if (!board.isCheckmate() && !board.isStalemate()
-            && UnwinnableQuickAnalyzer.unwinnableQuick(board) != UnwinnabilityQuickVerdict.UNWINNABLE && board.getRepetitionCount() == 1) {
+            && UnwinnableQuickAnalyzer.unwinnableQuick(board) != UnwinnabilityQuickVerdict.UNWINNABLE
+            && board.getRepetitionCount() == 1) {
           moveOptionList.add(moveSpecification);
         }
         board.unmove();
@@ -231,8 +231,8 @@ public class GenerateRandomGame {
       for (final MoveSpecification moveSpecification : legalMoves) {
         board.move(moveSpecification);
         if (!board.isCheckmate() && !board.isStalemate()
-            && UnwinnableQuickAnalyzer.unwinnableQuick(board) == UnwinnabilityQuickVerdict.UNWINNABLE && board.getRepetitionCount() == 1
-            && (!isFiftyReached || board.isFiftyMove())) {
+            && UnwinnableQuickAnalyzer.unwinnableQuick(board) == UnwinnabilityQuickVerdict.UNWINNABLE
+            && board.getRepetitionCount() == 1 && (!isFiftyReached || board.isFiftyMove())) {
           moveOptionList.add(moveSpecification);
         }
         board.unmove();
@@ -314,7 +314,8 @@ public class GenerateRandomGame {
         for (final MoveSpecification moveSpecification : legalMoves) {
           board.move(moveSpecification);
           if (!board.isCheckmate() && !board.isStalemate()
-              && UnwinnableQuickAnalyzer.unwinnableQuick(board) == UnwinnabilityQuickVerdict.UNWINNABLE && !board.isFiftyMove()) {
+              && UnwinnableQuickAnalyzer.unwinnableQuick(board) == UnwinnabilityQuickVerdict.UNWINNABLE
+              && !board.isFiftyMove()) {
             moveOptionList.add(moveSpecification);
           }
           board.unmove();

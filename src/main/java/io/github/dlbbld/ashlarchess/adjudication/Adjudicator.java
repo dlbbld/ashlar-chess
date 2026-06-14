@@ -41,7 +41,7 @@ public final class Adjudicator {
    * Quickly adjudicates a flag-fall (<a href="https://handbook.fide.com/chapter/e012023">FIDE 6.9</a>): draws only if
    * the opponent is provably unwinnable by the quick analyzer, otherwise rules the flag-fall a loss.
    *
-   * @param board the position at flag-fall
+   * @param board          the position at flag-fall
    * @param flaggingPlayer the player whose flag fell; must be {@link Side#WHITE} or {@link Side#BLACK}
    * @return {@link AdjudicationResult#DRAW} or {@link AdjudicationResult#LOSS}
    * @throws IllegalArgumentException if {@code flaggingPlayer} is {@link Side#NONE}
@@ -56,7 +56,7 @@ public final class Adjudicator {
    * Quickly adjudicates a resignation (<a href="https://handbook.fide.com/chapter/e012023">FIDE 5.1.2</a>) - identical
    * to {@link #adjudicateFlagfallQuick(Board, Side)}.
    *
-   * @param board the position at resignation
+   * @param board           the position at resignation
    * @param resigningPlayer the player resigning; must be {@link Side#WHITE} or {@link Side#BLACK}
    * @return {@link AdjudicationResult#DRAW} or {@link AdjudicationResult#LOSS}
    * @throws IllegalArgumentException if {@code resigningPlayer} is {@link Side#NONE}
@@ -70,9 +70,10 @@ public final class Adjudicator {
    * proven dead position, rules a loss on a proven win for the opponent, or {@link AdjudicationResult#UNDETERMINED}
    * when the complete analysis cannot decide within its search bound.
    *
-   * @param board the position at flag-fall
+   * @param board          the position at flag-fall
    * @param flaggingPlayer the player whose flag fell; must be {@link Side#WHITE} or {@link Side#BLACK}
-   * @return {@link AdjudicationResult#DRAW}, {@link AdjudicationResult#LOSS}, or {@link AdjudicationResult#UNDETERMINED}
+   * @return {@link AdjudicationResult#DRAW}, {@link AdjudicationResult#LOSS}, or
+   *         {@link AdjudicationResult#UNDETERMINED}
    * @throws IllegalArgumentException if {@code flaggingPlayer} is {@link Side#NONE}
    */
   public static AdjudicationResult adjudicateFlagfallFull(Board board, Side flaggingPlayer) {
@@ -91,9 +92,10 @@ public final class Adjudicator {
    * Adjudicates a resignation (<a href="https://handbook.fide.com/chapter/e012023">FIDE 5.1.2</a>) completely -
    * identical to {@link #adjudicateFlagfallFull(Board, Side)}.
    *
-   * @param board the position at resignation
+   * @param board           the position at resignation
    * @param resigningPlayer the player resigning; must be {@link Side#WHITE} or {@link Side#BLACK}
-   * @return {@link AdjudicationResult#DRAW}, {@link AdjudicationResult#LOSS}, or {@link AdjudicationResult#UNDETERMINED}
+   * @return {@link AdjudicationResult#DRAW}, {@link AdjudicationResult#LOSS}, or
+   *         {@link AdjudicationResult#UNDETERMINED}
    * @throws IllegalArgumentException if {@code resigningPlayer} is {@link Side#NONE}
    */
   public static AdjudicationResult adjudicateResignationFull(Board board, Side resigningPlayer) {

@@ -78,10 +78,10 @@ public final class LenientFenParser {
   }
 
   /**
-   * Shared internal pipeline: normalise then delegate, with a single auto-correction retry for the
-   * halfmove clock vs fullmove number consistency check (the only strict invariant the lenient layer recovers from).
-   * The accumulator is populated by both successful and failed paths so the exception (and the validation result
-   * derived from it) carries every transformation that fired before the failure point.
+   * Shared internal pipeline: normalise then delegate, with a single auto-correction retry for the halfmove clock vs
+   * fullmove number consistency check (the only strict invariant the lenient layer recovers from). The accumulator is
+   * populated by both successful and failed paths so the exception (and the validation result derived from it) carries
+   * every transformation that fired before the failure point.
    */
   private static Fen parseInternal(String fen, List<ForgivenFenItem> accumulator) {
     final String canonical = normalise(fen, accumulator);
@@ -139,8 +139,8 @@ public final class LenientFenParser {
    * Applies the lenient normalisation transforms in order, recording each as a {@link ForgivenFenItem} on the
    * accumulator. Returns the canonical six-field FEN string ready for {@link FenParserRaw} / {@link FenParserAdvanced}.
    * Throws {@link LenientFenParserValidationException} with {@link LenientFenParserValidationProblem#UNRECOVERABLE}
-   * when the input has fewer than four fields after normalisation (cannot recover to a FEN with a defaulted
-   * halfmove clock and fullmove number).
+   * when the input has fewer than four fields after normalisation (cannot recover to a FEN with a defaulted halfmove
+   * clock and fullmove number).
    */
   private static String normalise(String fen, List<ForgivenFenItem> accumulator) {
     String working = fen;

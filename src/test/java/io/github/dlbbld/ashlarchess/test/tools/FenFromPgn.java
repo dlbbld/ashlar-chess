@@ -13,8 +13,8 @@ import io.github.dlbbld.ashlarchess.pgn.PgnUtility;
 
 /**
  * Scratch tool that prints the final FEN of a PGN file. Mechanical helper for fixture authoring: when a new test case
- * is added to {@code PgnTestCaseCatalog}, the {@code fen} field needs the position reached after the PGN's last
- * move. Computing it by hand is tedious; this tool replays the PGN and prints the result on stdout.
+ * is added to {@code PgnTestCaseCatalog}, the {@code fen} field needs the position reached after the PGN's last move.
+ * Computing it by hand is tedious; this tool replays the PGN and prints the result on stdout.
  *
  * <p>
  * Usage from Maven:

@@ -19,8 +19,8 @@ import io.github.dlbbld.ashlarchess.common.Nulls;
  * not present in {@code priorOccurrences}. The compact constructor enforces this invariant.
  *
  * <p>
- * {@code hasBeenPlayed} is true when the same move appears in the played history - meaning the side actually made
- * the claim-ahead-able move on the board. The reporter marks such entries with an asterisk.
+ * {@code hasBeenPlayed} is true when the same move appears in the played history - meaning the side actually made the
+ * claim-ahead-able move on the board. The reporter marks such entries with an asterisk.
  */
 record ClaimAheadEntry(MoveRecord claimAheadMove, boolean hasBeenPlayed, ImmutableList<MoveRecord> priorOccurrences,
     boolean includesInitialPosition, int totalRepetitionCount) {

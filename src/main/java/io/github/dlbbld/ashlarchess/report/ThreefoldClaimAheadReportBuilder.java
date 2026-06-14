@@ -23,8 +23,8 @@ abstract class ThreefoldClaimAheadReportBuilder {
    * read-only - never receives {@code move} or {@code unmove} calls.
    *
    * <p>
-   * Entries are ordered by {@link ReportLineOrder#CLAIM_AHEAD_COMPARATOR}: lexicographic on the displayed move-
-   * count sequence ({@code priorOccurrences ++ claimAheadMove}, prefixed by a virtual {@code -1} when
+   * Entries are ordered by {@link ReportLineOrder#CLAIM_AHEAD_COMPARATOR}: lexicographic on the displayed move- count
+   * sequence ({@code priorOccurrences ++ claimAheadMove}, prefixed by a virtual {@code -1} when
    * {@code includesInitialPosition} is true). Sequences that share earlier moves stay adjacent and progress length-3 ->
    * length-4 -> length-5 (the shorter is a prefix of the longer in standard lex order). When the played history reaches
    * the same dynamic position multiple times, the earlier claim-ahead boundary surfaces first.
