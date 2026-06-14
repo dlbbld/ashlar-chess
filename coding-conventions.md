@@ -54,6 +54,15 @@ Documented exception:
 
 - **`BitboardPosition` deliberately carries its move-generation / king-safety engine** (`afterMove`, `legalMoves`, `attackedSquares`, `isInCheck`, `pinRay`, `pinnedPieces`, …) on the record. This is a conscious, bounded exception made for hot-path allocation reasons on the production move-generation path — the engine reads the twelve `long` fields directly without a wrapper object per call. It is **not** a licence to add domain methods to other records: no other record should follow this pattern without the same measured hot-path justification.
 
+## Enums carry data, not behavior
+
+Enums are value catalogs, and the same rule applies as for records. Where the line falls:
+
+- **Keep on the enum.** The canonical data (constructor-injected `final` fields and their accessors), trivial intrinsic predicates (`Side.getIsWhite()`), intrinsic involutions (`Side.getOppositeSide()`, `SquareType.getOppositeSquareType()`), and **self-canonical parse** — a `static exists` / `calculate(symbol)` that recognizes the value from *its own* canonical representation (letter, symbol, value), including one hop through an accessor (`NotationMovingPiece.calculate(char)` matching on `getPieceType().getLetter()`).
+- **Move to a utility / translator.** **Cross-type translation** (a `switch` mapping the enum — or another type — into a *different* enum or type: `KingSafetyCheck -> MoveCheck`, `Side -> FenSideSymbol`, `(Side, PieceType) -> Piece`); **side-relative chess-rule logic** (methods that combine the value with a `Side` or other move-rule input to compute a rule-significant result); and **presentation** (rendering values into display strings).
+
+Name it `<Enum>Utility` (or `<Enum>Translator` / `<Enum>Mapper`), in the enum's own package when the result type lives there, otherwise in the consuming package (`analyze.KingSafetyCheckTranslator`, `san.CastlingCheckMapper`). When extracting, move any private lookup table or helper that exists only to serve the extracted behavior along with it — don't leave the enum a half-data, half-hidden-service container.
+
 ## JavaDoc and comments
 
 JavaDoc should document contracts that are not obvious from the declaration: public API semantics, invariants, rule decisions, edge cases, and non-obvious test intent.

@@ -162,10 +162,32 @@ small and mostly low-risk.
 
 **Borderline, decide during execution (lean keep):** the trivial `isValid()` predicates on the parser validation
 results; `havingMove()` on `LegalMove` (mirrors `DynamicPosition`'s real `havingMove()` component). `Square.flip()`
-(heavy geometry, one caller) is a minor optional move to a board-geometry utility.
+(heavy geometry, one caller) **was extracted** to `board.enums.SquareUtility` (commit `77a95c72`) as part of the
+enum-logic sweep below.
 
 **Breaking:** `DynamicPosition.isEnPassantCapturePossible()` and the enum `toMoveCheck()` removals; the StaticPosition
 work is test-only.
+
+**Enum-logic sweep (in progress).** An audit of all 50 enums (beyond the three `toMoveCheck` enums above) found more
+behaviour living on enums. Extracted, each its own commit: `SanTerminalMarker` -> `SanTerminalMarkerUtility`
+(`41d09c7f`); `SanFormat.isCapture` -> `SanFormatUtility` (`1fbb7dea`); the `(Side, Type) -> Piece` factory family
+across `Piece` / `PieceType` / `PromotionPieceType` consolidated into `PieceUtility` (+ existing
+`PromotionPieceTypeUtility`), removing a `Piece.calculate` / `PieceType.calculate` duplicate (`a0476c28`);
+`Fen{Side,Piece}Symbol.calculate(Side/Piece)` translations -> `Fen{Side,Piece}SymbolUtility` (`c19797de`);
+`Square.flip` -> `SquareUtility` (`77a95c72`). The governing rule is now codified in **coding-conventions.md**
+("Enums carry data, not behavior"): self-canonical parse stays on the enum; cross-type translation, side-relative
+chess-rule logic, and presentation move to utilities. KEEP decisions: intrinsic involutions (`Side.getOppositeSide`,
+`SquareType.getOppositeSquareType`), self-parse `exists` / `calculate(symbol)` (`MoveSuffixAnnotation`, `StandardTag`,
+`Notation*`, the `Fen*Symbol` char parse), and the trivial value-list renderers (too small to warrant dedicated classes).
+
+**Remaining (dedicated pass): `Rank` / `File` / `Square` side-relative chess-rule methods.** Each foundational enum
+mixes intrinsic geometry (coordinate identity + single-step neighbours - keep) with `switch(Side)` rule logic
+(ground / promotion / pawn-initial / two-advance / en-passant ranks; jump-over and king/rook-origin squares; per-side
+left/right file tables - extract to `RankUtility` / `FileUtility` / `SquareUtility`). They share private helpers and
+`public static final` per-side maps, so each extracted method must move together with the tables/helpers that exist
+only to serve it - don't leave the enum half data, half hidden service. Order: `Rank` (cleanest - rule methods are
+independent of the geometry helpers), then `File`, then `Square` (most entangled; `SquareUtility` already seeded by
+`flip`).
 
 ### Cleanup (done) - dead code and test-only-production relocations
 
