@@ -498,7 +498,7 @@ public class PawnWallGeometricAnalyzer {
 
   private static StaticPosition createChangedPositionIfChange(StaticPosition staticPosition, Square square) {
     if (staticPosition.get(square) != Piece.WHITE_PAWN) {
-      return staticPosition.createChangedPosition(square, Piece.WHITE_PAWN);
+      return StaticPositionUtility.createChangedPosition(staticPosition, square, Piece.WHITE_PAWN);
     }
     return staticPosition;
   }

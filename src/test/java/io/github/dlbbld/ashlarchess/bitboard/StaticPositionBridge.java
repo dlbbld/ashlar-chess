@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import io.github.dlbbld.ashlarchess.board.StaticPosition;
+import io.github.dlbbld.ashlarchess.common.utility.StaticPositionUtility;
 import io.github.dlbbld.ashlarchess.board.enums.Piece;
 import io.github.dlbbld.ashlarchess.board.enums.Square;
 import io.github.dlbbld.ashlarchess.board.model.UpdateSquare;
@@ -89,7 +90,7 @@ public final class StaticPositionBridge {
     if (updates.isEmpty()) {
       return StaticPosition.EMPTY_POSITION;
     }
-    return StaticPosition.EMPTY_POSITION.createChangedPosition(updates);
+    return StaticPositionUtility.createChangedPosition(StaticPosition.EMPTY_POSITION, updates);
   }
 
   private static void collectOccupiedSquares(List<UpdateSquare> updates, long bitboard, Piece piece) {

@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 
 import io.github.dlbbld.ashlarchess.bitboard.StaticPositionBridge;
 import io.github.dlbbld.ashlarchess.board.StaticPosition;
+import io.github.dlbbld.ashlarchess.common.utility.StaticPositionUtility;
 import io.github.dlbbld.ashlarchess.board.enums.Piece;
 import io.github.dlbbld.ashlarchess.board.enums.Square;
 import io.github.dlbbld.ashlarchess.common.constants.EnumConstants;
@@ -24,7 +25,7 @@ class TestBasicStaticPosition implements EnumConstants {
     StaticPosition workingPosition = StaticPosition.INITIAL_POSITION;
     for (final Square square : Square.REAL) {
       if (!workingPosition.isEmpty(square)) {
-        workingPosition = workingPosition.createChangedPosition(square);
+        workingPosition = StaticPositionUtility.createChangedPosition(workingPosition, square);
       }
     }
 
@@ -47,7 +48,7 @@ class TestBasicStaticPosition implements EnumConstants {
   void testFill() throws Exception {
     StaticPosition workingPosition = StaticPosition.EMPTY_POSITION;
     for (final Square square : Square.REAL) {
-      workingPosition = workingPosition.createChangedPosition(square, WHITE_PAWN);
+      workingPosition = StaticPositionUtility.createChangedPosition(workingPosition, square, WHITE_PAWN);
     }
     final StaticPosition staticAllPawnPositionActual = new StaticPosition(WHITE_PAWN, WHITE_PAWN, WHITE_PAWN,
         WHITE_PAWN, WHITE_PAWN, WHITE_PAWN, WHITE_PAWN, WHITE_PAWN, WHITE_PAWN, WHITE_PAWN, WHITE_PAWN, WHITE_PAWN,
@@ -67,7 +68,7 @@ class TestBasicStaticPosition implements EnumConstants {
     final StaticPosition emptyPosition = StaticPosition.EMPTY_POSITION;
     boolean isCorrectException = false;
     try {
-      emptyPosition.createChangedPosition(Square.NONE);
+      StaticPositionUtility.createChangedPosition(emptyPosition, Square.NONE);
     } catch (@SuppressWarnings("unused") final IllegalArgumentException e) {
       isCorrectException = true;
     }
@@ -82,7 +83,7 @@ class TestBasicStaticPosition implements EnumConstants {
     for (final Piece piece : Piece.REAL) {
       boolean isCorrectException = false;
       try {
-        emptyPosition.createChangedPosition(Square.NONE, piece);
+        StaticPositionUtility.createChangedPosition(emptyPosition, Square.NONE, piece);
       } catch (@SuppressWarnings("unused") final IllegalArgumentException e) {
         isCorrectException = true;
       }
@@ -98,7 +99,7 @@ class TestBasicStaticPosition implements EnumConstants {
     for (final Square square : Square.REAL) {
       boolean isCorrectException = false;
       try {
-        emptyPosition.createChangedPosition(square, Piece.NONE);
+        StaticPositionUtility.createChangedPosition(emptyPosition, square, Piece.NONE);
       } catch (@SuppressWarnings("unused") final IllegalArgumentException e) {
         isCorrectException = true;
       }
@@ -114,13 +115,13 @@ class TestBasicStaticPosition implements EnumConstants {
     for (final Square square : Square.REAL) {
       for (final Piece piece : Piece.REAL) {
         assertEquals(Piece.NONE, workingPosition.get(square));
-        workingPosition = workingPosition.createChangedPosition(square, piece);
+        workingPosition = StaticPositionUtility.createChangedPosition(workingPosition, square, piece);
         assertEquals(piece, workingPosition.get(square));
-        workingPosition = workingPosition.createChangedPosition(square);
+        workingPosition = StaticPositionUtility.createChangedPosition(workingPosition, square);
         assertEquals(Piece.NONE, workingPosition.get(square));
-        workingPosition = workingPosition.createChangedPosition(square, piece);
+        workingPosition = StaticPositionUtility.createChangedPosition(workingPosition, square, piece);
         assertEquals(piece, workingPosition.get(square));
-        workingPosition = workingPosition.createChangedPosition(square);
+        workingPosition = StaticPositionUtility.createChangedPosition(workingPosition, square);
         assertEquals(StaticPosition.EMPTY_POSITION, workingPosition);
       }
     }

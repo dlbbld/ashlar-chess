@@ -15,6 +15,7 @@ import io.github.dlbbld.ashlarchess.bitboard.BitboardPosition;
 import io.github.dlbbld.ashlarchess.bitboard.BitboardPositionUtility;
 import io.github.dlbbld.ashlarchess.bitboard.StaticPositionBridge;
 import io.github.dlbbld.ashlarchess.board.StaticPosition;
+import io.github.dlbbld.ashlarchess.common.utility.StaticPositionUtility;
 import io.github.dlbbld.ashlarchess.board.enums.Piece;
 import io.github.dlbbld.ashlarchess.board.enums.PieceType;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
@@ -69,7 +70,7 @@ class TestBitboardPositionPins {
       if (piece == Piece.NONE || piece.getSide() != side || piece.getPieceType() == PieceType.KING) {
         continue;
       }
-      final StaticPosition modified = staticPosition.createChangedPosition(candidate);
+      final StaticPosition modified = StaticPositionUtility.createChangedPosition(staticPosition, candidate);
       final Set<Square> attackersAfter = enemySliderAttackersToKing(modified, kingSquare, side);
       if (attackersAfter.size() > attackersBefore.size()) {
         pinned.add(candidate);
