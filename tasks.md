@@ -180,14 +180,16 @@ chess-rule logic, and presentation move to utilities. KEEP decisions: intrinsic 
 `SquareType.getOppositeSquareType`), self-parse `exists` / `calculate(symbol)` (`MoveSuffixAnnotation`, `StandardTag`,
 `Notation*`, the `Fen*Symbol` char parse), and the trivial value-list renderers (too small to warrant dedicated classes).
 
-**Remaining (dedicated pass): `Rank` / `File` / `Square` side-relative chess-rule methods.** Each foundational enum
-mixes intrinsic geometry (coordinate identity + single-step neighbours - keep) with `switch(Side)` rule logic
-(ground / promotion / pawn-initial / two-advance / en-passant ranks; jump-over and king/rook-origin squares; per-side
-left/right file tables - extract to `RankUtility` / `FileUtility` / `SquareUtility`). They share private helpers and
-`public static final` per-side maps, so each extracted method must move together with the tables/helpers that exist
-only to serve it - don't leave the enum half data, half hidden service. Order: `Rank` (cleanest - rule methods are
-independent of the geometry helpers), then `File`, then `Square` (most entangled; `SquareUtility` already seeded by
-`flip`).
+**`Rank` / `File` / `Square` side-relative chess-rule methods - done.** `Rank`'s nine `switch(Side)` rule methods
+(ground / promotion / pawn-initial / two-advance / en-passant ranks + per-side validity) -> `RankUtility` (`978db416`);
+`Square`'s six rule methods (promotion-rank list, jump-over square, en-passant target list, the three castling-origin
+squares) -> `SquareUtility`, each carried with the private tables that serve only it (`f9b999e0`). **`File` needed no
+extraction**: it has only intrinsic identity, self-parse, and single-step left/right neighbour geometry - no chess-rule
+methods - and that neighbour geometry is kept on the enum, consistent with keeping `Rank`'s previous/next and `Square`'s
+directional neighbours. Kept on each enum: coordinate identity, self-parse `exists` / `calculate`, single-step neighbour
+geometry, plus `Square.calculateIsRightMostFile` (side-oriented edge geometry) and the externally-consumed
+`WHITE/BLACK_PAWN_TWO_SQUARE_ADVANCE` data constants. **The enum-logic sweep is complete** - every audited enum is now
+either extracted or has a documented KEEP rationale.
 
 ### Cleanup (done) - dead code and test-only-production relocations
 
