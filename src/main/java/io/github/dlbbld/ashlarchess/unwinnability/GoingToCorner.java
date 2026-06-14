@@ -8,6 +8,7 @@ import io.github.dlbbld.ashlarchess.board.enums.Piece;
 import io.github.dlbbld.ashlarchess.board.enums.PieceType;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
 import io.github.dlbbld.ashlarchess.board.enums.Square;
+import io.github.dlbbld.ashlarchess.board.enums.SquareUtility;
 import io.github.dlbbld.ashlarchess.common.constants.EnumConstants;
 import io.github.dlbbld.ashlarchess.model.LegalMove;
 import io.github.dlbbld.ashlarchess.model.LegalMoveKind;
@@ -67,7 +68,7 @@ class GoingToCorner implements EnumConstants {
     if (winner == BLACK) {
       // 8: set target := (flip-rank  flip-file)(target) . Flip the target with respect to the
       // center of the board (a8 becomes h1, and h8 becomes a1)
-      target = Square.flip(target);
+      target = SquareUtility.flip(target);
     }
 
     return target;
