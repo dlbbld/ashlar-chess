@@ -8,6 +8,7 @@ import java.util.Set;
 import io.github.dlbbld.ashlarchess.bitboard.BitboardPosition;
 import io.github.dlbbld.ashlarchess.board.enums.Piece;
 import io.github.dlbbld.ashlarchess.board.enums.Rank;
+import io.github.dlbbld.ashlarchess.board.enums.RankUtility;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
 import io.github.dlbbld.ashlarchess.board.enums.Square;
 import io.github.dlbbld.ashlarchess.common.constants.EnumConstants;
@@ -169,7 +170,7 @@ public final class ChessRuleAnalyzer implements EnumConstants {
   private static MovementCheck analyzePawnEnPassant(Side havingMove, Square enPassantCaptureTargetSquare,
       MoveSpecification moveSpecification) {
     final Square toSquare = moveSpecification.toSquare();
-    if (!Rank.calculateIsPawnEnPassantCaptureToRank(havingMove, toSquare.getRank())) {
+    if (!RankUtility.calculateIsPawnEnPassantCaptureToRank(havingMove, toSquare.getRank())) {
       return MovementCheck.PAWN_EN_PASSANT_WRONG_RANK;
     }
     if (!enPassantCaptureTargetSquare.equals(toSquare)) {

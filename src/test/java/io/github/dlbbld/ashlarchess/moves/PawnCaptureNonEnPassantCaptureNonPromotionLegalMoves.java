@@ -10,6 +10,7 @@ import io.github.dlbbld.ashlarchess.board.StaticPosition;
 import io.github.dlbbld.ashlarchess.board.enums.Piece;
 import io.github.dlbbld.ashlarchess.board.enums.PieceType;
 import io.github.dlbbld.ashlarchess.board.enums.Rank;
+import io.github.dlbbld.ashlarchess.board.enums.RankUtility;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
 import io.github.dlbbld.ashlarchess.board.enums.Square;
 import io.github.dlbbld.ashlarchess.common.exceptions.ProgrammingMistakeException;
@@ -29,7 +30,7 @@ class PawnCaptureNonEnPassantCaptureNonPromotionLegalMoves extends PawnLegalMove
     final Set<LegalMove> legalMoveSet = new TreeSet<>();
     final Set<Square> diagonalSquareToSet = PawnDiagonalSquares.getPawnDiagonalSquares(havingMove, fromSquare);
     for (final Square diagonalSquareTo : diagonalSquareToSet) {
-      if (!Rank.calculateIsPromotionRank(havingMove, diagonalSquareTo.getRank())
+      if (!RankUtility.calculateIsPromotionRank(havingMove, diagonalSquareTo.getRank())
           && staticPosition.isOpponentPiece(diagonalSquareTo, havingMove)) {
         final MoveSpecification moveSpecification = new MoveSpecification(fromSquare, diagonalSquareTo);
         if (!StaticPositionUtility.calculateIsKingAttackedAfterMove(staticPosition, havingMove, moveSpecification)) {

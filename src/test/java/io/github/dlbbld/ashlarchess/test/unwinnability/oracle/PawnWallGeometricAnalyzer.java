@@ -19,6 +19,7 @@ import io.github.dlbbld.ashlarchess.board.StaticPosition;
 import io.github.dlbbld.ashlarchess.board.enums.Piece;
 import io.github.dlbbld.ashlarchess.board.enums.PieceType;
 import io.github.dlbbld.ashlarchess.board.enums.Rank;
+import io.github.dlbbld.ashlarchess.board.enums.RankUtility;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
 import io.github.dlbbld.ashlarchess.board.enums.Square;
 import io.github.dlbbld.ashlarchess.common.Nulls;
@@ -253,7 +254,7 @@ public class PawnWallGeometricAnalyzer {
       StaticPosition staticPosition, Side side) {
     if (Square.calculateHasAheadSquare(side, squareLookAhead)) {
       final Square squareAhead = Square.calculateAheadSquare(side, squareLookAhead);
-      if (Rank.calculateIsPromotionRank(side, squareAhead.getRank())) {
+      if (RankUtility.calculateIsPromotionRank(side, squareAhead.getRank())) {
         return;
       }
       // now we assume the square is empty
@@ -314,7 +315,7 @@ public class PawnWallGeometricAnalyzer {
       StaticPosition staticPosition, Side side) {
     if (Square.calculateHasAheadSquare(side, squareLookAhead)) {
       final Square squareAhead = Square.calculateAheadSquare(side, squareLookAhead);
-      if (Rank.calculateIsPromotionRank(side, squareAhead.getRank())) {
+      if (RankUtility.calculateIsPromotionRank(side, squareAhead.getRank())) {
         return;
       }
       // now we assume the square is empty
@@ -407,7 +408,7 @@ public class PawnWallGeometricAnalyzer {
     }
 
     final int direction = side == Side.WHITE ? 1 : -1;
-    final int promotionRankNumber = Rank.calculatePromotionRank(side).getNumber();
+    final int promotionRankNumber = RankUtility.calculatePromotionRank(side).getNumber();
     final int fileNumber = square.getFile().getNumber();
 
     for (int rankNumber = square.getRank().getNumber()

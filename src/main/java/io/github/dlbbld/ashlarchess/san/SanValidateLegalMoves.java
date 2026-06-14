@@ -20,6 +20,7 @@ import io.github.dlbbld.ashlarchess.board.enums.Piece;
 import io.github.dlbbld.ashlarchess.board.enums.PieceUtility;
 import io.github.dlbbld.ashlarchess.board.enums.PieceType;
 import io.github.dlbbld.ashlarchess.board.enums.Rank;
+import io.github.dlbbld.ashlarchess.board.enums.RankUtility;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
 import io.github.dlbbld.ashlarchess.board.enums.Square;
 import io.github.dlbbld.ashlarchess.common.Nulls;
@@ -56,7 +57,7 @@ abstract class SanValidateLegalMoves extends AbstractSan implements EnumConstant
       case KING_CASTLING_KING_SIDE:
         throw new ProgrammingMistakeException("Castling is handled before switch");
       case PAWN_NON_CAPTURING_NON_PROMOTION: {
-        if (!Rank.calculateIsPawnTwoSquareAdvanceRank(havingMove, toSquare.getRank())) {
+        if (!RankUtility.calculateIsPawnTwoSquareAdvanceRank(havingMove, toSquare.getRank())) {
           // one square advance, san information is enough
           // from file equals to file and from rank is the rank before to rank
           final File fromFile = toSquare.getFile(); // moving straight forward
@@ -70,7 +71,7 @@ abstract class SanValidateLegalMoves extends AbstractSan implements EnumConstant
         if (board.getBitboardPosition().get(potentialJumpOverSquare) == Piece.NONE) {
           // two square advance
           final File fromFile = toSquare.getFile(); // moving straight forward
-          final Rank fromRank = Rank.calculatePawnInitialRank(havingMove);
+          final Rank fromRank = RankUtility.calculatePawnInitialRank(havingMove);
           final Square fromSquare = Square.calculate(fromFile, fromRank);
           return new MoveSpecification(fromSquare, toSquare);
         }

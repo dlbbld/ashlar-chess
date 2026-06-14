@@ -12,6 +12,7 @@ import com.google.common.collect.ImmutableMap;
 
 import io.github.dlbbld.ashlarchess.board.enums.File;
 import io.github.dlbbld.ashlarchess.board.enums.Rank;
+import io.github.dlbbld.ashlarchess.board.enums.RankUtility;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
 import io.github.dlbbld.ashlarchess.board.enums.Square;
 import io.github.dlbbld.ashlarchess.common.Nulls;
@@ -46,7 +47,7 @@ public class PawnSanValidateStaticallyStrictCalculate extends AbstractSanValidat
       };
       final SanValidationFromTo model = new SanValidationFromTo(fromFile, fromRank, toSquare);
       final boolean isCapture = fromFile != File.NONE;
-      if (Rank.calculateIsPromotionRank(side, toSquare.getRank())) {
+      if (RankUtility.calculateIsPromotionRank(side, toSquare.getRank())) {
         populatePawnPromotionMap(sanValidateMap, model, isCapture);
       } else {
         populatePawnNonPromotionMap(sanValidateMap, model, isCapture);

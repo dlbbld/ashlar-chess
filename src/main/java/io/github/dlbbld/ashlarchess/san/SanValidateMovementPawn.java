@@ -5,6 +5,7 @@ package io.github.dlbbld.ashlarchess.san;
 
 import io.github.dlbbld.ashlarchess.board.enums.File;
 import io.github.dlbbld.ashlarchess.board.enums.Rank;
+import io.github.dlbbld.ashlarchess.board.enums.RankUtility;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
 import io.github.dlbbld.ashlarchess.common.constants.EnumConstants;
 import io.github.dlbbld.ashlarchess.messages.Message;
@@ -44,7 +45,7 @@ abstract class SanValidateMovementPawn extends AbstractSan implements EnumConsta
   }
 
   private static void validatePawnDestinationRank(Side havingMove, Rank destinationRank) {
-    final boolean isInvalid = !Rank.calculateIsValidRank(havingMove, destinationRank);
+    final boolean isInvalid = !RankUtility.calculateIsValidRank(havingMove, destinationRank);
     if (isInvalid) {
       throw new SanValidationException(SanValidationProblem.MOVEMENT_PAWN_FORWARD_BACKWARDS,
           Message.getString("validation.san.movement.pawn.forward.backwards"));

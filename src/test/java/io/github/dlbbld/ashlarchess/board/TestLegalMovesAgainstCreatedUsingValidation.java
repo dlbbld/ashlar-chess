@@ -19,6 +19,7 @@ import io.github.dlbbld.ashlarchess.board.enums.Piece;
 import io.github.dlbbld.ashlarchess.board.enums.PieceType;
 import io.github.dlbbld.ashlarchess.board.enums.PromotionPieceType;
 import io.github.dlbbld.ashlarchess.board.enums.Rank;
+import io.github.dlbbld.ashlarchess.board.enums.RankUtility;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
 import io.github.dlbbld.ashlarchess.board.enums.Square;
 import io.github.dlbbld.ashlarchess.common.Nulls;
@@ -152,7 +153,7 @@ class TestLegalMovesAgainstCreatedUsingValidation {
         // we only check the actual promotion moves and not all silly possible combinations
         // that get's too much otherwise
         if (boardPiece.getPieceType() == PieceType.PAWN
-            && Rank.calculateIsPromotionRank(havingMove, toSquare.getRank())) {
+            && RankUtility.calculateIsPromotionRank(havingMove, toSquare.getRank())) {
           for (final PromotionPieceType promotionPieceType : PromotionPieceType.REAL) {
             final MoveSpecification promotionMove = new MoveSpecification(fromSquare, toSquare, promotionPieceType);
             try {

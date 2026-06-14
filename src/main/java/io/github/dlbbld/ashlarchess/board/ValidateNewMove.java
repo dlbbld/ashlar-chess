@@ -13,6 +13,7 @@ import io.github.dlbbld.ashlarchess.board.enums.CastlingRightLoss;
 import io.github.dlbbld.ashlarchess.board.enums.Piece;
 import io.github.dlbbld.ashlarchess.board.enums.PromotionPieceType;
 import io.github.dlbbld.ashlarchess.board.enums.Rank;
+import io.github.dlbbld.ashlarchess.board.enums.RankUtility;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
 import io.github.dlbbld.ashlarchess.board.enums.Square;
 import io.github.dlbbld.ashlarchess.common.constants.EnumConstants;
@@ -129,7 +130,7 @@ class ValidateNewMove implements EnumConstants {
   private static void validatePawnPromotionPieceConsistency(Board board, MoveSpecification moveSpecification)
       throws InvalidMoveException {
     final Side havingMove = board.getHavingMove();
-    if (Rank.calculateIsPromotionRank(havingMove, moveSpecification.toSquare().getRank())) {
+    if (RankUtility.calculateIsPromotionRank(havingMove, moveSpecification.toSquare().getRank())) {
       if (moveSpecification.promotionPieceType() == PromotionPieceType.NONE) {
         throw new InvalidMoveException("this is a pawn promotion move but the promotion piece was not specified",
             MoveCheck.MOVE_SPEC_PAWN_PROMOTION_NO_PROMOTION_PIECE);
