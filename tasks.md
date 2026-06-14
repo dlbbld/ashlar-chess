@@ -140,10 +140,10 @@ small and mostly low-risk.
 **Confirmed moves:**
 
 - **`StaticPosition.createChangedPosition` (3 overloads) + the private `checkUpdateSquare`** -> `StaticPositionUtility`
-  (test util; already exists and already wraps it). It simulates a state change - the rule's clearest category and its
-  own named counter-example (`afterMove` -> `Utility.createPositionAfterMove`). Keep the lightweight query predicates
-  (`get`, `isEmpty`, `isOwnPiece`, `isPawn`, ...) on the record. ~170 call-site edits, mechanical and concentrated in
-  `TestPerformMoveMainlyStaticPositionState` (test-only, low risk).
+  **- done** (`9a5692b1`). Relocated to the test util (which already wraps it via `createPositionAfterMove`), taking
+  `StaticPosition` as the first argument; the record keeps its lightweight query predicates (`get`, `isEmpty`,
+  `isOwnPiece`, `isPawn`, ...), `toString`, and the INITIAL/EMPTY constants. ~183 call-site edits (162 in
+  `TestPerformMoveMainlyStaticPositionState`), test-only, full default suite green.
 - **`DynamicPosition.isEnPassantCapturePossible()`** -> `EnPassantCaptureUtility` (a home exists). The
   attribute-vs-computed smell: a `field != NONE` check dressed as a property. ~7 call sites; public-API removal (fits the
   breaking release).
