@@ -4,7 +4,6 @@
 package io.github.dlbbld.ashlarchess.fen;
 
 import io.github.dlbbld.ashlarchess.board.enums.Side;
-import io.github.dlbbld.ashlarchess.common.exceptions.NonePointerException;
 
 public enum FenSideSymbol {
 
@@ -43,14 +42,6 @@ public enum FenSideSymbol {
       }
     }
     throw new IllegalArgumentException("Not a valid FEN side letter: '" + sideLetter + "'");
-  }
-
-  public static FenSideSymbol calculate(Side side) {
-    return switch (side) {
-      case WHITE -> FenSideSymbol.WHITE;
-      case BLACK -> FenSideSymbol.BLACK;
-      case NONE -> throw new NonePointerException();
-    };
   }
 
 }

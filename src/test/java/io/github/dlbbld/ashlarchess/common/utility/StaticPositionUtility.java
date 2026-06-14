@@ -20,7 +20,7 @@ import io.github.dlbbld.ashlarchess.common.Nulls;
 import io.github.dlbbld.ashlarchess.common.constants.EnumConstants;
 import io.github.dlbbld.ashlarchess.common.exceptions.ProgrammingMistakeException;
 import io.github.dlbbld.ashlarchess.common.model.MoveSpecification;
-import io.github.dlbbld.ashlarchess.fen.FenPieceSymbol;
+import io.github.dlbbld.ashlarchess.fen.FenPieceSymbolUtility;
 import io.github.dlbbld.ashlarchess.moves.CastlingUtility;
 import io.github.dlbbld.ashlarchess.moves.EnPassantCaptureUtility;
 import io.github.dlbbld.ashlarchess.moves.PromotionUtility;
@@ -116,7 +116,7 @@ public abstract class StaticPositionUtility implements EnumConstants {
             piecePlacement.append(consecutiveEmptySquares);
             consecutiveEmptySquares = 0;
           }
-          piecePlacement.append(FenPieceSymbol.calculate(pieceOnSquare).pieceLetter());
+          piecePlacement.append(FenPieceSymbolUtility.calculate(pieceOnSquare).pieceLetter());
         }
       }
       if (rankNumber != 1) {
