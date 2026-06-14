@@ -11,6 +11,7 @@ import io.github.dlbbld.ashlarchess.board.enums.Rank;
 import io.github.dlbbld.ashlarchess.board.enums.RankUtility;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
 import io.github.dlbbld.ashlarchess.board.enums.Square;
+import io.github.dlbbld.ashlarchess.board.enums.SquareUtility;
 import io.github.dlbbld.ashlarchess.common.constants.EnumConstants;
 import io.github.dlbbld.ashlarchess.common.exceptions.ProgrammingMistakeException;
 import io.github.dlbbld.ashlarchess.common.model.MoveSpecification;
@@ -122,7 +123,7 @@ public final class ChessRuleAnalyzer implements EnumConstants {
   private static MovementCheck analyzePawnTwoSquareAdvance(BitboardPosition bitboardPosition, Side havingMove,
       MoveSpecification moveSpecification) {
     final Square toSquare = moveSpecification.toSquare();
-    final Square jumpOverSquare = Square.calculateJumpOverSquare(havingMove, toSquare);
+    final Square jumpOverSquare = SquareUtility.calculateJumpOverSquare(havingMove, toSquare);
     final boolean jumpOverSquareIsEmpty = bitboardPosition.isEmpty(jumpOverSquare);
     final boolean toSquareIsEmpty = bitboardPosition.isEmpty(toSquare);
 

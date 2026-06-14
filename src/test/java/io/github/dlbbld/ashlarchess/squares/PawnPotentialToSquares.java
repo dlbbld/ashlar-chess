@@ -10,6 +10,7 @@ import io.github.dlbbld.ashlarchess.board.StaticPosition;
 import io.github.dlbbld.ashlarchess.board.enums.Piece;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
 import io.github.dlbbld.ashlarchess.board.enums.Square;
+import io.github.dlbbld.ashlarchess.board.enums.SquareUtility;
 
 public class PawnPotentialToSquares extends AbstractPotentialToSquares {
 
@@ -46,7 +47,7 @@ public class PawnPotentialToSquares extends AbstractPotentialToSquares {
 
     final Set<Square> emptyBoardTwoAdvanceSet = PawnTwoAdvanceEmptyBoardSquares.getPawnSquares(havingMove, fromSquare);
     for (final Square twoAdvanceSquare : emptyBoardTwoAdvanceSet) {
-      final Square squareJumpOver = Square.calculateJumpOverSquare(havingMove, twoAdvanceSquare);
+      final Square squareJumpOver = SquareUtility.calculateJumpOverSquare(havingMove, twoAdvanceSquare);
       final Piece pieceOnJumpOverSquare = staticPosition.get(squareJumpOver);
       if (pieceOnJumpOverSquare == Piece.NONE) {
         // square travelled over is empty

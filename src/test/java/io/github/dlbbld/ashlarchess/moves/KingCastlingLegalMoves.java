@@ -17,6 +17,7 @@ import io.github.dlbbld.ashlarchess.board.enums.Piece;
 import io.github.dlbbld.ashlarchess.board.enums.PieceUtility;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
 import io.github.dlbbld.ashlarchess.board.enums.Square;
+import io.github.dlbbld.ashlarchess.board.enums.SquareUtility;
 import io.github.dlbbld.ashlarchess.common.constants.CastlingConstants;
 import io.github.dlbbld.ashlarchess.common.exceptions.ProgrammingMistakeException;
 import io.github.dlbbld.ashlarchess.enums.CastlingCheck;
@@ -115,23 +116,23 @@ class KingCastlingLegalMoves extends KingLegalMoves {
   }
 
   private static boolean calculateQueenSideCastlingIsOriginalPosition(StaticPosition staticPosition, Side havingMove) {
-    final Square kingOriginalSquare = Square.calculateKingOriginalSquare(havingMove);
+    final Square kingOriginalSquare = SquareUtility.calculateKingOriginalSquare(havingMove);
     final Piece kingPiece = PieceUtility.calculateKingPiece(havingMove);
     if (staticPosition.get(kingOriginalSquare) != kingPiece) {
       return false;
     }
-    final Square rookOriginalSquare = Square.calculateQueenSideRookOriginalSquare(havingMove);
+    final Square rookOriginalSquare = SquareUtility.calculateQueenSideRookOriginalSquare(havingMove);
     final Piece rookPiece = PieceUtility.calculateRookPiece(havingMove);
     return staticPosition.get(rookOriginalSquare) == rookPiece;
   }
 
   private static boolean calculateKingSideCastlingIsOriginalPosition(StaticPosition staticPosition, Side havingMove) {
-    final Square kingOriginalSquare = Square.calculateKingOriginalSquare(havingMove);
+    final Square kingOriginalSquare = SquareUtility.calculateKingOriginalSquare(havingMove);
     final Piece kingPiece = PieceUtility.calculateKingPiece(havingMove);
     if (staticPosition.get(kingOriginalSquare) != kingPiece) {
       return false;
     }
-    final Square rookOriginalSquare = Square.calculateKingSideRookOriginalSquare(havingMove);
+    final Square rookOriginalSquare = SquareUtility.calculateKingSideRookOriginalSquare(havingMove);
     final Piece rookPiece = PieceUtility.calculateRookPiece(havingMove);
     return staticPosition.get(rookOriginalSquare) == rookPiece;
   }
@@ -139,7 +140,7 @@ class KingCastlingLegalMoves extends KingLegalMoves {
   private static CastlingCheck calculateQueenSideCheckCondition(StaticPosition staticPosition, Side havingMove) {
     final Side oppositeSide = havingMove.getOppositeSide();
     final Set<Square> attackedSquares = AbstractAttackedSquares.calculateAttackedSquares(staticPosition, oppositeSide);
-    if (attackedSquares.contains(Square.calculateKingOriginalSquare(havingMove))) {
+    if (attackedSquares.contains(SquareUtility.calculateKingOriginalSquare(havingMove))) {
       return CastlingCheck.TEMPORARY_KING_IN_CHECK;
     }
     if (attackedSquares.contains(calculateQueenSideKingTravelOverSquare(havingMove))) {
@@ -154,7 +155,7 @@ class KingCastlingLegalMoves extends KingLegalMoves {
   private static CastlingCheck calculateKingSideCheckCondition(StaticPosition staticPosition, Side havingMove) {
     final Side oppositeSide = havingMove.getOppositeSide();
     final Set<Square> attackedSquares = AbstractAttackedSquares.calculateAttackedSquares(staticPosition, oppositeSide);
-    if (attackedSquares.contains(Square.calculateKingOriginalSquare(havingMove))) {
+    if (attackedSquares.contains(SquareUtility.calculateKingOriginalSquare(havingMove))) {
       return CastlingCheck.TEMPORARY_KING_IN_CHECK;
     }
     if (attackedSquares.contains(calculateKingSideKingTravelOverSquare(havingMove))) {

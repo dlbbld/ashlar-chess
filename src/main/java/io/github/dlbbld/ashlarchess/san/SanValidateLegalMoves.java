@@ -23,6 +23,7 @@ import io.github.dlbbld.ashlarchess.board.enums.Rank;
 import io.github.dlbbld.ashlarchess.board.enums.RankUtility;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
 import io.github.dlbbld.ashlarchess.board.enums.Square;
+import io.github.dlbbld.ashlarchess.board.enums.SquareUtility;
 import io.github.dlbbld.ashlarchess.common.Nulls;
 import io.github.dlbbld.ashlarchess.common.constants.CastlingConstants;
 import io.github.dlbbld.ashlarchess.common.constants.EnumConstants;
@@ -67,7 +68,7 @@ abstract class SanValidateLegalMoves extends AbstractSan implements EnumConstant
         }
         // we calculate this with san information and knowing it's a legal move (so e4
         // is e2-e4 xor e3-e4)
-        final Square potentialJumpOverSquare = Square.calculateJumpOverSquare(havingMove, toSquare);
+        final Square potentialJumpOverSquare = SquareUtility.calculateJumpOverSquare(havingMove, toSquare);
         if (board.getBitboardPosition().get(potentialJumpOverSquare) == Piece.NONE) {
           // two square advance
           final File fromFile = toSquare.getFile(); // moving straight forward

@@ -10,7 +10,6 @@ import java.util.EnumMap;
 import java.util.List;
 
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
 
 import io.github.dlbbld.ashlarchess.common.Nulls;
 import io.github.dlbbld.ashlarchess.common.exceptions.NonePointerException;
@@ -254,78 +253,6 @@ public enum Square implements Comparable<Square> {
     };
   }
 
-  public static final ImmutableList<Square> WHITE_PROMOTION_RANK = constructListSquare(A8, B8, C8, D8, E8, F8, G8, H8);
-
-  public static final ImmutableList<Square> BLACK_PROMOTION_RANK = constructListSquare(A1, B1, C1, D1, E1, F1, G1, H1);
-
-  public static List<Square> getPromotionRank(Side side) {
-    return switch (side) {
-      case WHITE -> WHITE_PROMOTION_RANK;
-      case BLACK -> BLACK_PROMOTION_RANK;
-      case NONE -> throw new IllegalArgumentException();
-      default -> throw new IllegalArgumentException();
-    };
-  }
-
-  static final ImmutableList<Square> WHITE_MOVE_EN_PASSANT_CAPTURE_TARGET_SQUARE_LIST = constructListSquare(A6, B6, C6,
-      D6, E6, F6, G6, H6);
-
-  static final ImmutableList<Square> BLACK_MOVE_EN_PASSANT_CAPTURE_TARGET_SQUARE_LIST = constructListSquare(A3, B3, C3,
-      D3, E3, F3, G3, H3);
-
-  private static final ImmutableMap<Square, Square> WHITE_TWO_SQUARE_ADVANCE_TO_JUMP_OVER;
-
-  static {
-    final EnumMap<Square, Square> map = Nulls.newEnumMap(Square.class);
-
-    map.put(A4, A3);
-    map.put(B4, B3);
-    map.put(C4, C3);
-    map.put(D4, D3);
-    map.put(E4, E3);
-    map.put(F4, F3);
-    map.put(G4, G3);
-    map.put(H4, H3);
-
-    WHITE_TWO_SQUARE_ADVANCE_TO_JUMP_OVER = Nulls.immutableEnumMap(map);
-  }
-
-  private static final ImmutableMap<Square, Square> BLACK_TWO_SQUARE_ADVANCE_TO_JUMP_OVER;
-
-  static {
-    final EnumMap<Square, Square> map = Nulls.newEnumMap(Square.class);
-
-    map.put(A5, A6);
-    map.put(B5, B6);
-    map.put(C5, C6);
-    map.put(D5, D6);
-    map.put(E5, E6);
-    map.put(F5, F6);
-    map.put(G5, G6);
-    map.put(H5, H6);
-
-    BLACK_TWO_SQUARE_ADVANCE_TO_JUMP_OVER = Nulls.immutableEnumMap(map);
-
-  }
-
-  public static Square calculateJumpOverSquare(Side sideHavingMadeTheMove, Square pawnTwoAdvanceSquare) {
-    switch (sideHavingMadeTheMove) {
-      case WHITE:
-        if (!WHITE_TWO_SQUARE_ADVANCE_TO_JUMP_OVER.containsKey(pawnTwoAdvanceSquare)) {
-          throw new IllegalArgumentException("The method only applies for pawn two square advance moves");
-        }
-        return Nulls.get(WHITE_TWO_SQUARE_ADVANCE_TO_JUMP_OVER, pawnTwoAdvanceSquare);
-      case BLACK:
-        if (!BLACK_TWO_SQUARE_ADVANCE_TO_JUMP_OVER.containsKey(pawnTwoAdvanceSquare)) {
-          throw new IllegalArgumentException("The method only applies for pawn two square advance moves");
-        }
-        return Nulls.get(BLACK_TWO_SQUARE_ADVANCE_TO_JUMP_OVER, pawnTwoAdvanceSquare);
-      case NONE:
-      default:
-        throw new IllegalArgumentException();
-    }
-  }
-
   public static boolean calculateHasLeftSquare(Side havingMove, Square square) {
     return hasNeighbour(LEFT_SQUARE, havingMove, square);
   }
@@ -388,42 +315,6 @@ public enum Square implements Comparable<Square> {
 
   public static Square calculateBehindRightDiagonalSquare(Side havingMove, Square square) {
     return getNeighbour(BEHIND_RIGHT_DIAGONAL_SQUARE, havingMove, square);
-  }
-
-  public static Square calculateKingOriginalSquare(Side side) {
-    return switch (side) {
-      case BLACK -> E8;
-      case WHITE -> E1;
-      case NONE -> throw new IllegalArgumentException();
-      default -> throw new IllegalArgumentException();
-    };
-  }
-
-  public static Square calculateQueenSideRookOriginalSquare(Side side) {
-    return switch (side) {
-      case BLACK -> A8;
-      case WHITE -> A1;
-      case NONE -> throw new IllegalArgumentException();
-      default -> throw new IllegalArgumentException();
-    };
-  }
-
-  public static Square calculateKingSideRookOriginalSquare(Side side) {
-    return switch (side) {
-      case BLACK -> H8;
-      case WHITE -> H1;
-      case NONE -> throw new IllegalArgumentException();
-      default -> throw new IllegalArgumentException();
-    };
-  }
-
-  public static List<Square> calculateEnPassantCaptureTargetSquareList(Side havingMove) {
-    return switch (havingMove) {
-      case BLACK -> BLACK_MOVE_EN_PASSANT_CAPTURE_TARGET_SQUARE_LIST;
-      case WHITE -> WHITE_MOVE_EN_PASSANT_CAPTURE_TARGET_SQUARE_LIST;
-      case NONE -> throw new IllegalArgumentException();
-      default -> throw new IllegalArgumentException();
-    };
   }
 
   public static final ImmutableList<ImmutableList<Square>> WHITE_PAWN_TWO_SQUARE_ADVANCE;

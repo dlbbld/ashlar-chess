@@ -19,6 +19,7 @@ import io.github.dlbbld.ashlarchess.board.enums.PieceType;
 import io.github.dlbbld.ashlarchess.board.enums.Rank;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
 import io.github.dlbbld.ashlarchess.board.enums.Square;
+import io.github.dlbbld.ashlarchess.board.enums.SquareUtility;
 import io.github.dlbbld.ashlarchess.board.enums.SquareType;
 import io.github.dlbbld.ashlarchess.common.Nulls;
 import io.github.dlbbld.ashlarchess.common.constants.BasicConstants;
@@ -330,11 +331,11 @@ public class FenParserAdvanced implements EnumConstants {
         if (Rank.exists(rankLetter)) {
           final Rank rank = Rank.calculateRank(rankLetter);
           final Square square = Square.calculate(file, rank);
-          if (Square.calculateEnPassantCaptureTargetSquareList(havingMove).contains(square)) {
+          if (SquareUtility.calculateEnPassantCaptureTargetSquareList(havingMove).contains(square)) {
             return square;
           }
           final Side oppositeSide = havingMove.getOppositeSide();
-          if (Square.calculateEnPassantCaptureTargetSquareList(oppositeSide).contains(square)) {
+          if (SquareUtility.calculateEnPassantCaptureTargetSquareList(oppositeSide).contains(square)) {
             throw new FenAdvancedValidationException(
                 FenAdvancedValidationProblem.INVALID_EN_PASSANT_CAPTURE_TARGET_SQUARE_WRONG_COLOR,
                 "the en passant target square \"" + enPassantCaptureTargetSquare
@@ -709,7 +710,7 @@ public class FenParserAdvanced implements EnumConstants {
 
   private static void validatePawnRankNotPromotionRank(BitboardPosition bitboardPosition)
       throws FenAdvancedValidationException {
-    for (final Square square : Square.getPromotionRank(WHITE)) {
+    for (final Square square : SquareUtility.getPromotionRank(WHITE)) {
       if (bitboardPosition.get(square) == WHITE_PAWN) {
         throw new FenAdvancedValidationException(
             FenAdvancedValidationProblem.INVALID_WHITE_PAWN_INVALID_RANK_PROMOTION_RANK,
@@ -717,7 +718,7 @@ public class FenParserAdvanced implements EnumConstants {
       }
     }
 
-    for (final Square square : Square.getPromotionRank(BLACK)) {
+    for (final Square square : SquareUtility.getPromotionRank(BLACK)) {
       if (bitboardPosition.get(square) == BLACK_PAWN) {
         throw new FenAdvancedValidationException(
             FenAdvancedValidationProblem.INVALID_BLACK_PAWN_INVALID_RANK_PROMOTION_RANK,
@@ -728,7 +729,7 @@ public class FenParserAdvanced implements EnumConstants {
 
   private static void validatePawnRankNotGroundRank(BitboardPosition bitboardPosition)
       throws FenAdvancedValidationException {
-    for (final Square square : Square.getPromotionRank(BLACK)) {
+    for (final Square square : SquareUtility.getPromotionRank(BLACK)) {
       if (bitboardPosition.get(square) == WHITE_PAWN) {
         throw new FenAdvancedValidationException(
             FenAdvancedValidationProblem.INVALID_WHITE_PAWN_INVALID_RANK_GROUND_RANK,
@@ -736,7 +737,7 @@ public class FenParserAdvanced implements EnumConstants {
       }
     }
 
-    for (final Square square : Square.getPromotionRank(WHITE)) {
+    for (final Square square : SquareUtility.getPromotionRank(WHITE)) {
       if (bitboardPosition.get(square) == BLACK_PAWN) {
         throw new FenAdvancedValidationException(
             FenAdvancedValidationProblem.INVALID_BLACK_PAWN_INVALID_RANK_GROUND_RANK,

@@ -3,12 +3,23 @@
 
 package io.github.dlbbld.ashlarchess.board.enums;
 
+import static io.github.dlbbld.ashlarchess.common.utility.ImmutableUtility.constructListSquare;
+
+import java.util.EnumMap;
+import java.util.List;
+
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
+
+import io.github.dlbbld.ashlarchess.common.Nulls;
 import io.github.dlbbld.ashlarchess.common.exceptions.NonePointerException;
 
 /**
- * Board-geometry transformations on {@link Square} that are not part of a single square's intrinsic identity. Currently
- * the 180-degree point reflection ({@link #flip(Square)}); a square's own coordinates and single-step neighbours stay on
- * the {@code Square} enum.
+ * Board-geometry transformations and side-relative chess-rule squares for {@link Square}: the 180-degree reflection,
+ * the promotion-rank and en-passant target-square lists, the two-square-advance jump-over square, and the castling
+ * origin squares. These combine a square (or a {@link Side}) with the laws of chess, so they live here rather than on
+ * the {@code Square} enum, which keeps its coordinate identity and single-step neighbour geometry. Each backing table
+ * below exists solely to serve its method.
  */
 public final class SquareUtility {
 
@@ -86,6 +97,115 @@ public final class SquareUtility {
       case F8 -> Square.C1;
       case G8 -> Square.B1;
       case H8 -> Square.A1;
+      default -> throw new IllegalArgumentException();
+    };
+  }
+
+  private static final ImmutableList<Square> WHITE_PROMOTION_RANK = constructListSquare(Square.A8, Square.B8, Square.C8,
+      Square.D8, Square.E8, Square.F8, Square.G8, Square.H8);
+
+  private static final ImmutableList<Square> BLACK_PROMOTION_RANK = constructListSquare(Square.A1, Square.B1, Square.C1,
+      Square.D1, Square.E1, Square.F1, Square.G1, Square.H1);
+
+  public static List<Square> getPromotionRank(Side side) {
+    return switch (side) {
+      case WHITE -> WHITE_PROMOTION_RANK;
+      case BLACK -> BLACK_PROMOTION_RANK;
+      case NONE -> throw new IllegalArgumentException();
+      default -> throw new IllegalArgumentException();
+    };
+  }
+
+  private static final ImmutableList<Square> WHITE_MOVE_EN_PASSANT_CAPTURE_TARGET_SQUARE_LIST = constructListSquare(
+      Square.A6, Square.B6, Square.C6, Square.D6, Square.E6, Square.F6, Square.G6, Square.H6);
+
+  private static final ImmutableList<Square> BLACK_MOVE_EN_PASSANT_CAPTURE_TARGET_SQUARE_LIST = constructListSquare(
+      Square.A3, Square.B3, Square.C3, Square.D3, Square.E3, Square.F3, Square.G3, Square.H3);
+
+  public static List<Square> calculateEnPassantCaptureTargetSquareList(Side havingMove) {
+    return switch (havingMove) {
+      case BLACK -> BLACK_MOVE_EN_PASSANT_CAPTURE_TARGET_SQUARE_LIST;
+      case WHITE -> WHITE_MOVE_EN_PASSANT_CAPTURE_TARGET_SQUARE_LIST;
+      case NONE -> throw new IllegalArgumentException();
+      default -> throw new IllegalArgumentException();
+    };
+  }
+
+  private static final ImmutableMap<Square, Square> WHITE_TWO_SQUARE_ADVANCE_TO_JUMP_OVER;
+
+  static {
+    final EnumMap<Square, Square> map = Nulls.newEnumMap(Square.class);
+
+    map.put(Square.A4, Square.A3);
+    map.put(Square.B4, Square.B3);
+    map.put(Square.C4, Square.C3);
+    map.put(Square.D4, Square.D3);
+    map.put(Square.E4, Square.E3);
+    map.put(Square.F4, Square.F3);
+    map.put(Square.G4, Square.G3);
+    map.put(Square.H4, Square.H3);
+
+    WHITE_TWO_SQUARE_ADVANCE_TO_JUMP_OVER = Nulls.immutableEnumMap(map);
+  }
+
+  private static final ImmutableMap<Square, Square> BLACK_TWO_SQUARE_ADVANCE_TO_JUMP_OVER;
+
+  static {
+    final EnumMap<Square, Square> map = Nulls.newEnumMap(Square.class);
+
+    map.put(Square.A5, Square.A6);
+    map.put(Square.B5, Square.B6);
+    map.put(Square.C5, Square.C6);
+    map.put(Square.D5, Square.D6);
+    map.put(Square.E5, Square.E6);
+    map.put(Square.F5, Square.F6);
+    map.put(Square.G5, Square.G6);
+    map.put(Square.H5, Square.H6);
+
+    BLACK_TWO_SQUARE_ADVANCE_TO_JUMP_OVER = Nulls.immutableEnumMap(map);
+  }
+
+  public static Square calculateJumpOverSquare(Side sideHavingMadeTheMove, Square pawnTwoAdvanceSquare) {
+    switch (sideHavingMadeTheMove) {
+      case WHITE:
+        if (!WHITE_TWO_SQUARE_ADVANCE_TO_JUMP_OVER.containsKey(pawnTwoAdvanceSquare)) {
+          throw new IllegalArgumentException("The method only applies for pawn two square advance moves");
+        }
+        return Nulls.get(WHITE_TWO_SQUARE_ADVANCE_TO_JUMP_OVER, pawnTwoAdvanceSquare);
+      case BLACK:
+        if (!BLACK_TWO_SQUARE_ADVANCE_TO_JUMP_OVER.containsKey(pawnTwoAdvanceSquare)) {
+          throw new IllegalArgumentException("The method only applies for pawn two square advance moves");
+        }
+        return Nulls.get(BLACK_TWO_SQUARE_ADVANCE_TO_JUMP_OVER, pawnTwoAdvanceSquare);
+      case NONE:
+      default:
+        throw new IllegalArgumentException();
+    }
+  }
+
+  public static Square calculateKingOriginalSquare(Side side) {
+    return switch (side) {
+      case BLACK -> Square.E8;
+      case WHITE -> Square.E1;
+      case NONE -> throw new IllegalArgumentException();
+      default -> throw new IllegalArgumentException();
+    };
+  }
+
+  public static Square calculateQueenSideRookOriginalSquare(Side side) {
+    return switch (side) {
+      case BLACK -> Square.A8;
+      case WHITE -> Square.A1;
+      case NONE -> throw new IllegalArgumentException();
+      default -> throw new IllegalArgumentException();
+    };
+  }
+
+  public static Square calculateKingSideRookOriginalSquare(Side side) {
+    return switch (side) {
+      case BLACK -> Square.H8;
+      case WHITE -> Square.H1;
+      case NONE -> throw new IllegalArgumentException();
       default -> throw new IllegalArgumentException();
     };
   }
