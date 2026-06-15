@@ -32,11 +32,25 @@ PGN model:
 - `getPerformedHalfMoveCount()` renamed to `getPerformedMoveCount()`.
 - Removed `getHalfMoveList()` and `getLastHalfMove()`; the played-move list is no longer exposed on `Board`. It is rebuilt inside the `report` layer, and `PgnCreate.createPgnGame(board).moveList()` returns the played moves as `PgnMove`s.
 - `HalfMove` is gone from the public API (its replacement, `MoveRecord`, is package-private to `report`).
+- `isUnwinnableQuick(Side)` / `isUnwinnableFull(Side)` renamed to `calculateUnwinnabilityQuickVerdict(Side)` / `calculateUnwinnabilityFullVerdict(Side)` — the `calculate*` prefix marks that the verdict is computed on call, and the `*Verdict` suffix names what is returned.
+- `move(MoveSpecification)`, `movesStrict(String...)`, and `movesLenient(String...)` now return `void` instead of `boolean`. The discarded return was always `true` (failure is signalled by exception), so it carried no information.
+
+Boolean accessors (JavaBeans `is` / `has` idiom, no `get` prefix):
+
+- `Side.getIsWhite()` / `getIsBlack()` → `isWhite()` / `isBlack()`.
+- `CastlingRight.getHasKingSide()` / `getHasQueenSide()` → `hasKingSide()` / `hasQueenSide()`.
+- `File.getIsBorderFile()` → `isBorderFile()`.
+- `StandardTag.getIsSevenTagRosterTag()` → `isSevenTagRosterTag()`.
 
 Formatting / model:
 
 - `HalfMoveUtility` renamed to `MoveNumberFormat`.
 - `DynamicPosition.isEnPassantCapturePossible()` removed — test `enPassantCaptureTargetSquare() != Square.NONE` directly.
+
+Model invariants:
+
+- `UnwinnabilityFullAnalysis.mateLine()` now returns `ImmutableList<UciMove>` instead of `List<UciMove>`, and the record copies the list defensively on construction — the component is now guaranteed immutable.
+- `MoveSpecification`'s canonical constructor now validates its structural invariants on every path (previously the public four-argument constructor bypassed validation). Inconsistent from / to / castling / promotion combinations now throw `IllegalArgumentException` at construction instead of yielding a malformed value.
 
 FEN:
 

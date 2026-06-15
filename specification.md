@@ -116,7 +116,7 @@ Miguel Ambrona's CHA is, to the author's knowledge, the only published algorithm
 `Dead position` is the symmetric whole-position notion, checked by the no-side overloads `UnwinnableQuickAnalyzer.unwinnableQuick(board)` and `UnwinnableFullAnalyzer.unwinnableFull(board)`, which reuse the same verdict enums (`UNWINNABLE` = dead).
 
 The direct side-specific analyzers return analysis records. Only `WINNABLE_HELPMATE` carries a helpmate line that can be
-replayed from the input position; the `Board.isUnwinnableQuick(Side)` and `Board.isUnwinnableFull(Side)` convenience
+replayed from the input position; the `Board.calculateUnwinnabilityQuickVerdict(Side)` and `Board.calculateUnwinnabilityFullVerdict(Side)` convenience
 methods expose only the verdict.
 
 Side-specific quick/full unwinnability queries and whole-position dead-position queries are caller-invoked; no analyzer runs automatically during construction or move execution.
