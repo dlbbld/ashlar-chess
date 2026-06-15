@@ -11,10 +11,9 @@ import com.google.common.collect.ImmutableSet;
 
 import io.github.dlbbld.ashlarchess.board.enums.Square;
 import io.github.dlbbld.ashlarchess.common.Nulls;
-import io.github.dlbbld.ashlarchess.common.constants.EnumConstants;
 
 @SuppressWarnings("null")
-public class KnightEmptyBoardSquares extends AbstractEmptyBoardSquares implements EnumConstants {
+public class KnightEmptyBoardSquares extends AbstractEmptyBoardSquares {
 
   private static final int[][] KNIGHT_OFFSETS = { { 1, 2 }, { 1, -2 }, { -1, 2 }, { -1, -2 }, { 2, 1 }, { 2, -1 },
       { -2, 1 }, { -2, -1 } };

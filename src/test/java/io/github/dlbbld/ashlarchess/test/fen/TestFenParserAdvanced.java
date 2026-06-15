@@ -3,6 +3,7 @@
 
 package io.github.dlbbld.ashlarchess.test.fen;
 
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.WHITE;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
@@ -12,7 +13,6 @@ import io.github.dlbbld.ashlarchess.board.StaticPosition;
 import io.github.dlbbld.ashlarchess.board.enums.CastlingRight;
 import io.github.dlbbld.ashlarchess.board.enums.Square;
 import io.github.dlbbld.ashlarchess.common.constants.ChessConstants;
-import io.github.dlbbld.ashlarchess.common.constants.EnumConstants;
 import io.github.dlbbld.ashlarchess.common.enums.FenAdvancedValidationProblem;
 import io.github.dlbbld.ashlarchess.common.exceptions.FenAdvancedValidationException;
 import io.github.dlbbld.ashlarchess.fen.FenParserAdvanced;
@@ -21,7 +21,7 @@ import io.github.dlbbld.ashlarchess.fen.constants.FenConstants;
 import io.github.dlbbld.ashlarchess.fen.model.Fen;
 import io.github.dlbbld.ashlarchess.fen.model.FenRaw;
 
-class TestFenParserAdvanced implements EnumConstants {
+class TestFenParserAdvanced {
 
   @SuppressWarnings("static-method")
   @Test

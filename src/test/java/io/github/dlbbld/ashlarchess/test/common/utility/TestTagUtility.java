@@ -12,14 +12,13 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
-import io.github.dlbbld.ashlarchess.common.constants.EnumConstants;
 import io.github.dlbbld.ashlarchess.fen.constants.FenConstants;
 import io.github.dlbbld.ashlarchess.pgn.ResultTagValue;
 import io.github.dlbbld.ashlarchess.pgn.StandardTag;
 import io.github.dlbbld.ashlarchess.pgn.Tag;
 import io.github.dlbbld.ashlarchess.pgn.TagUtility;
 
-class TestTagUtility implements EnumConstants {
+class TestTagUtility {
 
   @SuppressWarnings("static-method")
   @Test

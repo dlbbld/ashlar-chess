@@ -3,6 +3,31 @@
 
 package io.github.dlbbld.ashlarchess.test.pgntest.basic;
 
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.A3;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.B3;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.B4;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.B5;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.B6;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.C4;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.D1;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.D2;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.D3;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.D5;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.D6;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.E2;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.E3;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.E7;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.F1;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.F3;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.F6;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.F7;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.H5;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.WHITE_BISHOP;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.WHITE_KING;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.WHITE_KNIGHT;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.WHITE_QUEEN;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.WHITE_ROOK;
+
 import java.util.ArrayList;
 import java.util.List;
 

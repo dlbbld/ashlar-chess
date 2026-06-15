@@ -3,6 +3,9 @@
 
 package io.github.dlbbld.ashlarchess.test.san.validate.statically.strict.calculate;
 
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.BLACK;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.WHITE;
+
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -12,10 +15,9 @@ import com.google.common.collect.ImmutableMap;
 
 import io.github.dlbbld.ashlarchess.board.enums.Side;
 import io.github.dlbbld.ashlarchess.common.Nulls;
-import io.github.dlbbld.ashlarchess.common.constants.EnumConstants;
 import io.github.dlbbld.ashlarchess.san.SanParse;
 
-public class SanValidateStaticallyStrict implements EnumConstants {
+public class SanValidateStaticallyStrict {
 
   private static final ImmutableMap<String, SanParse> SAN_VALIDATION_WHITE_MAP;
   private static final ImmutableMap<String, SanParse> SAN_VALIDATION_BLACK_MAP;

@@ -3,6 +3,39 @@
 
 package io.github.dlbbld.ashlarchess.moves;
 
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.A3;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.A4;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.A5;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.A6;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.B3;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.B4;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.B5;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.B6;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.C3;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.C4;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.C5;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.C6;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.D3;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.D4;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.D5;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.D6;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.E3;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.E4;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.E5;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.E6;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.F3;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.F4;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.F5;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.F6;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.G3;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.G4;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.G5;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.G6;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.H3;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.H4;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.H5;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.H6;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.PAWN;
 import static io.github.dlbbld.ashlarchess.common.utility.ImmutableUtility.constructListSquare;
 
 import java.util.ArrayList;
@@ -20,12 +53,11 @@ import io.github.dlbbld.ashlarchess.board.enums.Side;
 import io.github.dlbbld.ashlarchess.board.enums.Square;
 import io.github.dlbbld.ashlarchess.board.model.UpdateSquare;
 import io.github.dlbbld.ashlarchess.common.Nulls;
-import io.github.dlbbld.ashlarchess.common.constants.EnumConstants;
 import io.github.dlbbld.ashlarchess.common.model.MoveSpecification;
 import io.github.dlbbld.ashlarchess.model.LegalMove;
 import io.github.dlbbld.ashlarchess.model.LegalMoveKind;
 
-public abstract class EnPassantCaptureUtility implements EnumConstants {
+public abstract class EnPassantCaptureUtility {
 
   private static final ImmutableList<ImmutableList<Square>> WHITE_EN_PASSANT_CAPTURE_FROM_TO;
 

@@ -3,6 +3,51 @@
 
 package io.github.dlbbld.ashlarchess.moves;
 
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.A1;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.A2;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.A3;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.A4;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.A5;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.A6;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.A7;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.A8;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.B1;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.B2;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.B3;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.B4;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.B6;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.B7;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.B8;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.C1;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.C2;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.C3;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.C4;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.C6;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.C7;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.C8;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.D1;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.D5;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.D8;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.E2;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.E5;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.E6;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.E7;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.F3;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.F4;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.F6;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.F7;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.F8;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.G1;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.G3;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.G4;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.G5;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.G6;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.G8;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.H2;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.H4;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.H5;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.H6;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.H8;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.Set;
@@ -15,12 +60,11 @@ import io.github.dlbbld.ashlarchess.board.StaticPosition;
 import io.github.dlbbld.ashlarchess.board.enums.CastlingRight;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
 import io.github.dlbbld.ashlarchess.board.enums.Square;
-import io.github.dlbbld.ashlarchess.common.constants.EnumConstants;
 import io.github.dlbbld.ashlarchess.common.model.MoveSpecification;
 import io.github.dlbbld.ashlarchess.fen.FenParserAdvanced;
 import io.github.dlbbld.ashlarchess.model.LegalMove;
 
-class TestLegalMovesForPiecesIllegalPosition implements EnumConstants {
+class TestLegalMovesForPiecesIllegalPosition {
 
   // The relocated reference oracle (RookLegalMoves / BishopLegalMoves / etc.) takes StaticPosition; the FEN parser
   // returns BitboardPosition after Phase 3+4 of the role-inversion release. Test-oracle bridge below derives the

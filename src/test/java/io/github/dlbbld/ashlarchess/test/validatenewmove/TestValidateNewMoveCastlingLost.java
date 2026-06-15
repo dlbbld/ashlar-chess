@@ -10,9 +10,8 @@ import org.junit.jupiter.api.Test;
 import io.github.dlbbld.ashlarchess.board.Board;
 import io.github.dlbbld.ashlarchess.board.enums.CastlingRight;
 import io.github.dlbbld.ashlarchess.board.enums.CastlingRightLoss;
-import io.github.dlbbld.ashlarchess.common.constants.EnumConstants;
 
-class TestValidateNewMoveCastlingLost implements EnumConstants {
+class TestValidateNewMoveCastlingLost {
 
   // --- King moved ---
 

@@ -3,6 +3,22 @@
 
 package io.github.dlbbld.ashlarchess.test.legalmoves;
 
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.A1;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.A8;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.B1;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.B2;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.B7;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.B8;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.BLACK;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.C3;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.C6;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.D3;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.D6;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.E2;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.E4;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.E5;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.E7;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.WHITE;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -15,7 +31,6 @@ import io.github.dlbbld.ashlarchess.bitboard.StaticPositionBridge;
 import io.github.dlbbld.ashlarchess.board.Board;
 import io.github.dlbbld.ashlarchess.board.StaticPosition;
 import io.github.dlbbld.ashlarchess.board.enums.Square;
-import io.github.dlbbld.ashlarchess.common.constants.EnumConstants;
 import io.github.dlbbld.ashlarchess.common.model.MoveSpecification;
 import io.github.dlbbld.ashlarchess.common.utility.SetUtility;
 import io.github.dlbbld.ashlarchess.enums.KingSafetyCheck;
@@ -29,7 +44,7 @@ import io.github.dlbbld.ashlarchess.squares.PawnPotentialToSquares;
 import io.github.dlbbld.ashlarchess.squares.QueenPotentialToSquares;
 import io.github.dlbbld.ashlarchess.squares.RookPotentialToSquares;
 
-class TestPseudoLegalMoves implements EnumConstants {
+class TestPseudoLegalMoves {
 
   // --- White ---
 

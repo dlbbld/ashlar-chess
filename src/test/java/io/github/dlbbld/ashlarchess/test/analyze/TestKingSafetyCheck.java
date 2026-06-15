@@ -3,6 +3,11 @@
 
 package io.github.dlbbld.ashlarchess.test.analyze;
 
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.C3;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.C4;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.D6;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.E2;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.E4;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.EnumSet;
@@ -14,7 +19,6 @@ import org.junit.jupiter.api.Test;
 
 import io.github.dlbbld.ashlarchess.analyze.ChessRuleAnalyzer;
 import io.github.dlbbld.ashlarchess.board.Board;
-import io.github.dlbbld.ashlarchess.common.constants.EnumConstants;
 import io.github.dlbbld.ashlarchess.common.model.MoveSpecification;
 import io.github.dlbbld.ashlarchess.enums.KingSafetyCheck;
 
@@ -23,7 +27,7 @@ import io.github.dlbbld.ashlarchess.enums.KingSafetyCheck;
  * {@code SUCCESS}) has at least one test method exercising it. An {@code @AfterAll} hook verifies the entire enum is
  * covered - adding a new value without a test fails the build.
  */
-class TestKingSafetyCheck implements EnumConstants {
+class TestKingSafetyCheck {
 
   private static final Set<KingSafetyCheck> COVERED = new TreeSet<>();
 

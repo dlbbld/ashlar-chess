@@ -3,6 +3,24 @@
 
 package io.github.dlbbld.ashlarchess.test.pgntest.basic;
 
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.A5;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.A6;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.B5;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.B6;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.C5;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.C6;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.D5;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.D6;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.E5;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.E6;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.F5;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.F6;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.G5;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.G6;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.H5;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.H6;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.WHITE;
+
 import java.util.ArrayList;
 import java.util.List;
 

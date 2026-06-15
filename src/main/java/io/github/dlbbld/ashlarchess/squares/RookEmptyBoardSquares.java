@@ -10,9 +10,8 @@ import com.google.common.collect.ImmutableMap;
 
 import io.github.dlbbld.ashlarchess.board.enums.Square;
 import io.github.dlbbld.ashlarchess.common.Nulls;
-import io.github.dlbbld.ashlarchess.common.constants.EnumConstants;
 
-class RookEmptyBoardSquares extends AbstractEmptyBoardSquares implements EnumConstants {
+class RookEmptyBoardSquares extends AbstractEmptyBoardSquares {
 
   private static final ImmutableMap<Square, RookRange> ROOK_SQUARES_MAP;
 

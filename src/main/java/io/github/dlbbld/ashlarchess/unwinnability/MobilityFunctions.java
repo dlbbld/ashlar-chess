@@ -3,17 +3,33 @@
 
 package io.github.dlbbld.ashlarchess.unwinnability;
 
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.A1;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.A8;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.B1;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.B8;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.C1;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.C8;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.D1;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.D8;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.E1;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.E8;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.F1;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.F8;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.G1;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.G8;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.H1;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.H8;
+
 import java.util.Arrays;
 import java.util.Set;
 import java.util.TreeSet;
 
 import io.github.dlbbld.ashlarchess.board.enums.Side;
 import io.github.dlbbld.ashlarchess.board.enums.Square;
-import io.github.dlbbld.ashlarchess.common.constants.EnumConstants;
 import io.github.dlbbld.ashlarchess.squares.KingNonCastlingEmptyBoardSquares;
 import io.github.dlbbld.ashlarchess.squares.KnightEmptyBoardSquares;
 
-class MobilityFunctions implements EnumConstants {
+class MobilityFunctions {
 
   public static Set<Square> predecessorsCapture(PiecePlacement piecePlacement, Square square) {
     switch (piecePlacement.pieceType()) {

@@ -3,19 +3,27 @@
 
 package io.github.dlbbld.ashlarchess.unwinnability;
 
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.A6;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.A8;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.B8;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.BLACK;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.G8;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.H6;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.H8;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.KING;
+
 import io.github.dlbbld.ashlarchess.bitboard.BitboardPosition;
 import io.github.dlbbld.ashlarchess.board.enums.Piece;
 import io.github.dlbbld.ashlarchess.board.enums.PieceType;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
 import io.github.dlbbld.ashlarchess.board.enums.Square;
 import io.github.dlbbld.ashlarchess.board.enums.SquareUtility;
-import io.github.dlbbld.ashlarchess.common.constants.EnumConstants;
 import io.github.dlbbld.ashlarchess.model.LegalMove;
 import io.github.dlbbld.ashlarchess.model.LegalMoveKind;
 import io.github.dlbbld.ashlarchess.moves.CastlingUtility;
 
 //Figure 13 Going-to-corner routine used in Figure 12.
-class GoingToCorner implements EnumConstants {
+class GoingToCorner {
 
   // Inputs: position, legal move in the position, objective (Win or Lose)
   // Output: bool (indicating whether or not m is leading to a corner mating position)

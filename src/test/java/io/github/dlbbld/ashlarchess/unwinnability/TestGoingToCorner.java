@@ -3,6 +3,18 @@
 
 package io.github.dlbbld.ashlarchess.unwinnability;
 
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.A1;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.A4;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.A8;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.B6;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.D2;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.D7;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.E1;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.E8;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.F1;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.F2;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.G3;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.H1;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -12,14 +24,13 @@ import io.github.dlbbld.ashlarchess.board.Board;
 import io.github.dlbbld.ashlarchess.board.enums.PromotionPieceType;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
 import io.github.dlbbld.ashlarchess.board.enums.Square;
-import io.github.dlbbld.ashlarchess.common.constants.EnumConstants;
 import io.github.dlbbld.ashlarchess.model.LegalMove;
 import io.github.dlbbld.ashlarchess.model.LegalMoveKind;
 
 // Spec test for FUN22 Figure 13 (Going-to-corner). It is a pure function of (position, move, goal); it does NOT depend
 // on move ordering (that only affects the Figure 5 search traversal), so positions alone are enough. Expected values
 // are derived directly from Figure 13.
-class TestGoingToCorner implements EnumConstants {
+class TestGoingToCorner {
 
   // 2: a non-king, non-knight move is never going to the corner.
   @SuppressWarnings("static-method")

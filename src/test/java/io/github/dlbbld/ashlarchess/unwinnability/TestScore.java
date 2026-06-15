@@ -3,6 +3,25 @@
 
 package io.github.dlbbld.ashlarchess.unwinnability;
 
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.A1;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.A2;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.A6;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.A7;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.A8;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.B4;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.C3;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.D2;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.D5;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.D7;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.E1;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.E4;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.E7;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.E8;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.F1;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.F5;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.F8;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.H3;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.H4;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.junit.jupiter.api.Test;
@@ -11,7 +30,6 @@ import io.github.dlbbld.ashlarchess.board.Board;
 import io.github.dlbbld.ashlarchess.board.enums.PromotionPieceType;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
 import io.github.dlbbld.ashlarchess.board.enums.Square;
-import io.github.dlbbld.ashlarchess.common.constants.EnumConstants;
 import io.github.dlbbld.ashlarchess.model.LegalMove;
 import io.github.dlbbld.ashlarchess.model.LegalMoveKind;
 
@@ -19,7 +37,7 @@ import io.github.dlbbld.ashlarchess.model.LegalMoveKind;
 // depend on move ordering, so positions alone suffice. Expected values are derived from Figure 12. The two methods
 // suffixed _deviates / _followsChaNotPdf pin a deviation from the PDF (see notes on each); they assert current behaviour
 // so they stay green and will flag if the implementation changes.
-class TestScore implements EnumConstants {
+class TestScore {
 
   // ----- Intended winner to move (Figure 12, steps 1-3): capture / advanced pawn push / going-to-corner -> Reward.
   // -----

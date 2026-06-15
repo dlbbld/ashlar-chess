@@ -3,6 +3,24 @@
 
 package io.github.dlbbld.ashlarchess.test.analyze;
 
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.A1;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.A2;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.A8;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.B1;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.B4;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.D2;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.D3;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.D4;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.D5;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.D6;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.E1;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.E2;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.E3;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.E4;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.E5;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.F1;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.G4;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.H4;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.EnumSet;
@@ -14,7 +32,6 @@ import org.junit.jupiter.api.Test;
 
 import io.github.dlbbld.ashlarchess.analyze.ChessRuleAnalyzer;
 import io.github.dlbbld.ashlarchess.board.Board;
-import io.github.dlbbld.ashlarchess.common.constants.EnumConstants;
 import io.github.dlbbld.ashlarchess.common.model.MoveSpecification;
 import io.github.dlbbld.ashlarchess.enums.MovementCheck;
 
@@ -23,7 +40,7 @@ import io.github.dlbbld.ashlarchess.enums.MovementCheck;
  * {@code SUCCESS}) has at least one test method exercising it. An {@code @AfterAll} hook verifies the entire enum is
  * covered - adding a new value without a test fails the build.
  */
-class TestMovementCheck implements EnumConstants {
+class TestMovementCheck {
 
   private static final Set<MovementCheck> COVERED = new TreeSet<>();
 

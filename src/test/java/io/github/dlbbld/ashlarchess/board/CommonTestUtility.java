@@ -3,12 +3,13 @@
 
 package io.github.dlbbld.ashlarchess.board;
 
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.BLACK;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.WHITE;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import io.github.dlbbld.ashlarchess.bitboard.StaticPositionBridge;
-import io.github.dlbbld.ashlarchess.common.constants.EnumConstants;
 
-public abstract class CommonTestUtility implements EnumConstants {
+public abstract class CommonTestUtility {
 
   public static void checkBoardsAgainstEachOtherAll(Board boardFirst, LibraryCarlosBoard boardSecond) {
     checkBoardsAgainstEachOther(boardFirst, boardSecond, true);

@@ -5,11 +5,10 @@ package io.github.dlbbld.ashlarchess.model;
 
 import io.github.dlbbld.ashlarchess.board.enums.Piece;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
-import io.github.dlbbld.ashlarchess.common.constants.EnumConstants;
 import io.github.dlbbld.ashlarchess.common.model.MoveSpecification;
 
 public record LegalMove(MoveSpecification moveSpecification, Piece movingPiece, Piece pieceCaptured, LegalMoveKind kind)
-    implements Comparable<LegalMove>, EnumConstants {
+    implements Comparable<LegalMove> {
 
   public LegalMove {
     if (movingPiece == Piece.NONE) {

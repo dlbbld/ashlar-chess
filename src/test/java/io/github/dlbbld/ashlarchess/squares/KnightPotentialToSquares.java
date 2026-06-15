@@ -3,6 +3,8 @@
 
 package io.github.dlbbld.ashlarchess.squares;
 
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.KNIGHT;
+
 import java.util.Set;
 
 import io.github.dlbbld.ashlarchess.board.StaticPosition;

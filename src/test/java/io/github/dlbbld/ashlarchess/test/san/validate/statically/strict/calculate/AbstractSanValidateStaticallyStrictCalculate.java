@@ -3,6 +3,8 @@
 
 package io.github.dlbbld.ashlarchess.test.san.validate.statically.strict.calculate;
 
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.PAWN;
+
 import java.util.Map;
 
 import io.github.dlbbld.ashlarchess.board.enums.File;
@@ -11,7 +13,6 @@ import io.github.dlbbld.ashlarchess.board.enums.PromotionPieceType;
 import io.github.dlbbld.ashlarchess.board.enums.Rank;
 import io.github.dlbbld.ashlarchess.board.enums.Square;
 import io.github.dlbbld.ashlarchess.common.Nulls;
-import io.github.dlbbld.ashlarchess.common.constants.EnumConstants;
 import io.github.dlbbld.ashlarchess.common.exceptions.ProgrammingMistakeException;
 import io.github.dlbbld.ashlarchess.san.SanConversion;
 import io.github.dlbbld.ashlarchess.san.SanFormat;
@@ -20,7 +21,7 @@ import io.github.dlbbld.ashlarchess.san.SanTerminalMarker;
 import io.github.dlbbld.ashlarchess.test.san.SanCalculate;
 import io.github.dlbbld.ashlarchess.test.san.model.SanValidationFromTo;
 
-public abstract class AbstractSanValidateStaticallyStrictCalculate implements EnumConstants {
+public abstract class AbstractSanValidateStaticallyStrictCalculate {
 
   public static SanValidationFromTo calculateFromFileAndOrRankTo(String enumName, PieceType movingPieceType) {
 

@@ -3,6 +3,16 @@
 
 package io.github.dlbbld.ashlarchess.test.basic;
 
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.BLACK;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.RANK_1;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.RANK_2;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.RANK_3;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.RANK_4;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.RANK_5;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.RANK_6;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.RANK_7;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.RANK_8;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.WHITE;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -11,9 +21,8 @@ import org.junit.jupiter.api.Test;
 
 import io.github.dlbbld.ashlarchess.board.enums.Rank;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
-import io.github.dlbbld.ashlarchess.common.constants.EnumConstants;
 
-class TestBasicRank implements EnumConstants {
+class TestBasicRank {
 
   @SuppressWarnings("static-method")
   @Test

@@ -3,6 +3,10 @@
 
 package io.github.dlbbld.ashlarchess.san;
 
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.KING;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.PAWN;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.ROOK;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -26,7 +30,6 @@ import io.github.dlbbld.ashlarchess.board.enums.Square;
 import io.github.dlbbld.ashlarchess.board.enums.SquareUtility;
 import io.github.dlbbld.ashlarchess.common.Nulls;
 import io.github.dlbbld.ashlarchess.common.constants.CastlingConstants;
-import io.github.dlbbld.ashlarchess.common.constants.EnumConstants;
 import io.github.dlbbld.ashlarchess.common.exceptions.ProgrammingMistakeException;
 import io.github.dlbbld.ashlarchess.common.model.MoveSpecification;
 import io.github.dlbbld.ashlarchess.common.utility.ListUtility;
@@ -39,7 +42,7 @@ import io.github.dlbbld.ashlarchess.model.LegalMove;
 import io.github.dlbbld.ashlarchess.model.LegalMoveKind;
 import io.github.dlbbld.ashlarchess.moves.CastlingUtility;
 
-abstract class SanValidateLegalMoves extends AbstractSan implements EnumConstants {
+abstract class SanValidateLegalMoves extends AbstractSan {
 
   public static MoveSpecification calculateMoveSpecificationForSan(Board board, Side havingMove, SanFormat sanFormat,
       SanConversion sanConversion, MoveSpecification legalMoveOnlyCandidate) {

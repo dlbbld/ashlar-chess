@@ -8,10 +8,9 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.Test;
 
 import io.github.dlbbld.ashlarchess.board.Board;
-import io.github.dlbbld.ashlarchess.common.constants.EnumConstants;
 import io.github.dlbbld.ashlarchess.san.SanValidationException;
 
-class TestSpecialCastling implements EnumConstants {
+class TestSpecialCastling {
 
   @SuppressWarnings("static-method")
   @Test

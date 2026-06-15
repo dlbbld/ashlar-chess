@@ -3,15 +3,20 @@
 
 package io.github.dlbbld.ashlarchess.board;
 
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.BISHOP;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.KING;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.KNIGHT;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.PAWN;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.QUEEN;
+
 import io.github.dlbbld.ashlarchess.bitboard.BitboardPosition;
 import io.github.dlbbld.ashlarchess.board.enums.Piece;
 import io.github.dlbbld.ashlarchess.board.enums.PieceUtility;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
 import io.github.dlbbld.ashlarchess.board.enums.Square;
 import io.github.dlbbld.ashlarchess.board.enums.SquareType;
-import io.github.dlbbld.ashlarchess.common.constants.EnumConstants;
 
-abstract class InsufficientMaterialUtility implements EnumConstants {
+abstract class InsufficientMaterialUtility {
 
   public static boolean calculateIsInsufficientMaterial(Side side, BitboardPosition bitboardPosition) {
     final Side oppositeSide = side.getOppositeSide();

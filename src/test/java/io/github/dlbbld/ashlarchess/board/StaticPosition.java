@@ -3,12 +3,28 @@
 
 package io.github.dlbbld.ashlarchess.board;
 
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.BLACK;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.BLACK_BISHOP;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.BLACK_KING;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.BLACK_KNIGHT;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.BLACK_PAWN;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.BLACK_QUEEN;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.BLACK_ROOK;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.KING;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.PAWN;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.WHITE;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.WHITE_BISHOP;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.WHITE_KING;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.WHITE_KNIGHT;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.WHITE_PAWN;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.WHITE_QUEEN;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.WHITE_ROOK;
+
 import io.github.dlbbld.ashlarchess.board.enums.Piece;
 import io.github.dlbbld.ashlarchess.board.enums.PieceType;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
 import io.github.dlbbld.ashlarchess.board.enums.Square;
 import io.github.dlbbld.ashlarchess.common.Nulls;
-import io.github.dlbbld.ashlarchess.common.constants.EnumConstants;
 import io.github.dlbbld.ashlarchess.fen.FenPieceSymbolUtility;
 
 public record StaticPosition(Piece a8, Piece b8, Piece c8, Piece d8, Piece e8, Piece f8, Piece g8, Piece h8, Piece a7,
@@ -16,8 +32,7 @@ public record StaticPosition(Piece a8, Piece b8, Piece c8, Piece d8, Piece e8, P
     Piece e6, Piece f6, Piece g6, Piece h6, Piece a5, Piece b5, Piece c5, Piece d5, Piece e5, Piece f5, Piece g5,
     Piece h5, Piece a4, Piece b4, Piece c4, Piece d4, Piece e4, Piece f4, Piece g4, Piece h4, Piece a3, Piece b3,
     Piece c3, Piece d3, Piece e3, Piece f3, Piece g3, Piece h3, Piece a2, Piece b2, Piece c2, Piece d2, Piece e2,
-    Piece f2, Piece g2, Piece h2, Piece a1, Piece b1, Piece c1, Piece d1, Piece e1, Piece f1, Piece g1, Piece h1)
-    implements EnumConstants {
+    Piece f2, Piece g2, Piece h2, Piece a1, Piece b1, Piece c1, Piece d1, Piece e1, Piece f1, Piece g1, Piece h1) {
 
   public static final StaticPosition INITIAL_POSITION = new StaticPosition(BLACK_ROOK, BLACK_KNIGHT, BLACK_BISHOP,
       BLACK_QUEEN, BLACK_KING, BLACK_BISHOP, BLACK_KNIGHT, BLACK_ROOK, BLACK_PAWN, BLACK_PAWN, BLACK_PAWN, BLACK_PAWN,

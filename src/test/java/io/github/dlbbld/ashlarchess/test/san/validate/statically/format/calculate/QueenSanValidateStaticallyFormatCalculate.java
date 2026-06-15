@@ -3,6 +3,8 @@
 
 package io.github.dlbbld.ashlarchess.test.san.validate.statically.format.calculate;
 
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.QUEEN;
+
 import java.util.Map;
 import java.util.TreeMap;
 

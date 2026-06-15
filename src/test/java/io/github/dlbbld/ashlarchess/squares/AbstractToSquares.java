@@ -8,11 +8,10 @@ import io.github.dlbbld.ashlarchess.board.enums.Piece;
 import io.github.dlbbld.ashlarchess.board.enums.PieceType;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
 import io.github.dlbbld.ashlarchess.board.enums.Square;
-import io.github.dlbbld.ashlarchess.common.constants.EnumConstants;
 import io.github.dlbbld.ashlarchess.common.exceptions.ProgrammingMistakeException;
 import io.github.dlbbld.ashlarchess.enums.SquareOccupation;
 
-abstract class AbstractToSquares implements EnumConstants {
+abstract class AbstractToSquares {
 
   protected static void checkPiece(StaticPosition staticPosition, Side havingMove, Square sourceSquare,
       PieceType expectedPieceType) throws IllegalArgumentException {

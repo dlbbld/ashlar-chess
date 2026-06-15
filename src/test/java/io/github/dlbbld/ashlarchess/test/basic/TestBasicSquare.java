@@ -9,9 +9,8 @@ import org.junit.jupiter.api.Test;
 
 import io.github.dlbbld.ashlarchess.board.enums.Square;
 import io.github.dlbbld.ashlarchess.board.enums.SquareType;
-import io.github.dlbbld.ashlarchess.common.constants.EnumConstants;
 
-class TestBasicSquare implements EnumConstants {
+class TestBasicSquare {
 
   @SuppressWarnings("static-method")
   @Test

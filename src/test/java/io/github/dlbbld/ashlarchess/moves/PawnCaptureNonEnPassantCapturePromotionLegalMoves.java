@@ -3,6 +3,8 @@
 
 package io.github.dlbbld.ashlarchess.moves;
 
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.PAWN;
+
 import java.util.Set;
 import java.util.TreeSet;
 

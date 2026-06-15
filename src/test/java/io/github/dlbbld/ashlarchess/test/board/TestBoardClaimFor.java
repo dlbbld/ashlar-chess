@@ -3,6 +3,23 @@
 
 package io.github.dlbbld.ashlarchess.test.board;
 
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.A1;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.A2;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.A8;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.B8;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.C6;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.D4;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.E3;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.E4;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.E5;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.E7;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.F3;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.F6;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.F7;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.G1;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.G8;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.H6;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.H8;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -10,7 +27,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.Test;
 
 import io.github.dlbbld.ashlarchess.board.Board;
-import io.github.dlbbld.ashlarchess.common.constants.EnumConstants;
 import io.github.dlbbld.ashlarchess.common.model.MoveSpecification;
 
 /**
@@ -24,7 +40,7 @@ import io.github.dlbbld.ashlarchess.common.model.MoveSpecification;
  * specific move they intend to play and claims the draw on that announcement. The per-move predicates are the
  * FIDE-faithful API; the existence predicates are convenience shorthand derived from them.
  */
-class TestBoardClaimFor implements EnumConstants {
+class TestBoardClaimFor {
 
   // =============================================================================================
   // canClaimFiftyMoveRuleFor - FIDE 9.3 per-move

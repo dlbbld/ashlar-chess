@@ -8,10 +8,9 @@ import java.util.List;
 import io.github.dlbbld.ashlarchess.board.Board;
 import io.github.dlbbld.ashlarchess.board.CommonTestUtility;
 import io.github.dlbbld.ashlarchess.common.Nulls;
-import io.github.dlbbld.ashlarchess.common.constants.EnumConstants;
 import io.github.dlbbld.ashlarchess.common.model.MoveSpecification;
 
-public abstract class AbstractTestFenRoundtrip implements EnumConstants {
+public abstract class AbstractTestFenRoundtrip {
   public static void checFenRoundtrip(String initialFen, List<MoveSpecification> moveList) {
 
     final Board boardPlayMoves = new Board(initialFen);

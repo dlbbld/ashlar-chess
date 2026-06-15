@@ -10,12 +10,11 @@ import io.github.dlbbld.ashlarchess.board.enums.PieceType;
 import io.github.dlbbld.ashlarchess.board.enums.Rank;
 import io.github.dlbbld.ashlarchess.board.enums.Square;
 import io.github.dlbbld.ashlarchess.common.Nulls;
-import io.github.dlbbld.ashlarchess.common.constants.EnumConstants;
 import io.github.dlbbld.ashlarchess.messages.Message;
 import io.github.dlbbld.ashlarchess.model.EmptyBoardMove;
 import io.github.dlbbld.ashlarchess.squares.AbstractEmptyBoardSquares;
 
-abstract class SanValidateMovementRnbq extends AbstractSan implements EnumConstants {
+abstract class SanValidateMovementRnbq extends AbstractSan {
 
   public static void validateRnbqMovement(SanParse sanParse) {
     final SanConversion sanConversion = sanParse.sanConversion();

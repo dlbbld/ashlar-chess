@@ -3,6 +3,11 @@
 
 package io.github.dlbbld.ashlarchess.test.pgntest.basic;
 
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.A8;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.B7;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.B8;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.WHITE;
+
 import java.util.ArrayList;
 import java.util.List;
 

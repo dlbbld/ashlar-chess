@@ -10,7 +10,6 @@ import org.eclipse.jdt.annotation.Nullable;
 
 import io.github.dlbbld.ashlarchess.analyze.ChessRuleAnalyzer;
 import io.github.dlbbld.ashlarchess.board.Board;
-import io.github.dlbbld.ashlarchess.common.constants.EnumConstants;
 import io.github.dlbbld.ashlarchess.common.model.MoveSpecification;
 import io.github.dlbbld.ashlarchess.enums.KingSafetyCheck;
 import io.github.dlbbld.ashlarchess.enums.MoveCheck;
@@ -34,7 +33,7 @@ import io.github.dlbbld.ashlarchess.exceptions.InvalidMoveException;
  * The fallback path lets the inherited TestValidateNewMove scenarios run unchanged in this class while routing
  * analyzer-territory assertions through the analyzer for direct test coverage.
  */
-public abstract class AbstractTestChessRuleAnalyzerScenarios implements EnumConstants {
+public abstract class AbstractTestChessRuleAnalyzerScenarios {
 
   static void check(Board board, MoveSpecification move, MoveCheck expectedMoveCheck) {
     final MovementCheck expectedMc = toMovementCheck(expectedMoveCheck);

@@ -3,6 +3,24 @@
 
 package io.github.dlbbld.ashlarchess.test.pgntest.basic;
 
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.BLACK_BISHOP;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.BLACK_KING;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.BLACK_KNIGHT;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.BLACK_PAWN;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.BLACK_QUEEN;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.BLACK_ROOK;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.D8;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.E5;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.E7;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.E8;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.F6;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.F8;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.G7;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.G8;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.H4;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.H7;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.H8;
+
 import java.util.ArrayList;
 import java.util.List;
 

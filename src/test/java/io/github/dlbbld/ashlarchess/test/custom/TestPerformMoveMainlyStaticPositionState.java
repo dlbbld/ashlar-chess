@@ -3,6 +3,76 @@
 
 package io.github.dlbbld.ashlarchess.test.custom;
 
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.A1;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.A2;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.A4;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.A5;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.A7;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.A8;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.B1;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.B2;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.B3;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.B4;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.B5;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.B7;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.B8;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.BLACK;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.BLACK_BISHOP;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.BLACK_KING;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.BLACK_KNIGHT;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.BLACK_PAWN;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.BLACK_QUEEN;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.BLACK_ROOK;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.C1;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.C2;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.C3;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.C4;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.C5;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.C6;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.C7;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.C8;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.D1;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.D2;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.D3;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.D5;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.D6;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.D7;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.D8;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.E1;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.E2;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.E4;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.E5;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.E6;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.E7;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.E8;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.F1;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.F2;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.F3;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.F4;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.F5;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.F6;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.F7;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.F8;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.G1;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.G2;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.G4;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.G5;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.G6;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.G7;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.G8;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.H1;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.H2;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.H4;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.H5;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.H7;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.H8;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.WHITE;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.WHITE_BISHOP;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.WHITE_KING;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.WHITE_KNIGHT;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.WHITE_PAWN;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.WHITE_QUEEN;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.WHITE_ROOK;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.junit.jupiter.api.Test;
@@ -12,11 +82,10 @@ import io.github.dlbbld.ashlarchess.board.Board;
 import io.github.dlbbld.ashlarchess.board.StaticPosition;
 import io.github.dlbbld.ashlarchess.board.enums.CastlingMove;
 import io.github.dlbbld.ashlarchess.board.enums.PromotionPieceType;
-import io.github.dlbbld.ashlarchess.common.constants.EnumConstants;
 import io.github.dlbbld.ashlarchess.common.model.MoveSpecification;
 import io.github.dlbbld.ashlarchess.common.utility.StaticPositionUtility;
 
-class TestPerformMoveMainlyStaticPositionState implements EnumConstants {
+class TestPerformMoveMainlyStaticPositionState {
 
   @SuppressWarnings("static-method")
   @Test

@@ -16,7 +16,6 @@ import io.github.dlbbld.ashlarchess.board.enums.PieceType;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
 import io.github.dlbbld.ashlarchess.board.enums.Square;
 import io.github.dlbbld.ashlarchess.common.Nulls;
-import io.github.dlbbld.ashlarchess.common.constants.EnumConstants;
 import io.github.dlbbld.ashlarchess.common.model.MoveSpecification;
 import io.github.dlbbld.ashlarchess.common.utility.StaticPositionUtility;
 import io.github.dlbbld.ashlarchess.enums.KingSafetyCheck;
@@ -25,7 +24,7 @@ import io.github.dlbbld.ashlarchess.model.LegalMoveCalculation;
 import io.github.dlbbld.ashlarchess.model.LegalMoveKind;
 import io.github.dlbbld.ashlarchess.model.PseudoLegalMove;
 
-public abstract class AbstractLegalMoves implements EnumConstants {
+public abstract class AbstractLegalMoves {
 
   protected static void checkPiece(Side havingMove, Piece candidatePiece, PieceType expectedPieceType)
       throws IllegalArgumentException {

@@ -13,13 +13,12 @@ import org.junit.jupiter.api.Test;
 
 import io.github.dlbbld.ashlarchess.bitboard.StaticPositionBridge;
 import io.github.dlbbld.ashlarchess.board.enums.Square;
-import io.github.dlbbld.ashlarchess.common.constants.EnumConstants;
 import io.github.dlbbld.ashlarchess.fen.FenParserAdvanced;
 import io.github.dlbbld.ashlarchess.fen.constants.FenConstants;
 import io.github.dlbbld.ashlarchess.fen.model.Fen;
 import io.github.dlbbld.ashlarchess.squares.AbstractAttackedSquares;
 
-class TestAttackedSquaresByPosition implements EnumConstants {
+class TestAttackedSquaresByPosition {
 
   @SuppressWarnings("static-method")
   @Test

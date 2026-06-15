@@ -11,10 +11,9 @@ import io.github.dlbbld.ashlarchess.board.enums.PromotionPieceType;
 import io.github.dlbbld.ashlarchess.board.enums.PromotionPieceTypeUtility;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
 import io.github.dlbbld.ashlarchess.board.model.UpdateSquare;
-import io.github.dlbbld.ashlarchess.common.constants.EnumConstants;
 import io.github.dlbbld.ashlarchess.common.model.MoveSpecification;
 
-public abstract class PromotionUtility implements EnumConstants {
+public abstract class PromotionUtility {
 
   public static boolean calculateIsPromotionNewMove(MoveSpecification moveSpecification) {
     return moveSpecification.promotionPieceType() != PromotionPieceType.NONE;

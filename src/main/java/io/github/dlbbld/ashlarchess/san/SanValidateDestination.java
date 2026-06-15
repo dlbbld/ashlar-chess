@@ -3,6 +3,9 @@
 
 package io.github.dlbbld.ashlarchess.san;
 
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.KING;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.PAWN;
+
 import io.github.dlbbld.ashlarchess.bitboard.BitboardPosition;
 import io.github.dlbbld.ashlarchess.board.Board;
 import io.github.dlbbld.ashlarchess.board.enums.Piece;
@@ -10,12 +13,11 @@ import io.github.dlbbld.ashlarchess.board.enums.PieceType;
 import io.github.dlbbld.ashlarchess.board.enums.Rank;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
 import io.github.dlbbld.ashlarchess.board.enums.Square;
-import io.github.dlbbld.ashlarchess.common.constants.EnumConstants;
 import io.github.dlbbld.ashlarchess.common.model.MoveSpecification;
 import io.github.dlbbld.ashlarchess.messages.Message;
 import io.github.dlbbld.ashlarchess.moves.EnPassantCaptureUtility;
 
-abstract class SanValidateDestination extends AbstractSan implements EnumConstants {
+abstract class SanValidateDestination extends AbstractSan {
 
   public static void validateDestinationSquareSemantics(Board board, Side havingMove, SanFormat sanFormat,
       SanConversion sanConversion) {

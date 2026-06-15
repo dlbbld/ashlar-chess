@@ -3,15 +3,16 @@
 
 package io.github.dlbbld.ashlarchess.test.san.validate.strict;
 
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.BLACK;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.WHITE;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
 
-import io.github.dlbbld.ashlarchess.common.constants.EnumConstants;
 import io.github.dlbbld.ashlarchess.test.san.validate.statically.strict.calculate.SanValidateStaticallyStrict;
 
-class TestSanValidateStaticallyStrict implements EnumConstants {
+class TestSanValidateStaticallyStrict {
 
   @SuppressWarnings("static-method")
   @Test

@@ -13,9 +13,8 @@ import com.google.common.collect.ImmutableSet;
 
 import io.github.dlbbld.ashlarchess.board.enums.Square;
 import io.github.dlbbld.ashlarchess.common.Nulls;
-import io.github.dlbbld.ashlarchess.common.constants.EnumConstants;
 
-public abstract class ImmutableUtility implements EnumConstants {
+public abstract class ImmutableUtility {
 
   public static final ImmutableSet<Square> EMPTY_UNMODIFIABLE_SET;
 

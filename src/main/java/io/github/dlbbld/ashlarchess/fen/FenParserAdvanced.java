@@ -3,6 +3,12 @@
 
 package io.github.dlbbld.ashlarchess.fen;
 
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.BLACK;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.BLACK_PAWN;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.PAWN;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.WHITE;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.WHITE_PAWN;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -24,7 +30,6 @@ import io.github.dlbbld.ashlarchess.board.enums.SquareUtility;
 import io.github.dlbbld.ashlarchess.common.Nulls;
 import io.github.dlbbld.ashlarchess.common.constants.BasicConstants;
 import io.github.dlbbld.ashlarchess.common.constants.ChessConstants;
-import io.github.dlbbld.ashlarchess.common.constants.EnumConstants;
 import io.github.dlbbld.ashlarchess.common.enums.FenAdvancedValidationProblem;
 import io.github.dlbbld.ashlarchess.common.exceptions.FenAdvancedValidationException;
 import io.github.dlbbld.ashlarchess.common.exceptions.FenRawValidationException;
@@ -36,7 +41,7 @@ import io.github.dlbbld.ashlarchess.fen.model.FenRaw;
 import io.github.dlbbld.ashlarchess.model.CastlingRightBoth;
 import io.github.dlbbld.ashlarchess.moves.CastlingUtility;
 
-public class FenParserAdvanced implements EnumConstants {
+public class FenParserAdvanced {
 
   private static final String REG_EXP_EMPTY_RANK = "//";
   @SuppressWarnings("null")

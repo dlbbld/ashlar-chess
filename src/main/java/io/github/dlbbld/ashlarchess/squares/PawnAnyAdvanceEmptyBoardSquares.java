@@ -12,9 +12,8 @@ import com.google.common.collect.ImmutableSet;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
 import io.github.dlbbld.ashlarchess.board.enums.Square;
 import io.github.dlbbld.ashlarchess.common.Nulls;
-import io.github.dlbbld.ashlarchess.common.constants.EnumConstants;
 
-class PawnAnyAdvanceEmptyBoardSquares extends AbstractEmptyBoardSquares implements EnumConstants {
+class PawnAnyAdvanceEmptyBoardSquares extends AbstractEmptyBoardSquares {
 
   private static final ImmutableMap<Square, ImmutableSet<Square>> PAWN_WHITE_SQUARES_MAP;
   private static final ImmutableMap<Square, ImmutableSet<Square>> PAWN_BLACK_SQUARES_MAP;

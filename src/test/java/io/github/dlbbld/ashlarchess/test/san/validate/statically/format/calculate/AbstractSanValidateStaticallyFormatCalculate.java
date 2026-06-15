@@ -3,6 +3,9 @@
 
 package io.github.dlbbld.ashlarchess.test.san.validate.statically.format.calculate;
 
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.FILE_NONE;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.RANK_NONE;
+
 import java.util.ArrayList;
 import java.util.List;
 

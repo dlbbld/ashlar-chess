@@ -8,11 +8,10 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
 
-import io.github.dlbbld.ashlarchess.common.constants.EnumConstants;
 import io.github.dlbbld.ashlarchess.test.san.validate.statically.format.calculate.SanValidateStaticallyFormat;
 
 //at this stage we allow a lot of invalid SAN's which are then checked later
-class TestSanValidateStaticallyFormat implements EnumConstants {
+class TestSanValidateStaticallyFormat {
 
   @SuppressWarnings("static-method")
   @Test

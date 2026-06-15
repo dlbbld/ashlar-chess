@@ -3,19 +3,22 @@
 
 package io.github.dlbbld.ashlarchess.board;
 
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.BISHOP;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.KING;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.KNIGHT;
+
 import io.github.dlbbld.ashlarchess.bitboard.BitboardPosition;
 import io.github.dlbbld.ashlarchess.board.enums.Piece;
 import io.github.dlbbld.ashlarchess.board.enums.PieceType;
 import io.github.dlbbld.ashlarchess.board.enums.PieceUtility;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
 import io.github.dlbbld.ashlarchess.board.enums.Square;
-import io.github.dlbbld.ashlarchess.common.constants.EnumConstants;
 
 /**
  * Internal material checks needed by the board package's rule helpers (currently {@link InsufficientMaterialUtility}).
  * Kept narrow and package-private: the public API does not expose material arithmetic.
  */
-abstract class BoardMaterial implements EnumConstants {
+abstract class BoardMaterial {
 
   static boolean calculateIsOwnPiece(Side side, Piece pieceOnSquare) {
     return pieceOnSquare != Piece.NONE && pieceOnSquare.getSide() == side;

@@ -17,7 +17,6 @@ import com.google.common.collect.ImmutableList;
 
 import io.github.dlbbld.ashlarchess.board.Board;
 import io.github.dlbbld.ashlarchess.common.Nulls;
-import io.github.dlbbld.ashlarchess.common.constants.EnumConstants;
 import io.github.dlbbld.ashlarchess.common.ucimove.utility.UciMoveUtility;
 import io.github.dlbbld.ashlarchess.model.LegalMove;
 import io.github.dlbbld.ashlarchess.model.UciMove;
@@ -27,7 +26,7 @@ import io.github.dlbbld.ashlarchess.san.LenientSanParserValidationResult;
 import io.github.dlbbld.ashlarchess.san.LenientSanValidationProblem;
 
 @SuppressWarnings("static-method")
-class TestLenientSanParser implements EnumConstants {
+class TestLenientSanParser {
 
   // Italian-game opening that exercises pawn pushes, knight/bishop development, and castling.
   // Castling is the only move whose canonical SAN, LAN, and UCI representations all differ - the rest

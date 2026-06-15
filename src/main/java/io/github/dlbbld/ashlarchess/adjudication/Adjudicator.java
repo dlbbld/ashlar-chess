@@ -18,13 +18,13 @@ import io.github.dlbbld.ashlarchess.unwinnability.UnwinnabilityQuickVerdict;
  * Each event has a quick and a full variant, trading speed against certainty:
  * <ul>
  * <li><b>quick</b> - rules only {@link AdjudicationResult#DRAW} or {@link AdjudicationResult#LOSS}, from the fast
- * {@link Board#calculateUnwinnabilityQuickVerdict(Side)} analyzer. It draws only when it can <em>prove</em> the opponent cannot win;
- * otherwise it rules a loss (the flag stands when no draw can be shown). Latency is bounded - the right choice during
- * live play.</li>
+ * {@link Board#calculateUnwinnabilityQuickVerdict(Side)} analyzer. It draws only when it can <em>prove</em> the
+ * opponent cannot win; otherwise it rules a loss (the flag stands when no draw can be shown). Latency is bounded - the
+ * right choice during live play.</li>
  * <li><b>full</b> - rules {@link AdjudicationResult#DRAW}, {@link AdjudicationResult#LOSS}, or
- * {@link AdjudicationResult#UNDETERMINED}, from the complete {@link Board#calculateUnwinnabilityFullVerdict(Side)} analyzer. It draws on
- * a proven dead position, rules a loss on a proven win, and reports {@code UNDETERMINED} only when the search bound is
- * hit (rare). The recommended check at game end, where the extra cost is negligible.</li>
+ * {@link AdjudicationResult#UNDETERMINED}, from the complete {@link Board#calculateUnwinnabilityFullVerdict(Side)}
+ * analyzer. It draws on a proven dead position, rules a loss on a proven win, and reports {@code UNDETERMINED} only
+ * when the search bound is hit (rare). The recommended check at game end, where the extra cost is negligible.</li>
  * </ul>
  *
  * <p>
@@ -48,7 +48,8 @@ public final class Adjudicator {
    */
   public static AdjudicationResult adjudicateFlagfallQuick(Board board, Side flaggingPlayer) {
     final Side wouldBeWinner = opponentOf(flaggingPlayer);
-    return board.calculateUnwinnabilityQuickVerdict(wouldBeWinner) == UnwinnabilityQuickVerdict.UNWINNABLE ? AdjudicationResult.DRAW
+    return board.calculateUnwinnabilityQuickVerdict(wouldBeWinner) == UnwinnabilityQuickVerdict.UNWINNABLE
+        ? AdjudicationResult.DRAW
         : AdjudicationResult.LOSS;
   }
 

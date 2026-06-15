@@ -11,10 +11,9 @@ import org.eclipse.jdt.annotation.Nullable;
 import com.google.common.collect.ImmutableMap;
 
 import io.github.dlbbld.ashlarchess.common.Nulls;
-import io.github.dlbbld.ashlarchess.common.constants.EnumConstants;
 import io.github.dlbbld.ashlarchess.san.SanParse;
 
-public class SanValidateStaticallyFormat implements EnumConstants {
+public class SanValidateStaticallyFormat {
 
   private static final ImmutableMap<String, SanParse> SAN_VALIDATE_MAP;
 

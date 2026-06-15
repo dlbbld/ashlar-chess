@@ -3,6 +3,10 @@
 
 package io.github.dlbbld.ashlarchess.common.ucimove.utility;
 
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.BISHOP;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.KNIGHT;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.ROOK;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -18,13 +22,12 @@ import io.github.dlbbld.ashlarchess.board.enums.PromotionPieceType;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
 import io.github.dlbbld.ashlarchess.board.enums.Square;
 import io.github.dlbbld.ashlarchess.common.Nulls;
-import io.github.dlbbld.ashlarchess.common.constants.EnumConstants;
 import io.github.dlbbld.ashlarchess.model.EmptyBoardMove;
 import io.github.dlbbld.ashlarchess.model.UciMove;
 import io.github.dlbbld.ashlarchess.squares.AbstractEmptyBoardSquares;
 import io.github.dlbbld.ashlarchess.squares.PawnDiagonalSquares;
 
-public abstract class UciMoveValidationUtility implements EnumConstants {
+public abstract class UciMoveValidationUtility {
 
   private static final ImmutableList<UciMove> UCI_MOVE_LIST;
   private static final ImmutableMap<String, UciMove> UCI_MOVE_TEXT_LOOKUP;

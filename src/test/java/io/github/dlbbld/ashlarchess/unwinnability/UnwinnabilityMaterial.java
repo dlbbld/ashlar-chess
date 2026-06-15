@@ -3,6 +3,9 @@
 
 package io.github.dlbbld.ashlarchess.unwinnability;
 
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.KING;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.KNIGHT;
+
 import io.github.dlbbld.ashlarchess.board.StaticPosition;
 import io.github.dlbbld.ashlarchess.board.enums.Piece;
 import io.github.dlbbld.ashlarchess.board.enums.PieceType;
@@ -10,7 +13,6 @@ import io.github.dlbbld.ashlarchess.board.enums.PieceUtility;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
 import io.github.dlbbld.ashlarchess.board.enums.Square;
 import io.github.dlbbld.ashlarchess.board.enums.SquareType;
-import io.github.dlbbld.ashlarchess.common.constants.EnumConstants;
 
 /**
  * StaticPosition-backed material predicates used by the unwinnability/helpmate analysis. Reference implementations of
@@ -19,7 +21,7 @@ import io.github.dlbbld.ashlarchess.common.constants.EnumConstants;
  * production callers all consume the bitboard sibling. When Phase 6 of the switchover lands and the StaticPosition
  * subtree relocates to {@code src/test/}, this class moves with it as a single {@code git mv}.
  */
-abstract class UnwinnabilityMaterial implements EnumConstants {
+abstract class UnwinnabilityMaterial {
 
   // --- existence checks (any side or specific side) ---
 

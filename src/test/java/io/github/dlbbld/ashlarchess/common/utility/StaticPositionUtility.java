@@ -3,6 +3,8 @@
 
 package io.github.dlbbld.ashlarchess.common.utility;
 
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.KING;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.PAWN;
 import static io.github.dlbbld.ashlarchess.common.utility.ImmutableUtility.constructListSquare;
 
 import java.util.ArrayList;
@@ -17,7 +19,6 @@ import io.github.dlbbld.ashlarchess.board.enums.Side;
 import io.github.dlbbld.ashlarchess.board.enums.Square;
 import io.github.dlbbld.ashlarchess.board.model.UpdateSquare;
 import io.github.dlbbld.ashlarchess.common.Nulls;
-import io.github.dlbbld.ashlarchess.common.constants.EnumConstants;
 import io.github.dlbbld.ashlarchess.common.exceptions.ProgrammingMistakeException;
 import io.github.dlbbld.ashlarchess.common.model.MoveSpecification;
 import io.github.dlbbld.ashlarchess.fen.FenPieceSymbolUtility;
@@ -27,7 +28,7 @@ import io.github.dlbbld.ashlarchess.moves.PromotionUtility;
 import io.github.dlbbld.ashlarchess.moves.StandardMoveUtility;
 import io.github.dlbbld.ashlarchess.squares.AbstractAttackedSquares;
 
-public abstract class StaticPositionUtility implements EnumConstants {
+public abstract class StaticPositionUtility {
 
   // En-passant (from, to) patterns - test-side duplicate of EnPassantCaptureUtility's
   // WHITE/BLACK_EN_PASSANT_CAPTURE_FROM_TO

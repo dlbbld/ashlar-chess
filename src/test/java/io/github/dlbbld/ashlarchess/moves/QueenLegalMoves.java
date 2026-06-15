@@ -3,6 +3,8 @@
 
 package io.github.dlbbld.ashlarchess.moves;
 
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.QUEEN;
+
 import java.util.Set;
 
 import io.github.dlbbld.ashlarchess.board.StaticPosition;

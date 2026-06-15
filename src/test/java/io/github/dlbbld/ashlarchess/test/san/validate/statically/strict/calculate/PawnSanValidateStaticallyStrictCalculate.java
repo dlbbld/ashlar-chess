@@ -3,6 +3,8 @@
 
 package io.github.dlbbld.ashlarchess.test.san.validate.statically.strict.calculate;
 
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.PAWN;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;

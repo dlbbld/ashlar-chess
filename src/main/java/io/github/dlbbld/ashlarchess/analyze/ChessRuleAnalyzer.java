@@ -3,6 +3,8 @@
 
 package io.github.dlbbld.ashlarchess.analyze;
 
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.KING;
+
 import java.util.Set;
 
 import io.github.dlbbld.ashlarchess.bitboard.BitboardPosition;
@@ -11,7 +13,6 @@ import io.github.dlbbld.ashlarchess.board.enums.RankUtility;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
 import io.github.dlbbld.ashlarchess.board.enums.Square;
 import io.github.dlbbld.ashlarchess.board.enums.SquareUtility;
-import io.github.dlbbld.ashlarchess.common.constants.EnumConstants;
 import io.github.dlbbld.ashlarchess.common.exceptions.ProgrammingMistakeException;
 import io.github.dlbbld.ashlarchess.common.model.MoveSpecification;
 import io.github.dlbbld.ashlarchess.enums.KingSafetyCheck;
@@ -38,7 +39,7 @@ import io.github.dlbbld.ashlarchess.squares.KingNonCastlingEmptyBoardSquares;
  * <li>{@code move.fromSquare()} holds an own piece for {@code havingMove}.</li>
  * </ul>
  */
-public final class ChessRuleAnalyzer implements EnumConstants {
+public final class ChessRuleAnalyzer {
 
   private ChessRuleAnalyzer() {
   }

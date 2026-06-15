@@ -3,6 +3,8 @@
 
 package io.github.dlbbld.ashlarchess.board;
 
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.PAWN;
+
 import io.github.dlbbld.ashlarchess.analyze.CastlingCheckTranslator;
 import io.github.dlbbld.ashlarchess.analyze.ChessRuleAnalyzer;
 import io.github.dlbbld.ashlarchess.analyze.KingSafetyCheckTranslator;
@@ -15,7 +17,6 @@ import io.github.dlbbld.ashlarchess.board.enums.PromotionPieceType;
 import io.github.dlbbld.ashlarchess.board.enums.RankUtility;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
 import io.github.dlbbld.ashlarchess.board.enums.Square;
-import io.github.dlbbld.ashlarchess.common.constants.EnumConstants;
 import io.github.dlbbld.ashlarchess.common.exceptions.ProgrammingMistakeException;
 import io.github.dlbbld.ashlarchess.common.model.MoveSpecification;
 import io.github.dlbbld.ashlarchess.enums.CastlingCheck;
@@ -25,7 +26,7 @@ import io.github.dlbbld.ashlarchess.enums.MovementCheck;
 import io.github.dlbbld.ashlarchess.exceptions.InvalidMoveException;
 import io.github.dlbbld.ashlarchess.moves.CastlingUtility;
 
-class ValidateNewMove implements EnumConstants {
+class ValidateNewMove {
 
   public static MoveCheck validateNewMove(Board board, MoveSpecification moveSpecification)
       throws InvalidMoveException {

@@ -8,10 +8,9 @@ import java.util.List;
 
 import io.github.dlbbld.ashlarchess.board.enums.Piece;
 import io.github.dlbbld.ashlarchess.board.model.UpdateSquare;
-import io.github.dlbbld.ashlarchess.common.constants.EnumConstants;
 import io.github.dlbbld.ashlarchess.common.model.MoveSpecification;
 
-public abstract class StandardMoveUtility implements EnumConstants {
+public abstract class StandardMoveUtility {
 
   /**
    * Produces the {@link UpdateSquare} list for a non-castling, non-EP, non-promotion piece movement: the from-square

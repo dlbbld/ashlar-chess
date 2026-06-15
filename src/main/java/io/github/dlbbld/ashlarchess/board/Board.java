@@ -94,9 +94,9 @@ import io.github.dlbbld.ashlarchess.unwinnability.UnwinnableQuickAnalyzer;
  * {@link #isStalemate()}, {@link #isThreefoldRepetition()}, {@link #isFiftyMove()}, {@link #isFivefoldRepetition()},
  * {@link #isSeventyFiveMove()}, plus the side-specific unwinnability verdict methods
  * ({@code calculateUnwinnabilityQuickVerdict}, {@code calculateUnwinnabilityFullVerdict}) - the library's flagship CHA
- * feature. Whole-position dead-position checks (no intended
- * winner) live on the analyzers; see {@link io.github.dlbbld.ashlarchess.unwinnability}. Position-state accessors
- * return Guava {@code ImmutableList}/{@code ImmutableSet}; mutation is exclusively via {@code move}/{@code unmove}.
+ * feature. Whole-position dead-position checks (no intended winner) live on the analyzers; see
+ * {@link io.github.dlbbld.ashlarchess.unwinnability}. Position-state accessors return Guava
+ * {@code ImmutableList}/{@code ImmutableSet}; mutation is exclusively via {@code move}/{@code unmove}.
  *
  * <p>
  * For game-level reports (threefold-claim-ahead, repetition listings, no-progress sequences), use
