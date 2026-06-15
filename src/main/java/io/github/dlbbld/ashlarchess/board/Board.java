@@ -274,9 +274,9 @@ public class Board {
    * Plays the given move on this board. The {@code MoveSpecification} is validated against the current legal-move set;
    * an illegal move (or a move on a game already terminated) throws {@link InvalidMoveException}.
    */
-  public boolean move(MoveSpecification moveSpecification) throws InvalidMoveException {
+  public void move(MoveSpecification moveSpecification) throws InvalidMoveException {
     ValidateNewMove.validateNewMove(this, moveSpecification);
-    return performMoveWithoutValidation(moveSpecification);
+    performMoveWithoutValidation(moveSpecification);
   }
 
   /**
@@ -318,31 +318,29 @@ public class Board {
    * Plays the given sequence of canonical SAN moves on this board, in order. Convenience for batch play; the absence of
    * a thrown exception means every move was canonical and legal.
    */
-  public boolean movesStrict(String... sanArray) {
+  public void movesStrict(String... sanArray) {
     for (final String san : sanArray) {
       if (san == null) {
         throw new IllegalArgumentException("The SAN cannot be null");
       }
       moveStrict(san);
     }
-    return true;
   }
 
   /**
    * Plays the given sequence of canonical SAN moves on this board, in order. Convenience for batch play; the absence of
    * a thrown exception means every move was canonical and legal.
    */
-  public boolean movesLenient(String... sanArray) {
+  public void movesLenient(String... sanArray) {
     for (final String san : sanArray) {
       if (san == null) {
         throw new IllegalArgumentException("The SAN cannot be null");
       }
       moveLenient(san);
     }
-    return true;
   }
 
-  private boolean performMoveWithoutValidation(MoveSpecification moveSpecification) throws InvalidMoveException {
+  private void performMoveWithoutValidation(MoveSpecification moveSpecification) throws InvalidMoveException {
 
     final CastlingRight beforeCastlingRightWhite = Nulls.getLast(dynamicPositionList).castlingRightWhite();
     final CastlingRight beforeCastlingRightBlack = Nulls.getLast(dynamicPositionList).castlingRightBlack();
@@ -418,8 +416,6 @@ public class Board {
 
     this.sanList.add(MoveToSan.calculateSanLastMove(moveToPerform, legalMovesBeforeLastMove, sanTerminalMarker));
     this.lanList.add(MoveToLan.calculateLanLastMove(moveToPerform, sanTerminalMarker));
-
-    return true;
 
   }
 
