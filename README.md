@@ -204,9 +204,9 @@ one who flagged or resigned - and it returns the verdict.
 
 Each event has a **quick** and a **full** variant:
 
-* **quick** - rules `DRAW` or `LOSS`, from the fast `Board.isUnwinnableQuick(Side)` analyzer. It draws only when it can
+* **quick** - rules `DRAW` or `LOSS`, from the fast `Board.calculateUnwinnabilityQuickVerdict(Side)` analyzer. It draws only when it can
   *prove* the opponent cannot win; otherwise the flag stands. Latency is bounded - the right choice during live play.
-* **full** - rules `DRAW`, `LOSS`, or `UNDETERMINED`, from the complete `Board.isUnwinnableFull(Side)` analyzer. It
+* **full** - rules `DRAW`, `LOSS`, or `UNDETERMINED`, from the complete `Board.calculateUnwinnabilityFullVerdict(Side)` analyzer. It
   additionally *proves* wins and reports `UNDETERMINED` only when its bounded search runs out (rare). The recommended
   check at game end, where the extra cost is negligible.
 
@@ -308,7 +308,7 @@ even if the opponent cooperates. If the position is unwinnable for both players,
 > **Note:** quick/full dead-position detection is caller-invoked. `Board` does not run the analyzer during
 > construction or after each move; callers that want to adjudicate analyzer-driven dead positions call the no-side
 > overloads `UnwinnableQuickAnalyzer.unwinnableQuick(board)` / `UnwinnableFullAnalyzer.unwinnableFull(board)`, or the
-> side-specific `Board.isUnwinnableQuick(Side)` / `Board.isUnwinnableFull(Side)`.
+> side-specific `Board.calculateUnwinnabilityQuickVerdict(Side)` / `Board.calculateUnwinnabilityFullVerdict(Side)`.
 
 ## Methods
 The library provides an implementation of CHA. So for both situations, there is a quick and a full method.
@@ -323,7 +323,7 @@ The quick method has two return values:
 * POSSIBLY_WINNABLE - not proven unwinnable; most likely winnable, but it might be unwinnable in some rare cases
 
 The quick method never claims winnability - proving a concrete win is the full method's job.
-`Board.isUnwinnableQuick(Side)` returns this verdict directly. `UnwinnableQuickAnalyzer.unwinnableQuick(...)` returns
+`Board.calculateUnwinnabilityQuickVerdict(Side)` returns this verdict directly. `UnwinnableQuickAnalyzer.unwinnableQuick(...)` returns
 `UnwinnabilityQuickAnalysis` (the verdict only).
 
 The full method has four return values:
@@ -362,8 +362,8 @@ For example, if White flags with the king and rook against the lone king of Blac
 
 ```java
 final Board board = new Board("8/8/4k3/3R4/2K5/8/8/8 w - - 0 50");
-System.out.println(board.isUnwinnableQuick(Side.BLACK)); // UNWINNABLE
-System.out.println(board.isUnwinnableFull(Side.BLACK)); // UNWINNABLE
+System.out.println(board.calculateUnwinnabilityQuickVerdict(Side.BLACK)); // UNWINNABLE
+System.out.println(board.calculateUnwinnabilityFullVerdict(Side.BLACK)); // UNWINNABLE
 ```
 
 #### Forced moves
@@ -374,8 +374,8 @@ White could have won.
 
 ```java
 final Board board = new Board("5r1k/6P1/7K/5q2/8/8/8/8 b - - 0 51");
-System.out.println(board.isUnwinnableQuick(Side.WHITE)); // UNWINNABLE
-System.out.println(board.isUnwinnableFull(Side.WHITE)); // UNWINNABLE
+System.out.println(board.calculateUnwinnabilityQuickVerdict(Side.WHITE)); // UNWINNABLE
+System.out.println(board.calculateUnwinnabilityFullVerdict(Side.WHITE)); // UNWINNABLE
 ```
 
 #### Pawn walls
@@ -385,8 +385,8 @@ by most common chess libraries.
 
 ```java
 final Board board = new Board("8/8/3k4/1p2p1p1/pP1pP1P1/P2P4/1K6/8 b - - 32 62");
-System.out.println(board.isUnwinnableQuick(Side.BLACK)); // UNWINNABLE
-System.out.println(board.isUnwinnableFull(Side.BLACK)); // UNWINNABLE
+System.out.println(board.calculateUnwinnabilityQuickVerdict(Side.BLACK)); // UNWINNABLE
+System.out.println(board.calculateUnwinnabilityFullVerdict(Side.BLACK)); // UNWINNABLE
 ```
 
 #### Common positions
@@ -397,8 +397,8 @@ the bounded search may return UNDETERMINED.
 
 ```java
 final Board board = new Board("q4r2/pR3pkp/1p2p1p1/4P3/6P1/1P3Q2/1Pr2PK1/3R4 b - - 3 29");
-System.out.println(board.isUnwinnableQuick(Side.WHITE)); // POSSIBLY_WINNABLE
-System.out.println(board.isUnwinnableFull(Side.WHITE)); // WINNABLE_HELPMATE
+System.out.println(board.calculateUnwinnabilityQuickVerdict(Side.WHITE)); // POSSIBLY_WINNABLE
+System.out.println(board.calculateUnwinnabilityFullVerdict(Side.WHITE)); // WINNABLE_HELPMATE
 ```
 
 #### Blocked positions the quick algorithm proves
@@ -406,8 +406,8 @@ The quick algorithm (a port of CHA 2.6.1) also proves many blocked and fortress 
 
 ```java
 final Board board = new Board("1k6/1P5p/BP3p2/1P6/8/8/5PKP/8 b - - 0 41");
-System.out.println(board.isUnwinnableQuick(Side.WHITE)); // UNWINNABLE
-System.out.println(board.isUnwinnableFull(Side.WHITE)); // UNWINNABLE
+System.out.println(board.calculateUnwinnabilityQuickVerdict(Side.WHITE)); // UNWINNABLE
+System.out.println(board.calculateUnwinnabilityFullVerdict(Side.WHITE)); // UNWINNABLE
 ```
 
 ### Dead positions
