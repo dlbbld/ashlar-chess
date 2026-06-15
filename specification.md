@@ -44,7 +44,7 @@ Concretely:
 
 - **Records as value objects** (`PgnCommentary`, `Fen`, `Tag`, `PgnMove`, `PgnGame`, `MoveSpecification`). Where a record carries a non-trivial textual or grammatical contract — `PgnCommentary` is the load-bearing example — the compact constructor enforces it, and downstream code does not re-validate. For records whose invariants are field-level (`Fen`, `Tag`, `PgnMove`), validation lives one layer out, at the parser/factory boundary (`FenParserAdvanced`, `LenientPgnParser`, `StrictPgnParser`); a record never holds something that came in from outside the library without first passing through one of those entry points. `PgnGame`'s compact constructor performs defensive copies of its list components so the immutability claim holds end-to-end. The end result is the same — errors at construction time — but the boundary is occasionally one method out from the record itself.
 - **Heavy enum use** for closed domains (`Side`, `Piece`, `Square`, `File`, `Rank`, `MoveSuffixAnnotation`, `ResultTagValue`, etc.) — the compiler enforces exhaustive `switch` handling.
-- **Eclipse JDT null annotations** (`@NonNull` / `@Nullable`) used pervasively, with the build configured so violations are errors. Null is a typed concern, not a runtime accident.
+- **Eclipse JDT null annotations** (`@NonNull` / `@Nullable`) used pervasively, with the Eclipse JDT compiler configured so violations are errors. (This is a JDT-toolchain guarantee enforced in the IDE/ECJ build; the Maven `javac` build does not re-check null annotations.) Null is a typed concern, not a runtime accident.
 - **No reflection in the rule core.** What the type system says is what runs.
 
 The result is a codebase where a substantial class of bugs — null-dereference, unhandled enum case, mutated-after-construction — cannot reach runtime.
@@ -106,7 +106,7 @@ Position equality follows the FIDE definition: same piece placement, same side t
 
 ### 3.2 Unwinnability — Chess Unwinnability Analyzer (CHA)
 
-The library's **flagship feature**. A position is *unwinnable for a side* if that side has no theoretical mating sequence assuming worst-case play by the opponent. A *dead position* is one unwinnable for both sides. Insufficient material covers the trivial cases; positions like blocked pawn walls, certain wrong-bishop endgames, and many forced-only-moves continuations are dead but not insufficient — and most chess libraries get them wrong.
+The library's **flagship feature**. A position is *unwinnable for a side* if there is no legal sequence that can end with that side giving checkmate, even if the opponent cooperates (i.e. not even a helpmate exists). A *dead position* is one unwinnable for both sides. Insufficient material covers the trivial cases; positions like blocked pawn walls, certain wrong-bishop endgames, and many forced-only-moves continuations are dead but not insufficient — and most chess libraries get them wrong.
 
 Miguel Ambrona's CHA is, to the author's knowledge, the only published algorithm that decides these cases correctly across the full range of positions. ashlar-chess implements it in Java, in two variants:
 

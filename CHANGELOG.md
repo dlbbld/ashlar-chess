@@ -63,8 +63,26 @@ Enum behavior moved to utilities (the "enums carry data" pass) — each former `
 - `Piece.calculate{Rook,Knight,Bishop,Queen,King,Pawn}Piece(Side)` and `Piece.calculate(Side, PieceType)`, plus the duplicate `PieceType.calculate(Side, PieceType)`, consolidated into `board.enums.PieceUtility`. `PromotionPieceType.calculate(Side, PromotionPieceType)` → `board.enums.PromotionPieceTypeUtility.calculate(...)`.
 - `Square.flip`, `getPromotionRank`, `calculateJumpOverSquare`, `calculateEnPassantCaptureTargetSquareList`, and the king / queen-side-rook / king-side-rook original-square methods → `board.enums.SquareUtility`.
 - `Rank`'s side-relative rule methods (ground / promotion / pawn-initial / two-square-advance / en-passant ranks and per-side validity) → `board.enums.RankUtility`.
-- `FenSideSymbol.calculate(Side)` and `FenPieceSymbol.calculate(Piece)` → `fen.{FenSideSymbol,FenPieceSymbol}Utility` (the `calculate(char)` self-parse stays on the enum).
+- `FenSideSymbol.calculate(Side)` and `FenPieceSymbol.calculate(Piece)` → `fen.{FenSideSymbol,FenPieceSymbol}Utility` (the char self-parse stays on the enum, renamed to `parse(char)` — see below).
 - `SanTerminalMarker.calculate(...)` / `append(...)` → `san.SanTerminalMarkerUtility`; `SanFormat.isCapture()` → `san.SanFormatUtility.isCapture(...)`.
+
+Enum factories split by input — `of(...)` from typed components, `parse(...)` from text:
+
+- `Square.calculate(String)` → `parse(String)`; `Square.calculate(File, Rank)` and `Square.calculate(int, int)` → `of(...)`.
+- `Rank.calculateRank(char)` → `parse(char)`; `Rank.calculateRank(int)` → `of(int)`.
+- `File.calculateFile(char)` → `parse(char)`.
+- `calculate(...)` → `parse(...)` on `MoveSuffixAnnotation(String)`, `NotationMovingPiece(char)`, `NotationPromotionPiece(char)`, `FenSideSymbol(char)`, `FenPieceSymbol(char)`, `ResultTagValue(String)`, `SetUpTagValue(String)`, and `StandardTag(String)`.
+- Removed the unused `NotationPromotionPiece.existsIgnoreCase(char)` and `calculateIgnoreCase(char)`.
+
+FEN / SAN / LAN serializers use the `to*` idiom:
+
+- `FenBoard.calculateFen(Board)` → `FenBoard.toFen(Board)`.
+- `MoveToSan.calculateSanLastMove(LegalMove, List<LegalMove>, SanTerminalMarker)` → `MoveToSan.toSan(LegalMove move, List<LegalMove> legalMovesBeforeMove, SanTerminalMarker)`.
+- `MoveToLan.calculateLanLastMove(LegalMove, SanTerminalMarker)` → `MoveToLan.toLan(LegalMove move, SanTerminalMarker)`.
+
+`EnumConstants` is no longer a constant interface:
+
+- It is now a noninstantiable `public final class`, consumed via `import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.*` instead of `implements`. Types that used to implement it (e.g. `LegalMove`, `CastlingUtility`) no longer expose the square / piece / side aliases (`LegalMove.E4`, `CastlingUtility.E1`) through their public API.
 
 Removed from the published jar:
 
