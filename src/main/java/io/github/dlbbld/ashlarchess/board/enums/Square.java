@@ -244,15 +244,6 @@ public enum Square implements Comparable<Square> {
     return Nulls.get(sideMap, square);
   }
 
-  public static boolean calculateIsRightMostFile(Square square, Side side) {
-    return switch (side) {
-      case WHITE -> square.getFile() == File.FILE_H;
-      case BLACK -> square.getFile() == File.FILE_A;
-      case NONE -> throw new IllegalArgumentException();
-      default -> throw new IllegalArgumentException();
-    };
-  }
-
   public static boolean calculateHasLeftSquare(Side havingMove, Square square) {
     return hasNeighbour(LEFT_SQUARE, havingMove, square);
   }

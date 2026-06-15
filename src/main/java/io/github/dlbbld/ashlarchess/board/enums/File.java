@@ -12,15 +12,15 @@ import io.github.dlbbld.ashlarchess.common.exceptions.NonePointerException;
 import io.github.dlbbld.ashlarchess.common.exceptions.ProgrammingMistakeException;
 
 public enum File {
-  FILE_A('a', 1, true),
-  FILE_B('b', 2, false),
-  FILE_C('c', 3, false),
-  FILE_D('d', 4, false),
-  FILE_E('e', 5, false),
-  FILE_F('f', 6, false),
-  FILE_G('g', 7, false),
-  FILE_H('h', 8, true),
-  NONE('\0', 0, false);
+  FILE_A('a', 1),
+  FILE_B('b', 2),
+  FILE_C('c', 3),
+  FILE_D('d', 4),
+  FILE_E('e', 5),
+  FILE_F('f', 6),
+  FILE_G('g', 7),
+  FILE_H('h', 8),
+  NONE('\0', 0);
 
   @SuppressWarnings("null")
   public static final ImmutableList<File> REAL = ImmutableList.of(FILE_A, FILE_B, FILE_C, FILE_D, FILE_E, FILE_F,
@@ -30,13 +30,11 @@ public enum File {
   private final String letterString;
 
   private final int number;
-  private final boolean isBorderFile;
 
-  File(char letter, int number, boolean isBorderFile) {
+  File(char letter, int number) {
     this.letter = letter;
     this.letterString = Nulls.valueOf(letter);
     this.number = number;
-    this.isBorderFile = isBorderFile;
   }
 
   public char getLetter() {
@@ -52,11 +50,6 @@ public enum File {
   public int getNumber() {
     check();
     return number;
-  }
-
-  public boolean isBorderFile() {
-    check();
-    return isBorderFile;
   }
 
   public static boolean exists(char letter) {
@@ -155,26 +148,6 @@ public enum File {
       throw new IllegalArgumentException("No right file");
     }
     return Nulls.get(sideMap, file);
-  }
-
-  public static boolean calculateHasLeftLeftFile(Side havingMove, File file) {
-    if (havingMove == Side.NONE || file == NONE) {
-      throw new IllegalArgumentException();
-    }
-    if (!calculateHasLeftFile(havingMove, file)) {
-      return false;
-    }
-    return calculateHasLeftFile(havingMove, calculateLeftFile(havingMove, file));
-  }
-
-  public static boolean calculateHasRightRightFile(Side havingMove, File file) {
-    if (havingMove == Side.NONE || file == NONE) {
-      throw new IllegalArgumentException();
-    }
-    if (!calculateHasRightFile(havingMove, file)) {
-      return false;
-    }
-    return calculateHasRightFile(havingMove, calculateRightFile(havingMove, file));
   }
 
   private void check() {

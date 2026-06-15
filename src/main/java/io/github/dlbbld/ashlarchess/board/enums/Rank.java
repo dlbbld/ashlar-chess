@@ -105,14 +105,6 @@ public enum Rank {
   }
 
   private static final EnumMap<Side, EnumMap<Rank, Rank>> PREVIOUS_RANK = buildOffsetTable(-1);
-  private static final EnumMap<Side, EnumMap<Rank, Rank>> NEXT_RANK = buildOffsetTable(1);
-
-  public static boolean calculateHasPreviousRank(Side havingMove, Rank rank) {
-    if (havingMove == Side.NONE || rank == NONE) {
-      throw new IllegalArgumentException();
-    }
-    return Nulls.get(PREVIOUS_RANK, havingMove).containsKey(rank);
-  }
 
   public static Rank calculatePreviousRank(Side havingMove, Rank rank) {
     if (havingMove == Side.NONE || rank == NONE) {
@@ -123,44 +115,6 @@ public enum Rank {
       throw new IllegalArgumentException();
     }
     return Nulls.get(sideMap, rank);
-  }
-
-  public static boolean calculateHasNextRank(Side havingMove, Rank rank) {
-    if (havingMove == Side.NONE || rank == NONE) {
-      throw new IllegalArgumentException();
-    }
-    return Nulls.get(NEXT_RANK, havingMove).containsKey(rank);
-  }
-
-  public static Rank calculateNextRank(Side havingMove, Rank rank) {
-    if (havingMove == Side.NONE || rank == NONE) {
-      throw new IllegalArgumentException();
-    }
-    final EnumMap<Rank, Rank> sideMap = Nulls.get(NEXT_RANK, havingMove);
-    if (!sideMap.containsKey(rank)) {
-      throw new IllegalArgumentException();
-    }
-    return Nulls.get(sideMap, rank);
-  }
-
-  public static boolean calculateHasPreviousPreviousRank(Side havingMove, Rank rank) {
-    if (havingMove == Side.NONE || rank == NONE) {
-      throw new IllegalArgumentException();
-    }
-    if (!calculateHasPreviousRank(havingMove, rank)) {
-      return false;
-    }
-    return calculateHasPreviousRank(havingMove, calculatePreviousRank(havingMove, rank));
-  }
-
-  public static boolean calculateHasNextNextRank(Side havingMove, Rank rank) {
-    if (havingMove == Side.NONE || rank == NONE) {
-      throw new IllegalArgumentException();
-    }
-    if (!calculateHasNextRank(havingMove, rank)) {
-      return false;
-    }
-    return calculateHasNextRank(havingMove, calculateNextRank(havingMove, rank));
   }
 
   private void check() {

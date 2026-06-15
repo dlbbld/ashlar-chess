@@ -16,6 +16,7 @@ import com.google.common.collect.ImmutableList;
 import io.github.dlbbld.ashlarchess.bitboard.StaticPositionBridge;
 import io.github.dlbbld.ashlarchess.board.Board;
 import io.github.dlbbld.ashlarchess.board.StaticPosition;
+import io.github.dlbbld.ashlarchess.board.enums.File;
 import io.github.dlbbld.ashlarchess.board.enums.Piece;
 import io.github.dlbbld.ashlarchess.board.enums.PieceType;
 import io.github.dlbbld.ashlarchess.board.enums.RankUtility;
@@ -584,7 +585,7 @@ public class PawnWallGeometricAnalyzer {
       final Square squareNeighbor = Square.calculateRightSquare(side, squareCandidate);
       if (!blockedSquares.isEmpty(squareNeighbor)) {
         currentLine.add(squareNeighbor);
-        if (Square.calculateIsRightMostFile(squareNeighbor, side)) {
+        if (isRightMostFile(squareNeighbor, side)) {
           final List<Square> foundPawnWallLine = new ArrayList<>(currentLine);
           resultList.add(foundPawnWallLine);
           return;
@@ -612,7 +613,7 @@ public class PawnWallGeometricAnalyzer {
       final Square squareRight = Square.calculateRightSquare(side, squareCandidate);
       if (!blockedSquares.isEmpty(squareRight)) {
         currentLine.add(squareRight);
-        if (Square.calculateIsRightMostFile(squareRight, side)) {
+        if (isRightMostFile(squareRight, side)) {
           final List<Square> foundPawnWallLine = new ArrayList<>(currentLine);
           resultList.add(foundPawnWallLine);
           return;
@@ -631,6 +632,15 @@ public class PawnWallGeometricAnalyzer {
         currentLine.remove(currentLine.size() - 1);
       }
     }
+  }
+
+  private static boolean isRightMostFile(Square square, Side side) {
+    return switch (side) {
+      case WHITE -> square.getFile() == File.FILE_H;
+      case BLACK -> square.getFile() == File.FILE_A;
+      case NONE -> throw new IllegalArgumentException();
+      default -> throw new IllegalArgumentException();
+    };
   }
 
   /**
