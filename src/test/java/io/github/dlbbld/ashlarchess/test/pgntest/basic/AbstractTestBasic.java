@@ -13,7 +13,7 @@ import java.util.List;
 import io.github.dlbbld.ashlarchess.board.Board;
 import io.github.dlbbld.ashlarchess.board.enums.CastlingMove;
 import io.github.dlbbld.ashlarchess.board.enums.Piece;
-import io.github.dlbbld.ashlarchess.board.enums.PieceUtility;
+import io.github.dlbbld.ashlarchess.board.enums.PieceType;
 import io.github.dlbbld.ashlarchess.board.enums.PromotionPieceType;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
 import io.github.dlbbld.ashlarchess.board.enums.Square;
@@ -143,8 +143,8 @@ public abstract class AbstractTestBasic {
     assertEquals(Square.NONE, board.getEnPassantCaptureTargetSquare());
 
     final MoveSpecification moveSpecification = new MoveSpecification(fromSquare, toSquare);
-    final Piece movingPiece = PieceUtility.calculatePawnPiece(side);
-    final Piece capturedPiece = PieceUtility.calculatePawnPiece(side.getOppositeSide());
+    final Piece movingPiece = Piece.of(side, PieceType.PAWN);
+    final Piece capturedPiece = Piece.of(side.getOppositeSide(), PieceType.PAWN);
     final LegalMove expected = new LegalMove(moveSpecification, movingPiece, capturedPiece,
         LegalMoveKind.EN_PASSANT_CAPTURE);
 
@@ -182,15 +182,15 @@ public abstract class AbstractTestBasic {
     assertFalse(board.isStalemate());
 
     final MoveSpecification moveSpecification = new MoveSpecification(fromSquare, toSquare, promotionPieceType);
-    final Piece movingPiece = PieceUtility.calculatePawnPiece(side);
+    final Piece movingPiece = Piece.of(side, PieceType.PAWN);
     final LegalMove expected = new LegalMove(moveSpecification, movingPiece, capturedPiece, LegalMoveKind.PROMOTION);
     assertEquals(expected, board.getLastMove());
   }
 
   static void checkCastle(Side side, CastlingMove castlingMove, Board board) {
     final MoveSpecification moveSpecification = new MoveSpecification(castlingMove);
-    final LegalMove expected = new LegalMove(moveSpecification, PieceUtility.calculateKingPiece(side), Piece.NONE,
-        LegalMoveKind.CASTLING);
+    final LegalMove expected = new LegalMove(moveSpecification, Piece.of(side, PieceType.KING),
+        Piece.NONE, LegalMoveKind.CASTLING);
     assertEquals(expected, board.getLastMove());
   }
 

@@ -52,10 +52,10 @@ abstract class SanValidateMovementPawn extends AbstractSan {
   }
 
   private static void validatePawnCapturingDiagonal(Side havingMove, File fromFile, File toFile) {
-    final boolean isAdjacentLeft = File.calculateHasLeftFile(havingMove, fromFile)
-        && File.calculateLeftFile(havingMove, fromFile) == toFile;
-    final boolean isAdjacentRight = File.calculateHasRightFile(havingMove, fromFile)
-        && File.calculateRightFile(havingMove, fromFile) == toFile;
+    final boolean isAdjacentLeft = File.hasLeftFile(havingMove, fromFile)
+        && File.getLeftFile(havingMove, fromFile) == toFile;
+    final boolean isAdjacentRight = File.hasRightFile(havingMove, fromFile)
+        && File.getRightFile(havingMove, fromFile) == toFile;
 
     if (!isAdjacentLeft && !isAdjacentRight) {
       throw new SanValidationException(SanValidationProblem.MOVEMENT_PAWN_CAPTURE_NON_ADJACENT_FILE,

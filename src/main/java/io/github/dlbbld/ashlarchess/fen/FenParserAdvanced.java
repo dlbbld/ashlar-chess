@@ -21,7 +21,6 @@ import io.github.dlbbld.ashlarchess.board.enums.CastlingRight;
 import io.github.dlbbld.ashlarchess.board.enums.File;
 import io.github.dlbbld.ashlarchess.board.enums.Piece;
 import io.github.dlbbld.ashlarchess.board.enums.PieceType;
-import io.github.dlbbld.ashlarchess.board.enums.PieceUtility;
 import io.github.dlbbld.ashlarchess.board.enums.Rank;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
 import io.github.dlbbld.ashlarchess.board.enums.Square;
@@ -362,7 +361,7 @@ public class FenParserAdvanced {
     }
 
     final Side oppositeSide = havingMove.getOppositeSide();
-    final Square pawnTwoAdvanceSquare = Square.calculateAheadSquare(oppositeSide, enPassantCaptureTargetSquare);
+    final Square pawnTwoAdvanceSquare = Square.getAheadSquare(oppositeSide, enPassantCaptureTargetSquare);
     // The two-advance square must carry an opposite-side PAWN (the pawn that just played the two-square advance).
     // Three rejection conditions, all unioned: no piece at all, wrong side, or wrong piece type. The original
     // StaticPosition predicate read `A || (B && C)` due to Java operator precedence, which let some wrong-side or
@@ -379,7 +378,7 @@ public class FenParserAdvanced {
     }
 
     // that must come after checking if pawn has potentially advanced two squares
-    final Square startingSquare = Square.calculateBehindSquare(oppositeSide, enPassantCaptureTargetSquare);
+    final Square startingSquare = Square.getBehindSquare(oppositeSide, enPassantCaptureTargetSquare);
     final Piece pieceOnStartingSquare = bitboardPosition.get(startingSquare);
     final boolean isStartingSquareEmpty = pieceOnStartingSquare != Piece.NONE;
 
@@ -407,7 +406,7 @@ public class FenParserAdvanced {
     // previous check are necessary for this check: rewind the opponent's pawn two-square advance and verify
     // that havingMove was not already in check in that prior position. Bitboard-wise this is: relocate the
     // opponent pawn from the two-advance square back to its starting square; then ask isInCheck(havingMove).
-    final Piece opponentPawn = PieceUtility.calculatePawnPiece(oppositeSide);
+    final Piece opponentPawn = Piece.of(oppositeSide, PieceType.PAWN);
     final BitboardPosition bitboardPositionBeforeTwoSquareAdvance = bitboardPosition.withRelocatedPiece(opponentPawn,
         pawnTwoAdvanceSquare, startingSquare);
 

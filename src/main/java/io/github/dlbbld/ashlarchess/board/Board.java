@@ -18,7 +18,6 @@ import io.github.dlbbld.ashlarchess.board.enums.CastlingRight;
 import io.github.dlbbld.ashlarchess.board.enums.CastlingRightLoss;
 import io.github.dlbbld.ashlarchess.board.enums.Piece;
 import io.github.dlbbld.ashlarchess.board.enums.PieceType;
-import io.github.dlbbld.ashlarchess.board.enums.PieceUtility;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
 import io.github.dlbbld.ashlarchess.board.enums.Square;
 import io.github.dlbbld.ashlarchess.common.Nulls;
@@ -882,16 +881,16 @@ public class Board {
       return false;
     }
     // two potential capture moves
-    if (!Square.calculateHasBehindSquare(havingMove, enPassantCaptureTargetSquare)) {
+    if (!Square.hasBehindSquare(havingMove, enPassantCaptureTargetSquare)) {
       // cannot be for en en passant target square
       throw new ProgrammingMistakeException();
     }
-    final Square squareBehind = Square.calculateBehindSquare(havingMove, enPassantCaptureTargetSquare);
-    final Piece ownPawn = PieceUtility.calculate(havingMove, PieceType.PAWN);
+    final Square squareBehind = Square.getBehindSquare(havingMove, enPassantCaptureTargetSquare);
+    final Piece ownPawn = Piece.of(havingMove, PieceType.PAWN);
 
     // capture move from right square
-    if (Square.calculateHasRightSquare(havingMove, squareBehind)) {
-      final Square squareRight = Square.calculateRightSquare(havingMove, squareBehind);
+    if (Square.hasRightSquare(havingMove, squareBehind)) {
+      final Square squareRight = Square.getRightSquare(havingMove, squareBehind);
       if (bitboardPosition.get(squareRight) == ownPawn) {
         final MoveSpecification moveSpecification = new MoveSpecification(squareRight, enPassantCaptureTargetSquare);
         if (!bitboardPosition.afterMove(moveSpecification, havingMove).isInCheck(havingMove)) {
@@ -901,8 +900,8 @@ public class Board {
     }
 
     // capture move from left square
-    if (Square.calculateHasLeftSquare(havingMove, squareBehind)) {
-      final Square squareLeft = Square.calculateLeftSquare(havingMove, squareBehind);
+    if (Square.hasLeftSquare(havingMove, squareBehind)) {
+      final Square squareLeft = Square.getLeftSquare(havingMove, squareBehind);
       if (bitboardPosition.get(squareLeft) == ownPawn) {
         final MoveSpecification moveSpecification = new MoveSpecification(squareLeft, enPassantCaptureTargetSquare);
         if (!bitboardPosition.afterMove(moveSpecification, havingMove).isInCheck(havingMove)) {

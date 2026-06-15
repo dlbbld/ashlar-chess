@@ -9,7 +9,6 @@ import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.KNIGHT
 import io.github.dlbbld.ashlarchess.board.StaticPosition;
 import io.github.dlbbld.ashlarchess.board.enums.Piece;
 import io.github.dlbbld.ashlarchess.board.enums.PieceType;
-import io.github.dlbbld.ashlarchess.board.enums.PieceUtility;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
 import io.github.dlbbld.ashlarchess.board.enums.Square;
 import io.github.dlbbld.ashlarchess.board.enums.SquareType;
@@ -139,7 +138,7 @@ abstract class UnwinnabilityMaterial {
   }
 
   private static boolean hasPieceType(Side side, PieceType pieceType, StaticPosition staticPosition) {
-    final Piece piece = PieceUtility.calculate(side, pieceType);
+    final Piece piece = Piece.of(side, pieceType);
     for (final Square boardSquare : Square.REAL) {
       if (staticPosition.get(boardSquare) == piece) {
         return true;
@@ -149,7 +148,7 @@ abstract class UnwinnabilityMaterial {
   }
 
   private static int countPieces(Side side, StaticPosition staticPosition, PieceType pieceType) {
-    final Piece piece = PieceUtility.calculate(side, pieceType);
+    final Piece piece = Piece.of(side, pieceType);
     int total = 0;
     for (final Square boardSquare : Square.REAL) {
       if (staticPosition.get(boardSquare) == piece) {
@@ -160,7 +159,7 @@ abstract class UnwinnabilityMaterial {
   }
 
   private static int countBishops(Side side, StaticPosition staticPosition, SquareType squareType) {
-    final Piece bishop = PieceUtility.calculate(side, PieceType.BISHOP);
+    final Piece bishop = Piece.of(side, PieceType.BISHOP);
     int total = 0;
     for (final Square boardSquare : Square.REAL) {
       if (staticPosition.get(boardSquare) == bishop && boardSquare.getSquareType() == squareType) {

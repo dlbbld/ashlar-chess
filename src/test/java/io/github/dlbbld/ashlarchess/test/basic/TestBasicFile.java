@@ -73,79 +73,79 @@ class TestBasicFile {
   void testMethodsAdjacent() throws Exception {
 
     // white existence
-    assertFalse(File.calculateHasLeftFile(WHITE, File.FILE_A));
-    assertTrue(File.calculateHasLeftFile(WHITE, File.FILE_B));
-    assertTrue(File.calculateHasLeftFile(WHITE, File.FILE_C));
-    assertTrue(File.calculateHasLeftFile(WHITE, File.FILE_D));
-    assertTrue(File.calculateHasLeftFile(WHITE, File.FILE_E));
-    assertTrue(File.calculateHasLeftFile(WHITE, File.FILE_F));
-    assertTrue(File.calculateHasLeftFile(WHITE, File.FILE_G));
-    assertTrue(File.calculateHasLeftFile(WHITE, File.FILE_H));
+    assertFalse(File.hasLeftFile(WHITE, File.FILE_A));
+    assertTrue(File.hasLeftFile(WHITE, File.FILE_B));
+    assertTrue(File.hasLeftFile(WHITE, File.FILE_C));
+    assertTrue(File.hasLeftFile(WHITE, File.FILE_D));
+    assertTrue(File.hasLeftFile(WHITE, File.FILE_E));
+    assertTrue(File.hasLeftFile(WHITE, File.FILE_F));
+    assertTrue(File.hasLeftFile(WHITE, File.FILE_G));
+    assertTrue(File.hasLeftFile(WHITE, File.FILE_H));
 
-    assertTrue(File.calculateHasRightFile(WHITE, File.FILE_A));
-    assertTrue(File.calculateHasRightFile(WHITE, File.FILE_B));
-    assertTrue(File.calculateHasRightFile(WHITE, File.FILE_C));
-    assertTrue(File.calculateHasRightFile(WHITE, File.FILE_D));
-    assertTrue(File.calculateHasRightFile(WHITE, File.FILE_E));
-    assertTrue(File.calculateHasRightFile(WHITE, File.FILE_F));
-    assertTrue(File.calculateHasRightFile(WHITE, File.FILE_G));
-    assertFalse(File.calculateHasRightFile(WHITE, File.FILE_H));
+    assertTrue(File.hasRightFile(WHITE, File.FILE_A));
+    assertTrue(File.hasRightFile(WHITE, File.FILE_B));
+    assertTrue(File.hasRightFile(WHITE, File.FILE_C));
+    assertTrue(File.hasRightFile(WHITE, File.FILE_D));
+    assertTrue(File.hasRightFile(WHITE, File.FILE_E));
+    assertTrue(File.hasRightFile(WHITE, File.FILE_F));
+    assertTrue(File.hasRightFile(WHITE, File.FILE_G));
+    assertFalse(File.hasRightFile(WHITE, File.FILE_H));
 
     // black existence
-    assertTrue(File.calculateHasLeftFile(BLACK, File.FILE_A));
-    assertTrue(File.calculateHasLeftFile(BLACK, File.FILE_B));
-    assertTrue(File.calculateHasLeftFile(BLACK, File.FILE_C));
-    assertTrue(File.calculateHasLeftFile(BLACK, File.FILE_D));
-    assertTrue(File.calculateHasLeftFile(BLACK, File.FILE_E));
-    assertTrue(File.calculateHasLeftFile(BLACK, File.FILE_F));
-    assertTrue(File.calculateHasLeftFile(BLACK, File.FILE_G));
-    assertFalse(File.calculateHasLeftFile(BLACK, File.FILE_H));
+    assertTrue(File.hasLeftFile(BLACK, File.FILE_A));
+    assertTrue(File.hasLeftFile(BLACK, File.FILE_B));
+    assertTrue(File.hasLeftFile(BLACK, File.FILE_C));
+    assertTrue(File.hasLeftFile(BLACK, File.FILE_D));
+    assertTrue(File.hasLeftFile(BLACK, File.FILE_E));
+    assertTrue(File.hasLeftFile(BLACK, File.FILE_F));
+    assertTrue(File.hasLeftFile(BLACK, File.FILE_G));
+    assertFalse(File.hasLeftFile(BLACK, File.FILE_H));
 
-    assertFalse(File.calculateHasRightFile(BLACK, File.FILE_A));
-    assertTrue(File.calculateHasRightFile(BLACK, File.FILE_B));
-    assertTrue(File.calculateHasRightFile(BLACK, File.FILE_C));
-    assertTrue(File.calculateHasRightFile(BLACK, File.FILE_D));
-    assertTrue(File.calculateHasRightFile(BLACK, File.FILE_E));
-    assertTrue(File.calculateHasRightFile(BLACK, File.FILE_F));
-    assertTrue(File.calculateHasRightFile(BLACK, File.FILE_G));
-    assertTrue(File.calculateHasRightFile(BLACK, File.FILE_H));
+    assertFalse(File.hasRightFile(BLACK, File.FILE_A));
+    assertTrue(File.hasRightFile(BLACK, File.FILE_B));
+    assertTrue(File.hasRightFile(BLACK, File.FILE_C));
+    assertTrue(File.hasRightFile(BLACK, File.FILE_D));
+    assertTrue(File.hasRightFile(BLACK, File.FILE_E));
+    assertTrue(File.hasRightFile(BLACK, File.FILE_F));
+    assertTrue(File.hasRightFile(BLACK, File.FILE_G));
+    assertTrue(File.hasRightFile(BLACK, File.FILE_H));
 
     // white value
     checkExceptionLeft(WHITE, File.FILE_A);
-    assertEquals(File.FILE_A, File.calculateLeftFile(WHITE, File.FILE_B));
-    assertEquals(File.FILE_B, File.calculateLeftFile(WHITE, File.FILE_C));
-    assertEquals(File.FILE_C, File.calculateLeftFile(WHITE, File.FILE_D));
-    assertEquals(File.FILE_D, File.calculateLeftFile(WHITE, File.FILE_E));
-    assertEquals(File.FILE_E, File.calculateLeftFile(WHITE, File.FILE_F));
-    assertEquals(File.FILE_F, File.calculateLeftFile(WHITE, File.FILE_G));
+    assertEquals(File.FILE_A, File.getLeftFile(WHITE, File.FILE_B));
+    assertEquals(File.FILE_B, File.getLeftFile(WHITE, File.FILE_C));
+    assertEquals(File.FILE_C, File.getLeftFile(WHITE, File.FILE_D));
+    assertEquals(File.FILE_D, File.getLeftFile(WHITE, File.FILE_E));
+    assertEquals(File.FILE_E, File.getLeftFile(WHITE, File.FILE_F));
+    assertEquals(File.FILE_F, File.getLeftFile(WHITE, File.FILE_G));
 
-    assertEquals(File.FILE_B, File.calculateRightFile(WHITE, File.FILE_A));
-    assertEquals(File.FILE_C, File.calculateRightFile(WHITE, File.FILE_B));
-    assertEquals(File.FILE_D, File.calculateRightFile(WHITE, File.FILE_C));
-    assertEquals(File.FILE_E, File.calculateRightFile(WHITE, File.FILE_D));
-    assertEquals(File.FILE_F, File.calculateRightFile(WHITE, File.FILE_E));
-    assertEquals(File.FILE_G, File.calculateRightFile(WHITE, File.FILE_F));
-    assertEquals(File.FILE_H, File.calculateRightFile(WHITE, File.FILE_G));
+    assertEquals(File.FILE_B, File.getRightFile(WHITE, File.FILE_A));
+    assertEquals(File.FILE_C, File.getRightFile(WHITE, File.FILE_B));
+    assertEquals(File.FILE_D, File.getRightFile(WHITE, File.FILE_C));
+    assertEquals(File.FILE_E, File.getRightFile(WHITE, File.FILE_D));
+    assertEquals(File.FILE_F, File.getRightFile(WHITE, File.FILE_E));
+    assertEquals(File.FILE_G, File.getRightFile(WHITE, File.FILE_F));
+    assertEquals(File.FILE_H, File.getRightFile(WHITE, File.FILE_G));
     checkExceptionRight(WHITE, File.FILE_H);
 
     // black value
-    assertEquals(File.FILE_B, File.calculateLeftFile(BLACK, File.FILE_A));
-    assertEquals(File.FILE_C, File.calculateLeftFile(BLACK, File.FILE_B));
-    assertEquals(File.FILE_D, File.calculateLeftFile(BLACK, File.FILE_C));
-    assertEquals(File.FILE_E, File.calculateLeftFile(BLACK, File.FILE_D));
-    assertEquals(File.FILE_F, File.calculateLeftFile(BLACK, File.FILE_E));
-    assertEquals(File.FILE_G, File.calculateLeftFile(BLACK, File.FILE_F));
-    assertEquals(File.FILE_H, File.calculateLeftFile(BLACK, File.FILE_G));
+    assertEquals(File.FILE_B, File.getLeftFile(BLACK, File.FILE_A));
+    assertEquals(File.FILE_C, File.getLeftFile(BLACK, File.FILE_B));
+    assertEquals(File.FILE_D, File.getLeftFile(BLACK, File.FILE_C));
+    assertEquals(File.FILE_E, File.getLeftFile(BLACK, File.FILE_D));
+    assertEquals(File.FILE_F, File.getLeftFile(BLACK, File.FILE_E));
+    assertEquals(File.FILE_G, File.getLeftFile(BLACK, File.FILE_F));
+    assertEquals(File.FILE_H, File.getLeftFile(BLACK, File.FILE_G));
     checkExceptionLeft(BLACK, File.FILE_H);
 
     checkExceptionRight(BLACK, File.FILE_A);
-    assertEquals(File.FILE_A, File.calculateRightFile(BLACK, File.FILE_B));
-    assertEquals(File.FILE_B, File.calculateRightFile(BLACK, File.FILE_C));
-    assertEquals(File.FILE_C, File.calculateRightFile(BLACK, File.FILE_D));
-    assertEquals(File.FILE_D, File.calculateRightFile(BLACK, File.FILE_E));
-    assertEquals(File.FILE_E, File.calculateRightFile(BLACK, File.FILE_F));
-    assertEquals(File.FILE_F, File.calculateRightFile(BLACK, File.FILE_G));
-    assertEquals(File.FILE_G, File.calculateRightFile(BLACK, File.FILE_H));
+    assertEquals(File.FILE_A, File.getRightFile(BLACK, File.FILE_B));
+    assertEquals(File.FILE_B, File.getRightFile(BLACK, File.FILE_C));
+    assertEquals(File.FILE_C, File.getRightFile(BLACK, File.FILE_D));
+    assertEquals(File.FILE_D, File.getRightFile(BLACK, File.FILE_E));
+    assertEquals(File.FILE_E, File.getRightFile(BLACK, File.FILE_F));
+    assertEquals(File.FILE_F, File.getRightFile(BLACK, File.FILE_G));
+    assertEquals(File.FILE_G, File.getRightFile(BLACK, File.FILE_H));
   }
 
   private static void checkException(char fileLetter) {
@@ -162,7 +162,7 @@ class TestBasicFile {
   private static void checkExceptionLeft(Side side, File file) {
     boolean isException;
     try {
-      File.calculateLeftFile(side, file);
+      File.getLeftFile(side, file);
       isException = false;
     } catch (@SuppressWarnings("unused") final IllegalArgumentException e) {
       isException = true;
@@ -173,7 +173,7 @@ class TestBasicFile {
   private static void checkExceptionRight(Side side, File file) {
     boolean isException;
     try {
-      File.calculateRightFile(side, file);
+      File.getRightFile(side, file);
       isException = false;
     } catch (@SuppressWarnings("unused") final IllegalArgumentException e) {
       isException = true;

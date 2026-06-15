@@ -244,67 +244,67 @@ public enum Square implements Comparable<Square> {
     return Nulls.get(sideMap, square);
   }
 
-  public static boolean calculateHasLeftSquare(Side havingMove, Square square) {
+  public static boolean hasLeftSquare(Side havingMove, Square square) {
     return hasNeighbour(LEFT_SQUARE, havingMove, square);
   }
 
-  public static Square calculateLeftSquare(Side havingMove, Square square) {
+  public static Square getLeftSquare(Side havingMove, Square square) {
     return getNeighbour(LEFT_SQUARE, havingMove, square);
   }
 
-  public static boolean calculateHasRightSquare(Side havingMove, Square square) {
+  public static boolean hasRightSquare(Side havingMove, Square square) {
     return hasNeighbour(RIGHT_SQUARE, havingMove, square);
   }
 
-  public static Square calculateRightSquare(Side havingMove, Square square) {
+  public static Square getRightSquare(Side havingMove, Square square) {
     return getNeighbour(RIGHT_SQUARE, havingMove, square);
   }
 
-  public static boolean calculateHasAheadSquare(Side havingMove, Square square) {
+  public static boolean hasAheadSquare(Side havingMove, Square square) {
     return hasNeighbour(AHEAD_SQUARE, havingMove, square);
   }
 
-  public static Square calculateAheadSquare(Side havingMove, Square square) {
+  public static Square getAheadSquare(Side havingMove, Square square) {
     return getNeighbour(AHEAD_SQUARE, havingMove, square);
   }
 
-  public static boolean calculateHasBehindSquare(Side havingMove, Square square) {
+  public static boolean hasBehindSquare(Side havingMove, Square square) {
     return hasNeighbour(BEHIND_SQUARE, havingMove, square);
   }
 
-  public static Square calculateBehindSquare(Side havingMove, Square square) {
+  public static Square getBehindSquare(Side havingMove, Square square) {
     return getNeighbour(BEHIND_SQUARE, havingMove, square);
   }
 
-  public static boolean calculateHasLeftDiagonalSquare(Side havingMove, Square square) {
+  public static boolean hasLeftDiagonalSquare(Side havingMove, Square square) {
     return hasNeighbour(LEFT_DIAGONAL_SQUARE, havingMove, square);
   }
 
-  public static Square calculateLeftDiagonalSquare(Side havingMove, Square square) {
+  public static Square getLeftDiagonalSquare(Side havingMove, Square square) {
     return getNeighbour(LEFT_DIAGONAL_SQUARE, havingMove, square);
   }
 
-  public static boolean calculateHasRightDiagonalSquare(Side havingMove, Square square) {
+  public static boolean hasRightDiagonalSquare(Side havingMove, Square square) {
     return hasNeighbour(RIGHT_DIAGONAL_SQUARE, havingMove, square);
   }
 
-  public static Square calculateRightDiagonalSquare(Side havingMove, Square square) {
+  public static Square getRightDiagonalSquare(Side havingMove, Square square) {
     return getNeighbour(RIGHT_DIAGONAL_SQUARE, havingMove, square);
   }
 
-  public static boolean calculateHasBehindLeftDiagonalSquare(Side havingMove, Square square) {
+  public static boolean hasBehindLeftDiagonalSquare(Side havingMove, Square square) {
     return hasNeighbour(BEHIND_LEFT_DIAGONAL_SQUARE, havingMove, square);
   }
 
-  public static Square calculateBehindLeftDiagonalSquare(Side havingMove, Square square) {
+  public static Square getBehindLeftDiagonalSquare(Side havingMove, Square square) {
     return getNeighbour(BEHIND_LEFT_DIAGONAL_SQUARE, havingMove, square);
   }
 
-  public static boolean calculateHasBehindRightDiagonalSquare(Side havingMove, Square square) {
+  public static boolean hasBehindRightDiagonalSquare(Side havingMove, Square square) {
     return hasNeighbour(BEHIND_RIGHT_DIAGONAL_SQUARE, havingMove, square);
   }
 
-  public static Square calculateBehindRightDiagonalSquare(Side havingMove, Square square) {
+  public static Square getBehindRightDiagonalSquare(Side havingMove, Square square) {
     return getNeighbour(BEHIND_RIGHT_DIAGONAL_SQUARE, havingMove, square);
   }
 

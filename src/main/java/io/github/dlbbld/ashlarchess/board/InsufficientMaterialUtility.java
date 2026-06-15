@@ -11,7 +11,6 @@ import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.QUEEN;
 
 import io.github.dlbbld.ashlarchess.bitboard.BitboardPosition;
 import io.github.dlbbld.ashlarchess.board.enums.Piece;
-import io.github.dlbbld.ashlarchess.board.enums.PieceUtility;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
 import io.github.dlbbld.ashlarchess.board.enums.Square;
 import io.github.dlbbld.ashlarchess.board.enums.SquareType;
@@ -39,8 +38,8 @@ abstract class InsufficientMaterialUtility {
 
   private static boolean calculateHasZeroOrMultipleSquareBishopOnlyForSpecifiedColor(Side side,
       BitboardPosition bitboardPosition, SquareType squareType) {
-    final Piece king = PieceUtility.calculate(side, KING);
-    final Piece bishop = PieceUtility.calculate(side, BISHOP);
+    final Piece king = Piece.of(side, KING);
+    final Piece bishop = Piece.of(side, BISHOP);
     for (final Square boardSquare : Square.REAL) {
       final Piece pieceOnSquare = bitboardPosition.get(boardSquare);
       if (BoardMaterial.calculateIsOwnPiece(side, pieceOnSquare)) {
@@ -62,8 +61,8 @@ abstract class InsufficientMaterialUtility {
   }
 
   private static boolean calculateHasZeroOrMultipleQueenOnly(Side side, BitboardPosition bitboardPosition) {
-    final Piece king = PieceUtility.calculate(side, KING);
-    final Piece queen = PieceUtility.calculate(side, QUEEN);
+    final Piece king = Piece.of(side, KING);
+    final Piece queen = Piece.of(side, QUEEN);
     for (final Square boardSquare : Square.REAL) {
       final Piece pieceOnSquare = bitboardPosition.get(boardSquare);
       if (BoardMaterial.calculateIsOwnPiece(side, pieceOnSquare)) {
@@ -98,7 +97,7 @@ abstract class InsufficientMaterialUtility {
 
   private static boolean calculateHasBishopForSpecifiedColor(Side side, SquareType squareType,
       BitboardPosition bitboardPosition) {
-    final Piece bishop = PieceUtility.calculate(side, BISHOP);
+    final Piece bishop = Piece.of(side, BISHOP);
     for (final Square boardSquare : Square.REAL) {
       final Piece pieceOnSquare = bitboardPosition.get(boardSquare);
       if (pieceOnSquare == bishop && boardSquare.getSquareType() == squareType) {

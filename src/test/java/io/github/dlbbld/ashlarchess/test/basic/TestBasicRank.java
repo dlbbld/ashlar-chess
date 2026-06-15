@@ -66,29 +66,29 @@ class TestBasicRank {
   void testPreviousRank() throws Exception {
     // white
     checkExceptionPrevious(WHITE, RANK_1);
-    assertEquals(RANK_1, Rank.calculatePreviousRank(WHITE, RANK_2));
-    assertEquals(RANK_2, Rank.calculatePreviousRank(WHITE, RANK_3));
-    assertEquals(RANK_3, Rank.calculatePreviousRank(WHITE, RANK_4));
-    assertEquals(RANK_4, Rank.calculatePreviousRank(WHITE, RANK_5));
-    assertEquals(RANK_5, Rank.calculatePreviousRank(WHITE, RANK_6));
-    assertEquals(RANK_6, Rank.calculatePreviousRank(WHITE, RANK_7));
-    assertEquals(RANK_7, Rank.calculatePreviousRank(WHITE, RANK_8));
+    assertEquals(RANK_1, Rank.getPreviousRank(WHITE, RANK_2));
+    assertEquals(RANK_2, Rank.getPreviousRank(WHITE, RANK_3));
+    assertEquals(RANK_3, Rank.getPreviousRank(WHITE, RANK_4));
+    assertEquals(RANK_4, Rank.getPreviousRank(WHITE, RANK_5));
+    assertEquals(RANK_5, Rank.getPreviousRank(WHITE, RANK_6));
+    assertEquals(RANK_6, Rank.getPreviousRank(WHITE, RANK_7));
+    assertEquals(RANK_7, Rank.getPreviousRank(WHITE, RANK_8));
 
     // black
-    assertEquals(RANK_2, Rank.calculatePreviousRank(BLACK, RANK_1));
-    assertEquals(RANK_3, Rank.calculatePreviousRank(BLACK, RANK_2));
-    assertEquals(RANK_4, Rank.calculatePreviousRank(BLACK, RANK_3));
-    assertEquals(RANK_5, Rank.calculatePreviousRank(BLACK, RANK_4));
-    assertEquals(RANK_6, Rank.calculatePreviousRank(BLACK, RANK_5));
-    assertEquals(RANK_7, Rank.calculatePreviousRank(BLACK, RANK_6));
-    assertEquals(RANK_8, Rank.calculatePreviousRank(BLACK, RANK_7));
+    assertEquals(RANK_2, Rank.getPreviousRank(BLACK, RANK_1));
+    assertEquals(RANK_3, Rank.getPreviousRank(BLACK, RANK_2));
+    assertEquals(RANK_4, Rank.getPreviousRank(BLACK, RANK_3));
+    assertEquals(RANK_5, Rank.getPreviousRank(BLACK, RANK_4));
+    assertEquals(RANK_6, Rank.getPreviousRank(BLACK, RANK_5));
+    assertEquals(RANK_7, Rank.getPreviousRank(BLACK, RANK_6));
+    assertEquals(RANK_8, Rank.getPreviousRank(BLACK, RANK_7));
     checkExceptionPrevious(BLACK, RANK_8);
   }
 
   private static void checkExceptionPrevious(Side side, Rank rank) {
     boolean isException;
     try {
-      Rank.calculatePreviousRank(side, rank);
+      Rank.getPreviousRank(side, rank);
       isException = false;
     } catch (@SuppressWarnings("unused") final IllegalArgumentException e) {
       isException = true;

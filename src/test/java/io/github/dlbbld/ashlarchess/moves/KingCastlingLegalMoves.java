@@ -24,7 +24,7 @@ import com.google.common.collect.ImmutableList;
 import io.github.dlbbld.ashlarchess.board.StaticPosition;
 import io.github.dlbbld.ashlarchess.board.enums.CastlingRight;
 import io.github.dlbbld.ashlarchess.board.enums.Piece;
-import io.github.dlbbld.ashlarchess.board.enums.PieceUtility;
+import io.github.dlbbld.ashlarchess.board.enums.PieceType;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
 import io.github.dlbbld.ashlarchess.board.enums.Square;
 import io.github.dlbbld.ashlarchess.board.enums.SquareUtility;
@@ -127,23 +127,23 @@ class KingCastlingLegalMoves extends KingLegalMoves {
 
   private static boolean calculateQueenSideCastlingIsOriginalPosition(StaticPosition staticPosition, Side havingMove) {
     final Square kingOriginalSquare = SquareUtility.calculateKingOriginalSquare(havingMove);
-    final Piece kingPiece = PieceUtility.calculateKingPiece(havingMove);
+    final Piece kingPiece = Piece.of(havingMove, PieceType.KING);
     if (staticPosition.get(kingOriginalSquare) != kingPiece) {
       return false;
     }
     final Square rookOriginalSquare = SquareUtility.calculateQueenSideRookOriginalSquare(havingMove);
-    final Piece rookPiece = PieceUtility.calculateRookPiece(havingMove);
+    final Piece rookPiece = Piece.of(havingMove, PieceType.ROOK);
     return staticPosition.get(rookOriginalSquare) == rookPiece;
   }
 
   private static boolean calculateKingSideCastlingIsOriginalPosition(StaticPosition staticPosition, Side havingMove) {
     final Square kingOriginalSquare = SquareUtility.calculateKingOriginalSquare(havingMove);
-    final Piece kingPiece = PieceUtility.calculateKingPiece(havingMove);
+    final Piece kingPiece = Piece.of(havingMove, PieceType.KING);
     if (staticPosition.get(kingOriginalSquare) != kingPiece) {
       return false;
     }
     final Square rookOriginalSquare = SquareUtility.calculateKingSideRookOriginalSquare(havingMove);
-    final Piece rookPiece = PieceUtility.calculateRookPiece(havingMove);
+    final Piece rookPiece = Piece.of(havingMove, PieceType.ROOK);
     return staticPosition.get(rookOriginalSquare) == rookPiece;
   }
 

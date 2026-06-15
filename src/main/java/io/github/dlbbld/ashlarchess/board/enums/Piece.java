@@ -49,4 +49,21 @@ public enum Piece {
       throw new NonePointerException();
     }
   }
+
+  public static Piece of(Side side, PieceType pieceType) {
+    if (side != Side.WHITE && side != Side.BLACK) {
+      throw new IllegalArgumentException();
+    }
+    final boolean white = side == Side.WHITE;
+    return switch (pieceType) {
+      case PAWN -> white ? WHITE_PAWN : BLACK_PAWN;
+      case ROOK -> white ? WHITE_ROOK : BLACK_ROOK;
+      case KNIGHT -> white ? WHITE_KNIGHT : BLACK_KNIGHT;
+      case BISHOP -> white ? WHITE_BISHOP : BLACK_BISHOP;
+      case QUEEN -> white ? WHITE_QUEEN : BLACK_QUEEN;
+      case KING -> white ? WHITE_KING : BLACK_KING;
+      case NONE -> throw new IllegalArgumentException();
+      default -> throw new IllegalArgumentException();
+    };
+  }
 }

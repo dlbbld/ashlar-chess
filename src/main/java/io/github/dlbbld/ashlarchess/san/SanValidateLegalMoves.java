@@ -22,7 +22,6 @@ import io.github.dlbbld.ashlarchess.board.enums.CastlingRightLoss;
 import io.github.dlbbld.ashlarchess.board.enums.File;
 import io.github.dlbbld.ashlarchess.board.enums.Piece;
 import io.github.dlbbld.ashlarchess.board.enums.PieceType;
-import io.github.dlbbld.ashlarchess.board.enums.PieceUtility;
 import io.github.dlbbld.ashlarchess.board.enums.Rank;
 import io.github.dlbbld.ashlarchess.board.enums.RankUtility;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
@@ -65,7 +64,7 @@ abstract class SanValidateLegalMoves extends AbstractSan {
           // one square advance, san information is enough
           // from file equals to file and from rank is the rank before to rank
           final File fromFile = toSquare.getFile(); // moving straight forward
-          final Rank fromRank = Rank.calculatePreviousRank(havingMove, toSquare.getRank());
+          final Rank fromRank = Rank.getPreviousRank(havingMove, toSquare.getRank());
           final Square fromSquare = Square.of(fromFile, fromRank);
           return new MoveSpecification(fromSquare, toSquare);
         }
@@ -87,20 +86,20 @@ abstract class SanValidateLegalMoves extends AbstractSan {
       case PAWN_CAPTURING_NON_PROMOTION: {
         // from file is in the san and from rank is the rank before to rank
 
-        final Rank fromRank = Rank.calculatePreviousRank(havingMove, toSquare.getRank());
+        final Rank fromRank = Rank.getPreviousRank(havingMove, toSquare.getRank());
         final Square fromSquare = Square.of(sanConversion.fromFile(), fromRank);
         return new MoveSpecification(fromSquare, toSquare);
       }
       case PAWN_NON_CAPTURING_PROMOTION: {
         // from file equals to file and from rank is the rank before to rank
         final File fromFile = toSquare.getFile(); // moving straight forward
-        final Rank fromRank = Rank.calculatePreviousRank(havingMove, toSquare.getRank());
+        final Rank fromRank = Rank.getPreviousRank(havingMove, toSquare.getRank());
         final Square fromSquare = Square.of(fromFile, fromRank);
         return new MoveSpecification(fromSquare, toSquare, sanConversion.promotionPieceType());
       }
       case PAWN_CAPTURING_PROMOTION: {
         // from file is in the san and from rank is the rank before to rank
-        final Rank fromRank = Rank.calculatePreviousRank(havingMove, toSquare.getRank());
+        final Rank fromRank = Rank.getPreviousRank(havingMove, toSquare.getRank());
         final Square fromSquare = Square.of(sanConversion.fromFile(), fromRank);
         return new MoveSpecification(fromSquare, toSquare, sanConversion.promotionPieceType());
       }
@@ -138,7 +137,7 @@ abstract class SanValidateLegalMoves extends AbstractSan {
     }
 
     final PieceType pieceType = sanConversion.movingPieceType();
-    final Piece piece = PieceUtility.calculate(havingMove, pieceType);
+    final Piece piece = Piece.of(havingMove, pieceType);
 
     final List<LegalMove> legalMovesForMovingPiece = MoveToSan.calculateLegalMovesForMovingPiece(piece,
         board.getLegalMoves());

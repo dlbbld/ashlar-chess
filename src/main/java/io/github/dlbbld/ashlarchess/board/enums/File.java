@@ -114,14 +114,14 @@ public enum File {
   private static final EnumMap<Side, EnumMap<File, File>> LEFT_FILE = buildOffsetTable(-1);
   private static final EnumMap<Side, EnumMap<File, File>> RIGHT_FILE = buildOffsetTable(1);
 
-  public static boolean calculateHasLeftFile(Side havingMove, File file) {
+  public static boolean hasLeftFile(Side havingMove, File file) {
     if (havingMove == Side.NONE || file == NONE) {
       throw new IllegalArgumentException();
     }
     return Nulls.get(LEFT_FILE, havingMove).containsKey(file);
   }
 
-  public static File calculateLeftFile(Side havingMove, File file) {
+  public static File getLeftFile(Side havingMove, File file) {
     if (havingMove == Side.NONE || file == NONE) {
       throw new IllegalArgumentException();
     }
@@ -132,14 +132,14 @@ public enum File {
     return Nulls.get(sideMap, file);
   }
 
-  public static boolean calculateHasRightFile(Side havingMove, File file) {
+  public static boolean hasRightFile(Side havingMove, File file) {
     if (havingMove == Side.NONE || file == NONE) {
       throw new IllegalArgumentException();
     }
     return Nulls.get(RIGHT_FILE, havingMove).containsKey(file);
   }
 
-  public static File calculateRightFile(Side havingMove, File file) {
+  public static File getRightFile(Side havingMove, File file) {
     if (havingMove == Side.NONE || file == NONE) {
       throw new IllegalArgumentException();
     }

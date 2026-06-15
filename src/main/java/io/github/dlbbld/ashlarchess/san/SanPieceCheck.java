@@ -7,7 +7,6 @@ import io.github.dlbbld.ashlarchess.bitboard.BitboardPosition;
 import io.github.dlbbld.ashlarchess.board.enums.File;
 import io.github.dlbbld.ashlarchess.board.enums.Piece;
 import io.github.dlbbld.ashlarchess.board.enums.PieceType;
-import io.github.dlbbld.ashlarchess.board.enums.PieceUtility;
 import io.github.dlbbld.ashlarchess.board.enums.Rank;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
 import io.github.dlbbld.ashlarchess.board.enums.Square;
@@ -19,7 +18,7 @@ import io.github.dlbbld.ashlarchess.board.enums.Square;
 abstract class SanPieceCheck {
 
   static boolean calculateHasPieceType(Side side, PieceType pieceType, BitboardPosition bitboardPosition) {
-    final Piece piece = PieceUtility.calculate(side, pieceType);
+    final Piece piece = Piece.of(side, pieceType);
     for (final Square boardSquare : Square.REAL) {
       if (bitboardPosition.get(boardSquare) == piece) {
         return true;
@@ -29,7 +28,7 @@ abstract class SanPieceCheck {
   }
 
   static boolean calculateHasPieceType(Side side, PieceType pieceType, BitboardPosition bitboardPosition, File file) {
-    final Piece piece = PieceUtility.calculate(side, pieceType);
+    final Piece piece = Piece.of(side, pieceType);
     for (final Square boardSquare : Square.REAL) {
       if (boardSquare.getFile() != file) {
         continue;
@@ -42,7 +41,7 @@ abstract class SanPieceCheck {
   }
 
   static boolean calculateHasPieceType(Side side, PieceType pieceType, BitboardPosition bitboardPosition, Rank rank) {
-    final Piece piece = PieceUtility.calculate(side, pieceType);
+    final Piece piece = Piece.of(side, pieceType);
     for (final Square boardSquare : Square.REAL) {
       if (boardSquare.getRank() != rank) {
         continue;

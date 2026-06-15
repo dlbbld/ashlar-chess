@@ -10,7 +10,6 @@ import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.KNIGHT
 import io.github.dlbbld.ashlarchess.bitboard.BitboardPosition;
 import io.github.dlbbld.ashlarchess.board.enums.Piece;
 import io.github.dlbbld.ashlarchess.board.enums.PieceType;
-import io.github.dlbbld.ashlarchess.board.enums.PieceUtility;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
 import io.github.dlbbld.ashlarchess.board.enums.Square;
 
@@ -25,7 +24,7 @@ abstract class BoardMaterial {
   }
 
   static boolean calculateHasPieceType(Side side, PieceType pieceType, BitboardPosition bitboardPosition) {
-    final Piece piece = PieceUtility.calculate(side, pieceType);
+    final Piece piece = Piece.of(side, pieceType);
     for (final Square boardSquare : Square.REAL) {
       if (bitboardPosition.get(boardSquare) == piece) {
         return true;

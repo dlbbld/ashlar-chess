@@ -10,7 +10,6 @@ import java.util.function.Consumer;
 import io.github.dlbbld.ashlarchess.board.enums.CastlingMove;
 import io.github.dlbbld.ashlarchess.board.enums.Piece;
 import io.github.dlbbld.ashlarchess.board.enums.PieceType;
-import io.github.dlbbld.ashlarchess.board.enums.PieceUtility;
 import io.github.dlbbld.ashlarchess.board.enums.PromotionPieceType;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
 import io.github.dlbbld.ashlarchess.board.enums.Square;
@@ -140,7 +139,7 @@ public record BitboardPosition(long whitePawns, long whiteRooks, long whiteKnigh
 
   /**
    * Convenience predicate: does {@code square} carry a piece of {@code side} and {@code pieceType}? Equivalent to
-   * {@code get(square) == PieceUtility.calculate(side, pieceType)} but avoids constructing the {@code Piece} value.
+   * {@code get(square) == Piece.of(side, pieceType)} but avoids constructing the {@code Piece} value.
    */
   public boolean isOwnPiece(Square square, Side side, PieceType pieceType) {
     if (side != Side.WHITE && side != Side.BLACK) {
@@ -149,7 +148,7 @@ public record BitboardPosition(long whitePawns, long whiteRooks, long whiteKnigh
     if (pieceType == PieceType.NONE) {
       throw new IllegalArgumentException("isOwnPiece requires a real piece type, got NONE");
     }
-    return get(square) == PieceUtility.calculate(side, pieceType);
+    return get(square) == Piece.of(side, pieceType);
   }
 
   /**
@@ -699,7 +698,7 @@ public record BitboardPosition(long whitePawns, long whiteRooks, long whiteKnigh
 
     final PromotionPieceType promotion = moveSpec.promotionPieceType();
     final Piece destPiece = promotion == PromotionPieceType.NONE ? movingPiece
-        : PieceUtility.calculate(movingSide, promotion.getPieceType());
+        : Piece.of(movingSide, promotion.getPieceType());
 
     final long[] pieces = currentPieceBitboards();
     toggleBit(pieces, movingPiece, fromBit);
@@ -870,7 +869,7 @@ public record BitboardPosition(long whitePawns, long whiteRooks, long whiteKnigh
 
     final PromotionPieceType promotion = moveSpec.promotionPieceType();
     final Piece destPiece = promotion == PromotionPieceType.NONE ? movingPiece
-        : PieceUtility.calculate(movingSide, promotion.getPieceType());
+        : Piece.of(movingSide, promotion.getPieceType());
 
     long delta = ZobristKeys.pieceSquare(movingPiece, from);
     if (capturedPiece != Piece.NONE) {

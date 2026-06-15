@@ -12,7 +12,6 @@ import io.github.dlbbld.ashlarchess.board.enums.CastlingMove;
 import io.github.dlbbld.ashlarchess.board.enums.CastlingRight;
 import io.github.dlbbld.ashlarchess.board.enums.Piece;
 import io.github.dlbbld.ashlarchess.board.enums.PieceType;
-import io.github.dlbbld.ashlarchess.board.enums.PieceUtility;
 import io.github.dlbbld.ashlarchess.board.enums.PromotionPieceType;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
 import io.github.dlbbld.ashlarchess.board.enums.Square;
@@ -444,7 +443,7 @@ final class HelpmateSearchBoard {
 
     final PromotionPieceType promotion = moveSpec.promotionPieceType();
     final Piece destPiece = promotion == PromotionPieceType.NONE ? movingPiece
-        : PieceUtility.calculate(havingMove, promotion.getPieceType());
+        : Piece.of(havingMove, promotion.getPieceType());
 
     togglePieceBit(movingPiece, fromBit);
     togglePieceBit(capturedPiece, capturedBit);
@@ -497,16 +496,16 @@ final class HelpmateSearchBoard {
     if (enPassantCaptureTargetSquare == Square.NONE) {
       return Square.NONE;
     }
-    if (!Square.calculateHasBehindSquare(havingMove, enPassantCaptureTargetSquare)) {
+    if (!Square.hasBehindSquare(havingMove, enPassantCaptureTargetSquare)) {
       throw new ProgrammingMistakeException();
     }
-    final Square squareBehind = Square.calculateBehindSquare(havingMove, enPassantCaptureTargetSquare);
-    final Piece ownPawn = PieceUtility.calculate(havingMove, PieceType.PAWN);
+    final Square squareBehind = Square.getBehindSquare(havingMove, enPassantCaptureTargetSquare);
+    final Piece ownPawn = Piece.of(havingMove, PieceType.PAWN);
 
-    final boolean hasRight = Square.calculateHasRightSquare(havingMove, squareBehind);
-    final boolean hasLeft = Square.calculateHasLeftSquare(havingMove, squareBehind);
-    final Square candidateRight = hasRight ? Square.calculateRightSquare(havingMove, squareBehind) : Square.NONE;
-    final Square candidateLeft = hasLeft ? Square.calculateLeftSquare(havingMove, squareBehind) : Square.NONE;
+    final boolean hasRight = Square.hasRightSquare(havingMove, squareBehind);
+    final boolean hasLeft = Square.hasLeftSquare(havingMove, squareBehind);
+    final Square candidateRight = hasRight ? Square.getRightSquare(havingMove, squareBehind) : Square.NONE;
+    final Square candidateLeft = hasLeft ? Square.getLeftSquare(havingMove, squareBehind) : Square.NONE;
     final boolean hasRightPawn = hasRight && pieceAt(candidateRight) == ownPawn;
     final boolean hasLeftPawn = hasLeft && pieceAt(candidateLeft) == ownPawn;
 

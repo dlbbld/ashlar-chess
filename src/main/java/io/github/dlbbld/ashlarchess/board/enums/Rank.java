@@ -106,7 +106,7 @@ public enum Rank {
 
   private static final EnumMap<Side, EnumMap<Rank, Rank>> PREVIOUS_RANK = buildOffsetTable(-1);
 
-  public static Rank calculatePreviousRank(Side havingMove, Rank rank) {
+  public static Rank getPreviousRank(Side havingMove, Rank rank) {
     if (havingMove == Side.NONE || rank == NONE) {
       throw new IllegalArgumentException();
     }
