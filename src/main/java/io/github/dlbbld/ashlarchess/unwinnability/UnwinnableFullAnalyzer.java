@@ -8,6 +8,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import com.google.common.collect.ImmutableList;
+
 import io.github.dlbbld.ashlarchess.board.Board;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
 import io.github.dlbbld.ashlarchess.common.Nulls;
@@ -91,7 +93,7 @@ public class UnwinnableFullAnalyzer {
     }
     if (UnwinnableSemiStatic.unwinnableSemiStatic(board, winner, mobilitySolution)) {
       undoForcedMoves(board, totalForcedMoves);
-      return new UnwinnabilityFullAnalysis(UnwinnabilityFullVerdict.UNWINNABLE, new ArrayList<>());
+      return new UnwinnabilityFullAnalysis(UnwinnabilityFullVerdict.UNWINNABLE, ImmutableList.of());
     }
 
     // Basic-helpmate-existence theorem: for elementary mating material, decide winnability directly instead of
@@ -100,10 +102,10 @@ public class UnwinnableFullAnalyzer {
     switch (BasicHelpmateExistenceTheorem.decide(board, winner)) {
       case WINNABLE:
         undoForcedMoves(board, totalForcedMoves);
-        return new UnwinnabilityFullAnalysis(UnwinnabilityFullVerdict.WINNABLE_BY_THEOREM, new ArrayList<>());
+        return new UnwinnabilityFullAnalysis(UnwinnabilityFullVerdict.WINNABLE_BY_THEOREM, ImmutableList.of());
       case UNWINNABLE:
         undoForcedMoves(board, totalForcedMoves);
-        return new UnwinnabilityFullAnalysis(UnwinnabilityFullVerdict.UNWINNABLE, new ArrayList<>());
+        return new UnwinnabilityFullAnalysis(UnwinnabilityFullVerdict.UNWINNABLE, ImmutableList.of());
       case NOT_APPLICABLE:
         break;
       default:
@@ -123,7 +125,7 @@ public class UnwinnableFullAnalyzer {
       globalNodeCount += helpmateAnalysis.localNodesCount();
 
       if (globalNodeCount > GLOBAL_NODES_BOUND) {
-        return new UnwinnabilityFullAnalysis(UnwinnabilityFullVerdict.UNDETERMINED, new ArrayList<>());
+        return new UnwinnabilityFullAnalysis(UnwinnabilityFullVerdict.UNDETERMINED, ImmutableList.of());
       }
 
       switch (helpmateAnalysis.findHelpmateResult()) {
@@ -136,7 +138,7 @@ public class UnwinnableFullAnalyzer {
           // 5: else if the search was not interrupted (in step 4 of Figure 5) then
           // 6: return Unwinnable
           undoForcedMoves(board, totalForcedMoves);
-          return new UnwinnabilityFullAnalysis(UnwinnabilityFullVerdict.UNWINNABLE, new ArrayList<>());
+          return new UnwinnabilityFullAnalysis(UnwinnabilityFullVerdict.UNWINNABLE, ImmutableList.of());
         case UNKNOWN:
           // the algorithm continues with next depth
           break;
@@ -146,7 +148,7 @@ public class UnwinnableFullAnalyzer {
     }
 
     undoForcedMoves(board, totalForcedMoves);
-    return new UnwinnabilityFullAnalysis(UnwinnabilityFullVerdict.UNWINNABLE, new ArrayList<>());
+    return new UnwinnabilityFullAnalysis(UnwinnabilityFullVerdict.UNWINNABLE, ImmutableList.of());
   }
 
   private static void undoForcedMoves(Board board, int totalForcedMoves) {
@@ -155,10 +157,10 @@ public class UnwinnableFullAnalyzer {
     }
   }
 
-  private static List<UciMove> prependForcedMoves(List<UciMove> forcedMoveLine, List<UciMove> helpmateLine) {
+  private static ImmutableList<UciMove> prependForcedMoves(List<UciMove> forcedMoveLine, List<UciMove> helpmateLine) {
     final List<UciMove> result = new ArrayList<>(forcedMoveLine);
     result.addAll(helpmateLine);
-    return result;
+    return Nulls.copyOfList(result);
   }
 
   private static Board copyCurrentPositionForFullSearch(Board input) {

@@ -16,16 +16,28 @@ import io.github.dlbbld.ashlarchess.common.exceptions.ProgrammingMistakeExceptio
 public record MoveSpecification(Square fromSquare, Square toSquare, CastlingMove castlingMove,
     PromotionPieceType promotionPieceType) implements Comparable<MoveSpecification> {
 
+  // Canonical constructor: validates the invariant on every construction path, including direct callers of the 4-arg
+  // form. A non-castling spec must have two distinct real squares; a castling spec must have NONE from/to squares and
+  // no promotion piece type.
+  public MoveSpecification {
+    if (castlingMove == CastlingMove.NONE) {
+      validate(fromSquare, toSquare);
+    } else {
+      if (fromSquare != Square.NONE || toSquare != Square.NONE) {
+        throw new IllegalArgumentException("A castling move must have the none from and to square");
+      }
+      if (promotionPieceType != PromotionPieceType.NONE) {
+        throw new IllegalArgumentException("A castling move cannot have a promotion piece type");
+      }
+    }
+  }
+
   public MoveSpecification(Square fromSquare, Square toSquare) {
     this(fromSquare, toSquare, CastlingMove.NONE, PromotionPieceType.NONE);
-
-    validate(fromSquare, toSquare);
   }
 
   public MoveSpecification(Square fromSquare, Square toSquare, PromotionPieceType promotionPieceType) {
     this(fromSquare, toSquare, CastlingMove.NONE, promotionPieceType);
-
-    validate(fromSquare, toSquare);
 
     if (promotionPieceType == PromotionPieceType.NONE) {
       throw new IllegalArgumentException("The promotion piece type cannot be the none piece type");
@@ -34,10 +46,6 @@ public record MoveSpecification(Square fromSquare, Square toSquare, CastlingMove
 
   public MoveSpecification(CastlingMove castlingMove) {
     this(Square.NONE, Square.NONE, castlingMove, PromotionPieceType.NONE);
-
-    if (castlingMove == CastlingMove.NONE) {
-      throw new IllegalArgumentException("The castling move cannot be the none castling move");
-    }
   }
 
   private static void validate(Square fromSquare, Square toSquare) {
