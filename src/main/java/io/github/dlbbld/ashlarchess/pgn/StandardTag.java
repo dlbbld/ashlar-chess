@@ -90,7 +90,7 @@ public enum StandardTag {
     return name;
   }
 
-  public boolean getIsSevenTagRosterTag() {
+  public boolean isSevenTagRosterTag() {
     return isSevenTagRosterTag;
   }
 

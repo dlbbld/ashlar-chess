@@ -24,11 +24,11 @@ public enum CastlingRight {
     return description;
   }
 
-  public boolean getHasKingSide() {
+  public boolean hasKingSide() {
     return hasKingSide;
   }
 
-  public boolean getHasQueenSide() {
+  public boolean hasQueenSide() {
     return hasQueenSide;
   }
 

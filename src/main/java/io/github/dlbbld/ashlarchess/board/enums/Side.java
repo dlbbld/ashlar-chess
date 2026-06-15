@@ -28,12 +28,12 @@ public enum Side {
     this.name = name;
   }
 
-  public boolean getIsWhite() {
+  public boolean isWhite() {
     check();
     return isWhite;
   }
 
-  public boolean getIsBlack() {
+  public boolean isBlack() {
     check();
     return isBlack;
   }

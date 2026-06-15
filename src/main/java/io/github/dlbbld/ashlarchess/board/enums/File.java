@@ -54,7 +54,7 @@ public enum File {
     return number;
   }
 
-  public boolean getIsBorderFile() {
+  public boolean isBorderFile() {
     check();
     return isBorderFile;
   }
