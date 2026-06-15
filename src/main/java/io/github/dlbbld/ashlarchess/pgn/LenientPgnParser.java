@@ -325,7 +325,7 @@ public final class LenientPgnParser {
           SanValidationProblem.NONE, "The " + StandardTag.SET_UP.getName() + " tag value must exactly match one \""
               + SetUpTagValue.calculateList() + "\".");
     }
-    final SetUpTagValue setUpTagValue = SetUpTagValue.calculate(value);
+    final SetUpTagValue setUpTagValue = SetUpTagValue.parse(value);
     if (setUpTagValue == SetUpTagValue.START_FROM_INITIAL_POSITION && TagUtility.hasFen(tagList)) {
       throw new LenientPgnParserValidationException(
           LenientPgnParserValidationProblem.TAG_SET_UP_VALUE_ZERO_BUT_FEN_PROVIDED, SanValidationProblem.NONE,
@@ -368,7 +368,7 @@ public final class LenientPgnParser {
       }
       if (type == PgnTokenType.TERMINATION_MARKER) {
         tokenizer.next();
-        terminationResult = ResultTagValue.calculate(peek.text());
+        terminationResult = ResultTagValue.parse(peek.text());
         break;
       }
       if (type == PgnTokenType.MOVE_NUMBER_WHITE || type == PgnTokenType.MOVE_NUMBER_BLACK) {
@@ -582,7 +582,7 @@ public final class LenientPgnParser {
     if (!MoveSuffixAnnotation.exists(text)) {
       return MoveSuffixAnnotation.NONE;
     }
-    return MoveSuffixAnnotation.calculate(text);
+    return MoveSuffixAnnotation.parse(text);
   }
 
   private static void validateSanCharacters(String san) {
@@ -630,7 +630,7 @@ public final class LenientPgnParser {
     if (!TagUtility.hasResult(tagList) || terminationResult == null) {
       return;
     }
-    final ResultTagValue fromTag = ResultTagValue.calculate(TagUtility.readResult(tagList));
+    final ResultTagValue fromTag = ResultTagValue.parse(TagUtility.readResult(tagList));
     if (terminationResult != fromTag) {
       throw new LenientPgnParserValidationException(LenientPgnParserValidationProblem.TAG_RESULT_BOTH_SET_BUT_DIFFERENT,
           SanValidationProblem.NONE,

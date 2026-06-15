@@ -168,7 +168,7 @@ final class PawnWallKingWalkOracle {
         if (newFile < 1 || newFile > 8 || newRank < 1 || newRank > 8) {
           continue;
         }
-        neighbours.add(Square.calculate(newFile, newRank));
+        neighbours.add(Square.of(newFile, newRank));
       }
     }
     return neighbours;

@@ -72,7 +72,7 @@ class TestPawnPushes {
     if (forwardRank < 1 || forwardRank > 8) {
       return result;
     }
-    final Square forward = Square.calculate(fromFile, forwardRank);
+    final Square forward = Square.of(fromFile, forwardRank);
     if (!staticPosition.isEmpty(forward)) {
       return result;
     }
@@ -80,7 +80,7 @@ class TestPawnPushes {
     final boolean onStartingRank = side == Side.WHITE ? fromRank == 2 : fromRank == 7;
     if (onStartingRank) {
       final int doubleRank = fromRank + 2 * rankOffset;
-      final Square doubleForward = Square.calculate(fromFile, doubleRank);
+      final Square doubleForward = Square.of(fromFile, doubleRank);
       if (staticPosition.isEmpty(doubleForward)) {
         result.add(doubleForward);
       }

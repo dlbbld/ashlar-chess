@@ -30,7 +30,7 @@ public class KingNonCastlingEmptyBoardSquares extends AbstractEmptyBoardSquares 
         final int toFile = fromFile + offset[0];
         final int toRank = fromRank + offset[1];
         if (toFile >= 1 && toFile <= 8 && toRank >= 1 && toRank <= 8) {
-          builder.add(Square.calculate(toFile, toRank));
+          builder.add(Square.of(toFile, toRank));
         }
       }
       map.put(from, builder.build());

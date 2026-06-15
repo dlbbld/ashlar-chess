@@ -40,7 +40,7 @@ class PawnOneAdvanceEmptyBoardSquares extends AbstractEmptyBoardSquares {
       }
       final int toRank = fromRank + rankOffset;
       if (toRank >= 1 && toRank <= 8) {
-        map.put(from, ImmutableSet.of(Square.calculate(fromFile, toRank)));
+        map.put(from, ImmutableSet.of(Square.of(fromFile, toRank)));
       } else {
         map.put(from, ImmutableSet.of());
       }

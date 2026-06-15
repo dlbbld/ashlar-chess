@@ -53,11 +53,11 @@ public enum Rank {
     return false;
   }
 
-  public static Rank calculateRank(char character) {
-    return calculateRank(Character.getNumericValue(character));
+  public static Rank parse(char character) {
+    return of(Character.getNumericValue(character));
   }
 
-  public static Rank calculateRank(int number) {
+  public static Rank of(int number) {
     if (!exists(number)) {
       throw new IllegalArgumentException("For this number no corresponding non dummy Rank exists");
     }

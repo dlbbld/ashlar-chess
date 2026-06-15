@@ -45,7 +45,7 @@ public enum FenPieceSymbol {
     return false;
   }
 
-  public static FenPieceSymbol calculate(char pieceLetter) {
+  public static FenPieceSymbol parse(char pieceLetter) {
     for (final FenPieceSymbol symbol : values()) {
       if (symbol.pieceLetter == pieceLetter) {
         return symbol;

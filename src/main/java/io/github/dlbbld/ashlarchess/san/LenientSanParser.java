@@ -109,7 +109,7 @@ public final class LenientSanParser {
     final SanTerminalMarker marker = SanTerminalMarkerUtility.calculate(board.isCheck(), board.isCheckmate());
     board.unmove();
 
-    return MoveToSan.calculateSanLastMove(matching, legalMovesBefore, marker);
+    return MoveToSan.toSan(matching, legalMovesBefore, marker);
   }
 
   private static ImmutableList<ForgivenItem> itemsWithoutCanonical(String text,

@@ -83,7 +83,7 @@ public abstract class SanValidateFormatReference {
       if (!NotationMovingPiece.exists(checkMovingPieceTypeLetter)) {
         return SanConversionCheck.IS_NO_MATCH;
       }
-      final PieceType pieceType = NotationMovingPiece.calculate(checkMovingPieceTypeLetter).getPieceType();
+      final PieceType pieceType = NotationMovingPiece.parse(checkMovingPieceTypeLetter).getPieceType();
       if (!isPieceTypeForSanFormat(pieceType, sanFormat)) {
         return SanConversionCheck.IS_NO_MATCH;
       }
@@ -98,7 +98,7 @@ public abstract class SanValidateFormatReference {
       if (!File.exists(checkLetter)) {
         return SanConversionCheck.IS_NO_MATCH;
       }
-      fromFile = File.calculateFile(checkLetter);
+      fromFile = File.parse(checkLetter);
     } else {
       fromFile = File.NONE;
     }
@@ -111,7 +111,7 @@ public abstract class SanValidateFormatReference {
       if (!Rank.exists(checkLetter)) {
         return SanConversionCheck.IS_NO_MATCH;
       }
-      fromRank = Rank.calculateRank(checkLetter);
+      fromRank = Rank.parse(checkLetter);
     } else {
       fromRank = Rank.NONE;
     }
@@ -133,7 +133,7 @@ public abstract class SanValidateFormatReference {
       if (!File.exists(checkLetter)) {
         return SanConversionCheck.IS_NO_MATCH;
       }
-      toFile = File.calculateFile(checkLetter);
+      toFile = File.parse(checkLetter);
     } else {
       toFile = File.NONE;
     }
@@ -146,7 +146,7 @@ public abstract class SanValidateFormatReference {
       if (!Rank.exists(checkLetter)) {
         return SanConversionCheck.IS_NO_MATCH;
       }
-      toRank = Rank.calculateRank(checkLetter);
+      toRank = Rank.parse(checkLetter);
     } else {
       toRank = Rank.NONE;
     }
@@ -178,7 +178,7 @@ public abstract class SanValidateFormatReference {
       if (!NotationPromotionPiece.exists(checkPromotionPieceTypeLetter)) {
         return SanConversionCheck.IS_NO_MATCH;
       }
-      promotionPieceType = NotationPromotionPiece.calculate(checkPromotionPieceTypeLetter).getPromotionPieceType();
+      promotionPieceType = NotationPromotionPiece.parse(checkPromotionPieceTypeLetter).getPromotionPieceType();
     } else {
       promotionPieceType = PromotionPieceType.NONE;
     }
@@ -187,7 +187,7 @@ public abstract class SanValidateFormatReference {
     if (toFile == File.NONE && toRank == Rank.NONE) {
       toSquare = Square.NONE;
     } else if (toFile != File.NONE && toRank != Rank.NONE) {
-      toSquare = Square.calculate(toFile, toRank);
+      toSquare = Square.of(toFile, toRank);
     } else {
       throw new ProgrammingMistakeException(
           "Incorrect file/rank calculation - either file and rank are both set for non-castling moves or both not set for castling moves");

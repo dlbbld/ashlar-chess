@@ -414,8 +414,8 @@ public class Board {
 
     final SanTerminalMarker sanTerminalMarker = SanTerminalMarkerUtility.calculate(isCheck, isCheckmate);
 
-    this.sanList.add(MoveToSan.calculateSanLastMove(moveToPerform, legalMovesBeforeLastMove, sanTerminalMarker));
-    this.lanList.add(MoveToLan.calculateLanLastMove(moveToPerform, sanTerminalMarker));
+    this.sanList.add(MoveToSan.toSan(moveToPerform, legalMovesBeforeLastMove, sanTerminalMarker));
+    this.lanList.add(MoveToLan.toLan(moveToPerform, sanTerminalMarker));
 
   }
 
@@ -706,7 +706,7 @@ public class Board {
     if (isFirstMove()) {
       return initialFen.fen();
     }
-    return FenBoard.calculateFen(this);
+    return FenBoard.toFen(this);
   }
 
   public Fen getInitialFen() {

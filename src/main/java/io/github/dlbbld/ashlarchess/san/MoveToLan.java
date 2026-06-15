@@ -33,8 +33,8 @@ public class MoveToLan extends AbstractSan {
    */
   private static final char LAN_NON_CAPTURE_SEPARATOR = '-';
 
-  public static String calculateLanLastMove(LegalMove lastMove, SanTerminalMarker sanTerminalMarker) {
-    final MoveSpecification moveSpecification = lastMove.moveSpecification();
+  public static String toLan(LegalMove move, SanTerminalMarker sanTerminalMarker) {
+    final MoveSpecification moveSpecification = move.moveSpecification();
     final StringBuilder buildSan = new StringBuilder();
 
     if (CastlingUtility.calculateIsCastlingMove(moveSpecification)) {
@@ -49,10 +49,10 @@ public class MoveToLan extends AbstractSan {
       return Nulls.toString(buildSan);
     }
 
-    final Piece movingPiece = lastMove.movingPiece();
+    final Piece movingPiece = move.movingPiece();
     final String fromSquareName = moveSpecification.fromSquare().getName();
     final String toSquareName = moveSpecification.toSquare().getName();
-    final boolean isCapture = lastMove.pieceCaptured() != Piece.NONE;
+    final boolean isCapture = move.pieceCaptured() != Piece.NONE;
     switch (movingPiece.getPieceType()) {
       case PAWN:
         buildSan.append(fromSquareName);

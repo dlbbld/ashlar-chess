@@ -99,7 +99,7 @@ public abstract class TagUtility {
   }
 
   public static ResultTagValue readResultTagValue(List<Tag> tagList) {
-    return ResultTagValue.calculate(readResult(tagList));
+    return ResultTagValue.parse(readResult(tagList));
   }
 
   public static ResultTagValue readResultTagValue(PgnGame pgnGame) {

@@ -285,7 +285,7 @@ public final class StrictPgnParser {
           SanValidationProblem.NONE, "The " + StandardTag.RESULT.getName() + " tag value must exactly match one \""
               + ResultTagValue.calculateList() + "\".");
     }
-    return ResultTagValue.calculate(value);
+    return ResultTagValue.parse(value);
   }
 
   private static SetUpTagValue validateTagSetUpValue(List<Tag> tagList) {
@@ -299,7 +299,7 @@ public final class StrictPgnParser {
             SanValidationProblem.NONE, "The " + StandardTag.SET_UP.getName() + " tag value must exactly match one \""
                 + SetUpTagValue.calculateList() + "\".");
       }
-      setUpTagValue = SetUpTagValue.calculate(setUpStr);
+      setUpTagValue = SetUpTagValue.parse(setUpStr);
     }
     validateTagFenValue(tagList, setUpTagValue);
     return setUpTagValue;
@@ -554,7 +554,7 @@ public final class StrictPgnParser {
             "An invalid move annotation suffix of \"" + suffixToken.text() + "\" was found. Valid values are \""
                 + MoveSuffixAnnotation.calculateValueList() + "\".");
       }
-      suffix = MoveSuffixAnnotation.calculate(suffixToken.text());
+      suffix = MoveSuffixAnnotation.parse(suffixToken.text());
     }
     return new SanAndSuffix(san, suffix);
   }

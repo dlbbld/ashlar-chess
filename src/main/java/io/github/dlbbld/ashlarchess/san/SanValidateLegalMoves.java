@@ -66,7 +66,7 @@ abstract class SanValidateLegalMoves extends AbstractSan {
           // from file equals to file and from rank is the rank before to rank
           final File fromFile = toSquare.getFile(); // moving straight forward
           final Rank fromRank = Rank.calculatePreviousRank(havingMove, toSquare.getRank());
-          final Square fromSquare = Square.calculate(fromFile, fromRank);
+          final Square fromSquare = Square.of(fromFile, fromRank);
           return new MoveSpecification(fromSquare, toSquare);
         }
         // we calculate this with san information and knowing it's a legal move (so e4
@@ -76,7 +76,7 @@ abstract class SanValidateLegalMoves extends AbstractSan {
           // two square advance
           final File fromFile = toSquare.getFile(); // moving straight forward
           final Rank fromRank = RankUtility.calculatePawnInitialRank(havingMove);
-          final Square fromSquare = Square.calculate(fromFile, fromRank);
+          final Square fromSquare = Square.of(fromFile, fromRank);
           return new MoveSpecification(fromSquare, toSquare);
         }
 
@@ -88,20 +88,20 @@ abstract class SanValidateLegalMoves extends AbstractSan {
         // from file is in the san and from rank is the rank before to rank
 
         final Rank fromRank = Rank.calculatePreviousRank(havingMove, toSquare.getRank());
-        final Square fromSquare = Square.calculate(sanConversion.fromFile(), fromRank);
+        final Square fromSquare = Square.of(sanConversion.fromFile(), fromRank);
         return new MoveSpecification(fromSquare, toSquare);
       }
       case PAWN_NON_CAPTURING_PROMOTION: {
         // from file equals to file and from rank is the rank before to rank
         final File fromFile = toSquare.getFile(); // moving straight forward
         final Rank fromRank = Rank.calculatePreviousRank(havingMove, toSquare.getRank());
-        final Square fromSquare = Square.calculate(fromFile, fromRank);
+        final Square fromSquare = Square.of(fromFile, fromRank);
         return new MoveSpecification(fromSquare, toSquare, sanConversion.promotionPieceType());
       }
       case PAWN_CAPTURING_PROMOTION: {
         // from file is in the san and from rank is the rank before to rank
         final Rank fromRank = Rank.calculatePreviousRank(havingMove, toSquare.getRank());
-        final Square fromSquare = Square.calculate(sanConversion.fromFile(), fromRank);
+        final Square fromSquare = Square.of(sanConversion.fromFile(), fromRank);
         return new MoveSpecification(fromSquare, toSquare, sanConversion.promotionPieceType());
       }
       case RNBQ_CAPTURING_SQUARE: {

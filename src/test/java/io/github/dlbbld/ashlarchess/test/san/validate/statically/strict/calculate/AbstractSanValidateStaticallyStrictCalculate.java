@@ -33,13 +33,13 @@ public abstract class AbstractSanValidateStaticallyStrictCalculate {
       case 3:
         fromFile = File.NONE;
         fromRank = Rank.NONE;
-        toSquare = Square.calculate(Nulls.substring(parse, 1));
+        toSquare = Square.parse(Nulls.substring(parse, 1));
         break;
       case 4:
         final char checkLetter = parse.charAt(1);
 
         if (File.exists(checkLetter)) {
-          fromFile = File.calculateFile(checkLetter);
+          fromFile = File.parse(checkLetter);
           fromRank = Rank.NONE;
         } else {
           if (!Rank.exists(checkLetter)) {
@@ -47,15 +47,15 @@ public abstract class AbstractSanValidateStaticallyStrictCalculate {
                 "The fourth letter in " + parse + " must be a valid file letter or rank number");
           }
           fromFile = File.NONE;
-          fromRank = Rank.calculateRank(checkLetter);
+          fromRank = Rank.parse(checkLetter);
         }
-        toSquare = Square.calculate(Nulls.substring(parse, 2));
+        toSquare = Square.parse(Nulls.substring(parse, 2));
         break;
       case 5:
-        final Square fromSquare = Square.calculate(Nulls.substring(parse, 1, 3));
+        final Square fromSquare = Square.parse(Nulls.substring(parse, 1, 3));
         fromFile = fromSquare.getFile();
         fromRank = fromSquare.getRank();
-        toSquare = Square.calculate(Nulls.substring(parse, 3));
+        toSquare = Square.parse(Nulls.substring(parse, 3));
         break;
       default:
         throw new ProgrammingMistakeException(

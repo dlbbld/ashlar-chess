@@ -230,7 +230,7 @@ public class FenParserAdvanced {
           throw new ProgrammingMistakeException(
               "An unknown piece was found which was not filtered before by regular expression");
         }
-        final Piece piece = FenPieceSymbol.calculate(letterChar).piece();
+        final Piece piece = FenPieceSymbol.parse(letterChar).piece();
         rankPieceList.add(piece);
       }
     }
@@ -280,7 +280,7 @@ public class FenParserAdvanced {
       throw new FenAdvancedValidationException(FenAdvancedValidationProblem.INVALID_HAVING_MOVE_RANGE,
           "the having move part of \"" + havingMove + "\" is not valid");
     }
-    return FenSideSymbol.calculate(havingMove.charAt(0)).side();
+    return FenSideSymbol.parse(havingMove.charAt(0)).side();
   }
 
   private static CastlingRightBoth validateCastlingRightBoth(BitboardPosition bitboardPosition,
@@ -330,12 +330,12 @@ public class FenParserAdvanced {
     if (enPassantCaptureTargetSquare.length() == 2) {
       final char fileLetter = enPassantCaptureTargetSquare.charAt(0);
       if (File.exists(fileLetter)) {
-        final File file = File.calculateFile(fileLetter);
+        final File file = File.parse(fileLetter);
         final char rankLetter = enPassantCaptureTargetSquare.charAt(1);
 
         if (Rank.exists(rankLetter)) {
-          final Rank rank = Rank.calculateRank(rankLetter);
-          final Square square = Square.calculate(file, rank);
+          final Rank rank = Rank.parse(rankLetter);
+          final Square square = Square.of(file, rank);
           if (SquareUtility.calculateEnPassantCaptureTargetSquareList(havingMove).contains(square)) {
             return square;
           }

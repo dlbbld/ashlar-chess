@@ -28,7 +28,7 @@ public class KingNonCastlingSanValidateStaticallyStrictCalculate extends Abstrac
       final String parse = Nulls.toLowerCase(enumName);
       final File fromFile = File.NONE;
       final Rank fromRank = Rank.NONE;
-      final Square toSquare = Square.calculate(Nulls.substring(parse, 1));
+      final Square toSquare = Square.parse(Nulls.substring(parse, 1));
 
       final SanValidationFromTo model = new SanValidationFromTo(fromFile, fromRank, toSquare);
       populateMap(sanValidateMap, model, KING);

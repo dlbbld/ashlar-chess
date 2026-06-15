@@ -19,7 +19,7 @@ abstract class RayUtility {
     int f = fromFile + fileDelta;
     int r = fromRank + rankDelta;
     while (f >= 1 && f <= 8 && r >= 1 && r <= 8) {
-      builder.add(Square.calculate(f, r));
+      builder.add(Square.of(f, r));
       f += fileDelta;
       r += rankDelta;
     }

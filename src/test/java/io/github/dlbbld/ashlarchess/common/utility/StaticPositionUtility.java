@@ -103,7 +103,7 @@ public abstract class StaticPositionUtility {
     for (int rankNumber = 8; rankNumber >= 1; rankNumber--) {
       int consecutiveEmptySquares = 0;
       for (int fileNumber = 1; fileNumber <= 8; fileNumber++) {
-        final Square square = Square.calculate(fileNumber, rankNumber);
+        final Square square = Square.of(fileNumber, rankNumber);
         final Piece pieceOnSquare = staticPosition.get(square);
         final boolean isEmptySquare = pieceOnSquare == Piece.NONE;
         if (isEmptySquare) {

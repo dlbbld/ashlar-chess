@@ -107,7 +107,7 @@ public enum StandardTag {
     return false;
   }
 
-  public static StandardTag calculate(String name) {
+  public static StandardTag parse(String name) {
     if (!exists(name)) {
       throw new IllegalArgumentException("No tag for this name exists");
     }

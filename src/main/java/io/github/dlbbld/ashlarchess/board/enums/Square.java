@@ -145,7 +145,7 @@ public enum Square implements Comparable<Square> {
     return false;
   }
 
-  public static Square calculate(String name) {
+  public static Square parse(String name) {
     if (!exists(name)) {
       throw new IllegalArgumentException("No board square exists for square name " + name);
     }
@@ -157,7 +157,7 @@ public enum Square implements Comparable<Square> {
     throw new ProgrammingMistakeException("The code for calculating the square by name is wrong");
   }
 
-  public static Square calculate(File file, Rank rank) {
+  public static Square of(File file, Rank rank) {
     if (!exists(file, rank)) {
       throw new IllegalArgumentException("No board square exists for file enum " + file + " and rank enum " + rank);
     }
@@ -169,7 +169,7 @@ public enum Square implements Comparable<Square> {
     throw new ProgrammingMistakeException("The code for calculating the square by file and rank is wrong");
   }
 
-  public static Square calculate(int fileNumber, int rankNumber) {
+  public static Square of(int fileNumber, int rankNumber) {
     if (!exists(fileNumber, rankNumber)) {
       throw new IllegalArgumentException(
           "No board square exists for file number " + fileNumber + " and rank number " + rankNumber);
@@ -209,7 +209,7 @@ public enum Square implements Comparable<Square> {
         final int targetFile = source.getFile().getNumber() + fileOffset;
         final int targetRank = source.getRank().getNumber() + rankOffset;
         if (targetFile >= 1 && targetFile <= 8 && targetRank >= 1 && targetRank <= 8) {
-          sideMap.put(source, calculate(targetFile, targetRank));
+          sideMap.put(source, of(targetFile, targetRank));
         }
       }
       result.put(side, sideMap);

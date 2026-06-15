@@ -45,10 +45,10 @@ public class PawnDiagonalSquares {
       }
       final ImmutableSet.Builder<Square> builder = ImmutableSet.builder();
       if (fromFile - 1 >= 1) {
-        builder.add(Square.calculate(fromFile - 1, toRank));
+        builder.add(Square.of(fromFile - 1, toRank));
       }
       if (fromFile + 1 <= 8) {
-        builder.add(Square.calculate(fromFile + 1, toRank));
+        builder.add(Square.of(fromFile + 1, toRank));
       }
       map.put(from, builder.build());
     }

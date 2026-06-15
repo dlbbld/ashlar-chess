@@ -93,7 +93,7 @@ class TestPawnCaptures {
       if (toFile < 1 || toFile > 8) {
         continue;
       }
-      final Square target = Square.calculate(toFile, toRank);
+      final Square target = Square.of(toFile, toRank);
       if (staticPosition.isOpponentPiece(target, side)) {
         result.add(target);
       } else if (enPassantSquare != Square.NONE && target == enPassantSquare) {

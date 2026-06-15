@@ -49,7 +49,7 @@ enum SetUpTagValue {
     return false;
   }
 
-  public static SetUpTagValue calculate(String value) {
+  public static SetUpTagValue parse(String value) {
     if (!exists(value)) {
       throw new IllegalArgumentException();
     }

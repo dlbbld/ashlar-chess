@@ -35,7 +35,7 @@ public enum FenSideSymbol {
     return false;
   }
 
-  public static FenSideSymbol calculate(char sideLetter) {
+  public static FenSideSymbol parse(char sideLetter) {
     for (final FenSideSymbol symbol : values()) {
       if (symbol.sideLetter == sideLetter) {
         return symbol;

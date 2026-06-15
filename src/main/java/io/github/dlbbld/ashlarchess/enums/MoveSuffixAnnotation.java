@@ -44,7 +44,7 @@ public enum MoveSuffixAnnotation {
     return false;
   }
 
-  public static MoveSuffixAnnotation calculate(String suffix) {
+  public static MoveSuffixAnnotation parse(String suffix) {
     if (!exists(suffix)) {
       throw new IllegalArgumentException("No enum exists for this suffix");
     }

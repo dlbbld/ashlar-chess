@@ -130,7 +130,7 @@ class TestDiagonalUtility {
 
     int rankNumber = startingRankNumber;
     for (int fileNumber = startingFileNumber; fileNumber <= endFileNumber; fileNumber++) {
-      final Square diagonalSquare = Square.calculate(fileNumber, rankNumber);
+      final Square diagonalSquare = Square.of(fileNumber, rankNumber);
       diagonal.add(diagonalSquare);
       rankNumber++;
     }
@@ -158,7 +158,7 @@ class TestDiagonalUtility {
 
     int rankNumberProcess = startingRankNumber;
     for (int fileNumberProcess = startingFileNumber; fileNumberProcess <= endFileNumber; fileNumberProcess++) {
-      final Square diagonalSquare = Square.calculate(fileNumberProcess, rankNumberProcess);
+      final Square diagonalSquare = Square.of(fileNumberProcess, rankNumberProcess);
       diagonal.add(diagonalSquare);
       rankNumberProcess--;
     }

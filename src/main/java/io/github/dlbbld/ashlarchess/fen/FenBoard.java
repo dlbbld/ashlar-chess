@@ -12,7 +12,7 @@ import io.github.dlbbld.ashlarchess.common.Nulls;
 
 public class FenBoard {
 
-  public static String calculateFen(Board board) {
+  public static String toFen(Board board) {
 
     final Side havingMove = board.getHavingMove();
 

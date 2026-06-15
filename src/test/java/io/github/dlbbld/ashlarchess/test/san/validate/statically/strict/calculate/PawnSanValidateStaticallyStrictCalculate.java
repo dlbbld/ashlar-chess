@@ -37,12 +37,12 @@ public class PawnSanValidateStaticallyStrictCalculate extends AbstractSanValidat
       final Square toSquare = switch (parse.length()) {
         case 3 -> {
           fromFile = File.NONE;
-          yield Square.calculate(Nulls.substring(parse, 1));
+          yield Square.parse(Nulls.substring(parse, 1));
         }
         case 4 -> {
           final char fileLetter = parse.charAt(1);
-          fromFile = File.calculateFile(fileLetter);
-          yield Square.calculate(Nulls.substring(parse, 2));
+          fromFile = File.parse(fileLetter);
+          yield Square.parse(Nulls.substring(parse, 2));
         }
         default -> throw new ProgrammingMistakeException(
             "The length of the " + PAWN.getName() + " enum for " + side.getName() + " does not meet the expectation");

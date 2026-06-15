@@ -71,7 +71,7 @@ public enum File {
     return false;
   }
 
-  public static File calculateFile(char letter) {
+  public static File parse(char letter) {
     if (!exists(letter)) {
       throw new IllegalArgumentException("For this letter no corresponding non dummy File exists");
     }

@@ -41,7 +41,7 @@ public record PgnGame(@NonNull ImmutableList<@NonNull Tag> tagList, @NonNull Fen
     if (terminationMarker != null && TagUtility.hasResult(tagList)) {
       final String resultValue = TagUtility.readResult(tagList);
       if (ResultTagValue.exists(resultValue)) {
-        final ResultTagValue fromTag = ResultTagValue.calculate(resultValue);
+        final ResultTagValue fromTag = ResultTagValue.parse(resultValue);
         if (fromTag != terminationMarker) {
           throw new IllegalArgumentException("The Result tag value \"" + resultValue
               + "\" disagrees with the termination marker \"" + terminationMarker.getValue()

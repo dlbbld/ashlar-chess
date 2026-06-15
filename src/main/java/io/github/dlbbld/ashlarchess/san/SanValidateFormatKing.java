@@ -80,7 +80,7 @@ abstract class SanValidateFormatKing extends AbstractSan {
     if (core.length() == 3) {
       return new SanParse(SanFormat.KING_NON_CASTLING_NON_CAPTURING,
           new SanConversion(PieceType.KING, File.NONE, Rank.NONE,
-              Square.calculate(SanValidateFormat.parseFile(secondChar), SanValidateFormat.parseRank(thirdChar)),
+              Square.of(SanValidateFormat.parseFile(secondChar), SanValidateFormat.parseRank(thirdChar)),
               PromotionPieceType.NONE, sanTerminalMarker));
     }
 
@@ -126,7 +126,7 @@ abstract class SanValidateFormatKing extends AbstractSan {
     if (core.length() == 4) {
       return new SanParse(SanFormat.KING_NON_CASTLING_CAPTURING,
           new SanConversion(PieceType.KING, File.NONE, Rank.NONE,
-              Square.calculate(SanValidateFormat.parseFile(thirdChar), SanValidateFormat.parseRank(fourthChar)),
+              Square.of(SanValidateFormat.parseFile(thirdChar), SanValidateFormat.parseRank(fourthChar)),
               PromotionPieceType.NONE, sanTerminalMarker));
     }
 

@@ -48,14 +48,14 @@ class TestBasicFile {
     assertFalse(File.exists('0'));
     assertFalse(File.exists('9'));
 
-    assertEquals(File.FILE_A, File.calculateFile('a'));
-    assertEquals(File.FILE_B, File.calculateFile('b'));
-    assertEquals(File.FILE_C, File.calculateFile('c'));
-    assertEquals(File.FILE_D, File.calculateFile('d'));
-    assertEquals(File.FILE_E, File.calculateFile('e'));
-    assertEquals(File.FILE_F, File.calculateFile('f'));
-    assertEquals(File.FILE_G, File.calculateFile('g'));
-    assertEquals(File.FILE_H, File.calculateFile('h'));
+    assertEquals(File.FILE_A, File.parse('a'));
+    assertEquals(File.FILE_B, File.parse('b'));
+    assertEquals(File.FILE_C, File.parse('c'));
+    assertEquals(File.FILE_D, File.parse('d'));
+    assertEquals(File.FILE_E, File.parse('e'));
+    assertEquals(File.FILE_F, File.parse('f'));
+    assertEquals(File.FILE_G, File.parse('g'));
+    assertEquals(File.FILE_H, File.parse('h'));
 
     checkException('i');
     checkException('j');
@@ -232,7 +232,7 @@ class TestBasicFile {
   private static void checkException(char fileLetter) {
     boolean isException;
     try {
-      File.calculateFile(fileLetter);
+      File.parse(fileLetter);
       isException = false;
     } catch (@SuppressWarnings("unused") final IllegalArgumentException e) {
       isException = true;

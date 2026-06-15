@@ -51,14 +51,14 @@ class TestBasicRank {
     assertTrue(Rank.exists('7'));
     assertTrue(Rank.exists('8'));
 
-    assertEquals(Rank.RANK_1, Rank.calculateRank('1'));
-    assertEquals(Rank.RANK_2, Rank.calculateRank('2'));
-    assertEquals(Rank.RANK_3, Rank.calculateRank('3'));
-    assertEquals(Rank.RANK_4, Rank.calculateRank('4'));
-    assertEquals(Rank.RANK_5, Rank.calculateRank('5'));
-    assertEquals(Rank.RANK_6, Rank.calculateRank('6'));
-    assertEquals(Rank.RANK_7, Rank.calculateRank('7'));
-    assertEquals(Rank.RANK_8, Rank.calculateRank('8'));
+    assertEquals(Rank.RANK_1, Rank.parse('1'));
+    assertEquals(Rank.RANK_2, Rank.parse('2'));
+    assertEquals(Rank.RANK_3, Rank.parse('3'));
+    assertEquals(Rank.RANK_4, Rank.parse('4'));
+    assertEquals(Rank.RANK_5, Rank.parse('5'));
+    assertEquals(Rank.RANK_6, Rank.parse('6'));
+    assertEquals(Rank.RANK_7, Rank.parse('7'));
+    assertEquals(Rank.RANK_8, Rank.parse('8'));
   }
 
   @SuppressWarnings("static-method")

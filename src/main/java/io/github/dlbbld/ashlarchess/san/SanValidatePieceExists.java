@@ -69,7 +69,7 @@ abstract class SanValidatePieceExists extends AbstractSan {
         break;
       case RNBQ_CAPTURING_SQUARE:
       case RNBQ_NON_CAPTURING_SQUARE:
-        final Square fromSquare = Square.calculate(sanConversion.fromFile(), sanConversion.fromRank());
+        final Square fromSquare = Square.of(sanConversion.fromFile(), sanConversion.fromRank());
         final Piece pieceOnFromSquare = bitboardPosition.get(fromSquare);
         if (pieceOnFromSquare == Piece.NONE || pieceOnFromSquare.getSide() != havingMove
             || pieceOnFromSquare.getPieceType() != movingPieceType) {

@@ -34,7 +34,7 @@ class PawnTwoAdvanceEmptyBoardSquares extends AbstractEmptyBoardSquares {
     final EnumMap<Square, ImmutableSet<Square>> map = Nulls.newEnumMap(Square.class);
     for (final Square from : Square.REAL) {
       if (from.getRank().getNumber() == startRank) {
-        map.put(from, ImmutableSet.of(Square.calculate(from.getFile().getNumber(), targetRank)));
+        map.put(from, ImmutableSet.of(Square.of(from.getFile().getNumber(), targetRank)));
       } else {
         map.put(from, ImmutableSet.of());
       }

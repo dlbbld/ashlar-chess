@@ -60,7 +60,7 @@ final class PgnArchivalNormalization {
       return currentMarker;
     }
     if (TagUtility.hasResult(tagList)) {
-      return ResultTagValue.calculate(TagUtility.readResult(tagList));
+      return ResultTagValue.parse(TagUtility.readResult(tagList));
     }
     return ResultTagValue.ONGOING;
   }

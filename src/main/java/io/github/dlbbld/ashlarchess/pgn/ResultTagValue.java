@@ -49,7 +49,7 @@ public enum ResultTagValue {
     return false;
   }
 
-  public static ResultTagValue calculate(String value) {
+  public static ResultTagValue parse(String value) {
     if (!exists(value)) {
       throw new IllegalArgumentException();
     }

@@ -105,11 +105,11 @@ public abstract class SanValidateFormat extends AbstractSan {
   }
 
   static File parseFile(final char c) {
-    return File.calculateFile(c);
+    return File.parse(c);
   }
 
   static Rank parseRank(final char c) {
-    return Rank.calculateRank(c);
+    return Rank.parse(c);
   }
 
 }

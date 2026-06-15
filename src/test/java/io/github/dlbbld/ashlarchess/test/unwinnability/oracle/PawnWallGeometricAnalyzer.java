@@ -412,7 +412,7 @@ public class PawnWallGeometricAnalyzer {
 
     for (int rankNumber = square.getRank().getNumber()
         + direction; rankNumber != promotionRankNumber; rankNumber += direction) {
-      final Square squareAhead = Square.calculate(fileNumber, rankNumber);
+      final Square squareAhead = Square.of(fileNumber, rankNumber);
       if (staticPosition.isPawn(squareAhead)) {
         // we only require a piece ahead, no matter which side
         return true;
@@ -686,7 +686,7 @@ public class PawnWallGeometricAnalyzer {
           if (file < 1 || file > 8 || rank < 1 || rank > 8) {
             break;
           }
-          final Square next = Square.calculate(file, rank);
+          final Square next = Square.of(file, rank);
           final Piece pieceOnNext = staticPosition.get(next);
           if (pieceOnNext != Piece.NONE) {
             if (pieceOnNext.getSide() != side) {

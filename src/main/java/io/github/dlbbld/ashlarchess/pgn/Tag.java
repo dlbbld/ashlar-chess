@@ -9,8 +9,8 @@ public record Tag(String name, String value) implements Comparable<Tag> {
   public int compareTo(Tag o) {
     if (StandardTag.exists(name)) {
       if (StandardTag.exists(o.name)) {
-        final StandardTag thisTag = StandardTag.calculate(name);
-        final StandardTag otherTag = StandardTag.calculate(o.name);
+        final StandardTag thisTag = StandardTag.parse(name);
+        final StandardTag otherTag = StandardTag.parse(o.name);
         return Integer.compare(thisTag.getSortOrder(), otherTag.getSortOrder());
       }
       return -1;

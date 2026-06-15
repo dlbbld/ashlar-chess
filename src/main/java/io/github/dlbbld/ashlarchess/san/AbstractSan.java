@@ -17,7 +17,7 @@ abstract class AbstractSan {
     if (sanConversion.fromFile() == File.NONE || sanConversion.fromRank() == Rank.NONE) {
       return Square.NONE;
     }
-    return Square.calculate(sanConversion.fromFile(), sanConversion.fromRank());
+    return Square.of(sanConversion.fromFile(), sanConversion.fromRank());
   }
 
   static List<LegalMove> filterLegalMovesCandidates(List<LegalMove> legalMoves, Square toSquare) {

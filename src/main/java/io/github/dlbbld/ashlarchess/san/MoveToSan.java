@@ -20,15 +20,15 @@ import io.github.dlbbld.ashlarchess.moves.PromotionUtility;
 
 public class MoveToSan extends AbstractSan {
 
-  public static String calculateSanLastMove(LegalMove lastMove, List<LegalMove> legalMovesBeforeLastMove,
+  public static String toSan(LegalMove move, List<LegalMove> legalMovesBeforeMove,
       SanTerminalMarker sanTerminalMarker) {
 
     // first - check if castling move
-    final MoveSpecification moveSpecification = lastMove.moveSpecification();
+    final MoveSpecification moveSpecification = move.moveSpecification();
     if (CastlingUtility.calculateIsCastlingMove(moveSpecification)) {
       return calculateSanLastMoveCastling(moveSpecification, sanTerminalMarker);
     }
-    return calculateSanLastMoveNonCastling(lastMove, legalMovesBeforeLastMove, sanTerminalMarker);
+    return calculateSanLastMoveNonCastling(move, legalMovesBeforeMove, sanTerminalMarker);
   }
 
   private static SanSourceSpecification calculateSourceSpecification(LegalMove legalMove,
