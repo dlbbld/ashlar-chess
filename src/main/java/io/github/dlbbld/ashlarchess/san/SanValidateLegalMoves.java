@@ -64,7 +64,7 @@ abstract class SanValidateLegalMoves extends AbstractSan {
           // one square advance, san information is enough
           // from file equals to file and from rank is the rank before to rank
           final File fromFile = toSquare.getFile(); // moving straight forward
-          final Rank fromRank = toSquare.getRank().getPreviousRank(havingMove);
+          final Rank fromRank = toSquare.getBehindSquare(havingMove).getRank();
           final Square fromSquare = Square.of(fromFile, fromRank);
           return new MoveSpecification(fromSquare, toSquare);
         }
@@ -86,20 +86,20 @@ abstract class SanValidateLegalMoves extends AbstractSan {
       case PAWN_CAPTURING_NON_PROMOTION: {
         // from file is in the san and from rank is the rank before to rank
 
-        final Rank fromRank = toSquare.getRank().getPreviousRank(havingMove);
+        final Rank fromRank = toSquare.getBehindSquare(havingMove).getRank();
         final Square fromSquare = Square.of(sanConversion.fromFile(), fromRank);
         return new MoveSpecification(fromSquare, toSquare);
       }
       case PAWN_NON_CAPTURING_PROMOTION: {
         // from file equals to file and from rank is the rank before to rank
         final File fromFile = toSquare.getFile(); // moving straight forward
-        final Rank fromRank = toSquare.getRank().getPreviousRank(havingMove);
+        final Rank fromRank = toSquare.getBehindSquare(havingMove).getRank();
         final Square fromSquare = Square.of(fromFile, fromRank);
         return new MoveSpecification(fromSquare, toSquare, sanConversion.promotionPieceType());
       }
       case PAWN_CAPTURING_PROMOTION: {
         // from file is in the san and from rank is the rank before to rank
-        final Rank fromRank = toSquare.getRank().getPreviousRank(havingMove);
+        final Rank fromRank = toSquare.getBehindSquare(havingMove).getRank();
         final Square fromSquare = Square.of(sanConversion.fromFile(), fromRank);
         return new MoveSpecification(fromSquare, toSquare, sanConversion.promotionPieceType());
       }

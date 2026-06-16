@@ -3,11 +3,8 @@
 
 package io.github.dlbbld.ashlarchess.board.enums;
 
-import java.util.EnumMap;
-
 import com.google.common.collect.ImmutableList;
 
-import io.github.dlbbld.ashlarchess.common.Nulls;
 import io.github.dlbbld.ashlarchess.common.exceptions.NonePointerException;
 import io.github.dlbbld.ashlarchess.common.exceptions.ProgrammingMistakeException;
 
@@ -70,51 +67,6 @@ public enum Rank {
       }
     }
     throw new ProgrammingMistakeException("The code for calculating the rank is wrong");
-  }
-
-  // ---------------------------------------------------------------------------------------------
-  // Single-step rank-geometry lookup tables.
-  //
-  // For each Side, a mapping from each Rank to its previous / next neighbour from that side's
-  // perspective. Absent entries mean the source rank is on the relevant board edge.
-  // ---------------------------------------------------------------------------------------------
-
-  private static EnumMap<Side, EnumMap<Rank, Rank>> buildOffsetTable(int offsetForWhite) {
-    final EnumMap<Side, EnumMap<Rank, Rank>> result = Nulls.newEnumMap(Side.class);
-    for (final Side side : Side.REAL) {
-      final int offset = side == Side.WHITE ? offsetForWhite : -offsetForWhite;
-      final EnumMap<Rank, Rank> sideMap = Nulls.newEnumMap(Rank.class);
-      for (final Rank source : REAL) {
-        final int targetNumber = source.getNumber() + offset;
-        if (targetNumber >= 1 && targetNumber <= 8) {
-          sideMap.put(source, calculateByNumberInternal(targetNumber));
-        }
-      }
-      result.put(side, sideMap);
-    }
-    return result;
-  }
-
-  private static Rank calculateByNumberInternal(int number) {
-    for (final Rank rank : REAL) {
-      if (rank.getNumber() == number) {
-        return rank;
-      }
-    }
-    throw new ProgrammingMistakeException("No rank for number " + number);
-  }
-
-  private static final EnumMap<Side, EnumMap<Rank, Rank>> PREVIOUS_RANK = buildOffsetTable(-1);
-
-  public Rank getPreviousRank(Side havingMove) {
-    if (havingMove == Side.NONE || this == NONE) {
-      throw new IllegalArgumentException();
-    }
-    final EnumMap<Rank, Rank> sideMap = Nulls.get(PREVIOUS_RANK, havingMove);
-    if (!sideMap.containsKey(this)) {
-      throw new IllegalArgumentException();
-    }
-    return Nulls.get(sideMap, this);
   }
 
   private void check() {
