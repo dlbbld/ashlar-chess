@@ -43,12 +43,14 @@ Allowed on records:
 - **`Comparable` when the ordering is intrinsic to the type's identity.** `Tag` orders by standard-roster position. `MoveSpecification` orders by `(fromSquare, toSquare, castlingMove, promotionPieceType)`. Ordering that's a property of the type itself (not "one possible sort key out of several") fits on the record.
 - **Static factory constants for meaningful empty/initial values.** `PgnCommentary.EMPTY`. These are part of the type's value lattice, not behavior.
 - **Auto-generated `equals` / `hashCode` / `toString`** — the language provides these from the record's components. Don't override.
+- **Intrinsic self-description: a tiny derived accessor or predicate over the record's *own* components.** It may name *what the value is* — `MoveSpecification.isPromotion()` (whether its own `promotionPieceType` component is set), `LegalMove.havingMove()` (a projection of `movingPiece.getSide()`). Keep these to one-liners that read like the value's own nature, not domain operations.
 
 Not allowed on records:
 
 - **Domain-operation methods that compute results from the record's fields combined with anything else.** Those belong in the relevant utility class. *Example: don't put `staticPosition.afterMove(side, moveSpec)` on `StaticPosition`; put `StaticPositionUtility.createPositionAfterMove(staticPosition, side, moveSpec)` instead.* Records describe *what something is*; utilities describe *what you do with it*.
 - **Convenience constructors that hide validation logic in non-canonical paths.** Validation belongs in the canonical compact constructor, not scattered across overloads — otherwise a caller can bypass validation by reaching for the canonical constructor directly.
 - **Methods that simulate state changes** (records are values, not actors).
+- **Rule-consequence predicates** — a predicate that evaluates a chess *rule* about the record rather than describing its own state. *Example: "does this move reset the FIDE halfmove clock" is the pawn-move-or-capture rule, so it stays `BasicChessUtility.isResetHalfMoveClock(legalMove)`, not a method on `LegalMove`.* The line: self-description belongs on the record, rule evaluation belongs in a utility.
 
 Documented exception:
 
