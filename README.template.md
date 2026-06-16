@@ -113,9 +113,9 @@ one who flagged or resigned - and it returns the verdict.
 
 Each event has a **quick** and a **full** variant:
 
-* **quick** - rules `DRAW` or `LOSS`, from the fast `Board.calculateUnwinnabilityQuickVerdict(Side)` analyzer. It draws only when it can
+* **quick** - rules `DRAW` or `LOSS`, from the fast `Board.unwinnableQuick(Side)` analyzer. It draws only when it can
   *prove* the opponent cannot win; otherwise the flag stands. Latency is bounded - the right choice during live play.
-* **full** - rules `DRAW`, `LOSS`, or `UNDETERMINED`, from the complete `Board.calculateUnwinnabilityFullVerdict(Side)` analyzer. It
+* **full** - rules `DRAW`, `LOSS`, or `UNDETERMINED`, from the complete `Board.unwinnableFull(Side)` analyzer. It
   additionally *proves* wins and reports `UNDETERMINED` only when its bounded search runs out (rare). The recommended
   check at game end, where the extra cost is negligible.
 
@@ -186,7 +186,7 @@ even if the opponent cooperates. If the position is unwinnable for both players,
 > **Note:** quick/full dead-position detection is caller-invoked. `Board` does not run the analyzer during
 > construction or after each move; callers that want to adjudicate analyzer-driven dead positions call the no-side
 > overloads `UnwinnableQuickAnalyzer.unwinnableQuick(board)` / `UnwinnableFullAnalyzer.unwinnableFull(board)`, or the
-> side-specific `Board.calculateUnwinnabilityQuickVerdict(Side)` / `Board.calculateUnwinnabilityFullVerdict(Side)`.
+> side-specific `Board.unwinnableQuick(Side)` / `Board.unwinnableFull(Side)`.
 
 ## Methods
 The library provides an implementation of CHA. So for both situations, there is a quick and a full method.
@@ -201,7 +201,7 @@ The quick method has two return values:
 * POSSIBLY_WINNABLE - not proven unwinnable; most likely winnable, but it might be unwinnable in some rare cases
 
 The quick method never claims winnability - proving a concrete win is the full method's job.
-`Board.calculateUnwinnabilityQuickVerdict(Side)` returns this verdict directly. `UnwinnableQuickAnalyzer.unwinnableQuick(...)` returns
+`Board.unwinnableQuick(Side)` returns this verdict directly. `UnwinnableQuickAnalyzer.unwinnableQuick(...)` returns
 `UnwinnabilityQuickAnalysis` (the verdict only).
 
 The full method has four return values:

@@ -32,7 +32,7 @@ PGN model:
 - `getPerformedHalfMoveCount()` renamed to `getPerformedMoveCount()`.
 - Removed `getHalfMoveList()` and `getLastHalfMove()`; the played-move list is no longer exposed on `Board`. It is rebuilt inside the `report` layer, and `PgnCreate.createPgnGame(board).moveList()` returns the played moves as `PgnMove`s.
 - `HalfMove` is gone from the public API (its replacement, `MoveRecord`, is package-private to `report`).
-- `isUnwinnableQuick(Side)` / `isUnwinnableFull(Side)` renamed to `calculateUnwinnabilityQuickVerdict(Side)` / `calculateUnwinnabilityFullVerdict(Side)` — the `calculate*` prefix marks that the verdict is computed on call, and the `*Verdict` suffix names what is returned.
+- `isUnwinnableQuick(Side)` / `isUnwinnableFull(Side)` renamed to `unwinnableQuick(Side)` / `unwinnableFull(Side)`, matching the `UnwinnableQuickAnalyzer.unwinnableQuick(...)` / `UnwinnableFullAnalyzer.unwinnableFull(...)` engines they delegate to. The `Board` methods return the verdict directly; the analyzers return the full analysis.
 - `move(MoveSpecification)`, `movesStrict(String...)`, and `movesLenient(String...)` now return `void` instead of `boolean`. The discarded return was always `true` (failure is signalled by exception), so it carried no information.
 
 Boolean accessors (JavaBeans `is` / `has` idiom, no `get` prefix):
