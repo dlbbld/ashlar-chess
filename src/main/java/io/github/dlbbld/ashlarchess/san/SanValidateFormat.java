@@ -23,7 +23,10 @@ import io.github.dlbbld.ashlarchess.messages.Message;
  *   R, N, B, Q   -> {@link SanValidateFormatRnbq#parseRnbqMove}
  * </pre>
  */
-public abstract class SanValidateFormat extends AbstractSan {
+public final class SanValidateFormat extends AbstractSan {
+
+  private SanValidateFormat() {
+  }
 
   public static SanParse validateFormat(String san) {
 

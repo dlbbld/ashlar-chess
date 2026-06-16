@@ -45,7 +45,10 @@ import io.github.dlbbld.ashlarchess.model.CastlingRightBoth;
 import io.github.dlbbld.ashlarchess.model.LegalMove;
 import io.github.dlbbld.ashlarchess.model.LegalMoveKind;
 
-public abstract class CastlingUtility {
+public final class CastlingUtility {
+
+  private CastlingUtility() {
+  }
 
   private static final ImmutableList<Square> WHITE_QUEEN_SIDE_CASTLING_REQUIRED_EMPTY_SQUARE_LIST = constructListSquare(
       B1, C1, D1);

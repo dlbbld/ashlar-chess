@@ -11,7 +11,10 @@ import io.github.dlbbld.ashlarchess.model.LegalMove;
 import io.github.dlbbld.ashlarchess.moves.CastlingUtility;
 import io.github.dlbbld.ashlarchess.moves.PromotionUtility;
 
-public class MoveToLan extends AbstractSan {
+public final class MoveToLan extends AbstractSan {
+
+  private MoveToLan() {
+  }
 
   /**
    * LAN non-capture separator between from and to squares. Captures use {@link SanSymbol#CAPTURE} ({@code 'x'})

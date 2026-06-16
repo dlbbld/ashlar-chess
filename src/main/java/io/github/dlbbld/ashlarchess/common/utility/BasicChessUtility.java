@@ -11,7 +11,10 @@ import io.github.dlbbld.ashlarchess.common.enums.Termination;
 import io.github.dlbbld.ashlarchess.common.model.Outcome;
 import io.github.dlbbld.ashlarchess.model.LegalMove;
 
-public abstract class BasicChessUtility {
+public final class BasicChessUtility {
+
+  private BasicChessUtility() {
+  }
 
   public static Side calculateSideMoved(Side havingMoveInitial, int performedMoveCount) {
     switch (havingMoveInitial) {

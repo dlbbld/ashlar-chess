@@ -28,7 +28,10 @@ import io.github.dlbbld.ashlarchess.model.LegalMove;
 import io.github.dlbbld.ashlarchess.model.LegalMoveKind;
 import io.github.dlbbld.ashlarchess.san.SanSymbol;
 
-public abstract class CastlingConstants {
+public final class CastlingConstants {
+
+  private CastlingConstants() {
+  }
 
   public static final String SAN_CASTLING_KING_SIDE = "" + SanSymbol.CASTLING_O.getSymbol()
       + SanSymbol.CASTLING_HYPHEN.getSymbol() + SanSymbol.CASTLING_O.getSymbol();

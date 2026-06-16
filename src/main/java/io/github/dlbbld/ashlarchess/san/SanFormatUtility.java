@@ -7,7 +7,10 @@ package io.github.dlbbld.ashlarchess.san;
  * Behaviour for the {@link SanFormat} value enum: the capture / non-capture classification that previously lived on the
  * enum itself.
  */
-public abstract class SanFormatUtility {
+public final class SanFormatUtility {
+
+  private SanFormatUtility() {
+  }
 
   public static boolean isCapture(SanFormat sanFormat) {
     return switch (sanFormat) {

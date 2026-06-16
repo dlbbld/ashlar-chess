@@ -8,7 +8,10 @@ import java.nio.file.Path;
 import io.github.dlbbld.ashlarchess.board.Board;
 import io.github.dlbbld.ashlarchess.model.PgnMove;
 
-public abstract class PgnUtility {
+public final class PgnUtility {
+
+  private PgnUtility() {
+  }
 
   /**
    * Replays the moves of {@code pgnGame} on a fresh board and returns the resulting state.

@@ -18,7 +18,10 @@ import io.github.dlbbld.ashlarchess.model.LegalMove;
 import io.github.dlbbld.ashlarchess.moves.CastlingUtility;
 import io.github.dlbbld.ashlarchess.moves.PromotionUtility;
 
-public class MoveToSan extends AbstractSan {
+public final class MoveToSan extends AbstractSan {
+
+  private MoveToSan() {
+  }
 
   public static String toSan(LegalMove move, List<LegalMove> legalMovesBeforeMove,
       SanTerminalMarker sanTerminalMarker) {

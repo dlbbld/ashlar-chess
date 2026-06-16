@@ -15,7 +15,10 @@ import io.github.dlbbld.ashlarchess.enums.MoveCheck;
  * The switch is exhaustive (no {@code default:}) so any new value added to {@code KingSafetyCheck} causes a compile
  * error here.
  */
-public abstract class KingSafetyCheckTranslator {
+public final class KingSafetyCheckTranslator {
+
+  private KingSafetyCheckTranslator() {
+  }
 
   public static MoveCheck toMoveCheck(KingSafetyCheck kingSafetyCheck) {
     return switch (kingSafetyCheck) {

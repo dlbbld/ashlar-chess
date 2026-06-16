@@ -19,7 +19,10 @@ import io.github.dlbbld.ashlarchess.common.exceptions.FileSystemAccessException;
  * {@link WriteMode#SEMANTIC} - honest preservation of what the parse model contains. Callers who need a PGN spec
  * section 8.1.1-conformant artifact pass {@link WriteMode#ARCHIVAL} explicitly.
  */
-public class PgnWriter {
+public final class PgnWriter {
+
+  private PgnWriter() {
+  }
 
   // -------------------------------------------------------------------------------------------------
   // PgnGame entry points - semantic default, explicit-mode overloads

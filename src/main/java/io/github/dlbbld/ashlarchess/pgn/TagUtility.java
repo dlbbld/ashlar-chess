@@ -17,7 +17,10 @@ import io.github.dlbbld.ashlarchess.common.Nulls;
 import io.github.dlbbld.ashlarchess.common.exceptions.ProgrammingMistakeException;
 import io.github.dlbbld.ashlarchess.common.utility.BasicUtility;
 
-public abstract class TagUtility {
+public final class TagUtility {
+
+  private TagUtility() {
+  }
 
   private static final String TAG_PATTERN = "\\[([\\w]+) \"([^\"]*)\"\\]";
 

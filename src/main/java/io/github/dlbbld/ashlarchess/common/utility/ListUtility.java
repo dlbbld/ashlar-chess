@@ -7,7 +7,10 @@ import java.util.List;
 
 import io.github.dlbbld.ashlarchess.common.Nulls;
 
-public abstract class ListUtility {
+public final class ListUtility {
+
+  private ListUtility() {
+  }
 
   public static <E> E getOnly(List<E> list) {
     if (list.size() != 1) {

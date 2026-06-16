@@ -7,7 +7,10 @@ package io.github.dlbbld.ashlarchess.san;
  * Behaviour for the {@link SanTerminalMarker} value enum: the (check, checkmate) factory and the SAN-symbol rendering
  * that previously lived on the enum itself.
  */
-public abstract class SanTerminalMarkerUtility {
+public final class SanTerminalMarkerUtility {
+
+  private SanTerminalMarkerUtility() {
+  }
 
   /**
    * Factory: produce the marker corresponding to a (check, checkmate) state.

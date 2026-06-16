@@ -57,7 +57,10 @@ import io.github.dlbbld.ashlarchess.common.model.MoveSpecification;
 import io.github.dlbbld.ashlarchess.model.LegalMove;
 import io.github.dlbbld.ashlarchess.model.LegalMoveKind;
 
-public abstract class EnPassantCaptureUtility {
+public final class EnPassantCaptureUtility {
+
+  private EnPassantCaptureUtility() {
+  }
 
   private static final ImmutableList<ImmutableList<Square>> WHITE_EN_PASSANT_CAPTURE_FROM_TO;
 

@@ -23,7 +23,10 @@ import io.github.dlbbld.ashlarchess.enums.MoveCheck;
  * SAN-facing {@code SanValidationProblem}. Both switches are exhaustive (no {@code default:}) so any new value added to
  * {@code CastlingCheck} or {@code CastlingRightLoss} causes a compile error here.
  */
-public abstract class CastlingCheckTranslator {
+public final class CastlingCheckTranslator {
+
+  private CastlingCheckTranslator() {
+  }
 
   public static MoveCheck toMoveCheck(CastlingCheck castlingCheck, CastlingRightLoss castlingRightLoss) {
     return switch (castlingCheck) {

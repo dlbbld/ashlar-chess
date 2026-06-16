@@ -3,10 +3,11 @@
 
 package io.github.dlbbld.ashlarchess.test.common.utility;
 
-import io.github.dlbbld.ashlarchess.common.Nulls;
-import io.github.dlbbld.ashlarchess.common.constants.ChessConstants;
+import static io.github.dlbbld.ashlarchess.common.constants.ChessConstants.PGN_EXTENSION_INCLUDING_DOT;
 
-public abstract class PgnExtensionUtility extends ChessConstants {
+import io.github.dlbbld.ashlarchess.common.Nulls;
+
+public abstract class PgnExtensionUtility {
 
   public static boolean hasPgnExtension(String pgnName) {
     return pgnName.endsWith(PGN_EXTENSION_INCLUDING_DOT);

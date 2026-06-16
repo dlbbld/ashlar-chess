@@ -13,7 +13,10 @@ import io.github.dlbbld.ashlarchess.board.enums.Side;
 import io.github.dlbbld.ashlarchess.board.model.UpdateSquare;
 import io.github.dlbbld.ashlarchess.common.model.MoveSpecification;
 
-public abstract class PromotionUtility {
+public final class PromotionUtility {
+
+  private PromotionUtility() {
+  }
 
   public static boolean calculateIsPromotionNewMove(MoveSpecification moveSpecification) {
     return moveSpecification.promotionPieceType() != PromotionPieceType.NONE;

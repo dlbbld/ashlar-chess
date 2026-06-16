@@ -10,7 +10,10 @@ import io.github.dlbbld.ashlarchess.common.exceptions.ProgrammingMistakeExceptio
 import io.github.dlbbld.ashlarchess.common.model.DynamicPosition;
 import io.github.dlbbld.ashlarchess.model.LegalMove;
 
-public abstract class RepetitionUtility {
+public final class RepetitionUtility {
+
+  private RepetitionUtility() {
+  }
 
   public static int calculateCountRepetition(List<LegalMove> performedLegalMoveList,
       List<DynamicPosition> dynamicPositionList, DynamicPosition dynamicPosition) {

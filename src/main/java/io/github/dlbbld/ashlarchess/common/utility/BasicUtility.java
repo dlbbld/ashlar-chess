@@ -12,7 +12,7 @@ import java.util.Set;
 import io.github.dlbbld.ashlarchess.board.enums.Square;
 import io.github.dlbbld.ashlarchess.common.Nulls;
 
-public abstract class BasicUtility {
+public final class BasicUtility {
 
   private static final String COMMA_SEPARATOR_LIST = ", ";
 

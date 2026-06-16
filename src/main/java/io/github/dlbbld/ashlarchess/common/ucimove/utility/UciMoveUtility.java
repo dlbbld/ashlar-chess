@@ -14,7 +14,10 @@ import io.github.dlbbld.ashlarchess.common.model.MoveSpecification;
 import io.github.dlbbld.ashlarchess.model.UciMove;
 import io.github.dlbbld.ashlarchess.moves.CastlingUtility;
 
-public abstract class UciMoveUtility {
+public final class UciMoveUtility {
+
+  private UciMoveUtility() {
+  }
 
   public static UciMove convertMoveSpecificationToUci(Side havingMove, MoveSpecification moveSpecification) {
     Square fromSquare;

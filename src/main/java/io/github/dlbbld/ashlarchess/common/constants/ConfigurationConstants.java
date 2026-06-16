@@ -7,7 +7,10 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Locale;
 
-public abstract class ConfigurationConstants {
+public final class ConfigurationConstants {
+
+  private ConfigurationConstants() {
+  }
 
   @SuppressWarnings("null")
   public static final Path TEMP_FOLDER_PATH = Paths.get(System.getProperty("java.io.tmpdir"));

@@ -9,7 +9,10 @@ import io.github.dlbbld.ashlarchess.board.enums.Side;
 import io.github.dlbbld.ashlarchess.board.enums.Square;
 import io.github.dlbbld.ashlarchess.squares.PawnDiagonalSquares;
 
-public abstract class PawnDiagonalMoveUtility {
+public final class PawnDiagonalMoveUtility {
+
+  private PawnDiagonalMoveUtility() {
+  }
 
   public static boolean calculateIsPawnDiagonalMove(Side side, Square fromSquare, Square toSquare) {
     final Set<Square> diagonalToSquareSet = PawnDiagonalSquares.getPawnDiagonalSquares(side, fromSquare);

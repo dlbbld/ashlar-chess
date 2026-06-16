@@ -3,7 +3,10 @@
 
 package io.github.dlbbld.ashlarchess.common.constants;
 
-public abstract class BasicConstants {
+public final class BasicConstants {
+
+  private BasicConstants() {
+  }
   public static final String BLANK = "";
   public static final String NA = "NA";
 }

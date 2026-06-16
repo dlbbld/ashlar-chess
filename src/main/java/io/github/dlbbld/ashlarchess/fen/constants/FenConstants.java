@@ -18,7 +18,10 @@ import io.github.dlbbld.ashlarchess.board.enums.Square;
 import io.github.dlbbld.ashlarchess.common.Nulls;
 import io.github.dlbbld.ashlarchess.fen.model.Fen;
 
-public class FenConstants {
+public final class FenConstants {
+
+  private FenConstants() {
+  }
 
   public static final String FEN_INITIAL_STR = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
 

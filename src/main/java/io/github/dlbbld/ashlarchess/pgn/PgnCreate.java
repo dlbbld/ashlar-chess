@@ -26,7 +26,10 @@ import io.github.dlbbld.ashlarchess.model.PgnMove;
  * without inventing content. {@link WriteMode#ARCHIVAL} runs the model through {@link PgnArchivalNormalization} first
  * to produce a PGN spec section 8.1.1-conformant artifact.
  */
-public class PgnCreate {
+public final class PgnCreate {
+
+  private PgnCreate() {
+  }
 
   /** PGN export-format guideline: lines should not exceed 79 characters. */
   public static final int MAX_LINE_LENGTH = 79;

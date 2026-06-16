@@ -8,7 +8,10 @@ import java.util.Set;
 
 import io.github.dlbbld.ashlarchess.common.Nulls;
 
-public abstract class SetUtility {
+public final class SetUtility {
+
+  private SetUtility() {
+  }
 
   public static <E> E getOnly(Set<E> set) {
     if (set.size() != 1) {

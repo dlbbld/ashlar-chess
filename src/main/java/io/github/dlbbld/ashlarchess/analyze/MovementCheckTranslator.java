@@ -15,7 +15,10 @@ import io.github.dlbbld.ashlarchess.enums.MovementCheck;
  * The switch is exhaustive (no {@code default:}) so any new value added to {@code MovementCheck} causes a compile error
  * here.
  */
-public abstract class MovementCheckTranslator {
+public final class MovementCheckTranslator {
+
+  private MovementCheckTranslator() {
+  }
 
   public static MoveCheck toMoveCheck(MovementCheck movementCheck) {
     return switch (movementCheck) {

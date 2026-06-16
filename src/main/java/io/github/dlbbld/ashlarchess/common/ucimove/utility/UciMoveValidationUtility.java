@@ -27,7 +27,10 @@ import io.github.dlbbld.ashlarchess.model.UciMove;
 import io.github.dlbbld.ashlarchess.squares.AbstractEmptyBoardSquares;
 import io.github.dlbbld.ashlarchess.squares.PawnDiagonalSquares;
 
-public abstract class UciMoveValidationUtility {
+public final class UciMoveValidationUtility {
+
+  private UciMoveValidationUtility() {
+  }
 
   private static final ImmutableList<UciMove> UCI_MOVE_LIST;
   private static final ImmutableMap<String, UciMove> UCI_MOVE_TEXT_LOOKUP;

@@ -14,7 +14,10 @@ import com.google.common.collect.ImmutableSet;
 import io.github.dlbbld.ashlarchess.board.enums.Square;
 import io.github.dlbbld.ashlarchess.common.Nulls;
 
-public abstract class ImmutableUtility {
+public final class ImmutableUtility {
+
+  private ImmutableUtility() {
+  }
 
   public static final ImmutableSet<Square> EMPTY_UNMODIFIABLE_SET;
 
