@@ -106,7 +106,7 @@ Position equality follows the FIDE definition: same piece placement, same side t
 
 ### 3.2 Unwinnability — Chess Unwinnability Analyzer (CHA)
 
-The library's **flagship feature**. A position is *unwinnable for a side* if there is no legal sequence that can end with that side giving checkmate, even if the opponent cooperates (i.e. not even a helpmate exists). A *dead position* is one unwinnable for both sides. Insufficient material covers the trivial cases; positions like blocked pawn walls, certain wrong-bishop endgames, and many forced-only-moves continuations are dead but not insufficient — and most chess libraries get them wrong.
+The library's **flagship feature**. A position is *unwinnable for a side* if no helpmate exists for that side. A *dead position* is one unwinnable for both sides. Insufficient material covers the trivial cases; positions like blocked pawn walls, certain wrong-bishop endgames, and many forced-only-moves continuations are dead but not insufficient — and most chess libraries get them wrong.
 
 Miguel Ambrona's CHA is, to the author's knowledge, the only published algorithm that decides these cases correctly across the full range of positions. ashlar-chess implements it in Java, in two variants:
 
