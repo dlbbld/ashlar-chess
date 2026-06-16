@@ -9,7 +9,6 @@ import io.github.dlbbld.ashlarchess.common.constants.CastlingConstants;
 import io.github.dlbbld.ashlarchess.common.model.MoveSpecification;
 import io.github.dlbbld.ashlarchess.model.LegalMove;
 import io.github.dlbbld.ashlarchess.moves.CastlingUtility;
-import io.github.dlbbld.ashlarchess.moves.PromotionUtility;
 
 public final class MoveToLan extends AbstractSan {
 
@@ -61,7 +60,7 @@ public final class MoveToLan extends AbstractSan {
         buildSan.append(fromSquareName);
         buildSan.append(isCapture ? SanSymbol.CAPTURE.getSymbol() : LAN_NON_CAPTURE_SEPARATOR);
         buildSan.append(toSquareName);
-        if (PromotionUtility.calculateIsPromotion(moveSpecification)) {
+        if (moveSpecification.isPromotion()) {
           final char promotionPieceLetter = moveSpecification.promotionPieceType().getPieceType().getLetter();
           buildSan.append(SanSymbol.PROMOTION.getSymbol());
           buildSan.append(promotionPieceLetter);

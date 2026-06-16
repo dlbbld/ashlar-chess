@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import io.github.dlbbld.ashlarchess.board.enums.Piece;
-import io.github.dlbbld.ashlarchess.board.enums.PromotionPieceType;
 import io.github.dlbbld.ashlarchess.board.enums.PromotionPieceTypeUtility;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
 import io.github.dlbbld.ashlarchess.board.model.UpdateSquare;
@@ -16,14 +15,6 @@ import io.github.dlbbld.ashlarchess.common.model.MoveSpecification;
 public final class PromotionUtility {
 
   private PromotionUtility() {
-  }
-
-  public static boolean calculateIsPromotionNewMove(MoveSpecification moveSpecification) {
-    return moveSpecification.promotionPieceType() != PromotionPieceType.NONE;
-  }
-
-  public static boolean calculateIsPromotion(MoveSpecification move) {
-    return move.promotionPieceType() != PromotionPieceType.NONE;
   }
 
   public static List<UpdateSquare> performPromotionMovements(Side havingMove, MoveSpecification moveSpecification) {

@@ -86,4 +86,8 @@ public record MoveSpecification(Square fromSquare, Square toSquare, CastlingMove
     throw new ProgrammingMistakeException("now all fields are equal so objects are equal");
   }
 
+  public boolean isPromotion() {
+    return promotionPieceType() != PromotionPieceType.NONE;
+  }
+
 }

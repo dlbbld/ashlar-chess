@@ -151,7 +151,7 @@ public abstract class StaticPositionUtility {
     if (CastlingUtility.calculateIsCastlingMove(moveSpecification)) {
       return CastlingUtility.performCastlingMovements(havingMove, moveSpecification);
     }
-    if (PromotionUtility.calculateIsPromotionNewMove(moveSpecification)) {
+    if (moveSpecification.isPromotion()) {
       return PromotionUtility.performPromotionMovements(havingMove, moveSpecification);
     }
     return StandardMoveUtility.performStandardMovements(staticPosition.get(moveSpecification.fromSquare()),

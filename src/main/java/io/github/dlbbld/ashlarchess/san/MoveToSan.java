@@ -16,7 +16,6 @@ import io.github.dlbbld.ashlarchess.common.exceptions.ProgrammingMistakeExceptio
 import io.github.dlbbld.ashlarchess.common.model.MoveSpecification;
 import io.github.dlbbld.ashlarchess.model.LegalMove;
 import io.github.dlbbld.ashlarchess.moves.CastlingUtility;
-import io.github.dlbbld.ashlarchess.moves.PromotionUtility;
 
 public final class MoveToSan extends AbstractSan {
 
@@ -105,7 +104,7 @@ public final class MoveToSan extends AbstractSan {
 
     switch (movingPiece.getPieceType()) {
       case PAWN:
-        if (!PromotionUtility.calculateIsPromotion(moveSpecification)) {
+        if (!moveSpecification.isPromotion()) {
           if (isCapture) {
             buildSan.append(fromFileLetter).append(SanSymbol.CAPTURE.getSymbol());
           }
