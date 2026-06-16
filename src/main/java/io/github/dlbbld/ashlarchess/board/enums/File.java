@@ -114,40 +114,40 @@ public enum File {
   private static final EnumMap<Side, EnumMap<File, File>> LEFT_FILE = buildOffsetTable(-1);
   private static final EnumMap<Side, EnumMap<File, File>> RIGHT_FILE = buildOffsetTable(1);
 
-  public static boolean hasLeftFile(Side havingMove, File file) {
-    if (havingMove == Side.NONE || file == NONE) {
+  public boolean hasLeftFile(Side havingMove) {
+    if (havingMove == Side.NONE || this == NONE) {
       throw new IllegalArgumentException();
     }
-    return Nulls.get(LEFT_FILE, havingMove).containsKey(file);
+    return Nulls.get(LEFT_FILE, havingMove).containsKey(this);
   }
 
-  public static File getLeftFile(Side havingMove, File file) {
-    if (havingMove == Side.NONE || file == NONE) {
+  public File getLeftFile(Side havingMove) {
+    if (havingMove == Side.NONE || this == NONE) {
       throw new IllegalArgumentException();
     }
     final EnumMap<File, File> sideMap = Nulls.get(LEFT_FILE, havingMove);
-    if (!sideMap.containsKey(file)) {
+    if (!sideMap.containsKey(this)) {
       throw new IllegalArgumentException("No left file");
     }
-    return Nulls.get(sideMap, file);
+    return Nulls.get(sideMap, this);
   }
 
-  public static boolean hasRightFile(Side havingMove, File file) {
-    if (havingMove == Side.NONE || file == NONE) {
+  public boolean hasRightFile(Side havingMove) {
+    if (havingMove == Side.NONE || this == NONE) {
       throw new IllegalArgumentException();
     }
-    return Nulls.get(RIGHT_FILE, havingMove).containsKey(file);
+    return Nulls.get(RIGHT_FILE, havingMove).containsKey(this);
   }
 
-  public static File getRightFile(Side havingMove, File file) {
-    if (havingMove == Side.NONE || file == NONE) {
+  public File getRightFile(Side havingMove) {
+    if (havingMove == Side.NONE || this == NONE) {
       throw new IllegalArgumentException();
     }
     final EnumMap<File, File> sideMap = Nulls.get(RIGHT_FILE, havingMove);
-    if (!sideMap.containsKey(file)) {
+    if (!sideMap.containsKey(this)) {
       throw new IllegalArgumentException("No right file");
     }
-    return Nulls.get(sideMap, file);
+    return Nulls.get(sideMap, this);
   }
 
   private void check() {

@@ -13,34 +13,34 @@ class KingDistanceOneFunctions {
 
   public static Set<Square> calculateDiagonalSquares(Square sq) {
     final Set<Square> result = new TreeSet<>();
-    if (Square.hasLeftDiagonalSquare(Side.WHITE, sq)) {
-      result.add(Square.getLeftDiagonalSquare(Side.WHITE, sq));
+    if (sq.hasLeftDiagonalSquare(Side.WHITE)) {
+      result.add(sq.getLeftDiagonalSquare(Side.WHITE));
     }
-    if (Square.hasRightDiagonalSquare(Side.WHITE, sq)) {
-      result.add(Square.getRightDiagonalSquare(Side.WHITE, sq));
+    if (sq.hasRightDiagonalSquare(Side.WHITE)) {
+      result.add(sq.getRightDiagonalSquare(Side.WHITE));
     }
-    if (Square.hasLeftDiagonalSquare(Side.BLACK, sq)) {
-      result.add(Square.getLeftDiagonalSquare(Side.BLACK, sq));
+    if (sq.hasLeftDiagonalSquare(Side.BLACK)) {
+      result.add(sq.getLeftDiagonalSquare(Side.BLACK));
     }
-    if (Square.hasRightDiagonalSquare(Side.BLACK, sq)) {
-      result.add(Square.getRightDiagonalSquare(Side.BLACK, sq));
+    if (sq.hasRightDiagonalSquare(Side.BLACK)) {
+      result.add(sq.getRightDiagonalSquare(Side.BLACK));
     }
     return result;
   }
 
   public static Set<Square> calculateOrthogonalSquares(Square sq) {
     final Set<Square> result = new TreeSet<>();
-    if (Square.hasAheadSquare(Side.WHITE, sq)) {
-      result.add(Square.getAheadSquare(Side.WHITE, sq));
+    if (sq.hasAheadSquare(Side.WHITE)) {
+      result.add(sq.getAheadSquare(Side.WHITE));
     }
-    if (Square.hasRightSquare(Side.WHITE, sq)) {
-      result.add(Square.getRightSquare(Side.WHITE, sq));
+    if (sq.hasRightSquare(Side.WHITE)) {
+      result.add(sq.getRightSquare(Side.WHITE));
     }
-    if (Square.hasBehindSquare(Side.WHITE, sq)) {
-      result.add(Square.getBehindSquare(Side.WHITE, sq));
+    if (sq.hasBehindSquare(Side.WHITE)) {
+      result.add(sq.getBehindSquare(Side.WHITE));
     }
-    if (Square.hasLeftSquare(Side.WHITE, sq)) {
-      result.add(Square.getLeftSquare(Side.WHITE, sq));
+    if (sq.hasLeftSquare(Side.WHITE)) {
+      result.add(sq.getLeftSquare(Side.WHITE));
     }
     return result;
   }

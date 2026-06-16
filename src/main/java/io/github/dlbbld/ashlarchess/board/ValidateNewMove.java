@@ -173,7 +173,7 @@ class ValidateNewMove {
       case PAWN_EN_PASSANT_WRONG_RANK -> "the pawn cannot move diagonally to an empty field, except when en passant capture is possible, "
           + "which is not the case";
       case PAWN_EN_PASSANT_NO_IMMEDIATE_BEFORE_TWO_SQUARE_ADVANCE -> "the en passant capture requires that the pawn "
-          + "move " + Square.getBehindSquare(board.getHavingMove(), moveSpecification.toSquare()).getName()
+          + "move " + moveSpecification.toSquare().getBehindSquare(board.getHavingMove()).getName()
           + " was immediately played before, which is not the case";
       case KING_CAPTURES_GUARDED_PIECE -> "the king cannot capture this piece because it is guarded by another piece";
       case KING_MOVES_NEXT_TO_OPPONENT_KING -> "the king can not be moved next to the opponent king";

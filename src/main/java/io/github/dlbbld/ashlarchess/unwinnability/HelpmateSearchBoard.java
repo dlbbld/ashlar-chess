@@ -496,16 +496,16 @@ final class HelpmateSearchBoard {
     if (enPassantCaptureTargetSquare == Square.NONE) {
       return Square.NONE;
     }
-    if (!Square.hasBehindSquare(havingMove, enPassantCaptureTargetSquare)) {
+    if (!enPassantCaptureTargetSquare.hasBehindSquare(havingMove)) {
       throw new ProgrammingMistakeException();
     }
-    final Square squareBehind = Square.getBehindSquare(havingMove, enPassantCaptureTargetSquare);
+    final Square squareBehind = enPassantCaptureTargetSquare.getBehindSquare(havingMove);
     final Piece ownPawn = Piece.of(havingMove, PieceType.PAWN);
 
-    final boolean hasRight = Square.hasRightSquare(havingMove, squareBehind);
-    final boolean hasLeft = Square.hasLeftSquare(havingMove, squareBehind);
-    final Square candidateRight = hasRight ? Square.getRightSquare(havingMove, squareBehind) : Square.NONE;
-    final Square candidateLeft = hasLeft ? Square.getLeftSquare(havingMove, squareBehind) : Square.NONE;
+    final boolean hasRight = squareBehind.hasRightSquare(havingMove);
+    final boolean hasLeft = squareBehind.hasLeftSquare(havingMove);
+    final Square candidateRight = hasRight ? squareBehind.getRightSquare(havingMove) : Square.NONE;
+    final Square candidateLeft = hasLeft ? squareBehind.getLeftSquare(havingMove) : Square.NONE;
     final boolean hasRightPawn = hasRight && pieceAt(candidateRight) == ownPawn;
     final boolean hasLeftPawn = hasLeft && pieceAt(candidateLeft) == ownPawn;
 

@@ -361,7 +361,7 @@ public class FenParserAdvanced {
     }
 
     final Side oppositeSide = havingMove.getOppositeSide();
-    final Square pawnTwoAdvanceSquare = Square.getAheadSquare(oppositeSide, enPassantCaptureTargetSquare);
+    final Square pawnTwoAdvanceSquare = enPassantCaptureTargetSquare.getAheadSquare(oppositeSide);
     // The two-advance square must carry an opposite-side PAWN (the pawn that just played the two-square advance).
     // Three rejection conditions, all unioned: no piece at all, wrong side, or wrong piece type. The original
     // StaticPosition predicate read `A || (B && C)` due to Java operator precedence, which let some wrong-side or
@@ -378,7 +378,7 @@ public class FenParserAdvanced {
     }
 
     // that must come after checking if pawn has potentially advanced two squares
-    final Square startingSquare = Square.getBehindSquare(oppositeSide, enPassantCaptureTargetSquare);
+    final Square startingSquare = enPassantCaptureTargetSquare.getBehindSquare(oppositeSide);
     final Piece pieceOnStartingSquare = bitboardPosition.get(startingSquare);
     final boolean isStartingSquareEmpty = pieceOnStartingSquare != Piece.NONE;
 

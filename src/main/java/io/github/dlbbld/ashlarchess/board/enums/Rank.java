@@ -106,15 +106,15 @@ public enum Rank {
 
   private static final EnumMap<Side, EnumMap<Rank, Rank>> PREVIOUS_RANK = buildOffsetTable(-1);
 
-  public static Rank getPreviousRank(Side havingMove, Rank rank) {
-    if (havingMove == Side.NONE || rank == NONE) {
+  public Rank getPreviousRank(Side havingMove) {
+    if (havingMove == Side.NONE || this == NONE) {
       throw new IllegalArgumentException();
     }
     final EnumMap<Rank, Rank> sideMap = Nulls.get(PREVIOUS_RANK, havingMove);
-    if (!sideMap.containsKey(rank)) {
+    if (!sideMap.containsKey(this)) {
       throw new IllegalArgumentException();
     }
-    return Nulls.get(sideMap, rank);
+    return Nulls.get(sideMap, this);
   }
 
   private void check() {

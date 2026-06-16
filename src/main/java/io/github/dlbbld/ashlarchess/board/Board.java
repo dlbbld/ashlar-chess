@@ -881,16 +881,16 @@ public class Board {
       return false;
     }
     // two potential capture moves
-    if (!Square.hasBehindSquare(havingMove, enPassantCaptureTargetSquare)) {
+    if (!enPassantCaptureTargetSquare.hasBehindSquare(havingMove)) {
       // cannot be for en en passant target square
       throw new ProgrammingMistakeException();
     }
-    final Square squareBehind = Square.getBehindSquare(havingMove, enPassantCaptureTargetSquare);
+    final Square squareBehind = enPassantCaptureTargetSquare.getBehindSquare(havingMove);
     final Piece ownPawn = Piece.of(havingMove, PieceType.PAWN);
 
     // capture move from right square
-    if (Square.hasRightSquare(havingMove, squareBehind)) {
-      final Square squareRight = Square.getRightSquare(havingMove, squareBehind);
+    if (squareBehind.hasRightSquare(havingMove)) {
+      final Square squareRight = squareBehind.getRightSquare(havingMove);
       if (bitboardPosition.get(squareRight) == ownPawn) {
         final MoveSpecification moveSpecification = new MoveSpecification(squareRight, enPassantCaptureTargetSquare);
         if (!bitboardPosition.afterMove(moveSpecification, havingMove).isInCheck(havingMove)) {
@@ -900,8 +900,8 @@ public class Board {
     }
 
     // capture move from left square
-    if (Square.hasLeftSquare(havingMove, squareBehind)) {
-      final Square squareLeft = Square.getLeftSquare(havingMove, squareBehind);
+    if (squareBehind.hasLeftSquare(havingMove)) {
+      final Square squareLeft = squareBehind.getLeftSquare(havingMove);
       if (bitboardPosition.get(squareLeft) == ownPawn) {
         final MoveSpecification moveSpecification = new MoveSpecification(squareLeft, enPassantCaptureTargetSquare);
         if (!bitboardPosition.afterMove(moveSpecification, havingMove).isInCheck(havingMove)) {

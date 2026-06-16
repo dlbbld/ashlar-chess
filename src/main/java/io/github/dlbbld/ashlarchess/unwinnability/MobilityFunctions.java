@@ -35,11 +35,11 @@ class MobilityFunctions {
     switch (piecePlacement.pieceType()) {
       case PAWN:
         final Set<Square> result = new TreeSet<>();
-        if (Square.hasBehindLeftDiagonalSquare(piecePlacement.side(), square)) {
-          result.add(Square.getBehindLeftDiagonalSquare(piecePlacement.side(), square));
+        if (square.hasBehindLeftDiagonalSquare(piecePlacement.side())) {
+          result.add(square.getBehindLeftDiagonalSquare(piecePlacement.side()));
         }
-        if (Square.hasBehindRightDiagonalSquare(piecePlacement.side(), square)) {
-          result.add(Square.getBehindRightDiagonalSquare(piecePlacement.side(), square));
+        if (square.hasBehindRightDiagonalSquare(piecePlacement.side())) {
+          result.add(square.getBehindRightDiagonalSquare(piecePlacement.side()));
         }
         return result;
       case ROOK:
@@ -81,11 +81,11 @@ class MobilityFunctions {
   }
 
   private static Set<Square> calculateBehindSquare(Side side, Square square) {
-    if (!Square.hasBehindSquare(side, square)) {
+    if (!square.hasBehindSquare(side)) {
       return new TreeSet<>();
     }
     final Set<Square> result = new TreeSet<>();
-    result.add(Square.getBehindSquare(side, square));
+    result.add(square.getBehindSquare(side));
     return result;
   }
 
