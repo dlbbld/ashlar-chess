@@ -17,34 +17,34 @@ class TestSpecialReverseMethods {
   void testSquareDirections() {
     for (final Square square : Square.REAL) {
       for (final Side side : Side.REAL) {
-        if (Square.hasLeftDiagonalSquare(side, square)) {
-          final Square calculatedSquare = Square.getLeftDiagonalSquare(side, square);
-          final Square revertedSquare = Square.getLeftDiagonalSquare(side.getOppositeSide(), calculatedSquare);
+        if (square.hasLeftDiagonalSquare(side)) {
+          final Square calculatedSquare = square.getLeftDiagonalSquare(side);
+          final Square revertedSquare = calculatedSquare.getLeftDiagonalSquare(side.getOppositeSide());
           assertEquals(square, revertedSquare);
         }
-        if (Square.hasRightDiagonalSquare(side, square)) {
-          final Square calculatedSquare = Square.getRightDiagonalSquare(side, square);
-          final Square revertedSquare = Square.getRightDiagonalSquare(side.getOppositeSide(), calculatedSquare);
+        if (square.hasRightDiagonalSquare(side)) {
+          final Square calculatedSquare = square.getRightDiagonalSquare(side);
+          final Square revertedSquare = calculatedSquare.getRightDiagonalSquare(side.getOppositeSide());
           assertEquals(square, revertedSquare);
         }
-        if (Square.hasAheadSquare(side, square)) {
-          final Square calculatedSquare = Square.getAheadSquare(side, square);
-          final Square revertedSquare = Square.getBehindSquare(side, calculatedSquare);
+        if (square.hasAheadSquare(side)) {
+          final Square calculatedSquare = square.getAheadSquare(side);
+          final Square revertedSquare = calculatedSquare.getBehindSquare(side);
           assertEquals(square, revertedSquare);
         }
-        if (Square.hasBehindSquare(side, square)) {
-          final Square calculatedSquare = Square.getBehindSquare(side, square);
-          final Square revertedSquare = Square.getAheadSquare(side, calculatedSquare);
+        if (square.hasBehindSquare(side)) {
+          final Square calculatedSquare = square.getBehindSquare(side);
+          final Square revertedSquare = calculatedSquare.getAheadSquare(side);
           assertEquals(square, revertedSquare);
         }
-        if (Square.hasLeftSquare(side, square)) {
-          final Square calculatedSquare = Square.getLeftSquare(side, square);
-          final Square revertedSquare = Square.getRightSquare(side, calculatedSquare);
+        if (square.hasLeftSquare(side)) {
+          final Square calculatedSquare = square.getLeftSquare(side);
+          final Square revertedSquare = calculatedSquare.getRightSquare(side);
           assertEquals(square, revertedSquare);
         }
-        if (Square.hasRightSquare(side, square)) {
-          final Square calculatedSquare = Square.getRightSquare(side, square);
-          final Square revertedSquare = Square.getLeftSquare(side, calculatedSquare);
+        if (square.hasRightSquare(side)) {
+          final Square calculatedSquare = square.getRightSquare(side);
+          final Square revertedSquare = calculatedSquare.getLeftSquare(side);
           assertEquals(square, revertedSquare);
         }
       }

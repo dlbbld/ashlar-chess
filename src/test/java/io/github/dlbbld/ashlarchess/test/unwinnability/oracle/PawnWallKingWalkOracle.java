@@ -128,11 +128,11 @@ final class PawnWallKingWalkOracle {
   private static Set<Square> calculatePawnAttacksFrom(Set<Square> pawnSquares, Side side) {
     final Set<Square> attacks = Nulls.noneOf(Square.class);
     for (final Square square : pawnSquares) {
-      if (Square.hasLeftDiagonalSquare(side, square)) {
-        attacks.add(Square.getLeftDiagonalSquare(side, square));
+      if (square.hasLeftDiagonalSquare(side)) {
+        attacks.add(square.getLeftDiagonalSquare(side));
       }
-      if (Square.hasRightDiagonalSquare(side, square)) {
-        attacks.add(Square.getRightDiagonalSquare(side, square));
+      if (square.hasRightDiagonalSquare(side)) {
+        attacks.add(square.getRightDiagonalSquare(side));
       }
     }
     return attacks;

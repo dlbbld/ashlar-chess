@@ -112,14 +112,14 @@ public class PawnWallGeometricAnalyzer {
   }
 
   private static boolean pawnAttacksAnyChainSquare(Square pawnSquare, Side pawnSide, Set<Square> chainSet) {
-    if (Square.hasLeftDiagonalSquare(pawnSide, pawnSquare)) {
-      final Square left = Square.getLeftDiagonalSquare(pawnSide, pawnSquare);
+    if (pawnSquare.hasLeftDiagonalSquare(pawnSide)) {
+      final Square left = pawnSquare.getLeftDiagonalSquare(pawnSide);
       if (chainSet.contains(left)) {
         return true;
       }
     }
-    if (Square.hasRightDiagonalSquare(pawnSide, pawnSquare)) {
-      final Square right = Square.getRightDiagonalSquare(pawnSide, pawnSquare);
+    if (pawnSquare.hasRightDiagonalSquare(pawnSide)) {
+      final Square right = pawnSquare.getRightDiagonalSquare(pawnSide);
       if (chainSet.contains(right)) {
         return true;
       }
@@ -223,12 +223,12 @@ public class PawnWallGeometricAnalyzer {
     final Set<Square> attackingSquaresAsIs = new TreeSet<>();
     for (final Square square : Square.REAL) {
       if (StaticPositionBridge.toStaticPosition(board.getBitboardPosition()).isOwnPawn(square, side)) {
-        if (Square.hasLeftDiagonalSquare(side, square)) {
-          final Square squareLeftDiagonal = Square.getLeftDiagonalSquare(side, square);
+        if (square.hasLeftDiagonalSquare(side)) {
+          final Square squareLeftDiagonal = square.getLeftDiagonalSquare(side);
           attackingSquaresAsIs.add(squareLeftDiagonal);
         }
-        if (Square.hasRightDiagonalSquare(side, square)) {
-          final Square squareRightDiagonal = Square.getRightDiagonalSquare(side, square);
+        if (square.hasRightDiagonalSquare(side)) {
+          final Square squareRightDiagonal = square.getRightDiagonalSquare(side);
           attackingSquaresAsIs.add(squareRightDiagonal);
         }
       }
@@ -252,8 +252,8 @@ public class PawnWallGeometricAnalyzer {
 
   private static void addAttackingSquaresAfterMovingForFile(Set<Square> foundSquares, Square squareLookAhead,
       StaticPosition staticPosition, Side side) {
-    if (Square.hasAheadSquare(side, squareLookAhead)) {
-      final Square squareAhead = Square.getAheadSquare(side, squareLookAhead);
+    if (squareLookAhead.hasAheadSquare(side)) {
+      final Square squareAhead = squareLookAhead.getAheadSquare(side);
       if (RankUtility.calculateIsPromotionRank(side, squareAhead.getRank())) {
         return;
       }
@@ -265,12 +265,12 @@ public class PawnWallGeometricAnalyzer {
         }
       }
 
-      if (Square.hasLeftDiagonalSquare(side, squareAhead)) {
-        final Square squareLeftDiagonal = Square.getLeftDiagonalSquare(side, squareAhead);
+      if (squareAhead.hasLeftDiagonalSquare(side)) {
+        final Square squareLeftDiagonal = squareAhead.getLeftDiagonalSquare(side);
         foundSquares.add(squareLeftDiagonal);
       }
-      if (Square.hasRightDiagonalSquare(side, squareAhead)) {
-        final Square squareRightDiagonal = Square.getRightDiagonalSquare(side, squareAhead);
+      if (squareAhead.hasRightDiagonalSquare(side)) {
+        final Square squareRightDiagonal = squareAhead.getRightDiagonalSquare(side);
         foundSquares.add(squareRightDiagonal);
       }
 
@@ -313,8 +313,8 @@ public class PawnWallGeometricAnalyzer {
 
   private static void addPawnSquaresAfterMovingForFile(Set<Square> foundSquares, Square squareLookAhead,
       StaticPosition staticPosition, Side side) {
-    if (Square.hasAheadSquare(side, squareLookAhead)) {
-      final Square squareAhead = Square.getAheadSquare(side, squareLookAhead);
+    if (squareLookAhead.hasAheadSquare(side)) {
+      final Square squareAhead = squareLookAhead.getAheadSquare(side);
       if (RankUtility.calculateIsPromotionRank(side, squareAhead.getRank())) {
         return;
       }
@@ -369,11 +369,11 @@ public class PawnWallGeometricAnalyzer {
     for (final Square square : Square.REAL) {
       if (staticPosition.isPawn(square)) {
         final Piece piece = staticPosition.get(square);
-        if (!Square.hasAheadSquare(piece.getSide(), square)) {
+        if (!square.hasAheadSquare(piece.getSide())) {
           throw new ProgrammingMistakeException(
               "We are not expecting to find pawn on promotion rank, as we only allow legal positions");
         }
-        final Square squareAhead = Square.getAheadSquare(piece.getSide(), square);
+        final Square squareAhead = square.getAheadSquare(piece.getSide());
         if (staticPosition.isEmpty(squareAhead)) {
           return false;
         }
@@ -403,7 +403,7 @@ public class PawnWallGeometricAnalyzer {
 
   private static boolean calculateHasPawnAhead(StaticPosition staticPosition, Square square, Side side) {
 
-    if (!Square.hasAheadSquare(side, square)) {
+    if (!square.hasAheadSquare(side)) {
       throw new ProgrammingMistakeException("We are not expecting this to happen, as we only allow legal positions");
     }
 
@@ -434,8 +434,8 @@ public class PawnWallGeometricAnalyzer {
     for (final Square square : Square.REAL) {
       if (staticPosition.isPawn(square)) {
         final Piece piece = staticPosition.get(square);
-        if (Square.hasLeftDiagonalSquare(piece.getSide(), square)) {
-          final Square squareLeftDiagonal = Square.getLeftDiagonalSquare(piece.getSide(), square);
+        if (square.hasLeftDiagonalSquare(piece.getSide())) {
+          final Square squareLeftDiagonal = square.getLeftDiagonalSquare(piece.getSide());
           if (!staticPosition.isEmpty(squareLeftDiagonal)) {
             // if opponent piece not ok
             final Piece pieceLeftDiagonal = staticPosition.get(squareLeftDiagonal);
@@ -444,8 +444,8 @@ public class PawnWallGeometricAnalyzer {
             }
           }
         }
-        if (Square.hasRightDiagonalSquare(piece.getSide(), square)) {
-          final Square squareRightDiagonal = Square.getRightDiagonalSquare(piece.getSide(), square);
+        if (square.hasRightDiagonalSquare(piece.getSide())) {
+          final Square squareRightDiagonal = square.getRightDiagonalSquare(piece.getSide());
           if (!staticPosition.isEmpty(squareRightDiagonal)) {
             // if opponent piece not ok
             final Piece pieceRightDiagonal = staticPosition.get(squareRightDiagonal);
@@ -473,8 +473,8 @@ public class PawnWallGeometricAnalyzer {
       if (staticPosition.isOwnPawn(square, side)) {
         // we ignore pawn with empty squares ahead, but such pawns must be checked prior calling to have a pawn
         // ahead
-        if (Square.hasAheadSquare(side, square)) {
-          final Square squareAhead = Square.getAheadSquare(side, square);
+        if (square.hasAheadSquare(side)) {
+          final Square squareAhead = square.getAheadSquare(side);
           // now we assume the square is empty
           if (staticPosition.isEmpty(squareAhead) || squareAhead == ownKingSquare) {
             // we ignore pawns which can still move forward
@@ -483,12 +483,12 @@ public class PawnWallGeometricAnalyzer {
           calculateBlockedSquares = createChangedPositionIfChange(calculateBlockedSquares, square);
         }
       } else if (staticPosition.isOpponentPawn(square, side)) {
-        if (Square.hasLeftDiagonalSquare(side.getOppositeSide(), square)) {
-          final Square squareLeftDiagonal = Square.getLeftDiagonalSquare(side.getOppositeSide(), square);
+        if (square.hasLeftDiagonalSquare(side.getOppositeSide())) {
+          final Square squareLeftDiagonal = square.getLeftDiagonalSquare(side.getOppositeSide());
           calculateBlockedSquares = createChangedPositionIfChange(calculateBlockedSquares, squareLeftDiagonal);
         }
-        if (Square.hasRightDiagonalSquare(side.getOppositeSide(), square)) {
-          final Square squareRightDiagonal = Square.getRightDiagonalSquare(side.getOppositeSide(), square);
+        if (square.hasRightDiagonalSquare(side.getOppositeSide())) {
+          final Square squareRightDiagonal = square.getRightDiagonalSquare(side.getOppositeSide());
           calculateBlockedSquares = createChangedPositionIfChange(calculateBlockedSquares, squareRightDiagonal);
         }
       }
@@ -566,8 +566,8 @@ public class PawnWallGeometricAnalyzer {
   private static boolean calculateHasAllPawnsBehindSquare(StaticPosition staticPosition, Square squareToCheck,
       Side side) {
     // we want all own pawns behind the pawn line for the one example
-    if (Square.hasAheadSquare(side, squareToCheck)) {
-      final Square squareAhead = Square.getAheadSquare(side, squareToCheck);
+    if (squareToCheck.hasAheadSquare(side)) {
+      final Square squareAhead = squareToCheck.getAheadSquare(side);
       final Piece pieceOnSquareAhead = staticPosition.get(squareAhead);
       if (pieceOnSquareAhead.getPieceType() == PieceType.PAWN && pieceOnSquareAhead.getSide() == side) {
         // found a own pawn outside the pawn wall line
@@ -582,7 +582,7 @@ public class PawnWallGeometricAnalyzer {
   protected static void calculatePawnWallLines(StaticPosition blockedSquares, Square squareCandidate,
       boolean isNeedNeighbor, Side side, List<Square> currentLine, List<List<Square>> resultList) {
     if (isNeedNeighbor) {
-      final Square squareNeighbor = Square.getRightSquare(side, squareCandidate);
+      final Square squareNeighbor = squareCandidate.getRightSquare(side);
       if (!blockedSquares.isEmpty(squareNeighbor)) {
         currentLine.add(squareNeighbor);
         if (isRightMostFile(squareNeighbor, side)) {
@@ -599,8 +599,8 @@ public class PawnWallGeometricAnalyzer {
     // check all candidates to continue pawn wall
 
     // first - square behind
-    if (Square.hasBehindSquare(side, squareCandidate)) {
-      final Square squareBehind = Square.getBehindSquare(side, squareCandidate);
+    if (squareCandidate.hasBehindSquare(side)) {
+      final Square squareBehind = squareCandidate.getBehindSquare(side);
       if (!blockedSquares.isEmpty(squareBehind)) {
         currentLine.add(squareBehind);
         calculatePawnWallLines(blockedSquares, squareBehind, true, side, currentLine, resultList);
@@ -609,8 +609,8 @@ public class PawnWallGeometricAnalyzer {
     }
 
     // second - square right
-    if (Square.hasRightSquare(side, squareCandidate)) {
-      final Square squareRight = Square.getRightSquare(side, squareCandidate);
+    if (squareCandidate.hasRightSquare(side)) {
+      final Square squareRight = squareCandidate.getRightSquare(side);
       if (!blockedSquares.isEmpty(squareRight)) {
         currentLine.add(squareRight);
         if (isRightMostFile(squareRight, side)) {
@@ -624,8 +624,8 @@ public class PawnWallGeometricAnalyzer {
     }
 
     // first - square ahead
-    if (Square.hasAheadSquare(side, squareCandidate)) {
-      final Square squareAhead = Square.getAheadSquare(side, squareCandidate);
+    if (squareCandidate.hasAheadSquare(side)) {
+      final Square squareAhead = squareCandidate.getAheadSquare(side);
       if (!blockedSquares.isEmpty(squareAhead)) {
         currentLine.add(squareAhead);
         calculatePawnWallLines(blockedSquares, squareAhead, true, side, currentLine, resultList);

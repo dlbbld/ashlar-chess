@@ -76,15 +76,15 @@ class TestDiagonalUtility {
 
     // first we search the most left square of the diagonal
     Square mostLeftSquare = square;
-    while (Square.hasRightDiagonalSquare(BLACK, mostLeftSquare)) {
-      mostLeftSquare = Square.getRightDiagonalSquare(BLACK, mostLeftSquare);
+    while (mostLeftSquare.hasRightDiagonalSquare(BLACK)) {
+      mostLeftSquare = mostLeftSquare.getRightDiagonalSquare(BLACK);
     }
 
     // now we calculate the diagonal
     Square diagonalSquare = mostLeftSquare;
     diagonal.add(diagonalSquare);
-    while (Square.hasRightDiagonalSquare(WHITE, diagonalSquare)) {
-      diagonalSquare = Square.getRightDiagonalSquare(WHITE, diagonalSquare);
+    while (diagonalSquare.hasRightDiagonalSquare(WHITE)) {
+      diagonalSquare = diagonalSquare.getRightDiagonalSquare(WHITE);
       diagonal.add(diagonalSquare);
     }
     return diagonal;
@@ -98,15 +98,15 @@ class TestDiagonalUtility {
 
     // first we search the most left square of the diagonal
     Square mostLeftSquare = square;
-    while (Square.hasLeftDiagonalSquare(WHITE, mostLeftSquare)) {
-      mostLeftSquare = Square.getLeftDiagonalSquare(WHITE, mostLeftSquare);
+    while (mostLeftSquare.hasLeftDiagonalSquare(WHITE)) {
+      mostLeftSquare = mostLeftSquare.getLeftDiagonalSquare(WHITE);
     }
 
     // now we calculate the diagonal
     Square diagonalSquare = mostLeftSquare;
     diagonal.add(diagonalSquare);
-    while (Square.hasLeftDiagonalSquare(BLACK, diagonalSquare)) {
-      diagonalSquare = Square.getLeftDiagonalSquare(BLACK, diagonalSquare);
+    while (diagonalSquare.hasLeftDiagonalSquare(BLACK)) {
+      diagonalSquare = diagonalSquare.getLeftDiagonalSquare(BLACK);
       diagonal.add(diagonalSquare);
     }
     return diagonal;
