@@ -194,7 +194,7 @@ public enum Square implements Comparable<Square> {
   // For each of the eight directional relationships (left, right, ahead, behind, plus the four
   // diagonals), a per-side mapping from each source square to its neighbour in that direction.
   // Absent entries mean the source square has no neighbour in that direction (it is on the
-  // relevant board edge). All public calculate*Square / calculateHas*Square methods are thin
+  // relevant board edge). All public get*Square / has*Square methods are thin
   // accessors over these tables.
   // ---------------------------------------------------------------------------------------------
 
