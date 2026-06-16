@@ -1060,11 +1060,11 @@ public class Board {
     return InsufficientMaterial.NONE;
   }
 
-  public UnwinnabilityQuickVerdict calculateUnwinnabilityQuickVerdict(Side side) {
+  public UnwinnabilityQuickVerdict unwinnableQuick(Side side) {
     return UnwinnableQuickAnalyzer.unwinnableQuick(this, side).verdict();
   }
 
-  public UnwinnabilityFullVerdict calculateUnwinnabilityFullVerdict(Side side) {
+  public UnwinnabilityFullVerdict unwinnableFull(Side side) {
     return UnwinnableFullAnalyzer.unwinnableFull(this, side).verdict();
   }
 

@@ -202,40 +202,40 @@ public final class ReadmeExamples {
   public static void unwinnableInsufficientMaterial() {
     // <readme:unwinnable-insufficient-material>
     final Board board = new Board("8/8/4k3/3R4/2K5/8/8/8 w - - 0 50");
-    System.out.println(board.calculateUnwinnabilityQuickVerdict(Side.BLACK)); // [out]
-    System.out.println(board.calculateUnwinnabilityFullVerdict(Side.BLACK)); // [out]
+    System.out.println(board.unwinnableQuick(Side.BLACK)); // [out]
+    System.out.println(board.unwinnableFull(Side.BLACK)); // [out]
     // </readme:unwinnable-insufficient-material>
   }
 
   public static void unwinnableForcedMoves() {
     // <readme:unwinnable-forced-moves>
     final Board board = new Board("5r1k/6P1/7K/5q2/8/8/8/8 b - - 0 51");
-    System.out.println(board.calculateUnwinnabilityQuickVerdict(Side.WHITE)); // [out]
-    System.out.println(board.calculateUnwinnabilityFullVerdict(Side.WHITE)); // [out]
+    System.out.println(board.unwinnableQuick(Side.WHITE)); // [out]
+    System.out.println(board.unwinnableFull(Side.WHITE)); // [out]
     // </readme:unwinnable-forced-moves>
   }
 
   public static void unwinnablePawnWalls() {
     // <readme:unwinnable-pawn-walls>
     final Board board = new Board("8/8/3k4/1p2p1p1/pP1pP1P1/P2P4/1K6/8 b - - 32 62");
-    System.out.println(board.calculateUnwinnabilityQuickVerdict(Side.BLACK)); // [out]
-    System.out.println(board.calculateUnwinnabilityFullVerdict(Side.BLACK)); // [out]
+    System.out.println(board.unwinnableQuick(Side.BLACK)); // [out]
+    System.out.println(board.unwinnableFull(Side.BLACK)); // [out]
     // </readme:unwinnable-pawn-walls>
   }
 
   public static void unwinnableCommonPositions() {
     // <readme:unwinnable-common-positions>
     final Board board = new Board("q4r2/pR3pkp/1p2p1p1/4P3/6P1/1P3Q2/1Pr2PK1/3R4 b - - 3 29");
-    System.out.println(board.calculateUnwinnabilityQuickVerdict(Side.WHITE)); // [out]
-    System.out.println(board.calculateUnwinnabilityFullVerdict(Side.WHITE)); // [out]
+    System.out.println(board.unwinnableQuick(Side.WHITE)); // [out]
+    System.out.println(board.unwinnableFull(Side.WHITE)); // [out]
     // </readme:unwinnable-common-positions>
   }
 
   public static void unwinnableBlockedQuick() {
     // <readme:unwinnable-blocked-quick>
     final Board board = new Board("1k6/1P5p/BP3p2/1P6/8/8/5PKP/8 b - - 0 41");
-    System.out.println(board.calculateUnwinnabilityQuickVerdict(Side.WHITE)); // [out]
-    System.out.println(board.calculateUnwinnabilityFullVerdict(Side.WHITE)); // [out]
+    System.out.println(board.unwinnableQuick(Side.WHITE)); // [out]
+    System.out.println(board.unwinnableFull(Side.WHITE)); // [out]
     // </readme:unwinnable-blocked-quick>
   }
 

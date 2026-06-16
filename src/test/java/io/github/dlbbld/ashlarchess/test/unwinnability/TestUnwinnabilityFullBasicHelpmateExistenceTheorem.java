@@ -30,7 +30,7 @@ class TestUnwinnabilityFullBasicHelpmateExistenceTheorem {
       final UnwinnabilityFullVerdict expected = board.getHavingMove() == Side.BLACK
           && testCase.pgnName().contains("black_forced_to_capture") ? UnwinnabilityFullVerdict.UNWINNABLE
               : UnwinnabilityFullVerdict.WINNABLE_BY_THEOREM;
-      assertEquals(expected, board.calculateUnwinnabilityFullVerdict(Side.WHITE), testCase.pgnName());
+      assertEquals(expected, board.unwinnableFull(Side.WHITE), testCase.pgnName());
     }
   }
 }

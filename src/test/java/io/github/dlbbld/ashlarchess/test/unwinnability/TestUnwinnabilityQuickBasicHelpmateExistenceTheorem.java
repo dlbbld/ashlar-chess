@@ -30,7 +30,7 @@ class TestUnwinnabilityQuickBasicHelpmateExistenceTheorem {
       final Board board = testCase.finalPosition();
       final boolean theoremUnwinnable = board.getHavingMove() == Side.BLACK
           && testCase.pgnName().contains("black_forced_to_capture");
-      final UnwinnabilityQuickVerdict quick = board.calculateUnwinnabilityQuickVerdict(Side.WHITE);
+      final UnwinnabilityQuickVerdict quick = board.unwinnableQuick(Side.WHITE);
 
       final UnwinnabilityQuickVerdict expected = theoremUnwinnable ? UnwinnabilityQuickVerdict.UNWINNABLE
           : UnwinnabilityQuickVerdict.POSSIBLY_WINNABLE;
