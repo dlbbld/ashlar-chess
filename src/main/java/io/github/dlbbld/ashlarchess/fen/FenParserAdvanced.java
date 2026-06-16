@@ -714,7 +714,7 @@ public class FenParserAdvanced {
 
   private static void validatePawnRankNotPromotionRank(BitboardPosition bitboardPosition)
       throws FenAdvancedValidationException {
-    for (final Square square : SquareUtility.getPromotionRank(WHITE)) {
+    for (final Square square : SquareUtility.getPromotionRankList(WHITE)) {
       if (bitboardPosition.get(square) == WHITE_PAWN) {
         throw new FenAdvancedValidationException(
             FenAdvancedValidationProblem.INVALID_WHITE_PAWN_INVALID_RANK_PROMOTION_RANK,
@@ -722,7 +722,7 @@ public class FenParserAdvanced {
       }
     }
 
-    for (final Square square : SquareUtility.getPromotionRank(BLACK)) {
+    for (final Square square : SquareUtility.getPromotionRankList(BLACK)) {
       if (bitboardPosition.get(square) == BLACK_PAWN) {
         throw new FenAdvancedValidationException(
             FenAdvancedValidationProblem.INVALID_BLACK_PAWN_INVALID_RANK_PROMOTION_RANK,
@@ -733,7 +733,7 @@ public class FenParserAdvanced {
 
   private static void validatePawnRankNotGroundRank(BitboardPosition bitboardPosition)
       throws FenAdvancedValidationException {
-    for (final Square square : SquareUtility.getPromotionRank(BLACK)) {
+    for (final Square square : SquareUtility.getPromotionRankList(BLACK)) {
       if (bitboardPosition.get(square) == WHITE_PAWN) {
         throw new FenAdvancedValidationException(
             FenAdvancedValidationProblem.INVALID_WHITE_PAWN_INVALID_RANK_GROUND_RANK,
@@ -741,7 +741,7 @@ public class FenParserAdvanced {
       }
     }
 
-    for (final Square square : SquareUtility.getPromotionRank(WHITE)) {
+    for (final Square square : SquareUtility.getPromotionRankList(WHITE)) {
       if (bitboardPosition.get(square) == BLACK_PAWN) {
         throw new FenAdvancedValidationException(
             FenAdvancedValidationProblem.INVALID_BLACK_PAWN_INVALID_RANK_GROUND_RANK,

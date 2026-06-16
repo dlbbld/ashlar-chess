@@ -107,7 +107,7 @@ public final class SquareUtility {
   private static final ImmutableList<Square> BLACK_PROMOTION_RANK = constructListSquare(Square.A1, Square.B1, Square.C1,
       Square.D1, Square.E1, Square.F1, Square.G1, Square.H1);
 
-  public static List<Square> getPromotionRank(Side side) {
+  public static List<Square> getPromotionRankList(Side side) {
     return switch (side) {
       case WHITE -> WHITE_PROMOTION_RANK;
       case BLACK -> BLACK_PROMOTION_RANK;
