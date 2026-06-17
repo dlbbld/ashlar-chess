@@ -41,7 +41,10 @@ import io.github.dlbbld.ashlarchess.model.LegalMove;
 import io.github.dlbbld.ashlarchess.model.LegalMoveKind;
 import io.github.dlbbld.ashlarchess.moves.CastlingUtility;
 
-abstract class SanValidateLegalMoves {
+final class SanValidateLegalMoves {
+
+  private SanValidateLegalMoves() {
+  }
 
   public static MoveSpecification calculateMoveSpecificationForSan(Board board, Side havingMove, SanFormat sanFormat,
       SanConversion sanConversion, MoveSpecification legalMoveOnlyCandidate) {

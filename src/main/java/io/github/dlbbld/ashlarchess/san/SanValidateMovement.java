@@ -6,7 +6,10 @@ package io.github.dlbbld.ashlarchess.san;
 import io.github.dlbbld.ashlarchess.board.enums.PieceType;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
 
-abstract class SanValidateMovement {
+final class SanValidateMovement {
+
+  private SanValidateMovement() {
+  }
 
   public static void validateMovement(SanParse sanParse, Side havingMove) {
     final SanConversion sanConversion = sanParse.sanConversion();

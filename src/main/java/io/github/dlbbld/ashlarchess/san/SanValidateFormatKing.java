@@ -27,7 +27,10 @@ import io.github.dlbbld.ashlarchess.messages.Message;
  * Parses the SAN character-by-character (sequential), analogous to {@link SanValidateFormatPawn}. Each failure is
  * reported with the most specific {@link SanValidationProblem} describing which character is missing or wrong.
  */
-abstract class SanValidateFormatKing {
+final class SanValidateFormatKing {
+
+  private SanValidateFormatKing() {
+  }
 
   static SanParse parseKingMove(final String core, final SanTerminalMarker sanTerminalMarker) {
     // core[0] == 'K' ensured by the dispatcher in SanValidateFormat

@@ -9,7 +9,10 @@ import io.github.dlbbld.ashlarchess.board.enums.RankUtility;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
 import io.github.dlbbld.ashlarchess.messages.Message;
 
-abstract class SanValidateMovementPawn {
+final class SanValidateMovementPawn {
+
+  private SanValidateMovementPawn() {
+  }
 
   public static void validatePawnMovement(Side havingMove, SanFormat sanFormat, SanConversion sanConversion) {
 

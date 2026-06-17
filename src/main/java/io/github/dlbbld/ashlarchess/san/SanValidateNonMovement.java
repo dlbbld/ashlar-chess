@@ -6,7 +6,10 @@ package io.github.dlbbld.ashlarchess.san;
 import io.github.dlbbld.ashlarchess.board.enums.Square;
 import io.github.dlbbld.ashlarchess.messages.Message;
 
-abstract class SanValidateNonMovement {
+final class SanValidateNonMovement {
+
+  private SanValidateNonMovement() {
+  }
 
   public static void validateNonMovement(SanParse sanParse) {
     final SanFormat sanFormat = sanParse.sanFormat();

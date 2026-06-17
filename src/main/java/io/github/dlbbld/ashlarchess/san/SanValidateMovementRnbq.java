@@ -14,7 +14,10 @@ import io.github.dlbbld.ashlarchess.messages.Message;
 import io.github.dlbbld.ashlarchess.model.EmptyBoardMove;
 import io.github.dlbbld.ashlarchess.squares.EmptyBoardMoveUtility;
 
-abstract class SanValidateMovementRnbq {
+final class SanValidateMovementRnbq {
+
+  private SanValidateMovementRnbq() {
+  }
 
   public static void validateRnbqMovement(SanParse sanParse) {
     final SanConversion sanConversion = sanParse.sanConversion();
