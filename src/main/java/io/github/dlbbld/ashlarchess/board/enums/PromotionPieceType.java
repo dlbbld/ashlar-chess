@@ -64,14 +64,15 @@ public enum PromotionPieceType {
   }
 
   /**
-   * Compares two promotion piece types using the legal-move ordering rule: queen, rook, bishop, knight, none.
+   * Compares this promotion piece type against {@code other} using the legal-move ordering rule: queen, rook, bishop,
+   * knight, none.
    *
-   * @param firstPromotionPieceType the first promotion piece type
-   * @return a negative integer, zero, or a positive integer as the first argument is less than, equal to, or greater
-   *         than the second under the move-ordering rule
+   * @param other the promotion piece type to compare this one against
+   * @return a negative integer, zero, or a positive integer as this type orders before, the same as, or after
+   *         {@code other} under the move-ordering rule
    */
-  public int compareForMoveOrdering(PromotionPieceType firstPromotionPieceType) {
-    return Integer.compare(moveOrderingRank(this), moveOrderingRank(firstPromotionPieceType));
+  public int compareForMoveOrdering(PromotionPieceType other) {
+    return Integer.compare(moveOrderingRank(this), moveOrderingRank(other));
   }
 
   private static int moveOrderingRank(PromotionPieceType promotionPieceType) {
