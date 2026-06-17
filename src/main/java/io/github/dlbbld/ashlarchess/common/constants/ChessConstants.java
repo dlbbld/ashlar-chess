@@ -7,6 +7,7 @@ public final class ChessConstants {
 
   private ChessConstants() {
   }
+
   public static final int FIFTY_MOVE_RULE_HALF_MOVE_CLOCK_THRESHOLD = 100;
   public static final int SEVENTY_FIVE_MOVE_RULE_HALF_MOVE_CLOCK_THRESHOLD = 150;
 
