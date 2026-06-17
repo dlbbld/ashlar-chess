@@ -69,14 +69,14 @@ class TestInsufficientMaterial {
   private static boolean calculateIsInsufficientMaterial(BitboardPosition bitboardPosition) {
 
     // KNvK, KvKN
-    if (BoardMaterial.calculateHasKingAndKnightOnly(WHITE, bitboardPosition)
-        && BoardMaterial.calculateHasKingOnly(BLACK, bitboardPosition)
-        || BoardMaterial.calculateHasKingOnly(WHITE, bitboardPosition)
-            && BoardMaterial.calculateHasKingAndKnightOnly(BLACK, bitboardPosition)
-        || BoardMaterial.calculateHasKingOnly(WHITE, bitboardPosition)
-            && BoardMaterial.calculateHasKingAndBishopOnly(BLACK, bitboardPosition)
-        || BoardMaterial.calculateHasKingOnly(WHITE, bitboardPosition)
-            && BoardMaterial.calculateHasKingAndBishopOnly(BLACK, bitboardPosition)
+    if (InsufficientMaterialUtility.hasKingAndKnightOnly(WHITE, bitboardPosition)
+        && InsufficientMaterialUtility.hasKingOnly(BLACK, bitboardPosition)
+        || InsufficientMaterialUtility.hasKingOnly(WHITE, bitboardPosition)
+            && InsufficientMaterialUtility.hasKingAndKnightOnly(BLACK, bitboardPosition)
+        || InsufficientMaterialUtility.hasKingOnly(WHITE, bitboardPosition)
+            && InsufficientMaterialUtility.hasKingAndBishopOnly(BLACK, bitboardPosition)
+        || InsufficientMaterialUtility.hasKingOnly(WHITE, bitboardPosition)
+            && InsufficientMaterialUtility.hasKingAndBishopOnly(BLACK, bitboardPosition)
 
     ) {
       return true;
