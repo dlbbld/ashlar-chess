@@ -25,7 +25,10 @@ import io.github.dlbbld.ashlarchess.model.UciMove;
 //table used by Find-Helpmatec should be initialized to empty at the beginning, but it can be
 //shared between different calls to Find-Helpmatec in step 3. On the other hand, the global
 //counter cnt should be initialized to 0 on every base call to Find-Helpmatec in step 3.
-public class UnwinnableFullAnalyzer {
+public final class UnwinnableFullAnalyzer {
+
+  private UnwinnableFullAnalyzer() {
+  }
 
   private static final int MAX_DEPTH = 100;
   private static final int GLOBAL_NODES_BOUND = 500000;

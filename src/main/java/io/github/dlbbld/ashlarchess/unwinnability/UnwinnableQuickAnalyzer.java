@@ -23,7 +23,10 @@ import io.github.dlbbld.ashlarchess.model.LegalMove;
 // otherwise POSSIBLY_WINNABLE (CHA's "undetermined -> guessed winnable"). It never returns WINNABLE; finding a
 // helpmate is the job of the full analyzer. The depth-7 search is unconditional; the depth-15 pass is CHA's ad hoc
 // deeper retry for restricted pawn/bishop positions (CHA comment: "TODO: remove if too ad hoc for capturing bKHPqNEw").
-public class UnwinnableQuickAnalyzer {
+public final class UnwinnableQuickAnalyzer {
+
+  private UnwinnableQuickAnalyzer() {
+  }
 
   /**
    * Quick unwinnability for one intended winner.
