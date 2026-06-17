@@ -27,7 +27,7 @@ public final class MoveToSan extends AbstractSan {
 
     // first - check if castling move
     final MoveSpecification moveSpecification = move.moveSpecification();
-    if (CastlingUtility.calculateIsCastlingMove(moveSpecification)) {
+    if (CastlingUtility.isCastlingMove(moveSpecification)) {
       return calculateSanLastMoveCastling(moveSpecification, sanTerminalMarker);
     }
     return calculateSanLastMoveNonCastling(move, legalMovesBeforeMove, sanTerminalMarker);

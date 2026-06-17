@@ -44,7 +44,7 @@ public final class BasicUtility {
     return Nulls.getFirst(new ArrayList<>(set));
   }
 
-  public static <E> boolean calculateIsDisjoint(Set<E> firstSet, Set<E> secondSet) {
+  public static <E> boolean isDisjoint(Set<E> firstSet, Set<E> secondSet) {
     for (final E elementFirstSet : firstSet) {
       if (secondSet.contains(elementFirstSet)) {
         return false;

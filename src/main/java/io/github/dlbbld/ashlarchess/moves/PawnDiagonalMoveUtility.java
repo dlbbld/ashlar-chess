@@ -14,7 +14,7 @@ public final class PawnDiagonalMoveUtility {
   private PawnDiagonalMoveUtility() {
   }
 
-  public static boolean calculateIsPawnDiagonalMove(Side side, Square fromSquare, Square toSquare) {
+  public static boolean isPawnDiagonalMove(Side side, Square fromSquare, Square toSquare) {
     final Set<Square> diagonalToSquareSet = PawnDiagonalSquares.getPawnDiagonalSquares(side, fromSquare);
     return diagonalToSquareSet.contains(toSquare);
   }

@@ -77,7 +77,7 @@ public abstract class MoveConversionUtility {
   }
 
   public static Move convertMoveSpecification(Side havingMove, MoveSpecification moveSpecification) {
-    if (CastlingUtility.calculateIsCastlingMove(moveSpecification)) {
+    if (CastlingUtility.isCastlingMove(moveSpecification)) {
       return switch (havingMove) {
         case BLACK -> switch (moveSpecification.castlingMove()) {
           case KING_SIDE -> new Move(com.github.bhlangonijr.chesslib.Square.E8,

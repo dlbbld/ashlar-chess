@@ -484,9 +484,9 @@ public class FenParserAdvanced {
       final CastlingRight sideCastlingRight = CastlingUtility.getCastlingRight(castlingRightBoth, sideToCheck);
 
       final boolean isKingSideCastlingOriginalPosition = CastlingUtility
-          .calculateKingSideCastlingIsOriginalPosition(bitboardPosition, sideToCheck);
+          .isKingSideCastlingOriginalPosition(bitboardPosition, sideToCheck);
       final boolean isQueenSideCastlingOriginalPosition = CastlingUtility
-          .calculateQueenSideCastlingIsOriginalPosition(bitboardPosition, sideToCheck);
+          .isQueenSideCastlingOriginalPosition(bitboardPosition, sideToCheck);
 
       final FenAdvancedValidationProblem parseFenCheck = calculateParseFenCheck(sideToCheck, sideCastlingRight,
           isKingSideCastlingOriginalPosition, isQueenSideCastlingOriginalPosition);

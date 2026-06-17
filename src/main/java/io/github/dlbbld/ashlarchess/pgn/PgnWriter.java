@@ -49,7 +49,7 @@ public final class PgnWriter {
   }
 
   public static void writePgn(PgnGame pgnGame, Path filePath, WriteMode writeMode) {
-    final List<String> fileLines = PgnCreate.createPgnLines(pgnGame, writeMode);
+    final List<String> fileLines = PgnCreate.toPgnLines(pgnGame, writeMode);
     writeLinesReplacing(filePath, fileLines);
   }
 

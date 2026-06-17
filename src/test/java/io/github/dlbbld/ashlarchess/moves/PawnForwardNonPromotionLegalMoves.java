@@ -32,11 +32,11 @@ class PawnForwardNonPromotionLegalMoves extends PawnLegalMoves {
         .calculatePawnPotentialAdvanceToSquares(staticPosition, fromSquare, havingMove);
 
     for (final Square toSquare : pawnPotentialToSquareSet) {
-      if (!RankUtility.calculateIsPromotionRank(havingMove, toSquare.getRank())) {
+      if (!RankUtility.isPromotionRank(havingMove, toSquare.getRank())) {
         final MoveSpecification moveSpecification = new MoveSpecification(fromSquare, toSquare);
         if (!StaticPositionUtility.calculateIsKingAttackedAfterMove(staticPosition, havingMove, moveSpecification)) {
           final Piece pieceCaptured = staticPosition.get(toSquare);
-          final LegalMoveKind kind = EnPassantCaptureUtility.calculateIsPawnTwoSquareAdvanceMove(movingPiece,
+          final LegalMoveKind kind = EnPassantCaptureUtility.isPawnTwoSquareAdvanceMove(movingPiece,
               moveSpecification) ? LegalMoveKind.PAWN_TWO_SQUARE_ADVANCE : LegalMoveKind.NORMAL;
           final LegalMove legalMove = new LegalMove(moveSpecification, movingPiece, pieceCaptured, kind);
           legalMoveSet.add(legalMove);

@@ -31,7 +31,7 @@ class ValidateNewMove {
   public static MoveCheck validateNewMove(Board board, MoveSpecification moveSpecification)
       throws InvalidMoveException {
 
-    if (CastlingUtility.calculateIsCastlingMove(moveSpecification)) {
+    if (CastlingUtility.isCastlingMove(moveSpecification)) {
       validateCastling(board, moveSpecification);
       return MoveCheck.SUCCESS;
     }
@@ -54,7 +54,7 @@ class ValidateNewMove {
 
   private static void validateCastling(Board board, MoveSpecification moveSpecification) throws InvalidMoveException {
 
-    if (!CastlingUtility.calculateIsCastlingMove(moveSpecification)) {
+    if (!CastlingUtility.isCastlingMove(moveSpecification)) {
       throw new ProgrammingMistakeException("Precondition is not met");
     }
 
@@ -130,7 +130,7 @@ class ValidateNewMove {
   private static void validatePawnPromotionPieceConsistency(Board board, MoveSpecification moveSpecification)
       throws InvalidMoveException {
     final Side havingMove = board.getHavingMove();
-    if (RankUtility.calculateIsPromotionRank(havingMove, moveSpecification.toSquare().getRank())) {
+    if (RankUtility.isPromotionRank(havingMove, moveSpecification.toSquare().getRank())) {
       if (moveSpecification.promotionPieceType() == PromotionPieceType.NONE) {
         throw new InvalidMoveException("this is a pawn promotion move but the promotion piece was not specified",
             MoveCheck.MOVE_SPEC_PAWN_PROMOTION_NO_PROMOTION_PIECE);

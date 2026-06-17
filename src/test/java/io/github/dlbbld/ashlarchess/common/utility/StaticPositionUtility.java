@@ -148,7 +148,7 @@ public abstract class StaticPositionUtility {
     if (calculateIsPotentialEnPassantCaptureStaticPosition(staticPosition, moveSpecification)) {
       return EnPassantCaptureUtility.performEnPassantCaptureMovements(havingMove, moveSpecification);
     }
-    if (CastlingUtility.calculateIsCastlingMove(moveSpecification)) {
+    if (CastlingUtility.isCastlingMove(moveSpecification)) {
       return CastlingUtility.performCastlingMovements(havingMove, moveSpecification);
     }
     if (moveSpecification.isPromotion()) {
@@ -165,7 +165,7 @@ public abstract class StaticPositionUtility {
   // castling oracle re-implementation in KingCastlingLegalMoves.
   private static boolean calculateIsPotentialEnPassantCaptureStaticPosition(StaticPosition staticPosition,
       MoveSpecification moveSpecification) {
-    if (CastlingUtility.calculateIsCastlingMove(moveSpecification)) {
+    if (CastlingUtility.isCastlingMove(moveSpecification)) {
       return false;
     }
     final Piece movingPiece = staticPosition.get(moveSpecification.fromSquare());

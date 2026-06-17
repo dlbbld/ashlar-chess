@@ -20,7 +20,7 @@ class SemiStaticFunctions {
     for (final PiecePlacement piecePlacement : ms.getPiecePlacementSet()) {
       if (piecePlacement.side() == c) {
         final Set<Square> regionPiece = SemiStaticFunctions.attackedRegion(piecePlacement, ms);
-        if (!BasicUtility.calculateIsDisjoint(regionPiece, adjacentSet)) {
+        if (!BasicUtility.isDisjoint(regionPiece, adjacentSet)) {
           result.add(piecePlacement);
         }
       }
@@ -35,7 +35,7 @@ class SemiStaticFunctions {
     for (final Square square : Square.REAL) {
       final Set<Square> predecessorsCaptureSet = MobilityFunctions.predecessorsCapture(piecePlacement, square);
 
-      if (!BasicUtility.calculateIsDisjoint(predecessorsCaptureSet, regionPiece)) {
+      if (!BasicUtility.isDisjoint(predecessorsCaptureSet, regionPiece)) {
         result.add(square);
       }
     }
@@ -51,7 +51,7 @@ class SemiStaticFunctions {
     for (final PiecePlacement piecePlacement : ms.getPiecePlacementSet()) {
       if (piecePlacement.side() != c && piecePlacement.pieceType() != PieceType.KING) {
         final Set<Square> regionPiece = SemiStaticFunctions.region(piecePlacement, ms);
-        if (!BasicUtility.calculateIsDisjoint(regionPiece, adjacentSet)) {
+        if (!BasicUtility.isDisjoint(regionPiece, adjacentSet)) {
           result.add(piecePlacement);
         }
       }
@@ -66,7 +66,7 @@ class SemiStaticFunctions {
     for (final PiecePlacement piecePlacement : ms.getPiecePlacementSet()) {
       if (piecePlacement.side() != intendedLosersKing.side()) {
         final Set<Square> regionPiece = SemiStaticFunctions.region(piecePlacement, ms);
-        if (!BasicUtility.calculateIsDisjoint(regionPiece, regionKing)) {
+        if (!BasicUtility.isDisjoint(regionPiece, regionKing)) {
           result.add(piecePlacement);
         }
       }

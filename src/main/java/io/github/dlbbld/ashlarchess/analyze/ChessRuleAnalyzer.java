@@ -46,7 +46,7 @@ public final class ChessRuleAnalyzer {
 
   public static MovementCheck analyzeMovement(BitboardPosition bitboardPosition, Side havingMove,
       Square enPassantCaptureTargetSquare, MoveSpecification moveSpecification) {
-    if (CastlingUtility.calculateIsCastlingMove(moveSpecification)) {
+    if (CastlingUtility.isCastlingMove(moveSpecification)) {
       throw new ProgrammingMistakeException("Castling is not handled by movement analysis");
     }
     final Piece movingPiece = bitboardPosition.get(moveSpecification.fromSquare());
@@ -66,7 +66,7 @@ public final class ChessRuleAnalyzer {
   // enumeration).
   public static boolean isMoveKingSafe(BitboardPosition bitboardPosition, Side havingMove,
       MoveSpecification moveSpecification) {
-    if (CastlingUtility.calculateIsCastlingMove(moveSpecification)) {
+    if (CastlingUtility.isCastlingMove(moveSpecification)) {
       throw new ProgrammingMistakeException("Castling king-safety is handled by CastlingCheck");
     }
     return !bitboardPosition.afterMove(moveSpecification, havingMove).isInCheck(havingMove);
@@ -74,7 +74,7 @@ public final class ChessRuleAnalyzer {
 
   public static KingSafetyCheck analyzeKingSafety(BitboardPosition bitboardPosition, Side havingMove,
       MoveSpecification moveSpecification) {
-    if (CastlingUtility.calculateIsCastlingMove(moveSpecification)) {
+    if (CastlingUtility.isCastlingMove(moveSpecification)) {
       throw new ProgrammingMistakeException("Castling king-safety is handled by CastlingCheck");
     }
     final Piece movingPiece = bitboardPosition.get(moveSpecification.fromSquare());
@@ -99,7 +99,7 @@ public final class ChessRuleAnalyzer {
     final Piece movingPiece = bitboardPosition.get(fromSquare);
 
     final boolean isForwardMove = calculateIsPawnEmptyBoardMove(havingMove, fromSquare, toSquare);
-    final boolean isDiagonalMove = PawnDiagonalMoveUtility.calculateIsPawnDiagonalMove(havingMove, fromSquare,
+    final boolean isDiagonalMove = PawnDiagonalMoveUtility.isPawnDiagonalMove(havingMove, fromSquare,
         toSquare);
 
     if (!isForwardMove && !isDiagonalMove) {
@@ -107,7 +107,7 @@ public final class ChessRuleAnalyzer {
     }
 
     if (isForwardMove) {
-      if (EnPassantCaptureUtility.calculateIsPawnTwoSquareAdvanceMove(movingPiece, moveSpecification)) {
+      if (EnPassantCaptureUtility.isPawnTwoSquareAdvanceMove(movingPiece, moveSpecification)) {
         final MovementCheck twoSquareCheck = analyzePawnTwoSquareAdvance(bitboardPosition, havingMove,
             moveSpecification);
         if (twoSquareCheck != MovementCheck.SUCCESS) {
@@ -171,7 +171,7 @@ public final class ChessRuleAnalyzer {
   private static MovementCheck analyzePawnEnPassant(Side havingMove, Square enPassantCaptureTargetSquare,
       MoveSpecification moveSpecification) {
     final Square toSquare = moveSpecification.toSquare();
-    if (!RankUtility.calculateIsPawnEnPassantCaptureToRank(havingMove, toSquare.getRank())) {
+    if (!RankUtility.isPawnEnPassantCaptureToRank(havingMove, toSquare.getRank())) {
       return MovementCheck.PAWN_EN_PASSANT_WRONG_RANK;
     }
     if (!enPassantCaptureTargetSquare.equals(toSquare)) {

@@ -114,7 +114,7 @@ class TestPgnExportRoundTripAgainstPythonChessOracle {
         final PgnGame original = StrictPgnParser.parse(folderPath, record.pgn());
         verify(record, expectedUcis, original, "original-parse", bucket, failures);
 
-        final String semantic = PgnCreate.createPgnString(original, WriteMode.SEMANTIC);
+        final String semantic = PgnCreate.toPgnString(original, WriteMode.SEMANTIC);
         try {
           final PgnGame semanticReparsed = StrictPgnParser.parseText(semantic);
           verify(record, expectedUcis, semanticReparsed, "semantic-round-trip", bucket, failures);
@@ -122,7 +122,7 @@ class TestPgnExportRoundTripAgainstPythonChessOracle {
           failures.add(bucket + " / " + record.pgn() + " - semantic round-trip threw: " + e.getMessage());
         }
 
-        final String archival = PgnCreate.createPgnString(original, WriteMode.ARCHIVAL);
+        final String archival = PgnCreate.toPgnString(original, WriteMode.ARCHIVAL);
         try {
           final PgnGame archivalReparsed = StrictPgnParser.parseText(archival);
           verify(record, expectedUcis, archivalReparsed, "archival-round-trip", bucket, failures);

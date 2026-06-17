@@ -22,7 +22,7 @@ class TestPgnCreate {
 
     final PgnGame fileImport = LenientPgnParser.parseText(expectedString);
 
-    final String actualString = PgnCreate.createPgnString(fileImport);
+    final String actualString = PgnCreate.toPgnString(fileImport);
 
     assertEquals(expectedString, actualString);
 
@@ -43,7 +43,7 @@ class TestPgnCreate {
     final String expectedExport = PgnTestHelper.header("*") + "1. e4 {after-white} 1... e5 *\n\n";
 
     final PgnGame fileImport = LenientPgnParser.parseText(inputWithoutIndicator);
-    final String actualExport = PgnCreate.createPgnString(fileImport);
+    final String actualExport = PgnCreate.toPgnString(fileImport);
 
     assertEquals(expectedExport, actualExport);
   }
@@ -55,7 +55,7 @@ class TestPgnCreate {
     final String input = PgnTestHelper.header("*") + "1. e4 e5 2. Nf3 Nc6 *\n\n";
 
     final PgnGame fileImport = LenientPgnParser.parseText(input);
-    final String actualExport = PgnCreate.createPgnString(fileImport);
+    final String actualExport = PgnCreate.toPgnString(fileImport);
 
     assertEquals(input, actualExport);
   }
@@ -68,7 +68,7 @@ class TestPgnCreate {
     final String expectedExport = PgnTestHelper.header("*") + "1. e4 e5 2. Nf3 {after-white-2} 2... Nc6 *\n\n";
 
     final PgnGame fileImport = LenientPgnParser.parseText(inputWithoutIndicator);
-    final String actualExport = PgnCreate.createPgnString(fileImport);
+    final String actualExport = PgnCreate.toPgnString(fileImport);
 
     assertEquals(expectedExport, actualExport);
   }

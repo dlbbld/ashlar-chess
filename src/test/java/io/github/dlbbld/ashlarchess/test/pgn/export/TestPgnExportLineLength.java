@@ -57,7 +57,7 @@ class TestPgnExportLineLength {
     final List<String> fileLinesExpectedFromFileSystem = FileUtility.readFileLines(TEST_FOLDER_PATH, pgnName);
 
     final PgnGame pgnGameFromFileSystem = PgnCacheForStrictPgnParserTestCases.getPgn(TEST_FOLDER_PATH, pgnName);
-    final List<String> fileLinesActualFromPgn = PgnCreate.createPgnLines(pgnGameFromFileSystem);
+    final List<String> fileLinesActualFromPgn = PgnCreate.toPgnLines(pgnGameFromFileSystem);
     assertEquals(fileLinesExpectedFromFileSystem, fileLinesActualFromPgn);
   }
 }

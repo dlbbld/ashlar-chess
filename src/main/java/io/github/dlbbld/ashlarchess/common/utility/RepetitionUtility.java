@@ -31,7 +31,7 @@ public final class RepetitionUtility {
     // we use the same index for moves and position on purpose
     for (int i = performedLegalMoveList.size() - 1; i >= 0; i--) {
       final LegalMove lastLegalMove = Nulls.get(performedLegalMoveList, i);
-      if (BasicChessUtility.calculateIsResetHalfMoveClock(lastLegalMove)) {
+      if (BasicChessUtility.isResetHalfMoveClock(lastLegalMove)) {
         // if pawn move or capture the positions before cannot equal the current position
         // this is a property of the chess game with a basic mathematical proof
         // this is used often and increases performance

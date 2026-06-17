@@ -39,7 +39,7 @@ public final class MoveToLan extends AbstractSan {
     final MoveSpecification moveSpecification = move.moveSpecification();
     final StringBuilder buildSan = new StringBuilder();
 
-    if (CastlingUtility.calculateIsCastlingMove(moveSpecification)) {
+    if (CastlingUtility.isCastlingMove(moveSpecification)) {
       final String castlingLan = switch (moveSpecification.castlingMove()) {
         case KING_SIDE -> CastlingConstants.SAN_CASTLING_KING_SIDE;
         case QUEEN_SIDE -> CastlingConstants.SAN_CASTLING_QUEEN_SIDE;

@@ -374,7 +374,7 @@ class Mobility {
     final Set<Square> promotionSquareSet = MobilityFunctions.promotion(candidatePiecePlacement);
     final Set<Square> squareSetWithValueOne = mobility.calculateSquaresWithValueOne(candidatePiecePlacement);
 
-    final boolean isValidPawnPromotion = !BasicUtility.calculateIsDisjoint(promotionSquareSet, squareSetWithValueOne);
+    final boolean isValidPawnPromotion = !BasicUtility.isDisjoint(promotionSquareSet, squareSetWithValueOne);
 
     return isValidPawnPromotion;
   }

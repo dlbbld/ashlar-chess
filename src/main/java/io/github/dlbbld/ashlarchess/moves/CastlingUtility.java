@@ -225,7 +225,7 @@ public final class CastlingUtility {
     return result;
   }
 
-  private static boolean calculateIsCastlingQueenSide(MoveSpecification moveSpecification) {
+  private static boolean isCastlingQueenSide(MoveSpecification moveSpecification) {
     return switch (moveSpecification.castlingMove()) {
       case NONE -> false;
       case KING_SIDE -> false;
@@ -234,7 +234,7 @@ public final class CastlingUtility {
     };
   }
 
-  private static boolean calculateIsCastlingKingSide(MoveSpecification moveSpecification) {
+  private static boolean isCastlingKingSide(MoveSpecification moveSpecification) {
     return switch (moveSpecification.castlingMove()) {
       case NONE -> false;
       case KING_SIDE -> true;
@@ -243,8 +243,8 @@ public final class CastlingUtility {
     };
   }
 
-  public static boolean calculateIsCastlingMove(MoveSpecification moveSpecification) {
-    return calculateIsCastlingQueenSide(moveSpecification) || calculateIsCastlingKingSide(moveSpecification);
+  public static boolean isCastlingMove(MoveSpecification moveSpecification) {
+    return isCastlingQueenSide(moveSpecification) || isCastlingKingSide(moveSpecification);
   }
 
   public static CastlingRightBoth calculateCastlingRightBoth(CastlingRight lastCastlingRightWhite,
@@ -434,7 +434,7 @@ public final class CastlingUtility {
       return CastlingCheck.FINAL_NO_RIGHT;
     }
 
-    final boolean isOriginalPosition = calculateQueenSideCastlingIsOriginalPosition(bitboardPosition, havingMove);
+    final boolean isOriginalPosition = isQueenSideCastlingOriginalPosition(bitboardPosition, havingMove);
     if (!isOriginalPosition) {
       throw new ProgrammingMistakeException(
           "Castling right held but king or rook not on required square (inconsistent board state).");
@@ -458,7 +458,7 @@ public final class CastlingUtility {
       return CastlingCheck.FINAL_NO_RIGHT;
     }
 
-    final boolean isOriginalPosition = calculateKingSideCastlingIsOriginalPosition(bitboardPosition, havingMove);
+    final boolean isOriginalPosition = isKingSideCastlingOriginalPosition(bitboardPosition, havingMove);
     if (!isOriginalPosition) {
       throw new ProgrammingMistakeException(
           "Castling right held but king or rook not on required square (inconsistent board state).");
@@ -473,7 +473,7 @@ public final class CastlingUtility {
     return calculateKingSideCheckCondition(bitboardPosition, havingMove);
   }
 
-  public static boolean calculateQueenSideCastlingIsOriginalPosition(BitboardPosition bitboardPosition,
+  public static boolean isQueenSideCastlingOriginalPosition(BitboardPosition bitboardPosition,
       Side havingMove) {
     final Square kingOriginalSquare = SquareUtility.calculateKingOriginalSquare(havingMove);
     final Piece kingPiece = Piece.of(havingMove, PieceType.KING);
@@ -485,7 +485,7 @@ public final class CastlingUtility {
     return bitboardPosition.get(rookOriginalSquare) == rookPiece;
   }
 
-  public static boolean calculateKingSideCastlingIsOriginalPosition(BitboardPosition bitboardPosition,
+  public static boolean isKingSideCastlingOriginalPosition(BitboardPosition bitboardPosition,
       Side havingMove) {
     final Square kingOriginalSquare = SquareUtility.calculateKingOriginalSquare(havingMove);
     final Piece kingPiece = Piece.of(havingMove, PieceType.KING);
@@ -547,7 +547,7 @@ public final class CastlingUtility {
   }
 
   public static Square calculateKingCastlingFrom(Side havingMove, MoveSpecification moveSpecification) {
-    if (!calculateIsCastlingMove(moveSpecification)) {
+    if (!isCastlingMove(moveSpecification)) {
       throw new IllegalArgumentException();
     }
     return switch (moveSpecification.castlingMove()) {
@@ -569,7 +569,7 @@ public final class CastlingUtility {
   }
 
   public static Square calculateKingCastlingTo(Side havingMove, MoveSpecification moveSpecification) {
-    if (!calculateIsCastlingMove(moveSpecification)) {
+    if (!isCastlingMove(moveSpecification)) {
       throw new IllegalArgumentException();
     }
     return switch (moveSpecification.castlingMove()) {

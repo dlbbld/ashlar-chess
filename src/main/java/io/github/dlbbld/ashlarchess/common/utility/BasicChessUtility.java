@@ -81,7 +81,7 @@ public final class BasicChessUtility {
     return Outcome.ONGOING;
   }
 
-  public static boolean calculateIsResetHalfMoveClock(LegalMove legalMove) {
+  public static boolean isResetHalfMoveClock(LegalMove legalMove) {
     return legalMove.movingPiece() != Piece.NONE && legalMove.movingPiece().getPieceType() == PieceType.PAWN
         || legalMove.pieceCaptured() != Piece.NONE;
   }

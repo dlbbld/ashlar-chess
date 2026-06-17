@@ -55,7 +55,7 @@ class TestPgnExportBoardArchival {
     // gets filled.
     assertTrue(boardPgnGame.tagList().isEmpty());
 
-    final String archivalOutput = PgnCreate.createPgnString(boardPgnGame, WriteMode.ARCHIVAL);
+    final String archivalOutput = PgnCreate.toPgnString(boardPgnGame, WriteMode.ARCHIVAL);
 
     assertContainsAllStrPlaceholders(archivalOutput);
     assertResultTagMatchesExpected(archivalOutput, expectedResult);
@@ -98,7 +98,7 @@ class TestPgnExportBoardArchival {
     tagList.add(new Tag(StandardTag.FEN.getName(), customFen));
 
     final PgnGame boardPgnGame = PgnCreate.createPgnGame(board, tagList);
-    final String archivalOutput = PgnCreate.createPgnString(boardPgnGame, WriteMode.ARCHIVAL);
+    final String archivalOutput = PgnCreate.toPgnString(boardPgnGame, WriteMode.ARCHIVAL);
 
     assertTrue(archivalOutput.contains("[" + StandardTag.SET_UP.getName() + " \"1\"]"));
     assertTrue(archivalOutput.contains("[" + StandardTag.FEN.getName() + " \"" + customFen + "\"]"));
@@ -114,7 +114,7 @@ class TestPgnExportBoardArchival {
     final Board board = new Board();
     final PgnGame pgnGame = PgnCreate.createPgnGame(board);
 
-    final String archivalOutput = PgnCreate.createPgnString(pgnGame, WriteMode.ARCHIVAL);
+    final String archivalOutput = PgnCreate.toPgnString(pgnGame, WriteMode.ARCHIVAL);
 
     final int eventIdx = archivalOutput.indexOf("[" + StandardTag.EVENT.getName() + " ");
     final int resultIdx = archivalOutput.indexOf("[" + StandardTag.RESULT.getName() + " ");
@@ -131,7 +131,7 @@ class TestPgnExportBoardArchival {
     final Board board = new Board();
     final PgnGame pgnGame = PgnCreate.createPgnGame(board);
 
-    final String semanticOutput = PgnCreate.createPgnString(pgnGame, WriteMode.SEMANTIC);
+    final String semanticOutput = PgnCreate.toPgnString(pgnGame, WriteMode.SEMANTIC);
 
     // Tag section is empty - no '[' appears in the output, no STR placeholders.
     assertFalse(semanticOutput.contains("[" + StandardTag.EVENT.getName() + " "));
@@ -140,7 +140,7 @@ class TestPgnExportBoardArchival {
     assertTrue(semanticOutput.contains("*"));
 
     // And the tagList check that no fabrication slipped into the model on this path.
-    assertTrue(!TagUtility.calculateIsContainsAllSevenTagRosterTags(pgnGame.tagList()));
+    assertTrue(!TagUtility.hasAllSevenTagRosterTags(pgnGame.tagList()));
   }
 
   @SuppressWarnings("static-method")

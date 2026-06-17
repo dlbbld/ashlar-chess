@@ -155,7 +155,7 @@ public final class TagUtility {
     return false;
   }
 
-  public static boolean calculateIsContainsAllSevenTagRosterTags(List<Tag> tagList) {
+  public static boolean hasAllSevenTagRosterTags(List<Tag> tagList) {
     for (final StandardTag standardTag : SEVEN_TAG_ROSTER_TAG_LIST) {
       if (!TagUtility.existsTag(tagList, standardTag)) {
         return false;

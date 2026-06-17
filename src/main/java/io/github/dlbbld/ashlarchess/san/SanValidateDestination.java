@@ -132,7 +132,7 @@ abstract class SanValidateDestination extends AbstractSan {
     final Rank fromRank = toSquare.getBehindSquare(havingMove).getRank();
     final Square fromSquare = Square.of(sanConversion.fromFile(), fromRank);
     final MoveSpecification pawnCapturingNonPromotionMove = new MoveSpecification(fromSquare, toSquare);
-    return EnPassantCaptureUtility.calculateIsPotentialEnPassantCapture(board.getBitboardPosition(),
+    return EnPassantCaptureUtility.isPotentialEnPassantCapture(board.getBitboardPosition(),
         pawnCapturingNonPromotionMove);
   }
 }

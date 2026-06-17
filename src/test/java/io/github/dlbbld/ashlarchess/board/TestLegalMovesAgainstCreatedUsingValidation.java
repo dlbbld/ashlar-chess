@@ -152,7 +152,7 @@ class TestLegalMovesAgainstCreatedUsingValidation {
         // we only check the actual promotion moves and not all silly possible combinations
         // that get's too much otherwise
         if (boardPiece.getPieceType() == PieceType.PAWN
-            && RankUtility.calculateIsPromotionRank(havingMove, toSquare.getRank())) {
+            && RankUtility.isPromotionRank(havingMove, toSquare.getRank())) {
           for (final PromotionPieceType promotionPieceType : PromotionPieceType.REAL) {
             final MoveSpecification promotionMove = new MoveSpecification(fromSquare, toSquare, promotionPieceType);
             try {

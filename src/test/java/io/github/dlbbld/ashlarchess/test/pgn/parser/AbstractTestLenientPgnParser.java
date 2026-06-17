@@ -20,8 +20,8 @@ public abstract class AbstractTestLenientPgnParser {
    * invariant the original tests intended ("these variants are equivalent under spec section 8.1.1 form").
    */
   static void assertEqualsArchival(PgnGame expected, PgnGame actual) {
-    assertEquals(PgnCreate.createPgnString(expected, WriteMode.ARCHIVAL),
-        PgnCreate.createPgnString(actual, WriteMode.ARCHIVAL));
+    assertEquals(PgnCreate.toPgnString(expected, WriteMode.ARCHIVAL),
+        PgnCreate.toPgnString(actual, WriteMode.ARCHIVAL));
   }
 
   static void assertEqualsButTagList(PgnGame expected, PgnGame actual) {

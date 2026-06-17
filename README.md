@@ -492,7 +492,7 @@ final String pgn = """
     3. Bc4 Bc5
     """;
 final PgnGame pgnGame = LenientPgnParser.parseText(pgn);
-System.out.println(PgnCreate.createPgnString(pgnGame, WriteMode.ARCHIVAL));
+System.out.println(PgnCreate.toPgnString(pgnGame, WriteMode.ARCHIVAL));
 ```
 
 Output:
@@ -667,7 +667,7 @@ final Board board = new Board();
 board.movesStrict("e4", "e5", "Nf3", "Nf6", "Bc4", "Bc5");
 
 final PgnGame pgnGame = PgnCreate.createPgnGame(board);
-System.out.println(PgnCreate.createPgnString(pgnGame, WriteMode.ARCHIVAL));
+System.out.println(PgnCreate.toPgnString(pgnGame, WriteMode.ARCHIVAL));
 ```
 
 Output:
@@ -692,7 +692,7 @@ final Board board = new Board();
 board.movesStrict("e4", "e5", "Nf3", "Nf6", "Bc4", "Bc5");
 
 final PgnGame pgnGame = PgnCreate.createPgnGame(board);
-final String pgnString = PgnCreate.createPgnString(pgnGame, WriteMode.ARCHIVAL);
+final String pgnString = PgnCreate.toPgnString(pgnGame, WriteMode.ARCHIVAL);
 System.out.println(LenientPgnParser.validateText(pgnString).isValid()); // true
 System.out.println(StrictPgnParser.validateText(pgnString).isValid()); // true
 ```

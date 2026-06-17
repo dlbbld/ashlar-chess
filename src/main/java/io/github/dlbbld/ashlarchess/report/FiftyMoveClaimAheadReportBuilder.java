@@ -52,7 +52,7 @@ abstract class FiftyMoveClaimAheadReportBuilder {
 
     final List<LegalMove> performedLegalMoveList = board.getPerformedLegalMoveList();
     for (final LegalMove nextPlayedMove : performedLegalMoveList) {
-      final boolean nextPlayedMoveBreaksSequence = BasicChessUtility.calculateIsResetHalfMoveClock(nextPlayedMove);
+      final boolean nextPlayedMoveBreaksSequence = BasicChessUtility.isResetHalfMoveClock(nextPlayedMove);
       if (nextPlayedMoveBreaksSequence) {
         emitBoundaryIfMissedOpportunity(entries, replayBoard, currentStart, initialFenClock, initialFenSideToMove);
       }

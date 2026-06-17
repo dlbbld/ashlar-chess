@@ -23,7 +23,7 @@ public final class UciMoveUtility {
     Square fromSquare;
     Square toSquare;
     PromotionPieceType promotionPieceType;
-    if (CastlingUtility.calculateIsCastlingMove(moveSpecification)) {
+    if (CastlingUtility.isCastlingMove(moveSpecification)) {
       fromSquare = CastlingUtility.calculateKingCastlingFrom(havingMove, moveSpecification);
       toSquare = CastlingUtility.calculateKingCastlingTo(havingMove, moveSpecification);
       promotionPieceType = PromotionPieceType.NONE;

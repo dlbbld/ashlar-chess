@@ -512,7 +512,7 @@ public class Board {
       return false;
     }
     for (final LegalMove legalMove : getLegalMoves()) {
-      if (!BasicChessUtility.calculateIsResetHalfMoveClock(legalMove)) {
+      if (!BasicChessUtility.isResetHalfMoveClock(legalMove)) {
         return true;
       }
     }
@@ -544,7 +544,7 @@ public class Board {
     if (getHalfMoveClock() < 99) {
       return false;
     }
-    return !BasicChessUtility.calculateIsResetHalfMoveClock(legalMove);
+    return !BasicChessUtility.isResetHalfMoveClock(legalMove);
   }
 
   /**
@@ -574,7 +574,7 @@ public class Board {
    */
   public boolean canClaimThreefoldRepetitionRuleFor(MoveSpecification move) {
     final LegalMove legalMove = requireLegalMove(move);
-    if (BasicChessUtility.calculateIsResetHalfMoveClock(legalMove)) {
+    if (BasicChessUtility.isResetHalfMoveClock(legalMove)) {
       return false;
     }
     this.move(move);
@@ -597,7 +597,7 @@ public class Board {
   public boolean canClaimThreefoldRepetitionRuleWithOwnMove() {
     for (final LegalMove legalMove : getLegalMoves()) {
       // we must not check moves creating a position that never occurred so far
-      if (!BasicChessUtility.calculateIsResetHalfMoveClock(legalMove)) {
+      if (!BasicChessUtility.isResetHalfMoveClock(legalMove)) {
         this.move(legalMove.moveSpecification());
         if (isThreefoldRepetition()) {
           this.unmove();
@@ -683,7 +683,7 @@ public class Board {
 
   private int calculateNewHalfMoveClock(int lastHalfMoveClock) {
     final LegalMove legalMove = getLastMove();
-    if (BasicChessUtility.calculateIsResetHalfMoveClock(legalMove)) {
+    if (BasicChessUtility.isResetHalfMoveClock(legalMove)) {
       return 0;
     }
     return lastHalfMoveClock + 1;
@@ -698,7 +698,7 @@ public class Board {
   }
 
   public boolean isInsufficientMaterial(Side side) {
-    return InsufficientMaterialUtility.calculateIsInsufficientMaterial(side, getBitboardPosition());
+    return InsufficientMaterialUtility.isInsufficientMaterial(side, getBitboardPosition());
   }
 
   public String getFen() {

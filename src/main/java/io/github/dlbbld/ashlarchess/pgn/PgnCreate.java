@@ -34,23 +34,23 @@ public final class PgnCreate {
   /** PGN export-format guideline: lines should not exceed 79 characters. */
   public static final int MAX_LINE_LENGTH = 79;
 
-  public static String createPgnString(Board board) {
-    return createPgnString(createPgnGame(board));
+  public static String toPgnString(Board board) {
+    return toPgnString(createPgnGame(board));
   }
 
-  public static String createPgnString(PgnGame pgnGame) {
-    return createPgnString(pgnGame, WriteMode.SEMANTIC);
+  public static String toPgnString(PgnGame pgnGame) {
+    return toPgnString(pgnGame, WriteMode.SEMANTIC);
   }
 
-  public static String createPgnString(PgnGame pgnGame, WriteMode writeMode) {
-    return appendEmptyLine(BasicUtility.convertToString(createPgnLines(pgnGame, writeMode)));
+  public static String toPgnString(PgnGame pgnGame, WriteMode writeMode) {
+    return appendEmptyLine(BasicUtility.convertToString(toPgnLines(pgnGame, writeMode)));
   }
 
-  public static List<String> createPgnLines(PgnGame pgnGame) {
-    return createPgnLines(pgnGame, WriteMode.SEMANTIC);
+  public static List<String> toPgnLines(PgnGame pgnGame) {
+    return toPgnLines(pgnGame, WriteMode.SEMANTIC);
   }
 
-  public static List<String> createPgnLines(PgnGame pgnGame, WriteMode writeMode) {
+  public static List<String> toPgnLines(PgnGame pgnGame, WriteMode writeMode) {
     final PgnGame effective = writeMode == WriteMode.ARCHIVAL ? PgnArchivalNormalization.apply(pgnGame) : pgnGame;
     return calculateFileLines(effective.tagList(), effective.pregameCommentary(), effective.startFen(),
         effective.moveList(), effective.terminationMarker());
@@ -227,7 +227,7 @@ public final class PgnCreate {
    * Creates a PgnGame from a Board with no caller-supplied tags. The tag list is the minimal honest shape: empty when
    * the board started from the initial position, or just SetUp+FEN when from a non-initial position. STR fabrication
    * does not happen here - callers who want a spec section 8.1.1-conformant artifact pass {@link WriteMode#ARCHIVAL} to
-   * {@link PgnWriter} or {@link #createPgnString(PgnGame, WriteMode)}.
+   * {@link PgnWriter} or {@link #toPgnString(PgnGame, WriteMode)}.
    */
   public static PgnGame createPgnGame(Board board) {
 

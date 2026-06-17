@@ -60,7 +60,7 @@ abstract class SanValidateLegalMoves extends AbstractSan {
       case KING_CASTLING_KING_SIDE:
         throw new ProgrammingMistakeException("Castling is handled before switch");
       case PAWN_NON_CAPTURING_NON_PROMOTION: {
-        if (!RankUtility.calculateIsPawnTwoSquareAdvanceRank(havingMove, toSquare.getRank())) {
+        if (!RankUtility.isPawnTwoSquareAdvanceRank(havingMove, toSquare.getRank())) {
           // one square advance, san information is enough
           // from file equals to file and from rank is the rank before to rank
           final File fromFile = toSquare.getFile(); // moving straight forward

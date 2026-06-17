@@ -177,7 +177,7 @@ public final class EnPassantCaptureUtility {
   }
 
   // we check if the moving piece is a pawn and the move itself
-  public static boolean calculateIsPawnTwoSquareAdvanceMove(Piece movingPiece, MoveSpecification move) {
+  public static boolean isPawnTwoSquareAdvanceMove(Piece movingPiece, MoveSpecification move) {
     if (movingPiece != Piece.NONE && movingPiece.getPieceType() == PAWN) {
       return switch (movingPiece.getSide()) {
         case WHITE -> Square.WHITE_PAWN_TWO_SQUARE_ADVANCE.contains(calculateFromToList(move));
@@ -227,9 +227,9 @@ public final class EnPassantCaptureUtility {
   // StaticPosition-shaped overloads (calculateIsEnPassantCaptureNewMove, calculateIsPotentialEnPassantCapture)
   // were collapsed: the only test-side caller (the relocated StaticPositionUtility) now derives a bitboard via
   // StaticPositionBridge and calls this method instead.
-  public static boolean calculateIsPotentialEnPassantCapture(BitboardPosition bitboardPositionBeforeMove,
+  public static boolean isPotentialEnPassantCapture(BitboardPosition bitboardPositionBeforeMove,
       MoveSpecification move) {
-    if (CastlingUtility.calculateIsCastlingMove(move)) {
+    if (CastlingUtility.isCastlingMove(move)) {
       return false;
     }
     final Piece movingPiece = bitboardPositionBeforeMove.get(move.fromSquare());

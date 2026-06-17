@@ -175,13 +175,13 @@ public class PawnWallGeometricAnalyzer {
       // side. When the intersection is empty we think we hold the promise.
       final Set<Square> attackingSquaresWhite = calculateAttackingSquares(board, Side.WHITE);
       final Set<Square> pawnSquaresBlack = calculatePawnSquares(board, Side.BLACK);
-      if (!BasicUtility.calculateIsDisjoint(attackingSquaresWhite, pawnSquaresBlack)) {
+      if (!BasicUtility.isDisjoint(attackingSquaresWhite, pawnSquaresBlack)) {
         return false;
       }
 
       final Set<Square> attackingSquaresBlack = calculateAttackingSquares(board, Side.BLACK);
       final Set<Square> pawnSquaresWhite = calculatePawnSquares(board, Side.WHITE);
-      if (!BasicUtility.calculateIsDisjoint(attackingSquaresBlack, pawnSquaresWhite)) {
+      if (!BasicUtility.isDisjoint(attackingSquaresBlack, pawnSquaresWhite)) {
         return false;
       }
     }
@@ -254,7 +254,7 @@ public class PawnWallGeometricAnalyzer {
       StaticPosition staticPosition, Side side) {
     if (squareLookAhead.hasAheadSquare(side)) {
       final Square squareAhead = squareLookAhead.getAheadSquare(side);
-      if (RankUtility.calculateIsPromotionRank(side, squareAhead.getRank())) {
+      if (RankUtility.isPromotionRank(side, squareAhead.getRank())) {
         return;
       }
       // now we assume the square is empty
@@ -315,7 +315,7 @@ public class PawnWallGeometricAnalyzer {
       StaticPosition staticPosition, Side side) {
     if (squareLookAhead.hasAheadSquare(side)) {
       final Square squareAhead = squareLookAhead.getAheadSquare(side);
-      if (RankUtility.calculateIsPromotionRank(side, squareAhead.getRank())) {
+      if (RankUtility.isPromotionRank(side, squareAhead.getRank())) {
         return;
       }
       // now we assume the square is empty

@@ -49,7 +49,7 @@ public class PawnSanValidateStaticallyStrictCalculate extends AbstractSanValidat
       };
       final SanValidationFromTo model = new SanValidationFromTo(fromFile, fromRank, toSquare);
       final boolean isCapture = fromFile != File.NONE;
-      if (RankUtility.calculateIsPromotionRank(side, toSquare.getRank())) {
+      if (RankUtility.isPromotionRank(side, toSquare.getRank())) {
         populatePawnPromotionMap(sanValidateMap, model, isCapture);
       } else {
         populatePawnNonPromotionMap(sanValidateMap, model, isCapture);

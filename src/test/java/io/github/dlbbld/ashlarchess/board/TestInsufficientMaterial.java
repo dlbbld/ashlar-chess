@@ -83,10 +83,10 @@ class TestInsufficientMaterial {
     }
 
     // K(B^lightSquares)*vK(B^lightSquares)*, K(B^darkSquares)*vK(B^darkSquares)* (includes KvK)
-    if (InsufficientMaterialUtility.calculateHasZeroOrMultipleLightSquareBishopOnly(WHITE, bitboardPosition)
-        && InsufficientMaterialUtility.calculateHasZeroOrMultipleLightSquareBishopOnly(BLACK, bitboardPosition)
-        || InsufficientMaterialUtility.calculateHasZeroOrMultipleDarkSquareBishopOnly(WHITE, bitboardPosition)
-            && InsufficientMaterialUtility.calculateHasZeroOrMultipleDarkSquareBishopOnly(BLACK, bitboardPosition)) {
+    if (InsufficientMaterialUtility.hasZeroOrMultipleLightSquareBishopOnly(WHITE, bitboardPosition)
+        && InsufficientMaterialUtility.hasZeroOrMultipleLightSquareBishopOnly(BLACK, bitboardPosition)
+        || InsufficientMaterialUtility.hasZeroOrMultipleDarkSquareBishopOnly(WHITE, bitboardPosition)
+            && InsufficientMaterialUtility.hasZeroOrMultipleDarkSquareBishopOnly(BLACK, bitboardPosition)) {
       return true;
     }
 

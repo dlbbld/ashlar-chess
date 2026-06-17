@@ -44,7 +44,7 @@ abstract class SanValidateMovementPawn extends AbstractSan {
   }
 
   private static void validatePawnDestinationRank(Side havingMove, Rank destinationRank) {
-    final boolean isInvalid = !RankUtility.calculateIsValidRank(havingMove, destinationRank);
+    final boolean isInvalid = !RankUtility.isValidRank(havingMove, destinationRank);
     if (isInvalid) {
       throw new SanValidationException(SanValidationProblem.MOVEMENT_PAWN_FORWARD_BACKWARDS,
           Message.getString("validation.san.movement.pawn.forward.backwards"));
