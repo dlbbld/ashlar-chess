@@ -24,7 +24,7 @@ class PawnForwardNonPromotionLegalMoves extends PawnLegalMoves {
   public static Set<LegalMove> calculateLegalMoves(StaticPosition staticPosition, Side havingMove, Square fromSquare) {
 
     final Piece movingPiece = staticPosition.get(fromSquare);
-    checkPiece(havingMove, movingPiece, PAWN);
+    LegalMovesSupport.checkPiece(havingMove, movingPiece, PAWN);
 
     final Set<LegalMove> legalMoveSet = new TreeSet<>();
 

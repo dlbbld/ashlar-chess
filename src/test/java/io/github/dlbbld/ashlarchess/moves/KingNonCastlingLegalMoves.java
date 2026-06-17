@@ -19,12 +19,12 @@ class KingNonCastlingLegalMoves extends KingLegalMoves {
       Square fromSquare) {
 
     final Piece movingPiece = staticPosition.get(fromSquare);
-    checkPiece(havingMove, movingPiece, KING);
+    LegalMovesSupport.checkPiece(havingMove, movingPiece, KING);
 
     final Set<Square> toSquareSet = KingNonCastlingPotentialToSquares
         .calculateKingNonCastlingPotentialToSquares(staticPosition, fromSquare, havingMove);
 
-    return calculateLegalMoveSet(staticPosition, havingMove, fromSquare, toSquareSet);
+    return LegalMovesSupport.calculateLegalMoveSet(staticPosition, havingMove, fromSquare, toSquareSet);
   }
 
 }

@@ -36,7 +36,7 @@ import io.github.dlbbld.ashlarchess.common.utility.SetUtility;
 import io.github.dlbbld.ashlarchess.enums.KingSafetyCheck;
 import io.github.dlbbld.ashlarchess.model.LegalMoveCalculation;
 import io.github.dlbbld.ashlarchess.model.PseudoLegalMove;
-import io.github.dlbbld.ashlarchess.moves.AbstractLegalMoves;
+import io.github.dlbbld.ashlarchess.moves.LegalMovesSupport;
 import io.github.dlbbld.ashlarchess.squares.BishopPotentialToSquares;
 import io.github.dlbbld.ashlarchess.squares.KingNonCastlingPotentialToSquares;
 import io.github.dlbbld.ashlarchess.squares.KnightPotentialToSquares;
@@ -56,7 +56,7 @@ class TestPseudoLegalMoves {
     final StaticPosition sp = StaticPositionBridge.toStaticPosition(board.getBitboardPosition());
 
     final Set<Square> toSquares = KnightPotentialToSquares.calculateKnightPotentialToSquares(sp, E4, WHITE);
-    final LegalMoveCalculation calc = AbstractLegalMoves.calculateLegalMoveCalculation(sp, WHITE, E4, toSquares);
+    final LegalMoveCalculation calc = LegalMovesSupport.calculateLegalMoveCalculation(sp, WHITE, E4, toSquares);
 
     assertTrue(calc.legalMoveSet().isEmpty());
     assertFalse(calc.pseudoLegalMoveSet().isEmpty());
@@ -71,7 +71,7 @@ class TestPseudoLegalMoves {
     final StaticPosition sp = StaticPositionBridge.toStaticPosition(board.getBitboardPosition());
 
     final Set<Square> toSquares = BishopPotentialToSquares.calculateBishopPotentialToSquares(sp, E4, WHITE);
-    final LegalMoveCalculation calc = AbstractLegalMoves.calculateLegalMoveCalculation(sp, WHITE, E4, toSquares);
+    final LegalMoveCalculation calc = LegalMovesSupport.calculateLegalMoveCalculation(sp, WHITE, E4, toSquares);
 
     assertTrue(calc.legalMoveSet().isEmpty());
     assertFalse(calc.pseudoLegalMoveSet().isEmpty());
@@ -87,7 +87,7 @@ class TestPseudoLegalMoves {
     final StaticPosition sp = StaticPositionBridge.toStaticPosition(board.getBitboardPosition());
 
     final Set<Square> toSquares = RookPotentialToSquares.calculateRookPotentialToSquares(sp, C3, WHITE);
-    final LegalMoveCalculation calc = AbstractLegalMoves.calculateLegalMoveCalculation(sp, WHITE, C3, toSquares);
+    final LegalMoveCalculation calc = LegalMovesSupport.calculateLegalMoveCalculation(sp, WHITE, C3, toSquares);
 
     assertTrue(calc.legalMoveSet().isEmpty());
     assertFalse(calc.pseudoLegalMoveSet().isEmpty());
@@ -103,7 +103,7 @@ class TestPseudoLegalMoves {
     final StaticPosition sp = StaticPositionBridge.toStaticPosition(board.getBitboardPosition());
 
     final Set<Square> toSquares = QueenPotentialToSquares.calculateQueenPotentialToSquares(sp, E4, WHITE);
-    final LegalMoveCalculation calc = AbstractLegalMoves.calculateLegalMoveCalculation(sp, WHITE, E4, toSquares);
+    final LegalMoveCalculation calc = LegalMovesSupport.calculateLegalMoveCalculation(sp, WHITE, E4, toSquares);
 
     assertFalse(calc.legalMoveSet().isEmpty());
     assertFalse(calc.pseudoLegalMoveSet().isEmpty());
@@ -118,7 +118,7 @@ class TestPseudoLegalMoves {
     final StaticPosition sp = StaticPositionBridge.toStaticPosition(board.getBitboardPosition());
 
     final Set<Square> toSquares = PawnPotentialToSquares.calculatePawnPotentialToSquares(sp, Square.NONE, E2, WHITE);
-    final LegalMoveCalculation calc = AbstractLegalMoves.calculateLegalMoveCalculation(sp, WHITE, E2, toSquares);
+    final LegalMoveCalculation calc = LegalMovesSupport.calculateLegalMoveCalculation(sp, WHITE, E2, toSquares);
 
     assertTrue(calc.legalMoveSet().isEmpty());
     assertEquals(1, calc.pseudoLegalMoveSet().size());
@@ -136,7 +136,7 @@ class TestPseudoLegalMoves {
 
     final Set<Square> toSquares = KingNonCastlingPotentialToSquares.calculateKingNonCastlingPotentialToSquares(sp, A1,
         WHITE);
-    final LegalMoveCalculation calc = AbstractLegalMoves.calculateLegalMoveCalculation(sp, WHITE, A1, toSquares);
+    final LegalMoveCalculation calc = LegalMovesSupport.calculateLegalMoveCalculation(sp, WHITE, A1, toSquares);
 
     assertTrue(calc.legalMoveSet().isEmpty());
     assertEquals(1, calc.pseudoLegalMoveSet().size());
@@ -155,7 +155,7 @@ class TestPseudoLegalMoves {
     final StaticPosition sp = StaticPositionBridge.toStaticPosition(board.getBitboardPosition());
 
     final Set<Square> toSquares = KnightPotentialToSquares.calculateKnightPotentialToSquares(sp, E5, BLACK);
-    final LegalMoveCalculation calc = AbstractLegalMoves.calculateLegalMoveCalculation(sp, BLACK, E5, toSquares);
+    final LegalMoveCalculation calc = LegalMovesSupport.calculateLegalMoveCalculation(sp, BLACK, E5, toSquares);
 
     assertTrue(calc.legalMoveSet().isEmpty());
     assertFalse(calc.pseudoLegalMoveSet().isEmpty());
@@ -170,7 +170,7 @@ class TestPseudoLegalMoves {
     final StaticPosition sp = StaticPositionBridge.toStaticPosition(board.getBitboardPosition());
 
     final Set<Square> toSquares = BishopPotentialToSquares.calculateBishopPotentialToSquares(sp, E5, BLACK);
-    final LegalMoveCalculation calc = AbstractLegalMoves.calculateLegalMoveCalculation(sp, BLACK, E5, toSquares);
+    final LegalMoveCalculation calc = LegalMovesSupport.calculateLegalMoveCalculation(sp, BLACK, E5, toSquares);
 
     assertTrue(calc.legalMoveSet().isEmpty());
     assertFalse(calc.pseudoLegalMoveSet().isEmpty());
@@ -186,7 +186,7 @@ class TestPseudoLegalMoves {
     final StaticPosition sp = StaticPositionBridge.toStaticPosition(board.getBitboardPosition());
 
     final Set<Square> toSquares = RookPotentialToSquares.calculateRookPotentialToSquares(sp, C6, BLACK);
-    final LegalMoveCalculation calc = AbstractLegalMoves.calculateLegalMoveCalculation(sp, BLACK, C6, toSquares);
+    final LegalMoveCalculation calc = LegalMovesSupport.calculateLegalMoveCalculation(sp, BLACK, C6, toSquares);
 
     assertTrue(calc.legalMoveSet().isEmpty());
     assertFalse(calc.pseudoLegalMoveSet().isEmpty());
@@ -202,7 +202,7 @@ class TestPseudoLegalMoves {
     final StaticPosition sp = StaticPositionBridge.toStaticPosition(board.getBitboardPosition());
 
     final Set<Square> toSquares = QueenPotentialToSquares.calculateQueenPotentialToSquares(sp, E5, BLACK);
-    final LegalMoveCalculation calc = AbstractLegalMoves.calculateLegalMoveCalculation(sp, BLACK, E5, toSquares);
+    final LegalMoveCalculation calc = LegalMovesSupport.calculateLegalMoveCalculation(sp, BLACK, E5, toSquares);
 
     assertFalse(calc.legalMoveSet().isEmpty());
     assertFalse(calc.pseudoLegalMoveSet().isEmpty());
@@ -217,7 +217,7 @@ class TestPseudoLegalMoves {
     final StaticPosition sp = StaticPositionBridge.toStaticPosition(board.getBitboardPosition());
 
     final Set<Square> toSquares = PawnPotentialToSquares.calculatePawnPotentialToSquares(sp, Square.NONE, E7, BLACK);
-    final LegalMoveCalculation calc = AbstractLegalMoves.calculateLegalMoveCalculation(sp, BLACK, E7, toSquares);
+    final LegalMoveCalculation calc = LegalMovesSupport.calculateLegalMoveCalculation(sp, BLACK, E7, toSquares);
 
     assertTrue(calc.legalMoveSet().isEmpty());
     assertEquals(1, calc.pseudoLegalMoveSet().size());
@@ -235,7 +235,7 @@ class TestPseudoLegalMoves {
 
     final Set<Square> toSquares = KingNonCastlingPotentialToSquares.calculateKingNonCastlingPotentialToSquares(sp, A8,
         BLACK);
-    final LegalMoveCalculation calc = AbstractLegalMoves.calculateLegalMoveCalculation(sp, BLACK, A8, toSquares);
+    final LegalMoveCalculation calc = LegalMovesSupport.calculateLegalMoveCalculation(sp, BLACK, A8, toSquares);
 
     assertTrue(calc.legalMoveSet().isEmpty());
     assertEquals(1, calc.pseudoLegalMoveSet().size());
@@ -255,7 +255,7 @@ class TestPseudoLegalMoves {
     final StaticPosition sp = StaticPositionBridge.toStaticPosition(board.getBitboardPosition());
 
     final Set<Square> toSquares = KnightPotentialToSquares.calculateKnightPotentialToSquares(sp, B1, WHITE);
-    final LegalMoveCalculation calc = AbstractLegalMoves.calculateLegalMoveCalculation(sp, WHITE, B1, toSquares);
+    final LegalMoveCalculation calc = LegalMovesSupport.calculateLegalMoveCalculation(sp, WHITE, B1, toSquares);
 
     assertTrue(calc.legalMoveSet().isEmpty());
     assertFalse(calc.pseudoLegalMoveSet().isEmpty());
@@ -271,7 +271,7 @@ class TestPseudoLegalMoves {
     final StaticPosition sp = StaticPositionBridge.toStaticPosition(board.getBitboardPosition());
 
     final Set<Square> toSquares = KnightPotentialToSquares.calculateKnightPotentialToSquares(sp, B8, BLACK);
-    final LegalMoveCalculation calc = AbstractLegalMoves.calculateLegalMoveCalculation(sp, BLACK, B8, toSquares);
+    final LegalMoveCalculation calc = LegalMovesSupport.calculateLegalMoveCalculation(sp, BLACK, B8, toSquares);
 
     assertTrue(calc.legalMoveSet().isEmpty());
     assertFalse(calc.pseudoLegalMoveSet().isEmpty());

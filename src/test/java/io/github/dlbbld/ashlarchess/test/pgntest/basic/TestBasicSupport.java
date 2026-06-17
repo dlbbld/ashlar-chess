@@ -27,7 +27,10 @@ import io.github.dlbbld.ashlarchess.test.model.PgnTestCaseList;
 import io.github.dlbbld.ashlarchess.test.pgn.setup.PgnTestCaseCatalog;
 import io.github.dlbbld.ashlarchess.test.pgntest.enums.PgnTest;
 
-public abstract class AbstractTestBasic {
+public final class TestBasicSupport {
+
+  private TestBasicSupport() {
+  }
 
   // we check the following, to detect problems with incompleted test creation and later changes to code or file names:
   // 1a) for each JUnit hardcoded file there is a file in the expected value hardcoded file list

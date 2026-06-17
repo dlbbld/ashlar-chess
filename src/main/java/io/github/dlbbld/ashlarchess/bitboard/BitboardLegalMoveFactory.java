@@ -94,7 +94,7 @@ public final class BitboardLegalMoveFactory {
    * {@link BitboardPosition#legalMoves} and run through {@link #toLegalMove}; castling moves are computed inline via
    * {@link #emitCastlingLegalMoves} using {@link CastlingUtility}'s bitboard overloads. Returns an
    * {@link ImmutableList} sorted by {@link LegalMove#compareTo}, matching the public contract of the previous
-   * {@code AbstractLegalMoves.calculateLegalMoves} path.
+   * {@code LegalMovesSupport.calculateLegalMoves} path.
    */
   public static ImmutableList<LegalMove> calculateLegalMoves(BitboardPosition bitboardPosition, Side havingMove,
       CastlingRight castlingRight, long enPassantBit) {

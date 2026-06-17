@@ -16,16 +16,16 @@ import io.github.dlbbld.ashlarchess.pgn.LenientPgnParser;
  * expected FEN.
  *
  * <p>
- * See {@link AbstractTestPgnParserHalfMoveClockFromFen} for the iteration body and the exact assertion shape. Runs
+ * See {@link TestPgnParserHalfMoveClockFromFenSupport} for the iteration body and the exact assertion shape. Runs
  * every cycle (no gate) - this is core parser coverage.
  */
-class TestLenientPgnParserHalfMoveClockFromFen extends AbstractTestPgnParserHalfMoveClockFromFen {
+class TestLenientPgnParserHalfMoveClockFromFen {
 
   private static final Logger logger = Nulls.getLogger(TestLenientPgnParserHalfMoveClockFromFen.class);
 
   @SuppressWarnings("static-method")
   @Test
   void test() {
-    runForBuckets(LenientPgnParser::parse, logger);
+    TestPgnParserHalfMoveClockFromFenSupport.runForBuckets(LenientPgnParser::parse, logger);
   }
 }

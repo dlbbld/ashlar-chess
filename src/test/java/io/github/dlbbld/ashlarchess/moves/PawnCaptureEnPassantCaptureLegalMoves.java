@@ -24,7 +24,7 @@ class PawnCaptureEnPassantCaptureLegalMoves extends PawnLegalMoves {
       Side havingMove, Square fromSquare) {
 
     final Piece movingPiece = staticPosition.get(fromSquare);
-    checkPiece(havingMove, movingPiece, PAWN);
+    LegalMovesSupport.checkPiece(havingMove, movingPiece, PAWN);
 
     if (enPassantCaptureTargetSquare == Square.NONE) {
       return new TreeSet<>();

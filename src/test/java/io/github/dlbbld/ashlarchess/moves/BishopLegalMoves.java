@@ -14,17 +14,17 @@ import io.github.dlbbld.ashlarchess.board.enums.Square;
 import io.github.dlbbld.ashlarchess.model.LegalMove;
 import io.github.dlbbld.ashlarchess.squares.BishopPotentialToSquares;
 
-class BishopLegalMoves extends AbstractLegalMoves {
+class BishopLegalMoves {
   public static Set<LegalMove> calculateBishopLegalMoves(StaticPosition staticPosition, Side havingMove,
       Square fromSquare) {
 
     final Piece movingPiece = staticPosition.get(fromSquare);
-    checkPiece(havingMove, movingPiece, BISHOP);
+    LegalMovesSupport.checkPiece(havingMove, movingPiece, BISHOP);
 
     final Set<Square> toSquareSet = BishopPotentialToSquares.calculateBishopPotentialToSquares(staticPosition,
         fromSquare, havingMove);
 
-    return calculateLegalMoveSet(staticPosition, havingMove, fromSquare, toSquareSet);
+    return LegalMovesSupport.calculateLegalMoveSet(staticPosition, havingMove, fromSquare, toSquareSet);
   }
 
 }

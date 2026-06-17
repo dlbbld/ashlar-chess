@@ -7,7 +7,10 @@ import io.github.dlbbld.ashlarchess.common.Nulls;
 import io.github.dlbbld.ashlarchess.test.model.PgnFen;
 import io.github.dlbbld.ashlarchess.test.pgn.setup.PgnTestCaseCatalog;
 
-public abstract class AbstractGenerateTestCaseForPgn {
+public final class GenerateTestCaseForPgnSupport {
+
+  private GenerateTestCaseForPgnSupport() {
+  }
 
   static String generate(String pgnName) throws Exception {
 

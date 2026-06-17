@@ -16,7 +16,7 @@ import io.github.dlbbld.ashlarchess.bitboard.StaticPositionBridge;
 import io.github.dlbbld.ashlarchess.board.Board;
 import io.github.dlbbld.ashlarchess.board.enums.Square;
 import io.github.dlbbld.ashlarchess.model.PgnMove;
-import io.github.dlbbld.ashlarchess.moves.AbstractLegalMoves;
+import io.github.dlbbld.ashlarchess.moves.LegalMovesSupport;
 import io.github.dlbbld.ashlarchess.pgn.PgnGame;
 import io.github.dlbbld.ashlarchess.test.model.PgnFen;
 import io.github.dlbbld.ashlarchess.test.model.PgnTestCaseList;
@@ -119,7 +119,7 @@ public class MoveGenerationPerformanceSurvey {
     for (int round = 0; round < MEASURE_ROUNDS; round++) {
       for (final PositionPair position : positionList) {
         final Board board = position.ashlarBoard();
-        moveCount += AbstractLegalMoves.calculateLegalMoves(
+        moveCount += LegalMovesSupport.calculateLegalMoves(
             StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), board.getHavingMove(),
             board.getCastlingRight(board.getHavingMove()), board.getEnPassantCaptureTargetSquare()).size();
       }

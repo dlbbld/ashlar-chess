@@ -437,7 +437,7 @@ final class SanValidateLegalMoves {
   /**
    * Returns the from-squares of own {@code pieceType} pieces whose move to {@code toSquare} is pseudo-legal but
    * king-unsafe (i.e. it geometrically reaches {@code toSquare} but {@code afterMove(spec, side).isInCheck(side)}).
-   * Mirrors the {@code AbstractLegalMoves.calculateLegalMoveCalculation(...).pseudoLegalMoveSet()} surface used by SAN
+   * Mirrors the {@code LegalMovesSupport.calculateLegalMoveCalculation(...).pseudoLegalMoveSet()} surface used by SAN
    * error reporting. Reference behavior: king captures (toSquare carries a king) are skipped.
    */
   private static Set<Square> calculatePseudoLegalFromSquaresAny(BitboardPosition bitboardPosition, Side havingMove,

@@ -14,7 +14,7 @@ import io.github.dlbbld.ashlarchess.fen.FenParserAdvanced;
 import io.github.dlbbld.ashlarchess.fen.constants.FenConstants;
 import io.github.dlbbld.ashlarchess.fen.model.Fen;
 
-class TestFenRoundtripMoves extends AbstractTestFenRoundtrip {
+class TestFenRoundtripMoves {
 
   @SuppressWarnings("static-method")
   @Test
@@ -51,7 +51,7 @@ class TestFenRoundtripMoves extends AbstractTestFenRoundtrip {
 
     final List<MoveSpecification> moveList = boardMakeMoves.getPerformedMoveSpecificationList();
 
-    checFenRoundtrip(FenConstants.FEN_INITIAL_STR, moveList);
+    TestFenRoundtripSupport.checFenRoundtrip(FenConstants.FEN_INITIAL_STR, moveList);
   }
 
   @SuppressWarnings("static-method")
@@ -63,7 +63,7 @@ class TestFenRoundtripMoves extends AbstractTestFenRoundtrip {
 
     final List<MoveSpecification> moveList = boardMakeMoves.getPerformedMoveSpecificationList();
 
-    checFenRoundtrip(FenConstants.FEN_INITIAL_STR, moveList);
+    TestFenRoundtripSupport.checFenRoundtrip(FenConstants.FEN_INITIAL_STR, moveList);
   }
 
 }

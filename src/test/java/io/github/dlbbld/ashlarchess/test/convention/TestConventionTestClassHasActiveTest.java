@@ -18,7 +18,8 @@ import io.github.dlbbld.ashlarchess.test.common.utility.FileUtility;
 
 /**
  * Convention test: every Java class under {@code src/test/java} whose simple name starts with {@code Test} must contain
- * at least one {@code @Test} annotation.
+ * at least one {@code @Test} annotation, except test-helper classes carrying the {@code Support} suffix (e.g.
+ * {@code TestBasicSupport}), which are deliberately not runnable tests.
  *
  * <p>
  * Rationale: the {@code Test} prefix at every import site is a promise - readers expect a runnable JUnit class. A
@@ -48,6 +49,10 @@ class TestConventionTestClassHasActiveTest {
 
   private static final String REQUIRED_NAME_PREFIX = "Test";
 
+  // Test-helper classes carry the Support suffix and are deliberately not runnable tests, so they are exempt even
+  // when their name happens to start with Test (e.g. TestBasicSupport).
+  private static final String SUPPORT_SUFFIX = "Support";
+
   // Matches @Test, @ParameterizedTest, @RepeatedTest, @TestTemplate, @TestFactory. Any of these
   // makes a class runnable as a JUnit test.
   private static final Pattern TEST_ANNOTATION = Nulls
@@ -59,8 +64,9 @@ class TestConventionTestClassHasActiveTest {
     final List<String> violations = new ArrayList<>();
 
     for (final Path p : FileUtility.listAllFilesRecursively(TEST_JAVA_ROOT)) {
-      if (!Nulls.toString(p).endsWith(".java")
-          || !Nulls.toString(Nulls.getFileName(p)).startsWith(REQUIRED_NAME_PREFIX)) {
+      final String fileName = Nulls.toString(Nulls.getFileName(p));
+      if (!fileName.endsWith(".java") || !fileName.startsWith(REQUIRED_NAME_PREFIX)
+          || fileName.endsWith(SUPPORT_SUFFIX + ".java")) {
         continue;
       }
       final String contents = FileUtility.readFileAsString(p);

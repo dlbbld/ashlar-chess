@@ -14,17 +14,17 @@ import io.github.dlbbld.ashlarchess.board.enums.Square;
 import io.github.dlbbld.ashlarchess.model.LegalMove;
 import io.github.dlbbld.ashlarchess.squares.RookPotentialToSquares;
 
-class RookLegalMoves extends AbstractLegalMoves {
+class RookLegalMoves {
   public static Set<LegalMove> calculateRookLegalMoves(StaticPosition staticPosition, Side havingMove,
       Square fromSquare) {
 
     final Piece movingPiece = staticPosition.get(fromSquare);
-    checkPiece(havingMove, movingPiece, ROOK);
+    LegalMovesSupport.checkPiece(havingMove, movingPiece, ROOK);
 
     final Set<Square> toSquareSet = RookPotentialToSquares.calculateRookPotentialToSquares(staticPosition, fromSquare,
         havingMove);
 
-    return calculateLegalMoveSet(staticPosition, havingMove, fromSquare, toSquareSet);
+    return LegalMovesSupport.calculateLegalMoveSet(staticPosition, havingMove, fromSquare, toSquareSet);
   }
 
 }

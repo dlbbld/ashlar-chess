@@ -17,7 +17,7 @@ import io.github.dlbbld.ashlarchess.test.model.PgnTestCaseList;
 import io.github.dlbbld.ashlarchess.test.pgn.setup.PgnTestCaseCatalog;
 import io.github.dlbbld.ashlarchess.test.pgntest.enums.PgnTest;
 
-class TestBasicDoubleCheckBlack extends AbstractTestBasic {
+class TestBasicDoubleCheckBlack {
 
   private static final Logger logger = Nulls.getLogger(TestBasicDoubleCheckBlack.class);
 
@@ -29,7 +29,7 @@ class TestBasicDoubleCheckBlack extends AbstractTestBasic {
     pgnNameList.add("03_black_double_check_knight_diagonal.pgn");
     pgnNameList.add("04_black_double_check_bishop.pgn");
 
-    checkTestFolder(pgnNameList, PgnTest.BASIC_DOUBLE_CHECK_BLACK);
+    TestBasicSupport.checkTestFolder(pgnNameList, PgnTest.BASIC_DOUBLE_CHECK_BLACK);
   }
 
   @SuppressWarnings("static-method")
@@ -42,10 +42,10 @@ class TestBasicDoubleCheckBlack extends AbstractTestBasic {
       logger.info(testCase.pgnName());
 
       switch (testCase.pgnName()) {
-        case "01_black_double_check_rook.pgn" -> checkDoubleCheck(Piece.BLACK_ROOK, board);
-        case "02_black_double_check_knight_orthogonal.pgn" -> checkDoubleCheck(Piece.BLACK_KNIGHT, board);
-        case "03_black_double_check_knight_diagonal.pgn" -> checkDoubleCheck(Piece.BLACK_KNIGHT, board);
-        case "04_black_double_check_bishop.pgn" -> checkDoubleCheck(Piece.BLACK_BISHOP, board);
+        case "01_black_double_check_rook.pgn" -> TestBasicSupport.checkDoubleCheck(Piece.BLACK_ROOK, board);
+        case "02_black_double_check_knight_orthogonal.pgn" -> TestBasicSupport.checkDoubleCheck(Piece.BLACK_KNIGHT, board);
+        case "03_black_double_check_knight_diagonal.pgn" -> TestBasicSupport.checkDoubleCheck(Piece.BLACK_KNIGHT, board);
+        case "04_black_double_check_bishop.pgn" -> TestBasicSupport.checkDoubleCheck(Piece.BLACK_BISHOP, board);
         default -> throw new IllegalArgumentException();
       }
     }

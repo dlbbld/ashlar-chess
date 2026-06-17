@@ -24,7 +24,10 @@ import io.github.dlbbld.ashlarchess.model.LegalMoveCalculation;
 import io.github.dlbbld.ashlarchess.model.LegalMoveKind;
 import io.github.dlbbld.ashlarchess.model.PseudoLegalMove;
 
-public abstract class AbstractLegalMoves {
+public final class LegalMovesSupport {
+
+  private LegalMovesSupport() {
+  }
 
   protected static void checkPiece(Side havingMove, Piece candidatePiece, PieceType expectedPieceType)
       throws IllegalArgumentException {

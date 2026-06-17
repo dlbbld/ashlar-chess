@@ -49,7 +49,10 @@ import io.github.dlbbld.ashlarchess.test.pgntest.enums.PgnTest;
  * Logs each fixture's name as it runs so a failure mid-iteration shows progress.
  */
 @SuppressWarnings("null") // BiFunction lacks JDT null annotations
-abstract class AbstractTestPgnParserHalfMoveClockFromFen {
+final class TestPgnParserHalfMoveClockFromFenSupport {
+
+  private TestPgnParserHalfMoveClockFromFenSupport() {
+  }
 
   private static final ImmutableList<PgnTest> BUCKETS = Nulls.listOf(PgnTest.PARSER_FROM_FEN);
 

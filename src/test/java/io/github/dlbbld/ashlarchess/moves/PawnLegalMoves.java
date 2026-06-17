@@ -11,7 +11,7 @@ import io.github.dlbbld.ashlarchess.board.enums.Side;
 import io.github.dlbbld.ashlarchess.board.enums.Square;
 import io.github.dlbbld.ashlarchess.model.LegalMove;
 
-class PawnLegalMoves extends AbstractLegalMoves {
+class PawnLegalMoves {
   public static Set<LegalMove> calculatePawnLegalMoves(StaticPosition staticPosition,
       Square enPassantCaptureTargetSquare, Side havingMove, Square fromSquare) {
 

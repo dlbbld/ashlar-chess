@@ -19,7 +19,7 @@ import io.github.dlbbld.ashlarchess.test.model.PgnTestCaseList;
 import io.github.dlbbld.ashlarchess.test.pgn.setup.PgnTestCaseCatalog;
 import io.github.dlbbld.ashlarchess.test.pgntest.enums.PgnTest;
 
-class TestBasicCastlingSpecialWhite extends AbstractTestBasic {
+class TestBasicCastlingSpecialWhite {
 
   private static final Logger logger = Nulls.getLogger(TestBasicCastlingSpecialWhite.class);
 
@@ -37,7 +37,7 @@ class TestBasicCastlingSpecialWhite extends AbstractTestBasic {
     pgnNameList.add("09_white_castling_special_queenside_seventy_five_move.pgn");
     pgnNameList.add("10_white_castling_special_queenside_stalemate.pgn");
 
-    checkTestFolder(pgnNameList, PgnTest.BASIC_CASTLING_SPECIAL_WHITE);
+    TestBasicSupport.checkTestFolder(pgnNameList, PgnTest.BASIC_CASTLING_SPECIAL_WHITE);
   }
 
   @SuppressWarnings("static-method")
@@ -50,18 +50,18 @@ class TestBasicCastlingSpecialWhite extends AbstractTestBasic {
       logger.info(testCase.pgnName());
 
       switch (testCase.pgnName()) {
-        case "01_white_castling_special_kingside_check.pgn" -> checkCastle(WHITE, CastlingMove.KING_SIDE, board);
-        case "02_white_castling_special_kingside_checkmate.pgn" -> checkCastle(WHITE, CastlingMove.KING_SIDE, board);
-        case "03_white_castling_special_kingside_fifty_move.pgn" -> checkCastle(WHITE, CastlingMove.KING_SIDE, board);
-        case "04_white_castling_special_kingside_seventy_five_move.pgn" -> checkCastle(WHITE, CastlingMove.KING_SIDE,
+        case "01_white_castling_special_kingside_check.pgn" -> TestBasicSupport.checkCastle(WHITE, CastlingMove.KING_SIDE, board);
+        case "02_white_castling_special_kingside_checkmate.pgn" -> TestBasicSupport.checkCastle(WHITE, CastlingMove.KING_SIDE, board);
+        case "03_white_castling_special_kingside_fifty_move.pgn" -> TestBasicSupport.checkCastle(WHITE, CastlingMove.KING_SIDE, board);
+        case "04_white_castling_special_kingside_seventy_five_move.pgn" -> TestBasicSupport.checkCastle(WHITE, CastlingMove.KING_SIDE,
             board);
-        case "05_white_castling_special_kingside_stalemate.pgn" -> checkCastle(WHITE, CastlingMove.KING_SIDE, board);
-        case "06_white_castling_special_queenside_check.pgn" -> checkCastle(WHITE, CastlingMove.QUEEN_SIDE, board);
-        case "07_white_castling_special_queenside_checkmate.pgn" -> checkCastle(WHITE, CastlingMove.QUEEN_SIDE, board);
-        case "08_white_castling_special_queenside_fifty_move.pgn" -> checkCastle(WHITE, CastlingMove.QUEEN_SIDE, board);
-        case "09_white_castling_special_queenside_seventy_five_move.pgn" -> checkCastle(WHITE, CastlingMove.QUEEN_SIDE,
+        case "05_white_castling_special_kingside_stalemate.pgn" -> TestBasicSupport.checkCastle(WHITE, CastlingMove.KING_SIDE, board);
+        case "06_white_castling_special_queenside_check.pgn" -> TestBasicSupport.checkCastle(WHITE, CastlingMove.QUEEN_SIDE, board);
+        case "07_white_castling_special_queenside_checkmate.pgn" -> TestBasicSupport.checkCastle(WHITE, CastlingMove.QUEEN_SIDE, board);
+        case "08_white_castling_special_queenside_fifty_move.pgn" -> TestBasicSupport.checkCastle(WHITE, CastlingMove.QUEEN_SIDE, board);
+        case "09_white_castling_special_queenside_seventy_five_move.pgn" -> TestBasicSupport.checkCastle(WHITE, CastlingMove.QUEEN_SIDE,
             board);
-        case "10_white_castling_special_queenside_stalemate.pgn" -> checkCastle(WHITE, CastlingMove.QUEEN_SIDE, board);
+        case "10_white_castling_special_queenside_stalemate.pgn" -> TestBasicSupport.checkCastle(WHITE, CastlingMove.QUEEN_SIDE, board);
         default -> throw new IllegalArgumentException();
       }
     }

@@ -10,7 +10,10 @@ import io.github.dlbbld.ashlarchess.board.CommonTestUtility;
 import io.github.dlbbld.ashlarchess.common.Nulls;
 import io.github.dlbbld.ashlarchess.common.model.MoveSpecification;
 
-public abstract class AbstractTestFenRoundtrip {
+public final class TestFenRoundtripSupport {
+
+  private TestFenRoundtripSupport() {
+  }
   public static void checFenRoundtrip(String initialFen, List<MoveSpecification> moveList) {
 
     final Board boardPlayMoves = new Board(initialFen);

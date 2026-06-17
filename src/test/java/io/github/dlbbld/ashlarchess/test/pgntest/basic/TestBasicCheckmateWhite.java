@@ -43,7 +43,7 @@ import io.github.dlbbld.ashlarchess.test.model.PgnTestCaseList;
 import io.github.dlbbld.ashlarchess.test.pgn.setup.PgnTestCaseCatalog;
 import io.github.dlbbld.ashlarchess.test.pgntest.enums.PgnTest;
 
-class TestBasicCheckmateWhite extends AbstractTestBasic {
+class TestBasicCheckmateWhite {
 
   private static final Logger logger = Nulls.getLogger(TestBasicCheckmateWhite.class);
 
@@ -66,7 +66,7 @@ class TestBasicCheckmateWhite extends AbstractTestBasic {
     pgnNameList.add("14_white_checkmate_king_discover_orthogonal.pgn");
     pgnNameList.add("15_white_checkmate_king_discover_diagonal.pgn");
 
-    checkTestFolder(pgnNameList, PgnTest.BASIC_CHECKMATE_WHITE);
+    TestBasicSupport.checkTestFolder(pgnNameList, PgnTest.BASIC_CHECKMATE_WHITE);
   }
 
   @SuppressWarnings("static-method")
@@ -79,26 +79,26 @@ class TestBasicCheckmateWhite extends AbstractTestBasic {
       logger.info(testCase.pgnName());
 
       switch (testCase.pgnName()) {
-        case "01_white_checkmate_rook_direct_adjacent.pgn" -> checkNonCaptureCheckmate(D7, D8, WHITE_ROOK, board);
-        case "02_white_checkmate_rook_direct_range.pgn" -> checkNonCaptureCheckmate(H7, H8, WHITE_ROOK, board);
-        case "03_white_checkmate_rook_discover.pgn" -> checkNonCaptureCheckmate(D7, H7, WHITE_ROOK, board);
-        case "04_white_checkmate_knight_direct.pgn" -> checkNonCaptureCheckmate(B4, C6, WHITE_KNIGHT, board);
-        case "05_white_checkmate_knight_discover_orthogonal.pgn" -> checkNonCaptureCheckmate(D5, F6, WHITE_KNIGHT,
+        case "01_white_checkmate_rook_direct_adjacent.pgn" -> TestBasicSupport.checkNonCaptureCheckmate(D7, D8, WHITE_ROOK, board);
+        case "02_white_checkmate_rook_direct_range.pgn" -> TestBasicSupport.checkNonCaptureCheckmate(H7, H8, WHITE_ROOK, board);
+        case "03_white_checkmate_rook_discover.pgn" -> TestBasicSupport.checkNonCaptureCheckmate(D7, H7, WHITE_ROOK, board);
+        case "04_white_checkmate_knight_direct.pgn" -> TestBasicSupport.checkNonCaptureCheckmate(B4, C6, WHITE_KNIGHT, board);
+        case "05_white_checkmate_knight_discover_orthogonal.pgn" -> TestBasicSupport.checkNonCaptureCheckmate(D5, F6, WHITE_KNIGHT,
             board);
-        case "06_white_checkmate_knight_discover_diagonal.pgn" -> checkNonCaptureCheckmate(F6, G8, WHITE_KNIGHT, board);
-        case "07_white_checkmate_bishop_direct_adjacent.pgn" -> checkNonCaptureCheckmate(B3, C4, WHITE_BISHOP, board);
-        case "08_white_checkmate_bishop_direct_range.pgn" -> checkNonCaptureCheckmate(E2, F3, WHITE_BISHOP, board);
-        case "09_white_checkmate_bishop_discover.pgn" -> checkNonCaptureCheckmate(E5, C7, WHITE_BISHOP, board);
-        case "10_white_checkmate_queen_direct_orthogonal_adjacent.pgn" -> checkNonCaptureCheckmate(F6, C6, WHITE_QUEEN,
+        case "06_white_checkmate_knight_discover_diagonal.pgn" -> TestBasicSupport.checkNonCaptureCheckmate(F6, G8, WHITE_KNIGHT, board);
+        case "07_white_checkmate_bishop_direct_adjacent.pgn" -> TestBasicSupport.checkNonCaptureCheckmate(B3, C4, WHITE_BISHOP, board);
+        case "08_white_checkmate_bishop_direct_range.pgn" -> TestBasicSupport.checkNonCaptureCheckmate(E2, F3, WHITE_BISHOP, board);
+        case "09_white_checkmate_bishop_discover.pgn" -> TestBasicSupport.checkNonCaptureCheckmate(E5, C7, WHITE_BISHOP, board);
+        case "10_white_checkmate_queen_direct_orthogonal_adjacent.pgn" -> TestBasicSupport.checkNonCaptureCheckmate(F6, C6, WHITE_QUEEN,
             board);
-        case "11_white_checkmate_queen_direct_orthogonal_range.pgn" -> checkNonCaptureCheckmate(D8, A5, WHITE_QUEEN,
+        case "11_white_checkmate_queen_direct_orthogonal_range.pgn" -> TestBasicSupport.checkNonCaptureCheckmate(D8, A5, WHITE_QUEEN,
             board);
-        case "12_white_checkmate_queen_direct_diagonal_adjacent.pgn" -> checkNonCaptureCheckmate(B6, B7, WHITE_QUEEN,
+        case "12_white_checkmate_queen_direct_diagonal_adjacent.pgn" -> TestBasicSupport.checkNonCaptureCheckmate(B6, B7, WHITE_QUEEN,
             board);
-        case "13_white_checkmate_queen_direct_diagonal_range.pgn" -> checkNonCaptureCheckmate(C2, B3, WHITE_QUEEN,
+        case "13_white_checkmate_queen_direct_diagonal_range.pgn" -> TestBasicSupport.checkNonCaptureCheckmate(C2, B3, WHITE_QUEEN,
             board);
-        case "14_white_checkmate_king_discover_orthogonal.pgn" -> checkNonCaptureCheckmate(G7, H6, WHITE_KING, board);
-        case "15_white_checkmate_king_discover_diagonal.pgn" -> checkNonCaptureCheckmate(B6, B7, WHITE_KING, board);
+        case "14_white_checkmate_king_discover_orthogonal.pgn" -> TestBasicSupport.checkNonCaptureCheckmate(G7, H6, WHITE_KING, board);
+        case "15_white_checkmate_king_discover_diagonal.pgn" -> TestBasicSupport.checkNonCaptureCheckmate(B6, B7, WHITE_KING, board);
         default -> throw new IllegalArgumentException();
       }
     }

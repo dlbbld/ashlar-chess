@@ -12,7 +12,7 @@ import io.github.dlbbld.ashlarchess.board.enums.Side;
 import io.github.dlbbld.ashlarchess.board.enums.Square;
 import io.github.dlbbld.ashlarchess.model.LegalMove;
 
-class KingLegalMoves extends AbstractLegalMoves {
+class KingLegalMoves {
   public static Set<LegalMove> calculateKingLegalMoves(StaticPosition staticPosition, CastlingRight castlingRight,
       Side havingMove, Square fromSquare) {
 

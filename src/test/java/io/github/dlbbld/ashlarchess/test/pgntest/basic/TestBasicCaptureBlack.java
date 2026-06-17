@@ -63,7 +63,7 @@ import io.github.dlbbld.ashlarchess.test.model.PgnTestCaseList;
 import io.github.dlbbld.ashlarchess.test.pgn.setup.PgnTestCaseCatalog;
 import io.github.dlbbld.ashlarchess.test.pgntest.enums.PgnTest;
 
-class TestBasicCaptureBlack extends AbstractTestBasic {
+class TestBasicCaptureBlack {
 
   private static final Logger logger = Nulls.getLogger(TestBasicCaptureBlack.class);
 
@@ -96,7 +96,7 @@ class TestBasicCaptureBlack extends AbstractTestBasic {
     pgnNameList.add("24_black_capture_king_queen.pgn");
     pgnNameList.add("25_black_capture_king_pawn.pgn");
 
-    checkTestFolder(pgnNameList, PgnTest.BASIC_CAPTURE_BLACK);
+    TestBasicSupport.checkTestFolder(pgnNameList, PgnTest.BASIC_CAPTURE_BLACK);
   }
 
   @SuppressWarnings("static-method")
@@ -109,31 +109,31 @@ class TestBasicCaptureBlack extends AbstractTestBasic {
       logger.info(testCase.pgnName());
 
       switch (testCase.pgnName()) {
-        case "01_black_capture_rook_rook.pgn" -> checkCapture(D6, D5, BLACK_ROOK, WHITE_ROOK, board);
-        case "02_black_capture_rook_knight.pgn" -> checkCapture(A6, A7, BLACK_ROOK, WHITE_KNIGHT, board);
-        case "03_black_capture_rook_bishop.pgn" -> checkCapture(A6, H6, BLACK_ROOK, WHITE_BISHOP, board);
-        case "04_black_capture_rook_queen.pgn" -> checkCapture(H8, H5, BLACK_ROOK, WHITE_QUEEN, board);
-        case "05_black_capture_rook_pawn.pgn" -> checkCapture(H6, D6, BLACK_ROOK, WHITE_PAWN, board);
-        case "06_black_capture_knight_rook.pgn" -> checkCapture(C2, A1, BLACK_KNIGHT, WHITE_ROOK, board);
-        case "07_black_capture_knight_knight.pgn" -> checkCapture(F3, G1, BLACK_KNIGHT, WHITE_KNIGHT, board);
-        case "08_black_capture_knight_bishop.pgn" -> checkCapture(G3, F1, BLACK_KNIGHT, WHITE_BISHOP, board);
-        case "09_black_capture_knight_queen.pgn" -> checkCapture(E3, D1, BLACK_KNIGHT, WHITE_QUEEN, board);
-        case "10_black_capture_knight_pawn.pgn" -> checkCapture(C6, D4, BLACK_KNIGHT, WHITE_PAWN, board);
-        case "11_black_capture_bishop_rook.pgn" -> checkCapture(B7, H1, BLACK_BISHOP, WHITE_ROOK, board);
-        case "12_black_capture_bishop_knight.pgn" -> checkCapture(F5, B1, BLACK_BISHOP, WHITE_KNIGHT, board);
-        case "13_black_capture_bishop_bishop.pgn" -> checkCapture(A6, F1, BLACK_BISHOP, WHITE_BISHOP, board);
-        case "14_black_capture_bishop_queen.pgn" -> checkCapture(G4, D1, BLACK_BISHOP, WHITE_QUEEN, board);
-        case "15_black_capture_bishop_pawn.pgn" -> checkCapture(H3, G2, BLACK_BISHOP, WHITE_PAWN, board);
-        case "16_black_capture_queen_rook.pgn" -> checkCapture(F6, A1, BLACK_QUEEN, WHITE_ROOK, board);
-        case "17_black_capture_queen_knight.pgn" -> checkCapture(F5, B1, BLACK_QUEEN, WHITE_KNIGHT, board);
-        case "18_black_capture_queen_bishop.pgn" -> checkCapture(D8, G5, BLACK_QUEEN, WHITE_BISHOP, board);
-        case "19_black_capture_queen_queen.pgn" -> checkCapture(G5, F4, BLACK_QUEEN, WHITE_QUEEN, board);
-        case "20_black_capture_queen_pawn.pgn" -> checkCapture(F6, F2, BLACK_QUEEN, WHITE_PAWN, board);
-        case "21_black_capture_king_rook.pgn" -> checkCapture(B2, A1, BLACK_KING, WHITE_ROOK, board);
-        case "22_black_capture_king_knight.pgn" -> checkCapture(H2, G1, BLACK_KING, WHITE_KNIGHT, board);
-        case "23_black_capture_king_bishop.pgn" -> checkCapture(C2, C1, BLACK_KING, WHITE_BISHOP, board);
-        case "24_black_capture_king_queen.pgn" -> checkCapture(E8, F7, BLACK_KING, WHITE_QUEEN, board);
-        case "25_black_capture_king_pawn.pgn" -> checkCapture(A3, A2, BLACK_KING, WHITE_PAWN, board);
+        case "01_black_capture_rook_rook.pgn" -> TestBasicSupport.checkCapture(D6, D5, BLACK_ROOK, WHITE_ROOK, board);
+        case "02_black_capture_rook_knight.pgn" -> TestBasicSupport.checkCapture(A6, A7, BLACK_ROOK, WHITE_KNIGHT, board);
+        case "03_black_capture_rook_bishop.pgn" -> TestBasicSupport.checkCapture(A6, H6, BLACK_ROOK, WHITE_BISHOP, board);
+        case "04_black_capture_rook_queen.pgn" -> TestBasicSupport.checkCapture(H8, H5, BLACK_ROOK, WHITE_QUEEN, board);
+        case "05_black_capture_rook_pawn.pgn" -> TestBasicSupport.checkCapture(H6, D6, BLACK_ROOK, WHITE_PAWN, board);
+        case "06_black_capture_knight_rook.pgn" -> TestBasicSupport.checkCapture(C2, A1, BLACK_KNIGHT, WHITE_ROOK, board);
+        case "07_black_capture_knight_knight.pgn" -> TestBasicSupport.checkCapture(F3, G1, BLACK_KNIGHT, WHITE_KNIGHT, board);
+        case "08_black_capture_knight_bishop.pgn" -> TestBasicSupport.checkCapture(G3, F1, BLACK_KNIGHT, WHITE_BISHOP, board);
+        case "09_black_capture_knight_queen.pgn" -> TestBasicSupport.checkCapture(E3, D1, BLACK_KNIGHT, WHITE_QUEEN, board);
+        case "10_black_capture_knight_pawn.pgn" -> TestBasicSupport.checkCapture(C6, D4, BLACK_KNIGHT, WHITE_PAWN, board);
+        case "11_black_capture_bishop_rook.pgn" -> TestBasicSupport.checkCapture(B7, H1, BLACK_BISHOP, WHITE_ROOK, board);
+        case "12_black_capture_bishop_knight.pgn" -> TestBasicSupport.checkCapture(F5, B1, BLACK_BISHOP, WHITE_KNIGHT, board);
+        case "13_black_capture_bishop_bishop.pgn" -> TestBasicSupport.checkCapture(A6, F1, BLACK_BISHOP, WHITE_BISHOP, board);
+        case "14_black_capture_bishop_queen.pgn" -> TestBasicSupport.checkCapture(G4, D1, BLACK_BISHOP, WHITE_QUEEN, board);
+        case "15_black_capture_bishop_pawn.pgn" -> TestBasicSupport.checkCapture(H3, G2, BLACK_BISHOP, WHITE_PAWN, board);
+        case "16_black_capture_queen_rook.pgn" -> TestBasicSupport.checkCapture(F6, A1, BLACK_QUEEN, WHITE_ROOK, board);
+        case "17_black_capture_queen_knight.pgn" -> TestBasicSupport.checkCapture(F5, B1, BLACK_QUEEN, WHITE_KNIGHT, board);
+        case "18_black_capture_queen_bishop.pgn" -> TestBasicSupport.checkCapture(D8, G5, BLACK_QUEEN, WHITE_BISHOP, board);
+        case "19_black_capture_queen_queen.pgn" -> TestBasicSupport.checkCapture(G5, F4, BLACK_QUEEN, WHITE_QUEEN, board);
+        case "20_black_capture_queen_pawn.pgn" -> TestBasicSupport.checkCapture(F6, F2, BLACK_QUEEN, WHITE_PAWN, board);
+        case "21_black_capture_king_rook.pgn" -> TestBasicSupport.checkCapture(B2, A1, BLACK_KING, WHITE_ROOK, board);
+        case "22_black_capture_king_knight.pgn" -> TestBasicSupport.checkCapture(H2, G1, BLACK_KING, WHITE_KNIGHT, board);
+        case "23_black_capture_king_bishop.pgn" -> TestBasicSupport.checkCapture(C2, C1, BLACK_KING, WHITE_BISHOP, board);
+        case "24_black_capture_king_queen.pgn" -> TestBasicSupport.checkCapture(E8, F7, BLACK_KING, WHITE_QUEEN, board);
+        case "25_black_capture_king_pawn.pgn" -> TestBasicSupport.checkCapture(A3, A2, BLACK_KING, WHITE_PAWN, board);
         default -> throw new IllegalArgumentException();
       }
     }

@@ -26,7 +26,7 @@ class PawnCaptureNonEnPassantCaptureNonPromotionLegalMoves extends PawnLegalMove
   public static Set<LegalMove> calculateLegalMoves(StaticPosition staticPosition, Side havingMove, Square fromSquare) {
 
     final Piece movingPiece = staticPosition.get(fromSquare);
-    checkPiece(havingMove, movingPiece, PAWN);
+    LegalMovesSupport.checkPiece(havingMove, movingPiece, PAWN);
 
     final Set<LegalMove> legalMoveSet = new TreeSet<>();
     final Set<Square> diagonalSquareToSet = PawnDiagonalSquares.getPawnDiagonalSquares(havingMove, fromSquare);

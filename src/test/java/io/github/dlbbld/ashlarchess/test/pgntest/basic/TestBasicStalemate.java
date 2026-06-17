@@ -16,7 +16,7 @@ import io.github.dlbbld.ashlarchess.test.model.PgnTestCaseList;
 import io.github.dlbbld.ashlarchess.test.pgn.setup.PgnTestCaseCatalog;
 import io.github.dlbbld.ashlarchess.test.pgntest.enums.PgnTest;
 
-class TestBasicStalemate extends AbstractTestBasic {
+class TestBasicStalemate {
 
   private static final Logger logger = Nulls.getLogger(TestBasicStalemate.class);
 

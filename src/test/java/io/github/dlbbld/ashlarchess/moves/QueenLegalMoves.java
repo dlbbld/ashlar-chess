@@ -14,16 +14,16 @@ import io.github.dlbbld.ashlarchess.board.enums.Square;
 import io.github.dlbbld.ashlarchess.model.LegalMove;
 import io.github.dlbbld.ashlarchess.squares.QueenPotentialToSquares;
 
-class QueenLegalMoves extends AbstractLegalMoves {
+class QueenLegalMoves {
   public static Set<LegalMove> calculateQueenLegalMoves(StaticPosition staticPosition, Side havingMove,
       Square fromSquare) {
 
     final Piece movingPiece = staticPosition.get(fromSquare);
-    checkPiece(havingMove, movingPiece, QUEEN);
+    LegalMovesSupport.checkPiece(havingMove, movingPiece, QUEEN);
 
     final Set<Square> toSquareSet = QueenPotentialToSquares.calculateQueenPotentialToSquares(staticPosition, fromSquare,
         havingMove);
 
-    return calculateLegalMoveSet(staticPosition, havingMove, fromSquare, toSquareSet);
+    return LegalMovesSupport.calculateLegalMoveSet(staticPosition, havingMove, fromSquare, toSquareSet);
   }
 }

@@ -24,7 +24,7 @@ import io.github.dlbbld.ashlarchess.test.model.PgnTestCaseList;
 import io.github.dlbbld.ashlarchess.test.pgn.setup.PgnTestCaseCatalog;
 import io.github.dlbbld.ashlarchess.test.pgntest.enums.PgnTest;
 
-class TestBasicPromotionPieceBlack extends AbstractTestBasic {
+class TestBasicPromotionPieceBlack {
 
   private static final Logger logger = Nulls.getLogger(TestBasicPromotionPieceBlack.class);
 
@@ -40,7 +40,7 @@ class TestBasicPromotionPieceBlack extends AbstractTestBasic {
     pgnNameList.add("07_black_promotion_piece_capture_yes_bishop.pgn");
     pgnNameList.add("08_black_promotion_piece_capture_yes_queen.pgn");
 
-    checkTestFolder(pgnNameList, PgnTest.BASIC_PROMOTION_PIECE_BLACK);
+    TestBasicSupport.checkTestFolder(pgnNameList, PgnTest.BASIC_PROMOTION_PIECE_BLACK);
   }
 
   @SuppressWarnings("static-method")
@@ -53,21 +53,21 @@ class TestBasicPromotionPieceBlack extends AbstractTestBasic {
       logger.info(testCase.pgnName());
 
       switch (testCase.pgnName()) {
-        case "01_black_promotion_piece_capture_no_rook.pgn" -> checkPromotion(BLACK, H2, H1, Piece.NONE,
+        case "01_black_promotion_piece_capture_no_rook.pgn" -> TestBasicSupport.checkPromotion(BLACK, H2, H1, Piece.NONE,
             PromotionPieceType.ROOK, board);
-        case "02_black_promotion_piece_capture_no_knight.pgn" -> checkPromotion(BLACK, H2, H1, Piece.NONE,
+        case "02_black_promotion_piece_capture_no_knight.pgn" -> TestBasicSupport.checkPromotion(BLACK, H2, H1, Piece.NONE,
             PromotionPieceType.KNIGHT, board);
-        case "03_black_promotion_piece_capture_no_bishop.pgn" -> checkPromotion(BLACK, H2, H1, Piece.NONE,
+        case "03_black_promotion_piece_capture_no_bishop.pgn" -> TestBasicSupport.checkPromotion(BLACK, H2, H1, Piece.NONE,
             PromotionPieceType.BISHOP, board);
-        case "04_black_promotion_piece_capture_no_queen.pgn" -> checkPromotion(BLACK, H2, H1, Piece.NONE,
+        case "04_black_promotion_piece_capture_no_queen.pgn" -> TestBasicSupport.checkPromotion(BLACK, H2, H1, Piece.NONE,
             PromotionPieceType.QUEEN, board);
-        case "05_black_promotion_piece_capture_yes_rook.pgn" -> checkPromotion(BLACK, B2, C1, Piece.WHITE_BISHOP,
+        case "05_black_promotion_piece_capture_yes_rook.pgn" -> TestBasicSupport.checkPromotion(BLACK, B2, C1, Piece.WHITE_BISHOP,
             PromotionPieceType.ROOK, board);
-        case "06_black_promotion_piece_capture_yes_knight.pgn" -> checkPromotion(BLACK, B2, C1, Piece.WHITE_BISHOP,
+        case "06_black_promotion_piece_capture_yes_knight.pgn" -> TestBasicSupport.checkPromotion(BLACK, B2, C1, Piece.WHITE_BISHOP,
             PromotionPieceType.KNIGHT, board);
-        case "07_black_promotion_piece_capture_yes_bishop.pgn" -> checkPromotion(BLACK, B2, C1, Piece.WHITE_BISHOP,
+        case "07_black_promotion_piece_capture_yes_bishop.pgn" -> TestBasicSupport.checkPromotion(BLACK, B2, C1, Piece.WHITE_BISHOP,
             PromotionPieceType.BISHOP, board);
-        case "08_black_promotion_piece_capture_yes_queen.pgn" -> checkPromotion(BLACK, B2, C1, Piece.WHITE_BISHOP,
+        case "08_black_promotion_piece_capture_yes_queen.pgn" -> TestBasicSupport.checkPromotion(BLACK, B2, C1, Piece.WHITE_BISHOP,
             PromotionPieceType.QUEEN, board);
         default -> throw new IllegalArgumentException();
       }

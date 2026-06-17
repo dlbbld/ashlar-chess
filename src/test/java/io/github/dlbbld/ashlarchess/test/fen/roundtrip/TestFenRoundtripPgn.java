@@ -20,7 +20,7 @@ import io.github.dlbbld.ashlarchess.test.model.PgnTestCaseList;
 import io.github.dlbbld.ashlarchess.test.pgn.parser.PgnCacheForStrictPgnParserTestCases;
 import io.github.dlbbld.ashlarchess.test.pgn.setup.PgnTestCaseCatalog;
 
-class TestFenRoundtripPgn extends AbstractTestFenRoundtrip {
+class TestFenRoundtripPgn {
 
   private static final Logger logger = Nulls.getLogger(TestFenRoundtripPgn.class);
 
@@ -59,7 +59,7 @@ class TestFenRoundtripPgn extends AbstractTestFenRoundtrip {
       board.moveStrict(move.san());
     }
     final List<MoveSpecification> moveList = board.getPerformedMoveSpecificationList();
-    checFenRoundtrip(pgnGame.startFen().fen(), moveList);
+    TestFenRoundtripSupport.checFenRoundtrip(pgnGame.startFen().fen(), moveList);
   }
 
 }
