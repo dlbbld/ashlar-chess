@@ -3,9 +3,7 @@
 
 package io.github.dlbbld.ashlarchess.common.utility;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
@@ -18,8 +16,6 @@ public final class BasicUtility {
 
   private static final String SPACE_SEPARATOR_LIST = " ";
 
-  private static final String DATE_PATTERN = "yyyy.MM.dd";
-
   private BasicUtility() {
   }
 
@@ -29,12 +25,6 @@ public final class BasicUtility {
 
   public static String calculateSpaceSeparatedList(List<String> list) {
     return Nulls.join(SPACE_SEPARATOR_LIST, list);
-  }
-
-  @SuppressWarnings("null")
-  public static String calculateTodayDate() {
-    // SimpleDateFormat should not be static according to SonarLint reason gives is threading
-    return new SimpleDateFormat(DATE_PATTERN).format(new Date());
   }
 
   public static <E> E calculateOnlyElement(Set<E> set) {
