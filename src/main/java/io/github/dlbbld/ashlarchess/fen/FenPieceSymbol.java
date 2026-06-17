@@ -4,6 +4,7 @@
 package io.github.dlbbld.ashlarchess.fen;
 
 import io.github.dlbbld.ashlarchess.board.enums.Piece;
+import io.github.dlbbld.ashlarchess.common.exceptions.NonePointerException;
 
 public enum FenPieceSymbol {
 
@@ -34,6 +35,24 @@ public enum FenPieceSymbol {
 
   public Piece piece() {
     return piece;
+  }
+
+  public static FenPieceSymbol of(Piece piece) {
+    return switch (piece) {
+      case WHITE_PAWN -> WHITE_PAWN;
+      case WHITE_ROOK -> WHITE_ROOK;
+      case WHITE_KNIGHT -> WHITE_KNIGHT;
+      case WHITE_BISHOP -> WHITE_BISHOP;
+      case WHITE_QUEEN -> WHITE_QUEEN;
+      case WHITE_KING -> WHITE_KING;
+      case BLACK_PAWN -> BLACK_PAWN;
+      case BLACK_ROOK -> BLACK_ROOK;
+      case BLACK_KNIGHT -> BLACK_KNIGHT;
+      case BLACK_BISHOP -> BLACK_BISHOP;
+      case BLACK_QUEEN -> BLACK_QUEEN;
+      case BLACK_KING -> BLACK_KING;
+      case NONE -> throw new NonePointerException();
+    };
   }
 
   public static boolean exists(char pieceLetter) {

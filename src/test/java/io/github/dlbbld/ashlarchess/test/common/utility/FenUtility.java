@@ -5,7 +5,7 @@ package io.github.dlbbld.ashlarchess.test.common.utility;
 
 import io.github.dlbbld.ashlarchess.board.enums.Side;
 import io.github.dlbbld.ashlarchess.common.Nulls;
-import io.github.dlbbld.ashlarchess.fen.FenSideSymbolUtility;
+import io.github.dlbbld.ashlarchess.fen.FenSideSymbol;
 
 public abstract class FenUtility {
 
@@ -14,7 +14,7 @@ public abstract class FenUtility {
 
     fen.append(piecePlacement);
     fen.append(" ");
-    fen.append(FenSideSymbolUtility.calculate(side).sideLetter());
+    fen.append(FenSideSymbol.of(side).sideLetter());
     fen.append(" - - 0 100");
 
     return Nulls.toString(fen);

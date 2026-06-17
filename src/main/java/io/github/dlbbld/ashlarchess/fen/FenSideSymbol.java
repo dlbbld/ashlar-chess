@@ -4,6 +4,7 @@
 package io.github.dlbbld.ashlarchess.fen;
 
 import io.github.dlbbld.ashlarchess.board.enums.Side;
+import io.github.dlbbld.ashlarchess.common.exceptions.NonePointerException;
 
 public enum FenSideSymbol {
 
@@ -24,6 +25,14 @@ public enum FenSideSymbol {
 
   public Side side() {
     return side;
+  }
+
+  public static FenSideSymbol of(Side side) {
+    return switch (side) {
+      case WHITE -> WHITE;
+      case BLACK -> BLACK;
+      case NONE -> throw new NonePointerException();
+    };
   }
 
   public static boolean exists(char sideLetter) {

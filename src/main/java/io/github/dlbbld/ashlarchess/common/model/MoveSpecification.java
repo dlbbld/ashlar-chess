@@ -5,7 +5,6 @@ package io.github.dlbbld.ashlarchess.common.model;
 
 import io.github.dlbbld.ashlarchess.board.enums.CastlingMove;
 import io.github.dlbbld.ashlarchess.board.enums.PromotionPieceType;
-import io.github.dlbbld.ashlarchess.board.enums.PromotionPieceTypeUtility;
 import io.github.dlbbld.ashlarchess.board.enums.Square;
 import io.github.dlbbld.ashlarchess.common.exceptions.ProgrammingMistakeException;
 
@@ -79,7 +78,7 @@ public record MoveSpecification(Square fromSquare, Square toSquare, CastlingMove
     }
 
     if (this.promotionPieceType() != move.promotionPieceType()) {
-      return PromotionPieceTypeUtility.compareForMoveOrdering(this.promotionPieceType(), move.promotionPieceType());
+      return this.promotionPieceType().compareForMoveOrdering(move.promotionPieceType());
     }
 
     // code cannot come here

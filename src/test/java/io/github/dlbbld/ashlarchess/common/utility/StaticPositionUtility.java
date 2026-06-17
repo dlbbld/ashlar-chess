@@ -21,7 +21,7 @@ import io.github.dlbbld.ashlarchess.board.model.UpdateSquare;
 import io.github.dlbbld.ashlarchess.common.Nulls;
 import io.github.dlbbld.ashlarchess.common.exceptions.ProgrammingMistakeException;
 import io.github.dlbbld.ashlarchess.common.model.MoveSpecification;
-import io.github.dlbbld.ashlarchess.fen.FenPieceSymbolUtility;
+import io.github.dlbbld.ashlarchess.fen.FenPieceSymbol;
 import io.github.dlbbld.ashlarchess.moves.CastlingUtility;
 import io.github.dlbbld.ashlarchess.moves.EnPassantCaptureUtility;
 import io.github.dlbbld.ashlarchess.moves.PromotionUtility;
@@ -117,7 +117,7 @@ public abstract class StaticPositionUtility {
             piecePlacement.append(consecutiveEmptySquares);
             consecutiveEmptySquares = 0;
           }
-          piecePlacement.append(FenPieceSymbolUtility.calculate(pieceOnSquare).pieceLetter());
+          piecePlacement.append(FenPieceSymbol.of(pieceOnSquare).pieceLetter());
         }
       }
       if (rankNumber != 1) {
