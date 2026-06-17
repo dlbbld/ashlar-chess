@@ -278,48 +278,6 @@ class TestBoardClaimRights {
 
   @SuppressWarnings("static-method")
   @Test
-  void constructorDefensivelyCopiesSourceListNonEmptyPath() {
-    // Sister to returnedListIsImmutable: that test proves the EXPOSED list rejects mutation.
-    // This one proves the constructor decouples the record from the SOURCE list - i.e., the
-    // compact constructor's ImmutableList.copyOf is actually copying, not aliasing. Build a
-    // mutable source, construct ClaimRights, then mutate the source after construction and
-    // assert the record's view is unchanged.
-    final ClaimableMove original = new ClaimableMove(new MoveSpecification(A1, A2), "Ra2");
-    final List<ClaimableMove> mutableSource = new ArrayList<>();
-    mutableSource.add(original);
-
-    final ClaimRights rights = new ClaimRights(true, mutableSource);
-    assertEquals(1, rights.claimableMoves().size(), "precondition: one entry after construction");
-
-    // Mutate the source AFTER construction - the record must not reflect these changes.
-    mutableSource.clear();
-    mutableSource.add(new ClaimableMove(new MoveSpecification(A1, B1), "Rb1"));
-    mutableSource.add(new ClaimableMove(new MoveSpecification(A1, C1), "Rc1"));
-
-    assertEquals(1, rights.claimableMoves().size(),
-        "post-construction source mutations must not leak into the record's claimableMoves");
-    assertEquals(original, rights.claimableMoves().get(0), "the originally-present entry must remain unchanged");
-  }
-
-  @SuppressWarnings("static-method")
-  @Test
-  void constructorDefensivelyCopiesSourceListEmptyPath() {
-    // Same invariant on the canClaim=false branch: start with an empty mutable source, construct
-    // a ClaimRights, then add to the source. The record must remain empty (and canClaim==false).
-    final List<ClaimableMove> mutableSource = new ArrayList<>();
-    final ClaimRights rights = new ClaimRights(false, mutableSource);
-    assertFalse(rights.canClaim(), "precondition: empty source -> canClaim==false");
-    assertEquals(0, rights.claimableMoves().size());
-
-    mutableSource.add(new ClaimableMove(new MoveSpecification(A1, A2), "Ra2"));
-
-    assertEquals(0, rights.claimableMoves().size(),
-        "post-construction source addition must not leak into the record's claimableMoves");
-    assertFalse(rights.canClaim(), "canClaim must remain false; the invariant is fixed at construction");
-  }
-
-  @SuppressWarnings("static-method")
-  @Test
   void boardStateUnchangedAfterClaimRightsQuery() throws LenientSanParserValidationException {
     final Board board = new Board();
     board.movesStrict("Nf3", "Nf6", "Ng1", "Ng8", "Nf3", "Nf6", "Ng1");

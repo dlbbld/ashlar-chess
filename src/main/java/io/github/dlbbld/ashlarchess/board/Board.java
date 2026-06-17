@@ -674,7 +674,7 @@ public class Board {
       this.unmove();
       claimable.add(new ClaimableMove(spec, san));
     }
-    return new ClaimRights(!claimable.isEmpty(), claimable);
+    return new ClaimRights(!claimable.isEmpty(), Nulls.copyOfList(claimable));
   }
 
   public int getHalfMoveClock() {
