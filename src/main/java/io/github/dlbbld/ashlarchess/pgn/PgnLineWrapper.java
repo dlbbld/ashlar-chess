@@ -9,7 +9,10 @@ import java.util.List;
 import io.github.dlbbld.ashlarchess.common.Nulls;
 import io.github.dlbbld.ashlarchess.common.exceptions.ProgrammingMistakeException;
 
-abstract class PgnLineWrapper {
+final class PgnLineWrapper {
+
+  private PgnLineWrapper() {
+  }
 
   /**
    * Wraps {@code line} into at most {@code lineLength}-char lines, splitting on spaces - except inside {@code {...}}

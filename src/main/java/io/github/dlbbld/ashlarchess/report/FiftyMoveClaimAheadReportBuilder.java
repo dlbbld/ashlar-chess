@@ -16,7 +16,10 @@ import io.github.dlbbld.ashlarchess.common.model.MoveSpecification;
 import io.github.dlbbld.ashlarchess.common.utility.BasicChessUtility;
 import io.github.dlbbld.ashlarchess.model.LegalMove;
 
-abstract class FiftyMoveClaimAheadReportBuilder {
+final class FiftyMoveClaimAheadReportBuilder {
+
+  private FiftyMoveClaimAheadReportBuilder() {
+  }
 
   /**
    * Builds the 50-move claim-ahead report under the missed-opportunity filter: only those boundary moves are emitted

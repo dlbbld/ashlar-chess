@@ -10,7 +10,10 @@ import java.util.List;
 import io.github.dlbbld.ashlarchess.common.Nulls;
 import io.github.dlbbld.ashlarchess.common.model.DynamicPosition;
 
-abstract class ThreefoldExistingReportBuilder {
+final class ThreefoldExistingReportBuilder {
+
+  private ThreefoldExistingReportBuilder() {
+  }
 
   /**
    * Builds the "threefolds and beyond" report from the played history. Groups are ordered by

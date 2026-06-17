@@ -9,7 +9,10 @@ import java.util.List;
 import io.github.dlbbld.ashlarchess.common.Nulls;
 import io.github.dlbbld.ashlarchess.common.model.DynamicPosition;
 
-abstract class RepetitionGrouping {
+final class RepetitionGrouping {
+
+  private RepetitionGrouping() {
+  }
 
   static List<List<MoveRecord>> calculateRepetitionListList(List<MoveRecord> moveRecordList,
       int countRepetitionThreshold) {

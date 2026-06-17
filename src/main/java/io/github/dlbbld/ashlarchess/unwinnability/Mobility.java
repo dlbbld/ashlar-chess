@@ -22,7 +22,10 @@ import io.github.dlbbld.ashlarchess.common.exceptions.ProgrammingMistakeExceptio
 import io.github.dlbbld.ashlarchess.common.utility.BasicUtility;
 
 //Figure 7 Mobility algorithm.
-class Mobility {
+final class Mobility {
+
+  private Mobility() {
+  }
 
   // Inputs: a position
   // Output: mobility solution {MP!s}P in pos,s in S

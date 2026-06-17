@@ -29,7 +29,10 @@ import io.github.dlbbld.ashlarchess.board.enums.Square;
 import io.github.dlbbld.ashlarchess.squares.KingNonCastlingEmptyBoardSquares;
 import io.github.dlbbld.ashlarchess.squares.KnightEmptyBoardSquares;
 
-class MobilityFunctions {
+final class MobilityFunctions {
+
+  private MobilityFunctions() {
+  }
 
   public static Set<Square> predecessorsCapture(PiecePlacement piecePlacement, Square square) {
     switch (piecePlacement.pieceType()) {

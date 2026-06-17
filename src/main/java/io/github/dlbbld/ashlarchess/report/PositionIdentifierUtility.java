@@ -14,7 +14,10 @@ import io.github.dlbbld.ashlarchess.common.Nulls;
 import io.github.dlbbld.ashlarchess.common.exceptions.ProgrammingMistakeException;
 import io.github.dlbbld.ashlarchess.common.model.DynamicPosition;
 
-abstract class PositionIdentifierUtility {
+final class PositionIdentifierUtility {
+
+  private PositionIdentifierUtility() {
+  }
 
   private static final int BASE = 26;
   private static final int ASCII_TABLE_BEFORE_UPPER_CASE_A_NUMBER = 64;

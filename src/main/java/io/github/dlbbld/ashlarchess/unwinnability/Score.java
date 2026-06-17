@@ -13,7 +13,10 @@ import io.github.dlbbld.ashlarchess.model.LegalMove;
 import io.github.dlbbld.ashlarchess.model.LegalMoveKind;
 
 // Figure 12 Score routine used in Figure 5. Algorithm Going-to-corner is defined in Figure 13.
-class Score {
+final class Score {
+
+  private Score() {
+  }
 
   // Inputs: position, legal move in the position
   // Output: Normal, Reward, or Punish (variation score)

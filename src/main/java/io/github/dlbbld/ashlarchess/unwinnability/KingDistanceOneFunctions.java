@@ -9,7 +9,10 @@ import java.util.TreeSet;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
 import io.github.dlbbld.ashlarchess.board.enums.Square;
 
-class KingDistanceOneFunctions {
+final class KingDistanceOneFunctions {
+
+  private KingDistanceOneFunctions() {
+  }
 
   public static Set<Square> calculateDiagonalSquares(Square sq) {
     final Set<Square> result = new TreeSet<>();

@@ -15,7 +15,10 @@ import io.github.dlbbld.ashlarchess.board.enums.Square;
  * Internal piece-presence checks used by SAN piece-exists validation. Not part of the public API: SAN parsing is the
  * public entry point; the per-square scans are an implementation detail.
  */
-abstract class SanPieceCheck {
+final class SanPieceCheck {
+
+  private SanPieceCheck() {
+  }
 
   static boolean calculateHasPieceType(Side side, PieceType pieceType, BitboardPosition bitboardPosition) {
     final Piece piece = Piece.of(side, pieceType);

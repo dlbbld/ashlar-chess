@@ -11,7 +11,10 @@ import io.github.dlbbld.ashlarchess.board.enums.Square;
  * Shared helper for the empty-board sliding-piece (rook, bishop, queen) tables: walk from a starting (file, rank)
  * coordinate in a given direction (fileDelta, rankDelta) until off the board, collecting each square visited.
  */
-abstract class RayUtility {
+final class RayUtility {
+
+  private RayUtility() {
+  }
 
   @SuppressWarnings("null")
   static ImmutableList<Square> ray(int fromFile, int fromRank, int fileDelta, int rankDelta) {

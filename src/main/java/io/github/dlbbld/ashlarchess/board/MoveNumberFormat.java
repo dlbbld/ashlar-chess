@@ -6,7 +6,10 @@ package io.github.dlbbld.ashlarchess.board;
 import io.github.dlbbld.ashlarchess.board.enums.AddSpace;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
 
-public abstract class MoveNumberFormat {
+public final class MoveNumberFormat {
+
+  private MoveNumberFormat() {
+  }
 
   public static String calculateMoveNumberAndSanWithSpace(int fullMoveNumber, Side havingMove, String san) {
     return calculateMoveNumberAndSan(fullMoveNumber, havingMove, san, AddSpace.YES);

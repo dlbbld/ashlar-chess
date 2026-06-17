@@ -11,7 +11,10 @@ import io.github.dlbbld.ashlarchess.board.enums.Side;
 import io.github.dlbbld.ashlarchess.board.enums.Square;
 import io.github.dlbbld.ashlarchess.common.utility.BasicUtility;
 
-class SemiStaticFunctions {
+final class SemiStaticFunctions {
+
+  private SemiStaticFunctions() {
+  }
 
   static Set<PiecePlacement> assistants(Square s, Side c, MobilitySolution ms) {
     final Set<PiecePlacement> result = new TreeSet<>();

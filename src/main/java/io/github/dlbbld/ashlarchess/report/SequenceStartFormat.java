@@ -15,7 +15,10 @@ import io.github.dlbbld.ashlarchess.board.enums.Side;
  * the starting side has made {@code (c+1)/2} of the run's moves and the other side {@code c/2} (so at an even clock -
  * the 50/50 and 75/75 thresholds - they are equal, and at an odd clock they differ by one).
  */
-abstract class SequenceStartFormat {
+final class SequenceStartFormat {
+
+  private SequenceStartFormat() {
+  }
 
   /**
    * The start anchor: {@code [Starting position] (W/B)} for an initial-FEN start, else {@code <first move> (W/B)}.

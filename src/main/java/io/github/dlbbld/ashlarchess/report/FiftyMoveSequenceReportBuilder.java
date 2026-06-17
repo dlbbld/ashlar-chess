@@ -15,7 +15,10 @@ import io.github.dlbbld.ashlarchess.board.enums.Side;
 import io.github.dlbbld.ashlarchess.common.Nulls;
 import io.github.dlbbld.ashlarchess.common.constants.ChessConstants;
 
-abstract class FiftyMoveSequenceReportBuilder {
+final class FiftyMoveSequenceReportBuilder {
+
+  private FiftyMoveSequenceReportBuilder() {
+  }
 
   /**
    * Walks the played history once, opening a new {@link SequenceStart} whenever the clock transitions to 1 (first

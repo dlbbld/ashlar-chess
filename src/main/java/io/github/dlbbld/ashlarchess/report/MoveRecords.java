@@ -19,7 +19,10 @@ import io.github.dlbbld.ashlarchess.model.LegalMove;
  * accessors rather than Board pre-bundling them. {@link #played(Board)} replays from the initial FEN, so it is
  * {@code O(moves * legal-move-generation)} - intended for report building, not hot paths.
  */
-abstract class MoveRecords {
+final class MoveRecords {
+
+  private MoveRecords() {
+  }
 
   static ImmutableList<MoveRecord> played(Board board) {
     final ImmutableList<MoveSpecification> moves = board.getPerformedMoveSpecificationList();

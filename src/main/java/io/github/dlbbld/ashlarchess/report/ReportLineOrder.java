@@ -27,7 +27,10 @@ import java.util.List;
  * {@code priorOccurrences ++ claimAheadMove}) and by {@link ThreefoldExistingReportBuilder} (one group per repeated
  * position; displayed moves are {@code occurrences}).
  */
-abstract class ReportLineOrder {
+final class ReportLineOrder {
+
+  private ReportLineOrder() {
+  }
 
   static final Comparator<ClaimAheadEntry> CLAIM_AHEAD_COMPARATOR = (a, b) -> compareKeys(claimAheadSortKey(a),
       claimAheadSortKey(b));

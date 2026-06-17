@@ -12,7 +12,10 @@ import org.eclipse.jdt.annotation.Nullable;
 
 import io.github.dlbbld.ashlarchess.board.enums.Side;
 
-abstract class FiftyMoveSequencePrint {
+final class FiftyMoveSequencePrint {
+
+  private FiftyMoveSequencePrint() {
+  }
 
   /**
    * Renders the 50-move-sequence report as one line per sequence, anchored at the start, each threshold crossed, and

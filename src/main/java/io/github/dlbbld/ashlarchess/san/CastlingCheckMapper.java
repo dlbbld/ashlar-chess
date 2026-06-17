@@ -25,7 +25,10 @@ import io.github.dlbbld.ashlarchess.enums.CastlingCheck;
  * Both inner switches are exhaustive (no {@code default:}) so any new value added to {@code CastlingCheck} or
  * {@code CastlingRightLoss} causes a compile error here.
  */
-abstract class CastlingCheckMapper {
+final class CastlingCheckMapper {
+
+  private CastlingCheckMapper() {
+  }
 
   public static SanValidationProblem map(CastlingCheck castlingCheck, CastlingRightLoss castlingRightLoss) {
     return switch (castlingCheck) {

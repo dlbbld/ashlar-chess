@@ -9,7 +9,10 @@ import java.util.List;
 import io.github.dlbbld.ashlarchess.board.MoveNumberFormat;
 import io.github.dlbbld.ashlarchess.common.constants.ChessConstants;
 
-abstract class FiftyMoveClaimAheadPrint {
+final class FiftyMoveClaimAheadPrint {
+
+  private FiftyMoveClaimAheadPrint() {
+  }
 
   /**
    * Placeholder where a specific candidate's SAN would otherwise go. The 50-move claim-ahead section emits one entry

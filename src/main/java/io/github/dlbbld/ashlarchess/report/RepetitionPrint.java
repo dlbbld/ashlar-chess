@@ -12,7 +12,10 @@ import com.google.common.collect.ImmutableList;
 import io.github.dlbbld.ashlarchess.common.Nulls;
 import io.github.dlbbld.ashlarchess.common.model.DynamicPosition;
 
-abstract class RepetitionPrint {
+final class RepetitionPrint {
+
+  private RepetitionPrint() {
+  }
 
   static List<List<String>> render(ThreefoldExistingReport report, Map<DynamicPosition, String> positionIdentifierMap) {
 

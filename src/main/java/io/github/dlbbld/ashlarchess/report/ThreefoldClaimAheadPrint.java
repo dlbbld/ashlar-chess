@@ -12,7 +12,10 @@ import com.google.common.collect.ImmutableList;
 import io.github.dlbbld.ashlarchess.common.Nulls;
 import io.github.dlbbld.ashlarchess.common.model.DynamicPosition;
 
-abstract class ThreefoldClaimAheadPrint {
+final class ThreefoldClaimAheadPrint {
+
+  private ThreefoldClaimAheadPrint() {
+  }
 
   static List<List<String>> render(ThreefoldClaimAheadReport report,
       Map<DynamicPosition, String> positionIdentifierMap) {

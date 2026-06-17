@@ -21,7 +21,10 @@ import io.github.dlbbld.ashlarchess.squares.KingNonCastlingEmptyBoardSquares;
 
 //a We could design a more complete check that looks at all neighbours of s, but the condition on
 //step 10 would be significantly more involved (to ensure monotonicity).
-class UnwinnableSemiStatic {
+final class UnwinnableSemiStatic {
+
+  private UnwinnableSemiStatic() {
+  }
 
   // Inputs: position, intended winner, solution to the mobility problem
   // Output: bool (true if position is declared unwinnable, false otherwise)

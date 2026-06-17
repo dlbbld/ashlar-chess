@@ -11,7 +11,10 @@ import com.google.common.collect.ImmutableSet;
 import io.github.dlbbld.ashlarchess.board.enums.Square;
 import io.github.dlbbld.ashlarchess.common.exceptions.ProgrammingMistakeException;
 
-abstract class ValidateMoveNumberUtility {
+final class ValidateMoveNumberUtility {
+
+  private ValidateMoveNumberUtility() {
+  }
 
   public static <E extends OrthogonalRange> void validateOrthogonalMoveNumber(ImmutableMap<Square, E> mapOfListList,
       int numberOfExpectedMoves) {

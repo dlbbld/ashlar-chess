@@ -16,7 +16,10 @@ import io.github.dlbbld.ashlarchess.common.model.MoveSpecification;
 import io.github.dlbbld.ashlarchess.fen.model.Fen;
 import io.github.dlbbld.ashlarchess.model.LegalMove;
 
-abstract class ThreefoldClaimAheadReportBuilder {
+final class ThreefoldClaimAheadReportBuilder {
+
+  private ThreefoldClaimAheadReportBuilder() {
+  }
 
   /**
    * Builds the claim-ahead report by replaying the game on an internal fresh board. The {@code board} argument is

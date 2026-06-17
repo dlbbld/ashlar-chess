@@ -14,7 +14,10 @@ import io.github.dlbbld.ashlarchess.board.enums.SquareType;
  * Internal piece-count helpers used by FEN advanced validation. Not part of the public API: the library exposes parsing
  * and outcome reporting, not material arithmetic.
  */
-abstract class FenMaterialCount {
+final class FenMaterialCount {
+
+  private FenMaterialCount() {
+  }
 
   static int calculateNumberOfPieces(Side side, BitboardPosition bitboardPosition, PieceType pieceType) {
     final Piece piece = Piece.of(side, pieceType);

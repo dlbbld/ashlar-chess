@@ -23,7 +23,10 @@ import io.github.dlbbld.ashlarchess.model.LegalMoveKind;
 import io.github.dlbbld.ashlarchess.moves.CastlingUtility;
 
 //Figure 13 Going-to-corner routine used in Figure 12.
-class GoingToCorner {
+final class GoingToCorner {
+
+  private GoingToCorner() {
+  }
 
   // Inputs: position, legal move in the position, objective (Win or Lose)
   // Output: bool (indicating whether or not m is leading to a corner mating position)

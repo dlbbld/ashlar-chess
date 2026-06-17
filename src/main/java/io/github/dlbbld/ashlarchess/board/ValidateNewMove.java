@@ -26,7 +26,10 @@ import io.github.dlbbld.ashlarchess.enums.MovementCheck;
 import io.github.dlbbld.ashlarchess.exceptions.InvalidMoveException;
 import io.github.dlbbld.ashlarchess.moves.CastlingUtility;
 
-class ValidateNewMove {
+final class ValidateNewMove {
+
+  private ValidateNewMove() {
+  }
 
   public static MoveCheck validateNewMove(Board board, MoveSpecification moveSpecification)
       throws InvalidMoveException {
