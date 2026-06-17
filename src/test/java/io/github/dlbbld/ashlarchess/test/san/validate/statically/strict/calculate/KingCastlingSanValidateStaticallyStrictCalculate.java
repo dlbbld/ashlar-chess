@@ -22,7 +22,7 @@ import io.github.dlbbld.ashlarchess.san.SanParse;
 import io.github.dlbbld.ashlarchess.san.SanSymbol;
 import io.github.dlbbld.ashlarchess.san.SanTerminalMarker;
 
-public class KingCastlingSanValidateStaticallyStrictCalculate extends AbstractSanValidateStaticallyStrictCalculate {
+public class KingCastlingSanValidateStaticallyStrictCalculate {
 
   public static ImmutableMap<String, SanParse> calculateSanMap() {
 

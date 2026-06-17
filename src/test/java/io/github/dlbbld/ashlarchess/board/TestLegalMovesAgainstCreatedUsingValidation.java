@@ -27,7 +27,7 @@ import io.github.dlbbld.ashlarchess.exceptions.InvalidMoveException;
 import io.github.dlbbld.ashlarchess.model.LegalMove;
 import io.github.dlbbld.ashlarchess.model.PgnMove;
 import io.github.dlbbld.ashlarchess.pgn.PgnGame;
-import io.github.dlbbld.ashlarchess.squares.AbstractPotentialToSquares;
+import io.github.dlbbld.ashlarchess.squares.PotentialToSquaresSupport;
 import io.github.dlbbld.ashlarchess.test.RestrictTestConstants;
 import io.github.dlbbld.ashlarchess.test.model.PgnFen;
 import io.github.dlbbld.ashlarchess.test.model.PgnTestCaseList;
@@ -136,7 +136,7 @@ class TestLegalMovesAgainstCreatedUsingValidation {
           // not valid, so not adding
         }
       }
-      final Set<Square> potentialToSquareSet = AbstractPotentialToSquares.calculatePotentialToSquare(
+      final Set<Square> potentialToSquareSet = PotentialToSquaresSupport.calculatePotentialToSquare(
           StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), board.getEnPassantCaptureTargetSquare(),
           havingMove, fromSquare);
       // we cannot use all board squares - that get's too slow

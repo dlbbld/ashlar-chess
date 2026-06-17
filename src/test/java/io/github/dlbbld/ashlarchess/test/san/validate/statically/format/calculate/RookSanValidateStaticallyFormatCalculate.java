@@ -13,15 +13,16 @@ import com.google.common.collect.ImmutableMap;
 import io.github.dlbbld.ashlarchess.common.Nulls;
 import io.github.dlbbld.ashlarchess.san.SanParse;
 import io.github.dlbbld.ashlarchess.test.san.model.SanValidationFromTo;
+import io.github.dlbbld.ashlarchess.test.san.validate.statically.strict.calculate.SanValidateStaticallyStrictCalculateSupport;
 
-public class RookSanValidateStaticallyFormatCalculate extends AbstractSanValidateStaticallyFormatCalculate {
+public class RookSanValidateStaticallyFormatCalculate {
 
   static ImmutableMap<String, SanParse> calculateSanMap() {
 
     final Map<String, SanParse> sanValidateMap = new TreeMap<>();
 
-    for (final SanValidationFromTo model : calculateForPiece()) {
-      populateMap(sanValidateMap, model, ROOK);
+    for (final SanValidationFromTo model : SanValidateStaticallyFormatCalculateSupport.calculateForPiece()) {
+      SanValidateStaticallyStrictCalculateSupport.populateMap(sanValidateMap, model, ROOK);
     }
 
     return Nulls.copyOfMap(sanValidateMap);

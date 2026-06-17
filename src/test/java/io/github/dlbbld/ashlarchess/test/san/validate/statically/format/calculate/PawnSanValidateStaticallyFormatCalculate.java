@@ -12,26 +12,27 @@ import io.github.dlbbld.ashlarchess.board.enums.Rank;
 import io.github.dlbbld.ashlarchess.common.Nulls;
 import io.github.dlbbld.ashlarchess.san.SanParse;
 import io.github.dlbbld.ashlarchess.test.san.model.SanValidationFromTo;
+import io.github.dlbbld.ashlarchess.test.san.validate.statically.strict.calculate.SanValidateStaticallyStrictCalculateSupport;
 
-public class PawnSanValidateStaticallyFormatCalculate extends AbstractSanValidateStaticallyFormatCalculate {
+public class PawnSanValidateStaticallyFormatCalculate {
 
   static ImmutableMap<String, SanParse> calculateSanMap() {
     final Map<String, SanParse> sanValidateMap = new TreeMap<>();
 
     // promotion only on rank 1 and 8, non-promotion only on ranks 2-7
-    for (final SanValidationFromTo model : calculateWithoutDisambiguation()) {
+    for (final SanValidationFromTo model : SanValidateStaticallyFormatCalculateSupport.calculateWithoutDisambiguation()) {
       if (isPromotionRank(model)) {
-        populatePawnPromotionMap(sanValidateMap, model, false);
+        SanValidateStaticallyStrictCalculateSupport.populatePawnPromotionMap(sanValidateMap, model, false);
       } else {
-        populatePawnNonPromotionMap(sanValidateMap, model, false);
+        SanValidateStaticallyStrictCalculateSupport.populatePawnNonPromotionMap(sanValidateMap, model, false);
       }
     }
 
-    for (final SanValidationFromTo model : calculateWithFile()) {
+    for (final SanValidationFromTo model : SanValidateStaticallyFormatCalculateSupport.calculateWithFile()) {
       if (isPromotionRank(model)) {
-        populatePawnPromotionMap(sanValidateMap, model, true);
+        SanValidateStaticallyStrictCalculateSupport.populatePawnPromotionMap(sanValidateMap, model, true);
       } else {
-        populatePawnNonPromotionMap(sanValidateMap, model, true);
+        SanValidateStaticallyStrictCalculateSupport.populatePawnNonPromotionMap(sanValidateMap, model, true);
       }
     }
 

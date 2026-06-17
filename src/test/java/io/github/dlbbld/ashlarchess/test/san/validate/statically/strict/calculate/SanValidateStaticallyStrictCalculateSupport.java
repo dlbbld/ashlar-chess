@@ -21,7 +21,10 @@ import io.github.dlbbld.ashlarchess.san.SanTerminalMarker;
 import io.github.dlbbld.ashlarchess.test.san.SanCalculate;
 import io.github.dlbbld.ashlarchess.test.san.model.SanValidationFromTo;
 
-public abstract class AbstractSanValidateStaticallyStrictCalculate {
+public final class SanValidateStaticallyStrictCalculateSupport {
+
+  private SanValidateStaticallyStrictCalculateSupport() {
+  }
 
   public static SanValidationFromTo calculateFromFileAndOrRankTo(String enumName, PieceType movingPieceType) {
 

@@ -14,12 +14,12 @@ import io.github.dlbbld.ashlarchess.board.enums.Side;
 import io.github.dlbbld.ashlarchess.board.enums.Square;
 import io.github.dlbbld.ashlarchess.board.enums.SquareUtility;
 
-public class PawnPotentialToSquares extends AbstractPotentialToSquares {
+public class PawnPotentialToSquares {
 
   public static Set<Square> calculatePawnPotentialToSquares(StaticPosition staticPosition,
       Square enPassantCaptureTargetSquare, Square fromSquare, Side havingMove) {
 
-    checkPiece(staticPosition, havingMove, fromSquare, PAWN);
+    ToSquaresSupport.checkPiece(staticPosition, havingMove, fromSquare, PAWN);
 
     final Set<Square> advanceSquareSet = calculatePawnPotentialAdvanceToSquares(staticPosition, fromSquare, havingMove);
     final Set<Square> diagonalSquareSet = calculatePawnPotentialDiagonalToSquares(staticPosition,
@@ -34,7 +34,7 @@ public class PawnPotentialToSquares extends AbstractPotentialToSquares {
   public static Set<Square> calculatePawnPotentialAdvanceToSquares(StaticPosition staticPosition, Square fromSquare,
       Side havingMove) {
 
-    checkPiece(staticPosition, havingMove, fromSquare, PAWN);
+    ToSquaresSupport.checkPiece(staticPosition, havingMove, fromSquare, PAWN);
 
     final Set<Square> advanceSquareSet = new TreeSet<>();
 
@@ -66,7 +66,7 @@ public class PawnPotentialToSquares extends AbstractPotentialToSquares {
   public static Set<Square> calculatePawnPotentialDiagonalToSquares(StaticPosition staticPosition,
       Square enPassantCaptureTargetSquare, Square fromSquare, Side havingMove) {
 
-    checkPiece(staticPosition, havingMove, fromSquare, PAWN);
+    ToSquaresSupport.checkPiece(staticPosition, havingMove, fromSquare, PAWN);
 
     final Set<Square> diagonalSquareSet = new TreeSet<>();
 

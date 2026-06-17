@@ -15,15 +15,15 @@ import io.github.dlbbld.ashlarchess.san.SanParse;
 import io.github.dlbbld.ashlarchess.test.san.model.SanValidationFromTo;
 import io.github.dlbbld.ashlarchess.test.san.validate.statically.strict.enums.BishopSanValidateStaticallyStrict;
 
-public class BishopSanValidateStaticallyStrictCalculate extends AbstractSanValidateStaticallyStrictCalculate {
+public class BishopSanValidateStaticallyStrictCalculate {
 
   static ImmutableMap<String, SanParse> calculateSanMap() {
 
     final Map<String, SanParse> sanValidateMap = new TreeMap<>();
 
     for (final String enumName : BishopSanValidateStaticallyStrict.VALUES) {
-      final SanValidationFromTo model = calculateFromFileAndOrRankTo(enumName, BISHOP);
-      populateMap(sanValidateMap, model, BISHOP);
+      final SanValidationFromTo model = SanValidateStaticallyStrictCalculateSupport.calculateFromFileAndOrRankTo(enumName, BISHOP);
+      SanValidateStaticallyStrictCalculateSupport.populateMap(sanValidateMap, model, BISHOP);
     }
 
     return Nulls.copyOfMap(sanValidateMap);

@@ -11,13 +11,13 @@ import io.github.dlbbld.ashlarchess.board.StaticPosition;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
 import io.github.dlbbld.ashlarchess.board.enums.Square;
 
-class BishopRangeSquares extends AbstractRangeSquares {
+class BishopRangeSquares {
 
   public static Set<Square> calculateBishopRangeSquares(StaticPosition staticPosition, Square fromSquare,
       Side havingMove, boolean isAllowOwnPiece) {
 
     final BishopRange bishopRange = BishopEmptyBoardSquares.getBishopSquares(fromSquare);
-    return calculateDiagonalRangeSquare(staticPosition, havingMove, fromSquare, BISHOP, bishopRange, isAllowOwnPiece);
+    return RangeSquaresSupport.calculateDiagonalRangeSquare(staticPosition, havingMove, fromSquare, BISHOP, bishopRange, isAllowOwnPiece);
 
   }
 

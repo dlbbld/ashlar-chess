@@ -13,9 +13,12 @@ import io.github.dlbbld.ashlarchess.board.enums.File;
 import io.github.dlbbld.ashlarchess.board.enums.Rank;
 import io.github.dlbbld.ashlarchess.board.enums.Square;
 import io.github.dlbbld.ashlarchess.test.san.model.SanValidationFromTo;
-import io.github.dlbbld.ashlarchess.test.san.validate.statically.strict.calculate.AbstractSanValidateStaticallyStrictCalculate;
+import io.github.dlbbld.ashlarchess.test.san.validate.statically.strict.calculate.SanValidateStaticallyStrictCalculateSupport;
 
-public class AbstractSanValidateStaticallyFormatCalculate extends AbstractSanValidateStaticallyStrictCalculate {
+public final class SanValidateStaticallyFormatCalculateSupport {
+
+  private SanValidateStaticallyFormatCalculateSupport() {
+  }
 
   public static List<SanValidationFromTo> calculateWithoutDisambiguation() {
     final List<SanValidationFromTo> result = new ArrayList<>();

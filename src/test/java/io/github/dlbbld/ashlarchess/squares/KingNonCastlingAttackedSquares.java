@@ -11,12 +11,12 @@ import io.github.dlbbld.ashlarchess.board.StaticPosition;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
 import io.github.dlbbld.ashlarchess.board.enums.Square;
 
-class KingNonCastlingAttackedSquares extends AbstractAttackedSquares {
+class KingNonCastlingAttackedSquares {
 
   public static Set<Square> calculateKingNonCastlingAttackedSquares(StaticPosition staticPosition, Square fromSquare,
       Side havingMove) {
 
-    checkPiece(staticPosition, havingMove, fromSquare, KING);
+    ToSquaresSupport.checkPiece(staticPosition, havingMove, fromSquare, KING);
 
     return KingNonCastlingEmptyBoardSquares.getKingSquares(fromSquare);
   }

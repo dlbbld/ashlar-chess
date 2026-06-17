@@ -24,7 +24,7 @@ import io.github.dlbbld.ashlarchess.test.san.model.SanValidationFromTo;
 import io.github.dlbbld.ashlarchess.test.san.validate.statically.strict.enums.PawnBlackSanValidateStaticallyStrict;
 import io.github.dlbbld.ashlarchess.test.san.validate.statically.strict.enums.PawnWhiteSanValidateStaticallyStrict;
 
-public class PawnSanValidateStaticallyStrictCalculate extends AbstractSanValidateStaticallyStrictCalculate {
+public class PawnSanValidateStaticallyStrictCalculate {
 
   static ImmutableMap<String, SanParse> calculateSanMap(Side side) {
     final Map<String, SanParse> sanValidateMap = new TreeMap<>();
@@ -50,9 +50,9 @@ public class PawnSanValidateStaticallyStrictCalculate extends AbstractSanValidat
       final SanValidationFromTo model = new SanValidationFromTo(fromFile, fromRank, toSquare);
       final boolean isCapture = fromFile != File.NONE;
       if (RankUtility.isPromotionRank(side, toSquare.getRank())) {
-        populatePawnPromotionMap(sanValidateMap, model, isCapture);
+        SanValidateStaticallyStrictCalculateSupport.populatePawnPromotionMap(sanValidateMap, model, isCapture);
       } else {
-        populatePawnNonPromotionMap(sanValidateMap, model, isCapture);
+        SanValidateStaticallyStrictCalculateSupport.populatePawnNonPromotionMap(sanValidateMap, model, isCapture);
       }
     }
 

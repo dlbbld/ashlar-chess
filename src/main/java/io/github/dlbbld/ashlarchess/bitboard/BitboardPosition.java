@@ -170,7 +170,7 @@ public record BitboardPosition(long whitePawns, long whiteRooks, long whiteKnigh
   /**
    * Pseudo-legal target squares for the piece on {@code fromSquare}: squares the piece could move to, considering own
    * piece blocking and slider line-of-sight, but NOT king-safety. Mirrors the reference
-   * {@code AbstractPotentialToSquares.calculatePotentialToSquare} surface used by the SAN error-reporting layer.
+   * {@code PotentialToSquaresSupport.calculatePotentialToSquare} surface used by the SAN error-reporting layer.
    *
    * <p>
    * For pawns, includes forward advances (single + double when applicable) and diagonal captures against opponent
@@ -223,7 +223,7 @@ public record BitboardPosition(long whitePawns, long whiteRooks, long whiteKnigh
   /**
    * Union of all squares attacked / defended by {@code side}'s pieces, in the same "isAllowOwnPiece = true" sense the
    * reference uses: includes squares occupied by own pieces (those are defended). Differential-tested against
-   * {@code AbstractAttackedSquares.calculateAttackedSquares}.
+   * {@code AttackedSquaresSupport.calculateAttackedSquares}.
    */
   public long attackedSquares(Side side) {
     return attackedSquares(side, occupied());

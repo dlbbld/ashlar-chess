@@ -11,12 +11,12 @@ import io.github.dlbbld.ashlarchess.board.StaticPosition;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
 import io.github.dlbbld.ashlarchess.board.enums.Square;
 
-class PawnAttackedSquares extends AbstractAttackedSquares {
+class PawnAttackedSquares {
 
   public static Set<Square> calculatePawnAttackedSquares(StaticPosition staticPosition, Square fromSquare,
       Side havingMove) {
 
-    checkPiece(staticPosition, havingMove, fromSquare, PAWN);
+    ToSquaresSupport.checkPiece(staticPosition, havingMove, fromSquare, PAWN);
 
     return PawnDiagonalSquares.getPawnDiagonalSquares(havingMove, fromSquare);
   }

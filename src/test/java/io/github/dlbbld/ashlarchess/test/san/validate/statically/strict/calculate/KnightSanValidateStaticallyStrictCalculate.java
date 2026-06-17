@@ -15,15 +15,15 @@ import io.github.dlbbld.ashlarchess.san.SanParse;
 import io.github.dlbbld.ashlarchess.test.san.model.SanValidationFromTo;
 import io.github.dlbbld.ashlarchess.test.san.validate.statically.strict.enums.KnightSanValidateStaticallyStrict;
 
-public class KnightSanValidateStaticallyStrictCalculate extends AbstractSanValidateStaticallyStrictCalculate {
+public class KnightSanValidateStaticallyStrictCalculate {
 
   static ImmutableMap<String, SanParse> calculateSanMap() {
 
     final Map<String, SanParse> sanValidateMap = new TreeMap<>();
 
     for (final String enumName : KnightSanValidateStaticallyStrict.VALUES) {
-      final SanValidationFromTo model = calculateFromFileAndOrRankTo(enumName, KNIGHT);
-      populateMap(sanValidateMap, model, KNIGHT);
+      final SanValidationFromTo model = SanValidateStaticallyStrictCalculateSupport.calculateFromFileAndOrRankTo(enumName, KNIGHT);
+      SanValidateStaticallyStrictCalculateSupport.populateMap(sanValidateMap, model, KNIGHT);
     }
 
     return Nulls.copyOfMap(sanValidateMap);

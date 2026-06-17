@@ -18,7 +18,7 @@ import io.github.dlbbld.ashlarchess.san.SanParse;
 import io.github.dlbbld.ashlarchess.test.san.model.SanValidationFromTo;
 import io.github.dlbbld.ashlarchess.test.san.validate.statically.strict.enums.KingNonCastlingSanValidateStaticallyStrict;
 
-public class KingNonCastlingSanValidateStaticallyStrictCalculate extends AbstractSanValidateStaticallyStrictCalculate {
+public class KingNonCastlingSanValidateStaticallyStrictCalculate {
 
   static ImmutableMap<String, SanParse> calculateSanMap() {
 
@@ -31,7 +31,7 @@ public class KingNonCastlingSanValidateStaticallyStrictCalculate extends Abstrac
       final Square toSquare = Square.parse(Nulls.substring(parse, 1));
 
       final SanValidationFromTo model = new SanValidationFromTo(fromFile, fromRank, toSquare);
-      populateMap(sanValidateMap, model, KING);
+      SanValidateStaticallyStrictCalculateSupport.populateMap(sanValidateMap, model, KING);
     }
 
     return Nulls.copyOfMap(sanValidateMap);

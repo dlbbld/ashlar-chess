@@ -21,7 +21,10 @@ import io.github.dlbbld.ashlarchess.enums.SquareOccupation;
  *
  *
  */
-public abstract class AbstractPotentialToSquares extends AbstractToSquares {
+public final class PotentialToSquaresSupport {
+
+  private PotentialToSquaresSupport() {
+  }
 
   public static Set<Square> calculatePotentialToSquare(StaticPosition staticPosition,
       Square enPassantCaptureTargetSquare, Side havingMove, Square fromSquare) {
@@ -31,7 +34,7 @@ public abstract class AbstractPotentialToSquares extends AbstractToSquares {
     return switch (pieceOnFromSquare.getPieceType()) {
       case PAWN -> PawnPotentialToSquares.calculatePawnPotentialToSquares(staticPosition, enPassantCaptureTargetSquare,
           fromSquare, havingMove);
-      case ROOK, BISHOP, QUEEN -> AbstractRangeSquares.calculateRangeSquare(staticPosition, havingMove, fromSquare,
+      case ROOK, BISHOP, QUEEN -> RangeSquaresSupport.calculateRangeSquare(staticPosition, havingMove, fromSquare,
           false);
       case KNIGHT -> KnightPotentialToSquares.calculateKnightPotentialToSquares(staticPosition, fromSquare, havingMove);
       case KING -> KingNonCastlingPotentialToSquares.calculateKingNonCastlingPotentialToSquares(staticPosition,
@@ -45,12 +48,12 @@ public abstract class AbstractPotentialToSquares extends AbstractToSquares {
   static Set<Square> calculateNonRangeNonPawnPotentialToSquares(StaticPosition staticPosition, Square fromSquare,
       PieceType pieceType, Set<Square> emptyBoardSquareSet, Side havingMove) {
 
-    checkPiece(staticPosition, havingMove, fromSquare, pieceType);
+    ToSquaresSupport.checkPiece(staticPosition, havingMove, fromSquare, pieceType);
 
     final Set<Square> potentialToSquareSet = new TreeSet<>();
 
     for (final Square toSquare : emptyBoardSquareSet) {
-      final SquareOccupation squareOccupation = calculateSquareOccupation(staticPosition, havingMove, toSquare);
+      final SquareOccupation squareOccupation = ToSquaresSupport.calculateSquareOccupation(staticPosition, havingMove, toSquare);
       switch (squareOccupation) {
         case NONE:
           potentialToSquareSet.add(toSquare);

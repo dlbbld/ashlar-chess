@@ -24,7 +24,10 @@ import io.github.dlbbld.ashlarchess.enums.SquareOccupation;
  * case of pawns excluding the diagonal moves (for the reason, that these moves requires additional conditions, contrary
  * to the other pieces).
  */
-abstract class AbstractRangeSquares extends AbstractToSquares {
+final class RangeSquaresSupport {
+
+  private RangeSquaresSupport() {
+  }
 
   static Set<Square> calculateOrthogonalRangeSquare(StaticPosition staticPosition, Side havingMove, Square fromSquare,
       PieceType expectedSourcePieceType, OrthogonalRange orthogonalMoves, boolean isAllowOwnPiece) {
@@ -59,7 +62,7 @@ abstract class AbstractRangeSquares extends AbstractToSquares {
   private static Set<Square> calculateRangeSquare(StaticPosition staticPosition, Side havingMove, Square fromSquare,
       PieceType expectedSourcePieceType, ImmutableList<Square> emptyBoardSquareList, boolean isAllowOwnPiece) {
 
-    checkPiece(staticPosition, havingMove, fromSquare, expectedSourcePieceType);
+    ToSquaresSupport.checkPiece(staticPosition, havingMove, fromSquare, expectedSourcePieceType);
 
     final Set<Square> calculatedToSquareSet = new TreeSet<>();
 
@@ -95,7 +98,7 @@ abstract class AbstractRangeSquares extends AbstractToSquares {
     final List<Square> calculatedToSquareList = new ArrayList<>();
 
     for (final Square toSquare : emptyBoardSquareList) {
-      final SquareOccupation squareOccupation = calculateSquareOccupation(staticPosition, havingMove, toSquare);
+      final SquareOccupation squareOccupation = ToSquaresSupport.calculateSquareOccupation(staticPosition, havingMove, toSquare);
       switch (squareOccupation) {
         case NONE:
           calculatedToSquareList.add(toSquare);

@@ -11,7 +11,10 @@ import io.github.dlbbld.ashlarchess.board.enums.Square;
 import io.github.dlbbld.ashlarchess.common.exceptions.ProgrammingMistakeException;
 import io.github.dlbbld.ashlarchess.enums.SquareOccupation;
 
-abstract class AbstractToSquares {
+final class ToSquaresSupport {
+
+  private ToSquaresSupport() {
+  }
 
   protected static void checkPiece(StaticPosition staticPosition, Side havingMove, Square sourceSquare,
       PieceType expectedPieceType) throws IllegalArgumentException {

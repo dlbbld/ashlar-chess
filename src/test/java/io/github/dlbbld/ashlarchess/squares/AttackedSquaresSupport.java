@@ -19,7 +19,10 @@ import io.github.dlbbld.ashlarchess.board.enums.Square;
  *
  *
  */
-public abstract class AbstractAttackedSquares extends AbstractToSquares {
+public final class AttackedSquaresSupport {
+
+  private AttackedSquaresSupport() {
+  }
   public static Set<Square> calculateAttackedSquares(StaticPosition staticPosition, Side havingMove) {
 
     final Set<Square> squareSet = new TreeSet<>();

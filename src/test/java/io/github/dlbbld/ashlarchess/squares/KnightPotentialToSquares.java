@@ -11,14 +11,14 @@ import io.github.dlbbld.ashlarchess.board.StaticPosition;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
 import io.github.dlbbld.ashlarchess.board.enums.Square;
 
-public class KnightPotentialToSquares extends AbstractPotentialToSquares {
+public class KnightPotentialToSquares {
 
   public static Set<Square> calculateKnightPotentialToSquares(StaticPosition staticPosition, Square fromSquare,
       Side havingMove) {
 
     final Set<Square> emptyBoardSquareSet = KnightEmptyBoardSquares.getKnightSquares(fromSquare);
 
-    return calculateNonRangeNonPawnPotentialToSquares(staticPosition, fromSquare, KNIGHT, emptyBoardSquareSet,
+    return PotentialToSquaresSupport.calculateNonRangeNonPawnPotentialToSquares(staticPosition, fromSquare, KNIGHT, emptyBoardSquareSet,
         havingMove);
   }
 
