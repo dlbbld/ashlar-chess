@@ -21,7 +21,10 @@ import io.github.dlbbld.ashlarchess.test.common.utility.DiagonalLineUtility;
  * {@code "N1A2"} (piece-letter + rank-disambig + target square) - so the {@code *Calculate} consumers parse the same
  * shape.
  */
-abstract class SanValidateStaticallyStrictHelpers {
+final class SanValidateStaticallyStrictHelpers {
+
+  private SanValidateStaticallyStrictHelpers() {
+  }
 
   // ---- string-builder helpers -------------------------------------------------------------------
 

@@ -24,7 +24,10 @@ import io.github.dlbbld.ashlarchess.model.EmptyBoardMove;
 import io.github.dlbbld.ashlarchess.squares.EmptyBoardMoveUtility;
 
 @SuppressWarnings("null")
-public abstract class RookSanValidateStaticallyStrict {
+public final class RookSanValidateStaticallyStrict {
+
+  private RookSanValidateStaticallyStrict() {
+  }
 
   public static final ImmutableSet<String> VALUES;
 

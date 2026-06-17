@@ -10,7 +10,10 @@ import io.github.dlbbld.ashlarchess.board.enums.Piece;
 import io.github.dlbbld.ashlarchess.board.model.UpdateSquare;
 import io.github.dlbbld.ashlarchess.common.model.MoveSpecification;
 
-public abstract class StandardMoveUtility {
+public final class StandardMoveUtility {
+
+  private StandardMoveUtility() {
+  }
 
   /**
    * Produces the {@link UpdateSquare} list for a non-castling, non-EP, non-promotion piece movement: the from-square

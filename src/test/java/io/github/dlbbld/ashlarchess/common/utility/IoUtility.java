@@ -13,7 +13,7 @@ import org.eclipse.jdt.annotation.Owning;
 
 import io.github.dlbbld.ashlarchess.common.exceptions.ProgrammingMistakeException;
 
-public abstract class IoUtility {
+public final class IoUtility {
 
   private IoUtility() {
   }

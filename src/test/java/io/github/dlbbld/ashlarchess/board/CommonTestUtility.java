@@ -9,7 +9,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import io.github.dlbbld.ashlarchess.bitboard.StaticPositionBridge;
 
-public abstract class CommonTestUtility {
+public final class CommonTestUtility {
+
+  private CommonTestUtility() {
+  }
 
   public static void checkBoardsAgainstEachOtherAll(Board boardFirst, LibraryCarlosBoard boardSecond) {
     checkBoardsAgainstEachOther(boardFirst, boardSecond, true);

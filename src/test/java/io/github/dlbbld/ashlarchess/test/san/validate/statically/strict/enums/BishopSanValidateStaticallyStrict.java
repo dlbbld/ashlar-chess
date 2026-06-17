@@ -23,7 +23,10 @@ import io.github.dlbbld.ashlarchess.model.EmptyBoardMove;
 import io.github.dlbbld.ashlarchess.squares.EmptyBoardMoveUtility;
 
 @SuppressWarnings("null")
-public abstract class BishopSanValidateStaticallyStrict {
+public final class BishopSanValidateStaticallyStrict {
+
+  private BishopSanValidateStaticallyStrict() {
+  }
 
   public static final ImmutableSet<String> VALUES;
 

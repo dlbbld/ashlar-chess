@@ -5,7 +5,10 @@ package io.github.dlbbld.ashlarchess.test;
 
 import io.github.dlbbld.ashlarchess.test.pgntest.enums.PgnTestInclusion;
 
-public abstract class RestrictTestConstants {
+public final class RestrictTestConstants {
+
+  private RestrictTestConstants() {
+  }
 
   /**
    * Master switch driven by the {@code ashlar-chess.full} system property. Set to {@code true} via Maven profile

@@ -14,7 +14,10 @@ import io.github.dlbbld.ashlarchess.moves.CastlingUtility;
 import io.github.dlbbld.ashlarchess.test.librarycarlos.NullsCarlos;
 import io.github.dlbbld.ashlarchess.test.librarycomparison.utility.EnumConversionUtility;
 
-public abstract class MoveConversionUtility {
+public final class MoveConversionUtility {
+
+  private MoveConversionUtility() {
+  }
 
   // the SAN is only set when the game is loaded from the PGN
   // this method is only for this case

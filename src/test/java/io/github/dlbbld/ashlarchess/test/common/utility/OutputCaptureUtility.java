@@ -12,7 +12,10 @@ import com.google.common.collect.ImmutableList;
 import io.github.dlbbld.ashlarchess.common.Nulls;
 import io.github.dlbbld.ashlarchess.common.utility.IoUtility;
 
-public abstract class OutputCaptureUtility {
+public final class OutputCaptureUtility {
+
+  private OutputCaptureUtility() {
+  }
 
   public static String captureStdout(Runnable action) {
     final ByteArrayOutputStream buffer = new ByteArrayOutputStream();

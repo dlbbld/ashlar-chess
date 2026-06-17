@@ -16,7 +16,10 @@ import io.github.dlbbld.ashlarchess.model.EmptyBoardMove;
 import io.github.dlbbld.ashlarchess.squares.EmptyBoardMoveUtility;
 
 @SuppressWarnings("null")
-public abstract class KingNonCastlingSanValidateStaticallyStrict {
+public final class KingNonCastlingSanValidateStaticallyStrict {
+
+  private KingNonCastlingSanValidateStaticallyStrict() {
+  }
 
   public static final ImmutableSet<String> VALUES;
 

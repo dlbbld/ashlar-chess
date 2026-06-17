@@ -20,7 +20,10 @@ import io.github.dlbbld.ashlarchess.board.enums.SquareType;
  * production callers all consume the bitboard sibling. When Phase 6 of the switchover lands and the StaticPosition
  * subtree relocates to {@code src/test/}, this class moves with it as a single {@code git mv}.
  */
-abstract class UnwinnabilityMaterial {
+final class UnwinnabilityMaterial {
+
+  private UnwinnabilityMaterial() {
+  }
 
   // --- existence checks (any side or specific side) ---
 

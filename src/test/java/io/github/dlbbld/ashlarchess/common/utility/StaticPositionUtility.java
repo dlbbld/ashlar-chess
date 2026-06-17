@@ -28,7 +28,10 @@ import io.github.dlbbld.ashlarchess.moves.PromotionUtility;
 import io.github.dlbbld.ashlarchess.moves.StandardMoveUtility;
 import io.github.dlbbld.ashlarchess.squares.AbstractAttackedSquares;
 
-public abstract class StaticPositionUtility {
+public final class StaticPositionUtility {
+
+  private StaticPositionUtility() {
+  }
 
   // En-passant (from, to) patterns - test-side duplicate of EnPassantCaptureUtility's
   // WHITE/BLACK_EN_PASSANT_CAPTURE_FROM_TO

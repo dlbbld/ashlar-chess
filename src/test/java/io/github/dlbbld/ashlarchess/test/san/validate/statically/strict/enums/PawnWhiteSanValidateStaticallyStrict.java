@@ -19,7 +19,10 @@ import io.github.dlbbld.ashlarchess.squares.EmptyBoardMoveUtility;
 import io.github.dlbbld.ashlarchess.squares.PawnDiagonalSquares;
 
 @SuppressWarnings("null")
-public abstract class PawnWhiteSanValidateStaticallyStrict {
+public final class PawnWhiteSanValidateStaticallyStrict {
+
+  private PawnWhiteSanValidateStaticallyStrict() {
+  }
 
   public static final ImmutableSet<String> VALUES;
 

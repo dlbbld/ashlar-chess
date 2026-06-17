@@ -7,7 +7,10 @@ import static io.github.dlbbld.ashlarchess.common.constants.ChessConstants.PGN_E
 
 import io.github.dlbbld.ashlarchess.common.Nulls;
 
-public abstract class PgnExtensionUtility {
+public final class PgnExtensionUtility {
+
+  private PgnExtensionUtility() {
+  }
 
   public static boolean hasPgnExtension(String pgnName) {
     return pgnName.endsWith(PGN_EXTENSION_INCLUDING_DOT);

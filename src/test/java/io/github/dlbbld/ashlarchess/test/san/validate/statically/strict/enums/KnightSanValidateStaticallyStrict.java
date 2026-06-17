@@ -22,7 +22,10 @@ import io.github.dlbbld.ashlarchess.model.EmptyBoardMove;
 import io.github.dlbbld.ashlarchess.squares.EmptyBoardMoveUtility;
 
 @SuppressWarnings("null")
-public abstract class KnightSanValidateStaticallyStrict {
+public final class KnightSanValidateStaticallyStrict {
+
+  private KnightSanValidateStaticallyStrict() {
+  }
 
   public static final ImmutableSet<String> VALUES;
 

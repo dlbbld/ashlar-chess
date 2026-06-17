@@ -26,7 +26,10 @@ import io.github.dlbbld.ashlarchess.test.san.model.SanConversionCheck;
  * (iterating over all {@link SanFormat} values) as an oracle against which the direct-parse implementation can be
  * verified in tests.
  */
-public abstract class SanValidateFormatReference {
+public final class SanValidateFormatReference {
+
+  private SanValidateFormatReference() {
+  }
 
   public static SanParse validateFormat(String san) {
     for (final SanFormat sanFormat : SanFormat.values()) {

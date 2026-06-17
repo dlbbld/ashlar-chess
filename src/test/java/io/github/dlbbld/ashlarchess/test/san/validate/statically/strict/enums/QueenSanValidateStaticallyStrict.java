@@ -25,7 +25,10 @@ import io.github.dlbbld.ashlarchess.model.EmptyBoardMove;
 import io.github.dlbbld.ashlarchess.squares.EmptyBoardMoveUtility;
 
 @SuppressWarnings("null")
-public abstract class QueenSanValidateStaticallyStrict {
+public final class QueenSanValidateStaticallyStrict {
+
+  private QueenSanValidateStaticallyStrict() {
+  }
 
   public static final ImmutableSet<String> VALUES;
 

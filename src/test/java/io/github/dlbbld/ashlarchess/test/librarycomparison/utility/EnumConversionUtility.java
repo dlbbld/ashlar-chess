@@ -36,7 +36,10 @@ import io.github.dlbbld.ashlarchess.common.Nulls;
 import io.github.dlbbld.ashlarchess.common.exceptions.ProgrammingMistakeException;
 import io.github.dlbbld.ashlarchess.test.librarycarlos.NullsCarlos;
 
-public abstract class EnumConversionUtility {
+public final class EnumConversionUtility {
+
+  private EnumConversionUtility() {
+  }
 
   public static com.github.bhlangonijr.chesslib.Piece convertToPiece(Side havingMove, PieceType pieceType) {
     return switch (havingMove) {

@@ -20,7 +20,10 @@ import io.github.dlbbld.ashlarchess.board.enums.SquareType;
 import io.github.dlbbld.ashlarchess.test.librarycarlos.NullsCarlos;
 import io.github.dlbbld.ashlarchess.test.librarycomparison.utility.EnumConversionUtility;
 
-public abstract class LibraryCarlosImplementationUtility {
+public final class LibraryCarlosImplementationUtility {
+
+  private LibraryCarlosImplementationUtility() {
+  }
 
   private static Square calculateEnPassantCaptureDestination(Square moveTwoSquareAdvanceTo) {
     return switch (moveTwoSquareAdvanceTo) {

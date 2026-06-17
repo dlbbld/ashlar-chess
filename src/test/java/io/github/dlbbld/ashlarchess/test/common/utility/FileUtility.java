@@ -23,7 +23,10 @@ import io.github.dlbbld.ashlarchess.common.Nulls;
 import io.github.dlbbld.ashlarchess.common.exceptions.FileSystemAccessException;
 import io.github.dlbbld.ashlarchess.common.exceptions.ProgrammingMistakeException;
 
-public abstract class FileUtility {
+public final class FileUtility {
+
+  private FileUtility() {
+  }
 
   /**
    * Reads the entire contents of a file as a single UTF-8 string, preserving line terminators exactly as they appear on
