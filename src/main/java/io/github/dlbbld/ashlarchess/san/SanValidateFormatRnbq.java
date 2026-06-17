@@ -35,7 +35,7 @@ import io.github.dlbbld.ashlarchess.messages.Message;
  * shorter valid form is complete. Each failure is reported with the most specific {@link SanValidationProblem}
  * describing which character is missing or wrong.
  */
-abstract class SanValidateFormatRnbq extends AbstractSan {
+abstract class SanValidateFormatRnbq {
 
   static SanParse parseRnbqMove(final String core, final SanTerminalMarker sanTerminalMarker) {
     // core[0] is the piece letter, already validated to be R/N/B/Q by the dispatcher in SanValidateFormat.

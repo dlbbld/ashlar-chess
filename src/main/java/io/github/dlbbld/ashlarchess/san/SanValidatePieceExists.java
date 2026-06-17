@@ -12,7 +12,7 @@ import io.github.dlbbld.ashlarchess.board.enums.Square;
 import io.github.dlbbld.ashlarchess.common.Nulls;
 import io.github.dlbbld.ashlarchess.messages.Message;
 
-abstract class SanValidatePieceExists extends AbstractSan {
+abstract class SanValidatePieceExists {
 
   public static void validatePieceExists(Side havingMove, SanFormat sanFormat, SanConversion sanConversion,
       PieceType movingPieceType, BitboardPosition bitboardPosition) {

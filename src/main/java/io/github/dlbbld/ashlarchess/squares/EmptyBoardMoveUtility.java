@@ -12,7 +12,10 @@ import io.github.dlbbld.ashlarchess.board.enums.Side;
 import io.github.dlbbld.ashlarchess.board.enums.Square;
 import io.github.dlbbld.ashlarchess.model.EmptyBoardMove;
 
-public abstract class AbstractEmptyBoardSquares {
+public final class EmptyBoardMoveUtility {
+
+  private EmptyBoardMoveUtility() {
+  }
 
   public static Set<EmptyBoardMove> calculateNonPawnEmptyBoardMoves(PieceType pieceType, Square fromSquare) {
     return switch (pieceType) {

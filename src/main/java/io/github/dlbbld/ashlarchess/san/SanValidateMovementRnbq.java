@@ -12,9 +12,9 @@ import io.github.dlbbld.ashlarchess.board.enums.Square;
 import io.github.dlbbld.ashlarchess.common.Nulls;
 import io.github.dlbbld.ashlarchess.messages.Message;
 import io.github.dlbbld.ashlarchess.model.EmptyBoardMove;
-import io.github.dlbbld.ashlarchess.squares.AbstractEmptyBoardSquares;
+import io.github.dlbbld.ashlarchess.squares.EmptyBoardMoveUtility;
 
-abstract class SanValidateMovementRnbq extends AbstractSan {
+abstract class SanValidateMovementRnbq {
 
   public static void validateRnbqMovement(SanParse sanParse) {
     final SanConversion sanConversion = sanParse.sanConversion();
@@ -47,7 +47,7 @@ abstract class SanValidateMovementRnbq extends AbstractSan {
         break;
       case RNBQ_NON_CAPTURING_SQUARE:
       case RNBQ_CAPTURING_SQUARE: {
-        final Square fromSquare = AbstractSan.calculateFromSquare(sanConversion);
+        final Square fromSquare = SanDisambiguationUtility.calculateFromSquare(sanConversion);
         validateRnbqMovement(pieceType, fromSquare, toSquare);
       }
         break;
@@ -57,7 +57,7 @@ abstract class SanValidateMovementRnbq extends AbstractSan {
   }
 
   private static void validateRnbqMovement(PieceType movingPieceType, File fromFile, Square toSquare) {
-    final Set<EmptyBoardMove> emptyBoardMoveSet = AbstractEmptyBoardSquares
+    final Set<EmptyBoardMove> emptyBoardMoveSet = EmptyBoardMoveUtility
         .calculateNonPawnEmptyBoardMoves(movingPieceType);
 
     for (final EmptyBoardMove emptyBoardMove : emptyBoardMoveSet) {
@@ -86,7 +86,7 @@ abstract class SanValidateMovementRnbq extends AbstractSan {
   }
 
   private static void validateRnbqMovement(PieceType movingPieceType, Rank fromRank, Square toSquare) {
-    final Set<EmptyBoardMove> emptyBoardMoveSet = AbstractEmptyBoardSquares
+    final Set<EmptyBoardMove> emptyBoardMoveSet = EmptyBoardMoveUtility
         .calculateNonPawnEmptyBoardMoves(movingPieceType);
     for (final EmptyBoardMove emptyBoardMove : emptyBoardMoveSet) {
       final Square emptyBoardToSquare = emptyBoardMove.toSquare();
@@ -115,7 +115,7 @@ abstract class SanValidateMovementRnbq extends AbstractSan {
   }
 
   private static void validateRnbqMovement(PieceType movingPieceType, Square fromSquare, Square toSquare) {
-    final Set<EmptyBoardMove> emptyBoardMoveSet = AbstractEmptyBoardSquares
+    final Set<EmptyBoardMove> emptyBoardMoveSet = EmptyBoardMoveUtility
         .calculateNonPawnEmptyBoardMoves(movingPieceType);
     for (final EmptyBoardMove emptyBoardMove : emptyBoardMoveSet) {
       final Square emptyBoardToSquare = emptyBoardMove.toSquare();

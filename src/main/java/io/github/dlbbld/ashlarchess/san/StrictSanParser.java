@@ -17,7 +17,7 @@ import io.github.dlbbld.ashlarchess.model.LegalMove;
  * changing one method call. Use {@link io.github.dlbbld.ashlarchess.san.LenientSanParser} when parsing real-world PGN
  * that may contain forgivable deviations from canonical SAN.
  */
-public final class StrictSanParser extends AbstractSan {
+public final class StrictSanParser {
 
   private StrictSanParser() {
   }

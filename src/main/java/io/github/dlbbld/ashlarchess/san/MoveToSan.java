@@ -17,7 +17,7 @@ import io.github.dlbbld.ashlarchess.common.model.MoveSpecification;
 import io.github.dlbbld.ashlarchess.model.LegalMove;
 import io.github.dlbbld.ashlarchess.moves.CastlingUtility;
 
-public final class MoveToSan extends AbstractSan {
+public final class MoveToSan {
 
   private MoveToSan() {
   }
@@ -38,13 +38,13 @@ public final class MoveToSan extends AbstractSan {
 
     final MoveSpecification moveSpecification = legalMove.moveSpecification();
 
-    final List<LegalMove> legalMovesForPieceAndToSquare = filterLegalMovesCandidates(legalMovesForMovingPiece,
+    final List<LegalMove> legalMovesForPieceAndToSquare = SanDisambiguationUtility.filterLegalMovesCandidates(legalMovesForMovingPiece,
         moveSpecification.toSquare());
-    final int numberOfLegalMovesFromSameFile = calculateNumberOfLegalMovesFromFile(
+    final int numberOfLegalMovesFromSameFile = SanDisambiguationUtility.calculateNumberOfLegalMovesFromFile(
         moveSpecification.fromSquare().getFile(), legalMovesForPieceAndToSquare);
-    final int numberOfLegalMovesFromSameRank = calculateNumberOfLegalMovesFromRank(
+    final int numberOfLegalMovesFromSameRank = SanDisambiguationUtility.calculateNumberOfLegalMovesFromRank(
         moveSpecification.fromSquare().getRank(), legalMovesForPieceAndToSquare);
-    final boolean hasOtherFilesHavingLegalMoves = calculateHasOtherFilesHavingLegalMoves(
+    final boolean hasOtherFilesHavingLegalMoves = SanDisambiguationUtility.calculateHasOtherFilesHavingLegalMoves(
         moveSpecification.fromSquare().getFile(), legalMovesForPieceAndToSquare);
 
     if (hasOtherFilesHavingLegalMoves) {

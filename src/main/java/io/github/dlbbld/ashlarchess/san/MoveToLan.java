@@ -10,7 +10,7 @@ import io.github.dlbbld.ashlarchess.common.model.MoveSpecification;
 import io.github.dlbbld.ashlarchess.model.LegalMove;
 import io.github.dlbbld.ashlarchess.moves.CastlingUtility;
 
-public final class MoveToLan extends AbstractSan {
+public final class MoveToLan {
 
   private MoveToLan() {
   }

@@ -21,7 +21,7 @@ import io.github.dlbbld.ashlarchess.model.EmptyBoardMove;
 import io.github.dlbbld.ashlarchess.moves.CastlingUtility;
 import io.github.dlbbld.ashlarchess.moves.EnPassantCaptureUtility;
 import io.github.dlbbld.ashlarchess.moves.PawnDiagonalMoveUtility;
-import io.github.dlbbld.ashlarchess.squares.AbstractEmptyBoardSquares;
+import io.github.dlbbld.ashlarchess.squares.EmptyBoardMoveUtility;
 import io.github.dlbbld.ashlarchess.squares.KingNonCastlingEmptyBoardSquares;
 
 /**
@@ -187,7 +187,7 @@ public final class ChessRuleAnalyzer {
     final Piece movingPiece = bitboardPosition.get(fromSquare);
     final Piece capturedPiece = bitboardPosition.get(toSquare);
 
-    final Set<EmptyBoardMove> emptyBoardMoves = AbstractEmptyBoardSquares
+    final Set<EmptyBoardMove> emptyBoardMoves = EmptyBoardMoveUtility
         .calculateNonPawnEmptyBoardMoves(movingPiece.getPieceType(), fromSquare);
     if (!calculateIsEmptyBoardMove(toSquare, emptyBoardMoves)) {
       return MovementCheck.NOT_POSSIBLE;
@@ -211,7 +211,7 @@ public final class ChessRuleAnalyzer {
     final Square toSquare = moveSpecification.toSquare();
     final Piece pieceOnToSquare = bitboardPosition.get(toSquare);
 
-    final Set<EmptyBoardMove> emptyBoardMoves = AbstractEmptyBoardSquares.calculateNonPawnEmptyBoardMoves(KING,
+    final Set<EmptyBoardMove> emptyBoardMoves = EmptyBoardMoveUtility.calculateNonPawnEmptyBoardMoves(KING,
         fromSquare);
     if (!calculateIsEmptyBoardMove(toSquare, emptyBoardMoves)) {
       return MovementCheck.NOT_POSSIBLE;
@@ -254,7 +254,7 @@ public final class ChessRuleAnalyzer {
   }
 
   private static boolean calculateIsPawnEmptyBoardMove(Side havingMove, Square fromSquare, Square toSquare) {
-    final Set<EmptyBoardMove> emptyBoardMoves = AbstractEmptyBoardSquares.calculatePawnEmptyBoardMoves(havingMove,
+    final Set<EmptyBoardMove> emptyBoardMoves = EmptyBoardMoveUtility.calculatePawnEmptyBoardMoves(havingMove,
         fromSquare);
     return calculateIsEmptyBoardMove(toSquare, emptyBoardMoves);
   }

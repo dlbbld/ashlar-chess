@@ -16,7 +16,7 @@ import io.github.dlbbld.ashlarchess.messages.Message;
  * Parses pawn SAN moves - both forward (e.g. {@code d3}, {@code d8=Q}) and capturing (e.g. {@code dxe5},
  * {@code dxe8=Q}).
  */
-abstract class SanValidateFormatPawn extends AbstractSan {
+abstract class SanValidateFormatPawn {
 
   static SanParse parsePawnMove(final String core, final SanTerminalMarker sanTerminalMarker) {
     // too short

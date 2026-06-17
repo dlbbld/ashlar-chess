@@ -12,7 +12,7 @@ import io.github.dlbbld.ashlarchess.board.enums.Side;
 import io.github.dlbbld.ashlarchess.board.enums.Square;
 import io.github.dlbbld.ashlarchess.common.Nulls;
 
-class PawnAnyAdvanceEmptyBoardSquares extends AbstractEmptyBoardSquares {
+class PawnAnyAdvanceEmptyBoardSquares {
 
   private static final ImmutableMap<Square, ImmutableSet<Square>> PAWN_WHITE_SQUARES_MAP;
   private static final ImmutableMap<Square, ImmutableSet<Square>> PAWN_BLACK_SQUARES_MAP;

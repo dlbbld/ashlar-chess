@@ -12,7 +12,7 @@ import io.github.dlbbld.ashlarchess.board.enums.Square;
 import io.github.dlbbld.ashlarchess.common.Nulls;
 
 @SuppressWarnings("null")
-public class KingNonCastlingEmptyBoardSquares extends AbstractEmptyBoardSquares {
+public class KingNonCastlingEmptyBoardSquares {
 
   private static final int[][] KING_OFFSETS = { { 0, 1 }, { 0, -1 }, { 1, 0 }, { -1, 0 }, { 1, 1 }, { 1, -1 },
       { -1, 1 }, { -1, -1 } };

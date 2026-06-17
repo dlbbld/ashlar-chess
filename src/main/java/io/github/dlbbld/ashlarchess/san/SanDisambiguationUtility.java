@@ -11,7 +11,7 @@ import io.github.dlbbld.ashlarchess.board.enums.Rank;
 import io.github.dlbbld.ashlarchess.board.enums.Square;
 import io.github.dlbbld.ashlarchess.model.LegalMove;
 
-abstract class AbstractSan {
+abstract class SanDisambiguationUtility {
 
   static Square calculateFromSquare(SanConversion sanConversion) {
     if (sanConversion.fromFile() == File.NONE || sanConversion.fromRank() == Rank.NONE) {

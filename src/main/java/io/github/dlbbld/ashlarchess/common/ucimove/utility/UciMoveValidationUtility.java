@@ -24,7 +24,7 @@ import io.github.dlbbld.ashlarchess.board.enums.Square;
 import io.github.dlbbld.ashlarchess.common.Nulls;
 import io.github.dlbbld.ashlarchess.model.EmptyBoardMove;
 import io.github.dlbbld.ashlarchess.model.UciMove;
-import io.github.dlbbld.ashlarchess.squares.AbstractEmptyBoardSquares;
+import io.github.dlbbld.ashlarchess.squares.EmptyBoardMoveUtility;
 import io.github.dlbbld.ashlarchess.squares.PawnDiagonalSquares;
 
 public final class UciMoveValidationUtility {
@@ -42,7 +42,7 @@ public final class UciMoveValidationUtility {
     // Non-promotion moves: every square x {rook, bishop, knight} empty-board reach
     for (final Square fromSquare : Square.REAL) {
       for (final PieceType pieceType : List.of(ROOK, BISHOP, KNIGHT)) {
-        final Set<EmptyBoardMove> moveSet = AbstractEmptyBoardSquares.calculateNonPawnEmptyBoardMoves(pieceType,
+        final Set<EmptyBoardMove> moveSet = EmptyBoardMoveUtility.calculateNonPawnEmptyBoardMoves(pieceType,
             fromSquare);
         for (final EmptyBoardMove move : moveSet) {
           addUciMove(uciMoveList, uciMoveTextLookup, move.fromSquare(), move.toSquare(), PromotionPieceType.NONE);
@@ -76,7 +76,7 @@ public final class UciMoveValidationUtility {
   private static void addPromotionMoves(List<UciMove> uciMoveList, Map<String, UciMove> uciMoveTextLookup, Side side) {
     for (final Square fromSquare : getRankBeforePromotionRank(side)) {
       final Set<Square> toSquareSet = new TreeSet<>();
-      for (final EmptyBoardMove move : AbstractEmptyBoardSquares.calculatePawnEmptyBoardMoves(side, fromSquare)) {
+      for (final EmptyBoardMove move : EmptyBoardMoveUtility.calculatePawnEmptyBoardMoves(side, fromSquare)) {
         toSquareSet.add(move.toSquare());
       }
       toSquareSet.addAll(PawnDiagonalSquares.getPawnDiagonalSquares(side, fromSquare));

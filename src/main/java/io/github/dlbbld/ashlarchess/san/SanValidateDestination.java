@@ -17,7 +17,7 @@ import io.github.dlbbld.ashlarchess.common.model.MoveSpecification;
 import io.github.dlbbld.ashlarchess.messages.Message;
 import io.github.dlbbld.ashlarchess.moves.EnPassantCaptureUtility;
 
-abstract class SanValidateDestination extends AbstractSan {
+abstract class SanValidateDestination {
 
   public static void validateDestinationSquareSemantics(Board board, Side havingMove, SanFormat sanFormat,
       SanConversion sanConversion) {

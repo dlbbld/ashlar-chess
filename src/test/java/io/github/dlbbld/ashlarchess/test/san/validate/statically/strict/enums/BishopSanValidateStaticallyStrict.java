@@ -20,7 +20,7 @@ import com.google.common.collect.ImmutableSet;
 import io.github.dlbbld.ashlarchess.board.enums.PieceType;
 import io.github.dlbbld.ashlarchess.board.enums.Square;
 import io.github.dlbbld.ashlarchess.model.EmptyBoardMove;
-import io.github.dlbbld.ashlarchess.squares.AbstractEmptyBoardSquares;
+import io.github.dlbbld.ashlarchess.squares.EmptyBoardMoveUtility;
 
 @SuppressWarnings("null")
 public abstract class BishopSanValidateStaticallyStrict {
@@ -30,7 +30,7 @@ public abstract class BishopSanValidateStaticallyStrict {
   static {
     final Set<String> set = new TreeSet<>();
     for (final Square toSquare : Square.REAL) {
-      final Set<EmptyBoardMove> moves = AbstractEmptyBoardSquares.calculateNonPawnEmptyBoardMovesTo(PieceType.BISHOP,
+      final Set<EmptyBoardMove> moves = EmptyBoardMoveUtility.calculateNonPawnEmptyBoardMovesTo(PieceType.BISHOP,
           toSquare);
       final List<Square> fromSquareList = calculateFromSquareList(moves);
 

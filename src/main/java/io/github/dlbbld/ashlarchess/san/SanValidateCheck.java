@@ -7,7 +7,7 @@ import io.github.dlbbld.ashlarchess.board.Board;
 import io.github.dlbbld.ashlarchess.common.model.MoveSpecification;
 import io.github.dlbbld.ashlarchess.messages.Message;
 
-abstract class SanValidateCheck extends AbstractSan {
+abstract class SanValidateCheck {
 
   public static void validateSanTerminalMarker(Board board, SanTerminalMarker sanSanTerminalMarker,
       MoveSpecification moveSpecification) {
