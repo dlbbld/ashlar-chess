@@ -27,7 +27,6 @@ import io.github.dlbbld.ashlarchess.board.enums.Square;
 import io.github.dlbbld.ashlarchess.board.enums.SquareType;
 import io.github.dlbbld.ashlarchess.board.enums.SquareUtility;
 import io.github.dlbbld.ashlarchess.common.Nulls;
-import io.github.dlbbld.ashlarchess.common.constants.BasicConstants;
 import io.github.dlbbld.ashlarchess.common.constants.ChessConstants;
 import io.github.dlbbld.ashlarchess.common.enums.FenAdvancedValidationProblem;
 import io.github.dlbbld.ashlarchess.common.exceptions.FenAdvancedValidationException;
@@ -221,7 +220,7 @@ public class FenParserAdvanced {
     }
     final List<Piece> rankPieceList = new ArrayList<>();
     for (final String letter : rankDescriptionEvaluated) {
-      if (BasicConstants.BLANK.equals(letter)) {
+      if ("".equals(letter)) {
         rankPieceList.add(Piece.NONE);
       } else {
         final char letterChar = letter.charAt(0);
@@ -254,7 +253,7 @@ public class FenParserAdvanced {
         final int numberOfEmptyFields = Integer.parseInt(currentChar);
         countEvaluatedLength += numberOfEmptyFields;
         for (int j = 1; j <= numberOfEmptyFields; j++) {
-          squareDescriptionList.add(BasicConstants.BLANK);
+          squareDescriptionList.add("");
         }
       } catch (@SuppressWarnings("unused") final NumberFormatException e) {
         countEvaluatedLength++;
