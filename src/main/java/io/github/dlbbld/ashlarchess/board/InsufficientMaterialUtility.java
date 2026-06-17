@@ -24,10 +24,10 @@ final class InsufficientMaterialUtility {
   public static boolean isInsufficientMaterial(Side side, BitboardPosition bitboardPosition) {
     final Side oppositeSide = side.getOppositeSide();
 
-    if (InsufficientMaterialUtility.hasKingOnly(side, bitboardPosition)) {
+    if (hasKingOnly(side, bitboardPosition)) {
       return true;
     }
-    if (InsufficientMaterialUtility.hasKingAndKnightOnly(side, bitboardPosition)) {
+    if (hasKingAndKnightOnly(side, bitboardPosition)) {
       return hasZeroOrMultipleQueenOnly(oppositeSide, bitboardPosition);
     }
     if (hasZeroOrMultipleLightSquareBishopOnly(side, bitboardPosition)) {
@@ -46,7 +46,7 @@ final class InsufficientMaterialUtility {
     final Piece bishop = Piece.of(side, BISHOP);
     for (final Square boardSquare : Square.REAL) {
       final Piece pieceOnSquare = bitboardPosition.get(boardSquare);
-      if (InsufficientMaterialUtility.iisOwnPiece(side, pieceOnSquare)) {
+      if (isOwnPiece(side, pieceOnSquare)) {
         if (pieceOnSquare == king || pieceOnSquare == bishop && boardSquare.getSquareType() == squareType) {
           continue;
         }
@@ -69,7 +69,7 @@ final class InsufficientMaterialUtility {
     final Piece queen = Piece.of(side, QUEEN);
     for (final Square boardSquare : Square.REAL) {
       final Piece pieceOnSquare = bitboardPosition.get(boardSquare);
-      if (InsufficientMaterialUtility.iisOwnPiece(side, pieceOnSquare)) {
+      if (isOwnPiece(side, pieceOnSquare)) {
         if (pieceOnSquare == king || pieceOnSquare == queen) {
           continue;
         }
@@ -90,11 +90,11 @@ final class InsufficientMaterialUtility {
   }
 
   private static boolean hasPawn(Side side, BitboardPosition bitboardPosition) {
-    return InsufficientMaterialUtility.hasPieceType(side, PAWN, bitboardPosition);
+    return hasPieceType(side, PAWN, bitboardPosition);
   }
 
   private static boolean hasKnight(Side side, BitboardPosition bitboardPosition) {
-    return InsufficientMaterialUtility.hasPieceType(side, KNIGHT, bitboardPosition);
+    return hasPieceType(side, KNIGHT, bitboardPosition);
   }
 
   private static boolean hasBishopForSpecifiedColor(Side side, SquareType squareType,
@@ -109,7 +109,7 @@ final class InsufficientMaterialUtility {
     return false;
   }
 
-  private static boolean iisOwnPiece(Side side, Piece pieceOnSquare) {
+  private static boolean isOwnPiece(Side side, Piece pieceOnSquare) {
     return pieceOnSquare != Piece.NONE && pieceOnSquare.getSide() == side;
   }
 
