@@ -16,7 +16,10 @@ import io.github.dlbbld.ashlarchess.board.enums.Side;
 import io.github.dlbbld.ashlarchess.board.enums.Square;
 import io.github.dlbbld.ashlarchess.board.enums.SquareType;
 
-abstract class InsufficientMaterialUtility {
+final class InsufficientMaterialUtility {
+
+  private InsufficientMaterialUtility() {
+  }
 
   public static boolean isInsufficientMaterial(Side side, BitboardPosition bitboardPosition) {
     final Side oppositeSide = side.getOppositeSide();
