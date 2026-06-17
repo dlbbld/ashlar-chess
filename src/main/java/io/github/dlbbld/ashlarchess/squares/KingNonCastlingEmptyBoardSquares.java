@@ -4,7 +4,6 @@
 package io.github.dlbbld.ashlarchess.squares;
 
 import java.util.EnumMap;
-import java.util.Set;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
@@ -39,7 +38,7 @@ public class KingNonCastlingEmptyBoardSquares extends AbstractEmptyBoardSquares 
     ValidateMoveNumberUtility.validateMapOfSet(KING_SQUARES_MAP, 420);
   }
 
-  public static Set<Square> getKingSquares(Square fromSquare) {
+  public static ImmutableSet<Square> getKingSquares(Square fromSquare) {
     return Nulls.get(KING_SQUARES_MAP, fromSquare);
   }
 

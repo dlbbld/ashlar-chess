@@ -4,7 +4,6 @@
 package io.github.dlbbld.ashlarchess.squares;
 
 import java.util.EnumMap;
-import java.util.Set;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
@@ -42,7 +41,7 @@ class PawnTwoAdvanceEmptyBoardSquares extends AbstractEmptyBoardSquares {
     return Nulls.copyOfMap(map);
   }
 
-  public static Set<Square> getPawnSquares(Side havingMove, Square fromSquare) {
+  public static ImmutableSet<Square> getPawnSquares(Side havingMove, Square fromSquare) {
     return switch (havingMove) {
       case BLACK -> Nulls.get(PAWN_BLACK_SQUARES_MAP, fromSquare);
       case WHITE -> Nulls.get(PAWN_WHITE_SQUARES_MAP, fromSquare);

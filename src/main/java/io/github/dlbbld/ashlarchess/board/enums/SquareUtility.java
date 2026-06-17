@@ -6,7 +6,6 @@ package io.github.dlbbld.ashlarchess.board.enums;
 import static io.github.dlbbld.ashlarchess.common.utility.ImmutableUtility.constructListSquare;
 
 import java.util.EnumMap;
-import java.util.List;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
@@ -107,7 +106,7 @@ public final class SquareUtility {
   private static final ImmutableList<Square> BLACK_PROMOTION_RANK = constructListSquare(Square.A1, Square.B1, Square.C1,
       Square.D1, Square.E1, Square.F1, Square.G1, Square.H1);
 
-  public static List<Square> getPromotionRankList(Side side) {
+  public static ImmutableList<Square> getPromotionRankList(Side side) {
     return switch (side) {
       case WHITE -> WHITE_PROMOTION_RANK;
       case BLACK -> BLACK_PROMOTION_RANK;
@@ -122,7 +121,7 @@ public final class SquareUtility {
   private static final ImmutableList<Square> BLACK_MOVE_EN_PASSANT_CAPTURE_TARGET_SQUARE_LIST = constructListSquare(
       Square.A3, Square.B3, Square.C3, Square.D3, Square.E3, Square.F3, Square.G3, Square.H3);
 
-  public static List<Square> calculateEnPassantCaptureTargetSquareList(Side havingMove) {
+  public static ImmutableList<Square> calculateEnPassantCaptureTargetSquareList(Side havingMove) {
     return switch (havingMove) {
       case BLACK -> BLACK_MOVE_EN_PASSANT_CAPTURE_TARGET_SQUARE_LIST;
       case WHITE -> WHITE_MOVE_EN_PASSANT_CAPTURE_TARGET_SQUARE_LIST;
