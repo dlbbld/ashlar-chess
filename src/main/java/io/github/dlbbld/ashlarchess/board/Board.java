@@ -51,6 +51,9 @@ import io.github.dlbbld.ashlarchess.san.SanTerminalMarker;
 import io.github.dlbbld.ashlarchess.san.SanTerminalMarkerUtility;
 import io.github.dlbbld.ashlarchess.san.StrictSanParser;
 import io.github.dlbbld.ashlarchess.san.StrictSanParserValidationResult;
+import io.github.dlbbld.ashlarchess.unwinnability.DeadPositionAnalyzer;
+import io.github.dlbbld.ashlarchess.unwinnability.DeadPositionFullVerdict;
+import io.github.dlbbld.ashlarchess.unwinnability.DeadPositionQuickVerdict;
 import io.github.dlbbld.ashlarchess.unwinnability.UnwinnabilityFullVerdict;
 import io.github.dlbbld.ashlarchess.unwinnability.UnwinnabilityQuickVerdict;
 import io.github.dlbbld.ashlarchess.unwinnability.UnwinnableFullAnalyzer;
@@ -1066,6 +1069,24 @@ public class Board {
 
   public UnwinnabilityFullVerdict unwinnableFull(Side side) {
     return UnwinnableFullAnalyzer.unwinnableFull(this, side).verdict();
+  }
+
+  /**
+   * Quick whole-position dead check (FIDE 5.2.2): {@link DeadPositionQuickVerdict#DEAD} when neither side can deliver
+   * checkmate by any sequence of legal moves, {@link DeadPositionQuickVerdict#POSSIBLY_ALIVE} otherwise. The cheap,
+   * during-the-game counterpart to {@link #deadPositionFull()}.
+   */
+  public DeadPositionQuickVerdict deadPositionQuick() {
+    return DeadPositionAnalyzer.deadPositionQuick(this);
+  }
+
+  /**
+   * Complete whole-position dead check (FIDE 5.2.2): {@link DeadPositionFullVerdict#DEAD}, {@code ALIVE}, or
+   * {@code UNDETERMINED}. The complete check suggested at game end (resignation or flag-fall); during the game prefer the
+   * cheaper {@link #deadPositionQuick()}.
+   */
+  public DeadPositionFullVerdict deadPositionFull() {
+    return DeadPositionAnalyzer.deadPositionFull(this);
   }
 
   public CastlingRight getCastlingRight(Side havingMove) {

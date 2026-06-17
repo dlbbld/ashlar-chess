@@ -86,7 +86,7 @@ The library follows the FIDE Laws of Chess closely. Termination is **information
 | Threefold repetition | claimable | 9.2 |
 | 50-move rule | claimable | 9.3 |
 
-The automatic rows are listed in the precedence order `calculateOutcome` applies (python-chess parity): when two or more apply to the same position, the higher row wins. A KBvK stalemate, for instance, reports `INSUFFICIENT_MATERIAL`, not `STALEMATE`. Structural insufficient material is detected by a fast structural test (king-vs-king, king + minor vs king, etc.); analyzer-driven dead positions (FIDE 5.2.2 via the unwinnability analyzer) are intentionally not invoked by `calculateOutcome` — the analyzer would silently make every status query expensive — so callers that want that verdict call the no-side overloads `UnwinnableQuickAnalyzer.unwinnableQuick(board)` or `UnwinnableFullAnalyzer.unwinnableFull(board)` directly.
+The automatic rows are listed in the precedence order `calculateOutcome` applies (python-chess parity): when two or more apply to the same position, the higher row wins. A KBvK stalemate, for instance, reports `INSUFFICIENT_MATERIAL`, not `STALEMATE`. Structural insufficient material is detected by a fast structural test (king-vs-king, king + minor vs king, etc.); analyzer-driven dead positions (FIDE 5.2.2 via the unwinnability analyzer) are intentionally not invoked by `calculateOutcome` — the analyzer would silently make every status query expensive — so callers that want that verdict call `Board.deadPositionQuick()` or `Board.deadPositionFull()` (backed by `DeadPositionAnalyzer`) directly.
 
 Single-side insufficient material (one side lacks mating material but the other does not) is a diagnostic state of the position, not a termination, and is not surfaced by `Outcome`. Callers query `Board.isInsufficientMaterial(Side)` directly when they need it.
 
@@ -113,7 +113,7 @@ Miguel Ambrona's CHA is, to the author's knowledge, the only published algorithm
 - **Quick** — microsecond-scale, structural, two-valued: `UNWINNABLE` or `POSSIBLY_WINNABLE`. It proves unwinnability or leaves it open, and never claims winnability.
 - **Full** — deep search, four-valued: `WINNABLE_HELPMATE` (a concrete mate line was found), `WINNABLE_BY_THEOREM` (winnability certified by the basic-helpmate-existence theorem, no line), `UNWINNABLE`, or `UNDETERMINED`. The undetermined case is bounded by a 500 000-position limit; most positions resolve well below that.
 
-`Dead position` is the symmetric whole-position notion, checked by the no-side overloads `UnwinnableQuickAnalyzer.unwinnableQuick(board)` and `UnwinnableFullAnalyzer.unwinnableFull(board)`, which reuse the same verdict enums (`UNWINNABLE` = dead).
+`Dead position` is the symmetric whole-position notion, decided by `DeadPositionAnalyzer` (and the `Board.deadPositionQuick()` / `Board.deadPositionFull()` convenience methods): a position is dead exactly when it is unwinnable for both sides. It carries its own verdicts — `DeadPositionQuickVerdict` (`DEAD` / `POSSIBLY_ALIVE`) and `DeadPositionFullVerdict` (`DEAD` / `ALIVE` / `UNDETERMINED`) — rather than reusing the per-side unwinnable vocabulary.
 
 The direct side-specific analyzers return analysis records. Only `WINNABLE_HELPMATE` carries a helpmate line that can be
 replayed from the input position; the `Board.unwinnableQuick(Side)` and `Board.unwinnableFull(Side)` convenience

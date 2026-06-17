@@ -14,8 +14,7 @@ import io.github.dlbbld.ashlarchess.board.enums.Side;
 import io.github.dlbbld.ashlarchess.common.enums.Termination;
 import io.github.dlbbld.ashlarchess.common.model.Outcome;
 import io.github.dlbbld.ashlarchess.common.utility.BasicChessUtility;
-import io.github.dlbbld.ashlarchess.unwinnability.UnwinnabilityQuickVerdict;
-import io.github.dlbbld.ashlarchess.unwinnability.UnwinnableQuickAnalyzer;
+import io.github.dlbbld.ashlarchess.unwinnability.DeadPositionQuickVerdict;
 
 /**
  * Game-end semantics. The raw rule predicates on {@link Board} are independent - several may be true at one position -
@@ -24,8 +23,8 @@ import io.github.dlbbld.ashlarchess.unwinnability.UnwinnableQuickAnalyzer;
  *
  * <p>
  * {@code calculateOutcome} stays cheap and never invokes a CHA / dead-position analyzer; the analyzer-driven dead
- * position is a separate query via the no-side {@link UnwinnableQuickAnalyzer#unwinnableQuick(Board)} overload
- * ({@code UNWINNABLE} = dead) and is deliberately not a {@link Termination}.
+ * position is a separate query via {@link Board#deadPositionQuick()} ({@code DEAD} = dead) and is deliberately not a
+ * {@link Termination}.
  */
 class TestBoardGameEndOutcome {
 
@@ -113,7 +112,7 @@ class TestBoardGameEndOutcome {
     assertEquals(152, board.getHalfMoveClock(), "precondition: 38 king-shuffle cycles -> clock 152");
 
     assertTrue(board.isInsufficientMaterial(), "KvK is structurally insufficient");
-    assertEquals(UnwinnabilityQuickVerdict.UNWINNABLE, UnwinnableQuickAnalyzer.unwinnableQuick(board),
+    assertEquals(DeadPositionQuickVerdict.DEAD, board.deadPositionQuick(),
         "KvK is also dead under the analyzer (superset of insufficient material)");
     assertTrue(board.isFivefoldRepetition(), "initial position recurs > 5 times across the shuffle");
     assertTrue(board.isSeventyFiveMove(), "clock past 150");
@@ -137,7 +136,7 @@ class TestBoardGameEndOutcome {
     assertFalse(board.isCheckmate());
     assertFalse(board.isStalemate());
     assertFalse(board.isInsufficientMaterial());
-    assertEquals(UnwinnabilityQuickVerdict.POSSIBLY_WINNABLE, UnwinnableQuickAnalyzer.unwinnableQuick(board),
+    assertEquals(DeadPositionQuickVerdict.POSSIBLY_ALIVE, board.deadPositionQuick(),
         "ongoing opening position is not dead");
     assertFalse(board.isFivefoldRepetition());
     assertFalse(board.isSeventyFiveMove());

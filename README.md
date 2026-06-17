@@ -284,7 +284,7 @@ blocked pawn walls:
 
 ```text
 after each move:
-    if UnwinnableQuickAnalyzer.unwinnableQuick(board) == UNWINNABLE:
+    if board.deadPositionQuick() == DEAD:
         return draw
 ```
 
@@ -306,9 +306,9 @@ A position is unwinnable for a player if there is no legal sequence that can end
 even if the opponent cooperates. If the position is unwinnable for both players, it's a dead position.
 
 > **Note:** quick/full dead-position detection is caller-invoked. `Board` does not run the analyzer during
-> construction or after each move; callers that want to adjudicate analyzer-driven dead positions call the no-side
-> overloads `UnwinnableQuickAnalyzer.unwinnableQuick(board)` / `UnwinnableFullAnalyzer.unwinnableFull(board)`, or the
-> side-specific `Board.unwinnableQuick(Side)` / `Board.unwinnableFull(Side)`.
+> construction or after each move; callers that want to adjudicate analyzer-driven dead positions call
+> `Board.deadPositionQuick()` / `Board.deadPositionFull()` (backed by `DeadPositionAnalyzer`), or the side-specific
+> `Board.unwinnableQuick(Side)` / `Board.unwinnableFull(Side)`.
 
 ## Methods
 The library provides an implementation of CHA. So for both situations, there is a quick and a full method.
@@ -336,16 +336,17 @@ in any way, it is only trying an alternative approach for some material cases.
 Performance: The limit regarding "UNDETERMINED" is 500'000 positions. It takes around one to two seconds to reach. Most positions evaluate in milliseconds.
 
 ### Dead position
-A position is dead when it is unwinnable for both players. The no-side overloads check this and reuse the same verdict
-enums, so there is no separate dead-position type.
+A position is dead when it is unwinnable for both players. `DeadPositionAnalyzer` - and the
+`Board.deadPositionQuick()` / `Board.deadPositionFull()` convenience methods - decide this with their own
+whole-position verdicts, rather than reusing the per-side unwinnable vocabulary.
 
-`UnwinnableQuickAnalyzer.unwinnableQuick(board)` returns an `UnwinnabilityQuickVerdict`:
-* UNWINNABLE - the position is dead (neither side can mate)
-* POSSIBLY_WINNABLE - not provably dead
+`Board.deadPositionQuick()` returns a `DeadPositionQuickVerdict`:
+* DEAD - the position is dead (neither side can mate)
+* POSSIBLY_ALIVE - not provably dead
 
-`UnwinnableFullAnalyzer.unwinnableFull(board)` returns an `UnwinnabilityFullVerdict`:
-* WINNABLE_HELPMATE / WINNABLE_BY_THEOREM - not dead (one side can win)
-* UNWINNABLE - the position is dead
+`Board.deadPositionFull()` returns a `DeadPositionFullVerdict`:
+* DEAD - the position is dead
+* ALIVE - not dead (one side can win)
 * UNDETERMINED - the limits in the code interrupted the search
 
 Performance: The comment from the Unwinnability section for UNDETERMINED applies here. However, it checks both sides so that it can take double the time.
@@ -419,8 +420,8 @@ The most straightforward dead position is when one player already has insufficie
 [Position](https://lichess.org/analysis/8/8/3kn3/8/2K5/8/8/8_w_-_-_0_50)
 ```java
 final Board board = new Board("8/8/3kn3/8/2K5/8/8/8 w - - 0 50");
-System.out.println(UnwinnableQuickAnalyzer.unwinnableQuick(board)); // UNWINNABLE (dead)
-System.out.println(UnwinnableFullAnalyzer.unwinnableFull(board)); // UNWINNABLE (dead)
+System.out.println(board.deadPositionQuick()); // DEAD (dead)
+System.out.println(board.deadPositionFull()); // DEAD (dead)
 ```
 
 #### Pawn walls
@@ -429,8 +430,8 @@ Pawn walls are dead positions, but most common chess libraries do not detect the
 
 ```java
 final Board board = new Board("8/6b1/1p3k2/1Pp1p1p1/2P1PpP1/5P2/8/5K2 b - - 11 61");
-System.out.println(UnwinnableQuickAnalyzer.unwinnableQuick(board)); // UNWINNABLE (dead)
-System.out.println(UnwinnableFullAnalyzer.unwinnableFull(board)); // UNWINNABLE (dead)
+System.out.println(board.deadPositionQuick()); // DEAD (dead)
+System.out.println(board.deadPositionFull()); // DEAD (dead)
 ```
 
 #### Forced moves
@@ -439,8 +440,8 @@ Positions can also often be dead due to forced moves.
 
 ```java
 final Board board = new Board("k7/P1K5/8/8/8/8/8/8 b - - 2 58");
-System.out.println(UnwinnableQuickAnalyzer.unwinnableQuick(board)); // UNWINNABLE (dead)
-System.out.println(UnwinnableFullAnalyzer.unwinnableFull(board)); // UNWINNABLE (dead)
+System.out.println(board.deadPositionQuick()); // DEAD (dead)
+System.out.println(board.deadPositionFull()); // DEAD (dead)
 ```
 
 # PGN functionality

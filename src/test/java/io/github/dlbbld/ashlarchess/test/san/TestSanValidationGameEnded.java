@@ -12,8 +12,7 @@ import org.junit.jupiter.api.Test;
 import io.github.dlbbld.ashlarchess.board.Board;
 import io.github.dlbbld.ashlarchess.san.SanValidationException;
 import io.github.dlbbld.ashlarchess.san.StrictSanParser;
-import io.github.dlbbld.ashlarchess.unwinnability.UnwinnabilityQuickVerdict;
-import io.github.dlbbld.ashlarchess.unwinnability.UnwinnableQuickAnalyzer;
+import io.github.dlbbld.ashlarchess.unwinnability.DeadPositionQuickVerdict;
 
 /**
  * SAN-pipeline mirror of {@code TestValidateNewMoveGameEnded}: pins the same queryable-only posture at game-end states.
@@ -63,7 +62,7 @@ class TestSanValidationGameEnded {
   void testSanAcceptedAtDeadPositionUnwinnableQuickBornDead() {
     // Pawn-wall fortress (horizontal_1 from the CHA pawn-wall corpus).
     final Board board = new Board("4k3/8/8/p1p1p1p1/P1P1P1P1/8/8/4K3 w - - 0 50");
-    assertEquals(UnwinnabilityQuickVerdict.UNWINNABLE, UnwinnableQuickAnalyzer.unwinnableQuick(board));
+    assertEquals(DeadPositionQuickVerdict.DEAD, board.deadPositionQuick());
     assertDoesNotThrow(() -> StrictSanParser.parseText("Kd1", board),
         "quick-unwinnable dead position is queryable only; the SAN parser must accept the move");
   }
@@ -74,7 +73,7 @@ class TestSanValidationGameEnded {
     // Predecessor: pawn wall with white h-pawn still on h2. h3 completes the lock.
     final Board board = new Board("4k3/8/8/p1p1p1p1/PpPpPpPp/1P1P1P2/7P/4K3 w - - 0 49");
     board.moveStrict("h3");
-    assertEquals(UnwinnabilityQuickVerdict.UNWINNABLE, UnwinnableQuickAnalyzer.unwinnableQuick(board));
+    assertEquals(DeadPositionQuickVerdict.DEAD, board.deadPositionQuick());
     assertDoesNotThrow(() -> StrictSanParser.parseText("Kd8", board),
         "quick-unwinnable dead position is queryable only; the SAN parser must accept the move");
   }

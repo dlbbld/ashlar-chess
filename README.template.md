@@ -162,7 +162,7 @@ blocked pawn walls:
 
 ```text
 after each move:
-    if UnwinnableQuickAnalyzer.unwinnableQuick(board) == UNWINNABLE:
+    if board.deadPositionQuick() == DEAD:
         return draw
 ```
 
@@ -184,9 +184,9 @@ A position is unwinnable for a player if there is no legal sequence that can end
 even if the opponent cooperates. If the position is unwinnable for both players, it's a dead position.
 
 > **Note:** quick/full dead-position detection is caller-invoked. `Board` does not run the analyzer during
-> construction or after each move; callers that want to adjudicate analyzer-driven dead positions call the no-side
-> overloads `UnwinnableQuickAnalyzer.unwinnableQuick(board)` / `UnwinnableFullAnalyzer.unwinnableFull(board)`, or the
-> side-specific `Board.unwinnableQuick(Side)` / `Board.unwinnableFull(Side)`.
+> construction or after each move; callers that want to adjudicate analyzer-driven dead positions call
+> `Board.deadPositionQuick()` / `Board.deadPositionFull()` (backed by `DeadPositionAnalyzer`), or the side-specific
+> `Board.unwinnableQuick(Side)` / `Board.unwinnableFull(Side)`.
 
 ## Methods
 The library provides an implementation of CHA. So for both situations, there is a quick and a full method.
@@ -214,16 +214,17 @@ in any way, it is only trying an alternative approach for some material cases.
 Performance: The limit regarding "UNDETERMINED" is 500'000 positions. It takes around one to two seconds to reach. Most positions evaluate in milliseconds.
 
 ### Dead position
-A position is dead when it is unwinnable for both players. The no-side overloads check this and reuse the same verdict
-enums, so there is no separate dead-position type.
+A position is dead when it is unwinnable for both players. `DeadPositionAnalyzer` - and the
+`Board.deadPositionQuick()` / `Board.deadPositionFull()` convenience methods - decide this with their own
+whole-position verdicts, rather than reusing the per-side unwinnable vocabulary.
 
-`UnwinnableQuickAnalyzer.unwinnableQuick(board)` returns an `UnwinnabilityQuickVerdict`:
-* UNWINNABLE - the position is dead (neither side can mate)
-* POSSIBLY_WINNABLE - not provably dead
+`Board.deadPositionQuick()` returns a `DeadPositionQuickVerdict`:
+* DEAD - the position is dead (neither side can mate)
+* POSSIBLY_ALIVE - not provably dead
 
-`UnwinnableFullAnalyzer.unwinnableFull(board)` returns an `UnwinnabilityFullVerdict`:
-* WINNABLE_HELPMATE / WINNABLE_BY_THEOREM - not dead (one side can win)
-* UNWINNABLE - the position is dead
+`Board.deadPositionFull()` returns a `DeadPositionFullVerdict`:
+* DEAD - the position is dead
+* ALIVE - not dead (one side can win)
 * UNDETERMINED - the limits in the code interrupted the search
 
 Performance: The comment from the Unwinnability section for UNDETERMINED applies here. However, it checks both sides so that it can take double the time.

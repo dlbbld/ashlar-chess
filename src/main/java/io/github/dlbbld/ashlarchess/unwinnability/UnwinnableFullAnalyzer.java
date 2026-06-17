@@ -39,29 +39,6 @@ public class UnwinnableFullAnalyzer {
     return unwinnableFull(board, winner, false, new MobilitySolution());
   }
 
-  /**
-   * Dead-position-full check for the whole position (no intended winner): a winnable verdict ({@code WINNABLE_HELPMATE}
-   * / {@code WINNABLE_BY_THEOREM}) means the position is not dead because that side can win; {@code UNWINNABLE} means
-   * dead - neither side can deliver checkmate by any sequence of legal moves; {@code UNDETERMINED} means it could not
-   * be decided within the search bound. This complete check is suggested at game end (resignation or flag-fall); during
-   * the game prefer the cheaper {@link UnwinnableQuickAnalyzer#unwinnableQuick(Board)}. Short-circuits: it stops as
-   * soon as one side is found winnable.
-   */
-  public static UnwinnabilityFullVerdict unwinnableFull(Board board) {
-    final UnwinnabilityFullVerdict white = unwinnableFull(board, Side.WHITE).verdict();
-    if (white.isWinnable()) {
-      return white;
-    }
-    final UnwinnabilityFullVerdict black = unwinnableFull(board, Side.BLACK).verdict();
-    if (black.isWinnable()) {
-      return black;
-    }
-    if (white == UnwinnabilityFullVerdict.UNWINNABLE && black == UnwinnabilityFullVerdict.UNWINNABLE) {
-      return UnwinnabilityFullVerdict.UNWINNABLE;
-    }
-    return UnwinnabilityFullVerdict.UNDETERMINED;
-  }
-
   // Inputs: position, intended winner
   // Output: Unwinnable or Winnable (definite solution to the chess unwinnability problem)
   private static UnwinnabilityFullAnalysis unwinnableFull(Board board, Side winner, boolean isHasMobilitySolution,

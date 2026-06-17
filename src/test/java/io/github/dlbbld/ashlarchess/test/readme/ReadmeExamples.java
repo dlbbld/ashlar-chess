@@ -24,8 +24,6 @@ import io.github.dlbbld.ashlarchess.pgn.StrictPgnParserValidationResult;
 import io.github.dlbbld.ashlarchess.pgn.WriteMode;
 import io.github.dlbbld.ashlarchess.report.Reporter;
 import io.github.dlbbld.ashlarchess.san.ForgivenItem;
-import io.github.dlbbld.ashlarchess.unwinnability.UnwinnableFullAnalyzer;
-import io.github.dlbbld.ashlarchess.unwinnability.UnwinnableQuickAnalyzer;
 
 /**
  * Source of truth for the runnable code examples shown in {@code README.md}. Each method is one README example: the
@@ -242,24 +240,24 @@ public final class ReadmeExamples {
   public static void deadInsufficientMaterial() {
     // <readme:dead-insufficient-material>
     final Board board = new Board("8/8/3kn3/8/2K5/8/8/8 w - - 0 50");
-    System.out.println(UnwinnableQuickAnalyzer.unwinnableQuick(board)); // [out] (dead)
-    System.out.println(UnwinnableFullAnalyzer.unwinnableFull(board)); // [out] (dead)
+    System.out.println(board.deadPositionQuick()); // [out] (dead)
+    System.out.println(board.deadPositionFull()); // [out] (dead)
     // </readme:dead-insufficient-material>
   }
 
   public static void deadPawnWalls() {
     // <readme:dead-pawn-walls>
     final Board board = new Board("8/6b1/1p3k2/1Pp1p1p1/2P1PpP1/5P2/8/5K2 b - - 11 61");
-    System.out.println(UnwinnableQuickAnalyzer.unwinnableQuick(board)); // [out] (dead)
-    System.out.println(UnwinnableFullAnalyzer.unwinnableFull(board)); // [out] (dead)
+    System.out.println(board.deadPositionQuick()); // [out] (dead)
+    System.out.println(board.deadPositionFull()); // [out] (dead)
     // </readme:dead-pawn-walls>
   }
 
   public static void deadForcedMoves() {
     // <readme:dead-forced-moves>
     final Board board = new Board("k7/P1K5/8/8/8/8/8/8 b - - 2 58");
-    System.out.println(UnwinnableQuickAnalyzer.unwinnableQuick(board)); // [out] (dead)
-    System.out.println(UnwinnableFullAnalyzer.unwinnableFull(board)); // [out] (dead)
+    System.out.println(board.deadPositionQuick()); // [out] (dead)
+    System.out.println(board.deadPositionFull()); // [out] (dead)
     // </readme:dead-forced-moves>
   }
 

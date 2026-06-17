@@ -10,7 +10,6 @@ import org.junit.jupiter.api.Test;
 import io.github.dlbbld.ashlarchess.bitboard.StaticPositionBridge;
 import io.github.dlbbld.ashlarchess.board.Board;
 import io.github.dlbbld.ashlarchess.fen.constants.FenConstants;
-import io.github.dlbbld.ashlarchess.unwinnability.UnwinnableQuickAnalyzer;
 
 class TestBoardCopyCurrentPositionWithoutHistory {
 
@@ -72,6 +71,6 @@ class TestBoardCopyCurrentPositionWithoutHistory {
     assertEquals(source.isCheckmate(), actual.isCheckmate());
     assertEquals(source.isStalemate(), actual.isStalemate());
     assertEquals(source.isInsufficientMaterial(), actual.isInsufficientMaterial());
-    assertEquals(UnwinnableQuickAnalyzer.unwinnableQuick(source), UnwinnableQuickAnalyzer.unwinnableQuick(actual));
+    assertEquals(source.deadPositionQuick(), actual.deadPositionQuick());
   }
 }

@@ -14,8 +14,9 @@ package io.github.dlbbld.ashlarchess.common.enums;
  * separate null check.)
  *
  * <p>
- * Analyzer-driven dead positions (FIDE 5.2.2, via the quick or full unwinnability analyzer's no-side overload in
- * {@link io.github.dlbbld.ashlarchess.unwinnability}) are <em>not</em> represented here - invoking the analyzer from
+ * Analyzer-driven dead positions (FIDE 5.2.2, via
+ * {@link io.github.dlbbld.ashlarchess.unwinnability.DeadPositionAnalyzer}) are <em>not</em> represented here - invoking
+ * the analyzer from
  * {@code calculateOutcome} would silently make every status query expensive. Callers that want the analyzer-driven
  * verdict query it directly.
  *

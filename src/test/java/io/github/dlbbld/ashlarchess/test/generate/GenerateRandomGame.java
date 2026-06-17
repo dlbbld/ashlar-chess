@@ -15,8 +15,7 @@ import io.github.dlbbld.ashlarchess.common.model.DynamicPosition;
 import io.github.dlbbld.ashlarchess.common.model.MoveSpecification;
 import io.github.dlbbld.ashlarchess.test.common.utility.RandomUtility;
 import io.github.dlbbld.ashlarchess.test.librarycomparison.enums.FindRandomGame;
-import io.github.dlbbld.ashlarchess.unwinnability.UnwinnabilityQuickVerdict;
-import io.github.dlbbld.ashlarchess.unwinnability.UnwinnableQuickAnalyzer;
+import io.github.dlbbld.ashlarchess.unwinnability.DeadPositionQuickVerdict;
 
 public class GenerateRandomGame {
 
@@ -91,7 +90,7 @@ public class GenerateRandomGame {
 
         }
         if (!board.isCheckmate() && !board.isStalemate()
-            && UnwinnableQuickAnalyzer.unwinnableQuick(board) != UnwinnabilityQuickVerdict.UNWINNABLE
+            && board.deadPositionQuick() != DeadPositionQuickVerdict.DEAD
             && board.getRepetitionCount() == 1 && !board.isFiftyMove()) {
           moveOptionList.add(moveSpecification);
         }
@@ -178,7 +177,7 @@ public class GenerateRandomGame {
       for (final MoveSpecification moveSpecification : legalMoves) {
         board.move(moveSpecification);
         if (!board.isCheckmate() && !board.isStalemate()
-            && UnwinnableQuickAnalyzer.unwinnableQuick(board) != UnwinnabilityQuickVerdict.UNWINNABLE
+            && board.deadPositionQuick() != DeadPositionQuickVerdict.DEAD
             && board.getRepetitionCount() == 1) {
           moveOptionList.add(moveSpecification);
         }
@@ -231,7 +230,7 @@ public class GenerateRandomGame {
       for (final MoveSpecification moveSpecification : legalMoves) {
         board.move(moveSpecification);
         if (!board.isCheckmate() && !board.isStalemate()
-            && UnwinnableQuickAnalyzer.unwinnableQuick(board) == UnwinnabilityQuickVerdict.UNWINNABLE
+            && board.deadPositionQuick() == DeadPositionQuickVerdict.DEAD
             && board.getRepetitionCount() == 1 && (!isFiftyReached || board.isFiftyMove())) {
           moveOptionList.add(moveSpecification);
         }
@@ -314,7 +313,7 @@ public class GenerateRandomGame {
         for (final MoveSpecification moveSpecification : legalMoves) {
           board.move(moveSpecification);
           if (!board.isCheckmate() && !board.isStalemate()
-              && UnwinnableQuickAnalyzer.unwinnableQuick(board) == UnwinnabilityQuickVerdict.UNWINNABLE
+              && board.deadPositionQuick() == DeadPositionQuickVerdict.DEAD
               && !board.isFiftyMove()) {
             moveOptionList.add(moveSpecification);
           }
