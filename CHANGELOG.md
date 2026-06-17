@@ -12,6 +12,7 @@ A surface-only release. It retires the `HalfMove` concept, replaces the "halfmov
 ### Notable
 
 - **Records and enums are now data carriers.** A new rule in `coding-conventions.md` draws the line: records and enums hold data; computational, translation, and factory logic lives in dedicated `*Utility` / `*Translator` classes. `BitboardPosition` is the one documented exception — it carries its move-generation / king-safety engine on the record for hot-path allocation reasons.
+- **A last-chance API-polish pass** was folded in before publication, so no further major bump is needed for it. It refined the data-carrier rule: type-creating factories (`of(...)` from typed components, `parse(...)` from text), same-type conversions (`to*`), and tiny intrinsic self-description predicates live on the enum or record they describe, while rule evaluation stays in utilities — this returned the `Fen*Symbol` and `PromotionPieceType` factories to their enums and added `MoveSpecification.isPromotion()`. It also dropped the `calculateIs` / `calculateHas` prefix from boolean predicates (`is` / `has`), switched PGN export to the `to*` idiom, surfaced immutable collection types in signatures, and gave whole-position dead detection its own `DeadPositionAnalyzer`. See the Breaking list.
 - **`HalfMove` is retired.** The played-move row is now `MoveRecord`, rebuilt inside the report layer from `Board`'s existing per-move accessors; the public PGN movetext type is `PgnMove`.
 - **"Move" is the consistent term** for one player's action across the public model, move history, and reports. "halfmove" and "ply" now appear only where they are protocol- or engine-correct: FEN/PGN counters (`halfMoveClock`, the `PlyCount` tag) and the engine/search internals.
 - Added a Maven Central version badge to the README.
@@ -50,6 +51,7 @@ Formatting / model:
 Model invariants:
 
 - `UnwinnabilityFullAnalysis.mateLine()` now returns `ImmutableList<UciMove>` instead of `List<UciMove>`, and the record copies the list defensively on construction — the component is now guaranteed immutable.
+- `ClaimRights`'s `claimableMoves` component is now `ImmutableList<ClaimableMove>` (was `List<ClaimableMove>`); the canonical constructor requires an already-immutable list rather than defensively copying an arbitrary `List`.
 - `MoveSpecification`'s canonical constructor now validates its structural invariants on every path (previously the public four-argument constructor bypassed validation). Inconsistent from / to / castling / promotion combinations now throw `IllegalArgumentException` at construction instead of yielding a malformed value.
 
 FEN:
@@ -60,10 +62,10 @@ FEN:
 Enum behavior moved to utilities (the "enums carry data" pass) — each former `Enum.method(...)` is now `EnumUtility.method(enum, ...)`:
 
 - `KingSafetyCheck` / `MovementCheck` / `CastlingCheck` `toMoveCheck(...)` → `analyze.{KingSafetyCheck,MovementCheck,CastlingCheck}Translator.toMoveCheck(...)`.
-- `Piece.calculate{Rook,Knight,Bishop,Queen,King,Pawn}Piece(Side)` and `Piece.calculate(Side, PieceType)`, plus the duplicate `PieceType.calculate(Side, PieceType)`, consolidated into `board.enums.PieceUtility`. `PromotionPieceType.calculate(Side, PromotionPieceType)` → `board.enums.PromotionPieceTypeUtility.calculate(...)`.
-- `Square.flip`, `getPromotionRank`, `calculateJumpOverSquare`, `calculateEnPassantCaptureTargetSquareList`, and the king / queen-side-rook / king-side-rook original-square methods → `board.enums.SquareUtility`.
+- `Piece.calculate{Rook,Knight,Bishop,Queen,King,Pawn}Piece(Side)` and `Piece.calculate(Side, PieceType)`, plus the duplicate `PieceType.calculate(Side, PieceType)`, consolidated into `board.enums.PieceUtility`. `PromotionPieceType.calculate(Side, PromotionPieceType)` → the instance method `PromotionPieceType.toPiece(Side)`.
+- `Square.flip`, `getPromotionRank` (now `getPromotionRankList`), `calculateJumpOverSquare`, `calculateEnPassantCaptureTargetSquareList`, and the king / queen-side-rook / king-side-rook original-square methods → `board.enums.SquareUtility`.
 - `Rank`'s side-relative rule methods (ground / promotion / pawn-initial / two-square-advance / en-passant ranks and per-side validity) → `board.enums.RankUtility`.
-- `FenSideSymbol.calculate(Side)` and `FenPieceSymbol.calculate(Piece)` → `fen.{FenSideSymbol,FenPieceSymbol}Utility` (the char self-parse stays on the enum, renamed to `parse(char)` — see below).
+- `FenSideSymbol.calculate(Side)` → `FenSideSymbol.of(Side)` and `FenPieceSymbol.calculate(Piece)` → `FenPieceSymbol.of(Piece)` (the type-creating factories stay on the enums; the char self-parse is `parse(char)` — see below).
 - `SanTerminalMarker.calculate(...)` / `append(...)` → `san.SanTerminalMarkerUtility`; `SanFormat.isCapture()` → `san.SanFormatUtility.isCapture(...)`.
 
 Enum factories split by input — `of(...)` from typed components, `parse(...)` from text:
@@ -88,6 +90,35 @@ Removed from the published jar:
 
 - Deleted unused types `BoardUtility`, `CheckmateOrStalemate`, and `SemiOpenFilesUtility`.
 - Relocated test-only support out of `main` (public, but used only by the test / oracle layers): `StandardMoveUtility`, `LegalMoveCalculation`, `SquareOccupation`, `IoUtility`, `PseudoLegalMove`.
+
+Boolean predicate methods drop the `calculateIs` / `calculateHas` prefix for the JavaBeans `is` / `has` idiom:
+
+- `CastlingUtility.calculateIsCastlingMove` → `isCastlingMove`; `calculateQueenSideCastlingIsOriginalPosition` / `calculateKingSideCastlingIsOriginalPosition` → `isQueenSideCastlingOriginalPosition` / `isKingSideCastlingOriginalPosition`.
+- `BasicChessUtility.calculateIsResetHalfMoveClock` → `isResetHalfMoveClock`.
+- `BasicUtility.calculateIsDisjoint` → `isDisjoint`.
+- `EnPassantCaptureUtility.calculateIsPawnTwoSquareAdvanceMove` / `calculateIsPotentialEnPassantCapture` → `isPawnTwoSquareAdvanceMove` / `isPotentialEnPassantCapture`.
+- `PawnDiagonalMoveUtility.calculateIsPawnDiagonalMove` → `isPawnDiagonalMove`.
+- `TagUtility.calculateIsContainsAllSevenTagRosterTags` → `hasAllSevenTagRosterTags`.
+- `PromotionUtility.calculateIsPromotion(MoveSpecification)` removed; the predicate is now intrinsic to the record as `MoveSpecification.isPromotion()`.
+
+PGN export uses the `to*` idiom:
+
+- `PgnCreate.createPgnString(...)` → `toPgnString(...)` (all three overloads) and `createPgnLines(...)` → `toPgnLines(...)` (both overloads). `createPgnGame(...)` is unchanged — it builds a `PgnGame`, it does not serialize one.
+
+Immutable collection types in signatures:
+
+- `UciMoveValidationUtility.getUciMoveList()` returns `ImmutableList<UciMove>` (was `List<UciMove>`).
+- `SquareUtility.getPromotionRankList(Side)` (renamed from `Square.getPromotionRank`) and `calculateEnPassantCaptureTargetSquareList(Side)` return `ImmutableList<Square>` (was `List<Square>`).
+- The empty-board square getters — `KnightEmptyBoardSquares.getKnightSquares`, `KingNonCastlingEmptyBoardSquares.getKingSquares`, `PawnDiagonalSquares.getPawnDiagonalSquares`, and `Pawn{Any,One,Two}AdvanceEmptyBoardSquares.getPawnSquares` — return `ImmutableSet<Square>` (was `Set<Square>`).
+- Callers assigning to `List` / `Set` are unaffected; the change is binary-incompatible and only tightens the declared type.
+
+Dead position is its own analyzer:
+
+- The no-side overloads `UnwinnableQuickAnalyzer.unwinnableQuick(Board)` and `UnwinnableFullAnalyzer.unwinnableFull(Board)` are removed. Whole-position dead detection now lives in `unwinnability.DeadPositionAnalyzer`, with `Board.deadPositionQuick()` / `Board.deadPositionFull()` convenience methods and its own verdicts: `DeadPositionQuickVerdict` (`DEAD` / `POSSIBLY_ALIVE`) and `DeadPositionFullVerdict` (`DEAD` / `ALIVE` / `UNDETERMINED`). Migration: `UnwinnableQuickAnalyzer.unwinnableQuick(board) == UNWINNABLE` becomes `board.deadPositionQuick() == DEAD`; for the full check the two `WINNABLE_*` results map to `ALIVE`. Behaviour is unchanged — the per-side analyzers and verdicts are untouched.
+
+Noninstantiable classes are `final`:
+
+- The static-only utility, constant, translator, and analyzer classes (including `UnwinnableQuickAnalyzer` / `UnwinnableFullAnalyzer`) are now `final` with private constructors (previously `abstract` or implicitly instantiable). They were never meant to be subclassed or instantiated, so this affects only code that did so.
 
 
 ## [18.1.0] - Adjudication API - 2026-06-11
