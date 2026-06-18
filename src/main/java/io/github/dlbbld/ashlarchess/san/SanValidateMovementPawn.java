@@ -55,10 +55,8 @@ final class SanValidateMovementPawn {
   }
 
   private static void validatePawnCapturingDiagonal(Side havingMove, File fromFile, File toFile) {
-    final boolean isAdjacentLeft = fromFile.hasLeftFile(havingMove)
-        && fromFile.getLeftFile(havingMove) == toFile;
-    final boolean isAdjacentRight = fromFile.hasRightFile(havingMove)
-        && fromFile.getRightFile(havingMove) == toFile;
+    final boolean isAdjacentLeft = fromFile.hasLeftFile(havingMove) && fromFile.getLeftFile(havingMove) == toFile;
+    final boolean isAdjacentRight = fromFile.hasRightFile(havingMove) && fromFile.getRightFile(havingMove) == toFile;
 
     if (!isAdjacentLeft && !isAdjacentRight) {
       throw new SanValidationException(SanValidationProblem.MOVEMENT_PAWN_CAPTURE_NON_ADJACENT_FILE,

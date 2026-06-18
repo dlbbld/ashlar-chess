@@ -30,6 +30,7 @@ class TestStrictPgnParserEmptyException {
   }
 
   private static void checkException(String pgnName, StrictPgnParserValidationProblem expected) {
-    TestStrictPgnParserExceptionSupport.checkException(PGN_TEST_FOLDER_PATH, pgnName, expected, SanValidationProblem.NONE);
+    TestStrictPgnParserExceptionSupport.checkException(PGN_TEST_FOLDER_PATH, pgnName, expected,
+        SanValidationProblem.NONE);
   }
 }

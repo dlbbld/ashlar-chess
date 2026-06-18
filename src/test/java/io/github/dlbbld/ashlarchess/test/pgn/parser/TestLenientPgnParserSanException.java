@@ -29,6 +29,7 @@ class TestLenientPgnParserSanException {
   }
 
   private static void checkException(String pgnName, SanValidationProblem expectedSanValidationProblem) {
-    TestLenientPgnParserExceptionSupport.checkException(PGN_TEST_FOLDER_PATH, pgnName, LenientPgnParserValidationProblem.SAN, expectedSanValidationProblem);
+    TestLenientPgnParserExceptionSupport.checkException(PGN_TEST_FOLDER_PATH, pgnName,
+        LenientPgnParserValidationProblem.SAN, expectedSanValidationProblem);
   }
 }

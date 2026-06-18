@@ -23,7 +23,8 @@ class TestSanValidateNonMovement {
     TestSanValidateSupport.checkExceptionNonMovement("Nb1b1", board);
     TestSanValidateSupport.checkExceptionNonMovement("Bc1c1", board);
     TestSanValidateSupport.checkExceptionNonMovement("Qd1d1", board);
-    TestSanValidateSupport.checkExceptionFormat("Ke1e1", SanValidationProblem.FORMAT_KING_NON_CASTLING_NON_CAPTURE_OVERLENGTH, board);
+    TestSanValidateSupport.checkExceptionFormat("Ke1e1",
+        SanValidationProblem.FORMAT_KING_NON_CASTLING_NON_CAPTURE_OVERLENGTH, board);
 
     board.moveStrict("e4");
 
@@ -31,7 +32,8 @@ class TestSanValidateNonMovement {
     TestSanValidateSupport.checkExceptionNonMovement("Nb8b8", board);
     TestSanValidateSupport.checkExceptionNonMovement("Bc8c8", board);
     TestSanValidateSupport.checkExceptionNonMovement("Qd8d8", board);
-    TestSanValidateSupport.checkExceptionFormat("Ke8e8", SanValidationProblem.FORMAT_KING_NON_CASTLING_NON_CAPTURE_OVERLENGTH, board);
+    TestSanValidateSupport.checkExceptionFormat("Ke8e8",
+        SanValidationProblem.FORMAT_KING_NON_CASTLING_NON_CAPTURE_OVERLENGTH, board);
 
     board.moveStrict("e5");
 
@@ -74,9 +76,11 @@ class TestSanValidateNonMovement {
     // kings after moved
     board.moveStrict("Kd1");
     board.moveStrict("Kd8");
-    TestSanValidateSupport.checkExceptionFormat("Kd1d1", SanValidationProblem.FORMAT_KING_NON_CASTLING_NON_CAPTURE_OVERLENGTH, board);
+    TestSanValidateSupport.checkExceptionFormat("Kd1d1",
+        SanValidationProblem.FORMAT_KING_NON_CASTLING_NON_CAPTURE_OVERLENGTH, board);
     board.moveStrict("Ke2");
-    TestSanValidateSupport.checkExceptionFormat("Kd8d8", SanValidationProblem.FORMAT_KING_NON_CASTLING_NON_CAPTURE_OVERLENGTH, board);
+    TestSanValidateSupport.checkExceptionFormat("Kd8d8",
+        SanValidationProblem.FORMAT_KING_NON_CASTLING_NON_CAPTURE_OVERLENGTH, board);
     board.moveStrict("Ke8");
 
   }

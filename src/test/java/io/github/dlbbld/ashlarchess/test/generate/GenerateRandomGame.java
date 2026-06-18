@@ -89,8 +89,7 @@ public class GenerateRandomGame {
             throw new IllegalArgumentException();
 
         }
-        if (!board.isCheckmate() && !board.isStalemate()
-            && board.deadPositionQuick() != DeadPositionQuickVerdict.DEAD
+        if (!board.isCheckmate() && !board.isStalemate() && board.deadPositionQuick() != DeadPositionQuickVerdict.DEAD
             && board.getRepetitionCount() == 1 && !board.isFiftyMove()) {
           moveOptionList.add(moveSpecification);
         }
@@ -176,8 +175,7 @@ public class GenerateRandomGame {
       moveOptionList = new ArrayList<>();
       for (final MoveSpecification moveSpecification : legalMoves) {
         board.move(moveSpecification);
-        if (!board.isCheckmate() && !board.isStalemate()
-            && board.deadPositionQuick() != DeadPositionQuickVerdict.DEAD
+        if (!board.isCheckmate() && !board.isStalemate() && board.deadPositionQuick() != DeadPositionQuickVerdict.DEAD
             && board.getRepetitionCount() == 1) {
           moveOptionList.add(moveSpecification);
         }
@@ -229,8 +227,7 @@ public class GenerateRandomGame {
       moveOptionList = new ArrayList<>();
       for (final MoveSpecification moveSpecification : legalMoves) {
         board.move(moveSpecification);
-        if (!board.isCheckmate() && !board.isStalemate()
-            && board.deadPositionQuick() == DeadPositionQuickVerdict.DEAD
+        if (!board.isCheckmate() && !board.isStalemate() && board.deadPositionQuick() == DeadPositionQuickVerdict.DEAD
             && board.getRepetitionCount() == 1 && (!isFiftyReached || board.isFiftyMove())) {
           moveOptionList.add(moveSpecification);
         }
@@ -312,8 +309,7 @@ public class GenerateRandomGame {
         // means we have no continuation from 3 onwards found
         for (final MoveSpecification moveSpecification : legalMoves) {
           board.move(moveSpecification);
-          if (!board.isCheckmate() && !board.isStalemate()
-              && board.deadPositionQuick() == DeadPositionQuickVerdict.DEAD
+          if (!board.isCheckmate() && !board.isStalemate() && board.deadPositionQuick() == DeadPositionQuickVerdict.DEAD
               && !board.isFiftyMove()) {
             moveOptionList.add(moveSpecification);
           }

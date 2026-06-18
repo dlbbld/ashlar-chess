@@ -17,8 +17,8 @@ class RookRangeSquares {
       boolean isAllowOwnPiece) {
 
     final RookRange emptyBoardRange = RookEmptyBoardSquares.getRookSquares(fromSquare);
-    return RangeSquaresSupport.calculateOrthogonalRangeSquare(staticPosition, havingMove, fromSquare, ROOK, emptyBoardRange,
-        isAllowOwnPiece);
+    return RangeSquaresSupport.calculateOrthogonalRangeSquare(staticPosition, havingMove, fromSquare, ROOK,
+        emptyBoardRange, isAllowOwnPiece);
   }
 
 }

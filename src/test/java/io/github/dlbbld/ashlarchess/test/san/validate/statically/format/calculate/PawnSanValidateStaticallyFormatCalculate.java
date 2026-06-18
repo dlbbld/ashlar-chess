@@ -20,7 +20,8 @@ public class PawnSanValidateStaticallyFormatCalculate {
     final Map<String, SanParse> sanValidateMap = new TreeMap<>();
 
     // promotion only on rank 1 and 8, non-promotion only on ranks 2-7
-    for (final SanValidationFromTo model : SanValidateStaticallyFormatCalculateSupport.calculateWithoutDisambiguation()) {
+    for (final SanValidationFromTo model : SanValidateStaticallyFormatCalculateSupport
+        .calculateWithoutDisambiguation()) {
       if (isPromotionRank(model)) {
         SanValidateStaticallyStrictCalculateSupport.populatePawnPromotionMap(sanValidateMap, model, false);
       } else {

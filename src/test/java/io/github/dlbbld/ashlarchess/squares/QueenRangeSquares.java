@@ -19,10 +19,10 @@ class QueenRangeSquares {
 
     final QueenRange emptyBoardRange = QueenEmptyBoardSquares.getQueenSquares(fromSquare);
 
-    final Set<Square> result = new TreeSet<>(RangeSquaresSupport.calculateOrthogonalRangeSquare(staticPosition, havingMove, fromSquare,
-        QUEEN, emptyBoardRange, isAllowOwnPiece));
-    result.addAll(
-        RangeSquaresSupport.calculateDiagonalRangeSquare(staticPosition, havingMove, fromSquare, QUEEN, emptyBoardRange, isAllowOwnPiece));
+    final Set<Square> result = new TreeSet<>(RangeSquaresSupport.calculateOrthogonalRangeSquare(staticPosition,
+        havingMove, fromSquare, QUEEN, emptyBoardRange, isAllowOwnPiece));
+    result.addAll(RangeSquaresSupport.calculateDiagonalRangeSquare(staticPosition, havingMove, fromSquare, QUEEN,
+        emptyBoardRange, isAllowOwnPiece));
 
     return result;
   }

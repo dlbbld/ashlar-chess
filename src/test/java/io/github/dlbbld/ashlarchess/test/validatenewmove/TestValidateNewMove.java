@@ -55,7 +55,8 @@ class TestValidateNewMove {
   @SuppressWarnings("static-method")
   @Test
   void testMoveSpecFromSquareOccupiedByOpponent() {
-    TestValidateNewMoveSupport.check(new Board(), new MoveSpecification(E7, E5), MoveCheck.MOVE_SPEC_FROM_SQUARE_OCCUPIED_BY_OPPONENT);
+    TestValidateNewMoveSupport.check(new Board(), new MoveSpecification(E7, E5),
+        MoveCheck.MOVE_SPEC_FROM_SQUARE_OCCUPIED_BY_OPPONENT);
   }
 
   @SuppressWarnings("static-method")
@@ -90,7 +91,8 @@ class TestValidateNewMove {
   @SuppressWarnings("static-method")
   @Test
   void testMovementToSquareOccupiedByOwnPiece() {
-    TestValidateNewMoveSupport.check(new Board(), new MoveSpecification(A1, A2), MoveCheck.MOVEMENT_TO_SQUARE_OCCUPIED_BY_OWN_PIECE);
+    TestValidateNewMoveSupport.check(new Board(), new MoveSpecification(A1, A2),
+        MoveCheck.MOVEMENT_TO_SQUARE_OCCUPIED_BY_OWN_PIECE);
   }
 
   @SuppressWarnings("static-method")
@@ -140,13 +142,15 @@ class TestValidateNewMove {
   @SuppressWarnings("static-method")
   @Test
   void testKingCapturesGuardedPiece() {
-    TestValidateNewMoveSupport.check("4k3/7p/8/b7/8/8/3b4/4K3 w - - 0 1", new MoveSpecification(E1, D2), MoveCheck.KING_CAPTURES_GUARDED_PIECE);
+    TestValidateNewMoveSupport.check("4k3/7p/8/b7/8/8/3b4/4K3 w - - 0 1", new MoveSpecification(E1, D2),
+        MoveCheck.KING_CAPTURES_GUARDED_PIECE);
   }
 
   @SuppressWarnings("static-method")
   @Test
   void testKingMovesNextToOpponentKing() {
-    TestValidateNewMoveSupport.check("r7/8/8/8/8/4k3/8/4K3 w - - 0 1", new MoveSpecification(E1, E2), MoveCheck.KING_MOVES_NEXT_TO_OPPONENT_KING);
+    TestValidateNewMoveSupport.check("r7/8/8/8/8/4k3/8/4K3 w - - 0 1", new MoveSpecification(E1, E2),
+        MoveCheck.KING_MOVES_NEXT_TO_OPPONENT_KING);
   }
 
   // --- KING_MOVES_TO_ATTACKED_EMPTY_SQUARE (king-move to attacked empty destination) ---
@@ -163,7 +167,8 @@ class TestValidateNewMove {
   @SuppressWarnings("static-method")
   @Test
   void testAllButKingKingLeftInCheck() {
-    TestValidateNewMoveSupport.check("4r2k/8/8/8/2N5/8/8/4K3 w - - 0 1", new MoveSpecification(C4, D6), MoveCheck.ALL_BUT_KING_KING_LEFT_IN_CHECK);
+    TestValidateNewMoveSupport.check("4r2k/8/8/8/2N5/8/8/4K3 w - - 0 1", new MoveSpecification(C4, D6),
+        MoveCheck.ALL_BUT_KING_KING_LEFT_IN_CHECK);
   }
 
   @SuppressWarnings("static-method")
@@ -199,8 +204,8 @@ class TestValidateNewMove {
   @SuppressWarnings("static-method")
   @Test
   void testKingCastlingTemporaryKingTravelsThroughCheck() {
-    TestValidateNewMoveSupport.check("rnb1kbnr/pppp2pp/5q2/8/2B5/7N/PPPP2PP/RNBQK2R w KQkq - 0 25", new MoveSpecification(CastlingMove.KING_SIDE),
-        MoveCheck.KING_CASTLING_TEMPORARY_KING_TRAVELS_THROUGH_CHECK);
+    TestValidateNewMoveSupport.check("rnb1kbnr/pppp2pp/5q2/8/2B5/7N/PPPP2PP/RNBQK2R w KQkq - 0 25",
+        new MoveSpecification(CastlingMove.KING_SIDE), MoveCheck.KING_CASTLING_TEMPORARY_KING_TRAVELS_THROUGH_CHECK);
   }
 
   @SuppressWarnings("static-method")

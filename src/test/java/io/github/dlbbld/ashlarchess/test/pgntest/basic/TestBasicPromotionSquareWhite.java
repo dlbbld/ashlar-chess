@@ -95,34 +95,34 @@ class TestBasicPromotionSquareWhite {
             PromotionPieceType.QUEEN, board);
         case "08_white_promotion_square_straight_h8.pgn" -> TestBasicSupport.checkPromotion(WHITE, H7, H8, Piece.NONE,
             PromotionPieceType.QUEEN, board);
-        case "09_white_promotion_square_right_a8.pgn" -> TestBasicSupport.checkPromotion(WHITE, B7, A8, Piece.BLACK_ROOK,
-            PromotionPieceType.QUEEN, board);
-        case "10_white_promotion_square_right_b8.pgn" -> TestBasicSupport.checkPromotion(WHITE, C7, B8, Piece.BLACK_ROOK,
-            PromotionPieceType.QUEEN, board);
-        case "11_white_promotion_square_right_c8.pgn" -> TestBasicSupport.checkPromotion(WHITE, D7, C8, Piece.BLACK_ROOK,
-            PromotionPieceType.QUEEN, board);
-        case "12_white_promotion_square_right_d8.pgn" -> TestBasicSupport.checkPromotion(WHITE, E7, D8, Piece.BLACK_ROOK,
-            PromotionPieceType.QUEEN, board);
-        case "13_white_promotion_square_right_e8.pgn" -> TestBasicSupport.checkPromotion(WHITE, F7, E8, Piece.BLACK_BISHOP,
-            PromotionPieceType.QUEEN, board);
-        case "14_white_promotion_square_right_f8.pgn" -> TestBasicSupport.checkPromotion(WHITE, G7, F8, Piece.BLACK_ROOK,
-            PromotionPieceType.QUEEN, board);
-        case "15_white_promotion_square_right_g8.pgn" -> TestBasicSupport.checkPromotion(WHITE, H7, G8, Piece.BLACK_ROOK,
-            PromotionPieceType.QUEEN, board);
-        case "16_white_promotion_square_left_b8.pgn" -> TestBasicSupport.checkPromotion(WHITE, A7, B8, Piece.BLACK_KNIGHT,
-            PromotionPieceType.QUEEN, board);
-        case "17_white_promotion_square_left_c8.pgn" -> TestBasicSupport.checkPromotion(WHITE, B7, C8, Piece.BLACK_KNIGHT,
-            PromotionPieceType.QUEEN, board);
-        case "18_white_promotion_square_left_d8.pgn" -> TestBasicSupport.checkPromotion(WHITE, C7, D8, Piece.BLACK_KNIGHT,
-            PromotionPieceType.QUEEN, board);
-        case "19_white_promotion_square_left_e8.pgn" -> TestBasicSupport.checkPromotion(WHITE, D7, E8, Piece.BLACK_KNIGHT,
-            PromotionPieceType.QUEEN, board);
-        case "20_white_promotion_square_left_f8.pgn" -> TestBasicSupport.checkPromotion(WHITE, E7, F8, Piece.BLACK_KNIGHT,
-            PromotionPieceType.QUEEN, board);
-        case "21_white_promotion_square_left_g8.pgn" -> TestBasicSupport.checkPromotion(WHITE, F7, G8, Piece.BLACK_KNIGHT,
-            PromotionPieceType.QUEEN, board);
-        case "22_white_promotion_square_left_h8.pgn" -> TestBasicSupport.checkPromotion(WHITE, G7, H8, Piece.BLACK_KNIGHT,
-            PromotionPieceType.QUEEN, board);
+        case "09_white_promotion_square_right_a8.pgn" -> TestBasicSupport.checkPromotion(WHITE, B7, A8,
+            Piece.BLACK_ROOK, PromotionPieceType.QUEEN, board);
+        case "10_white_promotion_square_right_b8.pgn" -> TestBasicSupport.checkPromotion(WHITE, C7, B8,
+            Piece.BLACK_ROOK, PromotionPieceType.QUEEN, board);
+        case "11_white_promotion_square_right_c8.pgn" -> TestBasicSupport.checkPromotion(WHITE, D7, C8,
+            Piece.BLACK_ROOK, PromotionPieceType.QUEEN, board);
+        case "12_white_promotion_square_right_d8.pgn" -> TestBasicSupport.checkPromotion(WHITE, E7, D8,
+            Piece.BLACK_ROOK, PromotionPieceType.QUEEN, board);
+        case "13_white_promotion_square_right_e8.pgn" -> TestBasicSupport.checkPromotion(WHITE, F7, E8,
+            Piece.BLACK_BISHOP, PromotionPieceType.QUEEN, board);
+        case "14_white_promotion_square_right_f8.pgn" -> TestBasicSupport.checkPromotion(WHITE, G7, F8,
+            Piece.BLACK_ROOK, PromotionPieceType.QUEEN, board);
+        case "15_white_promotion_square_right_g8.pgn" -> TestBasicSupport.checkPromotion(WHITE, H7, G8,
+            Piece.BLACK_ROOK, PromotionPieceType.QUEEN, board);
+        case "16_white_promotion_square_left_b8.pgn" -> TestBasicSupport.checkPromotion(WHITE, A7, B8,
+            Piece.BLACK_KNIGHT, PromotionPieceType.QUEEN, board);
+        case "17_white_promotion_square_left_c8.pgn" -> TestBasicSupport.checkPromotion(WHITE, B7, C8,
+            Piece.BLACK_KNIGHT, PromotionPieceType.QUEEN, board);
+        case "18_white_promotion_square_left_d8.pgn" -> TestBasicSupport.checkPromotion(WHITE, C7, D8,
+            Piece.BLACK_KNIGHT, PromotionPieceType.QUEEN, board);
+        case "19_white_promotion_square_left_e8.pgn" -> TestBasicSupport.checkPromotion(WHITE, D7, E8,
+            Piece.BLACK_KNIGHT, PromotionPieceType.QUEEN, board);
+        case "20_white_promotion_square_left_f8.pgn" -> TestBasicSupport.checkPromotion(WHITE, E7, F8,
+            Piece.BLACK_KNIGHT, PromotionPieceType.QUEEN, board);
+        case "21_white_promotion_square_left_g8.pgn" -> TestBasicSupport.checkPromotion(WHITE, F7, G8,
+            Piece.BLACK_KNIGHT, PromotionPieceType.QUEEN, board);
+        case "22_white_promotion_square_left_h8.pgn" -> TestBasicSupport.checkPromotion(WHITE, G7, H8,
+            Piece.BLACK_KNIGHT, PromotionPieceType.QUEEN, board);
         default -> throw new IllegalArgumentException();
       }
     }

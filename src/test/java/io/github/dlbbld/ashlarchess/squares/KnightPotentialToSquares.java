@@ -18,8 +18,8 @@ public class KnightPotentialToSquares {
 
     final Set<Square> emptyBoardSquareSet = KnightEmptyBoardSquares.getKnightSquares(fromSquare);
 
-    return PotentialToSquaresSupport.calculateNonRangeNonPawnPotentialToSquares(staticPosition, fromSquare, KNIGHT, emptyBoardSquareSet,
-        havingMove);
+    return PotentialToSquaresSupport.calculateNonRangeNonPawnPotentialToSquares(staticPosition, fromSquare, KNIGHT,
+        emptyBoardSquareSet, havingMove);
   }
 
 }

@@ -22,7 +22,8 @@ public class QueenSanValidateStaticallyStrictCalculate {
     final Map<String, SanParse> sanValidateMap = new TreeMap<>();
 
     for (final String enumName : QueenSanValidateStaticallyStrict.VALUES) {
-      final SanValidationFromTo model = SanValidateStaticallyStrictCalculateSupport.calculateFromFileAndOrRankTo(enumName, QUEEN);
+      final SanValidationFromTo model = SanValidateStaticallyStrictCalculateSupport
+          .calculateFromFileAndOrRankTo(enumName, QUEEN);
       SanValidateStaticallyStrictCalculateSupport.populateMap(sanValidateMap, model, QUEEN);
     }
 

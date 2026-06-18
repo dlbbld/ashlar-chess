@@ -17,7 +17,8 @@ class BishopRangeSquares {
       Side havingMove, boolean isAllowOwnPiece) {
 
     final BishopRange bishopRange = BishopEmptyBoardSquares.getBishopSquares(fromSquare);
-    return RangeSquaresSupport.calculateDiagonalRangeSquare(staticPosition, havingMove, fromSquare, BISHOP, bishopRange, isAllowOwnPiece);
+    return RangeSquaresSupport.calculateDiagonalRangeSquare(staticPosition, havingMove, fromSquare, BISHOP, bishopRange,
+        isAllowOwnPiece);
 
   }
 

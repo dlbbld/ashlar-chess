@@ -9,8 +9,8 @@ import io.github.dlbbld.ashlarchess.board.enums.Side;
 /**
  * Decides whether a position is a <em>dead position</em> under FIDE 5.2.2: one in which neither side can deliver
  * checkmate by any sequence of legal moves, even with the fullest cooperation. This is the symmetric, whole-position
- * counterpart to the per-side unwinnability analyzers ({@link UnwinnableQuickAnalyzer}, {@link UnwinnableFullAnalyzer}):
- * a position is dead exactly when it is unwinnable for both sides.
+ * counterpart to the per-side unwinnability analyzers ({@link UnwinnableQuickAnalyzer},
+ * {@link UnwinnableFullAnalyzer}): a position is dead exactly when it is unwinnable for both sides.
  *
  * <p>
  * Two variants mirror the underlying analyzers. {@link #deadPositionQuick(Board)} is the cheap, structural,

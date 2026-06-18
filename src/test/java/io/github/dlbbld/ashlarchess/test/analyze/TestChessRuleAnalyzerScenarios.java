@@ -298,7 +298,8 @@ class TestChessRuleAnalyzerScenarios {
     board.move(move);
 
     move = new MoveSpecification(A4, A5);
-    TestChessRuleAnalyzerScenariosSupport.check(board, move, MoveCheck.MOVEMENT_PAWN_FORWARD_ONE_SQUARE_TO_SQUARE_NOT_EMPTY_OWN_PIECE);
+    TestChessRuleAnalyzerScenariosSupport.check(board, move,
+        MoveCheck.MOVEMENT_PAWN_FORWARD_ONE_SQUARE_TO_SQUARE_NOT_EMPTY_OWN_PIECE);
 
     move = new MoveSpecification(D4, E5);
     board.move(move);
@@ -313,7 +314,8 @@ class TestChessRuleAnalyzerScenarios {
     board.move(move);
 
     move = new MoveSpecification(E4, E5);
-    TestChessRuleAnalyzerScenariosSupport.check(board, move, MoveCheck.MOVEMENT_PAWN_FORWARD_ONE_SQUARE_TO_SQUARE_NOT_EMPTY_OWN_PIECE);
+    TestChessRuleAnalyzerScenariosSupport.check(board, move,
+        MoveCheck.MOVEMENT_PAWN_FORWARD_ONE_SQUARE_TO_SQUARE_NOT_EMPTY_OWN_PIECE);
 
     move = new MoveSpecification(H2, H4);
     board.move(move);
@@ -322,7 +324,8 @@ class TestChessRuleAnalyzerScenarios {
     board.move(move);
 
     move = new MoveSpecification(H4, H5);
-    TestChessRuleAnalyzerScenariosSupport.check(board, move, MoveCheck.MOVEMENT_PAWN_FORWARD_ONE_SQUARE_TO_SQUARE_NOT_EMPTY_OPPONENT_PIECE);
+    TestChessRuleAnalyzerScenariosSupport.check(board, move,
+        MoveCheck.MOVEMENT_PAWN_FORWARD_ONE_SQUARE_TO_SQUARE_NOT_EMPTY_OPPONENT_PIECE);
 
     move = new MoveSpecification(A5, A6);
     board.move(move);
@@ -337,7 +340,8 @@ class TestChessRuleAnalyzerScenarios {
     board.move(move);
 
     move = new MoveSpecification(A5, A6);
-    TestChessRuleAnalyzerScenariosSupport.check(board, move, MoveCheck.MOVEMENT_PAWN_FORWARD_ONE_SQUARE_TO_SQUARE_NOT_EMPTY_OPPONENT_PIECE);
+    TestChessRuleAnalyzerScenariosSupport.check(board, move,
+        MoveCheck.MOVEMENT_PAWN_FORWARD_ONE_SQUARE_TO_SQUARE_NOT_EMPTY_OPPONENT_PIECE);
 
     move = new MoveSpecification(F2, F3);
     board.move(move);
@@ -388,7 +392,8 @@ class TestChessRuleAnalyzerScenarios {
     board.move(move);
 
     move = new MoveSpecification(F5, E6);
-    TestChessRuleAnalyzerScenariosSupport.check(board, move, MoveCheck.MOVEMENT_PAWN_EN_PASSANT_NO_IMMEDIATE_BEFORE_TWO_SQUARE_ADVANCE);
+    TestChessRuleAnalyzerScenariosSupport.check(board, move,
+        MoveCheck.MOVEMENT_PAWN_EN_PASSANT_NO_IMMEDIATE_BEFORE_TWO_SQUARE_ADVANCE);
 
     move = new MoveSpecification(D2, H6);
     board.move(move);
@@ -415,19 +420,24 @@ class TestChessRuleAnalyzerScenarios {
     board.move(move);
 
     move = new MoveSpecification(F5, E6);
-    TestChessRuleAnalyzerScenariosSupport.check(board, move, MoveCheck.MOVEMENT_PAWN_EN_PASSANT_NO_IMMEDIATE_BEFORE_TWO_SQUARE_ADVANCE);
+    TestChessRuleAnalyzerScenariosSupport.check(board, move,
+        MoveCheck.MOVEMENT_PAWN_EN_PASSANT_NO_IMMEDIATE_BEFORE_TWO_SQUARE_ADVANCE);
 
     move = new MoveSpecification(H5, G6);
-    TestChessRuleAnalyzerScenariosSupport.check(board, move, MoveCheck.MOVEMENT_PAWN_EN_PASSANT_NO_IMMEDIATE_BEFORE_TWO_SQUARE_ADVANCE);
+    TestChessRuleAnalyzerScenariosSupport.check(board, move,
+        MoveCheck.MOVEMENT_PAWN_EN_PASSANT_NO_IMMEDIATE_BEFORE_TWO_SQUARE_ADVANCE);
 
     move = new MoveSpecification(A5, B6);
-    TestChessRuleAnalyzerScenariosSupport.check(board, move, MoveCheck.MOVEMENT_PAWN_EN_PASSANT_NO_IMMEDIATE_BEFORE_TWO_SQUARE_ADVANCE);
+    TestChessRuleAnalyzerScenariosSupport.check(board, move,
+        MoveCheck.MOVEMENT_PAWN_EN_PASSANT_NO_IMMEDIATE_BEFORE_TWO_SQUARE_ADVANCE);
 
     move = new MoveSpecification(E5, F6);
-    TestChessRuleAnalyzerScenariosSupport.check(board, move, MoveCheck.MOVEMENT_PAWN_EN_PASSANT_NO_IMMEDIATE_BEFORE_TWO_SQUARE_ADVANCE);
+    TestChessRuleAnalyzerScenariosSupport.check(board, move,
+        MoveCheck.MOVEMENT_PAWN_EN_PASSANT_NO_IMMEDIATE_BEFORE_TWO_SQUARE_ADVANCE);
 
     move = new MoveSpecification(F5, G6);
-    TestChessRuleAnalyzerScenariosSupport.check(board, move, MoveCheck.MOVEMENT_PAWN_EN_PASSANT_NO_IMMEDIATE_BEFORE_TWO_SQUARE_ADVANCE);
+    TestChessRuleAnalyzerScenariosSupport.check(board, move,
+        MoveCheck.MOVEMENT_PAWN_EN_PASSANT_NO_IMMEDIATE_BEFORE_TWO_SQUARE_ADVANCE);
 
     // pawn moves
     board = new Board();
@@ -445,7 +455,8 @@ class TestChessRuleAnalyzerScenarios {
     board.move(move);
 
     move = new MoveSpecification(E5, D6);
-    TestChessRuleAnalyzerScenariosSupport.check(board, move, MoveCheck.MOVEMENT_PAWN_EN_PASSANT_NO_IMMEDIATE_BEFORE_TWO_SQUARE_ADVANCE);
+    TestChessRuleAnalyzerScenariosSupport.check(board, move,
+        MoveCheck.MOVEMENT_PAWN_EN_PASSANT_NO_IMMEDIATE_BEFORE_TWO_SQUARE_ADVANCE);
 
     move = new MoveSpecification(H2, H4);
     board.move(move);
@@ -466,7 +477,8 @@ class TestChessRuleAnalyzerScenarios {
     board.move(move);
 
     move = new MoveSpecification(H5, G6);
-    TestChessRuleAnalyzerScenariosSupport.check(board, move, MoveCheck.MOVEMENT_PAWN_EN_PASSANT_NO_IMMEDIATE_BEFORE_TWO_SQUARE_ADVANCE);
+    TestChessRuleAnalyzerScenariosSupport.check(board, move,
+        MoveCheck.MOVEMENT_PAWN_EN_PASSANT_NO_IMMEDIATE_BEFORE_TWO_SQUARE_ADVANCE);
 
     move = new MoveSpecification(A2, A4);
     board.move(move);
@@ -481,7 +493,8 @@ class TestChessRuleAnalyzerScenarios {
     board.move(move);
 
     move = new MoveSpecification(A5, B6);
-    TestChessRuleAnalyzerScenariosSupport.check(board, move, MoveCheck.MOVEMENT_PAWN_EN_PASSANT_NO_IMMEDIATE_BEFORE_TWO_SQUARE_ADVANCE);
+    TestChessRuleAnalyzerScenariosSupport.check(board, move,
+        MoveCheck.MOVEMENT_PAWN_EN_PASSANT_NO_IMMEDIATE_BEFORE_TWO_SQUARE_ADVANCE);
 
     move = new MoveSpecification(D1, E1);
     board.move(move);
@@ -496,7 +509,8 @@ class TestChessRuleAnalyzerScenarios {
     board.move(move);
 
     move = new MoveSpecification(E5, F6);
-    TestChessRuleAnalyzerScenariosSupport.check(board, move, MoveCheck.MOVEMENT_PAWN_EN_PASSANT_NO_IMMEDIATE_BEFORE_TWO_SQUARE_ADVANCE);
+    TestChessRuleAnalyzerScenariosSupport.check(board, move,
+        MoveCheck.MOVEMENT_PAWN_EN_PASSANT_NO_IMMEDIATE_BEFORE_TWO_SQUARE_ADVANCE);
 
     // pawn moves
     board = new Board();
@@ -514,7 +528,8 @@ class TestChessRuleAnalyzerScenarios {
     board.move(move);
 
     move = new MoveSpecification(B5, C6);
-    TestChessRuleAnalyzerScenariosSupport.check(board, move, MoveCheck.MOVEMENT_PAWN_EN_PASSANT_NO_IMMEDIATE_BEFORE_TWO_SQUARE_ADVANCE);
+    TestChessRuleAnalyzerScenariosSupport.check(board, move,
+        MoveCheck.MOVEMENT_PAWN_EN_PASSANT_NO_IMMEDIATE_BEFORE_TWO_SQUARE_ADVANCE);
 
     move = new MoveSpecification(B5, A6);
     board.move(move);
@@ -541,7 +556,8 @@ class TestChessRuleAnalyzerScenarios {
     board.move(move);
 
     move = new MoveSpecification(H5, G6);
-    TestChessRuleAnalyzerScenariosSupport.check(board, move, MoveCheck.MOVEMENT_PAWN_EN_PASSANT_NO_IMMEDIATE_BEFORE_TWO_SQUARE_ADVANCE);
+    TestChessRuleAnalyzerScenariosSupport.check(board, move,
+        MoveCheck.MOVEMENT_PAWN_EN_PASSANT_NO_IMMEDIATE_BEFORE_TWO_SQUARE_ADVANCE);
 
   }
 
@@ -559,7 +575,8 @@ class TestChessRuleAnalyzerScenarios {
     board.move(move);
 
     move = new MoveSpecification(C2, C4);
-    TestChessRuleAnalyzerScenariosSupport.check(board, move, MoveCheck.MOVEMENT_PAWN_FORWARD_TWO_SQUARE_JUMP_OVER_SQUARE_ONLY_NOT_EMPTY);
+    TestChessRuleAnalyzerScenariosSupport.check(board, move,
+        MoveCheck.MOVEMENT_PAWN_FORWARD_TWO_SQUARE_JUMP_OVER_SQUARE_ONLY_NOT_EMPTY);
 
     move = new MoveSpecification(E2, E4);
     board.move(move);
@@ -580,7 +597,8 @@ class TestChessRuleAnalyzerScenarios {
     board.move(move);
 
     move = new MoveSpecification(C2, C4);
-    TestChessRuleAnalyzerScenariosSupport.check(board, move, MoveCheck.MOVEMENT_PAWN_FORWARD_TWO_SQUARE_TO_SQUARE_ONLY_NOT_EMPTY);
+    TestChessRuleAnalyzerScenariosSupport.check(board, move,
+        MoveCheck.MOVEMENT_PAWN_FORWARD_TWO_SQUARE_TO_SQUARE_ONLY_NOT_EMPTY);
 
     move = new MoveSpecification(A4, C3);
     board.move(move);
@@ -589,7 +607,8 @@ class TestChessRuleAnalyzerScenarios {
     board.move(move);
 
     move = new MoveSpecification(C2, C4);
-    TestChessRuleAnalyzerScenariosSupport.check(board, move, MoveCheck.MOVEMENT_PAWN_FORWARD_TWO_SQUARE_BOTH_SQUARE_NOT_EMPTY);
+    TestChessRuleAnalyzerScenariosSupport.check(board, move,
+        MoveCheck.MOVEMENT_PAWN_FORWARD_TWO_SQUARE_BOTH_SQUARE_NOT_EMPTY);
   }
 
   @Test
@@ -1128,7 +1147,8 @@ class TestChessRuleAnalyzerScenarios {
     board.move(move);
 
     move = new MoveSpecification(A5, A4);
-    TestChessRuleAnalyzerScenariosSupport.check(board, move, MoveCheck.MOVEMENT_PAWN_FORWARD_ONE_SQUARE_TO_SQUARE_NOT_EMPTY_OWN_PIECE);
+    TestChessRuleAnalyzerScenariosSupport.check(board, move,
+        MoveCheck.MOVEMENT_PAWN_FORWARD_ONE_SQUARE_TO_SQUARE_NOT_EMPTY_OWN_PIECE);
 
     move = new MoveSpecification(G8, H6);
     board.move(move);
@@ -1137,7 +1157,8 @@ class TestChessRuleAnalyzerScenarios {
     board.move(move);
 
     move = new MoveSpecification(H7, H6);
-    TestChessRuleAnalyzerScenariosSupport.check(board, move, MoveCheck.MOVEMENT_PAWN_FORWARD_ONE_SQUARE_TO_SQUARE_NOT_EMPTY_OWN_PIECE);
+    TestChessRuleAnalyzerScenariosSupport.check(board, move,
+        MoveCheck.MOVEMENT_PAWN_FORWARD_ONE_SQUARE_TO_SQUARE_NOT_EMPTY_OWN_PIECE);
 
     board = new Board();
 
@@ -1151,7 +1172,8 @@ class TestChessRuleAnalyzerScenarios {
     board.move(move);
 
     move = new MoveSpecification(A5, A4);
-    TestChessRuleAnalyzerScenariosSupport.check(board, move, MoveCheck.MOVEMENT_PAWN_FORWARD_ONE_SQUARE_TO_SQUARE_NOT_EMPTY_OPPONENT_PIECE);
+    TestChessRuleAnalyzerScenariosSupport.check(board, move,
+        MoveCheck.MOVEMENT_PAWN_FORWARD_ONE_SQUARE_TO_SQUARE_NOT_EMPTY_OPPONENT_PIECE);
 
     move = new MoveSpecification(A8, A6);
     board.move(move);
@@ -1166,7 +1188,8 @@ class TestChessRuleAnalyzerScenarios {
     board.move(move);
 
     move = new MoveSpecification(G7, G6);
-    TestChessRuleAnalyzerScenariosSupport.check(board, move, MoveCheck.MOVEMENT_PAWN_FORWARD_ONE_SQUARE_TO_SQUARE_NOT_EMPTY_OPPONENT_PIECE);
+    TestChessRuleAnalyzerScenariosSupport.check(board, move,
+        MoveCheck.MOVEMENT_PAWN_FORWARD_ONE_SQUARE_TO_SQUARE_NOT_EMPTY_OPPONENT_PIECE);
 
     board = new Board();
 
@@ -1259,10 +1282,12 @@ class TestChessRuleAnalyzerScenarios {
     board.move(move);
 
     move = new MoveSpecification(B4, A3);
-    TestChessRuleAnalyzerScenariosSupport.check(board, move, MoveCheck.MOVEMENT_PAWN_EN_PASSANT_NO_IMMEDIATE_BEFORE_TWO_SQUARE_ADVANCE);
+    TestChessRuleAnalyzerScenariosSupport.check(board, move,
+        MoveCheck.MOVEMENT_PAWN_EN_PASSANT_NO_IMMEDIATE_BEFORE_TWO_SQUARE_ADVANCE);
 
     move = new MoveSpecification(B4, C3);
-    TestChessRuleAnalyzerScenariosSupport.check(board, move, MoveCheck.MOVEMENT_PAWN_EN_PASSANT_NO_IMMEDIATE_BEFORE_TWO_SQUARE_ADVANCE);
+    TestChessRuleAnalyzerScenariosSupport.check(board, move,
+        MoveCheck.MOVEMENT_PAWN_EN_PASSANT_NO_IMMEDIATE_BEFORE_TWO_SQUARE_ADVANCE);
 
     move = new MoveSpecification(C8, B7);
     board.move(move);
@@ -1283,7 +1308,8 @@ class TestChessRuleAnalyzerScenarios {
     board.move(move);
 
     move = new MoveSpecification(H4, G3);
-    TestChessRuleAnalyzerScenariosSupport.check(board, move, MoveCheck.MOVEMENT_PAWN_EN_PASSANT_NO_IMMEDIATE_BEFORE_TWO_SQUARE_ADVANCE);
+    TestChessRuleAnalyzerScenariosSupport.check(board, move,
+        MoveCheck.MOVEMENT_PAWN_EN_PASSANT_NO_IMMEDIATE_BEFORE_TWO_SQUARE_ADVANCE);
 
     move = new MoveSpecification(F7, F5);
     board.move(move);
@@ -1304,7 +1330,8 @@ class TestChessRuleAnalyzerScenarios {
     board.move(move);
 
     move = new MoveSpecification(F4, G3);
-    TestChessRuleAnalyzerScenariosSupport.check(board, move, MoveCheck.MOVEMENT_PAWN_EN_PASSANT_NO_IMMEDIATE_BEFORE_TWO_SQUARE_ADVANCE);
+    TestChessRuleAnalyzerScenariosSupport.check(board, move,
+        MoveCheck.MOVEMENT_PAWN_EN_PASSANT_NO_IMMEDIATE_BEFORE_TWO_SQUARE_ADVANCE);
 
   }
 
@@ -1324,7 +1351,8 @@ class TestChessRuleAnalyzerScenarios {
     board.move(move);
 
     move = new MoveSpecification(C7, C5);
-    TestChessRuleAnalyzerScenariosSupport.check(board, move, MoveCheck.MOVEMENT_PAWN_FORWARD_TWO_SQUARE_JUMP_OVER_SQUARE_ONLY_NOT_EMPTY);
+    TestChessRuleAnalyzerScenariosSupport.check(board, move,
+        MoveCheck.MOVEMENT_PAWN_FORWARD_TWO_SQUARE_JUMP_OVER_SQUARE_ONLY_NOT_EMPTY);
 
     move = new MoveSpecification(C6, B8);
     board.move(move);
@@ -1345,7 +1373,8 @@ class TestChessRuleAnalyzerScenarios {
     board.move(move);
 
     move = new MoveSpecification(A7, A5);
-    TestChessRuleAnalyzerScenariosSupport.check(board, move, MoveCheck.MOVEMENT_PAWN_FORWARD_TWO_SQUARE_JUMP_OVER_SQUARE_ONLY_NOT_EMPTY);
+    TestChessRuleAnalyzerScenariosSupport.check(board, move,
+        MoveCheck.MOVEMENT_PAWN_FORWARD_TWO_SQUARE_JUMP_OVER_SQUARE_ONLY_NOT_EMPTY);
 
     move = new MoveSpecification(G8, F6);
     board.move(move);
@@ -1360,7 +1389,8 @@ class TestChessRuleAnalyzerScenarios {
     board.move(move);
 
     move = new MoveSpecification(H7, H5);
-    TestChessRuleAnalyzerScenariosSupport.check(board, move, MoveCheck.MOVEMENT_PAWN_FORWARD_TWO_SQUARE_TO_SQUARE_ONLY_NOT_EMPTY);
+    TestChessRuleAnalyzerScenariosSupport.check(board, move,
+        MoveCheck.MOVEMENT_PAWN_FORWARD_TWO_SQUARE_TO_SQUARE_ONLY_NOT_EMPTY);
 
     move = new MoveSpecification(H5, F6);
     board.move(move);
@@ -1375,7 +1405,8 @@ class TestChessRuleAnalyzerScenarios {
     board.move(move);
 
     move = new MoveSpecification(F7, F5);
-    TestChessRuleAnalyzerScenariosSupport.check(board, move, MoveCheck.MOVEMENT_PAWN_FORWARD_TWO_SQUARE_BOTH_SQUARE_NOT_EMPTY);
+    TestChessRuleAnalyzerScenariosSupport.check(board, move,
+        MoveCheck.MOVEMENT_PAWN_FORWARD_TWO_SQUARE_BOTH_SQUARE_NOT_EMPTY);
 
   }
 

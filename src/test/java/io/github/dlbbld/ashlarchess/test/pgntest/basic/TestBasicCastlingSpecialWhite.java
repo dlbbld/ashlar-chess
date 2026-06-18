@@ -50,18 +50,26 @@ class TestBasicCastlingSpecialWhite {
       logger.info(testCase.pgnName());
 
       switch (testCase.pgnName()) {
-        case "01_white_castling_special_kingside_check.pgn" -> TestBasicSupport.checkCastle(WHITE, CastlingMove.KING_SIDE, board);
-        case "02_white_castling_special_kingside_checkmate.pgn" -> TestBasicSupport.checkCastle(WHITE, CastlingMove.KING_SIDE, board);
-        case "03_white_castling_special_kingside_fifty_move.pgn" -> TestBasicSupport.checkCastle(WHITE, CastlingMove.KING_SIDE, board);
-        case "04_white_castling_special_kingside_seventy_five_move.pgn" -> TestBasicSupport.checkCastle(WHITE, CastlingMove.KING_SIDE,
-            board);
-        case "05_white_castling_special_kingside_stalemate.pgn" -> TestBasicSupport.checkCastle(WHITE, CastlingMove.KING_SIDE, board);
-        case "06_white_castling_special_queenside_check.pgn" -> TestBasicSupport.checkCastle(WHITE, CastlingMove.QUEEN_SIDE, board);
-        case "07_white_castling_special_queenside_checkmate.pgn" -> TestBasicSupport.checkCastle(WHITE, CastlingMove.QUEEN_SIDE, board);
-        case "08_white_castling_special_queenside_fifty_move.pgn" -> TestBasicSupport.checkCastle(WHITE, CastlingMove.QUEEN_SIDE, board);
-        case "09_white_castling_special_queenside_seventy_five_move.pgn" -> TestBasicSupport.checkCastle(WHITE, CastlingMove.QUEEN_SIDE,
-            board);
-        case "10_white_castling_special_queenside_stalemate.pgn" -> TestBasicSupport.checkCastle(WHITE, CastlingMove.QUEEN_SIDE, board);
+        case "01_white_castling_special_kingside_check.pgn" -> TestBasicSupport.checkCastle(WHITE,
+            CastlingMove.KING_SIDE, board);
+        case "02_white_castling_special_kingside_checkmate.pgn" -> TestBasicSupport.checkCastle(WHITE,
+            CastlingMove.KING_SIDE, board);
+        case "03_white_castling_special_kingside_fifty_move.pgn" -> TestBasicSupport.checkCastle(WHITE,
+            CastlingMove.KING_SIDE, board);
+        case "04_white_castling_special_kingside_seventy_five_move.pgn" -> TestBasicSupport.checkCastle(WHITE,
+            CastlingMove.KING_SIDE, board);
+        case "05_white_castling_special_kingside_stalemate.pgn" -> TestBasicSupport.checkCastle(WHITE,
+            CastlingMove.KING_SIDE, board);
+        case "06_white_castling_special_queenside_check.pgn" -> TestBasicSupport.checkCastle(WHITE,
+            CastlingMove.QUEEN_SIDE, board);
+        case "07_white_castling_special_queenside_checkmate.pgn" -> TestBasicSupport.checkCastle(WHITE,
+            CastlingMove.QUEEN_SIDE, board);
+        case "08_white_castling_special_queenside_fifty_move.pgn" -> TestBasicSupport.checkCastle(WHITE,
+            CastlingMove.QUEEN_SIDE, board);
+        case "09_white_castling_special_queenside_seventy_five_move.pgn" -> TestBasicSupport.checkCastle(WHITE,
+            CastlingMove.QUEEN_SIDE, board);
+        case "10_white_castling_special_queenside_stalemate.pgn" -> TestBasicSupport.checkCastle(WHITE,
+            CastlingMove.QUEEN_SIDE, board);
         default -> throw new IllegalArgumentException();
       }
     }

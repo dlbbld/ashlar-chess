@@ -22,7 +22,8 @@ public class BishopSanValidateStaticallyStrictCalculate {
     final Map<String, SanParse> sanValidateMap = new TreeMap<>();
 
     for (final String enumName : BishopSanValidateStaticallyStrict.VALUES) {
-      final SanValidationFromTo model = SanValidateStaticallyStrictCalculateSupport.calculateFromFileAndOrRankTo(enumName, BISHOP);
+      final SanValidationFromTo model = SanValidateStaticallyStrictCalculateSupport
+          .calculateFromFileAndOrRankTo(enumName, BISHOP);
       SanValidateStaticallyStrictCalculateSupport.populateMap(sanValidateMap, model, BISHOP);
     }
 

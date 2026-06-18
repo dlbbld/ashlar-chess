@@ -146,7 +146,8 @@ final class SanValidateLegalMoves {
         board.getLegalMoves());
     // for non castling moves we need to filter by the to square (which is always set for non castling)
     final Square toSquare = sanConversion.toSquare();
-    final List<LegalMove> legalMovesCandidates = SanDisambiguationUtility.filterLegalMovesCandidates(legalMovesForMovingPiece, toSquare);
+    final List<LegalMove> legalMovesCandidates = SanDisambiguationUtility
+        .filterLegalMovesCandidates(legalMovesForMovingPiece, toSquare);
 
     // for pawn moves we must filter additionally by the from file!!
     if (sanFormat == SanFormat.PAWN_CAPTURING_NON_PROMOTION || sanFormat == SanFormat.PAWN_CAPTURING_PROMOTION) {
@@ -539,7 +540,8 @@ final class SanValidateLegalMoves {
               fromFile.getLetterString(), toSquare.getName()));
     }
 
-    final int numberOfLegalMovesFromSameFile = SanDisambiguationUtility.calculateNumberOfLegalMovesFromFile(fromFile, legalMovesCandidates);
+    final int numberOfLegalMovesFromSameFile = SanDisambiguationUtility.calculateNumberOfLegalMovesFromFile(fromFile,
+        legalMovesCandidates);
     if (numberOfLegalMovesFromSameFile == 0) {
       final Set<Square> pseudoLegalFromSquares = calculatePseudoLegalFromSquaresOnFile(bitboardPosition, havingMove,
           pieceType, toSquare, 0L, fromFile);
@@ -570,7 +572,8 @@ final class SanValidateLegalMoves {
           Message.getString("validation.san.overspecified.rnbq.file.onlyOneLegalMove"));
     }
 
-    if (!SanDisambiguationUtility.calculateHasOtherFilesHavingLegalMoves(sanConversion.fromFile(), legalMovesCandidates)) {
+    if (!SanDisambiguationUtility.calculateHasOtherFilesHavingLegalMoves(sanConversion.fromFile(),
+        legalMovesCandidates)) {
       if (numberOfLegalMovesFromSameFile < 2) {
         throw new ProgrammingMistakeException("A programming assumption about the rank turned out to be wrong");
       }
@@ -612,7 +615,8 @@ final class SanValidateLegalMoves {
               Nulls.valueOf(fromRank.getNumber()), toSquare.getName()));
     }
 
-    final int numberOfLegalMovesFromSameRank = SanDisambiguationUtility.calculateNumberOfLegalMovesFromRank(fromRank, legalMovesCandidates);
+    final int numberOfLegalMovesFromSameRank = SanDisambiguationUtility.calculateNumberOfLegalMovesFromRank(fromRank,
+        legalMovesCandidates);
     if (numberOfLegalMovesFromSameRank == 0) {
       final Set<Square> pseudoLegalFromSquares = calculatePseudoLegalFromSquaresOnRank(bitboardPosition, havingMove,
           pieceType, toSquare, fromRank);
@@ -643,7 +647,8 @@ final class SanValidateLegalMoves {
           Message.getString("validation.san.overspecified.rnbq.rank.onlyOneLegalMove"));
     }
 
-    if (!SanDisambiguationUtility.calculateHasOtherRanksHavingLegalMoves(sanConversion.fromRank(), legalMovesCandidates)) {
+    if (!SanDisambiguationUtility.calculateHasOtherRanksHavingLegalMoves(sanConversion.fromRank(),
+        legalMovesCandidates)) {
       if (numberOfLegalMovesFromSameRank < 2) {
         throw new ProgrammingMistakeException("A programming assumption about the file turned out to be wrong");
       }
@@ -669,8 +674,8 @@ final class SanValidateLegalMoves {
       throw new ProgrammingMistakeException(
           "The program made the wrong assumption that the from file is determined at this point");
     }
-    final int numberOfLegalMovesFromSameFile = SanDisambiguationUtility.calculateNumberOfLegalMovesFromFile(onlyPossibleFromFile,
-        legalMovesCandidates);
+    final int numberOfLegalMovesFromSameFile = SanDisambiguationUtility
+        .calculateNumberOfLegalMovesFromFile(onlyPossibleFromFile, legalMovesCandidates);
 
     if (numberOfLegalMovesFromSameFile == 1) {
       throw new SanValidationException(SanValidationProblem.NON_STANDARD_SPECIFIED_RNBQ_RANK_INSTEAD_OF_FILE,
@@ -707,11 +712,11 @@ final class SanValidateLegalMoves {
           Message.getString("validation.san.overspecified.rnbq.square.onlyOneLegalMove"));
     }
 
-    final int numberOfLegalMovesFromOtherFiles = SanDisambiguationUtility.calculateNumberOfLegalMovesFromOtherFiles(sanConversion.fromFile(),
-        legalMovesCandidates);
+    final int numberOfLegalMovesFromOtherFiles = SanDisambiguationUtility
+        .calculateNumberOfLegalMovesFromOtherFiles(sanConversion.fromFile(), legalMovesCandidates);
 
-    final int numberOfLegalMovesFromFile = SanDisambiguationUtility.calculateNumberOfLegalMovesFromFile(sanConversion.fromFile(),
-        legalMovesCandidates);
+    final int numberOfLegalMovesFromFile = SanDisambiguationUtility
+        .calculateNumberOfLegalMovesFromFile(sanConversion.fromFile(), legalMovesCandidates);
 
     if (numberOfLegalMovesFromFile == 2 && numberOfLegalMovesFromOtherFiles == 0) {
       throw new SanValidationException(SanValidationProblem.OVERSPECIFIED_RNBQ_SQUARE_FILE_NOT_NECESSARY,

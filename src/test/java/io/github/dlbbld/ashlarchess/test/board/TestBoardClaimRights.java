@@ -35,10 +35,10 @@ import io.github.dlbbld.ashlarchess.model.LegalMove;
 import io.github.dlbbld.ashlarchess.san.LenientSanParserValidationException;
 
 /**
- * Tests for {@link Board#fiftyMoveRuleClaimRights()} and
- * {@link Board#threefoldRepetitionRuleClaimRights()}: the move-list variants of the FIDE 9.2 / 9.3 claim APIs.
- * Each {@link ClaimRights} pairs an existence boolean ({@code canClaim}) with the list of legal moves the side to move
- * could announce as a claim - defensively copied and ordered to match {@link Board#getLegalMoves()}.
+ * Tests for {@link Board#fiftyMoveRuleClaimRights()} and {@link Board#threefoldRepetitionRuleClaimRights()}: the
+ * move-list variants of the FIDE 9.2 / 9.3 claim APIs. Each {@link ClaimRights} pairs an existence boolean
+ * ({@code canClaim}) with the list of legal moves the side to move could announce as a claim - defensively copied and
+ * ordered to match {@link Board#getLegalMoves()}.
  *
  * <p>
  * The per-move predicates {@code canClaimFiftyMoveRuleFor} / {@code canClaimThreefoldRepetitionRuleFor} are the single

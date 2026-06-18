@@ -42,12 +42,14 @@ class TestBasicDoubleCheckCheckmateWhite {
       logger.info(testCase.pgnName());
 
       switch (testCase.pgnName()) {
-        case "01_white_double_check_checkmate_rook.pgn" -> TestBasicSupport.checkDoubleCheckCheckmate(Piece.WHITE_ROOK, board);
-        case "02_white_double_check_checkmate_knight_orthogonal.pgn" -> TestBasicSupport.checkDoubleCheckCheckmate(Piece.WHITE_KNIGHT,
+        case "01_white_double_check_checkmate_rook.pgn" -> TestBasicSupport.checkDoubleCheckCheckmate(Piece.WHITE_ROOK,
             board);
-        case "03_white_double_check_checkmate_knight_diagonal.pgn" -> TestBasicSupport.checkDoubleCheckCheckmate(Piece.WHITE_KNIGHT,
-            board);
-        case "04_white_double_check_checkmate_bishop.pgn" -> TestBasicSupport.checkDoubleCheckCheckmate(Piece.WHITE_BISHOP, board);
+        case "02_white_double_check_checkmate_knight_orthogonal.pgn" -> TestBasicSupport
+            .checkDoubleCheckCheckmate(Piece.WHITE_KNIGHT, board);
+        case "03_white_double_check_checkmate_knight_diagonal.pgn" -> TestBasicSupport
+            .checkDoubleCheckCheckmate(Piece.WHITE_KNIGHT, board);
+        case "04_white_double_check_checkmate_bishop.pgn" -> TestBasicSupport
+            .checkDoubleCheckCheckmate(Piece.WHITE_BISHOP, board);
         default -> throw new IllegalArgumentException();
       }
     }

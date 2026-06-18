@@ -18,8 +18,8 @@ public class KingNonCastlingPotentialToSquares {
 
     final Set<Square> emptyBoardSquareSet = KingNonCastlingEmptyBoardSquares.getKingSquares(fromSquare);
 
-    return PotentialToSquaresSupport.calculateNonRangeNonPawnPotentialToSquares(staticPosition, fromSquare, KING, emptyBoardSquareSet,
-        havingMove);
+    return PotentialToSquaresSupport.calculateNonRangeNonPawnPotentialToSquares(staticPosition, fromSquare, KING,
+        emptyBoardSquareSet, havingMove);
   }
 
 }

@@ -52,22 +52,22 @@ class TestBasicPromotionPieceWhite {
       logger.info(testCase.pgnName());
 
       switch (testCase.pgnName()) {
-        case "01_white_promotion_piece_capture_no_rook.pgn" -> TestBasicSupport.checkPromotion(WHITE, B7, B8, Piece.NONE,
-            PromotionPieceType.ROOK, board);
-        case "02_white_promotion_piece_capture_no_knight.pgn" -> TestBasicSupport.checkPromotion(WHITE, B7, B8, Piece.NONE,
-            PromotionPieceType.KNIGHT, board);
-        case "03_white_promotion_piece_capture_no_bishop.pgn" -> TestBasicSupport.checkPromotion(WHITE, B7, B8, Piece.NONE,
-            PromotionPieceType.BISHOP, board);
-        case "04_white_promotion_piece_capture_no_queen.pgn" -> TestBasicSupport.checkPromotion(WHITE, B7, B8, Piece.NONE,
-            PromotionPieceType.QUEEN, board);
-        case "05_white_promotion_piece_capture_yes_rook.pgn" -> TestBasicSupport.checkPromotion(WHITE, B7, A8, Piece.BLACK_ROOK,
-            PromotionPieceType.ROOK, board);
-        case "06_white_promotion_piece_capture_yes_knight.pgn" -> TestBasicSupport.checkPromotion(WHITE, B7, A8, Piece.BLACK_ROOK,
-            PromotionPieceType.KNIGHT, board);
-        case "07_white_promotion_piece_capture_yes_bishop.pgn" -> TestBasicSupport.checkPromotion(WHITE, B7, A8, Piece.BLACK_ROOK,
-            PromotionPieceType.BISHOP, board);
-        case "08_white_promotion_piece_capture_yes_queen.pgn" -> TestBasicSupport.checkPromotion(WHITE, B7, A8, Piece.BLACK_ROOK,
-            PromotionPieceType.QUEEN, board);
+        case "01_white_promotion_piece_capture_no_rook.pgn" -> TestBasicSupport.checkPromotion(WHITE, B7, B8,
+            Piece.NONE, PromotionPieceType.ROOK, board);
+        case "02_white_promotion_piece_capture_no_knight.pgn" -> TestBasicSupport.checkPromotion(WHITE, B7, B8,
+            Piece.NONE, PromotionPieceType.KNIGHT, board);
+        case "03_white_promotion_piece_capture_no_bishop.pgn" -> TestBasicSupport.checkPromotion(WHITE, B7, B8,
+            Piece.NONE, PromotionPieceType.BISHOP, board);
+        case "04_white_promotion_piece_capture_no_queen.pgn" -> TestBasicSupport.checkPromotion(WHITE, B7, B8,
+            Piece.NONE, PromotionPieceType.QUEEN, board);
+        case "05_white_promotion_piece_capture_yes_rook.pgn" -> TestBasicSupport.checkPromotion(WHITE, B7, A8,
+            Piece.BLACK_ROOK, PromotionPieceType.ROOK, board);
+        case "06_white_promotion_piece_capture_yes_knight.pgn" -> TestBasicSupport.checkPromotion(WHITE, B7, A8,
+            Piece.BLACK_ROOK, PromotionPieceType.KNIGHT, board);
+        case "07_white_promotion_piece_capture_yes_bishop.pgn" -> TestBasicSupport.checkPromotion(WHITE, B7, A8,
+            Piece.BLACK_ROOK, PromotionPieceType.BISHOP, board);
+        case "08_white_promotion_piece_capture_yes_queen.pgn" -> TestBasicSupport.checkPromotion(WHITE, B7, A8,
+            Piece.BLACK_ROOK, PromotionPieceType.QUEEN, board);
         default -> throw new IllegalArgumentException();
       }
     }

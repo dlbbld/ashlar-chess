@@ -16,8 +16,8 @@ import io.github.dlbbld.ashlarchess.pgn.StrictPgnParser;
  * expected FEN.
  *
  * <p>
- * See {@link TestPgnParserHalfMoveClockFromFenSupport} for the iteration body and the exact assertion shape. Runs
- * every cycle (no gate) - this is core parser coverage.
+ * See {@link TestPgnParserHalfMoveClockFromFenSupport} for the iteration body and the exact assertion shape. Runs every
+ * cycle (no gate) - this is core parser coverage.
  */
 class TestStrictPgnParserHalfMoveClockFromFen {
 

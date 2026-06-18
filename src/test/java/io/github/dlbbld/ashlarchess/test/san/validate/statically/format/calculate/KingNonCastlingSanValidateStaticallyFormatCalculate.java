@@ -21,7 +21,8 @@ public class KingNonCastlingSanValidateStaticallyFormatCalculate {
 
     final Map<String, SanParse> sanValidateMap = new TreeMap<>();
 
-    for (final SanValidationFromTo model : SanValidateStaticallyFormatCalculateSupport.calculateWithoutDisambiguation()) {
+    for (final SanValidationFromTo model : SanValidateStaticallyFormatCalculateSupport
+        .calculateWithoutDisambiguation()) {
       SanValidateStaticallyStrictCalculateSupport.populateMap(sanValidateMap, model, KING);
     }
 

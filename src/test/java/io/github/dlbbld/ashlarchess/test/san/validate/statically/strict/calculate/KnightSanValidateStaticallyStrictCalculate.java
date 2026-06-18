@@ -22,7 +22,8 @@ public class KnightSanValidateStaticallyStrictCalculate {
     final Map<String, SanParse> sanValidateMap = new TreeMap<>();
 
     for (final String enumName : KnightSanValidateStaticallyStrict.VALUES) {
-      final SanValidationFromTo model = SanValidateStaticallyStrictCalculateSupport.calculateFromFileAndOrRankTo(enumName, KNIGHT);
+      final SanValidationFromTo model = SanValidateStaticallyStrictCalculateSupport
+          .calculateFromFileAndOrRankTo(enumName, KNIGHT);
       SanValidateStaticallyStrictCalculateSupport.populateMap(sanValidateMap, model, KNIGHT);
     }
 

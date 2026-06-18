@@ -94,11 +94,10 @@ import io.github.dlbbld.ashlarchess.unwinnability.UnwinnableQuickAnalyzer;
  * <p>
  * Beyond move execution, {@code Board} exposes the standard rule-level predicates: {@link #isCheckmate()},
  * {@link #isStalemate()}, {@link #isThreefoldRepetition()}, {@link #isFiftyMove()}, {@link #isFivefoldRepetition()},
- * {@link #isSeventyFiveMove()}, plus the side-specific unwinnability verdict methods
- * ({@code unwinnableQuick}, {@code unwinnableFull}) - the library's flagship CHA
- * feature. Whole-position dead-position checks (no intended winner) live on the analyzers; see
- * {@link io.github.dlbbld.ashlarchess.unwinnability}. Position-state accessors return Guava
- * {@code ImmutableList}/{@code ImmutableSet}; mutation is exclusively via {@code move}/{@code unmove}.
+ * {@link #isSeventyFiveMove()}, plus the side-specific unwinnability verdict methods ({@code unwinnableQuick},
+ * {@code unwinnableFull}) - the library's flagship CHA feature. Whole-position dead-position checks (no intended
+ * winner) live on the analyzers; see {@link io.github.dlbbld.ashlarchess.unwinnability}. Position-state accessors
+ * return Guava {@code ImmutableList}/{@code ImmutableSet}; mutation is exclusively via {@code move}/{@code unmove}.
  *
  * <p>
  * For game-level reports (threefold-claim-ahead, repetition listings, no-progress sequences), use
@@ -1082,8 +1081,8 @@ public final class Board {
 
   /**
    * Complete whole-position dead check (FIDE 5.2.2): {@link DeadPositionFullVerdict#DEAD}, {@code ALIVE}, or
-   * {@code UNDETERMINED}. The complete check suggested at game end (resignation or flag-fall); during the game prefer the
-   * cheaper {@link #deadPositionQuick()}.
+   * {@code UNDETERMINED}. The complete check suggested at game end (resignation or flag-fall); during the game prefer
+   * the cheaper {@link #deadPositionQuick()}.
    */
   public DeadPositionFullVerdict deadPositionFull() {
     return DeadPositionAnalyzer.deadPositionFull(this);

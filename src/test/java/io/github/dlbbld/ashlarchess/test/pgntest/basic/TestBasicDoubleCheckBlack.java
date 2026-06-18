@@ -43,8 +43,10 @@ class TestBasicDoubleCheckBlack {
 
       switch (testCase.pgnName()) {
         case "01_black_double_check_rook.pgn" -> TestBasicSupport.checkDoubleCheck(Piece.BLACK_ROOK, board);
-        case "02_black_double_check_knight_orthogonal.pgn" -> TestBasicSupport.checkDoubleCheck(Piece.BLACK_KNIGHT, board);
-        case "03_black_double_check_knight_diagonal.pgn" -> TestBasicSupport.checkDoubleCheck(Piece.BLACK_KNIGHT, board);
+        case "02_black_double_check_knight_orthogonal.pgn" -> TestBasicSupport.checkDoubleCheck(Piece.BLACK_KNIGHT,
+            board);
+        case "03_black_double_check_knight_diagonal.pgn" -> TestBasicSupport.checkDoubleCheck(Piece.BLACK_KNIGHT,
+            board);
         case "04_black_double_check_bishop.pgn" -> TestBasicSupport.checkDoubleCheck(Piece.BLACK_BISHOP, board);
         default -> throw new IllegalArgumentException();
       }

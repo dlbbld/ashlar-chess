@@ -473,8 +473,7 @@ public final class CastlingUtility {
     return calculateKingSideCheckCondition(bitboardPosition, havingMove);
   }
 
-  public static boolean isQueenSideCastlingOriginalPosition(BitboardPosition bitboardPosition,
-      Side havingMove) {
+  public static boolean isQueenSideCastlingOriginalPosition(BitboardPosition bitboardPosition, Side havingMove) {
     final Square kingOriginalSquare = SquareUtility.calculateKingOriginalSquare(havingMove);
     final Piece kingPiece = Piece.of(havingMove, PieceType.KING);
     if (bitboardPosition.get(kingOriginalSquare) != kingPiece) {
@@ -485,8 +484,7 @@ public final class CastlingUtility {
     return bitboardPosition.get(rookOriginalSquare) == rookPiece;
   }
 
-  public static boolean isKingSideCastlingOriginalPosition(BitboardPosition bitboardPosition,
-      Side havingMove) {
+  public static boolean isKingSideCastlingOriginalPosition(BitboardPosition bitboardPosition, Side havingMove) {
     final Square kingOriginalSquare = SquareUtility.calculateKingOriginalSquare(havingMove);
     final Piece kingPiece = Piece.of(havingMove, PieceType.KING);
     if (bitboardPosition.get(kingOriginalSquare) != kingPiece) {

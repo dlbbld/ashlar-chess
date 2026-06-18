@@ -38,12 +38,12 @@ public final class MoveToSan {
 
     final MoveSpecification moveSpecification = legalMove.moveSpecification();
 
-    final List<LegalMove> legalMovesForPieceAndToSquare = SanDisambiguationUtility.filterLegalMovesCandidates(legalMovesForMovingPiece,
-        moveSpecification.toSquare());
-    final int numberOfLegalMovesFromSameFile = SanDisambiguationUtility.calculateNumberOfLegalMovesFromFile(
-        moveSpecification.fromSquare().getFile(), legalMovesForPieceAndToSquare);
-    final int numberOfLegalMovesFromSameRank = SanDisambiguationUtility.calculateNumberOfLegalMovesFromRank(
-        moveSpecification.fromSquare().getRank(), legalMovesForPieceAndToSquare);
+    final List<LegalMove> legalMovesForPieceAndToSquare = SanDisambiguationUtility
+        .filterLegalMovesCandidates(legalMovesForMovingPiece, moveSpecification.toSquare());
+    final int numberOfLegalMovesFromSameFile = SanDisambiguationUtility
+        .calculateNumberOfLegalMovesFromFile(moveSpecification.fromSquare().getFile(), legalMovesForPieceAndToSquare);
+    final int numberOfLegalMovesFromSameRank = SanDisambiguationUtility
+        .calculateNumberOfLegalMovesFromRank(moveSpecification.fromSquare().getRank(), legalMovesForPieceAndToSquare);
     final boolean hasOtherFilesHavingLegalMoves = SanDisambiguationUtility.calculateHasOtherFilesHavingLegalMoves(
         moveSpecification.fromSquare().getFile(), legalMovesForPieceAndToSquare);
 

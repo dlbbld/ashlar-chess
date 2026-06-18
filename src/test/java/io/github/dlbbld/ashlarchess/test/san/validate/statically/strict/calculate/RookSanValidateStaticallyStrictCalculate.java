@@ -22,7 +22,8 @@ public class RookSanValidateStaticallyStrictCalculate {
     final Map<String, SanParse> sanValidateMap = new TreeMap<>();
 
     for (final String enumName : RookSanValidateStaticallyStrict.VALUES) {
-      final SanValidationFromTo model = SanValidateStaticallyStrictCalculateSupport.calculateFromFileXorRankTo(enumName, ROOK);
+      final SanValidationFromTo model = SanValidateStaticallyStrictCalculateSupport.calculateFromFileXorRankTo(enumName,
+          ROOK);
       SanValidateStaticallyStrictCalculateSupport.populateMap(sanValidateMap, model, ROOK);
     }
 

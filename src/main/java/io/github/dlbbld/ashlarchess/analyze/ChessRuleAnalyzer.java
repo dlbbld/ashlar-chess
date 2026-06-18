@@ -99,8 +99,7 @@ public final class ChessRuleAnalyzer {
     final Piece movingPiece = bitboardPosition.get(fromSquare);
 
     final boolean isForwardMove = calculateIsPawnEmptyBoardMove(havingMove, fromSquare, toSquare);
-    final boolean isDiagonalMove = PawnDiagonalMoveUtility.isPawnDiagonalMove(havingMove, fromSquare,
-        toSquare);
+    final boolean isDiagonalMove = PawnDiagonalMoveUtility.isPawnDiagonalMove(havingMove, fromSquare, toSquare);
 
     if (!isForwardMove && !isDiagonalMove) {
       return MovementCheck.NOT_POSSIBLE;
@@ -211,8 +210,7 @@ public final class ChessRuleAnalyzer {
     final Square toSquare = moveSpecification.toSquare();
     final Piece pieceOnToSquare = bitboardPosition.get(toSquare);
 
-    final Set<EmptyBoardMove> emptyBoardMoves = EmptyBoardMoveUtility.calculateNonPawnEmptyBoardMoves(KING,
-        fromSquare);
+    final Set<EmptyBoardMove> emptyBoardMoves = EmptyBoardMoveUtility.calculateNonPawnEmptyBoardMoves(KING, fromSquare);
     if (!calculateIsEmptyBoardMove(toSquare, emptyBoardMoves)) {
       return MovementCheck.NOT_POSSIBLE;
     }

@@ -133,8 +133,8 @@ final class UnwinnableSemiStatic {
             break;
           }
           if (piecePlacement.pieceType() == PieceType.PAWN && expandedPawnRegion
-              && piecePlacement.squareOriginal().getFile() != target.getFile() && !BasicUtility
-                  .isDisjoint(MobilityFunctions.predecessorsCapture(piecePlacement, target), pieceRegion)) {
+              && piecePlacement.squareOriginal().getFile() != target.getFile()
+              && !BasicUtility.isDisjoint(MobilityFunctions.predecessorsCapture(piecePlacement, target), pieceRegion)) {
             result.add(piecePlacement);
             break;
           }
