@@ -12,7 +12,10 @@ import io.github.dlbbld.ashlarchess.board.enums.Square;
 import io.github.dlbbld.ashlarchess.common.Nulls;
 
 @SuppressWarnings("null")
-public class KnightEmptyBoardSquares {
+public final class KnightEmptyBoardSquares {
+
+  private KnightEmptyBoardSquares() {
+  }
 
   private static final int[][] KNIGHT_OFFSETS = { { 1, 2 }, { 1, -2 }, { -1, 2 }, { -1, -2 }, { 2, 1 }, { 2, -1 },
       { -2, 1 }, { -2, -1 } };

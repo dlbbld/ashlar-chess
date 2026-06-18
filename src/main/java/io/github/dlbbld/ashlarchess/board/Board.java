@@ -112,7 +112,7 @@ import io.github.dlbbld.ashlarchess.unwinnability.UnwinnableQuickAnalyzer;
  * in a {@link java.util.HashMap} or {@link java.util.HashSet} and then mutated will violate the collection's invariants
  * - don't do that.
  */
-public class Board {
+public final class Board {
 
   private final Fen initialFen;
   private final List<LegalMove> performedLegalMoveList;
