@@ -56,7 +56,7 @@ final class TestPgnParserHalfMoveClockFromFenSupport {
 
   private static final ImmutableList<PgnTest> BUCKETS = Nulls.listOf(PgnTest.PARSER_FROM_FEN);
 
-  protected static void runForBuckets(BiFunction<java.nio.file.Path, String, PgnGame> parse, Logger logger) {
+  static void runForBuckets(BiFunction<java.nio.file.Path, String, PgnGame> parse, Logger logger) {
     final List<String> failures = new ArrayList<>();
     int totalFixtures = 0;
 

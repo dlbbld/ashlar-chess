@@ -29,7 +29,7 @@ public final class LegalMovesSupport {
   private LegalMovesSupport() {
   }
 
-  protected static void checkPiece(Side havingMove, Piece candidatePiece, PieceType expectedPieceType)
+  static void checkPiece(Side havingMove, Piece candidatePiece, PieceType expectedPieceType)
       throws IllegalArgumentException {
     if (candidatePiece == Piece.NONE || candidatePiece.getSide() != havingMove
         || candidatePiece.getPieceType() != expectedPieceType) {

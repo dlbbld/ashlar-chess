@@ -281,7 +281,7 @@ public class PawnWallGeometricAnalyzer {
   }
 
   // same for pawn squares
-  protected static Set<Square> calculatePawnSquares(Board board, Side side) {
+  static Set<Square> calculatePawnSquares(Board board, Side side) {
     final Set<Square> pawnSquares = new TreeSet<>(calculatePawnSquareAsIs(board, side));
     pawnSquares.addAll(calculatePawnSquareAfterMoving(board, side));
     return pawnSquares;
@@ -579,8 +579,8 @@ public class PawnWallGeometricAnalyzer {
     return true;
   }
 
-  protected static void calculatePawnWallLines(StaticPosition blockedSquares, Square squareCandidate,
-      boolean isNeedNeighbor, Side side, List<Square> currentLine, List<List<Square>> resultList) {
+  static void calculatePawnWallLines(StaticPosition blockedSquares, Square squareCandidate, boolean isNeedNeighbor,
+      Side side, List<Square> currentLine, List<List<Square>> resultList) {
     if (isNeedNeighbor) {
       final Square squareNeighbor = squareCandidate.getRightSquare(side);
       if (!blockedSquares.isEmpty(squareNeighbor)) {

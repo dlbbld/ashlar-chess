@@ -37,7 +37,7 @@ public final class TestBasicSupport {
   // 1b) for each file in the expected value hardcoded file list there is a file in the JUnit hardcoded file list
   // 2a) for each file in the JUnit hardcoded file list there is a file in the test folder
   // 2b) for each file in the test folder there is an entry in the JUnit hardcoded file list
-  protected static void checkTestFolder(List<String> junitHardcodedPgnNameList, PgnTest pgnTest) {
+  static void checkTestFolder(List<String> junitHardcodedPgnNameList, PgnTest pgnTest) {
 
     final PgnTestCaseList testCaseList = PgnTestCaseCatalog.getTestList(pgnTest);
     final List<String> expectedValueHardcodedFileList = calculatePgnNameList(testCaseList.list());
@@ -84,7 +84,7 @@ public final class TestBasicSupport {
     return result;
   }
 
-  protected static void checkCheckmate(Board board) {
+  static void checkCheckmate(Board board) {
     assertTrue(board.isCheck());
     assertTrue(board.isCheckmate());
     assertFalse(board.isStalemate());
@@ -192,8 +192,8 @@ public final class TestBasicSupport {
 
   static void checkCastle(Side side, CastlingMove castlingMove, Board board) {
     final MoveSpecification moveSpecification = new MoveSpecification(castlingMove);
-    final LegalMove expected = new LegalMove(moveSpecification, Piece.of(side, PieceType.KING),
-        Piece.NONE, LegalMoveKind.CASTLING);
+    final LegalMove expected = new LegalMove(moveSpecification, Piece.of(side, PieceType.KING), Piece.NONE,
+        LegalMoveKind.CASTLING);
     assertEquals(expected, board.getLastMove());
   }
 

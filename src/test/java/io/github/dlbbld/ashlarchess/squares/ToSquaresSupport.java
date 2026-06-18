@@ -16,7 +16,7 @@ final class ToSquaresSupport {
   private ToSquaresSupport() {
   }
 
-  protected static void checkPiece(StaticPosition staticPosition, Side havingMove, Square sourceSquare,
+  static void checkPiece(StaticPosition staticPosition, Side havingMove, Square sourceSquare,
       PieceType expectedPieceType) throws IllegalArgumentException {
     if (!staticPosition.isOwnPiece(sourceSquare, havingMove, expectedPieceType)) {
       throw new IllegalArgumentException(
