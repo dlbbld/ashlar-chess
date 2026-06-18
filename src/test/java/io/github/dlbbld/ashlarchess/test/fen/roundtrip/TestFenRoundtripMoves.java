@@ -51,7 +51,7 @@ class TestFenRoundtripMoves {
 
     final List<MoveSpecification> moveList = boardMakeMoves.getPerformedMoveSpecificationList();
 
-    TestFenRoundtripSupport.checFenRoundtrip(FenConstants.FEN_INITIAL_STR, moveList);
+    TestFenRoundtripSupport.checkFenRoundtrip(FenConstants.FEN_INITIAL_STR, moveList);
   }
 
   @SuppressWarnings("static-method")
@@ -63,7 +63,7 @@ class TestFenRoundtripMoves {
 
     final List<MoveSpecification> moveList = boardMakeMoves.getPerformedMoveSpecificationList();
 
-    TestFenRoundtripSupport.checFenRoundtrip(FenConstants.FEN_INITIAL_STR, moveList);
+    TestFenRoundtripSupport.checkFenRoundtrip(FenConstants.FEN_INITIAL_STR, moveList);
   }
 
 }
