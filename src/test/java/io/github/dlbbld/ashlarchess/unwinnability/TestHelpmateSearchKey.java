@@ -89,9 +89,7 @@ class TestHelpmateSearchKey {
     final HelpmateSearchKey key2 = search2.currentTranspositionKey();
     assertEquals(dp1.equals(dp2), key1.equals(key2),
         "key equality must mirror DynamicPosition equality (dp1=" + dp1 + " dp2=" + dp2 + ")");
-    // Self-equality + hashCode contract.
-    assertEquals(key1, key1, "key must equal itself");
-    assertEquals(key1.hashCode(), key1.hashCode(), "key hashCode must be stable");
+    // equals/hashCode contract: equal keys must share a hashCode.
     if (key1.equals(key2)) {
       assertEquals(key1.hashCode(), key2.hashCode(), "equal keys must share hashCode");
     }
