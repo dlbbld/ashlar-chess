@@ -133,7 +133,7 @@ class TestHelpmateSearchBoard {
   private static void assertMatchesBoard(Board board, HelpmateSearchBoard searchBoard) {
     assertEquals(board.getDynamicPosition(), searchBoard.getDynamicPosition());
     assertEquals(board.getBitboardPosition(), searchBoard.getBitboardPosition());
-    assertEquals(board.getHavingMove(), searchBoard.getHavingMove());
+    assertEquals(board.getSideToMove(), searchBoard.getSideToMove());
     assertEquals(board.getEnPassantCaptureTargetSquare(), searchBoard.getEnPassantCaptureTargetSquare());
     assertEquals(board.getCastlingRightWhite(), searchBoard.getCastlingRight(Side.WHITE));
     assertEquals(board.getCastlingRightBlack(), searchBoard.getCastlingRight(Side.BLACK));

@@ -31,7 +31,7 @@ final class UnwinnableSemiStatic {
   public static boolean unwinnableSemiStatic(Board board, Side c, MobilitySolution mobilitySolution) {
 
     if (board.getLegalMoves().isEmpty()) {
-      return !board.isCheck() || board.getHavingMove() == c;
+      return !board.isCheck() || board.getSideToMove() == c;
     }
 
     if (board.isEnPassantCapturePossible()) {

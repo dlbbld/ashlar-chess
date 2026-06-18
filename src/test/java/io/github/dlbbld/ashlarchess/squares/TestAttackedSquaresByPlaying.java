@@ -2616,60 +2616,60 @@ class TestAttackedSquaresByPlaying {
     }
   }
 
-  private static void checkExceptionRook(StaticPosition staticPosition, Square fromSquare, Side havingMove) {
+  private static void checkExceptionRook(StaticPosition staticPosition, Square fromSquare, Side sideToMove) {
     boolean isCorrectException = false;
     try {
-      RookAttackedSquares.calculateRookAttackedSquares(staticPosition, fromSquare, havingMove);
+      RookAttackedSquares.calculateRookAttackedSquares(staticPosition, fromSquare, sideToMove);
     } catch (@SuppressWarnings("unused") final IllegalArgumentException iae) {
       isCorrectException = true;
     }
     assertTrue(isCorrectException);
   }
 
-  private static void checkExceptionKnight(StaticPosition staticPosition, Square fromSquare, Side havingMove) {
+  private static void checkExceptionKnight(StaticPosition staticPosition, Square fromSquare, Side sideToMove) {
     boolean isCorrectException = false;
     try {
-      KnightAttackedSquares.calculateKnightAttackedSquares(staticPosition, fromSquare, havingMove);
+      KnightAttackedSquares.calculateKnightAttackedSquares(staticPosition, fromSquare, sideToMove);
     } catch (@SuppressWarnings("unused") final IllegalArgumentException iae) {
       isCorrectException = true;
     }
     assertTrue(isCorrectException);
   }
 
-  private static void checkExceptionBishop(StaticPosition staticPosition, Square fromSquare, Side havingMove) {
+  private static void checkExceptionBishop(StaticPosition staticPosition, Square fromSquare, Side sideToMove) {
     boolean isCorrectException = false;
     try {
-      BishopAttackedSquares.calculateBishopAttackedSquares(staticPosition, fromSquare, havingMove);
+      BishopAttackedSquares.calculateBishopAttackedSquares(staticPosition, fromSquare, sideToMove);
     } catch (@SuppressWarnings("unused") final IllegalArgumentException iae) {
       isCorrectException = true;
     }
     assertTrue(isCorrectException);
   }
 
-  private static void checkExceptionQueen(StaticPosition staticPosition, Square fromSquare, Side havingMove) {
+  private static void checkExceptionQueen(StaticPosition staticPosition, Square fromSquare, Side sideToMove) {
     boolean isCorrectException = false;
     try {
-      QueenAttackedSquares.calculateQueenAttackedSquares(staticPosition, fromSquare, havingMove);
+      QueenAttackedSquares.calculateQueenAttackedSquares(staticPosition, fromSquare, sideToMove);
     } catch (@SuppressWarnings("unused") final IllegalArgumentException iae) {
       isCorrectException = true;
     }
     assertTrue(isCorrectException);
   }
 
-  private static void checkExceptionKingNonCastling(StaticPosition staticPosition, Square fromSquare, Side havingMove) {
+  private static void checkExceptionKingNonCastling(StaticPosition staticPosition, Square fromSquare, Side sideToMove) {
     boolean isCorrectException = false;
     try {
-      KingNonCastlingAttackedSquares.calculateKingNonCastlingAttackedSquares(staticPosition, fromSquare, havingMove);
+      KingNonCastlingAttackedSquares.calculateKingNonCastlingAttackedSquares(staticPosition, fromSquare, sideToMove);
     } catch (@SuppressWarnings("unused") final IllegalArgumentException iae) {
       isCorrectException = true;
     }
     assertTrue(isCorrectException);
   }
 
-  private static void checkExceptionPawn(StaticPosition staticPosition, Square fromSquare, Side havingMove) {
+  private static void checkExceptionPawn(StaticPosition staticPosition, Square fromSquare, Side sideToMove) {
     boolean isCorrectException = false;
     try {
-      PawnAttackedSquares.calculatePawnAttackedSquares(staticPosition, fromSquare, havingMove);
+      PawnAttackedSquares.calculatePawnAttackedSquares(staticPosition, fromSquare, sideToMove);
     } catch (@SuppressWarnings("unused") final IllegalArgumentException iae) {
       isCorrectException = true;
     }

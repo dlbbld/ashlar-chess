@@ -17,13 +17,13 @@ import io.github.dlbbld.ashlarchess.board.enums.SquareUtility;
 public class PawnPotentialToSquares {
 
   public static Set<Square> calculatePawnPotentialToSquares(StaticPosition staticPosition,
-      Square enPassantCaptureTargetSquare, Square fromSquare, Side havingMove) {
+      Square enPassantCaptureTargetSquare, Square fromSquare, Side sideToMove) {
 
-    ToSquaresSupport.checkPiece(staticPosition, havingMove, fromSquare, PAWN);
+    ToSquaresSupport.checkPiece(staticPosition, sideToMove, fromSquare, PAWN);
 
-    final Set<Square> advanceSquareSet = calculatePawnPotentialAdvanceToSquares(staticPosition, fromSquare, havingMove);
+    final Set<Square> advanceSquareSet = calculatePawnPotentialAdvanceToSquares(staticPosition, fromSquare, sideToMove);
     final Set<Square> diagonalSquareSet = calculatePawnPotentialDiagonalToSquares(staticPosition,
-        enPassantCaptureTargetSquare, fromSquare, havingMove);
+        enPassantCaptureTargetSquare, fromSquare, sideToMove);
 
     final Set<Square> all = new TreeSet<>(advanceSquareSet);
     all.addAll(diagonalSquareSet);
@@ -32,13 +32,13 @@ public class PawnPotentialToSquares {
   }
 
   public static Set<Square> calculatePawnPotentialAdvanceToSquares(StaticPosition staticPosition, Square fromSquare,
-      Side havingMove) {
+      Side sideToMove) {
 
-    ToSquaresSupport.checkPiece(staticPosition, havingMove, fromSquare, PAWN);
+    ToSquaresSupport.checkPiece(staticPosition, sideToMove, fromSquare, PAWN);
 
     final Set<Square> advanceSquareSet = new TreeSet<>();
 
-    final Set<Square> emptyBoardOneAdvanceSet = PawnOneAdvanceEmptyBoardSquares.getPawnSquares(havingMove, fromSquare);
+    final Set<Square> emptyBoardOneAdvanceSet = PawnOneAdvanceEmptyBoardSquares.getPawnSquares(sideToMove, fromSquare);
     for (final Square oneAdvanceSquare : emptyBoardOneAdvanceSet) {
       final Piece pieceOnToSquare = staticPosition.get(oneAdvanceSquare);
       if (pieceOnToSquare == Piece.NONE) {
@@ -47,9 +47,9 @@ public class PawnPotentialToSquares {
       }
     }
 
-    final Set<Square> emptyBoardTwoAdvanceSet = PawnTwoAdvanceEmptyBoardSquares.getPawnSquares(havingMove, fromSquare);
+    final Set<Square> emptyBoardTwoAdvanceSet = PawnTwoAdvanceEmptyBoardSquares.getPawnSquares(sideToMove, fromSquare);
     for (final Square twoAdvanceSquare : emptyBoardTwoAdvanceSet) {
-      final Square squareJumpOver = SquareUtility.calculateJumpOverSquare(havingMove, twoAdvanceSquare);
+      final Square squareJumpOver = SquareUtility.calculateJumpOverSquare(sideToMove, twoAdvanceSquare);
       final Piece pieceOnJumpOverSquare = staticPosition.get(squareJumpOver);
       if (pieceOnJumpOverSquare == Piece.NONE) {
         // square travelled over is empty
@@ -64,17 +64,17 @@ public class PawnPotentialToSquares {
   }
 
   public static Set<Square> calculatePawnPotentialDiagonalToSquares(StaticPosition staticPosition,
-      Square enPassantCaptureTargetSquare, Square fromSquare, Side havingMove) {
+      Square enPassantCaptureTargetSquare, Square fromSquare, Side sideToMove) {
 
-    ToSquaresSupport.checkPiece(staticPosition, havingMove, fromSquare, PAWN);
+    ToSquaresSupport.checkPiece(staticPosition, sideToMove, fromSquare, PAWN);
 
     final Set<Square> diagonalSquareSet = new TreeSet<>();
 
     // first we check for diagonal capturing moves, if none, we return potential en passant moves
-    final Set<Square> diagonalSquareCandidateSet = PawnDiagonalSquares.getPawnDiagonalSquares(havingMove, fromSquare);
+    final Set<Square> diagonalSquareCandidateSet = PawnDiagonalSquares.getPawnDiagonalSquares(sideToMove, fromSquare);
     for (final Square diagonalSquareCandidate : diagonalSquareCandidateSet) {
-      if (staticPosition.isOpponentPiece(diagonalSquareCandidate, havingMove)
-          && !staticPosition.isOpponentKing(diagonalSquareCandidate, havingMove)
+      if (staticPosition.isOpponentPiece(diagonalSquareCandidate, sideToMove)
+          && !staticPosition.isOpponentKing(diagonalSquareCandidate, sideToMove)
           || staticPosition.isEmpty(diagonalSquareCandidate)
               && enPassantCaptureTargetSquare == diagonalSquareCandidate) {
         diagonalSquareSet.add(diagonalSquareCandidate);

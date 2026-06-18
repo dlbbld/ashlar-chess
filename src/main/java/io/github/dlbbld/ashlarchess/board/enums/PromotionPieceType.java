@@ -37,11 +37,11 @@ public enum PromotionPieceType {
   }
 
   /**
-   * Constructs the concrete {@link Piece} that a pawn of {@code havingMove} becomes when promoting to
+   * Constructs the concrete {@link Piece} that a pawn of {@code sideToMove} becomes when promoting to
    * {@code promotionPieceType}.
    */
-  public Piece toPiece(Side havingMove) {
-    return switch (havingMove) {
+  public Piece toPiece(Side sideToMove) {
+    return switch (sideToMove) {
       case BLACK -> switch (this) {
         case ROOK -> Piece.BLACK_ROOK;
         case KNIGHT -> Piece.BLACK_KNIGHT;

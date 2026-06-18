@@ -81,11 +81,11 @@ public final class StaticPositionUtility {
     BLACK_EN_PASSANT_CAPTURE_FROM_TO = Nulls.copyOfList(list);
   }
 
-  public static boolean calculateIsCheck(StaticPosition staticPosition, Side havingMove) {
+  public static boolean calculateIsCheck(StaticPosition staticPosition, Side sideToMove) {
     final Set<Square> attackedSquares = AttackedSquaresOracle.calculateAttackedSquares(staticPosition,
-        havingMove.getOppositeSide());
-    final Square kingSquareHavingMove = StaticPositionUtility.calculateKingSquare(staticPosition, havingMove);
-    return attackedSquares.contains(kingSquareHavingMove);
+        sideToMove.getOppositeSide());
+    final Square kingSquareSideToMove = StaticPositionUtility.calculateKingSquare(staticPosition, sideToMove);
+    return attackedSquares.contains(kingSquareSideToMove);
   }
 
   public static Square calculateKingSquare(StaticPosition staticPosition, Side side) {
@@ -130,32 +130,32 @@ public final class StaticPositionUtility {
     return Nulls.toString(piecePlacement);
   }
 
-  public static boolean calculateIsKingAttackedAfterMove(StaticPosition staticPosition, Side havingMove,
+  public static boolean calculateIsKingAttackedAfterMove(StaticPosition staticPosition, Side sideToMove,
       MoveSpecification moveSpecification) {
-    final StaticPosition staticPositionEvaluateAfterMove = createPositionAfterMove(staticPosition, havingMove,
+    final StaticPosition staticPositionEvaluateAfterMove = createPositionAfterMove(staticPosition, sideToMove,
         moveSpecification);
-    return calculateIsCheck(staticPositionEvaluateAfterMove, havingMove);
+    return calculateIsCheck(staticPositionEvaluateAfterMove, sideToMove);
   }
 
-  public static StaticPosition createPositionAfterMove(StaticPosition staticPosition, Side havingMove,
+  public static StaticPosition createPositionAfterMove(StaticPosition staticPosition, Side sideToMove,
       MoveSpecification moveSpecification) {
 
-    final List<UpdateSquare> updateSquareList = calculateUpdateSquareList(staticPosition, havingMove,
+    final List<UpdateSquare> updateSquareList = calculateUpdateSquareList(staticPosition, sideToMove,
         moveSpecification);
     return StaticPositionUtility.createChangedPosition(staticPosition, updateSquareList);
   }
 
-  private static List<UpdateSquare> calculateUpdateSquareList(StaticPosition staticPosition, Side havingMove,
+  private static List<UpdateSquare> calculateUpdateSquareList(StaticPosition staticPosition, Side sideToMove,
       MoveSpecification moveSpecification) {
 
     if (calculateIsPotentialEnPassantCaptureStaticPosition(staticPosition, moveSpecification)) {
-      return EnPassantCaptureUtility.performEnPassantCaptureMovements(havingMove, moveSpecification);
+      return EnPassantCaptureUtility.performEnPassantCaptureMovements(sideToMove, moveSpecification);
     }
     if (CastlingUtility.isCastlingMove(moveSpecification)) {
-      return CastlingUtility.performCastlingMovements(havingMove, moveSpecification);
+      return CastlingUtility.performCastlingMovements(sideToMove, moveSpecification);
     }
     if (moveSpecification.isPromotion()) {
-      return PromotionUtility.performPromotionMovements(havingMove, moveSpecification);
+      return PromotionUtility.performPromotionMovements(sideToMove, moveSpecification);
     }
     return StandardMoveUtility.performStandardMovements(staticPosition.get(moveSpecification.fromSquare()),
         moveSpecification);

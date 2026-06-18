@@ -52,7 +52,7 @@ public class ForcedLineOracle {
   private static LimitedUnwinnabilityVerdict calculateUnwinnabilityInternal(Board board, Side side) {
 
     if (board.isCheckmate()) {
-      if (side == board.getHavingMove()) {
+      if (side == board.getSideToMove()) {
         return LimitedUnwinnabilityVerdict.UNWINNABLE;
       }
       return LimitedUnwinnabilityVerdict.WINNABLE;
@@ -91,7 +91,7 @@ public class ForcedLineOracle {
       // this chain. Carry it explicitly on GameForced for calculateUnwinnabilityForced to consume.
       final @Nullable Side singleSideIm = terminated ? null : singleSideInsufficientMaterial(board);
       if (terminated || singleSideIm != null) {
-        final Side sideMadeLastMove = board.getHavingMove().getOppositeSide();
+        final Side sideMadeLastMove = board.getSideToMove().getOppositeSide();
         for (int i = 1; i <= countForcedHalfMoves; i++) {
           board.unmove();
         }
@@ -99,7 +99,7 @@ public class ForcedLineOracle {
       }
     }
 
-    final Side sideMadeLastMove = board.getHavingMove().getOppositeSide();
+    final Side sideMadeLastMove = board.getSideToMove().getOppositeSide();
     for (int i = 1; i <= countForcedHalfMoves; i++) {
       board.unmove();
     }

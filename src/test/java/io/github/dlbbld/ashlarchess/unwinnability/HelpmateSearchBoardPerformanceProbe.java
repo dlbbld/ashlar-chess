@@ -21,8 +21,8 @@ public final class HelpmateSearchBoardPerformanceProbe {
     buffer.reset();
     final Square ep = board.getEnPassantCaptureTargetSquare();
     final long enPassantBit = ep == Square.NONE ? 0L : 1L << ep.ordinal();
-    BitboardLegalMoveFactory.calculateLegalMovesInto(buffer::append, board.getBitboardPosition(), board.getHavingMove(),
-        board.getCastlingRight(board.getHavingMove()), enPassantBit);
+    BitboardLegalMoveFactory.calculateLegalMovesInto(buffer::append, board.getBitboardPosition(), board.getSideToMove(),
+        board.getCastlingRight(board.getSideToMove()), enPassantBit);
     return buffer.size();
   }
 }

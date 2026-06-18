@@ -16,12 +16,12 @@ public final class PromotionUtility {
   private PromotionUtility() {
   }
 
-  public static List<UpdateSquare> performPromotionMovements(Side havingMove, MoveSpecification moveSpecification) {
+  public static List<UpdateSquare> performPromotionMovements(Side sideToMove, MoveSpecification moveSpecification) {
 
     final List<UpdateSquare> result = new ArrayList<>();
 
     result.add(new UpdateSquare(moveSpecification.fromSquare()));
-    final Piece promotionPiece = moveSpecification.promotionPieceType().toPiece(havingMove);
+    final Piece promotionPiece = moveSpecification.promotionPieceType().toPiece(sideToMove);
     result.add(new UpdateSquare(moveSpecification.toSquare(), promotionPiece));
 
     return result;

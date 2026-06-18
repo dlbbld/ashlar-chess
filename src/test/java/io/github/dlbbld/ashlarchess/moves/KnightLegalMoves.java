@@ -15,16 +15,16 @@ import io.github.dlbbld.ashlarchess.model.LegalMove;
 import io.github.dlbbld.ashlarchess.squares.KnightPotentialToSquares;
 
 class KnightLegalMoves {
-  public static Set<LegalMove> calculateKnightLegalMoves(StaticPosition staticPosition, Side havingMove,
+  public static Set<LegalMove> calculateKnightLegalMoves(StaticPosition staticPosition, Side sideToMove,
       Square fromSquare) {
 
     final Piece movingPiece = staticPosition.get(fromSquare);
-    LegalMovesSupport.checkPiece(havingMove, movingPiece, KNIGHT);
+    LegalMovesSupport.checkPiece(sideToMove, movingPiece, KNIGHT);
 
     final Set<Square> toSquareSet = KnightPotentialToSquares.calculateKnightPotentialToSquares(staticPosition,
-        fromSquare, havingMove);
+        fromSquare, sideToMove);
 
-    return LegalMovesSupport.calculateLegalMoveSet(staticPosition, havingMove, fromSquare, toSquareSet);
+    return LegalMovesSupport.calculateLegalMoveSet(staticPosition, sideToMove, fromSquare, toSquareSet);
   }
 
 }

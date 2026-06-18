@@ -14,7 +14,7 @@ final class SanValidateMovementPawn {
   private SanValidateMovementPawn() {
   }
 
-  public static void validatePawnMovement(Side havingMove, SanFormat sanFormat, SanConversion sanConversion) {
+  public static void validatePawnMovement(Side sideToMove, SanFormat sanFormat, SanConversion sanConversion) {
 
     switch (sanFormat) {
       case KING_CASTLING_KING_SIDE:
@@ -24,13 +24,13 @@ final class SanValidateMovementPawn {
         throw new IllegalArgumentException();
       case PAWN_NON_CAPTURING_NON_PROMOTION:
       case PAWN_NON_CAPTURING_PROMOTION: {
-        validatePawnDestinationRank(havingMove, sanConversion.toSquare().getRank());
+        validatePawnDestinationRank(sideToMove, sanConversion.toSquare().getRank());
         break;
       }
       case PAWN_CAPTURING_NON_PROMOTION:
       case PAWN_CAPTURING_PROMOTION: {
-        validatePawnDestinationRank(havingMove, sanConversion.toSquare().getRank());
-        validatePawnCapturingDiagonal(havingMove, sanConversion.fromFile(), sanConversion.toSquare().getFile());
+        validatePawnDestinationRank(sideToMove, sanConversion.toSquare().getRank());
+        validatePawnCapturingDiagonal(sideToMove, sanConversion.fromFile(), sanConversion.toSquare().getFile());
         break;
       }
       case RNBQ_CAPTURING_NEITHER:
@@ -46,17 +46,17 @@ final class SanValidateMovementPawn {
     }
   }
 
-  private static void validatePawnDestinationRank(Side havingMove, Rank destinationRank) {
-    final boolean isInvalid = !RankUtility.isValidRank(havingMove, destinationRank);
+  private static void validatePawnDestinationRank(Side sideToMove, Rank destinationRank) {
+    final boolean isInvalid = !RankUtility.isValidRank(sideToMove, destinationRank);
     if (isInvalid) {
       throw new SanValidationException(SanValidationProblem.MOVEMENT_PAWN_FORWARD_BACKWARDS,
           Message.getString("validation.san.movement.pawn.forward.backwards"));
     }
   }
 
-  private static void validatePawnCapturingDiagonal(Side havingMove, File fromFile, File toFile) {
-    final boolean isAdjacentLeft = fromFile.hasLeftFile(havingMove) && fromFile.getLeftFile(havingMove) == toFile;
-    final boolean isAdjacentRight = fromFile.hasRightFile(havingMove) && fromFile.getRightFile(havingMove) == toFile;
+  private static void validatePawnCapturingDiagonal(Side sideToMove, File fromFile, File toFile) {
+    final boolean isAdjacentLeft = fromFile.hasLeftFile(sideToMove) && fromFile.getLeftFile(sideToMove) == toFile;
+    final boolean isAdjacentRight = fromFile.hasRightFile(sideToMove) && fromFile.getRightFile(sideToMove) == toFile;
 
     if (!isAdjacentLeft && !isAdjacentRight) {
       throw new SanValidationException(SanValidationProblem.MOVEMENT_PAWN_CAPTURE_NON_ADJACENT_FILE,

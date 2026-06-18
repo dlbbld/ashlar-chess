@@ -41,6 +41,10 @@ PGN model:
 
 - `Reporter.printReport(...)` renamed to `Reporter.report(...)` and now **returns** the report as `ImmutableList<String>` instead of writing to `System.out`; the caller decides where the lines go (e.g. `Reporter.report(board).forEach(System.out::println)`). Applies to all three overloads (`Board`, PGN `String`, PGN file). A library should not own the output stream.
 
+Vocabulary — "side to move":
+
+- The non-standard `havingMove` vocabulary is replaced by the standard chess term. A **position**'s side to move is `sideToMove`; the side that makes a **move** is `movingSide` (beside `LegalMove.movingPiece()`). Renames: `Board.getHavingMove()` → `getSideToMove()`; the `Fen` / `DynamicPosition` `havingMove()` component → `sideToMove()`; `LegalMove.havingMove()` → `movingSide()`; `FenAdvancedValidationProblem.INVALID_HAVING_MOVE_RANGE` → `INVALID_SIDE_TO_MOVE_RANGE`.
+
 Boolean accessors (JavaBeans `is` / `has` idiom, no `get` prefix):
 
 - `Side.getIsWhite()` / `getIsBlack()` → `isWhite()` / `isBlack()`.

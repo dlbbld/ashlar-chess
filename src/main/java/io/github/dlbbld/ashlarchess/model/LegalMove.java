@@ -16,7 +16,7 @@ public record LegalMove(MoveSpecification moveSpecification, Piece movingPiece, 
     }
   }
 
-  public Side havingMove() {
+  public Side movingSide() {
     return movingPiece.getSide();
   }
 

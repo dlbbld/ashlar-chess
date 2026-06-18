@@ -22,22 +22,22 @@ import io.github.dlbbld.ashlarchess.squares.PawnPotentialToSquares;
 
 class PawnForwardPromotionLegalMoves extends PawnLegalMoves {
 
-  public static Set<LegalMove> calculateLegalMoves(StaticPosition staticPosition, Side havingMove, Square fromSquare) {
+  public static Set<LegalMove> calculateLegalMoves(StaticPosition staticPosition, Side sideToMove, Square fromSquare) {
 
     final Piece movingPiece = staticPosition.get(fromSquare);
-    LegalMovesSupport.checkPiece(havingMove, movingPiece, PAWN);
+    LegalMovesSupport.checkPiece(sideToMove, movingPiece, PAWN);
 
     final Set<LegalMove> legalMoveSet = new TreeSet<>();
 
     final Set<Square> pawnPotentialToSquareSet = PawnPotentialToSquares
-        .calculatePawnPotentialAdvanceToSquares(staticPosition, fromSquare, havingMove);
+        .calculatePawnPotentialAdvanceToSquares(staticPosition, fromSquare, sideToMove);
 
     for (final Square toSquare : pawnPotentialToSquareSet) {
-      if (RankUtility.isPromotionRank(havingMove, toSquare.getRank())) {
+      if (RankUtility.isPromotionRank(sideToMove, toSquare.getRank())) {
         // one move for each possible promotion square and promotion piece
         for (final PromotionPieceType promotionPieceType : PromotionPieceType.REAL) {
           final MoveSpecification moveSpecification = new MoveSpecification(fromSquare, toSquare, promotionPieceType);
-          if (!StaticPositionUtility.calculateIsKingAttackedAfterMove(staticPosition, havingMove, moveSpecification)) {
+          if (!StaticPositionUtility.calculateIsKingAttackedAfterMove(staticPosition, sideToMove, moveSpecification)) {
             final Piece pieceCaptured = staticPosition.get(toSquare);
             final LegalMove legalMove = new LegalMove(moveSpecification, movingPiece, pieceCaptured,
                 LegalMoveKind.PROMOTION);

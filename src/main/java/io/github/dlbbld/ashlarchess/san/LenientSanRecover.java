@@ -199,8 +199,8 @@ final class LenientSanRecover {
     final Rank fromRank = Rank.parse(rankDigit);
     final Square toSquare = Square.of(File.parse(body.charAt(body.length() - 2)),
         Rank.parse(body.charAt(body.length() - 1)));
-    final Side havingMove = board.getHavingMove();
-    final Piece movingPiece = Piece.of(havingMove, pieceType);
+    final Side sideToMove = board.getSideToMove();
+    final Piece movingPiece = Piece.of(sideToMove, pieceType);
 
     @Nullable LegalMove match = null;
     for (final LegalMove lm : board.getLegalMoves()) {

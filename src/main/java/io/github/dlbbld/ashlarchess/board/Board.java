@@ -148,8 +148,8 @@ public final class Board {
     }
 
     // values used in the following not to be get from board methods!!!
-    final Side initialHavingMove = initialFenUse.havingMove();
-    final CastlingRight initialCastlingRight = CastlingUtility.getCastlingRight(initialFenUse, initialHavingMove);
+    final Side initialSideToMove = initialFenUse.sideToMove();
+    final CastlingRight initialCastlingRight = CastlingUtility.getCastlingRight(initialFenUse, initialSideToMove);
     final Square initialEnPassantCaptureTargetSquare = initialFenUse.enPassantCaptureTargetSquare();
 
     this.initialFen = initialFenUse;
@@ -161,18 +161,18 @@ public final class Board {
     // Normalize: keep the target square on DynamicPosition only when an opposing pawn can actually capture there.
     // The raw FEN-spec square is preserved on Board (see getEnPassantCaptureTargetSquare()) for FEN export.
     final Square initialNormalizedEnPassantCaptureTargetSquare = calculateIsEnPassantCapturePossible(
-        initialEnPassantCaptureTargetSquare, initialHavingMove, initialBitboardPosition)
+        initialEnPassantCaptureTargetSquare, initialSideToMove, initialBitboardPosition)
             ? initialEnPassantCaptureTargetSquare
             : Square.NONE;
 
     this.performedLegalMoveList = new ArrayList<>();
     this.legalMoveListPerMove = new ArrayList<>();
     final ImmutableList<LegalMove> legalMoves = BitboardLegalMoveFactory.calculateLegalMoves(initialBitboardPosition,
-        initialHavingMove, initialCastlingRight, initialEnPassantBit);
+        initialSideToMove, initialCastlingRight, initialEnPassantBit);
     this.legalMoveListPerMove.add(legalMoves);
 
     this.isCheckList = new ArrayList<>();
-    final boolean isCheck = initialBitboardPosition.isInCheck(initialHavingMove);
+    final boolean isCheck = initialBitboardPosition.isInCheck(initialSideToMove);
     this.isCheckList.add(isCheck);
 
     this.isCheckmateList = new ArrayList<>();
@@ -191,7 +191,7 @@ public final class Board {
     if (initialFenUse.equals(FenConstants.FEN_INITIAL)) {
       this.dynamicPositionList.add(DynamicPositionConstants.INITIAL);
     } else {
-      this.dynamicPositionList.add(new DynamicPosition(initialHavingMove, initialBitboardPosition,
+      this.dynamicPositionList.add(new DynamicPosition(initialSideToMove, initialBitboardPosition,
           initialNormalizedEnPassantCaptureTargetSquare, initialCastlingRightWhite, initialCastlingRightBlack));
     }
     this.halfMoveClockList = new ArrayList<>();
@@ -247,7 +247,7 @@ public final class Board {
    *
    */
   public Board copyCurrentPositionWithoutHistory() {
-    final Fen currentPosition = new Fen(getFen(), getBitboardPosition(), getHavingMove(), getCastlingRightWhite(),
+    final Fen currentPosition = new Fen(getFen(), getBitboardPosition(), getSideToMove(), getCastlingRightWhite(),
         getCastlingRightBlack(), getEnPassantCaptureTargetSquare(), 0, getFullMoveNumber());
     return new Board(currentPosition);
   }
@@ -346,24 +346,24 @@ public final class Board {
     final CastlingRight beforeCastlingRightWhite = Nulls.getLast(dynamicPositionList).castlingRightWhite();
     final CastlingRight beforeCastlingRightBlack = Nulls.getLast(dynamicPositionList).castlingRightBlack();
 
-    final Side havingMove = this.getHavingMove();
+    final Side sideToMove = this.getSideToMove();
     final BitboardPosition beforeBitboardPosition = Nulls.getLast(dynamicPositionList).bitboardPosition();
     final LegalMove moveToPerform = BitboardLegalMoveFactory.toLegalMove(beforeBitboardPosition, moveSpecification,
-        havingMove);
+        sideToMove);
 
-    final Side afterHavingMove = havingMove.getOppositeSide();
+    final Side afterSideToMove = sideToMove.getOppositeSide();
     final CastlingRightBoth afterCastlingRightBoth = CastlingUtility
         .calculateCastlingRightBoth(beforeCastlingRightWhite, beforeCastlingRightBlack, moveToPerform);
-    final CastlingRight afterCastlingRightHavingMove = CastlingUtility.getCastlingRight(afterCastlingRightBoth,
-        afterHavingMove);
+    final CastlingRight afterCastlingRightSideToMove = CastlingUtility.getCastlingRight(afterCastlingRightBoth,
+        afterSideToMove);
     final Square afterEnPassantCaptureTargetSquare = EnPassantCaptureUtility
         .calculateEnPassantCaptureTargetSquare(moveToPerform);
 
-    final BitboardPosition afterBitboardPosition = beforeBitboardPosition.afterMove(moveSpecification, havingMove);
+    final BitboardPosition afterBitboardPosition = beforeBitboardPosition.afterMove(moveSpecification, sideToMove);
 
     // Normalize for DynamicPosition; see initial-position construction site for the rationale.
     final Square afterNormalizedEnPassantCaptureTargetSquare = calculateIsEnPassantCapturePossible(
-        afterEnPassantCaptureTargetSquare, afterHavingMove, afterBitboardPosition) ? afterEnPassantCaptureTargetSquare
+        afterEnPassantCaptureTargetSquare, afterSideToMove, afterBitboardPosition) ? afterEnPassantCaptureTargetSquare
             : Square.NONE;
 
     // update castling loss reasons
@@ -384,10 +384,10 @@ public final class Board {
 
     // now we have a depencency on instruction execution: the move must be performed before calling the legal moves
     final ImmutableList<LegalMove> legalMovesAfterMove = BitboardLegalMoveFactory
-        .calculateLegalMoves(afterBitboardPosition, afterHavingMove, afterCastlingRightHavingMove, afterEnPassantBit);
+        .calculateLegalMoves(afterBitboardPosition, afterSideToMove, afterCastlingRightSideToMove, afterEnPassantBit);
     this.legalMoveListPerMove.add(legalMovesAfterMove);
 
-    final boolean isCheck = afterBitboardPosition.isInCheck(afterHavingMove);
+    final boolean isCheck = afterBitboardPosition.isInCheck(afterSideToMove);
     this.isCheckList.add(isCheck);
 
     final boolean isCheckmate = isCheck && legalMovesAfterMove.isEmpty();
@@ -396,7 +396,7 @@ public final class Board {
     final boolean isStalemate = !isCheck && legalMovesAfterMove.isEmpty();
     this.isStalemateList.add(isStalemate);
 
-    final DynamicPosition newDynamicPosition = new DynamicPosition(afterHavingMove, afterBitboardPosition,
+    final DynamicPosition newDynamicPosition = new DynamicPosition(afterSideToMove, afterBitboardPosition,
         afterNormalizedEnPassantCaptureTargetSquare, afterCastlingRightBoth.castlingRightWhite(),
         afterCastlingRightBoth.castlingRightBlack());
     this.dynamicPositionList.add(newDynamicPosition);
@@ -737,9 +737,9 @@ public final class Board {
       throw new IllegalStateException("There is no last move");
     }
     final int fullMoveNumber = calculateFullMoveNumber(isFirstMove(), initialFen.fullMoveNumber(),
-        initialFen.havingMove(), getHavingMove(), getPerformedMoveCount());
+        initialFen.sideToMove(), getSideToMove(), getPerformedMoveCount());
 
-    return switch (getHavingMove()) {
+    return switch (getSideToMove()) {
       case WHITE -> fullMoveNumber - 1;
       case BLACK -> fullMoveNumber;
       case NONE -> throw new IllegalArgumentException();
@@ -748,13 +748,13 @@ public final class Board {
   }
 
   private static int calculateFullMoveNumber(boolean isFirstMove, int initialFenFullMoveNumber,
-      Side initialFenHavingMove, Side havingMove, int performedMoveCount) {
+      Side initialFenSideToMove, Side sideToMove, int performedMoveCount) {
     if (isFirstMove) {
       return initialFenFullMoveNumber;
     }
 
-    return switch (havingMove) {
-      case WHITE -> switch (initialFenHavingMove) {
+    return switch (sideToMove) {
+      case WHITE -> switch (initialFenSideToMove) {
         case BLACK -> {
           // must be even
           checkIsEven(performedMoveCount + 1);
@@ -768,7 +768,7 @@ public final class Board {
         case NONE -> throw new IllegalArgumentException();
         default -> throw new IllegalArgumentException();
       }; // must be even // must be even
-      case BLACK -> switch (initialFenHavingMove) {
+      case BLACK -> switch (initialFenSideToMove) {
         case BLACK -> {
           // must be even
           checkIsEven(performedMoveCount);
@@ -848,12 +848,12 @@ public final class Board {
     return Nulls.getLast(lanList);
   }
 
-  public Side getHavingMove() {
+  public Side getSideToMove() {
     if (isFirstMove()) {
-      return initialFen.havingMove();
+      return initialFen.sideToMove();
     }
     final LegalMove lastMove = getLastMove();
-    return lastMove.havingMove().getOppositeSide();
+    return lastMove.movingSide().getOppositeSide();
   }
 
   /**
@@ -877,36 +877,36 @@ public final class Board {
     return Nulls.getLast(dynamicPositionList).enPassantCaptureTargetSquare() != Square.NONE;
   }
 
-  private static boolean calculateIsEnPassantCapturePossible(Square enPassantCaptureTargetSquare, Side havingMove,
+  private static boolean calculateIsEnPassantCapturePossible(Square enPassantCaptureTargetSquare, Side sideToMove,
       BitboardPosition bitboardPosition) {
     if (enPassantCaptureTargetSquare == Square.NONE) {
       return false;
     }
     // two potential capture moves
-    if (!enPassantCaptureTargetSquare.hasBehindSquare(havingMove)) {
+    if (!enPassantCaptureTargetSquare.hasBehindSquare(sideToMove)) {
       // cannot be for en en passant target square
       throw new ProgrammingMistakeException();
     }
-    final Square squareBehind = enPassantCaptureTargetSquare.getBehindSquare(havingMove);
-    final Piece ownPawn = Piece.of(havingMove, PieceType.PAWN);
+    final Square squareBehind = enPassantCaptureTargetSquare.getBehindSquare(sideToMove);
+    final Piece ownPawn = Piece.of(sideToMove, PieceType.PAWN);
 
     // capture move from right square
-    if (squareBehind.hasRightSquare(havingMove)) {
-      final Square squareRight = squareBehind.getRightSquare(havingMove);
+    if (squareBehind.hasRightSquare(sideToMove)) {
+      final Square squareRight = squareBehind.getRightSquare(sideToMove);
       if (bitboardPosition.get(squareRight) == ownPawn) {
         final MoveSpecification moveSpecification = new MoveSpecification(squareRight, enPassantCaptureTargetSquare);
-        if (!bitboardPosition.afterMove(moveSpecification, havingMove).isInCheck(havingMove)) {
+        if (!bitboardPosition.afterMove(moveSpecification, sideToMove).isInCheck(sideToMove)) {
           return true;
         }
       }
     }
 
     // capture move from left square
-    if (squareBehind.hasLeftSquare(havingMove)) {
-      final Square squareLeft = squareBehind.getLeftSquare(havingMove);
+    if (squareBehind.hasLeftSquare(sideToMove)) {
+      final Square squareLeft = squareBehind.getLeftSquare(sideToMove);
       if (bitboardPosition.get(squareLeft) == ownPawn) {
         final MoveSpecification moveSpecification = new MoveSpecification(squareLeft, enPassantCaptureTargetSquare);
-        if (!bitboardPosition.afterMove(moveSpecification, havingMove).isInCheck(havingMove)) {
+        if (!bitboardPosition.afterMove(moveSpecification, sideToMove).isInCheck(sideToMove)) {
           return true;
         }
       }
@@ -1022,7 +1022,7 @@ public final class Board {
   }
 
   public int getFullMoveNumber() {
-    return calculateFullMoveNumber(isFirstMove(), initialFen.fullMoveNumber(), initialFen.havingMove(), getHavingMove(),
+    return calculateFullMoveNumber(isFirstMove(), initialFen.fullMoveNumber(), initialFen.sideToMove(), getSideToMove(),
         getPerformedMoveCount());
   }
 
@@ -1088,8 +1088,8 @@ public final class Board {
     return DeadPositionAnalyzer.deadPositionFull(this);
   }
 
-  public CastlingRight getCastlingRight(Side havingMove) {
-    return switch (havingMove) {
+  public CastlingRight getCastlingRight(Side sideToMove) {
+    return switch (sideToMove) {
       case WHITE -> getDynamicPosition().castlingRightWhite();
       case BLACK -> getDynamicPosition().castlingRightBlack();
       case NONE -> throw new IllegalArgumentException();
@@ -1109,9 +1109,9 @@ public final class Board {
 
   public ImmutableList<String> getLegalMovesUci() {
     final List<String> result = new ArrayList<>();
-    final Side havingMove = getHavingMove();
+    final Side sideToMove = getSideToMove();
     for (final MoveSpecification moveSpecification : getPossibleMoveSpecificationList()) {
-      final String uci = UciMoveUtility.convertMoveSpecificationToUci(havingMove, moveSpecification).text();
+      final String uci = UciMoveUtility.convertMoveSpecificationToUci(sideToMove, moveSpecification).text();
       result.add(uci);
     }
     return Nulls.copyOfList(result);

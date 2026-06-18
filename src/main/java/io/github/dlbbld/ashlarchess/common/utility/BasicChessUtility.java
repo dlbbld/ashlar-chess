@@ -16,8 +16,8 @@ public final class BasicChessUtility {
   private BasicChessUtility() {
   }
 
-  public static Side calculateSideMoved(Side havingMoveInitial, int performedMoveCount) {
-    switch (havingMoveInitial) {
+  public static Side calculateSideMoved(Side sideToMoveInitial, int performedMoveCount) {
+    switch (sideToMoveInitial) {
       case BLACK:
         if (performedMoveCount % 2 == 0) {
           return Side.WHITE;
@@ -35,8 +35,8 @@ public final class BasicChessUtility {
 
   }
 
-  public static int calculateFullMoveNumber(Side havingMoveInitial, int fullMoveNumberInitial, int performedMoveCount) {
-    return switch (havingMoveInitial) {
+  public static int calculateFullMoveNumber(Side sideToMoveInitial, int fullMoveNumberInitial, int performedMoveCount) {
+    return switch (sideToMoveInitial) {
       case BLACK -> fullMoveNumberInitial + (int) StrictMath.floor(performedMoveCount / 2.0);
       case WHITE -> fullMoveNumberInitial + (int) StrictMath.floor((performedMoveCount - 1) / 2.0);
       case NONE -> throw new IllegalArgumentException();
@@ -64,7 +64,7 @@ public final class BasicChessUtility {
   public static Outcome calculateOutcome(Board board) {
     if (board.isCheckmate()) {
       // Side to move is the loser; the other side delivered mate and is the winner.
-      return new Outcome(Termination.CHECKMATE, board.getHavingMove().getOppositeSide());
+      return new Outcome(Termination.CHECKMATE, board.getSideToMove().getOppositeSide());
     }
     if (board.isInsufficientMaterial()) {
       return new Outcome(Termination.INSUFFICIENT_MATERIAL, Side.NONE);

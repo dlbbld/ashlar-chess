@@ -19,7 +19,7 @@
  * <li>castling rights consistent with king and rook static positions</li>
  * <li>en-passant target square consistent with the side to move and the adjacent pawn structure</li>
  * <li>halfmove clock consistent with the fullmove number - {@code halfMoveClock <= 2 * (fullMoveNumber - 1) +
- * (havingMove == BLACK ? 1 : 0)}; a FEN like {@code ... 15 1} (15 halfmoves on move 1) is physically impossible. (The
+ * (sideToMove == BLACK ? 1 : 0)}; a FEN like {@code ... 15 1} (15 halfmoves on move 1) is physically impossible. (The
  * halfmove clock itself is not capped: the 75-move rule is a queryable predicate, not enforced at FEN import, so
  * halfmove clock values at and above 150 are legitimate FEN.)</li>
  * <li>fullmove number in the supported range</li>

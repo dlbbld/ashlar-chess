@@ -29,50 +29,50 @@ final class RangeSquaresSupport {
   private RangeSquaresSupport() {
   }
 
-  static Set<Square> calculateOrthogonalRangeSquare(StaticPosition staticPosition, Side havingMove, Square fromSquare,
+  static Set<Square> calculateOrthogonalRangeSquare(StaticPosition staticPosition, Side sideToMove, Square fromSquare,
       PieceType expectedSourcePieceType, OrthogonalRange orthogonalMoves, boolean isAllowOwnPiece) {
 
-    final Set<Square> calculatedToSquareSet = new TreeSet<>(calculateRangeSquare(staticPosition, havingMove, fromSquare,
+    final Set<Square> calculatedToSquareSet = new TreeSet<>(calculateRangeSquare(staticPosition, sideToMove, fromSquare,
         expectedSourcePieceType, orthogonalMoves.squareListNorth(), isAllowOwnPiece));
 
-    calculatedToSquareSet.addAll(calculateRangeSquare(staticPosition, havingMove, fromSquare, expectedSourcePieceType,
+    calculatedToSquareSet.addAll(calculateRangeSquare(staticPosition, sideToMove, fromSquare, expectedSourcePieceType,
         orthogonalMoves.squareListEast(), isAllowOwnPiece));
-    calculatedToSquareSet.addAll(calculateRangeSquare(staticPosition, havingMove, fromSquare, expectedSourcePieceType,
+    calculatedToSquareSet.addAll(calculateRangeSquare(staticPosition, sideToMove, fromSquare, expectedSourcePieceType,
         orthogonalMoves.squareListSouth(), isAllowOwnPiece));
-    calculatedToSquareSet.addAll(calculateRangeSquare(staticPosition, havingMove, fromSquare, expectedSourcePieceType,
+    calculatedToSquareSet.addAll(calculateRangeSquare(staticPosition, sideToMove, fromSquare, expectedSourcePieceType,
         orthogonalMoves.squareListWest(), isAllowOwnPiece));
     return calculatedToSquareSet;
   }
 
-  static Set<Square> calculateDiagonalRangeSquare(StaticPosition staticPosition, Side havingMove, Square fromSquare,
+  static Set<Square> calculateDiagonalRangeSquare(StaticPosition staticPosition, Side sideToMove, Square fromSquare,
       PieceType expectedSourcePieceType, DiagonalRange diagonalMoves, boolean isAllowOwnPiece) {
 
-    final Set<Square> calculatedToSquareSet = new TreeSet<>(calculateRangeSquare(staticPosition, havingMove, fromSquare,
+    final Set<Square> calculatedToSquareSet = new TreeSet<>(calculateRangeSquare(staticPosition, sideToMove, fromSquare,
         expectedSourcePieceType, diagonalMoves.squareListNorthEast(), isAllowOwnPiece));
 
-    calculatedToSquareSet.addAll(calculateRangeSquare(staticPosition, havingMove, fromSquare, expectedSourcePieceType,
+    calculatedToSquareSet.addAll(calculateRangeSquare(staticPosition, sideToMove, fromSquare, expectedSourcePieceType,
         diagonalMoves.squareListSouthEast(), isAllowOwnPiece));
-    calculatedToSquareSet.addAll(calculateRangeSquare(staticPosition, havingMove, fromSquare, expectedSourcePieceType,
+    calculatedToSquareSet.addAll(calculateRangeSquare(staticPosition, sideToMove, fromSquare, expectedSourcePieceType,
         diagonalMoves.squareListSouthWest(), isAllowOwnPiece));
-    calculatedToSquareSet.addAll(calculateRangeSquare(staticPosition, havingMove, fromSquare, expectedSourcePieceType,
+    calculatedToSquareSet.addAll(calculateRangeSquare(staticPosition, sideToMove, fromSquare, expectedSourcePieceType,
         diagonalMoves.squareListNorthWest(), isAllowOwnPiece));
     return calculatedToSquareSet;
   }
 
-  private static Set<Square> calculateRangeSquare(StaticPosition staticPosition, Side havingMove, Square fromSquare,
+  private static Set<Square> calculateRangeSquare(StaticPosition staticPosition, Side sideToMove, Square fromSquare,
       PieceType expectedSourcePieceType, ImmutableList<Square> emptyBoardSquareList, boolean isAllowOwnPiece) {
 
-    ToSquaresSupport.checkPiece(staticPosition, havingMove, fromSquare, expectedSourcePieceType);
+    ToSquaresSupport.checkPiece(staticPosition, sideToMove, fromSquare, expectedSourcePieceType);
 
     final Set<Square> calculatedToSquareSet = new TreeSet<>();
 
-    final List<Square> calculatedToSquareList = calculateRangeSquareList(staticPosition, havingMove,
+    final List<Square> calculatedToSquareList = calculateRangeSquareList(staticPosition, sideToMove,
         emptyBoardSquareList, isAllowOwnPiece);
     calculatedToSquareSet.addAll(calculatedToSquareList);
     return calculatedToSquareSet;
   }
 
-  static Set<Square> calculateRangeSquare(StaticPosition staticPosition, Side havingMove, Square fromSquare,
+  static Set<Square> calculateRangeSquare(StaticPosition staticPosition, Side sideToMove, Square fromSquare,
       boolean isAllowOwnPiece) {
 
     final Piece piece = staticPosition.get(fromSquare);
@@ -81,10 +81,10 @@ final class RangeSquaresSupport {
       throw new IllegalArgumentException();
     }
     return switch (piece.getPieceType()) {
-      case ROOK -> RookRangeSquares.calculateRookRangeSquares(staticPosition, fromSquare, havingMove, isAllowOwnPiece);
-      case BISHOP -> BishopRangeSquares.calculateBishopRangeSquares(staticPosition, fromSquare, havingMove,
+      case ROOK -> RookRangeSquares.calculateRookRangeSquares(staticPosition, fromSquare, sideToMove, isAllowOwnPiece);
+      case BISHOP -> BishopRangeSquares.calculateBishopRangeSquares(staticPosition, fromSquare, sideToMove,
           isAllowOwnPiece);
-      case QUEEN -> QueenRangeSquares.calculateQueenRangeSquares(staticPosition, fromSquare, havingMove,
+      case QUEEN -> QueenRangeSquares.calculateQueenRangeSquares(staticPosition, fromSquare, sideToMove,
           isAllowOwnPiece);
       case PAWN, KNIGHT, KING, NONE -> throw new IllegalArgumentException();
       default -> throw new IllegalArgumentException();
@@ -92,13 +92,13 @@ final class RangeSquaresSupport {
 
   }
 
-  private static List<Square> calculateRangeSquareList(StaticPosition staticPosition, Side havingMove,
+  private static List<Square> calculateRangeSquareList(StaticPosition staticPosition, Side sideToMove,
       List<Square> emptyBoardSquareList, boolean isAllowOwnPiece) {
 
     final List<Square> calculatedToSquareList = new ArrayList<>();
 
     for (final Square toSquare : emptyBoardSquareList) {
-      final SquareOccupation squareOccupation = ToSquaresSupport.calculateSquareOccupation(staticPosition, havingMove,
+      final SquareOccupation squareOccupation = ToSquaresSupport.calculateSquareOccupation(staticPosition, sideToMove,
           toSquare);
       switch (squareOccupation) {
         case NONE:

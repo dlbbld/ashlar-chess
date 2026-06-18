@@ -62,7 +62,7 @@ class TestAttackedSquaresByPosition {
     // The relocated reference oracle (AttackedSquaresSupport) takes StaticPosition; derive it on demand from
     // Fen's bitboard via the test-oracle bridge.
     final Set<Square> actualSquareSet = AttackedSquaresOracle
-        .calculateAttackedSquares(StaticPositionBridge.toStaticPosition(fen.bitboardPosition()), fen.havingMove());
+        .calculateAttackedSquares(StaticPositionBridge.toStaticPosition(fen.bitboardPosition()), fen.sideToMove());
 
     final Set<String> expected = new TreeSet<>();
     for (final String square : expectedSquareList) {

@@ -33,7 +33,7 @@ class TestKingSafetyCheck {
 
   private static KingSafetyCheck analyze(Board board, MoveSpecification move) {
     final KingSafetyCheck result = ChessRuleAnalyzer.analyzeKingSafety(board.getBitboardPosition(),
-        board.getHavingMove(), move);
+        board.getSideToMove(), move);
     COVERED.add(result);
     return result;
   }

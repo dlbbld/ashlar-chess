@@ -29,59 +29,59 @@ public final class LegalMovesSupport {
   private LegalMovesSupport() {
   }
 
-  static void checkPiece(Side havingMove, Piece candidatePiece, PieceType expectedPieceType)
+  static void checkPiece(Side sideToMove, Piece candidatePiece, PieceType expectedPieceType)
       throws IllegalArgumentException {
-    if (candidatePiece == Piece.NONE || candidatePiece.getSide() != havingMove
+    if (candidatePiece == Piece.NONE || candidatePiece.getSide() != sideToMove
         || candidatePiece.getPieceType() != expectedPieceType) {
       throw new IllegalArgumentException(
-          "The source square must be occupied by a " + havingMove + " " + expectedPieceType);
+          "The source square must be occupied by a " + sideToMove + " " + expectedPieceType);
     }
   }
 
-  public static ImmutableList<LegalMove> calculateLegalMoves(StaticPosition staticPosition, Side havingMove,
+  public static ImmutableList<LegalMove> calculateLegalMoves(StaticPosition staticPosition, Side sideToMove,
       CastlingRight castlingRight, final Square enPassantCaptureTargetSquare) {
     // The bottom-up call returns a TreeSet (sorted via LegalMove.compareTo). Wrapping with copyOfList preserves the
     // sorted iteration order as a List, making the move ordering part of the public contract.
     return Nulls.copyOfList(
-        calculateLegalMovesBottomUp(staticPosition, havingMove, castlingRight, enPassantCaptureTargetSquare));
+        calculateLegalMovesBottomUp(staticPosition, sideToMove, castlingRight, enPassantCaptureTargetSquare));
   }
 
   private static Set<LegalMove> calculateLegalMovesBottomUp(StaticPosition staticPosition,
-      Square enPassantCaptureTargetSquare, CastlingRight castlingRight, Side havingMove, Square fromSquare) {
+      Square enPassantCaptureTargetSquare, CastlingRight castlingRight, Side sideToMove, Square fromSquare) {
     final PieceType pieceType = staticPosition.get(fromSquare).getPieceType();
     return switch (pieceType) {
-      case PAWN -> PawnLegalMoves.calculatePawnLegalMoves(staticPosition, enPassantCaptureTargetSquare, havingMove,
+      case PAWN -> PawnLegalMoves.calculatePawnLegalMoves(staticPosition, enPassantCaptureTargetSquare, sideToMove,
           fromSquare);
-      case ROOK -> RookLegalMoves.calculateRookLegalMoves(staticPosition, havingMove, fromSquare);
-      case KNIGHT -> KnightLegalMoves.calculateKnightLegalMoves(staticPosition, havingMove, fromSquare);
-      case BISHOP -> BishopLegalMoves.calculateBishopLegalMoves(staticPosition, havingMove, fromSquare);
-      case QUEEN -> QueenLegalMoves.calculateQueenLegalMoves(staticPosition, havingMove, fromSquare);
-      case KING -> KingLegalMoves.calculateKingLegalMoves(staticPosition, castlingRight, havingMove, fromSquare);
+      case ROOK -> RookLegalMoves.calculateRookLegalMoves(staticPosition, sideToMove, fromSquare);
+      case KNIGHT -> KnightLegalMoves.calculateKnightLegalMoves(staticPosition, sideToMove, fromSquare);
+      case BISHOP -> BishopLegalMoves.calculateBishopLegalMoves(staticPosition, sideToMove, fromSquare);
+      case QUEEN -> QueenLegalMoves.calculateQueenLegalMoves(staticPosition, sideToMove, fromSquare);
+      case KING -> KingLegalMoves.calculateKingLegalMoves(staticPosition, castlingRight, sideToMove, fromSquare);
       case NONE -> throw new IllegalArgumentException();
       default -> throw new IllegalArgumentException();
     };
   }
 
-  private static Set<LegalMove> calculateLegalMovesBottomUp(StaticPosition staticPosition, Side havingMove,
+  private static Set<LegalMove> calculateLegalMovesBottomUp(StaticPosition staticPosition, Side sideToMove,
       CastlingRight castlingRight, final Square enPassantCaptureTargetSquare) {
 
     final Set<LegalMove> resultSet = new TreeSet<>();
     for (final Square fromSquare : Square.REAL) {
-      if (staticPosition.isOwnPiece(fromSquare, havingMove)) {
+      if (staticPosition.isOwnPiece(fromSquare, sideToMove)) {
         final Set<LegalMove> currentMovingPieceSet = calculateLegalMovesBottomUp(staticPosition,
-            enPassantCaptureTargetSquare, castlingRight, havingMove, fromSquare);
+            enPassantCaptureTargetSquare, castlingRight, sideToMove, fromSquare);
         resultSet.addAll(currentMovingPieceSet);
       }
     }
     return resultSet;
   }
 
-  static ImmutableSet<LegalMove> calculateLegalMoveSet(StaticPosition staticPosition, Side havingMove,
+  static ImmutableSet<LegalMove> calculateLegalMoveSet(StaticPosition staticPosition, Side sideToMove,
       Square fromSquare, Set<Square> toSquareSet) {
-    return calculateLegalMoveCalculation(staticPosition, havingMove, fromSquare, toSquareSet).legalMoveSet();
+    return calculateLegalMoveCalculation(staticPosition, sideToMove, fromSquare, toSquareSet).legalMoveSet();
   }
 
-  public static LegalMoveCalculation calculateLegalMoveCalculation(StaticPosition staticPosition, Side havingMove,
+  public static LegalMoveCalculation calculateLegalMoveCalculation(StaticPosition staticPosition, Side sideToMove,
       Square fromSquare, Set<Square> toSquareSet) {
 
     final Piece movingPiece = staticPosition.get(fromSquare);
@@ -97,7 +97,7 @@ public final class LegalMovesSupport {
         continue;
       }
 
-      if (!StaticPositionUtility.calculateIsKingAttackedAfterMove(staticPosition, havingMove, moveSpecification)) {
+      if (!StaticPositionUtility.calculateIsKingAttackedAfterMove(staticPosition, sideToMove, moveSpecification)) {
         // This helper services non-pawn, non-castling moves only (rook / knight / bishop / queen / king-non-castling).
         // Pawn moves go through PawnLegalMoves; castling goes through KingCastlingLegalMoves. None of those routes lead
         // here, so the kind is always NORMAL.
@@ -111,7 +111,7 @@ public final class LegalMovesSupport {
     final KingSafetyCheck pseudoLegalKingSafety;
     if (!legalMoveSet.isEmpty() || pseudoLegalMoveSet.isEmpty()) {
       pseudoLegalKingSafety = KingSafetyCheck.SUCCESS;
-    } else if (StaticPositionUtility.calculateIsCheck(staticPosition, havingMove)) {
+    } else if (StaticPositionUtility.calculateIsCheck(staticPosition, sideToMove)) {
       pseudoLegalKingSafety = KingSafetyCheck.NON_KING_LEFT_IN_CHECK;
     } else {
       pseudoLegalKingSafety = KingSafetyCheck.NON_KING_EXPOSED_TO_CHECK;

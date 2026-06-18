@@ -36,12 +36,12 @@ class TestFenParserRaw {
     assertEquals("rnbqkb1r/pp1ppppp/2p2n2/8/4P3/5N2/PPPP1PPP/RNBQKB1R", parsePiecePlacement(move4));
     assertEquals("rnbqkb1r/pp1ppppp/2p2n2/8/4P3/5N2/PPPP1PPP/RNBQKBR1", parsePiecePlacement(move5));
 
-    assertEquals("w", parseHavingMove(move0));
-    assertEquals("b", parseHavingMove(move1));
-    assertEquals("w", parseHavingMove(move2));
-    assertEquals("b", parseHavingMove(move3));
-    assertEquals("w", parseHavingMove(move4));
-    assertEquals("b", parseHavingMove(move5));
+    assertEquals("w", parseSideToMove(move0));
+    assertEquals("b", parseSideToMove(move1));
+    assertEquals("w", parseSideToMove(move2));
+    assertEquals("b", parseSideToMove(move3));
+    assertEquals("w", parseSideToMove(move4));
+    assertEquals("b", parseSideToMove(move5));
 
     assertEquals("KQkq", parseCastlingRight(move0));
     assertEquals("KQkq", parseCastlingRight(move1));
@@ -105,8 +105,8 @@ class TestFenParserRaw {
     return FenParserRaw.parseFenRaw(piecePlacement).piecePlacement();
   }
 
-  private static String parseHavingMove(String fen) {
-    return FenParserRaw.parseFenRaw(fen).havingMove();
+  private static String parseSideToMove(String fen) {
+    return FenParserRaw.parseFenRaw(fen).sideToMove();
   }
 
   private static String parseCastlingRight(String fen) {

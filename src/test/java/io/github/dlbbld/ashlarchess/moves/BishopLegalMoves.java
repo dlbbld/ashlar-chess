@@ -15,16 +15,16 @@ import io.github.dlbbld.ashlarchess.model.LegalMove;
 import io.github.dlbbld.ashlarchess.squares.BishopPotentialToSquares;
 
 class BishopLegalMoves {
-  public static Set<LegalMove> calculateBishopLegalMoves(StaticPosition staticPosition, Side havingMove,
+  public static Set<LegalMove> calculateBishopLegalMoves(StaticPosition staticPosition, Side sideToMove,
       Square fromSquare) {
 
     final Piece movingPiece = staticPosition.get(fromSquare);
-    LegalMovesSupport.checkPiece(havingMove, movingPiece, BISHOP);
+    LegalMovesSupport.checkPiece(sideToMove, movingPiece, BISHOP);
 
     final Set<Square> toSquareSet = BishopPotentialToSquares.calculateBishopPotentialToSquares(staticPosition,
-        fromSquare, havingMove);
+        fromSquare, sideToMove);
 
-    return LegalMovesSupport.calculateLegalMoveSet(staticPosition, havingMove, fromSquare, toSquareSet);
+    return LegalMovesSupport.calculateLegalMoveSet(staticPosition, sideToMove, fromSquare, toSquareSet);
   }
 
 }

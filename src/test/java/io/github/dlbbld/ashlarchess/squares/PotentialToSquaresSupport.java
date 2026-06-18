@@ -27,18 +27,18 @@ public final class PotentialToSquaresSupport {
   }
 
   public static Set<Square> calculatePotentialToSquare(StaticPosition staticPosition,
-      Square enPassantCaptureTargetSquare, Side havingMove, Square fromSquare) {
+      Square enPassantCaptureTargetSquare, Side sideToMove, Square fromSquare) {
 
     final Piece pieceOnFromSquare = staticPosition.get(fromSquare);
 
     return switch (pieceOnFromSquare.getPieceType()) {
       case PAWN -> PawnPotentialToSquares.calculatePawnPotentialToSquares(staticPosition, enPassantCaptureTargetSquare,
-          fromSquare, havingMove);
-      case ROOK, BISHOP, QUEEN -> RangeSquaresSupport.calculateRangeSquare(staticPosition, havingMove, fromSquare,
+          fromSquare, sideToMove);
+      case ROOK, BISHOP, QUEEN -> RangeSquaresSupport.calculateRangeSquare(staticPosition, sideToMove, fromSquare,
           false);
-      case KNIGHT -> KnightPotentialToSquares.calculateKnightPotentialToSquares(staticPosition, fromSquare, havingMove);
+      case KNIGHT -> KnightPotentialToSquares.calculateKnightPotentialToSquares(staticPosition, fromSquare, sideToMove);
       case KING -> KingNonCastlingPotentialToSquares.calculateKingNonCastlingPotentialToSquares(staticPosition,
-          fromSquare, havingMove);
+          fromSquare, sideToMove);
       case NONE -> new TreeSet<>();
       default -> throw new IllegalArgumentException();
     };
@@ -46,14 +46,14 @@ public final class PotentialToSquaresSupport {
 
   // knight or non castling king
   static Set<Square> calculateNonRangeNonPawnPotentialToSquares(StaticPosition staticPosition, Square fromSquare,
-      PieceType pieceType, Set<Square> emptyBoardSquareSet, Side havingMove) {
+      PieceType pieceType, Set<Square> emptyBoardSquareSet, Side sideToMove) {
 
-    ToSquaresSupport.checkPiece(staticPosition, havingMove, fromSquare, pieceType);
+    ToSquaresSupport.checkPiece(staticPosition, sideToMove, fromSquare, pieceType);
 
     final Set<Square> potentialToSquareSet = new TreeSet<>();
 
     for (final Square toSquare : emptyBoardSquareSet) {
-      final SquareOccupation squareOccupation = ToSquaresSupport.calculateSquareOccupation(staticPosition, havingMove,
+      final SquareOccupation squareOccupation = ToSquaresSupport.calculateSquareOccupation(staticPosition, sideToMove,
           toSquare);
       switch (squareOccupation) {
         case NONE:

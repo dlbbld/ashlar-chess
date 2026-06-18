@@ -39,14 +39,14 @@ class TestBitboardPositionAfterMove {
         final Board board = testCase.finalPosition();
         final StaticPosition staticPosition = StaticPositionBridge.toStaticPosition(board.getBitboardPosition());
         final BitboardPosition bitboardPosition = StaticPositionBridge.fromStaticPosition(staticPosition);
-        final Side havingMove = board.getHavingMove();
+        final Side sideToMove = board.getSideToMove();
 
         for (final LegalMove legalMove : board.getLegalMoves()) {
           final MoveSpecification moveSpec = legalMove.moveSpecification();
           final StaticPosition referenceAfter = StaticPositionUtility.createPositionAfterMove(staticPosition,
-              havingMove, moveSpec);
+              sideToMove, moveSpec);
           final BitboardPosition expectedAfter = StaticPositionBridge.fromStaticPosition(referenceAfter);
-          final BitboardPosition bitboardAfter = bitboardPosition.afterMove(moveSpec, havingMove);
+          final BitboardPosition bitboardAfter = bitboardPosition.afterMove(moveSpec, sideToMove);
           assertEquals(expectedAfter, bitboardAfter,
               "afterMove disagreement for " + moveSpec + " in fixture " + testCase.pgnName());
         }

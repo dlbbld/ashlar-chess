@@ -64,8 +64,8 @@ public class LibraryCarlosBoard {
   }
 
   public boolean move(MoveSpecification moveSpecification) {
-    final Side havingMove = getHavingMove();
-    final boolean result = board.doMove(MoveConversionUtility.convertMoveSpecification(havingMove, moveSpecification));
+    final Side sideToMove = getSideToMove();
+    final boolean result = board.doMove(MoveConversionUtility.convertMoveSpecification(sideToMove, moveSpecification));
     populateMoveHistory(moveSpecification);
     return result;
   }
@@ -88,11 +88,11 @@ public class LibraryCarlosBoard {
   private MoveSpecification calculateLastMoveSpecification() {
     final MoveBackup moveBackup = board.getBackup().getLast();
     @SuppressWarnings("null") @NonNull final Move move = moveBackup.getMove();
-    final com.github.bhlangonijr.chesslib.Side havingMove = NullsCarlos.getSideToMove(moveBackup);
+    final com.github.bhlangonijr.chesslib.Side sideToMove = NullsCarlos.getSideToMove(moveBackup);
     final com.github.bhlangonijr.chesslib.Square fromSquare = NullsCarlos.getFrom(move);
     com.github.bhlangonijr.chesslib.Piece movingPiece;
     if (moveBackup.isCastleMove()) {
-      movingPiece = switch (havingMove) {
+      movingPiece = switch (sideToMove) {
         case WHITE -> com.github.bhlangonijr.chesslib.Piece.WHITE_KING;
         case BLACK -> com.github.bhlangonijr.chesslib.Piece.BLACK_KING;
         default -> throw new IllegalArgumentException();
@@ -113,7 +113,7 @@ public class LibraryCarlosBoard {
         ? getEnPassantCaptureTargetSquare()
         : Square.NONE;
     final BitboardPosition bitboardPosition = StaticPositionBridge.fromStaticPosition(getStaticPosition());
-    dynamicPositionList.add(new DynamicPosition(getHavingMove(), bitboardPosition,
+    dynamicPositionList.add(new DynamicPosition(getSideToMove(), bitboardPosition,
         normalizedEnPassantCaptureTargetSquare, getCastlingRightWhite(), getCastlingRightBlack()));
   }
 
@@ -329,7 +329,7 @@ public class LibraryCarlosBoard {
     return board.isRepetition(5);
   }
 
-  public Side getHavingMove() {
+  public Side getSideToMove() {
     return EnumConversionUtility.convertToMySide(NullsCarlos.getSideToMove(this.board));
   }
 

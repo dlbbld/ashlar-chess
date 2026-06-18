@@ -61,7 +61,7 @@ class TestBoardCopyCurrentPositionWithoutHistory {
     assertEquals(0, actual.getHalfMoveClock());
     assertEquals(StaticPositionBridge.toStaticPosition(source.getBitboardPosition()),
         StaticPositionBridge.toStaticPosition(actual.getBitboardPosition()));
-    assertEquals(source.getHavingMove(), actual.getHavingMove());
+    assertEquals(source.getSideToMove(), actual.getSideToMove());
     assertEquals(source.getCastlingRightWhite(), actual.getCastlingRightWhite());
     assertEquals(source.getCastlingRightBlack(), actual.getCastlingRightBlack());
     assertEquals(source.getEnPassantCaptureTargetSquare(), actual.getEnPassantCaptureTargetSquare());

@@ -17,7 +17,7 @@ public final class FenBoard {
 
   public static String toFen(Board board) {
 
-    final Side havingMove = board.getHavingMove();
+    final Side sideToMove = board.getSideToMove();
 
     final StringBuilder fen = new StringBuilder();
 
@@ -26,7 +26,7 @@ public final class FenBoard {
     fen.append(" ");
 
     // side having the move
-    switch (havingMove) {
+    switch (sideToMove) {
       case BLACK -> fen.append("b");
       case WHITE -> fen.append("w");
       case NONE -> throw new IllegalArgumentException();

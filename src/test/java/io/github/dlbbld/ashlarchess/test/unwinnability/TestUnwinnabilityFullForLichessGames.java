@@ -43,12 +43,12 @@ class TestUnwinnabilityFullForLichessGames {
 
         logger.info(testCase.pgnName());
 
-        final UnwinnabilityFullVerdict unwinnableFullNotHavingMove = UnwinnableFullAnalyzer
-            .unwinnableFull(board, board.getHavingMove().getOppositeSide()).verdict();
-        assertEquals(UnwinnabilityFullVerdict.UNWINNABLE, unwinnableFullNotHavingMove);
+        final UnwinnabilityFullVerdict unwinnableFullNotSideToMove = UnwinnableFullAnalyzer
+            .unwinnableFull(board, board.getSideToMove().getOppositeSide()).verdict();
+        assertEquals(UnwinnabilityFullVerdict.UNWINNABLE, unwinnableFullNotSideToMove);
 
         final AmbronaUnwinnabilityVerdicts ambronaVerdict = AmbronaUnwinnabilityOracle.get(board.getFen());
-        switch (board.getHavingMove().getOppositeSide()) {
+        switch (board.getSideToMove().getOppositeSide()) {
           case WHITE:
             assertEquals(UnwinnabilityFullVerdict.UNWINNABLE, ambronaVerdict.fullWhite());
             break;
@@ -56,7 +56,7 @@ class TestUnwinnabilityFullForLichessGames {
             assertEquals(UnwinnabilityFullVerdict.UNWINNABLE, ambronaVerdict.fullBlack());
             break;
           default:
-            throw new IllegalStateException("Unexpected side: " + board.getHavingMove().getOppositeSide());
+            throw new IllegalStateException("Unexpected side: " + board.getSideToMove().getOppositeSide());
         }
       }
     }

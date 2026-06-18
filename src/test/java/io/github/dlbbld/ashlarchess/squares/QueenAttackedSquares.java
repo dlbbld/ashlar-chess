@@ -14,11 +14,11 @@ import io.github.dlbbld.ashlarchess.board.enums.Square;
 class QueenAttackedSquares {
 
   public static Set<Square> calculateQueenAttackedSquares(StaticPosition staticPosition, Square fromSquare,
-      Side havingMove) {
+      Side sideToMove) {
 
-    ToSquaresSupport.checkPiece(staticPosition, havingMove, fromSquare, QUEEN);
+    ToSquaresSupport.checkPiece(staticPosition, sideToMove, fromSquare, QUEEN);
 
-    return QueenRangeSquares.calculateQueenRangeSquares(staticPosition, fromSquare, havingMove, true);
+    return QueenRangeSquares.calculateQueenRangeSquares(staticPosition, fromSquare, sideToMove, true);
   }
 
 }

@@ -61,22 +61,22 @@ final class ValidateNewMove {
       throw new ProgrammingMistakeException("Precondition is not met");
     }
 
-    final Side havingMove = board.getHavingMove();
+    final Side sideToMove = board.getSideToMove();
 
     final CastlingMove castlingMove = moveSpecification.castlingMove();
     final CastlingCheck castlingCheck = switch (castlingMove) {
-      case KING_SIDE -> CastlingUtility.calculateKingSideCastlingCheck(board.getBitboardPosition(), havingMove,
-          board.getCastlingRight(havingMove));
-      case QUEEN_SIDE -> CastlingUtility.calculateQueenSideCastlingCheck(board.getBitboardPosition(), havingMove,
-          board.getCastlingRight(havingMove));
+      case KING_SIDE -> CastlingUtility.calculateKingSideCastlingCheck(board.getBitboardPosition(), sideToMove,
+          board.getCastlingRight(sideToMove));
+      case QUEEN_SIDE -> CastlingUtility.calculateQueenSideCastlingCheck(board.getBitboardPosition(), sideToMove,
+          board.getCastlingRight(sideToMove));
       case NONE -> throw new IllegalArgumentException();
     };
     final CastlingRightLoss castlingRightLoss = castlingCheck == CastlingCheck.FINAL_NO_RIGHT
-        ? board.getCastlingRightLoss(havingMove, castlingMove)
+        ? board.getCastlingRightLoss(sideToMove, castlingMove)
         : CastlingRightLoss.NOT_LOST;
     switch (castlingCheck) {
       case FINAL_NO_RIGHT:
-        final CastlingRight castlingRight = board.getCastlingRight(havingMove);
+        final CastlingRight castlingRight = board.getCastlingRight(sideToMove);
         if (castlingRight == CastlingRight.NONE) {
           throw new InvalidMoveException("there are no castling rights anymore on both sides",
               CastlingCheckTranslator.toMoveCheck(castlingCheck, castlingRightLoss));
@@ -105,14 +105,14 @@ final class ValidateNewMove {
 
   private static void validateNonCastlingBasic(Board board, MoveSpecification moveSpecification)
       throws InvalidMoveException {
-    final Side havingMove = board.getHavingMove();
+    final Side sideToMove = board.getSideToMove();
     final Square fromSquare = moveSpecification.fromSquare();
     final Piece movingPiece = board.getBitboardPosition().get(fromSquare);
 
     if (movingPiece == Piece.NONE) {
       throw new InvalidMoveException("the from square is empty", MoveCheck.MOVE_SPEC_FROM_SQUARE_EMPTY);
     }
-    if (movingPiece.getSide() != havingMove) {
+    if (movingPiece.getSide() != sideToMove) {
       throw new InvalidMoveException("the moving piece is not an own piece",
           MoveCheck.MOVE_SPEC_FROM_SQUARE_OCCUPIED_BY_OPPONENT);
     }
@@ -132,8 +132,8 @@ final class ValidateNewMove {
 
   private static void validatePawnPromotionPieceConsistency(Board board, MoveSpecification moveSpecification)
       throws InvalidMoveException {
-    final Side havingMove = board.getHavingMove();
-    if (RankUtility.isPromotionRank(havingMove, moveSpecification.toSquare().getRank())) {
+    final Side sideToMove = board.getSideToMove();
+    if (RankUtility.isPromotionRank(sideToMove, moveSpecification.toSquare().getRank())) {
       if (moveSpecification.promotionPieceType() == PromotionPieceType.NONE) {
         throw new InvalidMoveException("this is a pawn promotion move but the promotion piece was not specified",
             MoveCheck.MOVE_SPEC_PAWN_PROMOTION_NO_PROMOTION_PIECE);
@@ -146,7 +146,7 @@ final class ValidateNewMove {
 
   private static void validateMovement(Board board, MoveSpecification moveSpecification) throws InvalidMoveException {
     final MovementCheck movementCheck = ChessRuleAnalyzer.analyzeMovement(board.getBitboardPosition(),
-        board.getHavingMove(), board.getEnPassantCaptureTargetSquare(), moveSpecification);
+        board.getSideToMove(), board.getEnPassantCaptureTargetSquare(), moveSpecification);
     if (movementCheck == MovementCheck.SUCCESS) {
       return;
     }
@@ -176,7 +176,7 @@ final class ValidateNewMove {
       case PAWN_EN_PASSANT_WRONG_RANK -> "the pawn cannot move diagonally to an empty field, except when en passant capture is possible, "
           + "which is not the case";
       case PAWN_EN_PASSANT_NO_IMMEDIATE_BEFORE_TWO_SQUARE_ADVANCE -> "the en passant capture requires that the pawn "
-          + "move " + moveSpecification.toSquare().getBehindSquare(board.getHavingMove()).getName()
+          + "move " + moveSpecification.toSquare().getBehindSquare(board.getSideToMove()).getName()
           + " was immediately played before, which is not the case";
       case KING_CAPTURES_GUARDED_PIECE -> "the king cannot capture this piece because it is guarded by another piece";
       case KING_MOVES_NEXT_TO_OPPONENT_KING -> "the king can not be moved next to the opponent king";
@@ -187,7 +187,7 @@ final class ValidateNewMove {
 
   private static void validateKingSafety(Board board, MoveSpecification moveSpecification) throws InvalidMoveException {
     final KingSafetyCheck kingSafetyCheck = ChessRuleAnalyzer.analyzeKingSafety(board.getBitboardPosition(),
-        board.getHavingMove(), moveSpecification);
+        board.getSideToMove(), moveSpecification);
     if (kingSafetyCheck == KingSafetyCheck.SUCCESS) {
       return;
     }

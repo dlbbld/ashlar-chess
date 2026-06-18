@@ -687,13 +687,13 @@ class TestEmptyBoardSquares {
 
   }
 
-  private static void testPawnSquares(Side havingMove, Square testSquare, Square... squareList) {
+  private static void testPawnSquares(Side sideToMove, Square testSquare, Square... squareList) {
     final Set<Square> resultList = new TreeSet<>();
     for (final Square square : squareList) {
       @SuppressWarnings("null") @NonNull final Square squareNonNull = square;
       resultList.add(squareNonNull);
     }
-    final Set<Square> generatedPawnMoves = PawnAnyAdvanceEmptyBoardSquares.getPawnSquares(havingMove, testSquare);
+    final Set<Square> generatedPawnMoves = PawnAnyAdvanceEmptyBoardSquares.getPawnSquares(sideToMove, testSquare);
     assertEquals(generatedPawnMoves, resultList);
 
   }

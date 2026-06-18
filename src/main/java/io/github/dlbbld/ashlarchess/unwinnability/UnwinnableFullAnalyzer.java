@@ -58,7 +58,7 @@ public final class UnwinnableFullAnalyzer {
       isCanUseMobilitySolution = false;
       final LegalMove onlyLegalMove = Nulls.getFirst(board.getLegalMoves());
       forcedMoveLine.add(
-          UciMoveUtility.convertMoveSpecificationToUci(onlyLegalMove.havingMove(), onlyLegalMove.moveSpecification()));
+          UciMoveUtility.convertMoveSpecificationToUci(onlyLegalMove.movingSide(), onlyLegalMove.moveSpecification()));
       board.move(onlyLegalMove.moveSpecification());
       isForcedMove = board.getLegalMoves().size() == 1;
       totalForcedMoves++;
@@ -144,7 +144,7 @@ public final class UnwinnableFullAnalyzer {
   }
 
   private static Board copyCurrentPositionForFullSearch(Board input) {
-    final Fen fen = new Fen(input.getFen(), input.getBitboardPosition(), input.getHavingMove(),
+    final Fen fen = new Fen(input.getFen(), input.getBitboardPosition(), input.getSideToMove(),
         input.getCastlingRightWhite(), input.getCastlingRightBlack(), input.getEnPassantCaptureTargetSquare(), 0,
         input.getFullMoveNumber());
     return new Board(fen);

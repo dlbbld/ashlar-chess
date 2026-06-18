@@ -91,7 +91,7 @@ class FindHelpmate {
       boolean isPastProgress) {
 
     // 1: if the intended winner is checkmating their opponent in pos then return true
-    if (board.getHavingMove() == color.getOppositeSide() && board.isCheckmate()) {
+    if (board.getSideToMove() == color.getOppositeSide() && board.isCheckmate()) {
       return FindHelpmateRecursionResult.HELPMATE_FOUND;
     }
 
@@ -138,9 +138,9 @@ class FindHelpmate {
     // 7: for every legal move m in pos do:
     for (final LegalMove legalMove : board.getLegalMoves()) {
       // 8: let inc = match Score(pos,m) with Normal -> 0 | Reward -> 1 | Punish -> -2
-      ScoreResult score = Score.score(color, board.getHavingMove(), bitboardPosition, legalMove);
+      ScoreResult score = Score.score(color, board.getSideToMove(), bitboardPosition, legalMove);
 
-      if (board.getHavingMove() == color.getOppositeSide()
+      if (board.getSideToMove() == color.getOppositeSide()
           && UnwinnabilityMaterialBitboard.calculateHasQueen(color.getOppositeSide(), bitboardPosition)) {
         score = score == ScoreResult.REWARD ? ScoreResult.NORMAL : score;
       }
@@ -243,7 +243,7 @@ class FindHelpmate {
   private static List<UciMove> convertLegalMoveList(List<LegalMove> moveProgressList) {
     final List<UciMove> result = new ArrayList<>();
     for (final LegalMove legalMove : moveProgressList) {
-      result.add(UciMoveUtility.convertMoveSpecificationToUci(legalMove.havingMove(), legalMove.moveSpecification()));
+      result.add(UciMoveUtility.convertMoveSpecificationToUci(legalMove.movingSide(), legalMove.moveSpecification()));
     }
     return result;
   }

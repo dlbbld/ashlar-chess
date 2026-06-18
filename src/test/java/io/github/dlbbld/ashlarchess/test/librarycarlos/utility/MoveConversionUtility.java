@@ -79,9 +79,9 @@ public final class MoveConversionUtility {
     return new MoveSpecification(fromSquare, toSquare);
   }
 
-  public static Move convertMoveSpecification(Side havingMove, MoveSpecification moveSpecification) {
+  public static Move convertMoveSpecification(Side sideToMove, MoveSpecification moveSpecification) {
     if (CastlingUtility.isCastlingMove(moveSpecification)) {
-      return switch (havingMove) {
+      return switch (sideToMove) {
         case BLACK -> switch (moveSpecification.castlingMove()) {
           case KING_SIDE -> new Move(com.github.bhlangonijr.chesslib.Square.E8,
               com.github.bhlangonijr.chesslib.Square.G8);
@@ -107,7 +107,7 @@ public final class MoveConversionUtility {
         .convertToSquare(moveSpecification.fromSquare());
     final com.github.bhlangonijr.chesslib.Square to = EnumConversionUtility
         .convertToSquare(moveSpecification.toSquare());
-    final com.github.bhlangonijr.chesslib.Piece promotion = EnumConversionUtility.convertToPiece(havingMove,
+    final com.github.bhlangonijr.chesslib.Piece promotion = EnumConversionUtility.convertToPiece(sideToMove,
         moveSpecification.promotionPieceType());
     return new Move(from, to, promotion);
   }

@@ -22,7 +22,7 @@ final class SanValidateDestination {
   private SanValidateDestination() {
   }
 
-  public static void validateDestinationSquareSemantics(Board board, Side havingMove, SanFormat sanFormat,
+  public static void validateDestinationSquareSemantics(Board board, Side sideToMove, SanFormat sanFormat,
       SanConversion sanConversion) {
     if (sanFormat.isKingCastlingMove()) {
       return;
@@ -34,19 +34,19 @@ final class SanValidateDestination {
     final PieceType movingPieceType = sanConversion.movingPieceType();
 
     if (movingPieceType == PAWN) {
-      validatePawnDestination(board, havingMove, sanFormat, sanConversion, toSquare, pieceOnToSquare);
+      validatePawnDestination(board, sideToMove, sanFormat, sanConversion, toSquare, pieceOnToSquare);
     } else {
-      validateRnbqkDestination(havingMove, sanFormat, toSquare, pieceOnToSquare);
+      validateRnbqkDestination(sideToMove, sanFormat, toSquare, pieceOnToSquare);
     }
   }
 
-  private static void validatePawnDestination(Board board, Side havingMove, SanFormat sanFormat,
+  private static void validatePawnDestination(Board board, Side sideToMove, SanFormat sanFormat,
       SanConversion sanConversion, Square toSquare, Piece pieceOnToSquare) {
     final boolean isCapture = SanFormatUtility.isCapture(sanFormat);
 
     if (pieceOnToSquare != Piece.NONE) {
       // own piece on destination
-      if (pieceOnToSquare.getSide() == havingMove) {
+      if (pieceOnToSquare.getSide() == sideToMove) {
         if (isCapture) {
           throw new SanValidationException(SanValidationProblem.DESTINATION_PAWN_CAPTURE_OWN_PIECE,
               Message.getString("validation.san.destination.pawn.capture.ownPiece", toSquare.getName()));
@@ -76,7 +76,7 @@ final class SanValidateDestination {
 
     // empty destination
     if (isCapture) {
-      if (calculateIsPotentialEnPassantCapture(board, havingMove, sanFormat, sanConversion, toSquare)) {
+      if (calculateIsPotentialEnPassantCapture(board, sideToMove, sanFormat, sanConversion, toSquare)) {
         return;
       }
       throw new SanValidationException(SanValidationProblem.DESTINATION_PAWN_CAPTURE_EMPTY_NOT_EN_PASSANT,
@@ -85,13 +85,13 @@ final class SanValidateDestination {
     // non-capturing pawn move to empty destination: valid, fall through
   }
 
-  private static void validateRnbqkDestination(Side havingMove, SanFormat sanFormat, Square toSquare,
+  private static void validateRnbqkDestination(Side sideToMove, SanFormat sanFormat, Square toSquare,
       Piece pieceOnToSquare) {
     final boolean isCapture = SanFormatUtility.isCapture(sanFormat);
 
     if (pieceOnToSquare != Piece.NONE) {
       // own piece on destination
-      if (pieceOnToSquare.getSide() == havingMove) {
+      if (pieceOnToSquare.getSide() == sideToMove) {
         if (isCapture) {
           throw new SanValidationException(SanValidationProblem.DESTINATION_RNBQK_OWN_PIECE_CAPTURING,
               Message.getString("validation.san.destination.rnbqk.ownPiece.capturing", toSquare.getName()));
@@ -127,12 +127,12 @@ final class SanValidateDestination {
     // non-capturing move to empty destination: valid, fall through
   }
 
-  private static boolean calculateIsPotentialEnPassantCapture(Board board, Side havingMove, SanFormat sanFormat,
+  private static boolean calculateIsPotentialEnPassantCapture(Board board, Side sideToMove, SanFormat sanFormat,
       SanConversion sanConversion, Square toSquare) {
     if (sanFormat != SanFormat.PAWN_CAPTURING_NON_PROMOTION) {
       return false;
     }
-    final Rank fromRank = toSquare.getBehindSquare(havingMove).getRank();
+    final Rank fromRank = toSquare.getBehindSquare(sideToMove).getRank();
     final Square fromSquare = Square.of(sanConversion.fromFile(), fromRank);
     final MoveSpecification pawnCapturingNonPromotionMove = new MoveSpecification(fromSquare, toSquare);
     return EnPassantCaptureUtility.isPotentialEnPassantCapture(board.getBitboardPosition(),

@@ -24,7 +24,7 @@ import io.github.dlbbld.ashlarchess.board.enums.Side;
  * claim-aheads are informationally redundant with that row.
  */
 record FiftyMoveClaimAheadEntry(SequenceStart sequenceStart, int performedMoveCount, int fullMoveNumber,
-    Side sideHavingMove, Side startingSide) {
+    Side sideToMove, Side startingSide) {
 
   public FiftyMoveClaimAheadEntry {
     if (performedMoveCount < 1) {
@@ -33,8 +33,8 @@ record FiftyMoveClaimAheadEntry(SequenceStart sequenceStart, int performedMoveCo
     if (fullMoveNumber < 1) {
       throw new IllegalArgumentException("fullMoveNumber must be >= 1; was " + fullMoveNumber);
     }
-    if (sideHavingMove == Side.NONE) {
-      throw new IllegalArgumentException("sideHavingMove must be WHITE or BLACK");
+    if (sideToMove == Side.NONE) {
+      throw new IllegalArgumentException("sideToMove must be WHITE or BLACK");
     }
     if (startingSide == Side.NONE) {
       throw new IllegalArgumentException("startingSide must be WHITE or BLACK");

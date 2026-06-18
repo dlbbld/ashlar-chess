@@ -41,8 +41,8 @@ final class GoingToCorner {
     final Square fromSquare;
     if (m.kind() == LegalMoveKind.CASTLING) {
       movingPiece = m.movingPiece();
-      toSquare = CastlingUtility.calculateKingCastlingTo(m.havingMove(), m.moveSpecification());
-      fromSquare = CastlingUtility.calculateKingCastlingFrom(m.havingMove(), m.moveSpecification());
+      toSquare = CastlingUtility.calculateKingCastlingTo(m.movingSide(), m.moveSpecification());
+      fromSquare = CastlingUtility.calculateKingCastlingFrom(m.movingSide(), m.moveSpecification());
     } else {
       movingPiece = m.movingPiece();
       toSquare = m.moveSpecification().toSquare();

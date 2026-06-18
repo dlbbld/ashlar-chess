@@ -38,7 +38,7 @@ final class FiftyMoveSequenceReportBuilder {
     final int fiftyThreshold = ChessConstants.FIFTY_MOVE_RULE_HALF_MOVE_CLOCK_THRESHOLD;
     final int seventyFiveThreshold = ChessConstants.SEVENTY_FIVE_MOVE_RULE_HALF_MOVE_CLOCK_THRESHOLD;
     final int initialFenClock = board.getInitialFen().halfMoveClock();
-    final Side initialFenSideToMove = board.getInitialFen().havingMove();
+    final Side initialFenSideToMove = board.getInitialFen().sideToMove();
     final ImmutableList<MoveRecord> moveList = MoveRecords.played(board);
 
     final List<FiftyMoveSequence> sequences = new ArrayList<>();

@@ -119,7 +119,7 @@ public class ShallowTerminationOracle {
       case CHECKMATE ->
           // The side to move is in checkmate. If that's the side we're evaluating, they lost; otherwise
           // the side we're evaluating just delivered the mate - i.e. WIN.
-          board.getHavingMove() == side ? NodeOutcome.LOSS_OR_DRAW : NodeOutcome.WIN;
+          board.getSideToMove() == side ? NodeOutcome.LOSS_OR_DRAW : NodeOutcome.WIN;
       case STALEMATE, INSUFFICIENT_MATERIAL, SEVENTY_FIVE_MOVES, FIVEFOLD_REPETITION -> NodeOutcome.LOSS_OR_DRAW;
     };
   }

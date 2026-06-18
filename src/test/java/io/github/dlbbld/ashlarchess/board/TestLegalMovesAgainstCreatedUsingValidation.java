@@ -108,7 +108,7 @@ class TestLegalMovesAgainstCreatedUsingValidation {
   }
 
   private static Set<MoveSpecification> calculateMoveSpecificationsFromValidation(Board board, Square fromSquare) {
-    final Side havingMove = board.getHavingMove();
+    final Side sideToMove = board.getSideToMove();
 
     final Set<MoveSpecification> listForSquare = new TreeSet<>();
     // now we do something crazy:
@@ -118,7 +118,7 @@ class TestLegalMovesAgainstCreatedUsingValidation {
       return listForSquare;
     }
     final Piece boardPiece = board.getBitboardPosition().get(fromSquare);
-    if (boardPiece.getSide() == havingMove) {
+    if (boardPiece.getSide() == sideToMove) {
       // castling needs special treatment as always
       if (boardPiece.getPieceType() == PieceType.KING) {
         final MoveSpecification castlingKingSide = new MoveSpecification(CastlingMove.KING_SIDE);
@@ -138,7 +138,7 @@ class TestLegalMovesAgainstCreatedUsingValidation {
       }
       final Set<Square> potentialToSquareSet = PotentialToSquaresSupport.calculatePotentialToSquare(
           StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), board.getEnPassantCaptureTargetSquare(),
-          havingMove, fromSquare);
+          sideToMove, fromSquare);
       // we cannot use all board squares - that get's too slow
       // all PGN's expected outcomes are not through in 90 minutes
       for (final Square toSquare : potentialToSquareSet) {
@@ -152,7 +152,7 @@ class TestLegalMovesAgainstCreatedUsingValidation {
         // we only check the actual promotion moves and not all silly possible combinations
         // that get's too much otherwise
         if (boardPiece.getPieceType() == PieceType.PAWN
-            && RankUtility.isPromotionRank(havingMove, toSquare.getRank())) {
+            && RankUtility.isPromotionRank(sideToMove, toSquare.getRank())) {
           for (final PromotionPieceType promotionPieceType : PromotionPieceType.REAL) {
             final MoveSpecification promotionMove = new MoveSpecification(fromSquare, toSquare, promotionPieceType);
             try {

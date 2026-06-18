@@ -17,7 +17,7 @@ final class SanValidatePieceExists {
   private SanValidatePieceExists() {
   }
 
-  public static void validatePieceExists(Side havingMove, SanFormat sanFormat, SanConversion sanConversion,
+  public static void validatePieceExists(Side sideToMove, SanFormat sanFormat, SanConversion sanConversion,
       PieceType movingPieceType, BitboardPosition bitboardPosition) {
     switch (sanFormat) {
       case KING_CASTLING_KING_SIDE:
@@ -29,7 +29,7 @@ final class SanValidatePieceExists {
       case PAWN_NON_CAPTURING_PROMOTION: {
         // for non-capturing pawn moves, the pawn must be on the to-square's file
         final File pawnFile = sanConversion.toSquare().getFile();
-        if (!SanPieceCheck.calculateHasPieceType(havingMove, PieceType.PAWN, bitboardPosition, pawnFile)) {
+        if (!SanPieceCheck.calculateHasPieceType(sideToMove, PieceType.PAWN, bitboardPosition, pawnFile)) {
           throw new SanValidationException(SanValidationProblem.EXISTS_PAWN,
               Message.getString("validation.san.exists.pawn", pawnFile.getLetterString()));
         }
@@ -39,7 +39,7 @@ final class SanValidatePieceExists {
       case PAWN_CAPTURING_PROMOTION: {
         // for capturing pawn moves, the SAN specifies the from-file explicitly
         final File pawnFile = sanConversion.fromFile();
-        if (!SanPieceCheck.calculateHasPieceType(havingMove, PieceType.PAWN, bitboardPosition, pawnFile)) {
+        if (!SanPieceCheck.calculateHasPieceType(sideToMove, PieceType.PAWN, bitboardPosition, pawnFile)) {
           throw new SanValidationException(SanValidationProblem.EXISTS_PAWN,
               Message.getString("validation.san.exists.pawn", pawnFile.getLetterString()));
         }
@@ -47,14 +47,14 @@ final class SanValidatePieceExists {
       }
       case RNBQ_CAPTURING_NEITHER:
       case RNBQ_NON_CAPTURING_NEITHER:
-        if (!SanPieceCheck.calculateHasPieceType(havingMove, movingPieceType, bitboardPosition)) {
+        if (!SanPieceCheck.calculateHasPieceType(sideToMove, movingPieceType, bitboardPosition)) {
           throw new SanValidationException(SanValidationProblem.EXISTS_RNBQ_NEITHER,
               Message.getString("validation.san.exists.rnbq.neither", movingPieceType.getName()));
         }
         break;
       case RNBQ_CAPTURING_FILE:
       case RNBQ_NON_CAPTURING_FILE:
-        if (!SanPieceCheck.calculateHasPieceType(havingMove, movingPieceType, bitboardPosition,
+        if (!SanPieceCheck.calculateHasPieceType(sideToMove, movingPieceType, bitboardPosition,
             sanConversion.fromFile())) {
           throw new SanValidationException(SanValidationProblem.EXISTS_RNBQ_FILE,
               Message.getString("validation.san.exists.rnbq.file", movingPieceType.getName(),
@@ -63,7 +63,7 @@ final class SanValidatePieceExists {
         break;
       case RNBQ_CAPTURING_RANK:
       case RNBQ_NON_CAPTURING_RANK:
-        if (!SanPieceCheck.calculateHasPieceType(havingMove, movingPieceType, bitboardPosition,
+        if (!SanPieceCheck.calculateHasPieceType(sideToMove, movingPieceType, bitboardPosition,
             sanConversion.fromRank())) {
           throw new SanValidationException(SanValidationProblem.EXISTS_RNBQ_RANK,
               Message.getString("validation.san.exists.rnbq.rank", movingPieceType.getName(),
@@ -74,7 +74,7 @@ final class SanValidatePieceExists {
       case RNBQ_NON_CAPTURING_SQUARE:
         final Square fromSquare = Square.of(sanConversion.fromFile(), sanConversion.fromRank());
         final Piece pieceOnFromSquare = bitboardPosition.get(fromSquare);
-        if (pieceOnFromSquare == Piece.NONE || pieceOnFromSquare.getSide() != havingMove
+        if (pieceOnFromSquare == Piece.NONE || pieceOnFromSquare.getSide() != sideToMove
             || pieceOnFromSquare.getPieceType() != movingPieceType) {
           throw new SanValidationException(SanValidationProblem.EXISTS_RNBQ_SQUARE,
               Message.getString("validation.san.exists.rnbq.square", movingPieceType.getName(), fromSquare.getName()));

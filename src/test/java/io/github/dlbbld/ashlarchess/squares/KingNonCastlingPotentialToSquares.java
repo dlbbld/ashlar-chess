@@ -14,12 +14,12 @@ import io.github.dlbbld.ashlarchess.board.enums.Square;
 public class KingNonCastlingPotentialToSquares {
 
   public static Set<Square> calculateKingNonCastlingPotentialToSquares(StaticPosition staticPosition, Square fromSquare,
-      Side havingMove) {
+      Side sideToMove) {
 
     final Set<Square> emptyBoardSquareSet = KingNonCastlingEmptyBoardSquares.getKingSquares(fromSquare);
 
     return PotentialToSquaresSupport.calculateNonRangeNonPawnPotentialToSquares(staticPosition, fromSquare, KING,
-        emptyBoardSquareSet, havingMove);
+        emptyBoardSquareSet, sideToMove);
   }
 
 }

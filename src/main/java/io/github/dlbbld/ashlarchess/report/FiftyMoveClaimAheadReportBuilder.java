@@ -48,7 +48,7 @@ final class FiftyMoveClaimAheadReportBuilder {
   static FiftyMoveClaimAheadReport build(Board board) {
     final List<FiftyMoveClaimAheadEntry> entries = new ArrayList<>();
     final int initialFenClock = board.getInitialFen().halfMoveClock();
-    final Side initialFenSideToMove = board.getInitialFen().havingMove();
+    final Side initialFenSideToMove = board.getInitialFen().sideToMove();
 
     final Board replayBoard = new Board(board.getInitialFen());
     SequenceStart currentStart = initialSequenceStart(initialFenClock);
@@ -97,7 +97,7 @@ final class FiftyMoveClaimAheadReportBuilder {
     final int boundaryFullMoveNumber = replayBoard.getFullMoveNumber();
     final Side startingSide = SequenceStartFormat.startingSide(currentStart, initialFenClock, initialFenSideToMove);
     entries.add(new FiftyMoveClaimAheadEntry(currentStart, boundaryPerformedMoveCount, boundaryFullMoveNumber,
-        replayBoard.getHavingMove(), startingSide));
+        replayBoard.getSideToMove(), startingSide));
   }
 
   private static boolean hasAnyNonZeroingClaimCandidate(Board replayBoard) {

@@ -288,43 +288,43 @@ public record StaticPosition(Piece a8, Piece b8, Piece c8, Piece d8, Piece e8, P
     };
   }
 
-  public boolean isOwnPiece(Square square, Side havingMove) {
+  public boolean isOwnPiece(Square square, Side sideToMove) {
     if (isEmpty(square)) {
       return false;
     }
     final Piece piece = get(square);
-    return piece.getSide() == havingMove;
+    return piece.getSide() == sideToMove;
   }
 
-  public boolean isOwnPiece(Square square, Side havingMove, PieceType pieceType) {
+  public boolean isOwnPiece(Square square, Side sideToMove, PieceType pieceType) {
     if (isEmpty(square)) {
       return false;
     }
     final Piece piece = get(square);
-    return piece.getSide() == havingMove && piece.getPieceType() == pieceType;
+    return piece.getSide() == sideToMove && piece.getPieceType() == pieceType;
   }
 
-  public boolean isOpponentPiece(Square square, Side havingMove) {
-    return isOwnPiece(square, havingMove.getOppositeSide());
+  public boolean isOpponentPiece(Square square, Side sideToMove) {
+    return isOwnPiece(square, sideToMove.getOppositeSide());
   }
 
-  public boolean isOwnPawn(Square square, Side havingMove) {
-    return isOwnPiece(square, havingMove, PAWN);
+  public boolean isOwnPawn(Square square, Side sideToMove) {
+    return isOwnPiece(square, sideToMove, PAWN);
   }
 
-  public boolean isOpponentPawn(Square square, Side havingMove) {
-    return isOwnPiece(square, havingMove.getOppositeSide(), PAWN);
+  public boolean isOpponentPawn(Square square, Side sideToMove) {
+    return isOwnPiece(square, sideToMove.getOppositeSide(), PAWN);
   }
 
   public boolean isPawn(Square square) {
     return isOwnPawn(square, WHITE) || isOwnPawn(square, BLACK);
   }
 
-  public boolean isOwnKing(Square square, Side havingMove) {
-    return isOwnPiece(square, havingMove, KING);
+  public boolean isOwnKing(Square square, Side sideToMove) {
+    return isOwnPiece(square, sideToMove, KING);
   }
 
-  public boolean isOpponentKing(Square square, Side havingMove) {
-    return isOwnPiece(square, havingMove.getOppositeSide(), KING);
+  public boolean isOpponentKing(Square square, Side sideToMove) {
+    return isOwnPiece(square, sideToMove.getOppositeSide(), KING);
   }
 }

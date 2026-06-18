@@ -16,27 +16,27 @@ final class ToSquaresSupport {
   private ToSquaresSupport() {
   }
 
-  static void checkPiece(StaticPosition staticPosition, Side havingMove, Square sourceSquare,
+  static void checkPiece(StaticPosition staticPosition, Side sideToMove, Square sourceSquare,
       PieceType expectedPieceType) throws IllegalArgumentException {
-    if (!staticPosition.isOwnPiece(sourceSquare, havingMove, expectedPieceType)) {
+    if (!staticPosition.isOwnPiece(sourceSquare, sideToMove, expectedPieceType)) {
       throw new IllegalArgumentException(
-          "The source square must be occupied by a " + havingMove + " " + expectedPieceType);
+          "The source square must be occupied by a " + sideToMove + " " + expectedPieceType);
     }
   }
 
-  static SquareOccupation calculateSquareOccupation(StaticPosition staticPosition, Side havingMove, Square square) {
+  static SquareOccupation calculateSquareOccupation(StaticPosition staticPosition, Side sideToMove, Square square) {
     final Piece piece = staticPosition.get(square);
     if (piece == Piece.NONE) {
       return SquareOccupation.NONE;
     }
     return switch (piece.getSide()) {
-      case BLACK -> switch (havingMove) {
+      case BLACK -> switch (sideToMove) {
         case BLACK -> SquareOccupation.OWN_PIECE;
         case WHITE -> SquareOccupation.OPPONENT_PIECE;
         case NONE -> throw new IllegalArgumentException();
         default -> throw new IllegalArgumentException();
       };
-      case WHITE -> switch (havingMove) {
+      case WHITE -> switch (sideToMove) {
         case BLACK -> SquareOccupation.OPPONENT_PIECE;
         case WHITE -> SquareOccupation.OWN_PIECE;
         case NONE -> throw new IllegalArgumentException();

@@ -19,13 +19,13 @@ public final class UciMoveUtility {
   private UciMoveUtility() {
   }
 
-  public static UciMove convertMoveSpecificationToUci(Side havingMove, MoveSpecification moveSpecification) {
+  public static UciMove convertMoveSpecificationToUci(Side sideToMove, MoveSpecification moveSpecification) {
     Square fromSquare;
     Square toSquare;
     PromotionPieceType promotionPieceType;
     if (CastlingUtility.isCastlingMove(moveSpecification)) {
-      fromSquare = CastlingUtility.calculateKingCastlingFrom(havingMove, moveSpecification);
-      toSquare = CastlingUtility.calculateKingCastlingTo(havingMove, moveSpecification);
+      fromSquare = CastlingUtility.calculateKingCastlingFrom(sideToMove, moveSpecification);
+      toSquare = CastlingUtility.calculateKingCastlingTo(sideToMove, moveSpecification);
       promotionPieceType = PromotionPieceType.NONE;
     } else {
       fromSquare = moveSpecification.fromSquare();

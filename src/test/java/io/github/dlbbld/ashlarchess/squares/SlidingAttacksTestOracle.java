@@ -20,15 +20,15 @@ public final class SlidingAttacksTestOracle {
   private SlidingAttacksTestOracle() {
   }
 
-  public static Set<Square> bishopAttacks(StaticPosition staticPosition, Square fromSquare, Side havingMove) {
-    return BishopAttackedSquares.calculateBishopAttackedSquares(staticPosition, fromSquare, havingMove);
+  public static Set<Square> bishopAttacks(StaticPosition staticPosition, Square fromSquare, Side sideToMove) {
+    return BishopAttackedSquares.calculateBishopAttackedSquares(staticPosition, fromSquare, sideToMove);
   }
 
-  public static Set<Square> rookAttacks(StaticPosition staticPosition, Square fromSquare, Side havingMove) {
-    return RookAttackedSquares.calculateRookAttackedSquares(staticPosition, fromSquare, havingMove);
+  public static Set<Square> rookAttacks(StaticPosition staticPosition, Square fromSquare, Side sideToMove) {
+    return RookAttackedSquares.calculateRookAttackedSquares(staticPosition, fromSquare, sideToMove);
   }
 
-  public static Set<Square> queenAttacks(StaticPosition staticPosition, Square fromSquare, Side havingMove) {
-    return QueenAttackedSquares.calculateQueenAttackedSquares(staticPosition, fromSquare, havingMove);
+  public static Set<Square> queenAttacks(StaticPosition staticPosition, Square fromSquare, Side sideToMove) {
+    return QueenAttackedSquares.calculateQueenAttackedSquares(staticPosition, fromSquare, sideToMove);
   }
 }

@@ -69,10 +69,10 @@ public class FenParserAdvanced {
 
     validatePawnRankNotGroundRank(bitboardPosition);
 
-    final String havingMoveCheck = fenRaw.havingMove();
-    final Side havingMove = validateHavingMove(havingMoveCheck);
+    final String sideToMoveCheck = fenRaw.sideToMove();
+    final Side sideToMove = validateSideToMove(sideToMoveCheck);
 
-    if (bitboardPosition.isInCheck(havingMove.getOppositeSide())) {
+    if (bitboardPosition.isInCheck(sideToMove.getOppositeSide())) {
       throw new FenAdvancedValidationException(FenAdvancedValidationProblem.INVALID_POSITION_CHECK,
           "the king of the opposing player is in check");
     }
@@ -82,7 +82,7 @@ public class FenParserAdvanced {
 
     final String enPassantCaptureTargetSquareStr = fenRaw.enPassantCaptureTargetSquare();
     final Square enPassantCaptureTargetSquare = validateEnPassantCaptureTargetSquare(bitboardPosition,
-        enPassantCaptureTargetSquareStr, havingMove);
+        enPassantCaptureTargetSquareStr, sideToMove);
 
     final String halfMoveClockStr = fenRaw.halfMoveClock();
     final int halfMoveClock = validateHalfMoveClock(halfMoveClockStr, enPassantCaptureTargetSquare);
@@ -90,25 +90,25 @@ public class FenParserAdvanced {
     final String fullMoveNumberStr = fenRaw.fullMoveNumber();
     final int fullMoveNumber = validateFullMoveNumber(fullMoveNumberStr);
 
-    validateHalfMoveClockAgainstFullMoveNumber(halfMoveClock, fullMoveNumber, havingMove);
+    validateHalfMoveClockAgainstFullMoveNumber(halfMoveClock, fullMoveNumber, sideToMove);
 
-    return new Fen(fen, bitboardPosition, havingMove, castlingRightBoth.castlingRightWhite(),
+    return new Fen(fen, bitboardPosition, sideToMove, castlingRightBoth.castlingRightWhite(),
         castlingRightBoth.castlingRightBlack(), enPassantCaptureTargetSquare, halfMoveClock, fullMoveNumber);
   }
 
   /**
    * Halfmove clock cannot exceed the maximum number of halfmoves that have been played by the start of the given
-   * fullmove number. With {@code havingMove == WHITE} the maximum is {@code 2 * (fullMoveNumber - 1)}; with
-   * {@code havingMove == BLACK} the count includes White's halfmove on the current fullmove number, so the maximum is
+   * fullmove number. With {@code sideToMove == WHITE} the maximum is {@code 2 * (fullMoveNumber - 1)}; with
+   * {@code sideToMove == BLACK} the count includes White's halfmove on the current fullmove number, so the maximum is
    * {@code 2 * (fullMoveNumber - 1) + 1}. Violations are physical impossibilities - a FEN like {@code ... 15 1} (15
    * halfmoves played, claiming move 1) cannot arise from a real game. The lenient FEN parser auto-corrects this by
    * bumping {@code fullMoveNumber} up to {@code halfMoveClock} rounded up to the next multiple of ten (a generous
    * reserve over the strict minimum; the round-numbered value signals a reconstructed placeholder) and surfaces the
    * deviation via {@code ForgivenFenItemCode.HALF_MOVE_CLOCK_INCONSISTENT_WITH_FULL_MOVE_NUMBER}.
    */
-  private static void validateHalfMoveClockAgainstFullMoveNumber(int halfMoveClock, int fullMoveNumber, Side havingMove)
+  private static void validateHalfMoveClockAgainstFullMoveNumber(int halfMoveClock, int fullMoveNumber, Side sideToMove)
       throws FenAdvancedValidationException {
-    final int maximumPossibleHalfMoveClock = 2 * (fullMoveNumber - 1) + (havingMove == BLACK ? 1 : 0);
+    final int maximumPossibleHalfMoveClock = 2 * (fullMoveNumber - 1) + (sideToMove == BLACK ? 1 : 0);
     if (halfMoveClock > maximumPossibleHalfMoveClock) {
       throw new FenAdvancedValidationException(
           FenAdvancedValidationProblem.INVALID_HALF_MOVE_CLOCK_TOO_BIG_RELATIVE_TO_FULL_MOVE_NUMBER,
@@ -273,12 +273,12 @@ public class FenParserAdvanced {
     return squareDescriptionList;
   }
 
-  private static Side validateHavingMove(String havingMove) throws FenAdvancedValidationException {
-    if (havingMove.length() != 1 || !FenSideSymbol.exists(havingMove.charAt(0))) {
-      throw new FenAdvancedValidationException(FenAdvancedValidationProblem.INVALID_HAVING_MOVE_RANGE,
-          "the having move part of \"" + havingMove + "\" is not valid");
+  private static Side validateSideToMove(String sideToMove) throws FenAdvancedValidationException {
+    if (sideToMove.length() != 1 || !FenSideSymbol.exists(sideToMove.charAt(0))) {
+      throw new FenAdvancedValidationException(FenAdvancedValidationProblem.INVALID_SIDE_TO_MOVE_RANGE,
+          "the having move part of \"" + sideToMove + "\" is not valid");
     }
-    return FenSideSymbol.parse(havingMove.charAt(0)).side();
+    return FenSideSymbol.parse(sideToMove.charAt(0)).side();
   }
 
   private static CastlingRightBoth validateCastlingRightBoth(BitboardPosition bitboardPosition,
@@ -323,15 +323,15 @@ public class FenParserAdvanced {
   }
 
   private static Square validateEnPassantCaptureTargetSquare(BitboardPosition bitboardPosition,
-      String enPassantCaptureTargetSquareStr, Side havingMove) throws FenAdvancedValidationException {
+      String enPassantCaptureTargetSquareStr, Side sideToMove) throws FenAdvancedValidationException {
     final Square enPassantCaptureTargetSquare = validateEnPassantCaptureTargetSquare(enPassantCaptureTargetSquareStr,
-        havingMove);
+        sideToMove);
     validateEnPassantCaptureTargetSquareAgainstBitboardPosition(bitboardPosition, enPassantCaptureTargetSquare,
-        havingMove);
+        sideToMove);
     return enPassantCaptureTargetSquare;
   }
 
-  private static Square validateEnPassantCaptureTargetSquare(String enPassantCaptureTargetSquare, Side havingMove)
+  private static Square validateEnPassantCaptureTargetSquare(String enPassantCaptureTargetSquare, Side sideToMove)
       throws FenAdvancedValidationException {
     if (enPassantCaptureTargetSquare.length() == 1 && "-".equals(enPassantCaptureTargetSquare)) {
       return Square.NONE;
@@ -345,10 +345,10 @@ public class FenParserAdvanced {
         if (Rank.exists(rankLetter)) {
           final Rank rank = Rank.parse(rankLetter);
           final Square square = Square.of(file, rank);
-          if (SquareUtility.calculateEnPassantCaptureTargetSquareList(havingMove).contains(square)) {
+          if (SquareUtility.calculateEnPassantCaptureTargetSquareList(sideToMove).contains(square)) {
             return square;
           }
-          final Side oppositeSide = havingMove.getOppositeSide();
+          final Side oppositeSide = sideToMove.getOppositeSide();
           if (SquareUtility.calculateEnPassantCaptureTargetSquareList(oppositeSide).contains(square)) {
             throw new FenAdvancedValidationException(
                 FenAdvancedValidationProblem.INVALID_EN_PASSANT_CAPTURE_TARGET_SQUARE_WRONG_COLOR,
@@ -364,13 +364,13 @@ public class FenParserAdvanced {
   }
 
   private static void validateEnPassantCaptureTargetSquareAgainstBitboardPosition(BitboardPosition bitboardPosition,
-      Square enPassantCaptureTargetSquare, Side havingMove) throws FenAdvancedValidationException {
+      Square enPassantCaptureTargetSquare, Side sideToMove) throws FenAdvancedValidationException {
     if (enPassantCaptureTargetSquare == Square.NONE) {
       // if not set there is nothing to validate
       return;
     }
 
-    final Side oppositeSide = havingMove.getOppositeSide();
+    final Side oppositeSide = sideToMove.getOppositeSide();
     final Square pawnTwoAdvanceSquare = enPassantCaptureTargetSquare.getAheadSquare(oppositeSide);
     // The two-advance square must carry an opposite-side PAWN (the pawn that just played the two-square advance).
     // Three rejection conditions, all unioned: no piece at all, wrong side, or wrong piece type. The original
@@ -414,13 +414,13 @@ public class FenParserAdvanced {
     }
 
     // previous check are necessary for this check: rewind the opponent's pawn two-square advance and verify
-    // that havingMove was not already in check in that prior position. Bitboard-wise this is: relocate the
-    // opponent pawn from the two-advance square back to its starting square; then ask isInCheck(havingMove).
+    // that sideToMove was not already in check in that prior position. Bitboard-wise this is: relocate the
+    // opponent pawn from the two-advance square back to its starting square; then ask isInCheck(sideToMove).
     final Piece opponentPawn = Piece.of(oppositeSide, PieceType.PAWN);
     final BitboardPosition bitboardPositionBeforeTwoSquareAdvance = bitboardPosition.withRelocatedPiece(opponentPawn,
         pawnTwoAdvanceSquare, startingSquare);
 
-    if (bitboardPositionBeforeTwoSquareAdvance.isInCheck(havingMove)) {
+    if (bitboardPositionBeforeTwoSquareAdvance.isInCheck(sideToMove)) {
       throw new FenAdvancedValidationException(
           FenAdvancedValidationProblem.INVALID_EN_PASSANT_CAPTURE_PREVIOUS_POSITION_ILLEGAL,
           "the opponent king was in check before before performing the pawn two square advance");

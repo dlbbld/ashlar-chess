@@ -198,15 +198,15 @@ public final class EnPassantCaptureUtility {
 
   public static Square calculateEnPassantCaptureTargetSquare(LegalMove legalMove) {
     if (legalMove.kind() == LegalMoveKind.PAWN_TWO_SQUARE_ADVANCE) {
-      return calculateEnPassantCaptureTargetSquareForTwoSquareAdvanceMove(legalMove.havingMove(),
+      return calculateEnPassantCaptureTargetSquareForTwoSquareAdvanceMove(legalMove.movingSide(),
           legalMove.moveSpecification());
     }
     return Square.NONE;
   }
 
-  private static Square calculateEnPassantCaptureTargetSquareForTwoSquareAdvanceMove(Side havingMove,
+  private static Square calculateEnPassantCaptureTargetSquareForTwoSquareAdvanceMove(Side sideToMove,
       MoveSpecification move) {
-    switch (havingMove) {
+    switch (sideToMove) {
       case WHITE:
         if (!WHITE_TWO_SQUARE_ADVANCE_TO_EN_PASSANT_CAPTURE_TO.containsKey(move.toSquare())) {
           throw new IllegalArgumentException("The method only applies for en passant moves");
@@ -246,12 +246,12 @@ public final class EnPassantCaptureUtility {
     };
   }
 
-  public static Square calculateSquareOfCapturedPawnForEnPassantCapture(Side havingMove, MoveSpecification move) {
-    return calculateSquareOfCapturedPawnForEnPassantCapture(havingMove, move.toSquare());
+  public static Square calculateSquareOfCapturedPawnForEnPassantCapture(Side sideToMove, MoveSpecification move) {
+    return calculateSquareOfCapturedPawnForEnPassantCapture(sideToMove, move.toSquare());
   }
 
-  private static Square calculateSquareOfCapturedPawnForEnPassantCapture(Side havingMove, Square square) {
-    switch (havingMove) {
+  private static Square calculateSquareOfCapturedPawnForEnPassantCapture(Side sideToMove, Square square) {
+    switch (sideToMove) {
       case WHITE:
         if (!WHITE_EN_PASSANT_CAPTURE_TO_CAPTURE.containsKey(square)) {
           throw new IllegalArgumentException("Please provide the target square of an en passant capture");
@@ -268,17 +268,17 @@ public final class EnPassantCaptureUtility {
     }
   }
 
-  public static List<UpdateSquare> performEnPassantCaptureMovements(Side havingMove,
+  public static List<UpdateSquare> performEnPassantCaptureMovements(Side sideToMove,
       MoveSpecification moveSpecification) {
     // arriving here, the move must have been identified as en passant capture
     final List<UpdateSquare> result = new ArrayList<>();
 
-    // pawn move: from square becomes empty; on to square is the moved pawn (always a pawn of havingMove).
+    // pawn move: from square becomes empty; on to square is the moved pawn (always a pawn of sideToMove).
     result.add(new UpdateSquare(moveSpecification.fromSquare()));
-    result.add(new UpdateSquare(moveSpecification.toSquare(), Piece.of(havingMove, PieceType.PAWN)));
+    result.add(new UpdateSquare(moveSpecification.toSquare(), Piece.of(sideToMove, PieceType.PAWN)));
 
     // remove the captured pawn (one rank back from the to-square, same file)
-    final Square squareOfCapturedPawnForEnPassantCapture = calculateSquareOfCapturedPawnForEnPassantCapture(havingMove,
+    final Square squareOfCapturedPawnForEnPassantCapture = calculateSquareOfCapturedPawnForEnPassantCapture(sideToMove,
         moveSpecification);
     result.add(new UpdateSquare(squareOfCapturedPawnForEnPassantCapture, Piece.NONE));
 

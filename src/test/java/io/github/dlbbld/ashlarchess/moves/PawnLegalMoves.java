@@ -13,18 +13,18 @@ import io.github.dlbbld.ashlarchess.model.LegalMove;
 
 class PawnLegalMoves {
   public static Set<LegalMove> calculatePawnLegalMoves(StaticPosition staticPosition,
-      Square enPassantCaptureTargetSquare, Side havingMove, Square fromSquare) {
+      Square enPassantCaptureTargetSquare, Side sideToMove, Square fromSquare) {
 
     final Set<LegalMove> legalMoveSet = new TreeSet<>(
-        PawnForwardNonPromotionLegalMoves.calculateLegalMoves(staticPosition, havingMove, fromSquare));
+        PawnForwardNonPromotionLegalMoves.calculateLegalMoves(staticPosition, sideToMove, fromSquare));
 
-    legalMoveSet.addAll(PawnForwardPromotionLegalMoves.calculateLegalMoves(staticPosition, havingMove, fromSquare));
+    legalMoveSet.addAll(PawnForwardPromotionLegalMoves.calculateLegalMoves(staticPosition, sideToMove, fromSquare));
     legalMoveSet.addAll(PawnCaptureNonEnPassantCaptureNonPromotionLegalMoves.calculateLegalMoves(staticPosition,
-        havingMove, fromSquare));
+        sideToMove, fromSquare));
     legalMoveSet.addAll(
-        PawnCaptureNonEnPassantCapturePromotionLegalMoves.calculateLegalMoves(staticPosition, havingMove, fromSquare));
+        PawnCaptureNonEnPassantCapturePromotionLegalMoves.calculateLegalMoves(staticPosition, sideToMove, fromSquare));
     legalMoveSet.addAll(PawnCaptureEnPassantCaptureLegalMoves.calculateLegalMoves(staticPosition,
-        enPassantCaptureTargetSquare, havingMove, fromSquare));
+        enPassantCaptureTargetSquare, sideToMove, fromSquare));
 
     return legalMoveSet;
   }

@@ -73,7 +73,7 @@ public final class PgnCreate {
       fileLines.add("");
     }
 
-    final String moves = calculateMovetextWithoutGameTerminationMarker(startFen.fullMoveNumber(), startFen.havingMove(),
+    final String moves = calculateMovetextWithoutGameTerminationMarker(startFen.fullMoveNumber(), startFen.sideToMove(),
         moveList);
 
     // PgnCommentary is contract-validated (no `}`, no `\r`), so the value writes verbatim into {...}.
@@ -163,13 +163,13 @@ public final class PgnCreate {
     return Nulls.replace(Nulls.replace(value, "\\", "\\\\"), "\"", "\\\"");
   }
 
-  private static String calculateMovetextWithoutGameTerminationMarker(int fullMoveNumber, Side havingMove,
+  private static String calculateMovetextWithoutGameTerminationMarker(int fullMoveNumber, Side sideToMove,
       List<PgnMove> moveList) {
 
     final StringBuilder result = new StringBuilder();
 
     int currentFullMoveNumber = fullMoveNumber;
-    Side currentHavingMove = havingMove;
+    Side currentSideToMove = sideToMove;
     boolean isFirstMove = true;
     // T-002 / PGN spec section 8.2.2 case 1: commentary on White's move forces "N..." before the next Black move.
     boolean priorCommentaryAttached = false;
@@ -180,9 +180,9 @@ public final class PgnCreate {
       if (isFirstMove) {
         isFirstMove = false;
         final String fullMoveNumberPart = MoveNumberFormat.calculateFullMoveNumberInitialWithoutSpace(fullMoveNumber,
-            currentHavingMove);
+            currentSideToMove);
         result.append(fullMoveNumberPart);
-      } else if (currentHavingMove == Side.WHITE) {
+      } else if (currentSideToMove == Side.WHITE) {
         result.append(" ").append(currentFullMoveNumber).append('.');
       } else if (priorCommentaryAttached) {
         result.append(" ").append(currentFullMoveNumber).append("...");
@@ -202,10 +202,10 @@ public final class PgnCreate {
         priorCommentaryAttached = false;
       }
 
-      if (currentHavingMove == Side.BLACK) {
+      if (currentSideToMove == Side.BLACK) {
         currentFullMoveNumber++;
       }
-      currentHavingMove = currentHavingMove.getOppositeSide();
+      currentSideToMove = currentSideToMove.getOppositeSide();
     }
     return Nulls.toString(result);
   }

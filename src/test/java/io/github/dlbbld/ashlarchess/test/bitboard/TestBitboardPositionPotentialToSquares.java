@@ -44,13 +44,13 @@ class TestBitboardPositionPotentialToSquares {
         final Board board = testCase.finalPosition();
         final StaticPosition staticPosition = StaticPositionBridge.toStaticPosition(board.getBitboardPosition());
         final BitboardPosition bitboardPosition = StaticPositionBridge.fromStaticPosition(staticPosition);
-        final Side havingMove = board.getHavingMove();
+        final Side sideToMove = board.getSideToMove();
         final Square epTarget = board.getEnPassantCaptureTargetSquare();
         final long epBit = epTarget == Square.NONE ? 0L : 1L << epTarget.ordinal();
 
-        assertSidePotentialToSquaresAgree(staticPosition, bitboardPosition, havingMove, epTarget, epBit, testCase);
+        assertSidePotentialToSquaresAgree(staticPosition, bitboardPosition, sideToMove, epTarget, epBit, testCase);
         // The non-side-to-move never has an EP opportunity in a real position; pass NONE / 0L for them.
-        assertSidePotentialToSquaresAgree(staticPosition, bitboardPosition, havingMove.getOppositeSide(), Square.NONE,
+        assertSidePotentialToSquaresAgree(staticPosition, bitboardPosition, sideToMove.getOppositeSide(), Square.NONE,
             0L, testCase);
       }
     }

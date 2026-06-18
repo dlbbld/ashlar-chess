@@ -98,7 +98,7 @@ public final class UnwinnableQuickAnalyzer {
     }
 
     if (board.getLegalMoves().isEmpty() && board.isCheck()) {
-      return board.getHavingMove() == intendedWinner;
+      return board.getSideToMove() == intendedWinner;
     }
 
     if (depth <= 0) {
@@ -112,7 +112,7 @@ public final class UnwinnableQuickAnalyzer {
 
     for (final LegalMove legalMove : board.getLegalMoves()) {
       if (legalMove.movingPiece().getPieceType() == PieceType.KING) {
-        movedKings.value |= board.getHavingMove() == Side.WHITE ? 2 : 1;
+        movedKings.value |= board.getSideToMove() == Side.WHITE ? 2 : 1;
       }
       board.move(legalMove.moveSpecification());
       final boolean isUnwinnable = calculateIsDynamicallyUnwinnable(board, intendedWinner, depth - 1, movedKings,
@@ -131,7 +131,7 @@ public final class UnwinnableQuickAnalyzer {
   // CHA is_unwinnable_after_one_move: unwinnable if every legal move leads to a semi-statically unwinnable position.
   private static boolean calculateIsUnwinnableAfterOneMove(Board board, Side intendedWinner) {
     if (board.getLegalMoves().isEmpty()) {
-      return !board.isCheck() || board.getHavingMove() == intendedWinner;
+      return !board.isCheck() || board.getSideToMove() == intendedWinner;
     }
 
     for (final LegalMove legalMove : board.getLegalMoves()) {
@@ -187,7 +187,7 @@ public final class UnwinnableQuickAnalyzer {
   }
 
   private static Board copyCurrentPositionForQuickSearch(Board input) {
-    final Fen fen = new Fen(input.getFen(), input.getBitboardPosition(), input.getHavingMove(),
+    final Fen fen = new Fen(input.getFen(), input.getBitboardPosition(), input.getSideToMove(),
         input.getCastlingRightWhite(), input.getCastlingRightBlack(), input.getEnPassantCaptureTargetSquare(), 0,
         input.getFullMoveNumber());
     return new Board(fen);

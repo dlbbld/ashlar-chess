@@ -11,12 +11,12 @@ final class SanValidateMovement {
   private SanValidateMovement() {
   }
 
-  public static void validateMovement(SanParse sanParse, Side havingMove) {
+  public static void validateMovement(SanParse sanParse, Side sideToMove) {
     final SanConversion sanConversion = sanParse.sanConversion();
     final SanFormat sanFormat = sanParse.sanFormat();
 
     if (sanConversion.movingPieceType() == PieceType.PAWN) {
-      SanValidateMovementPawn.validatePawnMovement(havingMove, sanFormat, sanConversion);
+      SanValidateMovementPawn.validatePawnMovement(sideToMove, sanFormat, sanConversion);
       return;
     }
 

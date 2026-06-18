@@ -14,9 +14,9 @@ import io.github.dlbbld.ashlarchess.board.enums.Square;
 class KingNonCastlingAttackedSquares {
 
   public static Set<Square> calculateKingNonCastlingAttackedSquares(StaticPosition staticPosition, Square fromSquare,
-      Side havingMove) {
+      Side sideToMove) {
 
-    ToSquaresSupport.checkPiece(staticPosition, havingMove, fromSquare, KING);
+    ToSquaresSupport.checkPiece(staticPosition, sideToMove, fromSquare, KING);
 
     return KingNonCastlingEmptyBoardSquares.getKingSquares(fromSquare);
   }

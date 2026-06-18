@@ -15,16 +15,16 @@ import io.github.dlbbld.ashlarchess.model.LegalMove;
 import io.github.dlbbld.ashlarchess.squares.KingNonCastlingPotentialToSquares;
 
 class KingNonCastlingLegalMoves extends KingLegalMoves {
-  public static Set<LegalMove> calculateKingNonCastlingLegalMoves(StaticPosition staticPosition, Side havingMove,
+  public static Set<LegalMove> calculateKingNonCastlingLegalMoves(StaticPosition staticPosition, Side sideToMove,
       Square fromSquare) {
 
     final Piece movingPiece = staticPosition.get(fromSquare);
-    LegalMovesSupport.checkPiece(havingMove, movingPiece, KING);
+    LegalMovesSupport.checkPiece(sideToMove, movingPiece, KING);
 
     final Set<Square> toSquareSet = KingNonCastlingPotentialToSquares
-        .calculateKingNonCastlingPotentialToSquares(staticPosition, fromSquare, havingMove);
+        .calculateKingNonCastlingPotentialToSquares(staticPosition, fromSquare, sideToMove);
 
-    return LegalMovesSupport.calculateLegalMoveSet(staticPosition, havingMove, fromSquare, toSquareSet);
+    return LegalMovesSupport.calculateLegalMoveSet(staticPosition, sideToMove, fromSquare, toSquareSet);
   }
 
 }

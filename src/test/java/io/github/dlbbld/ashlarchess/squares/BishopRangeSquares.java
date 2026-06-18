@@ -14,10 +14,10 @@ import io.github.dlbbld.ashlarchess.board.enums.Square;
 class BishopRangeSquares {
 
   public static Set<Square> calculateBishopRangeSquares(StaticPosition staticPosition, Square fromSquare,
-      Side havingMove, boolean isAllowOwnPiece) {
+      Side sideToMove, boolean isAllowOwnPiece) {
 
     final BishopRange bishopRange = BishopEmptyBoardSquares.getBishopSquares(fromSquare);
-    return RangeSquaresSupport.calculateDiagonalRangeSquare(staticPosition, havingMove, fromSquare, BISHOP, bishopRange,
+    return RangeSquaresSupport.calculateDiagonalRangeSquare(staticPosition, sideToMove, fromSquare, BISHOP, bishopRange,
         isAllowOwnPiece);
 
   }

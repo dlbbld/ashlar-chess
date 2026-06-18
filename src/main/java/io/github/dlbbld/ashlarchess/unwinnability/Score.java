@@ -20,10 +20,10 @@ final class Score {
 
   // Inputs: position, legal move in the position
   // Output: Normal, Reward, or Punish (variation score)
-  public static ScoreResult score(Side color, Side havingMove, BitboardPosition bitboardPosition, LegalMove legalMove) {
+  public static ScoreResult score(Side color, Side sideToMove, BitboardPosition bitboardPosition, LegalMove legalMove) {
     ScoreResult variation = ScoreResult.NORMAL;
     // 1: if it is the intended winner's turn in pos then
-    if (havingMove == color) {
+    if (sideToMove == color) {
       // 2: if m is a capture or m is a pawn push or Going-to-corner(pos, m, Win) then
       // 3: return Reward
 
@@ -67,7 +67,7 @@ final class Score {
       return false;
     }
 
-    return calculateIsAdvancedRank(legalMove.havingMove(), legalMove.moveSpecification().toSquare().getRank());
+    return calculateIsAdvancedRank(legalMove.movingSide(), legalMove.moveSpecification().toSquare().getRank());
   }
 
   private static boolean calculateIsPawnMove(LegalMove legalMove) {

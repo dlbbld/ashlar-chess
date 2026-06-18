@@ -76,10 +76,10 @@ class TestBitboardPositionZobrist {
         final Board board = testCase.finalPosition();
         final BitboardPosition before = board.getBitboardPosition();
         final long beforeHash = before.zobristPieces();
-        final Side havingMove = board.getHavingMove();
+        final Side sideToMove = board.getSideToMove();
         for (final LegalMove legalMove : board.getLegalMoves()) {
           final MoveSpecification spec = legalMove.moveSpecification();
-          final BitboardPosition after = before.afterMove(spec, havingMove);
+          final BitboardPosition after = before.afterMove(spec, sideToMove);
           assertNotEquals(beforeHash, after.zobristPieces(),
               "applying " + spec + " in fixture " + testCase.pgnName() + " left the hash unchanged");
         }

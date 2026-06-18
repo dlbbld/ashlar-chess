@@ -38,25 +38,25 @@ public final class StrictSanParser {
 
     SanValidateNonMovement.validateNonMovement(sanParse);
 
-    final Side havingMove = board.getHavingMove();
-    SanValidateMovement.validateMovement(sanParse, havingMove);
+    final Side sideToMove = board.getSideToMove();
+    SanValidateMovement.validateMovement(sanParse, sideToMove);
 
     final SanFormat sanFormat = sanParse.sanFormat();
     final SanConversion sanConversion = sanParse.sanConversion();
 
-    SanValidatePieceExists.validatePieceExists(havingMove, sanFormat, sanConversion, sanConversion.movingPieceType(),
+    SanValidatePieceExists.validatePieceExists(sideToMove, sanFormat, sanConversion, sanConversion.movingPieceType(),
         board.getBitboardPosition());
 
-    SanValidateDestination.validateDestinationSquareSemantics(board, havingMove, sanFormat, sanConversion);
+    SanValidateDestination.validateDestinationSquareSemantics(board, sideToMove, sanFormat, sanConversion);
 
-    final List<LegalMove> legalMovesCandidates = SanValidateLegalMoves.calculateLegalMovesCandidates(board, havingMove,
+    final List<LegalMove> legalMovesCandidates = SanValidateLegalMoves.calculateLegalMovesCandidates(board, sideToMove,
         sanParse);
-    SanValidateLegalMoves.validateAgainstLegalMoves(board, havingMove, legalMovesCandidates, sanFormat, sanConversion);
+    SanValidateLegalMoves.validateAgainstLegalMoves(board, sideToMove, legalMovesCandidates, sanFormat, sanConversion);
 
     final LegalMove legalMoveOnlyCandidate = SanValidateLegalMoves.calculateOnlyPossibleLegalMove(sanFormat,
         sanConversion, legalMovesCandidates);
     final MoveSpecification moveSpecification = SanValidateLegalMoves.calculateMoveSpecificationForSan(board,
-        havingMove, sanFormat, sanConversion, legalMoveOnlyCandidate.moveSpecification());
+        sideToMove, sanFormat, sanConversion, legalMoveOnlyCandidate.moveSpecification());
     if (!moveSpecification.equals(legalMoveOnlyCandidate.moveSpecification())) {
       throw new ProgrammingMistakeException("A mistake happened in the move construction");
     }

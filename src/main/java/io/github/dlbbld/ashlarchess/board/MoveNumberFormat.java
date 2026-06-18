@@ -11,25 +11,25 @@ public final class MoveNumberFormat {
   private MoveNumberFormat() {
   }
 
-  public static String calculateMoveNumberAndSanWithSpace(int fullMoveNumber, Side havingMove, String san) {
-    return calculateMoveNumberAndSan(fullMoveNumber, havingMove, san, AddSpace.YES);
+  public static String calculateMoveNumberAndSanWithSpace(int fullMoveNumber, Side sideToMove, String san) {
+    return calculateMoveNumberAndSan(fullMoveNumber, sideToMove, san, AddSpace.YES);
   }
 
-  private static String calculateMoveNumberAndSan(int fullMoveNumber, Side havingMove, String san, AddSpace addSpace) {
-    return calculateFullMoveNumberInitial(fullMoveNumber, havingMove, addSpace) + san;
+  private static String calculateMoveNumberAndSan(int fullMoveNumber, Side sideToMove, String san, AddSpace addSpace) {
+    return calculateFullMoveNumberInitial(fullMoveNumber, sideToMove, addSpace) + san;
   }
 
-  public static String calculateFullMoveNumberInitialWithSpace(int initialFullMoveNumber, Side havingMove) {
-    return calculateFullMoveNumberInitial(initialFullMoveNumber, havingMove, AddSpace.YES);
+  public static String calculateFullMoveNumberInitialWithSpace(int initialFullMoveNumber, Side sideToMove) {
+    return calculateFullMoveNumberInitial(initialFullMoveNumber, sideToMove, AddSpace.YES);
   }
 
-  public static String calculateFullMoveNumberInitialWithoutSpace(int initialFullMoveNumber, Side havingMove) {
-    return calculateFullMoveNumberInitial(initialFullMoveNumber, havingMove, AddSpace.NO);
+  public static String calculateFullMoveNumberInitialWithoutSpace(int initialFullMoveNumber, Side sideToMove) {
+    return calculateFullMoveNumberInitial(initialFullMoveNumber, sideToMove, AddSpace.NO);
   }
 
-  private static String calculateFullMoveNumberInitial(int initialFullMoveNumber, Side havingMove, AddSpace addSpace) {
+  private static String calculateFullMoveNumberInitial(int initialFullMoveNumber, Side sideToMove, AddSpace addSpace) {
 
-    return switch (havingMove) {
+    return switch (sideToMove) {
       case WHITE -> initialFullMoveNumber + "." + addSpace.getValue();
       case BLACK -> initialFullMoveNumber + "..." + addSpace.getValue();
       case NONE -> throw new IllegalArgumentException();

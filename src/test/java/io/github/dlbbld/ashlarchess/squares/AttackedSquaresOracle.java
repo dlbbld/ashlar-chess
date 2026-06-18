@@ -24,26 +24,26 @@ public final class AttackedSquaresOracle {
   private AttackedSquaresOracle() {
   }
 
-  public static Set<Square> calculateAttackedSquares(StaticPosition staticPosition, Side havingMove) {
+  public static Set<Square> calculateAttackedSquares(StaticPosition staticPosition, Side sideToMove) {
 
     final Set<Square> squareSet = new TreeSet<>();
 
     for (final Square fromSquare : Square.REAL) {
-      if (staticPosition.isOwnPiece(fromSquare, havingMove)) {
+      if (staticPosition.isOwnPiece(fromSquare, sideToMove)) {
         final Piece piece = staticPosition.get(fromSquare);
         switch (piece.getPieceType()) {
           case PAWN -> squareSet
-              .addAll(PawnAttackedSquares.calculatePawnAttackedSquares(staticPosition, fromSquare, havingMove));
+              .addAll(PawnAttackedSquares.calculatePawnAttackedSquares(staticPosition, fromSquare, sideToMove));
           case ROOK -> squareSet
-              .addAll(RookAttackedSquares.calculateRookAttackedSquares(staticPosition, fromSquare, havingMove));
+              .addAll(RookAttackedSquares.calculateRookAttackedSquares(staticPosition, fromSquare, sideToMove));
           case KNIGHT -> squareSet
-              .addAll(KnightAttackedSquares.calculateKnightAttackedSquares(staticPosition, fromSquare, havingMove));
+              .addAll(KnightAttackedSquares.calculateKnightAttackedSquares(staticPosition, fromSquare, sideToMove));
           case BISHOP -> squareSet
-              .addAll(BishopAttackedSquares.calculateBishopAttackedSquares(staticPosition, fromSquare, havingMove));
+              .addAll(BishopAttackedSquares.calculateBishopAttackedSquares(staticPosition, fromSquare, sideToMove));
           case QUEEN -> squareSet
-              .addAll(QueenAttackedSquares.calculateQueenAttackedSquares(staticPosition, fromSquare, havingMove));
+              .addAll(QueenAttackedSquares.calculateQueenAttackedSquares(staticPosition, fromSquare, sideToMove));
           case KING -> squareSet.addAll(KingNonCastlingAttackedSquares
-              .calculateKingNonCastlingAttackedSquares(staticPosition, fromSquare, havingMove));
+              .calculateKingNonCastlingAttackedSquares(staticPosition, fromSquare, sideToMove));
           case NONE -> throw new IllegalArgumentException();
           default -> throw new IllegalArgumentException();
         }

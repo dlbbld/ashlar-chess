@@ -14,8 +14,8 @@ public final class RankUtility {
   private RankUtility() {
   }
 
-  public static Rank calculateGroundRank(Side havingMove) {
-    return switch (havingMove) {
+  public static Rank calculateGroundRank(Side sideToMove) {
+    return switch (sideToMove) {
       case WHITE -> Rank.RANK_1;
       case BLACK -> Rank.RANK_8;
       case NONE -> throw new IllegalArgumentException();
@@ -23,16 +23,16 @@ public final class RankUtility {
     };
   }
 
-  public static boolean isPromotionRank(Side havingMove, Rank rank) {
-    if (havingMove == Side.NONE || rank == Rank.NONE) {
+  public static boolean isPromotionRank(Side sideToMove, Rank rank) {
+    if (sideToMove == Side.NONE || rank == Rank.NONE) {
       throw new IllegalArgumentException();
     }
 
-    return rank == calculatePromotionRank(havingMove);
+    return rank == calculatePromotionRank(sideToMove);
   }
 
-  public static Rank calculatePromotionRank(Side havingMove) {
-    return switch (havingMove) {
+  public static Rank calculatePromotionRank(Side sideToMove) {
+    return switch (sideToMove) {
       case WHITE -> Rank.RANK_8;
       case BLACK -> Rank.RANK_1;
       case NONE -> throw new IllegalArgumentException();
@@ -40,8 +40,8 @@ public final class RankUtility {
     };
   }
 
-  public static Rank calculatePawnInitialRank(Side havingMove) {
-    return switch (havingMove) {
+  public static Rank calculatePawnInitialRank(Side sideToMove) {
+    return switch (sideToMove) {
       case BLACK -> Rank.RANK_7;
       case WHITE -> Rank.RANK_2;
       case NONE -> throw new IllegalArgumentException();
@@ -49,16 +49,16 @@ public final class RankUtility {
     };
   }
 
-  public static boolean isPawnTwoSquareAdvanceRank(Side havingMove, Rank rank) {
-    if (havingMove == Side.NONE || rank == Rank.NONE) {
+  public static boolean isPawnTwoSquareAdvanceRank(Side sideToMove, Rank rank) {
+    if (sideToMove == Side.NONE || rank == Rank.NONE) {
       throw new IllegalArgumentException();
     }
 
-    return rank == calculatePawnTwoSquareAdvanceRank(havingMove);
+    return rank == calculatePawnTwoSquareAdvanceRank(sideToMove);
   }
 
-  public static Rank calculatePawnTwoSquareAdvanceRank(Side havingMove) {
-    return switch (havingMove) {
+  public static Rank calculatePawnTwoSquareAdvanceRank(Side sideToMove) {
+    return switch (sideToMove) {
       case BLACK -> Rank.RANK_5;
       case WHITE -> Rank.RANK_4;
       case NONE -> throw new IllegalArgumentException();
@@ -66,8 +66,8 @@ public final class RankUtility {
     };
   }
 
-  public static Rank calculateEnPassantCaptureToRank(Side havingMove) {
-    return switch (havingMove) {
+  public static Rank calculateEnPassantCaptureToRank(Side sideToMove) {
+    return switch (sideToMove) {
       case BLACK -> Rank.RANK_3;
       case WHITE -> Rank.RANK_6;
       case NONE -> throw new IllegalArgumentException();
@@ -75,16 +75,16 @@ public final class RankUtility {
     };
   }
 
-  public static boolean isPawnEnPassantCaptureToRank(Side havingMove, Rank rank) {
-    if (havingMove == Side.NONE || rank == Rank.NONE) {
+  public static boolean isPawnEnPassantCaptureToRank(Side sideToMove, Rank rank) {
+    if (sideToMove == Side.NONE || rank == Rank.NONE) {
       throw new IllegalArgumentException();
     }
 
-    return rank == calculateEnPassantCaptureToRank(havingMove);
+    return rank == calculateEnPassantCaptureToRank(sideToMove);
   }
 
-  public static boolean isValidRank(Side havingMove, Rank rank) {
-    return switch (havingMove) {
+  public static boolean isValidRank(Side sideToMove, Rank rank) {
+    return switch (sideToMove) {
       case WHITE -> rank != Rank.RANK_1 && rank != Rank.RANK_2;
       case BLACK -> rank != Rank.RANK_7 && rank != Rank.RANK_8;
       case NONE -> throw new IllegalArgumentException();

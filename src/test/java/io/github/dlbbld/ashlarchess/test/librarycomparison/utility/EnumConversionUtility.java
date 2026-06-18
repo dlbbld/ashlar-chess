@@ -41,8 +41,8 @@ public final class EnumConversionUtility {
   private EnumConversionUtility() {
   }
 
-  public static com.github.bhlangonijr.chesslib.Piece convertToPiece(Side havingMove, PieceType pieceType) {
-    return switch (havingMove) {
+  public static com.github.bhlangonijr.chesslib.Piece convertToPiece(Side sideToMove, PieceType pieceType) {
+    return switch (sideToMove) {
       case BLACK -> switch (pieceType) {
         case PAWN -> com.github.bhlangonijr.chesslib.Piece.BLACK_PAWN;
         case ROOK -> com.github.bhlangonijr.chesslib.Piece.BLACK_ROOK;
@@ -68,9 +68,9 @@ public final class EnumConversionUtility {
     };
   }
 
-  public static com.github.bhlangonijr.chesslib.Piece convertToPiece(Side havingMove,
+  public static com.github.bhlangonijr.chesslib.Piece convertToPiece(Side sideToMove,
       PromotionPieceType promotionPieceType) {
-    return switch (havingMove) {
+    return switch (sideToMove) {
       case BLACK -> switch (promotionPieceType) {
         case ROOK -> com.github.bhlangonijr.chesslib.Piece.BLACK_ROOK;
         case KNIGHT -> com.github.bhlangonijr.chesslib.Piece.BLACK_KNIGHT;

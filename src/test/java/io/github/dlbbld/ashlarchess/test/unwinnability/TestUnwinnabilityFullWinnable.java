@@ -33,7 +33,7 @@ class TestUnwinnabilityFullWinnable {
       final PgnFen lichessTestCase = PgnTestCaseCatalog
           .findTestCase(calculateCorrespondingLichessGame(testCaseHavingHelpmate.pgnName()));
       final Board board = lichessTestCase.finalPosition();
-      final Side winner = board.getHavingMove();
+      final Side winner = board.getSideToMove();
       final UnwinnabilityFullAnalysis analysis = UnwinnableFullAnalyzer.unwinnableFull(board, winner);
       assertTrue(analysis.verdict().isWinnable(), testCaseHavingHelpmate.pgnName());
     }

@@ -14,11 +14,11 @@ import io.github.dlbbld.ashlarchess.board.enums.Square;
 public class RookPotentialToSquares {
 
   public static Set<Square> calculateRookPotentialToSquares(StaticPosition staticPosition, Square fromSquare,
-      Side havingMove) {
+      Side sideToMove) {
 
-    ToSquaresSupport.checkPiece(staticPosition, havingMove, fromSquare, ROOK);
+    ToSquaresSupport.checkPiece(staticPosition, sideToMove, fromSquare, ROOK);
 
-    return RookRangeSquares.calculateRookRangeSquares(staticPosition, fromSquare, havingMove, false);
+    return RookRangeSquares.calculateRookRangeSquares(staticPosition, fromSquare, sideToMove, false);
   }
 
 }

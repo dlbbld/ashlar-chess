@@ -144,12 +144,12 @@ class TestScore {
   }
 
   private static ScoreResult score(Side winner, Board board, Square from, Square to) {
-    return Score.score(winner, board.getHavingMove(), board.getBitboardPosition(), move(board, from, to));
+    return Score.score(winner, board.getSideToMove(), board.getBitboardPosition(), move(board, from, to));
   }
 
   private static ScoreResult scorePromotion(Side winner, Board board, Square from, Square to,
       PromotionPieceType promo) {
-    return Score.score(winner, board.getHavingMove(), board.getBitboardPosition(), promotion(board, from, to, promo));
+    return Score.score(winner, board.getSideToMove(), board.getBitboardPosition(), promotion(board, from, to, promo));
   }
 
   private static LegalMove move(Board board, Square from, Square to) {

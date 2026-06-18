@@ -226,86 +226,86 @@ public enum Square implements Comparable<Square> {
   private static final EnumMap<Side, EnumMap<Square, Square>> BEHIND_LEFT_DIAGONAL_SQUARE = buildOffsetTable(-1, -1);
   private static final EnumMap<Side, EnumMap<Square, Square>> BEHIND_RIGHT_DIAGONAL_SQUARE = buildOffsetTable(1, -1);
 
-  private static boolean hasNeighbour(EnumMap<Side, EnumMap<Square, Square>> table, Side havingMove, Square square) {
-    if (havingMove == Side.NONE || square == NONE) {
+  private static boolean hasNeighbour(EnumMap<Side, EnumMap<Square, Square>> table, Side sideToMove, Square square) {
+    if (sideToMove == Side.NONE || square == NONE) {
       throw new IllegalArgumentException();
     }
-    return Nulls.get(table, havingMove).containsKey(square);
+    return Nulls.get(table, sideToMove).containsKey(square);
   }
 
-  private static Square getNeighbour(EnumMap<Side, EnumMap<Square, Square>> table, Side havingMove, Square square) {
-    if (havingMove == Side.NONE || square == NONE) {
+  private static Square getNeighbour(EnumMap<Side, EnumMap<Square, Square>> table, Side sideToMove, Square square) {
+    if (sideToMove == Side.NONE || square == NONE) {
       throw new IllegalArgumentException();
     }
-    final EnumMap<Square, Square> sideMap = Nulls.get(table, havingMove);
+    final EnumMap<Square, Square> sideMap = Nulls.get(table, sideToMove);
     if (!sideMap.containsKey(square)) {
       throw new IllegalArgumentException();
     }
     return Nulls.get(sideMap, square);
   }
 
-  public boolean hasLeftSquare(Side havingMove) {
-    return hasNeighbour(LEFT_SQUARE, havingMove, this);
+  public boolean hasLeftSquare(Side sideToMove) {
+    return hasNeighbour(LEFT_SQUARE, sideToMove, this);
   }
 
-  public Square getLeftSquare(Side havingMove) {
-    return getNeighbour(LEFT_SQUARE, havingMove, this);
+  public Square getLeftSquare(Side sideToMove) {
+    return getNeighbour(LEFT_SQUARE, sideToMove, this);
   }
 
-  public boolean hasRightSquare(Side havingMove) {
-    return hasNeighbour(RIGHT_SQUARE, havingMove, this);
+  public boolean hasRightSquare(Side sideToMove) {
+    return hasNeighbour(RIGHT_SQUARE, sideToMove, this);
   }
 
-  public Square getRightSquare(Side havingMove) {
-    return getNeighbour(RIGHT_SQUARE, havingMove, this);
+  public Square getRightSquare(Side sideToMove) {
+    return getNeighbour(RIGHT_SQUARE, sideToMove, this);
   }
 
-  public boolean hasAheadSquare(Side havingMove) {
-    return hasNeighbour(AHEAD_SQUARE, havingMove, this);
+  public boolean hasAheadSquare(Side sideToMove) {
+    return hasNeighbour(AHEAD_SQUARE, sideToMove, this);
   }
 
-  public Square getAheadSquare(Side havingMove) {
-    return getNeighbour(AHEAD_SQUARE, havingMove, this);
+  public Square getAheadSquare(Side sideToMove) {
+    return getNeighbour(AHEAD_SQUARE, sideToMove, this);
   }
 
-  public boolean hasBehindSquare(Side havingMove) {
-    return hasNeighbour(BEHIND_SQUARE, havingMove, this);
+  public boolean hasBehindSquare(Side sideToMove) {
+    return hasNeighbour(BEHIND_SQUARE, sideToMove, this);
   }
 
-  public Square getBehindSquare(Side havingMove) {
-    return getNeighbour(BEHIND_SQUARE, havingMove, this);
+  public Square getBehindSquare(Side sideToMove) {
+    return getNeighbour(BEHIND_SQUARE, sideToMove, this);
   }
 
-  public boolean hasLeftDiagonalSquare(Side havingMove) {
-    return hasNeighbour(LEFT_DIAGONAL_SQUARE, havingMove, this);
+  public boolean hasLeftDiagonalSquare(Side sideToMove) {
+    return hasNeighbour(LEFT_DIAGONAL_SQUARE, sideToMove, this);
   }
 
-  public Square getLeftDiagonalSquare(Side havingMove) {
-    return getNeighbour(LEFT_DIAGONAL_SQUARE, havingMove, this);
+  public Square getLeftDiagonalSquare(Side sideToMove) {
+    return getNeighbour(LEFT_DIAGONAL_SQUARE, sideToMove, this);
   }
 
-  public boolean hasRightDiagonalSquare(Side havingMove) {
-    return hasNeighbour(RIGHT_DIAGONAL_SQUARE, havingMove, this);
+  public boolean hasRightDiagonalSquare(Side sideToMove) {
+    return hasNeighbour(RIGHT_DIAGONAL_SQUARE, sideToMove, this);
   }
 
-  public Square getRightDiagonalSquare(Side havingMove) {
-    return getNeighbour(RIGHT_DIAGONAL_SQUARE, havingMove, this);
+  public Square getRightDiagonalSquare(Side sideToMove) {
+    return getNeighbour(RIGHT_DIAGONAL_SQUARE, sideToMove, this);
   }
 
-  public boolean hasBehindLeftDiagonalSquare(Side havingMove) {
-    return hasNeighbour(BEHIND_LEFT_DIAGONAL_SQUARE, havingMove, this);
+  public boolean hasBehindLeftDiagonalSquare(Side sideToMove) {
+    return hasNeighbour(BEHIND_LEFT_DIAGONAL_SQUARE, sideToMove, this);
   }
 
-  public Square getBehindLeftDiagonalSquare(Side havingMove) {
-    return getNeighbour(BEHIND_LEFT_DIAGONAL_SQUARE, havingMove, this);
+  public Square getBehindLeftDiagonalSquare(Side sideToMove) {
+    return getNeighbour(BEHIND_LEFT_DIAGONAL_SQUARE, sideToMove, this);
   }
 
-  public boolean hasBehindRightDiagonalSquare(Side havingMove) {
-    return hasNeighbour(BEHIND_RIGHT_DIAGONAL_SQUARE, havingMove, this);
+  public boolean hasBehindRightDiagonalSquare(Side sideToMove) {
+    return hasNeighbour(BEHIND_RIGHT_DIAGONAL_SQUARE, sideToMove, this);
   }
 
-  public Square getBehindRightDiagonalSquare(Side havingMove) {
-    return getNeighbour(BEHIND_RIGHT_DIAGONAL_SQUARE, havingMove, this);
+  public Square getBehindRightDiagonalSquare(Side sideToMove) {
+    return getNeighbour(BEHIND_RIGHT_DIAGONAL_SQUARE, sideToMove, this);
   }
 
   public static final ImmutableList<ImmutableList<Square>> WHITE_PAWN_TWO_SQUARE_ADVANCE;

@@ -27,9 +27,9 @@ class TestFenParserAdvanced {
   @Test
   void testParseFenString() {
     final FenRaw actual = FenParserRaw
-        .parseFenRaw("position havingMove castlingRight enPassantCaptureTargetSquare halfMoveClock fullMoveNumber");
+        .parseFenRaw("position sideToMove castlingRight enPassantCaptureTargetSquare halfMoveClock fullMoveNumber");
 
-    assertEquals(new FenRaw("position", "havingMove", "castlingRight", "enPassantCaptureTargetSquare", "halfMoveClock",
+    assertEquals(new FenRaw("position", "sideToMove", "castlingRight", "enPassantCaptureTargetSquare", "halfMoveClock",
         "fullMoveNumber"), actual);
 
   }
@@ -109,9 +109,9 @@ class TestFenParserAdvanced {
     // having move
     // range
     checkParseFenException("r3k2r/8/8/8/8/8/8/R2K3R x - - 0 100",
-        FenAdvancedValidationProblem.INVALID_HAVING_MOVE_RANGE);
+        FenAdvancedValidationProblem.INVALID_SIDE_TO_MOVE_RANGE);
     checkParseFenException("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR x KQkq - 0 1",
-        FenAdvancedValidationProblem.INVALID_HAVING_MOVE_RANGE);
+        FenAdvancedValidationProblem.INVALID_SIDE_TO_MOVE_RANGE);
 
     // castling right
     // range
@@ -322,7 +322,7 @@ class TestFenParserAdvanced {
 
     assertEquals(StaticPosition.INITIAL_POSITION,
         io.github.dlbbld.ashlarchess.bitboard.StaticPositionBridge.toStaticPosition(actual.bitboardPosition()));
-    assertEquals(WHITE, actual.havingMove());
+    assertEquals(WHITE, actual.sideToMove());
     assertEquals(CastlingRight.KING_AND_QUEEN_SIDE, actual.castlingRightWhite());
     assertEquals(CastlingRight.KING_AND_QUEEN_SIDE, actual.castlingRightBlack());
     assertEquals(Square.NONE, actual.enPassantCaptureTargetSquare());

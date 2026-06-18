@@ -41,13 +41,13 @@ class TestBitboardLegalMoveFactory {
       final PgnTestCaseList testCaseList = PgnTestCaseCatalog.getTestList(pgnTest);
       for (final PgnFen testCase : testCaseList.list()) {
         final Board board = testCase.finalPosition();
-        final Side havingMove = board.getHavingMove();
+        final Side sideToMove = board.getSideToMove();
         final BitboardPosition bitboardPosition = board.getBitboardPosition();
         for (final LegalMove referenceMove : LegalMovesSupport.calculateLegalMoves(
-            StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), havingMove,
-            board.getCastlingRight(havingMove), board.getEnPassantCaptureTargetSquare())) {
+            StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), sideToMove,
+            board.getCastlingRight(sideToMove), board.getEnPassantCaptureTargetSquare())) {
           final LegalMove converted = BitboardLegalMoveFactory.toLegalMove(bitboardPosition,
-              referenceMove.moveSpecification(), havingMove);
+              referenceMove.moveSpecification(), sideToMove);
           assertEquals(referenceMove, converted, "converted LegalMove disagrees with reference for "
               + referenceMove.moveSpecification() + " in fixture " + testCase.pgnName());
         }

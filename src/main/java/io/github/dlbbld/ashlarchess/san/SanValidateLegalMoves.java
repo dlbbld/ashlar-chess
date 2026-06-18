@@ -46,7 +46,7 @@ final class SanValidateLegalMoves {
   private SanValidateLegalMoves() {
   }
 
-  public static MoveSpecification calculateMoveSpecificationForSan(Board board, Side havingMove, SanFormat sanFormat,
+  public static MoveSpecification calculateMoveSpecificationForSan(Board board, Side sideToMove, SanFormat sanFormat,
       SanConversion sanConversion, MoveSpecification legalMoveOnlyCandidate) {
 
     if (sanFormat == SanFormat.KING_CASTLING_QUEEN_SIDE) {
@@ -63,21 +63,21 @@ final class SanValidateLegalMoves {
       case KING_CASTLING_KING_SIDE:
         throw new ProgrammingMistakeException("Castling is handled before switch");
       case PAWN_NON_CAPTURING_NON_PROMOTION: {
-        if (!RankUtility.isPawnTwoSquareAdvanceRank(havingMove, toSquare.getRank())) {
+        if (!RankUtility.isPawnTwoSquareAdvanceRank(sideToMove, toSquare.getRank())) {
           // one square advance, san information is enough
           // from file equals to file and from rank is the rank before to rank
           final File fromFile = toSquare.getFile(); // moving straight forward
-          final Rank fromRank = toSquare.getBehindSquare(havingMove).getRank();
+          final Rank fromRank = toSquare.getBehindSquare(sideToMove).getRank();
           final Square fromSquare = Square.of(fromFile, fromRank);
           return new MoveSpecification(fromSquare, toSquare);
         }
         // we calculate this with san information and knowing it's a legal move (so e4
         // is e2-e4 xor e3-e4)
-        final Square potentialJumpOverSquare = SquareUtility.calculateJumpOverSquare(havingMove, toSquare);
+        final Square potentialJumpOverSquare = SquareUtility.calculateJumpOverSquare(sideToMove, toSquare);
         if (board.getBitboardPosition().get(potentialJumpOverSquare) == Piece.NONE) {
           // two square advance
           final File fromFile = toSquare.getFile(); // moving straight forward
-          final Rank fromRank = RankUtility.calculatePawnInitialRank(havingMove);
+          final Rank fromRank = RankUtility.calculatePawnInitialRank(sideToMove);
           final Square fromSquare = Square.of(fromFile, fromRank);
           return new MoveSpecification(fromSquare, toSquare);
         }
@@ -89,20 +89,20 @@ final class SanValidateLegalMoves {
       case PAWN_CAPTURING_NON_PROMOTION: {
         // from file is in the san and from rank is the rank before to rank
 
-        final Rank fromRank = toSquare.getBehindSquare(havingMove).getRank();
+        final Rank fromRank = toSquare.getBehindSquare(sideToMove).getRank();
         final Square fromSquare = Square.of(sanConversion.fromFile(), fromRank);
         return new MoveSpecification(fromSquare, toSquare);
       }
       case PAWN_NON_CAPTURING_PROMOTION: {
         // from file equals to file and from rank is the rank before to rank
         final File fromFile = toSquare.getFile(); // moving straight forward
-        final Rank fromRank = toSquare.getBehindSquare(havingMove).getRank();
+        final Rank fromRank = toSquare.getBehindSquare(sideToMove).getRank();
         final Square fromSquare = Square.of(fromFile, fromRank);
         return new MoveSpecification(fromSquare, toSquare, sanConversion.promotionPieceType());
       }
       case PAWN_CAPTURING_PROMOTION: {
         // from file is in the san and from rank is the rank before to rank
-        final Rank fromRank = toSquare.getBehindSquare(havingMove).getRank();
+        final Rank fromRank = toSquare.getBehindSquare(sideToMove).getRank();
         final Square fromSquare = Square.of(sanConversion.fromFile(), fromRank);
         return new MoveSpecification(fromSquare, toSquare, sanConversion.promotionPieceType());
       }
@@ -130,7 +130,7 @@ final class SanValidateLegalMoves {
     }
   }
 
-  public static List<LegalMove> calculateLegalMovesCandidates(Board board, Side havingMove, SanParse sanParse) {
+  public static List<LegalMove> calculateLegalMovesCandidates(Board board, Side sideToMove, SanParse sanParse) {
     final SanFormat sanFormat = sanParse.sanFormat();
     final SanConversion sanConversion = sanParse.sanConversion();
 
@@ -140,7 +140,7 @@ final class SanValidateLegalMoves {
     }
 
     final PieceType pieceType = sanConversion.movingPieceType();
-    final Piece piece = Piece.of(havingMove, pieceType);
+    final Piece piece = Piece.of(sideToMove, pieceType);
 
     final List<LegalMove> legalMovesForMovingPiece = MoveToSan.calculateLegalMovesForMovingPiece(piece,
         board.getLegalMoves());
@@ -184,7 +184,7 @@ final class SanValidateLegalMoves {
     return ListUtility.getOnly(filtered3);
   }
 
-  public static void validateAgainstLegalMoves(Board board, Side havingMove, List<LegalMove> legalMovesCandidates,
+  public static void validateAgainstLegalMoves(Board board, Side sideToMove, List<LegalMove> legalMovesCandidates,
       SanFormat sanFormat, SanConversion sanConversion) {
 
     final BitboardPosition bitboardPosition = board.getBitboardPosition();
@@ -194,14 +194,14 @@ final class SanValidateLegalMoves {
     // we need an early return for castling first so for the remaining cases we can
     // calculate the to square
     if (sanFormat == SanFormat.KING_CASTLING_QUEEN_SIDE) {
-      if (!isContained(legalMovesCandidates, havingMove, sanFormat)) {
-        throwCastlingException(board, havingMove, "Queen-side", CastlingMove.QUEEN_SIDE);
+      if (!isContained(legalMovesCandidates, sideToMove, sanFormat)) {
+        throwCastlingException(board, sideToMove, "Queen-side", CastlingMove.QUEEN_SIDE);
       }
       return;
     }
     if (sanFormat == SanFormat.KING_CASTLING_KING_SIDE) {
-      if (!isContained(legalMovesCandidates, havingMove, sanFormat)) {
-        throwCastlingException(board, havingMove, "King-side", CastlingMove.KING_SIDE);
+      if (!isContained(legalMovesCandidates, sideToMove, sanFormat)) {
+        throwCastlingException(board, sideToMove, "King-side", CastlingMove.KING_SIDE);
       }
       return;
     }
@@ -214,28 +214,28 @@ final class SanValidateLegalMoves {
       case KING_CASTLING_QUEEN_SIDE, KING_CASTLING_KING_SIDE -> throw new ProgrammingMistakeException(
           "Invalid program flow, the castling must be handled at this point");
       case KING_NON_CASTLING_NON_CAPTURING, KING_NON_CASTLING_CAPTURING -> validateAgainstLegalMovesForKingNonCastling(
-          bitboardPosition, havingMove, legalMovesCandidates, toSquare, epBit);
+          bitboardPosition, sideToMove, legalMovesCandidates, toSquare, epBit);
       case PAWN_NON_CAPTURING_NON_PROMOTION, PAWN_CAPTURING_NON_PROMOTION, PAWN_NON_CAPTURING_PROMOTION, PAWN_CAPTURING_PROMOTION -> validateAgainstLegalMovesForPawn(
-          bitboardPosition, havingMove, legalMovesCandidates, pieceType, sanFormat, sanConversion, toSquare, epBit);
+          bitboardPosition, sideToMove, legalMovesCandidates, pieceType, sanFormat, sanConversion, toSquare, epBit);
       case RNBQ_NON_CAPTURING_NEITHER, RNBQ_CAPTURING_NEITHER -> validateAgainstLegalMovesForPieceNeither(
-          bitboardPosition, havingMove, legalMovesCandidates, pieceType, toSquare);
+          bitboardPosition, sideToMove, legalMovesCandidates, pieceType, toSquare);
       case RNBQ_NON_CAPTURING_FILE, RNBQ_CAPTURING_FILE -> validateAgainstLegalMovesForPieceFile(bitboardPosition,
-          havingMove, legalMovesCandidates, pieceType, sanFormat, sanConversion, toSquare);
+          sideToMove, legalMovesCandidates, pieceType, sanFormat, sanConversion, toSquare);
       case RNBQ_NON_CAPTURING_RANK, RNBQ_CAPTURING_RANK -> validateAgainstLegalMovesForPieceRank(bitboardPosition,
-          havingMove, legalMovesCandidates, pieceType, sanFormat, sanConversion, toSquare);
+          sideToMove, legalMovesCandidates, pieceType, sanFormat, sanConversion, toSquare);
       case RNBQ_NON_CAPTURING_SQUARE, RNBQ_CAPTURING_SQUARE -> validateAgainstLegalMovesForPieceSquare(bitboardPosition,
-          havingMove, legalMovesCandidates, pieceType, sanFormat, sanConversion, toSquare);
+          sideToMove, legalMovesCandidates, pieceType, sanFormat, sanConversion, toSquare);
       default -> throw new IllegalArgumentException();
     }
   }
 
-  private static void validateAgainstLegalMovesForKingNonCastling(BitboardPosition bitboardPosition, Side havingMove,
+  private static void validateAgainstLegalMovesForKingNonCastling(BitboardPosition bitboardPosition, Side sideToMove,
       List<LegalMove> legalMovesCandidates, Square toSquare, long epBit) {
     if (!legalMovesCandidates.isEmpty()) {
       return;
     }
     final Set<Square> pseudoLegalFromSquares = calculatePseudoLegalKingNonCastlingFromSquares(bitboardPosition,
-        havingMove, toSquare, epBit);
+        sideToMove, toSquare, epBit);
     if (pseudoLegalFromSquares.isEmpty()) {
       throw new SanValidationException(SanValidationProblem.NOT_REACHABLE_KING_NON_CASTLING,
           Message.getString("validation.san.notReachable.king.nonCastling", toSquare.getName()));
@@ -244,7 +244,7 @@ final class SanValidateLegalMoves {
     // reasons (KING_CAPTURES_GUARDED_PIECE / KING_MOVES_NEXT_TO_OPPONENT_KING /
     // KING_MOVES_TO_ATTACKED_EMPTY_SQUARE) live in MovementCheck rather than the LEFT/EXPOSED
     // distinction used for non-king pieces.
-    final MovementCheck movementCheck = classifyKingNonCastlingMovementCheck(bitboardPosition, havingMove, toSquare);
+    final MovementCheck movementCheck = classifyKingNonCastlingMovementCheck(bitboardPosition, sideToMove, toSquare);
     switch (movementCheck) {
       case KING_CAPTURES_GUARDED_PIECE -> throw new SanValidationException(
           SanValidationProblem.KING_CAPTURES_GUARDED_PIECE,
@@ -267,24 +267,24 @@ final class SanValidateLegalMoves {
    * reference: NEXT_TO_OPPONENT_KING wins first, then CAPTURES_GUARDED_PIECE (opponent piece on destination), then
    * MOVES_TO_ATTACKED_EMPTY_SQUARE (empty destination, attacked).
    */
-  private static MovementCheck classifyKingNonCastlingMovementCheck(BitboardPosition bitboardPosition, Side havingMove,
+  private static MovementCheck classifyKingNonCastlingMovementCheck(BitboardPosition bitboardPosition, Side sideToMove,
       Square toSquare) {
-    final Square opponentKingSquare = bitboardPosition.kingSquare(havingMove.getOppositeSide());
+    final Square opponentKingSquare = bitboardPosition.kingSquare(sideToMove.getOppositeSide());
     if ((KingAttacks.attacks(opponentKingSquare) & 1L << toSquare.ordinal()) != 0L) {
       return MovementCheck.KING_MOVES_NEXT_TO_OPPONENT_KING;
     }
     final Piece pieceOnTo = bitboardPosition.get(toSquare);
-    if (pieceOnTo != Piece.NONE && pieceOnTo.getSide() == havingMove.getOppositeSide()) {
+    if (pieceOnTo != Piece.NONE && pieceOnTo.getSide() == sideToMove.getOppositeSide()) {
       return MovementCheck.KING_CAPTURES_GUARDED_PIECE;
     }
     return MovementCheck.KING_MOVES_TO_ATTACKED_EMPTY_SQUARE;
   }
 
   private static Set<Square> calculatePseudoLegalKingNonCastlingFromSquares(BitboardPosition bitboardPosition,
-      Side havingMove, Square toSquare, long epBit) {
+      Side sideToMove, Square toSquare, long epBit) {
     final Set<Square> result = new TreeSet<>();
     for (final Square fromSquare : Square.REAL) {
-      if (!bitboardPosition.isOwnPiece(fromSquare, havingMove, KING)) {
+      if (!bitboardPosition.isOwnPiece(fromSquare, sideToMove, KING)) {
         continue;
       }
       if (!bitboardPosition.potentialToSquares(fromSquare, epBit).contains(toSquare)) {
@@ -296,14 +296,14 @@ final class SanValidateLegalMoves {
         continue;
       }
       final MoveSpecification spec = new MoveSpecification(fromSquare, toSquare);
-      if (bitboardPosition.afterMove(spec, havingMove).isInCheck(havingMove)) {
+      if (bitboardPosition.afterMove(spec, sideToMove).isInCheck(sideToMove)) {
         result.add(fromSquare);
       }
     }
     return result;
   }
 
-  private static void validateAgainstLegalMovesForPawn(BitboardPosition bitboardPosition, Side havingMove,
+  private static void validateAgainstLegalMovesForPawn(BitboardPosition bitboardPosition, Side sideToMove,
       List<LegalMove> legalMovesCandidates, PieceType pieceType, SanFormat sanFormat, SanConversion sanConversion,
       Square toSquare, long epBit) {
     if (!legalMovesCandidates.isEmpty()) {
@@ -311,7 +311,7 @@ final class SanValidateLegalMoves {
     }
     final boolean isCapturing = sanFormat == SanFormat.PAWN_CAPTURING_NON_PROMOTION
         || sanFormat == SanFormat.PAWN_CAPTURING_PROMOTION;
-    final Set<Square> pseudoLegalFromSquares = calculatePseudoLegalPawnFromSquares(bitboardPosition, havingMove,
+    final Set<Square> pseudoLegalFromSquares = calculatePseudoLegalPawnFromSquares(bitboardPosition, sideToMove,
         isCapturing, sanConversion, toSquare, epBit);
     if (pseudoLegalFromSquares.isEmpty()) {
       if (isCapturing) {
@@ -321,7 +321,7 @@ final class SanValidateLegalMoves {
       throw new SanValidationException(SanValidationProblem.NOT_REACHABLE_PAWN_NON_CAPTURING,
           Message.getString("validation.san.notReachable.pawn.nonCapturing", pieceType.getName(), toSquare.getName()));
     }
-    final KingSafetyCheck reason = calculatePseudoLegalKingSafety(bitboardPosition, havingMove);
+    final KingSafetyCheck reason = calculatePseudoLegalKingSafety(bitboardPosition, sideToMove);
     if (reason == KingSafetyCheck.NON_KING_LEFT_IN_CHECK) {
       throw new SanValidationException(SanValidationProblem.KING_LEFT_IN_CHECK_PAWN,
           Message.getString("validation.san.kingLeftInCheck.pawn", pieceType.getName(), toSquare.getName()));
@@ -330,27 +330,27 @@ final class SanValidateLegalMoves {
         Message.getString("validation.san.kingExposedToCheck.pawn", pieceType.getName(), toSquare.getName()));
   }
 
-  private static Set<Square> calculatePseudoLegalPawnFromSquares(BitboardPosition bitboardPosition, Side havingMove,
+  private static Set<Square> calculatePseudoLegalPawnFromSquares(BitboardPosition bitboardPosition, Side sideToMove,
       boolean isCapturing, SanConversion sanConversion, Square toSquare, long epBit) {
     final File filterFromFile = isCapturing ? sanConversion.fromFile() : toSquare.getFile();
-    return calculatePseudoLegalFromSquaresOnFile(bitboardPosition, havingMove, PAWN, toSquare, epBit, filterFromFile);
+    return calculatePseudoLegalFromSquaresOnFile(bitboardPosition, sideToMove, PAWN, toSquare, epBit, filterFromFile);
   }
 
-  private static void validateAgainstLegalMovesForPieceNeither(BitboardPosition bitboardPosition, Side havingMove,
+  private static void validateAgainstLegalMovesForPieceNeither(BitboardPosition bitboardPosition, Side sideToMove,
       List<LegalMove> legalMovesCandidates, PieceType pieceType, Square toSquare) {
     if (legalMovesCandidates.isEmpty()) {
-      final Set<Square> pseudoLegalFromSquares = calculatePseudoLegalFromSquaresAny(bitboardPosition, havingMove,
+      final Set<Square> pseudoLegalFromSquares = calculatePseudoLegalFromSquaresAny(bitboardPosition, sideToMove,
           pieceType, toSquare);
 
       if (pseudoLegalFromSquares.isEmpty()) {
-        if (countPiecesOfType(bitboardPosition, havingMove, pieceType) == 1) {
+        if (countPiecesOfType(bitboardPosition, sideToMove, pieceType) == 1) {
           throw new SanValidationException(SanValidationProblem.NOT_REACHABLE_RNBQ_NEITHER_SINGLE, Message
               .getString("validation.san.notReachable.rnbq.neither.single", pieceType.getName(), toSquare.getName()));
         }
         throw new SanValidationException(SanValidationProblem.NOT_REACHABLE_RNBQ_NEITHER_MULTIPLE, Message
             .getString("validation.san.notReachable.rnbq.neither.multiple", pieceType.getName(), toSquare.getName()));
       }
-      final KingSafetyCheck reason = calculatePseudoLegalKingSafety(bitboardPosition, havingMove);
+      final KingSafetyCheck reason = calculatePseudoLegalKingSafety(bitboardPosition, sideToMove);
       if (pseudoLegalFromSquares.size() == 1) {
         final Square fromSquare = SetUtility.getOnly(pseudoLegalFromSquares);
         if (reason == KingSafetyCheck.NON_KING_LEFT_IN_CHECK) {
@@ -379,14 +379,14 @@ final class SanValidateLegalMoves {
     }
   }
 
-  private static void throwCastlingException(Board board, Side havingMove, String sideLabel,
+  private static void throwCastlingException(Board board, Side sideToMove, String sideLabel,
       CastlingMove castlingMove) {
-    final CastlingRight castlingRight = board.getCastlingRight(havingMove);
+    final CastlingRight castlingRight = board.getCastlingRight(sideToMove);
     final CastlingCheck castlingCheck = castlingMove == CastlingMove.QUEEN_SIDE
-        ? CastlingUtility.calculateQueenSideCastlingCheck(board.getBitboardPosition(), havingMove, castlingRight)
-        : CastlingUtility.calculateKingSideCastlingCheck(board.getBitboardPosition(), havingMove, castlingRight);
+        ? CastlingUtility.calculateQueenSideCastlingCheck(board.getBitboardPosition(), sideToMove, castlingRight)
+        : CastlingUtility.calculateKingSideCastlingCheck(board.getBitboardPosition(), sideToMove, castlingRight);
 
-    final CastlingRightLoss castlingRightLoss = board.getCastlingRightLoss(havingMove, castlingMove);
+    final CastlingRightLoss castlingRightLoss = board.getCastlingRightLoss(sideToMove, castlingMove);
     final String message;
 
     switch (castlingCheck) {
@@ -427,9 +427,9 @@ final class SanValidateLegalMoves {
         CastlingCheckTranslator.toMoveCheck(castlingCheck, castlingRightLoss), castlingRightLoss);
   }
 
-  private static KingSafetyCheck calculatePseudoLegalKingSafety(BitboardPosition bitboardPosition, Side havingMove) {
+  private static KingSafetyCheck calculatePseudoLegalKingSafety(BitboardPosition bitboardPosition, Side sideToMove) {
     // is check works because already narrowed down by legal move calculation to one or the other case
-    if (bitboardPosition.isInCheck(havingMove)) {
+    if (bitboardPosition.isInCheck(sideToMove)) {
       return KingSafetyCheck.NON_KING_LEFT_IN_CHECK;
     }
     return KingSafetyCheck.NON_KING_EXPOSED_TO_CHECK;
@@ -441,25 +441,25 @@ final class SanValidateLegalMoves {
    * Mirrors the {@code LegalMovesSupport.calculateLegalMoveCalculation(...).pseudoLegalMoveSet()} surface used by SAN
    * error reporting. Reference behavior: king captures (toSquare carries a king) are skipped.
    */
-  private static Set<Square> calculatePseudoLegalFromSquaresAny(BitboardPosition bitboardPosition, Side havingMove,
+  private static Set<Square> calculatePseudoLegalFromSquaresAny(BitboardPosition bitboardPosition, Side sideToMove,
       PieceType pieceType, Square toSquare) {
-    return calculatePseudoLegalFromSquaresFiltered(bitboardPosition, havingMove, pieceType, toSquare, 0L, File.NONE,
+    return calculatePseudoLegalFromSquaresFiltered(bitboardPosition, sideToMove, pieceType, toSquare, 0L, File.NONE,
         Rank.NONE);
   }
 
-  private static Set<Square> calculatePseudoLegalFromSquaresOnFile(BitboardPosition bitboardPosition, Side havingMove,
+  private static Set<Square> calculatePseudoLegalFromSquaresOnFile(BitboardPosition bitboardPosition, Side sideToMove,
       PieceType pieceType, Square toSquare, long epBit, File file) {
-    return calculatePseudoLegalFromSquaresFiltered(bitboardPosition, havingMove, pieceType, toSquare, epBit, file,
+    return calculatePseudoLegalFromSquaresFiltered(bitboardPosition, sideToMove, pieceType, toSquare, epBit, file,
         Rank.NONE);
   }
 
-  private static Set<Square> calculatePseudoLegalFromSquaresOnRank(BitboardPosition bitboardPosition, Side havingMove,
+  private static Set<Square> calculatePseudoLegalFromSquaresOnRank(BitboardPosition bitboardPosition, Side sideToMove,
       PieceType pieceType, Square toSquare, Rank rank) {
-    return calculatePseudoLegalFromSquaresFiltered(bitboardPosition, havingMove, pieceType, toSquare, 0L, File.NONE,
+    return calculatePseudoLegalFromSquaresFiltered(bitboardPosition, sideToMove, pieceType, toSquare, 0L, File.NONE,
         rank);
   }
 
-  private static Set<Square> calculatePseudoLegalFromSquaresFiltered(BitboardPosition bitboardPosition, Side havingMove,
+  private static Set<Square> calculatePseudoLegalFromSquaresFiltered(BitboardPosition bitboardPosition, Side sideToMove,
       PieceType pieceType, Square toSquare, long epBit, File fileFilter, Rank rankFilter) {
     final Set<Square> result = new TreeSet<>();
     for (final Square fromSquare : Square.REAL) {
@@ -469,7 +469,7 @@ final class SanValidateLegalMoves {
       if (rankFilter != Rank.NONE && fromSquare.getRank() != rankFilter) {
         continue;
       }
-      if (!bitboardPosition.isOwnPiece(fromSquare, havingMove, pieceType)) {
+      if (!bitboardPosition.isOwnPiece(fromSquare, sideToMove, pieceType)) {
         continue;
       }
       if (!bitboardPosition.potentialToSquares(fromSquare, epBit).contains(toSquare)) {
@@ -481,55 +481,55 @@ final class SanValidateLegalMoves {
         continue;
       }
       final MoveSpecification spec = new MoveSpecification(fromSquare, toSquare);
-      if (bitboardPosition.afterMove(spec, havingMove).isInCheck(havingMove)) {
+      if (bitboardPosition.afterMove(spec, sideToMove).isInCheck(sideToMove)) {
         result.add(fromSquare);
       }
     }
     return result;
   }
 
-  private static int countPiecesOfType(BitboardPosition bitboardPosition, Side havingMove, PieceType pieceType) {
+  private static int countPiecesOfType(BitboardPosition bitboardPosition, Side sideToMove, PieceType pieceType) {
     int count = 0;
     for (final Square square : Square.REAL) {
-      if (bitboardPosition.isOwnPiece(square, havingMove, pieceType)) {
+      if (bitboardPosition.isOwnPiece(square, sideToMove, pieceType)) {
         count++;
       }
     }
     return count;
   }
 
-  private static int countPiecesOfTypeOnFile(BitboardPosition bitboardPosition, Side havingMove, PieceType pieceType,
+  private static int countPiecesOfTypeOnFile(BitboardPosition bitboardPosition, Side sideToMove, PieceType pieceType,
       File file) {
     int count = 0;
     for (final Square square : Square.REAL) {
-      if (square.getFile() == file && bitboardPosition.isOwnPiece(square, havingMove, pieceType)) {
+      if (square.getFile() == file && bitboardPosition.isOwnPiece(square, sideToMove, pieceType)) {
         count++;
       }
     }
     return count;
   }
 
-  private static int countPiecesOfTypeOnRank(BitboardPosition bitboardPosition, Side havingMove, PieceType pieceType,
+  private static int countPiecesOfTypeOnRank(BitboardPosition bitboardPosition, Side sideToMove, PieceType pieceType,
       Rank rank) {
     int count = 0;
     for (final Square square : Square.REAL) {
-      if (square.getRank() == rank && bitboardPosition.isOwnPiece(square, havingMove, pieceType)) {
+      if (square.getRank() == rank && bitboardPosition.isOwnPiece(square, sideToMove, pieceType)) {
         count++;
       }
     }
     return count;
   }
 
-  private static void validateAgainstLegalMovesForPieceFile(BitboardPosition bitboardPosition, Side havingMove,
+  private static void validateAgainstLegalMovesForPieceFile(BitboardPosition bitboardPosition, Side sideToMove,
       List<LegalMove> legalMovesCandidates, PieceType pieceType, SanFormat sanFormat, SanConversion sanConversion,
       Square toSquare) {
     final File fromFile = sanConversion.fromFile();
-    final Set<Square> pieceCandidates = calculatePieceCandidateSquareSet(bitboardPosition, havingMove, pieceType,
+    final Set<Square> pieceCandidates = calculatePieceCandidateSquareSet(bitboardPosition, sideToMove, pieceType,
         sanFormat, sanConversion);
     final Set<Square> movementCandidates = filterCandidateSquaresForPotentialMove(bitboardPosition, toSquare,
         pieceCandidates);
     if (movementCandidates.isEmpty()) {
-      if (countPiecesOfTypeOnFile(bitboardPosition, havingMove, pieceType, fromFile) == 1) {
+      if (countPiecesOfTypeOnFile(bitboardPosition, sideToMove, pieceType, fromFile) == 1) {
         final Square pieceSquare = SetUtility.getOnly(pieceCandidates);
         throw new SanValidationException(SanValidationProblem.NOT_REACHABLE_RNBQ_FILE_SINGLE,
             Message.getString("validation.san.notReachable.rnbq.file.single", pieceType.getName(),
@@ -543,9 +543,9 @@ final class SanValidateLegalMoves {
     final int numberOfLegalMovesFromSameFile = SanDisambiguationUtility.calculateNumberOfLegalMovesFromFile(fromFile,
         legalMovesCandidates);
     if (numberOfLegalMovesFromSameFile == 0) {
-      final Set<Square> pseudoLegalFromSquares = calculatePseudoLegalFromSquaresOnFile(bitboardPosition, havingMove,
+      final Set<Square> pseudoLegalFromSquares = calculatePseudoLegalFromSquaresOnFile(bitboardPosition, sideToMove,
           pieceType, toSquare, 0L, fromFile);
-      final KingSafetyCheck reason = calculatePseudoLegalKingSafety(bitboardPosition, havingMove);
+      final KingSafetyCheck reason = calculatePseudoLegalKingSafety(bitboardPosition, sideToMove);
       if (pseudoLegalFromSquares.size() == 1) {
         final Square pieceSquare = SetUtility.getOnly(pseudoLegalFromSquares);
         if (reason == KingSafetyCheck.NON_KING_LEFT_IN_CHECK) {
@@ -595,16 +595,16 @@ final class SanValidateLegalMoves {
     }
   }
 
-  private static void validateAgainstLegalMovesForPieceRank(BitboardPosition bitboardPosition, Side havingMove,
+  private static void validateAgainstLegalMovesForPieceRank(BitboardPosition bitboardPosition, Side sideToMove,
       List<LegalMove> legalMovesCandidates, PieceType pieceType, SanFormat sanFormat, SanConversion sanConversion,
       Square toSquare) {
     final Rank fromRank = sanConversion.fromRank();
-    final Set<Square> pieceCandidates = calculatePieceCandidateSquareSet(bitboardPosition, havingMove, pieceType,
+    final Set<Square> pieceCandidates = calculatePieceCandidateSquareSet(bitboardPosition, sideToMove, pieceType,
         sanFormat, sanConversion);
     final Set<Square> movementCandidates = filterCandidateSquaresForPotentialMove(bitboardPosition, toSquare,
         pieceCandidates);
     if (movementCandidates.isEmpty()) {
-      if (countPiecesOfTypeOnRank(bitboardPosition, havingMove, pieceType, fromRank) == 1) {
+      if (countPiecesOfTypeOnRank(bitboardPosition, sideToMove, pieceType, fromRank) == 1) {
         final Square pieceSquare = SetUtility.getOnly(pieceCandidates);
         throw new SanValidationException(SanValidationProblem.NOT_REACHABLE_RNBQ_RANK_SINGLE,
             Message.getString("validation.san.notReachable.rnbq.rank.single", pieceType.getName(),
@@ -618,9 +618,9 @@ final class SanValidateLegalMoves {
     final int numberOfLegalMovesFromSameRank = SanDisambiguationUtility.calculateNumberOfLegalMovesFromRank(fromRank,
         legalMovesCandidates);
     if (numberOfLegalMovesFromSameRank == 0) {
-      final Set<Square> pseudoLegalFromSquares = calculatePseudoLegalFromSquaresOnRank(bitboardPosition, havingMove,
+      final Set<Square> pseudoLegalFromSquares = calculatePseudoLegalFromSquaresOnRank(bitboardPosition, sideToMove,
           pieceType, toSquare, fromRank);
-      final KingSafetyCheck reason = calculatePseudoLegalKingSafety(bitboardPosition, havingMove);
+      final KingSafetyCheck reason = calculatePseudoLegalKingSafety(bitboardPosition, sideToMove);
       if (pseudoLegalFromSquares.size() == 1) {
         final Square pieceSquare = SetUtility.getOnly(pseudoLegalFromSquares);
         if (reason == KingSafetyCheck.NON_KING_LEFT_IN_CHECK) {
@@ -683,11 +683,11 @@ final class SanValidateLegalMoves {
     }
   }
 
-  private static void validateAgainstLegalMovesForPieceSquare(BitboardPosition bitboardPosition, Side havingMove,
+  private static void validateAgainstLegalMovesForPieceSquare(BitboardPosition bitboardPosition, Side sideToMove,
       List<LegalMove> legalMovesCandidates, PieceType pieceType, SanFormat sanFormat, SanConversion sanConversion,
       Square toSquare) {
     final Square fromSquare = SanDisambiguationUtility.calculateFromSquare(sanConversion);
-    final Set<Square> pieceCandidates = calculatePieceCandidateSquareSet(bitboardPosition, havingMove, pieceType,
+    final Set<Square> pieceCandidates = calculatePieceCandidateSquareSet(bitboardPosition, sideToMove, pieceType,
         sanFormat, sanConversion);
     final Set<Square> movementCandidates = filterCandidateSquaresForPotentialMove(bitboardPosition, toSquare,
         pieceCandidates);
@@ -696,7 +696,7 @@ final class SanValidateLegalMoves {
           "validation.san.notReachable.rnbq.square", pieceType.getName(), fromSquare.getName(), toSquare.getName()));
     }
     if (SanDisambiguationUtility.calculateNumberOfLegalMovesFromSquare(fromSquare, legalMovesCandidates) == 0) {
-      final KingSafetyCheck reason = calculatePseudoLegalKingSafety(bitboardPosition, havingMove);
+      final KingSafetyCheck reason = calculatePseudoLegalKingSafety(bitboardPosition, sideToMove);
       if (reason == KingSafetyCheck.NON_KING_LEFT_IN_CHECK) {
         throw new SanValidationException(SanValidationProblem.KING_LEFT_IN_CHECK_RNBQ_SQUARE,
             Message.getString("validation.san.kingLeftInCheck.rnbq.square", pieceType.getName(), fromSquare.getName(),
@@ -729,11 +729,11 @@ final class SanValidateLegalMoves {
     }
   }
 
-  private static Set<Square> calculatePieceCandidateSquareSet(BitboardPosition bitboardPosition, Side havingMove,
+  private static Set<Square> calculatePieceCandidateSquareSet(BitboardPosition bitboardPosition, Side sideToMove,
       PieceType pieceType, SanFormat sanFormat, SanConversion sanConversion) {
     final Set<Square> result = new TreeSet<>();
     for (final Square square : Square.REAL) {
-      if (!bitboardPosition.isOwnPiece(square, havingMove, pieceType)) {
+      if (!bitboardPosition.isOwnPiece(square, sideToMove, pieceType)) {
         continue;
       }
       switch (sanFormat) {
@@ -949,12 +949,12 @@ final class SanValidateLegalMoves {
     throw new ProgrammingMistakeException("The program in mistake failed to determine the file");
   }
 
-  private static boolean isContained(List<LegalMove> legalMoves, Side havingMove, SanFormat sanFormat) {
-    return legalMoves.contains(calculateCastlingMove(havingMove, sanFormat));
+  private static boolean isContained(List<LegalMove> legalMoves, Side sideToMove, SanFormat sanFormat) {
+    return legalMoves.contains(calculateCastlingMove(sideToMove, sanFormat));
   }
 
-  private static LegalMove calculateCastlingMove(Side havingMove, SanFormat sanFormat) {
-    switch (havingMove) {
+  private static LegalMove calculateCastlingMove(Side sideToMove, SanFormat sanFormat) {
+    switch (sideToMove) {
       case WHITE:
         if (sanFormat == SanFormat.KING_CASTLING_KING_SIDE) {
           return CastlingConstants.WHITE_KING_SIDE_CASTLING_MOVE;

@@ -43,13 +43,13 @@ class TestPawnCaptures {
         final StaticPosition staticPosition = StaticPositionBridge.toStaticPosition(board.getBitboardPosition());
         final BitboardPosition bitboardPosition = StaticPositionBridge.fromStaticPosition(staticPosition);
         final Square boardEpTarget = board.getEnPassantCaptureTargetSquare();
-        final Side havingMove = board.getHavingMove();
+        final Side sideToMove = board.getSideToMove();
 
         // EP is only available to the side to move on the fixture board; the other side gets 0L.
-        final long epForWhite = (havingMove == Side.WHITE && boardEpTarget != Square.NONE)
+        final long epForWhite = (sideToMove == Side.WHITE && boardEpTarget != Square.NONE)
             ? (1L << boardEpTarget.ordinal())
             : 0L;
-        final long epForBlack = (havingMove == Side.BLACK && boardEpTarget != Square.NONE)
+        final long epForBlack = (sideToMove == Side.BLACK && boardEpTarget != Square.NONE)
             ? (1L << boardEpTarget.ordinal())
             : 0L;
         final Square epForWhiteSquare = epForWhite == 0L ? Square.NONE : boardEpTarget;

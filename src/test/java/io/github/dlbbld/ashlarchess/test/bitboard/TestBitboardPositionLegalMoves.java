@@ -55,25 +55,25 @@ class TestBitboardPositionLegalMoves {
         final Board board = testCase.finalPosition();
         final StaticPosition staticPosition = StaticPositionBridge.toStaticPosition(board.getBitboardPosition());
         final BitboardPosition bitboardPosition = StaticPositionBridge.fromStaticPosition(staticPosition);
-        final Side havingMove = board.getHavingMove();
+        final Side sideToMove = board.getSideToMove();
         final Square boardEpTarget = board.getEnPassantCaptureTargetSquare();
         final long enPassantBit = boardEpTarget == Square.NONE ? 0L : 1L << boardEpTarget.ordinal();
 
-        final Set<MoveSpecification> bitboardMoves = bitboardPosition.legalMoves(havingMove, enPassantBit);
+        final Set<MoveSpecification> bitboardMoves = bitboardPosition.legalMoves(sideToMove, enPassantBit);
         final Set<MoveSpecification> referenceNonCastlingMoves = staticPositionReferenceNonCastlingMoves(board,
-            staticPosition, havingMove, boardEpTarget);
+            staticPosition, sideToMove, boardEpTarget);
 
         assertEquals(referenceNonCastlingMoves, bitboardMoves,
-            "legalMoves disagreement for " + havingMove + " in fixture " + testCase.pgnName());
+            "legalMoves disagreement for " + sideToMove + " in fixture " + testCase.pgnName());
       }
     }
   }
 
   private static Set<MoveSpecification> staticPositionReferenceNonCastlingMoves(Board board,
-      StaticPosition staticPosition, Side havingMove, Square enPassantTargetSquare) {
+      StaticPosition staticPosition, Side sideToMove, Square enPassantTargetSquare) {
     final Set<MoveSpecification> result = new TreeSet<>();
-    for (final LegalMove legalMove : LegalMovesSupport.calculateLegalMoves(staticPosition, havingMove,
-        board.getCastlingRight(havingMove), enPassantTargetSquare)) {
+    for (final LegalMove legalMove : LegalMovesSupport.calculateLegalMoves(staticPosition, sideToMove,
+        board.getCastlingRight(sideToMove), enPassantTargetSquare)) {
       final MoveSpecification spec = legalMove.moveSpecification();
       if (spec.castlingMove() == CastlingMove.NONE) {
         result.add(spec);

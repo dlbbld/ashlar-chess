@@ -77,8 +77,8 @@ class TestPawnDiagonalSquares {
     check(BLACK, H1);
   }
 
-  private static void check(Side havingMove, Square fromSquare, Square... expectedSquareArray) {
-    final Set<Square> diagonalSquareSet = PawnDiagonalSquares.getPawnDiagonalSquares(havingMove, fromSquare);
+  private static void check(Side sideToMove, Square fromSquare, Square... expectedSquareArray) {
+    final Set<Square> diagonalSquareSet = PawnDiagonalSquares.getPawnDiagonalSquares(sideToMove, fromSquare);
 
     final Set<Square> expectedSquareSet = new TreeSet<>();
     for (final Square expectedSquare : expectedSquareArray) {

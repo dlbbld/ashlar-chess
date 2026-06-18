@@ -25,13 +25,13 @@ public class FenParserRaw {
     }
     // the regular expressions assures that these matches are not empty
     @SuppressWarnings("null") @NonNull final String piecePlacement = matcher.group(1);
-    @SuppressWarnings("null") @NonNull final String havingMove = matcher.group(2);
+    @SuppressWarnings("null") @NonNull final String sideToMove = matcher.group(2);
     @SuppressWarnings("null") @NonNull final String castlingRight = matcher.group(3);
     @SuppressWarnings("null") @NonNull final String enPassantCaptureTargetSquare = matcher.group(4);
     @SuppressWarnings("null") @NonNull final String halfMoveClock = matcher.group(5);
     @SuppressWarnings("null") @NonNull final String fullMoveNumber = matcher.group(6);
 
-    return new FenRaw(piecePlacement, havingMove, castlingRight, enPassantCaptureTargetSquare, halfMoveClock,
+    return new FenRaw(piecePlacement, sideToMove, castlingRight, enPassantCaptureTargetSquare, halfMoveClock,
         fullMoveNumber);
   }
 

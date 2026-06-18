@@ -56,7 +56,7 @@ class TestFiftyMoveClaimAheadReportBuilder {
     assertEquals("Ra3", entry.sequenceStart().firstNonZeroingMoveOrThrow().san(),
         "sequence anchored at the first non-zeroing move of the shuffle (Ra3)");
     // The boundary move is Black's (the played history ended after a White move; Black to move next).
-    assertEquals(Side.BLACK, entry.sideHavingMove(),
+    assertEquals(Side.BLACK, entry.sideToMove(),
         "the boundary move is Black-to-move (White just played the 99th move)");
   }
 
@@ -98,7 +98,7 @@ class TestFiftyMoveClaimAheadReportBuilder {
     assertTrue(entry.sequenceStart().isInitialFen(),
         "FEN clock 98 inherited - sequence-start is the initial-FEN shape");
     assertEquals(98, entry.sequenceStart().initialClockValue());
-    assertEquals(Side.BLACK, entry.sideHavingMove(),
+    assertEquals(Side.BLACK, entry.sideToMove(),
         "boundary move is Black-to-move (White's Rg1 took clock from 98 to 99; Black's turn next, before the pawn push)");
   }
 

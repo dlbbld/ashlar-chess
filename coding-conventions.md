@@ -33,6 +33,15 @@ Do not use standalone `halfmove`, `half-move`, `half move`, `ply`, or `plies` fo
 
 When in doubt, ask whether the term names a public chess-library concept or a protocol field. Public concept: `move`. Protocol field: `halfmove clock` / `fullmove number` in prose, `halfMoveClock` / `fullMoveNumber` in code.
 
+## API naming
+
+- **Normal classes** use JavaBeans accessors: `get` / `is` / `has` / `can`.
+- **Records** expose their components as bare-noun accessors (no `get` prefix).
+- **Positions** name the side to move `sideToMove` (`Board`, `Fen`, `DynamicPosition`).
+- **Moves** name the acting side `movingSide` (`LegalMove`, beside `movingPiece`).
+- **Avoid `calculate`** (and other implementation verbs) in public domain API names; name by the domain result.
+- **No `abstract` class purely to share static helpers** - a noninstantiable utility is `final` with a private constructor.
+
 ## Records carry data, not behavior
 
 Records are immutable value objects (the M in MVC). Computational and business logic that operates on them lives in dedicated utility/service classes — never on the record itself.
@@ -43,7 +52,7 @@ Allowed on records:
 - **`Comparable` when the ordering is intrinsic to the type's identity.** `Tag` orders by standard-roster position. `MoveSpecification` orders by `(fromSquare, toSquare, castlingMove, promotionPieceType)`. Ordering that's a property of the type itself (not "one possible sort key out of several") fits on the record.
 - **Static factory constants for meaningful empty/initial values.** `PgnCommentary.EMPTY`. These are part of the type's value lattice, not behavior.
 - **Auto-generated `equals` / `hashCode` / `toString`** — the language provides these from the record's components. Don't override.
-- **Intrinsic self-description: a tiny derived accessor or predicate over the record's *own* components.** It may name *what the value is* — `MoveSpecification.isPromotion()` (whether its own `promotionPieceType` component is set), `LegalMove.havingMove()` (a projection of `movingPiece.getSide()`). Keep these to one-liners that read like the value's own nature, not domain operations.
+- **Intrinsic self-description: a tiny derived accessor or predicate over the record's *own* components.** It may name *what the value is* — `MoveSpecification.isPromotion()` (whether its own `promotionPieceType` component is set), `LegalMove.movingSide()` (a projection of `movingPiece.getSide()`). Keep these to one-liners that read like the value's own nature, not domain operations.
 
 Not allowed on records:
 

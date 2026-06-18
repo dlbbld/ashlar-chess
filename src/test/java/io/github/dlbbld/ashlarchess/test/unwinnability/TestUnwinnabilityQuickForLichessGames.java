@@ -43,12 +43,12 @@ class TestUnwinnabilityQuickForLichessGames {
 
         logger.info(testCase.pgnName());
 
-        final UnwinnabilityQuickVerdict unwinnableQuickNotHavingMove = UnwinnableQuickAnalyzer
-            .unwinnableQuick(board, board.getHavingMove().getOppositeSide()).verdict();
-        assertEquals(UnwinnabilityQuickVerdict.UNWINNABLE, unwinnableQuickNotHavingMove);
+        final UnwinnabilityQuickVerdict unwinnableQuickNotSideToMove = UnwinnableQuickAnalyzer
+            .unwinnableQuick(board, board.getSideToMove().getOppositeSide()).verdict();
+        assertEquals(UnwinnabilityQuickVerdict.UNWINNABLE, unwinnableQuickNotSideToMove);
 
         final AmbronaUnwinnabilityVerdicts ambronaVerdict = AmbronaUnwinnabilityOracle.get(board.getFen());
-        switch (board.getHavingMove().getOppositeSide()) {
+        switch (board.getSideToMove().getOppositeSide()) {
           case WHITE:
             assertEquals(UnwinnabilityQuickVerdict.UNWINNABLE, ambronaVerdict.quickWhite());
             break;
@@ -56,7 +56,7 @@ class TestUnwinnabilityQuickForLichessGames {
             assertEquals(UnwinnabilityQuickVerdict.UNWINNABLE, ambronaVerdict.quickBlack());
             break;
           default:
-            throw new IllegalStateException("Unexpected side: " + board.getHavingMove().getOppositeSide());
+            throw new IllegalStateException("Unexpected side: " + board.getSideToMove().getOppositeSide());
         }
       }
     }

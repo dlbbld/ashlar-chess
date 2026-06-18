@@ -333,10 +333,10 @@ public class GenerateRandomGame {
       if (i > 0 && i % 2 == 0) {
         moveList.append(" ");
       }
-      final Side havingMove = replay.getMovingPiece().getSide();
-      if (havingMove.isWhite()) {
+      final Side sideToMove = replay.getMovingPiece().getSide();
+      if (sideToMove.isWhite()) {
         moveList.append(replay.getLastPlayedFullMoveNumber()).append(". ");
-      } else if (havingMove.isBlack()) {
+      } else if (sideToMove.isBlack()) {
         moveList.append(" ");
       } else {
         throw new ProgrammingMistakeException("That should never happen");

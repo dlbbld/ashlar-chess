@@ -354,7 +354,7 @@ public final class StrictPgnParser {
     }
 
     final List<PgnMove> moves = new ArrayList<>();
-    Side havingMove = startFen.havingMove();
+    Side sideToMove = startFen.sideToMove();
     int fullMoveNumber = startFen.fullMoveNumber();
     boolean isFirstMove = true;
 
@@ -378,7 +378,7 @@ public final class StrictPgnParser {
       }
 
       // Non-initial Black move: with prior commentary, "N..." indicator is required (T-002); without, forbidden.
-      if (!isFirstMove && havingMove == Side.BLACK) {
+      if (!isFirstMove && sideToMove == Side.BLACK) {
         if (priorCommentaryAttached) {
           final PgnToken token = tokenizer.peek();
           final String expected = MoveNumberFormat.calculateFullMoveNumberInitialWithoutSpace(fullMoveNumber,
@@ -399,8 +399,8 @@ public final class StrictPgnParser {
         }
       }
 
-      if (isFirstMove || havingMove == Side.WHITE) {
-        expectMoveNumber(fullMoveNumber, havingMove, isFirstMove);
+      if (isFirstMove || sideToMove == Side.WHITE) {
+        expectMoveNumber(fullMoveNumber, sideToMove, isFirstMove);
         expectInterTokenSpace(StrictPgnParserValidationProblem.MOVETEXT_UNEXPECTED_FORMAT,
             "A move number must be followed by a single space.");
       }
@@ -422,10 +422,10 @@ public final class StrictPgnParser {
       moves.add(new PgnMove(sanAndSuffix.san(), sanAndSuffix.suffix(), commentary));
 
       isFirstMove = false;
-      if (havingMove == Side.BLACK) {
+      if (sideToMove == Side.BLACK) {
         fullMoveNumber++;
       }
-      havingMove = havingMove.getOppositeSide();
+      sideToMove = sideToMove.getOppositeSide();
     }
   }
 
@@ -560,11 +560,11 @@ public final class StrictPgnParser {
     return new SanAndSuffix(san, suffix);
   }
 
-  private void expectMoveNumber(int expectedNumber, Side havingMove, boolean isFirstMove) {
+  private void expectMoveNumber(int expectedNumber, Side sideToMove, boolean isFirstMove) {
     final PgnToken token = tokenizer.peek();
-    final String expected = MoveNumberFormat.calculateFullMoveNumberInitialWithoutSpace(expectedNumber, havingMove);
+    final String expected = MoveNumberFormat.calculateFullMoveNumberInitialWithoutSpace(expectedNumber, sideToMove);
 
-    if (havingMove == Side.BLACK) {
+    if (sideToMove == Side.BLACK) {
       if (!isFirstMove) {
         if (token.type() == PgnTokenType.MOVE_NUMBER_BLACK || token.type() == PgnTokenType.MOVE_NUMBER_WHITE) {
           throw movetextError(StrictPgnParserValidationProblem.MOVETEXT_MOVE_NUMBER_FOR_BLACK_NON_INITIAL_MOVE,
@@ -631,7 +631,7 @@ public final class StrictPgnParser {
     // whose recorded play continues past such states.
     final Board board = new Board(startFen);
     for (final PgnMove move : moveList) {
-      final Side side = board.getHavingMove();
+      final Side side = board.getSideToMove();
       final int fullMoveNumber = board.getFullMoveNumber();
       try {
         board.moveStrict(move.san());

@@ -123,7 +123,7 @@ class TestAmbronaUnwinnabilityQuickOracleComparison {
   void testStartPosition() {
     final Board board = new Board();
     assertEquals(UnwinnabilityQuickVerdict.POSSIBLY_WINNABLE,
-        UnwinnableQuickAnalyzer.unwinnableQuick(board, board.getHavingMove().getOppositeSide()).verdict());
+        UnwinnableQuickAnalyzer.unwinnableQuick(board, board.getSideToMove().getOppositeSide()).verdict());
   }
 
   private record AcceptedDifference(String pgnName, Side side, UnwinnabilityQuickVerdict expected,

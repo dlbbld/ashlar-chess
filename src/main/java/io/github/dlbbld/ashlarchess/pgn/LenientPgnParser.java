@@ -752,7 +752,7 @@ public final class LenientPgnParser {
     final Board board = new Board(startFen);
     final List<PgnMove> canonicalList = new ArrayList<>(moveList.size());
     for (final PgnMove move : moveList) {
-      final Side side = board.getHavingMove();
+      final Side side = board.getSideToMove();
       final int fullMoveNumber = board.getFullMoveNumber();
       try {
         final LenientSanParserValidationResult result = board.moveLenient(move.san());

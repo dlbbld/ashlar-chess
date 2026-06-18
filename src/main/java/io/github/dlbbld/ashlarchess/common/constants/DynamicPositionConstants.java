@@ -13,7 +13,7 @@ public final class DynamicPositionConstants {
   private DynamicPositionConstants() {
   }
 
-  public static final DynamicPosition INITIAL = new DynamicPosition(FenConstants.FEN_INITIAL.havingMove(),
+  public static final DynamicPosition INITIAL = new DynamicPosition(FenConstants.FEN_INITIAL.sideToMove(),
       BitboardPosition.INITIAL_POSITION, Square.NONE, FenConstants.FEN_INITIAL.castlingRightWhite(),
       FenConstants.FEN_INITIAL.castlingRightBlack());
 }

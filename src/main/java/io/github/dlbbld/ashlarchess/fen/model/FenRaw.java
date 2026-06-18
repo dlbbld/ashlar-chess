@@ -3,7 +3,7 @@
 
 package io.github.dlbbld.ashlarchess.fen.model;
 
-public record FenRaw(String piecePlacement, String havingMove, String castlingRightBothStr,
+public record FenRaw(String piecePlacement, String sideToMove, String castlingRightBothStr,
     String enPassantCaptureTargetSquare, String halfMoveClock, String fullMoveNumber) {
 
 }

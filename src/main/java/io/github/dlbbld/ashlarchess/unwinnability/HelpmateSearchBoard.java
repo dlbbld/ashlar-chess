@@ -66,7 +66,7 @@ final class HelpmateSearchBoard {
   private long blackKings;
 
   // Per-move auxiliary state.
-  private Side havingMove;
+  private Side sideToMove;
   private Square enPassantCaptureTargetSquare;
   private Square normalizedEnPassantCaptureTargetSquare;
   private CastlingRight castlingRightWhite;
@@ -85,10 +85,10 @@ final class HelpmateSearchBoard {
   private LegalMoveBuffer[] buffersByDepth;
   private int undoTop;
 
-  private HelpmateSearchBoard(BitboardPosition initialBitboard, Side havingMove, Square enPassantCaptureTargetSquare,
+  private HelpmateSearchBoard(BitboardPosition initialBitboard, Side sideToMove, Square enPassantCaptureTargetSquare,
       CastlingRight castlingRightWhite, CastlingRight castlingRightBlack) {
     loadBitboard(initialBitboard);
-    this.havingMove = havingMove;
+    this.sideToMove = sideToMove;
     this.enPassantCaptureTargetSquare = enPassantCaptureTargetSquare;
     this.castlingRightWhite = castlingRightWhite;
     this.castlingRightBlack = castlingRightBlack;
@@ -105,7 +105,7 @@ final class HelpmateSearchBoard {
 
   static HelpmateSearchBoard from(Board board) {
     final DynamicPosition dp = board.getDynamicPosition();
-    return new HelpmateSearchBoard(dp.bitboardPosition(), dp.havingMove(), board.getEnPassantCaptureTargetSquare(),
+    return new HelpmateSearchBoard(dp.bitboardPosition(), dp.sideToMove(), board.getEnPassantCaptureTargetSquare(),
         dp.castlingRightWhite(), dp.castlingRightBlack());
   }
 
@@ -128,7 +128,7 @@ final class HelpmateSearchBoard {
     applyMoveInPlace(moveToPerform);
 
     // 4. Toggle side to move.
-    havingMove = havingMove.getOppositeSide();
+    sideToMove = sideToMove.getOppositeSide();
 
     // 5. Update castling rights based on the move (king/rook moves clear rights).
     final CastlingRightBoth newRights = CastlingUtility.calculateCastlingRightBoth(castlingRightWhite,
@@ -154,7 +154,7 @@ final class HelpmateSearchBoard {
   // ---------------------------- Getters (snapshots / debug, not the search hot path) ----------------------------
 
   DynamicPosition getDynamicPosition() {
-    return new DynamicPosition(havingMove, getBitboardPosition(), normalizedEnPassantCaptureTargetSquare,
+    return new DynamicPosition(sideToMove, getBitboardPosition(), normalizedEnPassantCaptureTargetSquare,
         castlingRightWhite, castlingRightBlack);
   }
 
@@ -171,13 +171,13 @@ final class HelpmateSearchBoard {
    * {@link HelpmateSearchKey} for the included / excluded field list.
    */
   HelpmateSearchKey currentTranspositionKey() {
-    return new HelpmateSearchKey(havingMove, whitePawns, whiteRooks, whiteKnights, whiteBishops, whiteQueens,
+    return new HelpmateSearchKey(sideToMove, whitePawns, whiteRooks, whiteKnights, whiteBishops, whiteQueens,
         whiteKings, blackPawns, blackRooks, blackKnights, blackBishops, blackQueens, blackKings,
         normalizedEnPassantCaptureTargetSquare, castlingRightWhite, castlingRightBlack);
   }
 
-  Side getHavingMove() {
-    return havingMove;
+  Side getSideToMove() {
+    return sideToMove;
   }
 
   Square getEnPassantCaptureTargetSquare() {
@@ -253,7 +253,7 @@ final class HelpmateSearchBoard {
     undo.blackBishops = blackBishops;
     undo.blackQueens = blackQueens;
     undo.blackKings = blackKings;
-    undo.havingMove = havingMove;
+    undo.sideToMove = sideToMove;
     undo.enPassantCaptureTargetSquare = enPassantCaptureTargetSquare;
     undo.normalizedEnPassantCaptureTargetSquare = normalizedEnPassantCaptureTargetSquare;
     undo.castlingRightWhite = castlingRightWhite;
@@ -276,7 +276,7 @@ final class HelpmateSearchBoard {
     blackBishops = undo.blackBishops;
     blackQueens = undo.blackQueens;
     blackKings = undo.blackKings;
-    havingMove = undo.havingMove;
+    sideToMove = undo.sideToMove;
     enPassantCaptureTargetSquare = undo.enPassantCaptureTargetSquare;
     normalizedEnPassantCaptureTargetSquare = undo.normalizedEnPassantCaptureTargetSquare;
     castlingRightWhite = undo.castlingRightWhite;
@@ -309,7 +309,7 @@ final class HelpmateSearchBoard {
    */
   private LegalMove identifyLegalMove(MoveSpecification moveSpec) {
     if (moveSpec.castlingMove() != CastlingMove.NONE) {
-      final Piece kingPiece = havingMove == Side.WHITE ? Piece.WHITE_KING : Piece.BLACK_KING;
+      final Piece kingPiece = sideToMove == Side.WHITE ? Piece.WHITE_KING : Piece.BLACK_KING;
       return new LegalMove(moveSpec, kingPiece, Piece.NONE, LegalMoveKind.CASTLING);
     }
 
@@ -329,7 +329,7 @@ final class HelpmateSearchBoard {
     if (!toEmpty) {
       capturedPiece = toPiece;
     } else if (diagonalPawnMove) {
-      capturedPiece = havingMove == Side.WHITE ? Piece.BLACK_PAWN : Piece.WHITE_PAWN;
+      capturedPiece = sideToMove == Side.WHITE ? Piece.BLACK_PAWN : Piece.WHITE_PAWN;
     } else {
       capturedPiece = Piece.NONE;
     }
@@ -421,7 +421,7 @@ final class HelpmateSearchBoard {
   private void applyMoveInPlace(LegalMove moveToPerform) {
     final MoveSpecification moveSpec = moveToPerform.moveSpecification();
     if (moveSpec.castlingMove() != CastlingMove.NONE) {
-      applyCastlingInPlace(moveSpec.castlingMove(), havingMove);
+      applyCastlingInPlace(moveSpec.castlingMove(), sideToMove);
       return;
     }
     final Square from = moveSpec.fromSquare();
@@ -435,7 +435,7 @@ final class HelpmateSearchBoard {
     if (capturedPiece == Piece.NONE) {
       capturedBit = 0L;
     } else if (moveToPerform.kind() == LegalMoveKind.EN_PASSANT_CAPTURE) {
-      final int capturedOrdinal = havingMove == Side.WHITE ? to.ordinal() - 8 : to.ordinal() + 8;
+      final int capturedOrdinal = sideToMove == Side.WHITE ? to.ordinal() - 8 : to.ordinal() + 8;
       capturedBit = 1L << capturedOrdinal;
     } else {
       capturedBit = toBit;
@@ -443,7 +443,7 @@ final class HelpmateSearchBoard {
 
     final PromotionPieceType promotion = moveSpec.promotionPieceType();
     final Piece destPiece = promotion == PromotionPieceType.NONE ? movingPiece
-        : Piece.of(havingMove, promotion.getPieceType());
+        : Piece.of(sideToMove, promotion.getPieceType());
 
     togglePieceBit(movingPiece, fromBit);
     togglePieceBit(capturedPiece, capturedBit);
@@ -496,16 +496,16 @@ final class HelpmateSearchBoard {
     if (enPassantCaptureTargetSquare == Square.NONE) {
       return Square.NONE;
     }
-    if (!enPassantCaptureTargetSquare.hasBehindSquare(havingMove)) {
+    if (!enPassantCaptureTargetSquare.hasBehindSquare(sideToMove)) {
       throw new ProgrammingMistakeException();
     }
-    final Square squareBehind = enPassantCaptureTargetSquare.getBehindSquare(havingMove);
-    final Piece ownPawn = Piece.of(havingMove, PieceType.PAWN);
+    final Square squareBehind = enPassantCaptureTargetSquare.getBehindSquare(sideToMove);
+    final Piece ownPawn = Piece.of(sideToMove, PieceType.PAWN);
 
-    final boolean hasRight = squareBehind.hasRightSquare(havingMove);
-    final boolean hasLeft = squareBehind.hasLeftSquare(havingMove);
-    final Square candidateRight = hasRight ? squareBehind.getRightSquare(havingMove) : Square.NONE;
-    final Square candidateLeft = hasLeft ? squareBehind.getLeftSquare(havingMove) : Square.NONE;
+    final boolean hasRight = squareBehind.hasRightSquare(sideToMove);
+    final boolean hasLeft = squareBehind.hasLeftSquare(sideToMove);
+    final Square candidateRight = hasRight ? squareBehind.getRightSquare(sideToMove) : Square.NONE;
+    final Square candidateLeft = hasLeft ? squareBehind.getLeftSquare(sideToMove) : Square.NONE;
     final boolean hasRightPawn = hasRight && pieceAt(candidateRight) == ownPawn;
     final boolean hasLeftPawn = hasLeft && pieceAt(candidateLeft) == ownPawn;
 
@@ -515,11 +515,11 @@ final class HelpmateSearchBoard {
 
     final BitboardPosition snapshot = getBitboardPosition();
     if (hasRightPawn
-        && !snapshot.isInCheckAfterEnPassantCapture(candidateRight, enPassantCaptureTargetSquare, havingMove)) {
+        && !snapshot.isInCheckAfterEnPassantCapture(candidateRight, enPassantCaptureTargetSquare, sideToMove)) {
       return enPassantCaptureTargetSquare;
     }
     if (hasLeftPawn
-        && !snapshot.isInCheckAfterEnPassantCapture(candidateLeft, enPassantCaptureTargetSquare, havingMove)) {
+        && !snapshot.isInCheckAfterEnPassantCapture(candidateLeft, enPassantCaptureTargetSquare, sideToMove)) {
       return enPassantCaptureTargetSquare;
     }
     return Square.NONE;
@@ -531,9 +531,9 @@ final class HelpmateSearchBoard {
     final BitboardPosition snapshot = getBitboardPosition();
     final long enPassantBit = enPassantCaptureTargetSquare == Square.NONE ? 0L
         : 1L << enPassantCaptureTargetSquare.ordinal();
-    BitboardLegalMoveFactory.calculateLegalMovesInto(currentBuffer::append, snapshot, havingMove,
-        getCastlingRight(havingMove), enPassantBit);
-    isCheck = snapshot.isInCheck(havingMove);
+    BitboardLegalMoveFactory.calculateLegalMovesInto(currentBuffer::append, snapshot, sideToMove,
+        getCastlingRight(sideToMove), enPassantBit);
+    isCheck = snapshot.isInCheck(sideToMove);
     isCheckmate = isCheck && currentBuffer.isEmpty();
     isStalemate = !isCheck && currentBuffer.isEmpty();
   }

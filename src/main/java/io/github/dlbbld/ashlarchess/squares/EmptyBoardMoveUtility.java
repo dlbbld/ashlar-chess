@@ -45,23 +45,23 @@ public final class EmptyBoardMoveUtility {
     return reverse(calculateNonPawnEmptyBoardMoves(pieceType, toSquare));
   }
 
-  public static Set<EmptyBoardMove> calculatePawnEmptyBoardMoves(Side havingMove, Square fromSquare) {
+  public static Set<EmptyBoardMove> calculatePawnEmptyBoardMoves(Side sideToMove, Square fromSquare) {
     return calculateEmptyBoardMovesFromSet(fromSquare,
-        PawnAnyAdvanceEmptyBoardSquares.getPawnSquares(havingMove, fromSquare));
+        PawnAnyAdvanceEmptyBoardSquares.getPawnSquares(sideToMove, fromSquare));
   }
 
   /**
    * Calculate the pawn moves.
    *
-   * @param havingMove The side having the move.
+   * @param sideToMove The side having the move.
    * @return All pawn moves except diagonal moves (implemented as such because they are not possible on an empty board).
    *
    */
-  public static Set<EmptyBoardMove> calculatePawnEmptyBoardMoves(Side havingMove) {
+  public static Set<EmptyBoardMove> calculatePawnEmptyBoardMoves(Side sideToMove) {
     final Set<EmptyBoardMove> emptyBoardMoves = new TreeSet<>();
     for (final Square fromSquare : Square.REAL) {
       emptyBoardMoves.addAll(calculateEmptyBoardMovesFromSet(fromSquare,
-          PawnAnyAdvanceEmptyBoardSquares.getPawnSquares(havingMove, fromSquare)));
+          PawnAnyAdvanceEmptyBoardSquares.getPawnSquares(sideToMove, fromSquare)));
     }
     return emptyBoardMoves;
   }

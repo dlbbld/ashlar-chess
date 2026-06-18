@@ -57,8 +57,8 @@ public class MoveGenerationPerformanceSurvey {
         final Board board = position.ashlarBoard();
         final Square ep = board.getEnPassantCaptureTargetSquare();
         final long enPassantBit = ep == Square.NONE ? 0L : 1L << ep.ordinal();
-        moveCount += BitboardLegalMoveFactory.calculateLegalMoves(board.getBitboardPosition(), board.getHavingMove(),
-            board.getCastlingRight(board.getHavingMove()), enPassantBit).size();
+        moveCount += BitboardLegalMoveFactory.calculateLegalMoves(board.getBitboardPosition(), board.getSideToMove(),
+            board.getCastlingRight(board.getSideToMove()), enPassantBit).size();
       }
     }
     return new Measurement(System.nanoTime() - start, moveCount);
@@ -120,8 +120,8 @@ public class MoveGenerationPerformanceSurvey {
       for (final PositionPair position : positionList) {
         final Board board = position.ashlarBoard();
         moveCount += LegalMovesSupport.calculateLegalMoves(
-            StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), board.getHavingMove(),
-            board.getCastlingRight(board.getHavingMove()), board.getEnPassantCaptureTargetSquare()).size();
+            StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), board.getSideToMove(),
+            board.getCastlingRight(board.getSideToMove()), board.getEnPassantCaptureTargetSquare()).size();
       }
     }
     return new Measurement(System.nanoTime() - start, moveCount);

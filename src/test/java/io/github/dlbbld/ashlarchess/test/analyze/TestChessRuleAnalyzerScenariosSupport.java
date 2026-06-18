@@ -41,7 +41,7 @@ public final class TestChessRuleAnalyzerScenariosSupport {
   static void check(Board board, MoveSpecification move, MoveCheck expectedMoveCheck) {
     final MovementCheck expectedMc = toMovementCheck(expectedMoveCheck);
     if (expectedMc != null) {
-      final MovementCheck actual = ChessRuleAnalyzer.analyzeMovement(board.getBitboardPosition(), board.getHavingMove(),
+      final MovementCheck actual = ChessRuleAnalyzer.analyzeMovement(board.getBitboardPosition(), board.getSideToMove(),
           board.getEnPassantCaptureTargetSquare(), move);
       assertEquals(expectedMc, actual);
       return;
@@ -50,10 +50,10 @@ public final class TestChessRuleAnalyzerScenariosSupport {
     if (expectedKs != null) {
       // king-safety presupposes movement passes
       final MovementCheck actualMc = ChessRuleAnalyzer.analyzeMovement(board.getBitboardPosition(),
-          board.getHavingMove(), board.getEnPassantCaptureTargetSquare(), move);
+          board.getSideToMove(), board.getEnPassantCaptureTargetSquare(), move);
       assertEquals(MovementCheck.SUCCESS, actualMc, "movement should pass before king-safety check");
       final KingSafetyCheck actualKs = ChessRuleAnalyzer.analyzeKingSafety(board.getBitboardPosition(),
-          board.getHavingMove(), move);
+          board.getSideToMove(), move);
       assertEquals(expectedKs, actualKs);
       return;
     }

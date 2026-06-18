@@ -38,11 +38,11 @@ class TestBitboardPositionHashDelta {
         final StaticPosition staticPosition = StaticPositionBridge.toStaticPosition(board.getBitboardPosition());
         final BitboardPosition before = StaticPositionBridge.fromStaticPosition(staticPosition);
         final long beforeHash = before.zobristPieces();
-        final Side havingMove = board.getHavingMove();
+        final Side sideToMove = board.getSideToMove();
         for (final LegalMove legalMove : board.getLegalMoves()) {
           final MoveSpecification spec = legalMove.moveSpecification();
-          final long incrementalHash = beforeHash ^ before.hashDelta(spec, havingMove);
-          final long freshHash = before.afterMove(spec, havingMove).zobristPieces();
+          final long incrementalHash = beforeHash ^ before.hashDelta(spec, sideToMove);
+          final long freshHash = before.afterMove(spec, sideToMove).zobristPieces();
           assertEquals(freshHash, incrementalHash,
               "hashDelta disagreement for " + spec + " in fixture " + testCase.pgnName());
         }

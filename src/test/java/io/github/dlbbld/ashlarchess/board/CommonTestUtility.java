@@ -78,7 +78,7 @@ public final class CommonTestUtility {
       assertEquals(boardFirst.isCapture(), boardSecond.isCapture());
     }
 
-    assertEquals(boardFirst.getHavingMove(), boardSecond.getHavingMove());
+    assertEquals(boardFirst.getSideToMove(), boardSecond.getSideToMove());
 
     assertEquals(boardFirst.isEnPassantCapturePossible(), boardSecond.isEnPassantCapturePossible());
 
@@ -165,7 +165,7 @@ public final class CommonTestUtility {
       assertEquals(boardFirst.isCapture(), boardSecond.isCapture());
     }
 
-    assertEquals(boardFirst.getHavingMove(), boardSecond.getHavingMove());
+    assertEquals(boardFirst.getSideToMove(), boardSecond.getSideToMove());
     assertEquals(boardFirst.isEnPassantCapturePossible(), boardSecond.isEnPassantCapturePossible());
     assertEquals(boardFirst.getCastlingRightWhite(), boardSecond.getCastlingRightWhite());
     assertEquals(boardFirst.getCastlingRightBlack(), boardSecond.getCastlingRightBlack());

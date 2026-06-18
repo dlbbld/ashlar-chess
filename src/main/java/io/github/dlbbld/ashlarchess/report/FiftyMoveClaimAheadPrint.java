@@ -47,7 +47,7 @@ final class FiftyMoveClaimAheadPrint {
 
   private static String formatBoundary(FiftyMoveClaimAheadEntry entry) {
     final int wouldBeClock = ChessConstants.FIFTY_MOVE_RULE_HALF_MOVE_CLOCK_THRESHOLD;
-    return MoveNumberFormat.calculateMoveNumberAndSanWithSpace(entry.fullMoveNumber(), entry.sideHavingMove(),
+    return MoveNumberFormat.calculateMoveNumberAndSanWithSpace(entry.fullMoveNumber(), entry.sideToMove(),
         CLAIM_AHEAD_POSSIBLE_PLACEHOLDER) + " " + SequenceStartFormat.counts(wouldBeClock, entry.startingSide());
   }
 }

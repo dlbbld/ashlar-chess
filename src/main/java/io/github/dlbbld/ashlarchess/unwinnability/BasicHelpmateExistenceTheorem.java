@@ -61,7 +61,7 @@ final class BasicHelpmateExistenceTheorem {
       return BasicHelpmateExistenceTheoremResult.NOT_APPLICABLE;
     }
 
-    if (board.getHavingMove() == winner) {
+    if (board.getSideToMove() == winner) {
       // W to move: W has a helpmate.
       return BasicHelpmateExistenceTheoremResult.WINNABLE;
     }

@@ -14,10 +14,10 @@ import io.github.dlbbld.ashlarchess.board.enums.Square;
 class PawnAttackedSquares {
 
   public static Set<Square> calculatePawnAttackedSquares(StaticPosition staticPosition, Square fromSquare,
-      Side havingMove) {
+      Side sideToMove) {
 
-    ToSquaresSupport.checkPiece(staticPosition, havingMove, fromSquare, PAWN);
+    ToSquaresSupport.checkPiece(staticPosition, sideToMove, fromSquare, PAWN);
 
-    return PawnDiagonalSquares.getPawnDiagonalSquares(havingMove, fromSquare);
+    return PawnDiagonalSquares.getPawnDiagonalSquares(sideToMove, fromSquare);
   }
 }

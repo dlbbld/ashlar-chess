@@ -35,7 +35,7 @@ final class UndoState {
   long blackQueens;
   long blackKings;
 
-  Side havingMove = Side.WHITE;
+  Side sideToMove = Side.WHITE;
   Square enPassantCaptureTargetSquare = Square.NONE;
   Square normalizedEnPassantCaptureTargetSquare = Square.NONE;
   CastlingRight castlingRightWhite = CastlingRight.NONE;

@@ -15,13 +15,13 @@ import io.github.dlbbld.ashlarchess.board.enums.Square;
 class QueenRangeSquares {
 
   public static Set<Square> calculateQueenRangeSquares(StaticPosition staticPosition, Square fromSquare,
-      Side havingMove, boolean isAllowOwnPiece) {
+      Side sideToMove, boolean isAllowOwnPiece) {
 
     final QueenRange emptyBoardRange = QueenEmptyBoardSquares.getQueenSquares(fromSquare);
 
     final Set<Square> result = new TreeSet<>(RangeSquaresSupport.calculateOrthogonalRangeSquare(staticPosition,
-        havingMove, fromSquare, QUEEN, emptyBoardRange, isAllowOwnPiece));
-    result.addAll(RangeSquaresSupport.calculateDiagonalRangeSquare(staticPosition, havingMove, fromSquare, QUEEN,
+        sideToMove, fromSquare, QUEEN, emptyBoardRange, isAllowOwnPiece));
+    result.addAll(RangeSquaresSupport.calculateDiagonalRangeSquare(staticPosition, sideToMove, fromSquare, QUEEN,
         emptyBoardRange, isAllowOwnPiece));
 
     return result;

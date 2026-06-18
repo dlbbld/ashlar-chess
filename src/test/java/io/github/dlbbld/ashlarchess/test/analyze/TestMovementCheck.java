@@ -45,7 +45,7 @@ class TestMovementCheck {
   private static final Set<MovementCheck> COVERED = new TreeSet<>();
 
   private static MovementCheck analyze(Board board, MoveSpecification move) {
-    final MovementCheck result = ChessRuleAnalyzer.analyzeMovement(board.getBitboardPosition(), board.getHavingMove(),
+    final MovementCheck result = ChessRuleAnalyzer.analyzeMovement(board.getBitboardPosition(), board.getSideToMove(),
         board.getEnPassantCaptureTargetSquare(), move);
     COVERED.add(result);
     return result;
