@@ -15,7 +15,10 @@ import io.github.dlbbld.ashlarchess.pgn.StrictPgnParserValidationProblem;
 import io.github.dlbbld.ashlarchess.pgn.StrictPgnParserValidationResult;
 import io.github.dlbbld.ashlarchess.san.SanValidationProblem;
 
-public abstract class AbstractTestStrictPgnParserException {
+public final class TestStrictPgnParserExceptionSupport {
+
+  private TestStrictPgnParserExceptionSupport() {
+  }
   static void checkException(Path pgnTestFolderPath, String pgnName,
       StrictPgnParserValidationProblem expectedProblemParser, SanValidationProblem expectedProblemSan) {
     checkParse(pgnTestFolderPath, pgnName, expectedProblemParser, expectedProblemSan);

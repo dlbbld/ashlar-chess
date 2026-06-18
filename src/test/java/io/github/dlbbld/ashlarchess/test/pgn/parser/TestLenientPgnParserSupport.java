@@ -9,7 +9,10 @@ import io.github.dlbbld.ashlarchess.pgn.PgnCreate;
 import io.github.dlbbld.ashlarchess.pgn.PgnGame;
 import io.github.dlbbld.ashlarchess.pgn.WriteMode;
 
-public abstract class AbstractTestLenientPgnParser {
+public final class TestLenientPgnParserSupport {
+
+  private TestLenientPgnParserSupport() {
+  }
 
   /**
    * Asserts that two parse models are equivalent under archival normalisation - i.e. once both are fed through

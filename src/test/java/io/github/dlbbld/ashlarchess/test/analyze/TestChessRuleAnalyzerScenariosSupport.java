@@ -33,7 +33,10 @@ import io.github.dlbbld.ashlarchess.exceptions.InvalidMoveException;
  * The fallback path lets the inherited TestValidateNewMove scenarios run unchanged in this class while routing
  * analyzer-territory assertions through the analyzer for direct test coverage.
  */
-public abstract class AbstractTestChessRuleAnalyzerScenarios {
+public final class TestChessRuleAnalyzerScenariosSupport {
+
+  private TestChessRuleAnalyzerScenariosSupport() {
+  }
 
   static void check(Board board, MoveSpecification move, MoveCheck expectedMoveCheck) {
     final MovementCheck expectedMc = toMovementCheck(expectedMoveCheck);

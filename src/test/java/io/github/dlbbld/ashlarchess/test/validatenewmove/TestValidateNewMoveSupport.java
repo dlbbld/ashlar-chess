@@ -11,7 +11,10 @@ import io.github.dlbbld.ashlarchess.common.model.MoveSpecification;
 import io.github.dlbbld.ashlarchess.enums.MoveCheck;
 import io.github.dlbbld.ashlarchess.exceptions.InvalidMoveException;
 
-public abstract class AbstractTestValidateNewMove {
+public final class TestValidateNewMoveSupport {
+
+  private TestValidateNewMoveSupport() {
+  }
 
   static void check(Board board, MoveSpecification move, MoveCheck expectedMoveCheck) {
     boolean isException = false;

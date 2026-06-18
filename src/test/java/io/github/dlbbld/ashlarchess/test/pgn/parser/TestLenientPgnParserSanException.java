@@ -12,7 +12,7 @@ import io.github.dlbbld.ashlarchess.pgn.LenientPgnParserValidationProblem;
 import io.github.dlbbld.ashlarchess.san.SanValidationProblem;
 import io.github.dlbbld.ashlarchess.test.pgntest.constants.PgnTestConstants;
 
-class TestLenientPgnParserSanException extends AbstractTestLenientPgnParserException {
+class TestLenientPgnParserSanException {
 
   private static final Path PGN_TEST_FOLDER_PATH = Nulls
       .pathResolve(PgnTestConstants.LENIENT_PGN_PARSER_TEST_ROOT_FOLDER_PATH, "exception/san");
@@ -29,6 +29,6 @@ class TestLenientPgnParserSanException extends AbstractTestLenientPgnParserExcep
   }
 
   private static void checkException(String pgnName, SanValidationProblem expectedSanValidationProblem) {
-    checkException(PGN_TEST_FOLDER_PATH, pgnName, LenientPgnParserValidationProblem.SAN, expectedSanValidationProblem);
+    TestLenientPgnParserExceptionSupport.checkException(PGN_TEST_FOLDER_PATH, pgnName, LenientPgnParserValidationProblem.SAN, expectedSanValidationProblem);
   }
 }

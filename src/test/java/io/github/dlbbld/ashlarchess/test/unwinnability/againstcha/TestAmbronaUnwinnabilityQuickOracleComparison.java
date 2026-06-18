@@ -43,12 +43,12 @@ class TestAmbronaUnwinnabilityQuickOracleComparison {
     final List<String> failureList = new ArrayList<>();
 
     for (final PgnTest pgnTest : PgnTest.values()) {
-      if (!AbstractCheckAgainstCha.isUseTestForCha(pgnTest)) {
+      if (!CheckAgainstCha.isUseTestForCha(pgnTest)) {
         continue;
       }
 
       if (RestrictTestConstants.IS_RESTRICT_UNWINNABILITY_QUICK_AGAINST_AMBRONA_ORACLE_TEST
-          && !AbstractCheckAgainstCha.isUseTestForCha(pgnTest)) {
+          && !CheckAgainstCha.isUseTestForCha(pgnTest)) {
         continue;
       }
 

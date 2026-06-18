@@ -11,7 +11,7 @@ import io.github.dlbbld.ashlarchess.common.Nulls;
 import io.github.dlbbld.ashlarchess.pgn.PgnGame;
 import io.github.dlbbld.ashlarchess.test.pgntest.constants.PgnTestConstants;
 
-class TestStrictPgnParserFromInitialPositionUsingFen extends AbstractTestLenientPgnParser {
+class TestStrictPgnParserFromInitialPositionUsingFen {
   private static final Path PGN_TEST_FOLDER_PATH = Nulls
       .pathResolve(PgnTestConstants.STRICT_PGN_PARSER_TEST_ROOT_FOLDER_PATH, "fromInitialPositionUsingFen");
 
@@ -23,15 +23,15 @@ class TestStrictPgnParserFromInitialPositionUsingFen extends AbstractTestLenient
 
     {
       final PgnGame actual = PgnCacheForStrictPgnParserTestCases.getPgn(PGN_TEST_FOLDER_PATH, "01_example.pgn");
-      assertEqualsArchival(expected, actual);
+      TestLenientPgnParserSupport.assertEqualsArchival(expected, actual);
     }
     {
       final PgnGame actual = PgnCacheForStrictPgnParserTestCases.getPgn(PGN_TEST_FOLDER_PATH, "02_example.pgn");
-      assertEqualsArchival(expected, actual);
+      TestLenientPgnParserSupport.assertEqualsArchival(expected, actual);
     }
     {
       final PgnGame actual = PgnCacheForStrictPgnParserTestCases.getPgn(PGN_TEST_FOLDER_PATH, "02_example.pgn");
-      assertEqualsArchival(expected, actual);
+      TestLenientPgnParserSupport.assertEqualsArchival(expected, actual);
     }
   }
 

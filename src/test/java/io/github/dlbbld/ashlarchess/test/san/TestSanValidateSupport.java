@@ -11,7 +11,10 @@ import io.github.dlbbld.ashlarchess.san.SanValidationException;
 import io.github.dlbbld.ashlarchess.san.SanValidationProblem;
 import io.github.dlbbld.ashlarchess.san.StrictSanParser;
 
-public abstract class AbstractTestSanValidate {
+public final class TestSanValidateSupport {
+
+  private TestSanValidateSupport() {
+  }
 
   public static void checkExceptionNonMovement(String san, Board board) {
     checkException(san, board, SanValidationProblem.NON_MOVEMENT_RNBQ_SOURCE_SQUARE_EQUALS_DESTINATION_SQUARE);

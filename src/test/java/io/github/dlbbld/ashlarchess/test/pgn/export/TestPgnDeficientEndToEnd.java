@@ -22,7 +22,7 @@ import io.github.dlbbld.ashlarchess.pgn.WriteMode;
  * exercising several lenient-tolerated deviations simultaneously, then asserted under both {@link WriteMode#SEMANTIC}
  * (the parse model echoed, no fabricated tags) and {@link WriteMode#ARCHIVAL} (the canonical spec section
  * 8.1.1-conformant artifact). Covers the semantic-preservation contract that the archival-equivalence helper in
- * {@code AbstractTestLenientPgnParser} does not directly verify.
+ * {@code TestLenientPgnParserSupport} does not directly verify.
  */
 @SuppressWarnings({ "static-method" })
 class TestPgnDeficientEndToEnd {

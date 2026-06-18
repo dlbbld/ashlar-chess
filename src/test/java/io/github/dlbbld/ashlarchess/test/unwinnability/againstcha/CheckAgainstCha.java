@@ -20,9 +20,9 @@ import io.github.dlbbld.ashlarchess.test.pgntest.enums.PgnTest;
 import io.github.dlbbld.ashlarchess.test.unwinnability.againstcha.model.UnwinnabilityRawRead;
 import io.github.dlbbld.ashlarchess.test.unwinnability.enums.UnwinnabilityMode;
 
-public final class AbstractCheckAgainstCha {
+public final class CheckAgainstCha {
 
-  private AbstractCheckAgainstCha() {
+  private CheckAgainstCha() {
   }
 
   public static List<UnwinnabilityRawRead> readChaRawResultList(Path fenAnalysisFilePath) throws Exception {

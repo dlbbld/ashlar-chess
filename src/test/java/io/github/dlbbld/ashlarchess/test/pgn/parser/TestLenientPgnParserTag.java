@@ -16,7 +16,7 @@ import io.github.dlbbld.ashlarchess.pgn.ResultTagValue;
 import io.github.dlbbld.ashlarchess.pgn.TagUtility;
 import io.github.dlbbld.ashlarchess.test.pgntest.constants.PgnTestConstants;
 
-class TestLenientPgnParserTag extends AbstractTestLenientPgnParser {
+class TestLenientPgnParserTag {
   private static final Path PGN_TEST_FOLDER_PATH = Nulls
       .pathResolve(PgnTestConstants.LENIENT_PGN_PARSER_TEST_ROOT_FOLDER_PATH, "tag");
 
@@ -32,7 +32,7 @@ class TestLenientPgnParserTag extends AbstractTestLenientPgnParser {
     assertTrue(TagUtility.hasResult(expected.tagList()));
     assertEquals(ResultTagValue.ONGOING.getValue(), TagUtility.readResult(expected.tagList()));
 
-    assertEqualsButTagList(actual, expected);
+    TestLenientPgnParserSupport.assertEqualsButTagList(actual, expected);
   }
 
   @SuppressWarnings("static-method")
@@ -70,12 +70,12 @@ class TestLenientPgnParserTag extends AbstractTestLenientPgnParser {
           "04_setup_tag_zero_remove.pgn");
       // Lenient parser preserves the redundant SetUp tag in the parsed model; archival normalisation drops it
       // because startFen is the initial position (FEN/SetUp are archival-only signals when not needed).
-      assertEqualsArchival(actual, expected);
+      TestLenientPgnParserSupport.assertEqualsArchival(actual, expected);
     }
     {
       final PgnGame expected = PgnCacheForLenientPgnParserTestCases.getPgn(PGN_TEST_FOLDER_PATH,
           "05_setup_tag_one_remove.pgn");
-      assertEqualsArchival(actual, expected);
+      TestLenientPgnParserSupport.assertEqualsArchival(actual, expected);
     }
   }
 
@@ -117,7 +117,7 @@ class TestLenientPgnParserTag extends AbstractTestLenientPgnParser {
     final PgnGame actual = PgnCacheForStrictPgnParserTestCases.getPgn(PGN_TEST_FOLDER_PATH, "98_original.pgn");
 
     final PgnGame expected = PgnCacheForLenientPgnParserTestCases.getPgn(PGN_TEST_FOLDER_PATH, "10_empty_tag_list.pgn");
-    assertEqualsButTagListAndResult(actual, expected);
+    TestLenientPgnParserSupport.assertEqualsButTagListAndResult(actual, expected);
   }
 
 }

@@ -45,7 +45,7 @@ class TestAmbronaUnwinnabilityFullOracleComparison {
     int checkedPositionCount = 0;
 
     for (final PgnTest pgnTest : PgnTest.values()) {
-      if (!AbstractCheckAgainstCha.isUseTestForCha(pgnTest)) {
+      if (!CheckAgainstCha.isUseTestForCha(pgnTest)) {
         continue;
       }
 

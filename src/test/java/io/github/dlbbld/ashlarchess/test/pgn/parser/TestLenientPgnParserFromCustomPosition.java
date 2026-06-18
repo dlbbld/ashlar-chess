@@ -11,7 +11,7 @@ import io.github.dlbbld.ashlarchess.common.Nulls;
 import io.github.dlbbld.ashlarchess.pgn.PgnGame;
 import io.github.dlbbld.ashlarchess.test.pgntest.constants.PgnTestConstants;
 
-class TestLenientPgnParserFromCustomPosition extends AbstractTestLenientPgnParser {
+class TestLenientPgnParserFromCustomPosition {
   private static final Path PGN_TEST_FOLDER_PATH = Nulls
       .pathResolve(PgnTestConstants.LENIENT_PGN_PARSER_TEST_ROOT_FOLDER_PATH, "fromCustomPosition");
 
@@ -24,19 +24,19 @@ class TestLenientPgnParserFromCustomPosition extends AbstractTestLenientPgnParse
 
     {
       final PgnGame actual = PgnCacheForLenientPgnParserTestCases.getPgn(PGN_TEST_FOLDER_PATH, "01_white_start.pgn");
-      assertEqualsArchival(expected, actual);
+      TestLenientPgnParserSupport.assertEqualsArchival(expected, actual);
     }
     {
       final PgnGame actual = PgnCacheForLenientPgnParserTestCases.getPgn(PGN_TEST_FOLDER_PATH, "02_white_start.pgn");
-      assertEqualsArchival(expected, actual);
+      TestLenientPgnParserSupport.assertEqualsArchival(expected, actual);
     }
     {
       final PgnGame actual = PgnCacheForLenientPgnParserTestCases.getPgn(PGN_TEST_FOLDER_PATH, "03_white_start.pgn");
-      assertEqualsArchival(expected, actual);
+      TestLenientPgnParserSupport.assertEqualsArchival(expected, actual);
     }
     {
       final PgnGame actual = PgnCacheForLenientPgnParserTestCases.getPgn(PGN_TEST_FOLDER_PATH, "04_white_start.pgn");
-      assertEqualsArchival(expected, actual);
+      TestLenientPgnParserSupport.assertEqualsArchival(expected, actual);
     }
   }
 
@@ -49,19 +49,19 @@ class TestLenientPgnParserFromCustomPosition extends AbstractTestLenientPgnParse
 
     {
       final PgnGame actual = PgnCacheForLenientPgnParserTestCases.getPgn(PGN_TEST_FOLDER_PATH, "05_black_start.pgn");
-      assertEqualsArchival(expected, actual);
+      TestLenientPgnParserSupport.assertEqualsArchival(expected, actual);
     }
     {
       final PgnGame actual = PgnCacheForLenientPgnParserTestCases.getPgn(PGN_TEST_FOLDER_PATH, "06_black_start.pgn");
-      assertEqualsArchival(expected, actual);
+      TestLenientPgnParserSupport.assertEqualsArchival(expected, actual);
     }
     {
       final PgnGame actual = PgnCacheForLenientPgnParserTestCases.getPgn(PGN_TEST_FOLDER_PATH, "07_black_start.pgn");
-      assertEqualsArchival(expected, actual);
+      TestLenientPgnParserSupport.assertEqualsArchival(expected, actual);
     }
     {
       final PgnGame actual = PgnCacheForLenientPgnParserTestCases.getPgn(PGN_TEST_FOLDER_PATH, "08_black_start.pgn");
-      assertEqualsArchival(expected, actual);
+      TestLenientPgnParserSupport.assertEqualsArchival(expected, actual);
     }
   }
 

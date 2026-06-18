@@ -13,7 +13,7 @@ import io.github.dlbbld.ashlarchess.common.Nulls;
 import io.github.dlbbld.ashlarchess.pgn.PgnGame;
 import io.github.dlbbld.ashlarchess.test.pgntest.constants.PgnTestConstants;
 
-class TestLenientPgnParserFromInitialPosition extends AbstractTestLenientPgnParser {
+class TestLenientPgnParserFromInitialPosition {
   private static final Path PGN_TEST_FOLDER_PATH = Nulls
       .pathResolve(PgnTestConstants.LENIENT_PGN_PARSER_TEST_ROOT_FOLDER_PATH, "fromInitialPosition");
 
@@ -73,18 +73,18 @@ class TestLenientPgnParserFromInitialPosition extends AbstractTestLenientPgnPars
     {
       final PgnGame actual = PgnCacheForLenientPgnParserTestCases.getPgn(PGN_TEST_FOLDER_PATH,
           "11_result_incomplete_missing_tag.pgn");
-      assertEqualsArchival(expected, actual);
+      TestLenientPgnParserSupport.assertEqualsArchival(expected, actual);
     }
     {
       final PgnGame actual = PgnCacheForLenientPgnParserTestCases.getPgn(PGN_TEST_FOLDER_PATH,
           "12_result_incomplete_missing_termination_marker.pgn");
-      assertEqualsArchival(expected, actual);
+      TestLenientPgnParserSupport.assertEqualsArchival(expected, actual);
 
     }
     {
       final PgnGame actual = PgnCacheForLenientPgnParserTestCases.getPgn(PGN_TEST_FOLDER_PATH,
           "13_result_incomplete_missing_tag_missing_termination_marker.pgn");
-      assertEqualsArchival(expected, actual);
+      TestLenientPgnParserSupport.assertEqualsArchival(expected, actual);
     }
   }
 
