@@ -11,7 +11,10 @@ import com.google.common.collect.ImmutableMap;
 import io.github.dlbbld.ashlarchess.board.enums.Square;
 import io.github.dlbbld.ashlarchess.common.Nulls;
 
-class QueenEmptyBoardSquares {
+final class QueenEmptyBoardSquares {
+
+  private QueenEmptyBoardSquares() {
+  }
 
   private static final ImmutableMap<Square, QueenRange> QUEEN_SQUARES_MAP;
 

@@ -11,7 +11,10 @@ import com.google.common.collect.ImmutableMap;
 import io.github.dlbbld.ashlarchess.board.enums.Square;
 import io.github.dlbbld.ashlarchess.common.Nulls;
 
-class BishopEmptyBoardSquares {
+final class BishopEmptyBoardSquares {
+
+  private BishopEmptyBoardSquares() {
+  }
 
   private static final ImmutableMap<Square, BishopRange> BISHOP_SQUARES_MAP;
 
