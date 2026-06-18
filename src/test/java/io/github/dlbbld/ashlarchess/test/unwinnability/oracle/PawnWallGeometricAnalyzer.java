@@ -27,7 +27,10 @@ import io.github.dlbbld.ashlarchess.common.exceptions.ProgrammingMistakeExceptio
 import io.github.dlbbld.ashlarchess.common.utility.BasicUtility;
 import io.github.dlbbld.ashlarchess.common.utility.StaticPositionUtility;
 
-public class PawnWallGeometricAnalyzer {
+public final class PawnWallGeometricAnalyzer {
+
+  private PawnWallGeometricAnalyzer() {
+  }
 
   private static final boolean IS_IGNORE_PAWN_OWN_PAWN_OUTSIDE_PAWN_WALL_LINE = true;
 

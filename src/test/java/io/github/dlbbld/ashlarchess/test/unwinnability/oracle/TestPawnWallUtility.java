@@ -19,7 +19,7 @@ import io.github.dlbbld.ashlarchess.board.enums.Side;
 import io.github.dlbbld.ashlarchess.board.enums.Square;
 import io.github.dlbbld.ashlarchess.fen.constants.FenConstants;
 
-class TestPawnWallUtility extends PawnWallGeometricAnalyzer {
+class TestPawnWallUtility {
 
   @SuppressWarnings("static-method")
   @Test
