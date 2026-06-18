@@ -213,7 +213,7 @@ public class PawnWallGeometricAnalyzer {
   }
 
   // calculate capturing squares
-  protected static Set<Square> calculateAttackingSquares(Board board, Side side) {
+  static Set<Square> calculateAttackingSquares(Board board, Side side) {
     final Set<Square> attackingSquares = new TreeSet<>(calculateAttackingSquareAsIs(board, side));
     attackingSquares.addAll(calculateAttackingSquareAfterMoving(board, side));
     return attackingSquares;
@@ -363,7 +363,7 @@ public class PawnWallGeometricAnalyzer {
     return true;
   }
 
-  protected static boolean calculateIsAllPawnsHavePawnAhead(Board board) {
+  static boolean calculateIsAllPawnsHavePawnAhead(Board board) {
     // loop over all square and check each pawn
     final StaticPosition staticPosition = StaticPositionBridge.toStaticPosition(board.getBitboardPosition());
     for (final Square square : Square.REAL) {
@@ -387,7 +387,7 @@ public class PawnWallGeometricAnalyzer {
     return true;
   }
 
-  protected static boolean calculateIsAllPawnsCanReachPawnAhead(Board board) {
+  static boolean calculateIsAllPawnsCanReachPawnAhead(Board board) {
     // loop over all square and check each pawn
     final StaticPosition staticPosition = StaticPositionBridge.toStaticPosition(board.getBitboardPosition());
     for (final Square square : Square.REAL) {
@@ -423,7 +423,7 @@ public class PawnWallGeometricAnalyzer {
     return false;
   }
 
-  protected static boolean calculateIsAllPawnsCannotCapture(Board board) {
+  static boolean calculateIsAllPawnsCannotCapture(Board board) {
     // we must check the en passant capture as not seen by following static checks
     if (board.isEnPassantCapturePossible()) {
       return false;
@@ -459,7 +459,7 @@ public class PawnWallGeometricAnalyzer {
     return true;
   }
 
-  protected static boolean calculateIsAllPawnsBlocked(Board board) {
+  static boolean calculateIsAllPawnsBlocked(Board board) {
     return calculateIsAllPawnsHavePawnAhead(board) && calculateIsAllPawnsCannotCapture(board);
   }
 
@@ -503,7 +503,7 @@ public class PawnWallGeometricAnalyzer {
     return staticPosition;
   }
 
-  protected static boolean calculateHasPawnWallLine(Board board, Side side) {
+  static boolean calculateHasPawnWallLine(Board board, Side side) {
     return calculateHasPawnWallLine(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()),
         findAllPawnWallLines(board, side), side);
   }
