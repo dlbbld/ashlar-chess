@@ -72,10 +72,6 @@ public class Nulls {
     return checkResult(list.remove(index));
   }
 
-  public static String toString(String[] stringArray) {
-    return checkResult(stringArray.toString());
-  }
-
   public static String toString(StringBuilder stringBuilder) {
     return checkResult(stringBuilder.toString());
   }
