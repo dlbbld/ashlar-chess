@@ -48,7 +48,7 @@ class TestFenRoundtripPgn {
     }
   }
 
-  private static void checkFenRoundtrip(Path folderPath, String pgnName) throws Exception {
+  private static void checkFenRoundtrip(Path folderPath, String pgnName) {
 
     logger.info(pgnName);
 

@@ -13,7 +13,7 @@ class TestLibraryCarlosFenValidationNotPass {
 
   @SuppressWarnings("static-method")
   @Test
-  void testExpectedFailureButSuccess() throws Exception {
+  void testExpectedFailureButSuccess() {
 
     // invalid side field - accepted - not ok
     assertTrue(testIsValid("r1bqk1nr/pppp1ppp/2n5/2b1p3/2B1P3/5N2/PPPP1PPP/RNBQK2R x KQkq - 0 4"));

@@ -23,7 +23,7 @@ class TestLibraryCarlosSanCalculationPass {
 
   @SuppressWarnings("static-method")
   @Test
-  void testWithoutFen() throws Exception {
+  void testWithoutFen() {
     final Board board = new Board();
     board.doMove(new Move(Square.E2, Square.E4));
     assertEquals("e4", calculateSan(board)); // works fine

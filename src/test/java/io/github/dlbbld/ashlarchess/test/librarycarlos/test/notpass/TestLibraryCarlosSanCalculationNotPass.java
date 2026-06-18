@@ -24,7 +24,7 @@ class TestLibraryCarlosSanCalculationNotPass {
 
   @SuppressWarnings("static-method")
   @Test
-  void testWithFen() throws Exception {
+  void testWithFen() {
     final Board board = new Board();
     final String fen = "8/8/3KP3/5P2/8/3p4/3kp3/8 w - - 0 100";
     board.loadFromFen(fen);

@@ -15,7 +15,7 @@ class TestBasicRank {
 
   @SuppressWarnings("static-method")
   @Test
-  void testCount() throws Exception {
+  void testCount() {
     int totalRanks = 0;
     for (@SuppressWarnings("unused") final Rank rank : Rank.REAL) {
       totalRanks++;
@@ -25,7 +25,7 @@ class TestBasicRank {
 
   @SuppressWarnings("static-method")
   @Test
-  void testMethodsDirect() throws Exception {
+  void testMethodsDirect() {
     assertFalse(Rank.exists('-'));
     assertFalse(Rank.exists('\0'));
     assertFalse(Rank.exists('0'));

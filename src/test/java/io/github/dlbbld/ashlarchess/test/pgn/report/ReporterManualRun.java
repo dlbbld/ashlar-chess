@@ -55,7 +55,7 @@ public class ReporterManualRun {
     Reporter.report(pgnString).forEach(System.out::println);
   }
 
-  static void printReport(String pgnName) throws Exception {
+  static void printReport(String pgnName) {
     final PgnTest pgnTest = PgnTestCaseCatalog.findPgnTestPgnNotListed(pgnName);
     System.out.println(pgnName);
     System.out.println("=============================================");

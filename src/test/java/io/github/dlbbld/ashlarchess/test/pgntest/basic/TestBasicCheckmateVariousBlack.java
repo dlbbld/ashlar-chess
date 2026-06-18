@@ -19,7 +19,7 @@ class TestBasicCheckmateVariousBlack {
 
   @SuppressWarnings("static-method")
   @Test
-  void test() throws Exception {
+  void test() {
     final PgnTestCaseList testCaseList = PgnTestCaseCatalog.getTestList(PgnTest.BASIC_CHECKMATE_VARIOUS_BLACK);
     for (final PgnFen testCase : testCaseList.list()) {
       logger.info(testCase.pgnName());

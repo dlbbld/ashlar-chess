@@ -28,7 +28,7 @@ class TestBoardAgainstEachOther {
 
   @SuppressWarnings("static-method")
   @Test
-  void test() throws Exception {
+  void test() {
     for (final PgnTestCaseList testCaseList : PgnTestCaseCatalog.getRestrictedTestListList()) {
       for (final PgnFen testCase : testCaseList.list()) {
         // takes 50 minutes with all test cases

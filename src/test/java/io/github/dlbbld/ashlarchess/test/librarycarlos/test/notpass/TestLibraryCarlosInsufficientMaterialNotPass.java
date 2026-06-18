@@ -13,7 +13,7 @@ class TestLibraryCarlosInsufficientMaterialNotPass {
 
   @SuppressWarnings("static-method")
   @Test
-  void testExceptedFalseButTrue() throws Exception {
+  void testExceptedFalseButTrue() {
     // KNvKN
     assertTrue(isInsufficientMaterial("8/8/4K3/8/1n6/8/5k1N/8 w - - 0 50"));
 

@@ -28,7 +28,7 @@ class TestUnwinnabilityFullAgainstLimitedOracle {
 
   @SuppressWarnings("static-method")
   @Test
-  void test() throws Exception {
+  void test() {
 
     final PgnTestCaseList testCaseList = PgnTestCaseCatalog.getTestList(PgnTest.CHA_LICHESS_QUICK_DEPTH_ABOVE_FOUR);
     for (final PgnFen testCase : testCaseList.list()) {

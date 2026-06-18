@@ -12,7 +12,7 @@ public final class GenerateTestCaseForPgnSupport {
   private GenerateTestCaseForPgnSupport() {
   }
 
-  static String generate(String pgnName) throws Exception {
+  static String generate(String pgnName) {
 
     final StringBuilder result = new StringBuilder();
     result.append("list.add(new ").append(PgnFen.class.getSimpleName()).append("(");

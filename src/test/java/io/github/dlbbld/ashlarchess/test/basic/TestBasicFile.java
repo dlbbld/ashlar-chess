@@ -18,7 +18,7 @@ class TestBasicFile {
 
   @SuppressWarnings("static-method")
   @Test
-  void testCount() throws Exception {
+  void testCount() {
     int totalFiles = 0;
     for (@SuppressWarnings("unused") final File file : File.REAL) {
       totalFiles++;
@@ -28,7 +28,7 @@ class TestBasicFile {
 
   @SuppressWarnings("static-method")
   @Test
-  void testMethodsDirect() throws Exception {
+  void testMethodsDirect() {
     assertTrue(File.exists('a'));
     assertTrue(File.exists('b'));
     assertTrue(File.exists('c'));
@@ -70,7 +70,7 @@ class TestBasicFile {
 
   @SuppressWarnings("static-method")
   @Test
-  void testMethodsAdjacent() throws Exception {
+  void testMethodsAdjacent() {
 
     // white existence
     assertFalse(File.FILE_A.hasLeftFile(WHITE));

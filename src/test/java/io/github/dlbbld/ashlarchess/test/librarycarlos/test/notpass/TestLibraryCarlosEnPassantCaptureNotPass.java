@@ -15,7 +15,7 @@ class TestLibraryCarlosEnPassantCaptureNotPass {
 
   @SuppressWarnings("static-method")
   @Test
-  void test() throws Exception {
+  void test() {
     final Board board = new Board();
     board.doMove("e4");
     board.doMove("Nf6");

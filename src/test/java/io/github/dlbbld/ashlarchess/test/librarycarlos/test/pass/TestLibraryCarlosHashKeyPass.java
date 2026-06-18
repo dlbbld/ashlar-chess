@@ -17,7 +17,7 @@ class TestLibraryCarlosHashKeyPass {
 
   @SuppressWarnings("static-method")
   @Test
-  void testTwoHalfMoves() throws Exception {
+  void testTwoHalfMoves() {
 
     final Board board = new Board();
     final Move e2e4 = new Move(Square.E2, Square.E4);

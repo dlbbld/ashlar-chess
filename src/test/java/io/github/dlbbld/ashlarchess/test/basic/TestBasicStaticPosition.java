@@ -21,7 +21,7 @@ class TestBasicStaticPosition {
 
   @SuppressWarnings("static-method")
   @Test
-  void testClearNonEmpty() throws Exception {
+  void testClearNonEmpty() {
     StaticPosition workingPosition = StaticPosition.INITIAL_POSITION;
     for (final Square square : Square.REAL) {
       if (!workingPosition.isEmpty(square)) {
@@ -45,7 +45,7 @@ class TestBasicStaticPosition {
 
   @SuppressWarnings("static-method")
   @Test
-  void testFill() throws Exception {
+  void testFill() {
     StaticPosition workingPosition = StaticPosition.EMPTY_POSITION;
     for (final Square square : Square.REAL) {
       workingPosition = StaticPositionUtility.createChangedPosition(workingPosition, square, WHITE_PAWN);

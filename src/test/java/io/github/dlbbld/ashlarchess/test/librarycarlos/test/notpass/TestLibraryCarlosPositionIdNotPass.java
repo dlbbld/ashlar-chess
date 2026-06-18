@@ -16,7 +16,7 @@ class TestLibraryCarlosPositionIdNotPass {
 
   @SuppressWarnings("static-method")
   @Test
-  void test() throws Exception {
+  void test() {
     final Board board = new Board();
     board.loadFromFen("6k1/8/8/8/6p1/8/5PR1/6K1 w - - 4 32");
     board.doMove(new Move(Square.F2, Square.F4));

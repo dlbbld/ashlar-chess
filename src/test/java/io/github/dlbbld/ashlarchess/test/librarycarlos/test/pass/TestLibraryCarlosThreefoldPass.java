@@ -117,7 +117,7 @@ class TestLibraryCarlosThreefoldPass {
 
   @SuppressWarnings("static-method")
   @Test
-  void testEnPassantCaptureNotPossibleOwnKingInCheck() throws Exception {
+  void testEnPassantCaptureNotPossibleOwnKingInCheck() {
     final Board board = new Board();
     board.loadFromFen("8/8/8/8/4p3/8/R2P3k/K7 w - - 0 37");
 
@@ -147,7 +147,7 @@ class TestLibraryCarlosThreefoldPass {
 
   @SuppressWarnings("static-method")
   @Test
-  void testEnPassantCaptureNotPossibleWouldExposeOwnKingToCheck() throws Exception {
+  void testEnPassantCaptureNotPossibleWouldExposeOwnKingToCheck() {
     final Board board = new Board();
     board.loadFromFen("6k1/8/8/8/6p1/8/5PR1/6K1 w - - 0 32");
 

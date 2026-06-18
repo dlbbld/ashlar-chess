@@ -22,7 +22,7 @@ class TestBasicStalemate {
 
   @SuppressWarnings("static-method")
   @Test
-  void test() throws Exception {
+  void test() {
     final PgnTestCaseList testCaseList = PgnTestCaseCatalog.getTestList(PgnTest.BASIC_STALEMATE);
     for (final PgnFen testCase : testCaseList.list()) {
       final Board board = testCase.finalPosition();

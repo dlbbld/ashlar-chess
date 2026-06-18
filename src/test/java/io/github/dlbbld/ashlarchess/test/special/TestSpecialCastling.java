@@ -14,7 +14,7 @@ class TestSpecialCastling {
 
   @SuppressWarnings("static-method")
   @Test
-  void testWhite() throws Exception {
+  void testWhite() {
     {
       // white has king-side castling rights but not queen side
       // try queen side castling
@@ -39,7 +39,7 @@ class TestSpecialCastling {
 
   @SuppressWarnings("static-method")
   @Test
-  void testBlack() throws Exception {
+  void testBlack() {
     {
       // black has king-side castling rights but not queen side
       // try queen side castling

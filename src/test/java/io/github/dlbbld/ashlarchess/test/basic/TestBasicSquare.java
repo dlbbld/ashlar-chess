@@ -14,7 +14,7 @@ class TestBasicSquare {
 
   @SuppressWarnings("static-method")
   @Test
-  void testCount() throws Exception {
+  void testCount() {
     int totalSquares = 0;
     for (@SuppressWarnings("unused") final Square square : Square.REAL) {
       totalSquares++;
@@ -24,7 +24,7 @@ class TestBasicSquare {
 
   @SuppressWarnings("static-method")
   @Test
-  void testCalculateSquare() throws Exception {
+  void testCalculateSquare() {
     assertEquals(Square.A1, Square.of(1, 1));
     assertEquals(Square.A8, Square.of(1, 8));
     assertEquals(Square.H8, Square.of(8, 8));
@@ -40,7 +40,7 @@ class TestBasicSquare {
 
   @SuppressWarnings("static-method")
   @Test
-  void testSquareType() throws Exception {
+  void testSquareType() {
     for (final Square square : Square.REAL) {
       if ((square.getFile().getNumber() + square.getRank().getNumber()) % 2 == 0) {
         assertEquals(SquareType.DARK_SQUARE, square.getSquareType());

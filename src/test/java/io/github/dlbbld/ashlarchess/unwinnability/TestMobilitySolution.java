@@ -107,7 +107,7 @@ class TestMobilitySolution {
 
   @SuppressWarnings("static-method")
   @Test
-  void testBasicAllMaximum() throws Exception {
+  void testBasicAllMaximum() {
     // KvK
     checkAllMaximum("8/8/4k3/8/8/2K5/8/8 w - - 0 100");
     checkAllMaximum("8/8/4k3/8/8/2K5/8/8 b - - 0 100");
@@ -171,7 +171,7 @@ class TestMobilitySolution {
 
   @SuppressWarnings("static-method")
   @Test
-  void testPawnWall() throws Exception {
+  void testPawnWall() {
     {
       final List<Square> whiteKingToSquareList = Nulls.asList(A1, B1, C1, D1, E1, F1, G1, H1, A2, B2, C2, D2, E2, F2,
           G2, H2, A3, B3, C3, D3, E3, F3, G3, H3);
@@ -214,13 +214,13 @@ class TestMobilitySolution {
 
   @SuppressWarnings("static-method")
   @Test
-  void testPseudoPawnWall() throws Exception {
+  void testPseudoPawnWall() {
     checkAllMaximum("8/8/3p4/4p2k/4P3/3P4/6K1/8 b - - 2 41");
   }
 
   @SuppressWarnings("static-method")
   @Test
-  void testAllLockedButKing() throws Exception {
+  void testAllLockedButKing() {
 
     {
       final List<Square> whiteKingToSquareList = Nulls.asList(A1, B1, C1, D1, E1, F1, G1, H1, E2, F2, G2, H2, D3, E3,
@@ -263,7 +263,7 @@ class TestMobilitySolution {
 
   @SuppressWarnings("static-method")
   @Test
-  void testCustom() throws Exception {
+  void testCustom() {
 
     {
       final Map<Square, List<Square>> mobilityMap = new EnumMap<>(Square.class);

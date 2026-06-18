@@ -15,7 +15,7 @@ class TestLibraryCarlosBoardEqualsPass {
 
   @SuppressWarnings("static-method")
   @Test
-  void test() throws Exception {
+  void test() {
     final Board board1 = new Board();
     board1.doMove(new Move("b1c3", Side.WHITE));
     board1.doMove(new Move("b8c6", Side.BLACK));

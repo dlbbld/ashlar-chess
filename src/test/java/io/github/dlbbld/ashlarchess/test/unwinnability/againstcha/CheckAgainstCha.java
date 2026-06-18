@@ -71,7 +71,7 @@ public final class CheckAgainstCha {
   }
 
   // list of the FEN of the past position for all PGN test case
-  static void createFenList() throws Exception {
+  static void createFenList() {
 
     for (final PgnTest pgnTest : PgnTest.values()) {
       final PgnTestCaseList testCaseList = PgnTestCaseCatalog.getTestList(pgnTest);
