@@ -84,10 +84,6 @@ public final class CommonTestUtility {
 
     assertEquals(boardFirst.getCastlingRightWhite(), boardSecond.getCastlingRightWhite());
     assertEquals(boardFirst.getCastlingRightBlack(), boardSecond.getCastlingRightBlack());
-    // in super
-    // assertEquals(boardFirst.getCastlingRight(WHITE), boardSecond.getCastlingRight(WHITE));
-    // in super
-    // assertEquals(boardFirst.getCastlingRight(BLACK), boardSecond.getCastlingRight(BLACK));
 
     if (isIncludeHistory) {
       assertEquals(boardFirst.getPerformedMoveCount(), boardSecond.getPerformedMoveCount());
@@ -101,13 +97,9 @@ public final class CommonTestUtility {
 
       assertEquals(boardFirst.getLegalMoves(), boardSecond.getLegalMoves());
       assertEquals(boardFirst.getPerformedMoveSpecificationList(), boardSecond.getPerformedMoveSpecificationList());
-      // in super
-      // assertEquals(boardFirst.getLegalMovesRepresentation(), boardSecond.getLegalMovesRepresentation());
       assertEquals(boardFirst.getLegalMovesSan(), boardSecond.getLegalMovesSan());
     }
 
-    // in super
-    // assertEquals(boardFirst.getLegalMovesUci(), boardSecond.getLegalMovesUci());
     if (!boardFirst.isFirstMove() && !boardSecond.isFirstMove()) {
       assertEquals(boardFirst.getLastMove(), boardSecond.getLastMove());
     }

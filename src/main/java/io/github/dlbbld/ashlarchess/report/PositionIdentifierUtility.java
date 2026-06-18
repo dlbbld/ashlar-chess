@@ -112,8 +112,6 @@ final class PositionIdentifierUtility {
       result.append("*");
     }
     result.append(" - ");
-    // result.append(repetitionSeriesMove.countRepetition());
-    // result.append("/");
     result.append(totalRepetitionCount);
     result.append(")");
 

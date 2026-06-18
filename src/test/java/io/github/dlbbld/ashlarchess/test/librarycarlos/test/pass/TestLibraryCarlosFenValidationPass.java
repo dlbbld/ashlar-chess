@@ -33,11 +33,9 @@ class TestLibraryCarlosFenValidationPass {
     assertFalse(testIsValid("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq x 0 1"));
 
     // halfmove clock contains invalid letter
-    // board.loadFromFen();
     assertFalse(testIsValid("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - x 1"));
 
     // move counter contains invalid letter
-    // board.loadFromFen();
     assertFalse(testIsValid("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 x"));
 
   }
