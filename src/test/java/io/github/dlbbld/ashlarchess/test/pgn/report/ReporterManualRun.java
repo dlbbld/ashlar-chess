@@ -9,7 +9,7 @@ import io.github.dlbbld.ashlarchess.test.pgntest.enums.PgnTest;
 
 public class ReporterManualRun {
 
-  public static void main(String[] args) throws Exception {
+  public static void main(String[] args) {
     System.out.println("=============================================");
     printReportForPgn("fivefold_correct_potapov_adly_2018.pgn");
     System.out.println("=============================================");
@@ -23,7 +23,7 @@ public class ReporterManualRun {
 
   }
 
-  private static void printReportForPgn(String pgnName) throws Exception {
+  private static void printReportForPgn(String pgnName) {
     printReport(pgnName);
   }
 
