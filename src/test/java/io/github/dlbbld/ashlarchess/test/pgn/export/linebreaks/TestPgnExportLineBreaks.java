@@ -19,7 +19,7 @@ import io.github.dlbbld.ashlarchess.pgn.WriteMode;
 import io.github.dlbbld.ashlarchess.test.FileComparison;
 import io.github.dlbbld.ashlarchess.test.pgntest.constants.PgnTestConstants;
 
-public class TestPgnExportLineBreaks {
+class TestPgnExportLineBreaks {
 
   private static final Logger logger = Nulls.getLogger(TestPgnExportLineBreaks.class);
 

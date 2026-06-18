@@ -18,7 +18,7 @@ import io.github.dlbbld.ashlarchess.pgn.PgnWriter;
 import io.github.dlbbld.ashlarchess.test.FileComparison;
 import io.github.dlbbld.ashlarchess.test.pgntest.constants.PgnTestConstants;
 
-public class TestPgnExportUtf8 {
+class TestPgnExportUtf8 {
 
   private static final Logger logger = Nulls.getLogger(TestPgnExportUtf8.class);
 

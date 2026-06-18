@@ -17,7 +17,7 @@ import io.github.dlbbld.ashlarchess.pgn.PgnGame;
 import io.github.dlbbld.ashlarchess.pgn.WriteMode;
 import io.github.dlbbld.ashlarchess.test.pgntest.constants.PgnTestConstants;
 
-public class TestLenientPgnParserUtf8 {
+class TestLenientPgnParserUtf8 {
 
   private static final Logger logger = Nulls.getLogger(TestLenientPgnParserUtf8.class);
 
