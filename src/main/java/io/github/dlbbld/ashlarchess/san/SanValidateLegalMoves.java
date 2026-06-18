@@ -3,9 +3,9 @@
 
 package io.github.dlbbld.ashlarchess.san;
 
-import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.KING;
-import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.PAWN;
-import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.ROOK;
+import static io.github.dlbbld.ashlarchess.board.enums.PieceType.KING;
+import static io.github.dlbbld.ashlarchess.board.enums.PieceType.PAWN;
+import static io.github.dlbbld.ashlarchess.board.enums.PieceType.ROOK;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -82,9 +82,9 @@ FEN / SAN / LAN serializers use the `to*` idiom:
 - `MoveToSan.calculateSanLastMove(LegalMove, List<LegalMove>, SanTerminalMarker)` → `MoveToSan.toSan(LegalMove move, List<LegalMove> legalMovesBeforeMove, SanTerminalMarker)`.
 - `MoveToLan.calculateLanLastMove(LegalMove, SanTerminalMarker)` → `MoveToLan.toLan(LegalMove move, SanTerminalMarker)`.
 
-`EnumConstants` is no longer a constant interface:
+`EnumConstants` removed from the public API:
 
-- It is now a noninstantiable `public final class`, consumed via `import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.*` instead of `implements`. Types that used to implement it (e.g. `LegalMove`, `CastlingUtility`) no longer expose the square / piece / side aliases (`LegalMove.E4`, `CastlingUtility.E1`) through their public API.
+- The square / piece / side alias layer (`import static …EnumConstants.E4`) was a non-idiomatic shortcut over the real enum types and is no longer part of the published library. Production code now references the enums directly (`import static …board.enums.Square.E4`, etc.), and `EnumConstants` has moved to the test sources as a fixture convenience. Callers should use the real enum constants — `Square.E4`, `Side.WHITE`, `PieceType.KING`. (It had also stopped being a constant interface: types like `LegalMove` / `CastlingUtility` never exposed the aliases through their public API.)
 
 Removed from the published jar:
 

@@ -3,11 +3,11 @@
 
 package io.github.dlbbld.ashlarchess.fen;
 
-import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.BLACK;
-import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.BLACK_PAWN;
-import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.PAWN;
-import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.WHITE;
-import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.WHITE_PAWN;
+import static io.github.dlbbld.ashlarchess.board.enums.Piece.BLACK_PAWN;
+import static io.github.dlbbld.ashlarchess.board.enums.Piece.WHITE_PAWN;
+import static io.github.dlbbld.ashlarchess.board.enums.PieceType.PAWN;
+import static io.github.dlbbld.ashlarchess.board.enums.Side.BLACK;
+import static io.github.dlbbld.ashlarchess.board.enums.Side.WHITE;
 
 import java.util.ArrayList;
 import java.util.List;

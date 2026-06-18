@@ -3,22 +3,22 @@
 
 package io.github.dlbbld.ashlarchess.moves;
 
-import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.B1;
-import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.B8;
-import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.BLACK_KING;
-import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.BLACK_ROOK;
-import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.C1;
-import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.C8;
-import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.D1;
-import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.D8;
-import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.F1;
-import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.F8;
-import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.G1;
-import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.G8;
-import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.KING;
-import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.ROOK;
-import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.WHITE_KING;
-import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.WHITE_ROOK;
+import static io.github.dlbbld.ashlarchess.board.enums.Piece.BLACK_KING;
+import static io.github.dlbbld.ashlarchess.board.enums.Piece.BLACK_ROOK;
+import static io.github.dlbbld.ashlarchess.board.enums.Piece.WHITE_KING;
+import static io.github.dlbbld.ashlarchess.board.enums.Piece.WHITE_ROOK;
+import static io.github.dlbbld.ashlarchess.board.enums.PieceType.KING;
+import static io.github.dlbbld.ashlarchess.board.enums.PieceType.ROOK;
+import static io.github.dlbbld.ashlarchess.board.enums.Square.B1;
+import static io.github.dlbbld.ashlarchess.board.enums.Square.B8;
+import static io.github.dlbbld.ashlarchess.board.enums.Square.C1;
+import static io.github.dlbbld.ashlarchess.board.enums.Square.C8;
+import static io.github.dlbbld.ashlarchess.board.enums.Square.D1;
+import static io.github.dlbbld.ashlarchess.board.enums.Square.D8;
+import static io.github.dlbbld.ashlarchess.board.enums.Square.F1;
+import static io.github.dlbbld.ashlarchess.board.enums.Square.F8;
+import static io.github.dlbbld.ashlarchess.board.enums.Square.G1;
+import static io.github.dlbbld.ashlarchess.board.enums.Square.G8;
 import static io.github.dlbbld.ashlarchess.common.utility.ImmutableUtility.constructListSquare;
 
 import java.util.ArrayList;

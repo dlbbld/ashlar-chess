@@ -3,9 +3,9 @@
 
 package io.github.dlbbld.ashlarchess.common.ucimove.utility;
 
-import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.BISHOP;
-import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.KNIGHT;
-import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.ROOK;
+import static io.github.dlbbld.ashlarchess.board.enums.PieceType.BISHOP;
+import static io.github.dlbbld.ashlarchess.board.enums.PieceType.KNIGHT;
+import static io.github.dlbbld.ashlarchess.board.enums.PieceType.ROOK;
 
 import java.util.ArrayList;
 import java.util.List;

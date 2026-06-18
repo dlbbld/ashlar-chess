@@ -3,7 +3,7 @@
 
 package io.github.dlbbld.ashlarchess.fen.constants;
 
-import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.WHITE;
+import static io.github.dlbbld.ashlarchess.board.enums.Side.WHITE;
 
 import java.util.Arrays;
 import java.util.List;

@@ -3,11 +3,11 @@
 
 package io.github.dlbbld.ashlarchess.board;
 
-import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.BISHOP;
-import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.KING;
-import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.KNIGHT;
-import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.PAWN;
-import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.QUEEN;
+import static io.github.dlbbld.ashlarchess.board.enums.PieceType.BISHOP;
+import static io.github.dlbbld.ashlarchess.board.enums.PieceType.KING;
+import static io.github.dlbbld.ashlarchess.board.enums.PieceType.KNIGHT;
+import static io.github.dlbbld.ashlarchess.board.enums.PieceType.PAWN;
+import static io.github.dlbbld.ashlarchess.board.enums.PieceType.QUEEN;
 
 import io.github.dlbbld.ashlarchess.bitboard.BitboardPosition;
 import io.github.dlbbld.ashlarchess.board.enums.Piece;

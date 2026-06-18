@@ -3,7 +3,7 @@
 
 package io.github.dlbbld.ashlarchess.board;
 
-import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.PAWN;
+import static io.github.dlbbld.ashlarchess.board.enums.PieceType.PAWN;
 
 import io.github.dlbbld.ashlarchess.analyze.CastlingCheckTranslator;
 import io.github.dlbbld.ashlarchess.analyze.ChessRuleAnalyzer;

@@ -3,14 +3,14 @@
 
 package io.github.dlbbld.ashlarchess.unwinnability;
 
-import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.A6;
-import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.A8;
-import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.B8;
-import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.BLACK;
-import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.G8;
-import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.H6;
-import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.H8;
-import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.KING;
+import static io.github.dlbbld.ashlarchess.board.enums.PieceType.KING;
+import static io.github.dlbbld.ashlarchess.board.enums.Side.BLACK;
+import static io.github.dlbbld.ashlarchess.board.enums.Square.A6;
+import static io.github.dlbbld.ashlarchess.board.enums.Square.A8;
+import static io.github.dlbbld.ashlarchess.board.enums.Square.B8;
+import static io.github.dlbbld.ashlarchess.board.enums.Square.G8;
+import static io.github.dlbbld.ashlarchess.board.enums.Square.H6;
+import static io.github.dlbbld.ashlarchess.board.enums.Square.H8;
 
 import io.github.dlbbld.ashlarchess.bitboard.BitboardPosition;
 import io.github.dlbbld.ashlarchess.board.enums.Piece;

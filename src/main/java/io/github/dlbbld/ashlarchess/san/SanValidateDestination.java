@@ -3,8 +3,8 @@
 
 package io.github.dlbbld.ashlarchess.san;
 
-import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.KING;
-import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.PAWN;
+import static io.github.dlbbld.ashlarchess.board.enums.PieceType.KING;
+import static io.github.dlbbld.ashlarchess.board.enums.PieceType.PAWN;
 
 import io.github.dlbbld.ashlarchess.bitboard.BitboardPosition;
 import io.github.dlbbld.ashlarchess.board.Board;

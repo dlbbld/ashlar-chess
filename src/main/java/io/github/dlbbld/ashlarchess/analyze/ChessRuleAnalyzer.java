@@ -3,7 +3,7 @@
 
 package io.github.dlbbld.ashlarchess.analyze;
 
-import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.KING;
+import static io.github.dlbbld.ashlarchess.board.enums.PieceType.KING;
 
 import java.util.Set;
 
