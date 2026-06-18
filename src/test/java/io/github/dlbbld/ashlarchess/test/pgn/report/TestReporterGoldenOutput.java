@@ -11,8 +11,11 @@ import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.function.Supplier;
 
 import org.junit.jupiter.api.Test;
+
+import com.google.common.collect.ImmutableList;
 
 import io.github.dlbbld.ashlarchess.board.Board;
 import io.github.dlbbld.ashlarchess.common.Nulls;
@@ -22,7 +25,7 @@ import io.github.dlbbld.ashlarchess.test.pgn.setup.PgnTestCaseCatalog;
 import io.github.dlbbld.ashlarchess.test.pgntest.enums.PgnTest;
 
 /**
- * Golden stdout guard for {@link Reporter#printReport}: any change to the printed bytes fails the test.
+ * Golden output guard for {@link Reporter#report}: any change to the rendered lines fails the test.
  *
  * <p>
  * Regenerate goldens with {@code -Dgolden.regenerate=true}; that mode deliberately fails every test so the flag cannot
@@ -41,7 +44,7 @@ class TestReporterGoldenOutput {
     final String pgn = """
         1. e4 e5 2. Nf3 Nf6 3. Bc4 Bc5
         """;
-    final String actual = captureStdout(() -> Reporter.printReport(pgn));
+    final String actual = render(() -> Reporter.report(pgn));
     compareOrRegenerate(actual, "01_no_threefold_activity.txt");
   }
 
@@ -106,7 +109,7 @@ class TestReporterGoldenOutput {
     // Locks the special-case rendering - sequence-with-no-endMove - that's hard to test from any
     // other entry point.
     final Board board = new Board("7k/8/8/8/8/8/1q6/K7 w - - 100 80");
-    final String actual = captureStdout(() -> Reporter.printReport(board));
+    final String actual = render(() -> Reporter.report(board));
     compareOrRegenerate(actual, "07_fifty_move_initial_fen_at_threshold.txt");
   }
 
@@ -122,17 +125,21 @@ class TestReporterGoldenOutput {
     // Locks the missed-opportunity output shape; previously no corpus or inline golden exercised it.
     final Board board = new Board("4k3/p7/8/8/8/8/P7/4K2R w - - 98 80");
     board.movesStrict("Rg1", "a6");
-    final String actual = captureStdout(() -> Reporter.printReport(board));
+    final String actual = render(() -> Reporter.report(board));
     compareOrRegenerate(actual, "08_fifty_move_missed_claim_ahead.txt");
   }
 
   private static String capturePgnFile(String pgnName) {
     final PgnTest pgnTest = PgnTestCaseCatalog.findPgnTestPgnNotListed(pgnName);
-    return captureStdout(() -> Reporter.printReport(pgnTest.getFolderPath(), pgnName));
+    return render(() -> Reporter.report(pgnTest.getFolderPath(), pgnName));
   }
 
-  private static String captureStdout(Runnable action) {
-    return normaliseLineEndings(OutputCaptureUtility.captureStdout(action));
+  private static String render(Supplier<ImmutableList<String>> action) {
+    final StringBuilder builder = new StringBuilder();
+    for (final String line : action.get()) {
+      builder.append(line).append('\n');
+    }
+    return normaliseLineEndings(Nulls.toString(builder));
   }
 
   private static void compareOrRegenerate(String actual, String goldenName) {

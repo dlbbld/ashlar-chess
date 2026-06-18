@@ -13,7 +13,6 @@ import org.junit.jupiter.api.Test;
 
 import io.github.dlbbld.ashlarchess.board.Board;
 import io.github.dlbbld.ashlarchess.common.constants.ChessConstants;
-import io.github.dlbbld.ashlarchess.test.common.utility.OutputCaptureUtility;
 
 /**
  * From-move-one coverage: positions that run into threefold, fivefold, 50-move, and 75-move rule conditions starting
@@ -341,7 +340,7 @@ class TestFromInitialPlacementAndFenStart {
    */
   private static void assertReporterOutput(Board board, boolean threefoldSectionNonEmpty,
       boolean expectedFiftyMoveSequenceReached) {
-    final List<String> lines = captureReporter(board);
+    final List<String> lines = reportLines(board);
 
     final List<String> threefoldSection = extractSection(lines, "Threefolds and beyond",
         "Valid fifty-move claims ahead");
@@ -367,8 +366,8 @@ class TestFromInitialPlacementAndFenStart {
     }
   }
 
-  private static List<String> captureReporter(Board board) {
-    return OutputCaptureUtility.captureStdoutLines(() -> Reporter.printReport(board));
+  private static List<String> reportLines(Board board) {
+    return Reporter.report(board);
   }
 
   /**

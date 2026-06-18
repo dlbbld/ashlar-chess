@@ -37,6 +37,10 @@ PGN model:
 - `move(MoveSpecification)`, `movesStrict(String...)`, and `movesLenient(String...)` now return `void` instead of `boolean`. The discarded return was always `true` (failure is signalled by exception), so it carried no information.
 - `calculateFiftyMoveRuleClaimRights()` / `calculateThreefoldRepetitionRuleClaimRights()` renamed to `fiftyMoveRuleClaimRights()` / `threefoldRepetitionRuleClaimRights()`, and `calculateInsufficientMaterial()` to `insufficientMaterial()` — dropping the implementation-flavoured `calculate` prefix in favour of domain nouns, matching the `unwinnableQuick` / `deadPositionQuick` accessors.
 
+`Reporter`:
+
+- `Reporter.printReport(...)` renamed to `Reporter.report(...)` and now **returns** the report as `ImmutableList<String>` instead of writing to `System.out`; the caller decides where the lines go (e.g. `Reporter.report(board).forEach(System.out::println)`). Applies to all three overloads (`Board`, PGN `String`, PGN file). A library should not own the output stream.
+
 Boolean accessors (JavaBeans `is` / `has` idiom, no `get` prefix):
 
 - `Side.getIsWhite()` / `getIsBlack()` → `isWhite()` / `isBlack()`.

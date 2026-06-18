@@ -14,7 +14,6 @@ import org.junit.jupiter.api.Test;
 import io.github.dlbbld.ashlarchess.board.Board;
 import io.github.dlbbld.ashlarchess.common.constants.ChessConstants;
 import io.github.dlbbld.ashlarchess.pgn.PgnUtility;
-import io.github.dlbbld.ashlarchess.test.common.utility.OutputCaptureUtility;
 import io.github.dlbbld.ashlarchess.test.pgn.setup.PgnTestCaseCatalog;
 import io.github.dlbbld.ashlarchess.test.pgntest.enums.PgnTest;
 
@@ -80,7 +79,7 @@ class TestReportPrintoutDerivesFromObjectModel {
     final FiftyMoveClaimAheadReport fiftyClaimAhead = FiftyMoveClaimAheadReportBuilder.build(board);
     final FiftyMoveSequenceReport fiftySequence = FiftyMoveSequenceReportBuilder.build(board);
 
-    final List<String> outputLines = captureReporter(board);
+    final List<String> outputLines = reportLines(board);
 
     final List<String> claimAheadSection = extractSection(outputLines, CLAIM_AHEAD_HEADER_PREFIX,
         EXISTING_HEADER_PREFIX);
@@ -140,10 +139,10 @@ class TestReportPrintoutDerivesFromObjectModel {
   }
 
   /**
-   * Captures System.out for one {@code Reporter.printReport(board)} invocation as a list of trimmed lines.
+   * The report lines for {@code board}, as produced by {@link Reporter#report(Board)}.
    */
-  private static List<String> captureReporter(Board board) {
-    return OutputCaptureUtility.captureStdoutLines(() -> Reporter.printReport(board));
+  private static List<String> reportLines(Board board) {
+    return Reporter.report(board);
   }
 
   /**

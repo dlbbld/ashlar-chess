@@ -52,14 +52,14 @@ public class ReporterManualRun {
         """;
     System.out.println("PGN string");
     System.out.println("=============================================");
-    Reporter.printReport(pgnString);
+    Reporter.report(pgnString).forEach(System.out::println);
   }
 
   static void printReport(String pgnName) throws Exception {
     final PgnTest pgnTest = PgnTestCaseCatalog.findPgnTestPgnNotListed(pgnName);
     System.out.println(pgnName);
     System.out.println("=============================================");
-    Reporter.printReport(pgnTest.getFolderPath(), pgnName);
+    Reporter.report(pgnTest.getFolderPath(), pgnName).forEach(System.out::println);
   }
 
 }

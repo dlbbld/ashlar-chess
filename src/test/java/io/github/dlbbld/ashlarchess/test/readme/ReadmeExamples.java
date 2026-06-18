@@ -91,7 +91,7 @@ public final class ReadmeExamples {
         Bb4 9. Qe2 O-O 10. f4 Nc6 11. e5 Ne8 12. Bd2 f6 13. c5 Qd8 14. a3 Bxc3 15. Bxc3
         fxe5 16. Bxe5 b6 17. Bg2 Nxe5 18. Bxa8 Nf7 19. Bg2 bxc5 20. Nxc5 Qb6 21. Qf2
         Qb5 22. Bf1 Qc6 23. Bg2 Qb5 24. Bf1 Qc6 25. Bg2""";
-    Reporter.printReport(pgn);
+    Reporter.report(pgn).forEach(System.out::println);
     // </readme:threefold-claim-ahead>
   }
 
@@ -106,7 +106,7 @@ public final class ReadmeExamples {
         Kf8 34. Rf5 h5 35. Qd8+ Kg7 36. Qg5+ Kf8 37. Qd8+ Kg7 38. Qg5+ Kf8 39. b3 Qd6
         40. Qf4 Qd1+ 41. Qf1 Qd7 42. Rxh5 Nxe3 43. Qf3 Qd4 44. Qa8+ Ke7 45. Qb7+ Kf8 46.
         Qb8+ *""";
-    Reporter.printReport(pgn);
+    Reporter.report(pgn).forEach(System.out::println);
     // </readme:threefold-on-board>
   }
 
@@ -132,7 +132,7 @@ public final class ReadmeExamples {
         Nf7+ Kg8 104. Nh6+ Kh8 105. Nf5 Ra7+ 106. Kf6 Ra1 107. Ne3 Re1 108. Nd5 Rg1
         109. Bf5 Rf1 110. Ndf4 Ra1 111. Ng6+ Kg8 112. Ne7+ Kh8 113. Ng5 Ra6+ 114. Kf7
         Rf6+""";
-    Reporter.printReport(pgn);
+    Reporter.report(pgn).forEach(System.out::println);
     // </readme:fifty-move>
   }
 

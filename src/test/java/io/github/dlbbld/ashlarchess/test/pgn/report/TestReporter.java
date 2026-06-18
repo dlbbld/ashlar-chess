@@ -3,7 +3,11 @@
 
 package io.github.dlbbld.ashlarchess.test.pgn.report;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
+
 import org.junit.jupiter.api.Test;
+
+import com.google.common.collect.ImmutableList;
 
 import io.github.dlbbld.ashlarchess.report.Reporter;
 
@@ -11,11 +15,12 @@ class TestReporter {
 
   @SuppressWarnings("static-method")
   @Test
-  void printReportDoesNotThrowOnSimpleGame() {
+  void reportProducesLinesForSimpleGame() {
     final String pgn = """
         1. e4 e5 2. Nf3 Nf6 3. Bc4 Bc5
         """;
-    Reporter.printReport(pgn);
+    final ImmutableList<String> lines = Reporter.report(pgn);
+    assertFalse(lines.isEmpty(), "report must produce at least the section headers");
   }
 
 }
