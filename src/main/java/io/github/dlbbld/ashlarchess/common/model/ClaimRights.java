@@ -18,8 +18,8 @@ import com.google.common.collect.ImmutableList;
  * time the rights were calculated.
  *
  * <p>
- * Produced by {@code Board.calculateFiftyMoveRuleClaimRights()} and
- * {@code Board.calculateThreefoldRepetitionRuleClaimRights()}.
+ * Produced by {@code Board.fiftyMoveRuleClaimRights()} and
+ * {@code Board.threefoldRepetitionRuleClaimRights()}.
  */
 public record ClaimRights(boolean canClaim, ImmutableList<ClaimableMove> claimableMoves) {
 

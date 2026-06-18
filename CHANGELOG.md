@@ -35,6 +35,7 @@ PGN model:
 - `HalfMove` is gone from the public API (its replacement, `MoveRecord`, is package-private to `report`).
 - `isUnwinnableQuick(Side)` / `isUnwinnableFull(Side)` renamed to `unwinnableQuick(Side)` / `unwinnableFull(Side)`, matching the `UnwinnableQuickAnalyzer.unwinnableQuick(...)` / `UnwinnableFullAnalyzer.unwinnableFull(...)` engines they delegate to. The `Board` methods return the verdict directly; the analyzers return the full analysis.
 - `move(MoveSpecification)`, `movesStrict(String...)`, and `movesLenient(String...)` now return `void` instead of `boolean`. The discarded return was always `true` (failure is signalled by exception), so it carried no information.
+- `calculateFiftyMoveRuleClaimRights()` / `calculateThreefoldRepetitionRuleClaimRights()` renamed to `fiftyMoveRuleClaimRights()` / `threefoldRepetitionRuleClaimRights()`, and `calculateInsufficientMaterial()` to `insufficientMaterial()` — dropping the implementation-flavoured `calculate` prefix in favour of domain nouns, matching the `unwinnableQuick` / `deadPositionQuick` accessors.
 
 Boolean accessors (JavaBeans `is` / `has` idiom, no `get` prefix):
 

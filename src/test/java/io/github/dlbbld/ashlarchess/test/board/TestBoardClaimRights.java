@@ -34,8 +34,8 @@ import io.github.dlbbld.ashlarchess.model.LegalMove;
 import io.github.dlbbld.ashlarchess.san.LenientSanParserValidationException;
 
 /**
- * Tests for {@link Board#calculateFiftyMoveRuleClaimRights()} and
- * {@link Board#calculateThreefoldRepetitionRuleClaimRights()}: the move-list variants of the FIDE 9.2 / 9.3 claim APIs.
+ * Tests for {@link Board#fiftyMoveRuleClaimRights()} and
+ * {@link Board#threefoldRepetitionRuleClaimRights()}: the move-list variants of the FIDE 9.2 / 9.3 claim APIs.
  * Each {@link ClaimRights} pairs an existence boolean ({@code canClaim}) with the list of legal moves the side to move
  * could announce as a claim - defensively copied and ordered to match {@link Board#getLegalMoves()}.
  *
@@ -46,14 +46,14 @@ import io.github.dlbbld.ashlarchess.san.LenientSanParserValidationException;
 class TestBoardClaimRights {
 
   // =============================================================================================
-  // calculateFiftyMoveRuleClaimRights - FIDE 9.3
+  // fiftyMoveRuleClaimRights - FIDE 9.3
   // =============================================================================================
 
   @SuppressWarnings("static-method")
   @Test
   void fiftyMoveEmptyBelowThreshold() {
     final Board board = new Board("7k/8/8/8/8/8/8/4K3 w - - 50 30");
-    final ClaimRights rights = board.calculateFiftyMoveRuleClaimRights();
+    final ClaimRights rights = board.fiftyMoveRuleClaimRights();
     assertFalse(rights.canClaim(), "clock 50 is below the 50-move-rule threshold of 99");
     assertEquals(0, rights.claimableMoves().size());
   }
@@ -63,7 +63,7 @@ class TestBoardClaimRights {
   void fiftyMoveQuietRookMoveAtClock99IsClaimable() {
     // White Ra1, K e1; clock 99. Any non-zeroing legal move qualifies (king or rook).
     final Board board = new Board("7k/8/8/8/8/8/4K3/R7 w - - 99 51");
-    final ClaimRights rights = board.calculateFiftyMoveRuleClaimRights();
+    final ClaimRights rights = board.fiftyMoveRuleClaimRights();
     assertTrue(rights.canClaim(), "at clock 99 every non-zeroing legal move is a 50-move claim candidate");
 
     boolean foundRa2 = false;
@@ -83,7 +83,7 @@ class TestBoardClaimRights {
     // White P e4, K e1; clock 99. The pawn move e4-e5 would reset the clock, so it is NOT a 50-move
     // claim candidate even though clock is 99. Other non-zeroing legal moves still qualify.
     final Board board = new Board("7k/8/8/8/4P3/8/4K3/R7 w - - 99 51");
-    final ClaimRights rights = board.calculateFiftyMoveRuleClaimRights();
+    final ClaimRights rights = board.fiftyMoveRuleClaimRights();
     assertTrue(rights.canClaim(), "non-pawn non-capture moves remain claimable");
 
     for (final ClaimableMove claim : rights.claimableMoves()) {
@@ -98,7 +98,7 @@ class TestBoardClaimRights {
     // White R a1, K e1; Black R a8 (a capture target on the same file). Clock 99. The capture Ra1xa8
     // would reset the clock and is not claimable; quiet rook moves on the a-file and king moves are.
     final Board board = new Board("r6k/8/8/8/8/8/4K3/R7 w - - 99 51");
-    final ClaimRights rights = board.calculateFiftyMoveRuleClaimRights();
+    final ClaimRights rights = board.fiftyMoveRuleClaimRights();
     assertTrue(rights.canClaim(), "non-capture moves remain claimable");
 
     for (final ClaimableMove claim : rights.claimableMoves()) {
@@ -114,7 +114,7 @@ class TestBoardClaimRights {
     // White's only non-zeroing legal move is Nh6-f7, which is mate. Strict FIDE 9.3: the move is a
     // valid 50-move claim regardless of the post-position outcome.
     final Board board = new Board("6rk/6pp/7N/5p2/6p1/8/2q5/K7 w - - 99 60");
-    final ClaimRights rights = board.calculateFiftyMoveRuleClaimRights();
+    final ClaimRights rights = board.fiftyMoveRuleClaimRights();
     assertTrue(rights.canClaim(), "mate-in-one at clock 99 remains a valid 50-move claim under strict FIDE 9.3");
 
     boolean foundNf7 = false;
@@ -130,7 +130,7 @@ class TestBoardClaimRights {
   }
 
   // =============================================================================================
-  // calculateThreefoldRepetitionRuleClaimRights - FIDE 9.2
+  // threefoldRepetitionRuleClaimRights - FIDE 9.2
   // =============================================================================================
 
   @SuppressWarnings("static-method")
@@ -142,7 +142,7 @@ class TestBoardClaimRights {
     final Board board = new Board();
     board.movesStrict("Nf3", "Nf6", "Ng1", "Ng8", "Nf3", "Nf6", "Ng1");
 
-    final ClaimRights rights = board.calculateThreefoldRepetitionRuleClaimRights();
+    final ClaimRights rights = board.threefoldRepetitionRuleClaimRights();
     assertTrue(rights.canClaim());
     assertEquals(1, rights.claimableMoves().size(), "only Ng8 creates the initial position's 3rd occurrence");
 
@@ -159,7 +159,7 @@ class TestBoardClaimRights {
     final Board board = new Board();
     board.movesStrict("Nf3", "Nf6", "Ng1", "Ng8", "Nf3", "Nf6", "Ng1");
 
-    final ClaimRights rights = board.calculateThreefoldRepetitionRuleClaimRights();
+    final ClaimRights rights = board.threefoldRepetitionRuleClaimRights();
     for (final ClaimableMove claim : rights.claimableMoves()) {
       assertFalse(claim.moveSpecification().equals(new MoveSpecification(B8, C6)),
           "Nb8-c6 produces a brand-new position and must not appear");
@@ -172,7 +172,7 @@ class TestBoardClaimRights {
     final Board board = new Board();
     board.movesStrict("e4", "e5", "Nf3", "Nf6");
 
-    final ClaimRights rights = board.calculateThreefoldRepetitionRuleClaimRights();
+    final ClaimRights rights = board.threefoldRepetitionRuleClaimRights();
     assertFalse(rights.canClaim());
     assertEquals(0, rights.claimableMoves().size());
   }
@@ -222,7 +222,7 @@ class TestBoardClaimRights {
   @Test
   void returnedListIsImmutable() {
     final Board board = new Board("7k/8/8/8/8/8/4K3/R7 w - - 99 51");
-    final ClaimRights rights = board.calculateFiftyMoveRuleClaimRights();
+    final ClaimRights rights = board.fiftyMoveRuleClaimRights();
 
     final List<ClaimableMove> moves = rights.claimableMoves();
     assertTrue(moves.size() > 0, "precondition: at least one claimable move");
@@ -239,13 +239,13 @@ class TestBoardClaimRights {
   @Test
   void canClaimMirrorsListEmptiness() {
     final Board emptyBoard = new Board(FenConstants.FEN_INITIAL);
-    final ClaimRights emptyRights = emptyBoard.calculateFiftyMoveRuleClaimRights();
+    final ClaimRights emptyRights = emptyBoard.fiftyMoveRuleClaimRights();
     assertEquals(emptyRights.canClaim(), !emptyRights.claimableMoves().isEmpty(),
         "canClaim must equal !claimableMoves.isEmpty()");
     assertFalse(emptyRights.canClaim());
 
     final Board claimableBoard = new Board("7k/8/8/8/8/8/4K3/R7 w - - 99 51");
-    final ClaimRights claimableRights = claimableBoard.calculateFiftyMoveRuleClaimRights();
+    final ClaimRights claimableRights = claimableBoard.fiftyMoveRuleClaimRights();
     assertEquals(claimableRights.canClaim(), !claimableRights.claimableMoves().isEmpty());
     assertTrue(claimableRights.canClaim());
   }
@@ -257,7 +257,7 @@ class TestBoardClaimRights {
     // The claimable list must follow getLegalMoves() iteration order - i.e., the indices of
     // claimable moves into the legal-moves list are strictly ascending.
     final Board board = new Board("7k/8/8/8/8/8/4K3/R7 w - - 99 51");
-    final ClaimRights rights = board.calculateFiftyMoveRuleClaimRights();
+    final ClaimRights rights = board.fiftyMoveRuleClaimRights();
     assertTrue(rights.claimableMoves().size() >= 2, "precondition: at least two candidates exist");
 
     final List<MoveSpecification> legalOrder = new ArrayList<>();
@@ -283,8 +283,8 @@ class TestBoardClaimRights {
     final int performedMoveCountBefore = board.getPerformedMoveCount();
     final String fenBefore = board.getFen();
 
-    board.calculateFiftyMoveRuleClaimRights();
-    board.calculateThreefoldRepetitionRuleClaimRights();
+    board.fiftyMoveRuleClaimRights();
+    board.threefoldRepetitionRuleClaimRights();
     board.canClaimFiftyMoveRuleFor("Ng8");
     board.canClaimThreefoldRepetitionRuleFor("Ng8");
 

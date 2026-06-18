@@ -636,7 +636,7 @@ public final class Board {
    * the single source of truth - so any future tightening of FIDE 9.3 semantics flows through automatically. Move order
    * in the returned list matches {@link #getLegalMoves()} order. The board state is unchanged after the call.
    */
-  public ClaimRights calculateFiftyMoveRuleClaimRights() {
+  public ClaimRights fiftyMoveRuleClaimRights() {
     return calculateClaimRights(/* threefoldRather */ false);
   }
 
@@ -650,7 +650,7 @@ public final class Board {
    * {@link #canClaimThreefoldRepetitionRuleFor(MoveSpecification)} - the single source of truth. Move order matches
    * {@link #getLegalMoves()} order. The board state is unchanged after the call.
    */
-  public ClaimRights calculateThreefoldRepetitionRuleClaimRights() {
+  public ClaimRights threefoldRepetitionRuleClaimRights() {
     return calculateClaimRights(/* threefoldRather */ true);
   }
 
@@ -1050,7 +1050,7 @@ public final class Board {
     return canClaimFiftyMoveRuleFor(move) || canClaimThreefoldRepetitionRuleFor(move);
   }
 
-  public InsufficientMaterial calculateInsufficientMaterial() {
+  public InsufficientMaterial insufficientMaterial() {
     if (isInsufficientMaterial()) {
       return InsufficientMaterial.BOTH;
     }
