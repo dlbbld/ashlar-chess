@@ -4,6 +4,8 @@
 package io.github.dlbbld.ashlarchess.report;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
@@ -151,7 +153,7 @@ class TestPositionIdentifierUtility {
         existing);
 
     final String initialLabel = Nulls.get(map, board.getInitialDynamicPosition());
-    assertTrue(initialLabel != null, "initial position must be present in the label map");
+    assertNotNull(initialLabel, "initial position must be present in the label map");
     assertEquals("A", initialLabel, "first distinct position seen in the claim-ahead walk gets label 'A'");
   }
 
@@ -203,7 +205,7 @@ class TestPositionIdentifierUtility {
 
     final DynamicPosition positionAfterE4 = afterE4.dynamicPosition();
     final DynamicPosition positionAfterE5 = afterE5.dynamicPosition();
-    assertTrue(!positionAfterE4.equals(positionAfterE5), "fixture sanity: the two positions must differ");
+    assertNotEquals(positionAfterE4, positionAfterE5, "fixture sanity: the two positions must differ");
 
     // Synthetic claim-ahead report with one entry on positionAfterE4. The record's invariant only
     // checks the count math; the chess semantics of the entry don't matter for the label-assignment

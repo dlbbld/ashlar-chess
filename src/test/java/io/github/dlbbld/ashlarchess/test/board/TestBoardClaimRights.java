@@ -16,6 +16,7 @@ import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.G8;
 import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.H6;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -87,7 +88,7 @@ class TestBoardClaimRights {
     assertTrue(rights.canClaim(), "non-pawn non-capture moves remain claimable");
 
     for (final ClaimableMove claim : rights.claimableMoves()) {
-      assertFalse(claim.moveSpecification().equals(new MoveSpecification(E4, E5)),
+      assertNotEquals(new MoveSpecification(E4, E5), claim.moveSpecification(),
           "the pawn move e4-e5 is clock-resetting and must NOT appear among claimable moves");
     }
   }
@@ -102,7 +103,7 @@ class TestBoardClaimRights {
     assertTrue(rights.canClaim(), "non-capture moves remain claimable");
 
     for (final ClaimableMove claim : rights.claimableMoves()) {
-      assertFalse(claim.moveSpecification().equals(new MoveSpecification(A1, A8)),
+      assertNotEquals(new MoveSpecification(A1, A8), claim.moveSpecification(),
           "the capture Ra1xa8 is clock-resetting and must NOT appear among claimable moves");
     }
   }
@@ -161,7 +162,7 @@ class TestBoardClaimRights {
 
     final ClaimRights rights = board.threefoldRepetitionRuleClaimRights();
     for (final ClaimableMove claim : rights.claimableMoves()) {
-      assertFalse(claim.moveSpecification().equals(new MoveSpecification(B8, C6)),
+      assertNotEquals(new MoveSpecification(B8, C6), claim.moveSpecification(),
           "Nb8-c6 produces a brand-new position and must not appear");
     }
   }

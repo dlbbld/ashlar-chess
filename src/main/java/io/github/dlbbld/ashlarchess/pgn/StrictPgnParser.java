@@ -35,6 +35,7 @@ public final class StrictPgnParser {
   private static final int MAX_TAG_NAME_LENGTH = 255;
   private static final int SAN_MIN_LENGTH = 2;
   private static final int SAN_MAX_LENGTH = 7;
+  private static final String AS_EXPECTED_SUFFIX = "\" as expected.";
 
   private final String source;
   private final PgnTokenizer tokenizer;
@@ -573,7 +574,7 @@ public final class StrictPgnParser {
       }
       if (token.type() != PgnTokenType.MOVE_NUMBER_BLACK || !token.text().equals(expected)) {
         throw movetextError(StrictPgnParserValidationProblem.MOVETEXT_MOVE_NUMBER_DOES_NOT_BEGIN_WITH_BLACK_MOVE,
-            "The move text does not begin indicating a Black move \"" + expected + "\" as expected.");
+            "The move text does not begin indicating a Black move \"" + expected + AS_EXPECTED_SUFFIX);
       }
       tokenizer.next();
       return;
@@ -583,10 +584,10 @@ public final class StrictPgnParser {
     if (token.type() != PgnTokenType.MOVE_NUMBER_WHITE || !token.text().equals(expected)) {
       if (isFirstMove) {
         throw movetextError(StrictPgnParserValidationProblem.MOVETEXT_MOVE_NUMBER_DOES_NOT_BEGIN_WITH_WHITE_MOVE,
-            "The move text does not begin indicating a White move \"" + expected + "\" as expected.");
+            "The move text does not begin indicating a White move \"" + expected + AS_EXPECTED_SUFFIX);
       }
       throw movetextError(StrictPgnParserValidationProblem.MOVETEXT_MOVE_NUMBER_DOES_NOT_CONTINUE_AS_EXPECTED,
-          "The movetext numbering does not continue with \"" + expected + "\" as expected.");
+          "The movetext numbering does not continue with \"" + expected + AS_EXPECTED_SUFFIX);
     }
     tokenizer.next();
   }

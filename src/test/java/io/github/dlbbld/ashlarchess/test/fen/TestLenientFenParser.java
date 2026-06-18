@@ -5,6 +5,7 @@ package io.github.dlbbld.ashlarchess.test.fen;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -133,7 +134,7 @@ class TestLenientFenParser {
     assertFalse(result.isValid());
     assertEquals(LenientFenParserValidationProblem.ADVANCED_INVALID, result.problem());
     // The underlying advanced-problem categorisation is carried so callers can switch without parsing message.
-    assertFalse(result.fenAdvancedValidationProblem() == FenAdvancedValidationProblem.SUCCESS);
+    assertNotEquals(FenAdvancedValidationProblem.SUCCESS, result.fenAdvancedValidationProblem());
     assertNull(result.fen());
   }
 

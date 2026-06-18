@@ -237,7 +237,7 @@ final class PgnTokenizer {
       }
       text.append((char) stream.read());
     }
-    if (text.length() == 0) {
+    if (text.isEmpty()) {
       // Unrecognised single character - consume it so we always make progress. The parser surfaces the rejection.
       text.append((char) stream.read());
     }

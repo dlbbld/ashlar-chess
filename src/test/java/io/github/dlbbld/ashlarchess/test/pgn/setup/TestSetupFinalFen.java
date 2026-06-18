@@ -86,7 +86,7 @@ class TestSetupFinalFen {
         sb.append(String.join("\n\n", mismatches));
       }
       if (!errors.isEmpty()) {
-        if (sb.length() > 0) {
+        if (!sb.isEmpty()) {
           sb.append("\n\n");
         }
         sb.append(String.format("%d fixture(s) could not be replayed:%n%n", errors.size()));

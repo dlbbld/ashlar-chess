@@ -4,6 +4,7 @@
 package io.github.dlbbld.ashlarchess.report;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
@@ -74,7 +75,7 @@ class TestThreefoldExistingReportBuilder {
         break;
       }
     }
-    assertTrue(initialGroup != null, "the initial position must appear as a repeated-position group");
+    assertNotNull(initialGroup, "the initial position must appear as a repeated-position group");
     assertEquals(5, initialGroup.totalRepetitionCount(), "fivefold of the initial position reached");
     assertEquals(4, initialGroup.occurrences().size(), "four played occurrences + 1 implicit initial");
   }

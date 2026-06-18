@@ -4,6 +4,7 @@
 package io.github.dlbbld.ashlarchess.report;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
@@ -75,7 +76,7 @@ class TestThreefoldClaimAheadReportBuilder {
         break;
       }
     }
-    assertTrue(initialPlayed != null,
+    assertNotNull(initialPlayed,
         "the played-on-board Ng8 must surface as a claim-ahead entry with hasBeenPlayed == true");
     assertEquals(3, initialPlayed.totalRepetitionCount());
   }

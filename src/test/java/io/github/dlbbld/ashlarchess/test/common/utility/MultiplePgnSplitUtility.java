@@ -46,7 +46,7 @@ public final class MultiplePgnSplitUtility {
       while (myReader.hasNextLine()) {
         final String line = Nulls.nextLine(myReader);
 
-        if (line.length() == 0) {
+        if (line.isEmpty()) {
           blankLineCounter++;
         }
         if (!isChess960 && line.indexOf("chess 960") != -1) {

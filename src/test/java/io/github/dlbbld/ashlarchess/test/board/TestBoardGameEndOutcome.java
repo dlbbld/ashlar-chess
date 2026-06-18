@@ -5,6 +5,7 @@ package io.github.dlbbld.ashlarchess.test.board;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
@@ -47,7 +48,7 @@ class TestBoardGameEndOutcome {
     final Outcome outcome = BasicChessUtility.calculateOutcome(board);
     assertEquals(Termination.CHECKMATE, outcome.termination(), "precedence: CHECKMATE outranks SEVENTY_FIVE_MOVES");
     assertEquals(Side.WHITE, outcome.winner(), "white delivered mate");
-    assertTrue(outcome.termination() != Termination.NONE);
+    assertNotEquals(Termination.NONE, outcome.termination());
   }
 
   // Case 2 - stalemate + 75-move both true; outcome.termination is STALEMATE.
@@ -68,7 +69,7 @@ class TestBoardGameEndOutcome {
     final Outcome outcome = BasicChessUtility.calculateOutcome(board);
     assertEquals(Termination.STALEMATE, outcome.termination(), "precedence: STALEMATE outranks SEVENTY_FIVE_MOVES");
     assertEquals(Side.NONE, outcome.winner(), "stalemate is a draw");
-    assertTrue(outcome.termination() != Termination.NONE);
+    assertNotEquals(Termination.NONE, outcome.termination());
   }
 
   // Case 3 - fivefold + 75-move both true; outcome.termination is SEVENTY_FIVE_MOVES.
