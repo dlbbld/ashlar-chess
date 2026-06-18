@@ -24,8 +24,7 @@ final class ToSquaresSupport {
     }
   }
 
-  public static SquareOccupation calculateSquareOccupation(StaticPosition staticPosition, Side havingMove,
-      Square square) {
+  static SquareOccupation calculateSquareOccupation(StaticPosition staticPosition, Side havingMove, Square square) {
     final Piece piece = staticPosition.get(square);
     if (piece == Piece.NONE) {
       return SquareOccupation.NONE;

@@ -53,7 +53,8 @@ public final class PotentialToSquaresSupport {
     final Set<Square> potentialToSquareSet = new TreeSet<>();
 
     for (final Square toSquare : emptyBoardSquareSet) {
-      final SquareOccupation squareOccupation = ToSquaresSupport.calculateSquareOccupation(staticPosition, havingMove, toSquare);
+      final SquareOccupation squareOccupation = ToSquaresSupport.calculateSquareOccupation(staticPosition, havingMove,
+          toSquare);
       switch (squareOccupation) {
         case NONE:
           potentialToSquareSet.add(toSquare);

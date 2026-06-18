@@ -26,7 +26,7 @@ public final class SanValidateStaticallyStrictCalculateSupport {
   private SanValidateStaticallyStrictCalculateSupport() {
   }
 
-  public static SanValidationFromTo calculateFromFileAndOrRankTo(String enumName, PieceType movingPieceType) {
+  static SanValidationFromTo calculateFromFileAndOrRankTo(String enumName, PieceType movingPieceType) {
 
     final String parse = enumName.toLowerCase();
     File fromFile;

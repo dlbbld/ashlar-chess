@@ -13,14 +13,13 @@ import io.github.dlbbld.ashlarchess.board.enums.File;
 import io.github.dlbbld.ashlarchess.board.enums.Rank;
 import io.github.dlbbld.ashlarchess.board.enums.Square;
 import io.github.dlbbld.ashlarchess.test.san.model.SanValidationFromTo;
-import io.github.dlbbld.ashlarchess.test.san.validate.statically.strict.calculate.SanValidateStaticallyStrictCalculateSupport;
 
 public final class SanValidateStaticallyFormatCalculateSupport {
 
   private SanValidateStaticallyFormatCalculateSupport() {
   }
 
-  public static List<SanValidationFromTo> calculateWithoutDisambiguation() {
+  static List<SanValidationFromTo> calculateWithoutDisambiguation() {
     final List<SanValidationFromTo> result = new ArrayList<>();
     for (final Square toSquare : Square.REAL) {
       result.add(new SanValidationFromTo(FILE_NONE, RANK_NONE, toSquare));
@@ -28,7 +27,7 @@ public final class SanValidateStaticallyFormatCalculateSupport {
     return result;
   }
 
-  public static List<SanValidationFromTo> calculateWithFile() {
+  static List<SanValidationFromTo> calculateWithFile() {
     final List<SanValidationFromTo> result = new ArrayList<>();
     for (final File fromFile : File.REAL) {
       for (final Square toSquare : Square.REAL) {
@@ -38,7 +37,7 @@ public final class SanValidateStaticallyFormatCalculateSupport {
     return result;
   }
 
-  public static List<SanValidationFromTo> calculateWithRank() {
+  static List<SanValidationFromTo> calculateWithRank() {
     final List<SanValidationFromTo> result = new ArrayList<>();
     for (final Rank fromRank : Rank.REAL) {
       for (final Square toSquare : Square.REAL) {
@@ -48,7 +47,7 @@ public final class SanValidateStaticallyFormatCalculateSupport {
     return result;
   }
 
-  public static List<SanValidationFromTo> calculateWithSquare() {
+  static List<SanValidationFromTo> calculateWithSquare() {
     final List<SanValidationFromTo> result = new ArrayList<>();
     for (final Square fromSquare : Square.REAL) {
       for (final Square toSquare : Square.REAL) {

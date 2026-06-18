@@ -72,7 +72,7 @@ final class RangeSquaresSupport {
     return calculatedToSquareSet;
   }
 
-  public static Set<Square> calculateRangeSquare(StaticPosition staticPosition, Side havingMove, Square fromSquare,
+  static Set<Square> calculateRangeSquare(StaticPosition staticPosition, Side havingMove, Square fromSquare,
       boolean isAllowOwnPiece) {
 
     final Piece piece = staticPosition.get(fromSquare);
@@ -98,7 +98,8 @@ final class RangeSquaresSupport {
     final List<Square> calculatedToSquareList = new ArrayList<>();
 
     for (final Square toSquare : emptyBoardSquareList) {
-      final SquareOccupation squareOccupation = ToSquaresSupport.calculateSquareOccupation(staticPosition, havingMove, toSquare);
+      final SquareOccupation squareOccupation = ToSquaresSupport.calculateSquareOccupation(staticPosition, havingMove,
+          toSquare);
       switch (squareOccupation) {
         case NONE:
           calculatedToSquareList.add(toSquare);
