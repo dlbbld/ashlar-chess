@@ -46,16 +46,6 @@ public final class LegalMovesSupport {
         calculateLegalMovesBottomUp(staticPosition, havingMove, castlingRight, enPassantCaptureTargetSquare));
   }
 
-  /**
-   * Public bridge to {@link KingCastlingLegalMoves}. Returns only the castling legal moves for {@code havingMove} given
-   * the current castling rights. Reference-layer entry point used by the corpus differential tests comparing this
-   * StaticPosition-shaped pipeline against {@code BitboardLegalMoveFactory}.
-   */
-  public static Set<LegalMove> calculateCastlingLegalMoves(StaticPosition staticPosition, Side havingMove,
-      CastlingRight castlingRight) {
-    return KingCastlingLegalMoves.calculateKingCastlingLegalMoves(staticPosition, havingMove, castlingRight);
-  }
-
   private static Set<LegalMove> calculateLegalMovesBottomUp(StaticPosition staticPosition,
       Square enPassantCaptureTargetSquare, CastlingRight castlingRight, Side havingMove, Square fromSquare) {
     final PieceType pieceType = staticPosition.get(fromSquare).getPieceType();
