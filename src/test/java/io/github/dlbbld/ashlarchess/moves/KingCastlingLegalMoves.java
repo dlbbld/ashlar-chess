@@ -32,11 +32,11 @@ import io.github.dlbbld.ashlarchess.common.constants.CastlingConstants;
 import io.github.dlbbld.ashlarchess.common.exceptions.ProgrammingMistakeException;
 import io.github.dlbbld.ashlarchess.enums.CastlingCheck;
 import io.github.dlbbld.ashlarchess.model.LegalMove;
-import io.github.dlbbld.ashlarchess.squares.AttackedSquaresSupport;
+import io.github.dlbbld.ashlarchess.squares.AttackedSquaresOracle;
 
 /**
  * Test-side StaticPosition legal-move generator for castling. Re-implements the castling check on the mailbox surface
- * ({@code StaticPosition.get(Square)} + {@link AttackedSquaresSupport}) end-to-end - it is the differential-test
+ * ({@code StaticPosition.get(Square)} + {@link AttackedSquaresOracle}) end-to-end - it is the differential-test
  * oracle for the bitboard castling pipeline ({@code BitboardLegalMoveFactory} inlines its own castling generation
  * against {@code CastlingUtility}'s bitboard methods), so this class must not delegate to that pipeline. Both sides
  * agreeing on every fixture is the spine assertion for castling.
@@ -149,7 +149,7 @@ class KingCastlingLegalMoves extends KingLegalMoves {
 
   private static CastlingCheck calculateQueenSideCheckCondition(StaticPosition staticPosition, Side havingMove) {
     final Side oppositeSide = havingMove.getOppositeSide();
-    final Set<Square> attackedSquares = AttackedSquaresSupport.calculateAttackedSquares(staticPosition, oppositeSide);
+    final Set<Square> attackedSquares = AttackedSquaresOracle.calculateAttackedSquares(staticPosition, oppositeSide);
     if (attackedSquares.contains(SquareUtility.calculateKingOriginalSquare(havingMove))) {
       return CastlingCheck.TEMPORARY_KING_IN_CHECK;
     }
@@ -164,7 +164,7 @@ class KingCastlingLegalMoves extends KingLegalMoves {
 
   private static CastlingCheck calculateKingSideCheckCondition(StaticPosition staticPosition, Side havingMove) {
     final Side oppositeSide = havingMove.getOppositeSide();
-    final Set<Square> attackedSquares = AttackedSquaresSupport.calculateAttackedSquares(staticPosition, oppositeSide);
+    final Set<Square> attackedSquares = AttackedSquaresOracle.calculateAttackedSquares(staticPosition, oppositeSide);
     if (attackedSquares.contains(SquareUtility.calculateKingOriginalSquare(havingMove))) {
       return CastlingCheck.TEMPORARY_KING_IN_CHECK;
     }

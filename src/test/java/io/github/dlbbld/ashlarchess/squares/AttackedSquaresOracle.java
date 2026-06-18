@@ -19,9 +19,9 @@ import io.github.dlbbld.ashlarchess.board.enums.Square;
  *
  *
  */
-public final class AttackedSquaresSupport {
+public final class AttackedSquaresOracle {
 
-  private AttackedSquaresSupport() {
+  private AttackedSquaresOracle() {
   }
 
   public static Set<Square> calculateAttackedSquares(StaticPosition staticPosition, Side havingMove) {

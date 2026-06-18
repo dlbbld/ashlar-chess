@@ -16,7 +16,7 @@ import io.github.dlbbld.ashlarchess.bitboard.StaticPositionBridge;
 import io.github.dlbbld.ashlarchess.board.StaticPosition;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
 import io.github.dlbbld.ashlarchess.board.enums.Square;
-import io.github.dlbbld.ashlarchess.squares.AttackedSquaresSupport;
+import io.github.dlbbld.ashlarchess.squares.AttackedSquaresOracle;
 import io.github.dlbbld.ashlarchess.test.model.PgnFen;
 import io.github.dlbbld.ashlarchess.test.model.PgnTestCaseList;
 import io.github.dlbbld.ashlarchess.test.pgn.setup.PgnTestCaseCatalog;
@@ -25,7 +25,7 @@ import io.github.dlbbld.ashlarchess.test.pgntest.enums.PgnTest;
 /**
  * Differential test for {@link BitboardPosition#attackedSquares(Side)}: for every fixture and every side, the
  * bitboard's union of all piece attacks must agree, square-for-square, with
- * {@link AttackedSquaresSupport#calculateAttackedSquares}. This is the first composed bitboard primitive - exercises
+ * {@link AttackedSquaresOracle#calculateAttackedSquares}. This is the first composed bitboard primitive - exercises
  * the whole Phase 2 + Phase 3 stack together.
  */
 class TestBitboardPositionAttackedSquares {
@@ -48,7 +48,7 @@ class TestBitboardPositionAttackedSquares {
   private static void assertSideAgrees(StaticPosition staticPosition, BitboardPosition bitboardPosition, Side side,
       PgnFen testCase) {
     final Set<Square> bitboardAttacks = BitboardPositionUtility.toSquareSet(bitboardPosition.attackedSquares(side));
-    final Set<Square> referenceAttacks = AttackedSquaresSupport.calculateAttackedSquares(staticPosition, side);
+    final Set<Square> referenceAttacks = AttackedSquaresOracle.calculateAttackedSquares(staticPosition, side);
     assertEquals(referenceAttacks, bitboardAttacks, side + " attackedSquares in fixture " + testCase.pgnName());
   }
 
@@ -57,13 +57,13 @@ class TestBitboardPositionAttackedSquares {
   void initialPositionMatchesReference() {
     final Set<Square> bbWhite = BitboardPositionUtility
         .toSquareSet(BitboardPosition.INITIAL_POSITION.attackedSquares(Side.WHITE));
-    final Set<Square> refWhite = AttackedSquaresSupport.calculateAttackedSquares(StaticPosition.INITIAL_POSITION,
+    final Set<Square> refWhite = AttackedSquaresOracle.calculateAttackedSquares(StaticPosition.INITIAL_POSITION,
         Side.WHITE);
     assertEquals(refWhite, bbWhite, "white attackedSquares on initial position");
 
     final Set<Square> bbBlack = BitboardPositionUtility
         .toSquareSet(BitboardPosition.INITIAL_POSITION.attackedSquares(Side.BLACK));
-    final Set<Square> refBlack = AttackedSquaresSupport.calculateAttackedSquares(StaticPosition.INITIAL_POSITION,
+    final Set<Square> refBlack = AttackedSquaresOracle.calculateAttackedSquares(StaticPosition.INITIAL_POSITION,
         Side.BLACK);
     assertEquals(refBlack, bbBlack, "black attackedSquares on initial position");
   }

@@ -26,7 +26,7 @@ import io.github.dlbbld.ashlarchess.moves.CastlingUtility;
 import io.github.dlbbld.ashlarchess.moves.EnPassantCaptureUtility;
 import io.github.dlbbld.ashlarchess.moves.PromotionUtility;
 import io.github.dlbbld.ashlarchess.moves.StandardMoveUtility;
-import io.github.dlbbld.ashlarchess.squares.AttackedSquaresSupport;
+import io.github.dlbbld.ashlarchess.squares.AttackedSquaresOracle;
 
 public final class StaticPositionUtility {
 
@@ -82,7 +82,7 @@ public final class StaticPositionUtility {
   }
 
   public static boolean calculateIsCheck(StaticPosition staticPosition, Side havingMove) {
-    final Set<Square> attackedSquares = AttackedSquaresSupport.calculateAttackedSquares(staticPosition,
+    final Set<Square> attackedSquares = AttackedSquaresOracle.calculateAttackedSquares(staticPosition,
         havingMove.getOppositeSide());
     final Square kingSquareHavingMove = StaticPositionUtility.calculateKingSquare(staticPosition, havingMove);
     return attackedSquares.contains(kingSquareHavingMove);

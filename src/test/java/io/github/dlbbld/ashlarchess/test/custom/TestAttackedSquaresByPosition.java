@@ -16,7 +16,7 @@ import io.github.dlbbld.ashlarchess.board.enums.Square;
 import io.github.dlbbld.ashlarchess.fen.FenParserAdvanced;
 import io.github.dlbbld.ashlarchess.fen.constants.FenConstants;
 import io.github.dlbbld.ashlarchess.fen.model.Fen;
-import io.github.dlbbld.ashlarchess.squares.AttackedSquaresSupport;
+import io.github.dlbbld.ashlarchess.squares.AttackedSquaresOracle;
 
 class TestAttackedSquaresByPosition {
 
@@ -61,7 +61,7 @@ class TestAttackedSquaresByPosition {
 
     // The relocated reference oracle (AttackedSquaresSupport) takes StaticPosition; derive it on demand from
     // Fen's bitboard via the test-oracle bridge.
-    final Set<Square> actualSquareSet = AttackedSquaresSupport
+    final Set<Square> actualSquareSet = AttackedSquaresOracle
         .calculateAttackedSquares(StaticPositionBridge.toStaticPosition(fen.bitboardPosition()), fen.havingMove());
 
     final Set<String> expected = new TreeSet<>();
