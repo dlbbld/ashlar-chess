@@ -23,6 +23,7 @@ public final class AttackedSquaresSupport {
 
   private AttackedSquaresSupport() {
   }
+
   public static Set<Square> calculateAttackedSquares(StaticPosition staticPosition, Side havingMove) {
 
     final Set<Square> squareSet = new TreeSet<>();

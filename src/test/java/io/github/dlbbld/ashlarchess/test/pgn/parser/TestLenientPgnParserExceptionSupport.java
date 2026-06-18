@@ -19,6 +19,7 @@ public final class TestLenientPgnParserExceptionSupport {
 
   private TestLenientPgnParserExceptionSupport() {
   }
+
   static void checkException(Path pgnTestFolderPath, String pgnName,
       LenientPgnParserValidationProblem expectedProblemParser, SanValidationProblem expectedProblemSan) {
     checkParse(pgnTestFolderPath, pgnName, expectedProblemParser, expectedProblemSan);
