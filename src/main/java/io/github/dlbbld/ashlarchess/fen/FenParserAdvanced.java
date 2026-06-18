@@ -303,12 +303,23 @@ public class FenParserAdvanced {
           "the castling right part of \"" + castlingRightBothStr + "\" is not valid");
     }
 
-    final CastlingRight white = hasK && hasQ ? CastlingRight.KING_AND_QUEEN_SIDE
-        : hasK ? CastlingRight.KING_SIDE : hasQ ? CastlingRight.QUEEN_SIDE : CastlingRight.NONE;
-    final CastlingRight black = hask && hasq ? CastlingRight.KING_AND_QUEEN_SIDE
-        : hask ? CastlingRight.KING_SIDE : hasq ? CastlingRight.QUEEN_SIDE : CastlingRight.NONE;
+    final CastlingRight white = castlingRight(hasK, hasQ);
+    final CastlingRight black = castlingRight(hask, hasq);
 
     return new CastlingRightBoth(white, black);
+  }
+
+  private static CastlingRight castlingRight(boolean hasKingSide, boolean hasQueenSide) {
+    if (hasKingSide && hasQueenSide) {
+      return CastlingRight.KING_AND_QUEEN_SIDE;
+    }
+    if (hasKingSide) {
+      return CastlingRight.KING_SIDE;
+    }
+    if (hasQueenSide) {
+      return CastlingRight.QUEEN_SIDE;
+    }
+    return CastlingRight.NONE;
   }
 
   private static Square validateEnPassantCaptureTargetSquare(BitboardPosition bitboardPosition,

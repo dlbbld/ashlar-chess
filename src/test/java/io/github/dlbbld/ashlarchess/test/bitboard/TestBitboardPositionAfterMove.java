@@ -68,7 +68,7 @@ class TestBitboardPositionAfterMove {
   @SuppressWarnings("static-method")
   @Test
   void noneSideThrows() {
-    assertThrows(IllegalArgumentException.class,
-        () -> BitboardPosition.INITIAL_POSITION.afterMove(new MoveSpecification(Square.E2, Square.E4), Side.NONE));
+    final MoveSpecification move = new MoveSpecification(Square.E2, Square.E4);
+    assertThrows(IllegalArgumentException.class, () -> BitboardPosition.INITIAL_POSITION.afterMove(move, Side.NONE));
   }
 }

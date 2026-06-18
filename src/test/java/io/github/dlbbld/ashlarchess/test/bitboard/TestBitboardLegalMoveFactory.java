@@ -69,7 +69,8 @@ class TestBitboardLegalMoveFactory {
   @SuppressWarnings("static-method")
   @Test
   void noneSideThrows() {
-    assertThrows(IllegalArgumentException.class, () -> BitboardLegalMoveFactory
-        .toLegalMove(BitboardPosition.INITIAL_POSITION, new MoveSpecification(Square.E2, Square.E4), Side.NONE));
+    final MoveSpecification move = new MoveSpecification(Square.E2, Square.E4);
+    assertThrows(IllegalArgumentException.class,
+        () -> BitboardLegalMoveFactory.toLegalMove(BitboardPosition.INITIAL_POSITION, move, Side.NONE));
   }
 }

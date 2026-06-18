@@ -135,7 +135,8 @@ class TestBoardClaimFor {
     // The per-move predicate now treats "not in the legal-moves set" as a loud failure - throws
     // IllegalArgumentException rather than silently returning false.
     final Board board = new Board("7k/8/8/8/8/8/4K3/R7 w - - 99 51");
-    assertThrows(IllegalArgumentException.class, () -> board.canClaimFiftyMoveRuleFor(new MoveSpecification(A1, H8)),
+    final MoveSpecification move = new MoveSpecification(A1, H8);
+    assertThrows(IllegalArgumentException.class, () -> board.canClaimFiftyMoveRuleFor(move),
         "a move not in the legal-moves set must throw, not silently return false");
   }
 
@@ -206,8 +207,8 @@ class TestBoardClaimFor {
     // F6-A1 is not a legal move from any piece on f6 (knight on f6 cannot reach a1).
     final Board board = new Board();
     board.movesStrict("Nf3", "Nf6", "Ng1", "Ng8", "Nf3", "Nf6", "Ng1");
-    assertThrows(IllegalArgumentException.class,
-        () -> board.canClaimThreefoldRepetitionRuleFor(new MoveSpecification(F6, A1)),
+    final MoveSpecification move = new MoveSpecification(F6, A1);
+    assertThrows(IllegalArgumentException.class, () -> board.canClaimThreefoldRepetitionRuleFor(move),
         "a move not in the legal-moves set must throw, not silently return false");
   }
 

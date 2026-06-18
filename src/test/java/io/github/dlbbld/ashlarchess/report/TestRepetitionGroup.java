@@ -8,6 +8,8 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import org.junit.jupiter.api.Test;
 
+import com.google.common.collect.ImmutableList;
+
 import io.github.dlbbld.ashlarchess.board.Board;
 import io.github.dlbbld.ashlarchess.common.Nulls;
 import io.github.dlbbld.ashlarchess.common.model.DynamicPosition;
@@ -24,8 +26,8 @@ class TestRepetitionGroup {
   void compactConstructorRejectsInconsistentTotal() {
     final MoveRecord move = firstPlayedMove();
     final DynamicPosition position = move.dynamicPosition();
-    assertThrows(IllegalArgumentException.class,
-        () -> new RepetitionGroup(position, Nulls.listOf(move, move, move), false, 99),
+    final ImmutableList<MoveRecord> occurrences = Nulls.listOf(move, move, move);
+    assertThrows(IllegalArgumentException.class, () -> new RepetitionGroup(position, occurrences, false, 99),
         "totalRepetitionCount disagreeing with occurrences.size() + (initial ? 1 : 0) must throw");
   }
 

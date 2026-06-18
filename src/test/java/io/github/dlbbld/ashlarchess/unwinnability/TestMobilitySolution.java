@@ -72,7 +72,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -266,7 +266,7 @@ class TestMobilitySolution {
   void testCustom() throws Exception {
 
     {
-      final Map<Square, List<Square>> mobilityMap = new HashMap<>();
+      final Map<Square, List<Square>> mobilityMap = new EnumMap<>(Square.class);
 
       final List<Square> whiteKingToSquareList = Nulls.asList(A1, B1, C1, D1, E1, F1, G1, H1, A2, B2, C2, D2, E2, F2,
           G2, H2, A3, B3, C3, D3, E3, F3, G3, H3, A4, B4, C4, D4, E4, F4, G4, H4, A5, C5, D5, E5, F5, G5, H5, C6, D6,
@@ -286,7 +286,7 @@ class TestMobilitySolution {
     }
 
     {
-      final Map<Square, List<Square>> mobilityMap = new HashMap<>();
+      final Map<Square, List<Square>> mobilityMap = new EnumMap<>(Square.class);
 
       final List<Square> whiteKingToSquareList = Nulls.asList(A1, B1, C1, D1, E1, F1, G1, H1, A2, B2, C2, D2, E2, F2,
           G2, H2, A3, B3, C3, A4, B4);
@@ -327,7 +327,7 @@ class TestMobilitySolution {
     }
 
     {
-      final Map<Square, List<Square>> mobilityMap = new HashMap<>();
+      final Map<Square, List<Square>> mobilityMap = new EnumMap<>(Square.class);
 
       final List<Square> whiteKingToSquareList = Nulls.asList(A1, B1, C1, D1, E1, F1, G1, H1, A2, B2, C2, D2, E2, F2,
           G2, H2, A3, B3, C3, D3, E3, F3, G3, H3, A4, B4, C4, D4, E4, F4, G4, H4, A5, B5, C5, D5, E5, F5, G5, H5);
@@ -362,7 +362,7 @@ class TestMobilitySolution {
     }
 
     {
-      final Map<Square, List<Square>> mobilityMap = new HashMap<>();
+      final Map<Square, List<Square>> mobilityMap = new EnumMap<>(Square.class);
 
       final List<Square> whiteKingToSquareList = Nulls.asList(G1);
       mobilityMap.put(G1, whiteKingToSquareList);
