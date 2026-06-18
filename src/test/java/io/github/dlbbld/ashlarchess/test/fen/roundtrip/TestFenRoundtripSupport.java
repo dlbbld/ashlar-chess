@@ -14,7 +14,8 @@ public final class TestFenRoundtripSupport {
 
   private TestFenRoundtripSupport() {
   }
-  public static void checFenRoundtrip(String initialFen, List<MoveSpecification> moveList) {
+
+  static void checFenRoundtrip(String initialFen, List<MoveSpecification> moveList) {
 
     final Board boardPlayMoves = new Board(initialFen);
 
