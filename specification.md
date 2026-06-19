@@ -29,10 +29,10 @@ The project moved in phases. The first implementation was correctness-first and 
 Concrete examples:
 
 - **Move history stores derived facts directly.** Whether a move was a two-square pawn advance or an en passant capture is recorded in the move history rather than recomputed from the position when needed. Engines like Stockfish compute these on demand because the savings matter at engine speeds. ashlar-chess stores them because the resulting code is shorter, more obviously correct, and easier to maintain.
-- **Production piece placement is bitboard-based.** `BitboardPosition` is the runtime representation for piece placement, move generation, attack queries, and piece hashing. It exists because a production library cannot stay credible if basic position questions are orders of magnitude slower than the surrounding ecosystem.
+- **Production piece placement is bitboard-based.** `BitboardPosition` is the runtime representation for piece placement, move generation, and attack queries. It exists because a production library cannot stay credible if basic position questions are orders of magnitude slower than the surrounding ecosystem.
 - **The public board stays rich.** `Board` is a game-state object, not the lean search representation. It keeps per-move legal moves, check flags, dynamic positions, halfmove clocks, repetition counts, SAN/LAN strings, and castling-right loss facts so rule queries, reports, FEN/PGN output, and `unmove` are direct and auditable. Its current position is bitboard-backed, but the object deliberately carries more game history than a performance-only board would.
 - **The full unwinnability search uses a mutable search board.** `HelpmateSearchBoard` owns mutable bitboards, make/unmake stacks, per-depth legal-move buffers, and an exact transposition key. This is a deliberate performance trade-off in the search hot path, contained inside the unwinnability package and tested against `Board`.
-- **Repetition and public state still prefer transparent semantics.** Position equality follows the FIDE definition directly. Zobrist exists as a bitboard helper, but semantic repetition logic remains rooted in the actual dynamic position fields, not in trusting a hash as the rule fact.
+- **Repetition and public state prefer transparent semantics.** Position equality follows the FIDE definition directly: repetition keys on the exact `DynamicPosition` record and the helpmate transposition table on the exact `HelpmateSearchKey` — exact value records, never a hash trusted as the rule fact.
 
 The resulting rule is: optimize where production use needs it, but make the optimization answer to a readable oracle. Where the FIDE Laws are ambiguous, the library follows the most rule-faithful reading.
 
@@ -245,7 +245,7 @@ The top-level package `io.github.dlbbld.ashlarchess` is organised by concern:
 | `distance` | Square-to-square distance metrics (king, knight) |
 | `range` | Orthogonal and diagonal direction ranges for piece movement |
 | `squares` | Precomputed square-to-square reachability and attack lookup tables (`emptyboard`, `pawn`, `to.attacked`, `to.potential`, `to.range`) |
-| `bitboard` | `BitboardPosition` (12-long piece-bitboard record) and its move/attack/Zobrist helpers — the production piece-placement representation |
+| `bitboard` | `BitboardPosition` (12-long piece-bitboard record) and its move/attack helpers — the production piece-placement representation |
 | `exceptions` | Top-level move-pipeline exception (`InvalidMoveException`); other exceptions live in `common.exceptions` |
 | `common` | Generic utilities, constants, and exceptions |
 
@@ -255,7 +255,7 @@ Packages depend in roughly that order (top to bottom).
 
 Piece placement has two independent representations in the codebase, by design.
 
-**`BitboardPosition`** (in `src/main/java/io/github/dlbbld/ashlarchess/bitboard/`) is the single piece-placement representation that production code sees. It is a 12-long record — one `long` per piece-and-side bitboard, little-endian rank-file with A1 at bit 0 — exposing move generation, attack queries, immutable make-move (`afterMove`), and a piece-only Zobrist hash. Everything in `src/main/` that needs to ask a question about pieces on squares asks `BitboardPosition`.
+**`BitboardPosition`** (in `src/main/java/io/github/dlbbld/ashlarchess/bitboard/`) is the single piece-placement representation that production code sees. It is a 12-long record — one `long` per piece-and-side bitboard, little-endian rank-file with A1 at bit 0 — exposing move generation, attack queries, and immutable make-move (`afterMove`). Everything in `src/main/` that needs to ask a question about pieces on squares asks `BitboardPosition`.
 
 **`Board`** remains a deliberately rich public game object. It stores the initial FEN plus parallel per-move state: performed legal moves, generated legal moves, check/checkmate/stalemate facts, dynamic positions whose piece placement is `BitboardPosition`, halfmove clocks, repetition counts, SAN/LAN output strings, and castling-right loss reasons. That is more memory and bookkeeping than a lean engine board, but it is the right trade-off for a rule library: public queries and reports can read already-established game facts, and the history needed for FIDE rules is explicit.
 
@@ -265,8 +265,8 @@ Piece placement has two independent representations in the codebase, by design.
 
 The contract is **permanent project policy**, not transitional:
 
-- Every primitive on `BitboardPosition` is asserted against the relocated `StaticPosition` oracle across the full PGN/FEN corpus — every fixture × every legal move — on every release going forward. The corpus walks live in `src/test/java/io/github/dlbbld/ashlarchess/test/bitboard/` (`TestBitboardPositionAfterMove`, `TestBitboardPositionAttackedSquares`, `TestBitboardPositionLegalMoves`, `TestBitboardPositionZobrist`, etc.) and use `StaticPositionUtility.createPositionAfterMove` as the independent oracle.
-- `StaticPosition` and its consumer subtree are never deleted. Future bitboard optimisations (incremental Zobrist, magic bitboards, more search-board hot-path work) cannot land without the oracle keeping them honest.
+- Every primitive on `BitboardPosition` is asserted against the relocated `StaticPosition` oracle across the full PGN/FEN corpus — every fixture × every legal move — on every release going forward. The corpus walks live in `src/test/java/io/github/dlbbld/ashlarchess/test/bitboard/` (`TestBitboardPositionAfterMove`, `TestBitboardPositionAttackedSquares`, `TestBitboardPositionLegalMoves`, etc.) and use `StaticPositionUtility.createPositionAfterMove` as the independent oracle.
+- `StaticPosition` and its consumer subtree are never deleted. Future bitboard optimisations (magic bitboards, more search-board hot-path work) cannot land without the oracle keeping them honest.
 - The boundary is one-way: nothing in `src/main/` may import from `io.github.dlbbld.ashlarchess.board.StaticPosition` or any relocated consumer. Doc comments may cross-reference; code may not.
 
 This is the project invariant in §2.1 applied to representation. The bitboard exists for the production code path; mutable search bitboards exist where the full analyzer needs them; the mailbox stays as the readable, audit-friendly second opinion that the optimized path is forever measured against.
@@ -317,7 +317,7 @@ A specific testing pattern, called out because it is permanent project policy (s
 
 - For each fixture in the corpus, take the position at every reachable game state, derive a `BitboardPosition` from it, and run the bitboard primitive being tested.
 - Compute the reference answer from `StaticPosition` / `StaticPositionUtility` independently.
-- Assert the two agree exactly. For `afterMove`, walk both forward over every legal move in every fixture position. For `zobristPieces()`, also assert that distinct corpus positions hash distinctly (no collisions observed) and that any legal move changes the hash.
+- Assert the two agree exactly. For `afterMove`, walk both forward over every legal move in every fixture position.
 
 The corpus-walking tests live in `src/test/java/io/github/dlbbld/ashlarchess/test/bitboard/`. A new primitive on `BitboardPosition` is not considered complete until its corpus walk lands alongside it.
 
