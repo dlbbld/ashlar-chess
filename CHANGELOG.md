@@ -66,6 +66,7 @@ Model invariants:
 FEN:
 
 - `ForgivenFenItemCode.MISSING_HALFMOVE_AND_FULLMOVE` → `MISSING_HALF_MOVE_CLOCK_AND_FULL_MOVE_NUMBER`; `MISSING_FULLMOVE_NUMBER` → `MISSING_FULL_MOVE_NUMBER`.
+- `FenAdvancedValidationProblem.INVALID_FULL_MOVE_NUMBER_TOO_BIG_ABSOLUT` → `INVALID_FULL_MOVE_NUMBER_TOO_BIG_ABSOLUTE` (typo fix in a public enum constant).
 - `FenConstants.POSSIBLE_FEN_AFTER_FIRST_HALF_MOVE` renamed to `POSSIBLE_FEN_AFTER_FIRST_MOVE`.
 
 Enum behavior moved to utilities (the "enums carry data" pass) — each former `Enum.method(...)` is now `EnumUtility.method(enum, ...)`:

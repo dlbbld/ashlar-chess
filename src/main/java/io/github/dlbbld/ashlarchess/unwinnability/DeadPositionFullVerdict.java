@@ -17,5 +17,15 @@ public enum DeadPositionFullVerdict {
   ALIVE,
 
   /** Neither dead nor alive could be established within the search bound. */
-  UNDETERMINED
+  UNDETERMINED;
+
+  /** Whether the position is proven dead (neither side can deliver checkmate). */
+  public boolean isDead() {
+    return this == DEAD;
+  }
+
+  /** Whether the position is proven alive (at least one side can deliver checkmate). */
+  public boolean isAlive() {
+    return this == ALIVE;
+  }
 }

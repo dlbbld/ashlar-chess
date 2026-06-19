@@ -26,4 +26,9 @@ public enum UnwinnabilityFullVerdict {
   public boolean isWinnable() {
     return this == WINNABLE_HELPMATE || this == WINNABLE_BY_THEOREM;
   }
+
+  /** Whether the intended winner is proven unable to win. */
+  public boolean isUnwinnable() {
+    return this == UNWINNABLE;
+  }
 }

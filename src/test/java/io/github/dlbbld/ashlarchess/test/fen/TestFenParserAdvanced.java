@@ -291,7 +291,7 @@ class TestFenParserAdvanced {
     // above max value
     checkParseFenException(
         "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 " + (FenConstants.MAX_FULL_MOVE_NUMBER + 1),
-        FenAdvancedValidationProblem.INVALID_FULL_MOVE_NUMBER_TOO_BIG_ABSOLUT);
+        FenAdvancedValidationProblem.INVALID_FULL_MOVE_NUMBER_TOO_BIG_ABSOLUTE);
 
   }
 

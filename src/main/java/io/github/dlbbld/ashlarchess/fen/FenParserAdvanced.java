@@ -475,7 +475,7 @@ public class FenParserAdvanced {
     }
 
     if (fullMoveNumber > FenConstants.MAX_FULL_MOVE_NUMBER) {
-      throw new FenAdvancedValidationException(FenAdvancedValidationProblem.INVALID_FULL_MOVE_NUMBER_TOO_BIG_ABSOLUT,
+      throw new FenAdvancedValidationException(FenAdvancedValidationProblem.INVALID_FULL_MOVE_NUMBER_TOO_BIG_ABSOLUTE,
           "the fullmove number of " + fullMoveNumber + " is above the maximum supported value of "
               + FenConstants.MAX_FULL_MOVE_NUMBER + "");
     }
