@@ -25,7 +25,7 @@ public final class FenBoard {
     fen.append(piecePlacement);
     fen.append(" ");
 
-    // side having the move
+    // side to move
     switch (sideToMove) {
       case BLACK -> fen.append("b");
       case WHITE -> fen.append("w");

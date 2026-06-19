@@ -57,8 +57,8 @@ public final class PawnDiagonalSquares {
     return Nulls.copyOfMap(map);
   }
 
-  public static ImmutableSet<Square> getPawnDiagonalSquares(Side sideToMove, Square fromSquare) {
-    return switch (sideToMove) {
+  public static ImmutableSet<Square> getPawnDiagonalSquares(Side side, Square fromSquare) {
+    return switch (side) {
       case BLACK -> Nulls.get(PAWN_BLACK_SQUARES_MAP, fromSquare);
       case WHITE -> Nulls.get(PAWN_WHITE_SQUARES_MAP, fromSquare);
       case NONE -> throw new IllegalArgumentException();

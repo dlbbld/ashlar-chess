@@ -164,8 +164,8 @@ public final class SquareUtility {
     BLACK_TWO_SQUARE_ADVANCE_TO_JUMP_OVER = Nulls.immutableEnumMap(map);
   }
 
-  public static Square calculateJumpOverSquare(Side sideHavingMadeTheMove, Square pawnTwoAdvanceSquare) {
-    switch (sideHavingMadeTheMove) {
+  public static Square calculateJumpOverSquare(Side side, Square pawnTwoAdvanceSquare) {
+    switch (side) {
       case WHITE:
         if (!WHITE_TWO_SQUARE_ADVANCE_TO_JUMP_OVER.containsKey(pawnTwoAdvanceSquare)) {
           throw new IllegalArgumentException("The method only applies for pawn two square advance moves");

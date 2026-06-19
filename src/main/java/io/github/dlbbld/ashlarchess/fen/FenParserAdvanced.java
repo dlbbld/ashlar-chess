@@ -353,7 +353,7 @@ public class FenParserAdvanced {
             throw new FenAdvancedValidationException(
                 FenAdvancedValidationProblem.INVALID_EN_PASSANT_CAPTURE_TARGET_SQUARE_WRONG_COLOR,
                 "the en passant target square \"" + enPassantCaptureTargetSquare
-                    + "\" belongs to the player having the move, not the opponent");
+                    + "\" belongs to the side to move, not the opponent");
           }
         }
       }
