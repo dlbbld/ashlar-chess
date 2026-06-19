@@ -106,7 +106,7 @@ class TestFenParserAdvanced {
     checkParseFenException("rnbq1rk1/pppp1ppp/5n2/4p3/1PB1P3/5N1P/P1PP1bP1/RNBQ1RK1 b - - 0 7",
         FenAdvancedValidationProblem.INVALID_POSITION_CHECK);
 
-    // having move
+    // side to move
     // range
     checkParseFenException("r3k2r/8/8/8/8/8/8/R2K3R x - - 0 100",
         FenAdvancedValidationProblem.INVALID_SIDE_TO_MOVE_RANGE);

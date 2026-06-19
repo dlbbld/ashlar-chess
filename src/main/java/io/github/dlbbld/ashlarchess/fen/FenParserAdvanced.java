@@ -276,7 +276,7 @@ public class FenParserAdvanced {
   private static Side validateSideToMove(String sideToMove) throws FenAdvancedValidationException {
     if (sideToMove.length() != 1 || !FenSideSymbol.exists(sideToMove.charAt(0))) {
       throw new FenAdvancedValidationException(FenAdvancedValidationProblem.INVALID_SIDE_TO_MOVE_RANGE,
-          "the having move part of \"" + sideToMove + "\" is not valid");
+          "the side to move part of \"" + sideToMove + "\" is not valid");
     }
     return FenSideSymbol.parse(sideToMove.charAt(0)).side();
   }

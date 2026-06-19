@@ -121,8 +121,8 @@ public final class SquareUtility {
   private static final ImmutableList<Square> BLACK_MOVE_EN_PASSANT_CAPTURE_TARGET_SQUARE_LIST = constructListSquare(
       Square.A3, Square.B3, Square.C3, Square.D3, Square.E3, Square.F3, Square.G3, Square.H3);
 
-  public static ImmutableList<Square> calculateEnPassantCaptureTargetSquareList(Side sideToMove) {
-    return switch (sideToMove) {
+  public static ImmutableList<Square> calculateEnPassantCaptureTargetSquareList(Side side) {
+    return switch (side) {
       case BLACK -> BLACK_MOVE_EN_PASSANT_CAPTURE_TARGET_SQUARE_LIST;
       case WHITE -> WHITE_MOVE_EN_PASSANT_CAPTURE_TARGET_SQUARE_LIST;
       case NONE -> throw new IllegalArgumentException();

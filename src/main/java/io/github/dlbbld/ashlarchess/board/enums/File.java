@@ -114,36 +114,36 @@ public enum File {
   private static final EnumMap<Side, EnumMap<File, File>> LEFT_FILE = buildOffsetTable(-1);
   private static final EnumMap<Side, EnumMap<File, File>> RIGHT_FILE = buildOffsetTable(1);
 
-  public boolean hasLeftFile(Side sideToMove) {
-    if (sideToMove == Side.NONE || this == NONE) {
+  public boolean hasLeftFile(Side side) {
+    if (side == Side.NONE || this == NONE) {
       throw new IllegalArgumentException();
     }
-    return Nulls.get(LEFT_FILE, sideToMove).containsKey(this);
+    return Nulls.get(LEFT_FILE, side).containsKey(this);
   }
 
-  public File getLeftFile(Side sideToMove) {
-    if (sideToMove == Side.NONE || this == NONE) {
+  public File getLeftFile(Side side) {
+    if (side == Side.NONE || this == NONE) {
       throw new IllegalArgumentException();
     }
-    final EnumMap<File, File> sideMap = Nulls.get(LEFT_FILE, sideToMove);
+    final EnumMap<File, File> sideMap = Nulls.get(LEFT_FILE, side);
     if (!sideMap.containsKey(this)) {
       throw new IllegalArgumentException("No left file");
     }
     return Nulls.get(sideMap, this);
   }
 
-  public boolean hasRightFile(Side sideToMove) {
-    if (sideToMove == Side.NONE || this == NONE) {
+  public boolean hasRightFile(Side side) {
+    if (side == Side.NONE || this == NONE) {
       throw new IllegalArgumentException();
     }
-    return Nulls.get(RIGHT_FILE, sideToMove).containsKey(this);
+    return Nulls.get(RIGHT_FILE, side).containsKey(this);
   }
 
-  public File getRightFile(Side sideToMove) {
-    if (sideToMove == Side.NONE || this == NONE) {
+  public File getRightFile(Side side) {
+    if (side == Side.NONE || this == NONE) {
       throw new IllegalArgumentException();
     }
-    final EnumMap<File, File> sideMap = Nulls.get(RIGHT_FILE, sideToMove);
+    final EnumMap<File, File> sideMap = Nulls.get(RIGHT_FILE, side);
     if (!sideMap.containsKey(this)) {
       throw new IllegalArgumentException("No right file");
     }
