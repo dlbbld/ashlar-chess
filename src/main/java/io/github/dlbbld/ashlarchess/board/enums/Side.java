@@ -38,6 +38,10 @@ public enum Side {
     return isBlack;
   }
 
+  /**
+   * The human-readable side name; throws {@code NonePointerException} for {@link #NONE}. Distinct from the inherited
+   * {@code name()} (the Java enum constant, e.g. {@code WHITE}).
+   */
   public String getName() {
     check();
     return name;

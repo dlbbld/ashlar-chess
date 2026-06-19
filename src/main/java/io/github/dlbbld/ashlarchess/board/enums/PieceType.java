@@ -30,6 +30,11 @@ public enum PieceType {
     return value;
   }
 
+  /**
+   * The human-readable piece-type name; throws {@code NonePointerException} for {@link #NONE}. Distinct from the
+   * inherited {@code name()} (the Java enum constant, e.g. {@code QUEEN}) and from {@link #getLetter()} /
+   * {@link #toString()} (the single-letter symbol, e.g. {@code Q}).
+   */
   public String getName() {
     check();
     return name;

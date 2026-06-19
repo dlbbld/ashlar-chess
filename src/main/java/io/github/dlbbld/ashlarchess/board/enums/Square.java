@@ -113,6 +113,11 @@ public enum Square implements Comparable<Square> {
     return rank;
   }
 
+  /**
+   * The chess square name, e.g. {@code a1}; throws {@code NonePointerException} for {@link #NONE}. Distinct from the
+   * inherited {@code name()} (the Java enum constant identity, e.g. {@code A1}) and from {@link #toString()} (the same
+   * {@code a1} text, but {@code none} for {@link #NONE} instead of throwing).
+   */
   public String getName() {
     check();
     return name;
