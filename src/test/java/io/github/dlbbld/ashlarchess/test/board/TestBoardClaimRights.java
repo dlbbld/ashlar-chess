@@ -53,7 +53,7 @@ class TestBoardClaimRights {
   @SuppressWarnings("static-method")
   @Test
   void fiftyMoveEmptyBelowThreshold() {
-    final Board board = new Board("7k/8/8/8/8/8/8/4K3 w - - 50 30");
+    final Board board = Board.fromFenStrict("7k/8/8/8/8/8/8/4K3 w - - 50 30");
     final ClaimRights rights = board.fiftyMoveRuleClaimRights();
     assertFalse(rights.canClaim(), "clock 50 is below the 50-move-rule threshold of 99");
     assertEquals(0, rights.claimableMoves().size());
@@ -63,7 +63,7 @@ class TestBoardClaimRights {
   @Test
   void fiftyMoveQuietRookMoveAtClock99IsClaimable() {
     // White Ra1, K e1; clock 99. Any non-zeroing legal move qualifies (king or rook).
-    final Board board = new Board("7k/8/8/8/8/8/4K3/R7 w - - 99 51");
+    final Board board = Board.fromFenStrict("7k/8/8/8/8/8/4K3/R7 w - - 99 51");
     final ClaimRights rights = board.fiftyMoveRuleClaimRights();
     assertTrue(rights.canClaim(), "at clock 99 every non-zeroing legal move is a 50-move claim candidate");
 
@@ -83,7 +83,7 @@ class TestBoardClaimRights {
   void fiftyMovePawnMoveAtClock99NotClaimable() {
     // White P e4, K e1; clock 99. The pawn move e4-e5 would reset the clock, so it is NOT a 50-move
     // claim candidate even though clock is 99. Other non-zeroing legal moves still qualify.
-    final Board board = new Board("7k/8/8/8/4P3/8/4K3/R7 w - - 99 51");
+    final Board board = Board.fromFenStrict("7k/8/8/8/4P3/8/4K3/R7 w - - 99 51");
     final ClaimRights rights = board.fiftyMoveRuleClaimRights();
     assertTrue(rights.canClaim(), "non-pawn non-capture moves remain claimable");
 
@@ -98,7 +98,7 @@ class TestBoardClaimRights {
   void fiftyMoveCaptureAtClock99NotClaimable() {
     // White R a1, K e1; Black R a8 (a capture target on the same file). Clock 99. The capture Ra1xa8
     // would reset the clock and is not claimable; quiet rook moves on the a-file and king moves are.
-    final Board board = new Board("r6k/8/8/8/8/8/4K3/R7 w - - 99 51");
+    final Board board = Board.fromFenStrict("r6k/8/8/8/8/8/4K3/R7 w - - 99 51");
     final ClaimRights rights = board.fiftyMoveRuleClaimRights();
     assertTrue(rights.canClaim(), "non-capture moves remain claimable");
 
@@ -114,7 +114,7 @@ class TestBoardClaimRights {
     // Same smothered-mate FEN as TestBoardClaimFor#fiftyMoveForReturnsTrueWhenCandidateMoveIsMate.
     // White's only non-zeroing legal move is Nh6-f7, which is mate. Strict FIDE 9.3: the move is a
     // valid 50-move claim regardless of the post-position outcome.
-    final Board board = new Board("6rk/6pp/7N/5p2/6p1/8/2q5/K7 w - - 99 60");
+    final Board board = Board.fromFenStrict("6rk/6pp/7N/5p2/6p1/8/2q5/K7 w - - 99 60");
     final ClaimRights rights = board.fiftyMoveRuleClaimRights();
     assertTrue(rights.canClaim(), "mate-in-one at clock 99 remains a valid 50-move claim under strict FIDE 9.3");
 
@@ -203,7 +203,7 @@ class TestBoardClaimRights {
   @SuppressWarnings("static-method")
   @Test
   void fiftyMoveSanOverloadMatchesMoveSpecificationOverload() throws LenientSanParserValidationException {
-    final Board board = new Board("7k/8/8/8/8/8/4K3/R7 w - - 99 51");
+    final Board board = Board.fromFenStrict("7k/8/8/8/8/8/4K3/R7 w - - 99 51");
 
     assertEquals(board.canClaimFiftyMoveRuleFor(new MoveSpecification(A1, A2)), board.canClaimFiftyMoveRuleFor("Ra2"),
         "SAN overload must agree with MoveSpecification overload");
@@ -222,7 +222,7 @@ class TestBoardClaimRights {
   @SuppressWarnings("static-method")
   @Test
   void returnedListIsImmutable() {
-    final Board board = new Board("7k/8/8/8/8/8/4K3/R7 w - - 99 51");
+    final Board board = Board.fromFenStrict("7k/8/8/8/8/8/4K3/R7 w - - 99 51");
     final ClaimRights rights = board.fiftyMoveRuleClaimRights();
 
     final List<ClaimableMove> moves = rights.claimableMoves();
@@ -245,7 +245,7 @@ class TestBoardClaimRights {
         "canClaim must equal !claimableMoves.isEmpty()");
     assertFalse(emptyRights.canClaim());
 
-    final Board claimableBoard = new Board("7k/8/8/8/8/8/4K3/R7 w - - 99 51");
+    final Board claimableBoard = Board.fromFenStrict("7k/8/8/8/8/8/4K3/R7 w - - 99 51");
     final ClaimRights claimableRights = claimableBoard.fiftyMoveRuleClaimRights();
     assertEquals(claimableRights.canClaim(), !claimableRights.claimableMoves().isEmpty());
     assertTrue(claimableRights.canClaim());
@@ -257,7 +257,7 @@ class TestBoardClaimRights {
     // At clock 99 with a quiet rook+king position, multiple non-zeroing legal moves all qualify.
     // The claimable list must follow getLegalMoves() iteration order - i.e., the indices of
     // claimable moves into the legal-moves list are strictly ascending.
-    final Board board = new Board("7k/8/8/8/8/8/4K3/R7 w - - 99 51");
+    final Board board = Board.fromFenStrict("7k/8/8/8/8/8/4K3/R7 w - - 99 51");
     final ClaimRights rights = board.fiftyMoveRuleClaimRights();
     assertTrue(rights.claimableMoves().size() >= 2, "precondition: at least two candidates exist");
 

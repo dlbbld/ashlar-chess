@@ -19,6 +19,7 @@ import io.github.dlbbld.ashlarchess.test.model.PgnTestCaseList;
 import io.github.dlbbld.ashlarchess.test.pgn.setup.PgnTestCaseCatalog;
 import io.github.dlbbld.ashlarchess.test.pgntest.enums.PgnTest;
 import io.github.dlbbld.ashlarchess.unwinnability.UnwinnabilityFullAnalysis;
+import io.github.dlbbld.ashlarchess.unwinnability.UnwinnabilityFullVerdict;
 import io.github.dlbbld.ashlarchess.unwinnability.UnwinnableFullAnalyzer;
 
 class TestUnwinnabilityFullWinnable {
@@ -35,7 +36,9 @@ class TestUnwinnabilityFullWinnable {
       final Board board = lichessTestCase.finalPosition();
       final Side winner = board.getSideToMove();
       final UnwinnabilityFullAnalysis analysis = UnwinnableFullAnalyzer.unwinnableFull(board, winner);
-      assertTrue(analysis.verdict().isWinnable(), testCaseHavingHelpmate.pgnName());
+      final UnwinnabilityFullVerdict verdict = analysis.verdict();
+      assertTrue(verdict == UnwinnabilityFullVerdict.WINNABLE_HELPMATE
+          || verdict == UnwinnabilityFullVerdict.WINNABLE_BY_THEOREM, testCaseHavingHelpmate.pgnName());
     }
   }
 

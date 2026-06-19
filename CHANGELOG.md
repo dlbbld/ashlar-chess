@@ -32,6 +32,10 @@ PGN model:
 `Board`:
 
 - `getPerformedHalfMoveCount()` renamed to `getPerformedMoveCount()`.
+- Removed `Board(String fen)`. FEN strings now use the explicit factory pair: `Board.fromFenStrict(String)` for strict
+  FEN and `Board.fromFenLenient(String)` for recovered/tolerant FEN. `Board(Fen)` remains for already-parsed FEN
+  values. This makes FEN construction match the library's strict/lenient parser vocabulary instead of hiding strict
+  parsing behind a `String` constructor.
 - Removed `getHalfMoveList()` and `getLastHalfMove()`; the played-move list is no longer exposed on `Board`. It is rebuilt inside the `report` layer, and `PgnCreate.createPgnGame(board).moveList()` returns the played moves as `PgnMove`s.
 - `HalfMove` is gone from the public API (its replacement, `MoveRecord`, is package-private to `report`).
 - `isUnwinnableQuick(Side)` / `isUnwinnableFull(Side)` renamed to `unwinnableQuick(Side)` / `unwinnableFull(Side)`, matching the `UnwinnableQuickAnalyzer.unwinnableQuick(...)` / `UnwinnableFullAnalyzer.unwinnableFull(...)` engines they delegate to. The `Board` methods return the verdict directly; the analyzers return the full analysis.
@@ -45,7 +49,7 @@ PGN model:
 
 Vocabulary — "side to move":
 
-- The non-standard `havingMove` vocabulary is replaced by the standard chess term. A **position**'s side to move is `sideToMove`; the side that makes a **move** is `movingSide` (beside `LegalMove.movingPiece()`). Renames: `Board.getHavingMove()` → `getSideToMove()`; the `Fen` / `DynamicPosition` `havingMove()` component → `sideToMove()`; `LegalMove.havingMove()` → `movingSide()`; `FenAdvancedValidationProblem.INVALID_HAVING_MOVE_RANGE` → `INVALID_SIDE_TO_MOVE_RANGE`.
+- The non-standard `havingMove` vocabulary is replaced by the standard chess term. A **position**'s side to move is `sideToMove`; the side that makes a **move** is `movingSide` (beside `LegalMove.movingPiece()`). Renames: `Board.getHavingMove()` → `getSideToMove()`; the `Fen` / `DynamicPosition` `havingMove()` component → `sideToMove()`; `LegalMove.havingMove()` → `movingSide()`; `StrictFenSemanticValidationProblem.INVALID_HAVING_MOVE_RANGE` → `INVALID_SIDE_TO_MOVE_RANGE`.
 
 Boolean accessors (JavaBeans `is` / `has` idiom, no `get` prefix):
 
@@ -68,14 +72,26 @@ Model invariants:
 
 FEN:
 
+- Added `StrictFenParser.parse(String)` and `StrictFenParser.validate(String)` as the public strict FEN parser facade,
+  symmetrical with `LenientFenParser.parse(String)` / `validate(String)`.
+- `FenParserRaw` and `FenParserAdvanced` are no longer public API. Their lexical and advanced-validation stages remain
+  internal implementation details behind `StrictFenParser`; callers should use `StrictFenParser.parse(String)` /
+  `validate(String)` or `Board.fromFenStrict(String)`.
+- `FenParserRaw` renamed internally to `StrictFenFieldParser`; `FenParserAdvanced` renamed internally to
+  `StrictFenSemanticParser`, making the strict-parser staging explicit.
+- `FenRaw` renamed to `FenField`; `FenRawValidationException` renamed to the package-private
+  `fen.StrictFenFieldValidationException`, matching the internal strict FEN field parser vocabulary.
+- `FenAdvancedValidationProblem` renamed to `StrictFenSemanticValidationProblem`;
+  `FenAdvancedValidationException` renamed to `fen.StrictFenSemanticValidationException`;
+  `LenientFenParserValidationProblem.ADVANCED_INVALID` renamed to `STRICT_SEMANTIC_INVALID`.
 - `ForgivenFenItemCode.MISSING_HALFMOVE_AND_FULLMOVE` → `MISSING_HALF_MOVE_CLOCK_AND_FULL_MOVE_NUMBER`; `MISSING_FULLMOVE_NUMBER` → `MISSING_FULL_MOVE_NUMBER`.
-- `FenAdvancedValidationProblem.INVALID_FULL_MOVE_NUMBER_TOO_BIG_ABSOLUT` → `INVALID_FULL_MOVE_NUMBER_TOO_BIG_ABSOLUTE` (typo fix in a public enum constant).
+- `StrictFenSemanticValidationProblem.INVALID_FULL_MOVE_NUMBER_TOO_BIG_ABSOLUT` → `INVALID_FULL_MOVE_NUMBER_TOO_BIG_ABSOLUTE` (typo fix in a public enum constant).
 - `FenConstants.POSSIBLE_FEN_AFTER_FIRST_HALF_MOVE` renamed to `POSSIBLE_FEN_AFTER_FIRST_MOVE`.
 
 Parser entry points — plain `parse` / `validate` when a parser has one input kind; source suffixes only when it has several:
 
 - SAN (text only): `LenientSanParser.parseText(String, Board)` / `StrictSanParser.parseText(String, Board)` → `parse(...)`. Removed `LenientSanParser.validateText(String, Board)` — a `void`-returning convenience with no strict counterpart; `parse(...)` validates by construction.
-- FEN (text only): `LenientFenParser.parseText(String)` → `parse(String)`; `LenientFenParser.validateText(String)` → `validate(String)`.
+- FEN (text only): `LenientFenParser.parseText(String)` → `parse(String)`; `LenientFenParser.validateText(String)` → `validate(String)`. Strict FEN now also has `StrictFenParser.parse(String)` / `validate(String)`.
 - PGN (text, file path, line list) — source kind matters, so suffixes stay: the `parse(Path)` / `parse(Path, String)` / `parse(String)` path overloads → `parsePath(...)`; `parse(List<String>)` → `parseLines(...)`; the `validate(Path)` / `validate(Path, String)` / `validate(String)` overloads → `validatePath(...)`. `parseText(String)` and `validateText(String)` are unchanged. This removes the `parse(String pgnPath)`-beside-`parseText(String pgn)` footgun (same parameter type, opposite meaning). Applies to both `StrictPgnParser` and `LenientPgnParser`.
 
 Enum behavior moved to utilities (the "enums carry data" pass) — each former `Enum.method(...)` is now `EnumUtility.method(enum, ...)`:
@@ -169,7 +185,7 @@ Adds a proved basic-helpmate-existence theorem that decides elementary endgames 
 ### Breaking
 
 - `UnwinnabilityQuickVerdict` is now two-valued: `UNWINNABLE`, `POSSIBLY_WINNABLE`. The `WINNABLE` constant is removed (the quick analyzer never returned it). `UnwinnabilityQuickAnalysis` now carries the verdict only; its `mateLine` component is removed.
-- `UnwinnabilityFullVerdict.WINNABLE` is split into `WINNABLE_HELPMATE` (the search found a cooperative mate; the analysis carries the mate line) and `WINNABLE_BY_THEOREM` (certified by the basic-checkmate theorem; no line). A `boolean isWinnable()` helper covers both.
+- `UnwinnabilityFullVerdict.WINNABLE` is split into `WINNABLE_HELPMATE` (the search found a cooperative mate; the analysis carries the mate line) and `WINNABLE_BY_THEOREM` (certified by the basic-checkmate theorem; no line).
 - Dead-position queries move from `Board` to no-side analyzer overloads that reuse the verdict enums (`UNWINNABLE` means dead). Removed `Board.isDeadPosition()`, `Board.isDeadPositionQuick()`, and `Board.isDeadPositionFull()`; use `UnwinnableQuickAnalyzer.unwinnableQuick(board)` (returns `UnwinnabilityQuickVerdict`) and `UnwinnableFullAnalyzer.unwinnableFull(board)` (returns `UnwinnabilityFullVerdict`). The `DeadPositionQuick` and `DeadPositionFull` enums are removed.
 - Removed the `GameEndFacts` record and `Board.calculateGameEndFacts()` (added in 16.0.0). Read the raw rule predicates from `Board` directly (`isCheckmate()`, `isStalemate()`, `isInsufficientMaterial()`, `isFivefoldRepetition()`, `isSeventyFiveMove()`) and the projected ruling from `BasicChessUtility.calculateOutcome(board)`. Removed `Board.isGameEnd()`; use `BasicChessUtility.calculateOutcome(board).termination() != Termination.NONE`.
 

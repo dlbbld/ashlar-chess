@@ -36,7 +36,7 @@ class TestBoardGameEndOutcome {
   void checkmateAndSeventyFiveMoveFactsBothTrueOutcomeIsCheckmate() {
     // White K g6, white Q g7 mating black K h8. Halfmove clock 150 - both checkmate and 75-move conditions hold. The
     // mating move must have been non-pawn non-capture for the clock to be 150 (otherwise it would have reset).
-    final Board board = new Board("7k/6Q1/6K1/8/8/8/8/8 b - - 150 80");
+    final Board board = Board.fromFenStrict("7k/6Q1/6K1/8/8/8/8/8 b - - 150 80");
     assertEquals(150, board.getHalfMoveClock(), "precondition: clock at 75-move threshold");
 
     assertTrue(board.isCheckmate(), "checkmate fact must be true");
@@ -58,7 +58,7 @@ class TestBoardGameEndOutcome {
   void stalemateAndSeventyFiveMoveFactsBothTrueOutcomeIsStalemate() {
     // White Kf7, Ph6. Black Kh8, Ph7. Black to move, stalemated (no king square, h7 pawn blocked by h6). Halfmove
     // clock 150 - both stalemate and 75-move conditions hold.
-    final Board board = new Board("7k/5K1p/7P/8/8/8/8/8 b - - 150 80");
+    final Board board = Board.fromFenStrict("7k/5K1p/7P/8/8/8/8/8 b - - 150 80");
     assertEquals(150, board.getHalfMoveClock(), "precondition: clock at 75-move threshold");
 
     assertTrue(board.isStalemate(), "stalemate fact must be true");
@@ -106,7 +106,7 @@ class TestBoardGameEndOutcome {
     // KvK position: dead AND insufficient. Play 38 cycles of king-shuffle to drive the clock past 150 and fivefold the
     // starting position. Multiple facts simultaneously true; precedence resolves to INSUFFICIENT_MATERIAL (it outranks
     // 75-move and fivefold).
-    final Board board = new Board("4k3/8/8/8/8/8/8/4K3 w - - 0 1");
+    final Board board = Board.fromFenStrict("4k3/8/8/8/8/8/8/4K3 w - - 0 1");
     for (int i = 0; i < 38; i++) {
       board.movesStrict("Kd2", "Kd8", "Ke1", "Ke8");
     }

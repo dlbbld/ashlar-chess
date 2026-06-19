@@ -17,7 +17,7 @@ class TestSpecialPawnCapture {
   void testWhite() {
     // two pawns can capture the same piece
     // caused a bug
-    final Board board = new Board("rrrrrrrr/PPPPPPPP/8/8/8/8/8/2k1K3 w - - 0 100");
+    final Board board = Board.fromFenStrict("rrrrrrrr/PPPPPPPP/8/8/8/8/8/2k1K3 w - - 0 100");
 
     board.moveStrict("bxa8=Q");
     board.unmove();
@@ -35,7 +35,7 @@ class TestSpecialPawnCapture {
   void testBlack() {
     // two pawns can capture the same piece
     // caused a bug
-    final Board board = new Board("3k1K2/8/8/8/8/8/pppppppp/QQQQQQQQ b - - 0 100");
+    final Board board = Board.fromFenStrict("3k1K2/8/8/8/8/8/pppppppp/QQQQQQQQ b - - 0 100");
 
     board.moveStrict("bxa1=Q");
     board.unmove();

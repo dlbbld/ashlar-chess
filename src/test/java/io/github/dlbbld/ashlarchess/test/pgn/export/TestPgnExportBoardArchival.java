@@ -90,7 +90,7 @@ class TestPgnExportBoardArchival {
     // Caller passes a tagList already containing FEN+SetUp for a custom starting position, then makes moves on
     // the board. Archival export must preserve the position-encoding tags.
     final String customFen = "r1b2r2/pp1pk1pp/8/7q/3pP1n1/5N1P/PPQ2PP1/3R1RK1 w - - 0 17";
-    final Board board = new Board(customFen);
+    final Board board = Board.fromFenStrict(customFen);
     board.moveStrict("Qa4");
 
     final List<Tag> tagList = new ArrayList<>();

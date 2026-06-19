@@ -125,7 +125,7 @@ public final class LenientPgnParser {
           message, null, e.getSanForgivenItemsAccumulated(), e.getTagForgivenItemsAccumulated());
     } catch (final io.github.dlbbld.ashlarchess.fen.LenientFenParserValidationException e) {
       // The FEN tag in the PGN failed lenient FEN parsing (either unrecoverable input or strict-semantic
-      // rejection by FenParserAdvanced). Surface as a typed PGN problem rather than leaking the FEN exception
+      // rejection by strict FEN validation). Surface as a typed PGN problem rather than leaking the FEN exception
       // type through the generic RuntimeException path. The tag-level forgiven items accumulated up to the
       // FEN-tag parse point are carried so callers retain partial diagnostic context.
       final String message = "The PGN FEN tag is invalid. Reason: " + BasicUtility.getMessage(e);
@@ -779,7 +779,7 @@ public final class LenientPgnParser {
     // Lenient PGN parser routes the FEN tag through the lenient FEN parser too - symmetry with movetext leniency
     // means deficient FEN tags (extra whitespace, missing counters, speculative fullMoveNumber on a non-initial
     // position) parse cleanly. The lenient layer only forgives syntactic deviations; structural / rule-consistency
-    // violations still propagate as FenAdvancedValidationException via LenientFenParserValidationException.
+    // violations still propagate as StrictFenSemanticValidationException via LenientFenParserValidationException.
     return LenientFenParser.parse(startFenStr);
   }
 

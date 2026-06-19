@@ -39,7 +39,7 @@ class TestFiftyMoveClaimAheadReportBuilder {
     // 99 moves of rook+king shuffle from clock 0 -> game ends at clock 99 with no further play.
     // The boundary at the final position has many non-zeroing legal moves available (king + rook
     // shuffle), but the new collapse model emits exactly ONE entry - the missed-opportunity move.
-    final Board board = new Board("4k3/8/8/8/8/8/8/R3K3 w - - 0 30");
+    final Board board = Board.fromFenStrict("4k3/8/8/8/8/8/8/R3K3 w - - 0 30");
     for (int i = 0; i < 24; i++) {
       board.movesStrict("Ra3", "Kd8", "Ra1", "Ke8");
     }
@@ -65,7 +65,7 @@ class TestFiftyMoveClaimAheadReportBuilder {
   void emptyWhenSequenceReachesThreshold() {
     // Same fixture but play one MORE non-zeroing move so clock crosses 99 -> 100. Sequence reached
     // threshold; the missed-opportunity filter suppresses the boundary entry entirely.
-    final Board board = new Board("4k3/8/8/8/8/8/8/R3K3 w - - 0 30");
+    final Board board = Board.fromFenStrict("4k3/8/8/8/8/8/8/R3K3 w - - 0 30");
     for (int i = 0; i < 25; i++) {
       board.movesStrict("Ra3", "Kd8", "Ra1", "Ke8");
     }
@@ -82,7 +82,7 @@ class TestFiftyMoveClaimAheadReportBuilder {
     // FEN clock 98. One non-zeroing move brings clock to 99. Then a pawn push resets the clock.
     // The boundary at the clock-99 move has multiple non-zeroing legal alternatives (the black king
     // could have moved instead of pushing the pawn). The collapse model emits exactly ONE entry.
-    final Board board = new Board("4k3/p7/8/8/8/8/P7/4K2R w - - 98 80");
+    final Board board = Board.fromFenStrict("4k3/p7/8/8/8/8/P7/4K2R w - - 98 80");
     assertEquals(98, board.getHalfMoveClock(), "precondition: FEN clock 98");
 
     board.movesStrict("Rg1");
@@ -108,11 +108,11 @@ class TestFiftyMoveClaimAheadReportBuilder {
     // FEN clock 100; no boundary entry under the filter - clock starts past 99, never sits at the
     // missed-opportunity boundary. Holds whether the only legal move is a capture (Kxb2 case) or
     // non-zeroing legal moves are available.
-    final Board boardNoCont = new Board("7k/8/8/8/8/8/1q6/K7 w - - 100 80");
+    final Board boardNoCont = Board.fromFenStrict("7k/8/8/8/8/8/1q6/K7 w - - 100 80");
     final FiftyMoveClaimAheadReport reportNoCont = FiftyMoveClaimAheadReportBuilder.build(boardNoCont);
     assertEquals(0, reportNoCont.entries().size(), "FEN at clock 100, no continuation: 0 entries (Kxb2 case)");
 
-    final Board boardWithCont = new Board("4k3/8/8/8/8/8/8/R3K3 w - - 100 80");
+    final Board boardWithCont = Board.fromFenStrict("4k3/8/8/8/8/8/8/R3K3 w - - 100 80");
     boardWithCont.movesStrict("Ra3", "Kd8", "Ra1", "Ke8");
     final FiftyMoveClaimAheadReport reportWithCont = FiftyMoveClaimAheadReportBuilder.build(boardWithCont);
     assertEquals(0, reportWithCont.entries().size(),
@@ -130,7 +130,7 @@ class TestFiftyMoveClaimAheadReportBuilder {
     // Sequence 1: FEN clock 98 -> Rg1 (clock 99) -> a6 (pawn push, clock 0). Boundary at Black's move.
     // Sequence 2 (after the reset): play 99 non-zeroing moves to reach clock 99, then a pawn push
     // resets again. Boundary at the second clock-99 move.
-    final Board board = new Board("4k3/p7/8/8/8/8/P7/4K2R w - - 98 80");
+    final Board board = Board.fromFenStrict("4k3/p7/8/8/8/8/P7/4K2R w - - 98 80");
     board.movesStrict("Rg1", "a6");
     // Now drive a fresh sequence to clock 99.
     board.movesStrict("Kd1");

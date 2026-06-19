@@ -8,20 +8,19 @@ import java.util.regex.Pattern;
 
 import org.eclipse.jdt.annotation.NonNull;
 
-import io.github.dlbbld.ashlarchess.common.exceptions.FenRawValidationException;
-import io.github.dlbbld.ashlarchess.fen.model.FenRaw;
+import io.github.dlbbld.ashlarchess.fen.model.FenField;
 
-public class FenParserRaw {
+final class StrictFenFieldParser {
 
-  private FenParserRaw() {
+  private StrictFenFieldParser() {
   }
 
-  public static FenRaw parseFenRaw(String fen) throws FenRawValidationException {
+  static FenField parse(String fen) throws StrictFenFieldValidationException {
     final String regExp = "^([^ ]+) ([^ ]+) ([^ ]+) ([^ ]+) ([^ ]+) ([^ ]+)$";
     final Pattern pattern = Pattern.compile(regExp);
     final Matcher matcher = pattern.matcher(fen);
     if (!matcher.find()) {
-      throw new FenRawValidationException("The format could not be identifed as valid FEN format");
+      throw new StrictFenFieldValidationException("The format could not be identifed as valid FEN format");
     }
     // the regular expressions assures that these matches are not empty
     @SuppressWarnings("null") @NonNull final String piecePlacement = matcher.group(1);
@@ -31,7 +30,7 @@ public class FenParserRaw {
     @SuppressWarnings("null") @NonNull final String halfMoveClock = matcher.group(5);
     @SuppressWarnings("null") @NonNull final String fullMoveNumber = matcher.group(6);
 
-    return new FenRaw(piecePlacement, sideToMove, castlingRight, enPassantCaptureTargetSquare, halfMoveClock,
+    return new FenField(piecePlacement, sideToMove, castlingRight, enPassantCaptureTargetSquare, halfMoveClock,
         fullMoveNumber);
   }
 

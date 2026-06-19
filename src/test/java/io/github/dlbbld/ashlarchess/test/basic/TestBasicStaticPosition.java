@@ -14,7 +14,7 @@ import io.github.dlbbld.ashlarchess.board.StaticPosition;
 import io.github.dlbbld.ashlarchess.board.enums.Piece;
 import io.github.dlbbld.ashlarchess.board.enums.Square;
 import io.github.dlbbld.ashlarchess.common.utility.StaticPositionUtility;
-import io.github.dlbbld.ashlarchess.fen.FenParserAdvanced;
+import io.github.dlbbld.ashlarchess.fen.StrictFenParser;
 import io.github.dlbbld.ashlarchess.fen.constants.FenConstants;
 
 class TestBasicStaticPosition {
@@ -38,7 +38,7 @@ class TestBasicStaticPosition {
     // FEN parser now produces BitboardPosition; derive StaticPosition via the test-oracle bridge for the
     // structural assertion against the reference StaticPosition.INITIAL_POSITION constant.
     final StaticPosition staticInitialPositionActual = StaticPositionBridge
-        .toStaticPosition(FenParserAdvanced.parseFenAdvanced(FenConstants.FEN_INITIAL_STR).bitboardPosition());
+        .toStaticPosition(StrictFenParser.parse(FenConstants.FEN_INITIAL_STR).bitboardPosition());
 
     assertEquals(StaticPosition.INITIAL_POSITION, staticInitialPositionActual);
   }

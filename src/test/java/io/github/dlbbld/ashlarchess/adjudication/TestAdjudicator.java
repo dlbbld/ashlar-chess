@@ -37,19 +37,19 @@ class TestAdjudicator {
   void quickDrawsWhenOpponentIsProvablyUnwinnable() {
     // White flags; the would-be winner (Black) is provably unwinnable - lone king, and a blocked pawn wall.
     assertEquals(AdjudicationResult.DRAW,
-        Adjudicator.adjudicateFlagfallQuick(new Board(KING_AND_ROOK_VS_KING), Side.WHITE));
+        Adjudicator.adjudicateFlagfallQuick(Board.fromFenStrict(KING_AND_ROOK_VS_KING), Side.WHITE));
     assertEquals(AdjudicationResult.DRAW,
-        Adjudicator.adjudicateFlagfallQuick(new Board(PAWN_WALL_UNWINNABLE_FOR_BLACK), Side.WHITE));
+        Adjudicator.adjudicateFlagfallQuick(Board.fromFenStrict(PAWN_WALL_UNWINNABLE_FOR_BLACK), Side.WHITE));
   }
 
   @SuppressWarnings("static-method")
   @Test
   void quickRulesLossWhenNoDrawCanBeShown() {
     // Black flags; White is not provably unwinnable -> the flag stands.
-    assertEquals(AdjudicationResult.LOSS, Adjudicator.adjudicateFlagfallQuick(new Board(WHITE_WINNABLE), Side.BLACK));
+    assertEquals(AdjudicationResult.LOSS, Adjudicator.adjudicateFlagfallQuick(Board.fromFenStrict(WHITE_WINNABLE), Side.BLACK));
     // White flags; quick cannot prove Black unwinnable here (it is actually winnable) -> loss.
     assertEquals(AdjudicationResult.LOSS,
-        Adjudicator.adjudicateFlagfallQuick(new Board(UNDETERMINED_FOR_BLACK), Side.WHITE));
+        Adjudicator.adjudicateFlagfallQuick(Board.fromFenStrict(UNDETERMINED_FOR_BLACK), Side.WHITE));
   }
 
   // === full: DRAW / LOSS / UNDETERMINED ===
@@ -58,16 +58,16 @@ class TestAdjudicator {
   @Test
   void fullDrawsOnAProvenDeadPosition() {
     assertEquals(AdjudicationResult.DRAW,
-        Adjudicator.adjudicateFlagfallFull(new Board(KING_AND_ROOK_VS_KING), Side.WHITE));
+        Adjudicator.adjudicateFlagfallFull(Board.fromFenStrict(KING_AND_ROOK_VS_KING), Side.WHITE));
     assertEquals(AdjudicationResult.DRAW,
-        Adjudicator.adjudicateFlagfallFull(new Board(PAWN_WALL_UNWINNABLE_FOR_BLACK), Side.WHITE));
+        Adjudicator.adjudicateFlagfallFull(Board.fromFenStrict(PAWN_WALL_UNWINNABLE_FOR_BLACK), Side.WHITE));
   }
 
   @SuppressWarnings("static-method")
   @Test
   void fullRulesLossOnAProvenWin() {
     // Black flags; the full analysis proves White can win -> Black loses.
-    assertEquals(AdjudicationResult.LOSS, Adjudicator.adjudicateFlagfallFull(new Board(WHITE_WINNABLE), Side.BLACK));
+    assertEquals(AdjudicationResult.LOSS, Adjudicator.adjudicateFlagfallFull(Board.fromFenStrict(WHITE_WINNABLE), Side.BLACK));
   }
 
   @SuppressWarnings("static-method")
@@ -75,7 +75,7 @@ class TestAdjudicator {
   void fullReportsUndeterminedWhenTheSearchBoundIsHit() {
     // White flags; the full analysis of Black exhausts the node bound -> undetermined.
     assertEquals(AdjudicationResult.UNDETERMINED,
-        Adjudicator.adjudicateFlagfallFull(new Board(UNDETERMINED_FOR_BLACK), Side.WHITE));
+        Adjudicator.adjudicateFlagfallFull(Board.fromFenStrict(UNDETERMINED_FOR_BLACK), Side.WHITE));
   }
 
   @SuppressWarnings("static-method")
@@ -83,9 +83,9 @@ class TestAdjudicator {
   void quickAndFullDifferOnTheUndeterminedPosition() {
     // Same position: quick rules a loss (no draw shown), full reports it cannot decide.
     assertEquals(AdjudicationResult.LOSS,
-        Adjudicator.adjudicateFlagfallQuick(new Board(UNDETERMINED_FOR_BLACK), Side.WHITE));
+        Adjudicator.adjudicateFlagfallQuick(Board.fromFenStrict(UNDETERMINED_FOR_BLACK), Side.WHITE));
     assertEquals(AdjudicationResult.UNDETERMINED,
-        Adjudicator.adjudicateFlagfallFull(new Board(UNDETERMINED_FOR_BLACK), Side.WHITE));
+        Adjudicator.adjudicateFlagfallFull(Board.fromFenStrict(UNDETERMINED_FOR_BLACK), Side.WHITE));
   }
 
   // === resignation == flag-fall ===
@@ -93,10 +93,10 @@ class TestAdjudicator {
   @SuppressWarnings("static-method")
   @Test
   void resignationAdjudicatesIdenticallyToFlagfall() {
-    final Board drawBoard = new Board(KING_AND_ROOK_VS_KING);
+    final Board drawBoard = Board.fromFenStrict(KING_AND_ROOK_VS_KING);
     assertEquals(AdjudicationResult.DRAW, Adjudicator.adjudicateResignationQuick(drawBoard, Side.WHITE));
     assertEquals(AdjudicationResult.DRAW, Adjudicator.adjudicateResignationFull(drawBoard, Side.WHITE));
-    final Board lossBoard = new Board(WHITE_WINNABLE);
+    final Board lossBoard = Board.fromFenStrict(WHITE_WINNABLE);
     assertEquals(AdjudicationResult.LOSS, Adjudicator.adjudicateResignationQuick(lossBoard, Side.BLACK));
     assertEquals(AdjudicationResult.LOSS, Adjudicator.adjudicateResignationFull(lossBoard, Side.BLACK));
   }
@@ -106,7 +106,7 @@ class TestAdjudicator {
   @SuppressWarnings("static-method")
   @Test
   void rejectsSideNone() {
-    final Board board = new Board(WHITE_WINNABLE);
+    final Board board = Board.fromFenStrict(WHITE_WINNABLE);
     assertThrows(IllegalArgumentException.class, () -> Adjudicator.adjudicateFlagfallQuick(board, Side.NONE));
     assertThrows(IllegalArgumentException.class, () -> Adjudicator.adjudicateResignationQuick(board, Side.NONE));
     assertThrows(IllegalArgumentException.class, () -> Adjudicator.adjudicateFlagfallFull(board, Side.NONE));

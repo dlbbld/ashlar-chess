@@ -53,7 +53,7 @@ class TestUnwinnabilityFullHelpmateIsHelpmate {
   }
 
   private static void assertHelpmateLine(String fen, Side winner, List<UciMove> mateLine) {
-    final Board board = new Board(fen);
+    final Board board = Board.fromFenStrict(fen);
     for (final UciMove uciMove : mateLine) {
       board.move(UciMoveUtility.convertUciMoveToMoveSpecification(board, uciMove));
     }

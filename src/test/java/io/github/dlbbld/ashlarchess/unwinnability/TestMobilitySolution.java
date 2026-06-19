@@ -398,7 +398,7 @@ class TestMobilitySolution {
   }
 
   private static void checkCustom(String fen, Map<Square, List<Square>> mobilityMap) {
-    final Board board = new Board(fen);
+    final Board board = Board.fromFenStrict(fen);
     final MobilitySolution mobilitySolution = Mobility.mobility(board);
 
     for (final PiecePlacement piecePlacement : mobilitySolution.getPiecePlacementSet()) {
@@ -413,7 +413,7 @@ class TestMobilitySolution {
 
   private static void checkAllLockedButKing(String fen, List<Square> whiteKingToSquareList,
       List<Square> blackKingToSquareList) {
-    final Board board = new Board(fen);
+    final Board board = Board.fromFenStrict(fen);
 
     final MobilitySolution mobilitySolution = Mobility.mobility(board);
 
@@ -452,7 +452,7 @@ class TestMobilitySolution {
 
   private static void checkPawnWallOnlyKingAndPawn(String fen, List<Square> whiteKingToSquareList,
       List<Square> blackKingToSquareList) {
-    final Board board = new Board(fen);
+    final Board board = Board.fromFenStrict(fen);
 
     final MobilitySolution mobilitySolution = Mobility.mobility(board);
 
@@ -484,7 +484,7 @@ class TestMobilitySolution {
   }
 
   private static void checkAllMaximum(String fen) {
-    final Board board = new Board(fen);
+    final Board board = Board.fromFenStrict(fen);
 
     final MobilitySolution mobilitySolution = Mobility.mobility(board);
 

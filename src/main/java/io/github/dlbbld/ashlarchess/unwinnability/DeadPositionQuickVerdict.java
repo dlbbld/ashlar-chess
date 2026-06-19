@@ -15,10 +15,5 @@ public enum DeadPositionQuickVerdict {
   DEAD,
 
   /** Not proven dead; the position may or may not be alive. */
-  POSSIBLY_ALIVE;
-
-  /** Whether the position is proven dead (neither side can deliver checkmate). */
-  public boolean isDead() {
-    return this == DEAD;
-  }
+  POSSIBLY_ALIVE
 }

@@ -28,18 +28,16 @@ import io.github.dlbbld.ashlarchess.board.enums.SquareType;
 import io.github.dlbbld.ashlarchess.board.enums.SquareUtility;
 import io.github.dlbbld.ashlarchess.common.Nulls;
 import io.github.dlbbld.ashlarchess.common.constants.ChessConstants;
-import io.github.dlbbld.ashlarchess.common.enums.FenAdvancedValidationProblem;
-import io.github.dlbbld.ashlarchess.common.exceptions.FenAdvancedValidationException;
-import io.github.dlbbld.ashlarchess.common.exceptions.FenRawValidationException;
+import io.github.dlbbld.ashlarchess.common.enums.StrictFenSemanticValidationProblem;
 import io.github.dlbbld.ashlarchess.common.exceptions.ProgrammingMistakeException;
 import io.github.dlbbld.ashlarchess.common.utility.BasicUtility;
 import io.github.dlbbld.ashlarchess.fen.constants.FenConstants;
 import io.github.dlbbld.ashlarchess.fen.model.Fen;
-import io.github.dlbbld.ashlarchess.fen.model.FenRaw;
+import io.github.dlbbld.ashlarchess.fen.model.FenField;
 import io.github.dlbbld.ashlarchess.model.CastlingRightBoth;
 import io.github.dlbbld.ashlarchess.moves.CastlingUtility;
 
-public class FenParserAdvanced {
+final class StrictFenSemanticParser {
 
   private static final String REG_EXP_EMPTY_RANK = "//";
   @SuppressWarnings("null")
@@ -49,19 +47,19 @@ public class FenParserAdvanced {
   @SuppressWarnings("null")
   private static final Pattern PATTERN_RANK = Pattern.compile(REG_EXP_RANK);
 
-  private FenParserAdvanced() {
+  private StrictFenSemanticParser() {
   }
 
-  public static Fen parseFenAdvanced(String fen) throws FenAdvancedValidationException {
-    final FenRaw fenRaw;
+  static Fen parse(String fen) throws StrictFenSemanticValidationException {
+    final FenField fenField;
     try {
-      fenRaw = FenParserRaw.parseFenRaw(fen);
-    } catch (final FenRawValidationException e) {
+      fenField = StrictFenFieldParser.parse(fen);
+    } catch (final StrictFenFieldValidationException e) {
       final String message = BasicUtility.getMessage(e);
-      throw new FenAdvancedValidationException(FenAdvancedValidationProblem.INVALID_FORMAT, message);
+      throw new StrictFenSemanticValidationException(StrictFenSemanticValidationProblem.INVALID_FORMAT, message);
     }
 
-    final String piecePlacement = fenRaw.piecePlacement();
+    final String piecePlacement = fenField.piecePlacement();
     final BitboardPosition bitboardPosition = validatePiecePlacement(piecePlacement);
     validateNumberOfPieces(bitboardPosition);
 
@@ -69,25 +67,25 @@ public class FenParserAdvanced {
 
     validatePawnRankNotGroundRank(bitboardPosition);
 
-    final String sideToMoveCheck = fenRaw.sideToMove();
+    final String sideToMoveCheck = fenField.sideToMove();
     final Side sideToMove = validateSideToMove(sideToMoveCheck);
 
     if (bitboardPosition.isInCheck(sideToMove.getOppositeSide())) {
-      throw new FenAdvancedValidationException(FenAdvancedValidationProblem.INVALID_POSITION_CHECK,
+      throw new StrictFenSemanticValidationException(StrictFenSemanticValidationProblem.INVALID_POSITION_CHECK,
           "the king of the opposing player is in check");
     }
 
-    final String castlingRightBothStr = fenRaw.castlingRightBothStr();
+    final String castlingRightBothStr = fenField.castlingRightBothStr();
     final CastlingRightBoth castlingRightBoth = validateCastlingRightBoth(bitboardPosition, castlingRightBothStr);
 
-    final String enPassantCaptureTargetSquareStr = fenRaw.enPassantCaptureTargetSquare();
+    final String enPassantCaptureTargetSquareStr = fenField.enPassantCaptureTargetSquare();
     final Square enPassantCaptureTargetSquare = validateEnPassantCaptureTargetSquare(bitboardPosition,
         enPassantCaptureTargetSquareStr, sideToMove);
 
-    final String halfMoveClockStr = fenRaw.halfMoveClock();
+    final String halfMoveClockStr = fenField.halfMoveClock();
     final int halfMoveClock = validateHalfMoveClock(halfMoveClockStr, enPassantCaptureTargetSquare);
 
-    final String fullMoveNumberStr = fenRaw.fullMoveNumber();
+    final String fullMoveNumberStr = fenField.fullMoveNumber();
     final int fullMoveNumber = validateFullMoveNumber(fullMoveNumberStr);
 
     validateHalfMoveClockAgainstFullMoveNumber(halfMoveClock, fullMoveNumber, sideToMove);
@@ -107,11 +105,11 @@ public class FenParserAdvanced {
    * deviation via {@code ForgivenFenItemCode.HALF_MOVE_CLOCK_INCONSISTENT_WITH_FULL_MOVE_NUMBER}.
    */
   private static void validateHalfMoveClockAgainstFullMoveNumber(int halfMoveClock, int fullMoveNumber, Side sideToMove)
-      throws FenAdvancedValidationException {
+      throws StrictFenSemanticValidationException {
     final int maximumPossibleHalfMoveClock = 2 * (fullMoveNumber - 1) + (sideToMove == BLACK ? 1 : 0);
     if (halfMoveClock > maximumPossibleHalfMoveClock) {
-      throw new FenAdvancedValidationException(
-          FenAdvancedValidationProblem.INVALID_HALF_MOVE_CLOCK_TOO_BIG_RELATIVE_TO_FULL_MOVE_NUMBER,
+      throw new StrictFenSemanticValidationException(
+          StrictFenSemanticValidationProblem.INVALID_HALF_MOVE_CLOCK_TOO_BIG_RELATIVE_TO_FULL_MOVE_NUMBER,
           "the halfmove clock \"" + halfMoveClock + "\" is greater than the maximum possible halfmove clock \""
               + maximumPossibleHalfMoveClock + "\" for the specified fullmove number of " + fullMoveNumber);
     }
@@ -122,10 +120,10 @@ public class FenParserAdvanced {
   // we do not validate if the position actually makes sense, like two kings of
   // same color or no king or both kings in
   // check, too much pawns etc.
-  public static BitboardPosition validatePiecePlacement(String piecePlacement) throws FenAdvancedValidationException {
+  static BitboardPosition validatePiecePlacement(String piecePlacement) throws StrictFenSemanticValidationException {
 
     if (piecePlacement.endsWith("/")) {
-      throw new FenAdvancedValidationException(FenAdvancedValidationProblem.INVALID_POSITION_ENDS_WITH_FORWARD_SLASH,
+      throw new StrictFenSemanticValidationException(StrictFenSemanticValidationProblem.INVALID_POSITION_ENDS_WITH_FORWARD_SLASH,
           "it ends with a slash");
     }
 
@@ -133,14 +131,14 @@ public class FenParserAdvanced {
     // empty ranks
     final Matcher matcherEmptyRank = PATTERN_EMPTY_RANK.matcher(piecePlacement);
     if (matcherEmptyRank.find()) {
-      throw new FenAdvancedValidationException(FenAdvancedValidationProblem.INVALID_POSITION_EMPTY_RANK,
+      throw new StrictFenSemanticValidationException(StrictFenSemanticValidationProblem.INVALID_POSITION_EMPTY_RANK,
           "it contains empty ranks");
     }
 
     final String[] rankDescriptionList = piecePlacement.split("/");
 
     if (rankDescriptionList.length != 8) {
-      throw new FenAdvancedValidationException(FenAdvancedValidationProblem.INVALID_POSITION_NUMBER_OF_RANKS,
+      throw new StrictFenSemanticValidationException(StrictFenSemanticValidationProblem.INVALID_POSITION_NUMBER_OF_RANKS,
           "it does not specify eight ranks");
     }
 
@@ -149,7 +147,7 @@ public class FenParserAdvanced {
       rankNumber++;
       final Matcher matcherRank = PATTERN_RANK.matcher(rankDescription);
       if (!matcherRank.find()) {
-        throw new FenAdvancedValidationException(FenAdvancedValidationProblem.INVALID_POSITION_UNKNOWN_CHAR,
+        throw new StrictFenSemanticValidationException(StrictFenSemanticValidationProblem.INVALID_POSITION_UNKNOWN_CHAR,
             "the rank " + rankNumber + " contains invalid chars");
       }
     }
@@ -242,7 +240,7 @@ public class FenParserAdvanced {
 
   }
 
-  private static List<String> validateEvaluatedLength(String rankDescription) throws FenAdvancedValidationException {
+  private static List<String> validateEvaluatedLength(String rankDescription) throws StrictFenSemanticValidationException {
     final List<String> squareDescriptionList = new ArrayList<>();
 
     int countEvaluatedLength = 0;
@@ -262,7 +260,7 @@ public class FenParserAdvanced {
 
     }
     if (countEvaluatedLength != 8) {
-      throw new FenAdvancedValidationException(FenAdvancedValidationProblem.INVALID_POSITION_LINE_EVALUATION_LENGTH,
+      throw new StrictFenSemanticValidationException(StrictFenSemanticValidationProblem.INVALID_POSITION_LINE_EVALUATION_LENGTH,
           "the rank description \"" + rankDescription + "\" for the position does not evaluate to eight squares");
     }
 
@@ -273,23 +271,23 @@ public class FenParserAdvanced {
     return squareDescriptionList;
   }
 
-  private static Side validateSideToMove(String sideToMove) throws FenAdvancedValidationException {
+  private static Side validateSideToMove(String sideToMove) throws StrictFenSemanticValidationException {
     if (sideToMove.length() != 1 || !FenSideSymbol.exists(sideToMove.charAt(0))) {
-      throw new FenAdvancedValidationException(FenAdvancedValidationProblem.INVALID_SIDE_TO_MOVE_RANGE,
+      throw new StrictFenSemanticValidationException(StrictFenSemanticValidationProblem.INVALID_SIDE_TO_MOVE_RANGE,
           "the side to move part of \"" + sideToMove + "\" is not valid");
     }
     return FenSideSymbol.parse(sideToMove.charAt(0)).side();
   }
 
   private static CastlingRightBoth validateCastlingRightBoth(BitboardPosition bitboardPosition,
-      String castlingRightBothStr) throws FenAdvancedValidationException {
+      String castlingRightBothStr) throws StrictFenSemanticValidationException {
     final CastlingRightBoth castlingRightBoth = validateCastlingRightBoth(castlingRightBothStr);
     validateCastlingRightAgainstBitboardPosition(bitboardPosition, castlingRightBoth);
     return castlingRightBoth;
   }
 
   private static CastlingRightBoth validateCastlingRightBoth(String castlingRightBothStr)
-      throws FenAdvancedValidationException {
+      throws StrictFenSemanticValidationException {
 
     final boolean hasK = castlingRightBothStr.contains("K");
     final boolean hasQ = castlingRightBothStr.contains("Q");
@@ -299,7 +297,7 @@ public class FenParserAdvanced {
     final String expected = (hasK ? "K" : "") + (hasQ ? "Q" : "") + (hask ? "k" : "") + (hasq ? "q" : "");
     if (expected.isEmpty() && !"-".equals(castlingRightBothStr)
         || !expected.isEmpty() && !expected.equals(castlingRightBothStr)) {
-      throw new FenAdvancedValidationException(FenAdvancedValidationProblem.INVALID_CASTLING_RIGHT_RANGE,
+      throw new StrictFenSemanticValidationException(StrictFenSemanticValidationProblem.INVALID_CASTLING_RIGHT_RANGE,
           "the castling right part of \"" + castlingRightBothStr + "\" is not valid");
     }
 
@@ -323,7 +321,7 @@ public class FenParserAdvanced {
   }
 
   private static Square validateEnPassantCaptureTargetSquare(BitboardPosition bitboardPosition,
-      String enPassantCaptureTargetSquareStr, Side sideToMove) throws FenAdvancedValidationException {
+      String enPassantCaptureTargetSquareStr, Side sideToMove) throws StrictFenSemanticValidationException {
     final Square enPassantCaptureTargetSquare = validateEnPassantCaptureTargetSquare(enPassantCaptureTargetSquareStr,
         sideToMove);
     validateEnPassantCaptureTargetSquareAgainstBitboardPosition(bitboardPosition, enPassantCaptureTargetSquare,
@@ -332,7 +330,7 @@ public class FenParserAdvanced {
   }
 
   private static Square validateEnPassantCaptureTargetSquare(String enPassantCaptureTargetSquare, Side sideToMove)
-      throws FenAdvancedValidationException {
+      throws StrictFenSemanticValidationException {
     if (enPassantCaptureTargetSquare.length() == 1 && "-".equals(enPassantCaptureTargetSquare)) {
       return Square.NONE;
     }
@@ -350,21 +348,21 @@ public class FenParserAdvanced {
           }
           final Side oppositeSide = sideToMove.getOppositeSide();
           if (SquareUtility.calculateEnPassantCaptureTargetSquareList(oppositeSide).contains(square)) {
-            throw new FenAdvancedValidationException(
-                FenAdvancedValidationProblem.INVALID_EN_PASSANT_CAPTURE_TARGET_SQUARE_WRONG_COLOR,
+            throw new StrictFenSemanticValidationException(
+                StrictFenSemanticValidationProblem.INVALID_EN_PASSANT_CAPTURE_TARGET_SQUARE_WRONG_COLOR,
                 "the en passant target square \"" + enPassantCaptureTargetSquare
                     + "\" belongs to the side to move, not the opponent");
           }
         }
       }
     }
-    throw new FenAdvancedValidationException(
-        FenAdvancedValidationProblem.INVALID_EN_PASSANT_CAPTURE_TARGET_SQUARE_RANGE,
+    throw new StrictFenSemanticValidationException(
+        StrictFenSemanticValidationProblem.INVALID_EN_PASSANT_CAPTURE_TARGET_SQUARE_RANGE,
         "the en passant target square part of \"" + enPassantCaptureTargetSquare + "\" is not valid");
   }
 
   private static void validateEnPassantCaptureTargetSquareAgainstBitboardPosition(BitboardPosition bitboardPosition,
-      Square enPassantCaptureTargetSquare, Side sideToMove) throws FenAdvancedValidationException {
+      Square enPassantCaptureTargetSquare, Side sideToMove) throws StrictFenSemanticValidationException {
     if (enPassantCaptureTargetSquare == Square.NONE) {
       // if not set there is nothing to validate
       return;
@@ -381,8 +379,8 @@ public class FenParserAdvanced {
     final Piece pieceOnTwoAdvanceSquare = bitboardPosition.get(pawnTwoAdvanceSquare);
     if (pieceOnTwoAdvanceSquare == Piece.NONE || pieceOnTwoAdvanceSquare.getSide() != oppositeSide
         || pieceOnTwoAdvanceSquare.getPieceType() != PAWN) {
-      throw new FenAdvancedValidationException(
-          FenAdvancedValidationProblem.INVALID_EN_PASSANT_CAPTURE_TARGET_SQUARE_NO_PAWN_AFTER,
+      throw new StrictFenSemanticValidationException(
+          StrictFenSemanticValidationProblem.INVALID_EN_PASSANT_CAPTURE_TARGET_SQUARE_NO_PAWN_AFTER,
           "the en passant target square is specified as \"" + enPassantCaptureTargetSquare
               + "\" but there is no opponent pawn on \"" + pawnTwoAdvanceSquare + "\"");
     }
@@ -396,20 +394,20 @@ public class FenParserAdvanced {
     final boolean isEnPassantCaptureTargetSquareEmpty = pieceOnEnPassantCaptureTargetSquare != Piece.NONE;
 
     if (isStartingSquareEmpty && isEnPassantCaptureTargetSquareEmpty) {
-      throw new FenAdvancedValidationException(FenAdvancedValidationProblem.INVALID_EN_PASSANT_CAPTURE_BOTH_NOT_EMPTY,
+      throw new StrictFenSemanticValidationException(StrictFenSemanticValidationProblem.INVALID_EN_PASSANT_CAPTURE_BOTH_NOT_EMPTY,
           "the en passant target square \"" + enPassantCaptureTargetSquare + "\" and the pawn starting square  \""
               + startingSquare + "\" are not empty");
     }
 
     if (isStartingSquareEmpty) {
-      throw new FenAdvancedValidationException(
-          FenAdvancedValidationProblem.INVALID_EN_PASSANT_CAPTURE_STARTING_SQUARE_NOT_EMPTY,
+      throw new StrictFenSemanticValidationException(
+          StrictFenSemanticValidationProblem.INVALID_EN_PASSANT_CAPTURE_STARTING_SQUARE_NOT_EMPTY,
           "the from square \"" + startingSquare + "\" of the pawn making the two square advance is not empty");
     }
 
     if (isEnPassantCaptureTargetSquareEmpty) {
-      throw new FenAdvancedValidationException(
-          FenAdvancedValidationProblem.INVALID_EN_PASSANT_CAPTURE_TARGET_SQUARE_NOT_EMPTY,
+      throw new StrictFenSemanticValidationException(
+          StrictFenSemanticValidationProblem.INVALID_EN_PASSANT_CAPTURE_TARGET_SQUARE_NOT_EMPTY,
           "the en passant target square \"" + enPassantCaptureTargetSquare + "\" is not empty");
     }
 
@@ -421,61 +419,61 @@ public class FenParserAdvanced {
         pawnTwoAdvanceSquare, startingSquare);
 
     if (bitboardPositionBeforeTwoSquareAdvance.isInCheck(sideToMove)) {
-      throw new FenAdvancedValidationException(
-          FenAdvancedValidationProblem.INVALID_EN_PASSANT_CAPTURE_PREVIOUS_POSITION_ILLEGAL,
+      throw new StrictFenSemanticValidationException(
+          StrictFenSemanticValidationProblem.INVALID_EN_PASSANT_CAPTURE_PREVIOUS_POSITION_ILLEGAL,
           "the opponent king was in check before before performing the pawn two square advance");
     }
 
   }
 
   private static int validateHalfMoveClock(String halfMoveClockStr, Square enPassantCaptureTargetSquare)
-      throws FenAdvancedValidationException {
+      throws StrictFenSemanticValidationException {
     final int halfMoveClock = validateHalfMoveClock(halfMoveClockStr);
     validateHalfMoveClock(halfMoveClock, enPassantCaptureTargetSquare);
     return halfMoveClock;
   }
 
-  private static int validateHalfMoveClock(String halfMoveClockStr) throws FenAdvancedValidationException {
+  private static int validateHalfMoveClock(String halfMoveClockStr) throws StrictFenSemanticValidationException {
     int halfMoveClock;
     try {
       halfMoveClock = Integer.parseInt(halfMoveClockStr);
     } catch (@SuppressWarnings("unused") final NumberFormatException e) {
-      throw new FenAdvancedValidationException(FenAdvancedValidationProblem.INVALID_HALF_MOVE_CLOCK_RANGE,
+      throw new StrictFenSemanticValidationException(StrictFenSemanticValidationProblem.INVALID_HALF_MOVE_CLOCK_RANGE,
           "the halfmove clock part of \"" + halfMoveClockStr + "\" is not an integer value");
     }
     return halfMoveClock;
   }
 
   private static void validateHalfMoveClock(int halfMoveClock, Square enPassantCaptureTargetSquare)
-      throws FenAdvancedValidationException {
+      throws StrictFenSemanticValidationException {
     if (enPassantCaptureTargetSquare != Square.NONE && halfMoveClock != 0) {
-      throw new FenAdvancedValidationException(
-          FenAdvancedValidationProblem.INVALID_HALF_MOVE_CLOCK_NOT_ZERO_BUT_EN_PASSANT_CAPTURE_TARGET_SQUARE_SET,
+      throw new StrictFenSemanticValidationException(
+          StrictFenSemanticValidationProblem.INVALID_HALF_MOVE_CLOCK_NOT_ZERO_BUT_EN_PASSANT_CAPTURE_TARGET_SQUARE_SET,
           "the halfmove clock is \"" + halfMoveClock + "\" must be zero if en passant target square is set");
     }
   }
 
-  private static int validateFullMoveNumber(String fullMoveNumberStr) throws FenAdvancedValidationException {
+  private static int validateFullMoveNumber(String fullMoveNumberStr) throws StrictFenSemanticValidationException {
     int fullMoveNumber;
     try {
       fullMoveNumber = Integer.parseInt(fullMoveNumberStr);
     } catch (@SuppressWarnings("unused") final NumberFormatException e) {
-      throw new FenAdvancedValidationException(FenAdvancedValidationProblem.INVALID_FULL_MOVE_NUMBER_RANGE,
+      throw new StrictFenSemanticValidationException(StrictFenSemanticValidationProblem.INVALID_FULL_MOVE_NUMBER_RANGE,
           "the fullmove number of \"" + fullMoveNumberStr + "\" is not an integer value");
     }
 
     if (fullMoveNumber < 0) {
-      throw new FenAdvancedValidationException(FenAdvancedValidationProblem.INVALID_FULL_MOVE_NUMBER_NEGATIVE,
+      throw new StrictFenSemanticValidationException(StrictFenSemanticValidationProblem.INVALID_FULL_MOVE_NUMBER_NEGATIVE,
           "the fullmove number of \"" + fullMoveNumberStr + "\" cannot be negative");
     }
 
     if (fullMoveNumber == 0) {
-      throw new FenAdvancedValidationException(FenAdvancedValidationProblem.INVALID_FULL_MOVE_NUMBER_ZERO,
+      throw new StrictFenSemanticValidationException(StrictFenSemanticValidationProblem.INVALID_FULL_MOVE_NUMBER_ZERO,
           "the fullmove number cannot be zero");
     }
 
     if (fullMoveNumber > FenConstants.MAX_FULL_MOVE_NUMBER) {
-      throw new FenAdvancedValidationException(FenAdvancedValidationProblem.INVALID_FULL_MOVE_NUMBER_TOO_BIG_ABSOLUTE,
+      throw new StrictFenSemanticValidationException(StrictFenSemanticValidationProblem.INVALID_FULL_MOVE_NUMBER_TOO_BIG_ABSOLUTE,
           "the fullmove number of " + fullMoveNumber + " is above the maximum supported value of "
               + FenConstants.MAX_FULL_MOVE_NUMBER + "");
     }
@@ -484,7 +482,7 @@ public class FenParserAdvanced {
   }
 
   private static void validateCastlingRightAgainstBitboardPosition(BitboardPosition bitboardPosition,
-      CastlingRightBoth castlingRightBoth) throws FenAdvancedValidationException {
+      CastlingRightBoth castlingRightBoth) throws StrictFenSemanticValidationException {
 
     final List<Side> sideToCheckList = new ArrayList<>();
     sideToCheckList.add(WHITE);
@@ -498,17 +496,17 @@ public class FenParserAdvanced {
       final boolean isQueenSideCastlingOriginalPosition = CastlingUtility
           .isQueenSideCastlingOriginalPosition(bitboardPosition, sideToCheck);
 
-      final FenAdvancedValidationProblem parseFenCheck = calculateParseFenCheck(sideToCheck, sideCastlingRight,
+      final StrictFenSemanticValidationProblem parseFenCheck = calculateParseFenCheck(sideToCheck, sideCastlingRight,
           isKingSideCastlingOriginalPosition, isQueenSideCastlingOriginalPosition);
 
-      if (parseFenCheck != FenAdvancedValidationProblem.SUCCESS) {
+      if (parseFenCheck != StrictFenSemanticValidationProblem.SUCCESS) {
         throw calculateParseFenException(sideToCheck, sideCastlingRight, parseFenCheck);
       }
     }
   }
 
-  private static FenAdvancedValidationException calculateParseFenException(Side sideToCheck,
-      CastlingRight castlingRight, FenAdvancedValidationProblem parseFenCheck) {
+  private static StrictFenSemanticValidationException calculateParseFenException(Side sideToCheck,
+      CastlingRight castlingRight, StrictFenSemanticValidationProblem parseFenCheck) {
 
     final StringBuilder message = new StringBuilder();
     message.append("Castling rights for ");
@@ -518,33 +516,33 @@ public class FenParserAdvanced {
     message.append(
         ", but castling as such is not possible, as the king and/or rock are not in their original positions anymore.");
 
-    return new FenAdvancedValidationException(parseFenCheck, Nulls.toString(message));
+    return new StrictFenSemanticValidationException(parseFenCheck, Nulls.toString(message));
   }
 
-  private static FenAdvancedValidationProblem calculateParseFenCheck(Side sideToCheck, CastlingRight castlingRight,
+  private static StrictFenSemanticValidationProblem calculateParseFenCheck(Side sideToCheck, CastlingRight castlingRight,
       boolean isKingSideCastlingOriginalPosition, boolean isQueenSideCastlingOriginalPosition) {
     switch (castlingRight) {
       case KING_AND_QUEEN_SIDE:
         if (!isKingSideCastlingOriginalPosition && !isQueenSideCastlingOriginalPosition) {
           return switch (sideToCheck) {
-            case BLACK -> FenAdvancedValidationProblem.INVALID_CASTLING_RIGHT_BLACK_BOTH;
-            case WHITE -> FenAdvancedValidationProblem.INVALID_CASTLING_RIGHT_WHITE_BOTH;
+            case BLACK -> StrictFenSemanticValidationProblem.INVALID_CASTLING_RIGHT_BLACK_BOTH;
+            case WHITE -> StrictFenSemanticValidationProblem.INVALID_CASTLING_RIGHT_WHITE_BOTH;
             case NONE -> throw new IllegalArgumentException();
             default -> throw new IllegalArgumentException();
           };
         }
         if (!isKingSideCastlingOriginalPosition) {
           return switch (sideToCheck) {
-            case BLACK -> FenAdvancedValidationProblem.INVALID_CASTLING_RIGHT_BLACK_KINGSIDE;
-            case WHITE -> FenAdvancedValidationProblem.INVALID_CASTLING_RIGHT_WHITE_KINGSIDE;
+            case BLACK -> StrictFenSemanticValidationProblem.INVALID_CASTLING_RIGHT_BLACK_KINGSIDE;
+            case WHITE -> StrictFenSemanticValidationProblem.INVALID_CASTLING_RIGHT_WHITE_KINGSIDE;
             case NONE -> throw new IllegalArgumentException();
             default -> throw new IllegalArgumentException();
           };
         }
         if (!isQueenSideCastlingOriginalPosition) {
           return switch (sideToCheck) {
-            case BLACK -> FenAdvancedValidationProblem.INVALID_CASTLING_RIGHT_BLACK_QUEENSIDE;
-            case WHITE -> FenAdvancedValidationProblem.INVALID_CASTLING_RIGHT_WHITE_QUEENSIDE;
+            case BLACK -> StrictFenSemanticValidationProblem.INVALID_CASTLING_RIGHT_BLACK_QUEENSIDE;
+            case WHITE -> StrictFenSemanticValidationProblem.INVALID_CASTLING_RIGHT_WHITE_QUEENSIDE;
             case NONE -> throw new IllegalArgumentException();
             default -> throw new IllegalArgumentException();
           };
@@ -553,8 +551,8 @@ public class FenParserAdvanced {
       case KING_SIDE:
         if (!isKingSideCastlingOriginalPosition) {
           return switch (sideToCheck) {
-            case BLACK -> FenAdvancedValidationProblem.INVALID_CASTLING_RIGHT_BLACK_KINGSIDE;
-            case WHITE -> FenAdvancedValidationProblem.INVALID_CASTLING_RIGHT_WHITE_KINGSIDE;
+            case BLACK -> StrictFenSemanticValidationProblem.INVALID_CASTLING_RIGHT_BLACK_KINGSIDE;
+            case WHITE -> StrictFenSemanticValidationProblem.INVALID_CASTLING_RIGHT_WHITE_KINGSIDE;
             case NONE -> throw new IllegalArgumentException();
             default -> throw new IllegalArgumentException();
           };
@@ -565,8 +563,8 @@ public class FenParserAdvanced {
       case QUEEN_SIDE:
         if (!isQueenSideCastlingOriginalPosition) {
           return switch (sideToCheck) {
-            case BLACK -> FenAdvancedValidationProblem.INVALID_CASTLING_RIGHT_BLACK_QUEENSIDE;
-            case WHITE -> FenAdvancedValidationProblem.INVALID_CASTLING_RIGHT_WHITE_QUEENSIDE;
+            case BLACK -> StrictFenSemanticValidationProblem.INVALID_CASTLING_RIGHT_BLACK_QUEENSIDE;
+            case WHITE -> StrictFenSemanticValidationProblem.INVALID_CASTLING_RIGHT_WHITE_QUEENSIDE;
             case NONE -> throw new IllegalArgumentException();
             default -> throw new IllegalArgumentException();
           };
@@ -575,32 +573,32 @@ public class FenParserAdvanced {
       default:
         throw new IllegalArgumentException();
     }
-    return FenAdvancedValidationProblem.SUCCESS;
+    return StrictFenSemanticValidationProblem.SUCCESS;
 
   }
 
-  private static void validateNumberOfPieces(BitboardPosition bitboardPosition) throws FenAdvancedValidationException {
+  private static void validateNumberOfPieces(BitboardPosition bitboardPosition) throws StrictFenSemanticValidationException {
     validateWhiteNumberOfPieces(bitboardPosition);
     validateBlackNumberOfPieces(bitboardPosition);
   }
 
   private static void validateWhiteNumberOfPieces(BitboardPosition bitboardPosition)
-      throws FenAdvancedValidationException {
+      throws StrictFenSemanticValidationException {
     // kings
     final int numberOfKings = FenMaterialCount.calculateNumberOfPieces(Side.WHITE, bitboardPosition, PieceType.KING);
     if (numberOfKings > ChessConstants.NUMBER_OF_KINGS) {
-      throw new FenAdvancedValidationException(FenAdvancedValidationProblem.INVALID_WHITE_TOO_MANY_KINGS,
+      throw new StrictFenSemanticValidationException(StrictFenSemanticValidationProblem.INVALID_WHITE_TOO_MANY_KINGS,
           "there is more than one white king");
     }
     if (numberOfKings == 0) {
-      throw new FenAdvancedValidationException(FenAdvancedValidationProblem.INVALID_WHITE_NO_KING,
+      throw new StrictFenSemanticValidationException(StrictFenSemanticValidationProblem.INVALID_WHITE_NO_KING,
           "there is no white king");
     }
 
     // pawns
     final int numberOfPawns = FenMaterialCount.calculateNumberOfPieces(Side.WHITE, bitboardPosition, PieceType.PAWN);
     if (numberOfPawns > ChessConstants.INITIAL_NUMBER_OF_PAWNS) {
-      throw new FenAdvancedValidationException(FenAdvancedValidationProblem.INVALID_WHITE_TOO_MANY_PAWNS,
+      throw new StrictFenSemanticValidationException(StrictFenSemanticValidationProblem.INVALID_WHITE_TOO_MANY_PAWNS,
           "there are too many white pawns");
     }
 
@@ -610,7 +608,7 @@ public class FenParserAdvanced {
     final int numberOfRooks = FenMaterialCount.calculateNumberOfPieces(Side.WHITE, bitboardPosition, PieceType.ROOK);
     final int numberOfRooksPromoted = numberOfRooks - ChessConstants.INITIAL_NUMBER_OF_ROOKS;
     if (numberOfRooksPromoted > numberOfPossiblePromotions) {
-      throw new FenAdvancedValidationException(FenAdvancedValidationProblem.INVALID_WHITE_TOO_MANY_ROOKS,
+      throw new StrictFenSemanticValidationException(StrictFenSemanticValidationProblem.INVALID_WHITE_TOO_MANY_ROOKS,
           "there are too many white rooks");
     }
 
@@ -619,7 +617,7 @@ public class FenParserAdvanced {
         PieceType.KNIGHT);
     final int numberOfKnightsPromoted = numberOfKnights - ChessConstants.INITIAL_NUMBER_OF_KNIGHTS;
     if (numberOfKnightsPromoted > numberOfPossiblePromotions) {
-      throw new FenAdvancedValidationException(FenAdvancedValidationProblem.INVALID_WHITE_TOO_MANY_KNIGHTS,
+      throw new StrictFenSemanticValidationException(StrictFenSemanticValidationProblem.INVALID_WHITE_TOO_MANY_KNIGHTS,
           "there are too many white knights");
     }
 
@@ -629,7 +627,7 @@ public class FenParserAdvanced {
     final int numberOfLightSquareBishopsPromoted = numberOfLightSquareBishops
         - ChessConstants.INITIAL_NUMBER_OF_LIGHT_SQUARE_BISHOPS;
     if (numberOfLightSquareBishopsPromoted > numberOfPossiblePromotions) {
-      throw new FenAdvancedValidationException(FenAdvancedValidationProblem.INVALID_WHITE_TOO_MANY_LIGHT_SQUARE_BISHOPS,
+      throw new StrictFenSemanticValidationException(StrictFenSemanticValidationProblem.INVALID_WHITE_TOO_MANY_LIGHT_SQUARE_BISHOPS,
           "there are too many white light squared bishops");
     }
 
@@ -639,7 +637,7 @@ public class FenParserAdvanced {
     final int numberOfDarkSquareBishopsPromoted = numberOfDarkSquareBishops
         - ChessConstants.INITIAL_NUMBER_OF_DARK_SQUARE_BISHOPS;
     if (numberOfDarkSquareBishopsPromoted > numberOfPossiblePromotions) {
-      throw new FenAdvancedValidationException(FenAdvancedValidationProblem.INVALID_WHITE_TOO_MANY_DARK_SQUARE_BISHOPS,
+      throw new StrictFenSemanticValidationException(StrictFenSemanticValidationProblem.INVALID_WHITE_TOO_MANY_DARK_SQUARE_BISHOPS,
           "there are too many white dark squared bishops");
     }
 
@@ -647,29 +645,29 @@ public class FenParserAdvanced {
     final int numberOfQueens = FenMaterialCount.calculateNumberOfPieces(Side.WHITE, bitboardPosition, PieceType.QUEEN);
     final int numberOfQueensPromoted = numberOfQueens - ChessConstants.INITIAL_NUMBER_OF_QUEENS;
     if (numberOfQueensPromoted > numberOfPossiblePromotions) {
-      throw new FenAdvancedValidationException(FenAdvancedValidationProblem.INVALID_WHITE_TOO_MANY_QUEENS,
+      throw new StrictFenSemanticValidationException(StrictFenSemanticValidationProblem.INVALID_WHITE_TOO_MANY_QUEENS,
           "there are too many white queens");
     }
   }
 
   private static void validateBlackNumberOfPieces(BitboardPosition bitboardPosition)
-      throws FenAdvancedValidationException {
+      throws StrictFenSemanticValidationException {
     // copy/replace code of white
     // kings
     final int numberOfKings = FenMaterialCount.calculateNumberOfPieces(Side.BLACK, bitboardPosition, PieceType.KING);
     if (numberOfKings > ChessConstants.NUMBER_OF_KINGS) {
-      throw new FenAdvancedValidationException(FenAdvancedValidationProblem.INVALID_BLACK_TOO_MANY_KINGS,
+      throw new StrictFenSemanticValidationException(StrictFenSemanticValidationProblem.INVALID_BLACK_TOO_MANY_KINGS,
           "there is more than one black king");
     }
     if (numberOfKings == 0) {
-      throw new FenAdvancedValidationException(FenAdvancedValidationProblem.INVALID_BLACK_NO_KING,
+      throw new StrictFenSemanticValidationException(StrictFenSemanticValidationProblem.INVALID_BLACK_NO_KING,
           "there is no black king");
     }
 
     // pawns
     final int numberOfPawns = FenMaterialCount.calculateNumberOfPieces(Side.BLACK, bitboardPosition, PieceType.PAWN);
     if (numberOfPawns > ChessConstants.INITIAL_NUMBER_OF_PAWNS) {
-      throw new FenAdvancedValidationException(FenAdvancedValidationProblem.INVALID_BLACK_TOO_MANY_PAWNS,
+      throw new StrictFenSemanticValidationException(StrictFenSemanticValidationProblem.INVALID_BLACK_TOO_MANY_PAWNS,
           "there are too many black pawns");
     }
 
@@ -679,7 +677,7 @@ public class FenParserAdvanced {
     final int numberOfRooks = FenMaterialCount.calculateNumberOfPieces(Side.BLACK, bitboardPosition, PieceType.ROOK);
     final int numberOfRooksPromoted = numberOfRooks - ChessConstants.INITIAL_NUMBER_OF_ROOKS;
     if (numberOfRooksPromoted > numberOfPossiblePromotions) {
-      throw new FenAdvancedValidationException(FenAdvancedValidationProblem.INVALID_BLACK_TOO_MANY_ROOKS,
+      throw new StrictFenSemanticValidationException(StrictFenSemanticValidationProblem.INVALID_BLACK_TOO_MANY_ROOKS,
           "there are too many black rooks");
     }
 
@@ -688,7 +686,7 @@ public class FenParserAdvanced {
         PieceType.KNIGHT);
     final int numberOfKnightsPromoted = numberOfKnights - ChessConstants.INITIAL_NUMBER_OF_KNIGHTS;
     if (numberOfKnightsPromoted > numberOfPossiblePromotions) {
-      throw new FenAdvancedValidationException(FenAdvancedValidationProblem.INVALID_BLACK_TOO_MANY_KNIGHTS,
+      throw new StrictFenSemanticValidationException(StrictFenSemanticValidationProblem.INVALID_BLACK_TOO_MANY_KNIGHTS,
           "there are too many black knights");
     }
 
@@ -698,7 +696,7 @@ public class FenParserAdvanced {
     final int numberOfLightSquareBishopsPromoted = numberOfLightSquareBishops
         - ChessConstants.INITIAL_NUMBER_OF_LIGHT_SQUARE_BISHOPS;
     if (numberOfLightSquareBishopsPromoted > numberOfPossiblePromotions) {
-      throw new FenAdvancedValidationException(FenAdvancedValidationProblem.INVALID_BLACK_TOO_MANY_LIGHT_SQUARE_BISHOPS,
+      throw new StrictFenSemanticValidationException(StrictFenSemanticValidationProblem.INVALID_BLACK_TOO_MANY_LIGHT_SQUARE_BISHOPS,
           "there are too many black light squared bishops");
     }
 
@@ -708,7 +706,7 @@ public class FenParserAdvanced {
     final int numberOfDarkSquareBishopsPromoted = numberOfDarkSquareBishops
         - ChessConstants.INITIAL_NUMBER_OF_DARK_SQUARE_BISHOPS;
     if (numberOfDarkSquareBishopsPromoted > numberOfPossiblePromotions) {
-      throw new FenAdvancedValidationException(FenAdvancedValidationProblem.INVALID_BLACK_TOO_MANY_DARK_SQUARE_BISHOPS,
+      throw new StrictFenSemanticValidationException(StrictFenSemanticValidationProblem.INVALID_BLACK_TOO_MANY_DARK_SQUARE_BISHOPS,
           "there are too many black dark squared bishops");
     }
 
@@ -716,45 +714,45 @@ public class FenParserAdvanced {
     final int numberOfQueens = FenMaterialCount.calculateNumberOfPieces(Side.BLACK, bitboardPosition, PieceType.QUEEN);
     final int numberOfQueensPromoted = numberOfQueens - ChessConstants.INITIAL_NUMBER_OF_QUEENS;
     if (numberOfQueensPromoted > numberOfPossiblePromotions) {
-      throw new FenAdvancedValidationException(FenAdvancedValidationProblem.INVALID_BLACK_TOO_MANY_QUEENS,
+      throw new StrictFenSemanticValidationException(StrictFenSemanticValidationProblem.INVALID_BLACK_TOO_MANY_QUEENS,
           "there are too many black queens");
     }
 
   }
 
   private static void validatePawnRankNotPromotionRank(BitboardPosition bitboardPosition)
-      throws FenAdvancedValidationException {
+      throws StrictFenSemanticValidationException {
     for (final Square square : SquareUtility.getPromotionRankList(WHITE)) {
       if (bitboardPosition.get(square) == WHITE_PAWN) {
-        throw new FenAdvancedValidationException(
-            FenAdvancedValidationProblem.INVALID_WHITE_PAWN_INVALID_RANK_PROMOTION_RANK,
+        throw new StrictFenSemanticValidationException(
+            StrictFenSemanticValidationProblem.INVALID_WHITE_PAWN_INVALID_RANK_PROMOTION_RANK,
             "There is a non promoted white pawn on rank " + square.getRank().getNumber());
       }
     }
 
     for (final Square square : SquareUtility.getPromotionRankList(BLACK)) {
       if (bitboardPosition.get(square) == BLACK_PAWN) {
-        throw new FenAdvancedValidationException(
-            FenAdvancedValidationProblem.INVALID_BLACK_PAWN_INVALID_RANK_PROMOTION_RANK,
+        throw new StrictFenSemanticValidationException(
+            StrictFenSemanticValidationProblem.INVALID_BLACK_PAWN_INVALID_RANK_PROMOTION_RANK,
             "There is a non promoted black pawn on rank " + square.getRank().getNumber());
       }
     }
   }
 
   private static void validatePawnRankNotGroundRank(BitboardPosition bitboardPosition)
-      throws FenAdvancedValidationException {
+      throws StrictFenSemanticValidationException {
     for (final Square square : SquareUtility.getPromotionRankList(BLACK)) {
       if (bitboardPosition.get(square) == WHITE_PAWN) {
-        throw new FenAdvancedValidationException(
-            FenAdvancedValidationProblem.INVALID_WHITE_PAWN_INVALID_RANK_GROUND_RANK,
+        throw new StrictFenSemanticValidationException(
+            StrictFenSemanticValidationProblem.INVALID_WHITE_PAWN_INVALID_RANK_GROUND_RANK,
             "There is a white pawn on rank " + square.getRank().getNumber());
       }
     }
 
     for (final Square square : SquareUtility.getPromotionRankList(WHITE)) {
       if (bitboardPosition.get(square) == BLACK_PAWN) {
-        throw new FenAdvancedValidationException(
-            FenAdvancedValidationProblem.INVALID_BLACK_PAWN_INVALID_RANK_GROUND_RANK,
+        throw new StrictFenSemanticValidationException(
+            StrictFenSemanticValidationProblem.INVALID_BLACK_PAWN_INVALID_RANK_GROUND_RANK,
             "There is a black pawn on rank " + square.getRank().getNumber());
       }
     }

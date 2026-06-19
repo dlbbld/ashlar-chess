@@ -76,7 +76,7 @@ class TestFiftyMoveSequenceReportBuilder {
     // Initial FEN clock 50 - half a 50-move run already inherited. Play 50 non-zeroing moves
     // to bring it to 100. The sequence's start is InitialFenStart(50); the endMove is the played
     // move that completed the threshold (and possibly further).
-    final Board board = new Board("4k3/8/8/8/8/8/8/R3K3 w - - 50 30");
+    final Board board = Board.fromFenStrict("4k3/8/8/8/8/8/8/R3K3 w - - 50 30");
     assertEquals(50, board.getHalfMoveClock(), "precondition: initial FEN at clock 50");
 
     for (int i = 0; i < 12; i++) {
@@ -105,7 +105,7 @@ class TestFiftyMoveSequenceReportBuilder {
     // legal move is Kxb2, a capture that resets the clock. No non-zeroing continuation possible.
     // The sequence must still appear in the report with endMove == null - the print layer renders
     // only the start marker, e.g. "[Starting position] (100)".
-    final Board board = new Board("7k/8/8/8/8/8/1q6/K7 w - - 100 80");
+    final Board board = Board.fromFenStrict("7k/8/8/8/8/8/1q6/K7 w - - 100 80");
     assertEquals(100, board.getHalfMoveClock(), "precondition: FEN clock already at threshold");
     assertEquals(1, board.getLegalMoves().size(), "precondition: only Kxb2 legal");
 
@@ -126,7 +126,7 @@ class TestFiftyMoveSequenceReportBuilder {
   void initialFenAlreadyAtThresholdWithContinuation() {
     // Sister case: FEN already at clock 100 AND non-zeroing legal moves available. Sequence's
     // start is InitialFenStart(100); endMove extends past the threshold via the played moves.
-    final Board board = new Board("4k3/8/8/8/8/8/8/R3K3 w - - 100 80");
+    final Board board = Board.fromFenStrict("4k3/8/8/8/8/8/8/R3K3 w - - 100 80");
     assertEquals(100, board.getHalfMoveClock(), "precondition: FEN clock already at threshold");
 
     board.movesStrict("Ra3", "Kd8", "Ra1", "Ke8");
@@ -151,7 +151,7 @@ class TestFiftyMoveSequenceReportBuilder {
     // Then 100 non-zeroing moves form a fresh sequence with AfterResetStart anchored at the first
     // non-zeroing move after the pawn push. White rook lives on h1 so the rook shuffle does not
     // collide with the white a-pawn after the push.
-    final Board board = new Board("4k3/p7/8/8/8/8/P7/4K2R w - - 50 30");
+    final Board board = Board.fromFenStrict("4k3/p7/8/8/8/8/P7/4K2R w - - 50 30");
     assertEquals(50, board.getHalfMoveClock(), "precondition: inherited clock 50");
 
     board.movesStrict("a3"); // White pawn push resets clock

@@ -9,22 +9,21 @@ import java.util.List;
 import java.util.Locale;
 
 import io.github.dlbbld.ashlarchess.common.Nulls;
-import io.github.dlbbld.ashlarchess.common.enums.FenAdvancedValidationProblem;
-import io.github.dlbbld.ashlarchess.common.exceptions.FenAdvancedValidationException;
+import io.github.dlbbld.ashlarchess.common.enums.StrictFenSemanticValidationProblem;
 import io.github.dlbbld.ashlarchess.common.utility.BasicUtility;
 import io.github.dlbbld.ashlarchess.fen.model.Fen;
 
 /**
  * Lenient FEN parser. Applies a purely syntactic-tolerance normalisation pass (whitespace, casing, missing trailing
  * counters, non-canonical castling order, non-ASCII dashes, trailing garbage) then delegates to
- * {@link FenParserAdvanced} for the structural and rule-consistency checks. Every transformation applied during
+ * {@link StrictFenParser} for the structural and rule-consistency checks. Every transformation applied during
  * normalisation surfaces as a {@link ForgivenFenItem} on the result.
  *
  * <p>
  * The lenient layer does <b>not</b> weaken any of the strict semantic invariants — a FEN with a missing king, a pawn on
  * rank 1, an impossible double-check, or castling rights that contradict the piece placement still fails.
- * Strict-vs-lenient is a syntactic axis; raw-vs-advanced is a semantic axis. The lenient layer operates on the
- * syntactic axis only and reuses the strict semantic pipeline for everything else.
+ * Strict-vs-lenient is the public syntactic axis. The lenient layer operates on that axis only and reuses the strict
+ * semantic pipeline for everything else.
  *
  * <p>
  * Two entry points:
@@ -65,15 +64,15 @@ public final class LenientFenParser {
     try {
       final Fen parsedFen = parseInternal(fen, accumulator);
       return new LenientFenParserValidationResult(LenientFenParserValidationProblem.OK,
-          FenAdvancedValidationProblem.SUCCESS, "OK", parsedFen, Nulls.copyOfList(accumulator));
+          StrictFenSemanticValidationProblem.SUCCESS, "OK", parsedFen, Nulls.copyOfList(accumulator));
     } catch (final LenientFenParserValidationException e) {
       return new LenientFenParserValidationResult(e.getLenientFenParserValidationProblem(),
-          e.getFenAdvancedValidationProblem(), BasicUtility.getMessage(e), null, e.getForgivenItemsAccumulated());
+          e.getStrictFenSemanticValidationProblem(), BasicUtility.getMessage(e), null, e.getForgivenItemsAccumulated());
     } catch (final RuntimeException e) {
       final String message = "An unexpected error occurred during lenient FEN validation. Reason: "
           + (e.getMessage() == null ? "" : e.getMessage());
       return new LenientFenParserValidationResult(LenientFenParserValidationProblem.UNKNOWN_ERROR,
-          FenAdvancedValidationProblem.SUCCESS, message, null, ForgivenFenItem.EMPTY_LIST);
+          StrictFenSemanticValidationProblem.SUCCESS, message, null, ForgivenFenItem.EMPTY_LIST);
     }
   }
 
@@ -86,21 +85,21 @@ public final class LenientFenParser {
   private static Fen parseInternal(String fen, List<ForgivenFenItem> accumulator) {
     final String canonical = normalise(fen, accumulator);
     try {
-      return FenParserAdvanced.parseFenAdvanced(canonical);
-    } catch (final FenAdvancedValidationException e) {
+      return StrictFenParser.parse(canonical);
+    } catch (final StrictFenSemanticValidationException e) {
       if (e
-          .getFenAdvancedValidationProblem() == FenAdvancedValidationProblem.INVALID_HALF_MOVE_CLOCK_TOO_BIG_RELATIVE_TO_FULL_MOVE_NUMBER) {
+          .getStrictFenSemanticValidationProblem() == StrictFenSemanticValidationProblem.INVALID_HALF_MOVE_CLOCK_TOO_BIG_RELATIVE_TO_FULL_MOVE_NUMBER) {
         final String corrected = autoCorrectHalfMoveClockInconsistency(canonical, accumulator);
         try {
-          return FenParserAdvanced.parseFenAdvanced(corrected);
-        } catch (final FenAdvancedValidationException retryFailure) {
-          throw new LenientFenParserValidationException(LenientFenParserValidationProblem.ADVANCED_INVALID,
-              retryFailure.getFenAdvancedValidationProblem(), BasicUtility.getMessage(retryFailure),
+          return StrictFenParser.parse(corrected);
+        } catch (final StrictFenSemanticValidationException retryFailure) {
+          throw new LenientFenParserValidationException(LenientFenParserValidationProblem.STRICT_SEMANTIC_INVALID,
+              retryFailure.getStrictFenSemanticValidationProblem(), BasicUtility.getMessage(retryFailure),
               Nulls.copyOfList(accumulator));
         }
       }
-      throw new LenientFenParserValidationException(LenientFenParserValidationProblem.ADVANCED_INVALID,
-          e.getFenAdvancedValidationProblem(), BasicUtility.getMessage(e), Nulls.copyOfList(accumulator));
+      throw new LenientFenParserValidationException(LenientFenParserValidationProblem.STRICT_SEMANTIC_INVALID,
+          e.getStrictFenSemanticValidationProblem(), BasicUtility.getMessage(e), Nulls.copyOfList(accumulator));
     }
   }
 
@@ -110,8 +109,8 @@ public final class LenientFenParser {
    * {@code halfMoveClock} rounded up to the next multiple of ten (so {@code halfMoveClock = 15} yields
    * {@code fullMoveNumber = 20}, well above the strict-minimum of 9). The reserve makes the auto-corrected value
    * visibly approximate — a consumer looking at the FEN sees a round-numbered placeholder that signals "the
-   * fullMoveNumber here was reconstructed, not measured." Called only after {@link FenParserAdvanced} has flagged
-   * {@link FenAdvancedValidationProblem#INVALID_HALF_MOVE_CLOCK_TOO_BIG_RELATIVE_TO_FULL_MOVE_NUMBER}, so the input is
+   * fullMoveNumber here was reconstructed, not measured." Called only after strict FEN validation has flagged
+   * {@link StrictFenSemanticValidationProblem#INVALID_HALF_MOVE_CLOCK_TOO_BIG_RELATIVE_TO_FULL_MOVE_NUMBER}, so the input is
    * known to have six well-formed fields with parseable integer counters and a valid side-to-move letter.
    */
   private static String autoCorrectHalfMoveClockInconsistency(String canonical, List<ForgivenFenItem> accumulator) {
@@ -137,7 +136,7 @@ public final class LenientFenParser {
 
   /**
    * Applies the lenient normalisation transforms in order, recording each as a {@link ForgivenFenItem} on the
-   * accumulator. Returns the canonical six-field FEN string ready for {@link FenParserRaw} / {@link FenParserAdvanced}.
+   * accumulator. Returns the canonical six-field FEN string ready for strict FEN validation.
    * Throws {@link LenientFenParserValidationException} with {@link LenientFenParserValidationProblem#UNRECOVERABLE}
    * when the input has fewer than four fields after normalisation (cannot recover to a FEN with a defaulted halfmove
    * clock and fullmove number).
@@ -261,11 +260,11 @@ public final class LenientFenParser {
           bit = 8;
           break;
         default:
-          // Unknown character; let raw parser reject this.
+          // Unknown character; let strict field parsing reject this.
           return;
       }
       if ((seen & bit) != 0) {
-        // Duplicate character; let raw parser reject this.
+        // Duplicate character; let strict field parsing reject this.
         return;
       }
       seen |= bit;

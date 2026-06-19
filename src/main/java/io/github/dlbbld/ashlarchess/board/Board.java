@@ -33,8 +33,8 @@ import io.github.dlbbld.ashlarchess.common.utility.BasicChessUtility;
 import io.github.dlbbld.ashlarchess.common.utility.RepetitionUtility;
 import io.github.dlbbld.ashlarchess.exceptions.InvalidMoveException;
 import io.github.dlbbld.ashlarchess.fen.FenBoard;
-import io.github.dlbbld.ashlarchess.fen.FenParserAdvanced;
 import io.github.dlbbld.ashlarchess.fen.LenientFenParser;
+import io.github.dlbbld.ashlarchess.fen.StrictFenParser;
 import io.github.dlbbld.ashlarchess.fen.constants.FenConstants;
 import io.github.dlbbld.ashlarchess.fen.model.Fen;
 import io.github.dlbbld.ashlarchess.model.CastlingRightBoth;
@@ -67,12 +67,12 @@ import io.github.dlbbld.ashlarchess.unwinnability.UnwinnableQuickAnalyzer;
  * <h2>Construction</h2>
  *
  * <p>
- * Three constructors:
+ * Core construction entry points:
  *
  * <ul>
  * <li>{@link #Board()} - start at the initial position.</li>
- * <li>{@link #Board(String)} - start at the position given by a FEN string. Validated by the advanced FEN parser; see
- * the {@code io.github.dlbbld.ashlarchess.fen} package documentation for the validation contract.</li>
+ * <li>{@link #fromFenStrict(String)} - start at the position given by a strict FEN string.</li>
+ * <li>{@link #fromFenLenient(String)} - start at a recovered FEN from common display/short-form variants.</li>
  * <li>{@link #Board(Fen)} - start at a pre-parsed {@link Fen} value.</li>
  * </ul>
  *
@@ -229,18 +229,6 @@ public final class Board {
   }
 
   /**
-   * Constructs a {@code Board} from a FEN string, validated by the advanced FEN parser. Enforces structural and
-   * rule-consistency checks (piece counts within physical bounds, no pawns on rank 1 or 8, castling rights consistent
-   * with king/rook static positions, en-passant target consistent with the side to move, halfmove clock consistent with
-   * the fullmove number, etc.). The halfmove clock itself is not capped - the FIDE 75-move rule is a queryable
-   * predicate on {@code Board}, not enforced at FEN import. Does not prove full game reachability - see the
-   * {@code io.github.dlbbld.ashlarchess.fen} package documentation for the full contract.
-   */
-  public Board(String fen) {
-    this(FenParserAdvanced.parseFenAdvanced(fen));
-  }
-
-  /**
    * Creates a new board whose initial position is this board's current position, without carrying over the move
    * history.
    *
@@ -252,9 +240,21 @@ public final class Board {
   }
 
   /**
+   * Creates a {@code Board} from a strict FEN string. Enforces structural and rule-consistency checks (piece counts
+   * within physical bounds, no pawns on rank 1 or 8, castling rights consistent with king/rook static positions,
+   * en-passant target consistent with the side to move, halfmove clock consistent with the fullmove number, etc.). The
+   * halfmove clock itself is not capped - the FIDE 75-move rule is a queryable predicate on {@code Board}, not enforced
+   * at FEN import. Does not prove full game reachability - see the {@code io.github.dlbbld.ashlarchess.fen} package
+   * documentation for the full contract.
+   */
+  public static Board fromFenStrict(String fen) {
+    return new Board(StrictFenParser.parse(fen));
+  }
+
+  /**
    * Constructs a {@code Board} from a FEN string via {@link LenientFenParser}. The lenient layer applies a
    * syntactic-tolerance pass (whitespace, casing, missing halfmove clock and fullmove number, non-canonical castling
-   * order, non-ASCII dashes, trailing garbage) before delegating to {@link FenParserAdvanced}. Strict semantic
+   * order, non-ASCII dashes, trailing garbage) before delegating to {@link StrictFenParser}. Strict semantic
    * invariants are unchanged: a FEN with a missing king, a pawn on rank 1, an impossible double-check, or castling
    * rights that contradict the piece placement still fails. Callers who need to see the list of tolerated deviations
    * should invoke {@link LenientFenParser#validate(String)} directly.

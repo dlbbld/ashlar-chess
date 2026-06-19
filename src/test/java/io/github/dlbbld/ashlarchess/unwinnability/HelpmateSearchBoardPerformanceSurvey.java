@@ -125,7 +125,7 @@ public class HelpmateSearchBoardPerformanceSurvey {
   }
 
   private static void addSetup(List<Setup> result, Board sourceBoard) {
-    final Board fenBoard = new Board(sourceBoard.getFen());
+    final Board fenBoard = Board.fromFenStrict(sourceBoard.getFen());
     final HelpmateSearchBoard searchBoard = HelpmateSearchBoard.from(fenBoard);
     final List<LegalMove> rootMoves = List.copyOf(searchBoard.getLegalMoves());
     if (rootMoves.isEmpty()) {

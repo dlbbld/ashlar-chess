@@ -229,6 +229,11 @@ whole-position verdicts, rather than reusing the per-side unwinnable vocabulary.
 
 Performance: The comment from the Unwinnability section for UNDETERMINED applies here. However, it checks both sides so that it can take double the time.
 
+### Reading a verdict
+Each of these verdicts is a **proof result**, and a proof has three logical outcomes: proved yes, proved no, and *not proven*. That last state is part of the answer, not a value to ignore: `POSSIBLY_WINNABLE`, `POSSIBLY_ALIVE`, and `UNDETERMINED` all mean *the analysis could not decide* - **not** the opposite of the proven case.
+
+So each verdict is a plain enum, read by comparing the constant; there is deliberately no `isUnwinnable()` / `isDead()` shortcut. A boolean would collapse the three outcomes into two, and its negation would mislead: `unwinnableFull(side) != UNWINNABLE` does **not** mean "winnable" (it also covers `POSSIBLY_WINNABLE` and `UNDETERMINED`), and `deadPositionFull() != DEAD` does **not** mean "alive". Never read "not proven X" as "proven not-X" - compare against the exact constant you mean, or `switch` on the verdict so the compiler forces you to handle every case, including the unknown one.
+
 ## Examples
 
 ### Unwinnable
@@ -305,7 +310,7 @@ UTF-8 byte-order marks (BOM) are accepted by the lenient parser (stripped on inp
 ### Lenient PGN parser
 The common PGN parser — reads the file with best effort. For example, the space after `[` below is ignored. See the [Limitations](#limitations) section above for what neither parser accepts.
 
-ashlar-chess ships **lenient parsers for all three input languages it consumes** — SAN, PGN, and FEN. Each one applies a typed syntactic-tolerance pass and surfaces tolerated deviations as forgiven items on the validation result, then delegates the heavy lifting to the corresponding strict parser. The PGN flavour (described in this section) routes its SAN tokens through the lenient SAN layer and its `FEN` tag through the lenient FEN layer, so a single lenient PGN parse picks up deviations across all three languages. The lenient FEN layer is reachable directly via `Board.fromFenLenient(String)` for callers that consume FEN strings outside the PGN context (engine output, lichess/chess.com exports, hand-edited fixtures); see `specification.md` §3.3.3 for the strict-vs-lenient × raw-vs-advanced contract and the full `ForgivenFenItemCode` taxonomy.
+ashlar-chess ships **lenient parsers for all three input languages it consumes** — SAN, PGN, and FEN. Each one applies a typed syntactic-tolerance pass and surfaces tolerated deviations as forgiven items on the validation result, then delegates the heavy lifting to the corresponding strict parser. The PGN flavour (described in this section) routes its SAN tokens through the lenient SAN layer and its `FEN` tag through the lenient FEN layer, so a single lenient PGN parse picks up deviations across all three languages. The lenient FEN layer is reachable directly via `Board.fromFenLenient(String)` for callers that consume FEN strings outside the PGN context (engine output, lichess/chess.com exports, hand-edited fixtures); see `specification.md` §3.3.3 for the strict-vs-lenient contract and the full `ForgivenFenItemCode` taxonomy.
 
 In addition to structural tolerances (whitespace, missing tags, optional termination markers), the lenient parser accepts a defined set of SAN deviations from canonical — see [PGN SAN tolerances](#pgn-san-tolerances) below.
 

@@ -29,7 +29,7 @@ public final class TestValidateNewMoveSupport {
   }
 
   static void check(String fen, MoveSpecification move, MoveCheck expectedMoveCheck) {
-    final Board board = new Board(fen);
+    final Board board = Board.fromFenStrict(fen);
     check(board, move, expectedMoveCheck);
 
   }

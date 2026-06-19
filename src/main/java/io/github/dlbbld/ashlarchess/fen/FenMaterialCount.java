@@ -11,7 +11,7 @@ import io.github.dlbbld.ashlarchess.board.enums.Square;
 import io.github.dlbbld.ashlarchess.board.enums.SquareType;
 
 /**
- * Internal piece-count helpers used by FEN advanced validation. Not part of the public API: the library exposes parsing
+ * Internal piece-count helpers used by FEN strict semantic validation. Not part of the public API: the library exposes parsing
  * and outcome reporting, not material arithmetic.
  */
 final class FenMaterialCount {

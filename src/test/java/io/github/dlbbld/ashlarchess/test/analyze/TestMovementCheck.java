@@ -56,7 +56,7 @@ class TestMovementCheck {
   }
 
   private static void check(String fen, MoveSpecification move, MovementCheck expected) {
-    check(new Board(fen), move, expected);
+    check(Board.fromFenStrict(fen), move, expected);
   }
 
   @SuppressWarnings("static-method")

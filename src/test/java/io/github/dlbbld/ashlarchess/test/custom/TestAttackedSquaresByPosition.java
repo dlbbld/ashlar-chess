@@ -13,7 +13,7 @@ import org.junit.jupiter.api.Test;
 
 import io.github.dlbbld.ashlarchess.bitboard.StaticPositionBridge;
 import io.github.dlbbld.ashlarchess.board.enums.Square;
-import io.github.dlbbld.ashlarchess.fen.FenParserAdvanced;
+import io.github.dlbbld.ashlarchess.fen.StrictFenParser;
 import io.github.dlbbld.ashlarchess.fen.constants.FenConstants;
 import io.github.dlbbld.ashlarchess.fen.model.Fen;
 import io.github.dlbbld.ashlarchess.squares.AttackedSquaresOracle;
@@ -57,7 +57,7 @@ class TestAttackedSquaresByPosition {
   }
 
   private static void checkPosition(String fenStr, String... expectedSquareList) {
-    final Fen fen = FenParserAdvanced.parseFenAdvanced(fenStr);
+    final Fen fen = StrictFenParser.parse(fenStr);
 
     // The relocated reference oracle (AttackedSquaresSupport) takes StaticPosition; derive it on demand from
     // Fen's bitboard via the test-oracle bridge.

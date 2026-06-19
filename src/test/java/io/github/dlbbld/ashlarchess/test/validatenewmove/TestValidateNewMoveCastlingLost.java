@@ -139,7 +139,7 @@ class TestValidateNewMoveCastlingLost {
   @Test
   void testFenImportNoRights() {
     // FEN with no castling rights at all
-    final Board board = new Board("r3k2r/pppppppp/8/8/8/8/PPPPPPPP/R3K2R w - - 0 1");
+    final Board board = Board.fromFenStrict("r3k2r/pppppppp/8/8/8/8/PPPPPPPP/R3K2R w - - 0 1");
 
     assertEquals(CastlingRight.NONE, board.getCastlingRightWhite());
     assertEquals(CastlingRight.NONE, board.getCastlingRightBlack());
@@ -153,7 +153,7 @@ class TestValidateNewMoveCastlingLost {
   @Test
   void testFenImportPartialRights() {
     // FEN with only white king-side and black queen-side castling rights
-    final Board board = new Board("r3k2r/pppppppp/8/8/8/8/PPPPPPPP/R3K2R w Kq - 0 1");
+    final Board board = Board.fromFenStrict("r3k2r/pppppppp/8/8/8/8/PPPPPPPP/R3K2R w Kq - 0 1");
 
     assertEquals(CastlingRight.KING_SIDE, board.getCastlingRightWhite());
     assertEquals(CastlingRight.QUEEN_SIDE, board.getCastlingRightBlack());
@@ -167,7 +167,7 @@ class TestValidateNewMoveCastlingLost {
   @Test
   void testFenImportAllRights() {
     // FEN with all castling rights - no losses
-    final Board board = new Board("r3k2r/pppppppp/8/8/8/8/PPPPPPPP/R3K2R w KQkq - 0 1");
+    final Board board = Board.fromFenStrict("r3k2r/pppppppp/8/8/8/8/PPPPPPPP/R3K2R w KQkq - 0 1");
 
     assertEquals(CastlingRight.KING_AND_QUEEN_SIDE, board.getCastlingRightWhite());
     assertEquals(CastlingRight.KING_AND_QUEEN_SIDE, board.getCastlingRightBlack());

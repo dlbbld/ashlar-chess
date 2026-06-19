@@ -20,15 +20,5 @@ public enum UnwinnabilityFullVerdict {
   UNWINNABLE,
 
   /** Neither winnable nor unwinnable could be established within the search bound. */
-  UNDETERMINED;
-
-  /** Whether the intended winner can win, regardless of how that was established. */
-  public boolean isWinnable() {
-    return this == WINNABLE_HELPMATE || this == WINNABLE_BY_THEOREM;
-  }
-
-  /** Whether the intended winner is proven unable to win. */
-  public boolean isUnwinnable() {
-    return this == UNWINNABLE;
-  }
+  UNDETERMINED
 }

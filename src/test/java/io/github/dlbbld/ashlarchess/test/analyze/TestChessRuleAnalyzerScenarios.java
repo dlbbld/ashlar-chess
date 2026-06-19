@@ -276,7 +276,7 @@ class TestChessRuleAnalyzerScenarios {
   @SuppressWarnings("static-method")
   void testWhiteCapturingPawn() {
 
-    Board board = new Board("rnb1kbnr/pppq1ppp/8/3pp3/3P4/P7/1PPQPPPP/RNB1KBNR w KQkq - 2 4");
+    Board board = Board.fromFenStrict("rnb1kbnr/pppq1ppp/8/3pp3/3P4/P7/1PPQPPPP/RNB1KBNR w KQkq - 2 4");
 
     // pawn
     MoveSpecification move = new MoveSpecification(A3, A4);

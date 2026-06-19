@@ -142,16 +142,16 @@ public final class ReadmeExamples {
 
     // White flags with only a lone king opposing the rook: the would-be winner
     // (Black) cannot mate, so the game is drawn, not lost.
-    final Board loneKing = new Board("8/8/4k3/3R4/2K5/8/8/8 w - - 0 50");
+    final Board loneKing = Board.fromFenStrict("8/8/4k3/3R4/2K5/8/8/8 w - - 0 50");
     System.out.println(Adjudicator.adjudicateFlagfallQuick(loneKing, Side.WHITE)); // [out]
 
     // White flags behind a blocked pawn wall: Black can never break through, so
     // the quick analyzer draws this non-material position too.
-    final Board pawnWall = new Board("8/8/3k4/1p2p1p1/pP1pP1P1/P2P4/1K6/8 b - - 32 62");
+    final Board pawnWall = Board.fromFenStrict("8/8/3k4/1p2p1p1/pP1pP1P1/P2P4/1K6/8 b - - 32 62");
     System.out.println(Adjudicator.adjudicateFlagfallQuick(pawnWall, Side.WHITE)); // [out]
 
     // Black flags with both sides still able to play for a win: the flag stands.
-    final Board winnable = new Board("q4r2/pR3pkp/1p2p1p1/4P3/6P1/1P3Q2/1Pr2PK1/3R4 b - - 3 29");
+    final Board winnable = Board.fromFenStrict("q4r2/pR3pkp/1p2p1p1/4P3/6P1/1P3Q2/1Pr2PK1/3R4 b - - 3 29");
     System.out.println(Adjudicator.adjudicateFlagfallQuick(winnable, Side.BLACK)); // [out]
     // </readme:adjudication-flagfall-quick>
   }
@@ -161,11 +161,11 @@ public final class ReadmeExamples {
     // The full analyzer additionally proves wins and may report UNDETERMINED.
 
     // Black flags in a position the full search proves White can win: a real loss.
-    final Board provenWin = new Board("q4r2/pR3pkp/1p2p1p1/4P3/6P1/1P3Q2/1Pr2PK1/3R4 b - - 3 29");
+    final Board provenWin = Board.fromFenStrict("q4r2/pR3pkp/1p2p1p1/4P3/6P1/1P3Q2/1Pr2PK1/3R4 b - - 3 29");
     System.out.println(Adjudicator.adjudicateFlagfallFull(provenWin, Side.BLACK)); // [out]
 
     // White flags in the rare position whose full search exhausts its node bound.
-    final Board undecided = new Board("2b5/1p6/pPp3k1/2Pp3p/P2PpBpP/4P1P1/5K2/8 b - - 46 59");
+    final Board undecided = Board.fromFenStrict("2b5/1p6/pPp3k1/2Pp3p/P2PpBpP/4P1P1/5K2/8 b - - 46 59");
     System.out.println(Adjudicator.adjudicateFlagfallFull(undecided, Side.WHITE)); // [out]
     // </readme:adjudication-flagfall-full>
   }
@@ -173,7 +173,7 @@ public final class ReadmeExamples {
   public static void adjudicationResignation() {
     // <readme:adjudication-resignation>
     // Resignation carries the identical FIDE exception, so it adjudicates exactly like a flag-fall.
-    final Board board = new Board("8/8/4k3/3R4/2K5/8/8/8 w - - 0 50");
+    final Board board = Board.fromFenStrict("8/8/4k3/3R4/2K5/8/8/8 w - - 0 50");
     System.out.println(Adjudicator.adjudicateResignationQuick(board, Side.WHITE)); // [out]
     System.out.println(Adjudicator.adjudicateResignationFull(board, Side.WHITE)); // [out]
     // </readme:adjudication-resignation>
@@ -199,7 +199,7 @@ public final class ReadmeExamples {
 
   public static void unwinnableInsufficientMaterial() {
     // <readme:unwinnable-insufficient-material>
-    final Board board = new Board("8/8/4k3/3R4/2K5/8/8/8 w - - 0 50");
+    final Board board = Board.fromFenStrict("8/8/4k3/3R4/2K5/8/8/8 w - - 0 50");
     System.out.println(board.unwinnableQuick(Side.BLACK)); // [out]
     System.out.println(board.unwinnableFull(Side.BLACK)); // [out]
     // </readme:unwinnable-insufficient-material>
@@ -207,7 +207,7 @@ public final class ReadmeExamples {
 
   public static void unwinnableForcedMoves() {
     // <readme:unwinnable-forced-moves>
-    final Board board = new Board("5r1k/6P1/7K/5q2/8/8/8/8 b - - 0 51");
+    final Board board = Board.fromFenStrict("5r1k/6P1/7K/5q2/8/8/8/8 b - - 0 51");
     System.out.println(board.unwinnableQuick(Side.WHITE)); // [out]
     System.out.println(board.unwinnableFull(Side.WHITE)); // [out]
     // </readme:unwinnable-forced-moves>
@@ -215,7 +215,7 @@ public final class ReadmeExamples {
 
   public static void unwinnablePawnWalls() {
     // <readme:unwinnable-pawn-walls>
-    final Board board = new Board("8/8/3k4/1p2p1p1/pP1pP1P1/P2P4/1K6/8 b - - 32 62");
+    final Board board = Board.fromFenStrict("8/8/3k4/1p2p1p1/pP1pP1P1/P2P4/1K6/8 b - - 32 62");
     System.out.println(board.unwinnableQuick(Side.BLACK)); // [out]
     System.out.println(board.unwinnableFull(Side.BLACK)); // [out]
     // </readme:unwinnable-pawn-walls>
@@ -223,7 +223,7 @@ public final class ReadmeExamples {
 
   public static void unwinnableCommonPositions() {
     // <readme:unwinnable-common-positions>
-    final Board board = new Board("q4r2/pR3pkp/1p2p1p1/4P3/6P1/1P3Q2/1Pr2PK1/3R4 b - - 3 29");
+    final Board board = Board.fromFenStrict("q4r2/pR3pkp/1p2p1p1/4P3/6P1/1P3Q2/1Pr2PK1/3R4 b - - 3 29");
     System.out.println(board.unwinnableQuick(Side.WHITE)); // [out]
     System.out.println(board.unwinnableFull(Side.WHITE)); // [out]
     // </readme:unwinnable-common-positions>
@@ -231,7 +231,7 @@ public final class ReadmeExamples {
 
   public static void unwinnableBlockedQuick() {
     // <readme:unwinnable-blocked-quick>
-    final Board board = new Board("1k6/1P5p/BP3p2/1P6/8/8/5PKP/8 b - - 0 41");
+    final Board board = Board.fromFenStrict("1k6/1P5p/BP3p2/1P6/8/8/5PKP/8 b - - 0 41");
     System.out.println(board.unwinnableQuick(Side.WHITE)); // [out]
     System.out.println(board.unwinnableFull(Side.WHITE)); // [out]
     // </readme:unwinnable-blocked-quick>
@@ -239,7 +239,7 @@ public final class ReadmeExamples {
 
   public static void deadInsufficientMaterial() {
     // <readme:dead-insufficient-material>
-    final Board board = new Board("8/8/3kn3/8/2K5/8/8/8 w - - 0 50");
+    final Board board = Board.fromFenStrict("8/8/3kn3/8/2K5/8/8/8 w - - 0 50");
     System.out.println(board.deadPositionQuick()); // [out] (dead)
     System.out.println(board.deadPositionFull()); // [out] (dead)
     // </readme:dead-insufficient-material>
@@ -247,7 +247,7 @@ public final class ReadmeExamples {
 
   public static void deadPawnWalls() {
     // <readme:dead-pawn-walls>
-    final Board board = new Board("8/6b1/1p3k2/1Pp1p1p1/2P1PpP1/5P2/8/5K2 b - - 11 61");
+    final Board board = Board.fromFenStrict("8/6b1/1p3k2/1Pp1p1p1/2P1PpP1/5P2/8/5K2 b - - 11 61");
     System.out.println(board.deadPositionQuick()); // [out] (dead)
     System.out.println(board.deadPositionFull()); // [out] (dead)
     // </readme:dead-pawn-walls>
@@ -255,7 +255,7 @@ public final class ReadmeExamples {
 
   public static void deadForcedMoves() {
     // <readme:dead-forced-moves>
-    final Board board = new Board("k7/P1K5/8/8/8/8/8/8 b - - 2 58");
+    final Board board = Board.fromFenStrict("k7/P1K5/8/8/8/8/8/8 b - - 2 58");
     System.out.println(board.deadPositionQuick()); // [out] (dead)
     System.out.println(board.deadPositionFull()); // [out] (dead)
     // </readme:dead-forced-moves>

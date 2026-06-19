@@ -69,7 +69,7 @@ public final class TestChessRuleAnalyzerScenariosSupport {
   }
 
   static void check(String fen, MoveSpecification move, MoveCheck expectedMoveCheck) {
-    check(new Board(fen), move, expectedMoveCheck);
+    check(Board.fromFenStrict(fen), move, expectedMoveCheck);
   }
 
   private static @Nullable MovementCheck toMovementCheck(MoveCheck mc) {

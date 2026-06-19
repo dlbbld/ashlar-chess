@@ -18,7 +18,7 @@ class TestSpecialCastling {
     {
       // white has king-side castling rights but not queen side
       // try queen side castling
-      final Board board = new Board("4k3/8/8/8/8/8/8/R3K2R w K - 0 100");
+      final Board board = Board.fromFenStrict("4k3/8/8/8/8/8/8/R3K2R w K - 0 100");
 
       board.moveStrict("O-O");
       board.unmove();
@@ -28,7 +28,7 @@ class TestSpecialCastling {
     {
       // white has queen-side castling rights but not king side
       // try king side castling
-      final Board board = new Board("4k3/8/8/8/8/8/8/R3K2R w Q - 0 100");
+      final Board board = Board.fromFenStrict("4k3/8/8/8/8/8/8/R3K2R w Q - 0 100");
 
       board.moveStrict("O-O-O");
       board.unmove();
@@ -43,7 +43,7 @@ class TestSpecialCastling {
     {
       // black has king-side castling rights but not queen side
       // try queen side castling
-      final Board board = new Board("r3k2r/8/8/8/8/8/8/R3K2R b k - 0 100");
+      final Board board = Board.fromFenStrict("r3k2r/8/8/8/8/8/8/R3K2R b k - 0 100");
 
       board.moveStrict("O-O");
       board.unmove();
@@ -53,7 +53,7 @@ class TestSpecialCastling {
     {
       // black has queen-side castling rights but not king side
       // try king side castling
-      final Board board = new Board("r3k2r/8/8/8/8/8/8/R3K2R b q - 0 100");
+      final Board board = Board.fromFenStrict("r3k2r/8/8/8/8/8/8/R3K2R b q - 0 100");
 
       board.moveStrict("O-O-O");
       board.unmove();

@@ -16,9 +16,9 @@ class TestBoardClaimWithOwnMove {
   @SuppressWarnings("static-method")
   @Test
   void canClaimFiftyMoveRuleWithOwnMoveAtBoundary() {
-    // fullMoveNumber must be consistent with halfMoveClock per FenParserAdvanced
+    // fullMoveNumber must be consistent with halfMoveClock per strict FEN validation
     // (clock <= 2 * (fullmove number - 1) for White to move); 99 clock requires fullmove number >= 51.
-    final Board oneQuietMoveBeforeFiftyMoveRule = new Board("7k/8/8/8/8/8/4K3/R7 w - - 99 51");
+    final Board oneQuietMoveBeforeFiftyMoveRule = Board.fromFenStrict("7k/8/8/8/8/8/4K3/R7 w - - 99 51");
 
     assertFalse(oneQuietMoveBeforeFiftyMoveRule.isFiftyMove());
     assertTrue(oneQuietMoveBeforeFiftyMoveRule.canClaimFiftyMoveRuleWithOwnMove());
@@ -33,7 +33,7 @@ class TestBoardClaimWithOwnMove {
     // holds. Precedence belongs to BasicChessUtility.calculateOutcome (which returns CHECKMATE
     // here, since CHECKMATE outranks the 50-move row in the precedence stack). Deliberate
     // divergence from python-chess at this corner.
-    final Board board = new Board("8/8/8/8/8/k7/q7/K7 w - - 100 60");
+    final Board board = Board.fromFenStrict("8/8/8/8/8/k7/q7/K7 w - - 100 60");
     assertTrue(board.isCheckmate(), "precondition: position must be checkmate");
     assertEquals(100, board.getHalfMoveClock(), "precondition: clock past 50-move threshold");
     assertTrue(board.getLegalMoves().isEmpty(), "precondition: no legal moves");
@@ -49,7 +49,7 @@ class TestBoardClaimWithOwnMove {
     // Same position semantics as above but with clock at 150 - past the 75-move threshold. Same
     // "facts are independent" rule: isSeventyFiveMove reports the raw threshold fact even when
     // checkmate also holds. calculateOutcome still returns CHECKMATE under the precedence stack.
-    final Board board = new Board("8/8/8/8/8/k7/q7/K7 w - - 150 80");
+    final Board board = Board.fromFenStrict("8/8/8/8/8/k7/q7/K7 w - - 150 80");
     assertTrue(board.isCheckmate(), "precondition: position must be checkmate");
     assertEquals(150, board.getHalfMoveClock(), "precondition: clock past 75-move threshold");
     assertTrue(board.isSeventyFiveMove(),
@@ -70,7 +70,7 @@ class TestBoardClaimWithOwnMove {
     // the claim, regardless of what that move does. python-chess rejects this case (it pushes
     // the move and re-checks is_fifty_moves on the post-position, where checkmate has zero legal
     // moves) under its "once checkmated, it is too late to claim" reading.
-    final Board board = new Board("6rk/6pp/7N/5p2/6p1/8/2q5/K7 w - - 99 60");
+    final Board board = Board.fromFenStrict("6rk/6pp/7N/5p2/6p1/8/2q5/K7 w - - 99 60");
     assertEquals(99, board.getHalfMoveClock(), "precondition: clock at 50-move boundary");
     assertFalse(board.isFiftyMove(), "precondition: current-position predicate is below threshold");
     assertTrue(board.canClaimFiftyMoveRuleWithOwnMove(),
@@ -81,7 +81,7 @@ class TestBoardClaimWithOwnMove {
   @SuppressWarnings("static-method")
   @Test
   void cannotClaimFiftyMoveRuleWithOwnMoveBeforeBoundary() {
-    final Board twoQuietMovesBeforeFiftyMoveRule = new Board("7k/8/8/8/8/8/4K3/R7 w - - 98 50");
+    final Board twoQuietMovesBeforeFiftyMoveRule = Board.fromFenStrict("7k/8/8/8/8/8/4K3/R7 w - - 98 50");
 
     assertFalse(twoQuietMovesBeforeFiftyMoveRule.isFiftyMove());
     assertFalse(twoQuietMovesBeforeFiftyMoveRule.canClaimFiftyMoveRuleWithOwnMove());

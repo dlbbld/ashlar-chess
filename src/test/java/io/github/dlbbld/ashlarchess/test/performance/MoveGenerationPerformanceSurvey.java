@@ -101,7 +101,7 @@ public class MoveGenerationPerformanceSurvey {
     final String fen = ashlarBoard.getFen();
     final com.github.bhlangonijr.chesslib.Board chessLibBoard = new com.github.bhlangonijr.chesslib.Board();
     chessLibBoard.loadFromFen(fen);
-    result.add(new PositionPair(new Board(fen), chessLibBoard));
+    result.add(new PositionPair(Board.fromFenStrict(fen), chessLibBoard));
   }
 
   private static void warmup(List<PositionPair> positionList) {

@@ -17,7 +17,7 @@ public final class TestFenRoundtripSupport {
 
   static void checkFenRoundtrip(String initialFen, List<MoveSpecification> moveList) {
 
-    final Board boardPlayMoves = new Board(initialFen);
+    final Board boardPlayMoves = Board.fromFenStrict(initialFen);
 
     Board previousBoardFromFen = null;
     for (int i = 0; i < moveList.size(); i++) {
@@ -30,7 +30,7 @@ public final class TestFenRoundtripSupport {
       }
 
       final String boardFen = boardPlayMoves.getFen();
-      final Board boardFromFen = new Board(boardFen);
+      final Board boardFromFen = Board.fromFenStrict(boardFen);
       previousBoardFromFen = boardFromFen;
 
       // testing board plus played equals board after played move fen

@@ -108,7 +108,7 @@ class TestReporterGoldenOutput {
     //
     // Locks the special-case rendering - sequence-with-no-endMove - that's hard to test from any
     // other entry point.
-    final Board board = new Board("7k/8/8/8/8/8/1q6/K7 w - - 100 80");
+    final Board board = Board.fromFenStrict("7k/8/8/8/8/8/1q6/K7 w - - 100 80");
     final String actual = render(() -> Reporter.report(board));
     compareOrRegenerate(actual, "07_fifty_move_initial_fen_at_threshold.txt");
   }
@@ -123,7 +123,7 @@ class TestReporterGoldenOutput {
     // beyond" section is empty (no sequence reached 100).
     //
     // Locks the missed-opportunity output shape; previously no corpus or inline golden exercised it.
-    final Board board = new Board("4k3/p7/8/8/8/8/P7/4K2R w - - 98 80");
+    final Board board = Board.fromFenStrict("4k3/p7/8/8/8/8/P7/4K2R w - - 98 80");
     board.movesStrict("Rg1", "a6");
     final String actual = render(() -> Reporter.report(board));
     compareOrRegenerate(actual, "08_fifty_move_missed_claim_ahead.txt");

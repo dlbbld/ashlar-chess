@@ -17,7 +17,7 @@ public class UnwinnabilityQuickManualRun {
     // final PgnGame pgnGame = LenientPgnParser.parsePath(pgnTest.getFolderPath(), pgnName);
     // final Board board = PgnUtility.calculateBoard(pgnGame);
 
-    final Board board = new Board("4k3/8/8/8/8/8/8/R3K3 b - - 0 100");
+    final Board board = Board.fromFenStrict("4k3/8/8/8/8/8/8/R3K3 b - - 0 100");
 
     System.out.println("White quick: " + UnwinnableQuickAnalyzer.unwinnableQuick(board, Side.WHITE));
 

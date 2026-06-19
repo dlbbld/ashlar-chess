@@ -8,13 +8,13 @@ import java.util.Map;
 
 import org.eclipse.jdt.annotation.Nullable;
 
-import io.github.dlbbld.ashlarchess.fen.FenParserAdvanced;
+import io.github.dlbbld.ashlarchess.fen.StrictFenParser;
 import io.github.dlbbld.ashlarchess.fen.model.Fen;
 
 /**
  * Process-lifetime cache for the parsed {@link Fen} of a test fixture's final position. The corpus row carries the
  * final position as a FEN string ({@code PgnFen.finalFen()}); every call to {@code PgnFen.finalPosition()} otherwise
- * re-runs {@link FenParserAdvanced#parseFenAdvanced(String)} to build the board. Caching by FEN string also
+ * re-runs {@link StrictFenParser#parse(String)} to build the board. Caching by FEN string also
  * deduplicates fixtures that happen to share a final position.
  *
  * <p>
@@ -34,7 +34,7 @@ public final class FenCacheForTestCases {
     if (cached != null) {
       return cached;
     }
-    final Fen parsed = FenParserAdvanced.parseFenAdvanced(fen);
+    final Fen parsed = StrictFenParser.parse(fen);
     FEN_CACHE.put(fen, parsed);
     return parsed;
   }

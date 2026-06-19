@@ -3,7 +3,7 @@
 
 package io.github.dlbbld.ashlarchess.common.enums;
 
-public enum FenAdvancedValidationProblem {
+public enum StrictFenSemanticValidationProblem {
   SUCCESS,
   INVALID_FORMAT,
   INVALID_POSITION_NUMBER_OF_RANKS,
@@ -53,5 +53,6 @@ public enum FenAdvancedValidationProblem {
   INVALID_WHITE_PAWN_INVALID_RANK_PROMOTION_RANK,
   INVALID_BLACK_PAWN_INVALID_RANK_PROMOTION_RANK,
   INVALID_WHITE_PAWN_INVALID_RANK_GROUND_RANK,
-  INVALID_BLACK_PAWN_INVALID_RANK_GROUND_RANK
+  INVALID_BLACK_PAWN_INVALID_RANK_GROUND_RANK,
+  UNKNOWN_ERROR
 }

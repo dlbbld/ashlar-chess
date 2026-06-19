@@ -18,7 +18,8 @@ import io.github.dlbbld.ashlarchess.common.exceptions.PgnCommentaryValidationExc
 import io.github.dlbbld.ashlarchess.common.exceptions.ProgrammingMistakeException;
 import io.github.dlbbld.ashlarchess.common.utility.BasicUtility;
 import io.github.dlbbld.ashlarchess.enums.MoveSuffixAnnotation;
-import io.github.dlbbld.ashlarchess.fen.FenParserAdvanced;
+import io.github.dlbbld.ashlarchess.fen.StrictFenParser;
+import io.github.dlbbld.ashlarchess.fen.StrictFenSemanticValidationException;
 import io.github.dlbbld.ashlarchess.fen.constants.FenConstants;
 import io.github.dlbbld.ashlarchess.fen.model.Fen;
 import io.github.dlbbld.ashlarchess.model.PgnMove;
@@ -325,8 +326,8 @@ public final class StrictPgnParser {
         }
         final String fen = TagUtility.readFen(tagList);
         try {
-          FenParserAdvanced.parseFenAdvanced(fen);
-        } catch (final io.github.dlbbld.ashlarchess.common.exceptions.FenAdvancedValidationException e) {
+          StrictFenParser.parse(fen);
+        } catch (final StrictFenSemanticValidationException e) {
           final String fenErrorReason = BasicUtility.getMessage(e);
           throw new StrictPgnParserValidationException(
               StrictPgnParserValidationProblem.TAG_SET_UP_REQUIRES_FEN_TAG_BUT_FEN_INVALID, SanValidationProblem.NONE,
@@ -649,7 +650,7 @@ public final class StrictPgnParser {
 
   private static Fen calculateStartFen(List<Tag> tagList, boolean isStartFromPosition) {
     final String startFenStr = isStartFromPosition ? TagUtility.readFen(tagList) : FenConstants.FEN_INITIAL_STR;
-    return FenParserAdvanced.parseFenAdvanced(startFenStr);
+    return StrictFenParser.parse(startFenStr);
   }
 
   // -------------------------------------------------------------------------------------------------

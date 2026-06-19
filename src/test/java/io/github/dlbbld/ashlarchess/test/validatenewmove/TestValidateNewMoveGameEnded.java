@@ -47,7 +47,7 @@ class TestValidateNewMoveGameEnded {
   @Test
   void testCheckmateLegalMovesEmpty() {
     // Fool's mate: white is checkmated by black queen on h4.
-    final Board board = new Board("rnb1kbnr/pppp1ppp/8/4p3/6Pq/5P2/PPPPP2P/RNBQKBNR w KQkq - 1 3");
+    final Board board = Board.fromFenStrict("rnb1kbnr/pppp1ppp/8/4p3/6Pq/5P2/PPPPP2P/RNBQKBNR w KQkq - 1 3");
     assertTrue(board.isCheckmate(), "fool's mate position must be checkmate");
     assertTrue(board.getLegalMoves().isEmpty(), "checkmate has no legal moves");
 
@@ -62,7 +62,7 @@ class TestValidateNewMoveGameEnded {
   @Test
   void testStalemateLegalMovesEmpty() {
     // Black king h8 has no legal move and is not in check.
-    final Board board = new Board("7k/8/6Q1/8/8/8/8/K7 b - - 0 1");
+    final Board board = Board.fromFenStrict("7k/8/6Q1/8/8/8/8/K7 b - - 0 1");
     assertTrue(board.isStalemate(), "K+Q vs K position must be stalemate for black");
     assertTrue(board.getLegalMoves().isEmpty(), "stalemate has no legal moves");
 
@@ -77,7 +77,7 @@ class TestValidateNewMoveGameEnded {
   void testMoveAcceptedAtInsufficientMaterialBoth() {
     // K vs K: dead position under FIDE 5.2.2. The pipeline accepts further moves; the caller
     // polls calculateOutcome / isInsufficientMaterial to learn the game has terminated.
-    final Board board = new Board("4k3/8/8/8/8/8/8/4K3 w - - 0 1");
+    final Board board = Board.fromFenStrict("4k3/8/8/8/8/8/8/4K3 w - - 0 1");
     assertTrue(board.isInsufficientMaterial(), "K vs K is mutual insufficient material");
     assertDoesNotThrow(() -> board.move(new MoveSpecification(E1, E2)),
         "insufficient material is queryable only; the pipeline must accept the move");
@@ -89,7 +89,7 @@ class TestValidateNewMoveGameEnded {
     // Pawn-wall fortress (horizontal_1 from the CHA pawn-wall corpus). Both sides have only kings
     // and locked pawns; the cheap insufficient-material detector stays quiet because pawns are
     // present, but the CHA quick analyzer classifies the position as dead.
-    final Board board = new Board("4k3/8/8/p1p1p1p1/P1P1P1P1/8/8/4K3 w - - 0 50");
+    final Board board = Board.fromFenStrict("4k3/8/8/p1p1p1p1/P1P1P1P1/8/8/4K3 w - - 0 50");
     assertEquals(DeadPositionQuickVerdict.DEAD, board.deadPositionQuick());
     assertDoesNotThrow(() -> board.move(new MoveSpecification(E1, D1)),
         "quick-unwinnable dead position is queryable only; the pipeline must accept the move");
@@ -100,7 +100,7 @@ class TestValidateNewMoveGameEnded {
   void testMoveAcceptedAtDeadPositionUnwinnableQuickPlayedInto() {
     // Predecessor: same wall structure as the no-en-passant pawn_wall fixture but with the white
     // h-pawn still on h2 (one rank back). White's h3 push completes the lock.
-    final Board board = new Board("4k3/8/8/p1p1p1p1/PpPpPpPp/1P1P1P2/7P/4K3 w - - 0 49");
+    final Board board = Board.fromFenStrict("4k3/8/8/p1p1p1p1/PpPpPpPp/1P1P1P2/7P/4K3 w - - 0 49");
     board.moveStrict("h3");
     assertEquals(DeadPositionQuickVerdict.DEAD, board.deadPositionQuick());
     assertDoesNotThrow(() -> board.move(new MoveSpecification(E8, D8)),
@@ -112,7 +112,7 @@ class TestValidateNewMoveGameEnded {
   void testMoveAcceptedAtSeventyFiveMoveThreshold() {
     // FEN with halfmove clock at the 75-move threshold (150). isSeventyFiveMove() returns true,
     // but the pipeline accepts further moves.
-    final Board board = new Board("4k3/8/4P3/8/8/8/2N1B3/3KQ2R w - - 150 76");
+    final Board board = Board.fromFenStrict("4k3/8/4P3/8/8/8/2N1B3/3KQ2R w - - 150 76");
     assertTrue(board.isSeventyFiveMove(), "predicate must fire at threshold");
     assertDoesNotThrow(() -> board.move(new MoveSpecification(D1, D2)),
         "75-move is queryable only; the pipeline must accept the move");

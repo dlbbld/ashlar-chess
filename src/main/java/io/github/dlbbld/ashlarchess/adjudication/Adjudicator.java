@@ -82,7 +82,8 @@ public final class Adjudicator {
     if (verdict == UnwinnabilityFullVerdict.UNWINNABLE) {
       return AdjudicationResult.DRAW;
     }
-    if (verdict.isWinnable()) {
+    if (verdict == UnwinnabilityFullVerdict.WINNABLE_HELPMATE
+        || verdict == UnwinnabilityFullVerdict.WINNABLE_BY_THEOREM) {
       return AdjudicationResult.LOSS;
     }
     return AdjudicationResult.UNDETERMINED;

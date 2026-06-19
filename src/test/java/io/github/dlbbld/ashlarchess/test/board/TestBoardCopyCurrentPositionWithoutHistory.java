@@ -39,7 +39,7 @@ class TestBoardCopyCurrentPositionWithoutHistory {
   }
 
   private static void checkFromFen(String fen) {
-    final Board source = new Board(fen);
+    final Board source = Board.fromFenStrict(fen);
     final Board copy = source.copyCurrentPositionWithoutHistory();
     final Board copyOfCopy = copy.copyCurrentPositionWithoutHistory();
 

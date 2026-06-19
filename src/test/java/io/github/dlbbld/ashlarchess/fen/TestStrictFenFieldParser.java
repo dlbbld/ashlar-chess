@@ -1,18 +1,16 @@
 // Copyright (C) 2020-2026 Daniel Baechli
 // SPDX-License-Identifier: GPL-3.0-only
 
-package io.github.dlbbld.ashlarchess.test.fen;
+package io.github.dlbbld.ashlarchess.fen;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
 
-import io.github.dlbbld.ashlarchess.common.exceptions.FenRawValidationException;
-import io.github.dlbbld.ashlarchess.fen.FenParserRaw;
 import io.github.dlbbld.ashlarchess.fen.constants.FenConstants;
 
-class TestFenParserRaw {
+class TestStrictFenFieldParser {
   @SuppressWarnings("static-method")
   @Test
   void testSuccessParseFields() {
@@ -93,8 +91,8 @@ class TestFenParserRaw {
   private static void checkException(String fen) {
     boolean isException = false;
     try {
-      FenParserRaw.parseFenRaw(fen);
-    } catch (@SuppressWarnings("unused") final FenRawValidationException e) {
+      StrictFenFieldParser.parse(fen);
+    } catch (@SuppressWarnings("unused") final StrictFenFieldValidationException e) {
       isException = true;
     }
     assertTrue(isException);
@@ -102,27 +100,27 @@ class TestFenParserRaw {
   }
 
   private static String parsePiecePlacement(String piecePlacement) {
-    return FenParserRaw.parseFenRaw(piecePlacement).piecePlacement();
+    return StrictFenFieldParser.parse(piecePlacement).piecePlacement();
   }
 
   private static String parseSideToMove(String fen) {
-    return FenParserRaw.parseFenRaw(fen).sideToMove();
+    return StrictFenFieldParser.parse(fen).sideToMove();
   }
 
   private static String parseCastlingRight(String fen) {
-    return FenParserRaw.parseFenRaw(fen).castlingRightBothStr();
+    return StrictFenFieldParser.parse(fen).castlingRightBothStr();
   }
 
   private static String parseEnPassantCaptureTargetSquare(String fen) {
-    return FenParserRaw.parseFenRaw(fen).enPassantCaptureTargetSquare();
+    return StrictFenFieldParser.parse(fen).enPassantCaptureTargetSquare();
   }
 
   private static String parseHalfMoveClock(String fen) {
-    return FenParserRaw.parseFenRaw(fen).halfMoveClock();
+    return StrictFenFieldParser.parse(fen).halfMoveClock();
   }
 
   private static String parseFullMoveNumber(String fen) {
-    return FenParserRaw.parseFenRaw(fen).fullMoveNumber();
+    return StrictFenFieldParser.parse(fen).fullMoveNumber();
   }
 
 }

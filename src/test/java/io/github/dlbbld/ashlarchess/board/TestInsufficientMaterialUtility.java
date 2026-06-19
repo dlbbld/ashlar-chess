@@ -14,7 +14,7 @@ import io.github.dlbbld.ashlarchess.board.enums.Side;
 class TestInsufficientMaterialUtility {
 
   private static BitboardPosition position(String fen) {
-    return new Board(fen).getBitboardPosition();
+    return Board.fromFenStrict(fen).getBitboardPosition();
   }
 
   // =====================================================================

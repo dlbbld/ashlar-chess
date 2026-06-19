@@ -102,7 +102,7 @@ class TestHelpmateSearchBoard {
     if (fen == null) {
       return new Board();
     }
-    return new Board(fen);
+    return Board.fromFenStrict(fen);
   }
 
   private static void assertSearchTreeMatchesBoard(Board board, int depth) {

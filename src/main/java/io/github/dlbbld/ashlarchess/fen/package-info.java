@@ -2,15 +2,14 @@
 // SPDX-License-Identifier: GPL-3.0-only
 
 /**
- * FEN (Forsyth-Edwards Notation) parsing, validation, and generation. Three parser entry points across the
- * strict-vs-lenient (syntactic) and raw-vs-advanced (semantic) axes - see {@code specification.md} section 3.3.3 for
- * the contract table.
+ * FEN (Forsyth-Edwards Notation) parsing, validation, and generation. The public API is split by strictness: strict
+ * input goes through {@link io.github.dlbbld.ashlarchess.fen.StrictFenParser}; recovered/tolerant input goes through
+ * {@link io.github.dlbbld.ashlarchess.fen.LenientFenParser}. The internal implementation still separates lexical
+ * field parsing from structural and rule-consistency validation, but those stages are not public entry points.
  *
  * <ul>
- * <li>{@link io.github.dlbbld.ashlarchess.fen.FenParserRaw} - basic structural parsing. One regex: six non-empty
- * space-separated fields. No semantic interpretation.</li>
- * <li>{@link io.github.dlbbld.ashlarchess.fen.FenParserAdvanced} - basic parsing plus advanced structural and
- * rule-consistency validation. Beyond field syntax it enforces:
+ * <li>{@link io.github.dlbbld.ashlarchess.fen.StrictFenParser} - strict FEN parsing plus structural and
+ * rule-consistency validation. It enforces:
  * <ul>
  * <li>exactly one king per side; pawn count &lt;= 8 per side; counts of non-pawn pieces beyond the starting set are
  * accounted for by missing pawns (promotion-consistency)</li>
@@ -24,13 +23,14 @@
  * halfmove clock values at and above 150 are legitimate FEN.)</li>
  * <li>fullmove number in the supported range</li>
  * </ul>
- * This is the variant {@link io.github.dlbbld.ashlarchess.board.Board#Board(String)} uses. It does not prove full game
- * reachability - a position passing these checks may still be unreachable from the initial position through any legal
- * sequence; structural and rule-consistency plausibility is the bar.</li>
+ * This is the variant {@link io.github.dlbbld.ashlarchess.board.Board#fromFenStrict(String)} uses. It does not prove
+ * full game reachability - a position passing these checks may still be unreachable from the initial position through
+ * any legal sequence; structural and rule-consistency plausibility is the bar.</li>
  * <li>{@link io.github.dlbbld.ashlarchess.fen.LenientFenParser} - purely syntactic-tolerance pre-pass. Normalises
  * whitespace, casing, missing trailing counters, non-canonical castling order, non-ASCII dashes, and trailing garbage;
  * also recovers from the strict halfmove clock vs fullmove number inconsistency by auto-correcting the fullmove number
- * up to the minimum consistent value. After normalisation, delegates to {@code FenParserAdvanced} - strict semantic
+ * up to a round reserve value consistent with the halfmove clock. After normalisation, delegates to
+ * {@code StrictFenParser} - strict semantic
  * invariants are unchanged. Every transform that fires surfaces as a typed
  * {@link io.github.dlbbld.ashlarchess.fen.ForgivenFenItem} on the
  * {@link io.github.dlbbld.ashlarchess.fen.LenientFenParserValidationResult}. Reached from

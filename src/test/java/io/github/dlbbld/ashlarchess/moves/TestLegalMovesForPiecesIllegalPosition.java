@@ -61,7 +61,7 @@ import io.github.dlbbld.ashlarchess.board.enums.CastlingRight;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
 import io.github.dlbbld.ashlarchess.board.enums.Square;
 import io.github.dlbbld.ashlarchess.common.model.MoveSpecification;
-import io.github.dlbbld.ashlarchess.fen.FenParserAdvanced;
+import io.github.dlbbld.ashlarchess.fen.FenPiecePlacementTestSupport;
 import io.github.dlbbld.ashlarchess.model.LegalMove;
 
 class TestLegalMovesForPiecesIllegalPosition {
@@ -70,7 +70,7 @@ class TestLegalMovesForPiecesIllegalPosition {
   // returns BitboardPosition after Phase 3+4 of the role-inversion release. Test-oracle bridge below derives the
   // StaticPosition from the parser's bitboard output.
   private static StaticPosition staticPositionFromFen(String piecePlacement) {
-    return StaticPositionBridge.toStaticPosition(FenParserAdvanced.validatePiecePlacement(piecePlacement));
+    return StaticPositionBridge.toStaticPosition(FenPiecePlacementTestSupport.validatePiecePlacement(piecePlacement));
   }
 
   @SuppressWarnings("static-method")

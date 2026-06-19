@@ -107,7 +107,7 @@ class TestHelpmateSearchBoardMakeUnmakeRoundTrip {
     if (fen == null) {
       return new Board();
     }
-    return new Board(fen);
+    return Board.fromFenStrict(fen);
   }
 
   private record Scenario(String label, @Nullable String fen, int depth) {

@@ -26,7 +26,7 @@ class TestLenientPgnParserFenTag {
 
   @Test
   void test01_fenTagWithMissingKingFailsAsFenTagInvalid() {
-    // The position passes lenient FEN normalisation (it's syntactically a six-field FEN) but FenParserAdvanced
+    // The position passes lenient FEN normalisation (it's syntactically a six-field FEN) but strict FEN validation
     // rejects it for the missing black king. The lenient PGN parser must surface this as FEN_TAG_INVALID
     // rather than UNKNOWN_ERROR.
     final String pgn = """

@@ -58,7 +58,7 @@ class TestSetupPgnCorpusNotPlaysBeyondAudit {
         } catch (final RuntimeException e) {
           // The strict parser surfaces both move-past-termination
           // (StrictPgnParserValidationException) and FEN-rejection
-          // (FenAdvancedValidationException, wrapped) cases as runtime exceptions; collect
+          // (StrictFenSemanticValidationException, wrapped) cases as runtime exceptions; collect
           // both. Catching the broader RuntimeException keeps the audit robust against future
           // exception subtypes that also indicate the same "cannot replay" outcome.
           playsBeyondFiles.add(pgnTest.name() + " / " + pgnName + "  -  " + e.getMessage());

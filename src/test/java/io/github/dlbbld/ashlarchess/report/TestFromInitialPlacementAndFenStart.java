@@ -106,7 +106,7 @@ class TestFromInitialPlacementAndFenStart {
   @SuppressWarnings("static-method")
   @Test
   void threefoldFromInitialBlackToMove() {
-    final Board board = new Board(FEN_INITIAL_BLACK_TO_MOVE);
+    final Board board = Board.fromFenStrict(FEN_INITIAL_BLACK_TO_MOVE);
     playKnightShuffleAsBlack(board, 2); // 8 moves; Black moves first each cycle
     assertThreefoldRepetition(board);
     // Fullmove numbering: with Black starting at fullmove number 1, after 8 moves (4 cycles of Nf6/Nf3/Ng8/Ng1) the
@@ -118,7 +118,7 @@ class TestFromInitialPlacementAndFenStart {
   @SuppressWarnings("static-method")
   @Test
   void fivefoldFromInitialBlackToMove() {
-    final Board board = new Board(FEN_INITIAL_BLACK_TO_MOVE);
+    final Board board = Board.fromFenStrict(FEN_INITIAL_BLACK_TO_MOVE);
     playKnightShuffleAsBlack(board, 4); // 16 moves
     assertFivefoldRepetition(board);
     assertEquals(9, board.getFullMoveNumber());
@@ -128,7 +128,7 @@ class TestFromInitialPlacementAndFenStart {
   @SuppressWarnings("static-method")
   @Test
   void fiftyMoveFromInitialBlackToMove() {
-    final Board board = new Board(FEN_INITIAL_BLACK_TO_MOVE);
+    final Board board = Board.fromFenStrict(FEN_INITIAL_BLACK_TO_MOVE);
     playKnightShuffleAsBlack(board, 25); // 100 moves
     assertFiftyMoveOrClaimable(board);
     assertReporterOutput(board, /* threefoldSectionNonEmpty */ true, /* expectedFiftyMoveSequenceReached */ true);
@@ -137,7 +137,7 @@ class TestFromInitialPlacementAndFenStart {
   @SuppressWarnings("static-method")
   @Test
   void seventyFiveMoveFromInitialBlackToMove() {
-    final Board board = new Board(FEN_INITIAL_BLACK_TO_MOVE);
+    final Board board = Board.fromFenStrict(FEN_INITIAL_BLACK_TO_MOVE);
     playKnightShuffleAsBlack(board, 38); // 152 moves
     assertSeventyFiveMove(board);
     assertReporterOutput(board, /* threefoldSectionNonEmpty */ true, /* expectedFiftyMoveSequenceReached */ true);
@@ -150,7 +150,7 @@ class TestFromInitialPlacementAndFenStart {
   @SuppressWarnings("static-method")
   @Test
   void threefoldFromFenWhiteToMove() {
-    final Board board = new Board(FEN_KRR_K_WHITE_TO_MOVE);
+    final Board board = Board.fromFenStrict(FEN_KRR_K_WHITE_TO_MOVE);
     playRookShuffleAsWhite(board, 2);
     assertThreefoldRepetition(board);
     assertReporterOutput(board, /* threefoldSectionNonEmpty */ true, /* expectedFiftyMoveSequenceReached */ false);
@@ -159,7 +159,7 @@ class TestFromInitialPlacementAndFenStart {
   @SuppressWarnings("static-method")
   @Test
   void fivefoldFromFenWhiteToMove() {
-    final Board board = new Board(FEN_KRR_K_WHITE_TO_MOVE);
+    final Board board = Board.fromFenStrict(FEN_KRR_K_WHITE_TO_MOVE);
     playRookShuffleAsWhite(board, 4);
     assertFivefoldRepetition(board);
     assertReporterOutput(board, /* threefoldSectionNonEmpty */ true, /* expectedFiftyMoveSequenceReached */ false);
@@ -168,7 +168,7 @@ class TestFromInitialPlacementAndFenStart {
   @SuppressWarnings("static-method")
   @Test
   void fiftyMoveFromFenWhiteToMove() {
-    final Board board = new Board(FEN_KRR_K_WHITE_TO_MOVE);
+    final Board board = Board.fromFenStrict(FEN_KRR_K_WHITE_TO_MOVE);
     playRookShuffleAsWhite(board, 25);
     assertFiftyMoveOrClaimable(board);
     assertReporterOutput(board, /* threefoldSectionNonEmpty */ true, /* expectedFiftyMoveSequenceReached */ true);
@@ -177,7 +177,7 @@ class TestFromInitialPlacementAndFenStart {
   @SuppressWarnings("static-method")
   @Test
   void seventyFiveMoveFromFenWhiteToMove() {
-    final Board board = new Board(FEN_KRR_K_WHITE_TO_MOVE);
+    final Board board = Board.fromFenStrict(FEN_KRR_K_WHITE_TO_MOVE);
     playRookShuffleAsWhite(board, 38);
     assertSeventyFiveMove(board);
     assertReporterOutput(board, /* threefoldSectionNonEmpty */ true, /* expectedFiftyMoveSequenceReached */ true);
@@ -190,7 +190,7 @@ class TestFromInitialPlacementAndFenStart {
   @SuppressWarnings("static-method")
   @Test
   void threefoldFromFenBlackToMove() {
-    final Board board = new Board(FEN_KRR_K_BLACK_TO_MOVE);
+    final Board board = Board.fromFenStrict(FEN_KRR_K_BLACK_TO_MOVE);
     playRookShuffleAsBlack(board, 2);
     assertThreefoldRepetition(board);
     assertEquals(5, board.getFullMoveNumber());
@@ -200,7 +200,7 @@ class TestFromInitialPlacementAndFenStart {
   @SuppressWarnings("static-method")
   @Test
   void fivefoldFromFenBlackToMove() {
-    final Board board = new Board(FEN_KRR_K_BLACK_TO_MOVE);
+    final Board board = Board.fromFenStrict(FEN_KRR_K_BLACK_TO_MOVE);
     playRookShuffleAsBlack(board, 4);
     assertFivefoldRepetition(board);
     assertEquals(9, board.getFullMoveNumber());
@@ -210,7 +210,7 @@ class TestFromInitialPlacementAndFenStart {
   @SuppressWarnings("static-method")
   @Test
   void fiftyMoveFromFenBlackToMove() {
-    final Board board = new Board(FEN_KRR_K_BLACK_TO_MOVE);
+    final Board board = Board.fromFenStrict(FEN_KRR_K_BLACK_TO_MOVE);
     playRookShuffleAsBlack(board, 25);
     assertFiftyMoveOrClaimable(board);
     assertReporterOutput(board, /* threefoldSectionNonEmpty */ true, /* expectedFiftyMoveSequenceReached */ true);
@@ -219,7 +219,7 @@ class TestFromInitialPlacementAndFenStart {
   @SuppressWarnings("static-method")
   @Test
   void seventyFiveMoveFromFenBlackToMove() {
-    final Board board = new Board(FEN_KRR_K_BLACK_TO_MOVE);
+    final Board board = Board.fromFenStrict(FEN_KRR_K_BLACK_TO_MOVE);
     playRookShuffleAsBlack(board, 38);
     assertSeventyFiveMove(board);
     assertReporterOutput(board, /* threefoldSectionNonEmpty */ true, /* expectedFiftyMoveSequenceReached */ true);

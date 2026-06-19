@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Test;
 import io.github.dlbbld.ashlarchess.board.Board;
 import io.github.dlbbld.ashlarchess.board.CommonTestUtility;
 import io.github.dlbbld.ashlarchess.common.model.MoveSpecification;
-import io.github.dlbbld.ashlarchess.fen.FenParserAdvanced;
+import io.github.dlbbld.ashlarchess.fen.StrictFenParser;
 import io.github.dlbbld.ashlarchess.fen.constants.FenConstants;
 import io.github.dlbbld.ashlarchess.fen.model.Fen;
 
@@ -19,7 +19,7 @@ class TestFenRoundtripMoves {
   @SuppressWarnings("static-method")
   @Test
   void testInitial() {
-    final Fen fen = FenParserAdvanced.parseFenAdvanced(FenConstants.FEN_INITIAL_STR);
+    final Fen fen = StrictFenParser.parse(FenConstants.FEN_INITIAL_STR);
     final Board boardFromFenInitial = new Board(fen);
     final Board board = new Board();
 

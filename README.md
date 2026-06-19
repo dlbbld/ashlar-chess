@@ -219,16 +219,16 @@ cannot checkmate by any possible series of legal moves. The quick variant is the
 
 // White flags with only a lone king opposing the rook: the would-be winner
 // (Black) cannot mate, so the game is drawn, not lost.
-final Board loneKing = new Board("8/8/4k3/3R4/2K5/8/8/8 w - - 0 50");
+final Board loneKing = Board.fromFenStrict("8/8/4k3/3R4/2K5/8/8/8 w - - 0 50");
 System.out.println(Adjudicator.adjudicateFlagfallQuick(loneKing, Side.WHITE)); // DRAW
 
 // White flags behind a blocked pawn wall: Black can never break through, so
 // the quick analyzer draws this non-material position too.
-final Board pawnWall = new Board("8/8/3k4/1p2p1p1/pP1pP1P1/P2P4/1K6/8 b - - 32 62");
+final Board pawnWall = Board.fromFenStrict("8/8/3k4/1p2p1p1/pP1pP1P1/P2P4/1K6/8 b - - 32 62");
 System.out.println(Adjudicator.adjudicateFlagfallQuick(pawnWall, Side.WHITE)); // DRAW
 
 // Black flags with both sides still able to play for a win: the flag stands.
-final Board winnable = new Board("q4r2/pR3pkp/1p2p1p1/4P3/6P1/1P3Q2/1Pr2PK1/3R4 b - - 3 29");
+final Board winnable = Board.fromFenStrict("q4r2/pR3pkp/1p2p1p1/4P3/6P1/1P3Q2/1Pr2PK1/3R4 b - - 3 29");
 System.out.println(Adjudicator.adjudicateFlagfallQuick(winnable, Side.BLACK)); // LOSS
 ```
 
@@ -244,11 +244,11 @@ remainder is exactly what the full variant is for:
 // The full analyzer additionally proves wins and may report UNDETERMINED.
 
 // Black flags in a position the full search proves White can win: a real loss.
-final Board provenWin = new Board("q4r2/pR3pkp/1p2p1p1/4P3/6P1/1P3Q2/1Pr2PK1/3R4 b - - 3 29");
+final Board provenWin = Board.fromFenStrict("q4r2/pR3pkp/1p2p1p1/4P3/6P1/1P3Q2/1Pr2PK1/3R4 b - - 3 29");
 System.out.println(Adjudicator.adjudicateFlagfallFull(provenWin, Side.BLACK)); // LOSS
 
 // White flags in the rare position whose full search exhausts its node bound.
-final Board undecided = new Board("2b5/1p6/pPp3k1/2Pp3p/P2PpBpP/4P1P1/5K2/8 b - - 46 59");
+final Board undecided = Board.fromFenStrict("2b5/1p6/pPp3k1/2Pp3p/P2PpBpP/4P1P1/5K2/8 b - - 46 59");
 System.out.println(Adjudicator.adjudicateFlagfallFull(undecided, Side.WHITE)); // UNDETERMINED
 ```
 
@@ -262,7 +262,7 @@ adjudicates exactly like a flag-fall - same test, same result, in both the quick
 
 ```java
 // Resignation carries the identical FIDE exception, so it adjudicates exactly like a flag-fall.
-final Board board = new Board("8/8/4k3/3R4/2K5/8/8/8 w - - 0 50");
+final Board board = Board.fromFenStrict("8/8/4k3/3R4/2K5/8/8/8 w - - 0 50");
 System.out.println(Adjudicator.adjudicateResignationQuick(board, Side.WHITE)); // DRAW
 System.out.println(Adjudicator.adjudicateResignationFull(board, Side.WHITE)); // DRAW
 ```
@@ -351,6 +351,11 @@ whole-position verdicts, rather than reusing the per-side unwinnable vocabulary.
 
 Performance: The comment from the Unwinnability section for UNDETERMINED applies here. However, it checks both sides so that it can take double the time.
 
+### Reading a verdict
+Each of these verdicts is a **proof result**, and a proof has three logical outcomes: proved yes, proved no, and *not proven*. That last state is part of the answer, not a value to ignore: `POSSIBLY_WINNABLE`, `POSSIBLY_ALIVE`, and `UNDETERMINED` all mean *the analysis could not decide* - **not** the opposite of the proven case.
+
+So each verdict is a plain enum, read by comparing the constant; there is deliberately no `isUnwinnable()` / `isDead()` shortcut. A boolean would collapse the three outcomes into two, and its negation would mislead: `unwinnableFull(side) != UNWINNABLE` does **not** mean "winnable" (it also covers `POSSIBLY_WINNABLE` and `UNDETERMINED`), and `deadPositionFull() != DEAD` does **not** mean "alive". Never read "not proven X" as "proven not-X" - compare against the exact constant you mean, or `switch` on the verdict so the compiler forces you to handle every case, including the unknown one.
+
 ## Examples
 
 ### Unwinnable
@@ -362,7 +367,7 @@ For example, if White flags with the king and rook against the lone king of Blac
 [Position](https://lichess.org/analysis/8/8/4k3/3R4/2K5/8/8/8_w_-_-_0_50)
 
 ```java
-final Board board = new Board("8/8/4k3/3R4/2K5/8/8/8 w - - 0 50");
+final Board board = Board.fromFenStrict("8/8/4k3/3R4/2K5/8/8/8 w - - 0 50");
 System.out.println(board.unwinnableQuick(Side.BLACK)); // UNWINNABLE
 System.out.println(board.unwinnableFull(Side.BLACK)); // UNWINNABLE
 ```
@@ -374,7 +379,7 @@ White could have won.
 [Game](https://lichess.org/OawUhnkq#101)
 
 ```java
-final Board board = new Board("5r1k/6P1/7K/5q2/8/8/8/8 b - - 0 51");
+final Board board = Board.fromFenStrict("5r1k/6P1/7K/5q2/8/8/8/8 b - - 0 51");
 System.out.println(board.unwinnableQuick(Side.WHITE)); // UNWINNABLE
 System.out.println(board.unwinnableFull(Side.WHITE)); // UNWINNABLE
 ```
@@ -385,7 +390,7 @@ by most common chess libraries.
 [Game](https://lichess.org/c3ew66ZV#123)
 
 ```java
-final Board board = new Board("8/8/3k4/1p2p1p1/pP1pP1P1/P2P4/1K6/8 b - - 32 62");
+final Board board = Board.fromFenStrict("8/8/3k4/1p2p1p1/pP1pP1P1/P2P4/1K6/8 b - - 32 62");
 System.out.println(board.unwinnableQuick(Side.BLACK)); // UNWINNABLE
 System.out.println(board.unwinnableFull(Side.BLACK)); // UNWINNABLE
 ```
@@ -397,7 +402,7 @@ the bounded search may return UNDETERMINED.
 [Game](https://lichess.org/SCKpvJQX#57)
 
 ```java
-final Board board = new Board("q4r2/pR3pkp/1p2p1p1/4P3/6P1/1P3Q2/1Pr2PK1/3R4 b - - 3 29");
+final Board board = Board.fromFenStrict("q4r2/pR3pkp/1p2p1p1/4P3/6P1/1P3Q2/1Pr2PK1/3R4 b - - 3 29");
 System.out.println(board.unwinnableQuick(Side.WHITE)); // POSSIBLY_WINNABLE
 System.out.println(board.unwinnableFull(Side.WHITE)); // WINNABLE_HELPMATE
 ```
@@ -406,7 +411,7 @@ System.out.println(board.unwinnableFull(Side.WHITE)); // WINNABLE_HELPMATE
 The quick algorithm (a port of CHA 2.6.1) also proves many blocked and fortress positions, not only material-based ones. Here White's bishop and pawns are blocked and cannot make progress against the cornered black king, so the position is unwinnable for White - and the quick algorithm already decides it. [Game](https://lichess.org/bKHPqNEw#81)
 
 ```java
-final Board board = new Board("1k6/1P5p/BP3p2/1P6/8/8/5PKP/8 b - - 0 41");
+final Board board = Board.fromFenStrict("1k6/1P5p/BP3p2/1P6/8/8/5PKP/8 b - - 0 41");
 System.out.println(board.unwinnableQuick(Side.WHITE)); // UNWINNABLE
 System.out.println(board.unwinnableFull(Side.WHITE)); // UNWINNABLE
 ```
@@ -419,7 +424,7 @@ The most straightforward dead position is when one player already has insufficie
 
 [Position](https://lichess.org/analysis/8/8/3kn3/8/2K5/8/8/8_w_-_-_0_50)
 ```java
-final Board board = new Board("8/8/3kn3/8/2K5/8/8/8 w - - 0 50");
+final Board board = Board.fromFenStrict("8/8/3kn3/8/2K5/8/8/8 w - - 0 50");
 System.out.println(board.deadPositionQuick()); // DEAD (dead)
 System.out.println(board.deadPositionFull()); // DEAD (dead)
 ```
@@ -429,7 +434,7 @@ Pawn walls are dead positions, but most common chess libraries do not detect the
 [Game](https://lichess.org/V08kX4kz#121)
 
 ```java
-final Board board = new Board("8/6b1/1p3k2/1Pp1p1p1/2P1PpP1/5P2/8/5K2 b - - 11 61");
+final Board board = Board.fromFenStrict("8/6b1/1p3k2/1Pp1p1p1/2P1PpP1/5P2/8/5K2 b - - 11 61");
 System.out.println(board.deadPositionQuick()); // DEAD (dead)
 System.out.println(board.deadPositionFull()); // DEAD (dead)
 ```
@@ -439,7 +444,7 @@ Positions can also often be dead due to forced moves.
 [Game](https://lichess.org/8FUSHxUV#115)
 
 ```java
-final Board board = new Board("k7/P1K5/8/8/8/8/8/8 b - - 2 58");
+final Board board = Board.fromFenStrict("k7/P1K5/8/8/8/8/8/8 b - - 2 58");
 System.out.println(board.deadPositionQuick()); // DEAD (dead)
 System.out.println(board.deadPositionFull()); // DEAD (dead)
 ```
@@ -459,7 +464,7 @@ UTF-8 byte-order marks (BOM) are accepted by the lenient parser (stripped on inp
 ### Lenient PGN parser
 The common PGN parser — reads the file with best effort. For example, the space after `[` below is ignored. See the [Limitations](#limitations) section above for what neither parser accepts.
 
-ashlar-chess ships **lenient parsers for all three input languages it consumes** — SAN, PGN, and FEN. Each one applies a typed syntactic-tolerance pass and surfaces tolerated deviations as forgiven items on the validation result, then delegates the heavy lifting to the corresponding strict parser. The PGN flavour (described in this section) routes its SAN tokens through the lenient SAN layer and its `FEN` tag through the lenient FEN layer, so a single lenient PGN parse picks up deviations across all three languages. The lenient FEN layer is reachable directly via `Board.fromFenLenient(String)` for callers that consume FEN strings outside the PGN context (engine output, lichess/chess.com exports, hand-edited fixtures); see `specification.md` §3.3.3 for the strict-vs-lenient × raw-vs-advanced contract and the full `ForgivenFenItemCode` taxonomy.
+ashlar-chess ships **lenient parsers for all three input languages it consumes** — SAN, PGN, and FEN. Each one applies a typed syntactic-tolerance pass and surfaces tolerated deviations as forgiven items on the validation result, then delegates the heavy lifting to the corresponding strict parser. The PGN flavour (described in this section) routes its SAN tokens through the lenient SAN layer and its `FEN` tag through the lenient FEN layer, so a single lenient PGN parse picks up deviations across all three languages. The lenient FEN layer is reachable directly via `Board.fromFenLenient(String)` for callers that consume FEN strings outside the PGN context (engine output, lichess/chess.com exports, hand-edited fixtures); see `specification.md` §3.3.3 for the strict-vs-lenient contract and the full `ForgivenFenItemCode` taxonomy.
 
 In addition to structural tolerances (whitespace, missing tags, optional termination markers), the lenient parser accepts a defined set of SAN deviations from canonical — see [PGN SAN tolerances](#pgn-san-tolerances) below.
 

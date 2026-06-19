@@ -24,8 +24,8 @@ class TestFindHelpmateTranspositionKey {
   @SuppressWarnings("static-method")
   @Test
   void testIgnoresMoveCounters() {
-    final Board boardFirst = new Board("8/8/8/8/8/8/8/K6k w - - 0 1");
-    final Board boardSecond = new Board("8/8/8/8/8/8/8/K6k w - - 10 9");
+    final Board boardFirst = Board.fromFenStrict("8/8/8/8/8/8/8/K6k w - - 0 1");
+    final Board boardSecond = Board.fromFenStrict("8/8/8/8/8/8/8/K6k w - - 10 9");
 
     assertEquals(boardFirst.getDynamicPosition(), boardSecond.getDynamicPosition());
   }
@@ -33,8 +33,8 @@ class TestFindHelpmateTranspositionKey {
   @SuppressWarnings("static-method")
   @Test
   void testIgnoresUncapturableEnPassantTarget() {
-    final Board boardWithTarget = new Board("8/8/8/8/4P3/8/8/K6k b - e3 0 1");
-    final Board boardWithoutTarget = new Board("8/8/8/8/4P3/8/8/K6k b - - 0 1");
+    final Board boardWithTarget = Board.fromFenStrict("8/8/8/8/4P3/8/8/K6k b - e3 0 1");
+    final Board boardWithoutTarget = Board.fromFenStrict("8/8/8/8/4P3/8/8/K6k b - - 0 1");
 
     assertEquals(boardWithTarget.getDynamicPosition(), boardWithoutTarget.getDynamicPosition());
   }
@@ -42,8 +42,8 @@ class TestFindHelpmateTranspositionKey {
   @SuppressWarnings("static-method")
   @Test
   void testKeepsCapturableEnPassantTarget() {
-    final Board boardWithTarget = new Board("8/8/8/8/3pP3/8/8/K6k b - e3 0 1");
-    final Board boardWithoutTarget = new Board("8/8/8/8/3pP3/8/8/K6k b - - 0 1");
+    final Board boardWithTarget = Board.fromFenStrict("8/8/8/8/3pP3/8/8/K6k b - e3 0 1");
+    final Board boardWithoutTarget = Board.fromFenStrict("8/8/8/8/3pP3/8/8/K6k b - - 0 1");
 
     assertNotEquals(boardWithTarget.getDynamicPosition(), boardWithoutTarget.getDynamicPosition());
   }
@@ -57,8 +57,8 @@ class TestFindHelpmateTranspositionKey {
     // d4 and e4 from rank 4, exposing the Black king on a4 to the White rook on h4. The capture is
     // illegal, so the king-safety-aware normalization correctly drops the e.p. target to NONE -
     // collapsing this position into the same DynamicPosition as one with no e.p. target at all.
-    final Board boardWithPinnedCapturer = new Board("8/8/8/8/k2pP2R/8/8/7K b - e3 0 1");
-    final Board boardWithoutTarget = new Board("8/8/8/8/k2pP2R/8/8/7K b - - 0 1");
+    final Board boardWithPinnedCapturer = Board.fromFenStrict("8/8/8/8/k2pP2R/8/8/7K b - e3 0 1");
+    final Board boardWithoutTarget = Board.fromFenStrict("8/8/8/8/k2pP2R/8/8/7K b - - 0 1");
 
     assertEquals(boardWithPinnedCapturer.getDynamicPosition(), boardWithoutTarget.getDynamicPosition());
   }

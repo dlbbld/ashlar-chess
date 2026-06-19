@@ -13,7 +13,7 @@ import org.junit.jupiter.api.Test;
 
 import com.google.common.collect.ImmutableList;
 
-import io.github.dlbbld.ashlarchess.common.enums.FenAdvancedValidationProblem;
+import io.github.dlbbld.ashlarchess.common.enums.StrictFenSemanticValidationProblem;
 import io.github.dlbbld.ashlarchess.fen.ForgivenFenItem;
 import io.github.dlbbld.ashlarchess.fen.ForgivenFenItemCode;
 import io.github.dlbbld.ashlarchess.fen.LenientFenParser;
@@ -132,9 +132,9 @@ class TestLenientFenParser {
     final String deviating = "rnbq1bnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
     final LenientFenParserValidationResult result = LenientFenParser.validate(deviating);
     assertFalse(result.isValid());
-    assertEquals(LenientFenParserValidationProblem.ADVANCED_INVALID, result.problem());
+    assertEquals(LenientFenParserValidationProblem.STRICT_SEMANTIC_INVALID, result.problem());
     // The underlying advanced-problem categorisation is carried so callers can switch without parsing message.
-    assertNotEquals(FenAdvancedValidationProblem.SUCCESS, result.fenAdvancedValidationProblem());
+    assertNotEquals(StrictFenSemanticValidationProblem.SUCCESS, result.strictFenSemanticValidationProblem());
     assertNull(result.fen());
   }
 
@@ -195,8 +195,8 @@ class TestLenientFenParser {
     final String deviating = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KKKQkq - 0 1";
     final LenientFenParserValidationResult result = LenientFenParser.validate(deviating);
     assertFalse(result.isValid());
-    assertEquals(LenientFenParserValidationProblem.ADVANCED_INVALID, result.problem());
-    assertEquals(FenAdvancedValidationProblem.INVALID_CASTLING_RIGHT_RANGE, result.fenAdvancedValidationProblem());
+    assertEquals(LenientFenParserValidationProblem.STRICT_SEMANTIC_INVALID, result.problem());
+    assertEquals(StrictFenSemanticValidationProblem.INVALID_CASTLING_RIGHT_RANGE, result.strictFenSemanticValidationProblem());
     assertNull(result.fen());
   }
 

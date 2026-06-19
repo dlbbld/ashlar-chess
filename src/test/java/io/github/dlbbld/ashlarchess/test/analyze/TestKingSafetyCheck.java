@@ -39,7 +39,7 @@ class TestKingSafetyCheck {
   }
 
   private static void check(String fen, MoveSpecification move, KingSafetyCheck expected) {
-    final Board board = new Board(fen);
+    final Board board = Board.fromFenStrict(fen);
     assertEquals(expected, analyze(board, move));
   }
 

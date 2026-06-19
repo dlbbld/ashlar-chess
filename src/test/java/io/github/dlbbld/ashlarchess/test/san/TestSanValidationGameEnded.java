@@ -31,7 +31,7 @@ class TestSanValidationGameEnded {
   @Test
   void testCheckmateSanRejectedThroughOrdinaryLegality() {
     // Fool's mate. "Ke2" cannot match any legal move because the king has none.
-    final Board board = new Board("rnb1kbnr/pppp1ppp/8/4p3/6Pq/5P2/PPPPP2P/RNBQKBNR w KQkq - 1 3");
+    final Board board = Board.fromFenStrict("rnb1kbnr/pppp1ppp/8/4p3/6Pq/5P2/PPPPP2P/RNBQKBNR w KQkq - 1 3");
     assertTrue(board.isCheckmate(), "fool's mate position must be checkmate");
     assertTrue(board.getLegalMoves().isEmpty(), "checkmate has no legal moves");
     rejectsNotViaGameEnded("Ke2", board);
@@ -40,7 +40,7 @@ class TestSanValidationGameEnded {
   @SuppressWarnings("static-method")
   @Test
   void testStalemateSanRejectedThroughOrdinaryLegality() {
-    final Board board = new Board("7k/8/6Q1/8/8/8/8/K7 b - - 0 1");
+    final Board board = Board.fromFenStrict("7k/8/6Q1/8/8/8/8/K7 b - - 0 1");
     assertTrue(board.isStalemate(), "K+Q vs K position must be stalemate for black");
     assertTrue(board.getLegalMoves().isEmpty(), "stalemate has no legal moves");
     rejectsNotViaGameEnded("Kg8", board);
@@ -51,7 +51,7 @@ class TestSanValidationGameEnded {
   @SuppressWarnings("static-method")
   @Test
   void testSanAcceptedAtInsufficientMaterialBoth() {
-    final Board board = new Board("4k3/8/8/8/8/8/8/4K3 w - - 0 1");
+    final Board board = Board.fromFenStrict("4k3/8/8/8/8/8/8/4K3 w - - 0 1");
     assertTrue(board.isInsufficientMaterial(), "K vs K is mutual insufficient material");
     assertDoesNotThrow(() -> StrictSanParser.parse("Ke2", board),
         "insufficient material is queryable only; the SAN parser must accept the move");
@@ -61,7 +61,7 @@ class TestSanValidationGameEnded {
   @Test
   void testSanAcceptedAtDeadPositionUnwinnableQuickBornDead() {
     // Pawn-wall fortress (horizontal_1 from the CHA pawn-wall corpus).
-    final Board board = new Board("4k3/8/8/p1p1p1p1/P1P1P1P1/8/8/4K3 w - - 0 50");
+    final Board board = Board.fromFenStrict("4k3/8/8/p1p1p1p1/P1P1P1P1/8/8/4K3 w - - 0 50");
     assertEquals(DeadPositionQuickVerdict.DEAD, board.deadPositionQuick());
     assertDoesNotThrow(() -> StrictSanParser.parse("Kd1", board),
         "quick-unwinnable dead position is queryable only; the SAN parser must accept the move");
@@ -71,7 +71,7 @@ class TestSanValidationGameEnded {
   @Test
   void testSanAcceptedAtDeadPositionUnwinnableQuickPlayedInto() {
     // Predecessor: pawn wall with white h-pawn still on h2. h3 completes the lock.
-    final Board board = new Board("4k3/8/8/p1p1p1p1/PpPpPpPp/1P1P1P2/7P/4K3 w - - 0 49");
+    final Board board = Board.fromFenStrict("4k3/8/8/p1p1p1p1/PpPpPpPp/1P1P1P2/7P/4K3 w - - 0 49");
     board.moveStrict("h3");
     assertEquals(DeadPositionQuickVerdict.DEAD, board.deadPositionQuick());
     assertDoesNotThrow(() -> StrictSanParser.parse("Kd8", board),
@@ -81,7 +81,7 @@ class TestSanValidationGameEnded {
   @SuppressWarnings("static-method")
   @Test
   void testSanAcceptedAtSeventyFiveMoveThreshold() {
-    final Board board = new Board("4k3/8/4P3/8/8/8/2N1B3/3KQ2R w - - 150 76");
+    final Board board = Board.fromFenStrict("4k3/8/4P3/8/8/8/2N1B3/3KQ2R w - - 150 76");
     assertTrue(board.isSeventyFiveMove(), "predicate must fire at threshold");
     assertDoesNotThrow(() -> StrictSanParser.parse("Kd2", board),
         "75-move is queryable only; the SAN parser must accept the move");

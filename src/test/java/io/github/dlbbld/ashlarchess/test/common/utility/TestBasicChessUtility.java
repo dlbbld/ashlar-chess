@@ -90,7 +90,7 @@ class TestBasicChessUtility {
     // KvK position (insufficient material) with halfmove clock at the 75-move threshold.
     // Both isInsufficientMaterial() and isSeventyFiveMove() return true on this board; the
     // returned outcome is the more specific of the two (IM precedes 75-move).
-    final Board board = new Board("4k3/8/8/8/8/8/8/4K3 w - - 150 76");
+    final Board board = Board.fromFenStrict("4k3/8/8/8/8/8/8/4K3 w - - 150 76");
     assertEquals(true, board.isInsufficientMaterial(), "precondition: insufficient material");
     assertEquals(true, board.isSeventyFiveMove(), "precondition: 75-move threshold reached");
     final Outcome outcome = BasicChessUtility.calculateOutcome(board);
@@ -114,7 +114,7 @@ class TestBasicChessUtility {
   void testCalculateOutcomeSeventyFiveMoveFiresWhenAlone() {
     // FEN at the 75-move threshold with enough material for both sides - only the 75-move
     // predicate fires.
-    final Board board = new Board("4k3/8/4P3/8/8/8/2N1B3/3KQ2R w - - 150 76");
+    final Board board = Board.fromFenStrict("4k3/8/4P3/8/8/8/2N1B3/3KQ2R w - - 150 76");
     assertEquals(true, board.isSeventyFiveMove(), "precondition: 75-move threshold reached");
     assertEquals(false, board.isInsufficientMaterial(), "precondition: not insufficient material");
     final Outcome outcome = BasicChessUtility.calculateOutcome(board);

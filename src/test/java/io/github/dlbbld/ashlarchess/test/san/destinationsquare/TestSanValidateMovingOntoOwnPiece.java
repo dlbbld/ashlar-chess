@@ -13,7 +13,7 @@ class TestSanValidateMovingOntoOwnPiece {
   @SuppressWarnings("static-method")
   @Test
   void testUnderstanding() {
-    final Board board = new Board("8/3k4/3r4/R7/4K3/8/8/R7 b - - 0 1");
+    final Board board = Board.fromFenStrict("8/3k4/3r4/R7/4K3/8/8/R7 b - - 0 1");
 
     TestSanValidateSupport.checkExceptionRnbqkMovingOntoOwnPiece("Rd6", board);
     board.movesStrict("Rc6");

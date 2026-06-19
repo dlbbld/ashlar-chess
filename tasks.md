@@ -11,6 +11,25 @@ Live planning only: current release work, backlog, and obsolete decisions. Shipp
 
 ---
 
+## 20.0.0 — JPMS module boundary / API-surface reset
+
+The dedicated module-and-API-boundary release. Breaking package / FQN changes that don't belong in 19.0.0 are parked here.
+
+### Group exceptions, models, enums, and constants by domain (package-by-feature)
+
+The codebase currently mixes "group by kind" with "feature-inline", and *duplicates* the by-kind buckets at two levels — `ashlarchess.exceptions` **and** `ashlarchess.common.exceptions`; `ashlarchess.enums` **and** `common.enums`; `ashlarchess.model` **and** `common.model` — with no rule for which one a type lands in, plus single-file kind sub-packages (e.g. `fen.constants` holds one class). A newcomer cannot predict any type's package from a rule.
+
+Rule to adopt: **package by feature/domain first; package by kind only for genuinely cross-cutting foundations.**
+
+- Feature-specific exceptions / enums / models / constants live *inline* in their feature package (FEN's in `fen`, PGN's in `pgn`, SAN's in `san`) — beside the code they serve. Not in a central bucket, and not in `fen.exceptions`-style kind sub-packages either (keep them next to the parser, as agreed).
+- Collapse the duplicate buckets: never both a top-level `<kind>` and a `common.<kind>`. Keep one shared-core home for genuinely cross-cutting types only — base exceptions (`UsageException`, `ProgrammingMistakeException`, `NonePointerException`), `ChessConstants`, the core chess vocabulary (`Side` / `Piece` / `Square` / …).
+- No single-file kind sub-packages.
+- Done = given any type, one rule predicts its package.
+
+A large, purely mechanical, compiler-checked FQN reset with no behavior change, and a prerequisite for a clean `module-info`: sensible `exports` / `opens` and package-private boundaries are impossible while features are split across two `common.*` junk drawers. (The FEN-local slice — folding the FEN validation problem enum into `fen` and dropping the single-file `fen.constants` — was carved out for 19.0.0; this is the global reset across all domains.)
+
+---
+
 ## Backlog — captured but unscheduled
 
 Items here are not assigned to any release. Captured so they don't get lost; revisit if/when scope or motivation aligns.

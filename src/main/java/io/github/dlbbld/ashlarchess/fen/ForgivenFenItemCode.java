@@ -6,7 +6,7 @@ package io.github.dlbbld.ashlarchess.fen;
 /**
  * FEN-level deviations the lenient FEN parser accepts. Surfaced on the validation result so consumers can see what the
  * parser tolerated without rejecting. None of these alter the semantic content of the position - they are purely
- * syntactic-tolerance transformations applied before delegating to {@link FenParserRaw} / {@link FenParserAdvanced}.
+ * syntactic-tolerance transformations applied before delegating to {@link StrictFenParser}.
  */
 public enum ForgivenFenItemCode {
 
@@ -68,7 +68,7 @@ public enum ForgivenFenItemCode {
    * - {@code halfMoveClock = 15} gives {@code fullMoveNumber = 20}, {@code halfMoveClock = 2} gives
    * {@code fullMoveNumber = 10}. The round-numbered result is well above the strict minimum and signals to a reader
    * that the value was reconstructed rather than measured. Strict parsing rejects (see
-   * {@code FenAdvancedValidationProblem.INVALID_HALF_MOVE_CLOCK_TOO_BIG_RELATIVE_TO_FULL_MOVE_NUMBER}).
+   * {@code StrictFenSemanticValidationProblem.INVALID_HALF_MOVE_CLOCK_TOO_BIG_RELATIVE_TO_FULL_MOVE_NUMBER}).
    */
   HALF_MOVE_CLOCK_INCONSISTENT_WITH_FULL_MOVE_NUMBER,
 

@@ -14,10 +14,5 @@ public enum UnwinnabilityQuickVerdict {
   UNWINNABLE,
 
   /** Not proven unwinnable; the intended winner may or may not be able to win. */
-  POSSIBLY_WINNABLE;
-
-  /** Whether the intended winner is proven unable to win. */
-  public boolean isUnwinnable() {
-    return this == UNWINNABLE;
-  }
+  POSSIBLY_WINNABLE
 }

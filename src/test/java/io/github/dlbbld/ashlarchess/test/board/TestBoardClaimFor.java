@@ -54,7 +54,7 @@ class TestBoardClaimFor {
     // mate). FIDE 9.3 frames the claim as announced before the move is played; the move's outcome
     // (checkmate) does not affect whether the no-progress condition is met. Per-move predicate
     // makes this explicit at the API level.
-    final Board board = new Board("6rk/6pp/7N/5p2/6p1/8/2q5/K7 w - - 99 60");
+    final Board board = Board.fromFenStrict("6rk/6pp/7N/5p2/6p1/8/2q5/K7 w - - 99 60");
     final MoveSpecification nf7 = new MoveSpecification(H6, F7);
     assertTrue(board.canClaimFiftyMoveRuleFor(nf7),
         "FIDE 9.3: non-pawn non-capture knight move at clock 99 is a valid claim even though it delivers mate");
@@ -83,7 +83,7 @@ class TestBoardClaimFor {
     // earlier "7k/6pp/5K2/..." fixture did, leaving Black with the legal pawn moves g5/g6/h5/h6)
     // would now fail the post-move stalemate assertion rather than silently degrading the test
     // to a quiet 50-move candidate.
-    final Board board = new Board("7k/4K2p/7P/8/8/8/8/8 w - - 99 60");
+    final Board board = Board.fromFenStrict("7k/4K2p/7P/8/8/8/8/8 w - - 99 60");
     final MoveSpecification kf7 = new MoveSpecification(E7, F7);
     assertTrue(board.canClaimFiftyMoveRuleFor(kf7),
         "FIDE 9.3: non-pawn non-capture king move at clock 99 is a valid claim even though it delivers stalemate");
@@ -100,7 +100,7 @@ class TestBoardClaimFor {
   void fiftyMoveForReturnsFalseForPawnMove() {
     // White has a pawn on e4 plus a quiet rook move available. The pawn push resets the halfmove
     // clock so it cannot satisfy the 50-move claim, even though clock 99 is at the boundary.
-    final Board board = new Board("7k/8/8/8/4P3/8/4K3/R7 w - - 99 51");
+    final Board board = Board.fromFenStrict("7k/8/8/8/4P3/8/4K3/R7 w - - 99 51");
     assertFalse(board.canClaimFiftyMoveRuleFor(new MoveSpecification(E4, E5)),
         "FIDE 9.3: a pawn move resets the clock and cannot satisfy the 50-move claim");
   }
@@ -112,7 +112,7 @@ class TestBoardClaimFor {
     // a hypothetical capture of the black king from the same position with a black piece on a8.
     // The capture would reset the clock, so it does not satisfy the claim.
     // Use a position where white can capture a non-king black piece on the back rank.
-    final Board board = new Board("r6k/8/8/8/8/8/4K3/R7 w - - 99 51");
+    final Board board = Board.fromFenStrict("r6k/8/8/8/8/8/4K3/R7 w - - 99 51");
     assertFalse(board.canClaimFiftyMoveRuleFor(new MoveSpecification(A1, A8)),
         "FIDE 9.3: a capture resets the clock and cannot satisfy the 50-move claim");
   }
@@ -122,7 +122,7 @@ class TestBoardClaimFor {
   void fiftyMoveForReturnsFalseWhenClockBelowBoundary() {
     // Clock 98 - one shy of the 99-required boundary. Even a non-pawn non-capture rook move
     // cannot satisfy the claim from here.
-    final Board board = new Board("7k/8/8/8/8/8/4K3/R7 w - - 98 50");
+    final Board board = Board.fromFenStrict("7k/8/8/8/8/8/4K3/R7 w - - 98 50");
     assertFalse(board.canClaimFiftyMoveRuleFor(new MoveSpecification(A1, A2)),
         "FIDE 9.3: clock must be at least 99 for the claim to be available");
   }
@@ -134,7 +134,7 @@ class TestBoardClaimFor {
     // move but not legal (different rank and file from a1; rook moves only along one or the other).
     // The per-move predicate now treats "not in the legal-moves set" as a loud failure - throws
     // IllegalArgumentException rather than silently returning false.
-    final Board board = new Board("7k/8/8/8/8/8/4K3/R7 w - - 99 51");
+    final Board board = Board.fromFenStrict("7k/8/8/8/8/8/4K3/R7 w - - 99 51");
     final MoveSpecification move = new MoveSpecification(A1, H8);
     assertThrows(IllegalArgumentException.class, () -> board.canClaimFiftyMoveRuleFor(move),
         "a move not in the legal-moves set must throw, not silently return false");
@@ -144,7 +144,7 @@ class TestBoardClaimFor {
   @Test
   void fiftyMoveForReturnsTrueForQuietRookMoveAtBoundary() {
     // Sanity baseline: the obvious "yes" case. Rook move at clock 99 -> claim valid.
-    final Board board = new Board("7k/8/8/8/8/8/4K3/R7 w - - 99 51");
+    final Board board = Board.fromFenStrict("7k/8/8/8/8/8/4K3/R7 w - - 99 51");
     assertTrue(board.canClaimFiftyMoveRuleFor(new MoveSpecification(A1, A2)),
         "FIDE 9.3: quiet non-zeroing legal move at clock 99 is a valid claim");
   }
@@ -195,7 +195,7 @@ class TestBoardClaimFor {
   void threefoldForReturnsFalseForCapture() {
     // Tiny position with a capture available. The capture produces a position with different
     // material than any earlier position in the game; cannot satisfy threefold.
-    final Board board = new Board("4k3/8/8/8/3p4/4P3/4K3/8 w - - 0 1");
+    final Board board = Board.fromFenStrict("4k3/8/8/8/3p4/4P3/4K3/8 w - - 0 1");
     assertFalse(board.canClaimThreefoldRepetitionRuleFor(new MoveSpecification(E3, D4)),
         "FIDE 9.2: a capture changes material; the resulting position cannot have occurred before");
   }
@@ -220,7 +220,7 @@ class TestBoardClaimFor {
   @Test
   void drawForReturnsTrueWhenOnlyFiftyMoveBranchTriggers() {
     // Quiet rook move at clock 99: 50-move branch true, threefold branch false (fresh position).
-    final Board board = new Board("7k/8/8/8/8/8/4K3/R7 w - - 99 51");
+    final Board board = Board.fromFenStrict("7k/8/8/8/8/8/4K3/R7 w - - 99 51");
     assertTrue(board.canClaimFiftyMoveRuleFor(new MoveSpecification(A1, A2)),
         "precondition: 50-move per-move predicate is true");
     assertFalse(board.canClaimThreefoldRepetitionRuleFor(new MoveSpecification(A1, A2)),

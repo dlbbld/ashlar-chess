@@ -105,7 +105,7 @@ class TestLenientSanParser {
   @Test
   void testMissingCheckmateSuffix() {
     // Back-rank mate: white rook to a8 mates black king on g8.
-    final Board board = new Board("6k1/5ppp/8/8/8/8/8/R6K w - - 0 1");
+    final Board board = Board.fromFenStrict("6k1/5ppp/8/8/8/8/8/R6K w - - 0 1");
     final LenientSanParserValidationResult result = board.moveLenient("Ra8");
     assertExactlyOneCode(result, LenientSanValidationProblem.MISSING_CHECKMATE_SUFFIX);
     assertEquals("Ra8#", canonical(result));
@@ -132,7 +132,7 @@ class TestLenientSanParser {
   @Test
   void testWrongCheckSuffixForCheckmate() {
     // Back-rank mate written with + instead of #.
-    final Board board = new Board("6k1/5ppp/8/8/8/8/8/R6K w - - 0 1");
+    final Board board = Board.fromFenStrict("6k1/5ppp/8/8/8/8/8/R6K w - - 0 1");
     final LenientSanParserValidationResult result = board.moveLenient("Ra8+");
     assertExactlyOneCode(result, LenientSanValidationProblem.WRONG_CHECK_SUFFIX_FOR_CHECKMATE);
     assertEquals("Ra8#", canonical(result));
@@ -188,7 +188,7 @@ class TestLenientSanParser {
   @Test
   void testOverspecifiedRankDisambiguation() {
     // Single white knight on d5; "N5e7" is rank-disambiguated but rank not necessary.
-    final Board board = new Board("4k3/8/8/3N4/8/8/P7/4K3 w - - 0 1");
+    final Board board = Board.fromFenStrict("4k3/8/8/3N4/8/8/P7/4K3 w - - 0 1");
     final LenientSanParserValidationResult result = board.moveLenient("N5e7");
     assertExactlyOneCode(result, LenientSanValidationProblem.OVERSPECIFIED_RANK_DISAMBIGUATION);
     assertEquals("Ne7", canonical(result));
@@ -200,7 +200,7 @@ class TestLenientSanParser {
     // Canonical SAN: "Rda1" (file disambig). User input "R1a1" (rank disambig) uniquely identifies the move
     // but is non-canonical - strict throws NON_STANDARD_SPECIFIED_RNBQ_RANK_INSTEAD_OF_FILE; lenient resolves to
     // "Rda1" by board lookup.
-    final Board board = new Board("7k/8/8/8/R7/8/8/3R3K w - - 0 1");
+    final Board board = Board.fromFenStrict("7k/8/8/8/R7/8/8/3R3K w - - 0 1");
     final LenientSanParserValidationResult result = board.moveLenient("R1a1");
     assertExactlyOneCode(result, LenientSanValidationProblem.NON_STANDARD_RANK_DISAMBIGUATION);
     assertEquals("Rda1", canonical(result));
@@ -209,7 +209,7 @@ class TestLenientSanParser {
   @Test
   void testOverspecifiedSquareDisambiguation() {
     // Single white knight on d5; "Nd5e7" is square-disambiguated (both file and rank unnecessary).
-    final Board board = new Board("4k3/8/8/3N4/8/8/P7/4K3 w - - 0 1");
+    final Board board = Board.fromFenStrict("4k3/8/8/3N4/8/8/P7/4K3 w - - 0 1");
     final LenientSanParserValidationResult result = board.moveLenient("Nd5e7");
     assertExactlyOneCode(result, LenientSanValidationProblem.OVERSPECIFIED_SQUARE_DISAMBIGUATION);
     assertEquals("Ne7", canonical(result));
@@ -260,7 +260,7 @@ class TestLenientSanParser {
   @Test
   void testMissingPromotionEquals() {
     // White pawn on a7, plays a8Q (no = symbol).
-    final Board board = new Board("8/P7/1k6/8/8/8/8/4K3 w - - 0 1");
+    final Board board = Board.fromFenStrict("8/P7/1k6/8/8/8/8/4K3 w - - 0 1");
     final LenientSanParserValidationResult result = board.moveLenient("a8Q");
     assertExactlyOneCode(result, LenientSanValidationProblem.MISSING_PROMOTION_EQUALS);
     assertEquals("a8=Q", canonical(result));
@@ -300,7 +300,7 @@ class TestLenientSanParser {
   @Test
   void testLowercasePromotionPiece() {
     // White pawn on a7, plays a8=q (lowercase q).
-    final Board board = new Board("8/P7/1k6/8/8/8/8/4K3 w - - 0 1");
+    final Board board = Board.fromFenStrict("8/P7/1k6/8/8/8/8/4K3 w - - 0 1");
     final LenientSanParserValidationResult result = board.moveLenient("a8=q");
     assertExactlyOneCode(result, LenientSanValidationProblem.LOWERCASE_PROMOTION_PIECE);
     assertEquals("a8=Q", canonical(result));
@@ -373,7 +373,7 @@ class TestLenientSanParser {
     // isUppercaseBPawnOnlyShape didn't cover the length-5 case. Should resolve to canonical "bxa8=Q" with
     // UPPERCASE_FILE_LETTER and MISSING_PROMOTION_EQUALS. (Bishops don't promote, so uppercase B at the head
     // of a capture-promotion shape unambiguously means b-file pawn.)
-    final Board board = new Board("r3k3/1P6/8/8/8/8/8/4K3 w - - 0 1");
+    final Board board = Board.fromFenStrict("r3k3/1P6/8/8/8/8/8/4K3 w - - 0 1");
     final LenientSanParserValidationResult result = board.moveLenient("Bxa8Q");
     assertContainsCode(result, LenientSanValidationProblem.UPPERCASE_FILE_LETTER);
     assertContainsCode(result, LenientSanValidationProblem.MISSING_PROMOTION_EQUALS);

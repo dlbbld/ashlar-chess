@@ -36,7 +36,7 @@ class TestGoingToCorner {
   @SuppressWarnings("static-method")
   @Test
   void nonKingNonKnightMoveIsNever() {
-    final Board board = new Board("r3k3/8/8/8/8/8/8/R3K3 w - - 0 1");
+    final Board board = Board.fromFenStrict("r3k3/8/8/8/8/8/8/R3K3 w - - 0 1");
     assertFalse(corner(Side.WHITE, board, A1, A4, Goal.WIN), "rook move");
   }
 
@@ -44,7 +44,7 @@ class TestGoingToCorner {
   @SuppressWarnings("static-method")
   @Test
   void winnerKingTowardLightCorner() {
-    final Board board = new Board("4k3/8/8/8/8/8/8/R3K3 w - - 0 1");
+    final Board board = Board.fromFenStrict("4k3/8/8/8/8/8/8/R3K3 w - - 0 1");
     assertTrue(corner(Side.WHITE, board, E1, D2, Goal.WIN), "e1-d2 steps toward a6");
     assertFalse(corner(Side.WHITE, board, E1, F1, Goal.WIN), "e1-f1 steps away from a6");
   }
@@ -54,10 +54,10 @@ class TestGoingToCorner {
   @SuppressWarnings("static-method")
   @Test
   void cornerColourDependsOnBishops() {
-    final Board light = new Board("4k3/8/8/8/8/8/8/R3K3 w - - 0 1");
+    final Board light = Board.fromFenStrict("4k3/8/8/8/8/8/8/R3K3 w - - 0 1");
     assertFalse(corner(Side.WHITE, light, E1, F2, Goal.WIN), "light corner a6: e1-f2 not progress");
 
-    final Board dark = new Board("4k3/8/8/8/8/8/8/2B1K3 w - - 0 1");
+    final Board dark = Board.fromFenStrict("4k3/8/8/8/8/8/8/2B1K3 w - - 0 1");
     assertTrue(corner(Side.WHITE, dark, E1, F2, Goal.WIN), "dark-bishop -> h6: e1-f2 is progress");
   }
 
@@ -65,7 +65,7 @@ class TestGoingToCorner {
   @SuppressWarnings("static-method")
   @Test
   void loserKingTowardCorner() {
-    final Board board = new Board("4k3/8/8/8/8/8/8/R3K3 b - - 0 1");
+    final Board board = Board.fromFenStrict("4k3/8/8/8/8/8/8/R3K3 b - - 0 1");
     assertTrue(corner(Side.WHITE, board, E8, D7, Goal.LOSE), "e8-d7 steps toward a8");
   }
 
@@ -75,10 +75,10 @@ class TestGoingToCorner {
   @SuppressWarnings("static-method")
   @Test
   void knightOntoAndOffCorner() {
-    final Board onto = new Board("8/8/1N6/8/4k3/8/8/4K3 w - - 0 1");
+    final Board onto = Board.fromFenStrict("8/8/1N6/8/4k3/8/8/4K3 w - - 0 1");
     assertTrue(corner(Side.WHITE, onto, B6, A8, Goal.WIN), "Nb6-a8 lands on a8");
 
-    final Board off = new Board("N7/8/8/8/4k3/8/8/4K3 w - - 0 1");
+    final Board off = Board.fromFenStrict("N7/8/8/8/4k3/8/8/4K3 w - - 0 1");
     assertFalse(corner(Side.WHITE, off, A8, B6, Goal.WIN), "Na8-b6 leaves a8");
   }
 
@@ -87,7 +87,7 @@ class TestGoingToCorner {
   @SuppressWarnings("static-method")
   @Test
   void blackWinnerTargetIsFlipped() {
-    final Board board = new Board("k7/8/8/4K3/8/6n1/8/8 b - - 0 1");
+    final Board board = Board.fromFenStrict("k7/8/8/4K3/8/6n1/8/8 b - - 0 1");
     assertTrue(corner(Side.BLACK, board, G3, H1, Goal.WIN), "Black winner: target flips to h1");
   }
 

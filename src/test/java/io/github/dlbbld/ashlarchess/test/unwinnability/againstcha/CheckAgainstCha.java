@@ -9,8 +9,8 @@ import java.util.List;
 
 import io.github.dlbbld.ashlarchess.board.enums.Side;
 import io.github.dlbbld.ashlarchess.common.Nulls;
-import io.github.dlbbld.ashlarchess.common.exceptions.FenAdvancedValidationException;
-import io.github.dlbbld.ashlarchess.fen.FenParserAdvanced;
+import io.github.dlbbld.ashlarchess.fen.StrictFenSemanticValidationException;
+import io.github.dlbbld.ashlarchess.fen.StrictFenParser;
 import io.github.dlbbld.ashlarchess.fen.model.Fen;
 import io.github.dlbbld.ashlarchess.test.common.utility.FileUtility;
 import io.github.dlbbld.ashlarchess.test.model.PgnFen;
@@ -40,8 +40,8 @@ public final class CheckAgainstCha {
 
       final Fen fen;
       try {
-        fen = FenParserAdvanced.parseFenAdvanced(fenStr);
-      } catch (final FenAdvancedValidationException fve) {
+        fen = StrictFenParser.parse(fenStr);
+      } catch (final StrictFenSemanticValidationException fve) {
         throw new IllegalArgumentException("Illegal FEN of \"" + fenStr + "\" for " + fve.getMessage() + " was found");
       }
 

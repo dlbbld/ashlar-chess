@@ -45,11 +45,13 @@ public final class DeadPositionAnalyzer {
    */
   public static DeadPositionFullVerdict deadPositionFull(Board board) {
     final UnwinnabilityFullVerdict white = UnwinnableFullAnalyzer.unwinnableFull(board, Side.WHITE).verdict();
-    if (white.isWinnable()) {
+    if (white == UnwinnabilityFullVerdict.WINNABLE_HELPMATE
+        || white == UnwinnabilityFullVerdict.WINNABLE_BY_THEOREM) {
       return DeadPositionFullVerdict.ALIVE;
     }
     final UnwinnabilityFullVerdict black = UnwinnableFullAnalyzer.unwinnableFull(board, Side.BLACK).verdict();
-    if (black.isWinnable()) {
+    if (black == UnwinnabilityFullVerdict.WINNABLE_HELPMATE
+        || black == UnwinnabilityFullVerdict.WINNABLE_BY_THEOREM) {
       return DeadPositionFullVerdict.ALIVE;
     }
     if (white == UnwinnabilityFullVerdict.UNWINNABLE && black == UnwinnabilityFullVerdict.UNWINNABLE) {
