@@ -124,6 +124,7 @@ FEN / SAN / LAN serializers use the `to*` idiom:
 Removed from the published jar:
 
 - Deleted unused types `BoardUtility`, `CheckmateOrStalemate`, and `SemiOpenFilesUtility`.
+- Deleted the unused placement-only Zobrist hash — `BitboardPosition.zobristPieces()` / `hashDelta(MoveSpecification, Side)` and the package-private `ZobristKeys`. Built and tested but never wired in: the helpmate transposition table and the repetition check key on the exact, collision-free value records `HelpmateSearchKey` / `DynamicPosition`, and a placement-only hash (no side-to-move / castling / en-passant) had no internal use and could not be safely exposed as a position key.
 - Relocated test-only support out of `main` (public, but used only by the test / oracle layers): `StandardMoveUtility`, `LegalMoveCalculation`, `SquareOccupation`, `IoUtility`, `PseudoLegalMove`.
 
 Boolean predicate methods drop the `calculateIs` / `calculateHas` prefix for the JavaBeans `is` / `has` idiom:
