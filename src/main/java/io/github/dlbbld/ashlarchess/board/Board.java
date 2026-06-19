@@ -23,7 +23,6 @@ import io.github.dlbbld.ashlarchess.board.enums.Square;
 import io.github.dlbbld.ashlarchess.common.Nulls;
 import io.github.dlbbld.ashlarchess.common.constants.ChessConstants;
 import io.github.dlbbld.ashlarchess.common.constants.DynamicPositionConstants;
-import io.github.dlbbld.ashlarchess.common.enums.InsufficientMaterial;
 import io.github.dlbbld.ashlarchess.common.exceptions.ProgrammingMistakeException;
 import io.github.dlbbld.ashlarchess.common.model.ClaimRights;
 import io.github.dlbbld.ashlarchess.common.model.ClaimableMove;
@@ -1047,19 +1046,6 @@ public final class Board {
    */
   public boolean canClaimDrawFor(MoveSpecification move) {
     return canClaimFiftyMoveRuleFor(move) || canClaimThreefoldRepetitionRuleFor(move);
-  }
-
-  public InsufficientMaterial insufficientMaterial() {
-    if (isInsufficientMaterial()) {
-      return InsufficientMaterial.BOTH;
-    }
-    if (isInsufficientMaterial(Side.WHITE)) {
-      return InsufficientMaterial.WHITE_ONLY;
-    }
-    if (isInsufficientMaterial(Side.BLACK)) {
-      return InsufficientMaterial.BLACK_ONLY;
-    }
-    return InsufficientMaterial.NONE;
   }
 
   public UnwinnabilityQuickVerdict unwinnableQuick(Side side) {
