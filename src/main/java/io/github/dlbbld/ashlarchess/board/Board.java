@@ -450,6 +450,35 @@ public final class Board {
         enPassantBit);
   }
 
+  // Computes the canonical SAN of a candidate legal move without mutating the board. Disambiguation uses the
+  // current legal-move set; the check / checkmate suffix is derived from the position after the move - the
+  // checkmate test generates the opponent's replies only when the move gives check.
+  private String sanForCandidate(LegalMove legalMove) {
+    final DynamicPosition current = Nulls.getLast(boardStateList).dynamicPosition();
+    final Side sideToMove = current.sideToMove();
+    final Side opponent = sideToMove.getOppositeSide();
+    final BitboardPosition afterPosition = current.bitboardPosition().afterMove(legalMove.moveSpecification(),
+        sideToMove);
+    final boolean isCheck = afterPosition.isInCheck(opponent);
+    final boolean isCheckmate = isCheck && opponentHasNoReply(afterPosition, opponent, current, legalMove);
+    final SanTerminalMarker sanTerminalMarker = SanTerminalMarkerUtility.calculate(isCheck, isCheckmate);
+    return MoveToSan.toSan(legalMove, currentLegalMoves, sanTerminalMarker);
+  }
+
+  // True iff the opponent has no legal reply in the position after {@code legalMove} - with check, that is mate.
+  private static boolean opponentHasNoReply(BitboardPosition afterPosition, Side opponent,
+      DynamicPosition beforeDynamicPosition, LegalMove legalMove) {
+    final CastlingRightBoth afterCastlingRightBoth = CastlingUtility.calculateCastlingRightBoth(
+        beforeDynamicPosition.castlingRightWhite(), beforeDynamicPosition.castlingRightBlack(), legalMove);
+    final CastlingRight afterCastlingRightOpponent = CastlingUtility.getCastlingRight(afterCastlingRightBoth, opponent);
+    final Square afterEnPassantCaptureTargetSquare = EnPassantCaptureUtility
+        .calculateEnPassantCaptureTargetSquare(legalMove);
+    final long afterEnPassantBit = afterEnPassantCaptureTargetSquare == Square.NONE ? 0L
+        : 1L << afterEnPassantCaptureTargetSquare.ordinal();
+    return BitboardLegalMoveFactory
+        .calculateLegalMoves(afterPosition, opponent, afterCastlingRightOpponent, afterEnPassantBit).isEmpty();
+  }
+
   /**
    * Undoes the most recently played move, restoring the board to the state immediately before that move. Throws if no
    * move has been played from the initial FEN.
@@ -681,13 +710,8 @@ public final class Board {
       if (!accepted) {
         continue;
       }
-      // Capture canonical SAN of the candidate via transient push. Symmetric in shape with the
-      // claim-ahead report builders. For threefold the predicate also pushed-and-popped internally;
-      // this is a second push purely to read the resulting SAN.
-      this.move(spec);
-      final String san = getSan();
-      this.unmove();
-      claimable.add(new ClaimableMove(spec, san));
+      // SAN of the candidate is computed directly from the current position - no transient push/pop.
+      claimable.add(new ClaimableMove(spec, sanForCandidate(legalMove)));
     }
     return new ClaimRights(!claimable.isEmpty(), Nulls.copyOfList(claimable));
   }
@@ -1105,10 +1129,8 @@ public final class Board {
 
   public ImmutableList<String> getLegalMovesSan() {
     final List<String> result = new ArrayList<>();
-    for (final MoveSpecification moveSpecification : getPossibleMoveSpecificationList()) {
-      this.move(moveSpecification);
-      result.add(getSan());
-      this.unmove();
+    for (final LegalMove legalMove : getLegalMoves()) {
+      result.add(sanForCandidate(legalMove));
     }
     return Nulls.copyOfList(result);
   }
