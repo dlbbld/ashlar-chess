@@ -49,8 +49,8 @@ public final class StrictPgnParser {
   // Public entry points
   // -------------------------------------------------------------------------------------------------
 
-  public static PgnGame parseText(String pgn) {
-    return new StrictPgnParser(pgn).parseInternal();
+  public static PgnGame parseText(String pgnText) {
+    return new StrictPgnParser(pgnText).parseInternal();
   }
 
   public static PgnGame parsePath(Path pgnPath) {
@@ -106,9 +106,9 @@ public final class StrictPgnParser {
   /**
    * Like {@link #parseText(String)} but returns a structured result instead of throwing.
    */
-  public static StrictPgnParserValidationResult validateText(String pgn) {
+  public static StrictPgnParserValidationResult validateText(String pgnText) {
     try {
-      parseText(pgn);
+      parseText(pgnText);
       return new StrictPgnParserValidationResult(StrictPgnParserValidationProblem.OK, SanValidationProblem.NONE, "OK");
     } catch (final StrictPgnParserValidationException e) {
       final String message = BasicUtility.getMessage(e);

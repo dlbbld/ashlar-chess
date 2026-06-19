@@ -55,8 +55,8 @@ public final class LenientPgnParser {
   // Public entry points
   // -------------------------------------------------------------------------------------------------
 
-  public static PgnGame parseText(String pgn) {
-    return new LenientPgnParser(pgn).parseInternal();
+  public static PgnGame parseText(String pgnText) {
+    return new LenientPgnParser(pgnText).parseInternal();
   }
 
   public static PgnGame parsePath(Path pgnPath) {
@@ -109,8 +109,8 @@ public final class LenientPgnParser {
    * parsed {@link PgnGame} (on success) and the list of SAN-level deviations the lenient layer forgave during movetext
    * replay.
    */
-  public static LenientPgnParserValidationResult validateText(String pgn) {
-    return runValidation(new LenientPgnParser(pgn));
+  public static LenientPgnParserValidationResult validateText(String pgnText) {
+    return runValidation(new LenientPgnParser(pgnText));
   }
 
   private static LenientPgnParserValidationResult runValidation(LenientPgnParser parser) {
