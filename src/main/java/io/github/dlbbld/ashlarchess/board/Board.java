@@ -113,25 +113,20 @@ import io.github.dlbbld.ashlarchess.unwinnability.UnwinnableQuickAnalyzer;
 public final class Board {
 
   private final Fen initialFen;
-  private final List<LegalMove> performedLegalMoveList;
-  private final List<ImmutableList<LegalMove>> legalMoveListPerMove;
-  private final List<Boolean> isCheckList;
-  private final List<Boolean> isCheckmateList;
-  private final List<Boolean> isStalemateList;
-  private final List<DynamicPosition> dynamicPositionList;
-  private final List<Integer> halfMoveClockList;
-  private final List<Integer> repetitionCountList;
-  private final List<String> sanList;
-  private final List<String> lanList;
-  // moveList intentionally NOT stored: the recorded-move rows are derived on demand by
-  // report.MoveRecords from the other per-move parallel stores (performedLegalMoveList + sanList +
-  // halfMoveClockList + dynamicPositionList + repetitionCountList + initial-FEN fullmove number anchor).
-  // Dropping the stored field eliminates one duplicated mutable list and keeps the recorded-move
-  // type out of Board's state model.
-  private final List<CastlingRightLoss> whiteKingSideLossList;
-  private final List<CastlingRightLoss> whiteQueenSideLossList;
-  private final List<CastlingRightLoss> blackKingSideLossList;
-  private final List<CastlingRightLoss> blackQueenSideLossList;
+  // One BoardState per position the game has passed through, replacing the former ~14 parallel lists.
+  // Entry i is the board's full derived state at the position reached after move i; entry 0 is the initial
+  // position, whose move/san/lan are null (no move produced it). The move-indexed data (move, san, lan)
+  // rides on the position the move produced; the position-indexed data (legal moves, check flags, dynamic
+  // position, halfmove clock, repetition count, castling-loss reasons) is that position's own state. A move
+  // appends one entry; unmove pops one. report.MoveRecords still derives its rows on demand through the
+  // public accessors.
+  private final List<BoardState> boardStateList;
+
+  private record BoardState(@Nullable LegalMove move, @Nullable String san, @Nullable String lan,
+      ImmutableList<LegalMove> legalMoves, boolean isCheck, boolean isCheckmate, boolean isStalemate,
+      DynamicPosition dynamicPosition, int halfMoveClock, int repetitionCount, CastlingRightLoss whiteKingSideLoss,
+      CastlingRightLoss whiteQueenSideLoss, CastlingRightLoss blackKingSideLoss, CastlingRightLoss blackQueenSideLoss) {
+  }
 
   /**
    * Constructs a {@code Board} at the position carried by the given pre-parsed {@link Fen}.
@@ -164,61 +159,41 @@ public final class Board {
             ? initialEnPassantCaptureTargetSquare
             : Square.NONE;
 
-    this.performedLegalMoveList = new ArrayList<>();
-    this.legalMoveListPerMove = new ArrayList<>();
     final ImmutableList<LegalMove> legalMoves = BitboardLegalMoveFactory.calculateLegalMoves(initialBitboardPosition,
         initialSideToMove, initialCastlingRight, initialEnPassantBit);
-    this.legalMoveListPerMove.add(legalMoves);
-
-    this.isCheckList = new ArrayList<>();
     final boolean isCheck = initialBitboardPosition.isInCheck(initialSideToMove);
-    this.isCheckList.add(isCheck);
-
-    this.isCheckmateList = new ArrayList<>();
     final boolean isCheckmate = isCheck && legalMoves.isEmpty();
-    this.isCheckmateList.add(isCheckmate);
-
-    this.isStalemateList = new ArrayList<>();
     final boolean isStalemate = !isCheck && legalMoves.isEmpty();
-    this.isStalemateList.add(isStalemate);
 
-    this.dynamicPositionList = new ArrayList<>();
     // attention - must be after we calculated the legal moves - we need them to check if en passant capture is possible
     // order of instructions dependency!!
     final CastlingRight initialCastlingRightWhite = CastlingUtility.getCastlingRight(initialFenUse, Side.WHITE);
     final CastlingRight initialCastlingRightBlack = CastlingUtility.getCastlingRight(initialFenUse, Side.BLACK);
+    final DynamicPosition initialDynamicPosition;
     if (initialFenUse.equals(FenConstants.FEN_INITIAL)) {
-      this.dynamicPositionList.add(DynamicPositionConstants.INITIAL);
+      initialDynamicPosition = DynamicPositionConstants.INITIAL;
     } else {
-      this.dynamicPositionList.add(new DynamicPosition(initialSideToMove, initialBitboardPosition,
-          initialNormalizedEnPassantCaptureTargetSquare, initialCastlingRightWhite, initialCastlingRightBlack));
+      initialDynamicPosition = new DynamicPosition(initialSideToMove, initialBitboardPosition,
+          initialNormalizedEnPassantCaptureTargetSquare, initialCastlingRightWhite, initialCastlingRightBlack);
     }
-    this.halfMoveClockList = new ArrayList<>();
-    this.halfMoveClockList.add(initialFenUse.halfMoveClock());
 
-    this.repetitionCountList = new ArrayList<>();
-    this.repetitionCountList.add(1);
-
-    this.sanList = new ArrayList<>();
-    // moveList intentionally not initialized - derived on demand from the parallel stores.
-    this.lanList = new ArrayList<>();
-
-    this.whiteKingSideLossList = new ArrayList<>();
-    this.whiteQueenSideLossList = new ArrayList<>();
-    this.blackKingSideLossList = new ArrayList<>();
-    this.blackQueenSideLossList = new ArrayList<>();
-    this.whiteKingSideLossList.add(initialCastlingRightWhite == CastlingRight.KING_AND_QUEEN_SIDE
+    final CastlingRightLoss initialWhiteKingSideLoss = initialCastlingRightWhite == CastlingRight.KING_AND_QUEEN_SIDE
         || initialCastlingRightWhite == CastlingRight.KING_SIDE ? CastlingRightLoss.NOT_LOST
-            : CastlingRightLoss.UNKNOWN_FEN_IMPORT);
-    this.whiteQueenSideLossList.add(initialCastlingRightWhite == CastlingRight.KING_AND_QUEEN_SIDE
+            : CastlingRightLoss.UNKNOWN_FEN_IMPORT;
+    final CastlingRightLoss initialWhiteQueenSideLoss = initialCastlingRightWhite == CastlingRight.KING_AND_QUEEN_SIDE
         || initialCastlingRightWhite == CastlingRight.QUEEN_SIDE ? CastlingRightLoss.NOT_LOST
-            : CastlingRightLoss.UNKNOWN_FEN_IMPORT);
-    this.blackKingSideLossList.add(initialCastlingRightBlack == CastlingRight.KING_AND_QUEEN_SIDE
+            : CastlingRightLoss.UNKNOWN_FEN_IMPORT;
+    final CastlingRightLoss initialBlackKingSideLoss = initialCastlingRightBlack == CastlingRight.KING_AND_QUEEN_SIDE
         || initialCastlingRightBlack == CastlingRight.KING_SIDE ? CastlingRightLoss.NOT_LOST
-            : CastlingRightLoss.UNKNOWN_FEN_IMPORT);
-    this.blackQueenSideLossList.add(initialCastlingRightBlack == CastlingRight.KING_AND_QUEEN_SIDE
+            : CastlingRightLoss.UNKNOWN_FEN_IMPORT;
+    final CastlingRightLoss initialBlackQueenSideLoss = initialCastlingRightBlack == CastlingRight.KING_AND_QUEEN_SIDE
         || initialCastlingRightBlack == CastlingRight.QUEEN_SIDE ? CastlingRightLoss.NOT_LOST
-            : CastlingRightLoss.UNKNOWN_FEN_IMPORT);
+            : CastlingRightLoss.UNKNOWN_FEN_IMPORT;
+
+    this.boardStateList = new ArrayList<>();
+    this.boardStateList.add(new BoardState(null, null, null, legalMoves, isCheck, isCheckmate, isStalemate,
+        initialDynamicPosition, initialFenUse.halfMoveClock(), 1, initialWhiteKingSideLoss, initialWhiteQueenSideLoss,
+        initialBlackKingSideLoss, initialBlackQueenSideLoss));
   }
 
   /**
@@ -267,7 +242,7 @@ public final class Board {
   }
 
   public boolean isFirstMove() {
-    return this.performedLegalMoveList.isEmpty();
+    return boardStateList.size() == 1;
   }
 
   /**
@@ -342,11 +317,12 @@ public final class Board {
 
   private void performMoveWithoutValidation(MoveSpecification moveSpecification) throws InvalidMoveException {
 
-    final CastlingRight beforeCastlingRightWhite = Nulls.getLast(dynamicPositionList).castlingRightWhite();
-    final CastlingRight beforeCastlingRightBlack = Nulls.getLast(dynamicPositionList).castlingRightBlack();
+    final BoardState beforeState = Nulls.getLast(boardStateList);
+    final CastlingRight beforeCastlingRightWhite = beforeState.dynamicPosition().castlingRightWhite();
+    final CastlingRight beforeCastlingRightBlack = beforeState.dynamicPosition().castlingRightBlack();
 
     final Side sideToMove = this.getSideToMove();
-    final BitboardPosition beforeBitboardPosition = Nulls.getLast(dynamicPositionList).bitboardPosition();
+    final BitboardPosition beforeBitboardPosition = beforeState.dynamicPosition().bitboardPosition();
     final LegalMove moveToPerform = BitboardLegalMoveFactory.toLegalMove(beforeBitboardPosition, moveSpecification,
         sideToMove);
 
@@ -365,58 +341,92 @@ public final class Board {
         afterEnPassantCaptureTargetSquare, afterSideToMove, afterBitboardPosition) ? afterEnPassantCaptureTargetSquare
             : Square.NONE;
 
-    // update castling loss reasons
-    this.whiteKingSideLossList.add(CastlingUtility.calculateCastlingRightLoss(moveToPerform,
-        Nulls.getLast(whiteKingSideLossList), Side.WHITE, CastlingMove.KING_SIDE));
-    this.whiteQueenSideLossList.add(CastlingUtility.calculateCastlingRightLoss(moveToPerform,
-        Nulls.getLast(whiteQueenSideLossList), Side.WHITE, CastlingMove.QUEEN_SIDE));
-    this.blackKingSideLossList.add(CastlingUtility.calculateCastlingRightLoss(moveToPerform,
-        Nulls.getLast(blackKingSideLossList), Side.BLACK, CastlingMove.KING_SIDE));
-    this.blackQueenSideLossList.add(CastlingUtility.calculateCastlingRightLoss(moveToPerform,
-        Nulls.getLast(blackQueenSideLossList), Side.BLACK, CastlingMove.QUEEN_SIDE));
-
-    // now changing board class state, so performing the move!
-    this.performedLegalMoveList.add(moveToPerform);
+    // castling loss reasons, derived from the previous position's reasons
+    final CastlingRightLoss whiteKingSideLoss = CastlingUtility.calculateCastlingRightLoss(moveToPerform,
+        beforeState.whiteKingSideLoss(), Side.WHITE, CastlingMove.KING_SIDE);
+    final CastlingRightLoss whiteQueenSideLoss = CastlingUtility.calculateCastlingRightLoss(moveToPerform,
+        beforeState.whiteQueenSideLoss(), Side.WHITE, CastlingMove.QUEEN_SIDE);
+    final CastlingRightLoss blackKingSideLoss = CastlingUtility.calculateCastlingRightLoss(moveToPerform,
+        beforeState.blackKingSideLoss(), Side.BLACK, CastlingMove.KING_SIDE);
+    final CastlingRightLoss blackQueenSideLoss = CastlingUtility.calculateCastlingRightLoss(moveToPerform,
+        beforeState.blackQueenSideLoss(), Side.BLACK, CastlingMove.QUEEN_SIDE);
 
     final long afterEnPassantBit = afterEnPassantCaptureTargetSquare == Square.NONE ? 0L
         : 1L << afterEnPassantCaptureTargetSquare.ordinal();
 
-    // now we have a depencency on instruction execution: the move must be performed before calling the legal moves
-    final ImmutableList<LegalMove> legalMovesAfterMove = BitboardLegalMoveFactory
-        .calculateLegalMoves(afterBitboardPosition, afterSideToMove, afterCastlingRightSideToMove, afterEnPassantBit);
-    this.legalMoveListPerMove.add(legalMovesAfterMove);
+    final ImmutableList<LegalMove> legalMovesAfterMove = BitboardLegalMoveFactory.calculateLegalMoves(
+        afterBitboardPosition, afterSideToMove, afterCastlingRightSideToMove, afterEnPassantBit);
 
     final boolean isCheck = afterBitboardPosition.isInCheck(afterSideToMove);
-    this.isCheckList.add(isCheck);
-
     final boolean isCheckmate = isCheck && legalMovesAfterMove.isEmpty();
-    this.isCheckmateList.add(isCheckmate);
-
     final boolean isStalemate = !isCheck && legalMovesAfterMove.isEmpty();
-    this.isStalemateList.add(isStalemate);
 
     final DynamicPosition newDynamicPosition = new DynamicPosition(afterSideToMove, afterBitboardPosition,
         afterNormalizedEnPassantCaptureTargetSquare, afterCastlingRightBoth.castlingRightWhite(),
         afterCastlingRightBoth.castlingRightBlack());
-    this.dynamicPositionList.add(newDynamicPosition);
 
-    // order of instructions dependency!! - must be after adding the move
-    final int lastHalfMoveClock = Nulls.getLast(halfMoveClockList);
-    this.halfMoveClockList.add(calculateNewHalfMoveClock(lastHalfMoveClock));
+    final int newHalfMoveClock = calculateNewHalfMoveClock(moveToPerform, beforeState.halfMoveClock());
 
-    // timely dependency - dynamic position list must be updated
-    final int newRepetitionCount = RepetitionUtility.calculateCountRepetition(performedLegalMoveList,
-        dynamicPositionList, newDynamicPosition);
-    this.repetitionCountList.add(newRepetitionCount);
+    // repetition needs the played-move list (N) and the position list (N+1), both including the new entry
+    final int newRepetitionCount = RepetitionUtility.calculateCountRepetition(collectPerformedMoves(moveToPerform),
+        collectDynamicPositions(newDynamicPosition), newDynamicPosition);
 
-    final ImmutableList<LegalMove> legalMovesBeforeLastMove = Nulls.get(legalMoveListPerMove,
-        legalMoveListPerMove.size() - 2);
-
+    // SAN disambiguation uses the legal moves of the position the move is played FROM (the current last state)
     final SanTerminalMarker sanTerminalMarker = SanTerminalMarkerUtility.calculate(isCheck, isCheckmate);
+    final String san = MoveToSan.toSan(moveToPerform, beforeState.legalMoves(), sanTerminalMarker);
+    final String lan = MoveToLan.toLan(moveToPerform, sanTerminalMarker);
 
-    this.sanList.add(MoveToSan.toSan(moveToPerform, legalMovesBeforeLastMove, sanTerminalMarker));
-    this.lanList.add(MoveToLan.toLan(moveToPerform, sanTerminalMarker));
+    // now changing board class state, so performing the move!
+    this.boardStateList.add(new BoardState(moveToPerform, san, lan, legalMovesAfterMove, isCheck, isCheckmate,
+        isStalemate, newDynamicPosition, newHalfMoveClock, newRepetitionCount, whiteKingSideLoss, whiteQueenSideLoss,
+        blackKingSideLoss, blackQueenSideLoss));
+  }
 
+  // The move that reached the position at {@code positionIndex} (>= 1); never the initial position (index 0).
+  private LegalMove moveAt(int positionIndex) {
+    final LegalMove move = Nulls.get(boardStateList, positionIndex).move();
+    if (move == null) {
+      throw new ProgrammingMistakeException("the board state at index " + positionIndex + " carries no move");
+    }
+    return move;
+  }
+
+  // The SAN of the move that reached the position at {@code positionIndex} (>= 1).
+  private String sanAt(int positionIndex) {
+    final String san = Nulls.get(boardStateList, positionIndex).san();
+    if (san == null) {
+      throw new ProgrammingMistakeException("the board state at index " + positionIndex + " carries no SAN");
+    }
+    return san;
+  }
+
+  // The LAN of the move that reached the position at {@code positionIndex} (>= 1).
+  private String lanAt(int positionIndex) {
+    final String lan = Nulls.get(boardStateList, positionIndex).lan();
+    if (lan == null) {
+      throw new ProgrammingMistakeException("the board state at index " + positionIndex + " carries no LAN");
+    }
+    return lan;
+  }
+
+  // Played moves so far (N entries, indices 1..size-1) plus the move about to be appended.
+  private List<LegalMove> collectPerformedMoves(LegalMove nextMove) {
+    final List<LegalMove> moves = new ArrayList<>();
+    for (int i = 1; i < boardStateList.size(); i++) {
+      moves.add(moveAt(i));
+    }
+    moves.add(nextMove);
+    return moves;
+  }
+
+  // Dynamic positions of every state so far (N+1 entries) plus the position about to be appended.
+  private List<DynamicPosition> collectDynamicPositions(DynamicPosition nextDynamicPosition) {
+    final List<DynamicPosition> positions = new ArrayList<>();
+    for (final BoardState state : boardStateList) {
+      positions.add(state.dynamicPosition());
+    }
+    positions.add(nextDynamicPosition);
+    return positions;
   }
 
   /**
@@ -428,42 +438,24 @@ public final class Board {
       throw new ProgrammingMistakeException("Undo move requested but no move to undo");
     }
 
-    this.performedLegalMoveList.remove(performedLegalMoveList.size() - 1);
-    this.legalMoveListPerMove.remove(legalMoveListPerMove.size() - 1);
-
-    this.isCheckList.remove(isCheckList.size() - 1);
-    this.isCheckmateList.remove(isCheckmateList.size() - 1);
-    this.isStalemateList.remove(isStalemateList.size() - 1);
-
-    this.dynamicPositionList.remove(dynamicPositionList.size() - 1);
-    this.halfMoveClockList.remove(halfMoveClockList.size() - 1);
-    this.repetitionCountList.remove(repetitionCountList.size() - 1);
-
-    this.sanList.remove(sanList.size() - 1);
-    this.lanList.remove(lanList.size() - 1);
-
-    this.whiteKingSideLossList.remove(whiteKingSideLossList.size() - 1);
-    this.whiteQueenSideLossList.remove(whiteQueenSideLossList.size() - 1);
-    this.blackKingSideLossList.remove(blackKingSideLossList.size() - 1);
-    this.blackQueenSideLossList.remove(blackQueenSideLossList.size() - 1);
-
+    this.boardStateList.remove(boardStateList.size() - 1);
   }
 
   public LegalMove getLastMove() {
     if (isFirstMove()) {
       throw new IllegalArgumentException("There is no last move");
     }
-    return Nulls.getLast(this.performedLegalMoveList);
+    return moveAt(boardStateList.size() - 1);
   }
 
   public ImmutableList<LegalMove> getLegalMoves() {
-    return Nulls.getLast(legalMoveListPerMove);
+    return Nulls.getLast(boardStateList).legalMoves();
   }
 
   public ImmutableList<MoveSpecification> getPerformedMoveSpecificationList() {
     final List<MoveSpecification> moveSpecificationList = new ArrayList<>();
-    for (final LegalMove legalMove : this.performedLegalMoveList) {
-      moveSpecificationList.add(legalMove.moveSpecification());
+    for (int i = 1; i < boardStateList.size(); i++) {
+      moveSpecificationList.add(moveAt(i).moveSpecification());
     }
     return Nulls.copyOfList(moveSpecificationList);
   }
@@ -477,17 +469,17 @@ public final class Board {
   }
 
   public boolean isCheck() {
-    return Nulls.getLast(isCheckList);
+    return Nulls.getLast(boardStateList).isCheck();
   }
 
   /** True iff the side to move is in check and has no legal move (FIDE 5.1.1). */
   public boolean isCheckmate() {
-    return Nulls.getLast(isCheckmateList);
+    return Nulls.getLast(boardStateList).isCheckmate();
   }
 
   /** True iff the side to move is not in check but has no legal move (FIDE 5.2.1). */
   public boolean isStalemate() {
-    return Nulls.getLast(isStalemateList);
+    return Nulls.getLast(boardStateList).isStalemate();
   }
 
   /**
@@ -679,19 +671,18 @@ public final class Board {
   }
 
   public int getHalfMoveClock() {
-    return Nulls.getLast(halfMoveClockList);
+    return Nulls.getLast(boardStateList).halfMoveClock();
   }
 
-  private int calculateNewHalfMoveClock(int lastHalfMoveClock) {
-    final LegalMove legalMove = getLastMove();
-    if (BasicChessUtility.isResetHalfMoveClock(legalMove)) {
+  private static int calculateNewHalfMoveClock(LegalMove move, int lastHalfMoveClock) {
+    if (BasicChessUtility.isResetHalfMoveClock(move)) {
       return 0;
     }
     return lastHalfMoveClock + 1;
   }
 
   public int getRepetitionCount() {
-    return Nulls.getLast(repetitionCountList);
+    return Nulls.getLast(boardStateList).repetitionCount();
   }
 
   public boolean isInsufficientMaterial() {
@@ -830,21 +821,25 @@ public final class Board {
   }
 
   public ImmutableList<String> getSanList() {
-    return Nulls.copyOfList(sanList);
+    final List<String> result = new ArrayList<>();
+    for (int i = 1; i < boardStateList.size(); i++) {
+      result.add(sanAt(i));
+    }
+    return Nulls.copyOfList(result);
   }
 
   public String getSan() {
     if (isFirstMove()) {
       throw new IllegalStateException("There is no last move");
     }
-    return Nulls.getLast(sanList);
+    return sanAt(boardStateList.size() - 1);
   }
 
   public String getLan() {
     if (isFirstMove()) {
       throw new IllegalStateException("There is no last move");
     }
-    return Nulls.getLast(lanList);
+    return lanAt(boardStateList.size() - 1);
   }
 
   public Side getSideToMove() {
@@ -857,23 +852,24 @@ public final class Board {
 
   /**
    * Current position as a {@link BitboardPosition}. Carried directly on every {@link DynamicPosition} in
-   * {@link #dynamicPositionList} (appended on every {@link #move}, popped on every {@link #unmove}). O(1) per call. The
+   * the last {@link #boardStateList} entry (appended on every {@link #move}, popped on every {@link #unmove}). O(1) per
+   * call. The
    * bitboard is the single source of truth for piece placement on the board; the StaticPosition reference layer lives
    * in {@code src/test/} as the permanent differential-test oracle.
    */
   public BitboardPosition getBitboardPosition() {
-    return Nulls.getLast(dynamicPositionList).bitboardPosition();
+    return Nulls.getLast(boardStateList).dynamicPosition().bitboardPosition();
   }
 
   BitboardPosition getBitboardPositionBeforeLastMove() {
     if (isFirstMove()) {
       throw new ProgrammingMistakeException("The method cannot be called if no move was yet made");
     }
-    return Nulls.get(dynamicPositionList, this.dynamicPositionList.size() - 2).bitboardPosition();
+    return Nulls.get(boardStateList, boardStateList.size() - 2).dynamicPosition().bitboardPosition();
   }
 
   public boolean isEnPassantCapturePossible() {
-    return Nulls.getLast(dynamicPositionList).enPassantCaptureTargetSquare() != Square.NONE;
+    return Nulls.getLast(boardStateList).dynamicPosition().enPassantCaptureTargetSquare() != Square.NONE;
   }
 
   private static boolean calculateIsEnPassantCapturePossible(Square enPassantCaptureTargetSquare, Side sideToMove,
@@ -914,19 +910,23 @@ public final class Board {
   }
 
   public int getPerformedMoveCount() {
-    return performedLegalMoveList.size();
+    return boardStateList.size() - 1;
   }
 
   ImmutableList<DynamicPosition> getDynamicPositionList() {
-    return Nulls.copyOfList(dynamicPositionList);
+    final List<DynamicPosition> result = new ArrayList<>();
+    for (final BoardState state : boardStateList) {
+      result.add(state.dynamicPosition());
+    }
+    return Nulls.copyOfList(result);
   }
 
   public DynamicPosition getInitialDynamicPosition() {
-    return Nulls.getFirst(dynamicPositionList);
+    return Nulls.getFirst(boardStateList).dynamicPosition();
   }
 
   public DynamicPosition getDynamicPosition() {
-    return Nulls.getLast(dynamicPositionList);
+    return Nulls.getLast(boardStateList).dynamicPosition();
   }
 
   public ImmutableList<MoveSpecification> getPossibleMoveSpecificationList() {
@@ -958,16 +958,20 @@ public final class Board {
   }
 
   public ImmutableList<LegalMove> getPerformedLegalMoveList() {
-    return Nulls.copyOfList(performedLegalMoveList);
+    final List<LegalMove> result = new ArrayList<>();
+    for (int i = 1; i < boardStateList.size(); i++) {
+      result.add(moveAt(i));
+    }
+    return Nulls.copyOfList(result);
   }
 
   @Override
   public int hashCode() {
-    // moveList intentionally absent - it's now a derived view of the other per-move lists, so it
-    // carries no information not already covered by sanList + dynamicPositionList +
-    // halfMoveClockList + repetitionCountList + performedLegalMoveList + initialFen.
-    return Objects.hash(dynamicPositionList, halfMoveClockList, initialFen, isCheckList, isCheckmateList,
-        isStalemateList, lanList, legalMoveListPerMove, performedLegalMoveList, repetitionCountList, sanList);
+    // The per-position BoardState records carry all game-history state. Castling-loss reasons are now part
+    // of the comparison via BoardState (the previous equals/hashCode excluded them); the equality relation
+    // is unchanged, because castling-loss is a deterministic function of the initial FEN and the move
+    // sequence - both already compared - so only the hash value differs.
+    return Objects.hash(boardStateList, initialFen);
   }
 
   @Override
@@ -979,29 +983,23 @@ public final class Board {
       return false;
     }
     final Board other = (Board) obj;
-    return Objects.equals(dynamicPositionList, other.dynamicPositionList)
-        && Objects.equals(halfMoveClockList, other.halfMoveClockList) && Objects.equals(initialFen, other.initialFen)
-        && Objects.equals(isCheckList, other.isCheckList) && Objects.equals(isCheckmateList, other.isCheckmateList)
-        && Objects.equals(isStalemateList, other.isStalemateList) && Objects.equals(lanList, other.lanList)
-        && Objects.equals(legalMoveListPerMove, other.legalMoveListPerMove)
-        && Objects.equals(performedLegalMoveList, other.performedLegalMoveList)
-        && Objects.equals(repetitionCountList, other.repetitionCountList) && Objects.equals(sanList, other.sanList);
+    return Objects.equals(initialFen, other.initialFen) && Objects.equals(boardStateList, other.boardStateList);
   }
 
   public CastlingRightLoss getWhiteKingSideLoss() {
-    return Nulls.getLast(whiteKingSideLossList);
+    return Nulls.getLast(boardStateList).whiteKingSideLoss();
   }
 
   public CastlingRightLoss getWhiteQueenSideLoss() {
-    return Nulls.getLast(whiteQueenSideLossList);
+    return Nulls.getLast(boardStateList).whiteQueenSideLoss();
   }
 
   public CastlingRightLoss getBlackKingSideLoss() {
-    return Nulls.getLast(blackKingSideLossList);
+    return Nulls.getLast(boardStateList).blackKingSideLoss();
   }
 
   public CastlingRightLoss getBlackQueenSideLoss() {
-    return Nulls.getLast(blackQueenSideLossList);
+    return Nulls.getLast(boardStateList).blackQueenSideLoss();
   }
 
   public CastlingRightLoss getCastlingRightLoss(Side side, CastlingMove castlingSide) {
