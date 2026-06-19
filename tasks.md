@@ -28,6 +28,17 @@ Rule to adopt: **package by feature/domain first; package by kind only for genui
 
 A large, purely mechanical, compiler-checked FQN reset with no behavior change, and a prerequisite for a clean `module-info`: sensible `exports` / `opens` and package-private boundaries are impossible while features are split across two `common.*` junk drawers. (The FEN-local slice — folding the FEN validation problem enum into `fen` and dropping the single-file `fen.constants` — was carved out for 19.0.0; this is the global reset across all domains.)
 
+### Position-as-value ergonomics: `mirror()` and an immutable `play(move)` (audit M3)
+
+Two related "treat a position as an immutable value" capabilities that Class-A libraries (python-chess, shakmaty, scalachess) expose and ashlar does not surface cleanly:
+
+- **`mirror()` / flip / transform** — return a new position that is the original vertically flipped *and* colour-swapped (the same position from the other side; turn, castling, en-passant all mirrored). Valuable for symmetry tests (`f(mirror(P))` must equal the mirror of `f(P)` — catches colour-handedness bugs), dataset augmentation, and halving case analysis. ashlar has none at board level today, only `SquareUtility.flip(Square)`.
+- **Clean immutable `play(move) → position`** — the next position as a fresh value, without mutating a `Board` or carrying its history. The machinery already exists immutably as `BitboardPosition.afterMove(...)`; it is just not surfaced as a clean public position API (today the only path is `copyCurrentPositionWithoutHistory()` then `move()`).
+
+Low–medium effort (the immutable apply-move exists; mirror is a straightforward bitboard transform — vertical flip = byte-reverse the 12 longs, colour swap = swap the white/black bitboards). It belongs here because it is **additive public API**, to be designed together with the position-API boundary (what the clean public position type is once the bitboard layer is internalised) and the still-open "light-analysis toolkit?" direction — `play()` / `mirror()` are most valuable to analysis / ML users.
+
+The one slice worth doing regardless of that direction, with no public-API commitment: an internal **mirror used by the test suite for symmetry checks** (e.g. unwinnability of `P` for a side ⟺ unwinnability of `mirror(P)` for the other) — pure added test coverage.
+
 ---
 
 ## Backlog — captured but unscheduled
