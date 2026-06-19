@@ -29,10 +29,10 @@ import io.github.dlbbld.ashlarchess.fen.model.Fen;
  * <p>
  * Two entry points:
  * <ul>
- * <li>{@link #parseText(String)} — returns the parsed {@link Fen} on success, throws
+ * <li>{@link #parse(String)} — returns the parsed {@link Fen} on success, throws
  * {@link LenientFenParserValidationException} on failure (with the accumulated forgiven items carried on the exception
  * so callers can still see diagnostics).</li>
- * <li>{@link #validateText(String)} — returns a {@link LenientFenParserValidationResult} that never throws; carries the
+ * <li>{@link #validate(String)} — returns a {@link LenientFenParserValidationResult} that never throws; carries the
  * parsed {@code Fen} (or {@code null} on failure), the typed problem categorisation, and the forgiven-items list.</li>
  * </ul>
  */
@@ -51,16 +51,16 @@ public final class LenientFenParser {
    * input cannot be recovered or fails the strict semantic checks; the exception carries the typed problem plus the
    * forgiven items accumulated before the failure point.
    */
-  public static Fen parseText(String fen) {
+  public static Fen parse(String fen) {
     final List<ForgivenFenItem> accumulator = new ArrayList<>();
     return parseInternal(fen, accumulator);
   }
 
   /**
-   * Like {@link #parseText(String)} but returns a structured result instead of throwing. The result also carries the
+   * Like {@link #parse(String)} but returns a structured result instead of throwing. The result also carries the
    * parsed {@link Fen} (on success) and the list of forgiven items the lenient layer applied during normalisation.
    */
-  public static LenientFenParserValidationResult validateText(String fen) {
+  public static LenientFenParserValidationResult validate(String fen) {
     final List<ForgivenFenItem> accumulator = new ArrayList<>();
     try {
       final Fen parsedFen = parseInternal(fen, accumulator);

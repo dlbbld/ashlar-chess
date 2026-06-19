@@ -10,7 +10,7 @@
  * A {@link io.github.dlbbld.ashlarchess.board.Board} represents a <em>game</em> - a position together with its move
  * history - not merely a position. The move-validation pipeline does <em>not</em> gate on game-end states: neither
  * {@link io.github.dlbbld.ashlarchess.board.ValidateNewMove#validateNewMove} (MoveSpecification pipeline) nor
- * {@code io.github.dlbbld.ashlarchess.san.StrictSanParser#parseText} (SAN pipeline) consults any termination predicate.
+ * {@code io.github.dlbbld.ashlarchess.san.StrictSanParser#parse} (SAN pipeline) consults any termination predicate.
  * At checkmate and stalemate the natural barrier is the empty legal-move set: any attempted move fails through ordinary
  * legality (own-piece occupation, king-into-check, etc.). At mutual insufficient material, fivefold repetition, the
  * 75-move rule, and analyzer-driven dead positions, legal moves still exist and the pipeline accepts them.

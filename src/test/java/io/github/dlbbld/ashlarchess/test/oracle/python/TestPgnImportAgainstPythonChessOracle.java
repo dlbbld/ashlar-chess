@@ -118,7 +118,7 @@ class TestPgnImportAgainstPythonChessOracle {
       final Path folderPath = bucket.getFolderPath();
       for (final OracleRecord record : records) {
         totalFixtures++;
-        final PgnGame pgnGame = StrictPgnParser.parse(folderPath, record.pgn());
+        final PgnGame pgnGame = StrictPgnParser.parsePath(folderPath, record.pgn());
 
         try {
           assertEquals(record.startFen(), pgnGame.startFen().fen(),

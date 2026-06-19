@@ -43,8 +43,8 @@ class TestReadMe {
     // through strict parsing is the demonstration this test exists for, so the producer side asks for archival.
     PgnWriter.writePgn(pgnGame, filePath, WriteMode.ARCHIVAL);
 
-    final Board lenientBoard = PgnUtility.calculateBoard(LenientPgnParser.parse(filePath));
-    final Board strictBoard = PgnUtility.calculateBoard(StrictPgnParser.parse(filePath));
+    final Board lenientBoard = PgnUtility.calculateBoard(LenientPgnParser.parsePath(filePath));
+    final Board strictBoard = PgnUtility.calculateBoard(StrictPgnParser.parsePath(filePath));
 
     assertEquals(sourceBoard.getFen(), lenientBoard.getFen());
     assertEquals(sourceBoard.getFen(), strictBoard.getFen());

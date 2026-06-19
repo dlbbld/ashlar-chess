@@ -140,7 +140,7 @@ class TestSanValidateAgainstLegalMovesCastling {
       CastlingRightLoss expectedLoss) {
     boolean isException;
     try {
-      StrictSanParser.parseText(san, board);
+      StrictSanParser.parse(san, board);
       isException = false;
     } catch (final SanValidationException e) {
       isException = true;

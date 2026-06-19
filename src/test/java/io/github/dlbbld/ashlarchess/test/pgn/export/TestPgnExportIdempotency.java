@@ -42,7 +42,7 @@ class TestPgnExportIdempotency {
             pgnName);
 
         final List<String> exportedLines = PgnCreate.toPgnLines(importedPgn);
-        final PgnGame exportedLinesImportedPgn = LenientPgnParser.parse(exportedLines);
+        final PgnGame exportedLinesImportedPgn = LenientPgnParser.parseLines(exportedLines);
 
         assertEquals(importedPgn, exportedLinesImportedPgn);
 

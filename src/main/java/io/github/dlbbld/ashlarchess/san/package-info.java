@@ -10,9 +10,9 @@
  * <p>
  * Two parser entry points sit on top of a shared validation core:
  * <ul>
- * <li>{@link io.github.dlbbld.ashlarchess.san.StrictSanParser#parseText(String, io.github.dlbbld.ashlarchess.board.Board)}
+ * <li>{@link io.github.dlbbld.ashlarchess.san.StrictSanParser#parse(String, io.github.dlbbld.ashlarchess.board.Board)}
  * - canonical SAN only. Reached from {@link io.github.dlbbld.ashlarchess.board.Board#moveStrict(String)}.
- * <li>{@link io.github.dlbbld.ashlarchess.san.LenientSanParser#parseText(String, io.github.dlbbld.ashlarchess.board.Board)}
+ * <li>{@link io.github.dlbbld.ashlarchess.san.LenientSanParser#parse(String, io.github.dlbbld.ashlarchess.board.Board)}
  * - accepts a defined set of forgivable deviations from canonical SAN. Reached from
  * {@link io.github.dlbbld.ashlarchess.board.Board#moveLenient(String)}. See {@code specification.md} section 3.3.1 for
  * the taxonomy.

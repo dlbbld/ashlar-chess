@@ -829,7 +829,7 @@ class TestSanValidateAgainstLegalMoves {
   private static void checkException(Board board, String san, SanValidationProblem expectedValidation) {
     boolean isException;
     try {
-      StrictSanParser.parseText(san, board);
+      StrictSanParser.parse(san, board);
       isException = false;
     } catch (final SanValidationException e) {
       isException = true;

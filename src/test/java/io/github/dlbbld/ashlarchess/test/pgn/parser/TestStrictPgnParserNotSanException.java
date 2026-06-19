@@ -94,7 +94,7 @@ class TestStrictPgnParserNotSanException {
   private static void checkException(String pgnName, StrictPgnParserValidationProblem expected) {
     boolean isException = false;
     try {
-      StrictPgnParser.parse(PGN_TEST_FOLDER_PATH, pgnName);
+      StrictPgnParser.parsePath(PGN_TEST_FOLDER_PATH, pgnName);
     } catch (final StrictPgnParserValidationException e) {
       isException = true;
       assertEquals(expected, e.getStrictPgnParserValidationProblem());

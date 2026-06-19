@@ -35,7 +35,7 @@ class TestStrictPgnParserSanException {
   private static void checkException(String pgnName, SanValidationProblem expected) {
     boolean isException = false;
     try {
-      StrictPgnParser.parse(PGN_TEST_FOLDER_PATH, pgnName);
+      StrictPgnParser.parsePath(PGN_TEST_FOLDER_PATH, pgnName);
     } catch (final StrictPgnParserValidationException e) {
       isException = true;
       assertEquals(StrictPgnParserValidationProblem.SAN, e.getStrictPgnParserValidationProblem());

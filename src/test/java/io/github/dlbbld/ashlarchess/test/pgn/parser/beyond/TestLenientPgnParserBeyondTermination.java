@@ -73,11 +73,11 @@ class TestLenientPgnParserBeyondTermination {
   }
 
   private static void assertRejectedNotViaGameEnded(String pgnName) {
-    assertThrows(LenientPgnParserValidationException.class, () -> LenientPgnParser.parse(BEYOND_FOLDER, pgnName));
+    assertThrows(LenientPgnParserValidationException.class, () -> LenientPgnParser.parsePath(BEYOND_FOLDER, pgnName));
   }
 
   private static void assertAccepted(String pgnName) {
-    assertDoesNotThrow(() -> LenientPgnParser.parse(BEYOND_FOLDER, pgnName),
+    assertDoesNotThrow(() -> LenientPgnParser.parsePath(BEYOND_FOLDER, pgnName),
         "insufficient material is queryable only; the parser must replay the full game");
   }
 }

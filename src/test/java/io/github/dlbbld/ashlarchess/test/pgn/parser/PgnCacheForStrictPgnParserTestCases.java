@@ -36,7 +36,7 @@ public class PgnCacheForStrictPgnParserTestCases {
     }
 
     // Not in cache; read it from disk and store
-    final PgnGame pgnGame = StrictPgnParser.parse(pgnFolderPath, pgnName);
+    final PgnGame pgnGame = StrictPgnParser.parsePath(pgnFolderPath, pgnName);
     PGN_CACHE.put(key, pgnGame);
 
     return pgnGame;

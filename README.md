@@ -577,7 +577,7 @@ The validation for 2. Nf4 failed. Reason: The lenient SAN parser could not parse
 #### File parsing
 
 ```java
-final PgnGame pgnGame = LenientPgnParser.parse("C:\\temp\\myFile.pgn");
+final PgnGame pgnGame = LenientPgnParser.parsePath("C:\\temp\\myFile.pgn");
 final Board board = PgnUtility.calculateBoard(pgnGame);
 System.out.println(board.isCheckmate());
 ```
@@ -652,7 +652,7 @@ The Result tag is required. PGN spec section 8.1.1 archival storage requires the
 #### File parsing
 
 ```java
-final PgnGame pgnGame = StrictPgnParser.parse("C:\\temp\\myFile.pgn");
+final PgnGame pgnGame = StrictPgnParser.parsePath("C:\\temp\\myFile.pgn");
 final Board board = PgnUtility.calculateBoard(pgnGame);
 System.out.println(board.isThreefoldRepetition());
 ```
@@ -753,7 +753,7 @@ The movetext is invalid because a SAN contains an invalid character of "Y".
 #### File validation
 
 ```java
-final LenientPgnParserValidationResult result = LenientPgnParser.validate("C:\\temp\\myFile.pgn");
+final LenientPgnParserValidationResult result = LenientPgnParser.validatePath("C:\\temp\\myFile.pgn");
 System.out.println(result.isValid());
 ```
 
@@ -809,7 +809,7 @@ The movetext numbering does not continue with "3." as expected.
 #### File validation
 
 ```java
-final StrictPgnParserValidationResult result = StrictPgnParser.validate("C:\\temp\\myFile.pgn");
+final StrictPgnParserValidationResult result = StrictPgnParser.validatePath("C:\\temp\\myFile.pgn");
 System.out.println(result.isValid());
 ```
 

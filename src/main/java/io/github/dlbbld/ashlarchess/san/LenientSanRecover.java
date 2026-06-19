@@ -46,7 +46,7 @@ final class LenientSanRecover {
     String current = candidate;
     for (int i = 0; i < MAX_ITERATIONS; i++) {
       try {
-        return StrictSanParser.parseText(current, board).moveSpecification();
+        return StrictSanParser.parse(current, board).moveSpecification();
       } catch (final SanValidationException e) {
         final SanValidationProblem strictCode = e.getSanValidationProblem();
         final LenientSanValidationProblem lenientCode = mapToLenientCode(strictCode);

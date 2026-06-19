@@ -29,7 +29,7 @@ public final class PgnUtility {
   }
 
   public static Board calculateBoard(Path folderPath, String pgnName) {
-    final PgnGame pgnGame = LenientPgnParser.parse(folderPath, pgnName);
+    final PgnGame pgnGame = LenientPgnParser.parsePath(folderPath, pgnName);
     return calculateBoard(pgnGame);
   }
 

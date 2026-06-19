@@ -38,7 +38,7 @@ class TestPgnExportPreview {
 
       final List<String> actualLineList = new ArrayList<>();
       actualLineList.add("e4 e5 Nf3 Nc6");
-      final PgnGame pgnGame = LenientPgnParser.parse(actualLineList);
+      final PgnGame pgnGame = LenientPgnParser.parseLines(actualLineList);
 
       final List<String> expectedLineList = PgnCreate.toPgnLines(pgnGame, WriteMode.ARCHIVAL);
       final String actual = convertToTextBlock(expectedLineList);
@@ -64,7 +64,7 @@ class TestPgnExportPreview {
           e4 e5 Nf3 Nc6""";
 
       final List<String> actualLineList = convertFromTextBlock(pgnImport);
-      final PgnGame pgnGame = LenientPgnParser.parse(actualLineList);
+      final PgnGame pgnGame = LenientPgnParser.parseLines(actualLineList);
 
       final List<String> expectedLineList = PgnCreate.toPgnLines(pgnGame, WriteMode.ARCHIVAL);
       final String actual = convertToTextBlock(expectedLineList);
@@ -91,7 +91,7 @@ class TestPgnExportPreview {
           e4 e5 Nf3 Nc6 1-0""";
 
       final List<String> actualLineList = convertFromTextBlock(pgnImport);
-      final PgnGame pgnGame = LenientPgnParser.parse(actualLineList);
+      final PgnGame pgnGame = LenientPgnParser.parseLines(actualLineList);
 
       final List<String> expectedLineList = PgnCreate.toPgnLines(pgnGame, WriteMode.ARCHIVAL);
       final String actual = convertToTextBlock(expectedLineList);
@@ -120,7 +120,7 @@ class TestPgnExportPreview {
           e4 e5 Nf3 Nc6 """;
 
       final List<String> actualLineList = convertFromTextBlock(pgnImport);
-      final PgnGame pgnGame = LenientPgnParser.parse(actualLineList);
+      final PgnGame pgnGame = LenientPgnParser.parseLines(actualLineList);
 
       final List<String> expectedLineList = PgnCreate.toPgnLines(pgnGame, WriteMode.ARCHIVAL);
       final String actual = convertToTextBlock(expectedLineList);
@@ -154,7 +154,7 @@ class TestPgnExportPreview {
           Qa4 Rb8 Qc4 Ra8 """;
 
       final List<String> actualLineList = convertFromTextBlock(pgnImport);
-      final PgnGame pgnGame = LenientPgnParser.parse(actualLineList);
+      final PgnGame pgnGame = LenientPgnParser.parseLines(actualLineList);
 
       final List<String> expectedLineList = PgnCreate.toPgnLines(pgnGame, WriteMode.ARCHIVAL);
       final String actual = convertToTextBlock(expectedLineList);
@@ -185,7 +185,7 @@ class TestPgnExportPreview {
           1. Qa4 Rb8 2. Qc4 Ra8 """;
 
       final List<String> actualLineList = convertFromTextBlock(pgnImport);
-      final PgnGame pgnGame = LenientPgnParser.parse(actualLineList);
+      final PgnGame pgnGame = LenientPgnParser.parseLines(actualLineList);
 
       final List<String> expectedLineList = PgnCreate.toPgnLines(pgnGame, WriteMode.ARCHIVAL);
       final String actual = convertToTextBlock(expectedLineList);
@@ -220,7 +220,7 @@ class TestPgnExportPreview {
           Qd7 Re1 Na6 Rd1 Nb8 Kb1 Be7 Kc1 """;
 
       final List<String> actualLineList = convertFromTextBlock(pgnImport);
-      final PgnGame pgnGame = LenientPgnParser.parse(actualLineList);
+      final PgnGame pgnGame = LenientPgnParser.parseLines(actualLineList);
 
       final List<String> expectedLineList = PgnCreate.toPgnLines(pgnGame, WriteMode.ARCHIVAL);
       final String actual = convertToTextBlock(expectedLineList);
@@ -251,7 +251,7 @@ class TestPgnExportPreview {
           1... Qd7 2. Re1 Na6 3. Rd1 Nb8 4. Kb1 Be7 5. Kc1""";
 
       final List<String> actualLineList = convertFromTextBlock(pgnImport);
-      final PgnGame pgnGame = LenientPgnParser.parse(actualLineList);
+      final PgnGame pgnGame = LenientPgnParser.parseLines(actualLineList);
 
       final List<String> expectedLineList = PgnCreate.toPgnLines(pgnGame, WriteMode.ARCHIVAL);
       final String actual = convertToTextBlock(expectedLineList);

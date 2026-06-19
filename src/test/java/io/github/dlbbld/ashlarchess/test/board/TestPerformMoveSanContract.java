@@ -22,14 +22,14 @@ import io.github.dlbbld.ashlarchess.test.pgn.setup.PgnTestCaseCatalog;
 /**
  * Verifies the round-trip consistency between SAN and MoveSpecification that
  * {@link io.github.dlbbld.ashlarchess.board.Board#moveStrict(String)} relies on: once
- * {@link io.github.dlbbld.ashlarchess.san.StrictSanParser}'s {@code parseText} has produced a MoveSpecification from a
+ * {@link io.github.dlbbld.ashlarchess.san.StrictSanParser}'s {@code parse} has produced a MoveSpecification from a
  * SAN, that MoveSpec is the canonical representation of the move and round-trips both ways. The board therefore
  * performs the move with no further re-validation of the spec.
  *
  * <h2>Forward (played moves)</h2>
  *
  * <p>
- * For each move of each PGN: derive the MoveSpec via {@code StrictSanParser.parseText(san, board)} <em>before</em>
+ * For each move of each PGN: derive the MoveSpec via {@code StrictSanParser.parse(san, board)} <em>before</em>
  * performing, then perform via {@code board.moveStrict(san)} and assert:
  *
  * <ol>
@@ -44,7 +44,7 @@ import io.github.dlbbld.ashlarchess.test.pgn.setup.PgnTestCaseCatalog;
  * At each played move: perform it, then capture both the stored MoveSpec
  * ({@code board.getLastMove().moveSpecification()}) and the board's canonical SAN ({@code board.getSan()});
  * {@link io.github.dlbbld.ashlarchess.board.Board#unmove} back to the prior position and re-derive a MoveSpec from that
- * canonical SAN via {@code StrictSanParser.parseText}. The re-derived MoveSpec must equal the stored one - the SAN the
+ * canonical SAN via {@code StrictSanParser.parse}. The re-derived MoveSpec must equal the stored one - the SAN the
  * board emits round-trips back to the same move.
  *
  * <h2>Scope and runtime</h2>
@@ -96,7 +96,7 @@ class TestPerformMoveSanContract {
       final String expectedProvidedSan = move.san();
 
       final MoveSpecification expectedCalculatedMoveSpecification = StrictSanParser
-          .parseText(expectedProvidedSan, board).moveSpecification();
+          .parse(expectedProvidedSan, board).moveSpecification();
 
       board.moveStrict(expectedProvidedSan);
 
@@ -125,7 +125,7 @@ class TestPerformMoveSanContract {
       final MoveSpecification expectedStoredMoveSpecification = board.getLastMove().moveSpecification();
       final String calculatedSan = board.getSan();
       board.unmove();
-      final MoveSpecification actualCalculatedMoveSpecification = StrictSanParser.parseText(calculatedSan, board)
+      final MoveSpecification actualCalculatedMoveSpecification = StrictSanParser.parse(calculatedSan, board)
           .moveSpecification();
       assertEquals(expectedStoredMoveSpecification, actualCalculatedMoveSpecification);
       board.moveStrict(move.san());

@@ -30,7 +30,7 @@ public final class TestStrictPgnParserExceptionSupport {
       StrictPgnParserValidationProblem expectedProblemParser, SanValidationProblem expectedProblemSan) {
     boolean isException = false;
     try {
-      StrictPgnParser.parse(pgnTestFolderPath, pgnName);
+      StrictPgnParser.parsePath(pgnTestFolderPath, pgnName);
     } catch (final StrictPgnParserValidationException e) {
       isException = true;
       assertEquals(expectedProblemParser, e.getStrictPgnParserValidationProblem());
@@ -41,7 +41,7 @@ public final class TestStrictPgnParserExceptionSupport {
 
   private static void checkValidate(Path pgnTestFolderPath, String pgnName,
       StrictPgnParserValidationProblem expectedParserProblem, SanValidationProblem expectedSanProblem) {
-    final StrictPgnParserValidationResult result = StrictPgnParser.validate(pgnTestFolderPath, pgnName);
+    final StrictPgnParserValidationResult result = StrictPgnParser.validatePath(pgnTestFolderPath, pgnName);
     assertFalse(result.isValid());
     assertEquals(expectedParserProblem, result.problemParser());
     assertEquals(expectedSanProblem, result.problemSan());

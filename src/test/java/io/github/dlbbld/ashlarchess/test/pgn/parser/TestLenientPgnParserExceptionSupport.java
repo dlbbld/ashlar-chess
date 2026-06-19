@@ -30,7 +30,7 @@ public final class TestLenientPgnParserExceptionSupport {
       LenientPgnParserValidationProblem expectedProblemParser, SanValidationProblem expectedProblemSan) {
     boolean isException = false;
     try {
-      LenientPgnParser.parse(pgnTestFolderPath, pgnName);
+      LenientPgnParser.parsePath(pgnTestFolderPath, pgnName);
     } catch (final LenientPgnParserValidationException e) {
       isException = true;
       assertEquals(expectedProblemParser, e.getLenientPgnParserValidationProblem());
@@ -41,7 +41,7 @@ public final class TestLenientPgnParserExceptionSupport {
 
   private static void checkValidate(Path pgnTestFolderPath, String pgnName,
       LenientPgnParserValidationProblem expectedParserProblem, SanValidationProblem expectedSanProblem) {
-    final LenientPgnParserValidationResult result = LenientPgnParser.validate(pgnTestFolderPath, pgnName);
+    final LenientPgnParserValidationResult result = LenientPgnParser.validatePath(pgnTestFolderPath, pgnName);
     assertFalse(result.isValid());
     assertEquals(expectedParserProblem, result.problemParser());
     assertEquals(expectedSanProblem, result.problemSan());

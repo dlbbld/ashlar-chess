@@ -53,7 +53,7 @@ class TestSanValidationGameEnded {
   void testSanAcceptedAtInsufficientMaterialBoth() {
     final Board board = new Board("4k3/8/8/8/8/8/8/4K3 w - - 0 1");
     assertTrue(board.isInsufficientMaterial(), "K vs K is mutual insufficient material");
-    assertDoesNotThrow(() -> StrictSanParser.parseText("Ke2", board),
+    assertDoesNotThrow(() -> StrictSanParser.parse("Ke2", board),
         "insufficient material is queryable only; the SAN parser must accept the move");
   }
 
@@ -63,7 +63,7 @@ class TestSanValidationGameEnded {
     // Pawn-wall fortress (horizontal_1 from the CHA pawn-wall corpus).
     final Board board = new Board("4k3/8/8/p1p1p1p1/P1P1P1P1/8/8/4K3 w - - 0 50");
     assertEquals(DeadPositionQuickVerdict.DEAD, board.deadPositionQuick());
-    assertDoesNotThrow(() -> StrictSanParser.parseText("Kd1", board),
+    assertDoesNotThrow(() -> StrictSanParser.parse("Kd1", board),
         "quick-unwinnable dead position is queryable only; the SAN parser must accept the move");
   }
 
@@ -74,7 +74,7 @@ class TestSanValidationGameEnded {
     final Board board = new Board("4k3/8/8/p1p1p1p1/PpPpPpPp/1P1P1P2/7P/4K3 w - - 0 49");
     board.moveStrict("h3");
     assertEquals(DeadPositionQuickVerdict.DEAD, board.deadPositionQuick());
-    assertDoesNotThrow(() -> StrictSanParser.parseText("Kd8", board),
+    assertDoesNotThrow(() -> StrictSanParser.parse("Kd8", board),
         "quick-unwinnable dead position is queryable only; the SAN parser must accept the move");
   }
 
@@ -83,7 +83,7 @@ class TestSanValidationGameEnded {
   void testSanAcceptedAtSeventyFiveMoveThreshold() {
     final Board board = new Board("4k3/8/4P3/8/8/8/2N1B3/3KQ2R w - - 150 76");
     assertTrue(board.isSeventyFiveMove(), "predicate must fire at threshold");
-    assertDoesNotThrow(() -> StrictSanParser.parseText("Kd2", board),
+    assertDoesNotThrow(() -> StrictSanParser.parse("Kd2", board),
         "75-move is queryable only; the SAN parser must accept the move");
   }
 
@@ -94,7 +94,7 @@ class TestSanValidationGameEnded {
     board.movesStrict("Nf3", "Nf6", "Ng1", "Ng8", "Nf3", "Nf6", "Ng1", "Ng8", "Nf3", "Nf6", "Ng1", "Ng8", "Nf3", "Nf6",
         "Ng1", "Ng8");
     assertTrue(board.isFivefoldRepetition(), "predicate must fire at fivefold");
-    assertDoesNotThrow(() -> StrictSanParser.parseText("e4", board),
+    assertDoesNotThrow(() -> StrictSanParser.parse("e4", board),
         "fivefold is queryable only; the SAN parser must accept the move");
   }
 
@@ -104,7 +104,7 @@ class TestSanValidationGameEnded {
   private static void rejectsNotViaGameEnded(String san, Board board) {
     boolean thrown = false;
     try {
-      StrictSanParser.parseText(san, board);
+      StrictSanParser.parse(san, board);
     } catch (@SuppressWarnings("unused") final SanValidationException e) {
       thrown = true;
     }

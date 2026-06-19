@@ -36,7 +36,7 @@ class TestLenientFenParser {
 
   @Test
   void test01_canonicalInputEmitsNoForgivenItems() {
-    final LenientFenParserValidationResult result = LenientFenParser.validateText(INITIAL_CANONICAL);
+    final LenientFenParserValidationResult result = LenientFenParser.validate(INITIAL_CANONICAL);
     assertTrue(result.isValid());
     assertTrue(result.forgivenItems().isEmpty());
     assertEquals(INITIAL_CANONICAL, fenOf(result).fen());
@@ -61,7 +61,7 @@ class TestLenientFenParser {
   @Test
   void test05_tabOrNewlineAsSeparator() {
     final String deviating = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR\tw\tKQkq\t-\t0\t1";
-    final LenientFenParserValidationResult result = LenientFenParser.validateText(deviating);
+    final LenientFenParserValidationResult result = LenientFenParser.validate(deviating);
     assertTrue(result.isValid());
     assertTrue(containsCode(result.forgivenItems(), ForgivenFenItemCode.TAB_OR_NEWLINE_AS_SEPARATOR));
   }
@@ -105,7 +105,7 @@ class TestLenientFenParser {
     // The fixture writes the target as uppercase "E3" to exercise the lenient normalisation; the surrounding
     // piece placement satisfies the strict en-passant preconditions (pawn on e4, e2 empty, e3 empty).
     final String deviating = "rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq E3 0 1";
-    final LenientFenParserValidationResult result = LenientFenParser.validateText(deviating);
+    final LenientFenParserValidationResult result = LenientFenParser.validate(deviating);
     assertTrue(result.isValid(), () -> "expected valid; got: " + result.message());
     assertTrue(containsCode(result.forgivenItems(), ForgivenFenItemCode.EN_PASSANT_UPPERCASE));
   }
@@ -120,7 +120,7 @@ class TestLenientFenParser {
   void test13_unrecoverableInsufficientFields() {
     // Three fields: cannot recover even with defaulting.
     final String deviating = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq";
-    final LenientFenParserValidationResult result = LenientFenParser.validateText(deviating);
+    final LenientFenParserValidationResult result = LenientFenParser.validate(deviating);
     assertFalse(result.isValid());
     assertEquals(LenientFenParserValidationProblem.UNRECOVERABLE, result.problem());
     assertNull(result.fen());
@@ -130,7 +130,7 @@ class TestLenientFenParser {
   void test14_advancedInvalidPropagates() {
     // Black king missing — strict-semantic failure, lenient does not forgive.
     final String deviating = "rnbq1bnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
-    final LenientFenParserValidationResult result = LenientFenParser.validateText(deviating);
+    final LenientFenParserValidationResult result = LenientFenParser.validate(deviating);
     assertFalse(result.isValid());
     assertEquals(LenientFenParserValidationProblem.ADVANCED_INVALID, result.problem());
     // The underlying advanced-problem categorisation is carried so callers can switch without parsing message.
@@ -145,7 +145,7 @@ class TestLenientFenParser {
     // a generous reserve over the strict minimum of 9 — the round-numbered placeholder signals a reconstructed
     // value rather than a measured one.
     final String deviating = "8/8/8/8/8/8/8/4K2k w - - 15 1";
-    final LenientFenParserValidationResult result = LenientFenParser.validateText(deviating);
+    final LenientFenParserValidationResult result = LenientFenParser.validate(deviating);
     assertTrue(result.isValid(), () -> "expected valid; got: " + result.message());
     assertTrue(
         containsCode(result.forgivenItems(), ForgivenFenItemCode.HALF_MOVE_CLOCK_INCONSISTENT_WITH_FULL_MOVE_NUMBER));
@@ -158,7 +158,7 @@ class TestLenientFenParser {
     // Realistic engine-output deficient FEN: leading whitespace, tab separators, uppercase side, non-canonical
     // castling order, em-dash en-passant, missing fullmove number (5-field).
     final String deviating = "  rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR\tW\tqkQK\t—\t0";
-    final LenientFenParserValidationResult result = LenientFenParser.validateText(deviating);
+    final LenientFenParserValidationResult result = LenientFenParser.validate(deviating);
     assertTrue(result.isValid(), () -> "expected valid; got: " + result.message());
     final ImmutableList<ForgivenFenItem> items = result.forgivenItems();
     assertTrue(containsCode(items, ForgivenFenItemCode.LEADING_WHITESPACE));
@@ -177,7 +177,7 @@ class TestLenientFenParser {
     // output. Combination should pass cleanly with MISSING_HALF_MOVE_CLOCK_AND_FULL_MOVE_NUMBER plus
     // TAB_OR_NEWLINE_AS_SEPARATOR.
     final String deviating = "r1bqkb1r/pppp1ppp/2n2n2/4p3/2B1P3/5N2/PPPP1PPP/RNBQK2R\tw\tKQkq\t-";
-    final LenientFenParserValidationResult result = LenientFenParser.validateText(deviating);
+    final LenientFenParserValidationResult result = LenientFenParser.validate(deviating);
     assertTrue(result.isValid(), () -> "expected valid; got: " + result.message());
     final ImmutableList<ForgivenFenItem> items = result.forgivenItems();
     assertTrue(containsCode(items, ForgivenFenItemCode.TAB_OR_NEWLINE_AS_SEPARATOR));
@@ -193,7 +193,7 @@ class TestLenientFenParser {
     // but does not collapse DUPLICATES — that crosses the line from syntactic tolerance into silent
     // typo-correction. The strict parser rejects with INVALID_CASTLING_RIGHT_RANGE.
     final String deviating = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KKKQkq - 0 1";
-    final LenientFenParserValidationResult result = LenientFenParser.validateText(deviating);
+    final LenientFenParserValidationResult result = LenientFenParser.validate(deviating);
     assertFalse(result.isValid());
     assertEquals(LenientFenParserValidationProblem.ADVANCED_INVALID, result.problem());
     assertEquals(FenAdvancedValidationProblem.INVALID_CASTLING_RIGHT_RANGE, result.fenAdvancedValidationProblem());
@@ -205,7 +205,7 @@ class TestLenientFenParser {
     // Pattern from web-UI clipboard exports: trailing newline (sometimes \r\n) and otherwise canonical FEN.
     // Mirrors the "I copied a FEN from a web UI and there's a stray newline" complaint pattern.
     final String deviating = INITIAL_CANONICAL + "\n";
-    final LenientFenParserValidationResult result = LenientFenParser.validateText(deviating);
+    final LenientFenParserValidationResult result = LenientFenParser.validate(deviating);
     assertTrue(result.isValid(), () -> "expected valid; got: " + result.message());
     assertTrue(containsCode(result.forgivenItems(), ForgivenFenItemCode.TRAILING_WHITESPACE));
     assertEquals(INITIAL_CANONICAL, fenOf(result).fen());
@@ -230,7 +230,7 @@ class TestLenientFenParser {
   }
 
   private static void assertExactlyOneCode(String input, ForgivenFenItemCode expectedCode) {
-    final LenientFenParserValidationResult result = LenientFenParser.validateText(input);
+    final LenientFenParserValidationResult result = LenientFenParser.validate(input);
     assertTrue(result.isValid(), () -> "expected valid; got: " + result.message());
     final long count = result.forgivenItems().stream().filter(i -> i.code() == expectedCode).count();
     assertEquals(1, count, () -> "expected exactly one " + expectedCode + " item; got: " + result.forgivenItems());

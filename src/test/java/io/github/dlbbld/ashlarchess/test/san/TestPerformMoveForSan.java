@@ -271,7 +271,7 @@ class TestPerformMoveForSan {
   }
 
   private static void checkMoveSpecificationTest(Board board, String san, MoveSpecification expectedMove) {
-    final MoveSpecification parsedMoveAsIs = StrictSanParser.parseText(san, board).moveSpecification();
+    final MoveSpecification parsedMoveAsIs = StrictSanParser.parse(san, board).moveSpecification();
     assertEquals(expectedMove, parsedMoveAsIs);
 
     board.move(expectedMove);

@@ -153,7 +153,7 @@ class TestLenientPgnParserUtf8 {
 
     final PgnGame pgnGameExpected = LenientPgnParser.parseText(pgn);
     final Path filePath = Nulls.pathResolve(PgnTestConstants.LENIENT_PGN_PARSER_UTF8_TEST_ROOT_FOLDER_PATH, fileName);
-    final PgnGame pgnGameActual = LenientPgnParser.parse(filePath);
+    final PgnGame pgnGameActual = LenientPgnParser.parsePath(filePath);
 
     // Compare under archival normalisation: the two inputs differ in tag order (test2/test3 use
     // intentionally-shuffled tag order to exercise lenient acceptance), which the parser preserves but archival

@@ -163,7 +163,7 @@ class TestSanValidatePieceExists {
   private static void checkException(String san, Board board, SanValidationProblem svp) {
     boolean isException;
     try {
-      StrictSanParser.parseText(san, board);
+      StrictSanParser.parse(san, board);
       isException = false;
     } catch (final SanValidationException e) {
       isException = true;

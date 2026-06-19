@@ -111,7 +111,7 @@ class TestPgnExportRoundTripAgainstPythonChessOracle {
           expectedUcis.add(move.uci());
         }
 
-        final PgnGame original = StrictPgnParser.parse(folderPath, record.pgn());
+        final PgnGame original = StrictPgnParser.parsePath(folderPath, record.pgn());
         verify(record, expectedUcis, original, "original-parse", bucket, failures);
 
         final String semantic = PgnCreate.toPgnString(original, WriteMode.SEMANTIC);

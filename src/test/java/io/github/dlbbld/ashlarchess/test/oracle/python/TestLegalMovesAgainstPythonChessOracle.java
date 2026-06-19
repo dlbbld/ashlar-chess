@@ -90,7 +90,7 @@ class TestLegalMovesAgainstPythonChessOracle {
       final Path folderPath = bucket.getFolderPath();
       for (final LegalMovesRecord record : records) {
         totalFixtures++;
-        final PgnGame pgnGame = StrictPgnParser.parse(folderPath, record.pgn());
+        final PgnGame pgnGame = StrictPgnParser.parsePath(folderPath, record.pgn());
         final int plyCount = pgnGame.moveList().size();
 
         try {

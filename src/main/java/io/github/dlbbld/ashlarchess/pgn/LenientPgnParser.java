@@ -59,21 +59,21 @@ public final class LenientPgnParser {
     return new LenientPgnParser(pgn).parseInternal();
   }
 
-  public static PgnGame parse(Path pgnPath) {
+  public static PgnGame parsePath(Path pgnPath) {
     return parseText(PgnReader.readPgn(pgnPath));
   }
 
-  public static PgnGame parse(Path pgnFolderPath, String pgnName) {
-    return parse(Nulls.pathResolve(pgnFolderPath, pgnName));
+  public static PgnGame parsePath(Path pgnFolderPath, String pgnName) {
+    return parsePath(Nulls.pathResolve(pgnFolderPath, pgnName));
   }
 
-  public static PgnGame parse(String pgnPath) {
-    return parse(Nulls.pathOf(pgnPath));
+  public static PgnGame parsePath(String pgnPath) {
+    return parsePath(Nulls.pathOf(pgnPath));
   }
 
   /** Parses lines produced by a line-based reader (each entry is one line without its terminator). */
-  public static PgnGame parse(List<String> fileLines) {
-    return parseText(joinLines(fileLines));
+  public static PgnGame parseLines(List<String> pgnLines) {
+    return parseText(joinLines(pgnLines));
   }
 
   private static String joinLines(List<String> lines) {
@@ -84,15 +84,15 @@ public final class LenientPgnParser {
     return Nulls.toString(builder);
   }
 
-  public static LenientPgnParserValidationResult validate(Path pgnFolderPath, String pgnName) {
-    return validate(Nulls.pathResolve(pgnFolderPath, pgnName));
+  public static LenientPgnParserValidationResult validatePath(Path pgnFolderPath, String pgnName) {
+    return validatePath(Nulls.pathResolve(pgnFolderPath, pgnName));
   }
 
-  public static LenientPgnParserValidationResult validate(String pgnPath) {
-    return validate(Nulls.pathOf(pgnPath));
+  public static LenientPgnParserValidationResult validatePath(String pgnPath) {
+    return validatePath(Nulls.pathOf(pgnPath));
   }
 
-  public static LenientPgnParserValidationResult validate(Path pgnPath) {
+  public static LenientPgnParserValidationResult validatePath(Path pgnPath) {
     final LenientPgnParser parser;
     try {
       parser = new LenientPgnParser(PgnReader.readPgn(pgnPath));
@@ -780,7 +780,7 @@ public final class LenientPgnParser {
     // means deficient FEN tags (extra whitespace, missing counters, speculative fullMoveNumber on a non-initial
     // position) parse cleanly. The lenient layer only forgives syntactic deviations; structural / rule-consistency
     // violations still propagate as FenAdvancedValidationException via LenientFenParserValidationException.
-    return LenientFenParser.parseText(startFenStr);
+    return LenientFenParser.parse(startFenStr);
   }
 
   // -------------------------------------------------------------------------------------------------

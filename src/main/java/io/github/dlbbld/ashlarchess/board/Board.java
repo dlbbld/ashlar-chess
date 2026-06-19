@@ -257,13 +257,13 @@ public final class Board {
    * order, non-ASCII dashes, trailing garbage) before delegating to {@link FenParserAdvanced}. Strict semantic
    * invariants are unchanged: a FEN with a missing king, a pawn on rank 1, an impossible double-check, or castling
    * rights that contradict the piece placement still fails. Callers who need to see the list of tolerated deviations
-   * should invoke {@link LenientFenParser#validateText(String)} directly.
+   * should invoke {@link LenientFenParser#validate(String)} directly.
    *
    * @throws io.github.dlbbld.ashlarchess.fen.LenientFenParserValidationException when the input cannot be recovered or
    *                                                                              fails the strict semantic checks
    */
   public static Board fromFenLenient(String fen) {
-    return new Board(LenientFenParser.parseText(fen));
+    return new Board(LenientFenParser.parse(fen));
   }
 
   public boolean isFirstMove() {
@@ -288,7 +288,7 @@ public final class Board {
    *                                                                 canonical but does not represent a legal move
    */
   public StrictSanParserValidationResult moveStrict(String san) {
-    final StrictSanParserValidationResult result = StrictSanParser.parseText(san, this);
+    final StrictSanParserValidationResult result = StrictSanParser.parse(san, this);
     this.performMoveWithoutValidation(result.moveSpecification());
     if (!san.equals(this.getSan())) {
       throw new ProgrammingMistakeException("The provided SAN and generated SAN are different, this should not happen");
@@ -309,7 +309,7 @@ public final class Board {
    *                                                                              supported tolerance
    */
   public LenientSanParserValidationResult moveLenient(String san) {
-    final LenientSanParserValidationResult result = LenientSanParser.parseText(san, this);
+    final LenientSanParserValidationResult result = LenientSanParser.parse(san, this);
     this.performMoveWithoutValidation(result.moveSpecification());
     return result;
   }
@@ -556,7 +556,7 @@ public final class Board {
    * is not in the current legal-moves set.
    */
   public boolean canClaimFiftyMoveRuleFor(String san) throws LenientSanParserValidationException {
-    return canClaimFiftyMoveRuleFor(LenientSanParser.parseText(san, this).moveSpecification());
+    return canClaimFiftyMoveRuleFor(LenientSanParser.parse(san, this).moveSpecification());
   }
 
   /**
@@ -592,7 +592,7 @@ public final class Board {
    * is not in the current legal-moves set.
    */
   public boolean canClaimThreefoldRepetitionRuleFor(String san) throws LenientSanParserValidationException {
-    return canClaimThreefoldRepetitionRuleFor(LenientSanParser.parseText(san, this).moveSpecification());
+    return canClaimThreefoldRepetitionRuleFor(LenientSanParser.parse(san, this).moveSpecification());
   }
 
   public boolean canClaimThreefoldRepetitionRuleWithOwnMove() {

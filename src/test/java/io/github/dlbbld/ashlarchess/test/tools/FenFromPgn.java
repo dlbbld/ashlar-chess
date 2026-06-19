@@ -44,7 +44,7 @@ public final class FenFromPgn {
     final Path folder = Nulls.getParent(pgnPath);
     final String fileName = Nulls.toString(Nulls.getFileName(pgnPath));
 
-    final PgnGame pgnGame = LenientPgnParser.parse(folder, fileName);
+    final PgnGame pgnGame = LenientPgnParser.parsePath(folder, fileName);
     final Board board = PgnUtility.calculateBoard(pgnGame);
     System.out.println(board.getFen());
   }

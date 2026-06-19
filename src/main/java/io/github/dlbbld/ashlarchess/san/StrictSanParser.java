@@ -28,12 +28,12 @@ public final class StrictSanParser {
    * @throws SanValidationException if the input is not canonical SAN, or is canonical but does not represent a legal
    *                                move on the current position
    */
-  public static StrictSanParserValidationResult parseText(String san, Board board) throws SanValidationException {
-    final MoveSpecification moveSpecification = parseTextInternal(san, board);
+  public static StrictSanParserValidationResult parse(String san, Board board) throws SanValidationException {
+    final MoveSpecification moveSpecification = parseInternal(san, board);
     return new StrictSanParserValidationResult(moveSpecification);
   }
 
-  private static MoveSpecification parseTextInternal(String san, Board board) throws SanValidationException {
+  private static MoveSpecification parseInternal(String san, Board board) throws SanValidationException {
     final SanParse sanParse = SanValidateFormat.validateFormat(san);
 
     SanValidateNonMovement.validateNonMovement(sanParse);

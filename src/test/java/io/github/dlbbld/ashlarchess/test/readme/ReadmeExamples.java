@@ -333,7 +333,7 @@ public final class ReadmeExamples {
 
   public static void pgnLenientFileParsing() {
     // <readme:pgn-lenient-file-parsing>
-    final PgnGame pgnGame = LenientPgnParser.parse("C:\\temp\\myFile.pgn");
+    final PgnGame pgnGame = LenientPgnParser.parsePath("C:\\temp\\myFile.pgn");
     final Board board = PgnUtility.calculateBoard(pgnGame);
     System.out.println(board.isCheckmate());
     // </readme:pgn-lenient-file-parsing>
@@ -395,7 +395,7 @@ public final class ReadmeExamples {
 
   public static void pgnStrictFileParsing() {
     // <readme:pgn-strict-file-parsing>
-    final PgnGame pgnGame = StrictPgnParser.parse("C:\\temp\\myFile.pgn");
+    final PgnGame pgnGame = StrictPgnParser.parsePath("C:\\temp\\myFile.pgn");
     final Board board = PgnUtility.calculateBoard(pgnGame);
     System.out.println(board.isThreefoldRepetition());
     // </readme:pgn-strict-file-parsing>
@@ -464,7 +464,7 @@ public final class ReadmeExamples {
 
   public static void pgnLenientValidationFile() {
     // <readme:pgn-lenient-validation-file>
-    final LenientPgnParserValidationResult result = LenientPgnParser.validate("C:\\temp\\myFile.pgn");
+    final LenientPgnParserValidationResult result = LenientPgnParser.validatePath("C:\\temp\\myFile.pgn");
     System.out.println(result.isValid());
     // </readme:pgn-lenient-validation-file>
   }
@@ -510,7 +510,7 @@ public final class ReadmeExamples {
 
   public static void pgnStrictValidationFile() {
     // <readme:pgn-strict-validation-file>
-    final StrictPgnParserValidationResult result = StrictPgnParser.validate("C:\\temp\\myFile.pgn");
+    final StrictPgnParserValidationResult result = StrictPgnParser.validatePath("C:\\temp\\myFile.pgn");
     System.out.println(result.isValid());
     // </readme:pgn-strict-validation-file>
   }

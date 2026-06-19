@@ -96,7 +96,7 @@ class TestSanValidateCastling {
   private static void checkCastlingException(String san, Board board, CastlingCheck expectedCastlingCheck,
       CastlingRightLoss expectedLoss) {
     try {
-      StrictSanParser.parseText(san, board);
+      StrictSanParser.parse(san, board);
       throw new AssertionError("Expected SanValidationException");
     } catch (final SanValidationException e) {
       assertEquals(CastlingCheckMapper.map(expectedCastlingCheck, expectedLoss), e.getSanValidationProblem());

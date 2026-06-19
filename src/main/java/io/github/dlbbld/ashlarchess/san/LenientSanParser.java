@@ -23,12 +23,8 @@ import io.github.dlbbld.ashlarchess.model.LegalMove;
  * uniquely identify a legal move and the deviation matches a supported tolerance category.
  *
  * <p>
- * See {@link io.github.dlbbld.ashlarchess.san the package-level Javadoc} for the strategy. The two public methods are:
- * <ul>
- * <li>{@link #parseText(String, Board)} - full parse, returns the resolved move plus the list of forgiven items.
- * <li>{@link #validateText(String, Board)} - discards the result, throws on rejection. Convenience for callers that
- * only need yes/no.
- * </ul>
+ * See {@link io.github.dlbbld.ashlarchess.san the package-level Javadoc} for the strategy. The public entry point
+ * {@link #parse(String, Board)} does a full parse, returning the resolved move plus the list of forgiven items.
  */
 public final class LenientSanParser {
 
@@ -43,10 +39,10 @@ public final class LenientSanParser {
    * @throws LenientSanParserValidationException if the input cannot be resolved to a legal move even after applying
    *                                             every supported tolerance
    */
-  public static LenientSanParserValidationResult parseText(String text, Board board) {
+  public static LenientSanParserValidationResult parse(String text, Board board) {
     // Phase 0: try strict on the raw input first. Canonical SAN pays zero lenient overhead.
     try {
-      final MoveSpecification ms = StrictSanParser.parseText(text, board).moveSpecification();
+      final MoveSpecification ms = StrictSanParser.parse(text, board).moveSpecification();
       return new LenientSanParserValidationResult(ms, ForgivenItem.EMPTY_LIST);
     } catch (@SuppressWarnings("unused") final SanValidationException ignored) {
       // Fall through to the lenient pipeline.
@@ -76,17 +72,6 @@ public final class LenientSanParser {
       items.add(new ForgivenItem(code, text, canonicalSan));
     }
     return new LenientSanParserValidationResult(moveSpecification, Nulls.copyOfList(items));
-  }
-
-  /**
-   * Validates {@code text} as a lenient SAN move on {@code board}. Equivalent to {@link #parseText} with the result
-   * discarded.
-   *
-   * @throws LenientSanParserValidationException if the input cannot be resolved to a legal move even after applying
-   *                                             every supported tolerance
-   */
-  public static void validateText(String text, Board board) {
-    parseText(text, board);
   }
 
   // --- Helpers ---

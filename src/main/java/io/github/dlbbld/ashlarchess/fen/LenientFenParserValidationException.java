@@ -13,7 +13,7 @@ import io.github.dlbbld.ashlarchess.common.enums.FenAdvancedValidationProblem;
 import io.github.dlbbld.ashlarchess.common.exceptions.UsageException;
 
 /**
- * Thrown by {@link LenientFenParser#parseText(String)} when the input cannot be parsed even after lenient
+ * Thrown by {@link LenientFenParser#parse(String)} when the input cannot be parsed even after lenient
  * normalisation, or when the normalised FEN fails strict semantic validation. Mirrors the SAN- and PGN-side
  * lenient-parser exceptions: carries the typed problem category, the underlying advanced-validation problem (when
  * applicable), and the list of forgiven items accumulated before the failure point.

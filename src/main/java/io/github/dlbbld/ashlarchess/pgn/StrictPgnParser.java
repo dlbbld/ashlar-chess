@@ -53,23 +53,23 @@ public final class StrictPgnParser {
     return new StrictPgnParser(pgn).parseInternal();
   }
 
-  public static PgnGame parse(Path pgnPath) {
+  public static PgnGame parsePath(Path pgnPath) {
     // Read raw bytes - line-based reconstruction would hide whether the source's trailing newline is actually
     // present.
     return parseText(PgnReader.readPgn(pgnPath));
   }
 
-  public static PgnGame parse(Path pgnFolderPath, String pgnName) {
-    return parse(Nulls.pathResolve(pgnFolderPath, pgnName));
+  public static PgnGame parsePath(Path pgnFolderPath, String pgnName) {
+    return parsePath(Nulls.pathResolve(pgnFolderPath, pgnName));
   }
 
-  public static PgnGame parse(String pgnPath) {
-    return parse(Nulls.pathOf(pgnPath));
+  public static PgnGame parsePath(String pgnPath) {
+    return parsePath(Nulls.pathOf(pgnPath));
   }
 
   /** Parses lines produced by a line-based reader (each entry is one line without its terminator). */
-  public static PgnGame parse(List<String> fileLines) {
-    return parseText(joinLines(fileLines));
+  public static PgnGame parseLines(List<String> pgnLines) {
+    return parseText(joinLines(pgnLines));
   }
 
   private static String joinLines(List<String> lines) {
@@ -80,17 +80,17 @@ public final class StrictPgnParser {
     return Nulls.toString(builder);
   }
 
-  public static StrictPgnParserValidationResult validate(Path pgnFolderPath, String pgnName) {
-    return validate(Nulls.pathResolve(pgnFolderPath, pgnName));
+  public static StrictPgnParserValidationResult validatePath(Path pgnFolderPath, String pgnName) {
+    return validatePath(Nulls.pathResolve(pgnFolderPath, pgnName));
   }
 
-  public static StrictPgnParserValidationResult validate(String pgnPath) {
-    return validate(Nulls.pathOf(pgnPath));
+  public static StrictPgnParserValidationResult validatePath(String pgnPath) {
+    return validatePath(Nulls.pathOf(pgnPath));
   }
 
-  public static StrictPgnParserValidationResult validate(Path pgnPath) {
+  public static StrictPgnParserValidationResult validatePath(Path pgnPath) {
     try {
-      parse(pgnPath);
+      parsePath(pgnPath);
       return new StrictPgnParserValidationResult(StrictPgnParserValidationProblem.OK, SanValidationProblem.NONE, "OK");
     } catch (final StrictPgnParserValidationException e) {
       final String message = BasicUtility.getMessage(e);

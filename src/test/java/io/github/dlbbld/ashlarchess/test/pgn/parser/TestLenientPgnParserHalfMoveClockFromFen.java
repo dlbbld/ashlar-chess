@@ -26,6 +26,6 @@ class TestLenientPgnParserHalfMoveClockFromFen {
   @SuppressWarnings("static-method")
   @Test
   void test() {
-    TestPgnParserHalfMoveClockFromFenSupport.runForBuckets(LenientPgnParser::parse, logger);
+    TestPgnParserHalfMoveClockFromFenSupport.runForBuckets(LenientPgnParser::parsePath, logger);
   }
 }

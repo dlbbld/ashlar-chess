@@ -42,7 +42,7 @@ import io.github.dlbbld.ashlarchess.test.pgntest.enums.PgnTest;
  * progression through subsequent moves.
  *
  * <p>
- * Subclasses inject the parser by passing {@code (folder, fileName) -> StrictPgnParser.parse(folder, fileName)} (or the
+ * Subclasses inject the parser by passing {@code (folder, fileName) -> StrictPgnParser.parsePath(folder, fileName)} (or the
  * lenient variant) to {@link #runForBuckets}.
  *
  * <p>

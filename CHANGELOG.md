@@ -71,6 +71,12 @@ FEN:
 - `FenAdvancedValidationProblem.INVALID_FULL_MOVE_NUMBER_TOO_BIG_ABSOLUT` → `INVALID_FULL_MOVE_NUMBER_TOO_BIG_ABSOLUTE` (typo fix in a public enum constant).
 - `FenConstants.POSSIBLE_FEN_AFTER_FIRST_HALF_MOVE` renamed to `POSSIBLE_FEN_AFTER_FIRST_MOVE`.
 
+Parser entry points — plain `parse` / `validate` when a parser has one input kind; source suffixes only when it has several:
+
+- SAN (text only): `LenientSanParser.parseText(String, Board)` / `StrictSanParser.parseText(String, Board)` → `parse(...)`. Removed `LenientSanParser.validateText(String, Board)` — a `void`-returning convenience with no strict counterpart; `parse(...)` validates by construction.
+- FEN (text only): `LenientFenParser.parseText(String)` → `parse(String)`; `LenientFenParser.validateText(String)` → `validate(String)`.
+- PGN (text, file path, line list) — source kind matters, so suffixes stay: the `parse(Path)` / `parse(Path, String)` / `parse(String)` path overloads → `parsePath(...)`; `parse(List<String>)` → `parseLines(...)`; the `validate(Path)` / `validate(Path, String)` / `validate(String)` overloads → `validatePath(...)`. `parseText(String)` and `validateText(String)` are unchanged. This removes the `parse(String pgnPath)`-beside-`parseText(String pgn)` footgun (same parameter type, opposite meaning). Applies to both `StrictPgnParser` and `LenientPgnParser`.
+
 Enum behavior moved to utilities (the "enums carry data" pass) — each former `Enum.method(...)` is now `EnumUtility.method(enum, ...)`:
 
 - `KingSafetyCheck` / `MovementCheck` / `CastlingCheck` `toMoveCheck(...)` → `analyze.{KingSafetyCheck,MovementCheck,CastlingCheck}Translator.toMoveCheck(...)`.
