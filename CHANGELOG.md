@@ -20,7 +20,7 @@ A surface-only release. It retires the `HalfMove` concept, replaces the "halfmov
 
 ### Behavioral
 
-- None. Move legality, SAN/FEN/PGN parsing and export, unwinnability and adjudication verdicts, and all report output are unchanged from 18.1.0. This release changes only the public type/method surface.
+- No rule, parser, or report behavior changes: move legality, SAN/FEN/PGN parsing and export, unwinnability and adjudication verdicts, and all report output are identical to 18.1.0. The one observable change is cosmetic — the core `board.enums` types now have a conventional `toString()` (see Notable).
 
 ### Breaking
 
