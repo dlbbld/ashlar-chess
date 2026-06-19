@@ -122,10 +122,14 @@ public final class Board {
   // public accessors.
   private final List<BoardState> boardStateList;
 
-  private record BoardState(@Nullable LegalMove move, @Nullable String san, @Nullable String lan,
-      ImmutableList<LegalMove> legalMoves, boolean isCheck, boolean isCheckmate, boolean isStalemate,
-      DynamicPosition dynamicPosition, int halfMoveClock, int repetitionCount, CastlingRightLoss whiteKingSideLoss,
-      CastlingRightLoss whiteQueenSideLoss, CastlingRightLoss blackKingSideLoss, CastlingRightLoss blackQueenSideLoss) {
+  // Legal moves of the CURRENT position only. Legal moves are derived cache, not game history, so historical
+  // positions do not retain them; this is recomputed on unmove() for the restored position.
+  private ImmutableList<LegalMove> currentLegalMoves;
+
+  private record BoardState(@Nullable LegalMove move, @Nullable String san, @Nullable String lan, boolean isCheck,
+      boolean isCheckmate, boolean isStalemate, DynamicPosition dynamicPosition, int halfMoveClock, int repetitionCount,
+      CastlingRightLoss whiteKingSideLoss, CastlingRightLoss whiteQueenSideLoss, CastlingRightLoss blackKingSideLoss,
+      CastlingRightLoss blackQueenSideLoss) {
   }
 
   /**
@@ -191,9 +195,10 @@ public final class Board {
             : CastlingRightLoss.UNKNOWN_FEN_IMPORT;
 
     this.boardStateList = new ArrayList<>();
-    this.boardStateList.add(new BoardState(null, null, null, legalMoves, isCheck, isCheckmate, isStalemate,
-        initialDynamicPosition, initialFenUse.halfMoveClock(), 1, initialWhiteKingSideLoss, initialWhiteQueenSideLoss,
-        initialBlackKingSideLoss, initialBlackQueenSideLoss));
+    this.boardStateList.add(new BoardState(null, null, null, isCheck, isCheckmate, isStalemate, initialDynamicPosition,
+        initialFenUse.halfMoveClock(), 1, initialWhiteKingSideLoss, initialWhiteQueenSideLoss, initialBlackKingSideLoss,
+        initialBlackQueenSideLoss));
+    this.currentLegalMoves = legalMoves;
   }
 
   /**
@@ -371,15 +376,16 @@ public final class Board {
     final int newRepetitionCount = RepetitionUtility.calculateCountRepetition(collectPerformedMoves(moveToPerform),
         collectDynamicPositions(newDynamicPosition), newDynamicPosition);
 
-    // SAN disambiguation uses the legal moves of the position the move is played FROM (the current last state)
+    // SAN disambiguation uses the legal moves of the position the move is played FROM (the current position)
     final SanTerminalMarker sanTerminalMarker = SanTerminalMarkerUtility.calculate(isCheck, isCheckmate);
-    final String san = MoveToSan.toSan(moveToPerform, beforeState.legalMoves(), sanTerminalMarker);
+    final String san = MoveToSan.toSan(moveToPerform, currentLegalMoves, sanTerminalMarker);
     final String lan = MoveToLan.toLan(moveToPerform, sanTerminalMarker);
 
     // now changing board class state, so performing the move!
-    this.boardStateList.add(new BoardState(moveToPerform, san, lan, legalMovesAfterMove, isCheck, isCheckmate,
-        isStalemate, newDynamicPosition, newHalfMoveClock, newRepetitionCount, whiteKingSideLoss, whiteQueenSideLoss,
+    this.boardStateList.add(new BoardState(moveToPerform, san, lan, isCheck, isCheckmate, isStalemate,
+        newDynamicPosition, newHalfMoveClock, newRepetitionCount, whiteKingSideLoss, whiteQueenSideLoss,
         blackKingSideLoss, blackQueenSideLoss));
+    this.currentLegalMoves = legalMovesAfterMove;
   }
 
   // The move that reached the position at {@code positionIndex} (>= 1); never the initial position (index 0).
@@ -429,6 +435,21 @@ public final class Board {
     return positions;
   }
 
+  // Recomputes a position's legal moves from its DynamicPosition. Legal moves are derived cache, not retained
+  // per historical position; getLegalMoves() serves the current position and unmove() restores it here. The
+  // DynamicPosition carries the normalized en-passant square, which is legal-move-equivalent to the raw square
+  // (normalization only zeroes the target when no legal en-passant capture exists).
+  private static ImmutableList<LegalMove> legalMovesFor(DynamicPosition dynamicPosition) {
+    final Side side = dynamicPosition.sideToMove();
+    final CastlingRight castlingRight = side == Side.WHITE ? dynamicPosition.castlingRightWhite()
+        : dynamicPosition.castlingRightBlack();
+    final Square enPassantCaptureTargetSquare = dynamicPosition.enPassantCaptureTargetSquare();
+    final long enPassantBit = enPassantCaptureTargetSquare == Square.NONE ? 0L
+        : 1L << enPassantCaptureTargetSquare.ordinal();
+    return BitboardLegalMoveFactory.calculateLegalMoves(dynamicPosition.bitboardPosition(), side, castlingRight,
+        enPassantBit);
+  }
+
   /**
    * Undoes the most recently played move, restoring the board to the state immediately before that move. Throws if no
    * move has been played from the initial FEN.
@@ -439,6 +460,7 @@ public final class Board {
     }
 
     this.boardStateList.remove(boardStateList.size() - 1);
+    this.currentLegalMoves = legalMovesFor(Nulls.getLast(boardStateList).dynamicPosition());
   }
 
   public LegalMove getLastMove() {
@@ -449,7 +471,7 @@ public final class Board {
   }
 
   public ImmutableList<LegalMove> getLegalMoves() {
-    return Nulls.getLast(boardStateList).legalMoves();
+    return currentLegalMoves;
   }
 
   public ImmutableList<MoveSpecification> getPerformedMoveSpecificationList() {
