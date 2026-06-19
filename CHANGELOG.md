@@ -63,6 +63,7 @@ Model invariants:
 
 - `UnwinnabilityFullAnalysis.mateLine()` now returns `ImmutableList<UciMove>` instead of `List<UciMove>`, and the record copies the list defensively on construction — the component is now guaranteed immutable.
 - `ClaimRights`'s `claimableMoves` component is now `ImmutableList<ClaimableMove>` (was `List<ClaimableMove>`); the canonical constructor requires an already-immutable list rather than defensively copying an arbitrary `List`.
+- `PgnCreate.toPgnLines(...)` (both overloads) now returns `ImmutableList<String>` instead of `List<String>` — the last return-side mutable-collection leak, now aligned with the rest of the API.
 - `MoveSpecification`'s canonical constructor now validates its structural invariants on every path (previously the public four-argument constructor bypassed validation). Inconsistent from / to / castling / promotion combinations now throw `IllegalArgumentException` at construction instead of yielding a malformed value.
 
 FEN:

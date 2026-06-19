@@ -8,6 +8,8 @@ import java.util.List;
 
 import org.eclipse.jdt.annotation.Nullable;
 
+import com.google.common.collect.ImmutableList;
+
 import io.github.dlbbld.ashlarchess.board.Board;
 import io.github.dlbbld.ashlarchess.board.MoveNumberFormat;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
@@ -46,14 +48,14 @@ public final class PgnCreate {
     return appendEmptyLine(BasicUtility.convertToString(toPgnLines(pgnGame, writeMode)));
   }
 
-  public static List<String> toPgnLines(PgnGame pgnGame) {
+  public static ImmutableList<String> toPgnLines(PgnGame pgnGame) {
     return toPgnLines(pgnGame, WriteMode.SEMANTIC);
   }
 
-  public static List<String> toPgnLines(PgnGame pgnGame, WriteMode writeMode) {
+  public static ImmutableList<String> toPgnLines(PgnGame pgnGame, WriteMode writeMode) {
     final PgnGame effective = writeMode == WriteMode.ARCHIVAL ? PgnArchivalNormalization.apply(pgnGame) : pgnGame;
-    return calculateFileLines(effective.tagList(), effective.pregameCommentary(), effective.startFen(),
-        effective.moveList(), effective.terminationMarker());
+    return Nulls.copyOfList(calculateFileLines(effective.tagList(), effective.pregameCommentary(),
+        effective.startFen(), effective.moveList(), effective.terminationMarker()));
   }
 
   private static String appendEmptyLine(String text) {
