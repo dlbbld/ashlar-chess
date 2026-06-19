@@ -35,6 +35,12 @@ public enum PieceType {
     return name;
   }
 
+  /** Piece-type letter: {@code "P" "N" "B" "R" "Q" "K"}, and {@code "none"} for {@link #NONE}. */
+  @Override
+  public String toString() {
+    return this == NONE ? "none" : String.valueOf(letter);
+  }
+
   PieceType(char letter, int value, String name) {
     this.letter = letter;
     this.value = value;
