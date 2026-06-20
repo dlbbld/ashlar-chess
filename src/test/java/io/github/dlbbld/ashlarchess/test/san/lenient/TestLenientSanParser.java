@@ -22,7 +22,7 @@ import io.github.dlbbld.ashlarchess.model.LegalMove;
 import io.github.dlbbld.ashlarchess.model.UciMove;
 import io.github.dlbbld.ashlarchess.san.ForgivenItem;
 import io.github.dlbbld.ashlarchess.san.LenientSanParserValidationException;
-import io.github.dlbbld.ashlarchess.san.LenientSanParserValidationResult;
+import io.github.dlbbld.ashlarchess.san.LenientSanParseResult;
 import io.github.dlbbld.ashlarchess.san.LenientSanValidationProblem;
 
 @SuppressWarnings("static-method")
@@ -42,7 +42,7 @@ class TestLenientSanParser {
   void testCanonicalSanGameProducesNoForgivenItems() {
     final Board board = new Board();
     for (final String san : ITALIAN_OPENING_SAN) {
-      final LenientSanParserValidationResult result = board.moveLenient(san);
+      final LenientSanParseResult result = board.moveLenient(san);
       assertTrue(result.forgivenItems().isEmpty(),
           "Expected no forgiven items for canonical SAN move: " + san + " (got " + result.forgivenItems() + ")");
     }
@@ -54,7 +54,7 @@ class TestLenientSanParser {
     final Board board = new Board();
     boolean sawUciCode = false;
     for (final String uci : uciMoves) {
-      final LenientSanParserValidationResult result = board.moveLenient(uci);
+      final LenientSanParseResult result = board.moveLenient(uci);
       if (containsCode(result, LenientSanValidationProblem.UCI_NOTATION)) {
         sawUciCode = true;
       }
@@ -76,7 +76,7 @@ class TestLenientSanParser {
     final Board board = new Board();
     boolean sawLongAlgebraic = false;
     for (final String lan : lanMoves) {
-      final LenientSanParserValidationResult result = board.moveLenient(lan);
+      final LenientSanParseResult result = board.moveLenient(lan);
       if (containsCode(result, LenientSanValidationProblem.LONG_ALGEBRAIC_NOTATION)) {
         sawLongAlgebraic = true;
       }
@@ -97,7 +97,7 @@ class TestLenientSanParser {
     board.moveStrict("e5");
     board.moveStrict("Bc4");
     board.moveStrict("Nc6");
-    final LenientSanParserValidationResult result = board.moveLenient("Bxf7");
+    final LenientSanParseResult result = board.moveLenient("Bxf7");
     assertExactlyOneCode(result, LenientSanValidationProblem.MISSING_CHECK_SUFFIX);
     assertEquals("Bxf7+", canonical(result));
   }
@@ -106,7 +106,7 @@ class TestLenientSanParser {
   void testMissingCheckmateSuffix() {
     // Back-rank mate: white rook to a8 mates black king on g8.
     final Board board = Board.fromFenStrict("6k1/5ppp/8/8/8/8/8/R6K w - - 0 1");
-    final LenientSanParserValidationResult result = board.moveLenient("Ra8");
+    final LenientSanParseResult result = board.moveLenient("Ra8");
     assertExactlyOneCode(result, LenientSanValidationProblem.MISSING_CHECKMATE_SUFFIX);
     assertEquals("Ra8#", canonical(result));
   }
@@ -115,7 +115,7 @@ class TestLenientSanParser {
   void testSpuriousCheckSuffix() {
     // 1.e4+ - pawn push that's not a check.
     final Board board = new Board();
-    final LenientSanParserValidationResult result = board.moveLenient("e4+");
+    final LenientSanParseResult result = board.moveLenient("e4+");
     assertExactlyOneCode(result, LenientSanValidationProblem.SPURIOUS_CHECK_SUFFIX);
     assertEquals("e4", canonical(result));
   }
@@ -124,7 +124,7 @@ class TestLenientSanParser {
   void testSpuriousCheckmateSuffix() {
     // 1.e4# - pawn push that's not mate.
     final Board board = new Board();
-    final LenientSanParserValidationResult result = board.moveLenient("e4#");
+    final LenientSanParseResult result = board.moveLenient("e4#");
     assertExactlyOneCode(result, LenientSanValidationProblem.SPURIOUS_CHECKMATE_SUFFIX);
     assertEquals("e4", canonical(result));
   }
@@ -133,7 +133,7 @@ class TestLenientSanParser {
   void testWrongCheckSuffixForCheckmate() {
     // Back-rank mate written with + instead of #.
     final Board board = Board.fromFenStrict("6k1/5ppp/8/8/8/8/8/R6K w - - 0 1");
-    final LenientSanParserValidationResult result = board.moveLenient("Ra8+");
+    final LenientSanParseResult result = board.moveLenient("Ra8+");
     assertExactlyOneCode(result, LenientSanValidationProblem.WRONG_CHECK_SUFFIX_FOR_CHECKMATE);
     assertEquals("Ra8#", canonical(result));
   }
@@ -146,7 +146,7 @@ class TestLenientSanParser {
     board.moveStrict("e5");
     board.moveStrict("Bc4");
     board.moveStrict("Nc6");
-    final LenientSanParserValidationResult result = board.moveLenient("Bxf7#");
+    final LenientSanParseResult result = board.moveLenient("Bxf7#");
     assertExactlyOneCode(result, LenientSanValidationProblem.WRONG_CHECKMATE_SUFFIX_FOR_CHECK);
     assertEquals("Bxf7+", canonical(result));
   }
@@ -159,7 +159,7 @@ class TestLenientSanParser {
     board.moveStrict("e5");
     board.moveStrict("Nf3");
     board.moveStrict("d6");
-    final LenientSanParserValidationResult result = board.moveLenient("Ne5");
+    final LenientSanParseResult result = board.moveLenient("Ne5");
     assertExactlyOneCode(result, LenientSanValidationProblem.MISSING_CAPTURE_MARKER);
     assertEquals("Nxe5", canonical(result));
   }
@@ -170,7 +170,7 @@ class TestLenientSanParser {
     final Board board = new Board();
     board.moveStrict("e4");
     board.moveStrict("e5");
-    final LenientSanParserValidationResult result = board.moveLenient("Bxc4");
+    final LenientSanParseResult result = board.moveLenient("Bxc4");
     assertExactlyOneCode(result, LenientSanValidationProblem.SPURIOUS_CAPTURE_MARKER);
     assertEquals("Bc4", canonical(result));
   }
@@ -180,7 +180,7 @@ class TestLenientSanParser {
     // After 1.e4, black plays "Nbc6" - only Nb8 can reach c6, file disambig is unnecessary.
     final Board board = new Board();
     board.moveStrict("e4");
-    final LenientSanParserValidationResult result = board.moveLenient("Nbc6");
+    final LenientSanParseResult result = board.moveLenient("Nbc6");
     assertExactlyOneCode(result, LenientSanValidationProblem.OVERSPECIFIED_FILE_DISAMBIGUATION);
     assertEquals("Nc6", canonical(result));
   }
@@ -189,7 +189,7 @@ class TestLenientSanParser {
   void testOverspecifiedRankDisambiguation() {
     // Single white knight on d5; "N5e7" is rank-disambiguated but rank not necessary.
     final Board board = Board.fromFenStrict("4k3/8/8/3N4/8/8/P7/4K3 w - - 0 1");
-    final LenientSanParserValidationResult result = board.moveLenient("N5e7");
+    final LenientSanParseResult result = board.moveLenient("N5e7");
     assertExactlyOneCode(result, LenientSanValidationProblem.OVERSPECIFIED_RANK_DISAMBIGUATION);
     assertEquals("Ne7", canonical(result));
   }
@@ -201,7 +201,7 @@ class TestLenientSanParser {
     // but is non-canonical - strict throws NON_STANDARD_SPECIFIED_RNBQ_RANK_INSTEAD_OF_FILE; lenient resolves to
     // "Rda1" by board lookup.
     final Board board = Board.fromFenStrict("7k/8/8/8/R7/8/8/3R3K w - - 0 1");
-    final LenientSanParserValidationResult result = board.moveLenient("R1a1");
+    final LenientSanParseResult result = board.moveLenient("R1a1");
     assertExactlyOneCode(result, LenientSanValidationProblem.NON_STANDARD_RANK_DISAMBIGUATION);
     assertEquals("Rda1", canonical(result));
   }
@@ -210,7 +210,7 @@ class TestLenientSanParser {
   void testOverspecifiedSquareDisambiguation() {
     // Single white knight on d5; "Nd5e7" is square-disambiguated (both file and rank unnecessary).
     final Board board = Board.fromFenStrict("4k3/8/8/3N4/8/8/P7/4K3 w - - 0 1");
-    final LenientSanParserValidationResult result = board.moveLenient("Nd5e7");
+    final LenientSanParseResult result = board.moveLenient("Nd5e7");
     assertExactlyOneCode(result, LenientSanValidationProblem.OVERSPECIFIED_SQUARE_DISAMBIGUATION);
     assertEquals("Ne7", canonical(result));
   }
@@ -219,7 +219,7 @@ class TestLenientSanParser {
   void testLongAlgebraicNotation() {
     // 1.e2-e4 - pawn move with explicit from-square and hyphen.
     final Board board = new Board();
-    final LenientSanParserValidationResult result = board.moveLenient("e2-e4");
+    final LenientSanParseResult result = board.moveLenient("e2-e4");
     assertContainsCode(result, LenientSanValidationProblem.LONG_ALGEBRAIC_NOTATION);
     assertEquals("e4", canonical(result));
   }
@@ -228,7 +228,7 @@ class TestLenientSanParser {
   void testUciNotation() {
     // 1.e2e4 - pawn UCI form (no hyphen, no piece letter).
     final Board board = new Board();
-    final LenientSanParserValidationResult result = board.moveLenient("e2e4");
+    final LenientSanParseResult result = board.moveLenient("e2e4");
     assertExactlyOneCode(result, LenientSanValidationProblem.UCI_NOTATION);
     assertEquals("e4", canonical(result));
   }
@@ -243,7 +243,7 @@ class TestLenientSanParser {
     board.moveStrict("Nc6");
     board.moveStrict("Bc4");
     board.moveStrict("Bc5");
-    final LenientSanParserValidationResult result = board.moveLenient("0-0");
+    final LenientSanParseResult result = board.moveLenient("0-0");
     assertExactlyOneCode(result, LenientSanValidationProblem.ZERO_INSTEAD_OF_O_CASTLING);
     assertEquals("O-O", canonical(result));
   }
@@ -252,7 +252,7 @@ class TestLenientSanParser {
   void testExplicitPawnLetter() {
     // 1.Pe4 - explicit pawn letter prefix.
     final Board board = new Board();
-    final LenientSanParserValidationResult result = board.moveLenient("Pe4");
+    final LenientSanParseResult result = board.moveLenient("Pe4");
     assertExactlyOneCode(result, LenientSanValidationProblem.EXPLICIT_PAWN_LETTER);
     assertEquals("e4", canonical(result));
   }
@@ -261,7 +261,7 @@ class TestLenientSanParser {
   void testMissingPromotionEquals() {
     // White pawn on a7, plays a8Q (no = symbol).
     final Board board = Board.fromFenStrict("8/P7/1k6/8/8/8/8/4K3 w - - 0 1");
-    final LenientSanParserValidationResult result = board.moveLenient("a8Q");
+    final LenientSanParseResult result = board.moveLenient("a8Q");
     assertExactlyOneCode(result, LenientSanValidationProblem.MISSING_PROMOTION_EQUALS);
     assertEquals("a8=Q", canonical(result));
   }
@@ -270,7 +270,7 @@ class TestLenientSanParser {
   void testLowercasePieceLetter() {
     // 1.nf3 - lowercase knight letter.
     final Board board = new Board();
-    final LenientSanParserValidationResult result = board.moveLenient("nf3");
+    final LenientSanParseResult result = board.moveLenient("nf3");
     assertExactlyOneCode(result, LenientSanValidationProblem.LOWERCASE_PIECE_LETTER);
     assertEquals("Nf3", canonical(result));
   }
@@ -279,7 +279,7 @@ class TestLenientSanParser {
   void testUppercaseFileLetter() {
     // 1.NF3 - uppercase file letter.
     final Board board = new Board();
-    final LenientSanParserValidationResult result = board.moveLenient("NF3");
+    final LenientSanParseResult result = board.moveLenient("NF3");
     assertExactlyOneCode(result, LenientSanValidationProblem.UPPERCASE_FILE_LETTER);
     assertEquals("Nf3", canonical(result));
   }
@@ -292,7 +292,7 @@ class TestLenientSanParser {
     board.moveStrict("e5");
     board.moveStrict("Nf3");
     board.moveStrict("d6");
-    final LenientSanParserValidationResult result = board.moveLenient("NXe5");
+    final LenientSanParseResult result = board.moveLenient("NXe5");
     assertExactlyOneCode(result, LenientSanValidationProblem.UPPERCASE_CAPTURE_MARKER);
     assertEquals("Nxe5", canonical(result));
   }
@@ -301,7 +301,7 @@ class TestLenientSanParser {
   void testLowercasePromotionPiece() {
     // White pawn on a7, plays a8=q (lowercase q).
     final Board board = Board.fromFenStrict("8/P7/1k6/8/8/8/8/4K3 w - - 0 1");
-    final LenientSanParserValidationResult result = board.moveLenient("a8=q");
+    final LenientSanParseResult result = board.moveLenient("a8=q");
     assertExactlyOneCode(result, LenientSanValidationProblem.LOWERCASE_PROMOTION_PIECE);
     assertEquals("a8=Q", canonical(result));
   }
@@ -315,7 +315,7 @@ class TestLenientSanParser {
     // Regression: lowercase b at position 0 was being case-folded to bishop ("b4+" -> "B4+") even when the
     // body shape is pawn-compatible. Should resolve to canonical "b4" with SPURIOUS_CHECK_SUFFIX.
     final Board board = new Board();
-    final LenientSanParserValidationResult result = board.moveLenient("b4+");
+    final LenientSanParseResult result = board.moveLenient("b4+");
     assertExactlyOneCode(result, LenientSanValidationProblem.SPURIOUS_CHECK_SUFFIX);
     assertEquals("b4", canonical(result));
   }
@@ -325,7 +325,7 @@ class TestLenientSanParser {
     // Regression: caseFixUppercaseFileLetters skipped position 0, so "E4" was rejected. Should resolve to
     // canonical "e4" with UPPERCASE_FILE_LETTER.
     final Board board = new Board();
-    final LenientSanParserValidationResult result = board.moveLenient("E4");
+    final LenientSanParseResult result = board.moveLenient("E4");
     assertExactlyOneCode(result, LenientSanValidationProblem.UPPERCASE_FILE_LETTER);
     assertEquals("e4", canonical(result));
   }
@@ -334,7 +334,7 @@ class TestLenientSanParser {
   void testUppercaseFileLetterAtPositionZeroUci() {
     // Regression: "E2E4" (UCI form with uppercase files) was rejected.
     final Board board = new Board();
-    final LenientSanParserValidationResult result = board.moveLenient("E2E4");
+    final LenientSanParseResult result = board.moveLenient("E2E4");
     assertContainsCode(result, LenientSanValidationProblem.UPPERCASE_FILE_LETTER);
     assertContainsCode(result, LenientSanValidationProblem.UCI_NOTATION);
     assertEquals("e4", canonical(result));
@@ -344,7 +344,7 @@ class TestLenientSanParser {
   void testUppercaseFileLetterAtPositionZeroLan() {
     // Regression: "E2-E4" (LAN form with uppercase files) was rejected.
     final Board board = new Board();
-    final LenientSanParserValidationResult result = board.moveLenient("E2-E4");
+    final LenientSanParseResult result = board.moveLenient("E2-E4");
     assertContainsCode(result, LenientSanValidationProblem.UPPERCASE_FILE_LETTER);
     assertContainsCode(result, LenientSanValidationProblem.LONG_ALGEBRAIC_NOTATION);
     assertEquals("e4", canonical(result));
@@ -361,7 +361,7 @@ class TestLenientSanParser {
     board.moveStrict("e5");
     board.moveStrict("Bc4");
     board.moveStrict("Nc6");
-    final LenientSanParserValidationResult result = board.moveLenient("bxf7");
+    final LenientSanParseResult result = board.moveLenient("bxf7");
     assertContainsCode(result, LenientSanValidationProblem.LOWERCASE_PIECE_LETTER);
     assertContainsCode(result, LenientSanValidationProblem.MISSING_CHECK_SUFFIX);
     assertEquals("Bxf7+", canonical(result));
@@ -374,7 +374,7 @@ class TestLenientSanParser {
     // UPPERCASE_FILE_LETTER and MISSING_PROMOTION_EQUALS. (Bishops don't promote, so uppercase B at the head
     // of a capture-promotion shape unambiguously means b-file pawn.)
     final Board board = Board.fromFenStrict("r3k3/1P6/8/8/8/8/8/4K3 w - - 0 1");
-    final LenientSanParserValidationResult result = board.moveLenient("Bxa8Q");
+    final LenientSanParseResult result = board.moveLenient("Bxa8Q");
     assertContainsCode(result, LenientSanValidationProblem.UPPERCASE_FILE_LETTER);
     assertContainsCode(result, LenientSanValidationProblem.MISSING_PROMOTION_EQUALS);
     assertEquals("bxa8=Q+", canonical(result));
@@ -387,7 +387,7 @@ class TestLenientSanParser {
     final Board board = new Board();
     board.moveStrict("e4");
     board.moveStrict("d5");
-    final LenientSanParserValidationResult result = board.moveLenient("ed5");
+    final LenientSanParseResult result = board.moveLenient("ed5");
     assertExactlyOneCode(result, LenientSanValidationProblem.MISSING_CAPTURE_MARKER);
     assertEquals("exd5", canonical(result));
   }
@@ -401,7 +401,7 @@ class TestLenientSanParser {
     // After 1.e4, black plays "nbc6" - lowercase n + unnecessary file disambig.
     final Board board = new Board();
     board.moveStrict("e4");
-    final LenientSanParserValidationResult result = board.moveLenient("nbc6");
+    final LenientSanParseResult result = board.moveLenient("nbc6");
     assertContainsCode(result, LenientSanValidationProblem.LOWERCASE_PIECE_LETTER);
     assertContainsCode(result, LenientSanValidationProblem.OVERSPECIFIED_FILE_DISAMBIGUATION);
     assertEquals("Nc6", canonical(result));
@@ -417,7 +417,7 @@ class TestLenientSanParser {
     board.moveStrict("Nc6");
     board.moveStrict("Bc4");
     board.moveStrict("Bc5");
-    final LenientSanParserValidationResult result = board.moveLenient("0-0+");
+    final LenientSanParseResult result = board.moveLenient("0-0+");
     assertContainsCode(result, LenientSanValidationProblem.ZERO_INSTEAD_OF_O_CASTLING);
     assertContainsCode(result, LenientSanValidationProblem.SPURIOUS_CHECK_SUFFIX);
     assertEquals("O-O", canonical(result));
@@ -427,7 +427,7 @@ class TestLenientSanParser {
   void testCombinationUciAndOverspecifiedSquare() {
     // 1.g1f3 - UCI knight move. After UCI translation gives "Ng1f3"; Phase 2 strips overspec to "Nf3".
     final Board board = new Board();
-    final LenientSanParserValidationResult result = board.moveLenient("g1f3");
+    final LenientSanParseResult result = board.moveLenient("g1f3");
     assertContainsCode(result, LenientSanValidationProblem.UCI_NOTATION);
     assertContainsCode(result, LenientSanValidationProblem.OVERSPECIFIED_SQUARE_DISAMBIGUATION);
     assertEquals("Nf3", canonical(result));
@@ -506,16 +506,16 @@ class TestLenientSanParser {
     return c >= '1' && c <= '8';
   }
 
-  private static boolean containsCode(LenientSanParserValidationResult result, LenientSanValidationProblem code) {
+  private static boolean containsCode(LenientSanParseResult result, LenientSanValidationProblem code) {
     return result.forgivenItems().stream().anyMatch(item -> item.code() == code);
   }
 
-  private static void assertContainsCode(LenientSanParserValidationResult result, LenientSanValidationProblem code) {
+  private static void assertContainsCode(LenientSanParseResult result, LenientSanValidationProblem code) {
     assertTrue(containsCode(result, code),
         "Expected forgiven items to contain " + code + " but got " + result.forgivenItems());
   }
 
-  private static void assertExactlyOneCode(LenientSanParserValidationResult result,
+  private static void assertExactlyOneCode(LenientSanParseResult result,
       LenientSanValidationProblem expectedCode) {
     assertEquals(1, result.forgivenItems().size(),
         "Expected exactly one forgiven item with code " + expectedCode + " but got " + result.forgivenItems());
@@ -523,7 +523,7 @@ class TestLenientSanParser {
     assertEquals(expectedCode, item.code(), "Expected forgiven code " + expectedCode + " but got " + item.code());
   }
 
-  private static String canonical(LenientSanParserValidationResult result) {
+  private static String canonical(LenientSanParseResult result) {
     assertFalse(result.forgivenItems().isEmpty(), "Cannot extract canonical SAN from a result with no forgiven items");
     return Nulls.get(result.forgivenItems(), 0).canonicalSan();
   }

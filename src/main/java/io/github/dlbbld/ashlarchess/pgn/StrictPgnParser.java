@@ -97,6 +97,9 @@ public final class StrictPgnParser {
       final String message = BasicUtility.getMessage(e);
       return new StrictPgnParserValidationResult(e.getStrictPgnParserValidationProblem(), e.getSanValidationProblem(),
           message);
+    } catch (final ProgrammingMistakeException e) {
+      // A library bug must fail fast, not be masked as an UNKNOWN_ERROR validation result.
+      throw e;
     } catch (final RuntimeException e) {
       final String message = unexpectedValidationErrorMessage(e);
       return new StrictPgnParserValidationResult(StrictPgnParserValidationProblem.UNKNOWN_ERROR,
@@ -115,6 +118,9 @@ public final class StrictPgnParser {
       final String message = BasicUtility.getMessage(e);
       return new StrictPgnParserValidationResult(e.getStrictPgnParserValidationProblem(), e.getSanValidationProblem(),
           message);
+    } catch (final ProgrammingMistakeException e) {
+      // A library bug must fail fast, not be masked as an UNKNOWN_ERROR validation result.
+      throw e;
     } catch (final RuntimeException e) {
       final String message = unexpectedValidationErrorMessage(e);
       return new StrictPgnParserValidationResult(StrictPgnParserValidationProblem.UNKNOWN_ERROR,

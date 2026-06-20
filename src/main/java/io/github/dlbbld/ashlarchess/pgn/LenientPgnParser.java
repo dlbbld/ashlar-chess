@@ -15,6 +15,7 @@ import io.github.dlbbld.ashlarchess.board.MoveNumberFormat;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
 import io.github.dlbbld.ashlarchess.common.Nulls;
 import io.github.dlbbld.ashlarchess.common.exceptions.PgnCommentaryValidationException;
+import io.github.dlbbld.ashlarchess.common.exceptions.ProgrammingMistakeException;
 import io.github.dlbbld.ashlarchess.common.utility.BasicUtility;
 import io.github.dlbbld.ashlarchess.enums.MoveSuffixAnnotation;
 import io.github.dlbbld.ashlarchess.fen.LenientFenParser;
@@ -23,7 +24,7 @@ import io.github.dlbbld.ashlarchess.fen.model.Fen;
 import io.github.dlbbld.ashlarchess.model.PgnMove;
 import io.github.dlbbld.ashlarchess.san.ForgivenItem;
 import io.github.dlbbld.ashlarchess.san.LenientSanParserValidationException;
-import io.github.dlbbld.ashlarchess.san.LenientSanParserValidationResult;
+import io.github.dlbbld.ashlarchess.san.LenientSanParseResult;
 import io.github.dlbbld.ashlarchess.san.SanValidationProblem;
 
 /**
@@ -96,6 +97,9 @@ public final class LenientPgnParser {
     final LenientPgnParser parser;
     try {
       parser = new LenientPgnParser(PgnReader.readPgn(pgnPath));
+    } catch (final ProgrammingMistakeException e) {
+      // A library bug must fail fast, not be masked as an UNKNOWN_ERROR validation result.
+      throw e;
     } catch (final RuntimeException e) {
       return new LenientPgnParserValidationResult(LenientPgnParserValidationProblem.UNKNOWN_ERROR,
           SanValidationProblem.NONE, unexpectedValidationErrorMessage(e), null, ForgivenItem.EMPTY_LIST,
@@ -132,6 +136,9 @@ public final class LenientPgnParser {
       return new LenientPgnParserValidationResult(LenientPgnParserValidationProblem.FEN_TAG_INVALID,
           SanValidationProblem.NONE, message, null, Nulls.copyOfList(parser.sanForgivenItemsAccumulator),
           Nulls.copyOfList(parser.tagForgivenItemsAccumulator));
+    } catch (final ProgrammingMistakeException e) {
+      // A library bug must fail fast, not be masked as an UNKNOWN_ERROR validation result.
+      throw e;
     } catch (final RuntimeException e) {
       final String message = unexpectedValidationErrorMessage(e);
       return new LenientPgnParserValidationResult(LenientPgnParserValidationProblem.UNKNOWN_ERROR,
@@ -765,7 +772,7 @@ public final class LenientPgnParser {
       final Side side = board.getSideToMove();
       final int fullMoveNumber = board.getFullMoveNumber();
       try {
-        final LenientSanParserValidationResult result = board.moveLenient(move.san());
+        final LenientSanParseResult result = board.moveLenient(move.san());
         sanForgivenItemsAccumulator.addAll(result.forgivenItems());
         final String canonicalSan = board.getSan();
         canonicalList.add(new PgnMove(canonicalSan, move.moveSuffixAnnotation(), move.commentary()));

@@ -39,11 +39,11 @@ public final class LenientSanParser {
    * @throws LenientSanParserValidationException if the input cannot be resolved to a legal move even after applying
    *                                             every supported tolerance
    */
-  public static LenientSanParserValidationResult parse(String text, Board board) {
+  public static LenientSanParseResult parse(String text, Board board) {
     // Phase 0: try strict on the raw input first. Canonical SAN pays zero lenient overhead.
     try {
       final MoveSpecification ms = StrictSanParser.parse(text, board).moveSpecification();
-      return new LenientSanParserValidationResult(ms, ForgivenItem.EMPTY_LIST);
+      return new LenientSanParseResult(ms, ForgivenItem.EMPTY_LIST);
     } catch (@SuppressWarnings("unused") final SanValidationException ignored) {
       // Fall through to the lenient pipeline.
     }
@@ -71,7 +71,7 @@ public final class LenientSanParser {
     for (final LenientSanValidationProblem code : codes) {
       items.add(new ForgivenItem(code, text, canonicalSan));
     }
-    return new LenientSanParserValidationResult(moveSpecification, Nulls.copyOfList(items));
+    return new LenientSanParseResult(moveSpecification, Nulls.copyOfList(items));
   }
 
   // --- Helpers ---

@@ -15,10 +15,10 @@ import io.github.dlbbld.ashlarchess.common.model.MoveSpecification;
  * there. {@code forgivenItems} is empty when the input was already canonical SAN.
  */
 @SuppressWarnings("null")
-public record LenientSanParserValidationResult(@NonNull MoveSpecification moveSpecification,
+public record LenientSanParseResult(@NonNull MoveSpecification moveSpecification,
     @NonNull ImmutableList<@NonNull ForgivenItem> forgivenItems) {
 
-  public LenientSanParserValidationResult {
+  public LenientSanParseResult {
     forgivenItems = Nulls.copyOfList(forgivenItems);
   }
 }

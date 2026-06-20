@@ -43,13 +43,13 @@ import io.github.dlbbld.ashlarchess.moves.CastlingUtility;
 import io.github.dlbbld.ashlarchess.moves.EnPassantCaptureUtility;
 import io.github.dlbbld.ashlarchess.san.LenientSanParser;
 import io.github.dlbbld.ashlarchess.san.LenientSanParserValidationException;
-import io.github.dlbbld.ashlarchess.san.LenientSanParserValidationResult;
+import io.github.dlbbld.ashlarchess.san.LenientSanParseResult;
 import io.github.dlbbld.ashlarchess.san.MoveToLan;
 import io.github.dlbbld.ashlarchess.san.MoveToSan;
 import io.github.dlbbld.ashlarchess.san.SanTerminalMarker;
 import io.github.dlbbld.ashlarchess.san.SanTerminalMarkerUtility;
 import io.github.dlbbld.ashlarchess.san.StrictSanParser;
-import io.github.dlbbld.ashlarchess.san.StrictSanParserValidationResult;
+import io.github.dlbbld.ashlarchess.san.StrictSanParseResult;
 import io.github.dlbbld.ashlarchess.unwinnability.DeadPositionAnalyzer;
 import io.github.dlbbld.ashlarchess.unwinnability.DeadPositionFullVerdict;
 import io.github.dlbbld.ashlarchess.unwinnability.DeadPositionQuickVerdict;
@@ -273,8 +273,8 @@ public final class Board {
    * @throws io.github.dlbbld.ashlarchess.san.SanValidationException if {@code san} is not canonical SAN, or is
    *                                                                 canonical but does not represent a legal move
    */
-  public StrictSanParserValidationResult moveStrict(String san) {
-    final StrictSanParserValidationResult result = StrictSanParser.parse(san, this);
+  public StrictSanParseResult moveStrict(String san) {
+    final StrictSanParseResult result = StrictSanParser.parse(san, this);
     this.performMoveWithoutValidation(result.moveSpecification());
     if (!san.equals(this.getSan())) {
       throw new ProgrammingMistakeException("The provided SAN and generated SAN are different, this should not happen");
@@ -287,15 +287,15 @@ public final class Board {
    * inputs uniquely identify a legal move and the deviation matches a supported tolerance category (case variation,
    * long-algebraic / UCI form, castling with digit zero, missing or wrong check / checkmate suffix, over-specification,
    * missing or spurious capture marker, missing promotion equals, explicit pawn letter). The returned
-   * {@link LenientSanParserValidationResult} carries the resolved {@code MoveSpecification} together with one
+   * {@link LenientSanParseResult} carries the resolved {@code MoveSpecification} together with one
    * {@code ForgivenItem} per deviation that was forgiven; on canonical input the forgiven-items list is empty.
    *
    * @throws io.github.dlbbld.ashlarchess.san.LenientSanParserValidationException if the input cannot be resolved to a
    *                                                                              legal move even after applying every
    *                                                                              supported tolerance
    */
-  public LenientSanParserValidationResult moveLenient(String san) {
-    final LenientSanParserValidationResult result = LenientSanParser.parse(san, this);
+  public LenientSanParseResult moveLenient(String san) {
+    final LenientSanParseResult result = LenientSanParser.parse(san, this);
     this.performMoveWithoutValidation(result.moveSpecification());
     return result;
   }

@@ -7,6 +7,7 @@ import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 
 import io.github.dlbbld.ashlarchess.common.enums.StrictFenSemanticValidationProblem;
+import io.github.dlbbld.ashlarchess.common.exceptions.ProgrammingMistakeException;
 import io.github.dlbbld.ashlarchess.common.utility.BasicUtility;
 import io.github.dlbbld.ashlarchess.fen.model.Fen;
 
@@ -39,6 +40,9 @@ public final class StrictFenParser {
       return new StrictFenParserValidationResult(StrictFenSemanticValidationProblem.SUCCESS, "OK", parsedFen);
     } catch (final StrictFenSemanticValidationException e) {
       return new StrictFenParserValidationResult(e.getStrictFenSemanticValidationProblem(), BasicUtility.getMessage(e), null);
+    } catch (final ProgrammingMistakeException e) {
+      // A library bug must fail fast, not be masked as an UNKNOWN_ERROR validation result.
+      throw e;
     } catch (final RuntimeException e) {
       return new StrictFenParserValidationResult(StrictFenSemanticValidationProblem.UNKNOWN_ERROR,
           unexpectedValidationErrorMessage(e), null);
