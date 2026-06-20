@@ -16,7 +16,7 @@ import io.github.dlbbld.ashlarchess.board.Board;
 import io.github.dlbbld.ashlarchess.common.Nulls;
 import io.github.dlbbld.ashlarchess.common.constants.ChessConstants;
 import io.github.dlbbld.ashlarchess.common.model.DynamicPosition;
-import io.github.dlbbld.ashlarchess.common.utility.BasicUtility;
+import io.github.dlbbld.ashlarchess.common.utility.ListUtility;
 import io.github.dlbbld.ashlarchess.messages.Message;
 import io.github.dlbbld.ashlarchess.pgn.LenientPgnParser;
 import io.github.dlbbld.ashlarchess.pgn.PgnGame;
@@ -96,7 +96,7 @@ public final class Reporter {
 
   private static void appendLines(List<String> output, List<List<String>> renderedLines) {
     for (final List<String> resultAsLine : renderedLines) {
-      output.add(BasicUtility.calculateSpaceSeparatedList(resultAsLine));
+      output.add(ListUtility.calculateSpaceSeparatedList(resultAsLine));
     }
   }
 

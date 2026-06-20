@@ -11,7 +11,7 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 
 import io.github.dlbbld.ashlarchess.common.Nulls;
-import io.github.dlbbld.ashlarchess.common.utility.BasicUtility;
+import io.github.dlbbld.ashlarchess.common.utility.ListUtility;
 
 class TestBasicUtility {
 
@@ -87,7 +87,7 @@ class TestBasicUtility {
 
     final List<String> lines = Nulls.asList("line 1", "", "line 3");
 
-    final String actual = BasicUtility.calculateLineSeparatedList(lines);
+    final String actual = ListUtility.calculateLineSeparatedList(lines);
 
     assertEquals(expected, actual);
 

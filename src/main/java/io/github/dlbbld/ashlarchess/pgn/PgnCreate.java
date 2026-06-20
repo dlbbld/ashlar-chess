@@ -16,7 +16,7 @@ import io.github.dlbbld.ashlarchess.board.enums.Side;
 import io.github.dlbbld.ashlarchess.common.Nulls;
 import io.github.dlbbld.ashlarchess.common.exceptions.ProgrammingMistakeException;
 import io.github.dlbbld.ashlarchess.common.model.Outcome;
-import io.github.dlbbld.ashlarchess.common.utility.BasicUtility;
+import io.github.dlbbld.ashlarchess.common.utility.ListUtility;
 import io.github.dlbbld.ashlarchess.enums.MoveSuffixAnnotation;
 import io.github.dlbbld.ashlarchess.fen.constants.FenConstants;
 import io.github.dlbbld.ashlarchess.fen.model.Fen;
@@ -44,7 +44,7 @@ public final class PgnCreate {
   }
 
   public static String toPgnString(PgnGame pgnGame, WriteMode writeMode) {
-    return appendEmptyLine(BasicUtility.calculateLineSeparatedList(toPgnLines(pgnGame, writeMode)));
+    return appendEmptyLine(ListUtility.calculateLineSeparatedList(toPgnLines(pgnGame, writeMode)));
   }
 
   public static ImmutableList<String> toPgnLines(PgnGame pgnGame) {

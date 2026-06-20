@@ -15,7 +15,7 @@ import com.google.common.collect.ImmutableList;
 
 import io.github.dlbbld.ashlarchess.common.Nulls;
 import io.github.dlbbld.ashlarchess.common.exceptions.ProgrammingMistakeException;
-import io.github.dlbbld.ashlarchess.common.utility.BasicUtility;
+import io.github.dlbbld.ashlarchess.common.utility.ListUtility;
 
 public final class TagUtility {
 
@@ -169,7 +169,7 @@ public final class TagUtility {
     for (final StandardTag tag : SEVEN_TAG_ROSTER_TAG_LIST) {
       list.add(tag.getName());
     }
-    return BasicUtility.calculateCommaSeparatedList(list);
+    return ListUtility.calculateCommaSeparatedList(list);
   }
 
   public static void removeTag(List<Tag> tagList, StandardTag tag) {

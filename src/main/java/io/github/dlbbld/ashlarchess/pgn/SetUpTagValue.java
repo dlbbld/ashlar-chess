@@ -10,7 +10,7 @@ import com.google.common.collect.ImmutableList;
 
 import io.github.dlbbld.ashlarchess.common.exceptions.NonePointerException;
 import io.github.dlbbld.ashlarchess.common.exceptions.ProgrammingMistakeException;
-import io.github.dlbbld.ashlarchess.common.utility.BasicUtility;
+import io.github.dlbbld.ashlarchess.common.utility.ListUtility;
 
 enum SetUpTagValue {
   START_FROM_INITIAL_POSITION("0"),
@@ -37,7 +37,7 @@ enum SetUpTagValue {
     for (final SetUpTagValue tagValue : REAL) {
       list.add(tagValue.getValue());
     }
-    return BasicUtility.calculateCommaSeparatedList(list);
+    return ListUtility.calculateCommaSeparatedList(list);
   }
 
   public static boolean exists(String value) {

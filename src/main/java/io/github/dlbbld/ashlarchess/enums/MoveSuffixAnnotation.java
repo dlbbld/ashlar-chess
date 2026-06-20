@@ -9,7 +9,7 @@ import java.util.List;
 import com.google.common.collect.ImmutableList;
 
 import io.github.dlbbld.ashlarchess.common.exceptions.ProgrammingMistakeException;
-import io.github.dlbbld.ashlarchess.common.utility.BasicUtility;
+import io.github.dlbbld.ashlarchess.common.utility.ListUtility;
 
 public enum MoveSuffixAnnotation {
 
@@ -61,6 +61,6 @@ public enum MoveSuffixAnnotation {
     for (final MoveSuffixAnnotation suffixEnum : REAL) {
       list.add(suffixEnum.getSuffix());
     }
-    return BasicUtility.calculateCommaSeparatedList(list);
+    return ListUtility.calculateCommaSeparatedList(list);
   }
 }

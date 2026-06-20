@@ -14,7 +14,7 @@ import java.util.TreeSet;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
 import io.github.dlbbld.ashlarchess.board.enums.Square;
 import io.github.dlbbld.ashlarchess.common.Nulls;
-import io.github.dlbbld.ashlarchess.common.utility.BasicUtility;
+import io.github.dlbbld.ashlarchess.common.utility.ListUtility;
 
 class Reachability {
 
@@ -89,14 +89,14 @@ class Reachability {
     final List<ReachabilityVariable> entriesWithValueOneList = calculateEntriesWithValueOne();
 
     final Set<Square> reachableSquareSetWhite = calculateSquareSet(Side.WHITE, entriesWithValueOneList);
-    final String squareListWhite = BasicUtility.calculateSquareList(reachableSquareSetWhite);
+    final String squareListWhite = ListUtility.calculateSquareList(reachableSquareSetWhite);
     lineList.add(Side.WHITE.getName() + ": " + squareListWhite);
 
     final Set<Square> reachableSquareSetBlack = calculateSquareSet(Side.BLACK, entriesWithValueOneList);
-    final String squareListBlack = BasicUtility.calculateSquareList(reachableSquareSetBlack);
+    final String squareListBlack = ListUtility.calculateSquareList(reachableSquareSetBlack);
     lineList.add(Side.BLACK.getName() + ": " + squareListBlack);
 
-    return BasicUtility.calculateLineSeparatedList(lineList);
+    return ListUtility.calculateLineSeparatedList(lineList);
   }
 
   private static Set<Square> calculateSquareSet(Side side, List<ReachabilityVariable> entryList) {

@@ -16,7 +16,7 @@ import org.eclipse.jdt.annotation.NonNull;
 
 import io.github.dlbbld.ashlarchess.board.enums.Square;
 import io.github.dlbbld.ashlarchess.common.Nulls;
-import io.github.dlbbld.ashlarchess.common.utility.BasicUtility;
+import io.github.dlbbld.ashlarchess.common.utility.ListUtility;
 
 class MobilitySolution {
 
@@ -113,14 +113,14 @@ class MobilitySolution {
       }
       final StringBuilder pieceDescription = new StringBuilder();
       pieceDescription.append(piecePlacement.toString());
-      final String squareList = BasicUtility.calculateSquareList(reachable);
+      final String squareList = ListUtility.calculateSquareList(reachable);
       pieceDescription.append(": ");
       pieceDescription.append(squareList);
       @SuppressWarnings("null") @NonNull final String string = pieceDescription.toString();
       lineList.add(string);
     }
 
-    return BasicUtility.calculateLineSeparatedList(lineList);
+    return ListUtility.calculateLineSeparatedList(lineList);
   }
 
   @Override

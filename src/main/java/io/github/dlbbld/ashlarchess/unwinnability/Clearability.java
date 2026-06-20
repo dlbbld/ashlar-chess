@@ -13,7 +13,7 @@ import java.util.TreeSet;
 import org.eclipse.jdt.annotation.NonNull;
 
 import io.github.dlbbld.ashlarchess.common.Nulls;
-import io.github.dlbbld.ashlarchess.common.utility.BasicUtility;
+import io.github.dlbbld.ashlarchess.common.utility.ListUtility;
 
 class Clearability {
 
@@ -72,7 +72,7 @@ class Clearability {
       lineList.add(string);
     }
 
-    return BasicUtility.calculateLineSeparatedList(lineList);
+    return ListUtility.calculateLineSeparatedList(lineList);
   }
 
   @Override

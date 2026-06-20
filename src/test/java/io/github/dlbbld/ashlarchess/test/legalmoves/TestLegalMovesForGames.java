@@ -13,7 +13,7 @@ import java.util.TreeSet;
 import org.junit.jupiter.api.Test;
 
 import io.github.dlbbld.ashlarchess.board.Board;
-import io.github.dlbbld.ashlarchess.common.utility.BasicUtility;
+import io.github.dlbbld.ashlarchess.common.utility.ListUtility;
 import io.github.dlbbld.ashlarchess.model.PgnMove;
 import io.github.dlbbld.ashlarchess.pgn.PgnGame;
 import io.github.dlbbld.ashlarchess.test.pgn.parser.PgnCacheForStrictPgnParserTestCases;
@@ -1010,7 +1010,7 @@ class TestLegalMovesForGames {
     for (final PgnMove move : pgnGame.moveList()) {
       board.moveStrict(move.san());
       final String san = board.getSan();
-      final String legalMoveList = BasicUtility.calculateCommaSeparatedList(new ArrayList<>(board.getLegalMovesSan()));
+      final String legalMoveList = ListUtility.calculateCommaSeparatedList(new ArrayList<>(board.getLegalMovesSan()));
       final String output = "checkLegalMoves(board, \"" + san + "\", \"" + legalMoveList + "\");";
       System.out.println(output);
     }
