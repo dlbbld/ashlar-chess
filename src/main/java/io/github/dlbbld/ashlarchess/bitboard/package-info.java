@@ -17,10 +17,6 @@
  * {@link io.github.dlbbld.ashlarchess.board.Board} / {@link io.github.dlbbld.ashlarchess.common.model.DynamicPosition}
  * and intentionally do not appear on {@link io.github.dlbbld.ashlarchess.bitboard.BitboardPosition}, which carries
  * piece placement only.
- *
- * <p>
- * See {@code tasks.md} - <em>Project invariant - the {@code StaticPosition} reference implementation is never lost</em>
- * - for the governing rule across the bitboard transition.
  */
 @NonNullByDefault
 package io.github.dlbbld.ashlarchess.bitboard;
