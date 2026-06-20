@@ -38,14 +38,14 @@ public class GenerateRandomGame {
 
     List<MoveSpecification> legalMoves = board.getLegalMoveSpecifications();
     int numberOfMoveOptions = legalMoves.size();
-    List<MoveSpecification> moveOptionList = new ArrayList<>(legalMoves);
+    List<MoveSpecification> moveOptions = new ArrayList<>(legalMoves);
 
     int moveNumberLastPossibleTermination = -1;
     int numberOfMovesPerformed = 0;
     while (numberOfMoveOptions != 0) {
       if (numberOfMoveOptions != 0) {
         final int randomMoveNumberIndex = RandomUtility.calculateRandomNumber(0, numberOfMoveOptions - 1);
-        final MoveSpecification moveSpecification = Nulls.get(moveOptionList, randomMoveNumberIndex);
+        final MoveSpecification moveSpecification = Nulls.get(moveOptions, randomMoveNumberIndex);
         board.move(moveSpecification);
         numberOfMovesPerformed++;
         if (numberOfMovesPerformed == 1 || numberOfMovesPerformed % 100 == 0) {
@@ -54,7 +54,7 @@ public class GenerateRandomGame {
         legalMoves = board.getLegalMoveSpecifications();
       }
 
-      moveOptionList = new ArrayList<>();
+      moveOptions = new ArrayList<>();
       for (final MoveSpecification moveSpecification : legalMoves) {
         board.move(moveSpecification);
         switch (findRandomGame) {
@@ -91,11 +91,11 @@ public class GenerateRandomGame {
         }
         if (!board.isCheckmate() && !board.isStalemate() && board.deadPositionQuick() != DeadPositionQuickVerdict.DEAD
             && board.getRepetitionCount() == 1 && !board.isFiftyMove()) {
-          moveOptionList.add(moveSpecification);
+          moveOptions.add(moveSpecification);
         }
         board.unmove();
       }
-      numberOfMoveOptions = moveOptionList.size();
+      numberOfMoveOptions = moveOptions.size();
     }
 
     if (moveNumberLastPossibleTermination != -1) {
@@ -141,8 +141,8 @@ public class GenerateRandomGame {
         if (isTerminationMoveFound) {
           System.out.println("A game with " + board.getPerformedMoveCount() / 2.0 + " moves ending in " + findRandomGame
               + " was generated");
-          final String moveList = calculateMoveText(board);
-          System.out.println(moveList);
+          final String moves = calculateMoveText(board);
+          System.out.println(moves);
           break;
         }
         board.unmove();
@@ -157,13 +157,13 @@ public class GenerateRandomGame {
 
     List<MoveSpecification> legalMoves = board.getLegalMoveSpecifications();
     int numberOfMoveOptions = legalMoves.size();
-    List<MoveSpecification> moveOptionList = new ArrayList<>(legalMoves);
+    List<MoveSpecification> moveOptions = new ArrayList<>(legalMoves);
 
     int numberOfMovesPerformed = 0;
     while (numberOfMoveOptions != 0) {
       if (numberOfMoveOptions != 0) {
         final int randomMoveNumberIndex = RandomUtility.calculateRandomNumber(0, numberOfMoveOptions - 1);
-        final MoveSpecification moveSpecification = Nulls.get(moveOptionList, randomMoveNumberIndex);
+        final MoveSpecification moveSpecification = Nulls.get(moveOptions, randomMoveNumberIndex);
         board.move(moveSpecification);
         numberOfMovesPerformed++;
         if (numberOfMovesPerformed == 1 || numberOfMovesPerformed % 100 == 0) {
@@ -172,21 +172,21 @@ public class GenerateRandomGame {
         legalMoves = board.getLegalMoveSpecifications();
       }
 
-      moveOptionList = new ArrayList<>();
+      moveOptions = new ArrayList<>();
       for (final MoveSpecification moveSpecification : legalMoves) {
         board.move(moveSpecification);
         if (!board.isCheckmate() && !board.isStalemate() && board.deadPositionQuick() != DeadPositionQuickVerdict.DEAD
             && board.getRepetitionCount() == 1) {
-          moveOptionList.add(moveSpecification);
+          moveOptions.add(moveSpecification);
         }
         board.unmove();
       }
-      numberOfMoveOptions = moveOptionList.size();
+      numberOfMoveOptions = moveOptions.size();
     }
 
     System.out.println("A game with " + board.getPerformedMoveCount() / 2.0 + " moves was generated");
-    final String moveList = calculateMoveText(board);
-    System.out.println(moveList);
+    final String moves = calculateMoveText(board);
+    System.out.println(moves);
   }
 
   // we only want one sequence over 50, so after passing 50 first time, we try to reach 75 and if not successful that's
@@ -196,14 +196,14 @@ public class GenerateRandomGame {
 
     List<MoveSpecification> legalMoves = board.getLegalMoveSpecifications();
     int numberOfMoveOptions = legalMoves.size();
-    List<MoveSpecification> moveOptionList = new ArrayList<>(legalMoves);
+    List<MoveSpecification> moveOptions = new ArrayList<>(legalMoves);
 
     boolean isFiftyReached = false;
     int numberOfMovesPerformed = 0;
     while (numberOfMoveOptions != 0) {
       if (numberOfMoveOptions != 0) {
         final int randomMoveNumberIndex = RandomUtility.calculateRandomNumber(0, numberOfMoveOptions - 1);
-        final MoveSpecification moveSpecification = Nulls.get(moveOptionList, randomMoveNumberIndex);
+        final MoveSpecification moveSpecification = Nulls.get(moveOptions, randomMoveNumberIndex);
         board.move(moveSpecification);
         if (!isFiftyReached && board.isFiftyMove()) {
           isFiftyReached = true;
@@ -217,23 +217,23 @@ public class GenerateRandomGame {
         if (board.isSeventyFiveMove()) {
           System.out.println("A game with " + board.getPerformedMoveCount() / 2.0
               + " moves ending with seventy-five-move rule was generated");
-          final String moveList = calculateMoveText(board);
-          System.out.println(moveList);
+          final String moves = calculateMoveText(board);
+          System.out.println(moves);
           return;
         }
         legalMoves = board.getLegalMoveSpecifications();
       }
 
-      moveOptionList = new ArrayList<>();
+      moveOptions = new ArrayList<>();
       for (final MoveSpecification moveSpecification : legalMoves) {
         board.move(moveSpecification);
         if (!board.isCheckmate() && !board.isStalemate() && board.deadPositionQuick() == DeadPositionQuickVerdict.DEAD
             && board.getRepetitionCount() == 1 && (!isFiftyReached || board.isFiftyMove())) {
-          moveOptionList.add(moveSpecification);
+          moveOptions.add(moveSpecification);
         }
         board.unmove();
       }
-      numberOfMoveOptions = moveOptionList.size();
+      numberOfMoveOptions = moveOptions.size();
     }
 
     System.out.println("Could not generate game ending with seventy-five-move rule");
@@ -263,7 +263,7 @@ public class GenerateRandomGame {
 
     List<MoveSpecification> legalMoves = board.getLegalMoveSpecifications();
     int numberOfMoveOptions = legalMoves.size();
-    List<MoveSpecification> moveOptionList = new ArrayList<>(legalMoves);
+    List<MoveSpecification> moveOptions = new ArrayList<>(legalMoves);
 
     boolean isRepetitionReached = false;
     // we need to intialize to something other than null, the below value is not meaning ful
@@ -272,7 +272,7 @@ public class GenerateRandomGame {
     while (numberOfMoveOptions != 0) {
       {
         final int randomMoveNumberIndex = RandomUtility.calculateRandomNumber(0, numberOfMoveOptions - 1);
-        final MoveSpecification moveSpecification = Nulls.get(moveOptionList, randomMoveNumberIndex);
+        final MoveSpecification moveSpecification = Nulls.get(moveOptions, randomMoveNumberIndex);
         board.move(moveSpecification);
         if (!isRepetitionReached && board.getRepetitionCount() == 2) {
           isRepetitionReached = true;
@@ -287,36 +287,36 @@ public class GenerateRandomGame {
         if (board.getRepetitionCount() == repetitionNumber) {
           System.out.println("A game with " + board.getPerformedMoveCount() / 2.0 + " moves ending with "
               + repetitionNumber + " repetitions was generated");
-          final String moveList = calculateMoveText(board);
-          System.out.println(moveList);
+          final String moves = calculateMoveText(board);
+          System.out.println(moves);
           return true;
         }
         legalMoves = board.getLegalMoveSpecifications();
       }
 
-      moveOptionList = new ArrayList<>();
+      moveOptions = new ArrayList<>();
 
       // try to speed up
       // if we find continuation we use it, otherwise we never hit more than three using random moves
       for (final MoveSpecification moveSpecification : legalMoves) {
         board.move(moveSpecification);
         if (repetitionPosition.equals(board.getDynamicPosition())) {
-          moveOptionList.add(moveSpecification);
+          moveOptions.add(moveSpecification);
         }
         board.unmove();
       }
-      if (moveOptionList.isEmpty()) {
+      if (moveOptions.isEmpty()) {
         // means we have no continuation from 3 onwards found
         for (final MoveSpecification moveSpecification : legalMoves) {
           board.move(moveSpecification);
           if (!board.isCheckmate() && !board.isStalemate() && board.deadPositionQuick() == DeadPositionQuickVerdict.DEAD
               && !board.isFiftyMove()) {
-            moveOptionList.add(moveSpecification);
+            moveOptions.add(moveSpecification);
           }
           board.unmove();
         }
       }
-      numberOfMoveOptions = moveOptionList.size();
+      numberOfMoveOptions = moveOptions.size();
     }
 
     System.out.println("Could not generate game ending with " + repetitionNumber + " repetitions");
@@ -324,27 +324,27 @@ public class GenerateRandomGame {
   }
 
   private static String calculateMoveText(Board board) {
-    final StringBuilder moveList = new StringBuilder();
-    final List<MoveSpecification> moves = board.getPerformedMoveSpecifications();
+    final StringBuilder moveText = new StringBuilder();
+    final List<MoveSpecification> performedMoves = board.getPerformedMoveSpecifications();
     final Board replay = new Board(board.getInitialFen());
-    for (int i = 0; i < moves.size(); i++) {
-      replay.move(Nulls.get(moves, i));
+    for (int i = 0; i < performedMoves.size(); i++) {
+      replay.move(Nulls.get(performedMoves, i));
       // after black move if following white move
       if (i > 0 && i % 2 == 0) {
-        moveList.append(" ");
+        moveText.append(" ");
       }
       final Side sideToMove = replay.getMovingPiece().getSide();
       if (sideToMove.isWhite()) {
-        moveList.append(replay.getLastPlayedFullMoveNumber()).append(". ");
+        moveText.append(replay.getLastPlayedFullMoveNumber()).append(". ");
       } else if (sideToMove.isBlack()) {
-        moveList.append(" ");
+        moveText.append(" ");
       } else {
         throw new ProgrammingMistakeException("That should never happen");
       }
-      moveList.append(replay.getSan());
+      moveText.append(replay.getSan());
     }
 
-    return Nulls.toString(moveList);
+    return Nulls.toString(moveText);
 
   }
 

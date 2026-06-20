@@ -12,9 +12,9 @@ import io.github.dlbbld.ashlarchess.common.Nulls;
 
 public final class ListUtility {
 
-  private static final String COMMA_SEPARATOR_LIST = ", ";
+  private static final String COMMA_SEPARATOR = ", ";
 
-  private static final String SPACE_SEPARATOR_LIST = " ";
+  private static final String SPACE_SEPARATOR = " ";
 
   private ListUtility() {
   }
@@ -27,11 +27,11 @@ public final class ListUtility {
   }
 
   public static String toCommaSeparatedString(List<String> list) {
-    return Nulls.join(COMMA_SEPARATOR_LIST, list);
+    return Nulls.join(COMMA_SEPARATOR, list);
   }
 
   public static String toSpaceSeparatedString(List<String> list) {
-    return Nulls.join(SPACE_SEPARATOR_LIST, list);
+    return Nulls.join(SPACE_SEPARATOR, list);
   }
 
   public static String toLineSeparatedString(List<String> list) {
@@ -39,11 +39,11 @@ public final class ListUtility {
   }
 
   public static String formatSquares(Set<Square> squareSet) {
-    final List<String> squareList = new ArrayList<>();
+    final List<String> squares = new ArrayList<>();
     for (final Square square : squareSet) {
-      squareList.add(square.getName());
+      squares.add(square.getName());
     }
-    return toCommaSeparatedString(squareList);
+    return toCommaSeparatedString(squares);
   }
 
 }

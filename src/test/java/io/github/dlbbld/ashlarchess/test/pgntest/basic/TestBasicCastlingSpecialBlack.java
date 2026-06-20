@@ -24,20 +24,20 @@ class TestBasicCastlingSpecialBlack {
   private static final Logger logger = Nulls.getLogger(TestBasicCastlingSpecialBlack.class);
 
   static {
-    final List<String> pgnNameList = new ArrayList<>();
+    final List<String> pgnNames = new ArrayList<>();
 
-    pgnNameList.add("01_black_castling_special_kingside_check.pgn");
-    pgnNameList.add("02_black_castling_special_kingside_checkmate.pgn");
-    pgnNameList.add("03_black_castling_special_kingside_fifty_move.pgn");
-    pgnNameList.add("04_black_castling_special_kingside_seventy_five_move.pgn");
-    pgnNameList.add("05_black_castling_special_kingside_stalemate.pgn");
-    pgnNameList.add("06_black_castling_special_queenside_check.pgn");
-    pgnNameList.add("07_black_castling_special_queenside_checkmate.pgn");
-    pgnNameList.add("08_black_castling_special_queenside_fifty_move.pgn");
-    pgnNameList.add("09_black_castling_special_queenside_seventy_five_move.pgn");
-    pgnNameList.add("10_black_castling_special_queenside_stalemate.pgn");
+    pgnNames.add("01_black_castling_special_kingside_check.pgn");
+    pgnNames.add("02_black_castling_special_kingside_checkmate.pgn");
+    pgnNames.add("03_black_castling_special_kingside_fifty_move.pgn");
+    pgnNames.add("04_black_castling_special_kingside_seventy_five_move.pgn");
+    pgnNames.add("05_black_castling_special_kingside_stalemate.pgn");
+    pgnNames.add("06_black_castling_special_queenside_check.pgn");
+    pgnNames.add("07_black_castling_special_queenside_checkmate.pgn");
+    pgnNames.add("08_black_castling_special_queenside_fifty_move.pgn");
+    pgnNames.add("09_black_castling_special_queenside_seventy_five_move.pgn");
+    pgnNames.add("10_black_castling_special_queenside_stalemate.pgn");
 
-    TestBasicSupport.checkTestFolder(pgnNameList, PgnTest.BASIC_CASTLING_SPECIAL_BLACK);
+    TestBasicSupport.checkTestFolder(pgnNames, PgnTest.BASIC_CASTLING_SPECIAL_BLACK);
   }
 
   @SuppressWarnings("static-method")

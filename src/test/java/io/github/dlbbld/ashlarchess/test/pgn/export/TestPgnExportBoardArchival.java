@@ -87,17 +87,17 @@ class TestPgnExportBoardArchival {
   @SuppressWarnings("static-method")
   @Test
   void boardFromNonInitialPositionArchivalEmitsSetUpAndFen() {
-    // Caller passes a tagList already containing FEN+SetUp for a custom starting position, then makes moves on
+    // Caller passes a tags already containing FEN+SetUp for a custom starting position, then makes moves on
     // the board. Archival export must preserve the position-encoding tags.
     final String customFen = "r1b2r2/pp1pk1pp/8/7q/3pP1n1/5N1P/PPQ2PP1/3R1RK1 w - - 0 17";
     final Board board = Board.fromFenStrict(customFen);
     board.moveStrict("Qa4");
 
-    final List<Tag> tagList = new ArrayList<>();
-    tagList.add(new Tag(StandardTag.SET_UP.getName(), "1"));
-    tagList.add(new Tag(StandardTag.FEN.getName(), customFen));
+    final List<Tag> tags = new ArrayList<>();
+    tags.add(new Tag(StandardTag.SET_UP.getName(), "1"));
+    tags.add(new Tag(StandardTag.FEN.getName(), customFen));
 
-    final PgnGame boardPgnGame = PgnCreate.createPgnGame(board, tagList);
+    final PgnGame boardPgnGame = PgnCreate.createPgnGame(board, tags);
     final String archivalOutput = PgnCreate.toPgnString(boardPgnGame, WriteMode.ARCHIVAL);
 
     assertTrue(archivalOutput.contains("[" + StandardTag.SET_UP.getName() + " \"1\"]"));
@@ -139,14 +139,14 @@ class TestPgnExportBoardArchival {
     // Termination marker is still emitted (carried by the parse model's terminationMarker field).
     assertTrue(semanticOutput.contains("*"));
 
-    // And the tagList check that no fabrication slipped into the model on this path.
+    // And the tags check that no fabrication slipped into the model on this path.
     assertTrue(!TagUtility.hasAllSevenTagRosterTags(pgnGame.tags()));
   }
 
   @SuppressWarnings("static-method")
   @Test
   void callerSuppliedResultTagDisagreeingWithBoardThrows() {
-    // The PgnGame invariant: when a Result tag is present in tagList AND terminationMarker is non-null, the
+    // The PgnGame invariant: when a Result tag is present in tags AND terminationMarker is non-null, the
     // two must agree. The Board-to-PgnGame path derives terminationMarker from the board's game status; if the
     // caller supplies a Result tag with a different value, the compact constructor of PgnGame catches the
     // inconsistency and throws - rather than silently producing a model that archival export would then have
@@ -163,8 +163,8 @@ class TestPgnExportBoardArchival {
 
     // Nulls.copyOfList wraps List.of with the @NonNull-annotated immutable list shape JDT requires for the
     // {@code createPgnGame(Board, List<Tag>)} parameter.
-    @SuppressWarnings("null") final List<Tag> contradictoryTagList = Nulls
+    @SuppressWarnings("null") final List<Tag> contradictoryTags = Nulls
         .copyOfList(Collections.singletonList(new Tag(StandardTag.RESULT.getName(), "0-1")));
-    assertThrows(IllegalArgumentException.class, () -> PgnCreate.createPgnGame(boardWonByWhite, contradictoryTagList));
+    assertThrows(IllegalArgumentException.class, () -> PgnCreate.createPgnGame(boardWonByWhite, contradictoryTags));
   }
 }

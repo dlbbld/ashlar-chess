@@ -70,10 +70,10 @@ class TestStrictPgnParserMoveSuffixAnnotation {
   }
 
   private static void checkMoveSuffixAnnotationSuccess(String pgnName,
-      List<MoveSuffixAnnotation> moveSuffixAnnotationListExpected) {
+      List<MoveSuffixAnnotation> expectedMoveSuffixAnnotations) {
     final PgnGame pgnGame = PgnCacheForStrictPgnParserTestCases
         .getPgn(PGN_TEST_MOVE_SUFFIX_ANNOTATION_SUCCESS_FOLDER_PATH, pgnName);
-    assertEquals(moveSuffixAnnotationListExpected, calculateMoveSuffixAnnotations(pgnGame.moves()));
+    assertEquals(expectedMoveSuffixAnnotations, calculateMoveSuffixAnnotations(pgnGame.moves()));
   }
 
   // -------------------------------------------------------------------------------------------------
@@ -117,36 +117,36 @@ class TestStrictPgnParserMoveSuffixAnnotation {
   }
 
   private static void checkCombinedSuccess(String pgnName, String pregameCommentaryExpected,
-      List<String> sanListExpected, List<MoveSuffixAnnotation> moveSuffixAnnotationListExpected,
-      List<String> commentaryListExpected) {
+      List<String> expectedSans, List<MoveSuffixAnnotation> expectedMoveSuffixAnnotations,
+      List<String> expectedCommentaries) {
     final PgnGame pgnGame = PgnCacheForStrictPgnParserTestCases.getPgn(PGN_TEST_COMBINED_SUCCESS_FOLDER_PATH, pgnName);
     assertEquals(pregameCommentaryExpected, pgnGame.pregameCommentary().value());
-    assertEquals(sanListExpected, calculateSans(pgnGame.moves()));
-    assertEquals(moveSuffixAnnotationListExpected, calculateMoveSuffixAnnotations(pgnGame.moves()));
-    assertEquals(commentaryListExpected, calculateCommentaries(pgnGame.moves()));
+    assertEquals(expectedSans, calculateSans(pgnGame.moves()));
+    assertEquals(expectedMoveSuffixAnnotations, calculateMoveSuffixAnnotations(pgnGame.moves()));
+    assertEquals(expectedCommentaries, calculateCommentaries(pgnGame.moves()));
   }
 
-  private static List<String> calculateSans(List<PgnMove> moveList) {
-    final List<String> sanList = new ArrayList<>();
-    for (final PgnMove move : moveList) {
-      sanList.add(move.san());
+  private static List<String> calculateSans(List<PgnMove> moves) {
+    final List<String> sans = new ArrayList<>();
+    for (final PgnMove move : moves) {
+      sans.add(move.san());
     }
-    return sanList;
+    return sans;
   }
 
-  private static List<MoveSuffixAnnotation> calculateMoveSuffixAnnotations(List<PgnMove> moveList) {
-    final List<MoveSuffixAnnotation> moveSuffixAnnotationList = new ArrayList<>();
-    for (final PgnMove move : moveList) {
-      moveSuffixAnnotationList.add(move.moveSuffixAnnotation());
+  private static List<MoveSuffixAnnotation> calculateMoveSuffixAnnotations(List<PgnMove> moves) {
+    final List<MoveSuffixAnnotation> moveSuffixAnnotations = new ArrayList<>();
+    for (final PgnMove move : moves) {
+      moveSuffixAnnotations.add(move.moveSuffixAnnotation());
     }
-    return moveSuffixAnnotationList;
+    return moveSuffixAnnotations;
   }
 
-  private static List<String> calculateCommentaries(List<PgnMove> moveList) {
-    final List<String> commentaryList = new ArrayList<>();
-    for (final PgnMove move : moveList) {
-      commentaryList.add(move.commentary().value());
+  private static List<String> calculateCommentaries(List<PgnMove> moves) {
+    final List<String> commentaries = new ArrayList<>();
+    for (final PgnMove move : moves) {
+      commentaries.add(move.commentary().value());
     }
-    return commentaryList;
+    return commentaries;
   }
 }

@@ -221,7 +221,7 @@ class TestBoardClaimRights {
 
   @SuppressWarnings("static-method")
   @Test
-  void returnedListIsImmutable() {
+  void returnedClaimableMovesAreImmutable() {
     final Board board = Board.fromFenStrict("7k/8/8/8/8/8/4K3/R7 w - - 99 51");
     final ClaimRights rights = board.fiftyMoveRuleClaimRights();
 
@@ -238,7 +238,7 @@ class TestBoardClaimRights {
 
   @SuppressWarnings("static-method")
   @Test
-  void canClaimMirrorsListEmptiness() {
+  void canClaimMirrorsClaimableMovesEmptiness() {
     final Board emptyBoard = new Board(FenConstants.FEN_INITIAL);
     final ClaimRights emptyRights = emptyBoard.fiftyMoveRuleClaimRights();
     assertEquals(emptyRights.canClaim(), !emptyRights.claimableMoves().isEmpty(),

@@ -21,7 +21,7 @@ import io.github.dlbbld.ashlarchess.test.pgntest.enums.PgnTest;
 
 public class PgnTestCaseCatalog {
 
-  private static PgnTestCaseList calculateTestCaseList(PgnTest pgnTest) {
+  private static PgnTestCaseList calculateTestCaseLists(PgnTest pgnTest) {
 
     return switch (pgnTest) {
       case BASIC_CASTLING_WHITE -> createTestCasesBasicCastlingWhite();
@@ -122,23 +122,23 @@ public class PgnTestCaseCatalog {
     };
   }
 
-  private static final EnumMap<PgnTest, PgnTestCaseList> allTestCaseListMap = Nulls.newEnumMap(PgnTest.class);
+  private static final EnumMap<PgnTest, PgnTestCaseList> testCaseListsByPgnTest = Nulls.newEnumMap(PgnTest.class);
 
-  private static final List<PgnTestCaseList> allTestCaseListList = new ArrayList<>();
+  private static final List<PgnTestCaseList> allTestCaseLists = new ArrayList<>();
 
-  private static final List<PgnTestCaseList> restricedTestCaseListList = new ArrayList<>();
+  private static final List<PgnTestCaseList> restrictedTestCaseLists = new ArrayList<>();
 
   static {
     for (final PgnTest pgnTest : PgnTest.values()) {
-      final PgnTestCaseList testCaseList = calculateTestCaseList(pgnTest);
-      allTestCaseListMap.put(pgnTest, testCaseList);
-      allTestCaseListList.add(testCaseList);
+      final PgnTestCaseList testCaseList = calculateTestCaseLists(pgnTest);
+      testCaseListsByPgnTest.put(pgnTest, testCaseList);
+      allTestCaseLists.add(testCaseList);
 
       if (pgnTest == PgnTest.MAX_MOVES) {
         switch (RestrictTestConstants.PGN_TEST_INCLUSION) {
           case ALL:
           case ONLY_LONGEST_POSSIBLE:
-            restricedTestCaseListList.add(testCaseList);
+            restrictedTestCaseLists.add(testCaseList);
             break;
           case ALL_EXCEPT_LONGEST_POSSIBLE:
             break;
@@ -149,7 +149,7 @@ public class PgnTestCaseCatalog {
         switch (RestrictTestConstants.PGN_TEST_INCLUSION) {
           case ALL:
           case ALL_EXCEPT_LONGEST_POSSIBLE:
-            restricedTestCaseListList.add(testCaseList);
+            restrictedTestCaseLists.add(testCaseList);
             break;
           case ONLY_LONGEST_POSSIBLE:
             break;
@@ -159,31 +159,31 @@ public class PgnTestCaseCatalog {
       }
     }
 
-    checkUniqueFileNames(allTestCaseListList);
+    checkUniqueFileNames(allTestCaseLists);
   }
 
   public static PgnTestCaseList getTestList(PgnTest pgnTest) {
-    if (!allTestCaseListMap.containsKey(pgnTest)) {
+    if (!testCaseListsByPgnTest.containsKey(pgnTest)) {
       throw new ProgrammingMistakeException("The test list was not constructed correctly");
     }
 
-    @SuppressWarnings("null") final PgnTestCaseList testCaseList = allTestCaseListMap.get(pgnTest);
+    @SuppressWarnings("null") final PgnTestCaseList testCaseList = testCaseListsByPgnTest.get(pgnTest);
     return testCaseList;
   }
 
   public static List<PgnTestCaseList> getTestList(@NonNull PgnTest... pgnTestArray) {
-    final List<PgnTestCaseList> resultListList = new ArrayList<>();
+    final List<PgnTestCaseList> lineGroups = new ArrayList<>();
     for (final PgnTest pgnTest : pgnTestArray) {
-      if (!allTestCaseListMap.containsKey(pgnTest)) {
+      if (!testCaseListsByPgnTest.containsKey(pgnTest)) {
         throw new ProgrammingMistakeException("The test list was not constructed correctly");
       }
-      resultListList.add(Nulls.get(allTestCaseListMap, pgnTest));
+      lineGroups.add(Nulls.get(testCaseListsByPgnTest, pgnTest));
     }
-    return resultListList;
+    return lineGroups;
   }
 
   public static PgnTest findPgnTest(String testPgnName) {
-    for (final PgnTestCaseList testCaseList : allTestCaseListList) {
+    for (final PgnTestCaseList testCaseList : allTestCaseLists) {
       for (final PgnFen testCase : testCaseList.list()) {
         if (testCase.pgnName().equals(testPgnName)) {
           return testCaseList.pgnTest();
@@ -194,7 +194,7 @@ public class PgnTestCaseCatalog {
   }
 
   public static PgnTest findPgnTestPgnNotListed(String testPgnName) {
-    for (final PgnTestCaseList testCaseList : allTestCaseListList) {
+    for (final PgnTestCaseList testCaseList : allTestCaseLists) {
       if (FileUtility.exists(testCaseList.pgnTest().getFolderPath(), testPgnName)) {
         return testCaseList.pgnTest();
       }
@@ -203,7 +203,7 @@ public class PgnTestCaseCatalog {
   }
 
   public static PgnFen findTestCase(String testPgnName) {
-    for (final PgnTestCaseList testCaseList : allTestCaseListList) {
+    for (final PgnTestCaseList testCaseList : allTestCaseLists) {
       for (final PgnFen testCase : testCaseList.list()) {
         if (testCase.pgnName().equals(testPgnName)) {
           return testCase;
@@ -214,7 +214,7 @@ public class PgnTestCaseCatalog {
   }
 
   public static List<PgnTestCaseList> getRestrictedTestCaseLists() {
-    return restricedTestCaseListList;
+    return restrictedTestCaseLists;
   }
 
   // -------------------------------------------------------------------------------------------------
@@ -230,8 +230,8 @@ public class PgnTestCaseCatalog {
   // future rename of a referenced fixture surfaces immediately rather than during a long test run.
   // -------------------------------------------------------------------------------------------------
 
-  private static final List<PgnTestCaseList> parserIntegrationSmokeList = buildParserIntegrationSmokeList();
-  private static final List<PgnTestCaseList> exportRoundtripSmokeList = buildExportRoundtripSmokeList();
+  private static final List<PgnTestCaseList> parserIntegrationSmokeTests = buildParserIntegrationSmokeTests();
+  private static final List<PgnTestCaseList> exportRoundtripSmokeTests = buildExportRoundtripSmokeTests();
 
   /**
    * Smoke subset used by {@code TestStrictPgnParserAgainstLenientPgnParser} - broad enough to exercise every major
@@ -239,8 +239,8 @@ public class PgnTestCaseCatalog {
    * various pieces, stalemate, custom starting position via FEN, repetition-sensitive en passant setup). About 45 files
    * in total rather than ~591.
    */
-  public static List<PgnTestCaseList> getParserIntegrationSmokeList() {
-    return parserIntegrationSmokeList;
+  public static List<PgnTestCaseList> getParserIntegrationSmokeTests() {
+    return parserIntegrationSmokeTests;
   }
 
   /**
@@ -248,11 +248,11 @@ public class PgnTestCaseCatalog {
    * parser smoke set because export tests only vary over structural shape, not chess-rule details. About 20 files
    * covering ordinary SAN movement, promotion, castling, en passant, and custom starting position.
    */
-  public static List<PgnTestCaseList> getExportRoundtripSmokeList() {
-    return exportRoundtripSmokeList;
+  public static List<PgnTestCaseList> getExportRoundtripSmokeTests() {
+    return exportRoundtripSmokeTests;
   }
 
-  private static List<PgnTestCaseList> buildParserIntegrationSmokeList() {
+  private static List<PgnTestCaseList> buildParserIntegrationSmokeTests() {
     final List<PgnTestCaseList> result = new ArrayList<>();
     // Small buckets - keep whole.
     result.add(getTestList(PgnTest.BASIC_MOVING_PIECE_WHITE));
@@ -278,7 +278,7 @@ public class PgnTestCaseCatalog {
     return result;
   }
 
-  private static List<PgnTestCaseList> buildExportRoundtripSmokeList() {
+  private static List<PgnTestCaseList> buildExportRoundtripSmokeTests() {
     final List<PgnTestCaseList> result = new ArrayList<>();
     // Whole small buckets covering the main SAN shapes.
     result.add(getTestList(PgnTest.BASIC_MOVING_PIECE_WHITE));
@@ -322,9 +322,9 @@ public class PgnTestCaseCatalog {
   // We want to have unique file names for the test cases. For the convenience
   // that o can run a test case for testing by
   // only specifying it's name.
-  private static void checkUniqueFileNames(List<PgnTestCaseList> testCaseListList) {
+  private static void checkUniqueFileNames(List<PgnTestCaseList> testCaseLists) {
     final Set<String> fileNames = new TreeSet<>();
-    for (final PgnTestCaseList testCaseList : testCaseListList) {
+    for (final PgnTestCaseList testCaseList : testCaseLists) {
       for (final PgnFen testCase : testCaseList.list()) {
         final String pgnName = testCase.pgnName();
         final boolean isNotContained = !fileNames.add(pgnName);

@@ -41,32 +41,32 @@ class TestBasicPromotionSquareWhite {
   private static final Logger logger = Nulls.getLogger(TestBasicPromotionSquareWhite.class);
 
   static {
-    final List<String> pgnNameList = new ArrayList<>();
+    final List<String> pgnNames = new ArrayList<>();
 
-    pgnNameList.add("01_white_promotion_square_straight_a8.pgn");
-    pgnNameList.add("02_white_promotion_square_straight_b8.pgn");
-    pgnNameList.add("03_white_promotion_square_straight_c8.pgn");
-    pgnNameList.add("04_white_promotion_square_straight_d8.pgn");
-    pgnNameList.add("05_white_promotion_square_straight_e8.pgn");
-    pgnNameList.add("06_white_promotion_square_straight_f8.pgn");
-    pgnNameList.add("07_white_promotion_square_straight_g8.pgn");
-    pgnNameList.add("08_white_promotion_square_straight_h8.pgn");
-    pgnNameList.add("09_white_promotion_square_right_a8.pgn");
-    pgnNameList.add("10_white_promotion_square_right_b8.pgn");
-    pgnNameList.add("11_white_promotion_square_right_c8.pgn");
-    pgnNameList.add("12_white_promotion_square_right_d8.pgn");
-    pgnNameList.add("13_white_promotion_square_right_e8.pgn");
-    pgnNameList.add("14_white_promotion_square_right_f8.pgn");
-    pgnNameList.add("15_white_promotion_square_right_g8.pgn");
-    pgnNameList.add("16_white_promotion_square_left_b8.pgn");
-    pgnNameList.add("17_white_promotion_square_left_c8.pgn");
-    pgnNameList.add("18_white_promotion_square_left_d8.pgn");
-    pgnNameList.add("19_white_promotion_square_left_e8.pgn");
-    pgnNameList.add("20_white_promotion_square_left_f8.pgn");
-    pgnNameList.add("21_white_promotion_square_left_g8.pgn");
-    pgnNameList.add("22_white_promotion_square_left_h8.pgn");
+    pgnNames.add("01_white_promotion_square_straight_a8.pgn");
+    pgnNames.add("02_white_promotion_square_straight_b8.pgn");
+    pgnNames.add("03_white_promotion_square_straight_c8.pgn");
+    pgnNames.add("04_white_promotion_square_straight_d8.pgn");
+    pgnNames.add("05_white_promotion_square_straight_e8.pgn");
+    pgnNames.add("06_white_promotion_square_straight_f8.pgn");
+    pgnNames.add("07_white_promotion_square_straight_g8.pgn");
+    pgnNames.add("08_white_promotion_square_straight_h8.pgn");
+    pgnNames.add("09_white_promotion_square_right_a8.pgn");
+    pgnNames.add("10_white_promotion_square_right_b8.pgn");
+    pgnNames.add("11_white_promotion_square_right_c8.pgn");
+    pgnNames.add("12_white_promotion_square_right_d8.pgn");
+    pgnNames.add("13_white_promotion_square_right_e8.pgn");
+    pgnNames.add("14_white_promotion_square_right_f8.pgn");
+    pgnNames.add("15_white_promotion_square_right_g8.pgn");
+    pgnNames.add("16_white_promotion_square_left_b8.pgn");
+    pgnNames.add("17_white_promotion_square_left_c8.pgn");
+    pgnNames.add("18_white_promotion_square_left_d8.pgn");
+    pgnNames.add("19_white_promotion_square_left_e8.pgn");
+    pgnNames.add("20_white_promotion_square_left_f8.pgn");
+    pgnNames.add("21_white_promotion_square_left_g8.pgn");
+    pgnNames.add("22_white_promotion_square_left_h8.pgn");
 
-    TestBasicSupport.checkTestFolder(pgnNameList, PgnTest.BASIC_PROMOTION_SQUARE_WHITE);
+    TestBasicSupport.checkTestFolder(pgnNames, PgnTest.BASIC_PROMOTION_SQUARE_WHITE);
   }
 
   @SuppressWarnings("static-method")

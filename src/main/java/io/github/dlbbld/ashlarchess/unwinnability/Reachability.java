@@ -81,27 +81,27 @@ class Reachability {
 
   public String print() {
 
-    final List<String> lineList = new ArrayList<>();
+    final List<String> lines = new ArrayList<>();
 
-    lineList.add("");
-    lineList.add("Reachability:");
+    lines.add("");
+    lines.add("Reachability:");
 
-    final List<ReachabilityVariable> entriesWithValueOneList = calculateEntriesWithValueOne();
+    final List<ReachabilityVariable> entriesWithValueOne = calculateEntriesWithValueOne();
 
-    final Set<Square> reachableSquareSetWhite = calculateSquareSet(Side.WHITE, entriesWithValueOneList);
+    final Set<Square> reachableSquareSetWhite = calculateSquareSet(Side.WHITE, entriesWithValueOne);
     final String squareListWhite = ListUtility.formatSquares(reachableSquareSetWhite);
-    lineList.add(Side.WHITE.getName() + ": " + squareListWhite);
+    lines.add(Side.WHITE.getName() + ": " + squareListWhite);
 
-    final Set<Square> reachableSquareSetBlack = calculateSquareSet(Side.BLACK, entriesWithValueOneList);
+    final Set<Square> reachableSquareSetBlack = calculateSquareSet(Side.BLACK, entriesWithValueOne);
     final String squareListBlack = ListUtility.formatSquares(reachableSquareSetBlack);
-    lineList.add(Side.BLACK.getName() + ": " + squareListBlack);
+    lines.add(Side.BLACK.getName() + ": " + squareListBlack);
 
-    return ListUtility.toLineSeparatedString(lineList);
+    return ListUtility.toLineSeparatedString(lines);
   }
 
-  private static Set<Square> calculateSquareSet(Side side, List<ReachabilityVariable> entryList) {
+  private static Set<Square> calculateSquareSet(Side side, List<ReachabilityVariable> entries) {
     final Set<Square> squareSet = new TreeSet<>();
-    for (final ReachabilityVariable reachabilityVariable : entryList) {
+    for (final ReachabilityVariable reachabilityVariable : entries) {
       if (reachabilityVariable.sideWhichCanReach() == side) {
         squareSet.add(reachabilityVariable.toSquare());
       }

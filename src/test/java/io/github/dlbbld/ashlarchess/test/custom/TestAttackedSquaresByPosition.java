@@ -56,7 +56,7 @@ class TestAttackedSquaresByPosition {
         "g5", "g3", "f2", "d4", "f4", "e6", "g6", "f7", "e8", "g8", "f6", "h6", "g7", "f7", "f8", "h8", "h7", "g6");
   }
 
-  private static void checkPosition(String fenStr, String... expectedSquareList) {
+  private static void checkPosition(String fenStr, String... expectedSquares) {
     final Fen fen = StrictFenParser.parse(fenStr);
 
     // The relocated reference oracle (AttackedSquaresSupport) takes StaticPosition; derive it on demand from
@@ -65,7 +65,7 @@ class TestAttackedSquaresByPosition {
         .calculateAttackedSquares(StaticPositionBridge.toStaticPosition(fen.bitboardPosition()), fen.sideToMove());
 
     final Set<String> expected = new TreeSet<>();
-    for (final String square : expectedSquareList) {
+    for (final String square : expectedSquares) {
       @SuppressWarnings("null") @NonNull final String nonNullSquare = square;
       expected.add(nonNullSquare);
     }

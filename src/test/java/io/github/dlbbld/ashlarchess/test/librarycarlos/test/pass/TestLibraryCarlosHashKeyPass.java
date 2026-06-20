@@ -36,11 +36,11 @@ class TestLibraryCarlosHashKeyPass {
   @SuppressWarnings("static-method")
   @Test
   void testEightHalfMoves() throws Exception {
-    final MoveList moveList = new MoveList();
-    moveList.loadFromSan("1. e4 e5 2. Nf3 Nc6 3. Bc4 Bc5 4. d4 a5");
+    final MoveList moves = new MoveList();
+    moves.loadFromSan("1. e4 e5 2. Nf3 Nc6 3. Bc4 Bc5 4. d4 a5");
 
     final Board board = new Board();
-    for (final Move element : moveList) {
+    for (final Move element : moves) {
       board.doMove(element);
     }
 

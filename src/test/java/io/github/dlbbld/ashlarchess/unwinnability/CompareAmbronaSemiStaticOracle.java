@@ -26,7 +26,7 @@ public final class CompareAmbronaSemiStaticOracle {
   }
 
   public record SemiStaticOracleComparison(int comparedFenCount, int fenDifferenceCount, int rowDifferenceCount,
-      Map<String, Integer> differenceCountByKind, List<String> differentFenList, List<String> printedDifferenceList) {
+      Map<String, Integer> differenceCountByKind, List<String> differentFens, List<String> printedDifferences) {
   }
 
   public static void main(String[] args) throws Exception {
@@ -38,11 +38,11 @@ public final class CompareAmbronaSemiStaticOracle {
     for (final Map.Entry<String, Integer> entry : Nulls.entrySet(comparison.differenceCountByKind())) {
       System.out.println("Row differences for " + Nulls.getKey(entry) + ": " + Nulls.getValue(entry));
     }
-    for (final String fen : comparison.differentFenList().subList(0,
-        Math.min(MAX_PRINTED_DIFFERENT_FENS, comparison.differentFenList().size()))) {
+    for (final String fen : comparison.differentFens().subList(0,
+        Math.min(MAX_PRINTED_DIFFERENT_FENS, comparison.differentFens().size()))) {
       System.out.println("Different FEN: " + fen);
     }
-    for (final String difference : comparison.printedDifferenceList()) {
+    for (final String difference : comparison.printedDifferences()) {
       System.out.println();
       System.out.println(difference);
     }
@@ -62,8 +62,8 @@ public final class CompareAmbronaSemiStaticOracle {
     int fenDifferenceCount = 0;
     int rowDifferenceCount = 0;
     int comparedFenCount = 0;
-    final List<String> differentFenList = new ArrayList<>();
-    final List<String> printedDifferenceList = new ArrayList<>();
+    final List<String> differentFens = new ArrayList<>();
+    final List<String> printedDifferences = new ArrayList<>();
     final Map<String, Integer> differenceCountByKind = new TreeMap<>();
 
     for (final Map.Entry<String, List<String>> entry : Nulls.entrySet(expectedByFen)) {
@@ -73,29 +73,29 @@ public final class CompareAmbronaSemiStaticOracle {
       final String fen = Nulls.getKey(entry);
       final List<String> expectedRows = Nulls.getValue(entry);
       final List<String> actualRows = SemiStaticOracleFormatter.calculateRows(fen);
-      final int differenceCount = countDifferences(expectedRows, actualRows, printedDifferenceList,
+      final int differenceCount = countDifferences(expectedRows, actualRows, printedDifferences,
           differenceCountByKind);
       if (differenceCount != 0) {
         fenDifferenceCount++;
-        differentFenList.add(fen);
+        differentFens.add(fen);
         rowDifferenceCount += differenceCount;
       }
       comparedFenCount++;
     }
     return new SemiStaticOracleComparison(comparedFenCount, fenDifferenceCount, rowDifferenceCount,
-        Nulls.copyOfMap(differenceCountByKind), Nulls.copyOfList(differentFenList),
-        Nulls.copyOfList(printedDifferenceList));
+        Nulls.copyOfMap(differenceCountByKind), Nulls.copyOfList(differentFens),
+        Nulls.copyOfList(printedDifferences));
   }
 
   private static Map<String, List<String>> readExpectedByFen() throws Exception {
-    final List<String> lineList = FileUtility.readFileLines(ORACLE_PATH);
-    if (lineList.isEmpty() || !SemiStaticOracleFormatter.HEADER.equals(Nulls.get(lineList, 0))) {
+    final List<String> lines = FileUtility.readFileLines(ORACLE_PATH);
+    if (lines.isEmpty() || !SemiStaticOracleFormatter.HEADER.equals(Nulls.get(lines, 0))) {
       throw new IllegalStateException("Unexpected semistatic oracle header");
     }
 
     final Map<String, List<String>> expectedByFen = new LinkedHashMap<>();
-    for (int i = 1; i < lineList.size(); i++) {
-      final String line = Nulls.get(lineList, i);
+    for (int i = 1; i < lines.size(); i++) {
+      final String line = Nulls.get(lines, i);
       final String[] itemArray = Nulls.split(line, "\t");
       if (itemArray.length != 5) {
         throw new IllegalStateException("Invalid semistatic oracle row: " + line);
@@ -110,7 +110,7 @@ public final class CompareAmbronaSemiStaticOracle {
   }
 
   private static int countDifferences(List<String> expectedRows, List<String> actualRows,
-      List<String> printedDifferenceList, Map<String, Integer> differenceCountByKind) {
+      List<String> printedDifferences, Map<String, Integer> differenceCountByKind) {
     int differenceCount = 0;
     final int maxSize = Math.max(expectedRows.size(), actualRows.size());
     for (int i = 0; i < maxSize; i++) {
@@ -120,8 +120,8 @@ public final class CompareAmbronaSemiStaticOracle {
         differenceCount++;
         final String kind = calculateKind(expectedRow, actualRow);
         differenceCountByKind.put(kind, Nulls.getOrDefault(differenceCountByKind, kind, 0) + 1);
-        if (printedDifferenceList.size() < MAX_PRINTED_DIFFERENCES) {
-          printedDifferenceList.add("Expected: " + expectedRow + "\nActual:   " + actualRow);
+        if (printedDifferences.size() < MAX_PRINTED_DIFFERENCES) {
+          printedDifferences.add("Expected: " + expectedRow + "\nActual:   " + actualRow);
         }
       }
     }

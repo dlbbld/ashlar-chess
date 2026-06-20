@@ -173,41 +173,41 @@ class TestMobilitySolution {
   @Test
   void testPawnWall() {
     {
-      final List<Square> whiteKingToSquareList = Nulls.asList(A1, B1, C1, D1, E1, F1, G1, H1, A2, B2, C2, D2, E2, F2,
+      final List<Square> whiteKingTargetSquares = Nulls.asList(A1, B1, C1, D1, E1, F1, G1, H1, A2, B2, C2, D2, E2, F2,
           G2, H2, A3, B3, C3, D3, E3, F3, G3, H3);
-      final List<Square> blackKingToSquareList = Nulls.asList(A6, B6, C6, D6, E6, F6, G6, H6, A7, B7, C7, D7, E7, F7,
+      final List<Square> blackKingTargetSquares = Nulls.asList(A6, B6, C6, D6, E6, F6, G6, H6, A7, B7, C7, D7, E7, F7,
           G7, H7, A8, B8, C8, D8, E8, F8, G8, H8);
 
-      checkPawnWallOnlyKingAndPawn("4k3/8/8/p1p1p1p1/P1P1P1P1/8/8/4K3 w - - 0 50", whiteKingToSquareList,
-          blackKingToSquareList);
+      checkPawnWallOnlyKingAndPawn("4k3/8/8/p1p1p1p1/P1P1P1P1/8/8/4K3 w - - 0 50", whiteKingTargetSquares,
+          blackKingTargetSquares);
 
-      checkPawnWallOnlyKingAndPawn("4k3/8/8/p1p1p1p1/P1P1P1P1/8/8/4K3 b - - 0 50", whiteKingToSquareList,
-          blackKingToSquareList);
+      checkPawnWallOnlyKingAndPawn("4k3/8/8/p1p1p1p1/P1P1P1P1/8/8/4K3 b - - 0 50", whiteKingTargetSquares,
+          blackKingTargetSquares);
     }
 
     {
-      final List<Square> whiteKingToSquareList = Nulls.asList(A1, B1, C1, D1, E1, F1, G1, H1, A2, B2, C2, D2, E2, F2,
+      final List<Square> whiteKingTargetSquares = Nulls.asList(A1, B1, C1, D1, E1, F1, G1, H1, A2, B2, C2, D2, E2, F2,
           G2, H2, E3, F3, G3, H3, F4, G4, H4);
-      final List<Square> blackKingToSquareList = Nulls.asList(A6, B6, C6, A7, B7, C7, D7, A8, B8, C8, D8, E8, F8, G8,
+      final List<Square> blackKingTargetSquares = Nulls.asList(A6, B6, C6, A7, B7, C7, D7, A8, B8, C8, D8, E8, F8, G8,
           H8);
-      checkPawnWallOnlyKingAndPawn("4k3/5p1p/4pPpP/1p1pP1P1/pPpP4/P1P5/8/4K3 w - - 0 50", whiteKingToSquareList,
-          blackKingToSquareList);
+      checkPawnWallOnlyKingAndPawn("4k3/5p1p/4pPpP/1p1pP1P1/pPpP4/P1P5/8/4K3 w - - 0 50", whiteKingTargetSquares,
+          blackKingTargetSquares);
 
-      checkPawnWallOnlyKingAndPawn("4k3/5p1p/4pPpP/1p1pP1P1/pPpP4/P1P5/8/4K3 b - - 0 50", whiteKingToSquareList,
-          blackKingToSquareList);
+      checkPawnWallOnlyKingAndPawn("4k3/5p1p/4pPpP/1p1pP1P1/pPpP4/P1P5/8/4K3 b - - 0 50", whiteKingTargetSquares,
+          blackKingTargetSquares);
     }
 
     {
-      final List<Square> whiteKingToSquareList = Nulls.asList(A1, B1, C1, D1, E1, F1, G1, H1, A2, B2, C2, D2, E2, F2,
+      final List<Square> whiteKingTargetSquares = Nulls.asList(A1, B1, C1, D1, E1, F1, G1, H1, A2, B2, C2, D2, E2, F2,
           G2, H2, E3, F3, G3, H3, F4, G4, H4, G5, H5);
-      final List<Square> blackKingToSquareList = Nulls.asList(A5, B5, A6, B6, C6, A7, B7, C7, D7, A8, B8, C8, D8, E8,
+      final List<Square> blackKingTargetSquares = Nulls.asList(A5, B5, A6, B6, C6, A7, B7, C7, D7, A8, B8, C8, D8, E8,
           F8, G8, H8);
 
-      checkPawnWallOnlyKingAndPawn("4k3/5p1p/4pP1P/3pP3/p1pP4/P1P5/8/4K3 w - - 0 50", whiteKingToSquareList,
-          blackKingToSquareList);
+      checkPawnWallOnlyKingAndPawn("4k3/5p1p/4pP1P/3pP3/p1pP4/P1P5/8/4K3 w - - 0 50", whiteKingTargetSquares,
+          blackKingTargetSquares);
 
-      checkPawnWallOnlyKingAndPawn("4k3/5p1p/4pP1P/3pP3/p1pP4/P1P5/8/4K3 b - - 0 50", whiteKingToSquareList,
-          blackKingToSquareList);
+      checkPawnWallOnlyKingAndPawn("4k3/5p1p/4pP1P/3pP3/p1pP4/P1P5/8/4K3 b - - 0 50", whiteKingTargetSquares,
+          blackKingTargetSquares);
     }
 
   }
@@ -223,40 +223,40 @@ class TestMobilitySolution {
   void testAllLockedButKing() {
 
     {
-      final List<Square> whiteKingToSquareList = Nulls.asList(A1, B1, C1, D1, E1, F1, G1, H1, E2, F2, G2, H2, D3, E3,
+      final List<Square> whiteKingTargetSquares = Nulls.asList(A1, B1, C1, D1, E1, F1, G1, H1, E2, F2, G2, H2, D3, E3,
           F3, F3, G3, H3, E4, F4, G4, H4, B5, D5, E5, F5, G5, H5, A6, B6, C6, D6, E6, F6, G6, H6, A7, B7, C7, D7, E7,
           F7, G7, H7, A8, B8, C8, D8, E8, F8, G8, H8);
-      final List<Square> blackKingToSquareList = Nulls.asList(A1, B1, C1, D1, E1, F1, G1, H1, B2, D2, E2, F2, G2, H2,
+      final List<Square> blackKingTargetSquares = Nulls.asList(A1, B1, C1, D1, E1, F1, G1, H1, B2, D2, E2, F2, G2, H2,
           E3, F3, G3, H3, D4, E4, F4, G4, H4, E5, F5, G5, H5, A6, B6, C6, D6, E6, F6, G6, H6, A7, B7, C7, D7, E7, F7,
           G7, H7, A8, B8, C8, D8, E8, F8, G8, H8);
 
-      checkAllLockedButKing("8/8/8/p1p4k/PbP5/pBp5/P1P3K1/8 w - - 2 41", whiteKingToSquareList, blackKingToSquareList);
+      checkAllLockedButKing("8/8/8/p1p4k/PbP5/pBp5/P1P3K1/8 w - - 2 41", whiteKingTargetSquares, blackKingTargetSquares);
 
-      checkAllLockedButKing("8/8/8/p1p4k/PbP5/pBp5/P1P3K1/8 b - - 2 41", whiteKingToSquareList, blackKingToSquareList);
+      checkAllLockedButKing("8/8/8/p1p4k/PbP5/pBp5/P1P3K1/8 b - - 2 41", whiteKingTargetSquares, blackKingTargetSquares);
     }
 
     {
-      final List<Square> whiteKingToSquareList = Nulls.asList(A1, B1, C1, D1, E1, F1, G1, H1, A2, B2, C2, D2, E2, F2,
+      final List<Square> whiteKingTargetSquares = Nulls.asList(A1, B1, C1, D1, E1, F1, G1, H1, A2, B2, C2, D2, E2, F2,
           G2, H2, A3, B3, C3, D3, E3, F3, G3, H3, A4, B4, C4, D4, E4, F4, G4, H4, A5, B5, C5, D5);
-      final List<Square> blackKingToSquareList = Nulls.asList(A8, B8, C8, D8, E8, F8, G7, H7, H8);
+      final List<Square> blackKingTargetSquares = Nulls.asList(A8, B8, C8, D8, E8, F8, G7, H7, H8);
 
-      checkAllLockedButKing("3k2n1/1p2p3/1P2Pp1p/5P1P/1K6/8/8/8 w - - 0 100", whiteKingToSquareList,
-          blackKingToSquareList);
+      checkAllLockedButKing("3k2n1/1p2p3/1P2Pp1p/5P1P/1K6/8/8/8 w - - 0 100", whiteKingTargetSquares,
+          blackKingTargetSquares);
 
-      checkAllLockedButKing("3k2n1/1p2p3/1P2Pp1p/5P1P/1K6/8/8/8 b - - 0 100", whiteKingToSquareList,
-          blackKingToSquareList);
+      checkAllLockedButKing("3k2n1/1p2p3/1P2Pp1p/5P1P/1K6/8/8/8 b - - 0 100", whiteKingTargetSquares,
+          blackKingTargetSquares);
     }
 
     {
-      final List<Square> whiteKingToSquareList = Nulls.asList(A1, B1, C1, D1, E1, F1, G1, H1, A2, B2, C2, D2, E2, F2,
+      final List<Square> whiteKingTargetSquares = Nulls.asList(A1, B1, C1, D1, E1, F1, G1, H1, A2, B2, C2, D2, E2, F2,
           G2, H2, A3, B3, C3, D3, E3, F3, G3, H3, D4, E4, F4, G4, H4);
-      final List<Square> blackKingToSquareList = Nulls.asList(A8, B8, C8, D8, E8, F8, G7, H7, H8);
+      final List<Square> blackKingTargetSquares = Nulls.asList(A8, B8, C8, D8, E8, F8, G7, H7, H8);
 
-      checkAllLockedButKing("3k2n1/1p2p3/1Pp1Pp1p/BpP2P1P/1P6/3K4/8/8 w - - 0 100", whiteKingToSquareList,
-          blackKingToSquareList);
+      checkAllLockedButKing("3k2n1/1p2p3/1Pp1Pp1p/BpP2P1P/1P6/3K4/8/8 w - - 0 100", whiteKingTargetSquares,
+          blackKingTargetSquares);
 
-      checkAllLockedButKing("3k2n1/1p2p3/1Pp1Pp1p/BpP2P1P/1P6/3K4/8/8 b - - 0 100", whiteKingToSquareList,
-          blackKingToSquareList);
+      checkAllLockedButKing("3k2n1/1p2p3/1Pp1Pp1p/BpP2P1P/1P6/3K4/8/8 b - - 0 100", whiteKingTargetSquares,
+          blackKingTargetSquares);
     }
 
   }
@@ -268,10 +268,10 @@ class TestMobilitySolution {
     {
       final Map<Square, List<Square>> mobilityMap = new EnumMap<>(Square.class);
 
-      final List<Square> whiteKingToSquareList = Nulls.asList(A1, B1, C1, D1, E1, F1, G1, H1, A2, B2, C2, D2, E2, F2,
+      final List<Square> whiteKingTargetSquares = Nulls.asList(A1, B1, C1, D1, E1, F1, G1, H1, A2, B2, C2, D2, E2, F2,
           G2, H2, A3, B3, C3, D3, E3, F3, G3, H3, A4, B4, C4, D4, E4, F4, G4, H4, A5, C5, D5, E5, F5, G5, H5, C6, D6,
           E6, F6, G6, H6, D7, E7, F7, G7, H7, D8, E8, F8, G8, H8);
-      mobilityMap.put(G2, whiteKingToSquareList);
+      mobilityMap.put(G2, whiteKingTargetSquares);
 
       mobilityMap.put(B5, Nulls.asList(B5));
       mobilityMap.put(A6, Nulls.asList(A6));
@@ -288,9 +288,9 @@ class TestMobilitySolution {
     {
       final Map<Square, List<Square>> mobilityMap = new EnumMap<>(Square.class);
 
-      final List<Square> whiteKingToSquareList = Nulls.asList(A1, B1, C1, D1, E1, F1, G1, H1, A2, B2, C2, D2, E2, F2,
+      final List<Square> whiteKingTargetSquares = Nulls.asList(A1, B1, C1, D1, E1, F1, G1, H1, A2, B2, C2, D2, E2, F2,
           G2, H2, A3, B3, C3, A4, B4);
-      mobilityMap.put(F2, whiteKingToSquareList);
+      mobilityMap.put(F2, whiteKingTargetSquares);
 
       mobilityMap.put(E3, Nulls.asList(E3));
       mobilityMap.put(G3, Nulls.asList(G3));
@@ -313,9 +313,9 @@ class TestMobilitySolution {
       mobilityMap.put(B6, Nulls.asList(B6));
       mobilityMap.put(C6, Nulls.asList(C6));
 
-      final List<Square> blackKingToSquareList = Nulls.asList(F5, E6, F6, G6, H6, D7, E7, F7, G7, H7, A8, B8, C8, D8,
+      final List<Square> blackKingTargetSquares = Nulls.asList(F5, E6, F6, G6, H6, D7, E7, F7, G7, H7, A8, B8, C8, D8,
           E8, F8, G8, H8);
-      mobilityMap.put(G6, blackKingToSquareList);
+      mobilityMap.put(G6, blackKingTargetSquares);
 
       mobilityMap.put(B7, Nulls.asList(B7));
 
@@ -329,9 +329,9 @@ class TestMobilitySolution {
     {
       final Map<Square, List<Square>> mobilityMap = new EnumMap<>(Square.class);
 
-      final List<Square> whiteKingToSquareList = Nulls.asList(A1, B1, C1, D1, E1, F1, G1, H1, A2, B2, C2, D2, E2, F2,
+      final List<Square> whiteKingTargetSquares = Nulls.asList(A1, B1, C1, D1, E1, F1, G1, H1, A2, B2, C2, D2, E2, F2,
           G2, H2, A3, B3, C3, D3, E3, F3, G3, H3, A4, B4, C4, D4, E4, F4, G4, H4, A5, B5, C5, D5, E5, F5, G5, H5);
-      mobilityMap.put(E1, whiteKingToSquareList);
+      mobilityMap.put(E1, whiteKingTargetSquares);
 
       mobilityMap.put(A2, Nulls.asList(A2, A3, A4, A5));
       mobilityMap.put(C2, Nulls.asList(C2, C3, C4, C5));
@@ -353,8 +353,8 @@ class TestMobilitySolution {
       mobilityMap.put(E7, Nulls.asList(E7));
       mobilityMap.put(G7, Nulls.asList(G7));
 
-      final List<Square> blackKingToSquareList = Nulls.asList(A8, B8, C8, D8, E8, F8, G8, H8);
-      mobilityMap.put(B8, blackKingToSquareList);
+      final List<Square> blackKingTargetSquares = Nulls.asList(A8, B8, C8, D8, E8, F8, G8, H8);
+      mobilityMap.put(B8, blackKingTargetSquares);
 
       checkCustom("1k6/p1p1p1p1/P1P1P1P1/p1p1p1p1/8/8/P1P1P1P1/4K3 w - - 10 100", mobilityMap);
 
@@ -364,8 +364,8 @@ class TestMobilitySolution {
     {
       final Map<Square, List<Square>> mobilityMap = new EnumMap<>(Square.class);
 
-      final List<Square> whiteKingToSquareList = Nulls.asList(G1);
-      mobilityMap.put(G1, whiteKingToSquareList);
+      final List<Square> whiteKingTargetSquares = Nulls.asList(G1);
+      mobilityMap.put(G1, whiteKingTargetSquares);
 
       mobilityMap.put(A2, Nulls.asList(A2, A3, A4, A5, A6));
       mobilityMap.put(C2, Nulls.asList(C2, C3, C4, C5, C6));
@@ -387,8 +387,8 @@ class TestMobilitySolution {
       mobilityMap.put(E7, Nulls.asList(E7, E6, E5, E4, E3));
       mobilityMap.put(G7, Nulls.asList(G7));
 
-      final List<Square> blackKingToSquareList = Nulls.asList(G8);
-      mobilityMap.put(G8, blackKingToSquareList);
+      final List<Square> blackKingTargetSquares = Nulls.asList(G8);
+      mobilityMap.put(G8, blackKingTargetSquares);
 
       checkCustom("6k1/p1p1p1P1/6PB/6P1/6p1/6pb/P1P1P1p1/6K1 w - - 0 100", mobilityMap);
 
@@ -404,15 +404,15 @@ class TestMobilitySolution {
     for (final PiecePlacement piecePlacement : mobilitySolution.getPiecePlacements()) {
       final Set<Square> squaresWithValueOne = mobilitySolution.calculateSquaresWithValueOne(piecePlacement);
       assertTrue(mobilityMap.containsKey(piecePlacement.squareOriginal()));
-      final List<Square> expectedSquareList = Nulls.get(mobilityMap, piecePlacement.squareOriginal());
-      final Set<Square> expectedSquareSet = new TreeSet<>(expectedSquareList);
+      final List<Square> expectedSquares = Nulls.get(mobilityMap, piecePlacement.squareOriginal());
+      final Set<Square> expectedSquareSet = new TreeSet<>(expectedSquares);
       assertEquals(expectedSquareSet, squaresWithValueOne);
     }
 
   }
 
-  private static void checkAllLockedButKing(String fen, List<Square> whiteKingToSquareList,
-      List<Square> blackKingToSquareList) {
+  private static void checkAllLockedButKing(String fen, List<Square> whiteKingTargetSquares,
+      List<Square> blackKingTargetSquares) {
     final Board board = Board.fromFenStrict(fen);
 
     final MobilitySolution mobilitySolution = Mobility.mobility(board);
@@ -437,8 +437,8 @@ class TestMobilitySolution {
         }
         case KING:
           switch (piecePlacement.side()) {
-            case WHITE -> assertEquals(new TreeSet<>(whiteKingToSquareList), squaresWithValueOne);
-            case BLACK -> assertEquals(new TreeSet<>(blackKingToSquareList), squaresWithValueOne);
+            case WHITE -> assertEquals(new TreeSet<>(whiteKingTargetSquares), squaresWithValueOne);
+            case BLACK -> assertEquals(new TreeSet<>(blackKingTargetSquares), squaresWithValueOne);
             case NONE -> throw new IllegalArgumentException();
             default -> throw new IllegalArgumentException();
           }
@@ -450,8 +450,8 @@ class TestMobilitySolution {
     }
   }
 
-  private static void checkPawnWallOnlyKingAndPawn(String fen, List<Square> whiteKingToSquareList,
-      List<Square> blackKingToSquareList) {
+  private static void checkPawnWallOnlyKingAndPawn(String fen, List<Square> whiteKingTargetSquares,
+      List<Square> blackKingTargetSquares) {
     final Board board = Board.fromFenStrict(fen);
 
     final MobilitySolution mobilitySolution = Mobility.mobility(board);
@@ -466,8 +466,8 @@ class TestMobilitySolution {
           break;
         case KING:
           switch (piecePlacement.side()) {
-            case WHITE -> assertEquals(new TreeSet<>(whiteKingToSquareList), squaresWithValueOne);
-            case BLACK -> assertEquals(new TreeSet<>(blackKingToSquareList), squaresWithValueOne);
+            case WHITE -> assertEquals(new TreeSet<>(whiteKingTargetSquares), squaresWithValueOne);
+            case BLACK -> assertEquals(new TreeSet<>(blackKingTargetSquares), squaresWithValueOne);
             case NONE -> throw new IllegalArgumentException();
             default -> throw new IllegalArgumentException();
           }

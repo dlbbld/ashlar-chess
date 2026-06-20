@@ -37,23 +37,23 @@ public class MoveGenerationPerformanceSurvey {
   public static void main(String[] args) {
     for (final PgnTest pgnTest : GROUPS) {
       @SuppressWarnings("null") final @NonNull PgnTest pgnTestNotNull = pgnTest;
-      final List<PositionPair> positionList = collectPositions(pgnTestNotNull);
-      warmup(positionList);
+      final List<PositionPair> positions = collectPositions(pgnTestNotNull);
+      warmup(positions);
 
-      final Measurement boardBackend = measureBoardBackend(positionList);
-      final Measurement helpmateSearchBoard = measureHelpmateSearchBoard(positionList);
-      final Measurement reference = measureReference(positionList);
-      final Measurement chessLib = measureChessLib(positionList);
+      final Measurement boardBackend = measureBoardBackend(positions);
+      final Measurement helpmateSearchBoard = measureHelpmateSearchBoard(positions);
+      final Measurement reference = measureReference(positions);
+      final Measurement chessLib = measureChessLib(positions);
 
-      printResult(pgnTestNotNull, positionList.size(), boardBackend, helpmateSearchBoard, reference, chessLib);
+      printResult(pgnTestNotNull, positions.size(), boardBackend, helpmateSearchBoard, reference, chessLib);
     }
   }
 
-  private static Measurement measureBoardBackend(List<PositionPair> positionList) {
+  private static Measurement measureBoardBackend(List<PositionPair> positions) {
     long moveCount = 0L;
     final long start = System.nanoTime();
     for (int round = 0; round < MEASURE_ROUNDS; round++) {
-      for (final PositionPair position : positionList) {
+      for (final PositionPair position : positions) {
         final Board board = position.ashlarBoard();
         final Square ep = board.getEnPassantCaptureTargetSquare();
         final long enPassantBit = ep == Square.NONE ? 0L : 1L << ep.ordinal();
@@ -64,12 +64,12 @@ public class MoveGenerationPerformanceSurvey {
     return new Measurement(System.nanoTime() - start, moveCount);
   }
 
-  private static Measurement measureHelpmateSearchBoard(List<PositionPair> positionList) {
+  private static Measurement measureHelpmateSearchBoard(List<PositionPair> positions) {
     final HelpmateSearchBoardPerformanceProbe probe = new HelpmateSearchBoardPerformanceProbe();
     long moveCount = 0L;
     final long start = System.nanoTime();
     for (int round = 0; round < MEASURE_ROUNDS; round++) {
-      for (final PositionPair position : positionList) {
+      for (final PositionPair position : positions) {
         moveCount += probe.calculateLegalMoveCount(position.ashlarBoard());
       }
     }
@@ -104,20 +104,20 @@ public class MoveGenerationPerformanceSurvey {
     result.add(new PositionPair(Board.fromFenStrict(fen), chessLibBoard));
   }
 
-  private static void warmup(List<PositionPair> positionList) {
+  private static void warmup(List<PositionPair> positions) {
     for (int i = 0; i < WARMUP_ROUNDS; i++) {
-      measureBoardBackend(positionList);
-      measureHelpmateSearchBoard(positionList);
-      measureReference(positionList);
-      measureChessLib(positionList);
+      measureBoardBackend(positions);
+      measureHelpmateSearchBoard(positions);
+      measureReference(positions);
+      measureChessLib(positions);
     }
   }
 
-  private static Measurement measureReference(List<PositionPair> positionList) {
+  private static Measurement measureReference(List<PositionPair> positions) {
     long moveCount = 0L;
     final long start = System.nanoTime();
     for (int round = 0; round < MEASURE_ROUNDS; round++) {
-      for (final PositionPair position : positionList) {
+      for (final PositionPair position : positions) {
         final Board board = position.ashlarBoard();
         moveCount += LegalMovesSupport.calculateLegalMoves(
             StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), board.getSideToMove(),
@@ -127,11 +127,11 @@ public class MoveGenerationPerformanceSurvey {
     return new Measurement(System.nanoTime() - start, moveCount);
   }
 
-  private static Measurement measureChessLib(List<PositionPair> positionList) {
+  private static Measurement measureChessLib(List<PositionPair> positions) {
     long moveCount = 0L;
     final long start = System.nanoTime();
     for (int round = 0; round < MEASURE_ROUNDS; round++) {
-      for (final PositionPair position : positionList) {
+      for (final PositionPair position : positions) {
         moveCount += generateChessLibLegalMoves(position.chessLibBoard()).size();
       }
     }

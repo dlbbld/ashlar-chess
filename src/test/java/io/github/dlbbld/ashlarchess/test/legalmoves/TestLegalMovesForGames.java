@@ -1010,8 +1010,8 @@ class TestLegalMovesForGames {
     for (final PgnMove move : pgnGame.moves()) {
       board.moveStrict(move.san());
       final String san = board.getSan();
-      final String legalMoveList = ListUtility.toCommaSeparatedString(new ArrayList<>(board.getLegalMovesAsSan()));
-      final String output = "checkLegalMoves(board, \"" + san + "\", \"" + legalMoveList + "\");";
+      final String legalMoves = ListUtility.toCommaSeparatedString(new ArrayList<>(board.getLegalMovesAsSan()));
+      final String output = "checkLegalMoves(board, \"" + san + "\", \"" + legalMoves + "\");";
       System.out.println(output);
     }
   }

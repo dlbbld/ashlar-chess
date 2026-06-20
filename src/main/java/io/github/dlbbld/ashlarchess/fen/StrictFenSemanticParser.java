@@ -135,15 +135,15 @@ final class StrictFenSemanticParser {
           "it contains empty ranks");
     }
 
-    final String[] rankDescriptionList = piecePlacement.split("/");
+    final String[] rankDescriptions = piecePlacement.split("/");
 
-    if (rankDescriptionList.length != 8) {
+    if (rankDescriptions.length != 8) {
       throw new StrictFenSemanticValidationException(StrictFenSemanticValidationProblem.INVALID_POSITION_NUMBER_OF_RANKS,
           "it does not specify eight ranks");
     }
 
     int rankNumber = 0;
-    for (final String rankDescription : rankDescriptionList) {
+    for (final String rankDescription : rankDescriptions) {
       rankNumber++;
       final Matcher matcherRank = PATTERN_RANK.matcher(rankDescription);
       if (!matcherRank.find()) {
@@ -152,25 +152,25 @@ final class StrictFenSemanticParser {
       }
     }
 
-    final List<List<String>> evaluatedRankList = new ArrayList<>();
-    for (final String rankDescription : rankDescriptionList) {
+    final List<List<String>> evaluatedRanks = new ArrayList<>();
+    for (final String rankDescription : rankDescriptions) {
       @SuppressWarnings("null") @NonNull final String rankDescriptionNonNull = rankDescription;
       final List<String> evaluatedRank = validateEvaluatedLength(rankDescriptionNonNull);
-      evaluatedRankList.add(evaluatedRank);
+      evaluatedRanks.add(evaluatedRank);
     }
 
-    final List<Piece> pieceList = new ArrayList<>();
-    for (final List<String> evaluatedRank : evaluatedRankList) {
-      pieceList.addAll(convertRankDescriptionEvaluatedToRank(evaluatedRank));
+    final List<Piece> pieces = new ArrayList<>();
+    for (final List<String> evaluatedRank : evaluatedRanks) {
+      pieces.addAll(convertRankDescriptionEvaluatedToRank(evaluatedRank));
     }
 
-    if (pieceList.size() != 64) {
+    if (pieces.size() != 64) {
       throw new ProgrammingMistakeException("The piece list construction is incorrect");
     }
 
-    // pieceList is indexed in FEN reading order (rank 8 first, then rank 7, ..., rank 1). Within each rank,
+    // pieces is indexed in FEN reading order (rank 8 first, then rank 7, ..., rank 1). Within each rank,
     // file a..h. Convert to bitboard: square ordinal in little-endian rank-file order is rank*8 + file with
-    // rank 0..7 (rank 1 = 0). For pieceList index i: rank-from-top = i / 8 (0 = rank 8), file = i % 8 (0 = a).
+    // rank 0..7 (rank 1 = 0). For pieces index i: rank-from-top = i / 8 (0 = rank 8), file = i % 8 (0 = a).
     // So square ordinal = (7 - i/8) * 8 + (i % 8) = (7 - i / 8) * 8 + i % 8.
     long whitePawns = 0L;
     long whiteRooks = 0L;
@@ -185,7 +185,7 @@ final class StrictFenSemanticParser {
     long blackQueens = 0L;
     long blackKings = 0L;
     for (int i = 0; i < 64; i++) {
-      final Piece piece = Nulls.get(pieceList, i);
+      final Piece piece = Nulls.get(pieces, i);
       if (piece == Piece.NONE) {
         continue;
       }
@@ -216,10 +216,10 @@ final class StrictFenSemanticParser {
     if (rankDescriptionEvaluated.size() != 8) {
       throw new ProgrammingMistakeException("The rank description evaluated must consist of exactly eight characters");
     }
-    final List<Piece> rankPieceList = new ArrayList<>();
+    final List<Piece> rankPieces = new ArrayList<>();
     for (final String letter : rankDescriptionEvaluated) {
       if ("".equals(letter)) {
-        rankPieceList.add(Piece.NONE);
+        rankPieces.add(Piece.NONE);
       } else {
         final char letterChar = letter.charAt(0);
         if (!FenPieceSymbol.exists(letterChar)) {
@@ -227,21 +227,21 @@ final class StrictFenSemanticParser {
               "An unknown piece was found which was not filtered before by regular expression");
         }
         final Piece piece = FenPieceSymbol.parse(letterChar).piece();
-        rankPieceList.add(piece);
+        rankPieces.add(piece);
       }
     }
 
     // post condition
-    if (rankPieceList.size() != 8) {
+    if (rankPieces.size() != 8) {
       throw new ProgrammingMistakeException("Post condition of eight elements for rank evaluation not met");
     }
 
-    return rankPieceList;
+    return rankPieces;
 
   }
 
   private static List<String> validateEvaluatedLength(String rankDescription) throws StrictFenSemanticValidationException {
-    final List<String> squareDescriptionList = new ArrayList<>();
+    final List<String> squareDescriptions = new ArrayList<>();
 
     int countEvaluatedLength = 0;
 
@@ -251,11 +251,11 @@ final class StrictFenSemanticParser {
         final int numberOfEmptyFields = Integer.parseInt(currentChar);
         countEvaluatedLength += numberOfEmptyFields;
         for (int j = 1; j <= numberOfEmptyFields; j++) {
-          squareDescriptionList.add("");
+          squareDescriptions.add("");
         }
       } catch (@SuppressWarnings("unused") final NumberFormatException e) {
         countEvaluatedLength++;
-        squareDescriptionList.add(currentChar);
+        squareDescriptions.add(currentChar);
       }
 
     }
@@ -265,10 +265,10 @@ final class StrictFenSemanticParser {
     }
 
     // post condition
-    if (squareDescriptionList.size() != 8) {
+    if (squareDescriptions.size() != 8) {
       throw new ProgrammingMistakeException("Post condition of eight elements for square description not met");
     }
-    return squareDescriptionList;
+    return squareDescriptions;
   }
 
   private static Side validateSideToMove(String sideToMove) throws StrictFenSemanticValidationException {
@@ -480,11 +480,11 @@ final class StrictFenSemanticParser {
   private static void validateCastlingRightAgainstBitboardPosition(BitboardPosition bitboardPosition,
       CastlingRightBoth castlingRightBoth) throws StrictFenSemanticValidationException {
 
-    final List<Side> sideToCheckList = new ArrayList<>();
-    sideToCheckList.add(WHITE);
-    sideToCheckList.add(BLACK);
+    final List<Side> sidesToCheck = new ArrayList<>();
+    sidesToCheck.add(WHITE);
+    sidesToCheck.add(BLACK);
 
-    for (final Side sideToCheck : sideToCheckList) {
+    for (final Side sideToCheck : sidesToCheck) {
       final CastlingRight sideCastlingRight = CastlingUtility.getCastlingRight(castlingRightBoth, sideToCheck);
 
       final boolean isKingSideCastlingOriginalPosition = CastlingUtility

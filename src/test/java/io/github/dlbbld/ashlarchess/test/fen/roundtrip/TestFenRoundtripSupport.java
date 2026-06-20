@@ -15,13 +15,13 @@ public final class TestFenRoundtripSupport {
   private TestFenRoundtripSupport() {
   }
 
-  static void checkFenRoundtrip(String initialFen, List<MoveSpecification> moveList) {
+  static void checkFenRoundtrip(String initialFen, List<MoveSpecification> moves) {
 
     final Board boardPlayMoves = Board.fromFenStrict(initialFen);
 
     Board previousBoardFromFen = null;
-    for (int i = 0; i < moveList.size(); i++) {
-      final MoveSpecification move = Nulls.get(moveList, i);
+    for (int i = 0; i < moves.size(); i++) {
+      final MoveSpecification move = Nulls.get(moves, i);
       boardPlayMoves.move(move);
       if (previousBoardFromFen != null) {
         // testing fen plus played move equals played move

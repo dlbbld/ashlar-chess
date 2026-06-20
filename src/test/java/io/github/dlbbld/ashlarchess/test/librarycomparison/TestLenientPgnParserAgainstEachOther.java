@@ -69,11 +69,11 @@ class TestLenientPgnParserAgainstEachOther {
     final PgnGame pgnGame = PgnCacheForStrictPgnParserTestCases.getPgn(pgnFolderPath, pgnName);
     final Fen startFen = pgnGame.startFen();
 
-    final List<String> sanList = new ArrayList<>();
+    final List<String> sans = new ArrayList<>();
     for (final PgnMove pgnMove : pgnGame.moves()) {
-      sanList.add(pgnMove.san());
+      sans.add(pgnMove.san());
     }
-    return new PgnSan(startFen.fen(), sanList);
+    return new PgnSan(startFen.fen(), sans);
   }
 
 }

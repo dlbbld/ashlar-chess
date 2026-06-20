@@ -61,7 +61,7 @@ class TestPerformMoveSanContract {
   @SuppressWarnings("static-method")
   @Test
   void testPlayedMoveSanMoveSpecRoundtrip() {
-    for (final PgnTestCaseList testCaseList : PgnTestCaseCatalog.getParserIntegrationSmokeList()) {
+    for (final PgnTestCaseList testCaseList : PgnTestCaseCatalog.getParserIntegrationSmokeTests()) {
       for (final PgnFen testCase : testCaseList.list()) {
         logger.info(testCase.pgnName());
         verifyProvidedSanToCalculatedSan(testCaseList, testCase);
@@ -72,7 +72,7 @@ class TestPerformMoveSanContract {
   @SuppressWarnings("static-method")
   @Test
   void testAllLegalMovesSanMoveSpecRoundtrip() {
-    for (final PgnTestCaseList testCaseList : PgnTestCaseCatalog.getParserIntegrationSmokeList()) {
+    for (final PgnTestCaseList testCaseList : PgnTestCaseCatalog.getParserIntegrationSmokeTests()) {
       for (final PgnFen testCase : testCaseList.list()) {
         logger.info(testCase.pgnName());
         verifyCalculatedSanToCalculatedMoveSpecification(testCaseList, testCase);

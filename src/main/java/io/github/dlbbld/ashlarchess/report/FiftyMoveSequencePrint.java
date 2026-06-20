@@ -32,11 +32,11 @@ final class FiftyMoveSequencePrint {
    * initial-FEN start) renders once. An initial-FEN start with no played continuation renders as the start alone.
    */
   static List<List<String>> render(FiftyMoveSequenceReport report) {
-    final List<List<String>> resultListList = new ArrayList<>();
+    final List<List<String>> lineGroups = new ArrayList<>();
     for (final FiftyMoveSequence sequence : report.sequences()) {
-      resultListList.add(renderSequence(sequence));
+      lineGroups.add(renderSequence(sequence));
     }
-    return resultListList;
+    return lineGroups;
   }
 
   private static List<String> renderSequence(FiftyMoveSequence sequence) {

@@ -42,7 +42,7 @@ public final class FenConstants {
   public static final ImmutableList<String> POSSIBLE_FEN_AFTER_FIRST_MOVE;
 
   static {
-    @SuppressWarnings("null") final @NonNull List<String> fenAfterFirstMoveList = Arrays.asList(
+    @SuppressWarnings("null") final @NonNull List<String> fensAfterFirstMove = Arrays.asList(
         "rnbqkbnr/pppppppp/8/8/8/P7/1PPPPPPP/RNBQKBNR b KQkq - 0 1",
         "rnbqkbnr/pppppppp/8/8/8/1P6/P1PPPPPP/RNBQKBNR b KQkq - 0 1",
         "rnbqkbnr/pppppppp/8/8/8/2P5/PP1PPPPP/RNBQKBNR b KQkq - 0 1",
@@ -63,7 +63,7 @@ public final class FenConstants {
         "rnbqkbnr/pppppppp/8/8/8/5N2/PPPPPPPP/RNBQKB1R b KQkq - 1 1",
         "rnbqkbnr/pppppppp/8/8/8/7N/PPPPPPPP/RNBQKB1R b KQkq - 1 1");
 
-    POSSIBLE_FEN_AFTER_FIRST_MOVE = Nulls.copyOfList(fenAfterFirstMoveList);
+    POSSIBLE_FEN_AFTER_FIRST_MOVE = Nulls.copyOfList(fensAfterFirstMove);
   }
 
 }

@@ -51,15 +51,15 @@ public class LibraryCarlosBoard {
   private final Board board = new Board();
 
   private int performedMoveCount;
-  private final List<LegalMove> performedLegalMoveList;
-  private final List<DynamicPosition> dynamicPositionList;
+  private final List<LegalMove> performedLegalMoves;
+  private final List<DynamicPosition> dynamicPositions;
 
   public LibraryCarlosBoard() {
 
     performedMoveCount = 0;
-    performedLegalMoveList = new ArrayList<>();
-    dynamicPositionList = new ArrayList<>();
-    dynamicPositionList.add(DynamicPositionConstants.INITIAL);
+    performedLegalMoves = new ArrayList<>();
+    dynamicPositions = new ArrayList<>();
+    dynamicPositions.add(DynamicPositionConstants.INITIAL);
 
   }
 
@@ -82,7 +82,7 @@ public class LibraryCarlosBoard {
     // shape with empty forgiven items. Cross-validation tests only need the move to land on the board.
     final MoveSpecification strict = moveStrict(san);
     return new io.github.dlbbld.ashlarchess.san.LenientSanParseResult(strict,
-        io.github.dlbbld.ashlarchess.san.ForgivenSanItem.EMPTY_LIST);
+        io.github.dlbbld.ashlarchess.san.ForgivenSanItem.NO_ITEMS);
   }
 
   private MoveSpecification calculateLastMoveSpecification() {
@@ -108,12 +108,12 @@ public class LibraryCarlosBoard {
 
     final MoveBackup moveBackup = NullsCarlos.getLast(this.board);
     final LegalMove legalMove = calculateLegalMove(moveSpecification, moveBackup);
-    performedLegalMoveList.add(legalMove);
+    performedLegalMoves.add(legalMove);
     final Square normalizedEnPassantCaptureTargetSquare = isEnPassantCapturePossible()
         ? getEnPassantCaptureTargetSquare()
         : Square.NONE;
     final BitboardPosition bitboardPosition = StaticPositionBridge.fromStaticPosition(getStaticPosition());
-    dynamicPositionList.add(new DynamicPosition(getSideToMove(), bitboardPosition,
+    dynamicPositions.add(new DynamicPosition(getSideToMove(), bitboardPosition,
         normalizedEnPassantCaptureTargetSquare, getCastlingRightWhite(), getCastlingRightBlack()));
   }
 
@@ -121,16 +121,16 @@ public class LibraryCarlosBoard {
     board.undoMove();
 
     performedMoveCount--;
-    performedLegalMoveList.remove(performedLegalMoveList.size() - 1);
-    dynamicPositionList.remove(dynamicPositionList.size() - 1);
+    performedLegalMoves.remove(performedLegalMoves.size() - 1);
+    dynamicPositions.remove(dynamicPositions.size() - 1);
   }
 
   public boolean canClaimFiftyMoveRuleWithOwnMove() {
     final int halfMoveClock = getHalfMoveClock();
     if (halfMoveClock == 99) {
-      final List<Move> legalMoveList = LibraryCarlosImplementationUtility.generateLegalMoves(this.board);
+      final List<Move> legalMoves = LibraryCarlosImplementationUtility.generateLegalMoves(this.board);
       // need to check if there is a legal move which has halfmove clock 100
-      for (final Move legalMove : legalMoveList) {
+      for (final Move legalMove : legalMoves) {
         board.doMove(legalMove);
         final int halfMoveClockAfterNextHalfMove = getHalfMoveClock();
         if (halfMoveClockAfterNextHalfMove == 100 && !board.isMated() && !board.isStaleMate()) {
@@ -215,10 +215,10 @@ public class LibraryCarlosBoard {
       return sanTest;
     }
 
-    final MoveList moveList = new MoveList();
-    moveList.addAll(calculateMoves(this.board));
+    final MoveList moves = new MoveList();
+    moves.addAll(calculateMoves(this.board));
     try {
-      final String[] sanArray = moveList.toSanArray();
+      final String[] sanArray = moves.toSanArray();
       @SuppressWarnings("null") final String last = Nulls.getLast(sanArray);
       return last;
     } catch (final MoveConversionException e) {
@@ -372,11 +372,11 @@ public class LibraryCarlosBoard {
   }
 
   public ImmutableList<DynamicPosition> getDynamicPositions() {
-    return Nulls.copyOfList(dynamicPositionList);
+    return Nulls.copyOfList(dynamicPositions);
   }
 
   public DynamicPosition getDynamicPosition() {
-    return Nulls.getLast(dynamicPositionList);
+    return Nulls.getLast(dynamicPositions);
   }
 
   public ImmutableList<MoveSpecification> getLegalMoveSpecifications() {
@@ -395,28 +395,28 @@ public class LibraryCarlosBoard {
 
   @SuppressWarnings("null")
   private static List<MoveBackup> generateLegalMoveBackups(Board board) {
-    List<Move> legalMoveList;
+    List<Move> legalMoves;
     try {
-      legalMoveList = MoveGenerator.generateLegalMoves(board);
+      legalMoves = MoveGenerator.generateLegalMoves(board);
     } catch (final MoveGeneratorException e) {
       throw new RuntimeException("Problem with legal move generation", e);
     }
 
-    final List<MoveBackup> moveBackupList = new ArrayList<>();
-    for (final Move move : legalMoveList) {
+    final List<MoveBackup> moveBackups = new ArrayList<>();
+    for (final Move move : legalMoves) {
       board.doMove(move);
       final MoveBackup moveBackup = board.getBackup().getLast();
       board.undoMove();
-      moveBackupList.add(moveBackup);
+      moveBackups.add(moveBackup);
     }
-    return moveBackupList;
+    return moveBackups;
   }
 
   private static Set<MoveSpecification> generateMoveSpecificationSortedSet(Board board) {
-    final List<Move> moveList = generateLegalMoves(board);
+    final List<Move> moves = generateLegalMoves(board);
 
     final Set<MoveSpecification> result = new TreeSet<>();
-    for (final Move move : moveList) {
+    for (final Move move : moves) {
       final MoveSpecification moveSpecification = convertMove(board, move);
       result.add(moveSpecification);
     }
@@ -430,10 +430,10 @@ public class LibraryCarlosBoard {
   }
 
   private static Set<LegalMove> generateLegalMoveSortedSet(Board board) {
-    final List<MoveBackup> moveBackupList = generateLegalMoveBackups(board);
+    final List<MoveBackup> moveBackups = generateLegalMoveBackups(board);
 
     final Set<LegalMove> result = new TreeSet<>();
-    for (final MoveBackup moveBackup : moveBackupList) {
+    for (final MoveBackup moveBackup : moveBackups) {
       final Move move = NullsCarlos.getMove(moveBackup);
       final MoveSpecification moveSpecification = convertMove(board, move);
       final Piece movingPiece = EnumConversionUtility.convertPiece(NullsCarlos.getMovingPiece(moveBackup));
@@ -450,7 +450,7 @@ public class LibraryCarlosBoard {
   }
 
   public LegalMove getLastMove() {
-    return Nulls.getLast(performedLegalMoveList);
+    return Nulls.getLast(performedLegalMoves);
   }
 
   private static LegalMove calculateLegalMove(MoveSpecification moveSpecification, MoveBackup moveBackup) {
@@ -490,15 +490,15 @@ public class LibraryCarlosBoard {
   }
 
   public ImmutableList<MoveSpecification> getPerformedMoveSpecifications() {
-    final List<MoveSpecification> moveSpecificationList = new ArrayList<>();
+    final List<MoveSpecification> moveSpecifications = new ArrayList<>();
     for (final MoveBackup moveBackup : NullsCarlos.getBackup(this.board)) {
 
       final Move move = NullsCarlos.getMove(moveBackup);
       final com.github.bhlangonijr.chesslib.Piece movingPiece = NullsCarlos.getMovingPiece(moveBackup);
 
-      moveSpecificationList.add(MoveConversionUtility.convertMove(move, movingPiece));
+      moveSpecifications.add(MoveConversionUtility.convertMove(move, movingPiece));
     }
-    return Nulls.copyOfList(moveSpecificationList);
+    return Nulls.copyOfList(moveSpecifications);
   }
 
   public ImmutableList<LegalMove> getLegalMoves() {
@@ -581,7 +581,7 @@ public class LibraryCarlosBoard {
   }
 
   public ImmutableList<LegalMove> getPerformedMoves() {
-    return Nulls.copyOfList(performedLegalMoveList);
+    return Nulls.copyOfList(performedLegalMoves);
   }
 
   // ===== Methods previously inherited as `default` from the (now-removed) ChessBoard interface =====

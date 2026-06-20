@@ -55,7 +55,7 @@ class TestBoardRepetitionCount {
   @Test
   void mapMatchesOracleAfterEveryMoveInRepresentativeGames() {
     int pgnsExercised = 0;
-    for (final PgnTestCaseList testCaseList : PgnTestCaseCatalog.getParserIntegrationSmokeList()) {
+    for (final PgnTestCaseList testCaseList : PgnTestCaseCatalog.getParserIntegrationSmokeTests()) {
       for (final PgnFen testCase : testCaseList.list()) {
         final PgnGame pgnGame = PgnCacheForStrictPgnParserTestCases.getPgn(testCaseList.pgnTest().getFolderPath(),
             testCase.pgnName());

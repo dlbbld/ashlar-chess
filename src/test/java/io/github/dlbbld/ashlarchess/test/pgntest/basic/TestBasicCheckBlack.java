@@ -49,25 +49,25 @@ class TestBasicCheckBlack {
   private static final Logger logger = Nulls.getLogger(TestBasicCheckBlack.class);
 
   static {
-    final List<String> pgnNameList = new ArrayList<>();
+    final List<String> pgnNames = new ArrayList<>();
 
-    pgnNameList.add("01_black_check_rook_direct_adjacent.pgn");
-    pgnNameList.add("02_black_check_rook_direct_range.pgn");
-    pgnNameList.add("03_black_check_rook_discover.pgn");
-    pgnNameList.add("04_black_check_knight_direct.pgn");
-    pgnNameList.add("05_black_check_knight_discover_orthogonal.pgn");
-    pgnNameList.add("06_black_check_knight_discover_diagonal.pgn");
-    pgnNameList.add("07_black_check_bishop_direct_adjacent.pgn");
-    pgnNameList.add("08_black_check_bishop_direct_range.pgn");
-    pgnNameList.add("09_black_check_bishop_discover.pgn");
-    pgnNameList.add("10_black_check_queen_direct_orthogonal_adjacent.pgn");
-    pgnNameList.add("11_black_check_queen_direct_orthogonal_range.pgn");
-    pgnNameList.add("12_black_check_queen_direct_diagonal_adjacent.pgn");
-    pgnNameList.add("13_black_check_queen_direct_diagonal_range.pgn");
-    pgnNameList.add("14_black_check_king_discover_orthogonal.pgn");
-    pgnNameList.add("15_black_check_king_discover_diagonal.pgn");
+    pgnNames.add("01_black_check_rook_direct_adjacent.pgn");
+    pgnNames.add("02_black_check_rook_direct_range.pgn");
+    pgnNames.add("03_black_check_rook_discover.pgn");
+    pgnNames.add("04_black_check_knight_direct.pgn");
+    pgnNames.add("05_black_check_knight_discover_orthogonal.pgn");
+    pgnNames.add("06_black_check_knight_discover_diagonal.pgn");
+    pgnNames.add("07_black_check_bishop_direct_adjacent.pgn");
+    pgnNames.add("08_black_check_bishop_direct_range.pgn");
+    pgnNames.add("09_black_check_bishop_discover.pgn");
+    pgnNames.add("10_black_check_queen_direct_orthogonal_adjacent.pgn");
+    pgnNames.add("11_black_check_queen_direct_orthogonal_range.pgn");
+    pgnNames.add("12_black_check_queen_direct_diagonal_adjacent.pgn");
+    pgnNames.add("13_black_check_queen_direct_diagonal_range.pgn");
+    pgnNames.add("14_black_check_king_discover_orthogonal.pgn");
+    pgnNames.add("15_black_check_king_discover_diagonal.pgn");
 
-    TestBasicSupport.checkTestFolder(pgnNameList, PgnTest.BASIC_CHECK_BLACK);
+    TestBasicSupport.checkTestFolder(pgnNames, PgnTest.BASIC_CHECK_BLACK);
   }
 
   @SuppressWarnings("static-method")

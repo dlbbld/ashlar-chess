@@ -63,35 +63,35 @@ class TestBasicCaptureWhite {
   private static final Logger logger = Nulls.getLogger(TestBasicCaptureWhite.class);
 
   static {
-    final List<String> pgnNameList = new ArrayList<>();
+    final List<String> pgnNames = new ArrayList<>();
 
-    pgnNameList.add("01_white_capture_rook_rook.pgn");
-    pgnNameList.add("02_white_capture_rook_knight.pgn");
-    pgnNameList.add("03_white_capture_rook_bishop.pgn");
-    pgnNameList.add("04_white_capture_rook_queen.pgn");
-    pgnNameList.add("05_white_capture_rook_pawn.pgn");
-    pgnNameList.add("06_white_capture_knight_rook.pgn");
-    pgnNameList.add("07_white_capture_knight_knight.pgn");
-    pgnNameList.add("08_white_capture_knight_bishop.pgn");
-    pgnNameList.add("09_white_capture_knight_queen.pgn");
-    pgnNameList.add("10_white_capture_knight_pawn.pgn");
-    pgnNameList.add("11_white_capture_bishop_rook.pgn");
-    pgnNameList.add("12_white_capture_bishop_knight.pgn");
-    pgnNameList.add("13_white_capture_bishop_bishop.pgn");
-    pgnNameList.add("14_white_capture_bishop_queen.pgn");
-    pgnNameList.add("15_white_capture_bishop_pawn.pgn");
-    pgnNameList.add("16_white_capture_queen_rook.pgn");
-    pgnNameList.add("17_white_capture_queen_knight.pgn");
-    pgnNameList.add("18_white_capture_queen_bishop.pgn");
-    pgnNameList.add("19_white_capture_queen_queen.pgn");
-    pgnNameList.add("20_white_capture_queen_pawn.pgn");
-    pgnNameList.add("21_white_capture_king_rook.pgn");
-    pgnNameList.add("22_white_capture_king_knight.pgn");
-    pgnNameList.add("23_white_capture_king_bishop.pgn");
-    pgnNameList.add("24_white_capture_king_queen.pgn");
-    pgnNameList.add("25_white_capture_king_pawn.pgn");
+    pgnNames.add("01_white_capture_rook_rook.pgn");
+    pgnNames.add("02_white_capture_rook_knight.pgn");
+    pgnNames.add("03_white_capture_rook_bishop.pgn");
+    pgnNames.add("04_white_capture_rook_queen.pgn");
+    pgnNames.add("05_white_capture_rook_pawn.pgn");
+    pgnNames.add("06_white_capture_knight_rook.pgn");
+    pgnNames.add("07_white_capture_knight_knight.pgn");
+    pgnNames.add("08_white_capture_knight_bishop.pgn");
+    pgnNames.add("09_white_capture_knight_queen.pgn");
+    pgnNames.add("10_white_capture_knight_pawn.pgn");
+    pgnNames.add("11_white_capture_bishop_rook.pgn");
+    pgnNames.add("12_white_capture_bishop_knight.pgn");
+    pgnNames.add("13_white_capture_bishop_bishop.pgn");
+    pgnNames.add("14_white_capture_bishop_queen.pgn");
+    pgnNames.add("15_white_capture_bishop_pawn.pgn");
+    pgnNames.add("16_white_capture_queen_rook.pgn");
+    pgnNames.add("17_white_capture_queen_knight.pgn");
+    pgnNames.add("18_white_capture_queen_bishop.pgn");
+    pgnNames.add("19_white_capture_queen_queen.pgn");
+    pgnNames.add("20_white_capture_queen_pawn.pgn");
+    pgnNames.add("21_white_capture_king_rook.pgn");
+    pgnNames.add("22_white_capture_king_knight.pgn");
+    pgnNames.add("23_white_capture_king_bishop.pgn");
+    pgnNames.add("24_white_capture_king_queen.pgn");
+    pgnNames.add("25_white_capture_king_pawn.pgn");
 
-    TestBasicSupport.checkTestFolder(pgnNameList, PgnTest.BASIC_CAPTURE_WHITE);
+    TestBasicSupport.checkTestFolder(pgnNames, PgnTest.BASIC_CAPTURE_WHITE);
   }
 
   @SuppressWarnings("static-method")

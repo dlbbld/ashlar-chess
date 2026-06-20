@@ -29,18 +29,18 @@ class TestBasicPromotionPieceBlack {
   private static final Logger logger = Nulls.getLogger(TestBasicPromotionPieceBlack.class);
 
   static {
-    final List<String> pgnNameList = new ArrayList<>();
+    final List<String> pgnNames = new ArrayList<>();
 
-    pgnNameList.add("01_black_promotion_piece_capture_no_rook.pgn");
-    pgnNameList.add("02_black_promotion_piece_capture_no_knight.pgn");
-    pgnNameList.add("03_black_promotion_piece_capture_no_bishop.pgn");
-    pgnNameList.add("04_black_promotion_piece_capture_no_queen.pgn");
-    pgnNameList.add("05_black_promotion_piece_capture_yes_rook.pgn");
-    pgnNameList.add("06_black_promotion_piece_capture_yes_knight.pgn");
-    pgnNameList.add("07_black_promotion_piece_capture_yes_bishop.pgn");
-    pgnNameList.add("08_black_promotion_piece_capture_yes_queen.pgn");
+    pgnNames.add("01_black_promotion_piece_capture_no_rook.pgn");
+    pgnNames.add("02_black_promotion_piece_capture_no_knight.pgn");
+    pgnNames.add("03_black_promotion_piece_capture_no_bishop.pgn");
+    pgnNames.add("04_black_promotion_piece_capture_no_queen.pgn");
+    pgnNames.add("05_black_promotion_piece_capture_yes_rook.pgn");
+    pgnNames.add("06_black_promotion_piece_capture_yes_knight.pgn");
+    pgnNames.add("07_black_promotion_piece_capture_yes_bishop.pgn");
+    pgnNames.add("08_black_promotion_piece_capture_yes_queen.pgn");
 
-    TestBasicSupport.checkTestFolder(pgnNameList, PgnTest.BASIC_PROMOTION_PIECE_BLACK);
+    TestBasicSupport.checkTestFolder(pgnNames, PgnTest.BASIC_PROMOTION_PIECE_BLACK);
   }
 
   @SuppressWarnings("static-method")

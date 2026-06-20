@@ -36,24 +36,24 @@ public final class RookSanValidateStaticallyStrict {
     for (final Square toSquare : Square.REAL) {
       final Set<EmptyBoardMove> moves = EmptyBoardMoveUtility.calculateNonPawnEmptyBoardMovesTo(PieceType.ROOK,
           toSquare);
-      final List<Square> fromSquareList = calculateFromSquares(moves);
+      final List<Square> fromSquares = calculateFromSquares(moves);
 
       // file/rank disambiguation
-      for (final Square fromSquare : fromSquareList) {
+      for (final Square fromSquare : fromSquares) {
         appendOnlyMove(set, toSquare, PieceType.ROOK);
-        if (calculateIsFromFilePossibleOrthogonal(fromSquare, toSquare, fromSquareList)) {
+        if (calculateIsFromFilePossibleOrthogonal(fromSquare, toSquare, fromSquares)) {
           appendMoveWithFile(set, toSquare, fromSquare.getFile(), PieceType.ROOK);
         }
-        if (calculateIsFromRankPossibleOrthogonal(fromSquare, toSquare, fromSquareList)) {
+        if (calculateIsFromRankPossibleOrthogonal(fromSquare, toSquare, fromSquares)) {
           appendMoveWithRank(set, toSquare, fromSquare.getRank(), PieceType.ROOK);
         }
       }
 
       // square disambiguation
-      for (final Square fromSquare : fromSquareList) {
+      for (final Square fromSquare : fromSquares) {
         appendOnlyMove(set, toSquare, PieceType.ROOK);
-        if (calculateIsFromRankPossibleOrthogonal(fromSquare, toSquare, fromSquareList)
-            && calculateHasOtherMovesFromSameRank(fromSquare, fromSquareList)) {
+        if (calculateIsFromRankPossibleOrthogonal(fromSquare, toSquare, fromSquares)
+            && calculateHasOtherMovesFromSameRank(fromSquare, fromSquares)) {
           appendMoveWithFromSquare(set, toSquare, fromSquare, PieceType.ROOK);
         }
       }

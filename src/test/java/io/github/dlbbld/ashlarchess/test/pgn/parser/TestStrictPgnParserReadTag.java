@@ -21,12 +21,12 @@ import io.github.dlbbld.ashlarchess.test.pgntest.constants.PgnTestConstants;
 
 class TestStrictPgnParserReadTag {
 
-  private static List<String> calculateSans(List<PgnMove> moveList) {
-    final List<String> sanList = new ArrayList<>();
-    for (final PgnMove move : moveList) {
-      sanList.add(move.san());
+  private static List<String> calculateSans(List<PgnMove> moves) {
+    final List<String> sans = new ArrayList<>();
+    for (final PgnMove move : moves) {
+      sans.add(move.san());
     }
-    return sanList;
+    return sans;
   }
 
   private static final Path PGN_TEST_FOLDER_PATH = Nulls
@@ -62,11 +62,11 @@ class TestStrictPgnParserReadTag {
     {
       final PgnGame pgnGame = PgnCacheForStrictPgnParserTestCases.getPgn(PGN_TEST_FOLDER_PATH,
           "03_example_white_last_move_short.pgn");
-      final List<String> moveList = new ArrayList<>();
-      moveList.add("Nf3");
-      moveList.add("Nf6");
-      moveList.add("c4");
-      assertEquals(moveList, calculateSans(pgnGame.moves()));
+      final List<String> moves = new ArrayList<>();
+      moves.add("Nf3");
+      moves.add("Nf6");
+      moves.add("c4");
+      assertEquals(moves, calculateSans(pgnGame.moves()));
 
       assertEquals(FenConstants.FEN_INITIAL, pgnGame.startFen());
     }
@@ -74,12 +74,12 @@ class TestStrictPgnParserReadTag {
     {
       final PgnGame pgnGame = PgnCacheForStrictPgnParserTestCases.getPgn(PGN_TEST_FOLDER_PATH,
           "04_example_black_last_move_short.pgn");
-      final List<String> moveList = new ArrayList<>();
-      moveList.add("Nf3");
-      moveList.add("Nf6");
-      moveList.add("c4");
-      moveList.add("c5");
-      assertEquals(moveList, calculateSans(pgnGame.moves()));
+      final List<String> moves = new ArrayList<>();
+      moves.add("Nf3");
+      moves.add("Nf6");
+      moves.add("c4");
+      moves.add("c5");
+      assertEquals(moves, calculateSans(pgnGame.moves()));
 
       assertEquals(FenConstants.FEN_INITIAL, pgnGame.startFen());
     }

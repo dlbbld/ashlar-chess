@@ -9,11 +9,11 @@ import io.github.dlbbld.ashlarchess.board.enums.Square;
 
 interface OrthogonalRange {
 
-  ImmutableList<Square> squareListNorth();
+  ImmutableList<Square> northSquares();
 
-  ImmutableList<Square> squareListEast();
+  ImmutableList<Square> eastSquares();
 
-  ImmutableList<Square> squareListSouth();
+  ImmutableList<Square> southSquares();
 
-  ImmutableList<Square> squareListWest();
+  ImmutableList<Square> westSquares();
 }

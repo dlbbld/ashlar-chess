@@ -26,15 +26,15 @@ public final class CheckAgainstCha {
   }
 
   public static List<UnwinnabilityRawRead> readChaRawResults(Path fenAnalysisFilePath) throws Exception {
-    final List<UnwinnabilityRawRead> resultList = new ArrayList<>();
+    final List<UnwinnabilityRawRead> lines = new ArrayList<>();
 
-    final List<String> fileLineList = FileUtility.readFileLines(fenAnalysisFilePath);
-    for (final String fileLine : fileLineList) {
+    final List<String> fileLines = FileUtility.readFileLines(fenAnalysisFilePath);
+    for (final String fileLine : fileLines) {
       final String[] fileLineItemArray = Nulls.split(fileLine, ";");
 
-      final List<String> fileLineItemList = Nulls.asList(fileLineItemArray);
+      final List<String> fileLineItems = Nulls.asList(fileLineItemArray);
 
-      final String fenStrRaw = Nulls.get(fileLineItemList, 0);
+      final String fenStrRaw = Nulls.get(fileLineItems, 0);
 
       final String fenStr = Nulls.trim(fenStrRaw);
 
@@ -45,29 +45,29 @@ public final class CheckAgainstCha {
         throw new IllegalArgumentException("Illegal FEN of \"" + fenStr + "\" for " + fve.getMessage() + " was found");
       }
 
-      final String lichessGameId = Nulls.get(fileLineItemList, 1);
+      final String lichessGameId = Nulls.get(fileLineItems, 1);
 
-      final String chaModeStr = Nulls.get(fileLineItemList, 2);
+      final String chaModeStr = Nulls.get(fileLineItems, 2);
       if (!UnwinnabilityMode.exists(chaModeStr)) {
         throw new IllegalArgumentException("Illegal identifier of \"" + chaModeStr + "\" was found");
       }
       final UnwinnabilityMode chaMode = UnwinnabilityMode.calculate(chaModeStr);
 
-      final String winnerStr = Nulls.get(fileLineItemList, 3);
+      final String winnerStr = Nulls.get(fileLineItems, 3);
       final Side winner = switch (winnerStr) {
         case "w" -> Side.WHITE;
         case "b" -> Side.BLACK;
         default -> throw new IllegalArgumentException("Illegal winning side of \"" + winnerStr + "\" was found");
       };
 
-      final String result = Nulls.get(fileLineItemList, 4);
+      final String result = Nulls.get(fileLineItems, 4);
 
-      final String mateLine = Nulls.get(fileLineItemList, 5);
+      final String mateLine = Nulls.get(fileLineItems, 5);
 
-      resultList.add(new UnwinnabilityRawRead(fen, lichessGameId, chaMode, winner, result, mateLine));
+      lines.add(new UnwinnabilityRawRead(fen, lichessGameId, chaMode, winner, result, mateLine));
     }
 
-    return resultList;
+    return lines;
   }
 
   // list of the FEN of the past position for all PGN test case

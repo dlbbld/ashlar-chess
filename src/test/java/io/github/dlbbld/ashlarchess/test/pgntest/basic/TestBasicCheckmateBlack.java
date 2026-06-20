@@ -49,25 +49,25 @@ class TestBasicCheckmateBlack {
   private static final Logger logger = Nulls.getLogger(TestBasicCheckmateBlack.class);
 
   static {
-    final List<String> pgnNameList = new ArrayList<>();
+    final List<String> pgnNames = new ArrayList<>();
 
-    pgnNameList.add("01_black_checkmate_rook_direct_adjacent.pgn");
-    pgnNameList.add("02_black_checkmate_rook_direct_range.pgn");
-    pgnNameList.add("03_black_checkmate_rook_discover.pgn");
-    pgnNameList.add("04_black_checkmate_knight_direct.pgn");
-    pgnNameList.add("05_black_checkmate_knight_discover_orthogonal.pgn");
-    pgnNameList.add("06_black_checkmate_knight_discover_diagonal.pgn");
-    pgnNameList.add("07_black_checkmate_bishop_direct_adjacent.pgn");
-    pgnNameList.add("08_black_checkmate_bishop_direct_range.pgn");
-    pgnNameList.add("09_black_checkmate_bishop_discover.pgn");
-    pgnNameList.add("10_black_checkmate_queen_direct_orthogonal_adjacent.pgn");
-    pgnNameList.add("11_black_checkmate_queen_direct_orthogonal_range.pgn");
-    pgnNameList.add("12_black_checkmate_queen_direct_diagonal_adjacent.pgn");
-    pgnNameList.add("13_black_checkmate_queen_direct_diagonal_range.pgn");
-    pgnNameList.add("14_black_checkmate_king_discover_orthogonal.pgn");
-    pgnNameList.add("15_black_checkmate_king_discover_diagonal.pgn");
+    pgnNames.add("01_black_checkmate_rook_direct_adjacent.pgn");
+    pgnNames.add("02_black_checkmate_rook_direct_range.pgn");
+    pgnNames.add("03_black_checkmate_rook_discover.pgn");
+    pgnNames.add("04_black_checkmate_knight_direct.pgn");
+    pgnNames.add("05_black_checkmate_knight_discover_orthogonal.pgn");
+    pgnNames.add("06_black_checkmate_knight_discover_diagonal.pgn");
+    pgnNames.add("07_black_checkmate_bishop_direct_adjacent.pgn");
+    pgnNames.add("08_black_checkmate_bishop_direct_range.pgn");
+    pgnNames.add("09_black_checkmate_bishop_discover.pgn");
+    pgnNames.add("10_black_checkmate_queen_direct_orthogonal_adjacent.pgn");
+    pgnNames.add("11_black_checkmate_queen_direct_orthogonal_range.pgn");
+    pgnNames.add("12_black_checkmate_queen_direct_diagonal_adjacent.pgn");
+    pgnNames.add("13_black_checkmate_queen_direct_diagonal_range.pgn");
+    pgnNames.add("14_black_checkmate_king_discover_orthogonal.pgn");
+    pgnNames.add("15_black_checkmate_king_discover_diagonal.pgn");
 
-    TestBasicSupport.checkTestFolder(pgnNameList, PgnTest.BASIC_CHECKMATE_BLACK);
+    TestBasicSupport.checkTestFolder(pgnNames, PgnTest.BASIC_CHECKMATE_BLACK);
   }
 
   @SuppressWarnings("static-method")

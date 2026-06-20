@@ -33,18 +33,18 @@ public final class AmbronaUnwinnabilityOracle {
   }
 
   private static Map<String, AmbronaUnwinnabilityVerdicts> readOracle() {
-    final List<String> lineList = FileUtility.readFileLines(ORACLE_PATH);
-    if (lineList.isEmpty()) {
+    final List<String> lines = FileUtility.readFileLines(ORACLE_PATH);
+    if (lines.isEmpty()) {
       throw new ProgrammingMistakeException("The Ambrona unwinnability oracle file is empty");
     }
     final String expectedHeader = "fen\tfullWhite\tfullBlack\tquickWhite\tquickBlack";
-    if (!expectedHeader.equals(Nulls.get(lineList, 0))) {
+    if (!expectedHeader.equals(Nulls.get(lines, 0))) {
       throw new ProgrammingMistakeException("Unexpected Ambrona unwinnability oracle header");
     }
 
     final Map<String, AmbronaUnwinnabilityVerdicts> result = new HashMap<>();
-    for (int i = 1; i < lineList.size(); i++) {
-      final String line = Nulls.get(lineList, i);
+    for (int i = 1; i < lines.size(); i++) {
+      final String line = Nulls.get(lines, i);
       final String[] itemArray = Nulls.split(line, "\t");
       if (itemArray.length != 5) {
         throw new ProgrammingMistakeException("Invalid Ambrona unwinnability oracle row: " + line);

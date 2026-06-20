@@ -55,18 +55,18 @@ final class SanValidateStaticallyStrictHelpers {
   // ---- from-square list extraction --------------------------------------------------------------
 
   static List<Square> calculateFromSquares(Set<EmptyBoardMove> emptyBoardMoveSet) {
-    final List<Square> fromSquareList = new ArrayList<>();
+    final List<Square> fromSquares = new ArrayList<>();
     for (final EmptyBoardMove move : emptyBoardMoveSet) {
-      fromSquareList.add(move.fromSquare());
+      fromSquares.add(move.fromSquare());
     }
-    return fromSquareList;
+    return fromSquares;
   }
 
   // ---- disambiguation predicates ----------------------------------------------------------------
 
   static boolean calculateIsFromRankPossibleOrthogonal(Square fromSquare, Square toSquare,
-      List<Square> fromSquareList) {
-    for (final Square otherFromSquare : fromSquareList) {
+      List<Square> fromSquares) {
+    for (final Square otherFromSquare : fromSquares) {
       if (otherFromSquare.getFile() == fromSquare.getFile() && otherFromSquare.getRank() != fromSquare.getRank()
           && calculateIsOppositeVertical(fromSquare, toSquare, otherFromSquare)) {
         return true;
@@ -75,8 +75,8 @@ final class SanValidateStaticallyStrictHelpers {
     return false;
   }
 
-  static boolean calculateHasOtherMovesFromSameRank(Square fromSquare, List<Square> fromSquareList) {
-    for (final Square otherFromSquare : fromSquareList) {
+  static boolean calculateHasOtherMovesFromSameRank(Square fromSquare, List<Square> fromSquares) {
+    for (final Square otherFromSquare : fromSquares) {
       if (otherFromSquare != fromSquare && otherFromSquare.getRank() == fromSquare.getRank()) {
         return true;
       }
@@ -98,8 +98,8 @@ final class SanValidateStaticallyStrictHelpers {
   }
 
   static boolean calculateIsFromFilePossibleOrthogonal(Square fromSquare, Square toSquare,
-      List<Square> fromSquareList) {
-    for (final Square otherFromSquare : fromSquareList) {
+      List<Square> fromSquares) {
+    for (final Square otherFromSquare : fromSquares) {
       if (otherFromSquare.getFile() != fromSquare.getFile()
           && calculateIsFromFilePossibleOrthogonal(fromSquare, toSquare, otherFromSquare)) {
         return true;
@@ -122,8 +122,8 @@ final class SanValidateStaticallyStrictHelpers {
     return false;
   }
 
-  static boolean calculateIsFromFilePossibleDiagonal(Square fromSquare, Square toSquare, List<Square> fromSquareList) {
-    for (final Square otherFromSquare : fromSquareList) {
+  static boolean calculateIsFromFilePossibleDiagonal(Square fromSquare, Square toSquare, List<Square> fromSquares) {
+    for (final Square otherFromSquare : fromSquares) {
       if (otherFromSquare.getFile() != fromSquare.getFile()
           && calculateIsFromFilePossibleDiagonal(fromSquare, toSquare, otherFromSquare)) {
         return true;

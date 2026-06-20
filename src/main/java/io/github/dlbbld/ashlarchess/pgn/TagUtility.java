@@ -25,84 +25,84 @@ public final class TagUtility {
   private static final String TAG_PATTERN = "\\[([\\w]+) \"([^\"]*)\"\\]";
 
   @SuppressWarnings("null")
-  public static final ImmutableList<StandardTag> SEVEN_TAG_ROSTER_TAG_LIST = Nulls
+  public static final ImmutableList<StandardTag> SEVEN_TAG_ROSTER_TAGS = Nulls
       .copyOfList(Arrays.asList(StandardTag.EVENT, StandardTag.SITE, StandardTag.DATE, StandardTag.ROUND,
           StandardTag.WHITE, StandardTag.BLACK, StandardTag.RESULT));
 
-  public static boolean hasEvent(List<Tag> tagList) {
-    return existsTagName(tagList, StandardTag.EVENT);
+  public static boolean hasEvent(List<Tag> tags) {
+    return existsTagName(tags, StandardTag.EVENT);
   }
 
-  static String readEvent(List<Tag> tagList) {
-    return readTagValue(tagList, StandardTag.EVENT);
+  static String readEvent(List<Tag> tags) {
+    return readTagValue(tags, StandardTag.EVENT);
   }
 
-  static boolean hasSite(List<Tag> tagList) {
-    return existsTagName(tagList, StandardTag.SITE);
+  static boolean hasSite(List<Tag> tags) {
+    return existsTagName(tags, StandardTag.SITE);
   }
 
-  static String readSite(List<Tag> tagList) {
-    return readTagValue(tagList, StandardTag.SITE);
+  static String readSite(List<Tag> tags) {
+    return readTagValue(tags, StandardTag.SITE);
   }
 
-  static boolean hasDate(List<Tag> tagList) {
-    return existsTagName(tagList, StandardTag.DATE);
+  static boolean hasDate(List<Tag> tags) {
+    return existsTagName(tags, StandardTag.DATE);
   }
 
-  public static String readDate(List<Tag> tagList) {
-    return readTagValue(tagList, StandardTag.DATE);
+  public static String readDate(List<Tag> tags) {
+    return readTagValue(tags, StandardTag.DATE);
   }
 
-  static boolean hasRound(List<Tag> tagList) {
-    return existsTagName(tagList, StandardTag.ROUND);
+  static boolean hasRound(List<Tag> tags) {
+    return existsTagName(tags, StandardTag.ROUND);
   }
 
-  static String readRound(List<Tag> tagList) {
-    return readTagValue(tagList, StandardTag.ROUND);
+  static String readRound(List<Tag> tags) {
+    return readTagValue(tags, StandardTag.ROUND);
   }
 
-  static boolean hasWhite(List<Tag> tagList) {
-    return existsTagName(tagList, StandardTag.WHITE);
+  static boolean hasWhite(List<Tag> tags) {
+    return existsTagName(tags, StandardTag.WHITE);
   }
 
-  static String readWhite(List<Tag> tagList) {
-    return readTagValue(tagList, StandardTag.WHITE);
+  static String readWhite(List<Tag> tags) {
+    return readTagValue(tags, StandardTag.WHITE);
   }
 
-  static boolean hasBlack(List<Tag> tagList) {
-    return existsTagName(tagList, StandardTag.BLACK);
+  static boolean hasBlack(List<Tag> tags) {
+    return existsTagName(tags, StandardTag.BLACK);
   }
 
-  static String readBlack(List<Tag> tagList) {
-    return readTagValue(tagList, StandardTag.BLACK);
+  static String readBlack(List<Tag> tags) {
+    return readTagValue(tags, StandardTag.BLACK);
   }
 
-  public static boolean hasResult(List<Tag> tagList) {
-    return existsTagName(tagList, StandardTag.RESULT);
+  public static boolean hasResult(List<Tag> tags) {
+    return existsTagName(tags, StandardTag.RESULT);
   }
 
-  public static String readResult(List<Tag> tagList) {
-    return readTagValue(tagList, StandardTag.RESULT);
+  public static String readResult(List<Tag> tags) {
+    return readTagValue(tags, StandardTag.RESULT);
   }
 
-  public static boolean hasSetUp(List<Tag> tagList) {
-    return existsTagName(tagList, StandardTag.SET_UP);
+  public static boolean hasSetUp(List<Tag> tags) {
+    return existsTagName(tags, StandardTag.SET_UP);
   }
 
-  public static String readSetUp(List<Tag> tagList) {
-    return readTagValue(tagList, StandardTag.SET_UP);
+  public static String readSetUp(List<Tag> tags) {
+    return readTagValue(tags, StandardTag.SET_UP);
   }
 
-  public static boolean hasFen(List<Tag> tagList) {
-    return existsTagName(tagList, StandardTag.FEN);
+  public static boolean hasFen(List<Tag> tags) {
+    return existsTagName(tags, StandardTag.FEN);
   }
 
-  public static String readFen(List<Tag> tagList) {
-    return readTagValue(tagList, StandardTag.FEN);
+  public static String readFen(List<Tag> tags) {
+    return readTagValue(tags, StandardTag.FEN);
   }
 
-  public static ResultTagValue readResultTagValue(List<Tag> tagList) {
-    return ResultTagValue.parse(readResult(tagList));
+  public static ResultTagValue readResultTagValue(List<Tag> tags) {
+    return ResultTagValue.parse(readResult(tags));
   }
 
   public static ResultTagValue readResultTagValue(PgnGame pgnGame) {
@@ -121,16 +121,16 @@ public final class TagUtility {
     throw new ProgrammingMistakeException("Must be validated to be a correct tag at this point");
   }
 
-  private static String readTagValue(List<Tag> tagList, StandardTag tag) {
-    return readTagValue(tagList, tag.getName());
+  private static String readTagValue(List<Tag> tags, StandardTag tag) {
+    return readTagValue(tags, tag.getName());
   }
 
-  static String readTagValue(List<Tag> tagList, String tagName) {
-    if (!existsTagName(tagList, tagName)) {
+  static String readTagValue(List<Tag> tags, String tagName) {
+    if (!existsTagName(tags, tagName)) {
       throw new IllegalArgumentException(
           "The method can only be used if a tag with the tagName exists, check first with the provided method.");
     }
-    for (final Tag tag : tagList) {
+    for (final Tag tag : tags) {
       if (tag.name().equals(tagName)) {
         return tag.value();
       }
@@ -138,16 +138,16 @@ public final class TagUtility {
     throw new ProgrammingMistakeException();
   }
 
-  public static boolean existsTag(List<Tag> tagList, StandardTag tag) {
-    return existsTagName(tagList, tag.getName());
+  public static boolean existsTag(List<Tag> tags, StandardTag tag) {
+    return existsTagName(tags, tag.getName());
   }
 
-  private static boolean existsTagName(List<Tag> tagList, StandardTag standardTag) {
-    return existsTagName(tagList, standardTag.getName());
+  private static boolean existsTagName(List<Tag> tags, StandardTag standardTag) {
+    return existsTagName(tags, standardTag.getName());
   }
 
-  private static boolean existsTagName(List<Tag> tagList, String tagName) {
-    for (final Tag tag : tagList) {
+  private static boolean existsTagName(List<Tag> tags, String tagName) {
+    for (final Tag tag : tags) {
       if (tag.name().equals(tagName)) {
         return true;
       }
@@ -155,9 +155,9 @@ public final class TagUtility {
     return false;
   }
 
-  public static boolean hasAllSevenTagRosterTags(List<Tag> tagList) {
-    for (final StandardTag standardTag : SEVEN_TAG_ROSTER_TAG_LIST) {
-      if (!TagUtility.existsTag(tagList, standardTag)) {
+  public static boolean hasAllSevenTagRosterTags(List<Tag> tags) {
+    for (final StandardTag standardTag : SEVEN_TAG_ROSTER_TAGS) {
+      if (!TagUtility.existsTag(tags, standardTag)) {
         return false;
       }
     }
@@ -166,17 +166,17 @@ public final class TagUtility {
 
   public static String calculateSevenTagRosterDescription() {
     final List<String> list = new ArrayList<>();
-    for (final StandardTag tag : SEVEN_TAG_ROSTER_TAG_LIST) {
+    for (final StandardTag tag : SEVEN_TAG_ROSTER_TAGS) {
       list.add(tag.getName());
     }
     return ListUtility.toCommaSeparatedString(list);
   }
 
-  public static void removeTag(List<Tag> tagList, StandardTag tag) {
+  public static void removeTag(List<Tag> tags, StandardTag tag) {
 
     int indexFound = -1;
     int index = -1;
-    for (final Tag tagCandidate : tagList) {
+    for (final Tag tagCandidate : tags) {
       index++;
       if (tagCandidate.name().equals(tag.getName())) {
         indexFound = index;
@@ -184,16 +184,16 @@ public final class TagUtility {
       }
     }
     if (indexFound != -1) {
-      tagList.remove(indexFound);
+      tags.remove(indexFound);
     }
   }
 
-  public static void removeSetUpTag(List<Tag> tagList) {
-    removeTag(tagList, StandardTag.SET_UP);
+  public static void removeSetUpTag(List<Tag> tags) {
+    removeTag(tags, StandardTag.SET_UP);
   }
 
-  public static void removeFenTag(List<Tag> tagList) {
-    removeTag(tagList, StandardTag.FEN);
+  public static void removeFenTag(List<Tag> tags) {
+    removeTag(tags, StandardTag.FEN);
   }
 
   public static String readTagValue(PgnGame pgnGame, String tagName) {

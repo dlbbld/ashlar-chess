@@ -33,8 +33,8 @@ public final class RestrictTestConstants {
   public static final boolean IS_RESTRICT_PGN_LEGAL_MOVE_VALIDATION_AGAINST_BOTTOM_UP_TEST = true && IS_RESTRICT_PGN;
   public static final boolean IS_RESTRICT_PGN_LENIENT_PARSER_API_AGAINST_EACH_OTHER_TEST = true && IS_RESTRICT_PGN;
   // The three flags below toggle between a curated smoke subset (true) and the full ALL_EXCEPT_LONGEST_POSSIBLE
-  // corpus (false). Smoke subsets live in PgnExpectedValue.getParserIntegrationSmokeList() and
-  // getExportRoundtripSmokeList(). The master flip turns these off along with the rest.
+  // corpus (false). Smoke subsets live in PgnExpectedValue.getParserIntegrationSmokeTests() and
+  // getExportRoundtripSmokeTests(). The master flip turns these off along with the rest.
   public static final boolean IS_RESTRICT_PGN_STRICT_AGAINST_LENIENT_TEST = true && IS_RESTRICT_PGN;
   public static final boolean IS_RESTRICT_PGN_EXPORT_IDEMPOTENCY_TEST = true && IS_RESTRICT_PGN;
   public static final boolean IS_RESTRICT_PGN_WRITER_TEST = true && IS_RESTRICT_PGN;

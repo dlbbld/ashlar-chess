@@ -28,6 +28,6 @@ public record ForgivenFenItem(ForgivenFenItemCode code, String original, String 
    * one place rather than at every caller.
    */
   @SuppressWarnings("null")
-  public static final @NonNull ImmutableList<@NonNull ForgivenFenItem> EMPTY_LIST = ImmutableList.of();
+  public static final @NonNull ImmutableList<@NonNull ForgivenFenItem> NO_ITEMS = ImmutableList.of();
 
 }

@@ -37,38 +37,38 @@ public final class TestBasicSupport {
   // 1b) for each file in the expected value hardcoded file list there is a file in the JUnit hardcoded file list
   // 2a) for each file in the JUnit hardcoded file list there is a file in the test folder
   // 2b) for each file in the test folder there is an entry in the JUnit hardcoded file list
-  static void checkTestFolder(List<String> junitHardcodedPgnNameList, PgnTest pgnTest) {
+  static void checkTestFolder(List<String> junitHardcodedPgnNames, PgnTest pgnTest) {
 
     final PgnTestCaseList testCaseList = PgnTestCaseCatalog.getTestList(pgnTest);
-    final List<String> expectedValueHardcodedFileList = calculatePgnNames(testCaseList.list());
+    final List<String> expectedValueHardcodedFiles = calculatePgnNames(testCaseList.list());
 
     // 1a)
-    for (final String pgnName : junitHardcodedPgnNameList) {
-      if (!expectedValueHardcodedFileList.contains(pgnName)) {
+    for (final String pgnName : junitHardcodedPgnNames) {
+      if (!expectedValueHardcodedFiles.contains(pgnName)) {
         throw new SetupException("The JUnit hardcoded file \"" + pgnName
             + "\" has no corresponding entry in the expected value hardcoded file list");
       }
     }
 
     // 1b)
-    for (final String pgnName : expectedValueHardcodedFileList) {
-      if (!junitHardcodedPgnNameList.contains(pgnName)) {
+    for (final String pgnName : expectedValueHardcodedFiles) {
+      if (!junitHardcodedPgnNames.contains(pgnName)) {
         throw new SetupException("The expected value hardcoded file \"" + pgnName
             + "\" has no corresponding entry in the JUnit hardcoded list");
       }
     }
 
     // 2a)
-    for (final String pgnName : junitHardcodedPgnNameList) {
+    for (final String pgnName : junitHardcodedPgnNames) {
       if (!FileUtility.exists(pgnTest.getFolderPath(), pgnName)) {
         throw new SetupException("The JUnit hardcoded file \"" + pgnName + "\" does not exist in the test folder");
       }
     }
 
     // 2b)
-    final List<String> testFolderPgnNameList = FileUtility.readFileNames(pgnTest.getFolderPath());
-    for (final String pgnName : testFolderPgnNameList) {
-      if (!junitHardcodedPgnNameList.contains(pgnName)) {
+    final List<String> testFolderPgnNames = FileUtility.readFileNames(pgnTest.getFolderPath());
+    for (final String pgnName : testFolderPgnNames) {
+      if (!junitHardcodedPgnNames.contains(pgnName)) {
         throw new SetupException(
             "The test directory file \"" + pgnName + "\" does not exist in the JUnit hardcoded file list");
       }

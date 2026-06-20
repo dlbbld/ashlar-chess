@@ -142,20 +142,20 @@ public final class StrictPgnParser {
   private PgnGame parseInternal() {
     StrictFileStructurePreScan.validate(source);
 
-    final List<Tag> tagList = parseTagSection();
-    validateUniqueTagNames(tagList);
+    final List<Tag> tags = parseTagSection();
+    validateUniqueTagNames(tags);
 
-    final ResultTagValue resultTagValue = validateResultTagValue(tagList);
-    final SetUpTagValue setUpTagValue = validateTagSetUpValue(tagList);
+    final ResultTagValue resultTagValue = validateResultTagValue(tags);
+    final SetUpTagValue setUpTagValue = validateTagSetUpValue(tags);
     final boolean isStartFromPosition = setUpTagValue == SetUpTagValue.START_FROM_SETUP_POSITION;
-    final Fen startFen = calculateStartFen(tagList, isStartFromPosition);
+    final Fen startFen = calculateStartFen(tags, isStartFromPosition);
 
     final MovetextOutcome movetext = parseMovetext(startFen, resultTagValue);
     expectOnlyTrailingWhitespaceUntilEof();
 
     validateBoardPerLastMove(startFen, movetext.moves());
 
-    return new PgnGame(Nulls.copyOfList(tagList), startFen, movetext.pregameCommentary(),
+    return new PgnGame(Nulls.copyOfList(tags), startFen, movetext.pregameCommentary(),
         Nulls.copyOfList(movetext.moves()), resultTagValue);
   }
 
@@ -265,20 +265,20 @@ public final class StrictPgnParser {
     }
   }
 
-  private static void validateUniqueTagNames(List<Tag> tagList) {
-    for (int i = 0; i < tagList.size(); i++) {
-      for (int j = i + 1; j < tagList.size(); j++) {
-        if (Nulls.get(tagList, i).name().equals(Nulls.get(tagList, j).name())) {
+  private static void validateUniqueTagNames(List<Tag> tags) {
+    for (int i = 0; i < tags.size(); i++) {
+      for (int j = i + 1; j < tags.size(); j++) {
+        if (Nulls.get(tags, i).name().equals(Nulls.get(tags, j).name())) {
           throw new StrictPgnParserValidationException(StrictPgnParserValidationProblem.TAG_NAME_NOT_UNIQUE,
-              SanValidationProblem.NONE, "The tag name must be unique. The tag name \"" + Nulls.get(tagList, i).name()
+              SanValidationProblem.NONE, "The tag name must be unique. The tag name \"" + Nulls.get(tags, i).name()
                   + "\" was used more than once.");
         }
       }
     }
   }
 
-  private static ResultTagValue validateResultTagValue(List<Tag> tagList) {
-    if (!TagUtility.hasResult(tagList)) {
+  private static ResultTagValue validateResultTagValue(List<Tag> tags) {
+    if (!TagUtility.hasResult(tags)) {
       throw new StrictPgnParserValidationException(StrictPgnParserValidationProblem.TAG_RESULT_MISSING,
           SanValidationProblem.NONE,
           "The " + StandardTag.RESULT.getName()
@@ -287,7 +287,7 @@ public final class StrictPgnParser {
               + " termination marker) and the SetUp/FEN coupling. Other roster tags are archival-storage concerns"
               + " only.");
     }
-    final String value = TagUtility.readResult(tagList);
+    final String value = TagUtility.readResult(tags);
     if (!ResultTagValue.exists(value)) {
       throw new StrictPgnParserValidationException(StrictPgnParserValidationProblem.TAG_RESULT_VALUE_INVALID,
           SanValidationProblem.NONE, "The " + StandardTag.RESULT.getName() + " tag value must exactly match one \""
@@ -296,12 +296,12 @@ public final class StrictPgnParser {
     return ResultTagValue.parse(value);
   }
 
-  private static SetUpTagValue validateTagSetUpValue(List<Tag> tagList) {
+  private static SetUpTagValue validateTagSetUpValue(List<Tag> tags) {
     final SetUpTagValue setUpTagValue;
-    if (!TagUtility.hasSetUp(tagList)) {
+    if (!TagUtility.hasSetUp(tags)) {
       setUpTagValue = SetUpTagValue.NONE;
     } else {
-      final String setUpStr = TagUtility.readSetUp(tagList);
+      final String setUpStr = TagUtility.readSetUp(tags);
       if (!SetUpTagValue.exists(setUpStr)) {
         throw new StrictPgnParserValidationException(StrictPgnParserValidationProblem.TAG_SET_UP_VALUE_INVALID,
             SanValidationProblem.NONE, "The " + StandardTag.SET_UP.getName() + " tag value must exactly match one \""
@@ -309,12 +309,12 @@ public final class StrictPgnParser {
       }
       setUpTagValue = SetUpTagValue.parse(setUpStr);
     }
-    validateTagFenValue(tagList, setUpTagValue);
+    validateTagFenValue(tags, setUpTagValue);
     return setUpTagValue;
   }
 
-  private static void validateTagFenValue(List<Tag> tagList, SetUpTagValue setUpTagValue) {
-    final boolean hasFen = TagUtility.hasFen(tagList);
+  private static void validateTagFenValue(List<Tag> tags, SetUpTagValue setUpTagValue) {
+    final boolean hasFen = TagUtility.hasFen(tags);
     switch (setUpTagValue) {
       case NONE, START_FROM_INITIAL_POSITION -> {
         if (hasFen) {
@@ -330,7 +330,7 @@ public final class StrictPgnParser {
               "If the " + StandardTag.SET_UP.getName() + " is set to " + SetUpTagValue.START_FROM_SETUP_POSITION
                   + ", the " + StandardTag.FEN.getName() + " tag must be set.");
         }
-        final String fen = TagUtility.readFen(tagList);
+        final String fen = TagUtility.readFen(tags);
         try {
           StrictFenParser.parse(fen);
         } catch (final StrictFenSemanticValidationException e) {
@@ -634,13 +634,13 @@ public final class StrictPgnParser {
   // Board replay & post-processing
   // -------------------------------------------------------------------------------------------------
 
-  private static void validateBoardPerLastMove(Fen startFen, List<PgnMove> moveList) {
+  private static void validateBoardPerLastMove(Fen startFen, List<PgnMove> moves) {
     // Strict parsing enforces PGN syntax + move legality + the cheap FIDE terminations
     // (checkmate / stalemate / mutual insufficient material). Fivefold repetition, the 75-move rule, and
     // analyzer-driven dead positions are queryable predicates on Board; historical PGN corpora routinely contain games
     // whose recorded play continues past such states.
     final Board board = new Board(startFen);
-    for (final PgnMove move : moveList) {
+    for (final PgnMove move : moves) {
       final Side side = board.getSideToMove();
       final int fullMoveNumber = board.getFullMoveNumber();
       try {
@@ -657,8 +657,8 @@ public final class StrictPgnParser {
     }
   }
 
-  private static Fen calculateStartFen(List<Tag> tagList, boolean isStartFromPosition) {
-    final String startFenStr = isStartFromPosition ? TagUtility.readFen(tagList) : FenConstants.FEN_INITIAL_STR;
+  private static Fen calculateStartFen(List<Tag> tags, boolean isStartFromPosition) {
+    final String startFenStr = isStartFromPosition ? TagUtility.readFen(tags) : FenConstants.FEN_INITIAL_STR;
     return StrictFenParser.parse(startFenStr);
   }
 

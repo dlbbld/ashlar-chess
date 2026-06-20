@@ -18,11 +18,11 @@ class TestLibraryCarlosSuggestions {
   @SuppressWarnings("static-method")
   @Test
   void testSuggestionAllowSanForMoveSpecification() throws Exception {
-    final MoveList moveList = new MoveList();
-    moveList.loadFromSan("1. e4 Nf6 2. e5 d5 3. Bc4 Nc6 4. Bf1 Nb8 5. Bc4 Nc6 6. Bf1 Nb8");
+    final MoveList moves = new MoveList();
+    moves.loadFromSan("1. e4 Nf6 2. e5 d5 3. Bc4 Nc6 4. Bf1 Nb8 5. Bc4 Nc6 6. Bf1 Nb8");
 
     final Board board = new Board();
-    for (final Move element : moveList) {
+    for (final Move element : moves) {
       board.doMove(element);
     }
 
@@ -45,11 +45,11 @@ class TestLibraryCarlosSuggestions {
   void testSuggestionBoardSan() throws Exception {
     // proper SAN works
     {
-      final MoveList moveList = new MoveList();
-      moveList.loadFromSan("1. d4 e6 2. Nc3 Bb4 3. Nf3 Nc6 4. Ng5 h6 5. Ne4");
+      final MoveList moves = new MoveList();
+      moves.loadFromSan("1. d4 e6 2. Nc3 Bb4 3. Nf3 Nc6 4. Ng5 h6 5. Ne4");
 
       final Board board = new Board();
-      for (final Move element : moveList) {
+      for (final Move element : moves) {
         board.doMove(element);
       }
     }
@@ -57,13 +57,13 @@ class TestLibraryCarlosSuggestions {
     // inproper SAN should not work but works
     {
 
-      final MoveList moveList = new MoveList();
-      moveList.loadFromSan("1. d4 e6 2. Nc3 Bb4 3. Nf3 Nc6 4. Ng5 h6 5. Nge4");
+      final MoveList moves = new MoveList();
+      moves.loadFromSan("1. d4 e6 2. Nc3 Bb4 3. Nf3 Nc6 4. Ng5 h6 5. Nge4");
 
       boolean isException = false;
       try {
         final Board board = new Board();
-        for (final Move element : moveList) {
+        for (final Move element : moves) {
           board.doMove(element);
         }
       } catch (@SuppressWarnings("unused") final Exception e) {

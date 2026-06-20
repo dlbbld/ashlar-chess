@@ -52,13 +52,13 @@ final class PositionIdentifierUtility {
 
   static String calculateIdentifier(int positionNumber) {
 
-    final List<Integer> representationList = calculateRepresentation(positionNumber - 1, BASE);
+    final List<Integer> representations = calculateRepresentation(positionNumber - 1, BASE);
 
     final StringBuilder result = new StringBuilder();
-    for (int i = 0; i < representationList.size(); i++) {
-      final int representation = Nulls.get(representationList, i);
+    for (int i = 0; i < representations.size(); i++) {
+      final int representation = Nulls.get(representations, i);
       final int representationAdaptedForLastDigit;
-      if (i == representationList.size() - 1) {
+      if (i == representations.size() - 1) {
         representationAdaptedForLastDigit = representation + 1;
       } else {
         representationAdaptedForLastDigit = representation;

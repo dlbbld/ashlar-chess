@@ -34,14 +34,14 @@ public class PgnParserLibraryCarlos {
       startingFen = gameFen;
     }
 
-    final List<String> sanList = new ArrayList<>();
+    final List<String> sans = new ArrayList<>();
     for (final Move move : game.getHalfMoves()) {
       // we know the API sets a value when loading from PGN
       @SuppressWarnings("null") @NonNull final String san = move.getSan();
-      sanList.add(san);
+      sans.add(san);
     }
 
-    return new PgnSan(startingFen, sanList);
+    return new PgnSan(startingFen, sans);
 
   }
 

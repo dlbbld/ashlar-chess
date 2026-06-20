@@ -63,7 +63,7 @@ class TestStrictPgnParserFromInitialPosition {
         "Qg7+", "Kd6", "Qf8+", "Ke5", "Qe8+", "Kd4", "Qxe2", "Nc3+", "Ka1", "Nxe2");
   }
 
-  private static void checkGame(String pgn, String... sanList) {
+  private static void checkGame(String pgn, String... sans) {
     final PgnGame pgnGame = PgnCacheForStrictPgnParserTestCases.getPgn(PGN_TEST_FOLDER_PATH, pgn);
 
     assertEquals(FenConstants.FEN_INITIAL, pgnGame.startFen());
@@ -75,7 +75,7 @@ class TestStrictPgnParserFromInitialPosition {
     }
 
     final Board expected = new Board();
-    for (final String san : sanList) {
+    for (final String san : sans) {
       @SuppressWarnings("null") @NonNull final String nonNullSan = san;
       expected.moveStrict(nonNullSan);
     }

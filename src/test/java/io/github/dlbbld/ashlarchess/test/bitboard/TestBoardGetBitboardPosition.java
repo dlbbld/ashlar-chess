@@ -58,17 +58,17 @@ class TestBoardGetBitboardPosition {
     final List<StaticPosition> independentHistory = new ArrayList<>();
     independentHistory.add(StaticPosition.INITIAL_POSITION);
 
-    final List<List<Square>> listMoveSquareList = new ArrayList<>();
-    listMoveSquareList.add(Nulls.asList(Square.E2, Square.E4));
-    listMoveSquareList.add(Nulls.asList(Square.E7, Square.E5));
-    listMoveSquareList.add(Nulls.asList(Square.G1, Square.F3));
-    listMoveSquareList.add(Nulls.asList(Square.B8, Square.C6));
-    listMoveSquareList.add(Nulls.asList(Square.F1, Square.B5));
+    final List<List<Square>> moveSquareGroups = new ArrayList<>();
+    moveSquareGroups.add(Nulls.asList(Square.E2, Square.E4));
+    moveSquareGroups.add(Nulls.asList(Square.E7, Square.E5));
+    moveSquareGroups.add(Nulls.asList(Square.G1, Square.F3));
+    moveSquareGroups.add(Nulls.asList(Square.B8, Square.C6));
+    moveSquareGroups.add(Nulls.asList(Square.F1, Square.B5));
 
     Side currentSide = Side.WHITE;
-    for (final List<Square> moveSquareList : listMoveSquareList) {
-      final Square squareFrom = Nulls.get(moveSquareList, 0);
-      final Square squareTo = Nulls.get(moveSquareList, 1);
+    for (final List<Square> moveSquares : moveSquareGroups) {
+      final Square squareFrom = Nulls.get(moveSquares, 0);
+      final Square squareTo = Nulls.get(moveSquares, 1);
       final MoveSpecification spec = new MoveSpecification(squareFrom, squareTo);
 
       final StaticPosition previousIndependent = Nulls.get(independentHistory, independentHistory.size() - 1);

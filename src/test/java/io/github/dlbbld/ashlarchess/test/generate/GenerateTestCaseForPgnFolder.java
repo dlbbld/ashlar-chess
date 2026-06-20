@@ -28,12 +28,12 @@ public class GenerateTestCaseForPgnFolder {
       throw new IllegalArgumentException("\"" + pgnFolderPath + "\" is not a directory");
     }
 
-    final File[] filesList = folder.listFiles();
-    if (filesList == null) {
+    final File[] files = folder.listFiles();
+    if (files == null) {
       throw new FileSystemAccessException("File list retrieval for \"" + pgnFolderPath + "\" failed");
     }
 
-    for (final File file : filesList) {
+    for (final File file : files) {
       if (file == null) {
         throw new ProgrammingMistakeException("Wrong assumption about API behaviour");
       }

@@ -40,7 +40,7 @@ class FindHelpmate {
   private int localNodeCount = 0;
 
   private boolean isCanExhaust = true;
-  private List<LegalMove> moveEvaluationList = new ArrayList<>();
+  private List<LegalMove> moveProgress = new ArrayList<>();
 
   public FindHelpmate(Side side) {
     this.color = side;
@@ -62,7 +62,7 @@ class FindHelpmate {
 
     this.localNodeCount = 0;
     this.isCanExhaust = true;
-    this.moveEvaluationList = new ArrayList<>();
+    this.moveProgress = new ArrayList<>();
 
     final FindHelpmateRecursionResult findHelpmate = findHelpmate(board, 0, maxDepth, 0, false);
 
@@ -74,7 +74,7 @@ class FindHelpmate {
     switch (findHelpmate) {
       case HELPMATE_FOUND:
         return new FindHelpmateAnalysis(FindHelpmateResult.HAS_HELPMATE, localNodeCount,
-            toUciMoves(moveEvaluationList));
+            toUciMoves(moveProgress));
       case HELPMATE_NOT_FOUND:
         if (isCanExhaust) {
           return new FindHelpmateAnalysis(FindHelpmateResult.HAS_NO_HELPMATE, localNodeCount, new ArrayList<>());
@@ -168,7 +168,7 @@ class FindHelpmate {
       // 9: if Find-Helpmatec(pos.move(m), depth+1, maxDepth+inc) then return true
       board.move(legalMove.moveSpecification());
 
-      moveEvaluationList.add(legalMove);
+      moveProgress.add(legalMove);
 
       final boolean isProgress = score == ScoreResult.REWARD;
 
@@ -187,7 +187,7 @@ class FindHelpmate {
         default:
           throw new IllegalArgumentException();
       }
-      moveEvaluationList.remove(moveEvaluationList.size() - 1);
+      moveProgress.remove(moveProgress.size() - 1);
     }
 
     // 10: return false (-> No mate was found after exploring every legal move)
@@ -239,9 +239,9 @@ class FindHelpmate {
     return false;
   }
 
-  private static List<UciMove> toUciMoves(List<LegalMove> moveProgressList) {
+  private static List<UciMove> toUciMoves(List<LegalMove> moveProgress) {
     final List<UciMove> result = new ArrayList<>();
-    for (final LegalMove legalMove : moveProgressList) {
+    for (final LegalMove legalMove : moveProgress) {
       result.add(UciMoveUtility.toUci(legalMove.movingSide(), legalMove.moveSpecification()));
     }
     return result;

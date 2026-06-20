@@ -20,11 +20,11 @@ final class ThreefoldClaimAheadPrint {
   static List<List<String>> render(ThreefoldClaimAheadReport report,
       Map<DynamicPosition, String> positionIdentifierMap) {
 
-    final List<List<String>> resultListList = new ArrayList<>();
+    final List<List<String>> lineGroups = new ArrayList<>();
     for (final ClaimAheadEntry entry : report.entries()) {
-      final List<String> resultList = new ArrayList<>();
+      final List<String> lines = new ArrayList<>();
       if (entry.includesInitialPosition()) {
-        resultList.add("[Initial position]");
+        lines.add("[Initial position]");
       }
 
       // The joined sequence is [priorOccurrences..., claimAheadMove]. claimAheadMove sits at lastIndex.
@@ -36,10 +36,10 @@ final class ThreefoldClaimAheadPrint {
         final boolean isAddPositionInformation = i == lastIndex;
         final String moveInformation = PositionIdentifierUtility.calculateMoveInformation(move,
             entry.totalRepetitionCount(), isAddAsterisk, isAddPositionInformation, positionIdentifierMap);
-        resultList.add(moveInformation);
+        lines.add(moveInformation);
       }
-      resultListList.add(resultList);
+      lineGroups.add(lines);
     }
-    return resultListList;
+    return lineGroups;
   }
 }

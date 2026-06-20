@@ -41,7 +41,7 @@ class TestAmbronaUnwinnabilityFullOracleComparison {
   @Test
   void chaPositionsExceptLichessHelpmatesMatchFullOracle() {
     final Set<AcceptedDifference> remainingAcceptedDifferenceSet = readAcceptedDifferenceSet();
-    final List<String> failureList = new ArrayList<>();
+    final List<String> failures = new ArrayList<>();
     int checkedPositionCount = 0;
 
     for (final PgnTest pgnTest : PgnTest.values()) {
@@ -53,33 +53,33 @@ class TestAmbronaUnwinnabilityFullOracleComparison {
       for (final PgnFen testCase : testCaseList.list()) {
         logger.info(testCase.pgnName());
         checkedPositionCount++;
-        check(testCase, Side.WHITE, AmbronaUnwinnabilityOracle.get(testCase.finalFen()).fullWhite(), failureList,
+        check(testCase, Side.WHITE, AmbronaUnwinnabilityOracle.get(testCase.finalFen()).fullWhite(), failures,
             remainingAcceptedDifferenceSet);
-        check(testCase, Side.BLACK, AmbronaUnwinnabilityOracle.get(testCase.finalFen()).fullBlack(), failureList,
+        check(testCase, Side.BLACK, AmbronaUnwinnabilityOracle.get(testCase.finalFen()).fullBlack(), failures,
             remainingAcceptedDifferenceSet);
 
         if (checkedPositionCount % PROGRESS_LOG_INTERVAL == 0) {
-          logger.info("Checked {} CHA positions, failures so far: {}", checkedPositionCount, failureList.size());
+          logger.info("Checked {} CHA positions, failures so far: {}", checkedPositionCount, failures.size());
         }
       }
     }
 
-    logger.info("Checked {} CHA positions, failures: {}", checkedPositionCount, failureList.size());
+    logger.info("Checked {} CHA positions, failures: {}", checkedPositionCount, failures.size());
     for (final AcceptedDifference acceptedDifference : remainingAcceptedDifferenceSet) {
-      failureList.add("Accepted difference was not observed: " + acceptedDifference);
+      failures.add("Accepted difference was not observed: " + acceptedDifference);
     }
-    assertTrue(failureList.isEmpty(), formatFailureMessage(checkedPositionCount, failureList));
+    assertTrue(failures.isEmpty(), formatFailureMessage(checkedPositionCount, failures));
   }
 
   private static void check(PgnFen testCase, Side intendedWinner, UnwinnabilityFullVerdict expected,
-      List<String> failureList, Set<AcceptedDifference> remainingAcceptedDifferenceSet) {
+      List<String> failures, Set<AcceptedDifference> remainingAcceptedDifferenceSet) {
     final Board board = testCase.finalPosition();
     final UnwinnabilityFullVerdict actual = UnwinnableFullAnalyzer.unwinnableFull(board, intendedWinner).verdict();
     if (!isSameVerdict(actual, expected)) {
       final AcceptedDifference difference = new AcceptedDifference(testCase.pgnName(), intendedWinner, expected, actual,
           testCase.finalFen());
       if (!remainingAcceptedDifferenceSet.remove(difference)) {
-        failureList.add(testCase.pgnName() + " " + intendedWinner + " expected " + expected + " actual " + actual
+        failures.add(testCase.pgnName() + " " + intendedWinner + " expected " + expected + " actual " + actual
             + " FEN " + testCase.finalFen());
       }
     }
@@ -99,14 +99,14 @@ class TestAmbronaUnwinnabilityFullOracleComparison {
   }
 
   private static Set<AcceptedDifference> readAcceptedDifferenceSet() {
-    final List<String> lineList = FileUtility.readFileLines(ACCEPTED_DIFFERENCE_PATH);
-    if (lineList.isEmpty() || !"pgnName\tside\texpected\tactual\tfen\treason".equals(Nulls.get(lineList, 0))) {
+    final List<String> lines = FileUtility.readFileLines(ACCEPTED_DIFFERENCE_PATH);
+    if (lines.isEmpty() || !"pgnName\tside\texpected\tactual\tfen\treason".equals(Nulls.get(lines, 0))) {
       throw new ProgrammingMistakeException("Unexpected full unwinnability accepted-differences header");
     }
 
     final Set<AcceptedDifference> result = new HashSet<>();
-    for (int i = 1; i < lineList.size(); i++) {
-      final String line = Nulls.get(lineList, i);
+    for (int i = 1; i < lines.size(); i++) {
+      final String line = Nulls.get(lines, i);
       final String[] itemArray = Nulls.split(line, "\t");
       if (itemArray.length != 6) {
         throw new ProgrammingMistakeException("Invalid full unwinnability accepted-differences row: " + line);
@@ -121,11 +121,11 @@ class TestAmbronaUnwinnabilityFullOracleComparison {
     return result;
   }
 
-  private static String formatFailureMessage(int checkedPositionCount, List<String> failureList) {
-    final List<String> printedFailureList = Nulls.subList(failureList, 0,
-        Math.min(MAX_PRINTED_FAILURES, failureList.size()));
-    return "Full unwinnability oracle mismatches for " + failureList.size() + " of " + checkedPositionCount
-        + " CHA positions:\n" + Nulls.join("\n", printedFailureList);
+  private static String formatFailureMessage(int checkedPositionCount, List<String> failures) {
+    final List<String> printedFailures = Nulls.subList(failures, 0,
+        Math.min(MAX_PRINTED_FAILURES, failures.size()));
+    return "Full unwinnability oracle mismatches for " + failures.size() + " of " + checkedPositionCount
+        + " CHA positions:\n" + Nulls.join("\n", printedFailures);
   }
 
   private record AcceptedDifference(String pgnName, Side side, UnwinnabilityFullVerdict expected,

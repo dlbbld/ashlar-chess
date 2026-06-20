@@ -53,6 +53,7 @@ Collection / `*List` naming (library-wide final pass):
 - `MoveSuffixAnnotation.calculateValueList()`, `ResultTagValue.calculateList()`, and `SetUpTagValue.calculateList()` → `allowedValuesText()` — each returns the allowed-values *text*, not a list.
 - `BitboardPositionUtility.toSquareSet(long)` → `toSquares(long)` (returns `ImmutableSet<Square>` — the return type carries the set-ness, the name carries the domain).
 - `MobilitySolution.getPiecePlacementSet()` → `getPiecePlacements()`.
+- Public collection constants also use domain names: `ForgivenFenItem.EMPTY_LIST`, `ForgivenSanItem.EMPTY_LIST`, and `ForgivenTagItem.EMPTY_LIST` → `NO_ITEMS`; `TagUtility.SEVEN_TAG_ROSTER_TAG_LIST` → `SEVEN_TAG_ROSTER_TAGS`.
 - `ListUtility.calculateCommaSeparatedList` / `calculateSpaceSeparatedList` / `calculateLineSeparatedList` → `toCommaSeparatedString` / `toSpaceSeparatedString` / `toLineSeparatedString`; `ListUtility.calculateSquareList(Set<Square>)` → `formatSquares(...)` — these return a `String`, so the `List` suffix was misleading.
 - Removed `ImmutableUtility.constructListSquare(Square...)` — a thin `ImmutableList` adapter redundant with `Nulls.listOf(...)`; call sites use `Nulls.listOf(...)`.
 

@@ -332,18 +332,18 @@ public final class DiagonalLineUtility {
     if (!calculateIsOnDiagonalLine(fromSquare, toSquare)) {
       throw new ProgrammingMistakeException("The method is only designed for squares on a diagonal line");
     }
-    for (final ImmutableList<Square> diagonalList : ALL_DIAGONALS) {
-      if (diagonalList.contains(fromSquare) && diagonalList.contains(toSquare)) {
-        return diagonalList;
+    for (final ImmutableList<Square> diagonals : ALL_DIAGONALS) {
+      if (diagonals.contains(fromSquare) && diagonals.contains(toSquare)) {
+        return diagonals;
       }
     }
     throw new ProgrammingMistakeException("This diagonal is not there");
   }
 
   private static boolean calculateIsContained(Square fromSquare, Square toSquare,
-      List<ImmutableList<Square>> diagonaListList) {
-    for (final ImmutableList<Square> diagonalList : diagonaListList) {
-      if (diagonalList.contains(fromSquare) && diagonalList.contains(toSquare)) {
+      List<ImmutableList<Square>> diagonalGroups) {
+    for (final ImmutableList<Square> diagonals : diagonalGroups) {
+      if (diagonals.contains(fromSquare) && diagonals.contains(toSquare)) {
         return true;
       }
     }

@@ -32,11 +32,11 @@ public final class UciMoveValidationUtility {
   private UciMoveValidationUtility() {
   }
 
-  private static final ImmutableList<UciMove> UCI_MOVE_LIST;
+  private static final ImmutableList<UciMove> UCI_MOVES;
   private static final ImmutableMap<String, UciMove> UCI_MOVE_TEXT_LOOKUP;
 
   static {
-    final List<UciMove> uciMoveList = new ArrayList<>();
+    final List<UciMove> uciMoves = new ArrayList<>();
     final Map<String, UciMove> uciMoveTextLookup = new TreeMap<>();
 
     // Non-promotion moves: every square x {rook, bishop, knight} empty-board reach
@@ -45,16 +45,16 @@ public final class UciMoveValidationUtility {
         final Set<EmptyBoardMove> moveSet = EmptyBoardMoveUtility.calculateNonPawnEmptyBoardMoves(pieceType,
             fromSquare);
         for (final EmptyBoardMove move : moveSet) {
-          addUciMove(uciMoveList, uciMoveTextLookup, move.fromSquare(), move.toSquare(), PromotionPieceType.NONE);
+          addUciMove(uciMoves, uciMoveTextLookup, move.fromSquare(), move.toSquare(), PromotionPieceType.NONE);
         }
       }
     }
 
     // Promotion moves: white from seventh rank, black from second rank
-    addPromotionMoves(uciMoveList, uciMoveTextLookup, Side.WHITE);
-    addPromotionMoves(uciMoveList, uciMoveTextLookup, Side.BLACK);
+    addPromotionMoves(uciMoves, uciMoveTextLookup, Side.WHITE);
+    addPromotionMoves(uciMoves, uciMoveTextLookup, Side.BLACK);
 
-    UCI_MOVE_LIST = Nulls.copyOfList(uciMoveList);
+    UCI_MOVES = Nulls.copyOfList(uciMoves);
     UCI_MOVE_TEXT_LOOKUP = Nulls.copyOfMap(uciMoveTextLookup);
   }
 
@@ -70,10 +70,10 @@ public final class UciMoveValidationUtility {
   }
 
   public static ImmutableList<UciMove> getUciMoves() {
-    return UCI_MOVE_LIST;
+    return UCI_MOVES;
   }
 
-  private static void addPromotionMoves(List<UciMove> uciMoveList, Map<String, UciMove> uciMoveTextLookup, Side side) {
+  private static void addPromotionMoves(List<UciMove> uciMoves, Map<String, UciMove> uciMoveTextLookup, Side side) {
     for (final Square fromSquare : getRankBeforePromotionRank(side)) {
       final Set<Square> toSquareSet = new TreeSet<>();
       for (final EmptyBoardMove move : EmptyBoardMoveUtility.calculatePawnEmptyBoardMoves(side, fromSquare)) {
@@ -83,18 +83,18 @@ public final class UciMoveValidationUtility {
 
       for (final Square toSquare : toSquareSet) {
         for (final PromotionPieceType promotionPieceType : PromotionPieceType.REAL) {
-          addUciMove(uciMoveList, uciMoveTextLookup, fromSquare, toSquare, promotionPieceType);
+          addUciMove(uciMoves, uciMoveTextLookup, fromSquare, toSquare, promotionPieceType);
         }
       }
     }
   }
 
-  private static void addUciMove(List<UciMove> uciMoveList, Map<String, UciMove> uciMoveTextLookup, Square fromSquare,
+  private static void addUciMove(List<UciMove> uciMoves, Map<String, UciMove> uciMoveTextLookup, Square fromSquare,
       Square toSquare, PromotionPieceType promotionPieceType) {
     final String text = calculateUciMoveStr(fromSquare, toSquare, promotionPieceType);
     final boolean isPromotion = promotionPieceType != PromotionPieceType.NONE;
     final UciMove uciMove = new UciMove(fromSquare, toSquare, text, isPromotion, promotionPieceType);
-    uciMoveList.add(uciMove);
+    uciMoves.add(uciMove);
     uciMoveTextLookup.put(text, uciMove);
   }
 

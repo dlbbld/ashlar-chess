@@ -22,7 +22,7 @@ public record ForgivenSanItem(LenientSanValidationProblem code, String originalT
    * one place rather than at every caller.
    */
   @SuppressWarnings("null")
-  public static final @NonNull ImmutableList<@NonNull ForgivenSanItem> EMPTY_LIST = ImmutableList.of();
+  public static final @NonNull ImmutableList<@NonNull ForgivenSanItem> NO_ITEMS = ImmutableList.of();
 
   public ForgivenSanItem {
     if (originalToken.isBlank()) {

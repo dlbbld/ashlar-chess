@@ -19,11 +19,11 @@ final class RepetitionPrint {
 
   static List<List<String>> render(ThreefoldExistingReport report, Map<DynamicPosition, String> positionIdentifierMap) {
 
-    final List<List<String>> resultListList = new ArrayList<>();
+    final List<List<String>> lineGroups = new ArrayList<>();
     for (final RepetitionGroup group : report.groups()) {
-      final List<String> resultList = new ArrayList<>();
+      final List<String> lines = new ArrayList<>();
       if (group.includesInitialPosition()) {
-        resultList.add("[Initial position]");
+        lines.add("[Initial position]");
       }
       final ImmutableList<MoveRecord> occurrences = group.occurrences();
       for (int i = 0; i < occurrences.size(); i++) {
@@ -31,10 +31,10 @@ final class RepetitionPrint {
         final boolean isAddPositionInformation = i == occurrences.size() - 1;
         final String moveInformation = PositionIdentifierUtility.calculateMoveInformation(move,
             group.totalRepetitionCount(), false, isAddPositionInformation, positionIdentifierMap);
-        resultList.add(moveInformation);
+        lines.add(moveInformation);
       }
-      resultListList.add(resultList);
+      lineGroups.add(lines);
     }
-    return resultListList;
+    return lineGroups;
   }
 }

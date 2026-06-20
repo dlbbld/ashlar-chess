@@ -62,7 +62,7 @@ class TestStrictPgnParserFromCustomPosition {
         "Rxb6", "Rh4", "Rb8+", "Kg7", "Nf1", "Rb2", "b6", "g5", "bxc7", "g4", "Rxb2");
   }
 
-  private static void checkGame(String pgn, String... hardCodedCompleteSanList) {
+  private static void checkGame(String pgn, String... hardCodedCompleteSans) {
     final PgnGame pgnGame = PgnCacheForStrictPgnParserTestCases.getPgn(PGN_TEST_FOLDER_PATH, pgn);
 
     assertNotEquals(FenConstants.FEN_INITIAL, pgnGame.startFen());
@@ -74,7 +74,7 @@ class TestStrictPgnParserFromCustomPosition {
     }
 
     final Board boardFromFirstMove = new Board();
-    for (final String san : hardCodedCompleteSanList) {
+    for (final String san : hardCodedCompleteSans) {
       @SuppressWarnings("null") @NonNull final String nonNullSan = san;
       boardFromFirstMove.moveStrict(nonNullSan);
     }

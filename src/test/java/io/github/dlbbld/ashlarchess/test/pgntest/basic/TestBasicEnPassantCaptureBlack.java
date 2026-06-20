@@ -39,24 +39,24 @@ class TestBasicEnPassantCaptureBlack {
   private static final Logger logger = Nulls.getLogger(TestBasicEnPassantCaptureBlack.class);
 
   static {
-    final List<String> pgnNameList = new ArrayList<>();
+    final List<String> pgnNames = new ArrayList<>();
 
-    pgnNameList.add("01_black_en_passant_capture_left_a3.pgn");
-    pgnNameList.add("02_black_en_passant_capture_left_b3.pgn");
-    pgnNameList.add("03_black_en_passant_capture_left_c3.pgn");
-    pgnNameList.add("04_black_en_passant_capture_left_d3.pgn");
-    pgnNameList.add("05_black_en_passant_capture_left_e3.pgn");
-    pgnNameList.add("06_black_en_passant_capture_left_f3.pgn");
-    pgnNameList.add("07_black_en_passant_capture_left_g3.pgn");
-    pgnNameList.add("08_black_en_passant_capture_right_b3.pgn");
-    pgnNameList.add("09_black_en_passant_capture_right_c3.pgn");
-    pgnNameList.add("10_black_en_passant_capture_right_d3.pgn");
-    pgnNameList.add("11_black_en_passant_capture_right_e3.pgn");
-    pgnNameList.add("12_black_en_passant_capture_right_f3.pgn");
-    pgnNameList.add("13_black_en_passant_capture_right_g3.pgn");
-    pgnNameList.add("14_black_en_passant_capture_right_h3.pgn");
+    pgnNames.add("01_black_en_passant_capture_left_a3.pgn");
+    pgnNames.add("02_black_en_passant_capture_left_b3.pgn");
+    pgnNames.add("03_black_en_passant_capture_left_c3.pgn");
+    pgnNames.add("04_black_en_passant_capture_left_d3.pgn");
+    pgnNames.add("05_black_en_passant_capture_left_e3.pgn");
+    pgnNames.add("06_black_en_passant_capture_left_f3.pgn");
+    pgnNames.add("07_black_en_passant_capture_left_g3.pgn");
+    pgnNames.add("08_black_en_passant_capture_right_b3.pgn");
+    pgnNames.add("09_black_en_passant_capture_right_c3.pgn");
+    pgnNames.add("10_black_en_passant_capture_right_d3.pgn");
+    pgnNames.add("11_black_en_passant_capture_right_e3.pgn");
+    pgnNames.add("12_black_en_passant_capture_right_f3.pgn");
+    pgnNames.add("13_black_en_passant_capture_right_g3.pgn");
+    pgnNames.add("14_black_en_passant_capture_right_h3.pgn");
 
-    TestBasicSupport.checkTestFolder(pgnNameList, PgnTest.BASIC_EN_PASSANT_CAPTURE_BLACK);
+    TestBasicSupport.checkTestFolder(pgnNames, PgnTest.BASIC_EN_PASSANT_CAPTURE_BLACK);
   }
 
   @SuppressWarnings("static-method")

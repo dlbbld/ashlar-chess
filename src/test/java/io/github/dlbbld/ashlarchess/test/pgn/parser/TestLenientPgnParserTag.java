@@ -32,7 +32,7 @@ class TestLenientPgnParserTag {
     assertTrue(TagUtility.hasResult(expected.tags()));
     assertEquals(ResultTagValue.ONGOING.getValue(), TagUtility.readResult(expected.tags()));
 
-    TestLenientPgnParserSupport.assertEqualsButTagList(actual, expected);
+    TestLenientPgnParserSupport.assertEqualsButTags(actual, expected);
   }
 
   @SuppressWarnings("static-method")
@@ -117,7 +117,7 @@ class TestLenientPgnParserTag {
     final PgnGame actual = PgnCacheForStrictPgnParserTestCases.getPgn(PGN_TEST_FOLDER_PATH, "98_original.pgn");
 
     final PgnGame expected = PgnCacheForLenientPgnParserTestCases.getPgn(PGN_TEST_FOLDER_PATH, "10_empty_tag_list.pgn");
-    TestLenientPgnParserSupport.assertEqualsButTagListAndResult(actual, expected);
+    TestLenientPgnParserSupport.assertEqualsButTagsAndResult(actual, expected);
   }
 
 }

@@ -17,7 +17,7 @@ class TestListUtility {
 
   @SuppressWarnings("static-method")
   @Test
-  void lineSeparatedList() {
+  void lineSeparatedString() {
     final String expected = """
         line 1
 

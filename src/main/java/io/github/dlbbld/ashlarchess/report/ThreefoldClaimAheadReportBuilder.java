@@ -46,10 +46,10 @@ final class ThreefoldClaimAheadReportBuilder {
     return new ThreefoldClaimAheadReport(Nulls.copyOfList(entries));
   }
 
-  private static List<MoveRecord> replayAndCollectClaimAheads(List<LegalMove> performedLegalMoveList, Fen initialFen) {
+  private static List<MoveRecord> replayAndCollectClaimAheads(List<LegalMove> performedLegalMoves, Fen initialFen) {
     final List<MoveRecord> result = new ArrayList<>();
     final Board replayBoard = new Board(initialFen);
-    for (final LegalMove legalMove : performedLegalMoveList) {
+    for (final LegalMove legalMove : performedLegalMoves) {
       collectClaimAheadsAtCurrentMove(result, replayBoard);
       replayBoard.move(legalMove.moveSpecification());
     }

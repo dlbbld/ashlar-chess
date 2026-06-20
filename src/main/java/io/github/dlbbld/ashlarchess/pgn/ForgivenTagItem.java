@@ -26,6 +26,6 @@ public record ForgivenTagItem(ForgivenTagItemCode code, String tagName, String d
    * in one place rather than at every caller.
    */
   @SuppressWarnings("null")
-  public static final @NonNull ImmutableList<@NonNull ForgivenTagItem> EMPTY_LIST = ImmutableList.of();
+  public static final @NonNull ImmutableList<@NonNull ForgivenTagItem> NO_ITEMS = ImmutableList.of();
 
 }

@@ -102,8 +102,8 @@ public final class LenientPgnParser {
       throw e;
     } catch (final RuntimeException e) {
       return new LenientPgnParserValidationResult(LenientPgnParserValidationProblem.UNKNOWN_ERROR,
-          SanValidationProblem.NONE, unexpectedValidationErrorMessage(e), null, ForgivenSanItem.EMPTY_LIST,
-          ForgivenTagItem.EMPTY_LIST);
+          SanValidationProblem.NONE, unexpectedValidationErrorMessage(e), null, ForgivenSanItem.NO_ITEMS,
+          ForgivenTagItem.NO_ITEMS);
     }
     return runValidation(parser);
   }
@@ -142,7 +142,7 @@ public final class LenientPgnParser {
     } catch (final RuntimeException e) {
       final String message = unexpectedValidationErrorMessage(e);
       return new LenientPgnParserValidationResult(LenientPgnParserValidationProblem.UNKNOWN_ERROR,
-          SanValidationProblem.NONE, message, null, ForgivenSanItem.EMPTY_LIST, ForgivenTagItem.EMPTY_LIST);
+          SanValidationProblem.NONE, message, null, ForgivenSanItem.NO_ITEMS, ForgivenTagItem.NO_ITEMS);
     }
   }
 
@@ -176,34 +176,34 @@ public final class LenientPgnParser {
 
     skipInsignificantWhitespace();
 
-    final List<Tag> tagList = parseTagSection();
-    validateUniqueTagNames(tagList);
-    validateResultTagValueIfPresent(tagList);
+    final List<Tag> tags = parseTagSection();
+    validateUniqueTagNames(tags);
+    validateResultTagValueIfPresent(tags);
 
     skipInsignificantWhitespace();
     final MovetextOutcome movetext = parseMovetext();
     expectOnlyTrailingContentUntilEof();
 
-    validateResultConsistency(tagList, movetext.terminationResult());
+    validateResultConsistency(tags, movetext.terminationResult());
 
-    validateTagSetUpValue(tagList);
+    validateTagSetUpValue(tags);
     // Lenient policy: presence of the FEN tag drives the setup-from-position decision. SetUp/FEN coupling
     // deviations are preserved in the tag list as-given; they surface as tag-level forgiven items below.
-    final boolean isStartFromPosition = TagUtility.hasFen(tagList);
+    final boolean isStartFromPosition = TagUtility.hasFen(tags);
 
-    final Fen startFen = calculateStartFen(tagList, isStartFromPosition);
+    final Fen startFen = calculateStartFen(tags, isStartFromPosition);
 
     // Tag-level forgiveness reporting. Populated before movetext replay so the diagnostics survive a SAN-level
     // failure (the exception path carries the accumulator). The parse model is preserved as given; this pass only
     // populates the diagnostic accumulator that surfaces on the validation result.
-    recordMissingStrTagItems(tagList);
-    recordResultAndTerminationMarkerItems(tagList, movetext.terminationResult());
-    recordSetUpFenCouplingItems(tagList, startFen);
+    recordMissingStrTagItems(tags);
+    recordResultAndTerminationMarkerItems(tags, movetext.terminationResult());
+    recordSetUpFenCouplingItems(tags, startFen);
 
-    final List<PgnMove> canonicalMoveList = replayBoardCanonicalizing(startFen, movetext.moves());
+    final List<PgnMove> canonicalMoves = replayBoardCanonicalizing(startFen, movetext.moves());
 
-    return new PgnGame(Nulls.copyOfList(tagList), startFen, movetext.pregameCommentary(),
-        Nulls.copyOfList(canonicalMoveList), movetext.terminationResult());
+    return new PgnGame(Nulls.copyOfList(tags), startFen, movetext.pregameCommentary(),
+        Nulls.copyOfList(canonicalMoves), movetext.terminationResult());
   }
 
   // -------------------------------------------------------------------------------------------------
@@ -298,23 +298,23 @@ public final class LenientPgnParser {
     }
   }
 
-  private static void validateUniqueTagNames(List<Tag> tagList) {
-    for (int i = 0; i < tagList.size(); i++) {
-      for (int j = i + 1; j < tagList.size(); j++) {
-        if (Nulls.get(tagList, i).name().equals(Nulls.get(tagList, j).name())) {
+  private static void validateUniqueTagNames(List<Tag> tags) {
+    for (int i = 0; i < tags.size(); i++) {
+      for (int j = i + 1; j < tags.size(); j++) {
+        if (Nulls.get(tags, i).name().equals(Nulls.get(tags, j).name())) {
           throw new LenientPgnParserValidationException(LenientPgnParserValidationProblem.TAG_NAME_NOT_UNIQUE,
-              SanValidationProblem.NONE, "The tag name must be unique. The tag name \"" + Nulls.get(tagList, i).name()
+              SanValidationProblem.NONE, "The tag name must be unique. The tag name \"" + Nulls.get(tags, i).name()
                   + "\" was used more than once.");
         }
       }
     }
   }
 
-  private static void validateResultTagValueIfPresent(List<Tag> tagList) {
-    if (!TagUtility.hasResult(tagList)) {
+  private static void validateResultTagValueIfPresent(List<Tag> tags) {
+    if (!TagUtility.hasResult(tags)) {
       return;
     }
-    final String value = TagUtility.readResult(tagList);
+    final String value = TagUtility.readResult(tags);
     if (!ResultTagValue.exists(value)) {
       throw new LenientPgnParserValidationException(LenientPgnParserValidationProblem.TAG_RESULT_VALUE_INVALID,
           SanValidationProblem.NONE, "The " + StandardTag.RESULT.getName() + " tag value must exactly match one \""
@@ -322,18 +322,18 @@ public final class LenientPgnParser {
     }
   }
 
-  private static void validateTagSetUpValue(List<Tag> tagList) {
-    if (!TagUtility.hasSetUp(tagList)) {
+  private static void validateTagSetUpValue(List<Tag> tags) {
+    if (!TagUtility.hasSetUp(tags)) {
       return;
     }
-    final String value = TagUtility.readSetUp(tagList);
+    final String value = TagUtility.readSetUp(tags);
     if (!SetUpTagValue.exists(value)) {
       throw new LenientPgnParserValidationException(LenientPgnParserValidationProblem.TAG_SET_UP_VALUE_INVALID,
           SanValidationProblem.NONE, "The " + StandardTag.SET_UP.getName() + " tag value must exactly match one \""
               + SetUpTagValue.allowedValuesText() + "\".");
     }
     final SetUpTagValue setUpTagValue = SetUpTagValue.parse(value);
-    if (setUpTagValue == SetUpTagValue.START_FROM_INITIAL_POSITION && TagUtility.hasFen(tagList)) {
+    if (setUpTagValue == SetUpTagValue.START_FROM_INITIAL_POSITION && TagUtility.hasFen(tags)) {
       throw new LenientPgnParserValidationException(
           LenientPgnParserValidationProblem.TAG_SET_UP_VALUE_ZERO_BUT_FEN_PROVIDED, SanValidationProblem.NONE,
           "When the " + StandardTag.SET_UP.getName() + " tag is set to "
@@ -643,11 +643,11 @@ public final class LenientPgnParser {
    * only result-related cross-check the lenient parser performs; both signals are preserved independently on the parse
    * model (Result tag on the tag list, termination marker on {@link PgnGame#terminationMarker()}).
    */
-  private static void validateResultConsistency(List<Tag> tagList, @Nullable ResultTagValue terminationResult) {
-    if (!TagUtility.hasResult(tagList) || terminationResult == null) {
+  private static void validateResultConsistency(List<Tag> tags, @Nullable ResultTagValue terminationResult) {
+    if (!TagUtility.hasResult(tags) || terminationResult == null) {
       return;
     }
-    final ResultTagValue fromTag = ResultTagValue.parse(TagUtility.readResult(tagList));
+    final ResultTagValue fromTag = ResultTagValue.parse(TagUtility.readResult(tags));
     if (terminationResult != fromTag) {
       throw new LenientPgnParserValidationException(LenientPgnParserValidationProblem.TAG_RESULT_BOTH_SET_BUT_DIFFERENT,
           SanValidationProblem.NONE,
@@ -665,12 +665,12 @@ public final class LenientPgnParser {
    * One {@link ForgivenTagItemCode#STR_TAG_MISSING} item per missing Seven Tag Roster entry, excluding Result (Result
    * has dedicated codes that also account for the termination-marker interaction).
    */
-  private void recordMissingStrTagItems(List<Tag> tagList) {
-    for (final StandardTag standardTag : TagUtility.SEVEN_TAG_ROSTER_TAG_LIST) {
+  private void recordMissingStrTagItems(List<Tag> tags) {
+    for (final StandardTag standardTag : TagUtility.SEVEN_TAG_ROSTER_TAGS) {
       if (standardTag == StandardTag.RESULT) {
         continue;
       }
-      if (!TagUtility.existsTag(tagList, standardTag)) {
+      if (!TagUtility.existsTag(tags, standardTag)) {
         tagForgivenItemsAccumulator
             .add(new ForgivenTagItem(ForgivenTagItemCode.STR_TAG_MISSING, standardTag.getName(), ""));
       }
@@ -684,8 +684,8 @@ public final class LenientPgnParser {
    * nothing is recorded - the value is already in the tag list (and {@link #validateResultConsistency} has already
    * cross-checked it against the marker if both are present).
    */
-  private void recordResultAndTerminationMarkerItems(List<Tag> tagList, @Nullable ResultTagValue terminationResult) {
-    if (TagUtility.hasResult(tagList)) {
+  private void recordResultAndTerminationMarkerItems(List<Tag> tags, @Nullable ResultTagValue terminationResult) {
+    if (TagUtility.hasResult(tags)) {
       return;
     }
     if (terminationResult != null) {
@@ -709,9 +709,9 @@ public final class LenientPgnParser {
    * The first two cases are exclusive of each other. The third can fire alongside neither, since it requires FEN
    * presence - when it fires, the SetUp tag may or may not be present (both shapes are equally redundant).
    */
-  private void recordSetUpFenCouplingItems(List<Tag> tagList, Fen startFen) {
-    final boolean hasFen = TagUtility.hasFen(tagList);
-    final boolean hasSetUp = TagUtility.hasSetUp(tagList);
+  private void recordSetUpFenCouplingItems(List<Tag> tags, Fen startFen) {
+    final boolean hasFen = TagUtility.hasFen(tags);
+    final boolean hasSetUp = TagUtility.hasSetUp(tags);
     if (hasFen && !hasSetUp) {
       tagForgivenItemsAccumulator.add(
           new ForgivenTagItem(ForgivenTagItemCode.SETUP_TAG_MISSING_BUT_FEN_PRESENT, StandardTag.SET_UP.getName(), ""));
@@ -765,17 +765,17 @@ public final class LenientPgnParser {
    * On a SAN-level failure the partial accumulator is included on the thrown
    * {@link LenientPgnParserValidationException} so callers see how many deviations were forgiven before the failure.
    */
-  private List<PgnMove> replayBoardCanonicalizing(Fen startFen, List<PgnMove> moveList) {
+  private List<PgnMove> replayBoardCanonicalizing(Fen startFen, List<PgnMove> moves) {
     final Board board = new Board(startFen);
-    final List<PgnMove> canonicalList = new ArrayList<>(moveList.size());
-    for (final PgnMove move : moveList) {
+    final List<PgnMove> canonicalMoves = new ArrayList<>(moves.size());
+    for (final PgnMove move : moves) {
       final Side side = board.getSideToMove();
       final int fullMoveNumber = board.getFullMoveNumber();
       try {
         final LenientSanParseResult result = board.moveLenient(move.san());
         sanForgivenItemsAccumulator.addAll(result.forgivenItems());
         final String canonicalSan = board.getSan();
-        canonicalList.add(new PgnMove(canonicalSan, move.moveSuffixAnnotation(), move.commentary()));
+        canonicalMoves.add(new PgnMove(canonicalSan, move.moveSuffixAnnotation(), move.commentary()));
       } catch (final LenientSanParserValidationException e) {
         final String moveNumberAndSan = MoveNumberFormat.calculateMoveNumberAndSanWithSpace(fullMoveNumber, side,
             move.san());
@@ -788,11 +788,11 @@ public final class LenientPgnParser {
             Nulls.copyOfList(sanForgivenItemsAccumulator), Nulls.copyOfList(tagForgivenItemsAccumulator));
       }
     }
-    return canonicalList;
+    return canonicalMoves;
   }
 
-  private static Fen calculateStartFen(List<Tag> tagList, boolean isStartFromPosition) {
-    final String startFenStr = isStartFromPosition ? TagUtility.readFen(tagList) : FenConstants.FEN_INITIAL_STR;
+  private static Fen calculateStartFen(List<Tag> tags, boolean isStartFromPosition) {
+    final String startFenStr = isStartFromPosition ? TagUtility.readFen(tags) : FenConstants.FEN_INITIAL_STR;
     // Lenient PGN parser routes the FEN tag through the lenient FEN parser too - symmetry with movetext leniency
     // means deficient FEN tags (extra whitespace, missing counters, speculative fullMoveNumber on a non-initial
     // position) parse cleanly. The lenient layer only forgives syntactic deviations; structural / rule-consistency

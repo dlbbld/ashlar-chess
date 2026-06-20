@@ -7,7 +7,7 @@ import com.google.common.collect.ImmutableList;
 
 import io.github.dlbbld.ashlarchess.board.enums.Square;
 
-record BishopRange(ImmutableList<Square> squareListNorthEast, ImmutableList<Square> squareListSouthEast,
-    ImmutableList<Square> squareListSouthWest, ImmutableList<Square> squareListNorthWest) implements DiagonalRange {
+record BishopRange(ImmutableList<Square> northEastSquares, ImmutableList<Square> southEastSquares,
+    ImmutableList<Square> southWestSquares, ImmutableList<Square> northWestSquares) implements DiagonalRange {
 
 }

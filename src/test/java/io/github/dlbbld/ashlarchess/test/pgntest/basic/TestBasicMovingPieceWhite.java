@@ -40,16 +40,16 @@ class TestBasicMovingPieceWhite {
   private static final Logger logger = Nulls.getLogger(TestBasicMovingPieceWhite.class);
 
   static {
-    final List<String> pgnNameList = new ArrayList<>();
+    final List<String> pgnNames = new ArrayList<>();
 
-    pgnNameList.add("01_white_moving_piece_rook.pgn");
-    pgnNameList.add("02_white_moving_piece_knight.pgn");
-    pgnNameList.add("03_white_moving_piece_bishop.pgn");
-    pgnNameList.add("04_white_moving_piece_queen.pgn");
-    pgnNameList.add("05_white_moving_piece_king.pgn");
-    pgnNameList.add("06_white_moving_piece_pawn.pgn");
+    pgnNames.add("01_white_moving_piece_rook.pgn");
+    pgnNames.add("02_white_moving_piece_knight.pgn");
+    pgnNames.add("03_white_moving_piece_bishop.pgn");
+    pgnNames.add("04_white_moving_piece_queen.pgn");
+    pgnNames.add("05_white_moving_piece_king.pgn");
+    pgnNames.add("06_white_moving_piece_pawn.pgn");
 
-    TestBasicSupport.checkTestFolder(pgnNameList, PgnTest.BASIC_MOVING_PIECE_WHITE);
+    TestBasicSupport.checkTestFolder(pgnNames, PgnTest.BASIC_MOVING_PIECE_WHITE);
   }
 
   @SuppressWarnings("static-method")

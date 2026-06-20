@@ -22,14 +22,14 @@ class TestBasicDoubleCheckCheckmateWhite {
   private static final Logger logger = Nulls.getLogger(TestBasicDoubleCheckCheckmateWhite.class);
 
   static {
-    final List<String> pgnNameList = new ArrayList<>();
+    final List<String> pgnNames = new ArrayList<>();
 
-    pgnNameList.add("01_white_double_check_checkmate_rook.pgn");
-    pgnNameList.add("02_white_double_check_checkmate_knight_orthogonal.pgn");
-    pgnNameList.add("03_white_double_check_checkmate_knight_diagonal.pgn");
-    pgnNameList.add("04_white_double_check_checkmate_bishop.pgn");
+    pgnNames.add("01_white_double_check_checkmate_rook.pgn");
+    pgnNames.add("02_white_double_check_checkmate_knight_orthogonal.pgn");
+    pgnNames.add("03_white_double_check_checkmate_knight_diagonal.pgn");
+    pgnNames.add("04_white_double_check_checkmate_bishop.pgn");
 
-    TestBasicSupport.checkTestFolder(pgnNameList, PgnTest.BASIC_CHECKMATE_DOUBLE_CHECK_WHITE);
+    TestBasicSupport.checkTestFolder(pgnNames, PgnTest.BASIC_CHECKMATE_DOUBLE_CHECK_WHITE);
   }
 
   @SuppressWarnings("static-method")

@@ -76,7 +76,7 @@ public final class LenientFenParser {
       final String message = "An unexpected error occurred during lenient FEN validation. Reason: "
           + (e.getMessage() == null ? "" : e.getMessage());
       return new LenientFenParserValidationResult(LenientFenParserValidationProblem.UNKNOWN_ERROR,
-          StrictFenSemanticValidationProblem.SUCCESS, message, null, ForgivenFenItem.EMPTY_LIST);
+          StrictFenSemanticValidationProblem.SUCCESS, message, null, ForgivenFenItem.NO_ITEMS);
     }
   }
 

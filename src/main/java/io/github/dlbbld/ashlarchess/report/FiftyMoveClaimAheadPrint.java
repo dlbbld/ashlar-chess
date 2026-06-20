@@ -34,15 +34,15 @@ final class FiftyMoveClaimAheadPrint {
    * sequence report.
    */
   static List<List<String>> render(FiftyMoveClaimAheadReport report) {
-    final List<List<String>> resultListList = new ArrayList<>();
+    final List<List<String>> lineGroups = new ArrayList<>();
     for (final FiftyMoveClaimAheadEntry entry : report.entries()) {
       final List<String> tokens = new ArrayList<>();
       tokens.add(SequenceStartFormat.startAnchor(entry.sequenceStart(), entry.startingSide()));
       tokens.add("-");
       tokens.add(formatBoundary(entry));
-      resultListList.add(tokens);
+      lineGroups.add(tokens);
     }
-    return resultListList;
+    return lineGroups;
   }
 
   private static String formatBoundary(FiftyMoveClaimAheadEntry entry) {

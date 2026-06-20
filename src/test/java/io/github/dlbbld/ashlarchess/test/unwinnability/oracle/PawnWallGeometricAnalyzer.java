@@ -511,10 +511,10 @@ public final class PawnWallGeometricAnalyzer {
         findAllPawnWallLines(board, side), side);
   }
 
-  private static boolean calculateHasPawnWallLine(StaticPosition staticPosition, List<List<Square>> resultList,
+  private static boolean calculateHasPawnWallLine(StaticPosition staticPosition, List<List<Square>> lines,
       Side side) {
     // we want all own pawns behind the pawn line for the one example
-    for (final List<Square> pawnWallLine : resultList) {
+    for (final List<Square> pawnWallLine : lines) {
       // we check to find one such line
       if (calculateHasAllPawnsBehindLine(staticPosition, pawnWallLine, side)) {
         return true;
@@ -542,13 +542,13 @@ public final class PawnWallGeometricAnalyzer {
     }
 
     final List<Square> currentLine = new ArrayList<>();
-    final List<List<Square>> resultList = new ArrayList<>();
+    final List<List<Square>> lines = new ArrayList<>();
     for (final Square squareCandidate : startCandidates) {
       currentLine.add(squareCandidate);
-      calculatePawnWallLines(blockedSquares, squareCandidate, true, side, currentLine, resultList);
+      calculatePawnWallLines(blockedSquares, squareCandidate, true, side, currentLine, lines);
       currentLine.remove(currentLine.size() - 1);
     }
-    return resultList;
+    return lines;
   }
 
   private static boolean calculateHasAllPawnsBehindLine(StaticPosition staticPosition, List<Square> pawnWallLine,
@@ -583,17 +583,17 @@ public final class PawnWallGeometricAnalyzer {
   }
 
   static void calculatePawnWallLines(StaticPosition blockedSquares, Square squareCandidate, boolean isNeedNeighbor,
-      Side side, List<Square> currentLine, List<List<Square>> resultList) {
+      Side side, List<Square> currentLine, List<List<Square>> lines) {
     if (isNeedNeighbor) {
       final Square squareNeighbor = squareCandidate.getRightSquare(side);
       if (!blockedSquares.isEmpty(squareNeighbor)) {
         currentLine.add(squareNeighbor);
         if (isRightMostFile(squareNeighbor, side)) {
           final List<Square> foundPawnWallLine = new ArrayList<>(currentLine);
-          resultList.add(foundPawnWallLine);
+          lines.add(foundPawnWallLine);
           return;
         }
-        calculatePawnWallLines(blockedSquares, squareNeighbor, false, side, currentLine, resultList);
+        calculatePawnWallLines(blockedSquares, squareNeighbor, false, side, currentLine, lines);
         currentLine.remove(currentLine.size() - 1);
       }
       return;
@@ -606,7 +606,7 @@ public final class PawnWallGeometricAnalyzer {
       final Square squareBehind = squareCandidate.getBehindSquare(side);
       if (!blockedSquares.isEmpty(squareBehind)) {
         currentLine.add(squareBehind);
-        calculatePawnWallLines(blockedSquares, squareBehind, true, side, currentLine, resultList);
+        calculatePawnWallLines(blockedSquares, squareBehind, true, side, currentLine, lines);
         currentLine.remove(currentLine.size() - 1);
       }
     }
@@ -618,10 +618,10 @@ public final class PawnWallGeometricAnalyzer {
         currentLine.add(squareRight);
         if (isRightMostFile(squareRight, side)) {
           final List<Square> foundPawnWallLine = new ArrayList<>(currentLine);
-          resultList.add(foundPawnWallLine);
+          lines.add(foundPawnWallLine);
           return;
         }
-        calculatePawnWallLines(blockedSquares, squareRight, false, side, currentLine, resultList);
+        calculatePawnWallLines(blockedSquares, squareRight, false, side, currentLine, lines);
         currentLine.remove(currentLine.size() - 1);
       }
     }
@@ -631,7 +631,7 @@ public final class PawnWallGeometricAnalyzer {
       final Square squareAhead = squareCandidate.getAheadSquare(side);
       if (!blockedSquares.isEmpty(squareAhead)) {
         currentLine.add(squareAhead);
-        calculatePawnWallLines(blockedSquares, squareAhead, true, side, currentLine, resultList);
+        calculatePawnWallLines(blockedSquares, squareAhead, true, side, currentLine, lines);
         currentLine.remove(currentLine.size() - 1);
       }
     }

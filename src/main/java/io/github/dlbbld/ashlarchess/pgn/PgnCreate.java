@@ -61,32 +61,32 @@ public final class PgnCreate {
     return text + "\n";
   }
 
-  private static List<String> calculateFileLines(List<Tag> tagList, PgnCommentary pregameCommentary, Fen startFen,
-      List<PgnMove> moveList, @Nullable ResultTagValue terminationMarker) {
+  private static List<String> calculateFileLines(List<Tag> tags, PgnCommentary pregameCommentary, Fen startFen,
+      List<PgnMove> moves, @Nullable ResultTagValue terminationMarker) {
 
     final List<String> fileLines = new ArrayList<>();
-    for (final Tag tag : tagList) {
+    for (final Tag tag : tags) {
       fileLines.add(calculateTagEntry(tag));
     }
     // PGN spec section 8.2.2: a tag section is followed by a single empty line. If there is no tag section
     // (semantic-mode output of a Board with no tags), no separator is emitted; the movetext starts immediately.
-    if (!tagList.isEmpty()) {
+    if (!tags.isEmpty()) {
       fileLines.add("");
     }
 
-    final String moves = calculateMovetextWithoutGameTerminationMarker(startFen.fullMoveNumber(), startFen.sideToMove(),
-        moveList);
+    final String movetext = calculateMovetextWithoutGameTerminationMarker(startFen.fullMoveNumber(),
+        startFen.sideToMove(), moves);
 
     // PgnCommentary is contract-validated (no `}`, no `\r`), so the value writes verbatim into {...}.
     final String pregameCommentaryValue = pregameCommentary.value();
     final String terminationSuffix = terminationMarker != null ? " " + terminationMarker.getValue() : "";
     final String movetextIncludingPreGameCommentary;
     if (pregameCommentaryValue.isEmpty()) {
-      movetextIncludingPreGameCommentary = moves + terminationSuffix;
-    } else if (moves.isEmpty()) {
+      movetextIncludingPreGameCommentary = movetext + terminationSuffix;
+    } else if (movetext.isEmpty()) {
       movetextIncludingPreGameCommentary = "{" + pregameCommentaryValue + "}" + terminationSuffix;
     } else {
-      movetextIncludingPreGameCommentary = "{" + pregameCommentaryValue + "}" + " " + moves + terminationSuffix;
+      movetextIncludingPreGameCommentary = "{" + pregameCommentaryValue + "}" + " " + movetext + terminationSuffix;
     }
 
     // Lenient parses can produce a PgnGame with no pregame commentary, no moves, and no termination marker
@@ -103,16 +103,16 @@ public final class PgnCreate {
     return fileLines;
   }
 
-  private static List<PgnMove> calculatePgnMoves(List<String> sanList) {
-    final List<PgnMove> moveList = new ArrayList<>();
+  private static List<PgnMove> calculatePgnMoves(List<String> sans) {
+    final List<PgnMove> moves = new ArrayList<>();
 
-    for (final String san : sanList) {
+    for (final String san : sans) {
       PgnMove move;
       move = new PgnMove(san, MoveSuffixAnnotation.NONE, PgnCommentary.EMPTY);
-      moveList.add(move);
+      moves.add(move);
     }
 
-    return moveList;
+    return moves;
   }
 
   private static ResultTagValue calculateResultTagValue(Board board) {
@@ -165,7 +165,7 @@ public final class PgnCreate {
   }
 
   private static String calculateMovetextWithoutGameTerminationMarker(int fullMoveNumber, Side sideToMove,
-      List<PgnMove> moveList) {
+      List<PgnMove> moves) {
 
     final StringBuilder result = new StringBuilder();
 
@@ -174,7 +174,7 @@ public final class PgnCreate {
     boolean isFirstMove = true;
     // T-002 / PGN spec section 8.2.2 case 1: commentary on White's move forces "N..." before the next Black move.
     boolean priorCommentaryAttached = false;
-    for (final PgnMove move : moveList) {
+    for (final PgnMove move : moves) {
 
       // Emit the move-number indicator in the three required cases: first move, before any White move, or
       // before a Black move that follows commentary on White's move (T-002).
@@ -216,12 +216,12 @@ public final class PgnCreate {
    * no sort). The termination marker is derived from the board's game-status - semantic-mode export will emit it as the
    * movetext trailer; archival-mode export will also synthesise a Result tag from it.
    */
-  public static PgnGame createPgnGame(Board board, List<Tag> tagList) {
+  public static PgnGame createPgnGame(Board board, List<Tag> tags) {
 
-    final List<PgnMove> moveList = calculatePgnMoves(board.getPerformedMovesAsSan());
+    final List<PgnMove> moves = calculatePgnMoves(board.getPerformedMovesAsSan());
 
-    return new PgnGame(Nulls.copyOfList(tagList), board.getInitialFen(), PgnCommentary.EMPTY,
-        Nulls.copyOfList(moveList), calculateResultTagValue(board));
+    return new PgnGame(Nulls.copyOfList(tags), board.getInitialFen(), PgnCommentary.EMPTY,
+        Nulls.copyOfList(moves), calculateResultTagValue(board));
   }
 
   /**
@@ -232,14 +232,14 @@ public final class PgnCreate {
    */
   public static PgnGame createPgnGame(Board board) {
 
-    final List<Tag> tagList = new ArrayList<>();
+    final List<Tag> tags = new ArrayList<>();
 
     if (board.getInitialFen() != FenConstants.FEN_INITIAL) {
-      tagList.add(new Tag(StandardTag.SET_UP.getName(), SetUpTagValue.START_FROM_SETUP_POSITION.getValue()));
-      tagList.add(new Tag(StandardTag.FEN.getName(), board.getInitialFen().fen()));
+      tags.add(new Tag(StandardTag.SET_UP.getName(), SetUpTagValue.START_FROM_SETUP_POSITION.getValue()));
+      tags.add(new Tag(StandardTag.FEN.getName(), board.getInitialFen().fen()));
     }
 
-    return createPgnGame(board, tagList);
+    return createPgnGame(board, tags);
   }
 
 }

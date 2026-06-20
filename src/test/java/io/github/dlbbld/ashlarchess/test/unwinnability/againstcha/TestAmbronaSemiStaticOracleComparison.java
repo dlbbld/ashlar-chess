@@ -35,6 +35,6 @@ class TestAmbronaSemiStaticOracleComparison {
     assertEquals(0, comparison.fenDifferenceCount());
     assertEquals(0, comparison.rowDifferenceCount());
     assertTrue(comparison.differenceCountByKind().isEmpty());
-    assertTrue(comparison.differentFenList().isEmpty());
+    assertTrue(comparison.differentFens().isEmpty());
   }
 }

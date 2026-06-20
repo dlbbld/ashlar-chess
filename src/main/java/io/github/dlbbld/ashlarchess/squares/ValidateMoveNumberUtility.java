@@ -16,10 +16,10 @@ final class ValidateMoveNumberUtility {
   private ValidateMoveNumberUtility() {
   }
 
-  public static <E extends OrthogonalRange> void validateOrthogonalMoveNumber(ImmutableMap<Square, E> mapOfListList,
+  public static <E extends OrthogonalRange> void validateOrthogonalMoveNumber(ImmutableMap<Square, E> rangesBySquare,
       int numberOfExpectedMoves) {
     int numberOfActualMoves = 0;
-    for (final E bishopRange : mapOfListList.values()) {
+    for (final E bishopRange : rangesBySquare.values()) {
       numberOfActualMoves += calculateOrthogonalMoves(bishopRange);
     }
     if (numberOfExpectedMoves != numberOfActualMoves) {
@@ -29,17 +29,17 @@ final class ValidateMoveNumberUtility {
 
   private static int calculateOrthogonalMoves(OrthogonalRange moves) {
     int total = 0;
-    total += moves.squareListNorth().size();
-    total += moves.squareListEast().size();
-    total += moves.squareListSouth().size();
-    total += moves.squareListWest().size();
+    total += moves.northSquares().size();
+    total += moves.eastSquares().size();
+    total += moves.southSquares().size();
+    total += moves.westSquares().size();
     return total;
   }
 
-  public static <E extends DiagonalRange> void validateDiagonalMovesNumber(ImmutableMap<Square, E> mapOfListList,
+  public static <E extends DiagonalRange> void validateDiagonalMovesNumber(ImmutableMap<Square, E> rangesBySquare,
       int numberOfExpectedMoves) {
     int numberOfActualMoves = 0;
-    for (final E bishopRange : mapOfListList.values()) {
+    for (final E bishopRange : rangesBySquare.values()) {
       numberOfActualMoves += calculateDiagonalMovesNumber(bishopRange);
     }
     if (numberOfExpectedMoves != numberOfActualMoves) {
@@ -49,10 +49,10 @@ final class ValidateMoveNumberUtility {
 
   private static int calculateDiagonalMovesNumber(DiagonalRange moves) {
     int total = 0;
-    total += moves.squareListNorthEast().size();
-    total += moves.squareListSouthEast().size();
-    total += moves.squareListSouthWest().size();
-    total += moves.squareListNorthWest().size();
+    total += moves.northEastSquares().size();
+    total += moves.southEastSquares().size();
+    total += moves.southWestSquares().size();
+    total += moves.northWestSquares().size();
     return total;
   }
 

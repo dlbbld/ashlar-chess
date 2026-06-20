@@ -44,9 +44,9 @@ class TestLibraryCarlosSanCalculationNotPass {
   }
 
   private static String calculateSan(Board board) {
-    final MoveList moveList = new MoveList();
-    moveList.addAll(calculateMoves(board));
-    final String[] sanArray = moveList.toSanArray();
+    final MoveList moves = new MoveList();
+    moves.addAll(calculateMoves(board));
+    final String[] sanArray = moves.toSanArray();
     @SuppressWarnings("null") final String last = Nulls.getLast(sanArray);
     return last;
   }

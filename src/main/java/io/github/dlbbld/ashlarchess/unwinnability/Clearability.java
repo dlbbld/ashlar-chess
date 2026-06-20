@@ -56,10 +56,10 @@ class Clearability {
 
   public String print() {
 
-    final List<String> lineList = new ArrayList<>();
+    final List<String> lines = new ArrayList<>();
 
-    lineList.add("");
-    lineList.add("Clearability:");
+    lines.add("");
+    lines.add("Clearability:");
 
     // TreeSet for ordering
     for (final PiecePlacement piecePlacement : new TreeSet<>(clearabilityMap.keySet())) {
@@ -69,10 +69,10 @@ class Clearability {
       pieceDescription.append(": ");
       pieceDescription.append(variableState.getDescription());
       @SuppressWarnings("null") @NonNull final String string = pieceDescription.toString();
-      lineList.add(string);
+      lines.add(string);
     }
 
-    return ListUtility.toLineSeparatedString(lineList);
+    return ListUtility.toLineSeparatedString(lines);
   }
 
   @Override

@@ -29,8 +29,8 @@ public class PawnSanValidateStaticallyStrictCalculate {
   static ImmutableMap<String, SanParse> calculateSanMap(Side side) {
     final Map<String, SanParse> sanValidateMap = new TreeMap<>();
 
-    final List<String> enumNameList = calculateEnumNames(side);
-    for (final String enumName : enumNameList) {
+    final List<String> enumNames = calculateEnumNames(side);
+    for (final String enumName : enumNames) {
       final String parse = enumName.toLowerCase();
       File fromFile;
       final Rank fromRank = Rank.NONE;

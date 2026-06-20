@@ -53,9 +53,9 @@ public final class LegalMovesJsonlReader {
   }
 
   private static LegalMovesPly toPly(Map<String, Object> obj) {
-    final List<Object> rawList = (List<Object>) obj.get("legalMovesUci");
-    final List<String> uci = new ArrayList<>(rawList.size());
-    for (final Object o : rawList) {
+    final List<Object> rawRows = (List<Object>) obj.get("legalMovesUci");
+    final List<String> uci = new ArrayList<>(rawRows.size());
+    for (final Object o : rawRows) {
       uci.add((String) o);
     }
     return new LegalMovesPly(Nulls.copyOfList(uci));

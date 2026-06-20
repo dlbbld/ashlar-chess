@@ -50,8 +50,8 @@ public final class LibraryCarlosImplementationUtility {
 
   private static boolean calculateIsLegalMoveEnPassantCapture(Board board, Square enPassantCaptureDestination) {
 
-    final List<Move> legalMoveList = generateLegalMoves(board);
-    for (final Move legalMove : legalMoveList) {
+    final List<Move> legalMoves = generateLegalMoves(board);
+    for (final Move legalMove : legalMoves) {
       if (legalMove.getTo() == enPassantCaptureDestination) {
         final com.github.bhlangonijr.chesslib.Piece piece = calculatePieceForLegalMove(board, legalMove);
         if (calculateIsPawn(piece)) {

@@ -92,10 +92,10 @@ final class MobilityFunctions {
     return result;
   }
 
-  static Set<PiecePlacement> attackers(Set<PiecePlacement> piecePlacementList, Square square) {
+  static Set<PiecePlacement> attackers(Set<PiecePlacement> piecePlacements, Square square) {
     final Set<PiecePlacement> result = new TreeSet<>();
 
-    for (final PiecePlacement piecePlacement : piecePlacementList) {
+    for (final PiecePlacement piecePlacement : piecePlacements) {
       if (predecessorsCapture(piecePlacement, square).contains(piecePlacement.squareOriginal())) {
         result.add(piecePlacement);
       }

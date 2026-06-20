@@ -27,14 +27,14 @@ public final class TestLenientPgnParserSupport {
         PgnCreate.toPgnString(actual, WriteMode.ARCHIVAL));
   }
 
-  static void assertEqualsButTagList(PgnGame expected, PgnGame actual) {
+  static void assertEqualsButTags(PgnGame expected, PgnGame actual) {
     assertEquals(expected.moves(), actual.moves());
     assertEquals(expected.pregameCommentary(), actual.pregameCommentary());
     // assertEquals(expected.tags(), actual.tags());
     assertEquals(expected.startFen(), actual.startFen());
   }
 
-  static void assertEqualsButTagListAndResult(PgnGame expected, PgnGame actual) {
+  static void assertEqualsButTagsAndResult(PgnGame expected, PgnGame actual) {
     // assertEquals(expected.resultTagValue(), actual.resultTagValue());
     assertEquals(expected.moves(), actual.moves());
     assertEquals(expected.pregameCommentary(), actual.pregameCommentary());

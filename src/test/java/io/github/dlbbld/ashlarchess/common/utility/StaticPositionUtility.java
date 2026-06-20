@@ -139,9 +139,9 @@ public final class StaticPositionUtility {
   public static StaticPosition createPositionAfterMove(StaticPosition staticPosition, Side sideToMove,
       MoveSpecification moveSpecification) {
 
-    final List<UpdateSquare> updateSquareList = calculateUpdateSquares(staticPosition, sideToMove,
+    final List<UpdateSquare> updateSquares = calculateUpdateSquares(staticPosition, sideToMove,
         moveSpecification);
-    return StaticPositionUtility.createChangedPosition(staticPosition, updateSquareList);
+    return StaticPositionUtility.createChangedPosition(staticPosition, updateSquares);
   }
 
   private static List<UpdateSquare> calculateUpdateSquares(StaticPosition staticPosition, Side sideToMove,
@@ -187,19 +187,19 @@ public final class StaticPositionUtility {
   }
 
   public static StaticPosition createChangedPosition(StaticPosition staticPosition, Square square, Piece piece) {
-    final List<UpdateSquare> updateSquareList = new ArrayList<>();
-    updateSquareList.add(new UpdateSquare(square, piece));
-    return createChangedPosition(staticPosition, updateSquareList);
+    final List<UpdateSquare> updateSquares = new ArrayList<>();
+    updateSquares.add(new UpdateSquare(square, piece));
+    return createChangedPosition(staticPosition, updateSquares);
   }
 
   public static StaticPosition createChangedPosition(StaticPosition staticPosition, Square square) {
-    final List<UpdateSquare> updateSquareList = new ArrayList<>();
-    updateSquareList.add(new UpdateSquare(square));
-    return createChangedPosition(staticPosition, updateSquareList);
+    final List<UpdateSquare> updateSquares = new ArrayList<>();
+    updateSquares.add(new UpdateSquare(square));
+    return createChangedPosition(staticPosition, updateSquares);
   }
 
   public static StaticPosition createChangedPosition(StaticPosition staticPosition,
-      List<UpdateSquare> updateSquareList) {
+      List<UpdateSquare> updateSquares) {
     Piece newA8 = staticPosition.a8();
     Piece newB8 = staticPosition.b8();
     Piece newC8 = staticPosition.c8();
@@ -265,7 +265,7 @@ public final class StaticPositionUtility {
     Piece newG1 = staticPosition.g1();
     Piece newH1 = staticPosition.h1();
 
-    for (final UpdateSquare updateSquare : updateSquareList) {
+    for (final UpdateSquare updateSquare : updateSquares) {
       final Square square = updateSquare.square();
       final Piece newPiece = updateSquare.piece();
       switch (square) {

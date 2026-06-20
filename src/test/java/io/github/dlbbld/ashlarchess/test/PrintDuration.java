@@ -10,10 +10,10 @@ import org.apache.logging.log4j.Logger;
 
 public class PrintDuration {
 
-  public static void printDuration(List<Long> milliSecondsList, Logger logger) {
-    final int numberOfTests = milliSecondsList.size();
+  public static void printDuration(List<Long> milliSecondValues, Logger logger) {
+    final int numberOfTests = milliSecondValues.size();
     double totalmilliSeconds = 0D;
-    for (final Long milliSecondsTest : milliSecondsList) {
+    for (final Long milliSecondsTest : milliSecondValues) {
       totalmilliSeconds += milliSecondsTest;
     }
 

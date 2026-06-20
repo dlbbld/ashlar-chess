@@ -57,12 +57,12 @@ public final class PgnWriter {
   // Board entry points - semantic default, explicit-mode overloads
   // -------------------------------------------------------------------------------------------------
 
-  public static void writePgn(Board board, List<Tag> tagList, Path folderPath, String pgnName) {
-    writePgn(board, tagList, folderPath, pgnName, WriteMode.SEMANTIC);
+  public static void writePgn(Board board, List<Tag> tags, Path folderPath, String pgnName) {
+    writePgn(board, tags, folderPath, pgnName, WriteMode.SEMANTIC);
   }
 
-  public static void writePgn(Board board, List<Tag> tagList, Path folderPath, String pgnName, WriteMode writeMode) {
-    final PgnGame pgnGame = PgnCreate.createPgnGame(board, tagList);
+  public static void writePgn(Board board, List<Tag> tags, Path folderPath, String pgnName, WriteMode writeMode) {
+    final PgnGame pgnGame = PgnCreate.createPgnGame(board, tags);
     writePgn(pgnGame, folderPath, pgnName, writeMode);
   }
 
@@ -79,14 +79,14 @@ public final class PgnWriter {
   // File I/O
   // -------------------------------------------------------------------------------------------------
 
-  private static void writeLinesReplacing(Path filePath, List<String> lineList) {
+  private static void writeLinesReplacing(Path filePath, List<String> lines) {
     try {
       Files.deleteIfExists(filePath);
     } catch (final IOException ioe) {
       throw new FileSystemAccessException("Deleting existing file \"" + filePath + "\" failed.", ioe);
     }
     try (BufferedWriter writer = Files.newBufferedWriter(filePath, StandardCharsets.UTF_8)) {
-      for (final String line : lineList) {
+      for (final String line : lines) {
         writer.write(line);
         writer.write("\n");
       }

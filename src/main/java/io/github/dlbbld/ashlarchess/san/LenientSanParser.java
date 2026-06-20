@@ -43,7 +43,7 @@ public final class LenientSanParser {
     // Phase 0: try strict on the raw input first. Canonical SAN pays zero lenient overhead.
     try {
       final MoveSpecification ms = StrictSanParser.parse(text, board);
-      return new LenientSanParseResult(ms, ForgivenSanItem.EMPTY_LIST);
+      return new LenientSanParseResult(ms, ForgivenSanItem.NO_ITEMS);
     } catch (@SuppressWarnings("unused") final SanValidationException ignored) {
       // Fall through to the lenient pipeline.
     }
@@ -100,7 +100,7 @@ public final class LenientSanParser {
   private static ImmutableList<ForgivenSanItem> itemsWithoutCanonical(String text,
       List<LenientSanValidationProblem> codes) {
     if (codes.isEmpty()) {
-      return ForgivenSanItem.EMPTY_LIST;
+      return ForgivenSanItem.NO_ITEMS;
     }
     // Failure path: the canonical SAN is unknown (the parse never resolved a move), so we surface the codes
     // accumulated so far paired with the original token. Callers diagnosing a failed lenient parse care about

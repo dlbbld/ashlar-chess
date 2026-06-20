@@ -8,11 +8,11 @@ import com.google.common.collect.ImmutableList;
 import io.github.dlbbld.ashlarchess.board.enums.Square;
 
 interface DiagonalRange {
-  ImmutableList<Square> squareListNorthEast();
+  ImmutableList<Square> northEastSquares();
 
-  ImmutableList<Square> squareListSouthEast();
+  ImmutableList<Square> southEastSquares();
 
-  ImmutableList<Square> squareListSouthWest();
+  ImmutableList<Square> southWestSquares();
 
-  ImmutableList<Square> squareListNorthWest();
+  ImmutableList<Square> northWestSquares();
 }

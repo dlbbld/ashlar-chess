@@ -33,14 +33,14 @@ final class RangeSquaresSupport {
       PieceType expectedSourcePieceType, OrthogonalRange orthogonalMoves, boolean isAllowOwnPiece) {
 
     final Set<Square> calculatedToSquareSet = new TreeSet<>(calculateRangeSquare(staticPosition, sideToMove, fromSquare,
-        expectedSourcePieceType, orthogonalMoves.squareListNorth(), isAllowOwnPiece));
+        expectedSourcePieceType, orthogonalMoves.northSquares(), isAllowOwnPiece));
 
     calculatedToSquareSet.addAll(calculateRangeSquare(staticPosition, sideToMove, fromSquare, expectedSourcePieceType,
-        orthogonalMoves.squareListEast(), isAllowOwnPiece));
+        orthogonalMoves.eastSquares(), isAllowOwnPiece));
     calculatedToSquareSet.addAll(calculateRangeSquare(staticPosition, sideToMove, fromSquare, expectedSourcePieceType,
-        orthogonalMoves.squareListSouth(), isAllowOwnPiece));
+        orthogonalMoves.southSquares(), isAllowOwnPiece));
     calculatedToSquareSet.addAll(calculateRangeSquare(staticPosition, sideToMove, fromSquare, expectedSourcePieceType,
-        orthogonalMoves.squareListWest(), isAllowOwnPiece));
+        orthogonalMoves.westSquares(), isAllowOwnPiece));
     return calculatedToSquareSet;
   }
 
@@ -48,27 +48,27 @@ final class RangeSquaresSupport {
       PieceType expectedSourcePieceType, DiagonalRange diagonalMoves, boolean isAllowOwnPiece) {
 
     final Set<Square> calculatedToSquareSet = new TreeSet<>(calculateRangeSquare(staticPosition, sideToMove, fromSquare,
-        expectedSourcePieceType, diagonalMoves.squareListNorthEast(), isAllowOwnPiece));
+        expectedSourcePieceType, diagonalMoves.northEastSquares(), isAllowOwnPiece));
 
     calculatedToSquareSet.addAll(calculateRangeSquare(staticPosition, sideToMove, fromSquare, expectedSourcePieceType,
-        diagonalMoves.squareListSouthEast(), isAllowOwnPiece));
+        diagonalMoves.southEastSquares(), isAllowOwnPiece));
     calculatedToSquareSet.addAll(calculateRangeSquare(staticPosition, sideToMove, fromSquare, expectedSourcePieceType,
-        diagonalMoves.squareListSouthWest(), isAllowOwnPiece));
+        diagonalMoves.southWestSquares(), isAllowOwnPiece));
     calculatedToSquareSet.addAll(calculateRangeSquare(staticPosition, sideToMove, fromSquare, expectedSourcePieceType,
-        diagonalMoves.squareListNorthWest(), isAllowOwnPiece));
+        diagonalMoves.northWestSquares(), isAllowOwnPiece));
     return calculatedToSquareSet;
   }
 
   private static Set<Square> calculateRangeSquare(StaticPosition staticPosition, Side sideToMove, Square fromSquare,
-      PieceType expectedSourcePieceType, ImmutableList<Square> emptyBoardSquareList, boolean isAllowOwnPiece) {
+      PieceType expectedSourcePieceType, ImmutableList<Square> emptyBoardSquares, boolean isAllowOwnPiece) {
 
     ToSquaresSupport.checkPiece(staticPosition, sideToMove, fromSquare, expectedSourcePieceType);
 
     final Set<Square> calculatedToSquareSet = new TreeSet<>();
 
-    final List<Square> calculatedToSquareList = calculateRangeSquares(staticPosition, sideToMove,
-        emptyBoardSquareList, isAllowOwnPiece);
-    calculatedToSquareSet.addAll(calculatedToSquareList);
+    final List<Square> calculatedToSquares = calculateRangeSquares(staticPosition, sideToMove,
+        emptyBoardSquares, isAllowOwnPiece);
+    calculatedToSquareSet.addAll(calculatedToSquares);
     return calculatedToSquareSet;
   }
 
@@ -93,30 +93,30 @@ final class RangeSquaresSupport {
   }
 
   private static List<Square> calculateRangeSquares(StaticPosition staticPosition, Side sideToMove,
-      List<Square> emptyBoardSquareList, boolean isAllowOwnPiece) {
+      List<Square> emptyBoardSquares, boolean isAllowOwnPiece) {
 
-    final List<Square> calculatedToSquareList = new ArrayList<>();
+    final List<Square> calculatedToSquares = new ArrayList<>();
 
-    for (final Square toSquare : emptyBoardSquareList) {
+    for (final Square toSquare : emptyBoardSquares) {
       final SquareOccupation squareOccupation = ToSquaresSupport.calculateSquareOccupation(staticPosition, sideToMove,
           toSquare);
       switch (squareOccupation) {
         case NONE:
-          calculatedToSquareList.add(toSquare);
+          calculatedToSquares.add(toSquare);
           continue;
         case OPPONENT_PIECE:
-          calculatedToSquareList.add(toSquare);
-          return calculatedToSquareList;
+          calculatedToSquares.add(toSquare);
+          return calculatedToSquares;
         case OWN_PIECE:
           if (isAllowOwnPiece) {
-            calculatedToSquareList.add(toSquare);
+            calculatedToSquares.add(toSquare);
           }
-          return calculatedToSquareList;
+          return calculatedToSquares;
         default:
           throw new IllegalArgumentException();
       }
     }
-    return calculatedToSquareList;
+    return calculatedToSquares;
   }
 
 }

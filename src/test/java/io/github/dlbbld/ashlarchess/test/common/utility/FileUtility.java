@@ -81,28 +81,28 @@ public final class FileUtility {
     return fileLines;
   }
 
-  public static void writeFile(Path folderPath, String fileName, List<String> lineList) {
-    writeFile(Nulls.pathResolve(folderPath, fileName), lineList);
+  public static void writeFile(Path folderPath, String fileName, List<String> lines) {
+    writeFile(Nulls.pathResolve(folderPath, fileName), lines);
   }
 
   public static void writeFile(Path folderPath, String fileName, String line) {
-    final List<String> lineList = new ArrayList<>();
-    lineList.add(line);
+    final List<String> lines = new ArrayList<>();
+    lines.add(line);
 
-    writeFile(Nulls.pathResolve(folderPath, fileName), lineList);
+    writeFile(Nulls.pathResolve(folderPath, fileName), lines);
   }
 
   public static void writeFile(Path filePath, String line) {
-    final List<String> lineList = new ArrayList<>();
-    lineList.add(line);
+    final List<String> lines = new ArrayList<>();
+    lines.add(line);
 
-    writeFile(filePath, lineList);
+    writeFile(filePath, lines);
   }
 
-  public static void writeFile(Path filePath, List<String> lineList) {
+  public static void writeFile(Path filePath, List<String> lines) {
     deleteFile(filePath);
     try (BufferedWriter writer = Files.newBufferedWriter(filePath, StandardCharsets.UTF_8)) {
-      for (final String line : lineList) {
+      for (final String line : lines) {
         writer.write(line);
         writer.write("\n");
       }
@@ -114,16 +114,16 @@ public final class FileUtility {
 
   public static void appendFile(Path filePath, String line) {
 
-    final List<String> lineList = new ArrayList<>();
-    lineList.add(line);
+    final List<String> lines = new ArrayList<>();
+    lines.add(line);
 
-    appendFile(filePath, lineList);
+    appendFile(filePath, lines);
   }
 
-  public static void appendFile(Path filePath, List<String> lineList) {
+  public static void appendFile(Path filePath, List<String> lines) {
 
     if (!exists(filePath)) {
-      writeFile(filePath, lineList);
+      writeFile(filePath, lines);
     } else {
 
       final File file = filePath.toFile();
@@ -132,7 +132,7 @@ public final class FileUtility {
       }
       try (BufferedWriter writer = Files.newBufferedWriter(filePath, StandardCharsets.UTF_8,
           StandardOpenOption.APPEND)) {
-        for (final String line : lineList) {
+        for (final String line : lines) {
           writer.write(line);
           writer.write("\n");
         }
@@ -180,12 +180,12 @@ public final class FileUtility {
       throw new IllegalArgumentException("\"" + folderPath + "\" is not a directory");
     }
 
-    final File[] filesList = folder.listFiles();
-    if (filesList == null) {
+    final File[] files = folder.listFiles();
+    if (files == null) {
       throw new FileSystemAccessException("File list retrieval for \"" + folderPath + "\" failed");
     }
 
-    for (final File file : filesList) {
+    for (final File file : files) {
       if (file == null) {
         throw new ProgrammingMistakeException("Wrong assumption about API behaviour");
       }
@@ -226,12 +226,12 @@ public final class FileUtility {
     if (!folder.isDirectory()) {
       throw new IllegalArgumentException("\"" + folderPath + "\" is not a directory");
     }
-    final File[] filesList = folder.listFiles();
-    if (filesList == null) {
+    final File[] files = folder.listFiles();
+    if (files == null) {
       throw new FileSystemAccessException("File list retrieval for \"" + folderPath + "\" failed");
     }
 
-    for (final File file : filesList) {
+    for (final File file : files) {
       if (file == null) {
         throw new ProgrammingMistakeException("Wrong assumption about API behaviour");
       }

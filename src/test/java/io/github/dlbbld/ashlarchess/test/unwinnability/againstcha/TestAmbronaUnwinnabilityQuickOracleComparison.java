@@ -40,7 +40,7 @@ class TestAmbronaUnwinnabilityQuickOracleComparison {
   @Test
   void test() {
     final Set<AcceptedDifference> remainingAcceptedDifferenceSet = readAcceptedDifferenceSet();
-    final List<String> failureList = new ArrayList<>();
+    final List<String> failures = new ArrayList<>();
 
     for (final PgnTest pgnTest : PgnTest.values()) {
       if (!CheckAgainstCha.isUseTestForCha(pgnTest)) {
@@ -68,42 +68,42 @@ class TestAmbronaUnwinnabilityQuickOracleComparison {
         final UnwinnabilityQuickVerdict unwinnableQuickWhite = UnwinnableQuickAnalyzer
             .unwinnableQuick(board, Side.WHITE).verdict();
         check(testCase, Side.WHITE, AmbronaUnwinnabilityOracle.get(testCase.finalFen()).quickWhite(),
-            unwinnableQuickWhite, failureList, remainingAcceptedDifferenceSet);
+            unwinnableQuickWhite, failures, remainingAcceptedDifferenceSet);
 
         final UnwinnabilityQuickVerdict unwinnableQuickBlack = UnwinnableQuickAnalyzer
             .unwinnableQuick(board, Side.BLACK).verdict();
         check(testCase, Side.BLACK, AmbronaUnwinnabilityOracle.get(testCase.finalFen()).quickBlack(),
-            unwinnableQuickBlack, failureList, remainingAcceptedDifferenceSet);
+            unwinnableQuickBlack, failures, remainingAcceptedDifferenceSet);
       }
     }
     for (final AcceptedDifference acceptedDifference : remainingAcceptedDifferenceSet) {
-      failureList.add("Accepted difference was not observed: " + acceptedDifference);
+      failures.add("Accepted difference was not observed: " + acceptedDifference);
     }
-    assertTrue(failureList.isEmpty(), Nulls.join("\n", failureList));
+    assertTrue(failures.isEmpty(), Nulls.join("\n", failures));
   }
 
   private static void check(PgnFen testCase, Side intendedWinner, UnwinnabilityQuickVerdict expected,
-      UnwinnabilityQuickVerdict actual, List<String> failureList,
+      UnwinnabilityQuickVerdict actual, List<String> failures,
       Set<AcceptedDifference> remainingAcceptedDifferenceSet) {
     if (actual != expected) {
       final AcceptedDifference difference = new AcceptedDifference(testCase.pgnName(), intendedWinner, expected, actual,
           testCase.finalFen());
       if (!remainingAcceptedDifferenceSet.remove(difference)) {
-        failureList.add(
+        failures.add(
             testCase.pgnName() + "\t" + intendedWinner + "\t" + expected + "\t" + actual + "\t" + testCase.finalFen());
       }
     }
   }
 
   private static Set<AcceptedDifference> readAcceptedDifferenceSet() {
-    final List<String> lineList = FileUtility.readFileLines(ACCEPTED_DIFFERENCE_PATH);
-    if (lineList.isEmpty() || !"pgnName\tside\texpected\tactual\tfen\treason".equals(Nulls.get(lineList, 0))) {
+    final List<String> lines = FileUtility.readFileLines(ACCEPTED_DIFFERENCE_PATH);
+    if (lines.isEmpty() || !"pgnName\tside\texpected\tactual\tfen\treason".equals(Nulls.get(lines, 0))) {
       throw new ProgrammingMistakeException("Unexpected quick unwinnability accepted-differences header");
     }
 
     final Set<AcceptedDifference> result = new HashSet<>();
-    for (int i = 1; i < lineList.size(); i++) {
-      final String line = Nulls.get(lineList, i);
+    for (int i = 1; i < lines.size(); i++) {
+      final String line = Nulls.get(lines, i);
       final String[] itemArray = Nulls.split(line, "\t");
       if (itemArray.length != 6) {
         throw new ProgrammingMistakeException("Invalid quick unwinnability accepted-differences row: " + line);

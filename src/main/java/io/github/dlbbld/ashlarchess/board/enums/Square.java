@@ -322,35 +322,35 @@ public enum Square implements Comparable<Square> {
   public static final ImmutableList<ImmutableList<Square>> BLACK_PAWN_TWO_SQUARE_ADVANCE;
 
   static {
-    final List<ImmutableList<Square>> whiteListList = new ArrayList<>();
-    initializeWhite(whiteListList);
-    WHITE_PAWN_TWO_SQUARE_ADVANCE = Nulls.copyOfList(whiteListList);
+    final List<ImmutableList<Square>> whiteSquarePairs = new ArrayList<>();
+    initializeWhite(whiteSquarePairs);
+    WHITE_PAWN_TWO_SQUARE_ADVANCE = Nulls.copyOfList(whiteSquarePairs);
 
-    final List<ImmutableList<Square>> blackListList = new ArrayList<>();
-    initializeBlack(blackListList);
-    BLACK_PAWN_TWO_SQUARE_ADVANCE = Nulls.copyOfList(blackListList);
+    final List<ImmutableList<Square>> blackSquarePairs = new ArrayList<>();
+    initializeBlack(blackSquarePairs);
+    BLACK_PAWN_TWO_SQUARE_ADVANCE = Nulls.copyOfList(blackSquarePairs);
   }
 
-  private static void initializeWhite(List<ImmutableList<Square>> listList) {
-    listList.add(Nulls.listOf(A2, A4));
-    listList.add(Nulls.listOf(B2, B4));
-    listList.add(Nulls.listOf(C2, C4));
-    listList.add(Nulls.listOf(D2, D4));
-    listList.add(Nulls.listOf(E2, E4));
-    listList.add(Nulls.listOf(F2, F4));
-    listList.add(Nulls.listOf(G2, G4));
-    listList.add(Nulls.listOf(H2, H4));
+  private static void initializeWhite(List<ImmutableList<Square>> squarePairs) {
+    squarePairs.add(Nulls.listOf(A2, A4));
+    squarePairs.add(Nulls.listOf(B2, B4));
+    squarePairs.add(Nulls.listOf(C2, C4));
+    squarePairs.add(Nulls.listOf(D2, D4));
+    squarePairs.add(Nulls.listOf(E2, E4));
+    squarePairs.add(Nulls.listOf(F2, F4));
+    squarePairs.add(Nulls.listOf(G2, G4));
+    squarePairs.add(Nulls.listOf(H2, H4));
   }
 
-  private static void initializeBlack(List<ImmutableList<Square>> listList) {
-    listList.add(Nulls.listOf(A7, A5));
-    listList.add(Nulls.listOf(B7, B5));
-    listList.add(Nulls.listOf(C7, C5));
-    listList.add(Nulls.listOf(D7, D5));
-    listList.add(Nulls.listOf(E7, E5));
-    listList.add(Nulls.listOf(F7, F5));
-    listList.add(Nulls.listOf(G7, G5));
-    listList.add(Nulls.listOf(H7, H5));
+  private static void initializeBlack(List<ImmutableList<Square>> squarePairs) {
+    squarePairs.add(Nulls.listOf(A7, A5));
+    squarePairs.add(Nulls.listOf(B7, B5));
+    squarePairs.add(Nulls.listOf(C7, C5));
+    squarePairs.add(Nulls.listOf(D7, D5));
+    squarePairs.add(Nulls.listOf(E7, E5));
+    squarePairs.add(Nulls.listOf(F7, F5));
+    squarePairs.add(Nulls.listOf(G7, G5));
+    squarePairs.add(Nulls.listOf(H7, H5));
   }
 
   private void check() {

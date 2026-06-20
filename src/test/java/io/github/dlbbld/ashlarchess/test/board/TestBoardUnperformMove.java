@@ -63,7 +63,7 @@ class TestBoardUnperformMove {
     int pgnsExercised = 0;
     int movesExercised = 0;
 
-    for (final PgnTestCaseList testCaseList : PgnTestCaseCatalog.getParserIntegrationSmokeList()) {
+    for (final PgnTestCaseList testCaseList : PgnTestCaseCatalog.getParserIntegrationSmokeTests()) {
       for (final PgnFen testCase : testCaseList.list()) {
         logger.info(testCase.pgnName());
         movesExercised += runUnperformContractTest(testCaseList, testCase);

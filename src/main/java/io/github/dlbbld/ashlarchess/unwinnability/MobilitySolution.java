@@ -97,10 +97,10 @@ class MobilitySolution {
 
   public String print() {
 
-    final List<String> lineList = new ArrayList<>();
+    final List<String> lines = new ArrayList<>();
 
-    lineList.add("");
-    lineList.add("Mobility:");
+    lines.add("");
+    lines.add("Mobility:");
 
     for (final PiecePlacement piecePlacement : new TreeSet<>(mobilityMap.keySet())) {
       final Map<Square, VariableState> valuePlacement = Nulls.get(mobilityMap, piecePlacement);
@@ -113,14 +113,14 @@ class MobilitySolution {
       }
       final StringBuilder pieceDescription = new StringBuilder();
       pieceDescription.append(piecePlacement.toString());
-      final String squareList = ListUtility.formatSquares(reachable);
+      final String squares = ListUtility.formatSquares(reachable);
       pieceDescription.append(": ");
-      pieceDescription.append(squareList);
+      pieceDescription.append(squares);
       @SuppressWarnings("null") @NonNull final String string = pieceDescription.toString();
-      lineList.add(string);
+      lines.add(string);
     }
 
-    return ListUtility.toLineSeparatedString(lineList);
+    return ListUtility.toLineSeparatedString(lines);
   }
 
   @Override

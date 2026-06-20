@@ -37,25 +37,25 @@ public final class QueenSanValidateStaticallyStrict {
     for (final Square toSquare : Square.REAL) {
       final Set<EmptyBoardMove> moves = EmptyBoardMoveUtility.calculateNonPawnEmptyBoardMovesTo(PieceType.QUEEN,
           toSquare);
-      final List<Square> fromSquareList = calculateFromSquares(moves);
+      final List<Square> fromSquares = calculateFromSquares(moves);
 
       // file/rank disambiguation
-      for (final Square fromSquare : fromSquareList) {
+      for (final Square fromSquare : fromSquares) {
         appendOnlyMove(set, toSquare, PieceType.QUEEN);
-        if (calculateIsFromFilePossibleOrthogonal(fromSquare, toSquare, fromSquareList)
-            && calculateIsFromFilePossibleDiagonal(fromSquare, toSquare, fromSquareList)) {
+        if (calculateIsFromFilePossibleOrthogonal(fromSquare, toSquare, fromSquares)
+            && calculateIsFromFilePossibleDiagonal(fromSquare, toSquare, fromSquares)) {
           appendMoveWithFile(set, toSquare, fromSquare.getFile(), PieceType.QUEEN);
         }
-        if (calculateIsFromRankPossibleQueen(fromSquare, toSquare, fromSquareList)) {
+        if (calculateIsFromRankPossibleQueen(fromSquare, toSquare, fromSquares)) {
           appendMoveWithRank(set, toSquare, fromSquare.getRank(), PieceType.QUEEN);
         }
       }
 
       // square disambiguation
-      for (final Square fromSquare : fromSquareList) {
+      for (final Square fromSquare : fromSquares) {
         appendOnlyMove(set, toSquare, PieceType.QUEEN);
-        if (calculateIsFromRankPossibleQueen(fromSquare, toSquare, fromSquareList)
-            && calculateHasOtherMovesFromSameRank(fromSquare, fromSquareList)) {
+        if (calculateIsFromRankPossibleQueen(fromSquare, toSquare, fromSquares)
+            && calculateHasOtherMovesFromSameRank(fromSquare, fromSquares)) {
           appendMoveWithFromSquare(set, toSquare, fromSquare, PieceType.QUEEN);
         }
       }
@@ -64,8 +64,8 @@ public final class QueenSanValidateStaticallyStrict {
   }
 
   private static boolean calculateIsFromRankPossibleQueen(Square fromSquare, Square toSquare,
-      List<Square> fromSquareList) {
-    for (final Square otherFromSquare : fromSquareList) {
+      List<Square> fromSquares) {
+    for (final Square otherFromSquare : fromSquares) {
       if (otherFromSquare.getFile() == fromSquare.getFile() && otherFromSquare.getRank() != fromSquare.getRank()
           && (fromSquare.getFile() != toSquare.getFile()
               || calculateIsOppositeVertical(fromSquare, toSquare, otherFromSquare))) {

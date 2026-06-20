@@ -50,22 +50,22 @@ public final class CastlingUtility {
   private CastlingUtility() {
   }
 
-  private static final ImmutableList<Square> WHITE_QUEEN_SIDE_CASTLING_REQUIRED_EMPTY_SQUARE_LIST = Nulls.listOf(
+  private static final ImmutableList<Square> WHITE_QUEEN_SIDE_CASTLING_REQUIRED_EMPTY_SQUARES = Nulls.listOf(
       B1, C1, D1);
 
-  private static final ImmutableList<Square> WHITE_KING_SIDE_CASTLING_REQUIRED_EMPTY_SQUARE_LIST = Nulls.listOf(
+  private static final ImmutableList<Square> WHITE_KING_SIDE_CASTLING_REQUIRED_EMPTY_SQUARES = Nulls.listOf(
       F1, G1);
 
-  private static final ImmutableList<Square> BLACK_QUEEN_SIDE_CASTLING_REQUIRED_EMPTY_SQUARE_LIST = Nulls.listOf(
+  private static final ImmutableList<Square> BLACK_QUEEN_SIDE_CASTLING_REQUIRED_EMPTY_SQUARES = Nulls.listOf(
       B8, C8, D8);
 
-  private static final ImmutableList<Square> BLACK_KING_SIDE_CASTLING_REQUIRED_EMPTY_SQUARE_LIST = Nulls.listOf(
+  private static final ImmutableList<Square> BLACK_KING_SIDE_CASTLING_REQUIRED_EMPTY_SQUARES = Nulls.listOf(
       F8, G8);
 
   private static List<Square> calculateQueenSideCastlingRequiredEmptySquares(Side sideToMove) {
     return switch (sideToMove) {
-      case BLACK -> BLACK_QUEEN_SIDE_CASTLING_REQUIRED_EMPTY_SQUARE_LIST;
-      case WHITE -> WHITE_QUEEN_SIDE_CASTLING_REQUIRED_EMPTY_SQUARE_LIST;
+      case BLACK -> BLACK_QUEEN_SIDE_CASTLING_REQUIRED_EMPTY_SQUARES;
+      case WHITE -> WHITE_QUEEN_SIDE_CASTLING_REQUIRED_EMPTY_SQUARES;
       case NONE -> throw new IllegalArgumentException();
       default -> throw new IllegalArgumentException();
     };
@@ -73,8 +73,8 @@ public final class CastlingUtility {
 
   private static List<Square> calculateKingSideCastlingRequiredEmptySquares(Side sideToMove) {
     return switch (sideToMove) {
-      case BLACK -> BLACK_KING_SIDE_CASTLING_REQUIRED_EMPTY_SQUARE_LIST;
-      case WHITE -> WHITE_KING_SIDE_CASTLING_REQUIRED_EMPTY_SQUARE_LIST;
+      case BLACK -> BLACK_KING_SIDE_CASTLING_REQUIRED_EMPTY_SQUARES;
+      case WHITE -> WHITE_KING_SIDE_CASTLING_REQUIRED_EMPTY_SQUARES;
       case NONE -> throw new IllegalArgumentException();
       default -> throw new IllegalArgumentException();
     };
@@ -501,8 +501,8 @@ public final class CastlingUtility {
     return calculateIsAllEmpty(bitboardPosition, calculateKingSideCastlingRequiredEmptySquares(sideToMove));
   }
 
-  private static boolean calculateIsAllEmpty(BitboardPosition bitboardPosition, List<Square> squareList) {
-    for (final Square square : squareList) {
+  private static boolean calculateIsAllEmpty(BitboardPosition bitboardPosition, List<Square> squares) {
+    for (final Square square : squares) {
       if (!bitboardPosition.isEmpty(square)) {
         return false;
       }

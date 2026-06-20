@@ -43,9 +43,9 @@ class TestUnwinnabilityFullWinnable {
   }
 
   private static List<PgnFen> helpmateFixtures() {
-    final PgnTestCaseList testCaseHavingHelpmateList = PgnTestCaseCatalog
+    final PgnTestCaseList testCasesHavingHelpmate = PgnTestCaseCatalog
         .getTestList(PgnTest.CHA_LICHESS_QUICK_DEPTH_ABOVE_FOUR_WINNABLE_FOR_FLAGGING_WITH_HELPMATE);
-    return testCaseHavingHelpmateList.list();
+    return testCasesHavingHelpmate.list();
   }
 
   private static String calculateCorrespondingLichessGame(String lichessGameHelpmate) {

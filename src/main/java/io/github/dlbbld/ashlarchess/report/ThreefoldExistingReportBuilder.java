@@ -21,10 +21,10 @@ final class ThreefoldExistingReportBuilder {
    * {@code -1} prefix when the repeated position is the initial position. In practice that puts initial-position groups
    * before non-initial groups, then orders the rest by the first played occurrence of each group.
    */
-  static ThreefoldExistingReport build(DynamicPosition initialDynamicPosition, List<MoveRecord> moveRecordList,
+  static ThreefoldExistingReport build(DynamicPosition initialDynamicPosition, List<MoveRecord> moveRecords,
       int threshold) {
 
-    final List<List<MoveRecord>> rawGroups = RepetitionGrouping.calculateRepetitionGroups(moveRecordList, threshold);
+    final List<List<MoveRecord>> rawGroups = RepetitionGrouping.calculateRepetitionGroups(moveRecords, threshold);
     final List<RepetitionGroup> groups = new ArrayList<>();
     for (final List<MoveRecord> rawGroup : rawGroups) {
       final DynamicPosition repeatedPosition = Nulls.getFirst(rawGroup).dynamicPosition();

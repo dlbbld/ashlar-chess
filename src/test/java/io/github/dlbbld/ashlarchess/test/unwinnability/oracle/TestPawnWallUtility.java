@@ -45,10 +45,10 @@ class TestPawnWallUtility {
         Square.D3, Square.D2, Square.G3, Square.G2);
   }
 
-  private static void testAttacking(String fen, Side side, @NonNull Square... expectedSquareList) {
+  private static void testAttacking(String fen, Side side, @NonNull Square... expectedSquares) {
     final Board board = Board.fromFenStrict(fen);
 
-    final Set<Square> expectedSquareSet = new TreeSet<>(Arrays.asList(expectedSquareList));
+    final Set<Square> expectedSquareSet = new TreeSet<>(Arrays.asList(expectedSquares));
     assertEquals(expectedSquareSet, PawnWallGeometricAnalyzer.calculateAttackingSquares(board, side));
   }
 
