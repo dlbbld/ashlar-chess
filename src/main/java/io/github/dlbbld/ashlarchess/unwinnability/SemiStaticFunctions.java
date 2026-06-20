@@ -20,7 +20,7 @@ final class SemiStaticFunctions {
     final Set<PiecePlacement> result = new TreeSet<>();
 
     final Set<Square> adjacentSet = KingDistanceOneFunctions.calculateOrthogonalSquares(s);
-    for (final PiecePlacement piecePlacement : ms.getPiecePlacementSet()) {
+    for (final PiecePlacement piecePlacement : ms.getPiecePlacements()) {
       if (piecePlacement.side() == c) {
         final Set<Square> regionPiece = SemiStaticFunctions.attackedRegion(piecePlacement, ms);
         if (!SetUtility.isDisjoint(regionPiece, adjacentSet)) {
@@ -51,7 +51,7 @@ final class SemiStaticFunctions {
     final Set<PiecePlacement> result = new TreeSet<>();
 
     final Set<Square> adjacentSet = KingDistanceOneFunctions.calculateOrthogonalSquares(s);
-    for (final PiecePlacement piecePlacement : ms.getPiecePlacementSet()) {
+    for (final PiecePlacement piecePlacement : ms.getPiecePlacements()) {
       if (piecePlacement.side() != c && piecePlacement.pieceType() != PieceType.KING) {
         final Set<Square> regionPiece = SemiStaticFunctions.region(piecePlacement, ms);
         if (!SetUtility.isDisjoint(regionPiece, adjacentSet)) {
@@ -66,7 +66,7 @@ final class SemiStaticFunctions {
     final Set<PiecePlacement> result = new TreeSet<>();
 
     final Set<Square> regionKing = SemiStaticFunctions.region(intendedLosersKing, ms);
-    for (final PiecePlacement piecePlacement : ms.getPiecePlacementSet()) {
+    for (final PiecePlacement piecePlacement : ms.getPiecePlacements()) {
       if (piecePlacement.side() != intendedLosersKing.side()) {
         final Set<Square> regionPiece = SemiStaticFunctions.region(piecePlacement, ms);
         if (!SetUtility.isDisjoint(regionPiece, regionKing)) {

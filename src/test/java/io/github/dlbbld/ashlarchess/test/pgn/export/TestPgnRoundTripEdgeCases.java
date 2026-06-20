@@ -82,8 +82,8 @@ class TestPgnRoundTripEdgeCases {
     final LenientPgnParserValidationResult reparseResult = LenientPgnParser.validateText(exported);
     assertTrue(reparseResult.isValid(), () -> "expected valid re-parse; got: " + reparseResult.message());
     final PgnGame reparsed = pgnGameOf(reparseResult);
-    assertEquals(parsed.tagList(), reparsed.tagList());
-    assertTrue(reparsed.moveList().isEmpty());
+    assertEquals(parsed.tags(), reparsed.tags());
+    assertTrue(reparsed.moves().isEmpty());
     assertEquals(null, reparsed.terminationMarker());
   }
 

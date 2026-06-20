@@ -24,7 +24,7 @@ final class ThreefoldExistingReportBuilder {
   static ThreefoldExistingReport build(DynamicPosition initialDynamicPosition, List<MoveRecord> moveRecordList,
       int threshold) {
 
-    final List<List<MoveRecord>> rawGroups = RepetitionGrouping.calculateRepetitionListList(moveRecordList, threshold);
+    final List<List<MoveRecord>> rawGroups = RepetitionGrouping.calculateRepetitionGroups(moveRecordList, threshold);
     final List<RepetitionGroup> groups = new ArrayList<>();
     for (final List<MoveRecord> rawGroup : rawGroups) {
       final DynamicPosition repeatedPosition = Nulls.getFirst(rawGroup).dynamicPosition();

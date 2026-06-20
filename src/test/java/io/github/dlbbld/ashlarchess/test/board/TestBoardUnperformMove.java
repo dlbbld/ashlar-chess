@@ -90,7 +90,7 @@ class TestBoardUnperformMove {
     final Board actual = new Board(pgnGame.startFen());
 
     int moveIndex = 0;
-    for (final PgnMove move : pgnGame.moveList()) {
+    for (final PgnMove move : pgnGame.moves()) {
       moveIndex++;
       final String san = move.san();
 

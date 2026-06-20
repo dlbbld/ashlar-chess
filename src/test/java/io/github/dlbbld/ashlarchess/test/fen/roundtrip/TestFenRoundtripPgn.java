@@ -55,7 +55,7 @@ class TestFenRoundtripPgn {
     final PgnGame pgnGame = PgnCacheForStrictPgnParserTestCases.getPgn(folderPath, pgnName);
 
     final Board board = new Board(pgnGame.startFen());
-    for (final PgnMove move : pgnGame.moveList()) {
+    for (final PgnMove move : pgnGame.moves()) {
       board.moveStrict(move.san());
     }
     final List<MoveSpecification> moveList = board.getPerformedMoveSpecifications();

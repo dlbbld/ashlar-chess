@@ -66,7 +66,7 @@ class TestReadMe {
     board.moveStrict("a3");
 
     assertEquals("Spring Classic", tagValue(pgnGame, "Event"));
-    assertEquals(6, pgnGame.moveList().size());
+    assertEquals(6, pgnGame.moves().size());
   }
 
   @Test
@@ -109,7 +109,7 @@ class TestReadMe {
     final Board board = PgnUtility.toBoard(pgnGame);
     board.moveStrict("a3");
 
-    assertEquals(6, pgnGame.moveList().size());
+    assertEquals(6, pgnGame.moves().size());
   }
 
   @Test
@@ -219,7 +219,7 @@ class TestReadMe {
   }
 
   private static String tagValue(PgnGame pgnGame, String name) {
-    for (final Tag tag : pgnGame.tagList()) {
+    for (final Tag tag : pgnGame.tags()) {
       if (tag.name().equals(name)) {
         return tag.value();
       }

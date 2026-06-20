@@ -72,7 +72,7 @@ class TestLegalMovesAgainstCreatedUsingValidation {
     final Board board = new Board(pgnGame.startFen());
     checkLegalMoves(board);
 
-    for (final PgnMove move : pgnGame.moveList()) {
+    for (final PgnMove move : pgnGame.moves()) {
       board.moveStrict(move.san());
       checkLegalMoves(board);
     }

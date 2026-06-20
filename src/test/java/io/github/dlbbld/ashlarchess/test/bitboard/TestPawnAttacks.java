@@ -42,7 +42,7 @@ class TestPawnAttacks {
         continue;
       }
       final Set<Square> bitboardAttacks = BitboardPositionUtility
-          .toSquareSet(PawnAttacks.attacks(fromSquare, Side.WHITE));
+          .toSquares(PawnAttacks.attacks(fromSquare, Side.WHITE));
       final Set<Square> referenceAttacks = PawnDiagonalSquares.getPawnDiagonalSquares(Side.WHITE, fromSquare);
       assertEquals(referenceAttacks, bitboardAttacks, "white pawn attacks from " + fromSquare.getName());
     }
@@ -56,7 +56,7 @@ class TestPawnAttacks {
         continue;
       }
       final Set<Square> bitboardAttacks = BitboardPositionUtility
-          .toSquareSet(PawnAttacks.attacks(fromSquare, Side.BLACK));
+          .toSquares(PawnAttacks.attacks(fromSquare, Side.BLACK));
       final Set<Square> referenceAttacks = PawnDiagonalSquares.getPawnDiagonalSquares(Side.BLACK, fromSquare);
       assertEquals(referenceAttacks, bitboardAttacks, "black pawn attacks from " + fromSquare.getName());
     }
@@ -86,7 +86,7 @@ class TestPawnAttacks {
     long remaining = pawns;
     while (remaining != 0L) {
       final Square fromSquare = Nulls.get(Square.REAL, Long.numberOfTrailingZeros(remaining));
-      final Set<Square> bitboardAttacks = BitboardPositionUtility.toSquareSet(PawnAttacks.attacks(fromSquare, side));
+      final Set<Square> bitboardAttacks = BitboardPositionUtility.toSquares(PawnAttacks.attacks(fromSquare, side));
       final Set<Square> referenceAttacks = PawnDiagonalSquares.getPawnDiagonalSquares(side, fromSquare);
       assertEquals(referenceAttacks, bitboardAttacks,
           side + " pawn attacks from " + fromSquare.getName() + " in fixture " + testCase.pgnName());

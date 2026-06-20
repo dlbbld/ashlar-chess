@@ -53,7 +53,7 @@ class TestBitboardPositionPins {
 
   private static void assertSideAgrees(StaticPosition staticPosition, BitboardPosition bitboardPosition, Side side,
       PgnFen testCase) {
-    final Set<Square> bitboardPinned = BitboardPositionUtility.toSquareSet(bitboardPosition.pinnedPieces(side));
+    final Set<Square> bitboardPinned = BitboardPositionUtility.toSquares(bitboardPosition.pinnedPieces(side));
     final Set<Square> referencePinned = referencePinnedPieces(staticPosition, side);
     assertEquals(referencePinned, bitboardPinned, side + " pinnedPieces in fixture " + testCase.pgnName());
   }

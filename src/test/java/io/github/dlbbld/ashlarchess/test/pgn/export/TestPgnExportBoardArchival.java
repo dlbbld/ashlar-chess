@@ -53,7 +53,7 @@ class TestPgnExportBoardArchival {
 
     // Sanity precondition: the Board path itself does not fabricate STR. Archival output is the only place STR
     // gets filled.
-    assertTrue(boardPgnGame.tagList().isEmpty());
+    assertTrue(boardPgnGame.tags().isEmpty());
 
     final String archivalOutput = PgnCreate.toPgnString(boardPgnGame, WriteMode.ARCHIVAL);
 
@@ -140,7 +140,7 @@ class TestPgnExportBoardArchival {
     assertTrue(semanticOutput.contains("*"));
 
     // And the tagList check that no fabrication slipped into the model on this path.
-    assertTrue(!TagUtility.hasAllSevenTagRosterTags(pgnGame.tagList()));
+    assertTrue(!TagUtility.hasAllSevenTagRosterTags(pgnGame.tags()));
   }
 
   @SuppressWarnings("static-method")

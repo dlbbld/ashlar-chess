@@ -29,7 +29,7 @@ A surface-only release. It retires the `HalfMove` concept, replaces the "halfmov
 PGN model:
 
 - `PgnHalfMove` renamed to `PgnMove`.
-- `PgnGame.halfMoveList()` renamed to `PgnGame.moveList()` (record component and accessor).
+- `PgnGame.halfMoveList()` renamed to `PgnGame.moves()`, and `PgnGame.tagList()` renamed to `PgnGame.tags()` (record components and accessors) — domain plurals over the implementation-type `*List` suffix.
 
 `Board`:
 
@@ -38,13 +38,25 @@ PGN model:
   FEN and `Board.fromFenLenient(String)` for recovered/tolerant FEN. `Board(Fen)` remains for already-parsed FEN
   values. This makes FEN construction match the library's strict/lenient parser vocabulary instead of hiding strict
   parsing behind a `String` constructor.
-- Removed `getHalfMoveList()` and `getLastHalfMove()`; the played-move list is no longer exposed on `Board`. It is rebuilt inside the `report` layer, and `PgnCreate.createPgnGame(board).moveList()` returns the played moves as `PgnMove`s.
+- Removed `getHalfMoveList()` and `getLastHalfMove()`; the played-move list is no longer exposed on `Board`. It is rebuilt inside the `report` layer, and `PgnCreate.createPgnGame(board).moves()` returns the played moves as `PgnMove`s.
 - `HalfMove` is gone from the public API (its replacement, `MoveRecord`, is package-private to `report`).
 - `isUnwinnableQuick(Side)` / `isUnwinnableFull(Side)` renamed to `unwinnableQuick(Side)` / `unwinnableFull(Side)`, matching the `UnwinnableQuickAnalyzer.unwinnableQuick(...)` / `UnwinnableFullAnalyzer.unwinnableFull(...)` engines they delegate to. The `Board` methods return the verdict directly; the analyzers return the full analysis.
 - `move(MoveSpecification)`, `movesStrict(String...)`, and `movesLenient(String...)` now return `void` instead of `boolean`. The discarded return was always `true` (failure is signalled by exception), so it carried no information.
 - `calculateFiftyMoveRuleClaimRights()` / `calculateThreefoldRepetitionRuleClaimRights()` renamed to `fiftyMoveRuleClaimRights()` / `threefoldRepetitionRuleClaimRights()` — dropping the implementation-flavoured `calculate` prefix in favour of domain nouns, matching the `unwinnableQuick` / `deadPositionQuick` accessors.
 - Removed `calculateInsufficientMaterial()` and the four-way `common.enums.InsufficientMaterial` enum (`NONE` / `WHITE_ONLY` / `BLACK_ONLY` / `BOTH`). It was fully derivable from — and read confusingly beside — the side-specific booleans; use `isInsufficientMaterial()` and `isInsufficientMaterial(Side)`.
 - Collection accessors use domain plurals instead of the implementation-type `*List` suffix, and the notation variants gain `As`: `getPossibleMoveSpecificationList()` → `getLegalMoveSpecifications()`, `getPerformedMoveSpecificationList()` → `getPerformedMoveSpecifications()`, `getPerformedLegalMoveList()` → `getPerformedLegalMoves()`, `getLegalMovesSan()` → `getLegalMovesAsSan()`, `getLegalMovesUci()` → `getLegalMovesAsUci()`, and `getSanList()` → `getPerformedMovesAsSan()` (the performed-move SAN history, mirroring `getLegalMovesAsSan()`). `getLegalMoves()` is already a domain plural and is unchanged, as are the single-move `getSan()` / `getLan()`.
+
+Collection / `*List` naming (library-wide final pass):
+
+- `SquareUtility.getPromotionRankList(Side)` → `getPromotionRankSquares(Side)`; `SquareUtility.calculateEnPassantCaptureTargetSquareList(Side)` → `getEnPassantCaptureTargetSquares(Side)`.
+- `UciMoveValidationUtility.getUciMoveList()` → `getUciMoves()`.
+- `MoveSuffixAnnotation.calculateValueList()`, `ResultTagValue.calculateList()`, and `SetUpTagValue.calculateList()` → `allowedValuesText()` — each returns the allowed-values *text*, not a list.
+- `BitboardPositionUtility.toSquareSet(long)` → `toSquares(long)` (returns `ImmutableSet<Square>` — the return type carries the set-ness, the name carries the domain).
+- `MobilitySolution.getPiecePlacementSet()` → `getPiecePlacements()`.
+- `ListUtility.calculateCommaSeparatedList` / `calculateSpaceSeparatedList` / `calculateLineSeparatedList` → `toCommaSeparatedString` / `toSpaceSeparatedString` / `toLineSeparatedString`; `ListUtility.calculateSquareList(Set<Square>)` → `formatSquares(...)` — these return a `String`, so the `List` suffix was misleading.
+- Removed `ImmutableUtility.constructListSquare(Square...)` — a thin `ImmutableList` adapter redundant with `Nulls.listOf(...)`; call sites use `Nulls.listOf(...)`.
+
+Kept deliberately: `Nulls`' Java-collection adapters (`copyOfList`, `asList`, `subList`, `listOf`, …), `PgnCreate.toPgnLines`, and the PGN parsers' `parseLines(...)` — there "list" / "lines" is the genuine Java-adapter or domain concept, not an implementation-type leak.
 
 `Reporter`:
 

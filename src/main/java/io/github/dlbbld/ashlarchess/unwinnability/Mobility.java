@@ -315,7 +315,7 @@ final class Mobility {
     final Side candidateOppositeSide = candidateSide.getOppositeSide();
     final Square candidateToSquare = candidateMobility.toSquare();
 
-    for (final PiecePlacement checkNonPawn : mobility.getPiecePlacementSet()) {
+    for (final PiecePlacement checkNonPawn : mobility.getPiecePlacements()) {
       if (checkNonPawn.side() == candidateOppositeSide && checkNonPawn.squareOriginal() == candidateToSquare
           && checkNonPawn.pieceType() != PieceType.PAWN && clearability.get(checkNonPawn) == VariableState.ZERO) {
         return true;
@@ -333,7 +333,7 @@ final class Mobility {
     final Side candidateOppositeSide = candidateSide.getOppositeSide();
     final Square candidateToSquare = candidateMobility.toSquare();
 
-    for (final PiecePlacement checkPawn : mobility.getPiecePlacementSet()) {
+    for (final PiecePlacement checkPawn : mobility.getPiecePlacements()) {
       if (checkPawn.side() == candidateOppositeSide && checkPawn.squareOriginal() == candidateToSquare
           && checkPawn.pieceType() == PieceType.PAWN) {
 
@@ -407,7 +407,7 @@ final class Mobility {
       return true;
     }
 
-    for (final PiecePlacement attacker : MobilityFunctions.attackers(mobility.getPiecePlacementSet(),
+    for (final PiecePlacement attacker : MobilityFunctions.attackers(mobility.getPiecePlacements(),
         candidateToSquare)) {
       if (attacker.side() != candidateSide && clearability.get(attacker) != VariableState.ONE) {
         return false;
@@ -425,7 +425,7 @@ final class Mobility {
     // Not self-capture. A piece must be cleared from a square before other of the same
     // color can move to it:
     // all pieces
-    for (final PiecePlacement checkPiecePlacement : mobility.getPiecePlacementSet()) {
+    for (final PiecePlacement checkPiecePlacement : mobility.getPiecePlacements()) {
       if (checkPiecePlacement != candidatePiecePlacement && checkPiecePlacement.side() == candidateSide
           && checkPiecePlacement.squareOriginal() == candidateToSquare
           && clearability.get(checkPiecePlacement) == VariableState.ZERO) {

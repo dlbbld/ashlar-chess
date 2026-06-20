@@ -72,7 +72,7 @@ public final class SemiStaticOracleFormatter {
   }
 
   private static PiecePlacement calculateKing(Side side, MobilitySolution mobilitySolution) {
-    for (final PiecePlacement piecePlacement : mobilitySolution.getPiecePlacementSet()) {
+    for (final PiecePlacement piecePlacement : mobilitySolution.getPiecePlacements()) {
       if (piecePlacement.side() == side && piecePlacement.pieceType() == PieceType.KING) {
         return piecePlacement;
       }
@@ -82,7 +82,7 @@ public final class SemiStaticOracleFormatter {
 
   private static PiecePlacement calculatePiecePlacement(PieceType pieceType, Side side, Square square,
       MobilitySolution mobilitySolution) {
-    for (final PiecePlacement piecePlacement : mobilitySolution.getPiecePlacementSet()) {
+    for (final PiecePlacement piecePlacement : mobilitySolution.getPiecePlacements()) {
       if (piecePlacement.pieceType() == pieceType && piecePlacement.side() == side
           && piecePlacement.squareOriginal() == square) {
         return piecePlacement;

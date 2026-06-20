@@ -1007,10 +1007,10 @@ class TestLegalMovesForGames {
   private static void generateGame(PgnTest pgnTest, String pgnName) {
     final PgnGame pgnGame = PgnCacheForStrictPgnParserTestCases.getPgn(pgnTest.getFolderPath(), pgnName);
     final Board board = new Board();
-    for (final PgnMove move : pgnGame.moveList()) {
+    for (final PgnMove move : pgnGame.moves()) {
       board.moveStrict(move.san());
       final String san = board.getSan();
-      final String legalMoveList = ListUtility.calculateCommaSeparatedList(new ArrayList<>(board.getLegalMovesAsSan()));
+      final String legalMoveList = ListUtility.toCommaSeparatedString(new ArrayList<>(board.getLegalMovesAsSan()));
       final String output = "checkLegalMoves(board, \"" + san + "\", \"" + legalMoveList + "\");";
       System.out.println(output);
     }

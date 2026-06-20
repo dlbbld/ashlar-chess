@@ -156,7 +156,7 @@ public final class EmptyBoardMoveUtility {
     return emptyBoardMovesFromSet;
   }
 
-  private static Set<EmptyBoardMove> calculateEmptyBoardMovesFromList(Square fromSquare, List<Square> toQuareList) {
+  private static Set<EmptyBoardMove> calculateEmptyBoardMovesFrom(Square fromSquare, List<Square> toQuareList) {
     final Set<EmptyBoardMove> emptyBoardMovesFromList = new TreeSet<>();
     for (final Square toSquare : toQuareList) {
       emptyBoardMovesFromList.add(new EmptyBoardMove(fromSquare, toSquare));
@@ -167,25 +167,25 @@ public final class EmptyBoardMoveUtility {
   private static Set<EmptyBoardMove> calculateOrthogonalEmptyBoardMoves(Square fromSquare,
       OrthogonalRange toQuareRange) {
     final Set<EmptyBoardMove> emptyBoardMovesFromListList = new TreeSet<>(
-        calculateEmptyBoardMovesFromList(fromSquare, toQuareRange.squareListNorth()));
+        calculateEmptyBoardMovesFrom(fromSquare, toQuareRange.squareListNorth()));
 
-    emptyBoardMovesFromListList.addAll(calculateEmptyBoardMovesFromList(fromSquare, toQuareRange.squareListEast()));
-    emptyBoardMovesFromListList.addAll(calculateEmptyBoardMovesFromList(fromSquare, toQuareRange.squareListSouth()));
-    emptyBoardMovesFromListList.addAll(calculateEmptyBoardMovesFromList(fromSquare, toQuareRange.squareListWest()));
+    emptyBoardMovesFromListList.addAll(calculateEmptyBoardMovesFrom(fromSquare, toQuareRange.squareListEast()));
+    emptyBoardMovesFromListList.addAll(calculateEmptyBoardMovesFrom(fromSquare, toQuareRange.squareListSouth()));
+    emptyBoardMovesFromListList.addAll(calculateEmptyBoardMovesFrom(fromSquare, toQuareRange.squareListWest()));
 
     return emptyBoardMovesFromListList;
   }
 
   private static Set<EmptyBoardMove> calculateDiagonalEmptyBoardMoves(Square fromSquare, DiagonalRange toQuareRange) {
     final Set<EmptyBoardMove> emptyBoardMovesFromListList = new TreeSet<>(
-        calculateEmptyBoardMovesFromList(fromSquare, toQuareRange.squareListNorthEast()));
+        calculateEmptyBoardMovesFrom(fromSquare, toQuareRange.squareListNorthEast()));
 
     emptyBoardMovesFromListList
-        .addAll(calculateEmptyBoardMovesFromList(fromSquare, toQuareRange.squareListSouthEast()));
+        .addAll(calculateEmptyBoardMovesFrom(fromSquare, toQuareRange.squareListSouthEast()));
     emptyBoardMovesFromListList
-        .addAll(calculateEmptyBoardMovesFromList(fromSquare, toQuareRange.squareListSouthWest()));
+        .addAll(calculateEmptyBoardMovesFrom(fromSquare, toQuareRange.squareListSouthWest()));
     emptyBoardMovesFromListList
-        .addAll(calculateEmptyBoardMovesFromList(fromSquare, toQuareRange.squareListNorthWest()));
+        .addAll(calculateEmptyBoardMovesFrom(fromSquare, toQuareRange.squareListNorthWest()));
 
     return emptyBoardMovesFromListList;
   }

@@ -153,10 +153,10 @@ public final class StrictPgnParser {
     final MovetextOutcome movetext = parseMovetext(startFen, resultTagValue);
     expectOnlyTrailingWhitespaceUntilEof();
 
-    validateBoardPerLastMove(startFen, movetext.moveList());
+    validateBoardPerLastMove(startFen, movetext.moves());
 
     return new PgnGame(Nulls.copyOfList(tagList), startFen, movetext.pregameCommentary(),
-        Nulls.copyOfList(movetext.moveList()), resultTagValue);
+        Nulls.copyOfList(movetext.moves()), resultTagValue);
   }
 
   // -------------------------------------------------------------------------------------------------
@@ -291,7 +291,7 @@ public final class StrictPgnParser {
     if (!ResultTagValue.exists(value)) {
       throw new StrictPgnParserValidationException(StrictPgnParserValidationProblem.TAG_RESULT_VALUE_INVALID,
           SanValidationProblem.NONE, "The " + StandardTag.RESULT.getName() + " tag value must exactly match one \""
-              + ResultTagValue.calculateList() + "\".");
+              + ResultTagValue.allowedValuesText() + "\".");
     }
     return ResultTagValue.parse(value);
   }
@@ -305,7 +305,7 @@ public final class StrictPgnParser {
       if (!SetUpTagValue.exists(setUpStr)) {
         throw new StrictPgnParserValidationException(StrictPgnParserValidationProblem.TAG_SET_UP_VALUE_INVALID,
             SanValidationProblem.NONE, "The " + StandardTag.SET_UP.getName() + " tag value must exactly match one \""
-                + SetUpTagValue.calculateList() + "\".");
+                + SetUpTagValue.allowedValuesText() + "\".");
       }
       setUpTagValue = SetUpTagValue.parse(setUpStr);
     }
@@ -349,9 +349,9 @@ public final class StrictPgnParser {
   // Movetext section
   // -------------------------------------------------------------------------------------------------
 
-  private record MovetextOutcome(List<PgnMove> moveList, PgnCommentary pregameCommentary) {
+  private record MovetextOutcome(List<PgnMove> moves, PgnCommentary pregameCommentary) {
     private MovetextOutcome {
-      moveList = Nulls.copyOfList(moveList);
+      moves = Nulls.copyOfList(moves);
     }
   }
 
@@ -563,7 +563,7 @@ public final class StrictPgnParser {
       if (!MoveSuffixAnnotation.exists(suffixToken.text())) {
         throw movetextError(StrictPgnParserValidationProblem.MOVETEXT_MOVE_SUFFIX_ANNOTATION_INVALID,
             "An invalid move annotation suffix of \"" + suffixToken.text() + "\" was found. Valid values are \""
-                + MoveSuffixAnnotation.calculateValueList() + "\".");
+                + MoveSuffixAnnotation.allowedValuesText() + "\".");
       }
       suffix = MoveSuffixAnnotation.parse(suffixToken.text());
     }

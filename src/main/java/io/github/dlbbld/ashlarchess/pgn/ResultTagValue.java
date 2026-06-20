@@ -32,12 +32,12 @@ public enum ResultTagValue {
     return sideWon;
   }
 
-  public static String calculateList() {
+  public static String allowedValuesText() {
     final List<String> list = new ArrayList<>();
     for (final ResultTagValue resultTagValue : ResultTagValue.values()) {
       list.add(resultTagValue.getValue());
     }
-    return ListUtility.calculateCommaSeparatedList(list);
+    return ListUtility.toCommaSeparatedString(list);
   }
 
   public static boolean exists(String value) {

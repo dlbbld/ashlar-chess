@@ -70,7 +70,7 @@ class TestPawnCaptures {
       final int squareOrdinal = Long.numberOfTrailingZeros(remaining);
       final Square fromSquare = Nulls.get(Square.REAL, squareOrdinal);
       final Set<Square> bitboardCaptures = BitboardPositionUtility
-          .toSquareSet(PawnMoves.captures(squareOrdinal, opponentPieces, enPassantBit, side));
+          .toSquares(PawnMoves.captures(squareOrdinal, opponentPieces, enPassantBit, side));
       final Set<Square> referenceCaptures = referenceCaptures(staticPosition, fromSquare, side, enPassantSquare);
       assertEquals(referenceCaptures, bitboardCaptures,
           side + " pawn captures from " + fromSquare.getName() + " in fixture " + testCase.pgnName());

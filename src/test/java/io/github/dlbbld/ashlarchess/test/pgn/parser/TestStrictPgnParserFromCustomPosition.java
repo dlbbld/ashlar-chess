@@ -69,7 +69,7 @@ class TestStrictPgnParserFromCustomPosition {
 
     final Board boardFromFen = new Board(pgnGame.startFen());
 
-    for (final PgnMove move : pgnGame.moveList()) {
+    for (final PgnMove move : pgnGame.moves()) {
       boardFromFen.moveStrict(move.san());
     }
 

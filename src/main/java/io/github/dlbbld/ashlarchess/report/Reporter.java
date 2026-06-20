@@ -96,7 +96,7 @@ public final class Reporter {
 
   private static void appendLines(List<String> output, List<List<String>> renderedLines) {
     for (final List<String> resultAsLine : renderedLines) {
-      output.add(ListUtility.calculateSpaceSeparatedList(resultAsLine));
+      output.add(ListUtility.toSpaceSeparatedString(resultAsLine));
     }
   }
 

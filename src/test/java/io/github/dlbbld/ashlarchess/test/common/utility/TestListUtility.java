@@ -25,7 +25,7 @@ class TestListUtility {
 
     final List<String> lines = Nulls.asList("line 1", "", "line 3");
 
-    assertEquals(expected, ListUtility.calculateLineSeparatedList(lines));
+    assertEquals(expected, ListUtility.toLineSeparatedString(lines));
   }
 
   @SuppressWarnings("static-method")

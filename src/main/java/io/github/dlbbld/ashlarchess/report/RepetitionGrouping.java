@@ -14,7 +14,7 @@ final class RepetitionGrouping {
   private RepetitionGrouping() {
   }
 
-  static List<List<MoveRecord>> calculateRepetitionListList(List<MoveRecord> moveRecordList,
+  static List<List<MoveRecord>> calculateRepetitionGroups(List<MoveRecord> moveRecordList,
       int countRepetitionThreshold) {
 
     final List<List<MoveRecord>> list = new ArrayList<>();

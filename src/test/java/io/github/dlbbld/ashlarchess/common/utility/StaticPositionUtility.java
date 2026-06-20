@@ -5,7 +5,6 @@ package io.github.dlbbld.ashlarchess.common.utility;
 
 import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.KING;
 import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.PAWN;
-import static io.github.dlbbld.ashlarchess.common.utility.ImmutableUtility.constructListSquare;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,20 +42,20 @@ public final class StaticPositionUtility {
 
   static {
     final List<ImmutableList<Square>> list = new ArrayList<>();
-    list.add(constructListSquare(Square.A5, Square.B6));
-    list.add(constructListSquare(Square.B5, Square.C6));
-    list.add(constructListSquare(Square.C5, Square.D6));
-    list.add(constructListSquare(Square.D5, Square.E6));
-    list.add(constructListSquare(Square.E5, Square.F6));
-    list.add(constructListSquare(Square.F5, Square.G6));
-    list.add(constructListSquare(Square.G5, Square.H6));
-    list.add(constructListSquare(Square.B5, Square.A6));
-    list.add(constructListSquare(Square.C5, Square.B6));
-    list.add(constructListSquare(Square.D5, Square.C6));
-    list.add(constructListSquare(Square.E5, Square.D6));
-    list.add(constructListSquare(Square.F5, Square.E6));
-    list.add(constructListSquare(Square.G5, Square.F6));
-    list.add(constructListSquare(Square.H5, Square.G6));
+    list.add(Nulls.listOf(Square.A5, Square.B6));
+    list.add(Nulls.listOf(Square.B5, Square.C6));
+    list.add(Nulls.listOf(Square.C5, Square.D6));
+    list.add(Nulls.listOf(Square.D5, Square.E6));
+    list.add(Nulls.listOf(Square.E5, Square.F6));
+    list.add(Nulls.listOf(Square.F5, Square.G6));
+    list.add(Nulls.listOf(Square.G5, Square.H6));
+    list.add(Nulls.listOf(Square.B5, Square.A6));
+    list.add(Nulls.listOf(Square.C5, Square.B6));
+    list.add(Nulls.listOf(Square.D5, Square.C6));
+    list.add(Nulls.listOf(Square.E5, Square.D6));
+    list.add(Nulls.listOf(Square.F5, Square.E6));
+    list.add(Nulls.listOf(Square.G5, Square.F6));
+    list.add(Nulls.listOf(Square.H5, Square.G6));
     WHITE_EN_PASSANT_CAPTURE_FROM_TO = Nulls.copyOfList(list);
   }
 
@@ -64,20 +63,20 @@ public final class StaticPositionUtility {
 
   static {
     final List<ImmutableList<Square>> list = new ArrayList<>();
-    list.add(constructListSquare(Square.A4, Square.B3));
-    list.add(constructListSquare(Square.B4, Square.C3));
-    list.add(constructListSquare(Square.C4, Square.D3));
-    list.add(constructListSquare(Square.D4, Square.E3));
-    list.add(constructListSquare(Square.E4, Square.F3));
-    list.add(constructListSquare(Square.F4, Square.G3));
-    list.add(constructListSquare(Square.G4, Square.H3));
-    list.add(constructListSquare(Square.B4, Square.A3));
-    list.add(constructListSquare(Square.C4, Square.B3));
-    list.add(constructListSquare(Square.D4, Square.C3));
-    list.add(constructListSquare(Square.E4, Square.D3));
-    list.add(constructListSquare(Square.F4, Square.E3));
-    list.add(constructListSquare(Square.G4, Square.F3));
-    list.add(constructListSquare(Square.H4, Square.G3));
+    list.add(Nulls.listOf(Square.A4, Square.B3));
+    list.add(Nulls.listOf(Square.B4, Square.C3));
+    list.add(Nulls.listOf(Square.C4, Square.D3));
+    list.add(Nulls.listOf(Square.D4, Square.E3));
+    list.add(Nulls.listOf(Square.E4, Square.F3));
+    list.add(Nulls.listOf(Square.F4, Square.G3));
+    list.add(Nulls.listOf(Square.G4, Square.H3));
+    list.add(Nulls.listOf(Square.B4, Square.A3));
+    list.add(Nulls.listOf(Square.C4, Square.B3));
+    list.add(Nulls.listOf(Square.D4, Square.C3));
+    list.add(Nulls.listOf(Square.E4, Square.D3));
+    list.add(Nulls.listOf(Square.F4, Square.E3));
+    list.add(Nulls.listOf(Square.G4, Square.F3));
+    list.add(Nulls.listOf(Square.H4, Square.G3));
     BLACK_EN_PASSANT_CAPTURE_FROM_TO = Nulls.copyOfList(list);
   }
 
@@ -175,7 +174,7 @@ public final class StaticPositionUtility {
     if (movingPiece == Piece.NONE || movingPiece.getPieceType() != PAWN) {
       return false;
     }
-    final ImmutableList<Square> fromTo = constructListSquare(moveSpecification.fromSquare(),
+    final ImmutableList<Square> fromTo = Nulls.listOf(moveSpecification.fromSquare(),
         moveSpecification.toSquare());
     return switch (movingPiece.getSide()) {
       case WHITE -> WHITE_EN_PASSANT_CAPTURE_FROM_TO.contains(fromTo)

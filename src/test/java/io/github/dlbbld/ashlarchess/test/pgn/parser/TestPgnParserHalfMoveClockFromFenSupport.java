@@ -70,7 +70,7 @@ final class TestPgnParserHalfMoveClockFromFenSupport {
         final PgnGame pgnGame = parse.apply(bucket.getFolderPath(), pgnName);
 
         final Board board = new Board(pgnGame.startFen());
-        for (final PgnMove move : pgnGame.moveList()) {
+        for (final PgnMove move : pgnGame.moves()) {
           board.moveStrict(move.san());
         }
 

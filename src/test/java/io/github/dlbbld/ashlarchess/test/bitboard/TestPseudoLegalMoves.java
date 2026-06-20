@@ -61,7 +61,7 @@ class TestPseudoLegalMoves {
     while (remaining != 0L) {
       final Square fromSquare = Nulls.get(Square.REAL, Long.numberOfTrailingZeros(remaining));
       final Set<Square> bitboardTargets = BitboardPositionUtility
-          .toSquareSet(KnightMoves.targets(fromSquare, ownPieces));
+          .toSquares(KnightMoves.targets(fromSquare, ownPieces));
       final Set<Square> referenceTargets = withoutOwnPieces(KnightEmptyBoardSquares.getKnightSquares(fromSquare),
           staticPosition, side);
       assertEquals(referenceTargets, bitboardTargets,
@@ -92,7 +92,7 @@ class TestPseudoLegalMoves {
     long remaining = kings;
     while (remaining != 0L) {
       final Square fromSquare = Nulls.get(Square.REAL, Long.numberOfTrailingZeros(remaining));
-      final Set<Square> bitboardTargets = BitboardPositionUtility.toSquareSet(KingMoves.targets(fromSquare, ownPieces));
+      final Set<Square> bitboardTargets = BitboardPositionUtility.toSquares(KingMoves.targets(fromSquare, ownPieces));
       final Set<Square> referenceTargets = withoutOwnPieces(KingNonCastlingEmptyBoardSquares.getKingSquares(fromSquare),
           staticPosition, side);
       assertEquals(referenceTargets, bitboardTargets,
@@ -126,7 +126,7 @@ class TestPseudoLegalMoves {
       final int squareOrdinal = Long.numberOfTrailingZeros(remaining);
       final Square fromSquare = Nulls.get(Square.REAL, squareOrdinal);
       final Set<Square> bitboardTargets = BitboardPositionUtility
-          .toSquareSet(BishopMoves.targets(squareOrdinal, occupied, ownPieces));
+          .toSquares(BishopMoves.targets(squareOrdinal, occupied, ownPieces));
       final Set<Square> referenceTargets = withoutOwnPieces(
           SlidingAttacksTestOracle.bishopAttacks(staticPosition, fromSquare, side), staticPosition, side);
       assertEquals(referenceTargets, bitboardTargets,
@@ -160,7 +160,7 @@ class TestPseudoLegalMoves {
       final int squareOrdinal = Long.numberOfTrailingZeros(remaining);
       final Square fromSquare = Nulls.get(Square.REAL, squareOrdinal);
       final Set<Square> bitboardTargets = BitboardPositionUtility
-          .toSquareSet(RookMoves.targets(squareOrdinal, occupied, ownPieces));
+          .toSquares(RookMoves.targets(squareOrdinal, occupied, ownPieces));
       final Set<Square> referenceTargets = withoutOwnPieces(
           SlidingAttacksTestOracle.rookAttacks(staticPosition, fromSquare, side), staticPosition, side);
       assertEquals(referenceTargets, bitboardTargets,
@@ -194,7 +194,7 @@ class TestPseudoLegalMoves {
       final int squareOrdinal = Long.numberOfTrailingZeros(remaining);
       final Square fromSquare = Nulls.get(Square.REAL, squareOrdinal);
       final Set<Square> bitboardTargets = BitboardPositionUtility
-          .toSquareSet(QueenMoves.targets(squareOrdinal, occupied, ownPieces));
+          .toSquares(QueenMoves.targets(squareOrdinal, occupied, ownPieces));
       final Set<Square> referenceTargets = withoutOwnPieces(
           SlidingAttacksTestOracle.queenAttacks(staticPosition, fromSquare, side), staticPosition, side);
       assertEquals(referenceTargets, bitboardTargets,

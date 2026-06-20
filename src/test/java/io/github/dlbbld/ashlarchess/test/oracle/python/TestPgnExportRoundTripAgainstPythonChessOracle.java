@@ -154,15 +154,15 @@ class TestPgnExportRoundTripAgainstPythonChessOracle {
 
     try {
       assertEquals(record.startFen(), parsed.startFen().fen(), () -> label + " - startFen mismatch");
-      assertEquals(expectedUcis.size(), parsed.moveList().size(), () -> label + " - half-move count mismatch");
+      assertEquals(expectedUcis.size(), parsed.moves().size(), () -> label + " - half-move count mismatch");
     } catch (final AssertionError e) {
       failures.add(ExceptionUtility.getMessage(e));
       return;
     }
 
     final Board board = new Board(parsed.startFen());
-    final List<String> actualUcis = new ArrayList<>(parsed.moveList().size());
-    for (final PgnMove move : parsed.moveList()) {
+    final List<String> actualUcis = new ArrayList<>(parsed.moves().size());
+    for (final PgnMove move : parsed.moves()) {
       board.moveStrict(move.san());
       final LegalMove last = board.getLastMove();
       final UciMove uci = UciMoveUtility.toUci(last.movingSide(), last.moveSpecification());

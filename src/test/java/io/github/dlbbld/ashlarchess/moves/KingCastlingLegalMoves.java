@@ -13,7 +13,6 @@ import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.F1;
 import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.F8;
 import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.G1;
 import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.G8;
-import static io.github.dlbbld.ashlarchess.common.utility.ImmutableUtility.constructListSquare;
 
 import java.util.List;
 import java.util.Set;
@@ -21,6 +20,7 @@ import java.util.TreeSet;
 
 import com.google.common.collect.ImmutableList;
 
+import io.github.dlbbld.ashlarchess.common.Nulls;
 import io.github.dlbbld.ashlarchess.board.StaticPosition;
 import io.github.dlbbld.ashlarchess.board.enums.CastlingRight;
 import io.github.dlbbld.ashlarchess.board.enums.Piece;
@@ -46,13 +46,13 @@ class KingCastlingLegalMoves extends KingLegalMoves {
   // Required-empty corridor and king-travel/king-destination squares - duplicated test-side so the StaticPosition
   // overload does not borrow them from the production CastlingUtility (which would weaken the oracle).
 
-  private static final ImmutableList<Square> WHITE_QUEEN_SIDE_CASTLING_REQUIRED_EMPTY_SQUARE_LIST = constructListSquare(
+  private static final ImmutableList<Square> WHITE_QUEEN_SIDE_CASTLING_REQUIRED_EMPTY_SQUARE_LIST = Nulls.listOf(
       B1, C1, D1);
-  private static final ImmutableList<Square> WHITE_KING_SIDE_CASTLING_REQUIRED_EMPTY_SQUARE_LIST = constructListSquare(
+  private static final ImmutableList<Square> WHITE_KING_SIDE_CASTLING_REQUIRED_EMPTY_SQUARE_LIST = Nulls.listOf(
       F1, G1);
-  private static final ImmutableList<Square> BLACK_QUEEN_SIDE_CASTLING_REQUIRED_EMPTY_SQUARE_LIST = constructListSquare(
+  private static final ImmutableList<Square> BLACK_QUEEN_SIDE_CASTLING_REQUIRED_EMPTY_SQUARE_LIST = Nulls.listOf(
       B8, C8, D8);
-  private static final ImmutableList<Square> BLACK_KING_SIDE_CASTLING_REQUIRED_EMPTY_SQUARE_LIST = constructListSquare(
+  private static final ImmutableList<Square> BLACK_KING_SIDE_CASTLING_REQUIRED_EMPTY_SQUARE_LIST = Nulls.listOf(
       F8, G8);
 
   private static final Square WHITE_QUEEN_SIDE_TRAVEL_OVER_SQUARE = D1;
@@ -102,7 +102,7 @@ class KingCastlingLegalMoves extends KingLegalMoves {
       throw new ProgrammingMistakeException(
           "Castling right held but king or rook not on required square (inconsistent board state).");
     }
-    if (!calculateIsAllEmpty(staticPosition, calculateQueenSideCastlingRequiredEmptySquareList(sideToMove))) {
+    if (!calculateIsAllEmpty(staticPosition, calculateQueenSideCastlingRequiredEmptySquares(sideToMove))) {
       return CastlingCheck.TEMPORARY_SQUARES_NOT_EMPTY;
     }
     return calculateQueenSideCheckCondition(staticPosition, sideToMove);
@@ -119,7 +119,7 @@ class KingCastlingLegalMoves extends KingLegalMoves {
       throw new ProgrammingMistakeException(
           "Castling right held but king or rook not on required square (inconsistent board state).");
     }
-    if (!calculateIsAllEmpty(staticPosition, calculateKingSideCastlingRequiredEmptySquareList(sideToMove))) {
+    if (!calculateIsAllEmpty(staticPosition, calculateKingSideCastlingRequiredEmptySquares(sideToMove))) {
       return CastlingCheck.TEMPORARY_SQUARES_NOT_EMPTY;
     }
     return calculateKingSideCheckCondition(staticPosition, sideToMove);
@@ -186,7 +186,7 @@ class KingCastlingLegalMoves extends KingLegalMoves {
     return true;
   }
 
-  private static List<Square> calculateQueenSideCastlingRequiredEmptySquareList(Side sideToMove) {
+  private static List<Square> calculateQueenSideCastlingRequiredEmptySquares(Side sideToMove) {
     return switch (sideToMove) {
       case BLACK -> BLACK_QUEEN_SIDE_CASTLING_REQUIRED_EMPTY_SQUARE_LIST;
       case WHITE -> WHITE_QUEEN_SIDE_CASTLING_REQUIRED_EMPTY_SQUARE_LIST;
@@ -195,7 +195,7 @@ class KingCastlingLegalMoves extends KingLegalMoves {
     };
   }
 
-  private static List<Square> calculateKingSideCastlingRequiredEmptySquareList(Side sideToMove) {
+  private static List<Square> calculateKingSideCastlingRequiredEmptySquares(Side sideToMove) {
     return switch (sideToMove) {
       case BLACK -> BLACK_KING_SIDE_CASTLING_REQUIRED_EMPTY_SQUARE_LIST;
       case WHITE -> WHITE_KING_SIDE_CASTLING_REQUIRED_EMPTY_SQUARE_LIST;

@@ -56,7 +56,7 @@ class TestBishopAttacks {
       final int squareOrdinal = Long.numberOfTrailingZeros(remaining);
       final Square fromSquare = Nulls.get(Square.REAL, squareOrdinal);
       final Set<Square> bitboardAttacks = BitboardPositionUtility
-          .toSquareSet(BishopAttacks.attacks(squareOrdinal, occupied));
+          .toSquares(BishopAttacks.attacks(squareOrdinal, occupied));
       final Set<Square> referenceAttacks = SlidingAttacksTestOracle.bishopAttacks(staticPosition, fromSquare, side);
       assertEquals(referenceAttacks, bitboardAttacks,
           side + " bishop attacks from " + fromSquare.getName() + " in fixture " + testCase.pgnName());
@@ -73,7 +73,7 @@ class TestBishopAttacks {
         Square.D4, io.github.dlbbld.ashlarchess.board.enums.Piece.WHITE_BISHOP);
     final BitboardPosition bitboardPosition = StaticPositionBridge.fromStaticPosition(staticPosition);
     final Set<Square> bitboardAttacks = BitboardPositionUtility
-        .toSquareSet(BishopAttacks.attacks(Square.D4.ordinal(), bitboardPosition.occupied()));
+        .toSquares(BishopAttacks.attacks(Square.D4.ordinal(), bitboardPosition.occupied()));
     final Set<Square> referenceAttacks = SlidingAttacksTestOracle.bishopAttacks(staticPosition, Square.D4, Side.WHITE);
     assertEquals(referenceAttacks, bitboardAttacks);
   }

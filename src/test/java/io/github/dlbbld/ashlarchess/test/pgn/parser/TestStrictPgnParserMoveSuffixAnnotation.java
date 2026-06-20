@@ -73,7 +73,7 @@ class TestStrictPgnParserMoveSuffixAnnotation {
       List<MoveSuffixAnnotation> moveSuffixAnnotationListExpected) {
     final PgnGame pgnGame = PgnCacheForStrictPgnParserTestCases
         .getPgn(PGN_TEST_MOVE_SUFFIX_ANNOTATION_SUCCESS_FOLDER_PATH, pgnName);
-    assertEquals(moveSuffixAnnotationListExpected, calculateMoveSuffixAnnotationList(pgnGame.moveList()));
+    assertEquals(moveSuffixAnnotationListExpected, calculateMoveSuffixAnnotationList(pgnGame.moves()));
   }
 
   // -------------------------------------------------------------------------------------------------
@@ -121,9 +121,9 @@ class TestStrictPgnParserMoveSuffixAnnotation {
       List<String> commentaryListExpected) {
     final PgnGame pgnGame = PgnCacheForStrictPgnParserTestCases.getPgn(PGN_TEST_COMBINED_SUCCESS_FOLDER_PATH, pgnName);
     assertEquals(pregameCommentaryExpected, pgnGame.pregameCommentary().value());
-    assertEquals(sanListExpected, calculateSanList(pgnGame.moveList()));
-    assertEquals(moveSuffixAnnotationListExpected, calculateMoveSuffixAnnotationList(pgnGame.moveList()));
-    assertEquals(commentaryListExpected, calculateCommentaryList(pgnGame.moveList()));
+    assertEquals(sanListExpected, calculateSanList(pgnGame.moves()));
+    assertEquals(moveSuffixAnnotationListExpected, calculateMoveSuffixAnnotationList(pgnGame.moves()));
+    assertEquals(commentaryListExpected, calculateCommentaryList(pgnGame.moves()));
   }
 
   private static List<String> calculateSanList(List<PgnMove> moveList) {

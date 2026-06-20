@@ -52,7 +52,7 @@ class TestPgnDeficientEndToEnd {
     final PgnGame pgnGame = result.pgnGame();
     assertNotNull(pgnGame);
     // Parse model preserves: exactly the three tags the user supplied (Event, White, FEN), nothing fabricated.
-    assertEquals(3, pgnGame.tagList().size());
+    assertEquals(3, pgnGame.tags().size());
     // No termination marker was in the input.
     assertEquals(null, pgnGame.terminationMarker());
     // Tag-forgiven-items report the deviations (missing STR tags, missing Result/marker, FEN without SetUp).

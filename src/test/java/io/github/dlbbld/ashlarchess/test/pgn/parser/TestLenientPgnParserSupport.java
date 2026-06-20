@@ -28,17 +28,17 @@ public final class TestLenientPgnParserSupport {
   }
 
   static void assertEqualsButTagList(PgnGame expected, PgnGame actual) {
-    assertEquals(expected.moveList(), actual.moveList());
+    assertEquals(expected.moves(), actual.moves());
     assertEquals(expected.pregameCommentary(), actual.pregameCommentary());
-    // assertEquals(expected.tagList(), actual.tagList());
+    // assertEquals(expected.tags(), actual.tags());
     assertEquals(expected.startFen(), actual.startFen());
   }
 
   static void assertEqualsButTagListAndResult(PgnGame expected, PgnGame actual) {
     // assertEquals(expected.resultTagValue(), actual.resultTagValue());
-    assertEquals(expected.moveList(), actual.moveList());
+    assertEquals(expected.moves(), actual.moves());
     assertEquals(expected.pregameCommentary(), actual.pregameCommentary());
-    // assertEquals(expected.tagList(), actual.tagList());
+    // assertEquals(expected.tags(), actual.tags());
     assertEquals(expected.startFen(), actual.startFen());
   }
 

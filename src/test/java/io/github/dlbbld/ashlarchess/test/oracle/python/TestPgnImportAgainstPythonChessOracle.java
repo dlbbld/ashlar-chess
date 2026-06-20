@@ -123,7 +123,7 @@ class TestPgnImportAgainstPythonChessOracle {
         try {
           assertEquals(record.startFen(), pgnGame.startFen().fen(),
               () -> bucket + " / " + record.pgn() + " - startFen mismatch (ashlar-chess vs python-chess)");
-          assertEquals(record.moves().size(), pgnGame.moveList().size(),
+          assertEquals(record.moves().size(), pgnGame.moves().size(),
               () -> bucket + " / " + record.pgn() + " - half-move count mismatch (ashlar-chess vs python-chess)");
         } catch (final AssertionError e) {
           failures.add(ExceptionUtility.getMessage(e));
@@ -131,9 +131,9 @@ class TestPgnImportAgainstPythonChessOracle {
         }
 
         final Board board = new Board(pgnGame.startFen());
-        for (int ply = 0; ply < pgnGame.moveList().size(); ply++) {
+        for (int ply = 0; ply < pgnGame.moves().size(); ply++) {
           totalPlies++;
-          final PgnMove move = Nulls.get(pgnGame.moveList(), ply);
+          final PgnMove move = Nulls.get(pgnGame.moves(), ply);
           final OracleMove expected = Nulls.get(record.moves(), ply);
           board.moveStrict(move.san());
 

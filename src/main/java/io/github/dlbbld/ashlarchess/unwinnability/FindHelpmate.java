@@ -74,7 +74,7 @@ class FindHelpmate {
     switch (findHelpmate) {
       case HELPMATE_FOUND:
         return new FindHelpmateAnalysis(FindHelpmateResult.HAS_HELPMATE, localNodeCount,
-            convertLegalMoveList(moveEvaluationList));
+            toUciMoves(moveEvaluationList));
       case HELPMATE_NOT_FOUND:
         if (isCanExhaust) {
           return new FindHelpmateAnalysis(FindHelpmateResult.HAS_NO_HELPMATE, localNodeCount, new ArrayList<>());
@@ -239,7 +239,7 @@ class FindHelpmate {
     return false;
   }
 
-  private static List<UciMove> convertLegalMoveList(List<LegalMove> moveProgressList) {
+  private static List<UciMove> toUciMoves(List<LegalMove> moveProgressList) {
     final List<UciMove> result = new ArrayList<>();
     for (final LegalMove legalMove : moveProgressList) {
       result.add(UciMoveUtility.toUci(legalMove.movingSide(), legalMove.moveSpecification()));

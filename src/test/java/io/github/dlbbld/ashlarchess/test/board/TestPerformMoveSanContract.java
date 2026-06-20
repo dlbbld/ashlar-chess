@@ -90,7 +90,7 @@ class TestPerformMoveSanContract {
     final Board board = new Board(pgnGame.startFen());
 
     int moveIndex = 0;
-    for (final PgnMove move : pgnGame.moveList()) {
+    for (final PgnMove move : pgnGame.moves()) {
       moveIndex++;
       final int hmi = moveIndex;
       final String expectedProvidedSan = move.san();
@@ -120,7 +120,7 @@ class TestPerformMoveSanContract {
         testCase.pgnName());
     final Board board = new Board(pgnGame.startFen());
 
-    for (final PgnMove move : pgnGame.moveList()) {
+    for (final PgnMove move : pgnGame.moves()) {
       board.moveStrict(move.san());
       final MoveSpecification expectedStoredMoveSpecification = board.getLastMove().moveSpecification();
       final String calculatedSan = board.getSan();

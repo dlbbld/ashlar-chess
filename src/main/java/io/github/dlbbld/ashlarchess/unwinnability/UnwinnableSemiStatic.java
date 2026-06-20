@@ -120,7 +120,7 @@ final class UnwinnableSemiStatic {
     final boolean isIgnorePawns = SemiStaticFunctions
         .region(calculateKing(side.getOppositeSide(), mobilitySolution), mobilitySolution).size() > 1;
 
-    for (final PiecePlacement piecePlacement : mobilitySolution.getPiecePlacementSet()) {
+    for (final PiecePlacement piecePlacement : mobilitySolution.getPiecePlacements()) {
       final Set<Square> pieceRegion = SemiStaticFunctions.region(piecePlacement, mobilitySolution);
       if (piecePlacement.pieceType() == PieceType.PAWN && isIgnorePawns && !pieceRegion.contains(Square.A1)) {
         continue;
@@ -189,7 +189,7 @@ final class UnwinnableSemiStatic {
   }
 
   private static PiecePlacement calculateKing(Side c, MobilitySolution mobilitySolution) {
-    for (final PiecePlacement piecePlacement : mobilitySolution.getPiecePlacementSet()) {
+    for (final PiecePlacement piecePlacement : mobilitySolution.getPiecePlacements()) {
       if (piecePlacement.side() == c && piecePlacement.pieceType() == PieceType.KING) {
         return piecePlacement;
       }

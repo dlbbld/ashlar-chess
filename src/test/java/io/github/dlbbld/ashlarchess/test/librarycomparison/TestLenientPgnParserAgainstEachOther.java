@@ -70,7 +70,7 @@ class TestLenientPgnParserAgainstEachOther {
     final Fen startFen = pgnGame.startFen();
 
     final List<String> sanList = new ArrayList<>();
-    for (final PgnMove pgnMove : pgnGame.moveList()) {
+    for (final PgnMove pgnMove : pgnGame.moves()) {
       sanList.add(pgnMove.san());
     }
     return new PgnSan(startFen.fen(), sanList);

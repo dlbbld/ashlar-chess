@@ -401,7 +401,7 @@ class TestMobilitySolution {
     final Board board = Board.fromFenStrict(fen);
     final MobilitySolution mobilitySolution = Mobility.mobility(board);
 
-    for (final PiecePlacement piecePlacement : mobilitySolution.getPiecePlacementSet()) {
+    for (final PiecePlacement piecePlacement : mobilitySolution.getPiecePlacements()) {
       final Set<Square> squaresWithValueOne = mobilitySolution.calculateSquaresWithValueOne(piecePlacement);
       assertTrue(mobilityMap.containsKey(piecePlacement.squareOriginal()));
       final List<Square> expectedSquareList = Nulls.get(mobilityMap, piecePlacement.squareOriginal());
@@ -417,7 +417,7 @@ class TestMobilitySolution {
 
     final MobilitySolution mobilitySolution = Mobility.mobility(board);
 
-    for (final PiecePlacement piecePlacement : mobilitySolution.getPiecePlacementSet()) {
+    for (final PiecePlacement piecePlacement : mobilitySolution.getPiecePlacements()) {
       final Set<Square> squaresWithValueOne = mobilitySolution.calculateSquaresWithValueOne(piecePlacement);
       switch (piecePlacement.pieceType()) {
         case PAWN: {
@@ -456,7 +456,7 @@ class TestMobilitySolution {
 
     final MobilitySolution mobilitySolution = Mobility.mobility(board);
 
-    for (final PiecePlacement piecePlacement : mobilitySolution.getPiecePlacementSet()) {
+    for (final PiecePlacement piecePlacement : mobilitySolution.getPiecePlacements()) {
       final Set<Square> squaresWithValueOne = mobilitySolution.calculateSquaresWithValueOne(piecePlacement);
       switch (piecePlacement.pieceType()) {
         case PAWN:
@@ -490,7 +490,7 @@ class TestMobilitySolution {
 
     checkBoardOccupation(StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), mobilitySolution);
 
-    for (final PiecePlacement piecePlacement : mobilitySolution.getPiecePlacementSet()) {
+    for (final PiecePlacement piecePlacement : mobilitySolution.getPiecePlacements()) {
       final Set<Square> squaresWithValueOne = mobilitySolution.calculateSquaresWithValueOne(piecePlacement);
 
       switch (piecePlacement.pieceType()) {
@@ -521,7 +521,7 @@ class TestMobilitySolution {
   }
 
   private static void checkNumberOfPieces(StaticPosition staticPosition, MobilitySolution mobilitySolution) {
-    assertEquals(calculateNumberOfPieces(staticPosition), mobilitySolution.getPiecePlacementSet().size());
+    assertEquals(calculateNumberOfPieces(staticPosition), mobilitySolution.getPiecePlacements().size());
   }
 
   private static void checkBoardOccupation(StaticPosition staticPosition, MobilitySolution mobilitySolution) {
@@ -531,7 +531,7 @@ class TestMobilitySolution {
   }
 
   private static void checkPieces(StaticPosition staticPosition, MobilitySolution mobilitySolution) {
-    for (final PiecePlacement piecePlacement : mobilitySolution.getPiecePlacementSet()) {
+    for (final PiecePlacement piecePlacement : mobilitySolution.getPiecePlacements()) {
       assertFalse(staticPosition.isEmpty(piecePlacement.squareOriginal()));
       assertEquals(staticPosition.get(piecePlacement.squareOriginal()).getPieceType(), piecePlacement.pieceType());
       assertEquals(staticPosition.get(piecePlacement.squareOriginal()).getSide(), piecePlacement.side());
@@ -559,7 +559,7 @@ class TestMobilitySolution {
 
   private static Set<Square> calculateOccupiedSquares(MobilitySolution mobilitySolution) {
     final Set<Square> nonEmptySquares = new TreeSet<>();
-    for (final PiecePlacement piecePlacement : mobilitySolution.getPiecePlacementSet()) {
+    for (final PiecePlacement piecePlacement : mobilitySolution.getPiecePlacements()) {
       nonEmptySquares.add(piecePlacement.squareOriginal());
     }
     return nonEmptySquares;

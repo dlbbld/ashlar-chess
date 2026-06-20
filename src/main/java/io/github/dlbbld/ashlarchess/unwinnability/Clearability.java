@@ -72,7 +72,7 @@ class Clearability {
       lineList.add(string);
     }
 
-    return ListUtility.calculateLineSeparatedList(lineList);
+    return ListUtility.toLineSeparatedString(lineList);
   }
 
   @Override

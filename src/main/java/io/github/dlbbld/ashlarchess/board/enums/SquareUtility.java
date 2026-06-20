@@ -3,7 +3,6 @@
 
 package io.github.dlbbld.ashlarchess.board.enums;
 
-import static io.github.dlbbld.ashlarchess.common.utility.ImmutableUtility.constructListSquare;
 
 import java.util.EnumMap;
 
@@ -100,13 +99,13 @@ public final class SquareUtility {
     };
   }
 
-  private static final ImmutableList<Square> WHITE_PROMOTION_RANK = constructListSquare(Square.A8, Square.B8, Square.C8,
+  private static final ImmutableList<Square> WHITE_PROMOTION_RANK = Nulls.listOf(Square.A8, Square.B8, Square.C8,
       Square.D8, Square.E8, Square.F8, Square.G8, Square.H8);
 
-  private static final ImmutableList<Square> BLACK_PROMOTION_RANK = constructListSquare(Square.A1, Square.B1, Square.C1,
+  private static final ImmutableList<Square> BLACK_PROMOTION_RANK = Nulls.listOf(Square.A1, Square.B1, Square.C1,
       Square.D1, Square.E1, Square.F1, Square.G1, Square.H1);
 
-  public static ImmutableList<Square> getPromotionRankList(Side side) {
+  public static ImmutableList<Square> getPromotionRankSquares(Side side) {
     return switch (side) {
       case WHITE -> WHITE_PROMOTION_RANK;
       case BLACK -> BLACK_PROMOTION_RANK;
@@ -115,13 +114,13 @@ public final class SquareUtility {
     };
   }
 
-  private static final ImmutableList<Square> WHITE_MOVE_EN_PASSANT_CAPTURE_TARGET_SQUARE_LIST = constructListSquare(
+  private static final ImmutableList<Square> WHITE_MOVE_EN_PASSANT_CAPTURE_TARGET_SQUARE_LIST = Nulls.listOf(
       Square.A6, Square.B6, Square.C6, Square.D6, Square.E6, Square.F6, Square.G6, Square.H6);
 
-  private static final ImmutableList<Square> BLACK_MOVE_EN_PASSANT_CAPTURE_TARGET_SQUARE_LIST = constructListSquare(
+  private static final ImmutableList<Square> BLACK_MOVE_EN_PASSANT_CAPTURE_TARGET_SQUARE_LIST = Nulls.listOf(
       Square.A3, Square.B3, Square.C3, Square.D3, Square.E3, Square.F3, Square.G3, Square.H3);
 
-  public static ImmutableList<Square> calculateEnPassantCaptureTargetSquareList(Side side) {
+  public static ImmutableList<Square> getEnPassantCaptureTargetSquares(Side side) {
     return switch (side) {
       case BLACK -> BLACK_MOVE_EN_PASSANT_CAPTURE_TARGET_SQUARE_LIST;
       case WHITE -> WHITE_MOVE_EN_PASSANT_CAPTURE_TARGET_SQUARE_LIST;

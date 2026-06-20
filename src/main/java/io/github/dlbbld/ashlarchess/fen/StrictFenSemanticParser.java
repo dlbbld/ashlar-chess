@@ -343,11 +343,11 @@ final class StrictFenSemanticParser {
         if (Rank.exists(rankLetter)) {
           final Rank rank = Rank.parse(rankLetter);
           final Square square = Square.of(file, rank);
-          if (SquareUtility.calculateEnPassantCaptureTargetSquareList(sideToMove).contains(square)) {
+          if (SquareUtility.getEnPassantCaptureTargetSquares(sideToMove).contains(square)) {
             return square;
           }
           final Side oppositeSide = sideToMove.getOppositeSide();
-          if (SquareUtility.calculateEnPassantCaptureTargetSquareList(oppositeSide).contains(square)) {
+          if (SquareUtility.getEnPassantCaptureTargetSquares(oppositeSide).contains(square)) {
             throw new StrictFenSemanticValidationException(
                 StrictFenSemanticValidationProblem.INVALID_EN_PASSANT_CAPTURE_TARGET_SQUARE_WRONG_COLOR,
                 "the en passant target square \"" + enPassantCaptureTargetSquare
@@ -718,7 +718,7 @@ final class StrictFenSemanticParser {
 
   private static void validatePawnRankNotPromotionRank(BitboardPosition bitboardPosition)
       throws StrictFenSemanticValidationException {
-    for (final Square square : SquareUtility.getPromotionRankList(WHITE)) {
+    for (final Square square : SquareUtility.getPromotionRankSquares(WHITE)) {
       if (bitboardPosition.get(square) == WHITE_PAWN) {
         throw new StrictFenSemanticValidationException(
             StrictFenSemanticValidationProblem.INVALID_WHITE_PAWN_INVALID_RANK_PROMOTION_RANK,
@@ -726,7 +726,7 @@ final class StrictFenSemanticParser {
       }
     }
 
-    for (final Square square : SquareUtility.getPromotionRankList(BLACK)) {
+    for (final Square square : SquareUtility.getPromotionRankSquares(BLACK)) {
       if (bitboardPosition.get(square) == BLACK_PAWN) {
         throw new StrictFenSemanticValidationException(
             StrictFenSemanticValidationProblem.INVALID_BLACK_PAWN_INVALID_RANK_PROMOTION_RANK,
@@ -737,7 +737,7 @@ final class StrictFenSemanticParser {
 
   private static void validatePawnRankNotGroundRank(BitboardPosition bitboardPosition)
       throws StrictFenSemanticValidationException {
-    for (final Square square : SquareUtility.getPromotionRankList(BLACK)) {
+    for (final Square square : SquareUtility.getPromotionRankSquares(BLACK)) {
       if (bitboardPosition.get(square) == WHITE_PAWN) {
         throw new StrictFenSemanticValidationException(
             StrictFenSemanticValidationProblem.INVALID_WHITE_PAWN_INVALID_RANK_GROUND_RANK,
@@ -745,7 +745,7 @@ final class StrictFenSemanticParser {
       }
     }
 
-    for (final Square square : SquareUtility.getPromotionRankList(WHITE)) {
+    for (final Square square : SquareUtility.getPromotionRankSquares(WHITE)) {
       if (bitboardPosition.get(square) == BLACK_PAWN) {
         throw new StrictFenSemanticValidationException(
             StrictFenSemanticValidationProblem.INVALID_BLACK_PAWN_INVALID_RANK_GROUND_RANK,

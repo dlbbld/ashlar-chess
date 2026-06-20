@@ -36,7 +36,6 @@ import static io.github.dlbbld.ashlarchess.board.enums.Square.H3;
 import static io.github.dlbbld.ashlarchess.board.enums.Square.H4;
 import static io.github.dlbbld.ashlarchess.board.enums.Square.H5;
 import static io.github.dlbbld.ashlarchess.board.enums.Square.H6;
-import static io.github.dlbbld.ashlarchess.common.utility.ImmutableUtility.constructListSquare;
 
 import java.util.ArrayList;
 import java.util.EnumMap;
@@ -66,20 +65,20 @@ public final class EnPassantCaptureUtility {
 
   static {
     final List<ImmutableList<Square>> list = new ArrayList<>();
-    list.add(constructListSquare(A5, B6));
-    list.add(constructListSquare(B5, C6));
-    list.add(constructListSquare(C5, D6));
-    list.add(constructListSquare(D5, E6));
-    list.add(constructListSquare(E5, F6));
-    list.add(constructListSquare(F5, G6));
-    list.add(constructListSquare(G5, H6));
-    list.add(constructListSquare(B5, A6));
-    list.add(constructListSquare(C5, B6));
-    list.add(constructListSquare(D5, C6));
-    list.add(constructListSquare(E5, D6));
-    list.add(constructListSquare(F5, E6));
-    list.add(constructListSquare(G5, F6));
-    list.add(constructListSquare(H5, G6));
+    list.add(Nulls.listOf(A5, B6));
+    list.add(Nulls.listOf(B5, C6));
+    list.add(Nulls.listOf(C5, D6));
+    list.add(Nulls.listOf(D5, E6));
+    list.add(Nulls.listOf(E5, F6));
+    list.add(Nulls.listOf(F5, G6));
+    list.add(Nulls.listOf(G5, H6));
+    list.add(Nulls.listOf(B5, A6));
+    list.add(Nulls.listOf(C5, B6));
+    list.add(Nulls.listOf(D5, C6));
+    list.add(Nulls.listOf(E5, D6));
+    list.add(Nulls.listOf(F5, E6));
+    list.add(Nulls.listOf(G5, F6));
+    list.add(Nulls.listOf(H5, G6));
     WHITE_EN_PASSANT_CAPTURE_FROM_TO = Nulls.copyOfList(list);
 
   }
@@ -89,20 +88,20 @@ public final class EnPassantCaptureUtility {
   static {
     final List<ImmutableList<Square>> list = new ArrayList<>();
 
-    list.add(constructListSquare(A4, B3));
-    list.add(constructListSquare(B4, C3));
-    list.add(constructListSquare(C4, D3));
-    list.add(constructListSquare(D4, E3));
-    list.add(constructListSquare(E4, F3));
-    list.add(constructListSquare(F4, G3));
-    list.add(constructListSquare(G4, H3));
-    list.add(constructListSquare(B4, A3));
-    list.add(constructListSquare(C4, B3));
-    list.add(constructListSquare(D4, C3));
-    list.add(constructListSquare(E4, D3));
-    list.add(constructListSquare(F4, E3));
-    list.add(constructListSquare(G4, F3));
-    list.add(constructListSquare(H4, G3));
+    list.add(Nulls.listOf(A4, B3));
+    list.add(Nulls.listOf(B4, C3));
+    list.add(Nulls.listOf(C4, D3));
+    list.add(Nulls.listOf(D4, E3));
+    list.add(Nulls.listOf(E4, F3));
+    list.add(Nulls.listOf(F4, G3));
+    list.add(Nulls.listOf(G4, H3));
+    list.add(Nulls.listOf(B4, A3));
+    list.add(Nulls.listOf(C4, B3));
+    list.add(Nulls.listOf(D4, C3));
+    list.add(Nulls.listOf(E4, D3));
+    list.add(Nulls.listOf(F4, E3));
+    list.add(Nulls.listOf(G4, F3));
+    list.add(Nulls.listOf(H4, G3));
 
     BLACK_EN_PASSANT_CAPTURE_FROM_TO = Nulls.copyOfList(list);
   }
@@ -180,8 +179,8 @@ public final class EnPassantCaptureUtility {
   public static boolean isPawnTwoSquareAdvanceMove(Piece movingPiece, MoveSpecification move) {
     if (movingPiece != Piece.NONE && movingPiece.getPieceType() == PAWN) {
       return switch (movingPiece.getSide()) {
-        case WHITE -> Square.WHITE_PAWN_TWO_SQUARE_ADVANCE.contains(calculateFromToList(move));
-        case BLACK -> Square.BLACK_PAWN_TWO_SQUARE_ADVANCE.contains(calculateFromToList(move));
+        case WHITE -> Square.WHITE_PAWN_TWO_SQUARE_ADVANCE.contains(calculateFromToSquares(move));
+        case BLACK -> Square.BLACK_PAWN_TWO_SQUARE_ADVANCE.contains(calculateFromToSquares(move));
         case NONE -> throw new IllegalArgumentException();
         default -> throw new IllegalArgumentException();
       };
@@ -189,7 +188,7 @@ public final class EnPassantCaptureUtility {
     return false;
   }
 
-  private static List<Square> calculateFromToList(MoveSpecification move) {
+  private static List<Square> calculateFromToSquares(MoveSpecification move) {
     final List<Square> result = new ArrayList<>();
     result.add(move.fromSquare());
     result.add(move.toSquare());
@@ -234,9 +233,9 @@ public final class EnPassantCaptureUtility {
       return false;
     }
     return switch (movingPiece.getSide()) {
-      case WHITE -> WHITE_EN_PASSANT_CAPTURE_FROM_TO.contains(calculateFromToList(move))
+      case WHITE -> WHITE_EN_PASSANT_CAPTURE_FROM_TO.contains(calculateFromToSquares(move))
           && bitboardPositionBeforeMove.get(move.toSquare()) == Piece.NONE;
-      case BLACK -> BLACK_EN_PASSANT_CAPTURE_FROM_TO.contains(calculateFromToList(move))
+      case BLACK -> BLACK_EN_PASSANT_CAPTURE_FROM_TO.contains(calculateFromToSquares(move))
           && bitboardPositionBeforeMove.get(move.toSquare()) == Piece.NONE;
       case NONE -> throw new IllegalArgumentException();
       default -> throw new IllegalArgumentException();

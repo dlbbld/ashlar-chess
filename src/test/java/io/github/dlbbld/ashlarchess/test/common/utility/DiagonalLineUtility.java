@@ -67,7 +67,6 @@ import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.H5;
 import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.H6;
 import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.H7;
 import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.H8;
-import static io.github.dlbbld.ashlarchess.common.utility.ImmutableUtility.constructListSquare;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -83,65 +82,65 @@ public final class DiagonalLineUtility {
   private DiagonalLineUtility() {
   }
 
-  public static final ImmutableList<Square> A8_UP = constructListSquare(A8);
+  public static final ImmutableList<Square> A8_UP = Nulls.listOf(A8);
 
-  public static final ImmutableList<Square> A7_UP = constructListSquare(A7, B8);
+  public static final ImmutableList<Square> A7_UP = Nulls.listOf(A7, B8);
 
-  public static final ImmutableList<Square> A6_UP = constructListSquare(A6, B7, C8);
+  public static final ImmutableList<Square> A6_UP = Nulls.listOf(A6, B7, C8);
 
-  public static final ImmutableList<Square> A5_UP = constructListSquare(A5, B6, C7, D8);
+  public static final ImmutableList<Square> A5_UP = Nulls.listOf(A5, B6, C7, D8);
 
-  public static final ImmutableList<Square> A4_UP = constructListSquare(A4, B5, C6, D7, E8);
+  public static final ImmutableList<Square> A4_UP = Nulls.listOf(A4, B5, C6, D7, E8);
 
-  public static final ImmutableList<Square> A3_UP = constructListSquare(A3, B4, C5, D6, E7, F8);
+  public static final ImmutableList<Square> A3_UP = Nulls.listOf(A3, B4, C5, D6, E7, F8);
 
-  public static final ImmutableList<Square> A2_UP = constructListSquare(A2, B3, C4, D5, E6, F7, G8);
+  public static final ImmutableList<Square> A2_UP = Nulls.listOf(A2, B3, C4, D5, E6, F7, G8);
 
-  public static final ImmutableList<Square> A1_UP = constructListSquare(A1, B2, C3, D4, E5, F6, G7, H8);
+  public static final ImmutableList<Square> A1_UP = Nulls.listOf(A1, B2, C3, D4, E5, F6, G7, H8);
 
-  public static final ImmutableList<Square> B1_UP = constructListSquare(B1, C2, D3, E4, F5, G6, H7);
+  public static final ImmutableList<Square> B1_UP = Nulls.listOf(B1, C2, D3, E4, F5, G6, H7);
 
-  public static final ImmutableList<Square> C1_UP = constructListSquare(C1, D2, E3, F4, G5, H6);
+  public static final ImmutableList<Square> C1_UP = Nulls.listOf(C1, D2, E3, F4, G5, H6);
 
-  public static final ImmutableList<Square> D1_UP = constructListSquare(D1, E2, F3, G4, H5);
+  public static final ImmutableList<Square> D1_UP = Nulls.listOf(D1, E2, F3, G4, H5);
 
-  public static final ImmutableList<Square> E1_UP = constructListSquare(E1, F2, G3, H4);
+  public static final ImmutableList<Square> E1_UP = Nulls.listOf(E1, F2, G3, H4);
 
-  public static final ImmutableList<Square> F1_UP = constructListSquare(F1, G2, H3);
+  public static final ImmutableList<Square> F1_UP = Nulls.listOf(F1, G2, H3);
 
-  public static final ImmutableList<Square> G1_UP = constructListSquare(G1, H2);
+  public static final ImmutableList<Square> G1_UP = Nulls.listOf(G1, H2);
 
-  public static final ImmutableList<Square> H1_UP = constructListSquare(H1);
+  public static final ImmutableList<Square> H1_UP = Nulls.listOf(H1);
 
-  public static final ImmutableList<Square> A1_DOWN = constructListSquare(A1);
+  public static final ImmutableList<Square> A1_DOWN = Nulls.listOf(A1);
 
-  public static final ImmutableList<Square> A2_DOWN = constructListSquare(A2, B1);
+  public static final ImmutableList<Square> A2_DOWN = Nulls.listOf(A2, B1);
 
-  public static final ImmutableList<Square> A3_DOWN = constructListSquare(A3, B2, C1);
+  public static final ImmutableList<Square> A3_DOWN = Nulls.listOf(A3, B2, C1);
 
-  public static final ImmutableList<Square> A4_DOWN = constructListSquare(A4, B3, C2, D1);
+  public static final ImmutableList<Square> A4_DOWN = Nulls.listOf(A4, B3, C2, D1);
 
-  public static final ImmutableList<Square> A5_DOWN = constructListSquare(A5, B4, C3, D2, E1);
+  public static final ImmutableList<Square> A5_DOWN = Nulls.listOf(A5, B4, C3, D2, E1);
 
-  public static final ImmutableList<Square> A6_DOWN = constructListSquare(A6, B5, C4, D3, E2, F1);
+  public static final ImmutableList<Square> A6_DOWN = Nulls.listOf(A6, B5, C4, D3, E2, F1);
 
-  public static final ImmutableList<Square> A7_DOWN = constructListSquare(A7, B6, C5, D4, E3, F2, G1);
+  public static final ImmutableList<Square> A7_DOWN = Nulls.listOf(A7, B6, C5, D4, E3, F2, G1);
 
-  public static final ImmutableList<Square> A8_DOWN = constructListSquare(A8, B7, C6, D5, E4, F3, G2, H1);
+  public static final ImmutableList<Square> A8_DOWN = Nulls.listOf(A8, B7, C6, D5, E4, F3, G2, H1);
 
-  public static final ImmutableList<Square> B8_DOWN = constructListSquare(B8, C7, D6, E5, F4, G3, H2);
+  public static final ImmutableList<Square> B8_DOWN = Nulls.listOf(B8, C7, D6, E5, F4, G3, H2);
 
-  public static final ImmutableList<Square> C8_DOWN = constructListSquare(C8, D7, E6, F5, G4, H3);
+  public static final ImmutableList<Square> C8_DOWN = Nulls.listOf(C8, D7, E6, F5, G4, H3);
 
-  public static final ImmutableList<Square> D8_DOWN = constructListSquare(D8, E7, F6, G5, H4);
+  public static final ImmutableList<Square> D8_DOWN = Nulls.listOf(D8, E7, F6, G5, H4);
 
-  public static final ImmutableList<Square> E8_DOWN = constructListSquare(E8, F7, G6, H5);
+  public static final ImmutableList<Square> E8_DOWN = Nulls.listOf(E8, F7, G6, H5);
 
-  public static final ImmutableList<Square> F8_DOWN = constructListSquare(F8, G7, H6);
+  public static final ImmutableList<Square> F8_DOWN = Nulls.listOf(F8, G7, H6);
 
-  public static final ImmutableList<Square> G8_DOWN = constructListSquare(G8, H7);
+  public static final ImmutableList<Square> G8_DOWN = Nulls.listOf(G8, H7);
 
-  public static final ImmutableList<Square> H8_DOWN = constructListSquare(H8);
+  public static final ImmutableList<Square> H8_DOWN = Nulls.listOf(H8);
 
   private static final ImmutableList<ImmutableList<Square>> WHITE_DIAGONALS;
   private static final ImmutableList<ImmutableList<Square>> BLACK_DIAGONALS;

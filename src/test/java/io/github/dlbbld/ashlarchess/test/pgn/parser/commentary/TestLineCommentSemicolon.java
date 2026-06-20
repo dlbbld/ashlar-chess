@@ -37,15 +37,15 @@ class TestLineCommentSemicolon {
   void pregameLineComment() {
     final PgnGame file = LenientPgnParser.parseText(PgnTestHelper.header("*") + "; opening remark\n1. e4 e5 *\n\n");
     assertEquals(" opening remark", file.pregameCommentary().value());
-    assertEquals(2, file.moveList().size());
+    assertEquals(2, file.moves().size());
   }
 
   @SuppressWarnings("static-method")
   @Test
   void trailingLineCommentAfterWhiteMove() {
     final PgnGame file = LenientPgnParser.parseText(PgnTestHelper.header("*") + "1. e4 ; good opening\ne5 *\n\n");
-    assertEquals(" good opening", Nulls.get(file.moveList(), 0).commentary().value());
-    assertEquals("e5", Nulls.get(file.moveList(), 1).san());
+    assertEquals(" good opening", Nulls.get(file.moves(), 0).commentary().value());
+    assertEquals("e5", Nulls.get(file.moves(), 1).san());
   }
 
   @SuppressWarnings("static-method")
@@ -53,8 +53,8 @@ class TestLineCommentSemicolon {
   void lineCommentOnItsOwnLineAttachesToPrecedingMove() {
     final PgnGame file = LenientPgnParser
         .parseText(PgnTestHelper.header("*") + "1. e4 e5\n; mid-game note\n2. Nf3 Nc6 *\n\n");
-    assertEquals(" mid-game note", Nulls.get(file.moveList(), 1).commentary().value());
-    assertEquals("Nf3", Nulls.get(file.moveList(), 2).san());
+    assertEquals(" mid-game note", Nulls.get(file.moves(), 1).commentary().value());
+    assertEquals("Nf3", Nulls.get(file.moves(), 2).san());
   }
 
   @SuppressWarnings("static-method")
@@ -62,8 +62,8 @@ class TestLineCommentSemicolon {
   void lineCommentRunsOnlyToEndOfLine() {
     // The newline terminates the comment; the following token is ordinary movetext, not comment content.
     final PgnGame file = LenientPgnParser.parseText(PgnTestHelper.header("*") + "1. e4 ;c1\ne5 ;c2\n*\n\n");
-    assertEquals("c1", Nulls.get(file.moveList(), 0).commentary().value());
-    assertEquals("c2", Nulls.get(file.moveList(), 1).commentary().value());
+    assertEquals("c1", Nulls.get(file.moves(), 0).commentary().value());
+    assertEquals("c2", Nulls.get(file.moves(), 1).commentary().value());
   }
 
   @SuppressWarnings("static-method")

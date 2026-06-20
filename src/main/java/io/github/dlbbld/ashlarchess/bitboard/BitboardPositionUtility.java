@@ -61,7 +61,7 @@ public final class BitboardPositionUtility {
    * compare a {@code long}-shaped attack/move set against a {@code Set<Square>}-shaped reference. The returned set
    * iterates squares in ordinal order.
    */
-  public static ImmutableSet<Square> toSquareSet(long bitboard) {
+  public static ImmutableSet<Square> toSquares(long bitboard) {
     if (bitboard == 0L) {
       return ImmutableSet.of();
     }

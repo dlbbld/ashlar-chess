@@ -54,7 +54,7 @@ class TestQueenAttacks {
       final int squareOrdinal = Long.numberOfTrailingZeros(remaining);
       final Square fromSquare = Nulls.get(Square.REAL, squareOrdinal);
       final Set<Square> bitboardAttacks = BitboardPositionUtility
-          .toSquareSet(QueenAttacks.attacks(squareOrdinal, occupied));
+          .toSquares(QueenAttacks.attacks(squareOrdinal, occupied));
       final Set<Square> referenceAttacks = SlidingAttacksTestOracle.queenAttacks(staticPosition, fromSquare, side);
       assertEquals(referenceAttacks, bitboardAttacks,
           side + " queen attacks from " + fromSquare.getName() + " in fixture " + testCase.pgnName());
@@ -69,7 +69,7 @@ class TestQueenAttacks {
         Square.D4, io.github.dlbbld.ashlarchess.board.enums.Piece.WHITE_QUEEN);
     final BitboardPosition bitboardPosition = StaticPositionBridge.fromStaticPosition(staticPosition);
     final Set<Square> bitboardAttacks = BitboardPositionUtility
-        .toSquareSet(QueenAttacks.attacks(Square.D4.ordinal(), bitboardPosition.occupied()));
+        .toSquares(QueenAttacks.attacks(Square.D4.ordinal(), bitboardPosition.occupied()));
     final Set<Square> referenceAttacks = SlidingAttacksTestOracle.queenAttacks(staticPosition, Square.D4, Side.WHITE);
     assertEquals(referenceAttacks, bitboardAttacks);
   }

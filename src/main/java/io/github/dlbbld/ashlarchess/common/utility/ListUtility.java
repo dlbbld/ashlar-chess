@@ -26,24 +26,24 @@ public final class ListUtility {
     return Nulls.getFirst(list);
   }
 
-  public static String calculateCommaSeparatedList(List<String> list) {
+  public static String toCommaSeparatedString(List<String> list) {
     return Nulls.join(COMMA_SEPARATOR_LIST, list);
   }
 
-  public static String calculateSpaceSeparatedList(List<String> list) {
+  public static String toSpaceSeparatedString(List<String> list) {
     return Nulls.join(SPACE_SEPARATOR_LIST, list);
   }
 
-  public static String calculateLineSeparatedList(List<String> list) {
+  public static String toLineSeparatedString(List<String> list) {
     return Nulls.join("\n", list);
   }
 
-  public static String calculateSquareList(Set<Square> squareSet) {
+  public static String formatSquares(Set<Square> squareSet) {
     final List<String> squareList = new ArrayList<>();
     for (final Square square : squareSet) {
       squareList.add(square.getName());
     }
-    return calculateCommaSeparatedList(squareList);
+    return toCommaSeparatedString(squareList);
   }
 
 }

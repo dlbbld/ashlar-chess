@@ -47,7 +47,7 @@ class TestBitboardPositionAttackedSquares {
 
   private static void assertSideAgrees(StaticPosition staticPosition, BitboardPosition bitboardPosition, Side side,
       PgnFen testCase) {
-    final Set<Square> bitboardAttacks = BitboardPositionUtility.toSquareSet(bitboardPosition.attackedSquares(side));
+    final Set<Square> bitboardAttacks = BitboardPositionUtility.toSquares(bitboardPosition.attackedSquares(side));
     final Set<Square> referenceAttacks = AttackedSquaresOracle.calculateAttackedSquares(staticPosition, side);
     assertEquals(referenceAttacks, bitboardAttacks, side + " attackedSquares in fixture " + testCase.pgnName());
   }
@@ -56,13 +56,13 @@ class TestBitboardPositionAttackedSquares {
   @Test
   void initialPositionMatchesReference() {
     final Set<Square> bbWhite = BitboardPositionUtility
-        .toSquareSet(BitboardPosition.INITIAL_POSITION.attackedSquares(Side.WHITE));
+        .toSquares(BitboardPosition.INITIAL_POSITION.attackedSquares(Side.WHITE));
     final Set<Square> refWhite = AttackedSquaresOracle.calculateAttackedSquares(StaticPosition.INITIAL_POSITION,
         Side.WHITE);
     assertEquals(refWhite, bbWhite, "white attackedSquares on initial position");
 
     final Set<Square> bbBlack = BitboardPositionUtility
-        .toSquareSet(BitboardPosition.INITIAL_POSITION.attackedSquares(Side.BLACK));
+        .toSquares(BitboardPosition.INITIAL_POSITION.attackedSquares(Side.BLACK));
     final Set<Square> refBlack = AttackedSquaresOracle.calculateAttackedSquares(StaticPosition.INITIAL_POSITION,
         Side.BLACK);
     assertEquals(refBlack, bbBlack, "black attackedSquares on initial position");

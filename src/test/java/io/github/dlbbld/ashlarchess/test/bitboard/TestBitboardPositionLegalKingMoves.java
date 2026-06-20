@@ -56,7 +56,7 @@ class TestBitboardPositionLegalKingMoves {
     // Bitboard returns the union of legal targets across all own kings; the reference is per-king. Compare per-king
     // by computing the bitboard's legal-king-targets and intersecting with each king's pseudo-legal pattern, but for
     // standard chess (one king per side) the union is just the one king's set.
-    final Set<Square> bitboardTargets = BitboardPositionUtility.toSquareSet(bitboardPosition.legalKingTargets(side));
+    final Set<Square> bitboardTargets = BitboardPositionUtility.toSquares(bitboardPosition.legalKingTargets(side));
 
     // For each own king, ask the reference. Union the answers (handles the multi-king edge case symmetrically).
     final Set<Square> referenceTargets = new TreeSet<>();

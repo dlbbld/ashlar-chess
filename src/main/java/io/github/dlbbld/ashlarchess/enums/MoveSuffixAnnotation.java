@@ -56,11 +56,11 @@ public enum MoveSuffixAnnotation {
     throw new ProgrammingMistakeException("The code for calculating the suffix enum is wrong");
   }
 
-  public static String calculateValueList() {
+  public static String allowedValuesText() {
     final List<String> list = new ArrayList<>();
     for (final MoveSuffixAnnotation suffixEnum : REAL) {
       list.add(suffixEnum.getSuffix());
     }
-    return ListUtility.calculateCommaSeparatedList(list);
+    return ListUtility.toCommaSeparatedString(list);
   }
 }

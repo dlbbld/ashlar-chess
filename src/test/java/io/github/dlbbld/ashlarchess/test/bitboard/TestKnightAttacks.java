@@ -35,7 +35,7 @@ class TestKnightAttacks {
   @Test
   void directAgainstReference() {
     for (final Square fromSquare : Square.REAL) {
-      final Set<Square> bitboardAttacks = BitboardPositionUtility.toSquareSet(KnightAttacks.attacks(fromSquare));
+      final Set<Square> bitboardAttacks = BitboardPositionUtility.toSquares(KnightAttacks.attacks(fromSquare));
       final Set<Square> referenceAttacks = KnightEmptyBoardSquares.getKnightSquares(fromSquare);
       assertEquals(referenceAttacks, bitboardAttacks, "knight attacks from " + fromSquare.getName());
     }
@@ -53,7 +53,7 @@ class TestKnightAttacks {
         long knights = bitboardPosition.whiteKnights() | bitboardPosition.blackKnights();
         while (knights != 0L) {
           final Square fromSquare = Nulls.get(Square.REAL, Long.numberOfTrailingZeros(knights));
-          final Set<Square> bitboardAttacks = BitboardPositionUtility.toSquareSet(KnightAttacks.attacks(fromSquare));
+          final Set<Square> bitboardAttacks = BitboardPositionUtility.toSquares(KnightAttacks.attacks(fromSquare));
           final Set<Square> referenceAttacks = KnightEmptyBoardSquares.getKnightSquares(fromSquare);
           assertEquals(referenceAttacks, bitboardAttacks,
               "knight attacks from " + fromSquare.getName() + " in fixture " + testCase.pgnName());

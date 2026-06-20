@@ -29,8 +29,8 @@ class TestLenientPgnParserTag {
     final PgnGame expected = PgnCacheForLenientPgnParserTestCases.getPgn(PGN_TEST_FOLDER_PATH,
         "01_result_tag_only.pgn");
 
-    assertTrue(TagUtility.hasResult(expected.tagList()));
-    assertEquals(ResultTagValue.ONGOING.getValue(), TagUtility.readResult(expected.tagList()));
+    assertTrue(TagUtility.hasResult(expected.tags()));
+    assertEquals(ResultTagValue.ONGOING.getValue(), TagUtility.readResult(expected.tags()));
 
     TestLenientPgnParserSupport.assertEqualsButTagList(actual, expected);
   }

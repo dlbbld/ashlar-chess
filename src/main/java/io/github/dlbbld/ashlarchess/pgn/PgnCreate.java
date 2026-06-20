@@ -44,7 +44,7 @@ public final class PgnCreate {
   }
 
   public static String toPgnString(PgnGame pgnGame, WriteMode writeMode) {
-    return appendEmptyLine(ListUtility.calculateLineSeparatedList(toPgnLines(pgnGame, writeMode)));
+    return appendEmptyLine(ListUtility.toLineSeparatedString(toPgnLines(pgnGame, writeMode)));
   }
 
   public static ImmutableList<String> toPgnLines(PgnGame pgnGame) {
@@ -53,8 +53,8 @@ public final class PgnCreate {
 
   public static ImmutableList<String> toPgnLines(PgnGame pgnGame, WriteMode writeMode) {
     final PgnGame effective = writeMode == WriteMode.ARCHIVAL ? PgnArchivalNormalization.apply(pgnGame) : pgnGame;
-    return Nulls.copyOfList(calculateFileLines(effective.tagList(), effective.pregameCommentary(),
-        effective.startFen(), effective.moveList(), effective.terminationMarker()));
+    return Nulls.copyOfList(calculateFileLines(effective.tags(), effective.pregameCommentary(),
+        effective.startFen(), effective.moves(), effective.terminationMarker()));
   }
 
   private static String appendEmptyLine(String text) {
@@ -103,7 +103,7 @@ public final class PgnCreate {
     return fileLines;
   }
 
-  private static List<PgnMove> calculatePgnMoveList(List<String> sanList) {
+  private static List<PgnMove> calculatePgnMoves(List<String> sanList) {
     final List<PgnMove> moveList = new ArrayList<>();
 
     for (final String san : sanList) {
@@ -218,7 +218,7 @@ public final class PgnCreate {
    */
   public static PgnGame createPgnGame(Board board, List<Tag> tagList) {
 
-    final List<PgnMove> moveList = calculatePgnMoveList(board.getPerformedMovesAsSan());
+    final List<PgnMove> moveList = calculatePgnMoves(board.getPerformedMovesAsSan());
 
     return new PgnGame(Nulls.copyOfList(tagList), board.getInitialFen(), PgnCommentary.EMPTY,
         Nulls.copyOfList(moveList), calculateResultTagValue(board));

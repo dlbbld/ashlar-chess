@@ -106,7 +106,7 @@ public final class TagUtility {
   }
 
   public static ResultTagValue readResultTagValue(PgnGame pgnGame) {
-    return readResultTagValue(pgnGame.tagList());
+    return readResultTagValue(pgnGame.tags());
   }
 
   static Tag calculateTag(String tagLine) {
@@ -169,7 +169,7 @@ public final class TagUtility {
     for (final StandardTag tag : SEVEN_TAG_ROSTER_TAG_LIST) {
       list.add(tag.getName());
     }
-    return ListUtility.calculateCommaSeparatedList(list);
+    return ListUtility.toCommaSeparatedString(list);
   }
 
   public static void removeTag(List<Tag> tagList, StandardTag tag) {
@@ -197,10 +197,10 @@ public final class TagUtility {
   }
 
   public static String readTagValue(PgnGame pgnGame, String tagName) {
-    if (!existsTagName(pgnGame.tagList(), tagName)) {
+    if (!existsTagName(pgnGame.tags(), tagName)) {
       return "NA";
     }
-    return readTagValue(pgnGame.tagList(), tagName);
+    return readTagValue(pgnGame.tags(), tagName);
   }
 
   public static String readTagValue(PgnGame pgnGame, StandardTag sevenTagRoster) {

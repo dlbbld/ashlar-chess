@@ -38,7 +38,7 @@ final class PgnArchivalNormalization {
   }
 
   static PgnGame apply(PgnGame input) {
-    final List<Tag> tagList = new ArrayList<>(input.tagList());
+    final List<Tag> tagList = new ArrayList<>(input.tags());
     final Fen startFen = input.startFen();
 
     final ResultTagValue marker = decideTerminationMarker(tagList, input.terminationMarker());
@@ -48,7 +48,7 @@ final class PgnArchivalNormalization {
     fillMissingSevenTagRoster(tagList);
     Collections.sort(tagList);
 
-    return new PgnGame(Nulls.copyOfList(tagList), startFen, input.pregameCommentary(), input.moveList(), marker);
+    return new PgnGame(Nulls.copyOfList(tagList), startFen, input.pregameCommentary(), input.moves(), marker);
   }
 
   /**

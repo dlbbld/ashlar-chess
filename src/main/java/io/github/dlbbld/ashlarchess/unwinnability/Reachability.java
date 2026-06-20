@@ -89,14 +89,14 @@ class Reachability {
     final List<ReachabilityVariable> entriesWithValueOneList = calculateEntriesWithValueOne();
 
     final Set<Square> reachableSquareSetWhite = calculateSquareSet(Side.WHITE, entriesWithValueOneList);
-    final String squareListWhite = ListUtility.calculateSquareList(reachableSquareSetWhite);
+    final String squareListWhite = ListUtility.formatSquares(reachableSquareSetWhite);
     lineList.add(Side.WHITE.getName() + ": " + squareListWhite);
 
     final Set<Square> reachableSquareSetBlack = calculateSquareSet(Side.BLACK, entriesWithValueOneList);
-    final String squareListBlack = ListUtility.calculateSquareList(reachableSquareSetBlack);
+    final String squareListBlack = ListUtility.formatSquares(reachableSquareSetBlack);
     lineList.add(Side.BLACK.getName() + ": " + squareListBlack);
 
-    return ListUtility.calculateLineSeparatedList(lineList);
+    return ListUtility.toLineSeparatedString(lineList);
   }
 
   private static Set<Square> calculateSquareSet(Side side, List<ReachabilityVariable> entryList) {

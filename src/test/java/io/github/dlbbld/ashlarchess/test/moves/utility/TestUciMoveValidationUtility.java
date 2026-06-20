@@ -17,7 +17,7 @@ class TestUciMoveValidationUtility {
   @SuppressWarnings("static-method")
   @Test
   void testPromotionPiece() {
-    for (final UciMove uciMove : UciMoveValidationUtility.getUciMoveList()) {
+    for (final UciMove uciMove : UciMoveValidationUtility.getUciMoves()) {
       if (uciMove.isPromotion()) {
         assertNotEquals(PromotionPieceType.NONE, uciMove.promotionPieceType());
       } else {
@@ -29,7 +29,7 @@ class TestUciMoveValidationUtility {
   @SuppressWarnings("static-method")
   @Test
   void testMoveText() {
-    for (final UciMove uciMove : UciMoveValidationUtility.getUciMoveList()) {
+    for (final UciMove uciMove : UciMoveValidationUtility.getUciMoves()) {
       final StringBuilder expectedText = new StringBuilder();
       expectedText.append(uciMove.fromSquare().getName());
       expectedText.append(uciMove.toSquare().getName());
@@ -114,6 +114,6 @@ class TestUciMoveValidationUtility {
 
     assertEquals(1968, total);
 
-    assertEquals(total, UciMoveValidationUtility.getUciMoveList().size());
+    assertEquals(total, UciMoveValidationUtility.getUciMoves().size());
   }
 }

@@ -200,7 +200,7 @@ public final class LenientPgnParser {
     recordResultAndTerminationMarkerItems(tagList, movetext.terminationResult());
     recordSetUpFenCouplingItems(tagList, startFen);
 
-    final List<PgnMove> canonicalMoveList = replayBoardCanonicalizing(startFen, movetext.moveList());
+    final List<PgnMove> canonicalMoveList = replayBoardCanonicalizing(startFen, movetext.moves());
 
     return new PgnGame(Nulls.copyOfList(tagList), startFen, movetext.pregameCommentary(),
         Nulls.copyOfList(canonicalMoveList), movetext.terminationResult());
@@ -318,7 +318,7 @@ public final class LenientPgnParser {
     if (!ResultTagValue.exists(value)) {
       throw new LenientPgnParserValidationException(LenientPgnParserValidationProblem.TAG_RESULT_VALUE_INVALID,
           SanValidationProblem.NONE, "The " + StandardTag.RESULT.getName() + " tag value must exactly match one \""
-              + ResultTagValue.calculateList() + "\".");
+              + ResultTagValue.allowedValuesText() + "\".");
     }
   }
 
@@ -330,7 +330,7 @@ public final class LenientPgnParser {
     if (!SetUpTagValue.exists(value)) {
       throw new LenientPgnParserValidationException(LenientPgnParserValidationProblem.TAG_SET_UP_VALUE_INVALID,
           SanValidationProblem.NONE, "The " + StandardTag.SET_UP.getName() + " tag value must exactly match one \""
-              + SetUpTagValue.calculateList() + "\".");
+              + SetUpTagValue.allowedValuesText() + "\".");
     }
     final SetUpTagValue setUpTagValue = SetUpTagValue.parse(value);
     if (setUpTagValue == SetUpTagValue.START_FROM_INITIAL_POSITION && TagUtility.hasFen(tagList)) {
@@ -346,10 +346,10 @@ public final class LenientPgnParser {
   // Movetext section
   // -------------------------------------------------------------------------------------------------
 
-  private record MovetextOutcome(List<PgnMove> moveList, PgnCommentary pregameCommentary,
+  private record MovetextOutcome(List<PgnMove> moves, PgnCommentary pregameCommentary,
       @Nullable ResultTagValue terminationResult) {
     private MovetextOutcome {
-      moveList = Nulls.copyOfList(moveList);
+      moves = Nulls.copyOfList(moves);
     }
   }
 

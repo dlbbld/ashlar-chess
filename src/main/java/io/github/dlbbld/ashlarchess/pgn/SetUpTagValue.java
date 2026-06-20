@@ -32,12 +32,12 @@ enum SetUpTagValue {
     return value;
   }
 
-  public static String calculateList() {
+  public static String allowedValuesText() {
     final List<String> list = new ArrayList<>();
     for (final SetUpTagValue tagValue : REAL) {
       list.add(tagValue.getValue());
     }
-    return ListUtility.calculateCommaSeparatedList(list);
+    return ListUtility.toCommaSeparatedString(list);
   }
 
   public static boolean exists(String value) {

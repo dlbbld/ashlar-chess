@@ -91,7 +91,7 @@ class TestLegalMovesAgainstPythonChessOracle {
       for (final LegalMovesRecord record : records) {
         totalFixtures++;
         final PgnGame pgnGame = StrictPgnParser.parsePath(folderPath, record.pgn());
-        final int plyCount = pgnGame.moveList().size();
+        final int plyCount = pgnGame.moves().size();
 
         try {
           assertEquals(plyCount + 1, record.perPly().size(),
@@ -116,7 +116,7 @@ class TestLegalMovesAgainstPythonChessOracle {
           }
 
           if (ply < plyCount) {
-            final PgnMove move = Nulls.get(pgnGame.moveList(), ply);
+            final PgnMove move = Nulls.get(pgnGame.moves(), ply);
             board.moveStrict(move.san());
           }
         }

@@ -54,7 +54,7 @@ class TestRookAttacks {
       final int squareOrdinal = Long.numberOfTrailingZeros(remaining);
       final Square fromSquare = Nulls.get(Square.REAL, squareOrdinal);
       final Set<Square> bitboardAttacks = BitboardPositionUtility
-          .toSquareSet(RookAttacks.attacks(squareOrdinal, occupied));
+          .toSquares(RookAttacks.attacks(squareOrdinal, occupied));
       final Set<Square> referenceAttacks = SlidingAttacksTestOracle.rookAttacks(staticPosition, fromSquare, side);
       assertEquals(referenceAttacks, bitboardAttacks,
           side + " rook attacks from " + fromSquare.getName() + " in fixture " + testCase.pgnName());
@@ -69,7 +69,7 @@ class TestRookAttacks {
         Square.D4, io.github.dlbbld.ashlarchess.board.enums.Piece.WHITE_ROOK);
     final BitboardPosition bitboardPosition = StaticPositionBridge.fromStaticPosition(staticPosition);
     final Set<Square> bitboardAttacks = BitboardPositionUtility
-        .toSquareSet(RookAttacks.attacks(Square.D4.ordinal(), bitboardPosition.occupied()));
+        .toSquares(RookAttacks.attacks(Square.D4.ordinal(), bitboardPosition.occupied()));
     final Set<Square> referenceAttacks = SlidingAttacksTestOracle.rookAttacks(staticPosition, Square.D4, Side.WHITE);
     assertEquals(referenceAttacks, bitboardAttacks);
   }

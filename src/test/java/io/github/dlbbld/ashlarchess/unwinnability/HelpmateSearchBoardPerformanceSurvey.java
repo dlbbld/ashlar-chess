@@ -113,7 +113,7 @@ public class HelpmateSearchBoardPerformanceSurvey {
       final PgnGame pgnGame = PgnCacheForStrictPgnParserTestCases.getPgn(pgnTest.getFolderPath(), testCase.pgnName());
       final Board board = new Board(pgnGame.startFen());
       addSetup(result, board);
-      for (final PgnMove move : pgnGame.moveList()) {
+      for (final PgnMove move : pgnGame.moves()) {
         board.moveStrict(move.san());
         addSetup(result, board);
         if (result.size() >= MAX_POSITIONS_PER_GROUP) {

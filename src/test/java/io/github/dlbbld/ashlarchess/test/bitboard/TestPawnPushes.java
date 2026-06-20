@@ -55,7 +55,7 @@ class TestPawnPushes {
       final int squareOrdinal = Long.numberOfTrailingZeros(remaining);
       final Square fromSquare = Nulls.get(Square.REAL, squareOrdinal);
       final Set<Square> bitboardPushes = BitboardPositionUtility
-          .toSquareSet(PawnMoves.pushes(squareOrdinal, occupied, side));
+          .toSquares(PawnMoves.pushes(squareOrdinal, occupied, side));
       final Set<Square> referencePushes = referencePushes(staticPosition, fromSquare, side);
       assertEquals(referencePushes, bitboardPushes,
           side + " pawn pushes from " + fromSquare.getName() + " in fixture " + testCase.pgnName());

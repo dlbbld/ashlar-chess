@@ -3,7 +3,6 @@
 
 package io.github.dlbbld.ashlarchess.board.enums;
 
-import static io.github.dlbbld.ashlarchess.common.utility.ImmutableUtility.constructListSquare;
 
 import java.util.ArrayList;
 import java.util.EnumMap;
@@ -88,8 +87,8 @@ public enum Square implements Comparable<Square> {
   private final Rank rank;
   private final String name;
 
-  public static final ImmutableList<Square> SEVENTH_RANK = constructListSquare(A7, B7, C7, D7, E7, F7, G7, H7);
-  public static final ImmutableList<Square> SECOND_RANK = constructListSquare(A2, B2, C2, D2, E2, F2, G2, H2);
+  public static final ImmutableList<Square> SEVENTH_RANK = Nulls.listOf(A7, B7, C7, D7, E7, F7, G7, H7);
+  public static final ImmutableList<Square> SECOND_RANK = Nulls.listOf(A2, B2, C2, D2, E2, F2, G2, H2);
 
   Square(SquareType squareType, File file, Rank rank, String name) {
     this.squareType = squareType;
@@ -195,7 +194,7 @@ public enum Square implements Comparable<Square> {
 
   // all squares except the empty one
   // order is not allowed to be changed as this will cause semantical errors
-  public static final ImmutableList<Square> REAL = constructListSquare(A1, B1, C1, D1, E1, F1, G1, H1, A2, B2, C2, D2,
+  public static final ImmutableList<Square> REAL = Nulls.listOf(A1, B1, C1, D1, E1, F1, G1, H1, A2, B2, C2, D2,
       E2, F2, G2, H2, A3, B3, C3, D3, E3, F3, G3, H3, A4, B4, C4, D4, E4, F4, G4, H4, A5, B5, C5, D5, E5, F5, G5, H5,
       A6, B6, C6, D6, E6, F6, G6, H6, A7, B7, C7, D7, E7, F7, G7, H7, A8, B8, C8, D8, E8, F8, G8, H8);
 
@@ -333,25 +332,25 @@ public enum Square implements Comparable<Square> {
   }
 
   private static void initializeWhite(List<ImmutableList<Square>> listList) {
-    listList.add(constructListSquare(A2, A4));
-    listList.add(constructListSquare(B2, B4));
-    listList.add(constructListSquare(C2, C4));
-    listList.add(constructListSquare(D2, D4));
-    listList.add(constructListSquare(E2, E4));
-    listList.add(constructListSquare(F2, F4));
-    listList.add(constructListSquare(G2, G4));
-    listList.add(constructListSquare(H2, H4));
+    listList.add(Nulls.listOf(A2, A4));
+    listList.add(Nulls.listOf(B2, B4));
+    listList.add(Nulls.listOf(C2, C4));
+    listList.add(Nulls.listOf(D2, D4));
+    listList.add(Nulls.listOf(E2, E4));
+    listList.add(Nulls.listOf(F2, F4));
+    listList.add(Nulls.listOf(G2, G4));
+    listList.add(Nulls.listOf(H2, H4));
   }
 
   private static void initializeBlack(List<ImmutableList<Square>> listList) {
-    listList.add(constructListSquare(A7, A5));
-    listList.add(constructListSquare(B7, B5));
-    listList.add(constructListSquare(C7, C5));
-    listList.add(constructListSquare(D7, D5));
-    listList.add(constructListSquare(E7, E5));
-    listList.add(constructListSquare(F7, F5));
-    listList.add(constructListSquare(G7, G5));
-    listList.add(constructListSquare(H7, H5));
+    listList.add(Nulls.listOf(A7, A5));
+    listList.add(Nulls.listOf(B7, B5));
+    listList.add(Nulls.listOf(C7, C5));
+    listList.add(Nulls.listOf(D7, D5));
+    listList.add(Nulls.listOf(E7, E5));
+    listList.add(Nulls.listOf(F7, F5));
+    listList.add(Nulls.listOf(G7, G5));
+    listList.add(Nulls.listOf(H7, H5));
   }
 
   private void check() {

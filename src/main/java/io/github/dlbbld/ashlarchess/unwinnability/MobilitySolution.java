@@ -89,7 +89,7 @@ class MobilitySolution {
     return result;
   }
 
-  public Set<PiecePlacement> getPiecePlacementSet() {
+  public Set<PiecePlacement> getPiecePlacements() {
     @SuppressWarnings("null") @NonNull final Set<PiecePlacement> keySet = mobilityMap.keySet();
     // treeset for ordering
     return new TreeSet<>(keySet);
@@ -113,14 +113,14 @@ class MobilitySolution {
       }
       final StringBuilder pieceDescription = new StringBuilder();
       pieceDescription.append(piecePlacement.toString());
-      final String squareList = ListUtility.calculateSquareList(reachable);
+      final String squareList = ListUtility.formatSquares(reachable);
       pieceDescription.append(": ");
       pieceDescription.append(squareList);
       @SuppressWarnings("null") @NonNull final String string = pieceDescription.toString();
       lineList.add(string);
     }
 
-    return ListUtility.calculateLineSeparatedList(lineList);
+    return ListUtility.toLineSeparatedString(lineList);
   }
 
   @Override
