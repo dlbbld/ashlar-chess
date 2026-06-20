@@ -20,7 +20,9 @@ A surface-only release. It retires the `HalfMove` concept, replaces the "halfmov
 
 ### Behavioral
 
-- No rule, parser, or report behavior changes: move legality, SAN/FEN/PGN parsing and export, unwinnability and adjudication verdicts, and all report output are identical to 18.1.0. The one observable change is cosmetic — the core `board.enums` types now have a conventional `toString()` (see Notable).
+- No rule, report, or adjudication behavior changes: move legality, FEN/SAN/PGN export, unwinnability and adjudication verdicts, and all report output are identical to 18.1.0. Parsing is identical except for the two deliberate additions below. The one cosmetic change is the conventional `toString()` on the core `board.enums` types (see Notable).
+- The lenient PGN parser now accepts `;` rest-of-line comments (PGN import format, spec section 5), attaching them as commentary exactly like brace comments; previously the `;` leaked into a SAN token and the parse failed. The strict PGN parser still rejects them — export format does not include `;` comments.
+- `NonePointerException` is now a `UsageException` rather than a `ProgrammingMistakeException`, and the FEN/PGN `validate(...)` methods now let a `ProgrammingMistakeException` propagate instead of masking it as `UNKNOWN_ERROR`. See Breaking → Exceptions.
 
 ### Breaking
 
@@ -62,6 +64,8 @@ Formatting / model:
 
 - `HalfMoveUtility` renamed to `MoveNumberFormat`.
 - `DynamicPosition.isEnPassantCapturePossible()` removed — test `enPassantCaptureTargetSquare() != Square.NONE` directly.
+- `LegalMove.pieceCaptured()` renamed to `capturedPiece()` (record component and accessor) — a "captured piece" noun, reading beside `movingPiece`.
+- `UciMove.text()` renamed to `uci()` (record component and accessor) — the generic `text` becomes the domain term.
 
 Model invariants:
 
@@ -91,6 +95,7 @@ FEN:
 Parser entry points — plain `parse` / `validate` when a parser has one input kind; source suffixes only when it has several:
 
 - SAN (text only): `LenientSanParser.parseText(String, Board)` / `StrictSanParser.parseText(String, Board)` → `parse(...)`. Removed `LenientSanParser.validateText(String, Board)` — a `void`-returning convenience with no strict counterpart; `parse(...)` validates by construction.
+- The SAN parse-result types are renamed so the `...ParserValidationResult` suffix stays reserved for what `validate()` returns (cf. the FEN/PGN validate results): `StrictSanParserValidationResult` → `StrictSanParseResult`, `LenientSanParserValidationResult` → `LenientSanParseResult`. They are returned by `parse(...)` (and `Board.moveStrict` / `moveLenient`), carry the resolved move — lenient also carries the forgiven items — and keep their shape-symmetric design.
 - FEN (text only): `LenientFenParser.parseText(String)` → `parse(String)`; `LenientFenParser.validateText(String)` → `validate(String)`. Strict FEN now also has `StrictFenParser.parse(String)` / `validate(String)`.
 - PGN (text, file path, line list) — source kind matters, so suffixes stay: the `parse(Path)` / `parse(Path, String)` / `parse(String)` path overloads → `parsePath(...)`; `parse(List<String>)` → `parseLines(...)`; the `validate(Path)` / `validate(Path, String)` / `validate(String)` overloads → `validatePath(...)`. `parseText(String)` and `validateText(String)` are unchanged. This removes the `parse(String pgnPath)`-beside-`parseText(String pgn)` footgun (same parameter type, opposite meaning). Applies to both `StrictPgnParser` and `LenientPgnParser`.
 
@@ -116,6 +121,7 @@ FEN / SAN / LAN serializers use the `to*` idiom:
 - `FenBoard.calculateFen(Board)` → `FenBoard.toFen(Board)`.
 - `MoveToSan.calculateSanLastMove(LegalMove, List<LegalMove>, SanTerminalMarker)` → `MoveToSan.toSan(LegalMove move, List<LegalMove> legalMovesBeforeMove, SanTerminalMarker)`.
 - `MoveToLan.calculateLanLastMove(LegalMove, SanTerminalMarker)` → `MoveToLan.toLan(LegalMove move, SanTerminalMarker)`.
+- `UciMoveUtility.convertMoveSpecificationToUci(Side, MoveSpecification)` → `toUci(...)`, `convertUciMoveToMoveSpecification(Board, UciMove)` → `toMoveSpecification(...)`, and `convertUciMoveToSan(Board, UciMove)` → `toSan(...)` — dropping the `convert*` prefix for the `to*` idiom.
 
 `EnumConstants` removed from the public API:
 
@@ -146,7 +152,13 @@ Immutable collection types in signatures:
 - `UciMoveValidationUtility.getUciMoveList()` returns `ImmutableList<UciMove>` (was `List<UciMove>`).
 - `SquareUtility.getPromotionRankList(Side)` (renamed from `Square.getPromotionRank`) and `calculateEnPassantCaptureTargetSquareList(Side)` return `ImmutableList<Square>` (was `List<Square>`).
 - The empty-board square getters — `KnightEmptyBoardSquares.getKnightSquares`, `KingNonCastlingEmptyBoardSquares.getKingSquares`, `PawnDiagonalSquares.getPawnDiagonalSquares`, and `Pawn{Any,One,Two}AdvanceEmptyBoardSquares.getPawnSquares` — return `ImmutableSet<Square>` (was `Set<Square>`).
+- `BitboardPosition.potentialToSquares(Square, long)` and `legalMoves(Side, long)` return `ImmutableSet<Square>` / `ImmutableSet<MoveSpecification>` — previously a freshly-allocated mutable `TreeSet` leaked through a public `Set<...>` return.
 - Callers assigning to `List` / `Set` are unaffected; the change is binary-incompatible and only tightens the declared type.
+
+Exceptions:
+
+- `NonePointerException` now extends `UsageException` instead of `ProgrammingMistakeException`. Reading a property of a `NONE` sentinel (e.g. `Piece.NONE.getSide()` after reading an empty square) is caller misuse, not a library bug. Code that caught `ProgrammingMistakeException` to trap NONE-access should catch `UsageException` (or `NonePointerException`) instead.
+- The strict / lenient FEN and PGN `validate(...)` methods now let a `ProgrammingMistakeException` propagate rather than folding it into an `UNKNOWN_ERROR` result, so a genuine library bug fails fast. Caller-fault runtime errors (including NONE-access, now a `UsageException`) still surface as `UNKNOWN_ERROR`.
 
 Dead position is its own analyzer:
 
