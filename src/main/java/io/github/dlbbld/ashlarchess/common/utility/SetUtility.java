@@ -20,4 +20,18 @@ public final class SetUtility {
     return Nulls.getFirst(new ArrayList<>(set));
   }
 
+  public static <E> boolean isDisjoint(Set<E> firstSet, Set<E> secondSet) {
+    for (final E elementFirstSet : firstSet) {
+      if (secondSet.contains(elementFirstSet)) {
+        return false;
+      }
+    }
+    for (final E elementSecondSet : secondSet) {
+      if (firstSet.contains(elementSecondSet)) {
+        return false;
+      }
+    }
+    return true;
+  }
+
 }

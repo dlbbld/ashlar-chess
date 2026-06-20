@@ -24,7 +24,7 @@ import io.github.dlbbld.ashlarchess.board.enums.Side;
 import io.github.dlbbld.ashlarchess.board.enums.Square;
 import io.github.dlbbld.ashlarchess.common.Nulls;
 import io.github.dlbbld.ashlarchess.common.exceptions.ProgrammingMistakeException;
-import io.github.dlbbld.ashlarchess.common.utility.BasicUtility;
+import io.github.dlbbld.ashlarchess.common.utility.SetUtility;
 import io.github.dlbbld.ashlarchess.common.utility.StaticPositionUtility;
 
 public final class PawnWallGeometricAnalyzer {
@@ -178,13 +178,13 @@ public final class PawnWallGeometricAnalyzer {
       // side. When the intersection is empty we think we hold the promise.
       final Set<Square> attackingSquaresWhite = calculateAttackingSquares(board, Side.WHITE);
       final Set<Square> pawnSquaresBlack = calculatePawnSquares(board, Side.BLACK);
-      if (!BasicUtility.isDisjoint(attackingSquaresWhite, pawnSquaresBlack)) {
+      if (!SetUtility.isDisjoint(attackingSquaresWhite, pawnSquaresBlack)) {
         return false;
       }
 
       final Set<Square> attackingSquaresBlack = calculateAttackingSquares(board, Side.BLACK);
       final Set<Square> pawnSquaresWhite = calculatePawnSquares(board, Side.WHITE);
-      if (!BasicUtility.isDisjoint(attackingSquaresBlack, pawnSquaresWhite)) {
+      if (!SetUtility.isDisjoint(attackingSquaresBlack, pawnSquaresWhite)) {
         return false;
       }
     }

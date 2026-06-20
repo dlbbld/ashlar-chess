@@ -13,7 +13,6 @@ import io.github.dlbbld.ashlarchess.board.enums.Square;
 import io.github.dlbbld.ashlarchess.board.enums.SquareType;
 import io.github.dlbbld.ashlarchess.common.Nulls;
 import io.github.dlbbld.ashlarchess.common.exceptions.ProgrammingMistakeException;
-import io.github.dlbbld.ashlarchess.common.utility.BasicUtility;
 import io.github.dlbbld.ashlarchess.common.utility.SetUtility;
 import io.github.dlbbld.ashlarchess.squares.KingNonCastlingEmptyBoardSquares;
 
@@ -135,7 +134,7 @@ final class UnwinnableSemiStatic {
           }
           if (piecePlacement.pieceType() == PieceType.PAWN && expandedPawnRegion
               && piecePlacement.squareOriginal().getFile() != target.getFile()
-              && !BasicUtility.isDisjoint(MobilityFunctions.predecessorsCapture(piecePlacement, target), pieceRegion)) {
+              && !SetUtility.isDisjoint(MobilityFunctions.predecessorsCapture(piecePlacement, target), pieceRegion)) {
             result.add(piecePlacement);
             break;
           }

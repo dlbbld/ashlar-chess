@@ -27,20 +27,6 @@ public final class BasicUtility {
     return Nulls.join(SPACE_SEPARATOR_LIST, list);
   }
 
-  public static <E> boolean isDisjoint(Set<E> firstSet, Set<E> secondSet) {
-    for (final E elementFirstSet : firstSet) {
-      if (secondSet.contains(elementFirstSet)) {
-        return false;
-      }
-    }
-    for (final E elementSecondSet : secondSet) {
-      if (firstSet.contains(elementSecondSet)) {
-        return false;
-      }
-    }
-    return true;
-  }
-
   public static String calculateLineSeparatedList(List<String> list) {
     return Nulls.join("\n", list);
   }

@@ -19,7 +19,7 @@ import io.github.dlbbld.ashlarchess.board.enums.Side;
 import io.github.dlbbld.ashlarchess.board.enums.Square;
 import io.github.dlbbld.ashlarchess.common.Nulls;
 import io.github.dlbbld.ashlarchess.common.exceptions.ProgrammingMistakeException;
-import io.github.dlbbld.ashlarchess.common.utility.BasicUtility;
+import io.github.dlbbld.ashlarchess.common.utility.SetUtility;
 
 //Figure 7 Mobility algorithm.
 final class Mobility {
@@ -377,7 +377,7 @@ final class Mobility {
     final Set<Square> promotionSquareSet = MobilityFunctions.promotion(candidatePiecePlacement);
     final Set<Square> squareSetWithValueOne = mobility.calculateSquaresWithValueOne(candidatePiecePlacement);
 
-    final boolean isValidPawnPromotion = !BasicUtility.isDisjoint(promotionSquareSet, squareSetWithValueOne);
+    final boolean isValidPawnPromotion = !SetUtility.isDisjoint(promotionSquareSet, squareSetWithValueOne);
 
     return isValidPawnPromotion;
   }

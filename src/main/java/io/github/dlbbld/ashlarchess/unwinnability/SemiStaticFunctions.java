@@ -9,7 +9,7 @@ import java.util.TreeSet;
 import io.github.dlbbld.ashlarchess.board.enums.PieceType;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
 import io.github.dlbbld.ashlarchess.board.enums.Square;
-import io.github.dlbbld.ashlarchess.common.utility.BasicUtility;
+import io.github.dlbbld.ashlarchess.common.utility.SetUtility;
 
 final class SemiStaticFunctions {
 
@@ -23,7 +23,7 @@ final class SemiStaticFunctions {
     for (final PiecePlacement piecePlacement : ms.getPiecePlacementSet()) {
       if (piecePlacement.side() == c) {
         final Set<Square> regionPiece = SemiStaticFunctions.attackedRegion(piecePlacement, ms);
-        if (!BasicUtility.isDisjoint(regionPiece, adjacentSet)) {
+        if (!SetUtility.isDisjoint(regionPiece, adjacentSet)) {
           result.add(piecePlacement);
         }
       }
@@ -38,7 +38,7 @@ final class SemiStaticFunctions {
     for (final Square square : Square.REAL) {
       final Set<Square> predecessorsCaptureSet = MobilityFunctions.predecessorsCapture(piecePlacement, square);
 
-      if (!BasicUtility.isDisjoint(predecessorsCaptureSet, regionPiece)) {
+      if (!SetUtility.isDisjoint(predecessorsCaptureSet, regionPiece)) {
         result.add(square);
       }
     }
@@ -54,7 +54,7 @@ final class SemiStaticFunctions {
     for (final PiecePlacement piecePlacement : ms.getPiecePlacementSet()) {
       if (piecePlacement.side() != c && piecePlacement.pieceType() != PieceType.KING) {
         final Set<Square> regionPiece = SemiStaticFunctions.region(piecePlacement, ms);
-        if (!BasicUtility.isDisjoint(regionPiece, adjacentSet)) {
+        if (!SetUtility.isDisjoint(regionPiece, adjacentSet)) {
           result.add(piecePlacement);
         }
       }
@@ -69,7 +69,7 @@ final class SemiStaticFunctions {
     for (final PiecePlacement piecePlacement : ms.getPiecePlacementSet()) {
       if (piecePlacement.side() != intendedLosersKing.side()) {
         final Set<Square> regionPiece = SemiStaticFunctions.region(piecePlacement, ms);
-        if (!BasicUtility.isDisjoint(regionPiece, regionKing)) {
+        if (!SetUtility.isDisjoint(regionPiece, regionKing)) {
           result.add(piecePlacement);
         }
       }
