@@ -35,7 +35,7 @@ import com.google.common.collect.Sets;
 
 import io.github.dlbbld.ashlarchess.common.exceptions.ProgrammingMistakeException;
 
-public class Nulls {
+public final class Nulls {
 
   private Nulls() {
   }

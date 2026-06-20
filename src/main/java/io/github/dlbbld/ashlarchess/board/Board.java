@@ -60,9 +60,12 @@ import io.github.dlbbld.ashlarchess.unwinnability.UnwinnableQuickAnalyzer;
 
 /**
  * The library's central type - a chess <em>game</em>, not merely a position. A {@code Board} carries the position
- * <strong>plus</strong> the move history from its initial FEN: every move ever performed, the legal-move set after
- * each, the halfmove clock, repetition counts, castling-right loss reasons, derived SAN/LAN strings - everything needed
- * to answer rule-level questions about the game so far.
+ * <strong>plus</strong> the move history from its initial FEN: one record per position reached (the move played, the
+ * check / checkmate / stalemate flags, the dynamic position, the halfmove clock, the repetition count, the
+ * castling-right loss reasons, and the derived SAN / LAN strings), plus the legal moves of the <em>current</em>
+ * position - everything needed to answer rule-level questions about the game so far. Legal moves are derived cache,
+ * not history: past positions do not retain their legal-move lists, and the current set is recomputed on
+ * {@link #unmove()}.
  *
  * <h2>Construction</h2>
  *
@@ -83,9 +86,11 @@ import io.github.dlbbld.ashlarchess.unwinnability.UnwinnableQuickAnalyzer;
  * {@link #move(MoveSpecification)}, {@link #movesStrict(String...)}, and is undone by {@link #unmove()}. Both
  * move-pipelines validate the candidate against the current legal-move set; an invalid move throws (see
  * {@link io.github.dlbbld.ashlarchess.exceptions.InvalidMoveException} from the {@code MoveSpecification} pipeline,
- * {@code SanValidationException} from the SAN pipeline). Checkmate, stalemate, and mutual insufficient material block
- * further moves. Fivefold repetition, the 75-move rule, and analyzer-driven dead positions are queryable states; the
- * move pipeline does <em>not</em> reject moves on those conditions. The package-level Javadoc on
+ * {@code SanValidationException} from the SAN pipeline). The move pipeline does <em>not</em> gate on game-end states:
+ * at checkmate and stalemate the legal-move set is empty, so any attempted move fails through ordinary legality; at
+ * mutual insufficient material, fivefold repetition, the 75-move rule, and analyzer-driven dead positions, legal moves
+ * still exist and the pipeline accepts them (the caller polls and decides whether to adjudicate). The package-level
+ * Javadoc on
  * {@link io.github.dlbbld.ashlarchess.board} documents the strict-game invariant in detail.
  *
  * <h2>Querying the game</h2>
@@ -252,7 +257,8 @@ public final class Board {
 
   /**
    * Plays the given move on this board. The {@code MoveSpecification} is validated against the current legal-move set;
-   * an illegal move (or a move on a game already terminated) throws {@link InvalidMoveException}.
+   * an illegal move throws {@link InvalidMoveException}. (The pipeline does not gate on game-end states; see the class
+   * Javadoc.)
    */
   public void move(MoveSpecification moveSpecification) throws InvalidMoveException {
     ValidateNewMove.validateNewMove(this, moveSpecification);
