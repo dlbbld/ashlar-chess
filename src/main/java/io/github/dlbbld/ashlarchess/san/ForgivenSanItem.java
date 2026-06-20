@@ -14,7 +14,7 @@ import com.google.common.collect.ImmutableList;
  * @param originalToken the original SAN token as the user wrote it (the entire move, not just the deviating fragment)
  * @param canonicalSan  the canonical SAN equivalent the parser resolved the input to
  */
-public record ForgivenItem(LenientSanValidationProblem code, String originalToken, String canonicalSan) {
+public record ForgivenSanItem(LenientSanValidationProblem code, String originalToken, String canonicalSan) {
 
   /**
    * Shared empty list for the "no deviations forgiven" case. Centralised here so the {@code @NonNull} suppression on
@@ -22,9 +22,9 @@ public record ForgivenItem(LenientSanValidationProblem code, String originalToke
    * one place rather than at every caller.
    */
   @SuppressWarnings("null")
-  public static final @NonNull ImmutableList<@NonNull ForgivenItem> EMPTY_LIST = ImmutableList.of();
+  public static final @NonNull ImmutableList<@NonNull ForgivenSanItem> EMPTY_LIST = ImmutableList.of();
 
-  public ForgivenItem {
+  public ForgivenSanItem {
     if (originalToken.isBlank()) {
       throw new IllegalArgumentException("originalToken must not be blank");
     }

@@ -43,8 +43,8 @@ public final class TestLenientPgnParserExceptionSupport {
       LenientPgnParserValidationProblem expectedParserProblem, SanValidationProblem expectedSanProblem) {
     final LenientPgnParserValidationResult result = LenientPgnParser.validatePath(pgnTestFolderPath, pgnName);
     assertFalse(result.isValid());
-    assertEquals(expectedParserProblem, result.problemParser());
-    assertEquals(expectedSanProblem, result.problemSan());
+    assertEquals(expectedParserProblem, result.parserProblem());
+    assertEquals(expectedSanProblem, result.sanProblem());
   }
 
 }

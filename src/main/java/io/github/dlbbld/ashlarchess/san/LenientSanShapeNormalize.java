@@ -83,7 +83,7 @@ final class LenientSanShapeNormalize {
       if (hasO && hasZero) {
         throw new LenientSanParserValidationException(
             Message.getString("validation.san.lenient.mixedCastlingZeroAndO", text), text, SanValidationProblem.NONE,
-            ForgivenItem.EMPTY_LIST);
+            ForgivenSanItem.EMPTY_LIST);
       }
       if (hasZero) {
         codes.add(LenientSanValidationProblem.ZERO_INSTEAD_OF_O_CASTLING);

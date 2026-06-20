@@ -43,8 +43,8 @@ public final class TestStrictPgnParserExceptionSupport {
       StrictPgnParserValidationProblem expectedParserProblem, SanValidationProblem expectedSanProblem) {
     final StrictPgnParserValidationResult result = StrictPgnParser.validatePath(pgnTestFolderPath, pgnName);
     assertFalse(result.isValid());
-    assertEquals(expectedParserProblem, result.problemParser());
-    assertEquals(expectedSanProblem, result.problemSan());
+    assertEquals(expectedParserProblem, result.parserProblem());
+    assertEquals(expectedSanProblem, result.sanProblem());
   }
 
 }

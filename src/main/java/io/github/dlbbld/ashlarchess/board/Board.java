@@ -288,7 +288,7 @@ public final class Board {
    * long-algebraic / UCI form, castling with digit zero, missing or wrong check / checkmate suffix, over-specification,
    * missing or spurious capture marker, missing promotion equals, explicit pawn letter). The returned
    * {@link LenientSanParseResult} carries the resolved {@code MoveSpecification} together with one
-   * {@code ForgivenItem} per deviation that was forgiven; on canonical input the forgiven-items list is empty.
+   * {@code ForgivenSanItem} per deviation that was forgiven; on canonical input the forgiven-items list is empty.
    *
    * @throws io.github.dlbbld.ashlarchess.san.LenientSanParserValidationException if the input cannot be resolved to a
    *                                                                              legal move even after applying every

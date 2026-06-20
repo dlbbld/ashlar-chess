@@ -13,7 +13,7 @@ import org.junit.jupiter.api.Test;
 import io.github.dlbbld.ashlarchess.common.Nulls;
 import io.github.dlbbld.ashlarchess.pgn.LenientPgnParser;
 import io.github.dlbbld.ashlarchess.pgn.LenientPgnParserValidationResult;
-import io.github.dlbbld.ashlarchess.san.ForgivenItem;
+import io.github.dlbbld.ashlarchess.san.ForgivenSanItem;
 import io.github.dlbbld.ashlarchess.san.LenientSanValidationProblem;
 import io.github.dlbbld.ashlarchess.test.pgntest.constants.PgnTestConstants;
 
@@ -149,7 +149,7 @@ class TestLenientPgnParserSanForgivenItems {
         "Expected valid lenient parse of " + fixtureFileName + " but got: " + result.message());
     assertEquals(1, result.sanForgivenItems().size(),
         "Expected exactly one forgiven item in " + fixtureFileName + " but got: " + result.sanForgivenItems());
-    final ForgivenItem item = Nulls.get(result.sanForgivenItems(), 0);
+    final ForgivenSanItem item = Nulls.get(result.sanForgivenItems(), 0);
     assertEquals(expectedCode, item.code(),
         "Expected forgiven code " + expectedCode + " in " + fixtureFileName + " but got: " + item.code());
   }

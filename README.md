@@ -516,7 +516,7 @@ Output:
 
 #### PGN SAN tolerances
 
-The lenient PGN parser accepts SAN moves that deviate from canonical SAN in any of the following ways. Each accepted deviation is surfaced as a typed `ForgivenItem` via `LenientPgnParserValidationResult.sanForgivenItems()`, so consumers can either silently accept or warn the user. The full taxonomy (21 codes) is documented in `specification.md` §3.3.1.
+The lenient PGN parser accepts SAN moves that deviate from canonical SAN in any of the following ways. Each accepted deviation is surfaced as a typed `ForgivenSanItem` via `LenientPgnParserValidationResult.sanForgivenItems()`, so consumers can either silently accept or warn the user. The full taxonomy (21 codes) is documented in `specification.md` §3.3.1.
 
 - **Castling**: `0-0` / `0-0-0` (zero instead of letter O)
 - **Notation form**: long algebraic (`e2-e4`, `Nb1-d7`), UCI (`e2e4`, `e7e8q`, `e1g1` for castling), explicit pawn letter (`Pe4`)
@@ -540,7 +540,7 @@ final String pgn = """
     """;
 final LenientPgnParserValidationResult result = LenientPgnParser.validateText(pgn);
 System.out.println(result.isValid());
-for (final ForgivenItem item : result.sanForgivenItems()) {
+for (final ForgivenSanItem item : result.sanForgivenItems()) {
   System.out.println(item.code() + ": " + item.originalToken() + " -> " + item.canonicalSan());
 }
 ```

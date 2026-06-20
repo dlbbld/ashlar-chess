@@ -16,7 +16,7 @@ import io.github.dlbbld.ashlarchess.common.model.MoveSpecification;
  */
 @SuppressWarnings("null")
 public record LenientSanParseResult(@NonNull MoveSpecification moveSpecification,
-    @NonNull ImmutableList<@NonNull ForgivenItem> forgivenItems) {
+    @NonNull ImmutableList<@NonNull ForgivenSanItem> forgivenItems) {
 
   public LenientSanParseResult {
     forgivenItems = Nulls.copyOfList(forgivenItems);

@@ -28,6 +28,10 @@ Rule to adopt: **package by feature/domain first; package by kind only for genui
 
 A large, purely mechanical, compiler-checked FQN reset with no behavior change, and a prerequisite for a clean `module-info`: sensible `exports` / `opens` and package-private boundaries are impossible while features are split across two `common.*` junk drawers. (The FEN-local slice — folding the FEN validation problem enum into `fen` and dropping the single-file `fen.constants` — was carved out for 19.0.0; this is the global reset across all domains.)
 
+### Tighten remaining mutable return types on internal-but-public surfaces
+
+A few `public static` helpers still return a freshly-built mutable `Set` / `List` typed as the mutable interface instead of a Guava `Immutable*`: `BitboardPositionUtility.toSquareSet(long)` (a `TreeSet` → `ImmutableSortedSet`), and the move-generation helpers `PromotionUtility.performPromotionMovements`, `CastlingUtility.performCastlingMovements`, `EnPassantCaptureUtility.performEnPassantCaptureMovements`, and the `EmptyBoardMoveUtility` overloads. Each returns a fresh per-call copy, so there is no aliasing bug today — tightening the declared type is pure polish. Parked here rather than 19.0.0 because these are exactly the internal-but-accidentally-public move-gen / bitboard surfaces this release narrows or hides behind the module boundary: fix the return types in the same pass that decides which of them stay public at all.
+
 ### Position-as-value ergonomics: `mirror()` and an immutable `play(move)` (audit M3)
 
 Two related "treat a position as an immutable value" capabilities that Class-A libraries (python-chess, shakmaty, scalachess) expose and ashlar does not surface cleanly:

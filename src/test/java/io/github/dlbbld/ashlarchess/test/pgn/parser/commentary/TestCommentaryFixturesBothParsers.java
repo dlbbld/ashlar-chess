@@ -218,8 +218,8 @@ class TestCommentaryFixturesBothParsers {
 
     final StrictPgnParserValidationResult result = StrictPgnParser.validatePath(folder, pgnName);
     assertFalse(result.isValid());
-    assertEquals(expected, result.problemParser());
-    assertEquals(SanValidationProblem.NONE, result.problemSan());
+    assertEquals(expected, result.parserProblem());
+    assertEquals(SanValidationProblem.NONE, result.sanProblem());
   }
 
   private static void assertLenientRejects(Path folder, String pgnName, LenientPgnParserValidationProblem expected) {
@@ -235,8 +235,8 @@ class TestCommentaryFixturesBothParsers {
 
     final LenientPgnParserValidationResult result = LenientPgnParser.validatePath(folder, pgnName);
     assertFalse(result.isValid());
-    assertEquals(expected, result.problemParser());
-    assertEquals(SanValidationProblem.NONE, result.problemSan());
+    assertEquals(expected, result.parserProblem());
+    assertEquals(SanValidationProblem.NONE, result.sanProblem());
   }
 
   private static void assertLenientAccepts(Path folder, String pgnName) {
@@ -244,7 +244,7 @@ class TestCommentaryFixturesBothParsers {
 
     final LenientPgnParserValidationResult result = LenientPgnParser.validatePath(folder, pgnName);
     assertTrue(result.isValid());
-    assertEquals(LenientPgnParserValidationProblem.OK, result.problemParser());
-    assertEquals(SanValidationProblem.NONE, result.problemSan());
+    assertEquals(LenientPgnParserValidationProblem.OK, result.parserProblem());
+    assertEquals(SanValidationProblem.NONE, result.sanProblem());
   }
 }

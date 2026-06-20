@@ -23,7 +23,7 @@ import io.github.dlbbld.ashlarchess.pgn.StrictPgnParserValidationException;
 import io.github.dlbbld.ashlarchess.pgn.StrictPgnParserValidationResult;
 import io.github.dlbbld.ashlarchess.pgn.WriteMode;
 import io.github.dlbbld.ashlarchess.report.Reporter;
-import io.github.dlbbld.ashlarchess.san.ForgivenItem;
+import io.github.dlbbld.ashlarchess.san.ForgivenSanItem;
 
 /**
  * Source of truth for the runnable code examples shown in {@code README.md}. Each method is one README example: the
@@ -307,7 +307,7 @@ public final class ReadmeExamples {
         """;
     final LenientPgnParserValidationResult result = LenientPgnParser.validateText(pgn);
     System.out.println(result.isValid());
-    for (final ForgivenItem item : result.sanForgivenItems()) {
+    for (final ForgivenSanItem item : result.sanForgivenItems()) {
       System.out.println(item.code() + ": " + item.originalToken() + " -> " + item.canonicalSan());
     }
     // </readme:pgn-san-tolerances>

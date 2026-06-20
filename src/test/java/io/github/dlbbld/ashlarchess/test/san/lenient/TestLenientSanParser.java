@@ -20,7 +20,7 @@ import io.github.dlbbld.ashlarchess.common.Nulls;
 import io.github.dlbbld.ashlarchess.common.ucimove.utility.UciMoveUtility;
 import io.github.dlbbld.ashlarchess.model.LegalMove;
 import io.github.dlbbld.ashlarchess.model.UciMove;
-import io.github.dlbbld.ashlarchess.san.ForgivenItem;
+import io.github.dlbbld.ashlarchess.san.ForgivenSanItem;
 import io.github.dlbbld.ashlarchess.san.LenientSanParserValidationException;
 import io.github.dlbbld.ashlarchess.san.LenientSanParseResult;
 import io.github.dlbbld.ashlarchess.san.LenientSanValidationProblem;
@@ -519,7 +519,7 @@ class TestLenientSanParser {
       LenientSanValidationProblem expectedCode) {
     assertEquals(1, result.forgivenItems().size(),
         "Expected exactly one forgiven item with code " + expectedCode + " but got " + result.forgivenItems());
-    final ForgivenItem item = Nulls.get(result.forgivenItems(), 0);
+    final ForgivenSanItem item = Nulls.get(result.forgivenItems(), 0);
     assertEquals(expectedCode, item.code(), "Expected forgiven code " + expectedCode + " but got " + item.code());
   }
 

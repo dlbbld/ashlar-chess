@@ -82,7 +82,7 @@ public class LibraryCarlosBoard {
     // shape with empty forgiven items. Cross-validation tests only need the move to land on the board.
     final MoveSpecification strict = moveStrict(san);
     return new io.github.dlbbld.ashlarchess.san.LenientSanParseResult(strict,
-        io.github.dlbbld.ashlarchess.san.ForgivenItem.EMPTY_LIST);
+        io.github.dlbbld.ashlarchess.san.ForgivenSanItem.EMPTY_LIST);
   }
 
   private MoveSpecification calculateLastMoveSpecification() {

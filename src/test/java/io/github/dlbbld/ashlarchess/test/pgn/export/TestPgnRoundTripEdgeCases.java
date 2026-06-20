@@ -97,7 +97,7 @@ class TestPgnRoundTripEdgeCases {
     final PgnGame pgnGame = result.pgnGame();
     if (pgnGame == null) {
       throw new AssertionError("Expected a non-null PgnGame on the lenient PGN validation result; problem="
-          + result.problemParser() + ", message=" + result.message());
+          + result.parserProblem() + ", message=" + result.message());
     }
     return pgnGame;
   }

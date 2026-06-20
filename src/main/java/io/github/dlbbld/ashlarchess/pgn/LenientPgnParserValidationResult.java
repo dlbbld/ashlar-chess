@@ -9,7 +9,7 @@ import org.eclipse.jdt.annotation.Nullable;
 import com.google.common.collect.ImmutableList;
 
 import io.github.dlbbld.ashlarchess.common.Nulls;
-import io.github.dlbbld.ashlarchess.san.ForgivenItem;
+import io.github.dlbbld.ashlarchess.san.ForgivenSanItem;
 import io.github.dlbbld.ashlarchess.san.SanValidationProblem;
 
 /**
@@ -26,9 +26,9 @@ import io.github.dlbbld.ashlarchess.san.SanValidationProblem;
  * lists contain whatever was accumulated up to the failure point.
  */
 @SuppressWarnings("null")
-public record LenientPgnParserValidationResult(@NonNull LenientPgnParserValidationProblem problemParser,
-    @NonNull SanValidationProblem problemSan, @NonNull String message, @Nullable PgnGame pgnGame,
-    @NonNull ImmutableList<@NonNull ForgivenItem> sanForgivenItems,
+public record LenientPgnParserValidationResult(@NonNull LenientPgnParserValidationProblem parserProblem,
+    @NonNull SanValidationProblem sanProblem, @NonNull String message, @Nullable PgnGame pgnGame,
+    @NonNull ImmutableList<@NonNull ForgivenSanItem> sanForgivenItems,
     @NonNull ImmutableList<@NonNull ForgivenTagItem> tagForgivenItems) {
 
   public LenientPgnParserValidationResult {
@@ -37,6 +37,6 @@ public record LenientPgnParserValidationResult(@NonNull LenientPgnParserValidati
   }
 
   public boolean isValid() {
-    return problemParser == LenientPgnParserValidationProblem.OK;
+    return parserProblem == LenientPgnParserValidationProblem.OK;
   }
 }

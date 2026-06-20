@@ -22,7 +22,7 @@ import io.github.dlbbld.ashlarchess.fen.LenientFenParser;
 import io.github.dlbbld.ashlarchess.fen.constants.FenConstants;
 import io.github.dlbbld.ashlarchess.fen.model.Fen;
 import io.github.dlbbld.ashlarchess.model.PgnMove;
-import io.github.dlbbld.ashlarchess.san.ForgivenItem;
+import io.github.dlbbld.ashlarchess.san.ForgivenSanItem;
 import io.github.dlbbld.ashlarchess.san.LenientSanParserValidationException;
 import io.github.dlbbld.ashlarchess.san.LenientSanParseResult;
 import io.github.dlbbld.ashlarchess.san.SanValidationProblem;
@@ -44,7 +44,7 @@ public final class LenientPgnParser {
 
   private final String source;
   private final PgnTokenizer tokenizer;
-  private final List<ForgivenItem> sanForgivenItemsAccumulator = new ArrayList<>();
+  private final List<ForgivenSanItem> sanForgivenItemsAccumulator = new ArrayList<>();
   private final List<ForgivenTagItem> tagForgivenItemsAccumulator = new ArrayList<>();
 
   private LenientPgnParser(String source) {
@@ -102,7 +102,7 @@ public final class LenientPgnParser {
       throw e;
     } catch (final RuntimeException e) {
       return new LenientPgnParserValidationResult(LenientPgnParserValidationProblem.UNKNOWN_ERROR,
-          SanValidationProblem.NONE, unexpectedValidationErrorMessage(e), null, ForgivenItem.EMPTY_LIST,
+          SanValidationProblem.NONE, unexpectedValidationErrorMessage(e), null, ForgivenSanItem.EMPTY_LIST,
           ForgivenTagItem.EMPTY_LIST);
     }
     return runValidation(parser);
@@ -142,7 +142,7 @@ public final class LenientPgnParser {
     } catch (final RuntimeException e) {
       final String message = unexpectedValidationErrorMessage(e);
       return new LenientPgnParserValidationResult(LenientPgnParserValidationProblem.UNKNOWN_ERROR,
-          SanValidationProblem.NONE, message, null, ForgivenItem.EMPTY_LIST, ForgivenTagItem.EMPTY_LIST);
+          SanValidationProblem.NONE, message, null, ForgivenSanItem.EMPTY_LIST, ForgivenTagItem.EMPTY_LIST);
     }
   }
 

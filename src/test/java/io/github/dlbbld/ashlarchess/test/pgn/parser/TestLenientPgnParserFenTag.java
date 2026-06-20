@@ -40,7 +40,7 @@ class TestLenientPgnParserFenTag {
         """;
     final LenientPgnParserValidationResult result = LenientPgnParser.validateText(pgn);
     assertFalse(result.isValid());
-    assertEquals(LenientPgnParserValidationProblem.FEN_TAG_INVALID, result.problemParser());
+    assertEquals(LenientPgnParserValidationProblem.FEN_TAG_INVALID, result.parserProblem());
     assertNull(result.pgnGame());
     assertTrue(result.message().contains("FEN tag is invalid"));
   }
@@ -60,7 +60,7 @@ class TestLenientPgnParserFenTag {
         """;
     final LenientPgnParserValidationResult result = LenientPgnParser.validateText(pgn);
     assertFalse(result.isValid());
-    assertEquals(LenientPgnParserValidationProblem.FEN_TAG_INVALID, result.problemParser());
+    assertEquals(LenientPgnParserValidationProblem.FEN_TAG_INVALID, result.parserProblem());
     assertNull(result.pgnGame());
   }
 

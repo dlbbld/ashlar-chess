@@ -161,8 +161,8 @@ class TestReadMe {
                 """;
     final LenientPgnParserValidationResult invalidResult = LenientPgnParser.validateText(invalidPgn);
     assertEquals(LenientPgnParserValidationProblem.EXCEPTION_CAUGHT_FROM_STRICT_VALIDATION,
-        invalidResult.problemParser());
-    assertEquals(SanValidationProblem.NONE, invalidResult.problemSan());
+        invalidResult.parserProblem());
+    assertEquals(SanValidationProblem.NONE, invalidResult.sanProblem());
   }
 
   @Test
@@ -208,8 +208,8 @@ class TestReadMe {
         """;
     final StrictPgnParserValidationResult invalidResult = StrictPgnParser.validateText(invalidPgn);
     assertEquals(StrictPgnParserValidationProblem.MOVETEXT_MOVE_NUMBER_DOES_NOT_CONTINUE_AS_EXPECTED,
-        invalidResult.problemParser());
-    assertEquals(SanValidationProblem.NONE, invalidResult.problemSan());
+        invalidResult.parserProblem());
+    assertEquals(SanValidationProblem.NONE, invalidResult.sanProblem());
   }
 
   private static Board createOpeningExampleBoard() {

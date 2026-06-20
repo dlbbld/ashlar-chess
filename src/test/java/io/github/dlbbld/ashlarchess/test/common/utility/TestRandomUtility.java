@@ -3,21 +3,15 @@
 
 package io.github.dlbbld.ashlarchess.test.common.utility;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
-import io.github.dlbbld.ashlarchess.common.Nulls;
-import io.github.dlbbld.ashlarchess.common.utility.ListUtility;
-
-class TestBasicUtility {
+class TestRandomUtility {
 
   @SuppressWarnings("static-method")
   @Test
-  void testRandom() {
+  void randomNumberWithinInterval() {
     checkIntervalException(0, -1);
     checkIntervalException(1, 0);
     checkIntervalException(2, 0);
@@ -46,7 +40,7 @@ class TestBasicUtility {
       checkInterval(0, 100);
     }
 
-    // check we hit all number from 0 to 10
+    // check we hit all numbers from 0 to 10
     // with assumption it happens before Integer.MAX_VALUE
     for (int i = 0; i <= 10; i++) {
       boolean isFound = false;
@@ -75,22 +69,6 @@ class TestBasicUtility {
       isException = true;
     }
     assertTrue(isException);
-  }
-
-  @SuppressWarnings("static-method")
-  @Test
-  void testConvertToString() {
-    final String expected = """
-        line 1
-
-        line 3""";
-
-    final List<String> lines = Nulls.asList("line 1", "", "line 3");
-
-    final String actual = ListUtility.calculateLineSeparatedList(lines);
-
-    assertEquals(expected, actual);
-
   }
 
 }

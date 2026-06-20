@@ -21,11 +21,11 @@ public class LenientSanParserValidationException extends UsageException {
 
   private final String originalText;
   private final SanValidationProblem underlyingSanValidationProblem;
-  private final @NonNull ImmutableList<@NonNull ForgivenItem> forgivenItemsAccumulated;
+  private final @NonNull ImmutableList<@NonNull ForgivenSanItem> forgivenItemsAccumulated;
 
   public LenientSanParserValidationException(String message, String originalText,
       SanValidationProblem underlyingSanValidationProblem,
-      @NonNull ImmutableList<@NonNull ForgivenItem> forgivenItemsAccumulated) {
+      @NonNull ImmutableList<@NonNull ForgivenSanItem> forgivenItemsAccumulated) {
     super(message);
     this.originalText = originalText;
     this.underlyingSanValidationProblem = underlyingSanValidationProblem;
@@ -49,7 +49,7 @@ public class LenientSanParserValidationException extends UsageException {
    * The forgiven items the lenient parser had already accumulated before failing. Useful for diagnostics - shows which
    * tolerances applied before the input became unrecoverable.
    */
-  public @NonNull ImmutableList<@NonNull ForgivenItem> getForgivenItemsAccumulated() {
+  public @NonNull ImmutableList<@NonNull ForgivenSanItem> getForgivenItemsAccumulated() {
     return forgivenItemsAccumulated;
   }
 
