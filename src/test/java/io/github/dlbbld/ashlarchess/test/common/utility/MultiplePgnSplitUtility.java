@@ -16,7 +16,7 @@ import org.apache.logging.log4j.Logger;
 
 import io.github.dlbbld.ashlarchess.common.Nulls;
 import io.github.dlbbld.ashlarchess.common.exceptions.ChessApiRuntimeException;
-import io.github.dlbbld.ashlarchess.common.utility.BasicUtility;
+import io.github.dlbbld.ashlarchess.common.utility.ExceptionUtility;
 
 public final class MultiplePgnSplitUtility {
 
@@ -80,7 +80,7 @@ public final class MultiplePgnSplitUtility {
         currentFileLines.add(line);
       }
     } catch (final IOException ioe) {
-      final String message = BasicUtility.getMessage(ioe);
+      final String message = ExceptionUtility.getMessage(ioe);
       throw new ChessApiRuntimeException(message);
     }
 

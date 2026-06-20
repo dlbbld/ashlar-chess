@@ -19,7 +19,7 @@ import com.google.common.collect.ImmutableList;
 import io.github.dlbbld.ashlarchess.board.Board;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
 import io.github.dlbbld.ashlarchess.common.Nulls;
-import io.github.dlbbld.ashlarchess.common.utility.BasicUtility;
+import io.github.dlbbld.ashlarchess.common.utility.ExceptionUtility;
 import io.github.dlbbld.ashlarchess.model.PgnMove;
 import io.github.dlbbld.ashlarchess.pgn.PgnGame;
 import io.github.dlbbld.ashlarchess.pgn.StrictPgnParser;
@@ -126,7 +126,7 @@ class TestPgnImportAgainstPythonChessOracle {
           assertEquals(record.moves().size(), pgnGame.moveList().size(),
               () -> bucket + " / " + record.pgn() + " - half-move count mismatch (ashlar-chess vs python-chess)");
         } catch (final AssertionError e) {
-          failures.add(BasicUtility.getMessage(e));
+          failures.add(ExceptionUtility.getMessage(e));
           continue;
         }
 
@@ -191,7 +191,7 @@ class TestPgnImportAgainstPythonChessOracle {
                   () -> bucket + " / " + record.pgn() + " ply " + plyLabel + " - canClaimFifty mismatch");
             }
           } catch (final AssertionError e) {
-            failures.add(BasicUtility.getMessage(e));
+            failures.add(ExceptionUtility.getMessage(e));
           }
         }
 
@@ -199,7 +199,7 @@ class TestPgnImportAgainstPythonChessOracle {
           assertEquals(record.finalFen(), board.getFen(),
               () -> bucket + " / " + record.pgn() + " - final FEN mismatch");
         } catch (final AssertionError e) {
-          failures.add(BasicUtility.getMessage(e));
+          failures.add(ExceptionUtility.getMessage(e));
         }
       }
     }

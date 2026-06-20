@@ -16,7 +16,7 @@ import com.google.common.collect.ImmutableList;
 
 import io.github.dlbbld.ashlarchess.board.Board;
 import io.github.dlbbld.ashlarchess.common.Nulls;
-import io.github.dlbbld.ashlarchess.common.utility.BasicUtility;
+import io.github.dlbbld.ashlarchess.common.utility.ExceptionUtility;
 import io.github.dlbbld.ashlarchess.model.PgnMove;
 import io.github.dlbbld.ashlarchess.pgn.PgnGame;
 import io.github.dlbbld.ashlarchess.test.model.PgnFen;
@@ -78,7 +78,7 @@ final class TestPgnParserHalfMoveClockFromFenSupport {
           assertEquals(testCase.finalFen(), board.getFen(),
               () -> bucket + " / " + pgnName + " - final FEN mismatch (halfmove clock or move-number drift)");
         } catch (final AssertionError e) {
-          failures.add(BasicUtility.getMessage(e));
+          failures.add(ExceptionUtility.getMessage(e));
         }
       }
     }

@@ -14,7 +14,7 @@ import io.github.dlbbld.ashlarchess.board.Board;
 import io.github.dlbbld.ashlarchess.common.Nulls;
 import io.github.dlbbld.ashlarchess.common.exceptions.ProgrammingMistakeException;
 import io.github.dlbbld.ashlarchess.common.model.MoveSpecification;
-import io.github.dlbbld.ashlarchess.common.utility.BasicUtility;
+import io.github.dlbbld.ashlarchess.common.utility.ExceptionUtility;
 import io.github.dlbbld.ashlarchess.messages.Message;
 import io.github.dlbbld.ashlarchess.model.LegalMove;
 
@@ -59,7 +59,7 @@ public final class LenientSanParser {
     try {
       moveSpecification = LenientSanRecover.parseWithRecovery(normalized, board, codes);
     } catch (final SanValidationException finalReject) {
-      final String reason = BasicUtility.getMessage(finalReject);
+      final String reason = ExceptionUtility.getMessage(finalReject);
       throw new LenientSanParserValidationException(
           Message.getString("validation.san.lenient.parseFailed", text, reason), text,
           finalReject.getSanValidationProblem(), itemsWithoutCanonical(text, codes));

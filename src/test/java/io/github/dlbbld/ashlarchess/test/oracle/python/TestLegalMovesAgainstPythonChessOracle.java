@@ -19,7 +19,7 @@ import com.google.common.collect.ImmutableList;
 
 import io.github.dlbbld.ashlarchess.board.Board;
 import io.github.dlbbld.ashlarchess.common.Nulls;
-import io.github.dlbbld.ashlarchess.common.utility.BasicUtility;
+import io.github.dlbbld.ashlarchess.common.utility.ExceptionUtility;
 import io.github.dlbbld.ashlarchess.model.PgnMove;
 import io.github.dlbbld.ashlarchess.pgn.PgnGame;
 import io.github.dlbbld.ashlarchess.pgn.StrictPgnParser;
@@ -97,7 +97,7 @@ class TestLegalMovesAgainstPythonChessOracle {
           assertEquals(plyCount + 1, record.perPly().size(),
               () -> bucket + " / " + record.pgn() + " - perPly length should be plyCount + 1");
         } catch (final AssertionError e) {
-          failures.add(BasicUtility.getMessage(e));
+          failures.add(ExceptionUtility.getMessage(e));
           continue;
         }
 
@@ -112,7 +112,7 @@ class TestLegalMovesAgainstPythonChessOracle {
             assertEquals(expectedPly.legalMovesUci(), actualSorted, () -> bucket + " / " + record.pgn() + " position "
                 + positionLabel + " - legal-move set mismatch (ashlar-chess vs python-chess)");
           } catch (final AssertionError e) {
-            failures.add(BasicUtility.getMessage(e));
+            failures.add(ExceptionUtility.getMessage(e));
           }
 
           if (ply < plyCount) {

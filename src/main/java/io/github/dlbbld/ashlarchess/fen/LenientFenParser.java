@@ -11,7 +11,7 @@ import java.util.Locale;
 import io.github.dlbbld.ashlarchess.common.Nulls;
 import io.github.dlbbld.ashlarchess.common.enums.StrictFenSemanticValidationProblem;
 import io.github.dlbbld.ashlarchess.common.exceptions.ProgrammingMistakeException;
-import io.github.dlbbld.ashlarchess.common.utility.BasicUtility;
+import io.github.dlbbld.ashlarchess.common.utility.ExceptionUtility;
 import io.github.dlbbld.ashlarchess.fen.model.Fen;
 
 /**
@@ -68,7 +68,7 @@ public final class LenientFenParser {
           StrictFenSemanticValidationProblem.SUCCESS, "OK", parsedFen, Nulls.copyOfList(accumulator));
     } catch (final LenientFenParserValidationException e) {
       return new LenientFenParserValidationResult(e.getLenientFenParserValidationProblem(),
-          e.getStrictFenSemanticValidationProblem(), BasicUtility.getMessage(e), null, e.getForgivenItemsAccumulated());
+          e.getStrictFenSemanticValidationProblem(), ExceptionUtility.getMessage(e), null, e.getForgivenItemsAccumulated());
     } catch (final ProgrammingMistakeException e) {
       // A library bug must fail fast, not be masked as an UNKNOWN_ERROR validation result.
       throw e;
@@ -98,12 +98,12 @@ public final class LenientFenParser {
           return StrictFenParser.parse(corrected);
         } catch (final StrictFenSemanticValidationException retryFailure) {
           throw new LenientFenParserValidationException(LenientFenParserValidationProblem.STRICT_SEMANTIC_INVALID,
-              retryFailure.getStrictFenSemanticValidationProblem(), BasicUtility.getMessage(retryFailure),
+              retryFailure.getStrictFenSemanticValidationProblem(), ExceptionUtility.getMessage(retryFailure),
               Nulls.copyOfList(accumulator));
         }
       }
       throw new LenientFenParserValidationException(LenientFenParserValidationProblem.STRICT_SEMANTIC_INVALID,
-          e.getStrictFenSemanticValidationProblem(), BasicUtility.getMessage(e), Nulls.copyOfList(accumulator));
+          e.getStrictFenSemanticValidationProblem(), ExceptionUtility.getMessage(e), Nulls.copyOfList(accumulator));
     }
   }
 

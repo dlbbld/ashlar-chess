@@ -19,7 +19,7 @@ import com.google.common.collect.ImmutableList;
 import io.github.dlbbld.ashlarchess.board.Board;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
 import io.github.dlbbld.ashlarchess.common.Nulls;
-import io.github.dlbbld.ashlarchess.common.utility.BasicUtility;
+import io.github.dlbbld.ashlarchess.common.utility.ExceptionUtility;
 import io.github.dlbbld.ashlarchess.test.ConfigurationTestConstants;
 import io.github.dlbbld.ashlarchess.test.pgntest.constants.PgnTestConstants;
 import io.github.dlbbld.ashlarchess.test.pgntest.enums.PgnTest;
@@ -100,7 +100,7 @@ class TestInsufficientMaterialAgainstPythonChessOracle {
           assertEquals(expectedFinal.hasInsufficientMaterialBlack(), board.isInsufficientMaterial(Side.BLACK),
               () -> bucket + " / " + record.pgn() + " - isInsufficientMaterial(BLACK) mismatch");
         } catch (final AssertionError e) {
-          failures.add(BasicUtility.getMessage(e));
+          failures.add(ExceptionUtility.getMessage(e));
         }
       }
     }

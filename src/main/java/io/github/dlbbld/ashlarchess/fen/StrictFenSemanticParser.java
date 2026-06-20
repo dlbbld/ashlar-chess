@@ -30,7 +30,7 @@ import io.github.dlbbld.ashlarchess.common.Nulls;
 import io.github.dlbbld.ashlarchess.common.constants.ChessConstants;
 import io.github.dlbbld.ashlarchess.common.enums.StrictFenSemanticValidationProblem;
 import io.github.dlbbld.ashlarchess.common.exceptions.ProgrammingMistakeException;
-import io.github.dlbbld.ashlarchess.common.utility.BasicUtility;
+import io.github.dlbbld.ashlarchess.common.utility.ExceptionUtility;
 import io.github.dlbbld.ashlarchess.fen.constants.FenConstants;
 import io.github.dlbbld.ashlarchess.fen.model.Fen;
 import io.github.dlbbld.ashlarchess.fen.model.FenField;
@@ -55,7 +55,7 @@ final class StrictFenSemanticParser {
     try {
       fenField = StrictFenFieldParser.parse(fen);
     } catch (final StrictFenFieldValidationException e) {
-      final String message = BasicUtility.getMessage(e);
+      final String message = ExceptionUtility.getMessage(e);
       throw new StrictFenSemanticValidationException(StrictFenSemanticValidationProblem.INVALID_FORMAT, message);
     }
 

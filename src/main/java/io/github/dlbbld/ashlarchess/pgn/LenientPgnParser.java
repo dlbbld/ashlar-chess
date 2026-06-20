@@ -16,7 +16,7 @@ import io.github.dlbbld.ashlarchess.board.enums.Side;
 import io.github.dlbbld.ashlarchess.common.Nulls;
 import io.github.dlbbld.ashlarchess.common.exceptions.PgnCommentaryValidationException;
 import io.github.dlbbld.ashlarchess.common.exceptions.ProgrammingMistakeException;
-import io.github.dlbbld.ashlarchess.common.utility.BasicUtility;
+import io.github.dlbbld.ashlarchess.common.utility.ExceptionUtility;
 import io.github.dlbbld.ashlarchess.enums.MoveSuffixAnnotation;
 import io.github.dlbbld.ashlarchess.fen.LenientFenParser;
 import io.github.dlbbld.ashlarchess.fen.constants.FenConstants;
@@ -124,7 +124,7 @@ public final class LenientPgnParser {
           pgnGame, Nulls.copyOfList(parser.sanForgivenItemsAccumulator),
           Nulls.copyOfList(parser.tagForgivenItemsAccumulator));
     } catch (final LenientPgnParserValidationException e) {
-      final String message = BasicUtility.getMessage(e);
+      final String message = ExceptionUtility.getMessage(e);
       return new LenientPgnParserValidationResult(e.getLenientPgnParserValidationProblem(), e.getSanValidationProblem(),
           message, null, e.getSanForgivenItemsAccumulated(), e.getTagForgivenItemsAccumulated());
     } catch (final io.github.dlbbld.ashlarchess.fen.LenientFenParserValidationException e) {
@@ -132,7 +132,7 @@ public final class LenientPgnParser {
       // rejection by strict FEN validation). Surface as a typed PGN problem rather than leaking the FEN exception
       // type through the generic RuntimeException path. The tag-level forgiven items accumulated up to the
       // FEN-tag parse point are carried so callers retain partial diagnostic context.
-      final String message = "The PGN FEN tag is invalid. Reason: " + BasicUtility.getMessage(e);
+      final String message = "The PGN FEN tag is invalid. Reason: " + ExceptionUtility.getMessage(e);
       return new LenientPgnParserValidationResult(LenientPgnParserValidationProblem.FEN_TAG_INVALID,
           SanValidationProblem.NONE, message, null, Nulls.copyOfList(parser.sanForgivenItemsAccumulator),
           Nulls.copyOfList(parser.tagForgivenItemsAccumulator));
@@ -526,7 +526,7 @@ public final class LenientPgnParser {
         } catch (final PgnCommentaryValidationException pcve) {
           // A brace comment cannot carry `}` (the tokenizer splits it out), but a `;` rest-of-line comment can carry
           // a forbidden character, so this path is reachable for LINE_COMMENT.
-          final String message = BasicUtility.getMessage(pcve);
+          final String message = ExceptionUtility.getMessage(pcve);
           throw movetextError(LenientPgnParserValidationProblem.MOVETEXT_COMMENTARY_CONTAINS_FORBIDDEN_CHARACTER,
               message);
         }
@@ -779,7 +779,7 @@ public final class LenientPgnParser {
       } catch (final LenientSanParserValidationException e) {
         final String moveNumberAndSan = MoveNumberFormat.calculateMoveNumberAndSanWithSpace(fullMoveNumber, side,
             move.san());
-        final String messageSanValidationFailure = BasicUtility.getMessage(e);
+        final String messageSanValidationFailure = ExceptionUtility.getMessage(e);
         final String message = "The validation for " + moveNumberAndSan + " failed. Reason: "
             + messageSanValidationFailure;
         final SanValidationProblem underlying = e.getUnderlyingSanValidationProblem();

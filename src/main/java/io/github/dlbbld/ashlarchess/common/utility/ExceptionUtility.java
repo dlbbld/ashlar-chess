@@ -3,9 +3,9 @@
 
 package io.github.dlbbld.ashlarchess.common.utility;
 
-public final class BasicUtility {
+public final class ExceptionUtility {
 
-  private BasicUtility() {
+  private ExceptionUtility() {
   }
 
   @SuppressWarnings("null")

@@ -20,7 +20,7 @@ import com.google.common.collect.ImmutableList;
 import io.github.dlbbld.ashlarchess.board.Board;
 import io.github.dlbbld.ashlarchess.common.Nulls;
 import io.github.dlbbld.ashlarchess.common.ucimove.utility.UciMoveUtility;
-import io.github.dlbbld.ashlarchess.common.utility.BasicUtility;
+import io.github.dlbbld.ashlarchess.common.utility.ExceptionUtility;
 import io.github.dlbbld.ashlarchess.model.LegalMove;
 import io.github.dlbbld.ashlarchess.model.PgnMove;
 import io.github.dlbbld.ashlarchess.model.UciMove;
@@ -156,7 +156,7 @@ class TestPgnExportRoundTripAgainstPythonChessOracle {
       assertEquals(record.startFen(), parsed.startFen().fen(), () -> label + " - startFen mismatch");
       assertEquals(expectedUcis.size(), parsed.moveList().size(), () -> label + " - half-move count mismatch");
     } catch (final AssertionError e) {
-      failures.add(BasicUtility.getMessage(e));
+      failures.add(ExceptionUtility.getMessage(e));
       return;
     }
 
@@ -173,7 +173,7 @@ class TestPgnExportRoundTripAgainstPythonChessOracle {
       assertEquals(expectedUcis, actualUcis, () -> label + " - played UCI sequence mismatch");
       assertEquals(record.finalFen(), board.getFen(), () -> label + " - finalFen mismatch");
     } catch (final AssertionError e) {
-      failures.add(BasicUtility.getMessage(e));
+      failures.add(ExceptionUtility.getMessage(e));
     }
   }
 
