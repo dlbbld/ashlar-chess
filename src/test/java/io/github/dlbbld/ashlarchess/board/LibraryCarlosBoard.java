@@ -70,18 +70,18 @@ public class LibraryCarlosBoard {
     return result;
   }
 
-  public io.github.dlbbld.ashlarchess.san.StrictSanParseResult moveStrict(String san) {
+  public MoveSpecification moveStrict(String san) {
     board.doMove(san);
     final MoveSpecification lastMoveSpecification = calculateLastMoveSpecification();
     populateMoveHistory(lastMoveSpecification);
-    return new io.github.dlbbld.ashlarchess.san.StrictSanParseResult(lastMoveSpecification);
+    return lastMoveSpecification;
   }
 
   public io.github.dlbbld.ashlarchess.san.LenientSanParseResult moveLenient(String san) {
     // Carlos's chesslib doesn't have a lenient SAN concept; delegate to strict, then wrap into the lenient result
     // shape with empty forgiven items. Cross-validation tests only need the move to land on the board.
-    final io.github.dlbbld.ashlarchess.san.StrictSanParseResult strict = moveStrict(san);
-    return new io.github.dlbbld.ashlarchess.san.LenientSanParseResult(strict.moveSpecification(),
+    final MoveSpecification strict = moveStrict(san);
+    return new io.github.dlbbld.ashlarchess.san.LenientSanParseResult(strict,
         io.github.dlbbld.ashlarchess.san.ForgivenItem.EMPTY_LIST);
   }
 

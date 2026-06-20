@@ -23,15 +23,13 @@ public final class StrictSanParser {
   }
 
   /**
-   * Parses {@code san} as canonical SAN against {@code board} and returns a {@link StrictSanParseResult} carrying the
-   * resolved {@link MoveSpecification}.
+   * Parses {@code san} as canonical SAN against {@code board} and returns the resolved {@link MoveSpecification}.
    *
    * @throws SanValidationException if the input is not canonical SAN, or is canonical but does not represent a legal
    *                                move on the current position
    */
-  public static StrictSanParseResult parse(String san, Board board) throws SanValidationException {
-    final MoveSpecification moveSpecification = parseInternal(san, board);
-    return new StrictSanParseResult(moveSpecification);
+  public static MoveSpecification parse(String san, Board board) throws SanValidationException {
+    return parseInternal(san, board);
   }
 
   private static MoveSpecification parseInternal(String san, Board board) throws SanValidationException {

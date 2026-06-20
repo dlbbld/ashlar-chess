@@ -96,7 +96,7 @@ class TestPerformMoveSanContract {
       final String expectedProvidedSan = move.san();
 
       final MoveSpecification expectedCalculatedMoveSpecification = StrictSanParser
-          .parse(expectedProvidedSan, board).moveSpecification();
+          .parse(expectedProvidedSan, board);
 
       board.moveStrict(expectedProvidedSan);
 
@@ -125,8 +125,7 @@ class TestPerformMoveSanContract {
       final MoveSpecification expectedStoredMoveSpecification = board.getLastMove().moveSpecification();
       final String calculatedSan = board.getSan();
       board.unmove();
-      final MoveSpecification actualCalculatedMoveSpecification = StrictSanParser.parse(calculatedSan, board)
-          .moveSpecification();
+      final MoveSpecification actualCalculatedMoveSpecification = StrictSanParser.parse(calculatedSan, board);
       assertEquals(expectedStoredMoveSpecification, actualCalculatedMoveSpecification);
       board.moveStrict(move.san());
     }

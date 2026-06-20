@@ -42,7 +42,7 @@ public final class LenientSanParser {
   public static LenientSanParseResult parse(String text, Board board) {
     // Phase 0: try strict on the raw input first. Canonical SAN pays zero lenient overhead.
     try {
-      final MoveSpecification ms = StrictSanParser.parse(text, board).moveSpecification();
+      final MoveSpecification ms = StrictSanParser.parse(text, board);
       return new LenientSanParseResult(ms, ForgivenItem.EMPTY_LIST);
     } catch (@SuppressWarnings("unused") final SanValidationException ignored) {
       // Fall through to the lenient pipeline.

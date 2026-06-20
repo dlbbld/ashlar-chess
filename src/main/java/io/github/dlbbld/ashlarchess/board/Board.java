@@ -49,7 +49,6 @@ import io.github.dlbbld.ashlarchess.san.MoveToSan;
 import io.github.dlbbld.ashlarchess.san.SanTerminalMarker;
 import io.github.dlbbld.ashlarchess.san.SanTerminalMarkerUtility;
 import io.github.dlbbld.ashlarchess.san.StrictSanParser;
-import io.github.dlbbld.ashlarchess.san.StrictSanParseResult;
 import io.github.dlbbld.ashlarchess.unwinnability.DeadPositionAnalyzer;
 import io.github.dlbbld.ashlarchess.unwinnability.DeadPositionFullVerdict;
 import io.github.dlbbld.ashlarchess.unwinnability.DeadPositionQuickVerdict;
@@ -266,20 +265,20 @@ public final class Board {
   }
 
   /**
-   * Plays the given move on this board, specified in canonical SAN. The result carries the resolved
-   * {@link MoveSpecification}; for callers that only need success / fail, the absence of a thrown exception is the
-   * answer. Use {@link #moveLenient(String)} when parsing real-world PGN that may contain forgivable deviations.
+   * Plays the given move on this board, specified in canonical SAN, and returns the resolved {@link MoveSpecification};
+   * for callers that only need success / fail, the absence of a thrown exception is the answer. Use
+   * {@link #moveLenient(String)} when parsing real-world PGN that may contain forgivable deviations.
    *
    * @throws io.github.dlbbld.ashlarchess.san.SanValidationException if {@code san} is not canonical SAN, or is
    *                                                                 canonical but does not represent a legal move
    */
-  public StrictSanParseResult moveStrict(String san) {
-    final StrictSanParseResult result = StrictSanParser.parse(san, this);
-    this.performMoveWithoutValidation(result.moveSpecification());
+  public MoveSpecification moveStrict(String san) {
+    final MoveSpecification moveSpecification = StrictSanParser.parse(san, this);
+    this.performMoveWithoutValidation(moveSpecification);
     if (!san.equals(this.getSan())) {
       throw new ProgrammingMistakeException("The provided SAN and generated SAN are different, this should not happen");
     }
-    return result;
+    return moveSpecification;
   }
 
   /**
