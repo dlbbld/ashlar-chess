@@ -205,7 +205,7 @@ public record BitboardPosition(long whitePawns, long whiteRooks, long whiteKnigh
       case NONE -> throw new IllegalStateException("Unreachable - Piece.NONE filtered above");
       default -> throw new IllegalArgumentException();
     };
-    return Nulls.copyOfSet(BitboardPositionUtility.toSquareSet(targets));
+    return BitboardPositionUtility.toSquareSet(targets);
   }
 
   private long pawnPotentialTargets(Square fromSquare, int fromOrdinal, Side side, long enPassantBit) {

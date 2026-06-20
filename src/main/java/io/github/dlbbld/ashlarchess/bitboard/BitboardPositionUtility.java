@@ -6,6 +6,8 @@ package io.github.dlbbld.ashlarchess.bitboard;
 import java.util.Set;
 import java.util.TreeSet;
 
+import com.google.common.collect.ImmutableSet;
+
 import io.github.dlbbld.ashlarchess.board.enums.Piece;
 import io.github.dlbbld.ashlarchess.board.enums.Square;
 import io.github.dlbbld.ashlarchess.common.Nulls;
@@ -59,9 +61,9 @@ public final class BitboardPositionUtility {
    * compare a {@code long}-shaped attack/move set against a {@code Set<Square>}-shaped reference. The returned set
    * iterates squares in ordinal order.
    */
-  public static Set<Square> toSquareSet(long bitboard) {
+  public static ImmutableSet<Square> toSquareSet(long bitboard) {
     if (bitboard == 0L) {
-      return Nulls.emptySet();
+      return ImmutableSet.of();
     }
     final Set<Square> squares = new TreeSet<>();
     long remaining = bitboard;
@@ -69,6 +71,6 @@ public final class BitboardPositionUtility {
       squares.add(Nulls.get(Square.REAL, Long.numberOfTrailingZeros(remaining)));
       remaining &= remaining - 1L;
     }
-    return squares;
+    return Nulls.copyOfSet(squares);
   }
 }
