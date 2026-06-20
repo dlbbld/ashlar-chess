@@ -116,7 +116,7 @@ Enum behavior moved to utilities (the "enums carry data" pass) — each former `
 
 - `KingSafetyCheck` / `MovementCheck` / `CastlingCheck` `toMoveCheck(...)` → `analyze.{KingSafetyCheck,MovementCheck,CastlingCheck}Translator.toMoveCheck(...)`.
 - `Piece.calculate{Rook,Knight,Bishop,Queen,King,Pawn}Piece(Side)` and `Piece.calculate(Side, PieceType)`, plus the duplicate `PieceType.calculate(Side, PieceType)`, consolidated into `board.enums.PieceUtility`. `PromotionPieceType.calculate(Side, PromotionPieceType)` → the instance method `PromotionPieceType.toPiece(Side)`.
-- `Square.flip`, `getPromotionRank` (now `getPromotionRankList`), `calculateJumpOverSquare`, `calculateEnPassantCaptureTargetSquareList`, and the king / queen-side-rook / king-side-rook original-square methods → `board.enums.SquareUtility`.
+- `Square.flip`, `getPromotionRank` (now `getPromotionRankSquares`), `calculateJumpOverSquare`, the en-passant-target-squares method (now `getEnPassantCaptureTargetSquares`), and the king / queen-side-rook / king-side-rook original-square methods → `board.enums.SquareUtility`.
 - `Rank`'s side-relative rule methods (ground / promotion / pawn-initial / two-square-advance / en-passant ranks and per-side validity) → `board.enums.RankUtility`.
 - `FenSideSymbol.calculate(Side)` → `FenSideSymbol.of(Side)` and `FenPieceSymbol.calculate(Piece)` → `FenPieceSymbol.of(Piece)` (the type-creating factories stay on the enums; the char self-parse is `parse(char)` — see below).
 - `SanTerminalMarker.calculate(...)` / `append(...)` → `san.SanTerminalMarkerUtility`; `SanFormat.isCapture()` → `san.SanFormatUtility.isCapture(...)`.
@@ -163,8 +163,8 @@ PGN export uses the `to*` idiom:
 
 Immutable collection types in signatures:
 
-- `UciMoveValidationUtility.getUciMoveList()` returns `ImmutableList<UciMove>` (was `List<UciMove>`).
-- `SquareUtility.getPromotionRankList(Side)` (renamed from `Square.getPromotionRank`) and `calculateEnPassantCaptureTargetSquareList(Side)` return `ImmutableList<Square>` (was `List<Square>`).
+- `UciMoveValidationUtility.getUciMoves()` returns `ImmutableList<UciMove>` (was `List<UciMove>`).
+- `SquareUtility.getPromotionRankSquares(Side)` (renamed from `Square.getPromotionRank`) and `getEnPassantCaptureTargetSquares(Side)` return `ImmutableList<Square>` (was `List<Square>`).
 - The empty-board square getters — `KnightEmptyBoardSquares.getKnightSquares`, `KingNonCastlingEmptyBoardSquares.getKingSquares`, `PawnDiagonalSquares.getPawnDiagonalSquares`, and `Pawn{Any,One,Two}AdvanceEmptyBoardSquares.getPawnSquares` — return `ImmutableSet<Square>` (was `Set<Square>`).
 - `BitboardPosition.potentialToSquares(Square, long)` and `legalMoves(Side, long)` return `ImmutableSet<Square>` / `ImmutableSet<MoveSpecification>` — previously a freshly-allocated mutable `TreeSet` leaked through a public `Set<...>` return.
 - Callers assigning to `List` / `Set` are unaffected; the change is binary-incompatible and only tightens the declared type.
