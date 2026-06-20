@@ -4,6 +4,45 @@ The **technical specification** for ashlar-chess: design goals, architecture, ph
 
 ---
 
+## Manifest
+
+ashlar-chess is not trying to be a broad, all-feature chess toolkit. It is trying to be a deeply correct, **finished**, essential orthodox-chess rules library.
+
+By a checklist of "major features found in large chess libraries," ashlar-chess will intentionally miss things: Chess960, full PGN variation-tree / RAV workflows, engine integration, tablebases, opening books, GUI-oriented features, and other advanced or niche use cases. That is not a failure of the project scope. It **is** the scope.
+
+The goal is an essential orthodox-chess rules library, where "essential" is defined deliberately and personally: the parts considered central to rule correctness and trustworthy chess data handling. The core feature set is fixed:
+
+- orthodox chess only, not Chess960;
+- strict and lenient FEN / SAN / PGN handling for the use cases ashlar supports, with explicit, instructive, educative validation messages;
+- precise legal-move validation and move execution;
+- exact game-state and rule predicates;
+- FIDE-relevant draw and termination handling;
+- CHA / unwinnability / dead-position analysis as a first-class rule-correctness domain;
+- strong PGN/FEN corpus testing and differential / oracle testing;
+- high-quality public API naming, packaging, documentation, and invariants.
+
+For these chosen domains, the quality bar is very high. ashlar-chess should be Class-A not because it does everything, but because the things it chooses to do are implemented with exceptional correctness, consistency, and maintainability.
+
+The guiding principle is therefore not "add every feature serious chess libraries have." It is: build the fixed essential feature set, make it internally coherent, FIDE-faithful where applicable, thoroughly tested, well documented, and pleasant to use — then **finish** it. This project should not grow forever. It should reach a stable, finished shape; after that, work is mostly quality improvement, bug fixes, documentation, performance where it matters, and API clarity — not endless feature expansion.
+
+### Reviewing against this manifest
+
+When reviewing ashlar-chess, distinguish three kinds of "missing":
+
+1. **Missing features that contradict the chosen essential scope** — actionable.
+2. **Missing features common in broader chess libraries but intentionally out of scope** — *not* actionable (worth knowing, deliberately declined).
+3. **Quality defects inside the chosen scope** — actionable.
+
+Only categories 1 and 3 are actionable for this project. Examples:
+
+- Chess960: out of scope (category 2).
+- Full PGN RAV / variation-tree tooling: out of scope unless the chosen PGN contract needs it (category 2).
+- CHA / unwinnability correctness: in scope, high priority (category 3-sensitive).
+- FEN / SAN / PGN correctness within the supported contract, including detailed, instructive validation messages: in scope, high priority.
+- Naming / API / package quality for public surfaces: in scope, high priority.
+
+---
+
 ## 1. Purpose & non-goals
 
 ashlar-chess is a Java chess library focused on **rule correctness, production usability, and reproducible validation**. Its flagship feature is a Java port of Miguel Ambrona's [Chess Unwinnability Analyzer (CHA)](https://github.com/miguel-ambrona/D3-Chess), to the author's knowledge the only published algorithm that decides unwinnability and dead-position questions correctly across all positions.
