@@ -138,7 +138,6 @@ Removed from the published jar:
 Boolean predicate methods drop the `calculateIs` / `calculateHas` prefix for the JavaBeans `is` / `has` idiom:
 
 - `CastlingUtility.calculateIsCastlingMove` → `isCastlingMove`; `calculateQueenSideCastlingIsOriginalPosition` / `calculateKingSideCastlingIsOriginalPosition` → `isQueenSideCastlingOriginalPosition` / `isKingSideCastlingOriginalPosition`.
-- `BasicChessUtility.calculateIsResetHalfMoveClock` → `isResetHalfMoveClock`.
 - `BasicUtility.calculateIsDisjoint` → `isDisjoint`.
 - `EnPassantCaptureUtility.calculateIsPawnTwoSquareAdvanceMove` / `calculateIsPotentialEnPassantCapture` → `isPawnTwoSquareAdvanceMove` / `isPotentialEnPassantCapture`.
 - `PawnDiagonalMoveUtility.calculateIsPawnDiagonalMove` → `isPawnDiagonalMove`.
@@ -165,7 +164,7 @@ Exceptions:
 `BasicChessUtility` deleted - its rule queries moved to their domain owners:
 
 - `BasicChessUtility.calculateOutcome(board)` → `board.outcome()` (the current-position outcome is now a query on `Board`, beside `isCheckmate()` / `isStalemate()`; same precedence, same non-null `Outcome.ONGOING` for ongoing positions).
-- `BasicChessUtility.isResetHalfMoveClock(move)` → `move.resetsHalfMoveClock()` (a `LegalMove` predicate - true for a pawn move or any capture).
+- `BasicChessUtility.calculateIsResetHalfMoveClock(move)` → `move.resetsHalfMoveClock()` (a `LegalMove` predicate - true for a pawn move or any capture).
 - `BasicChessUtility.calculateSideMoved(...)` and `calculateFullMoveNumber(Side, int, int)` are removed with no replacement; they were internal helpers with no production caller.
 - The `BasicChessUtility` class is deleted.
 

@@ -809,7 +809,7 @@ public final class Board {
         }
         case NONE -> throw new IllegalArgumentException();
         default -> throw new IllegalArgumentException();
-      }; // must be even // must be even
+      };
       case BLACK -> switch (initialFenSideToMove) {
         case BLACK -> {
           // must be even
@@ -823,7 +823,7 @@ public final class Board {
         }
         case NONE -> throw new IllegalArgumentException();
         default -> throw new IllegalArgumentException();
-      }; // must be even // must be even
+      };
       case NONE -> throw new IllegalArgumentException();
       default -> throw new IllegalArgumentException();
     };
