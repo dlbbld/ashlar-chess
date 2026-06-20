@@ -25,18 +25,25 @@ import io.github.dlbbld.ashlarchess.test.pgn.setup.PgnTestCaseCatalog;
 import io.github.dlbbld.ashlarchess.test.pgntest.enums.PgnTest;
 
 /**
- * Burn-in survey that drives EVERY public {@link Board} read method once per ply across a game replay, on corpora that
- * span a wide range of game lengths (normal games ~100 plies up to the synthetic MAX_MOVES games of ~17,700 plies). It
- * times each method individually and prints a scaling table: a method whose us/ply on the long corpus is far above its
- * us/ply on a normal-length corpus is superlinear (O(history) per call), which becomes O(n^2) when a caller invokes it
- * per ply.
+ * Burn-in survey that drives every cheap public {@link Board} read method once per ply across a game replay, over
+ * corpora spanning a range of game lengths (normal games ~100 plies up to the RANDOM_NO_REPETITION fixtures of ~1,200
+ * plies). It times each method individually and prints a scaling table: a method whose us/ply on the longer corpus is
+ * far above its us/ply on a normal-length corpus is superlinear (O(history) per call), which becomes O(n^2) when a
+ * caller invokes it per ply. (~1,200 plies is already ~12x a normal game - enough to expose any O(history) method; the
+ * 17,700-ply MAX_MOVES fixtures are deliberately omitted, as they only amplify the same signal while turning every
+ * genuinely O(n) probe into a multi-minute O(n^2) grind.)
+ *
+ * <p>This is a manually run diagnostic (a {@code main}, like the other surveys in this package), not an automated test:
+ * it flags candidates for a human to inspect; it does not assert thresholds.
  *
  * <p>Interpretation: a method that <em>returns</em> n items (getPerformedMoves, getLegalMovesAsSan, ...) being O(n) is
  * expected and not a defect. The defects to hunt are methods returning a scalar or boolean that are nonetheless
  * O(history) - those should be O(1). This is the same class of bug as the O(n^2) per-move repetition rebuild.
  *
- * <p>The heavy whole-position analyzers (unwinnableQuick/Full, deadPositionQuick/Full) are position-complexity bound,
- * not history bound, so they are exercised separately for coverage on a small sample rather than per ply.
+ * <p>The heavy whole-position analyzers are position-complexity bound, not history bound. The bounded quick variants
+ * (unwinnableQuick, deadPositionQuick) are exercised separately for coverage on a small sample; the unbounded full
+ * variants (unwinnableFull, deadPositionFull) are excluded entirely - they can run for minutes on a tangled position
+ * and are not a Board-scaling concern.
  */
 public class BoardApiBurnInSurvey {
 
@@ -87,7 +94,7 @@ public class BoardApiBurnInSurvey {
       perGroup.put(pgnTest.name(), usPerPly);
 
       printGroup(pgnTest.name(), games.size(), plies, usPerPly);
-      printHeavy(pgnTest.name(), games);
+      printHeavy(games);
     }
 
     printScalingTable(probes, perGroup);
@@ -237,7 +244,7 @@ public class BoardApiBurnInSurvey {
     }
   }
 
-  private static void printHeavy(String groupName, List<Game> games) {
+  private static void printHeavy(List<Game> games) {
     final int sampleCount = Math.min(HEAVY_SAMPLE_GAMES, games.size());
     if (sampleCount == 0) {
       return;
