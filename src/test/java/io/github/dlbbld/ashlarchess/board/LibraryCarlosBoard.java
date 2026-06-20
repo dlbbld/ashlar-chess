@@ -580,7 +580,7 @@ public class LibraryCarlosBoard {
     return true;
   }
 
-  public ImmutableList<LegalMove> getPerformedLegalMoves() {
+  public ImmutableList<LegalMove> getPerformedMoves() {
     return Nulls.copyOfList(performedLegalMoveList);
   }
 

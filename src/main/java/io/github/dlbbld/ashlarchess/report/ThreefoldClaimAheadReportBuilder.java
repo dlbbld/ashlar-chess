@@ -33,7 +33,7 @@ final class ThreefoldClaimAheadReportBuilder {
    * the same dynamic position multiple times, the earlier claim-ahead boundary surfaces first.
    */
   static ThreefoldClaimAheadReport build(Board board) {
-    final List<MoveRecord> rawClaimAheads = replayAndCollectClaimAheads(board.getPerformedLegalMoves(),
+    final List<MoveRecord> rawClaimAheads = replayAndCollectClaimAheads(board.getPerformedMoves(),
         board.getInitialFen());
     final ImmutableList<MoveRecord> moveRecordListPlayed = MoveRecords.played(board);
     final DynamicPosition initialDynamicPosition = board.getInitialDynamicPosition();

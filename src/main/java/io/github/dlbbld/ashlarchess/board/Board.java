@@ -1044,7 +1044,7 @@ public final class Board {
     }
   }
 
-  public ImmutableList<LegalMove> getPerformedLegalMoves() {
+  public ImmutableList<LegalMove> getPerformedMoves() {
     final List<LegalMove> result = new ArrayList<>();
     for (int i = 1; i < boardStateList.size(); i++) {
       result.add(moveAt(i));
