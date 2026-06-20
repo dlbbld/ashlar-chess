@@ -14,6 +14,7 @@ import io.github.dlbbld.ashlarchess.board.enums.SquareType;
 import io.github.dlbbld.ashlarchess.common.Nulls;
 import io.github.dlbbld.ashlarchess.common.exceptions.ProgrammingMistakeException;
 import io.github.dlbbld.ashlarchess.common.utility.BasicUtility;
+import io.github.dlbbld.ashlarchess.common.utility.SetUtility;
 import io.github.dlbbld.ashlarchess.squares.KingNonCastlingEmptyBoardSquares;
 
 //Figure 8 Semi-statically unwinnable algorithm, which may conclude that a position is
@@ -57,7 +58,7 @@ final class UnwinnableSemiStatic {
       }
     }
 
-    final SquareType visitorSquareType = BasicUtility.calculateOnlyElement(visitorSquareTypeSet);
+    final SquareType visitorSquareType = SetUtility.getOnly(visitorSquareTypeSet);
     for (final Square matingSquare : Square.REAL) {
       final Set<PiecePlacement> matingBishopSet = removeKing(
           visitors(Nulls.setOf(matingSquare), c, false, mobilitySolution), c);

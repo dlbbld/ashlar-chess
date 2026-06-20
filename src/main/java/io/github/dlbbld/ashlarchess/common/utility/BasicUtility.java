@@ -27,13 +27,6 @@ public final class BasicUtility {
     return Nulls.join(SPACE_SEPARATOR_LIST, list);
   }
 
-  public static <E> E calculateOnlyElement(Set<E> set) {
-    if (set.size() != 1) {
-      throw new IllegalArgumentException("The set must contain exactly one element");
-    }
-    return Nulls.getFirst(new ArrayList<>(set));
-  }
-
   public static <E> boolean isDisjoint(Set<E> firstSet, Set<E> secondSet) {
     for (final E elementFirstSet : firstSet) {
       if (secondSet.contains(elementFirstSet)) {
