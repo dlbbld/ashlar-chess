@@ -371,11 +371,7 @@ final class StrictFenSemanticParser {
     final Side oppositeSide = sideToMove.getOppositeSide();
     final Square pawnTwoAdvanceSquare = enPassantCaptureTargetSquare.getAheadSquare(oppositeSide);
     // The two-advance square must carry an opposite-side PAWN (the pawn that just played the two-square advance).
-    // Three rejection conditions, all unioned: no piece at all, wrong side, or wrong piece type. The original
-    // StaticPosition predicate read `A || (B && C)` due to Java operator precedence, which let some wrong-side or
-    // wrong-piece-type FENs slip past this check and trip an exception further down (in the rewind step). The
-    // bitboard rewind is strict (withRelocatedPiece preconditions piece presence) so the loose predicate now
-    // surfaces as an unchecked IllegalArgumentException - fixed here to throw the right typed validation exception.
+    // Reject on any of three unioned conditions: no piece, wrong side, or wrong piece type.
     final Piece pieceOnTwoAdvanceSquare = bitboardPosition.get(pawnTwoAdvanceSquare);
     if (pieceOnTwoAdvanceSquare == Piece.NONE || pieceOnTwoAdvanceSquare.getSide() != oppositeSide
         || pieceOnTwoAdvanceSquare.getPieceType() != PAWN) {

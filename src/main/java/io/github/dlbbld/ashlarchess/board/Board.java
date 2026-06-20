@@ -118,7 +118,7 @@ import io.github.dlbbld.ashlarchess.unwinnability.UnwinnableQuickAnalyzer;
 public final class Board {
 
   private final Fen initialFen;
-  // One BoardState per position the game has passed through, replacing the former ~14 parallel lists.
+  // One BoardState per position the game has passed through.
   // Entry i is the board's full derived state at the position reached after move i; entry 0 is the initial
   // position, whose move/san/lan are null (no move produced it). The move-indexed data (move, san, lan)
   // rides on the position the move produced; the position-indexed data (legal moves, check flags, dynamic
@@ -1054,10 +1054,8 @@ public final class Board {
 
   @Override
   public int hashCode() {
-    // The per-position BoardState records carry all game-history state. Castling-loss reasons are now part
-    // of the comparison via BoardState (the previous equals/hashCode excluded them); the equality relation
-    // is unchanged, because castling-loss is a deterministic function of the initial FEN and the move
-    // sequence - both already compared - so only the hash value differs.
+    // The per-position BoardState records carry all game-history state, including the castling-loss reasons, so the
+    // hash is a deterministic function of the initial FEN and the full per-position history.
     return Objects.hash(boardStateList, initialFen);
   }
 

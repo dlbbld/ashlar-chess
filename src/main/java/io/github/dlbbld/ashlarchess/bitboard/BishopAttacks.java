@@ -10,9 +10,8 @@ package io.github.dlbbld.ashlarchess.bitboard;
  * matching the existing reference's "isAllowOwnPiece = true" semantics for attacked squares (own pieces are defended).
  *
  * <p>
- * Classical ray loops are deliberately the choice here; magic-bitboard acceleration is deferred to the switchover
- * release where it actually earns its keep on the hot path. The shape of this API ({@code int sq, long occupied})
- * matches what magics would slot into.
+ * Classical ray loops are the implementation here. The API shape ({@code int sq, long occupied}) is compatible with
+ * occupied-mask attack generation (e.g. magic bitboards), should that become worthwhile.
  */
 public final class BishopAttacks {
 

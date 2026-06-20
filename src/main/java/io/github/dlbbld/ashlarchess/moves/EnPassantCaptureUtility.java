@@ -223,10 +223,7 @@ public final class EnPassantCaptureUtility {
     }
   }
 
-  // Only the bitboard variant survives in src/main after Phase 6 of the role-inversion release. The
-  // StaticPosition-shaped overloads (calculateIsEnPassantCaptureNewMove, calculateIsPotentialEnPassantCapture)
-  // were collapsed: the only test-side caller (the relocated StaticPositionUtility) now derives a bitboard via
-  // StaticPositionBridge and calls this method instead.
+  // Whether the pawn move would be an en-passant capture, evaluated against the position before the move is applied.
   public static boolean isPotentialEnPassantCapture(BitboardPosition bitboardPositionBeforeMove,
       MoveSpecification move) {
     if (CastlingUtility.isCastlingMove(move)) {

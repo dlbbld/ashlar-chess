@@ -8,8 +8,8 @@ import io.github.dlbbld.ashlarchess.board.enums.Square;
 /**
  * Precomputed knight-attack table. The geometric pattern is position-independent: for any square {@code sq},
  * {@link #attacks(Square)} returns the bitboard of the 2-8 squares a knight on {@code sq} attacks on an otherwise empty
- * board. Differential-tested bit-exact against {@code KnightEmptyBoardSquares.getKnightSquares} (the
- * {@code StaticPosition}-layer table, test-side since the 11.0.0 role-inversion release).
+ * board. Differential-tested bit-exact against the empty-board reference table
+ * {@code KnightEmptyBoardSquares.getKnightSquares}.
  */
 public final class KnightAttacks {
 

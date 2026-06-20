@@ -12,10 +12,9 @@ import io.github.dlbbld.ashlarchess.common.Nulls;
 import io.github.dlbbld.ashlarchess.fen.FenPieceSymbol;
 
 /**
- * Production-side bitboard utility methods that have no dependency on the {@code StaticPosition} reference layer. The
- * bridge methods between {@code StaticPosition} and {@code BitboardPosition} live in
- * {@code io.github.dlbbld.ashlarchess.bitboard.StaticPositionBridge} (under {@code src/test/}), since
- * {@code StaticPosition} itself relocated to {@code src/test/} as the permanent differential-test oracle.
+ * Production-side bitboard utility methods, with no dependency on the {@code StaticPosition} reference layer (which is
+ * test-side). The {@code StaticPosition} / {@code BitboardPosition} bridge methods live test-side in
+ * {@code io.github.dlbbld.ashlarchess.bitboard.StaticPositionBridge}.
  */
 public final class BitboardPositionUtility {
 

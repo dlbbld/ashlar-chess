@@ -124,9 +124,8 @@ class FindHelpmate {
     // 6: store (pos,D) in table
     store(cacheKey, movesLeft);
 
-    // Per the paper / Ambrona issue thread: 75-move and 5-fold repetition do not apply when adjudicating
-    // timeouts, so the helpmate search must continue past them. The previous fivefold/seventy-five gate
-    // here is removed for paper compliance.
+    // Per the paper / Ambrona issue thread: the 75-move and 5-fold-repetition rules do not apply when adjudicating
+    // timeouts, so the helpmate search must continue past them (no fivefold / seventy-five gate here).
 
     final BitboardPosition bitboardPosition = board.getBitboardPosition();
     if (UnwinnabilityMaterialBitboard.calculateHasKingOnly(color, bitboardPosition)

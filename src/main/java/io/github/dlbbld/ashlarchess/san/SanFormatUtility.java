@@ -4,8 +4,7 @@
 package io.github.dlbbld.ashlarchess.san;
 
 /**
- * Behaviour for the {@link SanFormat} value enum: the capture / non-capture classification that previously lived on the
- * enum itself.
+ * Utility predicates for the {@link SanFormat} value enum: the capture / non-capture classification.
  */
 public final class SanFormatUtility {
 

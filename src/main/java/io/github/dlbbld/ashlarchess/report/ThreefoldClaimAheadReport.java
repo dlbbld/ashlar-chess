@@ -13,7 +13,7 @@ import io.github.dlbbld.ashlarchess.common.Nulls;
  *
  * <p>
  * Entries are ordered by {@code (claimAheadMove.performedMoveCount(), legal-move-iteration-order at that move)},
- * matching the legacy outer sort (the comparator on the first element of each move's claim group) and the inner order
+ * matching the stable outer sort (the comparator on the first element of each move's claim group) and the inner order
  * (Board.getLegalMoves() iteration).
  */
 record ThreefoldClaimAheadReport(ImmutableList<ClaimAheadEntry> entries) {

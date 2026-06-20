@@ -10,8 +10,8 @@ package io.github.dlbbld.ashlarchess.bitboard;
  * bit is included before stopping) - matching the existing reference's "isAllowOwnPiece = true" attack semantics.
  *
  * <p>
- * Classical ray loops are the chosen implementation here; magic-bitboard acceleration is deferred to the switchover
- * release.
+ * Classical ray loops are the implementation here; the API shape is compatible with occupied-mask attack generation
+ * (e.g. magic bitboards), should that become worthwhile.
  */
 public final class RookAttacks {
 

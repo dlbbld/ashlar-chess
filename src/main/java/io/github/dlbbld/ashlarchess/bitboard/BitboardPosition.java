@@ -32,10 +32,9 @@ import io.github.dlbbld.ashlarchess.common.model.MoveSpecification;
  * {@link IllegalArgumentException}.
  *
  * <p>
- * Built alongside {@code StaticPosition} and verified bit-exact against it via differential testing across the full
- * PGN/FEN corpus. After the role-inversion release, {@code StaticPosition} lives in {@code src/test/} as the permanent
- * differential-test oracle; this record is the production representation. See {@code tasks.md} and the package-level
- * Javadoc for the governing Project Invariant.
+ * This record is the production piece-placement representation. It is verified bit-exact, via differential testing
+ * across the full PGN/FEN corpus, against the {@code StaticPosition} mailbox reference that lives test-side. See the
+ * package-level Javadoc for the governing invariant.
  *
  * <p>
  * <b>Deliberate "records carry data" exception:</b> unlike every other record in the codebase, this one carries its

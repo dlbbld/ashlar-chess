@@ -419,11 +419,7 @@ public final class CastlingUtility {
     };
   }
 
-  // CastlingUtility's castling-check methods are bitboard-only. After Phase 6 of the role-inversion release the
-  // StaticPosition variants moved out entirely: production callers (Board.move() and
-  // BitboardLegalMoveFactory.calculateLegalMoves) already used the bitboard overloads after 10.0.0 Step 4, and the
-  // test-side StaticPosition castling check now lives in KingCastlingLegalMoves (re-implemented end-to-end on the
-  // mailbox surface as an independent oracle - it does not call back into this class).
+  // The castling-check methods below operate on BitboardPosition.
 
   public static CastlingCheck calculateQueenSideCastlingCheck(BitboardPosition bitboardPosition, Side sideToMove,
       CastlingRight castlingRight) {

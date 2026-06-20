@@ -4,8 +4,8 @@
 package io.github.dlbbld.ashlarchess.san;
 
 /**
- * Behaviour for the {@link SanTerminalMarker} value enum: the (check, checkmate) factory and the SAN-symbol rendering
- * that previously lived on the enum itself.
+ * Utility behaviour for the {@link SanTerminalMarker} value enum: the (check, checkmate) factory and the SAN-symbol
+ * rendering.
  */
 public final class SanTerminalMarkerUtility {
 
