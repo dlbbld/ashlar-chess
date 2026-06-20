@@ -12,7 +12,10 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 
 import io.github.dlbbld.ashlarchess.board.Board;
+import io.github.dlbbld.ashlarchess.board.enums.CastlingMove;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
+import io.github.dlbbld.ashlarchess.board.enums.Square;
+import io.github.dlbbld.ashlarchess.common.model.MoveSpecification;
 import io.github.dlbbld.ashlarchess.model.PgnMove;
 import io.github.dlbbld.ashlarchess.pgn.PgnGame;
 import io.github.dlbbld.ashlarchess.test.model.PgnFen;
@@ -40,6 +43,7 @@ class TestMirrorSymmetry {
 
   private static final int MAX_CORE_POSITIONS = 6000;
   private static final int MAX_UNWINNABLE_POSITIONS = 100;
+  private static final int MAX_GAME_MIRROR_PLIES = 20000;
 
   @SuppressWarnings("static-method")
   @Test
@@ -80,6 +84,88 @@ class TestMirrorSymmetry {
       assertEquals(board.unwinnableQuick(Side.BLACK), mirror.unwinnableQuick(Side.WHITE),
           () -> "unwinnableQuick(BLACK) != mirror unwinnableQuick(WHITE): " + fen);
     }
+  }
+
+  @SuppressWarnings("static-method")
+  @Test
+  void mirroringAWholeGameTracksTheMirrorOfEveryPosition() {
+    // Replay each game on the original board and a mirror board (mirror of the start FEN), playing the mirror of every
+    // move. This tests that move EXECUTION commutes with mirroring -- castling rook movement, en-passant capture,
+    // promotion, the halfmove clock, and the repetition counter -- which the per-position generation test cannot reach.
+    // Non-initial-start PGNs are handled naturally by mirroring the start FEN.
+    int gamesExercised = 0;
+    int pliesExercised = 0;
+    for (final PgnTestCaseList testCaseList : PgnTestCaseCatalog.getParserIntegrationSmokeTests()) {
+      for (final PgnFen testCase : testCaseList.list()) {
+        final PgnGame pgnGame = PgnCacheForStrictPgnParserTestCases.getPgn(testCaseList.pgnTest().getFolderPath(),
+            testCase.pgnName());
+        final Board original = new Board(pgnGame.startFen());
+        final Board mirror = Board.fromFenStrict(mirrorFen(original.getFen()));
+        assertPositionMirror(original, mirror, testCase.pgnName(), 0);
+
+        int ply = 0;
+        for (final PgnMove move : pgnGame.moves()) {
+          final MoveSpecification specification = original.moveStrict(move.san());
+          playMirrorMove(mirror, specification, testCase.pgnName(), move.san());
+          ply++;
+          assertPositionMirror(original, mirror, testCase.pgnName(), ply);
+          pliesExercised++;
+        }
+        gamesExercised++;
+        if (pliesExercised >= MAX_GAME_MIRROR_PLIES) {
+          assertExercised(gamesExercised);
+          return;
+        }
+      }
+    }
+    assertExercised(gamesExercised);
+  }
+
+  private static void assertExercised(int gamesExercised) {
+    if (gamesExercised == 0) {
+      fail("no games exercised - corpus mis-configured");
+    }
+  }
+
+  private static void playMirrorMove(Board mirror, MoveSpecification specification, String pgnName, String san) {
+    final MoveSpecification mirrored = mirrorMove(specification);
+    try {
+      mirror.move(mirrored);
+    } catch (final RuntimeException e) {
+      fail("mirrored move " + san + " (" + mirrored + ") was illegal on the mirror board in " + pgnName + ": "
+          + e.getMessage());
+    }
+  }
+
+  private static MoveSpecification mirrorMove(MoveSpecification move) {
+    if (move.castlingMove() != CastlingMove.NONE) {
+      // King-side / queen-side is file-based, so vertical flip + colour swap keeps the same castling side.
+      return new MoveSpecification(move.castlingMove());
+    }
+    return new MoveSpecification(verticalFlip(move.fromSquare()), verticalFlip(move.toSquare()), CastlingMove.NONE,
+        move.promotionPieceType());
+  }
+
+  // Vertical flip (rank r -> 7-r, file preserved), matching the position mirror. NOT SquareUtility.flip, which is a
+  // 180-degree rotation (file also mirrored). ordinal = file + 8*rank, so XOR 0b111000 flips only the rank.
+  private static Square verticalFlip(Square square) {
+    return Square.values()[square.ordinal() ^ 0b111000];
+  }
+
+  private static void assertPositionMirror(Board original, Board mirror, String pgnName, int ply) {
+    final String[] expected = mirrorFen(original.getFen()).split("\\s+");
+    final String[] actual = mirror.getFen().split("\\s+");
+    for (int i = 0; i < 4; i++) {
+      final int field = i;
+      assertEquals(expected[i], actual[i],
+          () -> "mirror desync at FEN field " + field + " after ply " + ply + " in " + pgnName);
+    }
+    assertEquals(original.getHalfMoveClock(), mirror.getHalfMoveClock(),
+        () -> "halfmove clock not mirror-invariant after ply " + ply + " in " + pgnName);
+    assertEquals(original.getRepetitionCount(), mirror.getRepetitionCount(),
+        () -> "repetition count not mirror-invariant after ply " + ply + " in " + pgnName);
+    assertEquals(original.getLegalMoves().size(), mirror.getLegalMoves().size(),
+        () -> "legal-move count not symmetric after ply " + ply + " in " + pgnName);
   }
 
   /** Collects FENs from the smoke corpora. When {@code finalPositionsOnly}, takes each game's final (endgame) position. */
