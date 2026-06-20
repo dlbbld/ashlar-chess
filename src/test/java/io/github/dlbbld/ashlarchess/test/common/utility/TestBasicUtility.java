@@ -87,7 +87,7 @@ class TestBasicUtility {
 
     final List<String> lines = Nulls.asList("line 1", "", "line 3");
 
-    final String actual = BasicUtility.convertToString(lines);
+    final String actual = BasicUtility.calculateLineSeparatedList(lines);
 
     assertEquals(expected, actual);
 

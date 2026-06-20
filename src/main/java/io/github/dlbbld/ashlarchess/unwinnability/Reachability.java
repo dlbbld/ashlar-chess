@@ -96,7 +96,7 @@ class Reachability {
     final String squareListBlack = BasicUtility.calculateSquareList(reachableSquareSetBlack);
     lineList.add(Side.BLACK.getName() + ": " + squareListBlack);
 
-    return BasicUtility.convertToString(lineList);
+    return BasicUtility.calculateLineSeparatedList(lineList);
   }
 
   private static Set<Square> calculateSquareSet(Side side, List<ReachabilityVariable> entryList) {

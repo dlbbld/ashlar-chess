@@ -3,7 +3,7 @@
 
 package io.github.dlbbld.ashlarchess.fen.model;
 
-public record FenField(String piecePlacement, String sideToMove, String castlingRightBothStr,
+public record FenField(String piecePlacement, String sideToMove, String castlingRightBoth,
     String enPassantCaptureTargetSquare, String halfMoveClock, String fullMoveNumber) {
 
 }

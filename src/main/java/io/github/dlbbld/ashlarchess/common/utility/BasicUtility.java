@@ -48,7 +48,7 @@ public final class BasicUtility {
     return true;
   }
 
-  public static String convertToString(List<String> list) {
+  public static String calculateLineSeparatedList(List<String> list) {
     return Nulls.join("\n", list);
   }
 

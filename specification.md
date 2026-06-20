@@ -97,7 +97,7 @@ When validation fails, the library produces messages a human can act on. Each pr
 The library makes only modest thread-safety guarantees, all of them honest about the underlying types:
 
 - **`Board` is mutable and not thread-safe.** Use one `Board` per thread, or synchronize externally. `Board.equals` / `Board.hashCode` reflect current game state, so a `Board` placed in a `HashMap` or `HashSet` and then mutated will violate the collection's invariants.
-- **Records are immutable and thread-safe.** `Fen`, `PgnGame`, `PgnMove`, `MoveSpecification`, `PgnCommentary`, `Tag`, `Report`, etc. — once constructed, they can be freely shared.
+- **Records are immutable and thread-safe.** `Fen`, `PgnGame`, `PgnMove`, `MoveSpecification`, `PgnCommentary`, `Tag`, `Outcome`, etc. — once constructed, they can be freely shared.
 - **Static utility classes are stateless and thread-safe.** `Reporter`, `PgnCreate`, `KnightDistance`, the various `*Validation` and `*Utility` classes — all entry points are static methods on stateless classes. Multiple threads can call them concurrently.
 - **Parsers expose stateless static entry points.** `StrictPgnParser.parseText(String)` / `StrictPgnParser.parsePath(Path)` and the lenient counterparts construct a fresh parser instance per call internally; the parser instances themselves carry per-parse state and should not be shared. Stick to the static entry points.
 
@@ -267,26 +267,21 @@ The top-level package `io.github.dlbbld.ashlarchess` is organised by concern:
 | Package | Responsibility |
 |---|---|
 | `board` | `Board`, position state, move execution, game-status queries |
-| `model` | Cross-cutting model types |
+| `model` | Cross-cutting model types (`LegalMove`, `UciMove`, `PgnMove`, `CastlingRightBoth`, …) |
 | `enums` | Pipeline-level domain enums (`MoveCheck`, `MoveSuffixAnnotation`, etc.) shared across SAN and movement validation |
 | `fen` | FEN parsing, validation, and generation |
 | `san` | SAN parsing, validation, generation |
-| `moves` | Legal move enumeration and execution helpers |
-| `pgn.parser` | Strict and lenient PGN parsers; shared tokenizer in `pgn.parser.sequential` |
-| `pgn.create` | PGN export |
-| `pgn.writer` | File-system PGN writing |
-| `pgn.diagnostic` | Standalone PGN diagnostics outside the strict pipeline (e.g. `GameContinuationScanner`) |
-| `unwinnability` | CHA implementation, quick and full |
+| `moves` | Legal-move enumeration and execution helpers (castling, en-passant, promotion) |
+| `pgn` | A flat package: PGN parsing (`StrictPgnParser` / `LenientPgnParser` and the tokenizer), export (`PgnCreate`), file I/O (`PgnReader` / `PgnWriter`), and tag / PGN utility helpers |
+| `unwinnability` | CHA implementation (quick and full), dead-position analysis, and the king / knight distance metrics |
+| `adjudication` | Game adjudication for flagfall and resignation (`Adjudicator`, `AdjudicationResult`) |
 | `report` | Game-level reports: threefold-claim-ahead, repetition, 50-move sequences |
-| `analyze` | Stateless chess-rule analysis used by SAN and movement validation pipelines |
-| `utility` | PGN- and tag-level helpers used by the parsers and exporter (separate from `common.utility`) |
+| `analyze` | Stateless chess-rule analysis used by the SAN and movement validation pipelines |
 | `messages` | Validation-message bundle (`Message`, `messages.properties`) for SAN/FEN/PGN diagnostics |
-| `distance` | Square-to-square distance metrics (king, knight) |
-| `range` | Orthogonal and diagonal direction ranges for piece movement |
-| `squares` | Precomputed square-to-square reachability and attack lookup tables (`emptyboard`, `pawn`, `to.attacked`, `to.potential`, `to.range`) |
+| `squares` | Precomputed empty-board reachability / attack lookup tables and direction ranges (`*EmptyBoardSquares`, `*Range`) |
 | `bitboard` | `BitboardPosition` (12-long piece-bitboard record) and its move/attack helpers — the production piece-placement representation |
 | `exceptions` | Top-level move-pipeline exception (`InvalidMoveException`); other exceptions live in `common.exceptions` |
-| `common` | Generic utilities, constants, and exceptions |
+| `common` | Shared core: generic utilities, constants, cross-cutting model types, and the base exception hierarchy — `common.utility`, `common.constants`, `common.model`, `common.exceptions`, `common.enums`, `common.ucimove` |
 
 Packages depend in roughly that order (top to bottom).
 

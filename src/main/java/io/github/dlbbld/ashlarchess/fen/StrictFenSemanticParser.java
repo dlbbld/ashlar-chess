@@ -75,7 +75,7 @@ final class StrictFenSemanticParser {
           "the king of the opposing player is in check");
     }
 
-    final String castlingRightBothStr = fenField.castlingRightBothStr();
+    final String castlingRightBothStr = fenField.castlingRightBoth();
     final CastlingRightBoth castlingRightBoth = validateCastlingRightBoth(bitboardPosition, castlingRightBothStr);
 
     final String enPassantCaptureTargetSquareStr = fenField.enPassantCaptureTargetSquare();

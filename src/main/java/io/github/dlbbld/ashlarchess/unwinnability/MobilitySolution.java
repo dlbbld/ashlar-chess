@@ -120,7 +120,7 @@ class MobilitySolution {
       lineList.add(string);
     }
 
-    return BasicUtility.convertToString(lineList);
+    return BasicUtility.calculateLineSeparatedList(lineList);
   }
 
   @Override

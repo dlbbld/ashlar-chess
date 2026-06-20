@@ -108,7 +108,7 @@ class TestStrictFenFieldParser {
   }
 
   private static String parseCastlingRight(String fen) {
-    return StrictFenFieldParser.parse(fen).castlingRightBothStr();
+    return StrictFenFieldParser.parse(fen).castlingRightBoth();
   }
 
   private static String parseEnPassantCaptureTargetSquare(String fen) {

@@ -44,7 +44,7 @@ public final class PgnCreate {
   }
 
   public static String toPgnString(PgnGame pgnGame, WriteMode writeMode) {
-    return appendEmptyLine(BasicUtility.convertToString(toPgnLines(pgnGame, writeMode)));
+    return appendEmptyLine(BasicUtility.calculateLineSeparatedList(toPgnLines(pgnGame, writeMode)));
   }
 
   public static ImmutableList<String> toPgnLines(PgnGame pgnGame) {
