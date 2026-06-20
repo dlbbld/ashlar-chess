@@ -5,7 +5,7 @@ Releases from 3.3 onward. Earlier history is in git tags only.
 ## [Unreleased]
 
 
-## [19.0.0] - Retire HalfMove; records and enums carry data - 2026-06-14
+## [19.0.0] - The essential shape: coherent API, domain-owned behavior, declared scope - 2026-06-20
 
 A surface-only release. It retires the `HalfMove` concept, replaces the "halfmove" / "ply" vocabulary with "move" across the public model and reports, and applies a "data carriers, not behavior" pass that moves computed, translation, and factory logic off records and enums into dedicated utility / translator classes. No rule, parser, or analysis behavior changes — every verdict and every report is identical to 18.1.0; what changes is the shape of the API. It is heavily binary-incompatible, so the breaking list is long, but most migrations are a single type rename or a `Type.method(x)` → `TypeUtility.method(x)` call-site change.
 
