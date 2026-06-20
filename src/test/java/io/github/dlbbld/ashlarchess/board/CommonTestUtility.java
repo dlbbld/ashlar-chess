@@ -93,11 +93,11 @@ public final class CommonTestUtility {
       assertEquals(boardFirst.getDynamicPositionList(), boardSecond.getDynamicPositionList());
       assertEquals(boardFirst.getDynamicPosition(), boardSecond.getDynamicPosition());
 
-      assertEquals(boardFirst.getPossibleMoveSpecificationList(), boardSecond.getPossibleMoveSpecificationList());
+      assertEquals(boardFirst.getLegalMoveSpecifications(), boardSecond.getLegalMoveSpecifications());
 
       assertEquals(boardFirst.getLegalMoves(), boardSecond.getLegalMoves());
-      assertEquals(boardFirst.getPerformedMoveSpecificationList(), boardSecond.getPerformedMoveSpecificationList());
-      assertEquals(boardFirst.getLegalMovesSan(), boardSecond.getLegalMovesSan());
+      assertEquals(boardFirst.getPerformedMoveSpecifications(), boardSecond.getPerformedMoveSpecifications());
+      assertEquals(boardFirst.getLegalMovesAsSan(), boardSecond.getLegalMovesAsSan());
     }
 
     if (!boardFirst.isFirstMove() && !boardSecond.isFirstMove()) {
@@ -174,10 +174,10 @@ public final class CommonTestUtility {
       assertEquals(boardFirst.getPerformedMoveCount(), boardSecond.getPerformedMoveCount());
       assertEquals(boardFirst.getDynamicPositionList(), boardSecond.getDynamicPositionList());
       assertEquals(boardFirst.getDynamicPosition(), boardSecond.getDynamicPosition());
-      assertEquals(boardFirst.getPossibleMoveSpecificationList(), boardSecond.getPossibleMoveSpecificationList());
+      assertEquals(boardFirst.getLegalMoveSpecifications(), boardSecond.getLegalMoveSpecifications());
       assertEquals(boardFirst.getLegalMoves(), boardSecond.getLegalMoves());
-      assertEquals(boardFirst.getPerformedMoveSpecificationList(), boardSecond.getPerformedMoveSpecificationList());
-      assertEquals(boardFirst.getLegalMovesSan(), boardSecond.getLegalMovesSan());
+      assertEquals(boardFirst.getPerformedMoveSpecifications(), boardSecond.getPerformedMoveSpecifications());
+      assertEquals(boardFirst.getLegalMovesAsSan(), boardSecond.getLegalMovesAsSan());
     }
 
     if (!boardFirst.isFirstMove() && !boardSecond.isFirstMove()) {

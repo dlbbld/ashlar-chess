@@ -36,7 +36,7 @@ public class GenerateRandomGame {
   private static void generateRandomGame(FindRandomGame findRandomGame) {
     final Board board = new Board();
 
-    List<MoveSpecification> legalMoves = board.getPossibleMoveSpecificationList();
+    List<MoveSpecification> legalMoves = board.getLegalMoveSpecifications();
     int numberOfMoveOptions = legalMoves.size();
     List<MoveSpecification> moveOptionList = new ArrayList<>(legalMoves);
 
@@ -51,7 +51,7 @@ public class GenerateRandomGame {
         if (numberOfMovesPerformed == 1 || numberOfMovesPerformed % 100 == 0) {
           System.out.println("Number of moves performed: " + numberOfMovesPerformed);
         }
-        legalMoves = board.getPossibleMoveSpecificationList();
+        legalMoves = board.getLegalMoveSpecifications();
       }
 
       moveOptionList = new ArrayList<>();
@@ -105,7 +105,7 @@ public class GenerateRandomGame {
       }
       // now we should have at least one checkmate move
       // perform first found
-      legalMoves = board.getPossibleMoveSpecificationList();
+      legalMoves = board.getLegalMoveSpecifications();
       for (final MoveSpecification moveSpecification : legalMoves) {
         board.move(moveSpecification);
 
@@ -155,7 +155,7 @@ public class GenerateRandomGame {
   private static void generateNoRepetition() {
     final Board board = new Board();
 
-    List<MoveSpecification> legalMoves = board.getPossibleMoveSpecificationList();
+    List<MoveSpecification> legalMoves = board.getLegalMoveSpecifications();
     int numberOfMoveOptions = legalMoves.size();
     List<MoveSpecification> moveOptionList = new ArrayList<>(legalMoves);
 
@@ -169,7 +169,7 @@ public class GenerateRandomGame {
         if (numberOfMovesPerformed == 1 || numberOfMovesPerformed % 100 == 0) {
           System.out.println("Number of moves performed: " + numberOfMovesPerformed);
         }
-        legalMoves = board.getPossibleMoveSpecificationList();
+        legalMoves = board.getLegalMoveSpecifications();
       }
 
       moveOptionList = new ArrayList<>();
@@ -194,7 +194,7 @@ public class GenerateRandomGame {
   private static void generateSeventyFive() {
     final Board board = new Board();
 
-    List<MoveSpecification> legalMoves = board.getPossibleMoveSpecificationList();
+    List<MoveSpecification> legalMoves = board.getLegalMoveSpecifications();
     int numberOfMoveOptions = legalMoves.size();
     List<MoveSpecification> moveOptionList = new ArrayList<>(legalMoves);
 
@@ -221,7 +221,7 @@ public class GenerateRandomGame {
           System.out.println(moveList);
           return;
         }
-        legalMoves = board.getPossibleMoveSpecificationList();
+        legalMoves = board.getLegalMoveSpecifications();
       }
 
       moveOptionList = new ArrayList<>();
@@ -261,7 +261,7 @@ public class GenerateRandomGame {
   private static boolean generateRepetition(int repetitionNumber) {
     final Board board = new Board();
 
-    List<MoveSpecification> legalMoves = board.getPossibleMoveSpecificationList();
+    List<MoveSpecification> legalMoves = board.getLegalMoveSpecifications();
     int numberOfMoveOptions = legalMoves.size();
     List<MoveSpecification> moveOptionList = new ArrayList<>(legalMoves);
 
@@ -291,7 +291,7 @@ public class GenerateRandomGame {
           System.out.println(moveList);
           return true;
         }
-        legalMoves = board.getPossibleMoveSpecificationList();
+        legalMoves = board.getLegalMoveSpecifications();
       }
 
       moveOptionList = new ArrayList<>();
@@ -325,7 +325,7 @@ public class GenerateRandomGame {
 
   private static String calculateMoveList(Board board) {
     final StringBuilder moveList = new StringBuilder();
-    final List<MoveSpecification> moves = board.getPerformedMoveSpecificationList();
+    final List<MoveSpecification> moves = board.getPerformedMoveSpecifications();
     final Board replay = new Board(board.getInitialFen());
     for (int i = 0; i < moves.size(); i++) {
       replay.move(Nulls.get(moves, i));

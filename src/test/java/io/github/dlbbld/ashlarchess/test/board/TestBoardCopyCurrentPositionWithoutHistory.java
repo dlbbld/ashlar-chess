@@ -55,7 +55,7 @@ class TestBoardCopyCurrentPositionWithoutHistory {
   private static void assertEquivalentHistorylessBoard(Board source, Board actual) {
     // no history
     assertEquals(0, actual.getPerformedMoveCount());
-    assertEquals(0, actual.getPerformedLegalMoveList().size());
+    assertEquals(0, actual.getPerformedLegalMoves().size());
 
     // halfmove clock reset, everything else preserved
     assertEquals(0, actual.getHalfMoveClock());

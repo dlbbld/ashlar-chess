@@ -509,7 +509,7 @@ public final class Board {
     return currentLegalMoves;
   }
 
-  public ImmutableList<MoveSpecification> getPerformedMoveSpecificationList() {
+  public ImmutableList<MoveSpecification> getPerformedMoveSpecifications() {
     final List<MoveSpecification> moveSpecificationList = new ArrayList<>();
     for (int i = 1; i < boardStateList.size(); i++) {
       moveSpecificationList.add(moveAt(i).moveSpecification());
@@ -907,7 +907,7 @@ public final class Board {
     return getRepetitionCount() >= ChessConstants.FIVEFOLD_REPETITION_RULE_THRESHOLD;
   }
 
-  public ImmutableList<String> getSanList() {
+  public ImmutableList<String> getPerformedMovesAsSan() {
     final List<String> result = new ArrayList<>();
     for (int i = 1; i < boardStateList.size(); i++) {
       result.add(sanAt(i));
@@ -1016,7 +1016,7 @@ public final class Board {
     return Nulls.getLast(boardStateList).dynamicPosition();
   }
 
-  public ImmutableList<MoveSpecification> getPossibleMoveSpecificationList() {
+  public ImmutableList<MoveSpecification> getLegalMoveSpecifications() {
     final List<MoveSpecification> result = new ArrayList<>();
     for (final LegalMove legalMove : this.getLegalMoves()) {
       result.add(legalMove.moveSpecification());
@@ -1044,7 +1044,7 @@ public final class Board {
     }
   }
 
-  public ImmutableList<LegalMove> getPerformedLegalMoveList() {
+  public ImmutableList<LegalMove> getPerformedLegalMoves() {
     final List<LegalMove> result = new ArrayList<>();
     for (int i = 1; i < boardStateList.size(); i++) {
       result.add(moveAt(i));
@@ -1180,7 +1180,7 @@ public final class Board {
     };
   }
 
-  public ImmutableList<String> getLegalMovesSan() {
+  public ImmutableList<String> getLegalMovesAsSan() {
     final List<String> result = new ArrayList<>();
     for (final LegalMove legalMove : getLegalMoves()) {
       result.add(sanForCandidate(legalMove));
@@ -1188,10 +1188,10 @@ public final class Board {
     return Nulls.copyOfList(result);
   }
 
-  public ImmutableList<String> getLegalMovesUci() {
+  public ImmutableList<String> getLegalMovesAsUci() {
     final List<String> result = new ArrayList<>();
     final Side sideToMove = getSideToMove();
-    for (final MoveSpecification moveSpecification : getPossibleMoveSpecificationList()) {
+    for (final MoveSpecification moveSpecification : getLegalMoveSpecifications()) {
       final String uci = UciMoveUtility.toUci(sideToMove, moveSpecification).uci();
       result.add(uci);
     }

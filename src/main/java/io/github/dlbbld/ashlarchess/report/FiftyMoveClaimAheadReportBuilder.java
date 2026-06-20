@@ -52,7 +52,7 @@ final class FiftyMoveClaimAheadReportBuilder {
     final Board replayBoard = new Board(board.getInitialFen());
     SequenceStart currentStart = initialSequenceStart(initialFenClock);
 
-    final List<LegalMove> performedLegalMoveList = board.getPerformedLegalMoveList();
+    final List<LegalMove> performedLegalMoveList = board.getPerformedLegalMoves();
     for (final LegalMove nextPlayedMove : performedLegalMoveList) {
       final boolean nextPlayedMoveBreaksSequence = nextPlayedMove.resetsHalfMoveClock();
       if (nextPlayedMoveBreaksSequence) {

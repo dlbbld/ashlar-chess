@@ -58,7 +58,7 @@ class TestFenRoundtripPgn {
     for (final PgnMove move : pgnGame.moveList()) {
       board.moveStrict(move.san());
     }
-    final List<MoveSpecification> moveList = board.getPerformedMoveSpecificationList();
+    final List<MoveSpecification> moveList = board.getPerformedMoveSpecifications();
     TestFenRoundtripSupport.checkFenRoundtrip(pgnGame.startFen().fen(), moveList);
   }
 

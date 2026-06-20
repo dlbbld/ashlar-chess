@@ -218,7 +218,7 @@ public final class PgnCreate {
    */
   public static PgnGame createPgnGame(Board board, List<Tag> tagList) {
 
-    final List<PgnMove> moveList = calculatePgnMoveList(board.getSanList());
+    final List<PgnMove> moveList = calculatePgnMoveList(board.getPerformedMovesAsSan());
 
     return new PgnGame(Nulls.copyOfList(tagList), board.getInitialFen(), PgnCommentary.EMPTY,
         Nulls.copyOfList(moveList), calculateResultTagValue(board));

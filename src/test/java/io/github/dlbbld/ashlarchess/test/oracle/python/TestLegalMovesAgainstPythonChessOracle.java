@@ -34,7 +34,7 @@ import io.github.dlbbld.ashlarchess.test.pgntest.enums.PgnTest;
  * <p>
  * For each fixture: parses the PGN, walks the board through the played sequence, and at each ply (including ply 0
  * before any move and the position after the final move) asserts that the sorted UCI set of
- * {@code board.getLegalMovesUci()} equals the python-chess set recorded in the JSONL oracle under
+ * {@code board.getLegalMovesAsUci()} equals the python-chess set recorded in the JSONL oracle under
  * {@code src/test/resources/oracle/python-chess/move-gen/<folderPart>.jsonl}.
  *
  * <p>
@@ -105,7 +105,7 @@ class TestLegalMovesAgainstPythonChessOracle {
         for (int ply = 0; ply <= plyCount; ply++) {
           totalPositions++;
           final LegalMovesPly expectedPly = Nulls.get(record.perPly(), ply);
-          final List<String> actualSorted = sortedCopy(board.getLegalMovesUci());
+          final List<String> actualSorted = sortedCopy(board.getLegalMovesAsUci());
 
           final int positionLabel = ply;
           try {

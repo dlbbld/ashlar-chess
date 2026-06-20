@@ -49,7 +49,7 @@ class TestFenRoundtripMoves {
         "Kf6", "Rh6+", "Kg7", "Rh3", "Bxc4", "Rxe3", "Bxb3", "f4", "Ba4+", "Kc7", "Bxd7", "Rg3+", "Rxg3", "fxg3", "d5",
         "g2", "dxe6", "g1=Q+", "Kf7", "Qf2+");
 
-    final List<MoveSpecification> moveList = boardMakeMoves.getPerformedMoveSpecificationList();
+    final List<MoveSpecification> moveList = boardMakeMoves.getPerformedMoveSpecifications();
 
     TestFenRoundtripSupport.checkFenRoundtrip(FenConstants.FEN_INITIAL_STR, moveList);
   }
@@ -61,7 +61,7 @@ class TestFenRoundtripMoves {
     boardMakeMoves.movesStrict("e4", "e5", "Nf3", "Nc6", "Bc4", "Bc5", "c3", "d6", "d4", "exd4", "cxd4", "Bxd4", "Nxd4",
         "Nxd4", "O-O", "Nf6", "Re1", "Nxe4", "Nc3", "O-O");
 
-    final List<MoveSpecification> moveList = boardMakeMoves.getPerformedMoveSpecificationList();
+    final List<MoveSpecification> moveList = boardMakeMoves.getPerformedMoveSpecifications();
 
     TestFenRoundtripSupport.checkFenRoundtrip(FenConstants.FEN_INITIAL_STR, moveList);
   }

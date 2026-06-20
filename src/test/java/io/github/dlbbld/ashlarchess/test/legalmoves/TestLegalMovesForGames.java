@@ -978,12 +978,12 @@ class TestLegalMovesForGames {
   }
 
   private static void checkInitial(Board board) {
-    assertEquals(parseSanSet(INITIAL_LEGAL_MOVES), new TreeSet<>(board.getLegalMovesSan()));
+    assertEquals(parseSanSet(INITIAL_LEGAL_MOVES), new TreeSet<>(board.getLegalMovesAsSan()));
   }
 
   private static void checkLegalMoves(Board board, String san, String expected) {
     board.moveStrict(san);
-    assertEquals(parseSanSet(expected), new TreeSet<>(board.getLegalMovesSan()));
+    assertEquals(parseSanSet(expected), new TreeSet<>(board.getLegalMovesAsSan()));
   }
 
   // The fixtures are written in SAN-alphabetic order for readability, which is independent of the
@@ -1010,7 +1010,7 @@ class TestLegalMovesForGames {
     for (final PgnMove move : pgnGame.moveList()) {
       board.moveStrict(move.san());
       final String san = board.getSan();
-      final String legalMoveList = ListUtility.calculateCommaSeparatedList(new ArrayList<>(board.getLegalMovesSan()));
+      final String legalMoveList = ListUtility.calculateCommaSeparatedList(new ArrayList<>(board.getLegalMovesAsSan()));
       final String output = "checkLegalMoves(board, \"" + san + "\", \"" + legalMoveList + "\");";
       System.out.println(output);
     }
