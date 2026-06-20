@@ -19,7 +19,7 @@ public final class UciMoveUtility {
   private UciMoveUtility() {
   }
 
-  public static UciMove convertMoveSpecificationToUci(Side sideToMove, MoveSpecification moveSpecification) {
+  public static UciMove toUci(Side sideToMove, MoveSpecification moveSpecification) {
     Square fromSquare;
     Square toSquare;
     PromotionPieceType promotionPieceType;
@@ -41,7 +41,7 @@ public final class UciMoveUtility {
   // we are avoiding checks weather the uci move is legal move or not
   // the goal is to provide a move specification
   // the move specificatoin can then be checked to be legal
-  public static MoveSpecification convertUciMoveToMoveSpecification(Board board, UciMove uciMove) {
+  public static MoveSpecification toMoveSpecification(Board board, UciMove uciMove) {
     // we need the board to identify the castling move
 
     final Square fromSquare = uciMove.fromSquare();
@@ -68,8 +68,8 @@ public final class UciMoveUtility {
     return new MoveSpecification(fromSquare, toSquare);
   }
 
-  public static String convertUciMoveToSan(Board board, UciMove uciMove) {
-    final MoveSpecification moveSpecification = convertUciMoveToMoveSpecification(board, uciMove);
+  public static String toSan(Board board, UciMove uciMove) {
+    final MoveSpecification moveSpecification = toMoveSpecification(board, uciMove);
     board.move(moveSpecification);
     final String san = board.getSan();
     board.unmove();

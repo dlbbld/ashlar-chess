@@ -8,19 +8,23 @@ public record Tag(String name, String value) implements Comparable<Tag> {
   @Override
   public int compareTo(Tag o) {
     if (StandardTag.exists(name)) {
-      if (StandardTag.exists(o.name)) {
-        final StandardTag thisTag = StandardTag.parse(name);
-        final StandardTag otherTag = StandardTag.parse(o.name);
-        return Integer.compare(thisTag.getSortOrder(), otherTag.getSortOrder());
+      if (!StandardTag.exists(o.name)) {
+        // Standard tags sort before custom tags; names always differ here, so no tie-break is needed.
+        return -1;
       }
-      return -1;
-    }
-
-    if (StandardTag.exists(o.name)) {
+      final int bySortOrder = Integer.compare(StandardTag.parse(name).getSortOrder(),
+          StandardTag.parse(o.name).getSortOrder());
+      if (bySortOrder != 0) {
+        return bySortOrder;
+      }
+    } else if (StandardTag.exists(o.name)) {
       return 1;
     }
-    return name.compareTo(o.name);
 
+    // Same category and primary rank: order by name, then value, so compareTo stays consistent with equals
+    // (which compares both name and value).
+    final int byName = name.compareTo(o.name);
+    return byName != 0 ? byName : value.compareTo(o.value);
   }
 
 }

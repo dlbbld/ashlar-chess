@@ -427,7 +427,7 @@ final class HelpmateSearchBoard {
     final Square from = moveSpec.fromSquare();
     final Square to = moveSpec.toSquare();
     final Piece movingPiece = moveToPerform.movingPiece();
-    final Piece capturedPiece = moveToPerform.pieceCaptured();
+    final Piece capturedPiece = moveToPerform.capturedPiece();
     final long fromBit = 1L << from.ordinal();
     final long toBit = 1L << to.ordinal();
 

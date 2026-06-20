@@ -344,6 +344,9 @@ public final class StrictPgnParser {
   // -------------------------------------------------------------------------------------------------
 
   private record MovetextOutcome(List<PgnMove> moveList, PgnCommentary pregameCommentary) {
+    private MovetextOutcome {
+      moveList = Nulls.copyOfList(moveList);
+    }
   }
 
   private MovetextOutcome parseMovetext(Fen startFen, ResultTagValue resultTagValue) {

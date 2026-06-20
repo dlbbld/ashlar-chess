@@ -45,9 +45,9 @@ class PawnCaptureEnPassantCaptureLegalMoves extends PawnLegalMoves {
 
       final Square squareOfCapturedPawnForEnPassantCapture = EnPassantCaptureUtility
           .calculateSquareOfCapturedPawnForEnPassantCapture(sideToMove, moveSpecification);
-      final Piece pieceCaptured = staticPosition.get(squareOfCapturedPawnForEnPassantCapture);
+      final Piece capturedPiece = staticPosition.get(squareOfCapturedPawnForEnPassantCapture);
 
-      final LegalMove legalMove = new LegalMove(moveSpecification, movingPiece, pieceCaptured,
+      final LegalMove legalMove = new LegalMove(moveSpecification, movingPiece, capturedPiece,
           LegalMoveKind.EN_PASSANT_CAPTURE);
       legalMoveSet.add(legalMove);
     }

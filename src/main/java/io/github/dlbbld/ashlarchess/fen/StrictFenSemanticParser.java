@@ -388,24 +388,24 @@ final class StrictFenSemanticParser {
     // that must come after checking if pawn has potentially advanced two squares
     final Square startingSquare = enPassantCaptureTargetSquare.getBehindSquare(oppositeSide);
     final Piece pieceOnStartingSquare = bitboardPosition.get(startingSquare);
-    final boolean isStartingSquareEmpty = pieceOnStartingSquare != Piece.NONE;
+    final boolean isStartingSquareOccupied = pieceOnStartingSquare != Piece.NONE;
 
     final Piece pieceOnEnPassantCaptureTargetSquare = bitboardPosition.get(enPassantCaptureTargetSquare);
-    final boolean isEnPassantCaptureTargetSquareEmpty = pieceOnEnPassantCaptureTargetSquare != Piece.NONE;
+    final boolean isEnPassantCaptureTargetSquareOccupied = pieceOnEnPassantCaptureTargetSquare != Piece.NONE;
 
-    if (isStartingSquareEmpty && isEnPassantCaptureTargetSquareEmpty) {
+    if (isStartingSquareOccupied && isEnPassantCaptureTargetSquareOccupied) {
       throw new StrictFenSemanticValidationException(StrictFenSemanticValidationProblem.INVALID_EN_PASSANT_CAPTURE_BOTH_NOT_EMPTY,
           "the en passant target square \"" + enPassantCaptureTargetSquare + "\" and the pawn starting square  \""
               + startingSquare + "\" are not empty");
     }
 
-    if (isStartingSquareEmpty) {
+    if (isStartingSquareOccupied) {
       throw new StrictFenSemanticValidationException(
           StrictFenSemanticValidationProblem.INVALID_EN_PASSANT_CAPTURE_STARTING_SQUARE_NOT_EMPTY,
           "the from square \"" + startingSquare + "\" of the pawn making the two square advance is not empty");
     }
 
-    if (isEnPassantCaptureTargetSquareEmpty) {
+    if (isEnPassantCaptureTargetSquareOccupied) {
       throw new StrictFenSemanticValidationException(
           StrictFenSemanticValidationProblem.INVALID_EN_PASSANT_CAPTURE_TARGET_SQUARE_NOT_EMPTY,
           "the en passant target square \"" + enPassantCaptureTargetSquare + "\" is not empty");

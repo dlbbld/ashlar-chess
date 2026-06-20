@@ -478,8 +478,8 @@ class TestLenientSanParser {
     for (final String san : sanMoves) {
       ref.moveStrict(san);
       final LegalMove last = ref.getLastMove();
-      final UciMove uciMove = UciMoveUtility.convertMoveSpecificationToUci(last.movingSide(), last.moveSpecification());
-      uci.add(uciMove.text());
+      final UciMove uciMove = UciMoveUtility.toUci(last.movingSide(), last.moveSpecification());
+      uci.add(uciMove.uci());
     }
     return uci;
   }

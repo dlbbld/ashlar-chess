@@ -38,8 +38,8 @@ class PawnForwardPromotionLegalMoves extends PawnLegalMoves {
         for (final PromotionPieceType promotionPieceType : PromotionPieceType.REAL) {
           final MoveSpecification moveSpecification = new MoveSpecification(fromSquare, toSquare, promotionPieceType);
           if (!StaticPositionUtility.calculateIsKingAttackedAfterMove(staticPosition, sideToMove, moveSpecification)) {
-            final Piece pieceCaptured = staticPosition.get(toSquare);
-            final LegalMove legalMove = new LegalMove(moveSpecification, movingPiece, pieceCaptured,
+            final Piece capturedPiece = staticPosition.get(toSquare);
+            final LegalMove legalMove = new LegalMove(moveSpecification, movingPiece, capturedPiece,
                 LegalMoveKind.PROMOTION);
             legalMoveSet.add(legalMove);
           }

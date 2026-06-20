@@ -522,7 +522,7 @@ public final class Board {
       throw new IllegalStateException("There is no last move");
     }
     final LegalMove lastMove = getLastMove();
-    return lastMove.pieceCaptured() != Piece.NONE;
+    return lastMove.capturedPiece() != Piece.NONE;
   }
 
   public boolean isCheck() {
@@ -1026,6 +1026,20 @@ public final class Board {
     return Objects.hash(boardStateList, initialFen);
   }
 
+  /**
+   * Game equality: two boards are equal when they share the same initial FEN and the same full per-position history
+   * (the move played, the derived check / checkmate / stalemate flags, the dynamic position, the halfmove clock, the
+   * repetition count, and the castling-right-loss reasons at every position passed through). This is <em>game</em>
+   * identity, not <em>position</em> identity - two boards that reach the same current position by different move orders
+   * are <strong>not</strong> equal.
+   *
+   * <p>
+   * To compare positions rather than games, compare {@link #getDynamicPosition()} instead: it is the exact,
+   * collision-free value record for the current position (side to move, piece placement, castling rights, and
+   * en-passant target). Because {@code Board} is mutable, its equality changes as moves are played - see the
+   * class-level thread-safety note before using a {@code Board} as a {@link java.util.Map} key or
+   * {@link java.util.Set} element.
+   */
   @Override
   public boolean equals(@Nullable Object obj) {
     if (this == obj) {
@@ -1145,7 +1159,7 @@ public final class Board {
     final List<String> result = new ArrayList<>();
     final Side sideToMove = getSideToMove();
     for (final MoveSpecification moveSpecification : getPossibleMoveSpecificationList()) {
-      final String uci = UciMoveUtility.convertMoveSpecificationToUci(sideToMove, moveSpecification).text();
+      final String uci = UciMoveUtility.toUci(sideToMove, moveSpecification).uci();
       result.add(uci);
     }
     return Nulls.copyOfList(result);

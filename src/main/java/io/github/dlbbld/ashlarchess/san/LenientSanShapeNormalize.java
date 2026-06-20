@@ -27,9 +27,12 @@ import io.github.dlbbld.ashlarchess.messages.Message;
  * <ol>
  * <li>Castling shape (zero-vs-O, mixed-rejection, UCI castling)
  * <li>Strip terminal marker for body-only processing, re-attach at the end
- * <li>UCI piece-move translation (board-aware lookup of the piece on the from-square)
- * <li>Body transforms: explicit-P strip, LAN hyphen strip, missing promotion-equals insert
- * <li>Case fixups (lowercase piece letter, uppercase file letter, uppercase capture marker, lowercase promotion piece)
+ * <li>Explicit-P strip (drop a redundant leading {@code P} pawn letter)
+ * <li>Case fixups (lowercase piece letter, uppercase file letter, uppercase capture marker, lowercase promotion
+ * piece) - run early so the later board-aware and insert steps see case-normalized input
+ * <li>UCI/LAN piece-move translation (board-aware lookup of the piece on the from-square, LAN hyphen strip)
+ * <li>Missing pawn-capture marker insert
+ * <li>Missing promotion-equals insert
  * </ol>
  */
 final class LenientSanShapeNormalize {
@@ -79,7 +82,7 @@ final class LenientSanShapeNormalize {
       final boolean hasZero = body.indexOf('0') >= 0;
       if (hasO && hasZero) {
         throw new LenientSanParserValidationException(
-            Message.getString("validation.san.lenient.mixedCastlingZeroAndO", text), text, null,
+            Message.getString("validation.san.lenient.mixedCastlingZeroAndO", text), text, SanValidationProblem.NONE,
             ForgivenItem.EMPTY_LIST);
       }
       if (hasZero) {

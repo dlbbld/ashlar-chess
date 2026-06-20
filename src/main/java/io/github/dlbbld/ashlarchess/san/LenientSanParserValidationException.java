@@ -4,7 +4,6 @@
 package io.github.dlbbld.ashlarchess.san;
 
 import org.eclipse.jdt.annotation.NonNull;
-import org.eclipse.jdt.annotation.Nullable;
 
 import com.google.common.collect.ImmutableList;
 
@@ -21,11 +20,11 @@ import io.github.dlbbld.ashlarchess.common.exceptions.UsageException;
 public class LenientSanParserValidationException extends UsageException {
 
   private final String originalText;
-  private final @Nullable SanValidationProblem underlyingSanValidationProblem;
+  private final SanValidationProblem underlyingSanValidationProblem;
   private final @NonNull ImmutableList<@NonNull ForgivenItem> forgivenItemsAccumulated;
 
   public LenientSanParserValidationException(String message, String originalText,
-      @Nullable SanValidationProblem underlyingSanValidationProblem,
+      SanValidationProblem underlyingSanValidationProblem,
       @NonNull ImmutableList<@NonNull ForgivenItem> forgivenItemsAccumulated) {
     super(message);
     this.originalText = originalText;
@@ -39,10 +38,10 @@ public class LenientSanParserValidationException extends UsageException {
 
   /**
    * The deepest underlying strict-pipeline rejection reason, when the lenient parser exhausted its recovery options and
-   * the final failure came from the strict layer; {@code null} if the lenient layer rejected the input on shape grounds
-   * before the strict layer was consulted (e.g. mixed {@code 0-O} castling).
+   * the final failure came from the strict layer; {@link SanValidationProblem#NONE} if the lenient layer rejected the
+   * input on shape grounds before the strict layer was consulted (e.g. mixed {@code 0-O} castling).
    */
-  public @Nullable SanValidationProblem getUnderlyingSanValidationProblem() {
+  public SanValidationProblem getUnderlyingSanValidationProblem() {
     return underlyingSanValidationProblem;
   }
 

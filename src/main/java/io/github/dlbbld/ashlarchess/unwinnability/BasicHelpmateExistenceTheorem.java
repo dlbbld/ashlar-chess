@@ -80,7 +80,7 @@ final class BasicHelpmateExistenceTheorem {
 
     // One or two legal moves: winnable unless every legal first move captures one of W's pieces.
     for (final LegalMove legalMove : legalMoves) {
-      final Piece capturedPiece = legalMove.pieceCaptured();
+      final Piece capturedPiece = legalMove.capturedPiece();
       if (capturedPiece == Piece.NONE || capturedPiece.getSide() != winner) {
         // This move preserves W's mating material, so W has a helpmate.
         return BasicHelpmateExistenceTheoremResult.WINNABLE;

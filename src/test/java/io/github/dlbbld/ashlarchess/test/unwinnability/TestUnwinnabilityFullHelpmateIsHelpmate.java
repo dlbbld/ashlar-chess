@@ -55,7 +55,7 @@ class TestUnwinnabilityFullHelpmateIsHelpmate {
   private static void assertHelpmateLine(String fen, Side winner, List<UciMove> mateLine) {
     final Board board = Board.fromFenStrict(fen);
     for (final UciMove uciMove : mateLine) {
-      board.move(UciMoveUtility.convertUciMoveToMoveSpecification(board, uciMove));
+      board.move(UciMoveUtility.toMoveSpecification(board, uciMove));
     }
     assertEquals(winner.getOppositeSide(), board.getSideToMove());
     assertTrue(board.isCheckmate());

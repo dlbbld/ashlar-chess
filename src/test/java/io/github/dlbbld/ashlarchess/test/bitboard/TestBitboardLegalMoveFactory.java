@@ -63,7 +63,7 @@ class TestBitboardLegalMoveFactory {
         Side.WHITE);
     assertEquals(io.github.dlbbld.ashlarchess.model.LegalMoveKind.PAWN_TWO_SQUARE_ADVANCE, converted.kind());
     assertEquals(io.github.dlbbld.ashlarchess.board.enums.Piece.WHITE_PAWN, converted.movingPiece());
-    assertEquals(io.github.dlbbld.ashlarchess.board.enums.Piece.NONE, converted.pieceCaptured());
+    assertEquals(io.github.dlbbld.ashlarchess.board.enums.Piece.NONE, converted.capturedPiece());
   }
 
   @SuppressWarnings("static-method")

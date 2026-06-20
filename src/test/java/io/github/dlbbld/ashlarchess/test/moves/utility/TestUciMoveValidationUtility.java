@@ -37,7 +37,7 @@ class TestUciMoveValidationUtility {
         final char pieceNameLowerCase = Character.toLowerCase(uciMove.promotionPieceType().getPieceType().getLetter());
         expectedText.append(pieceNameLowerCase);
       }
-      assertEquals(expectedText.toString(), uciMove.text());
+      assertEquals(expectedText.toString(), uciMove.uci());
     }
   }
 

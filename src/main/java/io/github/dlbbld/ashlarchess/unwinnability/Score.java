@@ -58,7 +58,7 @@ final class Score {
   }
 
   private static boolean calculateIsCapture(LegalMove legalMove) {
-    return legalMove.pieceCaptured() != Piece.NONE;
+    return legalMove.capturedPiece() != Piece.NONE;
   }
 
   private static boolean calculateIsAdvancedPawnPush(LegalMove legalMove) {

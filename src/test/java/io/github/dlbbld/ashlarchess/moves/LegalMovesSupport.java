@@ -91,9 +91,9 @@ public final class LegalMovesSupport {
 
     for (final Square toSquare : toSquareSet) {
       final MoveSpecification moveSpecification = new MoveSpecification(fromSquare, toSquare);
-      final Piece pieceCaptured = staticPosition.isEmpty(toSquare) ? Piece.NONE : staticPosition.get(toSquare);
+      final Piece capturedPiece = staticPosition.isEmpty(toSquare) ? Piece.NONE : staticPosition.get(toSquare);
 
-      if (pieceCaptured != Piece.NONE && pieceCaptured.getPieceType() == PieceType.KING) {
+      if (capturedPiece != Piece.NONE && capturedPiece.getPieceType() == PieceType.KING) {
         continue;
       }
 
@@ -101,10 +101,10 @@ public final class LegalMovesSupport {
         // This helper services non-pawn, non-castling moves only (rook / knight / bishop / queen / king-non-castling).
         // Pawn moves go through PawnLegalMoves; castling goes through KingCastlingLegalMoves. None of those routes lead
         // here, so the kind is always NORMAL.
-        final LegalMove legalMove = new LegalMove(moveSpecification, movingPiece, pieceCaptured, LegalMoveKind.NORMAL);
+        final LegalMove legalMove = new LegalMove(moveSpecification, movingPiece, capturedPiece, LegalMoveKind.NORMAL);
         legalMoveSet.add(legalMove);
       } else {
-        final PseudoLegalMove pseudoLegalMove = new PseudoLegalMove(moveSpecification, movingPiece, pieceCaptured);
+        final PseudoLegalMove pseudoLegalMove = new PseudoLegalMove(moveSpecification, movingPiece, capturedPiece);
         pseudoLegalMoveSet.add(pseudoLegalMove);
       }
     }

@@ -37,8 +37,8 @@ public final class Reporter {
   private Reporter() {
   }
 
-  public static ImmutableList<String> report(String pgnString) {
-    final PgnGame pgnGame = LenientPgnParser.parseText(pgnString);
+  public static ImmutableList<String> report(String pgnText) {
+    final PgnGame pgnGame = LenientPgnParser.parseText(pgnText);
     final Board board = PgnUtility.calculateBoard(pgnGame);
     return report(board);
   }

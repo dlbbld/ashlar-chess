@@ -387,7 +387,7 @@ public final class CastlingUtility {
   }
 
   private static boolean calculateHasCapturedOpponentRookQueenSide(LegalMove legalMove) {
-    if (legalMove.pieceCaptured() != Piece.NONE && legalMove.pieceCaptured().getPieceType() == ROOK) {
+    if (legalMove.capturedPiece() != Piece.NONE && legalMove.capturedPiece().getPieceType() == ROOK) {
       final Square rookOpponentOriginalSquare = switch (legalMove.movingSide()) {
         case BLACK -> CastlingConstants.WHITE_ROOK_QUEEN_SIDE_CASTLING_FROM;
         case WHITE -> CastlingConstants.BLACK_ROOK_QUEEN_SIDE_CASTLING_FROM;
@@ -399,7 +399,7 @@ public final class CastlingUtility {
   }
 
   private static boolean calculateHasCapturedOpponentRookKingSide(LegalMove legalMove) {
-    if (legalMove.pieceCaptured() != Piece.NONE && legalMove.pieceCaptured().getPieceType() == ROOK) {
+    if (legalMove.capturedPiece() != Piece.NONE && legalMove.capturedPiece().getPieceType() == ROOK) {
       final Square rookOpponentOriginalSquare = switch (legalMove.movingSide()) {
         case BLACK -> CastlingConstants.WHITE_ROOK_KING_SIDE_CASTLING_FROM;
         case WHITE -> CastlingConstants.BLACK_ROOK_KING_SIDE_CASTLING_FROM;

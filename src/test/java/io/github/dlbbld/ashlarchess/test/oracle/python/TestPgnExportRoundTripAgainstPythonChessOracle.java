@@ -165,8 +165,8 @@ class TestPgnExportRoundTripAgainstPythonChessOracle {
     for (final PgnMove move : parsed.moveList()) {
       board.moveStrict(move.san());
       final LegalMove last = board.getLastMove();
-      final UciMove uci = UciMoveUtility.convertMoveSpecificationToUci(last.movingSide(), last.moveSpecification());
-      actualUcis.add(uci.text());
+      final UciMove uci = UciMoveUtility.toUci(last.movingSide(), last.moveSpecification());
+      actualUcis.add(uci.uci());
     }
 
     try {

@@ -341,6 +341,9 @@ public final class LenientPgnParser {
 
   private record MovetextOutcome(List<PgnMove> moveList, PgnCommentary pregameCommentary,
       @Nullable ResultTagValue terminationResult) {
+    private MovetextOutcome {
+      moveList = Nulls.copyOfList(moveList);
+    }
   }
 
   private MovetextOutcome parseMovetext() {
@@ -349,9 +352,9 @@ public final class LenientPgnParser {
     @Nullable ResultTagValue terminationResult = null;
 
     skipInsignificantWhitespace();
-    // Pregame-commentary slot: exactly one commentary allowed before the first move. Additional braces before any
-    // move fall through to the main loop and are reported as R4 (brace at SAN-expected position).
-    if (isBraceToken(tokenizer.peek().type())) {
+    // Pregame-commentary slot: exactly one commentary allowed before the first move. Additional comments before any
+    // move fall through to the main loop and are reported as R4 (commentary at SAN-expected position).
+    if (isCommentToken(tokenizer.peek().type())) {
       pregameCommentary = consumeCommentaryOrThrow();
     }
 
@@ -375,10 +378,10 @@ public final class LenientPgnParser {
         tokenizer.next();
         continue;
       }
-      if (isBraceToken(type)) {
+      if (isCommentToken(type)) {
         throwIfBrokenBrace(peek);
         throw movetextError(LenientPgnParserValidationProblem.MOVETEXT_COMMENTARY_NOT_ALLOWED_IN_SAN,
-            "A commentary brace cannot occur where a SAN move is expected.");
+            "A commentary cannot occur where a SAN move is expected.");
       }
       if (type == PgnTokenType.MOVE_SUFFIX_ANNOTATION) {
         if (moves.isEmpty()) {
@@ -400,7 +403,7 @@ public final class LenientPgnParser {
         final PgnMove move = parseMoveLenient();
         moves.add(move);
         skipInsignificantWhitespace();
-        if (isBraceToken(tokenizer.peek().type())) {
+        if (isCommentToken(tokenizer.peek().type())) {
           final PgnCommentary commentary = consumeCommentaryOrThrow();
           final int last = moves.size() - 1;
           final PgnMove previous = Nulls.get(moves, last);
@@ -510,11 +513,12 @@ public final class LenientPgnParser {
     final PgnToken token = tokenizer.next();
     switch (token.type()) {
       case BRACE_COMMENT:
+      case LINE_COMMENT:
         try {
           return new PgnCommentary(token.text());
         } catch (final PgnCommentaryValidationException pcve) {
-          // Defensive - the tokenizer cannot produce `}` here (handled as separate types), so unreachable in
-          // practice.
+          // A brace comment cannot carry `}` (the tokenizer splits it out), but a `;` rest-of-line comment can carry
+          // a forbidden character, so this path is reachable for LINE_COMMENT.
           final String message = BasicUtility.getMessage(pcve);
           throw movetextError(LenientPgnParserValidationProblem.MOVETEXT_COMMENTARY_CONTAINS_FORBIDDEN_CHARACTER,
               message);
@@ -534,6 +538,12 @@ public final class LenientPgnParser {
   private static boolean isBraceToken(PgnTokenType type) {
     return type == PgnTokenType.BRACE_COMMENT || type == PgnTokenType.BRACE_COMMENT_UNCLOSED
         || type == PgnTokenType.BRACE_STRAY_CLOSE;
+  }
+
+  // A comment token is either a brace comment (well-formed or malformed) or a `;` rest-of-line comment. The lenient
+  // parser accepts both wherever commentary is allowed; `;` comments are PGN import format (spec section 5).
+  private static boolean isCommentToken(PgnTokenType type) {
+    return isBraceToken(type) || type == PgnTokenType.LINE_COMMENT;
   }
 
   /** After the termination marker (or EOF) only whitespace may appear before EOF. */
@@ -767,7 +777,7 @@ public final class LenientPgnParser {
             + messageSanValidationFailure;
         final SanValidationProblem underlying = e.getUnderlyingSanValidationProblem();
         throw new LenientPgnParserValidationException(LenientPgnParserValidationProblem.SAN,
-            underlying == null ? SanValidationProblem.UNKNOWN_ERROR : underlying, message,
+            underlying == SanValidationProblem.NONE ? SanValidationProblem.UNKNOWN_ERROR : underlying, message,
             Nulls.copyOfList(sanForgivenItemsAccumulator), Nulls.copyOfList(tagForgivenItemsAccumulator));
       }
     }

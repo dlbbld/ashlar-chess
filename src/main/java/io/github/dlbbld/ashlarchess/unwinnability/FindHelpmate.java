@@ -243,7 +243,7 @@ class FindHelpmate {
   private static List<UciMove> convertLegalMoveList(List<LegalMove> moveProgressList) {
     final List<UciMove> result = new ArrayList<>();
     for (final LegalMove legalMove : moveProgressList) {
-      result.add(UciMoveUtility.convertMoveSpecificationToUci(legalMove.movingSide(), legalMove.moveSpecification()));
+      result.add(UciMoveUtility.toUci(legalMove.movingSide(), legalMove.moveSpecification()));
     }
     return result;
   }

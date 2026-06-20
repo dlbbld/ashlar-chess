@@ -54,7 +54,7 @@ public final class MoveToLan {
     final Piece movingPiece = move.movingPiece();
     final String fromSquareName = moveSpecification.fromSquare().getName();
     final String toSquareName = moveSpecification.toSquare().getName();
-    final boolean isCapture = move.pieceCaptured() != Piece.NONE;
+    final boolean isCapture = move.capturedPiece() != Piece.NONE;
     switch (movingPiece.getPieceType()) {
       case PAWN:
         buildSan.append(fromSquareName);

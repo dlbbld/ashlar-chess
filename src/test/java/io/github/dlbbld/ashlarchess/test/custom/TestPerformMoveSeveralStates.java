@@ -92,7 +92,7 @@ class TestPerformMoveSeveralStates {
       assertEquals(Piece.NONE, board.getBitboardPosition().get(fromSquare));
       assertEquals(movingPiece, board.getBitboardPosition().get(toSquare));
 
-      assertEquals(Piece.NONE, board.getLastMove().pieceCaptured());
+      assertEquals(Piece.NONE, board.getLastMove().capturedPiece());
 
       assertEquals(movingPiece, board.getLastMove().movingPiece());
 

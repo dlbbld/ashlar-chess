@@ -7,6 +7,8 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.function.Consumer;
 
+import com.google.common.collect.ImmutableSet;
+
 import io.github.dlbbld.ashlarchess.board.enums.CastlingMove;
 import io.github.dlbbld.ashlarchess.board.enums.Piece;
 import io.github.dlbbld.ashlarchess.board.enums.PieceType;
@@ -183,13 +185,13 @@ public record BitboardPosition(long whitePawns, long whiteRooks, long whiteKnigh
    * Returns an empty set if {@code fromSquare} is empty. {@code enPassantBit} is the single-bit bitboard of the EP
    * target square, or {@code 0L} if no EP is available.
    */
-  public Set<Square> potentialToSquares(Square fromSquare, long enPassantBit) {
+  public ImmutableSet<Square> potentialToSquares(Square fromSquare, long enPassantBit) {
     if (fromSquare == Square.NONE) {
       throw new IllegalArgumentException("The NONE square does not belong to the board");
     }
     final Piece piece = get(fromSquare);
     if (piece == Piece.NONE) {
-      return new TreeSet<>();
+      return ImmutableSet.of();
     }
     final Side side = piece.getSide();
     final long ownPieces = occupied(side);
@@ -204,7 +206,7 @@ public record BitboardPosition(long whitePawns, long whiteRooks, long whiteKnigh
       case NONE -> throw new IllegalStateException("Unreachable - Piece.NONE filtered above");
       default -> throw new IllegalArgumentException();
     };
-    return BitboardPositionUtility.toSquareSet(targets);
+    return Nulls.copyOfSet(BitboardPositionUtility.toSquareSet(targets));
   }
 
   private long pawnPotentialTargets(Square fromSquare, int fromOrdinal, Side side, long enPassantBit) {
@@ -462,10 +464,10 @@ public record BitboardPosition(long whitePawns, long whiteRooks, long whiteKnigh
    * promotion expands each rank-1/rank-8 target into four moves; en-passant is special-cased for the rank-pin edge case
    * where capturing the EP pawn could expose own king to a rook or queen along the rank.
    */
-  public Set<MoveSpecification> legalMoves(Side side, long enPassantBit) {
+  public ImmutableSet<MoveSpecification> legalMoves(Side side, long enPassantBit) {
     final Set<MoveSpecification> moves = new TreeSet<>();
     legalMovesInto(moves::add, side, enPassantBit);
-    return moves;
+    return Nulls.copyOfSet(moves);
   }
 
   /**

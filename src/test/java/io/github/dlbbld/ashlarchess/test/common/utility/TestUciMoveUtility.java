@@ -97,8 +97,8 @@ class TestUciMoveUtility {
       final LegalMove lastMove = board.getLastMove();
       final MoveSpecification moveSpecification = lastMove.moveSpecification();
 
-      final String actualUci = UciMoveUtility.convertMoveSpecificationToUci(lastMove.movingSide(), moveSpecification)
-          .text();
+      final String actualUci = UciMoveUtility.toUci(lastMove.movingSide(), moveSpecification)
+          .uci();
       assertEquals(test.uciMoveStr(), actualUci);
 
       final String actualUciForScala = convertMoveSpecificationToUciForScala(lastMove.movingSide(), moveSpecification);
@@ -116,7 +116,7 @@ class TestUciMoveUtility {
 
     for (final UciMoveTest test : list) {
       final UciMove moveModel = UciMoveValidationUtility.lookup(test.uciMoveStr());
-      final MoveSpecification moveSpecificationActual = UciMoveUtility.convertUciMoveToMoveSpecification(board,
+      final MoveSpecification moveSpecificationActual = UciMoveUtility.toMoveSpecification(board,
           moveModel);
       board.moveStrict(test.san());
 
@@ -130,7 +130,7 @@ class TestUciMoveUtility {
 
     for (final UciMoveTest test : list) {
       final UciMove uciMove = UciMoveValidationUtility.lookup(test.uciMoveStr());
-      final String san = UciMoveUtility.convertUciMoveToSan(board, uciMove);
+      final String san = UciMoveUtility.toSan(board, uciMove);
       assertEquals(test.san(), san);
       board.moveStrict(test.san());
     }
@@ -146,6 +146,6 @@ class TestUciMoveUtility {
       };
     }
 
-    return UciMoveUtility.convertMoveSpecificationToUci(sideToMove, moveSpecification).text();
+    return UciMoveUtility.toUci(sideToMove, moveSpecification).uci();
   }
 }
