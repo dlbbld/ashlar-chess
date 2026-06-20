@@ -4,7 +4,9 @@
 package io.github.dlbbld.ashlarchess.board;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 import org.eclipse.jdt.annotation.Nullable;
@@ -60,8 +62,8 @@ import io.github.dlbbld.ashlarchess.unwinnability.UnwinnableQuickAnalyzer;
 /**
  * The library's central type - a chess <em>game</em>, not merely a position. A {@code Board} carries the position
  * <strong>plus</strong> the move history from its initial FEN: one record per position reached (the move played, the
- * check / checkmate / stalemate flags, the dynamic position, the halfmove clock, the repetition count, the
- * castling-right loss reasons, and the derived SAN / LAN strings), plus the legal moves of the <em>current</em>
+ * check / checkmate / stalemate flags, the dynamic position, the halfmove clock, the castling-right loss reasons, and
+ * the derived SAN / LAN strings), plus the legal moves of the <em>current</em>
  * position - everything needed to answer rule-level questions about the game so far. Legal moves are derived cache,
  * not history: past positions do not retain their legal-move lists, and the current set is recomputed on
  * {@link #unmove()}.
@@ -121,17 +123,24 @@ public final class Board {
   // Entry i is the board's full derived state at the position reached after move i; entry 0 is the initial
   // position, whose move/san/lan are null (no move produced it). The move-indexed data (move, san, lan)
   // rides on the position the move produced; the position-indexed data (legal moves, check flags, dynamic
-  // position, halfmove clock, repetition count, castling-loss reasons) is that position's own state. A move
-  // appends one entry; unmove pops one. report.MoveRecords still derives its rows on demand through the
-  // public accessors.
+  // position, halfmove clock, castling-loss reasons) is that position's own state. A move appends one entry;
+  // unmove pops one. report.MoveRecords still derives its rows on demand through the public accessors.
   private final List<BoardState> boardStateList;
+
+  // Repetition-count index for the current history prefix: how many times each DynamicPosition has occurred. A
+  // DynamicPosition is the exact FIDE repetition identity (side to move, piece placement, normalized en-passant
+  // square, castling rights), and identical positions can only recur within one no-progress window - a pawn move or
+  // capture is irreversible - so this occurrence count IS the FIDE repetition count. Maintained incrementally by
+  // move() / unmove() so getRepetitionCount() is O(1); repetition count is a property of the history prefix, not of
+  // any one stored position, so it is not carried on BoardState.
+  private final Map<DynamicPosition, Integer> repetitionCounts;
 
   // Legal moves of the CURRENT position only. Legal moves are derived cache, not game history, so historical
   // positions do not retain them; this is recomputed on unmove() for the restored position.
   private ImmutableList<LegalMove> currentLegalMoves;
 
   private record BoardState(@Nullable LegalMove move, @Nullable String san, @Nullable String lan, boolean isCheck,
-      boolean isCheckmate, boolean isStalemate, DynamicPosition dynamicPosition, int halfMoveClock, int repetitionCount,
+      boolean isCheckmate, boolean isStalemate, DynamicPosition dynamicPosition, int halfMoveClock,
       CastlingRightLoss whiteKingSideLoss, CastlingRightLoss whiteQueenSideLoss, CastlingRightLoss blackKingSideLoss,
       CastlingRightLoss blackQueenSideLoss) {
   }
@@ -200,8 +209,10 @@ public final class Board {
 
     this.boardStateList = new ArrayList<>();
     this.boardStateList.add(new BoardState(null, null, null, isCheck, isCheckmate, isStalemate, initialDynamicPosition,
-        initialFenUse.halfMoveClock(), 1, initialWhiteKingSideLoss, initialWhiteQueenSideLoss, initialBlackKingSideLoss,
+        initialFenUse.halfMoveClock(), initialWhiteKingSideLoss, initialWhiteQueenSideLoss, initialBlackKingSideLoss,
         initialBlackQueenSideLoss));
+    this.repetitionCounts = new HashMap<>();
+    this.repetitionCounts.put(initialDynamicPosition, 1);
     this.currentLegalMoves = legalMoves;
   }
 
@@ -377,17 +388,16 @@ public final class Board {
 
     final int newHalfMoveClock = calculateNewHalfMoveClock(moveToPerform, beforeState.halfMoveClock());
 
-    final int newRepetitionCount = countRepetition(moveToPerform, newDynamicPosition);
-
     // SAN disambiguation uses the legal moves of the position the move is played FROM (the current position)
     final SanTerminalMarker sanTerminalMarker = SanTerminalMarkerUtility.calculate(isCheck, isCheckmate);
     final String san = MoveToSan.toSan(moveToPerform, currentLegalMoves, sanTerminalMarker);
     final String lan = MoveToLan.toLan(moveToPerform, sanTerminalMarker);
 
-    // now changing board class state, so performing the move!
+    // now changing board class state, so performing the move! Keep the repetition index in lockstep with the list.
+    incrementRepetitionCount(newDynamicPosition);
     this.boardStateList.add(new BoardState(moveToPerform, san, lan, isCheck, isCheckmate, isStalemate,
-        newDynamicPosition, newHalfMoveClock, newRepetitionCount, whiteKingSideLoss, whiteQueenSideLoss,
-        blackKingSideLoss, blackQueenSideLoss));
+        newDynamicPosition, newHalfMoveClock, whiteKingSideLoss, whiteQueenSideLoss, blackKingSideLoss,
+        blackQueenSideLoss));
     this.currentLegalMoves = legalMovesAfterMove;
   }
 
@@ -419,25 +429,24 @@ public final class Board {
   }
 
   // Played moves so far (N entries, indices 1..size-1) plus the move about to be appended.
-  // Repetition count of the position reached by playing {@code newMove}: how many times {@code newDynamicPosition} has
-  // occurred in the game so far, counting itself. Scans the played history backwards in place, only as far back as the
-  // most recent clock-resetting move (pawn move or capture): a position before such a move can never equal one after it
-  // (a basic property of chess), so the scan is bounded by the halfmove clock, not the full game length. Reading
-  // boardStateList directly avoids rebuilding the whole history on every move, which would make replay O(n^2).
-  private int countRepetition(LegalMove newMove, DynamicPosition newDynamicPosition) {
-    int countRepetition = 1;
-    final int lastIndex = boardStateList.size() - 1;
-    for (int i = lastIndex; i >= 0; i--) {
-      // The move played from position i: the new move at the tip, otherwise the move that reached position i+1.
-      final LegalMove movePlayedFromPosition = i == lastIndex ? newMove : moveAt(i + 1);
-      if (movePlayedFromPosition.resetsHalfMoveClock()) {
-        return countRepetition;
-      }
-      if (newDynamicPosition.equals(Nulls.get(boardStateList, i).dynamicPosition())) {
-        countRepetition++;
-      }
+  // Repetition-index maintenance, kept in lockstep with boardStateList: move() increments the entered position,
+  // unmove() decrements the left position. The count of a DynamicPosition is its number of occurrences in the current
+  // history prefix, which equals the FIDE repetition count (identical positions only recur within a no-progress
+  // window). Returns the new count for the entered position; callers that only need the side effect ignore it.
+  private int incrementRepetitionCount(DynamicPosition dynamicPosition) {
+    return repetitionCounts.merge(dynamicPosition, 1, Integer::sum);
+  }
+
+  private void decrementRepetitionCount(DynamicPosition dynamicPosition) {
+    final Integer oldCount = repetitionCounts.get(dynamicPosition);
+    if (oldCount == null) {
+      throw new ProgrammingMistakeException("missing repetition count for position being removed");
     }
-    return countRepetition;
+    if (oldCount.intValue() == 1) {
+      repetitionCounts.remove(dynamicPosition);
+    } else {
+      repetitionCounts.put(dynamicPosition, oldCount - 1);
+    }
   }
 
   // Recomputes a position's legal moves from its DynamicPosition. Legal moves are derived cache, not retained
@@ -493,6 +502,7 @@ public final class Board {
       throw new ProgrammingMistakeException("Undo move requested but no move to undo");
     }
 
+    decrementRepetitionCount(Nulls.getLast(boardStateList).dynamicPosition());
     this.boardStateList.remove(boardStateList.size() - 1);
     this.currentLegalMoves = legalMovesFor(Nulls.getLast(boardStateList).dynamicPosition());
   }
@@ -733,7 +743,11 @@ public final class Board {
   }
 
   public int getRepetitionCount() {
-    return Nulls.getLast(boardStateList).repetitionCount();
+    final Integer count = repetitionCounts.get(getDynamicPosition());
+    if (count == null) {
+      throw new ProgrammingMistakeException("missing repetition count for current position");
+    }
+    return count.intValue();
   }
 
   public boolean isInsufficientMaterial() {
@@ -1060,8 +1074,8 @@ public final class Board {
 
   /**
    * Game equality: two boards are equal when they share the same initial FEN and the same full per-position history
-   * (the move played, the derived check / checkmate / stalemate flags, the dynamic position, the halfmove clock, the
-   * repetition count, and the castling-right-loss reasons at every position passed through). This is <em>game</em>
+   * (the move played, the derived check / checkmate / stalemate flags, the dynamic position, the halfmove clock, and
+   * the castling-right-loss reasons at every position passed through). This is <em>game</em>
    * identity, not <em>position</em> identity - two boards that reach the same current position by different move orders
    * are <strong>not</strong> equal.
    *
