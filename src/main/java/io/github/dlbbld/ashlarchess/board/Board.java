@@ -23,13 +23,14 @@ import io.github.dlbbld.ashlarchess.board.enums.Square;
 import io.github.dlbbld.ashlarchess.common.Nulls;
 import io.github.dlbbld.ashlarchess.common.constants.ChessConstants;
 import io.github.dlbbld.ashlarchess.common.constants.DynamicPositionConstants;
+import io.github.dlbbld.ashlarchess.common.enums.Termination;
 import io.github.dlbbld.ashlarchess.common.exceptions.ProgrammingMistakeException;
 import io.github.dlbbld.ashlarchess.common.model.ClaimRights;
 import io.github.dlbbld.ashlarchess.common.model.ClaimableMove;
 import io.github.dlbbld.ashlarchess.common.model.DynamicPosition;
 import io.github.dlbbld.ashlarchess.common.model.MoveSpecification;
+import io.github.dlbbld.ashlarchess.common.model.Outcome;
 import io.github.dlbbld.ashlarchess.common.ucimove.utility.UciMoveUtility;
-import io.github.dlbbld.ashlarchess.common.utility.BasicChessUtility;
 import io.github.dlbbld.ashlarchess.common.utility.RepetitionUtility;
 import io.github.dlbbld.ashlarchess.exceptions.InvalidMoveException;
 import io.github.dlbbld.ashlarchess.fen.FenBoard;
@@ -561,7 +562,7 @@ public final class Board {
       return false;
     }
     for (final LegalMove legalMove : getLegalMoves()) {
-      if (!BasicChessUtility.isResetHalfMoveClock(legalMove)) {
+      if (!legalMove.resetsHalfMoveClock()) {
         return true;
       }
     }
@@ -593,7 +594,7 @@ public final class Board {
     if (getHalfMoveClock() < 99) {
       return false;
     }
-    return !BasicChessUtility.isResetHalfMoveClock(legalMove);
+    return !legalMove.resetsHalfMoveClock();
   }
 
   /**
@@ -623,7 +624,7 @@ public final class Board {
    */
   public boolean canClaimThreefoldRepetitionRuleFor(MoveSpecification move) {
     final LegalMove legalMove = requireLegalMove(move);
-    if (BasicChessUtility.isResetHalfMoveClock(legalMove)) {
+    if (legalMove.resetsHalfMoveClock()) {
       return false;
     }
     this.move(move);
@@ -646,7 +647,7 @@ public final class Board {
   public boolean canClaimThreefoldRepetitionRuleWithOwnMove() {
     for (final LegalMove legalMove : getLegalMoves()) {
       // we must not check moves creating a position that never occurred so far
-      if (!BasicChessUtility.isResetHalfMoveClock(legalMove)) {
+      if (!legalMove.resetsHalfMoveClock()) {
         this.move(legalMove.moveSpecification());
         if (isThreefoldRepetition()) {
           this.unmove();
@@ -726,7 +727,7 @@ public final class Board {
   }
 
   private static int calculateNewHalfMoveClock(LegalMove move, int lastHalfMoveClock) {
-    if (BasicChessUtility.isResetHalfMoveClock(move)) {
+    if (move.resetsHalfMoveClock()) {
       return 0;
     }
     return lastHalfMoveClock + 1;
@@ -777,7 +778,7 @@ public final class Board {
     if (isFirstMove()) {
       throw new IllegalStateException("There is no last move");
     }
-    final int fullMoveNumber = calculateFullMoveNumber(isFirstMove(), initialFen.fullMoveNumber(),
+    final int fullMoveNumber = fullMoveNumberFor(isFirstMove(), initialFen.fullMoveNumber(),
         initialFen.sideToMove(), getSideToMove(), getPerformedMoveCount());
 
     return switch (getSideToMove()) {
@@ -788,7 +789,7 @@ public final class Board {
     };
   }
 
-  private static int calculateFullMoveNumber(boolean isFirstMove, int initialFenFullMoveNumber,
+  private static int fullMoveNumberFor(boolean isFirstMove, int initialFenFullMoveNumber,
       Side initialFenSideToMove, Side sideToMove, int performedMoveCount) {
     if (isFirstMove) {
       return initialFenFullMoveNumber;
@@ -829,13 +830,49 @@ public final class Board {
   }
 
   /**
+   * Current-position outcome query: returns the most-specific {@link Outcome} for this board, or
+   * {@link Outcome#ONGOING} (the singleton with {@code termination == Termination.NONE}) when no termination condition
+   * fires. Never returns {@code null}.
+   *
+   * <p>
+   * Precedence (python-chess parity): {@link Termination#CHECKMATE} -&gt; {@link Termination#INSUFFICIENT_MATERIAL}
+   * -&gt; {@link Termination#STALEMATE} -&gt; {@link Termination#SEVENTY_FIVE_MOVES} -&gt;
+   * {@link Termination#FIVEFOLD_REPETITION}. Returns the first matching condition under that order. The library is
+   * permissive at the move pipeline - none of these block further moves; callers poll this method to decide whether a
+   * game should be adjudicated as over.
+   *
+   * <p>
+   * Does <em>not</em> invoke any unwinnability analyzer. Callers that want the analyzer-driven dead-position verdict
+   * call {@link #deadPositionQuick()} or {@link #deadPositionFull()} directly. Single-side insufficient-material states
+   * are diagnostic, not terminations, and are not surfaced here; callers query {@link #isInsufficientMaterial(Side)}
+   * directly.
+   */
+  public Outcome outcome() {
+    if (isCheckmate()) {
+      // Side to move is the loser; the other side delivered mate and is the winner.
+      return new Outcome(Termination.CHECKMATE, getSideToMove().getOppositeSide());
+    }
+    if (isInsufficientMaterial()) {
+      return new Outcome(Termination.INSUFFICIENT_MATERIAL, Side.NONE);
+    }
+    if (isStalemate()) {
+      return new Outcome(Termination.STALEMATE, Side.NONE);
+    }
+    if (isSeventyFiveMove()) {
+      return new Outcome(Termination.SEVENTY_FIVE_MOVES, Side.NONE);
+    }
+    if (isFivefoldRepetition()) {
+      return new Outcome(Termination.FIVEFOLD_REPETITION, Side.NONE);
+    }
+    return Outcome.ONGOING;
+  }
+
+  /**
    * Raw condition predicate (FIDE 9.3 threshold): returns {@code true} iff the halfmove clock has reached the 50-move-
    * rule threshold ({@code halfMoveClock >= 100}) on the current position. Reports the fact independently of any other
    * game-end condition that may also hold - at a checkmate position with clock past 100, this still returns
-   * {@code true}. Game-end precedence belongs to
-   * {@link io.github.dlbbld.ashlarchess.common.utility.BasicChessUtility#calculateOutcome} and not to this predicate.
-   * (Deliberate divergence from python-chess at game-end positions, where {@code is_fifty_moves} folds in a precedence
-   * guard.)
+   * {@code true}. Game-end precedence belongs to {@link #outcome()} and not to this predicate. (Deliberate divergence
+   * from python-chess at game-end positions, where {@code is_fifty_moves} folds in a precedence guard.)
    */
   public boolean isFiftyMove() {
     return getHalfMoveClock() >= ChessConstants.FIFTY_MOVE_RULE_HALF_MOVE_CLOCK_THRESHOLD;
@@ -853,9 +890,8 @@ public final class Board {
    * Raw condition predicate (FIDE 9.6.2 threshold): returns {@code true} iff the halfmove clock has reached the 75-
    * move-rule threshold ({@code halfMoveClock >= 150}) on the current position. Reports the fact independently of any
    * other game-end condition - at a checkmate position with clock past 150, this still returns {@code true}. Game-end
-   * precedence belongs to {@link io.github.dlbbld.ashlarchess.common.utility.BasicChessUtility#calculateOutcome} and
-   * not to this predicate. (Deliberate divergence from python-chess at game-end positions, where
-   * {@code is_seventyfive_moves} folds in a precedence guard.)
+   * precedence belongs to {@link #outcome()} and not to this predicate. (Deliberate divergence from python-chess at
+   * game-end positions, where {@code is_seventyfive_moves} folds in a precedence guard.)
    */
   public boolean isSeventyFiveMove() {
     return getHalfMoveClock() >= ChessConstants.SEVENTY_FIVE_MOVE_RULE_HALF_MOVE_CLOCK_THRESHOLD;
@@ -1084,7 +1120,7 @@ public final class Board {
   }
 
   public int getFullMoveNumber() {
-    return calculateFullMoveNumber(isFirstMove(), initialFen.fullMoveNumber(), initialFen.sideToMove(), getSideToMove(),
+    return fullMoveNumberFor(isFirstMove(), initialFen.fullMoveNumber(), initialFen.sideToMove(), getSideToMove(),
         getPerformedMoveCount());
   }
 

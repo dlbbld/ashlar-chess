@@ -10,7 +10,6 @@ import io.github.dlbbld.ashlarchess.board.enums.Side;
 import io.github.dlbbld.ashlarchess.common.enums.Termination;
 import io.github.dlbbld.ashlarchess.common.exceptions.ProgrammingMistakeException;
 import io.github.dlbbld.ashlarchess.common.model.Outcome;
-import io.github.dlbbld.ashlarchess.common.utility.BasicChessUtility;
 import io.github.dlbbld.ashlarchess.common.utility.ListUtility;
 import io.github.dlbbld.ashlarchess.model.LegalMove;
 import io.github.dlbbld.ashlarchess.test.unwinnability.oracle.enums.LimitedUnwinnabilityVerdict;
@@ -84,7 +83,7 @@ public class ForcedLineOracle {
       countForcedHalfMoves++;
       final LegalMove legalMove = ListUtility.getOnly(board.getLegalMoves());
       board.move(legalMove.moveSpecification());
-      final Outcome outcome = BasicChessUtility.calculateOutcome(board);
+      final Outcome outcome = board.outcome();
       final boolean terminated = outcome.termination() != Termination.NONE;
       // One-sided insufficient material is a diagnostic position state outside the Outcome view but
       // a decisive signal for the forced-line oracle: the side that lacks material cannot win along

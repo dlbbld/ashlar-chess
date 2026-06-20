@@ -14,16 +14,15 @@ import io.github.dlbbld.ashlarchess.board.Board;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
 import io.github.dlbbld.ashlarchess.common.enums.Termination;
 import io.github.dlbbld.ashlarchess.common.model.Outcome;
-import io.github.dlbbld.ashlarchess.common.utility.BasicChessUtility;
 import io.github.dlbbld.ashlarchess.unwinnability.DeadPositionQuickVerdict;
 
 /**
  * Game-end semantics. The raw rule predicates on {@link Board} are independent - several may be true at one position -
- * while {@link BasicChessUtility#calculateOutcome(Board)} projects them through the python-chess precedence stack into
+ * while {@link Board#outcome()} projects them through the python-chess precedence stack into
  * a single {@link Outcome}. These tests pin that independence and the projection together.
  *
  * <p>
- * {@code calculateOutcome} stays cheap and never invokes a CHA / dead-position analyzer; the analyzer-driven dead
+ * {@code outcome()} stays cheap and never invokes a CHA / dead-position analyzer; the analyzer-driven dead
  * position is a separate query via {@link Board#deadPositionQuick()} ({@code DEAD} = dead) and is deliberately not a
  * {@link Termination}.
  */
@@ -45,7 +44,7 @@ class TestBoardGameEndOutcome {
     assertFalse(board.isInsufficientMaterial());
     assertFalse(board.isFivefoldRepetition());
 
-    final Outcome outcome = BasicChessUtility.calculateOutcome(board);
+    final Outcome outcome = board.outcome();
     assertEquals(Termination.CHECKMATE, outcome.termination(), "precedence: CHECKMATE outranks SEVENTY_FIVE_MOVES");
     assertEquals(Side.WHITE, outcome.winner(), "white delivered mate");
     assertNotEquals(Termination.NONE, outcome.termination());
@@ -66,7 +65,7 @@ class TestBoardGameEndOutcome {
     assertFalse(board.isCheckmate());
     assertFalse(board.isInsufficientMaterial());
 
-    final Outcome outcome = BasicChessUtility.calculateOutcome(board);
+    final Outcome outcome = board.outcome();
     assertEquals(Termination.STALEMATE, outcome.termination(), "precedence: STALEMATE outranks SEVENTY_FIVE_MOVES");
     assertEquals(Side.NONE, outcome.winner(), "stalemate is a draw");
     assertNotEquals(Termination.NONE, outcome.termination());
@@ -92,7 +91,7 @@ class TestBoardGameEndOutcome {
     assertFalse(board.isStalemate());
     assertFalse(board.isInsufficientMaterial(), "still 32 pieces on the board, not insufficient");
 
-    final Outcome outcome = BasicChessUtility.calculateOutcome(board);
+    final Outcome outcome = board.outcome();
     assertEquals(Termination.SEVENTY_FIVE_MOVES, outcome.termination(),
         "precedence: SEVENTY_FIVE_MOVES outranks FIVEFOLD_REPETITION");
     assertEquals(Side.NONE, outcome.winner());
@@ -120,7 +119,7 @@ class TestBoardGameEndOutcome {
     assertFalse(board.isCheckmate());
     assertFalse(board.isStalemate());
 
-    final Outcome outcome = BasicChessUtility.calculateOutcome(board);
+    final Outcome outcome = board.outcome();
     assertEquals(Termination.INSUFFICIENT_MATERIAL, outcome.termination(),
         "precedence: INSUFFICIENT_MATERIAL outranks both SEVENTY_FIVE_MOVES and FIVEFOLD_REPETITION");
     assertEquals(Side.NONE, outcome.winner());
@@ -142,10 +141,45 @@ class TestBoardGameEndOutcome {
     assertFalse(board.isFivefoldRepetition());
     assertFalse(board.isSeventyFiveMove());
 
-    final Outcome outcome = BasicChessUtility.calculateOutcome(board);
+    final Outcome outcome = board.outcome();
     assertEquals(Termination.NONE, outcome.termination(),
         "no termination condition -> outcome.termination is Termination.NONE");
     assertEquals(Side.NONE, outcome.winner(), "ongoing outcome's winner is Side.NONE");
     assertEquals(Termination.NONE, outcome.termination(), "game has not ended");
+  }
+
+  // Single-condition cases: each isolates one termination so the precedence stack resolves it without an overlapping
+  // condition.
+
+  @SuppressWarnings("static-method")
+  @Test
+  void insufficientMaterialBeatsSeventyFiveMoveWithNoOtherCondition() {
+    // KvK (insufficient material) with the clock at the 75-move threshold; IM outranks 75-move.
+    final Board board = Board.fromFenStrict("4k3/8/8/8/8/8/8/4K3 w - - 150 76");
+    assertTrue(board.isInsufficientMaterial(), "precondition: insufficient material");
+    assertTrue(board.isSeventyFiveMove(), "precondition: 75-move threshold reached");
+    assertEquals(new Outcome(Termination.INSUFFICIENT_MATERIAL, Side.NONE), board.outcome());
+  }
+
+  @SuppressWarnings("static-method")
+  @Test
+  void fivefoldFiresWhenItIsTheOnlyCondition() {
+    // Four "Nf3 Nf6 Ng1 Ng8" shuffle cycles: fivefold fires, but the clock (16) is below the 75-move threshold.
+    final Board board = new Board();
+    board.movesStrict("Nf3", "Nf6", "Ng1", "Ng8", "Nf3", "Nf6", "Ng1", "Ng8", "Nf3", "Nf6", "Ng1", "Ng8", "Nf3", "Nf6",
+        "Ng1", "Ng8");
+    assertTrue(board.isFivefoldRepetition(), "precondition: fivefold threshold reached");
+    assertFalse(board.isSeventyFiveMove(), "precondition: clock below the 75-move threshold");
+    assertEquals(new Outcome(Termination.FIVEFOLD_REPETITION, Side.NONE), board.outcome());
+  }
+
+  @SuppressWarnings("static-method")
+  @Test
+  void seventyFiveMoveFiresWhenItIsTheOnlyCondition() {
+    // Clock at the 75-move threshold with enough material (not insufficient) and no repetition.
+    final Board board = Board.fromFenStrict("4k3/8/4P3/8/8/8/2N1B3/3KQ2R w - - 150 76");
+    assertTrue(board.isSeventyFiveMove(), "precondition: 75-move threshold reached");
+    assertFalse(board.isInsufficientMaterial(), "precondition: not insufficient material");
+    assertEquals(new Outcome(Termination.SEVENTY_FIVE_MOVES, Side.NONE), board.outcome());
   }
 }

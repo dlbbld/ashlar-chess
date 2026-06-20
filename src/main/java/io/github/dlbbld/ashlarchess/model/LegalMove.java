@@ -4,6 +4,7 @@
 package io.github.dlbbld.ashlarchess.model;
 
 import io.github.dlbbld.ashlarchess.board.enums.Piece;
+import io.github.dlbbld.ashlarchess.board.enums.PieceType;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
 import io.github.dlbbld.ashlarchess.common.model.MoveSpecification;
 
@@ -36,6 +37,15 @@ public record LegalMove(MoveSpecification moveSpecification, Piece movingPiece, 
 
   public Side movingSide() {
     return movingPiece.getSide();
+  }
+
+  /**
+   * Whether playing this move resets the halfmove clock (FIDE 9.3): {@code true} for a pawn move or any capture,
+   * {@code false} otherwise. The moving piece is never {@link Piece#NONE} (the canonical constructor rejects it), so the
+   * pawn test is always safe.
+   */
+  public boolean resetsHalfMoveClock() {
+    return movingPiece.getPieceType() == PieceType.PAWN || capturedPiece != Piece.NONE;
   }
 
   /**

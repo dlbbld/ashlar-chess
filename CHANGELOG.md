@@ -162,6 +162,13 @@ Exceptions:
 - `NonePointerException` now extends `UsageException` instead of `ProgrammingMistakeException`. Reading a property of a `NONE` sentinel (e.g. `Piece.NONE.getSide()` after reading an empty square) is caller misuse, not a library bug. Code that caught `ProgrammingMistakeException` to trap NONE-access should catch `UsageException` (or `NonePointerException`) instead.
 - The strict / lenient FEN and PGN `validate(...)` methods now let a `ProgrammingMistakeException` propagate rather than folding it into an `UNKNOWN_ERROR` result, so a genuine library bug fails fast. Caller-fault runtime errors (including NONE-access, now a `UsageException`) still surface as `UNKNOWN_ERROR`.
 
+`BasicChessUtility` deleted - its rule queries moved to their domain owners:
+
+- `BasicChessUtility.calculateOutcome(board)` → `board.outcome()` (the current-position outcome is now a query on `Board`, beside `isCheckmate()` / `isStalemate()`; same precedence, same non-null `Outcome.ONGOING` for ongoing positions).
+- `BasicChessUtility.isResetHalfMoveClock(move)` → `move.resetsHalfMoveClock()` (a `LegalMove` predicate - true for a pawn move or any capture).
+- `BasicChessUtility.calculateSideMoved(...)` and `calculateFullMoveNumber(Side, int, int)` are removed with no replacement; they were internal helpers with no production caller.
+- The `BasicChessUtility` class is deleted.
+
 Dead position is its own analyzer:
 
 - The no-side overloads `UnwinnableQuickAnalyzer.unwinnableQuick(Board)` and `UnwinnableFullAnalyzer.unwinnableFull(Board)` are removed. Whole-position dead detection now lives in `unwinnability.DeadPositionAnalyzer`, with `Board.deadPositionQuick()` / `Board.deadPositionFull()` convenience methods and its own verdicts: `DeadPositionQuickVerdict` (`DEAD` / `POSSIBLY_ALIVE`) and `DeadPositionFullVerdict` (`DEAD` / `ALIVE` / `UNDETERMINED`). Migration: `UnwinnableQuickAnalyzer.unwinnableQuick(board) == UNWINNABLE` becomes `board.deadPositionQuick() == DEAD`; for the full check the two `WINNABLE_*` results map to `ALIVE`. Behaviour is unchanged — the per-side analyzers and verdicts are untouched.

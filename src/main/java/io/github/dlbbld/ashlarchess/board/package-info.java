@@ -16,7 +16,7 @@
  * 75-move rule, and analyzer-driven dead positions, legal moves still exist and the pipeline accepts them.
  *
  * <p>
- * Callers poll {@link io.github.dlbbld.ashlarchess.common.utility.BasicChessUtility#calculateOutcome} for the
+ * Callers poll {@link io.github.dlbbld.ashlarchess.board.Board#outcome()} for the
  * current-position outcome - it returns the most-specific {@link io.github.dlbbld.ashlarchess.common.model.Outcome} for
  * the board, or the {@link io.github.dlbbld.ashlarchess.common.model.Outcome#ONGOING} singleton when the game is
  * ongoing. The five surfaced terminations are checkmate, mutual
@@ -27,20 +27,20 @@
  *
  * <p>
  * Single-side insufficient material (one side lacks mating material but the other does not) is a diagnostic position
- * state and is not surfaced by {@code calculateOutcome}. Callers that need it query
+ * state and is not surfaced by {@code outcome()}. Callers that need it query
  * {@link io.github.dlbbld.ashlarchess.board.Board#isInsufficientMaterial(io.github.dlbbld.ashlarchess.board.enums.Side)}
  * directly.
  *
  * <p>
  * Analyzer-driven dead positions (FIDE 5.2.2 via the quick or full unwinnability analyzer) are <em>not</em> surfaced
- * via {@code calculateOutcome} - invoking the analyzer from that method would silently make every status query
+ * via {@code outcome()} - invoking the analyzer from that method would silently make every status query
  * expensive. Callers that want the analyzer-driven verdict invoke
  * {@link io.github.dlbbld.ashlarchess.board.Board#deadPositionQuick()} or
  * {@link io.github.dlbbld.ashlarchess.board.Board#deadPositionFull()} (backed by
  * {@link io.github.dlbbld.ashlarchess.unwinnability.DeadPositionAnalyzer}) directly.
  *
  * <p>
- * The claimable draws (FIDE 9.2 3-fold, FIDE 9.3 50-move) are intentionally not surfaced by {@code calculateOutcome}: a
+ * The claimable draws (FIDE 9.2 3-fold, FIDE 9.3 50-move) are intentionally not surfaced by {@code outcome()}: a
  * player may decline to claim and continue playing. They remain queryable on the board via the dedicated
  * {@code canClaim*} predicates.
  */

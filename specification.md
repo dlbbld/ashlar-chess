@@ -59,7 +59,7 @@ The library makes only modest thread-safety guarantees, all of them honest about
 
 - **`Board` is mutable and not thread-safe.** Use one `Board` per thread, or synchronize externally. `Board.equals` / `Board.hashCode` reflect current game state, so a `Board` placed in a `HashMap` or `HashSet` and then mutated will violate the collection's invariants.
 - **Records are immutable and thread-safe.** `Fen`, `PgnGame`, `PgnMove`, `MoveSpecification`, `PgnCommentary`, `Tag`, `Report`, etc. — once constructed, they can be freely shared.
-- **Static utility classes are stateless and thread-safe.** `Reporter`, `PgnCreate`, `KnightDistance`, `BasicChessUtility`, the various `*Validation` and `*Utility` classes — all entry points are static methods on stateless classes. Multiple threads can call them concurrently.
+- **Static utility classes are stateless and thread-safe.** `Reporter`, `PgnCreate`, `KnightDistance`, the various `*Validation` and `*Utility` classes — all entry points are static methods on stateless classes. Multiple threads can call them concurrently.
 - **Parsers expose stateless static entry points.** `StrictPgnParser.parseText(String)` / `StrictPgnParser.parsePath(Path)` and the lenient counterparts construct a fresh parser instance per call internally; the parser instances themselves carry per-parse state and should not be shared. Stick to the static entry points.
 
 In short: share records and call static utilities from anywhere; never share a `Board`.
@@ -72,7 +72,7 @@ In short: share records and call static utilities from anywhere; never share a `
 
 The library follows the FIDE Laws of Chess closely. Termination is **information, not enforcement**: the move-validation pipeline does not consult any game-end predicate, and every FIDE termination is surfaced as a queryable artifact the caller polls to decide whether to adjudicate. Termination modes:
 
-- **Automatic (queryable)** — FIDE ends the game; no claim required. Surfaced by `BasicChessUtility.calculateOutcome(Board)` as a non-null `Outcome` record carrying a `Termination` and the winner for checkmate. The move pipeline still accepts further input at these states; the natural barrier at checkmate / stalemate is the empty legal-move set, so any subsequent move attempt fails through ordinary legality.
+- **Automatic (queryable)** — FIDE ends the game; no claim required. Surfaced by `board.outcome()` as a non-null `Outcome` record carrying a `Termination` and the winner for checkmate. The move pipeline still accepts further input at these states; the natural barrier at checkmate / stalemate is the empty legal-move set, so any subsequent move attempt fails through ordinary legality.
 - **Claimable** — FIDE permits but does not require the side-to-move to claim the draw; the game continues until claimed. Surfaced via dedicated on-board and with-move predicates on `Board`, not via `Outcome`.
 
 | Rule | Mode | FIDE article |
@@ -86,7 +86,7 @@ The library follows the FIDE Laws of Chess closely. Termination is **information
 | Threefold repetition | claimable | 9.2 |
 | 50-move rule | claimable | 9.3 |
 
-The automatic rows are listed in the precedence order `calculateOutcome` applies (python-chess parity): when two or more apply to the same position, the higher row wins. A KBvK stalemate, for instance, reports `INSUFFICIENT_MATERIAL`, not `STALEMATE`. Structural insufficient material is detected by a fast structural test (king-vs-king, king + minor vs king, etc.); analyzer-driven dead positions (FIDE 5.2.2 via the unwinnability analyzer) are intentionally not invoked by `calculateOutcome` — the analyzer would silently make every status query expensive — so callers that want that verdict call `Board.deadPositionQuick()` or `Board.deadPositionFull()` (backed by `DeadPositionAnalyzer`) directly.
+The automatic rows are listed in the precedence order `board.outcome()` applies (python-chess parity): when two or more apply to the same position, the higher row wins. A KBvK stalemate, for instance, reports `INSUFFICIENT_MATERIAL`, not `STALEMATE`. Structural insufficient material is detected by a fast structural test (king-vs-king, king + minor vs king, etc.); analyzer-driven dead positions (FIDE 5.2.2 via the unwinnability analyzer) are intentionally not invoked by `board.outcome()` — the analyzer would silently make every status query expensive — so callers that want that verdict call `Board.deadPositionQuick()` or `Board.deadPositionFull()` (backed by `DeadPositionAnalyzer`) directly.
 
 Single-side insufficient material (one side lacks mating material but the other does not) is a diagnostic state of the position, not a termination, and is not surfaced by `Outcome`. Callers query `Board.isInsufficientMaterial(Side)` directly when they need it.
 

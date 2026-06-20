@@ -13,7 +13,6 @@ import io.github.dlbbld.ashlarchess.board.Board;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
 import io.github.dlbbld.ashlarchess.common.Nulls;
 import io.github.dlbbld.ashlarchess.common.model.MoveSpecification;
-import io.github.dlbbld.ashlarchess.common.utility.BasicChessUtility;
 import io.github.dlbbld.ashlarchess.model.LegalMove;
 
 final class FiftyMoveClaimAheadReportBuilder {
@@ -55,7 +54,7 @@ final class FiftyMoveClaimAheadReportBuilder {
 
     final List<LegalMove> performedLegalMoveList = board.getPerformedLegalMoveList();
     for (final LegalMove nextPlayedMove : performedLegalMoveList) {
-      final boolean nextPlayedMoveBreaksSequence = BasicChessUtility.isResetHalfMoveClock(nextPlayedMove);
+      final boolean nextPlayedMoveBreaksSequence = nextPlayedMove.resetsHalfMoveClock();
       if (nextPlayedMoveBreaksSequence) {
         emitBoundaryIfMissedOpportunity(entries, replayBoard, currentStart, initialFenClock, initialFenSideToMove);
       }

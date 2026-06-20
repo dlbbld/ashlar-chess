@@ -30,7 +30,7 @@ class TestBoardClaimWithOwnMove {
     // White king a1 in mate from black queen a2 (protected by black king a3). Halfmove clock at
     // 100 - past the 50-move threshold. Under the "facts are independent" rule, isFiftyMove
     // reports the raw clock condition regardless of any higher-precedence condition that also
-    // holds. Precedence belongs to BasicChessUtility.calculateOutcome (which returns CHECKMATE
+    // holds. Precedence belongs to Board.outcome() (which returns CHECKMATE
     // here, since CHECKMATE outranks the 50-move row in the precedence stack). Deliberate
     // divergence from python-chess at this corner.
     final Board board = Board.fromFenStrict("8/8/8/8/8/k7/q7/K7 w - - 100 60");
@@ -48,7 +48,7 @@ class TestBoardClaimWithOwnMove {
   void isSeventyFiveMoveTrueAtCheckmateWhenClockPastThreshold() {
     // Same position semantics as above but with clock at 150 - past the 75-move threshold. Same
     // "facts are independent" rule: isSeventyFiveMove reports the raw threshold fact even when
-    // checkmate also holds. calculateOutcome still returns CHECKMATE under the precedence stack.
+    // checkmate also holds. outcome() still returns CHECKMATE under the precedence stack.
     final Board board = Board.fromFenStrict("8/8/8/8/8/k7/q7/K7 w - - 150 80");
     assertTrue(board.isCheckmate(), "precondition: position must be checkmate");
     assertEquals(150, board.getHalfMoveClock(), "precondition: clock past 75-move threshold");

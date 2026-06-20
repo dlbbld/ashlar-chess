@@ -16,7 +16,6 @@ import io.github.dlbbld.ashlarchess.board.enums.Side;
 import io.github.dlbbld.ashlarchess.common.Nulls;
 import io.github.dlbbld.ashlarchess.common.exceptions.ProgrammingMistakeException;
 import io.github.dlbbld.ashlarchess.common.model.Outcome;
-import io.github.dlbbld.ashlarchess.common.utility.BasicChessUtility;
 import io.github.dlbbld.ashlarchess.common.utility.BasicUtility;
 import io.github.dlbbld.ashlarchess.enums.MoveSuffixAnnotation;
 import io.github.dlbbld.ashlarchess.fen.constants.FenConstants;
@@ -117,7 +116,7 @@ public final class PgnCreate {
   }
 
   private static ResultTagValue calculateResultTagValue(Board board) {
-    final Outcome outcome = BasicChessUtility.calculateOutcome(board);
+    final Outcome outcome = board.outcome();
     switch (outcome.termination()) {
       case NONE:
         // Game is ongoing - including positions with one-sided insufficient material, which is a
