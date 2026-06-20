@@ -31,7 +31,6 @@ import io.github.dlbbld.ashlarchess.common.model.DynamicPosition;
 import io.github.dlbbld.ashlarchess.common.model.MoveSpecification;
 import io.github.dlbbld.ashlarchess.common.model.Outcome;
 import io.github.dlbbld.ashlarchess.common.ucimove.utility.UciMoveUtility;
-import io.github.dlbbld.ashlarchess.common.utility.RepetitionUtility;
 import io.github.dlbbld.ashlarchess.exceptions.InvalidMoveException;
 import io.github.dlbbld.ashlarchess.fen.FenBoard;
 import io.github.dlbbld.ashlarchess.fen.LenientFenParser;
@@ -378,9 +377,7 @@ public final class Board {
 
     final int newHalfMoveClock = calculateNewHalfMoveClock(moveToPerform, beforeState.halfMoveClock());
 
-    // repetition needs the played-move list (N) and the position list (N+1), both including the new entry
-    final int newRepetitionCount = RepetitionUtility.calculateCountRepetition(collectPerformedMoves(moveToPerform),
-        collectDynamicPositions(newDynamicPosition), newDynamicPosition);
+    final int newRepetitionCount = countRepetition(moveToPerform, newDynamicPosition);
 
     // SAN disambiguation uses the legal moves of the position the move is played FROM (the current position)
     final SanTerminalMarker sanTerminalMarker = SanTerminalMarkerUtility.calculate(isCheck, isCheckmate);
@@ -422,23 +419,25 @@ public final class Board {
   }
 
   // Played moves so far (N entries, indices 1..size-1) plus the move about to be appended.
-  private List<LegalMove> collectPerformedMoves(LegalMove nextMove) {
-    final List<LegalMove> moves = new ArrayList<>();
-    for (int i = 1; i < boardStateList.size(); i++) {
-      moves.add(moveAt(i));
+  // Repetition count of the position reached by playing {@code newMove}: how many times {@code newDynamicPosition} has
+  // occurred in the game so far, counting itself. Scans the played history backwards in place, only as far back as the
+  // most recent clock-resetting move (pawn move or capture): a position before such a move can never equal one after it
+  // (a basic property of chess), so the scan is bounded by the halfmove clock, not the full game length. Reading
+  // boardStateList directly avoids rebuilding the whole history on every move, which would make replay O(n^2).
+  private int countRepetition(LegalMove newMove, DynamicPosition newDynamicPosition) {
+    int countRepetition = 1;
+    final int lastIndex = boardStateList.size() - 1;
+    for (int i = lastIndex; i >= 0; i--) {
+      // The move played from position i: the new move at the tip, otherwise the move that reached position i+1.
+      final LegalMove movePlayedFromPosition = i == lastIndex ? newMove : moveAt(i + 1);
+      if (movePlayedFromPosition.resetsHalfMoveClock()) {
+        return countRepetition;
+      }
+      if (newDynamicPosition.equals(Nulls.get(boardStateList, i).dynamicPosition())) {
+        countRepetition++;
+      }
     }
-    moves.add(nextMove);
-    return moves;
-  }
-
-  // Dynamic positions of every state so far (N+1 entries) plus the position about to be appended.
-  private List<DynamicPosition> collectDynamicPositions(DynamicPosition nextDynamicPosition) {
-    final List<DynamicPosition> positions = new ArrayList<>();
-    for (final BoardState state : boardStateList) {
-      positions.add(state.dynamicPosition());
-    }
-    positions.add(nextDynamicPosition);
-    return positions;
+    return countRepetition;
   }
 
   // Recomputes a position's legal moves from its DynamicPosition. Legal moves are derived cache, not retained
