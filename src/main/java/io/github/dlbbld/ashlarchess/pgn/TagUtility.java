@@ -121,23 +121,6 @@ public final class TagUtility {
     throw new ProgrammingMistakeException("Must be validated to be a correct tag at this point");
   }
 
-  private static String readTagValue(List<Tag> tags, StandardTag tag) {
-    return readTagValue(tags, tag.getName());
-  }
-
-  static String readTagValue(List<Tag> tags, String tagName) {
-    if (!existsTagName(tags, tagName)) {
-      throw new IllegalArgumentException(
-          "The method can only be used if a tag with the tagName exists, check first with the provided method.");
-    }
-    for (final Tag tag : tags) {
-      if (tag.name().equals(tagName)) {
-        return tag.value();
-      }
-    }
-    throw new ProgrammingMistakeException();
-  }
-
   public static boolean existsTag(List<Tag> tags, StandardTag tag) {
     return existsTagName(tags, tag.getName());
   }
@@ -194,6 +177,23 @@ public final class TagUtility {
 
   public static void removeFenTag(List<Tag> tags) {
     removeTag(tags, StandardTag.FEN);
+  }
+
+  private static String readTagValue(List<Tag> tags, StandardTag tag) {
+    return readTagValue(tags, tag.getName());
+  }
+
+  static String readTagValue(List<Tag> tags, String tagName) {
+    if (!existsTagName(tags, tagName)) {
+      throw new IllegalArgumentException(
+          "The method can only be used if a tag with the tagName exists, check first with the provided method.");
+    }
+    for (final Tag tag : tags) {
+      if (tag.name().equals(tagName)) {
+        return tag.value();
+      }
+    }
+    throw new ProgrammingMistakeException();
   }
 
   public static String readTagValue(PgnGame pgnGame, String tagName) {

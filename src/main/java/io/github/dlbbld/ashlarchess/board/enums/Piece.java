@@ -44,14 +44,17 @@ public enum Piece {
     return side;
   }
 
-  /** FEN piece letter: white uppercase, black lowercase ({@code "P"}/{@code "p"}, ...), and {@code "none"} for {@link #NONE}. */
+  /**
+   * FEN piece letter: white uppercase, black lowercase ({@code "P"}/{@code "p"}, ...), and {@code "none"} for
+   * {@link #NONE}.
+   */
   @Override
   public String toString() {
     if (this == NONE) {
       return "none";
     }
-    return String.valueOf(
-        side == Side.WHITE ? Character.toUpperCase(pieceType.getLetter()) : Character.toLowerCase(pieceType.getLetter()));
+    return String.valueOf(side == Side.WHITE ? Character.toUpperCase(pieceType.getLetter())
+        : Character.toLowerCase(pieceType.getLetter()));
   }
 
   private void check() {

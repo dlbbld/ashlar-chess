@@ -20,13 +20,14 @@ import io.github.dlbbld.ashlarchess.test.pgn.setup.PgnTestCaseCatalog;
 import io.github.dlbbld.ashlarchess.test.pgntest.enums.PgnTest;
 
 /**
- * Measures the {@code Board} state-tracking paths that the move-generation survey deliberately steps around: construction
- * from a FEN, full game replay via {@link Board#move(MoveSpecification)}, and the move / {@link Board#unmove()} probe
- * that the fifty-move and threefold claim-ahead reports perform at each position. These are exactly the paths that the
- * "rich board" redesign (per-ply derived lists collapsed into one record list) touches; raw legal-move generation does
- * not exercise them.
+ * Measures the {@code Board} state-tracking paths that the move-generation survey deliberately steps around:
+ * construction from a FEN, full game replay via {@link Board#move(MoveSpecification)}, and the move /
+ * {@link Board#unmove()} probe that the fifty-move and threefold claim-ahead reports perform at each position. These
+ * are exactly the paths that the "rich board" redesign (per-ply derived lists collapsed into one record list) touches;
+ * raw legal-move generation does not exercise them.
  *
- * <p>This survey times ashlar only. ChessLib is not a fair normalizer here (its mutable board mutates in place and never
+ * <p>
+ * This survey times ashlar only. ChessLib is not a fair normalizer here (its mutable board mutates in place and never
  * built the per-ply derived state ashlar did), so cross-run machine drift is controlled instead by running
  * {@link MoveGenerationPerformanceSurvey} in the same boot session: its ChessLib us/position is identical code on any
  * tree and serves as the machine anchor when comparing this survey's numbers across releases.
@@ -56,7 +57,9 @@ public class BoardReplayPerformanceSurvey {
     }
   }
 
-  /** Construction only: {@code new Board(startFen)} per game. */
+  /**
+   * Construction only: {@code new Board(startFen)} per game.
+   */
   private static Measurement measureConstruct(List<Game> games) {
     long checksum = 0L;
     final long start = System.nanoTime();
@@ -157,7 +160,8 @@ public class BoardReplayPerformanceSurvey {
     System.out.printf("  construct (new Board(fen)):     %.3f us/game%n", constructUsPerGame);
     System.out.printf("  construct + replay:             %.3f us/ply  (%.1f us/game)%n", replayUsPerPly,
         replayUsPerGame);
-    System.out.printf("  construct + replay + unmove:    %.3f us/ply  (%.1f us/game)  [claim-ahead: move;unmove;move]%n",
+    System.out.printf(
+        "  construct + replay + unmove:    %.3f us/ply  (%.1f us/game)  [claim-ahead: move;unmove;move]%n",
         probeUsPerPly, probeUsPerGame);
     System.out.printf("  checksum: %d / %d / %d%n%n", construct.checksum(), replay.checksum(),
         replayWithProbe.checksum());
