@@ -196,15 +196,15 @@ public final class TagUtility {
     removeTag(tagList, StandardTag.FEN);
   }
 
-  public static String calculateTagValue(PgnGame pgnGame, String tagName) {
+  public static String readTagValue(PgnGame pgnGame, String tagName) {
     if (!existsTagName(pgnGame.tagList(), tagName)) {
       return "NA";
     }
     return readTagValue(pgnGame.tagList(), tagName);
   }
 
-  public static String calculateTagValue(PgnGame pgnGame, StandardTag sevenTagRoster) {
-    return calculateTagValue(pgnGame, sevenTagRoster.getName());
+  public static String readTagValue(PgnGame pgnGame, StandardTag sevenTagRoster) {
+    return readTagValue(pgnGame, sevenTagRoster.getName());
   }
 
 }

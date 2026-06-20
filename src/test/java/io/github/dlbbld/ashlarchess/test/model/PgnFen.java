@@ -29,7 +29,7 @@ public record PgnFen(String pgnName, String finalFen) {
 
   public Board game(PgnTest pgnTest) {
     final PgnGame pgnGame = PgnCacheForLenientPgnParserTestCases.getPgn(pgnTest.getFolderPath(), pgnName());
-    return PgnUtility.calculateBoard(pgnGame);
+    return PgnUtility.toBoard(pgnGame);
   }
 
 }

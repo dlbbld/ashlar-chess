@@ -479,7 +479,7 @@ final String pgn = """
       3. Bc4 Bc5
     """;
 final PgnGame pgnGame = LenientPgnParser.parseText(pgn);
-final Board board = PgnUtility.calculateBoard(pgnGame);
+final Board board = PgnUtility.toBoard(pgnGame);
 board.moveStrict("a3");
 ```
 
@@ -568,7 +568,7 @@ final String pgn = """
     """;
 try {
   final PgnGame pgnGame = LenientPgnParser.parseText(pgn);
-  System.out.println(PgnUtility.calculateBoard(pgnGame).isCheck()); // not reached
+  System.out.println(PgnUtility.toBoard(pgnGame).isCheck()); // not reached
 } catch (final LenientPgnParserValidationException e) {
   System.out.println(e.getMessage());
 }
@@ -583,7 +583,7 @@ The validation for 2. Nf4 failed. Reason: The lenient SAN parser could not parse
 
 ```java
 final PgnGame pgnGame = LenientPgnParser.parsePath("C:\\temp\\myFile.pgn");
-final Board board = PgnUtility.calculateBoard(pgnGame);
+final Board board = PgnUtility.toBoard(pgnGame);
 System.out.println(board.isCheckmate());
 ```
 
@@ -606,7 +606,7 @@ final String pgn = """
 
     """;
 final PgnGame pgnGame = StrictPgnParser.parseText(pgn);
-final Board board = PgnUtility.calculateBoard(pgnGame);
+final Board board = PgnUtility.toBoard(pgnGame);
 board.moveStrict("a3");
 ```
 
@@ -621,7 +621,7 @@ final String pgn = """
     """;
 try {
   final PgnGame pgnGame = StrictPgnParser.parseText(pgn);
-  System.out.println(PgnUtility.calculateBoard(pgnGame).isCheck()); // not reached
+  System.out.println(PgnUtility.toBoard(pgnGame).isCheck()); // not reached
 } catch (final StrictPgnParserValidationException e) {
   System.out.println(e.getMessage());
 }
@@ -643,7 +643,7 @@ final String pgn = """
     """;
 try {
   final PgnGame pgnGame = StrictPgnParser.parseText(pgn);
-  System.out.println(PgnUtility.calculateBoard(pgnGame).isCheck()); // not reached
+  System.out.println(PgnUtility.toBoard(pgnGame).isCheck()); // not reached
 } catch (final StrictPgnParserValidationException e) {
   System.out.println(e.getMessage());
 }
@@ -658,7 +658,7 @@ The Result tag is required. PGN spec section 8.1.1 archival storage requires the
 
 ```java
 final PgnGame pgnGame = StrictPgnParser.parsePath("C:\\temp\\myFile.pgn");
-final Board board = PgnUtility.calculateBoard(pgnGame);
+final Board board = PgnUtility.toBoard(pgnGame);
 System.out.println(board.isThreefoldRepetition());
 ```
 

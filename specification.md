@@ -165,7 +165,7 @@ Codes are not collapsed: each distinguishable deviation has its own code, and a 
 
 **Algorithm — two-phase.** *Phase 1 (shape normalization)* performs pure-string transforms plus board-aware UCI translation (look up piece on from-square): castling-zero, mixed-castling rejection, `P`-stripping, hyphen-stripping (LAN), UCI form translation, missing-`=` insertion, all four case fixups. LAN and UCI are mutually exclusive at the input level — a hyphen means LAN (`LONG_ALGEBRAIC_NOTATION` only), no hyphen means UCI shape (`UCI_NOTATION` only). *Phase 2 (semantic recovery)* feeds the normalized candidate to the strict pipeline and, on a recoverable rejection (terminal-marker mismatch, capture-marker mismatch, over-specification, non-standard disambig), mutates the candidate and retries. Each lenient code can fire at most once per parse, bounding the loop.
 
-**API.** `LenientSanParser.parseText(String, ChessBoard)` returns a `LenientSanParserValidationResult` (move + forgiven items). `LenientSanParser.validateText(String, ChessBoard)` is the same call with the result discarded — convenience for yes/no checks. `Board.moveLenient(String)` returns the same result type so the convenience path also surfaces forgiven items.
+**API.** `LenientSanParser.parse(String, Board)` returns a `LenientSanParseResult` (move + forgiven items); it validates by construction, throwing `LenientSanParserValidationException` on an unrecoverable input. `Board.moveLenient(String)` returns the same result type, so it also surfaces the forgiven items.
 
 **Deliberate non-recoveries.** Two categories are rejected even by the lenient pipeline:
 - **Mixed castling** (`0-O`, `O-0`) — no real-world tool emits this; allowing it would add parser complexity for zero practical value.

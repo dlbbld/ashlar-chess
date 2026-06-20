@@ -39,12 +39,12 @@ public final class Reporter {
 
   public static ImmutableList<String> report(String pgnText) {
     final PgnGame pgnGame = LenientPgnParser.parseText(pgnText);
-    final Board board = PgnUtility.calculateBoard(pgnGame);
+    final Board board = PgnUtility.toBoard(pgnGame);
     return report(board);
   }
 
   public static ImmutableList<String> report(Path folderPath, String pgnName) {
-    final Board board = PgnUtility.calculateBoard(folderPath, pgnName);
+    final Board board = PgnUtility.toBoard(folderPath, pgnName);
     return report(board);
   }
 

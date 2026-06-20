@@ -48,12 +48,12 @@ class TestPgnRoundTripEdgeCases {
         """;
     final PgnGame parsed = LenientPgnParser.parseText(pgn);
     // Model carries the unescaped form.
-    assertEquals("A \"Quote\" and slash \\", TagUtility.calculateTagValue(parsed, "Event"));
+    assertEquals("A \"Quote\" and slash \\", TagUtility.readTagValue(parsed, "Event"));
 
     final String exported = PgnCreate.toPgnString(parsed, WriteMode.SEMANTIC);
     // Exported form re-escapes both backslash and quote, so re-parsing recovers the same unescaped value.
     final PgnGame reparsed = LenientPgnParser.parseText(exported);
-    assertEquals("A \"Quote\" and slash \\", TagUtility.calculateTagValue(reparsed, "Event"));
+    assertEquals("A \"Quote\" and slash \\", TagUtility.readTagValue(reparsed, "Event"));
 
     // And the exported representation contains the spec-required escapes in the bracketed value.
     assertTrue(exported.contains("[Event \"A \\\"Quote\\\" and slash \\\\\"]"),

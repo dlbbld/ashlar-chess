@@ -15,7 +15,7 @@ public class UnwinnabilityQuickManualRun {
     //
     // final PgnTest pgnTest = PgnTestCaseCatalog.findPgnTestPgnNotListed(pgnName);
     // final PgnGame pgnGame = LenientPgnParser.parsePath(pgnTest.getFolderPath(), pgnName);
-    // final Board board = PgnUtility.calculateBoard(pgnGame);
+    // final Board board = PgnUtility.toBoard(pgnGame);
 
     final Board board = Board.fromFenStrict("4k3/8/8/8/8/8/8/R3K3 b - - 0 100");
 

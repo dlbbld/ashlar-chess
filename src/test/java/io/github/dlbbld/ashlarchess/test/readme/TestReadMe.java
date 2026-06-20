@@ -43,8 +43,8 @@ class TestReadMe {
     // through strict parsing is the demonstration this test exists for, so the producer side asks for archival.
     PgnWriter.writePgn(pgnGame, filePath, WriteMode.ARCHIVAL);
 
-    final Board lenientBoard = PgnUtility.calculateBoard(LenientPgnParser.parsePath(filePath));
-    final Board strictBoard = PgnUtility.calculateBoard(StrictPgnParser.parsePath(filePath));
+    final Board lenientBoard = PgnUtility.toBoard(LenientPgnParser.parsePath(filePath));
+    final Board strictBoard = PgnUtility.toBoard(StrictPgnParser.parsePath(filePath));
 
     assertEquals(sourceBoard.getFen(), lenientBoard.getFen());
     assertEquals(sourceBoard.getFen(), strictBoard.getFen());
@@ -62,7 +62,7 @@ class TestReadMe {
                 """;
 
     final PgnGame pgnGame = LenientPgnParser.parseText(pgn);
-    final Board board = PgnUtility.calculateBoard(pgnGame);
+    final Board board = PgnUtility.toBoard(pgnGame);
     board.moveStrict("a3");
 
     assertEquals("Spring Classic", tagValue(pgnGame, "Event"));
@@ -106,7 +106,7 @@ class TestReadMe {
         """;
 
     final PgnGame pgnGame = StrictPgnParser.parseText(pgn);
-    final Board board = PgnUtility.calculateBoard(pgnGame);
+    final Board board = PgnUtility.toBoard(pgnGame);
     board.moveStrict("a3");
 
     assertEquals(6, pgnGame.moveList().size());

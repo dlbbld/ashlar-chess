@@ -16,7 +16,7 @@ public final class PgnUtility {
   /**
    * Replays the moves of {@code pgnGame} on a fresh board and returns the resulting state.
    */
-  public static Board calculateBoard(PgnGame pgnGame) {
+  public static Board toBoard(PgnGame pgnGame) {
 
     final Board board = new Board(pgnGame.startFen());
 
@@ -28,9 +28,9 @@ public final class PgnUtility {
     return board;
   }
 
-  public static Board calculateBoard(Path folderPath, String pgnName) {
+  public static Board toBoard(Path folderPath, String pgnName) {
     final PgnGame pgnGame = LenientPgnParser.parsePath(folderPath, pgnName);
-    return calculateBoard(pgnGame);
+    return toBoard(pgnGame);
   }
 
 }

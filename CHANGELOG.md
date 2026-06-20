@@ -122,6 +122,8 @@ FEN / SAN / LAN serializers use the `to*` idiom:
 - `MoveToSan.calculateSanLastMove(LegalMove, List<LegalMove>, SanTerminalMarker)` → `MoveToSan.toSan(LegalMove move, List<LegalMove> legalMovesBeforeMove, SanTerminalMarker)`.
 - `MoveToLan.calculateLanLastMove(LegalMove, SanTerminalMarker)` → `MoveToLan.toLan(LegalMove move, SanTerminalMarker)`.
 - `UciMoveUtility.convertMoveSpecificationToUci(Side, MoveSpecification)` → `toUci(...)`, `convertUciMoveToMoveSpecification(Board, UciMove)` → `toMoveSpecification(...)`, and `convertUciMoveToSan(Board, UciMove)` → `toSan(...)` — dropping the `convert*` prefix for the `to*` idiom.
+- `PgnUtility.calculateBoard(PgnGame)` / `calculateBoard(Path, String)` → `toBoard(...)` — replays a PGN game onto a fresh board.
+- `TagUtility.calculateTagValue(PgnGame, String)` / `calculateTagValue(PgnGame, StandardTag)` → `readTagValue(...)`, matching the sibling tag readers (`readFen`, `readResult`, …).
 
 `EnumConstants` removed from the public API:
 

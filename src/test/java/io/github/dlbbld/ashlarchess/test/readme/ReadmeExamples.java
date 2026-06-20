@@ -271,7 +271,7 @@ public final class ReadmeExamples {
           3. Bc4 Bc5
         """;
     final PgnGame pgnGame = LenientPgnParser.parseText(pgn);
-    final Board board = PgnUtility.calculateBoard(pgnGame);
+    final Board board = PgnUtility.toBoard(pgnGame);
     board.moveStrict("a3");
     // </readme:pgn-lenient-valid>
   }
@@ -324,7 +324,7 @@ public final class ReadmeExamples {
         """;
     try {
       final PgnGame pgnGame = LenientPgnParser.parseText(pgn);
-      System.out.println(PgnUtility.calculateBoard(pgnGame).isCheck()); // not reached
+      System.out.println(PgnUtility.toBoard(pgnGame).isCheck()); // not reached
     } catch (final LenientPgnParserValidationException e) {
       System.out.println(e.getMessage());
     }
@@ -334,7 +334,7 @@ public final class ReadmeExamples {
   public static void pgnLenientFileParsing() {
     // <readme:pgn-lenient-file-parsing>
     final PgnGame pgnGame = LenientPgnParser.parsePath("C:\\temp\\myFile.pgn");
-    final Board board = PgnUtility.calculateBoard(pgnGame);
+    final Board board = PgnUtility.toBoard(pgnGame);
     System.out.println(board.isCheckmate());
     // </readme:pgn-lenient-file-parsing>
   }
@@ -354,7 +354,7 @@ public final class ReadmeExamples {
 
         """;
     final PgnGame pgnGame = StrictPgnParser.parseText(pgn);
-    final Board board = PgnUtility.calculateBoard(pgnGame);
+    final Board board = PgnUtility.toBoard(pgnGame);
     board.moveStrict("a3");
     // </readme:pgn-strict-valid>
   }
@@ -369,7 +369,7 @@ public final class ReadmeExamples {
         """;
     try {
       final PgnGame pgnGame = StrictPgnParser.parseText(pgn);
-      System.out.println(PgnUtility.calculateBoard(pgnGame).isCheck()); // not reached
+      System.out.println(PgnUtility.toBoard(pgnGame).isCheck()); // not reached
     } catch (final StrictPgnParserValidationException e) {
       System.out.println(e.getMessage());
     }
@@ -386,7 +386,7 @@ public final class ReadmeExamples {
         """;
     try {
       final PgnGame pgnGame = StrictPgnParser.parseText(pgn);
-      System.out.println(PgnUtility.calculateBoard(pgnGame).isCheck()); // not reached
+      System.out.println(PgnUtility.toBoard(pgnGame).isCheck()); // not reached
     } catch (final StrictPgnParserValidationException e) {
       System.out.println(e.getMessage());
     }
@@ -396,7 +396,7 @@ public final class ReadmeExamples {
   public static void pgnStrictFileParsing() {
     // <readme:pgn-strict-file-parsing>
     final PgnGame pgnGame = StrictPgnParser.parsePath("C:\\temp\\myFile.pgn");
-    final Board board = PgnUtility.calculateBoard(pgnGame);
+    final Board board = PgnUtility.toBoard(pgnGame);
     System.out.println(board.isThreefoldRepetition());
     // </readme:pgn-strict-file-parsing>
   }

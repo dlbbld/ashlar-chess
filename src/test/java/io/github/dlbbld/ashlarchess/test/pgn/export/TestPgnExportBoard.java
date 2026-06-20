@@ -60,7 +60,7 @@ class TestPgnExportBoard {
   }
 
   private static void checkBoardReplay(Board boardExpected, PgnGame boardExpectedPgnGame) {
-    final Board boardActual = PgnUtility.calculateBoard(boardExpectedPgnGame);
+    final Board boardActual = PgnUtility.toBoard(boardExpectedPgnGame);
     assertEquals(boardExpected, boardActual);
   }
 

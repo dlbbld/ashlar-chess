@@ -29,7 +29,7 @@ class TestLimitedUnwinnabilityOracle {
 
     final PgnTest pgnTest = PgnTestCaseCatalog.findPgnTestPgnNotListed(pgnName);
     final PgnGame pgnGame = LenientPgnParser.parsePath(pgnTest.getFolderPath(), pgnName);
-    final Board board = PgnUtility.calculateBoard(pgnGame);
+    final Board board = PgnUtility.toBoard(pgnGame);
     logger.info(pgnName);
 
     assertEquals(LimitedUnwinnabilityVerdict.WINNABLE,
@@ -45,7 +45,7 @@ class TestLimitedUnwinnabilityOracle {
 
     final PgnTest pgnTest = PgnTestCaseCatalog.findPgnTestPgnNotListed(pgnName);
     final PgnGame pgnGame = LenientPgnParser.parsePath(pgnTest.getFolderPath(), pgnName);
-    final Board board = PgnUtility.calculateBoard(pgnGame);
+    final Board board = PgnUtility.toBoard(pgnGame);
     logger.info(pgnName);
 
     assertEquals(LimitedUnwinnabilityVerdict.WINNABLE,
@@ -61,7 +61,7 @@ class TestLimitedUnwinnabilityOracle {
 
     final PgnTest pgnTest = PgnTestCaseCatalog.findPgnTestPgnNotListed(pgnName);
     final PgnGame pgnGame = LenientPgnParser.parsePath(pgnTest.getFolderPath(), pgnName);
-    final Board board = PgnUtility.calculateBoard(pgnGame);
+    final Board board = PgnUtility.toBoard(pgnGame);
     logger.info(pgnName);
 
     assertEquals(LimitedUnwinnabilityVerdict.UNWINNABLE,

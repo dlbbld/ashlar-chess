@@ -208,7 +208,7 @@ class TestLibraryCarlosThreefoldPass {
 
   private static boolean isThreefold(String pgnText) {
     final PgnGame pgnGame = LenientPgnParser.parseText(pgnText);
-    final io.github.dlbbld.ashlarchess.board.Board boardActual = PgnUtility.calculateBoard(pgnGame);
+    final io.github.dlbbld.ashlarchess.board.Board boardActual = PgnUtility.toBoard(pgnGame);
     return boardActual.isThreefoldRepetition();
   }
 

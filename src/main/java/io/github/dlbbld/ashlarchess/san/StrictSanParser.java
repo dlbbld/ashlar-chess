@@ -23,7 +23,8 @@ public final class StrictSanParser {
   }
 
   /**
-   * Parses {@code san} as canonical SAN against {@code board} and returns the resolved {@link MoveSpecification}.
+   * Parses {@code san} as canonical SAN against {@code board} and returns a {@link StrictSanParseResult} carrying the
+   * resolved {@link MoveSpecification}.
    *
    * @throws SanValidationException if the input is not canonical SAN, or is canonical but does not represent a legal
    *                                move on the current position

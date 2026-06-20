@@ -161,6 +161,6 @@ class TestThreefoldClaimAheadReportBuilder {
 
   private static Board loadCorpusBoard(String pgnName) {
     final PgnTest pgnTest = PgnTestCaseCatalog.findPgnTestPgnNotListed(pgnName);
-    return PgnUtility.calculateBoard(pgnTest.getFolderPath(), pgnName);
+    return PgnUtility.toBoard(pgnTest.getFolderPath(), pgnName);
   }
 }

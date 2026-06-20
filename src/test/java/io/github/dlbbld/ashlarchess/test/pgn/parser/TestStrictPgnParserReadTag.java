@@ -39,15 +39,15 @@ class TestStrictPgnParserReadTag {
       final PgnGame pgnGame = PgnCacheForStrictPgnParserTestCases.getPgn(PGN_TEST_FOLDER_PATH,
           "01_example_white_last_move.pgn");
 
-      assertEquals("Groningen", TagUtility.calculateTagValue(pgnGame, StandardTag.EVENT));
-      assertEquals("Groningen NED", TagUtility.calculateTagValue(pgnGame, StandardTag.SITE));
-      assertEquals("1997.??.??", TagUtility.calculateTagValue(pgnGame, StandardTag.DATE));
-      assertEquals("9", TagUtility.calculateTagValue(pgnGame, StandardTag.ROUND));
-      assertEquals("Pavel Blatny", TagUtility.calculateTagValue(pgnGame, StandardTag.WHITE));
-      assertEquals("Frank Holzke", TagUtility.calculateTagValue(pgnGame, StandardTag.BLACK));
-      assertEquals("1/2-1/2", TagUtility.calculateTagValue(pgnGame, StandardTag.RESULT));
-      assertEquals("A15", TagUtility.calculateTagValue(pgnGame, "ECO"));
-      assertEquals("1997.??.??", TagUtility.calculateTagValue(pgnGame, "EventDate"));
+      assertEquals("Groningen", TagUtility.readTagValue(pgnGame, StandardTag.EVENT));
+      assertEquals("Groningen NED", TagUtility.readTagValue(pgnGame, StandardTag.SITE));
+      assertEquals("1997.??.??", TagUtility.readTagValue(pgnGame, StandardTag.DATE));
+      assertEquals("9", TagUtility.readTagValue(pgnGame, StandardTag.ROUND));
+      assertEquals("Pavel Blatny", TagUtility.readTagValue(pgnGame, StandardTag.WHITE));
+      assertEquals("Frank Holzke", TagUtility.readTagValue(pgnGame, StandardTag.BLACK));
+      assertEquals("1/2-1/2", TagUtility.readTagValue(pgnGame, StandardTag.RESULT));
+      assertEquals("A15", TagUtility.readTagValue(pgnGame, "ECO"));
+      assertEquals("1997.??.??", TagUtility.readTagValue(pgnGame, "EventDate"));
 
       assertEquals(FenConstants.FEN_INITIAL, pgnGame.startFen());
     }
