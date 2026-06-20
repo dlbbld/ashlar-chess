@@ -21,7 +21,7 @@ import io.github.dlbbld.ashlarchess.test.pgntest.enums.PgnTest;
 
 public class PgnTestCaseCatalog {
 
-  private static PgnTestCaseList calculateTestCaseLists(PgnTest pgnTest) {
+  private static PgnTestCaseList calculateTestCaseList(PgnTest pgnTest) {
 
     return switch (pgnTest) {
       case BASIC_CASTLING_WHITE -> createTestCasesBasicCastlingWhite();
@@ -130,7 +130,7 @@ public class PgnTestCaseCatalog {
 
   static {
     for (final PgnTest pgnTest : PgnTest.values()) {
-      final PgnTestCaseList testCaseList = calculateTestCaseLists(pgnTest);
+      final PgnTestCaseList testCaseList = calculateTestCaseList(pgnTest);
       testCaseListsByPgnTest.put(pgnTest, testCaseList);
       allTestCaseLists.add(testCaseList);
 

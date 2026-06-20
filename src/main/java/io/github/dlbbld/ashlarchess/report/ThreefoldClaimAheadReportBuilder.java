@@ -35,12 +35,12 @@ final class ThreefoldClaimAheadReportBuilder {
   static ThreefoldClaimAheadReport build(Board board) {
     final List<MoveRecord> rawClaimAheads = replayAndCollectClaimAheads(board.getPerformedMoves(),
         board.getInitialFen());
-    final ImmutableList<MoveRecord> moveRecordListPlayed = MoveRecords.played(board);
+    final ImmutableList<MoveRecord> playedMoveRecords = MoveRecords.played(board);
     final DynamicPosition initialDynamicPosition = board.getInitialDynamicPosition();
 
     final List<ClaimAheadEntry> entries = new ArrayList<>();
     for (final MoveRecord claimAheadMove : rawClaimAheads) {
-      entries.add(buildEntry(claimAheadMove, moveRecordListPlayed, initialDynamicPosition));
+      entries.add(buildEntry(claimAheadMove, playedMoveRecords, initialDynamicPosition));
     }
     Collections.sort(entries, ReportLineOrder.CLAIM_AHEAD_COMPARATOR);
     return new ThreefoldClaimAheadReport(Nulls.copyOfList(entries));
@@ -75,14 +75,14 @@ final class ThreefoldClaimAheadReportBuilder {
     }
   }
 
-  private static ClaimAheadEntry buildEntry(MoveRecord claimAheadMove, ImmutableList<MoveRecord> moveRecordListPlayed,
+  private static ClaimAheadEntry buildEntry(MoveRecord claimAheadMove, ImmutableList<MoveRecord> playedMoveRecords,
       DynamicPosition initialDynamicPosition) {
 
-    final boolean hasBeenPlayed = moveRecordListPlayed.contains(claimAheadMove);
+    final boolean hasBeenPlayed = playedMoveRecords.contains(claimAheadMove);
     final boolean includesInitialPosition = initialDynamicPosition.equals(claimAheadMove.dynamicPosition());
 
     final List<MoveRecord> priorOccurrences = new ArrayList<>();
-    for (final MoveRecord played : moveRecordListPlayed) {
+    for (final MoveRecord played : playedMoveRecords) {
       if (played.performedMoveCount() >= claimAheadMove.performedMoveCount()) {
         break;
       }
