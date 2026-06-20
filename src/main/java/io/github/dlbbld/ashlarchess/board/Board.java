@@ -428,7 +428,6 @@ public final class Board {
     return lan;
   }
 
-  // Played moves so far (N entries, indices 1..size-1) plus the move about to be appended.
   // Repetition-index maintenance, kept in lockstep with boardStateList: move() increments the entered position,
   // unmove() decrements the left position. The count of a DynamicPosition is its number of occurrences in the current
   // history prefix, which equals the FIDE repetition count (identical positions only recur within a no-progress
@@ -1067,9 +1066,16 @@ public final class Board {
 
   @Override
   public int hashCode() {
-    // The per-position BoardState records carry all game-history state, including the castling-loss reasons, so the
-    // hash is a deterministic function of the initial FEN and the full per-position history.
-    return Objects.hash(boardStateList, initialFen);
+    // Deliberate design decision: hash an O(1) SUMMARY of the game (initial FEN + number of moves played + current
+    // position), NOT the full move history. The contract only requires that equal games hash equally, and two games
+    // that are equals() necessarily share the same initial FEN, the same move count, and the same current dynamic
+    // position - so this is correct. We deliberately do NOT hash the whole boardStateList: that is O(history) per call
+    // (it grew quadratic under per-ply hashing in the burn-in survey) for no real benefit, since Board is a mutable
+    // game object and the class javadoc already directs callers not to use it as a HashMap/HashSet key. The current
+    // position is highly discriminating, so distribution is good; only different games of equal length reaching the
+    // identical current position (rare transpositions) collide, and equals() resolves those. Do not "promote" this
+    // back to hashing the full history.
+    return Objects.hash(initialFen, boardStateList.size(), getDynamicPosition());
   }
 
   /**
