@@ -378,6 +378,13 @@ public final class LenientPgnParser {
       }
       if (type == PgnTokenType.TERMINATION_MARKER) {
         tokenizer.next();
+        // The tokenizer flags any digits-and-hyphens/slashes run (e.g. "1-2", "7/") as a termination marker; only the
+        // four canonical results are valid. Guard before parsing so a malformed marker is a validation problem, not a
+        // raw IllegalArgumentException out of ResultTagValue.parse (strict guards the same way).
+        if (!ResultTagValue.exists(peek.text())) {
+          throw movetextError(LenientPgnParserValidationProblem.MOVETEXT_TERMINATION_MARKER_INVALID,
+              "The game termination marker must be one of \"" + ResultTagValue.allowedValuesText() + "\".");
+        }
         terminationResult = ResultTagValue.parse(peek.text());
         break;
       }

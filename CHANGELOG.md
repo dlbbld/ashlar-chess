@@ -20,8 +20,9 @@ A surface-only release. It retires the `HalfMove` concept, replaces the "halfmov
 
 ### Behavioral
 
-- No rule, report, or adjudication behavior changes: move legality, FEN/SAN/PGN export, unwinnability and adjudication verdicts, and all report output are identical to 18.1.0. Parsing is identical except for the two deliberate additions below. The one cosmetic change is the conventional `toString()` on the core `board.enums` types (see Notable).
+- No rule, report, or adjudication behavior changes: move legality, FEN/SAN/PGN export, unwinnability and adjudication verdicts, and all report output are identical to 18.1.0. Parsing is identical except for the deliberate changes below. The one cosmetic change is the conventional `toString()` on the core `board.enums` types (see Notable).
 - The lenient PGN parser now accepts `;` rest-of-line comments (PGN import format, spec section 5), attaching them as commentary exactly like brace comments; previously the `;` leaked into a SAN token and the parse failed. The strict PGN parser still rejects them — export format does not include `;` comments.
+- The lenient PGN parser now reports a malformed game-termination marker — any digits/hyphen/slash run that is not one of `1-0` / `0-1` / `1/2-1/2` / `*` (e.g. `1-2`, `7/`) — as a `LenientPgnParserValidationException` with the new `LenientPgnParserValidationProblem.MOVETEXT_TERMINATION_MARKER_INVALID`; previously it leaked a raw `IllegalArgumentException` out of `ResultTagValue.parse`. The strict parser already guarded this. (Found by the parser fuzz harness.)
 - `NonePointerException` is now a `UsageException` rather than a `ProgrammingMistakeException`, and the FEN/PGN `validate(...)` methods now let a `ProgrammingMistakeException` propagate instead of masking it as `UNKNOWN_ERROR`. See Breaking → Exceptions.
 
 ### Breaking
