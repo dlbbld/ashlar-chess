@@ -49,7 +49,36 @@ The one slice worth doing regardless of that direction, with no public-API commi
 
 Items here are not assigned to any release. Captured so they don't get lost; revisit if/when scope or motivation aligns.
 
-No unscheduled items currently.
+### Lenient PGN: accept consecutive comments
+
+The lenient PGN parser allows exactly one commentary per slot. Two consecutive comments — a brace comment
+immediately followed by a `;` end-of-line comment, or `{c} {c}` — are rejected with
+`MOVETEXT_COMMENTARY_NOT_ALLOWED_IN_SAN` ("a commentary cannot occur where a SAN move is expected"). Real-world
+exports (lichess, ChessBase) sometimes emit multiple comments between moves, so for a best-in-class *lenient*
+importer this is a genuine gap. Supporting it is a data-model change — coalesce the consecutive comments into one
+`PgnCommentary`, or model a per-move comment list — so it is parked rather than squeezed into 19.0.0. The strict
+parser deliberately stays canonical (single comment, export format). Found by `ParserStressSurvey`'s
+comment-placement isolation; the per-move brace and game-start comment forms already parse, including a 7 MB /
+17,697-move heavy-comment document in ~0.7 s (linear, no quadratic comment handling).
+
+### Report-layer long-game cost (secondary `buildEntry` O(n^2); inherent claim-check constant)
+
+`Reporter.report(board)` is fast for real games (a 271-ply game reports in ~90 ms) but takes ~7 s on the synthetic
+17,697-ply MAX_MOVES game. Two contributors, both pathological-only (`ReportScalingSurvey` measures them):
+
+- **Inherent O(n) with a fat constant** — `ThreefoldClaimAheadReportBuilder.collectClaimAheadsAtCurrentMove` calls
+  `canClaimThreefoldRepetitionRuleFor` for every legal move at every position (~175 us/position). This is the dominant
+  cost and is not a defect: it is the work an exhaustive claim-ahead report does. Reducing it would mean changing what
+  the report computes, not just how.
+- **Secondary O(n^2)** — `ThreefoldClaimAheadReportBuilder.build` calls `buildEntry` per claim-ahead, and `buildEntry`
+  does an O(n) `playedMoveRecords.contains(...)` plus an O(n) prior-occurrence scan. With O(n) claim-aheads this is
+  O(n^2), but it only bites games with many threefold boundaries (real games have ~0) and is minor next to the
+  claim-check constant. Fix when motivated: precompute a `Set<MoveRecord>` for `contains` and a
+  `Map<DynamicPosition, List<MoveRecord>>` of played records for prior occurrences (the same shape as the
+  `RepetitionGrouping` O(n^2) -> O(n) fix already shipped in 19.0.0).
+
+Not scheduled because real-game reporting is already fast; revisit if long-game (correspondence / adjournment /
+synthetic) reporting becomes a real use case.
 
 ---
 
