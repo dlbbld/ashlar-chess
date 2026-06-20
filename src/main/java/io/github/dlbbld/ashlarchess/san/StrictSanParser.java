@@ -12,10 +12,11 @@ import io.github.dlbbld.ashlarchess.common.model.MoveSpecification;
 import io.github.dlbbld.ashlarchess.model.LegalMove;
 
 /**
- * Public entry point for the strict SAN pipeline. Accepts canonical SAN only; the result is symmetric in shape with
- * {@link io.github.dlbbld.ashlarchess.san.LenientSanParser} so callers can switch between strict and lenient by
- * changing one method call. Use {@link io.github.dlbbld.ashlarchess.san.LenientSanParser} when parsing real-world PGN
- * that may contain forgivable deviations from canonical SAN.
+ * Public entry point for the strict SAN pipeline. Accepts canonical SAN only and returns the resolved
+ * {@link MoveSpecification}, validating by construction - an input that is not canonical SAN, or is canonical but not a
+ * legal move on the position, throws. Use {@link LenientSanParser} when parsing real-world PGN that may contain
+ * forgivable deviations from canonical SAN; that pipeline returns a {@link LenientSanParseResult} carrying the resolved
+ * move plus the forgiven items.
  */
 public final class StrictSanParser {
 
