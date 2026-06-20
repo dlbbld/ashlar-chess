@@ -46,12 +46,12 @@ public final class MobilityOracleFormatter {
       final PiecePlacement piecePlacement = new PiecePlacement(piece.getPieceType(), piece.getSide(), source);
       final Set<Square> toSquareSet = mobilitySolution.calculateSquaresWithValueOne(piecePlacement);
       rowList.add(fen + "\t" + piece.getSide().name() + "\t" + piece.getPieceType().name() + "\t" + source.getName()
-          + "\t" + formatSquareList(toSquareSet));
+          + "\t" + formatSquares(toSquareSet));
     }
     return rowList;
   }
 
-  private static String formatSquareList(Set<Square> squareSet) {
+  private static String formatSquares(Set<Square> squareSet) {
     final List<String> squareNameList = new ArrayList<>();
     for (final Square square : squareSet) {
       squareNameList.add(square.getName());

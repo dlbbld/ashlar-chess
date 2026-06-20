@@ -29,7 +29,7 @@ class TestBoardAgainstEachOther {
   @SuppressWarnings("static-method")
   @Test
   void test() {
-    for (final PgnTestCaseList testCaseList : PgnTestCaseCatalog.getRestrictedTestListList()) {
+    for (final PgnTestCaseList testCaseList : PgnTestCaseCatalog.getRestrictedTestCaseLists()) {
       for (final PgnFen testCase : testCaseList.list()) {
         // takes 50 minutes with all test cases
         if (RestrictTestConstants.IS_RESTRICT_PGN_BOARD_API_AGAINST_EACH_OTHER_TEST) {

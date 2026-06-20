@@ -30,7 +30,7 @@ class TestStrictPgnParserAgainstLenientPgnParser {
     // false -> full ALL_EXCEPT_LONGEST_POSSIBLE corpus for a pre-release / regression sweep.
     final List<PgnTestCaseList> source = RestrictTestConstants.IS_RESTRICT_PGN_STRICT_AGAINST_LENIENT_TEST
         ? PgnTestCaseCatalog.getParserIntegrationSmokeList()
-        : PgnTestCaseCatalog.getRestrictedTestListList();
+        : PgnTestCaseCatalog.getRestrictedTestCaseLists();
     for (final PgnTestCaseList testCaseList : source) {
       for (final PgnFen testCase : testCaseList.list()) {
 

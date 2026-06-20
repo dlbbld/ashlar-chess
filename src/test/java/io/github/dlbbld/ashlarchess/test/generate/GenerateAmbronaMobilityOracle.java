@@ -70,7 +70,7 @@ public final class GenerateAmbronaMobilityOracle {
   }
 
   private static void generate(String d3ChessRoot) throws Exception {
-    final List<String> fenList = collectDistinctFinalFenList();
+    final List<String> fenList = collectDistinctFinalFens();
     logger.info("Collected {} distinct final FENs from the PGN test cases.", fenList.size());
 
     buildRunner(d3ChessRoot);
@@ -84,7 +84,7 @@ public final class GenerateAmbronaMobilityOracle {
     logger.info("Wrote {} Ambrona mobility rows to {}", oracleLineList.size(), ORACLE_PATH);
   }
 
-  private static List<String> collectDistinctFinalFenList() {
+  private static List<String> collectDistinctFinalFens() {
     final Set<String> fenSet = new LinkedHashSet<>();
     for (final PgnTest pgnTest : PgnTest.values()) {
       final PgnTestCaseList testCaseList = PgnTestCaseCatalog.getTestList(pgnTest);

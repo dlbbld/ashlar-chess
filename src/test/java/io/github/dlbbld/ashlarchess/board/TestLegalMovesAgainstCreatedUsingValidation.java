@@ -43,7 +43,7 @@ class TestLegalMovesAgainstCreatedUsingValidation {
   void test() {
     // the move generation from validation for testing is about ten times slower than the used on
     // so we only perform a spot checks on the PGN^s
-    for (final PgnTestCaseList testCaseList : PgnTestCaseCatalog.getRestrictedTestListList()) {
+    for (final PgnTestCaseList testCaseList : PgnTestCaseCatalog.getRestrictedTestCaseLists()) {
       if (RestrictTestConstants.IS_RESTRICT_PGN_LEGAL_MOVE_VALIDATION_AGAINST_BOTTOM_UP_TEST) {
         switch (testCaseList.pgnTest()) {
           case BASIC_CHECK_WHITE:

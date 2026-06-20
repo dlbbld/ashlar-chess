@@ -139,12 +139,12 @@ public final class StaticPositionUtility {
   public static StaticPosition createPositionAfterMove(StaticPosition staticPosition, Side sideToMove,
       MoveSpecification moveSpecification) {
 
-    final List<UpdateSquare> updateSquareList = calculateUpdateSquareList(staticPosition, sideToMove,
+    final List<UpdateSquare> updateSquareList = calculateUpdateSquares(staticPosition, sideToMove,
         moveSpecification);
     return StaticPositionUtility.createChangedPosition(staticPosition, updateSquareList);
   }
 
-  private static List<UpdateSquare> calculateUpdateSquareList(StaticPosition staticPosition, Side sideToMove,
+  private static List<UpdateSquare> calculateUpdateSquares(StaticPosition staticPosition, Side sideToMove,
       MoveSpecification moveSpecification) {
 
     if (calculateIsPotentialEnPassantCaptureStaticPosition(staticPosition, moveSpecification)) {

@@ -28,7 +28,7 @@ class TestFenRoundtripPgn {
   @Test
   void testPgnSample() {
 
-    for (final PgnTestCaseList testCaseList : PgnTestCaseCatalog.getRestrictedTestListList()) {
+    for (final PgnTestCaseList testCaseList : PgnTestCaseCatalog.getRestrictedTestCaseLists()) {
       if (RestrictTestConstants.IS_RESTRICT_PGN_FEN_PARSER_ALL_TEST) {
         switch (testCaseList.pgnTest()) {
           case BASIC_CHECK_WHITE:

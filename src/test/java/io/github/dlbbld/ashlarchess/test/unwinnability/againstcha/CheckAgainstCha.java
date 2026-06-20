@@ -25,7 +25,7 @@ public final class CheckAgainstCha {
   private CheckAgainstCha() {
   }
 
-  public static List<UnwinnabilityRawRead> readChaRawResultList(Path fenAnalysisFilePath) throws Exception {
+  public static List<UnwinnabilityRawRead> readChaRawResults(Path fenAnalysisFilePath) throws Exception {
     final List<UnwinnabilityRawRead> resultList = new ArrayList<>();
 
     final List<String> fileLineList = FileUtility.readFileLines(fenAnalysisFilePath);
@@ -71,7 +71,7 @@ public final class CheckAgainstCha {
   }
 
   // list of the FEN of the past position for all PGN test case
-  static void createFenList() {
+  static void createFens() {
 
     for (final PgnTest pgnTest : PgnTest.values()) {
       final PgnTestCaseList testCaseList = PgnTestCaseCatalog.getTestList(pgnTest);

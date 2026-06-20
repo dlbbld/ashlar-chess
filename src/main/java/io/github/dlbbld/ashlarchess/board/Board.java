@@ -1000,7 +1000,7 @@ public final class Board {
     return boardStateList.size() - 1;
   }
 
-  ImmutableList<DynamicPosition> getDynamicPositionList() {
+  ImmutableList<DynamicPosition> getDynamicPositions() {
     final List<DynamicPosition> result = new ArrayList<>();
     for (final BoardState state : boardStateList) {
       result.add(state.dynamicPosition());

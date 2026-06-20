@@ -40,7 +40,7 @@ public final class TestBasicSupport {
   static void checkTestFolder(List<String> junitHardcodedPgnNameList, PgnTest pgnTest) {
 
     final PgnTestCaseList testCaseList = PgnTestCaseCatalog.getTestList(pgnTest);
-    final List<String> expectedValueHardcodedFileList = calculatePgnNameList(testCaseList.list());
+    final List<String> expectedValueHardcodedFileList = calculatePgnNames(testCaseList.list());
 
     // 1a)
     for (final String pgnName : junitHardcodedPgnNameList) {
@@ -66,7 +66,7 @@ public final class TestBasicSupport {
     }
 
     // 2b)
-    final List<String> testFolderPgnNameList = FileUtility.readFileNameList(pgnTest.getFolderPath());
+    final List<String> testFolderPgnNameList = FileUtility.readFileNames(pgnTest.getFolderPath());
     for (final String pgnName : testFolderPgnNameList) {
       if (!junitHardcodedPgnNameList.contains(pgnName)) {
         throw new SetupException(
@@ -76,7 +76,7 @@ public final class TestBasicSupport {
 
   }
 
-  private static List<String> calculatePgnNameList(List<PgnFen> testCaseList) {
+  private static List<String> calculatePgnNames(List<PgnFen> testCaseList) {
     final List<String> result = new ArrayList<>();
     for (final PgnFen testCase : testCaseList) {
       result.add(testCase.pgnName());

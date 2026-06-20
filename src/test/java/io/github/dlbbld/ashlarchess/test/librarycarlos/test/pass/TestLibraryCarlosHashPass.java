@@ -32,10 +32,10 @@ class TestLibraryCarlosHashPass {
   @SuppressWarnings("static-method")
   @Test
   void test() throws Exception {
-    processFileList(PgnTest.RANDOM_NO_REPETITION);
+    processFiles(PgnTest.RANDOM_NO_REPETITION);
   }
 
-  private static void processFileList(PgnTest pgnTest) throws Exception {
+  private static void processFiles(PgnTest pgnTest) throws Exception {
     final File folder = pgnTest.getFolderPath().toFile();
     if (!folder.isDirectory()) {
       throw new SetupException("\"" + pgnTest.getFolderPath() + "\" is not a directory");

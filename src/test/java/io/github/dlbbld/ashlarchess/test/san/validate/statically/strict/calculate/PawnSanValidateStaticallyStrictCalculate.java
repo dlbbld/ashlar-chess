@@ -29,7 +29,7 @@ public class PawnSanValidateStaticallyStrictCalculate {
   static ImmutableMap<String, SanParse> calculateSanMap(Side side) {
     final Map<String, SanParse> sanValidateMap = new TreeMap<>();
 
-    final List<String> enumNameList = calculateEnumNameList(side);
+    final List<String> enumNameList = calculateEnumNames(side);
     for (final String enumName : enumNameList) {
       final String parse = enumName.toLowerCase();
       File fromFile;
@@ -59,7 +59,7 @@ public class PawnSanValidateStaticallyStrictCalculate {
     return Nulls.copyOfMap(sanValidateMap);
   }
 
-  private static List<String> calculateEnumNameList(Side side) {
+  private static List<String> calculateEnumNames(Side side) {
     return switch (side) {
       case WHITE -> new ArrayList<>(PawnWhiteSanValidateStaticallyStrict.VALUES);
       case BLACK -> new ArrayList<>(PawnBlackSanValidateStaticallyStrict.VALUES);

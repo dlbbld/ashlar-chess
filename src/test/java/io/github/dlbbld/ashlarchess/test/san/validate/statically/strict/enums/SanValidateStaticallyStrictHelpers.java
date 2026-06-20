@@ -54,7 +54,7 @@ final class SanValidateStaticallyStrictHelpers {
 
   // ---- from-square list extraction --------------------------------------------------------------
 
-  static List<Square> calculateFromSquareList(Set<EmptyBoardMove> emptyBoardMoveSet) {
+  static List<Square> calculateFromSquares(Set<EmptyBoardMove> emptyBoardMoveSet) {
     final List<Square> fromSquareList = new ArrayList<>();
     for (final EmptyBoardMove move : emptyBoardMoveSet) {
       fromSquareList.add(move.fromSquare());

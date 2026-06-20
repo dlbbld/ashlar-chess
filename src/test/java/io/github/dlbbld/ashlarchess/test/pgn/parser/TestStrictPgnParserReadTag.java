@@ -21,7 +21,7 @@ import io.github.dlbbld.ashlarchess.test.pgntest.constants.PgnTestConstants;
 
 class TestStrictPgnParserReadTag {
 
-  private static List<String> calculateSanList(List<PgnMove> moveList) {
+  private static List<String> calculateSans(List<PgnMove> moveList) {
     final List<String> sanList = new ArrayList<>();
     for (final PgnMove move : moveList) {
       sanList.add(move.san());
@@ -66,7 +66,7 @@ class TestStrictPgnParserReadTag {
       moveList.add("Nf3");
       moveList.add("Nf6");
       moveList.add("c4");
-      assertEquals(moveList, calculateSanList(pgnGame.moves()));
+      assertEquals(moveList, calculateSans(pgnGame.moves()));
 
       assertEquals(FenConstants.FEN_INITIAL, pgnGame.startFen());
     }
@@ -79,7 +79,7 @@ class TestStrictPgnParserReadTag {
       moveList.add("Nf6");
       moveList.add("c4");
       moveList.add("c5");
-      assertEquals(moveList, calculateSanList(pgnGame.moves()));
+      assertEquals(moveList, calculateSans(pgnGame.moves()));
 
       assertEquals(FenConstants.FEN_INITIAL, pgnGame.startFen());
     }

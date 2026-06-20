@@ -216,7 +216,7 @@ public class LibraryCarlosBoard {
     }
 
     final MoveList moveList = new MoveList();
-    moveList.addAll(calculateMoveList(this.board));
+    moveList.addAll(calculateMoves(this.board));
     try {
       final String[] sanArray = moveList.toSanArray();
       @SuppressWarnings("null") final String last = Nulls.getLast(sanArray);
@@ -226,7 +226,7 @@ public class LibraryCarlosBoard {
     }
   }
 
-  private static List<Move> calculateMoveList(Board board) {
+  private static List<Move> calculateMoves(Board board) {
     final List<Move> result = new ArrayList<>();
     for (final MoveBackup moveBackup : NullsCarlos.getBackup(board)) {
       result.add(NullsCarlos.getMove(moveBackup));
@@ -371,7 +371,7 @@ public class LibraryCarlosBoard {
     return performedMoveCount;
   }
 
-  public ImmutableList<DynamicPosition> getDynamicPositionList() {
+  public ImmutableList<DynamicPosition> getDynamicPositions() {
     return Nulls.copyOfList(dynamicPositionList);
   }
 
@@ -385,7 +385,7 @@ public class LibraryCarlosBoard {
 
   // the API does not return null
   @SuppressWarnings("null")
-  private static List<Move> generateLegalMoveList(Board board) {
+  private static List<Move> generateLegalMoves(Board board) {
     try {
       return MoveGenerator.generateLegalMoves(board);
     } catch (final MoveGeneratorException e) {
@@ -394,7 +394,7 @@ public class LibraryCarlosBoard {
   }
 
   @SuppressWarnings("null")
-  private static List<MoveBackup> generateLegalMoveBackupList(Board board) {
+  private static List<MoveBackup> generateLegalMoveBackups(Board board) {
     List<Move> legalMoveList;
     try {
       legalMoveList = MoveGenerator.generateLegalMoves(board);
@@ -413,7 +413,7 @@ public class LibraryCarlosBoard {
   }
 
   private static Set<MoveSpecification> generateMoveSpecificationSortedSet(Board board) {
-    final List<Move> moveList = generateLegalMoveList(board);
+    final List<Move> moveList = generateLegalMoves(board);
 
     final Set<MoveSpecification> result = new TreeSet<>();
     for (final Move move : moveList) {
@@ -430,7 +430,7 @@ public class LibraryCarlosBoard {
   }
 
   private static Set<LegalMove> generateLegalMoveSortedSet(Board board) {
-    final List<MoveBackup> moveBackupList = generateLegalMoveBackupList(board);
+    final List<MoveBackup> moveBackupList = generateLegalMoveBackups(board);
 
     final Set<LegalMove> result = new TreeSet<>();
     for (final MoveBackup moveBackup : moveBackupList) {

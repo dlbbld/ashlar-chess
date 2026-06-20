@@ -30,7 +30,7 @@ class TestPgnExportLineLength {
   @SuppressWarnings("static-method")
   @Test
   void test() {
-    final List<String> pgnNameList = calculatePgnNameList();
+    final List<String> pgnNameList = calculatePgnNames();
     assertFalse(pgnNameList.isEmpty(), "The PGN export line-length test folder must contain PGN files");
 
     for (final String pgnName : pgnNameList) {
@@ -38,10 +38,10 @@ class TestPgnExportLineLength {
     }
   }
 
-  private static List<String> calculatePgnNameList() {
+  private static List<String> calculatePgnNames() {
     final List<String> result = new ArrayList<>();
 
-    for (final String fileName : FileUtility.readFileNameList(TEST_FOLDER_PATH)) {
+    for (final String fileName : FileUtility.readFileNames(TEST_FOLDER_PATH)) {
       if (fileName.endsWith(".pgn")) {
         result.add(fileName);
       }

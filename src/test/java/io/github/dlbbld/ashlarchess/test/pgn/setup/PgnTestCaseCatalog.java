@@ -213,7 +213,7 @@ public class PgnTestCaseCatalog {
     throw new IllegalArgumentException("The file " + testPgnName + " does not exist");
   }
 
-  public static List<PgnTestCaseList> getRestrictedTestListList() {
+  public static List<PgnTestCaseList> getRestrictedTestCaseLists() {
     return restricedTestCaseListList;
   }
 

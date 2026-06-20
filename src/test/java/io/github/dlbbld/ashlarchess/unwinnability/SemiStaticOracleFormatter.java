@@ -101,7 +101,7 @@ public final class SemiStaticOracleFormatter {
     for (final Square square : squareSet) {
       valueList.add(square.getName());
     }
-    return formatValueList(valueList);
+    return formatValues(valueList);
   }
 
   private static String formatPieces(Set<PiecePlacement> piecePlacementSet) {
@@ -113,7 +113,7 @@ public final class SemiStaticOracleFormatter {
         }
       }
     }
-    return formatValueList(valueList);
+    return formatValues(valueList);
   }
 
   private static String formatPiece(PiecePlacement piecePlacement) {
@@ -121,7 +121,7 @@ public final class SemiStaticOracleFormatter {
         + piecePlacement.squareOriginal().getName();
   }
 
-  private static String formatValueList(List<String> valueList) {
+  private static String formatValues(List<String> valueList) {
     if (valueList.isEmpty()) {
       return "-";
     }

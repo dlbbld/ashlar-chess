@@ -220,7 +220,7 @@ public final class FileUtility {
     }
   }
 
-  public static List<String> readFileNameList(Path folderPath) {
+  public static List<String> readFileNames(Path folderPath) {
     final List<String> result = new ArrayList<>();
     final File folder = folderPath.toFile();
     if (!folder.isDirectory()) {

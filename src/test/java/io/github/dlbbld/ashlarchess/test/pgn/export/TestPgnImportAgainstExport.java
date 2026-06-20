@@ -31,7 +31,7 @@ class TestPgnImportAgainstExport {
     // false -> full ALL_EXCEPT_LONGEST_POSSIBLE corpus for a pre-release / regression sweep.
     final List<PgnTestCaseList> source = RestrictTestConstants.IS_RESTRICT_PGN_WRITER_TEST
         ? PgnTestCaseCatalog.getExportRoundtripSmokeList()
-        : PgnTestCaseCatalog.getRestrictedTestListList();
+        : PgnTestCaseCatalog.getRestrictedTestCaseLists();
     for (final PgnTestCaseList testCaseList : source) {
       for (final PgnFen testCase : testCaseList.list()) {
         final String pgnName = testCase.pgnName();

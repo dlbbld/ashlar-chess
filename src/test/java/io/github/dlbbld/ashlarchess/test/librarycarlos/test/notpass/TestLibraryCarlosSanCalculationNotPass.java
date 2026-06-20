@@ -45,13 +45,13 @@ class TestLibraryCarlosSanCalculationNotPass {
 
   private static String calculateSan(Board board) {
     final MoveList moveList = new MoveList();
-    moveList.addAll(calculateMoveList(board));
+    moveList.addAll(calculateMoves(board));
     final String[] sanArray = moveList.toSanArray();
     @SuppressWarnings("null") final String last = Nulls.getLast(sanArray);
     return last;
   }
 
-  private static List<Move> calculateMoveList(Board board) {
+  private static List<Move> calculateMoves(Board board) {
     final List<Move> result = new ArrayList<>();
     for (final MoveBackup moveBackup : NullsCarlos.getBackup(board)) {
       result.add(NullsCarlos.getMove(moveBackup));

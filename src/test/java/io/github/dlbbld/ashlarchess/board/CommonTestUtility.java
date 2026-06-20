@@ -90,7 +90,7 @@ public final class CommonTestUtility {
     }
 
     if (isIncludeHistory) {
-      assertEquals(boardFirst.getDynamicPositionList(), boardSecond.getDynamicPositionList());
+      assertEquals(boardFirst.getDynamicPositions(), boardSecond.getDynamicPositions());
       assertEquals(boardFirst.getDynamicPosition(), boardSecond.getDynamicPosition());
 
       assertEquals(boardFirst.getLegalMoveSpecifications(), boardSecond.getLegalMoveSpecifications());
@@ -172,7 +172,7 @@ public final class CommonTestUtility {
 
     if (isIncludeHistory) {
       assertEquals(boardFirst.getPerformedMoveCount(), boardSecond.getPerformedMoveCount());
-      assertEquals(boardFirst.getDynamicPositionList(), boardSecond.getDynamicPositionList());
+      assertEquals(boardFirst.getDynamicPositions(), boardSecond.getDynamicPositions());
       assertEquals(boardFirst.getDynamicPosition(), boardSecond.getDynamicPosition());
       assertEquals(boardFirst.getLegalMoveSpecifications(), boardSecond.getLegalMoveSpecifications());
       assertEquals(boardFirst.getLegalMoves(), boardSecond.getLegalMoves());

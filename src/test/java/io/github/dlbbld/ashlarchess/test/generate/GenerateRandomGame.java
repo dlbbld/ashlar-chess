@@ -141,7 +141,7 @@ public class GenerateRandomGame {
         if (isTerminationMoveFound) {
           System.out.println("A game with " + board.getPerformedMoveCount() / 2.0 + " moves ending in " + findRandomGame
               + " was generated");
-          final String moveList = calculateMoveList(board);
+          final String moveList = calculateMoveText(board);
           System.out.println(moveList);
           break;
         }
@@ -185,7 +185,7 @@ public class GenerateRandomGame {
     }
 
     System.out.println("A game with " + board.getPerformedMoveCount() / 2.0 + " moves was generated");
-    final String moveList = calculateMoveList(board);
+    final String moveList = calculateMoveText(board);
     System.out.println(moveList);
   }
 
@@ -217,7 +217,7 @@ public class GenerateRandomGame {
         if (board.isSeventyFiveMove()) {
           System.out.println("A game with " + board.getPerformedMoveCount() / 2.0
               + " moves ending with seventy-five-move rule was generated");
-          final String moveList = calculateMoveList(board);
+          final String moveList = calculateMoveText(board);
           System.out.println(moveList);
           return;
         }
@@ -287,7 +287,7 @@ public class GenerateRandomGame {
         if (board.getRepetitionCount() == repetitionNumber) {
           System.out.println("A game with " + board.getPerformedMoveCount() / 2.0 + " moves ending with "
               + repetitionNumber + " repetitions was generated");
-          final String moveList = calculateMoveList(board);
+          final String moveList = calculateMoveText(board);
           System.out.println(moveList);
           return true;
         }
@@ -323,7 +323,7 @@ public class GenerateRandomGame {
     return false;
   }
 
-  private static String calculateMoveList(Board board) {
+  private static String calculateMoveText(Board board) {
     final StringBuilder moveList = new StringBuilder();
     final List<MoveSpecification> moves = board.getPerformedMoveSpecifications();
     final Board replay = new Board(board.getInitialFen());

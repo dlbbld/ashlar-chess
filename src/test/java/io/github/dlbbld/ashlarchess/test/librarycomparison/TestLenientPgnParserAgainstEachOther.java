@@ -34,7 +34,7 @@ class TestLenientPgnParserAgainstEachOther {
   @SuppressWarnings("static-method")
   @Test
   void test() {
-    for (final PgnTestCaseList testCaseList : PgnTestCaseCatalog.getRestrictedTestListList()) {
+    for (final PgnTestCaseList testCaseList : PgnTestCaseCatalog.getRestrictedTestCaseLists()) {
       for (final PgnFen testCase : testCaseList.list()) {
         if (RestrictTestConstants.IS_RESTRICT_PGN_LENIENT_PARSER_API_AGAINST_EACH_OTHER_TEST) {
           switch (testCaseList.pgnTest()) {

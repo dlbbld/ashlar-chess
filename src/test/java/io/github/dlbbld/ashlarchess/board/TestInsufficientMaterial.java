@@ -25,7 +25,7 @@ class TestInsufficientMaterial {
   @SuppressWarnings("static-method")
   @Test
   void testPgnSample() {
-    for (final PgnTestCaseList testCaseList : PgnTestCaseCatalog.getRestrictedTestListList()) {
+    for (final PgnTestCaseList testCaseList : PgnTestCaseCatalog.getRestrictedTestCaseLists()) {
       if (RestrictTestConstants.IS_RESTRICT_PGN_INSUFFICIENT_MATERIAL_TEST) {
         switch (testCaseList.pgnTest()) {
           case BASIC_INSUFFICIENT_MATERIAL_BOTH:
