@@ -34,12 +34,12 @@ class TestLibraryCarlosPerformancePass {
 
   private static final double PER_HALF_MOVE_MAX_MILLISECONDS = 0.5;
 
-  private static List<PgnTest> PGN_TEST_LIST = Nulls.asList(PgnTest.MAX_MOVES);
+  private static final List<PgnTest> PGN_TESTS = Nulls.asList(PgnTest.MAX_MOVES);
 
   @SuppressWarnings("static-method")
   @Test
   void testPerformance() throws Exception {
-    for (final PgnTest pgnTest : PGN_TEST_LIST) {
+    for (final PgnTest pgnTest : PGN_TESTS) {
       final PgnTestCaseList testCaseList = PgnTestCaseCatalog.getTestList(pgnTest);
       for (final PgnFen testCase : testCaseList.list()) {
         final String pgnName = testCase.pgnName();
