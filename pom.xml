@@ -6,7 +6,7 @@
 
 	<groupId>io.github.dlbbld</groupId>
 	<artifactId>ashlar-chess</artifactId>
-	<version>19.0.0</version>
+	<version>19.1.0</version>
 
 	<name>ashlar-chess</name>
 	<description>A Java chess rules library with strict/lenient SAN, FEN, and
@@ -129,6 +129,15 @@
 						-->
 						<addMavenDescriptor>false</addMavenDescriptor>
 						<manifestEntries>
+							<!--
+								Intentional JPMS module name. Without this, the JVM derives
+								`ashlar.chess` from the jar file name for module-path consumers - an
+								accidental name. Declaring it locks the chosen
+								io.github.dlbbld.ashlarchess (mirrors the base package) ahead of the
+								explicit module-info.java planned for 20.0.0, so the eventual named
+								module keeps a name consumers can already rely on.
+							-->
+							<Automatic-Module-Name>io.github.dlbbld.ashlarchess</Automatic-Module-Name>
 							<Implementation-Title>${project.artifactId}</Implementation-Title>
 							<Implementation-Version>${project.version}</Implementation-Version>
 							<Implementation-Vendor>Daniel Bächli</Implementation-Vendor>
@@ -317,7 +326,7 @@
 					<plugin>
 						<groupId>org.sonatype.central</groupId>
 						<artifactId>central-publishing-maven-plugin</artifactId>
-						<version>0.7.0</version>
+						<version>0.11.0</version>
 						<extensions>true</extensions>
 						<configuration>
 							<publishingServerId>central</publishingServerId>
