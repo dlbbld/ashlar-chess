@@ -135,7 +135,7 @@ public class ReportScalingSurvey {
     try {
       sink += get(future).intValue();
       return System.nanoTime() - start;
-    } catch (final TimeoutException e) {
+    } catch (@SuppressWarnings("unused") final TimeoutException e) {
       future.cancel(true);
       return -1L;
     } catch (final Exception e) {

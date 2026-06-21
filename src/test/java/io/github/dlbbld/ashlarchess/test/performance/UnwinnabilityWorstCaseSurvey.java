@@ -14,8 +14,6 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-import org.eclipse.jdt.annotation.NonNull;
-
 import io.github.dlbbld.ashlarchess.board.Board;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
 import io.github.dlbbld.ashlarchess.common.Nulls;
@@ -31,8 +29,9 @@ import io.github.dlbbld.ashlarchess.test.pgntest.enums.PgnTest;
  * does not return within the timeout is a release blocker (non-terminating / pathological) and ends the run with the
  * offending FEN. Otherwise it reports the slowest calls so the worst-case tail is characterised, not just assumed.
  *
- * <p>The bounded {@code unwinnableQuick} / {@code deadPositionQuick} are not the concern here; this targets the
- * unbounded full CHA search. Manually run diagnostic (a {@code main}), like the other surveys in this package.
+ * <p>
+ * The bounded {@code unwinnableQuick} / {@code deadPositionQuick} are not the concern here; this targets the unbounded
+ * full CHA search. Manually run diagnostic (a {@code main}), like the other surveys in this package.
  */
 public class UnwinnabilityWorstCaseSurvey {
 
@@ -62,8 +61,8 @@ public class UnwinnabilityWorstCaseSurvey {
 
   public static void main(String[] args) {
     final List<Board> positions = collectPositions();
-    log("sweeping " + positions.size() + " endgame positions x 3 full analyzers, per-call timeout "
-        + TIMEOUT_MS / 1000 + "s");
+    log("sweeping " + positions.size() + " endgame positions x 3 full analyzers, per-call timeout " + TIMEOUT_MS / 1000
+        + "s");
 
     final List<Timing> timings = new ArrayList<>();
     for (final Board board : positions) {

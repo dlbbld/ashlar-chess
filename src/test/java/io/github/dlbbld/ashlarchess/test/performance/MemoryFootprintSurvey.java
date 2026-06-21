@@ -25,10 +25,11 @@ import io.github.dlbbld.ashlarchess.test.pgntest.enums.PgnTest;
  * record per ply (move + SAN/LAN + dynamic position + clock + castling-loss) but deliberately does NOT retain a
  * legal-move list per historical position; this measures the resulting bytes/ply.
  *
- * <p>Method: GC, read used heap, build {@code COPIES} fully-replayed boards held by strong references, GC, read used
- * heap; the delta divided by COPIES and by plies is bytes/ply. This is a coarse, GC-noisy measurement (run with a
- * fixed JVM and ignore small differences); bytes/ply staying flat across game lengths is the signal that matters.
- * Manually run diagnostic (a {@code main}), like the other surveys in this package.
+ * <p>
+ * Method: GC, read used heap, build {@code COPIES} fully-replayed boards held by strong references, GC, read used heap;
+ * the delta divided by COPIES and by plies is bytes/ply. This is a coarse, GC-noisy measurement (run with a fixed JVM
+ * and ignore small differences); bytes/ply staying flat across game lengths is the signal that matters. Manually run
+ * diagnostic (a {@code main}), like the other surveys in this package.
  */
 public class MemoryFootprintSurvey {
 
@@ -63,7 +64,8 @@ public class MemoryFootprintSurvey {
           bytesPerPly);
     }
     System.out.println();
-    System.out.println("read: bytes/ply ~constant across lengths => linear, no per-ply bloat. (coarse GC-based measure)");
+    System.out
+        .println("read: bytes/ply ~constant across lengths => linear, no per-ply bloat. (coarse GC-based measure)");
   }
 
   private static Board replay(Game game) {
@@ -84,7 +86,7 @@ public class MemoryFootprintSurvey {
       System.gc();
       try {
         Thread.sleep(60);
-      } catch (final InterruptedException e) {
+      } catch (@SuppressWarnings("unused") final InterruptedException e) {
         Thread.currentThread().interrupt();
         return;
       }

@@ -14,6 +14,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 import io.github.dlbbld.ashlarchess.board.Board;
+import io.github.dlbbld.ashlarchess.common.Nulls;
 import io.github.dlbbld.ashlarchess.common.exceptions.UsageException;
 import io.github.dlbbld.ashlarchess.fen.LenientFenParser;
 import io.github.dlbbld.ashlarchess.fen.StrictFenParser;
@@ -31,19 +32,22 @@ import io.github.dlbbld.ashlarchess.test.pgntest.enums.PgnTest;
 /**
  * Parser robustness + stress harness for FEN / SAN / PGN.
  *
- * <p>Part A - heavy-comment PGN stress: takes the longest real game in the corpus and wraps it in a deliberately heavy
- * PGN (a game-start comment, a long brace comment on <em>every</em> move, and an end-of-line {@code ;} comment on every
+ * <p>
+ * Part A - heavy-comment PGN stress: takes the longest real game in the corpus and wraps it in a deliberately heavy PGN
+ * (a game-start comment, a long brace comment on <em>every</em> move, and an end-of-line {@code ;} comment on every
  * move), at two comment sizes, then parses it strict and lenient under a hard timeout. This exercises the comment path
  * the random fuzzer never reaches, and reveals any superlinear comment handling (parse time should grow ~linearly with
  * comment bytes) or non-termination.
  *
- * <p>Part B - fuzzing: feeds random garbage and mutated-valid inputs to every parser entry point and asserts the
- * contract that malformed input surfaces as a {@link UsageException} (caller fault). Anything else escaping -
+ * <p>
+ * Part B - fuzzing: feeds random garbage and mutated-valid inputs to every parser entry point and asserts the contract
+ * that malformed input surfaces as a {@link UsageException} (caller fault). Anything else escaping -
  * {@code NullPointerException}, {@code ArrayIndexOutOfBoundsException}, {@code StackOverflowError},
  * {@code ProgrammingMistakeException}, ... - is a finding (a library bug), captured with the offending input. Fixed
  * seed, so runs are reproducible.
  *
- * <p>Manually run diagnostic (a {@code main}), like the other surveys in this package.
+ * <p>
+ * Manually run diagnostic (a {@code main}), like the other surveys in this package.
  */
 public class ParserStressSurvey {
 
@@ -53,8 +57,7 @@ public class ParserStressSurvey {
   private static final long HEAVY_PARSE_TIMEOUT_MS = 120_000L;
 
   private static final String[] FEN_SEEDS = { FenConstants.FEN_INITIAL.fen(),
-      "rnbqkbnr/pp1ppppp/8/2p5/4P3/8/PPPP1PPP/RNBQKBNR w KQkq c6 0 2",
-      "8/8/8/4k3/8/8/4K3/4R3 w - - 0 1" };
+      "rnbqkbnr/pp1ppppp/8/2p5/4P3/8/PPPP1PPP/RNBQKBNR w KQkq c6 0 2", "8/8/8/4k3/8/8/4K3/4R3 w - - 0 1" };
   private static final String[] SAN_SEEDS = { "e4", "Nf3", "O-O", "O-O-O", "exd5", "e8=Q+", "Nbd2", "Qxh7#", "dxe6",
       "Rfe1", "a8=N" };
   private static final String[] PGN_SEEDS = {
@@ -139,11 +142,11 @@ public class ParserStressSurvey {
       final int moves = game.moves().size();
       final String verdict = moves == expectedMoves ? "(round-trip OK)" : "(MISMATCH, expected " + expectedMoves + ")";
       System.out.printf("  %s parse: %,.1f ms   moves=%,d %s%n", label, ms, moves, verdict);
-    } catch (final TimeoutException e) {
+    } catch (@SuppressWarnings("unused") final TimeoutException e) {
       future.cancel(true);
       System.out.printf("  %s parse: !!! DID NOT RETURN within %ds -- pathological / non-terminating%n", label,
           HEAVY_PARSE_TIMEOUT_MS / 1000);
-    } catch (final InterruptedException e) {
+    } catch (@SuppressWarnings("unused") final InterruptedException e) {
       Thread.currentThread().interrupt();
     } catch (final Exception e) {
       final Throwable cause = e.getCause() == null ? e : e.getCause();
@@ -166,7 +169,7 @@ public class ParserStressSurvey {
       sb.append(" { ").append(filler("ply" + i + " ", commentLength)).append(" }").append('\n');
     }
     sb.append("*\n\n");
-    return sb.toString();
+    return Nulls.toString(sb);
   }
 
   private static String filler(String prefix, int length) {
@@ -175,7 +178,7 @@ public class ParserStressSurvey {
     while (sb.length() < length) {
       sb.append(FILLER_CHARS[sb.length() % FILLER_CHARS.length]);
     }
-    return sb.substring(0, length);
+    return Nulls.substring(sb, 0, length);
   }
 
   private static List<String> longestInitialStartGameSans() {
@@ -207,12 +210,12 @@ public class ParserStressSurvey {
     final Random rnd = new Random(FUZZ_SEED);
     final List<String> findings = new ArrayList<>();
 
-    fuzzTarget("FEN", "strict ", rnd, findings, FEN_SEEDS, s -> StrictFenParser.parse(s));
-    fuzzTarget("FEN", "lenient", rnd, findings, FEN_SEEDS, s -> LenientFenParser.parse(s));
+    fuzzTarget("FEN", "strict ", rnd, findings, FEN_SEEDS, StrictFenParser::parse);
+    fuzzTarget("FEN", "lenient", rnd, findings, FEN_SEEDS, LenientFenParser::parse);
     fuzzTarget("SAN", "strict ", rnd, findings, SAN_SEEDS, s -> new Board().moveStrict(s));
     fuzzTarget("SAN", "lenient", rnd, findings, SAN_SEEDS, s -> new Board().moveLenient(s));
-    fuzzTarget("PGN", "strict ", rnd, findings, PGN_SEEDS, s -> StrictPgnParser.parseText(s));
-    fuzzTarget("PGN", "lenient", rnd, findings, PGN_SEEDS, s -> LenientPgnParser.parseText(s));
+    fuzzTarget("PGN", "strict ", rnd, findings, PGN_SEEDS, StrictPgnParser::parseText);
+    fuzzTarget("PGN", "lenient", rnd, findings, PGN_SEEDS, LenientPgnParser::parseText);
 
     System.out.printf("%nfuzz complete (%,d iterations/target, seed %d). findings=%d%n", FUZZ_ITERATIONS, FUZZ_SEED,
         findings.size());
@@ -235,7 +238,7 @@ public class ParserStressSurvey {
       try {
         action.parse(input);
         accepted++;
-      } catch (final UsageException expected) {
+      } catch (@SuppressWarnings("unused") final UsageException expected) {
         rejected++;
       } catch (final Throwable bug) {
         found++;
@@ -253,7 +256,7 @@ public class ParserStressSurvey {
     for (int i = 0; i < length; i++) {
       sb.append(GARBAGE_CHARS.charAt(rnd.nextInt(GARBAGE_CHARS.length())));
     }
-    return sb.toString();
+    return Nulls.toString(sb);
   }
 
   private static String mutate(String seed, Random rnd) {
@@ -272,7 +275,7 @@ public class ParserStressSurvey {
         default -> sb.setCharAt(pos, GARBAGE_CHARS.charAt(rnd.nextInt(GARBAGE_CHARS.length())));
       }
     }
-    return sb.toString();
+    return Nulls.toString(sb);
   }
 
   private static String originFrame(Throwable t) {

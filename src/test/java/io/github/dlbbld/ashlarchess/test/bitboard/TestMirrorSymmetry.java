@@ -15,6 +15,7 @@ import io.github.dlbbld.ashlarchess.board.Board;
 import io.github.dlbbld.ashlarchess.board.enums.CastlingMove;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
 import io.github.dlbbld.ashlarchess.board.enums.Square;
+import io.github.dlbbld.ashlarchess.common.Nulls;
 import io.github.dlbbld.ashlarchess.common.model.MoveSpecification;
 import io.github.dlbbld.ashlarchess.model.PgnMove;
 import io.github.dlbbld.ashlarchess.pgn.PgnGame;
@@ -34,6 +35,7 @@ import io.github.dlbbld.ashlarchess.test.pgn.setup.PgnTestCaseCatalog;
  * <li>(sampled) the unwinnableQuick verdict matches with colours swapped</li>
  * </ul>
  *
+ * <p>
  * Any failure is a colour-handedness bug - the kind a colour-symmetric corpus can never surface (it would be wrong the
  * same way for both sides). The mirror is built purely from the FEN (reverse ranks, swap piece case, swap side, swap
  * castling, flip the en-passant rank), and the test asserts it is a true involution (mirror twice == identity) so the
@@ -168,7 +170,9 @@ class TestMirrorSymmetry {
         () -> "legal-move count not symmetric after ply " + ply + " in " + pgnName);
   }
 
-  /** Collects FENs from the smoke corpora. When {@code finalPositionsOnly}, takes each game's final (endgame) position. */
+  /**
+   * Collects FENs from the smoke corpora. When {@code finalPositionsOnly}, takes each game's final (endgame) position.
+   */
   private static List<String> collectFens(int max, boolean finalPositionsOnly) {
     final List<String> fens = new ArrayList<>();
     for (final PgnTestCaseList testCaseList : PgnTestCaseCatalog.getParserIntegrationSmokeTests()) {
@@ -234,7 +238,7 @@ class TestMirrorSymmetry {
       }
       result.append(swapCase(ranks[i]));
     }
-    return result.toString();
+    return Nulls.toString(result);
   }
 
   private static String mirrorCastling(String castling) {
@@ -248,7 +252,7 @@ class TestMirrorSymmetry {
         result.append(canonical);
       }
     }
-    return result.length() == 0 ? "-" : result.toString();
+    return result.length() == 0 ? "-" : Nulls.toString(result);
   }
 
   private static String mirrorEnPassant(String enPassant) {
@@ -272,6 +276,6 @@ class TestMirrorSymmetry {
         result.append(c);
       }
     }
-    return result.toString();
+    return Nulls.toString(result);
   }
 }

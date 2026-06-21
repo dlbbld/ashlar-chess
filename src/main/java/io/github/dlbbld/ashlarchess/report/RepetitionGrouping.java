@@ -16,8 +16,7 @@ final class RepetitionGrouping {
   private RepetitionGrouping() {
   }
 
-  static List<List<MoveRecord>> calculateRepetitionGroups(List<MoveRecord> moveRecords,
-      int countRepetitionThreshold) {
+  static List<List<MoveRecord>> calculateRepetitionGroups(List<MoveRecord> moveRecords, int countRepetitionThreshold) {
 
     // Group every move record by its dynamic position in a single pass (O(n)); a position's k-th occurrence carries
     // repetition count k (identical positions only recur within one no-progress window), so a group reaches the
@@ -25,12 +24,14 @@ final class RepetitionGrouping {
     // move list per record was O(n^2) and dominated the report on repetition-heavy games.
     final Map<DynamicPosition, List<MoveRecord>> occurrencesByPosition = new LinkedHashMap<>();
     for (final MoveRecord moveRecord : moveRecords) {
-      List<MoveRecord> occurrences = occurrencesByPosition.get(moveRecord.dynamicPosition());
-      if (occurrences == null) {
-        occurrences = new ArrayList<>();
+      if (!occurrencesByPosition.containsKey(moveRecord.dynamicPosition())) {
+        final List<MoveRecord> occurrences = new ArrayList<>();
+        occurrences.add(moveRecord);
         occurrencesByPosition.put(moveRecord.dynamicPosition(), occurrences);
+      } else {
+        final List<MoveRecord> occurrences = Nulls.get(occurrencesByPosition, moveRecord.dynamicPosition());
+        occurrences.add(moveRecord);
       }
-      occurrences.add(moveRecord);
     }
 
     final List<List<MoveRecord>> list = new ArrayList<>();
