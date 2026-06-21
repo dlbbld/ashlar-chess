@@ -517,6 +517,12 @@ public final class Board {
     return currentLegalMoves;
   }
 
+  /**
+   * The moves played so far, in order, as {@link MoveSpecification}s. Builds and returns a fresh immutable list on each
+   * call - the history is held as one {@code BoardState} record list, not a standing per-accessor list - so fetch it
+   * once and reuse the result rather than calling it repeatedly; for the count use {@link #getPerformedMoveCount()}
+   * (O(1)).
+   */
   public ImmutableList<MoveSpecification> getPerformedMoveSpecifications() {
     final List<MoveSpecification> moveSpecifications = new ArrayList<>();
     for (int i = 1; i < boardStates.size(); i++) {
@@ -919,6 +925,11 @@ public final class Board {
     return getRepetitionCount() >= ChessConstants.FIVEFOLD_REPETITION_RULE_THRESHOLD;
   }
 
+  /**
+   * The moves played so far, in order, as canonical SAN strings. Builds and returns a fresh immutable list on each call
+   * - the history is held as one {@code BoardState} record list, not a standing per-accessor list - so fetch it once
+   * and reuse the result rather than calling it repeatedly; for the count use {@link #getPerformedMoveCount()} (O(1)).
+   */
   public ImmutableList<String> getPerformedMovesAsSan() {
     final List<String> result = new ArrayList<>();
     for (int i = 1; i < boardStates.size(); i++) {
@@ -1056,6 +1067,12 @@ public final class Board {
     }
   }
 
+  /**
+   * The moves played so far, in order, as {@link LegalMove} records. Builds and returns a fresh immutable list on each
+   * call - the history is held as one {@code BoardState} record list, not a standing per-accessor list - so fetch it
+   * once and reuse the result rather than calling it repeatedly; for the count use {@link #getPerformedMoveCount()}
+   * (O(1)).
+   */
   public ImmutableList<LegalMove> getPerformedMoves() {
     final List<LegalMove> result = new ArrayList<>();
     for (int i = 1; i < boardStates.size(); i++) {
