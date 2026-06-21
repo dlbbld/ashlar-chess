@@ -8,8 +8,8 @@ import io.github.dlbbld.ashlarchess.common.enums.Termination;
 
 /**
  * The current-position outcome of a game: how it ended (or {@link Termination#NONE} if it has not) and who, if anyone,
- * won. Produced by {@link io.github.dlbbld.ashlarchess.board.Board#outcome()}; the
- * {@link #ONGOING} sentinel is returned for positions where no termination condition fires.
+ * won. Produced by {@link io.github.dlbbld.ashlarchess.board.Board#outcome()}; the {@link #ONGOING} sentinel is
+ * returned for positions where no termination condition fires.
  *
  * <p>
  * Invariant enforced by the compact constructor: {@code winner} is {@link Side#NONE} unless {@code termination} is
@@ -20,8 +20,8 @@ import io.github.dlbbld.ashlarchess.common.enums.Termination;
  * <p>
  * Shape parity with python-chess {@code chess.Outcome(termination, winner)} (with {@link Side#NONE} substituting for
  * Python's {@code None}, and {@link Termination#NONE} substituting for "no termination yet"). Termination is
- * information, not enforcement; the library does not block moves at these states, and callers poll
- * {@code outcome()} to decide whether to adjudicate.
+ * information, not enforcement; the library does not block moves at these states, and callers poll {@code outcome()} to
+ * decide whether to adjudicate.
  */
 public record Outcome(Termination termination, Side winner) {
 

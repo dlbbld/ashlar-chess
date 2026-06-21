@@ -60,8 +60,7 @@ class TestPseudoLegalMoves {
     long remaining = knights;
     while (remaining != 0L) {
       final Square fromSquare = Nulls.get(Square.REAL, Long.numberOfTrailingZeros(remaining));
-      final Set<Square> bitboardTargets = BitboardPositionUtility
-          .toSquares(KnightMoves.targets(fromSquare, ownPieces));
+      final Set<Square> bitboardTargets = BitboardPositionUtility.toSquares(KnightMoves.targets(fromSquare, ownPieces));
       final Set<Square> referenceTargets = withoutOwnPieces(KnightEmptyBoardSquares.getKnightSquares(fromSquare),
           staticPosition, side);
       assertEquals(referenceTargets, bitboardTargets,

@@ -23,8 +23,8 @@ public final class StrictFenParser {
   /**
    * Parses a strict FEN string.
    *
-   * @throws StrictFenSemanticValidationException if the FEN is malformed or violates the strict structural/rule-consistency
-   *                                        checks
+   * @throws StrictFenSemanticValidationException if the FEN is malformed or violates the strict
+   *                                              structural/rule-consistency checks
    */
   public static Fen parse(String fen) {
     return StrictFenSemanticParser.parse(fen);
@@ -39,7 +39,8 @@ public final class StrictFenParser {
       final Fen parsedFen = parse(fen);
       return new StrictFenParserValidationResult(StrictFenSemanticValidationProblem.SUCCESS, "OK", parsedFen);
     } catch (final StrictFenSemanticValidationException e) {
-      return new StrictFenParserValidationResult(e.getStrictFenSemanticValidationProblem(), ExceptionUtility.getMessage(e), null);
+      return new StrictFenParserValidationResult(e.getStrictFenSemanticValidationProblem(),
+          ExceptionUtility.getMessage(e), null);
     } catch (final ProgrammingMistakeException e) {
       // A library bug must fail fast, not be masked as an UNKNOWN_ERROR validation result.
       throw e;

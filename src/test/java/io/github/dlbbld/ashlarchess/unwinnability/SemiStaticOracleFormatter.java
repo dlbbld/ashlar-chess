@@ -91,8 +91,7 @@ public final class SemiStaticOracleFormatter {
     throw new IllegalArgumentException("Piece not in the mobility solution");
   }
 
-  private static void addRow(List<String> rows, String fen, String winner, String kind, String subject,
-      String value) {
+  private static void addRow(List<String> rows, String fen, String winner, String kind, String subject, String value) {
     rows.add(fen + "\t" + winner + "\t" + kind + "\t" + subject + "\t" + value);
   }
 

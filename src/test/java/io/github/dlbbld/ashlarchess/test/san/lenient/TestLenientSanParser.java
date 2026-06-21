@@ -21,8 +21,8 @@ import io.github.dlbbld.ashlarchess.common.ucimove.utility.UciMoveUtility;
 import io.github.dlbbld.ashlarchess.model.LegalMove;
 import io.github.dlbbld.ashlarchess.model.UciMove;
 import io.github.dlbbld.ashlarchess.san.ForgivenSanItem;
-import io.github.dlbbld.ashlarchess.san.LenientSanParserValidationException;
 import io.github.dlbbld.ashlarchess.san.LenientSanParseResult;
+import io.github.dlbbld.ashlarchess.san.LenientSanParserValidationException;
 import io.github.dlbbld.ashlarchess.san.LenientSanValidationProblem;
 
 @SuppressWarnings("static-method")
@@ -515,8 +515,7 @@ class TestLenientSanParser {
         "Expected forgiven items to contain " + code + " but got " + result.forgivenItems());
   }
 
-  private static void assertExactlyOneCode(LenientSanParseResult result,
-      LenientSanValidationProblem expectedCode) {
+  private static void assertExactlyOneCode(LenientSanParseResult result, LenientSanValidationProblem expectedCode) {
     assertEquals(1, result.forgivenItems().size(),
         "Expected exactly one forgiven item with code " + expectedCode + " but got " + result.forgivenItems());
     final ForgivenSanItem item = Nulls.get(result.forgivenItems(), 0);

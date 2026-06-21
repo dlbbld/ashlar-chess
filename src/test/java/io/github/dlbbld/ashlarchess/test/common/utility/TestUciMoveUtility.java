@@ -97,8 +97,7 @@ class TestUciMoveUtility {
       final LegalMove lastMove = board.getLastMove();
       final MoveSpecification moveSpecification = lastMove.moveSpecification();
 
-      final String actualUci = UciMoveUtility.toUci(lastMove.movingSide(), moveSpecification)
-          .uci();
+      final String actualUci = UciMoveUtility.toUci(lastMove.movingSide(), moveSpecification).uci();
       assertEquals(test.uciMoveStr(), actualUci);
 
       final String actualUciForScala = convertMoveSpecificationToUciForScala(lastMove.movingSide(), moveSpecification);
@@ -116,8 +115,7 @@ class TestUciMoveUtility {
 
     for (final UciMoveTest test : list) {
       final UciMove moveModel = UciMoveValidationUtility.lookup(test.uciMoveStr());
-      final MoveSpecification moveSpecificationActual = UciMoveUtility.toMoveSpecification(board,
-          moveModel);
+      final MoveSpecification moveSpecificationActual = UciMoveUtility.toMoveSpecification(board, moveModel);
       board.moveStrict(test.san());
 
       final MoveSpecification moveSpecificationExpected = board.getLastMove().moveSpecification();

@@ -73,8 +73,7 @@ public final class CompareAmbronaSemiStaticOracle {
       final String fen = Nulls.getKey(entry);
       final List<String> expectedRows = Nulls.getValue(entry);
       final List<String> actualRows = SemiStaticOracleFormatter.calculateRows(fen);
-      final int differenceCount = countDifferences(expectedRows, actualRows, printedDifferences,
-          differenceCountByKind);
+      final int differenceCount = countDifferences(expectedRows, actualRows, printedDifferences, differenceCountByKind);
       if (differenceCount != 0) {
         fenDifferenceCount++;
         differentFens.add(fen);
@@ -83,8 +82,7 @@ public final class CompareAmbronaSemiStaticOracle {
       comparedFenCount++;
     }
     return new SemiStaticOracleComparison(comparedFenCount, fenDifferenceCount, rowDifferenceCount,
-        Nulls.copyOfMap(differenceCountByKind), Nulls.copyOfList(differentFens),
-        Nulls.copyOfList(printedDifferences));
+        Nulls.copyOfMap(differenceCountByKind), Nulls.copyOfList(differentFens), Nulls.copyOfList(printedDifferences));
   }
 
   private static Map<String, List<String>> readExpectedByFen() throws Exception {

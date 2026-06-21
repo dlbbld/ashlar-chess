@@ -16,9 +16,9 @@ import io.github.dlbbld.ashlarchess.fen.model.Fen;
 
 /**
  * Lenient FEN parser. Applies a purely syntactic-tolerance normalisation pass (whitespace, casing, missing trailing
- * counters, non-canonical castling order, non-ASCII dashes, trailing garbage) then delegates to
- * {@link StrictFenParser} for the structural and rule-consistency checks. Every transformation applied during
- * normalisation surfaces as a {@link ForgivenFenItem} on the result.
+ * counters, non-canonical castling order, non-ASCII dashes, trailing garbage) then delegates to {@link StrictFenParser}
+ * for the structural and rule-consistency checks. Every transformation applied during normalisation surfaces as a
+ * {@link ForgivenFenItem} on the result.
  *
  * <p>
  * The lenient layer does <b>not</b> weaken any of the strict semantic invariants — a FEN with a missing king, a pawn on
@@ -57,8 +57,8 @@ public final class LenientFenParser {
   }
 
   /**
-   * Like {@link #parse(String)} but returns a structured result instead of throwing. The result also carries the
-   * parsed {@link Fen} (on success) and the list of forgiven items the lenient layer applied during normalisation.
+   * Like {@link #parse(String)} but returns a structured result instead of throwing. The result also carries the parsed
+   * {@link Fen} (on success) and the list of forgiven items the lenient layer applied during normalisation.
    */
   public static LenientFenParserValidationResult validate(String fen) {
     final List<ForgivenFenItem> accumulator = new ArrayList<>();
@@ -68,7 +68,8 @@ public final class LenientFenParser {
           StrictFenSemanticValidationProblem.SUCCESS, "OK", parsedFen, Nulls.copyOfList(accumulator));
     } catch (final LenientFenParserValidationException e) {
       return new LenientFenParserValidationResult(e.getLenientFenParserValidationProblem(),
-          e.getStrictFenSemanticValidationProblem(), ExceptionUtility.getMessage(e), null, e.getForgivenItemsAccumulated());
+          e.getStrictFenSemanticValidationProblem(), ExceptionUtility.getMessage(e), null,
+          e.getForgivenItemsAccumulated());
     } catch (final ProgrammingMistakeException e) {
       // A library bug must fail fast, not be masked as an UNKNOWN_ERROR validation result.
       throw e;
@@ -114,8 +115,8 @@ public final class LenientFenParser {
    * {@code fullMoveNumber = 20}, well above the strict-minimum of 9). The reserve makes the auto-corrected value
    * visibly approximate — a consumer looking at the FEN sees a round-numbered placeholder that signals "the
    * fullMoveNumber here was reconstructed, not measured." Called only after strict FEN validation has flagged
-   * {@link StrictFenSemanticValidationProblem#INVALID_HALF_MOVE_CLOCK_TOO_BIG_RELATIVE_TO_FULL_MOVE_NUMBER}, so the input is
-   * known to have six well-formed fields with parseable integer counters and a valid side-to-move letter.
+   * {@link StrictFenSemanticValidationProblem#INVALID_HALF_MOVE_CLOCK_TOO_BIG_RELATIVE_TO_FULL_MOVE_NUMBER}, so the
+   * input is known to have six well-formed fields with parseable integer counters and a valid side-to-move letter.
    */
   private static String autoCorrectHalfMoveClockInconsistency(String canonical, List<ForgivenFenItem> accumulator) {
     final String[] fields = canonical.split(" ");
@@ -140,10 +141,10 @@ public final class LenientFenParser {
 
   /**
    * Applies the lenient normalisation transforms in order, recording each as a {@link ForgivenFenItem} on the
-   * accumulator. Returns the canonical six-field FEN string ready for strict FEN validation.
-   * Throws {@link LenientFenParserValidationException} with {@link LenientFenParserValidationProblem#UNRECOVERABLE}
-   * when the input has fewer than four fields after normalisation (cannot recover to a FEN with a defaulted halfmove
-   * clock and fullmove number).
+   * accumulator. Returns the canonical six-field FEN string ready for strict FEN validation. Throws
+   * {@link LenientFenParserValidationException} with {@link LenientFenParserValidationProblem#UNRECOVERABLE} when the
+   * input has fewer than four fields after normalisation (cannot recover to a FEN with a defaulted halfmove clock and
+   * fullmove number).
    */
   private static String normalise(String fen, List<ForgivenFenItem> accumulator) {
     String working = fen;

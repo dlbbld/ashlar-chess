@@ -113,8 +113,8 @@ public class LibraryCarlosBoard {
         ? getEnPassantCaptureTargetSquare()
         : Square.NONE;
     final BitboardPosition bitboardPosition = StaticPositionBridge.fromStaticPosition(getStaticPosition());
-    dynamicPositions.add(new DynamicPosition(getSideToMove(), bitboardPosition,
-        normalizedEnPassantCaptureTargetSquare, getCastlingRightWhite(), getCastlingRightBlack()));
+    dynamicPositions.add(new DynamicPosition(getSideToMove(), bitboardPosition, normalizedEnPassantCaptureTargetSquare,
+        getCastlingRightWhite(), getCastlingRightBlack()));
   }
 
   public void unmove() {

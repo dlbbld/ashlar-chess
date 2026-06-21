@@ -15,9 +15,9 @@ import io.github.dlbbld.ashlarchess.board.enums.Square;
 
 /**
  * Pins the conventional-notation {@code toString()} contract added to the core board enums in 19.0.0: a chess-readable
- * representation (algebraic square, file letter, rank number, FEN piece letter) with {@code "none"} for the {@code NONE}
- * sentinels. The rest of the suite only proves nothing depended on the previous (constant-name) output; this locks the
- * new public output.
+ * representation (algebraic square, file letter, rank number, FEN piece letter) with {@code "none"} for the
+ * {@code NONE} sentinels. The rest of the suite only proves nothing depended on the previous (constant-name) output;
+ * this locks the new public output.
  */
 @SuppressWarnings("static-method")
 class TestEnumToString {

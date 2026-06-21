@@ -123,8 +123,8 @@ final class StrictFenSemanticParser {
   static BitboardPosition validatePiecePlacement(String piecePlacement) throws StrictFenSemanticValidationException {
 
     if (piecePlacement.endsWith("/")) {
-      throw new StrictFenSemanticValidationException(StrictFenSemanticValidationProblem.INVALID_POSITION_ENDS_WITH_FORWARD_SLASH,
-          "it ends with a slash");
+      throw new StrictFenSemanticValidationException(
+          StrictFenSemanticValidationProblem.INVALID_POSITION_ENDS_WITH_FORWARD_SLASH, "it ends with a slash");
     }
 
     // we check for empty ranks before the rank count, so we can avoid counting
@@ -138,8 +138,8 @@ final class StrictFenSemanticParser {
     final String[] rankDescriptions = piecePlacement.split("/");
 
     if (rankDescriptions.length != 8) {
-      throw new StrictFenSemanticValidationException(StrictFenSemanticValidationProblem.INVALID_POSITION_NUMBER_OF_RANKS,
-          "it does not specify eight ranks");
+      throw new StrictFenSemanticValidationException(
+          StrictFenSemanticValidationProblem.INVALID_POSITION_NUMBER_OF_RANKS, "it does not specify eight ranks");
     }
 
     int rankNumber = 0;
@@ -240,7 +240,8 @@ final class StrictFenSemanticParser {
 
   }
 
-  private static List<String> validateEvaluatedLength(String rankDescription) throws StrictFenSemanticValidationException {
+  private static List<String> validateEvaluatedLength(String rankDescription)
+      throws StrictFenSemanticValidationException {
     final List<String> squareDescriptions = new ArrayList<>();
 
     int countEvaluatedLength = 0;
@@ -260,7 +261,8 @@ final class StrictFenSemanticParser {
 
     }
     if (countEvaluatedLength != 8) {
-      throw new StrictFenSemanticValidationException(StrictFenSemanticValidationProblem.INVALID_POSITION_LINE_EVALUATION_LENGTH,
+      throw new StrictFenSemanticValidationException(
+          StrictFenSemanticValidationProblem.INVALID_POSITION_LINE_EVALUATION_LENGTH,
           "the rank description \"" + rankDescription + "\" for the position does not evaluate to eight squares");
     }
 
@@ -390,7 +392,8 @@ final class StrictFenSemanticParser {
     final boolean isEnPassantCaptureTargetSquareOccupied = pieceOnEnPassantCaptureTargetSquare != Piece.NONE;
 
     if (isStartingSquareOccupied && isEnPassantCaptureTargetSquareOccupied) {
-      throw new StrictFenSemanticValidationException(StrictFenSemanticValidationProblem.INVALID_EN_PASSANT_CAPTURE_BOTH_NOT_EMPTY,
+      throw new StrictFenSemanticValidationException(
+          StrictFenSemanticValidationProblem.INVALID_EN_PASSANT_CAPTURE_BOTH_NOT_EMPTY,
           "the en passant target square \"" + enPassantCaptureTargetSquare + "\" and the pawn starting square  \""
               + startingSquare + "\" are not empty");
     }
@@ -459,7 +462,8 @@ final class StrictFenSemanticParser {
     }
 
     if (fullMoveNumber < 0) {
-      throw new StrictFenSemanticValidationException(StrictFenSemanticValidationProblem.INVALID_FULL_MOVE_NUMBER_NEGATIVE,
+      throw new StrictFenSemanticValidationException(
+          StrictFenSemanticValidationProblem.INVALID_FULL_MOVE_NUMBER_NEGATIVE,
           "the fullmove number of \"" + fullMoveNumberStr + "\" cannot be negative");
     }
 
@@ -469,9 +473,9 @@ final class StrictFenSemanticParser {
     }
 
     if (fullMoveNumber > FenConstants.MAX_FULL_MOVE_NUMBER) {
-      throw new StrictFenSemanticValidationException(StrictFenSemanticValidationProblem.INVALID_FULL_MOVE_NUMBER_TOO_BIG_ABSOLUTE,
-          "the fullmove number of " + fullMoveNumber + " is above the maximum supported value of "
-              + FenConstants.MAX_FULL_MOVE_NUMBER + "");
+      throw new StrictFenSemanticValidationException(
+          StrictFenSemanticValidationProblem.INVALID_FULL_MOVE_NUMBER_TOO_BIG_ABSOLUTE, "the fullmove number of "
+              + fullMoveNumber + " is above the maximum supported value of " + FenConstants.MAX_FULL_MOVE_NUMBER + "");
     }
 
     return fullMoveNumber;
@@ -515,8 +519,9 @@ final class StrictFenSemanticParser {
     return new StrictFenSemanticValidationException(parseFenCheck, Nulls.toString(message));
   }
 
-  private static StrictFenSemanticValidationProblem calculateParseFenCheck(Side sideToCheck, CastlingRight castlingRight,
-      boolean isKingSideCastlingOriginalPosition, boolean isQueenSideCastlingOriginalPosition) {
+  private static StrictFenSemanticValidationProblem calculateParseFenCheck(Side sideToCheck,
+      CastlingRight castlingRight, boolean isKingSideCastlingOriginalPosition,
+      boolean isQueenSideCastlingOriginalPosition) {
     switch (castlingRight) {
       case KING_AND_QUEEN_SIDE:
         if (!isKingSideCastlingOriginalPosition && !isQueenSideCastlingOriginalPosition) {
@@ -573,7 +578,8 @@ final class StrictFenSemanticParser {
 
   }
 
-  private static void validateNumberOfPieces(BitboardPosition bitboardPosition) throws StrictFenSemanticValidationException {
+  private static void validateNumberOfPieces(BitboardPosition bitboardPosition)
+      throws StrictFenSemanticValidationException {
     validateWhiteNumberOfPieces(bitboardPosition);
     validateBlackNumberOfPieces(bitboardPosition);
   }
@@ -623,7 +629,8 @@ final class StrictFenSemanticParser {
     final int numberOfLightSquareBishopsPromoted = numberOfLightSquareBishops
         - ChessConstants.INITIAL_NUMBER_OF_LIGHT_SQUARE_BISHOPS;
     if (numberOfLightSquareBishopsPromoted > numberOfPossiblePromotions) {
-      throw new StrictFenSemanticValidationException(StrictFenSemanticValidationProblem.INVALID_WHITE_TOO_MANY_LIGHT_SQUARE_BISHOPS,
+      throw new StrictFenSemanticValidationException(
+          StrictFenSemanticValidationProblem.INVALID_WHITE_TOO_MANY_LIGHT_SQUARE_BISHOPS,
           "there are too many white light squared bishops");
     }
 
@@ -633,7 +640,8 @@ final class StrictFenSemanticParser {
     final int numberOfDarkSquareBishopsPromoted = numberOfDarkSquareBishops
         - ChessConstants.INITIAL_NUMBER_OF_DARK_SQUARE_BISHOPS;
     if (numberOfDarkSquareBishopsPromoted > numberOfPossiblePromotions) {
-      throw new StrictFenSemanticValidationException(StrictFenSemanticValidationProblem.INVALID_WHITE_TOO_MANY_DARK_SQUARE_BISHOPS,
+      throw new StrictFenSemanticValidationException(
+          StrictFenSemanticValidationProblem.INVALID_WHITE_TOO_MANY_DARK_SQUARE_BISHOPS,
           "there are too many white dark squared bishops");
     }
 
@@ -692,7 +700,8 @@ final class StrictFenSemanticParser {
     final int numberOfLightSquareBishopsPromoted = numberOfLightSquareBishops
         - ChessConstants.INITIAL_NUMBER_OF_LIGHT_SQUARE_BISHOPS;
     if (numberOfLightSquareBishopsPromoted > numberOfPossiblePromotions) {
-      throw new StrictFenSemanticValidationException(StrictFenSemanticValidationProblem.INVALID_BLACK_TOO_MANY_LIGHT_SQUARE_BISHOPS,
+      throw new StrictFenSemanticValidationException(
+          StrictFenSemanticValidationProblem.INVALID_BLACK_TOO_MANY_LIGHT_SQUARE_BISHOPS,
           "there are too many black light squared bishops");
     }
 
@@ -702,7 +711,8 @@ final class StrictFenSemanticParser {
     final int numberOfDarkSquareBishopsPromoted = numberOfDarkSquareBishops
         - ChessConstants.INITIAL_NUMBER_OF_DARK_SQUARE_BISHOPS;
     if (numberOfDarkSquareBishopsPromoted > numberOfPossiblePromotions) {
-      throw new StrictFenSemanticValidationException(StrictFenSemanticValidationProblem.INVALID_BLACK_TOO_MANY_DARK_SQUARE_BISHOPS,
+      throw new StrictFenSemanticValidationException(
+          StrictFenSemanticValidationProblem.INVALID_BLACK_TOO_MANY_DARK_SQUARE_BISHOPS,
           "there are too many black dark squared bishops");
     }
 

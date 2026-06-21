@@ -25,9 +25,9 @@ final class PositionIdentifierUtility {
   /**
    * Assigns a unique letter label per distinct position across both reports. Claim-ahead entries are visited first in
    * their stored order, then any positions appearing only in the existing-repetition groups are appended.
-   * Claim-ahead-first ordering keeps the printed report's letter assignment stable for users; the
-   * second walk closes the latent throw-on-missing edge against future fixtures where a threefold-reached position
-   * might not also appear as a claim-ahead opportunity.
+   * Claim-ahead-first ordering keeps the printed report's letter assignment stable for users; the second walk closes
+   * the latent throw-on-missing edge against future fixtures where a threefold-reached position might not also appear
+   * as a claim-ahead opportunity.
    */
   public static Map<DynamicPosition, String> calculatePositionIdentifierMap(ThreefoldClaimAheadReport claimAhead,
       ThreefoldExistingReport existing) {

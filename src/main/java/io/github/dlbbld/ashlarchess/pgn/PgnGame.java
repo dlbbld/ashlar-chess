@@ -19,8 +19,8 @@ import io.github.dlbbld.ashlarchess.model.PgnMove;
  * lenient-parsed input, while strict-parsed input always has both (and they match).
  *
  * <p>
- * Invariant: when a Result tag is present in {@link #tags()} <em>and</em> {@link #terminationMarker()} is non-null,
- * the two must agree. The lenient and strict PGN parsers enforce this before constructing the {@code PgnGame} (via the
+ * Invariant: when a Result tag is present in {@link #tags()} <em>and</em> {@link #terminationMarker()} is non-null, the
+ * two must agree. The lenient and strict PGN parsers enforce this before constructing the {@code PgnGame} (via the
  * cross-signal consistency check); the {@code Board}-to-{@code PgnGame} path
  * ({@link PgnCreate#createPgnGame(io.github.dlbbld.ashlarchess.board.Board, java.util.List)}) is also guarded here by
  * the compact constructor - a caller that supplies a Result tag disagreeing with the board's game-status-derived marker

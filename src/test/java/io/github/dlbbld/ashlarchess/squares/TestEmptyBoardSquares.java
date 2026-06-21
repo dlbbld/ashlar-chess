@@ -79,9 +79,9 @@ import org.junit.jupiter.api.Test;
 
 import com.google.common.collect.ImmutableList;
 
-import io.github.dlbbld.ashlarchess.common.Nulls;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
 import io.github.dlbbld.ashlarchess.board.enums.Square;
+import io.github.dlbbld.ashlarchess.common.Nulls;
 
 class TestEmptyBoardSquares {
 
@@ -232,8 +232,7 @@ class TestEmptyBoardSquares {
       final ImmutableList<Square> southWestSquares = Nulls.listOf();
       final ImmutableList<Square> northWestSquares = Nulls.listOf();
 
-      final BishopRange range = new BishopRange(northEastSquares, southEastSquares, southWestSquares,
-          northWestSquares);
+      final BishopRange range = new BishopRange(northEastSquares, southEastSquares, southWestSquares, northWestSquares);
 
       testBishopSquares(A1, range);
     }
@@ -246,8 +245,7 @@ class TestEmptyBoardSquares {
       final ImmutableList<Square> southWestSquares = Nulls.listOf();
       final ImmutableList<Square> northWestSquares = Nulls.listOf();
 
-      final BishopRange range = new BishopRange(northEastSquares, southEastSquares, southWestSquares,
-          northWestSquares);
+      final BishopRange range = new BishopRange(northEastSquares, southEastSquares, southWestSquares, northWestSquares);
 
       testBishopSquares(A2, range);
     }
@@ -260,8 +258,7 @@ class TestEmptyBoardSquares {
       final ImmutableList<Square> southWestSquares = Nulls.listOf();
       final ImmutableList<Square> northWestSquares = Nulls.listOf();
 
-      final BishopRange range = new BishopRange(northEastSquares, southEastSquares, southWestSquares,
-          northWestSquares);
+      final BishopRange range = new BishopRange(northEastSquares, southEastSquares, southWestSquares, northWestSquares);
 
       testBishopSquares(A3, range);
     }
@@ -274,8 +271,7 @@ class TestEmptyBoardSquares {
       final ImmutableList<Square> southWestSquares = Nulls.listOf();
       final ImmutableList<Square> northWestSquares = Nulls.listOf(A2);
 
-      final BishopRange range = new BishopRange(northEastSquares, southEastSquares, southWestSquares,
-          northWestSquares);
+      final BishopRange range = new BishopRange(northEastSquares, southEastSquares, southWestSquares, northWestSquares);
 
       testBishopSquares(B1, range);
     }
@@ -288,8 +284,7 @@ class TestEmptyBoardSquares {
       final ImmutableList<Square> southWestSquares = Nulls.listOf(A1);
       final ImmutableList<Square> northWestSquares = Nulls.listOf(A3);
 
-      final BishopRange range = new BishopRange(northEastSquares, southEastSquares, southWestSquares,
-          northWestSquares);
+      final BishopRange range = new BishopRange(northEastSquares, southEastSquares, southWestSquares, northWestSquares);
 
       testBishopSquares(B2, range);
     }
@@ -302,8 +297,7 @@ class TestEmptyBoardSquares {
       final ImmutableList<Square> southWestSquares = Nulls.listOf(A2);
       final ImmutableList<Square> northWestSquares = Nulls.listOf(A4);
 
-      final BishopRange range = new BishopRange(northEastSquares, southEastSquares, southWestSquares,
-          northWestSquares);
+      final BishopRange range = new BishopRange(northEastSquares, southEastSquares, southWestSquares, northWestSquares);
 
       testBishopSquares(B3, range);
     }
@@ -316,8 +310,7 @@ class TestEmptyBoardSquares {
       final ImmutableList<Square> southWestSquares = Nulls.listOf();
       final ImmutableList<Square> northWestSquares = Nulls.listOf(B2, A3);
 
-      final BishopRange range = new BishopRange(northEastSquares, southEastSquares, southWestSquares,
-          northWestSquares);
+      final BishopRange range = new BishopRange(northEastSquares, southEastSquares, southWestSquares, northWestSquares);
 
       testBishopSquares(C1, range);
     }
@@ -330,8 +323,7 @@ class TestEmptyBoardSquares {
       final ImmutableList<Square> southWestSquares = Nulls.listOf(B1);
       final ImmutableList<Square> northWestSquares = Nulls.listOf(B3, A4);
 
-      final BishopRange range = new BishopRange(northEastSquares, southEastSquares, southWestSquares,
-          northWestSquares);
+      final BishopRange range = new BishopRange(northEastSquares, southEastSquares, southWestSquares, northWestSquares);
 
       testBishopSquares(C2, range);
     }
@@ -344,8 +336,7 @@ class TestEmptyBoardSquares {
       final ImmutableList<Square> southWestSquares = Nulls.listOf(B2, A1);
       final ImmutableList<Square> northWestSquares = Nulls.listOf(B4, A5);
 
-      final BishopRange range = new BishopRange(northEastSquares, southEastSquares, southWestSquares,
-          northWestSquares);
+      final BishopRange range = new BishopRange(northEastSquares, southEastSquares, southWestSquares, northWestSquares);
 
       testBishopSquares(C3, range);
     }
@@ -358,8 +349,7 @@ class TestEmptyBoardSquares {
       final ImmutableList<Square> southWestSquares = Nulls.listOf(D3, C2, B1);
       final ImmutableList<Square> northWestSquares = Nulls.listOf(D5, C6, B7, A8);
 
-      final BishopRange range = new BishopRange(northEastSquares, southEastSquares, southWestSquares,
-          northWestSquares);
+      final BishopRange range = new BishopRange(northEastSquares, southEastSquares, southWestSquares, northWestSquares);
 
       testBishopSquares(E4, range);
     }
@@ -372,8 +362,7 @@ class TestEmptyBoardSquares {
       final ImmutableList<Square> southWestSquares = Nulls.listOf();
       final ImmutableList<Square> northWestSquares = Nulls.listOf();
 
-      final BishopRange range = new BishopRange(northEastSquares, southEastSquares, southWestSquares,
-          northWestSquares);
+      final BishopRange range = new BishopRange(northEastSquares, southEastSquares, southWestSquares, northWestSquares);
 
       testBishopSquares(A8, range);
     }
@@ -386,8 +375,7 @@ class TestEmptyBoardSquares {
       final ImmutableList<Square> southWestSquares = Nulls.listOf();
       final ImmutableList<Square> northWestSquares = Nulls.listOf();
 
-      final BishopRange range = new BishopRange(northEastSquares, southEastSquares, southWestSquares,
-          northWestSquares);
+      final BishopRange range = new BishopRange(northEastSquares, southEastSquares, southWestSquares, northWestSquares);
 
       testBishopSquares(A7, range);
     }
@@ -400,8 +388,7 @@ class TestEmptyBoardSquares {
       final ImmutableList<Square> southWestSquares = Nulls.listOf();
       final ImmutableList<Square> northWestSquares = Nulls.listOf();
 
-      final BishopRange range = new BishopRange(northEastSquares, southEastSquares, southWestSquares,
-          northWestSquares);
+      final BishopRange range = new BishopRange(northEastSquares, southEastSquares, southWestSquares, northWestSquares);
 
       testBishopSquares(A6, range);
     }
@@ -414,8 +401,7 @@ class TestEmptyBoardSquares {
       final ImmutableList<Square> southWestSquares = Nulls.listOf(A7);
       final ImmutableList<Square> northWestSquares = Nulls.listOf();
 
-      final BishopRange range = new BishopRange(northEastSquares, southEastSquares, southWestSquares,
-          northWestSquares);
+      final BishopRange range = new BishopRange(northEastSquares, southEastSquares, southWestSquares, northWestSquares);
 
       testBishopSquares(B8, range);
     }
@@ -428,8 +414,7 @@ class TestEmptyBoardSquares {
       final ImmutableList<Square> southWestSquares = Nulls.listOf(A6);
       final ImmutableList<Square> northWestSquares = Nulls.listOf(A8);
 
-      final BishopRange range = new BishopRange(northEastSquares, southEastSquares, southWestSquares,
-          northWestSquares);
+      final BishopRange range = new BishopRange(northEastSquares, southEastSquares, southWestSquares, northWestSquares);
 
       testBishopSquares(B7, range);
     }
@@ -442,8 +427,7 @@ class TestEmptyBoardSquares {
       final ImmutableList<Square> southWestSquares = Nulls.listOf(A5);
       final ImmutableList<Square> northWestSquares = Nulls.listOf(A7);
 
-      final BishopRange range = new BishopRange(northEastSquares, southEastSquares, southWestSquares,
-          northWestSquares);
+      final BishopRange range = new BishopRange(northEastSquares, southEastSquares, southWestSquares, northWestSquares);
 
       testBishopSquares(B6, range);
     }
@@ -456,8 +440,7 @@ class TestEmptyBoardSquares {
       final ImmutableList<Square> southWestSquares = Nulls.listOf(B7, A6);
       final ImmutableList<Square> northWestSquares = Nulls.listOf();
 
-      final BishopRange range = new BishopRange(northEastSquares, southEastSquares, southWestSquares,
-          northWestSquares);
+      final BishopRange range = new BishopRange(northEastSquares, southEastSquares, southWestSquares, northWestSquares);
 
       testBishopSquares(C8, range);
     }
@@ -470,8 +453,7 @@ class TestEmptyBoardSquares {
       final ImmutableList<Square> southWestSquares = Nulls.listOf(B6, A5);
       final ImmutableList<Square> northWestSquares = Nulls.listOf(B8);
 
-      final BishopRange range = new BishopRange(northEastSquares, southEastSquares, southWestSquares,
-          northWestSquares);
+      final BishopRange range = new BishopRange(northEastSquares, southEastSquares, southWestSquares, northWestSquares);
 
       testBishopSquares(C7, range);
     }
@@ -484,8 +466,7 @@ class TestEmptyBoardSquares {
       final ImmutableList<Square> southWestSquares = Nulls.listOf(B5, A4);
       final ImmutableList<Square> northWestSquares = Nulls.listOf(B7, A8);
 
-      final BishopRange range = new BishopRange(northEastSquares, southEastSquares, southWestSquares,
-          northWestSquares);
+      final BishopRange range = new BishopRange(northEastSquares, southEastSquares, southWestSquares, northWestSquares);
 
       testBishopSquares(C6, range);
     }
@@ -497,8 +478,7 @@ class TestEmptyBoardSquares {
       final ImmutableList<Square> southWestSquares = Nulls.listOf(D4, C3, B2, A1);
       final ImmutableList<Square> northWestSquares = Nulls.listOf(D6, C7, B8);
 
-      final BishopRange range = new BishopRange(northEastSquares, southEastSquares, southWestSquares,
-          northWestSquares);
+      final BishopRange range = new BishopRange(northEastSquares, southEastSquares, southWestSquares, northWestSquares);
 
       testBishopSquares(E5, range);
     }
@@ -526,8 +506,8 @@ class TestEmptyBoardSquares {
       final ImmutableList<Square> southWestSquares = Nulls.listOf();
       final ImmutableList<Square> northWestSquares = Nulls.listOf();
 
-      final QueenRange range = new QueenRange(northSquares, eastSquares, southSquares, westSquares,
-          northEastSquares, southEastSquares, southWestSquares, northWestSquares);
+      final QueenRange range = new QueenRange(northSquares, eastSquares, southSquares, westSquares, northEastSquares,
+          southEastSquares, southWestSquares, northWestSquares);
 
       testQueenSquares(A1, range);
     }
@@ -546,8 +526,8 @@ class TestEmptyBoardSquares {
       final ImmutableList<Square> southWestSquares = Nulls.listOf();
       final ImmutableList<Square> northWestSquares = Nulls.listOf();
 
-      final QueenRange range = new QueenRange(northSquares, eastSquares, southSquares, westSquares,
-          northEastSquares, southEastSquares, southWestSquares, northWestSquares);
+      final QueenRange range = new QueenRange(northSquares, eastSquares, southSquares, westSquares, northEastSquares,
+          southEastSquares, southWestSquares, northWestSquares);
 
       testQueenSquares(A3, range);
     }
@@ -566,8 +546,8 @@ class TestEmptyBoardSquares {
       final ImmutableList<Square> southWestSquares = Nulls.listOf(B7, A6);
       final ImmutableList<Square> northWestSquares = Nulls.listOf();
 
-      final QueenRange range = new QueenRange(northSquares, eastSquares, southSquares, westSquares,
-          northEastSquares, southEastSquares, southWestSquares, northWestSquares);
+      final QueenRange range = new QueenRange(northSquares, eastSquares, southSquares, westSquares, northEastSquares,
+          southEastSquares, southWestSquares, northWestSquares);
 
       testQueenSquares(C8, range);
     }
@@ -586,8 +566,8 @@ class TestEmptyBoardSquares {
       final ImmutableList<Square> southWestSquares = Nulls.listOf(C3, B2, A1);
       final ImmutableList<Square> northWestSquares = Nulls.listOf(C5, B6, A7);
 
-      final QueenRange range = new QueenRange(northSquares, eastSquares, southSquares, westSquares,
-          northEastSquares, southEastSquares, southWestSquares, northWestSquares);
+      final QueenRange range = new QueenRange(northSquares, eastSquares, southSquares, westSquares, northEastSquares,
+          southEastSquares, southWestSquares, northWestSquares);
 
       testQueenSquares(D4, range);
     }

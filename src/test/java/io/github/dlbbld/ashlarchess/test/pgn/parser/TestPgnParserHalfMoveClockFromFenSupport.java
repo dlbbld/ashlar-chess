@@ -42,8 +42,8 @@ import io.github.dlbbld.ashlarchess.test.pgntest.enums.PgnTest;
  * progression through subsequent moves.
  *
  * <p>
- * Subclasses inject the parser by passing {@code (folder, fileName) -> StrictPgnParser.parsePath(folder, fileName)} (or the
- * lenient variant) to {@link #runForBuckets}.
+ * Subclasses inject the parser by passing {@code (folder, fileName) -> StrictPgnParser.parsePath(folder, fileName)} (or
+ * the lenient variant) to {@link #runForBuckets}.
  *
  * <p>
  * Logs each fixture's name as it runs so a failure mid-iteration shows progress.

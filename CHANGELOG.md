@@ -5,6 +5,33 @@ Releases from 3.3 onward. Earlier history is in git tags only.
 ## [Unreleased]
 
 
+## [19.1.0] - Intentional JPMS module name - 2026-06-21
+
+A packaging-only release. The JAR now declares a stable, intentional automatic module name, so JPMS
+(named-module) consumers get a contract-grade `requires` name instead of one derived by accident from the
+file name. No code, behavior, or public-API changes — every verdict, report, and signature is identical to
+19.0.0.
+
+### Notable
+
+- **`Automatic-Module-Name: io.github.dlbbld.ashlarchess`.** Previously the JAR carried no module name, so on
+  the module path the JVM derived `ashlar.chess` from the file name — an accidental name nobody chose.
+  Declaring it in the manifest locks the intentional `io.github.dlbbld.ashlarchess` (mirroring the base
+  package) ahead of the explicit `module-info.java` planned for 20.0.0, so the eventual named module adopts a
+  name consumers can already depend on. Plain class-path users are unaffected.
+
+### Internal
+
+- Bumped `central-publishing-maven-plugin` 0.7.0 → 0.11.0. The Central Portal API added a `warnings` field to
+  its publish response that 0.7.0's response model could not parse, crashing `mvn -Prelease deploy` (the
+  upload still succeeded, but the command failed); 0.11.0 handles it. Build-only — not in the published
+  artifact.
+- Removed the empty base-package `package-info.java` (`io.github.dlbbld.ashlarchess`). It held only a no-op
+  `@NonNullByDefault` — the base package has no types, and the annotation does not cascade to sub-packages —
+  and JDK 21's `javadoc` fails the `-javadoc.jar` build on a package containing nothing but a
+  `package-info.java` ("No source files for package"). Internal only; no public type affected.
+
+
 ## [19.0.0] - The essential shape: coherent API, domain-owned behavior, declared scope - 2026-06-21
 
 A surface-only release. It retires the `HalfMove` concept, replaces the "halfmove" / "ply" vocabulary with "move" across the public model and reports, and applies a "data carriers, not behavior" pass that moves computed, translation, and factory logic off records and enums into dedicated utility / translator classes. No rule, parser, or analysis behavior changes — every verdict and every report is identical to 18.1.0; what changes is the shape of the API. It is heavily binary-incompatible, so the breaking list is long, but most migrations are a single type rename or a `Type.method(x)` → `TypeUtility.method(x)` call-site change.

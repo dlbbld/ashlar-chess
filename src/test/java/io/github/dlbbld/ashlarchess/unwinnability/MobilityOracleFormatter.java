@@ -45,8 +45,8 @@ public final class MobilityOracleFormatter {
       }
       final PiecePlacement piecePlacement = new PiecePlacement(piece.getPieceType(), piece.getSide(), source);
       final Set<Square> toSquareSet = mobilitySolution.calculateSquaresWithValueOne(piecePlacement);
-      rows.add(fen + "\t" + piece.getSide().name() + "\t" + piece.getPieceType().name() + "\t" + source.getName()
-          + "\t" + formatSquares(toSquareSet));
+      rows.add(fen + "\t" + piece.getSide().name() + "\t" + piece.getPieceType().name() + "\t" + source.getName() + "\t"
+          + formatSquares(toSquareSet));
     }
     return rows;
   }

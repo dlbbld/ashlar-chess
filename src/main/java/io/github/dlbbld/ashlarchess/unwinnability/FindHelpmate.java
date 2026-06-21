@@ -73,8 +73,7 @@ class FindHelpmate {
 
     switch (findHelpmate) {
       case HELPMATE_FOUND:
-        return new FindHelpmateAnalysis(FindHelpmateResult.HAS_HELPMATE, localNodeCount,
-            toUciMoves(moveProgress));
+        return new FindHelpmateAnalysis(FindHelpmateResult.HAS_HELPMATE, localNodeCount, toUciMoves(moveProgress));
       case HELPMATE_NOT_FOUND:
         if (isCanExhaust) {
           return new FindHelpmateAnalysis(FindHelpmateResult.HAS_NO_HELPMATE, localNodeCount, new ArrayList<>());

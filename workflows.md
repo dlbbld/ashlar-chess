@@ -80,14 +80,15 @@ The python-chess oracle reads pre-generated `.jsonl` files committed under `src/
 ## Cutting a release
 
 Release tags follow strict semver and match the `<version>` in `pom.xml`. The procedure is GitHub-PR-based, and the
-order is load-bearing: the working tree is cleared of Eclipse warnings, a release title is chosen up front and reused
+order is load-bearing: the working tree is cleared of Eclipse warnings and brought to a uniform auto-formatted /
+cleaned-up state, a release title is chosen up front and reused
 verbatim everywhere; artifacts are bumped before any
 gate runs; the full release bundle is built and signed **on the branch** before the PR, so a packaging/signing failure
 is fixed there rather than after the merge (direct pushes to `main` are not allowed, so a late failure forces a
 brand-new branch + PR); the version bump must reach `main` before the tag; the tag must exist before the published
 binary is built; and the irreversible Central Portal publish is always the very last step.
 
-**Order at a glance:** clear Eclipse warnings -> name the release -> update artifacts on a branch -> push -> pre-flight (full tests + javadoc +
+**Order at a glance:** clear Eclipse warnings + auto-format / clean up source -> name the release -> update artifacts on a branch -> push -> pre-flight (full tests + javadoc +
 headers) -> `mvn -Prelease verify` (build+sign dry-run, on the branch, no upload) -> open the PR (titled with the
 release title) -> merge to `main` -> delete the branch -> tag `main` (annotated, message = release title) ->
 `mvn -Prelease deploy` (stages) -> review + publish on the Central Portal (irreversible) -> GitHub Release (version as
@@ -95,11 +96,14 @@ the title field, release title as the notes H1).
 
 The detailed procedure:
 
-### 1. Clear Eclipse warnings and info messages
+### 1. Clear Eclipse warnings, then auto-format and clean up the source
 
-A release ships from a clean compiler state. Before anything else, the project must have **zero Eclipse / JDT warnings
-and zero info messages** in the Problems view. Warnings that accumulated during development are fixed here, as part of
-cutting the release - not left as a later chore.
+A release ships from a clean compiler state **and** a uniformly formatted source tree. Before anything else, the
+project must have **zero Eclipse / JDT warnings and zero info messages** in the Problems view, and the whole source
+tree must be auto-formatted and cleaned up to the project profile. This is done here, as part of cutting the release -
+not left as a later chore.
+
+First, resolve the Problems view to zero:
 
 - **Warnings** - unused imports / locals, raw types, missing `@Override`, dead code, narrowing conversions, and the
   like. Resolve every one.
@@ -107,8 +111,21 @@ cutting the release - not left as a later chore.
   raised when a package lacks its `package-info.java` carrying `@NonNullByDefault`. Add the missing file rather than
   suppressing the message; suppression hides the next real gap too.
 
-If the project is already clean, confirm it and move on - there is nothing to fix, which is the state to aim for at
-every release.
+Then bring formatting to the same baseline so no hand-formatting drift ships (manual Eclipse actions over both
+`src/main/java` and `src/test/java`):
+
+- **Auto-format** - select the source roots, Source -> Format (Ctrl+Shift+F), applying the project's formatter profile.
+- **Clean Up** - Source -> Clean Up with the project's profile (organize imports, add missing `@Override` / `final`,
+  remove unused, etc.). Clean Up overlaps with warning-clearing; running both leaves the tree warning-free *and*
+  uniformly cleaned.
+- The result must be **purely mechanical and behavior-preserving** (whitespace, import order, modifiers) - it changes
+  no signature and no behavior, so it is safe in any release, including a packaging-only one. Review the diff to
+  confirm that, then commit it as its **own** commit, separate from the version bump, before the gates in step 4 run.
+  The first release after this step was introduced may produce a larger diff as accumulated drift is normalized;
+  steady-state releases should produce little or nothing.
+
+If the project is already clean and formatted, confirm it and move on - there is nothing to fix, which is the state to
+aim for at every release.
 
 ### 2. Define the release title
 
@@ -168,10 +185,11 @@ Run on the release branch, with the artifacts from step 3 already committed:
 - Worktree is clean; everything intended for the release is committed.
 - Java license headers exact: `.\tools\java-license-headers.ps1 -Check`. Use `-Fix` before committing if the check reports drift.
 - `mvn test -Pfull` green. **Required.** (`-Pfull` keeps the default `test.excludes` unwinnability exclusion; add `-Dtest.excludes=` to also exercise that package - a release should.)
-- JavaDoc gates green. **Required.** Both goals must run with `-Dshow=private` — many main classes (the `io.github.dlbbld.ashlarchess.report` records, package-private helpers) and all test classes are package-private, and at javadoc's default `protected` visibility doclint silently skips them, so stale `@link` / malformed HTML go uncaught:
-  - `mvn javadoc:javadoc -Dshow=private` — all main docs.
-  - `mvn javadoc:test-javadoc -Dshow=private` — all test docs.
+- JavaDoc gates green. **Required.** Both goals must run with `-Dshow=private` — many main classes (the `io.github.dlbbld.ashlarchess.report` records, package-private helpers) and all test classes are package-private, and at javadoc's default `protected` visibility doclint silently skips them, so stale `@link` / malformed HTML go uncaught. Run them **from a clean target**, in one invocation so test-javadoc can link to the freshly generated main apidocs:
+  - `mvn clean javadoc:javadoc javadoc:test-javadoc -Dshow=private` — all main + test docs.
   - (`mvn javadoc:jar` stays at default visibility — it ships only the public API.)
+  - A dirty `target/` left over from `mvn test -Pfull` makes javadoc fail with a *misleading* `error: No source files for package <some random package>`; the leading `clean` avoids it. The failing package name is noise — it is not the real problem.
+  - **This report goal does NOT prove the shipped javadoc jar builds.** It runs at `-Dshow=private`; the released `javadoc:jar` (step 5) runs at *default* visibility and can fail where this passes — notably on a **type-less package** (one whose only `.java` file is `package-info.java`), which JDK 21's `javadoc` rejects with `error: No source files for package X`. That failure surfaces only in the step-5 dry-run. Rule: never leave a `package-info`-only package — a package must either carry types or have no `package-info.java` at all. (19.1.0 hit this on the base package `io.github.dlbbld.ashlarchess`, whose lone `package-info.java` held only a no-op `@NonNullByDefault` — `@NonNullByDefault` does not cascade to sub-packages — and was deleted.)
 - All tasks for the release are marked done in `tasks.md`.
 - **Board performance regression — required when board logic changed materially** (move / unmove, the per-position
   `BoardState` record, repetition tracking, `hashCode` / `equals`, legal-move caching). Otherwise skip.
@@ -191,6 +209,10 @@ Run on the release branch, with the artifacts from step 3 already committed:
 upload**, so any packaging/signing failure is caught while it can still be fixed on the branch with another commit.
 After the merge it is expensive to fix: direct pushes to `main` are not allowed, so a failure found later forces a new
 branch + PR.
+
+This is also the only gate that builds the **shipped** `javadoc:jar` (default visibility) and the GPG signatures, so a
+doc problem the step-4 `-Dshow=private` report goal tolerates — e.g. a type-less `package-info`-only package (see
+step 4) — fails here. That is exactly why the dry-run runs before the PR.
 
 ```
 mvn -Prelease help:active-profiles   # confirm the `release` profile is active

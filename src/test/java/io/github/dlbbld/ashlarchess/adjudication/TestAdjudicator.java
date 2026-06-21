@@ -46,7 +46,8 @@ class TestAdjudicator {
   @Test
   void quickRulesLossWhenNoDrawCanBeShown() {
     // Black flags; White is not provably unwinnable -> the flag stands.
-    assertEquals(AdjudicationResult.LOSS, Adjudicator.adjudicateFlagfallQuick(Board.fromFenStrict(WHITE_WINNABLE), Side.BLACK));
+    assertEquals(AdjudicationResult.LOSS,
+        Adjudicator.adjudicateFlagfallQuick(Board.fromFenStrict(WHITE_WINNABLE), Side.BLACK));
     // White flags; quick cannot prove Black unwinnable here (it is actually winnable) -> loss.
     assertEquals(AdjudicationResult.LOSS,
         Adjudicator.adjudicateFlagfallQuick(Board.fromFenStrict(UNDETERMINED_FOR_BLACK), Side.WHITE));
@@ -67,7 +68,8 @@ class TestAdjudicator {
   @Test
   void fullRulesLossOnAProvenWin() {
     // Black flags; the full analysis proves White can win -> Black loses.
-    assertEquals(AdjudicationResult.LOSS, Adjudicator.adjudicateFlagfallFull(Board.fromFenStrict(WHITE_WINNABLE), Side.BLACK));
+    assertEquals(AdjudicationResult.LOSS,
+        Adjudicator.adjudicateFlagfallFull(Board.fromFenStrict(WHITE_WINNABLE), Side.BLACK));
   }
 
   @SuppressWarnings("static-method")

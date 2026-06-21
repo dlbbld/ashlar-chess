@@ -43,9 +43,9 @@ import io.github.dlbbld.ashlarchess.model.CastlingRightBoth;
 import io.github.dlbbld.ashlarchess.model.LegalMove;
 import io.github.dlbbld.ashlarchess.moves.CastlingUtility;
 import io.github.dlbbld.ashlarchess.moves.EnPassantCaptureUtility;
+import io.github.dlbbld.ashlarchess.san.LenientSanParseResult;
 import io.github.dlbbld.ashlarchess.san.LenientSanParser;
 import io.github.dlbbld.ashlarchess.san.LenientSanParserValidationException;
-import io.github.dlbbld.ashlarchess.san.LenientSanParseResult;
 import io.github.dlbbld.ashlarchess.san.MoveToLan;
 import io.github.dlbbld.ashlarchess.san.MoveToSan;
 import io.github.dlbbld.ashlarchess.san.SanTerminalMarker;
@@ -63,10 +63,9 @@ import io.github.dlbbld.ashlarchess.unwinnability.UnwinnableQuickAnalyzer;
  * The library's central type - a chess <em>game</em>, not merely a position. A {@code Board} carries the position
  * <strong>plus</strong> the move history from its initial FEN: one record per position reached (the move played, the
  * check / checkmate / stalemate flags, the dynamic position, the halfmove clock, the castling-right loss reasons, and
- * the derived SAN / LAN strings), plus the legal moves of the <em>current</em>
- * position - everything needed to answer rule-level questions about the game so far. Legal moves are derived cache,
- * not history: past positions do not retain their legal-move lists, and the current set is recomputed on
- * {@link #unmove()}.
+ * the derived SAN / LAN strings), plus the legal moves of the <em>current</em> position - everything needed to answer
+ * rule-level questions about the game so far. Legal moves are derived cache, not history: past positions do not retain
+ * their legal-move lists, and the current set is recomputed on {@link #unmove()}.
  *
  * <h2>Construction</h2>
  *
@@ -91,8 +90,7 @@ import io.github.dlbbld.ashlarchess.unwinnability.UnwinnableQuickAnalyzer;
  * at checkmate and stalemate the legal-move set is empty, so any attempted move fails through ordinary legality; at
  * mutual insufficient material, fivefold repetition, the 75-move rule, and analyzer-driven dead positions, legal moves
  * still exist and the pipeline accepts them (the caller polls and decides whether to adjudicate). The package-level
- * Javadoc on
- * {@link io.github.dlbbld.ashlarchess.board} documents the strict-game invariant in detail.
+ * Javadoc on {@link io.github.dlbbld.ashlarchess.board} documents the strict-game invariant in detail.
  *
  * <h2>Querying the game</h2>
  *
@@ -249,10 +247,10 @@ public final class Board {
   /**
    * Constructs a {@code Board} from a FEN string via {@link LenientFenParser}. The lenient layer applies a
    * syntactic-tolerance pass (whitespace, casing, missing halfmove clock and fullmove number, non-canonical castling
-   * order, non-ASCII dashes, trailing garbage) before delegating to {@link StrictFenParser}. Strict semantic
-   * invariants are unchanged: a FEN with a missing king, a pawn on rank 1, an impossible double-check, or castling
-   * rights that contradict the piece placement still fails. Callers who need to see the list of tolerated deviations
-   * should invoke {@link LenientFenParser#validate(String)} directly.
+   * order, non-ASCII dashes, trailing garbage) before delegating to {@link StrictFenParser}. Strict semantic invariants
+   * are unchanged: a FEN with a missing king, a pawn on rank 1, an impossible double-check, or castling rights that
+   * contradict the piece placement still fails. Callers who need to see the list of tolerated deviations should invoke
+   * {@link LenientFenParser#validate(String)} directly.
    *
    * @throws io.github.dlbbld.ashlarchess.fen.LenientFenParserValidationException when the input cannot be recovered or
    *                                                                              fails the strict semantic checks
@@ -375,8 +373,8 @@ public final class Board {
     final long afterEnPassantBit = afterEnPassantCaptureTargetSquare == Square.NONE ? 0L
         : 1L << afterEnPassantCaptureTargetSquare.ordinal();
 
-    final ImmutableList<LegalMove> legalMovesAfterMove = BitboardLegalMoveFactory.calculateLegalMoves(
-        afterBitboardPosition, afterSideToMove, afterCastlingRightSideToMove, afterEnPassantBit);
+    final ImmutableList<LegalMove> legalMovesAfterMove = BitboardLegalMoveFactory
+        .calculateLegalMoves(afterBitboardPosition, afterSideToMove, afterCastlingRightSideToMove, afterEnPassantBit);
 
     final boolean isCheck = afterBitboardPosition.isInCheck(afterSideToMove);
     final boolean isCheckmate = isCheck && legalMovesAfterMove.isEmpty();
@@ -395,9 +393,8 @@ public final class Board {
 
     // now changing board class state, so performing the move! Keep the repetition index in lockstep with the list.
     incrementRepetitionCount(newDynamicPosition);
-    this.boardStates.add(new BoardState(moveToPerform, san, lan, isCheck, isCheckmate, isStalemate,
-        newDynamicPosition, newHalfMoveClock, whiteKingSideLoss, whiteQueenSideLoss, blackKingSideLoss,
-        blackQueenSideLoss));
+    this.boardStates.add(new BoardState(moveToPerform, san, lan, isCheck, isCheckmate, isStalemate, newDynamicPosition,
+        newHalfMoveClock, whiteKingSideLoss, whiteQueenSideLoss, blackKingSideLoss, blackQueenSideLoss));
     this.currentLegalMoves = legalMovesAfterMove;
   }
 
@@ -796,8 +793,8 @@ public final class Board {
     if (isFirstMove()) {
       throw new IllegalStateException("There is no last move");
     }
-    final int fullMoveNumber = fullMoveNumberFor(isFirstMove(), initialFen.fullMoveNumber(),
-        initialFen.sideToMove(), getSideToMove(), getPerformedMoveCount());
+    final int fullMoveNumber = fullMoveNumberFor(isFirstMove(), initialFen.fullMoveNumber(), initialFen.sideToMove(),
+        getSideToMove(), getPerformedMoveCount());
 
     return switch (getSideToMove()) {
       case WHITE -> fullMoveNumber - 1;
@@ -807,8 +804,8 @@ public final class Board {
     };
   }
 
-  private static int fullMoveNumberFor(boolean isFirstMove, int initialFenFullMoveNumber,
-      Side initialFenSideToMove, Side sideToMove, int performedMoveCount) {
+  private static int fullMoveNumberFor(boolean isFirstMove, int initialFenFullMoveNumber, Side initialFenSideToMove,
+      Side sideToMove, int performedMoveCount) {
     if (isFirstMove) {
       return initialFenFullMoveNumber;
     }
@@ -961,9 +958,8 @@ public final class Board {
   }
 
   /**
-   * Current position as a {@link BitboardPosition}. Carried directly on every {@link DynamicPosition} in
-   * the last {@link #boardStates} entry (appended on every {@link #move}, popped on every {@link #unmove}). O(1) per
-   * call. The
+   * Current position as a {@link BitboardPosition}. Carried directly on every {@link DynamicPosition} in the last
+   * {@link #boardStates} entry (appended on every {@link #move}, popped on every {@link #unmove}). O(1) per call. The
    * bitboard is the single source of truth for piece placement on the board; the StaticPosition reference layer lives
    * in {@code src/test/} as the permanent differential-test oracle.
    */
@@ -1098,16 +1094,16 @@ public final class Board {
   /**
    * Game equality: two boards are equal when they share the same initial FEN and the same full per-position history
    * (the move played, the derived check / checkmate / stalemate flags, the dynamic position, the halfmove clock, and
-   * the castling-right-loss reasons at every position passed through). This is <em>game</em>
-   * identity, not <em>position</em> identity - two boards that reach the same current position by different move orders
-   * are <strong>not</strong> equal.
+   * the castling-right-loss reasons at every position passed through). This is <em>game</em> identity, not
+   * <em>position</em> identity - two boards that reach the same current position by different move orders are
+   * <strong>not</strong> equal.
    *
    * <p>
    * To compare positions rather than games, compare {@link #getDynamicPosition()} instead: it is the exact,
    * collision-free value record for the current position (side to move, piece placement, castling rights, and
    * en-passant target). Because {@code Board} is mutable, its equality changes as moves are played - see the
-   * class-level thread-safety note before using a {@code Board} as a {@link java.util.Map} key or
-   * {@link java.util.Set} element.
+   * class-level thread-safety note before using a {@code Board} as a {@link java.util.Map} key or {@link java.util.Set}
+   * element.
    */
   @Override
   public boolean equals(@Nullable Object obj) {

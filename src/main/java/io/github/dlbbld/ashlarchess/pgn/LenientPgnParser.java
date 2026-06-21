@@ -23,8 +23,8 @@ import io.github.dlbbld.ashlarchess.fen.constants.FenConstants;
 import io.github.dlbbld.ashlarchess.fen.model.Fen;
 import io.github.dlbbld.ashlarchess.model.PgnMove;
 import io.github.dlbbld.ashlarchess.san.ForgivenSanItem;
-import io.github.dlbbld.ashlarchess.san.LenientSanParserValidationException;
 import io.github.dlbbld.ashlarchess.san.LenientSanParseResult;
+import io.github.dlbbld.ashlarchess.san.LenientSanParserValidationException;
 import io.github.dlbbld.ashlarchess.san.SanValidationProblem;
 
 /**
@@ -202,8 +202,8 @@ public final class LenientPgnParser {
 
     final List<PgnMove> canonicalMoves = replayBoardCanonicalizing(startFen, movetext.moves());
 
-    return new PgnGame(Nulls.copyOfList(tags), startFen, movetext.pregameCommentary(),
-        Nulls.copyOfList(canonicalMoves), movetext.terminationResult());
+    return new PgnGame(Nulls.copyOfList(tags), startFen, movetext.pregameCommentary(), Nulls.copyOfList(canonicalMoves),
+        movetext.terminationResult());
   }
 
   // -------------------------------------------------------------------------------------------------
