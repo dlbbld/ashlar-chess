@@ -28,7 +28,7 @@ public final class SquareUtility {
    * The square reached by a 180-degree rotation of the board (point reflection through the centre): file is mirrored
    * left-right and rank top-bottom, so {@code a1 <-> h8}.
    */
-  public static Square flip(Square square) {
+  public static Square rotate180(Square square) {
     return switch (square) {
       case NONE -> throw new NonePointerException();
       case A1 -> Square.H8;

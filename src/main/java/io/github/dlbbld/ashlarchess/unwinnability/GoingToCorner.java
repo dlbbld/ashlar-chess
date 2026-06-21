@@ -77,9 +77,9 @@ final class GoingToCorner {
 
     Square target = calculateTargetSquare(isDarkCorner, goal, p.getPieceType());
     if (winner == BLACK) {
-      // 8: set target := (flip-rank  flip-file)(target) . Flip the target with respect to the
+      // 8: set target := (flip-rank  flip-file)(target) . Rotate the target 180 degrees about the
       // center of the board (a8 becomes h1, and h8 becomes a1)
-      target = SquareUtility.flip(target);
+      target = SquareUtility.rotate180(target);
     }
 
     return target;

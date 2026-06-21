@@ -146,8 +146,8 @@ class TestMirrorSymmetry {
         move.promotionPieceType());
   }
 
-  // Vertical flip (rank r -> 7-r, file preserved), matching the position mirror. NOT SquareUtility.flip, which is a
-  // 180-degree rotation (file also mirrored). ordinal = file + 8*rank, so XOR 0b111000 flips only the rank.
+  // Vertical flip (rank r -> 7-r, file preserved), matching the position mirror. NOT SquareUtility.rotate180, which is
+  // a 180-degree rotation (file also mirrored). ordinal = file + 8*rank, so XOR 0b111000 flips only the rank.
   private static Square verticalFlip(Square square) {
     return Square.values()[square.ordinal() ^ 0b111000];
   }
