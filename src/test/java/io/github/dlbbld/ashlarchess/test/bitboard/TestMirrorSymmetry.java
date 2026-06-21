@@ -155,11 +155,11 @@ class TestMirrorSymmetry {
   }
 
   private static void assertPositionMirror(Board original, Board mirror, String pgnName, int ply) {
-    final String[] expected = mirrorFen(original.getFen()).split("\\s+");
-    final String[] actual = mirror.getFen().split("\\s+");
+    final String[] expected = Nulls.split(mirrorFen(original.getFen()), "\\s+");
+    final String[] actual = Nulls.split(mirror.getFen(), "\\s+");
     for (int i = 0; i < 4; i++) {
       final int field = i;
-      assertEquals(expected[i], actual[i],
+      assertEquals(Nulls.get(expected, i), Nulls.get(actual, i),
           () -> "mirror desync at FEN field " + field + " after ply " + ply + " in " + pgnName);
     }
     assertEquals(original.getHalfMoveClock(), mirror.getHalfMoveClock(),
@@ -204,39 +204,40 @@ class TestMirrorSymmetry {
   }
 
   private static void assertMirrorInvolution(String fen) {
-    final String[] original = fen.trim().split("\\s+");
-    final String[] doubled = mirrorFen(mirrorFen(fen)).split("\\s+");
+    final String[] original = Nulls.split(Nulls.trim(fen), "\\s+");
+    final String[] doubled = Nulls.split(mirrorFen(mirrorFen(fen)), "\\s+");
     // Fields 0-4 (placement, side, castling, en-passant, halfmove clock) must round-trip; field 5 (fullmove) is
     // deliberately normalised by the mirror, so it is excluded.
     for (int i = 0; i < 5; i++) {
       final int field = i;
-      assertEquals(original[i], doubled[i], () -> "mirror is not an involution at field " + field + " for: " + fen);
+      assertEquals(Nulls.get(original, i), Nulls.get(doubled, i),
+          () -> "mirror is not an involution at field " + field + " for: " + fen);
     }
   }
 
   // ---- FEN mirror: vertical flip + colour swap (the same position from the other side) ----
 
   private static String mirrorFen(String fen) {
-    final String[] fields = fen.trim().split("\\s+");
-    final String placement = mirrorPlacement(fields[0]);
-    final String side = "w".equals(fields[1]) ? "b" : "w";
-    final String castling = mirrorCastling(fields[2]);
-    final String enPassant = mirrorEnPassant(fields[3]);
+    final String[] fields = Nulls.split(Nulls.trim(fen), "\\s+");
+    final String placement = mirrorPlacement(Nulls.get(fields, 0));
+    final String side = "w".equals(Nulls.get(fields, 1)) ? "b" : "w";
+    final String castling = mirrorCastling(Nulls.get(fields, 2));
+    final String enPassant = mirrorEnPassant(Nulls.get(fields, 3));
     // Keep the halfmove clock (clock-sensitive predicates must compare like-for-like); the fullmove number is metadata
     // that affects no rule, so normalise it to one that is consistent with the flipped side and any clock (clock+1
     // always satisfies clock <= plies-implied-by-fullmove for either side to move).
-    final int halfMoveClock = Integer.parseInt(fields[4]);
+    final int halfMoveClock = Integer.parseInt(Nulls.get(fields, 4));
     return placement + " " + side + " " + castling + " " + enPassant + " " + halfMoveClock + " " + (halfMoveClock + 1);
   }
 
   private static String mirrorPlacement(String placement) {
-    final String[] ranks = placement.split("/");
+    final String[] ranks = Nulls.split(placement, "/");
     final StringBuilder result = new StringBuilder();
     for (int i = ranks.length - 1; i >= 0; i--) {
       if (result.length() > 0) {
         result.append('/');
       }
-      result.append(swapCase(ranks[i]));
+      result.append(swapCase(Nulls.get(ranks, i)));
     }
     return Nulls.toString(result);
   }

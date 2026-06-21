@@ -23,8 +23,8 @@ class TestLenientPgnParserMalformedTermination {
   @SuppressWarnings("static-method")
   @Test
   void malformedTerminationMarkerIsValidationProblemNotRawException() {
-    final LenientPgnParserValidationException exception = assertThrows(LenientPgnParserValidationException.class,
-        () -> LenientPgnParser.parseText("1. e4 e5 1-2"));
+    @SuppressWarnings("null") final LenientPgnParserValidationException exception = assertThrows(
+        LenientPgnParserValidationException.class, () -> LenientPgnParser.parseText("1. e4 e5 1-2"));
     assertEquals(LenientPgnParserValidationProblem.MOVETEXT_TERMINATION_MARKER_INVALID,
         exception.getLenientPgnParserValidationProblem());
   }
