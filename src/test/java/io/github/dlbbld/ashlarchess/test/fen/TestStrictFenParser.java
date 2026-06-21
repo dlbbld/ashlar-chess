@@ -57,8 +57,8 @@ class TestStrictFenParser {
   void parseInvalidFenThrowsStrictException() {
     final String fenWithInvalidSideToMove = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR x KQkq - 0 1";
 
-    final StrictFenSemanticValidationException exception = assertThrows(StrictFenSemanticValidationException.class,
-        () -> StrictFenParser.parse(fenWithInvalidSideToMove));
+    @SuppressWarnings("null") final StrictFenSemanticValidationException exception = assertThrows(
+        StrictFenSemanticValidationException.class, () -> StrictFenParser.parse(fenWithInvalidSideToMove));
 
     assertEquals(StrictFenSemanticValidationProblem.INVALID_SIDE_TO_MOVE_RANGE,
         exception.getStrictFenSemanticValidationProblem());

@@ -10,10 +10,12 @@ import java.util.List;
 import java.util.Map;
 
 import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.Nullable;
 
 import io.github.dlbbld.ashlarchess.board.Board;
 import io.github.dlbbld.ashlarchess.board.enums.CastlingMove;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
+import io.github.dlbbld.ashlarchess.common.Nulls;
 import io.github.dlbbld.ashlarchess.common.model.MoveSpecification;
 import io.github.dlbbld.ashlarchess.fen.model.Fen;
 import io.github.dlbbld.ashlarchess.model.PgnMove;
@@ -65,7 +67,7 @@ public class BoardApiBurnInSurvey {
     long run(Ctx ctx);
   }
 
-  private record Ctx(Board board, MoveSpecification candidate, String candidateSan, Board shadow) {
+  private record Ctx(Board board, @Nullable MoveSpecification candidate, @Nullable String candidateSan, Board shadow) {
   }
 
   private record NamedProbe(String name, Probe probe) {
@@ -77,6 +79,7 @@ public class BoardApiBurnInSurvey {
 
     for (final PgnTest pgnTest : GROUPS) {
       @SuppressWarnings("null") final @NonNull PgnTest pgnTestNotNull = pgnTest;
+      final String groupName = Nulls.name(pgnTestNotNull);
       final List<Game> games = collectGames(pgnTestNotNull);
       final int plies = totalPlies(games);
 
@@ -88,12 +91,12 @@ public class BoardApiBurnInSurvey {
       final Map<String, Double> usPerPly = new LinkedHashMap<>();
       final double denominator = (double) plies * MEASURE_ROUNDS;
       for (final NamedProbe namedProbe : probes) {
-        final Long total = nanos.get(namedProbe.name());
-        usPerPly.put(namedProbe.name(), (total == null ? 0L : total.longValue()) / denominator / 1000.0);
+        final Long total = Nulls.get(nanos, namedProbe.name());
+        usPerPly.put(namedProbe.name(), total.longValue() / denominator / 1000.0);
       }
-      perGroup.put(pgnTest.name(), usPerPly);
+      perGroup.put(groupName, usPerPly);
 
-      printGroup(pgnTest.name(), games.size(), plies, usPerPly);
+      printGroup(groupName, games.size(), plies, usPerPly);
       printHeavy(games);
     }
 
@@ -113,14 +116,14 @@ public class BoardApiBurnInSurvey {
           shadow.move(spec);
 
           final List<MoveSpecification> legal = board.getLegalMoveSpecifications();
-          final MoveSpecification candidate = legal.isEmpty() ? null : legal.get(0);
+          final @Nullable MoveSpecification candidate = legal.isEmpty() ? null : Nulls.get(legal, 0);
           final List<String> legalSan = board.getLegalMovesAsSan();
-          final String candidateSan = legalSan.isEmpty() ? null : legalSan.get(0);
+          final @Nullable String candidateSan = legalSan.isEmpty() ? null : Nulls.get(legalSan, 0);
           final Ctx ctx = new Ctx(board, candidate, candidateSan, shadow);
 
           for (int p = 0; p < probes.size(); p++) {
             final long t0 = System.nanoTime();
-            final long value = probes.get(p).probe().run(ctx);
+            final long value = Nulls.get(probes, p).probe().run(ctx);
             nanos[p] += System.nanoTime() - t0;
             localSink += value;
           }
@@ -131,7 +134,7 @@ public class BoardApiBurnInSurvey {
 
     final Map<String, Long> result = new LinkedHashMap<>();
     for (int p = 0; p < probes.size(); p++) {
-      result.put(probes.get(p).name(), nanos[p]);
+      result.put(Nulls.get(probes, p).name(), nanos[p]);
     }
     return result;
   }
@@ -195,12 +198,9 @@ public class BoardApiBurnInSurvey {
         c -> c.board().canClaimThreefoldRepetitionRuleWithOwnMove() ? 1 : 0));
 
     // ---- arg-taking claim predicates (internally probe move/unmove) ----
-    probes.add(new NamedProbe("canClaimDrawFor(move)",
-        c -> c.candidate() == null ? 0 : (c.board().canClaimDrawFor(c.candidate()) ? 1 : 0)));
-    probes.add(new NamedProbe("canClaimFiftyMoveRuleFor(move)",
-        c -> c.candidate() == null ? 0 : (c.board().canClaimFiftyMoveRuleFor(c.candidate()) ? 1 : 0)));
-    probes.add(new NamedProbe("canClaimThreefoldRepetitionRuleFor(move)",
-        c -> c.candidate() == null ? 0 : (c.board().canClaimThreefoldRepetitionRuleFor(c.candidate()) ? 1 : 0)));
+    probes.add(new NamedProbe("canClaimDrawFor(move)", c -> claimDrawMove(c)));
+    probes.add(new NamedProbe("canClaimFiftyMoveRuleFor(move)", c -> claimFiftyMove(c)));
+    probes.add(new NamedProbe("canClaimThreefoldRepetitionRuleFor(move)", c -> claimThreefoldMove(c)));
     probes.add(new NamedProbe("canClaimFiftyMoveRuleFor(san)", c -> claimFiftySan(c)));
     probes.add(new NamedProbe("canClaimThreefoldRepetitionRuleFor(san)", c -> claimThreefoldSan(c)));
 
@@ -223,25 +223,42 @@ public class BoardApiBurnInSurvey {
   }
 
   private static long claimFiftySan(Ctx c) {
-    if (c.candidateSan() == null) {
+    final @Nullable String candidateSan = c.candidateSan();
+    if (candidateSan == null) {
       return 0L;
     }
     try {
-      return c.board().canClaimFiftyMoveRuleFor(c.candidateSan()) ? 1L : 0L;
-    } catch (final RuntimeException e) {
+      return c.board().canClaimFiftyMoveRuleFor(candidateSan) ? 1L : 0L;
+    } catch (@SuppressWarnings("unused") final RuntimeException e) {
       return 0L;
     }
   }
 
   private static long claimThreefoldSan(Ctx c) {
-    if (c.candidateSan() == null) {
+    final @Nullable String candidateSan = c.candidateSan();
+    if (candidateSan == null) {
       return 0L;
     }
     try {
-      return c.board().canClaimThreefoldRepetitionRuleFor(c.candidateSan()) ? 1L : 0L;
-    } catch (final RuntimeException e) {
+      return c.board().canClaimThreefoldRepetitionRuleFor(candidateSan) ? 1L : 0L;
+    } catch (@SuppressWarnings("unused") final RuntimeException e) {
       return 0L;
     }
+  }
+
+  private static long claimDrawMove(Ctx c) {
+    final @Nullable MoveSpecification candidate = c.candidate();
+    return candidate == null ? 0L : c.board().canClaimDrawFor(candidate) ? 1L : 0L;
+  }
+
+  private static long claimFiftyMove(Ctx c) {
+    final @Nullable MoveSpecification candidate = c.candidate();
+    return candidate == null ? 0L : c.board().canClaimFiftyMoveRuleFor(candidate) ? 1L : 0L;
+  }
+
+  private static long claimThreefoldMove(Ctx c) {
+    final @Nullable MoveSpecification candidate = c.candidate();
+    return candidate == null ? 0L : c.board().canClaimThreefoldRepetitionRuleFor(candidate) ? 1L : 0L;
   }
 
   private static void printHeavy(List<Game> games) {
@@ -255,7 +272,7 @@ public class BoardApiBurnInSurvey {
     long unwinnableQuickNanos = 0L;
     long deadQuickNanos = 0L;
     for (int g = 0; g < sampleCount; g++) {
-      final Game game = games.get(g);
+      final Game game = Nulls.get(games, g);
       final Board board = new Board(game.startFen());
       for (final MoveSpecification spec : game.specs()) {
         board.move(spec);
@@ -280,13 +297,10 @@ public class BoardApiBurnInSurvey {
   }
 
   private static void printScalingTable(List<NamedProbe> probes, Map<String, Map<String, Double>> perGroup) {
-    final String shortGroup = PgnTest.WCC2021.name();
-    final String longGroup = PgnTest.RANDOM_NO_REPETITION.name();
-    final Map<String, Double> shortUs = perGroup.get(shortGroup);
-    final Map<String, Double> longUs = perGroup.get(longGroup);
-    if (shortUs == null || longUs == null) {
-      return;
-    }
+    final String shortGroup = Nulls.name(PgnTest.WCC2021);
+    final String longGroup = Nulls.name(PgnTest.RANDOM_NO_REPETITION);
+    final Map<String, Double> shortUs = Nulls.get(perGroup, shortGroup);
+    final Map<String, Double> longUs = Nulls.get(perGroup, longGroup);
 
     System.out.println("================ SCALING TABLE (per-method us/ply) ================");
     System.out.println("ratio = " + longGroup + " / " + shortGroup
@@ -304,8 +318,7 @@ public class BoardApiBurnInSurvey {
   }
 
   private static double value(Map<String, Double> map, String name) {
-    final Double v = map.get(name);
-    return v == null ? 0.0 : v.doubleValue();
+    return Nulls.get(map, name);
   }
 
   private static double ratio(Map<String, Double> shortUs, Map<String, Double> longUs, String name) {

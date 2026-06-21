@@ -62,9 +62,6 @@ public final class BitboardPositionUtility {
    * iterates squares in ordinal order.
    */
   public static ImmutableSet<Square> toSquares(long bitboard) {
-    if (bitboard == 0L) {
-      return ImmutableSet.of();
-    }
     final Set<Square> squares = new TreeSet<>();
     long remaining = bitboard;
     while (remaining != 0L) {

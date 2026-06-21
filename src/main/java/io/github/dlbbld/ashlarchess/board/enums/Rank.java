@@ -5,6 +5,7 @@ package io.github.dlbbld.ashlarchess.board.enums;
 
 import com.google.common.collect.ImmutableList;
 
+import io.github.dlbbld.ashlarchess.common.Nulls;
 import io.github.dlbbld.ashlarchess.common.exceptions.NonePointerException;
 import io.github.dlbbld.ashlarchess.common.exceptions.ProgrammingMistakeException;
 
@@ -39,7 +40,7 @@ public enum Rank {
    */
   @Override
   public String toString() {
-    return this == NONE ? "none" : String.valueOf(number);
+    return this == NONE ? "none" : Nulls.valueOf(number);
   }
 
   public static boolean exists(char character) {

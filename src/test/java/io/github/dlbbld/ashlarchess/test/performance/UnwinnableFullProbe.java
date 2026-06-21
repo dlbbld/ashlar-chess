@@ -10,13 +10,12 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
-import java.util.function.Supplier;
 
 import org.eclipse.jdt.annotation.NonNull;
 
 import io.github.dlbbld.ashlarchess.board.Board;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
-import io.github.dlbbld.ashlarchess.common.model.MoveSpecification;
+import io.github.dlbbld.ashlarchess.common.Nulls;
 import io.github.dlbbld.ashlarchess.model.PgnMove;
 import io.github.dlbbld.ashlarchess.pgn.PgnGame;
 import io.github.dlbbld.ashlarchess.test.model.PgnFen;
@@ -40,38 +39,59 @@ public class UnwinnableFullProbe {
   private static final PgnTest[] GROUPS = { PgnTest.WCC2021, PgnTest.CHA_LICHESS_QUICK_DEPTH_ABOVE_FOUR,
       PgnTest.RANDOM_NO_REPETITION, PgnTest.MAX_MOVES };
 
-  private static final ExecutorService WORKER = Executors.newSingleThreadExecutor(r -> {
-    final Thread t = new Thread(r, "full-analyzer");
-    t.setDaemon(true);
-    return t;
-  });
+  private static final ExecutorService WORKER = newWorker();
+
+  @FunctionalInterface
+  private interface FullAnalyzerCall {
+    String run();
+  }
+
+  @SuppressWarnings("null")
+  private static ExecutorService newWorker() {
+    return Executors.newSingleThreadExecutor(r -> {
+      final Thread t = new Thread(r, "full-analyzer");
+      t.setDaemon(true);
+      return t;
+    });
+  }
+
+  @SuppressWarnings("null")
+  private static Future<String> submit(FullAnalyzerCall call) {
+    return WORKER.submit(call::run);
+  }
+
+  @SuppressWarnings("null")
+  private static String get(Future<String> future) throws Exception {
+    return future.get(TIMEOUT_MS, TimeUnit.MILLISECONDS);
+  }
 
   public static void main(String[] args) {
     for (final PgnTest pgnTest : GROUPS) {
       @SuppressWarnings("null") final @NonNull PgnTest pgnTestNotNull = pgnTest;
       final List<Board> finals = finalPositions(pgnTestNotNull, GAMES_PER_GROUP);
       for (int g = 0; g < finals.size(); g++) {
-        final Board board = finals.get(g);
+        final Board board = Nulls.get(finals, g);
         final String fen = board.getFen();
-        log(pgnTest.name() + " game#" + (g + 1) + "  plies=" + board.getPerformedMoveCount() + "  fen=" + fen);
-        timeCall("unwinnableFull(WHITE)", fen, () -> board.unwinnableFull(Side.WHITE).toString());
-        timeCall("unwinnableFull(BLACK)", fen, () -> board.unwinnableFull(Side.BLACK).toString());
-        timeCall("deadPositionFull", fen, () -> board.deadPositionFull().toString());
+        log(Nulls.name(pgnTestNotNull) + " game#" + (g + 1) + "  plies=" + board.getPerformedMoveCount() + "  fen="
+            + fen);
+        timeCall("unwinnableFull(WHITE)", fen, () -> Nulls.format("%s", board.unwinnableFull(Side.WHITE)));
+        timeCall("unwinnableFull(BLACK)", fen, () -> Nulls.format("%s", board.unwinnableFull(Side.BLACK)));
+        timeCall("deadPositionFull", fen, () -> Nulls.format("%s", board.deadPositionFull()));
       }
     }
     log("ALL CALLS RETURNED -- no hang; unwinnableFull/deadPositionFull are bounded on these positions.");
     WORKER.shutdownNow();
   }
 
-  private static void timeCall(String label, String fen, Supplier<String> call) {
+  private static void timeCall(String label, String fen, FullAnalyzerCall call) {
     log("  -> " + label + " ...");
     final long start = System.nanoTime();
-    final Future<String> future = WORKER.submit(call::get);
+    final Future<String> future = submit(call);
     try {
-      final String result = future.get(TIMEOUT_MS, TimeUnit.MILLISECONDS);
+      final String result = get(future);
       final double ms = (System.nanoTime() - start) / 1_000_000.0;
-      log(String.format("     %s = %s   (%.1f ms)", label, result, ms));
-    } catch (final TimeoutException e) {
+      log(Nulls.format("     %s = %s   (%.1f ms)", label, result, ms));
+    } catch (@SuppressWarnings("unused") final TimeoutException e) {
       log("     !!! " + label + " DID NOT RETURN within " + (TIMEOUT_MS / 1000)
           + "s -- non-terminating / pathological");
       log("     !!! position: " + fen);
@@ -94,10 +114,7 @@ public class UnwinnableFullProbe {
       final PgnGame pgnGame = PgnCacheForStrictPgnParserTestCases.getPgn(pgnTest.getFolderPath(), testCase.pgnName());
       final Board board = new Board(pgnGame.startFen());
       for (final PgnMove move : pgnGame.moves()) {
-        final MoveSpecification spec = board.moveStrict(move.san());
-        if (spec == null) {
-          throw new IllegalStateException("null spec");
-        }
+        board.moveStrict(move.san());
       }
       result.add(board);
     }

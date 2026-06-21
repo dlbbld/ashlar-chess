@@ -134,6 +134,7 @@ class TestReporterGoldenOutput {
     return render(() -> Reporter.report(pgnTest.getFolderPath(), pgnName));
   }
 
+  @SuppressWarnings("null") // Supplier lacks JDT null annotations
   private static String render(Supplier<ImmutableList<String>> action) {
     final StringBuilder builder = new StringBuilder();
     for (final String line : action.get()) {

@@ -190,7 +190,7 @@ public record BitboardPosition(long whitePawns, long whiteRooks, long whiteKnigh
     }
     final Piece piece = get(fromSquare);
     if (piece == Piece.NONE) {
-      return ImmutableSet.of();
+      return BitboardPositionUtility.toSquares(0L);
     }
     final Side side = piece.getSide();
     final long ownPieces = occupied(side);

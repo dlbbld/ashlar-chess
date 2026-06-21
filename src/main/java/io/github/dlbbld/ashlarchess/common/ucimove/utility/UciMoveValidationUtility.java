@@ -34,14 +34,16 @@ public final class UciMoveValidationUtility {
 
   private static final ImmutableList<UciMove> UCI_MOVES;
   private static final ImmutableMap<String, UciMove> UCI_MOVE_TEXT_LOOKUP;
+  private static final ImmutableList<PieceType> NON_PROMOTION_MOVE_GENERATORS = Nulls.listOf(ROOK, BISHOP, KNIGHT);
 
   static {
     final List<UciMove> uciMoves = new ArrayList<>();
     final Map<String, UciMove> uciMoveTextLookup = new TreeMap<>();
 
-    // Non-promotion moves: every square x {rook, bishop, knight} empty-board reach
+    // Rook, bishop, and knight geometries cover every non-promotion UCI from/to pair; queen, king, pawn, and
+    // castling moves are subsets of those empty-board rays or jumps.
     for (final Square fromSquare : Square.REAL) {
-      for (final PieceType pieceType : List.of(ROOK, BISHOP, KNIGHT)) {
+      for (final PieceType pieceType : NON_PROMOTION_MOVE_GENERATORS) {
         final Set<EmptyBoardMove> moveSet = EmptyBoardMoveUtility.calculateNonPawnEmptyBoardMoves(pieceType,
             fromSquare);
         for (final EmptyBoardMove move : moveSet) {

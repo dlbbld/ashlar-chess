@@ -5,6 +5,7 @@ package io.github.dlbbld.ashlarchess.board.enums;
 
 import com.google.common.collect.ImmutableList;
 
+import io.github.dlbbld.ashlarchess.common.Nulls;
 import io.github.dlbbld.ashlarchess.common.exceptions.NonePointerException;
 
 public enum Piece {
@@ -53,7 +54,7 @@ public enum Piece {
     if (this == NONE) {
       return "none";
     }
-    return String.valueOf(side == Side.WHITE ? Character.toUpperCase(pieceType.getLetter())
+    return Nulls.valueOf(side == Side.WHITE ? Character.toUpperCase(pieceType.getLetter())
         : Character.toLowerCase(pieceType.getLetter()));
   }
 

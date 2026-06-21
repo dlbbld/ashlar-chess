@@ -437,10 +437,10 @@ public final class Board {
   }
 
   private void decrementRepetitionCount(DynamicPosition dynamicPosition) {
-    final Integer oldCount = repetitionCounts.get(dynamicPosition);
-    if (oldCount == null) {
+    if (!repetitionCounts.containsKey(dynamicPosition)) {
       throw new ProgrammingMistakeException("missing repetition count for position being removed");
     }
+    final Integer oldCount = Nulls.get(repetitionCounts, dynamicPosition);
     if (oldCount.intValue() == 1) {
       repetitionCounts.remove(dynamicPosition);
     } else {
@@ -742,11 +742,11 @@ public final class Board {
   }
 
   public int getRepetitionCount() {
-    final Integer count = repetitionCounts.get(getDynamicPosition());
-    if (count == null) {
+    if (!repetitionCounts.containsKey(getDynamicPosition())) {
       throw new ProgrammingMistakeException("missing repetition count for current position");
     }
-    return count.intValue();
+    final Integer count = Nulls.get(repetitionCounts, getDynamicPosition());
+    return count;
   }
 
   public boolean isInsufficientMaterial() {

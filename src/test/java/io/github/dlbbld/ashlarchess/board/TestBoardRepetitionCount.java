@@ -12,6 +12,7 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
+import io.github.dlbbld.ashlarchess.common.Nulls;
 import io.github.dlbbld.ashlarchess.common.model.DynamicPosition;
 import io.github.dlbbld.ashlarchess.model.PgnMove;
 import io.github.dlbbld.ashlarchess.pgn.PgnGame;
@@ -29,7 +30,7 @@ import io.github.dlbbld.ashlarchess.test.pgn.setup.PgnTestCaseCatalog;
  */
 class TestBoardRepetitionCount {
 
-  private static final List<String> KNIGHT_SHUFFLE_CYCLE = List.of("Nf3", "Nf6", "Ng1", "Ng8");
+  private static final List<String> KNIGHT_SHUFFLE_CYCLE = Nulls.listOf("Nf3", "Nf6", "Ng1", "Ng8");
 
   /** Test-only oracle: occurrences of the current dynamic position across the whole history prefix; never the map. */
   private static int historyScanRepetitionCount(Board board) {

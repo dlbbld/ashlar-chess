@@ -105,8 +105,8 @@ class TestLineCommentSemicolon {
   // -------------------------------------------------------------------------------------------------
 
   private static void expectLenientError(String pgnText, LenientPgnParserValidationProblem expected) {
-    final LenientPgnParserValidationException e = assertThrows(LenientPgnParserValidationException.class,
-        () -> LenientPgnParser.parseText(pgnText));
+    @SuppressWarnings("null") final LenientPgnParserValidationException e = assertThrows(
+        LenientPgnParserValidationException.class, () -> LenientPgnParser.parseText(pgnText));
     assertEquals(expected, e.getLenientPgnParserValidationProblem(),
         "Wrong problem category; message was: " + e.getMessage());
   }
