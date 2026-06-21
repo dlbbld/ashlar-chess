@@ -328,7 +328,7 @@ public final class DiagonalLineUtility {
     return firstDiagonal.equals(secondDiagonal);
   }
 
-  private static final ImmutableList<Square> calculateDiagonal(Square fromSquare, Square toSquare) {
+  private static ImmutableList<Square> calculateDiagonal(Square fromSquare, Square toSquare) {
     if (!calculateIsOnDiagonalLine(fromSquare, toSquare)) {
       throw new ProgrammingMistakeException("The method is only designed for squares on a diagonal line");
     }
