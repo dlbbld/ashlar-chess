@@ -173,6 +173,17 @@ Run on the release branch, with the artifacts from step 3 already committed:
   - `mvn javadoc:test-javadoc -Dshow=private` — all test docs.
   - (`mvn javadoc:jar` stays at default visibility — it ships only the public API.)
 - All tasks for the release are marked done in `tasks.md`.
+- **Board performance regression — required when board logic changed materially** (move / unmove, the per-position
+  `BoardState` record, repetition tracking, `hashCode` / `equals`, legal-move caching). Otherwise skip.
+  - Run the burn-in: `mvn -o -q exec:java -Dexec.classpathScope=test -Dexec.mainClass=io.github.dlbbld.ashlarchess.test.performance.BoardApiBurnInSurvey`
+  - Compare the per-method `us/ply` and the scaling `ratio` against
+    `src/test/java/io/github/dlbbld/ashlarchess/test/performance/board-burn-in-baseline.md`. **No scalar/boolean
+    accessor may turn superlinear** (a `ratio` that rises with game length is O(history) and the regression to catch),
+    and no method may regress significantly.
+  - Absolute `us/ply` are machine-relative, so for a real before/after, build the previous release from its tag in a
+    worktree (`git worktree add --detach ../ashlar-<prev> <tag>`), port the survey's renamed method names if the Board
+    API changed, and run both in the **same boot session**.
+  - Append the new release's numbers and the comparison verdict to `board-burn-in-baseline.md`.
 
 ### 5. Release build dry-run (on the branch, before the PR)
 
