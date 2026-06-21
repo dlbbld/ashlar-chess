@@ -14,6 +14,8 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
+import com.google.common.collect.ImmutableList;
+
 import io.github.dlbbld.ashlarchess.board.Board;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
 import io.github.dlbbld.ashlarchess.common.Nulls;
@@ -39,13 +41,13 @@ public class UnwinnabilityWorstCaseSurvey {
   private static final long TIMEOUT_MS = 90_000L;
   private static final int TOP_SLOWEST = 20;
 
-  private static final PgnTest[] CHA_GROUPS = { PgnTest.CHA_LICHESS_QUICK_DEPTH_THREE,
+  private static final ImmutableList<PgnTest> CHA_GROUPS = Nulls.listOf(PgnTest.CHA_LICHESS_QUICK_DEPTH_THREE,
       PgnTest.CHA_LICHESS_QUICK_DEPTH_FOUR, PgnTest.CHA_LICHESS_QUICK_DEPTH_ABOVE_FOUR,
       PgnTest.CHA_LICHESS_QUICK_DEPTH_ABOVE_FOUR_WINNABLE_FOR_FLAGGING_WITH_HELPMATE, PgnTest.CHA_AMBRONA,
       PgnTest.CHA_PAWN_WALL_YES, PgnTest.CHA_PAWN_WALL_NO, PgnTest.CHA_SHALLOW_TERMINATION,
       PgnTest.CHA_HELPMATE_BEYOND_FIVEFOLD, PgnTest.CHA_HELPMATE_BEYOND_SEVENTY_FIVE, PgnTest.CHA_BASIC_MATE_DRAW,
       PgnTest.CHA_BASIC_MATE_HELPMATE_04, PgnTest.CHA_BASIC_MATE_HELPMATE_10,
-      PgnTest.CHA_BASIC_MATE_HELPMATE_AROUND_MAX, PgnTest.CHA_BASIC_HELPMATE_EXISTENCE_THEOREM };
+      PgnTest.CHA_BASIC_MATE_HELPMATE_AROUND_MAX, PgnTest.CHA_BASIC_HELPMATE_EXISTENCE_THEOREM);
 
   private static final ExecutorService WORKER = newWorker();
 
@@ -100,7 +102,10 @@ public class UnwinnabilityWorstCaseSurvey {
 
   private static List<Board> collectPositions() {
     final List<PgnTestCaseList> sources = new ArrayList<>(PgnTestCaseCatalog.getRestrictedTestCaseLists());
-    sources.addAll(PgnTestCaseCatalog.getTestList(CHA_GROUPS));
+
+    for (final PgnTest pgnTest : CHA_GROUPS) {
+      sources.add(PgnTestCaseCatalog.getTestList(pgnTest));
+    }
 
     final Set<String> seenFens = new HashSet<>();
     final List<Board> positions = new ArrayList<>();

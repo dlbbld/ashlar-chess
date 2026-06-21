@@ -108,6 +108,10 @@ public final class Nulls {
     return checkResult(matcher.replaceAll(replacement));
   }
 
+  public static char[] toCharArray(String string) {
+    return checkResult(string.toCharArray());
+  }
+
   public static String toLowerCase(String string) {
     return checkResult(string.toLowerCase());
   }
