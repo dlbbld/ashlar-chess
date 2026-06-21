@@ -1,6 +1,8 @@
 ashlar-chess
 ===========
 
+[![Maven Central](https://img.shields.io/maven-central/v/io.github.dlbbld/ashlar-chess.svg)](https://central.sonatype.com/artifact/io.github.dlbbld/ashlar-chess)
+
 ashlar-chess is a Java chess library focused on rule correctness, production usability, and reproducible validation.
 It implements SAN, FEN, and PGN parsing, validation, and export with a strict/lenient parser pair,
 and includes a Java port of the [Chess Unwinnability Analyzer (CHA)](https://github.com/miguel-ambrona/D3-Chess) as a flagship feature.
@@ -10,7 +12,7 @@ and includes a Java port of the [Chess Unwinnability Analyzer (CHA)](https://git
 It's not a chess engine - it does not calculate best moves for a given position.
 
 It is also not a move-generation benchmark library. The public `Board` is a rich game object: it keeps the position,
-move history, legal moves per ply, SAN/LAN strings, repetition counts, halfmove clocks, and castling-right facts needed
+move history, per-move legal moves, SAN/LAN strings, repetition counts, halfmove clocks, and castling-right facts needed
 for rule-level queries and reports. That rich state is backed by bitboards for piece placement and move generation.
 The CHA full-search hot path is deliberately leaner: it uses mutable bitboards and make/unmake state because cooperative
 mate search needs the best practical performance the design can provide.
@@ -40,7 +42,7 @@ Requires JDK 17 or later at runtime. Published to Maven Central.
 <dependency>
   <groupId>io.github.dlbbld</groupId>
   <artifactId>ashlar-chess</artifactId>
-  <version>18.1.0</version>
+  <version>19.0.0</version>
 </dependency>
 ```
 
@@ -52,7 +54,7 @@ repositories {
 }
 
 dependencies {
-    implementation 'io.github.dlbbld:ashlar-chess:18.1.0'
+    implementation 'io.github.dlbbld:ashlar-chess:19.0.0'
 }
 ```
 
@@ -111,9 +113,9 @@ one who flagged or resigned - and it returns the verdict.
 
 Each event has a **quick** and a **full** variant:
 
-* **quick** - rules `DRAW` or `LOSS`, from the fast `Board.isUnwinnableQuick(Side)` analyzer. It draws only when it can
+* **quick** - rules `DRAW` or `LOSS`, from the fast `Board.unwinnableQuick(Side)` analyzer. It draws only when it can
   *prove* the opponent cannot win; otherwise the flag stands. Latency is bounded - the right choice during live play.
-* **full** - rules `DRAW`, `LOSS`, or `UNDETERMINED`, from the complete `Board.isUnwinnableFull(Side)` analyzer. It
+* **full** - rules `DRAW`, `LOSS`, or `UNDETERMINED`, from the complete `Board.unwinnableFull(Side)` analyzer. It
   additionally *proves* wins and reports `UNDETERMINED` only when its bounded search runs out (rare). The recommended
   check at game end, where the extra cost is negligible.
 
@@ -143,9 +145,12 @@ adjudicates exactly like a flag-fall - same test, same result, in both the quick
 
 <!-- readme:code id=adjudication-resignation -->
 
-## Dead position during play
-Under [FIDE 5.2.2](https://handbook.fide.com/chapter/e012023), the game is drawn as soon as a dead position arises:
-neither player can checkmate by any possible series of legal moves.
+# Dead position during play
+
+This is distinct from adjudication above, which corrects the *result* at game end (flag-fall, resignation). A dead
+position is a **live in-game termination**: under [FIDE 5.2.2](https://handbook.fide.com/chapter/e012023) the game is
+drawn the moment a dead position arises - neither player can checkmate by any possible series of legal moves. It is
+caller-invoked via `Board.deadPositionQuick()` / `Board.deadPositionFull()`; `Adjudicator` does not perform it.
 
 The standard material-only dead positions should still be checked during play:
 
@@ -160,7 +165,7 @@ blocked pawn walls:
 
 ```text
 after each move:
-    if UnwinnableQuickAnalyzer.unwinnableQuick(board) == UNWINNABLE:
+    if board.deadPositionQuick() == DEAD:
         return draw
 ```
 
@@ -182,16 +187,18 @@ A position is unwinnable for a player if there is no legal sequence that can end
 even if the opponent cooperates. If the position is unwinnable for both players, it's a dead position.
 
 > **Note:** quick/full dead-position detection is caller-invoked. `Board` does not run the analyzer during
-> construction or after each move; callers that want to adjudicate analyzer-driven dead positions call the no-side
-> overloads `UnwinnableQuickAnalyzer.unwinnableQuick(board)` / `UnwinnableFullAnalyzer.unwinnableFull(board)`, or the
-> side-specific `Board.isUnwinnableQuick(Side)` / `Board.isUnwinnableFull(Side)`.
+> construction or after each move; callers that want to adjudicate analyzer-driven dead positions call
+> `Board.deadPositionQuick()` / `Board.deadPositionFull()` (backed by `DeadPositionAnalyzer`), or the side-specific
+> `Board.unwinnableQuick(Side)` / `Board.unwinnableFull(Side)`.
 
 ## Methods
 The library provides an implementation of CHA. So for both situations, there is a quick and a full method.
 
 The quick method is designed to prove unwinnability cheaply. In Ambrona's full paper, the quick routine identified 90,543 of the 90,546 unfairly classified Lichess timeout games found by the full algorithm, missing only three (see [white paper](https://chasolver.org/FUN22-full.pdf). It is sound but not complete: when it returns `UNWINNABLE`, the position is proven unwinnable; when it returns `POSSIBLY_WINNABLE`, it simply leaves the question open.
 
-The full method is the stronger analysis. It first applies CHA's static unwinnability reasoning and then, when needed, searches for a cooperative mate. That search is much more expensive by nature, so this implementation bounds it at 500,000 nodes and reports `UNDETERMINED` if the bound is exhausted. The current corpus pins one such position.
+The full method is the stronger analysis. It first applies CHA's static unwinnability reasoning and then, when needed, searches for a cooperative mate. That search is an exhaustive tree search - much more expensive by nature than the quick method, which is not a tree search - so this implementation bounds it at 500,000 nodes and reports `UNDETERMINED` if the bound is exhausted. The current corpus pins one such position.
+
+On cost: in our test sweep - every CHA fixture plus 800 corpus endgame positions, on a standard developer notebook (JDK 17) - `unwinnableFull` returned in at most about half a second per side, so on the order of one second to test both sides. That is why the full variant is the right choice at game end or for offline analysis, while the bounded-latency quick variant is the one for live play, where a per-position delay of about a second for both sides would be too much. The decisive point is the quick method's accuracy, not just its speed: when it cannot prove unwinnability it is wrong to assume the position is unwinnable only about 1 in 10,000 times (the 99.99% above), so a live server can rely on the quick variant during the game and reserve the full search for those rare open cases after the game.
 
 ### Unwinnability
 The quick method has two return values:
@@ -199,7 +206,7 @@ The quick method has two return values:
 * POSSIBLY_WINNABLE - not proven unwinnable; most likely winnable, but it might be unwinnable in some rare cases
 
 The quick method never claims winnability - proving a concrete win is the full method's job.
-`Board.isUnwinnableQuick(Side)` returns this verdict directly. `UnwinnableQuickAnalyzer.unwinnableQuick(...)` returns
+`Board.unwinnableQuick(Side)` returns this verdict directly. `UnwinnableQuickAnalyzer.unwinnableQuick(...)` returns
 `UnwinnabilityQuickAnalysis` (the verdict only).
 
 The full method has four return values:
@@ -212,19 +219,25 @@ in any way, it is only trying an alternative approach for some material cases.
 Performance: The limit regarding "UNDETERMINED" is 500'000 positions. It takes around one to two seconds to reach. Most positions evaluate in milliseconds.
 
 ### Dead position
-A position is dead when it is unwinnable for both players. The no-side overloads check this and reuse the same verdict
-enums, so there is no separate dead-position type.
+A position is dead when it is unwinnable for both players. `DeadPositionAnalyzer` - and the
+`Board.deadPositionQuick()` / `Board.deadPositionFull()` convenience methods - decide this with their own
+whole-position verdicts, rather than reusing the per-side unwinnable vocabulary.
 
-`UnwinnableQuickAnalyzer.unwinnableQuick(board)` returns an `UnwinnabilityQuickVerdict`:
-* UNWINNABLE - the position is dead (neither side can mate)
-* POSSIBLY_WINNABLE - not provably dead
+`Board.deadPositionQuick()` returns a `DeadPositionQuickVerdict`:
+* DEAD - the position is dead (neither side can mate)
+* POSSIBLY_ALIVE - not provably dead
 
-`UnwinnableFullAnalyzer.unwinnableFull(board)` returns an `UnwinnabilityFullVerdict`:
-* WINNABLE_HELPMATE / WINNABLE_BY_THEOREM - not dead (one side can win)
-* UNWINNABLE - the position is dead
+`Board.deadPositionFull()` returns a `DeadPositionFullVerdict`:
+* DEAD - the position is dead
+* ALIVE - not dead (one side can win)
 * UNDETERMINED - the limits in the code interrupted the search
 
 Performance: The comment from the Unwinnability section for UNDETERMINED applies here. However, it checks both sides so that it can take double the time.
+
+### Reading a verdict
+Each of these verdicts is a **proof result**, and a proof has three logical outcomes: proved yes, proved no, and *not proven*. That last state is part of the answer, not a value to ignore: `POSSIBLY_WINNABLE`, `POSSIBLY_ALIVE`, and `UNDETERMINED` all mean *the analysis could not decide* - **not** the opposite of the proven case.
+
+So each verdict is a plain enum, read by comparing the constant; there is deliberately no `isUnwinnable()` / `isDead()` shortcut. A boolean would collapse the three outcomes into two, and its negation would mislead: `unwinnableFull(side) != UNWINNABLE` does **not** mean "winnable" (it also covers `POSSIBLY_WINNABLE` and `UNDETERMINED`), and `deadPositionFull() != DEAD` does **not** mean "alive". Never read "not proven X" as "proven not-X" - compare against the exact constant you mean, or `switch` on the verdict so the compiler forces you to handle every case, including the unknown one.
 
 ## Examples
 
@@ -302,7 +315,7 @@ UTF-8 byte-order marks (BOM) are accepted by the lenient parser (stripped on inp
 ### Lenient PGN parser
 The common PGN parser — reads the file with best effort. For example, the space after `[` below is ignored. See the [Limitations](#limitations) section above for what neither parser accepts.
 
-ashlar-chess ships **lenient parsers for all three input languages it consumes** — SAN, PGN, and FEN. Each one applies a typed syntactic-tolerance pass and surfaces tolerated deviations as forgiven items on the validation result, then delegates the heavy lifting to the corresponding strict parser. The PGN flavour (described in this section) routes its SAN tokens through the lenient SAN layer and its `FEN` tag through the lenient FEN layer, so a single lenient PGN parse picks up deviations across all three languages. The lenient FEN layer is reachable directly via `Board.fromFenLenient(String)` for callers that consume FEN strings outside the PGN context (engine output, lichess/chess.com exports, hand-edited fixtures); see `specification.md` §3.3.3 for the strict-vs-lenient × raw-vs-advanced contract and the full `ForgivenFenItemCode` taxonomy.
+ashlar-chess ships **lenient parsers for all three input languages it consumes** — SAN, PGN, and FEN. Each one applies a typed syntactic-tolerance pass and surfaces tolerated deviations as forgiven items on the validation result, then delegates the heavy lifting to the corresponding strict parser. The PGN flavour (described in this section) routes its SAN tokens through the lenient SAN layer and its `FEN` tag through the lenient FEN layer, so a single lenient PGN parse picks up deviations across all three languages. The lenient FEN layer is reachable directly via `Board.fromFenLenient(String)` for callers that consume FEN strings outside the PGN context (engine output, lichess/chess.com exports, hand-edited fixtures); see `specification.md` §3.3.3 for the strict-vs-lenient contract and the full `ForgivenFenItemCode` taxonomy.
 
 In addition to structural tolerances (whitespace, missing tags, optional termination markers), the lenient parser accepts a defined set of SAN deviations from canonical — see [PGN SAN tolerances](#pgn-san-tolerances) below.
 
@@ -321,7 +334,7 @@ Output:
 
 #### PGN SAN tolerances
 
-The lenient PGN parser accepts SAN moves that deviate from canonical SAN in any of the following ways. Each accepted deviation is surfaced as a typed `ForgivenItem` via `LenientPgnParserValidationResult.sanForgivenItems()`, so consumers can either silently accept or warn the user. The full taxonomy (21 codes) is documented in `specification.md` §3.3.1.
+The lenient PGN parser accepts SAN moves that deviate from canonical SAN in any of the following ways. Each accepted deviation is surfaced as a typed `ForgivenSanItem` via `LenientPgnParserValidationResult.sanForgivenItems()`, so consumers can either silently accept or warn the user. The full taxonomy (21 codes) is documented in `specification.md` §3.3.1.
 
 - **Castling**: `0-0` / `0-0-0` (zero instead of letter O)
 - **Notation form**: long algebraic (`e2-e4`, `Nb1-d7`), UCI (`e2e4`, `e7e8q`, `e1g1` for castling), explicit pawn letter (`Pe4`)

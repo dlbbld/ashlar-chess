@@ -9,13 +9,13 @@ import org.eclipse.jdt.annotation.Nullable;
 import com.google.common.collect.ImmutableList;
 
 import io.github.dlbbld.ashlarchess.common.Nulls;
-import io.github.dlbbld.ashlarchess.common.enums.FenAdvancedValidationProblem;
+import io.github.dlbbld.ashlarchess.common.enums.StrictFenSemanticValidationProblem;
 import io.github.dlbbld.ashlarchess.common.exceptions.UsageException;
 
 /**
- * Thrown by {@link LenientFenParser#parseText(String)} when the input cannot be parsed even after lenient
+ * Thrown by {@link LenientFenParser#parse(String)} when the input cannot be parsed even after lenient
  * normalisation, or when the normalised FEN fails strict semantic validation. Mirrors the SAN- and PGN-side
- * lenient-parser exceptions: carries the typed problem category, the underlying advanced-validation problem (when
+ * lenient-parser exceptions: carries the typed problem category, the underlying strict-semantic-validation problem (when
  * applicable), and the list of forgiven items accumulated before the failure point.
  */
 @SuppressWarnings("null")
@@ -24,11 +24,12 @@ public class LenientFenParserValidationException extends UsageException {
   private final LenientFenParserValidationProblem lenientFenParserValidationProblem;
 
   /**
-   * The underlying {@link FenAdvancedValidationProblem} when {@link #lenientFenParserValidationProblem} is
-   * {@link LenientFenParserValidationProblem#ADVANCED_INVALID}; {@link FenAdvancedValidationProblem#SUCCESS} otherwise.
-   * Carried so callers can react to the specific advanced-invariant violation without parsing the message.
+   * The underlying {@link StrictFenSemanticValidationProblem} when {@link #lenientFenParserValidationProblem} is
+   * {@link LenientFenParserValidationProblem#STRICT_SEMANTIC_INVALID};
+   * {@link StrictFenSemanticValidationProblem#SUCCESS} otherwise. Carried so callers can react to the specific strict
+   * semantic invariant violation without parsing the message.
    */
-  private final FenAdvancedValidationProblem fenAdvancedValidationProblem;
+  private final StrictFenSemanticValidationProblem strictFenSemanticValidationProblem;
 
   /**
    * Forgiven items accumulated before the failure point. Lenient normalisation runs left-to-right; if the delegate
@@ -39,16 +40,16 @@ public class LenientFenParserValidationException extends UsageException {
 
   public LenientFenParserValidationException(LenientFenParserValidationProblem lenientFenParserValidationProblem,
       String message) {
-    this(lenientFenParserValidationProblem, FenAdvancedValidationProblem.SUCCESS, message, ImmutableList.of());
+    this(lenientFenParserValidationProblem, StrictFenSemanticValidationProblem.SUCCESS, message, ImmutableList.of());
   }
 
   public LenientFenParserValidationException(LenientFenParserValidationProblem lenientFenParserValidationProblem,
-      @Nullable FenAdvancedValidationProblem fenAdvancedValidationProblem, String message,
+      @Nullable StrictFenSemanticValidationProblem strictFenSemanticValidationProblem, String message,
       @NonNull ImmutableList<@NonNull ForgivenFenItem> forgivenItemsAccumulated) {
     super(message);
     this.lenientFenParserValidationProblem = lenientFenParserValidationProblem;
-    this.fenAdvancedValidationProblem = fenAdvancedValidationProblem == null ? FenAdvancedValidationProblem.SUCCESS
-        : fenAdvancedValidationProblem;
+    this.strictFenSemanticValidationProblem = strictFenSemanticValidationProblem == null ? StrictFenSemanticValidationProblem.SUCCESS
+        : strictFenSemanticValidationProblem;
     this.forgivenItemsAccumulated = Nulls.copyOfList(forgivenItemsAccumulated);
   }
 
@@ -56,8 +57,8 @@ public class LenientFenParserValidationException extends UsageException {
     return lenientFenParserValidationProblem;
   }
 
-  public FenAdvancedValidationProblem getFenAdvancedValidationProblem() {
-    return fenAdvancedValidationProblem;
+  public StrictFenSemanticValidationProblem getStrictFenSemanticValidationProblem() {
+    return strictFenSemanticValidationProblem;
   }
 
   public @NonNull ImmutableList<@NonNull ForgivenFenItem> getForgivenItemsAccumulated() {

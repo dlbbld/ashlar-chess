@@ -8,6 +8,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import com.google.common.collect.ImmutableList;
+
 import io.github.dlbbld.ashlarchess.board.Board;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
 import io.github.dlbbld.ashlarchess.common.Nulls;
@@ -23,7 +25,10 @@ import io.github.dlbbld.ashlarchess.model.UciMove;
 //table used by Find-Helpmatec should be initialized to empty at the beginning, but it can be
 //shared between different calls to Find-Helpmatec in step 3. On the other hand, the global
 //counter cnt should be initialized to 0 on every base call to Find-Helpmatec in step 3.
-public class UnwinnableFullAnalyzer {
+public final class UnwinnableFullAnalyzer {
+
+  private UnwinnableFullAnalyzer() {
+  }
 
   private static final int MAX_DEPTH = 100;
   private static final int GLOBAL_NODES_BOUND = 500000;
@@ -35,29 +40,6 @@ public class UnwinnableFullAnalyzer {
   public static UnwinnabilityFullAnalysis unwinnableFull(Board input, Side winner) {
     final Board board = copyCurrentPositionForFullSearch(input);
     return unwinnableFull(board, winner, false, new MobilitySolution());
-  }
-
-  /**
-   * Dead-position-full check for the whole position (no intended winner): a winnable verdict
-   * ({@code WINNABLE_HELPMATE} / {@code WINNABLE_BY_THEOREM}) means the position is not dead because that side can win;
-   * {@code UNWINNABLE} means dead - neither side can deliver checkmate by any sequence of legal moves; {@code UNDETERMINED}
-   * means it could not be decided within the search bound. This complete check is suggested at game end (resignation or
-   * flag-fall); during the game prefer the cheaper {@link UnwinnableQuickAnalyzer#unwinnableQuick(Board)}. Short-circuits:
-   * it stops as soon as one side is found winnable.
-   */
-  public static UnwinnabilityFullVerdict unwinnableFull(Board board) {
-    final UnwinnabilityFullVerdict white = unwinnableFull(board, Side.WHITE).verdict();
-    if (white.isWinnable()) {
-      return white;
-    }
-    final UnwinnabilityFullVerdict black = unwinnableFull(board, Side.BLACK).verdict();
-    if (black.isWinnable()) {
-      return black;
-    }
-    if (white == UnwinnabilityFullVerdict.UNWINNABLE && black == UnwinnabilityFullVerdict.UNWINNABLE) {
-      return UnwinnabilityFullVerdict.UNWINNABLE;
-    }
-    return UnwinnabilityFullVerdict.UNDETERMINED;
   }
 
   // Inputs: position, intended winner
@@ -76,7 +58,7 @@ public class UnwinnableFullAnalyzer {
       isCanUseMobilitySolution = false;
       final LegalMove onlyLegalMove = Nulls.getFirst(board.getLegalMoves());
       forcedMoveLine.add(
-          UciMoveUtility.convertMoveSpecificationToUci(onlyLegalMove.havingMove(), onlyLegalMove.moveSpecification()));
+          UciMoveUtility.toUci(onlyLegalMove.movingSide(), onlyLegalMove.moveSpecification()));
       board.move(onlyLegalMove.moveSpecification());
       isForcedMove = board.getLegalMoves().size() == 1;
       totalForcedMoves++;
@@ -91,7 +73,7 @@ public class UnwinnableFullAnalyzer {
     }
     if (UnwinnableSemiStatic.unwinnableSemiStatic(board, winner, mobilitySolution)) {
       undoForcedMoves(board, totalForcedMoves);
-      return new UnwinnabilityFullAnalysis(UnwinnabilityFullVerdict.UNWINNABLE, new ArrayList<>());
+      return new UnwinnabilityFullAnalysis(UnwinnabilityFullVerdict.UNWINNABLE, Nulls.listOf());
     }
 
     // Basic-helpmate-existence theorem: for elementary mating material, decide winnability directly instead of
@@ -100,10 +82,10 @@ public class UnwinnableFullAnalyzer {
     switch (BasicHelpmateExistenceTheorem.decide(board, winner)) {
       case WINNABLE:
         undoForcedMoves(board, totalForcedMoves);
-        return new UnwinnabilityFullAnalysis(UnwinnabilityFullVerdict.WINNABLE_BY_THEOREM, new ArrayList<>());
+        return new UnwinnabilityFullAnalysis(UnwinnabilityFullVerdict.WINNABLE_BY_THEOREM, Nulls.listOf());
       case UNWINNABLE:
         undoForcedMoves(board, totalForcedMoves);
-        return new UnwinnabilityFullAnalysis(UnwinnabilityFullVerdict.UNWINNABLE, new ArrayList<>());
+        return new UnwinnabilityFullAnalysis(UnwinnabilityFullVerdict.UNWINNABLE, Nulls.listOf());
       case NOT_APPLICABLE:
         break;
       default:
@@ -123,7 +105,7 @@ public class UnwinnableFullAnalyzer {
       globalNodeCount += helpmateAnalysis.localNodesCount();
 
       if (globalNodeCount > GLOBAL_NODES_BOUND) {
-        return new UnwinnabilityFullAnalysis(UnwinnabilityFullVerdict.UNDETERMINED, new ArrayList<>());
+        return new UnwinnabilityFullAnalysis(UnwinnabilityFullVerdict.UNDETERMINED, Nulls.listOf());
       }
 
       switch (helpmateAnalysis.findHelpmateResult()) {
@@ -136,7 +118,7 @@ public class UnwinnableFullAnalyzer {
           // 5: else if the search was not interrupted (in step 4 of Figure 5) then
           // 6: return Unwinnable
           undoForcedMoves(board, totalForcedMoves);
-          return new UnwinnabilityFullAnalysis(UnwinnabilityFullVerdict.UNWINNABLE, new ArrayList<>());
+          return new UnwinnabilityFullAnalysis(UnwinnabilityFullVerdict.UNWINNABLE, Nulls.listOf());
         case UNKNOWN:
           // the algorithm continues with next depth
           break;
@@ -146,7 +128,7 @@ public class UnwinnableFullAnalyzer {
     }
 
     undoForcedMoves(board, totalForcedMoves);
-    return new UnwinnabilityFullAnalysis(UnwinnabilityFullVerdict.UNWINNABLE, new ArrayList<>());
+    return new UnwinnabilityFullAnalysis(UnwinnabilityFullVerdict.UNWINNABLE, Nulls.listOf());
   }
 
   private static void undoForcedMoves(Board board, int totalForcedMoves) {
@@ -155,14 +137,14 @@ public class UnwinnableFullAnalyzer {
     }
   }
 
-  private static List<UciMove> prependForcedMoves(List<UciMove> forcedMoveLine, List<UciMove> helpmateLine) {
+  private static ImmutableList<UciMove> prependForcedMoves(List<UciMove> forcedMoveLine, List<UciMove> helpmateLine) {
     final List<UciMove> result = new ArrayList<>(forcedMoveLine);
     result.addAll(helpmateLine);
-    return result;
+    return Nulls.copyOfList(result);
   }
 
   private static Board copyCurrentPositionForFullSearch(Board input) {
-    final Fen fen = new Fen(input.getFen(), input.getBitboardPosition(), input.getHavingMove(),
+    final Fen fen = new Fen(input.getFen(), input.getBitboardPosition(), input.getSideToMove(),
         input.getCastlingRightWhite(), input.getCastlingRightBlack(), input.getEnPassantCaptureTargetSquare(), 0,
         input.getFullMoveNumber());
     return new Board(fen);

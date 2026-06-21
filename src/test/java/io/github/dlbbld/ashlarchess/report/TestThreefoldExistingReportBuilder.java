@@ -4,6 +4,7 @@
 package io.github.dlbbld.ashlarchess.report;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
@@ -74,7 +75,7 @@ class TestThreefoldExistingReportBuilder {
         break;
       }
     }
-    assertTrue(initialGroup != null, "the initial position must appear as a repeated-position group");
+    assertNotNull(initialGroup, "the initial position must appear as a repeated-position group");
     assertEquals(5, initialGroup.totalRepetitionCount(), "fivefold of the initial position reached");
     assertEquals(4, initialGroup.occurrences().size(), "four played occurrences + 1 implicit initial");
   }
@@ -89,14 +90,14 @@ class TestThreefoldExistingReportBuilder {
     final ThreefoldExistingReport report = build(board);
     assertTrue(report.groups().size() >= 2, "fixture is named two-threefolds - at least 2 groups");
 
-    // Outer sort: groups ordered by the half-move count of each group's first occurrence.
+    // Outer sort: groups ordered by the move count of each group's first occurrence.
     for (int i = 1; i < report.groups().size(); i++) {
       final RepetitionGroup prevGroup = Nulls.get(report.groups(), i - 1);
-      final int prev = Nulls.get(prevGroup.occurrences(), 0).halfMoveCount();
+      final int prev = Nulls.get(prevGroup.occurrences(), 0).performedMoveCount();
 
       final RepetitionGroup currGroup = Nulls.get(report.groups(), i);
-      final int curr = Nulls.get(currGroup.occurrences(), 0).halfMoveCount();
-      assertTrue(prev <= curr, "groups must be sorted by first-occurrence half-move count");
+      final int curr = Nulls.get(currGroup.occurrences(), 0).performedMoveCount();
+      assertTrue(prev <= curr, "groups must be sorted by first-occurrence move count");
     }
 
     // Every group is consistent: totalRepetitionCount matches the occurrence count adjusted for
@@ -119,20 +120,20 @@ class TestThreefoldExistingReportBuilder {
     final Board board = loadCorpusBoard("11_threefold_castling_one_before_first_threefold.pgn");
 
     final ThreefoldExistingReport report = build(board);
-    // The fixture file name says "one_before_first_threefold" - meaning the position is one ply
+    // The fixture file name says "one_before_first_threefold" - meaning the position is one move
     // away from third occurrence and has not yet been reached. So the existing-report should be
     // empty; the claim-ahead report would have an entry. That pins the boundary semantic.
     assertEquals(0, report.groups().size(),
-        "fixture stops one ply before third occurrence; threefold not yet on the board");
+        "fixture stops one move before third occurrence; threefold not yet on the board");
   }
 
   private static ThreefoldExistingReport build(Board board) {
-    return ThreefoldExistingReportBuilder.build(board.getInitialDynamicPosition(), board.getHalfMoveList(),
+    return ThreefoldExistingReportBuilder.build(board.getInitialDynamicPosition(), MoveRecords.played(board),
         ChessConstants.THREEFOLD_REPETITION_RULE_THRESHOLD);
   }
 
   private static Board loadCorpusBoard(String pgnName) {
     final PgnTest pgnTest = PgnTestCaseCatalog.findPgnTestPgnNotListed(pgnName);
-    return PgnUtility.calculateBoard(pgnTest.getFolderPath(), pgnName);
+    return PgnUtility.toBoard(pgnTest.getFolderPath(), pgnName);
   }
 }

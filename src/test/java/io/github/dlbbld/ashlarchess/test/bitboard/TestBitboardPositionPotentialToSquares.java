@@ -16,7 +16,7 @@ import io.github.dlbbld.ashlarchess.board.StaticPosition;
 import io.github.dlbbld.ashlarchess.board.enums.Piece;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
 import io.github.dlbbld.ashlarchess.board.enums.Square;
-import io.github.dlbbld.ashlarchess.squares.AbstractPotentialToSquares;
+import io.github.dlbbld.ashlarchess.squares.PotentialToSquaresSupport;
 import io.github.dlbbld.ashlarchess.test.model.PgnFen;
 import io.github.dlbbld.ashlarchess.test.model.PgnTestCaseList;
 import io.github.dlbbld.ashlarchess.test.pgn.setup.PgnTestCaseCatalog;
@@ -24,7 +24,7 @@ import io.github.dlbbld.ashlarchess.test.pgntest.enums.PgnTest;
 
 /**
  * Differential test: {@link BitboardPosition#potentialToSquares(Square, long)} must agree set-equal with
- * {@link AbstractPotentialToSquares#calculatePotentialToSquare(StaticPosition, Square, Side, Square)} for every own
+ * {@link PotentialToSquaresSupport#calculatePotentialToSquare(StaticPosition, Square, Side, Square)} for every own
  * piece on every fixture in the corpus, for both sides. This pins the bitboard pseudo-legal-target surface used by the
  * SAN error-reporting layer against the StaticPosition-backed reference.
  *
@@ -44,13 +44,13 @@ class TestBitboardPositionPotentialToSquares {
         final Board board = testCase.finalPosition();
         final StaticPosition staticPosition = StaticPositionBridge.toStaticPosition(board.getBitboardPosition());
         final BitboardPosition bitboardPosition = StaticPositionBridge.fromStaticPosition(staticPosition);
-        final Side havingMove = board.getHavingMove();
+        final Side sideToMove = board.getSideToMove();
         final Square epTarget = board.getEnPassantCaptureTargetSquare();
         final long epBit = epTarget == Square.NONE ? 0L : 1L << epTarget.ordinal();
 
-        assertSidePotentialToSquaresAgree(staticPosition, bitboardPosition, havingMove, epTarget, epBit, testCase);
+        assertSidePotentialToSquaresAgree(staticPosition, bitboardPosition, sideToMove, epTarget, epBit, testCase);
         // The non-side-to-move never has an EP opportunity in a real position; pass NONE / 0L for them.
-        assertSidePotentialToSquaresAgree(staticPosition, bitboardPosition, havingMove.getOppositeSide(), Square.NONE,
+        assertSidePotentialToSquaresAgree(staticPosition, bitboardPosition, sideToMove.getOppositeSide(), Square.NONE,
             0L, testCase);
       }
     }
@@ -64,7 +64,7 @@ class TestBitboardPositionPotentialToSquares {
         continue;
       }
       final Set<Square> bitboardTargets = bitboardPosition.potentialToSquares(fromSquare, epBit);
-      final Set<Square> referenceTargets = AbstractPotentialToSquares.calculatePotentialToSquare(staticPosition,
+      final Set<Square> referenceTargets = PotentialToSquaresSupport.calculatePotentialToSquare(staticPosition,
           epTarget, side, fromSquare);
       assertEquals(referenceTargets, bitboardTargets, side + " " + piece.getPieceType() + " potential-to-squares from "
           + fromSquare.getName() + " in fixture " + testCase.pgnName());

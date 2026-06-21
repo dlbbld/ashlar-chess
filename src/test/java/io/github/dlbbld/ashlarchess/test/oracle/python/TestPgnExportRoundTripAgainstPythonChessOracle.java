@@ -20,9 +20,9 @@ import com.google.common.collect.ImmutableList;
 import io.github.dlbbld.ashlarchess.board.Board;
 import io.github.dlbbld.ashlarchess.common.Nulls;
 import io.github.dlbbld.ashlarchess.common.ucimove.utility.UciMoveUtility;
-import io.github.dlbbld.ashlarchess.common.utility.BasicUtility;
+import io.github.dlbbld.ashlarchess.common.utility.ExceptionUtility;
 import io.github.dlbbld.ashlarchess.model.LegalMove;
-import io.github.dlbbld.ashlarchess.model.PgnHalfMove;
+import io.github.dlbbld.ashlarchess.model.PgnMove;
 import io.github.dlbbld.ashlarchess.model.UciMove;
 import io.github.dlbbld.ashlarchess.pgn.PgnCreate;
 import io.github.dlbbld.ashlarchess.pgn.PgnGame;
@@ -37,19 +37,19 @@ import io.github.dlbbld.ashlarchess.test.pgntest.enums.PgnTest;
  * PGN-import oracle (slice 2 onward) as the ground-truth reference.
  *
  * <p>
- * For each fixture: parses the original PGN with ashlar-chess, plays it through to extract the played UCI sequence, then
- * emits the parsed game in each {@link WriteMode} ({@code SEMANTIC} and {@code ARCHIVAL}), re-parses the emitted string
- * with ashlar-chess, and asserts that the re-played UCI sequence and bounding FENs (start and final) still match what
- * python-chess sees on the source PGN. The python-chess oracle data lives in
+ * For each fixture: parses the original PGN with ashlar-chess, plays it through to extract the played UCI sequence,
+ * then emits the parsed game in each {@link WriteMode} ({@code SEMANTIC} and {@code ARCHIVAL}), re-parses the emitted
+ * string with ashlar-chess, and asserts that the re-played UCI sequence and bounding FENs (start and final) still match
+ * what python-chess sees on the source PGN. The python-chess oracle data lives in
  * {@code src/test/resources/oracle/python-chess/<folderPart>.jsonl}; this test does not introduce a new oracle file.
  *
  * <p>
  * Semantic round-trip equivalence (the user's framing): python-chess, if it could re-parse ashlar-chess's emitted PGN,
  * would see the same move UCI sequence, the same starting position, and the same ending position as it does on the
- * source. We assert this transitively: the import oracle establishes that ashlar-chess's parse of the source agrees with
- * python-chess (slice 2); this slice extends that to "and ashlar-chess's emit round-trips to the same UCI / FEN sequence
- * under both modes." If both conditions hold, python-chess's parse of either the source or the round-tripped artifact
- * would yield the same content.
+ * source. We assert this transitively: the import oracle establishes that ashlar-chess's parse of the source agrees
+ * with python-chess (slice 2); this slice extends that to "and ashlar-chess's emit round-trips to the same UCI / FEN
+ * sequence under both modes." If both conditions hold, python-chess's parse of either the source or the round-tripped
+ * artifact would yield the same content.
  *
  * <p>
  * What this test does <em>not</em> assert: byte equality between source PGN and emitted PGN (would fail trivially on
@@ -111,10 +111,10 @@ class TestPgnExportRoundTripAgainstPythonChessOracle {
           expectedUcis.add(move.uci());
         }
 
-        final PgnGame original = StrictPgnParser.parse(folderPath, record.pgn());
+        final PgnGame original = StrictPgnParser.parsePath(folderPath, record.pgn());
         verify(record, expectedUcis, original, "original-parse", bucket, failures);
 
-        final String semantic = PgnCreate.createPgnString(original, WriteMode.SEMANTIC);
+        final String semantic = PgnCreate.toPgnString(original, WriteMode.SEMANTIC);
         try {
           final PgnGame semanticReparsed = StrictPgnParser.parseText(semantic);
           verify(record, expectedUcis, semanticReparsed, "semantic-round-trip", bucket, failures);
@@ -122,7 +122,7 @@ class TestPgnExportRoundTripAgainstPythonChessOracle {
           failures.add(bucket + " / " + record.pgn() + " - semantic round-trip threw: " + e.getMessage());
         }
 
-        final String archival = PgnCreate.createPgnString(original, WriteMode.ARCHIVAL);
+        final String archival = PgnCreate.toPgnString(original, WriteMode.ARCHIVAL);
         try {
           final PgnGame archivalReparsed = StrictPgnParser.parseText(archival);
           verify(record, expectedUcis, archivalReparsed, "archival-round-trip", bucket, failures);
@@ -154,26 +154,26 @@ class TestPgnExportRoundTripAgainstPythonChessOracle {
 
     try {
       assertEquals(record.startFen(), parsed.startFen().fen(), () -> label + " - startFen mismatch");
-      assertEquals(expectedUcis.size(), parsed.halfMoveList().size(), () -> label + " - half-move count mismatch");
+      assertEquals(expectedUcis.size(), parsed.moves().size(), () -> label + " - half-move count mismatch");
     } catch (final AssertionError e) {
-      failures.add(BasicUtility.getMessage(e));
+      failures.add(ExceptionUtility.getMessage(e));
       return;
     }
 
     final Board board = new Board(parsed.startFen());
-    final List<String> actualUcis = new ArrayList<>(parsed.halfMoveList().size());
-    for (final PgnHalfMove halfMove : parsed.halfMoveList()) {
-      board.moveStrict(halfMove.san());
+    final List<String> actualUcis = new ArrayList<>(parsed.moves().size());
+    for (final PgnMove move : parsed.moves()) {
+      board.moveStrict(move.san());
       final LegalMove last = board.getLastMove();
-      final UciMove uci = UciMoveUtility.convertMoveSpecificationToUci(last.havingMove(), last.moveSpecification());
-      actualUcis.add(uci.text());
+      final UciMove uci = UciMoveUtility.toUci(last.movingSide(), last.moveSpecification());
+      actualUcis.add(uci.uci());
     }
 
     try {
       assertEquals(expectedUcis, actualUcis, () -> label + " - played UCI sequence mismatch");
       assertEquals(record.finalFen(), board.getFen(), () -> label + " - finalFen mismatch");
     } catch (final AssertionError e) {
-      failures.add(BasicUtility.getMessage(e));
+      failures.add(ExceptionUtility.getMessage(e));
     }
   }
 

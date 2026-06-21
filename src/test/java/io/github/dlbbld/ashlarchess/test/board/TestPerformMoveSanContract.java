@@ -11,7 +11,7 @@ import org.junit.jupiter.api.Test;
 import io.github.dlbbld.ashlarchess.board.Board;
 import io.github.dlbbld.ashlarchess.common.Nulls;
 import io.github.dlbbld.ashlarchess.common.model.MoveSpecification;
-import io.github.dlbbld.ashlarchess.model.PgnHalfMove;
+import io.github.dlbbld.ashlarchess.model.PgnMove;
 import io.github.dlbbld.ashlarchess.pgn.PgnGame;
 import io.github.dlbbld.ashlarchess.san.StrictSanParser;
 import io.github.dlbbld.ashlarchess.test.model.PgnFen;
@@ -22,14 +22,14 @@ import io.github.dlbbld.ashlarchess.test.pgn.setup.PgnTestCaseCatalog;
 /**
  * Verifies the round-trip consistency between SAN and MoveSpecification that
  * {@link io.github.dlbbld.ashlarchess.board.Board#moveStrict(String)} relies on: once
- * {@link io.github.dlbbld.ashlarchess.san.StrictSanParser}'s {@code parseText} has produced a MoveSpecification from a
+ * {@link io.github.dlbbld.ashlarchess.san.StrictSanParser}'s {@code parse} has produced a MoveSpecification from a
  * SAN, that MoveSpec is the canonical representation of the move and round-trips both ways. The board therefore
  * performs the move with no further re-validation of the spec.
  *
  * <h2>Forward (played moves)</h2>
  *
  * <p>
- * For each halfmove of each PGN: derive the MoveSpec via {@code StrictSanParser.parseText(san, board)} <em>before</em>
+ * For each move of each PGN: derive the MoveSpec via {@code StrictSanParser.parse(san, board)} <em>before</em>
  * performing, then perform via {@code board.moveStrict(san)} and assert:
  *
  * <ol>
@@ -41,10 +41,10 @@ import io.github.dlbbld.ashlarchess.test.pgn.setup.PgnTestCaseCatalog;
  * <h2>Reverse (canonical SAN back to MoveSpecification)</h2>
  *
  * <p>
- * At each played halfmove: perform it, then capture both the stored MoveSpec
+ * At each played move: perform it, then capture both the stored MoveSpec
  * ({@code board.getLastMove().moveSpecification()}) and the board's canonical SAN ({@code board.getSan()});
  * {@link io.github.dlbbld.ashlarchess.board.Board#unmove} back to the prior position and re-derive a MoveSpec from that
- * canonical SAN via {@code StrictSanParser.parseText}. The re-derived MoveSpec must equal the stored one - the SAN the
+ * canonical SAN via {@code StrictSanParser.parse}. The re-derived MoveSpec must equal the stored one - the SAN the
  * board emits round-trips back to the same move.
  *
  * <h2>Scope and runtime</h2>
@@ -61,7 +61,7 @@ class TestPerformMoveSanContract {
   @SuppressWarnings("static-method")
   @Test
   void testPlayedMoveSanMoveSpecRoundtrip() {
-    for (final PgnTestCaseList testCaseList : PgnTestCaseCatalog.getParserIntegrationSmokeList()) {
+    for (final PgnTestCaseList testCaseList : PgnTestCaseCatalog.getParserIntegrationSmokeTests()) {
       for (final PgnFen testCase : testCaseList.list()) {
         logger.info(testCase.pgnName());
         verifyProvidedSanToCalculatedSan(testCaseList, testCase);
@@ -72,7 +72,7 @@ class TestPerformMoveSanContract {
   @SuppressWarnings("static-method")
   @Test
   void testAllLegalMovesSanMoveSpecRoundtrip() {
-    for (final PgnTestCaseList testCaseList : PgnTestCaseCatalog.getParserIntegrationSmokeList()) {
+    for (final PgnTestCaseList testCaseList : PgnTestCaseCatalog.getParserIntegrationSmokeTests()) {
       for (final PgnFen testCase : testCaseList.list()) {
         logger.info(testCase.pgnName());
         verifyCalculatedSanToCalculatedMoveSpecification(testCaseList, testCase);
@@ -81,7 +81,7 @@ class TestPerformMoveSanContract {
   }
 
   /**
-   * Forward direction: for each played halfmove, derive MoveSpec from SAN, perform via SAN, then assert the played
+   * Forward direction: for each played move, derive MoveSpec from SAN, perform via SAN, then assert the played
    * LegalMove and the reconstructed SAN both match.
    */
   private static void verifyProvidedSanToCalculatedSan(PgnTestCaseList testCaseList, PgnFen testCase) {
@@ -89,24 +89,24 @@ class TestPerformMoveSanContract {
         testCase.pgnName());
     final Board board = new Board(pgnGame.startFen());
 
-    int halfMoveIndex = 0;
-    for (final PgnHalfMove halfMove : pgnGame.halfMoveList()) {
-      halfMoveIndex++;
-      final int hmi = halfMoveIndex;
-      final String expectedProvidedSan = halfMove.san();
+    int moveIndex = 0;
+    for (final PgnMove move : pgnGame.moves()) {
+      moveIndex++;
+      final int hmi = moveIndex;
+      final String expectedProvidedSan = move.san();
 
       final MoveSpecification expectedCalculatedMoveSpecification = StrictSanParser
-          .parseText(expectedProvidedSan, board).moveSpecification();
+          .parse(expectedProvidedSan, board);
 
       board.moveStrict(expectedProvidedSan);
 
       final MoveSpecification actualStoredMoveSpecification = board.getLastMove().moveSpecification();
       assertEquals(expectedCalculatedMoveSpecification, actualStoredMoveSpecification,
-          () -> testCase.pgnName() + ": halfmove " + hmi + " (" + expectedProvidedSan
+          () -> testCase.pgnName() + ": move " + hmi + " (" + expectedProvidedSan
               + ") - MoveSpec derived from SAN does not match the LegalMove's MoveSpec after perform");
 
       final String actualCalculatedSan = board.getSan();
-      assertEquals(expectedProvidedSan, actualCalculatedSan, () -> testCase.pgnName() + ": halfmove " + hmi + " ("
+      assertEquals(expectedProvidedSan, actualCalculatedSan, () -> testCase.pgnName() + ": move " + hmi + " ("
           + expectedProvidedSan + ") - SAN reconstructed from LegalMove does not match the original PGN SAN");
     }
   }
@@ -120,15 +120,14 @@ class TestPerformMoveSanContract {
         testCase.pgnName());
     final Board board = new Board(pgnGame.startFen());
 
-    for (final PgnHalfMove halfMove : pgnGame.halfMoveList()) {
-      board.moveStrict(halfMove.san());
+    for (final PgnMove move : pgnGame.moves()) {
+      board.moveStrict(move.san());
       final MoveSpecification expectedStoredMoveSpecification = board.getLastMove().moveSpecification();
       final String calculatedSan = board.getSan();
       board.unmove();
-      final MoveSpecification actualCalculatedMoveSpecification = StrictSanParser.parseText(calculatedSan, board)
-          .moveSpecification();
+      final MoveSpecification actualCalculatedMoveSpecification = StrictSanParser.parse(calculatedSan, board);
       assertEquals(expectedStoredMoveSpecification, actualCalculatedMoveSpecification);
-      board.moveStrict(halfMove.san());
+      board.moveStrict(move.san());
     }
   }
 

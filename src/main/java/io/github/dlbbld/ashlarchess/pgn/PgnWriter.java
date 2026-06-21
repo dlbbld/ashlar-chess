@@ -19,7 +19,10 @@ import io.github.dlbbld.ashlarchess.common.exceptions.FileSystemAccessException;
  * {@link WriteMode#SEMANTIC} - honest preservation of what the parse model contains. Callers who need a PGN spec
  * section 8.1.1-conformant artifact pass {@link WriteMode#ARCHIVAL} explicitly.
  */
-public class PgnWriter {
+public final class PgnWriter {
+
+  private PgnWriter() {
+  }
 
   // -------------------------------------------------------------------------------------------------
   // PgnGame entry points - semantic default, explicit-mode overloads
@@ -46,7 +49,7 @@ public class PgnWriter {
   }
 
   public static void writePgn(PgnGame pgnGame, Path filePath, WriteMode writeMode) {
-    final List<String> fileLines = PgnCreate.createPgnLines(pgnGame, writeMode);
+    final List<String> fileLines = PgnCreate.toPgnLines(pgnGame, writeMode);
     writeLinesReplacing(filePath, fileLines);
   }
 
@@ -54,12 +57,12 @@ public class PgnWriter {
   // Board entry points - semantic default, explicit-mode overloads
   // -------------------------------------------------------------------------------------------------
 
-  public static void writePgn(Board board, List<Tag> tagList, Path folderPath, String pgnName) {
-    writePgn(board, tagList, folderPath, pgnName, WriteMode.SEMANTIC);
+  public static void writePgn(Board board, List<Tag> tags, Path folderPath, String pgnName) {
+    writePgn(board, tags, folderPath, pgnName, WriteMode.SEMANTIC);
   }
 
-  public static void writePgn(Board board, List<Tag> tagList, Path folderPath, String pgnName, WriteMode writeMode) {
-    final PgnGame pgnGame = PgnCreate.createPgnGame(board, tagList);
+  public static void writePgn(Board board, List<Tag> tags, Path folderPath, String pgnName, WriteMode writeMode) {
+    final PgnGame pgnGame = PgnCreate.createPgnGame(board, tags);
     writePgn(pgnGame, folderPath, pgnName, writeMode);
   }
 
@@ -76,14 +79,14 @@ public class PgnWriter {
   // File I/O
   // -------------------------------------------------------------------------------------------------
 
-  private static void writeLinesReplacing(Path filePath, List<String> lineList) {
+  private static void writeLinesReplacing(Path filePath, List<String> lines) {
     try {
       Files.deleteIfExists(filePath);
     } catch (final IOException ioe) {
       throw new FileSystemAccessException("Deleting existing file \"" + filePath + "\" failed.", ioe);
     }
     try (BufferedWriter writer = Files.newBufferedWriter(filePath, StandardCharsets.UTF_8)) {
-      for (final String line : lineList) {
+      for (final String line : lines) {
         writer.write(line);
         writer.write("\n");
       }

@@ -38,7 +38,7 @@ class TestUnwinnabilityFullHelpmateIsHelpmate {
           .findTestCase(calculateCorrespondingLichessGame(testCaseHavingHelpmate.pgnName()));
       final Board board = lichessTestCase.finalPosition();
       final String fen = lichessTestCase.finalFen();
-      final Side winner = board.getHavingMove();
+      final Side winner = board.getSideToMove();
       final UnwinnabilityFullAnalysis analysis = UnwinnableFullAnalyzer.unwinnableFull(board, winner);
       // A searched winnable verdict must be WINNABLE_HELPMATE and carry a line; pin that before replaying it.
       assertEquals(UnwinnabilityFullVerdict.WINNABLE_HELPMATE, analysis.verdict(), fen);
@@ -47,17 +47,17 @@ class TestUnwinnabilityFullHelpmateIsHelpmate {
   }
 
   private static List<PgnFen> helpmateFixtures() {
-    final PgnTestCaseList testCaseHavingHelpmateList = PgnTestCaseCatalog
+    final PgnTestCaseList testCasesHavingHelpmate = PgnTestCaseCatalog
         .getTestList(PgnTest.CHA_LICHESS_QUICK_DEPTH_ABOVE_FOUR_WINNABLE_FOR_FLAGGING_WITH_HELPMATE);
-    return testCaseHavingHelpmateList.list();
+    return testCasesHavingHelpmate.list();
   }
 
   private static void assertHelpmateLine(String fen, Side winner, List<UciMove> mateLine) {
-    final Board board = new Board(fen);
+    final Board board = Board.fromFenStrict(fen);
     for (final UciMove uciMove : mateLine) {
-      board.move(UciMoveUtility.convertUciMoveToMoveSpecification(board, uciMove));
+      board.move(UciMoveUtility.toMoveSpecification(board, uciMove));
     }
-    assertEquals(winner.getOppositeSide(), board.getHavingMove());
+    assertEquals(winner.getOppositeSide(), board.getSideToMove());
     assertTrue(board.isCheckmate());
   }
 

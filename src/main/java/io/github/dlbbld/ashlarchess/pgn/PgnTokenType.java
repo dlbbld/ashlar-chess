@@ -31,7 +31,7 @@ enum PgnTokenType {
 
   /**
    * Generic PGN symbol token - letters, digits, and the continuation punctuation set. The parser decides by context
-   * whether a given symbol is a tag name, a SAN half-move, or something else.
+   * whether a given symbol is a tag name, a SAN move, or something else.
    */
   SYMBOL,
 
@@ -55,6 +55,13 @@ enum PgnTokenType {
    * Closing {@code }} outside any open commentary.
    */
   BRACE_STRAY_CLOSE,
+
+  /**
+   * Rest-of-line commentary introduced by {@code ;} (PGN import format, spec section 5). The token text is the
+   * commentary content after the semicolon, up to but not including the end of line. Brace comments are valid in both
+   * import and export format; semicolon comments are import-only, so only the lenient parser accepts them.
+   */
+  LINE_COMMENT,
 
   /**
    * {@code 1-0}, {@code 0-1}, {@code 1/2-1/2}, {@code *}.

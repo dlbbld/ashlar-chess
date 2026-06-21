@@ -23,9 +23,7 @@ import io.github.dlbbld.ashlarchess.pgn.StrictPgnParserValidationException;
 import io.github.dlbbld.ashlarchess.pgn.StrictPgnParserValidationResult;
 import io.github.dlbbld.ashlarchess.pgn.WriteMode;
 import io.github.dlbbld.ashlarchess.report.Reporter;
-import io.github.dlbbld.ashlarchess.san.ForgivenItem;
-import io.github.dlbbld.ashlarchess.unwinnability.UnwinnableFullAnalyzer;
-import io.github.dlbbld.ashlarchess.unwinnability.UnwinnableQuickAnalyzer;
+import io.github.dlbbld.ashlarchess.san.ForgivenSanItem;
 
 /**
  * Source of truth for the runnable code examples shown in {@code README.md}. Each method is one README example: the
@@ -93,7 +91,7 @@ public final class ReadmeExamples {
         Bb4 9. Qe2 O-O 10. f4 Nc6 11. e5 Ne8 12. Bd2 f6 13. c5 Qd8 14. a3 Bxc3 15. Bxc3
         fxe5 16. Bxe5 b6 17. Bg2 Nxe5 18. Bxa8 Nf7 19. Bg2 bxc5 20. Nxc5 Qb6 21. Qf2
         Qb5 22. Bf1 Qc6 23. Bg2 Qb5 24. Bf1 Qc6 25. Bg2""";
-    Reporter.printReport(pgn);
+    Reporter.report(pgn).forEach(System.out::println);
     // </readme:threefold-claim-ahead>
   }
 
@@ -108,7 +106,7 @@ public final class ReadmeExamples {
         Kf8 34. Rf5 h5 35. Qd8+ Kg7 36. Qg5+ Kf8 37. Qd8+ Kg7 38. Qg5+ Kf8 39. b3 Qd6
         40. Qf4 Qd1+ 41. Qf1 Qd7 42. Rxh5 Nxe3 43. Qf3 Qd4 44. Qa8+ Ke7 45. Qb7+ Kf8 46.
         Qb8+ *""";
-    Reporter.printReport(pgn);
+    Reporter.report(pgn).forEach(System.out::println);
     // </readme:threefold-on-board>
   }
 
@@ -134,7 +132,7 @@ public final class ReadmeExamples {
         Nf7+ Kg8 104. Nh6+ Kh8 105. Nf5 Ra7+ 106. Kf6 Ra1 107. Ne3 Re1 108. Nd5 Rg1
         109. Bf5 Rf1 110. Ndf4 Ra1 111. Ng6+ Kg8 112. Ne7+ Kh8 113. Ng5 Ra6+ 114. Kf7
         Rf6+""";
-    Reporter.printReport(pgn);
+    Reporter.report(pgn).forEach(System.out::println);
     // </readme:fifty-move>
   }
 
@@ -144,16 +142,16 @@ public final class ReadmeExamples {
 
     // White flags with only a lone king opposing the rook: the would-be winner
     // (Black) cannot mate, so the game is drawn, not lost.
-    final Board loneKing = new Board("8/8/4k3/3R4/2K5/8/8/8 w - - 0 50");
+    final Board loneKing = Board.fromFenStrict("8/8/4k3/3R4/2K5/8/8/8 w - - 0 50");
     System.out.println(Adjudicator.adjudicateFlagfallQuick(loneKing, Side.WHITE)); // [out]
 
     // White flags behind a blocked pawn wall: Black can never break through, so
     // the quick analyzer draws this non-material position too.
-    final Board pawnWall = new Board("8/8/3k4/1p2p1p1/pP1pP1P1/P2P4/1K6/8 b - - 32 62");
+    final Board pawnWall = Board.fromFenStrict("8/8/3k4/1p2p1p1/pP1pP1P1/P2P4/1K6/8 b - - 32 62");
     System.out.println(Adjudicator.adjudicateFlagfallQuick(pawnWall, Side.WHITE)); // [out]
 
     // Black flags with both sides still able to play for a win: the flag stands.
-    final Board winnable = new Board("q4r2/pR3pkp/1p2p1p1/4P3/6P1/1P3Q2/1Pr2PK1/3R4 b - - 3 29");
+    final Board winnable = Board.fromFenStrict("q4r2/pR3pkp/1p2p1p1/4P3/6P1/1P3Q2/1Pr2PK1/3R4 b - - 3 29");
     System.out.println(Adjudicator.adjudicateFlagfallQuick(winnable, Side.BLACK)); // [out]
     // </readme:adjudication-flagfall-quick>
   }
@@ -163,11 +161,11 @@ public final class ReadmeExamples {
     // The full analyzer additionally proves wins and may report UNDETERMINED.
 
     // Black flags in a position the full search proves White can win: a real loss.
-    final Board provenWin = new Board("q4r2/pR3pkp/1p2p1p1/4P3/6P1/1P3Q2/1Pr2PK1/3R4 b - - 3 29");
+    final Board provenWin = Board.fromFenStrict("q4r2/pR3pkp/1p2p1p1/4P3/6P1/1P3Q2/1Pr2PK1/3R4 b - - 3 29");
     System.out.println(Adjudicator.adjudicateFlagfallFull(provenWin, Side.BLACK)); // [out]
 
     // White flags in the rare position whose full search exhausts its node bound.
-    final Board undecided = new Board("2b5/1p6/pPp3k1/2Pp3p/P2PpBpP/4P1P1/5K2/8 b - - 46 59");
+    final Board undecided = Board.fromFenStrict("2b5/1p6/pPp3k1/2Pp3p/P2PpBpP/4P1P1/5K2/8 b - - 46 59");
     System.out.println(Adjudicator.adjudicateFlagfallFull(undecided, Side.WHITE)); // [out]
     // </readme:adjudication-flagfall-full>
   }
@@ -175,7 +173,7 @@ public final class ReadmeExamples {
   public static void adjudicationResignation() {
     // <readme:adjudication-resignation>
     // Resignation carries the identical FIDE exception, so it adjudicates exactly like a flag-fall.
-    final Board board = new Board("8/8/4k3/3R4/2K5/8/8/8 w - - 0 50");
+    final Board board = Board.fromFenStrict("8/8/4k3/3R4/2K5/8/8/8 w - - 0 50");
     System.out.println(Adjudicator.adjudicateResignationQuick(board, Side.WHITE)); // [out]
     System.out.println(Adjudicator.adjudicateResignationFull(board, Side.WHITE)); // [out]
     // </readme:adjudication-resignation>
@@ -201,65 +199,65 @@ public final class ReadmeExamples {
 
   public static void unwinnableInsufficientMaterial() {
     // <readme:unwinnable-insufficient-material>
-    final Board board = new Board("8/8/4k3/3R4/2K5/8/8/8 w - - 0 50");
-    System.out.println(board.isUnwinnableQuick(Side.BLACK)); // [out]
-    System.out.println(board.isUnwinnableFull(Side.BLACK)); // [out]
+    final Board board = Board.fromFenStrict("8/8/4k3/3R4/2K5/8/8/8 w - - 0 50");
+    System.out.println(board.unwinnableQuick(Side.BLACK)); // [out]
+    System.out.println(board.unwinnableFull(Side.BLACK)); // [out]
     // </readme:unwinnable-insufficient-material>
   }
 
   public static void unwinnableForcedMoves() {
     // <readme:unwinnable-forced-moves>
-    final Board board = new Board("5r1k/6P1/7K/5q2/8/8/8/8 b - - 0 51");
-    System.out.println(board.isUnwinnableQuick(Side.WHITE)); // [out]
-    System.out.println(board.isUnwinnableFull(Side.WHITE)); // [out]
+    final Board board = Board.fromFenStrict("5r1k/6P1/7K/5q2/8/8/8/8 b - - 0 51");
+    System.out.println(board.unwinnableQuick(Side.WHITE)); // [out]
+    System.out.println(board.unwinnableFull(Side.WHITE)); // [out]
     // </readme:unwinnable-forced-moves>
   }
 
   public static void unwinnablePawnWalls() {
     // <readme:unwinnable-pawn-walls>
-    final Board board = new Board("8/8/3k4/1p2p1p1/pP1pP1P1/P2P4/1K6/8 b - - 32 62");
-    System.out.println(board.isUnwinnableQuick(Side.BLACK)); // [out]
-    System.out.println(board.isUnwinnableFull(Side.BLACK)); // [out]
+    final Board board = Board.fromFenStrict("8/8/3k4/1p2p1p1/pP1pP1P1/P2P4/1K6/8 b - - 32 62");
+    System.out.println(board.unwinnableQuick(Side.BLACK)); // [out]
+    System.out.println(board.unwinnableFull(Side.BLACK)); // [out]
     // </readme:unwinnable-pawn-walls>
   }
 
   public static void unwinnableCommonPositions() {
     // <readme:unwinnable-common-positions>
-    final Board board = new Board("q4r2/pR3pkp/1p2p1p1/4P3/6P1/1P3Q2/1Pr2PK1/3R4 b - - 3 29");
-    System.out.println(board.isUnwinnableQuick(Side.WHITE)); // [out]
-    System.out.println(board.isUnwinnableFull(Side.WHITE)); // [out]
+    final Board board = Board.fromFenStrict("q4r2/pR3pkp/1p2p1p1/4P3/6P1/1P3Q2/1Pr2PK1/3R4 b - - 3 29");
+    System.out.println(board.unwinnableQuick(Side.WHITE)); // [out]
+    System.out.println(board.unwinnableFull(Side.WHITE)); // [out]
     // </readme:unwinnable-common-positions>
   }
 
   public static void unwinnableBlockedQuick() {
     // <readme:unwinnable-blocked-quick>
-    final Board board = new Board("1k6/1P5p/BP3p2/1P6/8/8/5PKP/8 b - - 0 41");
-    System.out.println(board.isUnwinnableQuick(Side.WHITE)); // [out]
-    System.out.println(board.isUnwinnableFull(Side.WHITE)); // [out]
+    final Board board = Board.fromFenStrict("1k6/1P5p/BP3p2/1P6/8/8/5PKP/8 b - - 0 41");
+    System.out.println(board.unwinnableQuick(Side.WHITE)); // [out]
+    System.out.println(board.unwinnableFull(Side.WHITE)); // [out]
     // </readme:unwinnable-blocked-quick>
   }
 
   public static void deadInsufficientMaterial() {
     // <readme:dead-insufficient-material>
-    final Board board = new Board("8/8/3kn3/8/2K5/8/8/8 w - - 0 50");
-    System.out.println(UnwinnableQuickAnalyzer.unwinnableQuick(board)); // [out] (dead)
-    System.out.println(UnwinnableFullAnalyzer.unwinnableFull(board)); // [out] (dead)
+    final Board board = Board.fromFenStrict("8/8/3kn3/8/2K5/8/8/8 w - - 0 50");
+    System.out.println(board.deadPositionQuick()); // [out] (dead)
+    System.out.println(board.deadPositionFull()); // [out] (dead)
     // </readme:dead-insufficient-material>
   }
 
   public static void deadPawnWalls() {
     // <readme:dead-pawn-walls>
-    final Board board = new Board("8/6b1/1p3k2/1Pp1p1p1/2P1PpP1/5P2/8/5K2 b - - 11 61");
-    System.out.println(UnwinnableQuickAnalyzer.unwinnableQuick(board)); // [out] (dead)
-    System.out.println(UnwinnableFullAnalyzer.unwinnableFull(board)); // [out] (dead)
+    final Board board = Board.fromFenStrict("8/6b1/1p3k2/1Pp1p1p1/2P1PpP1/5P2/8/5K2 b - - 11 61");
+    System.out.println(board.deadPositionQuick()); // [out] (dead)
+    System.out.println(board.deadPositionFull()); // [out] (dead)
     // </readme:dead-pawn-walls>
   }
 
   public static void deadForcedMoves() {
     // <readme:dead-forced-moves>
-    final Board board = new Board("k7/P1K5/8/8/8/8/8/8 b - - 2 58");
-    System.out.println(UnwinnableQuickAnalyzer.unwinnableQuick(board)); // [out] (dead)
-    System.out.println(UnwinnableFullAnalyzer.unwinnableFull(board)); // [out] (dead)
+    final Board board = Board.fromFenStrict("k7/P1K5/8/8/8/8/8/8 b - - 2 58");
+    System.out.println(board.deadPositionQuick()); // [out] (dead)
+    System.out.println(board.deadPositionFull()); // [out] (dead)
     // </readme:dead-forced-moves>
   }
 
@@ -273,7 +271,7 @@ public final class ReadmeExamples {
           3. Bc4 Bc5
         """;
     final PgnGame pgnGame = LenientPgnParser.parseText(pgn);
-    final Board board = PgnUtility.calculateBoard(pgnGame);
+    final Board board = PgnUtility.toBoard(pgnGame);
     board.moveStrict("a3");
     // </readme:pgn-lenient-valid>
   }
@@ -290,7 +288,7 @@ public final class ReadmeExamples {
         3. Bc4 Bc5
         """;
     final PgnGame pgnGame = LenientPgnParser.parseText(pgn);
-    System.out.println(PgnCreate.createPgnString(pgnGame, WriteMode.ARCHIVAL));
+    System.out.println(PgnCreate.toPgnString(pgnGame, WriteMode.ARCHIVAL));
     // </readme:pgn-lenient-export-transform>
   }
 
@@ -309,7 +307,7 @@ public final class ReadmeExamples {
         """;
     final LenientPgnParserValidationResult result = LenientPgnParser.validateText(pgn);
     System.out.println(result.isValid());
-    for (final ForgivenItem item : result.sanForgivenItems()) {
+    for (final ForgivenSanItem item : result.sanForgivenItems()) {
       System.out.println(item.code() + ": " + item.originalToken() + " -> " + item.canonicalSan());
     }
     // </readme:pgn-san-tolerances>
@@ -326,7 +324,7 @@ public final class ReadmeExamples {
         """;
     try {
       final PgnGame pgnGame = LenientPgnParser.parseText(pgn);
-      System.out.println(PgnUtility.calculateBoard(pgnGame).isCheck()); // not reached
+      System.out.println(PgnUtility.toBoard(pgnGame).isCheck()); // not reached
     } catch (final LenientPgnParserValidationException e) {
       System.out.println(e.getMessage());
     }
@@ -335,8 +333,8 @@ public final class ReadmeExamples {
 
   public static void pgnLenientFileParsing() {
     // <readme:pgn-lenient-file-parsing>
-    final PgnGame pgnGame = LenientPgnParser.parse("C:\\temp\\myFile.pgn");
-    final Board board = PgnUtility.calculateBoard(pgnGame);
+    final PgnGame pgnGame = LenientPgnParser.parsePath("C:\\temp\\myFile.pgn");
+    final Board board = PgnUtility.toBoard(pgnGame);
     System.out.println(board.isCheckmate());
     // </readme:pgn-lenient-file-parsing>
   }
@@ -356,7 +354,7 @@ public final class ReadmeExamples {
 
         """;
     final PgnGame pgnGame = StrictPgnParser.parseText(pgn);
-    final Board board = PgnUtility.calculateBoard(pgnGame);
+    final Board board = PgnUtility.toBoard(pgnGame);
     board.moveStrict("a3");
     // </readme:pgn-strict-valid>
   }
@@ -371,7 +369,7 @@ public final class ReadmeExamples {
         """;
     try {
       final PgnGame pgnGame = StrictPgnParser.parseText(pgn);
-      System.out.println(PgnUtility.calculateBoard(pgnGame).isCheck()); // not reached
+      System.out.println(PgnUtility.toBoard(pgnGame).isCheck()); // not reached
     } catch (final StrictPgnParserValidationException e) {
       System.out.println(e.getMessage());
     }
@@ -388,7 +386,7 @@ public final class ReadmeExamples {
         """;
     try {
       final PgnGame pgnGame = StrictPgnParser.parseText(pgn);
-      System.out.println(PgnUtility.calculateBoard(pgnGame).isCheck()); // not reached
+      System.out.println(PgnUtility.toBoard(pgnGame).isCheck()); // not reached
     } catch (final StrictPgnParserValidationException e) {
       System.out.println(e.getMessage());
     }
@@ -397,8 +395,8 @@ public final class ReadmeExamples {
 
   public static void pgnStrictFileParsing() {
     // <readme:pgn-strict-file-parsing>
-    final PgnGame pgnGame = StrictPgnParser.parse("C:\\temp\\myFile.pgn");
-    final Board board = PgnUtility.calculateBoard(pgnGame);
+    final PgnGame pgnGame = StrictPgnParser.parsePath("C:\\temp\\myFile.pgn");
+    final Board board = PgnUtility.toBoard(pgnGame);
     System.out.println(board.isThreefoldRepetition());
     // </readme:pgn-strict-file-parsing>
   }
@@ -409,7 +407,7 @@ public final class ReadmeExamples {
     board.movesStrict("e4", "e5", "Nf3", "Nf6", "Bc4", "Bc5");
 
     final PgnGame pgnGame = PgnCreate.createPgnGame(board);
-    System.out.println(PgnCreate.createPgnString(pgnGame, WriteMode.ARCHIVAL));
+    System.out.println(PgnCreate.toPgnString(pgnGame, WriteMode.ARCHIVAL));
     // </readme:pgn-create-game>
   }
 
@@ -419,7 +417,7 @@ public final class ReadmeExamples {
     board.movesStrict("e4", "e5", "Nf3", "Nf6", "Bc4", "Bc5");
 
     final PgnGame pgnGame = PgnCreate.createPgnGame(board);
-    final String pgnString = PgnCreate.createPgnString(pgnGame, WriteMode.ARCHIVAL);
+    final String pgnString = PgnCreate.toPgnString(pgnGame, WriteMode.ARCHIVAL);
     System.out.println(LenientPgnParser.validateText(pgnString).isValid()); // [out]
     System.out.println(StrictPgnParser.validateText(pgnString).isValid()); // [out]
     // </readme:pgn-format>
@@ -466,7 +464,7 @@ public final class ReadmeExamples {
 
   public static void pgnLenientValidationFile() {
     // <readme:pgn-lenient-validation-file>
-    final LenientPgnParserValidationResult result = LenientPgnParser.validate("C:\\temp\\myFile.pgn");
+    final LenientPgnParserValidationResult result = LenientPgnParser.validatePath("C:\\temp\\myFile.pgn");
     System.out.println(result.isValid());
     // </readme:pgn-lenient-validation-file>
   }
@@ -512,7 +510,7 @@ public final class ReadmeExamples {
 
   public static void pgnStrictValidationFile() {
     // <readme:pgn-strict-validation-file>
-    final StrictPgnParserValidationResult result = StrictPgnParser.validate("C:\\temp\\myFile.pgn");
+    final StrictPgnParserValidationResult result = StrictPgnParser.validatePath("C:\\temp\\myFile.pgn");
     System.out.println(result.isValid());
     // </readme:pgn-strict-validation-file>
   }

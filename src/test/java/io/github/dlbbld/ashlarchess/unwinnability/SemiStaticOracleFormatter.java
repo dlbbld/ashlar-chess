@@ -33,9 +33,9 @@ public final class SemiStaticOracleFormatter {
   }
 
   public static List<String> calculateRows(String fen) {
-    final Board board = new Board(fen);
+    final Board board = Board.fromFenStrict(fen);
     final MobilitySolution mobilitySolution = Mobility.mobility(board);
-    final List<String> rowList = new ArrayList<>();
+    final List<String> rows = new ArrayList<>();
 
     for (final Square source : Square.REAL) {
       if (board.getBitboardPosition().isEmpty(source)) {
@@ -44,7 +44,7 @@ public final class SemiStaticOracleFormatter {
       final Piece piece = board.getBitboardPosition().get(source);
       final PiecePlacement piecePlacement = calculatePiecePlacement(piece.getPieceType(), piece.getSide(), source,
           mobilitySolution);
-      addRow(rowList, fen, "-", "JAVA_ATTACKED_REGION", formatPiece(piecePlacement),
+      addRow(rows, fen, "-", "JAVA_ATTACKED_REGION", formatPiece(piecePlacement),
           formatSquares(SemiStaticFunctions.attackedRegion(piecePlacement, mobilitySolution)));
     }
 
@@ -52,27 +52,27 @@ public final class SemiStaticOracleFormatter {
       final PiecePlacement loserKing = calculateKing(winner.getOppositeSide(), mobilitySolution);
       final Set<Square> loserKingRegion = SemiStaticFunctions.region(loserKing, mobilitySolution);
 
-      addRow(rowList, fen, Nulls.name(winner), "VERDICT", "-",
+      addRow(rows, fen, Nulls.name(winner), "VERDICT", "-",
           UnwinnableSemiStatic.unwinnableSemiStatic(board, winner, mobilitySolution) ? "UNWINNABLE"
               : "POSSIBLY_WINNABLE");
-      addRow(rowList, fen, Nulls.name(winner), "JAVA_LOSER_KING_REGION", "-", formatSquares(loserKingRegion));
-      addRow(rowList, fen, Nulls.name(winner), "JAVA_INTRUDERS", "-",
+      addRow(rows, fen, Nulls.name(winner), "JAVA_LOSER_KING_REGION", "-", formatSquares(loserKingRegion));
+      addRow(rows, fen, Nulls.name(winner), "JAVA_INTRUDERS", "-",
           formatPieces(SemiStaticFunctions.intruders(loserKing, mobilitySolution)));
-      addRow(rowList, fen, Nulls.name(winner), "AMBRONA_VISITORS_EXPANDED", "-",
+      addRow(rows, fen, Nulls.name(winner), "AMBRONA_VISITORS_EXPANDED", "-",
           formatPieces(UnwinnableSemiStatic.calculateVisitorsExpanded(loserKingRegion, winner, mobilitySolution)));
 
       for (final Square square : loserKingRegion) {
-        addRow(rowList, fen, Nulls.name(winner), "JAVA_BLOCKERS", square.getName(),
+        addRow(rows, fen, Nulls.name(winner), "JAVA_BLOCKERS", square.getName(),
             formatPieces(SemiStaticFunctions.blockers(square, winner, mobilitySolution)));
-        addRow(rowList, fen, Nulls.name(winner), "JAVA_ASSISTANTS", square.getName(),
+        addRow(rows, fen, Nulls.name(winner), "JAVA_ASSISTANTS", square.getName(),
             formatPieces(SemiStaticFunctions.assistants(square, winner, mobilitySolution)));
       }
     }
-    return rowList;
+    return rows;
   }
 
   private static PiecePlacement calculateKing(Side side, MobilitySolution mobilitySolution) {
-    for (final PiecePlacement piecePlacement : mobilitySolution.getPiecePlacementSet()) {
+    for (final PiecePlacement piecePlacement : mobilitySolution.getPiecePlacements()) {
       if (piecePlacement.side() == side && piecePlacement.pieceType() == PieceType.KING) {
         return piecePlacement;
       }
@@ -82,7 +82,7 @@ public final class SemiStaticOracleFormatter {
 
   private static PiecePlacement calculatePiecePlacement(PieceType pieceType, Side side, Square square,
       MobilitySolution mobilitySolution) {
-    for (final PiecePlacement piecePlacement : mobilitySolution.getPiecePlacementSet()) {
+    for (final PiecePlacement piecePlacement : mobilitySolution.getPiecePlacements()) {
       if (piecePlacement.pieceType() == pieceType && piecePlacement.side() == side
           && piecePlacement.squareOriginal() == square) {
         return piecePlacement;
@@ -91,29 +91,29 @@ public final class SemiStaticOracleFormatter {
     throw new IllegalArgumentException("Piece not in the mobility solution");
   }
 
-  private static void addRow(List<String> rowList, String fen, String winner, String kind, String subject,
+  private static void addRow(List<String> rows, String fen, String winner, String kind, String subject,
       String value) {
-    rowList.add(fen + "\t" + winner + "\t" + kind + "\t" + subject + "\t" + value);
+    rows.add(fen + "\t" + winner + "\t" + kind + "\t" + subject + "\t" + value);
   }
 
   private static String formatSquares(Set<Square> squareSet) {
-    final List<String> valueList = new ArrayList<>();
+    final List<String> values = new ArrayList<>();
     for (final Square square : squareSet) {
-      valueList.add(square.getName());
+      values.add(square.getName());
     }
-    return formatValueList(valueList);
+    return formatValues(values);
   }
 
   private static String formatPieces(Set<PiecePlacement> piecePlacementSet) {
-    final List<String> valueList = new ArrayList<>();
+    final List<String> values = new ArrayList<>();
     for (final Square square : Square.REAL) {
       for (final PiecePlacement piecePlacement : piecePlacementSet) {
         if (piecePlacement.squareOriginal() == square) {
-          valueList.add(formatPiece(piecePlacement));
+          values.add(formatPiece(piecePlacement));
         }
       }
     }
-    return formatValueList(valueList);
+    return formatValues(values);
   }
 
   private static String formatPiece(PiecePlacement piecePlacement) {
@@ -121,10 +121,10 @@ public final class SemiStaticOracleFormatter {
         + piecePlacement.squareOriginal().getName();
   }
 
-  private static String formatValueList(List<String> valueList) {
-    if (valueList.isEmpty()) {
+  private static String formatValues(List<String> values) {
+    if (values.isEmpty()) {
       return "-";
     }
-    return Nulls.join(",", valueList);
+    return Nulls.join(",", values);
   }
 }

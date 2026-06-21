@@ -8,6 +8,9 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
 
+import io.github.dlbbld.ashlarchess.board.enums.Side;
+import io.github.dlbbld.ashlarchess.board.enums.Square;
+import io.github.dlbbld.ashlarchess.fen.constants.FenConstants;
 import io.github.dlbbld.ashlarchess.pgn.LenientPgnParser;
 import io.github.dlbbld.ashlarchess.pgn.LenientPgnParserValidationResult;
 import io.github.dlbbld.ashlarchess.pgn.PgnCreate;
@@ -24,6 +27,10 @@ import io.github.dlbbld.ashlarchess.pgn.WriteMode;
  * tokenizer unescapes on read, so the exporter must re-escape on write.</li>
  * <li>A tags-only PGN with no movetext and no termination marker - the lenient parser accepts this shape, semantic
  * export must produce a well-formed (re-parseable) PGN, not throw because the movetext string is empty.</li>
+ * <li>No-move games that carry only a starting position (from the initial position, and from a non-initial FEN with
+ * white or black to move, including castling rights and an en-passant target) - these exercise the FEN-start /
+ * zero-move export-and-reparse path on its own, independent of the CHA position fixtures that happen to use the same
+ * shape for a different purpose.</li>
  * </ul>
  */
 @SuppressWarnings("static-method")
@@ -48,12 +55,12 @@ class TestPgnRoundTripEdgeCases {
         """;
     final PgnGame parsed = LenientPgnParser.parseText(pgn);
     // Model carries the unescaped form.
-    assertEquals("A \"Quote\" and slash \\", TagUtility.calculateTagValue(parsed, "Event"));
+    assertEquals("A \"Quote\" and slash \\", TagUtility.readTagValue(parsed, "Event"));
 
-    final String exported = PgnCreate.createPgnString(parsed, WriteMode.SEMANTIC);
+    final String exported = PgnCreate.toPgnString(parsed, WriteMode.SEMANTIC);
     // Exported form re-escapes both backslash and quote, so re-parsing recovers the same unescaped value.
     final PgnGame reparsed = LenientPgnParser.parseText(exported);
-    assertEquals("A \"Quote\" and slash \\", TagUtility.calculateTagValue(reparsed, "Event"));
+    assertEquals("A \"Quote\" and slash \\", TagUtility.readTagValue(reparsed, "Event"));
 
     // And the exported representation contains the spec-required escapes in the bracketed value.
     assertTrue(exported.contains("[Event \"A \\\"Quote\\\" and slash \\\\\"]"),
@@ -76,15 +83,114 @@ class TestPgnRoundTripEdgeCases {
     final PgnGame parsed = pgnGameOf(parseResult);
 
     // Should not throw on an empty movetext.
-    final String exported = PgnCreate.createPgnString(parsed, WriteMode.SEMANTIC);
+    final String exported = PgnCreate.toPgnString(parsed, WriteMode.SEMANTIC);
 
     // Re-parsing the exported PGN must succeed and yield the same tag set + same empty movetext signal.
     final LenientPgnParserValidationResult reparseResult = LenientPgnParser.validateText(exported);
     assertTrue(reparseResult.isValid(), () -> "expected valid re-parse; got: " + reparseResult.message());
     final PgnGame reparsed = pgnGameOf(reparseResult);
-    assertEquals(parsed.tagList(), reparsed.tagList());
-    assertTrue(reparsed.halfMoveList().isEmpty());
+    assertEquals(parsed.tags(), reparsed.tags());
+    assertTrue(reparsed.moves().isEmpty());
     assertEquals(null, reparsed.terminationMarker());
+  }
+
+  @Test
+  void test03_noMoveGameFromStartingPositionRoundTrips() {
+    final PgnGame reparsed = assertNoMoveRoundTrip("""
+        [Event "?"]
+        [Site "?"]
+        [Date "????.??.??"]
+        [Round "?"]
+        [White "?"]
+        [Black "?"]
+        [Result "*"]
+
+        *
+
+        """);
+    assertEquals(FenConstants.FEN_INITIAL, reparsed.startFen(), "a no-FEN no-move game must round-trip as the start");
+  }
+
+  @Test
+  void test04_noMoveGameFromNonStartingPositionWhiteToMoveRoundTrips() {
+    // Non-initial position, White to move, full castling rights - exercises FEN + SetUp + castling-tag round-trip.
+    final PgnGame reparsed = assertNoMoveRoundTrip("""
+        [Event "?"]
+        [Site "?"]
+        [Date "????.??.??"]
+        [Round "?"]
+        [White "?"]
+        [Black "?"]
+        [Result "*"]
+        [SetUp "1"]
+        [FEN "r3k2r/8/8/8/8/8/8/R3K2R w KQkq - 0 1"]
+
+        *
+
+        """);
+    assertEquals(Side.WHITE, reparsed.startFen().sideToMove());
+    assertTrue(!FenConstants.FEN_INITIAL.equals(reparsed.startFen()), "must be a non-starting position");
+  }
+
+  @Test
+  void test05_noMoveGameFromNonStartingPositionBlackToMoveRoundTrips() {
+    // Same shape, Black to move.
+    final PgnGame reparsed = assertNoMoveRoundTrip("""
+        [Event "?"]
+        [Site "?"]
+        [Date "????.??.??"]
+        [Round "?"]
+        [White "?"]
+        [Black "?"]
+        [Result "*"]
+        [SetUp "1"]
+        [FEN "r3k2r/8/8/8/8/8/8/R3K2R b KQkq - 0 1"]
+
+        *
+
+        """);
+    assertEquals(Side.BLACK, reparsed.startFen().sideToMove());
+  }
+
+  @Test
+  void test06_noMoveGameWithEnPassantTargetRoundTrips() {
+    // Non-initial position with a capturable en-passant target (after 1. e4 d5 2. e5 f5), White to move - exercises
+    // the en-passant FEN field on the zero-move round-trip.
+    final PgnGame reparsed = assertNoMoveRoundTrip("""
+        [Event "?"]
+        [Site "?"]
+        [Date "????.??.??"]
+        [Round "?"]
+        [White "?"]
+        [Black "?"]
+        [Result "*"]
+        [SetUp "1"]
+        [FEN "rnbqkbnr/ppp1p1pp/8/3pPp2/8/8/PPPP1PPP/RNBQKBNR w KQkq f6 0 3"]
+
+        *
+
+        """);
+    assertEquals(Square.F6, reparsed.startFen().enPassantCaptureTargetSquare(),
+        "the en-passant target must survive the zero-move round-trip");
+  }
+
+  /**
+   * Round-trips a no-move PGN through {@code parse -> semantic export -> parse}: the start position, the zero-move
+   * shape, and the termination marker must be preserved, and a second export must equal the first (fixed point).
+   */
+  private static PgnGame assertNoMoveRoundTrip(String pgn) {
+    final PgnGame parsed = LenientPgnParser.parseText(pgn);
+    assertTrue(parsed.moves().isEmpty(), "fixture is supposed to have no moves");
+
+    final String exported = PgnCreate.toPgnString(parsed, WriteMode.SEMANTIC);
+    final PgnGame reparsed = LenientPgnParser.parseText(exported);
+
+    assertEquals(parsed.startFen(), reparsed.startFen(),
+        () -> "start position lost on round-trip; exported was:\n" + exported);
+    assertTrue(reparsed.moves().isEmpty(), "round-trip must keep zero moves");
+    assertEquals(parsed.terminationMarker(), reparsed.terminationMarker(), "termination marker lost on round-trip");
+    assertEquals(exported, PgnCreate.toPgnString(reparsed, WriteMode.SEMANTIC), "semantic export must be idempotent");
+    return reparsed;
   }
 
   /**
@@ -97,7 +203,7 @@ class TestPgnRoundTripEdgeCases {
     final PgnGame pgnGame = result.pgnGame();
     if (pgnGame == null) {
       throw new AssertionError("Expected a non-null PgnGame on the lenient PGN validation result; problem="
-          + result.problemParser() + ", message=" + result.message());
+          + result.parserProblem() + ", message=" + result.message());
     }
     return pgnGame;
   }

@@ -5,13 +5,16 @@ package io.github.dlbbld.ashlarchess.san;
 
 import io.github.dlbbld.ashlarchess.board.enums.File;
 import io.github.dlbbld.ashlarchess.board.enums.Rank;
+import io.github.dlbbld.ashlarchess.board.enums.RankUtility;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
-import io.github.dlbbld.ashlarchess.common.constants.EnumConstants;
 import io.github.dlbbld.ashlarchess.messages.Message;
 
-abstract class SanValidateMovementPawn extends AbstractSan implements EnumConstants {
+final class SanValidateMovementPawn {
 
-  public static void validatePawnMovement(Side havingMove, SanFormat sanFormat, SanConversion sanConversion) {
+  private SanValidateMovementPawn() {
+  }
+
+  public static void validatePawnMovement(Side sideToMove, SanFormat sanFormat, SanConversion sanConversion) {
 
     switch (sanFormat) {
       case KING_CASTLING_KING_SIDE:
@@ -21,13 +24,13 @@ abstract class SanValidateMovementPawn extends AbstractSan implements EnumConsta
         throw new IllegalArgumentException();
       case PAWN_NON_CAPTURING_NON_PROMOTION:
       case PAWN_NON_CAPTURING_PROMOTION: {
-        validatePawnDestinationRank(havingMove, sanConversion.toSquare().getRank());
+        validatePawnDestinationRank(sideToMove, sanConversion.toSquare().getRank());
         break;
       }
       case PAWN_CAPTURING_NON_PROMOTION:
       case PAWN_CAPTURING_PROMOTION: {
-        validatePawnDestinationRank(havingMove, sanConversion.toSquare().getRank());
-        validatePawnCapturingDiagonal(havingMove, sanConversion.fromFile(), sanConversion.toSquare().getFile());
+        validatePawnDestinationRank(sideToMove, sanConversion.toSquare().getRank());
+        validatePawnCapturingDiagonal(sideToMove, sanConversion.fromFile(), sanConversion.toSquare().getFile());
         break;
       }
       case RNBQ_CAPTURING_NEITHER:
@@ -43,19 +46,17 @@ abstract class SanValidateMovementPawn extends AbstractSan implements EnumConsta
     }
   }
 
-  private static void validatePawnDestinationRank(Side havingMove, Rank destinationRank) {
-    final boolean isInvalid = !Rank.calculateIsValidRank(havingMove, destinationRank);
+  private static void validatePawnDestinationRank(Side sideToMove, Rank destinationRank) {
+    final boolean isInvalid = !RankUtility.isValidRank(sideToMove, destinationRank);
     if (isInvalid) {
       throw new SanValidationException(SanValidationProblem.MOVEMENT_PAWN_FORWARD_BACKWARDS,
           Message.getString("validation.san.movement.pawn.forward.backwards"));
     }
   }
 
-  private static void validatePawnCapturingDiagonal(Side havingMove, File fromFile, File toFile) {
-    final boolean isAdjacentLeft = File.calculateHasLeftFile(havingMove, fromFile)
-        && File.calculateLeftFile(havingMove, fromFile) == toFile;
-    final boolean isAdjacentRight = File.calculateHasRightFile(havingMove, fromFile)
-        && File.calculateRightFile(havingMove, fromFile) == toFile;
+  private static void validatePawnCapturingDiagonal(Side sideToMove, File fromFile, File toFile) {
+    final boolean isAdjacentLeft = fromFile.hasLeftFile(sideToMove) && fromFile.getLeftFile(sideToMove) == toFile;
+    final boolean isAdjacentRight = fromFile.hasRightFile(sideToMove) && fromFile.getRightFile(sideToMove) == toFile;
 
     if (!isAdjacentLeft && !isAdjacentRight) {
       throw new SanValidationException(SanValidationProblem.MOVEMENT_PAWN_CAPTURE_NON_ADJACENT_FILE,

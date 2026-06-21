@@ -3,27 +3,46 @@
 
 package io.github.dlbbld.ashlarchess.unwinnability;
 
+import static io.github.dlbbld.ashlarchess.board.enums.Square.A1;
+import static io.github.dlbbld.ashlarchess.board.enums.Square.A8;
+import static io.github.dlbbld.ashlarchess.board.enums.Square.B1;
+import static io.github.dlbbld.ashlarchess.board.enums.Square.B8;
+import static io.github.dlbbld.ashlarchess.board.enums.Square.C1;
+import static io.github.dlbbld.ashlarchess.board.enums.Square.C8;
+import static io.github.dlbbld.ashlarchess.board.enums.Square.D1;
+import static io.github.dlbbld.ashlarchess.board.enums.Square.D8;
+import static io.github.dlbbld.ashlarchess.board.enums.Square.E1;
+import static io.github.dlbbld.ashlarchess.board.enums.Square.E8;
+import static io.github.dlbbld.ashlarchess.board.enums.Square.F1;
+import static io.github.dlbbld.ashlarchess.board.enums.Square.F8;
+import static io.github.dlbbld.ashlarchess.board.enums.Square.G1;
+import static io.github.dlbbld.ashlarchess.board.enums.Square.G8;
+import static io.github.dlbbld.ashlarchess.board.enums.Square.H1;
+import static io.github.dlbbld.ashlarchess.board.enums.Square.H8;
+
 import java.util.Arrays;
 import java.util.Set;
 import java.util.TreeSet;
 
 import io.github.dlbbld.ashlarchess.board.enums.Side;
 import io.github.dlbbld.ashlarchess.board.enums.Square;
-import io.github.dlbbld.ashlarchess.common.constants.EnumConstants;
 import io.github.dlbbld.ashlarchess.squares.KingNonCastlingEmptyBoardSquares;
 import io.github.dlbbld.ashlarchess.squares.KnightEmptyBoardSquares;
 
-class MobilityFunctions implements EnumConstants {
+final class MobilityFunctions {
+
+  private MobilityFunctions() {
+  }
 
   public static Set<Square> predecessorsCapture(PiecePlacement piecePlacement, Square square) {
     switch (piecePlacement.pieceType()) {
       case PAWN:
         final Set<Square> result = new TreeSet<>();
-        if (Square.calculateHasBehindLeftDiagonalSquare(piecePlacement.side(), square)) {
-          result.add(Square.calculateBehindLeftDiagonalSquare(piecePlacement.side(), square));
+        if (square.hasBehindLeftDiagonalSquare(piecePlacement.side())) {
+          result.add(square.getBehindLeftDiagonalSquare(piecePlacement.side()));
         }
-        if (Square.calculateHasBehindRightDiagonalSquare(piecePlacement.side(), square)) {
-          result.add(Square.calculateBehindRightDiagonalSquare(piecePlacement.side(), square));
+        if (square.hasBehindRightDiagonalSquare(piecePlacement.side())) {
+          result.add(square.getBehindRightDiagonalSquare(piecePlacement.side()));
         }
         return result;
       case ROOK:
@@ -65,18 +84,18 @@ class MobilityFunctions implements EnumConstants {
   }
 
   private static Set<Square> calculateBehindSquare(Side side, Square square) {
-    if (!Square.calculateHasBehindSquare(side, square)) {
+    if (!square.hasBehindSquare(side)) {
       return new TreeSet<>();
     }
     final Set<Square> result = new TreeSet<>();
-    result.add(Square.calculateBehindSquare(side, square));
+    result.add(square.getBehindSquare(side));
     return result;
   }
 
-  static Set<PiecePlacement> attackers(Set<PiecePlacement> piecePlacementList, Square square) {
+  static Set<PiecePlacement> attackers(Set<PiecePlacement> piecePlacements, Square square) {
     final Set<PiecePlacement> result = new TreeSet<>();
 
-    for (final PiecePlacement piecePlacement : piecePlacementList) {
+    for (final PiecePlacement piecePlacement : piecePlacements) {
       if (predecessorsCapture(piecePlacement, square).contains(piecePlacement.squareOriginal())) {
         result.add(piecePlacement);
       }

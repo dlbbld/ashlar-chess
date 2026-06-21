@@ -15,11 +15,14 @@ import io.github.dlbbld.ashlarchess.board.enums.PieceType;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
 import io.github.dlbbld.ashlarchess.board.enums.Square;
 import io.github.dlbbld.ashlarchess.model.EmptyBoardMove;
-import io.github.dlbbld.ashlarchess.squares.AbstractEmptyBoardSquares;
+import io.github.dlbbld.ashlarchess.squares.EmptyBoardMoveUtility;
 import io.github.dlbbld.ashlarchess.squares.PawnDiagonalSquares;
 
 @SuppressWarnings("null")
-public abstract class PawnWhiteSanValidateStaticallyStrict {
+public final class PawnWhiteSanValidateStaticallyStrict {
+
+  private PawnWhiteSanValidateStaticallyStrict() {
+  }
 
   public static final ImmutableSet<String> VALUES;
 
@@ -27,7 +30,7 @@ public abstract class PawnWhiteSanValidateStaticallyStrict {
     final Set<String> set = new TreeSet<>();
 
     // one and two-square pawn advances
-    for (final EmptyBoardMove move : AbstractEmptyBoardSquares.calculatePawnEmptyBoardMoves(Side.WHITE)) {
+    for (final EmptyBoardMove move : EmptyBoardMoveUtility.calculatePawnEmptyBoardMoves(Side.WHITE)) {
       appendOnlyMove(set, move.toSquare(), PieceType.PAWN);
     }
 

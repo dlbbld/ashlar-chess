@@ -9,7 +9,7 @@ import org.eclipse.jdt.annotation.Nullable;
 import com.google.common.collect.ImmutableList;
 
 import io.github.dlbbld.ashlarchess.common.Nulls;
-import io.github.dlbbld.ashlarchess.common.enums.FenAdvancedValidationProblem;
+import io.github.dlbbld.ashlarchess.common.enums.StrictFenSemanticValidationProblem;
 import io.github.dlbbld.ashlarchess.fen.model.Fen;
 
 /**
@@ -20,13 +20,13 @@ import io.github.dlbbld.ashlarchess.fen.model.Fen;
  *
  * <p>
  * The lenient layer only forgives syntactic deviations (whitespace, casing, missing trailing counters, etc.); it does
- * not weaken {@link FenParserAdvanced}'s structural/rule-consistency checks. When the underlying advanced parser
- * rejects the normalised FEN, {@link #fenAdvancedValidationProblem} carries the specific cause so callers can react
+ * not weaken {@link StrictFenParser}'s structural/rule-consistency checks. When the underlying strict parser
+ * rejects the normalised FEN, {@link #strictFenSemanticValidationProblem} carries the specific cause so callers can react
  * without parsing the message.
  */
 @SuppressWarnings("null")
 public record LenientFenParserValidationResult(@NonNull LenientFenParserValidationProblem problem,
-    @NonNull FenAdvancedValidationProblem fenAdvancedValidationProblem, @NonNull String message, @Nullable Fen fen,
+    @NonNull StrictFenSemanticValidationProblem strictFenSemanticValidationProblem, @NonNull String message, @Nullable Fen fen,
     @NonNull ImmutableList<@NonNull ForgivenFenItem> forgivenItems) {
 
   public LenientFenParserValidationResult {

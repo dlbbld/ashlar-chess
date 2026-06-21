@@ -3,19 +3,21 @@
 
 package io.github.dlbbld.ashlarchess.squares;
 
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.PAWN;
+
 import java.util.Set;
 
 import io.github.dlbbld.ashlarchess.board.StaticPosition;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
 import io.github.dlbbld.ashlarchess.board.enums.Square;
 
-class PawnAttackedSquares extends AbstractAttackedSquares {
+class PawnAttackedSquares {
 
   public static Set<Square> calculatePawnAttackedSquares(StaticPosition staticPosition, Square fromSquare,
-      Side havingMove) {
+      Side sideToMove) {
 
-    checkPiece(staticPosition, havingMove, fromSquare, PAWN);
+    ToSquaresSupport.checkPiece(staticPosition, sideToMove, fromSquare, PAWN);
 
-    return PawnDiagonalSquares.getPawnDiagonalSquares(havingMove, fromSquare);
+    return PawnDiagonalSquares.getPawnDiagonalSquares(sideToMove, fromSquare);
   }
 }

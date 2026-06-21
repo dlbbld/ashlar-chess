@@ -14,7 +14,6 @@ import org.junit.jupiter.api.Test;
 import io.github.dlbbld.ashlarchess.board.Board;
 import io.github.dlbbld.ashlarchess.common.constants.ChessConstants;
 import io.github.dlbbld.ashlarchess.pgn.PgnUtility;
-import io.github.dlbbld.ashlarchess.test.common.utility.OutputCaptureUtility;
 import io.github.dlbbld.ashlarchess.test.pgn.setup.PgnTestCaseCatalog;
 import io.github.dlbbld.ashlarchess.test.pgntest.enums.PgnTest;
 
@@ -50,8 +49,8 @@ class TestReportPrintoutDerivesFromObjectModel {
   @SuppressWarnings("static-method")
   @Test
   void threefoldReachedOnInitialPosition() {
-    // 8-ply knight shuffle: initial-position threefold on the board. Claim-ahead detected at the
-    // prior ply -> hasBeenPlayed == true -> asterisk in the output.
+    // 8-move knight shuffle: initial-position threefold on the board. Claim-ahead detected at the
+    // prior move -> hasBeenPlayed == true -> asterisk in the output.
     final Board board = new Board();
     board.movesStrict("Nf3", "Nf6", "Ng1", "Ng8", "Nf3", "Nf6", "Ng1", "Ng8");
 
@@ -76,11 +75,11 @@ class TestReportPrintoutDerivesFromObjectModel {
   private static void checkCorrespondence(Board board) {
     final ThreefoldClaimAheadReport claimAhead = ThreefoldClaimAheadReportBuilder.build(board);
     final ThreefoldExistingReport existing = ThreefoldExistingReportBuilder.build(board.getInitialDynamicPosition(),
-        board.getHalfMoveList(), ChessConstants.THREEFOLD_REPETITION_RULE_THRESHOLD);
+        MoveRecords.played(board), ChessConstants.THREEFOLD_REPETITION_RULE_THRESHOLD);
     final FiftyMoveClaimAheadReport fiftyClaimAhead = FiftyMoveClaimAheadReportBuilder.build(board);
     final FiftyMoveSequenceReport fiftySequence = FiftyMoveSequenceReportBuilder.build(board);
 
-    final List<String> outputLines = captureReporter(board);
+    final List<String> outputLines = reportLines(board);
 
     final List<String> claimAheadSection = extractSection(outputLines, CLAIM_AHEAD_HEADER_PREFIX,
         EXISTING_HEADER_PREFIX);
@@ -121,7 +120,7 @@ class TestReportPrintoutDerivesFromObjectModel {
       assertEquals(fiftyClaimAhead.entries().size(), fiftyClaimAheadSection.size(),
           "fifty-move claim-ahead section must have one rendered line per FiftyMoveClaimAheadEntry");
       // No asterisks expected under the missed-opportunity filter: the actually-played move at the
-      // boundary ply is by construction clock-resetting, so the non-zeroing candidate never coincides
+      // boundary move is by construction clock-resetting, so the non-zeroing candidate never coincides
       // with the played move.
       final long asterisks = fiftyClaimAheadSection.stream().filter(line -> line.contains("*")).count();
       assertEquals(0, asterisks,
@@ -140,10 +139,10 @@ class TestReportPrintoutDerivesFromObjectModel {
   }
 
   /**
-   * Captures System.out for one {@code Reporter.printReport(board)} invocation as a list of trimmed lines.
+   * The report lines for {@code board}, as produced by {@link Reporter#report(Board)}.
    */
-  private static List<String> captureReporter(Board board) {
-    return OutputCaptureUtility.captureStdoutLines(() -> Reporter.printReport(board));
+  private static List<String> reportLines(Board board) {
+    return Reporter.report(board);
   }
 
   /**
@@ -201,6 +200,6 @@ class TestReportPrintoutDerivesFromObjectModel {
 
   private static Board loadCorpusBoard(String pgnName) {
     final PgnTest pgnTest = PgnTestCaseCatalog.findPgnTestPgnNotListed(pgnName);
-    return PgnUtility.calculateBoard(pgnTest.getFolderPath(), pgnName);
+    return PgnUtility.toBoard(pgnTest.getFolderPath(), pgnName);
   }
 }

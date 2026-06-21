@@ -46,7 +46,7 @@ final class LenientSanRecover {
     String current = candidate;
     for (int i = 0; i < MAX_ITERATIONS; i++) {
       try {
-        return StrictSanParser.parseText(current, board).moveSpecification();
+        return StrictSanParser.parse(current, board);
       } catch (final SanValidationException e) {
         final SanValidationProblem strictCode = e.getSanValidationProblem();
         final LenientSanValidationProblem lenientCode = mapToLenientCode(strictCode);
@@ -195,12 +195,12 @@ final class LenientSanRecover {
     }
     final char pieceLetter = body.charAt(0);
     final char rankDigit = body.charAt(1);
-    final PieceType pieceType = NotationMovingPiece.calculate(pieceLetter).getPieceType();
-    final Rank fromRank = Rank.calculateRank(rankDigit);
-    final Square toSquare = Square.calculate(File.calculateFile(body.charAt(body.length() - 2)),
-        Rank.calculateRank(body.charAt(body.length() - 1)));
-    final Side havingMove = board.getHavingMove();
-    final Piece movingPiece = PieceType.calculate(havingMove, pieceType);
+    final PieceType pieceType = NotationMovingPiece.parse(pieceLetter).getPieceType();
+    final Rank fromRank = Rank.parse(rankDigit);
+    final Square toSquare = Square.of(File.parse(body.charAt(body.length() - 2)),
+        Rank.parse(body.charAt(body.length() - 1)));
+    final Side sideToMove = board.getSideToMove();
+    final Piece movingPiece = Piece.of(sideToMove, pieceType);
 
     @Nullable LegalMove match = null;
     for (final LegalMove lm : board.getLegalMoves()) {

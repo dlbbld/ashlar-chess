@@ -3,20 +3,22 @@
 
 package io.github.dlbbld.ashlarchess.squares;
 
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.ROOK;
+
 import java.util.Set;
 
 import io.github.dlbbld.ashlarchess.board.StaticPosition;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
 import io.github.dlbbld.ashlarchess.board.enums.Square;
 
-public class RookPotentialToSquares extends AbstractPotentialToSquares {
+public class RookPotentialToSquares {
 
   public static Set<Square> calculateRookPotentialToSquares(StaticPosition staticPosition, Square fromSquare,
-      Side havingMove) {
+      Side sideToMove) {
 
-    checkPiece(staticPosition, havingMove, fromSquare, ROOK);
+    ToSquaresSupport.checkPiece(staticPosition, sideToMove, fromSquare, ROOK);
 
-    return RookRangeSquares.calculateRookRangeSquares(staticPosition, fromSquare, havingMove, false);
+    return RookRangeSquares.calculateRookRangeSquares(staticPosition, fromSquare, sideToMove, false);
   }
 
 }

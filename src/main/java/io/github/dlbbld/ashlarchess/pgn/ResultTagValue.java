@@ -8,7 +8,7 @@ import java.util.List;
 
 import io.github.dlbbld.ashlarchess.board.enums.Side;
 import io.github.dlbbld.ashlarchess.common.exceptions.ProgrammingMistakeException;
-import io.github.dlbbld.ashlarchess.common.utility.BasicUtility;
+import io.github.dlbbld.ashlarchess.common.utility.ListUtility;
 
 public enum ResultTagValue {
   WHITE_WON("1-0", Side.WHITE),
@@ -32,12 +32,12 @@ public enum ResultTagValue {
     return sideWon;
   }
 
-  public static String calculateList() {
+  public static String allowedValuesText() {
     final List<String> list = new ArrayList<>();
     for (final ResultTagValue resultTagValue : ResultTagValue.values()) {
       list.add(resultTagValue.getValue());
     }
-    return BasicUtility.calculateCommaSeparatedList(list);
+    return ListUtility.toCommaSeparatedString(list);
   }
 
   public static boolean exists(String value) {
@@ -49,7 +49,7 @@ public enum ResultTagValue {
     return false;
   }
 
-  public static ResultTagValue calculate(String value) {
+  public static ResultTagValue parse(String value) {
     if (!exists(value)) {
       throw new IllegalArgumentException();
     }

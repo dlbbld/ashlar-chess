@@ -16,7 +16,7 @@ import io.github.dlbbld.ashlarchess.san.SanValidateFormat;
 import io.github.dlbbld.ashlarchess.san.SanValidationException;
 import io.github.dlbbld.ashlarchess.test.san.validate.statically.strict.calculate.SanValidateStaticallyStrict;
 
-class TestSanValidateNonPositionRelatedSupersetStrict extends AbstractTestSanValidate {
+class TestSanValidateNonPositionRelatedSupersetStrict {
 
   @SuppressWarnings("static-method")
   @Test

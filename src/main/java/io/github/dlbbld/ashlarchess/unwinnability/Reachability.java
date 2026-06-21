@@ -14,7 +14,7 @@ import java.util.TreeSet;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
 import io.github.dlbbld.ashlarchess.board.enums.Square;
 import io.github.dlbbld.ashlarchess.common.Nulls;
-import io.github.dlbbld.ashlarchess.common.utility.BasicUtility;
+import io.github.dlbbld.ashlarchess.common.utility.ListUtility;
 
 class Reachability {
 
@@ -81,27 +81,27 @@ class Reachability {
 
   public String print() {
 
-    final List<String> lineList = new ArrayList<>();
+    final List<String> lines = new ArrayList<>();
 
-    lineList.add("");
-    lineList.add("Reachability:");
+    lines.add("");
+    lines.add("Reachability:");
 
-    final List<ReachabilityVariable> entriesWithValueOneList = calculateEntriesWithValueOne();
+    final List<ReachabilityVariable> entriesWithValueOne = calculateEntriesWithValueOne();
 
-    final Set<Square> reachableSquareSetWhite = calculateSquareSet(Side.WHITE, entriesWithValueOneList);
-    final String squareListWhite = BasicUtility.calculateSquareList(reachableSquareSetWhite);
-    lineList.add(Side.WHITE.getName() + ": " + squareListWhite);
+    final Set<Square> reachableSquareSetWhite = calculateSquareSet(Side.WHITE, entriesWithValueOne);
+    final String whiteReachableSquaresText = ListUtility.formatSquares(reachableSquareSetWhite);
+    lines.add(Side.WHITE.getName() + ": " + whiteReachableSquaresText);
 
-    final Set<Square> reachableSquareSetBlack = calculateSquareSet(Side.BLACK, entriesWithValueOneList);
-    final String squareListBlack = BasicUtility.calculateSquareList(reachableSquareSetBlack);
-    lineList.add(Side.BLACK.getName() + ": " + squareListBlack);
+    final Set<Square> reachableSquareSetBlack = calculateSquareSet(Side.BLACK, entriesWithValueOne);
+    final String blackReachableSquaresText = ListUtility.formatSquares(reachableSquareSetBlack);
+    lines.add(Side.BLACK.getName() + ": " + blackReachableSquaresText);
 
-    return BasicUtility.convertToString(lineList);
+    return ListUtility.toLineSeparatedString(lines);
   }
 
-  private static Set<Square> calculateSquareSet(Side side, List<ReachabilityVariable> entryList) {
+  private static Set<Square> calculateSquareSet(Side side, List<ReachabilityVariable> entries) {
     final Set<Square> squareSet = new TreeSet<>();
-    for (final ReachabilityVariable reachabilityVariable : entryList) {
+    for (final ReachabilityVariable reachabilityVariable : entries) {
       if (reachabilityVariable.sideWhichCanReach() == side) {
         squareSet.add(reachabilityVariable.toSquare());
       }

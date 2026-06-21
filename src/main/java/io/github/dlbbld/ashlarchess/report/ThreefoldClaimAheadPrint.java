@@ -11,33 +11,35 @@ import com.google.common.collect.ImmutableList;
 
 import io.github.dlbbld.ashlarchess.common.Nulls;
 import io.github.dlbbld.ashlarchess.common.model.DynamicPosition;
-import io.github.dlbbld.ashlarchess.common.model.HalfMove;
 
-abstract class ThreefoldClaimAheadPrint {
+final class ThreefoldClaimAheadPrint {
+
+  private ThreefoldClaimAheadPrint() {
+  }
 
   static List<List<String>> render(ThreefoldClaimAheadReport report,
       Map<DynamicPosition, String> positionIdentifierMap) {
 
-    final List<List<String>> resultListList = new ArrayList<>();
+    final List<List<String>> lineGroups = new ArrayList<>();
     for (final ClaimAheadEntry entry : report.entries()) {
-      final List<String> resultList = new ArrayList<>();
+      final List<String> lines = new ArrayList<>();
       if (entry.includesInitialPosition()) {
-        resultList.add("[Initial position]");
+        lines.add("[Initial position]");
       }
 
       // The joined sequence is [priorOccurrences..., claimAheadMove]. claimAheadMove sits at lastIndex.
-      final ImmutableList<HalfMove> priorOccurrences = entry.priorOccurrences();
+      final ImmutableList<MoveRecord> priorOccurrences = entry.priorOccurrences();
       final int lastIndex = priorOccurrences.size();
       for (int i = 0; i <= lastIndex; i++) {
-        final HalfMove halfMove = i < lastIndex ? Nulls.get(priorOccurrences, i) : entry.claimAheadMove();
+        final MoveRecord move = i < lastIndex ? Nulls.get(priorOccurrences, i) : entry.claimAheadMove();
         final boolean isAddAsterisk = i < lastIndex || entry.hasBeenPlayed();
         final boolean isAddPositionInformation = i == lastIndex;
-        final String halfMoveInformation = PositionIdentifierUtility.calculateHalfMoveInformation(halfMove,
+        final String moveInformation = PositionIdentifierUtility.calculateMoveInformation(move,
             entry.totalRepetitionCount(), isAddAsterisk, isAddPositionInformation, positionIdentifierMap);
-        resultList.add(halfMoveInformation);
+        lines.add(moveInformation);
       }
-      resultListList.add(resultList);
+      lineGroups.add(lines);
     }
-    return resultListList;
+    return lineGroups;
   }
 }

@@ -23,7 +23,10 @@ import io.github.dlbbld.ashlarchess.model.LegalMove;
 // otherwise POSSIBLY_WINNABLE (CHA's "undetermined -> guessed winnable"). It never returns WINNABLE; finding a
 // helpmate is the job of the full analyzer. The depth-7 search is unconditional; the depth-15 pass is CHA's ad hoc
 // deeper retry for restricted pawn/bishop positions (CHA comment: "TODO: remove if too ad hoc for capturing bKHPqNEw").
-public class UnwinnableQuickAnalyzer {
+public final class UnwinnableQuickAnalyzer {
+
+  private UnwinnableQuickAnalyzer() {
+  }
 
   /**
    * Quick unwinnability for one intended winner.
@@ -35,38 +38,21 @@ public class UnwinnableQuickAnalyzer {
     return new UnwinnabilityQuickAnalysis(calculateUnwinnabilityQuickVerdict(input, c));
   }
 
-  /**
-   * Dead-position-quick check for the whole position (no intended winner): {@code UNWINNABLE} means the position is
-   * dead - neither side can deliver checkmate by any sequence of legal moves - and {@code POSSIBLY_WINNABLE} means it
-   * is not provably dead. This is the quick, during-the-game counterpart to
-   * {@link UnwinnableFullAnalyzer#unwinnableFull(Board)}, the complete check suggested at game end (resignation or
-   * flag-fall). Short-circuits: it stops as soon as one side is not provably unwinnable.
-   */
-  public static UnwinnabilityQuickVerdict unwinnableQuick(Board board) {
-    if (unwinnableQuick(board, Side.WHITE).verdict() != UnwinnabilityQuickVerdict.UNWINNABLE) {
-      return UnwinnabilityQuickVerdict.POSSIBLY_WINNABLE;
-    }
-    if (unwinnableQuick(board, Side.BLACK).verdict() != UnwinnabilityQuickVerdict.UNWINNABLE) {
-      return UnwinnabilityQuickVerdict.POSSIBLY_WINNABLE;
-    }
-    return UnwinnabilityQuickVerdict.UNWINNABLE;
-  }
-
   private static UnwinnabilityQuickVerdict calculateUnwinnabilityQuickVerdict(Board input, Side c) {
     final Board board = copyCurrentPositionForQuickSearch(input);
     final String invariant = board.getFen();
 
     // CHA trivial_progress: advance the position while there is exactly one legal move.
-    int countHalfmoves = 0;
+    int countPlies = 0;
     final Set<DynamicPosition> forcedPositionSet = new HashSet<>();
     while (board.getLegalMoves().size() == 1 && forcedPositionSet.add(board.getDynamicPosition())) {
       board.move(Nulls.getFirst(board.getLegalMoves()).moveSpecification());
-      countHalfmoves++;
+      countPlies++;
     }
 
     final boolean isUnwinnable = calculateIsQuickUnwinnable(board, c);
 
-    unperformHalfmoves(board, countHalfmoves);
+    unperformPlies(board, countPlies);
     if (!invariant.equals(board.getFen())) {
       throw new ProgrammingMistakeException("Board was changed");
     }
@@ -112,7 +98,7 @@ public class UnwinnableQuickAnalyzer {
     }
 
     if (board.getLegalMoves().isEmpty() && board.isCheck()) {
-      return board.getHavingMove() == intendedWinner;
+      return board.getSideToMove() == intendedWinner;
     }
 
     if (depth <= 0) {
@@ -126,7 +112,7 @@ public class UnwinnableQuickAnalyzer {
 
     for (final LegalMove legalMove : board.getLegalMoves()) {
       if (legalMove.movingPiece().getPieceType() == PieceType.KING) {
-        movedKings.value |= board.getHavingMove() == Side.WHITE ? 2 : 1;
+        movedKings.value |= board.getSideToMove() == Side.WHITE ? 2 : 1;
       }
       board.move(legalMove.moveSpecification());
       final boolean isUnwinnable = calculateIsDynamicallyUnwinnable(board, intendedWinner, depth - 1, movedKings,
@@ -145,7 +131,7 @@ public class UnwinnableQuickAnalyzer {
   // CHA is_unwinnable_after_one_move: unwinnable if every legal move leads to a semi-statically unwinnable position.
   private static boolean calculateIsUnwinnableAfterOneMove(Board board, Side intendedWinner) {
     if (board.getLegalMoves().isEmpty()) {
-      return !board.isCheck() || board.getHavingMove() == intendedWinner;
+      return !board.isCheck() || board.getSideToMove() == intendedWinner;
     }
 
     for (final LegalMove legalMove : board.getLegalMoves()) {
@@ -201,14 +187,14 @@ public class UnwinnableQuickAnalyzer {
   }
 
   private static Board copyCurrentPositionForQuickSearch(Board input) {
-    final Fen fen = new Fen(input.getFen(), input.getBitboardPosition(), input.getHavingMove(),
+    final Fen fen = new Fen(input.getFen(), input.getBitboardPosition(), input.getSideToMove(),
         input.getCastlingRightWhite(), input.getCastlingRightBlack(), input.getEnPassantCaptureTargetSquare(), 0,
         input.getFullMoveNumber());
     return new Board(fen);
   }
 
-  private static void unperformHalfmoves(Board board, int countHalfmoves) {
-    for (int i = 1; i <= countHalfmoves; i++) {
+  private static void unperformPlies(Board board, int countPlies) {
+    for (int i = 1; i <= countPlies; i++) {
       board.unmove();
     }
   }

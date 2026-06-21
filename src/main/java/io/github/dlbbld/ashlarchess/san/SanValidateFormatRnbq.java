@@ -35,7 +35,10 @@ import io.github.dlbbld.ashlarchess.messages.Message;
  * shorter valid form is complete. Each failure is reported with the most specific {@link SanValidationProblem}
  * describing which character is missing or wrong.
  */
-abstract class SanValidateFormatRnbq extends AbstractSan {
+final class SanValidateFormatRnbq {
+
+  private SanValidateFormatRnbq() {
+  }
 
   static SanParse parseRnbqMove(final String core, final SanTerminalMarker sanTerminalMarker) {
     // core[0] is the piece letter, already validated to be R/N/B/Q by the dispatcher in SanValidateFormat.
@@ -95,7 +98,7 @@ abstract class SanValidateFormatRnbq extends AbstractSan {
           Message.getString("validation.san.format.rnbq.capture.overlength"));
     }
 
-    final Square toSquare = Square.calculate(SanValidateFormat.parseFile(c2), SanValidateFormat.parseRank(c3));
+    final Square toSquare = Square.of(SanValidateFormat.parseFile(c2), SanValidateFormat.parseRank(c3));
     return new SanParse(pieceMoveSanFormat(false, false, true),
         new SanConversion(piece, File.NONE, Rank.NONE, toSquare, PromotionPieceType.NONE, sanTerminalMarker));
   }
@@ -141,7 +144,7 @@ abstract class SanValidateFormatRnbq extends AbstractSan {
           Message.getString("validation.san.format.rnbq.nonCapture.rank.overlength"));
     }
 
-    final Square toSquare = Square.calculate(toFile, SanValidateFormat.parseRank(c3));
+    final Square toSquare = Square.of(toFile, SanValidateFormat.parseRank(c3));
     return new SanParse(pieceMoveSanFormat(false, true, false),
         new SanConversion(piece, File.NONE, fromRank, toSquare, PromotionPieceType.NONE, sanTerminalMarker));
   }
@@ -176,7 +179,7 @@ abstract class SanValidateFormatRnbq extends AbstractSan {
           Message.getString("validation.san.format.rnbq.capture.rank.overlength"));
     }
 
-    final Square toSquare = Square.calculate(SanValidateFormat.parseFile(c3), SanValidateFormat.parseRank(c4));
+    final Square toSquare = Square.of(SanValidateFormat.parseFile(c3), SanValidateFormat.parseRank(c4));
     return new SanParse(pieceMoveSanFormat(false, true, true),
         new SanConversion(piece, File.NONE, fromRank, toSquare, PromotionPieceType.NONE, sanTerminalMarker));
   }
@@ -225,7 +228,7 @@ abstract class SanValidateFormatRnbq extends AbstractSan {
           Message.getString("validation.san.format.rnbq.nonCapture.file.overlength"));
     }
 
-    final Square toSquare = Square.calculate(toFile, SanValidateFormat.parseRank(c3));
+    final Square toSquare = Square.of(toFile, SanValidateFormat.parseRank(c3));
     return new SanParse(pieceMoveSanFormat(true, false, false),
         new SanConversion(piece, fromFile, Rank.NONE, toSquare, PromotionPieceType.NONE, sanTerminalMarker));
   }
@@ -260,7 +263,7 @@ abstract class SanValidateFormatRnbq extends AbstractSan {
           Message.getString("validation.san.format.rnbq.capture.file.overlength"));
     }
 
-    final Square toSquare = Square.calculate(SanValidateFormat.parseFile(c3), SanValidateFormat.parseRank(c4));
+    final Square toSquare = Square.of(SanValidateFormat.parseFile(c3), SanValidateFormat.parseRank(c4));
     return new SanParse(pieceMoveSanFormat(true, false, true),
         new SanConversion(piece, fromFile, Rank.NONE, toSquare, PromotionPieceType.NONE, sanTerminalMarker));
   }
@@ -273,7 +276,7 @@ abstract class SanValidateFormatRnbq extends AbstractSan {
       final PieceType piece, final File firstFile, final Rank firstRank) {
     // Length 3: interpret as plain destination Ra1 - firstFile/firstRank are the destination square.
     if (core.length() == 3) {
-      final Square toSquare = Square.calculate(firstFile, firstRank);
+      final Square toSquare = Square.of(firstFile, firstRank);
       return new SanParse(pieceMoveSanFormat(false, false, false),
           new SanConversion(piece, File.NONE, Rank.NONE, toSquare, PromotionPieceType.NONE, sanTerminalMarker));
     }
@@ -312,7 +315,7 @@ abstract class SanValidateFormatRnbq extends AbstractSan {
           Message.getString("validation.san.format.rnbq.nonCapture.square.overlength"));
     }
 
-    final Square toSquare = Square.calculate(toFile, SanValidateFormat.parseRank(c4));
+    final Square toSquare = Square.of(toFile, SanValidateFormat.parseRank(c4));
     return new SanParse(pieceMoveSanFormat(true, true, false),
         new SanConversion(piece, fromFile, fromRank, toSquare, PromotionPieceType.NONE, sanTerminalMarker));
   }
@@ -347,13 +350,13 @@ abstract class SanValidateFormatRnbq extends AbstractSan {
           Message.getString("validation.san.format.rnbq.capture.square.overlength"));
     }
 
-    final Square toSquare = Square.calculate(SanValidateFormat.parseFile(c4), SanValidateFormat.parseRank(c5));
+    final Square toSquare = Square.of(SanValidateFormat.parseFile(c4), SanValidateFormat.parseRank(c5));
     return new SanParse(pieceMoveSanFormat(true, true, true),
         new SanConversion(piece, fromFile, fromRank, toSquare, PromotionPieceType.NONE, sanTerminalMarker));
   }
 
   private static PieceType parsePieceLetter(final char c) {
-    return NotationMovingPiece.calculate(c).getPieceType();
+    return NotationMovingPiece.parse(c).getPieceType();
   }
 
   /**

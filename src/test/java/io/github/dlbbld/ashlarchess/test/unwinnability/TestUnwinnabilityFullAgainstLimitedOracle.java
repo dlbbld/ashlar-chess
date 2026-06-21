@@ -28,7 +28,7 @@ class TestUnwinnabilityFullAgainstLimitedOracle {
 
   @SuppressWarnings("static-method")
   @Test
-  void test() throws Exception {
+  void test() {
 
     final PgnTestCaseList testCaseList = PgnTestCaseCatalog.getTestList(PgnTest.CHA_LICHESS_QUICK_DEPTH_ABOVE_FOUR);
     for (final PgnFen testCase : testCaseList.list()) {
@@ -60,7 +60,8 @@ class TestUnwinnabilityFullAgainstLimitedOracle {
         assertEquals(UnwinnabilityFullVerdict.UNWINNABLE, unwinnableFull);
         break;
       case WINNABLE:
-        assertTrue(unwinnableFull.isWinnable());
+        assertTrue(unwinnableFull == UnwinnabilityFullVerdict.WINNABLE_HELPMATE
+            || unwinnableFull == UnwinnabilityFullVerdict.WINNABLE_BY_THEOREM);
         break;
       case UNKNOWN:
         break;

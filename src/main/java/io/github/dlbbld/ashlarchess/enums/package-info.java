@@ -16,8 +16,6 @@
  * <li>{@link io.github.dlbbld.ashlarchess.enums.KingSafetyCheck} - outcome of a king-attack-after-move check.</li>
  * <li>{@link io.github.dlbbld.ashlarchess.enums.MoveSuffixAnnotation} - PGN suffix annotations ({@code !}, {@code ?},
  * {@code !!}, {@code ??}, {@code !?}, {@code ?!}).</li>
- * <li>{@link io.github.dlbbld.ashlarchess.enums.SquareOccupation} - three-valued square occupancy (empty / own piece /
- * opponent piece) relative to a side.</li>
  * <li>{@link io.github.dlbbld.ashlarchess.enums.CastlingCheck} - outcome of a castling-precondition check.</li>
  * </ul>
  *

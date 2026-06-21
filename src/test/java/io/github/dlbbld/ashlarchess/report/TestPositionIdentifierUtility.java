@@ -4,6 +4,8 @@
 package io.github.dlbbld.ashlarchess.report;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
@@ -17,7 +19,6 @@ import io.github.dlbbld.ashlarchess.board.Board;
 import io.github.dlbbld.ashlarchess.common.Nulls;
 import io.github.dlbbld.ashlarchess.common.constants.ChessConstants;
 import io.github.dlbbld.ashlarchess.common.model.DynamicPosition;
-import io.github.dlbbld.ashlarchess.common.model.HalfMove;
 
 class TestPositionIdentifierUtility {
 
@@ -128,7 +129,7 @@ class TestPositionIdentifierUtility {
     board.movesStrict("e4", "e5");
     final ThreefoldClaimAheadReport claimAhead = ThreefoldClaimAheadReportBuilder.build(board);
     final ThreefoldExistingReport existing = ThreefoldExistingReportBuilder.build(board.getInitialDynamicPosition(),
-        board.getHalfMoveList(), ChessConstants.THREEFOLD_REPETITION_RULE_THRESHOLD);
+        MoveRecords.played(board), ChessConstants.THREEFOLD_REPETITION_RULE_THRESHOLD);
 
     final Map<DynamicPosition, String> map = PositionIdentifierUtility.calculatePositionIdentifierMap(claimAhead,
         existing);
@@ -138,7 +139,7 @@ class TestPositionIdentifierUtility {
   @SuppressWarnings("static-method")
   @Test
   void claimAheadOverlapsExistingShareSingleLabel() {
-    // 8-ply knight shuffle: claim-ahead has the initial-position entry (Ng8 played at ply 8 with
+    // 8-move knight shuffle: claim-ahead has the initial-position entry (Ng8 played at move 8 with
     // hasBeenPlayed == true); existing has the initial-position group. Same position in both
     // reports -> the map must hold a single entry for that position, not two.
     final Board board = new Board();
@@ -146,13 +147,13 @@ class TestPositionIdentifierUtility {
 
     final ThreefoldClaimAheadReport claimAhead = ThreefoldClaimAheadReportBuilder.build(board);
     final ThreefoldExistingReport existing = ThreefoldExistingReportBuilder.build(board.getInitialDynamicPosition(),
-        board.getHalfMoveList(), ChessConstants.THREEFOLD_REPETITION_RULE_THRESHOLD);
+        MoveRecords.played(board), ChessConstants.THREEFOLD_REPETITION_RULE_THRESHOLD);
 
     final Map<DynamicPosition, String> map = PositionIdentifierUtility.calculatePositionIdentifierMap(claimAhead,
         existing);
 
     final String initialLabel = Nulls.get(map, board.getInitialDynamicPosition());
-    assertTrue(initialLabel != null, "initial position must be present in the label map");
+    assertNotNull(initialLabel, "initial position must be present in the label map");
     assertEquals("A", initialLabel, "first distinct position seen in the claim-ahead walk gets label 'A'");
   }
 
@@ -170,7 +171,7 @@ class TestPositionIdentifierUtility {
 
     final ThreefoldClaimAheadReport claimAhead = ThreefoldClaimAheadReportBuilder.build(board);
     final ThreefoldExistingReport existing = ThreefoldExistingReportBuilder.build(board.getInitialDynamicPosition(),
-        board.getHalfMoveList(), ChessConstants.THREEFOLD_REPETITION_RULE_THRESHOLD);
+        MoveRecords.played(board), ChessConstants.THREEFOLD_REPETITION_RULE_THRESHOLD);
 
     final Map<DynamicPosition, String> map = PositionIdentifierUtility.calculatePositionIdentifierMap(claimAhead,
         existing);
@@ -192,19 +193,19 @@ class TestPositionIdentifierUtility {
     // order, then any positions appearing only in the existing-repetition groups are appended."
     //
     // Real games can't isolate this - the position that reaches threefold (existing) was also a
-    // claim-ahead at the prior ply, so the two reports overlap. Synthetic reports with distinct
+    // claim-ahead at the prior move, so the two reports overlap. Synthetic reports with distinct
     // positions give the precise ordering assertion: positionInClaimAhead gets "A", positionInExisting
     // gets "B" - and crucially NOT the reverse. (An implementation that walked existing first would
     // assign A to positionInExisting and would fail this test.)
     final Board board = new Board();
     board.moveStrict("e4");
-    final HalfMove afterE4 = Nulls.get(board.getHalfMoveList(), 0);
+    final MoveRecord afterE4 = Nulls.get(MoveRecords.played(board), 0);
     board.moveStrict("e5");
-    final HalfMove afterE5 = Nulls.get(board.getHalfMoveList(), 1);
+    final MoveRecord afterE5 = Nulls.get(MoveRecords.played(board), 1);
 
     final DynamicPosition positionAfterE4 = afterE4.dynamicPosition();
     final DynamicPosition positionAfterE5 = afterE5.dynamicPosition();
-    assertTrue(!positionAfterE4.equals(positionAfterE5), "fixture sanity: the two positions must differ");
+    assertNotEquals(positionAfterE4, positionAfterE5, "fixture sanity: the two positions must differ");
 
     // Synthetic claim-ahead report with one entry on positionAfterE4. The record's invariant only
     // checks the count math; the chess semantics of the entry don't matter for the label-assignment

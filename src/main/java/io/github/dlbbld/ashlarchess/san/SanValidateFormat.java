@@ -23,7 +23,10 @@ import io.github.dlbbld.ashlarchess.messages.Message;
  *   R, N, B, Q   -> {@link SanValidateFormatRnbq#parseRnbqMove}
  * </pre>
  */
-public abstract class SanValidateFormat extends AbstractSan {
+public final class SanValidateFormat {
+
+  private SanValidateFormat() {
+  }
 
   public static SanParse validateFormat(String san) {
 
@@ -105,11 +108,11 @@ public abstract class SanValidateFormat extends AbstractSan {
   }
 
   static File parseFile(final char c) {
-    return File.calculateFile(c);
+    return File.parse(c);
   }
 
   static Rank parseRank(final char c) {
-    return Rank.calculateRank(c);
+    return Rank.parse(c);
   }
 
 }

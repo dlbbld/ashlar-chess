@@ -65,7 +65,7 @@ class TestBitboardPositionIsInCheckAfterEnPassantCapture {
   void agreesWithAfterMoveIsInCheckReference() {
     for (final EpCase epCase : CASES) {
       try {
-        final BitboardPosition bitboardPosition = new Board(epCase.fen()).getBitboardPosition();
+        final BitboardPosition bitboardPosition = Board.fromFenStrict(epCase.fen()).getBitboardPosition();
         final MoveSpecification moveSpec = new MoveSpecification(epCase.fromSquare(), epCase.toSquare());
 
         final boolean reference = bitboardPosition.afterMove(moveSpec, epCase.mover()).isInCheck(epCase.mover());

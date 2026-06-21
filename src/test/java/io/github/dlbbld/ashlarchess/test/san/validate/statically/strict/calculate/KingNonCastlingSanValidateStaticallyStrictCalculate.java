@@ -3,6 +3,8 @@
 
 package io.github.dlbbld.ashlarchess.test.san.validate.statically.strict.calculate;
 
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.KING;
+
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -16,7 +18,7 @@ import io.github.dlbbld.ashlarchess.san.SanParse;
 import io.github.dlbbld.ashlarchess.test.san.model.SanValidationFromTo;
 import io.github.dlbbld.ashlarchess.test.san.validate.statically.strict.enums.KingNonCastlingSanValidateStaticallyStrict;
 
-public class KingNonCastlingSanValidateStaticallyStrictCalculate extends AbstractSanValidateStaticallyStrictCalculate {
+public class KingNonCastlingSanValidateStaticallyStrictCalculate {
 
   static ImmutableMap<String, SanParse> calculateSanMap() {
 
@@ -26,10 +28,10 @@ public class KingNonCastlingSanValidateStaticallyStrictCalculate extends Abstrac
       final String parse = Nulls.toLowerCase(enumName);
       final File fromFile = File.NONE;
       final Rank fromRank = Rank.NONE;
-      final Square toSquare = Square.calculate(Nulls.substring(parse, 1));
+      final Square toSquare = Square.parse(Nulls.substring(parse, 1));
 
       final SanValidationFromTo model = new SanValidationFromTo(fromFile, fromRank, toSquare);
-      populateMap(sanValidateMap, model, KING);
+      SanValidateStaticallyStrictCalculateSupport.populateMap(sanValidateMap, model, KING);
     }
 
     return Nulls.copyOfMap(sanValidateMap);

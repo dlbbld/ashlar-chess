@@ -24,7 +24,7 @@ import io.github.dlbbld.ashlarchess.test.ConfigurationTestConstants;
  *
  * <ul>
  * <li>Checkmate / stalemate fixtures (01-04) - still rejected, but through ordinary legality: the move attempted past
- * the mating / stalemating ply cannot match any legal move (the legal-move set is empty), so the lenient parser raises
+ * the mating / stalemating move cannot match any legal move (the legal-move set is empty), so the lenient parser raises
  * {@link LenientPgnParserValidationException}. The specific failure reason depends on the attempted move and is
  * intentionally not pinned.
  * <li>Insufficient-material fixtures (05-06) - now accepted: mutual insufficient material is queryable only and the
@@ -73,11 +73,11 @@ class TestLenientPgnParserBeyondTermination {
   }
 
   private static void assertRejectedNotViaGameEnded(String pgnName) {
-    assertThrows(LenientPgnParserValidationException.class, () -> LenientPgnParser.parse(BEYOND_FOLDER, pgnName));
+    assertThrows(LenientPgnParserValidationException.class, () -> LenientPgnParser.parsePath(BEYOND_FOLDER, pgnName));
   }
 
   private static void assertAccepted(String pgnName) {
-    assertDoesNotThrow(() -> LenientPgnParser.parse(BEYOND_FOLDER, pgnName),
+    assertDoesNotThrow(() -> LenientPgnParser.parsePath(BEYOND_FOLDER, pgnName),
         "insufficient material is queryable only; the parser must replay the full game");
   }
 }

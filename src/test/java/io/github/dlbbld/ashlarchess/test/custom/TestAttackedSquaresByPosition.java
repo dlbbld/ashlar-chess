@@ -13,13 +13,12 @@ import org.junit.jupiter.api.Test;
 
 import io.github.dlbbld.ashlarchess.bitboard.StaticPositionBridge;
 import io.github.dlbbld.ashlarchess.board.enums.Square;
-import io.github.dlbbld.ashlarchess.common.constants.EnumConstants;
-import io.github.dlbbld.ashlarchess.fen.FenParserAdvanced;
+import io.github.dlbbld.ashlarchess.fen.StrictFenParser;
 import io.github.dlbbld.ashlarchess.fen.constants.FenConstants;
 import io.github.dlbbld.ashlarchess.fen.model.Fen;
-import io.github.dlbbld.ashlarchess.squares.AbstractAttackedSquares;
+import io.github.dlbbld.ashlarchess.squares.AttackedSquaresOracle;
 
-class TestAttackedSquaresByPosition implements EnumConstants {
+class TestAttackedSquaresByPosition {
 
   @SuppressWarnings("static-method")
   @Test
@@ -57,16 +56,16 @@ class TestAttackedSquaresByPosition implements EnumConstants {
         "g5", "g3", "f2", "d4", "f4", "e6", "g6", "f7", "e8", "g8", "f6", "h6", "g7", "f7", "f8", "h8", "h7", "g6");
   }
 
-  private static void checkPosition(String fenStr, String... expectedSquareList) {
-    final Fen fen = FenParserAdvanced.parseFenAdvanced(fenStr);
+  private static void checkPosition(String fenStr, String... expectedSquares) {
+    final Fen fen = StrictFenParser.parse(fenStr);
 
-    // The relocated reference oracle (AbstractAttackedSquares) takes StaticPosition; derive it on demand from
+    // The relocated reference oracle (AttackedSquaresSupport) takes StaticPosition; derive it on demand from
     // Fen's bitboard via the test-oracle bridge.
-    final Set<Square> actualSquareSet = AbstractAttackedSquares
-        .calculateAttackedSquares(StaticPositionBridge.toStaticPosition(fen.bitboardPosition()), fen.havingMove());
+    final Set<Square> actualSquareSet = AttackedSquaresOracle
+        .calculateAttackedSquares(StaticPositionBridge.toStaticPosition(fen.bitboardPosition()), fen.sideToMove());
 
     final Set<String> expected = new TreeSet<>();
-    for (final String square : expectedSquareList) {
+    for (final String square : expectedSquares) {
       @SuppressWarnings("null") @NonNull final String nonNullSquare = square;
       expected.add(nonNullSquare);
     }

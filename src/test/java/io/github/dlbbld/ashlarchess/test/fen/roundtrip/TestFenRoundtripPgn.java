@@ -12,7 +12,7 @@ import org.junit.jupiter.api.Test;
 import io.github.dlbbld.ashlarchess.board.Board;
 import io.github.dlbbld.ashlarchess.common.Nulls;
 import io.github.dlbbld.ashlarchess.common.model.MoveSpecification;
-import io.github.dlbbld.ashlarchess.model.PgnHalfMove;
+import io.github.dlbbld.ashlarchess.model.PgnMove;
 import io.github.dlbbld.ashlarchess.pgn.PgnGame;
 import io.github.dlbbld.ashlarchess.test.RestrictTestConstants;
 import io.github.dlbbld.ashlarchess.test.model.PgnFen;
@@ -20,15 +20,15 @@ import io.github.dlbbld.ashlarchess.test.model.PgnTestCaseList;
 import io.github.dlbbld.ashlarchess.test.pgn.parser.PgnCacheForStrictPgnParserTestCases;
 import io.github.dlbbld.ashlarchess.test.pgn.setup.PgnTestCaseCatalog;
 
-class TestFenRoundtripPgn extends AbstractTestFenRoundtrip {
+class TestFenRoundtripPgn {
 
   private static final Logger logger = Nulls.getLogger(TestFenRoundtripPgn.class);
 
   @SuppressWarnings("static-method")
   @Test
-  void testPgnSample() throws Exception {
+  void testPgnSample() {
 
-    for (final PgnTestCaseList testCaseList : PgnTestCaseCatalog.getRestrictedTestListList()) {
+    for (final PgnTestCaseList testCaseList : PgnTestCaseCatalog.getRestrictedTestCaseLists()) {
       if (RestrictTestConstants.IS_RESTRICT_PGN_FEN_PARSER_ALL_TEST) {
         switch (testCaseList.pgnTest()) {
           case BASIC_CHECK_WHITE:
@@ -48,18 +48,18 @@ class TestFenRoundtripPgn extends AbstractTestFenRoundtrip {
     }
   }
 
-  private static void checkFenRoundtrip(Path folderPath, String pgnName) throws Exception {
+  private static void checkFenRoundtrip(Path folderPath, String pgnName) {
 
     logger.info(pgnName);
 
     final PgnGame pgnGame = PgnCacheForStrictPgnParserTestCases.getPgn(folderPath, pgnName);
 
     final Board board = new Board(pgnGame.startFen());
-    for (final PgnHalfMove halfMove : pgnGame.halfMoveList()) {
-      board.moveStrict(halfMove.san());
+    for (final PgnMove move : pgnGame.moves()) {
+      board.moveStrict(move.san());
     }
-    final List<MoveSpecification> moveList = board.getPerformedMoveSpecificationList();
-    checFenRoundtrip(pgnGame.startFen().fen(), moveList);
+    final List<MoveSpecification> moves = board.getPerformedMoveSpecifications();
+    TestFenRoundtripSupport.checkFenRoundtrip(pgnGame.startFen().fen(), moves);
   }
 
 }

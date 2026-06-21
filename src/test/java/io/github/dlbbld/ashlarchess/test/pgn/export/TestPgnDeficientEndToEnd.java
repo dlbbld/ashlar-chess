@@ -22,7 +22,7 @@ import io.github.dlbbld.ashlarchess.pgn.WriteMode;
  * exercising several lenient-tolerated deviations simultaneously, then asserted under both {@link WriteMode#SEMANTIC}
  * (the parse model echoed, no fabricated tags) and {@link WriteMode#ARCHIVAL} (the canonical spec section
  * 8.1.1-conformant artifact). Covers the semantic-preservation contract that the archival-equivalence helper in
- * {@code AbstractTestLenientPgnParser} does not directly verify.
+ * {@code TestLenientPgnParserSupport} does not directly verify.
  */
 @SuppressWarnings({ "static-method" })
 class TestPgnDeficientEndToEnd {
@@ -52,7 +52,7 @@ class TestPgnDeficientEndToEnd {
     final PgnGame pgnGame = result.pgnGame();
     assertNotNull(pgnGame);
     // Parse model preserves: exactly the three tags the user supplied (Event, White, FEN), nothing fabricated.
-    assertEquals(3, pgnGame.tagList().size());
+    assertEquals(3, pgnGame.tags().size());
     // No termination marker was in the input.
     assertEquals(null, pgnGame.terminationMarker());
     // Tag-forgiven-items report the deviations (missing STR tags, missing Result/marker, FEN without SetUp).
@@ -64,7 +64,7 @@ class TestPgnDeficientEndToEnd {
   @Test
   void test02_semanticExportEchoesTheParseModel() {
     final PgnGame pgnGame = LenientPgnParser.parseText(DEFICIENT_PGN);
-    final String semantic = PgnCreate.createPgnString(pgnGame, WriteMode.SEMANTIC);
+    final String semantic = PgnCreate.toPgnString(pgnGame, WriteMode.SEMANTIC);
 
     // Tags preserved as given (whitespace normalised inside the brackets).
     assertTrue(semantic.contains("[Event \"Spring Classic\"]"));
@@ -89,7 +89,7 @@ class TestPgnDeficientEndToEnd {
   @Test
   void test03_archivalExportProducesSpecCompliantOutput() {
     final PgnGame pgnGame = LenientPgnParser.parseText(DEFICIENT_PGN);
-    final String archival = PgnCreate.createPgnString(pgnGame, WriteMode.ARCHIVAL);
+    final String archival = PgnCreate.toPgnString(pgnGame, WriteMode.ARCHIVAL);
 
     // Caller-supplied tag values preserved.
     assertTrue(archival.contains("[Event \"Spring Classic\"]"));

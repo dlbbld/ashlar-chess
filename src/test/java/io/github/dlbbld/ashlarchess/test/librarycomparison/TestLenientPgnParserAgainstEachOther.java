@@ -14,7 +14,7 @@ import org.junit.jupiter.api.Test;
 
 import io.github.dlbbld.ashlarchess.common.Nulls;
 import io.github.dlbbld.ashlarchess.fen.model.Fen;
-import io.github.dlbbld.ashlarchess.model.PgnHalfMove;
+import io.github.dlbbld.ashlarchess.model.PgnMove;
 import io.github.dlbbld.ashlarchess.pgn.PgnGame;
 import io.github.dlbbld.ashlarchess.test.RestrictTestConstants;
 import io.github.dlbbld.ashlarchess.test.librarycarlos.pgn.parser.PgnParserLibraryCarlos;
@@ -33,8 +33,8 @@ class TestLenientPgnParserAgainstEachOther {
 
   @SuppressWarnings("static-method")
   @Test
-  void test() throws Exception {
-    for (final PgnTestCaseList testCaseList : PgnTestCaseCatalog.getRestrictedTestListList()) {
+  void test() {
+    for (final PgnTestCaseList testCaseList : PgnTestCaseCatalog.getRestrictedTestCaseLists()) {
       for (final PgnFen testCase : testCaseList.list()) {
         if (RestrictTestConstants.IS_RESTRICT_PGN_LENIENT_PARSER_API_AGAINST_EACH_OTHER_TEST) {
           switch (testCaseList.pgnTest()) {
@@ -69,11 +69,11 @@ class TestLenientPgnParserAgainstEachOther {
     final PgnGame pgnGame = PgnCacheForStrictPgnParserTestCases.getPgn(pgnFolderPath, pgnName);
     final Fen startFen = pgnGame.startFen();
 
-    final List<String> sanList = new ArrayList<>();
-    for (final PgnHalfMove pgnHalfMove : pgnGame.halfMoveList()) {
-      sanList.add(pgnHalfMove.san());
+    final List<String> sans = new ArrayList<>();
+    for (final PgnMove pgnMove : pgnGame.moves()) {
+      sans.add(pgnMove.san());
     }
-    return new PgnSan(startFen.fen(), sanList);
+    return new PgnSan(startFen.fen(), sans);
   }
 
 }

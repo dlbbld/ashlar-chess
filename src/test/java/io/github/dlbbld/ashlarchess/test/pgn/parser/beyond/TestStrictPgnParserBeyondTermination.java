@@ -62,11 +62,11 @@ class TestStrictPgnParserBeyondTermination {
   }
 
   private static void assertRejectedNotViaGameEnded(String pgnName) {
-    assertThrows(StrictPgnParserValidationException.class, () -> StrictPgnParser.parse(BEYOND_FOLDER, pgnName));
+    assertThrows(StrictPgnParserValidationException.class, () -> StrictPgnParser.parsePath(BEYOND_FOLDER, pgnName));
   }
 
   private static void assertAccepted(String pgnName) {
-    assertDoesNotThrow(() -> StrictPgnParser.parse(BEYOND_FOLDER, pgnName),
+    assertDoesNotThrow(() -> StrictPgnParser.parsePath(BEYOND_FOLDER, pgnName),
         "insufficient material is queryable only; the parser must replay the full game");
   }
 }

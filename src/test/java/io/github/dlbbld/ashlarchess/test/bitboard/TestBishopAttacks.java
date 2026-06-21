@@ -18,6 +18,7 @@ import io.github.dlbbld.ashlarchess.board.StaticPosition;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
 import io.github.dlbbld.ashlarchess.board.enums.Square;
 import io.github.dlbbld.ashlarchess.common.Nulls;
+import io.github.dlbbld.ashlarchess.common.utility.StaticPositionUtility;
 import io.github.dlbbld.ashlarchess.squares.SlidingAttacksTestOracle;
 import io.github.dlbbld.ashlarchess.test.model.PgnFen;
 import io.github.dlbbld.ashlarchess.test.model.PgnTestCaseList;
@@ -55,7 +56,7 @@ class TestBishopAttacks {
       final int squareOrdinal = Long.numberOfTrailingZeros(remaining);
       final Square fromSquare = Nulls.get(Square.REAL, squareOrdinal);
       final Set<Square> bitboardAttacks = BitboardPositionUtility
-          .toSquareSet(BishopAttacks.attacks(squareOrdinal, occupied));
+          .toSquares(BishopAttacks.attacks(squareOrdinal, occupied));
       final Set<Square> referenceAttacks = SlidingAttacksTestOracle.bishopAttacks(staticPosition, fromSquare, side);
       assertEquals(referenceAttacks, bitboardAttacks,
           side + " bishop attacks from " + fromSquare.getName() + " in fixture " + testCase.pgnName());
@@ -68,11 +69,11 @@ class TestBishopAttacks {
   void emptyBoardFromCenterMatchesReference() {
     // Bishop on D4 on an otherwise empty board - verifies the empty-board diagonal pattern via the production
     // reference rather than a hand-written expected set (no tautological self-test).
-    final StaticPosition staticPosition = StaticPosition.EMPTY_POSITION.createChangedPosition(Square.D4,
-        io.github.dlbbld.ashlarchess.board.enums.Piece.WHITE_BISHOP);
+    final StaticPosition staticPosition = StaticPositionUtility.createChangedPosition(StaticPosition.EMPTY_POSITION,
+        Square.D4, io.github.dlbbld.ashlarchess.board.enums.Piece.WHITE_BISHOP);
     final BitboardPosition bitboardPosition = StaticPositionBridge.fromStaticPosition(staticPosition);
     final Set<Square> bitboardAttacks = BitboardPositionUtility
-        .toSquareSet(BishopAttacks.attacks(Square.D4.ordinal(), bitboardPosition.occupied()));
+        .toSquares(BishopAttacks.attacks(Square.D4.ordinal(), bitboardPosition.occupied()));
     final Set<Square> referenceAttacks = SlidingAttacksTestOracle.bishopAttacks(staticPosition, Square.D4, Side.WHITE);
     assertEquals(referenceAttacks, bitboardAttacks);
   }

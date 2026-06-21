@@ -3,6 +3,8 @@
 
 package io.github.dlbbld.ashlarchess.board;
 
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.BLACK;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.WHITE;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.apache.logging.log4j.Logger;
@@ -11,20 +13,19 @@ import org.junit.jupiter.api.Test;
 import io.github.dlbbld.ashlarchess.bitboard.BitboardPosition;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
 import io.github.dlbbld.ashlarchess.common.Nulls;
-import io.github.dlbbld.ashlarchess.common.constants.EnumConstants;
 import io.github.dlbbld.ashlarchess.test.RestrictTestConstants;
 import io.github.dlbbld.ashlarchess.test.model.PgnFen;
 import io.github.dlbbld.ashlarchess.test.model.PgnTestCaseList;
 import io.github.dlbbld.ashlarchess.test.pgn.setup.PgnTestCaseCatalog;
 
-class TestInsufficientMaterial implements EnumConstants {
+class TestInsufficientMaterial {
 
   private static final Logger logger = Nulls.getLogger(TestInsufficientMaterial.class);
 
   @SuppressWarnings("static-method")
   @Test
-  void testPgnSample() throws Exception {
-    for (final PgnTestCaseList testCaseList : PgnTestCaseCatalog.getRestrictedTestListList()) {
+  void testPgnSample() {
+    for (final PgnTestCaseList testCaseList : PgnTestCaseCatalog.getRestrictedTestCaseLists()) {
       if (RestrictTestConstants.IS_RESTRICT_PGN_INSUFFICIENT_MATERIAL_TEST) {
         switch (testCaseList.pgnTest()) {
           case BASIC_INSUFFICIENT_MATERIAL_BOTH:
@@ -49,7 +50,7 @@ class TestInsufficientMaterial implements EnumConstants {
   }
 
   // Insufficient material is a function of the position alone, not the path. Build a history-less board from the
-  // cached final FEN via PgnFen.finalPosition() - no PGN parse, no per-ply replay - and assert that the
+  // cached final FEN via PgnFen.finalPosition() - no PGN parse, no per-move replay - and assert that the
   // mechanical bitboard-level computation agrees with the per-side Board predicate combined.
   private static void checkInsufficientMaterial(PgnFen testCase) {
 
@@ -68,24 +69,24 @@ class TestInsufficientMaterial implements EnumConstants {
   private static boolean calculateIsInsufficientMaterial(BitboardPosition bitboardPosition) {
 
     // KNvK, KvKN
-    if (BoardMaterial.calculateHasKingAndKnightOnly(WHITE, bitboardPosition)
-        && BoardMaterial.calculateHasKingOnly(BLACK, bitboardPosition)
-        || BoardMaterial.calculateHasKingOnly(WHITE, bitboardPosition)
-            && BoardMaterial.calculateHasKingAndKnightOnly(BLACK, bitboardPosition)
-        || BoardMaterial.calculateHasKingOnly(WHITE, bitboardPosition)
-            && BoardMaterial.calculateHasKingAndBishopOnly(BLACK, bitboardPosition)
-        || BoardMaterial.calculateHasKingOnly(WHITE, bitboardPosition)
-            && BoardMaterial.calculateHasKingAndBishopOnly(BLACK, bitboardPosition)
+    if (InsufficientMaterialUtility.hasKingAndKnightOnly(WHITE, bitboardPosition)
+        && InsufficientMaterialUtility.hasKingOnly(BLACK, bitboardPosition)
+        || InsufficientMaterialUtility.hasKingOnly(WHITE, bitboardPosition)
+            && InsufficientMaterialUtility.hasKingAndKnightOnly(BLACK, bitboardPosition)
+        || InsufficientMaterialUtility.hasKingOnly(WHITE, bitboardPosition)
+            && InsufficientMaterialUtility.hasKingAndBishopOnly(BLACK, bitboardPosition)
+        || InsufficientMaterialUtility.hasKingOnly(WHITE, bitboardPosition)
+            && InsufficientMaterialUtility.hasKingAndBishopOnly(BLACK, bitboardPosition)
 
     ) {
       return true;
     }
 
     // K(B^lightSquares)*vK(B^lightSquares)*, K(B^darkSquares)*vK(B^darkSquares)* (includes KvK)
-    if (InsufficientMaterialUtility.calculateHasZeroOrMultipleLightSquareBishopOnly(WHITE, bitboardPosition)
-        && InsufficientMaterialUtility.calculateHasZeroOrMultipleLightSquareBishopOnly(BLACK, bitboardPosition)
-        || InsufficientMaterialUtility.calculateHasZeroOrMultipleDarkSquareBishopOnly(WHITE, bitboardPosition)
-            && InsufficientMaterialUtility.calculateHasZeroOrMultipleDarkSquareBishopOnly(BLACK, bitboardPosition)) {
+    if (InsufficientMaterialUtility.hasZeroOrMultipleLightSquareBishopOnly(WHITE, bitboardPosition)
+        && InsufficientMaterialUtility.hasZeroOrMultipleLightSquareBishopOnly(BLACK, bitboardPosition)
+        || InsufficientMaterialUtility.hasZeroOrMultipleDarkSquareBishopOnly(WHITE, bitboardPosition)
+            && InsufficientMaterialUtility.hasZeroOrMultipleDarkSquareBishopOnly(BLACK, bitboardPosition)) {
       return true;
     }
 

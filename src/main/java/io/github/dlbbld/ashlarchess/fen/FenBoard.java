@@ -9,13 +9,15 @@ import io.github.dlbbld.ashlarchess.board.enums.CastlingRight;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
 import io.github.dlbbld.ashlarchess.board.enums.Square;
 import io.github.dlbbld.ashlarchess.common.Nulls;
-import io.github.dlbbld.ashlarchess.common.constants.EnumConstants;
 
-public class FenBoard implements EnumConstants {
+public final class FenBoard {
 
-  public static String calculateFen(Board board) {
+  private FenBoard() {
+  }
 
-    final Side havingMove = board.getHavingMove();
+  public static String toFen(Board board) {
+
+    final Side sideToMove = board.getSideToMove();
 
     final StringBuilder fen = new StringBuilder();
 
@@ -23,8 +25,8 @@ public class FenBoard implements EnumConstants {
     fen.append(piecePlacement);
     fen.append(" ");
 
-    // side having the move
-    switch (havingMove) {
+    // side to move
+    switch (sideToMove) {
       case BLACK -> fen.append("b");
       case WHITE -> fen.append("w");
       case NONE -> throw new IllegalArgumentException();
@@ -86,11 +88,11 @@ public class FenBoard implements EnumConstants {
     }
     fen.append(" ");
 
-    // half move clock
+    // halfmove clock
     fen.append(board.getHalfMoveClock());
     fen.append(" ");
 
-    // full move number (of next half move)
+    // fullmove number (of next move)
     fen.append(board.getFullMoveNumber());
 
     return Nulls.toString(fen);

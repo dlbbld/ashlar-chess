@@ -3,8 +3,6 @@
 
 package io.github.dlbbld.ashlarchess.enums;
 
-import io.github.dlbbld.ashlarchess.common.exceptions.ProgrammingMistakeException;
-
 // Outcomes of the king-safety check performed by ChessRuleAnalyzer for non-king moves.
 //
 // "King safety" here means: after the move is made, is the own king attacked?
@@ -19,14 +17,4 @@ public enum KingSafetyCheck {
 
   NON_KING_LEFT_IN_CHECK,
   NON_KING_EXPOSED_TO_CHECK;
-
-  // Translator to the broader MoveCheck enum, used when a KingSafetyCheck failure is surfaced
-  // through InvalidMoveException for MoveCheck public-API stability.
-  public MoveCheck toMoveCheck() {
-    return switch (this) {
-      case NON_KING_LEFT_IN_CHECK -> MoveCheck.ALL_BUT_KING_KING_LEFT_IN_CHECK;
-      case NON_KING_EXPOSED_TO_CHECK -> MoveCheck.ALL_BUT_KING_KING_EXPOSED_TO_CHECK;
-      case SUCCESS -> throw new ProgrammingMistakeException("SUCCESS is not a king-safety failure");
-    };
-  }
 }

@@ -3,16 +3,20 @@
 
 package io.github.dlbbld.ashlarchess.board;
 
+import static io.github.dlbbld.ashlarchess.board.enums.PieceType.PAWN;
+
+import io.github.dlbbld.ashlarchess.analyze.CastlingCheckTranslator;
 import io.github.dlbbld.ashlarchess.analyze.ChessRuleAnalyzer;
+import io.github.dlbbld.ashlarchess.analyze.KingSafetyCheckTranslator;
+import io.github.dlbbld.ashlarchess.analyze.MovementCheckTranslator;
 import io.github.dlbbld.ashlarchess.board.enums.CastlingMove;
 import io.github.dlbbld.ashlarchess.board.enums.CastlingRight;
 import io.github.dlbbld.ashlarchess.board.enums.CastlingRightLoss;
 import io.github.dlbbld.ashlarchess.board.enums.Piece;
 import io.github.dlbbld.ashlarchess.board.enums.PromotionPieceType;
-import io.github.dlbbld.ashlarchess.board.enums.Rank;
+import io.github.dlbbld.ashlarchess.board.enums.RankUtility;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
 import io.github.dlbbld.ashlarchess.board.enums.Square;
-import io.github.dlbbld.ashlarchess.common.constants.EnumConstants;
 import io.github.dlbbld.ashlarchess.common.exceptions.ProgrammingMistakeException;
 import io.github.dlbbld.ashlarchess.common.model.MoveSpecification;
 import io.github.dlbbld.ashlarchess.enums.CastlingCheck;
@@ -22,12 +26,15 @@ import io.github.dlbbld.ashlarchess.enums.MovementCheck;
 import io.github.dlbbld.ashlarchess.exceptions.InvalidMoveException;
 import io.github.dlbbld.ashlarchess.moves.CastlingUtility;
 
-class ValidateNewMove implements EnumConstants {
+final class ValidateNewMove {
+
+  private ValidateNewMove() {
+  }
 
   public static MoveCheck validateNewMove(Board board, MoveSpecification moveSpecification)
       throws InvalidMoveException {
 
-    if (CastlingUtility.calculateIsCastlingMove(moveSpecification)) {
+    if (CastlingUtility.isCastlingMove(moveSpecification)) {
       validateCastling(board, moveSpecification);
       return MoveCheck.SUCCESS;
     }
@@ -50,43 +57,44 @@ class ValidateNewMove implements EnumConstants {
 
   private static void validateCastling(Board board, MoveSpecification moveSpecification) throws InvalidMoveException {
 
-    if (!CastlingUtility.calculateIsCastlingMove(moveSpecification)) {
+    if (!CastlingUtility.isCastlingMove(moveSpecification)) {
       throw new ProgrammingMistakeException("Precondition is not met");
     }
 
-    final Side havingMove = board.getHavingMove();
+    final Side sideToMove = board.getSideToMove();
 
     final CastlingMove castlingMove = moveSpecification.castlingMove();
     final CastlingCheck castlingCheck = switch (castlingMove) {
-      case KING_SIDE -> CastlingUtility.calculateKingSideCastlingCheck(board.getBitboardPosition(), havingMove,
-          board.getCastlingRight(havingMove));
-      case QUEEN_SIDE -> CastlingUtility.calculateQueenSideCastlingCheck(board.getBitboardPosition(), havingMove,
-          board.getCastlingRight(havingMove));
+      case KING_SIDE -> CastlingUtility.calculateKingSideCastlingCheck(board.getBitboardPosition(), sideToMove,
+          board.getCastlingRight(sideToMove));
+      case QUEEN_SIDE -> CastlingUtility.calculateQueenSideCastlingCheck(board.getBitboardPosition(), sideToMove,
+          board.getCastlingRight(sideToMove));
       case NONE -> throw new IllegalArgumentException();
     };
     final CastlingRightLoss castlingRightLoss = castlingCheck == CastlingCheck.FINAL_NO_RIGHT
-        ? board.getCastlingRightLoss(havingMove, castlingMove)
+        ? board.getCastlingRightLoss(sideToMove, castlingMove)
         : CastlingRightLoss.NOT_LOST;
     switch (castlingCheck) {
       case FINAL_NO_RIGHT:
-        final CastlingRight castlingRight = board.getCastlingRight(havingMove);
+        final CastlingRight castlingRight = board.getCastlingRight(sideToMove);
         if (castlingRight == CastlingRight.NONE) {
           throw new InvalidMoveException("there are no castling rights anymore on both sides",
-              castlingCheck.toMoveCheck(castlingRightLoss));
+              CastlingCheckTranslator.toMoveCheck(castlingCheck, castlingRightLoss));
         }
         throw new InvalidMoveException("there is no castling right anymore on this side",
-            castlingCheck.toMoveCheck(castlingRightLoss));
+            CastlingCheckTranslator.toMoveCheck(castlingCheck, castlingRightLoss));
       case TEMPORARY_SQUARES_NOT_EMPTY:
         throw new InvalidMoveException("not all squares between the rook and the king are empty",
-            castlingCheck.toMoveCheck(castlingRightLoss));
+            CastlingCheckTranslator.toMoveCheck(castlingCheck, castlingRightLoss));
       case TEMPORARY_KING_IN_CHECK:
         throw new InvalidMoveException("castling is not possible because the king is in check",
-            castlingCheck.toMoveCheck(castlingRightLoss));
+            CastlingCheckTranslator.toMoveCheck(castlingCheck, castlingRightLoss));
       case TEMPORARY_KING_TRAVELS_THROUGH_CHECK:
         throw new InvalidMoveException("the king would travel over a field that is in check",
-            castlingCheck.toMoveCheck(castlingRightLoss));
+            CastlingCheckTranslator.toMoveCheck(castlingCheck, castlingRightLoss));
       case TEMPORARY_KING_ENDS_IN_CHECK:
-        throw new InvalidMoveException("the king would end in check", castlingCheck.toMoveCheck(castlingRightLoss));
+        throw new InvalidMoveException("the king would end in check",
+            CastlingCheckTranslator.toMoveCheck(castlingCheck, castlingRightLoss));
       case SUCCESS:
         // valid castling
         break;
@@ -97,14 +105,14 @@ class ValidateNewMove implements EnumConstants {
 
   private static void validateNonCastlingBasic(Board board, MoveSpecification moveSpecification)
       throws InvalidMoveException {
-    final Side havingMove = board.getHavingMove();
+    final Side sideToMove = board.getSideToMove();
     final Square fromSquare = moveSpecification.fromSquare();
     final Piece movingPiece = board.getBitboardPosition().get(fromSquare);
 
     if (movingPiece == Piece.NONE) {
       throw new InvalidMoveException("the from square is empty", MoveCheck.MOVE_SPEC_FROM_SQUARE_EMPTY);
     }
-    if (movingPiece.getSide() != havingMove) {
+    if (movingPiece.getSide() != sideToMove) {
       throw new InvalidMoveException("the moving piece is not an own piece",
           MoveCheck.MOVE_SPEC_FROM_SQUARE_OCCUPIED_BY_OPPONENT);
     }
@@ -124,8 +132,8 @@ class ValidateNewMove implements EnumConstants {
 
   private static void validatePawnPromotionPieceConsistency(Board board, MoveSpecification moveSpecification)
       throws InvalidMoveException {
-    final Side havingMove = board.getHavingMove();
-    if (Rank.calculateIsPromotionRank(havingMove, moveSpecification.toSquare().getRank())) {
+    final Side sideToMove = board.getSideToMove();
+    if (RankUtility.isPromotionRank(sideToMove, moveSpecification.toSquare().getRank())) {
       if (moveSpecification.promotionPieceType() == PromotionPieceType.NONE) {
         throw new InvalidMoveException("this is a pawn promotion move but the promotion piece was not specified",
             MoveCheck.MOVE_SPEC_PAWN_PROMOTION_NO_PROMOTION_PIECE);
@@ -138,12 +146,12 @@ class ValidateNewMove implements EnumConstants {
 
   private static void validateMovement(Board board, MoveSpecification moveSpecification) throws InvalidMoveException {
     final MovementCheck movementCheck = ChessRuleAnalyzer.analyzeMovement(board.getBitboardPosition(),
-        board.getHavingMove(), board.getEnPassantCaptureTargetSquare(), moveSpecification);
+        board.getSideToMove(), board.getEnPassantCaptureTargetSquare(), moveSpecification);
     if (movementCheck == MovementCheck.SUCCESS) {
       return;
     }
     throw new InvalidMoveException(movementMessage(movementCheck, board, moveSpecification),
-        movementCheck.toMoveCheck());
+        MovementCheckTranslator.toMoveCheck(movementCheck));
   }
 
   private static String movementMessage(MovementCheck check, Board board, MoveSpecification moveSpecification) {
@@ -168,7 +176,7 @@ class ValidateNewMove implements EnumConstants {
       case PAWN_EN_PASSANT_WRONG_RANK -> "the pawn cannot move diagonally to an empty field, except when en passant capture is possible, "
           + "which is not the case";
       case PAWN_EN_PASSANT_NO_IMMEDIATE_BEFORE_TWO_SQUARE_ADVANCE -> "the en passant capture requires that the pawn "
-          + "move " + Square.calculateBehindSquare(board.getHavingMove(), moveSpecification.toSquare()).getName()
+          + "move " + moveSpecification.toSquare().getBehindSquare(board.getSideToMove()).getName()
           + " was immediately played before, which is not the case";
       case KING_CAPTURES_GUARDED_PIECE -> "the king cannot capture this piece because it is guarded by another piece";
       case KING_MOVES_NEXT_TO_OPPONENT_KING -> "the king can not be moved next to the opponent king";
@@ -179,11 +187,12 @@ class ValidateNewMove implements EnumConstants {
 
   private static void validateKingSafety(Board board, MoveSpecification moveSpecification) throws InvalidMoveException {
     final KingSafetyCheck kingSafetyCheck = ChessRuleAnalyzer.analyzeKingSafety(board.getBitboardPosition(),
-        board.getHavingMove(), moveSpecification);
+        board.getSideToMove(), moveSpecification);
     if (kingSafetyCheck == KingSafetyCheck.SUCCESS) {
       return;
     }
-    throw new InvalidMoveException(kingSafetyMessage(kingSafetyCheck), kingSafetyCheck.toMoveCheck());
+    throw new InvalidMoveException(kingSafetyMessage(kingSafetyCheck),
+        KingSafetyCheckTranslator.toMoveCheck(kingSafetyCheck));
   }
 
   private static String kingSafetyMessage(KingSafetyCheck check) {

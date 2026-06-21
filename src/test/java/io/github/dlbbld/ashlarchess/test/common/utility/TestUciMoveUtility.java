@@ -97,12 +97,12 @@ class TestUciMoveUtility {
       final LegalMove lastMove = board.getLastMove();
       final MoveSpecification moveSpecification = lastMove.moveSpecification();
 
-      final String actualUci = UciMoveUtility.convertMoveSpecificationToUci(lastMove.havingMove(), moveSpecification)
-          .text();
+      final String actualUci = UciMoveUtility.toUci(lastMove.movingSide(), moveSpecification)
+          .uci();
       assertEquals(test.uciMoveStr(), actualUci);
 
-      final String actualUciForScala = convertMoveSpecificationToUciForScala(lastMove.havingMove(), moveSpecification);
-      if (CastlingUtility.calculateIsCastlingMove(moveSpecification)) {
+      final String actualUciForScala = convertMoveSpecificationToUciForScala(lastMove.movingSide(), moveSpecification);
+      if (CastlingUtility.isCastlingMove(moveSpecification)) {
         // O-O or O-O-O as provided in the san is expected
         assertEquals(test.san(), actualUciForScala);
       } else {
@@ -116,7 +116,7 @@ class TestUciMoveUtility {
 
     for (final UciMoveTest test : list) {
       final UciMove moveModel = UciMoveValidationUtility.lookup(test.uciMoveStr());
-      final MoveSpecification moveSpecificationActual = UciMoveUtility.convertUciMoveToMoveSpecification(board,
+      final MoveSpecification moveSpecificationActual = UciMoveUtility.toMoveSpecification(board,
           moveModel);
       board.moveStrict(test.san());
 
@@ -130,14 +130,14 @@ class TestUciMoveUtility {
 
     for (final UciMoveTest test : list) {
       final UciMove uciMove = UciMoveValidationUtility.lookup(test.uciMoveStr());
-      final String san = UciMoveUtility.convertUciMoveToSan(board, uciMove);
+      final String san = UciMoveUtility.toSan(board, uciMove);
       assertEquals(test.san(), san);
       board.moveStrict(test.san());
     }
   }
 
-  private static String convertMoveSpecificationToUciForScala(Side havingMove, MoveSpecification moveSpecification) {
-    if (CastlingUtility.calculateIsCastlingMove(moveSpecification)) {
+  private static String convertMoveSpecificationToUciForScala(Side sideToMove, MoveSpecification moveSpecification) {
+    if (CastlingUtility.isCastlingMove(moveSpecification)) {
       return switch (moveSpecification.castlingMove()) {
         case KING_SIDE -> CastlingConstants.SAN_CASTLING_KING_SIDE;
         case QUEEN_SIDE -> CastlingConstants.SAN_CASTLING_QUEEN_SIDE;
@@ -146,6 +146,6 @@ class TestUciMoveUtility {
       };
     }
 
-    return UciMoveUtility.convertMoveSpecificationToUci(havingMove, moveSpecification).text();
+    return UciMoveUtility.toUci(sideToMove, moveSpecification).uci();
   }
 }

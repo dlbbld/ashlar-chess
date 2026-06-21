@@ -52,7 +52,7 @@ final class KnightDistance {
         if (!isBoardSquare(fileNumber, rankNumber)) {
           continue;
         }
-        final Square next = Square.calculate(fileNumber, rankNumber);
+        final Square next = Square.of(fileNumber, rankNumber);
         final int nextIndex = toIndex(next);
         if (distances[nextIndex] != -1) {
           continue;

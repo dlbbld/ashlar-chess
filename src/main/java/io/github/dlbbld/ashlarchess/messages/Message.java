@@ -10,7 +10,7 @@ import io.github.dlbbld.ashlarchess.common.Nulls;
 import io.github.dlbbld.ashlarchess.common.constants.ConfigurationConstants;
 import io.github.dlbbld.ashlarchess.common.exceptions.ProgrammingMistakeException;
 
-public class Message {
+public final class Message {
 
   @SuppressWarnings("null")
   private static final ResourceBundle RESOURCE_BUNDLE = ResourceBundle

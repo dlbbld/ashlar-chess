@@ -32,17 +32,17 @@ class TestLibraryCarlosHashPass {
   @SuppressWarnings("static-method")
   @Test
   void test() throws Exception {
-    processFileList(PgnTest.RANDOM_NO_REPETITION);
+    processFiles(PgnTest.RANDOM_NO_REPETITION);
   }
 
-  private static void processFileList(PgnTest pgnTest) throws Exception {
+  private static void processFiles(PgnTest pgnTest) throws Exception {
     final File folder = pgnTest.getFolderPath().toFile();
     if (!folder.isDirectory()) {
       throw new SetupException("\"" + pgnTest.getFolderPath() + "\" is not a directory");
     }
 
-    final File[] filesList = folder.listFiles();
-    if (filesList == null) {
+    final File[] files = folder.listFiles();
+    if (files == null) {
       throw new FileSystemAccessException("The files in directory " + pgnTest.getFolderPath() + " could not be read");
     }
 
@@ -50,10 +50,10 @@ class TestLibraryCarlosHashPass {
         + " processed files");
 
     int numberOfFilesProcessed = 0;
-    final int numberOfFilesToProcess = filesList.length;
+    final int numberOfFilesToProcess = files.length;
     logger.info("*** Total " + numberOfFilesToProcess + " files to process ***");
 
-    for (final File file : filesList) {
+    for (final File file : files) {
       if (file == null) {
         throw new ProgrammingMistakeException("Wrong assumption about API behaviour");
       }

@@ -10,7 +10,6 @@ import org.junit.jupiter.api.Test;
 import io.github.dlbbld.ashlarchess.bitboard.StaticPositionBridge;
 import io.github.dlbbld.ashlarchess.board.Board;
 import io.github.dlbbld.ashlarchess.fen.constants.FenConstants;
-import io.github.dlbbld.ashlarchess.unwinnability.UnwinnableQuickAnalyzer;
 
 class TestBoardCopyCurrentPositionWithoutHistory {
 
@@ -40,7 +39,7 @@ class TestBoardCopyCurrentPositionWithoutHistory {
   }
 
   private static void checkFromFen(String fen) {
-    final Board source = new Board(fen);
+    final Board source = Board.fromFenStrict(fen);
     final Board copy = source.copyCurrentPositionWithoutHistory();
     final Board copyOfCopy = copy.copyCurrentPositionWithoutHistory();
 
@@ -55,14 +54,14 @@ class TestBoardCopyCurrentPositionWithoutHistory {
    */
   private static void assertEquivalentHistorylessBoard(Board source, Board actual) {
     // no history
-    assertEquals(0, actual.getPerformedHalfMoveCount());
-    assertEquals(0, actual.getPerformedLegalMoveList().size());
+    assertEquals(0, actual.getPerformedMoveCount());
+    assertEquals(0, actual.getPerformedMoves().size());
 
     // halfmove clock reset, everything else preserved
     assertEquals(0, actual.getHalfMoveClock());
     assertEquals(StaticPositionBridge.toStaticPosition(source.getBitboardPosition()),
         StaticPositionBridge.toStaticPosition(actual.getBitboardPosition()));
-    assertEquals(source.getHavingMove(), actual.getHavingMove());
+    assertEquals(source.getSideToMove(), actual.getSideToMove());
     assertEquals(source.getCastlingRightWhite(), actual.getCastlingRightWhite());
     assertEquals(source.getCastlingRightBlack(), actual.getCastlingRightBlack());
     assertEquals(source.getEnPassantCaptureTargetSquare(), actual.getEnPassantCaptureTargetSquare());
@@ -72,6 +71,6 @@ class TestBoardCopyCurrentPositionWithoutHistory {
     assertEquals(source.isCheckmate(), actual.isCheckmate());
     assertEquals(source.isStalemate(), actual.isStalemate());
     assertEquals(source.isInsufficientMaterial(), actual.isInsufficientMaterial());
-    assertEquals(UnwinnableQuickAnalyzer.unwinnableQuick(source), UnwinnableQuickAnalyzer.unwinnableQuick(actual));
+    assertEquals(source.deadPositionQuick(), actual.deadPositionQuick());
   }
 }

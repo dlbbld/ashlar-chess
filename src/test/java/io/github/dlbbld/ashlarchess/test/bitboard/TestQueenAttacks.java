@@ -18,6 +18,7 @@ import io.github.dlbbld.ashlarchess.board.StaticPosition;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
 import io.github.dlbbld.ashlarchess.board.enums.Square;
 import io.github.dlbbld.ashlarchess.common.Nulls;
+import io.github.dlbbld.ashlarchess.common.utility.StaticPositionUtility;
 import io.github.dlbbld.ashlarchess.squares.SlidingAttacksTestOracle;
 import io.github.dlbbld.ashlarchess.test.model.PgnFen;
 import io.github.dlbbld.ashlarchess.test.model.PgnTestCaseList;
@@ -53,7 +54,7 @@ class TestQueenAttacks {
       final int squareOrdinal = Long.numberOfTrailingZeros(remaining);
       final Square fromSquare = Nulls.get(Square.REAL, squareOrdinal);
       final Set<Square> bitboardAttacks = BitboardPositionUtility
-          .toSquareSet(QueenAttacks.attacks(squareOrdinal, occupied));
+          .toSquares(QueenAttacks.attacks(squareOrdinal, occupied));
       final Set<Square> referenceAttacks = SlidingAttacksTestOracle.queenAttacks(staticPosition, fromSquare, side);
       assertEquals(referenceAttacks, bitboardAttacks,
           side + " queen attacks from " + fromSquare.getName() + " in fixture " + testCase.pgnName());
@@ -64,11 +65,11 @@ class TestQueenAttacks {
   @SuppressWarnings("static-method")
   @Test
   void emptyBoardFromCenterMatchesReference() {
-    final StaticPosition staticPosition = StaticPosition.EMPTY_POSITION.createChangedPosition(Square.D4,
-        io.github.dlbbld.ashlarchess.board.enums.Piece.WHITE_QUEEN);
+    final StaticPosition staticPosition = StaticPositionUtility.createChangedPosition(StaticPosition.EMPTY_POSITION,
+        Square.D4, io.github.dlbbld.ashlarchess.board.enums.Piece.WHITE_QUEEN);
     final BitboardPosition bitboardPosition = StaticPositionBridge.fromStaticPosition(staticPosition);
     final Set<Square> bitboardAttacks = BitboardPositionUtility
-        .toSquareSet(QueenAttacks.attacks(Square.D4.ordinal(), bitboardPosition.occupied()));
+        .toSquares(QueenAttacks.attacks(Square.D4.ordinal(), bitboardPosition.occupied()));
     final Set<Square> referenceAttacks = SlidingAttacksTestOracle.queenAttacks(staticPosition, Square.D4, Side.WHITE);
     assertEquals(referenceAttacks, bitboardAttacks);
   }

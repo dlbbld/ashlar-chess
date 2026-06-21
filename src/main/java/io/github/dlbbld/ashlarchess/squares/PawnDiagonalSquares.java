@@ -4,7 +4,6 @@
 package io.github.dlbbld.ashlarchess.squares;
 
 import java.util.EnumMap;
-import java.util.Set;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
@@ -12,9 +11,11 @@ import com.google.common.collect.ImmutableSet;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
 import io.github.dlbbld.ashlarchess.board.enums.Square;
 import io.github.dlbbld.ashlarchess.common.Nulls;
-import io.github.dlbbld.ashlarchess.common.constants.EnumConstants;
 
-public class PawnDiagonalSquares implements EnumConstants {
+public final class PawnDiagonalSquares {
+
+  private PawnDiagonalSquares() {
+  }
 
   private static final ImmutableMap<Square, ImmutableSet<Square>> PAWN_WHITE_SQUARES_MAP;
   private static final ImmutableMap<Square, ImmutableSet<Square>> PAWN_BLACK_SQUARES_MAP;
@@ -46,18 +47,18 @@ public class PawnDiagonalSquares implements EnumConstants {
       }
       final ImmutableSet.Builder<Square> builder = ImmutableSet.builder();
       if (fromFile - 1 >= 1) {
-        builder.add(Square.calculate(fromFile - 1, toRank));
+        builder.add(Square.of(fromFile - 1, toRank));
       }
       if (fromFile + 1 <= 8) {
-        builder.add(Square.calculate(fromFile + 1, toRank));
+        builder.add(Square.of(fromFile + 1, toRank));
       }
       map.put(from, builder.build());
     }
     return Nulls.copyOfMap(map);
   }
 
-  public static Set<Square> getPawnDiagonalSquares(Side havingMove, Square fromSquare) {
-    return switch (havingMove) {
+  public static ImmutableSet<Square> getPawnDiagonalSquares(Side side, Square fromSquare) {
+    return switch (side) {
       case BLACK -> Nulls.get(PAWN_BLACK_SQUARES_MAP, fromSquare);
       case WHITE -> Nulls.get(PAWN_WHITE_SQUARES_MAP, fromSquare);
       case NONE -> throw new IllegalArgumentException();

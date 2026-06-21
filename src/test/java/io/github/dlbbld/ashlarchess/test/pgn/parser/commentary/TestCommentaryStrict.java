@@ -20,7 +20,7 @@ import io.github.dlbbld.ashlarchess.pgn.StrictPgnParserValidationProblem;
  * <ul>
  * <li>R1 - every opening delimiter must have a matching closing delimiter (else unclosed-commentary error).
  * <li>R3 - a closing delimiter outside any open commentary is a stray-close error.
- * <li>R4 - a commentary delimiter where a SAN half-move is expected is rejected.
+ * <li>R4 - a commentary delimiter where a SAN move is expected is rejected.
  * </ul>
  *
  * <p>
@@ -37,9 +37,9 @@ class TestCommentaryStrict {
   void v01_pregameCommentaryOnly() {
     final PgnGame file = StrictPgnParser.parseText(header("*") + "{opening remark} 1. e4 e5 *\n\n");
     assertEquals("opening remark", file.pregameCommentary().value());
-    assertEquals(2, file.halfMoveList().size());
-    assertEquals("", Nulls.get(file.halfMoveList(), 0).commentary().value());
-    assertEquals("", Nulls.get(file.halfMoveList(), 1).commentary().value());
+    assertEquals(2, file.moves().size());
+    assertEquals("", Nulls.get(file.moves(), 0).commentary().value());
+    assertEquals("", Nulls.get(file.moves(), 1).commentary().value());
   }
 
   @SuppressWarnings("static-method")
@@ -47,28 +47,28 @@ class TestCommentaryStrict {
   void v02_trailingCommentaryAfterWhiteMove() {
     final PgnGame file = StrictPgnParser.parseText(header("*") + "1. e4 {good opening} 1... e5 *\n\n");
     assertEquals("", file.pregameCommentary().value());
-    assertEquals("good opening", Nulls.get(file.halfMoveList(), 0).commentary().value());
-    assertEquals("", Nulls.get(file.halfMoveList(), 1).commentary().value());
+    assertEquals("good opening", Nulls.get(file.moves(), 0).commentary().value());
+    assertEquals("", Nulls.get(file.moves(), 1).commentary().value());
   }
 
   @SuppressWarnings("static-method")
   @Test
   void v03_trailingCommentaryAfterBlackMove() {
     final PgnGame file = StrictPgnParser.parseText(header("*") + "1. e4 e5 {symmetric} 2. Nf3 Nc6 *\n\n");
-    assertEquals("", Nulls.get(file.halfMoveList(), 0).commentary().value());
-    assertEquals("symmetric", Nulls.get(file.halfMoveList(), 1).commentary().value());
-    assertEquals("", Nulls.get(file.halfMoveList(), 2).commentary().value());
-    assertEquals("", Nulls.get(file.halfMoveList(), 3).commentary().value());
+    assertEquals("", Nulls.get(file.moves(), 0).commentary().value());
+    assertEquals("symmetric", Nulls.get(file.moves(), 1).commentary().value());
+    assertEquals("", Nulls.get(file.moves(), 2).commentary().value());
+    assertEquals("", Nulls.get(file.moves(), 3).commentary().value());
   }
 
   @SuppressWarnings("static-method")
   @Test
-  void v04_commentaryAfterEveryHalfMove() {
+  void v04_commentaryAfterEveryMove() {
     final PgnGame file = StrictPgnParser.parseText(header("*") + "1. e4 {a} 1... e5 {b} 2. Nf3 {c} 2... Nc6 {d} *\n\n");
-    assertEquals("a", Nulls.get(file.halfMoveList(), 0).commentary().value());
-    assertEquals("b", Nulls.get(file.halfMoveList(), 1).commentary().value());
-    assertEquals("c", Nulls.get(file.halfMoveList(), 2).commentary().value());
-    assertEquals("d", Nulls.get(file.halfMoveList(), 3).commentary().value());
+    assertEquals("a", Nulls.get(file.moves(), 0).commentary().value());
+    assertEquals("b", Nulls.get(file.moves(), 1).commentary().value());
+    assertEquals("c", Nulls.get(file.moves(), 2).commentary().value());
+    assertEquals("d", Nulls.get(file.moves(), 3).commentary().value());
   }
 
   @SuppressWarnings("static-method")
@@ -76,39 +76,39 @@ class TestCommentaryStrict {
   void v05_leadingAndTrailingCommentary() {
     final PgnGame file = StrictPgnParser.parseText(header("*") + "{intro} 1. e4 {after-1-white} 1... e5 *\n\n");
     assertEquals("intro", file.pregameCommentary().value());
-    assertEquals("after-1-white", Nulls.get(file.halfMoveList(), 0).commentary().value());
-    assertEquals("", Nulls.get(file.halfMoveList(), 1).commentary().value());
+    assertEquals("after-1-white", Nulls.get(file.moves(), 0).commentary().value());
+    assertEquals("", Nulls.get(file.moves(), 1).commentary().value());
   }
 
   @SuppressWarnings("static-method")
   @Test
   void v06_emptyCommentary() {
     final PgnGame file = StrictPgnParser.parseText(header("*") + "1. e4 {} 1... e5 *\n\n");
-    assertEquals("", Nulls.get(file.halfMoveList(), 0).commentary().value());
-    assertEquals("", Nulls.get(file.halfMoveList(), 1).commentary().value());
+    assertEquals("", Nulls.get(file.moves(), 0).commentary().value());
+    assertEquals("", Nulls.get(file.moves(), 1).commentary().value());
   }
 
   @SuppressWarnings("static-method")
   @Test
   void v07_commentaryWithPunctuationButNoBraces() {
     final PgnGame file = StrictPgnParser.parseText(header("*") + "1. e4 {special chars !? + # - / .} 1... e5 *\n\n");
-    assertEquals("special chars !? + # - / .", Nulls.get(file.halfMoveList(), 0).commentary().value());
+    assertEquals("special chars !? + # - / .", Nulls.get(file.moves(), 0).commentary().value());
   }
 
   @SuppressWarnings("static-method")
   @Test
   void v08_multilineCommentaryPreservedVerbatim() {
     final PgnGame file = StrictPgnParser.parseText(header("*") + "1. e4 {line one\nline two} 1... e5 *\n\n");
-    assertEquals("line one\nline two", Nulls.get(file.halfMoveList(), 0).commentary().value());
+    assertEquals("line one\nline two", Nulls.get(file.moves(), 0).commentary().value());
   }
 
   @SuppressWarnings("static-method")
   @Test
   void v09_commentaryAfterSuffixAnnotation() {
     final PgnGame file = StrictPgnParser.parseText(header("*") + "1. e4!? {spicy} 1... e5 *\n\n");
-    assertEquals("spicy", Nulls.get(file.halfMoveList(), 0).commentary().value());
+    assertEquals("spicy", Nulls.get(file.moves(), 0).commentary().value());
     assertEquals(io.github.dlbbld.ashlarchess.enums.MoveSuffixAnnotation.INTERESTING_MOVE,
-        Nulls.get(file.halfMoveList(), 0).moveSuffixAnnotation());
+        Nulls.get(file.moves(), 0).moveSuffixAnnotation());
   }
 
   @SuppressWarnings("static-method")
@@ -116,7 +116,7 @@ class TestCommentaryStrict {
   void v10_zeroMoveGameWithPreGameCommentaryOnly() {
     final PgnGame file = StrictPgnParser.parseText(header("*") + "{no moves played} *\n\n");
     assertEquals("no moves played", file.pregameCommentary().value());
-    assertEquals(0, file.halfMoveList().size());
+    assertEquals(0, file.moves().size());
   }
 
   // -------------------------------------------------------------------------------------------------
@@ -153,14 +153,14 @@ class TestCommentaryStrict {
   @Test
   void t003_openBraceInTrailingCommentaryIsContent() {
     final PgnGame file = StrictPgnParser.parseText(header("*") + "1. e4 {outer {inner} 1... e5 *\n\n");
-    assertEquals("outer {inner", Nulls.get(file.halfMoveList(), 0).commentary().value());
+    assertEquals("outer {inner", Nulls.get(file.moves(), 0).commentary().value());
   }
 
   @SuppressWarnings("static-method")
   @Test
   void t003_openBraceImmediatelyAtStartOfContent() {
     final PgnGame file = StrictPgnParser.parseText(header("*") + "1. e4 {{nested right away} 1... e5 *\n\n");
-    assertEquals("{nested right away", Nulls.get(file.halfMoveList(), 0).commentary().value());
+    assertEquals("{nested right away", Nulls.get(file.moves(), 0).commentary().value());
   }
 
   @SuppressWarnings("static-method")
@@ -269,7 +269,7 @@ class TestCommentaryStrict {
   @Test
   void tabInMoveCommentaryIsPreserved() {
     final PgnGame file = StrictPgnParser.parseText(header("*") + "1. e4 {a\tb} 1... e5 *\n\n");
-    assertEquals("a\tb", Nulls.get(file.halfMoveList(), 0).commentary().value());
+    assertEquals("a\tb", Nulls.get(file.moves(), 0).commentary().value());
   }
 
   @SuppressWarnings("static-method")
@@ -291,7 +291,7 @@ class TestCommentaryStrict {
   @Test
   void crlfInMoveCommentaryIsNormalisedToLf() {
     final PgnGame file = StrictPgnParser.parseText(header("*") + "1. e4 {a\r\nb} 1... e5 *\n\n");
-    assertEquals("a\nb", Nulls.get(file.halfMoveList(), 0).commentary().value());
+    assertEquals("a\nb", Nulls.get(file.moves(), 0).commentary().value());
   }
 
   @SuppressWarnings("static-method")
@@ -306,7 +306,7 @@ class TestCommentaryStrict {
   @Test
   void doubleSpacesInCommentaryArePreservedAsIs() {
     final PgnGame file = StrictPgnParser.parseText(header("*") + "1. e4 {a  b} 1... e5 *\n\n");
-    assertEquals("a  b", Nulls.get(file.halfMoveList(), 0).commentary().value());
+    assertEquals("a  b", Nulls.get(file.moves(), 0).commentary().value());
   }
 
   @SuppressWarnings("static-method")
@@ -331,7 +331,7 @@ class TestCommentaryStrict {
   @SuppressWarnings("static-method")
   @Test
   void t002_rejectMissingMoveNumberAfterCommentaryOnWhiteHigherFullMoveNumber() {
-    // Verifies the indicator is the current full-move number, not hardcoded to "1".
+    // Verifies the indicator is the current fullmove number, not hardcoded to "1".
     expectError(header("*") + "1. e4 e5 2. Nf3 {after-white-2} Nc6 *\n\n",
         StrictPgnParserValidationProblem.MOVETEXT_MOVE_NUMBER_REQUIRED_AFTER_COMMENTARY);
   }
@@ -340,8 +340,8 @@ class TestCommentaryStrict {
   @Test
   void t002_acceptCanonicalMoveNumberAfterCommentaryOnWhite() {
     final PgnGame file = StrictPgnParser.parseText(header("*") + "1. e4 {after-white} 1... e5 *\n\n");
-    assertEquals("after-white", Nulls.get(file.halfMoveList(), 0).commentary().value());
-    assertEquals("e5", Nulls.get(file.halfMoveList(), 1).san());
+    assertEquals("after-white", Nulls.get(file.moves(), 0).commentary().value());
+    assertEquals("e5", Nulls.get(file.moves(), 1).san());
   }
 
   @SuppressWarnings("static-method")
@@ -356,7 +356,7 @@ class TestCommentaryStrict {
   @Test
   void t002_noIndicatorRequiredWhenNoCommentaryIntervenes() {
     final PgnGame file = StrictPgnParser.parseText(header("*") + "1. e4 e5 *\n\n");
-    assertEquals(2, file.halfMoveList().size());
+    assertEquals(2, file.moves().size());
   }
 
   @SuppressWarnings("static-method")
@@ -364,8 +364,8 @@ class TestCommentaryStrict {
   void t002_indicatorNotRequiredWhenCommentaryIsOnBlackMove() {
     // Commentary on Black's move does not trigger T-002 - the next move (White) carries its own move number anyway.
     final PgnGame file = StrictPgnParser.parseText(header("*") + "1. e4 e5 {after-black} 2. Nf3 *\n\n");
-    assertEquals("after-black", Nulls.get(file.halfMoveList(), 1).commentary().value());
-    assertEquals("Nf3", Nulls.get(file.halfMoveList(), 2).san());
+    assertEquals("after-black", Nulls.get(file.moves(), 1).commentary().value());
+    assertEquals("Nf3", Nulls.get(file.moves(), 2).san());
   }
 
   // -------------------------------------------------------------------------------------------------

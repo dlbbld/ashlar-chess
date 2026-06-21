@@ -6,15 +6,18 @@ package io.github.dlbbld.ashlarchess.report;
 import java.util.ArrayList;
 import java.util.List;
 
-import io.github.dlbbld.ashlarchess.board.HalfMoveUtility;
+import io.github.dlbbld.ashlarchess.board.MoveNumberFormat;
 import io.github.dlbbld.ashlarchess.common.constants.ChessConstants;
 
-abstract class FiftyMoveClaimAheadPrint {
+final class FiftyMoveClaimAheadPrint {
+
+  private FiftyMoveClaimAheadPrint() {
+  }
 
   /**
    * Placeholder where a specific candidate's SAN would otherwise go. The 50-move claim-ahead section emits one entry
    * per missed-opportunity boundary, not per alternative legal move, so the candidate position is rendered abstractly:
-   * the line states that an ahead-claim was possible at this ply, not which specific move would have triggered it.
+   * the line states that an ahead-claim was possible at this move, not which specific move would have triggered it.
    */
   private static final String CLAIM_AHEAD_POSSIBLE_PLACEHOLDER = "[ahead claim possible]";
 
@@ -31,20 +34,20 @@ abstract class FiftyMoveClaimAheadPrint {
    * sequence report.
    */
   static List<List<String>> render(FiftyMoveClaimAheadReport report) {
-    final List<List<String>> resultListList = new ArrayList<>();
+    final List<List<String>> lineGroups = new ArrayList<>();
     for (final FiftyMoveClaimAheadEntry entry : report.entries()) {
       final List<String> tokens = new ArrayList<>();
       tokens.add(SequenceStartFormat.startAnchor(entry.sequenceStart(), entry.startingSide()));
       tokens.add("-");
       tokens.add(formatBoundary(entry));
-      resultListList.add(tokens);
+      lineGroups.add(tokens);
     }
-    return resultListList;
+    return lineGroups;
   }
 
   private static String formatBoundary(FiftyMoveClaimAheadEntry entry) {
     final int wouldBeClock = ChessConstants.FIFTY_MOVE_RULE_HALF_MOVE_CLOCK_THRESHOLD;
-    return HalfMoveUtility.calculateMoveNumberAndSanWithSpace(entry.fullMoveNumber(), entry.sideHavingMove(),
+    return MoveNumberFormat.calculateMoveNumberAndSanWithSpace(entry.fullMoveNumber(), entry.sideToMove(),
         CLAIM_AHEAD_POSSIBLE_PLACEHOLDER) + " " + SequenceStartFormat.counts(wouldBeClock, entry.startingSide());
   }
 }

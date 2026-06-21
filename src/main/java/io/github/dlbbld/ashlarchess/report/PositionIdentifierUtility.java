@@ -9,13 +9,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import io.github.dlbbld.ashlarchess.board.HalfMoveUtility;
+import io.github.dlbbld.ashlarchess.board.MoveNumberFormat;
 import io.github.dlbbld.ashlarchess.common.Nulls;
 import io.github.dlbbld.ashlarchess.common.exceptions.ProgrammingMistakeException;
 import io.github.dlbbld.ashlarchess.common.model.DynamicPosition;
-import io.github.dlbbld.ashlarchess.common.model.HalfMove;
 
-abstract class PositionIdentifierUtility {
+final class PositionIdentifierUtility {
+
+  private PositionIdentifierUtility() {
+  }
 
   private static final int BASE = 26;
   private static final int ASCII_TABLE_BEFORE_UPPER_CASE_A_NUMBER = 64;
@@ -23,7 +25,7 @@ abstract class PositionIdentifierUtility {
   /**
    * Assigns a unique letter label per distinct position across both reports. Claim-ahead entries are visited first in
    * their stored order, then any positions appearing only in the existing-repetition groups are appended.
-   * Claim-ahead-first ordering matches the letter assignment users have seen in the printed report historically; the
+   * Claim-ahead-first ordering keeps the printed report's letter assignment stable for users; the
    * second walk closes the latent throw-on-missing edge against future fixtures where a threefold-reached position
    * might not also appear as a claim-ahead opportunity.
    */
@@ -50,13 +52,13 @@ abstract class PositionIdentifierUtility {
 
   static String calculateIdentifier(int positionNumber) {
 
-    final List<Integer> representationList = calculateRepresentation(positionNumber - 1, BASE);
+    final List<Integer> representations = calculateRepresentation(positionNumber - 1, BASE);
 
     final StringBuilder result = new StringBuilder();
-    for (int i = 0; i < representationList.size(); i++) {
-      final int representation = Nulls.get(representationList, i);
+    for (int i = 0; i < representations.size(); i++) {
+      final int representation = Nulls.get(representations, i);
       final int representationAdaptedForLastDigit;
-      if (i == representationList.size() - 1) {
+      if (i == representations.size() - 1) {
         representationAdaptedForLastDigit = representation + 1;
       } else {
         representationAdaptedForLastDigit = representation;
@@ -95,7 +97,7 @@ abstract class PositionIdentifierUtility {
     return Nulls.get(positionIdentifierMap, position);
   }
 
-  private static String calculatePositionInformation(HalfMove repetitionSeriesMove, int totalRepetitionCount,
+  private static String calculatePositionInformation(MoveRecord repetitionSeriesMove, int totalRepetitionCount,
       boolean isAddAsterisk, Map<DynamicPosition, String> positionIdentifierMap) {
 
     final StringBuilder result = new StringBuilder();
@@ -110,24 +112,23 @@ abstract class PositionIdentifierUtility {
       result.append("*");
     }
     result.append(" - ");
-    // result.append(repetitionSeriesMove.countRepetition());
-    // result.append("/");
     result.append(totalRepetitionCount);
     result.append(")");
 
     return Nulls.toString(result);
   }
 
-  static String calculateHalfMoveInformation(HalfMove halfMove, int totalRepetitionCount, boolean isAddAsterisk,
+  static String calculateMoveInformation(MoveRecord move, int totalRepetitionCount, boolean isAddAsterisk,
       boolean isAddPositionInformation, Map<DynamicPosition, String> positionIdentifierMap) {
     final StringBuilder result = new StringBuilder();
 
-    result.append(HalfMoveUtility.calculateMoveNumberAndSanWithSpace(halfMove));
+    result.append(MoveNumberFormat.calculateMoveNumberAndSanWithSpace(move.fullMoveNumber(),
+        move.movingPiece().getSide(), move.san()));
 
     if (isAddPositionInformation) {
       result.append(" ");
 
-      final String positionInformation = calculatePositionInformation(halfMove, totalRepetitionCount, isAddAsterisk,
+      final String positionInformation = calculatePositionInformation(move, totalRepetitionCount, isAddAsterisk,
           positionIdentifierMap);
       result.append(positionInformation);
     }

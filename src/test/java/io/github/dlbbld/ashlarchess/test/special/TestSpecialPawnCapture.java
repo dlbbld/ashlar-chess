@@ -8,17 +8,16 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.Test;
 
 import io.github.dlbbld.ashlarchess.board.Board;
-import io.github.dlbbld.ashlarchess.common.constants.EnumConstants;
 import io.github.dlbbld.ashlarchess.san.SanValidationException;
 
-class TestSpecialPawnCapture implements EnumConstants {
+class TestSpecialPawnCapture {
 
   @SuppressWarnings("static-method")
   @Test
-  void testWhite() throws Exception {
+  void testWhite() {
     // two pawns can capture the same piece
     // caused a bug
-    final Board board = new Board("rrrrrrrr/PPPPPPPP/8/8/8/8/8/2k1K3 w - - 0 100");
+    final Board board = Board.fromFenStrict("rrrrrrrr/PPPPPPPP/8/8/8/8/8/2k1K3 w - - 0 100");
 
     board.moveStrict("bxa8=Q");
     board.unmove();
@@ -33,10 +32,10 @@ class TestSpecialPawnCapture implements EnumConstants {
 
   @SuppressWarnings("static-method")
   @Test
-  void testBlack() throws Exception {
+  void testBlack() {
     // two pawns can capture the same piece
     // caused a bug
-    final Board board = new Board("3k1K2/8/8/8/8/8/pppppppp/QQQQQQQQ b - - 0 100");
+    final Board board = Board.fromFenStrict("3k1K2/8/8/8/8/8/pppppppp/QQQQQQQQ b - - 0 100");
 
     board.moveStrict("bxa1=Q");
     board.unmove();

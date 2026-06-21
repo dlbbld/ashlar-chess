@@ -4,17 +4,18 @@
 package io.github.dlbbld.ashlarchess.squares;
 
 import java.util.EnumMap;
-import java.util.Set;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 
 import io.github.dlbbld.ashlarchess.board.enums.Square;
 import io.github.dlbbld.ashlarchess.common.Nulls;
-import io.github.dlbbld.ashlarchess.common.constants.EnumConstants;
 
 @SuppressWarnings("null")
-public class KingNonCastlingEmptyBoardSquares extends AbstractEmptyBoardSquares implements EnumConstants {
+public final class KingNonCastlingEmptyBoardSquares {
+
+  private KingNonCastlingEmptyBoardSquares() {
+  }
 
   private static final int[][] KING_OFFSETS = { { 0, 1 }, { 0, -1 }, { 1, 0 }, { -1, 0 }, { 1, 1 }, { 1, -1 },
       { -1, 1 }, { -1, -1 } };
@@ -31,7 +32,7 @@ public class KingNonCastlingEmptyBoardSquares extends AbstractEmptyBoardSquares 
         final int toFile = fromFile + offset[0];
         final int toRank = fromRank + offset[1];
         if (toFile >= 1 && toFile <= 8 && toRank >= 1 && toRank <= 8) {
-          builder.add(Square.calculate(toFile, toRank));
+          builder.add(Square.of(toFile, toRank));
         }
       }
       map.put(from, builder.build());
@@ -40,7 +41,7 @@ public class KingNonCastlingEmptyBoardSquares extends AbstractEmptyBoardSquares 
     ValidateMoveNumberUtility.validateMapOfSet(KING_SQUARES_MAP, 420);
   }
 
-  public static Set<Square> getKingSquares(Square fromSquare) {
+  public static ImmutableSet<Square> getKingSquares(Square fromSquare) {
     return Nulls.get(KING_SQUARES_MAP, fromSquare);
   }
 

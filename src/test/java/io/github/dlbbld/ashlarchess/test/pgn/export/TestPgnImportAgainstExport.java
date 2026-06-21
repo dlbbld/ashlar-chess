@@ -30,8 +30,8 @@ class TestPgnImportAgainstExport {
     // true (default) -> curated export-roundtrip smoke subset (~20 files).
     // false -> full ALL_EXCEPT_LONGEST_POSSIBLE corpus for a pre-release / regression sweep.
     final List<PgnTestCaseList> source = RestrictTestConstants.IS_RESTRICT_PGN_WRITER_TEST
-        ? PgnTestCaseCatalog.getExportRoundtripSmokeList()
-        : PgnTestCaseCatalog.getRestrictedTestListList();
+        ? PgnTestCaseCatalog.getExportRoundtripSmokeTests()
+        : PgnTestCaseCatalog.getRestrictedTestCaseLists();
     for (final PgnTestCaseList testCaseList : source) {
       for (final PgnFen testCase : testCaseList.list()) {
         final String pgnName = testCase.pgnName();
@@ -41,8 +41,8 @@ class TestPgnImportAgainstExport {
         final PgnGame pgnGameFromFileSystem = PgnCacheForLenientPgnParserTestCases
             .getPgn(testCaseList.pgnTest().getFolderPath(), pgnName);
 
-        final List<String> export = PgnCreate.createPgnLines(pgnGameFromFileSystem);
-        final PgnGame pgnGameFromReadingExport = LenientPgnParser.parse(export);
+        final List<String> export = PgnCreate.toPgnLines(pgnGameFromFileSystem);
+        final PgnGame pgnGameFromReadingExport = LenientPgnParser.parseLines(export);
 
         assertEquals(pgnGameFromFileSystem, pgnGameFromReadingExport);
       }

@@ -64,7 +64,7 @@ class TestHelpmateSearchKey {
     if (fen == null) {
       return new Board();
     }
-    return new Board(fen);
+    return Board.fromFenStrict(fen);
   }
 
   private static void walkInLockStep(HelpmateSearchBoard search1, HelpmateSearchBoard search2, int depth) {
@@ -89,9 +89,7 @@ class TestHelpmateSearchKey {
     final HelpmateSearchKey key2 = search2.currentTranspositionKey();
     assertEquals(dp1.equals(dp2), key1.equals(key2),
         "key equality must mirror DynamicPosition equality (dp1=" + dp1 + " dp2=" + dp2 + ")");
-    // Self-equality + hashCode contract.
-    assertEquals(key1, key1, "key must equal itself");
-    assertEquals(key1.hashCode(), key1.hashCode(), "key hashCode must be stable");
+    // equals/hashCode contract: equal keys must share a hashCode.
     if (key1.equals(key2)) {
       assertEquals(key1.hashCode(), key2.hashCode(), "equal keys must share hashCode");
     }
@@ -104,9 +102,9 @@ class TestHelpmateSearchKey {
   @Test
   void differentSideToMoveProducesDifferentKey() {
     // Pawn-less position so the EP target is NONE for both sides; isolates the sideToMove field.
-    final HelpmateSearchKey whiteToMove = HelpmateSearchBoard.from(new Board("4k3/8/8/8/8/8/8/4K3 w - - 0 1"))
+    final HelpmateSearchKey whiteToMove = HelpmateSearchBoard.from(Board.fromFenStrict("4k3/8/8/8/8/8/8/4K3 w - - 0 1"))
         .currentTranspositionKey();
-    final HelpmateSearchKey blackToMove = HelpmateSearchBoard.from(new Board("4k3/8/8/8/8/8/8/4K3 b - - 0 1"))
+    final HelpmateSearchKey blackToMove = HelpmateSearchBoard.from(Board.fromFenStrict("4k3/8/8/8/8/8/8/4K3 b - - 0 1"))
         .currentTranspositionKey();
     assertNotEquals(whiteToMove, blackToMove);
   }
@@ -116,9 +114,9 @@ class TestHelpmateSearchKey {
   @Test
   void differentNormalizedEpProducesDifferentKey() {
     // Same piece placement; one has a normalized-EP-capturable target, the other does not.
-    final HelpmateSearchKey withEp = HelpmateSearchBoard.from(new Board("8/8/8/8/3pP3/8/8/K6k b - e3 0 1"))
+    final HelpmateSearchKey withEp = HelpmateSearchBoard.from(Board.fromFenStrict("8/8/8/8/3pP3/8/8/K6k b - e3 0 1"))
         .currentTranspositionKey();
-    final HelpmateSearchKey withoutEp = HelpmateSearchBoard.from(new Board("8/8/8/8/3pP3/8/8/K6k b - - 0 1"))
+    final HelpmateSearchKey withoutEp = HelpmateSearchBoard.from(Board.fromFenStrict("8/8/8/8/3pP3/8/8/K6k b - - 0 1"))
         .currentTranspositionKey();
     assertNotEquals(withEp, withoutEp);
   }
@@ -127,10 +125,10 @@ class TestHelpmateSearchKey {
   @SuppressWarnings("static-method")
   @Test
   void differentWhiteCastlingRightsProducesDifferentKey() {
-    final HelpmateSearchKey both = HelpmateSearchBoard.from(new Board("r3k2r/8/8/8/8/8/8/R3K2R w KQkq - 0 1"))
+    final HelpmateSearchKey both = HelpmateSearchBoard.from(Board.fromFenStrict("r3k2r/8/8/8/8/8/8/R3K2R w KQkq - 0 1"))
         .currentTranspositionKey();
     final HelpmateSearchKey whiteQueenSideOnly = HelpmateSearchBoard
-        .from(new Board("r3k2r/8/8/8/8/8/8/R3K2R w Qkq - 0 1")).currentTranspositionKey();
+        .from(Board.fromFenStrict("r3k2r/8/8/8/8/8/8/R3K2R w Qkq - 0 1")).currentTranspositionKey();
     assertNotEquals(both, whiteQueenSideOnly);
   }
 
@@ -138,10 +136,10 @@ class TestHelpmateSearchKey {
   @SuppressWarnings("static-method")
   @Test
   void differentBlackCastlingRightsProducesDifferentKey() {
-    final HelpmateSearchKey both = HelpmateSearchBoard.from(new Board("r3k2r/8/8/8/8/8/8/R3K2R w KQkq - 0 1"))
+    final HelpmateSearchKey both = HelpmateSearchBoard.from(Board.fromFenStrict("r3k2r/8/8/8/8/8/8/R3K2R w KQkq - 0 1"))
         .currentTranspositionKey();
     final HelpmateSearchKey blackKingSideOnly = HelpmateSearchBoard
-        .from(new Board("r3k2r/8/8/8/8/8/8/R3K2R w KQk - 0 1")).currentTranspositionKey();
+        .from(Board.fromFenStrict("r3k2r/8/8/8/8/8/8/R3K2R w KQk - 0 1")).currentTranspositionKey();
     assertNotEquals(both, blackKingSideOnly);
   }
 
@@ -149,9 +147,9 @@ class TestHelpmateSearchKey {
   @SuppressWarnings("static-method")
   @Test
   void differentPiecePlacementProducesDifferentKey() {
-    final HelpmateSearchKey before = HelpmateSearchBoard.from(new Board("4k3/8/8/8/8/4P3/8/4K3 w - - 0 1"))
+    final HelpmateSearchKey before = HelpmateSearchBoard.from(Board.fromFenStrict("4k3/8/8/8/8/4P3/8/4K3 w - - 0 1"))
         .currentTranspositionKey();
-    final HelpmateSearchKey after = HelpmateSearchBoard.from(new Board("4k3/8/8/8/4P3/8/8/4K3 w - - 0 1"))
+    final HelpmateSearchKey after = HelpmateSearchBoard.from(Board.fromFenStrict("4k3/8/8/8/4P3/8/8/4K3 w - - 0 1"))
         .currentTranspositionKey();
     assertNotEquals(before, after);
   }

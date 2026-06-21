@@ -228,7 +228,7 @@ class TestParseTagUtility {
   }
 
   private static Tag findTagByName(PgnGame file, String name) {
-    for (final Tag tag : file.tagList()) {
+    for (final Tag tag : file.tags()) {
       if (tag.name().equals(name)) {
         return tag;
       }

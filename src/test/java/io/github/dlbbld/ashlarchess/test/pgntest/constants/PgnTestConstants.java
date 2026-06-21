@@ -8,7 +8,10 @@ import java.nio.file.Path;
 import io.github.dlbbld.ashlarchess.common.Nulls;
 import io.github.dlbbld.ashlarchess.test.ConfigurationTestConstants;
 
-public abstract class PgnTestConstants {
+public final class PgnTestConstants {
+
+  private PgnTestConstants() {
+  }
 
   public static final Path PGN_TEST_ROOT_FOLDER_PATH = Nulls
       .pathResolve(ConfigurationTestConstants.PROJECT_ROOT_FOLDER_PATH, "src/test/resources/pgn");

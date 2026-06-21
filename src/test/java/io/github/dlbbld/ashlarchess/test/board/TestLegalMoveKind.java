@@ -86,7 +86,7 @@ class TestLegalMoveKind {
   @Test
   void testPromotionForPawnReachingPromotionRank() {
     // Custom position: white pawn on a7 with empty a8 - any of the four promotion moves carries kind PROMOTION.
-    final Board board = new Board("4k3/P7/8/8/8/8/8/4K3 w - - 0 1");
+    final Board board = Board.fromFenStrict("4k3/P7/8/8/8/8/8/4K3 w - - 0 1");
     final LegalMove promotion = findFirstLegalMoveFromSquare(board, Square.A7);
     assertEquals(LegalMoveKind.PROMOTION, promotion.kind());
   }

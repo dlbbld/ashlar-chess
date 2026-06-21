@@ -19,6 +19,7 @@ import io.github.dlbbld.ashlarchess.board.enums.Piece;
 import io.github.dlbbld.ashlarchess.board.enums.PieceType;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
 import io.github.dlbbld.ashlarchess.board.enums.Square;
+import io.github.dlbbld.ashlarchess.common.utility.StaticPositionUtility;
 import io.github.dlbbld.ashlarchess.squares.SlidingAttacksTestOracle;
 import io.github.dlbbld.ashlarchess.test.model.PgnFen;
 import io.github.dlbbld.ashlarchess.test.model.PgnTestCaseList;
@@ -52,7 +53,7 @@ class TestBitboardPositionPins {
 
   private static void assertSideAgrees(StaticPosition staticPosition, BitboardPosition bitboardPosition, Side side,
       PgnFen testCase) {
-    final Set<Square> bitboardPinned = BitboardPositionUtility.toSquareSet(bitboardPosition.pinnedPieces(side));
+    final Set<Square> bitboardPinned = BitboardPositionUtility.toSquares(bitboardPosition.pinnedPieces(side));
     final Set<Square> referencePinned = referencePinnedPieces(staticPosition, side);
     assertEquals(referencePinned, bitboardPinned, side + " pinnedPieces in fixture " + testCase.pgnName());
   }
@@ -69,7 +70,7 @@ class TestBitboardPositionPins {
       if (piece == Piece.NONE || piece.getSide() != side || piece.getPieceType() == PieceType.KING) {
         continue;
       }
-      final StaticPosition modified = staticPosition.createChangedPosition(candidate);
+      final StaticPosition modified = StaticPositionUtility.createChangedPosition(staticPosition, candidate);
       final Set<Square> attackersAfter = enemySliderAttackersToKing(modified, kingSquare, side);
       if (attackersAfter.size() > attackersBefore.size()) {
         pinned.add(candidate);

@@ -3,6 +3,8 @@
 
 package io.github.dlbbld.ashlarchess.test.san.validate.statically.strict.calculate;
 
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.ROOK;
+
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -13,15 +15,16 @@ import io.github.dlbbld.ashlarchess.san.SanParse;
 import io.github.dlbbld.ashlarchess.test.san.model.SanValidationFromTo;
 import io.github.dlbbld.ashlarchess.test.san.validate.statically.strict.enums.RookSanValidateStaticallyStrict;
 
-public class RookSanValidateStaticallyStrictCalculate extends AbstractSanValidateStaticallyStrictCalculate {
+public class RookSanValidateStaticallyStrictCalculate {
 
   static ImmutableMap<String, SanParse> calculateSanMap() {
 
     final Map<String, SanParse> sanValidateMap = new TreeMap<>();
 
     for (final String enumName : RookSanValidateStaticallyStrict.VALUES) {
-      final SanValidationFromTo model = calculateFromFileXorRankTo(enumName, ROOK);
-      populateMap(sanValidateMap, model, ROOK);
+      final SanValidationFromTo model = SanValidateStaticallyStrictCalculateSupport.calculateFromFileXorRankTo(enumName,
+          ROOK);
+      SanValidateStaticallyStrictCalculateSupport.populateMap(sanValidateMap, model, ROOK);
     }
 
     return Nulls.copyOfMap(sanValidateMap);

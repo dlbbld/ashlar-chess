@@ -11,7 +11,7 @@ import io.github.dlbbld.ashlarchess.board.CommonTestUtility;
 import io.github.dlbbld.ashlarchess.board.LibraryCarlosBoard;
 import io.github.dlbbld.ashlarchess.common.Nulls;
 import io.github.dlbbld.ashlarchess.fen.constants.FenConstants;
-import io.github.dlbbld.ashlarchess.model.PgnHalfMove;
+import io.github.dlbbld.ashlarchess.model.PgnMove;
 import io.github.dlbbld.ashlarchess.pgn.PgnGame;
 import io.github.dlbbld.ashlarchess.test.RestrictTestConstants;
 import io.github.dlbbld.ashlarchess.test.model.PgnFen;
@@ -28,8 +28,8 @@ class TestBoardAgainstEachOther {
 
   @SuppressWarnings("static-method")
   @Test
-  void test() throws Exception {
-    for (final PgnTestCaseList testCaseList : PgnTestCaseCatalog.getRestrictedTestListList()) {
+  void test() {
+    for (final PgnTestCaseList testCaseList : PgnTestCaseCatalog.getRestrictedTestCaseLists()) {
       for (final PgnFen testCase : testCaseList.list()) {
         // takes 50 minutes with all test cases
         if (RestrictTestConstants.IS_RESTRICT_PGN_BOARD_API_AGAINST_EACH_OTHER_TEST) {
@@ -61,9 +61,9 @@ class TestBoardAgainstEachOther {
         final Board board = new Board();
         final LibraryCarlosBoard carlosBoard = new LibraryCarlosBoard();
 
-        for (final PgnHalfMove pgnHalfMove : pgnGame.halfMoveList()) {
+        for (final PgnMove pgnMove : pgnGame.moves()) {
 
-          final String san = pgnHalfMove.san();
+          final String san = pgnMove.san();
           board.moveStrict(san);
           carlosBoard.moveStrict(san);
 

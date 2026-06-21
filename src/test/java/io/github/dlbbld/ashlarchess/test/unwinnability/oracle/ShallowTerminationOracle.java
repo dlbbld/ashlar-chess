@@ -6,12 +6,11 @@ package io.github.dlbbld.ashlarchess.test.unwinnability.oracle;
 import io.github.dlbbld.ashlarchess.board.Board;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
 import io.github.dlbbld.ashlarchess.common.model.Outcome;
-import io.github.dlbbld.ashlarchess.common.utility.BasicChessUtility;
 import io.github.dlbbld.ashlarchess.model.LegalMove;
 import io.github.dlbbld.ashlarchess.test.unwinnability.oracle.enums.LimitedUnwinnabilityVerdict;
 
 /**
- * Test-only oracle answering one question: in a depth-3 half-move tree from the given position, is there any path that
+ * Test-only oracle answering one question: in a depth-3 ply tree from the given position, is there any path that
  * checkmates the loser (for {@code WINNABLE}), or do every single path resolve to a draw or self-loss (for
  * {@code UNWINNABLE})? If neither, the verdict is {@code UNKNOWN}.
  *
@@ -104,10 +103,10 @@ public class ShallowTerminationOracle {
    * that case X may still be able to mate, so the search must continue.
    */
   private static NodeOutcome classifyTerminal(Board board, Side side) {
-    final Outcome outcome = BasicChessUtility.calculateOutcome(board);
+    final Outcome outcome = board.outcome();
     return switch (outcome.termination()) {
       case NONE -> {
-        // Game ongoing for the calculateOutcome view, but one-sided insufficient material is a
+        // Game ongoing for the outcome() view, but one-sided insufficient material is a
         // diagnostic state outside that view: if the side we're evaluating lacks mating material,
         // that side cannot win - LOSS_OR_DRAW for them, UNRESOLVED for the opponent (the opponent
         // may still win).
@@ -119,7 +118,7 @@ public class ShallowTerminationOracle {
       case CHECKMATE ->
           // The side to move is in checkmate. If that's the side we're evaluating, they lost; otherwise
           // the side we're evaluating just delivered the mate - i.e. WIN.
-          board.getHavingMove() == side ? NodeOutcome.LOSS_OR_DRAW : NodeOutcome.WIN;
+          board.getSideToMove() == side ? NodeOutcome.LOSS_OR_DRAW : NodeOutcome.WIN;
       case STALEMATE, INSUFFICIENT_MATERIAL, SEVENTY_FIVE_MOVES, FIVEFOLD_REPETITION -> NodeOutcome.LOSS_OR_DRAW;
     };
   }

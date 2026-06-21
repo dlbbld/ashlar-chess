@@ -3,21 +3,23 @@
 
 package io.github.dlbbld.ashlarchess.squares;
 
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.KNIGHT;
+
 import java.util.Set;
 
 import io.github.dlbbld.ashlarchess.board.StaticPosition;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
 import io.github.dlbbld.ashlarchess.board.enums.Square;
 
-public class KnightPotentialToSquares extends AbstractPotentialToSquares {
+public class KnightPotentialToSquares {
 
   public static Set<Square> calculateKnightPotentialToSquares(StaticPosition staticPosition, Square fromSquare,
-      Side havingMove) {
+      Side sideToMove) {
 
     final Set<Square> emptyBoardSquareSet = KnightEmptyBoardSquares.getKnightSquares(fromSquare);
 
-    return calculateNonRangeNonPawnPotentialToSquares(staticPosition, fromSquare, KNIGHT, emptyBoardSquareSet,
-        havingMove);
+    return PotentialToSquaresSupport.calculateNonRangeNonPawnPotentialToSquares(staticPosition, fromSquare, KNIGHT,
+        emptyBoardSquareSet, sideToMove);
   }
 
 }

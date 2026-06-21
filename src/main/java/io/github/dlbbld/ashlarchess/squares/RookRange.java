@@ -7,7 +7,7 @@ import com.google.common.collect.ImmutableList;
 
 import io.github.dlbbld.ashlarchess.board.enums.Square;
 
-record RookRange(ImmutableList<Square> squareListNorth, ImmutableList<Square> squareListEast,
-    ImmutableList<Square> squareListSouth, ImmutableList<Square> squareListWest) implements OrthogonalRange {
+record RookRange(ImmutableList<Square> northSquares, ImmutableList<Square> eastSquares,
+    ImmutableList<Square> southSquares, ImmutableList<Square> westSquares) implements OrthogonalRange {
 
 }

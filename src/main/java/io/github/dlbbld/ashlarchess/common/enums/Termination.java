@@ -8,16 +8,16 @@ package io.github.dlbbld.ashlarchess.common.enums;
  * {@link io.github.dlbbld.ashlarchess.common.model.Outcome}.
  *
  * <p>
- * Companion to {@link io.github.dlbbld.ashlarchess.common.utility.BasicChessUtility#calculateOutcome}: the method
+ * Companion to {@link io.github.dlbbld.ashlarchess.board.Board#outcome()}: the method
  * surfaces one of these six values, with {@link #NONE} for ongoing positions where no termination condition fires.
  * (Returning a non-null {@code Outcome} for every position lets callers branch on {@code termination} alone without a
  * separate null check.)
  *
  * <p>
- * Analyzer-driven dead positions (FIDE 5.2.2, via the quick or full unwinnability analyzer's no-side overload in
- * {@link io.github.dlbbld.ashlarchess.unwinnability}) are <em>not</em> represented here - invoking the analyzer from
- * {@code calculateOutcome} would silently make every status query expensive. Callers that want the analyzer-driven
- * verdict query it directly.
+ * Analyzer-driven dead positions (FIDE 5.2.2, via
+ * {@link io.github.dlbbld.ashlarchess.unwinnability.DeadPositionAnalyzer}) are <em>not</em> represented here - invoking
+ * the analyzer from {@code outcome()} would silently make every status query expensive. Callers that want the
+ * analyzer-driven verdict query it directly.
  *
  * <p>
  * Claimable draws (FIDE 9.2 3-fold repetition, FIDE 9.3 50-move rule) are not represented either - they end the game

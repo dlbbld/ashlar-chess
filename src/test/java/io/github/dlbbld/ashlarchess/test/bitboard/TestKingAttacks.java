@@ -34,7 +34,7 @@ class TestKingAttacks {
   @Test
   void directAgainstReference() {
     for (final Square fromSquare : Square.REAL) {
-      final Set<Square> bitboardAttacks = BitboardPositionUtility.toSquareSet(KingAttacks.attacks(fromSquare));
+      final Set<Square> bitboardAttacks = BitboardPositionUtility.toSquares(KingAttacks.attacks(fromSquare));
       final Set<Square> referenceAttacks = KingNonCastlingEmptyBoardSquares.getKingSquares(fromSquare);
       assertEquals(referenceAttacks, bitboardAttacks, "king attacks from " + fromSquare.getName());
     }
@@ -52,7 +52,7 @@ class TestKingAttacks {
         long kings = bitboardPosition.whiteKings() | bitboardPosition.blackKings();
         while (kings != 0L) {
           final Square fromSquare = Nulls.get(Square.REAL, Long.numberOfTrailingZeros(kings));
-          final Set<Square> bitboardAttacks = BitboardPositionUtility.toSquareSet(KingAttacks.attacks(fromSquare));
+          final Set<Square> bitboardAttacks = BitboardPositionUtility.toSquares(KingAttacks.attacks(fromSquare));
           final Set<Square> referenceAttacks = KingNonCastlingEmptyBoardSquares.getKingSquares(fromSquare);
           assertEquals(referenceAttacks, bitboardAttacks,
               "king attacks from " + fromSquare.getName() + " in fixture " + testCase.pgnName());

@@ -19,8 +19,8 @@ public class UnwinnabilityFullManualRun {
     final String pgnName = "01_m1_white_to_move.pgn";
 
     final PgnTest pgnTest = PgnTestCaseCatalog.findPgnTestPgnNotListed(pgnName);
-    final PgnGame pgnGame = LenientPgnParser.parse(pgnTest.getFolderPath(), pgnName);
-    final Board board = PgnUtility.calculateBoard(pgnGame);
+    final PgnGame pgnGame = LenientPgnParser.parsePath(pgnTest.getFolderPath(), pgnName);
+    final Board board = PgnUtility.toBoard(pgnGame);
 
     System.out.println("White full: " + UnwinnableFullAnalyzer.unwinnableFull(board, Side.WHITE).verdict());
 

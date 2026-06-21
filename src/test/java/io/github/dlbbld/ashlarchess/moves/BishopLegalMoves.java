@@ -3,6 +3,8 @@
 
 package io.github.dlbbld.ashlarchess.moves;
 
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.BISHOP;
+
 import java.util.Set;
 
 import io.github.dlbbld.ashlarchess.board.StaticPosition;
@@ -12,17 +14,17 @@ import io.github.dlbbld.ashlarchess.board.enums.Square;
 import io.github.dlbbld.ashlarchess.model.LegalMove;
 import io.github.dlbbld.ashlarchess.squares.BishopPotentialToSquares;
 
-class BishopLegalMoves extends AbstractLegalMoves {
-  public static Set<LegalMove> calculateBishopLegalMoves(StaticPosition staticPosition, Side havingMove,
+class BishopLegalMoves {
+  public static Set<LegalMove> calculateBishopLegalMoves(StaticPosition staticPosition, Side sideToMove,
       Square fromSquare) {
 
     final Piece movingPiece = staticPosition.get(fromSquare);
-    checkPiece(havingMove, movingPiece, BISHOP);
+    LegalMovesSupport.checkPiece(sideToMove, movingPiece, BISHOP);
 
     final Set<Square> toSquareSet = BishopPotentialToSquares.calculateBishopPotentialToSquares(staticPosition,
-        fromSquare, havingMove);
+        fromSquare, sideToMove);
 
-    return calculateLegalMoveSet(staticPosition, havingMove, fromSquare, toSquareSet);
+    return LegalMovesSupport.calculateLegalMoveSet(staticPosition, sideToMove, fromSquare, toSquareSet);
   }
 
 }

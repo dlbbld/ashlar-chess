@@ -11,13 +11,16 @@ import io.github.dlbbld.ashlarchess.board.enums.Square;
 import io.github.dlbbld.ashlarchess.board.enums.SquareType;
 
 /**
- * Internal piece-count helpers used by FEN advanced validation. Not part of the public API: the library exposes parsing
+ * Internal piece-count helpers used by FEN strict semantic validation. Not part of the public API: the library exposes parsing
  * and outcome reporting, not material arithmetic.
  */
-abstract class FenMaterialCount {
+final class FenMaterialCount {
+
+  private FenMaterialCount() {
+  }
 
   static int calculateNumberOfPieces(Side side, BitboardPosition bitboardPosition, PieceType pieceType) {
-    final Piece piece = Piece.calculate(side, pieceType);
+    final Piece piece = Piece.of(side, pieceType);
     int total = 0;
     for (final Square boardSquare : Square.REAL) {
       if (bitboardPosition.get(boardSquare) == piece) {
@@ -28,7 +31,7 @@ abstract class FenMaterialCount {
   }
 
   static int calculateNumberOfBishops(Side side, BitboardPosition bitboardPosition, SquareType squareType) {
-    final Piece bishop = Piece.calculate(side, PieceType.BISHOP);
+    final Piece bishop = Piece.of(side, PieceType.BISHOP);
     int total = 0;
     for (final Square boardSquare : Square.REAL) {
       if (bitboardPosition.get(boardSquare) == bishop && boardSquare.getSquareType() == squareType) {

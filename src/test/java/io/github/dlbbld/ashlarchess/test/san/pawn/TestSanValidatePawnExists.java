@@ -20,7 +20,7 @@ class TestSanValidatePawnExists {
   void testWhite() {
 
     {
-      final Board board = new Board("4k3/5p2/8/8/8/8/3P4/4K3 w - - 0 100");
+      final Board board = Board.fromFenStrict("4k3/5p2/8/8/8/8/3P4/4K3 w - - 0 100");
 
       checkException("c1", board, SanValidationProblem.FORMAT_PAWN_FORWARD_PROMOTION_NO_PROMOTION_SYMBOL);
       checkException("c2", board, SanValidationProblem.MOVEMENT_PAWN_FORWARD_BACKWARDS);
@@ -48,7 +48,7 @@ class TestSanValidatePawnExists {
   void testBlack() {
 
     {
-      final Board board = new Board("4k3/5p2/8/8/8/8/3P4/4K3 b - - 0 100");
+      final Board board = Board.fromFenStrict("4k3/5p2/8/8/8/8/3P4/4K3 b - - 0 100");
 
       checkException("h8", board, SanValidationProblem.FORMAT_PAWN_FORWARD_PROMOTION_NO_PROMOTION_SYMBOL);
       checkException("h7", board, SanValidationProblem.MOVEMENT_PAWN_FORWARD_BACKWARDS);
@@ -79,7 +79,7 @@ class TestSanValidatePawnExists {
   private static void checkException(String san, Board board, SanValidationProblem svp) {
     boolean isException;
     try {
-      StrictSanParser.parseText(san, board);
+      StrictSanParser.parse(san, board);
       isException = false;
     } catch (final SanValidationException e) {
       isException = true;

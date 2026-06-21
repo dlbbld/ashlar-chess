@@ -38,58 +38,58 @@ final class PgnArchivalNormalization {
   }
 
   static PgnGame apply(PgnGame input) {
-    final List<Tag> tagList = new ArrayList<>(input.tagList());
+    final List<Tag> tags = new ArrayList<>(input.tags());
     final Fen startFen = input.startFen();
 
-    final ResultTagValue marker = decideTerminationMarker(tagList, input.terminationMarker());
+    final ResultTagValue marker = decideTerminationMarker(tags, input.terminationMarker());
 
-    rewriteFenAndSetUpTags(tagList, startFen);
-    addResultTagIfMissing(tagList, marker);
-    fillMissingSevenTagRoster(tagList);
-    Collections.sort(tagList);
+    rewriteFenAndSetUpTags(tags, startFen);
+    addResultTagIfMissing(tags, marker);
+    fillMissingSevenTagRoster(tags);
+    Collections.sort(tags);
 
-    return new PgnGame(Nulls.copyOfList(tagList), startFen, input.pregameCommentary(), input.halfMoveList(), marker);
+    return new PgnGame(Nulls.copyOfList(tags), startFen, input.pregameCommentary(), input.moves(), marker);
   }
 
   /**
    * Termination-marker decision: prefer the parse-model marker; fall back to the Result tag value; default to
    * {@link ResultTagValue#ONGOING}.
    */
-  private static ResultTagValue decideTerminationMarker(List<Tag> tagList, @Nullable ResultTagValue currentMarker) {
+  private static ResultTagValue decideTerminationMarker(List<Tag> tags, @Nullable ResultTagValue currentMarker) {
     if (currentMarker != null) {
       return currentMarker;
     }
-    if (TagUtility.hasResult(tagList)) {
-      return ResultTagValue.calculate(TagUtility.readResult(tagList));
+    if (TagUtility.hasResult(tags)) {
+      return ResultTagValue.parse(TagUtility.readResult(tags));
     }
     return ResultTagValue.ONGOING;
   }
 
   /**
    * Drops any existing FEN/SetUp tags, then re-adds the canonical pair when {@code startFen} is non-initial. The
-   * remove-then-readd shape guarantees the canonical pair regardless of inconsistencies in the input tagList.
+   * remove-then-readd shape guarantees the canonical pair regardless of inconsistencies in the input tags.
    */
-  private static void rewriteFenAndSetUpTags(List<Tag> tagList, Fen startFen) {
-    TagUtility.removeFenTag(tagList);
-    TagUtility.removeSetUpTag(tagList);
+  private static void rewriteFenAndSetUpTags(List<Tag> tags, Fen startFen) {
+    TagUtility.removeFenTag(tags);
+    TagUtility.removeSetUpTag(tags);
     if (!startFen.equals(FenConstants.FEN_INITIAL)) {
-      tagList.add(new Tag(StandardTag.SET_UP.getName(), SetUpTagValue.START_FROM_SETUP_POSITION.getValue()));
-      tagList.add(new Tag(StandardTag.FEN.getName(), startFen.fen()));
+      tags.add(new Tag(StandardTag.SET_UP.getName(), SetUpTagValue.START_FROM_SETUP_POSITION.getValue()));
+      tags.add(new Tag(StandardTag.FEN.getName(), startFen.fen()));
     }
   }
 
-  private static void addResultTagIfMissing(List<Tag> tagList, ResultTagValue marker) {
-    if (!TagUtility.hasResult(tagList)) {
-      tagList.add(new Tag(StandardTag.RESULT.getName(), marker.getValue()));
+  private static void addResultTagIfMissing(List<Tag> tags, ResultTagValue marker) {
+    if (!TagUtility.hasResult(tags)) {
+      tags.add(new Tag(StandardTag.RESULT.getName(), marker.getValue()));
     }
   }
 
-  private static void fillMissingSevenTagRoster(List<Tag> tagList) {
-    for (final StandardTag standardTag : TagUtility.SEVEN_TAG_ROSTER_TAG_LIST) {
-      if (TagUtility.existsTag(tagList, standardTag)) {
+  private static void fillMissingSevenTagRoster(List<Tag> tags) {
+    for (final StandardTag standardTag : TagUtility.SEVEN_TAG_ROSTER_TAGS) {
+      if (TagUtility.existsTag(tags, standardTag)) {
         continue;
       }
-      tagList.add(new Tag(standardTag.getName(), placeholderValue(standardTag)));
+      tags.add(new Tag(standardTag.getName(), placeholderValue(standardTag)));
     }
   }
 

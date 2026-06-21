@@ -28,8 +28,8 @@ class TestLimitedUnwinnabilityOracle {
     final String pgnName = "07_helpmate3_white_to_move.pgn";
 
     final PgnTest pgnTest = PgnTestCaseCatalog.findPgnTestPgnNotListed(pgnName);
-    final PgnGame pgnGame = LenientPgnParser.parse(pgnTest.getFolderPath(), pgnName);
-    final Board board = PgnUtility.calculateBoard(pgnGame);
+    final PgnGame pgnGame = LenientPgnParser.parsePath(pgnTest.getFolderPath(), pgnName);
+    final Board board = PgnUtility.toBoard(pgnGame);
     logger.info(pgnName);
 
     assertEquals(LimitedUnwinnabilityVerdict.WINNABLE,
@@ -44,8 +44,8 @@ class TestLimitedUnwinnabilityOracle {
     final String pgnName = "01_forced_checkmate.pgn";
 
     final PgnTest pgnTest = PgnTestCaseCatalog.findPgnTestPgnNotListed(pgnName);
-    final PgnGame pgnGame = LenientPgnParser.parse(pgnTest.getFolderPath(), pgnName);
-    final Board board = PgnUtility.calculateBoard(pgnGame);
+    final PgnGame pgnGame = LenientPgnParser.parsePath(pgnTest.getFolderPath(), pgnName);
+    final Board board = PgnUtility.toBoard(pgnGame);
     logger.info(pgnName);
 
     assertEquals(LimitedUnwinnabilityVerdict.WINNABLE,
@@ -60,8 +60,8 @@ class TestLimitedUnwinnabilityOracle {
     final String pgnName = "pawn_wall_ambrona_lichess_Ob5ozxgG.pgn";
 
     final PgnTest pgnTest = PgnTestCaseCatalog.findPgnTestPgnNotListed(pgnName);
-    final PgnGame pgnGame = LenientPgnParser.parse(pgnTest.getFolderPath(), pgnName);
-    final Board board = PgnUtility.calculateBoard(pgnGame);
+    final PgnGame pgnGame = LenientPgnParser.parsePath(pgnTest.getFolderPath(), pgnName);
+    final Board board = PgnUtility.toBoard(pgnGame);
     logger.info(pgnName);
 
     assertEquals(LimitedUnwinnabilityVerdict.UNWINNABLE,

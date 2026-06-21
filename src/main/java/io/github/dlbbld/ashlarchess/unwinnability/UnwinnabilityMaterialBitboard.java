@@ -6,7 +6,6 @@ package io.github.dlbbld.ashlarchess.unwinnability;
 import io.github.dlbbld.ashlarchess.bitboard.BitboardPosition;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
 import io.github.dlbbld.ashlarchess.board.enums.SquareType;
-import io.github.dlbbld.ashlarchess.common.constants.EnumConstants;
 
 /**
  * Bitboard-backed material predicates used by the unwinnability/helpmate analysis. Production callers in
@@ -16,7 +15,10 @@ import io.github.dlbbld.ashlarchess.common.constants.EnumConstants;
  * The StaticPosition-backed reference implementations of the same predicates live in the test tree as the permanent
  * differential-test oracle; this bitboard class is the production surface.
  */
-abstract class UnwinnabilityMaterialBitboard implements EnumConstants {
+final class UnwinnabilityMaterialBitboard {
+
+  private UnwinnabilityMaterialBitboard() {
+  }
 
   // Square-colour masks: A1 is dark, B1 is light, alternating. Bit i is light iff (file_i + rank_i) is odd.
   private static final long LIGHT_SQUARES = 0x55AA55AA55AA55AAL;

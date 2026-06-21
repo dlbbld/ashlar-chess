@@ -11,28 +11,37 @@ Live planning only: current release work, backlog, and obsolete decisions. Shipp
 
 ---
 
-## Released 18.1.0 — Adjudication API (see CHANGELOG)
+## 20.0.0 — JPMS module boundary / API-surface reset
 
-Shipped. Minor release: a new public `adjudication` package (`Adjudicator` / `AdjudicationResult`) for flag-fall and
-resignation per FIDE 6.9 / 5.1.2, the fifty-move report's per-player `(White/Black)` move counts, and a doctested,
-template-generated README. The "extend insufficient material" task (lone K+B / K+N winners) was found already covered by
-the 18.0.0 theorem and shipped no new code. Release details live in **CHANGELOG.md** `[18.1.0]`; the repeatable release
-procedure lives in **workflows.md**.
+The dedicated module-and-API-boundary release. Breaking package / FQN changes that don't belong in 19.0.0 are parked here.
 
----
+### Group exceptions, models, enums, and constants by domain (package-by-feature)
 
-## Released 18.0.0 — published 2026-06-04 to Maven Central (see CHANGELOG)
+The codebase currently mixes "group by kind" with "feature-inline", and *duplicates* the by-kind buckets at two levels — `ashlarchess.exceptions` **and** `ashlarchess.common.exceptions`; `ashlarchess.enums` **and** `common.enums`; `ashlarchess.model` **and** `common.model` — with no rule for which one a type lands in, plus single-file kind sub-packages (e.g. `fen.constants` holds one class). A newcomer cannot predict any type's package from a rule.
 
-Shipped. Breaking release: added the basic-helpmate-existence theorem shortcut in the full analyzer, realigned the
-quick analyzer to a faithful two-valued port of CHA 2.6.1, and simplified the dead-position / game-end API. Release
-details live in **CHANGELOG.md** `[18.0.0]`; the repeatable release procedure lives in **workflows.md**.
+Rule to adopt: **package by feature/domain first; package by kind only for genuinely cross-cutting foundations.**
 
----
+- Feature-specific exceptions / enums / models / constants live *inline* in their feature package (FEN's in `fen`, PGN's in `pgn`, SAN's in `san`) — beside the code they serve. Not in a central bucket, and not in `fen.exceptions`-style kind sub-packages either (keep them next to the parser, as agreed).
+- Collapse the duplicate buckets: never both a top-level `<kind>` and a `common.<kind>`. Keep one shared-core home for genuinely cross-cutting types only — base exceptions (`UsageException`, `ProgrammingMistakeException`, `NonePointerException`), `ChessConstants`, the core chess vocabulary (`Side` / `Piece` / `Square` / …).
+- No single-file kind sub-packages.
+- Done = given any type, one rule predicts its package.
 
-## Released 17.0.0 — published 2026-05-29 to Maven Central (see CHANGELOG)
+A large, purely mechanical, compiler-checked FQN reset with no behavior change, and a prerequisite for a clean `module-info`: sensible `exports` / `opens` and package-private boundaries are impossible while features are split across two `common.*` junk drawers. (The FEN-local slice — folding the FEN validation problem enum into `fen` and dropping the single-file `fen.constants` — was carved out for 19.0.0; this is the global reset across all domains.)
 
-Shipped. The one-time publication checklist was collapsed after release so this file stays focused on live work.
-Release details live in **CHANGELOG.md** `[17.0.0]`; the repeatable release procedure lives in **workflows.md**.
+### Tighten remaining mutable return types on internal-but-public surfaces
+
+A few `public static` move-generation helpers still return a freshly-built mutable `Set` / `List` typed as the mutable interface instead of a Guava `Immutable*`: `PromotionUtility.performPromotionMovements`, `CastlingUtility.performCastlingMovements`, `EnPassantCaptureUtility.performEnPassantCaptureMovements`, and the `EmptyBoardMoveUtility` overloads. Each returns a fresh per-call copy, so there is no aliasing bug today — tightening the declared type is pure polish. Parked here rather than 19.0.0 because these are exactly the internal-but-accidentally-public move-gen surfaces this release narrows or hides behind the module boundary: fix the return types in the same pass that decides which of them stay public at all. (`BitboardPositionUtility.toSquares` was tightened to `ImmutableSet` in 19.0.0.)
+
+### Position-as-value ergonomics: `mirror()` and an immutable `play(move)` (audit M3)
+
+Two related "treat a position as an immutable value" capabilities that Class-A libraries (python-chess, shakmaty, scalachess) expose and ashlar does not surface cleanly:
+
+- **`mirror()` / flip / transform** — return a new position that is the original vertically flipped *and* colour-swapped (the same position from the other side; turn, castling, en-passant all mirrored). Valuable for symmetry tests (`f(mirror(P))` must equal the mirror of `f(P)` — catches colour-handedness bugs), dataset augmentation, and halving case analysis. ashlar has none at board level today, only `SquareUtility.flip(Square)`.
+- **Clean immutable `play(move) → position`** — the next position as a fresh value, without mutating a `Board` or carrying its history. The machinery already exists immutably as `BitboardPosition.afterMove(...)`; it is just not surfaced as a clean public position API (today the only path is `copyCurrentPositionWithoutHistory()` then `move()`).
+
+Low–medium effort (the immutable apply-move exists; mirror is a straightforward bitboard transform — vertical flip = byte-reverse the 12 longs, colour swap = swap the white/black bitboards). It belongs here because it is **additive public API**, to be designed together with the position-API boundary (what the clean public position type is once the bitboard layer is internalised) and the still-open "light-analysis toolkit?" direction — `play()` / `mirror()` are most valuable to analysis / ML users.
+
+The one slice worth doing regardless of that direction, with no public-API commitment: an internal **mirror used by the test suite for symmetry checks** (e.g. unwinnability of `P` for a side ⟺ unwinnability of `mirror(P)` for the other) — pure added test coverage.
 
 ---
 
@@ -40,90 +49,36 @@ Release details live in **CHANGELOG.md** `[17.0.0]`; the repeatable release proc
 
 Items here are not assigned to any release. Captured so they don't get lost; revisit if/when scope or motivation aligns.
 
-### Report terminology: speak FIDE "moves by each player", not halfmoves or fullmove decimals
+### Lenient PGN: accept consecutive comments
 
-**Next up after the 18.1.0 README mechanization (Task 1).** Surfaced while mechanizing the README report output: the
-printed 50-move (and 75-move) report leaks engine-internal units. The bracketed counts are currently the halfmove clock
-(`63... Rg8 (1) - 114... Rf6+ (103)`); an earlier form used fullmove decimals (`(0.5) / (50) / (51.5)`). Neither is how
-the laws of chess speak.
+The lenient PGN parser allows exactly one commentary per slot. Two consecutive comments — a brace comment
+immediately followed by a `;` end-of-line comment, or `{c} {c}` — are rejected with
+`MOVETEXT_COMMENTARY_NOT_ALLOWED_IN_SAN` ("a commentary cannot occur where a SAN move is expected"). Real-world
+exports (lichess, ChessBase) sometimes emit multiple comments between moves, so for a best-in-class *lenient*
+importer this is a genuine gap. Supporting it is a data-model change — coalesce the consecutive comments into one
+`PgnCommentary`, or model a per-move comment list — so it is parked rather than squeezed into 19.0.0. The strict
+parser deliberately stays canonical (single comment, export format). Found by `ParserStressSurvey`'s
+comment-placement isolation; the per-move brace and game-start comment forms already parse, including a 7 MB /
+17,697-move heavy-comment document in ~0.7 s (linear, no quadratic comment handling).
 
-**Principle.** `fullmove number` (PGN-spec move numbering) and `halfmove` (ply) are *internal* terms - fine in the
-application internals and in PGN validation (where PGN move numbers are official), but they must not leak into
-user-facing report prose/output. FIDE Articles 9.3.1 / 9.3.2 / 9.6.2 frame the rules as "50 moves by each player" and
-"75 moves ... by each player". The reporter should translate the precise internal units (`halfMoveClock`, ply, PGN
-fullmove number) into that law-shaped vocabulary at the print boundary - keep the internals precise, change only the
-output.
+### Report-layer long-game cost (secondary `buildEntry` O(n^2); inherent claim-check constant)
 
-**Proposed report shape** (repository-owned, non-breaking - `Reporter` is print-only):
+`Reporter.report(board)` is fast for real games (a 271-ply game reports in ~90 ms) but takes ~7 s on the synthetic
+17,697-ply MAX_MOVES game. Two contributors, both pathological-only (`ReportScalingSurvey` measures them):
 
-- Fifty-move sequence:
-  `63... Rg8 - 113. Ng5 (50 moves by each player) - 114... Rf6+ (White 51, Black 52)`
-  - normal chess move labels for the moves; the legal threshold named exactly as the law ("50 moves by each player");
-    per-player counts after the threshold, not pseudo-fullmove decimals.
-- Fifty-move claim-ahead: `113. Ng5 (would complete 50 moves by each player)`.
-- Seventy-five-move: `138... Rc1 (75 moves by each player)`.
-- Start the sequence at the start move (not `0/0`); the load-bearing moments are "threshold reached" and "sequence
-  ends". (A fully tabular `0/0 ... 50/50` per-player diagnostic mode was considered and deferred unless wanted.)
+- **Inherent O(n) with a fat constant** — `ThreefoldClaimAheadReportBuilder.collectClaimAheadsAtCurrentMove` calls
+  `canClaimThreefoldRepetitionRuleFor` for every legal move at every position (~175 us/position). This is the dominant
+  cost and is not a defect: it is the work an exhaustive claim-ahead report does. Reducing it would mean changing what
+  the report computes, not just how.
+- **Secondary O(n^2)** — `ThreefoldClaimAheadReportBuilder.build` calls `buildEntry` per claim-ahead, and `buildEntry`
+  does an O(n) `playedMoveRecords.contains(...)` plus an O(n) prior-occurrence scan. With O(n) claim-aheads this is
+  O(n^2), but it only bites games with many threefold boundaries (real games have ~0) and is minor next to the
+  claim-check constant. Fix when motivated: precompute a `Set<MoveRecord>` for `contains` and a
+  `Map<DynamicPosition, List<MoveRecord>>` of played records for prior occurrences (the same shape as the
+  `RepetitionGrouping` O(n^2) -> O(n) fix already shipped in 19.0.0).
 
-**Touch points.** [`FiftyMoveSequencePrint`](src/main/java/io/github/dlbbld/ashlarchess/report/FiftyMoveSequencePrint.java),
-`FiftyMoveClaimAheadPrint`, the `report.fiftyMove.*` message-bundle titles, the threefold prints for vocabulary
-consistency, the README report prose + examples (regenerate via the Task 1 pipeline), and new report-format tests.
-
-### Implement the flagfall / resignation adjudication method (then de-pseudocode the README)
-
-**Status: method + tests done** (`io.github.dlbbld.ashlarchess.adjudication.Adjudicator` + `TestAdjudicator`, fast
-suite green). The README de-pseudocode below is the only remaining step.
-
-The README "Game adjudication" section currently gives the flagfall / resignation procedure only as ` ```text `
-pseudocode. The method is now real; the remaining work is to replace the pseudocode with a generated, compiled README
-example (Task 1 pipeline).
-
-The suggested procedure is already written out in the README, per FIDE 6.9 (flagfall) and 5.1.2 (resignation, which
-adjudicates exactly as flagfall):
-
-```
-on flagfall(flaggingPlayer):
-    wouldBeWinner = opponent(flaggingPlayer)
-    if board.isInsufficientMaterial(wouldBeWinner): return draw            # material-only, cheap
-    if board.isUnwinnableQuick(wouldBeWinner) == UNWINNABLE: return draw   # CHA quick, position-wise
-    return loss for flaggingPlayer
-```
-
-- **New public API (done).** `Adjudicator` (new `io.github.dlbbld.ashlarchess.adjudication` package) exposes
-  `adjudicateFlagfall{Quick,Full}(Board, Side)` and `adjudicateResignation{Quick,Full}(Board, Side)` (resignation
-  delegates to flag-fall). Returns `AdjudicationResult`: the **quick** variant rules only `DRAW` / `LOSS` (fast, from
-  `isUnwinnableQuick`); the **full** variant adds `UNDETERMINED` (from the complete `isUnwinnableFull`). New package
-  avoids a `common.utility` <-> `unwinnability` cycle.
-- **No new rule logic (done)** - composes `Board.isUnwinnableQuick(Side)` (quick) / `Board.isUnwinnableFull(Side)`
-  (full). The quick analyzer already includes the insufficient-material check, so no separate material call is needed.
-  Quick `POSSIBLY_WINNABLE` -> `LOSS` (no draw could be shown); full `WINNABLE_*` -> `LOSS`, `UNWINNABLE` -> `DRAW`,
-  `UNDETERMINED` -> `UNDETERMINED`.
-- **README.** Replace the `on flagfall(...)` / `on resignation(...)` pseudocode blocks with real compiled examples
-  wired into the generator (`ReadmeExamples` + placeholders), so the adjudication snippet compiles and shows real
-  output like every other example. The dead-position-during-play blocks can get the same treatment or stay
-  illustrative.
-- **Tests (done).** `TestAdjudicator` covers quick (DRAW / LOSS) and full (DRAW / LOSS / UNDETERMINED - the last via
-  the one node-bound-exhausting corpus position), resignation == flag-fall, and `Side.NONE` rejection.
-- Minor release (additive API); depends on the Task 1 README pipeline for the example wiring.
-
-### Converge `TestReadMe` with the generated README examples
-
-Cleanup left from the 18.1.0 README mechanization (per the "generator is source of truth" decision). Every example
-body now lives in `ReadmeExamples`, and `TestReadmeUpToDate` + the generator guarantee each README snippet compiles and
-prints exactly what it shows. `TestReadMe` still re-implements those same examples with hand-coded assertions. Slim it
-to only the behavioral assertions **not** visible in README output - parser problem-enum checks, `halfMoveList` sizes,
-the file write/parse round-trip - and drop the now-redundant ones the drift guard covers (unwinnability / dead-position
-verdicts, `isCheckmate`, `isValid`). First confirm the kept assertions aren't already covered by the dedicated
-parser / unwinnability suites; if they are, `TestReadMe` can retire entirely.
-
-### Records carry data, not behavior — sweep for violations
-The project rule (documented in `coding-conventions.md`): records carry data; domain logic that operates on them lives in dedicated utility / service classes. Permitted on a record: compact-constructor validation, `Comparable` when ordering is intrinsic, and language-provided `equals` / `hashCode` / `toString`. Domain-operation methods are not.
-Example: `StaticPosition`: the record carries multiple non-data methods — `createChangedPosition` etc.
-
-### Maven Central badge for README
-
-Optional: add a Maven Central status/version badge to the README if it improves the landing page without adding visual
-noise.
+Not scheduled because real-game reporting is already fast; revisit if long-game (correspondence / adjournment /
+synthetic) reporting becomes a real use case.
 
 ---
 

@@ -3,6 +3,9 @@
 
 package io.github.dlbbld.ashlarchess.test.san.validate.statically.strict.calculate;
 
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.FILE_NONE;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.RANK_NONE;
+
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -19,7 +22,7 @@ import io.github.dlbbld.ashlarchess.san.SanParse;
 import io.github.dlbbld.ashlarchess.san.SanSymbol;
 import io.github.dlbbld.ashlarchess.san.SanTerminalMarker;
 
-public class KingCastlingSanValidateStaticallyStrictCalculate extends AbstractSanValidateStaticallyStrictCalculate {
+public class KingCastlingSanValidateStaticallyStrictCalculate {
 
   public static ImmutableMap<String, SanParse> calculateSanMap() {
 

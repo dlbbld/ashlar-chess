@@ -11,7 +11,10 @@ package io.github.dlbbld.ashlarchess.san;
  * moving into check, moving next to the opponent king, or castling restrictions is validated later against the actual
  * board state.
  */
-abstract class SanValidateMovementKing extends AbstractSan {
+final class SanValidateMovementKing {
+
+  private SanValidateMovementKing() {
+  }
 
   public static void validateKingMovement(@SuppressWarnings("unused") SanParse sanParse) {
     // intentional no-op

@@ -12,30 +12,31 @@ import org.eclipse.jdt.annotation.Nullable;
 import io.github.dlbbld.ashlarchess.board.Board;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
 import io.github.dlbbld.ashlarchess.common.Nulls;
-import io.github.dlbbld.ashlarchess.common.model.HalfMove;
 import io.github.dlbbld.ashlarchess.common.model.MoveSpecification;
-import io.github.dlbbld.ashlarchess.common.utility.BasicChessUtility;
 import io.github.dlbbld.ashlarchess.model.LegalMove;
 
-abstract class FiftyMoveClaimAheadReportBuilder {
+final class FiftyMoveClaimAheadReportBuilder {
+
+  private FiftyMoveClaimAheadReportBuilder() {
+  }
 
   /**
-   * Builds the 50-move claim-ahead report under the missed-opportunity filter: only those boundary plies are emitted
+   * Builds the 50-move claim-ahead report under the missed-opportunity filter: only those boundary moves are emitted
    * where the no-progress sequence containing the boundary did not, in the actual played history, reach the 50-move-
    * rule threshold (halfmove clock 100). Sequences that did reach the threshold are surfaced by
    * {@link FiftyMoveSequenceReportBuilder} alone; their would-be claim-aheads are informationally redundant here.
    *
    * <p>
-   * Concretely, at any replay-ply where the position's halfmove clock equals 99, the builder asks: was the actually-
-   * played move at this ply a clock-resetting move (pawn move or capture), or did the played history end here? If yes -
-   * the sequence is about to break (or has ended) without ever reaching clock 100 - and at least one non-zeroing legal
-   * move exists at this ply, ONE entry is emitted (regardless of how many non-zeroing alternatives were available). If
-   * no - the actually-played move was non-zeroing, so clock will advance to 100 and the sequence reaches threshold - no
-   * entry is emitted at this ply.
+   * Concretely, at any replay-move where the position's halfmove clock equals 99, the builder asks: was the actually-
+   * played move at this move a clock-resetting move (pawn move or capture), or did the played history end here? If yes
+   * - the sequence is about to break (or has ended) without ever reaching clock 100 - and at least one non-zeroing
+   * legal move exists at this move, ONE entry is emitted (regardless of how many non-zeroing alternatives were
+   * available). If no - the actually-played move was non-zeroing, so clock will advance to 100 and the sequence reaches
+   * threshold - no entry is emitted at this move.
    *
    * <p>
    * One-entry-per-boundary collapse: at a clock-99 boundary with N >= 1 non-zeroing legal alternatives, listing all N
-   * would be 30+ rows for one ply with no informational gain over a single row stating the opportunity existed. The
+   * would be 30+ rows for one move with no informational gain over a single row stating the opportunity existed. The
    * single entry carries only the boundary's chronological position; the print layer renders a {@code [ahead claim
    * possible]} placeholder where a SAN would normally go.
    *
@@ -46,22 +47,22 @@ abstract class FiftyMoveClaimAheadReportBuilder {
   static FiftyMoveClaimAheadReport build(Board board) {
     final List<FiftyMoveClaimAheadEntry> entries = new ArrayList<>();
     final int initialFenClock = board.getInitialFen().halfMoveClock();
-    final Side initialFenSideToMove = board.getInitialFen().havingMove();
+    final Side initialFenSideToMove = board.getInitialFen().sideToMove();
 
     final Board replayBoard = new Board(board.getInitialFen());
     SequenceStart currentStart = initialSequenceStart(initialFenClock);
 
-    final List<LegalMove> performedLegalMoveList = board.getPerformedLegalMoveList();
-    for (final LegalMove nextPlayedMove : performedLegalMoveList) {
-      final boolean nextPlayedMoveBreaksSequence = BasicChessUtility.calculateIsResetHalfMoveClock(nextPlayedMove);
+    final List<LegalMove> performedLegalMoves = board.getPerformedMoves();
+    for (final LegalMove nextPlayedMove : performedLegalMoves) {
+      final boolean nextPlayedMoveBreaksSequence = nextPlayedMove.resetsHalfMoveClock();
       if (nextPlayedMoveBreaksSequence) {
         emitBoundaryIfMissedOpportunity(entries, replayBoard, currentStart, initialFenClock, initialFenSideToMove);
       }
       replayBoard.move(nextPlayedMove.moveSpecification());
-      currentStart = updatedSequenceStart(currentStart, replayBoard.getLastHalfMove());
+      currentStart = updatedSequenceStart(currentStart, MoveRecords.lastPlayed(replayBoard));
     }
     // Played history exhausted; the open sequence (if any) ends here without a further played move.
-    // If its clock is 99, the boundary ply is a missed opportunity.
+    // If its clock is 99, the boundary move is a missed opportunity.
     emitBoundaryIfMissedOpportunity(entries, replayBoard, currentStart, initialFenClock, initialFenSideToMove);
 
     Collections.sort(entries, ReportLineOrder.FIFTY_MOVE_CLAIM_AHEAD_COMPARATOR);
@@ -89,13 +90,13 @@ abstract class FiftyMoveClaimAheadReportBuilder {
     if (!hasAnyNonZeroingClaimCandidate(replayBoard)) {
       return;
     }
-    // Boundary metadata: the upcoming ply's chronological position. The candidate move itself is
+    // Boundary metadata: the upcoming move's chronological position. The candidate move itself is
     // not stored - the entry represents the boundary, not any single alternative move.
-    final int boundaryHalfMoveCount = replayBoard.getPerformedHalfMoveCount() + 1;
+    final int boundaryPerformedMoveCount = replayBoard.getPerformedMoveCount() + 1;
     final int boundaryFullMoveNumber = replayBoard.getFullMoveNumber();
     final Side startingSide = SequenceStartFormat.startingSide(currentStart, initialFenClock, initialFenSideToMove);
-    entries.add(new FiftyMoveClaimAheadEntry(currentStart, boundaryHalfMoveCount, boundaryFullMoveNumber,
-        replayBoard.getHavingMove(), startingSide));
+    entries.add(new FiftyMoveClaimAheadEntry(currentStart, boundaryPerformedMoveCount, boundaryFullMoveNumber,
+        replayBoard.getSideToMove(), startingSide));
   }
 
   private static boolean hasAnyNonZeroingClaimCandidate(Board replayBoard) {
@@ -109,13 +110,13 @@ abstract class FiftyMoveClaimAheadReportBuilder {
   }
 
   private static @Nullable SequenceStart updatedSequenceStart(@Nullable SequenceStart currentStart,
-      HalfMove playedHalfMove) {
-    if (playedHalfMove.halfMoveClock() == 0) {
+      MoveRecord playedMove) {
+    if (playedMove.halfMoveClock() == 0) {
       return null;
     }
     if (currentStart != null) {
       return currentStart;
     }
-    return SequenceStart.afterReset(playedHalfMove);
+    return SequenceStart.afterReset(playedMove);
   }
 }

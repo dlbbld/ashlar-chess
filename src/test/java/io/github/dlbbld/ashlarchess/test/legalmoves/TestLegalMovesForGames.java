@@ -13,8 +13,8 @@ import java.util.TreeSet;
 import org.junit.jupiter.api.Test;
 
 import io.github.dlbbld.ashlarchess.board.Board;
-import io.github.dlbbld.ashlarchess.common.utility.BasicUtility;
-import io.github.dlbbld.ashlarchess.model.PgnHalfMove;
+import io.github.dlbbld.ashlarchess.common.utility.ListUtility;
+import io.github.dlbbld.ashlarchess.model.PgnMove;
 import io.github.dlbbld.ashlarchess.pgn.PgnGame;
 import io.github.dlbbld.ashlarchess.test.pgn.parser.PgnCacheForStrictPgnParserTestCases;
 import io.github.dlbbld.ashlarchess.test.pgntest.enums.PgnTest;
@@ -978,12 +978,12 @@ class TestLegalMovesForGames {
   }
 
   private static void checkInitial(Board board) {
-    assertEquals(parseSanSet(INITIAL_LEGAL_MOVES), new TreeSet<>(board.getLegalMovesSan()));
+    assertEquals(parseSanSet(INITIAL_LEGAL_MOVES), new TreeSet<>(board.getLegalMovesAsSan()));
   }
 
   private static void checkLegalMoves(Board board, String san, String expected) {
     board.moveStrict(san);
-    assertEquals(parseSanSet(expected), new TreeSet<>(board.getLegalMovesSan()));
+    assertEquals(parseSanSet(expected), new TreeSet<>(board.getLegalMovesAsSan()));
   }
 
   // The fixtures are written in SAN-alphabetic order for readability, which is independent of the
@@ -1007,11 +1007,11 @@ class TestLegalMovesForGames {
   private static void generateGame(PgnTest pgnTest, String pgnName) {
     final PgnGame pgnGame = PgnCacheForStrictPgnParserTestCases.getPgn(pgnTest.getFolderPath(), pgnName);
     final Board board = new Board();
-    for (final PgnHalfMove move : pgnGame.halfMoveList()) {
+    for (final PgnMove move : pgnGame.moves()) {
       board.moveStrict(move.san());
       final String san = board.getSan();
-      final String legalMoveList = BasicUtility.calculateCommaSeparatedList(new ArrayList<>(board.getLegalMovesSan()));
-      final String output = "checkLegalMoves(board, \"" + san + "\", \"" + legalMoveList + "\");";
+      final String legalMoves = ListUtility.toCommaSeparatedString(new ArrayList<>(board.getLegalMovesAsSan()));
+      final String output = "checkLegalMoves(board, \"" + san + "\", \"" + legalMoves + "\");";
       System.out.println(output);
     }
   }

@@ -3,18 +3,20 @@
 
 package io.github.dlbbld.ashlarchess.squares;
 
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.KING;
+
 import java.util.Set;
 
 import io.github.dlbbld.ashlarchess.board.StaticPosition;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
 import io.github.dlbbld.ashlarchess.board.enums.Square;
 
-class KingNonCastlingAttackedSquares extends AbstractAttackedSquares {
+class KingNonCastlingAttackedSquares {
 
   public static Set<Square> calculateKingNonCastlingAttackedSquares(StaticPosition staticPosition, Square fromSquare,
-      Side havingMove) {
+      Side sideToMove) {
 
-    checkPiece(staticPosition, havingMove, fromSquare, KING);
+    ToSquaresSupport.checkPiece(staticPosition, sideToMove, fromSquare, KING);
 
     return KingNonCastlingEmptyBoardSquares.getKingSquares(fromSquare);
   }

@@ -38,7 +38,7 @@ class TestBitboardPositionOccupied {
         final StaticPosition staticPosition = StaticPositionBridge
             .toStaticPosition(testCase.finalPosition().getBitboardPosition());
         final BitboardPosition bitboardPosition = StaticPositionBridge.fromStaticPosition(staticPosition);
-        final Set<Square> fromBitboard = BitboardPositionUtility.toSquareSet(bitboardPosition.occupied());
+        final Set<Square> fromBitboard = BitboardPositionUtility.toSquares(bitboardPosition.occupied());
         final Set<Square> fromReference = referenceOccupied(staticPosition);
         assertEquals(fromReference, fromBitboard, "occupied() in fixture " + testCase.pgnName());
       }
@@ -62,7 +62,7 @@ class TestBitboardPositionOccupied {
 
   private static void assertSideAgrees(StaticPosition staticPosition, BitboardPosition bitboardPosition, Side side,
       PgnFen testCase) {
-    final Set<Square> fromBitboard = BitboardPositionUtility.toSquareSet(bitboardPosition.occupied(side));
+    final Set<Square> fromBitboard = BitboardPositionUtility.toSquares(bitboardPosition.occupied(side));
     final Set<Square> fromReference = referenceOccupiedBySide(staticPosition, side);
     assertEquals(fromReference, fromBitboard, "occupied(" + side + ") in fixture " + testCase.pgnName());
   }
@@ -91,7 +91,7 @@ class TestBitboardPositionOccupied {
   @Test
   void initialAndEmptyConstantsAgreeOnTotal() {
     final Set<Square> initialOccupied = BitboardPositionUtility
-        .toSquareSet(BitboardPosition.INITIAL_POSITION.occupied());
+        .toSquares(BitboardPosition.INITIAL_POSITION.occupied());
     assertEquals(referenceOccupied(StaticPosition.INITIAL_POSITION), initialOccupied);
     assertEquals(0L, BitboardPosition.EMPTY_POSITION.occupied());
   }

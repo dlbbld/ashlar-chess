@@ -14,7 +14,7 @@ class TestLibraryCarlosInsufficientMaterialPass {
 
   @SuppressWarnings("static-method")
   @Test
-  void testExceptedTrueAndTrue() throws Exception {
+  void testExceptedTrueAndTrue() {
 
     // KBvKB with bishop on same color field is a draw
     final String bishopOnSameColorSquares = "8/8/8/4k3/5b2/3K4/8/2B5 w - - 0 1";
@@ -30,7 +30,7 @@ class TestLibraryCarlosInsufficientMaterialPass {
 
   @SuppressWarnings("static-method")
   @Test
-  void testExceptedFalseAndFalse() throws Exception {
+  void testExceptedFalseAndFalse() {
 
     // KBvKB with bishop on different color field is not a draw
     final String bishopOnDifferentColorSquares = "8/8/8/4k3/5b2/3K4/2B5/8 w - - 0 1";

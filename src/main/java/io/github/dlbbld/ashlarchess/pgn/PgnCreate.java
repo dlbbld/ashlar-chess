@@ -8,84 +8,88 @@ import java.util.List;
 
 import org.eclipse.jdt.annotation.Nullable;
 
+import com.google.common.collect.ImmutableList;
+
 import io.github.dlbbld.ashlarchess.board.Board;
-import io.github.dlbbld.ashlarchess.board.HalfMoveUtility;
+import io.github.dlbbld.ashlarchess.board.MoveNumberFormat;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
 import io.github.dlbbld.ashlarchess.common.Nulls;
 import io.github.dlbbld.ashlarchess.common.exceptions.ProgrammingMistakeException;
 import io.github.dlbbld.ashlarchess.common.model.Outcome;
-import io.github.dlbbld.ashlarchess.common.utility.BasicChessUtility;
-import io.github.dlbbld.ashlarchess.common.utility.BasicUtility;
+import io.github.dlbbld.ashlarchess.common.utility.ListUtility;
 import io.github.dlbbld.ashlarchess.enums.MoveSuffixAnnotation;
 import io.github.dlbbld.ashlarchess.fen.constants.FenConstants;
 import io.github.dlbbld.ashlarchess.fen.model.Fen;
-import io.github.dlbbld.ashlarchess.model.PgnHalfMove;
+import io.github.dlbbld.ashlarchess.model.PgnMove;
 
 /**
  * PGN serialisation entry points. The library defaults to {@link WriteMode#SEMANTIC} - emits the parse model as-given
  * without inventing content. {@link WriteMode#ARCHIVAL} runs the model through {@link PgnArchivalNormalization} first
  * to produce a PGN spec section 8.1.1-conformant artifact.
  */
-public class PgnCreate {
+public final class PgnCreate {
+
+  private PgnCreate() {
+  }
 
   /** PGN export-format guideline: lines should not exceed 79 characters. */
   public static final int MAX_LINE_LENGTH = 79;
 
-  public static String createPgnString(Board board) {
-    return createPgnString(createPgnGame(board));
+  public static String toPgnString(Board board) {
+    return toPgnString(createPgnGame(board));
   }
 
-  public static String createPgnString(PgnGame pgnGame) {
-    return createPgnString(pgnGame, WriteMode.SEMANTIC);
+  public static String toPgnString(PgnGame pgnGame) {
+    return toPgnString(pgnGame, WriteMode.SEMANTIC);
   }
 
-  public static String createPgnString(PgnGame pgnGame, WriteMode writeMode) {
-    return appendEmptyLine(BasicUtility.convertToString(createPgnLines(pgnGame, writeMode)));
+  public static String toPgnString(PgnGame pgnGame, WriteMode writeMode) {
+    return appendEmptyLine(ListUtility.toLineSeparatedString(toPgnLines(pgnGame, writeMode)));
   }
 
-  public static List<String> createPgnLines(PgnGame pgnGame) {
-    return createPgnLines(pgnGame, WriteMode.SEMANTIC);
+  public static ImmutableList<String> toPgnLines(PgnGame pgnGame) {
+    return toPgnLines(pgnGame, WriteMode.SEMANTIC);
   }
 
-  public static List<String> createPgnLines(PgnGame pgnGame, WriteMode writeMode) {
+  public static ImmutableList<String> toPgnLines(PgnGame pgnGame, WriteMode writeMode) {
     final PgnGame effective = writeMode == WriteMode.ARCHIVAL ? PgnArchivalNormalization.apply(pgnGame) : pgnGame;
-    return calculateFileLines(effective.tagList(), effective.pregameCommentary(), effective.startFen(),
-        effective.halfMoveList(), effective.terminationMarker());
+    return Nulls.copyOfList(calculateFileLines(effective.tags(), effective.pregameCommentary(),
+        effective.startFen(), effective.moves(), effective.terminationMarker()));
   }
 
   private static String appendEmptyLine(String text) {
     return text + "\n";
   }
 
-  private static List<String> calculateFileLines(List<Tag> tagList, PgnCommentary pregameCommentary, Fen startFen,
-      List<PgnHalfMove> halfMoveList, @Nullable ResultTagValue terminationMarker) {
+  private static List<String> calculateFileLines(List<Tag> tags, PgnCommentary pregameCommentary, Fen startFen,
+      List<PgnMove> moves, @Nullable ResultTagValue terminationMarker) {
 
     final List<String> fileLines = new ArrayList<>();
-    for (final Tag tag : tagList) {
+    for (final Tag tag : tags) {
       fileLines.add(calculateTagEntry(tag));
     }
     // PGN spec section 8.2.2: a tag section is followed by a single empty line. If there is no tag section
     // (semantic-mode output of a Board with no tags), no separator is emitted; the movetext starts immediately.
-    if (!tagList.isEmpty()) {
+    if (!tags.isEmpty()) {
       fileLines.add("");
     }
 
-    final String moves = calculateMovetextWithoutGameTerminationMarker(startFen.fullMoveNumber(), startFen.havingMove(),
-        halfMoveList);
+    final String movetext = calculateMovetextWithoutGameTerminationMarker(startFen.fullMoveNumber(),
+        startFen.sideToMove(), moves);
 
     // PgnCommentary is contract-validated (no `}`, no `\r`), so the value writes verbatim into {...}.
     final String pregameCommentaryValue = pregameCommentary.value();
     final String terminationSuffix = terminationMarker != null ? " " + terminationMarker.getValue() : "";
     final String movetextIncludingPreGameCommentary;
     if (pregameCommentaryValue.isEmpty()) {
-      movetextIncludingPreGameCommentary = moves + terminationSuffix;
-    } else if (moves.isEmpty()) {
+      movetextIncludingPreGameCommentary = movetext + terminationSuffix;
+    } else if (movetext.isEmpty()) {
       movetextIncludingPreGameCommentary = "{" + pregameCommentaryValue + "}" + terminationSuffix;
     } else {
-      movetextIncludingPreGameCommentary = "{" + pregameCommentaryValue + "}" + " " + moves + terminationSuffix;
+      movetextIncludingPreGameCommentary = "{" + pregameCommentaryValue + "}" + " " + movetext + terminationSuffix;
     }
 
-    // Lenient parses can produce a PgnGame with no pregame commentary, no half-moves, and no termination marker
+    // Lenient parses can produce a PgnGame with no pregame commentary, no moves, and no termination marker
     // (a tags-only PGN). The movetext string is then empty; PgnLineWrapper rejects empty input, so skip the
     // wrap call and leave the movetext section blank. The output stays structurally well-formed (tag section,
     // separator, trailing blank) and re-parses cleanly under the lenient parser.
@@ -99,20 +103,20 @@ public class PgnCreate {
     return fileLines;
   }
 
-  private static List<PgnHalfMove> calculatePgnHalfMoveList(List<String> sanList) {
-    final List<PgnHalfMove> halfMoveList = new ArrayList<>();
+  private static List<PgnMove> calculatePgnMoves(List<String> sans) {
+    final List<PgnMove> moves = new ArrayList<>();
 
-    for (final String san : sanList) {
-      PgnHalfMove halfMove;
-      halfMove = new PgnHalfMove(san, MoveSuffixAnnotation.NONE, PgnCommentary.EMPTY);
-      halfMoveList.add(halfMove);
+    for (final String san : sans) {
+      PgnMove move;
+      move = new PgnMove(san, MoveSuffixAnnotation.NONE, PgnCommentary.EMPTY);
+      moves.add(move);
     }
 
-    return halfMoveList;
+    return moves;
   }
 
   private static ResultTagValue calculateResultTagValue(Board board) {
-    final Outcome outcome = BasicChessUtility.calculateOutcome(board);
+    final Outcome outcome = board.outcome();
     switch (outcome.termination()) {
       case NONE:
         // Game is ongoing - including positions with one-sided insufficient material, which is a
@@ -160,38 +164,38 @@ public class PgnCreate {
     return Nulls.replace(Nulls.replace(value, "\\", "\\\\"), "\"", "\\\"");
   }
 
-  private static String calculateMovetextWithoutGameTerminationMarker(int fullMoveNumber, Side havingMove,
-      List<PgnHalfMove> halfMoveList) {
+  private static String calculateMovetextWithoutGameTerminationMarker(int fullMoveNumber, Side sideToMove,
+      List<PgnMove> moves) {
 
     final StringBuilder result = new StringBuilder();
 
     int currentFullMoveNumber = fullMoveNumber;
-    Side currentHavingMove = havingMove;
+    Side currentSideToMove = sideToMove;
     boolean isFirstMove = true;
     // T-002 / PGN spec section 8.2.2 case 1: commentary on White's move forces "N..." before the next Black move.
     boolean priorCommentaryAttached = false;
-    for (final PgnHalfMove halfMove : halfMoveList) {
+    for (final PgnMove move : moves) {
 
-      // Emit the move-number indicator in the three required cases: first half-move, before any White move, or
+      // Emit the move-number indicator in the three required cases: first move, before any White move, or
       // before a Black move that follows commentary on White's move (T-002).
       if (isFirstMove) {
         isFirstMove = false;
-        final String fullMoveNumberPart = HalfMoveUtility.calculateFullMoveNumberInitialWithoutSpace(fullMoveNumber,
-            currentHavingMove);
+        final String fullMoveNumberPart = MoveNumberFormat.calculateFullMoveNumberInitialWithoutSpace(fullMoveNumber,
+            currentSideToMove);
         result.append(fullMoveNumberPart);
-      } else if (currentHavingMove == Side.WHITE) {
+      } else if (currentSideToMove == Side.WHITE) {
         result.append(" ").append(currentFullMoveNumber).append('.');
       } else if (priorCommentaryAttached) {
         result.append(" ").append(currentFullMoveNumber).append("...");
       }
 
-      final String san = halfMove.san();
+      final String san = move.san();
       result.append(" ").append(san);
-      if (halfMove.moveSuffixAnnotation() != MoveSuffixAnnotation.NONE) {
-        result.append(halfMove.moveSuffixAnnotation().getSuffix());
+      if (move.moveSuffixAnnotation() != MoveSuffixAnnotation.NONE) {
+        result.append(move.moveSuffixAnnotation().getSuffix());
       }
 
-      final String commentaryValue = halfMove.commentary().value();
+      final String commentaryValue = move.commentary().value();
       if (!commentaryValue.isEmpty()) {
         result.append(" {").append(commentaryValue).append('}');
         priorCommentaryAttached = true;
@@ -199,10 +203,10 @@ public class PgnCreate {
         priorCommentaryAttached = false;
       }
 
-      if (currentHavingMove == Side.BLACK) {
+      if (currentSideToMove == Side.BLACK) {
         currentFullMoveNumber++;
       }
-      currentHavingMove = currentHavingMove.getOppositeSide();
+      currentSideToMove = currentSideToMove.getOppositeSide();
     }
     return Nulls.toString(result);
   }
@@ -212,30 +216,30 @@ public class PgnCreate {
    * no sort). The termination marker is derived from the board's game-status - semantic-mode export will emit it as the
    * movetext trailer; archival-mode export will also synthesise a Result tag from it.
    */
-  public static PgnGame createPgnGame(Board board, List<Tag> tagList) {
+  public static PgnGame createPgnGame(Board board, List<Tag> tags) {
 
-    final List<PgnHalfMove> halfMoveList = calculatePgnHalfMoveList(board.getSanList());
+    final List<PgnMove> moves = calculatePgnMoves(board.getPerformedMovesAsSan());
 
-    return new PgnGame(Nulls.copyOfList(tagList), board.getInitialFen(), PgnCommentary.EMPTY,
-        Nulls.copyOfList(halfMoveList), calculateResultTagValue(board));
+    return new PgnGame(Nulls.copyOfList(tags), board.getInitialFen(), PgnCommentary.EMPTY,
+        Nulls.copyOfList(moves), calculateResultTagValue(board));
   }
 
   /**
    * Creates a PgnGame from a Board with no caller-supplied tags. The tag list is the minimal honest shape: empty when
    * the board started from the initial position, or just SetUp+FEN when from a non-initial position. STR fabrication
    * does not happen here - callers who want a spec section 8.1.1-conformant artifact pass {@link WriteMode#ARCHIVAL} to
-   * {@link PgnWriter} or {@link #createPgnString(PgnGame, WriteMode)}.
+   * {@link PgnWriter} or {@link #toPgnString(PgnGame, WriteMode)}.
    */
   public static PgnGame createPgnGame(Board board) {
 
-    final List<Tag> tagList = new ArrayList<>();
+    final List<Tag> tags = new ArrayList<>();
 
     if (board.getInitialFen() != FenConstants.FEN_INITIAL) {
-      tagList.add(new Tag(StandardTag.SET_UP.getName(), SetUpTagValue.START_FROM_SETUP_POSITION.getValue()));
-      tagList.add(new Tag(StandardTag.FEN.getName(), board.getInitialFen().fen()));
+      tags.add(new Tag(StandardTag.SET_UP.getName(), SetUpTagValue.START_FROM_SETUP_POSITION.getValue()));
+      tags.add(new Tag(StandardTag.FEN.getName(), board.getInitialFen().fen()));
     }
 
-    return createPgnGame(board, tagList);
+    return createPgnGame(board, tags);
   }
 
 }

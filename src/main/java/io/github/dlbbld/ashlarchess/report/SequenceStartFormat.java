@@ -3,9 +3,8 @@
 
 package io.github.dlbbld.ashlarchess.report;
 
-import io.github.dlbbld.ashlarchess.board.HalfMoveUtility;
+import io.github.dlbbld.ashlarchess.board.MoveNumberFormat;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
-import io.github.dlbbld.ashlarchess.common.model.HalfMove;
 
 /**
  * Shared per-player anchor helpers for the 50-move report, used by both the sequence print and the claim-ahead print so
@@ -16,7 +15,10 @@ import io.github.dlbbld.ashlarchess.common.model.HalfMove;
  * the starting side has made {@code (c+1)/2} of the run's moves and the other side {@code c/2} (so at an even clock -
  * the 50/50 and 75/75 thresholds - they are equal, and at an odd clock they differ by one).
  */
-abstract class SequenceStartFormat {
+final class SequenceStartFormat {
+
+  private SequenceStartFormat() {
+  }
 
   /**
    * The start anchor: {@code [Starting position] (W/B)} for an initial-FEN start, else {@code <first move> (W/B)}.
@@ -25,14 +27,15 @@ abstract class SequenceStartFormat {
     if (start.isInitialFen()) {
       return "[Starting position] " + counts(start.initialClockValue(), startingSide);
     }
-    return plyAnchor(start.firstNonZeroingMoveOrThrow(), startingSide);
+    return moveAnchor(start.firstNonZeroingMoveOrThrow(), startingSide);
   }
 
   /**
-   * A played-ply anchor: {@code <move> (W/B)}.
+   * A played-move anchor: {@code <move> (W/B)}.
    */
-  static String plyAnchor(HalfMove ply, Side startingSide) {
-    return HalfMoveUtility.calculateMoveNumberAndSanWithSpace(ply) + " " + counts(ply.halfMoveClock(), startingSide);
+  static String moveAnchor(MoveRecord move, Side startingSide) {
+    return MoveNumberFormat.calculateMoveNumberAndSanWithSpace(move.fullMoveNumber(), move.movingPiece().getSide(),
+        move.san()) + " " + counts(move.halfMoveClock(), startingSide);
   }
 
   /**
@@ -47,14 +50,14 @@ abstract class SequenceStartFormat {
   }
 
   /**
-   * The side that made the first ply of the run. For an after-reset start it is the first non-zeroing move's side. For
+   * The side that made the first move of the run. For an after-reset start it is the first non-zeroing move's side. For
    * an initial-FEN start the run began before the loaded position, so it is recovered from the FEN's side to move and
-   * clock parity: the FEN's side to move makes run-ply {@code initialFenClock + 1} and plies alternate, so the first
-   * run-ply was made by the FEN's side to move when the clock is even and by the opposite side when odd.
+   * clock parity: the FEN's side to move makes run-move {@code initialFenClock + 1} and moves alternate, so the first
+   * run-move was made by the FEN's side to move when the clock is even and by the opposite side when odd.
    */
   static Side startingSide(SequenceStart start, int initialFenClock, Side initialFenSideToMove) {
     if (!start.isInitialFen()) {
-      return start.firstNonZeroingMoveOrThrow().havingMove();
+      return start.firstNonZeroingMoveOrThrow().movingPiece().getSide();
     }
     return initialFenClock % 2 == 0 ? initialFenSideToMove : initialFenSideToMove.getOppositeSide();
   }

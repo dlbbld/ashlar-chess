@@ -6,7 +6,7 @@ package io.github.dlbbld.ashlarchess.fen;
 /**
  * FEN-level deviations the lenient FEN parser accepts. Surfaced on the validation result so consumers can see what the
  * parser tolerated without rejecting. None of these alter the semantic content of the position - they are purely
- * syntactic-tolerance transformations applied before delegating to {@link FenParserRaw} / {@link FenParserAdvanced}.
+ * syntactic-tolerance transformations applied before delegating to {@link StrictFenParser}.
  */
 public enum ForgivenFenItemCode {
 
@@ -23,16 +23,16 @@ public enum ForgivenFenItemCode {
   TAB_OR_NEWLINE_AS_SEPARATOR,
 
   /**
-   * Four-field FEN - half-move clock and full-move number both absent (common in engine output, e.g. Stockfish UCI
+   * Four-field FEN - halfmove clock and fullmove number both absent (common in engine output, e.g. Stockfish UCI
    * {@code position fen ...}). Defaulted to {@code 0 1}.
    */
-  MISSING_HALFMOVE_AND_FULLMOVE,
+  MISSING_HALF_MOVE_CLOCK_AND_FULL_MOVE_NUMBER,
 
   /**
-   * Five-field FEN - full-move number absent but half-move clock present. Defaulted to {@code 1} for the missing
-   * full-move number.
+   * Five-field FEN - fullmove number absent but halfmove clock present. Defaulted to {@code 1} for the missing fullmove
+   * number.
    */
-  MISSING_FULLMOVE_NUMBER,
+  MISSING_FULL_MOVE_NUMBER,
 
   /**
    * Side-to-move letter in uppercase ({@code W} or {@code B}) normalised to lowercase.
@@ -62,13 +62,13 @@ public enum ForgivenFenItemCode {
   TRAILING_GARBAGE_TOKEN,
 
   /**
-   * Half-move clock and full-move number are inconsistent: a FEN like {@code ... 15 1} claims 15 half-moves have been
-   * played but the full-move counter is still at 1. Physically impossible in a single chess game. The lenient parser
+   * Halfmove clock and fullmove number are inconsistent: a FEN like {@code ... 15 1} claims 15 halfmoves have been
+   * played but the fullmove number is still at 1. Physically impossible in a single chess game. The lenient parser
    * auto-corrects by bumping {@code fullMoveNumber} up to {@code halfMoveClock} rounded up to the next multiple of ten
    * - {@code halfMoveClock = 15} gives {@code fullMoveNumber = 20}, {@code halfMoveClock = 2} gives
    * {@code fullMoveNumber = 10}. The round-numbered result is well above the strict minimum and signals to a reader
    * that the value was reconstructed rather than measured. Strict parsing rejects (see
-   * {@code FenAdvancedValidationProblem.INVALID_HALF_MOVE_CLOCK_TOO_BIG_RELATIVE_TO_FULL_MOVE_NUMBER}).
+   * {@code StrictFenSemanticValidationProblem.INVALID_HALF_MOVE_CLOCK_TOO_BIG_RELATIVE_TO_FULL_MOVE_NUMBER}).
    */
   HALF_MOVE_CLOCK_INCONSISTENT_WITH_FULL_MOVE_NUMBER,
 

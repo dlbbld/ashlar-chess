@@ -13,7 +13,7 @@ import io.github.dlbbld.ashlarchess.board.enums.Square;
 import io.github.dlbbld.ashlarchess.board.enums.SquareType;
 import io.github.dlbbld.ashlarchess.common.Nulls;
 import io.github.dlbbld.ashlarchess.common.exceptions.ProgrammingMistakeException;
-import io.github.dlbbld.ashlarchess.common.utility.BasicUtility;
+import io.github.dlbbld.ashlarchess.common.utility.SetUtility;
 import io.github.dlbbld.ashlarchess.squares.KingNonCastlingEmptyBoardSquares;
 
 //Figure 8 Semi-statically unwinnable algorithm, which may conclude that a position is
@@ -21,14 +21,17 @@ import io.github.dlbbld.ashlarchess.squares.KingNonCastlingEmptyBoardSquares;
 
 //a We could design a more complete check that looks at all neighbours of s, but the condition on
 //step 10 would be significantly more involved (to ensure monotonicity).
-class UnwinnableSemiStatic {
+final class UnwinnableSemiStatic {
+
+  private UnwinnableSemiStatic() {
+  }
 
   // Inputs: position, intended winner, solution to the mobility problem
   // Output: bool (true if position is declared unwinnable, false otherwise)
   public static boolean unwinnableSemiStatic(Board board, Side c, MobilitySolution mobilitySolution) {
 
     if (board.getLegalMoves().isEmpty()) {
-      return !board.isCheck() || board.getHavingMove() == c;
+      return !board.isCheck() || board.getSideToMove() == c;
     }
 
     if (board.isEnPassantCapturePossible()) {
@@ -54,7 +57,7 @@ class UnwinnableSemiStatic {
       }
     }
 
-    final SquareType visitorSquareType = BasicUtility.calculateOnlyElement(visitorSquareTypeSet);
+    final SquareType visitorSquareType = SetUtility.getOnly(visitorSquareTypeSet);
     for (final Square matingSquare : Square.REAL) {
       final Set<PiecePlacement> matingBishopSet = removeKing(
           visitors(Nulls.setOf(matingSquare), c, false, mobilitySolution), c);
@@ -117,7 +120,7 @@ class UnwinnableSemiStatic {
     final boolean isIgnorePawns = SemiStaticFunctions
         .region(calculateKing(side.getOppositeSide(), mobilitySolution), mobilitySolution).size() > 1;
 
-    for (final PiecePlacement piecePlacement : mobilitySolution.getPiecePlacementSet()) {
+    for (final PiecePlacement piecePlacement : mobilitySolution.getPiecePlacements()) {
       final Set<Square> pieceRegion = SemiStaticFunctions.region(piecePlacement, mobilitySolution);
       if (piecePlacement.pieceType() == PieceType.PAWN && isIgnorePawns && !pieceRegion.contains(Square.A1)) {
         continue;
@@ -130,8 +133,8 @@ class UnwinnableSemiStatic {
             break;
           }
           if (piecePlacement.pieceType() == PieceType.PAWN && expandedPawnRegion
-              && piecePlacement.squareOriginal().getFile() != target.getFile() && !BasicUtility
-                  .calculateIsDisjoint(MobilityFunctions.predecessorsCapture(piecePlacement, target), pieceRegion)) {
+              && piecePlacement.squareOriginal().getFile() != target.getFile()
+              && !SetUtility.isDisjoint(MobilityFunctions.predecessorsCapture(piecePlacement, target), pieceRegion)) {
             result.add(piecePlacement);
             break;
           }
@@ -186,7 +189,7 @@ class UnwinnableSemiStatic {
   }
 
   private static PiecePlacement calculateKing(Side c, MobilitySolution mobilitySolution) {
-    for (final PiecePlacement piecePlacement : mobilitySolution.getPiecePlacementSet()) {
+    for (final PiecePlacement piecePlacement : mobilitySolution.getPiecePlacements()) {
       if (piecePlacement.side() == c && piecePlacement.pieceType() == PieceType.KING) {
         return piecePlacement;
       }

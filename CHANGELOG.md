@@ -5,6 +5,193 @@ Releases from 3.3 onward. Earlier history is in git tags only.
 ## [Unreleased]
 
 
+## [19.0.0] - The essential shape: coherent API, domain-owned behavior, declared scope - 2026-06-21
+
+A surface-only release. It retires the `HalfMove` concept, replaces the "halfmove" / "ply" vocabulary with "move" across the public model and reports, and applies a "data carriers, not behavior" pass that moves computed, translation, and factory logic off records and enums into dedicated utility / translator classes. No rule, parser, or analysis behavior changes — every verdict and every report is identical to 18.1.0; what changes is the shape of the API. It is heavily binary-incompatible, so the breaking list is long, but most migrations are a single type rename or a `Type.method(x)` → `TypeUtility.method(x)` call-site change.
+
+### Notable
+
+- **Records and enums are now data carriers.** A new rule in `coding-conventions.md` draws the line: records and enums hold data; computational, translation, and factory logic lives in dedicated `*Utility` / `*Translator` classes. `BitboardPosition` is the one documented exception — it carries its move-generation / king-safety engine on the record for hot-path allocation reasons.
+- **A last-chance API-polish pass** was folded in before publication, so no further major bump is needed for it. It refined the data-carrier rule: type-creating factories (`of(...)` from typed components, `parse(...)` from text), same-type conversions (`to*`), and tiny intrinsic self-description predicates live on the enum or record they describe, while rule evaluation stays in utilities — this returned the `Fen*Symbol` and `PromotionPieceType` factories to their enums and added `MoveSpecification.isPromotion()`. It also dropped the `calculateIs` / `calculateHas` prefix from boolean predicates (`is` / `has`), switched PGN export to the `to*` idiom, surfaced immutable collection types in signatures, and gave whole-position dead detection its own `DeadPositionAnalyzer`. See the Breaking list.
+- **`HalfMove` is retired.** The played-move row is now `MoveRecord`, rebuilt inside the report layer from `Board`'s existing per-move accessors; the public PGN movetext type is `PgnMove`.
+- **"Move" is the consistent term** for one player's action across the public model, move history, and reports. "halfmove" and "ply" now appear only where they are protocol- or engine-correct: FEN/PGN counters (`halfMoveClock`, the `PlyCount` tag) and the engine/search internals.
+- **Core board enums print conventional chess notation.** `Square.toString()` now returns `a1`..`h8` (not the `A1` constant name); `File` → `a`..`h`; `Rank` → `1`..`8`; `Piece` → the FEN letter (`P`/`p`, ...); `PieceType` → `P`/`N`/`B`/`R`/`Q`/`K` (and `none` for the `NONE` sentinels). Logging and diagnostics now read like a chess board. The explicit accessors (`getName()`, `getLetter()`, `getNumber()`) are unchanged.
+- Added a Maven Central version badge to the README.
+
+### Behavioral
+
+- No rule, report, or adjudication behavior changes: move legality, FEN/SAN/PGN export, unwinnability and adjudication verdicts, and all report output are identical to 18.1.0. Parsing is identical except for the deliberate changes below. The one cosmetic change is the conventional `toString()` on the core `board.enums` types (see Notable).
+- The lenient PGN parser now accepts `;` rest-of-line comments (PGN import format, spec section 5), attaching them as commentary exactly like brace comments; previously the `;` leaked into a SAN token and the parse failed. The strict PGN parser still rejects them — export format does not include `;` comments.
+- The lenient PGN parser now reports a malformed game-termination marker — any digits/hyphen/slash run that is not one of `1-0` / `0-1` / `1/2-1/2` / `*` (e.g. `1-2`, `7/`) — as a `LenientPgnParserValidationException` with the new `LenientPgnParserValidationProblem.MOVETEXT_TERMINATION_MARKER_INVALID`; previously it leaked a raw `IllegalArgumentException` out of `ResultTagValue.parse`. The strict parser already guarded this. (Found by the parser fuzz harness.)
+- `NonePointerException` is now a `UsageException` rather than a `ProgrammingMistakeException`, and the FEN/PGN `validate(...)` methods now let a `ProgrammingMistakeException` propagate instead of masking it as `UNKNOWN_ERROR`. See Breaking → Exceptions.
+
+### Breaking
+
+PGN model:
+
+- `PgnHalfMove` renamed to `PgnMove`.
+- `PgnGame.halfMoveList()` renamed to `PgnGame.moves()`, and `PgnGame.tagList()` renamed to `PgnGame.tags()` (record components and accessors) — domain plurals over the implementation-type `*List` suffix.
+
+`Board`:
+
+- `getPerformedHalfMoveCount()` renamed to `getPerformedMoveCount()`.
+- Removed `Board(String fen)`. FEN strings now use the explicit factory pair: `Board.fromFenStrict(String)` for strict
+  FEN and `Board.fromFenLenient(String)` for recovered/tolerant FEN. `Board(Fen)` remains for already-parsed FEN
+  values. This makes FEN construction match the library's strict/lenient parser vocabulary instead of hiding strict
+  parsing behind a `String` constructor.
+- Removed `getHalfMoveList()` and `getLastHalfMove()`; the played-move list is no longer exposed on `Board`. It is rebuilt inside the `report` layer, and `PgnCreate.createPgnGame(board).moves()` returns the played moves as `PgnMove`s.
+- `HalfMove` is gone from the public API (its replacement, `MoveRecord`, is package-private to `report`).
+- `isUnwinnableQuick(Side)` / `isUnwinnableFull(Side)` renamed to `unwinnableQuick(Side)` / `unwinnableFull(Side)`, matching the `UnwinnableQuickAnalyzer.unwinnableQuick(...)` / `UnwinnableFullAnalyzer.unwinnableFull(...)` engines they delegate to. The `Board` methods return the verdict directly; the analyzers return the full analysis.
+- `move(MoveSpecification)`, `movesStrict(String...)`, and `movesLenient(String...)` now return `void` instead of `boolean`. The discarded return was always `true` (failure is signalled by exception), so it carried no information.
+- `calculateFiftyMoveRuleClaimRights()` / `calculateThreefoldRepetitionRuleClaimRights()` renamed to `fiftyMoveRuleClaimRights()` / `threefoldRepetitionRuleClaimRights()` — dropping the implementation-flavoured `calculate` prefix in favour of domain nouns, matching the `unwinnableQuick` / `deadPositionQuick` accessors.
+- Removed `calculateInsufficientMaterial()` and the four-way `common.enums.InsufficientMaterial` enum (`NONE` / `WHITE_ONLY` / `BLACK_ONLY` / `BOTH`). It was fully derivable from — and read confusingly beside — the side-specific booleans; use `isInsufficientMaterial()` and `isInsufficientMaterial(Side)`.
+- Collection accessors use domain plurals instead of the implementation-type `*List` suffix, and the notation variants gain `As`: `getPossibleMoveSpecificationList()` → `getLegalMoveSpecifications()`, `getPerformedMoveSpecificationList()` → `getPerformedMoveSpecifications()`, `getPerformedLegalMoveList()` → `getPerformedMoves()`, `getLegalMovesSan()` → `getLegalMovesAsSan()`, `getLegalMovesUci()` → `getLegalMovesAsUci()`, and `getSanList()` → `getPerformedMovesAsSan()` (the performed-move SAN history, mirroring `getLegalMovesAsSan()`). `getLegalMoves()` is already a domain plural and is unchanged, as are the single-move `getSan()` / `getLan()`.
+
+Collection / `*List` naming (library-wide final pass):
+
+- `SquareUtility.getPromotionRankList(Side)` → `getPromotionRankSquares(Side)`; `SquareUtility.calculateEnPassantCaptureTargetSquareList(Side)` → `getEnPassantCaptureTargetSquares(Side)`.
+- `UciMoveValidationUtility.getUciMoveList()` → `getUciMoves()`.
+- `MoveSuffixAnnotation.calculateValueList()`, `ResultTagValue.calculateList()`, and `SetUpTagValue.calculateList()` → `allowedValuesText()` — each returns the allowed-values *text*, not a list.
+- `BitboardPositionUtility.toSquareSet(long)` → `toSquares(long)` (returns `ImmutableSet<Square>` — the return type carries the set-ness, the name carries the domain).
+- `MobilitySolution.getPiecePlacementSet()` → `getPiecePlacements()`.
+- Public collection constants also use domain names: `ForgivenFenItem.EMPTY_LIST`, `ForgivenSanItem.EMPTY_LIST`, and `ForgivenTagItem.EMPTY_LIST` → `NO_ITEMS`; `TagUtility.SEVEN_TAG_ROSTER_TAG_LIST` → `SEVEN_TAG_ROSTER_TAGS`.
+- `ListUtility.calculateCommaSeparatedList` / `calculateSpaceSeparatedList` / `calculateLineSeparatedList` → `toCommaSeparatedString` / `toSpaceSeparatedString` / `toLineSeparatedString`; `ListUtility.calculateSquareList(Set<Square>)` → `formatSquares(...)` — these return a `String`, so the `List` suffix was misleading.
+- Removed `ImmutableUtility.constructListSquare(Square...)` — a thin `ImmutableList` adapter redundant with `Nulls.listOf(...)`; call sites use `Nulls.listOf(...)`.
+
+Kept deliberately: `Nulls`' Java-collection adapters (`copyOfList`, `asList`, `subList`, `listOf`, …), `PgnCreate.toPgnLines`, and the PGN parsers' `parseLines(...)` — there "list" / "lines" is the genuine Java-adapter or domain concept, not an implementation-type leak.
+
+`Reporter`:
+
+- `Reporter.printReport(...)` renamed to `Reporter.report(...)` and now **returns** the report as `ImmutableList<String>` instead of writing to `System.out`; the caller decides where the lines go (e.g. `Reporter.report(board).forEach(System.out::println)`). Applies to all three overloads (`Board`, PGN `String`, PGN file). A library should not own the output stream.
+
+Vocabulary — "side to move":
+
+- The non-standard `havingMove` vocabulary is replaced by the standard chess term. A **position**'s side to move is `sideToMove`; the side that makes a **move** is `movingSide` (beside `LegalMove.movingPiece()`). Renames: `Board.getHavingMove()` → `getSideToMove()`; the `Fen` / `DynamicPosition` `havingMove()` component → `sideToMove()`; `LegalMove.havingMove()` → `movingSide()`; `StrictFenSemanticValidationProblem.INVALID_HAVING_MOVE_RANGE` → `INVALID_SIDE_TO_MOVE_RANGE`.
+
+Boolean accessors (JavaBeans `is` / `has` idiom, no `get` prefix):
+
+- `Side.getIsWhite()` / `getIsBlack()` → `isWhite()` / `isBlack()`.
+- `CastlingRight.getHasKingSide()` / `getHasQueenSide()` → `hasKingSide()` / `hasQueenSide()`.
+- `File.getIsBorderFile()` → `isBorderFile()`.
+- `StandardTag.getIsSevenTagRosterTag()` → `isSevenTagRosterTag()`.
+
+Formatting / model:
+
+- `HalfMoveUtility` renamed to `MoveNumberFormat`.
+- `DynamicPosition.isEnPassantCapturePossible()` removed — test `enPassantCaptureTargetSquare() != Square.NONE` directly.
+- `LegalMove.pieceCaptured()` renamed to `capturedPiece()` (record component and accessor) — a "captured piece" noun, reading beside `movingPiece`.
+- `UciMove.text()` renamed to `uci()` (record component and accessor) — the generic `text` becomes the domain term.
+
+Model invariants:
+
+- `UnwinnabilityFullAnalysis.mateLine()` now returns `ImmutableList<UciMove>` instead of `List<UciMove>`, and the record copies the list defensively on construction — the component is now guaranteed immutable.
+- `ClaimRights`'s `claimableMoves` component is now `ImmutableList<ClaimableMove>` (was `List<ClaimableMove>`); the canonical constructor requires an already-immutable list rather than defensively copying an arbitrary `List`.
+- `PgnCreate.toPgnLines(...)` (both overloads) now returns `ImmutableList<String>` instead of `List<String>` — the last return-side mutable-collection leak, now aligned with the rest of the API.
+- `MoveSpecification`'s canonical constructor now validates its structural invariants on every path (previously the public four-argument constructor bypassed validation). Inconsistent from / to / castling / promotion combinations now throw `IllegalArgumentException` at construction instead of yielding a malformed value.
+
+FEN:
+
+- Added `StrictFenParser.parse(String)` and `StrictFenParser.validate(String)` as the public strict FEN parser facade,
+  symmetrical with `LenientFenParser.parse(String)` / `validate(String)`.
+- `FenParserRaw` and `FenParserAdvanced` are no longer public API. Their lexical and advanced-validation stages remain
+  internal implementation details behind `StrictFenParser`; callers should use `StrictFenParser.parse(String)` /
+  `validate(String)` or `Board.fromFenStrict(String)`.
+- `FenParserRaw` renamed internally to `StrictFenFieldParser`; `FenParserAdvanced` renamed internally to
+  `StrictFenSemanticParser`, making the strict-parser staging explicit.
+- `FenRaw` renamed to `FenField`; `FenRawValidationException` renamed to the package-private
+  `fen.StrictFenFieldValidationException`, matching the internal strict FEN field parser vocabulary.
+- `FenAdvancedValidationProblem` renamed to `StrictFenSemanticValidationProblem`;
+  `FenAdvancedValidationException` renamed to `fen.StrictFenSemanticValidationException`;
+  `LenientFenParserValidationProblem.ADVANCED_INVALID` renamed to `STRICT_SEMANTIC_INVALID`.
+- `ForgivenFenItemCode.MISSING_HALFMOVE_AND_FULLMOVE` → `MISSING_HALF_MOVE_CLOCK_AND_FULL_MOVE_NUMBER`; `MISSING_FULLMOVE_NUMBER` → `MISSING_FULL_MOVE_NUMBER`.
+- `StrictFenSemanticValidationProblem.INVALID_FULL_MOVE_NUMBER_TOO_BIG_ABSOLUT` → `INVALID_FULL_MOVE_NUMBER_TOO_BIG_ABSOLUTE` (typo fix in a public enum constant).
+- `FenConstants.POSSIBLE_FEN_AFTER_FIRST_HALF_MOVE` renamed to `POSSIBLE_FEN_AFTER_FIRST_MOVE`.
+
+Parser entry points — plain `parse` / `validate` when a parser has one input kind; source suffixes only when it has several:
+
+- SAN (text only): `LenientSanParser.parseText(String, Board)` / `StrictSanParser.parseText(String, Board)` → `parse(...)`. Removed `LenientSanParser.validateText(String, Board)` — a `void`-returning convenience with no strict counterpart; `parse(...)` validates by construction.
+- SAN `parse` now returns its model directly, matching FEN/PGN. `StrictSanParser.parse(String, Board)` and `Board.moveStrict(String)` return the resolved `MoveSpecification` — the one-field `StrictSanParserValidationResult` wrapper is removed. The lenient side keeps a result type because it carries more than the move: `LenientSanParserValidationResult` → `LenientSanParseResult` (the resolved move plus the forgiven items), returned by `LenientSanParser.parse(...)` and `Board.moveLenient(...)`. The `...ParserValidationResult` suffix stays reserved for what `validate()` returns (cf. the FEN/PGN validate results).
+- FEN (text only): `LenientFenParser.parseText(String)` → `parse(String)`; `LenientFenParser.validateText(String)` → `validate(String)`. Strict FEN now also has `StrictFenParser.parse(String)` / `validate(String)`.
+- PGN (text, file path, line list) — source kind matters, so suffixes stay: the `parse(Path)` / `parse(Path, String)` / `parse(String)` path overloads → `parsePath(...)`; `parse(List<String>)` → `parseLines(...)`; the `validate(Path)` / `validate(Path, String)` / `validate(String)` overloads → `validatePath(...)`. `parseText(String)` and `validateText(String)` are unchanged. This removes the `parse(String pgnPath)`-beside-`parseText(String pgn)` footgun (same parameter type, opposite meaning). Applies to both `StrictPgnParser` and `LenientPgnParser`.
+
+Enum behavior moved to utilities (the "enums carry data" pass) — each former `Enum.method(...)` is now `EnumUtility.method(enum, ...)`:
+
+- `KingSafetyCheck` / `MovementCheck` / `CastlingCheck` `toMoveCheck(...)` → `analyze.{KingSafetyCheck,MovementCheck,CastlingCheck}Translator.toMoveCheck(...)`.
+- `Piece.calculate{Rook,Knight,Bishop,Queen,King,Pawn}Piece(Side)` and `Piece.calculate(Side, PieceType)`, plus the duplicate `PieceType.calculate(Side, PieceType)`, consolidated into `board.enums.PieceUtility`. `PromotionPieceType.calculate(Side, PromotionPieceType)` → the instance method `PromotionPieceType.toPiece(Side)`.
+- `Square.flip` (now `SquareUtility.rotate180` — the operation is a 180-degree rotation / point reflection through the centre, not a single-axis flip), `getPromotionRank` (now `getPromotionRankSquares`), `calculateJumpOverSquare`, the en-passant-target-squares method (now `getEnPassantCaptureTargetSquares`), and the king / queen-side-rook / king-side-rook original-square methods → `board.enums.SquareUtility`.
+- `Rank`'s side-relative rule methods (ground / promotion / pawn-initial / two-square-advance / en-passant ranks and per-side validity) → `board.enums.RankUtility`.
+- `FenSideSymbol.calculate(Side)` → `FenSideSymbol.of(Side)` and `FenPieceSymbol.calculate(Piece)` → `FenPieceSymbol.of(Piece)` (the type-creating factories stay on the enums; the char self-parse is `parse(char)` — see below).
+- `SanTerminalMarker.calculate(...)` / `append(...)` → `san.SanTerminalMarkerUtility`; `SanFormat.isCapture()` → `san.SanFormatUtility.isCapture(...)`.
+
+Enum factories split by input — `of(...)` from typed components, `parse(...)` from text:
+
+- `Square.calculate(String)` → `parse(String)`; `Square.calculate(File, Rank)` and `Square.calculate(int, int)` → `of(...)`.
+- `Rank.calculateRank(char)` → `parse(char)`; `Rank.calculateRank(int)` → `of(int)`.
+- `File.calculateFile(char)` → `parse(char)`.
+- `calculate(...)` → `parse(...)` on `MoveSuffixAnnotation(String)`, `NotationMovingPiece(char)`, `NotationPromotionPiece(char)`, `FenSideSymbol(char)`, `FenPieceSymbol(char)`, `ResultTagValue(String)`, `SetUpTagValue(String)`, and `StandardTag(String)`.
+- Removed the unused `NotationPromotionPiece.existsIgnoreCase(char)` and `calculateIgnoreCase(char)`.
+
+FEN / SAN / LAN serializers use the `to*` idiom:
+
+- `FenBoard.calculateFen(Board)` → `FenBoard.toFen(Board)`.
+- `MoveToSan.calculateSanLastMove(LegalMove, List<LegalMove>, SanTerminalMarker)` → `MoveToSan.toSan(LegalMove move, List<LegalMove> legalMovesBeforeMove, SanTerminalMarker)`.
+- `MoveToLan.calculateLanLastMove(LegalMove, SanTerminalMarker)` → `MoveToLan.toLan(LegalMove move, SanTerminalMarker)`.
+- `UciMoveUtility.convertMoveSpecificationToUci(Side, MoveSpecification)` → `toUci(...)`, `convertUciMoveToMoveSpecification(Board, UciMove)` → `toMoveSpecification(...)`, and `convertUciMoveToSan(Board, UciMove)` → `toSan(...)` — dropping the `convert*` prefix for the `to*` idiom.
+- `PgnUtility.calculateBoard(PgnGame)` / `calculateBoard(Path, String)` → `toBoard(...)` — replays a PGN game onto a fresh board.
+- `TagUtility.calculateTagValue(PgnGame, String)` / `calculateTagValue(PgnGame, StandardTag)` → `readTagValue(...)`, matching the sibling tag readers (`readFen`, `readResult`, …).
+
+`EnumConstants` removed from the public API:
+
+- The square / piece / side alias layer (`import static …EnumConstants.E4`) was a non-idiomatic shortcut over the real enum types and is no longer part of the published library. Production code now references the enums directly (`import static …board.enums.Square.E4`, etc.), and `EnumConstants` has moved to the test sources as a fixture convenience. Callers should use the real enum constants — `Square.E4`, `Side.WHITE`, `PieceType.KING`. (It had also stopped being a constant interface: types like `LegalMove` / `CastlingUtility` never exposed the aliases through their public API.)
+
+Removed from the published jar:
+
+- Deleted unused types `BoardUtility`, `CheckmateOrStalemate`, and `SemiOpenFilesUtility`.
+- Deleted the unused placement-only Zobrist hash — `BitboardPosition.zobristPieces()` / `hashDelta(MoveSpecification, Side)` and the package-private `ZobristKeys`. Built and tested but never wired in: the helpmate transposition table and the repetition check key on the exact, collision-free value records `HelpmateSearchKey` / `DynamicPosition`, and a placement-only hash (no side-to-move / castling / en-passant) had no internal use and could not be safely exposed as a position key.
+- Relocated test-only support out of `main` (public, but used only by the test / oracle layers): `StandardMoveUtility`, `LegalMoveCalculation`, `SquareOccupation`, `IoUtility`, `PseudoLegalMove`.
+
+Boolean predicate methods drop the `calculateIs` / `calculateHas` prefix for the JavaBeans `is` / `has` idiom:
+
+- `CastlingUtility.calculateIsCastlingMove` → `isCastlingMove`; `calculateQueenSideCastlingIsOriginalPosition` / `calculateKingSideCastlingIsOriginalPosition` → `isQueenSideCastlingOriginalPosition` / `isKingSideCastlingOriginalPosition`.
+- `BasicUtility.calculateIsDisjoint` → `isDisjoint`.
+- `EnPassantCaptureUtility.calculateIsPawnTwoSquareAdvanceMove` / `calculateIsPotentialEnPassantCapture` → `isPawnTwoSquareAdvanceMove` / `isPotentialEnPassantCapture`.
+- `PawnDiagonalMoveUtility.calculateIsPawnDiagonalMove` → `isPawnDiagonalMove`.
+- `TagUtility.calculateIsContainsAllSevenTagRosterTags` → `hasAllSevenTagRosterTags`.
+- `PromotionUtility.calculateIsPromotion(MoveSpecification)` removed; the predicate is now intrinsic to the record as `MoveSpecification.isPromotion()`.
+
+PGN export uses the `to*` idiom:
+
+- `PgnCreate.createPgnString(...)` → `toPgnString(...)` (all three overloads) and `createPgnLines(...)` → `toPgnLines(...)` (both overloads). `createPgnGame(...)` is unchanged — it builds a `PgnGame`, it does not serialize one.
+
+Immutable collection types in signatures:
+
+- `UciMoveValidationUtility.getUciMoves()` returns `ImmutableList<UciMove>` (was `List<UciMove>`).
+- `SquareUtility.getPromotionRankSquares(Side)` (renamed from `Square.getPromotionRank`) and `getEnPassantCaptureTargetSquares(Side)` return `ImmutableList<Square>` (was `List<Square>`).
+- The empty-board square getters — `KnightEmptyBoardSquares.getKnightSquares`, `KingNonCastlingEmptyBoardSquares.getKingSquares`, `PawnDiagonalSquares.getPawnDiagonalSquares`, and `Pawn{Any,One,Two}AdvanceEmptyBoardSquares.getPawnSquares` — return `ImmutableSet<Square>` (was `Set<Square>`).
+- `BitboardPosition.potentialToSquares(Square, long)` and `legalMoves(Side, long)` return `ImmutableSet<Square>` / `ImmutableSet<MoveSpecification>` — previously a freshly-allocated mutable `TreeSet` leaked through a public `Set<...>` return.
+- Callers assigning to `List` / `Set` are unaffected; the change is binary-incompatible and only tightens the declared type.
+
+Exceptions:
+
+- `NonePointerException` now extends `UsageException` instead of `ProgrammingMistakeException`. Reading a property of a `NONE` sentinel (e.g. `Piece.NONE.getSide()` after reading an empty square) is caller misuse, not a library bug. Code that caught `ProgrammingMistakeException` to trap NONE-access should catch `UsageException` (or `NonePointerException`) instead.
+- The strict / lenient FEN and PGN `validate(...)` methods now let a `ProgrammingMistakeException` propagate rather than folding it into an `UNKNOWN_ERROR` result, so a genuine library bug fails fast. Caller-fault runtime errors (including NONE-access, now a `UsageException`) still surface as `UNKNOWN_ERROR`.
+
+`BasicChessUtility` deleted - its rule queries moved to their domain owners:
+
+- `BasicChessUtility.calculateOutcome(board)` → `board.outcome()` (the current-position outcome is now a query on `Board`, beside `isCheckmate()` / `isStalemate()`; same precedence, same non-null `Outcome.ONGOING` for ongoing positions).
+- `BasicChessUtility.calculateIsResetHalfMoveClock(move)` → `move.resetsHalfMoveClock()` (a `LegalMove` predicate - true for a pawn move or any capture).
+- `BasicChessUtility.calculateSideMoved(...)` and `calculateFullMoveNumber(Side, int, int)` are removed with no replacement; they were internal helpers with no production caller.
+- The `BasicChessUtility` class is deleted.
+
+Dead position is its own analyzer:
+
+- The no-side overloads `UnwinnableQuickAnalyzer.unwinnableQuick(Board)` and `UnwinnableFullAnalyzer.unwinnableFull(Board)` are removed. Whole-position dead detection now lives in `unwinnability.DeadPositionAnalyzer`, with `Board.deadPositionQuick()` / `Board.deadPositionFull()` convenience methods and its own verdicts: `DeadPositionQuickVerdict` (`DEAD` / `POSSIBLY_ALIVE`) and `DeadPositionFullVerdict` (`DEAD` / `ALIVE` / `UNDETERMINED`). Migration: `UnwinnableQuickAnalyzer.unwinnableQuick(board) == UNWINNABLE` becomes `board.deadPositionQuick() == DEAD`; for the full check the two `WINNABLE_*` results map to `ALIVE`. Behaviour is unchanged — the per-side analyzers and verdicts are untouched.
+
+Noninstantiable classes are `final`:
+
+- The static-only utility, constant, translator, and analyzer classes (including `UnwinnableQuickAnalyzer` / `UnwinnableFullAnalyzer`) are now `final` with private constructors (previously `abstract` or implicitly instantiable). They were never meant to be subclassed or instantiated, so this affects only code that did so.
+
+
 ## [18.1.0] - Adjudication API - 2026-06-11
 
 Adds a public adjudication API for the two external game-ending events - flag-fall and resignation - that applies the FIDE "opponent cannot win" draw exception for you, and changes the fifty-move report to count in moves by each player rather than halfmoves. The release is additive: no public type changes shape.
@@ -34,7 +221,7 @@ Adds a proved basic-helpmate-existence theorem that decides elementary endgames 
 ### Breaking
 
 - `UnwinnabilityQuickVerdict` is now two-valued: `UNWINNABLE`, `POSSIBLY_WINNABLE`. The `WINNABLE` constant is removed (the quick analyzer never returned it). `UnwinnabilityQuickAnalysis` now carries the verdict only; its `mateLine` component is removed.
-- `UnwinnabilityFullVerdict.WINNABLE` is split into `WINNABLE_HELPMATE` (the search found a cooperative mate; the analysis carries the mate line) and `WINNABLE_BY_THEOREM` (certified by the basic-checkmate theorem; no line). A `boolean isWinnable()` helper covers both.
+- `UnwinnabilityFullVerdict.WINNABLE` is split into `WINNABLE_HELPMATE` (the search found a cooperative mate; the analysis carries the mate line) and `WINNABLE_BY_THEOREM` (certified by the basic-checkmate theorem; no line).
 - Dead-position queries move from `Board` to no-side analyzer overloads that reuse the verdict enums (`UNWINNABLE` means dead). Removed `Board.isDeadPosition()`, `Board.isDeadPositionQuick()`, and `Board.isDeadPositionFull()`; use `UnwinnableQuickAnalyzer.unwinnableQuick(board)` (returns `UnwinnabilityQuickVerdict`) and `UnwinnableFullAnalyzer.unwinnableFull(board)` (returns `UnwinnabilityFullVerdict`). The `DeadPositionQuick` and `DeadPositionFull` enums are removed.
 - Removed the `GameEndFacts` record and `Board.calculateGameEndFacts()` (added in 16.0.0). Read the raw rule predicates from `Board` directly (`isCheckmate()`, `isStalemate()`, `isInsufficientMaterial()`, `isFivefoldRepetition()`, `isSeventyFiveMove()`) and the projected ruling from `BasicChessUtility.calculateOutcome(board)`. Removed `Board.isGameEnd()`; use `BasicChessUtility.calculateOutcome(board).termination() != Termination.NONE`.
 

@@ -3,12 +3,16 @@
 
 package io.github.dlbbld.ashlarchess.board;
 
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.BLACK;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.WHITE;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import io.github.dlbbld.ashlarchess.bitboard.StaticPositionBridge;
-import io.github.dlbbld.ashlarchess.common.constants.EnumConstants;
 
-public abstract class CommonTestUtility implements EnumConstants {
+public final class CommonTestUtility {
+
+  private CommonTestUtility() {
+  }
 
   public static void checkBoardsAgainstEachOtherAll(Board boardFirst, LibraryCarlosBoard boardSecond) {
     checkBoardsAgainstEachOther(boardFirst, boardSecond, true);
@@ -74,36 +78,28 @@ public abstract class CommonTestUtility implements EnumConstants {
       assertEquals(boardFirst.isCapture(), boardSecond.isCapture());
     }
 
-    assertEquals(boardFirst.getHavingMove(), boardSecond.getHavingMove());
+    assertEquals(boardFirst.getSideToMove(), boardSecond.getSideToMove());
 
     assertEquals(boardFirst.isEnPassantCapturePossible(), boardSecond.isEnPassantCapturePossible());
 
     assertEquals(boardFirst.getCastlingRightWhite(), boardSecond.getCastlingRightWhite());
     assertEquals(boardFirst.getCastlingRightBlack(), boardSecond.getCastlingRightBlack());
-    // in super
-    // assertEquals(boardFirst.getCastlingRight(WHITE), boardSecond.getCastlingRight(WHITE));
-    // in super
-    // assertEquals(boardFirst.getCastlingRight(BLACK), boardSecond.getCastlingRight(BLACK));
 
     if (isIncludeHistory) {
-      assertEquals(boardFirst.getPerformedHalfMoveCount(), boardSecond.getPerformedHalfMoveCount());
+      assertEquals(boardFirst.getPerformedMoveCount(), boardSecond.getPerformedMoveCount());
     }
 
     if (isIncludeHistory) {
-      assertEquals(boardFirst.getDynamicPositionList(), boardSecond.getDynamicPositionList());
+      assertEquals(boardFirst.getDynamicPositions(), boardSecond.getDynamicPositions());
       assertEquals(boardFirst.getDynamicPosition(), boardSecond.getDynamicPosition());
 
-      assertEquals(boardFirst.getPossibleMoveSpecificationList(), boardSecond.getPossibleMoveSpecificationList());
+      assertEquals(boardFirst.getLegalMoveSpecifications(), boardSecond.getLegalMoveSpecifications());
 
       assertEquals(boardFirst.getLegalMoves(), boardSecond.getLegalMoves());
-      assertEquals(boardFirst.getPerformedMoveSpecificationList(), boardSecond.getPerformedMoveSpecificationList());
-      // in super
-      // assertEquals(boardFirst.getLegalMovesRepresentation(), boardSecond.getLegalMovesRepresentation());
-      assertEquals(boardFirst.getLegalMovesSan(), boardSecond.getLegalMovesSan());
+      assertEquals(boardFirst.getPerformedMoveSpecifications(), boardSecond.getPerformedMoveSpecifications());
+      assertEquals(boardFirst.getLegalMovesAsSan(), boardSecond.getLegalMovesAsSan());
     }
 
-    // in super
-    // assertEquals(boardFirst.getLegalMovesUci(), boardSecond.getLegalMovesUci());
     if (!boardFirst.isFirstMove() && !boardSecond.isFirstMove()) {
       assertEquals(boardFirst.getLastMove(), boardSecond.getLastMove());
     }
@@ -169,19 +165,19 @@ public abstract class CommonTestUtility implements EnumConstants {
       assertEquals(boardFirst.isCapture(), boardSecond.isCapture());
     }
 
-    assertEquals(boardFirst.getHavingMove(), boardSecond.getHavingMove());
+    assertEquals(boardFirst.getSideToMove(), boardSecond.getSideToMove());
     assertEquals(boardFirst.isEnPassantCapturePossible(), boardSecond.isEnPassantCapturePossible());
     assertEquals(boardFirst.getCastlingRightWhite(), boardSecond.getCastlingRightWhite());
     assertEquals(boardFirst.getCastlingRightBlack(), boardSecond.getCastlingRightBlack());
 
     if (isIncludeHistory) {
-      assertEquals(boardFirst.getPerformedHalfMoveCount(), boardSecond.getPerformedHalfMoveCount());
-      assertEquals(boardFirst.getDynamicPositionList(), boardSecond.getDynamicPositionList());
+      assertEquals(boardFirst.getPerformedMoveCount(), boardSecond.getPerformedMoveCount());
+      assertEquals(boardFirst.getDynamicPositions(), boardSecond.getDynamicPositions());
       assertEquals(boardFirst.getDynamicPosition(), boardSecond.getDynamicPosition());
-      assertEquals(boardFirst.getPossibleMoveSpecificationList(), boardSecond.getPossibleMoveSpecificationList());
+      assertEquals(boardFirst.getLegalMoveSpecifications(), boardSecond.getLegalMoveSpecifications());
       assertEquals(boardFirst.getLegalMoves(), boardSecond.getLegalMoves());
-      assertEquals(boardFirst.getPerformedMoveSpecificationList(), boardSecond.getPerformedMoveSpecificationList());
-      assertEquals(boardFirst.getLegalMovesSan(), boardSecond.getLegalMovesSan());
+      assertEquals(boardFirst.getPerformedMoveSpecifications(), boardSecond.getPerformedMoveSpecifications());
+      assertEquals(boardFirst.getLegalMovesAsSan(), boardSecond.getLegalMovesAsSan());
     }
 
     if (!boardFirst.isFirstMove() && !boardSecond.isFirstMove()) {

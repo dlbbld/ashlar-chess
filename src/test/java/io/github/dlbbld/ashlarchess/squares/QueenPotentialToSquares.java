@@ -3,20 +3,22 @@
 
 package io.github.dlbbld.ashlarchess.squares;
 
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.QUEEN;
+
 import java.util.Set;
 
 import io.github.dlbbld.ashlarchess.board.StaticPosition;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
 import io.github.dlbbld.ashlarchess.board.enums.Square;
 
-public class QueenPotentialToSquares extends AbstractPotentialToSquares {
+public class QueenPotentialToSquares {
 
   public static Set<Square> calculateQueenPotentialToSquares(StaticPosition staticPosition, Square fromSquare,
-      Side havingMove) {
+      Side sideToMove) {
 
-    checkPiece(staticPosition, havingMove, fromSquare, QUEEN);
+    ToSquaresSupport.checkPiece(staticPosition, sideToMove, fromSquare, QUEEN);
 
-    return QueenRangeSquares.calculateQueenRangeSquares(staticPosition, fromSquare, havingMove, false);
+    return QueenRangeSquares.calculateQueenRangeSquares(staticPosition, fromSquare, sideToMove, false);
   }
 
 }

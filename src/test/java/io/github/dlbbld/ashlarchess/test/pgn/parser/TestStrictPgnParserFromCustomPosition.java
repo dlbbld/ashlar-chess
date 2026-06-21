@@ -14,7 +14,7 @@ import io.github.dlbbld.ashlarchess.board.Board;
 import io.github.dlbbld.ashlarchess.board.CommonTestUtility;
 import io.github.dlbbld.ashlarchess.common.Nulls;
 import io.github.dlbbld.ashlarchess.fen.constants.FenConstants;
-import io.github.dlbbld.ashlarchess.model.PgnHalfMove;
+import io.github.dlbbld.ashlarchess.model.PgnMove;
 import io.github.dlbbld.ashlarchess.pgn.PgnGame;
 import io.github.dlbbld.ashlarchess.test.pgntest.constants.PgnTestConstants;
 
@@ -62,19 +62,19 @@ class TestStrictPgnParserFromCustomPosition {
         "Rxb6", "Rh4", "Rb8+", "Kg7", "Nf1", "Rb2", "b6", "g5", "bxc7", "g4", "Rxb2");
   }
 
-  private static void checkGame(String pgn, String... hardCodedCompleteSanList) {
+  private static void checkGame(String pgn, String... hardCodedCompleteSans) {
     final PgnGame pgnGame = PgnCacheForStrictPgnParserTestCases.getPgn(PGN_TEST_FOLDER_PATH, pgn);
 
     assertNotEquals(FenConstants.FEN_INITIAL, pgnGame.startFen());
 
     final Board boardFromFen = new Board(pgnGame.startFen());
 
-    for (final PgnHalfMove halfMove : pgnGame.halfMoveList()) {
-      boardFromFen.moveStrict(halfMove.san());
+    for (final PgnMove move : pgnGame.moves()) {
+      boardFromFen.moveStrict(move.san());
     }
 
     final Board boardFromFirstMove = new Board();
-    for (final String san : hardCodedCompleteSanList) {
+    for (final String san : hardCodedCompleteSans) {
       @SuppressWarnings("null") @NonNull final String nonNullSan = san;
       boardFromFirstMove.moveStrict(nonNullSan);
     }

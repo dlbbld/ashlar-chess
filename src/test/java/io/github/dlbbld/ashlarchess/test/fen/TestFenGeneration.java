@@ -54,7 +54,7 @@ class TestFenGeneration {
     board.movesStrict("a4", "Rb8");
     check("1rbqkbr1/1ppp1ppp/p1n2n2/4p3/P3P3/2N2N2/1PPPKPPP/R1BQ1B1R w - - 1 7", board);
 
-    // increase half-move clock to 20
+    // increase halfmove clock to 20
     board.movesStrict("Ra2", "Ra8", "Ra3", "Ra7", "Rb3", "Ra8", "Rb4", "Rb8", "Rc4", "Ra8", "Rd4", "Rb8", "Rd5", "Ra8",
         "Rd6", "Rb8", "Rg1", "Ra8", "Rd5");
     check("r1bqkbr1/1ppp1ppp/p1n2n2/3Rp3/P3P3/2N2N2/1PPPKPPP/2BQ1BR1 b - - 20 16", board);

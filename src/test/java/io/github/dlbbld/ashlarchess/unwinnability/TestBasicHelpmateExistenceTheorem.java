@@ -59,7 +59,7 @@ class TestBasicHelpmateExistenceTheorem {
   void defenderAsIntendedWinnerIsNotApplicable() {
     // KRvK, but Black (the bare king) is the intended winner: Black is not the mating side.
     assertEquals(BasicHelpmateExistenceTheoremResult.NOT_APPLICABLE,
-        BasicHelpmateExistenceTheorem.decide(new Board("4k3/8/8/8/8/8/8/R3K3 w - - 0 1"), Side.BLACK));
+        BasicHelpmateExistenceTheorem.decide(Board.fromFenStrict("4k3/8/8/8/8/8/8/R3K3 w - - 0 1"), Side.BLACK));
   }
 
   @SuppressWarnings("static-method")
@@ -79,6 +79,6 @@ class TestBasicHelpmateExistenceTheorem {
   }
 
   private static void assertWhiteWinner(BasicHelpmateExistenceTheoremResult expected, String fen) {
-    assertEquals(expected, BasicHelpmateExistenceTheorem.decide(new Board(fen), Side.WHITE), fen);
+    assertEquals(expected, BasicHelpmateExistenceTheorem.decide(Board.fromFenStrict(fen), Side.WHITE), fen);
   }
 }

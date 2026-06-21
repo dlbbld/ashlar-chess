@@ -13,7 +13,7 @@ import org.junit.jupiter.api.Test;
 import io.github.dlbbld.ashlarchess.board.Board;
 import io.github.dlbbld.ashlarchess.common.Nulls;
 import io.github.dlbbld.ashlarchess.fen.constants.FenConstants;
-import io.github.dlbbld.ashlarchess.model.PgnHalfMove;
+import io.github.dlbbld.ashlarchess.model.PgnMove;
 import io.github.dlbbld.ashlarchess.pgn.PgnGame;
 import io.github.dlbbld.ashlarchess.test.pgntest.constants.PgnTestConstants;
 
@@ -63,19 +63,19 @@ class TestStrictPgnParserFromInitialPosition {
         "Qg7+", "Kd6", "Qf8+", "Ke5", "Qe8+", "Kd4", "Qxe2", "Nc3+", "Ka1", "Nxe2");
   }
 
-  private static void checkGame(String pgn, String... sanList) {
+  private static void checkGame(String pgn, String... sans) {
     final PgnGame pgnGame = PgnCacheForStrictPgnParserTestCases.getPgn(PGN_TEST_FOLDER_PATH, pgn);
 
     assertEquals(FenConstants.FEN_INITIAL, pgnGame.startFen());
 
     final Board actual = new Board();
 
-    for (final PgnHalfMove halfMove : pgnGame.halfMoveList()) {
-      actual.moveStrict(halfMove.san());
+    for (final PgnMove move : pgnGame.moves()) {
+      actual.moveStrict(move.san());
     }
 
     final Board expected = new Board();
-    for (final String san : sanList) {
+    for (final String san : sans) {
       @SuppressWarnings("null") @NonNull final String nonNullSan = san;
       expected.moveStrict(nonNullSan);
     }

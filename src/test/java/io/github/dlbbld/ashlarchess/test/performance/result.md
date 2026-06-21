@@ -28,8 +28,8 @@ Each sample is stored as a fresh `Board(fen)`, and the timed section calls:
 ```java
 BitboardLegalMoveFactory.calculateLegalMoves(
     board.getBitboardPosition(),
-    board.getHavingMove(),
-    board.getCastlingRight(board.getHavingMove()),
+    board.getSideToMove(),
+    board.getCastlingRight(board.getSideToMove()),
     enPassantBit)
 ```
 

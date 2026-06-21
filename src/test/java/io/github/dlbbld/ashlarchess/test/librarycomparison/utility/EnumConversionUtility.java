@@ -3,6 +3,27 @@
 
 package io.github.dlbbld.ashlarchess.test.librarycomparison.utility;
 
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.BISHOP;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.BLACK;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.BLACK_BISHOP;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.BLACK_KING;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.BLACK_KNIGHT;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.BLACK_PAWN;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.BLACK_QUEEN;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.BLACK_ROOK;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.KING;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.KNIGHT;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.PAWN;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.QUEEN;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.ROOK;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.WHITE;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.WHITE_BISHOP;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.WHITE_KING;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.WHITE_KNIGHT;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.WHITE_PAWN;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.WHITE_QUEEN;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.WHITE_ROOK;
+
 import com.github.bhlangonijr.chesslib.CastleRight;
 
 import io.github.dlbbld.ashlarchess.board.enums.CastlingRight;
@@ -12,14 +33,16 @@ import io.github.dlbbld.ashlarchess.board.enums.PromotionPieceType;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
 import io.github.dlbbld.ashlarchess.board.enums.Square;
 import io.github.dlbbld.ashlarchess.common.Nulls;
-import io.github.dlbbld.ashlarchess.common.constants.EnumConstants;
 import io.github.dlbbld.ashlarchess.common.exceptions.ProgrammingMistakeException;
 import io.github.dlbbld.ashlarchess.test.librarycarlos.NullsCarlos;
 
-public abstract class EnumConversionUtility implements EnumConstants {
+public final class EnumConversionUtility {
 
-  public static com.github.bhlangonijr.chesslib.Piece convertToPiece(Side havingMove, PieceType pieceType) {
-    return switch (havingMove) {
+  private EnumConversionUtility() {
+  }
+
+  public static com.github.bhlangonijr.chesslib.Piece convertToPiece(Side sideToMove, PieceType pieceType) {
+    return switch (sideToMove) {
       case BLACK -> switch (pieceType) {
         case PAWN -> com.github.bhlangonijr.chesslib.Piece.BLACK_PAWN;
         case ROOK -> com.github.bhlangonijr.chesslib.Piece.BLACK_ROOK;
@@ -45,9 +68,9 @@ public abstract class EnumConversionUtility implements EnumConstants {
     };
   }
 
-  public static com.github.bhlangonijr.chesslib.Piece convertToPiece(Side havingMove,
+  public static com.github.bhlangonijr.chesslib.Piece convertToPiece(Side sideToMove,
       PromotionPieceType promotionPieceType) {
-    return switch (havingMove) {
+    return switch (sideToMove) {
       case BLACK -> switch (promotionPieceType) {
         case ROOK -> com.github.bhlangonijr.chesslib.Piece.BLACK_ROOK;
         case KNIGHT -> com.github.bhlangonijr.chesslib.Piece.BLACK_KNIGHT;

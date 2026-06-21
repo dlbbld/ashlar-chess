@@ -31,7 +31,7 @@ class TestSanValidatePawnFromSquare {
   @Test
   void testNonCapturingOneSquareWhiteValid() {
     // d3 with white pawn on d2 - valid
-    final Board board = new Board(FEN_BASE);
+    final Board board = Board.fromFenStrict(FEN_BASE);
     checkValid("d3", board);
   }
 
@@ -39,7 +39,7 @@ class TestSanValidatePawnFromSquare {
   @Test
   void testNonCapturingOneSquareWhiteNoPawn() {
     // e3 - no white pawn on e-file (pawn existence fails first)
-    final Board board = new Board(FEN_BASE);
+    final Board board = Board.fromFenStrict(FEN_BASE);
     checkException("e3", board, SanValidationProblem.EXISTS_PAWN);
   }
 
@@ -47,7 +47,7 @@ class TestSanValidatePawnFromSquare {
   @Test
   void testNonCapturingOneSquareWhiteWrongSquare() {
     // d5 with white pawn on d4 - valid one-square advance
-    final Board board = new Board(FEN_ADVANCED);
+    final Board board = Board.fromFenStrict(FEN_ADVANCED);
     checkValid("d5", board);
   }
 
@@ -55,7 +55,7 @@ class TestSanValidatePawnFromSquare {
   @Test
   void testNonCapturingOneSquareWhiteNoPawnOnFromSquare() {
     // d6 with white pawn on d4 - no pawn on d5
-    final Board board = new Board(FEN_ADVANCED);
+    final Board board = Board.fromFenStrict(FEN_ADVANCED);
     checkException("d6", board, SanValidationProblem.NOT_REACHABLE_PAWN_NON_CAPTURING);
   }
 
@@ -63,7 +63,7 @@ class TestSanValidatePawnFromSquare {
   @Test
   void testNonCapturingOneSquareBlackValid() {
     // f6 with black pawn on f7 - valid
-    final Board board = new Board("4k3/5p2/8/8/8/8/3P4/4K3 b - - 0 100");
+    final Board board = Board.fromFenStrict("4k3/5p2/8/8/8/8/3P4/4K3 b - - 0 100");
     checkValid("f6", board);
   }
 
@@ -71,7 +71,7 @@ class TestSanValidatePawnFromSquare {
   @Test
   void testNonCapturingOneSquareBlackNoPawnOnFromSquare() {
     // f3 with black pawn on f5 - no pawn on f4
-    final Board board = new Board("4k3/8/8/5p2/3P4/8/8/4K3 b - - 0 100");
+    final Board board = Board.fromFenStrict("4k3/8/8/5p2/3P4/8/8/4K3 b - - 0 100");
     checkException("f3", board, SanValidationProblem.NOT_REACHABLE_PAWN_NON_CAPTURING);
   }
 
@@ -81,7 +81,7 @@ class TestSanValidatePawnFromSquare {
   @Test
   void testNonCapturingTwoSquareWhiteValid() {
     // d4 with white pawn on d2 and d3 empty - valid
-    final Board board = new Board(FEN_BASE);
+    final Board board = Board.fromFenStrict(FEN_BASE);
     checkValid("d4", board);
   }
 
@@ -89,7 +89,7 @@ class TestSanValidatePawnFromSquare {
   @Test
   void testNonCapturingTwoSquareWhiteBlocked() {
     // d4 with white pawn on d2 but d3 blocked by black pawn - no valid from-square
-    final Board board = new Board(FEN_BLOCKED);
+    final Board board = Board.fromFenStrict(FEN_BLOCKED);
     checkException("d4", board, SanValidationProblem.NOT_REACHABLE_PAWN_NON_CAPTURING);
   }
 
@@ -97,13 +97,13 @@ class TestSanValidatePawnFromSquare {
   @Test
   void testNonCapturingTwoSquareWhiteAlreadyAdvanced() {
     {
-      final Board board = new Board(FEN_BASE);
+      final Board board = Board.fromFenStrict(FEN_BASE);
       board.moveStrict("d4");
       board.moveStrict("f5");
       checkException("d4", board, SanValidationProblem.DESTINATION_PAWN_FORWARD_OWN_PIECE);
     }
     {
-      final Board board = new Board(FEN_BASE);
+      final Board board = Board.fromFenStrict(FEN_BASE);
       board.moveStrict("d4");
       board.moveStrict("f5");
       board.moveStrict("d5");
@@ -116,7 +116,7 @@ class TestSanValidatePawnFromSquare {
   @Test
   void testNonCapturingTwoSquareBlackValid() {
     // f5 with black pawn on f7 and f6 empty - valid
-    final Board board = new Board("4k3/5p2/8/8/8/8/3P4/4K3 b - - 0 100");
+    final Board board = Board.fromFenStrict("4k3/5p2/8/8/8/8/3P4/4K3 b - - 0 100");
     checkValid("f5", board);
   }
 
@@ -124,7 +124,7 @@ class TestSanValidatePawnFromSquare {
   @Test
   void testNonCapturingTwoSquareBlackBlocked() {
     // f5 with black pawn on f7 but f6 blocked
-    final Board board = new Board("4k3/5p2/5P2/8/8/8/8/4K3 b - - 0 100");
+    final Board board = Board.fromFenStrict("4k3/5p2/5P2/8/8/8/8/4K3 b - - 0 100");
     checkException("f5", board, SanValidationProblem.NOT_REACHABLE_PAWN_NON_CAPTURING);
   }
 
@@ -132,7 +132,7 @@ class TestSanValidatePawnFromSquare {
   @Test
   void testNonCapturingTwoSquareBlackAlreadyAdvanced() {
     {
-      final Board board = new Board(FEN_BASE);
+      final Board board = Board.fromFenStrict(FEN_BASE);
       board.moveStrict("d4");
       board.moveStrict("f5");
       board.moveStrict("d5");
@@ -140,7 +140,7 @@ class TestSanValidatePawnFromSquare {
     }
 
     {
-      final Board board = new Board(FEN_BASE);
+      final Board board = Board.fromFenStrict(FEN_BASE);
       board.moveStrict("d4");
       board.moveStrict("f5");
       board.moveStrict("d5");
@@ -157,7 +157,7 @@ class TestSanValidatePawnFromSquare {
   @Test
   void testCapturingWhiteValid() {
     // dxe5 with white pawn on d4 - pawn on d4, one rank back from e5
-    final Board board = new Board("4k3/8/8/4p3/3P4/8/8/4K3 w - - 0 100");
+    final Board board = Board.fromFenStrict("4k3/8/8/4p3/3P4/8/8/4K3 w - - 0 100");
     checkValid("dxe5", board);
   }
 
@@ -165,7 +165,7 @@ class TestSanValidatePawnFromSquare {
   @Test
   void testCapturingWhiteNoPawn() {
     // cxd5 - no white pawn on c-file
-    final Board board = new Board("4k3/8/8/3p4/3P4/8/8/4K3 w - - 0 100");
+    final Board board = Board.fromFenStrict("4k3/8/8/3p4/3P4/8/8/4K3 w - - 0 100");
     checkException("cxd5", board, SanValidationProblem.EXISTS_PAWN);
   }
 
@@ -173,7 +173,7 @@ class TestSanValidatePawnFromSquare {
   @Test
   void testCapturingWhiteNoPawnOnFromSquare() {
     // dxe6 with white pawn on d4 - needs pawn on d5, but d5 is empty
-    final Board board = new Board("4k3/8/4p3/8/3P4/8/8/4K3 w - - 0 100");
+    final Board board = Board.fromFenStrict("4k3/8/4p3/8/3P4/8/8/4K3 w - - 0 100");
     checkException("dxe6", board, SanValidationProblem.NOT_REACHABLE_PAWN_CAPTURING);
   }
 
@@ -181,7 +181,7 @@ class TestSanValidatePawnFromSquare {
   @Test
   void testCapturingBlackValid() {
     // fxe4 with black pawn on f5 - pawn on f5, one rank back from e4
-    final Board board = new Board("4k3/8/8/5p2/4P3/8/8/4K3 b - - 0 100");
+    final Board board = Board.fromFenStrict("4k3/8/8/5p2/4P3/8/8/4K3 b - - 0 100");
     checkValid("fxe4", board);
   }
 
@@ -189,14 +189,14 @@ class TestSanValidatePawnFromSquare {
   @Test
   void testCapturingBlackNoPawnOnFromSquare() {
     // fxe3 with black pawn on f5 - needs pawn on f4, but f4 is empty
-    final Board board = new Board("4k3/8/8/5p2/8/4P3/8/4K3 b - - 0 100");
+    final Board board = Board.fromFenStrict("4k3/8/8/5p2/8/4P3/8/4K3 b - - 0 100");
     checkException("fxe3", board, SanValidationProblem.NOT_REACHABLE_PAWN_CAPTURING);
   }
 
   private static void checkValid(String san, Board board) {
     boolean isException = false;
     try {
-      StrictSanParser.parseText(san, board);
+      StrictSanParser.parse(san, board);
     } catch (@SuppressWarnings("unused") final SanValidationException e) {
       isException = true;
     }
@@ -206,7 +206,7 @@ class TestSanValidatePawnFromSquare {
   private static void checkException(String san, Board board, SanValidationProblem svp) {
     boolean isException;
     try {
-      StrictSanParser.parseText(san, board);
+      StrictSanParser.parse(san, board);
       isException = false;
     } catch (final SanValidationException e) {
       isException = true;

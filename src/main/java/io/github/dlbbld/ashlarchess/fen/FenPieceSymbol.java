@@ -37,6 +37,24 @@ public enum FenPieceSymbol {
     return piece;
   }
 
+  public static FenPieceSymbol of(Piece piece) {
+    return switch (piece) {
+      case WHITE_PAWN -> WHITE_PAWN;
+      case WHITE_ROOK -> WHITE_ROOK;
+      case WHITE_KNIGHT -> WHITE_KNIGHT;
+      case WHITE_BISHOP -> WHITE_BISHOP;
+      case WHITE_QUEEN -> WHITE_QUEEN;
+      case WHITE_KING -> WHITE_KING;
+      case BLACK_PAWN -> BLACK_PAWN;
+      case BLACK_ROOK -> BLACK_ROOK;
+      case BLACK_KNIGHT -> BLACK_KNIGHT;
+      case BLACK_BISHOP -> BLACK_BISHOP;
+      case BLACK_QUEEN -> BLACK_QUEEN;
+      case BLACK_KING -> BLACK_KING;
+      case NONE -> throw new NonePointerException();
+    };
+  }
+
   public static boolean exists(char pieceLetter) {
     for (final FenPieceSymbol symbol : values()) {
       if (symbol.pieceLetter == pieceLetter) {
@@ -46,31 +64,13 @@ public enum FenPieceSymbol {
     return false;
   }
 
-  public static FenPieceSymbol calculate(char pieceLetter) {
+  public static FenPieceSymbol parse(char pieceLetter) {
     for (final FenPieceSymbol symbol : values()) {
       if (symbol.pieceLetter == pieceLetter) {
         return symbol;
       }
     }
     throw new IllegalArgumentException("Not a valid FEN piece letter: '" + pieceLetter + "'");
-  }
-
-  public static FenPieceSymbol calculate(Piece piece) {
-    return switch (piece) {
-      case WHITE_PAWN -> FenPieceSymbol.WHITE_PAWN;
-      case WHITE_ROOK -> FenPieceSymbol.WHITE_ROOK;
-      case WHITE_KNIGHT -> FenPieceSymbol.WHITE_KNIGHT;
-      case WHITE_BISHOP -> FenPieceSymbol.WHITE_BISHOP;
-      case WHITE_QUEEN -> FenPieceSymbol.WHITE_QUEEN;
-      case WHITE_KING -> FenPieceSymbol.WHITE_KING;
-      case BLACK_PAWN -> FenPieceSymbol.BLACK_PAWN;
-      case BLACK_ROOK -> FenPieceSymbol.BLACK_ROOK;
-      case BLACK_KNIGHT -> FenPieceSymbol.BLACK_KNIGHT;
-      case BLACK_BISHOP -> FenPieceSymbol.BLACK_BISHOP;
-      case BLACK_QUEEN -> FenPieceSymbol.BLACK_QUEEN;
-      case BLACK_KING -> FenPieceSymbol.BLACK_KING;
-      case NONE -> throw new NonePointerException();
-    };
   }
 
 }

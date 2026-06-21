@@ -11,9 +11,11 @@ import java.util.Map;
 import org.eclipse.jdt.annotation.Nullable;
 
 import io.github.dlbbld.ashlarchess.board.enums.Side;
-import io.github.dlbbld.ashlarchess.common.model.HalfMove;
 
-abstract class FiftyMoveSequencePrint {
+final class FiftyMoveSequencePrint {
+
+  private FiftyMoveSequencePrint() {
+  }
 
   /**
    * Renders the 50-move-sequence report as one line per sequence, anchored at the start, each threshold crossed, and
@@ -30,11 +32,11 @@ abstract class FiftyMoveSequencePrint {
    * initial-FEN start) renders once. An initial-FEN start with no played continuation renders as the start alone.
    */
   static List<List<String>> render(FiftyMoveSequenceReport report) {
-    final List<List<String>> resultListList = new ArrayList<>();
+    final List<List<String>> lineGroups = new ArrayList<>();
     for (final FiftyMoveSequence sequence : report.sequences()) {
-      resultListList.add(renderSequence(sequence));
+      lineGroups.add(renderSequence(sequence));
     }
-    return resultListList;
+    return lineGroups;
   }
 
   private static List<String> renderSequence(FiftyMoveSequence sequence) {
@@ -42,9 +44,9 @@ abstract class FiftyMoveSequencePrint {
     final Map<Integer, String> anchorByClock = new LinkedHashMap<>();
     anchorByClock.putIfAbsent(startClock(sequence.start()),
         SequenceStartFormat.startAnchor(sequence.start(), startingSide));
-    addPlyAnchor(anchorByClock, sequence.fiftyMoveThresholdPly(), startingSide);
-    addPlyAnchor(anchorByClock, sequence.seventyFiveMoveThresholdPly(), startingSide);
-    addPlyAnchor(anchorByClock, sequence.endPly(), startingSide);
+    addMoveAnchor(anchorByClock, sequence.fiftyMoveThresholdMove(), startingSide);
+    addMoveAnchor(anchorByClock, sequence.seventyFiveMoveThresholdMove(), startingSide);
+    addMoveAnchor(anchorByClock, sequence.endMove(), startingSide);
 
     final List<String> tokens = new ArrayList<>();
     for (final String anchor : anchorByClock.values()) {
@@ -56,9 +58,9 @@ abstract class FiftyMoveSequencePrint {
     return tokens;
   }
 
-  private static void addPlyAnchor(Map<Integer, String> anchorByClock, @Nullable HalfMove ply, Side startingSide) {
-    if (ply != null) {
-      anchorByClock.putIfAbsent(ply.halfMoveClock(), SequenceStartFormat.plyAnchor(ply, startingSide));
+  private static void addMoveAnchor(Map<Integer, String> anchorByClock, @Nullable MoveRecord move, Side startingSide) {
+    if (move != null) {
+      anchorByClock.putIfAbsent(move.halfMoveClock(), SequenceStartFormat.moveAnchor(move, startingSide));
     }
   }
 

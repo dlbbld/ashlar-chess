@@ -3,6 +3,10 @@
 
 package io.github.dlbbld.ashlarchess.common.ucimove.utility;
 
+import static io.github.dlbbld.ashlarchess.board.enums.PieceType.BISHOP;
+import static io.github.dlbbld.ashlarchess.board.enums.PieceType.KNIGHT;
+import static io.github.dlbbld.ashlarchess.board.enums.PieceType.ROOK;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -18,37 +22,41 @@ import io.github.dlbbld.ashlarchess.board.enums.PromotionPieceType;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
 import io.github.dlbbld.ashlarchess.board.enums.Square;
 import io.github.dlbbld.ashlarchess.common.Nulls;
-import io.github.dlbbld.ashlarchess.common.constants.EnumConstants;
 import io.github.dlbbld.ashlarchess.model.EmptyBoardMove;
 import io.github.dlbbld.ashlarchess.model.UciMove;
-import io.github.dlbbld.ashlarchess.squares.AbstractEmptyBoardSquares;
+import io.github.dlbbld.ashlarchess.squares.EmptyBoardMoveUtility;
 import io.github.dlbbld.ashlarchess.squares.PawnDiagonalSquares;
 
-public abstract class UciMoveValidationUtility implements EnumConstants {
+public final class UciMoveValidationUtility {
 
-  private static final ImmutableList<UciMove> UCI_MOVE_LIST;
+  private UciMoveValidationUtility() {
+  }
+
+  private static final ImmutableList<UciMove> UCI_MOVES;
   private static final ImmutableMap<String, UciMove> UCI_MOVE_TEXT_LOOKUP;
+  private static final ImmutableList<PieceType> NON_PROMOTION_MOVE_GENERATORS = Nulls.listOf(ROOK, BISHOP, KNIGHT);
 
   static {
-    final List<UciMove> uciMoveList = new ArrayList<>();
+    final List<UciMove> uciMoves = new ArrayList<>();
     final Map<String, UciMove> uciMoveTextLookup = new TreeMap<>();
 
-    // Non-promotion moves: every square x {rook, bishop, knight} empty-board reach
+    // Rook, bishop, and knight geometries cover every non-promotion UCI from/to pair; queen, king, pawn, and
+    // castling moves are subsets of those empty-board rays or jumps.
     for (final Square fromSquare : Square.REAL) {
-      for (final PieceType pieceType : List.of(ROOK, BISHOP, KNIGHT)) {
-        final Set<EmptyBoardMove> moveSet = AbstractEmptyBoardSquares.calculateNonPawnEmptyBoardMoves(pieceType,
+      for (final PieceType pieceType : NON_PROMOTION_MOVE_GENERATORS) {
+        final Set<EmptyBoardMove> moveSet = EmptyBoardMoveUtility.calculateNonPawnEmptyBoardMoves(pieceType,
             fromSquare);
         for (final EmptyBoardMove move : moveSet) {
-          addUciMove(uciMoveList, uciMoveTextLookup, move.fromSquare(), move.toSquare(), PromotionPieceType.NONE);
+          addUciMove(uciMoves, uciMoveTextLookup, move.fromSquare(), move.toSquare(), PromotionPieceType.NONE);
         }
       }
     }
 
     // Promotion moves: white from seventh rank, black from second rank
-    addPromotionMoves(uciMoveList, uciMoveTextLookup, Side.WHITE);
-    addPromotionMoves(uciMoveList, uciMoveTextLookup, Side.BLACK);
+    addPromotionMoves(uciMoves, uciMoveTextLookup, Side.WHITE);
+    addPromotionMoves(uciMoves, uciMoveTextLookup, Side.BLACK);
 
-    UCI_MOVE_LIST = Nulls.copyOfList(uciMoveList);
+    UCI_MOVES = Nulls.copyOfList(uciMoves);
     UCI_MOVE_TEXT_LOOKUP = Nulls.copyOfMap(uciMoveTextLookup);
   }
 
@@ -63,32 +71,32 @@ public abstract class UciMoveValidationUtility implements EnumConstants {
     return Nulls.get(UCI_MOVE_TEXT_LOOKUP, uciMoveStr);
   }
 
-  public static List<UciMove> getUciMoveList() {
-    return UCI_MOVE_LIST;
+  public static ImmutableList<UciMove> getUciMoves() {
+    return UCI_MOVES;
   }
 
-  private static void addPromotionMoves(List<UciMove> uciMoveList, Map<String, UciMove> uciMoveTextLookup, Side side) {
+  private static void addPromotionMoves(List<UciMove> uciMoves, Map<String, UciMove> uciMoveTextLookup, Side side) {
     for (final Square fromSquare : getRankBeforePromotionRank(side)) {
       final Set<Square> toSquareSet = new TreeSet<>();
-      for (final EmptyBoardMove move : AbstractEmptyBoardSquares.calculatePawnEmptyBoardMoves(side, fromSquare)) {
+      for (final EmptyBoardMove move : EmptyBoardMoveUtility.calculatePawnEmptyBoardMoves(side, fromSquare)) {
         toSquareSet.add(move.toSquare());
       }
       toSquareSet.addAll(PawnDiagonalSquares.getPawnDiagonalSquares(side, fromSquare));
 
       for (final Square toSquare : toSquareSet) {
         for (final PromotionPieceType promotionPieceType : PromotionPieceType.REAL) {
-          addUciMove(uciMoveList, uciMoveTextLookup, fromSquare, toSquare, promotionPieceType);
+          addUciMove(uciMoves, uciMoveTextLookup, fromSquare, toSquare, promotionPieceType);
         }
       }
     }
   }
 
-  private static void addUciMove(List<UciMove> uciMoveList, Map<String, UciMove> uciMoveTextLookup, Square fromSquare,
+  private static void addUciMove(List<UciMove> uciMoves, Map<String, UciMove> uciMoveTextLookup, Square fromSquare,
       Square toSquare, PromotionPieceType promotionPieceType) {
     final String text = calculateUciMoveStr(fromSquare, toSquare, promotionPieceType);
     final boolean isPromotion = promotionPieceType != PromotionPieceType.NONE;
     final UciMove uciMove = new UciMove(fromSquare, toSquare, text, isPromotion, promotionPieceType);
-    uciMoveList.add(uciMove);
+    uciMoves.add(uciMove);
     uciMoveTextLookup.put(text, uciMove);
   }
 

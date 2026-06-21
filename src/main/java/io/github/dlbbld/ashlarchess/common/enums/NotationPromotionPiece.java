@@ -31,12 +31,7 @@ public enum NotationPromotionPiece {
     return false;
   }
 
-  public static boolean existsIgnoreCase(char promotionPieceLetter) {
-    final char promotionPieceLetterUpperCase = Character.toUpperCase(promotionPieceLetter);
-    return exists(promotionPieceLetterUpperCase);
-  }
-
-  public static NotationPromotionPiece calculate(char promotionPieceLetter) {
+  public static NotationPromotionPiece parse(char promotionPieceLetter) {
     if (!exists(promotionPieceLetter)) {
       throw new IllegalArgumentException("For this letter not ignoring case no corresponding enum exists");
     }
@@ -48,11 +43,4 @@ public enum NotationPromotionPiece {
     throw new ProgrammingMistakeException();
   }
 
-  public static NotationPromotionPiece calculateIgnoreCase(char promotionPieceLetter) {
-    if (!existsIgnoreCase(promotionPieceLetter)) {
-      throw new IllegalArgumentException("For this letter ignoring case no corresponding enum exists");
-    }
-    final char promotionPieceLetterUpperCase = Character.toUpperCase(promotionPieceLetter);
-    return calculate(promotionPieceLetterUpperCase);
-  }
 }

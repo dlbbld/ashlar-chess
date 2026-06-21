@@ -33,11 +33,11 @@ public final class MobilityOracleFormatter {
   }
 
   public static List<String> calculateRows(String fen) {
-    final Board board = new Board(fen);
+    final Board board = Board.fromFenStrict(fen);
     final MobilitySolution mobilitySolution = Mobility.mobility(board);
     final StaticPosition staticPosition = StaticPositionBridge.toStaticPosition(board.getBitboardPosition());
 
-    final List<String> rowList = new ArrayList<>();
+    final List<String> rows = new ArrayList<>();
     for (final Square source : Square.REAL) {
       final Piece piece = staticPosition.get(source);
       if (piece == Piece.NONE) {
@@ -45,17 +45,17 @@ public final class MobilityOracleFormatter {
       }
       final PiecePlacement piecePlacement = new PiecePlacement(piece.getPieceType(), piece.getSide(), source);
       final Set<Square> toSquareSet = mobilitySolution.calculateSquaresWithValueOne(piecePlacement);
-      rowList.add(fen + "\t" + piece.getSide().name() + "\t" + piece.getPieceType().name() + "\t" + source.getName()
-          + "\t" + formatSquareList(toSquareSet));
+      rows.add(fen + "\t" + piece.getSide().name() + "\t" + piece.getPieceType().name() + "\t" + source.getName()
+          + "\t" + formatSquares(toSquareSet));
     }
-    return rowList;
+    return rows;
   }
 
-  private static String formatSquareList(Set<Square> squareSet) {
-    final List<String> squareNameList = new ArrayList<>();
+  private static String formatSquares(Set<Square> squareSet) {
+    final List<String> squareNames = new ArrayList<>();
     for (final Square square : squareSet) {
-      squareNameList.add(square.getName());
+      squareNames.add(square.getName());
     }
-    return Nulls.join(",", squareNameList);
+    return Nulls.join(",", squareNames);
   }
 }

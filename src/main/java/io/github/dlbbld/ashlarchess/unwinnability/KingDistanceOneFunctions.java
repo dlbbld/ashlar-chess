@@ -9,38 +9,41 @@ import java.util.TreeSet;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
 import io.github.dlbbld.ashlarchess.board.enums.Square;
 
-class KingDistanceOneFunctions {
+final class KingDistanceOneFunctions {
+
+  private KingDistanceOneFunctions() {
+  }
 
   public static Set<Square> calculateDiagonalSquares(Square sq) {
     final Set<Square> result = new TreeSet<>();
-    if (Square.calculateHasLeftDiagonalSquare(Side.WHITE, sq)) {
-      result.add(Square.calculateLeftDiagonalSquare(Side.WHITE, sq));
+    if (sq.hasLeftDiagonalSquare(Side.WHITE)) {
+      result.add(sq.getLeftDiagonalSquare(Side.WHITE));
     }
-    if (Square.calculateHasRightDiagonalSquare(Side.WHITE, sq)) {
-      result.add(Square.calculateRightDiagonalSquare(Side.WHITE, sq));
+    if (sq.hasRightDiagonalSquare(Side.WHITE)) {
+      result.add(sq.getRightDiagonalSquare(Side.WHITE));
     }
-    if (Square.calculateHasLeftDiagonalSquare(Side.BLACK, sq)) {
-      result.add(Square.calculateLeftDiagonalSquare(Side.BLACK, sq));
+    if (sq.hasLeftDiagonalSquare(Side.BLACK)) {
+      result.add(sq.getLeftDiagonalSquare(Side.BLACK));
     }
-    if (Square.calculateHasRightDiagonalSquare(Side.BLACK, sq)) {
-      result.add(Square.calculateRightDiagonalSquare(Side.BLACK, sq));
+    if (sq.hasRightDiagonalSquare(Side.BLACK)) {
+      result.add(sq.getRightDiagonalSquare(Side.BLACK));
     }
     return result;
   }
 
   public static Set<Square> calculateOrthogonalSquares(Square sq) {
     final Set<Square> result = new TreeSet<>();
-    if (Square.calculateHasAheadSquare(Side.WHITE, sq)) {
-      result.add(Square.calculateAheadSquare(Side.WHITE, sq));
+    if (sq.hasAheadSquare(Side.WHITE)) {
+      result.add(sq.getAheadSquare(Side.WHITE));
     }
-    if (Square.calculateHasRightSquare(Side.WHITE, sq)) {
-      result.add(Square.calculateRightSquare(Side.WHITE, sq));
+    if (sq.hasRightSquare(Side.WHITE)) {
+      result.add(sq.getRightSquare(Side.WHITE));
     }
-    if (Square.calculateHasBehindSquare(Side.WHITE, sq)) {
-      result.add(Square.calculateBehindSquare(Side.WHITE, sq));
+    if (sq.hasBehindSquare(Side.WHITE)) {
+      result.add(sq.getBehindSquare(Side.WHITE));
     }
-    if (Square.calculateHasLeftSquare(Side.WHITE, sq)) {
-      result.add(Square.calculateLeftSquare(Side.WHITE, sq));
+    if (sq.hasLeftSquare(Side.WHITE)) {
+      result.add(sq.getLeftSquare(Side.WHITE));
     }
     return result;
   }

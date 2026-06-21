@@ -12,23 +12,24 @@ import io.github.dlbbld.ashlarchess.board.enums.Rank;
 import io.github.dlbbld.ashlarchess.board.enums.Square;
 import io.github.dlbbld.ashlarchess.common.Nulls;
 import io.github.dlbbld.ashlarchess.common.constants.CastlingConstants;
-import io.github.dlbbld.ashlarchess.common.exceptions.ProgrammingMistakeException;
 import io.github.dlbbld.ashlarchess.common.model.MoveSpecification;
 import io.github.dlbbld.ashlarchess.model.LegalMove;
 import io.github.dlbbld.ashlarchess.moves.CastlingUtility;
-import io.github.dlbbld.ashlarchess.moves.PromotionUtility;
 
-public class MoveToSan extends AbstractSan {
+public final class MoveToSan {
 
-  public static String calculateSanLastMove(LegalMove lastMove, List<LegalMove> legalMovesBeforeLastHalfMove,
+  private MoveToSan() {
+  }
+
+  public static String toSan(LegalMove move, List<LegalMove> legalMovesBeforeMove,
       SanTerminalMarker sanTerminalMarker) {
 
     // first - check if castling move
-    final MoveSpecification moveSpecification = lastMove.moveSpecification();
-    if (CastlingUtility.calculateIsCastlingMove(moveSpecification)) {
+    final MoveSpecification moveSpecification = move.moveSpecification();
+    if (CastlingUtility.isCastlingMove(moveSpecification)) {
       return calculateSanLastMoveCastling(moveSpecification, sanTerminalMarker);
     }
-    return calculateSanLastMoveNonCastling(lastMove, legalMovesBeforeLastHalfMove, sanTerminalMarker);
+    return calculateSanLastMoveNonCastling(move, legalMovesBeforeMove, sanTerminalMarker);
   }
 
   private static SanSourceSpecification calculateSourceSpecification(LegalMove legalMove,
@@ -36,13 +37,13 @@ public class MoveToSan extends AbstractSan {
 
     final MoveSpecification moveSpecification = legalMove.moveSpecification();
 
-    final List<LegalMove> legalMovesForPieceAndToSquare = filterLegalMovesCandidates(legalMovesForMovingPiece,
-        moveSpecification.toSquare());
-    final int numberOfLegalMovesFromSameFile = calculateNumberOfLegalMovesFromFile(
-        moveSpecification.fromSquare().getFile(), legalMovesForPieceAndToSquare);
-    final int numberOfLegalMovesFromSameRank = calculateNumberOfLegalMovesFromRank(
-        moveSpecification.fromSquare().getRank(), legalMovesForPieceAndToSquare);
-    final boolean hasOtherFilesHavingLegalMoves = calculateHasOtherFilesHavingLegalMoves(
+    final List<LegalMove> legalMovesForPieceAndToSquare = SanDisambiguationUtility
+        .filterLegalMovesCandidates(legalMovesForMovingPiece, moveSpecification.toSquare());
+    final int numberOfLegalMovesFromSameFile = SanDisambiguationUtility
+        .calculateNumberOfLegalMovesFromFile(moveSpecification.fromSquare().getFile(), legalMovesForPieceAndToSquare);
+    final int numberOfLegalMovesFromSameRank = SanDisambiguationUtility
+        .calculateNumberOfLegalMovesFromRank(moveSpecification.fromSquare().getRank(), legalMovesForPieceAndToSquare);
+    final boolean hasOtherFilesHavingLegalMoves = SanDisambiguationUtility.calculateHasOtherFilesHavingLegalMoves(
         moveSpecification.fromSquare().getFile(), legalMovesForPieceAndToSquare);
 
     if (hasOtherFilesHavingLegalMoves) {
@@ -75,20 +76,17 @@ public class MoveToSan extends AbstractSan {
       default -> throw new IllegalArgumentException();
     }
 
-    sanTerminalMarker.append(buildSan);
+    SanTerminalMarkerUtility.appendTo(buildSan, sanTerminalMarker);
     return Nulls.toString(buildSan);
   }
 
-  private static String calculateSanLastMoveNonCastling(LegalMove lastMove,
-      List<LegalMove> legalMovesBeforeLastHalfMove, SanTerminalMarker sanTerminalMarker) {
+  private static String calculateSanLastMoveNonCastling(LegalMove lastMove, List<LegalMove> legalMovesBeforeLastMove,
+      SanTerminalMarker sanTerminalMarker) {
 
     final MoveSpecification moveSpecification = lastMove.moveSpecification();
+    // LegalMove's canonical constructor forbids a NONE moving piece (see LegalMove), so movingPiece is always a real
+    // piece here.
     final Piece movingPiece = lastMove.movingPiece();
-    if (movingPiece == Piece.NONE) {
-      throw new ProgrammingMistakeException(
-          "Something is wrong, a non castling move always specifies a piece to be moved");
-    }
-
     final String pieceLetter = String.valueOf(movingPiece.getPieceType().getLetter());
     final Square fromSquare = moveSpecification.fromSquare();
     final File fromFile = fromSquare.getFile();
@@ -96,13 +94,13 @@ public class MoveToSan extends AbstractSan {
     final String fromFileLetter = String.valueOf(fromFile.getLetter());
     final int fromRankNumber = fromRank.getNumber();
     final String toSquareName = moveSpecification.toSquare().getName();
-    final boolean isCapture = lastMove.pieceCaptured() != Piece.NONE;
+    final boolean isCapture = lastMove.capturedPiece() != Piece.NONE;
 
     final StringBuilder buildSan = new StringBuilder();
 
     switch (movingPiece.getPieceType()) {
       case PAWN:
-        if (!PromotionUtility.calculateIsPromotion(moveSpecification)) {
+        if (!moveSpecification.isPromotion()) {
           if (isCapture) {
             buildSan.append(fromFileLetter).append(SanSymbol.CAPTURE.getSymbol());
           }
@@ -122,7 +120,7 @@ public class MoveToSan extends AbstractSan {
         buildSan.append(pieceLetter);
 
         final List<LegalMove> legalMovesForMovingPiece = calculateLegalMovesForMovingPiece(lastMove.movingPiece(),
-            legalMovesBeforeLastHalfMove);
+            legalMovesBeforeLastMove);
 
         final SanSourceSpecification sourceSpecification = calculateSourceSpecification(lastMove,
             legalMovesForMovingPiece);
@@ -161,12 +159,13 @@ public class MoveToSan extends AbstractSan {
       default:
         throw new IllegalArgumentException();
     }
-    sanTerminalMarker.append(buildSan);
+    SanTerminalMarkerUtility.appendTo(buildSan, sanTerminalMarker);
     return Nulls.toString(buildSan);
   }
 
-  // semantics for moving piece: for castling the moving piece is none! so the castling is not returned here when
-  // searching for the king as moving piece!!!
+  // Castling moves carry the king as their moving piece (not NONE), so searching for the king here also returns the
+  // side's castling moves. That is harmless for SAN disambiguation: a castling move and a normal king move never share
+  // a destination square, so castling never collides with a normal king move's from-file / from-rank disambiguation.
   static List<LegalMove> calculateLegalMovesForMovingPiece(Piece movingPiece, List<LegalMove> legalMoves) {
     final List<LegalMove> legalMovesForMovingPiece = new ArrayList<>();
     for (final LegalMove legalMove : legalMoves) {

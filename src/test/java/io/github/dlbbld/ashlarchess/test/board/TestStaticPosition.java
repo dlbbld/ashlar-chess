@@ -58,7 +58,7 @@ class TestStaticPosition {
   @Test
   void testPosition() {
 
-    final Board board = new Board("8/p4p1k/1pp2p1p/3p3P/1K1P1rP1/2P1n1R1/2P1r3/6R1 w - - 0 39");
+    final Board board = Board.fromFenStrict("8/p4p1k/1pp2p1p/3p3P/1K1P1rP1/2P1n1R1/2P1r3/6R1 w - - 0 39");
 
     final String expected = """
         ........

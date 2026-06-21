@@ -3,7 +3,39 @@
 
 package io.github.dlbbld.ashlarchess.moves;
 
-import static io.github.dlbbld.ashlarchess.common.utility.ImmutableUtility.constructListSquare;
+import static io.github.dlbbld.ashlarchess.board.enums.PieceType.PAWN;
+import static io.github.dlbbld.ashlarchess.board.enums.Square.A3;
+import static io.github.dlbbld.ashlarchess.board.enums.Square.A4;
+import static io.github.dlbbld.ashlarchess.board.enums.Square.A5;
+import static io.github.dlbbld.ashlarchess.board.enums.Square.A6;
+import static io.github.dlbbld.ashlarchess.board.enums.Square.B3;
+import static io.github.dlbbld.ashlarchess.board.enums.Square.B4;
+import static io.github.dlbbld.ashlarchess.board.enums.Square.B5;
+import static io.github.dlbbld.ashlarchess.board.enums.Square.B6;
+import static io.github.dlbbld.ashlarchess.board.enums.Square.C3;
+import static io.github.dlbbld.ashlarchess.board.enums.Square.C4;
+import static io.github.dlbbld.ashlarchess.board.enums.Square.C5;
+import static io.github.dlbbld.ashlarchess.board.enums.Square.C6;
+import static io.github.dlbbld.ashlarchess.board.enums.Square.D3;
+import static io.github.dlbbld.ashlarchess.board.enums.Square.D4;
+import static io.github.dlbbld.ashlarchess.board.enums.Square.D5;
+import static io.github.dlbbld.ashlarchess.board.enums.Square.D6;
+import static io.github.dlbbld.ashlarchess.board.enums.Square.E3;
+import static io.github.dlbbld.ashlarchess.board.enums.Square.E4;
+import static io.github.dlbbld.ashlarchess.board.enums.Square.E5;
+import static io.github.dlbbld.ashlarchess.board.enums.Square.E6;
+import static io.github.dlbbld.ashlarchess.board.enums.Square.F3;
+import static io.github.dlbbld.ashlarchess.board.enums.Square.F4;
+import static io.github.dlbbld.ashlarchess.board.enums.Square.F5;
+import static io.github.dlbbld.ashlarchess.board.enums.Square.F6;
+import static io.github.dlbbld.ashlarchess.board.enums.Square.G3;
+import static io.github.dlbbld.ashlarchess.board.enums.Square.G4;
+import static io.github.dlbbld.ashlarchess.board.enums.Square.G5;
+import static io.github.dlbbld.ashlarchess.board.enums.Square.G6;
+import static io.github.dlbbld.ashlarchess.board.enums.Square.H3;
+import static io.github.dlbbld.ashlarchess.board.enums.Square.H4;
+import static io.github.dlbbld.ashlarchess.board.enums.Square.H5;
+import static io.github.dlbbld.ashlarchess.board.enums.Square.H6;
 
 import java.util.ArrayList;
 import java.util.EnumMap;
@@ -15,35 +47,38 @@ import com.google.common.collect.Maps;
 
 import io.github.dlbbld.ashlarchess.bitboard.BitboardPosition;
 import io.github.dlbbld.ashlarchess.board.enums.Piece;
+import io.github.dlbbld.ashlarchess.board.enums.PieceType;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
 import io.github.dlbbld.ashlarchess.board.enums.Square;
 import io.github.dlbbld.ashlarchess.board.model.UpdateSquare;
 import io.github.dlbbld.ashlarchess.common.Nulls;
-import io.github.dlbbld.ashlarchess.common.constants.EnumConstants;
 import io.github.dlbbld.ashlarchess.common.model.MoveSpecification;
 import io.github.dlbbld.ashlarchess.model.LegalMove;
 import io.github.dlbbld.ashlarchess.model.LegalMoveKind;
 
-public abstract class EnPassantCaptureUtility implements EnumConstants {
+public final class EnPassantCaptureUtility {
+
+  private EnPassantCaptureUtility() {
+  }
 
   private static final ImmutableList<ImmutableList<Square>> WHITE_EN_PASSANT_CAPTURE_FROM_TO;
 
   static {
     final List<ImmutableList<Square>> list = new ArrayList<>();
-    list.add(constructListSquare(A5, B6));
-    list.add(constructListSquare(B5, C6));
-    list.add(constructListSquare(C5, D6));
-    list.add(constructListSquare(D5, E6));
-    list.add(constructListSquare(E5, F6));
-    list.add(constructListSquare(F5, G6));
-    list.add(constructListSquare(G5, H6));
-    list.add(constructListSquare(B5, A6));
-    list.add(constructListSquare(C5, B6));
-    list.add(constructListSquare(D5, C6));
-    list.add(constructListSquare(E5, D6));
-    list.add(constructListSquare(F5, E6));
-    list.add(constructListSquare(G5, F6));
-    list.add(constructListSquare(H5, G6));
+    list.add(Nulls.listOf(A5, B6));
+    list.add(Nulls.listOf(B5, C6));
+    list.add(Nulls.listOf(C5, D6));
+    list.add(Nulls.listOf(D5, E6));
+    list.add(Nulls.listOf(E5, F6));
+    list.add(Nulls.listOf(F5, G6));
+    list.add(Nulls.listOf(G5, H6));
+    list.add(Nulls.listOf(B5, A6));
+    list.add(Nulls.listOf(C5, B6));
+    list.add(Nulls.listOf(D5, C6));
+    list.add(Nulls.listOf(E5, D6));
+    list.add(Nulls.listOf(F5, E6));
+    list.add(Nulls.listOf(G5, F6));
+    list.add(Nulls.listOf(H5, G6));
     WHITE_EN_PASSANT_CAPTURE_FROM_TO = Nulls.copyOfList(list);
 
   }
@@ -53,20 +88,20 @@ public abstract class EnPassantCaptureUtility implements EnumConstants {
   static {
     final List<ImmutableList<Square>> list = new ArrayList<>();
 
-    list.add(constructListSquare(A4, B3));
-    list.add(constructListSquare(B4, C3));
-    list.add(constructListSquare(C4, D3));
-    list.add(constructListSquare(D4, E3));
-    list.add(constructListSquare(E4, F3));
-    list.add(constructListSquare(F4, G3));
-    list.add(constructListSquare(G4, H3));
-    list.add(constructListSquare(B4, A3));
-    list.add(constructListSquare(C4, B3));
-    list.add(constructListSquare(D4, C3));
-    list.add(constructListSquare(E4, D3));
-    list.add(constructListSquare(F4, E3));
-    list.add(constructListSquare(G4, F3));
-    list.add(constructListSquare(H4, G3));
+    list.add(Nulls.listOf(A4, B3));
+    list.add(Nulls.listOf(B4, C3));
+    list.add(Nulls.listOf(C4, D3));
+    list.add(Nulls.listOf(D4, E3));
+    list.add(Nulls.listOf(E4, F3));
+    list.add(Nulls.listOf(F4, G3));
+    list.add(Nulls.listOf(G4, H3));
+    list.add(Nulls.listOf(B4, A3));
+    list.add(Nulls.listOf(C4, B3));
+    list.add(Nulls.listOf(D4, C3));
+    list.add(Nulls.listOf(E4, D3));
+    list.add(Nulls.listOf(F4, E3));
+    list.add(Nulls.listOf(G4, F3));
+    list.add(Nulls.listOf(H4, G3));
 
     BLACK_EN_PASSANT_CAPTURE_FROM_TO = Nulls.copyOfList(list);
   }
@@ -141,11 +176,11 @@ public abstract class EnPassantCaptureUtility implements EnumConstants {
   }
 
   // we check if the moving piece is a pawn and the move itself
-  public static boolean calculateIsPawnTwoSquareAdvanceMove(Piece movingPiece, MoveSpecification move) {
+  public static boolean isPawnTwoSquareAdvanceMove(Piece movingPiece, MoveSpecification move) {
     if (movingPiece != Piece.NONE && movingPiece.getPieceType() == PAWN) {
       return switch (movingPiece.getSide()) {
-        case WHITE -> Square.WHITE_PAWN_TWO_SQUARE_ADVANCE.contains(calculateFromToList(move));
-        case BLACK -> Square.BLACK_PAWN_TWO_SQUARE_ADVANCE.contains(calculateFromToList(move));
+        case WHITE -> Square.WHITE_PAWN_TWO_SQUARE_ADVANCE.contains(calculateFromToSquares(move));
+        case BLACK -> Square.BLACK_PAWN_TWO_SQUARE_ADVANCE.contains(calculateFromToSquares(move));
         case NONE -> throw new IllegalArgumentException();
         default -> throw new IllegalArgumentException();
       };
@@ -153,7 +188,7 @@ public abstract class EnPassantCaptureUtility implements EnumConstants {
     return false;
   }
 
-  private static List<Square> calculateFromToList(MoveSpecification move) {
+  private static List<Square> calculateFromToSquares(MoveSpecification move) {
     final List<Square> result = new ArrayList<>();
     result.add(move.fromSquare());
     result.add(move.toSquare());
@@ -162,15 +197,15 @@ public abstract class EnPassantCaptureUtility implements EnumConstants {
 
   public static Square calculateEnPassantCaptureTargetSquare(LegalMove legalMove) {
     if (legalMove.kind() == LegalMoveKind.PAWN_TWO_SQUARE_ADVANCE) {
-      return calculateEnPassantCaptureTargetSquareForTwoSquareAdvanceMove(legalMove.havingMove(),
+      return calculateEnPassantCaptureTargetSquareForTwoSquareAdvanceMove(legalMove.movingSide(),
           legalMove.moveSpecification());
     }
     return Square.NONE;
   }
 
-  private static Square calculateEnPassantCaptureTargetSquareForTwoSquareAdvanceMove(Side havingMove,
+  private static Square calculateEnPassantCaptureTargetSquareForTwoSquareAdvanceMove(Side sideToMove,
       MoveSpecification move) {
-    switch (havingMove) {
+    switch (sideToMove) {
       case WHITE:
         if (!WHITE_TWO_SQUARE_ADVANCE_TO_EN_PASSANT_CAPTURE_TO.containsKey(move.toSquare())) {
           throw new IllegalArgumentException("The method only applies for en passant moves");
@@ -187,13 +222,10 @@ public abstract class EnPassantCaptureUtility implements EnumConstants {
     }
   }
 
-  // Only the bitboard variant survives in src/main after Phase 6 of the role-inversion release. The
-  // StaticPosition-shaped overloads (calculateIsEnPassantCaptureNewMove, calculateIsPotentialEnPassantCapture)
-  // were collapsed: the only test-side caller (the relocated StaticPositionUtility) now derives a bitboard via
-  // StaticPositionBridge and calls this method instead.
-  public static boolean calculateIsPotentialEnPassantCapture(BitboardPosition bitboardPositionBeforeMove,
+  // Whether the pawn move would be an en-passant capture, evaluated against the position before the move is applied.
+  public static boolean isPotentialEnPassantCapture(BitboardPosition bitboardPositionBeforeMove,
       MoveSpecification move) {
-    if (CastlingUtility.calculateIsCastlingMove(move)) {
+    if (CastlingUtility.isCastlingMove(move)) {
       return false;
     }
     final Piece movingPiece = bitboardPositionBeforeMove.get(move.fromSquare());
@@ -201,21 +233,21 @@ public abstract class EnPassantCaptureUtility implements EnumConstants {
       return false;
     }
     return switch (movingPiece.getSide()) {
-      case WHITE -> WHITE_EN_PASSANT_CAPTURE_FROM_TO.contains(calculateFromToList(move))
+      case WHITE -> WHITE_EN_PASSANT_CAPTURE_FROM_TO.contains(calculateFromToSquares(move))
           && bitboardPositionBeforeMove.get(move.toSquare()) == Piece.NONE;
-      case BLACK -> BLACK_EN_PASSANT_CAPTURE_FROM_TO.contains(calculateFromToList(move))
+      case BLACK -> BLACK_EN_PASSANT_CAPTURE_FROM_TO.contains(calculateFromToSquares(move))
           && bitboardPositionBeforeMove.get(move.toSquare()) == Piece.NONE;
       case NONE -> throw new IllegalArgumentException();
       default -> throw new IllegalArgumentException();
     };
   }
 
-  public static Square calculateSquareOfCapturedPawnForEnPassantCapture(Side havingMove, MoveSpecification move) {
-    return calculateSquareOfCapturedPawnForEnPassantCapture(havingMove, move.toSquare());
+  public static Square calculateSquareOfCapturedPawnForEnPassantCapture(Side sideToMove, MoveSpecification move) {
+    return calculateSquareOfCapturedPawnForEnPassantCapture(sideToMove, move.toSquare());
   }
 
-  private static Square calculateSquareOfCapturedPawnForEnPassantCapture(Side havingMove, Square square) {
-    switch (havingMove) {
+  private static Square calculateSquareOfCapturedPawnForEnPassantCapture(Side sideToMove, Square square) {
+    switch (sideToMove) {
       case WHITE:
         if (!WHITE_EN_PASSANT_CAPTURE_TO_CAPTURE.containsKey(square)) {
           throw new IllegalArgumentException("Please provide the target square of an en passant capture");
@@ -232,17 +264,17 @@ public abstract class EnPassantCaptureUtility implements EnumConstants {
     }
   }
 
-  public static List<UpdateSquare> performEnPassantCaptureMovements(Side havingMove,
+  public static List<UpdateSquare> performEnPassantCaptureMovements(Side sideToMove,
       MoveSpecification moveSpecification) {
     // arriving here, the move must have been identified as en passant capture
     final List<UpdateSquare> result = new ArrayList<>();
 
-    // pawn move: from square becomes empty; on to square is the moved pawn (always a pawn of havingMove).
+    // pawn move: from square becomes empty; on to square is the moved pawn (always a pawn of sideToMove).
     result.add(new UpdateSquare(moveSpecification.fromSquare()));
-    result.add(new UpdateSquare(moveSpecification.toSquare(), Piece.calculatePawnPiece(havingMove)));
+    result.add(new UpdateSquare(moveSpecification.toSquare(), Piece.of(sideToMove, PieceType.PAWN)));
 
     // remove the captured pawn (one rank back from the to-square, same file)
-    final Square squareOfCapturedPawnForEnPassantCapture = calculateSquareOfCapturedPawnForEnPassantCapture(havingMove,
+    final Square squareOfCapturedPawnForEnPassantCapture = calculateSquareOfCapturedPawnForEnPassantCapture(sideToMove,
         moveSpecification);
     result.add(new UpdateSquare(squareOfCapturedPawnForEnPassantCapture, Piece.NONE));
 

@@ -27,10 +27,10 @@ class TestUnwinnabilityFullBasicHelpmateExistenceTheorem {
   void fullVerdictMatchesTheorem() {
     for (final PgnFen testCase : PgnTestCaseCatalog.getTestList(PgnTest.CHA_BASIC_HELPMATE_EXISTENCE_THEOREM).list()) {
       final Board board = testCase.finalPosition();
-      final UnwinnabilityFullVerdict expected = board.getHavingMove() == Side.BLACK
+      final UnwinnabilityFullVerdict expected = board.getSideToMove() == Side.BLACK
           && testCase.pgnName().contains("black_forced_to_capture") ? UnwinnabilityFullVerdict.UNWINNABLE
               : UnwinnabilityFullVerdict.WINNABLE_BY_THEOREM;
-      assertEquals(expected, board.isUnwinnableFull(Side.WHITE), testCase.pgnName());
+      assertEquals(expected, board.unwinnableFull(Side.WHITE), testCase.pgnName());
     }
   }
 }

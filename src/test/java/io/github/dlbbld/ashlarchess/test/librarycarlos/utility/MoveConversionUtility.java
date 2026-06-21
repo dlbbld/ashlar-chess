@@ -14,7 +14,10 @@ import io.github.dlbbld.ashlarchess.moves.CastlingUtility;
 import io.github.dlbbld.ashlarchess.test.librarycarlos.NullsCarlos;
 import io.github.dlbbld.ashlarchess.test.librarycomparison.utility.EnumConversionUtility;
 
-public abstract class MoveConversionUtility {
+public final class MoveConversionUtility {
+
+  private MoveConversionUtility() {
+  }
 
   // the SAN is only set when the game is loaded from the PGN
   // this method is only for this case
@@ -76,9 +79,9 @@ public abstract class MoveConversionUtility {
     return new MoveSpecification(fromSquare, toSquare);
   }
 
-  public static Move convertMoveSpecification(Side havingMove, MoveSpecification moveSpecification) {
-    if (CastlingUtility.calculateIsCastlingMove(moveSpecification)) {
-      return switch (havingMove) {
+  public static Move convertMoveSpecification(Side sideToMove, MoveSpecification moveSpecification) {
+    if (CastlingUtility.isCastlingMove(moveSpecification)) {
+      return switch (sideToMove) {
         case BLACK -> switch (moveSpecification.castlingMove()) {
           case KING_SIDE -> new Move(com.github.bhlangonijr.chesslib.Square.E8,
               com.github.bhlangonijr.chesslib.Square.G8);
@@ -104,7 +107,7 @@ public abstract class MoveConversionUtility {
         .convertToSquare(moveSpecification.fromSquare());
     final com.github.bhlangonijr.chesslib.Square to = EnumConversionUtility
         .convertToSquare(moveSpecification.toSquare());
-    final com.github.bhlangonijr.chesslib.Piece promotion = EnumConversionUtility.convertToPiece(havingMove,
+    final com.github.bhlangonijr.chesslib.Piece promotion = EnumConversionUtility.convertToPiece(sideToMove,
         moveSpecification.promotionPieceType());
     return new Move(from, to, promotion);
   }

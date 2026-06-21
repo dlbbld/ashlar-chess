@@ -14,7 +14,10 @@ import io.github.dlbbld.ashlarchess.san.SanValidateFormat;
  * rejected by {@link SanValidateFormat#validateFormat}. Has its own dedicated unit test
  * ({@code TestSanValidateFormatBasic}) because other tests depend on its correctness as an oracle.
  */
-public abstract class SanValidateFormatBasic {
+public final class SanValidateFormatBasic {
+
+  private SanValidateFormatBasic() {
+  }
 
   /**
    * Returns {@code true} iff {@code san} passes the coarse character-class and length checks.

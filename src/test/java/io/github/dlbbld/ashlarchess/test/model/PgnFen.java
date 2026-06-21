@@ -19,7 +19,7 @@ import io.github.dlbbld.ashlarchess.test.pgntest.enums.PgnTest;
  * and clocks. {@code game(PgnTest)} replays the PGN with move history attached and is expensive; use it only when the
  * test genuinely needs history-derived state (repetition counts, claimable threefold, last-move metadata, PGN export
  * round-trips, end-to-end pipeline tests). A position-only test that mistakenly chose {@code game(...)} scales as the
- * number of plies in the fixture.
+ * number of moves in the fixture.
  */
 public record PgnFen(String pgnName, String finalFen) {
 
@@ -29,7 +29,7 @@ public record PgnFen(String pgnName, String finalFen) {
 
   public Board game(PgnTest pgnTest) {
     final PgnGame pgnGame = PgnCacheForLenientPgnParserTestCases.getPgn(pgnTest.getFolderPath(), pgnName());
-    return PgnUtility.calculateBoard(pgnGame);
+    return PgnUtility.toBoard(pgnGame);
   }
 
 }

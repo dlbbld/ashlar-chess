@@ -4,7 +4,6 @@
 package io.github.dlbbld.ashlarchess.squares;
 
 import java.util.EnumMap;
-import java.util.Set;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
@@ -12,9 +11,11 @@ import com.google.common.collect.ImmutableSet;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
 import io.github.dlbbld.ashlarchess.board.enums.Square;
 import io.github.dlbbld.ashlarchess.common.Nulls;
-import io.github.dlbbld.ashlarchess.common.constants.EnumConstants;
 
-class PawnAnyAdvanceEmptyBoardSquares extends AbstractEmptyBoardSquares implements EnumConstants {
+final class PawnAnyAdvanceEmptyBoardSquares {
+
+  private PawnAnyAdvanceEmptyBoardSquares() {
+  }
 
   private static final ImmutableMap<Square, ImmutableSet<Square>> PAWN_WHITE_SQUARES_MAP;
   private static final ImmutableMap<Square, ImmutableSet<Square>> PAWN_BLACK_SQUARES_MAP;
@@ -40,8 +41,8 @@ class PawnAnyAdvanceEmptyBoardSquares extends AbstractEmptyBoardSquares implemen
     return Nulls.copyOfMap(map);
   }
 
-  public static Set<Square> getPawnSquares(Side havingMove, Square fromSquare) {
-    return switch (havingMove) {
+  public static ImmutableSet<Square> getPawnSquares(Side side, Square fromSquare) {
+    return switch (side) {
       case BLACK -> Nulls.get(PAWN_BLACK_SQUARES_MAP, fromSquare);
       case WHITE -> Nulls.get(PAWN_WHITE_SQUARES_MAP, fromSquare);
       case NONE -> throw new IllegalArgumentException();

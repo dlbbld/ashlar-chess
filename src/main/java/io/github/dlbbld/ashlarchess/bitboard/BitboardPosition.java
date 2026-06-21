@@ -7,6 +7,8 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.function.Consumer;
 
+import com.google.common.collect.ImmutableSet;
+
 import io.github.dlbbld.ashlarchess.board.enums.CastlingMove;
 import io.github.dlbbld.ashlarchess.board.enums.Piece;
 import io.github.dlbbld.ashlarchess.board.enums.PieceType;
@@ -30,10 +32,16 @@ import io.github.dlbbld.ashlarchess.common.model.MoveSpecification;
  * {@link IllegalArgumentException}.
  *
  * <p>
- * Built alongside {@code StaticPosition} and verified bit-exact against it via differential testing across the full
- * PGN/FEN corpus. After the role-inversion release, {@code StaticPosition} lives in {@code src/test/} as the permanent
- * differential-test oracle; this record is the production representation. See {@code tasks.md} and the package-level
- * Javadoc for the governing Project Invariant.
+ * This record is the production piece-placement representation. It is verified bit-exact, via differential testing
+ * across the full PGN/FEN corpus, against the {@code StaticPosition} mailbox reference that lives test-side. See the
+ * package-level Javadoc for the governing invariant.
+ *
+ * <p>
+ * <b>Deliberate "records carry data" exception:</b> unlike every other record in the codebase, this one carries its
+ * move-generation / king-safety engine ({@code afterMove}, {@code legalMoves}, {@code attackedSquares},
+ * {@code isInCheck}, {@code pinRay}, {@code pinnedPieces}, …) rather than delegating to a utility, for hot-path
+ * allocation reasons on the production move-generation path. This is a conscious, bounded exception - see
+ * {@code coding-conventions.md} - and not a pattern to copy onto other records.
  */
 public record BitboardPosition(long whitePawns, long whiteRooks, long whiteKnights, long whiteBishops, long whiteQueens,
     long whiteKings, long blackPawns, long blackRooks, long blackKnights, long blackBishops, long blackQueens,
@@ -132,7 +140,7 @@ public record BitboardPosition(long whitePawns, long whiteRooks, long whiteKnigh
 
   /**
    * Convenience predicate: does {@code square} carry a piece of {@code side} and {@code pieceType}? Equivalent to
-   * {@code get(square) == Piece.calculate(side, pieceType)} but avoids constructing the {@code Piece} value.
+   * {@code get(square) == Piece.of(side, pieceType)} but avoids constructing the {@code Piece} value.
    */
   public boolean isOwnPiece(Square square, Side side, PieceType pieceType) {
     if (side != Side.WHITE && side != Side.BLACK) {
@@ -141,7 +149,7 @@ public record BitboardPosition(long whitePawns, long whiteRooks, long whiteKnigh
     if (pieceType == PieceType.NONE) {
       throw new IllegalArgumentException("isOwnPiece requires a real piece type, got NONE");
     }
-    return get(square) == Piece.calculate(side, pieceType);
+    return get(square) == Piece.of(side, pieceType);
   }
 
   /**
@@ -163,7 +171,7 @@ public record BitboardPosition(long whitePawns, long whiteRooks, long whiteKnigh
   /**
    * Pseudo-legal target squares for the piece on {@code fromSquare}: squares the piece could move to, considering own
    * piece blocking and slider line-of-sight, but NOT king-safety. Mirrors the reference
-   * {@code AbstractPotentialToSquares.calculatePotentialToSquare} surface used by the SAN error-reporting layer.
+   * {@code PotentialToSquaresSupport.calculatePotentialToSquare} surface used by the SAN error-reporting layer.
    *
    * <p>
    * For pawns, includes forward advances (single + double when applicable) and diagonal captures against opponent
@@ -176,13 +184,13 @@ public record BitboardPosition(long whitePawns, long whiteRooks, long whiteKnigh
    * Returns an empty set if {@code fromSquare} is empty. {@code enPassantBit} is the single-bit bitboard of the EP
    * target square, or {@code 0L} if no EP is available.
    */
-  public Set<Square> potentialToSquares(Square fromSquare, long enPassantBit) {
+  public ImmutableSet<Square> potentialToSquares(Square fromSquare, long enPassantBit) {
     if (fromSquare == Square.NONE) {
       throw new IllegalArgumentException("The NONE square does not belong to the board");
     }
     final Piece piece = get(fromSquare);
     if (piece == Piece.NONE) {
-      return new TreeSet<>();
+      return BitboardPositionUtility.toSquares(0L);
     }
     final Side side = piece.getSide();
     final long ownPieces = occupied(side);
@@ -197,7 +205,7 @@ public record BitboardPosition(long whitePawns, long whiteRooks, long whiteKnigh
       case NONE -> throw new IllegalStateException("Unreachable - Piece.NONE filtered above");
       default -> throw new IllegalArgumentException();
     };
-    return BitboardPositionUtility.toSquareSet(targets);
+    return BitboardPositionUtility.toSquares(targets);
   }
 
   private long pawnPotentialTargets(Square fromSquare, int fromOrdinal, Side side, long enPassantBit) {
@@ -216,7 +224,7 @@ public record BitboardPosition(long whitePawns, long whiteRooks, long whiteKnigh
   /**
    * Union of all squares attacked / defended by {@code side}'s pieces, in the same "isAllowOwnPiece = true" sense the
    * reference uses: includes squares occupied by own pieces (those are defended). Differential-tested against
-   * {@code AbstractAttackedSquares.calculateAttackedSquares}.
+   * {@code AttackedSquaresSupport.calculateAttackedSquares}.
    */
   public long attackedSquares(Side side) {
     return attackedSquares(side, occupied());
@@ -455,10 +463,10 @@ public record BitboardPosition(long whitePawns, long whiteRooks, long whiteKnigh
    * promotion expands each rank-1/rank-8 target into four moves; en-passant is special-cased for the rank-pin edge case
    * where capturing the EP pawn could expose own king to a rook or queen along the rank.
    */
-  public Set<MoveSpecification> legalMoves(Side side, long enPassantBit) {
+  public ImmutableSet<MoveSpecification> legalMoves(Side side, long enPassantBit) {
     final Set<MoveSpecification> moves = new TreeSet<>();
     legalMovesInto(moves::add, side, enPassantBit);
-    return moves;
+    return Nulls.copyOfSet(moves);
   }
 
   /**
@@ -651,8 +659,8 @@ public record BitboardPosition(long whitePawns, long whiteRooks, long whiteKnigh
    * the piece-movement part of castling (king and rook both move).
    *
    * <p>
-   * Castling rights, en-passant target square, side-to-move, and the halfmove / fullmove counters are intentionally NOT
-   * updated here - they live on {@link io.github.dlbbld.ashlarchess.board.Board} /
+   * Castling rights, en-passant target square, side-to-move, and the halfmove clock and fullmove number are
+   * intentionally NOT updated here - they live on {@link io.github.dlbbld.ashlarchess.board.Board} /
    * {@link io.github.dlbbld.ashlarchess.common.model.DynamicPosition}. This is the piece-placement-only equivalent of
    * {@code StaticPositionUtility.createPositionAfterMove}.
    *
@@ -691,7 +699,7 @@ public record BitboardPosition(long whitePawns, long whiteRooks, long whiteKnigh
 
     final PromotionPieceType promotion = moveSpec.promotionPieceType();
     final Piece destPiece = promotion == PromotionPieceType.NONE ? movingPiece
-        : Piece.calculate(movingSide, promotion.getPieceType());
+        : Piece.of(movingSide, promotion.getPieceType());
 
     final long[] pieces = currentPieceBitboards();
     toggleBit(pieces, movingPiece, fromBit);
@@ -796,124 +804,6 @@ public record BitboardPosition(long whitePawns, long whiteRooks, long whiteKnigh
       case NONE -> -1;
       default -> throw new IllegalArgumentException();
     };
-  }
-
-  /**
-   * Piece-placement Zobrist hash: XOR of {@link ZobristKeys#pieceSquare} for every (piece, square) pair currently on
-   * the board. Side-to-move, castling rights, and en-passant target are intentionally NOT mixed in - those state pieces
-   * live on {@code Board} / {@code DynamicPosition} and their Zobrist contributions belong there.
-   */
-  public long zobristPieces() {
-    long hash = 0L;
-    hash ^= zobristForPiece(whitePawns, Piece.WHITE_PAWN);
-    hash ^= zobristForPiece(whiteRooks, Piece.WHITE_ROOK);
-    hash ^= zobristForPiece(whiteKnights, Piece.WHITE_KNIGHT);
-    hash ^= zobristForPiece(whiteBishops, Piece.WHITE_BISHOP);
-    hash ^= zobristForPiece(whiteQueens, Piece.WHITE_QUEEN);
-    hash ^= zobristForPiece(whiteKings, Piece.WHITE_KING);
-    hash ^= zobristForPiece(blackPawns, Piece.BLACK_PAWN);
-    hash ^= zobristForPiece(blackRooks, Piece.BLACK_ROOK);
-    hash ^= zobristForPiece(blackKnights, Piece.BLACK_KNIGHT);
-    hash ^= zobristForPiece(blackBishops, Piece.BLACK_BISHOP);
-    hash ^= zobristForPiece(blackQueens, Piece.BLACK_QUEEN);
-    hash ^= zobristForPiece(blackKings, Piece.BLACK_KING);
-    return hash;
-  }
-
-  /**
-   * Incremental Zobrist update: returns the XOR delta that converts the piece-placement hash of this position (before
-   * the move) into the piece-placement hash of the position after the move. That is the below is guaranteed equal to
-   * {@code before.afterMove(moveSpec, movingSide).zobristPieces()}:
-   *
-   * <pre>
-   * long afterHash = beforeHash ^ before.hashDelta(moveSpec, movingSide);
-   * </pre>
-   *
-   * <p>
-   * Parallel in structure to {@link #afterMove}: identifies the moving piece, captured piece (regular or en-passant),
-   * and destination piece (handles promotion), and XORs the corresponding {@link ZobristKeys#pieceSquare} values rather
-   * than toggling bitboards. For castling, XORs both king's and rook's from/to keys.
-   */
-  public long hashDelta(MoveSpecification moveSpec, Side movingSide) {
-    if (movingSide != Side.WHITE && movingSide != Side.BLACK) {
-      throw new IllegalArgumentException("hashDelta requires Side.WHITE or Side.BLACK, got " + movingSide);
-    }
-    if (moveSpec.castlingMove() != CastlingMove.NONE) {
-      return castlingHashDelta(moveSpec.castlingMove(), movingSide);
-    }
-    final Square from = moveSpec.fromSquare();
-    final Square to = moveSpec.toSquare();
-    final Piece movingPiece = get(from);
-    final long toBit = 1L << to.ordinal();
-
-    final Piece capturedPiece;
-    final Square capturedSquare;
-    if ((toBit & occupied()) != 0L) {
-      capturedPiece = get(to);
-      capturedSquare = to;
-    } else if (movingPiece.getPieceType() == PieceType.PAWN && from.getFile() != to.getFile()) {
-      final int capturedOrdinal = movingSide == Side.WHITE ? to.ordinal() - 8 : to.ordinal() + 8;
-      capturedSquare = Nulls.get(Square.REAL, capturedOrdinal);
-      capturedPiece = movingSide == Side.WHITE ? Piece.BLACK_PAWN : Piece.WHITE_PAWN;
-    } else {
-      capturedPiece = Piece.NONE;
-      capturedSquare = Square.NONE;
-    }
-
-    final PromotionPieceType promotion = moveSpec.promotionPieceType();
-    final Piece destPiece = promotion == PromotionPieceType.NONE ? movingPiece
-        : Piece.calculate(movingSide, promotion.getPieceType());
-
-    long delta = ZobristKeys.pieceSquare(movingPiece, from);
-    if (capturedPiece != Piece.NONE) {
-      delta ^= ZobristKeys.pieceSquare(capturedPiece, capturedSquare);
-    }
-    delta ^= ZobristKeys.pieceSquare(destPiece, to);
-    return delta;
-  }
-
-  private static long castlingHashDelta(CastlingMove castlingMove, Side movingSide) {
-    final Square kingFrom;
-    final Square kingTo;
-    final Square rookFrom;
-    final Square rookTo;
-    if (movingSide == Side.WHITE) {
-      if (castlingMove == CastlingMove.KING_SIDE) {
-        kingFrom = Square.E1;
-        kingTo = Square.G1;
-        rookFrom = Square.H1;
-        rookTo = Square.F1;
-      } else {
-        kingFrom = Square.E1;
-        kingTo = Square.C1;
-        rookFrom = Square.A1;
-        rookTo = Square.D1;
-      }
-    } else if (castlingMove == CastlingMove.KING_SIDE) {
-      kingFrom = Square.E8;
-      kingTo = Square.G8;
-      rookFrom = Square.H8;
-      rookTo = Square.F8;
-    } else {
-      kingFrom = Square.E8;
-      kingTo = Square.C8;
-      rookFrom = Square.A8;
-      rookTo = Square.D8;
-    }
-    final Piece kingPiece = movingSide == Side.WHITE ? Piece.WHITE_KING : Piece.BLACK_KING;
-    final Piece rookPiece = movingSide == Side.WHITE ? Piece.WHITE_ROOK : Piece.BLACK_ROOK;
-    return ZobristKeys.pieceSquare(kingPiece, kingFrom) ^ ZobristKeys.pieceSquare(kingPiece, kingTo)
-        ^ ZobristKeys.pieceSquare(rookPiece, rookFrom) ^ ZobristKeys.pieceSquare(rookPiece, rookTo);
-  }
-
-  private static long zobristForPiece(long bitboard, Piece piece) {
-    long hash = 0L;
-    long remaining = bitboard;
-    while (remaining != 0L) {
-      hash ^= ZobristKeys.pieceSquare(piece, Nulls.get(Square.REAL, Long.numberOfTrailingZeros(remaining)));
-      remaining &= remaining - 1L;
-    }
-    return hash;
   }
 
   private static long inclusiveRayFromKing(int kingOrdinal, int pinnerOrdinal) {

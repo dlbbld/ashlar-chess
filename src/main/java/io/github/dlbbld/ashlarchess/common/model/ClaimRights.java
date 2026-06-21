@@ -3,9 +3,7 @@
 
 package io.github.dlbbld.ashlarchess.common.model;
 
-import java.util.List;
-
-import io.github.dlbbld.ashlarchess.common.Nulls;
+import com.google.common.collect.ImmutableList;
 
 /**
  * Snapshot of the side-to-move's right to claim a draw under one specific FIDE rule (either 9.2 threefold or 9.3 fifty-
@@ -16,17 +14,15 @@ import io.github.dlbbld.ashlarchess.common.Nulls;
  * constructor enforces this invariant so the two fields cannot disagree.
  *
  * <p>
- * {@code claimableMoves} is defensively copied to an immutable list at construction; callers cannot mutate it after the
- * fact. Move order follows the order of {@code Board.getLegalMoves()} at the time the rights were calculated.
+ * {@code claimableMoves} is an immutable list; its move order follows the order of {@code Board.getLegalMoves()} at the
+ * time the rights were calculated.
  *
  * <p>
- * Produced by {@code Board.calculateFiftyMoveRuleClaimRights()} and
- * {@code Board.calculateThreefoldRepetitionRuleClaimRights()}.
+ * Produced by {@code Board.fiftyMoveRuleClaimRights()} and {@code Board.threefoldRepetitionRuleClaimRights()}.
  */
-public record ClaimRights(boolean canClaim, List<ClaimableMove> claimableMoves) {
+public record ClaimRights(boolean canClaim, ImmutableList<ClaimableMove> claimableMoves) {
 
   public ClaimRights {
-    claimableMoves = Nulls.copyOfList(claimableMoves);
     if (canClaim == claimableMoves.isEmpty()) {
       throw new IllegalArgumentException("canClaim must equal !claimableMoves.isEmpty(); got canClaim=" + canClaim
           + ", claimableMoves.size()=" + claimableMoves.size());

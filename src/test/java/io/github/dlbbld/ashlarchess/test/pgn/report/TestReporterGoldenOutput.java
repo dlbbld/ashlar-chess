@@ -11,8 +11,11 @@ import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.function.Supplier;
 
 import org.junit.jupiter.api.Test;
+
+import com.google.common.collect.ImmutableList;
 
 import io.github.dlbbld.ashlarchess.board.Board;
 import io.github.dlbbld.ashlarchess.common.Nulls;
@@ -22,7 +25,7 @@ import io.github.dlbbld.ashlarchess.test.pgn.setup.PgnTestCaseCatalog;
 import io.github.dlbbld.ashlarchess.test.pgntest.enums.PgnTest;
 
 /**
- * Golden stdout guard for {@link Reporter#printReport}: any change to the printed bytes fails the test.
+ * Golden output guard for {@link Reporter#report}: any change to the rendered lines fails the test.
  *
  * <p>
  * Regenerate goldens with {@code -Dgolden.regenerate=true}; that mode deliberately fails every test so the flag cannot
@@ -41,7 +44,7 @@ class TestReporterGoldenOutput {
     final String pgn = """
         1. e4 e5 2. Nf3 Nf6 3. Bc4 Bc5
         """;
-    final String actual = captureStdout(() -> Reporter.printReport(pgn));
+    final String actual = render(() -> Reporter.report(pgn));
     compareOrRegenerate(actual, "01_no_threefold_activity.txt");
   }
 
@@ -49,7 +52,7 @@ class TestReporterGoldenOutput {
   @Test
   void claimAheadOnlyInitial() {
     // 1. Nf3 Nf6 2. Ng1 Ng8 3. Nf3 Nf6 4. Ng1 - Black has not played 4...Ng8 yet, so the
-    // initial-position third occurrence is one ply ahead. Pure claim-ahead.
+    // initial-position third occurrence is one move ahead. Pure claim-ahead.
     final String actual = capturePgnFile("01_threefold_moves_very_low_one_before_first_threefold.pgn");
     compareOrRegenerate(actual, "02_claim_ahead_only_initial.txt");
   }
@@ -86,7 +89,7 @@ class TestReporterGoldenOutput {
   void fivefoldCorrectPotapovAdly2018() {
     // The only corpus fixture that produces multiple claim-ahead entries for the same dynamic
     // position (length 3, 4, 5 of the A-group plus separate B / C groups). Locks in the line
-    // sort order so a future regression that ranks lines by claim-ahead-ply (the old shape) or
+    // sort order so a future regression that ranks lines by claim-ahead-move (the old shape) or
     // by some other key would break a golden, not just slip silently into the printed report.
     final String actual = capturePgnFile("fivefold_correct_potapov_adly_2018.pgn");
     compareOrRegenerate(actual, "06_fivefold_correct_potapov_adly_2018.txt");
@@ -103,10 +106,10 @@ class TestReporterGoldenOutput {
     // Fifty moves and beyond:
     // [Starting position] (100)
     //
-    // Locks the special-case rendering - sequence-with-no-endPly - that's hard to test from any
+    // Locks the special-case rendering - sequence-with-no-endMove - that's hard to test from any
     // other entry point.
-    final Board board = new Board("7k/8/8/8/8/8/1q6/K7 w - - 100 80");
-    final String actual = captureStdout(() -> Reporter.printReport(board));
+    final Board board = Board.fromFenStrict("7k/8/8/8/8/8/1q6/K7 w - - 100 80");
+    final String actual = render(() -> Reporter.report(board));
     compareOrRegenerate(actual, "07_fifty_move_initial_fen_at_threshold.txt");
   }
 
@@ -120,19 +123,24 @@ class TestReporterGoldenOutput {
     // beyond" section is empty (no sequence reached 100).
     //
     // Locks the missed-opportunity output shape; previously no corpus or inline golden exercised it.
-    final Board board = new Board("4k3/p7/8/8/8/8/P7/4K2R w - - 98 80");
+    final Board board = Board.fromFenStrict("4k3/p7/8/8/8/8/P7/4K2R w - - 98 80");
     board.movesStrict("Rg1", "a6");
-    final String actual = captureStdout(() -> Reporter.printReport(board));
+    final String actual = render(() -> Reporter.report(board));
     compareOrRegenerate(actual, "08_fifty_move_missed_claim_ahead.txt");
   }
 
   private static String capturePgnFile(String pgnName) {
     final PgnTest pgnTest = PgnTestCaseCatalog.findPgnTestPgnNotListed(pgnName);
-    return captureStdout(() -> Reporter.printReport(pgnTest.getFolderPath(), pgnName));
+    return render(() -> Reporter.report(pgnTest.getFolderPath(), pgnName));
   }
 
-  private static String captureStdout(Runnable action) {
-    return normaliseLineEndings(OutputCaptureUtility.captureStdout(action));
+  @SuppressWarnings("null") // Supplier lacks JDT null annotations
+  private static String render(Supplier<ImmutableList<String>> action) {
+    final StringBuilder builder = new StringBuilder();
+    for (final String line : action.get()) {
+      builder.append(line).append('\n');
+    }
+    return normaliseLineEndings(Nulls.toString(builder));
   }
 
   private static void compareOrRegenerate(String actual, String goldenName) {

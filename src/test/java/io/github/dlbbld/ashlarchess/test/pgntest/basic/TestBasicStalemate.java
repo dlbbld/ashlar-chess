@@ -16,13 +16,13 @@ import io.github.dlbbld.ashlarchess.test.model.PgnTestCaseList;
 import io.github.dlbbld.ashlarchess.test.pgn.setup.PgnTestCaseCatalog;
 import io.github.dlbbld.ashlarchess.test.pgntest.enums.PgnTest;
 
-class TestBasicStalemate extends AbstractTestBasic {
+class TestBasicStalemate {
 
   private static final Logger logger = Nulls.getLogger(TestBasicStalemate.class);
 
   @SuppressWarnings("static-method")
   @Test
-  void test() throws Exception {
+  void test() {
     final PgnTestCaseList testCaseList = PgnTestCaseCatalog.getTestList(PgnTest.BASIC_STALEMATE);
     for (final PgnFen testCase : testCaseList.list()) {
       final Board board = testCase.finalPosition();

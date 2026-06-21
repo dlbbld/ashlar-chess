@@ -1,0 +1,50 @@
+// Copyright (C) 2020-2026 Daniel Baechli
+// SPDX-License-Identifier: GPL-3.0-only
+
+package io.github.dlbbld.ashlarchess.squares;
+
+import io.github.dlbbld.ashlarchess.board.StaticPosition;
+import io.github.dlbbld.ashlarchess.board.enums.Piece;
+import io.github.dlbbld.ashlarchess.board.enums.PieceType;
+import io.github.dlbbld.ashlarchess.board.enums.Side;
+import io.github.dlbbld.ashlarchess.board.enums.Square;
+import io.github.dlbbld.ashlarchess.common.exceptions.ProgrammingMistakeException;
+import io.github.dlbbld.ashlarchess.enums.SquareOccupation;
+
+final class ToSquaresSupport {
+
+  private ToSquaresSupport() {
+  }
+
+  static void checkPiece(StaticPosition staticPosition, Side sideToMove, Square sourceSquare,
+      PieceType expectedPieceType) throws IllegalArgumentException {
+    if (!staticPosition.isOwnPiece(sourceSquare, sideToMove, expectedPieceType)) {
+      throw new IllegalArgumentException(
+          "The source square must be occupied by a " + sideToMove + " " + expectedPieceType);
+    }
+  }
+
+  static SquareOccupation calculateSquareOccupation(StaticPosition staticPosition, Side sideToMove, Square square) {
+    final Piece piece = staticPosition.get(square);
+    if (piece == Piece.NONE) {
+      return SquareOccupation.NONE;
+    }
+    return switch (piece.getSide()) {
+      case BLACK -> switch (sideToMove) {
+        case BLACK -> SquareOccupation.OWN_PIECE;
+        case WHITE -> SquareOccupation.OPPONENT_PIECE;
+        case NONE -> throw new IllegalArgumentException();
+        default -> throw new IllegalArgumentException();
+      };
+      case WHITE -> switch (sideToMove) {
+        case BLACK -> SquareOccupation.OPPONENT_PIECE;
+        case WHITE -> SquareOccupation.OWN_PIECE;
+        case NONE -> throw new IllegalArgumentException();
+        default -> throw new IllegalArgumentException();
+      };
+      case NONE -> // we filtered this case before
+          throw new ProgrammingMistakeException();
+      default -> throw new IllegalArgumentException();
+    };
+  }
+}

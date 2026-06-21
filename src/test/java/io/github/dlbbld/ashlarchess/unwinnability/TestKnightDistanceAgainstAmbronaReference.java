@@ -3,12 +3,15 @@
 
 package io.github.dlbbld.ashlarchess.unwinnability;
 
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.A1;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.A8;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.H1;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.H8;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.junit.jupiter.api.Test;
 
 import io.github.dlbbld.ashlarchess.board.enums.Square;
-import io.github.dlbbld.ashlarchess.common.constants.EnumConstants;
 
 /**
  * Cross-validates the BFS-based {@link KnightDistance} against an independent reference port of the closed-form
@@ -25,7 +28,7 @@ import io.github.dlbbld.ashlarchess.common.constants.EnumConstants;
  * <p>
  * Source: <a href="https://github.com/miguel-ambrona/D3-Chess">D3-Chess</a> (GPL v3).
  */
-class TestKnightDistanceAgainstAmbronaReference implements EnumConstants {
+class TestKnightDistanceAgainstAmbronaReference {
 
   @SuppressWarnings("static-method")
   @Test

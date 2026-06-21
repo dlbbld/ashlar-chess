@@ -10,7 +10,6 @@ import io.github.dlbbld.ashlarchess.board.enums.Side;
 import io.github.dlbbld.ashlarchess.common.enums.Termination;
 import io.github.dlbbld.ashlarchess.common.exceptions.ProgrammingMistakeException;
 import io.github.dlbbld.ashlarchess.common.model.Outcome;
-import io.github.dlbbld.ashlarchess.common.utility.BasicChessUtility;
 import io.github.dlbbld.ashlarchess.common.utility.ListUtility;
 import io.github.dlbbld.ashlarchess.model.LegalMove;
 import io.github.dlbbld.ashlarchess.test.unwinnability.oracle.enums.LimitedUnwinnabilityVerdict;
@@ -52,7 +51,7 @@ public class ForcedLineOracle {
   private static LimitedUnwinnabilityVerdict calculateUnwinnabilityInternal(Board board, Side side) {
 
     if (board.isCheckmate()) {
-      if (side == board.getHavingMove()) {
+      if (side == board.getSideToMove()) {
         return LimitedUnwinnabilityVerdict.UNWINNABLE;
       }
       return LimitedUnwinnabilityVerdict.WINNABLE;
@@ -74,8 +73,7 @@ public class ForcedLineOracle {
   /**
    * Walks the unique-legal-move chain from the current position. Mutates the board during the walk and undoes all moves
    * before returning, leaving the board unchanged. Returns a {@link GameForced} carrying the terminal status (if any)
-   * reached at the end of the chain, the number of forced half-moves walked, and which side made the last move in the
-   * chain.
+   * reached at the end of the chain, the number of forced plies walked, and which side made the last move in the chain.
    */
   static GameForced evaluateForcedLine(Board board) {
     // we check position after series of forced moves
@@ -85,14 +83,14 @@ public class ForcedLineOracle {
       countForcedHalfMoves++;
       final LegalMove legalMove = ListUtility.getOnly(board.getLegalMoves());
       board.move(legalMove.moveSpecification());
-      final Outcome outcome = BasicChessUtility.calculateOutcome(board);
+      final Outcome outcome = board.outcome();
       final boolean terminated = outcome.termination() != Termination.NONE;
       // One-sided insufficient material is a diagnostic position state outside the Outcome view but
       // a decisive signal for the forced-line oracle: the side that lacks material cannot win along
       // this chain. Carry it explicitly on GameForced for calculateUnwinnabilityForced to consume.
       final @Nullable Side singleSideIm = terminated ? null : singleSideInsufficientMaterial(board);
       if (terminated || singleSideIm != null) {
-        final Side sideMadeLastMove = board.getHavingMove().getOppositeSide();
+        final Side sideMadeLastMove = board.getSideToMove().getOppositeSide();
         for (int i = 1; i <= countForcedHalfMoves; i++) {
           board.unmove();
         }
@@ -100,7 +98,7 @@ public class ForcedLineOracle {
       }
     }
 
-    final Side sideMadeLastMove = board.getHavingMove().getOppositeSide();
+    final Side sideMadeLastMove = board.getSideToMove().getOppositeSide();
     for (int i = 1; i <= countForcedHalfMoves; i++) {
       board.unmove();
     }

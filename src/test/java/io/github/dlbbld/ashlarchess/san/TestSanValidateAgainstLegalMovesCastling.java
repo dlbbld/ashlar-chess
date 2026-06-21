@@ -8,6 +8,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
 
+import io.github.dlbbld.ashlarchess.analyze.CastlingCheckTranslator;
 import io.github.dlbbld.ashlarchess.board.Board;
 import io.github.dlbbld.ashlarchess.board.enums.CastlingRightLoss;
 import io.github.dlbbld.ashlarchess.enums.CastlingCheck;
@@ -57,7 +58,7 @@ class TestSanValidateAgainstLegalMovesCastling {
   @SuppressWarnings("static-method")
   @Test
   void testNoRightUnknownFenImport() {
-    final Board board = new Board("r3k2r/pppppppp/8/8/8/8/PPPPPPPP/R3K2R w - - 0 1");
+    final Board board = Board.fromFenStrict("r3k2r/pppppppp/8/8/8/8/PPPPPPPP/R3K2R w - - 0 1");
     checkCastlingException("O-O", board, CastlingCheck.FINAL_NO_RIGHT, CastlingRightLoss.UNKNOWN_FEN_IMPORT);
     checkCastlingException("O-O-O", board, CastlingCheck.FINAL_NO_RIGHT, CastlingRightLoss.UNKNOWN_FEN_IMPORT);
   }
@@ -90,14 +91,14 @@ class TestSanValidateAgainstLegalMovesCastling {
   @SuppressWarnings("static-method")
   @Test
   void testKingInCheckWhite() {
-    final Board board = new Board("rnbqk2r/pppp1ppp/5n2/4p3/2B1P3/2N2N2/PPPP1bPP/R1BQK2R w KQkq - 0 5");
+    final Board board = Board.fromFenStrict("rnbqk2r/pppp1ppp/5n2/4p3/2B1P3/2N2N2/PPPP1bPP/R1BQK2R w KQkq - 0 5");
     checkCastlingException("O-O", board, CastlingCheck.TEMPORARY_KING_IN_CHECK, CastlingRightLoss.NOT_LOST);
   }
 
   @SuppressWarnings("static-method")
   @Test
   void testKingInCheckBlack() {
-    final Board board = new Board("r1bqk2r/1ppp1pNp/p1n2n2/2b1p3/2B1P3/8/PPPP1PPP/RNBQK2R b KQkq - 0 6");
+    final Board board = Board.fromFenStrict("r1bqk2r/1ppp1pNp/p1n2n2/2b1p3/2B1P3/8/PPPP1PPP/RNBQK2R b KQkq - 0 6");
     checkCastlingException("O-O", board, CastlingCheck.TEMPORARY_KING_IN_CHECK, CastlingRightLoss.NOT_LOST);
   }
 
@@ -106,7 +107,7 @@ class TestSanValidateAgainstLegalMovesCastling {
   @SuppressWarnings("static-method")
   @Test
   void testKingWouldTravelThroughCheckWhite() {
-    final Board board = new Board("rnb1kbnr/pppp2pp/5q2/8/2B5/7N/PPPP2PP/RNBQK2R w KQkq - 0 25");
+    final Board board = Board.fromFenStrict("rnb1kbnr/pppp2pp/5q2/8/2B5/7N/PPPP2PP/RNBQK2R w KQkq - 0 25");
     checkCastlingException("O-O", board, CastlingCheck.TEMPORARY_KING_TRAVELS_THROUGH_CHECK,
         CastlingRightLoss.NOT_LOST);
   }
@@ -114,7 +115,7 @@ class TestSanValidateAgainstLegalMovesCastling {
   @SuppressWarnings("static-method")
   @Test
   void testKingWouldTravelThroughCheckBlack() {
-    final Board board = new Board("rnbqk2r/ppppppbp/4Nnp1/8/8/8/PPPPPPPP/R1BQKBNR b KQkq - 0 25");
+    final Board board = Board.fromFenStrict("rnbqk2r/ppppppbp/4Nnp1/8/8/8/PPPPPPPP/R1BQKBNR b KQkq - 0 25");
     checkCastlingException("O-O", board, CastlingCheck.TEMPORARY_KING_TRAVELS_THROUGH_CHECK,
         CastlingRightLoss.NOT_LOST);
   }
@@ -124,14 +125,14 @@ class TestSanValidateAgainstLegalMovesCastling {
   @SuppressWarnings("static-method")
   @Test
   void testKingWouldEndInCheckWhite() {
-    final Board board = new Board("rnbqk1nr/pppp1ppp/4p3/2b5/2B1P3/5P1N/PPPP2PP/RNBQK2R w KQkq - 0 25");
+    final Board board = Board.fromFenStrict("rnbqk1nr/pppp1ppp/4p3/2b5/2B1P3/5P1N/PPPP2PP/RNBQK2R w KQkq - 0 25");
     checkCastlingException("O-O", board, CastlingCheck.TEMPORARY_KING_ENDS_IN_CHECK, CastlingRightLoss.NOT_LOST);
   }
 
   @SuppressWarnings("static-method")
   @Test
   void testKingWouldEndInCheckBlack() {
-    final Board board = new Board("rnbqk2r/ppppppbp/6pN/8/6n1/4P3/PPPP1PPP/RNBQKB1R b KQkq - 0 25");
+    final Board board = Board.fromFenStrict("rnbqk2r/ppppppbp/6pN/8/6n1/4P3/PPPP1PPP/RNBQKB1R b KQkq - 0 25");
     checkCastlingException("O-O", board, CastlingCheck.TEMPORARY_KING_ENDS_IN_CHECK, CastlingRightLoss.NOT_LOST);
   }
 
@@ -139,12 +140,12 @@ class TestSanValidateAgainstLegalMovesCastling {
       CastlingRightLoss expectedLoss) {
     boolean isException;
     try {
-      StrictSanParser.parseText(san, board);
+      StrictSanParser.parse(san, board);
       isException = false;
     } catch (final SanValidationException e) {
       isException = true;
       assertEquals(CastlingCheckMapper.map(expectedCastlingCheck, expectedLoss), e.getSanValidationProblem());
-      assertEquals(expectedCastlingCheck.toMoveCheck(expectedLoss), e.getMoveCheck());
+      assertEquals(CastlingCheckTranslator.toMoveCheck(expectedCastlingCheck, expectedLoss), e.getMoveCheck());
       assertEquals(expectedLoss, e.getCastlingRightLoss());
     }
     assertTrue(isException);

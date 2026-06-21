@@ -6,7 +6,7 @@ package io.github.dlbbld.ashlarchess.model;
 import io.github.dlbbld.ashlarchess.board.enums.PromotionPieceType;
 import io.github.dlbbld.ashlarchess.board.enums.Square;
 
-public record UciMove(Square fromSquare, Square toSquare, String text, boolean isPromotion,
+public record UciMove(Square fromSquare, Square toSquare, String uci, boolean isPromotion,
     PromotionPieceType promotionPieceType) {
 
 }

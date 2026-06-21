@@ -16,7 +16,7 @@ import io.github.dlbbld.ashlarchess.board.enums.Side;
 import io.github.dlbbld.ashlarchess.board.enums.Square;
 import io.github.dlbbld.ashlarchess.common.model.MoveSpecification;
 import io.github.dlbbld.ashlarchess.model.LegalMove;
-import io.github.dlbbld.ashlarchess.moves.AbstractLegalMoves;
+import io.github.dlbbld.ashlarchess.moves.LegalMovesSupport;
 import io.github.dlbbld.ashlarchess.test.model.PgnFen;
 import io.github.dlbbld.ashlarchess.test.model.PgnTestCaseList;
 import io.github.dlbbld.ashlarchess.test.pgn.setup.PgnTestCaseCatalog;
@@ -28,7 +28,7 @@ import io.github.dlbbld.ashlarchess.test.pgntest.enums.PgnTest;
  * (same moving piece, captured piece, and {@link io.github.dlbbld.ashlarchess.model.LegalMoveKind}).
  *
  * <p>
- * The reference is {@link AbstractLegalMoves#calculateLegalMoves} directly - NOT {@code board.getLegalMoves()}, which
+ * The reference is {@link LegalMovesSupport#calculateLegalMoves} directly - NOT {@code board.getLegalMoves()}, which
  * since Switchover Step 2.2 ({@code a235d363}) is produced via this very factory. Using {@code board.getLegalMoves()}
  * as the oracle here would make the test self-referential.
  */
@@ -41,13 +41,13 @@ class TestBitboardLegalMoveFactory {
       final PgnTestCaseList testCaseList = PgnTestCaseCatalog.getTestList(pgnTest);
       for (final PgnFen testCase : testCaseList.list()) {
         final Board board = testCase.finalPosition();
-        final Side havingMove = board.getHavingMove();
+        final Side sideToMove = board.getSideToMove();
         final BitboardPosition bitboardPosition = board.getBitboardPosition();
-        for (final LegalMove referenceMove : AbstractLegalMoves.calculateLegalMoves(
-            StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), havingMove,
-            board.getCastlingRight(havingMove), board.getEnPassantCaptureTargetSquare())) {
+        for (final LegalMove referenceMove : LegalMovesSupport.calculateLegalMoves(
+            StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), sideToMove,
+            board.getCastlingRight(sideToMove), board.getEnPassantCaptureTargetSquare())) {
           final LegalMove converted = BitboardLegalMoveFactory.toLegalMove(bitboardPosition,
-              referenceMove.moveSpecification(), havingMove);
+              referenceMove.moveSpecification(), sideToMove);
           assertEquals(referenceMove, converted, "converted LegalMove disagrees with reference for "
               + referenceMove.moveSpecification() + " in fixture " + testCase.pgnName());
         }
@@ -63,13 +63,14 @@ class TestBitboardLegalMoveFactory {
         Side.WHITE);
     assertEquals(io.github.dlbbld.ashlarchess.model.LegalMoveKind.PAWN_TWO_SQUARE_ADVANCE, converted.kind());
     assertEquals(io.github.dlbbld.ashlarchess.board.enums.Piece.WHITE_PAWN, converted.movingPiece());
-    assertEquals(io.github.dlbbld.ashlarchess.board.enums.Piece.NONE, converted.pieceCaptured());
+    assertEquals(io.github.dlbbld.ashlarchess.board.enums.Piece.NONE, converted.capturedPiece());
   }
 
   @SuppressWarnings("static-method")
   @Test
   void noneSideThrows() {
-    assertThrows(IllegalArgumentException.class, () -> BitboardLegalMoveFactory
-        .toLegalMove(BitboardPosition.INITIAL_POSITION, new MoveSpecification(Square.E2, Square.E4), Side.NONE));
+    final MoveSpecification move = new MoveSpecification(Square.E2, Square.E4);
+    assertThrows(IllegalArgumentException.class,
+        () -> BitboardLegalMoveFactory.toLegalMove(BitboardPosition.INITIAL_POSITION, move, Side.NONE));
   }
 }

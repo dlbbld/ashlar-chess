@@ -32,7 +32,7 @@ public enum NotationMovingPiece {
     return false;
   }
 
-  public static NotationMovingPiece calculate(char movingPieceLetter) {
+  public static NotationMovingPiece parse(char movingPieceLetter) {
     if (!exists(movingPieceLetter)) {
       throw new IllegalArgumentException("For this letter no corresponding moving piece exists");
     }

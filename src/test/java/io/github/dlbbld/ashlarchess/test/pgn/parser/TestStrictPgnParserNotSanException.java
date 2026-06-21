@@ -16,7 +16,7 @@ import io.github.dlbbld.ashlarchess.pgn.StrictPgnParserValidationException;
 import io.github.dlbbld.ashlarchess.pgn.StrictPgnParserValidationProblem;
 import io.github.dlbbld.ashlarchess.test.pgntest.constants.PgnTestConstants;
 
-class TestStrictPgnParserNotSanException extends AbstractTestStrictPgnParserException {
+class TestStrictPgnParserNotSanException {
   private static final Path PGN_TEST_FOLDER_PATH = Nulls
       .pathResolve(PgnTestConstants.STRICT_PGN_PARSER_TEST_ROOT_FOLDER_PATH, "exception/other");
 
@@ -94,7 +94,7 @@ class TestStrictPgnParserNotSanException extends AbstractTestStrictPgnParserExce
   private static void checkException(String pgnName, StrictPgnParserValidationProblem expected) {
     boolean isException = false;
     try {
-      StrictPgnParser.parse(PGN_TEST_FOLDER_PATH, pgnName);
+      StrictPgnParser.parsePath(PGN_TEST_FOLDER_PATH, pgnName);
     } catch (final StrictPgnParserValidationException e) {
       isException = true;
       assertEquals(expected, e.getStrictPgnParserValidationProblem());

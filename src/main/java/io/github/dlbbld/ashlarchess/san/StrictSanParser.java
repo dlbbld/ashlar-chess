@@ -12,12 +12,16 @@ import io.github.dlbbld.ashlarchess.common.model.MoveSpecification;
 import io.github.dlbbld.ashlarchess.model.LegalMove;
 
 /**
- * Public entry point for the strict SAN pipeline. Accepts canonical SAN only; the result is symmetric in shape with
- * {@link io.github.dlbbld.ashlarchess.san.LenientSanParser} so callers can switch between strict and lenient by
- * changing one method call. Use {@link io.github.dlbbld.ashlarchess.san.LenientSanParser} when parsing real-world PGN
- * that may contain forgivable deviations from canonical SAN.
+ * Public entry point for the strict SAN pipeline. Accepts canonical SAN only and returns the resolved
+ * {@link MoveSpecification}, validating by construction - an input that is not canonical SAN, or is canonical but not a
+ * legal move on the position, throws. Use {@link LenientSanParser} when parsing real-world PGN that may contain
+ * forgivable deviations from canonical SAN; that pipeline returns a {@link LenientSanParseResult} carrying the resolved
+ * move plus the forgiven items.
  */
-public class StrictSanParser extends AbstractSan {
+public final class StrictSanParser {
+
+  private StrictSanParser() {
+  }
 
   /**
    * Parses {@code san} as canonical SAN against {@code board} and returns the resolved {@link MoveSpecification}.
@@ -25,35 +29,34 @@ public class StrictSanParser extends AbstractSan {
    * @throws SanValidationException if the input is not canonical SAN, or is canonical but does not represent a legal
    *                                move on the current position
    */
-  public static StrictSanParserValidationResult parseText(String san, Board board) throws SanValidationException {
-    final MoveSpecification moveSpecification = parseTextInternal(san, board);
-    return new StrictSanParserValidationResult(moveSpecification);
+  public static MoveSpecification parse(String san, Board board) throws SanValidationException {
+    return parseInternal(san, board);
   }
 
-  private static MoveSpecification parseTextInternal(String san, Board board) throws SanValidationException {
+  private static MoveSpecification parseInternal(String san, Board board) throws SanValidationException {
     final SanParse sanParse = SanValidateFormat.validateFormat(san);
 
     SanValidateNonMovement.validateNonMovement(sanParse);
 
-    final Side havingMove = board.getHavingMove();
-    SanValidateMovement.validateMovement(sanParse, havingMove);
+    final Side sideToMove = board.getSideToMove();
+    SanValidateMovement.validateMovement(sanParse, sideToMove);
 
     final SanFormat sanFormat = sanParse.sanFormat();
     final SanConversion sanConversion = sanParse.sanConversion();
 
-    SanValidatePieceExists.validatePieceExists(havingMove, sanFormat, sanConversion, sanConversion.movingPieceType(),
+    SanValidatePieceExists.validatePieceExists(sideToMove, sanFormat, sanConversion, sanConversion.movingPieceType(),
         board.getBitboardPosition());
 
-    SanValidateDestination.validateDestinationSquareSemantics(board, havingMove, sanFormat, sanConversion);
+    SanValidateDestination.validateDestinationSquareSemantics(board, sideToMove, sanFormat, sanConversion);
 
-    final List<LegalMove> legalMovesCandidates = SanValidateLegalMoves.calculateLegalMovesCandidates(board, havingMove,
+    final List<LegalMove> legalMovesCandidates = SanValidateLegalMoves.calculateLegalMovesCandidates(board, sideToMove,
         sanParse);
-    SanValidateLegalMoves.validateAgainstLegalMoves(board, havingMove, legalMovesCandidates, sanFormat, sanConversion);
+    SanValidateLegalMoves.validateAgainstLegalMoves(board, sideToMove, legalMovesCandidates, sanFormat, sanConversion);
 
     final LegalMove legalMoveOnlyCandidate = SanValidateLegalMoves.calculateOnlyPossibleLegalMove(sanFormat,
         sanConversion, legalMovesCandidates);
     final MoveSpecification moveSpecification = SanValidateLegalMoves.calculateMoveSpecificationForSan(board,
-        havingMove, sanFormat, sanConversion, legalMoveOnlyCandidate.moveSpecification());
+        sideToMove, sanFormat, sanConversion, legalMoveOnlyCandidate.moveSpecification());
     if (!moveSpecification.equals(legalMoveOnlyCandidate.moveSpecification())) {
       throw new ProgrammingMistakeException("A mistake happened in the move construction");
     }

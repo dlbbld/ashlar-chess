@@ -30,9 +30,19 @@ public enum PromotionPieceType {
     return pieceType;
   }
 
-  public static Piece calculate(Side havingMove, PromotionPieceType pieceType) {
-    return switch (havingMove) {
-      case BLACK -> switch (pieceType) {
+  private void check() {
+    if (this == NONE) {
+      throw new NonePointerException();
+    }
+  }
+
+  /**
+   * Constructs the concrete {@link Piece} that a pawn of {@code side} becomes when promoting to
+   * {@code promotionPieceType}.
+   */
+  public Piece toPiece(Side side) {
+    return switch (side) {
+      case BLACK -> switch (this) {
         case ROOK -> Piece.BLACK_ROOK;
         case KNIGHT -> Piece.BLACK_KNIGHT;
         case BISHOP -> Piece.BLACK_BISHOP;
@@ -40,7 +50,7 @@ public enum PromotionPieceType {
         case NONE -> throw new IllegalArgumentException();
         default -> throw new IllegalArgumentException();
       };
-      case WHITE -> switch (pieceType) {
+      case WHITE -> switch (this) {
         case ROOK -> Piece.WHITE_ROOK;
         case KNIGHT -> Piece.WHITE_KNIGHT;
         case BISHOP -> Piece.WHITE_BISHOP;
@@ -53,9 +63,26 @@ public enum PromotionPieceType {
     };
   }
 
-  private void check() {
-    if (this == NONE) {
-      throw new NonePointerException();
-    }
+  /**
+   * Compares this promotion piece type against {@code other} using the legal-move ordering rule: queen, rook, bishop,
+   * knight, none.
+   *
+   * @param other the promotion piece type to compare this one against
+   * @return a negative integer, zero, or a positive integer as this type orders before, the same as, or after
+   *         {@code other} under the move-ordering rule
+   */
+  public int compareForMoveOrdering(PromotionPieceType other) {
+    return Integer.compare(moveOrderingRank(this), moveOrderingRank(other));
+  }
+
+  private static int moveOrderingRank(PromotionPieceType promotionPieceType) {
+    return switch (promotionPieceType) {
+      case QUEEN -> 0;
+      case ROOK -> 1;
+      case BISHOP -> 2;
+      case KNIGHT -> 3;
+      case NONE -> 4;
+      default -> throw new IllegalArgumentException();
+    };
   }
 }

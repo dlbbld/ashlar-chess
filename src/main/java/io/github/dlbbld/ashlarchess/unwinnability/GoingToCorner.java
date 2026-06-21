@@ -3,18 +3,30 @@
 
 package io.github.dlbbld.ashlarchess.unwinnability;
 
+import static io.github.dlbbld.ashlarchess.board.enums.PieceType.KING;
+import static io.github.dlbbld.ashlarchess.board.enums.Side.BLACK;
+import static io.github.dlbbld.ashlarchess.board.enums.Square.A6;
+import static io.github.dlbbld.ashlarchess.board.enums.Square.A8;
+import static io.github.dlbbld.ashlarchess.board.enums.Square.B8;
+import static io.github.dlbbld.ashlarchess.board.enums.Square.G8;
+import static io.github.dlbbld.ashlarchess.board.enums.Square.H6;
+import static io.github.dlbbld.ashlarchess.board.enums.Square.H8;
+
 import io.github.dlbbld.ashlarchess.bitboard.BitboardPosition;
 import io.github.dlbbld.ashlarchess.board.enums.Piece;
 import io.github.dlbbld.ashlarchess.board.enums.PieceType;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
 import io.github.dlbbld.ashlarchess.board.enums.Square;
-import io.github.dlbbld.ashlarchess.common.constants.EnumConstants;
+import io.github.dlbbld.ashlarchess.board.enums.SquareUtility;
 import io.github.dlbbld.ashlarchess.model.LegalMove;
 import io.github.dlbbld.ashlarchess.model.LegalMoveKind;
 import io.github.dlbbld.ashlarchess.moves.CastlingUtility;
 
 //Figure 13 Going-to-corner routine used in Figure 12.
-class GoingToCorner implements EnumConstants {
+final class GoingToCorner {
+
+  private GoingToCorner() {
+  }
 
   // Inputs: position, legal move in the position, objective (Win or Lose)
   // Output: bool (indicating whether or not m is leading to a corner mating position)
@@ -29,8 +41,8 @@ class GoingToCorner implements EnumConstants {
     final Square fromSquare;
     if (m.kind() == LegalMoveKind.CASTLING) {
       movingPiece = m.movingPiece();
-      toSquare = CastlingUtility.calculateKingCastlingTo(m.havingMove(), m.moveSpecification());
-      fromSquare = CastlingUtility.calculateKingCastlingFrom(m.havingMove(), m.moveSpecification());
+      toSquare = CastlingUtility.calculateKingCastlingTo(m.movingSide(), m.moveSpecification());
+      fromSquare = CastlingUtility.calculateKingCastlingFrom(m.movingSide(), m.moveSpecification());
     } else {
       movingPiece = m.movingPiece();
       toSquare = m.moveSpecification().toSquare();
@@ -65,9 +77,9 @@ class GoingToCorner implements EnumConstants {
 
     Square target = calculateTargetSquare(isDarkCorner, goal, p.getPieceType());
     if (winner == BLACK) {
-      // 8: set target := (flip-rank  flip-file)(target) . Flip the target with respect to the
+      // 8: set target := (flip-rank  flip-file)(target) . Rotate the target 180 degrees about the
       // center of the board (a8 becomes h1, and h8 becomes a1)
-      target = Square.flip(target);
+      target = SquareUtility.rotate180(target);
     }
 
     return target;

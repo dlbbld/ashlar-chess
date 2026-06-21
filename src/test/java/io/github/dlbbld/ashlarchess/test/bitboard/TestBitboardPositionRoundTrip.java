@@ -30,7 +30,7 @@ class TestBitboardPositionRoundTrip {
     final StaticPosition staticPosition = StaticPosition.INITIAL_POSITION;
     final BitboardPosition bitboardPosition = StaticPositionBridge.fromStaticPosition(staticPosition);
     assertEquals(staticPosition, StaticPositionBridge.toStaticPosition(bitboardPosition));
-    assertEquals(bitboardPosition, BitboardPosition.INITIAL_POSITION);
+    assertEquals(BitboardPosition.INITIAL_POSITION, bitboardPosition);
   }
 
   @SuppressWarnings("static-method")
@@ -39,7 +39,7 @@ class TestBitboardPositionRoundTrip {
     final StaticPosition staticPosition = StaticPosition.EMPTY_POSITION;
     final BitboardPosition bitboardPosition = StaticPositionBridge.fromStaticPosition(staticPosition);
     assertEquals(staticPosition, StaticPositionBridge.toStaticPosition(bitboardPosition));
-    assertEquals(bitboardPosition, BitboardPosition.EMPTY_POSITION);
+    assertEquals(BitboardPosition.EMPTY_POSITION, bitboardPosition);
   }
 
   @SuppressWarnings("static-method")

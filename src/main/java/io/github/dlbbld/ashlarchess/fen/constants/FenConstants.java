@@ -3,6 +3,8 @@
 
 package io.github.dlbbld.ashlarchess.fen.constants;
 
+import static io.github.dlbbld.ashlarchess.board.enums.Side.WHITE;
+
 import java.util.Arrays;
 import java.util.List;
 
@@ -14,10 +16,12 @@ import io.github.dlbbld.ashlarchess.bitboard.BitboardPosition;
 import io.github.dlbbld.ashlarchess.board.enums.CastlingRight;
 import io.github.dlbbld.ashlarchess.board.enums.Square;
 import io.github.dlbbld.ashlarchess.common.Nulls;
-import io.github.dlbbld.ashlarchess.common.constants.EnumConstants;
 import io.github.dlbbld.ashlarchess.fen.model.Fen;
 
-public class FenConstants implements EnumConstants {
+public final class FenConstants {
+
+  private FenConstants() {
+  }
 
   public static final String FEN_INITIAL_STR = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
 
@@ -29,16 +33,16 @@ public class FenConstants implements EnumConstants {
 
   static final String PIECE_PLACEMENT_AFTER_E4_E5 = "rnbqkbnr/pppp1ppp/8/4p3/4P3/8/PPPP1PPP/RNBQKBNR";
 
-  // we set the max full move counter so that the halfmove clock still fits in the int range
+  // we set the max fullmove number so that the halfmove clock still fits in the int range
   public static final int MAX_FULL_MOVE_NUMBER = (Integer.MAX_VALUE - 1) / 2;
 
   public static final Fen FEN_INITIAL = new Fen(FEN_INITIAL_STR, BitboardPosition.INITIAL_POSITION, WHITE,
       CastlingRight.KING_AND_QUEEN_SIDE, CastlingRight.KING_AND_QUEEN_SIDE, Square.NONE, 0, 1);
 
-  public static final ImmutableList<String> POSSIBLE_FEN_AFTER_FIRST_HALF_MOVE;
+  public static final ImmutableList<String> POSSIBLE_FEN_AFTER_FIRST_MOVE;
 
   static {
-    @SuppressWarnings("null") final @NonNull List<String> fenAfterFirstHalfMoveList = Arrays.asList(
+    @SuppressWarnings("null") final @NonNull List<String> fensAfterFirstMove = Arrays.asList(
         "rnbqkbnr/pppppppp/8/8/8/P7/1PPPPPPP/RNBQKBNR b KQkq - 0 1",
         "rnbqkbnr/pppppppp/8/8/8/1P6/P1PPPPPP/RNBQKBNR b KQkq - 0 1",
         "rnbqkbnr/pppppppp/8/8/8/2P5/PP1PPPPP/RNBQKBNR b KQkq - 0 1",
@@ -59,7 +63,7 @@ public class FenConstants implements EnumConstants {
         "rnbqkbnr/pppppppp/8/8/8/5N2/PPPPPPPP/RNBQKB1R b KQkq - 1 1",
         "rnbqkbnr/pppppppp/8/8/8/7N/PPPPPPPP/RNBQKB1R b KQkq - 1 1");
 
-    POSSIBLE_FEN_AFTER_FIRST_HALF_MOVE = Nulls.copyOfList(fenAfterFirstHalfMoveList);
+    POSSIBLE_FEN_AFTER_FIRST_MOVE = Nulls.copyOfList(fensAfterFirstMove);
   }
 
 }

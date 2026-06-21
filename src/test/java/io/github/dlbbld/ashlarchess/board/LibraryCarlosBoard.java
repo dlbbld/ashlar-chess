@@ -32,7 +32,6 @@ import io.github.dlbbld.ashlarchess.common.constants.ChessConstants;
 import io.github.dlbbld.ashlarchess.common.constants.DynamicPositionConstants;
 import io.github.dlbbld.ashlarchess.common.exceptions.ProgrammingMistakeException;
 import io.github.dlbbld.ashlarchess.common.model.DynamicPosition;
-import io.github.dlbbld.ashlarchess.common.model.HalfMove;
 import io.github.dlbbld.ashlarchess.common.model.MoveSpecification;
 import io.github.dlbbld.ashlarchess.fen.constants.FenConstants;
 import io.github.dlbbld.ashlarchess.fen.model.Fen;
@@ -41,6 +40,7 @@ import io.github.dlbbld.ashlarchess.model.LegalMoveKind;
 import io.github.dlbbld.ashlarchess.moves.EnPassantCaptureUtility;
 import io.github.dlbbld.ashlarchess.san.SanSymbol;
 import io.github.dlbbld.ashlarchess.san.SanTerminalMarker;
+import io.github.dlbbld.ashlarchess.san.SanTerminalMarkerUtility;
 import io.github.dlbbld.ashlarchess.test.librarycarlos.NullsCarlos;
 import io.github.dlbbld.ashlarchess.test.librarycarlos.utility.MoveConversionUtility;
 import io.github.dlbbld.ashlarchess.test.librarycomparison.utility.BoardConversionUtitlity;
@@ -50,51 +50,49 @@ public class LibraryCarlosBoard {
 
   private final Board board = new Board();
 
-  private int performedHalfMoveCount;
-  private final List<LegalMove> performedLegalMoveList;
-  private final List<DynamicPosition> dynamicPositionList;
-  private final List<HalfMove> halfMoveList;
+  private int performedMoveCount;
+  private final List<LegalMove> performedLegalMoves;
+  private final List<DynamicPosition> dynamicPositions;
 
   public LibraryCarlosBoard() {
 
-    performedHalfMoveCount = 0;
-    performedLegalMoveList = new ArrayList<>();
-    dynamicPositionList = new ArrayList<>();
-    dynamicPositionList.add(DynamicPositionConstants.INITIAL);
-    halfMoveList = new ArrayList<>();
+    performedMoveCount = 0;
+    performedLegalMoves = new ArrayList<>();
+    dynamicPositions = new ArrayList<>();
+    dynamicPositions.add(DynamicPositionConstants.INITIAL);
 
   }
 
   public boolean move(MoveSpecification moveSpecification) {
-    final Side havingMove = getHavingMove();
-    final boolean result = board.doMove(MoveConversionUtility.convertMoveSpecification(havingMove, moveSpecification));
+    final Side sideToMove = getSideToMove();
+    final boolean result = board.doMove(MoveConversionUtility.convertMoveSpecification(sideToMove, moveSpecification));
     populateMoveHistory(moveSpecification);
     return result;
   }
 
-  public io.github.dlbbld.ashlarchess.san.StrictSanParserValidationResult moveStrict(String san) {
+  public MoveSpecification moveStrict(String san) {
     board.doMove(san);
     final MoveSpecification lastMoveSpecification = calculateLastMoveSpecification();
     populateMoveHistory(lastMoveSpecification);
-    return new io.github.dlbbld.ashlarchess.san.StrictSanParserValidationResult(lastMoveSpecification);
+    return lastMoveSpecification;
   }
 
-  public io.github.dlbbld.ashlarchess.san.LenientSanParserValidationResult moveLenient(String san) {
+  public io.github.dlbbld.ashlarchess.san.LenientSanParseResult moveLenient(String san) {
     // Carlos's chesslib doesn't have a lenient SAN concept; delegate to strict, then wrap into the lenient result
     // shape with empty forgiven items. Cross-validation tests only need the move to land on the board.
-    final io.github.dlbbld.ashlarchess.san.StrictSanParserValidationResult strict = moveStrict(san);
-    return new io.github.dlbbld.ashlarchess.san.LenientSanParserValidationResult(strict.moveSpecification(),
-        io.github.dlbbld.ashlarchess.san.ForgivenItem.EMPTY_LIST);
+    final MoveSpecification strict = moveStrict(san);
+    return new io.github.dlbbld.ashlarchess.san.LenientSanParseResult(strict,
+        io.github.dlbbld.ashlarchess.san.ForgivenSanItem.NO_ITEMS);
   }
 
   private MoveSpecification calculateLastMoveSpecification() {
     final MoveBackup moveBackup = board.getBackup().getLast();
     @SuppressWarnings("null") @NonNull final Move move = moveBackup.getMove();
-    final com.github.bhlangonijr.chesslib.Side havingMove = NullsCarlos.getSideToMove(moveBackup);
+    final com.github.bhlangonijr.chesslib.Side sideToMove = NullsCarlos.getSideToMove(moveBackup);
     final com.github.bhlangonijr.chesslib.Square fromSquare = NullsCarlos.getFrom(move);
     com.github.bhlangonijr.chesslib.Piece movingPiece;
     if (moveBackup.isCastleMove()) {
-      movingPiece = switch (havingMove) {
+      movingPiece = switch (sideToMove) {
         case WHITE -> com.github.bhlangonijr.chesslib.Piece.WHITE_KING;
         case BLACK -> com.github.bhlangonijr.chesslib.Piece.BLACK_KING;
         default -> throw new IllegalArgumentException();
@@ -106,38 +104,33 @@ public class LibraryCarlosBoard {
   }
 
   private void populateMoveHistory(MoveSpecification moveSpecification) {
-    performedHalfMoveCount++;
+    performedMoveCount++;
 
     final MoveBackup moveBackup = NullsCarlos.getLast(this.board);
     final LegalMove legalMove = calculateLegalMove(moveSpecification, moveBackup);
-    performedLegalMoveList.add(legalMove);
+    performedLegalMoves.add(legalMove);
     final Square normalizedEnPassantCaptureTargetSquare = isEnPassantCapturePossible()
         ? getEnPassantCaptureTargetSquare()
         : Square.NONE;
     final BitboardPosition bitboardPosition = StaticPositionBridge.fromStaticPosition(getStaticPosition());
-    dynamicPositionList.add(new DynamicPosition(getHavingMove(), bitboardPosition,
+    dynamicPositions.add(new DynamicPosition(getSideToMove(), bitboardPosition,
         normalizedEnPassantCaptureTargetSquare, getCastlingRightWhite(), getCastlingRightBlack()));
-
-    // ATTENTION: timely dependency, must be after the above code is very very dangerous
-    final HalfMove halfMove = buildHalfMove(moveSpecification);
-    halfMoveList.add(halfMove);
   }
 
   public void unmove() {
     board.undoMove();
 
-    performedHalfMoveCount--;
-    performedLegalMoveList.remove(performedLegalMoveList.size() - 1);
-    dynamicPositionList.remove(dynamicPositionList.size() - 1);
-    halfMoveList.remove(halfMoveList.size() - 1);
+    performedMoveCount--;
+    performedLegalMoves.remove(performedLegalMoves.size() - 1);
+    dynamicPositions.remove(dynamicPositions.size() - 1);
   }
 
   public boolean canClaimFiftyMoveRuleWithOwnMove() {
     final int halfMoveClock = getHalfMoveClock();
     if (halfMoveClock == 99) {
-      final List<Move> legalMoveList = LibraryCarlosImplementationUtility.generateLegalMoves(this.board);
-      // need to check if there is a legal move which has half move clock 100
-      for (final Move legalMove : legalMoveList) {
+      final List<Move> legalMoves = LibraryCarlosImplementationUtility.generateLegalMoves(this.board);
+      // need to check if there is a legal move which has halfmove clock 100
+      for (final Move legalMove : legalMoves) {
         board.doMove(legalMove);
         final int halfMoveClockAfterNextHalfMove = getHalfMoveClock();
         if (halfMoveClockAfterNextHalfMove == 100 && !board.isMated() && !board.isStaleMate()) {
@@ -151,7 +144,7 @@ public class LibraryCarlosBoard {
   }
 
   public boolean canClaimThreefoldRepetitionRuleWithOwnMove() {
-    for (final MoveSpecification moveSpecification : getPossibleMoveSpecificationList()) {
+    for (final MoveSpecification moveSpecification : getLegalMoveSpecifications()) {
       move(moveSpecification);
       if (isThreefoldRepetition()) {
         unmove();
@@ -222,10 +215,10 @@ public class LibraryCarlosBoard {
       return sanTest;
     }
 
-    final MoveList moveList = new MoveList();
-    moveList.addAll(calculateMoveList(this.board));
+    final MoveList moves = new MoveList();
+    moves.addAll(calculateMoves(this.board));
     try {
-      final String[] sanArray = moveList.toSanArray();
+      final String[] sanArray = moves.toSanArray();
       @SuppressWarnings("null") final String last = Nulls.getLast(sanArray);
       return last;
     } catch (final MoveConversionException e) {
@@ -233,7 +226,7 @@ public class LibraryCarlosBoard {
     }
   }
 
-  private static List<Move> calculateMoveList(Board board) {
+  private static List<Move> calculateMoves(Board board) {
     final List<Move> result = new ArrayList<>();
     for (final MoveBackup moveBackup : NullsCarlos.getBackup(board)) {
       result.add(NullsCarlos.getMove(moveBackup));
@@ -280,8 +273,8 @@ public class LibraryCarlosBoard {
       lan.append(promotionPieceSymbol);
     }
 
-    final SanTerminalMarker sanTerminalMarker = SanTerminalMarker.calculate(isCheck(), isCheckmate());
-    sanTerminalMarker.append(lan);
+    final SanTerminalMarker sanTerminalMarker = SanTerminalMarkerUtility.calculate(isCheck(), isCheckmate());
+    SanTerminalMarkerUtility.appendTo(lan, sanTerminalMarker);
 
     return Nulls.toString(lan);
   }
@@ -336,7 +329,7 @@ public class LibraryCarlosBoard {
     return board.isRepetition(5);
   }
 
-  public Side getHavingMove() {
+  public Side getSideToMove() {
     return EnumConversionUtility.convertToMySide(NullsCarlos.getSideToMove(this.board));
   }
 
@@ -374,29 +367,25 @@ public class LibraryCarlosBoard {
     };
   }
 
-  public int getPerformedHalfMoveCount() {
-    return performedHalfMoveCount;
+  public int getPerformedMoveCount() {
+    return performedMoveCount;
   }
 
-  public ImmutableList<DynamicPosition> getDynamicPositionList() {
-    return Nulls.copyOfList(dynamicPositionList);
-  }
-
-  public ImmutableList<HalfMove> getHalfMoveList() {
-    return Nulls.copyOfList(halfMoveList);
+  public ImmutableList<DynamicPosition> getDynamicPositions() {
+    return Nulls.copyOfList(dynamicPositions);
   }
 
   public DynamicPosition getDynamicPosition() {
-    return Nulls.getLast(dynamicPositionList);
+    return Nulls.getLast(dynamicPositions);
   }
 
-  public ImmutableList<MoveSpecification> getPossibleMoveSpecificationList() {
+  public ImmutableList<MoveSpecification> getLegalMoveSpecifications() {
     return Nulls.copyOfList(generateMoveSpecificationSortedSet(this.board));
   }
 
   // the API does not return null
   @SuppressWarnings("null")
-  private static List<Move> generateLegalMoveList(Board board) {
+  private static List<Move> generateLegalMoves(Board board) {
     try {
       return MoveGenerator.generateLegalMoves(board);
     } catch (final MoveGeneratorException e) {
@@ -405,29 +394,29 @@ public class LibraryCarlosBoard {
   }
 
   @SuppressWarnings("null")
-  private static List<MoveBackup> generateLegalMoveBackupList(Board board) {
-    List<Move> legalMoveList;
+  private static List<MoveBackup> generateLegalMoveBackups(Board board) {
+    List<Move> legalMoves;
     try {
-      legalMoveList = MoveGenerator.generateLegalMoves(board);
+      legalMoves = MoveGenerator.generateLegalMoves(board);
     } catch (final MoveGeneratorException e) {
       throw new RuntimeException("Problem with legal move generation", e);
     }
 
-    final List<MoveBackup> moveBackupList = new ArrayList<>();
-    for (final Move move : legalMoveList) {
+    final List<MoveBackup> moveBackups = new ArrayList<>();
+    for (final Move move : legalMoves) {
       board.doMove(move);
       final MoveBackup moveBackup = board.getBackup().getLast();
       board.undoMove();
-      moveBackupList.add(moveBackup);
+      moveBackups.add(moveBackup);
     }
-    return moveBackupList;
+    return moveBackups;
   }
 
   private static Set<MoveSpecification> generateMoveSpecificationSortedSet(Board board) {
-    final List<Move> moveList = generateLegalMoveList(board);
+    final List<Move> moves = generateLegalMoves(board);
 
     final Set<MoveSpecification> result = new TreeSet<>();
-    for (final Move move : moveList) {
+    for (final Move move : moves) {
       final MoveSpecification moveSpecification = convertMove(board, move);
       result.add(moveSpecification);
     }
@@ -441,15 +430,15 @@ public class LibraryCarlosBoard {
   }
 
   private static Set<LegalMove> generateLegalMoveSortedSet(Board board) {
-    final List<MoveBackup> moveBackupList = generateLegalMoveBackupList(board);
+    final List<MoveBackup> moveBackups = generateLegalMoveBackups(board);
 
     final Set<LegalMove> result = new TreeSet<>();
-    for (final MoveBackup moveBackup : moveBackupList) {
+    for (final MoveBackup moveBackup : moveBackups) {
       final Move move = NullsCarlos.getMove(moveBackup);
       final MoveSpecification moveSpecification = convertMove(board, move);
       final Piece movingPiece = EnumConversionUtility.convertPiece(NullsCarlos.getMovingPiece(moveBackup));
-      final Piece pieceCaptured = EnumConversionUtility.convertPiece(NullsCarlos.getCapturedPiece(moveBackup));
-      final LegalMove legalMove = new LegalMove(moveSpecification, movingPiece, pieceCaptured,
+      final Piece capturedPiece = EnumConversionUtility.convertPiece(NullsCarlos.getCapturedPiece(moveBackup));
+      final LegalMove legalMove = new LegalMove(moveSpecification, movingPiece, capturedPiece,
           calculateKind(moveBackup));
       result.add(legalMove);
     }
@@ -461,13 +450,13 @@ public class LibraryCarlosBoard {
   }
 
   public LegalMove getLastMove() {
-    return Nulls.getLast(performedLegalMoveList);
+    return Nulls.getLast(performedLegalMoves);
   }
 
   private static LegalMove calculateLegalMove(MoveSpecification moveSpecification, MoveBackup moveBackup) {
     final Piece movingPiece = EnumConversionUtility.convertToMyPiece(NullsCarlos.getMovingPiece(moveBackup));
-    final Piece pieceCaptured = EnumConversionUtility.convertToMyPiece(NullsCarlos.getCapturedPiece(moveBackup));
-    return new LegalMove(moveSpecification, movingPiece, pieceCaptured, calculateKind(moveBackup));
+    final Piece capturedPiece = EnumConversionUtility.convertToMyPiece(NullsCarlos.getCapturedPiece(moveBackup));
+    return new LegalMove(moveSpecification, movingPiece, capturedPiece, calculateKind(moveBackup));
   }
 
   private static LegalMoveKind calculateKind(MoveBackup moveBackup) {
@@ -500,16 +489,16 @@ public class LibraryCarlosBoard {
     return EnPassantCaptureUtility.calculateEnPassantCaptureTargetSquare(getLastMove());
   }
 
-  public ImmutableList<MoveSpecification> getPerformedMoveSpecificationList() {
-    final List<MoveSpecification> moveSpecificationList = new ArrayList<>();
+  public ImmutableList<MoveSpecification> getPerformedMoveSpecifications() {
+    final List<MoveSpecification> moveSpecifications = new ArrayList<>();
     for (final MoveBackup moveBackup : NullsCarlos.getBackup(this.board)) {
 
       final Move move = NullsCarlos.getMove(moveBackup);
       final com.github.bhlangonijr.chesslib.Piece movingPiece = NullsCarlos.getMovingPiece(moveBackup);
 
-      moveSpecificationList.add(MoveConversionUtility.convertMove(move, movingPiece));
+      moveSpecifications.add(MoveConversionUtility.convertMove(move, movingPiece));
     }
-    return Nulls.copyOfList(moveSpecificationList);
+    return Nulls.copyOfList(moveSpecifications);
   }
 
   public ImmutableList<LegalMove> getLegalMoves() {
@@ -591,8 +580,8 @@ public class LibraryCarlosBoard {
     return true;
   }
 
-  public ImmutableList<LegalMove> getPerformedLegalMoveList() {
-    return Nulls.copyOfList(performedLegalMoveList);
+  public ImmutableList<LegalMove> getPerformedMoves() {
+    return Nulls.copyOfList(performedLegalMoves);
   }
 
   // ===== Methods previously inherited as `default` from the (now-removed) ChessBoard interface =====
@@ -612,24 +601,13 @@ public class LibraryCarlosBoard {
     return canClaimThreefoldRepetitionRuleWithOwnMove();
   }
 
-  public ImmutableList<String> getLegalMovesSan() {
+  public ImmutableList<String> getLegalMovesAsSan() {
     final List<String> result = new ArrayList<>();
-    for (final MoveSpecification moveSpecification : getPossibleMoveSpecificationList()) {
+    for (final MoveSpecification moveSpecification : getLegalMoveSpecifications()) {
       this.move(moveSpecification);
       result.add(getSan());
       this.unmove();
     }
     return Nulls.copyOfList(result);
-  }
-
-  private HalfMove buildHalfMove(MoveSpecification moveSpecification) {
-    final int halfMoveCount = getPerformedHalfMoveCount();
-    final int halfMoveClock = getHalfMoveClock();
-    final int fullMoveNumber = getFullMoveNumber();
-    final int countRepetition = getRepetitionCount();
-    final DynamicPosition dynamicPosition = getDynamicPosition();
-    final Piece movingPiece = getMovingPiece();
-    return new HalfMove(halfMoveCount, fullMoveNumber, halfMoveClock, dynamicPosition, countRepetition, getSan(),
-        movingPiece, moveSpecification);
   }
 }

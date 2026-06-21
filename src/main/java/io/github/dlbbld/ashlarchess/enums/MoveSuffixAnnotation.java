@@ -9,7 +9,7 @@ import java.util.List;
 import com.google.common.collect.ImmutableList;
 
 import io.github.dlbbld.ashlarchess.common.exceptions.ProgrammingMistakeException;
-import io.github.dlbbld.ashlarchess.common.utility.BasicUtility;
+import io.github.dlbbld.ashlarchess.common.utility.ListUtility;
 
 public enum MoveSuffixAnnotation {
 
@@ -44,7 +44,7 @@ public enum MoveSuffixAnnotation {
     return false;
   }
 
-  public static MoveSuffixAnnotation calculate(String suffix) {
+  public static MoveSuffixAnnotation parse(String suffix) {
     if (!exists(suffix)) {
       throw new IllegalArgumentException("No enum exists for this suffix");
     }
@@ -56,11 +56,11 @@ public enum MoveSuffixAnnotation {
     throw new ProgrammingMistakeException("The code for calculating the suffix enum is wrong");
   }
 
-  public static String calculateValueList() {
+  public static String allowedValuesText() {
     final List<String> list = new ArrayList<>();
     for (final MoveSuffixAnnotation suffixEnum : REAL) {
       list.add(suffixEnum.getSuffix());
     }
-    return BasicUtility.calculateCommaSeparatedList(list);
+    return ListUtility.toCommaSeparatedString(list);
   }
 }

@@ -20,6 +20,6 @@ class TestAmbronaMobilityOracleComparison {
     assertEquals(1249, comparison.comparedFenCount());
     assertEquals(0, comparison.fenDifferenceCount());
     assertEquals(0, comparison.rowDifferenceCount());
-    assertTrue(comparison.differentFenList().isEmpty());
+    assertTrue(comparison.differentFens().isEmpty());
   }
 }

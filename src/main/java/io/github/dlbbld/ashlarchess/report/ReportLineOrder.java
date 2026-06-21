@@ -7,29 +7,30 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
-import io.github.dlbbld.ashlarchess.common.model.HalfMove;
-
 /**
  * Lexicographic ordering for printed report lines in the threefold sections. Each line corresponds to a sequence of
- * half-move counts (the displayed plies, optionally preceded by a virtual "[Initial position]" marker). The comparator
+ * move counts (the displayed moves, optionally preceded by a virtual "[Initial position]" marker). The comparator
  * orders lines by that sequence in standard lex order, so:
  *
  * <ul>
- * <li>Lines whose displayed plies share an earlier-position prefix stay grouped together. For a single dynamic position
+ * <li>Lines whose displayed moves share an earlier-position prefix stay grouped together. For a single dynamic position
  * whose repetition crosses the threefold threshold, then continues to fourfold and fivefold, the length-3 / length-4 /
- * length-5 claim-ahead lines all share the same opening plies and therefore sit adjacent - and in increasing-length
+ * length-5 claim-ahead lines all share the same opening moves and therefore sit adjacent - and in increasing-length
  * order, because a shorter sequence is a prefix of the longer one.</li>
  * <li>Lines that include the initial position sort before lines that do not. The "[Initial position]" marker is
- * conceptually before any played ply; the sort key represents it as a virtual half-move count of {@code -1}, lower than
- * any real ply.</li>
+ * conceptually before any played move; the sort key represents it as a virtual move count of {@code -1}, lower than any
+ * real move.</li>
  * </ul>
  *
  * <p>
- * Used by {@link ThreefoldClaimAheadReportBuilder} (one entry per claim-ahead candidate move; displayed plies are
+ * Used by {@link ThreefoldClaimAheadReportBuilder} (one entry per claim-ahead candidate move; displayed moves are
  * {@code priorOccurrences ++ claimAheadMove}) and by {@link ThreefoldExistingReportBuilder} (one group per repeated
- * position; displayed plies are {@code occurrences}).
+ * position; displayed moves are {@code occurrences}).
  */
-abstract class ReportLineOrder {
+final class ReportLineOrder {
+
+  private ReportLineOrder() {
+  }
 
   static final Comparator<ClaimAheadEntry> CLAIM_AHEAD_COMPARATOR = (a, b) -> compareKeys(claimAheadSortKey(a),
       claimAheadSortKey(b));
@@ -38,9 +39,9 @@ abstract class ReportLineOrder {
       b) -> compareKeys(repetitionGroupSortKey(a), repetitionGroupSortKey(b));
 
   /**
-   * Orders 50-move claim-ahead entries by (sequence-start-anchor, boundary half-move count). The sequence-start anchor
-   * is {@code -1} for an initial-FEN start (sorts before any played ply) or the {@code firstNonZeroingMove}'s half-move
-   * count for an after-reset start. This groups boundary entries by the run they belong to and orders within a run
+   * Orders 50-move claim-ahead entries by (sequence-start-anchor, boundary move count). The sequence-start anchor is
+   * {@code -1} for an initial-FEN start (sorts before any played move) or the {@code firstNonZeroingMove}'s move count
+   * for an after-reset start. This groups boundary entries by the run they belong to and orders within a run
    * chronologically.
    */
   static final Comparator<FiftyMoveClaimAheadEntry> FIFTY_MOVE_CLAIM_AHEAD_COMPARATOR = (a, b) -> {
@@ -49,7 +50,7 @@ abstract class ReportLineOrder {
     if (startCompare != 0) {
       return startCompare;
     }
-    return Integer.compare(a.halfMoveCount(), b.halfMoveCount());
+    return Integer.compare(a.performedMoveCount(), b.performedMoveCount());
   };
 
   private static List<Integer> claimAheadSortKey(ClaimAheadEntry entry) {
@@ -57,10 +58,10 @@ abstract class ReportLineOrder {
     if (entry.includesInitialPosition()) {
       key.add(-1);
     }
-    for (final HalfMove halfMove : entry.priorOccurrences()) {
-      key.add(halfMove.halfMoveCount());
+    for (final MoveRecord move : entry.priorOccurrences()) {
+      key.add(move.performedMoveCount());
     }
-    key.add(entry.claimAheadMove().halfMoveCount());
+    key.add(entry.claimAheadMove().performedMoveCount());
     return key;
   }
 
@@ -69,8 +70,8 @@ abstract class ReportLineOrder {
     if (group.includesInitialPosition()) {
       key.add(-1);
     }
-    for (final HalfMove halfMove : group.occurrences()) {
-      key.add(halfMove.halfMoveCount());
+    for (final MoveRecord move : group.occurrences()) {
+      key.add(move.performedMoveCount());
     }
     return key;
   }
@@ -79,7 +80,7 @@ abstract class ReportLineOrder {
     if (start.isInitialFen()) {
       return -1;
     }
-    return start.firstNonZeroingMoveOrThrow().halfMoveCount();
+    return start.firstNonZeroingMoveOrThrow().performedMoveCount();
   }
 
   private static int compareKeys(List<Integer> a, List<Integer> b) {

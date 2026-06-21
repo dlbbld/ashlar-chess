@@ -17,19 +17,19 @@ import io.github.dlbbld.ashlarchess.test.model.PgnTestCaseList;
 import io.github.dlbbld.ashlarchess.test.pgn.setup.PgnTestCaseCatalog;
 import io.github.dlbbld.ashlarchess.test.pgntest.enums.PgnTest;
 
-class TestBasicDoubleCheckCheckmateBlack extends AbstractTestBasic {
+class TestBasicDoubleCheckCheckmateBlack {
 
   private static final Logger logger = Nulls.getLogger(TestBasicDoubleCheckCheckmateBlack.class);
 
   static {
-    final List<String> pgnNameList = new ArrayList<>();
+    final List<String> pgnNames = new ArrayList<>();
 
-    pgnNameList.add("01_black_double_check_checkmate_rook.pgn");
-    pgnNameList.add("02_black_double_check_checkmate_knight_orthogonal.pgn");
-    pgnNameList.add("03_black_double_check_checkmate_knight_diagonal.pgn");
-    pgnNameList.add("04_black_double_check_checkmate_bishop.pgn");
+    pgnNames.add("01_black_double_check_checkmate_rook.pgn");
+    pgnNames.add("02_black_double_check_checkmate_knight_orthogonal.pgn");
+    pgnNames.add("03_black_double_check_checkmate_knight_diagonal.pgn");
+    pgnNames.add("04_black_double_check_checkmate_bishop.pgn");
 
-    checkTestFolder(pgnNameList, PgnTest.BASIC_CHECKMATE_DOUBLE_CHECK_BLACK);
+    TestBasicSupport.checkTestFolder(pgnNames, PgnTest.BASIC_CHECKMATE_DOUBLE_CHECK_BLACK);
   }
 
   @SuppressWarnings("static-method")
@@ -42,12 +42,14 @@ class TestBasicDoubleCheckCheckmateBlack extends AbstractTestBasic {
       logger.info(testCase.pgnName());
 
       switch (testCase.pgnName()) {
-        case "01_black_double_check_checkmate_rook.pgn" -> checkDoubleCheckCheckmate(Piece.BLACK_ROOK, board);
-        case "02_black_double_check_checkmate_knight_orthogonal.pgn" -> checkDoubleCheckCheckmate(Piece.BLACK_KNIGHT,
+        case "01_black_double_check_checkmate_rook.pgn" -> TestBasicSupport.checkDoubleCheckCheckmate(Piece.BLACK_ROOK,
             board);
-        case "03_black_double_check_checkmate_knight_diagonal.pgn" -> checkDoubleCheckCheckmate(Piece.BLACK_KNIGHT,
-            board);
-        case "04_black_double_check_checkmate_bishop.pgn" -> checkDoubleCheckCheckmate(Piece.BLACK_BISHOP, board);
+        case "02_black_double_check_checkmate_knight_orthogonal.pgn" -> TestBasicSupport
+            .checkDoubleCheckCheckmate(Piece.BLACK_KNIGHT, board);
+        case "03_black_double_check_checkmate_knight_diagonal.pgn" -> TestBasicSupport
+            .checkDoubleCheckCheckmate(Piece.BLACK_KNIGHT, board);
+        case "04_black_double_check_checkmate_bishop.pgn" -> TestBasicSupport
+            .checkDoubleCheckCheckmate(Piece.BLACK_BISHOP, board);
         default -> throw new IllegalArgumentException();
       }
     }

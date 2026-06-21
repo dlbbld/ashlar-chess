@@ -28,7 +28,7 @@ class TestUnwinnabilityQuickAgainstLimitedOracle {
 
   @SuppressWarnings("static-method")
   @Test
-  void test() throws Exception {
+  void test() {
 
     for (final PgnTest pgnTest : PgnTest.values()) {
       final PgnTestCaseList testCaseList = PgnTestCaseCatalog.getTestList(pgnTest);

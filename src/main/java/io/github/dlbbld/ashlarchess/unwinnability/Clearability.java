@@ -13,7 +13,7 @@ import java.util.TreeSet;
 import org.eclipse.jdt.annotation.NonNull;
 
 import io.github.dlbbld.ashlarchess.common.Nulls;
-import io.github.dlbbld.ashlarchess.common.utility.BasicUtility;
+import io.github.dlbbld.ashlarchess.common.utility.ListUtility;
 
 class Clearability {
 
@@ -56,10 +56,10 @@ class Clearability {
 
   public String print() {
 
-    final List<String> lineList = new ArrayList<>();
+    final List<String> lines = new ArrayList<>();
 
-    lineList.add("");
-    lineList.add("Clearability:");
+    lines.add("");
+    lines.add("Clearability:");
 
     // TreeSet for ordering
     for (final PiecePlacement piecePlacement : new TreeSet<>(clearabilityMap.keySet())) {
@@ -69,10 +69,10 @@ class Clearability {
       pieceDescription.append(": ");
       pieceDescription.append(variableState.getDescription());
       @SuppressWarnings("null") @NonNull final String string = pieceDescription.toString();
-      lineList.add(string);
+      lines.add(string);
     }
 
-    return BasicUtility.convertToString(lineList);
+    return ListUtility.toLineSeparatedString(lines);
   }
 
   @Override

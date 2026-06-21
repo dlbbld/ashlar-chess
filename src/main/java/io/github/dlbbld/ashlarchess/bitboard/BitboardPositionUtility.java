@@ -6,16 +6,17 @@ package io.github.dlbbld.ashlarchess.bitboard;
 import java.util.Set;
 import java.util.TreeSet;
 
+import com.google.common.collect.ImmutableSet;
+
 import io.github.dlbbld.ashlarchess.board.enums.Piece;
 import io.github.dlbbld.ashlarchess.board.enums.Square;
 import io.github.dlbbld.ashlarchess.common.Nulls;
 import io.github.dlbbld.ashlarchess.fen.FenPieceSymbol;
 
 /**
- * Production-side bitboard utility methods that have no dependency on the {@code StaticPosition} reference layer. The
- * bridge methods between {@code StaticPosition} and {@code BitboardPosition} live in
- * {@code io.github.dlbbld.ashlarchess.bitboard.StaticPositionBridge} (under {@code src/test/}), since
- * {@code StaticPosition} itself relocated to {@code src/test/} as the permanent differential-test oracle.
+ * Production-side bitboard utility methods, with no dependency on the {@code StaticPosition} reference layer (which is
+ * test-side). The {@code StaticPosition} / {@code BitboardPosition} bridge methods live test-side in
+ * {@code io.github.dlbbld.ashlarchess.bitboard.StaticPositionBridge}.
  */
 public final class BitboardPositionUtility {
 
@@ -32,7 +33,7 @@ public final class BitboardPositionUtility {
     for (int rankNumber = 8; rankNumber >= 1; rankNumber--) {
       int consecutiveEmptySquares = 0;
       for (int fileNumber = 1; fileNumber <= 8; fileNumber++) {
-        final Square square = Square.calculate(fileNumber, rankNumber);
+        final Square square = Square.of(fileNumber, rankNumber);
         final Piece pieceOnSquare = bitboardPosition.get(square);
         final boolean isEmptySquare = pieceOnSquare == Piece.NONE;
         if (isEmptySquare) {
@@ -45,7 +46,7 @@ public final class BitboardPositionUtility {
             piecePlacement.append(consecutiveEmptySquares);
             consecutiveEmptySquares = 0;
           }
-          piecePlacement.append(FenPieceSymbol.calculate(pieceOnSquare).pieceLetter());
+          piecePlacement.append(FenPieceSymbol.of(pieceOnSquare).pieceLetter());
         }
       }
       if (rankNumber != 1) {
@@ -60,16 +61,13 @@ public final class BitboardPositionUtility {
    * compare a {@code long}-shaped attack/move set against a {@code Set<Square>}-shaped reference. The returned set
    * iterates squares in ordinal order.
    */
-  public static Set<Square> toSquareSet(long bitboard) {
-    if (bitboard == 0L) {
-      return Nulls.emptySet();
-    }
+  public static ImmutableSet<Square> toSquares(long bitboard) {
     final Set<Square> squares = new TreeSet<>();
     long remaining = bitboard;
     while (remaining != 0L) {
       squares.add(Nulls.get(Square.REAL, Long.numberOfTrailingZeros(remaining)));
       remaining &= remaining - 1L;
     }
-    return squares;
+    return Nulls.copyOfSet(squares);
   }
 }

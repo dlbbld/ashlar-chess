@@ -3,18 +3,21 @@
 
 package io.github.dlbbld.ashlarchess.test.san;
 
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.KING;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.PAWN;
+
 import io.github.dlbbld.ashlarchess.board.enums.File;
 import io.github.dlbbld.ashlarchess.board.enums.PieceType;
 import io.github.dlbbld.ashlarchess.board.enums.PromotionPieceType;
 import io.github.dlbbld.ashlarchess.board.enums.Rank;
 import io.github.dlbbld.ashlarchess.board.enums.Square;
 import io.github.dlbbld.ashlarchess.common.Nulls;
-import io.github.dlbbld.ashlarchess.common.constants.EnumConstants;
 import io.github.dlbbld.ashlarchess.san.SanFormat;
 import io.github.dlbbld.ashlarchess.san.SanSymbol;
 import io.github.dlbbld.ashlarchess.san.SanTerminalMarker;
+import io.github.dlbbld.ashlarchess.san.SanTerminalMarkerUtility;
 
-public class SanCalculate implements EnumConstants {
+public class SanCalculate {
 
   public static String calculateSan(File fromFile, Rank fromRank, Square toSquare,
       PromotionPieceType promotionPieceType, boolean isCapture, SanTerminalMarker sanTerminalMarker,
@@ -41,7 +44,7 @@ public class SanCalculate implements EnumConstants {
       san.append(promotionPieceType.getPieceType().getLetter());
     }
 
-    sanTerminalMarker.append(san);
+    SanTerminalMarkerUtility.appendTo(san, sanTerminalMarker);
 
     return Nulls.toString(san);
   }

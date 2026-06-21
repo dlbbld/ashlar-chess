@@ -3,6 +3,24 @@
 
 package io.github.dlbbld.ashlarchess.test.pgntest.basic;
 
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.A1;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.A2;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.B1;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.B2;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.C1;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.C3;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.D1;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.D3;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.E1;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.E2;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.E4;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.WHITE_BISHOP;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.WHITE_KING;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.WHITE_KNIGHT;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.WHITE_PAWN;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.WHITE_QUEEN;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.WHITE_ROOK;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,21 +35,21 @@ import io.github.dlbbld.ashlarchess.test.model.PgnTestCaseList;
 import io.github.dlbbld.ashlarchess.test.pgn.setup.PgnTestCaseCatalog;
 import io.github.dlbbld.ashlarchess.test.pgntest.enums.PgnTest;
 
-class TestBasicMovingPieceWhite extends AbstractTestBasic {
+class TestBasicMovingPieceWhite {
 
   private static final Logger logger = Nulls.getLogger(TestBasicMovingPieceWhite.class);
 
   static {
-    final List<String> pgnNameList = new ArrayList<>();
+    final List<String> pgnNames = new ArrayList<>();
 
-    pgnNameList.add("01_white_moving_piece_rook.pgn");
-    pgnNameList.add("02_white_moving_piece_knight.pgn");
-    pgnNameList.add("03_white_moving_piece_bishop.pgn");
-    pgnNameList.add("04_white_moving_piece_queen.pgn");
-    pgnNameList.add("05_white_moving_piece_king.pgn");
-    pgnNameList.add("06_white_moving_piece_pawn.pgn");
+    pgnNames.add("01_white_moving_piece_rook.pgn");
+    pgnNames.add("02_white_moving_piece_knight.pgn");
+    pgnNames.add("03_white_moving_piece_bishop.pgn");
+    pgnNames.add("04_white_moving_piece_queen.pgn");
+    pgnNames.add("05_white_moving_piece_king.pgn");
+    pgnNames.add("06_white_moving_piece_pawn.pgn");
 
-    checkTestFolder(pgnNameList, PgnTest.BASIC_MOVING_PIECE_WHITE);
+    TestBasicSupport.checkTestFolder(pgnNames, PgnTest.BASIC_MOVING_PIECE_WHITE);
   }
 
   @SuppressWarnings("static-method")
@@ -44,12 +62,12 @@ class TestBasicMovingPieceWhite extends AbstractTestBasic {
       logger.info(testCase.pgnName());
 
       switch (testCase.pgnName()) {
-        case "01_white_moving_piece_rook.pgn" -> checkMovingPiece(A1, A2, WHITE_ROOK, board);
-        case "02_white_moving_piece_knight.pgn" -> checkMovingPiece(B1, C3, WHITE_KNIGHT, board);
-        case "03_white_moving_piece_bishop.pgn" -> checkMovingPiece(C1, B2, WHITE_BISHOP, board);
-        case "04_white_moving_piece_queen.pgn" -> checkMovingPiece(D1, D3, WHITE_QUEEN, board);
-        case "05_white_moving_piece_king.pgn" -> checkMovingPiece(E1, E2, WHITE_KING, board);
-        case "06_white_moving_piece_pawn.pgn" -> checkMovingPiece(E2, E4, WHITE_PAWN, board,
+        case "01_white_moving_piece_rook.pgn" -> TestBasicSupport.checkMovingPiece(A1, A2, WHITE_ROOK, board);
+        case "02_white_moving_piece_knight.pgn" -> TestBasicSupport.checkMovingPiece(B1, C3, WHITE_KNIGHT, board);
+        case "03_white_moving_piece_bishop.pgn" -> TestBasicSupport.checkMovingPiece(C1, B2, WHITE_BISHOP, board);
+        case "04_white_moving_piece_queen.pgn" -> TestBasicSupport.checkMovingPiece(D1, D3, WHITE_QUEEN, board);
+        case "05_white_moving_piece_king.pgn" -> TestBasicSupport.checkMovingPiece(E1, E2, WHITE_KING, board);
+        case "06_white_moving_piece_pawn.pgn" -> TestBasicSupport.checkMovingPiece(E2, E4, WHITE_PAWN, board,
             LegalMoveKind.PAWN_TWO_SQUARE_ADVANCE);
         default -> throw new IllegalArgumentException();
       }

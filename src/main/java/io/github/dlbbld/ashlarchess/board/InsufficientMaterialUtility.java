@@ -3,41 +3,50 @@
 
 package io.github.dlbbld.ashlarchess.board;
 
+import static io.github.dlbbld.ashlarchess.board.enums.PieceType.BISHOP;
+import static io.github.dlbbld.ashlarchess.board.enums.PieceType.KING;
+import static io.github.dlbbld.ashlarchess.board.enums.PieceType.KNIGHT;
+import static io.github.dlbbld.ashlarchess.board.enums.PieceType.PAWN;
+import static io.github.dlbbld.ashlarchess.board.enums.PieceType.QUEEN;
+
 import io.github.dlbbld.ashlarchess.bitboard.BitboardPosition;
 import io.github.dlbbld.ashlarchess.board.enums.Piece;
+import io.github.dlbbld.ashlarchess.board.enums.PieceType;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
 import io.github.dlbbld.ashlarchess.board.enums.Square;
 import io.github.dlbbld.ashlarchess.board.enums.SquareType;
-import io.github.dlbbld.ashlarchess.common.constants.EnumConstants;
 
-abstract class InsufficientMaterialUtility implements EnumConstants {
+final class InsufficientMaterialUtility {
 
-  public static boolean calculateIsInsufficientMaterial(Side side, BitboardPosition bitboardPosition) {
+  private InsufficientMaterialUtility() {
+  }
+
+  public static boolean isInsufficientMaterial(Side side, BitboardPosition bitboardPosition) {
     final Side oppositeSide = side.getOppositeSide();
 
-    if (BoardMaterial.calculateHasKingOnly(side, bitboardPosition)) {
+    if (hasKingOnly(side, bitboardPosition)) {
       return true;
     }
-    if (BoardMaterial.calculateHasKingAndKnightOnly(side, bitboardPosition)) {
-      return calculateHasZeroOrMultipleQueenOnly(oppositeSide, bitboardPosition);
+    if (hasKingAndKnightOnly(side, bitboardPosition)) {
+      return hasZeroOrMultipleQueenOnly(oppositeSide, bitboardPosition);
     }
-    if (calculateHasZeroOrMultipleLightSquareBishopOnly(side, bitboardPosition)) {
-      return calculateHasNoPawnAndNoKnightAndNoDarkSquareBishop(oppositeSide, bitboardPosition);
+    if (hasZeroOrMultipleLightSquareBishopOnly(side, bitboardPosition)) {
+      return hasNoPawnAndNoKnightAndNoDarkSquareBishop(oppositeSide, bitboardPosition);
     }
-    if (calculateHasZeroOrMultipleDarkSquareBishopOnly(side, bitboardPosition)) {
-      return calculateHasNoPawnAndNoKnightAndNoLightSquareBishop(oppositeSide, bitboardPosition);
+    if (hasZeroOrMultipleDarkSquareBishopOnly(side, bitboardPosition)) {
+      return hasNoPawnAndNoKnightAndNoLightSquareBishop(oppositeSide, bitboardPosition);
     }
 
     return false;
   }
 
-  private static boolean calculateHasZeroOrMultipleSquareBishopOnlyForSpecifiedColor(Side side,
+  private static boolean hasZeroOrMultipleSquareBishopOnlyForSpecifiedColor(Side side,
       BitboardPosition bitboardPosition, SquareType squareType) {
-    final Piece king = Piece.calculate(side, KING);
-    final Piece bishop = Piece.calculate(side, BISHOP);
+    final Piece king = Piece.of(side, KING);
+    final Piece bishop = Piece.of(side, BISHOP);
     for (final Square boardSquare : Square.REAL) {
       final Piece pieceOnSquare = bitboardPosition.get(boardSquare);
-      if (BoardMaterial.calculateIsOwnPiece(side, pieceOnSquare)) {
+      if (isOwnPiece(side, pieceOnSquare)) {
         if (pieceOnSquare == king || pieceOnSquare == bishop && boardSquare.getSquareType() == squareType) {
           continue;
         }
@@ -47,20 +56,20 @@ abstract class InsufficientMaterialUtility implements EnumConstants {
     return true;
   }
 
-  static boolean calculateHasZeroOrMultipleLightSquareBishopOnly(Side side, BitboardPosition bitboardPosition) {
-    return calculateHasZeroOrMultipleSquareBishopOnlyForSpecifiedColor(side, bitboardPosition, SquareType.LIGHT_SQUARE);
+  static boolean hasZeroOrMultipleLightSquareBishopOnly(Side side, BitboardPosition bitboardPosition) {
+    return hasZeroOrMultipleSquareBishopOnlyForSpecifiedColor(side, bitboardPosition, SquareType.LIGHT_SQUARE);
   }
 
-  static boolean calculateHasZeroOrMultipleDarkSquareBishopOnly(Side side, BitboardPosition bitboardPosition) {
-    return calculateHasZeroOrMultipleSquareBishopOnlyForSpecifiedColor(side, bitboardPosition, SquareType.DARK_SQUARE);
+  static boolean hasZeroOrMultipleDarkSquareBishopOnly(Side side, BitboardPosition bitboardPosition) {
+    return hasZeroOrMultipleSquareBishopOnlyForSpecifiedColor(side, bitboardPosition, SquareType.DARK_SQUARE);
   }
 
-  private static boolean calculateHasZeroOrMultipleQueenOnly(Side side, BitboardPosition bitboardPosition) {
-    final Piece king = Piece.calculate(side, KING);
-    final Piece queen = Piece.calculate(side, QUEEN);
+  private static boolean hasZeroOrMultipleQueenOnly(Side side, BitboardPosition bitboardPosition) {
+    final Piece king = Piece.of(side, KING);
+    final Piece queen = Piece.of(side, QUEEN);
     for (final Square boardSquare : Square.REAL) {
       final Piece pieceOnSquare = bitboardPosition.get(boardSquare);
-      if (BoardMaterial.calculateIsOwnPiece(side, pieceOnSquare)) {
+      if (isOwnPiece(side, pieceOnSquare)) {
         if (pieceOnSquare == king || pieceOnSquare == queen) {
           continue;
         }
@@ -70,29 +79,27 @@ abstract class InsufficientMaterialUtility implements EnumConstants {
     return true;
   }
 
-  private static boolean calculateHasNoPawnAndNoKnightAndNoLightSquareBishop(Side side,
+  private static boolean hasNoPawnAndNoKnightAndNoLightSquareBishop(Side side, BitboardPosition bitboardPosition) {
+    return !hasPawn(side, bitboardPosition) && !hasKnight(side, bitboardPosition)
+        && !hasBishopForSpecifiedColor(side, SquareType.LIGHT_SQUARE, bitboardPosition);
+  }
+
+  private static boolean hasNoPawnAndNoKnightAndNoDarkSquareBishop(Side side, BitboardPosition bitboardPosition) {
+    return !hasPawn(side, bitboardPosition) && !hasKnight(side, bitboardPosition)
+        && !hasBishopForSpecifiedColor(side, SquareType.DARK_SQUARE, bitboardPosition);
+  }
+
+  private static boolean hasPawn(Side side, BitboardPosition bitboardPosition) {
+    return hasPieceType(side, PAWN, bitboardPosition);
+  }
+
+  private static boolean hasKnight(Side side, BitboardPosition bitboardPosition) {
+    return hasPieceType(side, KNIGHT, bitboardPosition);
+  }
+
+  private static boolean hasBishopForSpecifiedColor(Side side, SquareType squareType,
       BitboardPosition bitboardPosition) {
-    return !calculateHasPawn(side, bitboardPosition) && !calculateHasKnight(side, bitboardPosition)
-        && !calculateHasBishopForSpecifiedColor(side, SquareType.LIGHT_SQUARE, bitboardPosition);
-  }
-
-  private static boolean calculateHasNoPawnAndNoKnightAndNoDarkSquareBishop(Side side,
-      BitboardPosition bitboardPosition) {
-    return !calculateHasPawn(side, bitboardPosition) && !calculateHasKnight(side, bitboardPosition)
-        && !calculateHasBishopForSpecifiedColor(side, SquareType.DARK_SQUARE, bitboardPosition);
-  }
-
-  private static boolean calculateHasPawn(Side side, BitboardPosition bitboardPosition) {
-    return BoardMaterial.calculateHasPieceType(side, PAWN, bitboardPosition);
-  }
-
-  private static boolean calculateHasKnight(Side side, BitboardPosition bitboardPosition) {
-    return BoardMaterial.calculateHasPieceType(side, KNIGHT, bitboardPosition);
-  }
-
-  private static boolean calculateHasBishopForSpecifiedColor(Side side, SquareType squareType,
-      BitboardPosition bitboardPosition) {
-    final Piece bishop = Piece.calculate(side, BISHOP);
+    final Piece bishop = Piece.of(side, BISHOP);
     for (final Square boardSquare : Square.REAL) {
       final Piece pieceOnSquare = bitboardPosition.get(boardSquare);
       if (pieceOnSquare == bishop && boardSquare.getSquareType() == squareType) {
@@ -100,6 +107,68 @@ abstract class InsufficientMaterialUtility implements EnumConstants {
       }
     }
     return false;
+  }
+
+  private static boolean isOwnPiece(Side side, Piece pieceOnSquare) {
+    return pieceOnSquare != Piece.NONE && pieceOnSquare.getSide() == side;
+  }
+
+  private static boolean hasPieceType(Side side, PieceType pieceType, BitboardPosition bitboardPosition) {
+    final Piece piece = Piece.of(side, pieceType);
+    for (final Square boardSquare : Square.REAL) {
+      if (bitboardPosition.get(boardSquare) == piece) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  static boolean hasKingOnly(Side side, BitboardPosition bitboardPosition) {
+    int countKing = 0;
+    for (final Square boardSquare : Square.REAL) {
+      final Piece pieceOnSquare = bitboardPosition.get(boardSquare);
+      if (pieceOnSquare == Piece.NONE || pieceOnSquare.getSide() != side) {
+        continue;
+      }
+      if (pieceOnSquare.getPieceType() == KING) {
+        countKing++;
+        continue;
+      }
+      return false;
+    }
+    return countKing == 1;
+  }
+
+  static boolean hasKingAndKnightOnly(Side side, BitboardPosition bitboardPosition) {
+    return hasKingAndAnotherPieceOnly(side, KNIGHT, bitboardPosition);
+  }
+
+  static boolean hasKingAndBishopOnly(Side side, BitboardPosition bitboardPosition) {
+    return hasKingAndAnotherPieceOnly(side, BISHOP, bitboardPosition);
+  }
+
+  private static boolean hasKingAndAnotherPieceOnly(Side side, PieceType anotherPieceType,
+      BitboardPosition bitboardPosition) {
+    int countKing = 0;
+    int countAnotherPieces = 0;
+    for (final Square boardSquare : Square.REAL) {
+      final Piece pieceOnSquare = bitboardPosition.get(boardSquare);
+      if (pieceOnSquare == Piece.NONE || pieceOnSquare.getSide() != side) {
+        continue;
+      }
+      if (pieceOnSquare.getPieceType() == KING) {
+        countKing++;
+        continue;
+      }
+      if (pieceOnSquare.getPieceType() != anotherPieceType) {
+        return false;
+      }
+      countAnotherPieces++;
+      if (countAnotherPieces > 1) {
+        return false;
+      }
+    }
+    return countKing == 1 && countAnotherPieces == 1;
   }
 
 }

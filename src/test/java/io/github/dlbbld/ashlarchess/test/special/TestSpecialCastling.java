@@ -8,18 +8,17 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.Test;
 
 import io.github.dlbbld.ashlarchess.board.Board;
-import io.github.dlbbld.ashlarchess.common.constants.EnumConstants;
 import io.github.dlbbld.ashlarchess.san.SanValidationException;
 
-class TestSpecialCastling implements EnumConstants {
+class TestSpecialCastling {
 
   @SuppressWarnings("static-method")
   @Test
-  void testWhite() throws Exception {
+  void testWhite() {
     {
       // white has king-side castling rights but not queen side
       // try queen side castling
-      final Board board = new Board("4k3/8/8/8/8/8/8/R3K2R w K - 0 100");
+      final Board board = Board.fromFenStrict("4k3/8/8/8/8/8/8/R3K2R w K - 0 100");
 
       board.moveStrict("O-O");
       board.unmove();
@@ -29,7 +28,7 @@ class TestSpecialCastling implements EnumConstants {
     {
       // white has queen-side castling rights but not king side
       // try king side castling
-      final Board board = new Board("4k3/8/8/8/8/8/8/R3K2R w Q - 0 100");
+      final Board board = Board.fromFenStrict("4k3/8/8/8/8/8/8/R3K2R w Q - 0 100");
 
       board.moveStrict("O-O-O");
       board.unmove();
@@ -40,11 +39,11 @@ class TestSpecialCastling implements EnumConstants {
 
   @SuppressWarnings("static-method")
   @Test
-  void testBlack() throws Exception {
+  void testBlack() {
     {
       // black has king-side castling rights but not queen side
       // try queen side castling
-      final Board board = new Board("r3k2r/8/8/8/8/8/8/R3K2R b k - 0 100");
+      final Board board = Board.fromFenStrict("r3k2r/8/8/8/8/8/8/R3K2R b k - 0 100");
 
       board.moveStrict("O-O");
       board.unmove();
@@ -54,7 +53,7 @@ class TestSpecialCastling implements EnumConstants {
     {
       // black has queen-side castling rights but not king side
       // try king side castling
-      final Board board = new Board("r3k2r/8/8/8/8/8/8/R3K2R b q - 0 100");
+      final Board board = Board.fromFenStrict("r3k2r/8/8/8/8/8/8/R3K2R b q - 0 100");
 
       board.moveStrict("O-O-O");
       board.unmove();

@@ -5,7 +5,10 @@ package io.github.dlbbld.ashlarchess.test;
 
 import io.github.dlbbld.ashlarchess.test.pgntest.enums.PgnTestInclusion;
 
-public abstract class RestrictTestConstants {
+public final class RestrictTestConstants {
+
+  private RestrictTestConstants() {
+  }
 
   /**
    * Master switch driven by the {@code ashlar-chess.full} system property. Set to {@code true} via Maven profile
@@ -30,8 +33,8 @@ public abstract class RestrictTestConstants {
   public static final boolean IS_RESTRICT_PGN_LEGAL_MOVE_VALIDATION_AGAINST_BOTTOM_UP_TEST = true && IS_RESTRICT_PGN;
   public static final boolean IS_RESTRICT_PGN_LENIENT_PARSER_API_AGAINST_EACH_OTHER_TEST = true && IS_RESTRICT_PGN;
   // The three flags below toggle between a curated smoke subset (true) and the full ALL_EXCEPT_LONGEST_POSSIBLE
-  // corpus (false). Smoke subsets live in PgnExpectedValue.getParserIntegrationSmokeList() and
-  // getExportRoundtripSmokeList(). The master flip turns these off along with the rest.
+  // corpus (false). Smoke subsets live in PgnExpectedValue.getParserIntegrationSmokeTests() and
+  // getExportRoundtripSmokeTests(). The master flip turns these off along with the rest.
   public static final boolean IS_RESTRICT_PGN_STRICT_AGAINST_LENIENT_TEST = true && IS_RESTRICT_PGN;
   public static final boolean IS_RESTRICT_PGN_EXPORT_IDEMPOTENCY_TEST = true && IS_RESTRICT_PGN;
   public static final boolean IS_RESTRICT_PGN_WRITER_TEST = true && IS_RESTRICT_PGN;
@@ -57,5 +60,10 @@ public abstract class RestrictTestConstants {
   // through the strict parser to confirm none plays beyond a FIDE-automatic termination. Takes
   // a few minutes; only useful when the corpus changes or the strict-pipeline rules change.
   public static final boolean IS_EXCLUDE_LONG_RUNNING_PGN_CORPUS_NOT_PLAYS_BEYOND_AUDIT = !IS_FULL;
+
+  // TestMirrorSymmetry: mirror-symmetry property sweep (vertical flip + colour swap) over up to 6000 corpus positions,
+  // a whole-game replay, and a CHA unwinnableQuick sample. A colour-handedness thoroughness guard, not fast-iteration
+  // work - and it touches the heavy unwinnability analyzer that is excluded elsewhere - so it is full-only.
+  public static final boolean IS_EXCLUDE_MIRROR_SYMMETRY_TEST = !IS_FULL;
 
 }

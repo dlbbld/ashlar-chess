@@ -55,12 +55,12 @@ class TestPgnExportBoard {
    * (it would be added on the archival-write path, not into the parse-model).
    */
   private static void checkNoFabrication(ResultTagValue resultTagValue, PgnGame pgnGame) {
-    assertTrue(pgnGame.tagList().isEmpty());
+    assertTrue(pgnGame.tags().isEmpty());
     assertEquals(resultTagValue, pgnGame.terminationMarker());
   }
 
   private static void checkBoardReplay(Board boardExpected, PgnGame boardExpectedPgnGame) {
-    final Board boardActual = PgnUtility.calculateBoard(boardExpectedPgnGame);
+    final Board boardActual = PgnUtility.toBoard(boardExpectedPgnGame);
     assertEquals(boardExpected, boardActual);
   }
 

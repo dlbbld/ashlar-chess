@@ -25,10 +25,12 @@
  * </ul>
  *
  * <p>
- * Dead-position detection is the symmetric whole-position notion: the no-side analyzer overloads
- * {@link io.github.dlbbld.ashlarchess.unwinnability.UnwinnableQuickAnalyzer#unwinnableQuick(io.github.dlbbld.ashlarchess.board.Board)}
- * and {@link io.github.dlbbld.ashlarchess.unwinnability.UnwinnableFullAnalyzer#unwinnableFull(io.github.dlbbld.ashlarchess.board.Board)}
- * reuse the same verdict enums, with {@code UNWINNABLE} meaning dead (neither side can mate).
+ * Dead-position detection is the symmetric whole-position notion, decided by
+ * {@link io.github.dlbbld.ashlarchess.unwinnability.DeadPositionAnalyzer}: a position is dead exactly when it is
+ * unwinnable for both sides. It carries its own verdicts -
+ * {@link io.github.dlbbld.ashlarchess.unwinnability.DeadPositionQuickVerdict} ({@code DEAD} / {@code POSSIBLY_ALIVE})
+ * and {@link io.github.dlbbld.ashlarchess.unwinnability.DeadPositionFullVerdict} ({@code DEAD} / {@code ALIVE} /
+ * {@code UNDETERMINED}) - rather than reusing the per-side unwinnable vocabulary.
  *
  * <h2>Analyzer entry points</h2>
  *

@@ -14,7 +14,7 @@ import org.junit.jupiter.api.Test;
 
 import io.github.dlbbld.ashlarchess.common.Nulls;
 import io.github.dlbbld.ashlarchess.enums.MoveSuffixAnnotation;
-import io.github.dlbbld.ashlarchess.model.PgnHalfMove;
+import io.github.dlbbld.ashlarchess.model.PgnMove;
 import io.github.dlbbld.ashlarchess.pgn.PgnGame;
 import io.github.dlbbld.ashlarchess.pgn.StrictPgnParserValidationException;
 import io.github.dlbbld.ashlarchess.pgn.StrictPgnParserValidationProblem;
@@ -70,10 +70,10 @@ class TestStrictPgnParserMoveSuffixAnnotation {
   }
 
   private static void checkMoveSuffixAnnotationSuccess(String pgnName,
-      List<MoveSuffixAnnotation> moveSuffixAnnotationListExpected) {
+      List<MoveSuffixAnnotation> expectedMoveSuffixAnnotations) {
     final PgnGame pgnGame = PgnCacheForStrictPgnParserTestCases
         .getPgn(PGN_TEST_MOVE_SUFFIX_ANNOTATION_SUCCESS_FOLDER_PATH, pgnName);
-    assertEquals(moveSuffixAnnotationListExpected, calculateMoveSuffixAnnotationList(pgnGame.halfMoveList()));
+    assertEquals(expectedMoveSuffixAnnotations, calculateMoveSuffixAnnotations(pgnGame.moves()));
   }
 
   // -------------------------------------------------------------------------------------------------
@@ -117,36 +117,36 @@ class TestStrictPgnParserMoveSuffixAnnotation {
   }
 
   private static void checkCombinedSuccess(String pgnName, String pregameCommentaryExpected,
-      List<String> sanListExpected, List<MoveSuffixAnnotation> moveSuffixAnnotationListExpected,
-      List<String> commentaryListExpected) {
+      List<String> expectedSans, List<MoveSuffixAnnotation> expectedMoveSuffixAnnotations,
+      List<String> expectedCommentaries) {
     final PgnGame pgnGame = PgnCacheForStrictPgnParserTestCases.getPgn(PGN_TEST_COMBINED_SUCCESS_FOLDER_PATH, pgnName);
     assertEquals(pregameCommentaryExpected, pgnGame.pregameCommentary().value());
-    assertEquals(sanListExpected, calculateSanList(pgnGame.halfMoveList()));
-    assertEquals(moveSuffixAnnotationListExpected, calculateMoveSuffixAnnotationList(pgnGame.halfMoveList()));
-    assertEquals(commentaryListExpected, calculateCommentaryList(pgnGame.halfMoveList()));
+    assertEquals(expectedSans, calculateSans(pgnGame.moves()));
+    assertEquals(expectedMoveSuffixAnnotations, calculateMoveSuffixAnnotations(pgnGame.moves()));
+    assertEquals(expectedCommentaries, calculateCommentaries(pgnGame.moves()));
   }
 
-  private static List<String> calculateSanList(List<PgnHalfMove> halfMoveList) {
-    final List<String> sanList = new ArrayList<>();
-    for (final PgnHalfMove halfMove : halfMoveList) {
-      sanList.add(halfMove.san());
+  private static List<String> calculateSans(List<PgnMove> moves) {
+    final List<String> sans = new ArrayList<>();
+    for (final PgnMove move : moves) {
+      sans.add(move.san());
     }
-    return sanList;
+    return sans;
   }
 
-  private static List<MoveSuffixAnnotation> calculateMoveSuffixAnnotationList(List<PgnHalfMove> halfMoveList) {
-    final List<MoveSuffixAnnotation> moveSuffixAnnotationList = new ArrayList<>();
-    for (final PgnHalfMove halfMove : halfMoveList) {
-      moveSuffixAnnotationList.add(halfMove.moveSuffixAnnotation());
+  private static List<MoveSuffixAnnotation> calculateMoveSuffixAnnotations(List<PgnMove> moves) {
+    final List<MoveSuffixAnnotation> moveSuffixAnnotations = new ArrayList<>();
+    for (final PgnMove move : moves) {
+      moveSuffixAnnotations.add(move.moveSuffixAnnotation());
     }
-    return moveSuffixAnnotationList;
+    return moveSuffixAnnotations;
   }
 
-  private static List<String> calculateCommentaryList(List<PgnHalfMove> halfMoveList) {
-    final List<String> commentaryList = new ArrayList<>();
-    for (final PgnHalfMove halfMove : halfMoveList) {
-      commentaryList.add(halfMove.commentary().value());
+  private static List<String> calculateCommentaries(List<PgnMove> moves) {
+    final List<String> commentaries = new ArrayList<>();
+    for (final PgnMove move : moves) {
+      commentaries.add(move.commentary().value());
     }
-    return commentaryList;
+    return commentaries;
   }
 }

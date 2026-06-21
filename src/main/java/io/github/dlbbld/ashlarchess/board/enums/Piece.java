@@ -5,6 +5,7 @@ package io.github.dlbbld.ashlarchess.board.enums;
 
 import com.google.common.collect.ImmutableList;
 
+import io.github.dlbbld.ashlarchess.common.Nulls;
 import io.github.dlbbld.ashlarchess.common.exceptions.NonePointerException;
 
 public enum Piece {
@@ -44,76 +45,39 @@ public enum Piece {
     return side;
   }
 
-  public static Piece calculateRookPiece(Side side) {
-    return switch (side) {
-      case BLACK -> BLACK_ROOK;
-      case WHITE -> WHITE_ROOK;
-      case NONE -> throw new IllegalArgumentException();
-      default -> throw new IllegalArgumentException();
-    };
-  }
-
-  public static Piece calculateKnightPiece(Side side) {
-    return switch (side) {
-      case BLACK -> BLACK_KNIGHT;
-      case WHITE -> WHITE_KNIGHT;
-      case NONE -> throw new IllegalArgumentException();
-      default -> throw new IllegalArgumentException();
-    };
-  }
-
-  public static Piece calculateBishopPiece(Side side) {
-    return switch (side) {
-      case BLACK -> BLACK_BISHOP;
-      case WHITE -> WHITE_BISHOP;
-      case NONE -> throw new IllegalArgumentException();
-      default -> throw new IllegalArgumentException();
-    };
-  }
-
-  public static Piece calculateQueenPiece(Side side) {
-    return switch (side) {
-      case BLACK -> BLACK_QUEEN;
-      case WHITE -> WHITE_QUEEN;
-      case NONE -> throw new IllegalArgumentException();
-      default -> throw new IllegalArgumentException();
-    };
-  }
-
-  public static Piece calculateKingPiece(Side side) {
-    return switch (side) {
-      case BLACK -> BLACK_KING;
-      case WHITE -> WHITE_KING;
-      case NONE -> throw new IllegalArgumentException();
-      default -> throw new IllegalArgumentException();
-    };
-  }
-
-  public static Piece calculatePawnPiece(Side side) {
-    return switch (side) {
-      case BLACK -> BLACK_PAWN;
-      case WHITE -> WHITE_PAWN;
-      case NONE -> throw new IllegalArgumentException();
-      default -> throw new IllegalArgumentException();
-    };
-  }
-
-  public static Piece calculate(Side side, PieceType pieceType) {
-    return switch (pieceType) {
-      case PAWN -> calculatePawnPiece(side);
-      case ROOK -> calculateRookPiece(side);
-      case KNIGHT -> calculateKnightPiece(side);
-      case BISHOP -> calculateBishopPiece(side);
-      case QUEEN -> calculateQueenPiece(side);
-      case KING -> calculateKingPiece(side);
-      case NONE -> throw new IllegalArgumentException();
-      default -> throw new IllegalArgumentException();
-    };
+  /**
+   * FEN piece letter: white uppercase, black lowercase ({@code "P"}/{@code "p"}, ...), and {@code "none"} for
+   * {@link #NONE}.
+   */
+  @Override
+  public String toString() {
+    if (this == NONE) {
+      return "none";
+    }
+    return Nulls.valueOf(side == Side.WHITE ? Character.toUpperCase(pieceType.getLetter())
+        : Character.toLowerCase(pieceType.getLetter()));
   }
 
   private void check() {
     if (this == NONE) {
       throw new NonePointerException();
     }
+  }
+
+  public static Piece of(Side side, PieceType pieceType) {
+    if (side != Side.WHITE && side != Side.BLACK) {
+      throw new IllegalArgumentException();
+    }
+    final boolean white = side == Side.WHITE;
+    return switch (pieceType) {
+      case PAWN -> white ? WHITE_PAWN : BLACK_PAWN;
+      case ROOK -> white ? WHITE_ROOK : BLACK_ROOK;
+      case KNIGHT -> white ? WHITE_KNIGHT : BLACK_KNIGHT;
+      case BISHOP -> white ? WHITE_BISHOP : BLACK_BISHOP;
+      case QUEEN -> white ? WHITE_QUEEN : BLACK_QUEEN;
+      case KING -> white ? WHITE_KING : BLACK_KING;
+      case NONE -> throw new IllegalArgumentException();
+      default -> throw new IllegalArgumentException();
+    };
   }
 }

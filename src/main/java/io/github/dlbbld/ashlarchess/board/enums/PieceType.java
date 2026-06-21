@@ -3,6 +3,7 @@
 
 package io.github.dlbbld.ashlarchess.board.enums;
 
+import io.github.dlbbld.ashlarchess.common.Nulls;
 import io.github.dlbbld.ashlarchess.common.exceptions.NonePointerException;
 import io.github.dlbbld.ashlarchess.messages.Message;
 
@@ -30,42 +31,28 @@ public enum PieceType {
     return value;
   }
 
+  /**
+   * The human-readable piece-type name; throws {@code NonePointerException} for {@link #NONE}. Distinct from the
+   * inherited {@code name()} (the Java enum constant, e.g. {@code QUEEN}) and from {@link #getLetter()} /
+   * {@link #toString()} (the single-letter symbol, e.g. {@code Q}).
+   */
   public String getName() {
     check();
     return name;
+  }
+
+  /**
+   * Piece-type letter: {@code "P" "N" "B" "R" "Q" "K"}, and {@code "none"} for {@link #NONE}.
+   */
+  @Override
+  public String toString() {
+    return this == NONE ? "none" : Nulls.valueOf(letter);
   }
 
   PieceType(char letter, int value, String name) {
     this.letter = letter;
     this.value = value;
     this.name = name;
-  }
-
-  public static Piece calculate(Side havingMove, PieceType pieceType) {
-    return switch (havingMove) {
-      case BLACK -> switch (pieceType) {
-        case PAWN -> Piece.BLACK_PAWN;
-        case ROOK -> Piece.BLACK_ROOK;
-        case KNIGHT -> Piece.BLACK_KNIGHT;
-        case BISHOP -> Piece.BLACK_BISHOP;
-        case QUEEN -> Piece.BLACK_QUEEN;
-        case KING -> Piece.BLACK_KING;
-        case NONE -> throw new IllegalArgumentException();
-        default -> throw new IllegalArgumentException();
-      };
-      case WHITE -> switch (pieceType) {
-        case PAWN -> Piece.WHITE_PAWN;
-        case ROOK -> Piece.WHITE_ROOK;
-        case KNIGHT -> Piece.WHITE_KNIGHT;
-        case BISHOP -> Piece.WHITE_BISHOP;
-        case QUEEN -> Piece.WHITE_QUEEN;
-        case KING -> Piece.WHITE_KING;
-        case NONE -> throw new IllegalArgumentException();
-        default -> throw new IllegalArgumentException();
-      };
-      case NONE -> throw new IllegalArgumentException();
-      default -> throw new IllegalArgumentException();
-    };
   }
 
   private void check() {

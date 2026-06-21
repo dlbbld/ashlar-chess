@@ -70,21 +70,21 @@ public final class GenerateAmbronaMobilityOracle {
   }
 
   private static void generate(String d3ChessRoot) throws Exception {
-    final List<String> fenList = collectDistinctFinalFenList();
-    logger.info("Collected {} distinct final FENs from the PGN test cases.", fenList.size());
+    final List<String> fens = collectDistinctFinalFens();
+    logger.info("Collected {} distinct final FENs from the PGN test cases.", fens.size());
 
     buildRunner(d3ChessRoot);
-    final List<String> oracleLineList = runOracle(fenList);
+    final List<String> oracleLines = runOracle(fens);
 
     Files.createDirectories(Nulls.getParent(ORACLE_PATH));
-    final List<String> fileLineList = new ArrayList<>();
-    fileLineList.add(MobilityOracleFormatter.HEADER);
-    fileLineList.addAll(oracleLineList);
-    Files.writeString(ORACLE_PATH, Nulls.join("\n", fileLineList) + "\n", StandardCharsets.UTF_8);
-    logger.info("Wrote {} Ambrona mobility rows to {}", oracleLineList.size(), ORACLE_PATH);
+    final List<String> fileLines = new ArrayList<>();
+    fileLines.add(MobilityOracleFormatter.HEADER);
+    fileLines.addAll(oracleLines);
+    Files.writeString(ORACLE_PATH, Nulls.join("\n", fileLines) + "\n", StandardCharsets.UTF_8);
+    logger.info("Wrote {} Ambrona mobility rows to {}", oracleLines.size(), ORACLE_PATH);
   }
 
-  private static List<String> collectDistinctFinalFenList() {
+  private static List<String> collectDistinctFinalFens() {
     final Set<String> fenSet = new LinkedHashSet<>();
     for (final PgnTest pgnTest : PgnTest.values()) {
       final PgnTestCaseList testCaseList = PgnTestCaseCatalog.getTestList(pgnTest);
@@ -105,7 +105,7 @@ public final class GenerateAmbronaMobilityOracle {
     runWslCommand(command);
   }
 
-  private static List<String> runOracle(List<String> fenList) throws Exception {
+  private static List<String> runOracle(List<String> fens) throws Exception {
     final ProcessBuilder processBuilder = new ProcessBuilder("wsl", "bash", "-lc",
         "LD_LIBRARY_PATH=/usr/local/lib " + shellQuote(WSL_RUNNER_PATH));
     final Process process = IoUtility.startProcess(processBuilder);
@@ -119,7 +119,7 @@ public final class GenerateAmbronaMobilityOracle {
               new InputStreamReader(IoUtility.getInputStream(process), StandardCharsets.UTF_8))) {
 
         int processed = 0;
-        for (final String fen : fenList) {
+        for (final String fen : fens) {
           writer.write(fen);
           writer.write('\n');
           writer.flush();
@@ -127,8 +127,8 @@ public final class GenerateAmbronaMobilityOracle {
           readRowsForFen(reader, fen, result);
           processed++;
 
-          if (processed % PROGRESS_LOG_INTERVAL == 0 || processed == fenList.size()) {
-            logger.info("Generated mobility rows for {}/{} FENs.", processed, fenList.size());
+          if (processed % PROGRESS_LOG_INTERVAL == 0 || processed == fens.size()) {
+            logger.info("Generated mobility rows for {}/{} FENs.", processed, fens.size());
           }
         }
       }

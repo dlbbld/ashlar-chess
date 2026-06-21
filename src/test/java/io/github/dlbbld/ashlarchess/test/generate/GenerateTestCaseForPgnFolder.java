@@ -13,7 +13,7 @@ import io.github.dlbbld.ashlarchess.common.exceptions.ProgrammingMistakeExceptio
 import io.github.dlbbld.ashlarchess.test.common.utility.PgnExtensionUtility;
 import io.github.dlbbld.ashlarchess.test.pgntest.enums.PgnTest;
 
-public class GenerateTestCaseForPgnFolder extends AbstractGenerateTestCaseForPgn {
+public class GenerateTestCaseForPgnFolder {
 
   // the folder can only contain PGN files
   private static final Path PGN_FOLDER_PATH = PgnTest.CHA_BASIC_MATE_HELPMATE_AROUND_MAX.getFolderPath();
@@ -28,12 +28,12 @@ public class GenerateTestCaseForPgnFolder extends AbstractGenerateTestCaseForPgn
       throw new IllegalArgumentException("\"" + pgnFolderPath + "\" is not a directory");
     }
 
-    final File[] filesList = folder.listFiles();
-    if (filesList == null) {
+    final File[] files = folder.listFiles();
+    if (files == null) {
       throw new FileSystemAccessException("File list retrieval for \"" + pgnFolderPath + "\" failed");
     }
 
-    for (final File file : filesList) {
+    for (final File file : files) {
       if (file == null) {
         throw new ProgrammingMistakeException("Wrong assumption about API behaviour");
       }
@@ -42,7 +42,7 @@ public class GenerateTestCaseForPgnFolder extends AbstractGenerateTestCaseForPgn
         throw new IllegalArgumentException("All files in the folder must be valid PGN files and have the extension \""
             + ChessConstants.PGN_EXTENSION + "\". The file \"" + pgnName + " does not meet the extension expectation");
       }
-      final String testCaseValues = generate(pgnName);
+      final String testCaseValues = GenerateTestCaseForPgnSupport.generate(pgnName);
       System.out.println(testCaseValues);
     }
   }

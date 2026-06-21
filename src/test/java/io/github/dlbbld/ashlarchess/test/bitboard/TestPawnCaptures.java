@@ -43,13 +43,13 @@ class TestPawnCaptures {
         final StaticPosition staticPosition = StaticPositionBridge.toStaticPosition(board.getBitboardPosition());
         final BitboardPosition bitboardPosition = StaticPositionBridge.fromStaticPosition(staticPosition);
         final Square boardEpTarget = board.getEnPassantCaptureTargetSquare();
-        final Side havingMove = board.getHavingMove();
+        final Side sideToMove = board.getSideToMove();
 
         // EP is only available to the side to move on the fixture board; the other side gets 0L.
-        final long epForWhite = (havingMove == Side.WHITE && boardEpTarget != Square.NONE)
+        final long epForWhite = (sideToMove == Side.WHITE && boardEpTarget != Square.NONE)
             ? (1L << boardEpTarget.ordinal())
             : 0L;
-        final long epForBlack = (havingMove == Side.BLACK && boardEpTarget != Square.NONE)
+        final long epForBlack = (sideToMove == Side.BLACK && boardEpTarget != Square.NONE)
             ? (1L << boardEpTarget.ordinal())
             : 0L;
         final Square epForWhiteSquare = epForWhite == 0L ? Square.NONE : boardEpTarget;
@@ -70,7 +70,7 @@ class TestPawnCaptures {
       final int squareOrdinal = Long.numberOfTrailingZeros(remaining);
       final Square fromSquare = Nulls.get(Square.REAL, squareOrdinal);
       final Set<Square> bitboardCaptures = BitboardPositionUtility
-          .toSquareSet(PawnMoves.captures(squareOrdinal, opponentPieces, enPassantBit, side));
+          .toSquares(PawnMoves.captures(squareOrdinal, opponentPieces, enPassantBit, side));
       final Set<Square> referenceCaptures = referenceCaptures(staticPosition, fromSquare, side, enPassantSquare);
       assertEquals(referenceCaptures, bitboardCaptures,
           side + " pawn captures from " + fromSquare.getName() + " in fixture " + testCase.pgnName());
@@ -93,7 +93,7 @@ class TestPawnCaptures {
       if (toFile < 1 || toFile > 8) {
         continue;
       }
-      final Square target = Square.calculate(toFile, toRank);
+      final Square target = Square.of(toFile, toRank);
       if (staticPosition.isOpponentPiece(target, side)) {
         result.add(target);
       } else if (enPassantSquare != Square.NONE && target == enPassantSquare) {

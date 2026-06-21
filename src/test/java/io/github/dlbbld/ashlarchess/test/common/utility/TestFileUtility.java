@@ -20,7 +20,7 @@ import io.github.dlbbld.ashlarchess.common.exceptions.FileSystemAccessException;
 import io.github.dlbbld.ashlarchess.test.ConfigurationTestConstants;
 import io.github.dlbbld.ashlarchess.test.FileComparison;
 
-public class TestFileUtility {
+class TestFileUtility {
 
   private static final Path TEST_FOLDER_PATH = Nulls.pathResolve(ConfigurationTestConstants.PROJECT_ROOT_FOLDER_PATH,
       "src/test/resources/fileUtility/utf8");

@@ -10,16 +10,16 @@ import com.google.common.collect.ImmutableList;
 
 import io.github.dlbbld.ashlarchess.common.Nulls;
 import io.github.dlbbld.ashlarchess.fen.model.Fen;
-import io.github.dlbbld.ashlarchess.model.PgnHalfMove;
+import io.github.dlbbld.ashlarchess.model.PgnMove;
 
 /**
  * Parsed PGN model. Reflects what the source actually contained - tag presence/absence and tag order are preserved by
  * the parsers. The {@code terminationMarker} is the movetext game-termination marker (`1-0`, `0-1`, `1/2-1/2`, `*`) and
- * is independent of any {@code Result} tag in {@link #tagList()}: both, either, or neither may be present in
+ * is independent of any {@code Result} tag in {@link #tags()}: both, either, or neither may be present in
  * lenient-parsed input, while strict-parsed input always has both (and they match).
  *
  * <p>
- * Invariant: when a Result tag is present in {@link #tagList()} <em>and</em> {@link #terminationMarker()} is non-null,
+ * Invariant: when a Result tag is present in {@link #tags()} <em>and</em> {@link #terminationMarker()} is non-null,
  * the two must agree. The lenient and strict PGN parsers enforce this before constructing the {@code PgnGame} (via the
  * cross-signal consistency check); the {@code Board}-to-{@code PgnGame} path
  * ({@link PgnCreate#createPgnGame(io.github.dlbbld.ashlarchess.board.Board, java.util.List)}) is also guarded here by
@@ -31,17 +31,17 @@ import io.github.dlbbld.ashlarchess.model.PgnHalfMove;
  * Don't use to construct PgnGame's on your own, intended as a parser result only, so holding valid data.
  */
 @SuppressWarnings("null")
-public record PgnGame(@NonNull ImmutableList<@NonNull Tag> tagList, @NonNull Fen startFen,
-    @NonNull PgnCommentary pregameCommentary, @NonNull ImmutableList<@NonNull PgnHalfMove> halfMoveList,
+public record PgnGame(@NonNull ImmutableList<@NonNull Tag> tags, @NonNull Fen startFen,
+    @NonNull PgnCommentary pregameCommentary, @NonNull ImmutableList<@NonNull PgnMove> moves,
     @Nullable ResultTagValue terminationMarker) {
 
   public PgnGame {
-    tagList = Nulls.copyOfList(tagList);
-    halfMoveList = Nulls.copyOfList(halfMoveList);
-    if (terminationMarker != null && TagUtility.hasResult(tagList)) {
-      final String resultValue = TagUtility.readResult(tagList);
+    tags = Nulls.copyOfList(tags);
+    moves = Nulls.copyOfList(moves);
+    if (terminationMarker != null && TagUtility.hasResult(tags)) {
+      final String resultValue = TagUtility.readResult(tags);
       if (ResultTagValue.exists(resultValue)) {
-        final ResultTagValue fromTag = ResultTagValue.calculate(resultValue);
+        final ResultTagValue fromTag = ResultTagValue.parse(resultValue);
         if (fromTag != terminationMarker) {
           throw new IllegalArgumentException("The Result tag value \"" + resultValue
               + "\" disagrees with the termination marker \"" + terminationMarker.getValue()

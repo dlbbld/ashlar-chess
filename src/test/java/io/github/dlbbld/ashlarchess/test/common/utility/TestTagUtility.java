@@ -12,31 +12,30 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
-import io.github.dlbbld.ashlarchess.common.constants.EnumConstants;
 import io.github.dlbbld.ashlarchess.fen.constants.FenConstants;
 import io.github.dlbbld.ashlarchess.pgn.ResultTagValue;
 import io.github.dlbbld.ashlarchess.pgn.StandardTag;
 import io.github.dlbbld.ashlarchess.pgn.Tag;
 import io.github.dlbbld.ashlarchess.pgn.TagUtility;
 
-class TestTagUtility implements EnumConstants {
+class TestTagUtility {
 
   @SuppressWarnings("static-method")
   @Test
   void test() {
 
-    final List<Tag> tagList = new ArrayList<>();
+    final List<Tag> tags = new ArrayList<>();
 
-    tagList.add(new Tag(StandardTag.RESULT.getName(), ResultTagValue.WHITE_WON.getValue()));
-    tagList.add(new Tag(StandardTag.FEN.getName(), FenConstants.FEN_INITIAL_STR));
+    tags.add(new Tag(StandardTag.RESULT.getName(), ResultTagValue.WHITE_WON.getValue()));
+    tags.add(new Tag(StandardTag.FEN.getName(), FenConstants.FEN_INITIAL_STR));
 
-    assertTrue(TagUtility.hasResult(tagList));
-    assertTrue(TagUtility.hasFen(tagList));
+    assertTrue(TagUtility.hasResult(tags));
+    assertTrue(TagUtility.hasFen(tags));
 
-    assertEquals(ResultTagValue.WHITE_WON.getValue(), TagUtility.readResult(tagList));
-    assertEquals(FenConstants.FEN_INITIAL_STR, TagUtility.readFen(tagList));
+    assertEquals(ResultTagValue.WHITE_WON.getValue(), TagUtility.readResult(tags));
+    assertEquals(FenConstants.FEN_INITIAL_STR, TagUtility.readFen(tags));
 
-    assertFalse(TagUtility.hasEvent(tagList));
-    assertFalse(TagUtility.hasSetUp(tagList));
+    assertFalse(TagUtility.hasEvent(tags));
+    assertFalse(TagUtility.hasSetUp(tags));
   }
 }

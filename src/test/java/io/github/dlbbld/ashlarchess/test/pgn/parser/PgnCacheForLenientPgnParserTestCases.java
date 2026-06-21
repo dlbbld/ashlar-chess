@@ -25,12 +25,12 @@ public class PgnCacheForLenientPgnParserTestCases {
         @SuppressWarnings("null") final PgnGame pgnGame = PGN_CACHE.get(key);
         return pgnGame;
       }
-      final PgnGame pgnGame = LenientPgnParser.parse(pgnFolderPath, pgnName);
+      final PgnGame pgnGame = LenientPgnParser.parsePath(pgnFolderPath, pgnName);
       PGN_CACHE.put(key, pgnGame);
       return pgnGame;
     }
     // other PGN's we are not caching
-    return LenientPgnParser.parse(pgnFolderPath, pgnName);
+    return LenientPgnParser.parsePath(pgnFolderPath, pgnName);
 
   }
 }

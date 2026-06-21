@@ -9,7 +9,7 @@ import io.github.dlbbld.ashlarchess.test.pgntest.enums.PgnTest;
 
 public class ReporterManualRun {
 
-  public static void main(String[] args) throws Exception {
+  public static void main(String[] args) {
     System.out.println("=============================================");
     printReportForPgn("fivefold_correct_potapov_adly_2018.pgn");
     System.out.println("=============================================");
@@ -23,7 +23,7 @@ public class ReporterManualRun {
 
   }
 
-  private static void printReportForPgn(String pgnName) throws Exception {
+  private static void printReportForPgn(String pgnName) {
     printReport(pgnName);
   }
 
@@ -52,14 +52,14 @@ public class ReporterManualRun {
         """;
     System.out.println("PGN string");
     System.out.println("=============================================");
-    Reporter.printReport(pgnString);
+    Reporter.report(pgnString).forEach(System.out::println);
   }
 
-  static void printReport(String pgnName) throws Exception {
+  static void printReport(String pgnName) {
     final PgnTest pgnTest = PgnTestCaseCatalog.findPgnTestPgnNotListed(pgnName);
     System.out.println(pgnName);
     System.out.println("=============================================");
-    Reporter.printReport(pgnTest.getFolderPath(), pgnName);
+    Reporter.report(pgnTest.getFolderPath(), pgnName).forEach(System.out::println);
   }
 
 }

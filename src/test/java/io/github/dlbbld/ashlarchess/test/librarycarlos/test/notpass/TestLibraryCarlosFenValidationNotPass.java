@@ -13,7 +13,7 @@ class TestLibraryCarlosFenValidationNotPass {
 
   @SuppressWarnings("static-method")
   @Test
-  void testExpectedFailureButSuccess() throws Exception {
+  void testExpectedFailureButSuccess() {
 
     // invalid side field - accepted - not ok
     assertTrue(testIsValid("r1bqk1nr/pppp1ppp/2n5/2b1p3/2B1P3/5N2/PPPP1PPP/RNBQK2R x KQkq - 0 4"));
@@ -33,7 +33,7 @@ class TestLibraryCarlosFenValidationNotPass {
     // castling field contains non possible value for position
     assertTrue(testIsValid("4k3/8/8/8/8/8/8/4KR2 w K - 0 1"));
 
-    // halfmove counter contains non possible value (too big in regard to fullMoveNumber)
+    // halfmove clock contains non possible value (too big in regard to fullMoveNumber)
     assertTrue(testIsValid("4k3/8/8/8/8/8/8/4KR2 w K - 500 50"));
 
   }

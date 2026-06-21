@@ -17,7 +17,7 @@ import io.github.dlbbld.ashlarchess.test.pgntest.constants.PgnTestConstants;
  * (any combination of spaces, tabs, newlines). Both shapes collapse to
  * {@link StrictPgnParserValidationProblem#FILE_EMPTY}. Symmetric with the lenient parser's empty-input handling.
  */
-class TestStrictPgnParserEmptyException extends AbstractTestStrictPgnParserException {
+class TestStrictPgnParserEmptyException {
 
   private static final Path PGN_TEST_FOLDER_PATH = Nulls
       .pathResolve(PgnTestConstants.STRICT_PGN_PARSER_TEST_ROOT_FOLDER_PATH, "exception/empty");
@@ -30,6 +30,7 @@ class TestStrictPgnParserEmptyException extends AbstractTestStrictPgnParserExcep
   }
 
   private static void checkException(String pgnName, StrictPgnParserValidationProblem expected) {
-    checkException(PGN_TEST_FOLDER_PATH, pgnName, expected, SanValidationProblem.NONE);
+    TestStrictPgnParserExceptionSupport.checkException(PGN_TEST_FOLDER_PATH, pgnName, expected,
+        SanValidationProblem.NONE);
   }
 }

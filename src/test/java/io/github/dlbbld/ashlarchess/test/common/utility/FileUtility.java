@@ -23,7 +23,10 @@ import io.github.dlbbld.ashlarchess.common.Nulls;
 import io.github.dlbbld.ashlarchess.common.exceptions.FileSystemAccessException;
 import io.github.dlbbld.ashlarchess.common.exceptions.ProgrammingMistakeException;
 
-public abstract class FileUtility {
+public final class FileUtility {
+
+  private FileUtility() {
+  }
 
   /**
    * Reads the entire contents of a file as a single UTF-8 string, preserving line terminators exactly as they appear on
@@ -78,28 +81,28 @@ public abstract class FileUtility {
     return fileLines;
   }
 
-  public static void writeFile(Path folderPath, String fileName, List<String> lineList) {
-    writeFile(Nulls.pathResolve(folderPath, fileName), lineList);
+  public static void writeFile(Path folderPath, String fileName, List<String> lines) {
+    writeFile(Nulls.pathResolve(folderPath, fileName), lines);
   }
 
   public static void writeFile(Path folderPath, String fileName, String line) {
-    final List<String> lineList = new ArrayList<>();
-    lineList.add(line);
+    final List<String> lines = new ArrayList<>();
+    lines.add(line);
 
-    writeFile(Nulls.pathResolve(folderPath, fileName), lineList);
+    writeFile(Nulls.pathResolve(folderPath, fileName), lines);
   }
 
   public static void writeFile(Path filePath, String line) {
-    final List<String> lineList = new ArrayList<>();
-    lineList.add(line);
+    final List<String> lines = new ArrayList<>();
+    lines.add(line);
 
-    writeFile(filePath, lineList);
+    writeFile(filePath, lines);
   }
 
-  public static void writeFile(Path filePath, List<String> lineList) {
+  public static void writeFile(Path filePath, List<String> lines) {
     deleteFile(filePath);
     try (BufferedWriter writer = Files.newBufferedWriter(filePath, StandardCharsets.UTF_8)) {
-      for (final String line : lineList) {
+      for (final String line : lines) {
         writer.write(line);
         writer.write("\n");
       }
@@ -111,16 +114,16 @@ public abstract class FileUtility {
 
   public static void appendFile(Path filePath, String line) {
 
-    final List<String> lineList = new ArrayList<>();
-    lineList.add(line);
+    final List<String> lines = new ArrayList<>();
+    lines.add(line);
 
-    appendFile(filePath, lineList);
+    appendFile(filePath, lines);
   }
 
-  public static void appendFile(Path filePath, List<String> lineList) {
+  public static void appendFile(Path filePath, List<String> lines) {
 
     if (!exists(filePath)) {
-      writeFile(filePath, lineList);
+      writeFile(filePath, lines);
     } else {
 
       final File file = filePath.toFile();
@@ -129,7 +132,7 @@ public abstract class FileUtility {
       }
       try (BufferedWriter writer = Files.newBufferedWriter(filePath, StandardCharsets.UTF_8,
           StandardOpenOption.APPEND)) {
-        for (final String line : lineList) {
+        for (final String line : lines) {
           writer.write(line);
           writer.write("\n");
         }
@@ -177,12 +180,12 @@ public abstract class FileUtility {
       throw new IllegalArgumentException("\"" + folderPath + "\" is not a directory");
     }
 
-    final File[] filesList = folder.listFiles();
-    if (filesList == null) {
+    final File[] files = folder.listFiles();
+    if (files == null) {
       throw new FileSystemAccessException("File list retrieval for \"" + folderPath + "\" failed");
     }
 
-    for (final File file : filesList) {
+    for (final File file : files) {
       if (file == null) {
         throw new ProgrammingMistakeException("Wrong assumption about API behaviour");
       }
@@ -217,18 +220,18 @@ public abstract class FileUtility {
     }
   }
 
-  public static List<String> readFileNameList(Path folderPath) {
+  public static List<String> readFileNames(Path folderPath) {
     final List<String> result = new ArrayList<>();
     final File folder = folderPath.toFile();
     if (!folder.isDirectory()) {
       throw new IllegalArgumentException("\"" + folderPath + "\" is not a directory");
     }
-    final File[] filesList = folder.listFiles();
-    if (filesList == null) {
+    final File[] files = folder.listFiles();
+    if (files == null) {
       throw new FileSystemAccessException("File list retrieval for \"" + folderPath + "\" failed");
     }
 
-    for (final File file : filesList) {
+    for (final File file : files) {
       if (file == null) {
         throw new ProgrammingMistakeException("Wrong assumption about API behaviour");
       }

@@ -13,7 +13,7 @@ import org.junit.jupiter.api.Test;
 
 import io.github.dlbbld.ashlarchess.common.Nulls;
 import io.github.dlbbld.ashlarchess.fen.constants.FenConstants;
-import io.github.dlbbld.ashlarchess.model.PgnHalfMove;
+import io.github.dlbbld.ashlarchess.model.PgnMove;
 import io.github.dlbbld.ashlarchess.pgn.PgnGame;
 import io.github.dlbbld.ashlarchess.pgn.StandardTag;
 import io.github.dlbbld.ashlarchess.pgn.TagUtility;
@@ -21,12 +21,12 @@ import io.github.dlbbld.ashlarchess.test.pgntest.constants.PgnTestConstants;
 
 class TestStrictPgnParserReadTag {
 
-  private static List<String> calculateSanList(List<PgnHalfMove> halfMoveList) {
-    final List<String> sanList = new ArrayList<>();
-    for (final PgnHalfMove halfMove : halfMoveList) {
-      sanList.add(halfMove.san());
+  private static List<String> calculateSans(List<PgnMove> moves) {
+    final List<String> sans = new ArrayList<>();
+    for (final PgnMove move : moves) {
+      sans.add(move.san());
     }
-    return sanList;
+    return sans;
   }
 
   private static final Path PGN_TEST_FOLDER_PATH = Nulls
@@ -39,15 +39,15 @@ class TestStrictPgnParserReadTag {
       final PgnGame pgnGame = PgnCacheForStrictPgnParserTestCases.getPgn(PGN_TEST_FOLDER_PATH,
           "01_example_white_last_move.pgn");
 
-      assertEquals("Groningen", TagUtility.calculateTagValue(pgnGame, StandardTag.EVENT));
-      assertEquals("Groningen NED", TagUtility.calculateTagValue(pgnGame, StandardTag.SITE));
-      assertEquals("1997.??.??", TagUtility.calculateTagValue(pgnGame, StandardTag.DATE));
-      assertEquals("9", TagUtility.calculateTagValue(pgnGame, StandardTag.ROUND));
-      assertEquals("Pavel Blatny", TagUtility.calculateTagValue(pgnGame, StandardTag.WHITE));
-      assertEquals("Frank Holzke", TagUtility.calculateTagValue(pgnGame, StandardTag.BLACK));
-      assertEquals("1/2-1/2", TagUtility.calculateTagValue(pgnGame, StandardTag.RESULT));
-      assertEquals("A15", TagUtility.calculateTagValue(pgnGame, "ECO"));
-      assertEquals("1997.??.??", TagUtility.calculateTagValue(pgnGame, "EventDate"));
+      assertEquals("Groningen", TagUtility.readTagValue(pgnGame, StandardTag.EVENT));
+      assertEquals("Groningen NED", TagUtility.readTagValue(pgnGame, StandardTag.SITE));
+      assertEquals("1997.??.??", TagUtility.readTagValue(pgnGame, StandardTag.DATE));
+      assertEquals("9", TagUtility.readTagValue(pgnGame, StandardTag.ROUND));
+      assertEquals("Pavel Blatny", TagUtility.readTagValue(pgnGame, StandardTag.WHITE));
+      assertEquals("Frank Holzke", TagUtility.readTagValue(pgnGame, StandardTag.BLACK));
+      assertEquals("1/2-1/2", TagUtility.readTagValue(pgnGame, StandardTag.RESULT));
+      assertEquals("A15", TagUtility.readTagValue(pgnGame, "ECO"));
+      assertEquals("1997.??.??", TagUtility.readTagValue(pgnGame, "EventDate"));
 
       assertEquals(FenConstants.FEN_INITIAL, pgnGame.startFen());
     }
@@ -62,11 +62,11 @@ class TestStrictPgnParserReadTag {
     {
       final PgnGame pgnGame = PgnCacheForStrictPgnParserTestCases.getPgn(PGN_TEST_FOLDER_PATH,
           "03_example_white_last_move_short.pgn");
-      final List<String> halfMoveList = new ArrayList<>();
-      halfMoveList.add("Nf3");
-      halfMoveList.add("Nf6");
-      halfMoveList.add("c4");
-      assertEquals(halfMoveList, calculateSanList(pgnGame.halfMoveList()));
+      final List<String> moves = new ArrayList<>();
+      moves.add("Nf3");
+      moves.add("Nf6");
+      moves.add("c4");
+      assertEquals(moves, calculateSans(pgnGame.moves()));
 
       assertEquals(FenConstants.FEN_INITIAL, pgnGame.startFen());
     }
@@ -74,12 +74,12 @@ class TestStrictPgnParserReadTag {
     {
       final PgnGame pgnGame = PgnCacheForStrictPgnParserTestCases.getPgn(PGN_TEST_FOLDER_PATH,
           "04_example_black_last_move_short.pgn");
-      final List<String> halfMoveList = new ArrayList<>();
-      halfMoveList.add("Nf3");
-      halfMoveList.add("Nf6");
-      halfMoveList.add("c4");
-      halfMoveList.add("c5");
-      assertEquals(halfMoveList, calculateSanList(pgnGame.halfMoveList()));
+      final List<String> moves = new ArrayList<>();
+      moves.add("Nf3");
+      moves.add("Nf6");
+      moves.add("c4");
+      moves.add("c5");
+      assertEquals(moves, calculateSans(pgnGame.moves()));
 
       assertEquals(FenConstants.FEN_INITIAL, pgnGame.startFen());
     }

@@ -16,7 +16,10 @@ import io.github.dlbbld.ashlarchess.messages.Message;
  * Parses pawn SAN moves - both forward (e.g. {@code d3}, {@code d8=Q}) and capturing (e.g. {@code dxe5},
  * {@code dxe8=Q}).
  */
-abstract class SanValidateFormatPawn extends AbstractSan {
+final class SanValidateFormatPawn {
+
+  private SanValidateFormatPawn() {
+  }
 
   static SanParse parsePawnMove(final String core, final SanTerminalMarker sanTerminalMarker) {
     // too short
@@ -55,7 +58,7 @@ abstract class SanValidateFormatPawn extends AbstractSan {
       // valid
       return new SanParse(SanFormat.PAWN_NON_CAPTURING_NON_PROMOTION,
           new SanConversion(PieceType.PAWN, File.NONE, Rank.NONE,
-              Square.calculate(SanValidateFormat.parseFile(firstChar), SanValidateFormat.parseRank(secondChar)),
+              Square.of(SanValidateFormat.parseFile(firstChar), SanValidateFormat.parseRank(secondChar)),
               PromotionPieceType.NONE, sanTerminalMarker));
     }
 
@@ -99,8 +102,8 @@ abstract class SanValidateFormatPawn extends AbstractSan {
     // valid
     return new SanParse(SanFormat.PAWN_NON_CAPTURING_PROMOTION,
         new SanConversion(PieceType.PAWN, File.NONE, Rank.NONE,
-            Square.calculate(SanValidateFormat.parseFile(firstChar), SanValidateFormat.parseRank(secondChar)),
-            NotationPromotionPiece.calculate(fourthChar).getPromotionPieceType(), sanTerminalMarker));
+            Square.of(SanValidateFormat.parseFile(firstChar), SanValidateFormat.parseRank(secondChar)),
+            NotationPromotionPiece.parse(fourthChar).getPromotionPieceType(), sanTerminalMarker));
   }
 
   private static SanParse parsePawnCaptureMove(final String core, final SanTerminalMarker sanTerminalMarker) {
@@ -147,7 +150,7 @@ abstract class SanValidateFormatPawn extends AbstractSan {
       // valid
       return new SanParse(SanFormat.PAWN_CAPTURING_NON_PROMOTION,
           new SanConversion(PieceType.PAWN, SanValidateFormat.parseFile(firstChar), Rank.NONE,
-              Square.calculate(SanValidateFormat.parseFile(thirdChar), SanValidateFormat.parseRank(fourthChar)),
+              Square.of(SanValidateFormat.parseFile(thirdChar), SanValidateFormat.parseRank(fourthChar)),
               PromotionPieceType.NONE, sanTerminalMarker));
     }
 
@@ -191,8 +194,8 @@ abstract class SanValidateFormatPawn extends AbstractSan {
     // valid
     return new SanParse(SanFormat.PAWN_CAPTURING_PROMOTION,
         new SanConversion(PieceType.PAWN, SanValidateFormat.parseFile(firstChar), Rank.NONE,
-            Square.calculate(SanValidateFormat.parseFile(thirdChar), SanValidateFormat.parseRank(fourthChar)),
-            NotationPromotionPiece.calculate(sixthChar).getPromotionPieceType(), sanTerminalMarker));
+            Square.of(SanValidateFormat.parseFile(thirdChar), SanValidateFormat.parseRank(fourthChar)),
+            NotationPromotionPiece.parse(sixthChar).getPromotionPieceType(), sanTerminalMarker));
   }
 
   private static boolean isAnyPromotionRank(final char c) {

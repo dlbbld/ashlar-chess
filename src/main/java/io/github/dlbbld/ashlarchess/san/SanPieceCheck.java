@@ -15,10 +15,13 @@ import io.github.dlbbld.ashlarchess.board.enums.Square;
  * Internal piece-presence checks used by SAN piece-exists validation. Not part of the public API: SAN parsing is the
  * public entry point; the per-square scans are an implementation detail.
  */
-abstract class SanPieceCheck {
+final class SanPieceCheck {
+
+  private SanPieceCheck() {
+  }
 
   static boolean calculateHasPieceType(Side side, PieceType pieceType, BitboardPosition bitboardPosition) {
-    final Piece piece = Piece.calculate(side, pieceType);
+    final Piece piece = Piece.of(side, pieceType);
     for (final Square boardSquare : Square.REAL) {
       if (bitboardPosition.get(boardSquare) == piece) {
         return true;
@@ -28,7 +31,7 @@ abstract class SanPieceCheck {
   }
 
   static boolean calculateHasPieceType(Side side, PieceType pieceType, BitboardPosition bitboardPosition, File file) {
-    final Piece piece = Piece.calculate(side, pieceType);
+    final Piece piece = Piece.of(side, pieceType);
     for (final Square boardSquare : Square.REAL) {
       if (boardSquare.getFile() != file) {
         continue;
@@ -41,7 +44,7 @@ abstract class SanPieceCheck {
   }
 
   static boolean calculateHasPieceType(Side side, PieceType pieceType, BitboardPosition bitboardPosition, Rank rank) {
-    final Piece piece = Piece.calculate(side, pieceType);
+    final Piece piece = Piece.of(side, pieceType);
     for (final Square boardSquare : Square.REAL) {
       if (boardSquare.getRank() != rank) {
         continue;

@@ -3,6 +3,72 @@
 
 package io.github.dlbbld.ashlarchess.test.custom;
 
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.A1;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.A2;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.A3;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.A4;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.A5;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.A6;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.A7;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.A8;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.B1;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.B2;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.B3;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.B4;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.B5;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.B6;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.B7;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.B8;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.BLACK;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.C1;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.C2;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.C3;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.C4;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.C5;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.C6;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.C7;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.C8;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.D1;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.D2;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.D3;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.D4;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.D5;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.D6;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.D7;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.D8;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.E1;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.E2;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.E3;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.E4;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.E5;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.E6;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.E7;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.E8;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.F1;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.F2;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.F3;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.F4;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.F5;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.F6;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.F7;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.F8;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.G1;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.G2;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.G3;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.G4;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.G5;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.G6;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.G7;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.G8;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.H1;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.H2;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.H3;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.H4;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.H5;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.H6;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.H7;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.H8;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.WHITE;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -18,7 +84,6 @@ import io.github.dlbbld.ashlarchess.board.StaticPosition;
 import io.github.dlbbld.ashlarchess.board.enums.PromotionPieceType;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
 import io.github.dlbbld.ashlarchess.board.enums.Square;
-import io.github.dlbbld.ashlarchess.common.constants.EnumConstants;
 import io.github.dlbbld.ashlarchess.common.model.MoveSpecification;
 import io.github.dlbbld.ashlarchess.squares.BishopPotentialToSquares;
 import io.github.dlbbld.ashlarchess.squares.KingNonCastlingPotentialToSquares;
@@ -27,7 +92,7 @@ import io.github.dlbbld.ashlarchess.squares.PawnPotentialToSquares;
 import io.github.dlbbld.ashlarchess.squares.QueenPotentialToSquares;
 import io.github.dlbbld.ashlarchess.squares.RookPotentialToSquares;
 
-class TestPotentialToSquares implements EnumConstants {
+class TestPotentialToSquares {
 
   @SuppressWarnings("static-method")
   @Test
@@ -2650,51 +2715,51 @@ class TestPotentialToSquares implements EnumConstants {
     }
   }
 
-  private static void checkExceptionRook(StaticPosition staticPosition, Square fromSquare, Side havingMove) {
+  private static void checkExceptionRook(StaticPosition staticPosition, Square fromSquare, Side sideToMove) {
     boolean isCorrectException = false;
     try {
-      RookPotentialToSquares.calculateRookPotentialToSquares(staticPosition, fromSquare, havingMove);
+      RookPotentialToSquares.calculateRookPotentialToSquares(staticPosition, fromSquare, sideToMove);
     } catch (@SuppressWarnings("unused") final IllegalArgumentException iae) {
       isCorrectException = true;
     }
     assertTrue(isCorrectException);
   }
 
-  private static void checkExceptionKnight(StaticPosition staticPosition, Square fromSquare, Side havingMove) {
+  private static void checkExceptionKnight(StaticPosition staticPosition, Square fromSquare, Side sideToMove) {
     boolean isCorrectException = false;
     try {
-      KnightPotentialToSquares.calculateKnightPotentialToSquares(staticPosition, fromSquare, havingMove);
+      KnightPotentialToSquares.calculateKnightPotentialToSquares(staticPosition, fromSquare, sideToMove);
     } catch (@SuppressWarnings("unused") final IllegalArgumentException iae) {
       isCorrectException = true;
     }
     assertTrue(isCorrectException);
   }
 
-  private static void checkExceptionBishop(StaticPosition staticPosition, Square fromSquare, Side havingMove) {
+  private static void checkExceptionBishop(StaticPosition staticPosition, Square fromSquare, Side sideToMove) {
     boolean isCorrectException = false;
     try {
-      BishopPotentialToSquares.calculateBishopPotentialToSquares(staticPosition, fromSquare, havingMove);
+      BishopPotentialToSquares.calculateBishopPotentialToSquares(staticPosition, fromSquare, sideToMove);
     } catch (@SuppressWarnings("unused") final IllegalArgumentException iae) {
       isCorrectException = true;
     }
     assertTrue(isCorrectException);
   }
 
-  private static void checkExceptionQueen(StaticPosition staticPosition, Square fromSquare, Side havingMove) {
+  private static void checkExceptionQueen(StaticPosition staticPosition, Square fromSquare, Side sideToMove) {
     boolean isCorrectException = false;
     try {
-      QueenPotentialToSquares.calculateQueenPotentialToSquares(staticPosition, fromSquare, havingMove);
+      QueenPotentialToSquares.calculateQueenPotentialToSquares(staticPosition, fromSquare, sideToMove);
     } catch (@SuppressWarnings("unused") final IllegalArgumentException iae) {
       isCorrectException = true;
     }
     assertTrue(isCorrectException);
   }
 
-  private static void checkExceptionKingNonCastling(StaticPosition staticPosition, Square fromSquare, Side havingMove) {
+  private static void checkExceptionKingNonCastling(StaticPosition staticPosition, Square fromSquare, Side sideToMove) {
     boolean isCorrectException = false;
     try {
       KingNonCastlingPotentialToSquares.calculateKingNonCastlingPotentialToSquares(staticPosition, fromSquare,
-          havingMove);
+          sideToMove);
     } catch (@SuppressWarnings("unused") final IllegalArgumentException iae) {
       isCorrectException = true;
     }
@@ -2702,11 +2767,11 @@ class TestPotentialToSquares implements EnumConstants {
   }
 
   private static void checkExceptionPawn(StaticPosition staticPosition, Square enPassantCaptureTargetSquare,
-      Square fromSquare, Side havingMove) {
+      Square fromSquare, Side sideToMove) {
     boolean isCorrectException = false;
     try {
       PawnPotentialToSquares.calculatePawnPotentialToSquares(staticPosition, enPassantCaptureTargetSquare, fromSquare,
-          havingMove);
+          sideToMove);
     } catch (@SuppressWarnings("unused") final IllegalArgumentException iae) {
       isCorrectException = true;
     }

@@ -8,13 +8,14 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import org.junit.jupiter.api.Test;
 
+import io.github.dlbbld.ashlarchess.analyze.MovementCheckTranslator;
 import io.github.dlbbld.ashlarchess.common.exceptions.ProgrammingMistakeException;
 import io.github.dlbbld.ashlarchess.enums.MoveCheck;
 import io.github.dlbbld.ashlarchess.enums.MovementCheck;
 
 /**
- * Lock-down test for {@link MovementCheck#toMoveCheck()}. Ensures the translator stays exhaustive over all failure
- * values and that SUCCESS is rejected as a refusal-reason translation.
+ * Lock-down test for {@link MovementCheckTranslator#toMoveCheck(MovementCheck)}. Ensures the translator stays
+ * exhaustive over all failure values and that SUCCESS is rejected as a refusal-reason translation.
  */
 class TestMovementCheckTranslator {
 
@@ -25,7 +26,7 @@ class TestMovementCheckTranslator {
       if (check == MovementCheck.SUCCESS) {
         continue;
       }
-      final MoveCheck translated = check.toMoveCheck();
+      final MoveCheck translated = MovementCheckTranslator.toMoveCheck(check);
       assertNotNull(translated, "translator returned null for " + check);
     }
   }
@@ -33,6 +34,6 @@ class TestMovementCheckTranslator {
   @SuppressWarnings("static-method")
   @Test
   void testSuccessThrows() {
-    assertThrows(ProgrammingMistakeException.class, MovementCheck.SUCCESS::toMoveCheck);
+    assertThrows(ProgrammingMistakeException.class, () -> MovementCheckTranslator.toMoveCheck(MovementCheck.SUCCESS));
   }
 }

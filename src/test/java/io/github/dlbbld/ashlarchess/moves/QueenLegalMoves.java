@@ -3,6 +3,8 @@
 
 package io.github.dlbbld.ashlarchess.moves;
 
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.QUEEN;
+
 import java.util.Set;
 
 import io.github.dlbbld.ashlarchess.board.StaticPosition;
@@ -12,16 +14,16 @@ import io.github.dlbbld.ashlarchess.board.enums.Square;
 import io.github.dlbbld.ashlarchess.model.LegalMove;
 import io.github.dlbbld.ashlarchess.squares.QueenPotentialToSquares;
 
-class QueenLegalMoves extends AbstractLegalMoves {
-  public static Set<LegalMove> calculateQueenLegalMoves(StaticPosition staticPosition, Side havingMove,
+class QueenLegalMoves {
+  public static Set<LegalMove> calculateQueenLegalMoves(StaticPosition staticPosition, Side sideToMove,
       Square fromSquare) {
 
     final Piece movingPiece = staticPosition.get(fromSquare);
-    checkPiece(havingMove, movingPiece, QUEEN);
+    LegalMovesSupport.checkPiece(sideToMove, movingPiece, QUEEN);
 
     final Set<Square> toSquareSet = QueenPotentialToSquares.calculateQueenPotentialToSquares(staticPosition, fromSquare,
-        havingMove);
+        sideToMove);
 
-    return calculateLegalMoveSet(staticPosition, havingMove, fromSquare, toSquareSet);
+    return LegalMovesSupport.calculateLegalMoveSet(staticPosition, sideToMove, fromSquare, toSquareSet);
   }
 }

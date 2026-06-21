@@ -3,8 +3,20 @@
 
 package io.github.dlbbld.ashlarchess.test.board;
 
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.A1;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.A2;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.A8;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.B8;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.C6;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.E4;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.E5;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.F6;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.F7;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.G8;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.H6;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -15,7 +27,6 @@ import org.junit.jupiter.api.Test;
 
 import io.github.dlbbld.ashlarchess.board.Board;
 import io.github.dlbbld.ashlarchess.common.Nulls;
-import io.github.dlbbld.ashlarchess.common.constants.EnumConstants;
 import io.github.dlbbld.ashlarchess.common.model.ClaimRights;
 import io.github.dlbbld.ashlarchess.common.model.ClaimableMove;
 import io.github.dlbbld.ashlarchess.common.model.MoveSpecification;
@@ -24,26 +35,26 @@ import io.github.dlbbld.ashlarchess.model.LegalMove;
 import io.github.dlbbld.ashlarchess.san.LenientSanParserValidationException;
 
 /**
- * Tests for {@link Board#calculateFiftyMoveRuleClaimRights()} and
- * {@link Board#calculateThreefoldRepetitionRuleClaimRights()}: the move-list variants of the FIDE 9.2 / 9.3 claim APIs.
- * Each {@link ClaimRights} pairs an existence boolean ({@code canClaim}) with the list of legal moves the side to move
- * could announce as a claim - defensively copied and ordered to match {@link Board#getLegalMoves()}.
+ * Tests for {@link Board#fiftyMoveRuleClaimRights()} and {@link Board#threefoldRepetitionRuleClaimRights()}: the
+ * move-list variants of the FIDE 9.2 / 9.3 claim APIs. Each {@link ClaimRights} pairs an existence boolean
+ * ({@code canClaim}) with the list of legal moves the side to move could announce as a claim - defensively copied and
+ * ordered to match {@link Board#getLegalMoves()}.
  *
  * <p>
  * The per-move predicates {@code canClaimFiftyMoveRuleFor} / {@code canClaimThreefoldRepetitionRuleFor} are the single
  * source of truth for which candidates are admitted; these tests verify the list-shape wrapper around those predicates.
  */
-class TestBoardClaimRights implements EnumConstants {
+class TestBoardClaimRights {
 
   // =============================================================================================
-  // calculateFiftyMoveRuleClaimRights - FIDE 9.3
+  // fiftyMoveRuleClaimRights - FIDE 9.3
   // =============================================================================================
 
   @SuppressWarnings("static-method")
   @Test
   void fiftyMoveEmptyBelowThreshold() {
-    final Board board = new Board("7k/8/8/8/8/8/8/4K3 w - - 50 30");
-    final ClaimRights rights = board.calculateFiftyMoveRuleClaimRights();
+    final Board board = Board.fromFenStrict("7k/8/8/8/8/8/8/4K3 w - - 50 30");
+    final ClaimRights rights = board.fiftyMoveRuleClaimRights();
     assertFalse(rights.canClaim(), "clock 50 is below the 50-move-rule threshold of 99");
     assertEquals(0, rights.claimableMoves().size());
   }
@@ -52,8 +63,8 @@ class TestBoardClaimRights implements EnumConstants {
   @Test
   void fiftyMoveQuietRookMoveAtClock99IsClaimable() {
     // White Ra1, K e1; clock 99. Any non-zeroing legal move qualifies (king or rook).
-    final Board board = new Board("7k/8/8/8/8/8/4K3/R7 w - - 99 51");
-    final ClaimRights rights = board.calculateFiftyMoveRuleClaimRights();
+    final Board board = Board.fromFenStrict("7k/8/8/8/8/8/4K3/R7 w - - 99 51");
+    final ClaimRights rights = board.fiftyMoveRuleClaimRights();
     assertTrue(rights.canClaim(), "at clock 99 every non-zeroing legal move is a 50-move claim candidate");
 
     boolean foundRa2 = false;
@@ -72,12 +83,12 @@ class TestBoardClaimRights implements EnumConstants {
   void fiftyMovePawnMoveAtClock99NotClaimable() {
     // White P e4, K e1; clock 99. The pawn move e4-e5 would reset the clock, so it is NOT a 50-move
     // claim candidate even though clock is 99. Other non-zeroing legal moves still qualify.
-    final Board board = new Board("7k/8/8/8/4P3/8/4K3/R7 w - - 99 51");
-    final ClaimRights rights = board.calculateFiftyMoveRuleClaimRights();
+    final Board board = Board.fromFenStrict("7k/8/8/8/4P3/8/4K3/R7 w - - 99 51");
+    final ClaimRights rights = board.fiftyMoveRuleClaimRights();
     assertTrue(rights.canClaim(), "non-pawn non-capture moves remain claimable");
 
     for (final ClaimableMove claim : rights.claimableMoves()) {
-      assertFalse(claim.moveSpecification().equals(new MoveSpecification(E4, E5)),
+      assertNotEquals(new MoveSpecification(E4, E5), claim.moveSpecification(),
           "the pawn move e4-e5 is clock-resetting and must NOT appear among claimable moves");
     }
   }
@@ -87,12 +98,12 @@ class TestBoardClaimRights implements EnumConstants {
   void fiftyMoveCaptureAtClock99NotClaimable() {
     // White R a1, K e1; Black R a8 (a capture target on the same file). Clock 99. The capture Ra1xa8
     // would reset the clock and is not claimable; quiet rook moves on the a-file and king moves are.
-    final Board board = new Board("r6k/8/8/8/8/8/4K3/R7 w - - 99 51");
-    final ClaimRights rights = board.calculateFiftyMoveRuleClaimRights();
+    final Board board = Board.fromFenStrict("r6k/8/8/8/8/8/4K3/R7 w - - 99 51");
+    final ClaimRights rights = board.fiftyMoveRuleClaimRights();
     assertTrue(rights.canClaim(), "non-capture moves remain claimable");
 
     for (final ClaimableMove claim : rights.claimableMoves()) {
-      assertFalse(claim.moveSpecification().equals(new MoveSpecification(A1, A8)),
+      assertNotEquals(new MoveSpecification(A1, A8), claim.moveSpecification(),
           "the capture Ra1xa8 is clock-resetting and must NOT appear among claimable moves");
     }
   }
@@ -103,8 +114,8 @@ class TestBoardClaimRights implements EnumConstants {
     // Same smothered-mate FEN as TestBoardClaimFor#fiftyMoveForReturnsTrueWhenCandidateMoveIsMate.
     // White's only non-zeroing legal move is Nh6-f7, which is mate. Strict FIDE 9.3: the move is a
     // valid 50-move claim regardless of the post-position outcome.
-    final Board board = new Board("6rk/6pp/7N/5p2/6p1/8/2q5/K7 w - - 99 60");
-    final ClaimRights rights = board.calculateFiftyMoveRuleClaimRights();
+    final Board board = Board.fromFenStrict("6rk/6pp/7N/5p2/6p1/8/2q5/K7 w - - 99 60");
+    final ClaimRights rights = board.fiftyMoveRuleClaimRights();
     assertTrue(rights.canClaim(), "mate-in-one at clock 99 remains a valid 50-move claim under strict FIDE 9.3");
 
     boolean foundNf7 = false;
@@ -120,19 +131,19 @@ class TestBoardClaimRights implements EnumConstants {
   }
 
   // =============================================================================================
-  // calculateThreefoldRepetitionRuleClaimRights - FIDE 9.2
+  // threefoldRepetitionRuleClaimRights - FIDE 9.2
   // =============================================================================================
 
   @SuppressWarnings("static-method")
   @Test
-  void threefoldExactlyOneClaimAheadAfterSevenPlyKnightShuffle() {
-    // 7-ply knight shuffle: Nf3 Nf6 Ng1 Ng8 Nf3 Nf6 Ng1. Black to move. Only Ng8 returns to the
+  void threefoldExactlyOneClaimAheadAfterSevenMoveKnightShuffle() {
+    // 7-move knight shuffle: Nf3 Nf6 Ng1 Ng8 Nf3 Nf6 Ng1. Black to move. Only Ng8 returns to the
     // initial position for the 3rd time; all other Black moves either reset the clock (pawn moves)
     // or produce a fresh position.
     final Board board = new Board();
     board.movesStrict("Nf3", "Nf6", "Ng1", "Ng8", "Nf3", "Nf6", "Ng1");
 
-    final ClaimRights rights = board.calculateThreefoldRepetitionRuleClaimRights();
+    final ClaimRights rights = board.threefoldRepetitionRuleClaimRights();
     assertTrue(rights.canClaim());
     assertEquals(1, rights.claimableMoves().size(), "only Ng8 creates the initial position's 3rd occurrence");
 
@@ -149,9 +160,9 @@ class TestBoardClaimRights implements EnumConstants {
     final Board board = new Board();
     board.movesStrict("Nf3", "Nf6", "Ng1", "Ng8", "Nf3", "Nf6", "Ng1");
 
-    final ClaimRights rights = board.calculateThreefoldRepetitionRuleClaimRights();
+    final ClaimRights rights = board.threefoldRepetitionRuleClaimRights();
     for (final ClaimableMove claim : rights.claimableMoves()) {
-      assertFalse(claim.moveSpecification().equals(new MoveSpecification(B8, C6)),
+      assertNotEquals(new MoveSpecification(B8, C6), claim.moveSpecification(),
           "Nb8-c6 produces a brand-new position and must not appear");
     }
   }
@@ -162,7 +173,7 @@ class TestBoardClaimRights implements EnumConstants {
     final Board board = new Board();
     board.movesStrict("e4", "e5", "Nf3", "Nf6");
 
-    final ClaimRights rights = board.calculateThreefoldRepetitionRuleClaimRights();
+    final ClaimRights rights = board.threefoldRepetitionRuleClaimRights();
     assertFalse(rights.canClaim());
     assertEquals(0, rights.claimableMoves().size());
   }
@@ -192,7 +203,7 @@ class TestBoardClaimRights implements EnumConstants {
   @SuppressWarnings("static-method")
   @Test
   void fiftyMoveSanOverloadMatchesMoveSpecificationOverload() throws LenientSanParserValidationException {
-    final Board board = new Board("7k/8/8/8/8/8/4K3/R7 w - - 99 51");
+    final Board board = Board.fromFenStrict("7k/8/8/8/8/8/4K3/R7 w - - 99 51");
 
     assertEquals(board.canClaimFiftyMoveRuleFor(new MoveSpecification(A1, A2)), board.canClaimFiftyMoveRuleFor("Ra2"),
         "SAN overload must agree with MoveSpecification overload");
@@ -210,9 +221,9 @@ class TestBoardClaimRights implements EnumConstants {
 
   @SuppressWarnings("static-method")
   @Test
-  void returnedListIsImmutable() {
-    final Board board = new Board("7k/8/8/8/8/8/4K3/R7 w - - 99 51");
-    final ClaimRights rights = board.calculateFiftyMoveRuleClaimRights();
+  void returnedClaimableMovesAreImmutable() {
+    final Board board = Board.fromFenStrict("7k/8/8/8/8/8/4K3/R7 w - - 99 51");
+    final ClaimRights rights = board.fiftyMoveRuleClaimRights();
 
     final List<ClaimableMove> moves = rights.claimableMoves();
     assertTrue(moves.size() > 0, "precondition: at least one claimable move");
@@ -227,15 +238,15 @@ class TestBoardClaimRights implements EnumConstants {
 
   @SuppressWarnings("static-method")
   @Test
-  void canClaimMirrorsListEmptiness() {
+  void canClaimMirrorsClaimableMovesEmptiness() {
     final Board emptyBoard = new Board(FenConstants.FEN_INITIAL);
-    final ClaimRights emptyRights = emptyBoard.calculateFiftyMoveRuleClaimRights();
+    final ClaimRights emptyRights = emptyBoard.fiftyMoveRuleClaimRights();
     assertEquals(emptyRights.canClaim(), !emptyRights.claimableMoves().isEmpty(),
         "canClaim must equal !claimableMoves.isEmpty()");
     assertFalse(emptyRights.canClaim());
 
-    final Board claimableBoard = new Board("7k/8/8/8/8/8/4K3/R7 w - - 99 51");
-    final ClaimRights claimableRights = claimableBoard.calculateFiftyMoveRuleClaimRights();
+    final Board claimableBoard = Board.fromFenStrict("7k/8/8/8/8/8/4K3/R7 w - - 99 51");
+    final ClaimRights claimableRights = claimableBoard.fiftyMoveRuleClaimRights();
     assertEquals(claimableRights.canClaim(), !claimableRights.claimableMoves().isEmpty());
     assertTrue(claimableRights.canClaim());
   }
@@ -246,8 +257,8 @@ class TestBoardClaimRights implements EnumConstants {
     // At clock 99 with a quiet rook+king position, multiple non-zeroing legal moves all qualify.
     // The claimable list must follow getLegalMoves() iteration order - i.e., the indices of
     // claimable moves into the legal-moves list are strictly ascending.
-    final Board board = new Board("7k/8/8/8/8/8/4K3/R7 w - - 99 51");
-    final ClaimRights rights = board.calculateFiftyMoveRuleClaimRights();
+    final Board board = Board.fromFenStrict("7k/8/8/8/8/8/4K3/R7 w - - 99 51");
+    final ClaimRights rights = board.fiftyMoveRuleClaimRights();
     assertTrue(rights.claimableMoves().size() >= 2, "precondition: at least two candidates exist");
 
     final List<MoveSpecification> legalOrder = new ArrayList<>();
@@ -266,61 +277,19 @@ class TestBoardClaimRights implements EnumConstants {
 
   @SuppressWarnings("static-method")
   @Test
-  void constructorDefensivelyCopiesSourceListNonEmptyPath() {
-    // Sister to returnedListIsImmutable: that test proves the EXPOSED list rejects mutation.
-    // This one proves the constructor decouples the record from the SOURCE list - i.e., the
-    // compact constructor's ImmutableList.copyOf is actually copying, not aliasing. Build a
-    // mutable source, construct ClaimRights, then mutate the source after construction and
-    // assert the record's view is unchanged.
-    final ClaimableMove original = new ClaimableMove(new MoveSpecification(A1, A2), "Ra2");
-    final List<ClaimableMove> mutableSource = new ArrayList<>();
-    mutableSource.add(original);
-
-    final ClaimRights rights = new ClaimRights(true, mutableSource);
-    assertEquals(1, rights.claimableMoves().size(), "precondition: one entry after construction");
-
-    // Mutate the source AFTER construction - the record must not reflect these changes.
-    mutableSource.clear();
-    mutableSource.add(new ClaimableMove(new MoveSpecification(A1, B1), "Rb1"));
-    mutableSource.add(new ClaimableMove(new MoveSpecification(A1, C1), "Rc1"));
-
-    assertEquals(1, rights.claimableMoves().size(),
-        "post-construction source mutations must not leak into the record's claimableMoves");
-    assertEquals(original, rights.claimableMoves().get(0), "the originally-present entry must remain unchanged");
-  }
-
-  @SuppressWarnings("static-method")
-  @Test
-  void constructorDefensivelyCopiesSourceListEmptyPath() {
-    // Same invariant on the canClaim=false branch: start with an empty mutable source, construct
-    // a ClaimRights, then add to the source. The record must remain empty (and canClaim==false).
-    final List<ClaimableMove> mutableSource = new ArrayList<>();
-    final ClaimRights rights = new ClaimRights(false, mutableSource);
-    assertFalse(rights.canClaim(), "precondition: empty source -> canClaim==false");
-    assertEquals(0, rights.claimableMoves().size());
-
-    mutableSource.add(new ClaimableMove(new MoveSpecification(A1, A2), "Ra2"));
-
-    assertEquals(0, rights.claimableMoves().size(),
-        "post-construction source addition must not leak into the record's claimableMoves");
-    assertFalse(rights.canClaim(), "canClaim must remain false; the invariant is fixed at construction");
-  }
-
-  @SuppressWarnings("static-method")
-  @Test
   void boardStateUnchangedAfterClaimRightsQuery() throws LenientSanParserValidationException {
     final Board board = new Board();
     board.movesStrict("Nf3", "Nf6", "Ng1", "Ng8", "Nf3", "Nf6", "Ng1");
 
-    final int halfMoveCountBefore = board.getPerformedHalfMoveCount();
+    final int performedMoveCountBefore = board.getPerformedMoveCount();
     final String fenBefore = board.getFen();
 
-    board.calculateFiftyMoveRuleClaimRights();
-    board.calculateThreefoldRepetitionRuleClaimRights();
+    board.fiftyMoveRuleClaimRights();
+    board.threefoldRepetitionRuleClaimRights();
     board.canClaimFiftyMoveRuleFor("Ng8");
     board.canClaimThreefoldRepetitionRuleFor("Ng8");
 
-    assertEquals(halfMoveCountBefore, board.getPerformedHalfMoveCount(),
+    assertEquals(performedMoveCountBefore, board.getPerformedMoveCount(),
         "queries must not alter the played-move count");
     assertEquals(fenBefore, board.getFen(), "queries must not alter the position (FEN unchanged)");
   }

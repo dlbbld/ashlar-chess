@@ -27,7 +27,10 @@ import io.github.dlbbld.ashlarchess.messages.Message;
  * Parses the SAN character-by-character (sequential), analogous to {@link SanValidateFormatPawn}. Each failure is
  * reported with the most specific {@link SanValidationProblem} describing which character is missing or wrong.
  */
-abstract class SanValidateFormatKing extends AbstractSan {
+final class SanValidateFormatKing {
+
+  private SanValidateFormatKing() {
+  }
 
   static SanParse parseKingMove(final String core, final SanTerminalMarker sanTerminalMarker) {
     // core[0] == 'K' ensured by the dispatcher in SanValidateFormat
@@ -80,7 +83,7 @@ abstract class SanValidateFormatKing extends AbstractSan {
     if (core.length() == 3) {
       return new SanParse(SanFormat.KING_NON_CASTLING_NON_CAPTURING,
           new SanConversion(PieceType.KING, File.NONE, Rank.NONE,
-              Square.calculate(SanValidateFormat.parseFile(secondChar), SanValidateFormat.parseRank(thirdChar)),
+              Square.of(SanValidateFormat.parseFile(secondChar), SanValidateFormat.parseRank(thirdChar)),
               PromotionPieceType.NONE, sanTerminalMarker));
     }
 
@@ -126,7 +129,7 @@ abstract class SanValidateFormatKing extends AbstractSan {
     if (core.length() == 4) {
       return new SanParse(SanFormat.KING_NON_CASTLING_CAPTURING,
           new SanConversion(PieceType.KING, File.NONE, Rank.NONE,
-              Square.calculate(SanValidateFormat.parseFile(thirdChar), SanValidateFormat.parseRank(fourthChar)),
+              Square.of(SanValidateFormat.parseFile(thirdChar), SanValidateFormat.parseRank(fourthChar)),
               PromotionPieceType.NONE, sanTerminalMarker));
     }
 

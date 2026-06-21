@@ -6,8 +6,6 @@ package io.github.dlbbld.ashlarchess.test.performance;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.jdt.annotation.NonNull;
-
 import com.github.bhlangonijr.chesslib.move.MoveGenerator;
 import com.github.bhlangonijr.chesslib.move.MoveGeneratorException;
 
@@ -15,8 +13,8 @@ import io.github.dlbbld.ashlarchess.bitboard.BitboardLegalMoveFactory;
 import io.github.dlbbld.ashlarchess.bitboard.StaticPositionBridge;
 import io.github.dlbbld.ashlarchess.board.Board;
 import io.github.dlbbld.ashlarchess.board.enums.Square;
-import io.github.dlbbld.ashlarchess.model.PgnHalfMove;
-import io.github.dlbbld.ashlarchess.moves.AbstractLegalMoves;
+import io.github.dlbbld.ashlarchess.model.PgnMove;
+import io.github.dlbbld.ashlarchess.moves.LegalMovesSupport;
 import io.github.dlbbld.ashlarchess.pgn.PgnGame;
 import io.github.dlbbld.ashlarchess.test.model.PgnFen;
 import io.github.dlbbld.ashlarchess.test.model.PgnTestCaseList;
@@ -25,6 +23,7 @@ import io.github.dlbbld.ashlarchess.test.pgn.setup.PgnTestCaseCatalog;
 import io.github.dlbbld.ashlarchess.test.pgntest.enums.PgnTest;
 import io.github.dlbbld.ashlarchess.unwinnability.HelpmateSearchBoardPerformanceProbe;
 
+@SuppressWarnings("null") // Manual survey; JDT cannot model unannotated JDK/JUnit/concurrency APIs cleanly.
 public class MoveGenerationPerformanceSurvey {
 
   private static final int MAX_POSITIONS_PER_GROUP = 800;
@@ -36,40 +35,39 @@ public class MoveGenerationPerformanceSurvey {
 
   public static void main(String[] args) {
     for (final PgnTest pgnTest : GROUPS) {
-      @SuppressWarnings("null") final @NonNull PgnTest pgnTestNotNull = pgnTest;
-      final List<PositionPair> positionList = collectPositions(pgnTestNotNull);
-      warmup(positionList);
+      final List<PositionPair> positions = collectPositions(pgnTest);
+      warmup(positions);
 
-      final Measurement boardBackend = measureBoardBackend(positionList);
-      final Measurement helpmateSearchBoard = measureHelpmateSearchBoard(positionList);
-      final Measurement reference = measureReference(positionList);
-      final Measurement chessLib = measureChessLib(positionList);
+      final Measurement boardBackend = measureBoardBackend(positions);
+      final Measurement helpmateSearchBoard = measureHelpmateSearchBoard(positions);
+      final Measurement reference = measureReference(positions);
+      final Measurement chessLib = measureChessLib(positions);
 
-      printResult(pgnTestNotNull, positionList.size(), boardBackend, helpmateSearchBoard, reference, chessLib);
+      printResult(pgnTest, positions.size(), boardBackend, helpmateSearchBoard, reference, chessLib);
     }
   }
 
-  private static Measurement measureBoardBackend(List<PositionPair> positionList) {
+  private static Measurement measureBoardBackend(List<PositionPair> positions) {
     long moveCount = 0L;
     final long start = System.nanoTime();
     for (int round = 0; round < MEASURE_ROUNDS; round++) {
-      for (final PositionPair position : positionList) {
+      for (final PositionPair position : positions) {
         final Board board = position.ashlarBoard();
         final Square ep = board.getEnPassantCaptureTargetSquare();
         final long enPassantBit = ep == Square.NONE ? 0L : 1L << ep.ordinal();
-        moveCount += BitboardLegalMoveFactory.calculateLegalMoves(board.getBitboardPosition(), board.getHavingMove(),
-            board.getCastlingRight(board.getHavingMove()), enPassantBit).size();
+        moveCount += BitboardLegalMoveFactory.calculateLegalMoves(board.getBitboardPosition(), board.getSideToMove(),
+            board.getCastlingRight(board.getSideToMove()), enPassantBit).size();
       }
     }
     return new Measurement(System.nanoTime() - start, moveCount);
   }
 
-  private static Measurement measureHelpmateSearchBoard(List<PositionPair> positionList) {
+  private static Measurement measureHelpmateSearchBoard(List<PositionPair> positions) {
     final HelpmateSearchBoardPerformanceProbe probe = new HelpmateSearchBoardPerformanceProbe();
     long moveCount = 0L;
     final long start = System.nanoTime();
     for (int round = 0; round < MEASURE_ROUNDS; round++) {
-      for (final PositionPair position : positionList) {
+      for (final PositionPair position : positions) {
         moveCount += probe.calculateLegalMoveCount(position.ashlarBoard());
       }
     }
@@ -86,8 +84,8 @@ public class MoveGenerationPerformanceSurvey {
       final PgnGame pgnGame = PgnCacheForStrictPgnParserTestCases.getPgn(pgnTest.getFolderPath(), testCase.pgnName());
       final Board board = new Board(pgnGame.startFen());
       addPosition(result, board);
-      for (final PgnHalfMove halfMove : pgnGame.halfMoveList()) {
-        board.moveStrict(halfMove.san());
+      for (final PgnMove move : pgnGame.moves()) {
+        board.moveStrict(move.san());
         addPosition(result, board);
         if (result.size() >= MAX_POSITIONS_PER_GROUP) {
           break;
@@ -101,44 +99,43 @@ public class MoveGenerationPerformanceSurvey {
     final String fen = ashlarBoard.getFen();
     final com.github.bhlangonijr.chesslib.Board chessLibBoard = new com.github.bhlangonijr.chesslib.Board();
     chessLibBoard.loadFromFen(fen);
-    result.add(new PositionPair(new Board(fen), chessLibBoard));
+    result.add(new PositionPair(Board.fromFenStrict(fen), chessLibBoard));
   }
 
-  private static void warmup(List<PositionPair> positionList) {
+  private static void warmup(List<PositionPair> positions) {
     for (int i = 0; i < WARMUP_ROUNDS; i++) {
-      measureBoardBackend(positionList);
-      measureHelpmateSearchBoard(positionList);
-      measureReference(positionList);
-      measureChessLib(positionList);
+      measureBoardBackend(positions);
+      measureHelpmateSearchBoard(positions);
+      measureReference(positions);
+      measureChessLib(positions);
     }
   }
 
-  private static Measurement measureReference(List<PositionPair> positionList) {
+  private static Measurement measureReference(List<PositionPair> positions) {
     long moveCount = 0L;
     final long start = System.nanoTime();
     for (int round = 0; round < MEASURE_ROUNDS; round++) {
-      for (final PositionPair position : positionList) {
+      for (final PositionPair position : positions) {
         final Board board = position.ashlarBoard();
-        moveCount += AbstractLegalMoves.calculateLegalMoves(
-            StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), board.getHavingMove(),
-            board.getCastlingRight(board.getHavingMove()), board.getEnPassantCaptureTargetSquare()).size();
+        moveCount += LegalMovesSupport.calculateLegalMoves(
+            StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), board.getSideToMove(),
+            board.getCastlingRight(board.getSideToMove()), board.getEnPassantCaptureTargetSquare()).size();
       }
     }
     return new Measurement(System.nanoTime() - start, moveCount);
   }
 
-  private static Measurement measureChessLib(List<PositionPair> positionList) {
+  private static Measurement measureChessLib(List<PositionPair> positions) {
     long moveCount = 0L;
     final long start = System.nanoTime();
     for (int round = 0; round < MEASURE_ROUNDS; round++) {
-      for (final PositionPair position : positionList) {
+      for (final PositionPair position : positions) {
         moveCount += generateChessLibLegalMoves(position.chessLibBoard()).size();
       }
     }
     return new Measurement(System.nanoTime() - start, moveCount);
   }
 
-  @SuppressWarnings("null")
   private static List<com.github.bhlangonijr.chesslib.move.Move> generateChessLibLegalMoves(
       com.github.bhlangonijr.chesslib.Board board) {
     try {
@@ -162,8 +159,8 @@ public class MoveGenerationPerformanceSurvey {
         boardBackend.moveCount(), helpmateSearchBoard.moveCount(), reference.moveCount(), chessLib.moveCount());
     System.out.printf("  Board backend: %.3f us/position  (%.1fx ChessLib)%n", boardBackendUs,
         boardBackendUs / chessLibUs);
-    System.out.printf("  HelpmateSearchBoard buffer path: %.3f us/position  (%.1fx ChessLib)%n",
-        helpmateSearchBoardUs, helpmateSearchBoardUs / chessLibUs);
+    System.out.printf("  HelpmateSearchBoard buffer path: %.3f us/position  (%.1fx ChessLib)%n", helpmateSearchBoardUs,
+        helpmateSearchBoardUs / chessLibUs);
     System.out.printf("  reference oracle: %.3f us/position  (%.1fx ChessLib)%n", referenceUs,
         referenceUs / chessLibUs);
     System.out.printf("  ChessLib: %.3f us/position%n%n", chessLibUs);

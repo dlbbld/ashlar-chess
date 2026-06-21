@@ -3,6 +3,9 @@
 
 package io.github.dlbbld.ashlarchess.san;
 
+import static io.github.dlbbld.ashlarchess.board.enums.PieceType.KING;
+import static io.github.dlbbld.ashlarchess.board.enums.PieceType.PAWN;
+
 import io.github.dlbbld.ashlarchess.bitboard.BitboardPosition;
 import io.github.dlbbld.ashlarchess.board.Board;
 import io.github.dlbbld.ashlarchess.board.enums.Piece;
@@ -10,14 +13,16 @@ import io.github.dlbbld.ashlarchess.board.enums.PieceType;
 import io.github.dlbbld.ashlarchess.board.enums.Rank;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
 import io.github.dlbbld.ashlarchess.board.enums.Square;
-import io.github.dlbbld.ashlarchess.common.constants.EnumConstants;
 import io.github.dlbbld.ashlarchess.common.model.MoveSpecification;
 import io.github.dlbbld.ashlarchess.messages.Message;
 import io.github.dlbbld.ashlarchess.moves.EnPassantCaptureUtility;
 
-abstract class SanValidateDestination extends AbstractSan implements EnumConstants {
+final class SanValidateDestination {
 
-  public static void validateDestinationSquareSemantics(Board board, Side havingMove, SanFormat sanFormat,
+  private SanValidateDestination() {
+  }
+
+  public static void validateDestinationSquareSemantics(Board board, Side sideToMove, SanFormat sanFormat,
       SanConversion sanConversion) {
     if (sanFormat.isKingCastlingMove()) {
       return;
@@ -29,19 +34,19 @@ abstract class SanValidateDestination extends AbstractSan implements EnumConstan
     final PieceType movingPieceType = sanConversion.movingPieceType();
 
     if (movingPieceType == PAWN) {
-      validatePawnDestination(board, havingMove, sanFormat, sanConversion, toSquare, pieceOnToSquare);
+      validatePawnDestination(board, sideToMove, sanFormat, sanConversion, toSquare, pieceOnToSquare);
     } else {
-      validateRnbqkDestination(havingMove, sanFormat, toSquare, pieceOnToSquare);
+      validateRnbqkDestination(sideToMove, sanFormat, toSquare, pieceOnToSquare);
     }
   }
 
-  private static void validatePawnDestination(Board board, Side havingMove, SanFormat sanFormat,
+  private static void validatePawnDestination(Board board, Side sideToMove, SanFormat sanFormat,
       SanConversion sanConversion, Square toSquare, Piece pieceOnToSquare) {
-    final boolean isCapture = sanFormat.isCapture();
+    final boolean isCapture = SanFormatUtility.isCapture(sanFormat);
 
     if (pieceOnToSquare != Piece.NONE) {
       // own piece on destination
-      if (pieceOnToSquare.getSide() == havingMove) {
+      if (pieceOnToSquare.getSide() == sideToMove) {
         if (isCapture) {
           throw new SanValidationException(SanValidationProblem.DESTINATION_PAWN_CAPTURE_OWN_PIECE,
               Message.getString("validation.san.destination.pawn.capture.ownPiece", toSquare.getName()));
@@ -71,7 +76,7 @@ abstract class SanValidateDestination extends AbstractSan implements EnumConstan
 
     // empty destination
     if (isCapture) {
-      if (calculateIsPotentialEnPassantCapture(board, havingMove, sanFormat, sanConversion, toSquare)) {
+      if (calculateIsPotentialEnPassantCapture(board, sideToMove, sanFormat, sanConversion, toSquare)) {
         return;
       }
       throw new SanValidationException(SanValidationProblem.DESTINATION_PAWN_CAPTURE_EMPTY_NOT_EN_PASSANT,
@@ -80,13 +85,13 @@ abstract class SanValidateDestination extends AbstractSan implements EnumConstan
     // non-capturing pawn move to empty destination: valid, fall through
   }
 
-  private static void validateRnbqkDestination(Side havingMove, SanFormat sanFormat, Square toSquare,
+  private static void validateRnbqkDestination(Side sideToMove, SanFormat sanFormat, Square toSquare,
       Piece pieceOnToSquare) {
-    final boolean isCapture = sanFormat.isCapture();
+    final boolean isCapture = SanFormatUtility.isCapture(sanFormat);
 
     if (pieceOnToSquare != Piece.NONE) {
       // own piece on destination
-      if (pieceOnToSquare.getSide() == havingMove) {
+      if (pieceOnToSquare.getSide() == sideToMove) {
         if (isCapture) {
           throw new SanValidationException(SanValidationProblem.DESTINATION_RNBQK_OWN_PIECE_CAPTURING,
               Message.getString("validation.san.destination.rnbqk.ownPiece.capturing", toSquare.getName()));
@@ -122,15 +127,15 @@ abstract class SanValidateDestination extends AbstractSan implements EnumConstan
     // non-capturing move to empty destination: valid, fall through
   }
 
-  private static boolean calculateIsPotentialEnPassantCapture(Board board, Side havingMove, SanFormat sanFormat,
+  private static boolean calculateIsPotentialEnPassantCapture(Board board, Side sideToMove, SanFormat sanFormat,
       SanConversion sanConversion, Square toSquare) {
     if (sanFormat != SanFormat.PAWN_CAPTURING_NON_PROMOTION) {
       return false;
     }
-    final Rank fromRank = Rank.calculatePreviousRank(havingMove, toSquare.getRank());
-    final Square fromSquare = Square.calculate(sanConversion.fromFile(), fromRank);
+    final Rank fromRank = toSquare.getBehindSquare(sideToMove).getRank();
+    final Square fromSquare = Square.of(sanConversion.fromFile(), fromRank);
     final MoveSpecification pawnCapturingNonPromotionMove = new MoveSpecification(fromSquare, toSquare);
-    return EnPassantCaptureUtility.calculateIsPotentialEnPassantCapture(board.getBitboardPosition(),
+    return EnPassantCaptureUtility.isPotentialEnPassantCapture(board.getBitboardPosition(),
         pawnCapturingNonPromotionMove);
   }
 }

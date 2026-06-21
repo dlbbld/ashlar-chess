@@ -16,7 +16,7 @@ class TestLibraryCarlosFenValidationPass {
 
   @SuppressWarnings("static-method")
   @Test
-  void testExpectedSuccessAndSuccess() throws Exception {
+  void testExpectedSuccessAndSuccess() {
     // initial position
     assertTrue(testIsValid(FenConstants.FEN_INITIAL_STR));
 
@@ -24,7 +24,7 @@ class TestLibraryCarlosFenValidationPass {
 
   @SuppressWarnings("static-method")
   @Test
-  void testExpectedFailureAndFailure() throws Exception {
+  void testExpectedFailureAndFailure() {
 
     // position field contains invalid letter
     assertFalse(testIsValid("xnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"));
@@ -33,11 +33,9 @@ class TestLibraryCarlosFenValidationPass {
     assertFalse(testIsValid("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq x 0 1"));
 
     // halfmove clock contains invalid letter
-    // board.loadFromFen();
     assertFalse(testIsValid("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - x 1"));
 
     // move counter contains invalid letter
-    // board.loadFromFen();
     assertFalse(testIsValid("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 x"));
 
   }

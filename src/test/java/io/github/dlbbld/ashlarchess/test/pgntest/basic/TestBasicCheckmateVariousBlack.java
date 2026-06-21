@@ -13,18 +13,18 @@ import io.github.dlbbld.ashlarchess.test.model.PgnTestCaseList;
 import io.github.dlbbld.ashlarchess.test.pgn.setup.PgnTestCaseCatalog;
 import io.github.dlbbld.ashlarchess.test.pgntest.enums.PgnTest;
 
-class TestBasicCheckmateVariousBlack extends AbstractTestBasic {
+class TestBasicCheckmateVariousBlack {
 
   private static final Logger logger = Nulls.getLogger(TestBasicCheckmateVariousBlack.class);
 
   @SuppressWarnings("static-method")
   @Test
-  void test() throws Exception {
+  void test() {
     final PgnTestCaseList testCaseList = PgnTestCaseCatalog.getTestList(PgnTest.BASIC_CHECKMATE_VARIOUS_BLACK);
     for (final PgnFen testCase : testCaseList.list()) {
       logger.info(testCase.pgnName());
       final Board board = testCase.finalPosition();
-      checkCheckmate(board);
+      TestBasicSupport.checkCheckmate(board);
     }
   }
 

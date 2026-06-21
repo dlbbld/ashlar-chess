@@ -19,10 +19,13 @@ import io.github.dlbbld.ashlarchess.board.enums.Side;
 import io.github.dlbbld.ashlarchess.board.enums.Square;
 import io.github.dlbbld.ashlarchess.common.Nulls;
 import io.github.dlbbld.ashlarchess.common.exceptions.ProgrammingMistakeException;
-import io.github.dlbbld.ashlarchess.common.utility.BasicUtility;
+import io.github.dlbbld.ashlarchess.common.utility.SetUtility;
 
 //Figure 7 Mobility algorithm.
-class Mobility {
+final class Mobility {
+
+  private Mobility() {
+  }
 
   // Inputs: a position
   // Output: mobility solution {MP!s}P in pos,s in S
@@ -34,17 +37,17 @@ class Mobility {
 
     // set MP->s := 0
     final BitboardPosition bitboardPosition = board.getBitboardPosition();
-    final List<PiecePlacement> piecePlacementList = new ArrayList<>();
+    final List<PiecePlacement> piecePlacements = new ArrayList<>();
     long occupied = bitboardPosition.occupied();
     while (occupied != 0L) {
       final Square square = Nulls.get(Square.REAL, Long.numberOfTrailingZeros(occupied));
       final Piece piece = bitboardPosition.get(square);
-      piecePlacementList.add(new PiecePlacement(piece.getPieceType(), piece.getSide(), square));
+      piecePlacements.add(new PiecePlacement(piece.getPieceType(), piece.getSide(), square));
       occupied &= occupied - 1L;
     }
 
     final @NonNull MobilitySolution mobility = new MobilitySolution();
-    for (final PiecePlacement piecePlacement : piecePlacementList) {
+    for (final PiecePlacement piecePlacement : piecePlacements) {
       for (final Square square : Square.REAL) {
         mobility.put(piecePlacement, square, VariableState.ZERO);
       }
@@ -52,7 +55,7 @@ class Mobility {
 
     // CP := 0
     final @NonNull Clearability clearability = new Clearability();
-    for (final PiecePlacement piecePlacement : piecePlacementList) {
+    for (final PiecePlacement piecePlacement : piecePlacements) {
       clearability.put(piecePlacement, VariableState.ZERO);
     }
 
@@ -65,14 +68,14 @@ class Mobility {
     }
 
     // 2: set MP -> P.sq := 1, for all P in pos ( -> Every piece can "move" to its current square)
-    for (final PiecePlacement piecePlacement : piecePlacementList) {
+    for (final PiecePlacement piecePlacement : piecePlacements) {
       mobility.put(piecePlacement, piecePlacement.squareOriginal(), VariableState.ONE);
     }
 
     int whiteMovements = 0;
     int blackMovements = 0;
-    Square whiteExtraKingSquare = calculateKingSquare(piecePlacementList, Side.WHITE);
-    Square blackExtraKingSquare = calculateKingSquare(piecePlacementList, Side.BLACK);
+    Square whiteExtraKingSquare = calculateKingSquare(piecePlacements, Side.WHITE);
+    Square blackExtraKingSquare = calculateKingSquare(piecePlacements, Side.BLACK);
     int round = 0;
     boolean isNewVariablesAreSetToOne = true;
     while (isNewVariablesAreSetToOne) {
@@ -129,7 +132,7 @@ class Mobility {
       }
 
       // Update mobility
-      for (final PiecePlacement candidatePiecePlacement : piecePlacementList) {
+      for (final PiecePlacement candidatePiecePlacement : piecePlacements) {
         // Move. If a piece can move to square s, it must pass first by a predecessor of s:
         // all pieces except pawns
         for (final Square candidateToSquare : Square.REAL) {
@@ -166,7 +169,7 @@ class Mobility {
           }
 
           if (calculateIsKingBlockedByExtraKingSquare(candidatePiecePlacement, candidateToSquare, whiteMovements,
-              blackMovements, whiteExtraKingSquare, blackExtraKingSquare, piecePlacementList)) {
+              blackMovements, whiteExtraKingSquare, blackExtraKingSquare, piecePlacements)) {
             continue;
           }
 
@@ -243,8 +246,8 @@ class Mobility {
         + mps.calculateVariableCountSetToOne();
   }
 
-  private static Square calculateKingSquare(List<PiecePlacement> piecePlacementList, Side side) {
-    for (final PiecePlacement piecePlacement : piecePlacementList) {
+  private static Square calculateKingSquare(List<PiecePlacement> piecePlacements, Side side) {
+    for (final PiecePlacement piecePlacement : piecePlacements) {
       if (piecePlacement.side() == side && piecePlacement.pieceType() == PieceType.KING) {
         return piecePlacement.squareOriginal();
       }
@@ -254,7 +257,7 @@ class Mobility {
 
   private static boolean calculateIsKingBlockedByExtraKingSquare(PiecePlacement candidatePiecePlacement,
       Square candidateToSquare, int whiteMovements, int blackMovements, Square whiteExtraKingSquare,
-      Square blackExtraKingSquare, List<PiecePlacement> piecePlacementList) {
+      Square blackExtraKingSquare, List<PiecePlacement> piecePlacements) {
     if (candidatePiecePlacement.pieceType() != PieceType.KING) {
       return false;
     }
@@ -264,7 +267,7 @@ class Mobility {
       return false;
     }
 
-    final Square opponentKingSquare = calculateKingSquare(piecePlacementList, side.getOppositeSide());
+    final Square opponentKingSquare = calculateKingSquare(piecePlacements, side.getOppositeSide());
     final Square opponentExtraKingSquare = side == Side.WHITE ? blackExtraKingSquare : whiteExtraKingSquare;
     return calculateIsKingDistanceAtMostOne(candidateToSquare, opponentKingSquare)
         || calculateIsKingDistanceAtMostOne(candidateToSquare, opponentExtraKingSquare);
@@ -312,7 +315,7 @@ class Mobility {
     final Side candidateOppositeSide = candidateSide.getOppositeSide();
     final Square candidateToSquare = candidateMobility.toSquare();
 
-    for (final PiecePlacement checkNonPawn : mobility.getPiecePlacementSet()) {
+    for (final PiecePlacement checkNonPawn : mobility.getPiecePlacements()) {
       if (checkNonPawn.side() == candidateOppositeSide && checkNonPawn.squareOriginal() == candidateToSquare
           && checkNonPawn.pieceType() != PieceType.PAWN && clearability.get(checkNonPawn) == VariableState.ZERO) {
         return true;
@@ -330,7 +333,7 @@ class Mobility {
     final Side candidateOppositeSide = candidateSide.getOppositeSide();
     final Square candidateToSquare = candidateMobility.toSquare();
 
-    for (final PiecePlacement checkPawn : mobility.getPiecePlacementSet()) {
+    for (final PiecePlacement checkPawn : mobility.getPiecePlacements()) {
       if (checkPawn.side() == candidateOppositeSide && checkPawn.squareOriginal() == candidateToSquare
           && checkPawn.pieceType() == PieceType.PAWN) {
 
@@ -374,7 +377,7 @@ class Mobility {
     final Set<Square> promotionSquareSet = MobilityFunctions.promotion(candidatePiecePlacement);
     final Set<Square> squareSetWithValueOne = mobility.calculateSquaresWithValueOne(candidatePiecePlacement);
 
-    final boolean isValidPawnPromotion = !BasicUtility.calculateIsDisjoint(promotionSquareSet, squareSetWithValueOne);
+    final boolean isValidPawnPromotion = !SetUtility.isDisjoint(promotionSquareSet, squareSetWithValueOne);
 
     return isValidPawnPromotion;
   }
@@ -404,7 +407,7 @@ class Mobility {
       return true;
     }
 
-    for (final PiecePlacement attacker : MobilityFunctions.attackers(mobility.getPiecePlacementSet(),
+    for (final PiecePlacement attacker : MobilityFunctions.attackers(mobility.getPiecePlacements(),
         candidateToSquare)) {
       if (attacker.side() != candidateSide && clearability.get(attacker) != VariableState.ONE) {
         return false;
@@ -422,7 +425,7 @@ class Mobility {
     // Not self-capture. A piece must be cleared from a square before other of the same
     // color can move to it:
     // all pieces
-    for (final PiecePlacement checkPiecePlacement : mobility.getPiecePlacementSet()) {
+    for (final PiecePlacement checkPiecePlacement : mobility.getPiecePlacements()) {
       if (checkPiecePlacement != candidatePiecePlacement && checkPiecePlacement.side() == candidateSide
           && checkPiecePlacement.squareOriginal() == candidateToSquare
           && clearability.get(checkPiecePlacement) == VariableState.ZERO) {

@@ -15,7 +15,7 @@ import io.github.dlbbld.ashlarchess.pgn.PgnGame;
 import io.github.dlbbld.ashlarchess.pgn.WriteMode;
 import io.github.dlbbld.ashlarchess.test.pgntest.constants.PgnTestConstants;
 
-public class TestLenientPgnParserLineBreaks {
+class TestLenientPgnParserLineBreaks {
 
   private static final Logger logger = Nulls.getLogger(TestLenientPgnParserLineBreaks.class);
 
@@ -78,12 +78,12 @@ public class TestLenientPgnParserLineBreaks {
     logger.info(pgnName);
 
     final PgnGame pgnGameActual = LenientPgnParser
-        .parse(PgnTestConstants.LENIENT_PGN_PARSER_LINE_BREAKS_TEST_ROOT_FOLDER_PATH, pgnName);
+        .parsePath(PgnTestConstants.LENIENT_PGN_PARSER_LINE_BREAKS_TEST_ROOT_FOLDER_PATH, pgnName);
 
     // The on-disk fixtures use a different tag order than the inline expected (ECO is placed after EventDate
     // there). The lenient parser preserves input order, so direct PgnGame equality fails. Archival
     // normalisation sorts both into canonical order - the right lens for "these inputs are equivalent."
-    assertEquals(PgnCreate.createPgnString(pgnGameExpected, WriteMode.ARCHIVAL),
-        PgnCreate.createPgnString(pgnGameActual, WriteMode.ARCHIVAL));
+    assertEquals(PgnCreate.toPgnString(pgnGameExpected, WriteMode.ARCHIVAL),
+        PgnCreate.toPgnString(pgnGameActual, WriteMode.ARCHIVAL));
   }
 }

@@ -11,28 +11,30 @@ import com.google.common.collect.ImmutableList;
 
 import io.github.dlbbld.ashlarchess.common.Nulls;
 import io.github.dlbbld.ashlarchess.common.model.DynamicPosition;
-import io.github.dlbbld.ashlarchess.common.model.HalfMove;
 
-abstract class RepetitionPrint {
+final class RepetitionPrint {
+
+  private RepetitionPrint() {
+  }
 
   static List<List<String>> render(ThreefoldExistingReport report, Map<DynamicPosition, String> positionIdentifierMap) {
 
-    final List<List<String>> resultListList = new ArrayList<>();
+    final List<List<String>> lineGroups = new ArrayList<>();
     for (final RepetitionGroup group : report.groups()) {
-      final List<String> resultList = new ArrayList<>();
+      final List<String> lines = new ArrayList<>();
       if (group.includesInitialPosition()) {
-        resultList.add("[Initial position]");
+        lines.add("[Initial position]");
       }
-      final ImmutableList<HalfMove> occurrences = group.occurrences();
+      final ImmutableList<MoveRecord> occurrences = group.occurrences();
       for (int i = 0; i < occurrences.size(); i++) {
-        final HalfMove halfMove = Nulls.get(occurrences, i);
+        final MoveRecord move = Nulls.get(occurrences, i);
         final boolean isAddPositionInformation = i == occurrences.size() - 1;
-        final String halfMoveInformation = PositionIdentifierUtility.calculateHalfMoveInformation(halfMove,
+        final String moveInformation = PositionIdentifierUtility.calculateMoveInformation(move,
             group.totalRepetitionCount(), false, isAddPositionInformation, positionIdentifierMap);
-        resultList.add(halfMoveInformation);
+        lines.add(moveInformation);
       }
-      resultListList.add(resultList);
+      lineGroups.add(lines);
     }
-    return resultListList;
+    return lineGroups;
   }
 }

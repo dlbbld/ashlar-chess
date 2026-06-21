@@ -3,6 +3,23 @@
 
 package io.github.dlbbld.ashlarchess.common.constants;
 
+import static io.github.dlbbld.ashlarchess.board.enums.Piece.BLACK_KING;
+import static io.github.dlbbld.ashlarchess.board.enums.Piece.WHITE_KING;
+import static io.github.dlbbld.ashlarchess.board.enums.Square.A1;
+import static io.github.dlbbld.ashlarchess.board.enums.Square.A8;
+import static io.github.dlbbld.ashlarchess.board.enums.Square.C1;
+import static io.github.dlbbld.ashlarchess.board.enums.Square.C8;
+import static io.github.dlbbld.ashlarchess.board.enums.Square.D1;
+import static io.github.dlbbld.ashlarchess.board.enums.Square.D8;
+import static io.github.dlbbld.ashlarchess.board.enums.Square.E1;
+import static io.github.dlbbld.ashlarchess.board.enums.Square.E8;
+import static io.github.dlbbld.ashlarchess.board.enums.Square.F1;
+import static io.github.dlbbld.ashlarchess.board.enums.Square.F8;
+import static io.github.dlbbld.ashlarchess.board.enums.Square.G1;
+import static io.github.dlbbld.ashlarchess.board.enums.Square.G8;
+import static io.github.dlbbld.ashlarchess.board.enums.Square.H1;
+import static io.github.dlbbld.ashlarchess.board.enums.Square.H8;
+
 import io.github.dlbbld.ashlarchess.board.enums.CastlingMove;
 import io.github.dlbbld.ashlarchess.board.enums.Piece;
 import io.github.dlbbld.ashlarchess.board.enums.Square;
@@ -11,7 +28,10 @@ import io.github.dlbbld.ashlarchess.model.LegalMove;
 import io.github.dlbbld.ashlarchess.model.LegalMoveKind;
 import io.github.dlbbld.ashlarchess.san.SanSymbol;
 
-public abstract class CastlingConstants implements EnumConstants {
+public final class CastlingConstants {
+
+  private CastlingConstants() {
+  }
 
   public static final String SAN_CASTLING_KING_SIDE = "" + SanSymbol.CASTLING_O.getSymbol()
       + SanSymbol.CASTLING_HYPHEN.getSymbol() + SanSymbol.CASTLING_O.getSymbol();

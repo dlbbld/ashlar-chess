@@ -13,7 +13,6 @@ import org.junit.jupiter.api.Test;
 
 import io.github.dlbbld.ashlarchess.board.Board;
 import io.github.dlbbld.ashlarchess.common.constants.ChessConstants;
-import io.github.dlbbld.ashlarchess.test.common.utility.OutputCaptureUtility;
 
 /**
  * From-move-one coverage: positions that run into threefold, fivefold, 50-move, and 75-move rule conditions starting
@@ -21,7 +20,8 @@ import io.github.dlbbld.ashlarchess.test.common.utility.OutputCaptureUtility;
  *
  * <ul>
  * <li>Initial piece placement, White to move on move 1 (the conventional standard start).</li>
- * <li>Initial piece placement, Black to move on move 1 (synthetic FEN where Black has the move at fullmove 1).</li>
+ * <li>Initial piece placement, Black to move on move 1 (synthetic FEN where Black has the move at fullmove number
+ * 1).</li>
  * <li>Non-initial FEN position, White to move on move 1.</li>
  * <li>Non-initial FEN position, Black to move on move 1.</li>
  * </ul>
@@ -34,9 +34,9 @@ import io.github.dlbbld.ashlarchess.test.common.utility.OutputCaptureUtility;
  * section header for the relevant condition.
  *
  * <p>
- * The Black-to-move-on-move-1 fixtures exercise FIDE fullmove-numbering correctness: when Black has the move at
- * fullmove 1, the fullmove counter increments after each Black move (not each White move), so the report's fullmove
- * references for repeated positions are shifted relative to the more usual White-first case.
+ * The Black-to-move-on-move-1 fixtures exercise FIDE fullmove numbering correctness: when Black has the move at
+ * fullmove number 1, the fullmove number increments after each Black move (not each White move), so the report's
+ * fullmove number references for repeated positions are shifted relative to the more usual White-first case.
  */
 class TestFromInitialPlacementAndFenStart {
 
@@ -49,13 +49,13 @@ class TestFromInitialPlacementAndFenStart {
    * Non-initial FEN - two rooks plus king vs lone king. Plenty of room for non-pawn, non-capture shuffling. Castling
    * rights are intentionally absent ({@code -}): the first rook move would otherwise erase the king-side right,
    * shifting the dynamic position between cycles 1 and 2 and forcing an extra cycle to reach threefold. With no rights,
-   * the shuffle returns to the exact same position every cycle. White to move at fullmove 1.
+   * the shuffle returns to the exact same position every cycle. White to move at fullmove number 1.
    */
   private static final String FEN_KRR_K_WHITE_TO_MOVE = "4k3/8/8/8/8/8/8/R3K2R w - - 0 1";
 
   /**
-   * Same piece placement and (absence of) rights as above but Black has the move at fullmove 1. Synthetic but valid;
-   * the predicates and report model do not care that the position is reachable from the standard start.
+   * Same piece placement and (absence of) rights as above but Black has the move at fullmove number 1. Synthetic but
+   * valid; the predicates and report model do not care that the position is reachable from the standard start.
    */
   private static final String FEN_KRR_K_BLACK_TO_MOVE = "4k3/8/8/8/8/8/8/R3K2R b - - 0 1";
 
@@ -67,7 +67,7 @@ class TestFromInitialPlacementAndFenStart {
   @Test
   void threefoldFromInitialWhiteToMove() {
     final Board board = new Board();
-    playKnightShuffleAsWhite(board, 2); // 8 plies -> initial position 3rd occurrence
+    playKnightShuffleAsWhite(board, 2); // 8 moves -> initial position 3rd occurrence
     assertThreefoldRepetition(board);
     assertReporterOutput(board, /* threefoldSectionNonEmpty */ true, /* expectedFiftyMoveSequenceReached */ false);
   }
@@ -76,7 +76,7 @@ class TestFromInitialPlacementAndFenStart {
   @Test
   void fivefoldFromInitialWhiteToMove() {
     final Board board = new Board();
-    playKnightShuffleAsWhite(board, 4); // 16 plies -> fivefold of initial position
+    playKnightShuffleAsWhite(board, 4); // 16 moves -> fivefold of initial position
     assertFivefoldRepetition(board);
     assertReporterOutput(board, /* threefoldSectionNonEmpty */ true, /* expectedFiftyMoveSequenceReached */ false);
   }
@@ -85,7 +85,7 @@ class TestFromInitialPlacementAndFenStart {
   @Test
   void fiftyMoveFromInitialWhiteToMove() {
     final Board board = new Board();
-    playKnightShuffleAsWhite(board, 25); // 100 plies -> halfmove clock 100
+    playKnightShuffleAsWhite(board, 25); // 100 moves -> halfmove clock 100
     assertFiftyMoveOrClaimable(board);
     assertReporterOutput(board, /* threefoldSectionNonEmpty */ true, /* expectedFiftyMoveSequenceReached */ true);
   }
@@ -94,7 +94,7 @@ class TestFromInitialPlacementAndFenStart {
   @Test
   void seventyFiveMoveFromInitialWhiteToMove() {
     final Board board = new Board();
-    playKnightShuffleAsWhite(board, 38); // 152 plies -> halfmove clock 152 (past 150 threshold)
+    playKnightShuffleAsWhite(board, 38); // 152 moves -> halfmove clock 152 (past 150 threshold)
     assertSeventyFiveMove(board);
     assertReporterOutput(board, /* threefoldSectionNonEmpty */ true, /* expectedFiftyMoveSequenceReached */ true);
   }
@@ -106,31 +106,30 @@ class TestFromInitialPlacementAndFenStart {
   @SuppressWarnings("static-method")
   @Test
   void threefoldFromInitialBlackToMove() {
-    final Board board = new Board(FEN_INITIAL_BLACK_TO_MOVE);
-    playKnightShuffleAsBlack(board, 2); // 8 plies; Black moves first each cycle
+    final Board board = Board.fromFenStrict(FEN_INITIAL_BLACK_TO_MOVE);
+    playKnightShuffleAsBlack(board, 2); // 8 moves; Black moves first each cycle
     assertThreefoldRepetition(board);
-    // Fullmove numbering: with Black starting at fullmove 1, after 8 plies (4 cycles of Nf6/Nf3/Ng8/Ng1) the fullmove
-    // counter is at 5 (incremented after each Black move).
-    assertEquals(5, board.getFullMoveNumber(),
-        "Black-to-move-at-fullmove-1: counter increments per Black move; 4 Black moves -> fullmove 5");
+    // Fullmove numbering: with Black starting at fullmove number 1, after 8 moves (4 cycles of Nf6/Nf3/Ng8/Ng1) the
+    // fullmove number is at 5 (incremented after each Black move).
+    assertEquals(5, board.getFullMoveNumber());
     assertReporterOutput(board, /* threefoldSectionNonEmpty */ true, /* expectedFiftyMoveSequenceReached */ false);
   }
 
   @SuppressWarnings("static-method")
   @Test
   void fivefoldFromInitialBlackToMove() {
-    final Board board = new Board(FEN_INITIAL_BLACK_TO_MOVE);
-    playKnightShuffleAsBlack(board, 4); // 16 plies
+    final Board board = Board.fromFenStrict(FEN_INITIAL_BLACK_TO_MOVE);
+    playKnightShuffleAsBlack(board, 4); // 16 moves
     assertFivefoldRepetition(board);
-    assertEquals(9, board.getFullMoveNumber(), "Black-to-move-at-fullmove-1: 8 Black moves -> fullmove 9");
+    assertEquals(9, board.getFullMoveNumber());
     assertReporterOutput(board, /* threefoldSectionNonEmpty */ true, /* expectedFiftyMoveSequenceReached */ false);
   }
 
   @SuppressWarnings("static-method")
   @Test
   void fiftyMoveFromInitialBlackToMove() {
-    final Board board = new Board(FEN_INITIAL_BLACK_TO_MOVE);
-    playKnightShuffleAsBlack(board, 25); // 100 plies
+    final Board board = Board.fromFenStrict(FEN_INITIAL_BLACK_TO_MOVE);
+    playKnightShuffleAsBlack(board, 25); // 100 moves
     assertFiftyMoveOrClaimable(board);
     assertReporterOutput(board, /* threefoldSectionNonEmpty */ true, /* expectedFiftyMoveSequenceReached */ true);
   }
@@ -138,8 +137,8 @@ class TestFromInitialPlacementAndFenStart {
   @SuppressWarnings("static-method")
   @Test
   void seventyFiveMoveFromInitialBlackToMove() {
-    final Board board = new Board(FEN_INITIAL_BLACK_TO_MOVE);
-    playKnightShuffleAsBlack(board, 38); // 152 plies
+    final Board board = Board.fromFenStrict(FEN_INITIAL_BLACK_TO_MOVE);
+    playKnightShuffleAsBlack(board, 38); // 152 moves
     assertSeventyFiveMove(board);
     assertReporterOutput(board, /* threefoldSectionNonEmpty */ true, /* expectedFiftyMoveSequenceReached */ true);
   }
@@ -151,7 +150,7 @@ class TestFromInitialPlacementAndFenStart {
   @SuppressWarnings("static-method")
   @Test
   void threefoldFromFenWhiteToMove() {
-    final Board board = new Board(FEN_KRR_K_WHITE_TO_MOVE);
+    final Board board = Board.fromFenStrict(FEN_KRR_K_WHITE_TO_MOVE);
     playRookShuffleAsWhite(board, 2);
     assertThreefoldRepetition(board);
     assertReporterOutput(board, /* threefoldSectionNonEmpty */ true, /* expectedFiftyMoveSequenceReached */ false);
@@ -160,7 +159,7 @@ class TestFromInitialPlacementAndFenStart {
   @SuppressWarnings("static-method")
   @Test
   void fivefoldFromFenWhiteToMove() {
-    final Board board = new Board(FEN_KRR_K_WHITE_TO_MOVE);
+    final Board board = Board.fromFenStrict(FEN_KRR_K_WHITE_TO_MOVE);
     playRookShuffleAsWhite(board, 4);
     assertFivefoldRepetition(board);
     assertReporterOutput(board, /* threefoldSectionNonEmpty */ true, /* expectedFiftyMoveSequenceReached */ false);
@@ -169,7 +168,7 @@ class TestFromInitialPlacementAndFenStart {
   @SuppressWarnings("static-method")
   @Test
   void fiftyMoveFromFenWhiteToMove() {
-    final Board board = new Board(FEN_KRR_K_WHITE_TO_MOVE);
+    final Board board = Board.fromFenStrict(FEN_KRR_K_WHITE_TO_MOVE);
     playRookShuffleAsWhite(board, 25);
     assertFiftyMoveOrClaimable(board);
     assertReporterOutput(board, /* threefoldSectionNonEmpty */ true, /* expectedFiftyMoveSequenceReached */ true);
@@ -178,7 +177,7 @@ class TestFromInitialPlacementAndFenStart {
   @SuppressWarnings("static-method")
   @Test
   void seventyFiveMoveFromFenWhiteToMove() {
-    final Board board = new Board(FEN_KRR_K_WHITE_TO_MOVE);
+    final Board board = Board.fromFenStrict(FEN_KRR_K_WHITE_TO_MOVE);
     playRookShuffleAsWhite(board, 38);
     assertSeventyFiveMove(board);
     assertReporterOutput(board, /* threefoldSectionNonEmpty */ true, /* expectedFiftyMoveSequenceReached */ true);
@@ -191,27 +190,27 @@ class TestFromInitialPlacementAndFenStart {
   @SuppressWarnings("static-method")
   @Test
   void threefoldFromFenBlackToMove() {
-    final Board board = new Board(FEN_KRR_K_BLACK_TO_MOVE);
+    final Board board = Board.fromFenStrict(FEN_KRR_K_BLACK_TO_MOVE);
     playRookShuffleAsBlack(board, 2);
     assertThreefoldRepetition(board);
-    assertEquals(5, board.getFullMoveNumber(), "Black-to-move-at-fullmove-1: 4 Black moves -> fullmove 5");
+    assertEquals(5, board.getFullMoveNumber());
     assertReporterOutput(board, /* threefoldSectionNonEmpty */ true, /* expectedFiftyMoveSequenceReached */ false);
   }
 
   @SuppressWarnings("static-method")
   @Test
   void fivefoldFromFenBlackToMove() {
-    final Board board = new Board(FEN_KRR_K_BLACK_TO_MOVE);
+    final Board board = Board.fromFenStrict(FEN_KRR_K_BLACK_TO_MOVE);
     playRookShuffleAsBlack(board, 4);
     assertFivefoldRepetition(board);
-    assertEquals(9, board.getFullMoveNumber(), "Black-to-move-at-fullmove-1: 8 Black moves -> fullmove 9");
+    assertEquals(9, board.getFullMoveNumber());
     assertReporterOutput(board, /* threefoldSectionNonEmpty */ true, /* expectedFiftyMoveSequenceReached */ false);
   }
 
   @SuppressWarnings("static-method")
   @Test
   void fiftyMoveFromFenBlackToMove() {
-    final Board board = new Board(FEN_KRR_K_BLACK_TO_MOVE);
+    final Board board = Board.fromFenStrict(FEN_KRR_K_BLACK_TO_MOVE);
     playRookShuffleAsBlack(board, 25);
     assertFiftyMoveOrClaimable(board);
     assertReporterOutput(board, /* threefoldSectionNonEmpty */ true, /* expectedFiftyMoveSequenceReached */ true);
@@ -220,7 +219,7 @@ class TestFromInitialPlacementAndFenStart {
   @SuppressWarnings("static-method")
   @Test
   void seventyFiveMoveFromFenBlackToMove() {
-    final Board board = new Board(FEN_KRR_K_BLACK_TO_MOVE);
+    final Board board = Board.fromFenStrict(FEN_KRR_K_BLACK_TO_MOVE);
     playRookShuffleAsBlack(board, 38);
     assertSeventyFiveMove(board);
     assertReporterOutput(board, /* threefoldSectionNonEmpty */ true, /* expectedFiftyMoveSequenceReached */ true);
@@ -231,9 +230,9 @@ class TestFromInitialPlacementAndFenStart {
   // ===========================================================================================
 
   /**
-   * Plays {@code cycles} repetitions of the four-ply knight shuffle {@code Nf3 Nf6 Ng1 Ng8} from the initial position.
-   * Each cycle returns to the initial position, so {@code cycles == 2} produces 8 plies and the initial position has
-   * occurred 3 times; {@code cycles == 4} produces 16 plies and 5 occurrences; and so on.
+   * Plays {@code cycles} repetitions of the four-move knight shuffle {@code Nf3 Nf6 Ng1 Ng8} from the initial position.
+   * Each cycle returns to the initial position, so {@code cycles == 2} produces 8 moves and the initial position has
+   * occurred 3 times; {@code cycles == 4} produces 16 moves and 5 occurrences; and so on.
    */
   private static void playKnightShuffleAsWhite(Board board, int cycles) {
     for (int i = 0; i < cycles; i++) {
@@ -242,7 +241,7 @@ class TestFromInitialPlacementAndFenStart {
   }
 
   /**
-   * Mirror for the Black-to-move-at-fullmove-1 case: each cycle is {@code Nf6 Nf3 Ng8 Ng1} (Black moves first).
+   * Mirror for the Black-to-move-on-move-1 case: each cycle is {@code Nf6 Nf3 Ng8 Ng1} (Black moves first).
    */
   private static void playKnightShuffleAsBlack(Board board, int cycles) {
     for (int i = 0; i < cycles; i++) {
@@ -251,7 +250,7 @@ class TestFromInitialPlacementAndFenStart {
   }
 
   /**
-   * Plays {@code cycles} repetitions of the four-ply rook shuffle {@code Rg1 Kd8 Rh1 Ke8} starting from the
+   * Plays {@code cycles} repetitions of the four-move rook shuffle {@code Rg1 Kd8 Rh1 Ke8} starting from the
    * {@code FEN_KRR_K_WHITE_TO_MOVE} position. Castling rights are absent in the FEN, so the position returns to the
    * exact starting state after each cycle (no first-cycle rights erasure to shift the dynamic position).
    */
@@ -276,7 +275,7 @@ class TestFromInitialPlacementAndFenStart {
     assertTrue(board.isThreefoldRepetition(), "Board.isThreefoldRepetition predicate must fire");
 
     final ThreefoldExistingReport report = ThreefoldExistingReportBuilder.build(board.getInitialDynamicPosition(),
-        board.getHalfMoveList(), ChessConstants.THREEFOLD_REPETITION_RULE_THRESHOLD);
+        MoveRecords.played(board), ChessConstants.THREEFOLD_REPETITION_RULE_THRESHOLD);
     assertTrue(report.groups().size() >= 1, "threefold report must surface at least one group");
 
     boolean anyAtThreefold = false;
@@ -294,7 +293,7 @@ class TestFromInitialPlacementAndFenStart {
     assertTrue(board.isFivefoldRepetition(), "Board.isFivefoldRepetition predicate must fire");
 
     final ThreefoldExistingReport report = ThreefoldExistingReportBuilder.build(board.getInitialDynamicPosition(),
-        board.getHalfMoveList(), ChessConstants.THREEFOLD_REPETITION_RULE_THRESHOLD);
+        MoveRecords.played(board), ChessConstants.THREEFOLD_REPETITION_RULE_THRESHOLD);
 
     boolean anyAtFivefold = false;
     for (final RepetitionGroup group : report.groups()) {
@@ -336,12 +335,12 @@ class TestFromInitialPlacementAndFenStart {
    *                                         the "Fifty moves and beyond" section should contain at least one sequence
    *                                         line; {@code false} if the section should render the "None" sentinel (no
    *                                         50-move stretch was reached in play). Threefold / fivefold tests pass
-   *                                         {@code false} (8/16 plies are well below the 50-move threshold); 50-move /
+   *                                         {@code false} (8/16 moves are well below the 50-move threshold); 50-move /
    *                                         75-move tests pass {@code true}.
    */
   private static void assertReporterOutput(Board board, boolean threefoldSectionNonEmpty,
       boolean expectedFiftyMoveSequenceReached) {
-    final List<String> lines = captureReporter(board);
+    final List<String> lines = reportLines(board);
 
     final List<String> threefoldSection = extractSection(lines, "Threefolds and beyond",
         "Valid fifty-move claims ahead");
@@ -367,8 +366,8 @@ class TestFromInitialPlacementAndFenStart {
     }
   }
 
-  private static List<String> captureReporter(Board board) {
-    return OutputCaptureUtility.captureStdoutLines(() -> Reporter.printReport(board));
+  private static List<String> reportLines(Board board) {
+    return Reporter.report(board);
   }
 
   /**

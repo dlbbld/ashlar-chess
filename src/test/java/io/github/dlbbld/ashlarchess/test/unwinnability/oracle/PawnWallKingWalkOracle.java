@@ -128,11 +128,11 @@ final class PawnWallKingWalkOracle {
   private static Set<Square> calculatePawnAttacksFrom(Set<Square> pawnSquares, Side side) {
     final Set<Square> attacks = Nulls.noneOf(Square.class);
     for (final Square square : pawnSquares) {
-      if (Square.calculateHasLeftDiagonalSquare(side, square)) {
-        attacks.add(Square.calculateLeftDiagonalSquare(side, square));
+      if (square.hasLeftDiagonalSquare(side)) {
+        attacks.add(square.getLeftDiagonalSquare(side));
       }
-      if (Square.calculateHasRightDiagonalSquare(side, square)) {
-        attacks.add(Square.calculateRightDiagonalSquare(side, square));
+      if (square.hasRightDiagonalSquare(side)) {
+        attacks.add(square.getRightDiagonalSquare(side));
       }
     }
     return attacks;
@@ -168,7 +168,7 @@ final class PawnWallKingWalkOracle {
         if (newFile < 1 || newFile > 8 || newRank < 1 || newRank > 8) {
           continue;
         }
-        neighbours.add(Square.calculate(newFile, newRank));
+        neighbours.add(Square.of(newFile, newRank));
       }
     }
     return neighbours;

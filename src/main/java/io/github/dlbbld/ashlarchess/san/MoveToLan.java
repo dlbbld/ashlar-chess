@@ -9,9 +9,11 @@ import io.github.dlbbld.ashlarchess.common.constants.CastlingConstants;
 import io.github.dlbbld.ashlarchess.common.model.MoveSpecification;
 import io.github.dlbbld.ashlarchess.model.LegalMove;
 import io.github.dlbbld.ashlarchess.moves.CastlingUtility;
-import io.github.dlbbld.ashlarchess.moves.PromotionUtility;
 
-public class MoveToLan extends AbstractSan {
+public final class MoveToLan {
+
+  private MoveToLan() {
+  }
 
   /**
    * LAN non-capture separator between from and to squares. Captures use {@link SanSymbol#CAPTURE} ({@code 'x'})
@@ -33,11 +35,11 @@ public class MoveToLan extends AbstractSan {
    */
   private static final char LAN_NON_CAPTURE_SEPARATOR = '-';
 
-  public static String calculateLanLastMove(LegalMove lastMove, SanTerminalMarker sanTerminalMarker) {
-    final MoveSpecification moveSpecification = lastMove.moveSpecification();
+  public static String toLan(LegalMove move, SanTerminalMarker sanTerminalMarker) {
+    final MoveSpecification moveSpecification = move.moveSpecification();
     final StringBuilder buildSan = new StringBuilder();
 
-    if (CastlingUtility.calculateIsCastlingMove(moveSpecification)) {
+    if (CastlingUtility.isCastlingMove(moveSpecification)) {
       final String castlingLan = switch (moveSpecification.castlingMove()) {
         case KING_SIDE -> CastlingConstants.SAN_CASTLING_KING_SIDE;
         case QUEEN_SIDE -> CastlingConstants.SAN_CASTLING_QUEEN_SIDE;
@@ -45,20 +47,20 @@ public class MoveToLan extends AbstractSan {
         default -> throw new IllegalArgumentException();
       };
       buildSan.append(castlingLan);
-      sanTerminalMarker.append(buildSan);
+      SanTerminalMarkerUtility.appendTo(buildSan, sanTerminalMarker);
       return Nulls.toString(buildSan);
     }
 
-    final Piece movingPiece = lastMove.movingPiece();
+    final Piece movingPiece = move.movingPiece();
     final String fromSquareName = moveSpecification.fromSquare().getName();
     final String toSquareName = moveSpecification.toSquare().getName();
-    final boolean isCapture = lastMove.pieceCaptured() != Piece.NONE;
+    final boolean isCapture = move.capturedPiece() != Piece.NONE;
     switch (movingPiece.getPieceType()) {
       case PAWN:
         buildSan.append(fromSquareName);
         buildSan.append(isCapture ? SanSymbol.CAPTURE.getSymbol() : LAN_NON_CAPTURE_SEPARATOR);
         buildSan.append(toSquareName);
-        if (PromotionUtility.calculateIsPromotion(moveSpecification)) {
+        if (moveSpecification.isPromotion()) {
           final char promotionPieceLetter = moveSpecification.promotionPieceType().getPieceType().getLetter();
           buildSan.append(SanSymbol.PROMOTION.getSymbol());
           buildSan.append(promotionPieceLetter);
@@ -79,7 +81,7 @@ public class MoveToLan extends AbstractSan {
       default:
         throw new IllegalArgumentException();
     }
-    sanTerminalMarker.append(buildSan);
+    SanTerminalMarkerUtility.appendTo(buildSan, sanTerminalMarker);
 
     return Nulls.toString(buildSan);
   }

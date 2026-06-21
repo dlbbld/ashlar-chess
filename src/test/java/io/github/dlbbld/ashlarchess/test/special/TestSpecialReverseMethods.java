@@ -9,43 +9,42 @@ import org.junit.jupiter.api.Test;
 
 import io.github.dlbbld.ashlarchess.board.enums.Side;
 import io.github.dlbbld.ashlarchess.board.enums.Square;
-import io.github.dlbbld.ashlarchess.common.constants.EnumConstants;
 
-class TestSpecialReverseMethods implements EnumConstants {
+class TestSpecialReverseMethods {
 
   @SuppressWarnings("static-method")
   @Test
   void testSquareDirections() {
     for (final Square square : Square.REAL) {
       for (final Side side : Side.REAL) {
-        if (Square.calculateHasLeftDiagonalSquare(side, square)) {
-          final Square calculatedSquare = Square.calculateLeftDiagonalSquare(side, square);
-          final Square revertedSquare = Square.calculateLeftDiagonalSquare(side.getOppositeSide(), calculatedSquare);
+        if (square.hasLeftDiagonalSquare(side)) {
+          final Square calculatedSquare = square.getLeftDiagonalSquare(side);
+          final Square revertedSquare = calculatedSquare.getLeftDiagonalSquare(side.getOppositeSide());
           assertEquals(square, revertedSquare);
         }
-        if (Square.calculateHasRightDiagonalSquare(side, square)) {
-          final Square calculatedSquare = Square.calculateRightDiagonalSquare(side, square);
-          final Square revertedSquare = Square.calculateRightDiagonalSquare(side.getOppositeSide(), calculatedSquare);
+        if (square.hasRightDiagonalSquare(side)) {
+          final Square calculatedSquare = square.getRightDiagonalSquare(side);
+          final Square revertedSquare = calculatedSquare.getRightDiagonalSquare(side.getOppositeSide());
           assertEquals(square, revertedSquare);
         }
-        if (Square.calculateHasAheadSquare(side, square)) {
-          final Square calculatedSquare = Square.calculateAheadSquare(side, square);
-          final Square revertedSquare = Square.calculateBehindSquare(side, calculatedSquare);
+        if (square.hasAheadSquare(side)) {
+          final Square calculatedSquare = square.getAheadSquare(side);
+          final Square revertedSquare = calculatedSquare.getBehindSquare(side);
           assertEquals(square, revertedSquare);
         }
-        if (Square.calculateHasBehindSquare(side, square)) {
-          final Square calculatedSquare = Square.calculateBehindSquare(side, square);
-          final Square revertedSquare = Square.calculateAheadSquare(side, calculatedSquare);
+        if (square.hasBehindSquare(side)) {
+          final Square calculatedSquare = square.getBehindSquare(side);
+          final Square revertedSquare = calculatedSquare.getAheadSquare(side);
           assertEquals(square, revertedSquare);
         }
-        if (Square.calculateHasLeftSquare(side, square)) {
-          final Square calculatedSquare = Square.calculateLeftSquare(side, square);
-          final Square revertedSquare = Square.calculateRightSquare(side, calculatedSquare);
+        if (square.hasLeftSquare(side)) {
+          final Square calculatedSquare = square.getLeftSquare(side);
+          final Square revertedSquare = calculatedSquare.getRightSquare(side);
           assertEquals(square, revertedSquare);
         }
-        if (Square.calculateHasRightSquare(side, square)) {
-          final Square calculatedSquare = Square.calculateRightSquare(side, square);
-          final Square revertedSquare = Square.calculateLeftSquare(side, calculatedSquare);
+        if (square.hasRightSquare(side)) {
+          final Square calculatedSquare = square.getRightSquare(side);
+          final Square revertedSquare = calculatedSquare.getLeftSquare(side);
           assertEquals(square, revertedSquare);
         }
       }

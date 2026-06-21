@@ -11,7 +11,7 @@ import com.google.common.collect.ImmutableList;
 import io.github.dlbbld.ashlarchess.board.Board;
 import io.github.dlbbld.ashlarchess.common.Nulls;
 import io.github.dlbbld.ashlarchess.model.LegalMove;
-import io.github.dlbbld.ashlarchess.model.PgnHalfMove;
+import io.github.dlbbld.ashlarchess.model.PgnMove;
 import io.github.dlbbld.ashlarchess.pgn.PgnGame;
 import io.github.dlbbld.ashlarchess.test.model.PgnFen;
 import io.github.dlbbld.ashlarchess.test.model.PgnTestCaseList;
@@ -56,21 +56,21 @@ public class HelpmateSearchBoardPerformanceSurvey {
 
   public static void main(String[] args) {
     for (final PgnTest pgnTest : GROUPS) {
-      final List<Setup> setupList = buildSetups(pgnTest);
-      warmup(setupList);
+      final List<Setup> setups = buildSetups(pgnTest);
+      warmup(setups);
 
-      final Measurement cycle = measureCycle(setupList);
-      final Measurement cycleWithKey = measureCycleWithKey(setupList);
+      final Measurement cycle = measureCycle(setups);
+      final Measurement cycleWithKey = measureCycleWithKey(setups);
 
-      printResult(pgnTest, setupList, cycle, cycleWithKey);
+      printResult(pgnTest, setups, cycle, cycleWithKey);
     }
   }
 
-  private static Measurement measureCycle(List<Setup> setupList) {
+  private static Measurement measureCycle(List<Setup> setups) {
     long moveCount = 0L;
     final long start = System.nanoTime();
     for (int round = 0; round < MEASURE_ROUNDS; round++) {
-      for (final Setup setup : setupList) {
+      for (final Setup setup : setups) {
         final HelpmateSearchBoard searchBoard = setup.searchBoard();
         for (final LegalMove legalMove : setup.rootMoves()) {
           searchBoard.move(legalMove.moveSpecification());
@@ -82,11 +82,11 @@ public class HelpmateSearchBoardPerformanceSurvey {
     return new Measurement(System.nanoTime() - start, moveCount);
   }
 
-  private static Measurement measureCycleWithKey(List<Setup> setupList) {
+  private static Measurement measureCycleWithKey(List<Setup> setups) {
     long moveCount = 0L;
     final long start = System.nanoTime();
     for (int round = 0; round < MEASURE_ROUNDS; round++) {
-      for (final Setup setup : setupList) {
+      for (final Setup setup : setups) {
         final HelpmateSearchBoard searchBoard = setup.searchBoard();
         for (final LegalMove legalMove : setup.rootMoves()) {
           searchBoard.move(legalMove.moveSpecification());
@@ -113,8 +113,8 @@ public class HelpmateSearchBoardPerformanceSurvey {
       final PgnGame pgnGame = PgnCacheForStrictPgnParserTestCases.getPgn(pgnTest.getFolderPath(), testCase.pgnName());
       final Board board = new Board(pgnGame.startFen());
       addSetup(result, board);
-      for (final PgnHalfMove halfMove : pgnGame.halfMoveList()) {
-        board.moveStrict(halfMove.san());
+      for (final PgnMove move : pgnGame.moves()) {
+        board.moveStrict(move.san());
         addSetup(result, board);
         if (result.size() >= MAX_POSITIONS_PER_GROUP) {
           break;
@@ -125,7 +125,7 @@ public class HelpmateSearchBoardPerformanceSurvey {
   }
 
   private static void addSetup(List<Setup> result, Board sourceBoard) {
-    final Board fenBoard = new Board(sourceBoard.getFen());
+    final Board fenBoard = Board.fromFenStrict(sourceBoard.getFen());
     final HelpmateSearchBoard searchBoard = HelpmateSearchBoard.from(fenBoard);
     final List<LegalMove> rootMoves = List.copyOf(searchBoard.getLegalMoves());
     if (rootMoves.isEmpty()) {
@@ -135,22 +135,22 @@ public class HelpmateSearchBoardPerformanceSurvey {
     result.add(new Setup(searchBoard, rootMoves));
   }
 
-  private static void warmup(List<Setup> setupList) {
+  private static void warmup(List<Setup> setups) {
     for (int i = 0; i < WARMUP_ROUNDS; i++) {
-      measureCycle(setupList);
-      measureCycleWithKey(setupList);
+      measureCycle(setups);
+      measureCycleWithKey(setups);
     }
   }
 
-  private static void printResult(PgnTest pgnTest, List<Setup> setupList, Measurement cycle, Measurement cycleWithKey) {
-    final int totalRootMoves = setupList.stream().mapToInt(s -> s.rootMoves().size()).sum();
+  private static void printResult(PgnTest pgnTest, List<Setup> setups, Measurement cycle, Measurement cycleWithKey) {
+    final int totalRootMoves = setups.stream().mapToInt(s -> s.rootMoves().size()).sum();
     final double denominator = totalRootMoves * (long) MEASURE_ROUNDS;
     final double cycleUs = cycle.nanoseconds() / denominator / 1000.0;
     final double cycleWithKeyUs = cycleWithKey.nanoseconds() / denominator / 1000.0;
     final double keyOverheadUs = cycleWithKeyUs - cycleUs;
 
     System.out.printf("%s%n", pgnTest);
-    System.out.printf("  positions: %,d  root moves: %,d%n", setupList.size(), totalRootMoves);
+    System.out.printf("  positions: %,d  root moves: %,d%n", setups.size(), totalRootMoves);
     System.out.printf("  cycle (move + unmove):           %.3f us/cycle%n", cycleUs);
     System.out.printf("  cycle + currentTranspositionKey: %.3f us/cycle  (key overhead %.3f us)%n%n", cycleWithKeyUs,
         keyOverheadUs);

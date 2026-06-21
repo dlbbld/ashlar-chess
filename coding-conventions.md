@@ -20,6 +20,28 @@ Enforced by:
 
 **JUnit method references.** Avoid hardcoded method names as string arguments in JUnit annotations (e.g. `@MethodSource("supplierName")`). Prefer the no-argument `@MethodSource` (which picks up a static method with the same name as the test) or `@ArgumentsSource(Provider.class)` — both are compiler-checked. The string form silently drifts from the method name under refactor and is only caught at test runtime. Allow only where the alternatives are materially worse.
 
+## Chess naming
+
+One player's action is a **move**. Use `move`, `played move`, `moveIndex` (0-based list index), and `performedMoveCount` (1-based count of played moves) in the domain model, move history, reports, PGN parsing/writing, tests, JavaDoc, and user-facing messages.
+
+Do not use standalone `halfmove`, `half-move`, `half move`, `ply`, or `plies` for a played move. The only exceptions are explicitly protocol- or engine-scoped:
+
+- **FEN/PGN protocol counters.** In prose, use the standards spelling `halfmove clock` and `fullmove number`, with `halfmove` / `fullmove` always one word — including standalone and plural uses (`halfmoves`, `fullmoves`) — never `half move` / `full move` / `half-move` / `full-move`. In Java identifiers, keep normal Java word boundaries: `halfMoveClock`, `fullMoveNumber`, `HALF_MOVE_CLOCK`, `FULL_MOVE_NUMBER`. This is an intentional split: prose follows the protocol field name; code follows Java naming.
+- **PGN `PlyCount` tag.** Keep `PlyCount` / `StandardTag.PLY_COUNT` because that is the tag name.
+- **Engine/search internals.** `ply` is allowed for search depth, per-depth buffers, make/unmake stacks, and engine-style prose such as "3-ply search". Do not let it leak into `Board`, move history, PGN model, or report vocabulary.
+- **External mirrors.** Test fixtures or adapters that deliberately mirror an external library or data contract may keep that source's vocabulary, for example python-chess `perPly` data or chesslib half-move naming.
+
+When in doubt, ask whether the term names a public chess-library concept or a protocol field. Public concept: `move`. Protocol field: `halfmove clock` / `fullmove number` in prose, `halfMoveClock` / `fullMoveNumber` in code.
+
+## API naming
+
+- **Normal classes** use JavaBeans accessors: `get` / `is` / `has` / `can`.
+- **Records** expose their components as bare-noun accessors (no `get` prefix).
+- **Positions** name the side to move `sideToMove` (`Board`, `Fen`, `DynamicPosition`).
+- **Moves** name the acting side `movingSide` (`LegalMove`, beside `movingPiece`).
+- **Avoid `calculate`** (and other implementation verbs) in public domain API names; name by the domain result.
+- **No `abstract` class purely to share static helpers** - a noninstantiable utility is `final` with a private constructor.
+
 ## Records carry data, not behavior
 
 Records are immutable value objects (the M in MVC). Computational and business logic that operates on them lives in dedicated utility/service classes — never on the record itself.
@@ -30,12 +52,27 @@ Allowed on records:
 - **`Comparable` when the ordering is intrinsic to the type's identity.** `Tag` orders by standard-roster position. `MoveSpecification` orders by `(fromSquare, toSquare, castlingMove, promotionPieceType)`. Ordering that's a property of the type itself (not "one possible sort key out of several") fits on the record.
 - **Static factory constants for meaningful empty/initial values.** `PgnCommentary.EMPTY`. These are part of the type's value lattice, not behavior.
 - **Auto-generated `equals` / `hashCode` / `toString`** — the language provides these from the record's components. Don't override.
+- **Intrinsic self-description: a tiny derived accessor or predicate over the record's *own* components.** It may name *what the value is* — `MoveSpecification.isPromotion()` (whether its own `promotionPieceType` component is set), `LegalMove.movingSide()` (a projection of `movingPiece.getSide()`). Keep these to one-liners that read like the value's own nature, not domain operations.
 
 Not allowed on records:
 
 - **Domain-operation methods that compute results from the record's fields combined with anything else.** Those belong in the relevant utility class. *Example: don't put `staticPosition.afterMove(side, moveSpec)` on `StaticPosition`; put `StaticPositionUtility.createPositionAfterMove(staticPosition, side, moveSpec)` instead.* Records describe *what something is*; utilities describe *what you do with it*.
 - **Convenience constructors that hide validation logic in non-canonical paths.** Validation belongs in the canonical compact constructor, not scattered across overloads — otherwise a caller can bypass validation by reaching for the canonical constructor directly.
 - **Methods that simulate state changes** (records are values, not actors).
+- **Rule-consequence predicates** — a predicate that evaluates a chess *rule* about the record rather than describing its own state. *Example: "does this move reset the FIDE halfmove clock" is the pawn-move-or-capture rule, so it stays `BasicChessUtility.isResetHalfMoveClock(legalMove)`, not a method on `LegalMove`.* The line: self-description belongs on the record, rule evaluation belongs in a utility.
+
+Documented exception:
+
+- **`BitboardPosition` deliberately carries its move-generation / king-safety engine** (`afterMove`, `legalMoves`, `attackedSquares`, `isInCheck`, `pinRay`, `pinnedPieces`, …) on the record. This is a conscious, bounded exception made for hot-path allocation reasons on the production move-generation path — the engine reads the twelve `long` fields directly without a wrapper object per call. It is **not** a licence to add domain methods to other records: no other record should follow this pattern without the same measured hot-path justification.
+
+## Enums carry data, not behavior
+
+Enums are value catalogs, and the same rule applies as for records. Where the line falls:
+
+- **Keep on the enum.** The canonical data (constructor-injected `final` fields and their accessors), trivial intrinsic predicates (`Side.getIsWhite()`), intrinsic involutions (`Side.getOppositeSide()`, `SquareType.getOppositeSquareType()`), and **self-canonical parse** — a `static exists` / `calculate(symbol)` that recognizes the value from *its own* canonical representation (letter, symbol, value), including one hop through an accessor (`NotationMovingPiece.calculate(char)` matching on `getPieceType().getLetter()`).
+- **Move to a utility / translator.** **Cross-type translation** (a `switch` mapping the enum — or another type — into a *different* enum or type: `KingSafetyCheck -> MoveCheck`, `Side -> FenSideSymbol`, `(Side, PieceType) -> Piece`); **side-relative chess-rule logic** (methods that combine the value with a `Side` or other move-rule input to compute a rule-significant result); and **presentation** (rendering values into display strings).
+
+Name it `<Enum>Utility` (or `<Enum>Translator` / `<Enum>Mapper`), in the enum's own package when the result type lives there, otherwise in the consuming package (`analyze.KingSafetyCheckTranslator`, `san.CastlingCheckMapper`). When extracting, move any private lookup table or helper that exists only to serve the extracted behavior along with it — don't leave the enum a half-data, half-hidden-service container.
 
 ## JavaDoc and comments
 

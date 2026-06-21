@@ -5,7 +5,10 @@ package io.github.dlbbld.ashlarchess.unwinnability;
 
 import io.github.dlbbld.ashlarchess.board.enums.Square;
 
-class KingDistance {
+final class KingDistance {
+
+  private KingDistance() {
+  }
 
   // Chebyshev Distance
   // minimum king moves on empty board

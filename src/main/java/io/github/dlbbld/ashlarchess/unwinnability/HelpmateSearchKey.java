@@ -19,7 +19,7 @@ import io.github.dlbbld.ashlarchess.common.model.DynamicPosition;
  * <p>
  * <strong>Fields and semantics:</strong>
  * <ul>
- * <li>{@code havingMove} - side to move.</li>
+ * <li>{@code sideToMove} - side to move.</li>
  * <li>{@code whitePawns}...{@code blackKings} - the twelve piece bitboards (same field order as
  * {@link io.github.dlbbld.ashlarchess.bitboard.BitboardPosition}).</li>
  * <li>{@code normalizedEnPassantCaptureTargetSquare} - the FIDE-position-identity EP target (set only when an opposing
@@ -31,15 +31,15 @@ import io.github.dlbbld.ashlarchess.common.model.DynamicPosition;
  * </ul>
  *
  * <p>
- * <strong>Explicitly NOT part of the key:</strong> raw EP target, halfmove / fullmove counters, cached check flags
- * ({@code isCheck} / {@code isCheckmate} / {@code isStalemate}), legal-move buffer contents, or any derived /
+ * <strong>Explicitly NOT part of the key:</strong> raw EP target, halfmove clock and fullmove number, cached check
+ * flags ({@code isCheck} / {@code isCheckmate} / {@code isStalemate}), legal-move buffer contents, or any derived /
  * search-local state. The key is over the search node's <em>inputs</em>, not its outputs.
  *
  * <p>
  * Package-private and constructed in exactly one place ({@link HelpmateSearchBoard#currentTranspositionKey()}); no
  * compact-constructor validation - the search board owns the invariants that would be checked there.
  */
-record HelpmateSearchKey(Side havingMove, long whitePawns, long whiteRooks, long whiteKnights, long whiteBishops,
+record HelpmateSearchKey(Side sideToMove, long whitePawns, long whiteRooks, long whiteKnights, long whiteBishops,
     long whiteQueens, long whiteKings, long blackPawns, long blackRooks, long blackKnights, long blackBishops,
     long blackQueens, long blackKings, Square normalizedEnPassantCaptureTargetSquare, CastlingRight castlingRightWhite,
     CastlingRight castlingRightBlack) {

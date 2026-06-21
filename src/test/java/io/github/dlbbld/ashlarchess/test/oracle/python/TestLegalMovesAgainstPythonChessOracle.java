@@ -19,8 +19,8 @@ import com.google.common.collect.ImmutableList;
 
 import io.github.dlbbld.ashlarchess.board.Board;
 import io.github.dlbbld.ashlarchess.common.Nulls;
-import io.github.dlbbld.ashlarchess.common.utility.BasicUtility;
-import io.github.dlbbld.ashlarchess.model.PgnHalfMove;
+import io.github.dlbbld.ashlarchess.common.utility.ExceptionUtility;
+import io.github.dlbbld.ashlarchess.model.PgnMove;
 import io.github.dlbbld.ashlarchess.pgn.PgnGame;
 import io.github.dlbbld.ashlarchess.pgn.StrictPgnParser;
 import io.github.dlbbld.ashlarchess.test.ConfigurationTestConstants;
@@ -34,7 +34,7 @@ import io.github.dlbbld.ashlarchess.test.pgntest.enums.PgnTest;
  * <p>
  * For each fixture: parses the PGN, walks the board through the played sequence, and at each ply (including ply 0
  * before any move and the position after the final move) asserts that the sorted UCI set of
- * {@code board.getLegalMovesUci()} equals the python-chess set recorded in the JSONL oracle under
+ * {@code board.getLegalMovesAsUci()} equals the python-chess set recorded in the JSONL oracle under
  * {@code src/test/resources/oracle/python-chess/move-gen/<folderPart>.jsonl}.
  *
  * <p>
@@ -90,34 +90,34 @@ class TestLegalMovesAgainstPythonChessOracle {
       final Path folderPath = bucket.getFolderPath();
       for (final LegalMovesRecord record : records) {
         totalFixtures++;
-        final PgnGame pgnGame = StrictPgnParser.parse(folderPath, record.pgn());
-        final int halfMoveCount = pgnGame.halfMoveList().size();
+        final PgnGame pgnGame = StrictPgnParser.parsePath(folderPath, record.pgn());
+        final int plyCount = pgnGame.moves().size();
 
         try {
-          assertEquals(halfMoveCount + 1, record.perPly().size(),
-              () -> bucket + " / " + record.pgn() + " - perPly length should be halfMoveCount + 1");
+          assertEquals(plyCount + 1, record.perPly().size(),
+              () -> bucket + " / " + record.pgn() + " - perPly length should be plyCount + 1");
         } catch (final AssertionError e) {
-          failures.add(BasicUtility.getMessage(e));
+          failures.add(ExceptionUtility.getMessage(e));
           continue;
         }
 
         final Board board = new Board(pgnGame.startFen());
-        for (int ply = 0; ply <= halfMoveCount; ply++) {
+        for (int ply = 0; ply <= plyCount; ply++) {
           totalPositions++;
           final LegalMovesPly expectedPly = Nulls.get(record.perPly(), ply);
-          final List<String> actualSorted = sortedCopy(board.getLegalMovesUci());
+          final List<String> actualSorted = sortedCopy(board.getLegalMovesAsUci());
 
           final int positionLabel = ply;
           try {
             assertEquals(expectedPly.legalMovesUci(), actualSorted, () -> bucket + " / " + record.pgn() + " position "
                 + positionLabel + " - legal-move set mismatch (ashlar-chess vs python-chess)");
           } catch (final AssertionError e) {
-            failures.add(BasicUtility.getMessage(e));
+            failures.add(ExceptionUtility.getMessage(e));
           }
 
-          if (ply < halfMoveCount) {
-            final PgnHalfMove halfMove = Nulls.get(pgnGame.halfMoveList(), ply);
-            board.moveStrict(halfMove.san());
+          if (ply < plyCount) {
+            final PgnMove move = Nulls.get(pgnGame.moves(), ply);
+            board.moveStrict(move.san());
           }
         }
       }

@@ -35,7 +35,7 @@ import com.google.common.collect.Sets;
 
 import io.github.dlbbld.ashlarchess.common.exceptions.ProgrammingMistakeException;
 
-public class Nulls {
+public final class Nulls {
 
   private Nulls() {
   }
@@ -72,10 +72,6 @@ public class Nulls {
     return checkResult(list.remove(index));
   }
 
-  public static String toString(String[] stringArray) {
-    return checkResult(stringArray.toString());
-  }
-
   public static String toString(StringBuilder stringBuilder) {
     return checkResult(stringBuilder.toString());
   }
@@ -110,6 +106,10 @@ public class Nulls {
 
   public static String replaceAll(Matcher matcher, String replacement) {
     return checkResult(matcher.replaceAll(replacement));
+  }
+
+  public static char[] toCharArray(String string) {
+    return checkResult(string.toCharArray());
   }
 
   public static String toLowerCase(String string) {

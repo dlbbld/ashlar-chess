@@ -16,7 +16,7 @@ import org.eclipse.jdt.annotation.NonNull;
 
 import io.github.dlbbld.ashlarchess.board.enums.Square;
 import io.github.dlbbld.ashlarchess.common.Nulls;
-import io.github.dlbbld.ashlarchess.common.utility.BasicUtility;
+import io.github.dlbbld.ashlarchess.common.utility.ListUtility;
 
 class MobilitySolution {
 
@@ -89,7 +89,7 @@ class MobilitySolution {
     return result;
   }
 
-  public Set<PiecePlacement> getPiecePlacementSet() {
+  public Set<PiecePlacement> getPiecePlacements() {
     @SuppressWarnings("null") @NonNull final Set<PiecePlacement> keySet = mobilityMap.keySet();
     // treeset for ordering
     return new TreeSet<>(keySet);
@@ -97,10 +97,10 @@ class MobilitySolution {
 
   public String print() {
 
-    final List<String> lineList = new ArrayList<>();
+    final List<String> lines = new ArrayList<>();
 
-    lineList.add("");
-    lineList.add("Mobility:");
+    lines.add("");
+    lines.add("Mobility:");
 
     for (final PiecePlacement piecePlacement : new TreeSet<>(mobilityMap.keySet())) {
       final Map<Square, VariableState> valuePlacement = Nulls.get(mobilityMap, piecePlacement);
@@ -113,14 +113,14 @@ class MobilitySolution {
       }
       final StringBuilder pieceDescription = new StringBuilder();
       pieceDescription.append(piecePlacement.toString());
-      final String squareList = BasicUtility.calculateSquareList(reachable);
+      final String squares = ListUtility.formatSquares(reachable);
       pieceDescription.append(": ");
-      pieceDescription.append(squareList);
+      pieceDescription.append(squares);
       @SuppressWarnings("null") @NonNull final String string = pieceDescription.toString();
-      lineList.add(string);
+      lines.add(string);
     }
 
-    return BasicUtility.convertToString(lineList);
+    return ListUtility.toLineSeparatedString(lines);
   }
 
   @Override

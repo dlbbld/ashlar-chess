@@ -69,21 +69,21 @@ public final class GenerateAmbronaUnwinnabilityOracle {
   }
 
   private static void generate(String d3ChessRoot) throws Exception {
-    final List<String> fenList = collectDistinctFinalFenList();
-    logger.info("Collected {} distinct final FENs from the PGN test cases.", fenList.size());
+    final List<String> fens = collectDistinctFinalFens();
+    logger.info("Collected {} distinct final FENs from the PGN test cases.", fens.size());
 
     buildRunner(d3ChessRoot);
-    final List<String> oracleLineList = runOracle(fenList);
+    final List<String> oracleLines = runOracle(fens);
 
     Files.createDirectories(Nulls.getParent(ORACLE_PATH));
-    final List<String> fileLineList = new ArrayList<>();
-    fileLineList.add("fen\tfullWhite\tfullBlack\tquickWhite\tquickBlack");
-    fileLineList.addAll(oracleLineList);
-    Files.writeString(ORACLE_PATH, Nulls.join("\n", fileLineList) + "\n", StandardCharsets.UTF_8);
-    logger.info("Wrote {} oracle rows to {}", oracleLineList.size(), ORACLE_PATH);
+    final List<String> fileLines = new ArrayList<>();
+    fileLines.add("fen\tfullWhite\tfullBlack\tquickWhite\tquickBlack");
+    fileLines.addAll(oracleLines);
+    Files.writeString(ORACLE_PATH, Nulls.join("\n", fileLines) + "\n", StandardCharsets.UTF_8);
+    logger.info("Wrote {} oracle rows to {}", oracleLines.size(), ORACLE_PATH);
   }
 
-  private static List<String> collectDistinctFinalFenList() {
+  private static List<String> collectDistinctFinalFens() {
     final Set<String> fenSet = new LinkedHashSet<>();
     for (final PgnTest pgnTest : PgnTest.values()) {
       final PgnTestCaseList testCaseList = PgnTestCaseCatalog.getTestList(pgnTest);
@@ -104,7 +104,7 @@ public final class GenerateAmbronaUnwinnabilityOracle {
     runWslCommand(command);
   }
 
-  private static List<String> runOracle(List<String> fenList) throws Exception {
+  private static List<String> runOracle(List<String> fens) throws Exception {
     final ProcessBuilder processBuilder = new ProcessBuilder("wsl", "bash", "-lc",
         "LD_LIBRARY_PATH=/usr/local/lib " + shellQuote(WSL_RUNNER_PATH));
     final Process process = IoUtility.startProcess(processBuilder);
@@ -118,7 +118,7 @@ public final class GenerateAmbronaUnwinnabilityOracle {
               new InputStreamReader(IoUtility.getInputStream(process), StandardCharsets.UTF_8))) {
 
         int processed = 0;
-        for (final String fen : fenList) {
+        for (final String fen : fens) {
           writer.write(fen);
           writer.write('\n');
           writer.flush();
@@ -131,8 +131,8 @@ public final class GenerateAmbronaUnwinnabilityOracle {
           result.add(resultLine);
           processed++;
 
-          if (processed % PROGRESS_LOG_INTERVAL == 0 || processed == fenList.size()) {
-            logger.info("Generated {}/{} Ambrona oracle rows.", processed, fenList.size());
+          if (processed % PROGRESS_LOG_INTERVAL == 0 || processed == fens.size()) {
+            logger.info("Generated {}/{} Ambrona oracle rows.", processed, fens.size());
           }
         }
       }

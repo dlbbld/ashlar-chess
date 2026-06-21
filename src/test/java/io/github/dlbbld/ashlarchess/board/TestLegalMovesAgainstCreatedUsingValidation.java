@@ -18,16 +18,16 @@ import io.github.dlbbld.ashlarchess.board.enums.CastlingMove;
 import io.github.dlbbld.ashlarchess.board.enums.Piece;
 import io.github.dlbbld.ashlarchess.board.enums.PieceType;
 import io.github.dlbbld.ashlarchess.board.enums.PromotionPieceType;
-import io.github.dlbbld.ashlarchess.board.enums.Rank;
+import io.github.dlbbld.ashlarchess.board.enums.RankUtility;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
 import io.github.dlbbld.ashlarchess.board.enums.Square;
 import io.github.dlbbld.ashlarchess.common.Nulls;
 import io.github.dlbbld.ashlarchess.common.model.MoveSpecification;
 import io.github.dlbbld.ashlarchess.exceptions.InvalidMoveException;
 import io.github.dlbbld.ashlarchess.model.LegalMove;
-import io.github.dlbbld.ashlarchess.model.PgnHalfMove;
+import io.github.dlbbld.ashlarchess.model.PgnMove;
 import io.github.dlbbld.ashlarchess.pgn.PgnGame;
-import io.github.dlbbld.ashlarchess.squares.AbstractPotentialToSquares;
+import io.github.dlbbld.ashlarchess.squares.PotentialToSquaresSupport;
 import io.github.dlbbld.ashlarchess.test.RestrictTestConstants;
 import io.github.dlbbld.ashlarchess.test.model.PgnFen;
 import io.github.dlbbld.ashlarchess.test.model.PgnTestCaseList;
@@ -43,7 +43,7 @@ class TestLegalMovesAgainstCreatedUsingValidation {
   void test() {
     // the move generation from validation for testing is about ten times slower than the used on
     // so we only perform a spot checks on the PGN^s
-    for (final PgnTestCaseList testCaseList : PgnTestCaseCatalog.getRestrictedTestListList()) {
+    for (final PgnTestCaseList testCaseList : PgnTestCaseCatalog.getRestrictedTestCaseLists()) {
       if (RestrictTestConstants.IS_RESTRICT_PGN_LEGAL_MOVE_VALIDATION_AGAINST_BOTTOM_UP_TEST) {
         switch (testCaseList.pgnTest()) {
           case BASIC_CHECK_WHITE:
@@ -72,8 +72,8 @@ class TestLegalMovesAgainstCreatedUsingValidation {
     final Board board = new Board(pgnGame.startFen());
     checkLegalMoves(board);
 
-    for (final PgnHalfMove halfMove : pgnGame.halfMoveList()) {
-      board.moveStrict(halfMove.san());
+    for (final PgnMove move : pgnGame.moves()) {
+      board.moveStrict(move.san());
       checkLegalMoves(board);
     }
 
@@ -108,7 +108,7 @@ class TestLegalMovesAgainstCreatedUsingValidation {
   }
 
   private static Set<MoveSpecification> calculateMoveSpecificationsFromValidation(Board board, Square fromSquare) {
-    final Side havingMove = board.getHavingMove();
+    final Side sideToMove = board.getSideToMove();
 
     final Set<MoveSpecification> listForSquare = new TreeSet<>();
     // now we do something crazy:
@@ -118,7 +118,7 @@ class TestLegalMovesAgainstCreatedUsingValidation {
       return listForSquare;
     }
     final Piece boardPiece = board.getBitboardPosition().get(fromSquare);
-    if (boardPiece.getSide() == havingMove) {
+    if (boardPiece.getSide() == sideToMove) {
       // castling needs special treatment as always
       if (boardPiece.getPieceType() == PieceType.KING) {
         final MoveSpecification castlingKingSide = new MoveSpecification(CastlingMove.KING_SIDE);
@@ -136,9 +136,9 @@ class TestLegalMovesAgainstCreatedUsingValidation {
           // not valid, so not adding
         }
       }
-      final Set<Square> potentialToSquareSet = AbstractPotentialToSquares.calculatePotentialToSquare(
+      final Set<Square> potentialToSquareSet = PotentialToSquaresSupport.calculatePotentialToSquare(
           StaticPositionBridge.toStaticPosition(board.getBitboardPosition()), board.getEnPassantCaptureTargetSquare(),
-          havingMove, fromSquare);
+          sideToMove, fromSquare);
       // we cannot use all board squares - that get's too slow
       // all PGN's expected outcomes are not through in 90 minutes
       for (final Square toSquare : potentialToSquareSet) {
@@ -152,7 +152,7 @@ class TestLegalMovesAgainstCreatedUsingValidation {
         // we only check the actual promotion moves and not all silly possible combinations
         // that get's too much otherwise
         if (boardPiece.getPieceType() == PieceType.PAWN
-            && Rank.calculateIsPromotionRank(havingMove, toSquare.getRank())) {
+            && RankUtility.isPromotionRank(sideToMove, toSquare.getRank())) {
           for (final PromotionPieceType promotionPieceType : PromotionPieceType.REAL) {
             final MoveSpecification promotionMove = new MoveSpecification(fromSquare, toSquare, promotionPieceType);
             try {

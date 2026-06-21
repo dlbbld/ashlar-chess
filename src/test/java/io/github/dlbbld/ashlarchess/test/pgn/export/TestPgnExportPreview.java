@@ -36,12 +36,12 @@ class TestPgnExportPreview {
 
           """;
 
-      final List<String> actualLineList = new ArrayList<>();
-      actualLineList.add("e4 e5 Nf3 Nc6");
-      final PgnGame pgnGame = LenientPgnParser.parse(actualLineList);
+      final List<String> actualLines = new ArrayList<>();
+      actualLines.add("e4 e5 Nf3 Nc6");
+      final PgnGame pgnGame = LenientPgnParser.parseLines(actualLines);
 
-      final List<String> expectedLineList = PgnCreate.createPgnLines(pgnGame, WriteMode.ARCHIVAL);
-      final String actual = convertToTextBlock(expectedLineList);
+      final List<String> expectedLines = PgnCreate.toPgnLines(pgnGame, WriteMode.ARCHIVAL);
+      final String actual = convertToTextBlock(expectedLines);
 
       assertEquals(expected, actual);
     }
@@ -63,11 +63,11 @@ class TestPgnExportPreview {
       final String pgnImport = """
           e4 e5 Nf3 Nc6""";
 
-      final List<String> actualLineList = convertFromTextBlock(pgnImport);
-      final PgnGame pgnGame = LenientPgnParser.parse(actualLineList);
+      final List<String> actualLines = convertFromTextBlock(pgnImport);
+      final PgnGame pgnGame = LenientPgnParser.parseLines(actualLines);
 
-      final List<String> expectedLineList = PgnCreate.createPgnLines(pgnGame, WriteMode.ARCHIVAL);
-      final String actual = convertToTextBlock(expectedLineList);
+      final List<String> expectedLines = PgnCreate.toPgnLines(pgnGame, WriteMode.ARCHIVAL);
+      final String actual = convertToTextBlock(expectedLines);
 
       assertEquals(expected, actual);
     }
@@ -90,11 +90,11 @@ class TestPgnExportPreview {
           [Event "Zuerich Open"]
           e4 e5 Nf3 Nc6 1-0""";
 
-      final List<String> actualLineList = convertFromTextBlock(pgnImport);
-      final PgnGame pgnGame = LenientPgnParser.parse(actualLineList);
+      final List<String> actualLines = convertFromTextBlock(pgnImport);
+      final PgnGame pgnGame = LenientPgnParser.parseLines(actualLines);
 
-      final List<String> expectedLineList = PgnCreate.createPgnLines(pgnGame, WriteMode.ARCHIVAL);
-      final String actual = convertToTextBlock(expectedLineList);
+      final List<String> expectedLines = PgnCreate.toPgnLines(pgnGame, WriteMode.ARCHIVAL);
+      final String actual = convertToTextBlock(expectedLines);
 
       assertEquals(expected, actual);
     }
@@ -119,11 +119,11 @@ class TestPgnExportPreview {
           [Event "Zuerich Open"]
           e4 e5 Nf3 Nc6 """;
 
-      final List<String> actualLineList = convertFromTextBlock(pgnImport);
-      final PgnGame pgnGame = LenientPgnParser.parse(actualLineList);
+      final List<String> actualLines = convertFromTextBlock(pgnImport);
+      final PgnGame pgnGame = LenientPgnParser.parseLines(actualLines);
 
-      final List<String> expectedLineList = PgnCreate.createPgnLines(pgnGame, WriteMode.ARCHIVAL);
-      final String actual = convertToTextBlock(expectedLineList);
+      final List<String> expectedLines = PgnCreate.toPgnLines(pgnGame, WriteMode.ARCHIVAL);
+      final String actual = convertToTextBlock(expectedLines);
 
       assertEquals(expected, actual);
     }
@@ -153,11 +153,11 @@ class TestPgnExportPreview {
           [FEN "r1b2r2/pp1pk1pp/8/7q/3pP1n1/5N1P/PPQ2PP1/3R1RK1 w - - 0 17"]
           Qa4 Rb8 Qc4 Ra8 """;
 
-      final List<String> actualLineList = convertFromTextBlock(pgnImport);
-      final PgnGame pgnGame = LenientPgnParser.parse(actualLineList);
+      final List<String> actualLines = convertFromTextBlock(pgnImport);
+      final PgnGame pgnGame = LenientPgnParser.parseLines(actualLines);
 
-      final List<String> expectedLineList = PgnCreate.createPgnLines(pgnGame, WriteMode.ARCHIVAL);
-      final String actual = convertToTextBlock(expectedLineList);
+      final List<String> expectedLines = PgnCreate.toPgnLines(pgnGame, WriteMode.ARCHIVAL);
+      final String actual = convertToTextBlock(expectedLines);
 
       assertEquals(expected, actual);
     }
@@ -184,11 +184,11 @@ class TestPgnExportPreview {
           [FEN "r1b2r2/pp1pk1pp/8/7q/3pP1n1/5N1P/PPQ2PP1/3R1RK1 w - - 0 17"]
           1. Qa4 Rb8 2. Qc4 Ra8 """;
 
-      final List<String> actualLineList = convertFromTextBlock(pgnImport);
-      final PgnGame pgnGame = LenientPgnParser.parse(actualLineList);
+      final List<String> actualLines = convertFromTextBlock(pgnImport);
+      final PgnGame pgnGame = LenientPgnParser.parseLines(actualLines);
 
-      final List<String> expectedLineList = PgnCreate.createPgnLines(pgnGame, WriteMode.ARCHIVAL);
-      final String actual = convertToTextBlock(expectedLineList);
+      final List<String> expectedLines = PgnCreate.toPgnLines(pgnGame, WriteMode.ARCHIVAL);
+      final String actual = convertToTextBlock(expectedLines);
 
       assertEquals(expected, actual);
     }
@@ -219,11 +219,11 @@ class TestPgnExportPreview {
           [FEN "1n2kb1r/p4ppp/4q3/4p1B1/4P3/8/PPP2PPP/2KR4 b k - 0 17"]
           Qd7 Re1 Na6 Rd1 Nb8 Kb1 Be7 Kc1 """;
 
-      final List<String> actualLineList = convertFromTextBlock(pgnImport);
-      final PgnGame pgnGame = LenientPgnParser.parse(actualLineList);
+      final List<String> actualLines = convertFromTextBlock(pgnImport);
+      final PgnGame pgnGame = LenientPgnParser.parseLines(actualLines);
 
-      final List<String> expectedLineList = PgnCreate.createPgnLines(pgnGame, WriteMode.ARCHIVAL);
-      final String actual = convertToTextBlock(expectedLineList);
+      final List<String> expectedLines = PgnCreate.toPgnLines(pgnGame, WriteMode.ARCHIVAL);
+      final String actual = convertToTextBlock(expectedLines);
 
       assertEquals(expected, actual);
     }
@@ -250,19 +250,19 @@ class TestPgnExportPreview {
           [FEN "1n2kb1r/p4ppp/4q3/4p1B1/4P3/8/PPP2PPP/2KR4 b k - 0 17"]
           1... Qd7 2. Re1 Na6 3. Rd1 Nb8 4. Kb1 Be7 5. Kc1""";
 
-      final List<String> actualLineList = convertFromTextBlock(pgnImport);
-      final PgnGame pgnGame = LenientPgnParser.parse(actualLineList);
+      final List<String> actualLines = convertFromTextBlock(pgnImport);
+      final PgnGame pgnGame = LenientPgnParser.parseLines(actualLines);
 
-      final List<String> expectedLineList = PgnCreate.createPgnLines(pgnGame, WriteMode.ARCHIVAL);
-      final String actual = convertToTextBlock(expectedLineList);
+      final List<String> expectedLines = PgnCreate.toPgnLines(pgnGame, WriteMode.ARCHIVAL);
+      final String actual = convertToTextBlock(expectedLines);
 
       assertEquals(expected, actual);
     }
   }
 
-  private static String convertToTextBlock(List<String> lineList) {
+  private static String convertToTextBlock(List<String> lines) {
     final StringBuilder result = new StringBuilder();
-    for (final String line : lineList) {
+    for (final String line : lines) {
       result.append(line);
       result.append("\n");
     }

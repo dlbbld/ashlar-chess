@@ -9,8 +9,7 @@ package io.github.dlbbld.ashlarchess.common.model;
  * current position, so callers can render the move and play it without re-resolving SAN.
  *
  * <p>
- * Produced by {@code Board.calculateFiftyMoveRuleClaimRights()} and
- * {@code Board.calculateThreefoldRepetitionRuleClaimRights()}.
+ * Produced by {@code Board.fiftyMoveRuleClaimRights()} and {@code Board.threefoldRepetitionRuleClaimRights()}.
  */
 public record ClaimableMove(MoveSpecification moveSpecification, String san) {
 

@@ -5,7 +5,10 @@ package io.github.dlbbld.ashlarchess.test.common.utility;
 
 import java.util.Random;
 
-public abstract class RandomUtility {
+public final class RandomUtility {
+
+  private RandomUtility() {
+  }
 
   // recommended by SonarLint to reuse
   private static final Random RANDOM = new Random();

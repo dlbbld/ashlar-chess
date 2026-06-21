@@ -13,14 +13,17 @@ import io.github.dlbbld.ashlarchess.model.LegalMove;
 import io.github.dlbbld.ashlarchess.model.LegalMoveKind;
 
 // Figure 12 Score routine used in Figure 5. Algorithm Going-to-corner is defined in Figure 13.
-class Score {
+final class Score {
+
+  private Score() {
+  }
 
   // Inputs: position, legal move in the position
   // Output: Normal, Reward, or Punish (variation score)
-  public static ScoreResult score(Side color, Side havingMove, BitboardPosition bitboardPosition, LegalMove legalMove) {
+  public static ScoreResult score(Side color, Side sideToMove, BitboardPosition bitboardPosition, LegalMove legalMove) {
     ScoreResult variation = ScoreResult.NORMAL;
     // 1: if it is the intended winner's turn in pos then
-    if (havingMove == color) {
+    if (sideToMove == color) {
       // 2: if m is a capture or m is a pawn push or Going-to-corner(pos, m, Win) then
       // 3: return Reward
 
@@ -55,7 +58,7 @@ class Score {
   }
 
   private static boolean calculateIsCapture(LegalMove legalMove) {
-    return legalMove.pieceCaptured() != Piece.NONE;
+    return legalMove.capturedPiece() != Piece.NONE;
   }
 
   private static boolean calculateIsAdvancedPawnPush(LegalMove legalMove) {
@@ -64,7 +67,7 @@ class Score {
       return false;
     }
 
-    return calculateIsAdvancedRank(legalMove.havingMove(), legalMove.moveSpecification().toSquare().getRank());
+    return calculateIsAdvancedRank(legalMove.movingSide(), legalMove.moveSpecification().toSquare().getRank());
   }
 
   private static boolean calculateIsPawnMove(LegalMove legalMove) {

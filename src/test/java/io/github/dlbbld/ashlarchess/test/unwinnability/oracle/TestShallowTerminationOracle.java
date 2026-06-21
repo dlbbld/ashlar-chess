@@ -40,7 +40,7 @@ class TestShallowTerminationOracle {
   @Test
   void testFen() {
     final String fen = "rnbq1bnr/pppp2pp/PN6/R4k2/4pp2/5N2/1PPPPPPP/2BQKB1R b K - 5 8";
-    final Board board = new Board(fen);
+    final Board board = Board.fromFenStrict(fen);
 
     assertEquals(LimitedUnwinnabilityVerdict.WINNABLE,
         ShallowTerminationOracle.calculateUnwinnability(board, Side.WHITE));

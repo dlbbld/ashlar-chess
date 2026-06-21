@@ -30,7 +30,7 @@ class TestSanValidateAgainstLegalMoves {
   @SuppressWarnings("static-method")
   @Test
   void testPawnNonPromotion() {
-    final Board board = new Board("8/8/8/2Rpk3/2R5/4K3/8/8 b - - 0 100");
+    final Board board = Board.fromFenStrict("8/8/8/2Rpk3/2R5/4K3/8/8 b - - 0 100");
 
     checkException(board, "d4", SanValidationProblem.KING_EXPOSED_TO_CHECK_PAWN);
     checkException(board, "dxc4", SanValidationProblem.KING_EXPOSED_TO_CHECK_PAWN);
@@ -42,11 +42,11 @@ class TestSanValidateAgainstLegalMoves {
   void testPawnPromotion() {
     // black
     {
-      final Board board = new Board("8/8/8/4K3/8/8/2R2p1k/6R1 b - - 0 100");
+      final Board board = Board.fromFenStrict("8/8/8/4K3/8/8/2R2p1k/6R1 b - - 0 100");
       checkException(board, "f1=N+", SanValidationProblem.KING_EXPOSED_TO_CHECK_PAWN);
     }
     {
-      final Board board = new Board("8/8/8/4K3/8/8/2R2p1k/6R1 b - - 0 100");
+      final Board board = Board.fromFenStrict("8/8/8/4K3/8/8/2R2p1k/6R1 b - - 0 100");
       checkException(board, "fxg1=Q+", SanValidationProblem.KING_EXPOSED_TO_CHECK_PAWN);
     }
 
@@ -652,7 +652,7 @@ class TestSanValidateAgainstLegalMoves {
   @SuppressWarnings("static-method")
   @Test
   void testPieceSquare1NoLegalMoveMore() {
-    final Board board = new Board("kn6/3p4/8/8/1Qp1pQ2/3p4/3Q4/2K5 w - - 0 100");
+    final Board board = Board.fromFenStrict("kn6/3p4/8/8/1Qp1pQ2/3p4/3Q4/2K5 w - - 0 100");
 
     // queen
     checkException(board, "Qd2d4", SanValidationProblem.NOT_REACHABLE_RNBQ_SQUARE);
@@ -695,7 +695,7 @@ class TestSanValidateAgainstLegalMoves {
   @SuppressWarnings("static-method")
   @Test
   void testPieceSquare2OnlyOneLegalMoveMore() {
-    final Board board = new Board("kn6/3p4/3Q4/3p4/1Qp1p3/8/3Q4/2K5 w - - 0 100");
+    final Board board = Board.fromFenStrict("kn6/3p4/3Q4/3p4/1Qp1p3/8/3Q4/2K5 w - - 0 100");
 
     // queen
     checkException(board, "Qd2d4", SanValidationProblem.OVERSPECIFIED_RNBQ_SQUARE_ONLY_ONE_LEGAL_MOVE);
@@ -762,7 +762,7 @@ class TestSanValidateAgainstLegalMoves {
   @SuppressWarnings("static-method")
   @Test
   void testPieceSquare3OnlyOnPieceOnFileMore() {
-    final Board board = new Board("kn6/3p4/8/8/1Q3Q2/3Q4/8/2K5 w - - 0 100");
+    final Board board = Board.fromFenStrict("kn6/3p4/8/8/1Q3Q2/3Q4/8/2K5 w - - 0 100");
 
     // queen
     checkException(board, "Qd3d4", SanValidationProblem.OVERSPECIFIED_RNBQ_SQUARE_RANK_NOT_NECESSARY);
@@ -829,7 +829,7 @@ class TestSanValidateAgainstLegalMoves {
   private static void checkException(Board board, String san, SanValidationProblem expectedValidation) {
     boolean isException;
     try {
-      StrictSanParser.parseText(san, board);
+      StrictSanParser.parse(san, board);
       isException = false;
     } catch (final SanValidationException e) {
       isException = true;

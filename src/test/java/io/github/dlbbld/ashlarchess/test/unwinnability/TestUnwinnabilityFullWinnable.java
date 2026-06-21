@@ -19,6 +19,7 @@ import io.github.dlbbld.ashlarchess.test.model.PgnTestCaseList;
 import io.github.dlbbld.ashlarchess.test.pgn.setup.PgnTestCaseCatalog;
 import io.github.dlbbld.ashlarchess.test.pgntest.enums.PgnTest;
 import io.github.dlbbld.ashlarchess.unwinnability.UnwinnabilityFullAnalysis;
+import io.github.dlbbld.ashlarchess.unwinnability.UnwinnabilityFullVerdict;
 import io.github.dlbbld.ashlarchess.unwinnability.UnwinnableFullAnalyzer;
 
 class TestUnwinnabilityFullWinnable {
@@ -33,16 +34,18 @@ class TestUnwinnabilityFullWinnable {
       final PgnFen lichessTestCase = PgnTestCaseCatalog
           .findTestCase(calculateCorrespondingLichessGame(testCaseHavingHelpmate.pgnName()));
       final Board board = lichessTestCase.finalPosition();
-      final Side winner = board.getHavingMove();
+      final Side winner = board.getSideToMove();
       final UnwinnabilityFullAnalysis analysis = UnwinnableFullAnalyzer.unwinnableFull(board, winner);
-      assertTrue(analysis.verdict().isWinnable(), testCaseHavingHelpmate.pgnName());
+      final UnwinnabilityFullVerdict verdict = analysis.verdict();
+      assertTrue(verdict == UnwinnabilityFullVerdict.WINNABLE_HELPMATE
+          || verdict == UnwinnabilityFullVerdict.WINNABLE_BY_THEOREM, testCaseHavingHelpmate.pgnName());
     }
   }
 
   private static List<PgnFen> helpmateFixtures() {
-    final PgnTestCaseList testCaseHavingHelpmateList = PgnTestCaseCatalog
+    final PgnTestCaseList testCasesHavingHelpmate = PgnTestCaseCatalog
         .getTestList(PgnTest.CHA_LICHESS_QUICK_DEPTH_ABOVE_FOUR_WINNABLE_FOR_FLAGGING_WITH_HELPMATE);
-    return testCaseHavingHelpmateList.list();
+    return testCasesHavingHelpmate.list();
   }
 
   private static String calculateCorrespondingLichessGame(String lichessGameHelpmate) {

@@ -3,20 +3,22 @@
 
 package io.github.dlbbld.ashlarchess.squares;
 
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.BISHOP;
+
 import java.util.Set;
 
 import io.github.dlbbld.ashlarchess.board.StaticPosition;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
 import io.github.dlbbld.ashlarchess.board.enums.Square;
 
-class BishopAttackedSquares extends AbstractAttackedSquares {
+class BishopAttackedSquares {
 
   public static Set<Square> calculateBishopAttackedSquares(StaticPosition staticPosition, Square fromSquare,
-      Side havingMove) {
+      Side sideToMove) {
 
-    checkPiece(staticPosition, havingMove, fromSquare, BISHOP);
+    ToSquaresSupport.checkPiece(staticPosition, sideToMove, fromSquare, BISHOP);
 
-    return BishopRangeSquares.calculateBishopRangeSquares(staticPosition, fromSquare, havingMove, true);
+    return BishopRangeSquares.calculateBishopRangeSquares(staticPosition, fromSquare, sideToMove, true);
 
   }
 

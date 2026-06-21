@@ -3,6 +3,24 @@
 
 package io.github.dlbbld.ashlarchess.test.pgntest.basic;
 
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.A5;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.A6;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.B5;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.B6;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.C5;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.C6;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.D5;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.D6;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.E5;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.E6;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.F5;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.F6;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.G5;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.G6;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.H5;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.H6;
+import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.WHITE;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,29 +34,29 @@ import io.github.dlbbld.ashlarchess.test.model.PgnTestCaseList;
 import io.github.dlbbld.ashlarchess.test.pgn.setup.PgnTestCaseCatalog;
 import io.github.dlbbld.ashlarchess.test.pgntest.enums.PgnTest;
 
-class TestBasicEnPassantCaptureWhite extends AbstractTestBasic {
+class TestBasicEnPassantCaptureWhite {
 
   private static final Logger logger = Nulls.getLogger(TestBasicEnPassantCaptureWhite.class);
 
   static {
-    final List<String> pgnNameList = new ArrayList<>();
+    final List<String> pgnNames = new ArrayList<>();
 
-    pgnNameList.add("01_white_en_passant_capture_right_a6.pgn");
-    pgnNameList.add("02_white_en_passant_capture_right_b6.pgn");
-    pgnNameList.add("03_white_en_passant_capture_right_c6.pgn");
-    pgnNameList.add("04_white_en_passant_capture_right_d6.pgn");
-    pgnNameList.add("05_white_en_passant_capture_right_e6.pgn");
-    pgnNameList.add("06_white_en_passant_capture_right_f6.pgn");
-    pgnNameList.add("07_white_en_passant_capture_right_g6.pgn");
-    pgnNameList.add("08_white_en_passant_capture_left_b6.pgn");
-    pgnNameList.add("09_white_en_passant_capture_left_c6.pgn");
-    pgnNameList.add("10_white_en_passant_capture_left_d6.pgn");
-    pgnNameList.add("11_white_en_passant_capture_left_e6.pgn");
-    pgnNameList.add("12_white_en_passant_capture_left_f6.pgn");
-    pgnNameList.add("13_white_en_passant_capture_left_g6.pgn");
-    pgnNameList.add("14_white_en_passant_capture_left_h6.pgn");
+    pgnNames.add("01_white_en_passant_capture_right_a6.pgn");
+    pgnNames.add("02_white_en_passant_capture_right_b6.pgn");
+    pgnNames.add("03_white_en_passant_capture_right_c6.pgn");
+    pgnNames.add("04_white_en_passant_capture_right_d6.pgn");
+    pgnNames.add("05_white_en_passant_capture_right_e6.pgn");
+    pgnNames.add("06_white_en_passant_capture_right_f6.pgn");
+    pgnNames.add("07_white_en_passant_capture_right_g6.pgn");
+    pgnNames.add("08_white_en_passant_capture_left_b6.pgn");
+    pgnNames.add("09_white_en_passant_capture_left_c6.pgn");
+    pgnNames.add("10_white_en_passant_capture_left_d6.pgn");
+    pgnNames.add("11_white_en_passant_capture_left_e6.pgn");
+    pgnNames.add("12_white_en_passant_capture_left_f6.pgn");
+    pgnNames.add("13_white_en_passant_capture_left_g6.pgn");
+    pgnNames.add("14_white_en_passant_capture_left_h6.pgn");
 
-    checkTestFolder(pgnNameList, PgnTest.BASIC_EN_PASSANT_CAPTURE_WHITE);
+    TestBasicSupport.checkTestFolder(pgnNames, PgnTest.BASIC_EN_PASSANT_CAPTURE_WHITE);
   }
 
   @SuppressWarnings("static-method")
@@ -51,20 +69,20 @@ class TestBasicEnPassantCaptureWhite extends AbstractTestBasic {
       logger.info(testCase.pgnName());
 
       switch (testCase.pgnName()) {
-        case "01_white_en_passant_capture_right_a6.pgn" -> checkEnPassantCapture(WHITE, B5, A6, board);
-        case "02_white_en_passant_capture_right_b6.pgn" -> checkEnPassantCapture(WHITE, C5, B6, board);
-        case "03_white_en_passant_capture_right_c6.pgn" -> checkEnPassantCapture(WHITE, D5, C6, board);
-        case "04_white_en_passant_capture_right_d6.pgn" -> checkEnPassantCapture(WHITE, E5, D6, board);
-        case "05_white_en_passant_capture_right_e6.pgn" -> checkEnPassantCapture(WHITE, F5, E6, board);
-        case "06_white_en_passant_capture_right_f6.pgn" -> checkEnPassantCapture(WHITE, G5, F6, board);
-        case "07_white_en_passant_capture_right_g6.pgn" -> checkEnPassantCapture(WHITE, H5, G6, board);
-        case "08_white_en_passant_capture_left_b6.pgn" -> checkEnPassantCapture(WHITE, A5, B6, board);
-        case "09_white_en_passant_capture_left_c6.pgn" -> checkEnPassantCapture(WHITE, B5, C6, board);
-        case "10_white_en_passant_capture_left_d6.pgn" -> checkEnPassantCapture(WHITE, C5, D6, board);
-        case "11_white_en_passant_capture_left_e6.pgn" -> checkEnPassantCapture(WHITE, D5, E6, board);
-        case "12_white_en_passant_capture_left_f6.pgn" -> checkEnPassantCapture(WHITE, E5, F6, board);
-        case "13_white_en_passant_capture_left_g6.pgn" -> checkEnPassantCapture(WHITE, F5, G6, board);
-        case "14_white_en_passant_capture_left_h6.pgn" -> checkEnPassantCapture(WHITE, G5, H6, board);
+        case "01_white_en_passant_capture_right_a6.pgn" -> TestBasicSupport.checkEnPassantCapture(WHITE, B5, A6, board);
+        case "02_white_en_passant_capture_right_b6.pgn" -> TestBasicSupport.checkEnPassantCapture(WHITE, C5, B6, board);
+        case "03_white_en_passant_capture_right_c6.pgn" -> TestBasicSupport.checkEnPassantCapture(WHITE, D5, C6, board);
+        case "04_white_en_passant_capture_right_d6.pgn" -> TestBasicSupport.checkEnPassantCapture(WHITE, E5, D6, board);
+        case "05_white_en_passant_capture_right_e6.pgn" -> TestBasicSupport.checkEnPassantCapture(WHITE, F5, E6, board);
+        case "06_white_en_passant_capture_right_f6.pgn" -> TestBasicSupport.checkEnPassantCapture(WHITE, G5, F6, board);
+        case "07_white_en_passant_capture_right_g6.pgn" -> TestBasicSupport.checkEnPassantCapture(WHITE, H5, G6, board);
+        case "08_white_en_passant_capture_left_b6.pgn" -> TestBasicSupport.checkEnPassantCapture(WHITE, A5, B6, board);
+        case "09_white_en_passant_capture_left_c6.pgn" -> TestBasicSupport.checkEnPassantCapture(WHITE, B5, C6, board);
+        case "10_white_en_passant_capture_left_d6.pgn" -> TestBasicSupport.checkEnPassantCapture(WHITE, C5, D6, board);
+        case "11_white_en_passant_capture_left_e6.pgn" -> TestBasicSupport.checkEnPassantCapture(WHITE, D5, E6, board);
+        case "12_white_en_passant_capture_left_f6.pgn" -> TestBasicSupport.checkEnPassantCapture(WHITE, E5, F6, board);
+        case "13_white_en_passant_capture_left_g6.pgn" -> TestBasicSupport.checkEnPassantCapture(WHITE, F5, G6, board);
+        case "14_white_en_passant_capture_left_h6.pgn" -> TestBasicSupport.checkEnPassantCapture(WHITE, G5, H6, board);
         default -> throw new IllegalArgumentException();
       }
     }

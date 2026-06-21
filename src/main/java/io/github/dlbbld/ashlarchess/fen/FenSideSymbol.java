@@ -27,6 +27,14 @@ public enum FenSideSymbol {
     return side;
   }
 
+  public static FenSideSymbol of(Side side) {
+    return switch (side) {
+      case WHITE -> WHITE;
+      case BLACK -> BLACK;
+      case NONE -> throw new NonePointerException();
+    };
+  }
+
   public static boolean exists(char sideLetter) {
     for (final FenSideSymbol symbol : values()) {
       if (symbol.sideLetter == sideLetter) {
@@ -36,21 +44,13 @@ public enum FenSideSymbol {
     return false;
   }
 
-  public static FenSideSymbol calculate(char sideLetter) {
+  public static FenSideSymbol parse(char sideLetter) {
     for (final FenSideSymbol symbol : values()) {
       if (symbol.sideLetter == sideLetter) {
         return symbol;
       }
     }
     throw new IllegalArgumentException("Not a valid FEN side letter: '" + sideLetter + "'");
-  }
-
-  public static FenSideSymbol calculate(Side side) {
-    return switch (side) {
-      case WHITE -> FenSideSymbol.WHITE;
-      case BLACK -> FenSideSymbol.BLACK;
-      case NONE -> throw new NonePointerException();
-    };
   }
 
 }

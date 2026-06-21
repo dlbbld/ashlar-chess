@@ -79,7 +79,7 @@ class TestHelpmateSearchBoardMakeUnmakeRoundTrip {
       // Defensive copy: per-depth buffers preserve the live view at depth N through recursion, but a snapshot
       // here makes the round-trip comparison robust to any future buffer-management change.
       final List<LegalMove> beforeLegalMoves = List.copyOf(searchBoard.getLegalMoves());
-      final Side beforeHavingMove = searchBoard.getHavingMove();
+      final Side beforeSideToMove = searchBoard.getSideToMove();
       final Square beforeRawEp = searchBoard.getEnPassantCaptureTargetSquare();
       final boolean beforeCheck = searchBoard.isCheck();
       final boolean beforeCheckmate = searchBoard.isCheckmate();
@@ -94,7 +94,7 @@ class TestHelpmateSearchBoardMakeUnmakeRoundTrip {
       assertEquals(beforeKey, searchBoard.currentTranspositionKey(),
           "transposition key after unmove (move " + legalMove + ")");
       assertEquals(beforeLegalMoves, searchBoard.getLegalMoves(), "legalMoves after unmove (move " + legalMove + ")");
-      assertEquals(beforeHavingMove, searchBoard.getHavingMove(), "havingMove after unmove (move " + legalMove + ")");
+      assertEquals(beforeSideToMove, searchBoard.getSideToMove(), "sideToMove after unmove (move " + legalMove + ")");
       assertEquals(beforeRawEp, searchBoard.getEnPassantCaptureTargetSquare(),
           "raw EP after unmove (move " + legalMove + ")");
       assertEquals(beforeCheck, searchBoard.isCheck(), "isCheck after unmove (move " + legalMove + ")");
@@ -107,7 +107,7 @@ class TestHelpmateSearchBoardMakeUnmakeRoundTrip {
     if (fen == null) {
       return new Board();
     }
-    return new Board(fen);
+    return Board.fromFenStrict(fen);
   }
 
   private record Scenario(String label, @Nullable String fen, int depth) {

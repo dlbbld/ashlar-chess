@@ -3,8 +3,9 @@
 
 package io.github.dlbbld.ashlarchess.unwinnability;
 
-import java.util.List;
+import com.google.common.collect.ImmutableList;
 
+import io.github.dlbbld.ashlarchess.common.Nulls;
 import io.github.dlbbld.ashlarchess.model.UciMove;
 
 /**
@@ -16,6 +17,9 @@ import io.github.dlbbld.ashlarchess.model.UciMove;
  * It is empty for {@code WINNABLE_BY_THEOREM} (winnability certified by the basic-helpmate-existence theorem without
  * searching for a sequence), and for {@code UNWINNABLE} and {@code UNDETERMINED}.
  */
-public record UnwinnabilityFullAnalysis(UnwinnabilityFullVerdict verdict, List<UciMove> mateLine) {
+public record UnwinnabilityFullAnalysis(UnwinnabilityFullVerdict verdict, ImmutableList<UciMove> mateLine) {
 
+  public UnwinnabilityFullAnalysis {
+    mateLine = Nulls.copyOfList(mateLine);
+  }
 }

@@ -88,6 +88,8 @@ final class PgnTokenizer {
       case '}':
         stream.read();
         return new PgnToken(PgnTokenType.BRACE_STRAY_CLOSE, "}", line, column);
+      case ';':
+        return readLineComment(line, column);
       case '!':
       case '?':
         return readMoveSuffixAnnotation(line, column);
@@ -168,6 +170,21 @@ final class PgnTokenizer {
     }
   }
 
+  private PgnToken readLineComment(int line, int column) {
+    stream.read(); // leading semicolon
+    final StringBuilder text = new StringBuilder();
+    while (true) {
+      final int c = stream.peek();
+      // A semicolon comment runs to the end of the line; the newline itself is not part of the comment and is left
+      // for the next token.
+      if (c == CHAR_EOF || c == '\n' || c == '\r') {
+        break;
+      }
+      text.append((char) stream.read());
+    }
+    return new PgnToken(PgnTokenType.LINE_COMMENT, Nulls.toString(text), line, column);
+  }
+
   private PgnToken readMoveSuffixAnnotation(int line, int column) {
     // Coalesce consecutive ! / ? into one token so over-long runs (`!!!`, `!?!`) surface as
     // MOVETEXT_MOVE_SUFFIX_ANNOTATION_INVALID rather than misdiagnosing as a spacing error.
@@ -237,7 +254,7 @@ final class PgnTokenizer {
       }
       text.append((char) stream.read());
     }
-    if (text.length() == 0) {
+    if (text.isEmpty()) {
       // Unrecognised single character - consume it so we always make progress. The parser surfaces the rejection.
       text.append((char) stream.read());
     }
@@ -246,7 +263,7 @@ final class PgnTokenizer {
 
   private static boolean isWordBreak(int c) {
     return c == ' ' || c == '\t' || c == '\n' || c == '\r' || c == '[' || c == ']' || c == '{' || c == '}' || c == '"'
-        || c == '!' || c == '?';
+        || c == '!' || c == '?' || c == ';';
   }
 
   private static boolean isAsciiDigit(int c) {

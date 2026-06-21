@@ -14,15 +14,18 @@ import io.github.dlbbld.ashlarchess.common.model.MoveSpecification;
 import io.github.dlbbld.ashlarchess.model.UciMove;
 import io.github.dlbbld.ashlarchess.moves.CastlingUtility;
 
-public abstract class UciMoveUtility {
+public final class UciMoveUtility {
 
-  public static UciMove convertMoveSpecificationToUci(Side havingMove, MoveSpecification moveSpecification) {
+  private UciMoveUtility() {
+  }
+
+  public static UciMove toUci(Side sideToMove, MoveSpecification moveSpecification) {
     Square fromSquare;
     Square toSquare;
     PromotionPieceType promotionPieceType;
-    if (CastlingUtility.calculateIsCastlingMove(moveSpecification)) {
-      fromSquare = CastlingUtility.calculateKingCastlingFrom(havingMove, moveSpecification);
-      toSquare = CastlingUtility.calculateKingCastlingTo(havingMove, moveSpecification);
+    if (CastlingUtility.isCastlingMove(moveSpecification)) {
+      fromSquare = CastlingUtility.calculateKingCastlingFrom(sideToMove, moveSpecification);
+      toSquare = CastlingUtility.calculateKingCastlingTo(sideToMove, moveSpecification);
       promotionPieceType = PromotionPieceType.NONE;
     } else {
       fromSquare = moveSpecification.fromSquare();
@@ -38,7 +41,7 @@ public abstract class UciMoveUtility {
   // we are avoiding checks weather the uci move is legal move or not
   // the goal is to provide a move specification
   // the move specificatoin can then be checked to be legal
-  public static MoveSpecification convertUciMoveToMoveSpecification(Board board, UciMove uciMove) {
+  public static MoveSpecification toMoveSpecification(Board board, UciMove uciMove) {
     // we need the board to identify the castling move
 
     final Square fromSquare = uciMove.fromSquare();
@@ -65,8 +68,8 @@ public abstract class UciMoveUtility {
     return new MoveSpecification(fromSquare, toSquare);
   }
 
-  public static String convertUciMoveToSan(Board board, UciMove uciMove) {
-    final MoveSpecification moveSpecification = convertUciMoveToMoveSpecification(board, uciMove);
+  public static String toSan(Board board, UciMove uciMove) {
+    final MoveSpecification moveSpecification = toMoveSpecification(board, uciMove);
     board.move(moveSpecification);
     final String san = board.getSan();
     board.unmove();

@@ -7,7 +7,7 @@ import static io.github.dlbbld.ashlarchess.test.san.validate.statically.strict.e
 import static io.github.dlbbld.ashlarchess.test.san.validate.statically.strict.enums.SanValidateStaticallyStrictHelpers.appendMoveWithFromSquare;
 import static io.github.dlbbld.ashlarchess.test.san.validate.statically.strict.enums.SanValidateStaticallyStrictHelpers.appendMoveWithRank;
 import static io.github.dlbbld.ashlarchess.test.san.validate.statically.strict.enums.SanValidateStaticallyStrictHelpers.appendOnlyMove;
-import static io.github.dlbbld.ashlarchess.test.san.validate.statically.strict.enums.SanValidateStaticallyStrictHelpers.calculateFromSquareList;
+import static io.github.dlbbld.ashlarchess.test.san.validate.statically.strict.enums.SanValidateStaticallyStrictHelpers.calculateFromSquares;
 import static io.github.dlbbld.ashlarchess.test.san.validate.statically.strict.enums.SanValidateStaticallyStrictHelpers.calculateHasOtherMovesFromSameRank;
 
 import java.util.List;
@@ -19,36 +19,39 @@ import com.google.common.collect.ImmutableSet;
 import io.github.dlbbld.ashlarchess.board.enums.PieceType;
 import io.github.dlbbld.ashlarchess.board.enums.Square;
 import io.github.dlbbld.ashlarchess.model.EmptyBoardMove;
-import io.github.dlbbld.ashlarchess.squares.AbstractEmptyBoardSquares;
+import io.github.dlbbld.ashlarchess.squares.EmptyBoardMoveUtility;
 
 @SuppressWarnings("null")
-public abstract class KnightSanValidateStaticallyStrict {
+public final class KnightSanValidateStaticallyStrict {
+
+  private KnightSanValidateStaticallyStrict() {
+  }
 
   public static final ImmutableSet<String> VALUES;
 
   static {
     final Set<String> set = new TreeSet<>();
     for (final Square toSquare : Square.REAL) {
-      final Set<EmptyBoardMove> moves = AbstractEmptyBoardSquares.calculateNonPawnEmptyBoardMovesTo(PieceType.KNIGHT,
+      final Set<EmptyBoardMove> moves = EmptyBoardMoveUtility.calculateNonPawnEmptyBoardMovesTo(PieceType.KNIGHT,
           toSquare);
-      final List<Square> fromSquareList = calculateFromSquareList(moves);
+      final List<Square> fromSquares = calculateFromSquares(moves);
 
       // file/rank disambiguation
-      for (final Square fromSquare : fromSquareList) {
+      for (final Square fromSquare : fromSquares) {
         appendOnlyMove(set, toSquare, PieceType.KNIGHT);
-        if (calculateIsFromFilePossibleKnight(fromSquare, fromSquareList)) {
+        if (calculateIsFromFilePossibleKnight(fromSquare, fromSquares)) {
           appendMoveWithFile(set, toSquare, fromSquare.getFile(), PieceType.KNIGHT);
         }
-        if (calculateIsFromRankPossibleKnight(fromSquare, fromSquareList)) {
+        if (calculateIsFromRankPossibleKnight(fromSquare, fromSquares)) {
           appendMoveWithRank(set, toSquare, fromSquare.getRank(), PieceType.KNIGHT);
         }
       }
 
       // square disambiguation
-      for (final Square fromSquare : fromSquareList) {
+      for (final Square fromSquare : fromSquares) {
         appendOnlyMove(set, toSquare, PieceType.KNIGHT);
-        if (calculateIsFromRankPossibleKnight(fromSquare, fromSquareList)
-            && calculateHasOtherMovesFromSameRank(fromSquare, fromSquareList)) {
+        if (calculateIsFromRankPossibleKnight(fromSquare, fromSquares)
+            && calculateHasOtherMovesFromSameRank(fromSquare, fromSquares)) {
           appendMoveWithFromSquare(set, toSquare, fromSquare, PieceType.KNIGHT);
         }
       }
@@ -56,8 +59,8 @@ public abstract class KnightSanValidateStaticallyStrict {
     VALUES = ImmutableSet.copyOf(set);
   }
 
-  private static boolean calculateIsFromRankPossibleKnight(Square fromSquare, List<Square> fromSquareList) {
-    for (final Square otherFromSquare : fromSquareList) {
+  private static boolean calculateIsFromRankPossibleKnight(Square fromSquare, List<Square> fromSquares) {
+    for (final Square otherFromSquare : fromSquares) {
       if (otherFromSquare.getRank() != fromSquare.getRank() && otherFromSquare.getFile() == fromSquare.getFile()) {
         return true;
       }
@@ -65,8 +68,8 @@ public abstract class KnightSanValidateStaticallyStrict {
     return false;
   }
 
-  private static boolean calculateIsFromFilePossibleKnight(Square fromSquare, List<Square> fromSquareList) {
-    for (final Square otherFromSquare : fromSquareList) {
+  private static boolean calculateIsFromFilePossibleKnight(Square fromSquare, List<Square> fromSquares) {
+    for (final Square otherFromSquare : fromSquares) {
       if (otherFromSquare.getFile() != fromSquare.getFile()) {
         return true;
       }
