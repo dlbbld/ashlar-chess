@@ -145,9 +145,12 @@ adjudicates exactly like a flag-fall - same test, same result, in both the quick
 
 <!-- readme:code id=adjudication-resignation -->
 
-## Dead position during play
-Under [FIDE 5.2.2](https://handbook.fide.com/chapter/e012023), the game is drawn as soon as a dead position arises:
-neither player can checkmate by any possible series of legal moves.
+# Dead position during play
+
+This is distinct from adjudication above, which corrects the *result* at game end (flag-fall, resignation). A dead
+position is a **live in-game termination**: under [FIDE 5.2.2](https://handbook.fide.com/chapter/e012023) the game is
+drawn the moment a dead position arises - neither player can checkmate by any possible series of legal moves. It is
+caller-invoked via `Board.deadPositionQuick()` / `Board.deadPositionFull()`; `Adjudicator` does not perform it.
 
 The standard material-only dead positions should still be checked during play:
 
