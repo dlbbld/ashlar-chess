@@ -5,10 +5,12 @@ package io.github.dlbbld.ashlarchess.test.bitboard;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
+import static org.junit.jupiter.api.Assumptions.assumeFalse;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import io.github.dlbbld.ashlarchess.board.Board;
@@ -19,6 +21,7 @@ import io.github.dlbbld.ashlarchess.common.Nulls;
 import io.github.dlbbld.ashlarchess.common.model.MoveSpecification;
 import io.github.dlbbld.ashlarchess.model.PgnMove;
 import io.github.dlbbld.ashlarchess.pgn.PgnGame;
+import io.github.dlbbld.ashlarchess.test.RestrictTestConstants;
 import io.github.dlbbld.ashlarchess.test.model.PgnFen;
 import io.github.dlbbld.ashlarchess.test.model.PgnTestCaseList;
 import io.github.dlbbld.ashlarchess.test.pgn.parser.PgnCacheForStrictPgnParserTestCases;
@@ -46,6 +49,15 @@ class TestMirrorSymmetry {
   private static final int MAX_CORE_POSITIONS = 6000;
   private static final int MAX_UNWINNABLE_POSITIONS = 100;
   private static final int MAX_GAME_MIRROR_PLIES = 20000;
+
+  // Full-suite only: a colour-handedness thoroughness sweep (thousands of positions + a CHA sample), not fast-iteration
+  // work. Excluded from the default run via assumeFalse; runs under -Pfull. See IS_EXCLUDE_MIRROR_SYMMETRY_TEST.
+  @SuppressWarnings("static-method")
+  @BeforeEach
+  void onlyInFullSuite() {
+    assumeFalse(RestrictTestConstants.IS_EXCLUDE_MIRROR_SYMMETRY_TEST,
+        "Mirror-symmetry sweep is a full-suite test, excluded by IS_EXCLUDE_MIRROR_SYMMETRY_TEST (run -Pfull)");
+  }
 
   @SuppressWarnings("static-method")
   @Test

@@ -61,4 +61,9 @@ public final class RestrictTestConstants {
   // a few minutes; only useful when the corpus changes or the strict-pipeline rules change.
   public static final boolean IS_EXCLUDE_LONG_RUNNING_PGN_CORPUS_NOT_PLAYS_BEYOND_AUDIT = !IS_FULL;
 
+  // TestMirrorSymmetry: mirror-symmetry property sweep (vertical flip + colour swap) over up to 6000 corpus positions,
+  // a whole-game replay, and a CHA unwinnableQuick sample. A colour-handedness thoroughness guard, not fast-iteration
+  // work - and it touches the heavy unwinnability analyzer that is excluded elsewhere - so it is full-only.
+  public static final boolean IS_EXCLUDE_MIRROR_SYMMETRY_TEST = !IS_FULL;
+
 }
