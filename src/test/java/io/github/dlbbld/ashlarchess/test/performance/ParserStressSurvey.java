@@ -65,7 +65,7 @@ public class ParserStressSurvey {
           + "[Result \"*\"]\n\n1. e4 e5 2. Nf3 Nc6 *\n" };
 
   private static final String GARBAGE_CHARS = "abcdefgh12345678KQRBNPkqrbnp /.-=+#*x{}[];:\"'\\\n\t()O0o";
-  private static final char[] FILLER_CHARS = "abcdefghijklmnopqrstuvwxyz0123456789 ".toCharArray();
+  private static final char[] FILLER_CHARS = Nulls.toCharArray("abcdefghijklmnopqrstuvwxyz0123456789 ");
 
   private static final ExecutorService WORKER = newWorker();
 
