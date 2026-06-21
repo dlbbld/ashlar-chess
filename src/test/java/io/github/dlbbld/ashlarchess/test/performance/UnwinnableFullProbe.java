@@ -11,8 +11,6 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-import org.eclipse.jdt.annotation.NonNull;
-
 import io.github.dlbbld.ashlarchess.board.Board;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
 import io.github.dlbbld.ashlarchess.common.Nulls;
@@ -31,6 +29,7 @@ import io.github.dlbbld.ashlarchess.test.pgntest.enums.PgnTest;
  * that does not return within the timeout is reported with its FEN and ends the probe - that would be a genuine
  * non-termination (release blocker), as opposed to merely slow-but-bounded.
  */
+@SuppressWarnings("null") // Manual survey; JDT cannot model unannotated JDK/JUnit/concurrency APIs cleanly.
 public class UnwinnableFullProbe {
 
   private static final int GAMES_PER_GROUP = 2;
@@ -46,7 +45,6 @@ public class UnwinnableFullProbe {
     String run();
   }
 
-  @SuppressWarnings("null")
   private static ExecutorService newWorker() {
     return Executors.newSingleThreadExecutor(r -> {
       final Thread t = new Thread(r, "full-analyzer");
@@ -55,25 +53,21 @@ public class UnwinnableFullProbe {
     });
   }
 
-  @SuppressWarnings("null")
   private static Future<String> submit(FullAnalyzerCall call) {
     return WORKER.submit(call::run);
   }
 
-  @SuppressWarnings("null")
   private static String get(Future<String> future) throws Exception {
     return future.get(TIMEOUT_MS, TimeUnit.MILLISECONDS);
   }
 
   public static void main(String[] args) {
     for (final PgnTest pgnTest : GROUPS) {
-      @SuppressWarnings("null") final @NonNull PgnTest pgnTestNotNull = pgnTest;
-      final List<Board> finals = finalPositions(pgnTestNotNull, GAMES_PER_GROUP);
+      final List<Board> finals = finalPositions(pgnTest, GAMES_PER_GROUP);
       for (int g = 0; g < finals.size(); g++) {
         final Board board = Nulls.get(finals, g);
         final String fen = board.getFen();
-        log(Nulls.name(pgnTestNotNull) + " game#" + (g + 1) + "  plies=" + board.getPerformedMoveCount() + "  fen="
-            + fen);
+        log(Nulls.name(pgnTest) + " game#" + (g + 1) + "  plies=" + board.getPerformedMoveCount() + "  fen=" + fen);
         timeCall("unwinnableFull(WHITE)", fen, () -> Nulls.format("%s", board.unwinnableFull(Side.WHITE)));
         timeCall("unwinnableFull(BLACK)", fen, () -> Nulls.format("%s", board.unwinnableFull(Side.BLACK)));
         timeCall("deadPositionFull", fen, () -> Nulls.format("%s", board.deadPositionFull()));

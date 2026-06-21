@@ -6,8 +6,6 @@ package io.github.dlbbld.ashlarchess.test.performance;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.jdt.annotation.NonNull;
-
 import com.github.bhlangonijr.chesslib.move.MoveGenerator;
 import com.github.bhlangonijr.chesslib.move.MoveGeneratorException;
 
@@ -25,6 +23,7 @@ import io.github.dlbbld.ashlarchess.test.pgn.setup.PgnTestCaseCatalog;
 import io.github.dlbbld.ashlarchess.test.pgntest.enums.PgnTest;
 import io.github.dlbbld.ashlarchess.unwinnability.HelpmateSearchBoardPerformanceProbe;
 
+@SuppressWarnings("null") // Manual survey; JDT cannot model unannotated JDK/JUnit/concurrency APIs cleanly.
 public class MoveGenerationPerformanceSurvey {
 
   private static final int MAX_POSITIONS_PER_GROUP = 800;
@@ -36,8 +35,7 @@ public class MoveGenerationPerformanceSurvey {
 
   public static void main(String[] args) {
     for (final PgnTest pgnTest : GROUPS) {
-      @SuppressWarnings("null") final @NonNull PgnTest pgnTestNotNull = pgnTest;
-      final List<PositionPair> positions = collectPositions(pgnTestNotNull);
+      final List<PositionPair> positions = collectPositions(pgnTest);
       warmup(positions);
 
       final Measurement boardBackend = measureBoardBackend(positions);
@@ -45,7 +43,7 @@ public class MoveGenerationPerformanceSurvey {
       final Measurement reference = measureReference(positions);
       final Measurement chessLib = measureChessLib(positions);
 
-      printResult(pgnTestNotNull, positions.size(), boardBackend, helpmateSearchBoard, reference, chessLib);
+      printResult(pgnTest, positions.size(), boardBackend, helpmateSearchBoard, reference, chessLib);
     }
   }
 
@@ -138,7 +136,6 @@ public class MoveGenerationPerformanceSurvey {
     return new Measurement(System.nanoTime() - start, moveCount);
   }
 
-  @SuppressWarnings("null")
   private static List<com.github.bhlangonijr.chesslib.move.Move> generateChessLibLegalMoves(
       com.github.bhlangonijr.chesslib.Board board) {
     try {

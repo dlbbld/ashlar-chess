@@ -49,6 +49,7 @@ import io.github.dlbbld.ashlarchess.test.pgntest.enums.PgnTest;
  * <p>
  * Manually run diagnostic (a {@code main}), like the other surveys in this package.
  */
+@SuppressWarnings("null") // Manual survey; JDT cannot model unannotated JDK/JUnit/concurrency APIs cleanly.
 public class ParserStressSurvey {
 
   private static final int[] COMMENT_LENGTHS = { 100, 400 };

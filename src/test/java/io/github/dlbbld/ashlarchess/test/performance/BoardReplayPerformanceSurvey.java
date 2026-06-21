@@ -6,8 +6,6 @@ package io.github.dlbbld.ashlarchess.test.performance;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.jdt.annotation.NonNull;
-
 import io.github.dlbbld.ashlarchess.board.Board;
 import io.github.dlbbld.ashlarchess.common.model.MoveSpecification;
 import io.github.dlbbld.ashlarchess.fen.model.Fen;
@@ -32,6 +30,7 @@ import io.github.dlbbld.ashlarchess.test.pgntest.enums.PgnTest;
  * {@link MoveGenerationPerformanceSurvey} in the same boot session: its ChessLib us/position is identical code on any
  * tree and serves as the machine anchor when comparing this survey's numbers across releases.
  */
+@SuppressWarnings("null") // Manual survey; JDT cannot model unannotated JDK/JUnit/concurrency APIs cleanly.
 public class BoardReplayPerformanceSurvey {
 
   private static final int MAX_GAMES_PER_GROUP = 150;
@@ -43,8 +42,7 @@ public class BoardReplayPerformanceSurvey {
 
   public static void main(String[] args) {
     for (final PgnTest pgnTest : GROUPS) {
-      @SuppressWarnings("null") final @NonNull PgnTest pgnTestNotNull = pgnTest;
-      final List<Game> games = collectGames(pgnTestNotNull);
+      final List<Game> games = collectGames(pgnTest);
       final int plyCount = totalPlies(games);
 
       warmup(games);
@@ -53,7 +51,7 @@ public class BoardReplayPerformanceSurvey {
       final Measurement replay = measureReplay(games);
       final Measurement replayWithProbe = measureReplayWithProbe(games);
 
-      printResult(pgnTestNotNull, games.size(), plyCount, construct, replay, replayWithProbe);
+      printResult(pgnTest, games.size(), plyCount, construct, replay, replayWithProbe);
     }
   }
 

@@ -6,8 +6,6 @@ package io.github.dlbbld.ashlarchess.test.performance;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.jdt.annotation.NonNull;
-
 import io.github.dlbbld.ashlarchess.board.Board;
 import io.github.dlbbld.ashlarchess.common.model.MoveSpecification;
 import io.github.dlbbld.ashlarchess.fen.model.Fen;
@@ -31,6 +29,7 @@ import io.github.dlbbld.ashlarchess.test.pgntest.enums.PgnTest;
  * and ignore small differences); bytes/ply staying flat across game lengths is the signal that matters. Manually run
  * diagnostic (a {@code main}), like the other surveys in this package.
  */
+@SuppressWarnings("null") // Manual survey; JDT cannot model unannotated JDK/JUnit/concurrency APIs cleanly.
 public class MemoryFootprintSurvey {
 
   private static final int COPIES = 8;
@@ -42,8 +41,7 @@ public class MemoryFootprintSurvey {
   public static void main(String[] args) {
     System.out.printf("%-26s %10s %14s %12s%n", "corpus", "plies", "retained/board", "bytes/ply");
     for (final PgnTest pgnTest : GROUPS) {
-      @SuppressWarnings("null") final @NonNull PgnTest pgnTestNotNull = pgnTest;
-      final Game game = longestInitialStartGame(pgnTestNotNull);
+      final Game game = longestInitialStartGame(pgnTest);
       final int plies = game.specs().size();
 
       gcSettle();

@@ -35,6 +35,7 @@ import io.github.dlbbld.ashlarchess.test.pgntest.enums.PgnTest;
  * The bounded {@code unwinnableQuick} / {@code deadPositionQuick} are not the concern here; this targets the unbounded
  * full CHA search. Manually run diagnostic (a {@code main}), like the other surveys in this package.
  */
+@SuppressWarnings("null") // Manual survey; JDT cannot model unannotated JDK/JUnit/concurrency APIs cleanly.
 public class UnwinnabilityWorstCaseSurvey {
 
   private static final int MAX_POSITIONS = 800;
@@ -122,12 +123,10 @@ public class UnwinnabilityWorstCaseSurvey {
     return positions;
   }
 
-  @SuppressWarnings("null")
   private static Future<String> submit(FullAnalyzerCall call) {
     return WORKER.submit(call::run);
   }
 
-  @SuppressWarnings("null")
   private static String get(Future<String> future) throws Exception {
     return future.get(TIMEOUT_MS, TimeUnit.MILLISECONDS);
   }

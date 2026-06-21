@@ -13,7 +13,6 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 
 import io.github.dlbbld.ashlarchess.board.Board;
@@ -36,6 +35,7 @@ import io.github.dlbbld.ashlarchess.test.pgntest.enums.PgnTest;
  * layer does not invoke the CHA / unwinnability search, so this is bounded work. Manually run diagnostic (a
  * {@code main}), like the other surveys in this package.
  */
+@SuppressWarnings("null") // Manual survey; JDT cannot model unannotated JDK/JUnit/concurrency APIs cleanly.
 public class ReportScalingSurvey {
 
   private static final int WARMUP_ROUNDS = 1;
@@ -54,10 +54,9 @@ public class ReportScalingSurvey {
 
     final Map<String, Double> usPerPlyByGroup = new LinkedHashMap<>();
     for (final PgnTest pgnTest : GROUPS) {
-      @SuppressWarnings("null") final @NonNull PgnTest pgnTestNotNull = pgnTest;
-      final Board board = longestInitialStartGameBoard(pgnTestNotNull);
+      final Board board = longestInitialStartGameBoard(pgnTest);
       final int plies = board.getPerformedMoveCount();
-      final String name = Nulls.name(pgnTestNotNull);
+      final String name = Nulls.name(pgnTest);
 
       final double[] result = measure(board, plies);
       if (result[0] < 0) {
@@ -148,12 +147,10 @@ public class ReportScalingSurvey {
     }
   }
 
-  @SuppressWarnings("null")
   private static Future<Integer> submit(Board board) {
     return WORKER.submit(() -> Integer.valueOf(Reporter.report(board).size()));
   }
 
-  @SuppressWarnings("null")
   private static Integer get(Future<Integer> future) throws Exception {
     return future.get(TIMEOUT_MS, TimeUnit.MILLISECONDS);
   }

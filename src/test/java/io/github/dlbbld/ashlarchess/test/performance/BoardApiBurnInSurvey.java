@@ -9,7 +9,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 
 import io.github.dlbbld.ashlarchess.board.Board;
@@ -35,18 +34,22 @@ import io.github.dlbbld.ashlarchess.test.pgntest.enums.PgnTest;
  * 17,700-ply MAX_MOVES fixtures are deliberately omitted, as they only amplify the same signal while turning every
  * genuinely O(n) probe into a multi-minute O(n^2) grind.)
  *
- * <p>This is a manually run diagnostic (a {@code main}, like the other surveys in this package), not an automated test:
- * it flags candidates for a human to inspect; it does not assert thresholds.
+ * <p>
+ * This is a manually run diagnostic (a {@code main}, like the other surveys in this package), not an automated test: it
+ * flags candidates for a human to inspect; it does not assert thresholds.
  *
- * <p>Interpretation: a method that <em>returns</em> n items (getPerformedMoves, getLegalMovesAsSan, ...) being O(n) is
+ * <p>
+ * Interpretation: a method that <em>returns</em> n items (getPerformedMoves, getLegalMovesAsSan, ...) being O(n) is
  * expected and not a defect. The defects to hunt are methods returning a scalar or boolean that are nonetheless
  * O(history) - those should be O(1). This is the same class of bug as the O(n^2) per-move repetition rebuild.
  *
- * <p>The heavy whole-position analyzers are position-complexity bound, not history bound. The bounded quick variants
+ * <p>
+ * The heavy whole-position analyzers are position-complexity bound, not history bound. The bounded quick variants
  * (unwinnableQuick, deadPositionQuick) are exercised separately for coverage on a small sample; the unbounded full
  * variants (unwinnableFull, deadPositionFull) are excluded entirely - they can run for minutes on a tangled position
  * and are not a Board-scaling concern.
  */
+@SuppressWarnings("null") // Manual survey; JDT cannot model unannotated JDK/JUnit/concurrency APIs cleanly.
 public class BoardApiBurnInSurvey {
 
   private static final int MAX_GAMES_PER_GROUP = 150;
@@ -78,9 +81,8 @@ public class BoardApiBurnInSurvey {
     final Map<String, Map<String, Double>> perGroup = new LinkedHashMap<>();
 
     for (final PgnTest pgnTest : GROUPS) {
-      @SuppressWarnings("null") final @NonNull PgnTest pgnTestNotNull = pgnTest;
-      final String groupName = Nulls.name(pgnTestNotNull);
-      final List<Game> games = collectGames(pgnTestNotNull);
+      final String groupName = Nulls.name(pgnTest);
+      final List<Game> games = collectGames(pgnTest);
       final int plies = totalPlies(games);
 
       for (int w = 0; w < WARMUP_ROUNDS; w++) {
@@ -148,7 +150,8 @@ public class BoardApiBurnInSurvey {
     probes.add(new NamedProbe("getLan", c -> c.board().getLan().length()));
     probes.add(new NamedProbe("toString", c -> c.board().toString().length()));
     probes.add(new NamedProbe("getSideToMove", c -> c.board().getSideToMove().ordinal()));
-    probes.add(new NamedProbe("getEnPassantCaptureTargetSquare", c -> c.board().getEnPassantCaptureTargetSquare().ordinal()));
+    probes.add(
+        new NamedProbe("getEnPassantCaptureTargetSquare", c -> c.board().getEnPassantCaptureTargetSquare().ordinal()));
     probes.add(new NamedProbe("getHalfMoveClock", c -> c.board().getHalfMoveClock()));
     probes.add(new NamedProbe("getFullMoveNumber", c -> c.board().getFullMoveNumber()));
     probes.add(new NamedProbe("getLastPlayedFullMoveNumber", c -> c.board().getLastPlayedFullMoveNumber()));
@@ -190,19 +193,19 @@ public class BoardApiBurnInSurvey {
     probes.add(new NamedProbe("threefoldRepetitionRuleClaimRights",
         c -> c.board().threefoldRepetitionRuleClaimRights().hashCode()));
     probes.add(new NamedProbe("canClaimFiftyMoveRule", c -> c.board().canClaimFiftyMoveRule() ? 1 : 0));
-    probes.add(new NamedProbe("canClaimThreefoldRepetitionRule",
-        c -> c.board().canClaimThreefoldRepetitionRule() ? 1 : 0));
-    probes.add(new NamedProbe("canClaimFiftyMoveRuleWithOwnMove",
-        c -> c.board().canClaimFiftyMoveRuleWithOwnMove() ? 1 : 0));
+    probes.add(
+        new NamedProbe("canClaimThreefoldRepetitionRule", c -> c.board().canClaimThreefoldRepetitionRule() ? 1 : 0));
+    probes.add(
+        new NamedProbe("canClaimFiftyMoveRuleWithOwnMove", c -> c.board().canClaimFiftyMoveRuleWithOwnMove() ? 1 : 0));
     probes.add(new NamedProbe("canClaimThreefoldRepetitionRuleWithOwnMove",
         c -> c.board().canClaimThreefoldRepetitionRuleWithOwnMove() ? 1 : 0));
 
     // ---- arg-taking claim predicates (internally probe move/unmove) ----
-    probes.add(new NamedProbe("canClaimDrawFor(move)", c -> claimDrawMove(c)));
-    probes.add(new NamedProbe("canClaimFiftyMoveRuleFor(move)", c -> claimFiftyMove(c)));
-    probes.add(new NamedProbe("canClaimThreefoldRepetitionRuleFor(move)", c -> claimThreefoldMove(c)));
-    probes.add(new NamedProbe("canClaimFiftyMoveRuleFor(san)", c -> claimFiftySan(c)));
-    probes.add(new NamedProbe("canClaimThreefoldRepetitionRuleFor(san)", c -> claimThreefoldSan(c)));
+    probes.add(new NamedProbe("canClaimDrawFor(move)", BoardApiBurnInSurvey::claimDrawMove));
+    probes.add(new NamedProbe("canClaimFiftyMoveRuleFor(move)", BoardApiBurnInSurvey::claimFiftyMove));
+    probes.add(new NamedProbe("canClaimThreefoldRepetitionRuleFor(move)", BoardApiBurnInSurvey::claimThreefoldMove));
+    probes.add(new NamedProbe("canClaimFiftyMoveRuleFor(san)", BoardApiBurnInSurvey::claimFiftySan));
+    probes.add(new NamedProbe("canClaimThreefoldRepetitionRuleFor(san)", BoardApiBurnInSurvey::claimThreefoldSan));
 
     // ---- collection accessors (O(n) is expected: they return n items) ----
     probes.add(new NamedProbe("getLegalMoves", c -> c.board().getLegalMoves().size()));
@@ -210,7 +213,8 @@ public class BoardApiBurnInSurvey {
     probes.add(new NamedProbe("getLegalMovesAsSan", c -> c.board().getLegalMovesAsSan().size()));
     probes.add(new NamedProbe("getLegalMovesAsUci", c -> c.board().getLegalMovesAsUci().size()));
     probes.add(new NamedProbe("getPerformedMoves", c -> c.board().getPerformedMoves().size()));
-    probes.add(new NamedProbe("getPerformedMoveSpecifications", c -> c.board().getPerformedMoveSpecifications().size()));
+    probes
+        .add(new NamedProbe("getPerformedMoveSpecifications", c -> c.board().getPerformedMoveSpecifications().size()));
     probes.add(new NamedProbe("getPerformedMovesAsSan", c -> c.board().getPerformedMovesAsSan().size()));
 
     // ---- copy + scalar O(n) suspects (hashCode/equals walk the full history) ----
@@ -285,7 +289,8 @@ public class BoardApiBurnInSurvey {
       deadQuickNanos += System.nanoTime() - t0;
     }
     System.out.printf("  quick analyzers (once at final position, %d-game sample):%n", sampleCount);
-    System.out.printf("    unwinnableQuick(W+B): %,.1f us/call%n", unwinnableQuickNanos / (double) sampleCount / 1000.0);
+    System.out.printf("    unwinnableQuick(W+B): %,.1f us/call%n",
+        unwinnableQuickNanos / (double) sampleCount / 1000.0);
     System.out.printf("    deadPositionQuick:    %,.1f us/call%n%n", deadQuickNanos / (double) sampleCount / 1000.0);
   }
 
