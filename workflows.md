@@ -185,10 +185,11 @@ Run on the release branch, with the artifacts from step 3 already committed:
 - Worktree is clean; everything intended for the release is committed.
 - Java license headers exact: `.\tools\java-license-headers.ps1 -Check`. Use `-Fix` before committing if the check reports drift.
 - `mvn test -Pfull` green. **Required.** (`-Pfull` keeps the default `test.excludes` unwinnability exclusion; add `-Dtest.excludes=` to also exercise that package - a release should.)
-- JavaDoc gates green. **Required.** Both goals must run with `-Dshow=private` — many main classes (the `io.github.dlbbld.ashlarchess.report` records, package-private helpers) and all test classes are package-private, and at javadoc's default `protected` visibility doclint silently skips them, so stale `@link` / malformed HTML go uncaught:
-  - `mvn javadoc:javadoc -Dshow=private` — all main docs.
-  - `mvn javadoc:test-javadoc -Dshow=private` — all test docs.
+- JavaDoc gates green. **Required.** Both goals must run with `-Dshow=private` — many main classes (the `io.github.dlbbld.ashlarchess.report` records, package-private helpers) and all test classes are package-private, and at javadoc's default `protected` visibility doclint silently skips them, so stale `@link` / malformed HTML go uncaught. Run them **from a clean target**, in one invocation so test-javadoc can link to the freshly generated main apidocs:
+  - `mvn clean javadoc:javadoc javadoc:test-javadoc -Dshow=private` — all main + test docs.
   - (`mvn javadoc:jar` stays at default visibility — it ships only the public API.)
+  - A dirty `target/` left over from `mvn test -Pfull` makes javadoc fail with a *misleading* `error: No source files for package <some random package>`; the leading `clean` avoids it. The failing package name is noise — it is not the real problem.
+  - **This report goal does NOT prove the shipped javadoc jar builds.** It runs at `-Dshow=private`; the released `javadoc:jar` (step 5) runs at *default* visibility and can fail where this passes — notably on a **type-less package** (one whose only `.java` file is `package-info.java`), which JDK 21's `javadoc` rejects with `error: No source files for package X`. That failure surfaces only in the step-5 dry-run. Rule: never leave a `package-info`-only package — a package must either carry types or have no `package-info.java` at all. (19.1.0 hit this on the base package `io.github.dlbbld.ashlarchess`, whose lone `package-info.java` held only a no-op `@NonNullByDefault` — `@NonNullByDefault` does not cascade to sub-packages — and was deleted.)
 - All tasks for the release are marked done in `tasks.md`.
 - **Board performance regression — required when board logic changed materially** (move / unmove, the per-position
   `BoardState` record, repetition tracking, `hashCode` / `equals`, legal-move caching). Otherwise skip.
@@ -208,6 +209,10 @@ Run on the release branch, with the artifacts from step 3 already committed:
 upload**, so any packaging/signing failure is caught while it can still be fixed on the branch with another commit.
 After the merge it is expensive to fix: direct pushes to `main` are not allowed, so a failure found later forces a new
 branch + PR.
+
+This is also the only gate that builds the **shipped** `javadoc:jar` (default visibility) and the GPG signatures, so a
+doc problem the step-4 `-Dshow=private` report goal tolerates — e.g. a type-less `package-info`-only package (see
+step 4) — fails here. That is exactly why the dry-run runs before the PR.
 
 ```
 mvn -Prelease help:active-profiles   # confirm the `release` profile is active
