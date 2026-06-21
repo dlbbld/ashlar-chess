@@ -53,8 +53,8 @@ public final class PgnCreate {
 
   public static ImmutableList<String> toPgnLines(PgnGame pgnGame, WriteMode writeMode) {
     final PgnGame effective = writeMode == WriteMode.ARCHIVAL ? PgnArchivalNormalization.apply(pgnGame) : pgnGame;
-    return Nulls.copyOfList(calculateFileLines(effective.tags(), effective.pregameCommentary(),
-        effective.startFen(), effective.moves(), effective.terminationMarker()));
+    return Nulls.copyOfList(calculateFileLines(effective.tags(), effective.pregameCommentary(), effective.startFen(),
+        effective.moves(), effective.terminationMarker()));
   }
 
   private static String appendEmptyLine(String text) {
@@ -220,8 +220,8 @@ public final class PgnCreate {
 
     final List<PgnMove> moves = calculatePgnMoves(board.getPerformedMovesAsSan());
 
-    return new PgnGame(Nulls.copyOfList(tags), board.getInitialFen(), PgnCommentary.EMPTY,
-        Nulls.copyOfList(moves), calculateResultTagValue(board));
+    return new PgnGame(Nulls.copyOfList(tags), board.getInitialFen(), PgnCommentary.EMPTY, Nulls.copyOfList(moves),
+        calculateResultTagValue(board));
   }
 
   /**

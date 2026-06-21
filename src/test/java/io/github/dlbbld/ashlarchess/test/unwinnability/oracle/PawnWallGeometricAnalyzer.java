@@ -511,8 +511,7 @@ public final class PawnWallGeometricAnalyzer {
         findAllPawnWallLines(board, side), side);
   }
 
-  private static boolean calculateHasPawnWallLine(StaticPosition staticPosition, List<List<Square>> lines,
-      Side side) {
+  private static boolean calculateHasPawnWallLine(StaticPosition staticPosition, List<List<Square>> lines, Side side) {
     // we want all own pawns behind the pawn line for the one example
     for (final List<Square> pawnWallLine : lines) {
       // we check to find one such line

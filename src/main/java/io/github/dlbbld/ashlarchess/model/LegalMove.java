@@ -18,11 +18,12 @@ import io.github.dlbbld.ashlarchess.common.model.MoveSpecification;
  * <li>{@code movingPiece} - the piece that moves. Never {@link Piece#NONE}: the canonical constructor rejects it, so
  * {@code movingPiece().getSide()} / {@code getPieceType()} are always safe.</li>
  * <li>{@code capturedPiece} - the piece this move captures, or {@link Piece#NONE} when the move captures nothing. Most
- * moves are non-captures, so this is commonly {@code Piece.NONE}; a caller must test {@code capturedPiece() != Piece.NONE}
- * (or the move {@code kind}) before treating it as a real piece, because {@code Piece.NONE.getSide()} /
- * {@code getPieceType()} throw. For an en-passant capture the captured pawn is not on the destination square, but
- * {@code capturedPiece} still names it. The asymmetry is deliberate - {@code movingPiece} forbids {@code NONE} while
- * {@code capturedPiece} uses it as the no-capture sentinel - because every move has a mover but only some capture.</li>
+ * moves are non-captures, so this is commonly {@code Piece.NONE}; a caller must test
+ * {@code capturedPiece() != Piece.NONE} (or the move {@code kind}) before treating it as a real piece, because
+ * {@code Piece.NONE.getSide()} / {@code getPieceType()} throw. For an en-passant capture the captured pawn is not on
+ * the destination square, but {@code capturedPiece} still names it. The asymmetry is deliberate - {@code movingPiece}
+ * forbids {@code NONE} while {@code capturedPiece} uses it as the no-capture sentinel - because every move has a mover
+ * but only some capture.</li>
  * <li>{@code kind} - the move category; see {@link LegalMoveKind}.</li>
  * </ul>
  */
@@ -41,8 +42,8 @@ public record LegalMove(MoveSpecification moveSpecification, Piece movingPiece, 
 
   /**
    * Whether playing this move resets the halfmove clock (FIDE 9.3): {@code true} for a pawn move or any capture,
-   * {@code false} otherwise. The moving piece is never {@link Piece#NONE} (the canonical constructor rejects it), so the
-   * pawn test is always safe.
+   * {@code false} otherwise. The moving piece is never {@link Piece#NONE} (the canonical constructor rejects it), so
+   * the pawn test is always safe.
    */
   public boolean resetsHalfMoveClock() {
     return movingPiece.getPieceType() == PieceType.PAWN || capturedPiece != Piece.NONE;

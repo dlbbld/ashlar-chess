@@ -53,8 +53,7 @@ class TestBitboardPositionAttackersTo {
 
   private static void assertSideAgrees(StaticPosition staticPosition, BitboardPosition bitboardPosition, Square target,
       Side side, PgnFen testCase) {
-    final Set<Square> bitboardAttackers = BitboardPositionUtility
-        .toSquares(bitboardPosition.attackersTo(target, side));
+    final Set<Square> bitboardAttackers = BitboardPositionUtility.toSquares(bitboardPosition.attackersTo(target, side));
     final Set<Square> referenceAttackers = referenceAttackersTo(staticPosition, target, side);
     assertEquals(referenceAttackers, bitboardAttackers,
         side + " attackersTo(" + target.getName() + ") in fixture " + testCase.pgnName());

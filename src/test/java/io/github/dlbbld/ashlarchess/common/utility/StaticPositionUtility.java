@@ -139,8 +139,7 @@ public final class StaticPositionUtility {
   public static StaticPosition createPositionAfterMove(StaticPosition staticPosition, Side sideToMove,
       MoveSpecification moveSpecification) {
 
-    final List<UpdateSquare> updateSquares = calculateUpdateSquares(staticPosition, sideToMove,
-        moveSpecification);
+    final List<UpdateSquare> updateSquares = calculateUpdateSquares(staticPosition, sideToMove, moveSpecification);
     return StaticPositionUtility.createChangedPosition(staticPosition, updateSquares);
   }
 
@@ -174,8 +173,7 @@ public final class StaticPositionUtility {
     if (movingPiece == Piece.NONE || movingPiece.getPieceType() != PAWN) {
       return false;
     }
-    final ImmutableList<Square> fromTo = Nulls.listOf(moveSpecification.fromSquare(),
-        moveSpecification.toSquare());
+    final ImmutableList<Square> fromTo = Nulls.listOf(moveSpecification.fromSquare(), moveSpecification.toSquare());
     return switch (movingPiece.getSide()) {
       case WHITE -> WHITE_EN_PASSANT_CAPTURE_FROM_TO.contains(fromTo)
           && staticPosition.get(moveSpecification.toSquare()) == Piece.NONE;
@@ -198,8 +196,7 @@ public final class StaticPositionUtility {
     return createChangedPosition(staticPosition, updateSquares);
   }
 
-  public static StaticPosition createChangedPosition(StaticPosition staticPosition,
-      List<UpdateSquare> updateSquares) {
+  public static StaticPosition createChangedPosition(StaticPosition staticPosition, List<UpdateSquare> updateSquares) {
     Piece newA8 = staticPosition.a8();
     Piece newB8 = staticPosition.b8();
     Piece newC8 = staticPosition.c8();

@@ -90,8 +90,7 @@ class TestBitboardPositionOccupied {
   @SuppressWarnings("static-method")
   @Test
   void initialAndEmptyConstantsAgreeOnTotal() {
-    final Set<Square> initialOccupied = BitboardPositionUtility
-        .toSquares(BitboardPosition.INITIAL_POSITION.occupied());
+    final Set<Square> initialOccupied = BitboardPositionUtility.toSquares(BitboardPosition.INITIAL_POSITION.occupied());
     assertEquals(referenceOccupied(StaticPosition.INITIAL_POSITION), initialOccupied);
     assertEquals(0L, BitboardPosition.EMPTY_POSITION.occupied());
   }

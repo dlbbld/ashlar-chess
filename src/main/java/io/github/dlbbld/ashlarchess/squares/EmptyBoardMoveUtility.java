@@ -180,12 +180,9 @@ public final class EmptyBoardMoveUtility {
     final Set<EmptyBoardMove> emptyBoardMoves = new TreeSet<>(
         calculateEmptyBoardMovesFrom(fromSquare, toSquareRange.northEastSquares()));
 
-    emptyBoardMoves
-        .addAll(calculateEmptyBoardMovesFrom(fromSquare, toSquareRange.southEastSquares()));
-    emptyBoardMoves
-        .addAll(calculateEmptyBoardMovesFrom(fromSquare, toSquareRange.southWestSquares()));
-    emptyBoardMoves
-        .addAll(calculateEmptyBoardMovesFrom(fromSquare, toSquareRange.northWestSquares()));
+    emptyBoardMoves.addAll(calculateEmptyBoardMovesFrom(fromSquare, toSquareRange.southEastSquares()));
+    emptyBoardMoves.addAll(calculateEmptyBoardMovesFrom(fromSquare, toSquareRange.southWestSquares()));
+    emptyBoardMoves.addAll(calculateEmptyBoardMovesFrom(fromSquare, toSquareRange.northWestSquares()));
 
     return emptyBoardMoves;
   }

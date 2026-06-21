@@ -3,7 +3,6 @@
 
 package io.github.dlbbld.ashlarchess.board.enums;
 
-
 import java.util.EnumMap;
 
 import com.google.common.collect.ImmutableList;
@@ -114,11 +113,11 @@ public final class SquareUtility {
     };
   }
 
-  private static final ImmutableList<Square> WHITE_MOVE_EN_PASSANT_CAPTURE_TARGET_SQUARES = Nulls.listOf(
-      Square.A6, Square.B6, Square.C6, Square.D6, Square.E6, Square.F6, Square.G6, Square.H6);
+  private static final ImmutableList<Square> WHITE_MOVE_EN_PASSANT_CAPTURE_TARGET_SQUARES = Nulls.listOf(Square.A6,
+      Square.B6, Square.C6, Square.D6, Square.E6, Square.F6, Square.G6, Square.H6);
 
-  private static final ImmutableList<Square> BLACK_MOVE_EN_PASSANT_CAPTURE_TARGET_SQUARES = Nulls.listOf(
-      Square.A3, Square.B3, Square.C3, Square.D3, Square.E3, Square.F3, Square.G3, Square.H3);
+  private static final ImmutableList<Square> BLACK_MOVE_EN_PASSANT_CAPTURE_TARGET_SQUARES = Nulls.listOf(Square.A3,
+      Square.B3, Square.C3, Square.D3, Square.E3, Square.F3, Square.G3, Square.H3);
 
   public static ImmutableList<Square> getEnPassantCaptureTargetSquares(Side side) {
     return switch (side) {

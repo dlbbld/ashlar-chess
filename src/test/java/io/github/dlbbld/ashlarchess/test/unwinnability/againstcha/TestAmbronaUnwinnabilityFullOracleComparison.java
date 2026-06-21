@@ -79,8 +79,8 @@ class TestAmbronaUnwinnabilityFullOracleComparison {
       final AcceptedDifference difference = new AcceptedDifference(testCase.pgnName(), intendedWinner, expected, actual,
           testCase.finalFen());
       if (!remainingAcceptedDifferenceSet.remove(difference)) {
-        failures.add(testCase.pgnName() + " " + intendedWinner + " expected " + expected + " actual " + actual
-            + " FEN " + testCase.finalFen());
+        failures.add(testCase.pgnName() + " " + intendedWinner + " expected " + expected + " actual " + actual + " FEN "
+            + testCase.finalFen());
       }
     }
   }
@@ -122,8 +122,7 @@ class TestAmbronaUnwinnabilityFullOracleComparison {
   }
 
   private static String formatFailureMessage(int checkedPositionCount, List<String> failures) {
-    final List<String> printedFailures = Nulls.subList(failures, 0,
-        Math.min(MAX_PRINTED_FAILURES, failures.size()));
+    final List<String> printedFailures = Nulls.subList(failures, 0, Math.min(MAX_PRINTED_FAILURES, failures.size()));
     return "Full unwinnability oracle mismatches for " + failures.size() + " of " + checkedPositionCount
         + " CHA positions:\n" + Nulls.join("\n", printedFailures);
   }

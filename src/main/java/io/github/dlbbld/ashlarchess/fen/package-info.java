@@ -4,8 +4,8 @@
 /**
  * FEN (Forsyth-Edwards Notation) parsing, validation, and generation. The public API is split by strictness: strict
  * input goes through {@link io.github.dlbbld.ashlarchess.fen.StrictFenParser}; recovered/tolerant input goes through
- * {@link io.github.dlbbld.ashlarchess.fen.LenientFenParser}. The internal implementation still separates lexical
- * field parsing from structural and rule-consistency validation, but those stages are not public entry points.
+ * {@link io.github.dlbbld.ashlarchess.fen.LenientFenParser}. The internal implementation still separates lexical field
+ * parsing from structural and rule-consistency validation, but those stages are not public entry points.
  *
  * <ul>
  * <li>{@link io.github.dlbbld.ashlarchess.fen.StrictFenParser} - strict FEN parsing plus structural and
@@ -30,8 +30,7 @@
  * whitespace, casing, missing trailing counters, non-canonical castling order, non-ASCII dashes, and trailing garbage;
  * also recovers from the strict halfmove clock vs fullmove number inconsistency by auto-correcting the fullmove number
  * up to a round reserve value consistent with the halfmove clock. After normalisation, delegates to
- * {@code StrictFenParser} - strict semantic
- * invariants are unchanged. Every transform that fires surfaces as a typed
+ * {@code StrictFenParser} - strict semantic invariants are unchanged. Every transform that fires surfaces as a typed
  * {@link io.github.dlbbld.ashlarchess.fen.ForgivenFenItem} on the
  * {@link io.github.dlbbld.ashlarchess.fen.LenientFenParserValidationResult}. Reached from
  * {@link io.github.dlbbld.ashlarchess.board.Board#fromFenLenient(String)}.</li>

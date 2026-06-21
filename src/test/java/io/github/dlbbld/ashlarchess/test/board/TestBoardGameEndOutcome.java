@@ -18,12 +18,12 @@ import io.github.dlbbld.ashlarchess.unwinnability.DeadPositionQuickVerdict;
 
 /**
  * Game-end semantics. The raw rule predicates on {@link Board} are independent - several may be true at one position -
- * while {@link Board#outcome()} projects them through the python-chess precedence stack into
- * a single {@link Outcome}. These tests pin that independence and the projection together.
+ * while {@link Board#outcome()} projects them through the python-chess precedence stack into a single {@link Outcome}.
+ * These tests pin that independence and the projection together.
  *
  * <p>
- * {@code outcome()} stays cheap and never invokes a CHA / dead-position analyzer; the analyzer-driven dead
- * position is a separate query via {@link Board#deadPositionQuick()} ({@code DEAD} = dead) and is deliberately not a
+ * {@code outcome()} stays cheap and never invokes a CHA / dead-position analyzer; the analyzer-driven dead position is
+ * a separate query via {@link Board#deadPositionQuick()} ({@code DEAD} = dead) and is deliberately not a
  * {@link Termination}.
  */
 class TestBoardGameEndOutcome {

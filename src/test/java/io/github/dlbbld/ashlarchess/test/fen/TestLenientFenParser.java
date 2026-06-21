@@ -196,7 +196,8 @@ class TestLenientFenParser {
     final LenientFenParserValidationResult result = LenientFenParser.validate(deviating);
     assertFalse(result.isValid());
     assertEquals(LenientFenParserValidationProblem.STRICT_SEMANTIC_INVALID, result.problem());
-    assertEquals(StrictFenSemanticValidationProblem.INVALID_CASTLING_RIGHT_RANGE, result.strictFenSemanticValidationProblem());
+    assertEquals(StrictFenSemanticValidationProblem.INVALID_CASTLING_RIGHT_RANGE,
+        result.strictFenSemanticValidationProblem());
     assertNull(result.fen());
   }
 

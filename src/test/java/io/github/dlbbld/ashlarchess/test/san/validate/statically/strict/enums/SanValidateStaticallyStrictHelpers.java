@@ -64,8 +64,7 @@ final class SanValidateStaticallyStrictHelpers {
 
   // ---- disambiguation predicates ----------------------------------------------------------------
 
-  static boolean calculateIsFromRankPossibleOrthogonal(Square fromSquare, Square toSquare,
-      List<Square> fromSquares) {
+  static boolean calculateIsFromRankPossibleOrthogonal(Square fromSquare, Square toSquare, List<Square> fromSquares) {
     for (final Square otherFromSquare : fromSquares) {
       if (otherFromSquare.getFile() == fromSquare.getFile() && otherFromSquare.getRank() != fromSquare.getRank()
           && calculateIsOppositeVertical(fromSquare, toSquare, otherFromSquare)) {
@@ -97,8 +96,7 @@ final class SanValidateStaticallyStrictHelpers {
     throw new ProgrammingMistakeException("Unexpected program flow - at this point the rank numbers must be different");
   }
 
-  static boolean calculateIsFromFilePossibleOrthogonal(Square fromSquare, Square toSquare,
-      List<Square> fromSquares) {
+  static boolean calculateIsFromFilePossibleOrthogonal(Square fromSquare, Square toSquare, List<Square> fromSquares) {
     for (final Square otherFromSquare : fromSquares) {
       if (otherFromSquare.getFile() != fromSquare.getFile()
           && calculateIsFromFilePossibleOrthogonal(fromSquare, toSquare, otherFromSquare)) {

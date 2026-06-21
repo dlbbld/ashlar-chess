@@ -202,8 +202,8 @@ public final class LenientPgnParser {
 
     final List<PgnMove> canonicalMoves = replayBoardCanonicalizing(startFen, movetext.moves());
 
-    return new PgnGame(Nulls.copyOfList(tags), startFen, movetext.pregameCommentary(),
-        Nulls.copyOfList(canonicalMoves), movetext.terminationResult());
+    return new PgnGame(Nulls.copyOfList(tags), startFen, movetext.pregameCommentary(), Nulls.copyOfList(canonicalMoves),
+        movetext.terminationResult());
   }
 
   // -------------------------------------------------------------------------------------------------

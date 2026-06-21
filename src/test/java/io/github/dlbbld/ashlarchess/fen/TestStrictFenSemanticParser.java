@@ -26,8 +26,8 @@ class TestStrictFenSemanticParser {
     final FenField actual = StrictFenFieldParser
         .parse("position sideToMove castlingRight enPassantCaptureTargetSquare halfMoveClock fullMoveNumber");
 
-    assertEquals(new FenField("position", "sideToMove", "castlingRight", "enPassantCaptureTargetSquare", "halfMoveClock",
-        "fullMoveNumber"), actual);
+    assertEquals(new FenField("position", "sideToMove", "castlingRight", "enPassantCaptureTargetSquare",
+        "halfMoveClock", "fullMoveNumber"), actual);
 
   }
 
@@ -73,7 +73,8 @@ class TestStrictFenSemanticParser {
     checkParseFenException("8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
         StrictFenSemanticValidationProblem.INVALID_POSITION_NUMBER_OF_RANKS);
 
-    checkParseFenException("RNBQKBNR w KQkq - 0 1", StrictFenSemanticValidationProblem.INVALID_POSITION_NUMBER_OF_RANKS);
+    checkParseFenException("RNBQKBNR w KQkq - 0 1",
+        StrictFenSemanticValidationProblem.INVALID_POSITION_NUMBER_OF_RANKS);
 
     checkParseFenException("xnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
         StrictFenSemanticValidationProblem.INVALID_POSITION_UNKNOWN_CHAR);

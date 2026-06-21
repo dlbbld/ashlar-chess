@@ -116,9 +116,8 @@ class TestStrictPgnParserMoveSuffixAnnotation {
         Nulls.asList("commentBlack1", "commentWhite", "commentBlack2"));
   }
 
-  private static void checkCombinedSuccess(String pgnName, String pregameCommentaryExpected,
-      List<String> expectedSans, List<MoveSuffixAnnotation> expectedMoveSuffixAnnotations,
-      List<String> expectedCommentaries) {
+  private static void checkCombinedSuccess(String pgnName, String pregameCommentaryExpected, List<String> expectedSans,
+      List<MoveSuffixAnnotation> expectedMoveSuffixAnnotations, List<String> expectedCommentaries) {
     final PgnGame pgnGame = PgnCacheForStrictPgnParserTestCases.getPgn(PGN_TEST_COMBINED_SUCCESS_FOLDER_PATH, pgnName);
     assertEquals(pregameCommentaryExpected, pgnGame.pregameCommentary().value());
     assertEquals(expectedSans, calculateSans(pgnGame.moves()));

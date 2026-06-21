@@ -90,15 +90,16 @@ class TestScore {
   @Test
   void loserMustPromoteHeavyPromotionIsPunish() {
     // Winner has only a knight, loser only pawns -> need-loser-promotion. a1=Q (heavy) -> step 6 Punish.
-    assertEquals(ScoreResult.PUNISH,
-        scorePromotion(Side.WHITE, Board.fromFenStrict("4k3/8/8/8/7p/8/p7/1N2K3 b - - 0 1"), A2, A1, PromotionPieceType.QUEEN));
+    assertEquals(ScoreResult.PUNISH, scorePromotion(Side.WHITE,
+        Board.fromFenStrict("4k3/8/8/8/7p/8/p7/1N2K3 b - - 0 1"), A2, A1, PromotionPieceType.QUEEN));
   }
 
   @SuppressWarnings("static-method")
   @Test
   void loserMustPromotePawnPushIsReward() {
     // Same material: a non-promoting pawn push h4-h3 -> step 7 Reward.
-    assertEquals(ScoreResult.REWARD, score(Side.WHITE, Board.fromFenStrict("4k3/8/8/8/7p/8/p7/1N2K3 b - - 0 1"), H4, H3));
+    assertEquals(ScoreResult.REWARD,
+        score(Side.WHITE, Board.fromFenStrict("4k3/8/8/8/7p/8/p7/1N2K3 b - - 0 1"), H4, H3));
   }
 
   // ----- Going-to-corner vs capture precedence, and need-loser-promotion interactions (CHA 2.6.1 values). -----
@@ -117,7 +118,8 @@ class TestScore {
   @SuppressWarnings("static-method")
   @Test
   void loserMustPromoteKingTowardCornerIsReward() {
-    assertEquals(ScoreResult.REWARD, score(Side.WHITE, Board.fromFenStrict("4k3/7p/8/8/8/8/8/1N2K3 b - - 0 1"), E8, D7));
+    assertEquals(ScoreResult.REWARD,
+        score(Side.WHITE, Board.fromFenStrict("4k3/7p/8/8/8/8/8/1N2K3 b - - 0 1"), E8, D7));
   }
 
   // Need-loser-promotion: a pawn CAPTURE. CHA's base Reward (pawn) is overridden to Punish by the capture branch.
@@ -125,7 +127,8 @@ class TestScore {
   @SuppressWarnings("static-method")
   @Test
   void loserMustPromotePawnCaptureIsPunishFollowsChaNotPdf() {
-    assertEquals(ScoreResult.PUNISH, score(Side.WHITE, Board.fromFenStrict("4k3/8/8/8/1p6/2N5/8/4K3 b - - 0 1"), B4, C3));
+    assertEquals(ScoreResult.PUNISH,
+        score(Side.WHITE, Board.fromFenStrict("4k3/8/8/8/1p6/2N5/8/4K3 b - - 0 1"), B4, C3));
   }
 
   // Need-loser-promotion: a quiet non-pawn move keeps the base Punish (no corner, no capture). Deviates from the
@@ -133,7 +136,8 @@ class TestScore {
   @SuppressWarnings("static-method")
   @Test
   void loserMustPromoteQuietKingMoveIsPunishFollowsChaNotPdf() {
-    assertEquals(ScoreResult.PUNISH, score(Side.WHITE, Board.fromFenStrict("4k3/8/8/8/8/8/p7/1N2K3 b - - 0 1"), E8, E7));
+    assertEquals(ScoreResult.PUNISH,
+        score(Side.WHITE, Board.fromFenStrict("4k3/8/8/8/8/8/p7/1N2K3 b - - 0 1"), E8, E7));
   }
 
   // No need-loser-promotion: a quiet loser move (no corner, no capture) keeps the base Normal.

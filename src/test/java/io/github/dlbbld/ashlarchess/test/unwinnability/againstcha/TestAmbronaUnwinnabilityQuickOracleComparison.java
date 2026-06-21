@@ -83,8 +83,7 @@ class TestAmbronaUnwinnabilityQuickOracleComparison {
   }
 
   private static void check(PgnFen testCase, Side intendedWinner, UnwinnabilityQuickVerdict expected,
-      UnwinnabilityQuickVerdict actual, List<String> failures,
-      Set<AcceptedDifference> remainingAcceptedDifferenceSet) {
+      UnwinnabilityQuickVerdict actual, List<String> failures, Set<AcceptedDifference> remainingAcceptedDifferenceSet) {
     if (actual != expected) {
       final AcceptedDifference difference = new AcceptedDifference(testCase.pgnName(), intendedWinner, expected, actual,
           testCase.finalFen());

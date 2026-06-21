@@ -21,16 +21,16 @@ public enum LenientFenParserValidationProblem {
 
   /**
    * Lenient normalisation produced a six-field FEN but strict field parsing rejected it (format failure after
-   * normalisation). Rare - the lenient layer's normalisation pipeline should not produce field-invalid output.
-   * Surfaces when the input contains characters or shapes the normaliser does not understand.
+   * normalisation). Rare - the lenient layer's normalisation pipeline should not produce field-invalid output. Surfaces
+   * when the input contains characters or shapes the normaliser does not understand.
    */
   FIELD_INVALID,
 
   /**
    * The normalised FEN passed lexical parsing but strict validation rejected it for a structural or rule-consistency
    * issue (piece counts, kings, castling rights inconsistent with piece placement, illegal en-passant target, etc.).
-   * The lenient layer does not forgive semantic invariants - a FEN with a king missing still fails. The
-   * underlying {@link io.github.dlbbld.ashlarchess.common.enums.StrictFenSemanticValidationProblem} is on the result.
+   * The lenient layer does not forgive semantic invariants - a FEN with a king missing still fails. The underlying
+   * {@link io.github.dlbbld.ashlarchess.common.enums.StrictFenSemanticValidationProblem} is on the result.
    */
   STRICT_SEMANTIC_INVALID,
 

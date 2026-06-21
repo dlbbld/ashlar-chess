@@ -28,8 +28,8 @@ import io.github.dlbbld.ashlarchess.messages.Message;
  * <li>Castling shape (zero-vs-O, mixed-rejection, UCI castling)
  * <li>Strip terminal marker for body-only processing, re-attach at the end
  * <li>Explicit-P strip (drop a redundant leading {@code P} pawn letter)
- * <li>Case fixups (lowercase piece letter, uppercase file letter, uppercase capture marker, lowercase promotion
- * piece) - run early so the later board-aware and insert steps see case-normalized input
+ * <li>Case fixups (lowercase piece letter, uppercase file letter, uppercase capture marker, lowercase promotion piece)
+ * - run early so the later board-aware and insert steps see case-normalized input
  * <li>UCI/LAN piece-move translation (board-aware lookup of the piece on the from-square, LAN hyphen strip)
  * <li>Missing pawn-capture marker insert
  * <li>Missing promotion-equals insert

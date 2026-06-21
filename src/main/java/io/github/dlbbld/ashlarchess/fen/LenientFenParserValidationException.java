@@ -13,10 +13,10 @@ import io.github.dlbbld.ashlarchess.common.enums.StrictFenSemanticValidationProb
 import io.github.dlbbld.ashlarchess.common.exceptions.UsageException;
 
 /**
- * Thrown by {@link LenientFenParser#parse(String)} when the input cannot be parsed even after lenient
- * normalisation, or when the normalised FEN fails strict semantic validation. Mirrors the SAN- and PGN-side
- * lenient-parser exceptions: carries the typed problem category, the underlying strict-semantic-validation problem (when
- * applicable), and the list of forgiven items accumulated before the failure point.
+ * Thrown by {@link LenientFenParser#parse(String)} when the input cannot be parsed even after lenient normalisation, or
+ * when the normalised FEN fails strict semantic validation. Mirrors the SAN- and PGN-side lenient-parser exceptions:
+ * carries the typed problem category, the underlying strict-semantic-validation problem (when applicable), and the list
+ * of forgiven items accumulated before the failure point.
  */
 @SuppressWarnings("null")
 public class LenientFenParserValidationException extends UsageException {
@@ -48,7 +48,8 @@ public class LenientFenParserValidationException extends UsageException {
       @NonNull ImmutableList<@NonNull ForgivenFenItem> forgivenItemsAccumulated) {
     super(message);
     this.lenientFenParserValidationProblem = lenientFenParserValidationProblem;
-    this.strictFenSemanticValidationProblem = strictFenSemanticValidationProblem == null ? StrictFenSemanticValidationProblem.SUCCESS
+    this.strictFenSemanticValidationProblem = strictFenSemanticValidationProblem == null
+        ? StrictFenSemanticValidationProblem.SUCCESS
         : strictFenSemanticValidationProblem;
     this.forgivenItemsAccumulated = Nulls.copyOfList(forgivenItemsAccumulated);
   }

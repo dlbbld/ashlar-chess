@@ -33,8 +33,8 @@ public final class LenientSanParser {
 
   /**
    * Parses {@code text} as a SAN move on {@code board}, accepting a defined set of canonical-SAN deviations. On
-   * success, returns the resolved {@link MoveSpecification} together with one {@link ForgivenSanItem} per deviation that
-   * was forgiven. On a canonical input, the forgiven-items list is empty.
+   * success, returns the resolved {@link MoveSpecification} together with one {@link ForgivenSanItem} per deviation
+   * that was forgiven. On a canonical input, the forgiven-items list is empty.
    *
    * @throws LenientSanParserValidationException if the input cannot be resolved to a legal move even after applying
    *                                             every supported tolerance

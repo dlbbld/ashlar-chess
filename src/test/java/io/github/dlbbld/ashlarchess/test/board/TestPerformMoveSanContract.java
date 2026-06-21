@@ -22,9 +22,9 @@ import io.github.dlbbld.ashlarchess.test.pgn.setup.PgnTestCaseCatalog;
 /**
  * Verifies the round-trip consistency between SAN and MoveSpecification that
  * {@link io.github.dlbbld.ashlarchess.board.Board#moveStrict(String)} relies on: once
- * {@link io.github.dlbbld.ashlarchess.san.StrictSanParser}'s {@code parse} has produced a MoveSpecification from a
- * SAN, that MoveSpec is the canonical representation of the move and round-trips both ways. The board therefore
- * performs the move with no further re-validation of the spec.
+ * {@link io.github.dlbbld.ashlarchess.san.StrictSanParser}'s {@code parse} has produced a MoveSpecification from a SAN,
+ * that MoveSpec is the canonical representation of the move and round-trips both ways. The board therefore performs the
+ * move with no further re-validation of the spec.
  *
  * <h2>Forward (played moves)</h2>
  *
@@ -95,8 +95,7 @@ class TestPerformMoveSanContract {
       final int hmi = moveIndex;
       final String expectedProvidedSan = move.san();
 
-      final MoveSpecification expectedCalculatedMoveSpecification = StrictSanParser
-          .parse(expectedProvidedSan, board);
+      final MoveSpecification expectedCalculatedMoveSpecification = StrictSanParser.parse(expectedProvidedSan, board);
 
       board.moveStrict(expectedProvidedSan);
 

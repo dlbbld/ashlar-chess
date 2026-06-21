@@ -20,14 +20,14 @@ import io.github.dlbbld.ashlarchess.fen.model.Fen;
  *
  * <p>
  * The lenient layer only forgives syntactic deviations (whitespace, casing, missing trailing counters, etc.); it does
- * not weaken {@link StrictFenParser}'s structural/rule-consistency checks. When the underlying strict parser
- * rejects the normalised FEN, {@link #strictFenSemanticValidationProblem} carries the specific cause so callers can react
+ * not weaken {@link StrictFenParser}'s structural/rule-consistency checks. When the underlying strict parser rejects
+ * the normalised FEN, {@link #strictFenSemanticValidationProblem} carries the specific cause so callers can react
  * without parsing the message.
  */
 @SuppressWarnings("null")
 public record LenientFenParserValidationResult(@NonNull LenientFenParserValidationProblem problem,
-    @NonNull StrictFenSemanticValidationProblem strictFenSemanticValidationProblem, @NonNull String message, @Nullable Fen fen,
-    @NonNull ImmutableList<@NonNull ForgivenFenItem> forgivenItems) {
+    @NonNull StrictFenSemanticValidationProblem strictFenSemanticValidationProblem, @NonNull String message,
+    @Nullable Fen fen, @NonNull ImmutableList<@NonNull ForgivenFenItem> forgivenItems) {
 
   public LenientFenParserValidationResult {
     forgivenItems = Nulls.copyOfList(forgivenItems);

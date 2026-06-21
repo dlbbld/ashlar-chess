@@ -66,8 +66,8 @@ final class RangeSquaresSupport {
 
     final Set<Square> calculatedToSquareSet = new TreeSet<>();
 
-    final List<Square> calculatedToSquares = calculateRangeSquares(staticPosition, sideToMove,
-        emptyBoardSquares, isAllowOwnPiece);
+    final List<Square> calculatedToSquares = calculateRangeSquares(staticPosition, sideToMove, emptyBoardSquares,
+        isAllowOwnPiece);
     calculatedToSquareSet.addAll(calculatedToSquares);
     return calculatedToSquareSet;
   }
