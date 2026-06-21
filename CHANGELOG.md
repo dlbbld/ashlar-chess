@@ -26,6 +26,10 @@ file name. No code, behavior, or public-API changes — every verdict, report, a
   its publish response that 0.7.0's response model could not parse, crashing `mvn -Prelease deploy` (the
   upload still succeeded, but the command failed); 0.11.0 handles it. Build-only — not in the published
   artifact.
+- Removed the empty base-package `package-info.java` (`io.github.dlbbld.ashlarchess`). It held only a no-op
+  `@NonNullByDefault` — the base package has no types, and the annotation does not cascade to sub-packages —
+  and JDK 21's `javadoc` fails the `-javadoc.jar` build on a package containing nothing but a
+  `package-info.java` ("No source files for package"). Internal only; no public type affected.
 
 
 ## [19.0.0] - The essential shape: coherent API, domain-owned behavior, declared scope - 2026-06-21
