@@ -67,16 +67,12 @@ public class ReportScalingSurvey {
       }
     }
 
-    // here the null annotations are contraproductive, they require below unnatural code so that no warnings are
-    // emitted.
-    if (usPerPlyByGroup.containsKey(PgnTest.WCC2021.name()) && usPerPlyByGroup.containsKey(PgnTest.MAX_MOVES.name())) {
-      final Double shortUs = Nulls.get(usPerPlyByGroup, Nulls.name(PgnTest.WCC2021));
-      final Double longUs = Nulls.get(usPerPlyByGroup, Nulls.name(PgnTest.MAX_MOVES));
-      if (shortUs.doubleValue() > 0) {
-        System.out.printf(
-            "%ncross-game ratio %s / %s us/ply = %.1f  (noisy: different games differ in claim density, not just length)%n",
-            PgnTest.MAX_MOVES.name(), PgnTest.WCC2021.name(), longUs.doubleValue() / shortUs.doubleValue());
-      }
+    final Double shortUs = usPerPlyByGroup.get(PgnTest.WCC2021.name());
+    final Double longUs = usPerPlyByGroup.get(PgnTest.MAX_MOVES.name());
+    if (shortUs != null && longUs != null && shortUs.doubleValue() > 0) {
+      System.out.printf(
+          "%ncross-game ratio %s / %s us/ply = %.1f  (noisy: different games differ in claim density, not just length)%n",
+          PgnTest.MAX_MOVES.name(), PgnTest.WCC2021.name(), longUs.doubleValue() / shortUs.doubleValue());
     }
 
     prefixScalingProbe();
