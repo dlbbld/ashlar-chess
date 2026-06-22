@@ -13,7 +13,7 @@ import io.github.dlbbld.ashlarchess.board.enums.RankUtility;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
 import io.github.dlbbld.ashlarchess.board.enums.Square;
 import io.github.dlbbld.ashlarchess.board.enums.SquareUtility;
-import io.github.dlbbld.ashlarchess.common.exceptions.ProgrammingMistakeException;
+import io.github.dlbbld.ashlarchess.exceptions.ProgrammingMistakeException;
 import io.github.dlbbld.ashlarchess.common.model.MoveSpecification;
 import io.github.dlbbld.ashlarchess.enums.KingSafetyCheck;
 import io.github.dlbbld.ashlarchess.enums.MovementCheck;

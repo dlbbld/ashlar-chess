@@ -20,7 +20,7 @@ import java.util.Set;
 import org.apache.logging.log4j.Logger;
 
 import io.github.dlbbld.ashlarchess.common.Nulls;
-import io.github.dlbbld.ashlarchess.common.exceptions.FileSystemAccessException;
+import io.github.dlbbld.ashlarchess.exceptions.FileSystemAccessException;
 import io.github.dlbbld.ashlarchess.common.utility.IoUtility;
 import io.github.dlbbld.ashlarchess.test.ConfigurationTestConstants;
 import io.github.dlbbld.ashlarchess.test.model.PgnFen;

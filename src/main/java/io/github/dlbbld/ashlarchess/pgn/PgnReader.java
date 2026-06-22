@@ -11,7 +11,7 @@ import java.nio.file.Path;
 
 import org.eclipse.jdt.annotation.NonNull;
 
-import io.github.dlbbld.ashlarchess.common.exceptions.FileSystemAccessException;
+import io.github.dlbbld.ashlarchess.exceptions.FileSystemAccessException;
 
 /**
  * Reads a PGN file as a UTF-8 string. Used internally by {@link StrictPgnParser} and {@link LenientPgnParser} to

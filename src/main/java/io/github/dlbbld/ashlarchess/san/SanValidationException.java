@@ -6,7 +6,7 @@ package io.github.dlbbld.ashlarchess.san;
 import org.eclipse.jdt.annotation.Nullable;
 
 import io.github.dlbbld.ashlarchess.board.enums.CastlingRightLoss;
-import io.github.dlbbld.ashlarchess.common.exceptions.UsageException;
+import io.github.dlbbld.ashlarchess.exceptions.UsageException;
 import io.github.dlbbld.ashlarchess.enums.MoveCheck;
 
 public class SanValidationException extends UsageException {

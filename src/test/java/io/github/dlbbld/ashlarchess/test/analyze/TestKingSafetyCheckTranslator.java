@@ -9,7 +9,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import org.junit.jupiter.api.Test;
 
 import io.github.dlbbld.ashlarchess.analyze.KingSafetyCheckTranslator;
-import io.github.dlbbld.ashlarchess.common.exceptions.ProgrammingMistakeException;
+import io.github.dlbbld.ashlarchess.exceptions.ProgrammingMistakeException;
 import io.github.dlbbld.ashlarchess.enums.KingSafetyCheck;
 import io.github.dlbbld.ashlarchess.enums.MoveCheck;
 

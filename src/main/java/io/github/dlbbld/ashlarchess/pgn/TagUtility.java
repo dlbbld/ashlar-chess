@@ -12,7 +12,7 @@ import java.util.regex.Pattern;
 import org.eclipse.jdt.annotation.NonNull;
 
 import io.github.dlbbld.ashlarchess.common.Nulls;
-import io.github.dlbbld.ashlarchess.common.exceptions.ProgrammingMistakeException;
+import io.github.dlbbld.ashlarchess.exceptions.ProgrammingMistakeException;
 import io.github.dlbbld.ashlarchess.common.utility.ListUtility;
 
 public final class TagUtility {

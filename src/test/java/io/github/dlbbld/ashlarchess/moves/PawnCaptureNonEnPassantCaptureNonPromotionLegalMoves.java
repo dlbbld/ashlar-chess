@@ -14,7 +14,7 @@ import io.github.dlbbld.ashlarchess.board.enums.PieceType;
 import io.github.dlbbld.ashlarchess.board.enums.RankUtility;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
 import io.github.dlbbld.ashlarchess.board.enums.Square;
-import io.github.dlbbld.ashlarchess.common.exceptions.ProgrammingMistakeException;
+import io.github.dlbbld.ashlarchess.exceptions.ProgrammingMistakeException;
 import io.github.dlbbld.ashlarchess.common.model.MoveSpecification;
 import io.github.dlbbld.ashlarchess.common.utility.StaticPositionUtility;
 import io.github.dlbbld.ashlarchess.model.LegalMove;

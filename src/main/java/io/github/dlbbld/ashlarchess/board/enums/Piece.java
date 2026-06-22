@@ -6,7 +6,7 @@ package io.github.dlbbld.ashlarchess.board.enums;
 import java.util.List;
 
 import io.github.dlbbld.ashlarchess.common.Nulls;
-import io.github.dlbbld.ashlarchess.common.exceptions.NonePointerException;
+import io.github.dlbbld.ashlarchess.exceptions.NonePointerException;
 
 public enum Piece {
   WHITE_PAWN(PieceType.PAWN, Side.WHITE),

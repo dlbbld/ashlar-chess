@@ -6,7 +6,7 @@ package io.github.dlbbld.ashlarchess.common.model;
 import io.github.dlbbld.ashlarchess.board.enums.CastlingMove;
 import io.github.dlbbld.ashlarchess.board.enums.PromotionPieceType;
 import io.github.dlbbld.ashlarchess.board.enums.Square;
-import io.github.dlbbld.ashlarchess.common.exceptions.ProgrammingMistakeException;
+import io.github.dlbbld.ashlarchess.exceptions.ProgrammingMistakeException;
 
 // Specification: for the non-castling non-promotion move the from and to square must be different board squares, for
 // the non-castling promotion move the from and to square must be different board squares and the promotion piece type

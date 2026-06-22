@@ -14,7 +14,7 @@ import io.github.dlbbld.ashlarchess.common.model.MoveSpecification;
 import io.github.dlbbld.ashlarchess.enums.KingSafetyCheck;
 import io.github.dlbbld.ashlarchess.enums.MoveCheck;
 import io.github.dlbbld.ashlarchess.enums.MovementCheck;
-import io.github.dlbbld.ashlarchess.exceptions.InvalidMoveException;
+import io.github.dlbbld.ashlarchess.board.InvalidMoveException;
 
 /**
  * Base for analyzer-routed scenario tests. The {@link #check} helper inspects the expected {@link MoveCheck} and

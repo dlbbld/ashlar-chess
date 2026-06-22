@@ -3,7 +3,7 @@
 
 package io.github.dlbbld.ashlarchess.pgn;
 
-import io.github.dlbbld.ashlarchess.common.exceptions.UsageException;
+import io.github.dlbbld.ashlarchess.exceptions.UsageException;
 
 /**
  * Thrown when a PGN commentary string violates the model contract: must contain no tab, newline, carriage return, or

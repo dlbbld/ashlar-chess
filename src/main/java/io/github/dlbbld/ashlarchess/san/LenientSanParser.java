@@ -10,7 +10,7 @@ import org.eclipse.jdt.annotation.Nullable;
 
 import io.github.dlbbld.ashlarchess.board.Board;
 import io.github.dlbbld.ashlarchess.common.Nulls;
-import io.github.dlbbld.ashlarchess.common.exceptions.ProgrammingMistakeException;
+import io.github.dlbbld.ashlarchess.exceptions.ProgrammingMistakeException;
 import io.github.dlbbld.ashlarchess.common.model.MoveSpecification;
 import io.github.dlbbld.ashlarchess.common.utility.ExceptionUtility;
 import io.github.dlbbld.ashlarchess.messages.Message;

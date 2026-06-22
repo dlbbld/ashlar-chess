@@ -8,7 +8,7 @@ import java.util.ResourceBundle;
 
 import io.github.dlbbld.ashlarchess.common.Nulls;
 import io.github.dlbbld.ashlarchess.common.constants.ConfigurationConstants;
-import io.github.dlbbld.ashlarchess.common.exceptions.ProgrammingMistakeException;
+import io.github.dlbbld.ashlarchess.exceptions.ProgrammingMistakeException;
 
 public final class Message {
 

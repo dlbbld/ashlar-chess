@@ -8,7 +8,7 @@ import java.util.List;
 import org.eclipse.jdt.annotation.NonNull;
 
 import io.github.dlbbld.ashlarchess.common.Nulls;
-import io.github.dlbbld.ashlarchess.common.exceptions.UsageException;
+import io.github.dlbbld.ashlarchess.exceptions.UsageException;
 import io.github.dlbbld.ashlarchess.san.ForgivenSanItem;
 import io.github.dlbbld.ashlarchess.san.SanValidationProblem;
 

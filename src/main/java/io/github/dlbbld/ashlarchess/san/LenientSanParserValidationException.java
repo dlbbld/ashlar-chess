@@ -8,7 +8,7 @@ import java.util.List;
 import org.eclipse.jdt.annotation.NonNull;
 
 import io.github.dlbbld.ashlarchess.common.Nulls;
-import io.github.dlbbld.ashlarchess.common.exceptions.UsageException;
+import io.github.dlbbld.ashlarchess.exceptions.UsageException;
 
 /**
  * Thrown when the lenient SAN parser cannot resolve the input to a legal move even after applying every supported

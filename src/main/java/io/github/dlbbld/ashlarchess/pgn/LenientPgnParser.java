@@ -14,7 +14,7 @@ import io.github.dlbbld.ashlarchess.board.Board;
 import io.github.dlbbld.ashlarchess.board.MoveNumberFormat;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
 import io.github.dlbbld.ashlarchess.common.Nulls;
-import io.github.dlbbld.ashlarchess.common.exceptions.ProgrammingMistakeException;
+import io.github.dlbbld.ashlarchess.exceptions.ProgrammingMistakeException;
 import io.github.dlbbld.ashlarchess.common.utility.ExceptionUtility;
 import io.github.dlbbld.ashlarchess.fen.LenientFenParser;
 import io.github.dlbbld.ashlarchess.fen.FenConstants;
@@ -541,7 +541,7 @@ public final class LenientPgnParser {
         throw movetextError(LenientPgnParserValidationProblem.MOVETEXT_COMMENTARY_END_BRACE_WITHOUT_START_BRACE,
             "A closing brace } was found with no matching opening brace.");
       default:
-        throw new io.github.dlbbld.ashlarchess.common.exceptions.ProgrammingMistakeException(
+        throw new io.github.dlbbld.ashlarchess.exceptions.ProgrammingMistakeException(
             "consumeCommentaryOrThrow called for non-brace token: " + token.type());
     }
   }

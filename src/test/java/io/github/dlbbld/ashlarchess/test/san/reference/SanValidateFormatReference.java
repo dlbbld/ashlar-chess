@@ -12,7 +12,7 @@ import io.github.dlbbld.ashlarchess.common.Nulls;
 import io.github.dlbbld.ashlarchess.common.constants.CastlingConstants;
 import io.github.dlbbld.ashlarchess.san.NotationMovingPiece;
 import io.github.dlbbld.ashlarchess.san.NotationPromotionPiece;
-import io.github.dlbbld.ashlarchess.common.exceptions.ProgrammingMistakeException;
+import io.github.dlbbld.ashlarchess.exceptions.ProgrammingMistakeException;
 import io.github.dlbbld.ashlarchess.san.SanConversion;
 import io.github.dlbbld.ashlarchess.san.SanFormat;
 import io.github.dlbbld.ashlarchess.san.SanParse;

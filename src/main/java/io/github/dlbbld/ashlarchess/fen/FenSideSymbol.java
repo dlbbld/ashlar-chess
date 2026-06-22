@@ -4,7 +4,7 @@
 package io.github.dlbbld.ashlarchess.fen;
 
 import io.github.dlbbld.ashlarchess.board.enums.Side;
-import io.github.dlbbld.ashlarchess.common.exceptions.NonePointerException;
+import io.github.dlbbld.ashlarchess.exceptions.NonePointerException;
 
 public enum FenSideSymbol {
 

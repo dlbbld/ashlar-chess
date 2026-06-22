@@ -4,7 +4,7 @@
 package io.github.dlbbld.ashlarchess.san;
 
 import io.github.dlbbld.ashlarchess.board.enums.PromotionPieceType;
-import io.github.dlbbld.ashlarchess.common.exceptions.ProgrammingMistakeException;
+import io.github.dlbbld.ashlarchess.exceptions.ProgrammingMistakeException;
 
 public enum NotationPromotionPiece {
   ROOK(PromotionPieceType.ROOK),

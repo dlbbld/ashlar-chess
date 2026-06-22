@@ -3,7 +3,7 @@
 
 package io.github.dlbbld.ashlarchess.test.unwinnability.identifier;
 
-import io.github.dlbbld.ashlarchess.common.exceptions.ProgrammingMistakeException;
+import io.github.dlbbld.ashlarchess.exceptions.ProgrammingMistakeException;
 import io.github.dlbbld.ashlarchess.unwinnability.UnwinnabilityFullVerdict;
 
 /**

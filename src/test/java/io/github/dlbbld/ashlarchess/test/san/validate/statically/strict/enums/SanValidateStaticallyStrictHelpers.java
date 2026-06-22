@@ -10,7 +10,7 @@ import java.util.Set;
 import io.github.dlbbld.ashlarchess.board.enums.PieceType;
 import io.github.dlbbld.ashlarchess.board.enums.Rank;
 import io.github.dlbbld.ashlarchess.board.enums.Square;
-import io.github.dlbbld.ashlarchess.common.exceptions.ProgrammingMistakeException;
+import io.github.dlbbld.ashlarchess.exceptions.ProgrammingMistakeException;
 import io.github.dlbbld.ashlarchess.model.EmptyBoardMove;
 import io.github.dlbbld.ashlarchess.test.common.utility.DiagonalLineUtility;
 

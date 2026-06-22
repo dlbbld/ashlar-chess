@@ -6,8 +6,8 @@ package io.github.dlbbld.ashlarchess.pgn;
 import java.util.ArrayList;
 import java.util.List;
 
-import io.github.dlbbld.ashlarchess.common.exceptions.NonePointerException;
-import io.github.dlbbld.ashlarchess.common.exceptions.ProgrammingMistakeException;
+import io.github.dlbbld.ashlarchess.exceptions.NonePointerException;
+import io.github.dlbbld.ashlarchess.exceptions.ProgrammingMistakeException;
 import io.github.dlbbld.ashlarchess.common.utility.ListUtility;
 
 enum SetUpTagValue {

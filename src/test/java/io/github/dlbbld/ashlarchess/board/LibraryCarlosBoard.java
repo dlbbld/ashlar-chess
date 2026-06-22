@@ -29,7 +29,7 @@ import io.github.dlbbld.ashlarchess.board.enums.Square;
 import io.github.dlbbld.ashlarchess.common.Nulls;
 import io.github.dlbbld.ashlarchess.common.constants.ChessConstants;
 import io.github.dlbbld.ashlarchess.common.constants.DynamicPositionConstants;
-import io.github.dlbbld.ashlarchess.common.exceptions.ProgrammingMistakeException;
+import io.github.dlbbld.ashlarchess.exceptions.ProgrammingMistakeException;
 import io.github.dlbbld.ashlarchess.common.model.DynamicPosition;
 import io.github.dlbbld.ashlarchess.common.model.MoveSpecification;
 import io.github.dlbbld.ashlarchess.fen.FenConstants;

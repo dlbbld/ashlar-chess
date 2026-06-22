@@ -3,7 +3,7 @@
 
 package io.github.dlbbld.ashlarchess.pgn;
 
-import io.github.dlbbld.ashlarchess.common.exceptions.UsageException;
+import io.github.dlbbld.ashlarchess.exceptions.UsageException;
 import io.github.dlbbld.ashlarchess.san.SanValidationProblem;
 
 public class StrictPgnParserValidationException extends UsageException {

@@ -24,14 +24,13 @@ import io.github.dlbbld.ashlarchess.common.Nulls;
 import io.github.dlbbld.ashlarchess.common.constants.ChessConstants;
 import io.github.dlbbld.ashlarchess.common.constants.DynamicPositionConstants;
 import io.github.dlbbld.ashlarchess.common.enums.Termination;
-import io.github.dlbbld.ashlarchess.common.exceptions.ProgrammingMistakeException;
+import io.github.dlbbld.ashlarchess.exceptions.ProgrammingMistakeException;
 import io.github.dlbbld.ashlarchess.common.model.ClaimRights;
 import io.github.dlbbld.ashlarchess.common.model.ClaimableMove;
 import io.github.dlbbld.ashlarchess.common.model.DynamicPosition;
 import io.github.dlbbld.ashlarchess.common.model.MoveSpecification;
 import io.github.dlbbld.ashlarchess.common.model.Outcome;
 import io.github.dlbbld.ashlarchess.common.ucimove.utility.UciMoveUtility;
-import io.github.dlbbld.ashlarchess.exceptions.InvalidMoveException;
 import io.github.dlbbld.ashlarchess.fen.FenBoard;
 import io.github.dlbbld.ashlarchess.fen.LenientFenParser;
 import io.github.dlbbld.ashlarchess.fen.StrictFenParser;
@@ -83,7 +82,7 @@ import io.github.dlbbld.ashlarchess.unwinnability.UnwinnableQuickAnalyzer;
  * Move execution happens through {@link #moveStrict(String)}, {@link #moveLenient(String)},
  * {@link #move(MoveSpecification)}, {@link #movesStrict(String...)}, and is undone by {@link #unmove()}. Both
  * move-pipelines validate the candidate against the current legal-move set; an invalid move throws (see
- * {@link io.github.dlbbld.ashlarchess.exceptions.InvalidMoveException} from the {@code MoveSpecification} pipeline,
+ * {@link io.github.dlbbld.ashlarchess.board.InvalidMoveException} from the {@code MoveSpecification} pipeline,
  * {@code SanValidationException} from the SAN pipeline). The move pipeline does <em>not</em> gate on game-end states:
  * at checkmate and stalemate the legal-move set is empty, so any attempted move fails through ordinary legality; at
  * mutual insufficient material, fivefold repetition, the 75-move rule, and analyzer-driven dead positions, legal moves

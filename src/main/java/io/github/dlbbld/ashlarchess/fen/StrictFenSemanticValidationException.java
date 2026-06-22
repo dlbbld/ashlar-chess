@@ -3,7 +3,7 @@
 
 package io.github.dlbbld.ashlarchess.fen;
 
-import io.github.dlbbld.ashlarchess.common.exceptions.UsageException;
+import io.github.dlbbld.ashlarchess.exceptions.UsageException;
 
 public class StrictFenSemanticValidationException extends UsageException {
 

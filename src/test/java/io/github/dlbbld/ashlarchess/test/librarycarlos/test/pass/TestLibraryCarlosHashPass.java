@@ -18,8 +18,8 @@ import com.github.bhlangonijr.chesslib.move.Move;
 import com.github.bhlangonijr.chesslib.pgn.PgnHolder;
 
 import io.github.dlbbld.ashlarchess.common.Nulls;
-import io.github.dlbbld.ashlarchess.common.exceptions.FileSystemAccessException;
-import io.github.dlbbld.ashlarchess.common.exceptions.ProgrammingMistakeException;
+import io.github.dlbbld.ashlarchess.exceptions.FileSystemAccessException;
+import io.github.dlbbld.ashlarchess.exceptions.ProgrammingMistakeException;
 import io.github.dlbbld.ashlarchess.test.common.exceptions.SetupException;
 import io.github.dlbbld.ashlarchess.test.pgntest.enums.PgnTest;
 

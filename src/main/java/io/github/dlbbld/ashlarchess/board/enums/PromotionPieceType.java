@@ -5,7 +5,7 @@ package io.github.dlbbld.ashlarchess.board.enums;
 
 import java.util.List;
 
-import io.github.dlbbld.ashlarchess.common.exceptions.NonePointerException;
+import io.github.dlbbld.ashlarchess.exceptions.NonePointerException;
 
 public enum PromotionPieceType {
   ROOK(PieceType.ROOK),

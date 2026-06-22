@@ -14,7 +14,7 @@ import io.github.dlbbld.ashlarchess.board.Board;
 import io.github.dlbbld.ashlarchess.board.MoveNumberFormat;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
 import io.github.dlbbld.ashlarchess.common.Nulls;
-import io.github.dlbbld.ashlarchess.common.exceptions.ProgrammingMistakeException;
+import io.github.dlbbld.ashlarchess.exceptions.ProgrammingMistakeException;
 import io.github.dlbbld.ashlarchess.common.utility.ExceptionUtility;
 import io.github.dlbbld.ashlarchess.fen.StrictFenParser;
 import io.github.dlbbld.ashlarchess.fen.StrictFenSemanticValidationException;

@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 import io.github.dlbbld.ashlarchess.common.Nulls;
-import io.github.dlbbld.ashlarchess.common.exceptions.NonePointerException;
+import io.github.dlbbld.ashlarchess.exceptions.NonePointerException;
 
 /**
  * Board-geometry transformations and side-relative chess-rule squares for {@link Square}: the 180-degree reflection,

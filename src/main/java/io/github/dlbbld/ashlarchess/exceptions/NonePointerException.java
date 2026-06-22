@@ -1,7 +1,7 @@
 // Copyright (C) 2020-2026 Daniel Baechli
 // SPDX-License-Identifier: GPL-3.0-only
 
-package io.github.dlbbld.ashlarchess.common.exceptions;
+package io.github.dlbbld.ashlarchess.exceptions;
 
 /**
  * Thrown when a caller reads a property of a {@code NONE} sentinel enum (e.g. {@code Piece.NONE.getSide()} after

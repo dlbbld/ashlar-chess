@@ -3,7 +3,7 @@
 
 package io.github.dlbbld.ashlarchess.test.common.exceptions;
 
-import io.github.dlbbld.ashlarchess.common.exceptions.ChessApiRuntimeException;
+import io.github.dlbbld.ashlarchess.exceptions.ChessApiRuntimeException;
 
 public class SetupException extends ChessApiRuntimeException {
 

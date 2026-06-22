@@ -7,8 +7,8 @@ import java.util.EnumMap;
 import java.util.List;
 
 import io.github.dlbbld.ashlarchess.common.Nulls;
-import io.github.dlbbld.ashlarchess.common.exceptions.NonePointerException;
-import io.github.dlbbld.ashlarchess.common.exceptions.ProgrammingMistakeException;
+import io.github.dlbbld.ashlarchess.exceptions.NonePointerException;
+import io.github.dlbbld.ashlarchess.exceptions.ProgrammingMistakeException;
 
 public enum File {
   FILE_A('a', 1),

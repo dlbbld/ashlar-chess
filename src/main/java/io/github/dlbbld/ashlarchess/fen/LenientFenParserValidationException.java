@@ -9,7 +9,7 @@ import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 
 import io.github.dlbbld.ashlarchess.common.Nulls;
-import io.github.dlbbld.ashlarchess.common.exceptions.UsageException;
+import io.github.dlbbld.ashlarchess.exceptions.UsageException;
 
 /**
  * Thrown by {@link LenientFenParser#parse(String)} when the input cannot be parsed even after lenient normalisation, or

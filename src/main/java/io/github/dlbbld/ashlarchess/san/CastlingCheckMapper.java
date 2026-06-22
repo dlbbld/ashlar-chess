@@ -4,7 +4,7 @@
 package io.github.dlbbld.ashlarchess.san;
 
 import io.github.dlbbld.ashlarchess.board.enums.CastlingRightLoss;
-import io.github.dlbbld.ashlarchess.common.exceptions.ProgrammingMistakeException;
+import io.github.dlbbld.ashlarchess.exceptions.ProgrammingMistakeException;
 import io.github.dlbbld.ashlarchess.enums.CastlingCheck;
 
 /**
