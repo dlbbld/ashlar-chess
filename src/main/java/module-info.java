@@ -10,7 +10,8 @@
  * FEN/PGN/SAN parsers and their result types, adjudication, reporting, the unwinnability face, the base
  * exception hierarchy, and {@code BitboardPosition} as documented advanced low-level API. Everything not
  * exported ({@code moves}, {@code analyze}, {@code squares}, {@code messages}, {@code common.*},
- * {@code board.model}, {@code bitboard.internal}) is internal and hidden from modular consumers.
+ * {@code board.model}, and the {@code *.internal} subpackages of {@code bitboard}/{@code pgn}/{@code san}/{@code fen})
+ * is internal and hidden from modular consumers.
  */
 module io.github.dlbbld.ashlarchess {
 

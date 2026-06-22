@@ -56,7 +56,9 @@ The headline goal is met — no duplicate by-kind buckets, public surface predic
 - **maven-jar-plugin** — dropped the now-redundant `Automatic-Module-Name` manifest entry (the real descriptor supersedes it).
 - **maven-javadoc-plugin** — excludes `module-info.java` from javadoc generation: 3.11.2 aborts a single-module `module-info` project with "aggregated report contains named and unnamed modules" in its pre-scan. The descriptor still compiles into the jar (modular consumers unaffected); only the rendered module-summary page is lost.
 
-Verified green: `mvn -o test` + `-Pfull` (1276 tests, 0 failures), `javadoc:jar`, and `javadoc:javadoc`/`test-javadoc -Dshow=private`. Remaining for 20.0.0: Phase-3 visibility tightening (narrow incidental `public` helpers inside exported packages — quality, not closure), the internal `common.*` tidy-ups, and the release flow.
+Verified green: `mvn -o test` + `-Pfull` (1276 tests, 0 failures), `javadoc:jar`, and `javadoc:javadoc`/`test-javadoc -Dshow=private`.
+
+**Phase 3 (hide internals) ✅ DONE 2026-06-22.** Narrowed the incidental `public` helpers that `exports` was dragging into the API into non-exported `*.internal` subpackages: `bitboard.internal` (move-gen engine), `pgn.internal` (`TagUtility`/`StandardTag`), `fen.internal` (`FenBoard`/`FenConstants`/symbol enums/`FenField`), `san.internal` (SAN-conversion model + notation enums + format utilities/validators). `report`/`adjudication`/`unwinnability`/`board.enums`/`exceptions` were already clean. Each `*.internal` is in `module-info`'s hidden set and the javadoc `excludePackageNames`; `-javadoc.jar` verified to carry zero `*.internal` entries while keeping the public API. Remaining for 20.0.0: the internal `common.*`/`messages`/`ucimove` tidy-ups (optional), and the release flow.
 
 ### Tighten remaining mutable return types on internal-but-public surfaces
 

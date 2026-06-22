@@ -287,6 +287,8 @@ The top-level package `io.github.dlbbld.ashlarchess` is organised by concern:
 
 Packages depend in roughly that order (top to bottom). As of 20.0.0 the layout is **package-by-feature**: feature-specific types live beside the code they serve, the duplicate by-kind buckets (`model`/`common.model`, `enums`/`common.enums`, `common.exceptions`) are gone, and `common.*` holds only genuinely cross-cutting internal infrastructure.
 
+For the JPMS boundary, each of `bitboard`, `pgn`, `san`, and `fen` additionally carries a non-exported `*.internal` subpackage holding its implementation-only types — kept `public` so the rest of the library and the white-box tests can use them across packages, but omitted from `module-info.java`'s `exports`, so modular consumers see only each package's public face.
+
 ### 4.1 Piece placement: bitboard in production, mailbox as test oracle
 
 Piece placement has two independent representations in the codebase, by design.
