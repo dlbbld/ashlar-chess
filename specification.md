@@ -266,13 +266,12 @@ The top-level package `io.github.dlbbld.ashlarchess` is organised by concern:
 
 | Package | Responsibility |
 |---|---|
-| `board` | `Board`, position state, move execution, game-status queries |
-| `model` | Cross-cutting model types (`LegalMove`, `UciMove`, `PgnMove`, `CastlingRightBoth`, …) |
-| `enums` | Pipeline-level domain enums (`MoveCheck`, `MoveSuffixAnnotation`, etc.) shared across SAN and movement validation |
-| `fen` | FEN parsing, validation, and generation |
-| `san` | SAN parsing, validation, generation |
-| `moves` | Legal-move enumeration and execution helpers (castling, en-passant, promotion) |
-| `pgn` | A flat package: PGN parsing (`StrictPgnParser` / `LenientPgnParser` and the tokenizer), export (`PgnCreate`), file I/O (`PgnReader` / `PgnWriter`), and tag / PGN utility helpers |
+| `board` | `Board`, position state, move execution, game-status queries, and the public game vocabulary: `LegalMove`, `LegalMoveKind`, `MoveSpecification`, `UciMove`, `Outcome`, `Termination`, `MoveCheck`, `InvalidMoveException`; plus internal position state (`DynamicPosition`, `ClaimRights`, `ClaimableMove`) |
+| `board.enums` | Core board vocabulary enums: `Side`, `Piece`, `PieceType`, `Square`, `Rank`, `File`, … |
+| `fen` | FEN parsing, validation, and generation (`Fen`, `FenConstants`, `StrictFenSemanticValidationProblem`) |
+| `san` | SAN parsing, validation, generation, and the lenient-notation enums (`NotationMovingPiece`, `NotationPromotionPiece`) |
+| `moves` | Legal-move enumeration and execution helpers (castling, en-passant, promotion); internal move-analysis check enums (`MovementCheck`, `CastlingCheck`, `KingSafetyCheck`) and move types (`EmptyBoardMove`, `CastlingRightBoth`) |
+| `pgn` | A flat package: the PGN model (`PgnGame`, `PgnMove`, `MoveSuffixAnnotation`), parsing (`StrictPgnParser` / `LenientPgnParser` and the tokenizer), export (`PgnCreate`), file I/O (`PgnReader` / `PgnWriter`), tag / PGN utility helpers, and `PgnCommentaryValidationException` |
 | `unwinnability` | CHA implementation (quick and full), dead-position analysis, and the king / knight distance metrics |
 | `adjudication` | Game adjudication for flagfall and resignation (`Adjudicator`, `AdjudicationResult`) |
 | `report` | Game-level reports: threefold-claim-ahead, repetition, 50-move sequences |
@@ -280,10 +279,10 @@ The top-level package `io.github.dlbbld.ashlarchess` is organised by concern:
 | `messages` | Validation-message bundle (`Message`, `messages.properties`) for SAN/FEN/PGN diagnostics |
 | `squares` | Precomputed empty-board reachability / attack lookup tables and direction ranges (`*EmptyBoardSquares`, `*Range`) |
 | `bitboard` | `BitboardPosition` (12-long piece-bitboard record) and its move/attack helpers — the production piece-placement representation |
-| `exceptions` | Top-level move-pipeline exception (`InvalidMoveException`); other exceptions live in `common.exceptions` |
-| `common` | Shared core: generic utilities, constants, cross-cutting model types, and the base exception hierarchy — `common.utility`, `common.constants`, `common.model`, `common.exceptions`, `common.enums`, `common.ucimove` |
+| `exceptions` | The cross-cutting base exception hierarchy (`UsageException`, `ChessApiRuntimeException`, `ProgrammingMistakeException`, `NonePointerException`, `FileSystemAccessException`). Feature-specific exceptions live inline in their feature package (`board.InvalidMoveException`, `pgn.PgnCommentaryValidationException`, `san.SanValidationException`) |
+| `common` | Shared internal infrastructure only: `common.utility` (`Nulls`, list/set/exception helpers), `common.constants`, `common.ucimove` |
 
-Packages depend in roughly that order (top to bottom).
+Packages depend in roughly that order (top to bottom). As of 20.0.0 the layout is **package-by-feature**: feature-specific types live beside the code they serve, the duplicate by-kind buckets (`model`/`common.model`, `enums`/`common.enums`, `common.exceptions`) are gone, and `common.*` holds only genuinely cross-cutting internal infrastructure.
 
 ### 4.1 Piece placement: bitboard in production, mailbox as test oracle
 
