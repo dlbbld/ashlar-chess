@@ -9,6 +9,8 @@ import java.util.List;
 
 import org.eclipse.jdt.annotation.Nullable;
 
+import io.github.dlbbld.ashlarchess.pgn.internal.TagUtility;
+import io.github.dlbbld.ashlarchess.pgn.internal.StandardTag;
 import io.github.dlbbld.ashlarchess.common.Nulls;
 import io.github.dlbbld.ashlarchess.fen.FenConstants;
 import io.github.dlbbld.ashlarchess.fen.model.Fen;

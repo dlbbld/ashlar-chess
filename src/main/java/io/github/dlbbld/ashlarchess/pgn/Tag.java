@@ -3,6 +3,8 @@
 
 package io.github.dlbbld.ashlarchess.pgn;
 
+import io.github.dlbbld.ashlarchess.pgn.internal.StandardTag;
+
 public record Tag(String name, String value) implements Comparable<Tag> {
 
   @Override

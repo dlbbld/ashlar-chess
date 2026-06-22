@@ -13,7 +13,7 @@ import org.junit.jupiter.api.Test;
 import io.github.dlbbld.ashlarchess.common.Nulls;
 import io.github.dlbbld.ashlarchess.pgn.PgnGame;
 import io.github.dlbbld.ashlarchess.pgn.ResultTagValue;
-import io.github.dlbbld.ashlarchess.pgn.TagUtility;
+import io.github.dlbbld.ashlarchess.pgn.internal.TagUtility;
 import io.github.dlbbld.ashlarchess.test.pgntest.constants.PgnTestConstants;
 
 class TestLenientPgnParserTag {

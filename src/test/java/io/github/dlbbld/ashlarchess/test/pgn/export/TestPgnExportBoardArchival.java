@@ -19,9 +19,9 @@ import io.github.dlbbld.ashlarchess.common.Nulls;
 import io.github.dlbbld.ashlarchess.pgn.PgnCreate;
 import io.github.dlbbld.ashlarchess.pgn.PgnGame;
 import io.github.dlbbld.ashlarchess.pgn.ResultTagValue;
-import io.github.dlbbld.ashlarchess.pgn.StandardTag;
+import io.github.dlbbld.ashlarchess.pgn.internal.StandardTag;
 import io.github.dlbbld.ashlarchess.pgn.Tag;
-import io.github.dlbbld.ashlarchess.pgn.TagUtility;
+import io.github.dlbbld.ashlarchess.pgn.internal.TagUtility;
 import io.github.dlbbld.ashlarchess.pgn.WriteMode;
 
 /**

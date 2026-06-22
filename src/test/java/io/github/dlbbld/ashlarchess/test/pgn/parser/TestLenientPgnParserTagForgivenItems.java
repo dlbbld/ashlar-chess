@@ -14,7 +14,7 @@ import io.github.dlbbld.ashlarchess.pgn.ForgivenTagItem;
 import io.github.dlbbld.ashlarchess.pgn.ForgivenTagItemCode;
 import io.github.dlbbld.ashlarchess.pgn.LenientPgnParser;
 import io.github.dlbbld.ashlarchess.pgn.LenientPgnParserValidationResult;
-import io.github.dlbbld.ashlarchess.pgn.StandardTag;
+import io.github.dlbbld.ashlarchess.pgn.internal.StandardTag;
 
 /**
  * The lenient PGN parser preserves the input as given and surfaces tolerated deviations on
