@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Test;
 
 import com.github.bhlangonijr.chesslib.Board;
 
-import io.github.dlbbld.ashlarchess.fen.FenConstants;
+import io.github.dlbbld.ashlarchess.fen.internal.FenConstants;
 
 class TestLibraryCarlosFenValidationPass {
 

@@ -20,7 +20,7 @@ import io.github.dlbbld.ashlarchess.exceptions.ProgrammingMistakeException;
 import io.github.dlbbld.ashlarchess.common.utility.ExceptionUtility;
 import io.github.dlbbld.ashlarchess.fen.StrictFenParser;
 import io.github.dlbbld.ashlarchess.fen.StrictFenSemanticValidationException;
-import io.github.dlbbld.ashlarchess.fen.FenConstants;
+import io.github.dlbbld.ashlarchess.fen.internal.FenConstants;
 import io.github.dlbbld.ashlarchess.fen.model.Fen;
 import io.github.dlbbld.ashlarchess.san.SanValidationException;
 import io.github.dlbbld.ashlarchess.san.SanValidationProblem;
@@ -604,7 +604,7 @@ public final class StrictPgnParser {
   private static void validateSanCharacters(String san) {
     for (int i = 0; i < san.length(); i++) {
       final char c = san.charAt(i);
-      if (!io.github.dlbbld.ashlarchess.fen.FenPieceSymbol.exists(c)
+      if (!io.github.dlbbld.ashlarchess.fen.internal.FenPieceSymbol.exists(c)
           && !io.github.dlbbld.ashlarchess.board.enums.File.exists(c)
           && !io.github.dlbbld.ashlarchess.board.enums.Rank.exists(c)
           && !io.github.dlbbld.ashlarchess.san.SanSymbol.exists(c)) {

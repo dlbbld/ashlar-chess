@@ -39,7 +39,7 @@
  * <p>
  * The {@link io.github.dlbbld.ashlarchess.fen.model.Fen} record is the parsed result - a value object carrying the
  * static position, side to move, castling rights, en-passant capture target square, halfmove clock, and fullmove
- * number. FEN string generation is via {@link io.github.dlbbld.ashlarchess.fen.FenBoard} from a
+ * number. FEN string generation is via {@link io.github.dlbbld.ashlarchess.fen.internal.FenBoard} from a
  * {@link io.github.dlbbld.ashlarchess.board.Board}.
  */
 @NonNullByDefault

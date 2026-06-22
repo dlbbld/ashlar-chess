@@ -19,7 +19,7 @@ import io.github.dlbbld.ashlarchess.fen.ForgivenFenItemCode;
 import io.github.dlbbld.ashlarchess.fen.LenientFenParser;
 import io.github.dlbbld.ashlarchess.fen.LenientFenParserValidationProblem;
 import io.github.dlbbld.ashlarchess.fen.LenientFenParserValidationResult;
-import io.github.dlbbld.ashlarchess.fen.FenConstants;
+import io.github.dlbbld.ashlarchess.fen.internal.FenConstants;
 import io.github.dlbbld.ashlarchess.fen.model.Fen;
 
 /**

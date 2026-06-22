@@ -19,7 +19,7 @@ import io.github.dlbbld.ashlarchess.common.Nulls;
 import io.github.dlbbld.ashlarchess.exceptions.ProgrammingMistakeException;
 import io.github.dlbbld.ashlarchess.common.utility.ExceptionUtility;
 import io.github.dlbbld.ashlarchess.fen.LenientFenParser;
-import io.github.dlbbld.ashlarchess.fen.FenConstants;
+import io.github.dlbbld.ashlarchess.fen.internal.FenConstants;
 import io.github.dlbbld.ashlarchess.fen.model.Fen;
 import io.github.dlbbld.ashlarchess.san.ForgivenSanItem;
 import io.github.dlbbld.ashlarchess.san.LenientSanParseResult;
@@ -621,7 +621,7 @@ public final class LenientPgnParser {
   }
 
   private static boolean isAllowedLenientSanCharacter(char c) {
-    if (io.github.dlbbld.ashlarchess.fen.FenPieceSymbol.exists(c)
+    if (io.github.dlbbld.ashlarchess.fen.internal.FenPieceSymbol.exists(c)
         || io.github.dlbbld.ashlarchess.board.enums.File.exists(c)
         || io.github.dlbbld.ashlarchess.board.enums.Rank.exists(c)
         || io.github.dlbbld.ashlarchess.san.SanSymbol.exists(c)) {
