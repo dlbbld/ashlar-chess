@@ -14,9 +14,6 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
-
 import io.github.dlbbld.ashlarchess.board.enums.PieceType;
 import io.github.dlbbld.ashlarchess.board.enums.PromotionPieceType;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
@@ -32,9 +29,9 @@ public final class UciMoveValidationUtility {
   private UciMoveValidationUtility() {
   }
 
-  private static final ImmutableList<UciMove> UCI_MOVES;
-  private static final ImmutableMap<String, UciMove> UCI_MOVE_TEXT_LOOKUP;
-  private static final ImmutableList<PieceType> NON_PROMOTION_MOVE_GENERATORS = Nulls.listOf(ROOK, BISHOP, KNIGHT);
+  private static final List<UciMove> UCI_MOVES;
+  private static final Map<String, UciMove> UCI_MOVE_TEXT_LOOKUP;
+  private static final List<PieceType> NON_PROMOTION_MOVE_GENERATORS = Nulls.listOf(ROOK, BISHOP, KNIGHT);
 
   static {
     final List<UciMove> uciMoves = new ArrayList<>();

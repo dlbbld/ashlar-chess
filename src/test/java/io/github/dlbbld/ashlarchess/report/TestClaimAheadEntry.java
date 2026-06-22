@@ -6,9 +6,9 @@ package io.github.dlbbld.ashlarchess.report;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import org.junit.jupiter.api.Test;
+import java.util.List;
 
-import com.google.common.collect.ImmutableList;
+import org.junit.jupiter.api.Test;
 
 import io.github.dlbbld.ashlarchess.board.Board;
 import io.github.dlbbld.ashlarchess.common.Nulls;
@@ -30,7 +30,7 @@ class TestClaimAheadEntry {
   @Test
   void compactConstructorRejectsInconsistentTotal() {
     final MoveRecord move = firstPlayedMove();
-    final ImmutableList<MoveRecord> noPriorOccurrences = Nulls.listOf();
+    final List<MoveRecord> noPriorOccurrences = Nulls.listOf();
     assertThrows(IllegalArgumentException.class, () -> new ClaimAheadEntry(move, false, noPriorOccurrences, false, 99),
         "totalRepetitionCount disagreeing with priorOccurrences.size() + 1 must throw");
   }

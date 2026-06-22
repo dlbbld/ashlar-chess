@@ -8,8 +8,6 @@ import java.util.List;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 
-import com.google.common.collect.ImmutableList;
-
 import io.github.dlbbld.ashlarchess.common.Nulls;
 import io.github.dlbbld.ashlarchess.common.enums.StrictFenSemanticValidationProblem;
 import io.github.dlbbld.ashlarchess.common.exceptions.UsageException;
@@ -42,7 +40,7 @@ public class LenientFenParserValidationException extends UsageException {
 
   public LenientFenParserValidationException(LenientFenParserValidationProblem lenientFenParserValidationProblem,
       String message) {
-    this(lenientFenParserValidationProblem, StrictFenSemanticValidationProblem.SUCCESS, message, ImmutableList.of());
+    this(lenientFenParserValidationProblem, StrictFenSemanticValidationProblem.SUCCESS, message, List.of());
   }
 
   public LenientFenParserValidationException(LenientFenParserValidationProblem lenientFenParserValidationProblem,

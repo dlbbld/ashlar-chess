@@ -6,9 +6,9 @@ package io.github.dlbbld.ashlarchess.report;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import org.junit.jupiter.api.Test;
+import java.util.List;
 
-import com.google.common.collect.ImmutableList;
+import org.junit.jupiter.api.Test;
 
 import io.github.dlbbld.ashlarchess.board.Board;
 import io.github.dlbbld.ashlarchess.common.Nulls;
@@ -26,7 +26,7 @@ class TestRepetitionGroup {
   void compactConstructorRejectsInconsistentTotal() {
     final MoveRecord move = firstPlayedMove();
     final DynamicPosition position = move.dynamicPosition();
-    final ImmutableList<MoveRecord> occurrences = Nulls.listOf(move, move, move);
+    final List<MoveRecord> occurrences = Nulls.listOf(move, move, move);
     assertThrows(IllegalArgumentException.class, () -> new RepetitionGroup(position, occurrences, false, 99),
         "totalRepetitionCount disagreeing with occurrences.size() + (initial ? 1 : 0) must throw");
   }

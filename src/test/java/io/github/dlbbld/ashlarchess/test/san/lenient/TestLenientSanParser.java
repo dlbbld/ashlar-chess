@@ -13,8 +13,6 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
-import com.google.common.collect.ImmutableList;
-
 import io.github.dlbbld.ashlarchess.board.Board;
 import io.github.dlbbld.ashlarchess.common.Nulls;
 import io.github.dlbbld.ashlarchess.common.ucimove.utility.UciMoveUtility;
@@ -31,7 +29,7 @@ class TestLenientSanParser {
   // Italian-game opening that exercises pawn pushes, knight/bishop development, and castling.
   // Castling is the only move whose canonical SAN, LAN, and UCI representations all differ - the rest
   // give us pawn vs piece coverage in each notation form.
-  private static final ImmutableList<String> ITALIAN_OPENING_SAN = Nulls.listOf("e4", "e5", "Nf3", "Nc6", "Bc4", "Bc5",
+  private static final List<String> ITALIAN_OPENING_SAN = Nulls.listOf("e4", "e5", "Nf3", "Nc6", "Bc4", "Bc5",
       "O-O", "Nf6", "d3", "d6");
 
   // ---------------------------------------------------------------------------

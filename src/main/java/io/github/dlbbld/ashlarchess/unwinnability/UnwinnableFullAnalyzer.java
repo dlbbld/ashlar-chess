@@ -8,8 +8,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import com.google.common.collect.ImmutableList;
-
 import io.github.dlbbld.ashlarchess.board.Board;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
 import io.github.dlbbld.ashlarchess.common.Nulls;
@@ -136,7 +134,7 @@ public final class UnwinnableFullAnalyzer {
     }
   }
 
-  private static ImmutableList<UciMove> prependForcedMoves(List<UciMove> forcedMoveLine, List<UciMove> helpmateLine) {
+  private static List<UciMove> prependForcedMoves(List<UciMove> forcedMoveLine, List<UciMove> helpmateLine) {
     final List<UciMove> result = new ArrayList<>(forcedMoveLine);
     result.addAll(helpmateLine);
     return Nulls.copyOfList(result);

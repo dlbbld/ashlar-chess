@@ -3,7 +3,7 @@
 
 package io.github.dlbbld.ashlarchess.common.model;
 
-import com.google.common.collect.ImmutableList;
+import java.util.List;
 
 /**
  * Snapshot of the side-to-move's right to claim a draw under one specific FIDE rule (either 9.2 threefold or 9.3 fifty-
@@ -20,7 +20,7 @@ import com.google.common.collect.ImmutableList;
  * <p>
  * Produced by {@code Board.fiftyMoveRuleClaimRights()} and {@code Board.threefoldRepetitionRuleClaimRights()}.
  */
-public record ClaimRights(boolean canClaim, ImmutableList<ClaimableMove> claimableMoves) {
+public record ClaimRights(boolean canClaim, List<ClaimableMove> claimableMoves) {
 
   public ClaimRights {
     if (canClaim == claimableMoves.isEmpty()) {

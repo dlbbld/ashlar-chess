@@ -3,7 +3,7 @@
 
 package io.github.dlbbld.ashlarchess.report;
 
-import com.google.common.collect.ImmutableList;
+import java.util.List;
 
 import io.github.dlbbld.ashlarchess.common.Nulls;
 import io.github.dlbbld.ashlarchess.common.model.DynamicPosition;
@@ -19,7 +19,7 @@ import io.github.dlbbld.ashlarchess.common.model.DynamicPosition;
  * {@code totalRepetitionCount == occurrences.size() + (includesInitialPosition ? 1 : 0)} so an inconsistent group
  * cannot exist.
  */
-record RepetitionGroup(DynamicPosition repeatedPosition, ImmutableList<MoveRecord> occurrences,
+record RepetitionGroup(DynamicPosition repeatedPosition, List<MoveRecord> occurrences,
     boolean includesInitialPosition, int totalRepetitionCount) {
 
   public RepetitionGroup {

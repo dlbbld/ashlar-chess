@@ -3,7 +3,7 @@
 
 package io.github.dlbbld.ashlarchess.report;
 
-import com.google.common.collect.ImmutableList;
+import java.util.List;
 
 import io.github.dlbbld.ashlarchess.common.Nulls;
 
@@ -16,7 +16,7 @@ import io.github.dlbbld.ashlarchess.common.Nulls;
  * chronologically by start move, with the initial-FEN-already-at-threshold sequence - if any - listed first because its
  * start move is treated as before-game.
  */
-record FiftyMoveSequenceReport(ImmutableList<FiftyMoveSequence> sequences) {
+record FiftyMoveSequenceReport(List<FiftyMoveSequence> sequences) {
 
   public FiftyMoveSequenceReport {
     sequences = Nulls.copyOfList(sequences);

@@ -14,8 +14,6 @@ import java.util.List;
 import org.apache.logging.log4j.Logger;
 import org.junit.jupiter.api.Test;
 
-import com.google.common.collect.ImmutableList;
-
 import io.github.dlbbld.ashlarchess.board.Board;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
 import io.github.dlbbld.ashlarchess.common.Nulls;
@@ -73,7 +71,7 @@ class TestPgnImportAgainstPythonChessOracle {
   private static final Path ORACLE_ROOT = Nulls.pathResolve(ConfigurationTestConstants.PROJECT_ROOT_FOLDER_PATH,
       "src/test/resources/oracle/python-chess");
 
-  private static final ImmutableList<PgnTest> BUCKETS = Nulls.listOf(PgnTest.PARSER_FROM_FEN,
+  private static final List<PgnTest> BUCKETS = Nulls.listOf(PgnTest.PARSER_FROM_FEN,
       // basic - moving pieces / capture / en passant / promotion
       PgnTest.BASIC_MOVING_PIECE_WHITE, PgnTest.BASIC_MOVING_PIECE_BLACK, PgnTest.BASIC_CAPTURE_WHITE,
       PgnTest.BASIC_CAPTURE_BLACK, PgnTest.BASIC_CAPTURE_LAST_MOVE, PgnTest.BASIC_EN_PASSANT_CAPTURE_WHITE,

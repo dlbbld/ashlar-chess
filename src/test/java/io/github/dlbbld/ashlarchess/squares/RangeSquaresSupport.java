@@ -8,8 +8,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
-import com.google.common.collect.ImmutableList;
-
 import io.github.dlbbld.ashlarchess.board.StaticPosition;
 import io.github.dlbbld.ashlarchess.board.enums.Piece;
 import io.github.dlbbld.ashlarchess.board.enums.PieceType;
@@ -60,7 +58,7 @@ final class RangeSquaresSupport {
   }
 
   private static Set<Square> calculateRangeSquare(StaticPosition staticPosition, Side sideToMove, Square fromSquare,
-      PieceType expectedSourcePieceType, ImmutableList<Square> emptyBoardSquares, boolean isAllowOwnPiece) {
+      PieceType expectedSourcePieceType, List<Square> emptyBoardSquares, boolean isAllowOwnPiece) {
 
     ToSquaresSupport.checkPiece(staticPosition, sideToMove, fromSquare, expectedSourcePieceType);
 

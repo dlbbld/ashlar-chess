@@ -3,11 +3,9 @@
 
 package io.github.dlbbld.ashlarchess.moves;
 
+import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
-
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableSet;
 
 import io.github.dlbbld.ashlarchess.board.StaticPosition;
 import io.github.dlbbld.ashlarchess.board.enums.CastlingRight;
@@ -38,7 +36,7 @@ public final class LegalMovesSupport {
     }
   }
 
-  public static ImmutableList<LegalMove> calculateLegalMoves(StaticPosition staticPosition, Side sideToMove,
+  public static List<LegalMove> calculateLegalMoves(StaticPosition staticPosition, Side sideToMove,
       CastlingRight castlingRight, final Square enPassantCaptureTargetSquare) {
     // The bottom-up call returns a TreeSet (sorted via LegalMove.compareTo). Wrapping with copyOfList preserves the
     // sorted iteration order as a List, making the move ordering part of the public contract.
@@ -76,7 +74,7 @@ public final class LegalMovesSupport {
     return resultSet;
   }
 
-  static ImmutableSet<LegalMove> calculateLegalMoveSet(StaticPosition staticPosition, Side sideToMove,
+  static Set<LegalMove> calculateLegalMoveSet(StaticPosition staticPosition, Side sideToMove,
       Square fromSquare, Set<Square> toSquareSet) {
     return calculateLegalMoveCalculation(staticPosition, sideToMove, fromSquare, toSquareSet).legalMoveSet();
   }

@@ -7,8 +7,6 @@ import java.util.List;
 
 import org.eclipse.jdt.annotation.NonNull;
 
-import com.google.common.collect.ImmutableList;
-
 /**
  * One tag-level deviation surfaced by the lenient PGN parser. The parse model preserves input as given; this record is
  * the diagnostic channel telling consumers which deviations the parser tolerated.
@@ -24,10 +22,10 @@ public record ForgivenTagItem(ForgivenTagItemCode code, String tagName, String d
 
   /**
    * Shared empty list for the "no tag deviations forgiven" case. Centralised here so the {@code @NonNull} suppression
-   * on Guava's {@code ImmutableList.of()} (which JDT can't statically prove is non-null with non-null elements) lives
+   * on the JDK {@code List.of()} (which JDT can't statically prove is non-null with non-null elements) lives
    * in one place rather than at every caller.
    */
   @SuppressWarnings("null")
-  public static final @NonNull List<@NonNull ForgivenTagItem> NO_ITEMS = ImmutableList.of();
+  public static final @NonNull List<@NonNull ForgivenTagItem> NO_ITEMS = List.of();
 
 }

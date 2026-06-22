@@ -3,7 +3,8 @@
 
 package io.github.dlbbld.ashlarchess.squares;
 
-import com.google.common.collect.ImmutableList;
+import java.util.ArrayList;
+import java.util.List;
 
 import io.github.dlbbld.ashlarchess.board.enums.Square;
 
@@ -17,8 +18,8 @@ final class RayUtility {
   }
 
   @SuppressWarnings("null")
-  static ImmutableList<Square> ray(int fromFile, int fromRank, int fileDelta, int rankDelta) {
-    final ImmutableList.Builder<Square> builder = ImmutableList.builder();
+  static List<Square> ray(int fromFile, int fromRank, int fileDelta, int rankDelta) {
+    final List<Square> builder = new ArrayList<>();
     int f = fromFile + fileDelta;
     int r = fromRank + rankDelta;
     while (f >= 1 && f <= 8 && r >= 1 && r <= 8) {
@@ -26,7 +27,7 @@ final class RayUtility {
       f += fileDelta;
       r += rankDelta;
     }
-    return builder.build();
+    return List.copyOf(builder);
   }
 
 }

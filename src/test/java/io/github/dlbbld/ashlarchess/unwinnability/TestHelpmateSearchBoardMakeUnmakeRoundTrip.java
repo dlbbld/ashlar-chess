@@ -10,8 +10,6 @@ import java.util.List;
 import org.eclipse.jdt.annotation.Nullable;
 import org.junit.jupiter.api.Test;
 
-import com.google.common.collect.ImmutableList;
-
 import io.github.dlbbld.ashlarchess.bitboard.BitboardPosition;
 import io.github.dlbbld.ashlarchess.board.Board;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
@@ -39,7 +37,7 @@ class TestHelpmateSearchBoardMakeUnmakeRoundTrip {
   /**
    * Mirrors {@link TestHelpmateSearchBoard}'s scenario set. {@code null} fen means initial position.
    */
-  private static final ImmutableList<Scenario> SCENARIOS = Nulls.listOf(new Scenario("initial", null, 2),
+  private static final List<Scenario> SCENARIOS = Nulls.listOf(new Scenario("initial", null, 2),
       new Scenario("all-four-castling-rights", "r3k2r/8/8/8/8/8/8/R3K2R w KQkq - 0 1", 1),
       new Scenario("legal-en-passant", "8/8/8/8/3pP3/8/8/K6k b - e3 0 1", 2),
       new Scenario("illegal-en-passant-normalization", "8/8/8/8/k2pP2R/8/8/7K b - e3 0 1", 1),

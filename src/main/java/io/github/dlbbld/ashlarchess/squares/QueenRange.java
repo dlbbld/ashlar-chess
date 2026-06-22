@@ -3,13 +3,13 @@
 
 package io.github.dlbbld.ashlarchess.squares;
 
-import com.google.common.collect.ImmutableList;
+import java.util.List;
 
 import io.github.dlbbld.ashlarchess.board.enums.Square;
 
-record QueenRange(ImmutableList<Square> northSquares, ImmutableList<Square> eastSquares,
-    ImmutableList<Square> southSquares, ImmutableList<Square> westSquares, ImmutableList<Square> northEastSquares,
-    ImmutableList<Square> southEastSquares, ImmutableList<Square> southWestSquares,
-    ImmutableList<Square> northWestSquares) implements DiagonalRange, OrthogonalRange {
+record QueenRange(List<Square> northSquares, List<Square> eastSquares,
+    List<Square> southSquares, List<Square> westSquares, List<Square> northEastSquares,
+    List<Square> southEastSquares, List<Square> southWestSquares,
+    List<Square> northWestSquares) implements DiagonalRange, OrthogonalRange {
 
 }

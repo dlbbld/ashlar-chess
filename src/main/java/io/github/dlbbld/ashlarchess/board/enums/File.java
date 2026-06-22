@@ -6,8 +6,6 @@ package io.github.dlbbld.ashlarchess.board.enums;
 import java.util.EnumMap;
 import java.util.List;
 
-import com.google.common.collect.ImmutableList;
-
 import io.github.dlbbld.ashlarchess.common.Nulls;
 import io.github.dlbbld.ashlarchess.common.exceptions.NonePointerException;
 import io.github.dlbbld.ashlarchess.common.exceptions.ProgrammingMistakeException;
@@ -24,7 +22,7 @@ public enum File {
   NONE('\0', 0);
 
   @SuppressWarnings("null")
-  public static final List<File> REAL = ImmutableList.of(FILE_A, FILE_B, FILE_C, FILE_D, FILE_E, FILE_F,
+  public static final List<File> REAL = List.of(FILE_A, FILE_B, FILE_C, FILE_D, FILE_E, FILE_F,
       FILE_G, FILE_H);
 
   private final char letter;

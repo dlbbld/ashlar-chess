@@ -71,8 +71,6 @@ import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.H8;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.google.common.collect.ImmutableList;
-
 import io.github.dlbbld.ashlarchess.board.enums.Square;
 import io.github.dlbbld.ashlarchess.common.Nulls;
 import io.github.dlbbld.ashlarchess.common.exceptions.ProgrammingMistakeException;
@@ -82,86 +80,86 @@ public final class DiagonalLineUtility {
   private DiagonalLineUtility() {
   }
 
-  public static final ImmutableList<Square> A8_UP = Nulls.listOf(A8);
+  public static final List<Square> A8_UP = Nulls.listOf(A8);
 
-  public static final ImmutableList<Square> A7_UP = Nulls.listOf(A7, B8);
+  public static final List<Square> A7_UP = Nulls.listOf(A7, B8);
 
-  public static final ImmutableList<Square> A6_UP = Nulls.listOf(A6, B7, C8);
+  public static final List<Square> A6_UP = Nulls.listOf(A6, B7, C8);
 
-  public static final ImmutableList<Square> A5_UP = Nulls.listOf(A5, B6, C7, D8);
+  public static final List<Square> A5_UP = Nulls.listOf(A5, B6, C7, D8);
 
-  public static final ImmutableList<Square> A4_UP = Nulls.listOf(A4, B5, C6, D7, E8);
+  public static final List<Square> A4_UP = Nulls.listOf(A4, B5, C6, D7, E8);
 
-  public static final ImmutableList<Square> A3_UP = Nulls.listOf(A3, B4, C5, D6, E7, F8);
+  public static final List<Square> A3_UP = Nulls.listOf(A3, B4, C5, D6, E7, F8);
 
-  public static final ImmutableList<Square> A2_UP = Nulls.listOf(A2, B3, C4, D5, E6, F7, G8);
+  public static final List<Square> A2_UP = Nulls.listOf(A2, B3, C4, D5, E6, F7, G8);
 
-  public static final ImmutableList<Square> A1_UP = Nulls.listOf(A1, B2, C3, D4, E5, F6, G7, H8);
+  public static final List<Square> A1_UP = Nulls.listOf(A1, B2, C3, D4, E5, F6, G7, H8);
 
-  public static final ImmutableList<Square> B1_UP = Nulls.listOf(B1, C2, D3, E4, F5, G6, H7);
+  public static final List<Square> B1_UP = Nulls.listOf(B1, C2, D3, E4, F5, G6, H7);
 
-  public static final ImmutableList<Square> C1_UP = Nulls.listOf(C1, D2, E3, F4, G5, H6);
+  public static final List<Square> C1_UP = Nulls.listOf(C1, D2, E3, F4, G5, H6);
 
-  public static final ImmutableList<Square> D1_UP = Nulls.listOf(D1, E2, F3, G4, H5);
+  public static final List<Square> D1_UP = Nulls.listOf(D1, E2, F3, G4, H5);
 
-  public static final ImmutableList<Square> E1_UP = Nulls.listOf(E1, F2, G3, H4);
+  public static final List<Square> E1_UP = Nulls.listOf(E1, F2, G3, H4);
 
-  public static final ImmutableList<Square> F1_UP = Nulls.listOf(F1, G2, H3);
+  public static final List<Square> F1_UP = Nulls.listOf(F1, G2, H3);
 
-  public static final ImmutableList<Square> G1_UP = Nulls.listOf(G1, H2);
+  public static final List<Square> G1_UP = Nulls.listOf(G1, H2);
 
-  public static final ImmutableList<Square> H1_UP = Nulls.listOf(H1);
+  public static final List<Square> H1_UP = Nulls.listOf(H1);
 
-  public static final ImmutableList<Square> A1_DOWN = Nulls.listOf(A1);
+  public static final List<Square> A1_DOWN = Nulls.listOf(A1);
 
-  public static final ImmutableList<Square> A2_DOWN = Nulls.listOf(A2, B1);
+  public static final List<Square> A2_DOWN = Nulls.listOf(A2, B1);
 
-  public static final ImmutableList<Square> A3_DOWN = Nulls.listOf(A3, B2, C1);
+  public static final List<Square> A3_DOWN = Nulls.listOf(A3, B2, C1);
 
-  public static final ImmutableList<Square> A4_DOWN = Nulls.listOf(A4, B3, C2, D1);
+  public static final List<Square> A4_DOWN = Nulls.listOf(A4, B3, C2, D1);
 
-  public static final ImmutableList<Square> A5_DOWN = Nulls.listOf(A5, B4, C3, D2, E1);
+  public static final List<Square> A5_DOWN = Nulls.listOf(A5, B4, C3, D2, E1);
 
-  public static final ImmutableList<Square> A6_DOWN = Nulls.listOf(A6, B5, C4, D3, E2, F1);
+  public static final List<Square> A6_DOWN = Nulls.listOf(A6, B5, C4, D3, E2, F1);
 
-  public static final ImmutableList<Square> A7_DOWN = Nulls.listOf(A7, B6, C5, D4, E3, F2, G1);
+  public static final List<Square> A7_DOWN = Nulls.listOf(A7, B6, C5, D4, E3, F2, G1);
 
-  public static final ImmutableList<Square> A8_DOWN = Nulls.listOf(A8, B7, C6, D5, E4, F3, G2, H1);
+  public static final List<Square> A8_DOWN = Nulls.listOf(A8, B7, C6, D5, E4, F3, G2, H1);
 
-  public static final ImmutableList<Square> B8_DOWN = Nulls.listOf(B8, C7, D6, E5, F4, G3, H2);
+  public static final List<Square> B8_DOWN = Nulls.listOf(B8, C7, D6, E5, F4, G3, H2);
 
-  public static final ImmutableList<Square> C8_DOWN = Nulls.listOf(C8, D7, E6, F5, G4, H3);
+  public static final List<Square> C8_DOWN = Nulls.listOf(C8, D7, E6, F5, G4, H3);
 
-  public static final ImmutableList<Square> D8_DOWN = Nulls.listOf(D8, E7, F6, G5, H4);
+  public static final List<Square> D8_DOWN = Nulls.listOf(D8, E7, F6, G5, H4);
 
-  public static final ImmutableList<Square> E8_DOWN = Nulls.listOf(E8, F7, G6, H5);
+  public static final List<Square> E8_DOWN = Nulls.listOf(E8, F7, G6, H5);
 
-  public static final ImmutableList<Square> F8_DOWN = Nulls.listOf(F8, G7, H6);
+  public static final List<Square> F8_DOWN = Nulls.listOf(F8, G7, H6);
 
-  public static final ImmutableList<Square> G8_DOWN = Nulls.listOf(G8, H7);
+  public static final List<Square> G8_DOWN = Nulls.listOf(G8, H7);
 
-  public static final ImmutableList<Square> H8_DOWN = Nulls.listOf(H8);
+  public static final List<Square> H8_DOWN = Nulls.listOf(H8);
 
-  private static final ImmutableList<ImmutableList<Square>> WHITE_DIAGONALS;
-  private static final ImmutableList<ImmutableList<Square>> BLACK_DIAGONALS;
-  private static final ImmutableList<ImmutableList<Square>> ALL_DIAGONALS;
+  private static final List<List<Square>> WHITE_DIAGONALS;
+  private static final List<List<Square>> BLACK_DIAGONALS;
+  private static final List<List<Square>> ALL_DIAGONALS;
 
   static {
-    final List<ImmutableList<Square>> whiteDiagonals = new ArrayList<>();
+    final List<List<Square>> whiteDiagonals = new ArrayList<>();
     initializeWhiteDiagonals(whiteDiagonals);
     WHITE_DIAGONALS = Nulls.copyOfList(whiteDiagonals);
 
-    final List<ImmutableList<Square>> blackDiagonals = new ArrayList<>();
+    final List<List<Square>> blackDiagonals = new ArrayList<>();
     initializeBlackDiagonals(blackDiagonals);
     BLACK_DIAGONALS = Nulls.copyOfList(blackDiagonals);
 
-    final List<ImmutableList<Square>> allDiagonals = new ArrayList<>();
+    final List<List<Square>> allDiagonals = new ArrayList<>();
     allDiagonals.addAll(WHITE_DIAGONALS);
     allDiagonals.addAll(BLACK_DIAGONALS);
     ALL_DIAGONALS = Nulls.copyOfList(allDiagonals);
   }
 
-  private static void initializeWhiteDiagonals(List<ImmutableList<Square>> diagonals) {
+  private static void initializeWhiteDiagonals(List<List<Square>> diagonals) {
     diagonals.add(A8_UP);
     diagonals.add(A6_UP);
     diagonals.add(A4_UP);
@@ -180,7 +178,7 @@ public final class DiagonalLineUtility {
     diagonals.add(G8_DOWN);
   }
 
-  private static void initializeBlackDiagonals(List<ImmutableList<Square>> diagonals) {
+  private static void initializeBlackDiagonals(List<List<Square>> diagonals) {
     diagonals.add(A7_UP);
     diagonals.add(A5_UP);
     diagonals.add(A3_UP);
@@ -199,7 +197,7 @@ public final class DiagonalLineUtility {
     diagonals.add(H8_DOWN);
   }
 
-  public static ImmutableList<Square> calculateLeftToRightUpDiagonal(Square square) {
+  public static List<Square> calculateLeftToRightUpDiagonal(Square square) {
 
     if (A8_UP.contains(square)) {
       return A8_UP;
@@ -251,7 +249,7 @@ public final class DiagonalLineUtility {
     throw new ProgrammingMistakeException("The corresponding diagonal for " + square.getName() + " was not found");
   }
 
-  public static ImmutableList<Square> calculateLeftToRightDownDiagonal(Square square) {
+  public static List<Square> calculateLeftToRightDownDiagonal(Square square) {
 
     if (A1_DOWN.contains(square)) {
       return A1_DOWN;
@@ -322,17 +320,17 @@ public final class DiagonalLineUtility {
       return false;
     }
     // now we must check if the diagonals are the same
-    final ImmutableList<Square> firstDiagonal = calculateDiagonal(fromSquare, intermediarySquare);
-    final ImmutableList<Square> secondDiagonal = calculateDiagonal(intermediarySquare, toSquare);
+    final List<Square> firstDiagonal = calculateDiagonal(fromSquare, intermediarySquare);
+    final List<Square> secondDiagonal = calculateDiagonal(intermediarySquare, toSquare);
 
     return firstDiagonal.equals(secondDiagonal);
   }
 
-  private static ImmutableList<Square> calculateDiagonal(Square fromSquare, Square toSquare) {
+  private static List<Square> calculateDiagonal(Square fromSquare, Square toSquare) {
     if (!calculateIsOnDiagonalLine(fromSquare, toSquare)) {
       throw new ProgrammingMistakeException("The method is only designed for squares on a diagonal line");
     }
-    for (final ImmutableList<Square> diagonals : ALL_DIAGONALS) {
+    for (final List<Square> diagonals : ALL_DIAGONALS) {
       if (diagonals.contains(fromSquare) && diagonals.contains(toSquare)) {
         return diagonals;
       }
@@ -341,8 +339,8 @@ public final class DiagonalLineUtility {
   }
 
   private static boolean calculateIsContained(Square fromSquare, Square toSquare,
-      List<ImmutableList<Square>> diagonalGroups) {
-    for (final ImmutableList<Square> diagonals : diagonalGroups) {
+      List<List<Square>> diagonalGroups) {
+    for (final List<Square> diagonals : diagonalGroups) {
       if (diagonals.contains(fromSquare) && diagonals.contains(toSquare)) {
         return true;
       }

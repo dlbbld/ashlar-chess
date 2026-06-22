@@ -14,8 +14,6 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-import com.google.common.collect.ImmutableList;
-
 import io.github.dlbbld.ashlarchess.board.Board;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
 import io.github.dlbbld.ashlarchess.common.Nulls;
@@ -42,7 +40,7 @@ public class UnwinnabilityWorstCaseSurvey {
   private static final long TIMEOUT_MS = 90_000L;
   private static final int TOP_SLOWEST = 20;
 
-  private static final ImmutableList<PgnTest> CHA_GROUPS = Nulls.listOf(PgnTest.CHA_LICHESS_QUICK_DEPTH_THREE,
+  private static final List<PgnTest> CHA_GROUPS = Nulls.listOf(PgnTest.CHA_LICHESS_QUICK_DEPTH_THREE,
       PgnTest.CHA_LICHESS_QUICK_DEPTH_FOUR, PgnTest.CHA_LICHESS_QUICK_DEPTH_ABOVE_FOUR,
       PgnTest.CHA_LICHESS_QUICK_DEPTH_ABOVE_FOUR_WINNABLE_FOR_FLAGGING_WITH_HELPMATE, PgnTest.CHA_AMBRONA,
       PgnTest.CHA_PAWN_WALL_YES, PgnTest.CHA_PAWN_WALL_NO, PgnTest.CHA_SHALLOW_TERMINATION,

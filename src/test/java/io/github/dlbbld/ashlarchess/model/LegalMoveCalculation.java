@@ -3,11 +3,11 @@
 
 package io.github.dlbbld.ashlarchess.model;
 
-import com.google.common.collect.ImmutableSet;
+import java.util.Set;
 
 import io.github.dlbbld.ashlarchess.enums.KingSafetyCheck;
 
-public record LegalMoveCalculation(ImmutableSet<LegalMove> legalMoveSet,
-    ImmutableSet<PseudoLegalMove> pseudoLegalMoveSet, KingSafetyCheck pseudoLegalKingSafety) {
+public record LegalMoveCalculation(Set<LegalMove> legalMoveSet,
+    Set<PseudoLegalMove> pseudoLegalMoveSet, KingSafetyCheck pseudoLegalKingSafety) {
 
 }

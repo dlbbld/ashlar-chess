@@ -11,8 +11,6 @@ import java.util.regex.Pattern;
 
 import org.eclipse.jdt.annotation.NonNull;
 
-import com.google.common.collect.ImmutableList;
-
 import io.github.dlbbld.ashlarchess.common.Nulls;
 import io.github.dlbbld.ashlarchess.common.exceptions.ProgrammingMistakeException;
 import io.github.dlbbld.ashlarchess.common.utility.ListUtility;
@@ -25,7 +23,7 @@ public final class TagUtility {
   private static final String TAG_PATTERN = "\\[([\\w]+) \"([^\"]*)\"\\]";
 
   @SuppressWarnings("null")
-  public static final ImmutableList<StandardTag> SEVEN_TAG_ROSTER_TAGS = Nulls
+  public static final List<StandardTag> SEVEN_TAG_ROSTER_TAGS = Nulls
       .copyOfList(Arrays.asList(StandardTag.EVENT, StandardTag.SITE, StandardTag.DATE, StandardTag.ROUND,
           StandardTag.WHITE, StandardTag.BLACK, StandardTag.RESULT));
 

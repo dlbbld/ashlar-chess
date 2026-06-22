@@ -10,8 +10,6 @@ import java.util.List;
 
 import org.eclipse.jdt.annotation.NonNull;
 
-import com.google.common.collect.ImmutableList;
-
 import io.github.dlbbld.ashlarchess.bitboard.BitboardPosition;
 import io.github.dlbbld.ashlarchess.board.enums.CastlingRight;
 import io.github.dlbbld.ashlarchess.board.enums.Square;
@@ -39,7 +37,7 @@ public final class FenConstants {
   public static final Fen FEN_INITIAL = new Fen(FEN_INITIAL_STR, BitboardPosition.INITIAL_POSITION, WHITE,
       CastlingRight.KING_AND_QUEEN_SIDE, CastlingRight.KING_AND_QUEEN_SIDE, Square.NONE, 0, 1);
 
-  public static final ImmutableList<String> POSSIBLE_FEN_AFTER_FIRST_MOVE;
+  public static final List<String> POSSIBLE_FEN_AFTER_FIRST_MOVE;
 
   static {
     @SuppressWarnings("null") final @NonNull List<String> fensAfterFirstMove = Arrays.asList(

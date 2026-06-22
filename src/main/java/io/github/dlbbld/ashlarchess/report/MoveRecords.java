@@ -6,8 +6,6 @@ package io.github.dlbbld.ashlarchess.report;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.google.common.collect.ImmutableList;
-
 import io.github.dlbbld.ashlarchess.board.Board;
 import io.github.dlbbld.ashlarchess.common.Nulls;
 import io.github.dlbbld.ashlarchess.common.model.MoveSpecification;
@@ -23,7 +21,7 @@ final class MoveRecords {
   private MoveRecords() {
   }
 
-  static ImmutableList<MoveRecord> played(Board board) {
+  static List<MoveRecord> played(Board board) {
     final List<MoveSpecification> moves = board.getPerformedMoveSpecifications();
     final Board replay = new Board(board.getInitialFen());
     final List<MoveRecord> result = new ArrayList<>(moves.size());

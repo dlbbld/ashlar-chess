@@ -3,11 +3,11 @@
 
 package io.github.dlbbld.ashlarchess.squares;
 
-import com.google.common.collect.ImmutableList;
+import java.util.List;
 
 import io.github.dlbbld.ashlarchess.board.enums.Square;
 
-record RookRange(ImmutableList<Square> northSquares, ImmutableList<Square> eastSquares,
-    ImmutableList<Square> southSquares, ImmutableList<Square> westSquares) implements OrthogonalRange {
+record RookRange(List<Square> northSquares, List<Square> eastSquares,
+    List<Square> southSquares, List<Square> westSquares) implements OrthogonalRange {
 
 }

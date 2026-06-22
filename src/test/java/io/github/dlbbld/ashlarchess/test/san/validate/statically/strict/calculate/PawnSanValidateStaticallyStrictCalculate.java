@@ -10,8 +10,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-import com.google.common.collect.ImmutableMap;
-
 import io.github.dlbbld.ashlarchess.board.enums.File;
 import io.github.dlbbld.ashlarchess.board.enums.Rank;
 import io.github.dlbbld.ashlarchess.board.enums.RankUtility;
@@ -26,7 +24,7 @@ import io.github.dlbbld.ashlarchess.test.san.validate.statically.strict.enums.Pa
 
 public class PawnSanValidateStaticallyStrictCalculate {
 
-  static ImmutableMap<String, SanParse> calculateSanMap(Side side) {
+  static Map<String, SanParse> calculateSanMap(Side side) {
     final Map<String, SanParse> sanValidateMap = new TreeMap<>();
 
     final List<String> enumNames = calculateEnumNames(side);

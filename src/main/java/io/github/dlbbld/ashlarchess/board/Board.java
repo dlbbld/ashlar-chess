@@ -11,8 +11,6 @@ import java.util.Objects;
 
 import org.eclipse.jdt.annotation.Nullable;
 
-import com.google.common.collect.ImmutableList;
-
 import io.github.dlbbld.ashlarchess.bitboard.BitboardLegalMoveFactory;
 import io.github.dlbbld.ashlarchess.bitboard.BitboardPosition;
 import io.github.dlbbld.ashlarchess.board.enums.CastlingMove;
@@ -100,7 +98,7 @@ import io.github.dlbbld.ashlarchess.unwinnability.UnwinnableQuickAnalyzer;
  * {@link #isSeventyFiveMove()}, plus the side-specific unwinnability verdict methods ({@code unwinnableQuick},
  * {@code unwinnableFull}) - the library's flagship CHA feature. Whole-position dead-position checks (no intended
  * winner) live on the analyzers; see {@link io.github.dlbbld.ashlarchess.unwinnability}. Position-state accessors
- * return Guava {@code ImmutableList}/{@code ImmutableSet}; mutation is exclusively via {@code move}/{@code unmove}.
+ * return unmodifiable JDK {@code List}/{@code Set}; mutation is exclusively via {@code move}/{@code unmove}.
  *
  * <p>
  * For game-level reports (threefold-claim-ahead, repetition listings, no-progress sequences), use
@@ -1019,7 +1017,7 @@ public final class Board {
     return boardStates.size() - 1;
   }
 
-  ImmutableList<DynamicPosition> getDynamicPositions() {
+  List<DynamicPosition> getDynamicPositions() {
     final List<DynamicPosition> result = new ArrayList<>();
     for (final BoardState state : boardStates) {
       result.add(state.dynamicPosition());

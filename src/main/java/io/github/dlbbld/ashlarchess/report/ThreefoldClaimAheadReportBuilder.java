@@ -7,8 +7,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import com.google.common.collect.ImmutableList;
-
 import io.github.dlbbld.ashlarchess.board.Board;
 import io.github.dlbbld.ashlarchess.common.Nulls;
 import io.github.dlbbld.ashlarchess.common.model.DynamicPosition;
@@ -35,7 +33,7 @@ final class ThreefoldClaimAheadReportBuilder {
   static ThreefoldClaimAheadReport build(Board board) {
     final List<MoveRecord> rawClaimAheads = replayAndCollectClaimAheads(board.getPerformedMoves(),
         board.getInitialFen());
-    final ImmutableList<MoveRecord> playedMoveRecords = MoveRecords.played(board);
+    final List<MoveRecord> playedMoveRecords = MoveRecords.played(board);
     final DynamicPosition initialDynamicPosition = board.getInitialDynamicPosition();
 
     final List<ClaimAheadEntry> entries = new ArrayList<>();
@@ -75,7 +73,7 @@ final class ThreefoldClaimAheadReportBuilder {
     }
   }
 
-  private static ClaimAheadEntry buildEntry(MoveRecord claimAheadMove, ImmutableList<MoveRecord> playedMoveRecords,
+  private static ClaimAheadEntry buildEntry(MoveRecord claimAheadMove, List<MoveRecord> playedMoveRecords,
       DynamicPosition initialDynamicPosition) {
 
     final boolean hasBeenPlayed = playedMoveRecords.contains(claimAheadMove);

@@ -19,7 +19,6 @@ import com.github.bhlangonijr.chesslib.move.MoveConversionException;
 import com.github.bhlangonijr.chesslib.move.MoveGenerator;
 import com.github.bhlangonijr.chesslib.move.MoveGeneratorException;
 import com.github.bhlangonijr.chesslib.move.MoveList;
-import com.google.common.collect.ImmutableList;
 
 import io.github.dlbbld.ashlarchess.bitboard.BitboardPosition;
 import io.github.dlbbld.ashlarchess.bitboard.StaticPositionBridge;
@@ -371,7 +370,7 @@ public class LibraryCarlosBoard {
     return performedMoveCount;
   }
 
-  public ImmutableList<DynamicPosition> getDynamicPositions() {
+  public List<DynamicPosition> getDynamicPositions() {
     return Nulls.copyOfList(dynamicPositions);
   }
 
@@ -379,7 +378,7 @@ public class LibraryCarlosBoard {
     return Nulls.getLast(dynamicPositions);
   }
 
-  public ImmutableList<MoveSpecification> getLegalMoveSpecifications() {
+  public List<MoveSpecification> getLegalMoveSpecifications() {
     return Nulls.copyOfList(generateMoveSpecificationSortedSet(this.board));
   }
 
@@ -489,7 +488,7 @@ public class LibraryCarlosBoard {
     return EnPassantCaptureUtility.calculateEnPassantCaptureTargetSquare(getLastMove());
   }
 
-  public ImmutableList<MoveSpecification> getPerformedMoveSpecifications() {
+  public List<MoveSpecification> getPerformedMoveSpecifications() {
     final List<MoveSpecification> moveSpecifications = new ArrayList<>();
     for (final MoveBackup moveBackup : NullsCarlos.getBackup(this.board)) {
 
@@ -501,7 +500,7 @@ public class LibraryCarlosBoard {
     return Nulls.copyOfList(moveSpecifications);
   }
 
-  public ImmutableList<LegalMove> getLegalMoves() {
+  public List<LegalMove> getLegalMoves() {
     return Nulls.copyOfList(generateLegalMoveSortedSet(this.board));
   }
 
@@ -580,7 +579,7 @@ public class LibraryCarlosBoard {
     return true;
   }
 
-  public ImmutableList<LegalMove> getPerformedMoves() {
+  public List<LegalMove> getPerformedMoves() {
     return Nulls.copyOfList(performedLegalMoves);
   }
 
@@ -601,7 +600,7 @@ public class LibraryCarlosBoard {
     return canClaimThreefoldRepetitionRuleWithOwnMove();
   }
 
-  public ImmutableList<String> getLegalMovesAsSan() {
+  public List<String> getLegalMovesAsSan() {
     final List<String> result = new ArrayList<>();
     for (final MoveSpecification moveSpecification : getLegalMoveSpecifications()) {
       this.move(moveSpecification);

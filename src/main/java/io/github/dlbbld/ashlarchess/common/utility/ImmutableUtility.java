@@ -7,8 +7,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.EnumSet;
 import java.util.List;
-
-import com.google.common.collect.ImmutableSet;
+import java.util.Set;
 
 import io.github.dlbbld.ashlarchess.board.enums.Square;
 import io.github.dlbbld.ashlarchess.common.Nulls;
@@ -18,7 +17,7 @@ public final class ImmutableUtility {
   private ImmutableUtility() {
   }
 
-  public static final ImmutableSet<Square> EMPTY_UNMODIFIABLE_SET;
+  public static final Set<Square> EMPTY_UNMODIFIABLE_SET;
 
   static {
     final List<Square> list = new ArrayList<>();
@@ -26,7 +25,7 @@ public final class ImmutableUtility {
     EMPTY_UNMODIFIABLE_SET = Nulls.copyOfSet(enumSet);
   }
 
-  public static ImmutableSet<Square> constructSet(Square... squareArray) {
+  public static Set<Square> constructSet(Square... squareArray) {
     if (squareArray.length == 0) {
       return EMPTY_UNMODIFIABLE_SET;
     }

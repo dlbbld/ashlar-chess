@@ -12,6 +12,8 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.EnumMap;
 import java.util.EnumSet;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -26,12 +28,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
-
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
 
 import io.github.dlbbld.ashlarchess.common.exceptions.ProgrammingMistakeException;
 
@@ -229,27 +225,41 @@ public final class Nulls {
   }
 
   public static <E extends Enum<E>> EnumSet<E> newEnumSet(Iterable<E> iterable, Class<E> elementType) {
-    return checkResult(Sets.newEnumSet(iterable, elementType));
+    final EnumSet<E> set = EnumSet.noneOf(elementType);
+    for (final E element : iterable) {
+      set.add(element);
+    }
+    return checkResult(set);
   }
 
   public static <K extends Enum<K>, V> EnumMap<K, V> newEnumMap(Class<K> type) {
-    return checkResult(Maps.newEnumMap(type));
+    return checkResult(new EnumMap<>(type));
   }
 
-  public static <K extends Enum<K>, V> ImmutableMap<K, V> immutableEnumMap(Map<K, ? extends V> map) {
-    return checkResult(Maps.immutableEnumMap(map));
+  // Unmodifiable view backed by an EnumMap: preserves enum-ordinal iteration order and the EnumMap's array-indexed
+  // O(1) lookup. EnumMap's copy constructor requires a non-empty source map to infer the key type (as Guava's
+  // Maps.immutableEnumMap did before).
+  public static <K extends Enum<K>, V> Map<K, V> immutableEnumMap(Map<K, ? extends V> map) {
+    return checkResult(Collections.unmodifiableMap(new EnumMap<K, V>(map)));
   }
 
-  public static <E> ImmutableList<E> copyOfList(Iterable<? extends E> elements) {
-    return checkResult(ImmutableList.copyOf(elements));
+  public static <E> List<E> copyOfList(Iterable<? extends E> elements) {
+    final List<E> list = new ArrayList<>();
+    for (final E element : elements) {
+      list.add(element);
+    }
+    return checkResult(List.copyOf(list));
   }
 
-  public static <E> ImmutableSet<E> copyOfSet(Collection<? extends E> elements) {
-    return checkResult(ImmutableSet.copyOf(elements));
+  // LinkedHashSet (not Set.copyOf) so the unmodifiable copy keeps the source's deterministic encounter order;
+  // JDK Set.of/copyOf deliberately randomise iteration order per JVM run.
+  public static <E> Set<E> copyOfSet(Collection<? extends E> elements) {
+    return checkResult(Collections.unmodifiableSet(new LinkedHashSet<>(elements)));
   }
 
-  public static <K, V> ImmutableMap<K, V> copyOfMap(Map<? extends K, ? extends V> map) {
-    return checkResult(ImmutableMap.copyOf(map));
+  // LinkedHashMap (not Map.copyOf) so the unmodifiable copy keeps the source's deterministic encounter order.
+  public static <K, V> Map<K, V> copyOfMap(Map<? extends K, ? extends V> map) {
+    return checkResult(Collections.unmodifiableMap(new LinkedHashMap<K, V>(map)));
   }
 
   @SuppressWarnings({ "unchecked" })
@@ -305,8 +315,8 @@ public final class Nulls {
   }
 
   @SafeVarargs
-  public static <E> ImmutableList<E> listOf(E... items) {
-    return checkResult(ImmutableList.copyOf(items));
+  public static <E> List<E> listOf(E... items) {
+    return checkResult(List.of(items));
   }
 
   public static <E extends Enum<E>> EnumSet<E> noneOf(Class<E> enumClass) {

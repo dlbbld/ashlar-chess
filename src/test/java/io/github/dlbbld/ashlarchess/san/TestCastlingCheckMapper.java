@@ -6,9 +6,9 @@ package io.github.dlbbld.ashlarchess.san;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-import org.junit.jupiter.api.Test;
+import java.util.List;
 
-import com.google.common.collect.ImmutableList;
+import org.junit.jupiter.api.Test;
 
 import io.github.dlbbld.ashlarchess.board.enums.CastlingRightLoss;
 import io.github.dlbbld.ashlarchess.common.Nulls;
@@ -28,11 +28,11 @@ import io.github.dlbbld.ashlarchess.enums.CastlingCheck;
  */
 class TestCastlingCheckMapper {
 
-  private static final ImmutableList<CastlingCheck> EXPECTED_CASTLING_CHECKS = Nulls.listOf(
+  private static final List<CastlingCheck> EXPECTED_CASTLING_CHECKS = Nulls.listOf(
       CastlingCheck.FINAL_NO_RIGHT, CastlingCheck.TEMPORARY_SQUARES_NOT_EMPTY, CastlingCheck.TEMPORARY_KING_IN_CHECK,
       CastlingCheck.TEMPORARY_KING_TRAVELS_THROUGH_CHECK, CastlingCheck.TEMPORARY_KING_ENDS_IN_CHECK);
 
-  private static final ImmutableList<SanValidationProblem> EXPECTED_KING_CASTLING_PROBLEMS = Nulls.listOf(
+  private static final List<SanValidationProblem> EXPECTED_KING_CASTLING_PROBLEMS = Nulls.listOf(
       SanValidationProblem.KING_CASTLING_FINAL_NO_RIGHT_KING_MOVED,
       SanValidationProblem.KING_CASTLING_FINAL_NO_RIGHT_ROOK_MOVED,
       SanValidationProblem.KING_CASTLING_FINAL_NO_RIGHT_ROOK_CAPTURED,
@@ -46,11 +46,11 @@ class TestCastlingCheckMapper {
   /**
    * Provenance values of {@link CastlingRightLoss} that correspond to a FINAL_NO_RIGHT failure.
    */
-  private static final ImmutableList<CastlingRightLoss> EXPECTED_FINAL_NO_RIGHT_PROVENANCES = Nulls.listOf(
+  private static final List<CastlingRightLoss> EXPECTED_FINAL_NO_RIGHT_PROVENANCES = Nulls.listOf(
       CastlingRightLoss.KING_MOVED, CastlingRightLoss.ROOK_MOVED, CastlingRightLoss.ROOK_CAPTURED,
       CastlingRightLoss.CASTLED, CastlingRightLoss.UNKNOWN_FEN_IMPORT);
 
-  private static final ImmutableList<SanValidationProblem> EXPECTED_FINAL_NO_RIGHT_PROBLEMS = Nulls.listOf(
+  private static final List<SanValidationProblem> EXPECTED_FINAL_NO_RIGHT_PROBLEMS = Nulls.listOf(
       SanValidationProblem.KING_CASTLING_FINAL_NO_RIGHT_KING_MOVED,
       SanValidationProblem.KING_CASTLING_FINAL_NO_RIGHT_ROOK_MOVED,
       SanValidationProblem.KING_CASTLING_FINAL_NO_RIGHT_ROOK_CAPTURED,
@@ -102,7 +102,7 @@ class TestCastlingCheckMapper {
   void testTemporaryMappingMatchesExpectedOrder() {
     // The TEMPORARY entries in EXPECTED_KING_CASTLING_PROBLEMS start after the 5 FINAL entries.
     final int temporaryStartIndex = EXPECTED_FINAL_NO_RIGHT_PROVENANCES.size();
-    final ImmutableList<CastlingCheck> temporaryCastlingChecks = EXPECTED_CASTLING_CHECKS.subList(1,
+    final List<CastlingCheck> temporaryCastlingChecks = EXPECTED_CASTLING_CHECKS.subList(1,
         EXPECTED_CASTLING_CHECKS.size());
     for (int i = 0; i < temporaryCastlingChecks.size(); i++) {
       assertEquals(Nulls.get(EXPECTED_KING_CASTLING_PROBLEMS, temporaryStartIndex + i),

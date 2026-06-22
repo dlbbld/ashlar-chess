@@ -5,8 +5,6 @@ package io.github.dlbbld.ashlarchess.board.enums;
 
 import java.util.List;
 
-import com.google.common.collect.ImmutableList;
-
 import io.github.dlbbld.ashlarchess.common.exceptions.NonePointerException;
 
 public enum PromotionPieceType {
@@ -19,7 +17,7 @@ public enum PromotionPieceType {
   @SuppressWarnings("null")
   // Move-ordering rule (Q, R, B, N) - see PromotionPieceTypeUtility for the rationale.
   // Enum declaration above keeps the static catalog order (P, R, N, B, Q, K) shared with PieceType.
-  public static final List<PromotionPieceType> REAL = ImmutableList.of(QUEEN, ROOK, BISHOP, KNIGHT);
+  public static final List<PromotionPieceType> REAL = List.of(QUEEN, ROOK, BISHOP, KNIGHT);
 
   private final PieceType pieceType;
 

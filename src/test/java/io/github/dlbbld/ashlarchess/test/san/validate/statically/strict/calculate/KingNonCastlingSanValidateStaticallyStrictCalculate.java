@@ -8,8 +8,6 @@ import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.KING;
 import java.util.Map;
 import java.util.TreeMap;
 
-import com.google.common.collect.ImmutableMap;
-
 import io.github.dlbbld.ashlarchess.board.enums.File;
 import io.github.dlbbld.ashlarchess.board.enums.Rank;
 import io.github.dlbbld.ashlarchess.board.enums.Square;
@@ -20,7 +18,7 @@ import io.github.dlbbld.ashlarchess.test.san.validate.statically.strict.enums.Ki
 
 public class KingNonCastlingSanValidateStaticallyStrictCalculate {
 
-  static ImmutableMap<String, SanParse> calculateSanMap() {
+  static Map<String, SanParse> calculateSanMap() {
 
     final Map<String, SanParse> sanValidateMap = new TreeMap<>();
 

@@ -100,7 +100,7 @@ public final class BitboardLegalMoveFactory {
   /**
    * Sink-based variant of {@link #calculateLegalMoves}: emits the same {@link LegalMove}s to {@code sink} but in the
    * underlying move generator's natural traversal order (non-castling first, then castling king-side / queen-side),
-   * rather than {@link LegalMove#compareTo} order. No {@link Set} / {@link TreeSet} / {@link ImmutableList} is
+   * rather than {@link LegalMove#compareTo} order. No {@link Set} / {@link TreeSet} / {@link List} is
    * allocated by this method - the search hot path passes a per-depth reusable buffer's {@code add} method as the sink.
    * The order-sorting set-based {@link #calculateLegalMoves} wraps this with a {@link TreeSet}-collecting sink so
    * Board's public-API contract is preserved unchanged.

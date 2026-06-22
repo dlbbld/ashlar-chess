@@ -6,8 +6,6 @@ package io.github.dlbbld.ashlarchess.enums;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.google.common.collect.ImmutableList;
-
 import io.github.dlbbld.ashlarchess.common.exceptions.ProgrammingMistakeException;
 import io.github.dlbbld.ashlarchess.common.utility.ListUtility;
 
@@ -22,7 +20,7 @@ public enum MoveSuffixAnnotation {
   NONE("");
 
   @SuppressWarnings("null")
-  public static final List<MoveSuffixAnnotation> REAL = ImmutableList.of(MISTAKE, GOOD_MOVE, BLUNDER,
+  public static final List<MoveSuffixAnnotation> REAL = List.of(MISTAKE, GOOD_MOVE, BLUNDER,
       DUBIOUS_MOVE, INTERESTING_MOVE, BRILLIANT_MOVE);
 
   private final String suffix;

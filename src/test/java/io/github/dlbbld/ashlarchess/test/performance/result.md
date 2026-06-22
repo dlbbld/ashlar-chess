@@ -40,7 +40,7 @@ list access.
 Second, the survey measures the legal-move buffer path used by `HelpmateSearchBoard` inside CHA full search. A test-side
 probe mirrors the legal-move part of `HelpmateSearchBoard.refreshDerivedState`: it calls
 `BitboardLegalMoveFactory.calculateLegalMovesInto(...)` and emits into a reusable `LegalMoveBuffer`, avoiding the
-`TreeSet` sorting and `ImmutableList` allocation used by the public `Board` path. This isolates move generation for the
+`TreeSet` sorting and `List` allocation used by the public `Board` path. This isolates move generation for the
 search board; it does not measure the whole recursive helpmate search or the `move` / `unmove` operations around each
 node.
 

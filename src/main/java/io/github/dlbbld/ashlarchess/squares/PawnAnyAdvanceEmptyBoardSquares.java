@@ -4,9 +4,9 @@
 package io.github.dlbbld.ashlarchess.squares;
 
 import java.util.EnumMap;
-
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableSet;
+import java.util.LinkedHashSet;
+import java.util.Map;
+import java.util.Set;
 
 import io.github.dlbbld.ashlarchess.board.enums.Side;
 import io.github.dlbbld.ashlarchess.board.enums.Square;
@@ -17,8 +17,8 @@ final class PawnAnyAdvanceEmptyBoardSquares {
   private PawnAnyAdvanceEmptyBoardSquares() {
   }
 
-  private static final ImmutableMap<Square, ImmutableSet<Square>> PAWN_WHITE_SQUARES_MAP;
-  private static final ImmutableMap<Square, ImmutableSet<Square>> PAWN_BLACK_SQUARES_MAP;
+  private static final Map<Square, Set<Square>> PAWN_WHITE_SQUARES_MAP;
+  private static final Map<Square, Set<Square>> PAWN_BLACK_SQUARES_MAP;
 
   static {
     PAWN_WHITE_SQUARES_MAP = build(Side.WHITE);
@@ -30,18 +30,18 @@ final class PawnAnyAdvanceEmptyBoardSquares {
 
   // Union of one-advance and two-advance. Pawns only exist on ranks 2-7.
   @SuppressWarnings("null")
-  private static ImmutableMap<Square, ImmutableSet<Square>> build(Side side) {
-    final EnumMap<Square, ImmutableSet<Square>> map = Nulls.newEnumMap(Square.class);
+  private static Map<Square, Set<Square>> build(Side side) {
+    final EnumMap<Square, Set<Square>> map = Nulls.newEnumMap(Square.class);
     for (final Square from : Square.REAL) {
-      final ImmutableSet.Builder<Square> builder = ImmutableSet.builder();
+      final Set<Square> builder = new LinkedHashSet<>();
       builder.addAll(PawnOneAdvanceEmptyBoardSquares.getPawnSquares(side, from));
       builder.addAll(PawnTwoAdvanceEmptyBoardSquares.getPawnSquares(side, from));
-      map.put(from, builder.build());
+      map.put(from, Nulls.copyOfSet(builder));
     }
     return Nulls.copyOfMap(map);
   }
 
-  public static ImmutableSet<Square> getPawnSquares(Side side, Square fromSquare) {
+  public static Set<Square> getPawnSquares(Side side, Square fromSquare) {
     return switch (side) {
       case BLACK -> Nulls.get(PAWN_BLACK_SQUARES_MAP, fromSquare);
       case WHITE -> Nulls.get(PAWN_WHITE_SQUARES_MAP, fromSquare);

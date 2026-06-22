@@ -18,8 +18,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
-import com.google.common.collect.ImmutableList;
-
 import io.github.dlbbld.ashlarchess.board.StaticPosition;
 import io.github.dlbbld.ashlarchess.board.enums.CastlingRight;
 import io.github.dlbbld.ashlarchess.board.enums.Piece;
@@ -46,12 +44,12 @@ class KingCastlingLegalMoves extends KingLegalMoves {
   // Required-empty corridor and king-travel/king-destination squares - duplicated test-side so the StaticPosition
   // overload does not borrow them from the production CastlingUtility (which would weaken the oracle).
 
-  private static final ImmutableList<Square> WHITE_QUEEN_SIDE_CASTLING_REQUIRED_EMPTY_SQUARES = Nulls.listOf(B1, C1,
+  private static final List<Square> WHITE_QUEEN_SIDE_CASTLING_REQUIRED_EMPTY_SQUARES = Nulls.listOf(B1, C1,
       D1);
-  private static final ImmutableList<Square> WHITE_KING_SIDE_CASTLING_REQUIRED_EMPTY_SQUARES = Nulls.listOf(F1, G1);
-  private static final ImmutableList<Square> BLACK_QUEEN_SIDE_CASTLING_REQUIRED_EMPTY_SQUARES = Nulls.listOf(B8, C8,
+  private static final List<Square> WHITE_KING_SIDE_CASTLING_REQUIRED_EMPTY_SQUARES = Nulls.listOf(F1, G1);
+  private static final List<Square> BLACK_QUEEN_SIDE_CASTLING_REQUIRED_EMPTY_SQUARES = Nulls.listOf(B8, C8,
       D8);
-  private static final ImmutableList<Square> BLACK_KING_SIDE_CASTLING_REQUIRED_EMPTY_SQUARES = Nulls.listOf(F8, G8);
+  private static final List<Square> BLACK_KING_SIDE_CASTLING_REQUIRED_EMPTY_SQUARES = Nulls.listOf(F8, G8);
 
   private static final Square WHITE_QUEEN_SIDE_TRAVEL_OVER_SQUARE = D1;
   private static final Square BLACK_QUEEN_SIDE_TRAVEL_OVER_SQUARE = D8;

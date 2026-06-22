@@ -14,8 +14,6 @@ import java.util.List;
 import org.apache.logging.log4j.Logger;
 import org.junit.jupiter.api.Test;
 
-import com.google.common.collect.ImmutableList;
-
 import io.github.dlbbld.ashlarchess.board.Board;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
 import io.github.dlbbld.ashlarchess.common.Nulls;
@@ -59,7 +57,7 @@ class TestInsufficientMaterialAgainstPythonChessOracle {
   private static final Path ORACLE_ROOT = Nulls.pathResolve(ConfigurationTestConstants.PROJECT_ROOT_FOLDER_PATH,
       "src/test/resources/oracle/python-chess");
 
-  private static final ImmutableList<PgnTest> BUCKETS = Nulls.listOf(PgnTest.BASIC_INSUFFICIENT_MATERIAL_BOTH,
+  private static final List<PgnTest> BUCKETS = Nulls.listOf(PgnTest.BASIC_INSUFFICIENT_MATERIAL_BOTH,
       PgnTest.BASIC_INSUFFICIENT_MATERIAL_ONLY_WHITE, PgnTest.BASIC_INSUFFICIENT_MATERIAL_ONLY_BLACK,
       PgnTest.BASIC_INSUFFICIENT_MATERIAL_NONE);
 

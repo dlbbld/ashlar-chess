@@ -29,7 +29,7 @@ import io.github.dlbbld.ashlarchess.moves.EnPassantCaptureUtility;
  * castling rights for both sides as mutable instance fields. {@link #move(MoveSpecification)} mutates the bitboards in
  * place; {@link #unmove()} pops a snapshot off a growable, pre-allocated stack of mutable {@link UndoState} objects.
  * The legal-move generator emits directly into a per-depth {@link LegalMoveBuffer} via
- * {@link BitboardLegalMoveFactory#calculateLegalMovesInto} - no per-move {@code Set} / {@code ImmutableList} allocation
+ * {@link BitboardLegalMoveFactory#calculateLegalMovesInto} - no per-move {@code Set} / {@code List} allocation
  * along the search hot path.
  *
  * <p>

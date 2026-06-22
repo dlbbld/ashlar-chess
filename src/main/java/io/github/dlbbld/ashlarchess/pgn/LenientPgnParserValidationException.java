@@ -7,8 +7,6 @@ import java.util.List;
 
 import org.eclipse.jdt.annotation.NonNull;
 
-import com.google.common.collect.ImmutableList;
-
 import io.github.dlbbld.ashlarchess.common.Nulls;
 import io.github.dlbbld.ashlarchess.common.exceptions.UsageException;
 import io.github.dlbbld.ashlarchess.san.ForgivenSanItem;
@@ -36,7 +34,7 @@ public class LenientPgnParserValidationException extends UsageException {
 
   public LenientPgnParserValidationException(LenientPgnParserValidationProblem lenientPgnParserValidationProblem,
       SanValidationProblem sanValidationProblem, String message) {
-    this(lenientPgnParserValidationProblem, sanValidationProblem, message, ImmutableList.of(), ImmutableList.of());
+    this(lenientPgnParserValidationProblem, sanValidationProblem, message, List.of(), List.of());
   }
 
   /**

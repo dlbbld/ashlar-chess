@@ -15,6 +15,17 @@ Live planning only: current release work, backlog, and obsolete decisions. Shipp
 
 The dedicated module-and-API-boundary release. Breaking package / FQN changes that don't belong in 19.0.0 are parked here.
 
+### Drop the Guava dependency — JDK collections only ✅ DONE 2026-06-22
+
+The public API exposed Guava `Immutable{List,Set,Map}` on return types, record components, and constants, forcing every consumer onto Guava (observed: a downstream module had to add Guava to its POM just to call `Board`). Guava was also used pervasively *internally*, yet only for `Immutable*` collection factories that JDK 17 fully covers (`List.copyOf`/`Set.copyOf`/`Map.copyOf`, `List.of`/…).
+
+Removed entirely, in two commits:
+
+- **Tier 1 — public surface.** `Board` getters, the vocabulary enums' `REAL` constants, the parser result records + validation-exception accessors, `Reporter`, `PgnCreate.toPgnLines`, the bitboard accessors, `UnwinnabilityFullAnalysis`, etc. now declare JDK `List`/`Set`. Behaviour-preserving (still returned the same Guava objects internally at that stage), so consumers no longer compile against Guava and `module-info` needs no `requires` for it.
+- **Tier 2 — internal sweep + dependency removed from `pom.xml`.** The `Nulls` / `ImmutableUtility` hubs and every call site now build JDK collections. Determinism preserved by rule: `copyOfSet` → unmodifiable `LinkedHashSet`, `copyOfMap` / `immutableEnumMap` → unmodifiable `LinkedHashMap` / `EnumMap` — **never** `Set.copyOf` / `Map.copyOf`, which randomise iteration order per JVM run. Verified with `-Pfull` (golden-output, perft, and python-chess oracle suites all green).
+
+Result: zero Guava in the artifact; under `module-info` Guava is not a `requires` at all. Resolves §5.2 of `20.0.0-jpms-plan.md`.
+
 ### Group exceptions, models, enums, and constants by domain (package-by-feature)
 
 The codebase currently mixes "group by kind" with "feature-inline", and *duplicates* the by-kind buckets at two levels — `ashlarchess.exceptions` **and** `ashlarchess.common.exceptions`; `ashlarchess.enums` **and** `common.enums`; `ashlarchess.model` **and** `common.model` — with no rule for which one a type lands in, plus single-file kind sub-packages (e.g. `fen.constants` holds one class). A newcomer cannot predict any type's package from a rule.
@@ -30,7 +41,7 @@ A large, purely mechanical, compiler-checked FQN reset with no behavior change, 
 
 ### Tighten remaining mutable return types on internal-but-public surfaces
 
-A few `public static` move-generation helpers still return a freshly-built mutable `Set` / `List` typed as the mutable interface instead of a Guava `Immutable*`: `PromotionUtility.performPromotionMovements`, `CastlingUtility.performCastlingMovements`, `EnPassantCaptureUtility.performEnPassantCaptureMovements`, and the `EmptyBoardMoveUtility` overloads. Each returns a fresh per-call copy, so there is no aliasing bug today — tightening the declared type is pure polish. Parked here rather than 19.0.0 because these are exactly the internal-but-accidentally-public move-gen surfaces this release narrows or hides behind the module boundary: fix the return types in the same pass that decides which of them stay public at all. (`BitboardPositionUtility.toSquares` was tightened to `ImmutableSet` in 19.0.0.)
+A few `public static` move-generation helpers still return a freshly-built mutable `Set` / `List` that callers could mutate: `PromotionUtility.performPromotionMovements`, `CastlingUtility.performCastlingMovements`, `EnPassantCaptureUtility.performEnPassantCaptureMovements`, and the `EmptyBoardMoveUtility` overloads. Each returns a fresh per-call copy, so there is no aliasing bug today — wrapping the result as an unmodifiable JDK collection (e.g. via `Nulls.copyOfList` / `Nulls.copyOfSet`, now that Guava is gone) is pure polish. Parked here rather than 19.0.0 because these are exactly the internal-but-accidentally-public move-gen surfaces this release narrows or hides behind the module boundary: fix the return types in the same pass that decides which of them stay public at all. (`BitboardPositionUtility.toSquares` already returns an unmodifiable `Set`.)
 
 ### Position-as-value ergonomics: `mirror()` and an immutable `play(move)` (audit M3)
 

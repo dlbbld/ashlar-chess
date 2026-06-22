@@ -6,9 +6,9 @@ package io.github.dlbbld.ashlarchess.test.bitboard;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import org.junit.jupiter.api.Test;
+import java.util.List;
 
-import com.google.common.collect.ImmutableList;
+import org.junit.jupiter.api.Test;
 
 import io.github.dlbbld.ashlarchess.bitboard.BitboardPosition;
 import io.github.dlbbld.ashlarchess.board.Board;
@@ -57,7 +57,7 @@ class TestBitboardPositionIsInCheckAfterEnPassantCapture {
   private static final EpCase EP_RESOLVES_CHECK = new EpCase("ep-resolves-check", "4k3/8/8/3pP3/2K5/8/8/8 w - d6 0 1",
       Square.E5, Square.D6, Side.WHITE);
 
-  private static final ImmutableList<EpCase> CASES = Nulls.listOf(LEGAL_EP_BLACK, ILLEGAL_EP_BLACK_RANK_ROOK,
+  private static final List<EpCase> CASES = Nulls.listOf(LEGAL_EP_BLACK, ILLEGAL_EP_BLACK_RANK_ROOK,
       LEGAL_EP_WHITE, ILLEGAL_EP_WHITE_RANK_ROOK, EP_RESOLVES_CHECK);
 
   @SuppressWarnings("static-method")
