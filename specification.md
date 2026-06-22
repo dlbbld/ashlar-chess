@@ -268,7 +268,9 @@ The top-level package `io.github.dlbbld.ashlarchess` is organised by concern:
 |---|---|
 | `board` | `Board`, position state, move execution, game-status queries, and the public game vocabulary: `LegalMove`, `LegalMoveKind`, `MoveSpecification`, `UciMove`, `Outcome`, `Termination`, `MoveCheck`, `InvalidMoveException`; plus internal position state (`DynamicPosition`, `ClaimRights`, `ClaimableMove`) |
 | `board.enums` | Core board vocabulary enums: `Side`, `Piece`, `PieceType`, `Square`, `Rank`, `File`, … |
-| `fen` | FEN parsing, validation, and generation (`Fen`, `FenConstants`, `StrictFenSemanticValidationProblem`) |
+| `board.model` | Internal board-mutation helper `UpdateSquare`, consumed by the `moves` execution helpers |
+| `fen` | FEN parsing, validation, and generation (`StrictFenParser` / `LenientFenParser`, `FenConstants`, `StrictFenSemanticValidationProblem`) |
+| `fen.model` | The public FEN value type `Fen`, returned by `Board`, the FEN parsers, and PGN |
 | `san` | SAN parsing, validation, generation, and the lenient-notation enums (`NotationMovingPiece`, `NotationPromotionPiece`) |
 | `moves` | Legal-move enumeration and execution helpers (castling, en-passant, promotion); internal move-analysis check enums (`MovementCheck`, `CastlingCheck`, `KingSafetyCheck`) and move types (`EmptyBoardMove`, `CastlingRightBoth`) |
 | `pgn` | A flat package: the PGN model (`PgnGame`, `PgnMove`, `MoveSuffixAnnotation`), parsing (`StrictPgnParser` / `LenientPgnParser` and the tokenizer), export (`PgnCreate`), file I/O (`PgnReader` / `PgnWriter`), tag / PGN utility helpers, and `PgnCommentaryValidationException` |
