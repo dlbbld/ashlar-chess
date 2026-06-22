@@ -5,9 +5,9 @@ package io.github.dlbbld.ashlarchess.test.perft;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import org.junit.jupiter.api.Test;
+import java.util.List;
 
-import com.google.common.collect.ImmutableList;
+import org.junit.jupiter.api.Test;
 
 import io.github.dlbbld.ashlarchess.bitboard.BitboardLegalMoveFactory;
 import io.github.dlbbld.ashlarchess.bitboard.BitboardPosition;
@@ -109,7 +109,7 @@ class TestPerft {
       return 1L;
     }
     final CastlingRight castlingRightSideToMove = sideToMove == Side.WHITE ? castlingRightWhite : castlingRightBlack;
-    final ImmutableList<LegalMove> legalMoves = BitboardLegalMoveFactory.calculateLegalMoves(position, sideToMove,
+    final List<LegalMove> legalMoves = BitboardLegalMoveFactory.calculateLegalMoves(position, sideToMove,
         castlingRightSideToMove, enPassantBit);
     if (depth == 1) {
       return legalMoves.size();

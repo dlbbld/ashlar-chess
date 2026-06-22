@@ -3,10 +3,10 @@
 
 package io.github.dlbbld.ashlarchess.pgn;
 
+import java.util.List;
+
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
-
-import com.google.common.collect.ImmutableList;
 
 import io.github.dlbbld.ashlarchess.common.Nulls;
 import io.github.dlbbld.ashlarchess.fen.model.Fen;
@@ -31,8 +31,8 @@ import io.github.dlbbld.ashlarchess.model.PgnMove;
  * Don't use to construct PgnGame's on your own, intended as a parser result only, so holding valid data.
  */
 @SuppressWarnings("null")
-public record PgnGame(@NonNull ImmutableList<@NonNull Tag> tags, @NonNull Fen startFen,
-    @NonNull PgnCommentary pregameCommentary, @NonNull ImmutableList<@NonNull PgnMove> moves,
+public record PgnGame(@NonNull List<@NonNull Tag> tags, @NonNull Fen startFen,
+    @NonNull PgnCommentary pregameCommentary, @NonNull List<@NonNull PgnMove> moves,
     @Nullable ResultTagValue terminationMarker) {
 
   public PgnGame {

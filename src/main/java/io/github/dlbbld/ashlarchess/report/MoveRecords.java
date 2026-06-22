@@ -24,7 +24,7 @@ final class MoveRecords {
   }
 
   static ImmutableList<MoveRecord> played(Board board) {
-    final ImmutableList<MoveSpecification> moves = board.getPerformedMoveSpecifications();
+    final List<MoveSpecification> moves = board.getPerformedMoveSpecifications();
     final Board replay = new Board(board.getInitialFen());
     final List<MoveRecord> result = new ArrayList<>(moves.size());
     for (final MoveSpecification moveSpecification : moves) {

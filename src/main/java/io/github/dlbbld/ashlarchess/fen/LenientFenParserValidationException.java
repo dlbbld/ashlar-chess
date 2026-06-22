@@ -3,6 +3,8 @@
 
 package io.github.dlbbld.ashlarchess.fen;
 
+import java.util.List;
+
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 
@@ -36,7 +38,7 @@ public class LenientFenParserValidationException extends UsageException {
    * parser then rejects the normalised FEN, the items that fired up to that point are carried so the caller has full
    * diagnostic context.
    */
-  private final @NonNull ImmutableList<@NonNull ForgivenFenItem> forgivenItemsAccumulated;
+  private final @NonNull List<@NonNull ForgivenFenItem> forgivenItemsAccumulated;
 
   public LenientFenParserValidationException(LenientFenParserValidationProblem lenientFenParserValidationProblem,
       String message) {
@@ -45,7 +47,7 @@ public class LenientFenParserValidationException extends UsageException {
 
   public LenientFenParserValidationException(LenientFenParserValidationProblem lenientFenParserValidationProblem,
       @Nullable StrictFenSemanticValidationProblem strictFenSemanticValidationProblem, String message,
-      @NonNull ImmutableList<@NonNull ForgivenFenItem> forgivenItemsAccumulated) {
+      @NonNull List<@NonNull ForgivenFenItem> forgivenItemsAccumulated) {
     super(message);
     this.lenientFenParserValidationProblem = lenientFenParserValidationProblem;
     this.strictFenSemanticValidationProblem = strictFenSemanticValidationProblem == null
@@ -62,7 +64,7 @@ public class LenientFenParserValidationException extends UsageException {
     return strictFenSemanticValidationProblem;
   }
 
-  public @NonNull ImmutableList<@NonNull ForgivenFenItem> getForgivenItemsAccumulated() {
+  public @NonNull List<@NonNull ForgivenFenItem> getForgivenItemsAccumulated() {
     return forgivenItemsAccumulated;
   }
 

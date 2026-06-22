@@ -8,8 +8,6 @@ import java.util.List;
 
 import org.eclipse.jdt.annotation.Nullable;
 
-import com.google.common.collect.ImmutableList;
-
 import io.github.dlbbld.ashlarchess.board.Board;
 import io.github.dlbbld.ashlarchess.common.Nulls;
 import io.github.dlbbld.ashlarchess.common.exceptions.ProgrammingMistakeException;
@@ -77,7 +75,7 @@ public final class LenientSanParser {
   // --- Helpers ---
 
   private static String computeCanonicalSan(MoveSpecification moveSpecification, Board board) {
-    final ImmutableList<LegalMove> legalMovesBefore = board.getLegalMoves();
+    final List<LegalMove> legalMovesBefore = board.getLegalMoves();
     @Nullable LegalMove matching = null;
     for (final LegalMove candidate : legalMovesBefore) {
       if (candidate.moveSpecification().equals(moveSpecification)) {
@@ -97,7 +95,7 @@ public final class LenientSanParser {
     return MoveToSan.toSan(matching, legalMovesBefore, marker);
   }
 
-  private static ImmutableList<ForgivenSanItem> itemsWithoutCanonical(String text,
+  private static List<ForgivenSanItem> itemsWithoutCanonical(String text,
       List<LenientSanValidationProblem> codes) {
     if (codes.isEmpty()) {
       return ForgivenSanItem.NO_ITEMS;

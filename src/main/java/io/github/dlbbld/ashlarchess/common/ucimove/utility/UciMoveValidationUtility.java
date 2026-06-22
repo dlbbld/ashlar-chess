@@ -71,7 +71,7 @@ public final class UciMoveValidationUtility {
     return Nulls.get(UCI_MOVE_TEXT_LOOKUP, uciMoveStr);
   }
 
-  public static ImmutableList<UciMove> getUciMoves() {
+  public static List<UciMove> getUciMoves() {
     return UCI_MOVES;
   }
 

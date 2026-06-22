@@ -3,9 +3,9 @@
 
 package io.github.dlbbld.ashlarchess.san;
 
-import org.eclipse.jdt.annotation.NonNull;
+import java.util.List;
 
-import com.google.common.collect.ImmutableList;
+import org.eclipse.jdt.annotation.NonNull;
 
 import io.github.dlbbld.ashlarchess.common.Nulls;
 import io.github.dlbbld.ashlarchess.common.model.MoveSpecification;
@@ -16,7 +16,7 @@ import io.github.dlbbld.ashlarchess.common.model.MoveSpecification;
  */
 @SuppressWarnings("null")
 public record LenientSanParseResult(@NonNull MoveSpecification moveSpecification,
-    @NonNull ImmutableList<@NonNull ForgivenSanItem> forgivenItems) {
+    @NonNull List<@NonNull ForgivenSanItem> forgivenItems) {
 
   public LenientSanParseResult {
     forgivenItems = Nulls.copyOfList(forgivenItems);

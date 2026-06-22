@@ -135,7 +135,7 @@ public final class Board {
 
   // Legal moves of the CURRENT position only. Legal moves are derived cache, not game history, so historical
   // positions do not retain them; this is recomputed on unmove() for the restored position.
-  private ImmutableList<LegalMove> currentLegalMoves;
+  private List<LegalMove> currentLegalMoves;
 
   private record BoardState(@Nullable LegalMove move, @Nullable String san, @Nullable String lan, boolean isCheck,
       boolean isCheckmate, boolean isStalemate, DynamicPosition dynamicPosition, int halfMoveClock,
@@ -174,7 +174,7 @@ public final class Board {
             ? initialEnPassantCaptureTargetSquare
             : Square.NONE;
 
-    final ImmutableList<LegalMove> legalMoves = BitboardLegalMoveFactory.calculateLegalMoves(initialBitboardPosition,
+    final List<LegalMove> legalMoves = BitboardLegalMoveFactory.calculateLegalMoves(initialBitboardPosition,
         initialSideToMove, initialCastlingRight, initialEnPassantBit);
     final boolean isCheck = initialBitboardPosition.isInCheck(initialSideToMove);
     final boolean isCheckmate = isCheck && legalMoves.isEmpty();
@@ -373,7 +373,7 @@ public final class Board {
     final long afterEnPassantBit = afterEnPassantCaptureTargetSquare == Square.NONE ? 0L
         : 1L << afterEnPassantCaptureTargetSquare.ordinal();
 
-    final ImmutableList<LegalMove> legalMovesAfterMove = BitboardLegalMoveFactory
+    final List<LegalMove> legalMovesAfterMove = BitboardLegalMoveFactory
         .calculateLegalMoves(afterBitboardPosition, afterSideToMove, afterCastlingRightSideToMove, afterEnPassantBit);
 
     final boolean isCheck = afterBitboardPosition.isInCheck(afterSideToMove);
@@ -449,7 +449,7 @@ public final class Board {
   // per historical position; getLegalMoves() serves the current position and unmove() restores it here. The
   // DynamicPosition carries the normalized en-passant square, which is legal-move-equivalent to the raw square
   // (normalization only zeroes the target when no legal en-passant capture exists).
-  private static ImmutableList<LegalMove> legalMovesFor(DynamicPosition dynamicPosition) {
+  private static List<LegalMove> legalMovesFor(DynamicPosition dynamicPosition) {
     final Side side = dynamicPosition.sideToMove();
     final CastlingRight castlingRight = side == Side.WHITE ? dynamicPosition.castlingRightWhite()
         : dynamicPosition.castlingRightBlack();
@@ -510,7 +510,7 @@ public final class Board {
     return moveAt(boardStates.size() - 1);
   }
 
-  public ImmutableList<LegalMove> getLegalMoves() {
+  public List<LegalMove> getLegalMoves() {
     return currentLegalMoves;
   }
 
@@ -520,7 +520,7 @@ public final class Board {
    * once and reuse the result rather than calling it repeatedly; for the count use {@link #getPerformedMoveCount()}
    * (O(1)).
    */
-  public ImmutableList<MoveSpecification> getPerformedMoveSpecifications() {
+  public List<MoveSpecification> getPerformedMoveSpecifications() {
     final List<MoveSpecification> moveSpecifications = new ArrayList<>();
     for (int i = 1; i < boardStates.size(); i++) {
       moveSpecifications.add(moveAt(i).moveSpecification());
@@ -927,7 +927,7 @@ public final class Board {
    * - the history is held as one {@code BoardState} record list, not a standing per-accessor list - so fetch it once
    * and reuse the result rather than calling it repeatedly; for the count use {@link #getPerformedMoveCount()} (O(1)).
    */
-  public ImmutableList<String> getPerformedMovesAsSan() {
+  public List<String> getPerformedMovesAsSan() {
     final List<String> result = new ArrayList<>();
     for (int i = 1; i < boardStates.size(); i++) {
       result.add(sanAt(i));
@@ -1035,7 +1035,7 @@ public final class Board {
     return Nulls.getLast(boardStates).dynamicPosition();
   }
 
-  public ImmutableList<MoveSpecification> getLegalMoveSpecifications() {
+  public List<MoveSpecification> getLegalMoveSpecifications() {
     final List<MoveSpecification> result = new ArrayList<>();
     for (final LegalMove legalMove : this.getLegalMoves()) {
       result.add(legalMove.moveSpecification());
@@ -1069,7 +1069,7 @@ public final class Board {
    * once and reuse the result rather than calling it repeatedly; for the count use {@link #getPerformedMoveCount()}
    * (O(1)).
    */
-  public ImmutableList<LegalMove> getPerformedMoves() {
+  public List<LegalMove> getPerformedMoves() {
     final List<LegalMove> result = new ArrayList<>();
     for (int i = 1; i < boardStates.size(); i++) {
       result.add(moveAt(i));
@@ -1212,7 +1212,7 @@ public final class Board {
     };
   }
 
-  public ImmutableList<String> getLegalMovesAsSan() {
+  public List<String> getLegalMovesAsSan() {
     final List<String> result = new ArrayList<>();
     for (final LegalMove legalMove : getLegalMoves()) {
       result.add(sanForCandidate(legalMove));
@@ -1220,7 +1220,7 @@ public final class Board {
     return Nulls.copyOfList(result);
   }
 
-  public ImmutableList<String> getLegalMovesAsUci() {
+  public List<String> getLegalMovesAsUci() {
     final List<String> result = new ArrayList<>();
     final Side sideToMove = getSideToMove();
     for (final MoveSpecification moveSpecification : getLegalMoveSpecifications()) {

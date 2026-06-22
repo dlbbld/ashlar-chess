@@ -3,10 +3,10 @@
 
 package io.github.dlbbld.ashlarchess.fen;
 
+import java.util.List;
+
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
-
-import com.google.common.collect.ImmutableList;
 
 import io.github.dlbbld.ashlarchess.common.Nulls;
 import io.github.dlbbld.ashlarchess.common.enums.StrictFenSemanticValidationProblem;
@@ -27,7 +27,7 @@ import io.github.dlbbld.ashlarchess.fen.model.Fen;
 @SuppressWarnings("null")
 public record LenientFenParserValidationResult(@NonNull LenientFenParserValidationProblem problem,
     @NonNull StrictFenSemanticValidationProblem strictFenSemanticValidationProblem, @NonNull String message,
-    @Nullable Fen fen, @NonNull ImmutableList<@NonNull ForgivenFenItem> forgivenItems) {
+    @Nullable Fen fen, @NonNull List<@NonNull ForgivenFenItem> forgivenItems) {
 
   public LenientFenParserValidationResult {
     forgivenItems = Nulls.copyOfList(forgivenItems);

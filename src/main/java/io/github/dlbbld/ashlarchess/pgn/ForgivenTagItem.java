@@ -3,6 +3,8 @@
 
 package io.github.dlbbld.ashlarchess.pgn;
 
+import java.util.List;
+
 import org.eclipse.jdt.annotation.NonNull;
 
 import com.google.common.collect.ImmutableList;
@@ -26,6 +28,6 @@ public record ForgivenTagItem(ForgivenTagItemCode code, String tagName, String d
    * in one place rather than at every caller.
    */
   @SuppressWarnings("null")
-  public static final @NonNull ImmutableList<@NonNull ForgivenTagItem> NO_ITEMS = ImmutableList.of();
+  public static final @NonNull List<@NonNull ForgivenTagItem> NO_ITEMS = ImmutableList.of();
 
 }

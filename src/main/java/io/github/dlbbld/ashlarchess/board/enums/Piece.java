@@ -3,6 +3,8 @@
 
 package io.github.dlbbld.ashlarchess.board.enums;
 
+import java.util.List;
+
 import com.google.common.collect.ImmutableList;
 
 import io.github.dlbbld.ashlarchess.common.Nulls;
@@ -24,7 +26,7 @@ public enum Piece {
   NONE(PieceType.NONE, Side.NONE);
 
   @SuppressWarnings("null")
-  public static final ImmutableList<Piece> REAL = ImmutableList.of(WHITE_PAWN, WHITE_ROOK, WHITE_KNIGHT, WHITE_BISHOP,
+  public static final List<Piece> REAL = ImmutableList.of(WHITE_PAWN, WHITE_ROOK, WHITE_KNIGHT, WHITE_BISHOP,
       WHITE_QUEEN, WHITE_KING, BLACK_PAWN, BLACK_ROOK, BLACK_KNIGHT, BLACK_BISHOP, BLACK_QUEEN, BLACK_KING);
 
   private final PieceType pieceType;

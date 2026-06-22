@@ -3,6 +3,8 @@
 
 package io.github.dlbbld.ashlarchess.board.enums;
 
+import java.util.List;
+
 import com.google.common.collect.ImmutableList;
 
 import io.github.dlbbld.ashlarchess.common.exceptions.NonePointerException;
@@ -16,7 +18,7 @@ public enum Side {
   NONE(false, false, "");
 
   @SuppressWarnings("null")
-  public static final ImmutableList<Side> REAL = ImmutableList.of(WHITE, BLACK);
+  public static final List<Side> REAL = ImmutableList.of(WHITE, BLACK);
 
   private final boolean isWhite;
   private final boolean isBlack;

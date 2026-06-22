@@ -3,6 +3,8 @@
 
 package io.github.dlbbld.ashlarchess.fen;
 
+import java.util.List;
+
 import org.eclipse.jdt.annotation.NonNull;
 
 import com.google.common.collect.ImmutableList;
@@ -28,6 +30,6 @@ public record ForgivenFenItem(ForgivenFenItemCode code, String original, String 
    * one place rather than at every caller.
    */
   @SuppressWarnings("null")
-  public static final @NonNull ImmutableList<@NonNull ForgivenFenItem> NO_ITEMS = ImmutableList.of();
+  public static final @NonNull List<@NonNull ForgivenFenItem> NO_ITEMS = ImmutableList.of();
 
 }

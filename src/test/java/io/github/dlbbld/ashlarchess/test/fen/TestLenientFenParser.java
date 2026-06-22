@@ -9,9 +9,9 @@ import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import org.junit.jupiter.api.Test;
+import java.util.List;
 
-import com.google.common.collect.ImmutableList;
+import org.junit.jupiter.api.Test;
 
 import io.github.dlbbld.ashlarchess.common.enums.StrictFenSemanticValidationProblem;
 import io.github.dlbbld.ashlarchess.fen.ForgivenFenItem;
@@ -160,7 +160,7 @@ class TestLenientFenParser {
     final String deviating = "  rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR\tW\tqkQK\t—\t0";
     final LenientFenParserValidationResult result = LenientFenParser.validate(deviating);
     assertTrue(result.isValid(), () -> "expected valid; got: " + result.message());
-    final ImmutableList<ForgivenFenItem> items = result.forgivenItems();
+    final List<ForgivenFenItem> items = result.forgivenItems();
     assertTrue(containsCode(items, ForgivenFenItemCode.LEADING_WHITESPACE));
     assertTrue(containsCode(items, ForgivenFenItemCode.TAB_OR_NEWLINE_AS_SEPARATOR));
     assertTrue(containsCode(items, ForgivenFenItemCode.UPPERCASE_SIDE_TO_MOVE));
@@ -179,7 +179,7 @@ class TestLenientFenParser {
     final String deviating = "r1bqkb1r/pppp1ppp/2n2n2/4p3/2B1P3/5N2/PPPP1PPP/RNBQK2R\tw\tKQkq\t-";
     final LenientFenParserValidationResult result = LenientFenParser.validate(deviating);
     assertTrue(result.isValid(), () -> "expected valid; got: " + result.message());
-    final ImmutableList<ForgivenFenItem> items = result.forgivenItems();
+    final List<ForgivenFenItem> items = result.forgivenItems();
     assertTrue(containsCode(items, ForgivenFenItemCode.TAB_OR_NEWLINE_AS_SEPARATOR));
     assertTrue(containsCode(items, ForgivenFenItemCode.MISSING_HALF_MOVE_CLOCK_AND_FULL_MOVE_NUMBER));
     // Counters defaulted as documented: halfMoveClock = 0, fullMoveNumber = 1.
@@ -237,7 +237,7 @@ class TestLenientFenParser {
     assertEquals(1, count, () -> "expected exactly one " + expectedCode + " item; got: " + result.forgivenItems());
   }
 
-  private static boolean containsCode(ImmutableList<ForgivenFenItem> items, ForgivenFenItemCode code) {
+  private static boolean containsCode(List<ForgivenFenItem> items, ForgivenFenItemCode code) {
     return items.stream().anyMatch(i -> i.code() == code);
   }
 }

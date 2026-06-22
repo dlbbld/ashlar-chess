@@ -22,7 +22,7 @@ public enum MoveSuffixAnnotation {
   NONE("");
 
   @SuppressWarnings("null")
-  public static final ImmutableList<MoveSuffixAnnotation> REAL = ImmutableList.of(MISTAKE, GOOD_MOVE, BLUNDER,
+  public static final List<MoveSuffixAnnotation> REAL = ImmutableList.of(MISTAKE, GOOD_MOVE, BLUNDER,
       DUBIOUS_MOVE, INTERESTING_MOVE, BRILLIANT_MOVE);
 
   private final String suffix;
