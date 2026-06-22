@@ -1,7 +1,9 @@
 // Copyright (C) 2020-2026 Daniel Baechli
 // SPDX-License-Identifier: GPL-3.0-only
 
-package io.github.dlbbld.ashlarchess.common.exceptions;
+package io.github.dlbbld.ashlarchess.pgn;
+
+import io.github.dlbbld.ashlarchess.common.exceptions.UsageException;
 
 /**
  * Thrown when a PGN commentary string violates the model contract: must contain no tab, newline, carriage return, or

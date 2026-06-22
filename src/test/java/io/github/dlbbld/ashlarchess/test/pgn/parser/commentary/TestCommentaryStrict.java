@@ -107,7 +107,7 @@ class TestCommentaryStrict {
   void v09_commentaryAfterSuffixAnnotation() {
     final PgnGame file = StrictPgnParser.parseText(header("*") + "1. e4!? {spicy} 1... e5 *\n\n");
     assertEquals("spicy", Nulls.get(file.moves(), 0).commentary().value());
-    assertEquals(io.github.dlbbld.ashlarchess.enums.MoveSuffixAnnotation.INTERESTING_MOVE,
+    assertEquals(io.github.dlbbld.ashlarchess.pgn.MoveSuffixAnnotation.INTERESTING_MOVE,
         Nulls.get(file.moves(), 0).moveSuffixAnnotation());
   }
 

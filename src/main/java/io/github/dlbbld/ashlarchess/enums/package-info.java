@@ -14,7 +14,7 @@
  * move-shape question: does this piece move this way at all?), produced by
  * {@link io.github.dlbbld.ashlarchess.analyze.ChessRuleAnalyzer}.</li>
  * <li>{@link io.github.dlbbld.ashlarchess.enums.KingSafetyCheck} - outcome of a king-attack-after-move check.</li>
- * <li>{@link io.github.dlbbld.ashlarchess.enums.MoveSuffixAnnotation} - PGN suffix annotations ({@code !}, {@code ?},
+ * <li>{@link io.github.dlbbld.ashlarchess.pgn.MoveSuffixAnnotation} - PGN suffix annotations ({@code !}, {@code ?},
  * {@code !!}, {@code ??}, {@code !?}, {@code ?!}).</li>
  * <li>{@link io.github.dlbbld.ashlarchess.enums.CastlingCheck} - outcome of a castling-precondition check.</li>
  * </ul>

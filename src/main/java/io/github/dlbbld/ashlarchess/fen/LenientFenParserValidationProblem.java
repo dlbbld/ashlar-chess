@@ -5,7 +5,7 @@ package io.github.dlbbld.ashlarchess.fen;
 
 /**
  * Top-level outcome categories from the lenient FEN parser. The richer downstream classifiers
- * ({@link io.github.dlbbld.ashlarchess.common.enums.StrictFenSemanticValidationProblem}) are surfaced separately on the
+ * ({@link io.github.dlbbld.ashlarchess.fen.StrictFenSemanticValidationProblem}) are surfaced separately on the
  * validation result so callers can switch on the specific failure mode without parsing the message.
  */
 public enum LenientFenParserValidationProblem {
@@ -30,7 +30,7 @@ public enum LenientFenParserValidationProblem {
    * The normalised FEN passed lexical parsing but strict validation rejected it for a structural or rule-consistency
    * issue (piece counts, kings, castling rights inconsistent with piece placement, illegal en-passant target, etc.).
    * The lenient layer does not forgive semantic invariants - a FEN with a king missing still fails. The underlying
-   * {@link io.github.dlbbld.ashlarchess.common.enums.StrictFenSemanticValidationProblem} is on the result.
+   * {@link io.github.dlbbld.ashlarchess.fen.StrictFenSemanticValidationProblem} is on the result.
    */
   STRICT_SEMANTIC_INVALID,
 

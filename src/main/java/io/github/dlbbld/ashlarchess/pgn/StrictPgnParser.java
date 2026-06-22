@@ -14,15 +14,12 @@ import io.github.dlbbld.ashlarchess.board.Board;
 import io.github.dlbbld.ashlarchess.board.MoveNumberFormat;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
 import io.github.dlbbld.ashlarchess.common.Nulls;
-import io.github.dlbbld.ashlarchess.common.exceptions.PgnCommentaryValidationException;
 import io.github.dlbbld.ashlarchess.common.exceptions.ProgrammingMistakeException;
 import io.github.dlbbld.ashlarchess.common.utility.ExceptionUtility;
-import io.github.dlbbld.ashlarchess.enums.MoveSuffixAnnotation;
 import io.github.dlbbld.ashlarchess.fen.StrictFenParser;
 import io.github.dlbbld.ashlarchess.fen.StrictFenSemanticValidationException;
-import io.github.dlbbld.ashlarchess.fen.constants.FenConstants;
+import io.github.dlbbld.ashlarchess.fen.FenConstants;
 import io.github.dlbbld.ashlarchess.fen.model.Fen;
-import io.github.dlbbld.ashlarchess.model.PgnMove;
 import io.github.dlbbld.ashlarchess.san.SanValidationException;
 import io.github.dlbbld.ashlarchess.san.SanValidationProblem;
 

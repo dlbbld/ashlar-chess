@@ -9,7 +9,6 @@ import java.util.List;
 import java.util.Locale;
 
 import io.github.dlbbld.ashlarchess.common.Nulls;
-import io.github.dlbbld.ashlarchess.common.enums.StrictFenSemanticValidationProblem;
 import io.github.dlbbld.ashlarchess.common.exceptions.ProgrammingMistakeException;
 import io.github.dlbbld.ashlarchess.common.utility.ExceptionUtility;
 import io.github.dlbbld.ashlarchess.fen.model.Fen;

@@ -15,7 +15,7 @@ import io.github.dlbbld.ashlarchess.board.enums.Piece;
 import io.github.dlbbld.ashlarchess.board.enums.Square;
 import io.github.dlbbld.ashlarchess.common.utility.StaticPositionUtility;
 import io.github.dlbbld.ashlarchess.fen.StrictFenParser;
-import io.github.dlbbld.ashlarchess.fen.constants.FenConstants;
+import io.github.dlbbld.ashlarchess.fen.FenConstants;
 
 class TestBasicStaticPosition {
 

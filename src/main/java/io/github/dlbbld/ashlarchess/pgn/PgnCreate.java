@@ -15,10 +15,8 @@ import io.github.dlbbld.ashlarchess.common.Nulls;
 import io.github.dlbbld.ashlarchess.common.exceptions.ProgrammingMistakeException;
 import io.github.dlbbld.ashlarchess.common.model.Outcome;
 import io.github.dlbbld.ashlarchess.common.utility.ListUtility;
-import io.github.dlbbld.ashlarchess.enums.MoveSuffixAnnotation;
-import io.github.dlbbld.ashlarchess.fen.constants.FenConstants;
+import io.github.dlbbld.ashlarchess.fen.FenConstants;
 import io.github.dlbbld.ashlarchess.fen.model.Fen;
-import io.github.dlbbld.ashlarchess.model.PgnMove;
 
 /**
  * PGN serialisation entry points. The library defaults to {@link WriteMode#SEMANTIC} - emits the parse model as-given

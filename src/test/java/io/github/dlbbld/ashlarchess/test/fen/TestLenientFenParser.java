@@ -13,13 +13,13 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
-import io.github.dlbbld.ashlarchess.common.enums.StrictFenSemanticValidationProblem;
+import io.github.dlbbld.ashlarchess.fen.StrictFenSemanticValidationProblem;
 import io.github.dlbbld.ashlarchess.fen.ForgivenFenItem;
 import io.github.dlbbld.ashlarchess.fen.ForgivenFenItemCode;
 import io.github.dlbbld.ashlarchess.fen.LenientFenParser;
 import io.github.dlbbld.ashlarchess.fen.LenientFenParserValidationProblem;
 import io.github.dlbbld.ashlarchess.fen.LenientFenParserValidationResult;
-import io.github.dlbbld.ashlarchess.fen.constants.FenConstants;
+import io.github.dlbbld.ashlarchess.fen.FenConstants;
 import io.github.dlbbld.ashlarchess.fen.model.Fen;
 
 /**

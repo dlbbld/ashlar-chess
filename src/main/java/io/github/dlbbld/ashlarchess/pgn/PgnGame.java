@@ -10,7 +10,6 @@ import org.eclipse.jdt.annotation.Nullable;
 
 import io.github.dlbbld.ashlarchess.common.Nulls;
 import io.github.dlbbld.ashlarchess.fen.model.Fen;
-import io.github.dlbbld.ashlarchess.model.PgnMove;
 
 /**
  * Parsed PGN model. Reflects what the source actually contained - tag presence/absence and tag order are preserved by

@@ -9,7 +9,6 @@ import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 
 import io.github.dlbbld.ashlarchess.common.Nulls;
-import io.github.dlbbld.ashlarchess.common.enums.StrictFenSemanticValidationProblem;
 import io.github.dlbbld.ashlarchess.fen.model.Fen;
 
 /**

@@ -3,7 +3,6 @@
 
 package io.github.dlbbld.ashlarchess.pgn;
 
-import io.github.dlbbld.ashlarchess.common.exceptions.PgnCommentaryValidationException;
 
 /**
  * Value object for PGN commentary content. Construction validates the contract - see specification.md (Commentary

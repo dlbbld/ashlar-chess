@@ -35,7 +35,7 @@ import io.github.dlbbld.ashlarchess.exceptions.InvalidMoveException;
 import io.github.dlbbld.ashlarchess.fen.FenBoard;
 import io.github.dlbbld.ashlarchess.fen.LenientFenParser;
 import io.github.dlbbld.ashlarchess.fen.StrictFenParser;
-import io.github.dlbbld.ashlarchess.fen.constants.FenConstants;
+import io.github.dlbbld.ashlarchess.fen.FenConstants;
 import io.github.dlbbld.ashlarchess.fen.model.Fen;
 import io.github.dlbbld.ashlarchess.model.CastlingRightBoth;
 import io.github.dlbbld.ashlarchess.model.LegalMove;
