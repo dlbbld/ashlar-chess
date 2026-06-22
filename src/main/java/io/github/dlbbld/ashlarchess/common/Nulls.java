@@ -252,14 +252,24 @@ public final class Nulls {
   }
 
   // LinkedHashSet (not Set.copyOf) so the unmodifiable copy keeps the source's deterministic encounter order;
-  // JDK Set.of/copyOf deliberately randomise iteration order per JVM run.
+  // JDK Set.of/copyOf deliberately randomise iteration order per JVM run. checkResult on each element rejects
+  // nulls, preserving the null-hostile defensive-copy contract Guava's ImmutableSet.copyOf used to provide.
   public static <E> Set<E> copyOfSet(Collection<? extends E> elements) {
-    return checkResult(Collections.unmodifiableSet(new LinkedHashSet<>(elements)));
+    final LinkedHashSet<E> set = new LinkedHashSet<>();
+    for (final E element : elements) {
+      set.add(checkResult(element));
+    }
+    return checkResult(Collections.unmodifiableSet(set));
   }
 
   // LinkedHashMap (not Map.copyOf) so the unmodifiable copy keeps the source's deterministic encounter order.
+  // checkResult on each key and value rejects nulls, preserving Guava ImmutableMap.copyOf's null-hostile contract.
   public static <K, V> Map<K, V> copyOfMap(Map<? extends K, ? extends V> map) {
-    return checkResult(Collections.unmodifiableMap(new LinkedHashMap<K, V>(map)));
+    final LinkedHashMap<K, V> result = new LinkedHashMap<>();
+    for (final Map.Entry<? extends K, ? extends V> entry : map.entrySet()) {
+      result.put(checkResult(entry.getKey()), checkResult(entry.getValue()));
+    }
+    return checkResult(Collections.unmodifiableMap(result));
   }
 
   @SuppressWarnings({ "unchecked" })
