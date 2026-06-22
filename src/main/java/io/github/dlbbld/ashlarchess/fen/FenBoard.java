@@ -3,7 +3,7 @@
 
 package io.github.dlbbld.ashlarchess.fen;
 
-import io.github.dlbbld.ashlarchess.bitboard.BitboardPositionUtility;
+import io.github.dlbbld.ashlarchess.bitboard.internal.BitboardPositionUtility;
 import io.github.dlbbld.ashlarchess.board.Board;
 import io.github.dlbbld.ashlarchess.board.enums.CastlingRight;
 import io.github.dlbbld.ashlarchess.board.enums.Side;

@@ -15,6 +15,19 @@ import io.github.dlbbld.ashlarchess.board.enums.Side;
 import io.github.dlbbld.ashlarchess.board.enums.Square;
 import io.github.dlbbld.ashlarchess.common.Nulls;
 import io.github.dlbbld.ashlarchess.board.MoveSpecification;
+import io.github.dlbbld.ashlarchess.bitboard.internal.BishopAttacks;
+import io.github.dlbbld.ashlarchess.bitboard.internal.BishopMoves;
+import io.github.dlbbld.ashlarchess.bitboard.internal.BitboardPositionUtility;
+import io.github.dlbbld.ashlarchess.bitboard.internal.KingAttacks;
+import io.github.dlbbld.ashlarchess.bitboard.internal.KingMoves;
+import io.github.dlbbld.ashlarchess.bitboard.internal.KnightAttacks;
+import io.github.dlbbld.ashlarchess.bitboard.internal.KnightMoves;
+import io.github.dlbbld.ashlarchess.bitboard.internal.PawnAttacks;
+import io.github.dlbbld.ashlarchess.bitboard.internal.PawnMoves;
+import io.github.dlbbld.ashlarchess.bitboard.internal.QueenAttacks;
+import io.github.dlbbld.ashlarchess.bitboard.internal.QueenMoves;
+import io.github.dlbbld.ashlarchess.bitboard.internal.RookAttacks;
+import io.github.dlbbld.ashlarchess.bitboard.internal.RookMoves;
 
 /**
  * Twelve-bitboard piece-placement representation: one {@code long} per real

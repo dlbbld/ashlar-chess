@@ -280,7 +280,8 @@ The top-level package `io.github.dlbbld.ashlarchess` is organised by concern:
 | `analyze` | Stateless chess-rule analysis used by the SAN and movement validation pipelines |
 | `messages` | Validation-message bundle (`Message`, `messages.properties`) for SAN/FEN/PGN diagnostics |
 | `squares` | Precomputed empty-board reachability / attack lookup tables and direction ranges (`*EmptyBoardSquares`, `*Range`) |
-| `bitboard` | `BitboardPosition` (12-long piece-bitboard record) and its move/attack helpers — the production piece-placement representation |
+| `bitboard` | The public `BitboardPosition` record (12-long piece placement) — the production representation, exported as documented advanced low-level API |
+| `bitboard.internal` | Internal bitboard engine (not exported): the per-piece attack/move bitboard tables, the `BitboardPosition`→`LegalMove` factory, and decode helpers |
 | `exceptions` | The cross-cutting base exception hierarchy (`UsageException`, `ChessApiRuntimeException`, `ProgrammingMistakeException`, `NonePointerException`, `FileSystemAccessException`). Feature-specific exceptions live inline in their feature package (`board.InvalidMoveException`, `pgn.PgnCommentaryValidationException`, `san.SanValidationException`) |
 | `common` | Shared internal infrastructure only: `common.utility` (`Nulls`, list/set/exception helpers), `common.constants`, `common.ucimove` |
 

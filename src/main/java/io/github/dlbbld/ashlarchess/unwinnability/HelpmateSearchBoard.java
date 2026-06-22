@@ -5,7 +5,7 @@ package io.github.dlbbld.ashlarchess.unwinnability;
 
 import java.util.List;
 
-import io.github.dlbbld.ashlarchess.bitboard.BitboardLegalMoveFactory;
+import io.github.dlbbld.ashlarchess.bitboard.internal.BitboardLegalMoveFactory;
 import io.github.dlbbld.ashlarchess.bitboard.BitboardPosition;
 import io.github.dlbbld.ashlarchess.board.Board;
 import io.github.dlbbld.ashlarchess.board.enums.CastlingMove;

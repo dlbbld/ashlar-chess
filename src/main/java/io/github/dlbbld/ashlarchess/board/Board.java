@@ -11,7 +11,7 @@ import java.util.Objects;
 
 import org.eclipse.jdt.annotation.Nullable;
 
-import io.github.dlbbld.ashlarchess.bitboard.BitboardLegalMoveFactory;
+import io.github.dlbbld.ashlarchess.bitboard.internal.BitboardLegalMoveFactory;
 import io.github.dlbbld.ashlarchess.bitboard.BitboardPosition;
 import io.github.dlbbld.ashlarchess.board.enums.CastlingMove;
 import io.github.dlbbld.ashlarchess.board.enums.CastlingRight;

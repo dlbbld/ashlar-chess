@@ -14,7 +14,7 @@ import java.util.TreeSet;
 
 import io.github.dlbbld.ashlarchess.analyze.CastlingCheckTranslator;
 import io.github.dlbbld.ashlarchess.bitboard.BitboardPosition;
-import io.github.dlbbld.ashlarchess.bitboard.KingAttacks;
+import io.github.dlbbld.ashlarchess.bitboard.internal.KingAttacks;
 import io.github.dlbbld.ashlarchess.board.Board;
 import io.github.dlbbld.ashlarchess.board.enums.CastlingMove;
 import io.github.dlbbld.ashlarchess.board.enums.CastlingRight;

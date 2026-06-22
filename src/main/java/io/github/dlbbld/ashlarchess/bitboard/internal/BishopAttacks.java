@@ -1,7 +1,7 @@
 // Copyright (C) 2020-2026 Daniel Baechli
 // SPDX-License-Identifier: GPL-3.0-only
 
-package io.github.dlbbld.ashlarchess.bitboard;
+package io.github.dlbbld.ashlarchess.bitboard.internal;
 
 /**
  * Bishop attacks via classical ray loops. {@link #attacks(int, long)} returns the bitboard of squares a bishop on
