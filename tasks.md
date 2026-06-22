@@ -39,6 +39,15 @@ Rule to adopt: **package by feature/domain first; package by kind only for genui
 
 A large, purely mechanical, compiler-checked FQN reset with no behavior change, and a prerequisite for a clean `module-info`: sensible `exports` / `opens` and package-private boundaries are impossible while features are split across two `common.*` junk drawers. (The FEN-local slice — folding the FEN validation problem enum into `fen` and dropping the single-file `fen.constants` — was carved out for 19.0.0; this is the global reset across all domains.)
 
+**Status (2026-06-22, branch `real-jpms`):** core collapse ✅ DONE in four compile-checked slices (commits `e5dc4d0a`→`5b711ecf`), full suite green (1276 tests). Decision: **concentrate public vocabulary on `board`** (base exceptions on top-level `exceptions`).
+
+1. feature inlining → `fen`/`pgn`/`san` (incl. dissolving the single-file `fen.constants`)
+2. exceptions: base hierarchy → top-level `exceptions`, `InvalidMoveException` → `board`; `common.exceptions` removed
+3. enums: move-analysis checks → `moves`, `Termination` → `board`; `enums` + `common.enums` removed
+4. model: public vocabulary (`LegalMove`, `LegalMoveKind`, `UciMove`, `MoveSpecification`, `Outcome`) + board-internal (`DynamicPosition`, `ClaimableMove`, `ClaimRights`) → `board`; `EmptyBoardMove`, `CastlingRightBoth` → `moves`; `model` + `common.model` removed
+
+The headline goal is met — no duplicate by-kind buckets, public surface predictable. **Remaining (lower-priority, internal; fold into the Phase-3 "hide internals" pass):** `common.constants` (ChessConstants is genuinely cross-cutting and can stay; `CastlingConstants`/`DynamicPositionConstants`/`ConfigurationConstants` could inline to `board`/`moves`), `common.utility` + `common` (`Nulls` — cross-cutting, fine as shared-core), `common.ucimove.utility`, and `messages.Message` (internal i18n). Test-side `model`/`common.model` packages still hold test-only types (`PseudoLegalMove`, `LegalMoveCalculation`, `TestOutcome`) to be mirrored to the new layout. Package-info javadoc for the dissolved/changed packages still needs an accuracy pass.
+
 ### Tighten remaining mutable return types on internal-but-public surfaces
 
 A few `public static` move-generation helpers still return a freshly-built mutable `Set` / `List` that callers could mutate: `PromotionUtility.performPromotionMovements`, `CastlingUtility.performCastlingMovements`, `EnPassantCaptureUtility.performEnPassantCaptureMovements`, and the `EmptyBoardMoveUtility` overloads. Each returns a fresh per-call copy, so there is no aliasing bug today — wrapping the result as an unmodifiable JDK collection (e.g. via `Nulls.copyOfList` / `Nulls.copyOfSet`, now that Guava is gone) is pure polish. Parked here rather than 19.0.0 because these are exactly the internal-but-accidentally-public move-gen surfaces this release narrows or hides behind the module boundary: fix the return types in the same pass that decides which of them stay public at all. (`BitboardPositionUtility.toSquares` already returns an unmodifiable `Set`.)
