@@ -12,7 +12,7 @@ import io.github.dlbbld.ashlarchess.analyze.ChessRuleAnalyzer;
 import io.github.dlbbld.ashlarchess.board.Board;
 import io.github.dlbbld.ashlarchess.board.MoveSpecification;
 import io.github.dlbbld.ashlarchess.moves.KingSafetyCheck;
-import io.github.dlbbld.ashlarchess.moves.MoveCheck;
+import io.github.dlbbld.ashlarchess.board.MoveCheck;
 import io.github.dlbbld.ashlarchess.moves.MovementCheck;
 import io.github.dlbbld.ashlarchess.board.InvalidMoveException;
 

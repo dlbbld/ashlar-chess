@@ -4,7 +4,6 @@
 package io.github.dlbbld.ashlarchess.board;
 
 import io.github.dlbbld.ashlarchess.exceptions.UsageException;
-import io.github.dlbbld.ashlarchess.moves.MoveCheck;
 
 public class InvalidMoveException extends UsageException {
 

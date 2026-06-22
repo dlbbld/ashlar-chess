@@ -4,7 +4,7 @@
 package io.github.dlbbld.ashlarchess.analyze;
 
 import io.github.dlbbld.ashlarchess.exceptions.ProgrammingMistakeException;
-import io.github.dlbbld.ashlarchess.moves.MoveCheck;
+import io.github.dlbbld.ashlarchess.board.MoveCheck;
 import io.github.dlbbld.ashlarchess.moves.MovementCheck;
 
 /**

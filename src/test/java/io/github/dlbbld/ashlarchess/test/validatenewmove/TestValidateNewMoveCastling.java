@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test;
 
 import io.github.dlbbld.ashlarchess.board.enums.CastlingMove;
 import io.github.dlbbld.ashlarchess.board.MoveSpecification;
-import io.github.dlbbld.ashlarchess.moves.MoveCheck;
+import io.github.dlbbld.ashlarchess.board.MoveCheck;
 
 class TestValidateNewMoveCastling {
 
