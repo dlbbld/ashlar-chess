@@ -9,7 +9,7 @@ import java.util.TreeSet;
 import io.github.dlbbld.ashlarchess.board.StaticPosition;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
 import io.github.dlbbld.ashlarchess.board.enums.Square;
-import io.github.dlbbld.ashlarchess.model.LegalMove;
+import io.github.dlbbld.ashlarchess.board.LegalMove;
 
 /**
  * Test-only public bridge that exposes the package-private legal-move generators under

@@ -15,8 +15,8 @@ import io.github.dlbbld.ashlarchess.board.Board;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
 import io.github.dlbbld.ashlarchess.board.enums.Square;
 import io.github.dlbbld.ashlarchess.common.Nulls;
-import io.github.dlbbld.ashlarchess.common.model.DynamicPosition;
-import io.github.dlbbld.ashlarchess.model.LegalMove;
+import io.github.dlbbld.ashlarchess.board.DynamicPosition;
+import io.github.dlbbld.ashlarchess.board.LegalMove;
 
 /**
  * Phase B.2 gate: for every legal move at every node of a recursive walk, asserts that {@link HelpmateSearchBoard#move}

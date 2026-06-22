@@ -6,7 +6,7 @@ package io.github.dlbbld.ashlarchess.unwinnability;
 import io.github.dlbbld.ashlarchess.board.enums.CastlingRight;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
 import io.github.dlbbld.ashlarchess.board.enums.Square;
-import io.github.dlbbld.ashlarchess.common.model.DynamicPosition;
+import io.github.dlbbld.ashlarchess.board.DynamicPosition;
 
 /**
  * Exact structural transposition-cache key for {@link FindHelpmate}'s search, built directly from

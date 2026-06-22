@@ -5,6 +5,7 @@ package io.github.dlbbld.ashlarchess.model;
 
 import java.util.Set;
 
+import io.github.dlbbld.ashlarchess.board.LegalMove;
 import io.github.dlbbld.ashlarchess.moves.KingSafetyCheck;
 
 public record LegalMoveCalculation(Set<LegalMove> legalMoveSet,

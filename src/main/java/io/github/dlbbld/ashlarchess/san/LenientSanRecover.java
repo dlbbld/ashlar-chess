@@ -18,8 +18,8 @@ import io.github.dlbbld.ashlarchess.board.enums.Side;
 import io.github.dlbbld.ashlarchess.board.enums.Square;
 import io.github.dlbbld.ashlarchess.common.Nulls;
 import io.github.dlbbld.ashlarchess.exceptions.ProgrammingMistakeException;
-import io.github.dlbbld.ashlarchess.common.model.MoveSpecification;
-import io.github.dlbbld.ashlarchess.model.LegalMove;
+import io.github.dlbbld.ashlarchess.board.MoveSpecification;
+import io.github.dlbbld.ashlarchess.board.LegalMove;
 
 /**
  * Phase 2 of the lenient pipeline: try the strict pipeline on the Phase 1 candidate; if strict rejects with one of the

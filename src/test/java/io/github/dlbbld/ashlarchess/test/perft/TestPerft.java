@@ -16,8 +16,8 @@ import io.github.dlbbld.ashlarchess.board.enums.Side;
 import io.github.dlbbld.ashlarchess.board.enums.Square;
 import io.github.dlbbld.ashlarchess.fen.StrictFenParser;
 import io.github.dlbbld.ashlarchess.fen.model.Fen;
-import io.github.dlbbld.ashlarchess.model.CastlingRightBoth;
-import io.github.dlbbld.ashlarchess.model.LegalMove;
+import io.github.dlbbld.ashlarchess.moves.CastlingRightBoth;
+import io.github.dlbbld.ashlarchess.board.LegalMove;
 import io.github.dlbbld.ashlarchess.moves.CastlingUtility;
 import io.github.dlbbld.ashlarchess.moves.EnPassantCaptureUtility;
 

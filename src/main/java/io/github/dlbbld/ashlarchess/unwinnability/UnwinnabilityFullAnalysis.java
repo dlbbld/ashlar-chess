@@ -6,7 +6,7 @@ package io.github.dlbbld.ashlarchess.unwinnability;
 import java.util.List;
 
 import io.github.dlbbld.ashlarchess.common.Nulls;
-import io.github.dlbbld.ashlarchess.model.UciMove;
+import io.github.dlbbld.ashlarchess.board.UciMove;
 
 /**
  * Result of the complete unwinnability analysis: the verdict and, for {@code WINNABLE_HELPMATE}, a witnessing mate line

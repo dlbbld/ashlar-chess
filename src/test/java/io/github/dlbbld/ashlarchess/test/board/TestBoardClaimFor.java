@@ -27,7 +27,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.Test;
 
 import io.github.dlbbld.ashlarchess.board.Board;
-import io.github.dlbbld.ashlarchess.common.model.MoveSpecification;
+import io.github.dlbbld.ashlarchess.board.MoveSpecification;
 
 /**
  * Tests for the per-move FIDE 9.2 / 9.3 claim predicates on {@link Board}:

@@ -1,12 +1,11 @@
 // Copyright (C) 2020-2026 Daniel Baechli
 // SPDX-License-Identifier: GPL-3.0-only
 
-package io.github.dlbbld.ashlarchess.model;
+package io.github.dlbbld.ashlarchess.board;
 
 import io.github.dlbbld.ashlarchess.board.enums.Piece;
 import io.github.dlbbld.ashlarchess.board.enums.PieceType;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
-import io.github.dlbbld.ashlarchess.common.model.MoveSpecification;
 
 /**
  * A single legal move in a position, as produced by the rule pipeline (the legal-move list on a board).

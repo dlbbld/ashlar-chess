@@ -16,11 +16,11 @@ import io.github.dlbbld.ashlarchess.board.enums.PromotionPieceType;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
 import io.github.dlbbld.ashlarchess.board.enums.Square;
 import io.github.dlbbld.ashlarchess.exceptions.ProgrammingMistakeException;
-import io.github.dlbbld.ashlarchess.common.model.DynamicPosition;
-import io.github.dlbbld.ashlarchess.common.model.MoveSpecification;
-import io.github.dlbbld.ashlarchess.model.CastlingRightBoth;
-import io.github.dlbbld.ashlarchess.model.LegalMove;
-import io.github.dlbbld.ashlarchess.model.LegalMoveKind;
+import io.github.dlbbld.ashlarchess.board.DynamicPosition;
+import io.github.dlbbld.ashlarchess.board.MoveSpecification;
+import io.github.dlbbld.ashlarchess.moves.CastlingRightBoth;
+import io.github.dlbbld.ashlarchess.board.LegalMove;
+import io.github.dlbbld.ashlarchess.board.LegalMoveKind;
 import io.github.dlbbld.ashlarchess.moves.CastlingUtility;
 import io.github.dlbbld.ashlarchess.moves.EnPassantCaptureUtility;
 

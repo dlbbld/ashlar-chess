@@ -10,7 +10,7 @@ import java.util.TreeSet;
 import io.github.dlbbld.ashlarchess.board.enums.PieceType;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
 import io.github.dlbbld.ashlarchess.board.enums.Square;
-import io.github.dlbbld.ashlarchess.model.EmptyBoardMove;
+import io.github.dlbbld.ashlarchess.moves.EmptyBoardMove;
 
 public final class EmptyBoardMoveUtility {
 

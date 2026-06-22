@@ -9,9 +9,9 @@ import io.github.dlbbld.ashlarchess.board.Board;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
 import io.github.dlbbld.ashlarchess.board.Termination;
 import io.github.dlbbld.ashlarchess.exceptions.ProgrammingMistakeException;
-import io.github.dlbbld.ashlarchess.common.model.Outcome;
+import io.github.dlbbld.ashlarchess.board.Outcome;
 import io.github.dlbbld.ashlarchess.common.utility.ListUtility;
-import io.github.dlbbld.ashlarchess.model.LegalMove;
+import io.github.dlbbld.ashlarchess.board.LegalMove;
 import io.github.dlbbld.ashlarchess.test.unwinnability.oracle.enums.LimitedUnwinnabilityVerdict;
 import io.github.dlbbld.ashlarchess.test.unwinnability.oracle.model.GameForced;
 

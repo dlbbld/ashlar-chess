@@ -4,7 +4,7 @@
 package io.github.dlbbld.ashlarchess.san;
 
 import io.github.dlbbld.ashlarchess.board.Board;
-import io.github.dlbbld.ashlarchess.common.model.MoveSpecification;
+import io.github.dlbbld.ashlarchess.board.MoveSpecification;
 import io.github.dlbbld.ashlarchess.messages.Message;
 
 final class SanValidateCheck {

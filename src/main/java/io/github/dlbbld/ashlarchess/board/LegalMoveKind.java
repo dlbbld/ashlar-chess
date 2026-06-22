@@ -1,13 +1,13 @@
 // Copyright (C) 2020-2026 Daniel Baechli
 // SPDX-License-Identifier: GPL-3.0-only
 
-package io.github.dlbbld.ashlarchess.model;
+package io.github.dlbbld.ashlarchess.board;
 
 /**
  * Categorises a {@link LegalMove} produced by the rule pipeline. The five values are mutually exclusive - a single
  * legal move cannot, for example, be both a castling move and a pawn two-square advance. The move pipeline knows the
  * category at the moment it constructs the {@code LegalMove}, so the kind is stored as a field rather than recomputed
- * by consumers from {@link io.github.dlbbld.ashlarchess.common.model.MoveSpecification} fields.
+ * by consumers from {@link io.github.dlbbld.ashlarchess.board.MoveSpecification} fields.
  *
  * <ul>
  * <li>{@link #NORMAL} - any non-pawn move that is not castling, and any pawn move that is neither an en-passant

@@ -8,7 +8,7 @@ import java.util.List;
 
 import io.github.dlbbld.ashlarchess.board.enums.Piece;
 import io.github.dlbbld.ashlarchess.board.model.UpdateSquare;
-import io.github.dlbbld.ashlarchess.common.model.MoveSpecification;
+import io.github.dlbbld.ashlarchess.board.MoveSpecification;
 
 public final class StandardMoveUtility {
 

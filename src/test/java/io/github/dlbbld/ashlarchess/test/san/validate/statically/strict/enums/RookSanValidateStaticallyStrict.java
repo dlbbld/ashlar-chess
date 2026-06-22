@@ -19,7 +19,7 @@ import java.util.TreeSet;
 import io.github.dlbbld.ashlarchess.board.enums.PieceType;
 import io.github.dlbbld.ashlarchess.board.enums.Square;
 import io.github.dlbbld.ashlarchess.common.Nulls;
-import io.github.dlbbld.ashlarchess.model.EmptyBoardMove;
+import io.github.dlbbld.ashlarchess.moves.EmptyBoardMove;
 import io.github.dlbbld.ashlarchess.squares.EmptyBoardMoveUtility;
 
 @SuppressWarnings("null")

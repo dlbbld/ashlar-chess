@@ -5,7 +5,7 @@ package io.github.dlbbld.ashlarchess.board;
 
 /**
  * The cause of an automatic game termination - the {@code termination} field of
- * {@link io.github.dlbbld.ashlarchess.common.model.Outcome}.
+ * {@link io.github.dlbbld.ashlarchess.board.Outcome}.
  *
  * <p>
  * Companion to {@link io.github.dlbbld.ashlarchess.board.Board#outcome()}: the method surfaces one of these six values,

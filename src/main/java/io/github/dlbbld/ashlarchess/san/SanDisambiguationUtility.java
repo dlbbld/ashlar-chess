@@ -9,7 +9,7 @@ import java.util.List;
 import io.github.dlbbld.ashlarchess.board.enums.File;
 import io.github.dlbbld.ashlarchess.board.enums.Rank;
 import io.github.dlbbld.ashlarchess.board.enums.Square;
-import io.github.dlbbld.ashlarchess.model.LegalMove;
+import io.github.dlbbld.ashlarchess.board.LegalMove;
 
 final class SanDisambiguationUtility {
 

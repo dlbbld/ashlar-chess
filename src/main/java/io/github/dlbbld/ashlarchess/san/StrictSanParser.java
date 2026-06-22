@@ -8,8 +8,8 @@ import java.util.List;
 import io.github.dlbbld.ashlarchess.board.Board;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
 import io.github.dlbbld.ashlarchess.exceptions.ProgrammingMistakeException;
-import io.github.dlbbld.ashlarchess.common.model.MoveSpecification;
-import io.github.dlbbld.ashlarchess.model.LegalMove;
+import io.github.dlbbld.ashlarchess.board.MoveSpecification;
+import io.github.dlbbld.ashlarchess.board.LegalMove;
 
 /**
  * Public entry point for the strict SAN pipeline. Accepts canonical SAN only and returns the resolved

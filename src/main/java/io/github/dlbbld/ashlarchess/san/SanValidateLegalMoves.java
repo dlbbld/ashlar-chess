@@ -30,15 +30,15 @@ import io.github.dlbbld.ashlarchess.board.enums.SquareUtility;
 import io.github.dlbbld.ashlarchess.common.Nulls;
 import io.github.dlbbld.ashlarchess.common.constants.CastlingConstants;
 import io.github.dlbbld.ashlarchess.exceptions.ProgrammingMistakeException;
-import io.github.dlbbld.ashlarchess.common.model.MoveSpecification;
+import io.github.dlbbld.ashlarchess.board.MoveSpecification;
 import io.github.dlbbld.ashlarchess.common.utility.ListUtility;
 import io.github.dlbbld.ashlarchess.common.utility.SetUtility;
 import io.github.dlbbld.ashlarchess.moves.CastlingCheck;
 import io.github.dlbbld.ashlarchess.moves.KingSafetyCheck;
 import io.github.dlbbld.ashlarchess.moves.MovementCheck;
 import io.github.dlbbld.ashlarchess.messages.Message;
-import io.github.dlbbld.ashlarchess.model.LegalMove;
-import io.github.dlbbld.ashlarchess.model.LegalMoveKind;
+import io.github.dlbbld.ashlarchess.board.LegalMove;
+import io.github.dlbbld.ashlarchess.board.LegalMoveKind;
 import io.github.dlbbld.ashlarchess.moves.CastlingUtility;
 
 final class SanValidateLegalMoves {

@@ -13,10 +13,10 @@ import io.github.dlbbld.ashlarchess.board.enums.Piece;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
 import io.github.dlbbld.ashlarchess.board.enums.Square;
 import io.github.dlbbld.ashlarchess.exceptions.ProgrammingMistakeException;
-import io.github.dlbbld.ashlarchess.common.model.MoveSpecification;
+import io.github.dlbbld.ashlarchess.board.MoveSpecification;
 import io.github.dlbbld.ashlarchess.common.utility.StaticPositionUtility;
-import io.github.dlbbld.ashlarchess.model.LegalMove;
-import io.github.dlbbld.ashlarchess.model.LegalMoveKind;
+import io.github.dlbbld.ashlarchess.board.LegalMove;
+import io.github.dlbbld.ashlarchess.board.LegalMoveKind;
 import io.github.dlbbld.ashlarchess.squares.PawnPotentialToSquares;
 
 class PawnCaptureEnPassantCaptureLegalMoves extends PawnLegalMoves {

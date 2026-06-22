@@ -10,9 +10,9 @@ import org.junit.jupiter.api.Test;
 import io.github.dlbbld.ashlarchess.board.Board;
 import io.github.dlbbld.ashlarchess.board.enums.CastlingMove;
 import io.github.dlbbld.ashlarchess.board.enums.Square;
-import io.github.dlbbld.ashlarchess.common.model.MoveSpecification;
-import io.github.dlbbld.ashlarchess.model.LegalMove;
-import io.github.dlbbld.ashlarchess.model.LegalMoveKind;
+import io.github.dlbbld.ashlarchess.board.MoveSpecification;
+import io.github.dlbbld.ashlarchess.board.LegalMove;
+import io.github.dlbbld.ashlarchess.board.LegalMoveKind;
 
 /**
  * Lock-down coverage for {@link LegalMoveKind} as stored on {@link LegalMove}.

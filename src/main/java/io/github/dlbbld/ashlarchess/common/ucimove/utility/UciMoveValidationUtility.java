@@ -19,8 +19,8 @@ import io.github.dlbbld.ashlarchess.board.enums.PromotionPieceType;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
 import io.github.dlbbld.ashlarchess.board.enums.Square;
 import io.github.dlbbld.ashlarchess.common.Nulls;
-import io.github.dlbbld.ashlarchess.model.EmptyBoardMove;
-import io.github.dlbbld.ashlarchess.model.UciMove;
+import io.github.dlbbld.ashlarchess.moves.EmptyBoardMove;
+import io.github.dlbbld.ashlarchess.board.UciMove;
 import io.github.dlbbld.ashlarchess.squares.EmptyBoardMoveUtility;
 import io.github.dlbbld.ashlarchess.squares.PawnDiagonalSquares;
 

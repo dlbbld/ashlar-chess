@@ -14,12 +14,12 @@ import io.github.dlbbld.ashlarchess.board.enums.PieceType;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
 import io.github.dlbbld.ashlarchess.board.enums.Square;
 import io.github.dlbbld.ashlarchess.common.Nulls;
-import io.github.dlbbld.ashlarchess.common.model.MoveSpecification;
+import io.github.dlbbld.ashlarchess.board.MoveSpecification;
 import io.github.dlbbld.ashlarchess.common.utility.StaticPositionUtility;
 import io.github.dlbbld.ashlarchess.moves.KingSafetyCheck;
-import io.github.dlbbld.ashlarchess.model.LegalMove;
+import io.github.dlbbld.ashlarchess.board.LegalMove;
 import io.github.dlbbld.ashlarchess.model.LegalMoveCalculation;
-import io.github.dlbbld.ashlarchess.model.LegalMoveKind;
+import io.github.dlbbld.ashlarchess.board.LegalMoveKind;
 import io.github.dlbbld.ashlarchess.model.PseudoLegalMove;
 
 public final class LegalMovesSupport {

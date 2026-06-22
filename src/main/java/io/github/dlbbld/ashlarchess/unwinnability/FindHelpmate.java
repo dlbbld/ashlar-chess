@@ -18,10 +18,10 @@ import io.github.dlbbld.ashlarchess.board.enums.Square;
 import io.github.dlbbld.ashlarchess.board.enums.SquareType;
 import io.github.dlbbld.ashlarchess.common.Nulls;
 import io.github.dlbbld.ashlarchess.exceptions.ProgrammingMistakeException;
-import io.github.dlbbld.ashlarchess.common.model.DynamicPosition;
+import io.github.dlbbld.ashlarchess.board.DynamicPosition;
 import io.github.dlbbld.ashlarchess.common.ucimove.utility.UciMoveUtility;
-import io.github.dlbbld.ashlarchess.model.LegalMove;
-import io.github.dlbbld.ashlarchess.model.UciMove;
+import io.github.dlbbld.ashlarchess.board.LegalMove;
+import io.github.dlbbld.ashlarchess.board.UciMove;
 
 //Figure 5 Find-Helpmatec routine, returns true if a checkmate sequence for player c in {w, b},
 //the intended winner, is found or false otherwise. The base call should be done on depth = 0,

@@ -14,8 +14,8 @@ import io.github.dlbbld.ashlarchess.bitboard.StaticPositionBridge;
 import io.github.dlbbld.ashlarchess.board.Board;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
 import io.github.dlbbld.ashlarchess.board.enums.Square;
-import io.github.dlbbld.ashlarchess.common.model.MoveSpecification;
-import io.github.dlbbld.ashlarchess.model.LegalMove;
+import io.github.dlbbld.ashlarchess.board.MoveSpecification;
+import io.github.dlbbld.ashlarchess.board.LegalMove;
 import io.github.dlbbld.ashlarchess.moves.LegalMovesSupport;
 import io.github.dlbbld.ashlarchess.test.model.PgnFen;
 import io.github.dlbbld.ashlarchess.test.model.PgnTestCaseList;
@@ -25,7 +25,7 @@ import io.github.dlbbld.ashlarchess.test.pgntest.enums.PgnTest;
 /**
  * Differential test for {@link BitboardLegalMoveFactory#toLegalMove}: for every legal move on every corpus fixture, the
  * converter applied to the move's {@link MoveSpecification} must reproduce the reference's {@link LegalMove} record
- * (same moving piece, captured piece, and {@link io.github.dlbbld.ashlarchess.model.LegalMoveKind}).
+ * (same moving piece, captured piece, and {@link io.github.dlbbld.ashlarchess.board.LegalMoveKind}).
  *
  * <p>
  * The reference is {@link LegalMovesSupport#calculateLegalMoves} directly - NOT {@code board.getLegalMoves()}, which
@@ -61,7 +61,7 @@ class TestBitboardLegalMoveFactory {
     final MoveSpecification e2e4 = new MoveSpecification(Square.E2, Square.E4);
     final LegalMove converted = BitboardLegalMoveFactory.toLegalMove(BitboardPosition.INITIAL_POSITION, e2e4,
         Side.WHITE);
-    assertEquals(io.github.dlbbld.ashlarchess.model.LegalMoveKind.PAWN_TWO_SQUARE_ADVANCE, converted.kind());
+    assertEquals(io.github.dlbbld.ashlarchess.board.LegalMoveKind.PAWN_TWO_SQUARE_ADVANCE, converted.kind());
     assertEquals(io.github.dlbbld.ashlarchess.board.enums.Piece.WHITE_PAWN, converted.movingPiece());
     assertEquals(io.github.dlbbld.ashlarchess.board.enums.Piece.NONE, converted.capturedPiece());
   }

@@ -84,7 +84,7 @@ import io.github.dlbbld.ashlarchess.board.StaticPosition;
 import io.github.dlbbld.ashlarchess.board.enums.PromotionPieceType;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
 import io.github.dlbbld.ashlarchess.board.enums.Square;
-import io.github.dlbbld.ashlarchess.common.model.MoveSpecification;
+import io.github.dlbbld.ashlarchess.board.MoveSpecification;
 import io.github.dlbbld.ashlarchess.squares.BishopPotentialToSquares;
 import io.github.dlbbld.ashlarchess.squares.KingNonCastlingPotentialToSquares;
 import io.github.dlbbld.ashlarchess.squares.KnightPotentialToSquares;

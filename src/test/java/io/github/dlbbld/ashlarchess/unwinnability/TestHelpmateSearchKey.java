@@ -13,8 +13,8 @@ import org.junit.jupiter.api.Test;
 
 import io.github.dlbbld.ashlarchess.board.Board;
 import io.github.dlbbld.ashlarchess.common.Nulls;
-import io.github.dlbbld.ashlarchess.common.model.DynamicPosition;
-import io.github.dlbbld.ashlarchess.model.LegalMove;
+import io.github.dlbbld.ashlarchess.board.DynamicPosition;
+import io.github.dlbbld.ashlarchess.board.LegalMove;
 
 /**
  * Differential test for {@link HelpmateSearchKey}: its equality semantics must match {@link DynamicPosition}'s exactly.

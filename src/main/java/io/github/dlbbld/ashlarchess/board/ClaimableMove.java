@@ -1,7 +1,7 @@
 // Copyright (C) 2020-2026 Daniel Baechli
 // SPDX-License-Identifier: GPL-3.0-only
 
-package io.github.dlbbld.ashlarchess.common.model;
+package io.github.dlbbld.ashlarchess.board;
 
 /**
  * One legal move that the side to move could announce as a FIDE 9.2 (threefold repetition) or 9.3 (50-move rule) draw

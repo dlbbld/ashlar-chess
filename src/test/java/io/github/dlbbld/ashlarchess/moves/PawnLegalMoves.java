@@ -9,7 +9,7 @@ import java.util.TreeSet;
 import io.github.dlbbld.ashlarchess.board.StaticPosition;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
 import io.github.dlbbld.ashlarchess.board.enums.Square;
-import io.github.dlbbld.ashlarchess.model.LegalMove;
+import io.github.dlbbld.ashlarchess.board.LegalMove;
 
 class PawnLegalMoves {
   public static Set<LegalMove> calculatePawnLegalMoves(StaticPosition staticPosition,

@@ -14,7 +14,7 @@ import io.github.dlbbld.ashlarchess.board.enums.PromotionPieceType;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
 import io.github.dlbbld.ashlarchess.board.enums.Square;
 import io.github.dlbbld.ashlarchess.common.Nulls;
-import io.github.dlbbld.ashlarchess.common.model.MoveSpecification;
+import io.github.dlbbld.ashlarchess.board.MoveSpecification;
 
 /**
  * Twelve-bitboard piece-placement representation: one {@code long} per real
@@ -659,7 +659,7 @@ public record BitboardPosition(long whitePawns, long whiteRooks, long whiteKnigh
    * <p>
    * Castling rights, en-passant target square, side-to-move, and the halfmove clock and fullmove number are
    * intentionally NOT updated here - they live on {@link io.github.dlbbld.ashlarchess.board.Board} /
-   * {@link io.github.dlbbld.ashlarchess.common.model.DynamicPosition}. This is the piece-placement-only equivalent of
+   * {@link io.github.dlbbld.ashlarchess.board.DynamicPosition}. This is the piece-placement-only equivalent of
    * {@code StaticPositionUtility.createPositionAfterMove}.
    *
    * <p>

@@ -6,7 +6,7 @@ package io.github.dlbbld.ashlarchess.report;
 import java.util.List;
 
 import io.github.dlbbld.ashlarchess.common.Nulls;
-import io.github.dlbbld.ashlarchess.common.model.DynamicPosition;
+import io.github.dlbbld.ashlarchess.board.DynamicPosition;
 
 /**
  * One position that reached the threefold-repetition threshold in the played history.

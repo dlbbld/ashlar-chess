@@ -32,7 +32,7 @@ import io.github.dlbbld.ashlarchess.exceptions.ProgrammingMistakeException;
 import io.github.dlbbld.ashlarchess.common.utility.ExceptionUtility;
 import io.github.dlbbld.ashlarchess.fen.model.Fen;
 import io.github.dlbbld.ashlarchess.fen.model.FenField;
-import io.github.dlbbld.ashlarchess.model.CastlingRightBoth;
+import io.github.dlbbld.ashlarchess.moves.CastlingRightBoth;
 import io.github.dlbbld.ashlarchess.moves.CastlingUtility;
 
 final class StrictFenSemanticParser {

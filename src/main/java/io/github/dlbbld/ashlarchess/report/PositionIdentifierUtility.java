@@ -12,7 +12,7 @@ import java.util.Map;
 import io.github.dlbbld.ashlarchess.board.MoveNumberFormat;
 import io.github.dlbbld.ashlarchess.common.Nulls;
 import io.github.dlbbld.ashlarchess.exceptions.ProgrammingMistakeException;
-import io.github.dlbbld.ashlarchess.common.model.DynamicPosition;
+import io.github.dlbbld.ashlarchess.board.DynamicPosition;
 
 final class PositionIdentifierUtility {
 
