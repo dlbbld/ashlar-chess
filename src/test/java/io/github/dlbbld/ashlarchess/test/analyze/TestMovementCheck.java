@@ -33,7 +33,7 @@ import org.junit.jupiter.api.Test;
 import io.github.dlbbld.ashlarchess.analyze.ChessRuleAnalyzer;
 import io.github.dlbbld.ashlarchess.board.Board;
 import io.github.dlbbld.ashlarchess.common.model.MoveSpecification;
-import io.github.dlbbld.ashlarchess.enums.MovementCheck;
+import io.github.dlbbld.ashlarchess.moves.MovementCheck;
 
 /**
  * Per-{@link MovementCheck}-value tests for {@link ChessRuleAnalyzer#analyzeMovement}. Each enum value (including

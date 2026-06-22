@@ -9,7 +9,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import org.junit.jupiter.api.Test;
 
 import io.github.dlbbld.ashlarchess.board.enums.Side;
-import io.github.dlbbld.ashlarchess.common.enums.Termination;
+import io.github.dlbbld.ashlarchess.board.Termination;
 
 /**
  * Direct compact-constructor tests for {@link Outcome}. Pins the semantic invariants the record's compact constructor

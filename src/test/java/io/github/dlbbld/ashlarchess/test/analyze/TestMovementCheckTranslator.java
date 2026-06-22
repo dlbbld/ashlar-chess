@@ -10,8 +10,8 @@ import org.junit.jupiter.api.Test;
 
 import io.github.dlbbld.ashlarchess.analyze.MovementCheckTranslator;
 import io.github.dlbbld.ashlarchess.exceptions.ProgrammingMistakeException;
-import io.github.dlbbld.ashlarchess.enums.MoveCheck;
-import io.github.dlbbld.ashlarchess.enums.MovementCheck;
+import io.github.dlbbld.ashlarchess.moves.MoveCheck;
+import io.github.dlbbld.ashlarchess.moves.MovementCheck;
 
 /**
  * Lock-down test for {@link MovementCheckTranslator#toMoveCheck(MovementCheck)}. Ensures the translator stays

@@ -28,7 +28,7 @@ import io.github.dlbbld.ashlarchess.board.enums.SquareUtility;
 import io.github.dlbbld.ashlarchess.common.Nulls;
 import io.github.dlbbld.ashlarchess.common.constants.CastlingConstants;
 import io.github.dlbbld.ashlarchess.exceptions.ProgrammingMistakeException;
-import io.github.dlbbld.ashlarchess.enums.CastlingCheck;
+import io.github.dlbbld.ashlarchess.moves.CastlingCheck;
 import io.github.dlbbld.ashlarchess.model.LegalMove;
 import io.github.dlbbld.ashlarchess.squares.AttackedSquaresOracle;
 

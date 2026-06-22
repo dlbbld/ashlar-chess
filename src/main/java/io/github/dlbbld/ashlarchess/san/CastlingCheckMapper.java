@@ -5,7 +5,7 @@ package io.github.dlbbld.ashlarchess.san;
 
 import io.github.dlbbld.ashlarchess.board.enums.CastlingRightLoss;
 import io.github.dlbbld.ashlarchess.exceptions.ProgrammingMistakeException;
-import io.github.dlbbld.ashlarchess.enums.CastlingCheck;
+import io.github.dlbbld.ashlarchess.moves.CastlingCheck;
 
 /**
  * Maps {@link CastlingCheck} + {@link CastlingRightLoss} to their counterparts in {@link SanValidationProblem}.

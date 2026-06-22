@@ -20,7 +20,7 @@ import org.junit.jupiter.api.Test;
 import io.github.dlbbld.ashlarchess.analyze.ChessRuleAnalyzer;
 import io.github.dlbbld.ashlarchess.board.Board;
 import io.github.dlbbld.ashlarchess.common.model.MoveSpecification;
-import io.github.dlbbld.ashlarchess.enums.KingSafetyCheck;
+import io.github.dlbbld.ashlarchess.moves.KingSafetyCheck;
 
 /**
  * Per-{@link KingSafetyCheck}-value tests for {@link ChessRuleAnalyzer#analyzeKingSafety}. Each enum value (including

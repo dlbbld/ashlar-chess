@@ -5,8 +5,8 @@ package io.github.dlbbld.ashlarchess.analyze;
 
 import io.github.dlbbld.ashlarchess.board.enums.CastlingRightLoss;
 import io.github.dlbbld.ashlarchess.exceptions.ProgrammingMistakeException;
-import io.github.dlbbld.ashlarchess.enums.CastlingCheck;
-import io.github.dlbbld.ashlarchess.enums.MoveCheck;
+import io.github.dlbbld.ashlarchess.moves.CastlingCheck;
+import io.github.dlbbld.ashlarchess.moves.MoveCheck;
 
 /**
  * Translates a {@link CastlingCheck} result into the broader {@link MoveCheck} vocabulary. Used when a castling result

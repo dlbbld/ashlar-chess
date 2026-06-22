@@ -29,7 +29,7 @@ import io.github.dlbbld.ashlarchess.board.Board;
 import io.github.dlbbld.ashlarchess.board.enums.CastlingMove;
 import io.github.dlbbld.ashlarchess.board.enums.PromotionPieceType;
 import io.github.dlbbld.ashlarchess.common.model.MoveSpecification;
-import io.github.dlbbld.ashlarchess.enums.MoveCheck;
+import io.github.dlbbld.ashlarchess.moves.MoveCheck;
 
 /**
  * Surface-level smoke tests for {@code ValidateNewMove#validateNewMove}: one representative scenario per public

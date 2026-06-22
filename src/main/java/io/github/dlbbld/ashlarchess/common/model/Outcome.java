@@ -4,7 +4,7 @@
 package io.github.dlbbld.ashlarchess.common.model;
 
 import io.github.dlbbld.ashlarchess.board.enums.Side;
-import io.github.dlbbld.ashlarchess.common.enums.Termination;
+import io.github.dlbbld.ashlarchess.board.Termination;
 
 /**
  * The current-position outcome of a game: how it ended (or {@link Termination#NONE} if it has not) and who, if anyone,

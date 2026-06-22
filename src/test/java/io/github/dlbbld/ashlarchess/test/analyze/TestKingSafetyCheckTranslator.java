@@ -10,8 +10,8 @@ import org.junit.jupiter.api.Test;
 
 import io.github.dlbbld.ashlarchess.analyze.KingSafetyCheckTranslator;
 import io.github.dlbbld.ashlarchess.exceptions.ProgrammingMistakeException;
-import io.github.dlbbld.ashlarchess.enums.KingSafetyCheck;
-import io.github.dlbbld.ashlarchess.enums.MoveCheck;
+import io.github.dlbbld.ashlarchess.moves.KingSafetyCheck;
+import io.github.dlbbld.ashlarchess.moves.MoveCheck;
 
 /**
  * Lock-down test for {@link KingSafetyCheckTranslator#toMoveCheck(KingSafetyCheck)}. Ensures the translator stays
