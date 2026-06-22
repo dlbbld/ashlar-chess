@@ -3,7 +3,7 @@
 
 package io.github.dlbbld.ashlarchess.test.san.reference;
 
-import io.github.dlbbld.ashlarchess.san.SanValidateFormat;
+import io.github.dlbbld.ashlarchess.san.internal.SanValidateFormat;
 
 /**
  * Test-only coarse sanity filter over SAN strings - a superset of the structurally valid SAN language that lives in

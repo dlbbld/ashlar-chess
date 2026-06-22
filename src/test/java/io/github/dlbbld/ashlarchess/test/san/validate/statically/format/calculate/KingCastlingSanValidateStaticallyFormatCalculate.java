@@ -5,7 +5,7 @@ package io.github.dlbbld.ashlarchess.test.san.validate.statically.format.calcula
 
 import java.util.Map;
 
-import io.github.dlbbld.ashlarchess.san.SanParse;
+import io.github.dlbbld.ashlarchess.san.internal.SanParse;
 import io.github.dlbbld.ashlarchess.test.san.validate.statically.strict.calculate.KingCastlingSanValidateStaticallyStrictCalculate;
 
 public class KingCastlingSanValidateStaticallyFormatCalculate {

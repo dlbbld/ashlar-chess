@@ -9,7 +9,7 @@ import java.util.TreeMap;
 import org.eclipse.jdt.annotation.Nullable;
 
 import io.github.dlbbld.ashlarchess.common.Nulls;
-import io.github.dlbbld.ashlarchess.san.SanParse;
+import io.github.dlbbld.ashlarchess.san.internal.SanParse;
 
 public class SanValidateStaticallyFormat {
 

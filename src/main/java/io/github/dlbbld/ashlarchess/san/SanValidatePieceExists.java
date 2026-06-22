@@ -3,6 +3,8 @@
 
 package io.github.dlbbld.ashlarchess.san;
 
+import io.github.dlbbld.ashlarchess.san.internal.SanFormat;
+import io.github.dlbbld.ashlarchess.san.internal.SanConversion;
 import io.github.dlbbld.ashlarchess.bitboard.BitboardPosition;
 import io.github.dlbbld.ashlarchess.board.enums.File;
 import io.github.dlbbld.ashlarchess.board.enums.Piece;

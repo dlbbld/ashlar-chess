@@ -3,6 +3,8 @@
 
 package io.github.dlbbld.ashlarchess.san;
 
+import io.github.dlbbld.ashlarchess.san.internal.SanParse;
+
 /**
  * Intentional no-op validator for king SAN movement at the abstract movement layer.
  *

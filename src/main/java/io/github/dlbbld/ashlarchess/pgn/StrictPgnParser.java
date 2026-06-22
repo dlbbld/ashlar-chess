@@ -607,7 +607,7 @@ public final class StrictPgnParser {
       if (!io.github.dlbbld.ashlarchess.fen.internal.FenPieceSymbol.exists(c)
           && !io.github.dlbbld.ashlarchess.board.enums.File.exists(c)
           && !io.github.dlbbld.ashlarchess.board.enums.Rank.exists(c)
-          && !io.github.dlbbld.ashlarchess.san.SanSymbol.exists(c)) {
+          && !io.github.dlbbld.ashlarchess.san.internal.SanSymbol.exists(c)) {
         throw movetextError(StrictPgnParserValidationProblem.MOVETEXT_SAN_CHARACTER_INVALID,
             "The movetext is invalid because a SAN contains an invalid character of \"" + c + "\".");
       }

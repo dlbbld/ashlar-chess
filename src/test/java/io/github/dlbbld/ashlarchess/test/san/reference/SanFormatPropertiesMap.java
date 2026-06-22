@@ -5,7 +5,7 @@ package io.github.dlbbld.ashlarchess.test.san.reference;
 
 import java.util.EnumMap;
 
-import io.github.dlbbld.ashlarchess.san.SanFormat;
+import io.github.dlbbld.ashlarchess.san.internal.SanFormat;
 
 public class SanFormatPropertiesMap {
 

@@ -1,7 +1,7 @@
 // Copyright (C) 2020-2026 Daniel Baechli
 // SPDX-License-Identifier: GPL-3.0-only
 
-package io.github.dlbbld.ashlarchess.san;
+package io.github.dlbbld.ashlarchess.san.internal;
 
 public enum SanFormat {
 
@@ -31,7 +31,9 @@ public enum SanFormat {
   // (3d) O-O
   KING_CASTLING_KING_SIDE;
 
-  boolean isKingCastlingMove() {
+  // public so the san-package validators can call it across the package boundary; SanFormat lives in the
+  // non-exported san.internal, so this does not widen the consumer-facing API.
+  public boolean isKingCastlingMove() {
     return this == KING_CASTLING_KING_SIDE || this == KING_CASTLING_QUEEN_SIDE;
   }
 

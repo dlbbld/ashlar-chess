@@ -12,6 +12,9 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
+import io.github.dlbbld.ashlarchess.san.internal.SanFormat;
+import io.github.dlbbld.ashlarchess.san.internal.SanConversion;
+import io.github.dlbbld.ashlarchess.san.internal.SanParse;
 import io.github.dlbbld.ashlarchess.analyze.CastlingCheckTranslator;
 import io.github.dlbbld.ashlarchess.bitboard.BitboardPosition;
 import io.github.dlbbld.ashlarchess.bitboard.internal.KingAttacks;

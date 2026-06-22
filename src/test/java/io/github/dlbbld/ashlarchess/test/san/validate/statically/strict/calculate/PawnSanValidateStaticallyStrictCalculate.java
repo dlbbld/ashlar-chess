@@ -17,7 +17,7 @@ import io.github.dlbbld.ashlarchess.board.enums.Side;
 import io.github.dlbbld.ashlarchess.board.enums.Square;
 import io.github.dlbbld.ashlarchess.common.Nulls;
 import io.github.dlbbld.ashlarchess.exceptions.ProgrammingMistakeException;
-import io.github.dlbbld.ashlarchess.san.SanParse;
+import io.github.dlbbld.ashlarchess.san.internal.SanParse;
 import io.github.dlbbld.ashlarchess.test.san.model.SanValidationFromTo;
 import io.github.dlbbld.ashlarchess.test.san.validate.statically.strict.enums.PawnBlackSanValidateStaticallyStrict;
 import io.github.dlbbld.ashlarchess.test.san.validate.statically.strict.enums.PawnWhiteSanValidateStaticallyStrict;

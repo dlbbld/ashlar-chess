@@ -12,10 +12,10 @@ import io.github.dlbbld.ashlarchess.board.enums.PromotionPieceType;
 import io.github.dlbbld.ashlarchess.board.enums.Rank;
 import io.github.dlbbld.ashlarchess.board.enums.Square;
 import io.github.dlbbld.ashlarchess.common.Nulls;
-import io.github.dlbbld.ashlarchess.san.SanFormat;
-import io.github.dlbbld.ashlarchess.san.SanSymbol;
+import io.github.dlbbld.ashlarchess.san.internal.SanFormat;
+import io.github.dlbbld.ashlarchess.san.internal.SanSymbol;
 import io.github.dlbbld.ashlarchess.san.SanTerminalMarker;
-import io.github.dlbbld.ashlarchess.san.SanTerminalMarkerUtility;
+import io.github.dlbbld.ashlarchess.san.internal.SanTerminalMarkerUtility;
 
 public class SanCalculate {
 

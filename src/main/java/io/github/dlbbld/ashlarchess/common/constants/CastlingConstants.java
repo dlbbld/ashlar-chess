@@ -26,7 +26,7 @@ import io.github.dlbbld.ashlarchess.board.enums.Square;
 import io.github.dlbbld.ashlarchess.board.MoveSpecification;
 import io.github.dlbbld.ashlarchess.board.LegalMove;
 import io.github.dlbbld.ashlarchess.board.LegalMoveKind;
-import io.github.dlbbld.ashlarchess.san.SanSymbol;
+import io.github.dlbbld.ashlarchess.san.internal.SanSymbol;
 
 public final class CastlingConstants {
 

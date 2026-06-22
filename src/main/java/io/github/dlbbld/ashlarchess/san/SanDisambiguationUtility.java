@@ -6,6 +6,7 @@ package io.github.dlbbld.ashlarchess.san;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.github.dlbbld.ashlarchess.san.internal.SanConversion;
 import io.github.dlbbld.ashlarchess.board.enums.File;
 import io.github.dlbbld.ashlarchess.board.enums.Rank;
 import io.github.dlbbld.ashlarchess.board.enums.Square;

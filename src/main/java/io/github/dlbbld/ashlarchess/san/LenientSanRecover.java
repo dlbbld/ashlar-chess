@@ -9,6 +9,7 @@ import java.util.Set;
 
 import org.eclipse.jdt.annotation.Nullable;
 
+import io.github.dlbbld.ashlarchess.san.internal.NotationMovingPiece;
 import io.github.dlbbld.ashlarchess.board.Board;
 import io.github.dlbbld.ashlarchess.board.enums.File;
 import io.github.dlbbld.ashlarchess.board.enums.Piece;

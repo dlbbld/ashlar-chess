@@ -15,7 +15,7 @@ import java.util.function.Consumer;
 import org.junit.jupiter.api.Test;
 
 import io.github.dlbbld.ashlarchess.common.Nulls;
-import io.github.dlbbld.ashlarchess.san.SanValidateFormat;
+import io.github.dlbbld.ashlarchess.san.internal.SanValidateFormat;
 import io.github.dlbbld.ashlarchess.san.SanValidationException;
 import io.github.dlbbld.ashlarchess.test.RestrictTestConstants;
 import io.github.dlbbld.ashlarchess.test.san.reference.SanValidateFormatBasic;

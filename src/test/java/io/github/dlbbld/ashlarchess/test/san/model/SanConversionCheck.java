@@ -3,7 +3,7 @@
 
 package io.github.dlbbld.ashlarchess.test.san.model;
 
-import io.github.dlbbld.ashlarchess.san.SanConversion;
+import io.github.dlbbld.ashlarchess.san.internal.SanConversion;
 
 public record SanConversionCheck(boolean isMatch, SanConversion sanConversion) {
 

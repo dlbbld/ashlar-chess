@@ -39,7 +39,7 @@ import io.github.dlbbld.ashlarchess.san.LenientSanParserValidationException;
 import io.github.dlbbld.ashlarchess.san.MoveToLan;
 import io.github.dlbbld.ashlarchess.san.MoveToSan;
 import io.github.dlbbld.ashlarchess.san.SanTerminalMarker;
-import io.github.dlbbld.ashlarchess.san.SanTerminalMarkerUtility;
+import io.github.dlbbld.ashlarchess.san.internal.SanTerminalMarkerUtility;
 import io.github.dlbbld.ashlarchess.san.StrictSanParser;
 import io.github.dlbbld.ashlarchess.unwinnability.DeadPositionAnalyzer;
 import io.github.dlbbld.ashlarchess.unwinnability.DeadPositionFullVerdict;
