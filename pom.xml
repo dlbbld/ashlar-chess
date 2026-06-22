@@ -125,14 +125,10 @@
 						<addMavenDescriptor>false</addMavenDescriptor>
 						<manifestEntries>
 							<!--
-								Intentional JPMS module name. Without this, the JVM derives
-								`ashlar.chess` from the jar file name for module-path consumers - an
-								accidental name. Declaring it locks the chosen
-								io.github.dlbbld.ashlarchess (mirrors the base package) ahead of the
-								explicit module-info.java planned for 20.0.0, so the eventual named
-								module keeps a name consumers can already rely on.
+								The JPMS module name is declared by src/main/java/module-info.java
+								(module io.github.dlbbld.ashlarchess). A real module descriptor supersedes
+								Automatic-Module-Name, so that manifest entry is no longer carried here.
 							-->
-							<Automatic-Module-Name>io.github.dlbbld.ashlarchess</Automatic-Module-Name>
 							<Implementation-Title>${project.artifactId}</Implementation-Title>
 							<Implementation-Version>${project.version}</Implementation-Version>
 							<Implementation-Vendor>Daniel Bächli</Implementation-Vendor>
@@ -155,6 +151,17 @@
 					<excludes>
 						<exclude>${test.excludes}</exclude>
 					</excludes>
+					<!--
+						The white-box test tree carries no module-info, so surefire patches it into the
+						io.github.dlbbld.ashlarchess module (its tests must reach non-exported internals).
+						TestBoardUnperformMove deep-compares two Boards with commons-lang3
+						EqualsBuilder.reflectionEquals, which setAccessible()s Board's private fields - that
+						needs the board package opened to org.apache.commons.lang3 for the forked test JVM.
+						Kept here, not in module-info, on purpose: it is a test-only reflection need, not a
+						package ashlar wants open to consumers at runtime.
+					-->
+					<argLine>--add-opens
+						io.github.dlbbld.ashlarchess/io.github.dlbbld.ashlarchess.board=org.apache.commons.lang3</argLine>
 				</configuration>
 			</plugin>
 
@@ -180,6 +187,17 @@
 					<source>17</source>
 					<doclint>all,-missing</doclint>
 					<failOnError>true</failOnError>
+					<!--
+						maven-javadoc-plugin 3.11.2 aborts a single-module project that has a
+						module-info.java with "aggregated report contains named and unnamed modules"
+						(its module pre-scan trips before any doc is generated). Exclude module-info.java
+						from javadoc generation so the tool runs in classic (package) mode; the descriptor
+						is still compiled into the jar by maven-compiler-plugin, so modular consumers are
+						unaffected. Only the rendered module-summary page is lost, not any package/class doc.
+					-->
+					<sourceFileExcludes>
+						<sourceFileExclude>module-info.java</sourceFileExclude>
+					</sourceFileExcludes>
 				</configuration>
 			</plugin>
 		</plugins>
