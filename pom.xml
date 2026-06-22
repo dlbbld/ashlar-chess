@@ -173,7 +173,7 @@
 					Javadoc is NOT bound to the package phase. Regular edit-compile cycles
 					(mvn test-compile, mvn package -DskipTests) stay fast and Java-only.
 					Run javadoc explicitly when touching docs / API signatures:
-						mvn javadoc:javadoc -Dshow=private       # validate ALL main docs
+						mvn javadoc:javadoc -Dshow=private       # validate exported main docs (internals excluded, see excludePackageNames)
 						mvn javadoc:test-javadoc -Dshow=private  # validate ALL test docs
 						mvn javadoc:jar                          # produce the public-API javadoc jar
 					Both validation goals need -Dshow=private: many main classes (report records,
@@ -198,6 +198,14 @@
 					<sourceFileExcludes>
 						<sourceFileExclude>module-info.java</sourceFileExclude>
 					</sourceFileExcludes>
+					<!--
+						Because javadoc runs in classic (package) mode here, it would otherwise document
+						EVERY public type in EVERY package - including the non-exported internals - so the
+						published -javadoc.jar would advertise hidden JPMS internals as API. Restrict the
+						output to the exported packages by excluding the hidden ones. KEEP IN SYNC with
+						module-info.java: this list is exactly the packages it does NOT export.
+					-->
+					<excludePackageNames>io.github.dlbbld.ashlarchess.analyze,io.github.dlbbld.ashlarchess.board.model,io.github.dlbbld.ashlarchess.common,io.github.dlbbld.ashlarchess.common.constants,io.github.dlbbld.ashlarchess.common.ucimove.utility,io.github.dlbbld.ashlarchess.common.utility,io.github.dlbbld.ashlarchess.messages,io.github.dlbbld.ashlarchess.moves,io.github.dlbbld.ashlarchess.squares</excludePackageNames>
 				</configuration>
 			</plugin>
 		</plugins>
