@@ -85,6 +85,17 @@ board.movesStrict("Bc5", "Qf3", "h6", "Qxf7#");
 System.out.println(board.isCheckmate()); // true
 ```
 
+# Working with castling moves
+A castling `MoveSpecification` carries the `CastlingMove` (`KING_SIDE` / `QUEEN_SIDE`); its from/to squares are deliberately `Square.NONE`. Resolve the squares a castling move actually touches from `CastlingMove`, given the side:
+```java
+final CastlingMove castling = moveSpecification.castlingMove(); // KING_SIDE / QUEEN_SIDE / NONE
+
+castling.kingFromSquare(Side.WHITE); // E1
+castling.kingToSquare(Side.WHITE);   // G1 (king-side), C1 (queen-side)
+castling.rookFromSquare(Side.WHITE); // H1 (king-side), A1 (queen-side)
+castling.rookToSquare(Side.WHITE);   // F1 (king-side), D1 (queen-side)
+```
+
 # History
 Initially I needed a chess library that detects threefold repetitions and the fifty-move rule - not just for the current position, but across the whole game, including possible claims ahead. Finding none that did this, I started implementing it, and along the way it grew into a programming exercise in its own right, focused above all on correctness.
 

@@ -6,7 +6,7 @@
 
 	<groupId>io.github.dlbbld</groupId>
 	<artifactId>ashlar-chess</artifactId>
-	<version>19.1.0</version>
+	<version>20.0.0-SNAPSHOT</version>
 
 	<name>ashlar-chess</name>
 	<description>A Java chess rules library with strict/lenient SAN, FEN, and
