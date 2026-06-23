@@ -17,7 +17,6 @@ import io.github.dlbbld.ashlarchess.moves.EmptyBoardMove;
 import io.github.dlbbld.ashlarchess.squares.EmptyBoardMoveUtility;
 import io.github.dlbbld.ashlarchess.squares.PawnDiagonalSquares;
 
-@SuppressWarnings("null")
 public final class PawnBlackSanValidateStaticallyStrict {
 
   private PawnBlackSanValidateStaticallyStrict() {

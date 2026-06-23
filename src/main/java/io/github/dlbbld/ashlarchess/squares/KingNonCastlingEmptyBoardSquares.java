@@ -11,7 +11,6 @@ import java.util.Set;
 import io.github.dlbbld.ashlarchess.board.enums.Square;
 import io.github.dlbbld.ashlarchess.internal.Nulls;
 
-@SuppressWarnings("null")
 public final class KingNonCastlingEmptyBoardSquares {
 
   private KingNonCastlingEmptyBoardSquares() {

@@ -29,7 +29,6 @@ final class PawnAnyAdvanceEmptyBoardSquares {
   }
 
   // Union of one-advance and two-advance. Pawns only exist on ranks 2-7.
-  @SuppressWarnings("null")
   private static Map<Square, Set<Square>> build(Side side) {
     final EnumMap<Square, Set<Square>> map = Nulls.newEnumMap(Square.class);
     for (final Square from : Square.REAL) {

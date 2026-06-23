@@ -22,7 +22,6 @@ import io.github.dlbbld.ashlarchess.internal.Nulls;
 import io.github.dlbbld.ashlarchess.moves.EmptyBoardMove;
 import io.github.dlbbld.ashlarchess.squares.EmptyBoardMoveUtility;
 
-@SuppressWarnings("null")
 public final class RookSanValidateStaticallyStrict {
 
   private RookSanValidateStaticallyStrict() {
