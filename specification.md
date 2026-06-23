@@ -12,7 +12,7 @@ By a checklist of "major features found in large chess libraries," ashlar-chess 
 
 The goal is an essential orthodox-chess rules library, where "essential" is defined deliberately and personally: the parts considered central to rule correctness and trustworthy chess data handling. The core feature set is fixed:
 
-- orthodox chess only, not Chess960;
+- orthodox chess only;
 - strict and lenient FEN / SAN / PGN handling for the use cases ashlar supports, with explicit, instructive, educative validation messages;
 - precise legal-move validation and move execution;
 - exact game-state and rule predicates;
@@ -52,9 +52,7 @@ The project moved in phases. The first implementation was correctness-first and 
 Concrete examples:
 
 - **Move history stores derived facts directly.** Whether a move was a two-square pawn advance or an en passant capture is recorded in the move history rather than recomputed from the position when needed. Engines like Stockfish compute these on demand because the savings matter at engine speeds. ashlar-chess stores them because the resulting code is shorter, more obviously correct, and easier to maintain.
-- **Production piece placement is bitboard-based.** `BitboardPosition` is the runtime representation for piece placement, move generation, and attack queries. It exists because a production library cannot stay credible if basic position questions are orders of magnitude slower than the surrounding ecosystem.
-- **The public board stays rich.** `Board` is a game-state object, not the lean search representation. It keeps a per-position record for every ply (the move, check flags, dynamic position, halfmove clock, repetition count, SAN/LAN strings, castling-right loss facts) plus the legal moves of the current position, so rule queries, reports, FEN/PGN output, and `unmove` are direct and auditable. Legal moves are derived cache, not history: historical positions do not retain their legal-move lists, and the current set is recomputed on `unmove`. Its current position is bitboard-backed, but the object deliberately carries more game history than a performance-only board would.
-- **The full unwinnability search uses a mutable search board.** `HelpmateSearchBoard` owns mutable bitboards, make/unmake stacks, per-depth legal-move buffers, and an exact transposition key. This is a deliberate performance trade-off in the search hot path, contained inside the unwinnability package and tested against `Board`.
+- **The representation split follows from this bargain** — bitboard piece placement for production, a deliberately rich `Board` game object, and a mutable search board (`HelpmateSearchBoard`) for the full-unwinnability hot path, each kept honest against a readable reference. The three representations and their trade-offs are detailed in §4.1.
 - **Repetition and public state prefer transparent semantics.** Position equality follows the FIDE definition directly: repetition keys on the exact `DynamicPosition` record and the helpmate transposition table on the exact `HelpmateSearchKey` — exact value records, never a hash trusted as the rule fact.
 
 The resulting rule is: optimize where production use needs it, but make the optimization answer to a readable oracle. Where the FIDE Laws are ambiguous, the library follows the most rule-faithful reading.
@@ -147,7 +145,7 @@ Side-specific quick/full unwinnability queries and whole-position dead-position 
 ### 3.3 SAN, FEN, PGN
 
 - **SAN** — two pipelines: **strict** (canonical SAN only; reached from `Board.moveStrict(String)` and from the PGN-driven path) and **lenient** (accepts a defined set of forgivable deviations from canonical; reached from `Board.moveLenient(String)`). See §3.3.1 for the lenient taxonomy and algorithm.
-- **FEN** — strict and lenient public entry points. `StrictFenParser` performs the full strict parse and structural/rule-consistency validation: piece placement is 8 ranks summing to 8 squares; pawns are off rank 1 and rank 8; the side that just moved is not still in check; castling rights are consistent with king/rook static positions; en-passant target square is well-formed, on the correct rank for the side to move, has a pawn one square ahead, has the starting square empty, and the previous position is legal; the halfmove clock is a non-negative integer and is 0 whenever an en-passant target is set; the fullmove number is a positive integer ≤ `MAX_FULL_MOVE_NUMBER`; and the halfmove clock is consistent with the fullmove number (so `... 15 1` is rejected). The halfmove clock itself is not capped — the FIDE 75-move rule is surfaced as a queryable predicate on `Board`, not enforced at FEN import. `Board.fromFenStrict(String)` uses the strict parser. `LenientFenParser` (`Board.fromFenLenient(String)`) runs a syntactic-tolerance pre-pass that forgives whitespace, casing, missing trailing counters, non-canonical castling order, non-ASCII dashes, trailing garbage, and the halfmove clock vs fullmove number inconsistency (auto-corrected by bumping `fullMoveNumber` up to `halfMoveClock` rounded up to the next multiple of ten), then delegates to `StrictFenParser`. See §3.3.3 for the contract table.
+- **FEN** — strict and lenient public entry points. `StrictFenParser` (`Board.fromFenStrict(String)`) performs the full strict parse plus structural/rule-consistency validation; `LenientFenParser` (`Board.fromFenLenient(String)`) runs a syntactic-tolerance pre-pass (whitespace, casing, missing trailing counters, non-canonical castling order, non-ASCII dashes, trailing garbage, and the halfmove-clock / fullmove-number inconsistency) and then delegates to the strict parser. The halfmove clock is never capped — the FIDE 75-move rule is a queryable `Board` predicate, not a FEN-import limit. See §3.3.3 for the full strict-invariant list and the forgiven-code table.
 - **PGN** — two parsers, both **preserving input as given**: **strict** (enforces the spec's import-format syntax, plus the semantic essentials: Result tag presence, SetUp/FEN coupling) and **lenient** (tolerates real-world PGN — spaced move-number indicators, missing seven-tag-roster entries, optional termination markers, extra whitespace). Both produce the same `PgnGame` model; neither normalises the tag list. The exporter has two modes: **semantic** (the default, emits the parse model as-given) and **archival** (PGN spec §8.1.1-conformant output, opt-in via `WriteMode.ARCHIVAL`). See §3.3.2 for the parse/validate/export contract. The two-parser split is deliberate: a single parser with a "strictness flag" inevitably grows conditional branches that obscure both rule sets — splitting keeps each parser readable and lets the two evolve independently.
 
 #### 3.3.1 Lenient SAN
@@ -335,27 +333,17 @@ The test suite is the project's safety net. Refactors are expected to leave the 
 
 ### 6.1 Differential testing of the bitboard backend
 
-A specific testing pattern, called out because it is permanent project policy (see §4.1): the bitboard piece-placement representation that production runs on is asserted bit-exact against the `StaticPosition` mailbox oracle across the full PGN/FEN corpus. Pattern:
+The permanent oracle policy is stated in §4.1; this is the concrete test pattern it produces:
 
-- For each fixture in the corpus, take the position at every reachable game state, derive a `BitboardPosition` from it, and run the bitboard primitive being tested.
-- Compute the reference answer from `StaticPosition` / `StaticPositionUtility` independently.
+- For each fixture in the corpus, take the position at every reachable game state, derive a `BitboardPosition`, and run the bitboard primitive under test.
+- Compute the reference answer independently from `StaticPosition` / `StaticPositionUtility`.
 - Assert the two agree exactly. For `afterMove`, walk both forward over every legal move in every fixture position.
 
-The corpus-walking tests live in `src/test/java/io/github/dlbbld/ashlarchess/test/bitboard/`. A new primitive on `BitboardPosition` is not considered complete until its corpus walk lands alongside it.
+A new primitive on `BitboardPosition` is not considered complete until its corpus walk lands alongside it (`src/test/java/io/github/dlbbld/ashlarchess/test/bitboard/`).
 
 ### 6.2 Restricted vs full suite
 
-Day-to-day iteration runs a restricted subset (`mvn test`). A handful of long-running audits are gated by `RestrictTestConstants`: the cross-corpus parser audits, a multi-second unwinnability full-search test, the legacy parser-rejection audit. They take from a few seconds to a few minutes apiece and are not useful on every iteration.
-
-The full suite is a Maven profile:
-
-```
-mvn test -Pfull -Dtest.excludes=
-```
-
-`-Pfull` sets the `ashlar-chess.full` system property, which flips every gate inside `RestrictTestConstants` and switches `PgnTestInclusion` to `ALL` (including the longest-possible-game corpus). `-Dtest.excludes=` clears the default unwinnability-suite exclusion.
-
-**Release-time requirement:** before tagging a release, run `mvn test -Pfull -Dtest.excludes=` and confirm green. The default suite is *not* sufficient to certify a release.
+Day-to-day iteration runs a restricted subset; the complete suite — every `RestrictTestConstants` gate flipped and the longest-possible-game corpus included — runs under a Maven profile and is the **release gate**: the default suite is *not* sufficient to certify a release. The exact commands are in [`setup.md`](setup.md) (*Running the test suite*).
 
 ### 6.3 What the test volume buys — and a note on shared corpora
 
