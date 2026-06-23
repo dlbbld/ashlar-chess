@@ -86,17 +86,8 @@ class TestAmbronaUnwinnabilityFullOracleComparison {
     }
   }
 
-  // CHA does not distinguish the WINNABLE_HELPMATE / WINNABLE_BY_THEOREM split, so a winnable oracle verdict matches
-  // either of ours.
   private static boolean isSameVerdict(UnwinnabilityFullVerdict actual, UnwinnabilityFullVerdict expected) {
-    if (actual == expected) {
-      return true;
-    }
-    final boolean actualWinnable = actual == UnwinnabilityFullVerdict.WINNABLE_HELPMATE
-        || actual == UnwinnabilityFullVerdict.WINNABLE_BY_THEOREM;
-    final boolean expectedWinnable = expected == UnwinnabilityFullVerdict.WINNABLE_HELPMATE
-        || expected == UnwinnabilityFullVerdict.WINNABLE_BY_THEOREM;
-    return actualWinnable && expectedWinnable;
+    return actual == expected;
   }
 
   private static Set<AcceptedDifference> readAcceptedDifferenceSet() {

@@ -151,8 +151,7 @@ Artifacts go next, so every gate below runs against the actual release version. 
 change, no version drift):
 
 - [`pom.xml`](pom.xml) line 9 — `<version>X.Y.Z</version>`
-- [`README.md`](README.md) and [`manual.md`](manual.md) — the Maven `<version>` snippets and the Gradle
-  `implementation '...:ashlar-chess:X.Y.Z'` snippets
+- [`README.md`](README.md) and [`manual.md`](manual.md) — the Maven `<version>` snippets
 
 Add the `CHANGELOG.md` entry above `[Unreleased]`. The header carries the **release title** between the version and the
 date - `## [X.Y.Z] - Release Title - YYYY-MM-DD`:

@@ -25,6 +25,8 @@ import io.github.dlbbld.ashlarchess.pgn.StrictPgnParserValidationResult;
 import io.github.dlbbld.ashlarchess.pgn.WriteMode;
 import io.github.dlbbld.ashlarchess.report.Reporter;
 import io.github.dlbbld.ashlarchess.san.ForgivenSanItem;
+import io.github.dlbbld.ashlarchess.san.LenientSanParseResult;
+import io.github.dlbbld.ashlarchess.san.StrictSanParser;
 import io.github.dlbbld.ashlarchess.unwinnability.DeadPositionQuickVerdict;
 
 /**
@@ -58,6 +60,8 @@ public final class ReadmeExamples {
         new ReadmeExample("adjudication-flagfall-full", ReadmeExamples::adjudicationFlagfallFull, true),
         new ReadmeExample("adjudication-resignation", ReadmeExamples::adjudicationResignation, true),
         new ReadmeExample("dead-position-during-play", ReadmeExamples::deadPositionDuringPlay, true),
+        new ReadmeExample("readme-notation-input", ReadmeExamples::readmeNotationInput, true),
+        new ReadmeExample("readme-unwinnability", ReadmeExamples::readmeUnwinnability, true),
         new ReadmeExample("basic-usage", ReadmeExamples::basicUsage, true),
         new ReadmeExample("castling-geometry", ReadmeExamples::castlingGeometry, true),
         new ReadmeExample("unwinnable-insufficient-material", ReadmeExamples::unwinnableInsufficientMaterial, true),
@@ -211,6 +215,36 @@ public final class ReadmeExamples {
 
     System.out.println(board.isCheckmate()); // [out]
     // </readme:basic-usage>
+  }
+
+  public static void readmeNotationInput() {
+    // <readme:readme-notation-input>
+    final Board board = Board
+        .fromFenLenient(" rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR W KQkq - ");
+
+    final MoveSpecification e4 = StrictSanParser.parse("e4", board);
+    board.move(e4);
+
+    final LenientSanParseResult e5 = board.moveLenient("e7-e5");
+    System.out.println(e5.forgivenItems().isEmpty()); // [out]
+
+    final PgnGame game = LenientPgnParser.parseText("""
+        [Event "?"]
+
+        1. e4 e5 2. nf3 *
+        """);
+    final Board imported = PgnUtility.toBoard(game);
+    System.out.println(imported.getSan()); // [out]
+    // </readme:readme-notation-input>
+  }
+
+  public static void readmeUnwinnability() {
+    // <readme:readme-unwinnability>
+    final Board position = Board.fromFenStrict("8/8/3k4/1p2p1p1/pP1pP1P1/P2P4/1K6/8 b - - 32 62");
+
+    System.out.println(position.unwinnableQuick(Side.BLACK)); // [out]
+    System.out.println(position.deadPositionQuick()); // [out]
+    // </readme:readme-unwinnability>
   }
 
   public static void castlingGeometry() {

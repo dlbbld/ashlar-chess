@@ -43,29 +43,18 @@ Requires JDK 17 or later at runtime. Published to Maven Central.
 </dependency>
 ```
 
-### Gradle
-
-```groovy
-repositories {
-    mavenCentral()
-}
-
-dependencies {
-    implementation 'io.github.dlbbld:ashlar-chess:19.1.0'
-}
-```
-
 ## Quick Start
 
-<!-- readme:code id=basic-usage -->
+The full manual has focused sections for each domain. These two compiled examples show the main public entry points:
+strict/lenient notation handling, PGN import, and unwinnability/dead-position checks.
 
-## Castling Moves
+### Notation Input
 
-A castling `MoveSpecification` carries only the `CastlingMove` (`KING_SIDE` / `QUEEN_SIDE`); its from/to squares are
-deliberately `Square.NONE`. Detect a castling move with `isCastling()`, then resolve the touched squares from the
-`CastlingMove` and the side to move:
+<!-- readme:code id=readme-notation-input -->
 
-<!-- readme:code id=castling-geometry -->
+### Unwinnability
+
+<!-- readme:code id=readme-unwinnability -->
 
 ## Building From Source
 

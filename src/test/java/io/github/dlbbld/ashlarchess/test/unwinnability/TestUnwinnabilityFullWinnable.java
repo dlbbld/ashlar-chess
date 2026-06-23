@@ -3,7 +3,7 @@
 
 package io.github.dlbbld.ashlarchess.test.unwinnability;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.List;
 
@@ -38,8 +38,7 @@ class TestUnwinnabilityFullWinnable {
       final Side winner = board.getSideToMove();
       final UnwinnabilityFullAnalysis analysis = UnwinnableFullAnalyzer.unwinnableFull(board, winner);
       final UnwinnabilityFullVerdict verdict = analysis.verdict();
-      assertTrue(verdict == UnwinnabilityFullVerdict.WINNABLE_HELPMATE
-          || verdict == UnwinnabilityFullVerdict.WINNABLE_BY_THEOREM, testCaseHavingHelpmate.pgnName());
+      assertEquals(UnwinnabilityFullVerdict.WINNABLE, verdict, testCaseHavingHelpmate.pgnName());
     }
   }
 

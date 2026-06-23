@@ -34,6 +34,10 @@ adopting the named module is not itself a rename.
 - **No forced logging or utility dependency.** `commons-lang3` and `log4j` are no longer dependencies of the
   library — internal logging uses the JDK's `java.util.logging`, so consumers are forced onto no logging framework.
   (`org.eclipse.jdt.annotation` is `requires static transitive`: optional and compile-only.)
+- **Full unwinnability verdict collapsed back to the public domain answer.** `UnwinnabilityFullVerdict` now exposes
+  `WINNABLE`, `UNWINNABLE`, and `UNDETERMINED`. The theorem/search proof detail lives on
+  `UnwinnabilityFullAnalysis`: `isWinnableByTheorem()` marks theorem-certified wins, and `mateLine()` carries the
+  concrete UCI line for searched wins.
 
 ### Added
 

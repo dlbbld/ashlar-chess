@@ -60,8 +60,7 @@ class TestUnwinnabilityFullAgainstLimitedOracle {
         assertEquals(UnwinnabilityFullVerdict.UNWINNABLE, unwinnableFull);
         break;
       case WINNABLE:
-        assertTrue(unwinnableFull == UnwinnabilityFullVerdict.WINNABLE_HELPMATE
-            || unwinnableFull == UnwinnabilityFullVerdict.WINNABLE_BY_THEOREM);
+        assertEquals(UnwinnabilityFullVerdict.WINNABLE, unwinnableFull);
         break;
       case UNKNOWN:
         break;
@@ -70,7 +69,7 @@ class TestUnwinnabilityFullAgainstLimitedOracle {
     }
 
     switch (unwinnableFull) {
-      case WINNABLE_HELPMATE, WINNABLE_BY_THEOREM -> assertNotEquals(LimitedUnwinnabilityVerdict.UNWINNABLE, verdict);
+      case WINNABLE -> assertNotEquals(LimitedUnwinnabilityVerdict.UNWINNABLE, verdict);
       case UNWINNABLE -> {
         final boolean isIncomplete = verdict == LimitedUnwinnabilityVerdict.UNWINNABLE
             || verdict == LimitedUnwinnabilityVerdict.UNKNOWN;

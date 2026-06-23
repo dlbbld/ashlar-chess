@@ -132,13 +132,17 @@ The library's **flagship feature**. A position is *unwinnable for a side* if no 
 Miguel Ambrona's CHA is, to the author's knowledge, the only published algorithm that decides these cases correctly across the full range of positions. ashlar-chess implements it in Java, in two variants:
 
 - **Quick** — microsecond-scale, structural, two-valued: `UNWINNABLE` or `POSSIBLY_WINNABLE`. It proves unwinnability or leaves it open, and never claims winnability.
-- **Full** — deep search, four-valued: `WINNABLE_HELPMATE` (a concrete mate line was found), `WINNABLE_BY_THEOREM` (winnability certified by the basic-helpmate-existence theorem, no line), `UNWINNABLE`, or `UNDETERMINED`. The undetermined case is bounded by a 500 000-position limit; most positions resolve well below that.
+- **Full** — deep search, three-valued: `WINNABLE`, `UNWINNABLE`, or `UNDETERMINED`. The direct analysis record
+  additionally tells whether a `WINNABLE` result was theorem-certified and carries a concrete mate line for searched
+  wins. The undetermined case is bounded by a 500 000-position limit; most positions resolve well below that.
 
 `Dead position` is the symmetric whole-position notion, decided by `DeadPositionAnalyzer` (and the `Board.deadPositionQuick()` / `Board.deadPositionFull()` convenience methods): a position is dead exactly when it is unwinnable for both sides. It carries its own verdicts — `DeadPositionQuickVerdict` (`DEAD` / `POSSIBLY_ALIVE`) and `DeadPositionFullVerdict` (`DEAD` / `ALIVE` / `UNDETERMINED`) — rather than reusing the per-side unwinnable vocabulary.
 
-The direct side-specific analyzers return analysis records. Only `WINNABLE_HELPMATE` carries a helpmate line that can be
-replayed from the input position; the `Board.unwinnableQuick(Side)` and `Board.unwinnableFull(Side)` convenience
-methods expose only the verdict.
+The direct side-specific analyzers return analysis records. For full analysis, `UnwinnabilityFullAnalysis` keeps the
+proof detail behind the simple public verdict: theorem-certified wins have `isWinnableByTheorem() == true` and no mate
+line; searched wins have `isWinnableByTheorem() == false` and carry a UCI helpmate line that can be replayed from the
+input position. The `Board.unwinnableQuick(Side)` and `Board.unwinnableFull(Side)` convenience methods expose only the
+verdict.
 
 Side-specific quick/full unwinnability queries and whole-position dead-position queries are caller-invoked; no analyzer runs automatically during construction or move execution.
 

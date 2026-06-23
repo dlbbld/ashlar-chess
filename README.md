@@ -43,55 +43,39 @@ Requires JDK 17 or later at runtime. Published to Maven Central.
 </dependency>
 ```
 
-### Gradle
-
-```groovy
-repositories {
-    mavenCentral()
-}
-
-dependencies {
-    implementation 'io.github.dlbbld:ashlar-chess:19.1.0'
-}
-```
-
 ## Quick Start
 
+The full manual has focused sections for each domain. These two compiled examples show the main public entry points:
+strict/lenient notation handling, PGN import, and unwinnability/dead-position checks.
+
+### Notation Input
+
 ```java
-final Board board = new Board();
+final Board board = Board
+    .fromFenLenient(" rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR W KQkq - ");
 
-board.moveStrict("e4"); // specifying the SAN
-board.movesStrict("e5", "Bc4"); // specifying multiple SAN's
+final MoveSpecification e4 = StrictSanParser.parse("e4", board);
+board.move(e4);
 
-final MoveSpecification newMove = new MoveSpecification(Square.F8, Square.C5);
-board.move(newMove); // move specification without SAN
+final LenientSanParseResult e5 = board.moveLenient("e7-e5");
+System.out.println(e5.forgivenItems().isEmpty()); // false
 
-board.unmove(); // undoes last move
+final PgnGame game = LenientPgnParser.parseText("""
+    [Event "?"]
 
-board.movesStrict("Bc5", "Qf3", "h6", "Qxf7#");
-
-System.out.println(board.isCheckmate()); // true
+    1. e4 e5 2. nf3 *
+    """);
+final Board imported = PgnUtility.toBoard(game);
+System.out.println(imported.getSan()); // Nf3
 ```
 
-## Castling Moves
-
-A castling `MoveSpecification` carries only the `CastlingMove` (`KING_SIDE` / `QUEEN_SIDE`); its from/to squares are
-deliberately `Square.NONE`. Detect a castling move with `isCastling()`, then resolve the touched squares from the
-`CastlingMove` and the side to move:
+### Unwinnability
 
 ```java
-// A castling MoveSpecification carries only the CastlingMove; its from/to squares are Square.NONE.
-// Detect a castling move with isCastling(), then resolve the squares it touches from the
-// CastlingMove, given the side.
-final MoveSpecification specification = new MoveSpecification(CastlingMove.KING_SIDE);
+final Board position = Board.fromFenStrict("8/8/3k4/1p2p1p1/pP1pP1P1/P2P4/1K6/8 b - - 32 62");
 
-if (specification.isCastling()) {
-  final CastlingMove castling = specification.castlingMove();
-  System.out.println(castling.kingFromSquare(Side.WHITE)); // e1
-  System.out.println(castling.kingToSquare(Side.WHITE)); // g1
-  System.out.println(castling.rookFromSquare(Side.WHITE)); // h1
-  System.out.println(castling.rookToSquare(Side.WHITE)); // f1
-}
+System.out.println(position.unwinnableQuick(Side.BLACK)); // UNWINNABLE
+System.out.println(position.deadPositionQuick()); // DEAD
 ```
 
 ## Building From Source

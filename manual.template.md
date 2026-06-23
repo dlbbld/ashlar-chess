@@ -26,12 +26,6 @@ ashlar-chess requires JDK 17 or later. It is published to Maven Central.
 </dependency>
 ```
 
-For Gradle:
-
-```groovy
-implementation 'io.github.dlbbld:ashlar-chess:19.1.0'
-```
-
 From 20.0.0 onward, ashlar-chess is a named JPMS module:
 
 ```java
@@ -185,16 +179,29 @@ cooperates. A dead position is unwinnable for both sides.
 The quick analyzers prove unwinnability cheaply. The full analyzers search deeper and can prove concrete wins or report
 `UNDETERMINED` when the search limit is exhausted.
 
-### Reading Verdicts
+### Reading Quick Verdicts
 
 The verdict enums are proof results, not booleans. Read the exact constant:
 
-- `UNWINNABLE` means proven unwinnable.
-- `POSSIBLY_WINNABLE` means not proven unwinnable.
-- `WINNABLE_HELPMATE` and `WINNABLE_BY_THEOREM` mean proven winnable.
-- `UNDETERMINED` means the full search stopped at its bound.
+- Side-specific quick: `UNWINNABLE` means proven unwinnable; `POSSIBLY_WINNABLE` means not proven unwinnable.
+- Dead-position quick: `DEAD` means both sides are proven unwinnable; `POSSIBLY_ALIVE` means at least one side was not
+  proven unwinnable.
 
 Do not read `!= UNWINNABLE` as “winnable”; it also includes undecided states.
+
+### Reading Full Verdicts
+
+The full side-specific verdict has three public outcomes:
+
+- `WINNABLE` means proven winnable.
+- `UNWINNABLE` means proven unwinnable.
+- `UNDETERMINED` means the full search stopped at its bound.
+
+When you call `UnwinnableFullAnalyzer` directly, `UnwinnabilityFullAnalysis` also tells you how a `WINNABLE` result was
+proved: `isWinnableByTheorem()` is true for theorem-certified wins, while `mateLine()` carries a concrete UCI helpmate
+line for searched wins. The `Board.unwinnableFull(Side)` convenience method exposes only the public verdict.
+
+Dead-position full uses its own whole-position vocabulary: `DEAD`, `ALIVE`, or `UNDETERMINED`.
 
 ### Side-Specific Examples
 

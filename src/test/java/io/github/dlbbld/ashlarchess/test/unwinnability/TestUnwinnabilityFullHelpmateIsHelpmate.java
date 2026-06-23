@@ -4,6 +4,7 @@
 package io.github.dlbbld.ashlarchess.test.unwinnability;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
@@ -41,8 +42,8 @@ class TestUnwinnabilityFullHelpmateIsHelpmate {
       final String fen = lichessTestCase.finalFen();
       final Side winner = board.getSideToMove();
       final UnwinnabilityFullAnalysis analysis = UnwinnableFullAnalyzer.unwinnableFull(board, winner);
-      // A searched winnable verdict must be WINNABLE_HELPMATE and carry a line; pin that before replaying it.
-      assertEquals(UnwinnabilityFullVerdict.WINNABLE_HELPMATE, analysis.verdict(), fen);
+      assertEquals(UnwinnabilityFullVerdict.WINNABLE, analysis.verdict(), fen);
+      assertFalse(analysis.isWinnableByTheorem(), fen);
       assertHelpmateLine(fen, winner, analysis.mateLine());
     }
   }
