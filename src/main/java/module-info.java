@@ -16,7 +16,6 @@
 module io.github.dlbbld.ashlarchess {
 
   requires org.apache.logging.log4j;
-  requires org.apache.commons.lang3;
   // transitive so a JDT-aware consumer can resolve the @NonNull/@Nullable annotations that appear in our exported
   // API signatures (e.g. ForgivenSanItem.NO_ITEMS); static so the dependency stays optional - the annotations are
   // CLASS-retention and never needed at runtime, so this does not force jdt.annotation onto consumers.

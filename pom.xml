@@ -90,6 +90,7 @@
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-lang3</artifactId>
 			<version>3.20.0</version>
+			<scope>test</scope>
 		</dependency>
 
 		<dependency>
@@ -156,12 +157,12 @@
 						io.github.dlbbld.ashlarchess module (its tests must reach non-exported internals).
 						TestBoardUnperformMove deep-compares two Boards with commons-lang3
 						EqualsBuilder.reflectionEquals, which setAccessible()s Board's private fields - that
-						needs the board package opened to org.apache.commons.lang3 for the forked test JVM.
-						Kept here, not in module-info, on purpose: it is a test-only reflection need, not a
-						package ashlar wants open to consumers at runtime.
+						needs the board package opened to the unnamed module (commons-lang3 is a test-scoped
+						dependency on the classpath) for the forked test JVM. Kept here, not in module-info, on
+						purpose: it is a test-only reflection need, not a package ashlar wants open to consumers.
 					-->
 					<argLine>--add-opens
-						io.github.dlbbld.ashlarchess/io.github.dlbbld.ashlarchess.board=org.apache.commons.lang3</argLine>
+						io.github.dlbbld.ashlarchess/io.github.dlbbld.ashlarchess.board=ALL-UNNAMED</argLine>
 				</configuration>
 			</plugin>
 

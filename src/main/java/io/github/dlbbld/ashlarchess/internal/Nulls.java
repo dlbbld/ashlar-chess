@@ -23,7 +23,6 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.eclipse.jdt.annotation.NonNull;
@@ -128,16 +127,32 @@ public final class Nulls {
     return checkResult(String.join(delimiter, elements));
   }
 
+  /**
+   * Trims leading/trailing whitespace and collapses every internal run of whitespace to a single space (a
+   * dependency-free equivalent of the former {@code commons-lang3 StringUtils.normalizeSpace}; whitespace is
+   * {@link Character#isWhitespace(char)}).
+   */
   public static String normalizeSpace(String str) {
-    return checkResult(StringUtils.normalizeSpace(str));
+    final int length = str.length();
+    final StringBuilder result = new StringBuilder(length);
+    boolean pendingSpace = false;
+    for (int i = 0; i < length; i++) {
+      final char character = str.charAt(i);
+      if (Character.isWhitespace(character)) {
+        pendingSpace = result.length() > 0;
+      } else {
+        if (pendingSpace) {
+          result.append(' ');
+          pendingSpace = false;
+        }
+        result.append(character);
+      }
+    }
+    return checkResult(result.toString());
   }
 
   public static String trim(String str) {
     return checkResult(str.trim());
-  }
-
-  public static String capitalize(final String str) {
-    return checkResult(StringUtils.capitalize(str));
   }
 
   public static Pattern compile(String regex) {
