@@ -345,7 +345,7 @@ ashlar-chess relies on a large regression test suite:
 - **Broad coverage by code area** — every package has dedicated tests; rule-level decisions have multi-fixture parameterised tests.
 - **Edge-case fixtures** — positions and games chosen to stress the rule engine: 75-move-rule games, fivefold-repetition games, dead positions, near-misses, long forced sequences.
 - **Long and random games** — hundreds of moves, including imported real-world games and synthetic stress tests; generated games surface bugs that targeted fixtures miss.
-- **Cross-library validation** — selected fixtures are processed by other chess libraries; disagreements surface as test failures and have, in the past, led to bug reports against those libraries.
+- **Cross-library validation** — selected fixtures are processed by other chess libraries; disagreements surface as test failures and have, in the past, led to bug reports against those libraries (see §6.3).
 
 The test suite is the project's safety net. Refactors are expected to leave the test count unchanged or growing; if they don't, the change is suspect.
 
@@ -372,3 +372,14 @@ mvn test -Pfull -Dtest.excludes=
 `-Pfull` sets the `ashlar-chess.full` system property, which flips every gate inside `RestrictTestConstants` and switches `PgnTestInclusion` to `ALL` (including the longest-possible-game corpus). `-Dtest.excludes=` clears the default unwinnability-suite exclusion.
 
 **Release-time requirement:** before tagging a release, run `mvn test -Pfull -Dtest.excludes=` and confirm green. The default suite is *not* sufficient to certify a release.
+
+### 6.3 What the test volume buys — and a note on shared corpora
+
+The cross-library validation above is not aimed at finding bugs in other libraries: python-chess, the primary oracle, is a mature and widely trusted reference, which is precisely what makes it a good oracle. But differential testing is symmetric, and during development it surfaced two genuine bugs in python-chess:
+
+- insufficient-material detection — [python-chess #634](https://github.com/niklasf/python-chess/issues/634);
+- a repetition / fifty-move *claim-ahead* case — [python-chess #632](https://github.com/niklasf/python-chess/issues/632).
+
+These are recorded not as a boast but as evidence of the project's central premise: in this domain it is remarkably easy to introduce a subtle, behaviour-changing bug, even in excellent code. The same effect showed up constantly *inside* ashlar-chess during development — refactors that looked semantics-preserving at the surface routinely turned swathes of tests red. That is the justification for the test volume: the many tests are not ceremony or coverage for its own sake, they are demanded by the subject. Chess rules carry a long tail of interacting edge cases — en passant only after a specific two-square advance, castling rights lost by a rook *capture*, repetition identity across transpositions, the 50- and 75-move interactions — where a plausible change is wrong in a way that only a targeted case exposes.
+
+> **Observation (not a deliverable).** There appears to be no shared, reusable corpus of rule-level chess test cases — a conformance suite a chess library could validate against — in general circulation; if one exists, the author did not find it. As a result, much of the value of ashlar-chess is the large set of hand-crafted, rule-targeted fixtures it carries, which were not available off the shelf. Publishing them as a standalone corpus could be a worthwhile contribution; it is noted here as a possibility, not planned work.
