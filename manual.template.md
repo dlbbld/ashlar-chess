@@ -171,13 +171,7 @@ the game is drawn at the moment neither side can checkmate by any possible serie
 
 ashlar-chess does not run the analyzer automatically after each move. Callers that want this termination point query it:
 
-```text
-after each move:
-    if board.isInsufficientMaterial():
-        return draw
-    if board.deadPositionQuick() == DEAD:
-        return draw
-```
+<!-- readme:code id=dead-position-during-play -->
 
 The quick dead-position check is computationally cheap. Running it during live play is a product decision: it gives the
 exact FIDE termination moment, while checking only at flagfall/resignation still preserves the final result because a

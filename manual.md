@@ -306,12 +306,14 @@ the game is drawn at the moment neither side can checkmate by any possible serie
 
 ashlar-chess does not run the analyzer automatically after each move. Callers that want this termination point query it:
 
-```text
-after each move:
-    if board.isInsufficientMaterial():
-        return draw
-    if board.deadPositionQuick() == DEAD:
-        return draw
+```java
+final Board board = Board.fromFenStrict("8/8/3k4/1p2p1p1/pP1pP1P1/P2P4/1K6/8 b - - 32 62");
+
+if (board.isInsufficientMaterial()) {
+  // draw by insufficient material
+} else if (board.deadPositionQuick() == DeadPositionQuickVerdict.DEAD) {
+  // draw by dead position
+}
 ```
 
 The quick dead-position check is computationally cheap. Running it during live play is a product decision: it gives the
@@ -620,7 +622,7 @@ The validation for 2. Nf4 failed. Reason: The lenient SAN parser could not parse
 File parsing:
 
 ```java
-final PgnGame pgnGame = LenientPgnParser.parsePath("C:\\temp\\myFile.pgn");
+final PgnGame pgnGame = LenientPgnParser.parsePath("game.pgn");
 final Board board = PgnUtility.toBoard(pgnGame);
 System.out.println(board.isCheckmate());
 ```
@@ -701,7 +703,7 @@ The Result tag is required. PGN spec section 8.1.1 archival storage requires the
 File parsing:
 
 ```java
-final PgnGame pgnGame = StrictPgnParser.parsePath("C:\\temp\\myFile.pgn");
+final PgnGame pgnGame = StrictPgnParser.parsePath("game.pgn");
 final Board board = PgnUtility.toBoard(pgnGame);
 System.out.println(board.isThreefoldRepetition());
 ```
@@ -751,7 +753,7 @@ final Board board = new Board();
 board.movesStrict("e4", "e5", "Nf3", "Nf6", "Bc4", "Bc5");
 
 final PgnGame pgnGame = PgnCreate.createPgnGame(board);
-PgnWriter.writePgn(pgnGame, "C:\\temp\\myFile.pgn", WriteMode.ARCHIVAL);
+PgnWriter.writePgn(pgnGame, "game.pgn", WriteMode.ARCHIVAL);
 ```
 
 ### PGN Validation
@@ -793,7 +795,7 @@ The movetext is invalid because a SAN contains an invalid character of "Y".
 File validation:
 
 ```java
-final LenientPgnParserValidationResult result = LenientPgnParser.validatePath("C:\\temp\\myFile.pgn");
+final LenientPgnParserValidationResult result = LenientPgnParser.validatePath("game.pgn");
 System.out.println(result.isValid());
 ```
 
@@ -844,7 +846,7 @@ The movetext numbering does not continue with "3." as expected.
 File validation:
 
 ```java
-final StrictPgnParserValidationResult result = StrictPgnParser.validatePath("C:\\temp\\myFile.pgn");
+final StrictPgnParserValidationResult result = StrictPgnParser.validatePath("game.pgn");
 System.out.println(result.isValid());
 ```
 

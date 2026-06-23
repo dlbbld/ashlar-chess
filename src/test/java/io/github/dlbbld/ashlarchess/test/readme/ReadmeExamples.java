@@ -25,6 +25,7 @@ import io.github.dlbbld.ashlarchess.pgn.StrictPgnParserValidationResult;
 import io.github.dlbbld.ashlarchess.pgn.WriteMode;
 import io.github.dlbbld.ashlarchess.report.Reporter;
 import io.github.dlbbld.ashlarchess.san.ForgivenSanItem;
+import io.github.dlbbld.ashlarchess.unwinnability.DeadPositionQuickVerdict;
 
 /**
  * Source of truth for the runnable code examples shown in {@code README.md}. Each method is one README example: the
@@ -56,6 +57,7 @@ public final class ReadmeExamples {
         new ReadmeExample("adjudication-flagfall-quick", ReadmeExamples::adjudicationFlagfallQuick, true),
         new ReadmeExample("adjudication-flagfall-full", ReadmeExamples::adjudicationFlagfallFull, true),
         new ReadmeExample("adjudication-resignation", ReadmeExamples::adjudicationResignation, true),
+        new ReadmeExample("dead-position-during-play", ReadmeExamples::deadPositionDuringPlay, true),
         new ReadmeExample("basic-usage", ReadmeExamples::basicUsage, true),
         new ReadmeExample("castling-geometry", ReadmeExamples::castlingGeometry, true),
         new ReadmeExample("unwinnable-insufficient-material", ReadmeExamples::unwinnableInsufficientMaterial, true),
@@ -179,6 +181,18 @@ public final class ReadmeExamples {
     System.out.println(Adjudicator.adjudicateResignationQuick(board, Side.WHITE)); // [out]
     System.out.println(Adjudicator.adjudicateResignationFull(board, Side.WHITE)); // [out]
     // </readme:adjudication-resignation>
+  }
+
+  public static void deadPositionDuringPlay() {
+    // <readme:dead-position-during-play>
+    final Board board = Board.fromFenStrict("8/8/3k4/1p2p1p1/pP1pP1P1/P2P4/1K6/8 b - - 32 62");
+
+    if (board.isInsufficientMaterial()) {
+      // draw by insufficient material
+    } else if (board.deadPositionQuick() == DeadPositionQuickVerdict.DEAD) {
+      // draw by dead position
+    }
+    // </readme:dead-position-during-play>
   }
 
   public static void basicUsage() {
@@ -352,7 +366,7 @@ public final class ReadmeExamples {
 
   public static void pgnLenientFileParsing() {
     // <readme:pgn-lenient-file-parsing>
-    final PgnGame pgnGame = LenientPgnParser.parsePath("C:\\temp\\myFile.pgn");
+    final PgnGame pgnGame = LenientPgnParser.parsePath("game.pgn");
     final Board board = PgnUtility.toBoard(pgnGame);
     System.out.println(board.isCheckmate());
     // </readme:pgn-lenient-file-parsing>
@@ -414,7 +428,7 @@ public final class ReadmeExamples {
 
   public static void pgnStrictFileParsing() {
     // <readme:pgn-strict-file-parsing>
-    final PgnGame pgnGame = StrictPgnParser.parsePath("C:\\temp\\myFile.pgn");
+    final PgnGame pgnGame = StrictPgnParser.parsePath("game.pgn");
     final Board board = PgnUtility.toBoard(pgnGame);
     System.out.println(board.isThreefoldRepetition());
     // </readme:pgn-strict-file-parsing>
@@ -448,7 +462,7 @@ public final class ReadmeExamples {
     board.movesStrict("e4", "e5", "Nf3", "Nf6", "Bc4", "Bc5");
 
     final PgnGame pgnGame = PgnCreate.createPgnGame(board);
-    PgnWriter.writePgn(pgnGame, "C:\\temp\\myFile.pgn", WriteMode.ARCHIVAL);
+    PgnWriter.writePgn(pgnGame, "game.pgn", WriteMode.ARCHIVAL);
     // </readme:pgn-export>
   }
 
@@ -483,7 +497,7 @@ public final class ReadmeExamples {
 
   public static void pgnLenientValidationFile() {
     // <readme:pgn-lenient-validation-file>
-    final LenientPgnParserValidationResult result = LenientPgnParser.validatePath("C:\\temp\\myFile.pgn");
+    final LenientPgnParserValidationResult result = LenientPgnParser.validatePath("game.pgn");
     System.out.println(result.isValid());
     // </readme:pgn-lenient-validation-file>
   }
@@ -529,7 +543,7 @@ public final class ReadmeExamples {
 
   public static void pgnStrictValidationFile() {
     // <readme:pgn-strict-validation-file>
-    final StrictPgnParserValidationResult result = StrictPgnParser.validatePath("C:\\temp\\myFile.pgn");
+    final StrictPgnParserValidationResult result = StrictPgnParser.validatePath("game.pgn");
     System.out.println(result.isValid());
     // </readme:pgn-strict-validation-file>
   }
