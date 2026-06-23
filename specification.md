@@ -1,6 +1,6 @@
 # ashlar-chess — Specification
 
-The **technical specification** for ashlar-chess: design goals, architecture, philosophy, and the rule-level decisions that make the library what it is. Meant for someone (including future-self) who needs to understand *why* the library is shaped the way it is. User-facing documentation lives in `README.md`.
+The **technical specification** for ashlar-chess: design goals, architecture, philosophy, and the rule-level decisions that make the library what it is. Meant for someone (including future-self) who needs to understand *why* the library is shaped the way it is. User-facing how-to documentation lives in `manual.md`; `README.md` is the project front door.
 
 ---
 

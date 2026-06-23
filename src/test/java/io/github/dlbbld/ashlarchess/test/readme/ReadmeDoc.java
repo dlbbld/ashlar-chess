@@ -28,8 +28,8 @@ import io.github.dlbbld.ashlarchess.internal.Nulls;
 import io.github.dlbbld.ashlarchess.test.common.utility.FileUtility;
 
 /**
- * Renders {@code README.md} from {@code README.template.md}. For each registered {@link ReadmeExample} the template
- * carries placeholder lines that are replaced by generated content; every other template line passes through verbatim:
+ * Renders the public Markdown docs from their templates. For each referenced {@link ReadmeExample} the template carries
+ * placeholder lines that are replaced by generated content; every other template line passes through verbatim:
  *
  * <ul>
  * <li>{@code <!-- readme:code id=ID -->} - the verbatim source slice of the example's {@code // <readme:ID>} ...
@@ -42,14 +42,16 @@ import io.github.dlbbld.ashlarchess.test.common.utility.FileUtility;
  *
  * <p>
  * Because the shown code is sliced from compiled source and the shown output is captured from running it, a rendered
- * README is correct by construction. {@code TestReadmeUpToDate} pins the committed file to a fresh render; run
- * {@link GenerateReadme} to regenerate after editing the template or an example. Paths are relative to the module root
+ * document is correct by construction. {@code TestReadmeUpToDate} pins the committed files to fresh renders; run
+ * {@link GenerateReadme} to regenerate after editing a template or an example. Paths are relative to the module root
  * (the working directory under Maven).
  */
 public final class ReadmeDoc {
 
-  private static final Path TEMPLATE_PATH = Nulls.pathOf("README.template.md");
+  private static final Path README_TEMPLATE_PATH = Nulls.pathOf("README.template.md");
+  private static final Path MANUAL_TEMPLATE_PATH = Nulls.pathOf("manual.template.md");
   private static final Path README_PATH = Nulls.pathOf("README.md");
+  private static final Path MANUAL_PATH = Nulls.pathOf("manual.md");
   private static final Path EXAMPLES_SOURCE_PATH = Nulls
       .pathOf("src/test/java/io/github/dlbbld/ashlarchess/test/readme/ReadmeExamples.java");
 
@@ -66,23 +68,39 @@ public final class ReadmeDoc {
   }
 
   /** Renders the README as a list of lines (no trailing line terminators), ready to compare or write. */
-  public static List<String> generate() {
+  public static List<String> generateReadme() {
+    return generate(README_TEMPLATE_PATH);
+  }
+
+  /** Renders the manual as a list of lines (no trailing line terminators), ready to compare or write. */
+  public static List<String> generateManual() {
+    return generate(MANUAL_TEMPLATE_PATH);
+  }
+
+  private static List<String> generate(Path templatePath) {
     final List<String> sourceLines = FileUtility.readFileLines(EXAMPLES_SOURCE_PATH);
-    final List<String> templateLines = FileUtility.readFileLines(TEMPLATE_PATH);
-    final Set<String> outputPlaceholderIds = collectOutputPlaceholderIds(templateLines);
+    final List<String> templateLines = FileUtility.readFileLines(templatePath);
+    final Set<String> codePlaceholderIds = collectPlaceholderIds(templateLines, "code");
+    final Set<String> outputPlaceholderIds = collectPlaceholderIds(templateLines, "output");
+    final Set<String> referencedIds = new HashSet<>();
+    referencedIds.addAll(codePlaceholderIds);
+    referencedIds.addAll(outputPlaceholderIds);
 
     final Map<String, List<String>> codeById = new LinkedHashMap<>();
     final Map<String, List<String>> outputById = new LinkedHashMap<>();
-    for (final ReadmeExample example : ReadmeExamples.examples()) {
-      final String id = example.id();
+    final Map<String, ReadmeExample> examplesById = examplesById();
+    for (final String id : referencedIds) {
+      final ReadmeExample example = requireRegisteredExample(examplesById, id);
       final List<String> captured = example.run()
           ? stripTrailingBlanks(normalizeVolatile(captureOutput(example.body())))
           : new ArrayList<>();
       final Deque<String> remaining = new ArrayDeque<>(captured);
-      codeById.put(id, substituteInlineOutputs(sliceSource(sourceLines, id), remaining, id));
+      if (codePlaceholderIds.contains(id)) {
+        codeById.put(id, substituteInlineOutputs(sliceSource(sourceLines, id), remaining, id));
+      }
       final List<String> blockOutput = new ArrayList<>(remaining);
       if (!blockOutput.isEmpty() && !outputPlaceholderIds.contains(id)) {
-        throw new IllegalStateException("README example \"" + id + "\" produced output with no " + OUT_TOKEN
+        throw new IllegalStateException("Documentation example \"" + id + "\" produced output with no " + OUT_TOKEN
             + " marker and no output placeholder to show it.");
       }
       outputById.put(id, blockOutput);
@@ -110,17 +128,18 @@ public final class ReadmeDoc {
   }
 
   /**
-   * Renders and writes {@code README.md}.
+   * Renders and writes {@code README.md} and {@code manual.md}.
    */
-  public static void writeReadme() {
-    FileUtility.writeFile(README_PATH, generate());
+  public static void writeDocs() {
+    FileUtility.writeFile(README_PATH, generateReadme());
+    FileUtility.writeFile(MANUAL_PATH, generateManual());
   }
 
-  private static Set<String> collectOutputPlaceholderIds(List<String> templateLines) {
+  private static Set<String> collectPlaceholderIds(List<String> templateLines, String kind) {
     final Set<String> ids = new HashSet<>();
     for (final String line : templateLines) {
       final Matcher matcher = PLACEHOLDER.matcher(line);
-      if (matcher.matches() && "output".equals(matcher.group(1))) {
+      if (matcher.matches() && kind.equals(matcher.group(1))) {
         final String id = matcher.group(2);
         if (id != null) {
           ids.add(id);
@@ -128,6 +147,17 @@ public final class ReadmeDoc {
       }
     }
     return ids;
+  }
+
+  private static Map<String, ReadmeExample> examplesById() {
+    final Map<String, ReadmeExample> result = new LinkedHashMap<>();
+    for (final ReadmeExample example : ReadmeExamples.examples()) {
+      final ReadmeExample old = result.put(example.id(), example);
+      if (old != null) {
+        throw new IllegalStateException("Duplicate documentation example id: " + example.id());
+      }
+    }
+    return result;
   }
 
   private static List<String> substituteInlineOutputs(List<String> code, Deque<String> remaining, String id) {
@@ -151,9 +181,18 @@ public final class ReadmeDoc {
   private static List<String> requireExample(Map<String, List<String>> byId, String id, String kind) {
     if (!byId.containsKey(id)) {
       throw new IllegalStateException(
-          "README " + kind + " placeholder references id \"" + id + "\", which has no registered example.");
+          "Documentation " + kind + " placeholder references id \"" + id + "\", which has no registered example.");
     }
     return Nulls.get(byId, id);
+  }
+
+  private static ReadmeExample requireRegisteredExample(Map<String, ReadmeExample> byId, String id) {
+    final ReadmeExample example = byId.get(id);
+    if (example == null) {
+      throw new IllegalStateException(
+          "Documentation placeholder references id \"" + id + "\", which has no registered example.");
+    }
+    return example;
   }
 
   private static void appendFenced(List<String> result, String openingFence, List<String> body) {
