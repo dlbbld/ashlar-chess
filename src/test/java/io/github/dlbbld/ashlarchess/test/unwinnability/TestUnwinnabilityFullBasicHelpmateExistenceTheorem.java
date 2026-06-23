@@ -16,6 +16,7 @@ import io.github.dlbbld.ashlarchess.test.pgntest.enums.PgnTest;
 import io.github.dlbbld.ashlarchess.unwinnability.UnwinnabilityFullAnalysis;
 import io.github.dlbbld.ashlarchess.unwinnability.UnwinnabilityFullVerdict;
 import io.github.dlbbld.ashlarchess.unwinnability.UnwinnableFullAnalyzer;
+import io.github.dlbbld.ashlarchess.unwinnability.WinnableProof;
 
 // Basic-endgame helpmate-reachability theorem, White holding the mating material. The complete (full)
 // analyzer must reproduce the theorem on every fixture:
@@ -35,7 +36,7 @@ class TestUnwinnabilityFullBasicHelpmateExistenceTheorem {
       final UnwinnabilityFullAnalysis analysis = UnwinnableFullAnalyzer.unwinnableFull(board, Side.WHITE);
       assertEquals(expected, analysis.verdict(), testCase.pgnName());
       if (expected == UnwinnabilityFullVerdict.WINNABLE) {
-        assertTrue(analysis.isWinnableByTheorem(), testCase.pgnName());
+        assertEquals(WinnableProof.THEOREM, analysis.winnableProof(), testCase.pgnName());
         assertTrue(analysis.mateLine().isEmpty(), testCase.pgnName());
       }
     }

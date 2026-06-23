@@ -36,8 +36,8 @@ adopting the named module is not itself a rename.
   (`org.eclipse.jdt.annotation` is `requires static transitive`: optional and compile-only.)
 - **Full unwinnability verdict collapsed back to the public domain answer.** `UnwinnabilityFullVerdict` now exposes
   `WINNABLE`, `UNWINNABLE`, and `UNDETERMINED`. The theorem/search proof detail lives on
-  `UnwinnabilityFullAnalysis`: `isWinnableByTheorem()` marks theorem-certified wins, and `mateLine()` carries the
-  concrete UCI line for searched wins.
+  `UnwinnabilityFullAnalysis`: `winnableProof()` returns `WinnableProof.THEOREM` / `HELPMATE` / `NONE`, and `mateLine()`
+  carries the concrete UCI line for searched wins.
 
 ### Added
 

@@ -139,9 +139,9 @@ Miguel Ambrona's CHA is, to the author's knowledge, the only published algorithm
 `Dead position` is the symmetric whole-position notion, decided by `DeadPositionAnalyzer` (and the `Board.deadPositionQuick()` / `Board.deadPositionFull()` convenience methods): a position is dead exactly when it is unwinnable for both sides. It carries its own verdicts — `DeadPositionQuickVerdict` (`DEAD` / `POSSIBLY_ALIVE`) and `DeadPositionFullVerdict` (`DEAD` / `ALIVE` / `UNDETERMINED`) — rather than reusing the per-side unwinnable vocabulary.
 
 The direct side-specific analyzers return analysis records. For full analysis, `UnwinnabilityFullAnalysis` keeps the
-proof detail behind the simple public verdict: theorem-certified wins have `isWinnableByTheorem() == true` and no mate
-line; searched wins have `isWinnableByTheorem() == false` and carry a UCI helpmate line that can be replayed from the
-input position. The `Board.unwinnableQuick(Side)` and `Board.unwinnableFull(Side)` convenience methods expose only the
+proof detail behind the simple public verdict: `winnableProof()` is `WinnableProof.THEOREM` for theorem-certified wins
+(no mate line) and `WinnableProof.HELPMATE` for searched wins (which carry a UCI helpmate line that can be replayed from
+the input position), and `WinnableProof.NONE` when the verdict is not `WINNABLE`. The `Board.unwinnableQuick(Side)` and `Board.unwinnableFull(Side)` convenience methods expose only the
 verdict.
 
 Side-specific quick/full unwinnability queries and whole-position dead-position queries are caller-invoked; no analyzer runs automatically during construction or move execution.
