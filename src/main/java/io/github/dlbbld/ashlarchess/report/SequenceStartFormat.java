@@ -3,7 +3,7 @@
 
 package io.github.dlbbld.ashlarchess.report;
 
-import io.github.dlbbld.ashlarchess.board.MoveNumberFormat;
+import io.github.dlbbld.ashlarchess.board.internal.MoveNumberFormat;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
 
 /**
