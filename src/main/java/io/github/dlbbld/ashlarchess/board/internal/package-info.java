@@ -3,9 +3,10 @@
 
 /**
  * Internal {@code board} helpers, not exported from the module: move-number formatting for PGN/report output
- * ({@code MoveNumberFormat} and its {@code AddSpace} flag). {@code MoveNumberFormat} stays {@code public} so the
- * {@code pgn} and {@code report} packages can use it across packages, but {@code module-info.java} does not export this
- * package. The public game vocabulary stays in {@code board}.
+ * ({@code MoveNumberFormat} and its {@code AddSpace} flag) and the UCI-move helpers for the public {@code UciMove}
+ * value type ({@code UciMoveUtility}, {@code UciMoveValidationUtility}). They stay {@code public} so the rest of the
+ * library (e.g. {@code pgn}, {@code report}, {@code unwinnability}) can use them across packages, but
+ * {@code module-info.java} does not export this package. The public game vocabulary stays in {@code board}.
  */
 @NonNullByDefault
 package io.github.dlbbld.ashlarchess.board.internal;
