@@ -193,7 +193,7 @@
 						(its module pre-scan trips before any doc is generated). Exclude module-info.java
 						from javadoc generation so the tool runs in classic (package) mode; the descriptor
 						is still compiled into the jar by maven-compiler-plugin, so modular consumers are
-						unaffected. Only the rendered module-summary page is lost, not any package/class doc.
+						unaffected. The module-summary page is still rendered from the compiled descriptor.
 					-->
 					<sourceFileExcludes>
 						<sourceFileExclude>module-info.java</sourceFileExclude>
