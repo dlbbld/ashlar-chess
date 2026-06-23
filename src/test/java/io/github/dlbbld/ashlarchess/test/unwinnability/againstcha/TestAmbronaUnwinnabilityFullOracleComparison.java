@@ -11,6 +11,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.jupiter.api.Test;
 
@@ -29,7 +30,7 @@ import io.github.dlbbld.ashlarchess.unwinnability.UnwinnableFullAnalyzer;
 
 class TestAmbronaUnwinnabilityFullOracleComparison {
 
-  private static final Logger logger = Nulls.getLogger(TestAmbronaUnwinnabilityFullOracleComparison.class);
+  private static final Logger logger = LogManager.getLogger(TestAmbronaUnwinnabilityFullOracleComparison.class);
 
   private static final int PROGRESS_LOG_INTERVAL = 25;
   private static final int MAX_PRINTED_FAILURES = 20;

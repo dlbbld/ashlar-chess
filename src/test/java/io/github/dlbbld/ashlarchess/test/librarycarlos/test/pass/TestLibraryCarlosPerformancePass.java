@@ -8,6 +8,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.nio.file.Path;
 import java.util.List;
 
+import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.jupiter.api.Test;
 
@@ -26,7 +27,7 @@ import io.github.dlbbld.ashlarchess.test.pgntest.enums.PgnTest;
 
 class TestLibraryCarlosPerformancePass {
 
-  private static final Logger logger = Nulls.getLogger(TestLibraryCarlosPerformancePass.class);
+  private static final Logger logger = LogManager.getLogger(TestLibraryCarlosPerformancePass.class);
 
   private static final double LOAD_PGN_DURATION_MAX_MILLISECONDS = 1000.0;
 

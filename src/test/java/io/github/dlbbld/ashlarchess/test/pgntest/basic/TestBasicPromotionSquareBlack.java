@@ -24,13 +24,13 @@ import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.H2;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.jupiter.api.Test;
 
 import io.github.dlbbld.ashlarchess.board.Board;
 import io.github.dlbbld.ashlarchess.board.enums.Piece;
 import io.github.dlbbld.ashlarchess.board.enums.PromotionPieceType;
-import io.github.dlbbld.ashlarchess.internal.Nulls;
 import io.github.dlbbld.ashlarchess.test.model.PgnFen;
 import io.github.dlbbld.ashlarchess.test.model.PgnTestCaseList;
 import io.github.dlbbld.ashlarchess.test.pgn.setup.PgnTestCaseCatalog;
@@ -38,7 +38,7 @@ import io.github.dlbbld.ashlarchess.test.pgntest.enums.PgnTest;
 
 class TestBasicPromotionSquareBlack {
 
-  private static final Logger logger = Nulls.getLogger(TestBasicPromotionSquareBlack.class);
+  private static final Logger logger = LogManager.getLogger(TestBasicPromotionSquareBlack.class);
 
   static {
     final List<String> pgnNames = new ArrayList<>();

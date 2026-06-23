@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.jupiter.api.Test;
 
@@ -53,7 +54,7 @@ import io.github.dlbbld.ashlarchess.test.pgntest.enums.PgnTest;
  */
 class TestLegalMovesAgainstPythonChessOracle {
 
-  private static final Logger LOGGER = Nulls.getLogger(TestLegalMovesAgainstPythonChessOracle.class);
+  private static final Logger LOGGER = LogManager.getLogger(TestLegalMovesAgainstPythonChessOracle.class);
 
   private static final Path ORACLE_ROOT = Nulls.pathResolve(ConfigurationTestConstants.PROJECT_ROOT_FOLDER_PATH,
       "src/test/resources/oracle/python-chess/move-gen");

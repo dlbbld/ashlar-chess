@@ -8,6 +8,7 @@ import static org.junit.jupiter.api.Assertions.fail;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
@@ -38,7 +39,7 @@ class TestSetupFinalFen {
 
   private static final int PROGRESS_LOG_INTERVAL = 50;
 
-  private static final Logger logger = Nulls.getLogger(TestSetupFinalFen.class);
+  private static final Logger logger = LogManager.getLogger(TestSetupFinalFen.class);
 
   @SuppressWarnings("static-method")
   @Test

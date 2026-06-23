@@ -10,6 +10,7 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.jupiter.api.Test;
 
@@ -25,7 +26,7 @@ class TestPgnExportLineLength {
   private static final Path TEST_FOLDER_PATH = Nulls.pathResolve(PgnTestConstants.PGN_EXPORT_TEST_ROOT_FOLDER_PATH,
       "lineLength");
 
-  private static final Logger logger = Nulls.getLogger(TestPgnExportLineLength.class);
+  private static final Logger logger = LogManager.getLogger(TestPgnExportLineLength.class);
 
   @SuppressWarnings("static-method")
   @Test

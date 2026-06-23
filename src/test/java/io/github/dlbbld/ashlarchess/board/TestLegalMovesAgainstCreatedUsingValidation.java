@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
+import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.jupiter.api.Test;
 
@@ -21,7 +22,6 @@ import io.github.dlbbld.ashlarchess.board.enums.PromotionPieceType;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
 import io.github.dlbbld.ashlarchess.board.enums.Square;
 import io.github.dlbbld.ashlarchess.board.enums.internal.RankUtility;
-import io.github.dlbbld.ashlarchess.internal.Nulls;
 import io.github.dlbbld.ashlarchess.pgn.PgnGame;
 import io.github.dlbbld.ashlarchess.pgn.PgnMove;
 import io.github.dlbbld.ashlarchess.squares.PotentialToSquaresSupport;
@@ -33,7 +33,7 @@ import io.github.dlbbld.ashlarchess.test.pgn.setup.PgnTestCaseCatalog;
 
 class TestLegalMovesAgainstCreatedUsingValidation {
 
-  private static final Logger logger = Nulls.getLogger(TestLegalMovesAgainstCreatedUsingValidation.class);
+  private static final Logger logger = LogManager.getLogger(TestLegalMovesAgainstCreatedUsingValidation.class);
 
   @SuppressWarnings("static-method")
   @Test

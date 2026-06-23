@@ -17,6 +17,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import io.github.dlbbld.ashlarchess.common.utility.IoUtility;
@@ -36,7 +37,7 @@ import io.github.dlbbld.ashlarchess.unwinnability.SemiStaticOracleFormatter;
  */
 public final class GenerateAmbronaSemiStaticOracle {
 
-  private static final Logger logger = Nulls.getLogger(GenerateAmbronaSemiStaticOracle.class);
+  private static final Logger logger = LogManager.getLogger(GenerateAmbronaSemiStaticOracle.class);
 
   private static final String D3_CHESS_PATH_PROPERTY = "ambrona.d3.path";
   private static final String WSL_RUNNER_PATH = "/tmp/ashlar-chess-ambrona-oracle/semistatic-oracle";

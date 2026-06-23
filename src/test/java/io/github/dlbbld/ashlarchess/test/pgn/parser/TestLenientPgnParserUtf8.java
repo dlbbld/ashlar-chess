@@ -7,6 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.nio.file.Path;
 
+import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.jupiter.api.Test;
 
@@ -19,7 +20,7 @@ import io.github.dlbbld.ashlarchess.test.pgntest.constants.PgnTestConstants;
 
 class TestLenientPgnParserUtf8 {
 
-  private static final Logger logger = Nulls.getLogger(TestLenientPgnParserUtf8.class);
+  private static final Logger logger = LogManager.getLogger(TestLenientPgnParserUtf8.class);
 
   @SuppressWarnings("static-method")
   @Test

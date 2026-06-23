@@ -7,6 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.nio.file.Path;
 
+import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.jupiter.api.Test;
 
@@ -21,7 +22,7 @@ import io.github.dlbbld.ashlarchess.test.pgntest.constants.PgnTestConstants;
 
 class TestPgnExportLineBreaks {
 
-  private static final Logger logger = Nulls.getLogger(TestPgnExportLineBreaks.class);
+  private static final Logger logger = LogManager.getLogger(TestPgnExportLineBreaks.class);
 
   private static final Path TEST_SOURCE_FILE_PATH = Nulls
       .pathResolve(PgnTestConstants.PGN_EXPORT_LINE_BREAKS_TEST_ROOT_FOLDER_PATH, "01_linux.pgn");

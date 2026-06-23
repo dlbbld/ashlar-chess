@@ -23,8 +23,6 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 
@@ -163,10 +161,6 @@ public final class Nulls {
   @NonNull
   public static String[] split(String str, String regex) {
     return checkResult(str.split(regex, -1));
-  }
-
-  public static Logger getLogger(Class<?> theClass) {
-    return checkResult(LogManager.getLogger(theClass));
   }
 
   public static <E extends Enum<E>> String name(E enumTyp) {

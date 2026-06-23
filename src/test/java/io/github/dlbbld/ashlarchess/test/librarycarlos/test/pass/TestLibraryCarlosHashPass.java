@@ -9,6 +9,7 @@ import java.io.File;
 import java.util.Map;
 import java.util.TreeMap;
 
+import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.jupiter.api.Test;
 
@@ -25,7 +26,7 @@ import io.github.dlbbld.ashlarchess.test.pgntest.enums.PgnTest;
 
 class TestLibraryCarlosHashPass {
 
-  private static final Logger logger = Nulls.getLogger(TestLibraryCarlosHashPass.class);
+  private static final Logger logger = LogManager.getLogger(TestLibraryCarlosHashPass.class);
 
   private static final int SHOW_COMPLETION_PROGRESS_NUMBER_OF_PROCESSED_FILES = 1;
 

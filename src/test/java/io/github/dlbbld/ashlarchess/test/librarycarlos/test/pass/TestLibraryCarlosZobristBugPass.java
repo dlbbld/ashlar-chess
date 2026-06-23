@@ -10,6 +10,7 @@ import java.nio.file.Path;
 import java.util.Set;
 import java.util.TreeSet;
 
+import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.jupiter.api.Test;
 
@@ -31,7 +32,7 @@ import io.github.dlbbld.ashlarchess.test.pgntest.enums.PgnTest;
 
 class TestLibraryCarlosZobristBugPass {
 
-  private static final Logger logger = Nulls.getLogger(TestLibraryCarlosZobristBugPass.class);
+  private static final Logger logger = LogManager.getLogger(TestLibraryCarlosZobristBugPass.class);
 
   @SuppressWarnings("static-method")
   @Test

@@ -5,12 +5,12 @@ package io.github.dlbbld.ashlarchess.test.unwinnability.oracle;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.jupiter.api.Test;
 
 import io.github.dlbbld.ashlarchess.board.Board;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
-import io.github.dlbbld.ashlarchess.internal.Nulls;
 import io.github.dlbbld.ashlarchess.pgn.LenientPgnParser;
 import io.github.dlbbld.ashlarchess.pgn.PgnGame;
 import io.github.dlbbld.ashlarchess.pgn.PgnUtility;
@@ -20,7 +20,7 @@ import io.github.dlbbld.ashlarchess.test.unwinnability.oracle.enums.LimitedUnwin
 
 class TestLimitedUnwinnabilityOracle {
 
-  private static final Logger logger = Nulls.getLogger(TestLimitedUnwinnabilityOracle.class);
+  private static final Logger logger = LogManager.getLogger(TestLimitedUnwinnabilityOracle.class);
 
   @SuppressWarnings("static-method")
   @Test
