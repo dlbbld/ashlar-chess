@@ -77,6 +77,7 @@ public final class ReadmeExamples {
         new ReadmeExample("dead-insufficient-material", ReadmeExamples::deadInsufficientMaterial, true),
         new ReadmeExample("dead-pawn-walls", ReadmeExamples::deadPawnWalls, true),
         new ReadmeExample("dead-forced-moves", ReadmeExamples::deadForcedMoves, true),
+        new ReadmeExample("dead-possibly-alive", ReadmeExamples::deadPossiblyAlive, true),
         new ReadmeExample("pgn-lenient-valid", ReadmeExamples::pgnLenientValid, true),
         new ReadmeExample("pgn-lenient-export-transform", ReadmeExamples::pgnLenientExportTransform, true),
         new ReadmeExample("pgn-san-tolerances", ReadmeExamples::pgnSanTolerances, true),
@@ -388,6 +389,17 @@ public final class ReadmeExamples {
     System.out.println(board.deadPositionQuick()); // [out]
     System.out.println(board.deadPositionFull()); // [out]
     // </readme:dead-forced-moves>
+  }
+
+  public static void deadPossiblyAlive() {
+    // <readme:dead-possibly-alive>
+    final Board board = Board.fromFenStrict("q4r2/pR3pkp/1p2p1p1/4P3/6P1/1P3Q2/1Pr2PK1/3R4 b - - 3 29");
+
+    System.out.println(board.deadPositionQuick()); // [out]
+    System.out.println(board.deadPositionFull()); // [out]
+    System.out.println(board.unwinnableQuick(Side.WHITE)); // [out]
+    System.out.println(board.unwinnableFull(Side.WHITE)); // [out]
+    // </readme:dead-possibly-alive>
   }
 
   public static void pgnLenientValid() {

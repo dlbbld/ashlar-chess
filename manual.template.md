@@ -246,6 +246,14 @@ Forced moves:
 
 <!-- readme:code id=dead-forced-moves -->
 
+Positions quick does not prove dead:
+
+<!-- readme:code id=dead-possibly-alive -->
+
+For quick side-specific unwinnability, `POSSIBLY_WINNABLE` is intentionally conservative: it means "not proven
+unwinnable". In the project statistics, more than 99.99% of these quick-open positions are in fact winnable, but callers
+that need a proof should use the full verdict.
+
 ## Validation Model
 
 The library validates the three notations it consumes:

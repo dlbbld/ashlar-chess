@@ -452,6 +452,21 @@ System.out.println(board.deadPositionQuick()); // DEAD
 System.out.println(board.deadPositionFull()); // DEAD
 ```
 
+Positions quick does not prove dead:
+
+```java
+final Board board = Board.fromFenStrict("q4r2/pR3pkp/1p2p1p1/4P3/6P1/1P3Q2/1Pr2PK1/3R4 b - - 3 29");
+
+System.out.println(board.deadPositionQuick()); // POSSIBLY_ALIVE
+System.out.println(board.deadPositionFull()); // ALIVE
+System.out.println(board.unwinnableQuick(Side.WHITE)); // POSSIBLY_WINNABLE
+System.out.println(board.unwinnableFull(Side.WHITE)); // WINNABLE
+```
+
+For quick side-specific unwinnability, `POSSIBLY_WINNABLE` is intentionally conservative: it means "not proven
+unwinnable". In the project statistics, more than 99.99% of these quick-open positions are in fact winnable, but callers
+that need a proof should use the full verdict.
+
 ## Validation Model
 
 The library validates the three notations it consumes:
