@@ -3,7 +3,6 @@
 
 package io.github.dlbbld.ashlarchess.san.internal;
 
-
 /**
  * Utility behaviour for the {@link SanTerminalMarker} value enum: the (check, checkmate) factory and the SAN-symbol
  * rendering.

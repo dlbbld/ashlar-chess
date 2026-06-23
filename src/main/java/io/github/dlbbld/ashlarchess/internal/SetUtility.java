@@ -6,7 +6,6 @@ package io.github.dlbbld.ashlarchess.internal;
 import java.util.ArrayList;
 import java.util.Set;
 
-
 public final class SetUtility {
 
   private SetUtility() {

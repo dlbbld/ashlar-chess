@@ -22,8 +22,8 @@ class TestSanValidateFormatSuccessOracle {
    *
    * <p>
    * This uses the static map as an oracle: if the new parser produces a different result for any known-valid SAN string
-   * (wrong {@link io.github.dlbbld.ashlarchess.san.internal.SanFormat}, wrong from-square, wrong promotion piece, etc.) the test
-   * will catch it immediately without having to enumerate strings manually.
+   * (wrong {@link io.github.dlbbld.ashlarchess.san.internal.SanFormat}, wrong from-square, wrong promotion piece, etc.)
+   * the test will catch it immediately without having to enumerate strings manually.
    */
   @SuppressWarnings("static-method")
   @Test

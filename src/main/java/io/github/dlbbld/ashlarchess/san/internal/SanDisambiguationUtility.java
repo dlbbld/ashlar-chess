@@ -12,9 +12,9 @@ import io.github.dlbbld.ashlarchess.board.enums.Square;
 import io.github.dlbbld.ashlarchess.board.LegalMove;
 
 /**
- * Shared SAN disambiguation helpers. The methods are {@code public} so both the SAN generator
- * ({@link MoveToSan}) and the SAN validators in the {@code san} package can call them across the package boundary;
- * {@code san.internal} is not exported, so this does not widen the consumer-facing API.
+ * Shared SAN disambiguation helpers. The methods are {@code public} so both the SAN generator ({@link MoveToSan}) and
+ * the SAN validators in the {@code san} package can call them across the package boundary; {@code san.internal} is not
+ * exported, so this does not widen the consumer-facing API.
  */
 public final class SanDisambiguationUtility {
 

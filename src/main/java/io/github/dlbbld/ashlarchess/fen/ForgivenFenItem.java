@@ -24,8 +24,8 @@ public record ForgivenFenItem(ForgivenFenItemCode code, String original, String 
 
   /**
    * Shared empty list for the "no deviations forgiven" case. Centralised here so the {@code @NonNull} suppression on
-   * the JDK {@code List.of()} (which JDT cannot statically prove is non-null with non-null elements) lives in
-   * one place rather than at every caller.
+   * the JDK {@code List.of()} (which JDT cannot statically prove is non-null with non-null elements) lives in one place
+   * rather than at every caller.
    */
   @SuppressWarnings("null")
   public static final @NonNull List<@NonNull ForgivenFenItem> NO_ITEMS = List.of();

@@ -22,8 +22,8 @@ public record ForgivenTagItem(ForgivenTagItemCode code, String tagName, String d
 
   /**
    * Shared empty list for the "no tag deviations forgiven" case. Centralised here so the {@code @NonNull} suppression
-   * on the JDK {@code List.of()} (which JDT can't statically prove is non-null with non-null elements) lives
-   * in one place rather than at every caller.
+   * on the JDK {@code List.of()} (which JDT can't statically prove is non-null with non-null elements) lives in one
+   * place rather than at every caller.
    */
   @SuppressWarnings("null")
   public static final @NonNull List<@NonNull ForgivenTagItem> NO_ITEMS = List.of();

@@ -46,13 +46,11 @@ public final class CastlingUtility {
   private CastlingUtility() {
   }
 
-  private static final List<Square> WHITE_QUEEN_SIDE_CASTLING_REQUIRED_EMPTY_SQUARES = Nulls.listOf(B1, C1,
-      D1);
+  private static final List<Square> WHITE_QUEEN_SIDE_CASTLING_REQUIRED_EMPTY_SQUARES = Nulls.listOf(B1, C1, D1);
 
   private static final List<Square> WHITE_KING_SIDE_CASTLING_REQUIRED_EMPTY_SQUARES = Nulls.listOf(F1, G1);
 
-  private static final List<Square> BLACK_QUEEN_SIDE_CASTLING_REQUIRED_EMPTY_SQUARES = Nulls.listOf(B8, C8,
-      D8);
+  private static final List<Square> BLACK_QUEEN_SIDE_CASTLING_REQUIRED_EMPTY_SQUARES = Nulls.listOf(B8, C8, D8);
 
   private static final List<Square> BLACK_KING_SIDE_CASTLING_REQUIRED_EMPTY_SQUARES = Nulls.listOf(F8, G8);
 

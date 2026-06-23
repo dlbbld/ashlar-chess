@@ -100,11 +100,11 @@ public final class SquareUtility {
     };
   }
 
-  private static final List<Square> WHITE_PROMOTION_RANK = Nulls.listOf(Square.A8, Square.B8, Square.C8,
-      Square.D8, Square.E8, Square.F8, Square.G8, Square.H8);
+  private static final List<Square> WHITE_PROMOTION_RANK = Nulls.listOf(Square.A8, Square.B8, Square.C8, Square.D8,
+      Square.E8, Square.F8, Square.G8, Square.H8);
 
-  private static final List<Square> BLACK_PROMOTION_RANK = Nulls.listOf(Square.A1, Square.B1, Square.C1,
-      Square.D1, Square.E1, Square.F1, Square.G1, Square.H1);
+  private static final List<Square> BLACK_PROMOTION_RANK = Nulls.listOf(Square.A1, Square.B1, Square.C1, Square.D1,
+      Square.E1, Square.F1, Square.G1, Square.H1);
 
   public static List<Square> getPromotionRankSquares(Side side) {
     return switch (side) {
@@ -115,11 +115,11 @@ public final class SquareUtility {
     };
   }
 
-  private static final List<Square> WHITE_MOVE_EN_PASSANT_CAPTURE_TARGET_SQUARES = Nulls.listOf(Square.A6,
-      Square.B6, Square.C6, Square.D6, Square.E6, Square.F6, Square.G6, Square.H6);
+  private static final List<Square> WHITE_MOVE_EN_PASSANT_CAPTURE_TARGET_SQUARES = Nulls.listOf(Square.A6, Square.B6,
+      Square.C6, Square.D6, Square.E6, Square.F6, Square.G6, Square.H6);
 
-  private static final List<Square> BLACK_MOVE_EN_PASSANT_CAPTURE_TARGET_SQUARES = Nulls.listOf(Square.A3,
-      Square.B3, Square.C3, Square.D3, Square.E3, Square.F3, Square.G3, Square.H3);
+  private static final List<Square> BLACK_MOVE_EN_PASSANT_CAPTURE_TARGET_SQUARES = Nulls.listOf(Square.A3, Square.B3,
+      Square.C3, Square.D3, Square.E3, Square.F3, Square.G3, Square.H3);
 
   public static List<Square> getEnPassantCaptureTargetSquares(Side side) {
     return switch (side) {

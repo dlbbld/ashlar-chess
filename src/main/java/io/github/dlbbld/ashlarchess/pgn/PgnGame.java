@@ -31,9 +31,8 @@ import io.github.dlbbld.ashlarchess.fen.model.Fen;
  * Don't use to construct PgnGame's on your own, intended as a parser result only, so holding valid data.
  */
 @SuppressWarnings("null")
-public record PgnGame(@NonNull List<@NonNull Tag> tags, @NonNull Fen startFen,
-    @NonNull PgnCommentary pregameCommentary, @NonNull List<@NonNull PgnMove> moves,
-    @Nullable ResultTagValue terminationMarker) {
+public record PgnGame(@NonNull List<@NonNull Tag> tags, @NonNull Fen startFen, @NonNull PgnCommentary pregameCommentary,
+    @NonNull List<@NonNull PgnMove> moves, @Nullable ResultTagValue terminationMarker) {
 
   public PgnGame {
     tags = Nulls.copyOfList(tags);

@@ -363,8 +363,8 @@ public final class Board {
     final long afterEnPassantBit = afterEnPassantCaptureTargetSquare == Square.NONE ? 0L
         : 1L << afterEnPassantCaptureTargetSquare.ordinal();
 
-    final List<LegalMove> legalMovesAfterMove = BitboardLegalMoveFactory
-        .calculateLegalMoves(afterBitboardPosition, afterSideToMove, afterCastlingRightSideToMove, afterEnPassantBit);
+    final List<LegalMove> legalMovesAfterMove = BitboardLegalMoveFactory.calculateLegalMoves(afterBitboardPosition,
+        afterSideToMove, afterCastlingRightSideToMove, afterEnPassantBit);
 
     final boolean isCheck = afterBitboardPosition.isInCheck(afterSideToMove);
     final boolean isCheckmate = isCheck && legalMovesAfterMove.isEmpty();

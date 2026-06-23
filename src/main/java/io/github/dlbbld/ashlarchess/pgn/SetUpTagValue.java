@@ -16,8 +16,7 @@ enum SetUpTagValue {
   NONE("");
 
   @SuppressWarnings("null")
-  public static final List<SetUpTagValue> REAL = List.of(START_FROM_INITIAL_POSITION,
-      START_FROM_SETUP_POSITION);
+  public static final List<SetUpTagValue> REAL = List.of(START_FROM_INITIAL_POSITION, START_FROM_SETUP_POSITION);
 
   private final String value;
 

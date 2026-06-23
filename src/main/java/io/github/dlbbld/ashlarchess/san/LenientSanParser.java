@@ -99,8 +99,7 @@ public final class LenientSanParser {
     return MoveToSan.toSan(matching, legalMovesBefore, marker);
   }
 
-  private static List<ForgivenSanItem> itemsWithoutCanonical(String text,
-      List<LenientSanValidationProblem> codes) {
+  private static List<ForgivenSanItem> itemsWithoutCanonical(String text, List<LenientSanValidationProblem> codes) {
     if (codes.isEmpty()) {
       return ForgivenSanItem.NO_ITEMS;
     }

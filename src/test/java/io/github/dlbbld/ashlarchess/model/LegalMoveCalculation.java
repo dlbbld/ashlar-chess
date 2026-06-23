@@ -8,7 +8,7 @@ import java.util.Set;
 import io.github.dlbbld.ashlarchess.board.LegalMove;
 import io.github.dlbbld.ashlarchess.moves.KingSafetyCheck;
 
-public record LegalMoveCalculation(Set<LegalMove> legalMoveSet,
-    Set<PseudoLegalMove> pseudoLegalMoveSet, KingSafetyCheck pseudoLegalKingSafety) {
+public record LegalMoveCalculation(Set<LegalMove> legalMoveSet, Set<PseudoLegalMove> pseudoLegalMoveSet,
+    KingSafetyCheck pseudoLegalKingSafety) {
 
 }

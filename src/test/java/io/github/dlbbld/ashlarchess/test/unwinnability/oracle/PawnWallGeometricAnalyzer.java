@@ -715,11 +715,11 @@ public final class PawnWallGeometricAnalyzer {
     return reachable;
   }
 
-  private static final List<Square> LEFTMOST_FILE_WHITE = Nulls.listOf(Square.A1, Square.A2, Square.A3,
-      Square.A4, Square.A5, Square.A6, Square.A7, Square.A8);
+  private static final List<Square> LEFTMOST_FILE_WHITE = Nulls.listOf(Square.A1, Square.A2, Square.A3, Square.A4,
+      Square.A5, Square.A6, Square.A7, Square.A8);
 
-  private static final List<Square> LEFTMOST_FILE_BLACK = Nulls.listOf(Square.H8, Square.H7, Square.H6,
-      Square.H5, Square.H4, Square.H3, Square.H2, Square.H1);
+  private static final List<Square> LEFTMOST_FILE_BLACK = Nulls.listOf(Square.H8, Square.H7, Square.H6, Square.H5,
+      Square.H4, Square.H3, Square.H2, Square.H1);
 
   // Local material checks. Inlined from the former public MaterialUtility so that
   // material arithmetic is not re-exposed on the public API surface for this test helper.

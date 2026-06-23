@@ -26,9 +26,8 @@ public final class TagUtility {
   private static final String TAG_PATTERN = "\\[([\\w]+) \"([^\"]*)\"\\]";
 
   @SuppressWarnings("null")
-  public static final List<StandardTag> SEVEN_TAG_ROSTER_TAGS = Nulls
-      .copyOfList(Arrays.asList(StandardTag.EVENT, StandardTag.SITE, StandardTag.DATE, StandardTag.ROUND,
-          StandardTag.WHITE, StandardTag.BLACK, StandardTag.RESULT));
+  public static final List<StandardTag> SEVEN_TAG_ROSTER_TAGS = Nulls.copyOfList(Arrays.asList(StandardTag.EVENT,
+      StandardTag.SITE, StandardTag.DATE, StandardTag.ROUND, StandardTag.WHITE, StandardTag.BLACK, StandardTag.RESULT));
 
   public static boolean hasEvent(List<Tag> tags) {
     return existsTagName(tags, StandardTag.EVENT);

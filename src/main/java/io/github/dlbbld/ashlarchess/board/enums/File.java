@@ -22,8 +22,7 @@ public enum File {
   NONE('\0', 0);
 
   @SuppressWarnings("null")
-  public static final List<File> REAL = List.of(FILE_A, FILE_B, FILE_C, FILE_D, FILE_E, FILE_F,
-      FILE_G, FILE_H);
+  public static final List<File> REAL = List.of(FILE_A, FILE_B, FILE_C, FILE_D, FILE_E, FILE_F, FILE_G, FILE_H);
 
   private final char letter;
   private final String letterString;

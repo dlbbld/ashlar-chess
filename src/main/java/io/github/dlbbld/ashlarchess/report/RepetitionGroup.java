@@ -19,8 +19,8 @@ import io.github.dlbbld.ashlarchess.board.DynamicPosition;
  * {@code totalRepetitionCount == occurrences.size() + (includesInitialPosition ? 1 : 0)} so an inconsistent group
  * cannot exist.
  */
-record RepetitionGroup(DynamicPosition repeatedPosition, List<MoveRecord> occurrences,
-    boolean includesInitialPosition, int totalRepetitionCount) {
+record RepetitionGroup(DynamicPosition repeatedPosition, List<MoveRecord> occurrences, boolean includesInitialPosition,
+    int totalRepetitionCount) {
 
   public RepetitionGroup {
     occurrences = Nulls.copyOfList(occurrences);

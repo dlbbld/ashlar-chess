@@ -20,8 +20,8 @@ public enum MoveSuffixAnnotation {
   NONE("");
 
   @SuppressWarnings("null")
-  public static final List<MoveSuffixAnnotation> REAL = List.of(MISTAKE, GOOD_MOVE, BLUNDER,
-      DUBIOUS_MOVE, INTERESTING_MOVE, BRILLIANT_MOVE);
+  public static final List<MoveSuffixAnnotation> REAL = List.of(MISTAKE, GOOD_MOVE, BLUNDER, DUBIOUS_MOVE,
+      INTERESTING_MOVE, BRILLIANT_MOVE);
 
   private final String suffix;
 

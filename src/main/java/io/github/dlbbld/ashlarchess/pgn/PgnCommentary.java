@@ -3,7 +3,6 @@
 
 package io.github.dlbbld.ashlarchess.pgn;
 
-
 /**
  * Value object for PGN commentary content. Construction validates the contract - see specification.md (Commentary
  * contract).

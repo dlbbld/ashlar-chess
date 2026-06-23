@@ -74,8 +74,8 @@ public final class LegalMovesSupport {
     return resultSet;
   }
 
-  static Set<LegalMove> calculateLegalMoveSet(StaticPosition staticPosition, Side sideToMove,
-      Square fromSquare, Set<Square> toSquareSet) {
+  static Set<LegalMove> calculateLegalMoveSet(StaticPosition staticPosition, Side sideToMove, Square fromSquare,
+      Set<Square> toSquareSet) {
     return calculateLegalMoveCalculation(staticPosition, sideToMove, fromSquare, toSquareSet).legalMoveSet();
   }
 

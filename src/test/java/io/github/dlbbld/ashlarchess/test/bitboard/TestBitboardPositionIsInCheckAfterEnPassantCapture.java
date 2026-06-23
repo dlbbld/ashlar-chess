@@ -57,8 +57,8 @@ class TestBitboardPositionIsInCheckAfterEnPassantCapture {
   private static final EpCase EP_RESOLVES_CHECK = new EpCase("ep-resolves-check", "4k3/8/8/3pP3/2K5/8/8/8 w - d6 0 1",
       Square.E5, Square.D6, Side.WHITE);
 
-  private static final List<EpCase> CASES = Nulls.listOf(LEGAL_EP_BLACK, ILLEGAL_EP_BLACK_RANK_ROOK,
-      LEGAL_EP_WHITE, ILLEGAL_EP_WHITE_RANK_ROOK, EP_RESOLVES_CHECK);
+  private static final List<EpCase> CASES = Nulls.listOf(LEGAL_EP_BLACK, ILLEGAL_EP_BLACK_RANK_ROOK, LEGAL_EP_WHITE,
+      ILLEGAL_EP_WHITE_RANK_ROOK, EP_RESOLVES_CHECK);
 
   @SuppressWarnings("static-method")
   @Test

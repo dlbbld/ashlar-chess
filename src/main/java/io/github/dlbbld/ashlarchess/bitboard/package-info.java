@@ -14,9 +14,9 @@
  *
  * <p>
  * Castling rights, en-passant target, side-to-move, and the halfmove clock and fullmove number live on
- * {@link io.github.dlbbld.ashlarchess.board.Board} / {@link io.github.dlbbld.ashlarchess.board.DynamicPosition}
- * and intentionally do not appear on {@link io.github.dlbbld.ashlarchess.bitboard.BitboardPosition}, which carries
- * piece placement only.
+ * {@link io.github.dlbbld.ashlarchess.board.Board} / {@link io.github.dlbbld.ashlarchess.board.DynamicPosition} and
+ * intentionally do not appear on {@link io.github.dlbbld.ashlarchess.bitboard.BitboardPosition}, which carries piece
+ * placement only.
  */
 @NonNullByDefault
 package io.github.dlbbld.ashlarchess.bitboard;

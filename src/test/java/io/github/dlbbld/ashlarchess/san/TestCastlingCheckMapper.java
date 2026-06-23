@@ -28,8 +28,8 @@ import io.github.dlbbld.ashlarchess.moves.CastlingCheck;
  */
 class TestCastlingCheckMapper {
 
-  private static final List<CastlingCheck> EXPECTED_CASTLING_CHECKS = Nulls.listOf(
-      CastlingCheck.FINAL_NO_RIGHT, CastlingCheck.TEMPORARY_SQUARES_NOT_EMPTY, CastlingCheck.TEMPORARY_KING_IN_CHECK,
+  private static final List<CastlingCheck> EXPECTED_CASTLING_CHECKS = Nulls.listOf(CastlingCheck.FINAL_NO_RIGHT,
+      CastlingCheck.TEMPORARY_SQUARES_NOT_EMPTY, CastlingCheck.TEMPORARY_KING_IN_CHECK,
       CastlingCheck.TEMPORARY_KING_TRAVELS_THROUGH_CHECK, CastlingCheck.TEMPORARY_KING_ENDS_IN_CHECK);
 
   private static final List<SanValidationProblem> EXPECTED_KING_CASTLING_PROBLEMS = Nulls.listOf(

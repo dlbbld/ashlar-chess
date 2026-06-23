@@ -338,8 +338,7 @@ public final class DiagonalLineUtility {
     throw new ProgrammingMistakeException("This diagonal is not there");
   }
 
-  private static boolean calculateIsContained(Square fromSquare, Square toSquare,
-      List<List<Square>> diagonalGroups) {
+  private static boolean calculateIsContained(Square fromSquare, Square toSquare, List<List<Square>> diagonalGroups) {
     for (final List<Square> diagonals : diagonalGroups) {
       if (diagonals.contains(fromSquare) && diagonals.contains(toSquare)) {
         return true;
