@@ -6,6 +6,7 @@ package io.github.dlbbld.ashlarchess.board;
 import io.github.dlbbld.ashlarchess.board.enums.Piece;
 import io.github.dlbbld.ashlarchess.board.enums.PieceType;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
+import io.github.dlbbld.ashlarchess.board.enums.Square;
 
 /**
  * A single legal move in a position, as produced by the rule pipeline (the legal-move list on a board).
@@ -46,6 +47,40 @@ public record LegalMove(MoveSpecification moveSpecification, Piece movingPiece, 
    */
   public boolean resetsHalfMoveClock() {
     return movingPiece.getPieceType() == PieceType.PAWN || capturedPiece != Piece.NONE;
+  }
+
+  /** Whether this move captures a piece (including an en-passant capture); equivalent to {@code capturedPiece != NONE}. */
+  public boolean isCapture() {
+    return capturedPiece != Piece.NONE;
+  }
+
+  /** Whether this move is a castling move. */
+  public boolean isCastling() {
+    return kind == LegalMoveKind.CASTLING;
+  }
+
+  /** Whether this move is a promotion. */
+  public boolean isPromotion() {
+    return kind == LegalMoveKind.PROMOTION;
+  }
+
+  /** Whether this move is an en-passant capture. */
+  public boolean isEnPassant() {
+    return kind == LegalMoveKind.EN_PASSANT_CAPTURE;
+  }
+
+  /**
+   * The square the captured pawn occupied for an en-passant capture. The captured pawn is <em>not</em> on this move's
+   * destination square: it stands on the same file as the destination and the same rank as the origin.
+   *
+   * @return the captured pawn's square
+   * @throws IllegalStateException if this move is not an en-passant capture (test {@link #isEnPassant()} first)
+   */
+  public Square enPassantCapturedPawnSquare() {
+    if (kind != LegalMoveKind.EN_PASSANT_CAPTURE) {
+      throw new IllegalStateException("not an en-passant capture: " + kind);
+    }
+    return Square.of(moveSpecification.toSquare().getFile(), moveSpecification.fromSquare().getRank());
   }
 
   /**
