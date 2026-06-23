@@ -38,7 +38,7 @@ import io.github.dlbbld.ashlarchess.board.LegalMove;
 import io.github.dlbbld.ashlarchess.board.LegalMoveKind;
 import io.github.dlbbld.ashlarchess.moves.EnPassantCaptureUtility;
 import io.github.dlbbld.ashlarchess.san.internal.SanSymbol;
-import io.github.dlbbld.ashlarchess.san.SanTerminalMarker;
+import io.github.dlbbld.ashlarchess.san.internal.SanTerminalMarker;
 import io.github.dlbbld.ashlarchess.san.internal.SanTerminalMarkerUtility;
 import io.github.dlbbld.ashlarchess.test.librarycarlos.NullsCarlos;
 import io.github.dlbbld.ashlarchess.test.librarycarlos.utility.MoveConversionUtility;

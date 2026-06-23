@@ -3,7 +3,6 @@
 
 package io.github.dlbbld.ashlarchess.san.internal;
 
-import io.github.dlbbld.ashlarchess.san.SanTerminalMarker;
 import io.github.dlbbld.ashlarchess.board.enums.File;
 import io.github.dlbbld.ashlarchess.board.enums.PieceType;
 import io.github.dlbbld.ashlarchess.board.enums.PromotionPieceType;

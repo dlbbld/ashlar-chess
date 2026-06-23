@@ -1,7 +1,7 @@
 // Copyright (C) 2020-2026 Daniel Baechli
 // SPDX-License-Identifier: GPL-3.0-only
 
-package io.github.dlbbld.ashlarchess.san;
+package io.github.dlbbld.ashlarchess.san.internal;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -168,7 +168,7 @@ public final class MoveToSan {
   // Castling moves carry the king as their moving piece (not NONE), so searching for the king here also returns the
   // side's castling moves. That is harmless for SAN disambiguation: a castling move and a normal king move never share
   // a destination square, so castling never collides with a normal king move's from-file / from-rank disambiguation.
-  static List<LegalMove> calculateLegalMovesForMovingPiece(Piece movingPiece, List<LegalMove> legalMoves) {
+  public static List<LegalMove> calculateLegalMovesForMovingPiece(Piece movingPiece, List<LegalMove> legalMoves) {
     final List<LegalMove> legalMovesForMovingPiece = new ArrayList<>();
     for (final LegalMove legalMove : legalMoves) {
       if (legalMove.movingPiece() == movingPiece) {

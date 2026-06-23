@@ -3,6 +3,9 @@
 
 package io.github.dlbbld.ashlarchess.san;
 
+import io.github.dlbbld.ashlarchess.san.internal.MoveToSan;
+import io.github.dlbbld.ashlarchess.san.internal.SanTerminalMarker;
+
 import java.util.ArrayList;
 import java.util.List;
 

@@ -19,9 +19,10 @@
  * </ul>
  *
  * <p>
- * Generation goes the other direction: {@link io.github.dlbbld.ashlarchess.san.MoveToSan} produces canonical SAN for a
- * played move (with minimal disambiguation and the correct check/checkmate suffix);
- * {@link io.github.dlbbld.ashlarchess.san.MoveToLan} produces long algebraic notation.
+ * Generation goes the other direction and is available from {@link io.github.dlbbld.ashlarchess.board.Board}:
+ * {@link io.github.dlbbld.ashlarchess.board.Board#getSan()} produces canonical SAN for a played move (with minimal
+ * disambiguation and the correct check/checkmate suffix) and {@link io.github.dlbbld.ashlarchess.board.Board#getLan()}
+ * produces long algebraic notation.
  *
  * <p>
  * Format-level checks and movement-level (legal-move, king-safety) checks both live in this package.

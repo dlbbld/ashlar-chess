@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: GPL-3.0-only
 
 package io.github.dlbbld.ashlarchess.san;
+import io.github.dlbbld.ashlarchess.san.internal.SanDisambiguationUtility;
 
 import io.github.dlbbld.ashlarchess.san.internal.SanFormat;
 import io.github.dlbbld.ashlarchess.san.internal.SanConversion;

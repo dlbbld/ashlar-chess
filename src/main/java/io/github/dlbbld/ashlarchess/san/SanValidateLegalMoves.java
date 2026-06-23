@@ -3,6 +3,9 @@
 
 package io.github.dlbbld.ashlarchess.san;
 
+import io.github.dlbbld.ashlarchess.san.internal.SanDisambiguationUtility;
+import io.github.dlbbld.ashlarchess.san.internal.MoveToSan;
+
 import static io.github.dlbbld.ashlarchess.board.enums.PieceType.KING;
 import static io.github.dlbbld.ashlarchess.board.enums.PieceType.PAWN;
 import static io.github.dlbbld.ashlarchess.board.enums.PieceType.ROOK;
