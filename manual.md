@@ -432,24 +432,24 @@ Insufficient material:
 
 ```java
 final Board board = Board.fromFenStrict("8/8/3kn3/8/2K5/8/8/8 w - - 0 50");
-System.out.println(board.deadPositionQuick()); // DEAD (dead)
-System.out.println(board.deadPositionFull()); // DEAD (dead)
+System.out.println(board.deadPositionQuick()); // DEAD
+System.out.println(board.deadPositionFull()); // DEAD
 ```
 
 Pawn walls:
 
 ```java
 final Board board = Board.fromFenStrict("8/6b1/1p3k2/1Pp1p1p1/2P1PpP1/5P2/8/5K2 b - - 11 61");
-System.out.println(board.deadPositionQuick()); // DEAD (dead)
-System.out.println(board.deadPositionFull()); // DEAD (dead)
+System.out.println(board.deadPositionQuick()); // DEAD
+System.out.println(board.deadPositionFull()); // DEAD
 ```
 
 Forced moves:
 
 ```java
 final Board board = Board.fromFenStrict("k7/P1K5/8/8/8/8/8/8 b - - 2 58");
-System.out.println(board.deadPositionQuick()); // DEAD (dead)
-System.out.println(board.deadPositionFull()); // DEAD (dead)
+System.out.println(board.deadPositionQuick()); // DEAD
+System.out.println(board.deadPositionFull()); // DEAD
 ```
 
 ## Validation Model

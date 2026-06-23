@@ -369,24 +369,24 @@ public final class ReadmeExamples {
   public static void deadInsufficientMaterial() {
     // <readme:dead-insufficient-material>
     final Board board = Board.fromFenStrict("8/8/3kn3/8/2K5/8/8/8 w - - 0 50");
-    System.out.println(board.deadPositionQuick()); // [out] (dead)
-    System.out.println(board.deadPositionFull()); // [out] (dead)
+    System.out.println(board.deadPositionQuick()); // [out]
+    System.out.println(board.deadPositionFull()); // [out]
     // </readme:dead-insufficient-material>
   }
 
   public static void deadPawnWalls() {
     // <readme:dead-pawn-walls>
     final Board board = Board.fromFenStrict("8/6b1/1p3k2/1Pp1p1p1/2P1PpP1/5P2/8/5K2 b - - 11 61");
-    System.out.println(board.deadPositionQuick()); // [out] (dead)
-    System.out.println(board.deadPositionFull()); // [out] (dead)
+    System.out.println(board.deadPositionQuick()); // [out]
+    System.out.println(board.deadPositionFull()); // [out]
     // </readme:dead-pawn-walls>
   }
 
   public static void deadForcedMoves() {
     // <readme:dead-forced-moves>
     final Board board = Board.fromFenStrict("k7/P1K5/8/8/8/8/8/8 b - - 2 58");
-    System.out.println(board.deadPositionQuick()); // [out] (dead)
-    System.out.println(board.deadPositionFull()); // [out] (dead)
+    System.out.println(board.deadPositionQuick()); // [out]
+    System.out.println(board.deadPositionFull()); // [out]
     // </readme:dead-forced-moves>
   }
 
