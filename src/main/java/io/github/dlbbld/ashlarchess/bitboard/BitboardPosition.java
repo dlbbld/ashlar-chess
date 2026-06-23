@@ -7,14 +7,6 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.function.Consumer;
 
-import io.github.dlbbld.ashlarchess.board.enums.CastlingMove;
-import io.github.dlbbld.ashlarchess.board.enums.Piece;
-import io.github.dlbbld.ashlarchess.board.enums.PieceType;
-import io.github.dlbbld.ashlarchess.board.enums.PromotionPieceType;
-import io.github.dlbbld.ashlarchess.board.enums.Side;
-import io.github.dlbbld.ashlarchess.board.enums.Square;
-import io.github.dlbbld.ashlarchess.internal.Nulls;
-import io.github.dlbbld.ashlarchess.board.MoveSpecification;
 import io.github.dlbbld.ashlarchess.bitboard.internal.BishopAttacks;
 import io.github.dlbbld.ashlarchess.bitboard.internal.BishopMoves;
 import io.github.dlbbld.ashlarchess.bitboard.internal.BitboardPositionUtility;
@@ -28,6 +20,14 @@ import io.github.dlbbld.ashlarchess.bitboard.internal.QueenAttacks;
 import io.github.dlbbld.ashlarchess.bitboard.internal.QueenMoves;
 import io.github.dlbbld.ashlarchess.bitboard.internal.RookAttacks;
 import io.github.dlbbld.ashlarchess.bitboard.internal.RookMoves;
+import io.github.dlbbld.ashlarchess.board.MoveSpecification;
+import io.github.dlbbld.ashlarchess.board.enums.CastlingMove;
+import io.github.dlbbld.ashlarchess.board.enums.Piece;
+import io.github.dlbbld.ashlarchess.board.enums.PieceType;
+import io.github.dlbbld.ashlarchess.board.enums.PromotionPieceType;
+import io.github.dlbbld.ashlarchess.board.enums.Side;
+import io.github.dlbbld.ashlarchess.board.enums.Square;
+import io.github.dlbbld.ashlarchess.internal.Nulls;
 
 /**
  * Twelve-bitboard piece-placement representation: one {@code long} per real

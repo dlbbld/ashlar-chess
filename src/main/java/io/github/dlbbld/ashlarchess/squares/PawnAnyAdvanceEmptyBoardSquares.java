@@ -33,8 +33,7 @@ final class PawnAnyAdvanceEmptyBoardSquares {
   private static Map<Square, Set<Square>> build(Side side) {
     final EnumMap<Square, Set<Square>> map = Nulls.newEnumMap(Square.class);
     for (final Square from : Square.REAL) {
-      final Set<Square> builder = new LinkedHashSet<>();
-      builder.addAll(PawnOneAdvanceEmptyBoardSquares.getPawnSquares(side, from));
+      final Set<Square> builder = new LinkedHashSet<>(PawnOneAdvanceEmptyBoardSquares.getPawnSquares(side, from));
       builder.addAll(PawnTwoAdvanceEmptyBoardSquares.getPawnSquares(side, from));
       map.put(from, Nulls.copyOfSet(builder));
     }

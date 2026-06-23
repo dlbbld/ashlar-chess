@@ -7,8 +7,8 @@ import java.util.List;
 
 import io.github.dlbbld.ashlarchess.board.Board;
 import io.github.dlbbld.ashlarchess.board.CommonTestUtility;
-import io.github.dlbbld.ashlarchess.internal.Nulls;
 import io.github.dlbbld.ashlarchess.board.MoveSpecification;
+import io.github.dlbbld.ashlarchess.internal.Nulls;
 
 public final class TestFenRoundtripSupport {
 

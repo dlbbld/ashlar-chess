@@ -8,10 +8,10 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
-import io.github.dlbbld.ashlarchess.internal.Nulls;
 import io.github.dlbbld.ashlarchess.exceptions.ProgrammingMistakeException;
-import io.github.dlbbld.ashlarchess.internal.ExceptionUtility;
 import io.github.dlbbld.ashlarchess.fen.model.Fen;
+import io.github.dlbbld.ashlarchess.internal.ExceptionUtility;
+import io.github.dlbbld.ashlarchess.internal.Nulls;
 
 /**
  * Lenient FEN parser. Applies a purely syntactic-tolerance normalisation pass (whitespace, casing, missing trailing

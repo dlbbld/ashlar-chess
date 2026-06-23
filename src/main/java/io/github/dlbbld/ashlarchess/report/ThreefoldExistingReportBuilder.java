@@ -7,8 +7,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import io.github.dlbbld.ashlarchess.internal.Nulls;
 import io.github.dlbbld.ashlarchess.board.DynamicPosition;
+import io.github.dlbbld.ashlarchess.internal.Nulls;
 
 final class ThreefoldExistingReportBuilder {
 

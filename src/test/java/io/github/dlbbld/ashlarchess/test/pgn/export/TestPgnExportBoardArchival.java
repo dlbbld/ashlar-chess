@@ -19,10 +19,10 @@ import io.github.dlbbld.ashlarchess.internal.Nulls;
 import io.github.dlbbld.ashlarchess.pgn.PgnCreate;
 import io.github.dlbbld.ashlarchess.pgn.PgnGame;
 import io.github.dlbbld.ashlarchess.pgn.ResultTagValue;
-import io.github.dlbbld.ashlarchess.pgn.internal.StandardTag;
 import io.github.dlbbld.ashlarchess.pgn.Tag;
-import io.github.dlbbld.ashlarchess.pgn.internal.TagUtility;
 import io.github.dlbbld.ashlarchess.pgn.WriteMode;
+import io.github.dlbbld.ashlarchess.pgn.internal.StandardTag;
+import io.github.dlbbld.ashlarchess.pgn.internal.TagUtility;
 
 /**
  * The {@link PgnCreate#createPgnGame(Board)} path produces a minimal honest model - no STR fabrication. Archival export

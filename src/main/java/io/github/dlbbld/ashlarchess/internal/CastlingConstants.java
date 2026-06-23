@@ -20,12 +20,12 @@ import static io.github.dlbbld.ashlarchess.board.enums.Square.G8;
 import static io.github.dlbbld.ashlarchess.board.enums.Square.H1;
 import static io.github.dlbbld.ashlarchess.board.enums.Square.H8;
 
+import io.github.dlbbld.ashlarchess.board.LegalMove;
+import io.github.dlbbld.ashlarchess.board.LegalMoveKind;
+import io.github.dlbbld.ashlarchess.board.MoveSpecification;
 import io.github.dlbbld.ashlarchess.board.enums.CastlingMove;
 import io.github.dlbbld.ashlarchess.board.enums.Piece;
 import io.github.dlbbld.ashlarchess.board.enums.Square;
-import io.github.dlbbld.ashlarchess.board.MoveSpecification;
-import io.github.dlbbld.ashlarchess.board.LegalMove;
-import io.github.dlbbld.ashlarchess.board.LegalMoveKind;
 import io.github.dlbbld.ashlarchess.san.internal.SanSymbol;
 
 public final class CastlingConstants {

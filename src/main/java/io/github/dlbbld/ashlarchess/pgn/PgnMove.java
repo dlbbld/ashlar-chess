@@ -3,8 +3,6 @@
 
 package io.github.dlbbld.ashlarchess.pgn;
 
-import io.github.dlbbld.ashlarchess.pgn.PgnCommentary;
-
 public record PgnMove(String san, MoveSuffixAnnotation moveSuffixAnnotation, PgnCommentary commentary) {
 
 }

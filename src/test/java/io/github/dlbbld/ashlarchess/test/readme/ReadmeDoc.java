@@ -23,8 +23,8 @@ import java.util.regex.Pattern;
 
 import org.eclipse.jdt.annotation.NonNull;
 
-import io.github.dlbbld.ashlarchess.internal.Nulls;
 import io.github.dlbbld.ashlarchess.common.utility.IoUtility;
+import io.github.dlbbld.ashlarchess.internal.Nulls;
 import io.github.dlbbld.ashlarchess.test.common.utility.FileUtility;
 
 /**

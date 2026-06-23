@@ -5,8 +5,8 @@ package io.github.dlbbld.ashlarchess.unwinnability;
 
 import java.util.List;
 
-import io.github.dlbbld.ashlarchess.internal.Nulls;
 import io.github.dlbbld.ashlarchess.board.UciMove;
+import io.github.dlbbld.ashlarchess.internal.Nulls;
 
 record FindHelpmateAnalysis(FindHelpmateResult findHelpmateResult, int localNodesCount, List<UciMove> mateLine) {
   FindHelpmateAnalysis {

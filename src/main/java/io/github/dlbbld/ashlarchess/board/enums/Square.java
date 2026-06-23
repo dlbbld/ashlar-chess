@@ -7,9 +7,9 @@ import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.List;
 
-import io.github.dlbbld.ashlarchess.internal.Nulls;
 import io.github.dlbbld.ashlarchess.exceptions.NonePointerException;
 import io.github.dlbbld.ashlarchess.exceptions.ProgrammingMistakeException;
+import io.github.dlbbld.ashlarchess.internal.Nulls;
 
 public enum Square implements Comparable<Square> {
 

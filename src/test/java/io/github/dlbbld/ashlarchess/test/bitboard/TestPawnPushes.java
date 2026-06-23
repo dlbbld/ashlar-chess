@@ -12,9 +12,9 @@ import java.util.TreeSet;
 import org.junit.jupiter.api.Test;
 
 import io.github.dlbbld.ashlarchess.bitboard.BitboardPosition;
+import io.github.dlbbld.ashlarchess.bitboard.StaticPositionBridge;
 import io.github.dlbbld.ashlarchess.bitboard.internal.BitboardPositionUtility;
 import io.github.dlbbld.ashlarchess.bitboard.internal.PawnMoves;
-import io.github.dlbbld.ashlarchess.bitboard.StaticPositionBridge;
 import io.github.dlbbld.ashlarchess.board.StaticPosition;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
 import io.github.dlbbld.ashlarchess.board.enums.Square;

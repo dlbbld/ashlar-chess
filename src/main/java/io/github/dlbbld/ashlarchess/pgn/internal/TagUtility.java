@@ -11,12 +11,12 @@ import java.util.regex.Pattern;
 
 import org.eclipse.jdt.annotation.NonNull;
 
+import io.github.dlbbld.ashlarchess.exceptions.ProgrammingMistakeException;
+import io.github.dlbbld.ashlarchess.internal.ListUtility;
+import io.github.dlbbld.ashlarchess.internal.Nulls;
 import io.github.dlbbld.ashlarchess.pgn.PgnGame;
 import io.github.dlbbld.ashlarchess.pgn.ResultTagValue;
 import io.github.dlbbld.ashlarchess.pgn.Tag;
-import io.github.dlbbld.ashlarchess.internal.Nulls;
-import io.github.dlbbld.ashlarchess.exceptions.ProgrammingMistakeException;
-import io.github.dlbbld.ashlarchess.internal.ListUtility;
 
 public final class TagUtility {
 

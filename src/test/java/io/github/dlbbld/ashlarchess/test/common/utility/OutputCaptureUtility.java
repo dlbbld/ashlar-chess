@@ -8,8 +8,8 @@ import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 
-import io.github.dlbbld.ashlarchess.internal.Nulls;
 import io.github.dlbbld.ashlarchess.common.utility.IoUtility;
+import io.github.dlbbld.ashlarchess.internal.Nulls;
 
 public final class OutputCaptureUtility {
 

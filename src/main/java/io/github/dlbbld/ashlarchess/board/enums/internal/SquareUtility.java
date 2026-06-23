@@ -3,15 +3,14 @@
 
 package io.github.dlbbld.ashlarchess.board.enums.internal;
 
-import io.github.dlbbld.ashlarchess.board.enums.Side;
-import io.github.dlbbld.ashlarchess.board.enums.Square;
-
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 
-import io.github.dlbbld.ashlarchess.internal.Nulls;
+import io.github.dlbbld.ashlarchess.board.enums.Side;
+import io.github.dlbbld.ashlarchess.board.enums.Square;
 import io.github.dlbbld.ashlarchess.exceptions.NonePointerException;
+import io.github.dlbbld.ashlarchess.internal.Nulls;
 
 /**
  * Board-geometry transformations and side-relative chess-rule squares for {@link Square}: the 180-degree reflection,

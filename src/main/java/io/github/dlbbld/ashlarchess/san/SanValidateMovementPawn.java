@@ -3,13 +3,13 @@
 
 package io.github.dlbbld.ashlarchess.san;
 
-import io.github.dlbbld.ashlarchess.san.internal.SanFormat;
-import io.github.dlbbld.ashlarchess.san.internal.SanConversion;
 import io.github.dlbbld.ashlarchess.board.enums.File;
 import io.github.dlbbld.ashlarchess.board.enums.Rank;
-import io.github.dlbbld.ashlarchess.board.enums.internal.RankUtility;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
+import io.github.dlbbld.ashlarchess.board.enums.internal.RankUtility;
 import io.github.dlbbld.ashlarchess.messages.Message;
+import io.github.dlbbld.ashlarchess.san.internal.SanConversion;
+import io.github.dlbbld.ashlarchess.san.internal.SanFormat;
 
 final class SanValidateMovementPawn {
 

@@ -6,10 +6,10 @@ package io.github.dlbbld.ashlarchess.san.internal;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.github.dlbbld.ashlarchess.board.LegalMove;
 import io.github.dlbbld.ashlarchess.board.enums.File;
 import io.github.dlbbld.ashlarchess.board.enums.Rank;
 import io.github.dlbbld.ashlarchess.board.enums.Square;
-import io.github.dlbbld.ashlarchess.board.LegalMove;
 
 /**
  * Shared SAN disambiguation helpers. The methods are {@code public} so both the SAN generator ({@link MoveToSan}) and

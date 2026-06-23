@@ -9,9 +9,9 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import org.junit.jupiter.api.Test;
 
 import io.github.dlbbld.ashlarchess.analyze.KingSafetyCheckTranslator;
+import io.github.dlbbld.ashlarchess.board.MoveCheck;
 import io.github.dlbbld.ashlarchess.exceptions.ProgrammingMistakeException;
 import io.github.dlbbld.ashlarchess.moves.KingSafetyCheck;
-import io.github.dlbbld.ashlarchess.board.MoveCheck;
 
 /**
  * Lock-down test for {@link KingSafetyCheckTranslator#toMoveCheck(KingSafetyCheck)}. Ensures the translator stays

@@ -10,18 +10,18 @@ import java.util.List;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 
-import io.github.dlbbld.ashlarchess.pgn.internal.TagUtility;
-import io.github.dlbbld.ashlarchess.pgn.internal.StandardTag;
 import io.github.dlbbld.ashlarchess.board.Board;
-import io.github.dlbbld.ashlarchess.board.internal.MoveNumberFormat;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
-import io.github.dlbbld.ashlarchess.internal.Nulls;
+import io.github.dlbbld.ashlarchess.board.internal.MoveNumberFormat;
 import io.github.dlbbld.ashlarchess.exceptions.ProgrammingMistakeException;
-import io.github.dlbbld.ashlarchess.internal.ExceptionUtility;
 import io.github.dlbbld.ashlarchess.fen.StrictFenParser;
 import io.github.dlbbld.ashlarchess.fen.StrictFenSemanticValidationException;
 import io.github.dlbbld.ashlarchess.fen.internal.FenConstants;
 import io.github.dlbbld.ashlarchess.fen.model.Fen;
+import io.github.dlbbld.ashlarchess.internal.ExceptionUtility;
+import io.github.dlbbld.ashlarchess.internal.Nulls;
+import io.github.dlbbld.ashlarchess.pgn.internal.StandardTag;
+import io.github.dlbbld.ashlarchess.pgn.internal.TagUtility;
 import io.github.dlbbld.ashlarchess.san.SanValidationException;
 import io.github.dlbbld.ashlarchess.san.SanValidationProblem;
 

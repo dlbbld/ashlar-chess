@@ -8,9 +8,9 @@ import java.util.List;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 
-import io.github.dlbbld.ashlarchess.pgn.internal.TagUtility;
-import io.github.dlbbld.ashlarchess.internal.Nulls;
 import io.github.dlbbld.ashlarchess.fen.model.Fen;
+import io.github.dlbbld.ashlarchess.internal.Nulls;
+import io.github.dlbbld.ashlarchess.pgn.internal.TagUtility;
 
 /**
  * Parsed PGN model. Reflects what the source actually contained - tag presence/absence and tag order are preserved by

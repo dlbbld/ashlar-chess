@@ -9,11 +9,11 @@ import java.util.List;
 
 import org.eclipse.jdt.annotation.Nullable;
 
-import io.github.dlbbld.ashlarchess.pgn.internal.TagUtility;
-import io.github.dlbbld.ashlarchess.pgn.internal.StandardTag;
-import io.github.dlbbld.ashlarchess.internal.Nulls;
 import io.github.dlbbld.ashlarchess.fen.internal.FenConstants;
 import io.github.dlbbld.ashlarchess.fen.model.Fen;
+import io.github.dlbbld.ashlarchess.internal.Nulls;
+import io.github.dlbbld.ashlarchess.pgn.internal.StandardTag;
+import io.github.dlbbld.ashlarchess.pgn.internal.TagUtility;
 
 /**
  * Prepares a {@link PgnGame} for PGN spec section 8.1.1 archival-storage output. Operates on the in-memory model only;

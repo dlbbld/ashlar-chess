@@ -27,11 +27,11 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.junit.jupiter.api.Test;
 
 import io.github.dlbbld.ashlarchess.board.Board;
+import io.github.dlbbld.ashlarchess.board.LegalMove;
+import io.github.dlbbld.ashlarchess.board.LegalMoveKind;
 import io.github.dlbbld.ashlarchess.board.enums.PromotionPieceType;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
 import io.github.dlbbld.ashlarchess.board.enums.Square;
-import io.github.dlbbld.ashlarchess.board.LegalMove;
-import io.github.dlbbld.ashlarchess.board.LegalMoveKind;
 
 // Spec test for FUN22 Figure 12 (Score). Score is a pure function of (position, move, intended-winner); it does NOT
 // depend on move ordering, so positions alone suffice. Expected values are derived from Figure 12. The two methods

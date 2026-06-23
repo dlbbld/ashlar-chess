@@ -6,9 +6,9 @@ package io.github.dlbbld.ashlarchess.messages;
 import java.text.MessageFormat;
 import java.util.ResourceBundle;
 
-import io.github.dlbbld.ashlarchess.internal.Nulls;
-import io.github.dlbbld.ashlarchess.internal.ConfigurationConstants;
 import io.github.dlbbld.ashlarchess.exceptions.ProgrammingMistakeException;
+import io.github.dlbbld.ashlarchess.internal.ConfigurationConstants;
+import io.github.dlbbld.ashlarchess.internal.Nulls;
 
 public final class Message {
 

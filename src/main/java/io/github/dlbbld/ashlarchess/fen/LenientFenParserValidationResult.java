@@ -8,8 +8,8 @@ import java.util.List;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 
-import io.github.dlbbld.ashlarchess.internal.Nulls;
 import io.github.dlbbld.ashlarchess.fen.model.Fen;
+import io.github.dlbbld.ashlarchess.internal.Nulls;
 
 /**
  * Outcome of a lenient FEN parse-with-validation. On success, {@link #fen} carries the parsed model and

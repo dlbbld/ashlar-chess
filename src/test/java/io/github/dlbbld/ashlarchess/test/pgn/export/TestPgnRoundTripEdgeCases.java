@@ -15,8 +15,8 @@ import io.github.dlbbld.ashlarchess.pgn.LenientPgnParser;
 import io.github.dlbbld.ashlarchess.pgn.LenientPgnParserValidationResult;
 import io.github.dlbbld.ashlarchess.pgn.PgnCreate;
 import io.github.dlbbld.ashlarchess.pgn.PgnGame;
-import io.github.dlbbld.ashlarchess.pgn.internal.TagUtility;
 import io.github.dlbbld.ashlarchess.pgn.WriteMode;
+import io.github.dlbbld.ashlarchess.pgn.internal.TagUtility;
 
 /**
  * Round-trip edge cases for the semantic-export contract: input shapes the lenient parser accepts must survive

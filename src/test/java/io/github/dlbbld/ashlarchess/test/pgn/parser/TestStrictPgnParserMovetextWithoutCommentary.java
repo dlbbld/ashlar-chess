@@ -11,8 +11,8 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 
 import io.github.dlbbld.ashlarchess.internal.Nulls;
-import io.github.dlbbld.ashlarchess.pgn.PgnMove;
 import io.github.dlbbld.ashlarchess.pgn.PgnGame;
+import io.github.dlbbld.ashlarchess.pgn.PgnMove;
 import io.github.dlbbld.ashlarchess.pgn.StrictPgnParser;
 
 class TestStrictPgnParserMovetextWithoutCommentary {

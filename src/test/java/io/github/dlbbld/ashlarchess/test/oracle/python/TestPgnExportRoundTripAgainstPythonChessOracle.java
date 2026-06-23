@@ -16,14 +16,14 @@ import org.eclipse.jdt.annotation.NonNull;
 import org.junit.jupiter.api.Test;
 
 import io.github.dlbbld.ashlarchess.board.Board;
-import io.github.dlbbld.ashlarchess.internal.Nulls;
+import io.github.dlbbld.ashlarchess.board.LegalMove;
+import io.github.dlbbld.ashlarchess.board.UciMove;
 import io.github.dlbbld.ashlarchess.board.internal.UciMoveUtility;
 import io.github.dlbbld.ashlarchess.internal.ExceptionUtility;
-import io.github.dlbbld.ashlarchess.board.LegalMove;
-import io.github.dlbbld.ashlarchess.pgn.PgnMove;
-import io.github.dlbbld.ashlarchess.board.UciMove;
+import io.github.dlbbld.ashlarchess.internal.Nulls;
 import io.github.dlbbld.ashlarchess.pgn.PgnCreate;
 import io.github.dlbbld.ashlarchess.pgn.PgnGame;
+import io.github.dlbbld.ashlarchess.pgn.PgnMove;
 import io.github.dlbbld.ashlarchess.pgn.StrictPgnParser;
 import io.github.dlbbld.ashlarchess.pgn.WriteMode;
 import io.github.dlbbld.ashlarchess.test.ConfigurationTestConstants;

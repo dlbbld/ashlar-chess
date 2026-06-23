@@ -3,13 +3,6 @@
 
 package io.github.dlbbld.ashlarchess.san.internal;
 
-import io.github.dlbbld.ashlarchess.san.SanValidationProblem;
-import io.github.dlbbld.ashlarchess.san.SanValidationException;
-import io.github.dlbbld.ashlarchess.san.internal.NotationPromotionPiece;
-import io.github.dlbbld.ashlarchess.san.internal.SanFormat;
-import io.github.dlbbld.ashlarchess.san.internal.SanConversion;
-import io.github.dlbbld.ashlarchess.san.internal.SanParse;
-import io.github.dlbbld.ashlarchess.san.internal.SanValidateFormat;
 import io.github.dlbbld.ashlarchess.board.enums.File;
 import io.github.dlbbld.ashlarchess.board.enums.PieceType;
 import io.github.dlbbld.ashlarchess.board.enums.PromotionPieceType;
@@ -17,6 +10,8 @@ import io.github.dlbbld.ashlarchess.board.enums.Rank;
 import io.github.dlbbld.ashlarchess.board.enums.Square;
 import io.github.dlbbld.ashlarchess.internal.Nulls;
 import io.github.dlbbld.ashlarchess.messages.Message;
+import io.github.dlbbld.ashlarchess.san.SanValidationException;
+import io.github.dlbbld.ashlarchess.san.SanValidationProblem;
 
 /**
  * Parses pawn SAN moves - both forward (e.g. {@code d3}, {@code d8=Q}) and capturing (e.g. {@code dxe5},

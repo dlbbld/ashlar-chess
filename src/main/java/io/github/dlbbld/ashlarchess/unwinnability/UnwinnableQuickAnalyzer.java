@@ -10,13 +10,13 @@ import java.util.Set;
 
 import io.github.dlbbld.ashlarchess.bitboard.BitboardPosition;
 import io.github.dlbbld.ashlarchess.board.Board;
+import io.github.dlbbld.ashlarchess.board.DynamicPosition;
+import io.github.dlbbld.ashlarchess.board.LegalMove;
 import io.github.dlbbld.ashlarchess.board.enums.PieceType;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
-import io.github.dlbbld.ashlarchess.internal.Nulls;
 import io.github.dlbbld.ashlarchess.exceptions.ProgrammingMistakeException;
-import io.github.dlbbld.ashlarchess.board.DynamicPosition;
 import io.github.dlbbld.ashlarchess.fen.model.Fen;
-import io.github.dlbbld.ashlarchess.board.LegalMove;
+import io.github.dlbbld.ashlarchess.internal.Nulls;
 
 // Faithful port of CHA 2.6.1 DYNAMIC::quick_analysis (the deployed -quick), NOT the paper's Figure 10. It is
 // deliberately 2-valued: it returns UNWINNABLE when it can prove the position dead for the intended winner, and

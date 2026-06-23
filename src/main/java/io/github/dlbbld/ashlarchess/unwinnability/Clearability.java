@@ -12,8 +12,8 @@ import java.util.TreeSet;
 
 import org.eclipse.jdt.annotation.NonNull;
 
-import io.github.dlbbld.ashlarchess.internal.Nulls;
 import io.github.dlbbld.ashlarchess.internal.ListUtility;
+import io.github.dlbbld.ashlarchess.internal.Nulls;
 
 class Clearability {
 

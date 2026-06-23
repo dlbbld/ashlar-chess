@@ -72,8 +72,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import io.github.dlbbld.ashlarchess.board.enums.Square;
-import io.github.dlbbld.ashlarchess.internal.Nulls;
 import io.github.dlbbld.ashlarchess.exceptions.ProgrammingMistakeException;
+import io.github.dlbbld.ashlarchess.internal.Nulls;
 
 public final class DiagonalLineUtility {
 
@@ -153,8 +153,7 @@ public final class DiagonalLineUtility {
     initializeBlackDiagonals(blackDiagonals);
     BLACK_DIAGONALS = Nulls.copyOfList(blackDiagonals);
 
-    final List<List<Square>> allDiagonals = new ArrayList<>();
-    allDiagonals.addAll(WHITE_DIAGONALS);
+    final List<List<Square>> allDiagonals = new ArrayList<>(WHITE_DIAGONALS);
     allDiagonals.addAll(BLACK_DIAGONALS);
     ALL_DIAGONALS = Nulls.copyOfList(allDiagonals);
   }

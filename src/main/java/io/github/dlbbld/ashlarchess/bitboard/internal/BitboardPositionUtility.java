@@ -9,8 +9,8 @@ import java.util.TreeSet;
 import io.github.dlbbld.ashlarchess.bitboard.BitboardPosition;
 import io.github.dlbbld.ashlarchess.board.enums.Piece;
 import io.github.dlbbld.ashlarchess.board.enums.Square;
-import io.github.dlbbld.ashlarchess.internal.Nulls;
 import io.github.dlbbld.ashlarchess.fen.internal.FenPieceSymbol;
+import io.github.dlbbld.ashlarchess.internal.Nulls;
 
 /**
  * Production-side bitboard utility methods, with no dependency on the {@code StaticPosition} reference layer (which is

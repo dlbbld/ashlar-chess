@@ -6,9 +6,9 @@ package io.github.dlbbld.ashlarchess.board.enums;
 import java.util.EnumMap;
 import java.util.List;
 
-import io.github.dlbbld.ashlarchess.internal.Nulls;
 import io.github.dlbbld.ashlarchess.exceptions.NonePointerException;
 import io.github.dlbbld.ashlarchess.exceptions.ProgrammingMistakeException;
+import io.github.dlbbld.ashlarchess.internal.Nulls;
 
 public enum File {
   FILE_A('a', 1),

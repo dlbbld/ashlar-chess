@@ -6,16 +6,14 @@ package io.github.dlbbld.ashlarchess.san.internal;
 import java.util.ArrayList;
 import java.util.List;
 
-import io.github.dlbbld.ashlarchess.san.internal.SanSymbol;
-import io.github.dlbbld.ashlarchess.san.internal.SanTerminalMarkerUtility;
+import io.github.dlbbld.ashlarchess.board.LegalMove;
+import io.github.dlbbld.ashlarchess.board.MoveSpecification;
 import io.github.dlbbld.ashlarchess.board.enums.File;
 import io.github.dlbbld.ashlarchess.board.enums.Piece;
 import io.github.dlbbld.ashlarchess.board.enums.Rank;
 import io.github.dlbbld.ashlarchess.board.enums.Square;
-import io.github.dlbbld.ashlarchess.internal.Nulls;
 import io.github.dlbbld.ashlarchess.internal.CastlingConstants;
-import io.github.dlbbld.ashlarchess.board.MoveSpecification;
-import io.github.dlbbld.ashlarchess.board.LegalMove;
+import io.github.dlbbld.ashlarchess.internal.Nulls;
 import io.github.dlbbld.ashlarchess.moves.CastlingUtility;
 
 public final class MoveToSan {

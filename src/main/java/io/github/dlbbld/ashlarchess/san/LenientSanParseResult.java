@@ -7,8 +7,8 @@ import java.util.List;
 
 import org.eclipse.jdt.annotation.NonNull;
 
-import io.github.dlbbld.ashlarchess.internal.Nulls;
 import io.github.dlbbld.ashlarchess.board.MoveSpecification;
+import io.github.dlbbld.ashlarchess.internal.Nulls;
 
 /**
  * Outcome of a successful lenient SAN parse: the resolved move, plus the list of deviations the parser forgave to get

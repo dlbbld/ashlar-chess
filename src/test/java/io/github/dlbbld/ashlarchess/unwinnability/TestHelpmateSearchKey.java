@@ -12,9 +12,9 @@ import org.eclipse.jdt.annotation.Nullable;
 import org.junit.jupiter.api.Test;
 
 import io.github.dlbbld.ashlarchess.board.Board;
-import io.github.dlbbld.ashlarchess.internal.Nulls;
 import io.github.dlbbld.ashlarchess.board.DynamicPosition;
 import io.github.dlbbld.ashlarchess.board.LegalMove;
+import io.github.dlbbld.ashlarchess.internal.Nulls;
 
 /**
  * Differential test for {@link HelpmateSearchKey}: its equality semantics must match {@link DynamicPosition}'s exactly.

@@ -3,9 +3,6 @@
 
 package io.github.dlbbld.ashlarchess.san;
 
-import io.github.dlbbld.ashlarchess.san.internal.SanDisambiguationUtility;
-import io.github.dlbbld.ashlarchess.san.internal.MoveToSan;
-
 import static io.github.dlbbld.ashlarchess.board.enums.PieceType.KING;
 import static io.github.dlbbld.ashlarchess.board.enums.PieceType.PAWN;
 import static io.github.dlbbld.ashlarchess.board.enums.PieceType.ROOK;
@@ -15,13 +12,13 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
-import io.github.dlbbld.ashlarchess.san.internal.SanFormat;
-import io.github.dlbbld.ashlarchess.san.internal.SanConversion;
-import io.github.dlbbld.ashlarchess.san.internal.SanParse;
 import io.github.dlbbld.ashlarchess.analyze.CastlingCheckTranslator;
 import io.github.dlbbld.ashlarchess.bitboard.BitboardPosition;
 import io.github.dlbbld.ashlarchess.bitboard.internal.KingAttacks;
 import io.github.dlbbld.ashlarchess.board.Board;
+import io.github.dlbbld.ashlarchess.board.LegalMove;
+import io.github.dlbbld.ashlarchess.board.LegalMoveKind;
+import io.github.dlbbld.ashlarchess.board.MoveSpecification;
 import io.github.dlbbld.ashlarchess.board.enums.CastlingMove;
 import io.github.dlbbld.ashlarchess.board.enums.CastlingRight;
 import io.github.dlbbld.ashlarchess.board.enums.CastlingRightLoss;
@@ -29,23 +26,25 @@ import io.github.dlbbld.ashlarchess.board.enums.File;
 import io.github.dlbbld.ashlarchess.board.enums.Piece;
 import io.github.dlbbld.ashlarchess.board.enums.PieceType;
 import io.github.dlbbld.ashlarchess.board.enums.Rank;
-import io.github.dlbbld.ashlarchess.board.enums.internal.RankUtility;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
 import io.github.dlbbld.ashlarchess.board.enums.Square;
+import io.github.dlbbld.ashlarchess.board.enums.internal.RankUtility;
 import io.github.dlbbld.ashlarchess.board.enums.internal.SquareUtility;
-import io.github.dlbbld.ashlarchess.internal.Nulls;
-import io.github.dlbbld.ashlarchess.internal.CastlingConstants;
 import io.github.dlbbld.ashlarchess.exceptions.ProgrammingMistakeException;
-import io.github.dlbbld.ashlarchess.board.MoveSpecification;
+import io.github.dlbbld.ashlarchess.internal.CastlingConstants;
 import io.github.dlbbld.ashlarchess.internal.ListUtility;
+import io.github.dlbbld.ashlarchess.internal.Nulls;
 import io.github.dlbbld.ashlarchess.internal.SetUtility;
+import io.github.dlbbld.ashlarchess.messages.Message;
 import io.github.dlbbld.ashlarchess.moves.CastlingCheck;
+import io.github.dlbbld.ashlarchess.moves.CastlingUtility;
 import io.github.dlbbld.ashlarchess.moves.KingSafetyCheck;
 import io.github.dlbbld.ashlarchess.moves.MovementCheck;
-import io.github.dlbbld.ashlarchess.messages.Message;
-import io.github.dlbbld.ashlarchess.board.LegalMove;
-import io.github.dlbbld.ashlarchess.board.LegalMoveKind;
-import io.github.dlbbld.ashlarchess.moves.CastlingUtility;
+import io.github.dlbbld.ashlarchess.san.internal.MoveToSan;
+import io.github.dlbbld.ashlarchess.san.internal.SanConversion;
+import io.github.dlbbld.ashlarchess.san.internal.SanDisambiguationUtility;
+import io.github.dlbbld.ashlarchess.san.internal.SanFormat;
+import io.github.dlbbld.ashlarchess.san.internal.SanParse;
 
 final class SanValidateLegalMoves {
 

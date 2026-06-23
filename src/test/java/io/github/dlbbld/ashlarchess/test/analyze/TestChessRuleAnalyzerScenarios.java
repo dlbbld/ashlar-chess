@@ -71,9 +71,9 @@ import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.H8;
 import org.junit.jupiter.api.Test;
 
 import io.github.dlbbld.ashlarchess.board.Board;
-import io.github.dlbbld.ashlarchess.board.enums.PromotionPieceType;
-import io.github.dlbbld.ashlarchess.board.MoveSpecification;
 import io.github.dlbbld.ashlarchess.board.MoveCheck;
+import io.github.dlbbld.ashlarchess.board.MoveSpecification;
+import io.github.dlbbld.ashlarchess.board.enums.PromotionPieceType;
 
 class TestChessRuleAnalyzerScenarios {
 

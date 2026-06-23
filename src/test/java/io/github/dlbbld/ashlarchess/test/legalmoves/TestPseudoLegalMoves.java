@@ -29,13 +29,13 @@ import org.junit.jupiter.api.Test;
 
 import io.github.dlbbld.ashlarchess.bitboard.StaticPositionBridge;
 import io.github.dlbbld.ashlarchess.board.Board;
+import io.github.dlbbld.ashlarchess.board.MoveSpecification;
 import io.github.dlbbld.ashlarchess.board.StaticPosition;
 import io.github.dlbbld.ashlarchess.board.enums.Square;
-import io.github.dlbbld.ashlarchess.board.MoveSpecification;
 import io.github.dlbbld.ashlarchess.internal.SetUtility;
-import io.github.dlbbld.ashlarchess.moves.KingSafetyCheck;
 import io.github.dlbbld.ashlarchess.model.LegalMoveCalculation;
 import io.github.dlbbld.ashlarchess.model.PseudoLegalMove;
+import io.github.dlbbld.ashlarchess.moves.KingSafetyCheck;
 import io.github.dlbbld.ashlarchess.moves.LegalMovesSupport;
 import io.github.dlbbld.ashlarchess.squares.BishopPotentialToSquares;
 import io.github.dlbbld.ashlarchess.squares.KingNonCastlingPotentialToSquares;

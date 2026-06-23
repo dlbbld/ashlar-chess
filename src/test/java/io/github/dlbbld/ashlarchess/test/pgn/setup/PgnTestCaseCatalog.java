@@ -11,8 +11,8 @@ import java.util.TreeSet;
 
 import org.eclipse.jdt.annotation.NonNull;
 
-import io.github.dlbbld.ashlarchess.internal.Nulls;
 import io.github.dlbbld.ashlarchess.exceptions.ProgrammingMistakeException;
+import io.github.dlbbld.ashlarchess.internal.Nulls;
 import io.github.dlbbld.ashlarchess.test.RestrictTestConstants;
 import io.github.dlbbld.ashlarchess.test.common.utility.FileUtility;
 import io.github.dlbbld.ashlarchess.test.model.PgnFen;

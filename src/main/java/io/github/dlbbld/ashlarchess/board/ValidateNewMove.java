@@ -14,14 +14,14 @@ import io.github.dlbbld.ashlarchess.board.enums.CastlingRight;
 import io.github.dlbbld.ashlarchess.board.enums.CastlingRightLoss;
 import io.github.dlbbld.ashlarchess.board.enums.Piece;
 import io.github.dlbbld.ashlarchess.board.enums.PromotionPieceType;
-import io.github.dlbbld.ashlarchess.board.enums.internal.RankUtility;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
 import io.github.dlbbld.ashlarchess.board.enums.Square;
+import io.github.dlbbld.ashlarchess.board.enums.internal.RankUtility;
 import io.github.dlbbld.ashlarchess.exceptions.ProgrammingMistakeException;
 import io.github.dlbbld.ashlarchess.moves.CastlingCheck;
+import io.github.dlbbld.ashlarchess.moves.CastlingUtility;
 import io.github.dlbbld.ashlarchess.moves.KingSafetyCheck;
 import io.github.dlbbld.ashlarchess.moves.MovementCheck;
-import io.github.dlbbld.ashlarchess.moves.CastlingUtility;
 
 final class ValidateNewMove {
 

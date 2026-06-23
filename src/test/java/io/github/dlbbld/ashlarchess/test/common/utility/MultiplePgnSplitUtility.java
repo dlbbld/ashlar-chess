@@ -14,9 +14,9 @@ import java.util.Scanner;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
 
-import io.github.dlbbld.ashlarchess.internal.Nulls;
 import io.github.dlbbld.ashlarchess.exceptions.ChessApiRuntimeException;
 import io.github.dlbbld.ashlarchess.internal.ExceptionUtility;
+import io.github.dlbbld.ashlarchess.internal.Nulls;
 
 public final class MultiplePgnSplitUtility {
 

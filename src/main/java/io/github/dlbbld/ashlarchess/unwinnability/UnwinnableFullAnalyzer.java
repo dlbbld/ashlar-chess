@@ -9,13 +9,13 @@ import java.util.List;
 import java.util.Set;
 
 import io.github.dlbbld.ashlarchess.board.Board;
-import io.github.dlbbld.ashlarchess.board.enums.Side;
-import io.github.dlbbld.ashlarchess.internal.Nulls;
 import io.github.dlbbld.ashlarchess.board.DynamicPosition;
-import io.github.dlbbld.ashlarchess.board.internal.UciMoveUtility;
-import io.github.dlbbld.ashlarchess.fen.model.Fen;
 import io.github.dlbbld.ashlarchess.board.LegalMove;
 import io.github.dlbbld.ashlarchess.board.UciMove;
+import io.github.dlbbld.ashlarchess.board.enums.Side;
+import io.github.dlbbld.ashlarchess.board.internal.UciMoveUtility;
+import io.github.dlbbld.ashlarchess.fen.model.Fen;
+import io.github.dlbbld.ashlarchess.internal.Nulls;
 
 //Figure 9 Main routine for deciding chess unwinnability. It is based on our semi-static
 //algorithm (Figure 8) and our search routine (Figure 5) integrated via iterative deepening.

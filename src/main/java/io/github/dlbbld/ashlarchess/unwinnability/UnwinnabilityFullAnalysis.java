@@ -5,8 +5,8 @@ package io.github.dlbbld.ashlarchess.unwinnability;
 
 import java.util.List;
 
-import io.github.dlbbld.ashlarchess.internal.Nulls;
 import io.github.dlbbld.ashlarchess.board.UciMove;
+import io.github.dlbbld.ashlarchess.internal.Nulls;
 
 /**
  * Result of the complete unwinnability analysis: the verdict and, for {@code WINNABLE_HELPMATE}, a witnessing mate line

@@ -7,11 +7,11 @@ import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.KNIGHT
 
 import java.util.Set;
 
+import io.github.dlbbld.ashlarchess.board.LegalMove;
 import io.github.dlbbld.ashlarchess.board.StaticPosition;
 import io.github.dlbbld.ashlarchess.board.enums.Piece;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
 import io.github.dlbbld.ashlarchess.board.enums.Square;
-import io.github.dlbbld.ashlarchess.board.LegalMove;
 import io.github.dlbbld.ashlarchess.squares.KnightPotentialToSquares;
 
 class KnightLegalMoves {

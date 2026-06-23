@@ -19,9 +19,9 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.Test;
 
 import io.github.dlbbld.ashlarchess.board.Board;
-import io.github.dlbbld.ashlarchess.board.MoveSpecification;
-import io.github.dlbbld.ashlarchess.board.MoveCheck;
 import io.github.dlbbld.ashlarchess.board.InvalidMoveException;
+import io.github.dlbbld.ashlarchess.board.MoveCheck;
+import io.github.dlbbld.ashlarchess.board.MoveSpecification;
 import io.github.dlbbld.ashlarchess.unwinnability.DeadPositionQuickVerdict;
 
 /**

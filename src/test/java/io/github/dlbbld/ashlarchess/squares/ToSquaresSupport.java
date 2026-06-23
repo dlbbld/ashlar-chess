@@ -8,8 +8,8 @@ import io.github.dlbbld.ashlarchess.board.enums.Piece;
 import io.github.dlbbld.ashlarchess.board.enums.PieceType;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
 import io.github.dlbbld.ashlarchess.board.enums.Square;
-import io.github.dlbbld.ashlarchess.exceptions.ProgrammingMistakeException;
 import io.github.dlbbld.ashlarchess.enums.SquareOccupation;
+import io.github.dlbbld.ashlarchess.exceptions.ProgrammingMistakeException;
 
 final class ToSquaresSupport {
 

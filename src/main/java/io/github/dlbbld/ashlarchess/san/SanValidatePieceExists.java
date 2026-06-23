@@ -3,8 +3,6 @@
 
 package io.github.dlbbld.ashlarchess.san;
 
-import io.github.dlbbld.ashlarchess.san.internal.SanFormat;
-import io.github.dlbbld.ashlarchess.san.internal.SanConversion;
 import io.github.dlbbld.ashlarchess.bitboard.BitboardPosition;
 import io.github.dlbbld.ashlarchess.board.enums.File;
 import io.github.dlbbld.ashlarchess.board.enums.Piece;
@@ -13,6 +11,8 @@ import io.github.dlbbld.ashlarchess.board.enums.Side;
 import io.github.dlbbld.ashlarchess.board.enums.Square;
 import io.github.dlbbld.ashlarchess.internal.Nulls;
 import io.github.dlbbld.ashlarchess.messages.Message;
+import io.github.dlbbld.ashlarchess.san.internal.SanConversion;
+import io.github.dlbbld.ashlarchess.san.internal.SanFormat;
 
 final class SanValidatePieceExists {
 

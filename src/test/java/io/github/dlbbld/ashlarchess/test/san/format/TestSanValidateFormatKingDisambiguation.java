@@ -8,9 +8,9 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
 
-import io.github.dlbbld.ashlarchess.san.internal.SanValidateFormat;
 import io.github.dlbbld.ashlarchess.san.SanValidationException;
 import io.github.dlbbld.ashlarchess.san.SanValidationProblem;
+import io.github.dlbbld.ashlarchess.san.internal.SanValidateFormat;
 
 class TestSanValidateFormatKingDisambiguation {
 

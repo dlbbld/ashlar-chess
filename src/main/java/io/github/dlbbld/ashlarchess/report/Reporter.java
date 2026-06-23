@@ -11,10 +11,10 @@ import java.util.Map;
 import org.eclipse.jdt.annotation.NonNull;
 
 import io.github.dlbbld.ashlarchess.board.Board;
-import io.github.dlbbld.ashlarchess.internal.Nulls;
-import io.github.dlbbld.ashlarchess.internal.ChessConstants;
 import io.github.dlbbld.ashlarchess.board.DynamicPosition;
+import io.github.dlbbld.ashlarchess.internal.ChessConstants;
 import io.github.dlbbld.ashlarchess.internal.ListUtility;
+import io.github.dlbbld.ashlarchess.internal.Nulls;
 import io.github.dlbbld.ashlarchess.messages.Message;
 import io.github.dlbbld.ashlarchess.pgn.LenientPgnParser;
 import io.github.dlbbld.ashlarchess.pgn.PgnGame;

@@ -7,9 +7,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import io.github.dlbbld.ashlarchess.board.Board;
-import io.github.dlbbld.ashlarchess.board.MoveSpecification;
-import io.github.dlbbld.ashlarchess.board.MoveCheck;
 import io.github.dlbbld.ashlarchess.board.InvalidMoveException;
+import io.github.dlbbld.ashlarchess.board.MoveCheck;
+import io.github.dlbbld.ashlarchess.board.MoveSpecification;
 
 public final class TestValidateNewMoveSupport {
 

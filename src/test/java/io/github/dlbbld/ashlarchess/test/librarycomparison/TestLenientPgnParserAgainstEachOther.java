@@ -12,10 +12,10 @@ import java.util.List;
 import org.apache.logging.log4j.Logger;
 import org.junit.jupiter.api.Test;
 
-import io.github.dlbbld.ashlarchess.internal.Nulls;
 import io.github.dlbbld.ashlarchess.fen.model.Fen;
-import io.github.dlbbld.ashlarchess.pgn.PgnMove;
+import io.github.dlbbld.ashlarchess.internal.Nulls;
 import io.github.dlbbld.ashlarchess.pgn.PgnGame;
+import io.github.dlbbld.ashlarchess.pgn.PgnMove;
 import io.github.dlbbld.ashlarchess.test.RestrictTestConstants;
 import io.github.dlbbld.ashlarchess.test.librarycarlos.pgn.parser.PgnParserLibraryCarlos;
 import io.github.dlbbld.ashlarchess.test.model.PgnFen;

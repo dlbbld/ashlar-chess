@@ -11,8 +11,8 @@ import java.nio.file.Path;
 import java.util.List;
 
 import io.github.dlbbld.ashlarchess.board.Board;
-import io.github.dlbbld.ashlarchess.internal.Nulls;
 import io.github.dlbbld.ashlarchess.exceptions.FileSystemAccessException;
+import io.github.dlbbld.ashlarchess.internal.Nulls;
 
 /**
  * Serialises a {@link PgnGame} (or a {@link Board}) to a PGN file on disk. All overloads default to

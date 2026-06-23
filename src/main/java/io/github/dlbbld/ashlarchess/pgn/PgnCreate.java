@@ -8,16 +8,16 @@ import java.util.List;
 
 import org.eclipse.jdt.annotation.Nullable;
 
-import io.github.dlbbld.ashlarchess.pgn.internal.StandardTag;
 import io.github.dlbbld.ashlarchess.board.Board;
-import io.github.dlbbld.ashlarchess.board.internal.MoveNumberFormat;
-import io.github.dlbbld.ashlarchess.board.enums.Side;
-import io.github.dlbbld.ashlarchess.internal.Nulls;
-import io.github.dlbbld.ashlarchess.exceptions.ProgrammingMistakeException;
 import io.github.dlbbld.ashlarchess.board.Outcome;
-import io.github.dlbbld.ashlarchess.internal.ListUtility;
+import io.github.dlbbld.ashlarchess.board.enums.Side;
+import io.github.dlbbld.ashlarchess.board.internal.MoveNumberFormat;
+import io.github.dlbbld.ashlarchess.exceptions.ProgrammingMistakeException;
 import io.github.dlbbld.ashlarchess.fen.internal.FenConstants;
 import io.github.dlbbld.ashlarchess.fen.model.Fen;
+import io.github.dlbbld.ashlarchess.internal.ListUtility;
+import io.github.dlbbld.ashlarchess.internal.Nulls;
+import io.github.dlbbld.ashlarchess.pgn.internal.StandardTag;
 
 /**
  * PGN serialisation entry points. The library defaults to {@link WriteMode#SEMANTIC} - emits the parse model as-given

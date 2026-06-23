@@ -11,10 +11,10 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
-import io.github.dlbbld.ashlarchess.internal.Nulls;
 import io.github.dlbbld.ashlarchess.fen.internal.FenConstants;
-import io.github.dlbbld.ashlarchess.pgn.PgnMove;
+import io.github.dlbbld.ashlarchess.internal.Nulls;
 import io.github.dlbbld.ashlarchess.pgn.PgnGame;
+import io.github.dlbbld.ashlarchess.pgn.PgnMove;
 import io.github.dlbbld.ashlarchess.pgn.internal.StandardTag;
 import io.github.dlbbld.ashlarchess.pgn.internal.TagUtility;
 import io.github.dlbbld.ashlarchess.test.pgntest.constants.PgnTestConstants;

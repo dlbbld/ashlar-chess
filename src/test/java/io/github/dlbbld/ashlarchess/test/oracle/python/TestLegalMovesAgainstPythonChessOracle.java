@@ -16,10 +16,10 @@ import org.apache.logging.log4j.Logger;
 import org.junit.jupiter.api.Test;
 
 import io.github.dlbbld.ashlarchess.board.Board;
-import io.github.dlbbld.ashlarchess.internal.Nulls;
 import io.github.dlbbld.ashlarchess.internal.ExceptionUtility;
-import io.github.dlbbld.ashlarchess.pgn.PgnMove;
+import io.github.dlbbld.ashlarchess.internal.Nulls;
 import io.github.dlbbld.ashlarchess.pgn.PgnGame;
+import io.github.dlbbld.ashlarchess.pgn.PgnMove;
 import io.github.dlbbld.ashlarchess.pgn.StrictPgnParser;
 import io.github.dlbbld.ashlarchess.test.ConfigurationTestConstants;
 import io.github.dlbbld.ashlarchess.test.pgntest.constants.PgnTestConstants;

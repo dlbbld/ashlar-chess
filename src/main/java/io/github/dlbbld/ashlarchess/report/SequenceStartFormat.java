@@ -3,8 +3,8 @@
 
 package io.github.dlbbld.ashlarchess.report;
 
-import io.github.dlbbld.ashlarchess.board.internal.MoveNumberFormat;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
+import io.github.dlbbld.ashlarchess.board.internal.MoveNumberFormat;
 
 /**
  * Shared per-player anchor helpers for the 50-move report, used by both the sequence print and the claim-ahead print so

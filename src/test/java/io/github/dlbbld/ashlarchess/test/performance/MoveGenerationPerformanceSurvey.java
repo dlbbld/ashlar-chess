@@ -9,13 +9,13 @@ import java.util.List;
 import com.github.bhlangonijr.chesslib.move.MoveGenerator;
 import com.github.bhlangonijr.chesslib.move.MoveGeneratorException;
 
-import io.github.dlbbld.ashlarchess.bitboard.internal.BitboardLegalMoveFactory;
 import io.github.dlbbld.ashlarchess.bitboard.StaticPositionBridge;
+import io.github.dlbbld.ashlarchess.bitboard.internal.BitboardLegalMoveFactory;
 import io.github.dlbbld.ashlarchess.board.Board;
 import io.github.dlbbld.ashlarchess.board.enums.Square;
-import io.github.dlbbld.ashlarchess.pgn.PgnMove;
 import io.github.dlbbld.ashlarchess.moves.LegalMovesSupport;
 import io.github.dlbbld.ashlarchess.pgn.PgnGame;
+import io.github.dlbbld.ashlarchess.pgn.PgnMove;
 import io.github.dlbbld.ashlarchess.test.model.PgnFen;
 import io.github.dlbbld.ashlarchess.test.model.PgnTestCaseList;
 import io.github.dlbbld.ashlarchess.test.pgn.parser.PgnCacheForStrictPgnParserTestCases;

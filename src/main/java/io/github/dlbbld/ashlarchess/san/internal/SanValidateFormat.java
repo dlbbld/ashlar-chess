@@ -3,16 +3,16 @@
 
 package io.github.dlbbld.ashlarchess.san.internal;
 
-import io.github.dlbbld.ashlarchess.san.SanValidationProblem;
-import io.github.dlbbld.ashlarchess.san.SanValidationException;
 import io.github.dlbbld.ashlarchess.board.enums.File;
 import io.github.dlbbld.ashlarchess.board.enums.PieceType;
 import io.github.dlbbld.ashlarchess.board.enums.PromotionPieceType;
 import io.github.dlbbld.ashlarchess.board.enums.Rank;
 import io.github.dlbbld.ashlarchess.board.enums.Square;
-import io.github.dlbbld.ashlarchess.internal.Nulls;
 import io.github.dlbbld.ashlarchess.internal.CastlingConstants;
+import io.github.dlbbld.ashlarchess.internal.Nulls;
 import io.github.dlbbld.ashlarchess.messages.Message;
+import io.github.dlbbld.ashlarchess.san.SanValidationException;
+import io.github.dlbbld.ashlarchess.san.SanValidationProblem;
 
 /**
  * Public entry point for SAN format validation. Dispatches on the leading character of the core (trailing check /

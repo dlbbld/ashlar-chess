@@ -12,10 +12,10 @@ import org.junit.jupiter.api.Test;
 
 import io.github.dlbbld.ashlarchess.bitboard.BitboardPosition;
 import io.github.dlbbld.ashlarchess.board.Board;
+import io.github.dlbbld.ashlarchess.board.MoveSpecification;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
 import io.github.dlbbld.ashlarchess.board.enums.Square;
 import io.github.dlbbld.ashlarchess.internal.Nulls;
-import io.github.dlbbld.ashlarchess.board.MoveSpecification;
 
 /**
  * Differential test for {@link BitboardPosition#isInCheckAfterEnPassantCapture(Square, Square, Side)}: per fixture and

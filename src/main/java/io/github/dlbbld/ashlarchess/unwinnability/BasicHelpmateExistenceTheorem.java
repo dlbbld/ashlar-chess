@@ -7,9 +7,9 @@ import java.util.List;
 
 import io.github.dlbbld.ashlarchess.bitboard.BitboardPosition;
 import io.github.dlbbld.ashlarchess.board.Board;
+import io.github.dlbbld.ashlarchess.board.LegalMove;
 import io.github.dlbbld.ashlarchess.board.enums.Piece;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
-import io.github.dlbbld.ashlarchess.board.LegalMove;
 
 /**
  * Finite-state basic-helpmate-existence theorem, used as a sound shortcut inside the complete unwinnability analysis so

@@ -11,8 +11,8 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 
 import io.github.dlbbld.ashlarchess.board.Board;
-import io.github.dlbbld.ashlarchess.internal.Nulls;
 import io.github.dlbbld.ashlarchess.board.DynamicPosition;
+import io.github.dlbbld.ashlarchess.internal.Nulls;
 
 /**
  * Direct unit tests for the {@link RepetitionGroup} record. Covers the compact-constructor invariant

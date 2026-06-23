@@ -14,8 +14,8 @@ import org.junit.jupiter.api.Test;
 
 import io.github.dlbbld.ashlarchess.fen.internal.FenConstants;
 import io.github.dlbbld.ashlarchess.pgn.ResultTagValue;
-import io.github.dlbbld.ashlarchess.pgn.internal.StandardTag;
 import io.github.dlbbld.ashlarchess.pgn.Tag;
+import io.github.dlbbld.ashlarchess.pgn.internal.StandardTag;
 import io.github.dlbbld.ashlarchess.pgn.internal.TagUtility;
 
 class TestTagUtility {

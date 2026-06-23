@@ -3,22 +3,21 @@
 
 package io.github.dlbbld.ashlarchess.san;
 
-import io.github.dlbbld.ashlarchess.san.internal.MoveToSan;
-import io.github.dlbbld.ashlarchess.san.internal.SanTerminalMarker;
-
 import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.jdt.annotation.Nullable;
 
-import io.github.dlbbld.ashlarchess.san.internal.SanTerminalMarkerUtility;
 import io.github.dlbbld.ashlarchess.board.Board;
-import io.github.dlbbld.ashlarchess.internal.Nulls;
-import io.github.dlbbld.ashlarchess.exceptions.ProgrammingMistakeException;
-import io.github.dlbbld.ashlarchess.board.MoveSpecification;
-import io.github.dlbbld.ashlarchess.internal.ExceptionUtility;
-import io.github.dlbbld.ashlarchess.messages.Message;
 import io.github.dlbbld.ashlarchess.board.LegalMove;
+import io.github.dlbbld.ashlarchess.board.MoveSpecification;
+import io.github.dlbbld.ashlarchess.exceptions.ProgrammingMistakeException;
+import io.github.dlbbld.ashlarchess.internal.ExceptionUtility;
+import io.github.dlbbld.ashlarchess.internal.Nulls;
+import io.github.dlbbld.ashlarchess.messages.Message;
+import io.github.dlbbld.ashlarchess.san.internal.MoveToSan;
+import io.github.dlbbld.ashlarchess.san.internal.SanTerminalMarker;
+import io.github.dlbbld.ashlarchess.san.internal.SanTerminalMarkerUtility;
 
 /**
  * Public entry point for the lenient SAN pipeline. Accepts inputs that the strict pipeline rejects, when those inputs
