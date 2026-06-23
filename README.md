@@ -43,6 +43,18 @@ Requires JDK 17 or later at runtime. Published to Maven Central.
 </dependency>
 ```
 
+### Gradle
+
+```groovy
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'io.github.dlbbld:ashlar-chess:19.1.0'
+}
+```
+
 ## Quick Start
 
 The full manual has focused sections for each domain. These two compiled examples show the main public entry points:
