@@ -271,7 +271,7 @@ The top-level package `io.github.dlbbld.ashlarchess` is organised by concern:
 | `board.model` | Internal board-mutation helper `UpdateSquare`, consumed by the `moves` execution helpers |
 | `fen` | FEN parsing, validation, and generation (`StrictFenParser` / `LenientFenParser`, `FenConstants`, `StrictFenSemanticValidationProblem`) |
 | `fen.model` | The public FEN value type `Fen`, returned by `Board`, the FEN parsers, and PGN |
-| `san` | SAN parsing, validation, generation, and the lenient-notation enums (`NotationMovingPiece`, `NotationPromotionPiece`) |
+| `san` | Public SAN parsing and validation (`StrictSanParser` / `LenientSanParser`, result and problem types); the conversion model, notation enums, and SAN/LAN generators live in `san.internal`, with generation reached from `Board` (`getSan()` / `getLan()`) |
 | `moves` | Legal-move enumeration and execution helpers (castling, en-passant, promotion); internal move-analysis check enums (`MovementCheck`, `CastlingCheck`, `KingSafetyCheck`) and move types (`EmptyBoardMove`, `CastlingRightBoth`) |
 | `pgn` | A flat package: the PGN model (`PgnGame`, `PgnMove`, `MoveSuffixAnnotation`), parsing (`StrictPgnParser` / `LenientPgnParser` and the tokenizer), export (`PgnCreate`), file I/O (`PgnReader` / `PgnWriter`), tag / PGN utility helpers, and `PgnCommentaryValidationException` |
 | `unwinnability` | CHA implementation (quick and full), dead-position analysis, and the king / knight distance metrics |
@@ -283,11 +283,11 @@ The top-level package `io.github.dlbbld.ashlarchess` is organised by concern:
 | `bitboard` | The public `BitboardPosition` record (12-long piece placement) — the production representation, exported as documented advanced low-level API |
 | `bitboard.internal` | Internal bitboard engine (not exported): the per-piece attack/move bitboard tables, the `BitboardPosition`→`LegalMove` factory, and decode helpers |
 | `exceptions` | The cross-cutting base exception hierarchy (`UsageException`, `ChessApiRuntimeException`, `ProgrammingMistakeException`, `NonePointerException`, `FileSystemAccessException`). Feature-specific exceptions live inline in their feature package (`board.InvalidMoveException`, `pgn.PgnCommentaryValidationException`, `san.SanValidationException`) |
-| `common` | Shared internal infrastructure only: `common.utility` (`Nulls`, list/set/exception helpers), `common.constants`, `common.ucimove` |
+| `internal` | Cross-cutting internal infrastructure with no single feature home: `Nulls` (the null-handling hub), the generic `ListUtility` / `SetUtility` / `ExceptionUtility` helpers, and the global `ChessConstants` / `ConfigurationConstants` / `CastlingConstants` |
 
-Packages depend in roughly that order (top to bottom). As of 20.0.0 the layout is **package-by-feature**: feature-specific types live beside the code they serve, the duplicate by-kind buckets (`model`/`common.model`, `enums`/`common.enums`, `common.exceptions`) are gone, and `common.*` holds only genuinely cross-cutting internal infrastructure.
+Packages depend in roughly that order (top to bottom). As of 20.0.0 the layout is **package-by-feature**: feature-specific types live beside the code they serve, the duplicate by-kind buckets (`model`/`common.model`, `enums`/`common.enums`, `common.exceptions`) are gone, and a single non-exported `internal` package holds only genuinely cross-cutting infrastructure (feature-specific helpers live in each feature's own `*.internal`).
 
-For the JPMS boundary, each of `bitboard`, `pgn`, `san`, and `fen` additionally carries a non-exported `*.internal` subpackage holding its implementation-only types — kept `public` so the rest of the library and the white-box tests can use them across packages, but omitted from `module-info.java`'s `exports`, so modular consumers see only each package's public face.
+For the JPMS boundary, implementation-only types live in non-exported `*.internal` subpackages: `bitboard`, `board`, `board.enums`, `fen`, `pgn`, and `san` each carry one, alongside the top-level cross-cutting `internal` package. They stay `public` so the rest of the library and the white-box tests can use them across packages, but they are omitted from `module-info.java`'s `exports`, so modular consumers see only each exported package's public face. An API-surface audit (2026-06-23) confirmed the exported packages carry only genuine API: incidental publics like `MoveNumberFormat`, the SAN/LAN generators (`MoveToSan` / `MoveToLan`), and the `SquareUtility` / `RankUtility` geometry helpers were moved into these `*.internal` packages.
 
 ### 4.1 Piece placement: bitboard in production, mailbox as test oracle
 
