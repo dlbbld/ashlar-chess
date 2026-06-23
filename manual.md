@@ -34,8 +34,7 @@ module your.module {
 }
 ```
 
-The module exports only the public API packages. Implementation packages such as `moves`, `squares`, `analyze`, and the
-`*.internal` packages are not exported.
+The module exports only the documented public API packages. Unsupported internals are inaccessible to modular consumers.
 
 ## Board Basics
 
@@ -104,9 +103,9 @@ System.out.println(board.getPerformedMovesAsSan()); // [e4, e5, Nf3, Nc6, Bc4, B
 System.out.println(board.getFen()); // r1bqk1nr/pppp1ppp/2n5/2b1p3/2B1P3/5N2/PPPP1PPP/RNBQK2R w KQkq - 4 4
 ```
 
-The move pipeline validates the candidate against the current legal-move set. Checkmate and stalemate naturally reject
-further moves because the legal-move set is empty. Other draw states such as fifty-move, fivefold repetition, and
-dead-position analysis are queryable; the caller decides when to adjudicate.
+Move execution validates the requested move against the current legal-move set. Checkmate and stalemate naturally reject
+further moves because no legal moves remain. Other draw states such as fifty-move, fivefold repetition, and dead-position
+analysis are queryable; the caller decides when to adjudicate.
 
 ```java
 final Board board = new Board();
@@ -122,22 +121,21 @@ System.out.println(board.getLegalMovesAsSan()); // []
 
 ## Move Values
 
-`MoveSpecification` is the move request value. Ordinary moves carry `fromSquare` and `toSquare`. Promotions additionally
-carry a `PromotionPieceType`. Castling carries a `CastlingMove` and deliberately uses `Square.NONE` for both from/to.
+`MoveSpecification` is the move request value. Ordinary moves are created from their source and destination squares.
+Promotions additionally carry a `PromotionPieceType`. Castling is created from the `CastlingMove` enum:
+`new MoveSpecification(CastlingMove.KING_SIDE)` or `new MoveSpecification(CastlingMove.QUEEN_SIDE)`.
 
-`LegalMove` is the validated move value returned by the legal-move list and used internally by `Board`. It exposes
-conveniences such as `isCapture()`, `isCastling()`, `isPromotion()`, `isEnPassant()`, and
-`enPassantCapturedPawnSquare()`.
+`LegalMove` is the validated move value returned by legal-move APIs and performed-move history. It exposes conveniences
+such as `isCapture()`, `isCastling()`, `isPromotion()`, `isEnPassant()`, and `enPassantCapturedPawnSquare()`.
 
 ### Castling
 
-A castling move touches four squares, but its `MoveSpecification` stores only the castling side. Resolve the squares
-from `CastlingMove` and the side to move:
+Create castling requests with the `CastlingMove` enum. When you need the king and rook squares touched by the move,
+resolve them from `CastlingMove` and the moving side:
 
 ```java
-// A castling MoveSpecification carries only the CastlingMove; its from/to squares are Square.NONE.
-// Detect a castling move with isCastling(), then resolve the squares it touches from the
-// CastlingMove, given the side.
+// Create a castling request with the CastlingMove enum, then resolve the touched
+// king and rook squares from the enum and moving side.
 final MoveSpecification specification = new MoveSpecification(CastlingMove.KING_SIDE);
 
 if (specification.isCastling()) {
@@ -465,8 +463,8 @@ The library validates the three notations it consumes:
 Each domain has a strict and lenient public path.
 
 Strict means canonical input. Lenient means ashlar-chess accepts a defined set of recoverable syntactic deviations,
-reports them as typed forgiven items, and then delegates to the strict path for the actual chess validation. Lenient
-does not turn illegal chess into legal chess.
+reports them as typed forgiven items, and then applies the same chess validation as strict input. Lenient does not turn
+illegal chess into legal chess.
 
 ## SAN Validation
 
@@ -574,7 +572,7 @@ Lenient PGN routes its `FEN` tag through lenient FEN. Strict PGN routes the `FEN
 
 ### Limitations
 
-The PGN implementation intentionally does not support:
+PGN support intentionally does not include:
 
 - recursive annotation variations;
 - Numeric Annotation Glyphs such as `$1`;

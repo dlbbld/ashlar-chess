@@ -312,9 +312,8 @@ public final class ReadmeExamples {
 
   public static void castlingGeometry() {
     // <readme:castling-geometry>
-    // A castling MoveSpecification carries only the CastlingMove; its from/to squares are Square.NONE.
-    // Detect a castling move with isCastling(), then resolve the squares it touches from the
-    // CastlingMove, given the side.
+    // Create a castling request with the CastlingMove enum, then resolve the touched
+    // king and rook squares from the enum and moving side.
     final MoveSpecification specification = new MoveSpecification(CastlingMove.KING_SIDE);
 
     if (specification.isCastling()) {
