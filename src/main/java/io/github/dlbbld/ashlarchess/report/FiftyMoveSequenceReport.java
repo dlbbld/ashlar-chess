@@ -5,7 +5,7 @@ package io.github.dlbbld.ashlarchess.report;
 
 import java.util.List;
 
-import io.github.dlbbld.ashlarchess.common.Nulls;
+import io.github.dlbbld.ashlarchess.internal.Nulls;
 
 /**
  * All no-progress runs in the game that reached the 50-move-rule threshold (halfmove clock {@code >= 100}).

@@ -1,7 +1,7 @@
 // Copyright (C) 2020-2026 Daniel Baechli
 // SPDX-License-Identifier: GPL-3.0-only
 
-package io.github.dlbbld.ashlarchess.common.utility;
+package io.github.dlbbld.ashlarchess.internal;
 
 public final class ExceptionUtility {
 

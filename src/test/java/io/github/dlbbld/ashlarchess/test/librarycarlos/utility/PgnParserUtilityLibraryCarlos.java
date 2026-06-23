@@ -8,7 +8,7 @@ import java.nio.file.Path;
 import com.github.bhlangonijr.chesslib.game.Game;
 import com.github.bhlangonijr.chesslib.pgn.PgnHolder;
 
-import io.github.dlbbld.ashlarchess.common.Nulls;
+import io.github.dlbbld.ashlarchess.internal.Nulls;
 import io.github.dlbbld.ashlarchess.test.librarycarlos.NullsCarlos;
 
 public class PgnParserUtilityLibraryCarlos {

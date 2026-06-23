@@ -11,7 +11,7 @@ import java.util.TreeSet;
 
 import org.junit.jupiter.api.Test;
 
-import io.github.dlbbld.ashlarchess.common.utility.SetUtility;
+import io.github.dlbbld.ashlarchess.internal.SetUtility;
 
 class TestSetUtility {
 

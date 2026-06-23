@@ -8,7 +8,7 @@ import java.util.Arrays;
 import java.util.Queue;
 
 import io.github.dlbbld.ashlarchess.board.enums.Square;
-import io.github.dlbbld.ashlarchess.common.Nulls;
+import io.github.dlbbld.ashlarchess.internal.Nulls;
 
 final class KnightDistance {
 

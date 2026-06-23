@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import io.github.dlbbld.ashlarchess.board.Board;
-import io.github.dlbbld.ashlarchess.common.Nulls;
+import io.github.dlbbld.ashlarchess.internal.Nulls;
 import io.github.dlbbld.ashlarchess.board.MoveSpecification;
 import io.github.dlbbld.ashlarchess.board.LegalMove;
 

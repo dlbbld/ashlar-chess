@@ -12,7 +12,7 @@ import org.junit.jupiter.api.Test;
 
 import io.github.dlbbld.ashlarchess.board.Board;
 import io.github.dlbbld.ashlarchess.board.CommonTestUtility;
-import io.github.dlbbld.ashlarchess.common.Nulls;
+import io.github.dlbbld.ashlarchess.internal.Nulls;
 import io.github.dlbbld.ashlarchess.fen.internal.FenConstants;
 import io.github.dlbbld.ashlarchess.pgn.PgnMove;
 import io.github.dlbbld.ashlarchess.pgn.PgnGame;

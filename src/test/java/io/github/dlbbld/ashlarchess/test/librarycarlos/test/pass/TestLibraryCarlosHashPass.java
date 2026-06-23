@@ -17,7 +17,7 @@ import com.github.bhlangonijr.chesslib.game.Game;
 import com.github.bhlangonijr.chesslib.move.Move;
 import com.github.bhlangonijr.chesslib.pgn.PgnHolder;
 
-import io.github.dlbbld.ashlarchess.common.Nulls;
+import io.github.dlbbld.ashlarchess.internal.Nulls;
 import io.github.dlbbld.ashlarchess.exceptions.FileSystemAccessException;
 import io.github.dlbbld.ashlarchess.exceptions.ProgrammingMistakeException;
 import io.github.dlbbld.ashlarchess.test.common.exceptions.SetupException;

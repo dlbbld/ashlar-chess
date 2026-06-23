@@ -8,9 +8,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
-import io.github.dlbbld.ashlarchess.common.Nulls;
+import io.github.dlbbld.ashlarchess.internal.Nulls;
 import io.github.dlbbld.ashlarchess.exceptions.ProgrammingMistakeException;
-import io.github.dlbbld.ashlarchess.common.utility.ExceptionUtility;
+import io.github.dlbbld.ashlarchess.internal.ExceptionUtility;
 import io.github.dlbbld.ashlarchess.fen.model.Fen;
 
 /**

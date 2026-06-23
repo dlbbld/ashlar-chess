@@ -1,7 +1,7 @@
 // Copyright (C) 2020-2026 Daniel Baechli
 // SPDX-License-Identifier: GPL-3.0-only
 
-package io.github.dlbbld.ashlarchess.common.ucimove.utility;
+package io.github.dlbbld.ashlarchess.board.internal;
 
 import static io.github.dlbbld.ashlarchess.board.enums.PieceType.BISHOP;
 import static io.github.dlbbld.ashlarchess.board.enums.PieceType.KNIGHT;
@@ -18,7 +18,7 @@ import io.github.dlbbld.ashlarchess.board.enums.PieceType;
 import io.github.dlbbld.ashlarchess.board.enums.PromotionPieceType;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
 import io.github.dlbbld.ashlarchess.board.enums.Square;
-import io.github.dlbbld.ashlarchess.common.Nulls;
+import io.github.dlbbld.ashlarchess.internal.Nulls;
 import io.github.dlbbld.ashlarchess.moves.EmptyBoardMove;
 import io.github.dlbbld.ashlarchess.board.UciMove;
 import io.github.dlbbld.ashlarchess.squares.EmptyBoardMoveUtility;

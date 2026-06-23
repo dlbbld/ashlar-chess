@@ -13,8 +13,8 @@ import org.junit.jupiter.api.Test;
 
 import io.github.dlbbld.ashlarchess.board.Board;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
-import io.github.dlbbld.ashlarchess.common.Nulls;
-import io.github.dlbbld.ashlarchess.common.ucimove.utility.UciMoveUtility;
+import io.github.dlbbld.ashlarchess.internal.Nulls;
+import io.github.dlbbld.ashlarchess.board.internal.UciMoveUtility;
 import io.github.dlbbld.ashlarchess.board.UciMove;
 import io.github.dlbbld.ashlarchess.test.common.utility.PgnExtensionUtility;
 import io.github.dlbbld.ashlarchess.test.model.PgnFen;

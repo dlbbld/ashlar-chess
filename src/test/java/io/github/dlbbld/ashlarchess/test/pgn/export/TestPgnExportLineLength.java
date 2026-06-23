@@ -13,7 +13,7 @@ import java.util.List;
 import org.apache.logging.log4j.Logger;
 import org.junit.jupiter.api.Test;
 
-import io.github.dlbbld.ashlarchess.common.Nulls;
+import io.github.dlbbld.ashlarchess.internal.Nulls;
 import io.github.dlbbld.ashlarchess.pgn.PgnCreate;
 import io.github.dlbbld.ashlarchess.pgn.PgnGame;
 import io.github.dlbbld.ashlarchess.test.common.utility.FileUtility;

@@ -20,9 +20,9 @@ import io.github.dlbbld.ashlarchess.board.enums.PieceType;
 import io.github.dlbbld.ashlarchess.board.enums.internal.RankUtility;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
 import io.github.dlbbld.ashlarchess.board.enums.Square;
-import io.github.dlbbld.ashlarchess.common.Nulls;
+import io.github.dlbbld.ashlarchess.internal.Nulls;
 import io.github.dlbbld.ashlarchess.exceptions.ProgrammingMistakeException;
-import io.github.dlbbld.ashlarchess.common.utility.SetUtility;
+import io.github.dlbbld.ashlarchess.internal.SetUtility;
 import io.github.dlbbld.ashlarchess.common.utility.StaticPositionUtility;
 
 public final class PawnWallGeometricAnalyzer {

@@ -14,7 +14,7 @@ import org.eclipse.jdt.annotation.Nullable;
 import io.github.dlbbld.ashlarchess.board.Board;
 import io.github.dlbbld.ashlarchess.board.enums.CastlingMove;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
-import io.github.dlbbld.ashlarchess.common.Nulls;
+import io.github.dlbbld.ashlarchess.internal.Nulls;
 import io.github.dlbbld.ashlarchess.board.MoveSpecification;
 import io.github.dlbbld.ashlarchess.fen.model.Fen;
 import io.github.dlbbld.ashlarchess.pgn.PgnMove;

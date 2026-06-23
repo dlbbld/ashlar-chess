@@ -19,7 +19,7 @@ import io.github.dlbbld.ashlarchess.board.Board;
 import io.github.dlbbld.ashlarchess.board.StaticPosition;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
 import io.github.dlbbld.ashlarchess.board.enums.Square;
-import io.github.dlbbld.ashlarchess.common.Nulls;
+import io.github.dlbbld.ashlarchess.internal.Nulls;
 import io.github.dlbbld.ashlarchess.test.model.PgnFen;
 import io.github.dlbbld.ashlarchess.test.model.PgnTestCaseList;
 import io.github.dlbbld.ashlarchess.test.pgn.setup.PgnTestCaseCatalog;

@@ -9,7 +9,7 @@ import java.util.TreeSet;
 import io.github.dlbbld.ashlarchess.board.enums.PieceType;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
 import io.github.dlbbld.ashlarchess.board.enums.Square;
-import io.github.dlbbld.ashlarchess.common.utility.SetUtility;
+import io.github.dlbbld.ashlarchess.internal.SetUtility;
 
 final class SemiStaticFunctions {
 

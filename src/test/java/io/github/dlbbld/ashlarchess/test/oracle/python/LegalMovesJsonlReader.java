@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import io.github.dlbbld.ashlarchess.common.Nulls;
+import io.github.dlbbld.ashlarchess.internal.Nulls;
 
 /**
  * Reads a python-chess-generated move-generation oracle JSONL file into {@link LegalMovesRecord} values. One JSON

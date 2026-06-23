@@ -14,7 +14,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 import io.github.dlbbld.ashlarchess.board.Board;
-import io.github.dlbbld.ashlarchess.common.Nulls;
+import io.github.dlbbld.ashlarchess.internal.Nulls;
 import io.github.dlbbld.ashlarchess.exceptions.UsageException;
 import io.github.dlbbld.ashlarchess.fen.LenientFenParser;
 import io.github.dlbbld.ashlarchess.fen.StrictFenParser;

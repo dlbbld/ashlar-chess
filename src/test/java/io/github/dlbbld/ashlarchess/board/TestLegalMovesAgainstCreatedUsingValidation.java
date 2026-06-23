@@ -21,7 +21,7 @@ import io.github.dlbbld.ashlarchess.board.enums.PromotionPieceType;
 import io.github.dlbbld.ashlarchess.board.enums.internal.RankUtility;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
 import io.github.dlbbld.ashlarchess.board.enums.Square;
-import io.github.dlbbld.ashlarchess.common.Nulls;
+import io.github.dlbbld.ashlarchess.internal.Nulls;
 import io.github.dlbbld.ashlarchess.board.MoveSpecification;
 import io.github.dlbbld.ashlarchess.board.InvalidMoveException;
 import io.github.dlbbld.ashlarchess.board.LegalMove;

@@ -5,7 +5,7 @@ package io.github.dlbbld.ashlarchess.test.pgntest.constants;
 
 import java.nio.file.Path;
 
-import io.github.dlbbld.ashlarchess.common.Nulls;
+import io.github.dlbbld.ashlarchess.internal.Nulls;
 import io.github.dlbbld.ashlarchess.test.ConfigurationTestConstants;
 
 public final class PgnTestConstants {

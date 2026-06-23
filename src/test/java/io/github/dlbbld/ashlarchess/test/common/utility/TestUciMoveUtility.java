@@ -12,10 +12,10 @@ import org.junit.jupiter.api.Test;
 
 import io.github.dlbbld.ashlarchess.board.Board;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
-import io.github.dlbbld.ashlarchess.common.constants.CastlingConstants;
+import io.github.dlbbld.ashlarchess.internal.CastlingConstants;
 import io.github.dlbbld.ashlarchess.board.MoveSpecification;
-import io.github.dlbbld.ashlarchess.common.ucimove.utility.UciMoveUtility;
-import io.github.dlbbld.ashlarchess.common.ucimove.utility.UciMoveValidationUtility;
+import io.github.dlbbld.ashlarchess.board.internal.UciMoveUtility;
+import io.github.dlbbld.ashlarchess.board.internal.UciMoveValidationUtility;
 import io.github.dlbbld.ashlarchess.board.LegalMove;
 import io.github.dlbbld.ashlarchess.board.UciMove;
 import io.github.dlbbld.ashlarchess.moves.CastlingUtility;

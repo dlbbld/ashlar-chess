@@ -12,7 +12,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
 import io.github.dlbbld.ashlarchess.board.Board;
-import io.github.dlbbld.ashlarchess.common.Nulls;
+import io.github.dlbbld.ashlarchess.internal.Nulls;
 import io.github.dlbbld.ashlarchess.pgn.LenientPgnParser;
 import io.github.dlbbld.ashlarchess.pgn.LenientPgnParserValidationException;
 import io.github.dlbbld.ashlarchess.pgn.LenientPgnParserValidationProblem;

@@ -5,7 +5,7 @@ package io.github.dlbbld.ashlarchess.report;
 
 import java.util.List;
 
-import io.github.dlbbld.ashlarchess.common.Nulls;
+import io.github.dlbbld.ashlarchess.internal.Nulls;
 
 /**
  * One legal move that would, if played from its parent position, create a threefold-repetition position the side could

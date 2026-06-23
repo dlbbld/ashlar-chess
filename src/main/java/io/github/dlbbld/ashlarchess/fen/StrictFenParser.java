@@ -7,7 +7,7 @@ import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 
 import io.github.dlbbld.ashlarchess.exceptions.ProgrammingMistakeException;
-import io.github.dlbbld.ashlarchess.common.utility.ExceptionUtility;
+import io.github.dlbbld.ashlarchess.internal.ExceptionUtility;
 import io.github.dlbbld.ashlarchess.fen.model.Fen;
 
 /**

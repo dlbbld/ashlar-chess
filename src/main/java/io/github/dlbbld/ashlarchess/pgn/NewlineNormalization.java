@@ -3,7 +3,7 @@
 
 package io.github.dlbbld.ashlarchess.pgn;
 
-import io.github.dlbbld.ashlarchess.common.Nulls;
+import io.github.dlbbld.ashlarchess.internal.Nulls;
 
 /** Normalises CRLF and lone CR to LF - see specification.md (Newline handling). */
 final class NewlineNormalization {

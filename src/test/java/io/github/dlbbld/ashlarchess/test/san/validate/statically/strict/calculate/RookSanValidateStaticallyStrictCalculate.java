@@ -8,7 +8,7 @@ import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.ROOK;
 import java.util.Map;
 import java.util.TreeMap;
 
-import io.github.dlbbld.ashlarchess.common.Nulls;
+import io.github.dlbbld.ashlarchess.internal.Nulls;
 import io.github.dlbbld.ashlarchess.san.internal.SanParse;
 import io.github.dlbbld.ashlarchess.test.san.model.SanValidationFromTo;
 import io.github.dlbbld.ashlarchess.test.san.validate.statically.strict.enums.RookSanValidateStaticallyStrict;

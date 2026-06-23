@@ -1,14 +1,13 @@
 // Copyright (C) 2020-2026 Daniel Baechli
 // SPDX-License-Identifier: GPL-3.0-only
 
-package io.github.dlbbld.ashlarchess.common.utility;
+package io.github.dlbbld.ashlarchess.internal;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
 import io.github.dlbbld.ashlarchess.board.enums.Square;
-import io.github.dlbbld.ashlarchess.common.Nulls;
 
 public final class ListUtility {
 

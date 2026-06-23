@@ -12,7 +12,7 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 
 import io.github.dlbbld.ashlarchess.board.Board;
-import io.github.dlbbld.ashlarchess.common.constants.ChessConstants;
+import io.github.dlbbld.ashlarchess.internal.ChessConstants;
 
 /**
  * From-move-one coverage: positions that run into threefold, fivefold, 50-move, and 75-move rule conditions starting

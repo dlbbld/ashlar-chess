@@ -3,9 +3,9 @@
 
 package io.github.dlbbld.ashlarchess.test.common.utility;
 
-import static io.github.dlbbld.ashlarchess.common.constants.ChessConstants.PGN_EXTENSION_INCLUDING_DOT;
+import static io.github.dlbbld.ashlarchess.internal.ChessConstants.PGN_EXTENSION_INCLUDING_DOT;
 
-import io.github.dlbbld.ashlarchess.common.Nulls;
+import io.github.dlbbld.ashlarchess.internal.Nulls;
 
 public final class PgnExtensionUtility {
 

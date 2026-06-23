@@ -12,7 +12,7 @@ import io.github.dlbbld.ashlarchess.board.enums.PieceType;
 import io.github.dlbbld.ashlarchess.board.enums.PromotionPieceType;
 import io.github.dlbbld.ashlarchess.board.enums.Rank;
 import io.github.dlbbld.ashlarchess.board.enums.Square;
-import io.github.dlbbld.ashlarchess.common.constants.CastlingConstants;
+import io.github.dlbbld.ashlarchess.internal.CastlingConstants;
 import io.github.dlbbld.ashlarchess.san.internal.SanConversion;
 import io.github.dlbbld.ashlarchess.san.internal.SanFormat;
 import io.github.dlbbld.ashlarchess.san.internal.SanParse;

@@ -14,8 +14,8 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
-import io.github.dlbbld.ashlarchess.common.Nulls;
-import io.github.dlbbld.ashlarchess.common.constants.ConfigurationConstants;
+import io.github.dlbbld.ashlarchess.internal.Nulls;
+import io.github.dlbbld.ashlarchess.internal.ConfigurationConstants;
 import io.github.dlbbld.ashlarchess.exceptions.FileSystemAccessException;
 import io.github.dlbbld.ashlarchess.test.ConfigurationTestConstants;
 import io.github.dlbbld.ashlarchess.test.FileComparison;

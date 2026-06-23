@@ -10,7 +10,7 @@ import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 
-import io.github.dlbbld.ashlarchess.common.Nulls;
+import io.github.dlbbld.ashlarchess.internal.Nulls;
 import io.github.dlbbld.ashlarchess.exceptions.NonePointerException;
 
 /**

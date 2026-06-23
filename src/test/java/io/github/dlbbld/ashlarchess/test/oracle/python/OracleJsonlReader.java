@@ -13,7 +13,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import io.github.dlbbld.ashlarchess.common.Nulls;
+import io.github.dlbbld.ashlarchess.internal.Nulls;
 
 /**
  * Reads a python-chess-generated oracle JSONL file into {@link OracleRecord} values. One JSON object per line; objects

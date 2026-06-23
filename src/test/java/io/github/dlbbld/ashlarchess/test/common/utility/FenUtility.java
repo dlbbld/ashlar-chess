@@ -4,7 +4,7 @@
 package io.github.dlbbld.ashlarchess.test.common.utility;
 
 import io.github.dlbbld.ashlarchess.board.enums.Side;
-import io.github.dlbbld.ashlarchess.common.Nulls;
+import io.github.dlbbld.ashlarchess.internal.Nulls;
 import io.github.dlbbld.ashlarchess.fen.internal.FenSideSymbol;
 
 public final class FenUtility {

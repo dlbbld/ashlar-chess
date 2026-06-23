@@ -5,7 +5,7 @@ package io.github.dlbbld.ashlarchess.report;
 
 import java.util.List;
 
-import io.github.dlbbld.ashlarchess.common.Nulls;
+import io.github.dlbbld.ashlarchess.internal.Nulls;
 
 /**
  * All threefold-repetition claim-ahead opportunities discovered during the played history's replay, including those the

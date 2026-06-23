@@ -5,7 +5,7 @@ package io.github.dlbbld.ashlarchess.report;
 
 import java.util.List;
 
-import io.github.dlbbld.ashlarchess.common.Nulls;
+import io.github.dlbbld.ashlarchess.internal.Nulls;
 
 /**
  * Missed 50-move claim-ahead opportunities discovered during the played history's replay. Each entry represents one

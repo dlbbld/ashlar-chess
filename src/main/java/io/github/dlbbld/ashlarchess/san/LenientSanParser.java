@@ -13,10 +13,10 @@ import org.eclipse.jdt.annotation.Nullable;
 
 import io.github.dlbbld.ashlarchess.san.internal.SanTerminalMarkerUtility;
 import io.github.dlbbld.ashlarchess.board.Board;
-import io.github.dlbbld.ashlarchess.common.Nulls;
+import io.github.dlbbld.ashlarchess.internal.Nulls;
 import io.github.dlbbld.ashlarchess.exceptions.ProgrammingMistakeException;
 import io.github.dlbbld.ashlarchess.board.MoveSpecification;
-import io.github.dlbbld.ashlarchess.common.utility.ExceptionUtility;
+import io.github.dlbbld.ashlarchess.internal.ExceptionUtility;
 import io.github.dlbbld.ashlarchess.messages.Message;
 import io.github.dlbbld.ashlarchess.board.LegalMove;
 

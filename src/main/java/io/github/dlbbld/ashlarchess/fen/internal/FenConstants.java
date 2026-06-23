@@ -13,7 +13,7 @@ import org.eclipse.jdt.annotation.NonNull;
 import io.github.dlbbld.ashlarchess.bitboard.BitboardPosition;
 import io.github.dlbbld.ashlarchess.board.enums.CastlingRight;
 import io.github.dlbbld.ashlarchess.board.enums.Square;
-import io.github.dlbbld.ashlarchess.common.Nulls;
+import io.github.dlbbld.ashlarchess.internal.Nulls;
 import io.github.dlbbld.ashlarchess.fen.model.Fen;
 
 public final class FenConstants {

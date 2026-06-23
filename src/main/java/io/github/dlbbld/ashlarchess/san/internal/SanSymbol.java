@@ -3,7 +3,7 @@
 
 package io.github.dlbbld.ashlarchess.san.internal;
 
-import io.github.dlbbld.ashlarchess.common.Nulls;
+import io.github.dlbbld.ashlarchess.internal.Nulls;
 
 public enum SanSymbol {
   CAPTURE('x'),

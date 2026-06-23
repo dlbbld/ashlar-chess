@@ -6,7 +6,7 @@ package io.github.dlbbld.ashlarchess.test.pgn.parser;
 import org.apache.logging.log4j.Logger;
 import org.junit.jupiter.api.Test;
 
-import io.github.dlbbld.ashlarchess.common.Nulls;
+import io.github.dlbbld.ashlarchess.internal.Nulls;
 import io.github.dlbbld.ashlarchess.pgn.LenientPgnParser;
 
 /**

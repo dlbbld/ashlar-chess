@@ -8,7 +8,7 @@ import java.util.List;
 
 import io.github.dlbbld.ashlarchess.exceptions.NonePointerException;
 import io.github.dlbbld.ashlarchess.exceptions.ProgrammingMistakeException;
-import io.github.dlbbld.ashlarchess.common.utility.ListUtility;
+import io.github.dlbbld.ashlarchess.internal.ListUtility;
 
 enum SetUpTagValue {
   START_FROM_INITIAL_POSITION("0"),

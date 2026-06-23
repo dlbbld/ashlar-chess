@@ -10,7 +10,7 @@ import java.nio.file.Path;
 
 import org.junit.jupiter.api.Test;
 
-import io.github.dlbbld.ashlarchess.common.Nulls;
+import io.github.dlbbld.ashlarchess.internal.Nulls;
 import io.github.dlbbld.ashlarchess.pgn.StrictPgnParser;
 import io.github.dlbbld.ashlarchess.pgn.StrictPgnParserValidationException;
 import io.github.dlbbld.ashlarchess.test.ConfigurationTestConstants;

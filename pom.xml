@@ -205,7 +205,7 @@
 						output to the exported packages by excluding the hidden ones. KEEP IN SYNC with
 						module-info.java: this list is exactly the packages it does NOT export.
 					-->
-					<excludePackageNames>io.github.dlbbld.ashlarchess.analyze,io.github.dlbbld.ashlarchess.bitboard.internal,io.github.dlbbld.ashlarchess.board.enums.internal,io.github.dlbbld.ashlarchess.board.internal,io.github.dlbbld.ashlarchess.board.model,io.github.dlbbld.ashlarchess.common,io.github.dlbbld.ashlarchess.common.constants,io.github.dlbbld.ashlarchess.common.utility,io.github.dlbbld.ashlarchess.fen.internal,io.github.dlbbld.ashlarchess.messages,io.github.dlbbld.ashlarchess.moves,io.github.dlbbld.ashlarchess.pgn.internal,io.github.dlbbld.ashlarchess.san.internal,io.github.dlbbld.ashlarchess.squares</excludePackageNames>
+					<excludePackageNames>io.github.dlbbld.ashlarchess.analyze,io.github.dlbbld.ashlarchess.bitboard.internal,io.github.dlbbld.ashlarchess.board.enums.internal,io.github.dlbbld.ashlarchess.board.internal,io.github.dlbbld.ashlarchess.board.model,io.github.dlbbld.ashlarchess.fen.internal,io.github.dlbbld.ashlarchess.internal,io.github.dlbbld.ashlarchess.messages,io.github.dlbbld.ashlarchess.moves,io.github.dlbbld.ashlarchess.pgn.internal,io.github.dlbbld.ashlarchess.san.internal,io.github.dlbbld.ashlarchess.squares</excludePackageNames>
 				</configuration>
 			</plugin>
 		</plugins>

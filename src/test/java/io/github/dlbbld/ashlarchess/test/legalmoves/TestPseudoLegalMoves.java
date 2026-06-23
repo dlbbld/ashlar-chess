@@ -32,7 +32,7 @@ import io.github.dlbbld.ashlarchess.board.Board;
 import io.github.dlbbld.ashlarchess.board.StaticPosition;
 import io.github.dlbbld.ashlarchess.board.enums.Square;
 import io.github.dlbbld.ashlarchess.board.MoveSpecification;
-import io.github.dlbbld.ashlarchess.common.utility.SetUtility;
+import io.github.dlbbld.ashlarchess.internal.SetUtility;
 import io.github.dlbbld.ashlarchess.moves.KingSafetyCheck;
 import io.github.dlbbld.ashlarchess.model.LegalMoveCalculation;
 import io.github.dlbbld.ashlarchess.model.PseudoLegalMove;

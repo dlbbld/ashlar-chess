@@ -19,7 +19,7 @@ import java.util.stream.Stream;
 
 import org.eclipse.jdt.annotation.NonNull;
 
-import io.github.dlbbld.ashlarchess.common.Nulls;
+import io.github.dlbbld.ashlarchess.internal.Nulls;
 import io.github.dlbbld.ashlarchess.exceptions.FileSystemAccessException;
 import io.github.dlbbld.ashlarchess.exceptions.ProgrammingMistakeException;
 

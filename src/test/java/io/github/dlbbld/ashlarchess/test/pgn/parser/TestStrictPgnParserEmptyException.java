@@ -7,7 +7,7 @@ import java.nio.file.Path;
 
 import org.junit.jupiter.api.Test;
 
-import io.github.dlbbld.ashlarchess.common.Nulls;
+import io.github.dlbbld.ashlarchess.internal.Nulls;
 import io.github.dlbbld.ashlarchess.pgn.StrictPgnParserValidationProblem;
 import io.github.dlbbld.ashlarchess.san.SanValidationProblem;
 import io.github.dlbbld.ashlarchess.test.pgntest.constants.PgnTestConstants;

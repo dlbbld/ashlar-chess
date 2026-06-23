@@ -10,7 +10,7 @@ import java.nio.file.Path;
 
 import org.apache.logging.log4j.Logger;
 
-import io.github.dlbbld.ashlarchess.common.Nulls;
+import io.github.dlbbld.ashlarchess.internal.Nulls;
 
 public class FileComparison {
 

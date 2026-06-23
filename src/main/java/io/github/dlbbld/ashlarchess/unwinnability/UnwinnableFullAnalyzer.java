@@ -10,9 +10,9 @@ import java.util.Set;
 
 import io.github.dlbbld.ashlarchess.board.Board;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
-import io.github.dlbbld.ashlarchess.common.Nulls;
+import io.github.dlbbld.ashlarchess.internal.Nulls;
 import io.github.dlbbld.ashlarchess.board.DynamicPosition;
-import io.github.dlbbld.ashlarchess.common.ucimove.utility.UciMoveUtility;
+import io.github.dlbbld.ashlarchess.board.internal.UciMoveUtility;
 import io.github.dlbbld.ashlarchess.fen.model.Fen;
 import io.github.dlbbld.ashlarchess.board.LegalMove;
 import io.github.dlbbld.ashlarchess.board.UciMove;
