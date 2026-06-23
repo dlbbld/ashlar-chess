@@ -45,7 +45,7 @@ rule-level predicates.
 
 Use one `Board` per thread. It is mutable and not thread-safe.
 
-<!-- readme:code id=basic-usage -->
+The examples below are the fastest tour through the everyday board API.
 
 ### Creating a Board
 
@@ -56,16 +56,23 @@ Common entry points:
 - `Board.fromFenLenient(String)` — tolerant FEN import.
 - `new Board(Fen)` — start from an already parsed FEN value.
 
+<!-- readme:code id=board-creation -->
+
 Move execution:
 
 - `moveStrict(String)` parses and plays canonical SAN.
 - `moveLenient(String)` parses and plays a tolerated SAN spelling, returning forgiven items.
+- `movesStrict(String...)` and `movesLenient(String...)` play a sequence.
 - `move(MoveSpecification)` plays a programmatic move specification.
 - `unmove()` undoes the last move.
+
+<!-- readme:code id=board-move-entry-points -->
 
 The move pipeline validates the candidate against the current legal-move set. Checkmate and stalemate naturally reject
 further moves because the legal-move set is empty. Other draw states such as fifty-move, fivefold repetition, and
 dead-position analysis are queryable; the caller decides when to adjudicate.
+
+<!-- readme:code id=board-state-queries -->
 
 ## Move Values
 

@@ -11,6 +11,8 @@ import io.github.dlbbld.ashlarchess.board.MoveSpecification;
 import io.github.dlbbld.ashlarchess.board.enums.CastlingMove;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
 import io.github.dlbbld.ashlarchess.board.enums.Square;
+import io.github.dlbbld.ashlarchess.fen.StrictFenParser;
+import io.github.dlbbld.ashlarchess.fen.model.Fen;
 import io.github.dlbbld.ashlarchess.internal.Nulls;
 import io.github.dlbbld.ashlarchess.pgn.LenientPgnParser;
 import io.github.dlbbld.ashlarchess.pgn.LenientPgnParserValidationException;
@@ -62,6 +64,9 @@ public final class ReadmeExamples {
         new ReadmeExample("dead-position-during-play", ReadmeExamples::deadPositionDuringPlay, true),
         new ReadmeExample("readme-notation-input", ReadmeExamples::readmeNotationInput, true),
         new ReadmeExample("readme-unwinnability", ReadmeExamples::readmeUnwinnability, true),
+        new ReadmeExample("board-creation", ReadmeExamples::boardCreation, true),
+        new ReadmeExample("board-move-entry-points", ReadmeExamples::boardMoveEntryPoints, true),
+        new ReadmeExample("board-state-queries", ReadmeExamples::boardStateQueries, true),
         new ReadmeExample("basic-usage", ReadmeExamples::basicUsage, true),
         new ReadmeExample("castling-geometry", ReadmeExamples::castlingGeometry, true),
         new ReadmeExample("unwinnable-insufficient-material", ReadmeExamples::unwinnableInsufficientMaterial, true),
@@ -215,6 +220,64 @@ public final class ReadmeExamples {
 
     System.out.println(board.isCheckmate()); // [out]
     // </readme:basic-usage>
+  }
+
+  public static void boardCreation() {
+    // <readme:board-creation>
+    final Board initial = new Board();
+
+    final Board strictFen = Board.fromFenStrict(
+        "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
+
+    final Board lenientFen = Board.fromFenLenient(
+        " rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR W kqKQ - ");
+
+    final Fen parsedFen = StrictFenParser.parse(
+        "8/8/4k3/3R4/2K5/8/8/8 w - - 0 50");
+    final Board fromFenModel = new Board(parsedFen);
+
+    System.out.println(initial.getSideToMove()); // [out]
+    System.out.println(strictFen.getFen()); // [out]
+    System.out.println(lenientFen.getCastlingRightWhite()); // [out]
+    System.out.println(fromFenModel.isInsufficientMaterial(Side.BLACK)); // [out]
+    // </readme:board-creation>
+  }
+
+  public static void boardMoveEntryPoints() {
+    // <readme:board-move-entry-points>
+    final Board board = new Board();
+
+    board.moveStrict("e4");
+
+    final LenientSanParseResult e5 = board.moveLenient("e7-e5");
+    final ForgivenSanItem forgiven = e5.forgivenItems().get(0);
+    System.out.println(forgiven.originalToken() + " -> " + forgiven.canonicalSan()); // [out]
+
+    board.movesLenient("nf3", "Nc6");
+
+    final MoveSpecification bishopMove = StrictSanParser.parse("Bc4", board);
+    board.move(bishopMove);
+
+    board.unmove();
+    board.movesStrict("Bc4", "Bc5");
+
+    System.out.println(board.getPerformedMovesAsSan()); // [out]
+    System.out.println(board.getFen()); // [out]
+    // </readme:board-move-entry-points>
+  }
+
+  public static void boardStateQueries() {
+    // <readme:board-state-queries>
+    final Board board = new Board();
+    board.movesStrict("e4", "e5", "Qh5", "Nc6", "Bc4", "Nf6", "Qxf7#");
+
+    System.out.println(board.getSan()); // [out]
+    System.out.println(board.getPerformedMoveCount()); // [out]
+    System.out.println(board.getSideToMove()); // [out]
+    System.out.println(board.isCheck()); // [out]
+    System.out.println(board.isCheckmate()); // [out]
+    System.out.println(board.getLegalMovesAsSan()); // [out]
+    // </readme:board-state-queries>
   }
 
   public static void readmeNotationInput() {

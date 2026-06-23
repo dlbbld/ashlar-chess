@@ -45,21 +45,7 @@ rule-level predicates.
 
 Use one `Board` per thread. It is mutable and not thread-safe.
 
-```java
-final Board board = new Board();
-
-board.moveStrict("e4"); // specifying the SAN
-board.movesStrict("e5", "Bc4"); // specifying multiple SAN's
-
-final MoveSpecification newMove = new MoveSpecification(Square.F8, Square.C5);
-board.move(newMove); // move specification without SAN
-
-board.unmove(); // undoes last move
-
-board.movesStrict("Bc5", "Qf3", "h6", "Qxf7#");
-
-System.out.println(board.isCheckmate()); // true
-```
+The examples below are the fastest tour through the everyday board API.
 
 ### Creating a Board
 
@@ -70,16 +56,69 @@ Common entry points:
 - `Board.fromFenLenient(String)` — tolerant FEN import.
 - `new Board(Fen)` — start from an already parsed FEN value.
 
+```java
+final Board initial = new Board();
+
+final Board strictFen = Board.fromFenStrict(
+    "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
+
+final Board lenientFen = Board.fromFenLenient(
+    " rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR W kqKQ - ");
+
+final Fen parsedFen = StrictFenParser.parse(
+    "8/8/4k3/3R4/2K5/8/8/8 w - - 0 50");
+final Board fromFenModel = new Board(parsedFen);
+
+System.out.println(initial.getSideToMove()); // WHITE
+System.out.println(strictFen.getFen()); // rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1
+System.out.println(lenientFen.getCastlingRightWhite()); // KING_AND_QUEEN_SIDE
+System.out.println(fromFenModel.isInsufficientMaterial(Side.BLACK)); // true
+```
+
 Move execution:
 
 - `moveStrict(String)` parses and plays canonical SAN.
 - `moveLenient(String)` parses and plays a tolerated SAN spelling, returning forgiven items.
+- `movesStrict(String...)` and `movesLenient(String...)` play a sequence.
 - `move(MoveSpecification)` plays a programmatic move specification.
 - `unmove()` undoes the last move.
+
+```java
+final Board board = new Board();
+
+board.moveStrict("e4");
+
+final LenientSanParseResult e5 = board.moveLenient("e7-e5");
+final ForgivenSanItem forgiven = e5.forgivenItems().get(0);
+System.out.println(forgiven.originalToken() + " -> " + forgiven.canonicalSan()); // e7-e5 -> e5
+
+board.movesLenient("nf3", "Nc6");
+
+final MoveSpecification bishopMove = StrictSanParser.parse("Bc4", board);
+board.move(bishopMove);
+
+board.unmove();
+board.movesStrict("Bc4", "Bc5");
+
+System.out.println(board.getPerformedMovesAsSan()); // [e4, e5, Nf3, Nc6, Bc4, Bc5]
+System.out.println(board.getFen()); // r1bqk1nr/pppp1ppp/2n5/2b1p3/2B1P3/5N2/PPPP1PPP/RNBQK2R w KQkq - 4 4
+```
 
 The move pipeline validates the candidate against the current legal-move set. Checkmate and stalemate naturally reject
 further moves because the legal-move set is empty. Other draw states such as fifty-move, fivefold repetition, and
 dead-position analysis are queryable; the caller decides when to adjudicate.
+
+```java
+final Board board = new Board();
+board.movesStrict("e4", "e5", "Qh5", "Nc6", "Bc4", "Nf6", "Qxf7#");
+
+System.out.println(board.getSan()); // Qxf7#
+System.out.println(board.getPerformedMoveCount()); // 7
+System.out.println(board.getSideToMove()); // BLACK
+System.out.println(board.isCheck()); // true
+System.out.println(board.isCheckmate()); // true
+System.out.println(board.getLegalMovesAsSan()); // []
+```
 
 ## Move Values
 
