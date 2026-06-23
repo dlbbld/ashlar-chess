@@ -8,6 +8,7 @@ import java.util.List;
 import io.github.dlbbld.ashlarchess.adjudication.Adjudicator;
 import io.github.dlbbld.ashlarchess.board.Board;
 import io.github.dlbbld.ashlarchess.board.MoveSpecification;
+import io.github.dlbbld.ashlarchess.board.enums.CastlingMove;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
 import io.github.dlbbld.ashlarchess.board.enums.Square;
 import io.github.dlbbld.ashlarchess.internal.Nulls;
@@ -56,6 +57,7 @@ public final class ReadmeExamples {
         new ReadmeExample("adjudication-flagfall-full", ReadmeExamples::adjudicationFlagfallFull, true),
         new ReadmeExample("adjudication-resignation", ReadmeExamples::adjudicationResignation, true),
         new ReadmeExample("basic-usage", ReadmeExamples::basicUsage, true),
+        new ReadmeExample("castling-geometry", ReadmeExamples::castlingGeometry, true),
         new ReadmeExample("unwinnable-insufficient-material", ReadmeExamples::unwinnableInsufficientMaterial, true),
         new ReadmeExample("unwinnable-forced-moves", ReadmeExamples::unwinnableForcedMoves, true),
         new ReadmeExample("unwinnable-pawn-walls", ReadmeExamples::unwinnablePawnWalls, true),
@@ -195,6 +197,23 @@ public final class ReadmeExamples {
 
     System.out.println(board.isCheckmate()); // [out]
     // </readme:basic-usage>
+  }
+
+  public static void castlingGeometry() {
+    // <readme:castling-geometry>
+    // A castling MoveSpecification carries only the CastlingMove; its from/to squares are Square.NONE.
+    // Detect a castling move with isCastling(), then resolve the squares it touches from the
+    // CastlingMove, given the side.
+    final MoveSpecification specification = new MoveSpecification(CastlingMove.KING_SIDE);
+
+    if (specification.isCastling()) {
+      final CastlingMove castling = specification.castlingMove();
+      System.out.println(castling.kingFromSquare(Side.WHITE)); // [out]
+      System.out.println(castling.kingToSquare(Side.WHITE)); // [out]
+      System.out.println(castling.rookFromSquare(Side.WHITE)); // [out]
+      System.out.println(castling.rookToSquare(Side.WHITE)); // [out]
+    }
+    // </readme:castling-geometry>
   }
 
   public static void unwinnableInsufficientMaterial() {

@@ -89,4 +89,8 @@ public record MoveSpecification(Square fromSquare, Square toSquare, CastlingMove
     return promotionPieceType() != PromotionPieceType.NONE;
   }
 
+  public boolean isCastling() {
+    return castlingMove() != CastlingMove.NONE;
+  }
+
 }

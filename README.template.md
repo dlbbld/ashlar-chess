@@ -71,6 +71,10 @@ For the full Eclipse contributor workflow (project import, Checkstyle, formatter
 # Basic usage example
 <!-- readme:code id=basic-usage -->
 
+# Working with castling moves
+A castling `MoveSpecification` carries only the `CastlingMove` (`KING_SIDE` / `QUEEN_SIDE`); its from/to squares are deliberately `Square.NONE`. Detect a castling move with `isCastling()`, then resolve the squares it touches from the `CastlingMove`, given the side (`kingToSquare` is `G`-file for king-side and `C`-file for queen-side; `rookFromSquare`/`rookToSquare` are `H`→`F` and `A`→`D` respectively):
+<!-- readme:code id=castling-geometry -->
+
 # History
 Initially I needed a chess library that detects threefold repetitions and the fifty-move rule - not just for the current position, but across the whole game, including possible claims ahead. Finding none that did this, I started implementing it, and along the way it grew into a programming exercise in its own right, focused above all on correctness.
 

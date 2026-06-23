@@ -86,14 +86,20 @@ System.out.println(board.isCheckmate()); // true
 ```
 
 # Working with castling moves
-A castling `MoveSpecification` carries the `CastlingMove` (`KING_SIDE` / `QUEEN_SIDE`); its from/to squares are deliberately `Square.NONE`. Resolve the squares a castling move actually touches from `CastlingMove`, given the side:
+A castling `MoveSpecification` carries only the `CastlingMove` (`KING_SIDE` / `QUEEN_SIDE`); its from/to squares are deliberately `Square.NONE`. Detect a castling move with `isCastling()`, then resolve the squares it touches from the `CastlingMove`, given the side (`kingToSquare` is `G`-file for king-side and `C`-file for queen-side; `rookFromSquare`/`rookToSquare` are `H`→`F` and `A`→`D` respectively):
 ```java
-final CastlingMove castling = moveSpecification.castlingMove(); // KING_SIDE / QUEEN_SIDE / NONE
+// A castling MoveSpecification carries only the CastlingMove; its from/to squares are Square.NONE.
+// Detect a castling move with isCastling(), then resolve the squares it touches from the
+// CastlingMove, given the side.
+final MoveSpecification specification = new MoveSpecification(CastlingMove.KING_SIDE);
 
-castling.kingFromSquare(Side.WHITE); // E1
-castling.kingToSquare(Side.WHITE);   // G1 (king-side), C1 (queen-side)
-castling.rookFromSquare(Side.WHITE); // H1 (king-side), A1 (queen-side)
-castling.rookToSquare(Side.WHITE);   // F1 (king-side), D1 (queen-side)
+if (specification.isCastling()) {
+  final CastlingMove castling = specification.castlingMove();
+  System.out.println(castling.kingFromSquare(Side.WHITE)); // e1
+  System.out.println(castling.kingToSquare(Side.WHITE)); // g1
+  System.out.println(castling.rookFromSquare(Side.WHITE)); // h1
+  System.out.println(castling.rookToSquare(Side.WHITE)); // f1
+}
 ```
 
 # History

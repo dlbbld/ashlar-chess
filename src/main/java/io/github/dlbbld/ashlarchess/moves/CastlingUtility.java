@@ -217,26 +217,8 @@ public final class CastlingUtility {
     return result;
   }
 
-  private static boolean isCastlingQueenSide(MoveSpecification moveSpecification) {
-    return switch (moveSpecification.castlingMove()) {
-      case NONE -> false;
-      case KING_SIDE -> false;
-      case QUEEN_SIDE -> true;
-      default -> throw new IllegalArgumentException();
-    };
-  }
-
-  private static boolean isCastlingKingSide(MoveSpecification moveSpecification) {
-    return switch (moveSpecification.castlingMove()) {
-      case NONE -> false;
-      case KING_SIDE -> true;
-      case QUEEN_SIDE -> false;
-      default -> throw new IllegalArgumentException();
-    };
-  }
-
   public static boolean isCastlingMove(MoveSpecification moveSpecification) {
-    return isCastlingQueenSide(moveSpecification) || isCastlingKingSide(moveSpecification);
+    return moveSpecification.isCastling();
   }
 
   public static CastlingRightBoth calculateCastlingRightBoth(CastlingRight lastCastlingRightWhite,
