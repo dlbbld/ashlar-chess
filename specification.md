@@ -25,22 +25,6 @@ For these chosen domains, the quality bar is very high. ashlar-chess should be C
 
 The guiding principle is therefore not "add every feature serious chess libraries have." It is: build the fixed essential feature set, make it internally coherent, FIDE-faithful where applicable, thoroughly tested, well documented, and pleasant to use — then **finish** it. This project should not grow forever. It should reach a stable, finished shape; after that, work is mostly quality improvement, bug fixes, documentation, performance where it matters, and API clarity — not endless feature expansion.
 
-### Reviewing against this manifest
-
-When reviewing ashlar-chess, distinguish three kinds of "missing":
-
-1. **Missing features that contradict the chosen essential scope** — actionable.
-2. **Missing features common in broader chess libraries but intentionally out of scope** — *not* actionable (worth knowing, deliberately declined).
-3. **Quality defects inside the chosen scope** — actionable.
-
-Only categories 1 and 3 are actionable for this project. Examples:
-
-- Chess960: out of scope (category 2).
-- Full PGN RAV / variation-tree tooling: out of scope unless the chosen PGN contract needs it (category 2).
-- CHA / unwinnability correctness: in scope, high priority (category 3-sensitive).
-- FEN / SAN / PGN correctness within the supported contract, including detailed, instructive validation messages: in scope, high priority.
-- Naming / API / package quality for public surfaces: in scope, high priority.
-
 ---
 
 ## 1. Purpose & non-goals
