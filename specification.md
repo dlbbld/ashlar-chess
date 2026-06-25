@@ -144,6 +144,8 @@ proof detail behind the simple public verdict: `winnableProof()` is `WinnablePro
 the input position), and `WinnableProof.NONE` when the verdict is not `WINNABLE`. The `Board.unwinnableQuick(Side)` and `Board.unwinnableFull(Side)` convenience methods expose only the
 verdict.
 
+**Terminal positions.** The analyzers are *total* — they are never rejected on a finished game; they return a verdict, following CHA's `Find-Helpmate` base cases (Ambrona, Figure 5). An already-**checkmate** position is `WINNABLE` for the side that delivered mate — a zero-move helpmate, so the analysis carries `WinnableProof.HELPMATE` with an **empty** `mateLine()` — and `UNWINNABLE` for the mated side. A **stalemate** is `UNWINNABLE` for both sides (no legal move can continue toward a mate). Consequently a dead-position query reports stalemate as `DEAD` and an already-delivered checkmate as not dead. In normal use the analyzer is not invoked on a finished game (the result is already known via `board.outcome()`); this behaviour matters only when a terminal position is analyzed directly, as Ambrona's reference oracle does. Ambrona's published pseudocode lists "stalemate / receiving checkmate → not a helpmate" as an explicit base case; his C++ omits it as redundant (a side with no legal move cannot progress to a mate), and ashlar mirrors the C++.
+
 Side-specific quick/full unwinnability queries and whole-position dead-position queries are caller-invoked; no analyzer runs automatically during construction or move execution.
 
 ### 3.3 SAN, FEN, PGN

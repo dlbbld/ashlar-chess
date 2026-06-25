@@ -34,6 +34,12 @@ public final class UnwinnableFullAnalyzer {
   /**
    * Runs the algorithm on a fresh history-less board built from the caller's FEN. The caller's board is not mutated,
    * and repetition history from the caller's game is intentionally ignored.
+   *
+   * <p>
+   * Terminal positions are handled, not rejected (CHA Find-Helpmate base cases): an already-checkmate position is
+   * {@code WINNABLE} for the side that delivered mate - a zero-move helpmate, so {@link UnwinnabilityFullAnalysis#mateLine()}
+   * is empty and {@link UnwinnabilityFullAnalysis#winnableProof()} is {@link WinnableProof#HELPMATE} - and
+   * {@code UNWINNABLE} for the mated side; a stalemate is {@code UNWINNABLE} for both sides.
    */
   public static UnwinnabilityFullAnalysis unwinnableFull(Board input, Side winner) {
     final Board board = copyCurrentPositionForFullSearch(input);

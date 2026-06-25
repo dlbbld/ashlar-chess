@@ -4,8 +4,8 @@
 package io.github.dlbbld.ashlarchess.unwinnability;
 
 /**
- * How a {@link UnwinnabilityFullVerdict#WINNABLE} result was established, carried on
- * {@link UnwinnabilityFullAnalysis}. Compare the constant directly; there is no boolean shortcut.
+ * How a {@link UnwinnabilityFullVerdict#WINNABLE} result was established, carried on {@link UnwinnabilityFullAnalysis}.
+ * Compare the constant directly; there is no boolean shortcut.
  */
 public enum WinnableProof {
 
@@ -15,6 +15,9 @@ public enum WinnableProof {
   /** Winnability shown by a concrete cooperative-mate search; the analysis carries a mate line. */
   HELPMATE,
 
-  /** Not a win - the verdict is {@link UnwinnabilityFullVerdict#UNWINNABLE} or {@link UnwinnabilityFullVerdict#UNDETERMINED}. */
+  /**
+   * Not a win - the verdict is {@link UnwinnabilityFullVerdict#UNWINNABLE} or
+   * {@link UnwinnabilityFullVerdict#UNDETERMINED}.
+   */
   NONE
 }
