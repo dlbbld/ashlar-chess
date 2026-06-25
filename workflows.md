@@ -88,7 +88,7 @@ is fixed there rather than after the merge (direct pushes to `main` are not allo
 brand-new branch + PR); the version bump must reach `main` before the tag; the tag must exist before the published
 binary is built; and the irreversible Central Portal publish is always the very last step.
 
-**Order at a glance:** clear Eclipse warnings + auto-format / clean up source -> name the release -> update artifacts on a branch -> push -> pre-flight (full tests + javadoc +
+**Order at a glance:** clear Eclipse warnings + auto-format / clean up source + regenerate docs -> name the release -> update artifacts on a branch -> push -> pre-flight (full tests + javadoc +
 headers) -> `mvn -Prelease verify` (build+sign dry-run, on the branch, no upload) -> open the PR (titled with the
 release title) -> merge to `main` -> delete the branch -> tag `main` (annotated, message = release title) ->
 `mvn -Prelease deploy` (stages) -> review + publish on the Central Portal (irreversible) -> GitHub Release (version as
@@ -118,6 +118,14 @@ Then bring formatting to the same baseline so no hand-formatting drift ships (ma
 - **Clean Up** - Source -> Clean Up with the project's profile (organize imports, add missing `@Override` / `final`,
   remove unused, etc.). Clean Up overlaps with warning-clearing; running both leaves the tree warning-free *and*
   uniformly cleaned.
+- **Regenerate the generated docs** - auto-format reflows the *sliced example bodies* in
+  [`ReadmeExamples.java`](src/test/java/io/github/dlbbld/ashlarchess/test/readme/ReadmeExamples.java) (e.g. it
+  single-lines a wrapped `Board.fromFenStrict(...)` call), and `README.md` / `manual.md` are verbatim renders of those
+  slices - so any reflow of an example silently makes the committed Markdown stale. After formatting, regenerate both:
+  `mvn -o -q test-compile exec:java -Dexec.mainClass=io.github.dlbbld.ashlarchess.test.readme.GenerateReadme -Dexec.classpathScope=test`,
+  confirm `TestReadmeUpToDate` is green, and include the regenerated `README.md` / `manual.md` in the same clean-up
+  commit. A plain `mvn test-compile` does **not** catch this - only `mvn test` (via `TestReadmeUpToDate`) does, so a
+  format commit pushed without the regen leaves the build red on HEAD.
 - The result must be **purely mechanical and behavior-preserving** (whitespace, import order, modifiers) - it changes
   no signature and no behavior, so it is safe in any release, including a packaging-only one. Review the diff to
   confirm that, then commit it as its **own** commit, separate from the version bump, before the gates in step 4 run.
