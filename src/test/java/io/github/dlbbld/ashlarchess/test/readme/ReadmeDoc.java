@@ -82,8 +82,7 @@ public final class ReadmeDoc {
     final List<String> templateLines = FileUtility.readFileLines(templatePath);
     final Set<String> codePlaceholderIds = collectPlaceholderIds(templateLines, "code");
     final Set<String> outputPlaceholderIds = collectPlaceholderIds(templateLines, "output");
-    final Set<String> referencedIds = new HashSet<>();
-    referencedIds.addAll(codePlaceholderIds);
+    final Set<String> referencedIds = new HashSet<>(codePlaceholderIds);
     referencedIds.addAll(outputPlaceholderIds);
 
     final Map<String, List<String>> codeById = new LinkedHashMap<>();

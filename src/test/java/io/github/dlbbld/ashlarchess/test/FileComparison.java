@@ -10,8 +10,8 @@ import java.nio.file.Path;
 
 import org.apache.logging.log4j.Logger;
 
-import io.github.dlbbld.ashlarchess.test.common.utility.Loggers;
 import io.github.dlbbld.ashlarchess.internal.Nulls;
+import io.github.dlbbld.ashlarchess.test.common.utility.Loggers;
 
 public class FileComparison {
   private static final Logger logger = Loggers.getLogger(FileComparison.class);

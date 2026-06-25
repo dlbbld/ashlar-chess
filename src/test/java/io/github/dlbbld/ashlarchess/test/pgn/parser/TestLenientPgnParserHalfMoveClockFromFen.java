@@ -6,8 +6,8 @@ package io.github.dlbbld.ashlarchess.test.pgn.parser;
 import org.apache.logging.log4j.Logger;
 import org.junit.jupiter.api.Test;
 
-import io.github.dlbbld.ashlarchess.test.common.utility.Loggers;
 import io.github.dlbbld.ashlarchess.pgn.LenientPgnParser;
+import io.github.dlbbld.ashlarchess.test.common.utility.Loggers;
 
 /**
  * Verifies that the lenient PGN parser correctly initializes board state from a {@code [FEN]} tag and updates the
