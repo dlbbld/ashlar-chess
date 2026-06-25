@@ -37,6 +37,7 @@ import io.github.dlbbld.ashlarchess.test.pgntest.enums.PgnTest;
  */
 class TestSetupPgnCorpusNotPlaysBeyondAudit {
 
+  @SuppressWarnings("null")
   private static final Logger logger = LogManager.getLogger(TestSetupPgnCorpusNotPlaysBeyondAudit.class);
 
   @SuppressWarnings("static-method")

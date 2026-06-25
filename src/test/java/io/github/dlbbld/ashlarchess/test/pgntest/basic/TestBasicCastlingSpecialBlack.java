@@ -21,6 +21,7 @@ import io.github.dlbbld.ashlarchess.test.pgntest.enums.PgnTest;
 
 class TestBasicCastlingSpecialBlack {
 
+  @SuppressWarnings("null")
   private static final Logger logger = LogManager.getLogger(TestBasicCastlingSpecialBlack.class);
 
   static {

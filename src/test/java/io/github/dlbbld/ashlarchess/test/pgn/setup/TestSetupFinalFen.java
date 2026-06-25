@@ -39,6 +39,7 @@ class TestSetupFinalFen {
 
   private static final int PROGRESS_LOG_INTERVAL = 50;
 
+  @SuppressWarnings("null")
   private static final Logger logger = LogManager.getLogger(TestSetupFinalFen.class);
 
   @SuppressWarnings("static-method")

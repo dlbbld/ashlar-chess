@@ -53,6 +53,7 @@ import io.github.dlbbld.ashlarchess.test.pgntest.enums.PgnTest;
  */
 class TestInsufficientMaterialAgainstPythonChessOracle {
 
+  @SuppressWarnings("null")
   private static final Logger LOGGER = LogManager.getLogger(TestInsufficientMaterialAgainstPythonChessOracle.class);
 
   private static final Path ORACLE_ROOT = Nulls.pathResolve(ConfigurationTestConstants.PROJECT_ROOT_FOLDER_PATH,

@@ -46,6 +46,7 @@ import io.github.dlbbld.ashlarchess.test.pgntest.enums.PgnTest;
 
 class TestBasicCheckBlack {
 
+  @SuppressWarnings("null")
   private static final Logger logger = LogManager.getLogger(TestBasicCheckBlack.class);
 
   static {

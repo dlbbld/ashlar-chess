@@ -20,6 +20,7 @@ import io.github.dlbbld.ashlarchess.test.pgn.setup.PgnTestCaseCatalog;
 
 class TestInsufficientMaterial {
 
+  @SuppressWarnings("null")
   private static final Logger logger = LogManager.getLogger(TestInsufficientMaterial.class);
 
   @SuppressWarnings("static-method")

@@ -55,6 +55,7 @@ import io.github.dlbbld.ashlarchess.test.pgn.setup.PgnTestCaseCatalog;
  */
 class TestBoardUnperformMove {
 
+  @SuppressWarnings("null")
   private static final Logger logger = LogManager.getLogger(TestBoardUnperformMove.class);
 
   @SuppressWarnings("static-method")

@@ -21,6 +21,7 @@ import io.github.dlbbld.ashlarchess.pgn.LenientPgnParser;
  */
 class TestLenientPgnParserHalfMoveClockFromFen {
 
+  @SuppressWarnings("null")
   private static final Logger logger = LogManager.getLogger(TestLenientPgnParserHalfMoveClockFromFen.class);
 
   @SuppressWarnings("static-method")

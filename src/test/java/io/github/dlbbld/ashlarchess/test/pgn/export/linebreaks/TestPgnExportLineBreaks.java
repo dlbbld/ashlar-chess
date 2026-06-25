@@ -22,6 +22,7 @@ import io.github.dlbbld.ashlarchess.test.pgntest.constants.PgnTestConstants;
 
 class TestPgnExportLineBreaks {
 
+  @SuppressWarnings("null")
   private static final Logger logger = LogManager.getLogger(TestPgnExportLineBreaks.class);
 
   private static final Path TEST_SOURCE_FILE_PATH = Nulls

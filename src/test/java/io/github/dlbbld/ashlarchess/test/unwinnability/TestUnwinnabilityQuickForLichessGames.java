@@ -21,6 +21,7 @@ import io.github.dlbbld.ashlarchess.unwinnability.UnwinnableQuickAnalyzer;
 
 class TestUnwinnabilityQuickForLichessGames {
 
+  @SuppressWarnings("null")
   private static final Logger logger = LogManager.getLogger(TestUnwinnabilityQuickForLichessGames.class);
 
   @SuppressWarnings("static-method")

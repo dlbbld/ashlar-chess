@@ -21,6 +21,7 @@ import io.github.dlbbld.ashlarchess.internal.Nulls;
 
 public final class MultiplePgnSplitUtility {
 
+  @SuppressWarnings("null")
   private static final Logger logger = LogManager.getLogger(MultiplePgnSplitUtility.class);
 
   private MultiplePgnSplitUtility() {

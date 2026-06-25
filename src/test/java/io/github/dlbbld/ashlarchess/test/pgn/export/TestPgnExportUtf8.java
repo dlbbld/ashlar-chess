@@ -21,6 +21,7 @@ import io.github.dlbbld.ashlarchess.test.pgntest.constants.PgnTestConstants;
 
 class TestPgnExportUtf8 {
 
+  @SuppressWarnings("null")
   private static final Logger logger = LogManager.getLogger(TestPgnExportUtf8.class);
 
   private static final String FILE_NAME = "utf8.pgn";

@@ -24,6 +24,7 @@ import io.github.dlbbld.ashlarchess.unwinnability.UnwinnableQuickAnalyzer;
 
 class TestUnwinnabilityQuickAgainstLimitedOracle {
 
+  @SuppressWarnings("null")
   private static final Logger logger = LogManager.getLogger(TestUnwinnabilityQuickAgainstLimitedOracle.class);
 
   @SuppressWarnings("static-method")

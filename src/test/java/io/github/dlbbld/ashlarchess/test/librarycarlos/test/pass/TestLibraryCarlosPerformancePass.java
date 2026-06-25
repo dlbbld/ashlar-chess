@@ -27,6 +27,7 @@ import io.github.dlbbld.ashlarchess.test.pgntest.enums.PgnTest;
 
 class TestLibraryCarlosPerformancePass {
 
+  @SuppressWarnings("null")
   private static final Logger logger = LogManager.getLogger(TestLibraryCarlosPerformancePass.class);
 
   private static final double LOAD_PGN_DURATION_MAX_MILLISECONDS = 1000.0;

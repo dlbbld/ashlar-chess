@@ -36,6 +36,7 @@ import io.github.dlbbld.ashlarchess.test.pgntest.enums.PgnTest;
  */
 public final class GenerateAmbronaUnwinnabilityOracle {
 
+  @SuppressWarnings("null")
   private static final Logger logger = LogManager.getLogger(GenerateAmbronaUnwinnabilityOracle.class);
 
   private static final String D3_CHESS_PATH_PROPERTY = "ambrona.d3.path";

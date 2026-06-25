@@ -60,6 +60,7 @@ import io.github.dlbbld.ashlarchess.test.pgntest.enums.PgnTest;
 
 class TestBasicCaptureWhite {
 
+  @SuppressWarnings("null")
   private static final Logger logger = LogManager.getLogger(TestBasicCaptureWhite.class);
 
   static {

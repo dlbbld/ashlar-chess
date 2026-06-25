@@ -20,6 +20,7 @@ import io.github.dlbbld.ashlarchess.test.pgntest.constants.PgnTestConstants;
 
 class TestLenientPgnParserUtf8 {
 
+  @SuppressWarnings("null")
   private static final Logger logger = LogManager.getLogger(TestLenientPgnParserUtf8.class);
 
   @SuppressWarnings("static-method")

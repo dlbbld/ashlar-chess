@@ -25,6 +25,7 @@ import io.github.dlbbld.ashlarchess.unwinnability.UnwinnableFullAnalyzer;
 
 class TestUnwinnabilityFullWinnable {
 
+  @SuppressWarnings("null")
   private static final Logger logger = LogManager.getLogger(TestUnwinnabilityFullWinnable.class);
 
   @SuppressWarnings("static-method")

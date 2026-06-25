@@ -17,6 +17,7 @@ import io.github.dlbbld.ashlarchess.test.pgntest.constants.PgnTestConstants;
 
 class TestLenientPgnParserLineBreaks {
 
+  @SuppressWarnings("null")
   private static final Logger logger = LogManager.getLogger(TestLenientPgnParserLineBreaks.class);
 
   @SuppressWarnings("static-method")

@@ -24,6 +24,7 @@ class TestBoardAgainstEachOther {
   // Leave empty to test all games, put a game name to only test this game.
   // private static final String ONLY_TEST_GAME = "threefold_castling_white_both_sides_lost";
 
+  @SuppressWarnings("null")
   private static final Logger logger = LogManager.getLogger(TestBoardAgainstEachOther.class);
 
   @SuppressWarnings("static-method")

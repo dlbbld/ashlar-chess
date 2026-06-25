@@ -22,6 +22,7 @@ import io.github.dlbbld.ashlarchess.test.pgn.setup.PgnTestCaseCatalog;
 
 class TestPgnExportIdempotency {
 
+  @SuppressWarnings("null")
   private static final Logger logger = LogManager.getLogger(TestPgnExportIdempotency.class);
 
   @SuppressWarnings({ "static-method" })

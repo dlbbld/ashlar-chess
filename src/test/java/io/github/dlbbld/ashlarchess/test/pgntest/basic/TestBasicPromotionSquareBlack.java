@@ -38,6 +38,7 @@ import io.github.dlbbld.ashlarchess.test.pgntest.enums.PgnTest;
 
 class TestBasicPromotionSquareBlack {
 
+  @SuppressWarnings("null")
   private static final Logger logger = LogManager.getLogger(TestBasicPromotionSquareBlack.class);
 
   static {

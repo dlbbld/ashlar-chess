@@ -30,6 +30,7 @@ import io.github.dlbbld.ashlarchess.unwinnability.UnwinnableFullAnalyzer;
 
 class TestAmbronaUnwinnabilityFullOracleComparison {
 
+  @SuppressWarnings("null")
   private static final Logger logger = LogManager.getLogger(TestAmbronaUnwinnabilityFullOracleComparison.class);
 
   private static final int PROGRESS_LOG_INTERVAL = 25;

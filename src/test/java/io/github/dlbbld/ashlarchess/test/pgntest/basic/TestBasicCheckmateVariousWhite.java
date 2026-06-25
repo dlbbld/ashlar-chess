@@ -15,6 +15,7 @@ import io.github.dlbbld.ashlarchess.test.pgntest.enums.PgnTest;
 
 class TestBasicCheckmateVariousWhite {
 
+  @SuppressWarnings("null")
   private static final Logger logger = LogManager.getLogger(TestBasicCheckmateVariousWhite.class);
 
   @SuppressWarnings("static-method")

@@ -22,6 +22,7 @@ import io.github.dlbbld.ashlarchess.test.pgn.setup.PgnTestCaseCatalog;
 
 class TestFenRoundtripPgn {
 
+  @SuppressWarnings("null")
   private static final Logger logger = LogManager.getLogger(TestFenRoundtripPgn.class);
 
   @SuppressWarnings("static-method")

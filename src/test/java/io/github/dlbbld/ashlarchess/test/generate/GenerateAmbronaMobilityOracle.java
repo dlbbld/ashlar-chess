@@ -37,6 +37,7 @@ import io.github.dlbbld.ashlarchess.unwinnability.MobilityOracleFormatter;
  */
 public final class GenerateAmbronaMobilityOracle {
 
+  @SuppressWarnings("null")
   private static final Logger logger = LogManager.getLogger(GenerateAmbronaMobilityOracle.class);
 
   private static final String D3_CHESS_PATH_PROPERTY = "ambrona.d3.path";

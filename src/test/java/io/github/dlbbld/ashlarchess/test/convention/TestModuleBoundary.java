@@ -23,6 +23,7 @@ import java.util.stream.Stream;
 import org.junit.jupiter.api.Test;
 
 import io.github.dlbbld.ashlarchess.board.Board;
+import io.github.dlbbld.ashlarchess.internal.Nulls;
 
 /**
  * Guards the JPMS module boundary so it cannot drift silently. The boundary is otherwise maintained by hand (the
@@ -42,6 +43,7 @@ class TestModuleBoundary {
   /**
    * The intended public API surface. Must be updated deliberately, in lock-step with {@code module-info.java}.
    */
+  @SuppressWarnings("null")
   private static final Set<String> EXPECTED_EXPORTS = Set.of("io.github.dlbbld.ashlarchess.board",
       "io.github.dlbbld.ashlarchess.board.enums", "io.github.dlbbld.ashlarchess.fen",
       "io.github.dlbbld.ashlarchess.fen.model", "io.github.dlbbld.ashlarchess.pgn", "io.github.dlbbld.ashlarchess.san",
@@ -57,6 +59,7 @@ class TestModuleBoundary {
     assertEquals("io.github.dlbbld.ashlarchess", module.getName());
 
     final ModuleDescriptor descriptor = module.getDescriptor();
+    @SuppressWarnings("null")
     final Set<String> actualExports = descriptor.exports().stream().filter(e -> !e.isQualified())
         .map(ModuleDescriptor.Exports::source).collect(Collectors.toCollection(TreeSet::new));
 
@@ -90,15 +93,17 @@ class TestModuleBoundary {
         "javadoc excludePackageNames lists packages that do not exist in production: " + dangling);
   }
 
+  @SuppressWarnings("null")
   private static Set<String> parseJavadocExcludePackageNames() throws IOException {
     final String pom = Files.readString(Paths.get("pom.xml"));
     final Matcher matcher = Pattern.compile("<excludePackageNames>(.*?)</excludePackageNames>", Pattern.DOTALL)
         .matcher(pom);
     assertTrue(matcher.find(), "excludePackageNames not found in pom.xml");
-    return Arrays.stream(matcher.group(1).split(",")).map(String::trim).filter(s -> !s.isEmpty())
+    return Arrays.stream(Nulls.split(matcher.group(1), ",")).map(Nulls::trim).filter(s -> !s.isEmpty())
         .collect(Collectors.toCollection(TreeSet::new));
   }
 
+  @SuppressWarnings("null")
   private static Set<String> productionPackages() throws IOException {
     final Path sourceRoot = Paths.get("src/main/java");
     try (Stream<Path> paths = Files.walk(sourceRoot)) {

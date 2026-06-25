@@ -20,6 +20,7 @@ import io.github.dlbbld.ashlarchess.test.unwinnability.oracle.enums.LimitedUnwin
 
 class TestLimitedUnwinnabilityOracle {
 
+  @SuppressWarnings("null")
   private static final Logger logger = LogManager.getLogger(TestLimitedUnwinnabilityOracle.class);
 
   @SuppressWarnings("static-method")

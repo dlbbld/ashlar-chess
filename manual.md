@@ -88,7 +88,7 @@ final Board board = new Board();
 board.moveStrict("e4");
 
 final LenientSanParseResult e5 = board.moveLenient("e7-e5");
-final ForgivenSanItem forgiven = e5.forgivenItems().get(0);
+final ForgivenSanItem forgiven = e5.forgivenItems().stream().findFirst().orElseThrow();
 System.out.println(forgiven.originalToken() + " -> " + forgiven.canonicalSan()); // e7-e5 -> e5
 
 board.movesLenient("nf3", "Nc6");

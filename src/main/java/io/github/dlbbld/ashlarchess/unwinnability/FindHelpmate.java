@@ -27,6 +27,7 @@ import io.github.dlbbld.ashlarchess.internal.Nulls;
 //limits of the search. The Score routine is defined in Figure 12 (Appendix A).
 class FindHelpmate {
 
+  @SuppressWarnings("null")
   private static final Logger logger = Logger.getLogger(FindHelpmate.class.getName());
 
   // empirically enough

@@ -33,6 +33,7 @@ import io.github.dlbbld.ashlarchess.test.pgn.setup.PgnTestCaseCatalog;
 
 class TestLegalMovesAgainstCreatedUsingValidation {
 
+  @SuppressWarnings("null")
   private static final Logger logger = LogManager.getLogger(TestLegalMovesAgainstCreatedUsingValidation.class);
 
   @SuppressWarnings("static-method")

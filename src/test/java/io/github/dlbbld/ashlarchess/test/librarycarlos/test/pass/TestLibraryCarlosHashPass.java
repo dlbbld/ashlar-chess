@@ -26,6 +26,7 @@ import io.github.dlbbld.ashlarchess.test.pgntest.enums.PgnTest;
 
 class TestLibraryCarlosHashPass {
 
+  @SuppressWarnings("null")
   private static final Logger logger = LogManager.getLogger(TestLibraryCarlosHashPass.class);
 
   private static final int SHOW_COMPLETION_PROGRESS_NUMBER_OF_PROCESSED_FILES = 1;

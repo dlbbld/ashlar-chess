@@ -26,6 +26,7 @@ class TestPgnExportLineLength {
   private static final Path TEST_FOLDER_PATH = Nulls.pathResolve(PgnTestConstants.PGN_EXPORT_TEST_ROOT_FOLDER_PATH,
       "lineLength");
 
+  @SuppressWarnings("null")
   private static final Logger logger = LogManager.getLogger(TestPgnExportLineLength.class);
 
   @SuppressWarnings("static-method")

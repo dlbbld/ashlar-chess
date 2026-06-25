@@ -29,6 +29,7 @@ import io.github.dlbbld.ashlarchess.unwinnability.WinnableProof;
 
 class TestUnwinnabilityFullHelpmateIsHelpmate {
 
+  @SuppressWarnings("null")
   private static final Logger logger = LogManager.getLogger(TestUnwinnabilityFullHelpmateIsHelpmate.class);
 
   @SuppressWarnings("static-method")

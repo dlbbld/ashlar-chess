@@ -22,6 +22,7 @@ import io.github.dlbbld.ashlarchess.test.pgn.setup.PgnTestCaseCatalog;
 
 class TestPgnImportAgainstExport {
 
+  @SuppressWarnings("null")
   private static final Logger logger = LogManager.getLogger(TestPgnImportAgainstExport.class);
 
   @SuppressWarnings({ "static-method" })

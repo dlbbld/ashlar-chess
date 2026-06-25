@@ -152,10 +152,10 @@ public final class ReadmeDoc {
   private static Map<String, ReadmeExample> examplesById() {
     final Map<String, ReadmeExample> result = new LinkedHashMap<>();
     for (final ReadmeExample example : ReadmeExamples.examples()) {
-      final ReadmeExample old = result.put(example.id(), example);
-      if (old != null) {
+      if (result.containsKey(example.id())) {
         throw new IllegalStateException("Duplicate documentation example id: " + example.id());
       }
+      result.put(example.id(), example);
     }
     return result;
   }
@@ -187,12 +187,11 @@ public final class ReadmeDoc {
   }
 
   private static ReadmeExample requireRegisteredExample(Map<String, ReadmeExample> byId, String id) {
-    final ReadmeExample example = byId.get(id);
-    if (example == null) {
+    if (!byId.containsKey(id)) {
       throw new IllegalStateException(
           "Documentation placeholder references id \"" + id + "\", which has no registered example.");
     }
-    return example;
+    return Nulls.get(byId, id);
   }
 
   private static void appendFenced(List<String> result, String openingFence, List<String> body) {

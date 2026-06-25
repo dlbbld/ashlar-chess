@@ -36,6 +36,7 @@ import io.github.dlbbld.ashlarchess.test.pgntest.enums.PgnTest;
 
 class TestBasicEnPassantCaptureBlack {
 
+  @SuppressWarnings("null")
   private static final Logger logger = LogManager.getLogger(TestBasicEnPassantCaptureBlack.class);
 
   static {

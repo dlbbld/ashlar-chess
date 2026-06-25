@@ -21,6 +21,7 @@ import io.github.dlbbld.ashlarchess.test.pgn.setup.PgnTestCaseCatalog;
 
 class TestStrictPgnParserAgainstLenientPgnParser {
 
+  @SuppressWarnings("null")
   private static final Logger logger = LogManager.getLogger(TestStrictPgnParserAgainstLenientPgnParser.class);
 
   @SuppressWarnings({ "static-method" })

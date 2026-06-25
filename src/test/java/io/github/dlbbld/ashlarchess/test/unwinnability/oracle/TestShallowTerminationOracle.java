@@ -23,6 +23,7 @@ import io.github.dlbbld.ashlarchess.unwinnability.UnwinnabilityQuickVerdict;
 
 class TestShallowTerminationOracle {
 
+  @SuppressWarnings("null")
   private static final Logger logger = LogManager.getLogger(TestShallowTerminationOracle.class);
 
   @SuppressWarnings("static-method")

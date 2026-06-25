@@ -56,6 +56,7 @@ import io.github.dlbbld.ashlarchess.test.pgn.setup.PgnTestCaseCatalog;
  */
 class TestPerformMoveSanContract {
 
+  @SuppressWarnings("null")
   private static final Logger logger = LogManager.getLogger(TestPerformMoveSanContract.class);
 
   @SuppressWarnings("static-method")

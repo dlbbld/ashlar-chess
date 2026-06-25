@@ -32,6 +32,7 @@ import io.github.dlbbld.ashlarchess.unwinnability.UnwinnableQuickAnalyzer;
 
 class TestAmbronaUnwinnabilityQuickOracleComparison {
 
+  @SuppressWarnings("null")
   private static final Logger logger = LogManager.getLogger(TestAmbronaUnwinnabilityQuickOracleComparison.class);
   private static final Path ACCEPTED_DIFFERENCE_PATH = Nulls.pathResolve(
       ConfigurationTestConstants.PROJECT_ROOT_FOLDER_PATH,
