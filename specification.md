@@ -59,7 +59,7 @@ The resulting rule is: optimize where production use needs it, but make the opti
 
 ### 2.2 Functional style and compile-time guarantees
 
-The codebase is written in as functional a style as Java reasonably permits: records, immutable value objects, pure helpers. Mutable state is confined to a small number of well-defined classes: `Board` for the public game state, and package-private search machinery such as `HelpmateSearchBoard` where the full unwinnability search needs make/unmake performance. The aspirational target is Haskell — total functions and types that make illegal states unrepresentable. Where Java forces compromise (mutable accessors, nullable JDK return types, search-hot-path mutation), the compromises are localised and crossed with explicit annotations and tests.
+The codebase uses Java's type system as far as is practical: records, immutable value objects, closed enums, null annotations, and explicit result types. The goal is to encode as many invariants as possible in types, so illegal states are hard to construct and ordinary compiler checks catch more mistakes. Mutable state is confined to a small number of well-defined classes: `Board` for the public game state, and package-private search machinery such as `HelpmateSearchBoard` where the full unwinnability search needs make/unmake performance. Where Java forces compromise (mutable accessors, nullable JDK return types, search-hot-path mutation), the compromises are localised and crossed with explicit annotations and tests.
 
 Concretely:
 
@@ -160,7 +160,7 @@ The lenient SAN pipeline (`LenientSanParser`, reached via `Board.moveLenient(Str
 
 **Principle: canonical-first.** A string that already parses as canonical SAN never receives a different meaning under lenient — strict is tried first; only on rejection does the lenient layer engage. So `bxc6` always means pawn capture from the b-file, even if a bishop on the b-file could also capture on c6.
 
-**Taxonomy — 21 codes** (`io.github.dlbbld.ashlarchess.san.enums.LenientSanValidationProblem`):
+**Taxonomy — 21 codes** (`io.github.dlbbld.ashlarchess.san.LenientSanValidationProblem`):
 
 | Category | Code | Example |
 |---|---|---|

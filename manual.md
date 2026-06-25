@@ -497,16 +497,36 @@ Use it through `StrictSanParser.parse(String, Board)` or `Board.moveStrict(Strin
 Lenient SAN accepts common real-world spelling deviations when they uniquely identify a legal move. Use it through
 `LenientSanParser.parse(String, Board)` or `Board.moveLenient(String)`.
 
-Accepted deviation categories:
+Accepted deviations are reported with typed codes
+(`io.github.dlbbld.ashlarchess.san.LenientSanValidationProblem`):
 
-- missing, spurious, or wrong check/checkmate suffix;
-- missing or spurious capture marker;
-- redundant or non-standard disambiguation;
-- long algebraic notation and UCI notation;
-- zero instead of letter `O` for castling;
-- explicit pawn letter;
-- missing promotion equals sign;
-- case variation.
+| Category | Code | Example |
+|---|---|---|
+| **Suffix mismatch** (6) | `MISSING_CHECK_SUFFIX` | `Nd7` when actually check |
+| | `MISSING_CHECKMATE_SUFFIX` | `Nd7` when actually mate |
+| | `SPURIOUS_CHECK_SUFFIX` | `Nd7+` when not check |
+| | `SPURIOUS_CHECKMATE_SUFFIX` | `Nd7#` when not mate |
+| | `WRONG_CHECK_SUFFIX_FOR_CHECKMATE` | `Nd7+` when actually mate |
+| | `WRONG_CHECKMATE_SUFFIX_FOR_CHECK` | `Nd7#` when only check |
+| **Capture marker** (2) | `MISSING_CAPTURE_MARKER` | `Be5` (piece) or `ed5` (pawn) when actually a capture |
+| | `SPURIOUS_CAPTURE_MARKER` | `Bxe5` when destination empty |
+| **Disambiguation** (4) | `OVERSPECIFIED_FILE_DISAMBIGUATION` | `Nbd7` when `Nd7` would suffice |
+| | `OVERSPECIFIED_RANK_DISAMBIGUATION` | `N3d7` when `Nd7` would suffice |
+| | `OVERSPECIFIED_SQUARE_DISAMBIGUATION` | `Nb3d7` when less would suffice |
+| | `NON_STANDARD_RANK_DISAMBIGUATION` | `R1d4` where canonical uses file (`Rad4`) |
+| **Notation form** (4) | `LONG_ALGEBRAIC_NOTATION` | `e2-e4`, `Nb1-d7` |
+| | `UCI_NOTATION` | `e2e4`, `e7e8q`, `e1g1` (castling) |
+| | `ZERO_INSTEAD_OF_O_CASTLING` | `0-0`, `0-0-0` |
+| | `EXPLICIT_PAWN_LETTER` | `Pe4` |
+| **Promotion form** (1) | `MISSING_PROMOTION_EQUALS` | `e8Q` |
+| **Case variation** (4) | `LOWERCASE_PIECE_LETTER` | `nf3` |
+| | `UPPERCASE_FILE_LETTER` | `NF3` |
+| | `UPPERCASE_CAPTURE_MARKER` | `BXe5` |
+| | `LOWERCASE_PROMOTION_PIECE` | `e8=q` |
+
+Codes are not collapsed: each distinguishable deviation has its own code, and a single move can carry multiple codes
+(for example, `nbxd7+` when actually mate emits `LOWERCASE_PIECE_LETTER`,
+`OVERSPECIFIED_FILE_DISAMBIGUATION`, and `WRONG_CHECK_SUFFIX_FOR_CHECKMATE`).
 
 Mixed castling such as `0-O` is rejected. Pawn spurious capture marker recovery is also rejected because it would
 silently change the user's intended pawn.
