@@ -8,7 +8,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
 
-import io.github.dlbbld.ashlarchess.common.Nulls;
+import io.github.dlbbld.ashlarchess.internal.Nulls;
 import io.github.dlbbld.ashlarchess.pgn.LenientPgnParser;
 import io.github.dlbbld.ashlarchess.pgn.LenientPgnParserValidationException;
 import io.github.dlbbld.ashlarchess.pgn.LenientPgnParserValidationProblem;
@@ -149,7 +149,7 @@ class TestCommentaryLenient {
   void v09_commentaryAfterSuffixAnnotation() {
     final PgnGame file = LenientPgnParser.parseText(PgnTestHelper.header("*") + "1. e4!? {spicy} e5 *\n\n");
     assertEquals("spicy", Nulls.get(file.moves(), 0).commentary().value());
-    assertEquals(io.github.dlbbld.ashlarchess.enums.MoveSuffixAnnotation.INTERESTING_MOVE,
+    assertEquals(io.github.dlbbld.ashlarchess.pgn.MoveSuffixAnnotation.INTERESTING_MOVE,
         Nulls.get(file.moves(), 0).moveSuffixAnnotation());
   }
 
@@ -400,7 +400,7 @@ class TestCommentaryLenient {
     final PgnGame file = LenientPgnParser
         .parseText(PgnTestHelper.header("*") + "1. e4!? {spicy\n" + "groovy}" + " e5 *\n\n");
     assertEquals("spicy\ngroovy", Nulls.get(file.moves(), 0).commentary().value());
-    assertEquals(io.github.dlbbld.ashlarchess.enums.MoveSuffixAnnotation.INTERESTING_MOVE,
+    assertEquals(io.github.dlbbld.ashlarchess.pgn.MoveSuffixAnnotation.INTERESTING_MOVE,
         Nulls.get(file.moves(), 0).moveSuffixAnnotation());
   }
 

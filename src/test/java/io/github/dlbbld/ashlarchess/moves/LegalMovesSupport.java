@@ -3,25 +3,22 @@
 
 package io.github.dlbbld.ashlarchess.moves;
 
+import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableSet;
-
+import io.github.dlbbld.ashlarchess.board.LegalMove;
+import io.github.dlbbld.ashlarchess.board.LegalMoveKind;
+import io.github.dlbbld.ashlarchess.board.MoveSpecification;
 import io.github.dlbbld.ashlarchess.board.StaticPosition;
 import io.github.dlbbld.ashlarchess.board.enums.CastlingRight;
 import io.github.dlbbld.ashlarchess.board.enums.Piece;
 import io.github.dlbbld.ashlarchess.board.enums.PieceType;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
 import io.github.dlbbld.ashlarchess.board.enums.Square;
-import io.github.dlbbld.ashlarchess.common.Nulls;
-import io.github.dlbbld.ashlarchess.common.model.MoveSpecification;
 import io.github.dlbbld.ashlarchess.common.utility.StaticPositionUtility;
-import io.github.dlbbld.ashlarchess.enums.KingSafetyCheck;
-import io.github.dlbbld.ashlarchess.model.LegalMove;
+import io.github.dlbbld.ashlarchess.internal.Nulls;
 import io.github.dlbbld.ashlarchess.model.LegalMoveCalculation;
-import io.github.dlbbld.ashlarchess.model.LegalMoveKind;
 import io.github.dlbbld.ashlarchess.model.PseudoLegalMove;
 
 public final class LegalMovesSupport {
@@ -38,7 +35,7 @@ public final class LegalMovesSupport {
     }
   }
 
-  public static ImmutableList<LegalMove> calculateLegalMoves(StaticPosition staticPosition, Side sideToMove,
+  public static List<LegalMove> calculateLegalMoves(StaticPosition staticPosition, Side sideToMove,
       CastlingRight castlingRight, final Square enPassantCaptureTargetSquare) {
     // The bottom-up call returns a TreeSet (sorted via LegalMove.compareTo). Wrapping with copyOfList preserves the
     // sorted iteration order as a List, making the move ordering part of the public contract.
@@ -76,8 +73,8 @@ public final class LegalMovesSupport {
     return resultSet;
   }
 
-  static ImmutableSet<LegalMove> calculateLegalMoveSet(StaticPosition staticPosition, Side sideToMove,
-      Square fromSquare, Set<Square> toSquareSet) {
+  static Set<LegalMove> calculateLegalMoveSet(StaticPosition staticPosition, Side sideToMove, Square fromSquare,
+      Set<Square> toSquareSet) {
     return calculateLegalMoveCalculation(staticPosition, sideToMove, fromSquare, toSquareSet).legalMoveSet();
   }
 

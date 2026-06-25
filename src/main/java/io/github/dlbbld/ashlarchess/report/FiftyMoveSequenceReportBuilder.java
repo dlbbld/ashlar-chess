@@ -8,12 +8,10 @@ import java.util.List;
 
 import org.eclipse.jdt.annotation.Nullable;
 
-import com.google.common.collect.ImmutableList;
-
 import io.github.dlbbld.ashlarchess.board.Board;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
-import io.github.dlbbld.ashlarchess.common.Nulls;
-import io.github.dlbbld.ashlarchess.common.constants.ChessConstants;
+import io.github.dlbbld.ashlarchess.internal.ChessConstants;
+import io.github.dlbbld.ashlarchess.internal.Nulls;
 
 final class FiftyMoveSequenceReportBuilder {
 
@@ -39,7 +37,7 @@ final class FiftyMoveSequenceReportBuilder {
     final int seventyFiveThreshold = ChessConstants.SEVENTY_FIVE_MOVE_RULE_HALF_MOVE_CLOCK_THRESHOLD;
     final int initialFenClock = board.getInitialFen().halfMoveClock();
     final Side initialFenSideToMove = board.getInitialFen().sideToMove();
-    final ImmutableList<MoveRecord> moves = MoveRecords.played(board);
+    final List<MoveRecord> moves = MoveRecords.played(board);
 
     final List<FiftyMoveSequence> sequences = new ArrayList<>();
 

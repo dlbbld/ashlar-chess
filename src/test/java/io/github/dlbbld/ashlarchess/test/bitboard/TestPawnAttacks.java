@@ -11,13 +11,13 @@ import java.util.Set;
 import org.junit.jupiter.api.Test;
 
 import io.github.dlbbld.ashlarchess.bitboard.BitboardPosition;
-import io.github.dlbbld.ashlarchess.bitboard.BitboardPositionUtility;
-import io.github.dlbbld.ashlarchess.bitboard.PawnAttacks;
 import io.github.dlbbld.ashlarchess.bitboard.StaticPositionBridge;
+import io.github.dlbbld.ashlarchess.bitboard.internal.BitboardPositionUtility;
+import io.github.dlbbld.ashlarchess.bitboard.internal.PawnAttacks;
 import io.github.dlbbld.ashlarchess.board.StaticPosition;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
 import io.github.dlbbld.ashlarchess.board.enums.Square;
-import io.github.dlbbld.ashlarchess.common.Nulls;
+import io.github.dlbbld.ashlarchess.internal.Nulls;
 import io.github.dlbbld.ashlarchess.squares.PawnDiagonalSquares;
 import io.github.dlbbld.ashlarchess.test.model.PgnFen;
 import io.github.dlbbld.ashlarchess.test.model.PgnTestCaseList;

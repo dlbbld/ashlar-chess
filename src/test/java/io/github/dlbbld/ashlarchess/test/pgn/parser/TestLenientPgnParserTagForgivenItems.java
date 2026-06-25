@@ -6,15 +6,15 @@ package io.github.dlbbld.ashlarchess.test.pgn.parser;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import org.junit.jupiter.api.Test;
+import java.util.List;
 
-import com.google.common.collect.ImmutableList;
+import org.junit.jupiter.api.Test;
 
 import io.github.dlbbld.ashlarchess.pgn.ForgivenTagItem;
 import io.github.dlbbld.ashlarchess.pgn.ForgivenTagItemCode;
 import io.github.dlbbld.ashlarchess.pgn.LenientPgnParser;
 import io.github.dlbbld.ashlarchess.pgn.LenientPgnParserValidationResult;
-import io.github.dlbbld.ashlarchess.pgn.StandardTag;
+import io.github.dlbbld.ashlarchess.pgn.internal.StandardTag;
 
 /**
  * The lenient PGN parser preserves the input as given and surfaces tolerated deviations on
@@ -35,7 +35,7 @@ class TestLenientPgnParserTagForgivenItems {
         1. e4 e5 *
 
         """;
-    final ImmutableList<ForgivenTagItem> items = parseAndGetItems(pgn);
+    final List<ForgivenTagItem> items = parseAndGetItems(pgn);
 
     assertEquals(5, countByCode(items, ForgivenTagItemCode.STR_TAG_MISSING));
     assertHasItem(items, ForgivenTagItemCode.STR_TAG_MISSING, StandardTag.SITE.getName(), "");
@@ -58,7 +58,7 @@ class TestLenientPgnParserTagForgivenItems {
         1. e4 e5 1-0
 
         """;
-    final ImmutableList<ForgivenTagItem> items = parseAndGetItems(pgn);
+    final List<ForgivenTagItem> items = parseAndGetItems(pgn);
 
     assertHasItem(items, ForgivenTagItemCode.RESULT_TAG_MISSING_BUT_TERMINATION_MARKER_PRESENT,
         StandardTag.RESULT.getName(), "1-0");
@@ -77,7 +77,7 @@ class TestLenientPgnParserTagForgivenItems {
         1. e4 e5
 
         """;
-    final ImmutableList<ForgivenTagItem> items = parseAndGetItems(pgn);
+    final List<ForgivenTagItem> items = parseAndGetItems(pgn);
 
     assertHasItem(items, ForgivenTagItemCode.RESULT_TAG_AND_TERMINATION_MARKER_BOTH_MISSING,
         StandardTag.RESULT.getName(), "");
@@ -98,7 +98,7 @@ class TestLenientPgnParserTagForgivenItems {
         17. Qa4 *
 
         """;
-    final ImmutableList<ForgivenTagItem> items = parseAndGetItems(pgn);
+    final List<ForgivenTagItem> items = parseAndGetItems(pgn);
 
     assertHasItem(items, ForgivenTagItemCode.SETUP_TAG_MISSING_BUT_FEN_PRESENT, StandardTag.SET_UP.getName(), "");
   }
@@ -118,7 +118,7 @@ class TestLenientPgnParserTagForgivenItems {
         1. e4 e5 *
 
         """;
-    final ImmutableList<ForgivenTagItem> items = parseAndGetItems(pgn);
+    final List<ForgivenTagItem> items = parseAndGetItems(pgn);
 
     assertHasItem(items, ForgivenTagItemCode.SETUP_TAG_PRESENT_BUT_FEN_MISSING, StandardTag.FEN.getName(), "");
   }
@@ -141,7 +141,7 @@ class TestLenientPgnParserTagForgivenItems {
         1. e4 e5 *
 
         """;
-    final ImmutableList<ForgivenTagItem> items = parseAndGetItems(pgn);
+    final List<ForgivenTagItem> items = parseAndGetItems(pgn);
 
     assertHasItem(items, ForgivenTagItemCode.REDUNDANT_FEN_AND_SETUP_FOR_INITIAL_POSITION, StandardTag.FEN.getName(),
         "");
@@ -161,7 +161,7 @@ class TestLenientPgnParserTagForgivenItems {
         1. e4 e5 *
 
         """;
-    final ImmutableList<ForgivenTagItem> items = parseAndGetItems(pgn);
+    final List<ForgivenTagItem> items = parseAndGetItems(pgn);
 
     assertTrue(items.isEmpty());
   }
@@ -170,17 +170,17 @@ class TestLenientPgnParserTagForgivenItems {
   // Helpers
   // -------------------------------------------------------------------------------------------------
 
-  private static ImmutableList<ForgivenTagItem> parseAndGetItems(String pgn) {
+  private static List<ForgivenTagItem> parseAndGetItems(String pgn) {
     final LenientPgnParserValidationResult result = LenientPgnParser.validateText(pgn);
     assertTrue(result.isValid(), () -> "Expected lenient parse to succeed but got: " + result.message());
     return result.tagForgivenItems();
   }
 
-  private static long countByCode(ImmutableList<ForgivenTagItem> items, ForgivenTagItemCode code) {
+  private static long countByCode(List<ForgivenTagItem> items, ForgivenTagItemCode code) {
     return items.stream().filter(i -> i.code() == code).count();
   }
 
-  private static void assertHasItem(ImmutableList<ForgivenTagItem> items, ForgivenTagItemCode code, String tagName,
+  private static void assertHasItem(List<ForgivenTagItem> items, ForgivenTagItemCode code, String tagName,
       String detail) {
     final boolean present = items.stream()
         .anyMatch(i -> i.code() == code && i.tagName().equals(tagName) && i.detail().equals(detail));

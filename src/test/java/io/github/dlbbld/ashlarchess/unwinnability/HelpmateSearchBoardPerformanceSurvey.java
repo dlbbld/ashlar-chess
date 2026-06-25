@@ -6,13 +6,11 @@ package io.github.dlbbld.ashlarchess.unwinnability;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.google.common.collect.ImmutableList;
-
 import io.github.dlbbld.ashlarchess.board.Board;
-import io.github.dlbbld.ashlarchess.common.Nulls;
-import io.github.dlbbld.ashlarchess.model.LegalMove;
-import io.github.dlbbld.ashlarchess.model.PgnMove;
+import io.github.dlbbld.ashlarchess.board.LegalMove;
+import io.github.dlbbld.ashlarchess.internal.Nulls;
 import io.github.dlbbld.ashlarchess.pgn.PgnGame;
+import io.github.dlbbld.ashlarchess.pgn.PgnMove;
 import io.github.dlbbld.ashlarchess.test.model.PgnFen;
 import io.github.dlbbld.ashlarchess.test.model.PgnTestCaseList;
 import io.github.dlbbld.ashlarchess.test.pgn.parser.PgnCacheForStrictPgnParserTestCases;
@@ -51,7 +49,7 @@ public class HelpmateSearchBoardPerformanceSurvey {
   private static final int WARMUP_ROUNDS = 3;
   private static final int MEASURE_ROUNDS = 20;
 
-  private static final ImmutableList<PgnTest> GROUPS = Nulls.listOf(PgnTest.MAX_MOVES, PgnTest.RANDOM_NO_REPETITION,
+  private static final List<PgnTest> GROUPS = Nulls.listOf(PgnTest.MAX_MOVES, PgnTest.RANDOM_NO_REPETITION,
       PgnTest.WCC2021, PgnTest.CHA_LICHESS_QUICK_DEPTH_ABOVE_FOUR);
 
   public static void main(String[] args) {

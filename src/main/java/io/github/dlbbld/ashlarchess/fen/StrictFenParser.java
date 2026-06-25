@@ -6,10 +6,9 @@ package io.github.dlbbld.ashlarchess.fen;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 
-import io.github.dlbbld.ashlarchess.common.enums.StrictFenSemanticValidationProblem;
-import io.github.dlbbld.ashlarchess.common.exceptions.ProgrammingMistakeException;
-import io.github.dlbbld.ashlarchess.common.utility.ExceptionUtility;
+import io.github.dlbbld.ashlarchess.exceptions.ProgrammingMistakeException;
 import io.github.dlbbld.ashlarchess.fen.model.Fen;
+import io.github.dlbbld.ashlarchess.internal.ExceptionUtility;
 
 /**
  * Strict FEN parser. Accepts only canonical six-field FEN text and applies the library's structural and

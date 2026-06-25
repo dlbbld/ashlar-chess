@@ -6,11 +6,10 @@ package io.github.dlbbld.ashlarchess.test.common.utility;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
+import java.util.List;
 
-import com.google.common.collect.ImmutableList;
-
-import io.github.dlbbld.ashlarchess.common.Nulls;
 import io.github.dlbbld.ashlarchess.common.utility.IoUtility;
+import io.github.dlbbld.ashlarchess.internal.Nulls;
 
 public final class OutputCaptureUtility {
 
@@ -29,11 +28,11 @@ public final class OutputCaptureUtility {
     return IoUtility.toString(buffer);
   }
 
-  public static ImmutableList<String> captureStdoutLines(Runnable action) {
+  public static List<String> captureStdoutLines(Runnable action) {
     return lines(captureStdout(action));
   }
 
-  public static ImmutableList<String> lines(String text) {
+  public static List<String> lines(String text) {
     return Nulls.copyOfList(Nulls.asList(Nulls.split(normaliseLineEndings(text), "\n")));
   }
 

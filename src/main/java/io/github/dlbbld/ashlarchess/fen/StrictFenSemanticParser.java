@@ -25,16 +25,17 @@ import io.github.dlbbld.ashlarchess.board.enums.Rank;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
 import io.github.dlbbld.ashlarchess.board.enums.Square;
 import io.github.dlbbld.ashlarchess.board.enums.SquareType;
-import io.github.dlbbld.ashlarchess.board.enums.SquareUtility;
-import io.github.dlbbld.ashlarchess.common.Nulls;
-import io.github.dlbbld.ashlarchess.common.constants.ChessConstants;
-import io.github.dlbbld.ashlarchess.common.enums.StrictFenSemanticValidationProblem;
-import io.github.dlbbld.ashlarchess.common.exceptions.ProgrammingMistakeException;
-import io.github.dlbbld.ashlarchess.common.utility.ExceptionUtility;
-import io.github.dlbbld.ashlarchess.fen.constants.FenConstants;
+import io.github.dlbbld.ashlarchess.board.enums.internal.SquareUtility;
+import io.github.dlbbld.ashlarchess.exceptions.ProgrammingMistakeException;
+import io.github.dlbbld.ashlarchess.fen.internal.FenConstants;
+import io.github.dlbbld.ashlarchess.fen.internal.FenField;
+import io.github.dlbbld.ashlarchess.fen.internal.FenPieceSymbol;
+import io.github.dlbbld.ashlarchess.fen.internal.FenSideSymbol;
 import io.github.dlbbld.ashlarchess.fen.model.Fen;
-import io.github.dlbbld.ashlarchess.fen.model.FenField;
-import io.github.dlbbld.ashlarchess.model.CastlingRightBoth;
+import io.github.dlbbld.ashlarchess.internal.ChessConstants;
+import io.github.dlbbld.ashlarchess.internal.ExceptionUtility;
+import io.github.dlbbld.ashlarchess.internal.Nulls;
+import io.github.dlbbld.ashlarchess.moves.CastlingRightBoth;
 import io.github.dlbbld.ashlarchess.moves.CastlingUtility;
 
 final class StrictFenSemanticParser {

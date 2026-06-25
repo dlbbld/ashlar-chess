@@ -116,11 +116,11 @@ public final class LibraryCarlosImplementationUtility {
     return false;
   }
 
-  public static boolean calculateIsInsufficientMaterial(Board board) {
+  static boolean calculateIsInsufficientMaterial(Board board) {
     return calculateIsInsufficientMaterial(Side.WHITE, board) && calculateIsInsufficientMaterial(Side.BLACK, board);
   }
 
-  public static boolean calculateIsInsufficientMaterial(Side side, Board board) {
+  static boolean calculateIsInsufficientMaterial(Side side, Board board) {
     // using current python chess 1.5.0 implementation
     if (calculateHasPiece(side, com.github.bhlangonijr.chesslib.PieceType.PAWN, board)
         || calculateHasPiece(side, com.github.bhlangonijr.chesslib.PieceType.ROOK, board)

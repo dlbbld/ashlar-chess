@@ -19,7 +19,6 @@ import com.github.bhlangonijr.chesslib.move.MoveConversionException;
 import com.github.bhlangonijr.chesslib.move.MoveGenerator;
 import com.github.bhlangonijr.chesslib.move.MoveGeneratorException;
 import com.github.bhlangonijr.chesslib.move.MoveList;
-import com.google.common.collect.ImmutableList;
 
 import io.github.dlbbld.ashlarchess.bitboard.BitboardPosition;
 import io.github.dlbbld.ashlarchess.bitboard.StaticPositionBridge;
@@ -27,20 +26,16 @@ import io.github.dlbbld.ashlarchess.board.enums.CastlingRight;
 import io.github.dlbbld.ashlarchess.board.enums.Piece;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
 import io.github.dlbbld.ashlarchess.board.enums.Square;
-import io.github.dlbbld.ashlarchess.common.Nulls;
-import io.github.dlbbld.ashlarchess.common.constants.ChessConstants;
-import io.github.dlbbld.ashlarchess.common.constants.DynamicPositionConstants;
-import io.github.dlbbld.ashlarchess.common.exceptions.ProgrammingMistakeException;
-import io.github.dlbbld.ashlarchess.common.model.DynamicPosition;
-import io.github.dlbbld.ashlarchess.common.model.MoveSpecification;
-import io.github.dlbbld.ashlarchess.fen.constants.FenConstants;
+import io.github.dlbbld.ashlarchess.board.internal.DynamicPositionConstants;
+import io.github.dlbbld.ashlarchess.exceptions.ProgrammingMistakeException;
+import io.github.dlbbld.ashlarchess.fen.internal.FenConstants;
 import io.github.dlbbld.ashlarchess.fen.model.Fen;
-import io.github.dlbbld.ashlarchess.model.LegalMove;
-import io.github.dlbbld.ashlarchess.model.LegalMoveKind;
+import io.github.dlbbld.ashlarchess.internal.ChessConstants;
+import io.github.dlbbld.ashlarchess.internal.Nulls;
 import io.github.dlbbld.ashlarchess.moves.EnPassantCaptureUtility;
-import io.github.dlbbld.ashlarchess.san.SanSymbol;
-import io.github.dlbbld.ashlarchess.san.SanTerminalMarker;
-import io.github.dlbbld.ashlarchess.san.SanTerminalMarkerUtility;
+import io.github.dlbbld.ashlarchess.san.internal.SanSymbol;
+import io.github.dlbbld.ashlarchess.san.internal.SanTerminalMarker;
+import io.github.dlbbld.ashlarchess.san.internal.SanTerminalMarkerUtility;
 import io.github.dlbbld.ashlarchess.test.librarycarlos.NullsCarlos;
 import io.github.dlbbld.ashlarchess.test.librarycarlos.utility.MoveConversionUtility;
 import io.github.dlbbld.ashlarchess.test.librarycomparison.utility.BoardConversionUtitlity;
@@ -371,7 +366,7 @@ public class LibraryCarlosBoard {
     return performedMoveCount;
   }
 
-  public ImmutableList<DynamicPosition> getDynamicPositions() {
+  public List<DynamicPosition> getDynamicPositions() {
     return Nulls.copyOfList(dynamicPositions);
   }
 
@@ -379,7 +374,7 @@ public class LibraryCarlosBoard {
     return Nulls.getLast(dynamicPositions);
   }
 
-  public ImmutableList<MoveSpecification> getLegalMoveSpecifications() {
+  public List<MoveSpecification> getLegalMoveSpecifications() {
     return Nulls.copyOfList(generateMoveSpecificationSortedSet(this.board));
   }
 
@@ -489,7 +484,7 @@ public class LibraryCarlosBoard {
     return EnPassantCaptureUtility.calculateEnPassantCaptureTargetSquare(getLastMove());
   }
 
-  public ImmutableList<MoveSpecification> getPerformedMoveSpecifications() {
+  public List<MoveSpecification> getPerformedMoveSpecifications() {
     final List<MoveSpecification> moveSpecifications = new ArrayList<>();
     for (final MoveBackup moveBackup : NullsCarlos.getBackup(this.board)) {
 
@@ -501,7 +496,7 @@ public class LibraryCarlosBoard {
     return Nulls.copyOfList(moveSpecifications);
   }
 
-  public ImmutableList<LegalMove> getLegalMoves() {
+  public List<LegalMove> getLegalMoves() {
     return Nulls.copyOfList(generateLegalMoveSortedSet(this.board));
   }
 
@@ -580,7 +575,7 @@ public class LibraryCarlosBoard {
     return true;
   }
 
-  public ImmutableList<LegalMove> getPerformedMoves() {
+  public List<LegalMove> getPerformedMoves() {
     return Nulls.copyOfList(performedLegalMoves);
   }
 
@@ -601,7 +596,7 @@ public class LibraryCarlosBoard {
     return canClaimThreefoldRepetitionRuleWithOwnMove();
   }
 
-  public ImmutableList<String> getLegalMovesAsSan() {
+  public List<String> getLegalMovesAsSan() {
     final List<String> result = new ArrayList<>();
     for (final MoveSpecification moveSpecification : getLegalMoveSpecifications()) {
       this.move(moveSpecification);

@@ -10,16 +10,16 @@ import java.nio.file.Path;
 import org.apache.logging.log4j.Logger;
 import org.junit.jupiter.api.Test;
 
-import io.github.dlbbld.ashlarchess.common.Nulls;
+import io.github.dlbbld.ashlarchess.internal.Nulls;
 import io.github.dlbbld.ashlarchess.pgn.LenientPgnParser;
 import io.github.dlbbld.ashlarchess.pgn.PgnCreate;
 import io.github.dlbbld.ashlarchess.pgn.PgnGame;
 import io.github.dlbbld.ashlarchess.pgn.WriteMode;
+import io.github.dlbbld.ashlarchess.test.common.utility.Loggers;
 import io.github.dlbbld.ashlarchess.test.pgntest.constants.PgnTestConstants;
 
 class TestLenientPgnParserUtf8 {
-
-  private static final Logger logger = Nulls.getLogger(TestLenientPgnParserUtf8.class);
+  private static final Logger logger = Loggers.getLogger(TestLenientPgnParserUtf8.class);
 
   @SuppressWarnings("static-method")
   @Test

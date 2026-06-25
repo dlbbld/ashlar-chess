@@ -3,11 +3,11 @@
 
 package io.github.dlbbld.ashlarchess.squares;
 
-import com.google.common.collect.ImmutableList;
+import java.util.List;
 
 import io.github.dlbbld.ashlarchess.board.enums.Square;
 
-record BishopRange(ImmutableList<Square> northEastSquares, ImmutableList<Square> southEastSquares,
-    ImmutableList<Square> southWestSquares, ImmutableList<Square> northWestSquares) implements DiagonalRange {
+record BishopRange(List<Square> northEastSquares, List<Square> southEastSquares, List<Square> southWestSquares,
+    List<Square> northWestSquares) implements DiagonalRange {
 
 }

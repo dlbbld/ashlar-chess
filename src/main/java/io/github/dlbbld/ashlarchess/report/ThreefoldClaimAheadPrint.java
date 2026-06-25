@@ -7,10 +7,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import com.google.common.collect.ImmutableList;
-
-import io.github.dlbbld.ashlarchess.common.Nulls;
-import io.github.dlbbld.ashlarchess.common.model.DynamicPosition;
+import io.github.dlbbld.ashlarchess.board.DynamicPosition;
+import io.github.dlbbld.ashlarchess.internal.Nulls;
 
 final class ThreefoldClaimAheadPrint {
 
@@ -28,7 +26,7 @@ final class ThreefoldClaimAheadPrint {
       }
 
       // The joined sequence is [priorOccurrences..., claimAheadMove]. claimAheadMove sits at lastIndex.
-      final ImmutableList<MoveRecord> priorOccurrences = entry.priorOccurrences();
+      final List<MoveRecord> priorOccurrences = entry.priorOccurrences();
       final int lastIndex = priorOccurrences.size();
       for (int i = 0; i <= lastIndex; i++) {
         final MoveRecord move = i < lastIndex ? Nulls.get(priorOccurrences, i) : entry.claimAheadMove();

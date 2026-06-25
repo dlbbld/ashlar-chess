@@ -6,8 +6,8 @@ package io.github.dlbbld.ashlarchess.report;
 import java.util.ArrayList;
 import java.util.List;
 
-import io.github.dlbbld.ashlarchess.board.MoveNumberFormat;
-import io.github.dlbbld.ashlarchess.common.constants.ChessConstants;
+import io.github.dlbbld.ashlarchess.board.internal.MoveNumberFormat;
+import io.github.dlbbld.ashlarchess.internal.ChessConstants;
 
 final class FiftyMoveClaimAheadPrint {
 

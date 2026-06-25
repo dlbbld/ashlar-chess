@@ -6,7 +6,6 @@ package io.github.dlbbld.ashlarchess.pgn;
 import java.nio.file.Path;
 
 import io.github.dlbbld.ashlarchess.board.Board;
-import io.github.dlbbld.ashlarchess.model.PgnMove;
 
 public final class PgnUtility {
 

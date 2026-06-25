@@ -12,7 +12,7 @@ import org.eclipse.jdt.annotation.NonNull;
 import com.github.bhlangonijr.chesslib.game.Game;
 import com.github.bhlangonijr.chesslib.move.Move;
 
-import io.github.dlbbld.ashlarchess.fen.constants.FenConstants;
+import io.github.dlbbld.ashlarchess.fen.internal.FenConstants;
 import io.github.dlbbld.ashlarchess.test.librarycarlos.utility.PgnParserUtilityLibraryCarlos;
 import io.github.dlbbld.ashlarchess.test.pgn.parser.model.PgnSan;
 

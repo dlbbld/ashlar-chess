@@ -15,20 +15,18 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
-import com.google.common.collect.ImmutableSet;
-
 import io.github.dlbbld.ashlarchess.board.enums.PieceType;
 import io.github.dlbbld.ashlarchess.board.enums.Square;
-import io.github.dlbbld.ashlarchess.model.EmptyBoardMove;
+import io.github.dlbbld.ashlarchess.internal.Nulls;
+import io.github.dlbbld.ashlarchess.moves.EmptyBoardMove;
 import io.github.dlbbld.ashlarchess.squares.EmptyBoardMoveUtility;
 
-@SuppressWarnings("null")
 public final class BishopSanValidateStaticallyStrict {
 
   private BishopSanValidateStaticallyStrict() {
   }
 
-  public static final ImmutableSet<String> VALUES;
+  public static final Set<String> VALUES;
 
   static {
     final Set<String> set = new TreeSet<>();
@@ -57,7 +55,7 @@ public final class BishopSanValidateStaticallyStrict {
         }
       }
     }
-    VALUES = ImmutableSet.copyOf(set);
+    VALUES = Nulls.copyOfSet(set);
   }
 
   private static boolean calculateIsFromRankPossibleBishop(Square fromSquare, List<Square> fromSquares) {

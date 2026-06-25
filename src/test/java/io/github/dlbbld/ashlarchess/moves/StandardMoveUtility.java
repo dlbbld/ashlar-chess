@@ -6,9 +6,9 @@ package io.github.dlbbld.ashlarchess.moves;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.github.dlbbld.ashlarchess.board.MoveSpecification;
 import io.github.dlbbld.ashlarchess.board.enums.Piece;
 import io.github.dlbbld.ashlarchess.board.model.UpdateSquare;
-import io.github.dlbbld.ashlarchess.common.model.MoveSpecification;
 
 public final class StandardMoveUtility {
 

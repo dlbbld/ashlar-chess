@@ -10,9 +10,9 @@ import java.util.List;
 import org.apache.logging.log4j.Logger;
 import org.junit.jupiter.api.Test;
 
-import io.github.dlbbld.ashlarchess.common.Nulls;
 import io.github.dlbbld.ashlarchess.pgn.PgnGame;
 import io.github.dlbbld.ashlarchess.test.RestrictTestConstants;
+import io.github.dlbbld.ashlarchess.test.common.utility.Loggers;
 import io.github.dlbbld.ashlarchess.test.model.PgnFen;
 import io.github.dlbbld.ashlarchess.test.model.PgnTestCaseList;
 import io.github.dlbbld.ashlarchess.test.pgn.parser.PgnCacheForLenientPgnParserTestCases;
@@ -20,8 +20,7 @@ import io.github.dlbbld.ashlarchess.test.pgn.parser.PgnCacheForStrictPgnParserTe
 import io.github.dlbbld.ashlarchess.test.pgn.setup.PgnTestCaseCatalog;
 
 class TestStrictPgnParserAgainstLenientPgnParser {
-
-  private static final Logger logger = Nulls.getLogger(TestStrictPgnParserAgainstLenientPgnParser.class);
+  private static final Logger logger = Loggers.getLogger(TestStrictPgnParserAgainstLenientPgnParser.class);
 
   @SuppressWarnings({ "static-method" })
   @Test

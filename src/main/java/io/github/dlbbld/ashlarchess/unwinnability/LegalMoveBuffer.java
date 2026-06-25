@@ -7,7 +7,7 @@ import java.util.AbstractList;
 
 import org.eclipse.jdt.annotation.NonNull;
 
-import io.github.dlbbld.ashlarchess.model.LegalMove;
+import io.github.dlbbld.ashlarchess.board.LegalMove;
 
 /**
  * Per-ply reusable container for the legal-move generator's output, owned by {@link HelpmateSearchBoard}. Backed by a

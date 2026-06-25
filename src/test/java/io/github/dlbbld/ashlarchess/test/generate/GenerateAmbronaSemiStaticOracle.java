@@ -19,10 +19,11 @@ import java.util.Set;
 
 import org.apache.logging.log4j.Logger;
 
-import io.github.dlbbld.ashlarchess.common.Nulls;
-import io.github.dlbbld.ashlarchess.common.exceptions.FileSystemAccessException;
 import io.github.dlbbld.ashlarchess.common.utility.IoUtility;
+import io.github.dlbbld.ashlarchess.exceptions.FileSystemAccessException;
+import io.github.dlbbld.ashlarchess.internal.Nulls;
 import io.github.dlbbld.ashlarchess.test.ConfigurationTestConstants;
+import io.github.dlbbld.ashlarchess.test.common.utility.Loggers;
 import io.github.dlbbld.ashlarchess.test.model.PgnFen;
 import io.github.dlbbld.ashlarchess.test.model.PgnTestCaseList;
 import io.github.dlbbld.ashlarchess.test.pgn.setup.PgnTestCaseCatalog;
@@ -35,8 +36,7 @@ import io.github.dlbbld.ashlarchess.unwinnability.SemiStaticOracleFormatter;
  * the default location.
  */
 public final class GenerateAmbronaSemiStaticOracle {
-
-  private static final Logger logger = Nulls.getLogger(GenerateAmbronaSemiStaticOracle.class);
+  private static final Logger logger = Loggers.getLogger(GenerateAmbronaSemiStaticOracle.class);
 
   private static final String D3_CHESS_PATH_PROPERTY = "ambrona.d3.path";
   private static final String WSL_RUNNER_PATH = "/tmp/ashlar-chess-ambrona-oracle/semistatic-oracle";

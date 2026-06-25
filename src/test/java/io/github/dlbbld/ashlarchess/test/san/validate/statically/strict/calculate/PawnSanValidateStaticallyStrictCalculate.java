@@ -10,23 +10,21 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-import com.google.common.collect.ImmutableMap;
-
 import io.github.dlbbld.ashlarchess.board.enums.File;
 import io.github.dlbbld.ashlarchess.board.enums.Rank;
-import io.github.dlbbld.ashlarchess.board.enums.RankUtility;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
 import io.github.dlbbld.ashlarchess.board.enums.Square;
-import io.github.dlbbld.ashlarchess.common.Nulls;
-import io.github.dlbbld.ashlarchess.common.exceptions.ProgrammingMistakeException;
-import io.github.dlbbld.ashlarchess.san.SanParse;
+import io.github.dlbbld.ashlarchess.board.enums.internal.RankUtility;
+import io.github.dlbbld.ashlarchess.exceptions.ProgrammingMistakeException;
+import io.github.dlbbld.ashlarchess.internal.Nulls;
+import io.github.dlbbld.ashlarchess.san.internal.SanParse;
 import io.github.dlbbld.ashlarchess.test.san.model.SanValidationFromTo;
 import io.github.dlbbld.ashlarchess.test.san.validate.statically.strict.enums.PawnBlackSanValidateStaticallyStrict;
 import io.github.dlbbld.ashlarchess.test.san.validate.statically.strict.enums.PawnWhiteSanValidateStaticallyStrict;
 
 public class PawnSanValidateStaticallyStrictCalculate {
 
-  static ImmutableMap<String, SanParse> calculateSanMap(Side side) {
+  static Map<String, SanParse> calculateSanMap(Side side) {
     final Map<String, SanParse> sanValidateMap = new TreeMap<>();
 
     final List<String> enumNames = calculateEnumNames(side);

@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Test;
 
 import com.github.bhlangonijr.chesslib.move.MoveList;
 
-import io.github.dlbbld.ashlarchess.common.Nulls;
+import io.github.dlbbld.ashlarchess.internal.Nulls;
 
 class TestLibraryCarlosCastlingCausesCheckOrCheckmatePass {
 

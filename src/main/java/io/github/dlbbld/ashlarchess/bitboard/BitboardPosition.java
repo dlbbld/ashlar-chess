@@ -7,16 +7,27 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.function.Consumer;
 
-import com.google.common.collect.ImmutableSet;
-
+import io.github.dlbbld.ashlarchess.bitboard.internal.BishopAttacks;
+import io.github.dlbbld.ashlarchess.bitboard.internal.BishopMoves;
+import io.github.dlbbld.ashlarchess.bitboard.internal.BitboardPositionUtility;
+import io.github.dlbbld.ashlarchess.bitboard.internal.KingAttacks;
+import io.github.dlbbld.ashlarchess.bitboard.internal.KingMoves;
+import io.github.dlbbld.ashlarchess.bitboard.internal.KnightAttacks;
+import io.github.dlbbld.ashlarchess.bitboard.internal.KnightMoves;
+import io.github.dlbbld.ashlarchess.bitboard.internal.PawnAttacks;
+import io.github.dlbbld.ashlarchess.bitboard.internal.PawnMoves;
+import io.github.dlbbld.ashlarchess.bitboard.internal.QueenAttacks;
+import io.github.dlbbld.ashlarchess.bitboard.internal.QueenMoves;
+import io.github.dlbbld.ashlarchess.bitboard.internal.RookAttacks;
+import io.github.dlbbld.ashlarchess.bitboard.internal.RookMoves;
+import io.github.dlbbld.ashlarchess.board.MoveSpecification;
 import io.github.dlbbld.ashlarchess.board.enums.CastlingMove;
 import io.github.dlbbld.ashlarchess.board.enums.Piece;
 import io.github.dlbbld.ashlarchess.board.enums.PieceType;
 import io.github.dlbbld.ashlarchess.board.enums.PromotionPieceType;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
 import io.github.dlbbld.ashlarchess.board.enums.Square;
-import io.github.dlbbld.ashlarchess.common.Nulls;
-import io.github.dlbbld.ashlarchess.common.model.MoveSpecification;
+import io.github.dlbbld.ashlarchess.internal.Nulls;
 
 /**
  * Twelve-bitboard piece-placement representation: one {@code long} per real
@@ -184,7 +195,7 @@ public record BitboardPosition(long whitePawns, long whiteRooks, long whiteKnigh
    * Returns an empty set if {@code fromSquare} is empty. {@code enPassantBit} is the single-bit bitboard of the EP
    * target square, or {@code 0L} if no EP is available.
    */
-  public ImmutableSet<Square> potentialToSquares(Square fromSquare, long enPassantBit) {
+  public Set<Square> potentialToSquares(Square fromSquare, long enPassantBit) {
     if (fromSquare == Square.NONE) {
       throw new IllegalArgumentException("The NONE square does not belong to the board");
     }
@@ -463,7 +474,7 @@ public record BitboardPosition(long whitePawns, long whiteRooks, long whiteKnigh
    * promotion expands each rank-1/rank-8 target into four moves; en-passant is special-cased for the rank-pin edge case
    * where capturing the EP pawn could expose own king to a rook or queen along the rank.
    */
-  public ImmutableSet<MoveSpecification> legalMoves(Side side, long enPassantBit) {
+  public Set<MoveSpecification> legalMoves(Side side, long enPassantBit) {
     final Set<MoveSpecification> moves = new TreeSet<>();
     legalMovesInto(moves::add, side, enPassantBit);
     return Nulls.copyOfSet(moves);
@@ -661,7 +672,7 @@ public record BitboardPosition(long whitePawns, long whiteRooks, long whiteKnigh
    * <p>
    * Castling rights, en-passant target square, side-to-move, and the halfmove clock and fullmove number are
    * intentionally NOT updated here - they live on {@link io.github.dlbbld.ashlarchess.board.Board} /
-   * {@link io.github.dlbbld.ashlarchess.common.model.DynamicPosition}. This is the piece-placement-only equivalent of
+   * {@link io.github.dlbbld.ashlarchess.board.DynamicPosition}. This is the piece-placement-only equivalent of
    * {@code StaticPositionUtility.createPositionAfterMove}.
    *
    * <p>

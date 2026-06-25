@@ -10,13 +10,11 @@ import java.util.Map;
 
 import org.eclipse.jdt.annotation.NonNull;
 
-import com.google.common.collect.ImmutableList;
-
 import io.github.dlbbld.ashlarchess.board.Board;
-import io.github.dlbbld.ashlarchess.common.Nulls;
-import io.github.dlbbld.ashlarchess.common.constants.ChessConstants;
-import io.github.dlbbld.ashlarchess.common.model.DynamicPosition;
-import io.github.dlbbld.ashlarchess.common.utility.ListUtility;
+import io.github.dlbbld.ashlarchess.board.DynamicPosition;
+import io.github.dlbbld.ashlarchess.internal.ChessConstants;
+import io.github.dlbbld.ashlarchess.internal.ListUtility;
+import io.github.dlbbld.ashlarchess.internal.Nulls;
 import io.github.dlbbld.ashlarchess.messages.Message;
 import io.github.dlbbld.ashlarchess.pgn.LenientPgnParser;
 import io.github.dlbbld.ashlarchess.pgn.PgnGame;
@@ -37,18 +35,18 @@ public final class Reporter {
   private Reporter() {
   }
 
-  public static ImmutableList<String> report(String pgnText) {
+  public static List<String> report(String pgnText) {
     final PgnGame pgnGame = LenientPgnParser.parseText(pgnText);
     final Board board = PgnUtility.toBoard(pgnGame);
     return report(board);
   }
 
-  public static ImmutableList<String> report(Path folderPath, String pgnName) {
+  public static List<String> report(Path folderPath, String pgnName) {
     final Board board = PgnUtility.toBoard(folderPath, pgnName);
     return report(board);
   }
 
-  public static ImmutableList<String> report(Board board) {
+  public static List<String> report(Board board) {
     return Nulls.copyOfList(calculateReportLines(board));
   }
 

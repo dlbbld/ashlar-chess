@@ -8,7 +8,7 @@ import java.util.regex.Pattern;
 
 import org.eclipse.jdt.annotation.NonNull;
 
-import io.github.dlbbld.ashlarchess.fen.model.FenField;
+import io.github.dlbbld.ashlarchess.fen.internal.FenField;
 
 final class StrictFenFieldParser {
 

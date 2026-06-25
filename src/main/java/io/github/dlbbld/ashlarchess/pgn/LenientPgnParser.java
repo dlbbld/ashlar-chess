@@ -11,17 +11,16 @@ import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 
 import io.github.dlbbld.ashlarchess.board.Board;
-import io.github.dlbbld.ashlarchess.board.MoveNumberFormat;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
-import io.github.dlbbld.ashlarchess.common.Nulls;
-import io.github.dlbbld.ashlarchess.common.exceptions.PgnCommentaryValidationException;
-import io.github.dlbbld.ashlarchess.common.exceptions.ProgrammingMistakeException;
-import io.github.dlbbld.ashlarchess.common.utility.ExceptionUtility;
-import io.github.dlbbld.ashlarchess.enums.MoveSuffixAnnotation;
+import io.github.dlbbld.ashlarchess.board.internal.MoveNumberFormat;
+import io.github.dlbbld.ashlarchess.exceptions.ProgrammingMistakeException;
 import io.github.dlbbld.ashlarchess.fen.LenientFenParser;
-import io.github.dlbbld.ashlarchess.fen.constants.FenConstants;
+import io.github.dlbbld.ashlarchess.fen.internal.FenConstants;
 import io.github.dlbbld.ashlarchess.fen.model.Fen;
-import io.github.dlbbld.ashlarchess.model.PgnMove;
+import io.github.dlbbld.ashlarchess.internal.ExceptionUtility;
+import io.github.dlbbld.ashlarchess.internal.Nulls;
+import io.github.dlbbld.ashlarchess.pgn.internal.StandardTag;
+import io.github.dlbbld.ashlarchess.pgn.internal.TagUtility;
 import io.github.dlbbld.ashlarchess.san.ForgivenSanItem;
 import io.github.dlbbld.ashlarchess.san.LenientSanParseResult;
 import io.github.dlbbld.ashlarchess.san.LenientSanParserValidationException;
@@ -544,7 +543,7 @@ public final class LenientPgnParser {
         throw movetextError(LenientPgnParserValidationProblem.MOVETEXT_COMMENTARY_END_BRACE_WITHOUT_START_BRACE,
             "A closing brace } was found with no matching opening brace.");
       default:
-        throw new io.github.dlbbld.ashlarchess.common.exceptions.ProgrammingMistakeException(
+        throw new io.github.dlbbld.ashlarchess.exceptions.ProgrammingMistakeException(
             "consumeCommentaryOrThrow called for non-brace token: " + token.type());
     }
   }
@@ -622,10 +621,10 @@ public final class LenientPgnParser {
   }
 
   private static boolean isAllowedLenientSanCharacter(char c) {
-    if (io.github.dlbbld.ashlarchess.fen.FenPieceSymbol.exists(c)
+    if (io.github.dlbbld.ashlarchess.fen.internal.FenPieceSymbol.exists(c)
         || io.github.dlbbld.ashlarchess.board.enums.File.exists(c)
         || io.github.dlbbld.ashlarchess.board.enums.Rank.exists(c)
-        || io.github.dlbbld.ashlarchess.san.SanSymbol.exists(c)) {
+        || io.github.dlbbld.ashlarchess.san.internal.SanSymbol.exists(c)) {
       return true;
     }
     // Lenient additions: uppercase file letter (UPPERCASE_FILE_LETTER), uppercase capture marker

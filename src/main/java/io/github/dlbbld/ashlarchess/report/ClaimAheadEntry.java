@@ -3,9 +3,9 @@
 
 package io.github.dlbbld.ashlarchess.report;
 
-import com.google.common.collect.ImmutableList;
+import java.util.List;
 
-import io.github.dlbbld.ashlarchess.common.Nulls;
+import io.github.dlbbld.ashlarchess.internal.Nulls;
 
 /**
  * One legal move that would, if played from its parent position, create a threefold-repetition position the side could
@@ -22,7 +22,7 @@ import io.github.dlbbld.ashlarchess.common.Nulls;
  * {@code hasBeenPlayed} is true when the same move appears in the played history - meaning the side actually made the
  * claim-ahead-able move on the board. The reporter marks such entries with an asterisk.
  */
-record ClaimAheadEntry(MoveRecord claimAheadMove, boolean hasBeenPlayed, ImmutableList<MoveRecord> priorOccurrences,
+record ClaimAheadEntry(MoveRecord claimAheadMove, boolean hasBeenPlayed, List<MoveRecord> priorOccurrences,
     boolean includesInitialPosition, int totalRepetitionCount) {
 
   public ClaimAheadEntry {

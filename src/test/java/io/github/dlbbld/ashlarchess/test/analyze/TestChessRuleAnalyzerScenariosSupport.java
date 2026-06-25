@@ -10,11 +10,11 @@ import org.eclipse.jdt.annotation.Nullable;
 
 import io.github.dlbbld.ashlarchess.analyze.ChessRuleAnalyzer;
 import io.github.dlbbld.ashlarchess.board.Board;
-import io.github.dlbbld.ashlarchess.common.model.MoveSpecification;
-import io.github.dlbbld.ashlarchess.enums.KingSafetyCheck;
-import io.github.dlbbld.ashlarchess.enums.MoveCheck;
-import io.github.dlbbld.ashlarchess.enums.MovementCheck;
-import io.github.dlbbld.ashlarchess.exceptions.InvalidMoveException;
+import io.github.dlbbld.ashlarchess.board.InvalidMoveException;
+import io.github.dlbbld.ashlarchess.board.MoveCheck;
+import io.github.dlbbld.ashlarchess.board.MoveSpecification;
+import io.github.dlbbld.ashlarchess.moves.KingSafetyCheck;
+import io.github.dlbbld.ashlarchess.moves.MovementCheck;
 
 /**
  * Base for analyzer-routed scenario tests. The {@link #check} helper inspects the expected {@link MoveCheck} and

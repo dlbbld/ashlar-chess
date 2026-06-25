@@ -3,9 +3,9 @@
 
 package io.github.dlbbld.ashlarchess.board.enums;
 
-import com.google.common.collect.ImmutableList;
+import java.util.List;
 
-import io.github.dlbbld.ashlarchess.common.exceptions.ProgrammingMistakeException;
+import io.github.dlbbld.ashlarchess.exceptions.ProgrammingMistakeException;
 
 public enum SquareType {
   LIGHT_SQUARE,
@@ -13,7 +13,7 @@ public enum SquareType {
   NONE;
 
   @SuppressWarnings("null")
-  public static final ImmutableList<SquareType> REAL = ImmutableList.of(LIGHT_SQUARE, DARK_SQUARE);
+  public static final List<SquareType> REAL = List.of(LIGHT_SQUARE, DARK_SQUARE);
 
   // cannot define in constructor as cannot reference an enum befor it is defined
   public SquareType getOppositeSquareType() {

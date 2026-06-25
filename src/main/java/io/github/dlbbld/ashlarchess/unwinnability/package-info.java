@@ -19,8 +19,8 @@
  * microsecond-scale, structural, two-valued: {@code UNWINNABLE} or {@code POSSIBLY_WINNABLE}. It is sound but not
  * complete - it proves unwinnability or leaves it open, and never claims winnability.</li>
  * <li><strong>Full</strong> ({@link io.github.dlbbld.ashlarchess.unwinnability.UnwinnableFullAnalyzer}) - deep search,
- * four-valued: {@code WINNABLE_HELPMATE} (a concrete mate line was found), {@code WINNABLE_BY_THEOREM} (winnability
- * certified by the basic-helpmate-existence theorem, no line), {@code UNWINNABLE}, or {@code UNDETERMINED}. The
+ * three-valued: {@code WINNABLE}, {@code UNWINNABLE}, or {@code UNDETERMINED}. The direct analysis record additionally
+ * tells whether a {@code WINNABLE} result was theorem-certified and carries a concrete mate line for searched wins. The
  * undetermined case is bounded by a 500&nbsp;000-position limit; most positions resolve well below it.</li>
  * </ul>
  *

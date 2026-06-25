@@ -4,14 +4,13 @@
 package io.github.dlbbld.ashlarchess.squares;
 
 import java.util.EnumMap;
-
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableSet;
+import java.util.LinkedHashSet;
+import java.util.Map;
+import java.util.Set;
 
 import io.github.dlbbld.ashlarchess.board.enums.Square;
-import io.github.dlbbld.ashlarchess.common.Nulls;
+import io.github.dlbbld.ashlarchess.internal.Nulls;
 
-@SuppressWarnings("null")
 public final class KingNonCastlingEmptyBoardSquares {
 
   private KingNonCastlingEmptyBoardSquares() {
@@ -20,14 +19,14 @@ public final class KingNonCastlingEmptyBoardSquares {
   private static final int[][] KING_OFFSETS = { { 0, 1 }, { 0, -1 }, { 1, 0 }, { -1, 0 }, { 1, 1 }, { 1, -1 },
       { -1, 1 }, { -1, -1 } };
 
-  private static final ImmutableMap<Square, ImmutableSet<Square>> KING_SQUARES_MAP;
+  private static final Map<Square, Set<Square>> KING_SQUARES_MAP;
 
   static {
-    final EnumMap<Square, ImmutableSet<Square>> map = Nulls.newEnumMap(Square.class);
+    final EnumMap<Square, Set<Square>> map = Nulls.newEnumMap(Square.class);
     for (final Square from : Square.REAL) {
       final int fromFile = from.getFile().getNumber();
       final int fromRank = from.getRank().getNumber();
-      final ImmutableSet.Builder<Square> builder = ImmutableSet.builder();
+      final Set<Square> builder = new LinkedHashSet<>();
       for (final int[] offset : KING_OFFSETS) {
         final int toFile = fromFile + offset[0];
         final int toRank = fromRank + offset[1];
@@ -35,13 +34,13 @@ public final class KingNonCastlingEmptyBoardSquares {
           builder.add(Square.of(toFile, toRank));
         }
       }
-      map.put(from, builder.build());
+      map.put(from, Nulls.copyOfSet(builder));
     }
     KING_SQUARES_MAP = Nulls.copyOfMap(map);
     ValidateMoveNumberUtility.validateMapOfSet(KING_SQUARES_MAP, 420);
   }
 
-  public static ImmutableSet<Square> getKingSquares(Square fromSquare) {
+  public static Set<Square> getKingSquares(Square fromSquare) {
     return Nulls.get(KING_SQUARES_MAP, fromSquare);
   }
 

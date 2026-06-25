@@ -9,9 +9,9 @@ import java.util.Map;
 
 import org.junit.jupiter.api.Test;
 
-import io.github.dlbbld.ashlarchess.common.Nulls;
-import io.github.dlbbld.ashlarchess.san.SanParse;
-import io.github.dlbbld.ashlarchess.san.SanValidateFormat;
+import io.github.dlbbld.ashlarchess.internal.Nulls;
+import io.github.dlbbld.ashlarchess.san.internal.SanParse;
+import io.github.dlbbld.ashlarchess.san.internal.SanValidateFormat;
 import io.github.dlbbld.ashlarchess.test.san.validate.statically.format.calculate.SanValidateStaticallyFormat;
 
 class TestSanValidateFormatSuccessOracle {
@@ -22,8 +22,8 @@ class TestSanValidateFormatSuccessOracle {
    *
    * <p>
    * This uses the static map as an oracle: if the new parser produces a different result for any known-valid SAN string
-   * (wrong {@link io.github.dlbbld.ashlarchess.san.SanFormat}, wrong from-square, wrong promotion piece, etc.) the test
-   * will catch it immediately without having to enumerate strings manually.
+   * (wrong {@link io.github.dlbbld.ashlarchess.san.internal.SanFormat}, wrong from-square, wrong promotion piece, etc.)
+   * the test will catch it immediately without having to enumerate strings manually.
    */
   @SuppressWarnings("static-method")
   @Test

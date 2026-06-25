@@ -3,9 +3,9 @@
 
 package io.github.dlbbld.ashlarchess.san;
 
-import org.eclipse.jdt.annotation.NonNull;
+import java.util.List;
 
-import com.google.common.collect.ImmutableList;
+import org.eclipse.jdt.annotation.NonNull;
 
 /**
  * One forgiven deviation surfaced by the lenient SAN parser.
@@ -18,11 +18,11 @@ public record ForgivenSanItem(LenientSanValidationProblem code, String originalT
 
   /**
    * Shared empty list for the "no deviations forgiven" case. Centralised here so the {@code @NonNull} suppression on
-   * Guava's {@code ImmutableList.of()} (which JDT can't statically prove is non-null with non-null elements) lives in
-   * one place rather than at every caller.
+   * the JDK {@code List.of()} (which JDT can't statically prove is non-null with non-null elements) lives in one place
+   * rather than at every caller.
    */
   @SuppressWarnings("null")
-  public static final @NonNull ImmutableList<@NonNull ForgivenSanItem> NO_ITEMS = ImmutableList.of();
+  public static final @NonNull List<@NonNull ForgivenSanItem> NO_ITEMS = List.of();
 
   public ForgivenSanItem {
     if (originalToken.isBlank()) {

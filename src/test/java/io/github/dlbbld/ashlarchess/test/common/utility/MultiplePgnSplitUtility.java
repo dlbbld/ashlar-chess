@@ -14,13 +14,12 @@ import java.util.Scanner;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
 
-import io.github.dlbbld.ashlarchess.common.Nulls;
-import io.github.dlbbld.ashlarchess.common.exceptions.ChessApiRuntimeException;
-import io.github.dlbbld.ashlarchess.common.utility.ExceptionUtility;
+import io.github.dlbbld.ashlarchess.exceptions.ChessApiRuntimeException;
+import io.github.dlbbld.ashlarchess.internal.ExceptionUtility;
+import io.github.dlbbld.ashlarchess.internal.Nulls;
 
 public final class MultiplePgnSplitUtility {
-
-  private static final Logger logger = Nulls.getLogger(MultiplePgnSplitUtility.class);
+  private static final Logger logger = Loggers.getLogger(MultiplePgnSplitUtility.class);
 
   private MultiplePgnSplitUtility() {
   }

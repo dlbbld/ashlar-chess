@@ -3,10 +3,10 @@
 
 package io.github.dlbbld.ashlarchess.board.enums;
 
-import com.google.common.collect.ImmutableList;
+import java.util.List;
 
-import io.github.dlbbld.ashlarchess.common.Nulls;
-import io.github.dlbbld.ashlarchess.common.exceptions.NonePointerException;
+import io.github.dlbbld.ashlarchess.exceptions.NonePointerException;
+import io.github.dlbbld.ashlarchess.internal.Nulls;
 
 public enum Piece {
   WHITE_PAWN(PieceType.PAWN, Side.WHITE),
@@ -24,8 +24,8 @@ public enum Piece {
   NONE(PieceType.NONE, Side.NONE);
 
   @SuppressWarnings("null")
-  public static final ImmutableList<Piece> REAL = ImmutableList.of(WHITE_PAWN, WHITE_ROOK, WHITE_KNIGHT, WHITE_BISHOP,
-      WHITE_QUEEN, WHITE_KING, BLACK_PAWN, BLACK_ROOK, BLACK_KNIGHT, BLACK_BISHOP, BLACK_QUEEN, BLACK_KING);
+  public static final List<Piece> REAL = List.of(WHITE_PAWN, WHITE_ROOK, WHITE_KNIGHT, WHITE_BISHOP, WHITE_QUEEN,
+      WHITE_KING, BLACK_PAWN, BLACK_ROOK, BLACK_KNIGHT, BLACK_BISHOP, BLACK_QUEEN, BLACK_KING);
 
   private final PieceType pieceType;
   private final Side side;

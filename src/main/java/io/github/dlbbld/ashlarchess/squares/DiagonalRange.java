@@ -3,16 +3,16 @@
 
 package io.github.dlbbld.ashlarchess.squares;
 
-import com.google.common.collect.ImmutableList;
+import java.util.List;
 
 import io.github.dlbbld.ashlarchess.board.enums.Square;
 
 interface DiagonalRange {
-  ImmutableList<Square> northEastSquares();
+  List<Square> northEastSquares();
 
-  ImmutableList<Square> southEastSquares();
+  List<Square> southEastSquares();
 
-  ImmutableList<Square> southWestSquares();
+  List<Square> southWestSquares();
 
-  ImmutableList<Square> northWestSquares();
+  List<Square> northWestSquares();
 }

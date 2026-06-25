@@ -1,6 +1,6 @@
 # ashlar-chess — Specification
 
-The **technical specification** for ashlar-chess: design goals, architecture, philosophy, and the rule-level decisions that make the library what it is. Meant for someone (including future-self) who needs to understand *why* the library is shaped the way it is. User-facing documentation lives in `README.md`.
+The **technical specification** for ashlar-chess: design goals, architecture, philosophy, and the rule-level decisions that make the library what it is. Meant for someone (including future-self) who needs to understand *why* the library is shaped the way it is. User-facing how-to documentation lives in `manual.md`; `README.md` is the project front door.
 
 ---
 
@@ -12,7 +12,7 @@ By a checklist of "major features found in large chess libraries," ashlar-chess 
 
 The goal is an essential orthodox-chess rules library, where "essential" is defined deliberately and personally: the parts considered central to rule correctness and trustworthy chess data handling. The core feature set is fixed:
 
-- orthodox chess only, not Chess960;
+- orthodox chess only;
 - strict and lenient FEN / SAN / PGN handling for the use cases ashlar supports, with explicit, instructive, educative validation messages;
 - precise legal-move validation and move execution;
 - exact game-state and rule predicates;
@@ -24,22 +24,6 @@ The goal is an essential orthodox-chess rules library, where "essential" is defi
 For these chosen domains, the quality bar is very high. ashlar-chess should be Class-A not because it does everything, but because the things it chooses to do are implemented with exceptional correctness, consistency, and maintainability.
 
 The guiding principle is therefore not "add every feature serious chess libraries have." It is: build the fixed essential feature set, make it internally coherent, FIDE-faithful where applicable, thoroughly tested, well documented, and pleasant to use — then **finish** it. This project should not grow forever. It should reach a stable, finished shape; after that, work is mostly quality improvement, bug fixes, documentation, performance where it matters, and API clarity — not endless feature expansion.
-
-### Reviewing against this manifest
-
-When reviewing ashlar-chess, distinguish three kinds of "missing":
-
-1. **Missing features that contradict the chosen essential scope** — actionable.
-2. **Missing features common in broader chess libraries but intentionally out of scope** — *not* actionable (worth knowing, deliberately declined).
-3. **Quality defects inside the chosen scope** — actionable.
-
-Only categories 1 and 3 are actionable for this project. Examples:
-
-- Chess960: out of scope (category 2).
-- Full PGN RAV / variation-tree tooling: out of scope unless the chosen PGN contract needs it (category 2).
-- CHA / unwinnability correctness: in scope, high priority (category 3-sensitive).
-- FEN / SAN / PGN correctness within the supported contract, including detailed, instructive validation messages: in scope, high priority.
-- Naming / API / package quality for public surfaces: in scope, high priority.
 
 ---
 
@@ -68,16 +52,14 @@ The project moved in phases. The first implementation was correctness-first and 
 Concrete examples:
 
 - **Move history stores derived facts directly.** Whether a move was a two-square pawn advance or an en passant capture is recorded in the move history rather than recomputed from the position when needed. Engines like Stockfish compute these on demand because the savings matter at engine speeds. ashlar-chess stores them because the resulting code is shorter, more obviously correct, and easier to maintain.
-- **Production piece placement is bitboard-based.** `BitboardPosition` is the runtime representation for piece placement, move generation, and attack queries. It exists because a production library cannot stay credible if basic position questions are orders of magnitude slower than the surrounding ecosystem.
-- **The public board stays rich.** `Board` is a game-state object, not the lean search representation. It keeps a per-position record for every ply (the move, check flags, dynamic position, halfmove clock, repetition count, SAN/LAN strings, castling-right loss facts) plus the legal moves of the current position, so rule queries, reports, FEN/PGN output, and `unmove` are direct and auditable. Legal moves are derived cache, not history: historical positions do not retain their legal-move lists, and the current set is recomputed on `unmove`. Its current position is bitboard-backed, but the object deliberately carries more game history than a performance-only board would.
-- **The full unwinnability search uses a mutable search board.** `HelpmateSearchBoard` owns mutable bitboards, make/unmake stacks, per-depth legal-move buffers, and an exact transposition key. This is a deliberate performance trade-off in the search hot path, contained inside the unwinnability package and tested against `Board`.
+- **The representation split follows from this bargain** — bitboard piece placement for production, a deliberately rich `Board` game object, and a mutable search board (`HelpmateSearchBoard`) for the full-unwinnability hot path, each kept honest against a readable reference. The three representations and their trade-offs are detailed in §4.1.
 - **Repetition and public state prefer transparent semantics.** Position equality follows the FIDE definition directly: repetition keys on the exact `DynamicPosition` record and the helpmate transposition table on the exact `HelpmateSearchKey` — exact value records, never a hash trusted as the rule fact.
 
 The resulting rule is: optimize where production use needs it, but make the optimization answer to a readable oracle. Where the FIDE Laws are ambiguous, the library follows the most rule-faithful reading.
 
 ### 2.2 Functional style and compile-time guarantees
 
-The codebase is written in as functional a style as Java reasonably permits: records, immutable value objects, pure helpers. Mutable state is confined to a small number of well-defined classes: `Board` for the public game state, and package-private search machinery such as `HelpmateSearchBoard` where the full unwinnability search needs make/unmake performance. The aspirational target is Haskell — total functions and types that make illegal states unrepresentable. Where Java forces compromise (mutable accessors, nullable JDK return types, search-hot-path mutation), the compromises are localised and crossed with explicit annotations and tests.
+The codebase uses Java's type system as far as is practical: records, immutable value objects, closed enums, null annotations, and explicit result types. The goal is to encode as many invariants as possible in types, so illegal states are hard to construct and ordinary compiler checks catch more mistakes. Mutable state is confined to a small number of well-defined classes: `Board` for the public game state, and package-private search machinery such as `HelpmateSearchBoard` where the full unwinnability search needs make/unmake performance. Where Java forces compromise (mutable accessors, nullable JDK return types, search-hot-path mutation), the compromises are localised and crossed with explicit annotations and tests.
 
 Concretely:
 
@@ -150,20 +132,26 @@ The library's **flagship feature**. A position is *unwinnable for a side* if no 
 Miguel Ambrona's CHA is, to the author's knowledge, the only published algorithm that decides these cases correctly across the full range of positions. ashlar-chess implements it in Java, in two variants:
 
 - **Quick** — microsecond-scale, structural, two-valued: `UNWINNABLE` or `POSSIBLY_WINNABLE`. It proves unwinnability or leaves it open, and never claims winnability.
-- **Full** — deep search, four-valued: `WINNABLE_HELPMATE` (a concrete mate line was found), `WINNABLE_BY_THEOREM` (winnability certified by the basic-helpmate-existence theorem, no line), `UNWINNABLE`, or `UNDETERMINED`. The undetermined case is bounded by a 500 000-position limit; most positions resolve well below that.
+- **Full** — deep search, three-valued: `WINNABLE`, `UNWINNABLE`, or `UNDETERMINED`. The direct analysis record
+  additionally tells whether a `WINNABLE` result was theorem-certified and carries a concrete mate line for searched
+  wins. The undetermined case is bounded by a 500 000-position limit; most positions resolve well below that.
 
 `Dead position` is the symmetric whole-position notion, decided by `DeadPositionAnalyzer` (and the `Board.deadPositionQuick()` / `Board.deadPositionFull()` convenience methods): a position is dead exactly when it is unwinnable for both sides. It carries its own verdicts — `DeadPositionQuickVerdict` (`DEAD` / `POSSIBLY_ALIVE`) and `DeadPositionFullVerdict` (`DEAD` / `ALIVE` / `UNDETERMINED`) — rather than reusing the per-side unwinnable vocabulary.
 
-The direct side-specific analyzers return analysis records. Only `WINNABLE_HELPMATE` carries a helpmate line that can be
-replayed from the input position; the `Board.unwinnableQuick(Side)` and `Board.unwinnableFull(Side)` convenience
-methods expose only the verdict.
+The direct side-specific analyzers return analysis records. For full analysis, `UnwinnabilityFullAnalysis` keeps the
+proof detail behind the simple public verdict: `winnableProof()` is `WinnableProof.THEOREM` for theorem-certified wins
+(no mate line) and `WinnableProof.HELPMATE` for searched wins (which carry a UCI helpmate line that can be replayed from
+the input position), and `WinnableProof.NONE` when the verdict is not `WINNABLE`. The `Board.unwinnableQuick(Side)` and `Board.unwinnableFull(Side)` convenience methods expose only the
+verdict.
+
+**Terminal positions.** The analyzers are *total* — they are never rejected on a finished game; they return a verdict, following CHA's `Find-Helpmate` base cases (Ambrona, Figure 5). An already-**checkmate** position is `WINNABLE` for the side that delivered mate — a zero-move helpmate, so the analysis carries `WinnableProof.HELPMATE` with an **empty** `mateLine()` — and `UNWINNABLE` for the mated side. A **stalemate** is `UNWINNABLE` for both sides (no legal move can continue toward a mate). Consequently a dead-position query reports stalemate as `DEAD` and an already-delivered checkmate as not dead. In normal use the analyzer is not invoked on a finished game (the result is already known via `board.outcome()`); this behaviour matters only when a terminal position is analyzed directly, as Ambrona's reference oracle does. Ambrona's published pseudocode lists "stalemate / receiving checkmate → not a helpmate" as an explicit base case; his C++ omits it as redundant (a side with no legal move cannot progress to a mate), and ashlar mirrors the C++.
 
 Side-specific quick/full unwinnability queries and whole-position dead-position queries are caller-invoked; no analyzer runs automatically during construction or move execution.
 
 ### 3.3 SAN, FEN, PGN
 
 - **SAN** — two pipelines: **strict** (canonical SAN only; reached from `Board.moveStrict(String)` and from the PGN-driven path) and **lenient** (accepts a defined set of forgivable deviations from canonical; reached from `Board.moveLenient(String)`). See §3.3.1 for the lenient taxonomy and algorithm.
-- **FEN** — strict and lenient public entry points. `StrictFenParser` performs the full strict parse and structural/rule-consistency validation: piece placement is 8 ranks summing to 8 squares; pawns are off rank 1 and rank 8; the side that just moved is not still in check; castling rights are consistent with king/rook static positions; en-passant target square is well-formed, on the correct rank for the side to move, has a pawn one square ahead, has the starting square empty, and the previous position is legal; the halfmove clock is a non-negative integer and is 0 whenever an en-passant target is set; the fullmove number is a positive integer ≤ `MAX_FULL_MOVE_NUMBER`; and the halfmove clock is consistent with the fullmove number (so `... 15 1` is rejected). The halfmove clock itself is not capped — the FIDE 75-move rule is surfaced as a queryable predicate on `Board`, not enforced at FEN import. `Board.fromFenStrict(String)` uses the strict parser. `LenientFenParser` (`Board.fromFenLenient(String)`) runs a syntactic-tolerance pre-pass that forgives whitespace, casing, missing trailing counters, non-canonical castling order, non-ASCII dashes, trailing garbage, and the halfmove clock vs fullmove number inconsistency (auto-corrected by bumping `fullMoveNumber` up to `halfMoveClock` rounded up to the next multiple of ten), then delegates to `StrictFenParser`. See §3.3.3 for the contract table.
+- **FEN** — strict and lenient public entry points. `StrictFenParser` (`Board.fromFenStrict(String)`) performs the full strict parse plus structural/rule-consistency validation; `LenientFenParser` (`Board.fromFenLenient(String)`) runs a syntactic-tolerance pre-pass (whitespace, casing, missing trailing counters, non-canonical castling order, non-ASCII dashes, trailing garbage, and the halfmove-clock / fullmove-number inconsistency) and then delegates to the strict parser. The halfmove clock is never capped — the FIDE 75-move rule is a queryable `Board` predicate, not a FEN-import limit. See §3.3.3 for the full strict-invariant list and the forgiven-code table.
 - **PGN** — two parsers, both **preserving input as given**: **strict** (enforces the spec's import-format syntax, plus the semantic essentials: Result tag presence, SetUp/FEN coupling) and **lenient** (tolerates real-world PGN — spaced move-number indicators, missing seven-tag-roster entries, optional termination markers, extra whitespace). Both produce the same `PgnGame` model; neither normalises the tag list. The exporter has two modes: **semantic** (the default, emits the parse model as-given) and **archival** (PGN spec §8.1.1-conformant output, opt-in via `WriteMode.ARCHIVAL`). See §3.3.2 for the parse/validate/export contract. The two-parser split is deliberate: a single parser with a "strictness flag" inevitably grows conditional branches that obscure both rule sets — splitting keeps each parser readable and lets the two evolve independently.
 
 #### 3.3.1 Lenient SAN
@@ -174,7 +162,7 @@ The lenient SAN pipeline (`LenientSanParser`, reached via `Board.moveLenient(Str
 
 **Principle: canonical-first.** A string that already parses as canonical SAN never receives a different meaning under lenient — strict is tried first; only on rejection does the lenient layer engage. So `bxc6` always means pawn capture from the b-file, even if a bishop on the b-file could also capture on c6.
 
-**Taxonomy — 21 codes** (`io.github.dlbbld.ashlarchess.san.enums.LenientSanValidationProblem`):
+**Taxonomy — 21 codes** (`io.github.dlbbld.ashlarchess.san.LenientSanValidationProblem`):
 
 | Category | Code | Example |
 |---|---|---|
@@ -266,24 +254,28 @@ The top-level package `io.github.dlbbld.ashlarchess` is organised by concern:
 
 | Package | Responsibility |
 |---|---|
-| `board` | `Board`, position state, move execution, game-status queries |
-| `model` | Cross-cutting model types (`LegalMove`, `UciMove`, `PgnMove`, `CastlingRightBoth`, …) |
-| `enums` | Pipeline-level domain enums (`MoveCheck`, `MoveSuffixAnnotation`, etc.) shared across SAN and movement validation |
-| `fen` | FEN parsing, validation, and generation |
-| `san` | SAN parsing, validation, generation |
-| `moves` | Legal-move enumeration and execution helpers (castling, en-passant, promotion) |
-| `pgn` | A flat package: PGN parsing (`StrictPgnParser` / `LenientPgnParser` and the tokenizer), export (`PgnCreate`), file I/O (`PgnReader` / `PgnWriter`), and tag / PGN utility helpers |
+| `board` | `Board`, position state, move execution, game-status queries, and the public game vocabulary: `LegalMove`, `LegalMoveKind`, `MoveSpecification`, `UciMove`, `Outcome`, `Termination`, `MoveCheck`, `InvalidMoveException`; plus internal position state (`DynamicPosition`, `ClaimRights`, `ClaimableMove`) |
+| `board.enums` | Core board vocabulary enums: `Side`, `Piece`, `PieceType`, `Square`, `Rank`, `File`, … |
+| `board.model` | Internal board-mutation helper `UpdateSquare`, consumed by the `moves` execution helpers |
+| `fen` | FEN parsing, validation, and generation (`StrictFenParser` / `LenientFenParser`, `FenConstants`, `StrictFenSemanticValidationProblem`) |
+| `fen.model` | The public FEN value type `Fen`, returned by `Board`, the FEN parsers, and PGN |
+| `san` | Public SAN parsing and validation (`StrictSanParser` / `LenientSanParser`, result and problem types); the conversion model, notation enums, and SAN/LAN generators live in `san.internal`, with generation reached from `Board` (`getSan()` / `getLan()`) |
+| `moves` | Legal-move enumeration and execution helpers (castling, en-passant, promotion); internal move-analysis check enums (`MovementCheck`, `CastlingCheck`, `KingSafetyCheck`) and move types (`EmptyBoardMove`, `CastlingRightBoth`) |
+| `pgn` | A flat package: the PGN model (`PgnGame`, `PgnMove`, `MoveSuffixAnnotation`), parsing (`StrictPgnParser` / `LenientPgnParser` and the tokenizer), export (`PgnCreate`), file I/O (`PgnReader` / `PgnWriter`), tag / PGN utility helpers, and `PgnCommentaryValidationException` |
 | `unwinnability` | CHA implementation (quick and full), dead-position analysis, and the king / knight distance metrics |
 | `adjudication` | Game adjudication for flagfall and resignation (`Adjudicator`, `AdjudicationResult`) |
 | `report` | Game-level reports: threefold-claim-ahead, repetition, 50-move sequences |
 | `analyze` | Stateless chess-rule analysis used by the SAN and movement validation pipelines |
 | `messages` | Validation-message bundle (`Message`, `messages.properties`) for SAN/FEN/PGN diagnostics |
 | `squares` | Precomputed empty-board reachability / attack lookup tables and direction ranges (`*EmptyBoardSquares`, `*Range`) |
-| `bitboard` | `BitboardPosition` (12-long piece-bitboard record) and its move/attack helpers — the production piece-placement representation |
-| `exceptions` | Top-level move-pipeline exception (`InvalidMoveException`); other exceptions live in `common.exceptions` |
-| `common` | Shared core: generic utilities, constants, cross-cutting model types, and the base exception hierarchy — `common.utility`, `common.constants`, `common.model`, `common.exceptions`, `common.enums`, `common.ucimove` |
+| `bitboard` | The public `BitboardPosition` record (12-long piece placement) — the production representation, exported as documented advanced low-level API |
+| `bitboard.internal` | Internal bitboard engine (not exported): the per-piece attack/move bitboard tables, the `BitboardPosition`→`LegalMove` factory, and decode helpers |
+| `exceptions` | The cross-cutting base exception hierarchy (`UsageException`, `ChessApiRuntimeException`, `ProgrammingMistakeException`, `NonePointerException`, `FileSystemAccessException`). Feature-specific exceptions live inline in their feature package (`board.InvalidMoveException`, `pgn.PgnCommentaryValidationException`, `san.SanValidationException`) |
+| `internal` | Cross-cutting internal infrastructure with no single feature home: `Nulls` (the null-handling hub), the generic `ListUtility` / `SetUtility` / `ExceptionUtility` helpers, and the global `ChessConstants` / `ConfigurationConstants` / `CastlingConstants` |
 
-Packages depend in roughly that order (top to bottom).
+Packages depend in roughly that order (top to bottom). As of 20.0.0 the layout is **package-by-feature**: feature-specific types live beside the code they serve, the duplicate by-kind buckets (`model`/`common.model`, `enums`/`common.enums`, `common.exceptions`) are gone, and a single non-exported `internal` package holds only genuinely cross-cutting infrastructure (feature-specific helpers live in each feature's own `*.internal`).
+
+For the JPMS boundary, implementation-only types live in non-exported `*.internal` subpackages: `bitboard`, `board`, `board.enums`, `fen`, `pgn`, and `san` each carry one, alongside the top-level cross-cutting `internal` package. They stay `public` so the rest of the library and the white-box tests can use them across packages, but they are omitted from `module-info.java`'s `exports`, so modular consumers see only each exported package's public face. An API-surface audit (2026-06-23) confirmed the exported packages carry only genuine API: incidental publics like `MoveNumberFormat`, the SAN/LAN generators (`MoveToSan` / `MoveToLan`), and the `SquareUtility` / `RankUtility` geometry helpers were moved into these `*.internal` packages.
 
 ### 4.1 Piece placement: bitboard in production, mailbox as test oracle
 
@@ -341,30 +333,32 @@ ashlar-chess relies on a large regression test suite:
 - **Broad coverage by code area** — every package has dedicated tests; rule-level decisions have multi-fixture parameterised tests.
 - **Edge-case fixtures** — positions and games chosen to stress the rule engine: 75-move-rule games, fivefold-repetition games, dead positions, near-misses, long forced sequences.
 - **Long and random games** — hundreds of moves, including imported real-world games and synthetic stress tests; generated games surface bugs that targeted fixtures miss.
-- **Cross-library validation** — selected fixtures are processed by other chess libraries; disagreements surface as test failures and have, in the past, led to bug reports against those libraries.
+- **Cross-library validation** — selected fixtures are processed by other chess libraries; disagreements surface as test failures and have, in the past, led to issues raised against those libraries (see §6.3).
 
 The test suite is the project's safety net. Refactors are expected to leave the test count unchanged or growing; if they don't, the change is suspect.
 
 ### 6.1 Differential testing of the bitboard backend
 
-A specific testing pattern, called out because it is permanent project policy (see §4.1): the bitboard piece-placement representation that production runs on is asserted bit-exact against the `StaticPosition` mailbox oracle across the full PGN/FEN corpus. Pattern:
+The permanent oracle policy is stated in §4.1; this is the concrete test pattern it produces:
 
-- For each fixture in the corpus, take the position at every reachable game state, derive a `BitboardPosition` from it, and run the bitboard primitive being tested.
-- Compute the reference answer from `StaticPosition` / `StaticPositionUtility` independently.
+- For each fixture in the corpus, take the position at every reachable game state, derive a `BitboardPosition`, and run the bitboard primitive under test.
+- Compute the reference answer independently from `StaticPosition` / `StaticPositionUtility`.
 - Assert the two agree exactly. For `afterMove`, walk both forward over every legal move in every fixture position.
 
-The corpus-walking tests live in `src/test/java/io/github/dlbbld/ashlarchess/test/bitboard/`. A new primitive on `BitboardPosition` is not considered complete until its corpus walk lands alongside it.
+A new primitive on `BitboardPosition` is not considered complete until its corpus walk lands alongside it (`src/test/java/io/github/dlbbld/ashlarchess/test/bitboard/`).
 
 ### 6.2 Restricted vs full suite
 
-Day-to-day iteration runs a restricted subset (`mvn test`). A handful of long-running audits are gated by `RestrictTestConstants`: the cross-corpus parser audits, a multi-second unwinnability full-search test, the legacy parser-rejection audit. They take from a few seconds to a few minutes apiece and are not useful on every iteration.
+Day-to-day iteration runs a restricted subset; the complete suite — every `RestrictTestConstants` gate flipped and the longest-possible-game corpus included — runs under a Maven profile and is the **release gate**: the default suite is *not* sufficient to certify a release. The exact commands are in [`setup.md`](setup.md) (*Running the test suite*).
 
-The full suite is a Maven profile:
+### 6.3 What the test volume buys — and a note on shared corpora
 
-```
-mvn test -Pfull -Dtest.excludes=
-```
+The cross-library validation above is not aimed at finding bugs in other libraries — python-chess (the primary oracle) and scalachess (the chess library behind Lichess) are mature, widely trusted references, which is precisely what makes them good oracles. But differential comparison is symmetric, and during development it surfaced a few small discrepancies, all since fixed:
 
-`-Pfull` sets the `ashlar-chess.full` system property, which flips every gate inside `RestrictTestConstants` and switches `PgnTestInclusion` to `ALL` (including the longest-possible-game corpus). `-Dtest.excludes=` clears the default unwinnability-suite exclusion.
+- a bug in insufficient-material detection — king and bishop versus king and bishop with both bishops on same-coloured squares was not recognised — [python-chess #634](https://github.com/niklasf/python-chess/issues/634);
+- a minor inconsistency I raised in the fifty-move-rule *claim-ahead* boundary — the draw was claimable one move earlier than the method reported — [python-chess #632](https://github.com/niklasf/python-chess/issues/632);
+- a threefold-repetition draw claim that failed from a custom starting position (it worked from the initial position) — surfaced via [Lichess #7009](https://github.com/lichess-org/lila/issues/7009), traced to scalachess and since fixed there.
 
-**Release-time requirement:** before tagging a release, run `mvn test -Pfull -Dtest.excludes=` and confirm green. The default suite is *not* sufficient to certify a release.
+These are noted not as a boast — these are excellent libraries and every case was promptly addressed — but as evidence of the project's central premise: in this domain it is remarkably easy to introduce a subtle, behaviour-changing slip, even in first-rate code. The same effect showed up constantly *inside* ashlar-chess during development — refactors that looked semantics-preserving at the surface routinely turned swathes of tests red. That is the justification for the test volume: the many tests are not ceremony or coverage for its own sake, they are demanded by the subject. Chess rules carry a long tail of interacting edge cases — en passant only after a specific two-square advance, castling rights lost by a rook *capture*, repetition identity across transpositions, the 50- and 75-move interactions — where a plausible change is wrong in a way that only a targeted case exposes.
+
+> **Observation (not a deliverable).** There appears to be no shared, reusable corpus of rule-level chess test cases — a conformance suite a chess library could validate against — in general circulation; if one exists, the author did not find it. As a result, much of the value of ashlar-chess is the large set of hand-crafted, rule-targeted fixtures it carries, which were not available off the shelf. Publishing them as a standalone corpus could be a worthwhile contribution; it is noted here as a possibility, not planned work.

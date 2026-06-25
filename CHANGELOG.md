@@ -2,7 +2,60 @@
 
 Releases from 3.3 onward. Earlier history is in git tags only.
 
-## [Unreleased]
+## [20.0.0] - JPMS module boundary and public-API surface reset - 2026-06-25
+
+The 20.0.0 release. ashlar-chess is now a proper JPMS module with a deliberately narrow public API. This is a
+**breaking release**: it adds `module-info.java`, removes Guava from the public API, and relocates or hides many
+types as part of a package-by-feature reset. The breaks apply to plain class-path consumers too — these are package
+relocations, not just module encapsulation.
+
+The module name is `io.github.dlbbld.ashlarchess`, identical to the `Automatic-Module-Name` shipped in 19.1.0, so
+adopting the named module is not itself a rename.
+
+### Breaking
+
+- **JPMS module.** `module-info.java` exports only the public API: `board`, `board.enums`, `fen`, `fen.model`,
+  `pgn`, `san`, `adjudication`, `report`, `unwinnability`, `exceptions`, and `bitboard` (`BitboardPosition` as
+  documented advanced low-level API). Every other package is internal and inaccessible to modular consumers.
+- **Guava removed from the public API (and the library entirely).** Methods that returned Guava `ImmutableList` /
+  `ImmutableSet` / `ImmutableMap` now return JDK `List` / `Set` / `Map`. Consumers should drop Guava (and any
+  `requires com.google.common`) from their build — ashlar-chess no longer pulls it in.
+- **Public vocabulary consolidated into `board`.** These types moved (from the old `model` / `common.model` /
+  `common.enums` / `enums` / `exceptions` packages) and are now imported from `io.github.dlbbld.ashlarchess.board`:
+  `LegalMove`, `LegalMoveKind`, `UciMove`, `MoveSpecification`, `Outcome`, `Termination`, `MoveCheck`,
+  `InvalidMoveException`, `ClaimRights`, `ClaimableMove`, `DynamicPosition`. The base exception hierarchy
+  (`ChessApiRuntimeException`, `UsageException`, `ProgrammingMistakeException`, `NonePointerException`,
+  `FileSystemAccessException`) is in the top-level `exceptions` package.
+- **Implementation types are now hidden** (moved into non-exported packages such as the `*.internal` subpackages,
+  `moves`, `squares`, `analyze`): the move-generation engine, `CastlingUtility`, `SquareUtility` / `RankUtility`,
+  the SAN/LAN generators `MoveToSan` / `MoveToLan`, `UpdateSquare`, `MoveNumberFormat`, and the `Nulls` / `Message`
+  helpers, among others. If you depended on any of these, use the public API instead (see **Added**); they are no
+  longer reachable.
+- **No forced logging or utility dependency.** `commons-lang3` and `log4j` are no longer dependencies of the
+  library — internal logging uses the JDK's `java.util.logging`, so consumers are forced onto no logging framework.
+  (`org.eclipse.jdt.annotation` is `requires static transitive`: optional and compile-only.)
+- **Full unwinnability verdict collapsed back to the public domain answer.** `UnwinnabilityFullVerdict` now exposes
+  `WINNABLE`, `UNWINNABLE`, and `UNDETERMINED`. The theorem/search proof detail lives on
+  `UnwinnabilityFullAnalysis`: `winnableProof()` returns `WinnableProof.THEOREM` / `HELPMATE` / `NONE`, and `mateLine()`
+  carries the concrete UCI line for searched wins.
+
+### Added
+
+- **`module-info.java`** — module `io.github.dlbbld.ashlarchess`.
+- **Castling geometry on `CastlingMove`:** `kingFromSquare(Side)`, `kingToSquare(Side)`, `rookFromSquare(Side)`,
+  `rookToSquare(Side)` resolve the squares a castling move touches (a castling `MoveSpecification` stores
+  `Square.NONE` for from/to).
+- **`MoveSpecification.isCastling()`** — companion to the existing `isPromotion()`.
+- **`LegalMove` conveniences:** `isCapture()`, `isCastling()`, `isPromotion()`, `isEnPassant()`, and
+  `enPassantCapturedPawnSquare()` (the captured pawn does not stand on the move's destination square).
+
+### Internal
+
+- Package-by-feature reset: the duplicate by-kind buckets (`model` / `common.model`, `enums` / `common.enums`,
+  `common.exceptions`) are gone; cross-cutting helpers are consolidated into a single non-exported `internal`
+  package; dead post-Guava code (`ImmutableUtility`) was removed.
+- A module-boundary guard test fails the build if the exported package set or the javadoc `excludePackageNames`
+  drift from the intended public API.
 
 
 ## [19.1.0] - Intentional JPMS module name - 2026-06-21

@@ -10,17 +10,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import com.google.common.collect.ImmutableList;
-
+import io.github.dlbbld.ashlarchess.board.MoveSpecification;
 import io.github.dlbbld.ashlarchess.board.StaticPosition;
 import io.github.dlbbld.ashlarchess.board.enums.Piece;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
 import io.github.dlbbld.ashlarchess.board.enums.Square;
 import io.github.dlbbld.ashlarchess.board.model.UpdateSquare;
-import io.github.dlbbld.ashlarchess.common.Nulls;
-import io.github.dlbbld.ashlarchess.common.exceptions.ProgrammingMistakeException;
-import io.github.dlbbld.ashlarchess.common.model.MoveSpecification;
-import io.github.dlbbld.ashlarchess.fen.FenPieceSymbol;
+import io.github.dlbbld.ashlarchess.exceptions.ProgrammingMistakeException;
+import io.github.dlbbld.ashlarchess.fen.internal.FenPieceSymbol;
+import io.github.dlbbld.ashlarchess.internal.Nulls;
 import io.github.dlbbld.ashlarchess.moves.CastlingUtility;
 import io.github.dlbbld.ashlarchess.moves.EnPassantCaptureUtility;
 import io.github.dlbbld.ashlarchess.moves.PromotionUtility;
@@ -38,10 +36,10 @@ public final class StaticPositionUtility {
   // (the differential test would then not catch a bitboard EP-detection regression that mistakenly agreed with a
   // bad production constant). Same rationale as the castling oracle duplication in KingCastlingLegalMoves.
 
-  private static final ImmutableList<ImmutableList<Square>> WHITE_EN_PASSANT_CAPTURE_FROM_TO;
+  private static final List<List<Square>> WHITE_EN_PASSANT_CAPTURE_FROM_TO;
 
   static {
-    final List<ImmutableList<Square>> list = new ArrayList<>();
+    final List<List<Square>> list = new ArrayList<>();
     list.add(Nulls.listOf(Square.A5, Square.B6));
     list.add(Nulls.listOf(Square.B5, Square.C6));
     list.add(Nulls.listOf(Square.C5, Square.D6));
@@ -59,10 +57,10 @@ public final class StaticPositionUtility {
     WHITE_EN_PASSANT_CAPTURE_FROM_TO = Nulls.copyOfList(list);
   }
 
-  private static final ImmutableList<ImmutableList<Square>> BLACK_EN_PASSANT_CAPTURE_FROM_TO;
+  private static final List<List<Square>> BLACK_EN_PASSANT_CAPTURE_FROM_TO;
 
   static {
-    final List<ImmutableList<Square>> list = new ArrayList<>();
+    final List<List<Square>> list = new ArrayList<>();
     list.add(Nulls.listOf(Square.A4, Square.B3));
     list.add(Nulls.listOf(Square.B4, Square.C3));
     list.add(Nulls.listOf(Square.C4, Square.D3));
@@ -173,7 +171,7 @@ public final class StaticPositionUtility {
     if (movingPiece == Piece.NONE || movingPiece.getPieceType() != PAWN) {
       return false;
     }
-    final ImmutableList<Square> fromTo = Nulls.listOf(moveSpecification.fromSquare(), moveSpecification.toSquare());
+    final List<Square> fromTo = Nulls.listOf(moveSpecification.fromSquare(), moveSpecification.toSquare());
     return switch (movingPiece.getSide()) {
       case WHITE -> WHITE_EN_PASSANT_CAPTURE_FROM_TO.contains(fromTo)
           && staticPosition.get(moveSpecification.toSquare()) == Piece.NONE;

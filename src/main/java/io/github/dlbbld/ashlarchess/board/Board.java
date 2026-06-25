@@ -11,10 +11,8 @@ import java.util.Objects;
 
 import org.eclipse.jdt.annotation.Nullable;
 
-import com.google.common.collect.ImmutableList;
-
-import io.github.dlbbld.ashlarchess.bitboard.BitboardLegalMoveFactory;
 import io.github.dlbbld.ashlarchess.bitboard.BitboardPosition;
+import io.github.dlbbld.ashlarchess.bitboard.internal.BitboardLegalMoveFactory;
 import io.github.dlbbld.ashlarchess.board.enums.CastlingMove;
 import io.github.dlbbld.ashlarchess.board.enums.CastlingRight;
 import io.github.dlbbld.ashlarchess.board.enums.CastlingRightLoss;
@@ -22,35 +20,27 @@ import io.github.dlbbld.ashlarchess.board.enums.Piece;
 import io.github.dlbbld.ashlarchess.board.enums.PieceType;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
 import io.github.dlbbld.ashlarchess.board.enums.Square;
-import io.github.dlbbld.ashlarchess.common.Nulls;
-import io.github.dlbbld.ashlarchess.common.constants.ChessConstants;
-import io.github.dlbbld.ashlarchess.common.constants.DynamicPositionConstants;
-import io.github.dlbbld.ashlarchess.common.enums.Termination;
-import io.github.dlbbld.ashlarchess.common.exceptions.ProgrammingMistakeException;
-import io.github.dlbbld.ashlarchess.common.model.ClaimRights;
-import io.github.dlbbld.ashlarchess.common.model.ClaimableMove;
-import io.github.dlbbld.ashlarchess.common.model.DynamicPosition;
-import io.github.dlbbld.ashlarchess.common.model.MoveSpecification;
-import io.github.dlbbld.ashlarchess.common.model.Outcome;
-import io.github.dlbbld.ashlarchess.common.ucimove.utility.UciMoveUtility;
-import io.github.dlbbld.ashlarchess.exceptions.InvalidMoveException;
-import io.github.dlbbld.ashlarchess.fen.FenBoard;
+import io.github.dlbbld.ashlarchess.board.internal.DynamicPositionConstants;
+import io.github.dlbbld.ashlarchess.board.internal.UciMoveUtility;
+import io.github.dlbbld.ashlarchess.exceptions.ProgrammingMistakeException;
 import io.github.dlbbld.ashlarchess.fen.LenientFenParser;
 import io.github.dlbbld.ashlarchess.fen.StrictFenParser;
-import io.github.dlbbld.ashlarchess.fen.constants.FenConstants;
+import io.github.dlbbld.ashlarchess.fen.internal.FenBoard;
+import io.github.dlbbld.ashlarchess.fen.internal.FenConstants;
 import io.github.dlbbld.ashlarchess.fen.model.Fen;
-import io.github.dlbbld.ashlarchess.model.CastlingRightBoth;
-import io.github.dlbbld.ashlarchess.model.LegalMove;
+import io.github.dlbbld.ashlarchess.internal.ChessConstants;
+import io.github.dlbbld.ashlarchess.internal.Nulls;
+import io.github.dlbbld.ashlarchess.moves.CastlingRightBoth;
 import io.github.dlbbld.ashlarchess.moves.CastlingUtility;
 import io.github.dlbbld.ashlarchess.moves.EnPassantCaptureUtility;
 import io.github.dlbbld.ashlarchess.san.LenientSanParseResult;
 import io.github.dlbbld.ashlarchess.san.LenientSanParser;
 import io.github.dlbbld.ashlarchess.san.LenientSanParserValidationException;
-import io.github.dlbbld.ashlarchess.san.MoveToLan;
-import io.github.dlbbld.ashlarchess.san.MoveToSan;
-import io.github.dlbbld.ashlarchess.san.SanTerminalMarker;
-import io.github.dlbbld.ashlarchess.san.SanTerminalMarkerUtility;
 import io.github.dlbbld.ashlarchess.san.StrictSanParser;
+import io.github.dlbbld.ashlarchess.san.internal.MoveToLan;
+import io.github.dlbbld.ashlarchess.san.internal.MoveToSan;
+import io.github.dlbbld.ashlarchess.san.internal.SanTerminalMarker;
+import io.github.dlbbld.ashlarchess.san.internal.SanTerminalMarkerUtility;
 import io.github.dlbbld.ashlarchess.unwinnability.DeadPositionAnalyzer;
 import io.github.dlbbld.ashlarchess.unwinnability.DeadPositionFullVerdict;
 import io.github.dlbbld.ashlarchess.unwinnability.DeadPositionQuickVerdict;
@@ -85,7 +75,7 @@ import io.github.dlbbld.ashlarchess.unwinnability.UnwinnableQuickAnalyzer;
  * Move execution happens through {@link #moveStrict(String)}, {@link #moveLenient(String)},
  * {@link #move(MoveSpecification)}, {@link #movesStrict(String...)}, and is undone by {@link #unmove()}. Both
  * move-pipelines validate the candidate against the current legal-move set; an invalid move throws (see
- * {@link io.github.dlbbld.ashlarchess.exceptions.InvalidMoveException} from the {@code MoveSpecification} pipeline,
+ * {@link io.github.dlbbld.ashlarchess.board.InvalidMoveException} from the {@code MoveSpecification} pipeline,
  * {@code SanValidationException} from the SAN pipeline). The move pipeline does <em>not</em> gate on game-end states:
  * at checkmate and stalemate the legal-move set is empty, so any attempted move fails through ordinary legality; at
  * mutual insufficient material, fivefold repetition, the 75-move rule, and analyzer-driven dead positions, legal moves
@@ -100,7 +90,7 @@ import io.github.dlbbld.ashlarchess.unwinnability.UnwinnableQuickAnalyzer;
  * {@link #isSeventyFiveMove()}, plus the side-specific unwinnability verdict methods ({@code unwinnableQuick},
  * {@code unwinnableFull}) - the library's flagship CHA feature. Whole-position dead-position checks (no intended
  * winner) live on the analyzers; see {@link io.github.dlbbld.ashlarchess.unwinnability}. Position-state accessors
- * return Guava {@code ImmutableList}/{@code ImmutableSet}; mutation is exclusively via {@code move}/{@code unmove}.
+ * return unmodifiable JDK {@code List}/{@code Set}; mutation is exclusively via {@code move}/{@code unmove}.
  *
  * <p>
  * For game-level reports (threefold-claim-ahead, repetition listings, no-progress sequences), use
@@ -135,7 +125,7 @@ public final class Board {
 
   // Legal moves of the CURRENT position only. Legal moves are derived cache, not game history, so historical
   // positions do not retain them; this is recomputed on unmove() for the restored position.
-  private ImmutableList<LegalMove> currentLegalMoves;
+  private List<LegalMove> currentLegalMoves;
 
   private record BoardState(@Nullable LegalMove move, @Nullable String san, @Nullable String lan, boolean isCheck,
       boolean isCheckmate, boolean isStalemate, DynamicPosition dynamicPosition, int halfMoveClock,
@@ -174,7 +164,7 @@ public final class Board {
             ? initialEnPassantCaptureTargetSquare
             : Square.NONE;
 
-    final ImmutableList<LegalMove> legalMoves = BitboardLegalMoveFactory.calculateLegalMoves(initialBitboardPosition,
+    final List<LegalMove> legalMoves = BitboardLegalMoveFactory.calculateLegalMoves(initialBitboardPosition,
         initialSideToMove, initialCastlingRight, initialEnPassantBit);
     final boolean isCheck = initialBitboardPosition.isInCheck(initialSideToMove);
     final boolean isCheckmate = isCheck && legalMoves.isEmpty();
@@ -373,8 +363,8 @@ public final class Board {
     final long afterEnPassantBit = afterEnPassantCaptureTargetSquare == Square.NONE ? 0L
         : 1L << afterEnPassantCaptureTargetSquare.ordinal();
 
-    final ImmutableList<LegalMove> legalMovesAfterMove = BitboardLegalMoveFactory
-        .calculateLegalMoves(afterBitboardPosition, afterSideToMove, afterCastlingRightSideToMove, afterEnPassantBit);
+    final List<LegalMove> legalMovesAfterMove = BitboardLegalMoveFactory.calculateLegalMoves(afterBitboardPosition,
+        afterSideToMove, afterCastlingRightSideToMove, afterEnPassantBit);
 
     final boolean isCheck = afterBitboardPosition.isInCheck(afterSideToMove);
     final boolean isCheckmate = isCheck && legalMovesAfterMove.isEmpty();
@@ -449,7 +439,7 @@ public final class Board {
   // per historical position; getLegalMoves() serves the current position and unmove() restores it here. The
   // DynamicPosition carries the normalized en-passant square, which is legal-move-equivalent to the raw square
   // (normalization only zeroes the target when no legal en-passant capture exists).
-  private static ImmutableList<LegalMove> legalMovesFor(DynamicPosition dynamicPosition) {
+  private static List<LegalMove> legalMovesFor(DynamicPosition dynamicPosition) {
     final Side side = dynamicPosition.sideToMove();
     final CastlingRight castlingRight = side == Side.WHITE ? dynamicPosition.castlingRightWhite()
         : dynamicPosition.castlingRightBlack();
@@ -510,7 +500,7 @@ public final class Board {
     return moveAt(boardStates.size() - 1);
   }
 
-  public ImmutableList<LegalMove> getLegalMoves() {
+  public List<LegalMove> getLegalMoves() {
     return currentLegalMoves;
   }
 
@@ -520,7 +510,7 @@ public final class Board {
    * once and reuse the result rather than calling it repeatedly; for the count use {@link #getPerformedMoveCount()}
    * (O(1)).
    */
-  public ImmutableList<MoveSpecification> getPerformedMoveSpecifications() {
+  public List<MoveSpecification> getPerformedMoveSpecifications() {
     final List<MoveSpecification> moveSpecifications = new ArrayList<>();
     for (int i = 1; i < boardStates.size(); i++) {
       moveSpecifications.add(moveAt(i).moveSpecification());
@@ -927,7 +917,7 @@ public final class Board {
    * - the history is held as one {@code BoardState} record list, not a standing per-accessor list - so fetch it once
    * and reuse the result rather than calling it repeatedly; for the count use {@link #getPerformedMoveCount()} (O(1)).
    */
-  public ImmutableList<String> getPerformedMovesAsSan() {
+  public List<String> getPerformedMovesAsSan() {
     final List<String> result = new ArrayList<>();
     for (int i = 1; i < boardStates.size(); i++) {
       result.add(sanAt(i));
@@ -1019,7 +1009,7 @@ public final class Board {
     return boardStates.size() - 1;
   }
 
-  ImmutableList<DynamicPosition> getDynamicPositions() {
+  List<DynamicPosition> getDynamicPositions() {
     final List<DynamicPosition> result = new ArrayList<>();
     for (final BoardState state : boardStates) {
       result.add(state.dynamicPosition());
@@ -1035,7 +1025,7 @@ public final class Board {
     return Nulls.getLast(boardStates).dynamicPosition();
   }
 
-  public ImmutableList<MoveSpecification> getLegalMoveSpecifications() {
+  public List<MoveSpecification> getLegalMoveSpecifications() {
     final List<MoveSpecification> result = new ArrayList<>();
     for (final LegalMove legalMove : this.getLegalMoves()) {
       result.add(legalMove.moveSpecification());
@@ -1069,7 +1059,7 @@ public final class Board {
    * once and reuse the result rather than calling it repeatedly; for the count use {@link #getPerformedMoveCount()}
    * (O(1)).
    */
-  public ImmutableList<LegalMove> getPerformedMoves() {
+  public List<LegalMove> getPerformedMoves() {
     final List<LegalMove> result = new ArrayList<>();
     for (int i = 1; i < boardStates.size(); i++) {
       result.add(moveAt(i));
@@ -1212,7 +1202,7 @@ public final class Board {
     };
   }
 
-  public ImmutableList<String> getLegalMovesAsSan() {
+  public List<String> getLegalMovesAsSan() {
     final List<String> result = new ArrayList<>();
     for (final LegalMove legalMove : getLegalMoves()) {
       result.add(sanForCandidate(legalMove));
@@ -1220,7 +1210,7 @@ public final class Board {
     return Nulls.copyOfList(result);
   }
 
-  public ImmutableList<String> getLegalMovesAsUci() {
+  public List<String> getLegalMovesAsUci() {
     final List<String> result = new ArrayList<>();
     final Side sideToMove = getSideToMove();
     for (final MoveSpecification moveSpecification : getLegalMoveSpecifications()) {

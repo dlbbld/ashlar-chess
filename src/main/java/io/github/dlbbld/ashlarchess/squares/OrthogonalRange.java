@@ -3,17 +3,17 @@
 
 package io.github.dlbbld.ashlarchess.squares;
 
-import com.google.common.collect.ImmutableList;
+import java.util.List;
 
 import io.github.dlbbld.ashlarchess.board.enums.Square;
 
 interface OrthogonalRange {
 
-  ImmutableList<Square> northSquares();
+  List<Square> northSquares();
 
-  ImmutableList<Square> eastSquares();
+  List<Square> eastSquares();
 
-  ImmutableList<Square> southSquares();
+  List<Square> southSquares();
 
-  ImmutableList<Square> westSquares();
+  List<Square> westSquares();
 }

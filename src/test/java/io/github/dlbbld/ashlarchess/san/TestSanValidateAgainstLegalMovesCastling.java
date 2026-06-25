@@ -11,7 +11,7 @@ import org.junit.jupiter.api.Test;
 import io.github.dlbbld.ashlarchess.analyze.CastlingCheckTranslator;
 import io.github.dlbbld.ashlarchess.board.Board;
 import io.github.dlbbld.ashlarchess.board.enums.CastlingRightLoss;
-import io.github.dlbbld.ashlarchess.enums.CastlingCheck;
+import io.github.dlbbld.ashlarchess.moves.CastlingCheck;
 
 class TestSanValidateAgainstLegalMovesCastling {
 

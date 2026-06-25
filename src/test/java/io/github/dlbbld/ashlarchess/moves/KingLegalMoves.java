@@ -6,11 +6,11 @@ package io.github.dlbbld.ashlarchess.moves;
 import java.util.Set;
 import java.util.TreeSet;
 
+import io.github.dlbbld.ashlarchess.board.LegalMove;
 import io.github.dlbbld.ashlarchess.board.StaticPosition;
 import io.github.dlbbld.ashlarchess.board.enums.CastlingRight;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
 import io.github.dlbbld.ashlarchess.board.enums.Square;
-import io.github.dlbbld.ashlarchess.model.LegalMove;
 
 class KingLegalMoves {
   public static Set<LegalMove> calculateKingLegalMoves(StaticPosition staticPosition, CastlingRight castlingRight,

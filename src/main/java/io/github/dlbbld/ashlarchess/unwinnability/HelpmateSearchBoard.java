@@ -5,9 +5,13 @@ package io.github.dlbbld.ashlarchess.unwinnability;
 
 import java.util.List;
 
-import io.github.dlbbld.ashlarchess.bitboard.BitboardLegalMoveFactory;
 import io.github.dlbbld.ashlarchess.bitboard.BitboardPosition;
+import io.github.dlbbld.ashlarchess.bitboard.internal.BitboardLegalMoveFactory;
 import io.github.dlbbld.ashlarchess.board.Board;
+import io.github.dlbbld.ashlarchess.board.DynamicPosition;
+import io.github.dlbbld.ashlarchess.board.LegalMove;
+import io.github.dlbbld.ashlarchess.board.LegalMoveKind;
+import io.github.dlbbld.ashlarchess.board.MoveSpecification;
 import io.github.dlbbld.ashlarchess.board.enums.CastlingMove;
 import io.github.dlbbld.ashlarchess.board.enums.CastlingRight;
 import io.github.dlbbld.ashlarchess.board.enums.Piece;
@@ -15,12 +19,8 @@ import io.github.dlbbld.ashlarchess.board.enums.PieceType;
 import io.github.dlbbld.ashlarchess.board.enums.PromotionPieceType;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
 import io.github.dlbbld.ashlarchess.board.enums.Square;
-import io.github.dlbbld.ashlarchess.common.exceptions.ProgrammingMistakeException;
-import io.github.dlbbld.ashlarchess.common.model.DynamicPosition;
-import io.github.dlbbld.ashlarchess.common.model.MoveSpecification;
-import io.github.dlbbld.ashlarchess.model.CastlingRightBoth;
-import io.github.dlbbld.ashlarchess.model.LegalMove;
-import io.github.dlbbld.ashlarchess.model.LegalMoveKind;
+import io.github.dlbbld.ashlarchess.exceptions.ProgrammingMistakeException;
+import io.github.dlbbld.ashlarchess.moves.CastlingRightBoth;
 import io.github.dlbbld.ashlarchess.moves.CastlingUtility;
 import io.github.dlbbld.ashlarchess.moves.EnPassantCaptureUtility;
 
@@ -29,8 +29,8 @@ import io.github.dlbbld.ashlarchess.moves.EnPassantCaptureUtility;
  * castling rights for both sides as mutable instance fields. {@link #move(MoveSpecification)} mutates the bitboards in
  * place; {@link #unmove()} pops a snapshot off a growable, pre-allocated stack of mutable {@link UndoState} objects.
  * The legal-move generator emits directly into a per-depth {@link LegalMoveBuffer} via
- * {@link BitboardLegalMoveFactory#calculateLegalMovesInto} - no per-move {@code Set} / {@code ImmutableList} allocation
- * along the search hot path.
+ * {@link BitboardLegalMoveFactory#calculateLegalMovesInto} - no per-move {@code Set} / {@code List} allocation along
+ * the search hot path.
  *
  * <p>
  * {@link BitboardPosition} stays immutable (it remains a record); the mutation is local to this package-private search

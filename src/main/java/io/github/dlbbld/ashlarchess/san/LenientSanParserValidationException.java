@@ -3,12 +3,12 @@
 
 package io.github.dlbbld.ashlarchess.san;
 
+import java.util.List;
+
 import org.eclipse.jdt.annotation.NonNull;
 
-import com.google.common.collect.ImmutableList;
-
-import io.github.dlbbld.ashlarchess.common.Nulls;
-import io.github.dlbbld.ashlarchess.common.exceptions.UsageException;
+import io.github.dlbbld.ashlarchess.exceptions.UsageException;
+import io.github.dlbbld.ashlarchess.internal.Nulls;
 
 /**
  * Thrown when the lenient SAN parser cannot resolve the input to a legal move even after applying every supported
@@ -21,11 +21,11 @@ public class LenientSanParserValidationException extends UsageException {
 
   private final String originalText;
   private final SanValidationProblem underlyingSanValidationProblem;
-  private final @NonNull ImmutableList<@NonNull ForgivenSanItem> forgivenItemsAccumulated;
+  private final @NonNull List<@NonNull ForgivenSanItem> forgivenItemsAccumulated;
 
   public LenientSanParserValidationException(String message, String originalText,
       SanValidationProblem underlyingSanValidationProblem,
-      @NonNull ImmutableList<@NonNull ForgivenSanItem> forgivenItemsAccumulated) {
+      @NonNull List<@NonNull ForgivenSanItem> forgivenItemsAccumulated) {
     super(message);
     this.originalText = originalText;
     this.underlyingSanValidationProblem = underlyingSanValidationProblem;
@@ -49,7 +49,7 @@ public class LenientSanParserValidationException extends UsageException {
    * The forgiven items the lenient parser had already accumulated before failing. Useful for diagnostics - shows which
    * tolerances applied before the input became unrecoverable.
    */
-  public @NonNull ImmutableList<@NonNull ForgivenSanItem> getForgivenItemsAccumulated() {
+  public @NonNull List<@NonNull ForgivenSanItem> getForgivenItemsAccumulated() {
     return forgivenItemsAccumulated;
   }
 

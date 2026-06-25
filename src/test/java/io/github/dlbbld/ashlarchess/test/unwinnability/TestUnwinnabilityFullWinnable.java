@@ -3,7 +3,7 @@
 
 package io.github.dlbbld.ashlarchess.test.unwinnability;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.List;
 
@@ -12,7 +12,8 @@ import org.junit.jupiter.api.Test;
 
 import io.github.dlbbld.ashlarchess.board.Board;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
-import io.github.dlbbld.ashlarchess.common.Nulls;
+import io.github.dlbbld.ashlarchess.internal.Nulls;
+import io.github.dlbbld.ashlarchess.test.common.utility.Loggers;
 import io.github.dlbbld.ashlarchess.test.common.utility.PgnExtensionUtility;
 import io.github.dlbbld.ashlarchess.test.model.PgnFen;
 import io.github.dlbbld.ashlarchess.test.model.PgnTestCaseList;
@@ -23,8 +24,7 @@ import io.github.dlbbld.ashlarchess.unwinnability.UnwinnabilityFullVerdict;
 import io.github.dlbbld.ashlarchess.unwinnability.UnwinnableFullAnalyzer;
 
 class TestUnwinnabilityFullWinnable {
-
-  private static final Logger logger = Nulls.getLogger(TestUnwinnabilityFullWinnable.class);
+  private static final Logger logger = Loggers.getLogger(TestUnwinnabilityFullWinnable.class);
 
   @SuppressWarnings("static-method")
   @Test
@@ -37,8 +37,7 @@ class TestUnwinnabilityFullWinnable {
       final Side winner = board.getSideToMove();
       final UnwinnabilityFullAnalysis analysis = UnwinnableFullAnalyzer.unwinnableFull(board, winner);
       final UnwinnabilityFullVerdict verdict = analysis.verdict();
-      assertTrue(verdict == UnwinnabilityFullVerdict.WINNABLE_HELPMATE
-          || verdict == UnwinnabilityFullVerdict.WINNABLE_BY_THEOREM, testCaseHavingHelpmate.pgnName());
+      assertEquals(UnwinnabilityFullVerdict.WINNABLE, verdict, testCaseHavingHelpmate.pgnName());
     }
   }
 

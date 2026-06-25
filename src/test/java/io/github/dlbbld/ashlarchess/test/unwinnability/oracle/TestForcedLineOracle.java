@@ -51,7 +51,7 @@ class TestForcedLineOracle {
   private static LimitedUnwinnabilityVerdict convert(UnwinnabilityFullVerdict verdict) {
     return switch (verdict) {
       case UNWINNABLE -> LimitedUnwinnabilityVerdict.UNWINNABLE;
-      case WINNABLE_HELPMATE, WINNABLE_BY_THEOREM -> LimitedUnwinnabilityVerdict.WINNABLE;
+      case WINNABLE -> LimitedUnwinnabilityVerdict.WINNABLE;
       case UNDETERMINED -> LimitedUnwinnabilityVerdict.UNKNOWN;
     };
   }

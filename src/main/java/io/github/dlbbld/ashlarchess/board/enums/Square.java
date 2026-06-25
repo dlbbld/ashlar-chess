@@ -7,11 +7,9 @@ import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.List;
 
-import com.google.common.collect.ImmutableList;
-
-import io.github.dlbbld.ashlarchess.common.Nulls;
-import io.github.dlbbld.ashlarchess.common.exceptions.NonePointerException;
-import io.github.dlbbld.ashlarchess.common.exceptions.ProgrammingMistakeException;
+import io.github.dlbbld.ashlarchess.exceptions.NonePointerException;
+import io.github.dlbbld.ashlarchess.exceptions.ProgrammingMistakeException;
+import io.github.dlbbld.ashlarchess.internal.Nulls;
 
 public enum Square implements Comparable<Square> {
 
@@ -86,8 +84,8 @@ public enum Square implements Comparable<Square> {
   private final Rank rank;
   private final String name;
 
-  public static final ImmutableList<Square> SEVENTH_RANK = Nulls.listOf(A7, B7, C7, D7, E7, F7, G7, H7);
-  public static final ImmutableList<Square> SECOND_RANK = Nulls.listOf(A2, B2, C2, D2, E2, F2, G2, H2);
+  public static final List<Square> SEVENTH_RANK = Nulls.listOf(A7, B7, C7, D7, E7, F7, G7, H7);
+  public static final List<Square> SECOND_RANK = Nulls.listOf(A2, B2, C2, D2, E2, F2, G2, H2);
 
   Square(SquareType squareType, File file, Rank rank, String name) {
     this.squareType = squareType;
@@ -195,9 +193,9 @@ public enum Square implements Comparable<Square> {
 
   // all squares except the empty one
   // order is not allowed to be changed as this will cause semantical errors
-  public static final ImmutableList<Square> REAL = Nulls.listOf(A1, B1, C1, D1, E1, F1, G1, H1, A2, B2, C2, D2, E2, F2,
-      G2, H2, A3, B3, C3, D3, E3, F3, G3, H3, A4, B4, C4, D4, E4, F4, G4, H4, A5, B5, C5, D5, E5, F5, G5, H5, A6, B6,
-      C6, D6, E6, F6, G6, H6, A7, B7, C7, D7, E7, F7, G7, H7, A8, B8, C8, D8, E8, F8, G8, H8);
+  public static final List<Square> REAL = Nulls.listOf(A1, B1, C1, D1, E1, F1, G1, H1, A2, B2, C2, D2, E2, F2, G2, H2,
+      A3, B3, C3, D3, E3, F3, G3, H3, A4, B4, C4, D4, E4, F4, G4, H4, A5, B5, C5, D5, E5, F5, G5, H5, A6, B6, C6, D6,
+      E6, F6, G6, H6, A7, B7, C7, D7, E7, F7, G7, H7, A8, B8, C8, D8, E8, F8, G8, H8);
 
   // ---------------------------------------------------------------------------------------------
   // Single-step square-geometry lookup tables.
@@ -319,20 +317,20 @@ public enum Square implements Comparable<Square> {
     return getNeighbour(BEHIND_RIGHT_DIAGONAL_SQUARE, side, this);
   }
 
-  public static final ImmutableList<ImmutableList<Square>> WHITE_PAWN_TWO_SQUARE_ADVANCE;
-  public static final ImmutableList<ImmutableList<Square>> BLACK_PAWN_TWO_SQUARE_ADVANCE;
+  public static final List<List<Square>> WHITE_PAWN_TWO_SQUARE_ADVANCE;
+  public static final List<List<Square>> BLACK_PAWN_TWO_SQUARE_ADVANCE;
 
   static {
-    final List<ImmutableList<Square>> whiteSquarePairs = new ArrayList<>();
+    final List<List<Square>> whiteSquarePairs = new ArrayList<>();
     initializeWhite(whiteSquarePairs);
     WHITE_PAWN_TWO_SQUARE_ADVANCE = Nulls.copyOfList(whiteSquarePairs);
 
-    final List<ImmutableList<Square>> blackSquarePairs = new ArrayList<>();
+    final List<List<Square>> blackSquarePairs = new ArrayList<>();
     initializeBlack(blackSquarePairs);
     BLACK_PAWN_TWO_SQUARE_ADVANCE = Nulls.copyOfList(blackSquarePairs);
   }
 
-  private static void initializeWhite(List<ImmutableList<Square>> squarePairs) {
+  private static void initializeWhite(List<List<Square>> squarePairs) {
     squarePairs.add(Nulls.listOf(A2, A4));
     squarePairs.add(Nulls.listOf(B2, B4));
     squarePairs.add(Nulls.listOf(C2, C4));
@@ -343,7 +341,7 @@ public enum Square implements Comparable<Square> {
     squarePairs.add(Nulls.listOf(H2, H4));
   }
 
-  private static void initializeBlack(List<ImmutableList<Square>> squarePairs) {
+  private static void initializeBlack(List<List<Square>> squarePairs) {
     squarePairs.add(Nulls.listOf(A7, A5));
     squarePairs.add(Nulls.listOf(B7, B5));
     squarePairs.add(Nulls.listOf(C7, C5));

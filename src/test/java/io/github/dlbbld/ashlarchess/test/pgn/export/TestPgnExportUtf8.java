@@ -10,17 +10,17 @@ import java.nio.file.Path;
 import org.apache.logging.log4j.Logger;
 import org.junit.jupiter.api.Test;
 
-import io.github.dlbbld.ashlarchess.common.Nulls;
-import io.github.dlbbld.ashlarchess.common.constants.ConfigurationConstants;
+import io.github.dlbbld.ashlarchess.internal.ConfigurationConstants;
+import io.github.dlbbld.ashlarchess.internal.Nulls;
 import io.github.dlbbld.ashlarchess.pgn.LenientPgnParser;
 import io.github.dlbbld.ashlarchess.pgn.PgnGame;
 import io.github.dlbbld.ashlarchess.pgn.PgnWriter;
 import io.github.dlbbld.ashlarchess.test.FileComparison;
+import io.github.dlbbld.ashlarchess.test.common.utility.Loggers;
 import io.github.dlbbld.ashlarchess.test.pgntest.constants.PgnTestConstants;
 
 class TestPgnExportUtf8 {
-
-  private static final Logger logger = Nulls.getLogger(TestPgnExportUtf8.class);
+  private static final Logger logger = Loggers.getLogger(TestPgnExportUtf8.class);
 
   private static final String FILE_NAME = "utf8.pgn";
 

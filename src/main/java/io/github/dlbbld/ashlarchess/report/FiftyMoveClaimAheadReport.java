@@ -3,9 +3,9 @@
 
 package io.github.dlbbld.ashlarchess.report;
 
-import com.google.common.collect.ImmutableList;
+import java.util.List;
 
-import io.github.dlbbld.ashlarchess.common.Nulls;
+import io.github.dlbbld.ashlarchess.internal.Nulls;
 
 /**
  * Missed 50-move claim-ahead opportunities discovered during the played history's replay. Each entry represents one
@@ -23,7 +23,7 @@ import io.github.dlbbld.ashlarchess.common.Nulls;
  * Entries are ordered by {@code (sequenceStart-anchor, performedMoveCount)} via
  * {@link ReportLineOrder#FIFTY_MOVE_CLAIM_AHEAD_COMPARATOR}.
  */
-record FiftyMoveClaimAheadReport(ImmutableList<FiftyMoveClaimAheadEntry> entries) {
+record FiftyMoveClaimAheadReport(List<FiftyMoveClaimAheadEntry> entries) {
 
   public FiftyMoveClaimAheadReport {
     entries = Nulls.copyOfList(entries);

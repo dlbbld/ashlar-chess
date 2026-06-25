@@ -7,10 +7,13 @@ import java.util.List;
 
 import io.github.dlbbld.ashlarchess.adjudication.Adjudicator;
 import io.github.dlbbld.ashlarchess.board.Board;
+import io.github.dlbbld.ashlarchess.board.MoveSpecification;
+import io.github.dlbbld.ashlarchess.board.enums.CastlingMove;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
 import io.github.dlbbld.ashlarchess.board.enums.Square;
-import io.github.dlbbld.ashlarchess.common.Nulls;
-import io.github.dlbbld.ashlarchess.common.model.MoveSpecification;
+import io.github.dlbbld.ashlarchess.fen.StrictFenParser;
+import io.github.dlbbld.ashlarchess.fen.model.Fen;
+import io.github.dlbbld.ashlarchess.internal.Nulls;
 import io.github.dlbbld.ashlarchess.pgn.LenientPgnParser;
 import io.github.dlbbld.ashlarchess.pgn.LenientPgnParserValidationException;
 import io.github.dlbbld.ashlarchess.pgn.LenientPgnParserValidationResult;
@@ -24,6 +27,9 @@ import io.github.dlbbld.ashlarchess.pgn.StrictPgnParserValidationResult;
 import io.github.dlbbld.ashlarchess.pgn.WriteMode;
 import io.github.dlbbld.ashlarchess.report.Reporter;
 import io.github.dlbbld.ashlarchess.san.ForgivenSanItem;
+import io.github.dlbbld.ashlarchess.san.LenientSanParseResult;
+import io.github.dlbbld.ashlarchess.san.StrictSanParser;
+import io.github.dlbbld.ashlarchess.unwinnability.DeadPositionQuickVerdict;
 
 /**
  * Source of truth for the runnable code examples shown in {@code README.md}. Each method is one README example: the
@@ -55,7 +61,14 @@ public final class ReadmeExamples {
         new ReadmeExample("adjudication-flagfall-quick", ReadmeExamples::adjudicationFlagfallQuick, true),
         new ReadmeExample("adjudication-flagfall-full", ReadmeExamples::adjudicationFlagfallFull, true),
         new ReadmeExample("adjudication-resignation", ReadmeExamples::adjudicationResignation, true),
+        new ReadmeExample("dead-position-during-play", ReadmeExamples::deadPositionDuringPlay, true),
+        new ReadmeExample("readme-notation-input", ReadmeExamples::readmeNotationInput, true),
+        new ReadmeExample("readme-unwinnability", ReadmeExamples::readmeUnwinnability, true),
+        new ReadmeExample("board-creation", ReadmeExamples::boardCreation, true),
+        new ReadmeExample("board-move-entry-points", ReadmeExamples::boardMoveEntryPoints, true),
+        new ReadmeExample("board-state-queries", ReadmeExamples::boardStateQueries, true),
         new ReadmeExample("basic-usage", ReadmeExamples::basicUsage, true),
+        new ReadmeExample("castling-geometry", ReadmeExamples::castlingGeometry, true),
         new ReadmeExample("unwinnable-insufficient-material", ReadmeExamples::unwinnableInsufficientMaterial, true),
         new ReadmeExample("unwinnable-forced-moves", ReadmeExamples::unwinnableForcedMoves, true),
         new ReadmeExample("unwinnable-pawn-walls", ReadmeExamples::unwinnablePawnWalls, true),
@@ -64,6 +77,7 @@ public final class ReadmeExamples {
         new ReadmeExample("dead-insufficient-material", ReadmeExamples::deadInsufficientMaterial, true),
         new ReadmeExample("dead-pawn-walls", ReadmeExamples::deadPawnWalls, true),
         new ReadmeExample("dead-forced-moves", ReadmeExamples::deadForcedMoves, true),
+        new ReadmeExample("dead-possibly-alive", ReadmeExamples::deadPossiblyAlive, true),
         new ReadmeExample("pgn-lenient-valid", ReadmeExamples::pgnLenientValid, true),
         new ReadmeExample("pgn-lenient-export-transform", ReadmeExamples::pgnLenientExportTransform, true),
         new ReadmeExample("pgn-san-tolerances", ReadmeExamples::pgnSanTolerances, true),
@@ -179,6 +193,18 @@ public final class ReadmeExamples {
     // </readme:adjudication-resignation>
   }
 
+  public static void deadPositionDuringPlay() {
+    // <readme:dead-position-during-play>
+    final Board board = Board.fromFenStrict("8/8/3k4/1p2p1p1/pP1pP1P1/P2P4/1K6/8 b - - 32 62");
+
+    if (board.isInsufficientMaterial()) {
+      // draw by insufficient material
+    } else if (board.deadPositionQuick() == DeadPositionQuickVerdict.DEAD) {
+      // draw by dead position
+    }
+    // </readme:dead-position-during-play>
+  }
+
   public static void basicUsage() {
     // <readme:basic-usage>
     final Board board = new Board();
@@ -195,6 +221,107 @@ public final class ReadmeExamples {
 
     System.out.println(board.isCheckmate()); // [out]
     // </readme:basic-usage>
+  }
+
+  public static void boardCreation() {
+    // <readme:board-creation>
+    final Board initial = new Board();
+
+    final Board strictFen = Board.fromFenStrict("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
+
+    final Board lenientFen = Board.fromFenLenient(" rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR W kqKQ - ");
+
+    final Fen parsedFen = StrictFenParser.parse("8/8/4k3/3R4/2K5/8/8/8 w - - 0 50");
+    final Board fromFenModel = new Board(parsedFen);
+
+    System.out.println(initial.getSideToMove()); // [out]
+    System.out.println(strictFen.getFen()); // [out]
+    System.out.println(lenientFen.getCastlingRightWhite()); // [out]
+    System.out.println(fromFenModel.isInsufficientMaterial(Side.BLACK)); // [out]
+    // </readme:board-creation>
+  }
+
+  public static void boardMoveEntryPoints() {
+    // <readme:board-move-entry-points>
+    final Board board = new Board();
+
+    board.moveStrict("e4");
+
+    final LenientSanParseResult e5 = board.moveLenient("e7-e5");
+    for (final ForgivenSanItem forgiven : e5.forgivenItems()) {
+      System.out.println(forgiven.originalToken() + " -> " + forgiven.canonicalSan()); // [out]
+    }
+
+    board.movesLenient("nf3", "Nc6");
+
+    final MoveSpecification bishopMove = StrictSanParser.parse("Bc4", board);
+    board.move(bishopMove);
+
+    board.unmove();
+    board.movesStrict("Bc4", "Bc5");
+
+    System.out.println(board.getPerformedMovesAsSan()); // [out]
+    System.out.println(board.getFen()); // [out]
+    // </readme:board-move-entry-points>
+  }
+
+  public static void boardStateQueries() {
+    // <readme:board-state-queries>
+    final Board board = new Board();
+    board.movesStrict("e4", "e5", "Qh5", "Nc6", "Bc4", "Nf6", "Qxf7#");
+
+    System.out.println(board.getSan()); // [out]
+    System.out.println(board.getPerformedMoveCount()); // [out]
+    System.out.println(board.getSideToMove()); // [out]
+    System.out.println(board.isCheck()); // [out]
+    System.out.println(board.isCheckmate()); // [out]
+    System.out.println(board.getLegalMovesAsSan()); // [out]
+    // </readme:board-state-queries>
+  }
+
+  public static void readmeNotationInput() {
+    // <readme:readme-notation-input>
+    final Board board = Board.fromFenLenient(" rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR W KQkq - ");
+
+    final MoveSpecification e4 = StrictSanParser.parse("e4", board);
+    board.move(e4);
+
+    final LenientSanParseResult e5 = board.moveLenient("e7-e5");
+    System.out.println(e5.forgivenItems().isEmpty()); // [out]
+
+    final PgnGame game = LenientPgnParser.parseText("""
+        [Event "?"]
+
+        1. e4 e5 2. nf3 *
+        """);
+    final Board imported = PgnUtility.toBoard(game);
+    System.out.println(imported.getSan()); // [out]
+    // </readme:readme-notation-input>
+  }
+
+  public static void readmeUnwinnability() {
+    // <readme:readme-unwinnability>
+    final Board position = Board.fromFenStrict("8/8/3k4/1p2p1p1/pP1pP1P1/P2P4/1K6/8 b - - 32 62");
+
+    System.out.println(position.unwinnableQuick(Side.BLACK)); // [out]
+    System.out.println(position.deadPositionQuick()); // [out]
+    // </readme:readme-unwinnability>
+  }
+
+  public static void castlingGeometry() {
+    // <readme:castling-geometry>
+    // Create a castling request with the CastlingMove enum, then resolve the touched
+    // king and rook squares from the enum and moving side.
+    final MoveSpecification specification = new MoveSpecification(CastlingMove.KING_SIDE);
+
+    if (specification.isCastling()) {
+      final CastlingMove castling = specification.castlingMove();
+      System.out.println(castling.kingFromSquare(Side.WHITE)); // [out]
+      System.out.println(castling.kingToSquare(Side.WHITE)); // [out]
+      System.out.println(castling.rookFromSquare(Side.WHITE)); // [out]
+      System.out.println(castling.rookToSquare(Side.WHITE)); // [out]
+    }
+    // </readme:castling-geometry>
   }
 
   public static void unwinnableInsufficientMaterial() {
@@ -240,25 +367,36 @@ public final class ReadmeExamples {
   public static void deadInsufficientMaterial() {
     // <readme:dead-insufficient-material>
     final Board board = Board.fromFenStrict("8/8/3kn3/8/2K5/8/8/8 w - - 0 50");
-    System.out.println(board.deadPositionQuick()); // [out] (dead)
-    System.out.println(board.deadPositionFull()); // [out] (dead)
+    System.out.println(board.deadPositionQuick()); // [out]
+    System.out.println(board.deadPositionFull()); // [out]
     // </readme:dead-insufficient-material>
   }
 
   public static void deadPawnWalls() {
     // <readme:dead-pawn-walls>
     final Board board = Board.fromFenStrict("8/6b1/1p3k2/1Pp1p1p1/2P1PpP1/5P2/8/5K2 b - - 11 61");
-    System.out.println(board.deadPositionQuick()); // [out] (dead)
-    System.out.println(board.deadPositionFull()); // [out] (dead)
+    System.out.println(board.deadPositionQuick()); // [out]
+    System.out.println(board.deadPositionFull()); // [out]
     // </readme:dead-pawn-walls>
   }
 
   public static void deadForcedMoves() {
     // <readme:dead-forced-moves>
     final Board board = Board.fromFenStrict("k7/P1K5/8/8/8/8/8/8 b - - 2 58");
-    System.out.println(board.deadPositionQuick()); // [out] (dead)
-    System.out.println(board.deadPositionFull()); // [out] (dead)
+    System.out.println(board.deadPositionQuick()); // [out]
+    System.out.println(board.deadPositionFull()); // [out]
     // </readme:dead-forced-moves>
+  }
+
+  public static void deadPossiblyAlive() {
+    // <readme:dead-possibly-alive>
+    final Board board = Board.fromFenStrict("q4r2/pR3pkp/1p2p1p1/4P3/6P1/1P3Q2/1Pr2PK1/3R4 b - - 3 29");
+
+    System.out.println(board.deadPositionQuick()); // [out]
+    System.out.println(board.deadPositionFull()); // [out]
+    System.out.println(board.unwinnableQuick(Side.WHITE)); // [out]
+    System.out.println(board.unwinnableFull(Side.WHITE)); // [out]
+    // </readme:dead-possibly-alive>
   }
 
   public static void pgnLenientValid() {
@@ -333,7 +471,7 @@ public final class ReadmeExamples {
 
   public static void pgnLenientFileParsing() {
     // <readme:pgn-lenient-file-parsing>
-    final PgnGame pgnGame = LenientPgnParser.parsePath("C:\\temp\\myFile.pgn");
+    final PgnGame pgnGame = LenientPgnParser.parsePath("game.pgn");
     final Board board = PgnUtility.toBoard(pgnGame);
     System.out.println(board.isCheckmate());
     // </readme:pgn-lenient-file-parsing>
@@ -395,7 +533,7 @@ public final class ReadmeExamples {
 
   public static void pgnStrictFileParsing() {
     // <readme:pgn-strict-file-parsing>
-    final PgnGame pgnGame = StrictPgnParser.parsePath("C:\\temp\\myFile.pgn");
+    final PgnGame pgnGame = StrictPgnParser.parsePath("game.pgn");
     final Board board = PgnUtility.toBoard(pgnGame);
     System.out.println(board.isThreefoldRepetition());
     // </readme:pgn-strict-file-parsing>
@@ -429,7 +567,7 @@ public final class ReadmeExamples {
     board.movesStrict("e4", "e5", "Nf3", "Nf6", "Bc4", "Bc5");
 
     final PgnGame pgnGame = PgnCreate.createPgnGame(board);
-    PgnWriter.writePgn(pgnGame, "C:\\temp\\myFile.pgn", WriteMode.ARCHIVAL);
+    PgnWriter.writePgn(pgnGame, "game.pgn", WriteMode.ARCHIVAL);
     // </readme:pgn-export>
   }
 
@@ -464,7 +602,7 @@ public final class ReadmeExamples {
 
   public static void pgnLenientValidationFile() {
     // <readme:pgn-lenient-validation-file>
-    final LenientPgnParserValidationResult result = LenientPgnParser.validatePath("C:\\temp\\myFile.pgn");
+    final LenientPgnParserValidationResult result = LenientPgnParser.validatePath("game.pgn");
     System.out.println(result.isValid());
     // </readme:pgn-lenient-validation-file>
   }
@@ -510,7 +648,7 @@ public final class ReadmeExamples {
 
   public static void pgnStrictValidationFile() {
     // <readme:pgn-strict-validation-file>
-    final StrictPgnParserValidationResult result = StrictPgnParser.validatePath("C:\\temp\\myFile.pgn");
+    final StrictPgnParserValidationResult result = StrictPgnParser.validatePath("game.pgn");
     System.out.println(result.isValid());
     // </readme:pgn-strict-validation-file>
   }

@@ -17,7 +17,8 @@ import com.github.bhlangonijr.chesslib.move.Move;
 import com.github.bhlangonijr.chesslib.move.MoveList;
 import com.github.bhlangonijr.chesslib.pgn.PgnHolder;
 
-import io.github.dlbbld.ashlarchess.common.Nulls;
+import io.github.dlbbld.ashlarchess.internal.Nulls;
+import io.github.dlbbld.ashlarchess.test.common.utility.Loggers;
 import io.github.dlbbld.ashlarchess.test.librarycarlos.NullsCarlos;
 import io.github.dlbbld.ashlarchess.test.model.PgnFen;
 import io.github.dlbbld.ashlarchess.test.model.PgnTestCaseList;
@@ -25,8 +26,7 @@ import io.github.dlbbld.ashlarchess.test.pgn.setup.PgnTestCaseCatalog;
 import io.github.dlbbld.ashlarchess.test.pgntest.enums.PgnTest;
 
 class TestLibraryCarlosPerformancePass {
-
-  private static final Logger logger = Nulls.getLogger(TestLibraryCarlosPerformancePass.class);
+  private static final Logger logger = Loggers.getLogger(TestLibraryCarlosPerformancePass.class);
 
   private static final double LOAD_PGN_DURATION_MAX_MILLISECONDS = 1000.0;
 

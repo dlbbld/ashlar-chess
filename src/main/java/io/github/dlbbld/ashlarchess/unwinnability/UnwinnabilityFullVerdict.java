@@ -3,18 +3,11 @@
 
 package io.github.dlbbld.ashlarchess.unwinnability;
 
-/**
- * Verdict of the complete (full) unwinnability analysis for an intended winner. The two winnable values record how
- * winnability was established: {@code WINNABLE_HELPMATE} found a concrete cooperative mate and the analysis carries the
- * mate line; {@code WINNABLE_BY_THEOREM} was certified by the basic-helpmate-existence theorem and carries no line.
- */
+/** Verdict of the complete (full) unwinnability analysis for an intended winner. */
 public enum UnwinnabilityFullVerdict {
 
-  /** Winnable: a concrete helpmate was found; the analysis carries the witnessing mate line. */
-  WINNABLE_HELPMATE,
-
-  /** Winnable: certified by the basic-helpmate-existence theorem, without an explicit mate line. */
-  WINNABLE_BY_THEOREM,
+  /** Proven winnable for the intended winner. */
+  WINNABLE,
 
   /** Proven unwinnable for the intended winner. */
   UNWINNABLE,

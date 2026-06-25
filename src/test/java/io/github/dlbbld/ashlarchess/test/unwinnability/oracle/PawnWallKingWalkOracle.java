@@ -17,8 +17,8 @@ import io.github.dlbbld.ashlarchess.board.enums.Piece;
 import io.github.dlbbld.ashlarchess.board.enums.PieceType;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
 import io.github.dlbbld.ashlarchess.board.enums.Square;
-import io.github.dlbbld.ashlarchess.common.Nulls;
 import io.github.dlbbld.ashlarchess.common.utility.StaticPositionUtility;
+import io.github.dlbbld.ashlarchess.internal.Nulls;
 
 /**
  * Test-only BFS oracle for the pawn-wall classifier.

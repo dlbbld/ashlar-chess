@@ -6,7 +6,7 @@
 
 	<groupId>io.github.dlbbld</groupId>
 	<artifactId>ashlar-chess</artifactId>
-	<version>19.1.0</version>
+	<version>20.0.0</version>
 
 	<name>ashlar-chess</name>
 	<description>A Java chess rules library with strict/lenient SAN, FEN, and
@@ -61,14 +61,10 @@
 
 	<dependencies>
 		<dependency>
-			<groupId>com.google.guava</groupId>
-			<artifactId>guava</artifactId>
-			<version>33.5.0-jre</version>
-		</dependency>
-		<dependency>
 			<groupId>org.apache.logging.log4j</groupId>
 			<artifactId>log4j-api</artifactId>
 			<version>2.25.4</version>
+			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.logging.log4j</groupId>
@@ -95,6 +91,7 @@
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-lang3</artifactId>
 			<version>3.20.0</version>
+			<scope>test</scope>
 		</dependency>
 
 		<dependency>
@@ -130,14 +127,10 @@
 						<addMavenDescriptor>false</addMavenDescriptor>
 						<manifestEntries>
 							<!--
-								Intentional JPMS module name. Without this, the JVM derives
-								`ashlar.chess` from the jar file name for module-path consumers - an
-								accidental name. Declaring it locks the chosen
-								io.github.dlbbld.ashlarchess (mirrors the base package) ahead of the
-								explicit module-info.java planned for 20.0.0, so the eventual named
-								module keeps a name consumers can already rely on.
+								The JPMS module name is declared by src/main/java/module-info.java
+								(module io.github.dlbbld.ashlarchess). A real module descriptor supersedes
+								Automatic-Module-Name, so that manifest entry is no longer carried here.
 							-->
-							<Automatic-Module-Name>io.github.dlbbld.ashlarchess</Automatic-Module-Name>
 							<Implementation-Title>${project.artifactId}</Implementation-Title>
 							<Implementation-Version>${project.version}</Implementation-Version>
 							<Implementation-Vendor>Daniel Bächli</Implementation-Vendor>
@@ -160,6 +153,17 @@
 					<excludes>
 						<exclude>${test.excludes}</exclude>
 					</excludes>
+					<!--
+						The white-box test tree carries no module-info, so surefire patches it into the
+						io.github.dlbbld.ashlarchess module (its tests must reach non-exported internals).
+						TestBoardUnperformMove deep-compares two Boards with commons-lang3
+						EqualsBuilder.reflectionEquals, which setAccessible()s Board's private fields - that
+						needs the board package opened to the unnamed module (commons-lang3 is a test-scoped
+						dependency on the classpath) for the forked test JVM. Kept here, not in module-info, on
+						purpose: it is a test-only reflection need, not a package ashlar wants open to consumers.
+					-->
+					<argLine>--add-opens
+						io.github.dlbbld.ashlarchess/io.github.dlbbld.ashlarchess.board=ALL-UNNAMED</argLine>
 				</configuration>
 			</plugin>
 
@@ -171,7 +175,7 @@
 					Javadoc is NOT bound to the package phase. Regular edit-compile cycles
 					(mvn test-compile, mvn package -DskipTests) stay fast and Java-only.
 					Run javadoc explicitly when touching docs / API signatures:
-						mvn javadoc:javadoc -Dshow=private       # validate ALL main docs
+						mvn javadoc:javadoc -Dshow=private       # validate exported main docs (internals excluded, see excludePackageNames)
 						mvn javadoc:test-javadoc -Dshow=private  # validate ALL test docs
 						mvn javadoc:jar                          # produce the public-API javadoc jar
 					Both validation goals need -Dshow=private: many main classes (report records,
@@ -185,6 +189,25 @@
 					<source>17</source>
 					<doclint>all,-missing</doclint>
 					<failOnError>true</failOnError>
+					<!--
+						maven-javadoc-plugin 3.11.2 aborts a single-module project that has a
+						module-info.java with "aggregated report contains named and unnamed modules"
+						(its module pre-scan trips before any doc is generated). Exclude module-info.java
+						from javadoc generation so the tool runs in classic (package) mode; the descriptor
+						is still compiled into the jar by maven-compiler-plugin, so modular consumers are
+						unaffected. The module-summary page is still rendered from the compiled descriptor.
+					-->
+					<sourceFileExcludes>
+						<sourceFileExclude>module-info.java</sourceFileExclude>
+					</sourceFileExcludes>
+					<!--
+						Because javadoc runs in classic (package) mode here, it would otherwise document
+						EVERY public type in EVERY package - including the non-exported internals - so the
+						published -javadoc.jar would advertise hidden JPMS internals as API. Restrict the
+						output to the exported packages by excluding the hidden ones. KEEP IN SYNC with
+						module-info.java: this list is exactly the packages it does NOT export.
+					-->
+					<excludePackageNames>io.github.dlbbld.ashlarchess.analyze,io.github.dlbbld.ashlarchess.bitboard.internal,io.github.dlbbld.ashlarchess.board.enums.internal,io.github.dlbbld.ashlarchess.board.internal,io.github.dlbbld.ashlarchess.board.model,io.github.dlbbld.ashlarchess.fen.internal,io.github.dlbbld.ashlarchess.internal,io.github.dlbbld.ashlarchess.messages,io.github.dlbbld.ashlarchess.moves,io.github.dlbbld.ashlarchess.pgn.internal,io.github.dlbbld.ashlarchess.san.internal,io.github.dlbbld.ashlarchess.squares</excludePackageNames>
 				</configuration>
 			</plugin>
 		</plugins>

@@ -3,20 +3,18 @@
 
 package io.github.dlbbld.ashlarchess.squares;
 
+import java.util.Map;
 import java.util.Set;
 
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableSet;
-
 import io.github.dlbbld.ashlarchess.board.enums.Square;
-import io.github.dlbbld.ashlarchess.common.exceptions.ProgrammingMistakeException;
+import io.github.dlbbld.ashlarchess.exceptions.ProgrammingMistakeException;
 
 final class ValidateMoveNumberUtility {
 
   private ValidateMoveNumberUtility() {
   }
 
-  public static <E extends OrthogonalRange> void validateOrthogonalMoveNumber(ImmutableMap<Square, E> rangesBySquare,
+  public static <E extends OrthogonalRange> void validateOrthogonalMoveNumber(Map<Square, E> rangesBySquare,
       int numberOfExpectedMoves) {
     int numberOfActualMoves = 0;
     for (final E bishopRange : rangesBySquare.values()) {
@@ -36,7 +34,7 @@ final class ValidateMoveNumberUtility {
     return total;
   }
 
-  public static <E extends DiagonalRange> void validateDiagonalMovesNumber(ImmutableMap<Square, E> rangesBySquare,
+  public static <E extends DiagonalRange> void validateDiagonalMovesNumber(Map<Square, E> rangesBySquare,
       int numberOfExpectedMoves) {
     int numberOfActualMoves = 0;
     for (final E bishopRange : rangesBySquare.values()) {
@@ -56,7 +54,7 @@ final class ValidateMoveNumberUtility {
     return total;
   }
 
-  public static void validateMapOfSet(ImmutableMap<Square, ImmutableSet<Square>> mapOfSet, int numberOfExpectedMoves) {
+  public static void validateMapOfSet(Map<Square, Set<Square>> mapOfSet, int numberOfExpectedMoves) {
     int numberOfActualMoves = 0;
     for (final Set<Square> set : mapOfSet.values()) {
       numberOfActualMoves += set.size();

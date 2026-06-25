@@ -7,21 +7,20 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.Logger;
+import java.util.logging.Logger;
 
 import io.github.dlbbld.ashlarchess.bitboard.BitboardPosition;
 import io.github.dlbbld.ashlarchess.board.Board;
+import io.github.dlbbld.ashlarchess.board.DynamicPosition;
+import io.github.dlbbld.ashlarchess.board.LegalMove;
+import io.github.dlbbld.ashlarchess.board.UciMove;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
 import io.github.dlbbld.ashlarchess.board.enums.Square;
 import io.github.dlbbld.ashlarchess.board.enums.SquareType;
-import io.github.dlbbld.ashlarchess.common.Nulls;
-import io.github.dlbbld.ashlarchess.common.exceptions.ProgrammingMistakeException;
-import io.github.dlbbld.ashlarchess.common.model.DynamicPosition;
-import io.github.dlbbld.ashlarchess.common.ucimove.utility.UciMoveUtility;
-import io.github.dlbbld.ashlarchess.model.LegalMove;
-import io.github.dlbbld.ashlarchess.model.UciMove;
+import io.github.dlbbld.ashlarchess.board.internal.UciMoveUtility;
+import io.github.dlbbld.ashlarchess.exceptions.ProgrammingMistakeException;
+import io.github.dlbbld.ashlarchess.internal.JdkLoggers;
+import io.github.dlbbld.ashlarchess.internal.Nulls;
 
 //Figure 5 Find-Helpmatec routine, returns true if a checkmate sequence for player c in {w, b},
 //the intended winner, is found or false otherwise. The base call should be done on depth = 0,
@@ -29,7 +28,7 @@ import io.github.dlbbld.ashlarchess.model.UciMove;
 //limits of the search. The Score routine is defined in Figure 12 (Appendix A).
 class FindHelpmate {
 
-  private static final Logger logger = Nulls.getLogger(FindHelpmate.class);
+  private static final Logger logger = JdkLoggers.getLogger(FindHelpmate.class);
 
   // empirically enough
   private static final int LOCAL_NODES_BOUND = 10000;
@@ -57,7 +56,7 @@ class FindHelpmate {
     final Square invariantEnPassantCaptureTargetSquare = board.getEnPassantCaptureTargetSquare();
 
     if (maxDepth != 0 && maxDepth % 10 == 0) {
-      logger.printf(Level.DEBUG, "maxDepth=%d", maxDepth);
+      logger.fine(() -> "maxDepth=" + maxDepth);
     }
 
     this.localNodeCount = 0;

@@ -8,16 +8,15 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.apache.logging.log4j.Logger;
 import org.junit.jupiter.api.Test;
 
-import io.github.dlbbld.ashlarchess.common.Nulls;
 import io.github.dlbbld.ashlarchess.pgn.LenientPgnParser;
 import io.github.dlbbld.ashlarchess.pgn.PgnCreate;
 import io.github.dlbbld.ashlarchess.pgn.PgnGame;
 import io.github.dlbbld.ashlarchess.pgn.WriteMode;
+import io.github.dlbbld.ashlarchess.test.common.utility.Loggers;
 import io.github.dlbbld.ashlarchess.test.pgntest.constants.PgnTestConstants;
 
 class TestLenientPgnParserLineBreaks {
-
-  private static final Logger logger = Nulls.getLogger(TestLenientPgnParserLineBreaks.class);
+  private static final Logger logger = Loggers.getLogger(TestLenientPgnParserLineBreaks.class);
 
   @SuppressWarnings("static-method")
   @Test

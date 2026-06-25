@@ -3,9 +3,9 @@
 
 package io.github.dlbbld.ashlarchess.report;
 
-import com.google.common.collect.ImmutableList;
+import java.util.List;
 
-import io.github.dlbbld.ashlarchess.common.Nulls;
+import io.github.dlbbld.ashlarchess.internal.Nulls;
 
 /**
  * All positions that reached the threefold-repetition threshold in the played history.
@@ -14,7 +14,7 @@ import io.github.dlbbld.ashlarchess.common.Nulls;
  * Groups are ordered by the move count of each group's first occurrence (matching the inlined first-occurrence sort in
  * {@link RepetitionGrouping#calculateRepetitionGroups} on the {@code List<List<MoveRecord>>} output).
  */
-record ThreefoldExistingReport(ImmutableList<RepetitionGroup> groups) {
+record ThreefoldExistingReport(List<RepetitionGroup> groups) {
 
   public ThreefoldExistingReport {
     groups = Nulls.copyOfList(groups);

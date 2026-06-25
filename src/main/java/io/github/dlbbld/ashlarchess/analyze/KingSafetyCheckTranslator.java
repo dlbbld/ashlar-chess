@@ -3,9 +3,9 @@
 
 package io.github.dlbbld.ashlarchess.analyze;
 
-import io.github.dlbbld.ashlarchess.common.exceptions.ProgrammingMistakeException;
-import io.github.dlbbld.ashlarchess.enums.KingSafetyCheck;
-import io.github.dlbbld.ashlarchess.enums.MoveCheck;
+import io.github.dlbbld.ashlarchess.board.MoveCheck;
+import io.github.dlbbld.ashlarchess.exceptions.ProgrammingMistakeException;
+import io.github.dlbbld.ashlarchess.moves.KingSafetyCheck;
 
 /**
  * Translates a {@link KingSafetyCheck} failure into the broader {@link MoveCheck} vocabulary, used when a king-safety

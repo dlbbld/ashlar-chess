@@ -11,7 +11,7 @@ import java.nio.charset.StandardCharsets;
 
 import org.eclipse.jdt.annotation.Owning;
 
-import io.github.dlbbld.ashlarchess.common.exceptions.ProgrammingMistakeException;
+import io.github.dlbbld.ashlarchess.exceptions.ProgrammingMistakeException;
 
 public final class IoUtility {
 

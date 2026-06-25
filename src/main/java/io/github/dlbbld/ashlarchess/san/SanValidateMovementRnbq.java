@@ -9,9 +9,12 @@ import io.github.dlbbld.ashlarchess.board.enums.File;
 import io.github.dlbbld.ashlarchess.board.enums.PieceType;
 import io.github.dlbbld.ashlarchess.board.enums.Rank;
 import io.github.dlbbld.ashlarchess.board.enums.Square;
-import io.github.dlbbld.ashlarchess.common.Nulls;
+import io.github.dlbbld.ashlarchess.internal.Nulls;
 import io.github.dlbbld.ashlarchess.messages.Message;
-import io.github.dlbbld.ashlarchess.model.EmptyBoardMove;
+import io.github.dlbbld.ashlarchess.moves.EmptyBoardMove;
+import io.github.dlbbld.ashlarchess.san.internal.SanConversion;
+import io.github.dlbbld.ashlarchess.san.internal.SanDisambiguationUtility;
+import io.github.dlbbld.ashlarchess.san.internal.SanParse;
 import io.github.dlbbld.ashlarchess.squares.EmptyBoardMoveUtility;
 
 final class SanValidateMovementRnbq {

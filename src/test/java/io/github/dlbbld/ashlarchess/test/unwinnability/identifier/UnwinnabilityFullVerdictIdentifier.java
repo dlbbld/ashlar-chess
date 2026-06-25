@@ -3,7 +3,7 @@
 
 package io.github.dlbbld.ashlarchess.test.unwinnability.identifier;
 
-import io.github.dlbbld.ashlarchess.common.exceptions.ProgrammingMistakeException;
+import io.github.dlbbld.ashlarchess.exceptions.ProgrammingMistakeException;
 import io.github.dlbbld.ashlarchess.unwinnability.UnwinnabilityFullVerdict;
 
 /**
@@ -18,7 +18,7 @@ public final class UnwinnabilityFullVerdictIdentifier {
 
   public static String getIdentifier(UnwinnabilityFullVerdict verdict) {
     return switch (verdict) {
-      case WINNABLE_HELPMATE, WINNABLE_BY_THEOREM -> "winnable";
+      case WINNABLE -> "winnable";
       case UNWINNABLE -> "unwinnable";
       case UNDETERMINED -> "undetermined";
     };

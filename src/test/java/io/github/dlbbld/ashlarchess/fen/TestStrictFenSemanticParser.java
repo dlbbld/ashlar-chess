@@ -12,11 +12,10 @@ import org.junit.jupiter.api.Test;
 import io.github.dlbbld.ashlarchess.board.StaticPosition;
 import io.github.dlbbld.ashlarchess.board.enums.CastlingRight;
 import io.github.dlbbld.ashlarchess.board.enums.Square;
-import io.github.dlbbld.ashlarchess.common.constants.ChessConstants;
-import io.github.dlbbld.ashlarchess.common.enums.StrictFenSemanticValidationProblem;
-import io.github.dlbbld.ashlarchess.fen.constants.FenConstants;
+import io.github.dlbbld.ashlarchess.fen.internal.FenConstants;
+import io.github.dlbbld.ashlarchess.fen.internal.FenField;
 import io.github.dlbbld.ashlarchess.fen.model.Fen;
-import io.github.dlbbld.ashlarchess.fen.model.FenField;
+import io.github.dlbbld.ashlarchess.internal.ChessConstants;
 
 class TestStrictFenSemanticParser {
 

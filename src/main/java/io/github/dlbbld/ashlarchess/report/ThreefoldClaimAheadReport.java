@@ -3,9 +3,9 @@
 
 package io.github.dlbbld.ashlarchess.report;
 
-import com.google.common.collect.ImmutableList;
+import java.util.List;
 
-import io.github.dlbbld.ashlarchess.common.Nulls;
+import io.github.dlbbld.ashlarchess.internal.Nulls;
 
 /**
  * All threefold-repetition claim-ahead opportunities discovered during the played history's replay, including those the
@@ -16,7 +16,7 @@ import io.github.dlbbld.ashlarchess.common.Nulls;
  * matching the stable outer sort (the comparator on the first element of each move's claim group) and the inner order
  * (Board.getLegalMoves() iteration).
  */
-record ThreefoldClaimAheadReport(ImmutableList<ClaimAheadEntry> entries) {
+record ThreefoldClaimAheadReport(List<ClaimAheadEntry> entries) {
 
   public ThreefoldClaimAheadReport {
     entries = Nulls.copyOfList(entries);

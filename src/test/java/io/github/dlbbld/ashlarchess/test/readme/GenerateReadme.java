@@ -4,14 +4,14 @@
 package io.github.dlbbld.ashlarchess.test.readme;
 
 /**
- * Regenerates {@code README.md} from {@code README.template.md} and the {@link ReadmeExamples} methods. Run after
- * editing the template or an example:
+ * Regenerates the public Markdown docs from their templates and the {@link ReadmeExamples} methods. Run after editing a
+ * template or an example:
  *
  * <pre>
  * mvn -q test-compile exec:java -Dexec.mainClass=io.github.dlbbld.ashlarchess.test.readme.GenerateReadme -Dexec.classpathScope=test
  * </pre>
  *
- * {@code TestReadmeUpToDate} fails the build if the committed README differs from a fresh render.
+ * {@code TestReadmeUpToDate} fails the build if a committed document differs from a fresh render.
  */
 public final class GenerateReadme {
 
@@ -19,7 +19,7 @@ public final class GenerateReadme {
   }
 
   public static void main(String[] args) {
-    ReadmeDoc.writeReadme();
-    System.out.println("README.md regenerated from README.template.md.");
+    ReadmeDoc.writeDocs();
+    System.out.println("README.md and manual.md regenerated from their templates.");
   }
 }

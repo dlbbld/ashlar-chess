@@ -17,15 +17,14 @@ import org.junit.jupiter.api.Test;
 import io.github.dlbbld.ashlarchess.board.Board;
 import io.github.dlbbld.ashlarchess.board.enums.Piece;
 import io.github.dlbbld.ashlarchess.board.enums.PromotionPieceType;
-import io.github.dlbbld.ashlarchess.common.Nulls;
+import io.github.dlbbld.ashlarchess.test.common.utility.Loggers;
 import io.github.dlbbld.ashlarchess.test.model.PgnFen;
 import io.github.dlbbld.ashlarchess.test.model.PgnTestCaseList;
 import io.github.dlbbld.ashlarchess.test.pgn.setup.PgnTestCaseCatalog;
 import io.github.dlbbld.ashlarchess.test.pgntest.enums.PgnTest;
 
 class TestBasicPromotionPieceWhite {
-
-  private static final Logger logger = Nulls.getLogger(TestBasicPromotionPieceWhite.class);
+  private static final Logger logger = Loggers.getLogger(TestBasicPromotionPieceWhite.class);
 
   static {
     final List<String> pgnNames = new ArrayList<>();

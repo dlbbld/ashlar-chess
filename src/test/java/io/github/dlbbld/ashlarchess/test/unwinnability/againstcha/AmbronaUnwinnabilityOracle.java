@@ -8,8 +8,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import io.github.dlbbld.ashlarchess.common.Nulls;
-import io.github.dlbbld.ashlarchess.common.exceptions.ProgrammingMistakeException;
+import io.github.dlbbld.ashlarchess.exceptions.ProgrammingMistakeException;
+import io.github.dlbbld.ashlarchess.internal.Nulls;
 import io.github.dlbbld.ashlarchess.test.ConfigurationTestConstants;
 import io.github.dlbbld.ashlarchess.test.common.utility.FileUtility;
 import io.github.dlbbld.ashlarchess.test.unwinnability.againstcha.model.AmbronaUnwinnabilityVerdicts;
@@ -62,11 +62,7 @@ public final class AmbronaUnwinnabilityOracle {
     return result;
   }
 
-  // CHA's full vocabulary has a single "WINNABLE"; the WINNABLE_HELPMATE / WINNABLE_BY_THEOREM split is ours, not
-  // CHA's.
-  // Map CHA's token to a canonical winnable value - oracle comparisons group the two via isWinnable().
   private static UnwinnabilityFullVerdict parseChaFullVerdict(String token) {
-    return "WINNABLE".equals(token) ? UnwinnabilityFullVerdict.WINNABLE_HELPMATE
-        : UnwinnabilityFullVerdict.valueOf(token);
+    return UnwinnabilityFullVerdict.valueOf(token);
   }
 }

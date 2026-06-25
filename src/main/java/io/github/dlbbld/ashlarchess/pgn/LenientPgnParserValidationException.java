@@ -3,12 +3,12 @@
 
 package io.github.dlbbld.ashlarchess.pgn;
 
+import java.util.List;
+
 import org.eclipse.jdt.annotation.NonNull;
 
-import com.google.common.collect.ImmutableList;
-
-import io.github.dlbbld.ashlarchess.common.Nulls;
-import io.github.dlbbld.ashlarchess.common.exceptions.UsageException;
+import io.github.dlbbld.ashlarchess.exceptions.UsageException;
+import io.github.dlbbld.ashlarchess.internal.Nulls;
 import io.github.dlbbld.ashlarchess.san.ForgivenSanItem;
 import io.github.dlbbld.ashlarchess.san.SanValidationProblem;
 
@@ -23,18 +23,18 @@ public class LenientPgnParserValidationException extends UsageException {
    * SAN-level forgiven items accumulated during movetext replay before the failure point. Empty if the failure occurred
    * outside the movetext path (tag validation, structural error) or if no SAN deviation had been forgiven yet.
    */
-  private final @NonNull ImmutableList<@NonNull ForgivenSanItem> sanForgivenItemsAccumulated;
+  private final @NonNull List<@NonNull ForgivenSanItem> sanForgivenItemsAccumulated;
 
   /**
    * Tag-level forgiven items accumulated before the failure point. Tag-level forgiveness happens after tag parsing and
    * before movetext replay, so this list is empty for any failure that originated in the tag section itself, and
    * fully-populated for any failure that originated downstream (in the movetext).
    */
-  private final @NonNull ImmutableList<@NonNull ForgivenTagItem> tagForgivenItemsAccumulated;
+  private final @NonNull List<@NonNull ForgivenTagItem> tagForgivenItemsAccumulated;
 
   public LenientPgnParserValidationException(LenientPgnParserValidationProblem lenientPgnParserValidationProblem,
       SanValidationProblem sanValidationProblem, String message) {
-    this(lenientPgnParserValidationProblem, sanValidationProblem, message, ImmutableList.of(), ImmutableList.of());
+    this(lenientPgnParserValidationProblem, sanValidationProblem, message, List.of(), List.of());
   }
 
   /**
@@ -44,8 +44,8 @@ public class LenientPgnParserValidationException extends UsageException {
    */
   public LenientPgnParserValidationException(LenientPgnParserValidationProblem lenientPgnParserValidationProblem,
       SanValidationProblem sanValidationProblem, String message,
-      @NonNull ImmutableList<@NonNull ForgivenSanItem> sanForgivenItemsAccumulated,
-      @NonNull ImmutableList<@NonNull ForgivenTagItem> tagForgivenItemsAccumulated) {
+      @NonNull List<@NonNull ForgivenSanItem> sanForgivenItemsAccumulated,
+      @NonNull List<@NonNull ForgivenTagItem> tagForgivenItemsAccumulated) {
     super(message);
     this.lenientPgnParserValidationProblem = lenientPgnParserValidationProblem;
     this.sanValidationProblem = sanValidationProblem;
@@ -61,11 +61,11 @@ public class LenientPgnParserValidationException extends UsageException {
     return sanValidationProblem;
   }
 
-  public @NonNull ImmutableList<@NonNull ForgivenSanItem> getSanForgivenItemsAccumulated() {
+  public @NonNull List<@NonNull ForgivenSanItem> getSanForgivenItemsAccumulated() {
     return sanForgivenItemsAccumulated;
   }
 
-  public @NonNull ImmutableList<@NonNull ForgivenTagItem> getTagForgivenItemsAccumulated() {
+  public @NonNull List<@NonNull ForgivenTagItem> getTagForgivenItemsAccumulated() {
     return tagForgivenItemsAccumulated;
   }
 

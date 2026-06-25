@@ -100,6 +100,28 @@ python src/test/python/generate_move_gen_oracle.py
 
 ---
 
+## 7. Running the test suite
+
+Day-to-day iteration runs a restricted subset:
+
+```
+mvn test
+```
+
+A handful of long-running audits are gated by `RestrictTestConstants` — the cross-corpus parser audits, a multi-second unwinnability full-search test, the legacy parser-rejection audit. They take seconds to a few minutes apiece and are not useful on every iteration.
+
+The full suite is a Maven profile:
+
+```
+mvn test -Pfull -Dtest.excludes=
+```
+
+`-Pfull` sets the `ashlar-chess.full` system property, which flips every gate inside `RestrictTestConstants` and switches `PgnTestInclusion` to `ALL` (including the longest-possible-game corpus). `-Dtest.excludes=` clears the default unwinnability-suite exclusion.
+
+**Release gate:** before tagging a release, run `mvn test -Pfull -Dtest.excludes=` and confirm green — the default suite is *not* sufficient to certify a release. (See [`specification.md`](specification.md) §6 for *why* the suite is shaped this way.)
+
+---
+
 ## What you get for free after import
 
 Because of the project-level config in `.settings/` and at the repo root, you do **not** need to:

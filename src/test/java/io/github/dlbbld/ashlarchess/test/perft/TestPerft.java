@@ -5,19 +5,19 @@ package io.github.dlbbld.ashlarchess.test.perft;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import java.util.List;
+
 import org.junit.jupiter.api.Test;
 
-import com.google.common.collect.ImmutableList;
-
-import io.github.dlbbld.ashlarchess.bitboard.BitboardLegalMoveFactory;
 import io.github.dlbbld.ashlarchess.bitboard.BitboardPosition;
+import io.github.dlbbld.ashlarchess.bitboard.internal.BitboardLegalMoveFactory;
+import io.github.dlbbld.ashlarchess.board.LegalMove;
 import io.github.dlbbld.ashlarchess.board.enums.CastlingRight;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
 import io.github.dlbbld.ashlarchess.board.enums.Square;
 import io.github.dlbbld.ashlarchess.fen.StrictFenParser;
 import io.github.dlbbld.ashlarchess.fen.model.Fen;
-import io.github.dlbbld.ashlarchess.model.CastlingRightBoth;
-import io.github.dlbbld.ashlarchess.model.LegalMove;
+import io.github.dlbbld.ashlarchess.moves.CastlingRightBoth;
 import io.github.dlbbld.ashlarchess.moves.CastlingUtility;
 import io.github.dlbbld.ashlarchess.moves.EnPassantCaptureUtility;
 
@@ -109,7 +109,7 @@ class TestPerft {
       return 1L;
     }
     final CastlingRight castlingRightSideToMove = sideToMove == Side.WHITE ? castlingRightWhite : castlingRightBlack;
-    final ImmutableList<LegalMove> legalMoves = BitboardLegalMoveFactory.calculateLegalMoves(position, sideToMove,
+    final List<LegalMove> legalMoves = BitboardLegalMoveFactory.calculateLegalMoves(position, sideToMove,
         castlingRightSideToMove, enPassantBit);
     if (depth == 1) {
       return legalMoves.size();

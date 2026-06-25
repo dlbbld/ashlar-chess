@@ -3,23 +3,33 @@
 
 package io.github.dlbbld.ashlarchess.unwinnability;
 
-import com.google.common.collect.ImmutableList;
+import java.util.List;
 
-import io.github.dlbbld.ashlarchess.common.Nulls;
-import io.github.dlbbld.ashlarchess.model.UciMove;
+import io.github.dlbbld.ashlarchess.board.UciMove;
+import io.github.dlbbld.ashlarchess.internal.Nulls;
 
 /**
- * Result of the complete unwinnability analysis: the verdict and, for {@code WINNABLE_HELPMATE}, a witnessing mate line
- * in UCI moves that checkmates the loser.
+ * Result of the complete unwinnability analysis: the public verdict plus proof detail for proven wins.
  *
  * <p>
- * The mate line is present only for {@code WINNABLE_HELPMATE} (the helpmate search found a concrete cooperative mate).
- * It is empty for {@code WINNABLE_BY_THEOREM} (winnability certified by the basic-helpmate-existence theorem without
- * searching for a sequence), and for {@code UNWINNABLE} and {@code UNDETERMINED}.
+ * The public {@code verdict} stays coarse. {@link #winnableProof()} says how a {@code WINNABLE} verdict was established
+ * - {@link WinnableProof#THEOREM} for the basic-helpmate-existence theorem (never a line) or
+ * {@link WinnableProof#HELPMATE} for a concrete search ({@link #mateLine()} carries the witnessing UCI line when the
+ * search produced one; it can be empty) - and is {@link WinnableProof#NONE} for a non-winnable verdict (never a line).
  */
-public record UnwinnabilityFullAnalysis(UnwinnabilityFullVerdict verdict, ImmutableList<UciMove> mateLine) {
+public record UnwinnabilityFullAnalysis(UnwinnabilityFullVerdict verdict, WinnableProof winnableProof,
+    List<UciMove> mateLine) {
 
   public UnwinnabilityFullAnalysis {
     mateLine = Nulls.copyOfList(mateLine);
+    if ((verdict == UnwinnabilityFullVerdict.WINNABLE) == (winnableProof == WinnableProof.NONE)) {
+      throw new IllegalArgumentException("winnableProof must be NONE exactly when the verdict is not WINNABLE");
+    }
+    // A mate line is only ever a HELPMATE artefact: a theorem certification carries none, and a non-winnable verdict
+    // carries none. A HELPMATE win usually carries a line, but the search can prove winnability without one, so an
+    // empty HELPMATE line is permitted.
+    if (winnableProof != WinnableProof.HELPMATE && !mateLine.isEmpty()) {
+      throw new IllegalArgumentException("Only a HELPMATE (searched) win can carry a mate line");
+    }
   }
 }

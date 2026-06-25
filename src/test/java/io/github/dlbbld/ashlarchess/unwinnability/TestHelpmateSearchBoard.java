@@ -11,13 +11,11 @@ import java.util.Set;
 import org.eclipse.jdt.annotation.Nullable;
 import org.junit.jupiter.api.Test;
 
-import com.google.common.collect.ImmutableList;
-
 import io.github.dlbbld.ashlarchess.board.Board;
+import io.github.dlbbld.ashlarchess.board.LegalMove;
+import io.github.dlbbld.ashlarchess.board.MoveSpecification;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
-import io.github.dlbbld.ashlarchess.common.Nulls;
-import io.github.dlbbld.ashlarchess.common.model.MoveSpecification;
-import io.github.dlbbld.ashlarchess.model.LegalMove;
+import io.github.dlbbld.ashlarchess.internal.Nulls;
 
 class TestHelpmateSearchBoard {
 
@@ -79,10 +77,10 @@ class TestHelpmateSearchBoard {
   private static final SearchCase SCENARIO_EN_PASSANT_RESOLVES_CHECK = new SearchCase("en-passant-resolves-check",
       "4k3/8/8/3pP3/2K5/8/8/8 w - d6 0 1", 1);
 
-  private static final ImmutableList<SearchCase> SCENARIOS = Nulls.listOf(SCENARIO_INITIAL,
-      SCENARIO_ALL_FOUR_CASTLING_RIGHTS, SCENARIO_LEGAL_EN_PASSANT, SCENARIO_ILLEGAL_EN_PASSANT_NORMALIZATION,
-      SCENARIO_BOTH_SIDES_PROMOTE, SCENARIO_CHECKMATE_TERMINAL, SCENARIO_STALEMATE_TERMINAL,
-      SCENARIO_CHECK_WITH_KING_ONLY_EVASIONS, SCENARIO_DOUBLE_CHECK_KING_ONLY, SCENARIO_EN_PASSANT_RESOLVES_CHECK);
+  private static final List<SearchCase> SCENARIOS = Nulls.listOf(SCENARIO_INITIAL, SCENARIO_ALL_FOUR_CASTLING_RIGHTS,
+      SCENARIO_LEGAL_EN_PASSANT, SCENARIO_ILLEGAL_EN_PASSANT_NORMALIZATION, SCENARIO_BOTH_SIDES_PROMOTE,
+      SCENARIO_CHECKMATE_TERMINAL, SCENARIO_STALEMATE_TERMINAL, SCENARIO_CHECK_WITH_KING_ONLY_EVASIONS,
+      SCENARIO_DOUBLE_CHECK_KING_ONLY, SCENARIO_EN_PASSANT_RESOLVES_CHECK);
 
   @SuppressWarnings("static-method")
   @Test

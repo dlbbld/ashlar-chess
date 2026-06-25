@@ -12,10 +12,11 @@ import org.apache.logging.log4j.Logger;
 import org.junit.jupiter.api.Test;
 
 import io.github.dlbbld.ashlarchess.board.Board;
+import io.github.dlbbld.ashlarchess.board.UciMove;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
-import io.github.dlbbld.ashlarchess.common.Nulls;
-import io.github.dlbbld.ashlarchess.common.ucimove.utility.UciMoveUtility;
-import io.github.dlbbld.ashlarchess.model.UciMove;
+import io.github.dlbbld.ashlarchess.board.internal.UciMoveUtility;
+import io.github.dlbbld.ashlarchess.internal.Nulls;
+import io.github.dlbbld.ashlarchess.test.common.utility.Loggers;
 import io.github.dlbbld.ashlarchess.test.common.utility.PgnExtensionUtility;
 import io.github.dlbbld.ashlarchess.test.model.PgnFen;
 import io.github.dlbbld.ashlarchess.test.model.PgnTestCaseList;
@@ -24,10 +25,10 @@ import io.github.dlbbld.ashlarchess.test.pgntest.enums.PgnTest;
 import io.github.dlbbld.ashlarchess.unwinnability.UnwinnabilityFullAnalysis;
 import io.github.dlbbld.ashlarchess.unwinnability.UnwinnabilityFullVerdict;
 import io.github.dlbbld.ashlarchess.unwinnability.UnwinnableFullAnalyzer;
+import io.github.dlbbld.ashlarchess.unwinnability.WinnableProof;
 
 class TestUnwinnabilityFullHelpmateIsHelpmate {
-
-  private static final Logger logger = Nulls.getLogger(TestUnwinnabilityFullHelpmateIsHelpmate.class);
+  private static final Logger logger = Loggers.getLogger(TestUnwinnabilityFullHelpmateIsHelpmate.class);
 
   @SuppressWarnings("static-method")
   @Test
@@ -40,8 +41,8 @@ class TestUnwinnabilityFullHelpmateIsHelpmate {
       final String fen = lichessTestCase.finalFen();
       final Side winner = board.getSideToMove();
       final UnwinnabilityFullAnalysis analysis = UnwinnableFullAnalyzer.unwinnableFull(board, winner);
-      // A searched winnable verdict must be WINNABLE_HELPMATE and carry a line; pin that before replaying it.
-      assertEquals(UnwinnabilityFullVerdict.WINNABLE_HELPMATE, analysis.verdict(), fen);
+      assertEquals(UnwinnabilityFullVerdict.WINNABLE, analysis.verdict(), fen);
+      assertEquals(WinnableProof.HELPMATE, analysis.winnableProof(), fen);
       assertHelpmateLine(fen, winner, analysis.mateLine());
     }
   }

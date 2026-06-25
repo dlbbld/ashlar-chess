@@ -11,14 +11,13 @@ import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.List;
 import java.util.function.Supplier;
 
 import org.junit.jupiter.api.Test;
 
-import com.google.common.collect.ImmutableList;
-
 import io.github.dlbbld.ashlarchess.board.Board;
-import io.github.dlbbld.ashlarchess.common.Nulls;
+import io.github.dlbbld.ashlarchess.internal.Nulls;
 import io.github.dlbbld.ashlarchess.report.Reporter;
 import io.github.dlbbld.ashlarchess.test.common.utility.OutputCaptureUtility;
 import io.github.dlbbld.ashlarchess.test.pgn.setup.PgnTestCaseCatalog;
@@ -135,7 +134,7 @@ class TestReporterGoldenOutput {
   }
 
   @SuppressWarnings("null") // Supplier lacks JDT null annotations
-  private static String render(Supplier<ImmutableList<String>> action) {
+  private static String render(Supplier<List<String>> action) {
     final StringBuilder builder = new StringBuilder();
     for (final String line : action.get()) {
       builder.append(line).append('\n');

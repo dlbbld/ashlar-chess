@@ -10,18 +10,18 @@ import java.util.TreeSet;
 
 import org.junit.jupiter.api.Test;
 
-import io.github.dlbbld.ashlarchess.bitboard.BishopMoves;
 import io.github.dlbbld.ashlarchess.bitboard.BitboardPosition;
-import io.github.dlbbld.ashlarchess.bitboard.BitboardPositionUtility;
-import io.github.dlbbld.ashlarchess.bitboard.KingMoves;
-import io.github.dlbbld.ashlarchess.bitboard.KnightMoves;
-import io.github.dlbbld.ashlarchess.bitboard.QueenMoves;
-import io.github.dlbbld.ashlarchess.bitboard.RookMoves;
 import io.github.dlbbld.ashlarchess.bitboard.StaticPositionBridge;
+import io.github.dlbbld.ashlarchess.bitboard.internal.BishopMoves;
+import io.github.dlbbld.ashlarchess.bitboard.internal.BitboardPositionUtility;
+import io.github.dlbbld.ashlarchess.bitboard.internal.KingMoves;
+import io.github.dlbbld.ashlarchess.bitboard.internal.KnightMoves;
+import io.github.dlbbld.ashlarchess.bitboard.internal.QueenMoves;
+import io.github.dlbbld.ashlarchess.bitboard.internal.RookMoves;
 import io.github.dlbbld.ashlarchess.board.StaticPosition;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
 import io.github.dlbbld.ashlarchess.board.enums.Square;
-import io.github.dlbbld.ashlarchess.common.Nulls;
+import io.github.dlbbld.ashlarchess.internal.Nulls;
 import io.github.dlbbld.ashlarchess.squares.KingNonCastlingEmptyBoardSquares;
 import io.github.dlbbld.ashlarchess.squares.KnightEmptyBoardSquares;
 import io.github.dlbbld.ashlarchess.squares.SlidingAttacksTestOracle;

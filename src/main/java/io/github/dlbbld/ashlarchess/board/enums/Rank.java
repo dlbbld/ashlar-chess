@@ -3,11 +3,11 @@
 
 package io.github.dlbbld.ashlarchess.board.enums;
 
-import com.google.common.collect.ImmutableList;
+import java.util.List;
 
-import io.github.dlbbld.ashlarchess.common.Nulls;
-import io.github.dlbbld.ashlarchess.common.exceptions.NonePointerException;
-import io.github.dlbbld.ashlarchess.common.exceptions.ProgrammingMistakeException;
+import io.github.dlbbld.ashlarchess.exceptions.NonePointerException;
+import io.github.dlbbld.ashlarchess.exceptions.ProgrammingMistakeException;
+import io.github.dlbbld.ashlarchess.internal.Nulls;
 
 public enum Rank {
   RANK_1(1),
@@ -21,8 +21,7 @@ public enum Rank {
   NONE(0);
 
   @SuppressWarnings("null")
-  public static final ImmutableList<Rank> REAL = ImmutableList.of(RANK_1, RANK_2, RANK_3, RANK_4, RANK_5, RANK_6,
-      RANK_7, RANK_8);
+  public static final List<Rank> REAL = List.of(RANK_1, RANK_2, RANK_3, RANK_4, RANK_5, RANK_6, RANK_7, RANK_8);
 
   private final int number;
 

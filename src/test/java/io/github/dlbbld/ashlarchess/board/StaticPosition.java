@@ -24,8 +24,8 @@ import io.github.dlbbld.ashlarchess.board.enums.Piece;
 import io.github.dlbbld.ashlarchess.board.enums.PieceType;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
 import io.github.dlbbld.ashlarchess.board.enums.Square;
-import io.github.dlbbld.ashlarchess.common.Nulls;
-import io.github.dlbbld.ashlarchess.fen.FenPieceSymbol;
+import io.github.dlbbld.ashlarchess.fen.internal.FenPieceSymbol;
+import io.github.dlbbld.ashlarchess.internal.Nulls;
 
 public record StaticPosition(Piece a8, Piece b8, Piece c8, Piece d8, Piece e8, Piece f8, Piece g8, Piece h8, Piece a7,
     Piece b7, Piece c7, Piece d7, Piece e7, Piece f7, Piece g7, Piece h7, Piece a6, Piece b6, Piece c6, Piece d6,

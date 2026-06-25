@@ -14,8 +14,8 @@ import io.github.dlbbld.ashlarchess.pgn.LenientPgnParser;
 import io.github.dlbbld.ashlarchess.pgn.LenientPgnParserValidationResult;
 import io.github.dlbbld.ashlarchess.pgn.PgnCreate;
 import io.github.dlbbld.ashlarchess.pgn.PgnGame;
-import io.github.dlbbld.ashlarchess.pgn.StandardTag;
 import io.github.dlbbld.ashlarchess.pgn.WriteMode;
+import io.github.dlbbld.ashlarchess.pgn.internal.StandardTag;
 
 /**
  * The headline end-to-end deficient-PGN fixture called out in {@code tasks.md} for this release: a single PGN

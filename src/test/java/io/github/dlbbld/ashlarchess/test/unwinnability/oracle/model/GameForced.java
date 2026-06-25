@@ -5,9 +5,9 @@ package io.github.dlbbld.ashlarchess.test.unwinnability.oracle.model;
 
 import org.eclipse.jdt.annotation.Nullable;
 
+import io.github.dlbbld.ashlarchess.board.Outcome;
+import io.github.dlbbld.ashlarchess.board.Termination;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
-import io.github.dlbbld.ashlarchess.common.enums.Termination;
-import io.github.dlbbld.ashlarchess.common.model.Outcome;
 
 /**
  * Result of walking the unique-legal-move chain from a position. The chain terminates when one of these states is

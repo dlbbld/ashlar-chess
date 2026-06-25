@@ -13,10 +13,11 @@ import java.util.List;
 import org.apache.logging.log4j.Logger;
 import org.junit.jupiter.api.Test;
 
-import io.github.dlbbld.ashlarchess.common.Nulls;
+import io.github.dlbbld.ashlarchess.internal.Nulls;
 import io.github.dlbbld.ashlarchess.pgn.PgnCreate;
 import io.github.dlbbld.ashlarchess.pgn.PgnGame;
 import io.github.dlbbld.ashlarchess.test.common.utility.FileUtility;
+import io.github.dlbbld.ashlarchess.test.common.utility.Loggers;
 import io.github.dlbbld.ashlarchess.test.pgn.parser.PgnCacheForStrictPgnParserTestCases;
 import io.github.dlbbld.ashlarchess.test.pgntest.constants.PgnTestConstants;
 
@@ -24,8 +25,7 @@ class TestPgnExportLineLength {
 
   private static final Path TEST_FOLDER_PATH = Nulls.pathResolve(PgnTestConstants.PGN_EXPORT_TEST_ROOT_FOLDER_PATH,
       "lineLength");
-
-  private static final Logger logger = Nulls.getLogger(TestPgnExportLineLength.class);
+  private static final Logger logger = Loggers.getLogger(TestPgnExportLineLength.class);
 
   @SuppressWarnings("static-method")
   @Test

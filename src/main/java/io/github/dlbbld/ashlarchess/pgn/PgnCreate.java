@@ -8,19 +8,16 @@ import java.util.List;
 
 import org.eclipse.jdt.annotation.Nullable;
 
-import com.google.common.collect.ImmutableList;
-
 import io.github.dlbbld.ashlarchess.board.Board;
-import io.github.dlbbld.ashlarchess.board.MoveNumberFormat;
+import io.github.dlbbld.ashlarchess.board.Outcome;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
-import io.github.dlbbld.ashlarchess.common.Nulls;
-import io.github.dlbbld.ashlarchess.common.exceptions.ProgrammingMistakeException;
-import io.github.dlbbld.ashlarchess.common.model.Outcome;
-import io.github.dlbbld.ashlarchess.common.utility.ListUtility;
-import io.github.dlbbld.ashlarchess.enums.MoveSuffixAnnotation;
-import io.github.dlbbld.ashlarchess.fen.constants.FenConstants;
+import io.github.dlbbld.ashlarchess.board.internal.MoveNumberFormat;
+import io.github.dlbbld.ashlarchess.exceptions.ProgrammingMistakeException;
+import io.github.dlbbld.ashlarchess.fen.internal.FenConstants;
 import io.github.dlbbld.ashlarchess.fen.model.Fen;
-import io.github.dlbbld.ashlarchess.model.PgnMove;
+import io.github.dlbbld.ashlarchess.internal.ListUtility;
+import io.github.dlbbld.ashlarchess.internal.Nulls;
+import io.github.dlbbld.ashlarchess.pgn.internal.StandardTag;
 
 /**
  * PGN serialisation entry points. The library defaults to {@link WriteMode#SEMANTIC} - emits the parse model as-given
@@ -47,11 +44,11 @@ public final class PgnCreate {
     return appendEmptyLine(ListUtility.toLineSeparatedString(toPgnLines(pgnGame, writeMode)));
   }
 
-  public static ImmutableList<String> toPgnLines(PgnGame pgnGame) {
+  public static List<String> toPgnLines(PgnGame pgnGame) {
     return toPgnLines(pgnGame, WriteMode.SEMANTIC);
   }
 
-  public static ImmutableList<String> toPgnLines(PgnGame pgnGame, WriteMode writeMode) {
+  public static List<String> toPgnLines(PgnGame pgnGame, WriteMode writeMode) {
     final PgnGame effective = writeMode == WriteMode.ARCHIVAL ? PgnArchivalNormalization.apply(pgnGame) : pgnGame;
     return Nulls.copyOfList(calculateFileLines(effective.tags(), effective.pregameCommentary(), effective.startFen(),
         effective.moves(), effective.terminationMarker()));

@@ -16,10 +16,11 @@ import org.junit.jupiter.api.Test;
 
 import io.github.dlbbld.ashlarchess.board.Board;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
-import io.github.dlbbld.ashlarchess.common.Nulls;
-import io.github.dlbbld.ashlarchess.common.exceptions.ProgrammingMistakeException;
+import io.github.dlbbld.ashlarchess.exceptions.ProgrammingMistakeException;
+import io.github.dlbbld.ashlarchess.internal.Nulls;
 import io.github.dlbbld.ashlarchess.test.ConfigurationTestConstants;
 import io.github.dlbbld.ashlarchess.test.common.utility.FileUtility;
+import io.github.dlbbld.ashlarchess.test.common.utility.Loggers;
 import io.github.dlbbld.ashlarchess.test.model.PgnFen;
 import io.github.dlbbld.ashlarchess.test.model.PgnTestCaseList;
 import io.github.dlbbld.ashlarchess.test.pgn.setup.PgnTestCaseCatalog;
@@ -28,8 +29,7 @@ import io.github.dlbbld.ashlarchess.unwinnability.UnwinnabilityFullVerdict;
 import io.github.dlbbld.ashlarchess.unwinnability.UnwinnableFullAnalyzer;
 
 class TestAmbronaUnwinnabilityFullOracleComparison {
-
-  private static final Logger logger = Nulls.getLogger(TestAmbronaUnwinnabilityFullOracleComparison.class);
+  private static final Logger logger = Loggers.getLogger(TestAmbronaUnwinnabilityFullOracleComparison.class);
 
   private static final int PROGRESS_LOG_INTERVAL = 25;
   private static final int MAX_PRINTED_FAILURES = 20;
@@ -85,17 +85,8 @@ class TestAmbronaUnwinnabilityFullOracleComparison {
     }
   }
 
-  // CHA does not distinguish the WINNABLE_HELPMATE / WINNABLE_BY_THEOREM split, so a winnable oracle verdict matches
-  // either of ours.
   private static boolean isSameVerdict(UnwinnabilityFullVerdict actual, UnwinnabilityFullVerdict expected) {
-    if (actual == expected) {
-      return true;
-    }
-    final boolean actualWinnable = actual == UnwinnabilityFullVerdict.WINNABLE_HELPMATE
-        || actual == UnwinnabilityFullVerdict.WINNABLE_BY_THEOREM;
-    final boolean expectedWinnable = expected == UnwinnabilityFullVerdict.WINNABLE_HELPMATE
-        || expected == UnwinnabilityFullVerdict.WINNABLE_BY_THEOREM;
-    return actualWinnable && expectedWinnable;
+    return actual == expected;
   }
 
   private static Set<AcceptedDifference> readAcceptedDifferenceSet() {

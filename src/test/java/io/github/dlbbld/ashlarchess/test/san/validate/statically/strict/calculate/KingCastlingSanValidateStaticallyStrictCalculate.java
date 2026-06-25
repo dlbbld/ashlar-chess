@@ -9,22 +9,20 @@ import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.RANK_N
 import java.util.Map;
 import java.util.TreeMap;
 
-import com.google.common.collect.ImmutableMap;
-
 import io.github.dlbbld.ashlarchess.board.enums.PieceType;
 import io.github.dlbbld.ashlarchess.board.enums.PromotionPieceType;
 import io.github.dlbbld.ashlarchess.board.enums.Square;
-import io.github.dlbbld.ashlarchess.common.Nulls;
-import io.github.dlbbld.ashlarchess.common.constants.CastlingConstants;
-import io.github.dlbbld.ashlarchess.san.SanConversion;
-import io.github.dlbbld.ashlarchess.san.SanFormat;
-import io.github.dlbbld.ashlarchess.san.SanParse;
-import io.github.dlbbld.ashlarchess.san.SanSymbol;
-import io.github.dlbbld.ashlarchess.san.SanTerminalMarker;
+import io.github.dlbbld.ashlarchess.internal.CastlingConstants;
+import io.github.dlbbld.ashlarchess.internal.Nulls;
+import io.github.dlbbld.ashlarchess.san.internal.SanConversion;
+import io.github.dlbbld.ashlarchess.san.internal.SanFormat;
+import io.github.dlbbld.ashlarchess.san.internal.SanParse;
+import io.github.dlbbld.ashlarchess.san.internal.SanSymbol;
+import io.github.dlbbld.ashlarchess.san.internal.SanTerminalMarker;
 
 public class KingCastlingSanValidateStaticallyStrictCalculate {
 
-  public static ImmutableMap<String, SanParse> calculateSanMap() {
+  public static Map<String, SanParse> calculateSanMap() {
 
     final Map<String, SanParse> sanCastlingMap = new TreeMap<>();
 

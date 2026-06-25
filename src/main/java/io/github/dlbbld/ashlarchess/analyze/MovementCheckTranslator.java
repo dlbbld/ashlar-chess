@@ -3,9 +3,9 @@
 
 package io.github.dlbbld.ashlarchess.analyze;
 
-import io.github.dlbbld.ashlarchess.common.exceptions.ProgrammingMistakeException;
-import io.github.dlbbld.ashlarchess.enums.MoveCheck;
-import io.github.dlbbld.ashlarchess.enums.MovementCheck;
+import io.github.dlbbld.ashlarchess.board.MoveCheck;
+import io.github.dlbbld.ashlarchess.exceptions.ProgrammingMistakeException;
+import io.github.dlbbld.ashlarchess.moves.MovementCheck;
 
 /**
  * Translates a {@link MovementCheck} failure into the broader {@link MoveCheck} vocabulary, used when a movement

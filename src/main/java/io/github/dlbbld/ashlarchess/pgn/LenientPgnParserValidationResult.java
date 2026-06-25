@@ -3,12 +3,12 @@
 
 package io.github.dlbbld.ashlarchess.pgn;
 
+import java.util.List;
+
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 
-import com.google.common.collect.ImmutableList;
-
-import io.github.dlbbld.ashlarchess.common.Nulls;
+import io.github.dlbbld.ashlarchess.internal.Nulls;
 import io.github.dlbbld.ashlarchess.san.ForgivenSanItem;
 import io.github.dlbbld.ashlarchess.san.SanValidationProblem;
 
@@ -28,8 +28,8 @@ import io.github.dlbbld.ashlarchess.san.SanValidationProblem;
 @SuppressWarnings("null")
 public record LenientPgnParserValidationResult(@NonNull LenientPgnParserValidationProblem parserProblem,
     @NonNull SanValidationProblem sanProblem, @NonNull String message, @Nullable PgnGame pgnGame,
-    @NonNull ImmutableList<@NonNull ForgivenSanItem> sanForgivenItems,
-    @NonNull ImmutableList<@NonNull ForgivenTagItem> tagForgivenItems) {
+    @NonNull List<@NonNull ForgivenSanItem> sanForgivenItems,
+    @NonNull List<@NonNull ForgivenTagItem> tagForgivenItems) {
 
   public LenientPgnParserValidationResult {
     sanForgivenItems = Nulls.copyOfList(sanForgivenItems);

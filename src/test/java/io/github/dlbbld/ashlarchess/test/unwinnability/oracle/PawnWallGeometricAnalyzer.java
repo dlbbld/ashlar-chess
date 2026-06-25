@@ -11,21 +11,19 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
-import com.google.common.collect.ImmutableList;
-
 import io.github.dlbbld.ashlarchess.bitboard.StaticPositionBridge;
 import io.github.dlbbld.ashlarchess.board.Board;
 import io.github.dlbbld.ashlarchess.board.StaticPosition;
 import io.github.dlbbld.ashlarchess.board.enums.File;
 import io.github.dlbbld.ashlarchess.board.enums.Piece;
 import io.github.dlbbld.ashlarchess.board.enums.PieceType;
-import io.github.dlbbld.ashlarchess.board.enums.RankUtility;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
 import io.github.dlbbld.ashlarchess.board.enums.Square;
-import io.github.dlbbld.ashlarchess.common.Nulls;
-import io.github.dlbbld.ashlarchess.common.exceptions.ProgrammingMistakeException;
-import io.github.dlbbld.ashlarchess.common.utility.SetUtility;
+import io.github.dlbbld.ashlarchess.board.enums.internal.RankUtility;
 import io.github.dlbbld.ashlarchess.common.utility.StaticPositionUtility;
+import io.github.dlbbld.ashlarchess.exceptions.ProgrammingMistakeException;
+import io.github.dlbbld.ashlarchess.internal.Nulls;
+import io.github.dlbbld.ashlarchess.internal.SetUtility;
 
 public final class PawnWallGeometricAnalyzer {
 
@@ -717,11 +715,11 @@ public final class PawnWallGeometricAnalyzer {
     return reachable;
   }
 
-  private static final ImmutableList<Square> LEFTMOST_FILE_WHITE = Nulls.listOf(Square.A1, Square.A2, Square.A3,
-      Square.A4, Square.A5, Square.A6, Square.A7, Square.A8);
+  private static final List<Square> LEFTMOST_FILE_WHITE = Nulls.listOf(Square.A1, Square.A2, Square.A3, Square.A4,
+      Square.A5, Square.A6, Square.A7, Square.A8);
 
-  private static final ImmutableList<Square> LEFTMOST_FILE_BLACK = Nulls.listOf(Square.H8, Square.H7, Square.H6,
-      Square.H5, Square.H4, Square.H3, Square.H2, Square.H1);
+  private static final List<Square> LEFTMOST_FILE_BLACK = Nulls.listOf(Square.H8, Square.H7, Square.H6, Square.H5,
+      Square.H4, Square.H3, Square.H2, Square.H1);
 
   // Local material checks. Inlined from the former public MaterialUtility so that
   // material arithmetic is not re-exposed on the public API surface for this test helper.

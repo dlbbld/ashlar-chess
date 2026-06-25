@@ -6,8 +6,8 @@ package io.github.dlbbld.ashlarchess.test.pgn.parser;
 import org.apache.logging.log4j.Logger;
 import org.junit.jupiter.api.Test;
 
-import io.github.dlbbld.ashlarchess.common.Nulls;
 import io.github.dlbbld.ashlarchess.pgn.StrictPgnParser;
+import io.github.dlbbld.ashlarchess.test.common.utility.Loggers;
 
 /**
  * Verifies that the strict PGN parser correctly initializes board state from a {@code [FEN]} tag and updates the
@@ -20,8 +20,7 @@ import io.github.dlbbld.ashlarchess.pgn.StrictPgnParser;
  * cycle (no gate) - this is core parser coverage.
  */
 class TestStrictPgnParserHalfMoveClockFromFen {
-
-  private static final Logger logger = Nulls.getLogger(TestStrictPgnParserHalfMoveClockFromFen.class);
+  private static final Logger logger = Loggers.getLogger(TestStrictPgnParserHalfMoveClockFromFen.class);
 
   @SuppressWarnings("static-method")
   @Test

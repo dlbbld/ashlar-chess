@@ -12,8 +12,8 @@ import java.util.List;
 import org.apache.logging.log4j.Logger;
 import org.junit.jupiter.api.Test;
 
-import io.github.dlbbld.ashlarchess.common.Nulls;
 import io.github.dlbbld.ashlarchess.test.RestrictTestConstants;
+import io.github.dlbbld.ashlarchess.test.common.utility.Loggers;
 import io.github.dlbbld.ashlarchess.test.model.PgnFen;
 import io.github.dlbbld.ashlarchess.test.model.PgnTestCaseList;
 import io.github.dlbbld.ashlarchess.test.pgn.parser.PgnCacheForStrictPgnParserTestCases;
@@ -36,8 +36,7 @@ import io.github.dlbbld.ashlarchess.test.pgntest.enums.PgnTest;
  * via {@code assumeFalse} during routine runs. Flip the flag to {@code false} locally to run.
  */
 class TestSetupPgnCorpusNotPlaysBeyondAudit {
-
-  private static final Logger logger = Nulls.getLogger(TestSetupPgnCorpusNotPlaysBeyondAudit.class);
+  private static final Logger logger = Loggers.getLogger(TestSetupPgnCorpusNotPlaysBeyondAudit.class);
 
   @SuppressWarnings("static-method")
   @Test

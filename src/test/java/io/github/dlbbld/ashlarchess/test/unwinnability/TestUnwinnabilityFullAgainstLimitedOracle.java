@@ -12,7 +12,7 @@ import org.junit.jupiter.api.Test;
 
 import io.github.dlbbld.ashlarchess.board.Board;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
-import io.github.dlbbld.ashlarchess.common.Nulls;
+import io.github.dlbbld.ashlarchess.test.common.utility.Loggers;
 import io.github.dlbbld.ashlarchess.test.model.PgnFen;
 import io.github.dlbbld.ashlarchess.test.model.PgnTestCaseList;
 import io.github.dlbbld.ashlarchess.test.pgn.setup.PgnTestCaseCatalog;
@@ -23,8 +23,7 @@ import io.github.dlbbld.ashlarchess.unwinnability.UnwinnabilityFullVerdict;
 import io.github.dlbbld.ashlarchess.unwinnability.UnwinnableFullAnalyzer;
 
 class TestUnwinnabilityFullAgainstLimitedOracle {
-
-  private static final Logger logger = Nulls.getLogger(TestUnwinnabilityFullAgainstLimitedOracle.class);
+  private static final Logger logger = Loggers.getLogger(TestUnwinnabilityFullAgainstLimitedOracle.class);
 
   @SuppressWarnings("static-method")
   @Test
@@ -60,8 +59,7 @@ class TestUnwinnabilityFullAgainstLimitedOracle {
         assertEquals(UnwinnabilityFullVerdict.UNWINNABLE, unwinnableFull);
         break;
       case WINNABLE:
-        assertTrue(unwinnableFull == UnwinnabilityFullVerdict.WINNABLE_HELPMATE
-            || unwinnableFull == UnwinnabilityFullVerdict.WINNABLE_BY_THEOREM);
+        assertEquals(UnwinnabilityFullVerdict.WINNABLE, unwinnableFull);
         break;
       case UNKNOWN:
         break;
@@ -70,7 +68,7 @@ class TestUnwinnabilityFullAgainstLimitedOracle {
     }
 
     switch (unwinnableFull) {
-      case WINNABLE_HELPMATE, WINNABLE_BY_THEOREM -> assertNotEquals(LimitedUnwinnabilityVerdict.UNWINNABLE, verdict);
+      case WINNABLE -> assertNotEquals(LimitedUnwinnabilityVerdict.UNWINNABLE, verdict);
       case UNWINNABLE -> {
         final boolean isIncomplete = verdict == LimitedUnwinnabilityVerdict.UNWINNABLE
             || verdict == LimitedUnwinnabilityVerdict.UNKNOWN;

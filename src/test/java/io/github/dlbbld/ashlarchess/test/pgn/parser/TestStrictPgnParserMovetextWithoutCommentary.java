@@ -10,9 +10,9 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
-import io.github.dlbbld.ashlarchess.common.Nulls;
-import io.github.dlbbld.ashlarchess.model.PgnMove;
+import io.github.dlbbld.ashlarchess.internal.Nulls;
 import io.github.dlbbld.ashlarchess.pgn.PgnGame;
+import io.github.dlbbld.ashlarchess.pgn.PgnMove;
 import io.github.dlbbld.ashlarchess.pgn.StrictPgnParser;
 
 class TestStrictPgnParserMovetextWithoutCommentary {
@@ -50,7 +50,7 @@ class TestStrictPgnParserMovetextWithoutCommentary {
     final PgnGame file = StrictPgnParser.parseText(header() + movetextPart + " *\n\n");
     assertEquals("", file.pregameCommentary().value());
     assertEquals(expectedSans, calculateSans(file.moves()));
-    for (final io.github.dlbbld.ashlarchess.model.PgnMove move : file.moves()) {
+    for (final io.github.dlbbld.ashlarchess.pgn.PgnMove move : file.moves()) {
       assertEquals("", move.commentary().value(), "Expected no commentary on " + move.san());
     }
   }

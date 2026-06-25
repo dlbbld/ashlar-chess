@@ -40,31 +40,28 @@ import static io.github.dlbbld.ashlarchess.board.enums.Square.H6;
 import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.List;
-
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Maps;
+import java.util.Map;
 
 import io.github.dlbbld.ashlarchess.bitboard.BitboardPosition;
+import io.github.dlbbld.ashlarchess.board.LegalMove;
+import io.github.dlbbld.ashlarchess.board.LegalMoveKind;
+import io.github.dlbbld.ashlarchess.board.MoveSpecification;
 import io.github.dlbbld.ashlarchess.board.enums.Piece;
 import io.github.dlbbld.ashlarchess.board.enums.PieceType;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
 import io.github.dlbbld.ashlarchess.board.enums.Square;
 import io.github.dlbbld.ashlarchess.board.model.UpdateSquare;
-import io.github.dlbbld.ashlarchess.common.Nulls;
-import io.github.dlbbld.ashlarchess.common.model.MoveSpecification;
-import io.github.dlbbld.ashlarchess.model.LegalMove;
-import io.github.dlbbld.ashlarchess.model.LegalMoveKind;
+import io.github.dlbbld.ashlarchess.internal.Nulls;
 
 public final class EnPassantCaptureUtility {
 
   private EnPassantCaptureUtility() {
   }
 
-  private static final ImmutableList<ImmutableList<Square>> WHITE_EN_PASSANT_CAPTURE_FROM_TO;
+  private static final List<List<Square>> WHITE_EN_PASSANT_CAPTURE_FROM_TO;
 
   static {
-    final List<ImmutableList<Square>> list = new ArrayList<>();
+    final List<List<Square>> list = new ArrayList<>();
     list.add(Nulls.listOf(A5, B6));
     list.add(Nulls.listOf(B5, C6));
     list.add(Nulls.listOf(C5, D6));
@@ -83,10 +80,10 @@ public final class EnPassantCaptureUtility {
 
   }
 
-  private static final ImmutableList<ImmutableList<Square>> BLACK_EN_PASSANT_CAPTURE_FROM_TO;
+  private static final List<List<Square>> BLACK_EN_PASSANT_CAPTURE_FROM_TO;
 
   static {
-    final List<ImmutableList<Square>> list = new ArrayList<>();
+    final List<List<Square>> list = new ArrayList<>();
 
     list.add(Nulls.listOf(A4, B3));
     list.add(Nulls.listOf(B4, C3));
@@ -106,10 +103,10 @@ public final class EnPassantCaptureUtility {
     BLACK_EN_PASSANT_CAPTURE_FROM_TO = Nulls.copyOfList(list);
   }
 
-  private static final ImmutableMap<Square, Square> WHITE_EN_PASSANT_CAPTURE_TO_CAPTURE;
+  private static final Map<Square, Square> WHITE_EN_PASSANT_CAPTURE_TO_CAPTURE;
 
   static {
-    final EnumMap<Square, Square> map = Maps.newEnumMap(Square.class);
+    final EnumMap<Square, Square> map = new EnumMap<>(Square.class);
 
     map.put(A6, A5);
     map.put(B6, B5);
@@ -123,7 +120,7 @@ public final class EnPassantCaptureUtility {
     WHITE_EN_PASSANT_CAPTURE_TO_CAPTURE = Nulls.immutableEnumMap(map);
   }
 
-  private static final ImmutableMap<Square, Square> BLACK_EN_PASSANT_CAPTURE_TO_CAPTURE;
+  private static final Map<Square, Square> BLACK_EN_PASSANT_CAPTURE_TO_CAPTURE;
 
   static {
     final EnumMap<Square, Square> map = Nulls.newEnumMap(Square.class);
@@ -140,7 +137,7 @@ public final class EnPassantCaptureUtility {
     BLACK_EN_PASSANT_CAPTURE_TO_CAPTURE = Nulls.immutableEnumMap(map);
   }
 
-  private static final ImmutableMap<Square, Square> WHITE_TWO_SQUARE_ADVANCE_TO_EN_PASSANT_CAPTURE_TO;
+  private static final Map<Square, Square> WHITE_TWO_SQUARE_ADVANCE_TO_EN_PASSANT_CAPTURE_TO;
 
   static {
     final EnumMap<Square, Square> map = Nulls.newEnumMap(Square.class);
@@ -157,7 +154,7 @@ public final class EnPassantCaptureUtility {
     WHITE_TWO_SQUARE_ADVANCE_TO_EN_PASSANT_CAPTURE_TO = Nulls.immutableEnumMap(map);
   }
 
-  private static final ImmutableMap<Square, Square> BLACK_TWO_SQUARE_ADVANCE_TO_EN_PASSANT_CAPTURE_TO;
+  private static final Map<Square, Square> BLACK_TWO_SQUARE_ADVANCE_TO_EN_PASSANT_CAPTURE_TO;
 
   static {
     final EnumMap<Square, Square> map = Nulls.newEnumMap(Square.class);

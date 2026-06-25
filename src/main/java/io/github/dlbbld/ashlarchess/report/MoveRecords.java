@@ -6,12 +6,10 @@ package io.github.dlbbld.ashlarchess.report;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.google.common.collect.ImmutableList;
-
 import io.github.dlbbld.ashlarchess.board.Board;
-import io.github.dlbbld.ashlarchess.common.Nulls;
-import io.github.dlbbld.ashlarchess.common.model.MoveSpecification;
-import io.github.dlbbld.ashlarchess.model.LegalMove;
+import io.github.dlbbld.ashlarchess.board.LegalMove;
+import io.github.dlbbld.ashlarchess.board.MoveSpecification;
+import io.github.dlbbld.ashlarchess.internal.Nulls;
 
 /**
  * Builds {@link MoveRecord} rows for a played game: the report layer reconstructs the rows from {@code Board}'s public
@@ -23,8 +21,8 @@ final class MoveRecords {
   private MoveRecords() {
   }
 
-  static ImmutableList<MoveRecord> played(Board board) {
-    final ImmutableList<MoveSpecification> moves = board.getPerformedMoveSpecifications();
+  static List<MoveRecord> played(Board board) {
+    final List<MoveSpecification> moves = board.getPerformedMoveSpecifications();
     final Board replay = new Board(board.getInitialFen());
     final List<MoveRecord> result = new ArrayList<>(moves.size());
     for (final MoveSpecification moveSpecification : moves) {

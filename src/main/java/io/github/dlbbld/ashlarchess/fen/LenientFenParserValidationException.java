@@ -3,14 +3,13 @@
 
 package io.github.dlbbld.ashlarchess.fen;
 
+import java.util.List;
+
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 
-import com.google.common.collect.ImmutableList;
-
-import io.github.dlbbld.ashlarchess.common.Nulls;
-import io.github.dlbbld.ashlarchess.common.enums.StrictFenSemanticValidationProblem;
-import io.github.dlbbld.ashlarchess.common.exceptions.UsageException;
+import io.github.dlbbld.ashlarchess.exceptions.UsageException;
+import io.github.dlbbld.ashlarchess.internal.Nulls;
 
 /**
  * Thrown by {@link LenientFenParser#parse(String)} when the input cannot be parsed even after lenient normalisation, or
@@ -36,16 +35,16 @@ public class LenientFenParserValidationException extends UsageException {
    * parser then rejects the normalised FEN, the items that fired up to that point are carried so the caller has full
    * diagnostic context.
    */
-  private final @NonNull ImmutableList<@NonNull ForgivenFenItem> forgivenItemsAccumulated;
+  private final @NonNull List<@NonNull ForgivenFenItem> forgivenItemsAccumulated;
 
   public LenientFenParserValidationException(LenientFenParserValidationProblem lenientFenParserValidationProblem,
       String message) {
-    this(lenientFenParserValidationProblem, StrictFenSemanticValidationProblem.SUCCESS, message, ImmutableList.of());
+    this(lenientFenParserValidationProblem, StrictFenSemanticValidationProblem.SUCCESS, message, List.of());
   }
 
   public LenientFenParserValidationException(LenientFenParserValidationProblem lenientFenParserValidationProblem,
       @Nullable StrictFenSemanticValidationProblem strictFenSemanticValidationProblem, String message,
-      @NonNull ImmutableList<@NonNull ForgivenFenItem> forgivenItemsAccumulated) {
+      @NonNull List<@NonNull ForgivenFenItem> forgivenItemsAccumulated) {
     super(message);
     this.lenientFenParserValidationProblem = lenientFenParserValidationProblem;
     this.strictFenSemanticValidationProblem = strictFenSemanticValidationProblem == null
@@ -62,7 +61,7 @@ public class LenientFenParserValidationException extends UsageException {
     return strictFenSemanticValidationProblem;
   }
 
-  public @NonNull ImmutableList<@NonNull ForgivenFenItem> getForgivenItemsAccumulated() {
+  public @NonNull List<@NonNull ForgivenFenItem> getForgivenItemsAccumulated() {
     return forgivenItemsAccumulated;
   }
 

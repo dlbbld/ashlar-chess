@@ -17,12 +17,12 @@
  *
  * <p>
  * Callers poll {@link io.github.dlbbld.ashlarchess.board.Board#outcome()} for the current-position outcome - it returns
- * the most-specific {@link io.github.dlbbld.ashlarchess.common.model.Outcome} for the board, or the
- * {@link io.github.dlbbld.ashlarchess.common.model.Outcome#ONGOING} singleton when the game is ongoing. The five
- * surfaced terminations are checkmate, mutual insufficient material, stalemate, 75-move, and fivefold (in that
- * precedence order; python-chess parity). The library is permissive at the move pipeline for corpus and tooling
- * compatibility (historical PGN databases routinely contain games whose recorded play continues a move or two past an
- * automatic termination); the caller decides whether to adjudicate.
+ * the most-specific {@link io.github.dlbbld.ashlarchess.board.Outcome} for the board, or the
+ * {@link io.github.dlbbld.ashlarchess.board.Outcome#ONGOING} singleton when the game is ongoing. The five surfaced
+ * terminations are checkmate, mutual insufficient material, stalemate, 75-move, and fivefold (in that precedence order;
+ * python-chess parity). The library is permissive at the move pipeline for corpus and tooling compatibility (historical
+ * PGN databases routinely contain games whose recorded play continues a move or two past an automatic termination); the
+ * caller decides whether to adjudicate.
  *
  * <p>
  * Single-side insufficient material (one side lacks mating material but the other does not) is a diagnostic position

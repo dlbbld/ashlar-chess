@@ -6,10 +6,10 @@ package io.github.dlbbld.ashlarchess.test.generate;
 import java.io.File;
 import java.nio.file.Path;
 
-import io.github.dlbbld.ashlarchess.common.Nulls;
-import io.github.dlbbld.ashlarchess.common.constants.ChessConstants;
-import io.github.dlbbld.ashlarchess.common.exceptions.FileSystemAccessException;
-import io.github.dlbbld.ashlarchess.common.exceptions.ProgrammingMistakeException;
+import io.github.dlbbld.ashlarchess.exceptions.FileSystemAccessException;
+import io.github.dlbbld.ashlarchess.exceptions.ProgrammingMistakeException;
+import io.github.dlbbld.ashlarchess.internal.ChessConstants;
+import io.github.dlbbld.ashlarchess.internal.Nulls;
 import io.github.dlbbld.ashlarchess.test.common.utility.PgnExtensionUtility;
 import io.github.dlbbld.ashlarchess.test.pgntest.enums.PgnTest;
 

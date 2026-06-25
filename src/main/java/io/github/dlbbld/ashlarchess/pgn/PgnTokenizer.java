@@ -5,7 +5,7 @@ package io.github.dlbbld.ashlarchess.pgn;
 
 import org.eclipse.jdt.annotation.Nullable;
 
-import io.github.dlbbld.ashlarchess.common.Nulls;
+import io.github.dlbbld.ashlarchess.internal.Nulls;
 
 /**
  * Pull-based PGN tokenizer. Emits tokens for every construct the grammar cares about; strict-specific inter-token
