@@ -59,9 +59,9 @@ class TestModuleBoundary {
     assertEquals("io.github.dlbbld.ashlarchess", module.getName());
 
     final ModuleDescriptor descriptor = module.getDescriptor();
-    @SuppressWarnings("null")
-    final Set<String> actualExports = descriptor.exports().stream().filter(e -> !e.isQualified())
-        .map(ModuleDescriptor.Exports::source).collect(Collectors.toCollection(TreeSet::new));
+    @SuppressWarnings("null") final Set<String> actualExports = descriptor.exports().stream()
+        .filter(e -> !e.isQualified()).map(ModuleDescriptor.Exports::source)
+        .collect(Collectors.toCollection(TreeSet::new));
 
     assertEquals(new TreeSet<>(EXPECTED_EXPORTS), actualExports,
         "module-info exports drifted from the intended public API; update EXPECTED_EXPORTS only on purpose");

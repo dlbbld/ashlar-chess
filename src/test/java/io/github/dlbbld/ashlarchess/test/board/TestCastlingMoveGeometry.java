@@ -65,7 +65,8 @@ class TestCastlingMoveGeometry {
   void testPinnedToInternalConstantsWhite() {
     assertEquals(CastlingConstants.WHITE_KING_FROM, CastlingMove.KING_SIDE.kingFromSquare(Side.WHITE));
     assertEquals(CastlingConstants.WHITE_KING_KING_SIDE_CASTLING_TO, CastlingMove.KING_SIDE.kingToSquare(Side.WHITE));
-    assertEquals(CastlingConstants.WHITE_ROOK_KING_SIDE_CASTLING_FROM, CastlingMove.KING_SIDE.rookFromSquare(Side.WHITE));
+    assertEquals(CastlingConstants.WHITE_ROOK_KING_SIDE_CASTLING_FROM,
+        CastlingMove.KING_SIDE.rookFromSquare(Side.WHITE));
     assertEquals(CastlingConstants.WHITE_ROOK_KING_SIDE_CASTLING_TO, CastlingMove.KING_SIDE.rookToSquare(Side.WHITE));
     assertEquals(CastlingConstants.WHITE_KING_QUEEN_SIDE_CASTLING_TO, CastlingMove.QUEEN_SIDE.kingToSquare(Side.WHITE));
     assertEquals(CastlingConstants.WHITE_ROOK_QUEEN_SIDE_CASTLING_FROM,
@@ -78,7 +79,8 @@ class TestCastlingMoveGeometry {
   void testPinnedToInternalConstantsBlack() {
     assertEquals(CastlingConstants.BLACK_KING_FROM, CastlingMove.KING_SIDE.kingFromSquare(Side.BLACK));
     assertEquals(CastlingConstants.BLACK_KING_KING_SIDE_CASTLING_TO, CastlingMove.KING_SIDE.kingToSquare(Side.BLACK));
-    assertEquals(CastlingConstants.BLACK_ROOK_KING_SIDE_CASTLING_FROM, CastlingMove.KING_SIDE.rookFromSquare(Side.BLACK));
+    assertEquals(CastlingConstants.BLACK_ROOK_KING_SIDE_CASTLING_FROM,
+        CastlingMove.KING_SIDE.rookFromSquare(Side.BLACK));
     assertEquals(CastlingConstants.BLACK_ROOK_KING_SIDE_CASTLING_TO, CastlingMove.KING_SIDE.rookToSquare(Side.BLACK));
     assertEquals(CastlingConstants.BLACK_KING_QUEEN_SIDE_CASTLING_TO, CastlingMove.QUEEN_SIDE.kingToSquare(Side.BLACK));
     assertEquals(CastlingConstants.BLACK_ROOK_QUEEN_SIDE_CASTLING_FROM,

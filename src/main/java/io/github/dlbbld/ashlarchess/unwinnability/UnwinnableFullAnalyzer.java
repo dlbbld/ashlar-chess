@@ -37,9 +37,10 @@ public final class UnwinnableFullAnalyzer {
    *
    * <p>
    * Terminal positions are handled, not rejected (CHA Find-Helpmate base cases): an already-checkmate position is
-   * {@code WINNABLE} for the side that delivered mate - a zero-move helpmate, so {@link UnwinnabilityFullAnalysis#mateLine()}
-   * is empty and {@link UnwinnabilityFullAnalysis#winnableProof()} is {@link WinnableProof#HELPMATE} - and
-   * {@code UNWINNABLE} for the mated side; a stalemate is {@code UNWINNABLE} for both sides.
+   * {@code WINNABLE} for the side that delivered mate - a zero-move helpmate, so
+   * {@link UnwinnabilityFullAnalysis#mateLine()} is empty and {@link UnwinnabilityFullAnalysis#winnableProof()} is
+   * {@link WinnableProof#HELPMATE} - and {@code UNWINNABLE} for the mated side; a stalemate is {@code UNWINNABLE} for
+   * both sides.
    */
   public static UnwinnabilityFullAnalysis unwinnableFull(Board input, Side winner) {
     final Board board = copyCurrentPositionForFullSearch(input);

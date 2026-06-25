@@ -10,9 +10,9 @@ import io.github.dlbbld.ashlarchess.exceptions.NonePointerException;
  *
  * <p>
  * A castling {@code MoveSpecification} carries only the {@code CastlingMove} (its from/to squares are deliberately
- * {@code Square.NONE}). The geometry accessors below resolve, for a given {@link Side}, the four squares a castling move
- * actually touches - the king's origin and destination and the rook's origin and destination - so callers do not have
- * to hard-code castling geometry themselves.
+ * {@code Square.NONE}). The geometry accessors below resolve, for a given {@link Side}, the four squares a castling
+ * move actually touches - the king's origin and destination and the rook's origin and destination - so callers do not
+ * have to hard-code castling geometry themselves.
  */
 public enum CastlingMove {
 
