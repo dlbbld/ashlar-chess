@@ -13,9 +13,9 @@ import io.github.dlbbld.ashlarchess.internal.Nulls;
  *
  * <p>
  * The public {@code verdict} stays coarse. {@link #winnableProof()} says how a {@code WINNABLE} verdict was established
- * - {@link WinnableProof#THEOREM} for the basic-helpmate-existence theorem (no line) or {@link WinnableProof#HELPMATE}
- * for a concrete search ({@link #mateLine()} carries the witnessing UCI line) - and is {@link WinnableProof#NONE} for a
- * non-winnable verdict.
+ * - {@link WinnableProof#THEOREM} for the basic-helpmate-existence theorem (never a line) or
+ * {@link WinnableProof#HELPMATE} for a concrete search ({@link #mateLine()} carries the witnessing UCI line when the
+ * search produced one; it can be empty) - and is {@link WinnableProof#NONE} for a non-winnable verdict (never a line).
  */
 public record UnwinnabilityFullAnalysis(UnwinnabilityFullVerdict verdict, WinnableProof winnableProof,
     List<UciMove> mateLine) {
@@ -25,14 +25,11 @@ public record UnwinnabilityFullAnalysis(UnwinnabilityFullVerdict verdict, Winnab
     if ((verdict == UnwinnabilityFullVerdict.WINNABLE) == (winnableProof == WinnableProof.NONE)) {
       throw new IllegalArgumentException("winnableProof must be NONE exactly when the verdict is not WINNABLE");
     }
-    if (winnableProof == WinnableProof.THEOREM && !mateLine.isEmpty()) {
-      throw new IllegalArgumentException("A theorem-certified win does not carry a mate line");
-    }
-    if (winnableProof == WinnableProof.HELPMATE && mateLine.isEmpty()) {
-      throw new IllegalArgumentException("A searched (helpmate) win must carry a mate line");
-    }
-    if (winnableProof == WinnableProof.NONE && !mateLine.isEmpty()) {
-      throw new IllegalArgumentException("Only a WINNABLE analysis can carry a mate line");
+    // A mate line is only ever a HELPMATE artefact: a theorem certification carries none, and a non-winnable verdict
+    // carries none. A HELPMATE win usually carries a line, but the search can prove winnability without one, so an
+    // empty HELPMATE line is permitted.
+    if (winnableProof != WinnableProof.HELPMATE && !mateLine.isEmpty()) {
+      throw new IllegalArgumentException("Only a HELPMATE (searched) win can carry a mate line");
     }
   }
 }
