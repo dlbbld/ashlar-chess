@@ -58,14 +58,11 @@ Common entry points:
 ```java
 final Board initial = new Board();
 
-final Board strictFen = Board.fromFenStrict(
-    "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
+final Board strictFen = Board.fromFenStrict("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
 
-final Board lenientFen = Board.fromFenLenient(
-    " rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR W kqKQ - ");
+final Board lenientFen = Board.fromFenLenient(" rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR W kqKQ - ");
 
-final Fen parsedFen = StrictFenParser.parse(
-    "8/8/4k3/3R4/2K5/8/8/8 w - - 0 50");
+final Fen parsedFen = StrictFenParser.parse("8/8/4k3/3R4/2K5/8/8/8 w - - 0 50");
 final Board fromFenModel = new Board(parsedFen);
 
 System.out.println(initial.getSideToMove()); // WHITE

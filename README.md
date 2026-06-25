@@ -63,8 +63,7 @@ strict/lenient notation handling, PGN import, and unwinnability/dead-position ch
 ### Notation Input
 
 ```java
-final Board board = Board
-    .fromFenLenient(" rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR W KQkq - ");
+final Board board = Board.fromFenLenient(" rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR W KQkq - ");
 
 final MoveSpecification e4 = StrictSanParser.parse("e4", board);
 board.move(e4);
