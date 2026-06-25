@@ -251,8 +251,9 @@ public final class ReadmeExamples {
     board.moveStrict("e4");
 
     final LenientSanParseResult e5 = board.moveLenient("e7-e5");
-    final ForgivenSanItem forgiven = e5.forgivenItems().stream().findFirst().orElseThrow();
-    System.out.println(forgiven.originalToken() + " -> " + forgiven.canonicalSan()); // [out]
+    for (final ForgivenSanItem forgiven : e5.forgivenItems()) {
+      System.out.println(forgiven.originalToken() + " -> " + forgiven.canonicalSan()); // [out]
+    }
 
     board.movesLenient("nf3", "Nc6");
 
