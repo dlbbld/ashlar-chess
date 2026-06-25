@@ -6,10 +6,10 @@ package io.github.dlbbld.ashlarchess.test.board;
 import static org.junit.jupiter.api.Assertions.fail;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.jupiter.api.Test;
 
+import io.github.dlbbld.ashlarchess.test.common.utility.Loggers;
 import io.github.dlbbld.ashlarchess.board.Board;
 import io.github.dlbbld.ashlarchess.pgn.PgnGame;
 import io.github.dlbbld.ashlarchess.pgn.PgnMove;
@@ -54,9 +54,7 @@ import io.github.dlbbld.ashlarchess.test.pgn.setup.PgnTestCaseCatalog;
  * a test failure rather than silently skipping.
  */
 class TestBoardUnperformMove {
-
-  @SuppressWarnings("null")
-  private static final Logger logger = LogManager.getLogger(TestBoardUnperformMove.class);
+  private static final Logger logger = Loggers.getLogger(TestBoardUnperformMove.class);
 
   @SuppressWarnings("static-method")
   @Test

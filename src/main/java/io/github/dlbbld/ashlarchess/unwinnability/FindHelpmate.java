@@ -19,6 +19,7 @@ import io.github.dlbbld.ashlarchess.board.enums.Square;
 import io.github.dlbbld.ashlarchess.board.enums.SquareType;
 import io.github.dlbbld.ashlarchess.board.internal.UciMoveUtility;
 import io.github.dlbbld.ashlarchess.exceptions.ProgrammingMistakeException;
+import io.github.dlbbld.ashlarchess.internal.JdkLoggers;
 import io.github.dlbbld.ashlarchess.internal.Nulls;
 
 //Figure 5 Find-Helpmatec routine, returns true if a checkmate sequence for player c in {w, b},
@@ -27,8 +28,7 @@ import io.github.dlbbld.ashlarchess.internal.Nulls;
 //limits of the search. The Score routine is defined in Figure 12 (Appendix A).
 class FindHelpmate {
 
-  @SuppressWarnings("null")
-  private static final Logger logger = Logger.getLogger(FindHelpmate.class.getName());
+  private static final Logger logger = JdkLoggers.getLogger(FindHelpmate.class);
 
   // empirically enough
   private static final int LOCAL_NODES_BOUND = 10000;

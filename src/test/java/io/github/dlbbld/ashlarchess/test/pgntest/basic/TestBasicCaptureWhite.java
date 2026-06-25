@@ -48,10 +48,10 @@ import static io.github.dlbbld.ashlarchess.common.constants.EnumConstants.WHITE_
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.jupiter.api.Test;
 
+import io.github.dlbbld.ashlarchess.test.common.utility.Loggers;
 import io.github.dlbbld.ashlarchess.board.Board;
 import io.github.dlbbld.ashlarchess.test.model.PgnFen;
 import io.github.dlbbld.ashlarchess.test.model.PgnTestCaseList;
@@ -59,9 +59,7 @@ import io.github.dlbbld.ashlarchess.test.pgn.setup.PgnTestCaseCatalog;
 import io.github.dlbbld.ashlarchess.test.pgntest.enums.PgnTest;
 
 class TestBasicCaptureWhite {
-
-  @SuppressWarnings("null")
-  private static final Logger logger = LogManager.getLogger(TestBasicCaptureWhite.class);
+  private static final Logger logger = Loggers.getLogger(TestBasicCaptureWhite.class);
 
   static {
     final List<String> pgnNames = new ArrayList<>();

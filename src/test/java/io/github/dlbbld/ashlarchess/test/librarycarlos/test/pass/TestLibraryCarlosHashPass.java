@@ -9,7 +9,6 @@ import java.io.File;
 import java.util.Map;
 import java.util.TreeMap;
 
-import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.jupiter.api.Test;
 
@@ -18,6 +17,7 @@ import com.github.bhlangonijr.chesslib.game.Game;
 import com.github.bhlangonijr.chesslib.move.Move;
 import com.github.bhlangonijr.chesslib.pgn.PgnHolder;
 
+import io.github.dlbbld.ashlarchess.test.common.utility.Loggers;
 import io.github.dlbbld.ashlarchess.exceptions.FileSystemAccessException;
 import io.github.dlbbld.ashlarchess.exceptions.ProgrammingMistakeException;
 import io.github.dlbbld.ashlarchess.internal.Nulls;
@@ -25,9 +25,7 @@ import io.github.dlbbld.ashlarchess.test.common.exceptions.SetupException;
 import io.github.dlbbld.ashlarchess.test.pgntest.enums.PgnTest;
 
 class TestLibraryCarlosHashPass {
-
-  @SuppressWarnings("null")
-  private static final Logger logger = LogManager.getLogger(TestLibraryCarlosHashPass.class);
+  private static final Logger logger = Loggers.getLogger(TestLibraryCarlosHashPass.class);
 
   private static final int SHOW_COMPLETION_PROGRESS_NUMBER_OF_PROCESSED_FILES = 1;
 

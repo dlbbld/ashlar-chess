@@ -5,10 +5,10 @@ package io.github.dlbbld.ashlarchess.test.unwinnability;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.jupiter.api.Test;
 
+import io.github.dlbbld.ashlarchess.test.common.utility.Loggers;
 import io.github.dlbbld.ashlarchess.board.Board;
 import io.github.dlbbld.ashlarchess.test.model.PgnFen;
 import io.github.dlbbld.ashlarchess.test.model.PgnTestCaseList;
@@ -20,9 +20,7 @@ import io.github.dlbbld.ashlarchess.unwinnability.UnwinnabilityQuickVerdict;
 import io.github.dlbbld.ashlarchess.unwinnability.UnwinnableQuickAnalyzer;
 
 class TestUnwinnabilityQuickForLichessGames {
-
-  @SuppressWarnings("null")
-  private static final Logger logger = LogManager.getLogger(TestUnwinnabilityQuickForLichessGames.class);
+  private static final Logger logger = Loggers.getLogger(TestUnwinnabilityQuickForLichessGames.class);
 
   @SuppressWarnings("static-method")
   @Test

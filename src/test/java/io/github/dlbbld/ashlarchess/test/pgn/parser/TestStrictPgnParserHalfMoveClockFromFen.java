@@ -3,10 +3,10 @@
 
 package io.github.dlbbld.ashlarchess.test.pgn.parser;
 
-import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.jupiter.api.Test;
 
+import io.github.dlbbld.ashlarchess.test.common.utility.Loggers;
 import io.github.dlbbld.ashlarchess.pgn.StrictPgnParser;
 
 /**
@@ -20,9 +20,7 @@ import io.github.dlbbld.ashlarchess.pgn.StrictPgnParser;
  * cycle (no gate) - this is core parser coverage.
  */
 class TestStrictPgnParserHalfMoveClockFromFen {
-
-  @SuppressWarnings("null")
-  private static final Logger logger = LogManager.getLogger(TestStrictPgnParserHalfMoveClockFromFen.class);
+  private static final Logger logger = Loggers.getLogger(TestStrictPgnParserHalfMoveClockFromFen.class);
 
   @SuppressWarnings("static-method")
   @Test

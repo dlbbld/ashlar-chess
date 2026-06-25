@@ -10,10 +10,10 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
-import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.jupiter.api.Test;
 
+import io.github.dlbbld.ashlarchess.test.common.utility.Loggers;
 import io.github.dlbbld.ashlarchess.bitboard.StaticPositionBridge;
 import io.github.dlbbld.ashlarchess.board.enums.CastlingMove;
 import io.github.dlbbld.ashlarchess.board.enums.Piece;
@@ -32,9 +32,7 @@ import io.github.dlbbld.ashlarchess.test.pgn.parser.PgnCacheForStrictPgnParserTe
 import io.github.dlbbld.ashlarchess.test.pgn.setup.PgnTestCaseCatalog;
 
 class TestLegalMovesAgainstCreatedUsingValidation {
-
-  @SuppressWarnings("null")
-  private static final Logger logger = LogManager.getLogger(TestLegalMovesAgainstCreatedUsingValidation.class);
+  private static final Logger logger = Loggers.getLogger(TestLegalMovesAgainstCreatedUsingValidation.class);
 
   @SuppressWarnings("static-method")
   @Test

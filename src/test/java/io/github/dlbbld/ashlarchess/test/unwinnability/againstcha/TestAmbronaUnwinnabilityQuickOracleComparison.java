@@ -12,10 +12,10 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.jupiter.api.Test;
 
+import io.github.dlbbld.ashlarchess.test.common.utility.Loggers;
 import io.github.dlbbld.ashlarchess.board.Board;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
 import io.github.dlbbld.ashlarchess.exceptions.ProgrammingMistakeException;
@@ -31,9 +31,7 @@ import io.github.dlbbld.ashlarchess.unwinnability.UnwinnabilityQuickVerdict;
 import io.github.dlbbld.ashlarchess.unwinnability.UnwinnableQuickAnalyzer;
 
 class TestAmbronaUnwinnabilityQuickOracleComparison {
-
-  @SuppressWarnings("null")
-  private static final Logger logger = LogManager.getLogger(TestAmbronaUnwinnabilityQuickOracleComparison.class);
+  private static final Logger logger = Loggers.getLogger(TestAmbronaUnwinnabilityQuickOracleComparison.class);
   private static final Path ACCEPTED_DIFFERENCE_PATH = Nulls.pathResolve(
       ConfigurationTestConstants.PROJECT_ROOT_FOLDER_PATH,
       "src/test/resources/oracle/ambrona-unwinnability-quick-accepted-differences.tsv");

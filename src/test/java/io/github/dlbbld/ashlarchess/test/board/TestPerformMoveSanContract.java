@@ -5,10 +5,10 @@ package io.github.dlbbld.ashlarchess.test.board;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.jupiter.api.Test;
 
+import io.github.dlbbld.ashlarchess.test.common.utility.Loggers;
 import io.github.dlbbld.ashlarchess.board.Board;
 import io.github.dlbbld.ashlarchess.board.MoveSpecification;
 import io.github.dlbbld.ashlarchess.pgn.PgnGame;
@@ -55,9 +55,7 @@ import io.github.dlbbld.ashlarchess.test.pgn.setup.PgnTestCaseCatalog;
  * slower of the two but completes in seconds.
  */
 class TestPerformMoveSanContract {
-
-  @SuppressWarnings("null")
-  private static final Logger logger = LogManager.getLogger(TestPerformMoveSanContract.class);
+  private static final Logger logger = Loggers.getLogger(TestPerformMoveSanContract.class);
 
   @SuppressWarnings("static-method")
   @Test

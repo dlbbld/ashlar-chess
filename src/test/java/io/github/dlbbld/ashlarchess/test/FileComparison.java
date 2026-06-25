@@ -8,15 +8,13 @@ import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import io.github.dlbbld.ashlarchess.test.common.utility.Loggers;
 import io.github.dlbbld.ashlarchess.internal.Nulls;
 
 public class FileComparison {
-
-  @SuppressWarnings("null")
-  private static final Logger logger = LogManager.getLogger(FileComparison.class);
+  private static final Logger logger = Loggers.getLogger(FileComparison.class);
 
   // problem PGN files in Eclipse suddenly have windows line breaks instead of unix line breaks
   @SuppressWarnings("null")

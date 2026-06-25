@@ -3,10 +3,10 @@
 
 package io.github.dlbbld.ashlarchess.test.librarycomparison;
 
-import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.jupiter.api.Test;
 
+import io.github.dlbbld.ashlarchess.test.common.utility.Loggers;
 import io.github.dlbbld.ashlarchess.board.Board;
 import io.github.dlbbld.ashlarchess.board.CommonTestUtility;
 import io.github.dlbbld.ashlarchess.board.LibraryCarlosBoard;
@@ -23,9 +23,7 @@ class TestBoardAgainstEachOther {
 
   // Leave empty to test all games, put a game name to only test this game.
   // private static final String ONLY_TEST_GAME = "threefold_castling_white_both_sides_lost";
-
-  @SuppressWarnings("null")
-  private static final Logger logger = LogManager.getLogger(TestBoardAgainstEachOther.class);
+  private static final Logger logger = Loggers.getLogger(TestBoardAgainstEachOther.class);
 
   @SuppressWarnings("static-method")
   @Test

@@ -11,10 +11,10 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.jupiter.api.Test;
 
+import io.github.dlbbld.ashlarchess.test.common.utility.Loggers;
 import io.github.dlbbld.ashlarchess.board.Board;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
 import io.github.dlbbld.ashlarchess.internal.ExceptionUtility;
@@ -66,9 +66,7 @@ import io.github.dlbbld.ashlarchess.test.pgntest.enums.PgnTest;
  * oracle's {@code canClaimFifty} assertion runs at every ply without skip.
  */
 class TestPgnImportAgainstPythonChessOracle {
-
-  @SuppressWarnings("null")
-  private static final Logger LOGGER = LogManager.getLogger(TestPgnImportAgainstPythonChessOracle.class);
+  private static final Logger LOGGER = Loggers.getLogger(TestPgnImportAgainstPythonChessOracle.class);
 
   private static final Path ORACLE_ROOT = Nulls.pathResolve(ConfigurationTestConstants.PROJECT_ROOT_FOLDER_PATH,
       "src/test/resources/oracle/python-chess");

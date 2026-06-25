@@ -10,10 +10,10 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.jupiter.api.Test;
 
+import io.github.dlbbld.ashlarchess.test.common.utility.Loggers;
 import io.github.dlbbld.ashlarchess.internal.Nulls;
 import io.github.dlbbld.ashlarchess.pgn.PgnCreate;
 import io.github.dlbbld.ashlarchess.pgn.PgnGame;
@@ -25,9 +25,7 @@ class TestPgnExportLineLength {
 
   private static final Path TEST_FOLDER_PATH = Nulls.pathResolve(PgnTestConstants.PGN_EXPORT_TEST_ROOT_FOLDER_PATH,
       "lineLength");
-
-  @SuppressWarnings("null")
-  private static final Logger logger = LogManager.getLogger(TestPgnExportLineLength.class);
+  private static final Logger logger = Loggers.getLogger(TestPgnExportLineLength.class);
 
   @SuppressWarnings("static-method")
   @Test

@@ -17,9 +17,9 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import io.github.dlbbld.ashlarchess.test.common.utility.Loggers;
 import io.github.dlbbld.ashlarchess.common.utility.IoUtility;
 import io.github.dlbbld.ashlarchess.exceptions.FileSystemAccessException;
 import io.github.dlbbld.ashlarchess.internal.Nulls;
@@ -36,9 +36,7 @@ import io.github.dlbbld.ashlarchess.unwinnability.MobilityOracleFormatter;
  * the default location.
  */
 public final class GenerateAmbronaMobilityOracle {
-
-  @SuppressWarnings("null")
-  private static final Logger logger = LogManager.getLogger(GenerateAmbronaMobilityOracle.class);
+  private static final Logger logger = Loggers.getLogger(GenerateAmbronaMobilityOracle.class);
 
   private static final String D3_CHESS_PATH_PROPERTY = "ambrona.d3.path";
   private static final String WSL_RUNNER_PATH = "/tmp/ashlar-chess-ambrona-oracle/mobility-oracle";

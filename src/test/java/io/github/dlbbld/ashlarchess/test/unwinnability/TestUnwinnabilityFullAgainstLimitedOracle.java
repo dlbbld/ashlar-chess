@@ -7,10 +7,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.jupiter.api.Test;
 
+import io.github.dlbbld.ashlarchess.test.common.utility.Loggers;
 import io.github.dlbbld.ashlarchess.board.Board;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
 import io.github.dlbbld.ashlarchess.test.model.PgnFen;
@@ -23,9 +23,7 @@ import io.github.dlbbld.ashlarchess.unwinnability.UnwinnabilityFullVerdict;
 import io.github.dlbbld.ashlarchess.unwinnability.UnwinnableFullAnalyzer;
 
 class TestUnwinnabilityFullAgainstLimitedOracle {
-
-  @SuppressWarnings("null")
-  private static final Logger logger = LogManager.getLogger(TestUnwinnabilityFullAgainstLimitedOracle.class);
+  private static final Logger logger = Loggers.getLogger(TestUnwinnabilityFullAgainstLimitedOracle.class);
 
   @SuppressWarnings("static-method")
   @Test

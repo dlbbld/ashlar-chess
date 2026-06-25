@@ -12,7 +12,6 @@ import java.util.List;
 import java.util.Scanner;
 
 import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import io.github.dlbbld.ashlarchess.exceptions.ChessApiRuntimeException;
@@ -20,9 +19,7 @@ import io.github.dlbbld.ashlarchess.internal.ExceptionUtility;
 import io.github.dlbbld.ashlarchess.internal.Nulls;
 
 public final class MultiplePgnSplitUtility {
-
-  @SuppressWarnings("null")
-  private static final Logger logger = LogManager.getLogger(MultiplePgnSplitUtility.class);
+  private static final Logger logger = Loggers.getLogger(MultiplePgnSplitUtility.class);
 
   private MultiplePgnSplitUtility() {
   }

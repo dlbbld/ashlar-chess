@@ -7,10 +7,10 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.nio.file.Path;
 
-import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.jupiter.api.Test;
 
+import io.github.dlbbld.ashlarchess.test.common.utility.Loggers;
 import io.github.dlbbld.ashlarchess.internal.ConfigurationConstants;
 import io.github.dlbbld.ashlarchess.internal.Nulls;
 import io.github.dlbbld.ashlarchess.pgn.LenientPgnParser;
@@ -20,9 +20,7 @@ import io.github.dlbbld.ashlarchess.test.FileComparison;
 import io.github.dlbbld.ashlarchess.test.pgntest.constants.PgnTestConstants;
 
 class TestPgnExportUtf8 {
-
-  @SuppressWarnings("null")
-  private static final Logger logger = LogManager.getLogger(TestPgnExportUtf8.class);
+  private static final Logger logger = Loggers.getLogger(TestPgnExportUtf8.class);
 
   private static final String FILE_NAME = "utf8.pgn";
 

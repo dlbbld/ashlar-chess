@@ -9,10 +9,10 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.jupiter.api.Test;
 
+import io.github.dlbbld.ashlarchess.test.common.utility.Loggers;
 import io.github.dlbbld.ashlarchess.fen.model.Fen;
 import io.github.dlbbld.ashlarchess.pgn.PgnGame;
 import io.github.dlbbld.ashlarchess.pgn.PgnMove;
@@ -28,9 +28,7 @@ class TestLenientPgnParserAgainstEachOther {
 
   // Leave empty to test all games, put a game name to only test this game.
   // private static final String ONLY_TEST_GAME = "threefold_castling_white_both_sides_lost";
-
-  @SuppressWarnings("null")
-  private static final Logger logger = LogManager.getLogger(TestLenientPgnParserAgainstEachOther.class);
+  private static final Logger logger = Loggers.getLogger(TestLenientPgnParserAgainstEachOther.class);
 
   @SuppressWarnings("static-method")
   @Test

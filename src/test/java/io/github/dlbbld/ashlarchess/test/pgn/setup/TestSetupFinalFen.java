@@ -8,11 +8,11 @@ import static org.junit.jupiter.api.Assertions.fail;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 
+import io.github.dlbbld.ashlarchess.test.common.utility.Loggers;
 import io.github.dlbbld.ashlarchess.board.Board;
 import io.github.dlbbld.ashlarchess.internal.Nulls;
 import io.github.dlbbld.ashlarchess.test.model.PgnFen;
@@ -38,9 +38,7 @@ import io.github.dlbbld.ashlarchess.test.pgntest.enums.PgnTest;
 class TestSetupFinalFen {
 
   private static final int PROGRESS_LOG_INTERVAL = 50;
-
-  @SuppressWarnings("null")
-  private static final Logger logger = LogManager.getLogger(TestSetupFinalFen.class);
+  private static final Logger logger = Loggers.getLogger(TestSetupFinalFen.class);
 
   @SuppressWarnings("static-method")
   @Test

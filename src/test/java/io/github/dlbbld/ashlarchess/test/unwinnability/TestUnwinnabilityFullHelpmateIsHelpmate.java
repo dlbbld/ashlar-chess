@@ -8,10 +8,10 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
 
-import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.jupiter.api.Test;
 
+import io.github.dlbbld.ashlarchess.test.common.utility.Loggers;
 import io.github.dlbbld.ashlarchess.board.Board;
 import io.github.dlbbld.ashlarchess.board.UciMove;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
@@ -28,9 +28,7 @@ import io.github.dlbbld.ashlarchess.unwinnability.UnwinnableFullAnalyzer;
 import io.github.dlbbld.ashlarchess.unwinnability.WinnableProof;
 
 class TestUnwinnabilityFullHelpmateIsHelpmate {
-
-  @SuppressWarnings("null")
-  private static final Logger logger = LogManager.getLogger(TestUnwinnabilityFullHelpmateIsHelpmate.class);
+  private static final Logger logger = Loggers.getLogger(TestUnwinnabilityFullHelpmateIsHelpmate.class);
 
   @SuppressWarnings("static-method")
   @Test
