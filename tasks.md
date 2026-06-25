@@ -66,6 +66,12 @@ Verified green: `mvn -o test` + `-Pfull` (1276 tests, 0 failures), `javadoc:jar`
 
 **Phase 6 (cooldown deep-dive) ✅ DONE 2026-06-23.** Adversarial multi-agent review of the JPMS/API surface. **No breaking gap found** — the export closure is clean (a flagged "Message-in-enum-constructor leak" was a false positive: intra-module access to non-exported packages is legal, and `Message` is in no public signature). Closed the genuine class-A gaps: (1) **en-passant captured-pawn square** was the symmetric analog of the castling gap (resolver was in non-exported `moves`) → added `LegalMove.enPassantCapturedPawnSquare()` + `isCapture()`/`isCastling()`/`isPromotion()`/`isEnPassant()` predicates; (2) **forced dependencies** — dropped `commons-lang3` (inlined `Nulls.normalizeSpace`, deleted dead `capitalize`) and `log4j` (production now uses JDK `java.util.logging`; the 64 tests that shared `Nulls.getLogger` rerouted to log4j's own `LogManager`, log4j now test-scope) → final module `requires` is just `java.logging` + `static transitive jdt.annotation`, with no forced external runtime dependency on consumers; (3) **no boundary guard** → added `TestModuleBoundary` (exports == intended API; javadoc `excludePackageNames` == non-exported production packages); (4) **no migration doc** → wrote the `[Unreleased]`/20.0.0 CHANGELOG breaking/added section. Verified: 1296 tests green, module descriptor clean. Remaining for 20.0.0: the release flow.
 
+---
+
+## Backlog — captured but unscheduled
+
+Items here are not assigned to any release. Captured so they don't get lost; revisit if/when scope or motivation aligns.
+
 ### Tighten remaining mutable return types on internal-but-public surfaces
 
 A few `public static` move-generation helpers still return a freshly-built mutable `Set` / `List` that callers could mutate: `PromotionUtility.performPromotionMovements`, `CastlingUtility.performCastlingMovements`, `EnPassantCaptureUtility.performEnPassantCaptureMovements`, and the `EmptyBoardMoveUtility` overloads. Each returns a fresh per-call copy, so there is no aliasing bug today — wrapping the result as an unmodifiable JDK collection (e.g. via `Nulls.copyOfList` / `Nulls.copyOfSet`, now that Guava is gone) is pure polish. Parked here rather than 19.0.0 because these are exactly the internal-but-accidentally-public move-gen surfaces this release narrows or hides behind the module boundary: fix the return types in the same pass that decides which of them stay public at all. (`BitboardPositionUtility.toSquares` already returns an unmodifiable `Set`.)
@@ -80,12 +86,6 @@ Two related "treat a position as an immutable value" capabilities that Class-A l
 Low–medium effort (the immutable apply-move exists; mirror is a straightforward bitboard transform — vertical flip = byte-reverse the 12 longs, colour swap = swap the white/black bitboards). It belongs here because it is **additive public API**, to be designed together with the position-API boundary (what the clean public position type is once the bitboard layer is internalised) and the still-open "light-analysis toolkit?" direction — `play()` / `mirror()` are most valuable to analysis / ML users.
 
 The one slice worth doing regardless of that direction, with no public-API commitment: an internal **mirror used by the test suite for symmetry checks** (e.g. unwinnability of `P` for a side ⟺ unwinnability of `mirror(P)` for the other) — pure added test coverage.
-
----
-
-## Backlog — captured but unscheduled
-
-Items here are not assigned to any release. Captured so they don't get lost; revisit if/when scope or motivation aligns.
 
 ### Lenient PGN: accept consecutive comments
 

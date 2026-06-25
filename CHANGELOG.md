@@ -2,7 +2,7 @@
 
 Releases from 3.3 onward. Earlier history is in git tags only.
 
-## [Unreleased]
+## [20.0.0] - JPMS module boundary and public-API surface reset - 2026-06-25
 
 The 20.0.0 release. ashlar-chess is now a proper JPMS module with a deliberately narrow public API. This is a
 **breaking release**: it adds `module-info.java`, removes Guava from the public API, and relocates or hides many

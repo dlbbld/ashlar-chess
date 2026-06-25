@@ -22,7 +22,7 @@ ashlar-chess requires JDK 17 or later. It is published to Maven Central.
 <dependency>
   <groupId>io.github.dlbbld</groupId>
   <artifactId>ashlar-chess</artifactId>
-  <version>19.1.0</version>
+  <version>20.0.0</version>
 </dependency>
 ```
 
