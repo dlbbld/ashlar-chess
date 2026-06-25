@@ -39,18 +39,14 @@ import io.github.dlbbld.ashlarchess.board.Board;
  */
 class TestModuleBoundary {
 
-  /** The intended public API surface. Must be updated deliberately, in lock-step with {@code module-info.java}. */
-  private static final Set<String> EXPECTED_EXPORTS = Set.of(
-      "io.github.dlbbld.ashlarchess.board",
-      "io.github.dlbbld.ashlarchess.board.enums",
-      "io.github.dlbbld.ashlarchess.fen",
-      "io.github.dlbbld.ashlarchess.fen.model",
-      "io.github.dlbbld.ashlarchess.pgn",
-      "io.github.dlbbld.ashlarchess.san",
-      "io.github.dlbbld.ashlarchess.adjudication",
-      "io.github.dlbbld.ashlarchess.report",
-      "io.github.dlbbld.ashlarchess.unwinnability",
-      "io.github.dlbbld.ashlarchess.exceptions",
+  /**
+   * The intended public API surface. Must be updated deliberately, in lock-step with {@code module-info.java}.
+   */
+  private static final Set<String> EXPECTED_EXPORTS = Set.of("io.github.dlbbld.ashlarchess.board",
+      "io.github.dlbbld.ashlarchess.board.enums", "io.github.dlbbld.ashlarchess.fen",
+      "io.github.dlbbld.ashlarchess.fen.model", "io.github.dlbbld.ashlarchess.pgn", "io.github.dlbbld.ashlarchess.san",
+      "io.github.dlbbld.ashlarchess.adjudication", "io.github.dlbbld.ashlarchess.report",
+      "io.github.dlbbld.ashlarchess.unwinnability", "io.github.dlbbld.ashlarchess.exceptions",
       "io.github.dlbbld.ashlarchess.bitboard");
 
   @SuppressWarnings("static-method")
@@ -90,8 +86,8 @@ class TestModuleBoundary {
 
     final Set<String> dangling = new TreeSet<>(excluded);
     dangling.removeAll(productionPackages);
-    assertTrue(dangling.isEmpty(), "javadoc excludePackageNames lists packages that do not exist in production: "
-        + dangling);
+    assertTrue(dangling.isEmpty(),
+        "javadoc excludePackageNames lists packages that do not exist in production: " + dangling);
   }
 
   private static Set<String> parseJavadocExcludePackageNames() throws IOException {
@@ -107,7 +103,7 @@ class TestModuleBoundary {
     final Path sourceRoot = Paths.get("src/main/java");
     try (Stream<Path> paths = Files.walk(sourceRoot)) {
       return paths.filter(Files::isRegularFile).filter(p -> p.getFileName().toString().endsWith(".java"))
-          .filter(p -> !p.getFileName().toString().equals("module-info.java"))
+          .filter(p -> !"module-info.java".equals(p.getFileName().toString()))
           .map(p -> sourceRoot.relativize(p.getParent()).toString().replace(File.separatorChar, '.'))
           .collect(Collectors.toCollection(TreeSet::new));
     }

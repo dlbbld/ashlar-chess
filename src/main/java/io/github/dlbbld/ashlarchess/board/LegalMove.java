@@ -49,7 +49,9 @@ public record LegalMove(MoveSpecification moveSpecification, Piece movingPiece, 
     return movingPiece.getPieceType() == PieceType.PAWN || capturedPiece != Piece.NONE;
   }
 
-  /** Whether this move captures a piece (including an en-passant capture); equivalent to {@code capturedPiece != NONE}. */
+  /**
+   * Whether this move captures a piece (including an en-passant capture); equivalent to {@code capturedPiece != NONE}.
+   */
   public boolean isCapture() {
     return capturedPiece != Piece.NONE;
   }
