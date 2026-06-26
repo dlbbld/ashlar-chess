@@ -81,7 +81,9 @@ public final class CheckAgainstCha {
     }
   }
 
-  static boolean isUseTestForCha(PgnTest pgnTest) {
+  // The unwinnability comparison position subset. Shared by both the cha (C++) and chasolver (Rust) oracle
+  // comparison harnesses so they cover exactly the same positions.
+  public static boolean isUseTestForCha(PgnTest pgnTest) {
     switch (pgnTest) {
       case BASIC_FORCED:
       case CHA_LICHESS_QUICK_DEPTH_ABOVE_FOUR:
