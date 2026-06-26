@@ -76,6 +76,8 @@ final class StrictFenSemanticParser {
           "the king of the opposing player is in check");
     }
 
+    validateCheckConfiguration(bitboardPosition, sideToMove);
+
     final String castlingRightBothStr = fenField.castlingRightBoth();
     final CastlingRightBoth castlingRightBoth = validateCastlingRightBoth(bitboardPosition, castlingRightBothStr);
 
@@ -764,5 +766,60 @@ final class StrictFenSemanticParser {
       }
     }
 
+  }
+
+  // A double check can only be created by a single move that gives a direct check while uncovering a slider behind it
+  // (a discovered check). Several check configurations are therefore unreachable, so a FEN claiming them is illegal:
+  // three or more simultaneous checkers (one move cannot uncover more than one line), or a double check whose two
+  // checkers attack the king along the same geometry. A knight or pawn can never be the uncovered slider; two diagonal
+  // attackers (or two orthogonal attackers) cannot both check at once; and a queen can never be the silent blocker, so
+  // two queens can never co-check either. Legal double checks (knight + slider, bishop + rook, diagonal + orthogonal
+  // slider) are left untouched.
+  private static void validateCheckConfiguration(BitboardPosition bitboardPosition, Side sideToMove)
+      throws StrictFenSemanticValidationException {
+    final Square kingSquare = bitboardPosition.kingSquare(sideToMove);
+    final long checkers = bitboardPosition.attackersTo(kingSquare, sideToMove.getOppositeSide());
+    final int checkerCount = Long.bitCount(checkers);
+    if (checkerCount < 2) {
+      return;
+    }
+    if (checkerCount > 2) {
+      throw new StrictFenSemanticValidationException(
+          StrictFenSemanticValidationProblem.INVALID_POSITION_IMPOSSIBLE_CHECK,
+          "the " + sideToMove.getName() + " king is attacked by " + checkerCount
+              + " pieces, but a single move can deliver at most a double check");
+    }
+
+    final Square firstSquare = Nulls.get(Square.REAL, Long.numberOfTrailingZeros(checkers));
+    final Square secondSquare = Nulls.get(Square.REAL, Long.numberOfTrailingZeros(checkers & (checkers - 1)));
+    final Piece firstChecker = bitboardPosition.get(firstSquare);
+    final Piece secondChecker = bitboardPosition.get(secondSquare);
+
+    final boolean sameGeometry = calculateCheckGeometry(firstChecker, kingSquare,
+        firstSquare) == calculateCheckGeometry(secondChecker, kingSquare, secondSquare);
+    final boolean bothQueens = firstChecker.getPieceType() == PieceType.QUEEN
+        && secondChecker.getPieceType() == PieceType.QUEEN;
+    if (sameGeometry || bothQueens) {
+      throw new StrictFenSemanticValidationException(
+          StrictFenSemanticValidationProblem.INVALID_POSITION_IMPOSSIBLE_CHECK,
+          "the " + sideToMove.getName() + " king is in a double check that no single move could create");
+    }
+  }
+
+  private enum CheckGeometry {
+    NON_SLIDER, DIAGONAL, ORTHOGONAL
+  }
+
+  private static CheckGeometry calculateCheckGeometry(Piece checker, Square kingSquare, Square checkerSquare) {
+    return switch (checker.getPieceType()) {
+      case BISHOP -> CheckGeometry.DIAGONAL;
+      case ROOK -> CheckGeometry.ORTHOGONAL;
+      case QUEEN -> kingSquare.getFile() == checkerSquare.getFile() || kingSquare.getRank() == checkerSquare.getRank()
+          ? CheckGeometry.ORTHOGONAL
+          : CheckGeometry.DIAGONAL;
+      case KNIGHT, PAWN, KING -> CheckGeometry.NON_SLIDER;
+      case NONE -> throw new ProgrammingMistakeException("a checker square cannot be empty");
+      default -> throw new ProgrammingMistakeException("unexpected checker piece type");
+    };
   }
 }

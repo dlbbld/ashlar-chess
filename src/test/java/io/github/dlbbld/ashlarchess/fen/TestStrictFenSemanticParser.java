@@ -431,6 +431,43 @@ class TestStrictFenSemanticParser {
         StrictFenSemanticValidationProblem.INVALID_BLACK_PAWN_INVALID_RANK_GROUND_RANK);
   }
 
+  @SuppressWarnings("static-method")
+  @Test
+  void testParseFenImpossibleCheck() {
+    // A double check is always a discovered check, so several check configurations are unreachable and illegal.
+
+    // Two bishops giving a double check: the moving bishop cannot switch from one of the king's diagonals to the
+    // other. (These three are the curated chasolver positions that motivated this rule.)
+    checkParseFenException("8/8/8/8/8/2b1k1b1/8/3RKR2 w - - 0 1",
+        StrictFenSemanticValidationProblem.INVALID_POSITION_IMPOSSIBLE_CHECK);
+    checkParseFenException("8/8/8/8/8/1k6/b1b5/RKR5 w - - 0 1",
+        StrictFenSemanticValidationProblem.INVALID_POSITION_IMPOSSIBLE_CHECK);
+    checkParseFenException("5B2/7r/5K1k/7r/8/4B3/8/8 b - - 0 1",
+        StrictFenSemanticValidationProblem.INVALID_POSITION_IMPOSSIBLE_CHECK);
+
+    // Two rooks (both orthogonal): the moving rook cannot switch from the king's rank to its file.
+    checkParseFenException("4r3/6k1/8/8/8/8/8/r3K3 w - - 0 1",
+        StrictFenSemanticValidationProblem.INVALID_POSITION_IMPOSSIBLE_CHECK);
+
+    // Two queens (here orthogonal + diagonal): a queen can never be the silent blocker, so two queens never co-check.
+    checkParseFenException("4q3/6k1/8/q7/8/8/8/4K3 w - - 0 1",
+        StrictFenSemanticValidationProblem.INVALID_POSITION_IMPOSSIBLE_CHECK);
+
+    // Two knights: neither can be the uncovered slider.
+    checkParseFenException("8/8/8/2n5/4K3/2n5/8/4k3 w - - 0 1",
+        StrictFenSemanticValidationProblem.INVALID_POSITION_IMPOSSIBLE_CHECK);
+
+    // Three simultaneous checkers: one move cannot uncover more than one line.
+    checkParseFenException("4r3/8/8/8/4K3/2n5/8/1b2k3 w - - 0 1",
+        StrictFenSemanticValidationProblem.INVALID_POSITION_IMPOSSIBLE_CHECK);
+
+    // Legal double checks must NOT be rejected: rook (orthogonal) + bishop (diagonal), and rook + knight.
+    checkParseFenSuccess("4r3/6k1/8/8/1b6/8/8/4K3 w - - 0 1");
+    checkParseFenSuccess("4r3/6k1/8/8/8/5n2/8/4K3 w - - 0 1");
+    // A legal single check must NOT be rejected.
+    checkParseFenSuccess("4r3/6k1/8/8/8/8/8/4K3 w - - 0 1");
+  }
+
   private static void checkParseFenException(String fen, StrictFenSemanticValidationProblem expected) {
     StrictFenSemanticValidationProblem actual = StrictFenSemanticValidationProblem.SUCCESS;
     try {
