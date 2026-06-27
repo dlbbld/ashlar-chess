@@ -18,19 +18,24 @@ import io.github.dlbbld.ashlarchess.board.enums.Side;
  * <p>
  * The theorem was proved by exhaustive retrograde enumeration of the local legal state graph for each covered material
  * class in the sibling project basic-helpmate-existence (https://github.com/dlbbld/basic-helpmate-existence, tag
- * 1.0.0). Let {@code W} be the side holding the mating material (the intended winner here) and {@code L} the defender.
- * For every ongoing legal position in a covered class:
- * <ol>
- * <li>If {@code W} is to move, {@code W} has a helpmate (winnable for {@code W}).</li>
- * <li>If {@code L} is to move, {@code W} has a helpmate unless {@code L} has one or two legal moves and every legal
- * first move captures one of {@code W}'s pieces. In that exceptional case {@code L} is forced to destroy {@code W}'s
- * mating material, leaving {@code W} unable to checkmate, so the position is unwinnable for {@code W}.</li>
- * </ol>
+ * 1.2.0). Let {@code W} be the side holding the mating material (the intended winner here) and {@code L} the defender.
  *
  * <p>
+ * <b>Main theorem.</b> For every ongoing legal position in a covered class:
+ * <ol>
+ * <li>If {@code W} is to move, {@code W} has a helpmate (winnable for {@code W}).</li>
+ * <li>If {@code L} is to move, {@code W} has a helpmate unless every legal first move captures one of {@code W}'s
+ * pieces. In that exceptional case {@code L} is forced to destroy {@code W}'s mating material, leaving {@code W} unable
+ * to checkmate, so the position is unwinnable for {@code W}.</li>
+ * </ol>
  * Covered classes (with {@code W} holding the mating material): KRvK, KQvK, KBBvK with opposite-coloured bishops,
- * KBNvK, KRvKB, and KRvKN, plus the colour-reversed statements by symmetry. The decision matches the operational recipe
- * in section 10 of the project's exposition.
+ * KBNvK, KNNvK, KRvKB, and KRvKN, plus the colour-reversed statements by symmetry.
+ *
+ * <p>
+ * <b>Supplementary two-major classes.</b> KRRvK and KQQvK are not part of the main theorem but are covered by a
+ * separate finite-state computation: in every ongoing legal KRRvK or KQQvK position {@code W} has a helpmate,
+ * regardless of the side to move and with no forced-capture exception - a forced first capture of one major piece only
+ * reduces the position to KRvK or KQvK, which still suffices to mate.
  *
  * <p>
  * <b>Legality assumption.</b> The theorem holds for strictly game-legal positions, which is exactly the domain of the
@@ -58,7 +63,8 @@ final class BasicHelpmateExistenceTheorem {
    */
   static BasicHelpmateExistenceTheoremResult decide(Board board, Side winner) {
     final BitboardPosition position = board.getBitboardPosition();
-    if (!isCoveredClass(position, winner)) {
+    final boolean isTwoMajorClass = isTwoMajorWinnableClass(position, winner);
+    if (!isTwoMajorClass && !isMainTheoremClass(position, winner)) {
       return BasicHelpmateExistenceTheoremResult.NOT_APPLICABLE;
     }
 
@@ -70,6 +76,12 @@ final class BasicHelpmateExistenceTheorem {
     // L to move. Leave genuine terminals to the regular path.
     if (board.isCheckmate() || board.isStalemate()) {
       return BasicHelpmateExistenceTheoremResult.NOT_APPLICABLE;
+    }
+
+    if (isTwoMajorClass) {
+      // KRRvK / KQQvK: winnable for every ongoing position - a forced first capture only reduces to KRvK or KQvK,
+      // which still suffices, so the forced-capture exception never applies.
+      return BasicHelpmateExistenceTheoremResult.WINNABLE;
     }
 
     final List<LegalMove> legalMoves = board.getLegalMoves();
@@ -92,13 +104,14 @@ final class BasicHelpmateExistenceTheorem {
     return BasicHelpmateExistenceTheoremResult.UNWINNABLE;
   }
 
-  private static boolean isCoveredClass(BitboardPosition position, Side winner) {
+  private static boolean isMainTheoremClass(BitboardPosition position, Side winner) {
     final Side defender = winner.getOppositeSide();
 
     // Classes where the defender is reduced to a bare king.
     if (UnwinnabilityMaterialBitboard.calculateHasKingOnly(defender, position)) {
       return isKingAndRookOnly(winner, position) || isKingAndQueenOnly(winner, position)
-          || isKingAndOppositeBishopsOnly(winner, position) || isKingBishopKnightOnly(winner, position);
+          || isKingAndOppositeBishopsOnly(winner, position) || isKingBishopKnightOnly(winner, position)
+          || isKingAndTwoKnightsOnly(winner, position);
     }
 
     // Rook classes where the defender keeps a single minor piece.
@@ -107,6 +120,15 @@ final class BasicHelpmateExistenceTheorem {
     }
 
     return false;
+  }
+
+  // Supplementary two-major classes (KRRvK, KQQvK): every ongoing legal position is winnable for the major side
+  // regardless of side to move, even when the defender is forced to capture one major piece on the first move (the
+  // remaining KRvK or KQvK still suffices). Proved by a separate finite-state computation, not the main theorem.
+  private static boolean isTwoMajorWinnableClass(BitboardPosition position, Side winner) {
+    final Side defender = winner.getOppositeSide();
+    return UnwinnabilityMaterialBitboard.calculateHasKingOnly(defender, position)
+        && (isKingAndTwoRooksOnly(winner, position) || isKingAndTwoQueensOnly(winner, position));
   }
 
   private static boolean isKingAndRookOnly(Side side, BitboardPosition position) {
@@ -132,6 +154,24 @@ final class BasicHelpmateExistenceTheorem {
   private static boolean isKingBishopKnightOnly(Side side, BitboardPosition position) {
     return count(bishops(side, position)) == 1 && count(knights(side, position)) == 1
         && count(rooks(side, position)) == 0 && count(queens(side, position)) == 0 && count(pawns(side, position)) == 0;
+  }
+
+  private static boolean isKingAndTwoKnightsOnly(Side side, BitboardPosition position) {
+    return count(knights(side, position)) == 2 && count(rooks(side, position)) == 0
+        && count(queens(side, position)) == 0 && count(bishops(side, position)) == 0
+        && count(pawns(side, position)) == 0;
+  }
+
+  private static boolean isKingAndTwoRooksOnly(Side side, BitboardPosition position) {
+    return count(rooks(side, position)) == 2 && count(queens(side, position)) == 0
+        && count(bishops(side, position)) == 0 && count(knights(side, position)) == 0
+        && count(pawns(side, position)) == 0;
+  }
+
+  private static boolean isKingAndTwoQueensOnly(Side side, BitboardPosition position) {
+    return count(queens(side, position)) == 2 && count(rooks(side, position)) == 0
+        && count(bishops(side, position)) == 0 && count(knights(side, position)) == 0
+        && count(pawns(side, position)) == 0;
   }
 
   private static boolean isKingAndSingleBishopOnly(Side side, BitboardPosition position) {

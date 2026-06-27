@@ -1,0 +1,19 @@
+# Copyright (C) 2020-2026 Daniel Baechli
+# SPDX-License-Identifier: GPL-3.0-only
+
+[package]
+name = "chasolver-oracle"
+version = "0.1.0"
+edition = "2021"
+rust-version = "1.82"
+description = "Local oracle runner for Miguel Ambrona's chasolver (the Rust successor to D3-Chess/CHA). Reads FENs from stdin and prints full/quick unwinnability verdicts for both sides, mirroring tools/ambrona-oracle/cha_oracle.cpp."
+license = "GPL-3.0-only"
+publish = false
+
+[dependencies]
+# Pinned to the same chess-crate major as chasolver so the Board/Color types unify.
+chasolver = "3.0"
+chess = "3.2"
+
+[profile.release]
+lto = true

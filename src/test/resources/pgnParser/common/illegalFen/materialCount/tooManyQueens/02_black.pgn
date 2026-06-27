@@ -1,0 +1,12 @@
+[Event "Illegal FEN: too many black queens"]
+[Site "?"]
+[Date "?"]
+[Round "?"]
+[White "?"]
+[Black "?"]
+[Result "*"]
+[SetUp "1"]
+[FEN "rnbqkbnr/pppppppp/3q4/8/8/8/PPPPPPPP/RNBQKBNR b KQkq - 19 10"]
+
+*
+

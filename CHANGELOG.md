@@ -2,6 +2,36 @@
 
 Releases from 3.3 onward. Earlier history is in git tags only.
 
+## [21.0.0] - Unwinnability soundness and endgame helpmate theorems - 2026-06-27
+
+A correctness-and-completeness release for the CHA unwinnability / adjudication path, with stricter FEN legality
+checking. No public type or signature was removed or changed, but several adjudication verdicts and validation
+outcomes are observably different, so this is a major bump.
+
+### Behavioral
+
+- **Unwinnability soundness fix.** `UnwinnableSemiStatic` no longer applies an unsound shortcut that dropped a limited
+  pawn from the semi-static visitor set, which could over-claim `UNWINNABLE` on positions where a pawn-net helpmate
+  exists. The fix removes those false draws; the trade-off is that some pawn-wall fortress draws the shortcut also
+  (correctly) proved are now reported `UNDETERMINED` rather than `UNWINNABLE` — sound, but less complete. Affects
+  `Board.unwinnableFull` / `Board.unwinnableQuick` and the `Adjudicator`.
+- **Endgame helpmate-existence coverage (KNNvK, KRRvK, KQQvK).** The complete analyzer now decides these three
+  material classes directly via the basic-helpmate-existence theorem (tracking the sibling project's 1.2.0 release)
+  instead of searching for the cooperative mate, so positions that could previously land at `UNDETERMINED` are now
+  proven `WINNABLE`.
+- **Strict FEN rejects unreachable check configurations.** `Board.fromFenStrict` (and PGN import of a `[SetUp "1"]` /
+  `[FEN ...]` header) now rejects positions whose check configuration cannot arise from any legal move: a double check
+  by two same-coloured bishops, two rooks, two queens, or two knights, or three or more simultaneous checkers. The new
+  reason is `StrictFenSemanticValidationProblem.INVALID_POSITION_IMPOSSIBLE_CHECK`. A FEN accepted before that encodes
+  such an impossible check is now rejected.
+
+### Internal
+
+- **chasolver (Rust) cross-validation oracle.** A differential-test harness validates ashlar against Miguel Ambrona's
+  Rust `chasolver` (successor to his C++ `cha` / D3-Chess), confirming the Rust implementation adheres to the C++ and
+  that ashlar never contradicts either on a legal position. Test-only; no shipped change.
+- **Stockfish board-replay survey** added for board-pipeline cross-checking. Test-only.
+
 ## [20.0.0] - JPMS module boundary and public-API surface reset - 2026-06-25
 
 The 20.0.0 release. ashlar-chess is now a proper JPMS module with a deliberately narrow public API. This is a

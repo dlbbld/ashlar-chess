@@ -1,0 +1,12 @@
+[Event "Illegal FEN: white knight bishop queen triple-check black king"]
+[Site "?"]
+[Date "?"]
+[Round "?"]
+[White "?"]
+[Black "?"]
+[Result "*"]
+[SetUp "1"]
+[FEN "8/8/8/Q2k4/5N2/8/6B1/7K b - - 0 1"]
+
+*
+

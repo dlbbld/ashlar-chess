@@ -117,14 +117,16 @@ final class UnwinnableSemiStatic {
   private static Set<PiecePlacement> visitors(Set<Square> region, Side side, boolean expandedPawnRegion,
       MobilitySolution mobilitySolution) {
     final Set<PiecePlacement> result = new TreeSet<>();
-    final boolean isIgnorePawns = SemiStaticFunctions
-        .region(calculateKing(side.getOppositeSide(), mobilitySolution), mobilitySolution).size() > 1;
 
+    // The original CHA C++ (semistatic.cpp) dropped "pawn visitors that are limited in movement" when the intended
+    // loser king's region spanned more than one square - a shortcut its own author flagged in the source with
+    // "(is this sound?)". It is unsound: an ordinary, non-promoting pawn can still deliver a quiet-push checkmate once
+    // the loser king has been walked into a pawn net, so dropping such pawns lets the empty-visitor-set test below
+    // wrongly conclude UNWINNABLE for a genuinely winnable position. This shortcut is not part of the proven Figure 8
+    // algorithm, so it is removed: a winner pawn whose mobility region reaches the loser king region stays in the
+    // (non-bishop) visitor set, which makes the routine abstain instead of falsely proving unwinnability.
     for (final PiecePlacement piecePlacement : mobilitySolution.getPiecePlacements()) {
       final Set<Square> pieceRegion = SemiStaticFunctions.region(piecePlacement, mobilitySolution);
-      if (piecePlacement.pieceType() == PieceType.PAWN && isIgnorePawns && !pieceRegion.contains(Square.A1)) {
-        continue;
-      }
 
       if (piecePlacement.side() == side) {
         for (final Square target : region) {

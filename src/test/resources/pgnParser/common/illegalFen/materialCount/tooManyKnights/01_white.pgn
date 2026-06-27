@@ -1,0 +1,12 @@
+[Event "Illegal FEN: too many white knights"]
+[Site "?"]
+[Date "?"]
+[Round "?"]
+[White "?"]
+[Black "?"]
+[Result "*"]
+[SetUp "1"]
+[FEN "rnbqkbnr/pppppppp/8/8/N7/8/PPPPPPPP/RNBQKBNR w KQkq - 0 10"]
+
+*
+

@@ -4,6 +4,12 @@
 `PgnFen` fixtures. The generator calls Miguel Ambrona's D3-Chess C++
 implementation through WSL and writes one row per distinct final FEN.
 
+`chasolver/positions.txt` is different: it is copied from Miguel Ambrona's
+chasolver repository and is the upstream curated position set itself. The
+tests under `againstchasolvercurated` read its `WB`, `W-`, `-B`, and `--`
+classifications directly instead of treating it as generated output from this
+project's PGN fixtures.
+
 The TSV columns are:
 
 ```text

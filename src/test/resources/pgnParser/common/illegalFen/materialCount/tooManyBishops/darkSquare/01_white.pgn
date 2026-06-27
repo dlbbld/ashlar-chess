@@ -1,0 +1,12 @@
+[Event "Illegal FEN: too many white dark-square bishops"]
+[Site "?"]
+[Date "?"]
+[Round "?"]
+[White "?"]
+[Black "?"]
+[Result "*"]
+[SetUp "1"]
+[FEN "rnbqkbnr/pppppppp/1B6/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 18 10"]
+
+*
+
