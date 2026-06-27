@@ -11,6 +11,17 @@ Live planning only: current release work, backlog, and obsolete decisions. Shipp
 
 ---
 
+## 21.0.0 — Unwinnability soundness and endgame helpmate theorems
+
+Correctness-and-completeness release for the CHA unwinnability / adjudication path, plus stricter FEN legality. See **CHANGELOG.md** for the consumer-facing summary.
+
+- **Semi-static pawn-visitor soundness fix** ✅ DONE 2026-06-27 — removed the unsound `isIgnorePawns` shortcut in `UnwinnableSemiStatic` that over-claimed `UNWINNABLE` on pawn-net helpmates. Trade-off: pawn-wall fortresses it also (correctly) proved are now `UNDETERMINED` (sound, less complete) — accepted-differences rows added to the cha + chasolver oracles.
+- **Impossible-check strict-FEN validation** ✅ DONE 2026-06-27 — strict parsing (and PGN `SetUp`/`FEN` import) rejects unreachable check configurations (double bishop/rook/queen/knight check, three+ checkers); new `StrictFenSemanticValidationProblem.INVALID_POSITION_IMPOSSIBLE_CHECK`.
+- **chasolver (Rust) cross-validation oracle** ✅ DONE 2026-06-27 — validated that Ambrona's Rust `chasolver` adheres to his C++ `cha`; curated soundness set kept.
+- **KNNvK / KRRvK / KQQvK helpmate-existence theorem** ✅ DONE 2026-06-27 — `BasicHelpmateExistenceTheorem` tracks basic-helpmate-existence 1.2.0, deciding these classes by theorem instead of search.
+
+---
+
 ## 20.0.0 — JPMS module boundary / API-surface reset
 
 The dedicated module-and-API-boundary release. Breaking package / FQN changes that don't belong in 19.0.0 are parked here.
