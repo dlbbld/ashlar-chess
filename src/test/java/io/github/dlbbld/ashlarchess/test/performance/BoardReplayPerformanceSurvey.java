@@ -59,8 +59,8 @@ public class BoardReplayPerformanceSurvey {
   private static final String STOCKFISH_WSL_ARGUMENT = "--stockfish-wsl";
   private static final String D3_CHESS_PATH_PROPERTY = "ambrona.d3.path";
   private static final String WSL_RUNNER_RELATIVE_PATH = ".cache/ashlar-chess-ambrona-oracle/board-replay-stockfish";
-  private static final Path STOCKFISH_SOURCE_PATH = Nulls.pathResolve(ConfigurationTestConstants.PROJECT_ROOT_FOLDER_PATH,
-      "tools/ambrona-oracle/board_replay_stockfish.cpp");
+  private static final Path STOCKFISH_SOURCE_PATH = Nulls.pathResolve(
+      ConfigurationTestConstants.PROJECT_ROOT_FOLDER_PATH, "tools/ambrona-oracle/board_replay_stockfish.cpp");
 
   private static final PgnTest[] GROUPS = { PgnTest.MAX_MOVES, PgnTest.RANDOM_NO_REPETITION, PgnTest.WCC2021,
       PgnTest.CHA_LICHESS_QUICK_DEPTH_ABOVE_FOUR };
@@ -243,8 +243,7 @@ public class BoardReplayPerformanceSurvey {
     System.out.printf("  Stockfish WSL construct:        %.3f us/game%n", constructUsPerGame);
     System.out.printf("  Stockfish WSL replay:           %.3f us/ply  (%.1f us/game)%n", replayUsPerPly,
         replayUsPerGame);
-    System.out.printf(
-        "  Stockfish WSL replay + undo:    %.3f us/ply  (%.1f us/game)  [move;undo;move]%n",
+    System.out.printf("  Stockfish WSL replay + undo:    %.3f us/ply  (%.1f us/game)  [move;undo;move]%n",
         probeUsPerPly, probeUsPerGame);
     System.out.printf("  Stockfish WSL checksum: %d / %d / %d%n%n", stockfish.construct().checksum(),
         stockfish.replay().checksum(), stockfish.replayWithProbe().checksum());
@@ -283,9 +282,8 @@ public class BoardReplayPerformanceSurvey {
   }
 
   private static StockfishMeasurements measureStockfish(List<Game> games, String stockfishRunnerPath) throws Exception {
-    final ProcessBuilder processBuilder = new ProcessBuilder("wsl", "bash", "-lc",
-        "LD_LIBRARY_PATH=/usr/local/lib " + shellQuote(stockfishRunnerPath) + " " + WARMUP_ROUNDS + " "
-            + MEASURE_ROUNDS);
+    final ProcessBuilder processBuilder = new ProcessBuilder("wsl", "bash", "-lc", "LD_LIBRARY_PATH=/usr/local/lib "
+        + shellQuote(stockfishRunnerPath) + " " + WARMUP_ROUNDS + " " + MEASURE_ROUNDS);
     processBuilder.redirectErrorStream(true);
     final Process process = IoUtility.startProcess(processBuilder);
 

@@ -36,7 +36,8 @@ import io.github.dlbbld.ashlarchess.unwinnability.UnwinnableQuickAnalyzer;
  * {@link io.github.dlbbld.ashlarchess.test.unwinnability.againstcha.TestAmbronaUnwinnabilityQuickOracleComparison} for
  * the cha (C++) oracle.
  *
- * <p>Unlike cha's three-valued {@code quick_analysis}, chasolver's {@code is_unwinnable_fast} is two-valued (it never
+ * <p>
+ * Unlike cha's three-valued {@code quick_analysis}, chasolver's {@code is_unwinnable_fast} is two-valued (it never
  * claims winnability), so it maps exactly onto ashlar's two-valued {@link UnwinnabilityQuickVerdict}. The cha test's
  * {@code BASIC_FORCED} skip is therefore not needed here.
  */
@@ -102,13 +103,15 @@ class TestChasolverUnwinnabilityQuickOracleComparison {
       final String line = Nulls.get(lines, i);
       final String[] itemArray = Nulls.split(line, "\t");
       if (itemArray.length != 6) {
-        throw new ProgrammingMistakeException("Invalid quick chasolver unwinnability accepted-differences row: " + line);
+        throw new ProgrammingMistakeException(
+            "Invalid quick chasolver unwinnability accepted-differences row: " + line);
       }
       final AcceptedDifference difference = new AcceptedDifference(Nulls.get(itemArray, 0),
           Side.valueOf(Nulls.get(itemArray, 1)), UnwinnabilityQuickVerdict.valueOf(Nulls.get(itemArray, 2)),
           UnwinnabilityQuickVerdict.valueOf(Nulls.get(itemArray, 3)), Nulls.get(itemArray, 4));
       if (!result.add(difference)) {
-        throw new ProgrammingMistakeException("Duplicate quick chasolver unwinnability accepted-differences row: " + line);
+        throw new ProgrammingMistakeException(
+            "Duplicate quick chasolver unwinnability accepted-differences row: " + line);
       }
     }
     return result;

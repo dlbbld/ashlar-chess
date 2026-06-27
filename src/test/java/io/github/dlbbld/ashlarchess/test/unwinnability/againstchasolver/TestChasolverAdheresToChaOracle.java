@@ -24,21 +24,23 @@ import io.github.dlbbld.ashlarchess.test.common.utility.Loggers;
 /**
  * The headline cross-implementation test: does Miguel Ambrona's Rust {@code chasolver} adhere to his C++ {@code cha}
  * (D3-Chess)? Compares the two pre-generated oracles - {@code ambrona-unwinnability.tsv} (C++) and
- * {@code chasolver-unwinnability.tsv} (Rust) - position for position over the identical FEN set, with no ashlar analysis
- * involved.
+ * {@code chasolver-unwinnability.tsv} (Rust) - position for position over the identical FEN set, with no ashlar
+ * analysis involved.
  *
- * <p>Two invariants are asserted:
+ * <p>
+ * Two invariants are asserted:
  * <ul>
  * <li><b>Adherence:</b> for the complete (full) verdict, whenever both implementations <em>decide</em> a position
  * (WINNABLE or UNWINNABLE), they must agree. A flat WINNABLE-vs-UNWINNABLE contradiction is a real adherence violation
- * and fails the build. (UNDETERMINED on either side is allowed: it only means an implementation hit its own search bound,
- * not that it disagrees.)</li>
+ * and fails the build. (UNDETERMINED on either side is allowed: it only means an implementation hit its own search
+ * bound, not that it disagrees.)</li>
  * <li><b>Soundness:</b> within each oracle, a quick {@code UNWINNABLE} (a claimed proof of unwinnability) must be
  * backed by the complete verdict also being {@code UNWINNABLE}. A quick {@code UNWINNABLE} over a position the full
  * search calls WINNABLE would be an unsound fast check.</li>
  * </ul>
  *
- * <p>The remaining, allowed differences (one side resolves a position the other left UNDETERMINED; the two
+ * <p>
+ * The remaining, allowed differences (one side resolves a position the other left UNDETERMINED; the two
  * deliberately-incomplete quick pre-filters prove unwinnability on different position types) are logged as a summary,
  * not failed.
  */
@@ -47,9 +49,8 @@ class TestChasolverAdheresToChaOracle {
 
   private static final Path CHA_ORACLE_PATH = Nulls.pathResolve(ConfigurationTestConstants.PROJECT_ROOT_FOLDER_PATH,
       "src/test/resources/oracle/ambrona-unwinnability.tsv");
-  private static final Path CHASOLVER_ORACLE_PATH = Nulls
-      .pathResolve(ConfigurationTestConstants.PROJECT_ROOT_FOLDER_PATH,
-          "src/test/resources/oracle/chasolver-unwinnability.tsv");
+  private static final Path CHASOLVER_ORACLE_PATH = Nulls.pathResolve(
+      ConfigurationTestConstants.PROJECT_ROOT_FOLDER_PATH, "src/test/resources/oracle/chasolver-unwinnability.tsv");
 
   private record Verdicts(String fullWhite, String fullBlack, String quickWhite, String quickBlack) {
   }
@@ -76,9 +77,9 @@ class TestChasolverAdheresToChaOracle {
       final Verdicts r = Nulls.get(rust, fen);
 
       // Full-verdict adherence, per intended winner.
-      final String[] fullKinds = {"fullWhite", "fullBlack"};
-      final String[] chaFulls = {c.fullWhite(), c.fullBlack()};
-      final String[] rustFulls = {r.fullWhite(), r.fullBlack()};
+      final String[] fullKinds = { "fullWhite", "fullBlack" };
+      final String[] chaFulls = { c.fullWhite(), c.fullBlack() };
+      final String[] rustFulls = { r.fullWhite(), r.fullBlack() };
       for (int i = 0; i < fullKinds.length; i++) {
         final String cf = Nulls.get(chaFulls, i);
         final String rf = Nulls.get(rustFulls, i);
@@ -86,8 +87,7 @@ class TestChasolverAdheresToChaOracle {
           if (cf.equals(rf)) {
             fullDecidedAgree++;
           } else {
-            contradictions
-                .add(Nulls.get(fullKinds, i) + ": cha=" + cf + " chasolver=" + rf + " fen=" + fen);
+            contradictions.add(Nulls.get(fullKinds, i) + ": cha=" + cf + " chasolver=" + rf + " fen=" + fen);
           }
         } else if ("UNDETERMINED".equals(cf) && isDecided(rf)) {
           rustResolvedWhatChaLeftUndetermined++;
@@ -110,9 +110,11 @@ class TestChasolverAdheresToChaOracle {
     }
 
     logger.info("Compared {} positions (x2 winners).", cha.size());
-    logger.info("Full verdicts: {} decided-and-agree; chasolver resolved {} that cha left UNDETERMINED; "
-        + "cha resolved {} that chasolver left UNDETERMINED; contradictions: {}.", fullDecidedAgree,
-        rustResolvedWhatChaLeftUndetermined, chaResolvedWhatRustLeftUndetermined, contradictions.size());
+    logger.info(
+        "Full verdicts: {} decided-and-agree; chasolver resolved {} that cha left UNDETERMINED; "
+            + "cha resolved {} that chasolver left UNDETERMINED; contradictions: {}.",
+        fullDecidedAgree, rustResolvedWhatChaLeftUndetermined, chaResolvedWhatRustLeftUndetermined,
+        contradictions.size());
     logger.info("Quick pre-filter gaps: chasolver-stronger {}, cha-stronger {} (all sound).", quickGapRustStronger,
         quickGapChaStronger);
 
@@ -152,7 +154,8 @@ class TestChasolverAdheresToChaOracle {
     for (int i = 1; i < lines.size(); i++) {
       final String[] item = Nulls.split(Nulls.get(lines, i), "\t");
       if (item.length != 5) {
-        throw new ProgrammingMistakeException("Invalid unwinnability oracle row in " + path + ": " + Nulls.get(lines, i));
+        throw new ProgrammingMistakeException(
+            "Invalid unwinnability oracle row in " + path + ": " + Nulls.get(lines, i));
       }
       final String fen = Nulls.get(item, 0);
       if (result.containsKey(fen)) {

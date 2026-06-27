@@ -28,14 +28,14 @@ import io.github.dlbbld.ashlarchess.board.enums.Side;
  * pieces. In that exceptional case {@code L} is forced to destroy {@code W}'s mating material, leaving {@code W} unable
  * to checkmate, so the position is unwinnable for {@code W}.</li>
  * </ol>
- * Covered classes (with {@code W} holding the mating material): KRvK, KQvK, KBBvK with opposite-coloured bishops, KBNvK,
- * KNNvK, KRvKB, and KRvKN, plus the colour-reversed statements by symmetry.
+ * Covered classes (with {@code W} holding the mating material): KRvK, KQvK, KBBvK with opposite-coloured bishops,
+ * KBNvK, KNNvK, KRvKB, and KRvKN, plus the colour-reversed statements by symmetry.
  *
  * <p>
- * <b>Supplementary two-major classes.</b> KRRvK and KQQvK are not part of the main theorem but are covered by a separate
- * finite-state computation: in every ongoing legal KRRvK or KQQvK position {@code W} has a helpmate, regardless of the
- * side to move and with no forced-capture exception - a forced first capture of one major piece only reduces the
- * position to KRvK or KQvK, which still suffices to mate.
+ * <b>Supplementary two-major classes.</b> KRRvK and KQQvK are not part of the main theorem but are covered by a
+ * separate finite-state computation: in every ongoing legal KRRvK or KQQvK position {@code W} has a helpmate,
+ * regardless of the side to move and with no forced-capture exception - a forced first capture of one major piece only
+ * reduces the position to KRvK or KQvK, which still suffices to mate.
  *
  * <p>
  * <b>Legality assumption.</b> The theorem holds for strictly game-legal positions, which is exactly the domain of the

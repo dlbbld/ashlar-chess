@@ -31,8 +31,9 @@ import io.github.dlbbld.ashlarchess.unwinnability.UnwinnableFullAnalyzer;
 
 /**
  * Compares ashlar's complete (full) unwinnability verdict against Miguel Ambrona's Rust {@code chasolver} oracle, the
- * direct analogue of {@link io.github.dlbbld.ashlarchess.test.unwinnability.againstcha.TestAmbronaUnwinnabilityFullOracleComparison}
- * for the cha (C++) oracle. The same cha position subset is reused via {@link CheckAgainstCha#isUseTestForCha}.
+ * direct analogue of
+ * {@link io.github.dlbbld.ashlarchess.test.unwinnability.againstcha.TestAmbronaUnwinnabilityFullOracleComparison} for
+ * the cha (C++) oracle. The same cha position subset is reused via {@link CheckAgainstCha#isUseTestForCha}.
  */
 class TestChasolverUnwinnabilityFullOracleComparison {
   private static final Logger logger = Loggers.getLogger(TestChasolverUnwinnabilityFullOracleComparison.class);
@@ -108,7 +109,8 @@ class TestChasolverUnwinnabilityFullOracleComparison {
           Side.valueOf(Nulls.get(itemArray, 1)), UnwinnabilityFullVerdict.valueOf(Nulls.get(itemArray, 2)),
           UnwinnabilityFullVerdict.valueOf(Nulls.get(itemArray, 3)), Nulls.get(itemArray, 4));
       if (!result.add(difference)) {
-        throw new ProgrammingMistakeException("Duplicate full chasolver unwinnability accepted-differences row: " + line);
+        throw new ProgrammingMistakeException(
+            "Duplicate full chasolver unwinnability accepted-differences row: " + line);
       }
     }
     return result;

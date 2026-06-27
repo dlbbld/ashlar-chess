@@ -29,8 +29,8 @@ import io.github.dlbbld.ashlarchess.test.pgntest.constants.PgnTestConstants;
 
 class TestPgnParserIllegalFenImport {
 
-  private static final Path ILLEGAL_FEN_ROOT = Nulls
-      .pathResolve(PgnTestConstants.PGN_PARSER_TEST_ROOT_FOLDER_PATH, "common/illegalFen");
+  private static final Path ILLEGAL_FEN_ROOT = Nulls.pathResolve(PgnTestConstants.PGN_PARSER_TEST_ROOT_FOLDER_PATH,
+      "common/illegalFen");
 
   @SuppressWarnings("static-method")
   @Test
@@ -44,8 +44,8 @@ class TestPgnParserIllegalFenImport {
 
       final StrictPgnParserValidationResult result = StrictPgnParser.validatePath(pgnPath);
       assertFalse(result.isValid(), pgnPath::toString);
-      assertEquals(StrictPgnParserValidationProblem.TAG_SET_UP_REQUIRES_FEN_TAG_BUT_FEN_INVALID,
-          result.parserProblem(), pgnPath::toString);
+      assertEquals(StrictPgnParserValidationProblem.TAG_SET_UP_REQUIRES_FEN_TAG_BUT_FEN_INVALID, result.parserProblem(),
+          pgnPath::toString);
       assertEquals(SanValidationProblem.NONE, result.sanProblem(), pgnPath::toString);
     }
   }

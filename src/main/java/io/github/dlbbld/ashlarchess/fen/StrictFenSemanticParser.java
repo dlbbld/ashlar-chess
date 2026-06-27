@@ -807,7 +807,9 @@ final class StrictFenSemanticParser {
   }
 
   private enum CheckGeometry {
-    NON_SLIDER, DIAGONAL, ORTHOGONAL
+    NON_SLIDER,
+    DIAGONAL,
+    ORTHOGONAL
   }
 
   private static CheckGeometry calculateCheckGeometry(Piece checker, Square kingSquare, Square checkerSquare) {

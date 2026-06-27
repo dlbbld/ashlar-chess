@@ -56,8 +56,8 @@ class TestChasolverCuratedPositions {
     logger.info("Rejected position sample:\n{}", Nulls.join("\n", printedFailures));
 
     assertTrue(importFailures.size() < positions.size(),
-        "the lenient parser must import the large majority of curated positions, but rejected "
-            + importFailures.size() + " of " + positions.size());
+        "the lenient parser must import the large majority of curated positions, but rejected " + importFailures.size()
+            + " of " + positions.size());
   }
 
   @SuppressWarnings("static-method")
@@ -109,8 +109,9 @@ class TestChasolverCuratedPositions {
       }
 
       if ((checkedPositionCount + skippedImportCount) % PROGRESS_LOG_INTERVAL == 0) {
-        logger.info("Checked quick soundness for {} chasolver curated positions, skipped imports: {}, "
-            + "failures so far: {}", checkedPositionCount, skippedImportCount, failures.size());
+        logger.info(
+            "Checked quick soundness for {} chasolver curated positions, skipped imports: {}, " + "failures so far: {}",
+            checkedPositionCount, skippedImportCount, failures.size());
       }
     }
 
@@ -142,8 +143,8 @@ class TestChasolverCuratedPositions {
       return 1;
     }
     if (actual != expectedVerdict) {
-      failures.add("line " + position.lineNumber() + " " + winner + " expected " + expectedVerdict + " actual "
-          + actual + " FEN " + position.fen());
+      failures.add("line " + position.lineNumber() + " " + winner + " expected " + expectedVerdict + " actual " + actual
+          + " FEN " + position.fen());
     }
     return 0;
   }

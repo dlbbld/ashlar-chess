@@ -35,8 +35,8 @@ import io.github.dlbbld.ashlarchess.test.pgntest.enums.PgnTest;
  * toolchain (rustup/cargo); the runner crate under {@code tools/chasolver-oracle} (which depends on Miguel Ambrona's
  * {@code chasolver} crate) is copied into WSL and built with {@code cargo build --release}, then streamed FENs.
  *
- * <p>Run with:
- * {@code mvn -o -q test-compile exec:java
+ * <p>
+ * Run with: {@code mvn -o -q test-compile exec:java
  * -Dexec.mainClass=io.github.dlbbld.ashlarchess.test.generate.GenerateChasolverUnwinnabilityOracle
  * -Dexec.classpathScope=test}
  */
@@ -91,9 +91,9 @@ public final class GenerateChasolverUnwinnabilityOracle {
   private static void buildRunner() throws Exception {
     final String crateWsl = windowsPathToWsl(CRATE_SOURCE_PATH);
     final String build = shellQuote(WSL_BUILD_DIR);
-    final String command = ". \"$HOME/.cargo/env\" >/dev/null 2>&1; rm -rf " + build + " && mkdir -p " + build + " && cp "
-        + shellQuote(crateWsl) + "/Cargo.toml " + build + "/ && cp -r " + shellQuote(crateWsl) + "/src " + build
-        + "/ && cd " + build + " && cargo build --release";
+    final String command = ". \"$HOME/.cargo/env\" >/dev/null 2>&1; rm -rf " + build + " && mkdir -p " + build
+        + " && cp " + shellQuote(crateWsl) + "/Cargo.toml " + build + "/ && cp -r " + shellQuote(crateWsl) + "/src "
+        + build + "/ && cd " + build + " && cargo build --release";
     logger.info("Building the chasolver oracle runner in WSL (cargo build --release); first build downloads crates...");
     runWslCommand(command);
   }
