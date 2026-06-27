@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.logging.log4j.Logger;
+import org.eclipse.jdt.annotation.Nullable;
 import org.junit.jupiter.api.Test;
 
 import io.github.dlbbld.ashlarchess.board.Board;
@@ -53,6 +54,10 @@ class TestChasolverCuratedPositions {
     logger.info("Chasolver curated positions rejected by ashlar FEN import: {}/{}", importFailures.size(),
         positions.size());
     logger.info("Rejected position sample:\n{}", Nulls.join("\n", printedFailures));
+
+    assertTrue(importFailures.size() < positions.size(),
+        "the lenient parser must import the large majority of curated positions, but rejected "
+            + importFailures.size() + " of " + positions.size());
   }
 
   @SuppressWarnings("static-method")
@@ -65,7 +70,7 @@ class TestChasolverCuratedPositions {
     int checkedPositionCount = 0;
 
     for (final CuratedPosition position : positions) {
-      final Board board = parseBoardOrNull(position);
+      final @Nullable Board board = parseBoardOrNull(position);
       if (board == null) {
         skippedImportCount++;
       } else {
@@ -94,7 +99,7 @@ class TestChasolverCuratedPositions {
     int checkedPositionCount = 0;
 
     for (final CuratedPosition position : positions) {
-      final Board board = parseBoardOrNull(position);
+      final @Nullable Board board = parseBoardOrNull(position);
       if (board == null) {
         skippedImportCount++;
       } else {
@@ -119,11 +124,12 @@ class TestChasolverCuratedPositions {
   // two rooks, two queens, two knights, or three+ checkers) - so positions that fail it are skipped rather than
   // analysed. The half/full-move clocks do not affect the verdict, so a placeholder " 0 1" is appended to satisfy the
   // strict six-field requirement.
+  @Nullable
   private static Board parseBoardOrNull(CuratedPosition position) {
     try {
       Board.fromFenStrict(position.fen() + " 0 1");
       return Board.fromFenLenient(position.fen());
-    } catch (final RuntimeException exception) {
+    } catch (@SuppressWarnings("unused") final RuntimeException exception) {
       return null;
     }
   }
@@ -162,7 +168,7 @@ class TestChasolverCuratedPositions {
       if (line.length() < 4 || line.charAt(2) != ' ') {
         throw new ProgrammingMistakeException("Invalid chasolver curated position row: " + line);
       }
-      positions.add(parsePosition(i + 1, line.substring(0, 2), line.substring(3)));
+      positions.add(parsePosition(i + 1, Nulls.substring(line, 0, 2), Nulls.substring(line, 3)));
     }
     if (positions.isEmpty()) {
       throw new ProgrammingMistakeException("The chasolver curated position oracle is empty");

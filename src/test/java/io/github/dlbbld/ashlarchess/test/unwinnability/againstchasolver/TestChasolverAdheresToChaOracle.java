@@ -70,9 +70,9 @@ class TestChasolverAdheresToChaOracle {
     int quickGapRustStronger = 0;
     int quickGapChaStronger = 0;
 
-    for (final Map.Entry<String, Verdicts> entry : cha.entrySet()) {
-      final String fen = entry.getKey();
-      final Verdicts c = entry.getValue();
+    for (final Map.Entry<String, Verdicts> entry : Nulls.entrySet(cha)) {
+      final String fen = Nulls.getKey(entry);
+      final Verdicts c = Nulls.getValue(entry);
       final Verdicts r = Nulls.get(rust, fen);
 
       // Full-verdict adherence, per intended winner.
@@ -80,14 +80,14 @@ class TestChasolverAdheresToChaOracle {
       final String[] chaFulls = {c.fullWhite(), c.fullBlack()};
       final String[] rustFulls = {r.fullWhite(), r.fullBlack()};
       for (int i = 0; i < fullKinds.length; i++) {
-        final String cf = chaFulls[i];
-        final String rf = rustFulls[i];
+        final String cf = Nulls.get(chaFulls, i);
+        final String rf = Nulls.get(rustFulls, i);
         if (isDecided(cf) && isDecided(rf)) {
           if (cf.equals(rf)) {
             fullDecidedAgree++;
           } else {
             contradictions
-                .add(fullKinds[i] + ": cha=" + cf + " chasolver=" + rf + " fen=" + fen);
+                .add(Nulls.get(fullKinds, i) + ": cha=" + cf + " chasolver=" + rf + " fen=" + fen);
           }
         } else if ("UNDETERMINED".equals(cf) && isDecided(rf)) {
           rustResolvedWhatChaLeftUndetermined++;
@@ -154,10 +154,11 @@ class TestChasolverAdheresToChaOracle {
       if (item.length != 5) {
         throw new ProgrammingMistakeException("Invalid unwinnability oracle row in " + path + ": " + Nulls.get(lines, i));
       }
-      if (result.put(Nulls.get(item, 0),
-          new Verdicts(Nulls.get(item, 1), Nulls.get(item, 2), Nulls.get(item, 3), Nulls.get(item, 4))) != null) {
-        throw new ProgrammingMistakeException("Duplicate oracle FEN in " + path + ": " + Nulls.get(item, 0));
+      final String fen = Nulls.get(item, 0);
+      if (result.containsKey(fen)) {
+        throw new ProgrammingMistakeException("Duplicate oracle FEN in " + path + ": " + fen);
       }
+      result.put(fen, new Verdicts(Nulls.get(item, 1), Nulls.get(item, 2), Nulls.get(item, 3), Nulls.get(item, 4)));
     }
     return result;
   }
