@@ -11,6 +11,14 @@ Live planning only: current release work, backlog, and obsolete decisions. Shipp
 
 ---
 
+## 21.1.0 — Further improving
+
+Work on branch `further-improving`.
+
+- **Correct the 21.0.0 release-notes overclaim about the KNNvK/KRRvK/KQQvK theorem.** The `CHANGELOG.md` `[21.0.0]` entry and the published GitHub Release notes say the analyzer decides these classes by theorem "so positions that could previously land at `UNDETERMINED` are now proven `WINNABLE`" — a completeness claim that is wrong. The complete helpmate search **already** proves these classes `WINNABLE` (it finds the cooperative mate); they never landed at `UNDETERMINED`. The `BasicHelpmateExistenceTheorem` shortcut changes only that the analyzer no longer **runs** that (sometimes long) search — it decides them directly with a theorem-certified `WINNABLE` (`WinnableProof.THEOREM`, no mate line). It is a **performance + proof-provenance** improvement, not a completeness one (21.0.0 added no completeness; the semi-static fix slightly *reduced* it). Reword the CHANGELOG bullet and the summary's "correctness-and-completeness" framing, and edit the public GitHub Release notes to match.
+
+---
+
 ## 21.0.0 — Unwinnability soundness and endgame helpmate theorems
 
 Correctness-and-completeness release for the CHA unwinnability / adjudication path, plus stricter FEN legality. See **CHANGELOG.md** for the consumer-facing summary.
