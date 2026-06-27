@@ -27,6 +27,9 @@ class TestBasicHelpmateExistenceTheorem {
     assertWhiteWinner(BasicHelpmateExistenceTheoremResult.WINNABLE, "4k3/8/8/8/8/8/8/4KBN1 w - - 0 1"); // KBNvK
     assertWhiteWinner(BasicHelpmateExistenceTheoremResult.WINNABLE, "2b1k3/8/8/8/8/8/8/R3K3 w - - 0 1"); // KRvKB
     assertWhiteWinner(BasicHelpmateExistenceTheoremResult.WINNABLE, "1n2k3/8/8/8/8/8/8/R3K3 w - - 0 1"); // KRvKN
+    assertWhiteWinner(BasicHelpmateExistenceTheoremResult.WINNABLE, "4k3/8/8/8/8/8/8/1N2K1N1 w - - 0 1"); // KNNvK
+    assertWhiteWinner(BasicHelpmateExistenceTheoremResult.WINNABLE, "4k3/8/8/8/8/8/8/R3K2R w - - 0 1"); // KRRvK
+    assertWhiteWinner(BasicHelpmateExistenceTheoremResult.WINNABLE, "4k3/8/8/8/8/8/8/Q3K2Q w - - 0 1"); // KQQvK
   }
 
   // ----- Defender (Black) to move, not forced to capture: WINNABLE. -----
@@ -37,6 +40,9 @@ class TestBasicHelpmateExistenceTheorem {
     assertWhiteWinner(BasicHelpmateExistenceTheoremResult.WINNABLE, "4k3/8/8/8/8/8/8/R3K3 b - - 0 1"); // KRvK
     assertWhiteWinner(BasicHelpmateExistenceTheoremResult.WINNABLE, "4k3/8/8/8/8/8/8/2B1KB2 b - - 0 1"); // KBBvK opp
     assertWhiteWinner(BasicHelpmateExistenceTheoremResult.WINNABLE, "1n2k3/8/8/8/8/8/8/R3K3 b - - 0 1"); // KRvKN
+    assertWhiteWinner(BasicHelpmateExistenceTheoremResult.WINNABLE, "4k3/8/8/8/8/8/8/1N2K1N1 b - - 0 1"); // KNNvK
+    assertWhiteWinner(BasicHelpmateExistenceTheoremResult.WINNABLE, "4k3/8/8/8/8/8/8/R3K2R b - - 0 1"); // KRRvK
+    assertWhiteWinner(BasicHelpmateExistenceTheoremResult.WINNABLE, "4k3/8/8/8/8/8/8/Q3K2Q b - - 0 1"); // KQQvK
   }
 
   // ----- Defender (Black) to move, every legal move captures White's mating material: UNWINNABLE. -----
@@ -50,6 +56,16 @@ class TestBasicHelpmateExistenceTheorem {
     assertWhiteWinner(BasicHelpmateExistenceTheoremResult.UNWINNABLE, "kN6/8/BK6/8/8/8/8/8 b - - 0 1"); // KBNvK
     assertWhiteWinner(BasicHelpmateExistenceTheoremResult.UNWINNABLE, "k7/R1K5/8/8/8/8/8/7b b - - 0 1"); // KRvKB
     assertWhiteWinner(BasicHelpmateExistenceTheoremResult.UNWINNABLE, "k7/R1K5/8/8/8/8/8/7n b - - 0 1"); // KRvKN
+    assertWhiteWinner(BasicHelpmateExistenceTheoremResult.UNWINNABLE, "k7/N1K5/8/8/4N3/8/8/8 b - - 0 1"); // KNNvK
+  }
+
+  // ----- Two-major classes (KRRvK, KQQvK): even a forced first capture leaves KRvK / KQvK, so still WINNABLE. -----
+
+  @SuppressWarnings("static-method")
+  @Test
+  void twoMajorForcedFirstCaptureIsStillWinnable() {
+    assertWhiteWinner(BasicHelpmateExistenceTheoremResult.WINNABLE, "k7/R1K5/8/8/8/8/8/7R b - - 0 1"); // KRRvK
+    assertWhiteWinner(BasicHelpmateExistenceTheoremResult.WINNABLE, "k7/Q1K5/8/8/8/8/8/2Q5 b - - 0 1"); // KQQvK
   }
 
   // ----- NOT_APPLICABLE: outside the proven domain, the shortcut must defer to the regular analysis. -----
@@ -73,7 +89,7 @@ class TestBasicHelpmateExistenceTheorem {
   @Test
   void uncoveredMaterialIsNotApplicable() {
     assertWhiteWinner(BasicHelpmateExistenceTheoremResult.NOT_APPLICABLE, "4k3/8/8/8/8/8/4P3/4K3 w - - 0 1"); // KPvK
-    assertWhiteWinner(BasicHelpmateExistenceTheoremResult.NOT_APPLICABLE, "4k3/8/8/8/8/8/8/R3K2R w - - 0 1"); // KRRvK
+    assertWhiteWinner(BasicHelpmateExistenceTheoremResult.NOT_APPLICABLE, "4k3/8/8/8/8/8/8/Q3K2R w - - 0 1"); // KQRvK
     assertWhiteWinner(BasicHelpmateExistenceTheoremResult.NOT_APPLICABLE,
         "r1bqkbnr/pppppppp/2n5/8/8/5N2/PPPPPPPP/RNBQKB1R w KQkq - 4 3"); // opening
   }
