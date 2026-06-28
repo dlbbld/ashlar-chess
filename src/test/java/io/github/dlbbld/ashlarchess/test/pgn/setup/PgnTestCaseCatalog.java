@@ -2711,7 +2711,7 @@ public class PgnTestCaseCatalog {
     list.add(new PgnFen("pawn_wall_norgaard_additional_own_pawns_not_marched_up.pgn",
         "6k1/1p1p1p1p/1P1P1P1P/8/8/4K3/1P1P1P1P/8 w - - 0 39"));
 
-    // TODO today's Ambrona website (full or quick) sees unwinnable for both sides
+    // the example with different outcome in C++ CHA
     list.add(new PgnFen("pawn_wall_norgaard_additional_own_pawns_not_marched_up_with_opponent_pawns_between.pgn",
         "1k6/p1p1p1p1/P1P1P1P1/p1p1p1p1/8/8/P1P1P1P1/4K3 w - - 0 34"));
 
