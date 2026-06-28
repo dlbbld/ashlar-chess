@@ -23,6 +23,10 @@ import io.github.dlbbld.ashlarchess.internal.Nulls;
 //table used by Find-Helpmatec should be initialized to empty at the beginning, but it can be
 //shared between different calls to Find-Helpmatec in step 3. On the other hand, the global
 //counter cnt should be initialized to 0 on every base call to Find-Helpmatec in step 3.
+/**
+ * Defined for legal positions only; on an illegal position the result is undefined (and may differ from the quick
+ * analyzer). See this package's documentation for the legal-position contract.
+ */
 public final class UnwinnableFullAnalyzer {
 
   private UnwinnableFullAnalyzer() {

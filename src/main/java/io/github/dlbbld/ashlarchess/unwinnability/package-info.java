@@ -34,6 +34,30 @@
  * and {@link io.github.dlbbld.ashlarchess.unwinnability.DeadPositionFullVerdict} ({@code DEAD} / {@code ALIVE} /
  * {@code UNDETERMINED}) - rather than reusing the per-side unwinnable vocabulary.
  *
+ * <h2>Legal positions only</h2>
+ *
+ * <p>
+ * <b>This analysis is defined for, and guaranteed only on, legal positions</b> - those reachable from the standard
+ * starting position by a sequence of legal moves. That is the whole domain of the game-play use cases it serves
+ * (flag-fall and resignation adjudication, dead-position detection): a game played with legal moves, and the PGNs it
+ * produces, never contains an illegal position, and winnability is meaningless on one.
+ *
+ * <p>
+ * Strict FEN validation ({@code Board.fromFenStrict}) rejects the illegal positions it can detect by structural rule -
+ * wrong piece counts, the side not to move left in check, and unreachable check geometries (a double check by two
+ * same-coloured bishops, two rooks, two queens, or two knights, or three or more checkers). But full legality cannot be
+ * validated in practice - a complete check needs an infeasible retrograde / proof-game search - so <b>ashlar does not
+ * enforce legality, and submitting only legal positions is the caller's responsibility.</b>
+ *
+ * <p>
+ * On an illegal position the result is undefined: it may be inaccurate, and the quick and full analyzers (or other CHA
+ * implementations) may disagree. The verdict is still correct on the large majority of illegal positions; only a small,
+ * known set of unreachable constructions is mis-decided - for example a checkmate delivered by an impossible
+ * double-bishop check over otherwise insufficient material (called unwinnable), or the retro-illegal basic-helpmate
+ * counterexamples {@code 8/8/8/8/2N5/8/k1K5/1B6 b} (KBNvK) and {@code 8/8/8/8/8/B7/B7/k1K5 w} (KBBvK), genuinely
+ * unwinnable yet reported {@code WINNABLE} by the helpmate-existence shortcut. Such positions cannot occur in a legally
+ * played game; they are of interest only for puzzles or position composition, which is out of scope.
+ *
  * <h2>Analyzer entry points</h2>
  *
  * <p>
