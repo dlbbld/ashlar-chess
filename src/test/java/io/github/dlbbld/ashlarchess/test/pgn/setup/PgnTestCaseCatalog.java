@@ -2633,7 +2633,8 @@ public class PgnTestCaseCatalog {
     list.add(new PgnFen("ambrona_13_lichess_OawUhnkq.pgn", "5r1k/6P1/7K/5q2/8/8/8/8 b - - 0 51"));
     list.add(new PgnFen("ambrona_14.pgn", "k7/Q6r/2b5/1pBp1p1p/1P1P1P1P/KP6/1P6/8 b - - 10 100"));
     list.add(new PgnFen("ambrona_15_lichess_QRvIMh3z.pgn", "2b5/1p6/pPp3k1/2Pp3p/P2PpBpP/4P1P1/5K2/8 b - - 46 59"));
-    list.add(new PgnFen("ambrona_16.pgn", "1k6/p1p1p1p1/P1P1P1P1/p1p1p1p1/8/8/P1P1P1P1/4K3 w - - 10 100"));
+    // ambrona_16 example position "1k6/p1p1p1p1/P1P1P1P1/p1p1p1p1/8/8/P1P1P1P1/4K3 w - - 10 100" we have in no pawn
+    // wall test - not duplicating here
     list.add(new PgnFen("ambrona_17.pgn", "rnb1b3/pk1p4/p1pPp1p1/P1P1P1P1/RBP5/P7/5B2/7K w - - 10 100"));
 
     return new PgnTestCaseList(PgnTest.CHA_AMBRONA, list);
