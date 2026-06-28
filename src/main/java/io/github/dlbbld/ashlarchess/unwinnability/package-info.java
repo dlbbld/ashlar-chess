@@ -2,8 +2,10 @@
 // SPDX-License-Identifier: GPL-3.0-only
 
 /**
- * The library's flagship feature - a Java port of Miguel Ambrona's
- * <a href="https://github.com/miguel-ambrona/D3-Chess">Chess Unwinnability Analyzer (CHA)</a> (GPL v3). Decides whether
+ * The library's flagship feature - a Java port of Miguel Ambrona's <b>C++</b> Chess Unwinnability Analyzer (CHA),
+ * originally published as D3-Chess (GPL v3). Ambrona has since replaced that repository with his Rust successor
+ * <a href="https://github.com/miguel-ambrona/chasolver">chasolver</a>, which ashlar does <em>not</em> port. Decides
+ * whether
  * a position is <em>unwinnable for a side</em> - no legal sequence can end with that side giving checkmate, even if the
  * opponent cooperates - and the symmetric notion of a <em>dead position</em> (unwinnable for both sides).
  *
