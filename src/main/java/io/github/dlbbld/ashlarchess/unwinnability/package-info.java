@@ -2,27 +2,38 @@
 // SPDX-License-Identifier: GPL-3.0-only
 
 /**
- * The library's flagship feature - a Java port of Miguel Ambrona's <b>C++</b> Chess Unwinnability Analyzer (CHA),
- * originally published as D3-Chess (GPL v3). Ambrona has since replaced that repository with his Rust successor
- * <a href="https://github.com/miguel-ambrona/chasolver">chasolver</a>, which ashlar does <em>not</em> port. Decides
- * whether a position is <em>unwinnable for a side</em> - no legal sequence can end with that side giving checkmate,
- * even if the opponent cooperates - and the symmetric notion of a <em>dead position</em> (unwinnable for both sides).
+ * The library's flagship feature - unwinnability analysis. Decides whether a position is <em>unwinnable for a
+ * side</em> - no legal sequence can end with that side giving checkmate, even if the opponent cooperates - and the
+ * symmetric notion of a <em>dead position</em> (unwinnable for both sides).
+ *
+ * <p>
+ * Since 22.0.0 the engine is ashlar's own clean-room implementation of Miguel Ambrona's FUN 2022 paper <em>A
+ * Practical Algorithm for Chess Unwinnability</em> (Figures 5-13, Lemmas 5/6, Theorem 12), governed by the committed
+ * specification {@code fun22-spec.md} and derived from the paper only. It replaces the earlier Java port of
+ * Ambrona's C++ Chess Unwinnability Analyzer (CHA / D3-Chess): the algorithm code is now traceable to the published
+ * paper rather than to another codebase. Ambrona's Rust successor
+ * <a href="https://github.com/miguel-ambrona/chasolver">chasolver</a> serves as an independent test oracle; see
+ * {@code fun22-spec.md} section 8 for the validation record (zero soundness contradictions across the D3-Chess and
+ * chasolver-labelled corpora).
  *
  * <p>
  * Insufficient material covers the trivial cases (king-vs-king, king + minor vs king); positions like blocked pawn
- * walls, certain wrong-bishop endgames, and many forced-only-moves continuations are dead but <em>not</em> insufficient
- * - and most chess libraries get them wrong. CHA decides them correctly across the full range of positions.
+ * walls, certain wrong-bishop endgames, and many forced-only-moves continuations are dead but <em>not</em>
+ * insufficient - and most chess libraries get them wrong. This analysis decides them correctly across the full range
+ * of positions.
  *
  * <h2>Two variants</h2>
  *
  * <ul>
- * <li><strong>Quick</strong> ({@link io.github.dlbbld.ashlarchess.unwinnability.UnwinnableQuickAnalyzer}) -
- * microsecond-scale, structural, two-valued: {@code UNWINNABLE} or {@code POSSIBLY_WINNABLE}. It is sound but not
- * complete - it proves unwinnability or leaves it open, and never claims winnability.</li>
- * <li><strong>Full</strong> ({@link io.github.dlbbld.ashlarchess.unwinnability.UnwinnableFullAnalyzer}) - deep search,
- * three-valued: {@code WINNABLE}, {@code UNWINNABLE}, or {@code UNDETERMINED}. The direct analysis record additionally
- * tells whether a {@code WINNABLE} result was theorem-certified and carries a concrete mate line for searched wins. The
- * undetermined case is bounded by a 500&nbsp;000-position limit; most positions resolve well below it.</li>
+ * <li><strong>Quick</strong> ({@link io.github.dlbbld.ashlarchess.unwinnability.UnwinnableQuickAnalyzer}) - the
+ * paper's Figure 10: structural and bounded, three-valued: {@code UNWINNABLE}, {@code WINNABLE} (only on quickly
+ * matable positions), or {@code POSSIBLY_WINNABLE}. It is sound but not complete - a definite verdict is always
+ * correct, and {@code POSSIBLY_WINNABLE} asserts nothing.</li>
+ * <li><strong>Full</strong> ({@link io.github.dlbbld.ashlarchess.unwinnability.UnwinnableFullAnalyzer}) - the
+ * paper's Figure 9: deep search, three-valued: {@code WINNABLE}, {@code UNWINNABLE}, or {@code UNDETERMINED}. The
+ * direct analysis record additionally tells whether a {@code WINNABLE} result was theorem-certified and carries a
+ * concrete mate line for searched wins. The undetermined case is bounded by a 500&nbsp;000-position limit; most
+ * positions resolve well below it.</li>
  * </ul>
  *
  * <p>
@@ -49,13 +60,13 @@
  * enforce legality, and submitting only legal positions is the caller's responsibility.</b>
  *
  * <p>
- * On an illegal position the result is undefined: it may be inaccurate, and the quick and full analyzers (or other CHA
- * implementations) may disagree. The verdict is still correct on the large majority of illegal positions; only a small,
- * known set of unreachable constructions is mis-decided - for example a checkmate delivered by an impossible
- * double-bishop check over otherwise insufficient material (called unwinnable), or the retro-illegal basic-helpmate
- * counterexamples {@code 8/8/8/8/2N5/8/k1K5/1B6 b} (KBNvK) and {@code 8/8/8/8/8/B7/B7/k1K5 w} (KBBvK), genuinely
- * unwinnable yet reported {@code WINNABLE} by the helpmate-existence shortcut. Such positions cannot occur in a legally
- * played game; they are of interest only for puzzles or position composition, which is out of scope.
+ * On an illegal position the result is undefined: it may be inaccurate, and the quick and full analyzers (or other
+ * implementations of the same algorithms) may disagree. The verdict is still correct on the large majority of illegal
+ * positions; only a small, known set of unreachable constructions is mis-decided - for example a checkmate delivered
+ * by an impossible double-bishop check over otherwise insufficient material (called unwinnable), or the retro-illegal
+ * basic-helpmate counterexamples {@code 8/8/8/8/2N5/8/k1K5/1B6 b} (KBNvK) and {@code 8/8/8/8/8/B7/B7/k1K5 w} (KBBvK),
+ * genuinely unwinnable yet reported {@code WINNABLE} by the helpmate-existence shortcut. Such positions cannot occur
+ * in a legally played game; they are of interest only for puzzles or position composition, which is out of scope.
  *
  * <h2>Analyzer entry points</h2>
  *
@@ -64,7 +75,8 @@
  * analyzer is run automatically during board construction or move execution.
  *
  * <p>
- * See {@code specification.md} section 3.2 for the full design rationale.
+ * See {@code specification.md} section 3.2 for the design rationale and {@code fun22-spec.md} for the governing
+ * algorithm specification.
  */
 @NonNullByDefault
 package io.github.dlbbld.ashlarchess.unwinnability;

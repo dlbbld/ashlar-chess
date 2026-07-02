@@ -358,7 +358,7 @@ public final class ReadmeExamples {
 
   public static void unwinnableBlockedQuick() {
     // <readme:unwinnable-blocked-quick>
-    final Board board = Board.fromFenStrict("1k6/1P5p/BP3p2/1P6/8/8/5PKP/8 b - - 0 41");
+    final Board board = Board.fromFenStrict("2b1k3/8/8/1p1p1p1p/1P1P1P1P/8/8/2B1K3 w - - 0 40");
     System.out.println(board.unwinnableQuick(Side.WHITE)); // [out]
     System.out.println(board.unwinnableFull(Side.WHITE)); // [out]
     // </readme:unwinnable-blocked-quick>

@@ -108,7 +108,7 @@ final class BasicHelpmateExistenceTheorem {
     final Side defender = winner.getOppositeSide();
 
     // Classes where the defender is reduced to a bare king.
-    if (UnwinnabilityMaterialBitboard.calculateHasKingOnly(defender, position)) {
+    if (hasKingOnly(defender, position)) {
       return isKingAndRookOnly(winner, position) || isKingAndQueenOnly(winner, position)
           || isKingAndOppositeBishopsOnly(winner, position) || isKingBishopKnightOnly(winner, position)
           || isKingAndTwoKnightsOnly(winner, position);
@@ -127,7 +127,7 @@ final class BasicHelpmateExistenceTheorem {
   // remaining KRvK or KQvK still suffices). Proved by a separate finite-state computation, not the main theorem.
   private static boolean isTwoMajorWinnableClass(BitboardPosition position, Side winner) {
     final Side defender = winner.getOppositeSide();
-    return UnwinnabilityMaterialBitboard.calculateHasKingOnly(defender, position)
+    return hasKingOnly(defender, position)
         && (isKingAndTwoRooksOnly(winner, position) || isKingAndTwoQueensOnly(winner, position));
   }
 
@@ -145,8 +145,8 @@ final class BasicHelpmateExistenceTheorem {
 
   private static boolean isKingAndOppositeBishopsOnly(Side side, BitboardPosition position) {
     return count(bishops(side, position)) == 2
-        && UnwinnabilityMaterialBitboard.calculateHasLightSquareBishops(side, position)
-        && UnwinnabilityMaterialBitboard.calculateHasDarkSquareBishops(side, position)
+        && (bishops(side, position) & SquareGeometry.LIGHT_SQUARES) != 0L
+        && (bishops(side, position) & SquareGeometry.DARK_SQUARES) != 0L
         && count(rooks(side, position)) == 0 && count(queens(side, position)) == 0
         && count(knights(side, position)) == 0 && count(pawns(side, position)) == 0;
   }
@@ -184,6 +184,12 @@ final class BasicHelpmateExistenceTheorem {
     return count(knights(side, position)) == 1 && count(rooks(side, position)) == 0
         && count(queens(side, position)) == 0 && count(bishops(side, position)) == 0
         && count(pawns(side, position)) == 0;
+  }
+
+  private static boolean hasKingOnly(Side side, BitboardPosition position) {
+    final long sideOccupancy = position.occupied(side);
+    final long sideKings = side == Side.WHITE ? position.whiteKings() : position.blackKings();
+    return sideOccupancy == sideKings && Long.bitCount(sideKings) == 1;
   }
 
   private static int count(long bitboard) {

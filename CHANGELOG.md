@@ -2,6 +2,41 @@
 
 Releases from 3.3 onward. Earlier history is in git tags only.
 
+## [Unreleased] - 22.0.0 - The FUN22 paper formulation replaces the cha port
+
+The unwinnability engine is now ashlar's own clean-room implementation of Miguel Ambrona's FUN 2022 paper *A
+Practical Algorithm for Chess Unwinnability* (Figures 5-13, Lemmas 5/6, Theorem 12), governed by the committed
+specification `fun22-spec.md` and derived from the paper only. It replaces the Java port of Ambrona's C++ CHA
+(D3-Chess): the algorithm is now traceable to the published paper rather than to another codebase. The engine was
+built and validated out-of-tree first (`fun22-reference`): zero soundness contradictions against the D3-Chess
+ground-truth corpus, against the previous cha-port analyzer, and against Ambrona's independent Rust `chasolver`.
+
+### Breaking
+
+- **`UnwinnabilityQuickVerdict` gains `WINNABLE`** (paper Figure 10 is three-valued): the quick analysis now proves
+  winnability on quickly matable positions instead of answering `POSSIBLY_WINNABLE`. Exhaustive switches over the
+  enum need a new case; comparisons against `UNWINNABLE` (the adjudication use) are unaffected.
+
+### Behavioral
+
+- **Quick analysis follows the paper's Figure 10** (bounded DFS with a global depth-9 interrupt, then the
+  semi-static check gated to pawn/bishop/king material without semi-open files) instead of CHA's deployed
+  `quick_analysis` heuristics. Some verdicts move between `UNWINNABLE` and `POSSIBLY_WINNABLE` in both directions;
+  definite verdicts remain sound.
+- **Full analysis follows the paper's Figure 9** (semi-static shortcut, then Find-Helpmate under iterative
+  deepening with the Figure 12/13 heuristics and the Figure 5 footnote-b reward chaining). The
+  basic-helpmate-existence theorem shortcut, the mate line on searched wins, and the 500 000-node global budget are
+  kept. Resolution on hard positions may differ from the cha port in both directions (the paper and cha diverge on
+  completeness, never soundness); the exhausted-budget fall-through now correctly answers `UNDETERMINED` where the
+  old code could in principle over-claim `UNWINNABLE`.
+
+### Internal
+
+- The cha-port internals (mobility/semi-static/search/material classes and their unit tests) are deleted; the
+  clean-room engine classes and the ported fun22-reference unit tests replace them, including the permanent
+  Theorem 12 soundness sweep over the newly committed D3-Chess ground-truth corpus
+  (`oracle/d3chess/test-vectors.txt`).
+
 ## [21.1.0] - Oracle housekeeping - 2026-07-03
 
 A documentation-and-test housekeeping release around the unwinnability analyzers and their oracles: the

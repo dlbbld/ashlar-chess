@@ -3,200 +3,123 @@
 
 package io.github.dlbbld.ashlarchess.unwinnability;
 
-import java.util.Set;
-import java.util.TreeSet;
-
-import io.github.dlbbld.ashlarchess.board.Board;
 import io.github.dlbbld.ashlarchess.board.enums.PieceType;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
-import io.github.dlbbld.ashlarchess.board.enums.Square;
-import io.github.dlbbld.ashlarchess.board.enums.SquareType;
 import io.github.dlbbld.ashlarchess.exceptions.ProgrammingMistakeException;
-import io.github.dlbbld.ashlarchess.internal.Nulls;
-import io.github.dlbbld.ashlarchess.internal.SetUtility;
-import io.github.dlbbld.ashlarchess.squares.KingNonCastlingEmptyBoardSquares;
 
-//Figure 8 Semi-statically unwinnable algorithm, which may conclude that a position is
-//unwinnable for an intended winner based on an admissible solution to the mobility problem.
-
-//a We could design a more complete check that looks at all neighbours of s, but the condition on
-//step 10 would be significantly more involved (to ensure monotonicity).
+// Figure 8 Semi-static algorithm for deciding unwinnability. Together with the Figure 7 mobility
+// over-approximation this is Theorem 12: a true return value proves the position unwinnable for
+// the intended winner.
+/**
+ * The semi-static unwinnability check - the paper's {@code Unwinnable_static} (Figure 8; {@code fun22-spec.md}
+ * section 3). Given a position, an intended winner {@code c}, and an admissible mobility solution, it returns
+ * {@code true} only when it can <em>prove</em> the position unwinnable for {@code c}. It is sound but deliberately
+ * incomplete (may return {@code false} on a truly unwinnable position).
+ */
 final class UnwinnableSemiStatic {
 
   private UnwinnableSemiStatic() {
   }
 
-  // Inputs: position, intended winner, solution to the mobility problem
-  // Output: bool (true if position is declared unwinnable, false otherwise)
-  public static boolean unwinnableSemiStatic(Board board, Side c, MobilitySolution mobilitySolution) {
-
-    if (board.getLegalMoves().isEmpty()) {
-      return !board.isCheck() || board.getSideToMove() == c;
+  /**
+   * @return {@code true} iff the position is proved unwinnable for {@code winner}
+   */
+  static boolean unwinnableSemiStatic(SemiStaticPosition position, Side winner, MobilitySolution mobilitySolution) {
+    if (mobilitySolution.position() != position) {
+      throw new ProgrammingMistakeException("Mobility solution was computed for a different position");
     }
-
-    if (board.isEnPassantCapturePossible()) {
+    // Step 1: the mobility soundness lemma (Lemma 8) assumes no castling rights and no possible en passant.
+    if (position.enPassantPossible() || position.castlingRightsPresent()) {
       return false;
     }
 
-    final PiecePlacement intendedLoserKing = calculateKing(c.getOppositeSide(), mobilitySolution);
-    final Set<Square> intendedLoserKingRegion = SemiStaticFunctions.region(intendedLoserKing, mobilitySolution);
-    final Set<PiecePlacement> visitorSet = calculateVisitorsExpanded(intendedLoserKingRegion, c, mobilitySolution);
+    final int totalPieces = position.count();
+    final Side loser = winner.getOppositeSide();
+    final long loserKingRegion = mobilitySolution.region(position.kingIndex(loser));
 
-    if (visitorSet.isEmpty()) {
-      return true;
-    }
-
-    final Set<SquareType> visitorSquareTypeSet = calculateSquareTypeSet(visitorSet);
-    if (visitorSquareTypeSet.size() > 1) {
-      return false;
-    }
-
-    for (final PiecePlacement visitor : visitorSet) {
-      if (visitor.pieceType() != PieceType.BISHOP) {
-        return false;
-      }
-    }
-
-    final SquareType visitorSquareType = SetUtility.getOnly(visitorSquareTypeSet);
-    for (final Square matingSquare : Square.REAL) {
-      final Set<PiecePlacement> matingBishopSet = removeKing(
-          visitors(Nulls.setOf(matingSquare), c, false, mobilitySolution), c);
-
-      if (matingBishopSet.isEmpty() || !intendedLoserKingRegion.contains(matingSquare)) {
+    // Steps 4-6: intruders are the winner's pieces that can enter the loser king's region; they must be empty or all
+    // same-square-coloured bishops.
+    boolean sawIntruder = false;
+    int intruderSquareColor = -1;
+    for (int i = 0; i < totalPieces; i++) {
+      final SemiStaticPiece piece = position.piece(i);
+      if (piece.side() != winner || (mobilitySolution.region(i) & loserKingRegion) == 0L) {
         continue;
       }
+      if (piece.pieceType() != PieceType.BISHOP) {
+        return false; // step 5: a non-bishop intruder
+      }
+      final int squareColor = squareColor(piece.square());
+      if (!sawIntruder) {
+        sawIntruder = true;
+        intruderSquareColor = squareColor;
+      } else if (squareColor != intruderSquareColor) {
+        return false; // step 6: bishops of opposite square colours
+      }
+    }
 
-      final Set<Square> escapingSquareSet = new TreeSet<>();
-      final Set<Square> checkingSquareSet = new TreeSet<>();
-      for (final Square adjacentSquare : KingNonCastlingEmptyBoardSquares.getKingSquares(matingSquare)) {
-        if (intendedLoserKingRegion.contains(adjacentSquare)) {
-          if (adjacentSquare.getSquareType() == visitorSquareType) {
-            checkingSquareSet.add(adjacentSquare);
-          } else {
-            escapingSquareSet.add(adjacentSquare);
+    // Step 7: att-region for the winner's pieces (blockers use region; only the winner's att-region is needed, for
+    // assistants and the step-10 attacker).
+    final long[] attackRegions = new long[totalPieces];
+    for (int i = 0; i < totalPieces; i++) {
+      final SemiStaticPiece piece = position.piece(i);
+      if (piece.side() == winner) {
+        attackRegions[i] = attackRegion(piece, mobilitySolution.region(i));
+      }
+    }
+
+    // Step 10: is there a candidate mate square for the loser's king? Steps 8-10 range over alpha(s) - the squares
+    // SHARING A BORDER with s (the paper's share-a-border glyph, verified on the 500-dpi render), NOT all 8
+    // neighbours delta(s). Figure 8 footnote a says a "more complete check" would look at all neighbours, and the
+    // Lemma 11 footnote's at-most-one-square-per-assistant argument holds specifically for alpha(s) (opposite square
+    // colour to s, so the same-coloured bishop intruders can never attack them).
+    for (int s = 0; s < SquareGeometry.SQUARES; s++) {
+      if (((loserKingRegion >> s) & 1L) == 0L) {
+        continue;
+      }
+      final long alpha = SquareGeometry.alpha(s);
+      final int alphaCount = Long.bitCount(alpha);
+
+      int coverers = 0; // |blockers(s)| + |assistants(s)|
+      boolean winnerAttacksS = false;
+      for (int i = 0; i < totalPieces; i++) {
+        final SemiStaticPiece piece = position.piece(i);
+        if (piece.side() != winner) {
+          // Blocker (step 8): a loser non-king piece that can occupy a bordering square.
+          if (piece.pieceType() != PieceType.KING && (mobilitySolution.region(i) & alpha) != 0L) {
+            coverers++;
+          }
+        } else {
+          // Assistant (step 9): a winner piece that can attack a bordering square.
+          if ((attackRegions[i] & alpha) != 0L) {
+            coverers++;
+          }
+          if (((attackRegions[i] >> s) & 1L) != 0L) {
+            winnerAttacksS = true;
           }
         }
       }
-
-      final Set<Square> neighbourSet = KingNonCastlingEmptyBoardSquares.getKingSquares(matingSquare);
-      final boolean isActiveWinnerKing = visitors(neighbourSet, c, false, mobilitySolution)
-          .contains(calculateKing(c, mobilitySolution));
-      if (calculateHasTwoDiagonals(checkingSquareSet) && matingBishopSet.size() < 2 && !isActiveWinnerKing) {
-        continue;
-      }
-
-      boolean isUnblockable = false;
-      for (final Square escapingSquare : escapingSquareSet) {
-        if (removeKings(visitors(Nulls.setOf(escapingSquare), c.getOppositeSide(), false, mobilitySolution))
-            .isEmpty()) {
-          isUnblockable = true;
-          break;
-        }
-      }
-
-      if (isUnblockable && !isActiveWinnerKing) {
-        continue;
-      }
-
-      final Set<PiecePlacement> blockerSet = visitors(escapingSquareSet, c.getOppositeSide(), false, mobilitySolution);
-      final int blockerCount = (isActiveWinnerKing ? 1 : 0) + removeKings(blockerSet).size();
-      if (escapingSquareSet.size() <= blockerCount) {
-        return false;
+      if (winnerAttacksS && coverers >= alphaCount) {
+        return false; // s looks matable: reachable, attacked, and all alpha-escapes coverable
       }
     }
 
-    return true;
-
+    return true; // no candidate mate square anywhere: unwinnable for the intended winner
   }
 
-  static Set<PiecePlacement> calculateVisitorsExpanded(Set<Square> intendedLoserKingRegion, Side intendedWinner,
-      MobilitySolution mobilitySolution) {
-    return removeKing(visitors(intendedLoserKingRegion, intendedWinner, true, mobilitySolution), intendedWinner);
-  }
-
-  private static Set<PiecePlacement> visitors(Set<Square> region, Side side, boolean expandedPawnRegion,
-      MobilitySolution mobilitySolution) {
-    final Set<PiecePlacement> result = new TreeSet<>();
-
-    // The original CHA C++ (semistatic.cpp) dropped "pawn visitors that are limited in movement" when the intended
-    // loser king's region spanned more than one square - a shortcut its own author flagged in the source with
-    // "(is this sound?)". It is unsound: an ordinary, non-promoting pawn can still deliver a quiet-push checkmate once
-    // the loser king has been walked into a pawn net, so dropping such pawns lets the empty-visitor-set test below
-    // wrongly conclude UNWINNABLE for a genuinely winnable position. This shortcut is not part of the proven Figure 8
-    // algorithm, so it is removed: a winner pawn whose mobility region reaches the loser king region stays in the
-    // (non-bishop) visitor set, which makes the routine abstain instead of falsely proving unwinnability.
-    for (final PiecePlacement piecePlacement : mobilitySolution.getPiecePlacements()) {
-      final Set<Square> pieceRegion = SemiStaticFunctions.region(piecePlacement, mobilitySolution);
-
-      if (piecePlacement.side() == side) {
-        for (final Square target : region) {
-          if (pieceRegion.contains(target)) {
-            result.add(piecePlacement);
-            break;
-          }
-          if (piecePlacement.pieceType() == PieceType.PAWN && expandedPawnRegion
-              && piecePlacement.squareOriginal().getFile() != target.getFile()
-              && !SetUtility.isDisjoint(MobilityFunctions.predecessorsCapture(piecePlacement, target), pieceRegion)) {
-            result.add(piecePlacement);
-            break;
-          }
-        }
+  /** att-region(P) = the squares s with pred-captP(s) intersecting region(P). */
+  private static long attackRegion(SemiStaticPiece piece, long region) {
+    long result = 0L;
+    for (int s = 0; s < SquareGeometry.SQUARES; s++) {
+      if ((Predecessors.captures(piece.pieceType(), piece.side(), s) & region) != 0L) {
+        result |= 1L << s;
       }
     }
     return result;
   }
 
-  private static Set<PiecePlacement> removeKing(Set<PiecePlacement> piecePlacementSet, Side side) {
-    final Set<PiecePlacement> result = new TreeSet<>();
-    for (final PiecePlacement piecePlacement : piecePlacementSet) {
-      if (piecePlacement.side() != side || piecePlacement.pieceType() != PieceType.KING) {
-        result.add(piecePlacement);
-      }
-    }
-    return result;
+  /** A 2-colouring of the board (light/dark); only equality is used, for step 6. */
+  private static int squareColor(int square) {
+    return ((square & 7) + (square >> 3)) & 1;
   }
-
-  private static Set<PiecePlacement> removeKings(Set<PiecePlacement> piecePlacementSet) {
-    final Set<PiecePlacement> result = new TreeSet<>();
-    for (final PiecePlacement piecePlacement : piecePlacementSet) {
-      if (piecePlacement.pieceType() != PieceType.KING) {
-        result.add(piecePlacement);
-      }
-    }
-    return result;
-  }
-
-  private static Set<SquareType> calculateSquareTypeSet(Set<PiecePlacement> piecePlacementSet) {
-    final Set<SquareType> result = new TreeSet<>();
-    for (final PiecePlacement piecePlacement : piecePlacementSet) {
-      result.add(piecePlacement.squareOriginal().getSquareType());
-    }
-    return result;
-  }
-
-  private static boolean calculateHasTwoDiagonals(Set<Square> checkingSquareSet) {
-    for (final Square squareA : checkingSquareSet) {
-      for (final Square squareB : checkingSquareSet) {
-        if (squareA == squareB) {
-          continue;
-        }
-        final int fileDistance = Math.abs(squareA.getFile().getNumber() - squareB.getFile().getNumber());
-        final int rankDistance = Math.abs(squareA.getRank().getNumber() - squareB.getRank().getNumber());
-        if (fileDistance == 2 && rankDistance == 0 || fileDistance == 0 && rankDistance == 2) {
-          return true;
-        }
-      }
-    }
-    return false;
-  }
-
-  private static PiecePlacement calculateKing(Side c, MobilitySolution mobilitySolution) {
-    for (final PiecePlacement piecePlacement : mobilitySolution.getPiecePlacements()) {
-      if (piecePlacement.side() == c && piecePlacement.pieceType() == PieceType.KING) {
-        return piecePlacement;
-      }
-    }
-    throw new ProgrammingMistakeException("King not in the list");
-  }
-
 }

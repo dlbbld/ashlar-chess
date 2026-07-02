@@ -11,6 +11,65 @@ Live planning only: current release work, backlog, and obsolete decisions. Shipp
 
 ---
 
+## 22.0.0 — The FUN22 paper formulation replaces the cha port
+
+Branch `implement-fun22`. The unwinnability engine becomes ashlar's own clean-room implementation of Ambrona's FUN 2022
+paper (*A Practical Algorithm for Chess Unwinnability*, Figures 5–13, Lemmas 5/6, Theorem 12), vendored from the
+validated `fun22-reference` project (branch `semi-static-v1`: whole-corpus sweeps vs chasolver with 0 contradictions).
+The cha-C++-mirroring internals (including the 21.0.0 pawn-intruders correction, which the paper formulation subsumes)
+are deleted. The governing document is the clean-room spec (`fun22-spec.md`, brought over from fun22-reference);
+**we honor the spec** — algorithm code must be traceable to the paper, never to cha.
+
+Design decisions (agreed 2026-07-03):
+
+- **Public API kept**: the 10 exported types stay (`UnwinnableFullAnalyzer`, `UnwinnableQuickAnalyzer`,
+  `DeadPositionAnalyzer`, the two analysis records, the four verdict enums, `WinnableProof`). Everything package-private
+  is swapped wholesale.
+- **Quick becomes three-valued** (paper Figure 10): `UnwinnabilityQuickVerdict` gains `WINNABLE` (fires when the
+  bounded DFS meets a mate for the intended winner before the first depth-`D` interrupt). Breaking change, allowed and
+  documented in a major release; `Adjudicator`/`DeadPositionAnalyzer` compare against `UNWINNABLE` only and are
+  unaffected.
+- **Ashlar extensions kept, clearly layered on top of the paper**: the `BasicHelpmateExistenceTheorem` shortcut
+  (ashlar's own theorem work, `WinnableProof.THEOREM`) and the mate line on searched wins
+  (`UnwinnabilityFullAnalysis.mateLine()`, mechanical bookkeeping in the Figure 5 search).
+- **Full = Figure 9 pure** plus the theorem step: semi-static shortcut → theorem → iterative deepening. The cha-specific
+  forced-move pre-advance is dropped from the full analyzer (the search decides forced lines within budget); the quick
+  analyzer keeps its forced-move advance because that is paper (Figure 10 step 1, loop-guarded per footnote a).
+- **Budget envelope kept from 21.x**: 500 000 global node budget across deepening iterations (the paper leaves
+  `bound(d)` as a parameter), depth cap 100. Transposition table is per-iteration (not shared across iterations —
+  sharing after a node-bound interrupt could let truncated entries prune a later iteration into an unsound
+  `UNWINNABLE`); the post-loop fall-through returns `UNDETERMINED`, fixing the old code's theoretically unsound
+  `UNWINNABLE` fall-through.
+- **The cha material predicate (`UnwinnabilityMaterialBitboard`) is retired with the port**; Ambrona's Lemmas 5/6 live
+  on in the clean-room `MaterialLemmas` (same proven lemmas, paper-traceable formulation — this does not reopen the
+  "material is correct" decision, it re-derives the identical predicate from the paper).
+- **Oracle contract shifts from adherence to implication**: vs cha/chasolver oracles, soundness contradictions are
+  bugs; completeness differences (who resolves more `UNDETERMINED`) are expected (paper ≠ cha extensions, text
+  footnote 12) and go to the accepted-differences fixtures.
+
+Work items:
+
+- **Vendor the semi-static layer** (SquareGeometry, Predecessors, semi-static Position model, Mobility = Fig 6/7
+  fixpoint, UnwinnableSemiStatic = Fig 8 with the α(s) reading verified at 500 dpi). ✅ DONE 2026-07-03 — the ported
+  Theorem 12 soundness sweep over the newly committed D3-Chess corpus reproduces fun22-reference exactly
+  (1723 analysed / 80 strict-FEN-rejected / 699 sound UNWINNABLE verdicts).
+- **Vendor the search layer** (MaterialLemmas, Score = Fig 12, GoingToCorner = Fig 13, FindHelpmate = Fig 5 with
+  footnote-b reward chaining + mate-line tracking) and rewire the public analyzers (Fig 9 full, Fig 10 quick).
+  ✅ DONE 2026-07-03 — `BasicHelpmateExistenceTheorem` now carries its three bitboard shape helpers itself (the cha
+  material class is gone).
+- **Delete the cha-port internals and their unit tests; port the fun22-reference unit tests.** ✅ DONE 2026-07-03 —
+  27 main classes and 22 test files deleted (including the mobility/semistatic internal-oracle comparisons and their
+  generators, which oracled cha internals that no longer exist); 6 ported test classes added.
+- **Docs**: package-info rewritten (clean-room paper implementation, no longer a cha port), spec brought into
+  `fun22-spec.md`, CHANGELOG entry. ✅ DONE 2026-07-03 — README/manual regenerated (the "blocked positions the quick
+  algorithm proves" example now uses the paper-provable bishop fortress; the old example has a semi-open file, which
+  Figure 10's gate declines by design). Default profile green (1302 tests).
+- **Full-suite sign-off**: run the excluded unwinnability suite, re-baseline the accepted-differences fixtures
+  (soundness contradictions block release), measure performance vs 21.1.0 and decide whether a fast-board pass is
+  needed before release.
+
+---
+
 ## 21.1.0 — Oracle housekeeping
 
 Published 2026-07-03 (tag `21.1.0`, on Maven Central); see **CHANGELOG.md** for the consumer-facing summary. Shipped from branch `further-improving`.

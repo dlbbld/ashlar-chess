@@ -3,27 +3,34 @@
 
 package io.github.dlbbld.ashlarchess.unwinnability;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.List;
 
 import io.github.dlbbld.ashlarchess.bitboard.BitboardPosition;
 import io.github.dlbbld.ashlarchess.board.Board;
-import io.github.dlbbld.ashlarchess.board.DynamicPosition;
-import io.github.dlbbld.ashlarchess.board.LegalMove;
-import io.github.dlbbld.ashlarchess.board.enums.PieceType;
+import io.github.dlbbld.ashlarchess.board.MoveSpecification;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
-import io.github.dlbbld.ashlarchess.exceptions.ProgrammingMistakeException;
 import io.github.dlbbld.ashlarchess.fen.model.Fen;
-import io.github.dlbbld.ashlarchess.internal.Nulls;
 
-// Faithful port of CHA 2.6.1 DYNAMIC::quick_analysis (the deployed -quick), NOT the paper's Figure 10. It is
-// deliberately 2-valued: it returns UNWINNABLE when it can prove the position dead for the intended winner, and
-// otherwise POSSIBLY_WINNABLE (CHA's "undetermined -> guessed winnable"). It never returns WINNABLE; finding a
-// helpmate is the job of the full analyzer. The depth-7 search is unconditional; the depth-15 pass is CHA's ad hoc
-// deeper retry for restricted pawn/bishop positions (CHA comment: "TODO: remove if too ad hoc for capturing bKHPqNEw").
+// Figure 10 Unwinnable_quick: sound, computationally very light, deliberately incomplete.
+// Footnote a: the forced-move advance must be loop-guarded (arbitrarily long single-move
+// sequences exist; capping is verdict-preserving since a forced prefix is equivalence-
+// preserving). Footnote b: the Lemma 5/6 material positions are DFS leaves.
 /**
+ * The quick unwinnability analysis - the paper's {@code Unwinnable_quick} (Figure 10). Steps: (1) advance the
+ * position while there is only one legal move; (2) a plain DFS that is interrupted as soon as any variation reaches
+ * the depth bound, with checkmate/stalemate and the insufficient-winning-material positions of Lemmas 5/6 (and the
+ * bare winner king) as tree leaves; (3) {@code WINNABLE} if a mate by the intended winner was met,
+ * {@code UNWINNABLE} if the whole tree was exhausted without interruption; else (4) the semi-static check, gated to
+ * positions with only pawn/bishop/king material and no <em>semi-open files</em> (files with pawns of one colour
+ * only); else (5) {@code POSSIBLY_WINNABLE}.
+ *
+ * <p>
+ * The depth interrupt is <em>global</em>: the first line that reaches the depth bound stops the whole search (this
+ * literal Figure 10 semantics is what makes the routine fast). Hence {@code WINNABLE} fires only when a mate is met
+ * before the first deep dive; in general winnable positions the routine returns {@code POSSIBLY_WINNABLE}, which
+ * asserts nothing.
+ *
+ * <p>
  * Defined for legal positions only; on an illegal position the result is undefined (and may differ from the full
  * analyzer). See this package's documentation for the legal-position contract.
  */
@@ -32,11 +39,17 @@ public final class UnwinnableQuickAnalyzer {
   private UnwinnableQuickAnalyzer() {
   }
 
+  /** The paper's empirically chosen depth bound {@code D}. */
+  private static final int DEPTH_BOUND = 9;
+
+  /** Guard for Figure 10 footnote a: stop advancing forced lines after this many plies. */
+  private static final int FORCED_ADVANCE_CAP = 500;
+
+  private static final long FILE_A = 0x0101_0101_0101_0101L;
+
   /**
-   * Quick unwinnability for one intended winner.
-   *
-   * <p>
-   * It answer the question "can this side ever deliver checkmate?"
+   * Quick unwinnability for one intended winner: can this side ever deliver checkmate? Runs on a fresh history-less
+   * board built from the caller's FEN; the caller's board is not mutated.
    */
   public static UnwinnabilityQuickAnalysis unwinnableQuick(Board input, Side c) {
     return new UnwinnabilityQuickAnalysis(calculateUnwinnabilityQuickVerdict(input, c));
@@ -44,150 +57,54 @@ public final class UnwinnableQuickAnalyzer {
 
   private static UnwinnabilityQuickVerdict calculateUnwinnabilityQuickVerdict(Board input, Side c) {
     final Board board = copyCurrentPositionForQuickSearch(input);
-    final String invariant = board.getFen();
 
-    // CHA trivial_progress: advance the position while there is exactly one legal move.
-    int countPlies = 0;
-    final Set<DynamicPosition> forcedPositionSet = new HashSet<>();
-    while (board.getLegalMoves().size() == 1 && forcedPositionSet.add(board.getDynamicPosition())) {
-      board.move(Nulls.getFirst(board.getLegalMoves()).moveSpecification());
-      countPlies++;
+    // Step 1: advance the position as long as there is only one legal move (loop-guarded, footnote a).
+    int advanced = 0;
+    List<MoveSpecification> legalMoves;
+    while ((legalMoves = board.getLegalMoveSpecifications()).size() == 1 && advanced < FORCED_ADVANCE_CAP) {
+      board.move(legalMoves.get(0));
+      advanced++;
     }
 
-    final boolean isUnwinnable = calculateIsQuickUnwinnable(board, c);
+    // Step 2: bounded DFS, interrupted as soon as the depth bound is reached anywhere.
+    final QuickSearch quickSearch = new QuickSearch(c);
+    quickSearch.depthFirstSearch(board, 0);
 
-    unperformPlies(board, countPlies);
-    if (!invariant.equals(board.getFen())) {
-      throw new ProgrammingMistakeException("Board was changed");
+    if (quickSearch.mateFound) {
+      return UnwinnabilityQuickVerdict.WINNABLE; // step 3
     }
-    return isUnwinnable ? UnwinnabilityQuickVerdict.UNWINNABLE : UnwinnabilityQuickVerdict.POSSIBLY_WINNABLE;
-  }
-
-  // Mirrors the body of DYNAMIC::quick_analysis: an unconditional depth-7 dynamic search, an ad hoc deeper depth-15
-  // retry, then the blocked-position semi-static checks. Returns true only when one of them proves unwinnability.
-  private static boolean calculateIsQuickUnwinnable(Board board, Side c) {
-    final BitboardPosition bitboardPosition = board.getBitboardPosition();
-    final boolean hasOnlyPawnsAndBishops = calculateHasOnlyPawnsBishopsAndKings(bitboardPosition);
-    final MovedKings movedKings = new MovedKings();
-
-    boolean isUnwinnable = calculateIsDynamicallyUnwinnable(board, c, 7, movedKings, new HashMap<>());
-
-    if (!isUnwinnable && hasOnlyPawnsAndBishops && movedKings.value != 3 && board.getLegalMoves().size() <= 8) {
-      isUnwinnable = calculateIsDynamicallyUnwinnable(board, c, 15, movedKings, new HashMap<>());
+    if (!quickSearch.interrupted) {
+      return UnwinnabilityQuickVerdict.UNWINNABLE; // step 4: the whole tree was exhausted
     }
 
-    final boolean isBlockedCandidate = calculateIsBlockedCandidate(bitboardPosition);
-
-    if (isBlockedCandidate && !isUnwinnable && hasOnlyPawnsAndBishops) {
-      isUnwinnable = UnwinnableSemiStatic.unwinnableSemiStatic(board, c, Mobility.mobility(board));
-    }
-
-    if (isBlockedCandidate && !isUnwinnable && calculateIsAlmostOnlyPawnsBishopsAndKings(bitboardPosition)
-        && (board.isCheck() || UnwinnabilityMaterialBitboard.calculateHasKnight(bitboardPosition))) {
-      isUnwinnable = calculateIsUnwinnableAfterOneMove(board, c);
-    }
-
-    return isUnwinnable;
-  }
-
-  // CHA dynamically_unwinnable: returns true iff every line, within the depth bound, reaches a position that is
-  // impossible to win for the intended winner (or a checkmate of the intended winner). A transposition map memoizes
-  // the (position, depth) verdict; the boolean result is unaffected by it, though movedKings may be under-counted on
-  // a cache hit (only relevant to the ad hoc depth-15 gate).
-  private static boolean calculateIsDynamicallyUnwinnable(Board board, Side intendedWinner, int depth,
-      MovedKings movedKings, Map<DynamicSearchKey, Boolean> transpositionMap) {
-    // impossible_to_win: winner has just the king, or the loser must promote but has no pawns (Lemmas 5/6).
-    if (UnwinnabilityMaterialBitboard.calculateIsInsufficientMaterial(intendedWinner, board.getBitboardPosition())) {
-      return true;
-    }
-
-    if (board.getLegalMoves().isEmpty() && board.isCheck()) {
-      return board.getSideToMove() == intendedWinner;
-    }
-
-    if (depth <= 0) {
-      return false;
-    }
-
-    final DynamicSearchKey cacheKey = new DynamicSearchKey(board.getDynamicPosition(), depth);
-    if (transpositionMap.containsKey(cacheKey)) {
-      return Nulls.get(transpositionMap, cacheKey);
-    }
-
-    for (final LegalMove legalMove : board.getLegalMoves()) {
-      if (legalMove.movingPiece().getPieceType() == PieceType.KING) {
-        movedKings.value |= board.getSideToMove() == Side.WHITE ? 2 : 1;
-      }
-      board.move(legalMove.moveSpecification());
-      final boolean isUnwinnable = calculateIsDynamicallyUnwinnable(board, intendedWinner, depth - 1, movedKings,
-          transpositionMap);
-      board.unmove();
-      if (!isUnwinnable) {
-        transpositionMap.put(cacheKey, false);
-        return false;
+    // Steps 5-6: the semi-static check, gated to blocked-position candidates.
+    final BitboardPosition placement = board.getBitboardPosition();
+    if (hasOnlyPawnsBishopsAndKings(placement) && !hasSemiOpenFile(placement)) {
+      final SemiStaticPosition semiStaticPosition = SemiStaticPosition.fromBoard(board);
+      if (UnwinnableSemiStatic.unwinnableSemiStatic(semiStaticPosition, c, Mobility.mobility(semiStaticPosition))) {
+        return UnwinnabilityQuickVerdict.UNWINNABLE;
       }
     }
-
-    transpositionMap.put(cacheKey, true);
-    return true;
+    return UnwinnabilityQuickVerdict.POSSIBLY_WINNABLE; // step 7
   }
 
-  // CHA is_unwinnable_after_one_move: unwinnable if every legal move leads to a semi-statically unwinnable position.
-  private static boolean calculateIsUnwinnableAfterOneMove(Board board, Side intendedWinner) {
-    if (board.getLegalMoves().isEmpty()) {
-      return !board.isCheck() || board.getSideToMove() == intendedWinner;
-    }
+  /** Figure 10 step 5: only pieces of type pawn, bishop, king (either side). */
+  private static boolean hasOnlyPawnsBishopsAndKings(BitboardPosition placement) {
+    return (placement.whiteKnights() | placement.whiteRooks() | placement.whiteQueens() | placement.blackKnights()
+        | placement.blackRooks() | placement.blackQueens()) == 0L;
+  }
 
-    for (final LegalMove legalMove : board.getLegalMoves()) {
-      board.move(legalMove.moveSpecification());
-      final MobilitySolution mobilitySolution = Mobility.mobility(board);
-      final boolean isUnwinnable = UnwinnableSemiStatic.unwinnableSemiStatic(board, intendedWinner, mobilitySolution);
-      board.unmove();
-      if (!isUnwinnable) {
-        return false;
+  /** A semi-open file: pawns of exactly one colour on it. */
+  private static boolean hasSemiOpenFile(BitboardPosition placement) {
+    for (int file = 0; file < 8; file++) {
+      final long fileMask = FILE_A << file;
+      final boolean hasWhitePawns = (placement.whitePawns() & fileMask) != 0L;
+      final boolean hasBlackPawns = (placement.blackPawns() & fileMask) != 0L;
+      if (hasWhitePawns ^ hasBlackPawns) {
+        return true;
       }
     }
-    return true;
-  }
-
-  private static boolean calculateHasOnlyPawnsBishopsAndKings(BitboardPosition bitboardPosition) {
-    return !UnwinnabilityMaterialBitboard.calculateHasRook(bitboardPosition)
-        && !UnwinnabilityMaterialBitboard.calculateHasKnight(bitboardPosition)
-        && !UnwinnabilityMaterialBitboard.calculateHasQueen(bitboardPosition);
-  }
-
-  private static boolean calculateIsAlmostOnlyPawnsBishopsAndKings(BitboardPosition bitboardPosition) {
-    final long heavyPieces = bitboardPosition.whiteKnights() | bitboardPosition.blackKnights()
-        | bitboardPosition.whiteRooks() | bitboardPosition.blackRooks() | bitboardPosition.whiteQueens()
-        | bitboardPosition.blackQueens();
-    return Long.bitCount(heavyPieces) <= 1;
-  }
-
-  private static boolean calculateIsBlockedCandidate(BitboardPosition bitboardPosition) {
-    return calculateNumberOfBlockedPawns(bitboardPosition) >= 1 && !calculateHasLonelyPawns(bitboardPosition);
-  }
-
-  private static int calculateNumberOfBlockedPawns(BitboardPosition bitboardPosition) {
-    // A white pawn one rank below a black pawn = the white pawn's bit shifted up 8 lands on a black pawn.
-    return Long.bitCount((bitboardPosition.whitePawns() << 8) & bitboardPosition.blackPawns());
-  }
-
-  // Mask matching the reference: white < rank 7, black > rank 2 (0-indexed).
-  private static final long WHITE_LONELY_RANK_MASK = 0x0000FFFFFFFFFFFFL;
-  private static final long BLACK_LONELY_RANK_MASK = 0xFFFFFFFFFFFF0000L;
-
-  private static boolean calculateHasLonelyPawns(BitboardPosition bitboardPosition) {
-    final int whitePawnFileMask = projectToFiles(bitboardPosition.whitePawns() & WHITE_LONELY_RANK_MASK);
-    final int blackPawnFileMask = projectToFiles(bitboardPosition.blackPawns() & BLACK_LONELY_RANK_MASK);
-    return whitePawnFileMask != blackPawnFileMask;
-  }
-
-  private static int projectToFiles(long bitboard) {
-    long result = bitboard;
-    result |= result >>> 32;
-    result |= result >>> 16;
-    result |= result >>> 8;
-    return (int) (result & 0xFFL);
+    return false;
   }
 
   private static Board copyCurrentPositionForQuickSearch(Board input) {
@@ -197,16 +114,46 @@ public final class UnwinnableQuickAnalyzer {
     return new Board(fen);
   }
 
-  private static void unperformPlies(Board board, int countPlies) {
-    for (int i = 1; i <= countPlies; i++) {
-      board.unmove();
+  /**
+   * The Figure 10 step-2 DFS. Leaves (footnote b): checkmate, stalemate, and insufficient winning material (bare
+   * king, Lemma 5, Lemma 6). A non-leaf node at the depth bound interrupts the whole search.
+   */
+  private static final class QuickSearch {
+
+    private final Side winner;
+    private final Side loserSide;
+    private boolean mateFound;
+    private boolean interrupted;
+
+    private QuickSearch(Side winner) {
+      this.winner = winner;
+      this.loserSide = winner.getOppositeSide();
     }
-  }
 
-  private static final class MovedKings {
-    private int value;
-  }
-
-  private record DynamicSearchKey(DynamicPosition dynamicPosition, int depth) {
+    private void depthFirstSearch(Board board, int depth) {
+      if (board.isCheckmate()) {
+        if (board.getSideToMove() == loserSide) {
+          mateFound = true; // interrupt (i): checkmate by the intended winner
+        }
+        return;
+      }
+      final BitboardPosition placement = board.getBitboardPosition();
+      if (board.isStalemate() || MaterialLemmas.winnerHasBareKing(placement, winner)
+          || MaterialLemmas.unwinnableByLemma5Or6(placement, winner)) {
+        return; // a true leaf: no mate by the winner in this subtree
+      }
+      if (depth == DEPTH_BOUND) {
+        interrupted = true; // interrupt (ii): the depth bound reached on a non-leaf
+        return;
+      }
+      for (final MoveSpecification move : board.getLegalMoveSpecifications()) {
+        board.move(move);
+        depthFirstSearch(board, depth + 1);
+        board.unmove();
+        if (mateFound || interrupted) {
+          return;
+        }
+      }
+    }
   }
 }

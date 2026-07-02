@@ -4,9 +4,9 @@ ashlar-chess
 [![Maven Central](https://img.shields.io/maven-central/v/io.github.dlbbld/ashlar-chess.svg)](https://central.sonatype.com/artifact/io.github.dlbbld/ashlar-chess)
 
 ashlar-chess is a Java chess library focused on rule correctness, production usability, and reproducible validation.
-It implements SAN, FEN, and PGN parsing, validation, and export with strict/lenient parser pairs, and includes a Java
-port of Miguel Ambrona's C++ [Chess Unwinnability Analyzer (CHA)](https://github.com/miguel-ambrona/chasolver) as a
-flagship feature.
+It implements SAN, FEN, and PGN parsing, validation, and export with strict/lenient parser pairs, and includes a
+clean-room implementation of Miguel Ambrona's FUN 2022 unwinnability algorithm (the paper behind the
+[Chess Unwinnability Analyzer](https://github.com/miguel-ambrona/chasolver)) as a flagship feature.
 
 ## What it is
 
@@ -108,7 +108,9 @@ Copyright (C) 2020-2026  Daniel Bächli
 ashlar-chess is free software, licensed under the GNU General Public License, version 3 (GPL v3). See [LICENSE](LICENSE)
 for the full text.
 
-The unwinnability and dead-position detection is a Java port of Miguel Ambrona's **C++** Chess Unwinnability Analyzer
-(CHA), originally published as `D3-Chess`, also licensed under GPL v3. Ambrona has since renamed and replaced that
-repository with his **Rust** successor, [`chasolver`](https://github.com/miguel-ambrona/chasolver) — the old `D3-Chess`
-URL now redirects there — so ashlar ports the earlier **C++** implementation and the CHA paper, **not** the Rust one.
+The unwinnability and dead-position detection is ashlar's own clean-room implementation of Miguel Ambrona's FUN 2022
+paper *A Practical Algorithm for Chess Unwinnability*, governed by the committed specification
+[`fun22-spec.md`](fun22-spec.md); it is derived from the paper only, not from Ambrona's implementations (the retired
+C++ `D3-Chess`/`cha` or its **Rust** successor [`chasolver`](https://github.com/miguel-ambrona/chasolver), both
+GPL v3). Ambrona's D3-Chess ground-truth test vectors and verdicts from `cha`/`chasolver` are committed as test
+fixtures for cross-validation.
