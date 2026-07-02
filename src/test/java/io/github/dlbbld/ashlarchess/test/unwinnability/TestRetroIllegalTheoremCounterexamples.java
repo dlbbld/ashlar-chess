@@ -7,13 +7,13 @@ import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
 import io.github.dlbbld.ashlarchess.board.Board;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
-import io.github.dlbbld.ashlarchess.internal.Nulls;
 import io.github.dlbbld.ashlarchess.unwinnability.UnwinnabilityFullAnalysis;
 import io.github.dlbbld.ashlarchess.unwinnability.UnwinnabilityFullVerdict;
 import io.github.dlbbld.ashlarchess.unwinnability.UnwinnabilityQuickVerdict;
@@ -44,25 +44,30 @@ import io.github.dlbbld.ashlarchess.unwinnability.WinnableProof;
 class TestRetroIllegalTheoremCounterexamples {
 
   /** White to move: KBBvK opposite bishops (3) then KBNvK light bishop (15), in the README table order. */
-  private static final List<String> WHITE_TO_MOVE_FENS = Nulls.listOf( //
-      "8/8/8/8/8/B7/B7/k1K5 w - - 0 1", //
-      "8/8/8/8/8/B7/B1K5/k7 w - - 0 1", //
-      "8/8/8/8/8/8/B1K5/k1B5 w - - 0 1", //
-      "8/8/8/8/8/8/B7/k1KN4 w - - 0 1", //
-      "8/8/8/8/8/3N4/B7/k1K5 w - - 0 1", //
-      "8/8/8/8/2N5/8/B7/k1K5 w - - 0 1", //
-      "8/8/8/8/N7/8/B7/k1K5 w - - 0 1", //
-      "8/8/8/8/8/8/BN6/k1K5 w - - 0 1", //
-      "8/8/8/8/8/8/B1K5/k2N4 w - - 0 1", //
-      "8/8/8/8/8/3N4/B1K5/k7 w - - 0 1", //
-      "8/8/8/8/2N5/8/B1K5/k7 w - - 0 1", //
-      "8/8/8/8/N7/8/B1K5/k7 w - - 0 1", //
-      "8/8/8/8/8/8/BNK5/k7 w - - 0 1", //
-      "8/8/8/8/8/8/2K5/kB1N4 w - - 0 1", //
-      "8/8/8/8/8/3N4/2K5/kB6 w - - 0 1", //
-      "8/8/8/8/2N5/8/2K5/kB6 w - - 0 1", //
-      "8/8/8/8/N7/8/2K5/kB6 w - - 0 1", //
-      "8/8/8/8/8/8/1NK5/kB6 w - - 0 1");
+  private static final List<String> WHITE_TO_MOVE_FENS = createWhiteToMoveFens();
+
+  private static List<String> createWhiteToMoveFens() {
+    final List<String> fens = new ArrayList<>();
+    fens.add("8/8/8/8/8/B7/B7/k1K5 w - - 0 1");
+    fens.add("8/8/8/8/8/B7/B1K5/k7 w - - 0 1");
+    fens.add("8/8/8/8/8/8/B1K5/k1B5 w - - 0 1");
+    fens.add("8/8/8/8/8/8/B7/k1KN4 w - - 0 1");
+    fens.add("8/8/8/8/8/3N4/B7/k1K5 w - - 0 1");
+    fens.add("8/8/8/8/2N5/8/B7/k1K5 w - - 0 1");
+    fens.add("8/8/8/8/N7/8/B7/k1K5 w - - 0 1");
+    fens.add("8/8/8/8/8/8/BN6/k1K5 w - - 0 1");
+    fens.add("8/8/8/8/8/8/B1K5/k2N4 w - - 0 1");
+    fens.add("8/8/8/8/8/3N4/B1K5/k7 w - - 0 1");
+    fens.add("8/8/8/8/2N5/8/B1K5/k7 w - - 0 1");
+    fens.add("8/8/8/8/N7/8/B1K5/k7 w - - 0 1");
+    fens.add("8/8/8/8/8/8/BNK5/k7 w - - 0 1");
+    fens.add("8/8/8/8/8/8/2K5/kB1N4 w - - 0 1");
+    fens.add("8/8/8/8/8/3N4/2K5/kB6 w - - 0 1");
+    fens.add("8/8/8/8/2N5/8/2K5/kB6 w - - 0 1");
+    fens.add("8/8/8/8/N7/8/2K5/kB6 w - - 0 1");
+    fens.add("8/8/8/8/8/8/1NK5/kB6 w - - 0 1");
+    return fens;
+  }
 
   /** Black to move: the single KBNvK light-bishop representative (Black's king is in check from the bishop). */
   private static final String BLACK_TO_MOVE_FEN = "8/8/8/8/2N5/8/k1K5/1B6 b - - 0 1";
