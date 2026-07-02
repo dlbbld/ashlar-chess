@@ -13,7 +13,7 @@ Live planning only: current release work, backlog, and obsolete decisions. Shipp
 
 ## 21.1.0 — Oracle housekeeping
 
-Work on branch `further-improving`.
+Published 2026-07-03 (tag `21.1.0`, on Maven Central); see **CHANGELOG.md** for the consumer-facing summary. Shipped from branch `further-improving`.
 
 - **Correct the 21.0.0 release-notes overclaim about the KNNvK/KRRvK/KQQvK theorem.** ✅ DONE 2026-07-02 — the `CHANGELOG.md` `[21.0.0]` bullet is reworded (performance + proof-provenance improvement, not completeness; the search already proved these classes `WINNABLE`), the summary framing is now "A correctness release", and the published GitHub Release notes were edited in place to match. The correction is also called out in the `[21.1.0]` entry.
 
