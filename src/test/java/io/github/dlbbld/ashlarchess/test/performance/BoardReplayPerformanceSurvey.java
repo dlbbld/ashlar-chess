@@ -84,8 +84,8 @@ public class BoardReplayPerformanceSurvey {
       final Measurement construct = measureConstruct(games);
       final Measurement replay = measureReplay(games);
       final Measurement replayWithProbe = measureReplayWithProbe(games);
-      final StockfishMeasurements stockfish =
-          stockfishRunnerPath == null ? null : measureStockfish(games, stockfishRunnerPath);
+      final StockfishMeasurements stockfish = stockfishRunnerPath == null ? null
+          : measureStockfish(games, stockfishRunnerPath);
 
       printResult(pgnTest, games.size(), plyCount, construct, replay, replayWithProbe, stockfish);
     }
