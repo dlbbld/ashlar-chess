@@ -12,6 +12,7 @@ import java.util.Set;
 
 import org.junit.jupiter.api.Test;
 
+import io.github.dlbbld.ashlarchess.internal.Nulls;
 import io.github.dlbbld.ashlarchess.test.RestrictTestConstants;
 import io.github.dlbbld.ashlarchess.unwinnability.CompareAmbronaSemiStaticOracle;
 
@@ -28,10 +29,10 @@ class TestAmbronaSemiStaticOracleComparison {
   // drops the blocked black pawns from the semi-static visitor set and so proves UNWINNABLE. ashlar, after the 21.0.0
   // soundness fix in UnwinnableSemiStatic, keeps those pawns as visitors and reports POSSIBLY_WINNABLE; it is the
   // sound side (see CHANGELOG 21.0.0). A divergence on any other FEN, or of any other kind, is a real regression.
-  private static final Set<String> ACCEPTED_DIVERGENT_FENS = Set
-      .of("1k6/p1p1p1p1/P1P1P1P1/p1p1p1p1/8/8/P1P1P1P1/4K3 w - - 0 34");
+  private static final Set<String> ACCEPTED_DIVERGENT_FENS = Nulls
+      .setOf("1k6/p1p1p1p1/P1P1P1P1/p1p1p1p1/8/8/P1P1P1P1/4K3 w - - 0 34");
 
-  private static final Set<String> ACCEPTED_DIFFERENCE_KINDS = Set.of("VERDICT", "AMBRONA_VISITORS_EXPANDED");
+  private static final Set<String> ACCEPTED_DIFFERENCE_KINDS = Nulls.setOf("VERDICT", "AMBRONA_VISITORS_EXPANDED");
 
   @SuppressWarnings("static-method")
   @Test
