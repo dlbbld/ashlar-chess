@@ -32,7 +32,7 @@ class TestChasolverCuratedPositions {
   private static final int MAX_PRINTED_FAILURES = 30;
   private static final int MAX_PRINTED_IMPORT_FAILURES = 200;
   private static final Path POSITION_PATH = Nulls.pathResolve(ConfigurationTestConstants.PROJECT_ROOT_FOLDER_PATH,
-      "src/test/resources/oracle/chasolver/positions.txt");
+      "src/test/resources/oracle/chasolver/curated/positions.txt");
 
   @SuppressWarnings("static-method")
   @Test

@@ -1,12 +1,24 @@
-# Ambrona oracles
+# Chess-engine oracles
 
-`ambrona-unwinnability.tsv` is generated from the final FENs cached in the
-`PgnFen` fixtures. The generator calls Miguel Ambrona's D3-Chess C++
-implementation through WSL and writes one row per distinct final FEN.
+This folder separates oracle files by the engine that produced the verdicts and
+by the source of the tested positions:
 
-`chasolver/positions.txt` is different: it is copied from Miguel Ambrona's
-chasolver repository and is the upstream curated position set itself. The
-tests under `againstchasolvercurated` read its `WB`, `W-`, `-B`, and `--`
+```text
+cha/ashlar-pgn/        D3-Chess/CHA output over Ashlar's PGN final positions
+chasolver/ashlar-pgn/  Rust chasolver output over the same Ashlar positions
+chasolver/curated/     the upstream curated chasolver position set
+python-chess/          python-chess output over Ashlar PGN fixtures
+```
+
+The `ashlar-pgn` files are generated from the final FENs cached in the
+`PgnFen` fixtures. The CHA generator calls Miguel Ambrona's D3-Chess C++
+implementation through WSL. The chasolver generator calls Miguel Ambrona's Rust
+`chasolver` implementation through WSL. Both write one row per distinct final
+FEN.
+
+`chasolver/curated/positions.txt` is different: it is copied from Miguel
+Ambrona's chasolver repository and is the upstream curated position set itself.
+The tests under `againstchasolvercurated` read its `WB`, `W-`, `-B`, and `--`
 classifications directly instead of treating it as generated output from this
 project's PGN fixtures.
 
@@ -16,17 +28,17 @@ The TSV columns are:
 fen	fullWhite	fullBlack	quickWhite	quickBlack
 ```
 
-`ambrona-mobility.tsv` uses the same final FEN source, but writes one row per
-piece in every distinct position. The `toSquares` column is a comma-separated
-list of squares reached by Ambrona's saturated semistatic movement variable for
-that piece.
+`cha/ashlar-pgn/mobility.tsv` uses the same final FEN source, but writes one
+row per piece in every distinct position. The `toSquares` column is a
+comma-separated list of squares reached by Ambrona's saturated semistatic
+movement variable for that piece.
 
 ```text
 fen	side	pieceType	from	toSquares
 ```
 
-`ambrona-semistatic.tsv` uses the same final FEN source and writes Ambrona rows
-for semistatic verdicts and helper sets.
+`cha/ashlar-pgn/semistatic.tsv` uses the same final FEN source and writes CHA
+rows for semistatic verdicts and helper sets.
 
 ```text
 fen	side	kind	subject	value
@@ -111,7 +123,7 @@ mvn -q org.codehaus.mojo:exec-maven-plugin:3.6.2:java "-Dexec.classpathScope=tes
 
 The unwinnability generator compiles `tools/ambrona-oracle/cha_oracle.cpp` into `/tmp` inside
 WSL, streams every distinct final FEN to it, and rewrites
-`src/test/resources/oracle/ambrona-unwinnability.tsv` with LF line endings.
+`src/test/resources/oracle/cha/ashlar-pgn/unwinnability.tsv` with LF line endings.
 
 To regenerate the mobility oracle, run:
 

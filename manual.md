@@ -16,15 +16,8 @@ examples, so the shown snippets are checked by the test suite.
 
 ## Installation
 
-ashlar-chess requires JDK 17 or later. It is published to Maven Central.
-
-```xml
-<dependency>
-  <groupId>io.github.dlbbld</groupId>
-  <artifactId>ashlar-chess</artifactId>
-  <version>21.0.0</version>
-</dependency>
-```
+ashlar-chess requires JDK 17 or later. It is published to Maven Central. See the
+[README dependency section](README.md#dependency) for the current Maven and Gradle coordinates.
 
 From 20.0.0 onward, ashlar-chess is a named JPMS module:
 
@@ -356,6 +349,17 @@ cooperates. A dead position is unwinnable for both sides.
 
 The quick analyzers prove unwinnability cheaply. The full analyzers search deeper and can prove concrete wins or report
 `UNDETERMINED` when the search limit is exhausted.
+
+### Legal positions only
+
+These analyses are defined for — and guaranteed only on — **legal positions** (positions reachable from the start by
+legal moves). That is exactly what game play and PGNs produce, so it covers the intended use: flag-fall / resignation
+adjudication and dead-position detection. ashlar cannot validate full legality — a complete check would need an
+infeasible retrograde search — so **submitting only legal positions is your responsibility.** On an illegal position
+the result is undefined and the quick and full verdicts may disagree; in practice it is still correct on the large
+majority of illegal positions, with only a small set of unreachable constructions decided wrongly (for example an
+impossible double-bishop-check mate called unwinnable, or certain illegal `KBNvK` / `KBBvK` positions reported
+`WINNABLE`). Such positions never arise in a legally played game and are out of scope.
 
 ### Reading Quick Verdicts
 

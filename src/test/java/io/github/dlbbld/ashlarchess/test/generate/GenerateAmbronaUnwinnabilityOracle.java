@@ -44,7 +44,7 @@ public final class GenerateAmbronaUnwinnabilityOracle {
   private static final Path CPP_SOURCE_PATH = Nulls.pathResolve(ConfigurationTestConstants.PROJECT_ROOT_FOLDER_PATH,
       "tools/ambrona-oracle/cha_oracle.cpp");
   private static final Path ORACLE_PATH = Nulls.pathResolve(ConfigurationTestConstants.PROJECT_ROOT_FOLDER_PATH,
-      "src/test/resources/oracle/ambrona-unwinnability.tsv");
+      "src/test/resources/oracle/cha/ashlar-pgn/unwinnability.tsv");
 
   private GenerateAmbronaUnwinnabilityOracle() {
   }

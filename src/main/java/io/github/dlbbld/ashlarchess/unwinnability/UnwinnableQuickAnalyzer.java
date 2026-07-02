@@ -23,6 +23,10 @@ import io.github.dlbbld.ashlarchess.internal.Nulls;
 // otherwise POSSIBLY_WINNABLE (CHA's "undetermined -> guessed winnable"). It never returns WINNABLE; finding a
 // helpmate is the job of the full analyzer. The depth-7 search is unconditional; the depth-15 pass is CHA's ad hoc
 // deeper retry for restricted pawn/bishop positions (CHA comment: "TODO: remove if too ad hoc for capturing bKHPqNEw").
+/**
+ * Defined for legal positions only; on an illegal position the result is undefined (and may differ from the full
+ * analyzer). See this package's documentation for the legal-position contract.
+ */
 public final class UnwinnableQuickAnalyzer {
 
   private UnwinnableQuickAnalyzer() {

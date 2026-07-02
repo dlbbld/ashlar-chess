@@ -14,6 +14,8 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.jdt.annotation.Nullable;
+
 import io.github.dlbbld.ashlarchess.board.Board;
 import io.github.dlbbld.ashlarchess.board.MoveSpecification;
 import io.github.dlbbld.ashlarchess.board.enums.CastlingMove;
@@ -66,9 +68,8 @@ public class BoardReplayPerformanceSurvey {
       PgnTest.CHA_LICHESS_QUICK_DEPTH_ABOVE_FOUR };
 
   public static void main(String[] args) throws Exception {
-    final boolean runStockfish = shouldRunStockfish(args);
     String stockfishRunnerPath = null;
-    if (runStockfish) {
+    if (shouldRunStockfish(args)) {
       System.out.printf("Stockfish WSL runner: %s%n", resolveD3ChessRoot(args));
       stockfishRunnerPath = readWslHomePath() + "/" + WSL_RUNNER_RELATIVE_PATH;
       buildStockfishRunner(stockfishRunnerPath);
@@ -83,7 +84,8 @@ public class BoardReplayPerformanceSurvey {
       final Measurement construct = measureConstruct(games);
       final Measurement replay = measureReplay(games);
       final Measurement replayWithProbe = measureReplayWithProbe(games);
-      final StockfishMeasurements stockfish = runStockfish ? measureStockfish(games, stockfishRunnerPath) : null;
+      final StockfishMeasurements stockfish = stockfishRunnerPath == null ? null
+          : measureStockfish(games, stockfishRunnerPath);
 
       printResult(pgnTest, games.size(), plyCount, construct, replay, replayWithProbe, stockfish);
     }
@@ -206,7 +208,7 @@ public class BoardReplayPerformanceSurvey {
   }
 
   private static void printResult(PgnTest pgnTest, int gameCount, int plyCount, Measurement construct,
-      Measurement replay, Measurement replayWithProbe, StockfishMeasurements stockfish) {
+      Measurement replay, Measurement replayWithProbe, @Nullable StockfishMeasurements stockfish) {
     final double gameDenominator = (double) gameCount * MEASURE_ROUNDS;
     final double plyDenominator = (double) plyCount * MEASURE_ROUNDS;
 

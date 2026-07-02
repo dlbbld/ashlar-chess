@@ -35,7 +35,7 @@ class TestAmbronaUnwinnabilityFullOracleComparison {
   private static final int MAX_PRINTED_FAILURES = 20;
   private static final Path ACCEPTED_DIFFERENCE_PATH = Nulls.pathResolve(
       ConfigurationTestConstants.PROJECT_ROOT_FOLDER_PATH,
-      "src/test/resources/oracle/ambrona-unwinnability-full-accepted-differences.tsv");
+      "src/test/resources/oracle/cha/ashlar-pgn/unwinnability-full-accepted-differences.tsv");
 
   @SuppressWarnings("static-method")
   @Test

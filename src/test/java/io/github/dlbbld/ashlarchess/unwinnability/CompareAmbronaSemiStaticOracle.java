@@ -20,7 +20,7 @@ public final class CompareAmbronaSemiStaticOracle {
   private static final int MAX_PRINTED_DIFFERENT_FENS = 10;
 
   private static final Path ORACLE_PATH = Nulls.pathResolve(ConfigurationTestConstants.PROJECT_ROOT_FOLDER_PATH,
-      "src/test/resources/oracle/ambrona-semistatic.tsv");
+      "src/test/resources/oracle/cha/ashlar-pgn/semistatic.tsv");
 
   private CompareAmbronaSemiStaticOracle() {
   }

@@ -16,6 +16,10 @@ import io.github.dlbbld.ashlarchess.board.enums.Side;
  * Two variants mirror the underlying analyzers. {@link #deadPositionQuick(Board)} is the cheap, structural,
  * during-the-game check; {@link #deadPositionFull(Board)} is the complete check suggested at game end (resignation or
  * flag-fall). Like the analyzers, both run on a history-less copy of the position and do not mutate the caller's board.
+ *
+ * <p>
+ * Defined for legal positions only; on an illegal position the result is undefined. See this package's documentation
+ * for the legal-position contract.
  */
 public final class DeadPositionAnalyzer {
 

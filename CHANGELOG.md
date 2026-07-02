@@ -2,11 +2,42 @@
 
 Releases from 3.3 onward. Earlier history is in git tags only.
 
+## [21.1.0] - Oracle housekeeping - 2026-07-03
+
+A documentation-and-test housekeeping release around the unwinnability analyzers and their oracles: the
+legal-position contract is now stated on the API, the 21.0.0 notes are corrected, and the known retro-illegal
+theorem counterexamples are locked down as tests. No behavioral change to any analyzer or parser.
+
+### Documentation
+
+- **Legal-position contract for the unwinnability analyzers.** The `unwinnability` package-info, the manual, and the
+  three public analyzers (`UnwinnableFullAnalyzer`, `UnwinnableQuickAnalyzer`, `DeadPositionAnalyzer`) now state the
+  contract explicitly: the analysis is guaranteed only on legal positions (reachable from the initial position);
+  on illegal input the result is undefined and the full and quick analyzers may visibly disagree. Legality beyond
+  strict-FEN checks is not enforced - it is decidable only by retrograde analysis - so submitting legal positions is
+  the caller's responsibility.
+- **ashlar ports the C++ `cha`, not the Rust `chasolver`.** The README and package-info now say precisely which of
+  Miguel Ambrona's implementations ashlar ports: the earlier C++ `cha` (D3-Chess) and the CHA paper - the
+  `github.com/miguel-ambrona/D3-Chess` URL now redirects to the newer Rust `chasolver`, which ashlar does not port.
+- **21.0.0 release-notes correction.** The 21.0.0 notes overclaimed the KNNvK/KRRvK/KQQvK theorem as a completeness
+  improvement ("positions that could previously land at `UNDETERMINED` are now proven `WINNABLE`"). The search
+  already proved these classes `WINNABLE`; the theorem is a performance and proof-provenance improvement. The
+  `[21.0.0]` entry below and the published GitHub Release notes are corrected in place.
+
+### Internal
+
+- **Retro-illegal theorem-counterexample lock-down** (test-only). The 19 known retro-illegal representatives from
+  basic-helpmate-existence ("Illegal positions not satisfying the conclusion") are asserted as documented
+  out-of-domain cases: strict FEN accepts them, the full analyzer answers theorem-certified `WINNABLE`, the quick
+  analyzer `UNWINNABLE` - the exact divergence the legal-position contract documents.
+- **Oracle housekeeping** (test-only): CHA oracle fixtures reorganized, stale accepted-differences rows pruned, the
+  chasolver node-limit exception PGN fixed, and an Eclipse null-analysis / auto-format pass over the source tree.
+
 ## [21.0.0] - Unwinnability soundness and endgame helpmate theorems - 2026-06-27
 
-A correctness-and-completeness release for the CHA unwinnability / adjudication path, with stricter FEN legality
-checking. No public type or signature was removed or changed, but several adjudication verdicts and validation
-outcomes are observably different, so this is a major bump.
+A correctness release for the CHA unwinnability / adjudication path, with stricter FEN legality checking. No public
+type or signature was removed or changed, but several adjudication verdicts and validation outcomes are observably
+different, so this is a major bump.
 
 ### Behavioral
 
@@ -15,10 +46,11 @@ outcomes are observably different, so this is a major bump.
   exists. The fix removes those false draws; the trade-off is that some pawn-wall fortress draws the shortcut also
   (correctly) proved are now reported `UNDETERMINED` rather than `UNWINNABLE` — sound, but less complete. Affects
   `Board.unwinnableFull` / `Board.unwinnableQuick` and the `Adjudicator`.
-- **Endgame helpmate-existence coverage (KNNvK, KRRvK, KQQvK).** The complete analyzer now decides these three
+- **Endgame helpmate-existence theorems (KNNvK, KRRvK, KQQvK).** The complete analyzer now decides these three
   material classes directly via the basic-helpmate-existence theorem (tracking the sibling project's 1.2.0 release)
-  instead of searching for the cooperative mate, so positions that could previously land at `UNDETERMINED` are now
-  proven `WINNABLE`.
+  instead of running the (sometimes long) cooperative-mate search. A performance and proof-provenance improvement,
+  not a completeness one: the search already proved these classes `WINNABLE`; the theorem answers immediately with a
+  theorem-certified verdict (`WinnableProof.THEOREM`, no mate line).
 - **Strict FEN rejects unreachable check configurations.** `Board.fromFenStrict` (and PGN import of a `[SetUp "1"]` /
   `[FEN ...]` header) now rejects positions whose check configuration cannot arise from any legal move: a double check
   by two same-coloured bishops, two rooks, two queens, or two knights, or three or more simultaneous checkers. The new

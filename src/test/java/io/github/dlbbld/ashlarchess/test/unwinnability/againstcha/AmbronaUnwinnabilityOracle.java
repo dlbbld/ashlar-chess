@@ -19,7 +19,7 @@ import io.github.dlbbld.ashlarchess.unwinnability.UnwinnabilityQuickVerdict;
 public final class AmbronaUnwinnabilityOracle {
 
   private static final Path ORACLE_PATH = Nulls.pathResolve(ConfigurationTestConstants.PROJECT_ROOT_FOLDER_PATH,
-      "src/test/resources/oracle/ambrona-unwinnability.tsv");
+      "src/test/resources/oracle/cha/ashlar-pgn/unwinnability.tsv");
   private static final Map<String, AmbronaUnwinnabilityVerdicts> VERDICT_BY_FEN = readOracle();
 
   private AmbronaUnwinnabilityOracle() {

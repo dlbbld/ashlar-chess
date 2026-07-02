@@ -23,9 +23,8 @@ import io.github.dlbbld.ashlarchess.test.common.utility.Loggers;
 
 /**
  * The headline cross-implementation test: does Miguel Ambrona's Rust {@code chasolver} adhere to his C++ {@code cha}
- * (D3-Chess)? Compares the two pre-generated oracles - {@code ambrona-unwinnability.tsv} (C++) and
- * {@code chasolver-unwinnability.tsv} (Rust) - position for position over the identical FEN set, with no ashlar
- * analysis involved.
+ * (D3-Chess)? Compares the two pre-generated Ashlar-PGN oracles - CHA (C++) and chasolver (Rust) - position for
+ * position over the identical FEN set, with no ashlar analysis involved.
  *
  * <p>
  * Two invariants are asserted:
@@ -48,9 +47,10 @@ class TestChasolverAdheresToChaOracle {
   private static final Logger logger = Loggers.getLogger(TestChasolverAdheresToChaOracle.class);
 
   private static final Path CHA_ORACLE_PATH = Nulls.pathResolve(ConfigurationTestConstants.PROJECT_ROOT_FOLDER_PATH,
-      "src/test/resources/oracle/ambrona-unwinnability.tsv");
+      "src/test/resources/oracle/cha/ashlar-pgn/unwinnability.tsv");
   private static final Path CHASOLVER_ORACLE_PATH = Nulls.pathResolve(
-      ConfigurationTestConstants.PROJECT_ROOT_FOLDER_PATH, "src/test/resources/oracle/chasolver-unwinnability.tsv");
+      ConfigurationTestConstants.PROJECT_ROOT_FOLDER_PATH,
+      "src/test/resources/oracle/chasolver/ashlar-pgn/unwinnability.tsv");
 
   private record Verdicts(String fullWhite, String fullBlack, String quickWhite, String quickBlack) {
   }
