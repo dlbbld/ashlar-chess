@@ -24,13 +24,19 @@ class TestAmbronaSemiStaticOracleComparison {
   /** FEN count in the oracle file. Asserted as the expected comparedFenCount in full mode. */
   private static final int TOTAL_FENS_IN_ORACLE = 1249;
 
-  // The single accepted semi-static divergence from cha (C++), on one pawn-wall position recorded under two move
-  // clocks. cha applies the `isIgnorePawns` shortcut - flagged "(is this sound?)" in its own semistatic.cpp - that
-  // drops the blocked black pawns from the semi-static visitor set and so proves UNWINNABLE. ashlar, after the 21.0.0
-  // soundness fix in UnwinnableSemiStatic, keeps those pawns as visitors and reports POSSIBLY_WINNABLE; it is the
-  // sound side (see CHANGELOG 21.0.0). A divergence on any other FEN, or of any other kind, is a real regression.
-  private static final Set<String> ACCEPTED_DIVERGENT_FENS = Nulls
-      .setOf("1k6/p1p1p1p1/P1P1P1P1/p1p1p1p1/8/8/P1P1P1P1/4K3 w - - 0 34");
+  // The single accepted semi-static divergence from cha (C++), on one pawn-wall position. cha applies the
+  // `isIgnorePawns` shortcut - flagged "(is this sound?)" in its own semistatic.cpp - that drops the blocked black
+  // pawns from the semi-static visitor set and so proves UNWINNABLE. ashlar, after the 21.0.0 soundness fix in
+  // UnwinnableSemiStatic, keeps those pawns as visitors and reports POSSIBLY_WINNABLE; it is the sound side (see
+  // CHANGELOG 21.0.0). A divergence on any other FEN, or of any other kind, is a real regression.
+  //
+  // The position appears under TWO move clocks: the committed oracle TSV keeps the row generated from the since-
+  // deduplicated ambrona_16.pgn fixture (same board, clock "10 100"), so the comparison observes both FEN strings.
+  // These are two recordings of the one divergence, not two divergences - both stay accepted unless the TSV is
+  // regenerated without the removed fixture.
+  private static final Set<String> ACCEPTED_DIVERGENT_FENS = Nulls.setOf(
+      "1k6/p1p1p1p1/P1P1P1P1/p1p1p1p1/8/8/P1P1P1P1/4K3 w - - 0 34",
+      "1k6/p1p1p1p1/P1P1P1P1/p1p1p1p1/8/8/P1P1P1P1/4K3 w - - 10 100");
 
   private static final Set<String> ACCEPTED_DIFFERENCE_KINDS = Nulls.setOf("VERDICT", "AMBRONA_VISITORS_EXPANDED");
 
