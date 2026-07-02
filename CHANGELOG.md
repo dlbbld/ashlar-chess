@@ -2,7 +2,7 @@
 
 Releases from 3.3 onward. Earlier history is in git tags only.
 
-## [21.1.0] - Oracle housekeeping - 2026-07-02
+## [21.1.0] - Oracle housekeeping - 2026-07-03
 
 A documentation-and-test housekeeping release around the unwinnability analyzers and their oracles: the
 legal-position contract is now stated on the API, the 21.0.0 notes are corrected, and the known retro-illegal
