@@ -13,6 +13,7 @@ import org.junit.jupiter.api.Test;
 
 import io.github.dlbbld.ashlarchess.board.Board;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
+import io.github.dlbbld.ashlarchess.internal.Nulls;
 import io.github.dlbbld.ashlarchess.unwinnability.UnwinnabilityFullAnalysis;
 import io.github.dlbbld.ashlarchess.unwinnability.UnwinnabilityFullVerdict;
 import io.github.dlbbld.ashlarchess.unwinnability.UnwinnabilityQuickVerdict;
@@ -23,12 +24,12 @@ import io.github.dlbbld.ashlarchess.unwinnability.WinnableProof;
 /**
  * Documented out-of-domain lock-down: the known retro-illegal counterexamples to the basic-helpmate-existence theorem,
  * as enumerated in that project's README under "Illegal positions not satisfying the conclusion" (3 KBBvK
- * opposite-bishops and 15 KBNvK light-bishop representatives with White to move, plus 1 KBNvK representative with
- * Black to move).
+ * opposite-bishops and 15 KBNvK light-bishop representatives with White to move, plus 1 KBNvK representative with Black
+ * to move).
  *
  * <p>
- * These positions are illegal - they cannot arise from the initial position by any series of legal moves (in each,
- * the side to move's opponent had no legal last move) - but only retrograde analysis can tell, so strict FEN parsing
+ * These positions are illegal - they cannot arise from the initial position by any series of legal moves (in each, the
+ * side to move's opponent had no legal last move) - but only retrograde analysis can tell, so strict FEN parsing
  * accepts them. They are exactly the out-of-domain examples cited by the "legal positions only" contract in the
  * {@code unwinnability} package-info: the analysis is guaranteed on legal positions only, and on these illegal inputs
  * the full and quick analyzers visibly disagree. This test asserts that current, documented behaviour so any drift is
@@ -43,7 +44,7 @@ import io.github.dlbbld.ashlarchess.unwinnability.WinnableProof;
 class TestRetroIllegalTheoremCounterexamples {
 
   /** White to move: KBBvK opposite bishops (3) then KBNvK light bishop (15), in bhe README table order. */
-  private static final List<String> WHITE_TO_MOVE_FENS = """
+  private static final List<String> WHITE_TO_MOVE_FENS = Nulls.copyOfList("""
       8/8/8/8/8/B7/B7/k1K5 w - - 0 1
       8/8/8/8/8/B7/B1K5/k7 w - - 0 1
       8/8/8/8/8/8/B1K5/k1B5 w - - 0 1
@@ -62,7 +63,7 @@ class TestRetroIllegalTheoremCounterexamples {
       8/8/8/8/2N5/8/2K5/kB6 w - - 0 1
       8/8/8/8/N7/8/2K5/kB6 w - - 0 1
       8/8/8/8/8/8/1NK5/kB6 w - - 0 1
-      """.lines().toList();
+      """.lines().toList());
 
   /** Black to move: the single KBNvK light-bishop representative (Black's king is in check from the bishop). */
   private static final String BLACK_TO_MOVE_FEN = "8/8/8/8/2N5/8/k1K5/1B6 b - - 0 1";
