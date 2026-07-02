@@ -12,6 +12,13 @@
  * {@code analyze}, {@code squares}, {@code messages}, {@code internal}, {@code board.model}, and the {@code *.internal}
  * subpackages of {@code bitboard}/{@code board}/{@code board.enums}/{@code pgn}/{@code san}/{@code fen}) is internal
  * and hidden from modular consumers.
+ *
+ * <p>
+ * <strong>One qualified exception.</strong> {@code bitboard.internal} - the fast move-table engine - is lent, via a
+ * <em>qualified</em> export, to the single module {@code io.github.dlbbld.fun22reference} (a clean-room reference
+ * implementation of Ambrona's FUN 2022 unwinnability algorithm, used as a research oracle). This is deliberately
+ * <em>not</em> public API: no other consumer can see it, and no source/binary compatibility is promised across
+ * releases. It exists only so that one owned, privileged research module can drive the fast legal-move generator.
  */
 module io.github.dlbbld.ashlarchess {
 
@@ -32,5 +39,9 @@ module io.github.dlbbld.ashlarchess {
   exports io.github.dlbbld.ashlarchess.unwinnability;
   exports io.github.dlbbld.ashlarchess.exceptions;
   exports io.github.dlbbld.ashlarchess.bitboard;
+
+  // Qualified (friend) export: the fast move-table engine is NOT public API. It is lent only to the
+  // fun22-reference research oracle. No compatibility promise to any other consumer.
+  exports io.github.dlbbld.ashlarchess.bitboard.internal to io.github.dlbbld.fun22reference;
 
 }
