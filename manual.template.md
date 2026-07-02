@@ -16,15 +16,8 @@ examples, so the shown snippets are checked by the test suite.
 
 ## Installation
 
-ashlar-chess requires JDK 17 or later. It is published to Maven Central.
-
-```xml
-<dependency>
-  <groupId>io.github.dlbbld</groupId>
-  <artifactId>ashlar-chess</artifactId>
-  <version>21.0.0</version>
-</dependency>
-```
+ashlar-chess requires JDK 17 or later. It is published to Maven Central. See the
+[README dependency section](README.md#dependency) for the current Maven and Gradle coordinates.
 
 From 20.0.0 onward, ashlar-chess is a named JPMS module:
 
