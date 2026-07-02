@@ -45,7 +45,7 @@ public final class GenerateAmbronaMobilityOracle {
   private static final Path CPP_SOURCE_PATH = Nulls.pathResolve(ConfigurationTestConstants.PROJECT_ROOT_FOLDER_PATH,
       "tools/ambrona-oracle/mobility_oracle.cpp");
   private static final Path ORACLE_PATH = Nulls.pathResolve(ConfigurationTestConstants.PROJECT_ROOT_FOLDER_PATH,
-      "src/test/resources/oracle/ambrona-mobility.tsv");
+      "src/test/resources/oracle/cha/ashlar-pgn/mobility.tsv");
 
   private GenerateAmbronaMobilityOracle() {
   }

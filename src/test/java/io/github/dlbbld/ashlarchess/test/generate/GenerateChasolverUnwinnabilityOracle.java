@@ -50,7 +50,7 @@ public final class GenerateChasolverUnwinnabilityOracle {
   private static final Path CRATE_SOURCE_PATH = Nulls.pathResolve(ConfigurationTestConstants.PROJECT_ROOT_FOLDER_PATH,
       "tools/chasolver-oracle");
   private static final Path ORACLE_PATH = Nulls.pathResolve(ConfigurationTestConstants.PROJECT_ROOT_FOLDER_PATH,
-      "src/test/resources/oracle/chasolver-unwinnability.tsv");
+      "src/test/resources/oracle/chasolver/ashlar-pgn/unwinnability.tsv");
 
   private GenerateChasolverUnwinnabilityOracle() {
   }

@@ -42,7 +42,7 @@ public final class RestrictTestConstants {
   public static final boolean IS_RESTRICT_PGN_UNWINNABILITY_QUICK_AGAINST_LIMITED_ORACLE_TEST = true && IS_RESTRICT_PGN;
   public static final boolean IS_RESTRICT_PGN_REPORT_TEST = true && IS_RESTRICT_PGN;
   public static final boolean IS_RESTRICT_UNWINNABILITY_QUICK_AGAINST_AMBRONA_ORACLE_TEST = true && IS_RESTRICT_PGN;
-  // TestAmbronaSemiStaticOracleComparison: heavy comparison against the ambrona-semistatic.tsv oracle (1249 unique
+  // TestAmbronaSemiStaticOracleComparison: heavy comparison against the CHA semistatic oracle (1249 unique
   // FENs, ~60s). Smoke-mode runs only the first {@code MAX_FENS_IN_SMOKE_MODE} entries (see the test).
   public static final boolean IS_RESTRICT_AMBRONA_SEMISTATIC_ORACLE_COMPARISON_TEST = true && IS_RESTRICT_PGN;
 

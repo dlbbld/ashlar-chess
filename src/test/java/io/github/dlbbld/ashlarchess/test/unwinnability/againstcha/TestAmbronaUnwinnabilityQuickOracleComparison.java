@@ -34,7 +34,7 @@ class TestAmbronaUnwinnabilityQuickOracleComparison {
   private static final Logger logger = Loggers.getLogger(TestAmbronaUnwinnabilityQuickOracleComparison.class);
   private static final Path ACCEPTED_DIFFERENCE_PATH = Nulls.pathResolve(
       ConfigurationTestConstants.PROJECT_ROOT_FOLDER_PATH,
-      "src/test/resources/oracle/ambrona-unwinnability-quick-accepted-differences.tsv");
+      "src/test/resources/oracle/cha/ashlar-pgn/unwinnability-quick-accepted-differences.tsv");
 
   @SuppressWarnings("static-method")
   @Test

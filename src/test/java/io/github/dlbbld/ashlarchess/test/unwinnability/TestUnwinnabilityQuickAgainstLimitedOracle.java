@@ -37,7 +37,6 @@ class TestUnwinnabilityQuickAgainstLimitedOracle {
             case CHA_LICHESS_QUICK_DEPTH_ABOVE_FOUR:
             case CHA_LICHESS_QUICK_DEPTH_THREE:
             case CHA_LICHESS_QUICK_DEPTH_FOUR:
-            case CHA_AMBRONA:
               break;
             // $CASES-OMITTED$
             default:
@@ -47,8 +46,6 @@ class TestUnwinnabilityQuickAgainstLimitedOracle {
 
         switch (testCase.pgnName()) {
           // here my tool sees unwinnability but not the quick analysis
-          case "ambrona_10.pgn":
-          case "ambrona_16.pgn":
           case "pawn_wall_norgaard_additional_own_pawns_not_marched_up_with_opponent_pawns_between.pgn":
             continue;
           default:

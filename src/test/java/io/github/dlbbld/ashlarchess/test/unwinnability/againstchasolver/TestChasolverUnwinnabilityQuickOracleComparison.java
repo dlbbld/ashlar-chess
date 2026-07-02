@@ -45,7 +45,7 @@ class TestChasolverUnwinnabilityQuickOracleComparison {
   private static final Logger logger = Loggers.getLogger(TestChasolverUnwinnabilityQuickOracleComparison.class);
   private static final Path ACCEPTED_DIFFERENCE_PATH = Nulls.pathResolve(
       ConfigurationTestConstants.PROJECT_ROOT_FOLDER_PATH,
-      "src/test/resources/oracle/chasolver-unwinnability-quick-accepted-differences.tsv");
+      "src/test/resources/oracle/chasolver/ashlar-pgn/unwinnability-quick-accepted-differences.tsv");
 
   @SuppressWarnings("static-method")
   @Test

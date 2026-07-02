@@ -18,7 +18,7 @@ public final class CompareAmbronaMobilityOracle {
   private static final int MAX_PRINTED_DIFFERENCES = 10;
 
   private static final Path ORACLE_PATH = Nulls.pathResolve(ConfigurationTestConstants.PROJECT_ROOT_FOLDER_PATH,
-      "src/test/resources/oracle/ambrona-mobility.tsv");
+      "src/test/resources/oracle/cha/ashlar-pgn/mobility.tsv");
 
   private CompareAmbronaMobilityOracle() {
   }
