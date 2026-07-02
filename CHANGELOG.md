@@ -2,11 +2,11 @@
 
 Releases from 3.3 onward. Earlier history is in git tags only.
 
-## [21.1.0] - Further improving - 2026-07-02
+## [21.1.0] - Oracle housekeeping - 2026-07-02
 
-A documentation-and-enablement release: the unwinnability analyzers' legal-position contract is now stated on the
-API, and the module lends its internal move-table engine to the sibling FUN22 reference implementation via a
-qualified export. No behavioral change to any analyzer or parser.
+A documentation-and-test housekeeping release around the unwinnability analyzers and their oracles: the
+legal-position contract is now stated on the API, the 21.0.0 notes are corrected, and the known retro-illegal
+theorem counterexamples are locked down as tests. No behavioral change to any analyzer or parser.
 
 ### Documentation
 
@@ -23,14 +23,6 @@ qualified export. No behavioral change to any analyzer or parser.
   improvement ("positions that could previously land at `UNDETERMINED` are now proven `WINNABLE`"). The search
   already proved these classes `WINNABLE`; the theorem is a performance and proof-provenance improvement. The
   `[21.0.0]` entry below and the published GitHub Release notes are corrected in place.
-
-### Module
-
-- **Qualified export of `bitboard.internal` to the FUN22 reference implementation.** `module-info.java` adds
-  `exports io.github.dlbbld.ashlarchess.bitboard.internal to io.github.dlbbld.fun22reference` so the clean-room
-  reference implementation of Ambrona's FUN 2022 semi-static algorithm (a research oracle) can drive the fast
-  move-table engine. This is deliberately not public API: no other module can see it, and no source or binary
-  compatibility is promised for it across releases.
 
 ### Internal
 

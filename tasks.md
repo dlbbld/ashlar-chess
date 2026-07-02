@@ -11,7 +11,7 @@ Live planning only: current release work, backlog, and obsolete decisions. Shipp
 
 ---
 
-## 21.1.0 — Further improving
+## 21.1.0 — Oracle housekeeping
 
 Work on branch `further-improving`.
 
