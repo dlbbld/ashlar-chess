@@ -4,11 +4,11 @@ Releases from 3.3 onward. Earlier history is in git tags only.
 
 ## [Unreleased] - 22.0.0 - The FUN22 paper formulation replaces the cha port
 
-The unwinnability engine is now ashlar's own clean-room implementation of Miguel Ambrona's FUN 2022 paper *A
+The unwinnability engine is now ashlar's own independent, paper-derived implementation of Miguel Ambrona's FUN 2022 paper *A
 Practical Algorithm for Chess Unwinnability* (Figures 5-13, Lemmas 5/6, Theorem 12), governed by the committed
 specification `fun22-spec.md` and derived from the paper only. It replaces the Java port of Ambrona's C++ CHA
 (D3-Chess): the algorithm is now traceable to the published paper rather than to another codebase. The engine was
-built and validated as a standalone clean-room project first: zero soundness contradictions against the D3-Chess
+built and validated as a standalone independent project first: zero soundness contradictions against the D3-Chess
 ground-truth corpus, against the previous cha-port analyzer, and against Ambrona's independent Rust `chasolver`.
 
 ### Breaking
@@ -43,8 +43,8 @@ ground-truth corpus, against the previous cha-port analyzer, and against Ambrona
 ### Internal
 
 - The cha-port internals (mobility/semi-static/search/material classes and their unit tests) are deleted; the
-  clean-room engine classes and their ported unit tests replace them, including the permanent Theorem 12 soundness
-  sweep (over the curated chasolver ground-truth corpus).
+  paper-derived engine classes and their ported unit tests replace them, including the permanent Theorem 12
+  soundness sweep (over the curated chasolver ground-truth corpus).
 
 ## [21.1.0] - Oracle housekeeping - 2026-07-03
 

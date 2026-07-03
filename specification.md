@@ -29,7 +29,7 @@ The guiding principle is therefore not "add every feature serious chess librarie
 
 ## 1. Purpose & non-goals
 
-ashlar-chess is a Java chess library focused on **rule correctness, production usability, and reproducible validation**. Its flagship feature is a clean-room implementation of Miguel Ambrona's FUN 2022 unwinnability algorithm (the paper behind the [Chess Unwinnability Analyzer](https://github.com/miguel-ambrona/chasolver)), to the author's knowledge the only published algorithm that decides unwinnability and dead-position questions correctly across all positions.
+ashlar-chess is a Java chess library focused on **rule correctness, production usability, and reproducible validation**. Its flagship feature is an independent, paper-derived implementation of Miguel Ambrona's FUN 2022 unwinnability algorithm (the paper behind the [Chess Unwinnability Analyzer](https://github.com/miguel-ambrona/chasolver)), to the author's knowledge the only published algorithm that decides unwinnability and dead-position questions correctly across all positions.
 
 The library is **not**:
 
@@ -129,7 +129,7 @@ Position equality follows the FIDE definition: same piece placement, same side t
 
 The library's **flagship feature**. A position is *unwinnable for a side* if no helpmate exists for that side. A *dead position* is one unwinnable for both sides. Insufficient material covers the trivial cases; positions like blocked pawn walls, certain wrong-bishop endgames, and many forced-only-moves continuations are dead but not insufficient — and most chess libraries get them wrong.
 
-Miguel Ambrona's FUN 2022 algorithm (*A Practical Algorithm for Chess Unwinnability*) is, to the author's knowledge, the only published algorithm that decides these cases correctly across the full range of positions. Since 22.0.0 ashlar-chess carries its own clean-room implementation of the paper, governed by the committed specification `fun22-spec.md` (it replaced the earlier Java port of Ambrona's C++ CHA/D3-Chess implementation). Two variants:
+Miguel Ambrona's FUN 2022 algorithm (*A Practical Algorithm for Chess Unwinnability*) is, to the author's knowledge, the only published algorithm that decides these cases correctly across the full range of positions. Since 22.0.0 ashlar-chess carries its own independent, paper-derived implementation, governed by the committed specification `fun22-spec.md` (it replaced the earlier Java port of Ambrona's C++ CHA/D3-Chess implementation). Two variants:
 
 - **Quick** — the paper's Figure 10: structural and bounded, three-valued: `UNWINNABLE`, `WINNABLE` (only on quickly matable positions), or `POSSIBLY_WINNABLE`. Sound but not complete — a definite verdict is always correct, and `POSSIBLY_WINNABLE` asserts nothing.
 - **Full** — the paper's Figure 9: deep search, three-valued: `WINNABLE`, `UNWINNABLE`, or `UNDETERMINED`. The direct

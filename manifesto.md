@@ -22,7 +22,7 @@ It is rare, in practical software, to implement an algorithm that comes with an 
 semi-static core sound — the mobility over-approximation, the lemmas, Theorem 12. An algorithm like that deserves a
 *faithful* implementation: code traceable to the paper and its proofs, not to another codebase.
 
-That is what ashlar-chess carries: a clean-room implementation of the paper, governed by the committed specification
+That is what ashlar-chess carries: an independent, paper-derived implementation, governed by the committed specification
 [`fun22-spec.md`](fun22-spec.md) — including the paper's own footnotes where they are load-bearing (the Figure 5
 reward-chaining heuristic, the Figure 10 loop guard and material leaves; the exact implemented/not-implemented
 inventory is in `fun22-spec.md` section 6). It *tries* to be a reference implementation of the paper. It does not

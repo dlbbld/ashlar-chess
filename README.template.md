@@ -4,8 +4,8 @@ ashlar-chess
 [![Maven Central](https://img.shields.io/maven-central/v/io.github.dlbbld/ashlar-chess.svg)](https://central.sonatype.com/artifact/io.github.dlbbld/ashlar-chess)
 
 ashlar-chess is a Java chess library focused on rule correctness, production usability, and reproducible validation.
-It implements SAN, FEN, and PGN parsing, validation, and export with strict/lenient parser pairs, and includes a
-clean-room implementation of Miguel Ambrona's FUN 2022 unwinnability algorithm
+It implements SAN, FEN, and PGN parsing, validation, and export with strict/lenient parser pairs, and includes an
+independent, paper-derived implementation of Miguel Ambrona's FUN 2022 unwinnability algorithm
 ([*A Practical Algorithm for Chess Unwinnability*](https://chasolver.org/FUN22-full.pdf), the paper behind the
 [Chess Unwinnability Analyzer](https://github.com/miguel-ambrona/chasolver)) as a flagship feature.
 
@@ -89,10 +89,8 @@ Copyright (C) 2020-2026  Daniel Bächli
 ashlar-chess is free software, licensed under the GNU General Public License, version 3 (GPL v3). See [LICENSE](LICENSE)
 for the full text.
 
-The unwinnability and dead-position detection is ashlar's own clean-room implementation of Miguel Ambrona's FUN 2022
-paper [*A Practical Algorithm for Chess Unwinnability*](https://chasolver.org/FUN22-full.pdf), governed by the
-committed specification
-[`fun22-spec.md`](fun22-spec.md); it is derived from the paper only, not from Ambrona's implementations (the retired
-C++ `D3-Chess`/`cha` or its **Rust** successor [`chasolver`](https://github.com/miguel-ambrona/chasolver), both
-GPL v3). Ambrona's D3-Chess ground-truth test vectors and verdicts from `cha`/`chasolver` are committed as test
-fixtures for cross-validation.
+The unwinnability and dead-position detection is ashlar's own implementation of Miguel Ambrona's FUN 2022 paper
+[*A Practical Algorithm for Chess Unwinnability*](https://chasolver.org/FUN22-full.pdf), governed by the committed
+specification [`fun22-spec.md`](fun22-spec.md). It is intended to be faithful to the paper, not a port of Ambrona's
+C++ `D3-Chess`/`cha` or Rust [`chasolver`](https://github.com/miguel-ambrona/chasolver); those implementations and
+their verdicts are used only as cross-validation oracles and test fixtures.

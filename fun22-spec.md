@@ -1,4 +1,4 @@
-# FUN22 unwinnability — clean-room specification
+# FUN22 unwinnability — specification
 
 This document is the **governing specification** for ashlar's unwinnability engine (the
 `io.github.dlbbld.ashlarchess.unwinnability` package internals). It is derived **only** from Miguel Ambrona's FUN
