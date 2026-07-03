@@ -4,7 +4,6 @@
 package io.github.dlbbld.ashlarchess.unwinnability;
 
 import io.github.dlbbld.ashlarchess.bitboard.BitboardPosition;
-import io.github.dlbbld.ashlarchess.board.Board;
 import io.github.dlbbld.ashlarchess.board.MoveSpecification;
 import io.github.dlbbld.ashlarchess.board.enums.PieceType;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
@@ -33,11 +32,10 @@ final class GoingToCorner {
    * @param goalWin {@code true} for the winner's move (drive to mate), {@code false} for the loser's
    * @return whether {@code move} decreases the piece's distance to the target corner square
    */
-  static boolean towardCorner(Board board, MoveSpecification move, Side winner, boolean goalWin) {
+  static boolean towardCorner(BitboardPosition position, MoveSpecification move, Side winner, boolean goalWin) {
     if (move.isCastling()) {
       return false;
     }
-    final BitboardPosition position = board.getBitboardPosition();
     final Square from = move.fromSquare();
     final Square to = move.toSquare();
     final PieceType pieceType = position.get(from).getPieceType();

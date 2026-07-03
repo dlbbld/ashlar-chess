@@ -7,9 +7,11 @@ import java.util.List;
 
 import io.github.dlbbld.ashlarchess.bitboard.BitboardPosition;
 import io.github.dlbbld.ashlarchess.board.Board;
+import io.github.dlbbld.ashlarchess.board.LegalMove;
 import io.github.dlbbld.ashlarchess.board.MoveSpecification;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
 import io.github.dlbbld.ashlarchess.fen.model.Fen;
+import io.github.dlbbld.ashlarchess.internal.Nulls;
 
 // Figure 10 Unwinnable_quick: sound, computationally very light, deliberately incomplete.
 // Footnote a: the forced-move advance must be loop-guarded (arbitrarily long single-move
@@ -66,9 +68,10 @@ public final class UnwinnableQuickAnalyzer {
       advanced++;
     }
 
-    // Step 2: bounded DFS, interrupted as soon as the depth bound is reached anywhere.
+    // Step 2: bounded DFS on the mutable search-board hot path, interrupted as soon as the depth bound is reached
+    // anywhere.
     final QuickSearch quickSearch = new QuickSearch(c);
-    quickSearch.depthFirstSearch(board, 0);
+    quickSearch.depthFirstSearch(HelpmateSearchBoard.from(board), 0);
 
     if (quickSearch.mateFound) {
       return UnwinnabilityQuickVerdict.WINNABLE; // step 3
@@ -130,7 +133,7 @@ public final class UnwinnableQuickAnalyzer {
       this.loserSide = winner.getOppositeSide();
     }
 
-    private void depthFirstSearch(Board board, int depth) {
+    private void depthFirstSearch(HelpmateSearchBoard board, int depth) {
       if (board.isCheckmate()) {
         if (board.getSideToMove() == loserSide) {
           mateFound = true; // interrupt (i): checkmate by the intended winner
@@ -146,8 +149,10 @@ public final class UnwinnableQuickAnalyzer {
         interrupted = true; // interrupt (ii): the depth bound reached on a non-leaf
         return;
       }
-      for (final MoveSpecification move : board.getLegalMoveSpecifications()) {
-        board.move(move);
+      final List<LegalMove> legalMoves = board.getLegalMoves();
+      final int totalLegalMoves = legalMoves.size();
+      for (int i = 0; i < totalLegalMoves; i++) {
+        board.move(Nulls.get(legalMoves, i).moveSpecification());
         depthFirstSearch(board, depth + 1);
         board.unmove();
         if (mateFound || interrupted) {

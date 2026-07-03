@@ -49,14 +49,16 @@ public final class UnwinnableFullAnalyzer {
       return new UnwinnabilityFullAnalysis(UnwinnabilityFullVerdict.UNWINNABLE, Nulls.listOf());
     }
 
-    // 2: for every d in N do (-> iterative deepening). The transposition table is per-iteration - see FindHelpmate
-    // for why sharing it across iterations could produce a false UNWINNABLE.
+    // 2: for every d in N do (-> iterative deepening). The search runs on the mutable HelpmateSearchBoard hot path;
+    // make/unmake is balanced, so the same search board serves every iteration. The transposition table is
+    // per-iteration - see FindHelpmate for why sharing it across iterations could produce a false UNWINNABLE.
+    final HelpmateSearchBoard searchBoard = HelpmateSearchBoard.from(board);
     int remainingNodes = GLOBAL_NODES_BOUND;
     for (int maxDepth = 0; maxDepth <= MAX_DEPTH; maxDepth++) {
       // 3: set b_d = Find-Helpmate_c(pos, 0, maxDepth = d), with the iteration's node bound being what is left of
       // the global budget.
       final FindHelpmate findHelpmate = new FindHelpmate(winner, remainingNodes);
-      final HelpmateSearchResult searchResult = findHelpmate.search(board, maxDepth);
+      final HelpmateSearchResult searchResult = findHelpmate.search(searchBoard, maxDepth);
       remainingNodes -= searchResult.nodesUsed();
 
       // 4: if b_d = true then return Winnable

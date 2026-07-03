@@ -4,7 +4,6 @@
 package io.github.dlbbld.ashlarchess.unwinnability;
 
 import io.github.dlbbld.ashlarchess.bitboard.BitboardPosition;
-import io.github.dlbbld.ashlarchess.board.Board;
 import io.github.dlbbld.ashlarchess.board.MoveSpecification;
 import io.github.dlbbld.ashlarchess.board.enums.Piece;
 import io.github.dlbbld.ashlarchess.board.enums.PieceType;
@@ -28,14 +27,13 @@ final class Score {
   }
 
   /** Depth increment for exploring {@code move}: 0 (Normal), +1 (Reward), -2 (Punish). */
-  static int increment(Board board, MoveSpecification move, Side winner) {
-    final boolean winnerTurn = board.getSideToMove() == winner;
+  static int increment(BitboardPosition position, Side sideToMove, MoveSpecification move, Side winner) {
+    final boolean winnerTurn = sideToMove == winner;
 
     if (move.isCastling()) {
       return 0; // neither a capture nor a pawn move
     }
 
-    final BitboardPosition position = board.getBitboardPosition();
     final Square from = move.fromSquare();
     final Square to = move.toSquare();
     final boolean isPawnMove = position.get(from).getPieceType() == PieceType.PAWN;
@@ -45,7 +43,7 @@ final class Score {
 
     if (winnerTurn) {
       // Figure 12 line 2: capture OR pawn push OR Going-to-corner(Win) -> Reward.
-      return isCapture || isPawnPush || GoingToCorner.towardCorner(board, move, winner, true) ? 1 : 0;
+      return isCapture || isPawnPush || GoingToCorner.towardCorner(position, move, winner, true) ? 1 : 0;
     }
 
     // Intended loser's turn.
@@ -60,7 +58,7 @@ final class Score {
         return 1; // line 7: any (other) pawn move -> Reward
       }
     }
-    if (GoingToCorner.towardCorner(board, move, winner, false)) {
+    if (GoingToCorner.towardCorner(position, move, winner, false)) {
       return 1; // line 8: Going-to-corner(Lose) -> Reward
     }
     if (isCapture) {

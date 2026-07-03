@@ -115,6 +115,12 @@ Remaining before release:
   concentrated in hard positions that burn the full 500 000-node budget at public-`Board` per-node cost). Decide
   whether 22.0.0 ships as-is (single-query production impact is millisecond-scale on typical positions) or first
   gets a fast-board pass (drive the Figure 5 search and Figure 10 DFS over an internal make/unmake board).
+  ✅ DONE 2026-07-03 (user decision: the fast board MUST be used - it was wrongly deleted with the cha port despite
+  being engine-agnostic machinery). `HelpmateSearchBoard`/`HelpmateSearchKey`/`LegalMoveBuffer`/`UndoState` and their
+  lock-step tests restored from git history; `FindHelpmate` (Fig 5) and the Fig 10 quick DFS now run on the search
+  board; `Score`/`GoingToCorner` refactored to bitboard-level signatures. Verdicts identical (all oracle comparisons
+  and pins green with zero re-baselining). Curated sweep: **318 s** - 2.6× faster than the Board-driven engine and
+  ~21% faster than the old cha-port engine.
 - **Release steps** per workflows.md (version bump, CHANGELOG date, README/manual regeneration is already done,
   sign+publish from the notebook).
 
