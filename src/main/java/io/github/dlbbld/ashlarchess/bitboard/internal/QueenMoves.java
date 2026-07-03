@@ -3,9 +3,7 @@
 
 package io.github.dlbbld.ashlarchess.bitboard.internal;
 
-/**
- * Pseudo-legal queen target squares: bishop targets union rook targets, both with the same own-piece filter.
- */
+/** Pseudo-legal queen target squares: bishop targets union rook targets, both with the same own-piece filter. */
 public final class QueenMoves {
 
   private QueenMoves() {

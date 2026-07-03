@@ -91,9 +91,7 @@ public class BoardReplayPerformanceSurvey {
     }
   }
 
-  /**
-   * Construction only: {@code new Board(startFen)} per game.
-   */
+  /** Construction only: {@code new Board(startFen)} per game. */
   private static Measurement measureConstruct(List<Game> games) {
     long checksum = 0L;
     final long start = System.nanoTime();

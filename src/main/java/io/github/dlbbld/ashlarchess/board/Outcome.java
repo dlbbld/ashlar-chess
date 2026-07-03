@@ -24,9 +24,7 @@ import io.github.dlbbld.ashlarchess.board.enums.Side;
  */
 public record Outcome(Termination termination, Side winner) {
 
-  /**
-   * Singleton "no termination" outcome - returned by {@code outcome()} for ongoing positions.
-   */
+  /** Singleton "no termination" outcome - returned by {@code outcome()} for ongoing positions. */
   public static final Outcome ONGOING = new Outcome(Termination.NONE, Side.NONE);
 
   public Outcome {

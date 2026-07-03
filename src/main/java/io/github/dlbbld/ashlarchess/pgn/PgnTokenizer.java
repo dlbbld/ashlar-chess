@@ -34,9 +34,7 @@ final class PgnTokenizer {
     return result;
   }
 
-  /**
-   * One-token lookahead past {@link #peek()}.
-   */
+  /** One-token lookahead past {@link #peek()}. */
   public PgnToken peekNext() {
     if (peekedAt0 == null) {
       peekedAt0 = readNext();

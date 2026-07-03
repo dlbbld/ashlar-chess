@@ -9,11 +9,11 @@ import io.github.dlbbld.ashlarchess.board.enums.Side;
 // Figure 7 Algorithm for over-approximating the mobility of all pieces in a given position. The
 // output solution is admissible: M >= M* where M* is the true mobility (Lemma 8 / Corollary 9).
 /**
- * The mobility over-approximation - the Figure 7 fixpoint over the Figure 6 implications (see
- * {@code fun22-spec.md} section 2). Given a position it returns, for every piece {@code P} and square {@code s},
- * whether {@code P} can <em>eventually</em> move to {@code s} (variable {@code M[P][s]}). The result is
- * <em>admissible</em>: it never reports a square unreachable that is in fact reachable, which is what makes the
- * composed semi-static check (Theorem 12) sound.
+ * The mobility over-approximation - the Figure 7 fixpoint over the Figure 6 implications (see {@code fun22-spec.md}
+ * section 2). Given a position it returns, for every piece {@code P} and square {@code s}, whether {@code P} can
+ * <em>eventually</em> move to {@code s} (variable {@code M[P][s]}). The result is <em>admissible</em>: it never reports
+ * a square unreachable that is in fact reachable, which is what makes the composed semi-static check (Theorem 12)
+ * sound.
  */
 final class Mobility {
 
@@ -133,8 +133,8 @@ final class Mobility {
   }
 
   /** Pawn move rule: push (enemy on target clearable) or capture (enemy reaches s) or promotion. */
-  private static boolean pawnCanReach(SemiStaticPosition position, long[] m, boolean[] cleared, long[] reachable,
-      int i, int s) {
+  private static boolean pawnCanReach(SemiStaticPosition position, long[] m, boolean[] cleared, long[] reachable, int i,
+      int s) {
     final SemiStaticPiece pawn = position.piece(i);
     final Side side = pawn.side();
 
@@ -158,8 +158,7 @@ final class Mobility {
   }
 
   /** King-attackers rule: every enemy piece currently attacking {@code s} must be clearable. */
-  private static boolean kingAttackersClearable(SemiStaticPosition position, boolean[] cleared, int kingIndex,
-      int s) {
+  private static boolean kingAttackersClearable(SemiStaticPosition position, boolean[] cleared, int kingIndex, int s) {
     final Side kingSide = position.piece(kingIndex).side();
     for (int j = 0; j < position.count(); j++) {
       final SemiStaticPiece enemy = position.piece(j);

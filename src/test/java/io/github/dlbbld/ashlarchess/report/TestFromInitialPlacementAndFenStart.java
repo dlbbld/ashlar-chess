@@ -40,9 +40,7 @@ import io.github.dlbbld.ashlarchess.internal.ChessConstants;
  */
 class TestFromInitialPlacementAndFenStart {
 
-  /**
-   * Standard initial position with White to move. Default Board() constructor produces this.
-   */
+  /** Standard initial position with White to move. Default Board() constructor produces this. */
   private static final String FEN_INITIAL_BLACK_TO_MOVE = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR b KQkq - 0 1";
 
   /**
@@ -240,9 +238,7 @@ class TestFromInitialPlacementAndFenStart {
     }
   }
 
-  /**
-   * Mirror for the Black-to-move-on-move-1 case: each cycle is {@code Nf6 Nf3 Ng8 Ng1} (Black moves first).
-   */
+  /** Mirror for the Black-to-move-on-move-1 case: each cycle is {@code Nf6 Nf3 Ng8 Ng1} (Black moves first). */
   private static void playKnightShuffleAsBlack(Board board, int cycles) {
     for (int i = 0; i < cycles; i++) {
       board.movesStrict("Nf6", "Nf3", "Ng8", "Ng1");

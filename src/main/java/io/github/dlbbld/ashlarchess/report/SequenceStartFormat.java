@@ -20,9 +20,7 @@ final class SequenceStartFormat {
   private SequenceStartFormat() {
   }
 
-  /**
-   * The start anchor: {@code [Starting position] (W/B)} for an initial-FEN start, else {@code <first move> (W/B)}.
-   */
+  /** The start anchor: {@code [Starting position] (W/B)} for an initial-FEN start, else {@code <first move> (W/B)}. */
   static String startAnchor(SequenceStart start, Side startingSide) {
     if (start.isInitialFen()) {
       return "[Starting position] " + counts(start.initialClockValue(), startingSide);
@@ -30,17 +28,13 @@ final class SequenceStartFormat {
     return moveAnchor(start.firstNonZeroingMoveOrThrow(), startingSide);
   }
 
-  /**
-   * A played-move anchor: {@code <move> (W/B)}.
-   */
+  /** A played-move anchor: {@code <move> (W/B)}. */
   static String moveAnchor(MoveRecord move, Side startingSide) {
     return MoveNumberFormat.calculateMoveNumberAndSanWithSpace(move.fullMoveNumber(), move.movingPiece().getSide(),
         move.san()) + " " + counts(move.halfMoveClock(), startingSide);
   }
 
-  /**
-   * The {@code (White/Black)} move counts for a halfmove clock, given the side that started the run.
-   */
+  /** The {@code (White/Black)} move counts for a halfmove clock, given the side that started the run. */
   static String counts(int clock, Side startingSide) {
     final int starterCount = (clock + 1) / 2;
     final int otherCount = clock / 2;

@@ -34,9 +34,7 @@ import io.github.dlbbld.ashlarchess.internal.Nulls;
  */
 class TestHelpmateSearchBoardMakeUnmakeRoundTrip {
 
-  /**
-   * Mirrors {@link TestHelpmateSearchBoard}'s scenario set. {@code null} fen means initial position.
-   */
+  /** Mirrors {@link TestHelpmateSearchBoard}'s scenario set. {@code null} fen means initial position. */
   private static final List<Scenario> SCENARIOS = Nulls.listOf(new Scenario("initial", null, 2),
       new Scenario("all-four-castling-rights", "r3k2r/8/8/8/8/8/8/R3K2R w KQkq - 0 1", 1),
       new Scenario("legal-en-passant", "8/8/8/8/3pP3/8/8/K6k b - e3 0 1", 2),

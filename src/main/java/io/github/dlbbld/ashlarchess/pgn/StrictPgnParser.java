@@ -106,9 +106,7 @@ public final class StrictPgnParser {
     }
   }
 
-  /**
-   * Like {@link #parseText(String)} but returns a structured result instead of throwing.
-   */
+  /** Like {@link #parseText(String)} but returns a structured result instead of throwing. */
   public static StrictPgnParserValidationResult validateText(String pgnText) {
     try {
       parseText(pgnText);
@@ -438,9 +436,7 @@ public final class StrictPgnParser {
     }
   }
 
-  /**
-   * Returns the {@link PgnCommentary} for a well-formed brace token, or throws the matching error category.
-   */
+  /** Returns the {@link PgnCommentary} for a well-formed brace token, or throws the matching error category. */
   private PgnCommentary consumeCommentaryOrThrow() {
     final PgnToken token = tokenizer.next();
     switch (token.type()) {
@@ -499,9 +495,7 @@ public final class StrictPgnParser {
     }
   }
 
-  /**
-   * Throws the broken-brace-specific error if {@code token} is one; returns normally otherwise.
-   */
+  /** Throws the broken-brace-specific error if {@code token} is one; returns normally otherwise. */
   private static void throwIfBrokenBrace(PgnToken token) {
     switch (token.type()) {
       case BRACE_COMMENT_UNCLOSED:

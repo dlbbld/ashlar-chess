@@ -43,9 +43,7 @@ class TestCastlingCheckMapper {
       SanValidationProblem.KING_CASTLING_TEMPORARY_KING_TRAVELS_THROUGH_CHECK,
       SanValidationProblem.KING_CASTLING_TEMPORARY_KING_ENDS_IN_CHECK);
 
-  /**
-   * Provenance values of {@link CastlingRightLoss} that correspond to a FINAL_NO_RIGHT failure.
-   */
+  /** Provenance values of {@link CastlingRightLoss} that correspond to a FINAL_NO_RIGHT failure. */
   private static final List<CastlingRightLoss> EXPECTED_FINAL_NO_RIGHT_PROVENANCES = Nulls.listOf(
       CastlingRightLoss.KING_MOVED, CastlingRightLoss.ROOK_MOVED, CastlingRightLoss.ROOK_CAPTURED,
       CastlingRightLoss.CASTLED, CastlingRightLoss.UNKNOWN_FEN_IMPORT);

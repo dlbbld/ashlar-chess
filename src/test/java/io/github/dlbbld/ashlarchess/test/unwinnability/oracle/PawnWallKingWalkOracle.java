@@ -138,9 +138,7 @@ final class PawnWallKingWalkOracle {
     return attacks;
   }
 
-  /**
-   * Returns the mutable set of squares currently occupied by pawns of {@code side}.
-   */
+  /** Returns the mutable set of squares currently occupied by pawns of {@code side}. */
   private static Set<Square> collectOpposingPawnSquares(StaticPosition position, Side side) {
     final Set<Square> pawns = Nulls.noneOf(Square.class);
     for (final Square square : Square.REAL) {
@@ -151,9 +149,7 @@ final class PawnWallKingWalkOracle {
     return pawns;
   }
 
-  /**
-   * Returns the up-to-eight king-move neighbours of {@code square} (all squares within one file and one rank).
-   */
+  /** Returns the up-to-eight king-move neighbours of {@code square} (all squares within one file and one rank). */
   private static EnumSet<Square> kingNeighbours(Square square) {
     final EnumSet<Square> neighbours = Nulls.noneOf(Square.class);
     final int fileNumber = square.getFile().getNumber();

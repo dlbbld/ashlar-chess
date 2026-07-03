@@ -133,9 +133,7 @@ public final class Board {
       CastlingRightLoss blackQueenSideLoss) {
   }
 
-  /**
-   * Constructs a {@code Board} at the position carried by the given pre-parsed {@link Fen}.
-   */
+  /** Constructs a {@code Board} at the position carried by the given pre-parsed {@link Fen}. */
   public Board(Fen initialFen) {
 
     // using the static fen in case saves a bit of memory
@@ -204,9 +202,7 @@ public final class Board {
     this.currentLegalMoves = legalMoves;
   }
 
-  /**
-   * Constructs a {@code Board} at the standard initial position.
-   */
+  /** Constructs a {@code Board} at the standard initial position. */
   public Board() {
     this(FenConstants.FEN_INITIAL);
   }

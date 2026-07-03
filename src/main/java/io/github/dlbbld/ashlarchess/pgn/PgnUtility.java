@@ -12,9 +12,7 @@ public final class PgnUtility {
   private PgnUtility() {
   }
 
-  /**
-   * Replays the moves of {@code pgnGame} on a fresh board and returns the resulting state.
-   */
+  /** Replays the moves of {@code pgnGame} on a fresh board and returns the resulting state. */
   public static Board toBoard(PgnGame pgnGame) {
 
     final Board board = new Board(pgnGame.startFen());

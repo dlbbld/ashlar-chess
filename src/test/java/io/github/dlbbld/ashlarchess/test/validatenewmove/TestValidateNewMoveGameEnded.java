@@ -133,9 +133,7 @@ class TestValidateNewMoveGameEnded {
 
   // --- helpers ---
 
-  /**
-   * Asserts that the move is rejected with the given {@link MoveCheck}.
-   */
+  /** Asserts that the move is rejected with the given {@link MoveCheck}. */
   private static void rejectsWith(Board board, MoveSpecification move, MoveCheck expected) {
     boolean thrown = false;
     try {

@@ -40,9 +40,7 @@ import io.github.dlbbld.ashlarchess.internal.Nulls;
  */
 class TestModuleBoundary {
 
-  /**
-   * The intended public API surface. Must be updated deliberately, in lock-step with {@code module-info.java}.
-   */
+  /** The intended public API surface. Must be updated deliberately, in lock-step with {@code module-info.java}. */
   @SuppressWarnings("null")
   private static final Set<String> EXPECTED_EXPORTS = Set.of("io.github.dlbbld.ashlarchess.board",
       "io.github.dlbbld.ashlarchess.board.enums", "io.github.dlbbld.ashlarchess.fen",

@@ -25,9 +25,7 @@ import io.github.dlbbld.ashlarchess.pgn.StrictPgnParserValidationResult;
 import io.github.dlbbld.ashlarchess.san.SanValidationProblem;
 import io.github.dlbbld.ashlarchess.test.pgntest.constants.PgnTestConstants;
 
-/**
- * Cross-parser fidelity: each fixture must yield the same {@link PgnGame} through both strict and lenient.
- */
+/** Cross-parser fidelity: each fixture must yield the same {@link PgnGame} through both strict and lenient. */
 class TestCommentaryFixturesBothParsers {
 
   private static final Path COMMENTARY_FOLDER_PATH = Nulls

@@ -91,9 +91,7 @@ class TestLegalMoveKind {
     assertEquals(LegalMoveKind.PROMOTION, promotion.kind());
   }
 
-  /**
-   * Utility: find the unique legal move from {@code from} to {@code to} on the given board, or fail.
-   */
+  /** Utility: find the unique legal move from {@code from} to {@code to} on the given board, or fail. */
   private static LegalMove findLegalMoveByFromTo(Board board, Square from, Square to) {
     for (final LegalMove legalMove : board.getLegalMoves()) {
       if (legalMove.moveSpecification().fromSquare() == from && legalMove.moveSpecification().toSquare() == to) {

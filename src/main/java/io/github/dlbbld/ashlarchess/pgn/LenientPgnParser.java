@@ -226,9 +226,7 @@ public final class LenientPgnParser {
     }
   }
 
-  /**
-   * Returns true if line {@code lineNumber} (1-based) contains {@code [} or {@code ]}.
-   */
+  /** Returns true if line {@code lineNumber} (1-based) contains {@code [} or {@code ]}. */
   private boolean currentLineContainsTagBracket(int lineNumber) {
     int index = 0;
     int currentLine = 1;
@@ -519,9 +517,7 @@ public final class LenientPgnParser {
     return "+".equals(text) || "#".equals(text);
   }
 
-  /**
-   * Returns the {@link PgnCommentary} for a well-formed brace token, or throws the matching error category.
-   */
+  /** Returns the {@link PgnCommentary} for a well-formed brace token, or throws the matching error category. */
   private PgnCommentary consumeCommentaryOrThrow() {
     final PgnToken token = tokenizer.next();
     switch (token.type()) {
@@ -579,9 +575,7 @@ public final class LenientPgnParser {
     }
   }
 
-  /**
-   * Throws the broken-brace-specific error if {@code token} is one; returns normally otherwise.
-   */
+  /** Throws the broken-brace-specific error if {@code token} is one; returns normally otherwise. */
   private static void throwIfBrokenBrace(PgnToken token) {
     switch (token.type()) {
       case BRACE_COMMENT_UNCLOSED:
@@ -748,9 +742,7 @@ public final class LenientPgnParser {
     }
   }
 
-  /**
-   * Consumes only {@link PgnTokenType#SPACES} at the current position. Used inside a single logical line.
-   */
+  /** Consumes only {@link PgnTokenType#SPACES} at the current position. Used inside a single logical line. */
   private void skipInlineWhitespace() {
     while (tokenizer.peek().type() == PgnTokenType.SPACES) {
       tokenizer.next();

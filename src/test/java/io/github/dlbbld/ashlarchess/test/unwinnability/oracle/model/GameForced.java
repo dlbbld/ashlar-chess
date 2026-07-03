@@ -31,9 +31,7 @@ import io.github.dlbbld.ashlarchess.board.enums.Side;
 public record GameForced(Outcome outcome, @Nullable Side singleSideInsufficientMaterial, int evaluatedPositions,
     Side sideMadeLastMove) {
 
-  /**
-   * Convenience: {@code true} iff an automatic termination was reached at the end of the forced chain.
-   */
+  /** Convenience: {@code true} iff an automatic termination was reached at the end of the forced chain. */
   public boolean hasTermination() {
     return outcome.termination() != Termination.NONE;
   }
