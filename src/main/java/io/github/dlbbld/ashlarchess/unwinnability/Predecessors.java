@@ -18,7 +18,9 @@ final class Predecessors {
   private Predecessors() {
   }
 
-  /** predP(s): squares from which the piece reaches {@code s} in one non-capture move. */
+  /**
+   * predP(s): squares from which the piece reaches {@code s} in one non-capture move.
+   */
   static long moves(PieceType pieceType, Side side, int s) {
     return switch (pieceType) {
       case KNIGHT -> SquareGeometry.knight(s);
@@ -30,7 +32,9 @@ final class Predecessors {
     };
   }
 
-  /** pred-captP(s): squares from which the piece captures onto {@code s}. */
+  /**
+   * pred-captP(s): squares from which the piece captures onto {@code s}.
+   */
   static long captures(PieceType pieceType, Side side, int s) {
     if (pieceType == PieceType.PAWN) {
       return SquareGeometry.pawnAttackPredecessors(side, s);

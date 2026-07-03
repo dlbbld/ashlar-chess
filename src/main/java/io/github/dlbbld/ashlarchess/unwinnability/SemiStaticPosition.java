@@ -93,12 +93,16 @@ final class SemiStaticPosition {
     return pieces.length;
   }
 
-  /** The piece at index {@code i} (its stable identity). */
+  /**
+   * The piece at index {@code i} (its stable identity).
+   */
   SemiStaticPiece piece(int i) {
     return pieces[i];
   }
 
-  /** Index of the piece occupying {@code square}, or {@code -1} if empty. */
+  /**
+   * Index of the piece occupying {@code square}, or {@code -1} if empty.
+   */
   int indexAt(int square) {
     return indexAt[square];
   }
@@ -111,7 +115,9 @@ final class SemiStaticPosition {
     return enPassantPossible;
   }
 
-  /** Index of {@code side}'s king (always present - the constructor enforces exactly one per side). */
+  /**
+   * Index of {@code side}'s king (always present - the constructor enforces exactly one per side).
+   */
   int kingIndex(Side side) {
     return side == Side.WHITE ? whiteKingIndex : blackKingIndex;
   }

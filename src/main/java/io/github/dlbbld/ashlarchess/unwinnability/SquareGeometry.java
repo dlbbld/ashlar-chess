@@ -154,17 +154,23 @@ final class SquareGeometry {
     return KNIGHT[square];
   }
 
-  /** &omega;_side(s): the &le; 1 square a pawn of {@code side} pushes from to reach s. */
+  /**
+   * &omega;_side(s): the &le; 1 square a pawn of {@code side} pushes from to reach s.
+   */
   static long pawnPushPredecessors(Side side, int square) {
     return PAWN_PUSH_PRED[side.ordinal()][square];
   }
 
-  /** &pi;_side(s): squares from which a pawn of {@code side} attacks s. */
+  /**
+   * &pi;_side(s): squares from which a pawn of {@code side} attacks s.
+   */
   static long pawnAttackPredecessors(Side side, int square) {
     return PAWN_ATTACK_PRED[side.ordinal()][square];
   }
 
-  /** prom(P): promotion squares for a pawn of {@code side}. */
+  /**
+   * prom(P): promotion squares for a pawn of {@code side}.
+   */
   static long promotion(Side side) {
     return side == Side.WHITE ? PROMOTION_WHITE : PROMOTION_BLACK;
   }
