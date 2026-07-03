@@ -22,9 +22,7 @@ final class MobilitySolution {
     return position;
   }
 
-  /**
-   * region(P) for the piece at index {@code pieceIndex}, as a bitboard.
-   */
+  /** region(P) for the piece at index {@code pieceIndex}, as a bitboard. */
   long region(int pieceIndex) {
     return regions[pieceIndex];
   }

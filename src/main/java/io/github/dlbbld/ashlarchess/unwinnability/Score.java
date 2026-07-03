@@ -26,9 +26,7 @@ final class Score {
   private Score() {
   }
 
-  /**
-   * Depth increment for exploring {@code move}: 0 (Normal), +1 (Reward), -2 (Punish).
-   */
+  /** Depth increment for exploring {@code move}: 0 (Normal), +1 (Reward), -2 (Punish). */
   static int increment(BitboardPosition position, Side sideToMove, MoveSpecification move, Side winner) {
     final boolean winnerTurn = sideToMove == winner;
 

@@ -41,9 +41,7 @@ public final class UnwinnableQuickAnalyzer {
   private UnwinnableQuickAnalyzer() {
   }
 
-  /**
-   * The paper's empirically chosen depth bound {@code D}.
-   */
+  /** The paper's empirically chosen depth bound {@code D}. */
   private static final int DEPTH_BOUND = 9;
 
   /** Guard for Figure 10 footnote a: stop advancing forced lines after this many plies. */

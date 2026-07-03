@@ -210,16 +210,6 @@ Verified green: `mvn -o test` + `-Pfull` (1276 tests, 0 failures), `javadoc:jar`
 
 Items here are not assigned to any release. Captured so they don't get lost; revisit if/when scope or motivation aligns.
 
-### Relax SingleLineJavadoc to allow inline tags (decision made 2026-07-03, execution parked)
-
-Set `ignoreInlineTags` to `true` on the `SingleLineJavadoc` module in `checkstyle.xml` (currently `false`, the
-google_checks.xml default). Rationale: the shipped Checkstyle encoding is stricter than the written Google Java Style
-Guide, which permits the single-line Javadoc form whenever there are no *block* tags — inline tags like `{@code}`
-included — and Google's own Guava uses `/** Returns ... {@code x}. */` one-liners throughout. Forcing three lines for
-a one-sentence contract with semantic markup is comment-shape pedantry, not League-A rigor. When executed, optionally
-recompress the unwinnability-package Javadocs that were mechanically expanded to comply (commit `2adb6a85`); both
-forms remain legal after the relaxation, so no sweep is required.
-
 ### Tighten remaining mutable return types on internal-but-public surfaces
 
 A few `public static` move-generation helpers still return a freshly-built mutable `Set` / `List` that callers could mutate: `PromotionUtility.performPromotionMovements`, `CastlingUtility.performCastlingMovements`, `EnPassantCaptureUtility.performEnPassantCaptureMovements`, and the `EmptyBoardMoveUtility` overloads. Each returns a fresh per-call copy, so there is no aliasing bug today — wrapping the result as an unmodifiable JDK collection (e.g. via `Nulls.copyOfList` / `Nulls.copyOfSet`, now that Guava is gone) is pure polish. Parked here rather than 19.0.0 because these are exactly the internal-but-accidentally-public move-gen surfaces this release narrows or hides behind the module boundary: fix the return types in the same pass that decides which of them stay public at all. (`BitboardPositionUtility.toSquares` already returns an unmodifiable `Set`.)

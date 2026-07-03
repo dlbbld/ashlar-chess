@@ -20,9 +20,7 @@ final class Mobility {
   private Mobility() {
   }
 
-  /**
-   * Runs the fixpoint and returns the mobility solution for {@code position}.
-   */
+  /** Runs the fixpoint and returns the mobility solution for {@code position}. */
   static MobilitySolution mobility(SemiStaticPosition position) {
     final int totalPieces = position.count();
 
@@ -108,9 +106,7 @@ final class Mobility {
     return new MobilitySolution(position, m);
   }
 
-  /**
-   * All Figure 6 rule bodies with head {@code M[i][s]} hold on the current state.
-   */
+  /** All Figure 6 rule bodies with head {@code M[i][s]} hold on the current state. */
   private static boolean canReach(SemiStaticPosition position, long[] m, boolean[] cleared, long[] reachable, int i,
       int s) {
     final SemiStaticPiece piece = position.piece(i);
@@ -161,9 +157,7 @@ final class Mobility {
     return (SquareGeometry.promotion(side) & m[i]) != 0L;
   }
 
-  /**
-   * King-attackers rule: every enemy piece currently attacking {@code s} must be clearable.
-   */
+  /** King-attackers rule: every enemy piece currently attacking {@code s} must be clearable. */
   private static boolean kingAttackersClearable(SemiStaticPosition position, boolean[] cleared, int kingIndex,
       int s) {
     final Side kingSide = position.piece(kingIndex).side();
