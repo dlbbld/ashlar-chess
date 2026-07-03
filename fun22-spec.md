@@ -1,8 +1,8 @@
 # FUN22 unwinnability — clean-room specification
 
 This document is the **governing specification** for ashlar's unwinnability engine (the
-`io.github.dlbbld.ashlarchess.unwinnability` package internals, vendored in 22.0.0 from the validated
-`fun22-reference` project). It is derived **only** from Miguel Ambrona's FUN 2022 paper, *"A Practical Algorithm for
+`io.github.dlbbld.ashlarchess.unwinnability` package internals). It is derived **only** from Miguel Ambrona's FUN
+2022 paper, *"A Practical Algorithm for
 Chess Unwinnability"* — the **full version** (the one with complete proofs of Lemmas 10 and 11). Neither ashlar's
 former cha port nor Ambrona's D3-Chess/`cha`/`chasolver` source was consulted. Review the engine code against this
 document (and the paper), not against any other codebase.
@@ -295,25 +295,3 @@ Deliberate, clearly-layered additions — none alters the paper algorithms' verd
 - **Mate line** (`UnwinnabilityFullAnalysis.mateLine()`): the Figure 5 search records the exhibited helpmate line on
   the unwind — bookkeeping only. A `WINNABLE` verdict is always search-proven and carries its witnessing line (empty
   exactly for a zero-move helpmate, i.e. the submitted position is already the intended winner's checkmate).
-- **Three-valued quick verdict**: the paper's Figure 10 returns Winnable / Unwinnable / PossiblyWinnable; ashlar's
-  `UnwinnabilityQuickVerdict` exposes exactly that (the pre-22.0.0 cha-port quick was two-valued and never claimed
-  winnability).
-
-Ashlar's basic-helpmate-existence theorem (the separately proven finite-state decision of the elementary
-mating-material classes KRvK, KQvK, KBBvK opposite, KBNvK, KNNvK, KRvKB, KRvKN, KRRvK, KQQvK) was a production
-shortcut between the semi-static step and the search until early 22.0.0 development; it is now a **test-side oracle
-only** (`BasicHelpmateExistenceTheorem` in the test tree), so the production analyzer is Figure 9 pure. The agreement
-tests run the theorem over the curated elementary-material corpus and require the engine to answer `UNWINNABLE`
-wherever the theorem proves unwinnability and to exhibit a concrete helpmate wherever the theorem guarantees one.
-
----
-
-## 8. Provenance
-
-The engine was first built as the standalone clean-room project `fun22-reference` (github.com/dlbbld/fun22-reference)
-against ashlar's public API only, and validated there before vendoring: over the D3-Chess ground-truth corpus and a
-3 415-position chasolver-labelled corpus, every semi-static/full/quick definite verdict was confirmed (0
-contradictions) against D3-Chess labels, ashlar's former cha-port analyzer, and Ambrona's independent Rust
-`chasolver`. The permanent Theorem 12 soundness sweep (`TestUnwinnableSemiStatic`) runs over the curated chasolver corpus in
-ashlar's test resources (`oracle/chasolver/curated/positions.txt`), which carries every D3-Chess ground-truth vector
-except one orphan position, adopted separately in the PGN corpus (`pgn/cha/various`).

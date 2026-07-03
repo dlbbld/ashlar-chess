@@ -12,9 +12,9 @@
  * specification {@code fun22-spec.md} and derived from the paper only. It replaces the earlier Java port of
  * Ambrona's C++ Chess Unwinnability Analyzer (CHA / D3-Chess): the algorithm code is now traceable to the published
  * paper rather than to another codebase. Ambrona's Rust successor
- * <a href="https://github.com/miguel-ambrona/chasolver">chasolver</a> serves as an independent test oracle; see
- * {@code fun22-spec.md} section 8 for the validation record (zero soundness contradictions across the D3-Chess and
- * chasolver-labelled corpora).
+ * <a href="https://github.com/miguel-ambrona/chasolver">chasolver</a> serves as an independent test oracle: every
+ * definite verdict is cross-checked against the committed cha/chasolver oracle fixtures with zero soundness
+ * contradictions.
  *
  * <p>
  * Insufficient material covers the trivial cases (king-vs-king, king + minor vs king); positions like blocked pawn

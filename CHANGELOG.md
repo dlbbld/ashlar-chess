@@ -8,7 +8,7 @@ The unwinnability engine is now ashlar's own clean-room implementation of Miguel
 Practical Algorithm for Chess Unwinnability* (Figures 5-13, Lemmas 5/6, Theorem 12), governed by the committed
 specification `fun22-spec.md` and derived from the paper only. It replaces the Java port of Ambrona's C++ CHA
 (D3-Chess): the algorithm is now traceable to the published paper rather than to another codebase. The engine was
-built and validated out-of-tree first (`fun22-reference`): zero soundness contradictions against the D3-Chess
+built and validated as a standalone clean-room project first: zero soundness contradictions against the D3-Chess
 ground-truth corpus, against the previous cha-port analyzer, and against Ambrona's independent Rust `chasolver`.
 
 ### Breaking
@@ -43,8 +43,8 @@ ground-truth corpus, against the previous cha-port analyzer, and against Ambrona
 ### Internal
 
 - The cha-port internals (mobility/semi-static/search/material classes and their unit tests) are deleted; the
-  clean-room engine classes and the ported fun22-reference unit tests replace them, including the permanent
-  Theorem 12 soundness sweep (over the curated chasolver ground-truth corpus).
+  clean-room engine classes and their ported unit tests replace them, including the permanent Theorem 12 soundness
+  sweep (over the curated chasolver ground-truth corpus).
 
 ## [21.1.0] - Oracle housekeeping - 2026-07-03
 
