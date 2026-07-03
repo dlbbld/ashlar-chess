@@ -80,6 +80,19 @@ class TestUnwinnableFullAnalyzerFigure9 {
 
   @SuppressWarnings("static-method")
   @Test
+  void deepHelpmateNeedsTheFootnoteBRewardChain() {
+    // K+Q vs K+pawn: the loser's pawn keeps this outside every theorem class, so the search itself must exhibit the
+    // deep queen helpmate - which the bounded deepening only reaches with the Figure 5 footnote-b reward chaining
+    // (rewarding a Normal move that follows a Reward move). This is the end-to-end pin for that footnote and for
+    // the reward-chain-aware transposition key.
+    final UnwinnabilityFullAnalysis analysis = full("4k3/4p3/8/8/8/8/8/3QK3 w - - 0 1", Side.WHITE);
+    assertEquals(UnwinnabilityFullVerdict.WINNABLE, analysis.verdict());
+    assertEquals(WinnableProof.HELPMATE, analysis.winnableProof());
+    assertTrue(analysis.mateLine().size() >= 2);
+  }
+
+  @SuppressWarnings("static-method")
+  @Test
   void twoKnightsAndOppositeBishopsRemainWinnable() {
     // Lemma 5/6 strictness end-to-end (TestMaterialLemmas pins the predicates themselves): two knights and
     // opposite-coloured bishops CAN helpmate. Both classes are theorem-covered, so the verdicts are certified.

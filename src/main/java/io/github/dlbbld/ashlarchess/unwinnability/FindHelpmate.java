@@ -29,33 +29,33 @@ import io.github.dlbbld.ashlarchess.internal.Nulls;
  * bookkeeping, no influence on the search.
  *
  * <p>
- * One instance serves all iterative-deepening iterations of one Figure 9 analysis: the transposition table is shared
- * across base calls (the paper's explicit allowance), while {@code cnt} and the interrupted flag reset per call.
- * Sharing is sound in this analyzer because a node-bound interrupt always ends the whole analysis (the iteration
- * consumed the remaining global budget), so every table entry a <em>later</em> iteration can see was written by a
- * depth-bounded-only search and is a genuine "explored with this budget" coverage claim - never a truncated one.
+ * One instance = one bounded search (one iterative-deepening iteration of Figure 9), exactly the paper's Figure 5
+ * semantics. The transposition table is deliberately NOT shared across iterations, although the paper's prose allows
+ * it: the soundness of "tree exhausted without interrupt implies UNWINNABLE" rests on the interrupted flag being
+ * monotone over every visit the table's entries summarize. Within one iteration that holds - an entry written by a
+ * depth-cut visit coexists with the raised flag, so that iteration can no longer claim {@code UNWINNABLE}. A stale
+ * entry from an earlier, depth-cut iteration would prune a later iteration's node WITHOUT re-raising its interrupt
+ * flag, letting the later iteration believe it exhausted the tree while cut lines hide behind the prune - a
+ * potential false {@code UNWINNABLE}. (Discovered via a Codex review finding on the transposition key.)
  */
 final class FindHelpmate {
 
   private final Side winnerSide;
   private final Side loserSide;
+  private final int nodesBound;
   private final Map<TranspositionKey, Integer> transpositionTable = new HashMap<>();
   private final Deque<UciMove> mateLine = new ArrayDeque<>();
-  private int nodesBound;
   private int nodesUsed;
   private boolean interrupted;
 
-  FindHelpmate(Side winner) {
+  FindHelpmate(Side winner, int nodesBound) {
     this.winnerSide = winner;
     this.loserSide = winner.getOppositeSide();
+    this.nodesBound = nodesBound;
   }
 
   /** Base call: one bounded search from the board's current position (Figure 9 step 3). */
-  HelpmateSearchResult search(Board board, int maxDepth, int callNodesBound) {
-    this.nodesBound = callNodesBound;
-    this.nodesUsed = 0;
-    this.interrupted = false;
-    this.mateLine.clear();
+  HelpmateSearchResult search(Board board, int maxDepth) {
     final boolean helpmateFound = search(board, 0, maxDepth, false);
     return new HelpmateSearchResult(helpmateFound, interrupted, nodesUsed,
         Nulls.copyOfList(new ArrayList<>(mateLine)));
@@ -82,8 +82,10 @@ final class FindHelpmate {
       return false;
     }
 
-    // Steps 5-6: depth-aware transposition table - skip a position already searched with at least this budget.
-    final TranspositionKey key = keyOf(board, placement);
+    // Steps 5-6: depth-aware transposition table - skip a position already searched with at least this budget. The
+    // reward-chain flag is part of the key: a visit with the footnote-b boost pending explores a strictly stronger
+    // budget shape than one without, so the two states must not prune each other (Codex review finding).
+    final TranspositionKey key = keyOf(board, placement, previousWasReward);
     final Integer seenBudget = transpositionTable.get(key);
     if (seenBudget != null && seenBudget >= remainingBudget) {
       return false;
@@ -107,15 +109,15 @@ final class FindHelpmate {
     return false; // step 10
   }
 
-  private static TranspositionKey keyOf(Board board, BitboardPosition placement) {
+  private static TranspositionKey keyOf(Board board, BitboardPosition placement, boolean previousWasReward) {
     final Square enPassant = board.isEnPassantCapturePossible() ? board.getEnPassantCaptureTargetSquare()
         : Square.NONE;
     return new TranspositionKey(placement, board.getSideToMove(), board.getCastlingRightWhite(),
-        board.getCastlingRightBlack(), enPassant);
+        board.getCastlingRightBlack(), enPassant, previousWasReward);
   }
 
-  /** Position identity for the transposition table (piece placement + game state). */
+  /** Search-state identity for the transposition table (piece placement + game state + reward-chain state). */
   private record TranspositionKey(BitboardPosition placement, Side sideToMove, CastlingRight castlingRightWhite,
-      CastlingRight castlingRightBlack, Square enPassantCaptureTargetSquare) {
+      CastlingRight castlingRightBlack, Square enPassantCaptureTargetSquare, boolean previousWasReward) {
   }
 }

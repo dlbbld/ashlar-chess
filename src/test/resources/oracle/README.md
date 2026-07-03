@@ -34,13 +34,31 @@ The TSV columns are:
 fen	fullWhite	fullBlack	quickWhite	quickBlack
 ```
 
-Until 22.0.0 this folder also carried `cha/ashlar-pgn/mobility.tsv` and
-`cha/ashlar-pgn/semistatic.tsv`, dumps of CHA's internal mobility/semi-static
-state compared field-by-field against the former cha-port internals. They were
-retired with the port: the paper-formulation engine is deliberately not
-structured like cha internally (text footnote 12 - cha evolved beyond the
-paper), so only the public verdicts are compared, by implication, against the
-`unwinnability.tsv` oracles.
+`cha/ashlar-pgn/mobility.tsv` uses the same final FEN source, but writes one
+row per piece in every distinct position; the `toSquares` column is the
+saturated mobility region CHA computed for that piece:
+
+```text
+fen	side	pieceType	from	toSquares
+```
+
+With the 22.0.0 paper-formulation engine this dump is compared **by
+implication, not equality** (`TestMobilityAgainstChaMobilityOracle`): cha
+evolved beyond the paper (text footnote 12) and tightens mobility below the
+paper's Figure 6/7 fixpoint in locked pawn structures, so cha's region must be
+a *subset* of ashlar's for every piece - ashlar computes the least fixpoint,
+and any cha square outside it would mean ashlar under-approximates, breaking
+the Theorem 12 admissibility argument. Measured split, pinned in the test:
+16758 of 16845 rows bit-identical, 87 rows cha-strictly-tighter.
+
+Until 22.0.0 this folder also carried `cha/ashlar-pgn/semistatic.tsv`, a dump
+of CHA's semi-static verdicts and helper sets compared field-by-field against
+the former cha-port internals. It was retired with the port: cha's semi-static
+carries beyond-paper case-splitting while the paper's α-reading is stronger
+elsewhere, so no implication holds in either direction at that layer - the
+semi-static layer is instead covered by the Theorem 12 soundness sweep over the
+D3-Chess ground truth (`TestUnwinnableSemiStatic`) and by the public-verdict
+oracles.
 
 ## One-time Windows setup
 

@@ -37,8 +37,9 @@ Design decisions (agreed 2026-07-03):
   analyzer keeps its forced-move advance because that is paper (Figure 10 step 1, loop-guarded per footnote a).
 - **Budget envelope kept from 21.x**: 500 000 global node budget across deepening iterations (the paper leaves
   `bound(d)` as a parameter), depth cap 100, per-iteration node bound = remaining global budget. Transposition table
-  is shared across iterations (paper allowance) — sound in this budget scheme because a node-bound interrupt always
-  ends the whole analysis, so later iterations only ever see depth-bounded (untruncated) coverage entries; the
+  is **per-iteration, and the key includes the footnote-b reward-chain flag** (final state after the Codex review:
+  cross-iteration sharing — briefly implemented for performance — can let a stale depth-cut entry suppress a later
+  iteration's interrupt and fake an exhaustion witness → potential false `UNWINNABLE`; see `fun22-spec.md` §6). The
   post-loop fall-through returns `UNDETERMINED`, fixing the old code's theoretically unsound `UNWINNABLE`
   fall-through.
 - **The cha material predicate (`UnwinnabilityMaterialBitboard`) is retired with the port**; Ambrona's Lemmas 5/6 live
@@ -72,12 +73,34 @@ Work items:
   analyzer regressed on exactly **one verdict** (Norgaard pawn-wall, White side, `UNWINNABLE`→`UNDETERMINED` — the
   pure locked fortress only a beyond-paper semi-static proves; Black side was already `UNDETERMINED` since 21.0.0)
   and gained one class of strength (quick `WINNABLE` on quickly matable positions, ~17 corpus positions). The QUICK
-  analyzer regressed on two fortress positions (`lichess_f6c1lu7R`, Norgaard-White; the full analyzer still proves
-  f6c1lu7R). Along the way the shared-transposition-table fix (see the budget-envelope decision above) recovered
-  f6c1lu7R for the full analyzer and cut the suite from 22:03 to 14:39 min. Test-harness changes: quick oracle
+  analyzer regressed on two fortress positions (`lichess_f6c1lu7R`, Norgaard-White). **Correction after the Codex
+  review**: the shared-transposition-table change that briefly recovered f6c1lu7R for the full analyzer (and cut the
+  suite from 22:03 to 14:39 min) was reverted as theoretically unsound (stale depth-cut entries can fake the
+  exhaustion witness — see the budget-envelope decision above), so the full analyzer's regression is f6c1lu7R (both
+  sides) plus Norgaard-White, all sound-direction and allowlisted. Test-harness changes: quick oracle
   comparisons moved to implication semantics (a two-valued oracle's "undetermined" is consistent with a definite
   ashlar verdict); Lichess pin tests now report all failing positions instead of failing fast; the retired
   cha-internal mobility/semistatic oracles (fixtures, generators, C++ sources) are deleted.
+
+- **Codex review round (2026-07-03).** ✅ DONE — all three findings addressed plus the test gap:
+  - **P1 (transposition key)**: the reward-chain flag is now part of the search-state key, and the analysis exposed a
+    deeper issue in the briefly-shared transposition table (stale depth-cut entries can fake the exhaustion witness →
+    potential false `UNWINNABLE`); reverted to the paper-literal per-iteration table. Costs vs the shared version:
+    f6c1lu7R full is `UNDETERMINED` again (allowlisted; quick already was), and the honest exact-state keying now
+    agrees with both oracles on `chasolver_node_limit_exception.pgn` (`UNDETERMINED`; the old engine's `WINNABLE`
+    there rode on the unsoundly coarse key) — both legacy allowlist rows deleted.
+  - **P2**: `UnwinnabilityQuickAnalysis` javadoc and the manual's "Reading Quick Verdicts" section now describe the
+    three-valued quick verdict; README/manual regenerated.
+  - **P3**: the pom description no longer says "CHA-based" (now "implementing Ambrona's FUN 2022 algorithm").
+  - **Test gap**: direct Figure 12/13 unit tests added (`TestScoreFigure12`, `TestGoingToCornerFigure13`, one case
+    per figure line) plus a footnote-b end-to-end pin (K+Q vs K+pawn deep helpmate, outside every theorem class).
+    **Internal-layer oracle revived with an implication contract**: measured over the archived CHA C++ mobility dump,
+    cha's regions are bit-identical to the paper's Figure 6/7 least fixpoint on 16758 of 16845 piece rows and a
+    strict subset on the remaining 87 (all locked pawn structures — cha's beyond-paper "steady pieces" tightening);
+    `TestMobilityAgainstChaMobilityOracle` pins cha ⊆ paper per piece (a cha square outside our fixpoint would mean
+    we under-approximate and break Theorem 12 admissibility) plus the exact split. The retired `semistatic.tsv` layer
+    stays retired: no implication holds in either direction there (cha case-splitting vs the paper's stronger
+    α-reading), so that layer is covered by the D3-Chess Theorem 12 soundness sweep instead.
 
 Remaining before release:
 

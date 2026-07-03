@@ -258,13 +258,18 @@ checkmate/stalemate — chess foundation, not unwinnability logic):
   Find-Helpmate; `WINNABLE` on an exhibited helpmate, `UNWINNABLE` on an uninterrupted exhaustion, else
   `UNDETERMINED` when the budget runs out. The paper leaves `bound(d)` as a parameter (its practical note, text
   footnote 13, fixes a small constant); ashlar uses one global 500 000-node budget across iterations with a depth
-  ceiling of 100 (each iteration's node bound is the remaining global budget). The transposition table is shared
-  across iterations, per the paper's explicit allowance. Sharing is sound *in this budget scheme* because a
-  node-bound interrupt always ends the whole analysis (the iteration consumed the remaining budget, so the loop
-  exits `UNDETERMINED`): every entry a later iteration can observe was written by a depth-bounded-only search and is
-  a genuine "explored with this budget" coverage claim, never a node-bound-truncated one. (Entries written after a
-  node-bound cut could overclaim coverage; they are only ever visible within their own, already-interrupted
-  iteration, which can no longer conclude `UNWINNABLE`.)
+  ceiling of 100 (each iteration's node bound is the remaining global budget). **The transposition table is
+  per-iteration — a deliberate deviation from the paper's prose, which says the table "can be shared between
+  different calls".** The soundness of Figure 9 step 5-6 ("search not interrupted ⟹ Unwinnable") rests on the
+  interrupted flag being monotone over every visit the table's entries summarize: within one iteration, an entry
+  written by a depth-cut visit coexists with the raised flag, so that iteration can no longer claim `UNWINNABLE`. A
+  *stale* entry from an earlier, depth-cut iteration would prune a later iteration's node *without re-raising its
+  interrupt flag* — the later iteration could believe it exhausted the tree while cut lines hide behind the stale
+  prune, a potential false `UNWINNABLE`. The absence-of-mate half of a stale entry is still a true statement; it is
+  the exhaustion *witness* that does not survive sharing. (Surfaced by a Codex review of the transposition key;
+  sharing was briefly implemented and reverted.) The search-state key includes the footnote-b reward-chain flag: a
+  visit with the boost pending explores a strictly stronger budget shape than one without, so the two states must
+  not prune each other.
 - **Figure 10 quick routine** → `UnwinnableQuickAnalyzer`: forced-move advance, bounded DFS with a *global* depth-9
   interrupt, then the semi-static check gated to pawn/bishop/king material without semi-open files. **Footnote a**
   (implemented): the forced-move advance is loop-guarded (arbitrarily long single-move sequences exist; capping is

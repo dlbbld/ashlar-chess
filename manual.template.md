@@ -193,11 +193,13 @@ impossible double-bishop-check mate called unwinnable, or certain illegal `KBNvK
 
 The verdict enums are proof results, not booleans. Read the exact constant:
 
-- Side-specific quick: `UNWINNABLE` means proven unwinnable; `POSSIBLY_WINNABLE` means not proven unwinnable.
+- Side-specific quick: `UNWINNABLE` means proven unwinnable; `WINNABLE` means proven winnable (the bounded search met
+  a checkmate by the intended winner - it fires only on quickly matable positions and carries no mate line);
+  `POSSIBLY_WINNABLE` means not decided either way.
 - Dead-position quick: `DEAD` means both sides are proven unwinnable; `POSSIBLY_ALIVE` means at least one side was not
   proven unwinnable.
 
-Do not read `!= UNWINNABLE` as “winnable”; it also includes undecided states.
+Do not read `!= UNWINNABLE` as “winnable”; it also includes the undecided `POSSIBLY_WINNABLE`.
 
 ### Reading Full Verdicts
 
@@ -254,9 +256,10 @@ Positions quick does not prove dead:
 
 <!-- readme:code id=dead-possibly-alive -->
 
-For quick side-specific unwinnability, `POSSIBLY_WINNABLE` is intentionally conservative: it means "not proven
-unwinnable". In the project statistics, more than 99.99% of these quick-open positions are in fact winnable, but callers
-that need a proof should use the full verdict.
+For quick side-specific unwinnability, `POSSIBLY_WINNABLE` is intentionally conservative: it means "not decided either
+way". In the project statistics, more than 99.99% of these quick-open positions are in fact winnable, but callers that
+need a proof should use the full verdict (or rely on quick's own `WINNABLE`, which fires on quickly matable
+positions).
 
 ## Validation Model
 

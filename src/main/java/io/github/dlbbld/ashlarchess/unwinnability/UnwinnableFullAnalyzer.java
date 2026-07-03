@@ -66,14 +66,14 @@ public final class UnwinnableFullAnalyzer {
         throw new IllegalArgumentException();
     }
 
-    // 2: for every d in N do (-> iterative deepening). The transposition table is shared across iterations (the
-    // paper's explicit allowance; sound here because a node-bound interrupt ends the whole analysis).
-    final FindHelpmate findHelpmate = new FindHelpmate(winner);
+    // 2: for every d in N do (-> iterative deepening). The transposition table is per-iteration - see FindHelpmate
+    // for why sharing it across iterations could produce a false UNWINNABLE.
     int remainingNodes = GLOBAL_NODES_BOUND;
     for (int maxDepth = 0; maxDepth <= MAX_DEPTH; maxDepth++) {
       // 3: set b_d = Find-Helpmate_c(pos, 0, maxDepth = d), with the iteration's node bound being what is left of
       // the global budget.
-      final HelpmateSearchResult searchResult = findHelpmate.search(board, maxDepth, remainingNodes);
+      final FindHelpmate findHelpmate = new FindHelpmate(winner, remainingNodes);
+      final HelpmateSearchResult searchResult = findHelpmate.search(board, maxDepth);
       remainingNodes -= searchResult.nodesUsed();
 
       // 4: if b_d = true then return Winnable
