@@ -245,8 +245,9 @@ version's inline prose / proofs, not guessed:
 
 ## 6. The search side (Figures 5, 9, 10, 12, 13)
 
-Implemented clean-room from the same paper, driven over ashlar's `Board` engine (make/unmake, legal move generation,
-checkmate/stalemate — chess foundation, not unwinnability logic):
+Implemented independently from the same paper, driven over ashlar's mutable `HelpmateSearchBoard` hot path (twelve
+mutable bitboards, make/unmake, per-depth legal-move buffers, cached terminal flags — chess foundation, not
+unwinnability logic; lock-step-tested against the public `Board`):
 
 - **Figure 5 `Find-Helpmate`** → `FindHelpmate`: depth- and node-bounded DFS for a checkmate *by the intended
   winner*, with a depth-aware transposition table and the Figure 12 Score budget adjustment. Terminal leaves:
