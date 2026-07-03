@@ -410,16 +410,18 @@ public final class LenientPgnParser {
         throw movetextError(LenientPgnParserValidationProblem.MOVETEXT_COMMENTARY_NOT_ALLOWED_IN_SAN,
             "A commentary cannot occur where a SAN move is expected.");
       }
+      // A suffix glyph (`!`/`?`/...) is folded into the move's NAG list - it is shorthand for a NAG (see Nag). A
+      // detached glyph with no move to attach to, or an unrecognised run like `!?!`, is tolerated by dropping it.
       if (type == PgnTokenType.MOVE_SUFFIX_ANNOTATION) {
-        if (moves.isEmpty()) {
-          tokenizer.next();
-          continue;
-        }
         final PgnToken suffixToken = tokenizer.next();
-        final MoveSuffixAnnotation suffix = parseMoveSuffix(suffixToken.text());
-        final int last = moves.size() - 1;
-        final PgnMove previous = Nulls.get(moves, last);
-        moves.set(last, new PgnMove(previous.san(), suffix, previous.commentary()));
+        appendNagToLastMove(moves, glyphToNag(suffixToken.text()));
+        continue;
+      }
+      // A numeric annotation glyph (`$N`) annotates the move just played (chess.com's review export emits these). A
+      // NAG before any move, or a malformed/out-of-range code, is tolerated by dropping it.
+      if (type == PgnTokenType.NAG) {
+        final PgnToken nagToken = tokenizer.next();
+        appendNagToLastMove(moves, parseNagLenient(nagToken));
         continue;
       }
       if (type == PgnTokenType.SYMBOL) {
@@ -428,14 +430,6 @@ public final class LenientPgnParser {
         // lenient parser skips the balanced group and keeps the mainline.
         if (peek.text().startsWith("(")) {
           skipVariation();
-          continue;
-        }
-        // A numeric annotation glyph (NAG, `$N`) annotates the move just played. chess.com's game-review export emits
-        // these instead of the symbolic `!`/`?` glyphs. The six move-assessment NAGs map onto MoveSuffixAnnotation; any
-        // other code is tolerated (consumed, no annotation) - see applyNagToLastMove.
-        if (peek.text().startsWith("$")) {
-          tokenizer.next();
-          applyNagToLastMove(moves, peek.text());
           continue;
         }
         // Tolerate spaced move-number indicators like `1 . e4` and `1 ... e5` - see consumedSpacedMoveNumber.
@@ -528,14 +522,17 @@ public final class LenientPgnParser {
     validateSanCharacters(san);
     validateSanLength(san);
 
-    MoveSuffixAnnotation suffix = MoveSuffixAnnotation.NONE;
-    // Allow whitespace between SAN and suffix annotation (`e4 !!`).
+    final List<Nag> nags = new ArrayList<>();
+    // Allow whitespace between SAN and suffix annotation (`e4 !!`); the glyph is folded into the move's NAG list.
     skipInlineWhitespace();
     if (tokenizer.peek().type() == PgnTokenType.MOVE_SUFFIX_ANNOTATION) {
-      suffix = parseMoveSuffix(tokenizer.next().text());
+      final Nag nag = glyphToNag(tokenizer.next().text());
+      if (nag != null) {
+        nags.add(nag);
+      }
     }
 
-    return new PgnMove(san, suffix, PgnCommentary.EMPTY);
+    return new PgnMove(san, nags, PgnCommentary.EMPTY);
   }
 
   private static boolean isBareCheckOrMate(String text) {
@@ -573,9 +570,9 @@ public final class LenientPgnParser {
    * Consumes every annotation trailing the move just added - comments and numeric annotation glyphs, in any order and
    * quantity - and folds them onto that move. Real-world tools emit several and interleave them: lichess opens each
    * analyzed game with {@code { [%eval ...] [%clk ...] } { <opening name> }}, and a NAG-plus-comment pair
-   * ({@code Nf3 $1 {develops}}) is ordinary PGN. Comments are merged onto the move's commentary; move-assessment NAGs
-   * set its suffix (see {@link #applyNagToLastMove}). Handling both here keeps post-move annotation order-independent -
-   * {@code Nf3 $1 {c}} and {@code Nf3 {c} $1} parse identically.
+   * ({@code Nf3 $1 {develops}}) is ordinary PGN. Comments are merged onto the move's commentary; NAGs are appended to
+   * its NAG list. Handling both here keeps post-move annotation order-independent - {@code Nf3 $1 {c}} and
+   * {@code Nf3 {c} $1} parse identically.
    */
   private void consumePostMoveAnnotations(List<PgnMove> moves) {
     skipInsignificantWhitespace();
@@ -585,11 +582,11 @@ public final class LenientPgnParser {
         final PgnCommentary commentary = consumeCommentaryOrThrow();
         final int last = moves.size() - 1;
         final PgnMove previous = Nulls.get(moves, last);
-        moves.set(last, new PgnMove(previous.san(), previous.moveSuffixAnnotation(),
+        moves.set(last, new PgnMove(previous.san(), previous.nags(),
             mergeCommentary(previous.commentary(), commentary)));
-      } else if (ahead.type() == PgnTokenType.SYMBOL && ahead.text().startsWith("$")) {
+      } else if (ahead.type() == PgnTokenType.NAG) {
         tokenizer.next();
-        applyNagToLastMove(moves, ahead.text());
+        appendNagToLastMove(moves, parseNagLenient(ahead));
       } else {
         return;
       }
@@ -609,44 +606,45 @@ public final class LenientPgnParser {
   }
 
   /**
-   * Applies a numeric annotation glyph ({@code $N}) to the most recently parsed move. The six move-assessment NAGs the
-   * PGN standard defines are the numeric encoding of ashlar's symbolic {@link MoveSuffixAnnotation} values, so they are
-   * mapped onto the move's suffix (overwriting {@code NONE}; an explicit symbolic glyph already on the move is kept).
-   * Every other code - positional, time, or chess.com's own {@code $9} - has no symbolic equivalent and is tolerated:
-   * the token was already consumed, and no annotation is recorded. A {@code $N} before any move (none exists yet) is
-   * likewise dropped.
+   * Appends a NAG to the most recently parsed move. A {@code null} NAG (an unrecognised glyph run, or a malformed /
+   * out-of-range {@code $N}) or a NAG before any move exists is tolerated by dropping it - the lenient parser reads
+   * what it can and never fails on an annotation.
    */
-  private static void applyNagToLastMove(List<PgnMove> moves, String nagText) {
-    final MoveSuffixAnnotation nagSuffix = nagToSuffix(nagText);
-    if (nagSuffix == MoveSuffixAnnotation.NONE || moves.isEmpty()) {
+  private static void appendNagToLastMove(List<PgnMove> moves, @Nullable Nag nag) {
+    if (nag == null || moves.isEmpty()) {
       return;
     }
     final int last = moves.size() - 1;
     final PgnMove previous = Nulls.get(moves, last);
-    if (previous.moveSuffixAnnotation() != MoveSuffixAnnotation.NONE) {
-      return;
-    }
-    moves.set(last, new PgnMove(previous.san(), nagSuffix, previous.commentary()));
+    final List<Nag> nags = new ArrayList<>(previous.nags());
+    nags.add(nag);
+    moves.set(last, new PgnMove(previous.san(), nags, previous.commentary()));
   }
 
-  /** Maps a move-assessment NAG to its symbolic annotation; any non-assessment code returns {@code NONE}. */
-  private static MoveSuffixAnnotation nagToSuffix(String nagText) {
-    switch (nagText) {
-      case "$1":
-        return MoveSuffixAnnotation.GOOD_MOVE;
-      case "$2":
-        return MoveSuffixAnnotation.MISTAKE;
-      case "$3":
-        return MoveSuffixAnnotation.BRILLIANT_MOVE;
-      case "$4":
-        return MoveSuffixAnnotation.BLUNDER;
-      case "$5":
-        return MoveSuffixAnnotation.INTERESTING_MOVE;
-      case "$6":
-        return MoveSuffixAnnotation.DUBIOUS_MOVE;
-      default:
-        return MoveSuffixAnnotation.NONE;
+  /** The NAG a suffix glyph is shorthand for ({@code !}=1 ... {@code ?!}=6), or {@code null} for an unknown glyph run. */
+  private static @Nullable Nag glyphToNag(String glyphText) {
+    if (!MoveSuffixAnnotation.exists(glyphText)) {
+      return null;
     }
+    return new Nag(MoveSuffixAnnotation.parse(glyphText).getNagCode());
+  }
+
+  /** Parses a {@code $N} NAG token, or returns {@code null} if the code is missing or outside {@code 0..255}. */
+  private static @Nullable Nag parseNagLenient(PgnToken nagToken) {
+    final String digits = nagToken.text().substring(1); // drop the leading '$'
+    if (digits.isEmpty()) {
+      return null;
+    }
+    final int code;
+    try {
+      code = Integer.parseInt(digits);
+    } catch (final NumberFormatException e) {
+      return null;
+    }
+    if (code > 255) {
+      return null;
+    }
+    return new Nag(code);
   }
 
   /**
@@ -730,14 +728,6 @@ public final class LenientPgnParser {
   private static LenientPgnParserValidationException movetextError(LenientPgnParserValidationProblem problem,
       String message) {
     return new LenientPgnParserValidationException(problem, SanValidationProblem.NONE, message);
-  }
-
-  private static MoveSuffixAnnotation parseMoveSuffix(String text) {
-    // Lenient: unknown suffixes downgrade to NONE rather than fail.
-    if (!MoveSuffixAnnotation.exists(text)) {
-      return MoveSuffixAnnotation.NONE;
-    }
-    return MoveSuffixAnnotation.parse(text);
   }
 
   private static void validateSanCharacters(String san) {
@@ -911,7 +901,7 @@ public final class LenientPgnParser {
         final LenientSanParseResult result = board.moveLenient(move.san());
         sanForgivenItemsAccumulator.addAll(result.forgivenItems());
         final String canonicalSan = board.getSan();
-        canonicalMoves.add(new PgnMove(canonicalSan, move.moveSuffixAnnotation(), move.commentary()));
+        canonicalMoves.add(new PgnMove(canonicalSan, move.nags(), move.commentary()));
       } catch (final LenientSanParserValidationException e) {
         final String moveNumberAndSan = MoveNumberFormat.calculateMoveNumberAndSanWithSpace(fullMoveNumber, side,
             move.san());

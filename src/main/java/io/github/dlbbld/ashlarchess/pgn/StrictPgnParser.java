@@ -412,10 +412,17 @@ public final class StrictPgnParser {
             "A move number must be followed by a single space.");
       }
 
-      final SanAndSuffix sanAndSuffix = parseSanAndSuffix();
+      final SanAndNags sanAndNags = parseSanAndSuffix();
+      final List<Nag> nags = sanAndNags.nags();
 
       // Trailing blank line at this position -> file has no termination marker; report specifically.
       expectInterTokenSeparatorOrMissingTermination(resultTagValue);
+
+      // Any NAGs follow the move (and its suffix glyph), each separated by a single space (PGN spec section 8.2.4).
+      while (tokenizer.peek().type() == PgnTokenType.NAG) {
+        nags.add(parseNagStrict());
+        expectInterTokenSeparatorOrMissingTermination(resultTagValue);
+      }
 
       PgnCommentary commentary = PgnCommentary.EMPTY;
       if (isBraceToken(tokenizer.peek().type())) {
@@ -426,7 +433,7 @@ public final class StrictPgnParser {
         priorCommentaryAttached = false;
       }
 
-      moves.add(new PgnMove(sanAndSuffix.san(), sanAndSuffix.suffix(), commentary));
+      moves.add(new PgnMove(sanAndNags.san(), nags, commentary));
 
       isFirstMove = false;
       if (sideToMove == Side.BLACK) {
@@ -531,10 +538,10 @@ public final class StrictPgnParser {
     }
   }
 
-  private record SanAndSuffix(String san, MoveSuffixAnnotation suffix) {
+  private record SanAndNags(String san, List<Nag> nags) {
   }
 
-  private SanAndSuffix parseSanAndSuffix() {
+  private SanAndNags parseSanAndSuffix() {
     final PgnToken token = tokenizer.peek();
     if (isBraceToken(token.type())) {
       throwIfBrokenBrace(token);
@@ -550,7 +557,9 @@ public final class StrictPgnParser {
     validateSanCharacters(san);
     validateSanLength(san);
 
-    MoveSuffixAnnotation suffix = MoveSuffixAnnotation.NONE;
+    // A suffix glyph is import-format shorthand for a NAG (PGN spec 8.2.3.8): fold it into the move's NAG list rather
+    // than carrying a second annotation representation. At most one glyph attaches directly to the SAN.
+    final List<Nag> nags = new ArrayList<>();
     if (tokenizer.peek().type() == PgnTokenType.MOVE_SUFFIX_ANNOTATION) {
       final PgnToken suffixToken = tokenizer.next();
       if (!MoveSuffixAnnotation.exists(suffixToken.text())) {
@@ -558,9 +567,31 @@ public final class StrictPgnParser {
             "An invalid move annotation suffix of \"" + suffixToken.text() + "\" was found. Valid values are \""
                 + MoveSuffixAnnotation.allowedValuesText() + "\".");
       }
-      suffix = MoveSuffixAnnotation.parse(suffixToken.text());
+      nags.add(new Nag(MoveSuffixAnnotation.parse(suffixToken.text()).getNagCode()));
     }
-    return new SanAndSuffix(san, suffix);
+    return new SanAndNags(san, nags);
+  }
+
+  /** Consumes a NAG token and validates its {@code $}-plus-digits form; the code must be in {@code 0..255}. */
+  private Nag parseNagStrict() {
+    final PgnToken token = tokenizer.next();
+    final String digits = token.text().substring(1); // drop the leading '$'
+    if (digits.isEmpty()) {
+      throw movetextError(StrictPgnParserValidationProblem.MOVETEXT_NAG_INVALID,
+          "A NAG must be '$' followed by an integer from 0 to 255.");
+    }
+    final int code;
+    try {
+      code = Integer.parseInt(digits);
+    } catch (final NumberFormatException e) {
+      throw movetextError(StrictPgnParserValidationProblem.MOVETEXT_NAG_INVALID,
+          "A NAG value of \"" + digits + "\" is not an integer from 0 to 255.");
+    }
+    if (code > 255) {
+      throw movetextError(StrictPgnParserValidationProblem.MOVETEXT_NAG_INVALID,
+          "A NAG value must be from 0 to 255, but was " + code + ".");
+    }
+    return new Nag(code);
   }
 
   private void expectMoveNumber(int expectedNumber, Side sideToMove, boolean isFirstMove) {

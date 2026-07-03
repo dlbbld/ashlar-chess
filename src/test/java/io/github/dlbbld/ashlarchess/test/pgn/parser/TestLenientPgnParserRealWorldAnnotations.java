@@ -6,11 +6,14 @@ package io.github.dlbbld.ashlarchess.test.pgn.parser;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.util.List;
+
 import org.junit.jupiter.api.Test;
 
 import io.github.dlbbld.ashlarchess.internal.Nulls;
 import io.github.dlbbld.ashlarchess.pgn.LenientPgnParser;
 import io.github.dlbbld.ashlarchess.pgn.MoveSuffixAnnotation;
+import io.github.dlbbld.ashlarchess.pgn.Nag;
 import io.github.dlbbld.ashlarchess.pgn.PgnGame;
 import io.github.dlbbld.ashlarchess.test.PgnTestHelper;
 
@@ -79,45 +82,76 @@ class TestLenientPgnParserRealWorldAnnotations {
 
   @SuppressWarnings("static-method")
   @Test
-  void moveAssessmentNagsBecomeTheEquivalentSymbolicAnnotation() {
-    // The six move-assessment NAGs ($1..$6) are the numeric encoding of ashlar's six symbolic move annotations;
-    // chess.com's game-review export emits these instead of the glyphs. Each is mapped to the matching enum value.
+  void moveAssessmentNagsArePreservedAndReadBackAsTheirGlyph() {
+    // The six move-assessment NAGs ($1..$6) are shorthand for ashlar's symbolic glyphs; chess.com's review export
+    // emits the numbers. Each is preserved as a Nag, and moveSuffixAnnotation() reads it back as the matching glyph.
     final PgnGame game = LenientPgnParser.parseText(PgnTestHelper.header("*")
         + "1. e4 $1 e5 $2 2. Nf3 $3 Nc6 $4 3. Bb5 $5 a6 $6 *\n\n");
     assertEquals(6, game.moves().size());
-    assertEquals(MoveSuffixAnnotation.GOOD_MOVE, Nulls.get(game.moves(), 0).moveSuffixAnnotation());
-    assertEquals(MoveSuffixAnnotation.MISTAKE, Nulls.get(game.moves(), 1).moveSuffixAnnotation());
-    assertEquals(MoveSuffixAnnotation.BRILLIANT_MOVE, Nulls.get(game.moves(), 2).moveSuffixAnnotation());
-    assertEquals(MoveSuffixAnnotation.BLUNDER, Nulls.get(game.moves(), 3).moveSuffixAnnotation());
-    assertEquals(MoveSuffixAnnotation.INTERESTING_MOVE, Nulls.get(game.moves(), 4).moveSuffixAnnotation());
-    assertEquals(MoveSuffixAnnotation.DUBIOUS_MOVE, Nulls.get(game.moves(), 5).moveSuffixAnnotation());
+    final int[] codes = {1, 2, 3, 4, 5, 6};
+    final MoveSuffixAnnotation[] glyphs = {MoveSuffixAnnotation.GOOD_MOVE, MoveSuffixAnnotation.MISTAKE,
+        MoveSuffixAnnotation.BRILLIANT_MOVE, MoveSuffixAnnotation.BLUNDER, MoveSuffixAnnotation.INTERESTING_MOVE,
+        MoveSuffixAnnotation.DUBIOUS_MOVE};
+    for (int i = 0; i < 6; i++) {
+      assertEquals(List.of(new Nag(codes[i])), Nulls.get(game.moves(), i).nags());
+      assertEquals(glyphs[i], Nulls.get(game.moves(), i).moveSuffixAnnotation());
+    }
   }
 
   @SuppressWarnings("static-method")
   @Test
-  void nonAssessmentNagsAreToleratedWithoutAnnotation() {
-    // Codes outside $1..$6 (positional, time, or chess.com's own $9 sprinkled across nearly every move) have no
-    // symbolic equivalent; the parser consumes them and leaves the move unannotated rather than choking.
+  void aGlyphSuffixAndItsNagAreTheSameThing() {
+    // e4? and e4 $2 both mean "mistake": both yield a single Nag(2). The unified model stores them identically.
+    final PgnGame glyph = LenientPgnParser.parseText(PgnTestHelper.header("*") + "1. e4? e5 *\n\n");
+    final PgnGame nag = LenientPgnParser.parseText(PgnTestHelper.header("*") + "1. e4 $2 e5 *\n\n");
+    assertEquals(List.of(new Nag(2)), Nulls.getFirst(glyph.moves()).nags());
+    assertEquals(Nulls.getFirst(glyph.moves()).nags(), Nulls.getFirst(nag.moves()).nags());
+  }
+
+  @SuppressWarnings("static-method")
+  @Test
+  void nonAssessmentNagsArePreservedNotDiscarded() {
+    // Codes outside $1..$6 (positional, time, or chess.com's own $9) have no glyph shorthand, but they are real data
+    // and are preserved as Nags - moveSuffixAnnotation() is NONE because there is no glyph, yet nags() carries them.
     final PgnGame game = LenientPgnParser
         .parseText(PgnTestHelper.header("*") + "1. e4 $9 e5 $10 2. Nf3 $7 Nc6 *\n\n");
     assertEquals(4, game.moves().size());
+    assertEquals(List.of(new Nag(9)), Nulls.get(game.moves(), 0).nags());
+    assertEquals(List.of(new Nag(10)), Nulls.get(game.moves(), 1).nags());
+    assertEquals(List.of(new Nag(7)), Nulls.get(game.moves(), 2).nags());
     assertEquals(MoveSuffixAnnotation.NONE, Nulls.get(game.moves(), 0).moveSuffixAnnotation());
-    assertEquals(MoveSuffixAnnotation.NONE, Nulls.get(game.moves(), 1).moveSuffixAnnotation());
-    assertEquals(MoveSuffixAnnotation.NONE, Nulls.get(game.moves(), 2).moveSuffixAnnotation());
+  }
+
+  @SuppressWarnings("static-method")
+  @Test
+  void multipleNagsOnOneMoveAreAllPreservedInOrder() {
+    // A move may carry several NAGs - an assessment plus a positional code (e.g. $1 = good, $14 = slight edge).
+    final PgnGame game = LenientPgnParser.parseText(PgnTestHelper.header("*") + "1. Nf3 $1 $14 d5 *\n\n");
+    assertEquals(List.of(new Nag(1), new Nag(14)), Nulls.getFirst(game.moves()).nags());
+  }
+
+  @SuppressWarnings("static-method")
+  @Test
+  void malformedOrOutOfRangeNagIsTolerated() {
+    // Lenient never fails on an annotation: a $ with no digits or a code above 255 is dropped, the game still parses.
+    final PgnGame game = LenientPgnParser.parseText(PgnTestHelper.header("*") + "1. e4 $999 e5 $ *\n\n");
+    assertEquals(2, game.moves().size());
+    assertEquals(List.of(), Nulls.get(game.moves(), 0).nags());
+    assertEquals(List.of(), Nulls.get(game.moves(), 1).nags());
   }
 
   @SuppressWarnings("static-method")
   @Test
   void nagAndCommentOnOneMoveParseInEitherOrder() {
-    // A move-assessment NAG and a textual comment on the same move (ChessBase/SCID emit both) must parse regardless of
-    // order: the suffix comes from the NAG, the commentary from the brace, either way round.
+    // A NAG and a textual comment on the same move (ChessBase/SCID emit both) must parse regardless of order: the NAG
+    // is preserved, the commentary from the brace, either way round.
     final PgnGame nagFirst = LenientPgnParser
         .parseText(PgnTestHelper.header("*") + "1. Nf3 $1 { develops } d5 *\n\n");
     final PgnGame commentFirst = LenientPgnParser
         .parseText(PgnTestHelper.header("*") + "1. Nf3 { develops } $1 d5 *\n\n");
     for (final PgnGame game : new PgnGame[] {nagFirst, commentFirst}) {
       assertEquals(2, game.moves().size());
-      assertEquals(MoveSuffixAnnotation.GOOD_MOVE, Nulls.getFirst(game.moves()).moveSuffixAnnotation());
+      assertEquals(List.of(new Nag(1)), Nulls.getFirst(game.moves()).nags());
       assertEquals("develops", Nulls.getFirst(game.moves()).commentary().value().trim());
     }
   }
@@ -131,9 +165,9 @@ class TestLenientPgnParserRealWorldAnnotations {
     final PgnGame game = LenientPgnParser.parseText(PgnTestHelper.header("*") + movetext + "\n\n");
     assertEquals(7, game.moves().size());
     assertEquals("g3", Nulls.get(game.moves(), 2).san());
-    assertEquals(MoveSuffixAnnotation.MISTAKE, Nulls.get(game.moves(), 2).moveSuffixAnnotation());
+    assertEquals(List.of(new Nag(2)), Nulls.get(game.moves(), 2).nags());
     assertEquals("g6", Nulls.get(game.moves(), 5).san());
-    assertEquals(MoveSuffixAnnotation.GOOD_MOVE, Nulls.get(game.moves(), 5).moveSuffixAnnotation());
+    assertEquals(List.of(new Nag(1)), Nulls.get(game.moves(), 5).nags());
     assertEquals("Qe2", Nulls.get(game.moves(), 6).san());
   }
 

@@ -91,6 +91,8 @@ final class PgnTokenizer {
       case '!':
       case '?':
         return readMoveSuffixAnnotation(line, column);
+      case '$':
+        return readNag(line, column);
       case '*':
         stream.read();
         return new PgnToken(PgnTokenType.TERMINATION_MARKER, "*", line, column);
@@ -197,6 +199,15 @@ final class PgnTokenizer {
     return new PgnToken(PgnTokenType.MOVE_SUFFIX_ANNOTATION, Nulls.toString(text), line, column);
   }
 
+  private PgnToken readNag(int line, int column) {
+    final StringBuilder text = new StringBuilder();
+    text.append((char) stream.read()); // leading '$'
+    while (isAsciiDigit(stream.peek())) {
+      text.append((char) stream.read());
+    }
+    return new PgnToken(PgnTokenType.NAG, Nulls.toString(text), line, column);
+  }
+
   private PgnToken readDigitStarted(int line, int column) {
     final StringBuilder text = new StringBuilder();
     while (isAsciiDigit(stream.peek())) {
@@ -261,7 +272,7 @@ final class PgnTokenizer {
 
   private static boolean isWordBreak(int c) {
     return c == ' ' || c == '\t' || c == '\n' || c == '\r' || c == '[' || c == ']' || c == '{' || c == '}' || c == '"'
-        || c == '!' || c == '?' || c == ';';
+        || c == '!' || c == '?' || c == ';' || c == '$';
   }
 
   private static boolean isAsciiDigit(int c) {

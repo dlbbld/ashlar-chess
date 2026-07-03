@@ -105,7 +105,7 @@ public final class PgnCreate {
 
     for (final String san : sans) {
       PgnMove move;
-      move = new PgnMove(san, MoveSuffixAnnotation.NONE, PgnCommentary.EMPTY);
+      move = new PgnMove(san, List.of(), PgnCommentary.EMPTY);
       moves.add(move);
     }
 
@@ -188,9 +188,7 @@ public final class PgnCreate {
 
       final String san = move.san();
       result.append(" ").append(san);
-      if (move.moveSuffixAnnotation() != MoveSuffixAnnotation.NONE) {
-        result.append(move.moveSuffixAnnotation().getSuffix());
-      }
+      appendNags(result, move.nags());
 
       final String commentaryValue = move.commentary().value();
       if (!commentaryValue.isEmpty()) {
@@ -206,6 +204,29 @@ public final class PgnCreate {
       currentSideToMove = currentSideToMove.getOppositeSide();
     }
     return Nulls.toString(result);
+  }
+
+  /**
+   * Renders a move's NAGs. The first move-assessment NAG (code 1..6) is written as its readable suffix glyph attached
+   * directly to the SAN ({@code e4?}); every other NAG is written as a spaced {@code $N} token ({@code e4 $14}). Codes
+   * without a glyph shorthand always take the {@code $N} form, and at most one glyph is attached so the output stays
+   * unambiguous (two glyphs would fuse - {@code ?}+{@code !} would read as {@code ?!}).
+   */
+  private static void appendNags(StringBuilder result, List<Nag> nags) {
+    int glyphIndex = -1;
+    for (int i = 0; i < nags.size(); i++) {
+      final MoveSuffixAnnotation glyph = MoveSuffixAnnotation.fromNagCode(Nulls.get(nags, i).code());
+      if (glyph != null) {
+        result.append(glyph.getSuffix());
+        glyphIndex = i;
+        break;
+      }
+    }
+    for (int i = 0; i < nags.size(); i++) {
+      if (i != glyphIndex) {
+        result.append(" ").append(Nulls.get(nags, i).toToken());
+      }
+    }
   }
 
   /**

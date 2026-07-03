@@ -34,6 +34,13 @@ enum PgnTokenType {
   /** {@code !}, {@code !!}, {@code ?}, {@code ??}, {@code !?}, {@code ?!}. */
   MOVE_SUFFIX_ANNOTATION,
 
+  /**
+   * A numeric annotation glyph (NAG): {@code $} followed by digits (PGN spec section 8.2.4). The token text is the
+   * whole lexeme including the {@code $} (e.g. {@code "$2"}); a bare {@code "$"} with no digits is emitted for the
+   * malformed case and rejected by the parser.
+   */
+  NAG,
+
   /** Brace-delimited commentary {@code {...}}. The token text is the commentary content without the braces. */
   BRACE_COMMENT,
 
