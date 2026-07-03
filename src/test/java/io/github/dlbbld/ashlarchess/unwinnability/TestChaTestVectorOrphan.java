@@ -12,10 +12,10 @@ import io.github.dlbbld.ashlarchess.board.Board;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
 
 // The "orphan" cha test vector: diffing Miguel Ambrona's C++ test set (D3-Chess tests/test-vector.txt, 1798
-// positions; vendored as oracle/d3chess/test-vectors.txt, last line) against his Rust successor's test set
-// (chasolver tests/positions.txt, 3401 positions) leaves exactly ONE position present in the C++ suite but absent
-// from the Rust one - the family siblings made it over, this exact vector did not (established 2026-07-03,
-// presumably an accidental drop). Adopted here so the position stays a living test somewhere.
+// positions) against his Rust successor's test set (chasolver tests/positions.txt = our curated corpus, 3401
+// positions) leaves exactly ONE position present in the C++ suite but absent from the Rust one - the family
+// siblings made it over, this exact vector did not (established 2026-07-03, presumably an accidental drop).
+// Adopted as pgn/cha/various/01_cha_test_vector_orphan.pgn (group CHA_VARIOUS) with the analyzer-level pins here.
 //
 // Ground truth (label W-; both cha C++ and chasolver 3.0 engines confirm): White can helpmate, Black cannot - the
 // black king is caged on f8 by Bg8/Rh8 and the f7/h7 pawns, and Black's forces can never deliver a mate.

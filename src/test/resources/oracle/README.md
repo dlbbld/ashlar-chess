@@ -7,7 +7,6 @@ by the source of the tested positions:
 cha/ashlar-pgn/        D3-Chess/CHA output over Ashlar's PGN final positions
 chasolver/ashlar-pgn/  Rust chasolver output over the same Ashlar positions
 chasolver/curated/     the upstream curated chasolver position set
-d3chess/               the upstream D3-Chess ground-truth test vectors
 python-chess/          python-chess output over Ashlar PGN fixtures
 ```
 
@@ -23,10 +22,13 @@ The tests under `againstchasolvercurated` read its `WB`, `W-`, `-B`, and `--`
 classifications directly instead of treating it as generated output from this
 project's PGN fixtures.
 
-`d3chess/test-vectors.txt` is copied from Miguel Ambrona's D3-Chess repository:
-the ground-truth test vectors of the FUN 2022 paper, one position per line with
-a `WB`/`W-`/`-B`/`--` helpmate classification. `TestUnwinnableSemiStatic` runs
-the permanent Theorem 12 soundness sweep over it.
+`chasolver/curated/positions.txt` also feeds `TestUnwinnableSemiStatic`'s
+permanent Theorem 12 soundness sweep (its `WB`/`W-`/`-B`/`--` labels are the
+ground truth). It supersedes the retired copy of D3-Chess's
+`tests/test-vector.txt`: the Rust test set carries every C++ test vector
+except one - that orphan position is adopted as
+`pgn/cha/various/01_cha_test_vector_orphan.pgn` and pinned by
+`TestChaTestVectorOrphan`.
 
 The TSV columns are:
 
@@ -57,7 +59,7 @@ the former cha-port internals. It was retired with the port: cha's semi-static
 carries beyond-paper case-splitting while the paper's α-reading is stronger
 elsewhere, so no implication holds in either direction at that layer - the
 semi-static layer is instead covered by the Theorem 12 soundness sweep over the
-D3-Chess ground truth (`TestUnwinnableSemiStatic`) and by the public-verdict
+curated chasolver corpus (`TestUnwinnableSemiStatic`) and by the public-verdict
 oracles.
 
 ## One-time Windows setup

@@ -20,9 +20,11 @@ import io.github.dlbbld.ashlarchess.board.enums.Side;
 import io.github.dlbbld.ashlarchess.exceptions.UsageException;
 
 // Tests for the Figure 8 semi-static check, ported from the fun22-reference unit tests. The core test is a soundness
-// sweep: over every ground-truth D3-Chess vector, whenever the semi-static check declares the position unwinnable for
-// a player, that player must indeed be unable to helpmate (Theorem 12 soundness). It asserts only the implication
-// UNWINNABLE => truly unwinnable; it never requires the check to be complete.
+// sweep: over every ground-truth vector of chasolver's curated test set (community-submitted queries with verified
+// winnability labels; it carries every cha C++ test vector except the orphan adopted in pgn/cha/various), whenever
+// the semi-static check declares the position unwinnable for a player, that player must indeed be unable to helpmate
+// (Theorem 12 soundness). It asserts only the implication UNWINNABLE => truly unwinnable; it never requires the
+// check to be complete.
 class TestUnwinnableSemiStatic {
 
   private static boolean unwinnable(String fen, Side winner) {
@@ -52,7 +54,7 @@ class TestUnwinnableSemiStatic {
     int skipped = 0;
     int caught = 0;
 
-    try (InputStream in = TestUnwinnableSemiStatic.class.getResourceAsStream("/oracle/d3chess/test-vectors.txt");
+    try (InputStream in = TestUnwinnableSemiStatic.class.getResourceAsStream("/oracle/chasolver/curated/positions.txt");
         BufferedReader reader = new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_8))) {
       String line;
       while ((line = reader.readLine()) != null) {
@@ -91,12 +93,12 @@ class TestUnwinnableSemiStatic {
 
     // Coverage guards (deterministic: committed corpus). A silent drop in `caught` would make the soundness check
     // pass vacuously; pin the counts and update them deliberately if the corpus or the algorithm changes.
-    assertEquals(1723, analysed, "corpus positions analysed changed (was 1723)");
-    assertEquals(80, skipped, "strict-FEN-rejected positions changed (was 80)");
-    assertEquals(699, caught, "semi-static UNWINNABLE coverage changed (was 699)");
+    assertEquals(3151, analysed, "corpus positions analysed changed (was 3151)");
+    assertEquals(263, skipped, "strict-FEN-rejected positions changed (was 263)");
+    assertEquals(985, caught, "semi-static UNWINNABLE coverage changed (was 985)");
   }
 
-  /** D3-Chess FENs omit the clock fields; append them so strict parsing accepts the FEN. */
+  /** The corpus FENs omit the clock fields; append them so strict parsing accepts the FEN. */
   private static String normalizeFen(String fen) {
     final int fields = fen.split("\\s+").length;
     if (fields == 4) {

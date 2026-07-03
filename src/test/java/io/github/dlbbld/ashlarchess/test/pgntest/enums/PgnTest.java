@@ -97,6 +97,7 @@ public enum PgnTest {
   CHA_LICHESS_QUICK_DEPTH_ABOVE_FOUR(false, "cha/lichess/quick/depthAboveFour"),
   CHA_LICHESS_QUICK_DEPTH_ABOVE_FOUR_WINNABLE_FOR_FLAGGING_WITH_HELPMATE(false, "cha/lichess/quick/depthAboveFour/winnableForFlaggingWithHelpmate"),
   CHA_CHASOLVER_EXCEPTIONS(false, "cha/chasolverExceptions"),
+  CHA_VARIOUS(false, "cha/various"),
   CHA_PAWN_WALL_YES(false, "cha/pawnWall/yes"),
   CHA_PAWN_WALL_NO(false, "cha/pawnWall/no"),
   CHA_SHALLOW_TERMINATION(false, "cha/shallowTermination"),

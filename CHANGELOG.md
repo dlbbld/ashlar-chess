@@ -45,8 +45,7 @@ ground-truth corpus, against the previous cha-port analyzer, and against Ambrona
 
 - The cha-port internals (mobility/semi-static/search/material classes and their unit tests) are deleted; the
   clean-room engine classes and the ported fun22-reference unit tests replace them, including the permanent
-  Theorem 12 soundness sweep over the newly committed D3-Chess ground-truth corpus
-  (`oracle/d3chess/test-vectors.txt`).
+  Theorem 12 soundness sweep (over the curated chasolver ground-truth corpus).
 
 ## [21.1.0] - Oracle housekeeping - 2026-07-03
 

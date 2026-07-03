@@ -314,5 +314,6 @@ The engine was first built as the standalone clean-room project `fun22-reference
 against ashlar's public API only, and validated there before vendoring: over the D3-Chess ground-truth corpus and a
 3 415-position chasolver-labelled corpus, every semi-static/full/quick definite verdict was confirmed (0
 contradictions) against D3-Chess labels, ashlar's former cha-port analyzer, and Ambrona's independent Rust
-`chasolver`. The D3-Chess corpus ships in ashlar's test resources (`oracle/d3chess/test-vectors.txt`) with a
-permanent soundness sweep (`TestUnwinnableSemiStatic`).
+`chasolver`. The permanent Theorem 12 soundness sweep (`TestUnwinnableSemiStatic`) runs over the curated chasolver corpus in
+ashlar's test resources (`oracle/chasolver/curated/positions.txt`), which carries every D3-Chess ground-truth vector
+except one orphan position, adopted separately in the PGN corpus (`pgn/cha/various`).

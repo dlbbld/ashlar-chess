@@ -84,6 +84,7 @@ public class PgnTestCaseCatalog {
       case CHA_LICHESS_QUICK_DEPTH_THREE -> createTestCasesChaLichessQuickDepthThree();
       case CHA_LICHESS_QUICK_DEPTH_FOUR -> createTestCasesChaLichessQuickDepthFour();
       case CHA_CHASOLVER_EXCEPTIONS -> createTestCasesChaChasolverExceptions();
+      case CHA_VARIOUS -> createTestCasesChaVarious();
       case MAX_MOVES -> createTestCasesLongestPossible();
       case MAX_SAME_PIECE_PROMOTION_WHITE -> createTestCasesMaxSamePiecePromotionWhite();
       case MAX_SAME_PIECE_PROMOTION_BLACK -> createTestCasesMaxSamePiecePromotionBlack();
@@ -2618,6 +2619,18 @@ public class PgnTestCaseCatalog {
         new PgnFen("02_chasolver_node_limit_exception.pgn", "1Bb5/1p6/pPp3k1/2Pp1b1p/P2PpBpP/4P1P1/5K2/8 w - - 5 37"));
 
     return new PgnTestCaseList(PgnTest.CHA_CHASOLVER_EXCEPTIONS, list);
+  }
+
+  // Various composed cha positions without a dedicated group. 01: the "orphan" cha C++ test vector - the one
+  // position of D3-Chess tests/test-vector.txt that chasolver's test set does not carry (its family siblings made
+  // it over, this exact vector did not); adopted here so it stays a living test. See TestChaTestVectorOrphan for
+  // the analyzer-level pins.
+  private static PgnTestCaseList createTestCasesChaVarious() {
+    final List<PgnFen> list = new ArrayList<>();
+
+    list.add(new PgnFen("01_cha_test_vector_orphan.pgn", "1b3kBR/4pP1P/1p1pP2P/1P1P4/8/K5p1/6P1/1B6 b - - 0 1"));
+
+    return new PgnTestCaseList(PgnTest.CHA_VARIOUS, list);
   }
 
   // Fixtures the geometric pawn-wall classifier accepts as YES: chain spans file a to h, both kings on opposite

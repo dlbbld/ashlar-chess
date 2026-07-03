@@ -90,6 +90,7 @@ public final class CheckAgainstCha {
       case CHA_LICHESS_QUICK_DEPTH_THREE:
       case CHA_LICHESS_QUICK_DEPTH_FOUR:
       case CHA_CHASOLVER_EXCEPTIONS:
+      case CHA_VARIOUS:
       case CHA_PAWN_WALL_YES:
       case CHA_PAWN_WALL_NO:
       case CHA_SHALLOW_TERMINATION:
