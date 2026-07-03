@@ -249,9 +249,13 @@ class TestCommentaryLenient {
 
   @SuppressWarnings("static-method")
   @Test
-  void r4_braceBeforeBlackSan() {
-    expectError(PgnTestHelper.header("*") + "1. e4 {c1} {c2} e5 *\n\n",
-        LenientPgnParserValidationProblem.MOVETEXT_COMMENTARY_NOT_ALLOWED_IN_SAN);
+  void consecutiveCommentsAfterAMoveAreMergedNotRejected() {
+    // Two comments on one move are valid PGN and real-world common (lichess opens every analyzed game with
+    // `{ [%eval ...] [%clk ...] } { <opening name> }`); the lenient parser merges them rather than rejecting the
+    // second. (Before 22.0.0 this was MOVETEXT_COMMENTARY_NOT_ALLOWED_IN_SAN.)
+    final PgnGame game = LenientPgnParser.parseText(PgnTestHelper.header("*") + "1. e4 {c1} {c2} e5 *\n\n");
+    assertEquals(2, game.moves().size());
+    assertEquals("c1 c2", Nulls.getFirst(game.moves()).commentary().value());
   }
 
   @SuppressWarnings("static-method")

@@ -218,16 +218,22 @@ public final class LenientPgnParser {
         tags.add(parseTag());
         continue;
       }
-      // Any line still containing [ or ] is a tag-line candidate; report it rather than slip into movetext parsing.
-      if (currentLineContainsTagBracket(peek.line())) {
+      // A line carrying a [ or ] OUTSIDE any comment is a tag-line candidate (e.g. `Event "?"]` missing its opening
+      // bracket); report it rather than slip into movetext parsing. Brackets INSIDE a {...} comment or after a ;
+      // line-comment - a `[%eval ...]` / `[%clk ...]` command, as lichess and other tools emit - are movetext
+      // content, not a tag, and must not be misread here.
+      if (lineHasTopLevelTagBracket(peek.line())) {
         throw tagFormatError("A tag line with an invalid format was found on line " + peek.line() + ".");
       }
       return tags;
     }
   }
 
-  /** Returns true if line {@code lineNumber} (1-based) contains {@code [} or {@code ]}. */
-  private boolean currentLineContainsTagBracket(int lineNumber) {
+  /**
+   * Returns true if line {@code lineNumber} (1-based) contains a {@code [} or {@code ]} outside any {@code {...}}
+   * brace comment or {@code ;} rest-of-line comment.
+   */
+  private boolean lineHasTopLevelTagBracket(int lineNumber) {
     int index = 0;
     int currentLine = 1;
     while (currentLine < lineNumber && index < source.length()) {
@@ -242,12 +248,22 @@ public final class LenientPgnParser {
       }
       index++;
     }
+    int braceDepth = 0;
     while (index < source.length()) {
       final char c = source.charAt(index);
       if (c == '\n' || c == '\r') {
         break;
       }
-      if (c == '[' || c == ']') {
+      if (c == ';' && braceDepth == 0) {
+        break; // a rest-of-line comment; brackets after it are comment content
+      }
+      if (c == '{') {
+        braceDepth++;
+      } else if (c == '}') {
+        if (braceDepth > 0) {
+          braceDepth--;
+        }
+      } else if (braceDepth == 0 && (c == '[' || c == ']')) {
         return true;
       }
       index++;
@@ -407,6 +423,13 @@ public final class LenientPgnParser {
         continue;
       }
       if (type == PgnTokenType.SYMBOL) {
+        // A recursive annotation variation (RAV) opens with a `(`-led symbol. ashlar does not model variations (a
+        // rules library reads the game that was played, not the engine's side-lines - see specification.md); the
+        // lenient parser skips the balanced group and keeps the mainline.
+        if (peek.text().startsWith("(")) {
+          skipVariation();
+          continue;
+        }
         // Tolerate spaced move-number indicators like `1 . e4` and `1 ... e5` - see consumedSpacedMoveNumber.
         if (consumedSpacedMoveNumber(peek)) {
           continue;
@@ -414,11 +437,15 @@ public final class LenientPgnParser {
         final PgnMove move = parseMoveLenient();
         moves.add(move);
         skipInsignificantWhitespace();
-        if (isCommentToken(tokenizer.peek().type())) {
+        // Consume ALL consecutive comments after the move, merging their text. Real-world tools emit more than one:
+        // lichess opens every analyzed game with `{ [%eval ...] [%clk ...] } { <opening name> }`.
+        while (isCommentToken(tokenizer.peek().type())) {
           final PgnCommentary commentary = consumeCommentaryOrThrow();
           final int last = moves.size() - 1;
           final PgnMove previous = Nulls.get(moves, last);
-          moves.set(last, new PgnMove(previous.san(), previous.moveSuffixAnnotation(), commentary));
+          moves.set(last, new PgnMove(previous.san(), previous.moveSuffixAnnotation(),
+              mergeCommentary(previous.commentary(), commentary)));
+          skipInsignificantWhitespace();
         }
         continue;
       }
@@ -544,6 +571,50 @@ public final class LenientPgnParser {
     }
   }
 
+  /** Joins two commentaries with a single space, dropping either if empty. Used to merge consecutive comments. */
+  private static PgnCommentary mergeCommentary(PgnCommentary existing, PgnCommentary addition) {
+    if (existing.value().isEmpty()) {
+      return addition;
+    }
+    if (addition.value().isEmpty()) {
+      return existing;
+    }
+    return new PgnCommentary(existing.value() + " " + addition.value());
+  }
+
+  /**
+   * Skips a balanced parenthesised variation (RAV) that begins at the current {@code (}-led symbol token. Depth is
+   * counted over the {@code (} and {@code )} characters in the consumed tokens; comment tokens are consumed without
+   * scanning their content, so parentheses inside a {@code {...}} comment (e.g. lichess's {@code {(0.32 -> 1.41) ...}})
+   * do not affect the balance. Nested variations are handled by the depth counter. An unbalanced group (EOF reached
+   * with depth still open) stops gracefully.
+   */
+  private void skipVariation() {
+    int depth = 0;
+    while (true) {
+      final PgnToken token = tokenizer.peek();
+      if (token.type() == PgnTokenType.EOF) {
+        return;
+      }
+      tokenizer.next();
+      if (isCommentToken(token.type())) {
+        continue;
+      }
+      final String text = token.text();
+      for (int i = 0; i < text.length(); i++) {
+        final char c = text.charAt(i);
+        if (c == '(') {
+          depth++;
+        } else if (c == ')') {
+          depth--;
+        }
+      }
+      if (depth <= 0) {
+        return;
+      }
+    }
+  }
+
   private static boolean isBraceToken(PgnTokenType type) {
     return type == PgnTokenType.BRACE_COMMENT || type == PgnTokenType.BRACE_COMMENT_UNCLOSED
         || type == PgnTokenType.BRACE_STRAY_CLOSE;
@@ -566,7 +637,7 @@ public final class LenientPgnParser {
         tokenizer.next();
         continue;
       }
-      if (token.type() == PgnTokenType.TAG_BRACKET_OPEN || currentLineContainsTagBracket(token.line())) {
+      if (token.type() == PgnTokenType.TAG_BRACKET_OPEN || lineHasTopLevelTagBracket(token.line())) {
         throw tagReappearError();
       }
       throwIfBrokenBrace(token);
