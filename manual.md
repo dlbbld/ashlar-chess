@@ -381,10 +381,10 @@ The full side-specific verdict has three public outcomes:
 - `UNWINNABLE` means proven unwinnable.
 - `UNDETERMINED` means the full search stopped at its bound.
 
-When you call `UnwinnableFullAnalyzer` directly, `UnwinnabilityFullAnalysis` also tells you how a `WINNABLE` result was
-proved: `winnableProof()` returns `WinnableProof.THEOREM` for theorem-certified wins and `WinnableProof.HELPMATE` for
-searched wins (where `mateLine()` carries a concrete UCI helpmate line). The `Board.unwinnableFull(Side)` convenience
-method exposes only the public verdict.
+When you call `UnwinnableFullAnalyzer` directly, `UnwinnabilityFullAnalysis` also carries the proof of a `WINNABLE`
+result: `mateLine()` is the concrete UCI helpmate line the search exhibited (empty exactly when the submitted position
+is already a checkmate delivered by the intended winner - a zero-move helpmate). The `Board.unwinnableFull(Side)`
+convenience method exposes only the public verdict.
 
 Dead-position full uses its own whole-position vocabulary: `DEAD`, `ALIVE`, or `UNDETERMINED`.
 

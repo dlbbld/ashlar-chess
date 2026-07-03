@@ -292,15 +292,19 @@ implementations on *completeness* (who proves more) is therefore expected; diver
 
 Deliberate, clearly-layered additions — none alters the paper algorithms' verdict logic:
 
-- **Basic-helpmate-existence theorem shortcut** (`BasicHelpmateExistenceTheorem`, between the Figure 9 semi-static
-  step and the search): decides elementary mating-material classes (KRvK, KQvK, KBBvK opposite, KBNvK, KNNvK, KRvKB,
-  KRvKN, KRRvK, KQQvK) by ashlar's separately proven finite-state theorem instead of search. Verdicts are
-  theorem-certified (`WinnableProof.THEOREM`) and carry no mate line.
 - **Mate line** (`UnwinnabilityFullAnalysis.mateLine()`): the Figure 5 search records the exhibited helpmate line on
-  the unwind — bookkeeping only.
+  the unwind — bookkeeping only. A `WINNABLE` verdict is always search-proven and carries its witnessing line (empty
+  exactly for a zero-move helpmate, i.e. the submitted position is already the intended winner's checkmate).
 - **Three-valued quick verdict**: the paper's Figure 10 returns Winnable / Unwinnable / PossiblyWinnable; ashlar's
   `UnwinnabilityQuickVerdict` exposes exactly that (the pre-22.0.0 cha-port quick was two-valued and never claimed
   winnability).
+
+Ashlar's basic-helpmate-existence theorem (the separately proven finite-state decision of the elementary
+mating-material classes KRvK, KQvK, KBBvK opposite, KBNvK, KNNvK, KRvKB, KRvKN, KRRvK, KQQvK) was a production
+shortcut between the semi-static step and the search until early 22.0.0 development; it is now a **test-side oracle
+only** (`BasicHelpmateExistenceTheorem` in the test tree), so the production analyzer is Figure 9 pure. The agreement
+tests run the theorem over the curated elementary-material corpus and require the engine to answer `UNWINNABLE`
+wherever the theorem proves unwinnability and to exhibit a concrete helpmate wherever the theorem guarantees one.
 
 ---
 

@@ -13,9 +13,7 @@ import io.github.dlbbld.ashlarchess.internal.Nulls;
 // routine is sound on every definite verdict and, given large enough limits, complete; with the
 // finite budget below it may return UNDETERMINED.
 /**
- * The complete unwinnability analysis - the paper's Figure 9 main routine with one ashlar extension: after the
- * semi-static shortcut, elementary mating material is decided by the basic-helpmate-existence theorem instead of
- * search (see {@link BasicHelpmateExistenceTheorem}), so those verdicts are theorem-certified and carry no mate line.
+ * The complete unwinnability analysis - the paper's Figure 9 main routine.
  *
  * <p>
  * Defined for legal positions only; on an illegal position the result is undefined (and may differ from the quick
@@ -38,9 +36,8 @@ public final class UnwinnableFullAnalyzer {
    * <p>
    * Terminal positions are handled, not rejected (Figure 5 base cases): an already-checkmate position is
    * {@code WINNABLE} for the side that delivered mate - a zero-move helpmate, so
-   * {@link UnwinnabilityFullAnalysis#mateLine()} is empty and {@link UnwinnabilityFullAnalysis#winnableProof()} is
-   * {@link WinnableProof#HELPMATE} - and {@code UNWINNABLE} for the mated side; a stalemate is {@code UNWINNABLE} for
-   * both sides.
+   * {@link UnwinnabilityFullAnalysis#mateLine()} is empty - and {@code UNWINNABLE} for the mated side; a stalemate is
+   * {@code UNWINNABLE} for both sides.
    */
   public static UnwinnabilityFullAnalysis unwinnableFull(Board input, Side winner) {
     final Board board = copyCurrentPositionForFullSearch(input);
@@ -49,21 +46,7 @@ public final class UnwinnableFullAnalyzer {
     final SemiStaticPosition semiStaticPosition = SemiStaticPosition.fromBoard(board);
     if (UnwinnableSemiStatic.unwinnableSemiStatic(semiStaticPosition, winner,
         Mobility.mobility(semiStaticPosition))) {
-      return new UnwinnabilityFullAnalysis(UnwinnabilityFullVerdict.UNWINNABLE, WinnableProof.NONE, Nulls.listOf());
-    }
-
-    // Ashlar extension (not in the paper): for elementary mating material, decide winnability directly by the
-    // basic-helpmate-existence theorem instead of searching for a cooperative mate. The verdict is certified by the
-    // theorem, so no mate line accompanies a winnable result.
-    switch (BasicHelpmateExistenceTheorem.decide(board, winner)) {
-      case WINNABLE:
-        return new UnwinnabilityFullAnalysis(UnwinnabilityFullVerdict.WINNABLE, WinnableProof.THEOREM, Nulls.listOf());
-      case UNWINNABLE:
-        return new UnwinnabilityFullAnalysis(UnwinnabilityFullVerdict.UNWINNABLE, WinnableProof.NONE, Nulls.listOf());
-      case NOT_APPLICABLE:
-        break;
-      default:
-        throw new IllegalArgumentException();
+      return new UnwinnabilityFullAnalysis(UnwinnabilityFullVerdict.UNWINNABLE, Nulls.listOf());
     }
 
     // 2: for every d in N do (-> iterative deepening). The transposition table is per-iteration - see FindHelpmate
@@ -78,12 +61,11 @@ public final class UnwinnableFullAnalyzer {
 
       // 4: if b_d = true then return Winnable
       if (searchResult.helpmateFound()) {
-        return new UnwinnabilityFullAnalysis(UnwinnabilityFullVerdict.WINNABLE, WinnableProof.HELPMATE,
-            searchResult.mateLine());
+        return new UnwinnabilityFullAnalysis(UnwinnabilityFullVerdict.WINNABLE, searchResult.mateLine());
       }
       // 5-6: if the search was not interrupted then return Unwinnable
       if (!searchResult.interrupted()) {
-        return new UnwinnabilityFullAnalysis(UnwinnabilityFullVerdict.UNWINNABLE, WinnableProof.NONE, Nulls.listOf());
+        return new UnwinnabilityFullAnalysis(UnwinnabilityFullVerdict.UNWINNABLE, Nulls.listOf());
       }
       if (remainingNodes <= 0) {
         break; // global budget exhausted
@@ -91,7 +73,7 @@ public final class UnwinnableFullAnalyzer {
     }
 
     // Budget or depth ceiling reached without a definite verdict.
-    return new UnwinnabilityFullAnalysis(UnwinnabilityFullVerdict.UNDETERMINED, WinnableProof.NONE, Nulls.listOf());
+    return new UnwinnabilityFullAnalysis(UnwinnabilityFullVerdict.UNDETERMINED, Nulls.listOf());
   }
 
   private static Board copyCurrentPositionForFullSearch(Board input) {

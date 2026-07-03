@@ -16,6 +16,11 @@ ground-truth corpus, against the previous cha-port analyzer, and against Ambrona
 - **`UnwinnabilityQuickVerdict` gains `WINNABLE`** (paper Figure 10 is three-valued): the quick analysis now proves
   winnability on quickly matable positions instead of answering `POSSIBLY_WINNABLE`. Exhaustive switches over the
   enum need a new case; comparisons against `UNWINNABLE` (the adjudication use) are unaffected.
+- **`WinnableProof` is removed and `UnwinnabilityFullAnalysis` is now `(verdict, mateLine)`**: the
+  basic-helpmate-existence theorem no longer short-circuits the full analyzer (it lives on as a test-side oracle), so
+  every `WINNABLE` verdict is search-proven and `mateLine()` is its witness - empty exactly for a zero-move helpmate
+  (the submitted position is already the intended winner's checkmate). Elementary-material wins (KQvK, KRvK, KNNvK,
+  ...) therefore now carry concrete mate lines instead of a theorem certification.
 
 ### Behavioral
 
@@ -29,6 +34,12 @@ ground-truth corpus, against the previous cha-port analyzer, and against Ambrona
   kept. Resolution on hard positions may differ from the cha port in both directions (the paper and cha diverge on
   completeness, never soundness); the exhausted-budget fall-through now correctly answers `UNDETERMINED` where the
   old code could in principle over-claim `UNWINNABLE`.
+- **The basic-helpmate-existence theorem moved from production to the test suite.** The full analyzer is the paper's
+  Figure 9 with no theorem step; the theorem now certifies the engine in tests (agreement over the curated
+  elementary-material corpus: `UNWINNABLE` wherever the theorem proves unwinnability, a concrete helpmate wherever it
+  guarantees one). A side effect improves the out-of-domain story: on the known retro-illegal theorem
+  counterexamples, the full analyzer now proves `UNWINNABLE` by search exhaustion, agreeing with the quick analyzer
+  and chasolver - the previously documented full-vs-quick disagreement on those illegal positions is gone.
 
 ### Internal
 

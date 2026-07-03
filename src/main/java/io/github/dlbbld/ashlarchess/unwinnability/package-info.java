@@ -31,9 +31,8 @@
  * correct, and {@code POSSIBLY_WINNABLE} asserts nothing.</li>
  * <li><strong>Full</strong> ({@link io.github.dlbbld.ashlarchess.unwinnability.UnwinnableFullAnalyzer}) - the
  * paper's Figure 9: deep search, three-valued: {@code WINNABLE}, {@code UNWINNABLE}, or {@code UNDETERMINED}. The
- * direct analysis record additionally tells whether a {@code WINNABLE} result was theorem-certified and carries a
- * concrete mate line for searched wins. The undetermined case is bounded by a 500&nbsp;000-position limit; most
- * positions resolve well below it.</li>
+ * direct analysis record carries the concrete mate line witnessing a {@code WINNABLE} result. The undetermined case
+ * is bounded by a 500&nbsp;000-position limit; most positions resolve well below it.</li>
  * </ul>
  *
  * <p>
@@ -63,10 +62,9 @@
  * On an illegal position the result is undefined: it may be inaccurate, and the quick and full analyzers (or other
  * implementations of the same algorithms) may disagree. The verdict is still correct on the large majority of illegal
  * positions; only a small, known set of unreachable constructions is mis-decided - for example a checkmate delivered
- * by an impossible double-bishop check over otherwise insufficient material (called unwinnable), or the retro-illegal
- * basic-helpmate counterexamples {@code 8/8/8/8/2N5/8/k1K5/1B6 b} (KBNvK) and {@code 8/8/8/8/8/B7/B7/k1K5 w} (KBBvK),
- * genuinely unwinnable yet reported {@code WINNABLE} by the helpmate-existence shortcut. Such positions cannot occur
- * in a legally played game; they are of interest only for puzzles or position composition, which is out of scope.
+ * by an impossible double-bishop check over otherwise insufficient material (called unwinnable). Such positions
+ * cannot occur in a legally played game; they are of interest only for puzzles or position composition, which is out
+ * of scope.
  *
  * <h2>Analyzer entry points</h2>
  *

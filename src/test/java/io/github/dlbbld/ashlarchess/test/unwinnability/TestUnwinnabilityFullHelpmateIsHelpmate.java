@@ -25,7 +25,6 @@ import io.github.dlbbld.ashlarchess.test.pgntest.enums.PgnTest;
 import io.github.dlbbld.ashlarchess.unwinnability.UnwinnabilityFullAnalysis;
 import io.github.dlbbld.ashlarchess.unwinnability.UnwinnabilityFullVerdict;
 import io.github.dlbbld.ashlarchess.unwinnability.UnwinnableFullAnalyzer;
-import io.github.dlbbld.ashlarchess.unwinnability.WinnableProof;
 
 class TestUnwinnabilityFullHelpmateIsHelpmate {
   private static final Logger logger = Loggers.getLogger(TestUnwinnabilityFullHelpmateIsHelpmate.class);
@@ -42,7 +41,6 @@ class TestUnwinnabilityFullHelpmateIsHelpmate {
       final Side winner = board.getSideToMove();
       final UnwinnabilityFullAnalysis analysis = UnwinnableFullAnalyzer.unwinnableFull(board, winner);
       assertEquals(UnwinnabilityFullVerdict.WINNABLE, analysis.verdict(), fen);
-      assertEquals(WinnableProof.HELPMATE, analysis.winnableProof(), fen);
       assertHelpmateLine(fen, winner, analysis.mateLine());
     }
   }

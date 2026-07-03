@@ -29,9 +29,15 @@ Design decisions (agreed 2026-07-03):
   bounded DFS meets a mate for the intended winner before the first depth-`D` interrupt). Breaking change, allowed and
   documented in a major release; `Adjudicator`/`DeadPositionAnalyzer` compare against `UNWINNABLE` only and are
   unaffected.
-- **Ashlar extensions kept, clearly layered on top of the paper**: the `BasicHelpmateExistenceTheorem` shortcut
-  (ashlar's own theorem work, `WinnableProof.THEOREM`) and the mate line on searched wins
-  (`UnwinnabilityFullAnalysis.mateLine()`, mechanical bookkeeping in the Figure 5 search).
+- **Ashlar extensions kept, clearly layered on top of the paper**: the mate line on searched wins
+  (`UnwinnabilityFullAnalysis.mateLine()`, mechanical bookkeeping in the Figure 5 search). **Revised 2026-07-03
+  (user decision)**: the `BasicHelpmateExistenceTheorem` shortcut is OUT of production - the full analyzer is
+  Figure 9 pure - and the theorem lives on as a test-side oracle (agreement tests over the curated
+  elementary-material corpus). With it, `WinnableProof` is removed and `UnwinnabilityFullAnalysis` becomes
+  `(verdict, mateLine)`: every `WINNABLE` is search-proven with its witnessing line. Side effect: on the 19
+  retro-illegal theorem counterexamples the full analyzer now proves `UNWINNABLE` by exhausting the tiny caged
+  graphs - full, quick and chasolver agree even on that illegal input, retiring the documented out-of-domain
+  disagreement.
 - **Full = Figure 9 pure** plus the theorem step: semi-static shortcut → theorem → iterative deepening. The cha-specific
   forced-move pre-advance is dropped from the full analyzer (the search decides forced lines within budget); the quick
   analyzer keeps its forced-move advance because that is paper (Figure 10 step 1, loop-guarded per footnote a).

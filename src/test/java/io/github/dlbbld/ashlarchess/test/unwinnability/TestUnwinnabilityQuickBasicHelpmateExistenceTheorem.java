@@ -4,6 +4,7 @@
 package io.github.dlbbld.ashlarchess.test.unwinnability;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 import org.junit.jupiter.api.Test;
 
@@ -12,29 +13,35 @@ import io.github.dlbbld.ashlarchess.board.enums.Side;
 import io.github.dlbbld.ashlarchess.test.model.PgnFen;
 import io.github.dlbbld.ashlarchess.test.pgn.setup.PgnTestCaseCatalog;
 import io.github.dlbbld.ashlarchess.test.pgntest.enums.PgnTest;
+import io.github.dlbbld.ashlarchess.unwinnability.BasicHelpmateExistenceTheorem;
 import io.github.dlbbld.ashlarchess.unwinnability.UnwinnabilityQuickVerdict;
 
-// Basic-endgame helpmate-reachability theorem, White holding the mating material, checked against the quick analyzer.
-// The quick analysis is two-valued (UNWINNABLE / POSSIBLY_WINNABLE) and never claims winnability, so it both stays
-// sound and characterizes a known gap:
-//   - Forced-capture (theorem-unwinnable) positions: quick proves UNWINNABLE, by advancing the single forced capture
-//     into insufficient material.
-//   - Winnable positions: quick returns POSSIBLY_WINNABLE - it only proves unwinnability and never searches for the far
-//     helpmate, so it never contradicts the theorem (never UNWINNABLE on a winnable position).
+// The basic-helpmate-existence theorem as a test oracle against the quick analyzer. The quick analysis is sound and
+// deliberately incomplete, so the contract is one-directional:
+//   - theorem UNWINNABLE (forced capture into insufficient material): quick must prove UNWINNABLE - it advances the
+//     single forced capture and exhausts the insufficient-material leaves.
+//   - theorem WINNABLE: quick must never contradict (never UNWINNABLE); it may prove WINNABLE when it meets a mate
+//     before its first depth interrupt, or leave the position open as POSSIBLY_WINNABLE.
 class TestUnwinnabilityQuickBasicHelpmateExistenceTheorem {
 
   @SuppressWarnings("static-method")
   @Test
-  void quickIsSoundAndDecidesOnlyForcedCaptures() {
+  void quickIsSoundAgainstTheTheoremOracle() {
     for (final PgnFen testCase : PgnTestCaseCatalog.getTestList(PgnTest.CHA_BASIC_HELPMATE_EXISTENCE_THEOREM).list()) {
       final Board board = testCase.finalPosition();
-      final boolean theoremUnwinnable = board.getSideToMove() == Side.BLACK
-          && testCase.pgnName().contains("black_forced_to_capture");
       final UnwinnabilityQuickVerdict quick = board.unwinnableQuick(Side.WHITE);
-
-      final UnwinnabilityQuickVerdict expected = theoremUnwinnable ? UnwinnabilityQuickVerdict.UNWINNABLE
-          : UnwinnabilityQuickVerdict.POSSIBLY_WINNABLE;
-      assertEquals(expected, quick, testCase.pgnName());
+      switch (BasicHelpmateExistenceTheorem.decide(board, Side.WHITE)) {
+        case UNWINNABLE:
+          assertEquals(UnwinnabilityQuickVerdict.UNWINNABLE, quick, testCase.pgnName());
+          break;
+        case WINNABLE:
+          assertNotEquals(UnwinnabilityQuickVerdict.UNWINNABLE, quick, testCase.pgnName());
+          break;
+        case NOT_APPLICABLE:
+          throw new AssertionError(testCase.pgnName() + ": every curated fixture is a covered, ongoing position");
+        default:
+          throw new IllegalArgumentException();
+      }
     }
   }
 }

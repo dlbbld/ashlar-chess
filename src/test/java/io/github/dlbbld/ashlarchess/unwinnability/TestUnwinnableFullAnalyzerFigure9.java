@@ -11,9 +11,9 @@ import org.junit.jupiter.api.Test;
 import io.github.dlbbld.ashlarchess.board.Board;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
 
-// End-to-end checks of the full routine (Figure 9: semi-static shortcut + Find-Helpmate under iterative deepening,
-// plus ashlar's theorem extension), ported from the fun22-reference unit tests and adapted to the theorem shortcut
-// where it intercepts a covered material class.
+// End-to-end checks of the full routine (Figure 9: semi-static shortcut + Find-Helpmate under iterative deepening),
+// ported from the fun22-reference unit tests. Since the basic-helpmate-existence theorem moved to the test side,
+// every WINNABLE below is search-proven and carries a witnessing mate line.
 class TestUnwinnableFullAnalyzerFigure9 {
 
   private static UnwinnabilityFullAnalysis full(String fen, Side winner) {
@@ -34,7 +34,7 @@ class TestUnwinnableFullAnalyzerFigure9 {
     final String fen = "4k3/8/8/8/8/8/1Q6/4K3 w - - 0 1";
     final UnwinnabilityFullAnalysis whiteAnalysis = full(fen, Side.WHITE);
     assertEquals(UnwinnabilityFullVerdict.WINNABLE, whiteAnalysis.verdict());
-    assertEquals(WinnableProof.THEOREM, whiteAnalysis.winnableProof()); // KQvK is theorem-certified, no mate line
+    assertTrue(whiteAnalysis.mateLine().size() >= 2, "the deep queen helpmate is search-proven with a line");
     assertEquals(UnwinnabilityFullVerdict.UNWINNABLE, full(fen, Side.BLACK).verdict()); // Black is a bare king
   }
 
@@ -52,7 +52,6 @@ class TestUnwinnableFullAnalyzerFigure9 {
     // carries the one-move line.
     final UnwinnabilityFullAnalysis analysis = full("k7/8/1K6/8/8/8/8/1Q5R w - - 0 1", Side.WHITE);
     assertEquals(UnwinnabilityFullVerdict.WINNABLE, analysis.verdict());
-    assertEquals(WinnableProof.HELPMATE, analysis.winnableProof());
     assertEquals(1, analysis.mateLine().size());
   }
 
@@ -64,7 +63,6 @@ class TestUnwinnableFullAnalyzerFigure9 {
     final String fen = "k6R/8/1K6/8/8/8/8/8 b - - 0 1";
     final UnwinnabilityFullAnalysis whiteAnalysis = full(fen, Side.WHITE);
     assertEquals(UnwinnabilityFullVerdict.WINNABLE, whiteAnalysis.verdict());
-    assertEquals(WinnableProof.HELPMATE, whiteAnalysis.winnableProof());
     assertTrue(whiteAnalysis.mateLine().isEmpty());
     assertEquals(UnwinnabilityFullVerdict.UNWINNABLE, full(fen, Side.BLACK).verdict());
   }
@@ -81,13 +79,11 @@ class TestUnwinnableFullAnalyzerFigure9 {
   @SuppressWarnings("static-method")
   @Test
   void deepHelpmateNeedsTheFootnoteBRewardChain() {
-    // K+Q vs K+pawn: the loser's pawn keeps this outside every theorem class, so the search itself must exhibit the
-    // deep queen helpmate - which the bounded deepening only reaches with the Figure 5 footnote-b reward chaining
-    // (rewarding a Normal move that follows a Reward move). This is the end-to-end pin for that footnote and for
-    // the reward-chain-aware transposition key.
+    // K+Q vs K+pawn: the search must exhibit the deep queen helpmate - which the bounded deepening only reaches
+    // with the Figure 5 footnote-b reward chaining (rewarding a Normal move that follows a Reward move). This is
+    // the end-to-end pin for that footnote and for the reward-chain-aware transposition key.
     final UnwinnabilityFullAnalysis analysis = full("4k3/4p3/8/8/8/8/8/3QK3 w - - 0 1", Side.WHITE);
     assertEquals(UnwinnabilityFullVerdict.WINNABLE, analysis.verdict());
-    assertEquals(WinnableProof.HELPMATE, analysis.winnableProof());
     assertTrue(analysis.mateLine().size() >= 2);
   }
 
@@ -95,13 +91,14 @@ class TestUnwinnableFullAnalyzerFigure9 {
   @Test
   void twoKnightsAndOppositeBishopsRemainWinnable() {
     // Lemma 5/6 strictness end-to-end (TestMaterialLemmas pins the predicates themselves): two knights and
-    // opposite-coloured bishops CAN helpmate. Both classes are theorem-covered, so the verdicts are certified.
+    // opposite-coloured bishops CAN helpmate, so the search must exhibit the lines - a too-loose material leaf
+    // would wrongly prune these to UNWINNABLE.
     final UnwinnabilityFullAnalysis knights = full("k7/8/8/8/8/8/8/K5NN w - - 0 1", Side.WHITE);
     assertEquals(UnwinnabilityFullVerdict.WINNABLE, knights.verdict());
-    assertEquals(WinnableProof.THEOREM, knights.winnableProof());
+    assertTrue(knights.mateLine().size() >= 2);
 
     final UnwinnabilityFullAnalysis bishops = full("k7/8/8/8/8/8/8/K1B2B2 w - - 0 1", Side.WHITE);
     assertEquals(UnwinnabilityFullVerdict.WINNABLE, bishops.verdict());
-    assertEquals(WinnableProof.THEOREM, bishops.winnableProof());
+    assertTrue(bishops.mateLine().size() >= 2);
   }
 }

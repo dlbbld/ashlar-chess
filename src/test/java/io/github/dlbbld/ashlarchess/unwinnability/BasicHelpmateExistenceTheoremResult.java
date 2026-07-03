@@ -8,7 +8,7 @@ package io.github.dlbbld.ashlarchess.unwinnability;
  * covered material class (with the intended winner holding the mating material) or is a terminal position the regular
  * analysis should handle, so the caller must continue with the ordinary search.
  */
-enum BasicHelpmateExistenceTheoremResult {
+public enum BasicHelpmateExistenceTheoremResult {
   WINNABLE,
   UNWINNABLE,
   NOT_APPLICABLE;

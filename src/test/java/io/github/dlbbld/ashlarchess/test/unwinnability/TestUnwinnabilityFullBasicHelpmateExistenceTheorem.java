@@ -4,6 +4,7 @@
 package io.github.dlbbld.ashlarchess.test.unwinnability;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
@@ -13,32 +14,45 @@ import io.github.dlbbld.ashlarchess.board.enums.Side;
 import io.github.dlbbld.ashlarchess.test.model.PgnFen;
 import io.github.dlbbld.ashlarchess.test.pgn.setup.PgnTestCaseCatalog;
 import io.github.dlbbld.ashlarchess.test.pgntest.enums.PgnTest;
+import io.github.dlbbld.ashlarchess.unwinnability.BasicHelpmateExistenceTheorem;
 import io.github.dlbbld.ashlarchess.unwinnability.UnwinnabilityFullAnalysis;
 import io.github.dlbbld.ashlarchess.unwinnability.UnwinnabilityFullVerdict;
 import io.github.dlbbld.ashlarchess.unwinnability.UnwinnableFullAnalyzer;
-import io.github.dlbbld.ashlarchess.unwinnability.WinnableProof;
 
-// Basic-endgame helpmate-reachability theorem, White holding the mating material. The complete (full)
-// analyzer must reproduce the theorem on every fixture:
-//   White to move                                   -> White has a helpmate -> WINNABLE
-//   Black to move, forced to capture White material  -> no helpmate         -> UNWINNABLE
-//   Black to move, not forced to capture             -> White has a helpmate -> WINNABLE
+// The basic-helpmate-existence theorem as a test oracle (since 22.0.0 it no longer short-circuits the production
+// analyzer): over the curated elementary-material corpus the theorem decides every position by its proven
+// finite-state statement, and the FUN22 engine must agree - in particular it must answer UNWINNABLE wherever the
+// theorem proves unwinnability (the forced-capture case), and it must exhibit a concrete helpmate line wherever the
+// theorem guarantees a helpmate exists.
 class TestUnwinnabilityFullBasicHelpmateExistenceTheorem {
 
   @SuppressWarnings("static-method")
   @Test
-  void fullVerdictMatchesTheorem() {
+  void fullVerdictAgreesWithTheTheoremOracle() {
+    int theoremWinnable = 0;
+    int theoremUnwinnable = 0;
     for (final PgnFen testCase : PgnTestCaseCatalog.getTestList(PgnTest.CHA_BASIC_HELPMATE_EXISTENCE_THEOREM).list()) {
       final Board board = testCase.finalPosition();
-      final UnwinnabilityFullVerdict expected = board.getSideToMove() == Side.BLACK
-          && testCase.pgnName().contains("black_forced_to_capture") ? UnwinnabilityFullVerdict.UNWINNABLE
-              : UnwinnabilityFullVerdict.WINNABLE;
       final UnwinnabilityFullAnalysis analysis = UnwinnableFullAnalyzer.unwinnableFull(board, Side.WHITE);
-      assertEquals(expected, analysis.verdict(), testCase.pgnName());
-      if (expected == UnwinnabilityFullVerdict.WINNABLE) {
-        assertEquals(WinnableProof.THEOREM, analysis.winnableProof(), testCase.pgnName());
-        assertTrue(analysis.mateLine().isEmpty(), testCase.pgnName());
+      switch (BasicHelpmateExistenceTheorem.decide(board, Side.WHITE)) {
+        case WINNABLE:
+          theoremWinnable++;
+          assertEquals(UnwinnabilityFullVerdict.WINNABLE, analysis.verdict(), testCase.pgnName());
+          assertFalse(analysis.mateLine().isEmpty(),
+              testCase.pgnName() + ": the theorem guarantees a helpmate; the search must exhibit one");
+          break;
+        case UNWINNABLE:
+          theoremUnwinnable++;
+          assertEquals(UnwinnabilityFullVerdict.UNWINNABLE, analysis.verdict(), testCase.pgnName());
+          break;
+        case NOT_APPLICABLE:
+          throw new AssertionError(testCase.pgnName() + ": every curated fixture is a covered, ongoing position");
+        default:
+          throw new IllegalArgumentException();
       }
     }
+    // Both theorem branches must actually be exercised by the corpus.
+    assertTrue(theoremWinnable > 0 && theoremUnwinnable > 0,
+        "corpus lost a theorem branch: winnable=" + theoremWinnable + " unwinnable=" + theoremUnwinnable);
   }
 }

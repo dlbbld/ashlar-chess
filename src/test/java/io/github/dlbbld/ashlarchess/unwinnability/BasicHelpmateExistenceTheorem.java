@@ -12,8 +12,11 @@ import io.github.dlbbld.ashlarchess.board.enums.Piece;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
 
 /**
- * Finite-state basic-helpmate-existence theorem, used as a sound shortcut inside the complete unwinnability analysis so
- * it does not have to rediscover a long cooperative mating line for elementary material.
+ * Finite-state basic-helpmate-existence theorem. Since 22.0.0 this is a <b>test-side oracle only</b>: the production
+ * analyzer follows the FUN 2022 paper's Figure 9 exactly (semi-static shortcut + Find-Helpmate search) and no longer
+ * takes a theorem shortcut; the theorem instead certifies, in the test suite, that the paper engine's verdicts agree
+ * with the proven theorem on every covered elementary-material position (in particular that the engine answers
+ * {@code UNWINNABLE} wherever the theorem proves unwinnability).
  *
  * <p>
  * The theorem was proved by exhaustive retrograde enumeration of the local legal state graph for each covered material
@@ -46,12 +49,11 @@ import io.github.dlbbld.ashlarchess.board.enums.Side;
  * on any input.
  *
  * <p>
- * <b>No witness line.</b> A winnable decision here is certified by the theorem, not by an explicit mating sequence, so
- * callers receive a {@code WINNABLE} verdict whose analysis is marked theorem-certified and carries no move line. This
- * is intentional: the line is not needed for the dead-position verdict and would otherwise require the very search this
- * shortcut avoids.
+ * <b>No witness line.</b> A winnable decision here is certified by the theorem, not by an explicit mating sequence -
+ * which is exactly what makes it a useful independent oracle: the agreement tests check that the search-based engine
+ * exhibits a concrete helpmate wherever the theorem guarantees one exists.
  */
-final class BasicHelpmateExistenceTheorem {
+public final class BasicHelpmateExistenceTheorem {
 
   private BasicHelpmateExistenceTheorem() {
   }
@@ -61,7 +63,7 @@ final class BasicHelpmateExistenceTheorem {
    * not in a covered class with {@code winner} as the mating side, or is a terminal (checkmate/stalemate) position
    * better handled by the regular analysis.
    */
-  static BasicHelpmateExistenceTheoremResult decide(Board board, Side winner) {
+  public static BasicHelpmateExistenceTheoremResult decide(Board board, Side winner) {
     final BitboardPosition position = board.getBitboardPosition();
     final boolean isTwoMajorClass = isTwoMajorWinnableClass(position, winner);
     if (!isTwoMajorClass && !isMainTheoremClass(position, winner)) {
