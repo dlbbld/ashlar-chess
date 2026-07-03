@@ -18,6 +18,7 @@ import io.github.dlbbld.ashlarchess.pgn.PgnGame;
 import io.github.dlbbld.ashlarchess.pgn.StrictPgnParser;
 import io.github.dlbbld.ashlarchess.pgn.StrictPgnParserValidationException;
 import io.github.dlbbld.ashlarchess.pgn.StrictPgnParserValidationProblem;
+import io.github.dlbbld.ashlarchess.pgn.WriteMode;
 import io.github.dlbbld.ashlarchess.test.PgnTestHelper;
 
 /**
@@ -65,6 +66,18 @@ class TestPgnAnnotationEdgeCases {
     // "?!?" is not one of the six glyphs; lenient drops the unrecognised run rather than failing.
     final PgnGame game = lenient("1. e4?!? e5 *");
     assertEquals(List.of(), Nulls.getFirst(game.moves()).nags());
+  }
+
+  @SuppressWarnings("static-method")
+  @Test
+  void nonNumericNagIsDroppedLenientlyAsOneToken() {
+    // `$abc` and `$1x` are captured whole as malformed NAG tokens (the trailing letters do NOT spill out as a bad
+    // SAN); lenient drops them and the game still parses.
+    final PgnGame game = lenient("1. e4 $abc e5 $1x 2. Nf3 Nc6 *");
+    assertEquals(4, game.moves().size());
+    for (int i = 0; i < 4; i++) {
+      assertEquals(List.of(), Nulls.get(game.moves(), i).nags(), "move " + i);
+    }
   }
 
   // -----------------------------------------------------------------------------------------------------------------
@@ -162,6 +175,12 @@ class TestPgnAnnotationEdgeCases {
     assertStrictProblem("1. e4 (1. d4 d5) e5 *", StrictPgnParserValidationProblem.MOVETEXT_SAN_CHARACTER_INVALID);
   }
 
+  @SuppressWarnings("static-method")
+  @Test
+  void strictRejectsANonNumericNag() {
+    assertStrictProblem("1. e4 $abc e5 *", StrictPgnParserValidationProblem.MOVETEXT_NAG_INVALID);
+  }
+
   // -----------------------------------------------------------------------------------------------------------------
   // Round-trip rendering
   // -----------------------------------------------------------------------------------------------------------------
@@ -173,6 +192,25 @@ class TestPgnAnnotationEdgeCases {
     final String pgn = PgnCreate.toPgnString(game);
     final String movetext = Nulls.substring(pgn, pgn.indexOf("1. ")).trim();
     assertEquals("1. e4 $0 e5 $255 2. Nf3 $9 Nc6 *", movetext);
+  }
+
+  @SuppressWarnings("static-method")
+  @Test
+  void onlyTheFirstAssessmentNagBecomesAGlyphOnSemanticExport() {
+    // With two assessment codes plus a positional one, only the first assessment ($1) is rendered as a glyph; the
+    // second assessment ($2) and the positional ($14) stay as $N. Two glyphs would fuse ambiguously.
+    final PgnGame game = lenient("1. Nf3 $1 $2 $14 d5 *");
+    final String pgn = PgnCreate.toPgnString(game);
+    assertEquals("1. Nf3! $2 $14 d5 *", Nulls.substring(pgn, pgn.indexOf("1. ")).trim());
+  }
+
+  @SuppressWarnings("static-method")
+  @Test
+  void archivalExportWritesEveryNagAsADollarTokenIncludingAssessments() {
+    // Archival is PGN export-format conformant (spec 8.2.3.8): assessment codes 1..6 are written as $N, not glyphs.
+    final PgnGame game = lenient("1. e4? e5 $9 2. Nf3 $1 $2 $14 Nc6 *");
+    final String pgn = PgnCreate.toPgnString(game, WriteMode.ARCHIVAL);
+    assertEquals("1. e4 $2 e5 $9 2. Nf3 $1 $2 $14 Nc6 *", Nulls.substring(pgn, pgn.indexOf("1. ")).trim());
   }
 
   @SuppressWarnings("static-method")

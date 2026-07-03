@@ -51,7 +51,7 @@ public final class PgnCreate {
   public static List<String> toPgnLines(PgnGame pgnGame, WriteMode writeMode) {
     final PgnGame effective = writeMode == WriteMode.ARCHIVAL ? PgnArchivalNormalization.apply(pgnGame) : pgnGame;
     return Nulls.copyOfList(calculateFileLines(effective.tags(), effective.pregameCommentary(), effective.startFen(),
-        effective.moves(), effective.terminationMarker()));
+        effective.moves(), effective.terminationMarker(), writeMode));
   }
 
   private static String appendEmptyLine(String text) {
@@ -59,7 +59,7 @@ public final class PgnCreate {
   }
 
   private static List<String> calculateFileLines(List<Tag> tags, PgnCommentary pregameCommentary, Fen startFen,
-      List<PgnMove> moves, @Nullable ResultTagValue terminationMarker) {
+      List<PgnMove> moves, @Nullable ResultTagValue terminationMarker, WriteMode writeMode) {
 
     final List<String> fileLines = new ArrayList<>();
     for (final Tag tag : tags) {
@@ -72,7 +72,7 @@ public final class PgnCreate {
     }
 
     final String movetext = calculateMovetextWithoutGameTerminationMarker(startFen.fullMoveNumber(),
-        startFen.sideToMove(), moves);
+        startFen.sideToMove(), moves, writeMode);
 
     // PgnCommentary is contract-validated (no `}`, no `\r`), so the value writes verbatim into {...}.
     final String pregameCommentaryValue = pregameCommentary.value();
@@ -162,7 +162,7 @@ public final class PgnCreate {
   }
 
   private static String calculateMovetextWithoutGameTerminationMarker(int fullMoveNumber, Side sideToMove,
-      List<PgnMove> moves) {
+      List<PgnMove> moves, WriteMode writeMode) {
 
     final StringBuilder result = new StringBuilder();
 
@@ -188,7 +188,7 @@ public final class PgnCreate {
 
       final String san = move.san();
       result.append(" ").append(san);
-      appendNags(result, move.nags());
+      appendNags(result, move.nags(), writeMode);
 
       final String commentaryValue = move.commentary().value();
       if (!commentaryValue.isEmpty()) {
@@ -207,19 +207,30 @@ public final class PgnCreate {
   }
 
   /**
-   * Renders a move's NAGs. The first move-assessment NAG (code 1..6) is written as its readable suffix glyph attached
-   * directly to the SAN ({@code e4?}); every other NAG is written as a spaced {@code $N} token ({@code e4 $14}). Codes
-   * without a glyph shorthand always take the {@code $N} form, and at most one glyph is attached so the output stays
-   * unambiguous (two glyphs would fuse - {@code ?}+{@code !} would read as {@code ?!}).
+   * Renders a move's NAGs, in one of two forms.
+   *
+   * <p>
+   * <b>Archival</b> ({@link WriteMode#ARCHIVAL}) is PGN export-format conformant (spec section 8.2.3.8, which defines
+   * the suffix glyphs as import-only shorthand for NAGs): <em>every</em> NAG is written as a spaced {@code $N} token,
+   * including the assessment codes {@code 1..6}, so {@code e4?} exports as {@code e4 $2}.
+   *
+   * <p>
+   * <b>Semantic</b> (the default) favours human readability and idempotent re-parsing over strict export conformance:
+   * the <em>first</em> assessment NAG (code {@code 1..6}) is written as its glyph attached to the SAN ({@code e4?}) and
+   * every other NAG - a second assessment code, {@code $0}, or any positional code - as a spaced {@code $N}. At most
+   * one glyph is attached so the output stays unambiguous (two fused glyphs, e.g. {@code ?}+{@code !}, would read as the
+   * single glyph {@code ?!}).
    */
-  private static void appendNags(StringBuilder result, List<Nag> nags) {
+  private static void appendNags(StringBuilder result, List<Nag> nags, WriteMode writeMode) {
     int glyphIndex = -1;
-    for (int i = 0; i < nags.size(); i++) {
-      final MoveSuffixAnnotation glyph = MoveSuffixAnnotation.fromNagCode(Nulls.get(nags, i).code());
-      if (glyph != null) {
-        result.append(glyph.getSuffix());
-        glyphIndex = i;
-        break;
+    if (writeMode != WriteMode.ARCHIVAL) {
+      for (int i = 0; i < nags.size(); i++) {
+        final MoveSuffixAnnotation glyph = MoveSuffixAnnotation.fromNagCode(Nulls.get(nags, i).code());
+        if (glyph != null) {
+          result.append(glyph.getSuffix());
+          glyphIndex = i;
+          break;
+        }
       }
     }
     for (int i = 0; i < nags.size(); i++) {

@@ -612,14 +612,19 @@ Lenient PGN routes its `FEN` tag through lenient FEN. Strict PGN routes the `FEN
 
 ### Limitations
 
-PGN support intentionally does not include:
+PGN support intentionally does not model:
 
-- recursive annotation variations;
-- Numeric Annotation Glyphs such as `$1`;
+- recursive annotation variations (RAV): the lenient parser tolerates and skips them to keep the mainline, and the
+  strict parser rejects them — ashlar reads the game that was played, not engine side-lines;
 - multi-game PGN files.
 
-UTF-8 byte-order marks are accepted by the lenient parser and rejected by the strict parser. PGN move suffix annotations
-(`!`, `?`, `!!`, `??`, `!?`, `?!`) are parsed, modeled, and round-tripped by both parsers.
+UTF-8 byte-order marks are accepted by the lenient parser and rejected by the strict parser.
+
+Move annotations are supported and modeled. Both the six suffix glyphs (`!`, `?`, `!!`, `??`, `!?`, `?!`) and Numeric
+Annotation Glyphs (`$0`–`$255`) are parsed, preserved, and round-tripped by both parsers. Per the PGN standard
+(section 8.2.3.8) the glyphs are import shorthand for NAG codes `1`–`6`, so ashlar folds both into one `Nag` list per
+move — `e4?` and `e4 $2` are the same annotation. Semantic (default) export writes the first assessment NAG as its
+readable glyph; archival export (`WriteMode.ARCHIVAL`) writes every NAG as `$N`, matching the PGN export format.
 
 ### Parse Model
 

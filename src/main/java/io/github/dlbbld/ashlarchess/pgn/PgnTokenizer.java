@@ -200,9 +200,12 @@ final class PgnTokenizer {
   }
 
   private PgnToken readNag(int line, int column) {
+    // A NAG is `$` + digits. Consume any trailing letters too (not just digits) so a malformed lexeme like `$abc` or
+    // `$1x` surfaces as one NAG token the parser can reject/drop whole, rather than leaving letters to be misread as a
+    // SAN. Stop at punctuation/whitespace so a NAG glued to `*`, `)`, `+` etc. still splits (`$9*` -> `$9`, `*`).
     final StringBuilder text = new StringBuilder();
     text.append((char) stream.read()); // leading '$'
-    while (isAsciiDigit(stream.peek())) {
+    while (isAsciiDigit(stream.peek()) || isAsciiLetter(stream.peek())) {
       text.append((char) stream.read());
     }
     return new PgnToken(PgnTokenType.NAG, Nulls.toString(text), line, column);
@@ -277,5 +280,9 @@ final class PgnTokenizer {
 
   private static boolean isAsciiDigit(int c) {
     return c >= '0' && c <= '9';
+  }
+
+  private static boolean isAsciiLetter(int c) {
+    return c >= 'a' && c <= 'z' || c >= 'A' && c <= 'Z';
   }
 }
