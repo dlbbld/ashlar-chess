@@ -36,7 +36,7 @@ import io.github.dlbbld.ashlarchess.internal.Nulls;
  * depth-cut visit coexists with the raised flag, so that iteration can no longer claim {@code UNWINNABLE}. A stale
  * entry from an earlier, depth-cut iteration would prune a later iteration's node WITHOUT re-raising its interrupt
  * flag, letting the later iteration believe it exhausted the tree while cut lines hide behind the prune - a
- * potential false {@code UNWINNABLE}. (Discovered via a Codex review finding on the transposition key.)
+ * potential false {@code UNWINNABLE}.
  */
 final class FindHelpmate {
 
@@ -84,7 +84,7 @@ final class FindHelpmate {
 
     // Steps 5-6: depth-aware transposition table - skip a position already searched with at least this budget. The
     // reward-chain flag is part of the key: a visit with the footnote-b boost pending explores a strictly stronger
-    // budget shape than one without, so the two states must not prune each other (Codex review finding).
+    // budget shape than one without, so the two states must not prune each other.
     final TranspositionKey key = keyOf(board, placement, previousWasReward);
     final Integer seenBudget = transpositionTable.get(key);
     if (seenBudget != null && seenBudget >= remainingBudget) {

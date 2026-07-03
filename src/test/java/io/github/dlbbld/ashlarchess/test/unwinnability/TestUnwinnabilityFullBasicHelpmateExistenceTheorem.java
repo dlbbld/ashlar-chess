@@ -7,10 +7,14 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.util.List;
+
 import org.junit.jupiter.api.Test;
 
 import io.github.dlbbld.ashlarchess.board.Board;
+import io.github.dlbbld.ashlarchess.board.UciMove;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
+import io.github.dlbbld.ashlarchess.board.internal.UciMoveUtility;
 import io.github.dlbbld.ashlarchess.test.model.PgnFen;
 import io.github.dlbbld.ashlarchess.test.pgn.setup.PgnTestCaseCatalog;
 import io.github.dlbbld.ashlarchess.test.pgntest.enums.PgnTest;
@@ -40,6 +44,7 @@ class TestUnwinnabilityFullBasicHelpmateExistenceTheorem {
           assertEquals(UnwinnabilityFullVerdict.WINNABLE, analysis.verdict(), testCase.pgnName());
           assertFalse(analysis.mateLine().isEmpty(),
               testCase.pgnName() + ": the theorem guarantees a helpmate; the search must exhibit one");
+          assertHelpmateLine(testCase.finalFen(), analysis.mateLine(), testCase.pgnName());
           break;
         case UNWINNABLE:
           theoremUnwinnable++;
@@ -54,5 +59,15 @@ class TestUnwinnabilityFullBasicHelpmateExistenceTheorem {
     // Both theorem branches must actually be exercised by the corpus.
     assertTrue(theoremWinnable > 0 && theoremUnwinnable > 0,
         "corpus lost a theorem branch: winnable=" + theoremWinnable + " unwinnable=" + theoremUnwinnable);
+  }
+
+  /** The exhibited line, replayed from the position, must end in a checkmate delivered by White. */
+  private static void assertHelpmateLine(String fen, List<UciMove> mateLine, String pgnName) {
+    final Board board = Board.fromFenStrict(fen);
+    for (final UciMove uciMove : mateLine) {
+      board.move(UciMoveUtility.toMoveSpecification(board, uciMove));
+    }
+    assertEquals(Side.BLACK, board.getSideToMove(), pgnName + ": the mate must be delivered by White");
+    assertTrue(board.isCheckmate(), pgnName + ": the exhibited line must end in checkmate");
   }
 }

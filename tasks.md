@@ -22,9 +22,9 @@ are deleted. The governing document is the clean-room spec (`fun22-spec.md`, bro
 
 Design decisions (agreed 2026-07-03):
 
-- **Public API kept**: the 10 exported types stay (`UnwinnableFullAnalyzer`, `UnwinnableQuickAnalyzer`,
-  `DeadPositionAnalyzer`, the two analysis records, the four verdict enums, `WinnableProof`). Everything package-private
-  is swapped wholesale.
+- **Public API kept** (final state): `UnwinnableFullAnalyzer`, `UnwinnableQuickAnalyzer`, `DeadPositionAnalyzer`,
+  the two analysis records and the four verdict enums stay; `WinnableProof` was later removed together with the
+  theorem relocation (see the revised extensions bullet below). Everything package-private is swapped wholesale.
 - **Quick becomes three-valued** (paper Figure 10): `UnwinnabilityQuickVerdict` gains `WINNABLE` (fires when the
   bounded DFS meets a mate for the intended winner before the first depth-`D` interrupt). Breaking change, allowed and
   documented in a major release; `Adjudicator`/`DeadPositionAnalyzer` compare against `UNWINNABLE` only and are
@@ -38,9 +38,10 @@ Design decisions (agreed 2026-07-03):
   retro-illegal theorem counterexamples the full analyzer now proves `UNWINNABLE` by exhausting the tiny caged
   graphs - full, quick and chasolver agree even on that illegal input, retiring the documented out-of-domain
   disagreement.
-- **Full = Figure 9 pure** plus the theorem step: semi-static shortcut → theorem → iterative deepening. The cha-specific
-  forced-move pre-advance is dropped from the full analyzer (the search decides forced lines within budget); the quick
-  analyzer keeps its forced-move advance because that is paper (Figure 10 step 1, loop-guarded per footnote a).
+- **Full = Figure 9 pure**: semi-static shortcut → iterative deepening (the interim theorem step was removed with
+  the theorem relocation - see the revised extensions bullet below). The cha-specific forced-move pre-advance is
+  dropped from the full analyzer (the search decides forced lines within budget); the quick analyzer keeps its
+  forced-move advance because that is paper (Figure 10 step 1, loop-guarded per footnote a).
 - **Budget envelope kept from 21.x**: 500 000 global node budget across deepening iterations (the paper leaves
   `bound(d)` as a parameter), depth cap 100, per-iteration node bound = remaining global budget. Transposition table
   is **per-iteration, and the key includes the footnote-b reward-chain flag** (final state after the Codex review:

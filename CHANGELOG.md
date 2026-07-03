@@ -29,11 +29,10 @@ ground-truth corpus, against the previous cha-port analyzer, and against Ambrona
   `quick_analysis` heuristics. Some verdicts move between `UNWINNABLE` and `POSSIBLY_WINNABLE` in both directions;
   definite verdicts remain sound.
 - **Full analysis follows the paper's Figure 9** (semi-static shortcut, then Find-Helpmate under iterative
-  deepening with the Figure 12/13 heuristics and the Figure 5 footnote-b reward chaining). The
-  basic-helpmate-existence theorem shortcut, the mate line on searched wins, and the 500 000-node global budget are
-  kept. Resolution on hard positions may differ from the cha port in both directions (the paper and cha diverge on
-  completeness, never soundness); the exhausted-budget fall-through now correctly answers `UNDETERMINED` where the
-  old code could in principle over-claim `UNWINNABLE`.
+  deepening with the Figure 12/13 heuristics and the Figure 5 footnote-b reward chaining); the mate line on wins and
+  the 500 000-node global budget are kept. Resolution on hard positions may differ from the cha port in both
+  directions (the paper and cha diverge on completeness, never soundness); the exhausted-budget fall-through now
+  correctly answers `UNDETERMINED` where the old code could in principle over-claim `UNWINNABLE`.
 - **The basic-helpmate-existence theorem moved from production to the test suite.** The full analyzer is the paper's
   Figure 9 with no theorem step; the theorem now certifies the engine in tests (agreement over the curated
   elementary-material corpus: `UNWINNABLE` wherever the theorem proves unwinnability, a concrete helpmate wherever it
