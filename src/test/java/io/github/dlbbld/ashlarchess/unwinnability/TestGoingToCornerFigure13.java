@@ -12,7 +12,7 @@ import io.github.dlbbld.ashlarchess.board.Board;
 import io.github.dlbbld.ashlarchess.board.MoveSpecification;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
 
-// Direct unit tests for the Figure 13 Going-to-corner heuristic (fun22-spec.md section 6): only slow pieces (king,
+// Direct unit tests for the Figure 13 Going-to-corner heuristic (fun22-spec.pdf section 6): only slow pieces (king,
 // knight) qualify, the mating corner follows the bishop square colours, and the target is rotated 180 degrees for a
 // Black winner.
 class TestGoingToCornerFigure13 {

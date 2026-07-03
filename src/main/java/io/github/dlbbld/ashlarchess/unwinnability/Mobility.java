@@ -9,7 +9,7 @@ import io.github.dlbbld.ashlarchess.board.enums.Side;
 // Figure 7 Algorithm for over-approximating the mobility of all pieces in a given position. The
 // output solution is admissible: M >= M* where M* is the true mobility (Lemma 8 / Corollary 9).
 /**
- * The mobility over-approximation - the Figure 7 fixpoint over the Figure 6 implications (see {@code fun22-spec.md}
+ * The mobility over-approximation - the Figure 7 fixpoint over the Figure 6 implications (see {@code fun22-spec.pdf}
  * section 2). Given a position it returns, for every piece {@code P} and square {@code s}, whether {@code P} can
  * <em>eventually</em> move to {@code s} (variable {@code M[P][s]}). The result is <em>admissible</em>: it never reports
  * a square unreachable that is in fact reachable, which is what makes the composed semi-static check (Theorem 12)

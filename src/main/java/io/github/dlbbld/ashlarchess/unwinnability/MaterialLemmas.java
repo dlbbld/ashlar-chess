@@ -9,7 +9,7 @@ import io.github.dlbbld.ashlarchess.board.enums.Side;
 /**
  * Material predicates used by the Find-Helpmate search and the quick analysis: the paper's Lemmas 5/6 and the Figure
  * 12 Score material condition. Pure counting over the per-piece bitboards, derived from the paper
- * ({@code fun22-spec.md}); the same proven lemmas the retired cha-port material predicate encoded.
+ * ({@code fun22-spec.pdf}); the same proven lemmas the retired cha-port material predicate encoded.
  *
  * <ul>
  * <li><b>Lemma 5</b>: a pawn-free position is unwinnable for a player with just a knight if the opponent has no

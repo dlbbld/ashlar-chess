@@ -91,6 +91,6 @@ for the full text.
 
 The unwinnability and dead-position detection is ashlar's own implementation of Miguel Ambrona's FUN 2022 paper
 [*A Practical Algorithm for Chess Unwinnability*](https://chasolver.org/FUN22-full.pdf), governed by the committed
-specification [`fun22-spec.md`](fun22-spec.md). It is intended to be faithful to the paper, not a port of Ambrona's
+specification [`fun22-spec.pdf`](fun22-spec.pdf). It is intended to be faithful to the paper, not a port of Ambrona's
 C++ `D3-Chess`/`cha` or Rust [`chasolver`](https://github.com/miguel-ambrona/chasolver); those implementations and
 their verdicts are used only as cross-validation oracles and test fixtures.

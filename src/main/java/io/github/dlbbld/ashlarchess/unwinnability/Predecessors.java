@@ -8,7 +8,7 @@ import io.github.dlbbld.ashlarchess.board.enums.Side;
 import io.github.dlbbld.ashlarchess.exceptions.ProgrammingMistakeException;
 
 /**
- * The paper's {@code predP(s)} and {@code pred-captP(s)} sets ({@code fun22-spec.md} section 1.1), shared by
+ * The paper's {@code predP(s)} and {@code pred-captP(s)} sets ({@code fun22-spec.pdf} section 1.1), shared by
  * {@link Mobility} (Figure 6/7) and {@link UnwinnableSemiStatic} (Figure 8's {@code att-region}). Pure geometry keyed
  * by piece type/side and target square. Sliders use only the adjacent squares (&beta;/&alpha;/&delta;); long slides
  * emerge stepwise from the Figure 7 fixpoint.

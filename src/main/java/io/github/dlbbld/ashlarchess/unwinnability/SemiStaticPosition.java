@@ -17,7 +17,7 @@ import io.github.dlbbld.ashlarchess.exceptions.ProgrammingMistakeException;
 import io.github.dlbbld.ashlarchess.internal.Nulls;
 
 /**
- * A chess position as the semi-static analysis sees it ({@code fun22-spec.md} section 1): the set of pieces plus
+ * A chess position as the semi-static analysis sees it ({@code fun22-spec.pdf} section 1): the set of pieces plus
  * the two preconditions that {@link UnwinnableSemiStatic} step 1 checks (castling rights present, en passant
  * possible). Pieces occupy distinct squares.
  *

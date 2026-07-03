@@ -1,0 +1,339 @@
+% Copyright (C) 2020-2026 Daniel Baechli
+% SPDX-License-Identifier: GPL-3.0-only
+%
+% Build (no LaTeX install needed beyond a TeX engine): `tectonic fun22-spec.tex`
+% produces fun22-spec.pdf. Tectonic uses the XeTeX engine, so the Unicode chess
+% and math notation below is typeset directly.
+\documentclass[11pt]{article}
+
+\usepackage[a4paper,margin=2.4cm]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{booktabs}
+\usepackage{fontspec}
+\usepackage{unicode-math}
+% Latin Modern is bundled with tectonic; resolve the OTFs by file name so no system-font install is needed.
+\setmainfont{lmroman10-regular.otf}[
+  BoldFont = lmroman10-bold.otf,
+  ItalicFont = lmroman10-italic.otf,
+  BoldItalicFont = lmroman10-bolditalic.otf ]
+\setmonofont{lmmono10-regular.otf}[ BoldFont = lmmonolt10-bold.otf ]
+\setmathfont{latinmodern-math.otf}
+\usepackage{enumitem}
+\usepackage[dvipsnames]{xcolor}
+\usepackage[colorlinks=true,linkcolor=RoyalBlue,urlcolor=RoyalBlue]{hyperref}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+
+\newcommand{\code}[1]{\texttt{#1}}
+
+\titleformat{\section}{\normalfont\Large\bfseries\color{RoyalBlue!70!black}}{\thesection.}{0.6em}{}
+\titleformat{\subsection}{\normalfont\large\bfseries}{\thesubsection}{0.6em}{}
+
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\small FUN22 unwinnability --- specification}
+\rhead{\small ashlar-chess}
+\cfoot{\thepage}
+\renewcommand{\headrulewidth}{0.2pt}
+
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}{Lemma}
+\newtheorem{corollary}{Corollary}
+\theoremstyle{definition}
+\newtheorem{note}{Note}
+
+% Semantic shorthands for the recurring sets and predicates.
+\newcommand{\pos}{\mathit{pos}}
+\newcommand{\sq}{\mathit{sq}}
+\newcommand{\predP}{\mathrm{pred}_P}
+\newcommand{\predcaptP}{\mathrm{pred\text{-}capt}_P}
+\newcommand{\prom}{\mathrm{prom}}
+\newcommand{\attackers}{\mathrm{attackers}}
+\newcommand{\region}{\mathrm{region}}
+\newcommand{\attregion}{\mathrm{att\text{-}region}}
+\newcommand{\blockers}{\mathrm{blockers}}
+\newcommand{\assistants}{\mathrm{assistants}}
+\newcommand{\true}{\ensuremath{\mathsf{true}}}
+\newcommand{\false}{\ensuremath{\mathsf{false}}}
+\newcommand{\Mobility}{\mathrm{Mobility}}
+\newcommand{\UnwinnableStatic}{\mathrm{UnwinnableStatic}}
+\newcommand{\becomes}{\;\Longleftarrow\;}
+
+\setlength{\parskip}{0.5em}
+\setlength{\parindent}{0pt}
+
+\begin{document}
+
+\begin{center}
+  {\LARGE\bfseries FUN22 unwinnability --- specification}\\[0.4em]
+  {\normalsize ashlar-chess \quad$\cdot$\quad governing document for the \code{io.github.dlbbld.ashlarchess.unwinnability} engine}
+\end{center}
+
+This document is the \textbf{governing specification} for ashlar's unwinnability engine (the
+\code{io.github.dlbbld.ashlarchess.unwinnability} package internals). It is derived \textbf{only} from Miguel
+Ambrona's FUN 2022 paper, \emph{``A Practical Algorithm for Chess Unwinnability''} --- the \textbf{full version} (the
+one with complete proofs of Lemmas~10 and~11). Neither ashlar's former cha port nor Ambrona's D3-Chess/\code{cha}/%
+\code{chasolver} source was consulted. Review the engine code against this document (and the paper), not against any
+other codebase.
+
+Sections~1--5 specify the semi-static algorithm (Theorem~12) in full detail; Section~6 maps the remaining paper
+figures (the search side) to their implementing classes and records their footnote treatments; Section~7 records what
+ashlar deliberately adds on top of the paper. Section/figure/line references point at the full version unless noted.
+
+\section{Scope}
+
+The heart of the engine is \textbf{Theorem~12}:
+\[
+  \UnwinnableStatic(\pos, c, \Mobility(\pos)) = \true \quad\Longrightarrow\quad \pos \text{ is unwinnable for } c,
+\]
+i.e.\ the composition of the \textbf{mobility over-approximation} (\S3.1, Fig.~6--7, Lemma~8, Corollary~9) with the
+\textbf{semi-static check} (\S3.2, Fig.~8, Lemmas~10--11). The semi-static check is sound and deliberately
+incomplete: it may decline on truly-unwinnable positions, but a \true{} must never be wrong.
+
+Around it, the paper's full algorithm (Fig.~9 = semi-static shortcut + Find-Helpmate search under iterative
+deepening) and quick algorithm (Fig.~10) are implemented per Section~6.
+
+\section{Board model and notation}
+
+Squares are integers $0..63$ with $a1 = 0,\ b1 = 1,\ \dots,\ h8 = 63$ (little-endian rank-file; the ashlar/Stockfish
+layout --- $\mathrm{file}(s) = s \mathbin{\&} 7$, $\mathrm{rank}(s) = s \gg 3$, coinciding with
+\code{Square.ordinal()}).
+
+A \textbf{piece} $P$ is $(\mathit{type}, \mathit{color}, \sq)$ with $\mathit{type} \in \{K,Q,R,B,N,P\}$,
+$\mathit{color} \in \{w,b\}$, $\sq \in 0..63$. A \textbf{position} $\pos$ is a set of pieces on distinct squares
+(\code{SemiStaticPosition}/\code{SemiStaticPiece}). $\mathrm{color}(s)$ is the light/dark colour of square $s$.
+
+Per-square geometric sets (all ``over an empty board''; implemented in \code{SquareGeometry}):
+
+\begin{center}
+\begin{tabular}{@{}l p{11.2cm}@{}}
+\toprule
+set & meaning \\
+\midrule
+$\alpha(s)$ & orthogonally adjacent squares (share a border; opposite square colour) \\
+$\beta(s)$ & diagonally adjacent squares (same square colour) \\
+$\delta(s) = \alpha(s) \cup \beta(s)$ & all $\le 8$ king-neighbours --- the \textbf{king's escape squares} \\
+$\nu(s)$ & squares at knight-distance 1 \\
+$\omega_w(s)\ /\ \omega_b(s)$ & the $\le 1$ square from which a \textbf{white / black} pawn reaches $s$ by one non-capturing push \\
+$\pi_w(s)\ /\ \pi_b(s)$ & the squares from which a \textbf{white / black} pawn attacks $s$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\noindent Double pawn pushes need no special case: reachability of a rank-4 square is already implied stepwise
+through the rank-3 square, and admissibility (\S3) makes this over-approximation sound.
+
+\subsection{Predecessors (Fig.~6 preamble, full version l.523--555)}
+
+Implemented in \code{Predecessors}. $\predP(s)$ --- squares from which $P.\mathit{type}$ reaches $s$ in one
+non-capture move:
+\[
+  \predP(s) =
+  \begin{cases}
+    \nu(s) & \text{if } P.\mathit{type} = N \\
+    \beta(s) & \text{if } P.\mathit{type} = B \\
+    \alpha(s) & \text{if } P.\mathit{type} = R \\
+    \delta(s) & \text{if } P.\mathit{type} \in \{Q,K\} \\
+    \omega_{P.\mathit{color}}(s) & \text{if } P.\mathit{type} = P
+  \end{cases}
+\]
+Note sliders use only the \textbf{adjacent} squares ($\beta/\alpha/\delta$). Long slides emerge stepwise from the
+Fig.~7 fixpoint; enemy blockers are (soundly) ignored.
+
+$\predcaptP(s)$ --- squares from which $P$ \emph{captures} onto $s$:
+\[
+  \predcaptP(s) =
+  \begin{cases}
+    \pi_{P.\mathit{color}}(s) & \text{if } P.\mathit{type} = P \\
+    \predP(s) & \text{otherwise}
+  \end{cases}
+\]
+
+$\prom(P)$ --- promotion squares, defined only for pawns:
+\[
+  \prom(P) =
+  \begin{cases}
+    \{a8..h8\} & \text{if } P.\mathit{color} = w \\
+    \{a1..h1\} & \text{if } P.\mathit{color} = b \\
+    \varnothing & \text{otherwise}
+  \end{cases}
+\]
+
+$\attackers(s) = \{\, P \in \pos : P.\sq \in \predcaptP(s) \,\}$ --- pieces currently attacking $s$.
+
+\section{Mobility (Fig.~6 rules + Fig.~7 fixpoint)}
+
+Implemented in \code{Mobility}/\code{MobilitySolution}. Boolean variables over the current position:
+\begin{itemize}[nosep]
+  \item $M[P][s]$ --- piece $P$ can \emph{eventually} move to square $s$.
+  \item $R[s][c]$ --- square $s$ can eventually be reached (or is currently occupied) by a \textbf{non-king} piece of colour $c$.
+  \item $C[P]$ --- piece $P$ can be cleared from $P.\sq$ (by moving away or being captured).
+\end{itemize}
+
+\subsection{Figure 6 --- the implications (heads may repeat)}
+
+For a variable $V$, \textbf{$V$ becomes 1 iff the body of \emph{every} rule with head $V$ is true} (conjunction
+\emph{across} rules; each body may itself be a disjunction/conjunction). All literals are positive $\Rightarrow$ the
+system is monotone.
+
+\textbf{Move} (non-pawn $P$, $s \ne P.\sq$):
+\[
+  M[P][s] \becomes \bigvee_{u \in \predP(s)} M[P][u]
+\]
+
+\textbf{Pawn move} ($P.\mathit{type} = P$, $s \ne P.\sq$). Let $F_s^c := C[P']$ if some $P' \in \pos$ has
+$P'.\mathit{color} = c$ and $P'.\sq = s$, else $F_s^c := \true$:
+\[
+  \begin{aligned}
+    M[P][s] \becomes\ & \Bigl( \bigvee_{u \in \predP(s)} M[P][u] \Bigr) \land F_s^{\neg P.\mathit{color}} && \text{push (enemy on $s$ clearable)} \\
+    \lor\ & \Bigl( \bigvee_{u \in \predcaptP(s)} M[P][u] \Bigr) \land R[s][\neg P.\mathit{color}] && \text{capture (enemy reaches $s$)} \\
+    \lor\ & \Bigl( \bigvee_{u \in \prom(P)} M[P][u] \Bigr) && \text{reached a promo sq $\Rightarrow$ go anywhere}
+  \end{aligned}
+\]
+(The push's \emph{own-colour} blocker on $s$ is handled by the separate \textbf{not self-capture} rule below, so $F$
+here guards the \emph{enemy} on the push target; see \S5 note~P1.)
+
+\textbf{Clearance} ($P \in \pos$):
+\[
+  C[P] \becomes \Bigl( \bigvee_{s \ne P.\sq} M[P][s] \Bigr) \lor \Bigl( \bigvee_{\substack{P' \in \pos \\ P'.\mathit{color} \ne P.\mathit{color}}} M[P'][P.\sq] \Bigr)
+\]
+
+\textbf{Reachability} ($s \in S$, $c \in \{w,b\}$):
+\[
+  R[s][c] \becomes \bigvee_{\substack{P \in \pos,\ P.\mathit{color} = c \\ P.\mathit{type} \ne K}} M[P][s]
+\]
+
+\textbf{King attackers} ($P.\mathit{type} = K$, $s \ne P.\sq$):
+\[
+  M[P][s] \becomes \bigwedge_{\substack{P' \in \attackers(s) \\ P'.\mathit{color} \ne P.\mathit{color}}} C[P']
+\]
+
+\textbf{Not self-capture} ($P, P' \in \pos$, $P \ne P'$, $P.\mathit{color} = P'.\mathit{color}$):
+\[
+  M[P][P'.\sq] \becomes C[P']
+\]
+
+A king thus needs \textbf{move $\land$ king-attackers $\land$ (not-self-capture if ally on $s$)} all true; a pawn needs
+\textbf{pawn-move $\land$ (not-self-capture if ally on $s$)}.
+
+\subsection{Figure 7 --- the fixpoint}
+
+\begin{enumerate}[leftmargin=2.4em,label=\arabic*.]
+  \item $M[P][s] = C[P] = R[s][c] = 0$ for all $P, s, c$.
+  \item $M[P][P.\sq] = 1$ for all $P \in \pos$ \quad (a piece can ``move'' to its own square).
+  \item repeat: for every variable $V$ still 0, if every Fig-6 rule with head $V$ has a true body on the current state, set $V = 1$;
+  \item until no variable changes;
+  \item return $\{\, M[P][s] \,\}$.
+\end{enumerate}
+
+Monotone, so it converges; the least such fixpoint is \textbf{admissible}: $M[P][s] \ge M^*[P][s]$ where $M^*$ is the
+true mobility (Lemma~8 / Corollary~9). Over-approximation is safe because the semi-static check is monotone-decreasing
+in $M$ (Lemma~10).
+
+\section{UnwinnableStatic (Fig.~8)}
+
+Implemented in \code{UnwinnableSemiStatic}. Input $\pos$, intended winner $c$, mobility $M$. Output $\mathrm{bool}$.
+
+\begin{enumerate}[leftmargin=2.6em,label=\arabic*.]
+  \item if en passant is possible OR any player has castling rights $\rightarrow$ return \false.
+  \item $\region(P) := \{\, s \mid M[P][s] = 1 \,\}$ \quad for each $P \in \pos$.
+  \item $K_c :=$ winner's king; \quad $K_{\neg c} :=$ loser's king.
+  \item $\mathit{intruders} := \{\, P \in \pos \mid P.\mathit{color} = c \land \region(P) \cap \region(K_{\neg c}) \ne \varnothing \,\}$.
+  \item if $\exists\, P \in \mathit{intruders}$ with $P.\mathit{type} \ne B$ $\rightarrow$ return \false.
+  \item if $\exists\, P,P' \in \mathit{intruders}$ with $\mathrm{color}(P.\sq) \ne \mathrm{color}(P'.\sq)$ $\rightarrow$ return \false.
+  \item $\attregion(P) := \{\, s \mid \predcaptP(s) \cap \region(P) \ne \varnothing \,\}$ \quad for each $P \in \pos$.
+  \item $\blockers(s) := \{\, P \in \pos \mid P.\mathit{color} \ne c \land P.\mathit{type} \ne K \land \region(P) \cap \alpha(s) \ne \varnothing \,\}$ \\ (\textsc{loser}'s non-king pieces --- occupy a bordering square).
+  \item $\assistants(s) := \{\, P \in \pos \mid P.\mathit{color} = c \land \attregion(P) \cap \alpha(s) \ne \varnothing \,\}$ \\ (\textsc{winner}'s pieces --- attack a bordering square).
+  \item if $\exists\, s \in \region(K_{\neg c})$ such that
+    \[
+      |\blockers(s)| + |\assistants(s)| \ge |\alpha(s)| \quad\text{AND}\quad \exists\, P \in \pos \text{ with } s \in \attregion(P) \land P.\mathit{color} = c
+    \]
+    $\rightarrow$ return \false.
+  \item return \true{} \quad (position is unwinnable for $c$).
+\end{enumerate}
+
+\textbf{Reading} (\S3.2, Lemma~11): a position is unwinnable if for \textbf{every} square either (i) the loser's king
+can't reach it, or (ii) the winner can't attack it, or (iii) its \textbf{bordering squares $\alpha(s)$} can't all be
+simultaneously blocked (by a \textsc{loser} non-king piece occupying --- the king can't capture its own piece) or
+covered (by a \textsc{winner} piece attacking). Step~10 returns \false{} as soon as one square fails all three ---
+i.e.\ looks matable. Steps~5--6 enforce Lemma~11's precondition: the only pieces that may enter the loser-king region
+(hence deliver check) are same-coloured bishops (or none). In genuinely blocked positions the two kings' regions are
+disjoint, so the winner's king is \emph{not} an intruder and step~5 does not fire.
+
+\textbf{Why $\alpha(s)$ and not all 8 neighbours $\delta(s)$} (verified on the 500-dpi render: steps~8--10 carry the
+paper's share-a-border glyph): the $\alpha(s)$ squares have the \emph{opposite} square colour to
+$s$, so once steps~5--6 guarantee that only same-coloured bishops can enter the loser-king region, no bishop intruder
+can ever attack an $\alpha(s)$ square --- the only possible assistants there are pawns or the winner's king, and each
+of those covers at most one $\alpha(s)$ square (Lemma~11 footnote). That is exactly what makes the step-10
+\emph{count} a sound proxy for simultaneous coverage. Figure~8's own footnote~\emph{a} confirms the restriction:
+``we could design a more complete check that looks at \textbf{all} neighbours of $s$, but the condition on step~10
+would be significantly more involved (to ensure monotonicity).'' A $\delta$-based count is NOT covered by the paper's
+proof (a single piece can cover several $\delta$ squares at once, so the count would under-estimate coverage and could
+wrongly conclude unwinnability).
+
+\textbf{Soundness direction.} Every approximation widens the ``possibly matable'' set: $M$ over-approximates reach
+(step 5/10 fire more easily), and step~10 counts \emph{pieces} vs.\ $\alpha(s)$ squares (each blocker/assistant covers
+$\le 1$ of them under the bishop precondition --- Lemma~11 footnote --- so the count over-estimates coverage).
+Over-estimating matability can only turn a true \code{UNWINNABLE} into \false{} (\code{UNKNOWN}), never the reverse.
+Hence \true{} is always correct = sound.
+
+\section{Theorem 12}
+
+\begin{theorem}[Theorem 12]
+$\UnwinnableStatic(\pos, c, \Mobility(\pos)) = \true \Longrightarrow \pos$ is unwinnable for $c$.
+\end{theorem}
+
+\begin{proof}
+$M \leftarrow \Mobility(\pos)$ is admissible (Corollary~9); $\UnwinnableStatic$ is monotone decreasing in $M$
+(Lemma~10) and sound on the true mobility $M^*$ (Lemma~11). Since $M \ge M^*$,
+\[
+  \UnwinnableStatic(\pos,c,M) = \true \;\Longrightarrow\; \UnwinnableStatic(\pos,c,M^*) = \true \;\Longrightarrow\; \pos \text{ unwinnable for } c. \qedhere
+\]
+\end{proof}
+
+\textbf{Precondition} (step~1): the paper proves Lemma~8 only for positions \textbf{without castling rights and
+without a possible en passant}; those cases return \false{} (unknown) up front.
+
+\section{Resolved OCR ambiguities (audit trail)}
+
+The paper's figures use $\ne\ \varnothing\ \cap\ \notin\ \ge$ glyphs that do not survive text extraction. Each was
+resolved from the full version's inline prose / proofs, not guessed:
+
+\begin{itemize}[leftmargin=1.4em]
+  \item \textbf{Step 5} $P.\mathit{type} \ne B$: full-version note --- \emph{``the set of intruders [must] be empty or formed entirely by bishops.''}
+  \item \textbf{Step 6} $\mathrm{color}(P.\sq) \ne \mathrm{color}(P'.\sq)$: note --- \emph{``all intruders \dots\ be of the same square color.''}
+  \item \textbf{Step 8} $P.\mathit{color} \ne c$ (\textsc{loser}'s non-king pieces), \textbf{step 9} $P.\mathit{color} = c$ (\textsc{winner}'s pieces): the two \emph{differ} in side. The rendered Figure~8 annotates step~8 as \emph{``the intended loser's pieces that can potentially block an adjacent square to $s$''} --- the loser king cannot capture its own piece, so only a loser-owned piece is a reliable escape \emph{blocker}; the winner's pieces instead \emph{attack} escape squares (step~9). (An earlier draft wrongly set step~8 to $= c$ after a corrupted text extraction showed $= c$ on both lines; corrected from the rendered figure --- a soundness fix, since counting winner pieces here would undercount loser-owned blockers and could return \code{UNWINNABLE} for a matable position.)
+  \item \textbf{Steps 8--10 neighbour set $= \alpha(s)$, not $\delta(s)$} (fixed 2026-07-03): at 220 dpi the share-a-border glyph was misread as the 8-neighbour glyph by two independent reviewers; the 500-dpi zoom is unambiguous, and both figure footnote~\emph{a} and the Lemma~11 footnote only make sense for $\alpha$. An earlier draft (and implementation) used $\delta(s)$ with threshold $|\delta(s)|$ --- empirically it produced zero contradictions over the corpus, but it is not covered by the paper's soundness proof. Lesson: verify glyph-level figure details at high DPI.
+  \item \textbf{Note P1 --- pawn push $F$ factor} (verified against the rendered figure): the paper defines $F_s^c$ via the piece of colour $\ne c$ on $s$ and uses $F_s^{P.\mathit{color}}$; this spec defines $F_s^c$ via the piece of colour $= c$ and uses $F_s^{\neg P.\mathit{color}}$. Both denote exactly \emph{``the enemy piece on the pawn's push target $s$ can be cleared,''} matching the prose \emph{``a possibly \textbf{enemy} piece on the target square can be cleared first,''} and the own-colour blocker is already handled by \textbf{not self-capture}. Either sign is a \emph{valid} (sound) constraint --- it only removes genuinely impossible mobility, preserving admissibility $M \ge M^*$ --- so this choice cannot break soundness; it is documented for fidelity.
+\end{itemize}
+
+\section{The search side (Figures 5, 9, 10, 12, 13)}
+
+Implemented independently from the same paper, driven over ashlar's mutable \code{HelpmateSearchBoard} hot path
+(twelve mutable bitboards, make/unmake, per-depth legal-move buffers, cached terminal flags --- chess foundation, not
+unwinnability logic; lock-step-tested against the public \code{Board}):
+
+\begin{itemize}[leftmargin=1.4em]
+  \item \textbf{Figure 5 \code{Find-Helpmate}} $\rightarrow$ \code{FindHelpmate}: depth- and node-bounded DFS for a checkmate \emph{by the intended winner}, with a depth-aware transposition table and the Figure~12 Score budget adjustment. Terminal leaves: checkmate, stalemate, the winner's bare king, and the Lemma~5/6 material shapes (\code{MaterialLemmas}). \textbf{Footnote b} (implemented; resolves deep helpmates like K+Q at small bounds): a Normal-scored move directly following a Reward-scored move is also rewarded. Footnote~a (Stockfish move ordering) is deliberately not implemented --- perf-only.
+  \item \textbf{Figure 9 full routine} $\rightarrow$ \code{UnwinnableFullAnalyzer}: semi-static shortcut, then iterative deepening over Find-Helpmate; \code{WINNABLE} on an exhibited helpmate, \code{UNWINNABLE} on an uninterrupted exhaustion, else \code{UNDETERMINED} when the budget runs out. The paper leaves $\mathrm{bound}(d)$ as a parameter (its practical note, text footnote~13, fixes a small constant); ashlar uses one global 500\,000-node budget across iterations with a depth ceiling of 100 (each iteration's node bound is the remaining global budget). \textbf{The transposition table is per-iteration --- a deliberate deviation from the paper's prose, which says the table ``can be shared between different calls''.} The soundness of Figure~9 step~5--6 (``search not interrupted $\Rightarrow$ Unwinnable'') rests on the interrupted flag being monotone over every visit the table's entries summarize: within one iteration, an entry written by a depth-cut visit coexists with the raised flag, so that iteration can no longer claim \code{UNWINNABLE}. A \emph{stale} entry from an earlier, depth-cut iteration would prune a later iteration's node \emph{without re-raising its interrupt flag} --- the later iteration could believe it exhausted the tree while cut lines hide behind the stale prune, a potential false \code{UNWINNABLE}. The absence-of-mate half of a stale entry is still a true statement; it is the exhaustion \emph{witness} that does not survive sharing. The search-state key includes the footnote-b reward-chain flag: a visit with the boost pending explores a strictly stronger budget shape than one without, so the two states must not prune each other.
+  \item \textbf{Figure 10 quick routine} $\rightarrow$ \code{UnwinnableQuickAnalyzer}: forced-move advance, bounded DFS with a \emph{global} depth-9 interrupt, then the semi-static check gated to pawn/bishop/king material without semi-open files. \textbf{Footnote a} (implemented): the forced-move advance is loop-guarded (arbitrarily long single-move sequences exist; capping is verdict-preserving since a forced prefix is equivalence-preserving). \textbf{Footnote b} (implemented): the Lemma~5/6 material positions are DFS leaves --- that is what makes not-interrupted $\Rightarrow$ \code{UNWINNABLE} fire on imminently terminating positions.
+  \item \textbf{Figure 12 \code{Score}} $\rightarrow$ \code{Score}: Normal/Reward/Punish move classification; pure efficiency heuristic.
+  \item \textbf{Figure 13 \code{Going-to-corner}} $\rightarrow$ \code{GoingToCorner}: rewards slow-piece (K/N) moves approaching the mating corner; the depth extension that lets bounded search finish long mating plans.
+  \item \textbf{Lemmas 5/6} $\rightarrow$ \code{MaterialLemmas}: winner-side insufficient-material shapes (strict: \emph{exactly one} knight; bishops of \emph{one} square colour), plus the Figure~12 material condition (same shapes without the pawn-freeness gate).
+\end{itemize}
+
+Text footnote~4 (transposition cut) and footnote~13 (constant practical bound) are honoured as above. Text
+footnote~12 notes that \code{cha} evolved beyond the paper with extra heuristics --- divergence between this engine and
+cha-lineage implementations on \emph{completeness} (who proves more) is therefore expected; divergence on
+\emph{soundness} is a bug.
+
+\section{Ashlar extensions on top of the paper}
+
+Deliberate, clearly-layered additions --- none alters the paper algorithms' verdict logic:
+
+\begin{itemize}[leftmargin=1.4em]
+  \item \textbf{Mate line} (\code{UnwinnabilityFullAnalysis.mateLine()}): the Figure~5 search records the exhibited helpmate line on the unwind --- bookkeeping only. A \code{WINNABLE} verdict is always search-proven and carries its witnessing line (empty exactly for a zero-move helpmate, i.e.\ the submitted position is already the intended winner's checkmate).
+\end{itemize}
+
+\end{document}

@@ -11,7 +11,7 @@ import io.github.dlbbld.ashlarchess.exceptions.ProgrammingMistakeException;
 // over-approximation this is Theorem 12: a true return value proves the position unwinnable for
 // the intended winner.
 /**
- * The semi-static unwinnability check - the paper's {@code Unwinnable_static} (Figure 8; {@code fun22-spec.md}
+ * The semi-static unwinnability check - the paper's {@code Unwinnable_static} (Figure 8; {@code fun22-spec.pdf}
  * section 3). Given a position, an intended winner {@code c}, and an admissible mobility solution, it returns
  * {@code true} only when it can <em>prove</em> the position unwinnable for {@code c}. It is sound but deliberately
  * incomplete (may return {@code false} on a truly unwinnable position).

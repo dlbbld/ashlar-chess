@@ -17,7 +17,7 @@ Branch `implement-fun22`. The unwinnability engine becomes ashlar's own clean-ro
 paper (*A Practical Algorithm for Chess Unwinnability*, Figures 5–13, Lemmas 5/6, Theorem 12), vendored from the
 validated `fun22-reference` project (branch `semi-static-v1`: whole-corpus sweeps vs chasolver with 0 contradictions).
 The cha-C++-mirroring internals (including the 21.0.0 pawn-intruders correction, which the paper formulation subsumes)
-are deleted. The governing document is the clean-room spec (`fun22-spec.md`, brought over from fun22-reference);
+are deleted. The governing document is the clean-room spec (`fun22-spec.pdf`, brought over from fun22-reference);
 **we honor the spec** — algorithm code must be traceable to the paper, never to cha.
 
 Design decisions (agreed 2026-07-03):
@@ -46,7 +46,7 @@ Design decisions (agreed 2026-07-03):
   `bound(d)` as a parameter), depth cap 100, per-iteration node bound = remaining global budget. Transposition table
   is **per-iteration, and the key includes the footnote-b reward-chain flag** (final state after the Codex review:
   cross-iteration sharing — briefly implemented for performance — can let a stale depth-cut entry suppress a later
-  iteration's interrupt and fake an exhaustion witness → potential false `UNWINNABLE`; see `fun22-spec.md` §6). The
+  iteration's interrupt and fake an exhaustion witness → potential false `UNWINNABLE`; see `fun22-spec.pdf` §6). The
   post-loop fall-through returns `UNDETERMINED`, fixing the old code's theoretically unsound `UNWINNABLE`
   fall-through.
 - **The cha material predicate (`UnwinnabilityMaterialBitboard`) is retired with the port**; Ambrona's Lemmas 5/6 live
@@ -70,7 +70,7 @@ Work items:
   27 main classes and 22 test files deleted (including the mobility/semistatic internal-oracle comparisons and their
   generators, which oracled cha internals that no longer exist); 6 ported test classes added.
 - **Docs**: package-info rewritten (clean-room paper implementation, no longer a cha port), spec brought into
-  `fun22-spec.md`, CHANGELOG entry. ✅ DONE 2026-07-03 — README/manual regenerated (the "blocked positions the quick
+  `fun22-spec.pdf`, CHANGELOG entry. ✅ DONE 2026-07-03 — README/manual regenerated (the "blocked positions the quick
   algorithm proves" example now uses the paper-provable bishop fortress; the old example has a semi-open file, which
   Figure 10's gate declines by design). Default profile green (1302 tests).
 - **Full-suite sign-off**: run the excluded unwinnability suite, re-baseline the accepted-differences fixtures

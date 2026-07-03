@@ -12,7 +12,7 @@ import io.github.dlbbld.ashlarchess.board.MoveSpecification;
 import io.github.dlbbld.ashlarchess.board.enums.PromotionPieceType;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
 
-// Direct unit tests for the Figure 12 Score heuristic (fun22-spec.md section 6), one case per figure line. The
+// Direct unit tests for the Figure 12 Score heuristic (fun22-spec.pdf section 6), one case per figure line. The
 // heuristic is efficiency-only, but its increments shape which helpmates the bounded search reaches, so the figure
 // lines are pinned here rather than only observed through end-to-end verdicts.
 class TestScoreFigure12 {

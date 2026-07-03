@@ -9,7 +9,7 @@
  * <p>
  * Since 22.0.0 the engine is ashlar's own independent, paper-derived implementation of Miguel Ambrona's FUN 2022 paper <em>A
  * Practical Algorithm for Chess Unwinnability</em> (Figures 5-13, Lemmas 5/6, Theorem 12), governed by the committed
- * specification {@code fun22-spec.md} and derived from the paper only. It replaces the earlier Java port of
+ * specification {@code fun22-spec.pdf} and derived from the paper only. It replaces the earlier Java port of
  * Ambrona's C++ Chess Unwinnability Analyzer (CHA / D3-Chess): the algorithm code is now traceable to the published
  * paper rather than to another codebase. Ambrona's Rust successor
  * <a href="https://github.com/miguel-ambrona/chasolver">chasolver</a> serves as an independent test oracle: every
@@ -73,7 +73,7 @@
  * analyzer is run automatically during board construction or move execution.
  *
  * <p>
- * See {@code specification.md} section 3.2 for the design rationale and {@code fun22-spec.md} for the governing
+ * See {@code specification.md} section 3.2 for the design rationale and {@code fun22-spec.pdf} for the governing
  * algorithm specification.
  */
 @NonNullByDefault

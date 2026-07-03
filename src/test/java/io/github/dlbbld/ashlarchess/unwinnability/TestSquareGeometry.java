@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Test;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
 import io.github.dlbbld.ashlarchess.internal.Nulls;
 
-// Known-value checks for the paper's square-geometry sets (fun22-spec.md section 1), ported from the
+// Known-value checks for the paper's square-geometry sets (fun22-spec.pdf section 1), ported from the
 // fun22-reference unit tests.
 class TestSquareGeometry {
 
