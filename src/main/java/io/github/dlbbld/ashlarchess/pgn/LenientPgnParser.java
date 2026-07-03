@@ -629,22 +629,9 @@ public final class LenientPgnParser {
     return new Nag(MoveSuffixAnnotation.parse(glyphText).getNagCode());
   }
 
-  /** Parses a {@code $N} NAG token, or returns {@code null} if the code is missing or outside {@code 0..255}. */
+  /** Parses a {@code $N} NAG token, or returns {@code null} (dropped) if the body is not a decimal 0..255. */
   private static @Nullable Nag parseNagLenient(PgnToken nagToken) {
-    final String digits = nagToken.text().substring(1); // drop the leading '$'
-    if (digits.isEmpty()) {
-      return null;
-    }
-    final int code;
-    try {
-      code = Integer.parseInt(digits);
-    } catch (final NumberFormatException e) {
-      return null;
-    }
-    if (code > 255) {
-      return null;
-    }
-    return new Nag(code);
+    return Nag.fromDigits(nagToken.text().substring(1)); // drop the leading '$'
   }
 
   /**

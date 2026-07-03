@@ -572,26 +572,15 @@ public final class StrictPgnParser {
     return new SanAndNags(san, nags);
   }
 
-  /** Consumes a NAG token and validates its {@code $}-plus-digits form; the code must be in {@code 0..255}. */
+  /** Consumes a NAG token and validates its {@code $}-plus-digits form; the code must be a decimal in {@code 0..255}. */
   private Nag parseNagStrict() {
     final PgnToken token = tokenizer.next();
-    final String digits = token.text().substring(1); // drop the leading '$'
-    if (digits.isEmpty()) {
+    final Nag nag = Nag.fromDigits(token.text().substring(1)); // drop the leading '$'
+    if (nag == null) {
       throw movetextError(StrictPgnParserValidationProblem.MOVETEXT_NAG_INVALID,
-          "A NAG must be '$' followed by an integer from 0 to 255.");
+          "A NAG must be '$' followed by a decimal integer from 0 to 255, but was \"" + token.text() + "\".");
     }
-    final int code;
-    try {
-      code = Integer.parseInt(digits);
-    } catch (final NumberFormatException e) {
-      throw movetextError(StrictPgnParserValidationProblem.MOVETEXT_NAG_INVALID,
-          "A NAG value of \"" + digits + "\" is not an integer from 0 to 255.");
-    }
-    if (code > 255) {
-      throw movetextError(StrictPgnParserValidationProblem.MOVETEXT_NAG_INVALID,
-          "A NAG value must be from 0 to 255, but was " + code + ".");
-    }
-    return new Nag(code);
+    return nag;
   }
 
   private void expectMoveNumber(int expectedNumber, Side sideToMove, boolean isFirstMove) {

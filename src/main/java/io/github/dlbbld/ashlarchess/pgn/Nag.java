@@ -3,6 +3,8 @@
 
 package io.github.dlbbld.ashlarchess.pgn;
 
+import org.eclipse.jdt.annotation.Nullable;
+
 /**
  * A Numeric Annotation Glyph (NAG) - the PGN standard's move annotation (spec section 8.2.4), a code in the range
  * {@code 0..255}. NAGs are the single, uniform representation of move annotations in ashlar's PGN model: the six
@@ -22,5 +24,30 @@ public record Nag(int code) {
   /** The PGN token form of this NAG, e.g. {@code "$2"}. */
   public String toToken() {
     return "$" + code;
+  }
+
+  /**
+   * Parses a NAG token body (the text after the leading {@code $}) into a {@link Nag}, or returns {@code null} if it is
+   * not well-formed. Per PGN spec 8.2.4 a NAG is {@code $} followed by a non-negative decimal integer from 0 to 255, so
+   * an empty body, a sign ({@code $-1}, {@code $+5}), letters ({@code $abc}), or an out-of-range / overflowing value are
+   * all rejected. Callers decide the policy: the strict parser turns {@code null} into a validation error, the lenient
+   * parser drops it.
+   */
+  static @Nullable Nag fromDigits(String body) {
+    if (body.isEmpty()) {
+      return null;
+    }
+    for (int i = 0; i < body.length(); i++) {
+      final char c = body.charAt(i);
+      if (c < '0' || c > '9') {
+        return null;
+      }
+    }
+    try {
+      final int value = Integer.parseInt(body);
+      return value <= 255 ? new Nag(value) : null;
+    } catch (final NumberFormatException e) {
+      return null;
+    }
   }
 }

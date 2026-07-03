@@ -80,6 +80,25 @@ class TestPgnAnnotationEdgeCases {
     }
   }
 
+  @SuppressWarnings("static-method")
+  @Test
+  void signedNagIsCapturedWholeAndDroppedLeniently() {
+    // A NAG is `$` + a NON-negative decimal (spec 8.2.4); a sign makes it malformed. The `-`/`+` is consumed into the
+    // NAG token so `$-1` does not split into a bare `$` plus a stray `-1` that would be misread as a move - the whole
+    // token is dropped and the game parses (this is `2. d4 $-1 d5` from the manual probe).
+    final PgnGame game = lenient("1. e4 e5 2. d4 $-1 d5 $+5 3. Nf3 Nc6 *");
+    assertEquals(6, game.moves().size());
+    for (int i = 0; i < 6; i++) {
+      assertEquals(List.of(), Nulls.get(game.moves(), i).nags(), "move " + i);
+    }
+  }
+
+  @SuppressWarnings("static-method")
+  @Test
+  void strictRejectsASignedNag() {
+    assertStrictProblem("1. e4 e5 2. d4 $-1 d5 *", StrictPgnParserValidationProblem.MOVETEXT_NAG_INVALID);
+  }
+
   // -----------------------------------------------------------------------------------------------------------------
   // NAG position (lenient)
   // -----------------------------------------------------------------------------------------------------------------
