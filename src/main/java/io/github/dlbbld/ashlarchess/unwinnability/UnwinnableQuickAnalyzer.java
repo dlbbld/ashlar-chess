@@ -64,7 +64,7 @@ public final class UnwinnableQuickAnalyzer {
     int advanced = 0;
     List<MoveSpecification> legalMoves;
     while ((legalMoves = board.getLegalMoveSpecifications()).size() == 1 && advanced < FORCED_ADVANCE_CAP) {
-      board.move(legalMoves.get(0));
+      board.move(Nulls.getFirst(legalMoves));
       advanced++;
     }
 

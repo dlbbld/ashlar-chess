@@ -18,6 +18,7 @@ import org.junit.jupiter.api.Test;
 import io.github.dlbbld.ashlarchess.board.Board;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
 import io.github.dlbbld.ashlarchess.exceptions.UsageException;
+import io.github.dlbbld.ashlarchess.internal.Nulls;
 
 // Tests for the Figure 8 semi-static check, ported from the fun22-reference unit tests. The core test is a soundness
 // sweep: over every ground-truth vector of chasolver's curated test set (community-submitted queries with verified
@@ -63,7 +64,7 @@ class TestUnwinnableSemiStatic {
         }
         final char whiteLabel = line.charAt(0); // 'W' if White can helpmate, else '-'
         final char blackLabel = line.charAt(1); // 'B' if Black can helpmate, else '-'
-        final String fen = normalizeFen(line.substring(3).trim());
+        final String fen = normalizeFen(Nulls.trim(Nulls.substring(line, 3)));
 
         final Board board;
         try {

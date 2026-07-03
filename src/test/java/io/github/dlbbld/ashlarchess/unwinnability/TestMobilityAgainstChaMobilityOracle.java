@@ -16,6 +16,7 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 
 import io.github.dlbbld.ashlarchess.board.Board;
+import io.github.dlbbld.ashlarchess.internal.Nulls;
 
 // Internal-layer oracle for the Figure 6/7 mobility fixpoint, against the archived CHA C++ mobility dump
 // (oracle/cha/ashlar-pgn/mobility.tsv, one row per piece per distinct corpus position).
@@ -65,7 +66,7 @@ class TestMobilityAgainstChaMobilityOracle {
         } else if ((chaRegion & ~paperRegion) == 0L) {
           chaStrictlyTighter++;
         } else {
-          violations.add(fen + " " + item[1] + " " + item[2] + " " + item[3]);
+          violations.add(fen + " " + Nulls.get(item, 1) + " " + Nulls.get(item, 2) + " " + Nulls.get(item, 3));
         }
       }
     }

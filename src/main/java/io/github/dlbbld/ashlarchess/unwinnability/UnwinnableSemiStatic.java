@@ -22,6 +22,8 @@ final class UnwinnableSemiStatic {
   }
 
   /**
+   * Runs the Figure 8 check on {@code position} under the given admissible mobility solution.
+   *
    * @return {@code true} iff the position is proved unwinnable for {@code winner}
    */
   static boolean unwinnableSemiStatic(SemiStaticPosition position, Side winner, MobilitySolution mobilitySolution) {

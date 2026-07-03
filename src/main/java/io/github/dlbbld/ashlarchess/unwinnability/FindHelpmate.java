@@ -85,8 +85,9 @@ final class FindHelpmate {
     // reward-chain flag is part of the key: a visit with the footnote-b boost pending explores a strictly stronger
     // budget shape than one without, so the two states must not prune each other.
     final TranspositionKey key = new TranspositionKey(board.currentTranspositionKey(), previousWasReward);
-    final Integer seenBudget = transpositionTable.get(key);
-    if (seenBudget != null && seenBudget >= remainingBudget) {
+    // Stored budgets are always >= 0, so -1 is a safe "absent" sentinel (remainingBudget is >= 0 here).
+    final int seenBudget = Nulls.getOrDefault(transpositionTable, key, -1);
+    if (seenBudget >= remainingBudget) {
       return false;
     }
     transpositionTable.put(key, remainingBudget);

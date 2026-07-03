@@ -3,7 +3,6 @@
 
 package io.github.dlbbld.ashlarchess.unwinnability;
 
-import java.util.ArrayDeque;
 import java.util.Arrays;
 
 import io.github.dlbbld.ashlarchess.board.enums.Side;
@@ -84,22 +83,25 @@ final class SquareGeometry {
     DARK_SQUARES = dark;
     LIGHT_SQUARES = ~dark;
 
-    // Breadth-first knight distances over the empty board (uses KNIGHT, filled above).
+    // Breadth-first knight distances over the empty board (uses KNIGHT, filled above). Every square is enqueued at
+    // most once, so a plain int array serves as the queue.
+    final int[] queue = new int[SQUARES];
     for (int src = 0; src < SQUARES; src++) {
       final int[] dist = KNIGHT_DISTANCE[src];
       Arrays.fill(dist, -1);
       dist[src] = 0;
-      final ArrayDeque<Integer> queue = new ArrayDeque<>();
-      queue.add(src);
-      while (!queue.isEmpty()) {
-        final int u = queue.poll();
+      int head = 0;
+      int tail = 0;
+      queue[tail++] = src;
+      while (head < tail) {
+        final int u = queue[head++];
         long neighbours = KNIGHT[u];
         while (neighbours != 0L) {
           final int v = Long.numberOfTrailingZeros(neighbours);
           neighbours &= neighbours - 1;
           if (dist[v] < 0) {
             dist[v] = dist[u] + 1;
-            queue.add(v);
+            queue[tail++] = v;
           }
         }
       }

@@ -14,6 +14,7 @@ import io.github.dlbbld.ashlarchess.board.enums.Piece;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
 import io.github.dlbbld.ashlarchess.board.enums.Square;
 import io.github.dlbbld.ashlarchess.exceptions.ProgrammingMistakeException;
+import io.github.dlbbld.ashlarchess.internal.Nulls;
 
 /**
  * A chess position as the semi-static analysis sees it ({@code fun22-spec.md} section 1): the set of pieces plus
@@ -34,7 +35,10 @@ final class SemiStaticPosition {
   private final int blackKingIndex;
 
   SemiStaticPosition(List<SemiStaticPiece> pieces, boolean castlingRightsPresent, boolean enPassantPossible) {
-    this.pieces = pieces.toArray(new SemiStaticPiece[0]);
+    this.pieces = new SemiStaticPiece[pieces.size()];
+    for (int i = 0; i < this.pieces.length; i++) {
+      this.pieces[i] = Nulls.get(pieces, i);
+    }
     this.indexAt = new int[SquareGeometry.SQUARES];
     Arrays.fill(this.indexAt, -1);
     int whiteKing = -1;
@@ -94,6 +98,7 @@ final class SemiStaticPosition {
   }
 
   /** The piece at index {@code i} (its stable identity). */
+  @SuppressWarnings("null")
   SemiStaticPiece piece(int i) {
     return pieces[i];
   }

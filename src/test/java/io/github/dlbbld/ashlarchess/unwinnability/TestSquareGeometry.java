@@ -8,6 +8,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.junit.jupiter.api.Test;
 
 import io.github.dlbbld.ashlarchess.board.enums.Side;
+import io.github.dlbbld.ashlarchess.internal.Nulls;
 
 // Known-value checks for the paper's square-geometry sets (fun22-spec.md section 1), ported from the
 // fun22-reference unit tests.
@@ -22,8 +23,8 @@ class TestSquareGeometry {
 
   private static long set(String... names) {
     long result = 0L;
-    for (final String name : names) {
-      result |= 1L << sq(name);
+    for (int i = 0; i < names.length; i++) {
+      result |= 1L << sq(Nulls.get(names, i));
     }
     return result;
   }

@@ -29,6 +29,8 @@ final class GoingToCorner {
   private static final int B8 = 57;
 
   /**
+   * Decides whether {@code move} steps a slow piece (king or knight) closer to the mating-corner target square.
+   *
    * @param goalWin {@code true} for the winner's move (drive to mate), {@code false} for the loser's
    * @return whether {@code move} decreases the piece's distance to the target corner square
    */
