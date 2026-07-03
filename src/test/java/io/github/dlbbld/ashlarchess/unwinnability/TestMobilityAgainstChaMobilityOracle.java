@@ -46,19 +46,22 @@ class TestMobilityAgainstChaMobilityOracle {
         BufferedReader reader = new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_8))) {
       String line = reader.readLine(); // header
       while ((line = reader.readLine()) != null) {
-        final String[] item = line.split("\t");
-        final String fen = item[0];
-        if (!fen.equals(currentFen)) {
+        final String[] item = Nulls.split(line, "\t");
+        final String fen = Nulls.get(item, 0);
+        // The || guards make position/mobilitySolution provably non-null after the block: the condition being false
+        // means position != null, and the block assigns them non-null.
+        if (position == null || mobilitySolution == null || !fen.equals(currentFen)) {
           currentFen = fen;
           position = SemiStaticPosition.fromBoard(Board.fromFenStrict(fen));
           mobilitySolution = Mobility.mobility(position);
         }
         rows++;
 
-        final long paperRegion = mobilitySolution.region(position.indexAt(squareIndex(item[3])));
+        final long paperRegion = mobilitySolution.region(position.indexAt(squareIndex(Nulls.get(item, 3))));
         long chaRegion = 0L;
-        for (final String squareName : item[4].split(",")) {
-          chaRegion |= 1L << squareIndex(squareName);
+        final String[] squareNames = Nulls.split(Nulls.get(item, 4), ",");
+        for (int k = 0; k < squareNames.length; k++) {
+          chaRegion |= 1L << squareIndex(Nulls.get(squareNames, k));
         }
 
         if (paperRegion == chaRegion) {
