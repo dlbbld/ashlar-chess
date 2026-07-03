@@ -444,17 +444,7 @@ public final class LenientPgnParser {
         }
         final PgnMove move = parseMoveLenient();
         moves.add(move);
-        skipInsignificantWhitespace();
-        // Consume ALL consecutive comments after the move, merging their text. Real-world tools emit more than one:
-        // lichess opens every analyzed game with `{ [%eval ...] [%clk ...] } { <opening name> }`.
-        while (isCommentToken(tokenizer.peek().type())) {
-          final PgnCommentary commentary = consumeCommentaryOrThrow();
-          final int last = moves.size() - 1;
-          final PgnMove previous = Nulls.get(moves, last);
-          moves.set(last, new PgnMove(previous.san(), previous.moveSuffixAnnotation(),
-              mergeCommentary(previous.commentary(), commentary)));
-          skipInsignificantWhitespace();
-        }
+        consumePostMoveAnnotations(moves);
         continue;
       }
       throw new LenientPgnParserValidationException(
@@ -576,6 +566,34 @@ public final class LenientPgnParser {
       default:
         throw new io.github.dlbbld.ashlarchess.exceptions.ProgrammingMistakeException(
             "consumeCommentaryOrThrow called for non-brace token: " + token.type());
+    }
+  }
+
+  /**
+   * Consumes every annotation trailing the move just added - comments and numeric annotation glyphs, in any order and
+   * quantity - and folds them onto that move. Real-world tools emit several and interleave them: lichess opens each
+   * analyzed game with {@code { [%eval ...] [%clk ...] } { <opening name> }}, and a NAG-plus-comment pair
+   * ({@code Nf3 $1 {develops}}) is ordinary PGN. Comments are merged onto the move's commentary; move-assessment NAGs
+   * set its suffix (see {@link #applyNagToLastMove}). Handling both here keeps post-move annotation order-independent -
+   * {@code Nf3 $1 {c}} and {@code Nf3 {c} $1} parse identically.
+   */
+  private void consumePostMoveAnnotations(List<PgnMove> moves) {
+    skipInsignificantWhitespace();
+    while (true) {
+      final PgnToken ahead = tokenizer.peek();
+      if (isCommentToken(ahead.type())) {
+        final PgnCommentary commentary = consumeCommentaryOrThrow();
+        final int last = moves.size() - 1;
+        final PgnMove previous = Nulls.get(moves, last);
+        moves.set(last, new PgnMove(previous.san(), previous.moveSuffixAnnotation(),
+            mergeCommentary(previous.commentary(), commentary)));
+      } else if (ahead.type() == PgnTokenType.SYMBOL && ahead.text().startsWith("$")) {
+        tokenizer.next();
+        applyNagToLastMove(moves, ahead.text());
+      } else {
+        return;
+      }
+      skipInsignificantWhitespace();
     }
   }
 

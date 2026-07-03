@@ -108,6 +108,22 @@ class TestLenientPgnParserRealWorldAnnotations {
 
   @SuppressWarnings("static-method")
   @Test
+  void nagAndCommentOnOneMoveParseInEitherOrder() {
+    // A move-assessment NAG and a textual comment on the same move (ChessBase/SCID emit both) must parse regardless of
+    // order: the suffix comes from the NAG, the commentary from the brace, either way round.
+    final PgnGame nagFirst = LenientPgnParser
+        .parseText(PgnTestHelper.header("*") + "1. Nf3 $1 { develops } d5 *\n\n");
+    final PgnGame commentFirst = LenientPgnParser
+        .parseText(PgnTestHelper.header("*") + "1. Nf3 { develops } $1 d5 *\n\n");
+    for (final PgnGame game : new PgnGame[] {nagFirst, commentFirst}) {
+      assertEquals(2, game.moves().size());
+      assertEquals(MoveSuffixAnnotation.GOOD_MOVE, Nulls.getFirst(game.moves()).moveSuffixAnnotation());
+      assertEquals("develops", Nulls.getFirst(game.moves()).commentary().value().trim());
+    }
+  }
+
+  @SuppressWarnings("static-method")
+  @Test
   void nagsAndVariationsCombineTheWayChessComExportsThem() {
     // chess.com's "with variations and review" export carries both on the same movetext: a NAG on nearly every move
     // and RAV side-lines for the analyzed ones. The mainline is e4 e5 g3 f6 Qh5+ g6 = 6 half-moves.
