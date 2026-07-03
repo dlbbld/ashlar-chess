@@ -19,8 +19,9 @@
  * <p>
  * Insufficient material covers the trivial cases (king-vs-king, king + minor vs king); positions like blocked pawn
  * walls, certain wrong-bishop endgames, and many forced-only-moves continuations are dead but <em>not</em>
- * insufficient - and most chess libraries get them wrong. This analysis decides them correctly across the full range
- * of positions.
+ * insufficient - and most chess libraries get them wrong. This analysis handles those cases as rule questions rather
+ * than material shortcuts; its definite verdicts are proof results, while hard full searches may still stop as
+ * {@code UNDETERMINED}.
  *
  * <h2>Two variants</h2>
  *
