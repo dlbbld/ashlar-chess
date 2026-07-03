@@ -8,7 +8,7 @@ The **technical specification** for ashlar-chess: design goals, architecture, ph
 
 ashlar-chess is not trying to be a broad, all-feature chess toolkit. It is trying to be a deeply correct, **finished**, essential orthodox-chess rules library.
 
-By a checklist of "major features found in large chess libraries," ashlar-chess will intentionally miss things: Chess960, full PGN variation-tree / RAV workflows, engine integration, tablebases, opening books, GUI-oriented features, and other advanced or niche use cases. That is not a failure of the project scope. It **is** the scope.
+By a checklist of "major features found in large chess libraries," ashlar-chess will intentionally miss things: Chess960, PGN variation-tree modelling (the lenient parser skips recursive annotation variations to keep the mainline rather than building the tree — numeric annotation glyphs and suffix annotations, by contrast, are fully supported), engine integration, tablebases, opening books, GUI-oriented features, and other advanced or niche use cases. That is not a failure of the project scope. It **is** the scope.
 
 The goal is an essential orthodox-chess rules library, where "essential" is defined deliberately and personally: the parts considered central to rule correctness and trustworthy chess data handling. The core feature set is fixed:
 

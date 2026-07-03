@@ -16,8 +16,10 @@ moves, parse and export PGN/FEN/SAN, report draw claims, adjudicate flagfall/res
 exception, or analyze unwinnability/dead positions. Why the library exists is stated in
 [`manifesto.md`](manifesto.md).
 
-It is not a chess engine, does not search for best moves, and does not support Chess960, PGN variation trees, tablebases,
-opening books, or GUI/tournament-management workflows.
+It is not a chess engine, does not search for best moves, and does not support Chess960, tablebases, opening books, or
+GUI/tournament-management workflows. It does not model PGN variation trees either — the lenient PGN parser happily skips
+recursive annotation variations to keep the mainline, while move annotations (suffix glyphs and numeric annotation
+glyphs) are fully parsed and preserved.
 
 ## Documentation
 
