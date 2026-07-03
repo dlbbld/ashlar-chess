@@ -1,0 +1,23 @@
+[Event "rated blitz game"]
+[Site "https://lichess.org/00000000"]
+[Date "2022.11.07"]
+[Round "-"]
+[White "Player1"]
+[Black "Player2"]
+[Result "0-1"]
+[GameId "00000000"]
+[UTCDate "2022.11.07"]
+[UTCTime "19:34:53"]
+[WhiteElo "1588"]
+[BlackElo "1588"]
+[WhiteRatingDiff "-5"]
+[BlackRatingDiff "+6"]
+[Variant "Standard"]
+[TimeControl "300+3"]
+[ECO "A40"]
+[Opening "Queen's Pawn Game"]
+[Termination "Normal"]
+
+1. d4 a5 2. e4 a4 3. a3 d6 4. c4 g6 5. Nf3 Bg7 6. Bd3 h5 7. O-O Bg4 8. h3 Bxf3 9. Qxf3 Bxd4 10. Nc3 Bxc3 11. bxc3 Nc6 12. Bg5 Ne5 13. Qe2 Nxd3 14. Qxd3 Nf6 15. Rad1 O-O 16. Qf3 Ra5 17. h4 Ng4 18. e5 Rxe5 19. Rfe1 Rf5 20. Qxb7 Rxf2 21. Bxe7 Qa8 22. Qxa8 Rxa8 23. c5 Rc2 24. cxd6 cxd6 25. Rxd6 Rxc3 26. Bd8 Kg7 27. Rf1 Ra7 28. Bf6+ Nxf6 29. Rfxf6 Rxa3 30. Ra6 Rxa6 31. Rxa6 Ra1+ 32. Kh2 a3 33. Kg3 a2 34. Ra3 f6 35. Ra7+ Kh6 36. Ra8 g5 37. hxg5+ Kxg5 38. Ra5+ f5 39. Ra6 h4+ 40. Kf2 Kg4 41. Ra4+ f4 42. Ra5 h3 43. gxh3+ Kxh3 44. Kf3 Rf1+ 45. Ke4 a1=Q 46. Rxa1 Rxa1 47. Kxf4 Re1 48. Kf5 Kh2 49. Kf6 Re4 50. Kf5 Re3 51. Kf4 Rc3 52. Ke4 Rc7 53. Kd5 Kg3 54. Kd6 Rc4 55. Kd5 Rh4 56. Ke5 Kf3 57. Kd5 Ke3 58. Kc5 Kd3 59. Kb5 Kc3 60. Ka5 Rb4 61. Ka6 Kc4 62. Ka5 Rb3 63. Ka4 Rb1 64. Ka5 Rb2 65. Ka6 Kc5 66. Ka7 Kc6 67. Ka8 Kc7 0-1
+
+
