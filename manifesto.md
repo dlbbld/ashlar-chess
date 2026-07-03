@@ -17,4 +17,4 @@ software, to implement an algorithm that comes with an actual mathematical proof
 independently and validates it against Ambrona's own tools, so this rule question can be answered in Java with the
 same seriousness as ordinary move legality.
 
-The project should not grow forever. It should become finished — boring in the best way — and trustworthy.
+The project should not grow forever. It should become finished and trustworthy.
