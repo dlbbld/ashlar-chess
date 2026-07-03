@@ -2621,6 +2621,8 @@ public class PgnTestCaseCatalog {
         "1Bb5/1p6/pPpBb1k1/2Pp1b2/P2PpBp1/4P1P1/5K2/8 w - - 10 46"));
     list.add(
         new PgnFen("04_chasolver_node_limit_exception.pgn", "1Bb5/8/2b1b1k1/1pBpBb2/pP1PpBp1/4P1P1/P4K2/8 w - - 9 56"));
+    list.add(
+        new PgnFen("05_chasolver_node_limit_exception.pgn", "1Bb5/8/2b1b1k1/1pBpBb2/pP1PpBp1/4P1P1/P7/7K w - - 13 58"));
 
     return new PgnTestCaseList(PgnTest.CHA_CHASOLVER_EXCEPTIONS, list);
   }
