@@ -13,7 +13,8 @@ clean-room implementation of Miguel Ambrona's FUN 2022 unwinnability algorithm
 
 ashlar-chess is an orthodox-chess rules and data-handling library. It is useful when an application needs to validate
 moves, parse and export PGN/FEN/SAN, report draw claims, adjudicate flagfall/resignation under the FIDE mating-material
-exception, or analyze unwinnability/dead positions.
+exception, or analyze unwinnability/dead positions. Why the library exists is stated in
+[`manifesto.md`](manifesto.md).
 
 It is not a chess engine, does not search for best moves, and does not support Chess960, PGN variation trees, tablebases,
 opening books, or GUI/tournament-management workflows.
