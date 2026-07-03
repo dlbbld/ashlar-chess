@@ -7,6 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
 import java.nio.file.Path;
+import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
@@ -18,10 +19,12 @@ import io.github.dlbbld.ashlarchess.test.pgntest.constants.PgnTestConstants;
 
 /**
  * Nested / consecutive recursive-annotation-variation (RAV) stress fixtures. ashlar does not model variations - the
- * lenient parser skips every balanced {@code (...)} group and recovers the mainline. These headerless, result-less
- * inputs push harder than the inline cases: three or more consecutive side-lines at one node, depth-two nesting, a long
- * trailing run of side-lines, and (03) RAV skipping while the game starts from a custom FEN position. Each asserts the
- * exact recovered mainline.
+ * lenient parser skips every balanced {@code (...)} group and recovers the mainline. These inputs push harder than the
+ * inline cases: three or more consecutive side-lines at one node, depth-two nesting, a long trailing run of side-lines,
+ * RAV skipping while the game starts from a custom FEN position (03), and - the important robustness case - side-lines
+ * that themselves carry comments, NAGs, and suffix glyphs at every nesting level (04, 05). Every annotation inside a
+ * variation must be consumed with it and never leak onto a mainline move, and parentheses inside a variation's comment
+ * must not disturb the paren-depth balance. Each test asserts the exact recovered mainline.
  */
 class TestPgnVariationSkipFixtures {
 
@@ -58,8 +61,35 @@ class TestPgnVariationSkipFixtures {
     assertNull(game.terminationMarker());
   }
 
+  @SuppressWarnings("static-method")
+  @Test
+  void annotationsInsideNestedVariationsAreSkippedNotLeakedOntoTheMainline() {
+    // The side-lines carry suffix glyphs (!?, ?!), comments, and NAGs ($1, $2, $4) at both nesting levels. None may
+    // attach to a mainline move: the recovered mainline is annotation-free.
+    final PgnGame game = parse("04_nested_rav_with_comments_nags_suffixes.pgn");
+    assertEquals("e4 e5 Nf3 Nc6 Bb5 a6 Ba4", mainline(game));
+    assertNoAnnotationsLeaked(game);
+  }
+
+  @SuppressWarnings("static-method")
+  @Test
+  void parenthesesInsideAVariationsCommentDoNotDisturbTheDepthBalance() {
+    // The comments inside the (nested) side-lines contain "(main line)" and "(solid)". Because comment content is not
+    // scanned for parens, the balance is unaffected and the mainline is recovered exactly; a $14 inside is dropped too.
+    final PgnGame game = parse("05_variation_comment_with_parens.pgn");
+    assertEquals("d4 d5 c4 e6 Nc3", mainline(game));
+    assertNoAnnotationsLeaked(game);
+  }
+
   private static PgnGame parse(String fixture) {
     return LenientPgnParser.parsePath(FOLDER, fixture);
+  }
+
+  private static void assertNoAnnotationsLeaked(PgnGame game) {
+    for (final PgnMove move : game.moves()) {
+      assertEquals(List.of(), move.nags(), "NAG leaked onto mainline move " + move.san());
+      assertEquals("", move.commentary().value(), "comment leaked onto mainline move " + move.san());
+    }
   }
 
   private static String mainline(PgnGame game) {
