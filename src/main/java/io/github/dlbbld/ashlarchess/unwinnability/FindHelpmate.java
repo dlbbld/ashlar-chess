@@ -29,28 +29,33 @@ import io.github.dlbbld.ashlarchess.internal.Nulls;
  * bookkeeping, no influence on the search.
  *
  * <p>
- * One instance = one bounded search (one iterative-deepening iteration of Figure 9). The transposition table is not
- * shared across iterations: after a node-bound interrupt, entries may cover a truncated subtree, and reusing them in
- * a later iteration could prune it into an unsound {@code UNWINNABLE}.
+ * One instance serves all iterative-deepening iterations of one Figure 9 analysis: the transposition table is shared
+ * across base calls (the paper's explicit allowance), while {@code cnt} and the interrupted flag reset per call.
+ * Sharing is sound in this analyzer because a node-bound interrupt always ends the whole analysis (the iteration
+ * consumed the remaining global budget), so every table entry a <em>later</em> iteration can see was written by a
+ * depth-bounded-only search and is a genuine "explored with this budget" coverage claim - never a truncated one.
  */
 final class FindHelpmate {
 
   private final Side winnerSide;
   private final Side loserSide;
-  private final int nodesBound;
   private final Map<TranspositionKey, Integer> transpositionTable = new HashMap<>();
   private final Deque<UciMove> mateLine = new ArrayDeque<>();
+  private int nodesBound;
   private int nodesUsed;
   private boolean interrupted;
 
-  FindHelpmate(Side winner, int nodesBound) {
+  FindHelpmate(Side winner) {
     this.winnerSide = winner;
     this.loserSide = winner.getOppositeSide();
-    this.nodesBound = nodesBound;
   }
 
   /** Base call: one bounded search from the board's current position (Figure 9 step 3). */
-  HelpmateSearchResult search(Board board, int maxDepth) {
+  HelpmateSearchResult search(Board board, int maxDepth, int callNodesBound) {
+    this.nodesBound = callNodesBound;
+    this.nodesUsed = 0;
+    this.interrupted = false;
+    this.mateLine.clear();
     final boolean helpmateFound = search(board, 0, maxDepth, false);
     return new HelpmateSearchResult(helpmateFound, interrupted, nodesUsed,
         Nulls.copyOfList(new ArrayList<>(mateLine)));

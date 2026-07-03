@@ -90,6 +90,9 @@ class TestUnwinnabilityQuickAgainstLimitedOracle {
       case UNWINNABLE:
         assertNotEquals(LimitedUnwinnabilityVerdict.WINNABLE, verdict);
         break;
+      case WINNABLE:
+        assertNotEquals(LimitedUnwinnabilityVerdict.UNWINNABLE, verdict);
+        break;
       case POSSIBLY_WINNABLE:
         break;
       default:

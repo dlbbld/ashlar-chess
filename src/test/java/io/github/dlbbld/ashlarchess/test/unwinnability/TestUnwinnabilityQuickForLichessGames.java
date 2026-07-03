@@ -4,11 +4,16 @@
 package io.github.dlbbld.ashlarchess.test.unwinnability;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.logging.log4j.Logger;
 import org.junit.jupiter.api.Test;
 
 import io.github.dlbbld.ashlarchess.board.Board;
+import io.github.dlbbld.ashlarchess.internal.Nulls;
 import io.github.dlbbld.ashlarchess.test.common.utility.Loggers;
 import io.github.dlbbld.ashlarchess.test.model.PgnFen;
 import io.github.dlbbld.ashlarchess.test.model.PgnTestCaseList;
@@ -25,6 +30,7 @@ class TestUnwinnabilityQuickForLichessGames {
   @SuppressWarnings("static-method")
   @Test
   void test() throws Exception {
+    final List<String> failures = new ArrayList<>();
 
     for (final PgnTest pgnTest : PgnTest.values()) {
       final PgnTestCaseList testCaseList = PgnTestCaseCatalog.getTestList(pgnTest);
@@ -38,13 +44,26 @@ class TestUnwinnabilityQuickForLichessGames {
             continue;
         }
 
+        switch (testCase.pgnName()) {
+          // Paper-formulation trade-off (22.0.0): this locked pawn fortress needs cha's beyond-paper quick extras;
+          // the Figure 10 routine leaves it open (the full analyzer still proves it UNWINNABLE - see the
+          // accepted-differences fixtures for the corresponding quick oracle rows).
+          case "lichess_f6c1lu7R.pgn":
+            continue;
+          default:
+            break;
+        }
+
         final Board board = testCase.finalPosition();
 
         logger.info(testCase.pgnName());
 
         final UnwinnabilityQuickVerdict unwinnableQuickNotSideToMove = UnwinnableQuickAnalyzer
             .unwinnableQuick(board, board.getSideToMove().getOppositeSide()).verdict();
-        assertEquals(UnwinnabilityQuickVerdict.UNWINNABLE, unwinnableQuickNotSideToMove);
+        if (unwinnableQuickNotSideToMove != UnwinnabilityQuickVerdict.UNWINNABLE) {
+          failures.add(testCase.pgnName() + " " + board.getSideToMove().getOppositeSide() + " expected UNWINNABLE"
+              + " actual " + unwinnableQuickNotSideToMove + " FEN " + testCase.finalFen());
+        }
 
         final AmbronaUnwinnabilityVerdicts ambronaVerdict = AmbronaUnwinnabilityOracle.get(board.getFen());
         switch (board.getSideToMove().getOppositeSide()) {
@@ -59,5 +78,6 @@ class TestUnwinnabilityQuickForLichessGames {
         }
       }
     }
+    assertTrue(failures.isEmpty(), Nulls.join("\n", failures));
   }
 }

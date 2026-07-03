@@ -258,9 +258,13 @@ checkmate/stalemate — chess foundation, not unwinnability logic):
   Find-Helpmate; `WINNABLE` on an exhibited helpmate, `UNWINNABLE` on an uninterrupted exhaustion, else
   `UNDETERMINED` when the budget runs out. The paper leaves `bound(d)` as a parameter (its practical note, text
   footnote 13, fixes a small constant); ashlar uses one global 500 000-node budget across iterations with a depth
-  ceiling of 100. The transposition table is **not** shared across iterations: after a node-bound interrupt, entries
-  may describe truncated subtrees, and reusing them could prune a later iteration into an unsound `UNWINNABLE`
-  (the paper permits sharing but does not model interrupted entries).
+  ceiling of 100 (each iteration's node bound is the remaining global budget). The transposition table is shared
+  across iterations, per the paper's explicit allowance. Sharing is sound *in this budget scheme* because a
+  node-bound interrupt always ends the whole analysis (the iteration consumed the remaining budget, so the loop
+  exits `UNDETERMINED`): every entry a later iteration can observe was written by a depth-bounded-only search and is
+  a genuine "explored with this budget" coverage claim, never a node-bound-truncated one. (Entries written after a
+  node-bound cut could overclaim coverage; they are only ever visible within their own, already-interrupted
+  iteration, which can no longer conclude `UNWINNABLE`.)
 - **Figure 10 quick routine** → `UnwinnableQuickAnalyzer`: forced-move advance, bounded DFS with a *global* depth-9
   interrupt, then the semi-static check gated to pawn/bishop/king material without semi-open files. **Footnote a**
   (implemented): the forced-move advance is loop-guarded (arbitrarily long single-move sequences exist; capping is

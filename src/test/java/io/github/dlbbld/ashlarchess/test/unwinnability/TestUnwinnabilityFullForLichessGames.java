@@ -4,11 +4,16 @@
 package io.github.dlbbld.ashlarchess.test.unwinnability;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.logging.log4j.Logger;
 import org.junit.jupiter.api.Test;
 
 import io.github.dlbbld.ashlarchess.board.Board;
+import io.github.dlbbld.ashlarchess.internal.Nulls;
 import io.github.dlbbld.ashlarchess.test.common.utility.Loggers;
 import io.github.dlbbld.ashlarchess.test.model.PgnFen;
 import io.github.dlbbld.ashlarchess.test.model.PgnTestCaseList;
@@ -25,6 +30,7 @@ class TestUnwinnabilityFullForLichessGames {
   @SuppressWarnings("static-method")
   @Test
   void test() throws Exception {
+    final List<String> failures = new ArrayList<>();
 
     for (final PgnTest pgnTest : PgnTest.values()) {
       final PgnTestCaseList testCaseList = PgnTestCaseCatalog.getTestList(pgnTest);
@@ -44,7 +50,10 @@ class TestUnwinnabilityFullForLichessGames {
 
         final UnwinnabilityFullVerdict unwinnableFullNotSideToMove = UnwinnableFullAnalyzer
             .unwinnableFull(board, board.getSideToMove().getOppositeSide()).verdict();
-        assertEquals(UnwinnabilityFullVerdict.UNWINNABLE, unwinnableFullNotSideToMove);
+        if (unwinnableFullNotSideToMove != UnwinnabilityFullVerdict.UNWINNABLE) {
+          failures.add(testCase.pgnName() + " " + board.getSideToMove().getOppositeSide() + " expected UNWINNABLE"
+              + " actual " + unwinnableFullNotSideToMove + " FEN " + testCase.finalFen());
+        }
 
         final AmbronaUnwinnabilityVerdicts ambronaVerdict = AmbronaUnwinnabilityOracle.get(board.getFen());
         switch (board.getSideToMove().getOppositeSide()) {
@@ -59,5 +68,6 @@ class TestUnwinnabilityFullForLichessGames {
         }
       }
     }
+    assertTrue(failures.isEmpty(), Nulls.join("\n", failures));
   }
 }

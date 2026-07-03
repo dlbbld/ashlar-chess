@@ -36,10 +36,11 @@ Design decisions (agreed 2026-07-03):
   forced-move pre-advance is dropped from the full analyzer (the search decides forced lines within budget); the quick
   analyzer keeps its forced-move advance because that is paper (Figure 10 step 1, loop-guarded per footnote a).
 - **Budget envelope kept from 21.x**: 500 000 global node budget across deepening iterations (the paper leaves
-  `bound(d)` as a parameter), depth cap 100. Transposition table is per-iteration (not shared across iterations —
-  sharing after a node-bound interrupt could let truncated entries prune a later iteration into an unsound
-  `UNWINNABLE`); the post-loop fall-through returns `UNDETERMINED`, fixing the old code's theoretically unsound
-  `UNWINNABLE` fall-through.
+  `bound(d)` as a parameter), depth cap 100, per-iteration node bound = remaining global budget. Transposition table
+  is shared across iterations (paper allowance) — sound in this budget scheme because a node-bound interrupt always
+  ends the whole analysis, so later iterations only ever see depth-bounded (untruncated) coverage entries; the
+  post-loop fall-through returns `UNDETERMINED`, fixing the old code's theoretically unsound `UNWINNABLE`
+  fall-through.
 - **The cha material predicate (`UnwinnabilityMaterialBitboard`) is retired with the port**; Ambrona's Lemmas 5/6 live
   on in the clean-room `MaterialLemmas` (same proven lemmas, paper-traceable formulation — this does not reopen the
   "material is correct" decision, it re-derives the identical predicate from the paper).
@@ -66,7 +67,26 @@ Work items:
   Figure 10's gate declines by design). Default profile green (1302 tests).
 - **Full-suite sign-off**: run the excluded unwinnability suite, re-baseline the accepted-differences fixtures
   (soundness contradictions block release), measure performance vs 21.1.0 and decide whether a fast-board pass is
-  needed before release.
+  needed before release. ✅ DONE 2026-07-03 — whole suite (default + excluded) green: **1348 tests, 0 failures,
+  0 soundness contradictions against cha and chasolver**. Verdict movement vs the cha port, in full: the FULL
+  analyzer regressed on exactly **one verdict** (Norgaard pawn-wall, White side, `UNWINNABLE`→`UNDETERMINED` — the
+  pure locked fortress only a beyond-paper semi-static proves; Black side was already `UNDETERMINED` since 21.0.0)
+  and gained one class of strength (quick `WINNABLE` on quickly matable positions, ~17 corpus positions). The QUICK
+  analyzer regressed on two fortress positions (`lichess_f6c1lu7R`, Norgaard-White; the full analyzer still proves
+  f6c1lu7R). Along the way the shared-transposition-table fix (see the budget-envelope decision above) recovered
+  f6c1lu7R for the full analyzer and cut the suite from 22:03 to 14:39 min. Test-harness changes: quick oracle
+  comparisons moved to implication semantics (a two-valued oracle's "undetermined" is consistent with a definite
+  ashlar verdict); Lichess pin tests now report all failing positions instead of failing fast; the retired
+  cha-internal mobility/semistatic oracles (fixtures, generators, C++ sources) are deleted.
+
+Remaining before release:
+
+- **Performance decision**: the curated chasolver sweep runs 831 s vs ~404 s on the cha-port engine (~2×; the gap is
+  concentrated in hard positions that burn the full 500 000-node budget at public-`Board` per-node cost). Decide
+  whether 22.0.0 ships as-is (single-query production impact is millisecond-scale on typical positions) or first
+  gets a fast-board pass (drive the Figure 5 search and Figure 10 DFS over an internal make/unmake board).
+- **Release steps** per workflows.md (version bump, CHANGELOG date, README/manual regeneration is already done,
+  sign+publish from the notebook).
 
 ---
 

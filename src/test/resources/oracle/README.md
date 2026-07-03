@@ -7,6 +7,7 @@ by the source of the tested positions:
 cha/ashlar-pgn/        D3-Chess/CHA output over Ashlar's PGN final positions
 chasolver/ashlar-pgn/  Rust chasolver output over the same Ashlar positions
 chasolver/curated/     the upstream curated chasolver position set
+d3chess/               the upstream D3-Chess ground-truth test vectors
 python-chess/          python-chess output over Ashlar PGN fixtures
 ```
 
@@ -22,27 +23,24 @@ The tests under `againstchasolvercurated` read its `WB`, `W-`, `-B`, and `--`
 classifications directly instead of treating it as generated output from this
 project's PGN fixtures.
 
+`d3chess/test-vectors.txt` is copied from Miguel Ambrona's D3-Chess repository:
+the ground-truth test vectors of the FUN 2022 paper, one position per line with
+a `WB`/`W-`/`-B`/`--` helpmate classification. `TestUnwinnableSemiStatic` runs
+the permanent Theorem 12 soundness sweep over it.
+
 The TSV columns are:
 
 ```text
 fen	fullWhite	fullBlack	quickWhite	quickBlack
 ```
 
-`cha/ashlar-pgn/mobility.tsv` uses the same final FEN source, but writes one
-row per piece in every distinct position. The `toSquares` column is a
-comma-separated list of squares reached by Ambrona's saturated semistatic
-movement variable for that piece.
-
-```text
-fen	side	pieceType	from	toSquares
-```
-
-`cha/ashlar-pgn/semistatic.tsv` uses the same final FEN source and writes CHA
-rows for semistatic verdicts and helper sets.
-
-```text
-fen	side	kind	subject	value
-```
+Until 22.0.0 this folder also carried `cha/ashlar-pgn/mobility.tsv` and
+`cha/ashlar-pgn/semistatic.tsv`, dumps of CHA's internal mobility/semi-static
+state compared field-by-field against the former cha-port internals. They were
+retired with the port: the paper-formulation engine is deliberately not
+structured like cha internally (text footnote 12 - cha evolved beyond the
+paper), so only the public verdicts are compared, by implication, against the
+`unwinnability.tsv` oracles.
 
 ## One-time Windows setup
 
@@ -125,43 +123,9 @@ The unwinnability generator compiles `tools/ambrona-oracle/cha_oracle.cpp` into 
 WSL, streams every distinct final FEN to it, and rewrites
 `src/test/resources/oracle/cha/ashlar-pgn/unwinnability.tsv` with LF line endings.
 
-To regenerate the mobility oracle, run:
+The oracle comparison tests live in the unwinnability test package, which is
+excluded from default Maven test runs. Run them explicitly with:
 
 ```powershell
-mvn -q org.codehaus.mojo:exec-maven-plugin:3.6.2:java "-Dexec.classpathScope=test" "-Dexec.mainClass=io.github.dlbbld.ashlarchess.test.generate.GenerateAmbronaMobilityOracle"
-```
-
-The optional D3-Chess path argument and `ambrona.d3.path` system property work
-the same way as for the unwinnability oracle. The mobility generator compiles
-`tools/ambrona-oracle/mobility_oracle.cpp`.
-
-To regenerate the semistatic oracle, run:
-
-```powershell
-mvn -q org.codehaus.mojo:exec-maven-plugin:3.6.2:java "-Dexec.classpathScope=test" "-Dexec.mainClass=io.github.dlbbld.ashlarchess.test.generate.GenerateAmbronaSemiStaticOracle"
-```
-
-The optional D3-Chess path argument and `ambrona.d3.path` system property work
-the same way as for the unwinnability oracle. The semistatic generator compiles
-`tools/ambrona-oracle/semistatic_oracle.cpp`.
-
-To compare the generated mobility oracle against the Java mobility
-implementation without turning the mismatch report into a JUnit failure, run:
-
-```powershell
-mvn -q org.codehaus.mojo:exec-maven-plugin:3.6.2:java "-Dexec.classpathScope=test" "-Dexec.mainClass=io.github.dlbbld.ashlarchess.unwinnability.CompareAmbronaMobilityOracle"
-```
-
-To compare the generated semistatic oracle without turning the mismatch report
-into a JUnit failure, run:
-
-```powershell
-mvn -q org.codehaus.mojo:exec-maven-plugin:3.6.2:java "-Dexec.classpathScope=test" "-Dexec.mainClass=io.github.dlbbld.ashlarchess.unwinnability.CompareAmbronaSemiStaticOracle"
-```
-
-The corresponding JUnit baseline tests live in the unwinnability test package,
-which is excluded from default Maven test runs. Run them explicitly with:
-
-```powershell
-mvn -q "-Dtest.excludes=" "-Dtest=TestAmbronaMobilityOracleComparison,TestAmbronaSemiStaticOracleComparison" test
+mvn -q "-Dtest.excludes=" "-Dtest=TestAmbronaUnwinnabilityFullOracleComparison,TestAmbronaUnwinnabilityQuickOracleComparison,TestChasolverUnwinnabilityFullOracleComparison,TestChasolverUnwinnabilityQuickOracleComparison" test
 ```
