@@ -19,11 +19,13 @@ import io.github.dlbbld.ashlarchess.pgn.ResultTagValue;
 import io.github.dlbbld.ashlarchess.test.pgntest.constants.PgnTestConstants;
 
 /**
- * The lenient parser against real, unmodified movetext from the two servers a copy-paste is most likely to come from:
- * lichess (symbolic glyphs, {@code [%eval]}/{@code [%clk]} command comments, RAV side-lines) and chess.com (numeric
- * {@code $N} NAGs, RAV side-lines). The games are the actual exports; only the identifying tag values (player names,
- * game URL/id) were anonymised. Each fixture must parse, recover the right mainline, carry the expected NAG data, and
- * survive a parse -> write -> parse round-trip with its moves and NAGs intact.
+ * The lenient parser against real, unmodified movetext from the three sources a copy-paste is most likely to come from:
+ * lichess (symbolic glyphs, {@code [%eval]}/{@code [%clk]} command comments, RAV side-lines), chess.com (numeric
+ * {@code $N} NAGs, RAV side-lines), and archival/annotated classics from game databases (long multi-line brace
+ * comments, no-space move numbers like {@code 1.e4}). The lichess/chess.com games are the actual exports with only the
+ * identifying tag values (player names, game URL/id) anonymised; the classics are public-domain historical games kept
+ * verbatim. Each fixture must parse, recover the right mainline, carry the expected annotation data, and survive a
+ * parse -> write -> parse round-trip with its moves, NAGs, and commentary intact.
  */
 class TestPgnRealWorldGames {
 
@@ -81,11 +83,52 @@ class TestPgnRealWorldGames {
     assertEquals(12, totalNags(game));
   }
 
+  // -----------------------------------------------------------------------------------------------------------------
+  // Annotated classics - long multi-line brace comments, no NAGs, no variations. Public-domain historical games.
+  // -----------------------------------------------------------------------------------------------------------------
+
+  @SuppressWarnings("static-method")
+  @Test
+  void laskerCapablancaHasNoSpaceMoveNumbersAndMultiLineComments() {
+    // This export writes move numbers glued to the SAN ("1.e4", "27.Qxd8+"); the lenient parser handles the missing
+    // space. Capablanca's notes are long comments that wrap across several source lines.
+    final PgnGame game = parse("classic_lasker_capablanca_1921.pgn");
+    assertEquals(61, game.moves().size());
+    assertEquals(ResultTagValue.DRAW, game.terminationMarker());
+    assertEquals(0, totalNags(game));
+    assertEquals(8, commentedMoveCount(game));
+    // Move 1 (index 0) carries the leading "Notes by ..." comment.
+    assertTrue(Nulls.getFirst(game.moves()).commentary().value().contains("Notes by J. R. Capablanca"));
+  }
+
+  @SuppressWarnings("static-method")
+  @Test
+  void zukertortSteinitzParsesFischersAnnotations() {
+    final PgnGame game = parse("classic_zukertort_steinitz_1886.pgn");
+    assertEquals(58, game.moves().size());
+    assertEquals(ResultTagValue.BLACK_WON, game.terminationMarker());
+    assertEquals(0, totalNags(game));
+    assertEquals(8, commentedMoveCount(game));
+  }
+
+  @SuppressWarnings("static-method")
+  @Test
+  void nimzowitschHakanssonParsesCommentsContainingMoveLikeText() {
+    // Nimzowitsch's notes quote long analysis lines ("12...Kb8 13 c3! dxc3 ...") inside the braces. That text is
+    // comment content, not movetext - the brace makes it opaque, so it must not affect the parsed mainline.
+    final PgnGame game = parse("classic_nimzowitsch_hakansson_1922.pgn");
+    assertEquals(53, game.moves().size());
+    assertEquals(ResultTagValue.WHITE_WON, game.terminationMarker());
+    assertEquals(0, totalNags(game));
+    assertEquals(9, commentedMoveCount(game));
+  }
+
   @SuppressWarnings("static-method")
   @Test
   void everyRealGameSurvivesAParseWriteParseRoundTrip() {
     for (final String fixture : new String[] {"lichess_raw.pgn", "lichess_analysis.pgn", "chesscom_variations.pgn",
-        "chesscom_review.pgn", "chesscom_variations_review.pgn"}) {
+        "chesscom_review.pgn", "chesscom_variations_review.pgn", "classic_lasker_capablanca_1921.pgn",
+        "classic_zukertort_steinitz_1886.pgn", "classic_nimzowitsch_hakansson_1922.pgn"}) {
       final PgnGame first = parse(fixture);
       final PgnGame reparsed = LenientPgnParser.parseText(PgnCreate.toPgnString(first));
       assertEquals(first.moves().size(), reparsed.moves().size(), fixture);
@@ -94,6 +137,7 @@ class TestPgnRealWorldGames {
         final PgnMove b = Nulls.get(reparsed.moves(), i);
         assertEquals(a.san(), b.san(), fixture + " san@" + i);
         assertEquals(a.nags(), b.nags(), fixture + " nags@" + i);
+        assertEquals(a.commentary().value(), b.commentary().value(), fixture + " comment@" + i);
       }
     }
   }
@@ -108,6 +152,16 @@ class TestPgnRealWorldGames {
       total += move.nags().size();
     }
     return total;
+  }
+
+  private static int commentedMoveCount(PgnGame game) {
+    int count = 0;
+    for (final PgnMove move : game.moves()) {
+      if (!move.commentary().value().isEmpty()) {
+        count++;
+      }
+    }
+    return count;
   }
 
   private static boolean hasCommentary(PgnGame game) {
