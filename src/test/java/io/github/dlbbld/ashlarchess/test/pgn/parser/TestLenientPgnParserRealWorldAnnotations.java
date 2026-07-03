@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 
 import io.github.dlbbld.ashlarchess.internal.Nulls;
 import io.github.dlbbld.ashlarchess.pgn.LenientPgnParser;
+import io.github.dlbbld.ashlarchess.pgn.MoveSuffixAnnotation;
 import io.github.dlbbld.ashlarchess.pgn.PgnGame;
 import io.github.dlbbld.ashlarchess.test.PgnTestHelper;
 
@@ -74,6 +75,50 @@ class TestLenientPgnParserRealWorldAnnotations {
     final PgnGame game = LenientPgnParser
         .parseText(PgnTestHelper.header("*") + "1. e4 { (0.32 -> 1.41) Inaccuracy. } (1. d4 d5) e5 *\n\n");
     assertEquals(2, game.moves().size());
+  }
+
+  @SuppressWarnings("static-method")
+  @Test
+  void moveAssessmentNagsBecomeTheEquivalentSymbolicAnnotation() {
+    // The six move-assessment NAGs ($1..$6) are the numeric encoding of ashlar's six symbolic move annotations;
+    // chess.com's game-review export emits these instead of the glyphs. Each is mapped to the matching enum value.
+    final PgnGame game = LenientPgnParser.parseText(PgnTestHelper.header("*")
+        + "1. e4 $1 e5 $2 2. Nf3 $3 Nc6 $4 3. Bb5 $5 a6 $6 *\n\n");
+    assertEquals(6, game.moves().size());
+    assertEquals(MoveSuffixAnnotation.GOOD_MOVE, Nulls.get(game.moves(), 0).moveSuffixAnnotation());
+    assertEquals(MoveSuffixAnnotation.MISTAKE, Nulls.get(game.moves(), 1).moveSuffixAnnotation());
+    assertEquals(MoveSuffixAnnotation.BRILLIANT_MOVE, Nulls.get(game.moves(), 2).moveSuffixAnnotation());
+    assertEquals(MoveSuffixAnnotation.BLUNDER, Nulls.get(game.moves(), 3).moveSuffixAnnotation());
+    assertEquals(MoveSuffixAnnotation.INTERESTING_MOVE, Nulls.get(game.moves(), 4).moveSuffixAnnotation());
+    assertEquals(MoveSuffixAnnotation.DUBIOUS_MOVE, Nulls.get(game.moves(), 5).moveSuffixAnnotation());
+  }
+
+  @SuppressWarnings("static-method")
+  @Test
+  void nonAssessmentNagsAreToleratedWithoutAnnotation() {
+    // Codes outside $1..$6 (positional, time, or chess.com's own $9 sprinkled across nearly every move) have no
+    // symbolic equivalent; the parser consumes them and leaves the move unannotated rather than choking.
+    final PgnGame game = LenientPgnParser
+        .parseText(PgnTestHelper.header("*") + "1. e4 $9 e5 $10 2. Nf3 $7 Nc6 *\n\n");
+    assertEquals(4, game.moves().size());
+    assertEquals(MoveSuffixAnnotation.NONE, Nulls.get(game.moves(), 0).moveSuffixAnnotation());
+    assertEquals(MoveSuffixAnnotation.NONE, Nulls.get(game.moves(), 1).moveSuffixAnnotation());
+    assertEquals(MoveSuffixAnnotation.NONE, Nulls.get(game.moves(), 2).moveSuffixAnnotation());
+  }
+
+  @SuppressWarnings("static-method")
+  @Test
+  void nagsAndVariationsCombineTheWayChessComExportsThem() {
+    // chess.com's "with variations and review" export carries both on the same movetext: a NAG on nearly every move
+    // and RAV side-lines for the analyzed ones. The mainline is e4 e5 g3 f6 Qh5+ g6 = 6 half-moves.
+    final String movetext = "1. e4 e5 2. g3 $2 f6 $9 3. Qh5+ $9 g6 $1 (3... Ke7 4. Qf7+ Kd6) 4. Qe2 *";
+    final PgnGame game = LenientPgnParser.parseText(PgnTestHelper.header("*") + movetext + "\n\n");
+    assertEquals(7, game.moves().size());
+    assertEquals("g3", Nulls.get(game.moves(), 2).san());
+    assertEquals(MoveSuffixAnnotation.MISTAKE, Nulls.get(game.moves(), 2).moveSuffixAnnotation());
+    assertEquals("g6", Nulls.get(game.moves(), 5).san());
+    assertEquals(MoveSuffixAnnotation.GOOD_MOVE, Nulls.get(game.moves(), 5).moveSuffixAnnotation());
+    assertEquals("Qe2", Nulls.get(game.moves(), 6).san());
   }
 
   @SuppressWarnings("static-method")

@@ -430,6 +430,14 @@ public final class LenientPgnParser {
           skipVariation();
           continue;
         }
+        // A numeric annotation glyph (NAG, `$N`) annotates the move just played. chess.com's game-review export emits
+        // these instead of the symbolic `!`/`?` glyphs. The six move-assessment NAGs map onto MoveSuffixAnnotation; any
+        // other code is tolerated (consumed, no annotation) - see applyNagToLastMove.
+        if (peek.text().startsWith("$")) {
+          tokenizer.next();
+          applyNagToLastMove(moves, peek.text());
+          continue;
+        }
         // Tolerate spaced move-number indicators like `1 . e4` and `1 ... e5` - see consumedSpacedMoveNumber.
         if (consumedSpacedMoveNumber(peek)) {
           continue;
@@ -580,6 +588,47 @@ public final class LenientPgnParser {
       return existing;
     }
     return new PgnCommentary(existing.value() + " " + addition.value());
+  }
+
+  /**
+   * Applies a numeric annotation glyph ({@code $N}) to the most recently parsed move. The six move-assessment NAGs the
+   * PGN standard defines are the numeric encoding of ashlar's symbolic {@link MoveSuffixAnnotation} values, so they are
+   * mapped onto the move's suffix (overwriting {@code NONE}; an explicit symbolic glyph already on the move is kept).
+   * Every other code - positional, time, or chess.com's own {@code $9} - has no symbolic equivalent and is tolerated:
+   * the token was already consumed, and no annotation is recorded. A {@code $N} before any move (none exists yet) is
+   * likewise dropped.
+   */
+  private static void applyNagToLastMove(List<PgnMove> moves, String nagText) {
+    final MoveSuffixAnnotation nagSuffix = nagToSuffix(nagText);
+    if (nagSuffix == MoveSuffixAnnotation.NONE || moves.isEmpty()) {
+      return;
+    }
+    final int last = moves.size() - 1;
+    final PgnMove previous = Nulls.get(moves, last);
+    if (previous.moveSuffixAnnotation() != MoveSuffixAnnotation.NONE) {
+      return;
+    }
+    moves.set(last, new PgnMove(previous.san(), nagSuffix, previous.commentary()));
+  }
+
+  /** Maps a move-assessment NAG to its symbolic annotation; any non-assessment code returns {@code NONE}. */
+  private static MoveSuffixAnnotation nagToSuffix(String nagText) {
+    switch (nagText) {
+      case "$1":
+        return MoveSuffixAnnotation.GOOD_MOVE;
+      case "$2":
+        return MoveSuffixAnnotation.MISTAKE;
+      case "$3":
+        return MoveSuffixAnnotation.BRILLIANT_MOVE;
+      case "$4":
+        return MoveSuffixAnnotation.BLUNDER;
+      case "$5":
+        return MoveSuffixAnnotation.INTERESTING_MOVE;
+      case "$6":
+        return MoveSuffixAnnotation.DUBIOUS_MOVE;
+      default:
+        return MoveSuffixAnnotation.NONE;
+    }
   }
 
   /**
