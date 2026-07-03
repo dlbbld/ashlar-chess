@@ -5,7 +5,8 @@ ashlar-chess
 
 ashlar-chess is a Java chess library focused on rule correctness, production usability, and reproducible validation.
 It implements SAN, FEN, and PGN parsing, validation, and export with strict/lenient parser pairs, and includes a
-clean-room implementation of Miguel Ambrona's FUN 2022 unwinnability algorithm (the paper behind the
+clean-room implementation of Miguel Ambrona's FUN 2022 unwinnability algorithm
+([*A Practical Algorithm for Chess Unwinnability*](https://chasolver.org/FUN22-full.pdf), the paper behind the
 [Chess Unwinnability Analyzer](https://github.com/miguel-ambrona/chasolver)) as a flagship feature.
 
 ## What it is
@@ -88,7 +89,8 @@ ashlar-chess is free software, licensed under the GNU General Public License, ve
 for the full text.
 
 The unwinnability and dead-position detection is ashlar's own clean-room implementation of Miguel Ambrona's FUN 2022
-paper *A Practical Algorithm for Chess Unwinnability*, governed by the committed specification
+paper [*A Practical Algorithm for Chess Unwinnability*](https://chasolver.org/FUN22-full.pdf), governed by the
+committed specification
 [`fun22-spec.md`](fun22-spec.md); it is derived from the paper only, not from Ambrona's implementations (the retired
 C++ `D3-Chess`/`cha` or its **Rust** successor [`chasolver`](https://github.com/miguel-ambrona/chasolver), both
 GPL v3). Ambrona's D3-Chess ground-truth test vectors and verdicts from `cha`/`chasolver` are committed as test
