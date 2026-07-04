@@ -7,6 +7,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
@@ -126,9 +128,17 @@ class TestPgnRealWorldGames {
   @SuppressWarnings("static-method")
   @Test
   void everyRealGameSurvivesAParseWriteParseRoundTrip() {
-    for (final String fixture : Nulls.asList("lichess_raw.pgn", "lichess_analysis.pgn", "chesscom_variations.pgn",
-        "chesscom_review.pgn", "chesscom_variations_review.pgn", "classic_lasker_capablanca_1921.pgn",
-        "classic_zukertort_steinitz_1886.pgn", "classic_nimzowitsch_hakansson_1922.pgn")) {
+    final List<String> fixtures = new ArrayList<>();
+    fixtures.add("lichess_raw.pgn");
+    fixtures.add("lichess_analysis.pgn");
+    fixtures.add("chesscom_variations.pgn");
+    fixtures.add("chesscom_review.pgn");
+    fixtures.add("chesscom_variations_review.pgn");
+    fixtures.add("classic_lasker_capablanca_1921.pgn");
+    fixtures.add("classic_zukertort_steinitz_1886.pgn");
+    fixtures.add("classic_nimzowitsch_hakansson_1922.pgn");
+
+    for (final String fixture : fixtures) {
       final PgnGame first = parse(fixture);
       final PgnGame reparsed = LenientPgnParser.parseText(PgnCreate.toPgnString(first));
       assertEquals(first.moves().size(), reparsed.moves().size(), fixture);
