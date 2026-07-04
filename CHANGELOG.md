@@ -2,7 +2,7 @@
 
 Releases from 3.3 onward. Earlier history is in git tags only.
 
-## [Unreleased] - 22.0.0 - The FUN22 paper formulation replaces the cha port
+## [22.0.0] - Unwinnability now straight from the FUN 2022 paper - 2026-07-04
 
 The unwinnability engine is now ashlar's own independent, paper-derived implementation of Miguel Ambrona's FUN 2022 paper *A
 Practical Algorithm for Chess Unwinnability* (Figures 5-13, Lemmas 5/6, Theorem 12), governed by the committed
@@ -10,6 +10,9 @@ specification `fun22-spec.pdf` and derived from the paper only. It replaces the 
 (D3-Chess): the algorithm is now traceable to the published paper rather than to another codebase. The engine was
 built and validated as a standalone independent project first: zero soundness contradictions against the D3-Chess
 ground-truth corpus, against the previous cha-port analyzer, and against Ambrona's independent Rust `chasolver`.
+Alongside the engine swap, PGN import learns real-world move annotations: NAGs and suffix glyphs are one unified,
+preserved model (validated against python-chess), and the lenient parser skips analysis side-lines (RAV) to read the
+game that was played.
 
 ### Breaking
 

@@ -11,7 +11,7 @@ Live planning only: current release work, backlog, and obsolete decisions. Shipp
 
 ---
 
-## 22.0.0 — The FUN22 paper formulation replaces the cha port
+## 22.0.0 — Unwinnability now straight from the FUN 2022 paper
 
 Branch `implement-fun22`. The unwinnability engine becomes ashlar's own clean-room implementation of Ambrona's FUN 2022
 paper (*A Practical Algorithm for Chess Unwinnability*, Figures 5–13, Lemmas 5/6, Theorem 12), vendored from the
@@ -109,6 +109,21 @@ Work items:
     stays retired: no implication holds in either direction there (cha case-splitting vs the paper's stronger
     α-reading), so that layer is covered by the D3-Chess Theorem 12 soundness sweep instead.
 
+- **PGN real-world annotations (grew into the release alongside the engine swap).** ✅ DONE 2026-07-04 — driven by
+  real lichess computer-analysis and chess.com game-review exports:
+  - Lenient tolerances: `[%eval]`/`[%clk]` command comments (brace-depth-aware tag heuristic), consecutive comments
+    merged per move, RAV `(...)` skipped to keep the mainline (tolerated, not modeled — variation trees stay a
+    non-goal; strict still rejects RAV).
+  - **Unified NAG model** (python-chess-informed, user decision): `PgnMove` stores `List<Nag>`; the six suffix
+    glyphs are import shorthand for codes 1–6 (`e4?` ≡ `e4 $2`), all 256 codes preserved in both parsers,
+    `moveSuffixAnnotation()` derived. Malformed/signed/out-of-range NAGs: strict rejects (`MOVETEXT_NAG_INVALID`),
+    lenient drops as one token. Semantic export renders the first assessment NAG as its glyph (fidelity: source
+    order/duplicates kept); archival export is canonical — dedup + sorted, all `$N` — matching python-chess
+    byte-for-byte (committed `nagExport.jsonl` oracle).
+  - Test corpus: anonymized lichess/chess.com fixtures + three annotated classics + nested-RAV stress files +
+    edge/contract pins (~90 new PGN tests); 19.5 MB ChessBase ECO one-shot sweep: 1366/1369 lenient (3 rejects =
+    corrupt U+007F comment bytes). Two Codex review rounds green; docs (spec/manual/README/changelog) aligned.
+
 Remaining before release:
 
 - **Performance decision**: the curated chasolver sweep runs 831 s vs ~404 s on the cha-port engine (~2×; the gap is
@@ -121,8 +136,9 @@ Remaining before release:
   board; `Score`/`GoingToCorner` refactored to bitboard-level signatures. Verdicts identical (all oracle comparisons
   and pins green with zero re-baselining). Curated sweep: **318 s** - 2.6× faster than the Board-driven engine and
   ~21% faster than the old cha-port engine.
-- **Release steps** per workflows.md (version bump, CHANGELOG date, README/manual regeneration is already done,
-  sign+publish from the notebook).
+- **Release steps** per workflows.md. ✅ Branch-side artifacts DONE 2026-07-04 (title "Unwinnability now straight
+  from the FUN 2022 paper"; pom 22.0.0, changelog header/date, README version snippets regenerated, this section
+  closed). Pre-flight (`-Pfull`), PR/merge/tag, and sign+publish from the notebook follow per runbook.
 
 ---
 
