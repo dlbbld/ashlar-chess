@@ -412,34 +412,41 @@ public final class LenientPgnParser {
       }
       // A suffix glyph (`!`/`?`/...) is folded into the move's NAG list - it is shorthand for a NAG (see Nag). A
       // detached glyph with no move to attach to, or an unrecognised run like `!?!`, is tolerated by dropping it.
-      if (type == PgnTokenType.MOVE_SUFFIX_ANNOTATION) {
-        final PgnToken suffixToken = tokenizer.next();
-        appendNagToLastMove(moves, glyphToNag(suffixToken.text()));
-        continue;
-      }
+
       // A numeric annotation glyph (`$N`) annotates the move just played (chess.com's review export emits these). A
       // NAG before any move, or a malformed/out-of-range code, is tolerated by dropping it.
-      if (type == PgnTokenType.NAG) {
-        final PgnToken nagToken = tokenizer.next();
-        appendNagToLastMove(moves, parseNagLenient(nagToken));
-        continue;
-      }
-      if (type == PgnTokenType.SYMBOL) {
-        // A recursive annotation variation (RAV) opens with a `(`-led symbol. ashlar does not model variations (a
-        // rules library reads the game that was played, not the engine's side-lines - see specification.md); the
-        // lenient parser skips the balanced group and keeps the mainline.
-        if (peek.text().startsWith("(")) {
-          skipVariation();
-          continue;
+      if (type != null) {
+        switch (type) {
+          case MOVE_SUFFIX_ANNOTATION: {
+            final PgnToken suffixToken = tokenizer.next();
+            appendNagToLastMove(moves, glyphToNag(suffixToken.text()));
+            continue;
+          }
+          case NAG: {
+            final PgnToken nagToken = tokenizer.next();
+            appendNagToLastMove(moves, parseNagLenient(nagToken));
+            continue;
+          }
+          case SYMBOL: {
+            // A recursive annotation variation (RAV) opens with a `(`-led symbol. ashlar does not model variations (a
+            // rules library reads the game that was played, not the engine's side-lines - see specification.md); the
+            // lenient parser skips the balanced group and keeps the mainline.
+            if (peek.text().startsWith("(")) {
+              skipVariation();
+              continue;
+            }
+            // Tolerate spaced move-number indicators like `1 . e4` and `1 ... e5` - see consumedSpacedMoveNumber.
+            if (consumedSpacedMoveNumber(peek)) {
+              continue;
+            }
+            final PgnMove move = parseMoveLenient();
+            moves.add(move);
+            consumePostMoveAnnotations(moves);
+            continue;
+          }
+          default:
+            break;
         }
-        // Tolerate spaced move-number indicators like `1 . e4` and `1 ... e5` - see consumedSpacedMoveNumber.
-        if (consumedSpacedMoveNumber(peek)) {
-          continue;
-        }
-        final PgnMove move = parseMoveLenient();
-        moves.add(move);
-        consumePostMoveAnnotations(moves);
-        continue;
       }
       throw new LenientPgnParserValidationException(
           LenientPgnParserValidationProblem.EXCEPTION_CAUGHT_FROM_STRICT_VALIDATION, SanValidationProblem.NONE,

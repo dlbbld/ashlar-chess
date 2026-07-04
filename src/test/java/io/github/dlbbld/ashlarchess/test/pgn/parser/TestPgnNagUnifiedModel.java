@@ -91,6 +91,6 @@ class TestPgnNagUnifiedModel {
     assertThrows(IllegalArgumentException.class, () -> new Nag(256));
     assertEquals("$0", new Nag(0).toToken());
     assertEquals("$255", new Nag(255).toToken());
-    assertTrue(new Nag(2).toToken().equals("$2"));
+    assertTrue("$2".equals(new Nag(2).toToken()));
   }
 }

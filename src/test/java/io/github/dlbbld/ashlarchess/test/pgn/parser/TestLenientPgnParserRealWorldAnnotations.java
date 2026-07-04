@@ -174,10 +174,11 @@ class TestLenientPgnParserRealWorldAnnotations {
   void representativeLichessAnalysisSliceParsesToItsMainline() {
     // A compact slice with every lichess construct at once: two opening comments, symbolic annotations, eval/clk
     // command comments, and RAV lines for the flagged moves. The mainline is d4 a5 e4 a4 a3 d6 c4 g6 = 8 half-moves.
-    final String movetext = "1. d4 { [%eval 0.15] [%clk 0:05:00] } { A40 Queen's Pawn Game } 1... a5 "
-        + "{ [%eval 0.67] [%clk 0:05:00] } 2. e4 { [%eval 0.69] } 2... a4 { [%eval 1.12] } 3. a3 { [%eval 0.97] } "
-        + "3... d6?! { (0.97 -> 1.16) Inaccuracy. e5 was best. } { [%eval 1.16] } (3... e5 4. dxe5 dxe5 5. Qxd8+) "
-        + "4. c4 { [%eval 0.64] } 4... g6 { [%eval 0.92] } 0-1";
+    final String movetext = """
+        1. d4 { [%eval 0.15] [%clk 0:05:00] } { A40 Queen's Pawn Game } 1... a5 \
+        { [%eval 0.67] [%clk 0:05:00] } 2. e4 { [%eval 0.69] } 2... a4 { [%eval 1.12] } 3. a3 { [%eval 0.97] } \
+        3... d6?! { (0.97 -> 1.16) Inaccuracy. e5 was best. } { [%eval 1.16] } (3... e5 4. dxe5 dxe5 5. Qxd8+) \
+        4. c4 { [%eval 0.64] } 4... g6 { [%eval 0.92] } 0-1""";
     final PgnGame game = LenientPgnParser.parseText(PgnTestHelper.header("0-1") + movetext + "\n\n");
     assertEquals(8, game.moves().size());
     assertEquals("d4", Nulls.get(game.moves(), 0).san());

@@ -92,7 +92,8 @@ final class SquareGeometry {
       dist[src] = 0;
       int head = 0;
       int tail = 0;
-      queue[tail++] = src;
+      queue[tail] = src;
+      tail++;
       while (head < tail) {
         final int u = queue[head++];
         long neighbours = KNIGHT[u];

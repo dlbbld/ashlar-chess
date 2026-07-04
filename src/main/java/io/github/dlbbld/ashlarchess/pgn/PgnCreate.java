@@ -4,6 +4,7 @@
 package io.github.dlbbld.ashlarchess.pgn;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.eclipse.jdt.annotation.Nullable;
@@ -255,7 +256,7 @@ public final class PgnCreate {
         codes.add(nag.code());
       }
     }
-    codes.sort(null);
+    Collections.sort(codes);
     return codes;
   }
 
