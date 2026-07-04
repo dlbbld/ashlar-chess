@@ -186,9 +186,9 @@ only when you need context.
 
 **10.2** Release title field: `X.Y.Z`.
 
-**10.3** Notes body starts with `# <release title>`.
+**10.3** Generate the notes body — never hand-paste changelog text: `.\tools\build-release-notes.ps1 -Version X.Y.Z -Title "<release title>"`. It emits `# <release title>` plus the `CHANGELOG.md` `[X.Y.Z]` entry with paragraphs and list items **unwrapped to one logical line each**. The changelog's ~120-column hard wraps are invisible in file rendering but become `<br>` in a release body (GitHub renders files with soft newlines, release notes/issues/comments with hard ones) — pasted verbatim, every paragraph breaks mid-sentence (22.0.0 lesson, fixed in place with `gh release edit`).
 
-**10.4** Paste/adapt the `CHANGELOG.md` `[X.Y.Z]` entry below that H1.
+**10.4** Publish: `gh release create X.Y.Z --verify-tag --title "X.Y.Z" --notes-file release-notes-X.Y.Z.md` — then **open the release page and look at it**.
 
 **11. Post-release**
 
