@@ -410,18 +410,17 @@ public final class LenientPgnParser {
         throw movetextError(LenientPgnParserValidationProblem.MOVETEXT_COMMENTARY_NOT_ALLOWED_IN_SAN,
             "A commentary cannot occur where a SAN move is expected.");
       }
-      // A suffix glyph (`!`/`?`/...) is folded into the move's NAG list - it is shorthand for a NAG (see Nag). A
-      // detached glyph with no move to attach to, or an unrecognised run like `!?!`, is tolerated by dropping it.
-
-      // A numeric annotation glyph (`$N`) annotates the move just played (chess.com's review export emits these). A
-      // NAG before any move, or a malformed/out-of-range code, is tolerated by dropping it.
       if (type != null) {
         switch (type) {
+          // A suffix glyph (`!`/`?`/...) is folded into the move's NAG list - it is shorthand for a NAG (see Nag). A
+          // detached glyph with no move to attach to, or an unrecognised run like `!?!`, is tolerated by dropping it.
           case MOVE_SUFFIX_ANNOTATION: {
             final PgnToken suffixToken = tokenizer.next();
             appendNagToLastMove(moves, glyphToNag(suffixToken.text()));
             continue;
           }
+          // A numeric annotation glyph (`$N`) annotates the move just played (chess.com's review export emits these).
+          // A NAG before any move, or a malformed/out-of-range code, is tolerated by dropping it.
           case NAG: {
             final PgnToken nagToken = tokenizer.next();
             appendNagToLastMove(moves, parseNagLenient(nagToken));
