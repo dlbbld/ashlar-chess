@@ -234,6 +234,26 @@ class TestPgnAnnotationEdgeCases {
 
   @SuppressWarnings("static-method")
   @Test
+  void archivalExportDeduplicatesAndSortsNags() {
+    // Archival is the canonical form: unordered NAGs, duplicates, and a glyph that duplicates an explicit NAG all
+    // collapse to a deduplicated, ascending $N sequence (matching python-chess). `Nf3?? $4` -> single $4.
+    final PgnGame game = lenient("1. e4 $2 $1 e5 $1 $1 2. Nf3?? $4 d5 *");
+    final String pgn = PgnCreate.toPgnString(game, WriteMode.ARCHIVAL);
+    assertEquals("1. e4 $1 $2 e5 $1 2. Nf3 $4 d5 *", Nulls.substring(pgn, pgn.indexOf("1. ")).trim());
+  }
+
+  @SuppressWarnings("static-method")
+  @Test
+  void semanticExportPreservesNagOrderAndDuplicates() {
+    // Semantic is the fidelity form: the source order and duplicates are kept (contrast the archival test above). The
+    // first assessment NAG becomes a glyph; the rest, including a duplicate, stay as $N.
+    final PgnGame game = lenient("1. e4 $2 $1 e5 $1 $1 *");
+    final String pgn = PgnCreate.toPgnString(game);
+    assertEquals("1. e4? $1 e5! $1 *", Nulls.substring(pgn, pgn.indexOf("1. ")).trim());
+  }
+
+  @SuppressWarnings("static-method")
+  @Test
   void aGlyphAndAPositionalNagOnOneMoveRoundTrip() {
     // code 1 renders as the glyph "!", code 14 (no glyph) as "$14"; reparsing recovers both.
     final PgnGame game = lenient("1. Nf3 $1 $14 d5 *");

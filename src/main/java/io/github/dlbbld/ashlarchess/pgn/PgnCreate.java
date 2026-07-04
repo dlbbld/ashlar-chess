@@ -210,27 +210,34 @@ public final class PgnCreate {
    * Renders a move's NAGs, in one of two forms.
    *
    * <p>
-   * <b>Archival</b> ({@link WriteMode#ARCHIVAL}) is PGN export-format conformant (spec section 8.2.3.8, which defines
-   * the suffix glyphs as import-only shorthand for NAGs): <em>every</em> NAG is written as a spaced {@code $N} token,
-   * including the assessment codes {@code 1..6}, so {@code e4?} exports as {@code e4 $2}.
+   * <b>Archival</b> ({@link WriteMode#ARCHIVAL}) is the canonical, PGN export-format conformant form (spec section
+   * 8.2.3.8, which defines the suffix glyphs as import-only shorthand for NAGs): the NAGs are deduplicated and sorted
+   * ascending, and <em>every</em> one is written as a spaced {@code $N} token, including the assessment codes
+   * {@code 1..6}. So {@code e4?} exports as {@code e4 $2}, and a move carrying {@code $2 $1 $1} exports as
+   * {@code $1 $2}. This matches python-chess (which holds a move's NAGs in a set), so archival output agrees with it
+   * byte-for-byte.
    *
    * <p>
-   * <b>Semantic</b> (the default) favours human readability and idempotent re-parsing over strict export conformance:
-   * the <em>first</em> assessment NAG (code {@code 1..6}) is written as its glyph attached to the SAN ({@code e4?}) and
-   * every other NAG - a second assessment code, {@code $0}, or any positional code - as a spaced {@code $N}. At most
-   * one glyph is attached so the output stays unambiguous (two fused glyphs, e.g. {@code ?}+{@code !}, would read as the
-   * single glyph {@code ?!}).
+   * <b>Semantic</b> (the default) favours human readability and honest preservation over canonical form: the source
+   * order and duplicates are kept, the <em>first</em> assessment NAG (code {@code 1..6}) is written as its glyph
+   * attached to the SAN ({@code e4?}) and every other NAG - a second assessment code, {@code $0}, or any positional
+   * code - as a spaced {@code $N}. At most one glyph is attached so the output stays unambiguous (two fused glyphs,
+   * e.g. {@code ?}+{@code !}, would read as the single glyph {@code ?!}).
    */
   private static void appendNags(StringBuilder result, List<Nag> nags, WriteMode writeMode) {
+    if (writeMode == WriteMode.ARCHIVAL) {
+      for (final int code : sortedDistinctNagCodes(nags)) {
+        result.append(" $").append(code);
+      }
+      return;
+    }
     int glyphIndex = -1;
-    if (writeMode != WriteMode.ARCHIVAL) {
-      for (int i = 0; i < nags.size(); i++) {
-        final MoveSuffixAnnotation glyph = MoveSuffixAnnotation.fromNagCode(Nulls.get(nags, i).code());
-        if (glyph != null) {
-          result.append(glyph.getSuffix());
-          glyphIndex = i;
-          break;
-        }
+    for (int i = 0; i < nags.size(); i++) {
+      final MoveSuffixAnnotation glyph = MoveSuffixAnnotation.fromNagCode(Nulls.get(nags, i).code());
+      if (glyph != null) {
+        result.append(glyph.getSuffix());
+        glyphIndex = i;
+        break;
       }
     }
     for (int i = 0; i < nags.size(); i++) {
@@ -238,6 +245,18 @@ public final class PgnCreate {
         result.append(" ").append(Nulls.get(nags, i).toToken());
       }
     }
+  }
+
+  /** The move's NAG codes, deduplicated and sorted ascending - the canonical (archival) ordering. */
+  private static List<Integer> sortedDistinctNagCodes(List<Nag> nags) {
+    final List<Integer> codes = new ArrayList<>();
+    for (final Nag nag : nags) {
+      if (!codes.contains(nag.code())) {
+        codes.add(nag.code());
+      }
+    }
+    codes.sort(null);
+    return codes;
   }
 
   /**

@@ -624,7 +624,9 @@ Move annotations are supported and modeled. Both the six suffix glyphs (`!`, `?`
 Annotation Glyphs (`$0`–`$255`) are parsed, preserved, and round-tripped by both parsers. Per the PGN standard
 (section 8.2.3.8) the glyphs are import shorthand for NAG codes `1`–`6`, so ashlar folds both into one `Nag` list per
 move — `e4?` and `e4 $2` are the same annotation. Semantic (default) export writes the first assessment NAG as its
-readable glyph; archival export (`WriteMode.ARCHIVAL`) writes every NAG as `$N`, matching the PGN export format.
+readable glyph and preserves the source order and duplicates; archival export (`WriteMode.ARCHIVAL`) is canonical —
+it deduplicates and sorts a move's NAGs and writes every one as `$N`, matching the PGN export format and python-chess
+byte-for-byte.
 
 ### Parse Model
 

@@ -35,11 +35,10 @@ import io.github.dlbbld.ashlarchess.test.ConfigurationTestConstants;
  *
  * <p>
  * Both libraries treat the six suffix glyphs as import shorthand for NAG codes 1..6 and write every NAG as {@code $N} in
- * export/archival form, so for these fixtures the serialisations coincide byte-for-byte. The fixtures deliberately keep
- * NAGs in ascending, duplicate-free order (and carry no variations): python-chess holds a move's NAGs in a set and
- * ashlar-chess in an ordered list, so the two agree exactly only on canonical input - which is what real exporters emit.
- * The per-move code comparison deduplicates and sorts ashlar's list, so it holds regardless of that representational
- * difference.
+ * export/archival form. Archival export is also <em>canonical</em>: ashlar-chess deduplicates and sorts a move's NAGs
+ * ascending, matching how python-chess holds them in a set - so the two serialisations coincide byte-for-byte even when
+ * the source order is scrambled or carries duplicates (fixtures 06/07). The fixtures carry no variations (ashlar skips
+ * those; python-chess models them). The per-move code comparison also deduplicates and sorts ashlar's parsed list.
  */
 class TestPgnArchivalExportAgainstPythonChessOracle {
 
