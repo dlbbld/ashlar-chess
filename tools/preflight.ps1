@@ -50,7 +50,10 @@ function Invoke-Gate {
 
 Invoke-Gate "worktree clean" {
   $status = git status --porcelain
-  if ($status) {
+  if ($LASTEXITCODE -ne 0) {
+    Write-Host "git status failed (exit $LASTEXITCODE); cannot verify the worktree - failing closed." -ForegroundColor Red
+    $global:LASTEXITCODE = 1
+  } elseif ($status) {
     Write-Host "Worktree is not clean:" -ForegroundColor Red
     Write-Host $status
     $global:LASTEXITCODE = 1
