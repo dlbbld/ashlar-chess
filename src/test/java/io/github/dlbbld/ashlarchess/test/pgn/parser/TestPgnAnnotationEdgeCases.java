@@ -168,7 +168,7 @@ class TestPgnAnnotationEdgeCases {
 
   @SuppressWarnings("static-method")
   @Test
-  void aVariationIsSkippedWithoutValidatingItsContents() {
+  void variationIsSkippedWithoutValidatingItsContents() {
     // "Skip" means the side-line is never parsed as moves: illegal SANs and outright garbage inside it are consumed
     // as opaque tokens, so the mainline (e4 e5) is unaffected and the game does not fail.
     final PgnGame game = lenient("1. e4 (1. TotallyIllegal) e5 (2. Zxq9 foo bar) *");
@@ -179,7 +179,7 @@ class TestPgnAnnotationEdgeCases {
 
   @SuppressWarnings("static-method")
   @Test
-  void aVariationImmediatelyBeforeTheTerminationKeepsTheRealMarker() {
+  void variationImmediatelyBeforeTerminationKeepsRealMarker() {
     // The balanced group is skipped and the `*` that follows it is still recognised as the game-termination marker.
     final PgnGame game = lenient("1. e4 (1. d4 d5) *");
     assertEquals(1, game.moves().size());
@@ -189,7 +189,7 @@ class TestPgnAnnotationEdgeCases {
 
   @SuppressWarnings("static-method")
   @Test
-  void aSemicolonLineCommentInsideAVariationIsSkipped() {
+  void semicolonLineCommentInsideVariationIsSkipped() {
     // A `;` rest-of-line comment inside a side-line is consumed opaquely with the rest of the variation; the closing
     // `)` on the next line still balances the group and the mainline is recovered.
     final PgnGame game = lenient("1. e4 (1. d4 ; a branch note\nd5) e5 *");
@@ -214,7 +214,7 @@ class TestPgnAnnotationEdgeCases {
 
   @SuppressWarnings("static-method")
   @Test
-  void aGlyphSeparatedFromItsMoveByASpaceStillAttaches() {
+  void glyphSeparatedFromMoveBySpaceStillAttaches() {
     final PgnGame game = lenient("1. e4 !! e5 *");
     assertEquals(List.of(new Nag(3)), Nulls.getFirst(game.moves()).nags());
   }
@@ -310,7 +310,7 @@ class TestPgnAnnotationEdgeCases {
 
   @SuppressWarnings("static-method")
   @Test
-  void aGlyphAndAPositionalNagOnOneMoveRoundTrip() {
+  void glyphAndPositionalNagOnOneMoveRoundTrip() {
     // code 1 renders as the glyph "!", code 14 (no glyph) as "$14"; reparsing recovers both.
     final PgnGame game = lenient("1. Nf3 $1 $14 d5 *");
     final String pgn = PgnCreate.toPgnString(game);
@@ -365,7 +365,8 @@ class TestPgnAnnotationEdgeCases {
   }
 
   private static void assertStrictProblem(String movetext, StrictPgnParserValidationProblem expected) {
-    final StrictPgnParserValidationException e = assertThrows(StrictPgnParserValidationException.class,
+    @SuppressWarnings("null") final StrictPgnParserValidationException e = assertThrows(
+        StrictPgnParserValidationException.class,
         () -> StrictPgnParser.parseText(PgnTestHelper.header("*") + movetext + "\n\n"));
     assertEquals(expected, e.getStrictPgnParserValidationProblem());
   }

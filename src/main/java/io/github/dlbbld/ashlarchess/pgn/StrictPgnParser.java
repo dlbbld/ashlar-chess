@@ -575,7 +575,7 @@ public final class StrictPgnParser {
   /** Consumes a NAG token and validates its {@code $}-plus-digits form; the code must be a decimal in {@code 0..255}. */
   private Nag parseNagStrict() {
     final PgnToken token = tokenizer.next();
-    final Nag nag = Nag.fromDigits(token.text().substring(1)); // drop the leading '$'
+    final Nag nag = Nag.fromDigits(Nulls.substring(token.text(), 1)); // drop the leading '$'
     if (nag == null) {
       throw movetextError(StrictPgnParserValidationProblem.MOVETEXT_NAG_INVALID,
           "A NAG must be '$' followed by a decimal integer from 0 to 255, but was \"" + token.text() + "\".");

@@ -37,17 +37,17 @@ public record Nag(int code) {
     if (body.isEmpty()) {
       return null;
     }
+    int value = 0;
     for (int i = 0; i < body.length(); i++) {
       final char c = body.charAt(i);
       if (c < '0' || c > '9') {
         return null;
       }
+      value = value * 10 + c - '0';
+      if (value > 255) {
+        return null;
+      }
     }
-    try {
-      final int value = Integer.parseInt(body);
-      return value <= 255 ? new Nag(value) : null;
-    } catch (final NumberFormatException e) {
-      return null;
-    }
+    return new Nag(value);
   }
 }

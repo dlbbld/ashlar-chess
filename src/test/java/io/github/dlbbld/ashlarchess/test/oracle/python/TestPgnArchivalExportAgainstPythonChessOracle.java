@@ -50,7 +50,8 @@ class TestPgnArchivalExportAgainstPythonChessOracle {
   @SuppressWarnings({ "static-method", "unchecked" })
   @Test
   void archivalNagExportMatchesPythonChess() throws IOException {
-    final List<String> lines = Files.readAllLines(ORACLE_PATH, StandardCharsets.UTF_8);
+    @SuppressWarnings("null") final List<String> lines = Nulls.copyOfList(
+        Files.readAllLines(ORACLE_PATH, StandardCharsets.UTF_8));
     int fixtures = 0;
     for (int li = 0; li < lines.size(); li++) {
       final String line = Nulls.get(lines, li);

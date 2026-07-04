@@ -126,9 +126,9 @@ class TestPgnRealWorldGames {
   @SuppressWarnings("static-method")
   @Test
   void everyRealGameSurvivesAParseWriteParseRoundTrip() {
-    for (final String fixture : new String[] {"lichess_raw.pgn", "lichess_analysis.pgn", "chesscom_variations.pgn",
+    for (final String fixture : Nulls.asList("lichess_raw.pgn", "lichess_analysis.pgn", "chesscom_variations.pgn",
         "chesscom_review.pgn", "chesscom_variations_review.pgn", "classic_lasker_capablanca_1921.pgn",
-        "classic_zukertort_steinitz_1886.pgn", "classic_nimzowitsch_hakansson_1922.pgn"}) {
+        "classic_zukertort_steinitz_1886.pgn", "classic_nimzowitsch_hakansson_1922.pgn")) {
       final PgnGame first = parse(fixture);
       final PgnGame reparsed = LenientPgnParser.parseText(PgnCreate.toPgnString(first));
       assertEquals(first.moves().size(), reparsed.moves().size(), fixture);

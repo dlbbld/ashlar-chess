@@ -100,7 +100,7 @@ class TestLenientPgnParserRealWorldAnnotations {
 
   @SuppressWarnings("static-method")
   @Test
-  void aGlyphSuffixAndItsNagAreTheSameThing() {
+  void glyphSuffixAndNagAreTheSameThing() {
     // e4? and e4 $2 both mean "mistake": both yield a single Nag(2). The unified model stores them identically.
     final PgnGame glyph = LenientPgnParser.parseText(PgnTestHelper.header("*") + "1. e4? e5 *\n\n");
     final PgnGame nag = LenientPgnParser.parseText(PgnTestHelper.header("*") + "1. e4 $2 e5 *\n\n");

@@ -631,7 +631,7 @@ public final class LenientPgnParser {
 
   /** Parses a {@code $N} NAG token, or returns {@code null} (dropped) if the body is not a decimal 0..255. */
   private static @Nullable Nag parseNagLenient(PgnToken nagToken) {
-    return Nag.fromDigits(nagToken.text().substring(1)); // drop the leading '$'
+    return Nag.fromDigits(Nulls.substring(nagToken.text(), 1)); // drop the leading '$'
   }
 
   /**

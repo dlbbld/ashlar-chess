@@ -47,7 +47,8 @@ class TestPgnNagUnifiedModel {
   @SuppressWarnings("static-method")
   @Test
   void strictRejectsNagWithoutDigits() {
-    final StrictPgnParserValidationException e = assertThrows(StrictPgnParserValidationException.class,
+    @SuppressWarnings("null") final StrictPgnParserValidationException e = assertThrows(
+        StrictPgnParserValidationException.class,
         () -> StrictPgnParser.parseText(PgnTestHelper.header("*") + "1. e4 $ e5 *\n\n"));
     assertEquals(StrictPgnParserValidationProblem.MOVETEXT_NAG_INVALID, e.getStrictPgnParserValidationProblem());
   }
@@ -55,7 +56,8 @@ class TestPgnNagUnifiedModel {
   @SuppressWarnings("static-method")
   @Test
   void strictRejectsNagOutOfRange() {
-    final StrictPgnParserValidationException e = assertThrows(StrictPgnParserValidationException.class,
+    @SuppressWarnings("null") final StrictPgnParserValidationException e = assertThrows(
+        StrictPgnParserValidationException.class,
         () -> StrictPgnParser.parseText(PgnTestHelper.header("*") + "1. e4 $999 e5 *\n\n"));
     assertEquals(StrictPgnParserValidationProblem.MOVETEXT_NAG_INVALID, e.getStrictPgnParserValidationProblem());
   }

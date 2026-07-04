@@ -105,7 +105,7 @@ public final class PgnCreate {
 
     for (final String san : sans) {
       PgnMove move;
-      move = new PgnMove(san, List.of(), PgnCommentary.EMPTY);
+      move = new PgnMove(san, new ArrayList<Nag>(), PgnCommentary.EMPTY);
       moves.add(move);
     }
 
