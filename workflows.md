@@ -38,7 +38,7 @@ Run from Eclipse (Run As → Java Application) or from the command line:
 
 Find the `createTestCases<Category>` function matching the target `PgnTest` enum value in [`PgnTestCaseCatalog.java`](src/test/java/io/github/dlbbld/ashlarchess/test/pgn/setup/PgnTestCaseCatalog.java). Append the generated `list.add(...)` line in the natural sort order of the existing entries.
 
-Run `mvn test -Dtest=TestSetupPgnRegistration` to confirm the corpus-vs-registry diff is now empty.
+Run `mvn test -Dtest=TestSetupPgnRegistration` to confirm the corpus-vs-registry diff is now empty, and `mvn test -Dtest=TestPgnCorpusFileStructure` to confirm the file passes the strict file-structure pre-scan (exactly two empty lines: one after the last tag, one at the end). The structure lint runs in every default-profile build, so a malformed file fails the same commit that adds it — running it here just catches the mistake before it is even committed. (Lesson from 22.0.0: a corpus file ending `*\n` instead of `*\n\n` stayed invisible for a day because every corpus-sweeping test lived in `-Pfull`.)
 
 ### Adding a new corpus category
 
@@ -96,9 +96,11 @@ only when you need context.
 
 **2.4** Regenerate README/manual examples: `mvn -o -q test-compile exec:java -Dexec.mainClass=io.github.dlbbld.ashlarchess.test.readme.GenerateReadme -Dexec.classpathScope=test`.
 
-**2.5** Review the diff as mechanical only.
+**2.5** Run the JavaDoc gates: `mvn clean javadoc:javadoc javadoc:test-javadoc -Dshow=private`. Doc errors are cleanup-shaped and belong in this pass; pre-flight re-runs the same gate as a cheap confirmation.
 
-**2.6** Commit this cleanup separately before the version bump.
+**2.6** Review the diff as mechanical only.
+
+**2.7** Commit this cleanup separately before the version bump.
 
 **3. Choose the release title**
 
@@ -128,21 +130,13 @@ only when you need context.
 
 **5. Run pre-flight on the release branch**
 
-**5.1** Confirm the worktree is clean.
+**5.1** Run the pre-flight script: `.\tools\preflight.ps1`. It chains, fail-fast with one summary and honest exit codes: worktree clean → license headers (`java-license-headers.ps1 -Check`) → `mvn test -Pfull` → `mvn test -Pfull -Dtest.excludes=` (the normally excluded unwinnability suite; a release exercises it) → the JavaDoc gates (`mvn clean javadoc:javadoc javadoc:test-javadoc -Dshow=private`).
 
-**5.2** Check Java license headers: `.\tools\java-license-headers.ps1 -Check`.
+**5.2** If the header gate reports drift, fix and commit: `.\tools\java-license-headers.ps1 -Fix`, then re-run 5.1.
 
-**5.3** If needed, fix and commit header drift: `.\tools\java-license-headers.ps1 -Fix`.
+**5.3** Confirm all release tasks are done in `tasks.md`.
 
-**5.4** Run full tests: `mvn test -Pfull`.
-
-**5.5** Also exercise the normally excluded unwinnability package for a release: `mvn test -Pfull -Dtest.excludes=`.
-
-**5.6** Run JavaDoc gates from a clean `target/`: `mvn clean javadoc:javadoc javadoc:test-javadoc -Dshow=private`.
-
-**5.7** Confirm all release tasks are done in `tasks.md`.
-
-**5.8** If board logic changed materially, run the board burn-in and update the baseline: `mvn -o -q exec:java -Dexec.classpathScope=test -Dexec.mainClass=io.github.dlbbld.ashlarchess.test.performance.BoardApiBurnInSurvey`.
+**5.4** If board logic changed materially, run the board burn-in and update the baseline: `mvn -o -q exec:java -Dexec.classpathScope=test -Dexec.mainClass=io.github.dlbbld.ashlarchess.test.performance.BoardApiBurnInSurvey`.
 
 **6. Run the release build dry-run on the branch**
 
@@ -251,6 +245,8 @@ Browse prior entries in `CHANGELOG.md` for tone and depth. Entries before this c
 `## [X.Y.Z] - YYYY-MM-DD` header with no title; leave them as shipped.
 
 #### 5. Run pre-flight on the release branch
+
+Pre-flight is one command — `.\tools\preflight.ps1` — chaining the five automated gates fail-fast, each verdict taken from the tool's own exit code (no log grepping; a build failure can never hide behind a green shell exit). The notes below explain the individual gates.
 
 The pre-flight JavaDoc command must run both main and test docs with `-Dshow=private`: many main classes and all test
 classes are package-private, and at javadoc's default `protected` visibility doclint silently skips them. Running from a
