@@ -4,6 +4,7 @@
 package io.github.dlbbld.ashlarchess.test.pgn.parser;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -152,6 +153,17 @@ class TestPgnAnnotationEdgeCases {
     final PgnGame game = lenient("1. e4 e5 (2. d4 exd4 *");
     assertEquals(2, game.moves().size());
     assertEquals("e5", Nulls.get(game.moves(), 1).san());
+  }
+
+  @SuppressWarnings("static-method")
+  @Test
+  void anUnbalancedVariationInTheMiddleDiscardsTheRemainder() {
+    // An unclosed `(` consumes to end of input hunting its `)`, so recoverable-LOOKING mainline moves after it (and
+    // the termination marker) are swallowed with the side-line - the recovered mainline stops at the `(`.
+    final PgnGame game = lenient("1. e4 e5 (2. d4 exd4 2. Nf3 Nc6 *");
+    assertEquals(2, game.moves().size());
+    assertEquals("e5", Nulls.get(game.moves(), 1).san());
+    assertNull(game.terminationMarker());
   }
 
   @SuppressWarnings("static-method")
