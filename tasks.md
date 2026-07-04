@@ -13,6 +13,8 @@ Live planning only: current release work, backlog, and obsolete decisions. Shipp
 
 ## 22.0.0 — Unwinnability now straight from the FUN 2022 paper
 
+Published 2026-07-04 (tag `22.0.0` on `f04800f9`, on Maven Central); see **CHANGELOG.md** for the consumer-facing summary. Shipped from branch `implement-fun22` (merged as PR #68, plus the pre-flight fixture fix PR #69). The `fun22-reference` project is decommissioned with the release: everything of value is vendored and validated in ashlar, a full-history bundle lives in `Downloads/fun22-reference-archive/`.
+
 Branch `implement-fun22`. The unwinnability engine becomes ashlar's own clean-room implementation of Ambrona's FUN 2022
 paper (*A Practical Algorithm for Chess Unwinnability*, Figures 5–13, Lemmas 5/6, Theorem 12), vendored from the
 validated `fun22-reference` project (branch `semi-static-v1`: whole-corpus sweeps vs chasolver with 0 contradictions).
