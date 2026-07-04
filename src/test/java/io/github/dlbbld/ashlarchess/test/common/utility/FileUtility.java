@@ -49,9 +49,7 @@ public final class FileUtility {
     }
   }
 
-  /**
-   * Reading a file linewise, without including linebreaks or adding spaces after a line break.
-   */
+  /** Reading a file linewise, without including linebreaks or adding spaces after a line break. */
   public static List<String> readFileLines(Path folderPath, String fileName) {
     return readFileLines(Nulls.pathResolve(folderPath, fileName));
   }

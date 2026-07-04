@@ -65,9 +65,7 @@ public final class OracleJsonlReader {
         (Boolean) obj.get("canClaimFifty"));
   }
 
-  /**
-   * Package-visible: parse one JSONL line into a fresh {@code LinkedHashMap}. Used by sibling oracle readers.
-   */
+  /** Package-visible: parse one JSONL line into a fresh {@code LinkedHashMap}. Used by sibling oracle readers. */
   static Map<String, Object> parseLineToObject(String text) {
     return (Map<String, Object>) parseValue(text);
   }

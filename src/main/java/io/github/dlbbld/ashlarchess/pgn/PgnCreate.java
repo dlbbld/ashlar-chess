@@ -4,6 +4,7 @@
 package io.github.dlbbld.ashlarchess.pgn;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.eclipse.jdt.annotation.Nullable;
@@ -51,7 +52,7 @@ public final class PgnCreate {
   public static List<String> toPgnLines(PgnGame pgnGame, WriteMode writeMode) {
     final PgnGame effective = writeMode == WriteMode.ARCHIVAL ? PgnArchivalNormalization.apply(pgnGame) : pgnGame;
     return Nulls.copyOfList(calculateFileLines(effective.tags(), effective.pregameCommentary(), effective.startFen(),
-        effective.moves(), effective.terminationMarker()));
+        effective.moves(), effective.terminationMarker(), writeMode));
   }
 
   private static String appendEmptyLine(String text) {
@@ -59,7 +60,7 @@ public final class PgnCreate {
   }
 
   private static List<String> calculateFileLines(List<Tag> tags, PgnCommentary pregameCommentary, Fen startFen,
-      List<PgnMove> moves, @Nullable ResultTagValue terminationMarker) {
+      List<PgnMove> moves, @Nullable ResultTagValue terminationMarker, WriteMode writeMode) {
 
     final List<String> fileLines = new ArrayList<>();
     for (final Tag tag : tags) {
@@ -72,7 +73,7 @@ public final class PgnCreate {
     }
 
     final String movetext = calculateMovetextWithoutGameTerminationMarker(startFen.fullMoveNumber(),
-        startFen.sideToMove(), moves);
+        startFen.sideToMove(), moves, writeMode);
 
     // PgnCommentary is contract-validated (no `}`, no `\r`), so the value writes verbatim into {...}.
     final String pregameCommentaryValue = pregameCommentary.value();
@@ -105,7 +106,7 @@ public final class PgnCreate {
 
     for (final String san : sans) {
       PgnMove move;
-      move = new PgnMove(san, MoveSuffixAnnotation.NONE, PgnCommentary.EMPTY);
+      move = new PgnMove(san, new ArrayList<>(), PgnCommentary.EMPTY);
       moves.add(move);
     }
 
@@ -162,7 +163,7 @@ public final class PgnCreate {
   }
 
   private static String calculateMovetextWithoutGameTerminationMarker(int fullMoveNumber, Side sideToMove,
-      List<PgnMove> moves) {
+      List<PgnMove> moves, WriteMode writeMode) {
 
     final StringBuilder result = new StringBuilder();
 
@@ -188,9 +189,7 @@ public final class PgnCreate {
 
       final String san = move.san();
       result.append(" ").append(san);
-      if (move.moveSuffixAnnotation() != MoveSuffixAnnotation.NONE) {
-        result.append(move.moveSuffixAnnotation().getSuffix());
-      }
+      appendNags(result, move.nags(), writeMode);
 
       final String commentaryValue = move.commentary().value();
       if (!commentaryValue.isEmpty()) {
@@ -206,6 +205,59 @@ public final class PgnCreate {
       currentSideToMove = currentSideToMove.getOppositeSide();
     }
     return Nulls.toString(result);
+  }
+
+  /**
+   * Renders a move's NAGs, in one of two forms.
+   *
+   * <p>
+   * <b>Archival</b> ({@link WriteMode#ARCHIVAL}) is the canonical, PGN export-format conformant form (spec section
+   * 8.2.3.8, which defines the suffix glyphs as import-only shorthand for NAGs): the NAGs are deduplicated and sorted
+   * ascending, and <em>every</em> one is written as a spaced {@code $N} token, including the assessment codes
+   * {@code 1..6}. So {@code e4?} exports as {@code e4 $2}, and a move carrying {@code $2 $1 $1} exports as
+   * {@code $1 $2}. This matches python-chess (which holds a move's NAGs in a set), so archival output agrees with it
+   * byte-for-byte.
+   *
+   * <p>
+   * <b>Semantic</b> (the default) favours human readability and honest preservation over canonical form: the source
+   * order and duplicates are kept, the <em>first</em> assessment NAG (code {@code 1..6}) is written as its glyph
+   * attached to the SAN ({@code e4?}) and every other NAG - a second assessment code, {@code $0}, or any positional
+   * code - as a spaced {@code $N}. At most one glyph is attached so the output stays unambiguous (two fused glyphs,
+   * e.g. {@code ?}+{@code !}, would read as the single glyph {@code ?!}).
+   */
+  private static void appendNags(StringBuilder result, List<Nag> nags, WriteMode writeMode) {
+    if (writeMode == WriteMode.ARCHIVAL) {
+      for (final int code : sortedDistinctNagCodes(nags)) {
+        result.append(" $").append(code);
+      }
+      return;
+    }
+    int glyphIndex = -1;
+    for (int i = 0; i < nags.size(); i++) {
+      final MoveSuffixAnnotation glyph = MoveSuffixAnnotation.fromNagCode(Nulls.get(nags, i).code());
+      if (glyph != null) {
+        result.append(glyph.getSuffix());
+        glyphIndex = i;
+        break;
+      }
+    }
+    for (int i = 0; i < nags.size(); i++) {
+      if (i != glyphIndex) {
+        result.append(" ").append(Nulls.get(nags, i).toToken());
+      }
+    }
+  }
+
+  /** The move's NAG codes, deduplicated and sorted ascending - the canonical (archival) ordering. */
+  private static List<Integer> sortedDistinctNagCodes(List<Nag> nags) {
+    final List<Integer> codes = new ArrayList<>();
+    for (final Nag nag : nags) {
+      if (!codes.contains(nag.code())) {
+        codes.add(nag.code());
+      }
+    }
+    Collections.sort(codes);
+    return codes;
   }
 
   /**

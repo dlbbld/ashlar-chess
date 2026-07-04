@@ -4,18 +4,22 @@ ashlar-chess
 [![Maven Central](https://img.shields.io/maven-central/v/io.github.dlbbld/ashlar-chess.svg)](https://central.sonatype.com/artifact/io.github.dlbbld/ashlar-chess)
 
 ashlar-chess is a Java chess library focused on rule correctness, production usability, and reproducible validation.
-It implements SAN, FEN, and PGN parsing, validation, and export with strict/lenient parser pairs, and includes a Java
-port of Miguel Ambrona's C++ [Chess Unwinnability Analyzer (CHA)](https://github.com/miguel-ambrona/chasolver) as a
-flagship feature.
+It implements SAN, FEN, and PGN parsing, validation, and export with strict/lenient parser pairs, and includes an
+independent, paper-derived implementation of Miguel Ambrona's FUN 2022 unwinnability algorithm
+([*A Practical Algorithm for Chess Unwinnability*](https://chasolver.org/FUN22-full.pdf), the paper behind the
+[Chess Unwinnability Analyzer](https://github.com/miguel-ambrona/chasolver)) as a flagship feature.
 
 ## What it is
 
 ashlar-chess is an orthodox-chess rules and data-handling library. It is useful when an application needs to validate
 moves, parse and export PGN/FEN/SAN, report draw claims, adjudicate flagfall/resignation under the FIDE mating-material
-exception, or analyze unwinnability/dead positions.
+exception, or analyze unwinnability/dead positions. Why the library exists is stated in
+[`manifesto.md`](manifesto.md).
 
-It is not a chess engine, does not search for best moves, and does not support Chess960, PGN variation trees, tablebases,
-opening books, or GUI/tournament-management workflows.
+It is not a chess engine, does not search for best moves, and does not support Chess960, tablebases, opening books, or
+GUI/tournament-management workflows. It does not model PGN variation trees either — the lenient PGN parser happily skips
+recursive annotation variations to keep the mainline, while move annotations (suffix glyphs and numeric annotation
+glyphs) are fully parsed and preserved.
 
 ## Documentation
 
@@ -40,7 +44,7 @@ Requires JDK 17 or later at runtime. Published to Maven Central.
 <dependency>
   <groupId>io.github.dlbbld</groupId>
   <artifactId>ashlar-chess</artifactId>
-  <version>21.1.0</version>
+  <version>22.0.0</version>
 </dependency>
 ```
 
@@ -52,7 +56,7 @@ repositories {
 }
 
 dependencies {
-    implementation 'io.github.dlbbld:ashlar-chess:21.1.0'
+    implementation 'io.github.dlbbld:ashlar-chess:22.0.0'
 }
 ```
 
@@ -108,7 +112,8 @@ Copyright (C) 2020-2026  Daniel Bächli
 ashlar-chess is free software, licensed under the GNU General Public License, version 3 (GPL v3). See [LICENSE](LICENSE)
 for the full text.
 
-The unwinnability and dead-position detection is a Java port of Miguel Ambrona's **C++** Chess Unwinnability Analyzer
-(CHA), originally published as `D3-Chess`, also licensed under GPL v3. Ambrona has since renamed and replaced that
-repository with his **Rust** successor, [`chasolver`](https://github.com/miguel-ambrona/chasolver) — the old `D3-Chess`
-URL now redirects there — so ashlar ports the earlier **C++** implementation and the CHA paper, **not** the Rust one.
+The unwinnability and dead-position detection is ashlar's own implementation of Miguel Ambrona's FUN 2022 paper
+[*A Practical Algorithm for Chess Unwinnability*](https://chasolver.org/FUN22-full.pdf), governed by the committed
+specification [`fun22-spec.pdf`](fun22-spec.pdf). It is intended to be faithful to the paper, not a port of Ambrona's
+C++ `D3-Chess`/`cha` or Rust [`chasolver`](https://github.com/miguel-ambrona/chasolver); those implementations and
+their verdicts are used only as cross-validation oracles and test fixtures.

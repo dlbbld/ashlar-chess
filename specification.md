@@ -8,7 +8,7 @@ The **technical specification** for ashlar-chess: design goals, architecture, ph
 
 ashlar-chess is not trying to be a broad, all-feature chess toolkit. It is trying to be a deeply correct, **finished**, essential orthodox-chess rules library.
 
-By a checklist of "major features found in large chess libraries," ashlar-chess will intentionally miss things: Chess960, full PGN variation-tree / RAV workflows, engine integration, tablebases, opening books, GUI-oriented features, and other advanced or niche use cases. That is not a failure of the project scope. It **is** the scope.
+By a checklist of "major features found in large chess libraries," ashlar-chess will intentionally miss things: Chess960, PGN variation-tree modelling (the lenient parser skips recursive annotation variations to keep the mainline rather than building the tree — numeric annotation glyphs and suffix annotations, by contrast, are fully supported), engine integration, tablebases, opening books, GUI-oriented features, and other advanced or niche use cases. That is not a failure of the project scope. It **is** the scope.
 
 The goal is an essential orthodox-chess rules library, where "essential" is defined deliberately and personally: the parts considered central to rule correctness and trustworthy chess data handling. The core feature set is fixed:
 
@@ -17,7 +17,7 @@ The goal is an essential orthodox-chess rules library, where "essential" is defi
 - precise legal-move validation and move execution;
 - exact game-state and rule predicates;
 - FIDE-relevant draw and termination handling;
-- CHA / unwinnability / dead-position analysis as a first-class rule-correctness domain;
+- unwinnability / dead-position analysis (the FUN 2022 algorithm) as a first-class rule-correctness domain;
 - strong PGN/FEN corpus testing and differential / oracle testing;
 - high-quality public API naming, packaging, documentation, and invariants.
 
@@ -29,7 +29,7 @@ The guiding principle is therefore not "add every feature serious chess librarie
 
 ## 1. Purpose & non-goals
 
-ashlar-chess is a Java chess library focused on **rule correctness, production usability, and reproducible validation**. Its flagship feature is a Java port of Miguel Ambrona's [Chess Unwinnability Analyzer (CHA)](https://github.com/miguel-ambrona/D3-Chess), to the author's knowledge the only published algorithm that decides unwinnability and dead-position questions correctly across all positions.
+ashlar-chess is a Java chess library focused on **rule correctness, production usability, and reproducible validation**. Its flagship feature is an independent, paper-derived implementation of Miguel Ambrona's FUN 2022 unwinnability algorithm (the paper behind the [Chess Unwinnability Analyzer](https://github.com/miguel-ambrona/chasolver)), to the author's knowledge the only published practical algorithm for unwinnability and dead-position questions beyond material heuristics.
 
 The library is **not**:
 
@@ -52,14 +52,14 @@ The project moved in phases. The first implementation was correctness-first and 
 Concrete examples:
 
 - **Move history stores derived facts directly.** Whether a move was a two-square pawn advance or an en passant capture is recorded in the move history rather than recomputed from the position when needed. Engines like Stockfish compute these on demand because the savings matter at engine speeds. ashlar-chess stores them because the resulting code is shorter, more obviously correct, and easier to maintain.
-- **The representation split follows from this bargain** — bitboard piece placement for production, a deliberately rich `Board` game object, and a mutable search board (`HelpmateSearchBoard`) for the full-unwinnability hot path, each kept honest against a readable reference. The three representations and their trade-offs are detailed in §4.1.
+- **The representation split follows from this bargain** — bitboard piece placement for production, a deliberately rich `Board` game object, and a mutable search board (`HelpmateSearchBoard`) for the unwinnability-search hot path, each kept honest against a readable reference. The three representations and their trade-offs are detailed in §4.1.
 - **Repetition and public state prefer transparent semantics.** Position equality follows the FIDE definition directly: repetition keys on the exact `DynamicPosition` record and the helpmate transposition table on the exact `HelpmateSearchKey` — exact value records, never a hash trusted as the rule fact.
 
 The resulting rule is: optimize where production use needs it, but make the optimization answer to a readable oracle. Where the FIDE Laws are ambiguous, the library follows the most rule-faithful reading.
 
 ### 2.2 Functional style and compile-time guarantees
 
-The codebase uses Java's type system as far as is practical: records, immutable value objects, closed enums, null annotations, and explicit result types. The goal is to encode as many invariants as possible in types, so illegal states are hard to construct and ordinary compiler checks catch more mistakes. Mutable state is confined to a small number of well-defined classes: `Board` for the public game state, and package-private search machinery such as `HelpmateSearchBoard` where the full unwinnability search needs make/unmake performance. Where Java forces compromise (mutable accessors, nullable JDK return types, search-hot-path mutation), the compromises are localised and crossed with explicit annotations and tests.
+The codebase uses Java's type system as far as is practical: records, immutable value objects, closed enums, null annotations, and explicit result types. The goal is to encode as many invariants as possible in types, so illegal states are hard to construct and ordinary compiler checks catch more mistakes. Mutable state is confined to a small number of well-defined classes: `Board` for the public game state, and package-private search machinery such as `HelpmateSearchBoard` where the unwinnability searches need make/unmake performance. Where Java forces compromise (mutable accessors, nullable JDK return types, search-hot-path mutation), the compromises are localised and crossed with explicit annotations and tests.
 
 Concretely:
 
@@ -125,26 +125,26 @@ The library produces analysis output that names which moves *would* satisfy the 
 
 Position equality follows the FIDE definition: same piece placement, same side to move, same castling rights, same en-passant possibilities.
 
-### 3.2 Unwinnability — Chess Unwinnability Analyzer (CHA)
+### 3.2 Unwinnability — the FUN 2022 algorithm
 
 The library's **flagship feature**. A position is *unwinnable for a side* if no helpmate exists for that side. A *dead position* is one unwinnable for both sides. Insufficient material covers the trivial cases; positions like blocked pawn walls, certain wrong-bishop endgames, and many forced-only-moves continuations are dead but not insufficient — and most chess libraries get them wrong.
 
-Miguel Ambrona's CHA is, to the author's knowledge, the only published algorithm that decides these cases correctly across the full range of positions. ashlar-chess implements it in Java, in two variants:
+Miguel Ambrona's FUN 2022 algorithm (*A Practical Algorithm for Chess Unwinnability*) is, to the author's knowledge, the only published practical algorithm for these cases beyond material heuristics. Since 22.0.0 ashlar-chess carries its own independent, paper-derived implementation, governed by the committed specification `fun22-spec.pdf` (it replaced the earlier Java port of Ambrona's C++ CHA/D3-Chess implementation). Two variants:
 
-- **Quick** — microsecond-scale, structural, two-valued: `UNWINNABLE` or `POSSIBLY_WINNABLE`. It proves unwinnability or leaves it open, and never claims winnability.
-- **Full** — deep search, three-valued: `WINNABLE`, `UNWINNABLE`, or `UNDETERMINED`. The direct analysis record
-  additionally tells whether a `WINNABLE` result was theorem-certified and carries a concrete mate line for searched
-  wins. The undetermined case is bounded by a 500 000-position limit; most positions resolve well below that.
+- **Quick** — the paper's Figure 10: structural and bounded, three-valued: `UNWINNABLE`, `WINNABLE` (only on quickly matable positions), or `POSSIBLY_WINNABLE`. Sound but not complete — a definite verdict is always correct, and `POSSIBLY_WINNABLE` asserts nothing.
+- **Full** — the paper's Figure 9: deep search, three-valued: `WINNABLE`, `UNWINNABLE`, or `UNDETERMINED`. The direct
+  analysis record carries the concrete mate line witnessing a `WINNABLE` verdict. The undetermined case is bounded by
+  a 500 000-position limit; most positions resolve well below that.
 
 `Dead position` is the symmetric whole-position notion, decided by `DeadPositionAnalyzer` (and the `Board.deadPositionQuick()` / `Board.deadPositionFull()` convenience methods): a position is dead exactly when it is unwinnable for both sides. It carries its own verdicts — `DeadPositionQuickVerdict` (`DEAD` / `POSSIBLY_ALIVE`) and `DeadPositionFullVerdict` (`DEAD` / `ALIVE` / `UNDETERMINED`) — rather than reusing the per-side unwinnable vocabulary.
 
-The direct side-specific analyzers return analysis records. For full analysis, `UnwinnabilityFullAnalysis` keeps the
-proof detail behind the simple public verdict: `winnableProof()` is `WinnableProof.THEOREM` for theorem-certified wins
-(no mate line) and `WinnableProof.HELPMATE` for searched wins (which carry a UCI helpmate line that can be replayed from
-the input position), and `WinnableProof.NONE` when the verdict is not `WINNABLE`. The `Board.unwinnableQuick(Side)` and `Board.unwinnableFull(Side)` convenience methods expose only the
-verdict.
+The direct side-specific analyzers return analysis records. For full analysis, `UnwinnabilityFullAnalysis` carries the
+proof behind the simple public verdict: `mateLine()` is the UCI helpmate line the search exhibited (replayable from the
+input position), empty exactly when the submitted position is already a checkmate delivered by the intended winner —
+a zero-move helpmate. A non-winnable verdict never carries a line. The `Board.unwinnableQuick(Side)` and
+`Board.unwinnableFull(Side)` convenience methods expose only the verdict.
 
-**Terminal positions.** The analyzers are *total* — they are never rejected on a finished game; they return a verdict, following CHA's `Find-Helpmate` base cases (Ambrona, Figure 5). An already-**checkmate** position is `WINNABLE` for the side that delivered mate — a zero-move helpmate, so the analysis carries `WinnableProof.HELPMATE` with an **empty** `mateLine()` — and `UNWINNABLE` for the mated side. A **stalemate** is `UNWINNABLE` for both sides (no legal move can continue toward a mate). Consequently a dead-position query reports stalemate as `DEAD` and an already-delivered checkmate as not dead. In normal use the analyzer is not invoked on a finished game (the result is already known via `board.outcome()`); this behaviour matters only when a terminal position is analyzed directly, as Ambrona's reference oracle does. Ambrona's published pseudocode lists "stalemate / receiving checkmate → not a helpmate" as an explicit base case; his C++ omits it as redundant (a side with no legal move cannot progress to a mate), and ashlar mirrors the C++.
+**Terminal positions.** The analyzers are *total* — they are never rejected on a finished game; they return a verdict, following the paper's `Find-Helpmate` base cases (Figure 5). An already-**checkmate** position is `WINNABLE` for the side that delivered mate — a zero-move helpmate with an **empty** `mateLine()` — and `UNWINNABLE` for the mated side. A **stalemate** is `UNWINNABLE` for both sides (no legal move can continue toward a mate). Consequently a dead-position query reports stalemate as `DEAD` and an already-delivered checkmate as not dead. In normal use the analyzer is not invoked on a finished game (the result is already known via `board.outcome()`); this behaviour matters only when a terminal position is analyzed directly, as the reference oracles do.
 
 Side-specific quick/full unwinnability queries and whole-position dead-position queries are caller-invoked; no analyzer runs automatically during construction or move execution.
 
@@ -152,7 +152,7 @@ Side-specific quick/full unwinnability queries and whole-position dead-position 
 
 - **SAN** — two pipelines: **strict** (canonical SAN only; reached from `Board.moveStrict(String)` and from the PGN-driven path) and **lenient** (accepts a defined set of forgivable deviations from canonical; reached from `Board.moveLenient(String)`). See §3.3.1 for the lenient taxonomy and algorithm.
 - **FEN** — strict and lenient public entry points. `StrictFenParser` (`Board.fromFenStrict(String)`) performs the full strict parse plus structural/rule-consistency validation; `LenientFenParser` (`Board.fromFenLenient(String)`) runs a syntactic-tolerance pre-pass (whitespace, casing, missing trailing counters, non-canonical castling order, non-ASCII dashes, trailing garbage, and the halfmove-clock / fullmove-number inconsistency) and then delegates to the strict parser. The halfmove clock is never capped — the FIDE 75-move rule is a queryable `Board` predicate, not a FEN-import limit. See §3.3.3 for the full strict-invariant list and the forgiven-code table.
-- **PGN** — two parsers, both **preserving input as given**: **strict** (enforces the spec's import-format syntax, plus the semantic essentials: Result tag presence, SetUp/FEN coupling) and **lenient** (tolerates real-world PGN — spaced move-number indicators, missing seven-tag-roster entries, optional termination markers, extra whitespace). Both produce the same `PgnGame` model; neither normalises the tag list. The exporter has two modes: **semantic** (the default, emits the parse model as-given) and **archival** (PGN spec §8.1.1-conformant output, opt-in via `WriteMode.ARCHIVAL`). See §3.3.2 for the parse/validate/export contract. The two-parser split is deliberate: a single parser with a "strictness flag" inevitably grows conditional branches that obscure both rule sets — splitting keeps each parser readable and lets the two evolve independently.
+- **PGN** — two parsers, both **preserving input as given**: **strict** (enforces the spec's import-format syntax, plus the semantic essentials: Result tag presence, SetUp/FEN coupling) and **lenient** (tolerates real-world PGN — spaced move-number indicators, missing seven-tag-roster entries, optional termination markers, extra whitespace, and the annotation constructs analysis exports carry: `[%eval]` / `[%clk]` command comments, multiple comments on one move, and recursive annotation variations). Both produce the same `PgnGame` model; neither normalises the tag list. **Move annotations are modelled uniformly as NAGs** (numeric annotation glyphs, `Nag`): the PGN standard (§8.2.3.8) defines the six symbolic suffix glyphs (`!` `?` `!!` `??` `!?` `?!`) as import-format shorthand for NAG codes `1`–`6`, so both parsers fold a glyph into the move's NAG list — `e4?` and `e4 $2` yield the same `Nag(2)`. Codes without a glyph (positional, time, chess.com's `$9`, …) are carried as NAGs too, so nothing is discarded; `PgnMove.moveSuffixAnnotation()` is a convenience that reads the first assessment NAG back as its glyph. **Semantic** export (the default) renders the *first* assessment NAG (`1`–`6`) as its readable glyph and every other NAG as `$N` — human-readable and idempotent under re-parse, but *not* the PGN export format. **Archival** export (`WriteMode.ARCHIVAL`) is the *canonical* export-format-conformant form (§8.2.3.8, which makes the glyphs import-only shorthand): a move's NAGs are deduplicated and sorted ascending, and every one — assessment codes included — is written as `$N` (`e4?` becomes `e4 $2`; a move carrying `$2 $1 $1` becomes `$1 $2`). This matches python-chess (which holds a move's NAGs in a set) byte-for-byte. Either way annotations round-trip (semantic preserves them exactly; archival preserves the *set* of codes). RAV side-lines `(...)`, by contrast, are *skipped* by the lenient parser to recover the mainline — consistent with the variation-tree non-goal, ashlar reads the game that was played rather than modelling engine side-lines. The exporter has two modes: **semantic** (the default, emits the parse model as-given) and **archival** (PGN spec §8.1.1-conformant output, opt-in via `WriteMode.ARCHIVAL`). See §3.3.2 for the parse/validate/export contract. The two-parser split is deliberate: a single parser with a "strictness flag" inevitably grows conditional branches that obscure both rule sets — splitting keeps each parser readable and lets the two evolve independently.
 
 #### 3.3.1 Lenient SAN
 
@@ -261,8 +261,8 @@ The top-level package `io.github.dlbbld.ashlarchess` is organised by concern:
 | `fen.model` | The public FEN value type `Fen`, returned by `Board`, the FEN parsers, and PGN |
 | `san` | Public SAN parsing and validation (`StrictSanParser` / `LenientSanParser`, result and problem types); the conversion model, notation enums, and SAN/LAN generators live in `san.internal`, with generation reached from `Board` (`getSan()` / `getLan()`) |
 | `moves` | Legal-move enumeration and execution helpers (castling, en-passant, promotion); internal move-analysis check enums (`MovementCheck`, `CastlingCheck`, `KingSafetyCheck`) and move types (`EmptyBoardMove`, `CastlingRightBoth`) |
-| `pgn` | A flat package: the PGN model (`PgnGame`, `PgnMove`, `MoveSuffixAnnotation`), parsing (`StrictPgnParser` / `LenientPgnParser` and the tokenizer), export (`PgnCreate`), file I/O (`PgnReader` / `PgnWriter`), tag / PGN utility helpers, and `PgnCommentaryValidationException` |
-| `unwinnability` | CHA implementation (quick and full), dead-position analysis, and the king / knight distance metrics |
+| `pgn` | A flat package: the PGN model (`PgnGame`, `PgnMove`, `Nag`, `MoveSuffixAnnotation`), parsing (`StrictPgnParser` / `LenientPgnParser` and the tokenizer), export (`PgnCreate`), file I/O (`PgnReader` / `PgnWriter`), tag / PGN utility helpers, and `PgnCommentaryValidationException` |
+| `unwinnability` | the FUN 2022 unwinnability engine (quick and full), dead-position analysis |
 | `adjudication` | Game adjudication for flagfall and resignation (`Adjudicator`, `AdjudicationResult`) |
 | `report` | Game-level reports: threefold-claim-ahead, repetition, 50-move sequences |
 | `analyze` | Stateless chess-rule analysis used by the SAN and movement validation pipelines |
@@ -285,9 +285,9 @@ Piece placement has two independent representations in the codebase, by design.
 
 **`Board`** remains a deliberately rich public game object. It stores the initial FEN plus one per-position record for every ply — the performed move, check/checkmate/stalemate facts, the dynamic position whose piece placement is `BitboardPosition`, the halfmove clock, the repetition count, SAN/LAN output strings, and castling-right loss reasons — plus the legal moves of the *current* position only (historical legal-move lists are not retained; the current set is recomputed on `unmove`). That is more memory and bookkeeping than a lean engine board, but it is the right trade-off for a rule library: public queries and reports can read already-established game facts, and the history needed for FIDE rules is explicit.
 
-**`HelpmateSearchBoard`** is the intentional hot-path exception. The complete unwinnability search performs deep cooperative-mate exploration, so it uses a package-private mutable board with twelve mutable bitboards, make/unmake, reusable undo stacks, per-depth legal-move buffers, and an exact structural transposition key. This is not a second public representation and not a private chess engine: it is a contained search board built on the same bitboard move-generation layer, with lock-step tests against `Board`.
+**`HelpmateSearchBoard`** is the intentional hot-path exception. The unwinnability searches (the FUN 2022 Figure 5 deepening search and the Figure 10 quick DFS) perform deep cooperative-mate exploration, so they run on a package-private mutable board with twelve mutable bitboards, make/unmake, reusable undo stacks, per-depth legal-move buffers, and an exact structural transposition key. This is not a second public representation and not a private chess engine: it is a contained search board built on the same bitboard move-generation layer, with lock-step tests against `Board`. The board is engine-agnostic machinery — it survived the 22.0.0 switch from the cha port to the paper engine unchanged.
 
-**`StaticPosition`** (in `src/test/java/io/github/dlbbld/ashlarchess/board/`) is the 64-square mailbox reference implementation, accumulated over years of correctness-first work. It does not live in `src/main/` anymore — it was relocated, not deleted — and exists in `src/test/` strictly to act as the **permanent differential-test oracle** for the bitboard backend. Its consumer subtree relocated with it (`StaticPositionUtility`; `io.github.dlbbld.ashlarchess.squares.{Abstract,Bishop,Rook,Queen,Knight,King,Pawn}{AttackedSquares,PotentialToSquares,RangeSquares}`; `io.github.dlbbld.ashlarchess.moves.{Abstract,Bishop,Rook,Queen,Knight,King,Pawn}LegalMoves`; `UnwinnabilityMaterial`). The bridge methods `StaticPositionBridge.fromStaticPosition` / `toStaticPosition` (also in `src/test/java/io/github/dlbbld/ashlarchess/bitboard/`) round-trip between the two on the test side only.
+**`StaticPosition`** (in `src/test/java/io/github/dlbbld/ashlarchess/board/`) is the 64-square mailbox reference implementation, accumulated over years of correctness-first work. It does not live in `src/main/` anymore — it was relocated, not deleted — and exists in `src/test/` strictly to act as the **permanent differential-test oracle** for the bitboard backend. Its consumer subtree relocated with it (`StaticPositionUtility`; `io.github.dlbbld.ashlarchess.squares.{Abstract,Bishop,Rook,Queen,Knight,King,Pawn}{AttackedSquares,PotentialToSquares,RangeSquares}`; `io.github.dlbbld.ashlarchess.moves.{Abstract,Bishop,Rook,Queen,Knight,King,Pawn}LegalMoves`). The bridge methods `StaticPositionBridge.fromStaticPosition` / `toStaticPosition` (also in `src/test/java/io/github/dlbbld/ashlarchess/bitboard/`) round-trip between the two on the test side only.
 
 The contract is **permanent project policy**, not transitional:
 

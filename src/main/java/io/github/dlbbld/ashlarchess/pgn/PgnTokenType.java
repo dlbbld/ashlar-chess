@@ -19,14 +19,10 @@ enum PgnTokenType {
 
   NEWLINE,
 
-  /**
-   * e.g. {@code 1.} or {@code 12.}.
-   */
+  /** e.g. {@code 1.} or {@code 12.}. */
   MOVE_NUMBER_WHITE,
 
-  /**
-   * e.g. {@code 1...} or {@code 12...}.
-   */
+  /** e.g. {@code 1...} or {@code 12...}. */
   MOVE_NUMBER_BLACK,
 
   /**
@@ -35,25 +31,23 @@ enum PgnTokenType {
    */
   SYMBOL,
 
-  /**
-   * {@code !}, {@code !!}, {@code ?}, {@code ??}, {@code !?}, {@code ?!}.
-   */
+  /** {@code !}, {@code !!}, {@code ?}, {@code ??}, {@code !?}, {@code ?!}. */
   MOVE_SUFFIX_ANNOTATION,
 
   /**
-   * Brace-delimited commentary {@code {...}}. The token text is the commentary content without the braces.
+   * A numeric annotation glyph (NAG): {@code $} followed by digits (PGN spec section 8.2.4). The token text is the
+   * whole lexeme including the {@code $} (e.g. {@code "$2"}); a bare {@code "$"} with no digits is emitted for the
+   * malformed case and rejected by the parser.
    */
+  NAG,
+
+  /** Brace-delimited commentary {@code {...}}. The token text is the commentary content without the braces. */
   BRACE_COMMENT,
 
-  /**
-   * Opening {@code {} with no
-    *  matching {@code }} before EOF. The token text holds the partial content.
-   */
+  /** Opening {@code {} with no matching {@code }} before EOF. The token text holds the partial content. */
   BRACE_COMMENT_UNCLOSED,
 
-  /**
-   * Closing {@code }} outside any open commentary.
-   */
+  /** Closing {@code }} outside any open commentary. */
   BRACE_STRAY_CLOSE,
 
   /**
@@ -63,9 +57,7 @@ enum PgnTokenType {
    */
   LINE_COMMENT,
 
-  /**
-   * {@code 1-0}, {@code 0-1}, {@code 1/2-1/2}, {@code *}.
-   */
+  /** {@code 1-0}, {@code 0-1}, {@code 1/2-1/2}, {@code *}. */
   TERMINATION_MARKER,
 
   EOF

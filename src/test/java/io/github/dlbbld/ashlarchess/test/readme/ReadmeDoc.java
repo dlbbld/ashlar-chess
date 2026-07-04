@@ -126,9 +126,7 @@ public final class ReadmeDoc {
     return result;
   }
 
-  /**
-   * Renders and writes {@code README.md} and {@code manual.md}.
-   */
+  /** Renders and writes {@code README.md} and {@code manual.md}. */
   public static void writeDocs() {
     FileUtility.writeFile(README_PATH, generateReadme());
     FileUtility.writeFile(MANUAL_PATH, generateManual());

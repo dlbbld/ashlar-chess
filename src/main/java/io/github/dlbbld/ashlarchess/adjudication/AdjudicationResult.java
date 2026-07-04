@@ -3,9 +3,7 @@
 
 package io.github.dlbbld.ashlarchess.adjudication;
 
-/**
- * Outcome of adjudicating a flag-fall or resignation, from the perspective of the player who flagged or resigned.
- */
+/** Outcome of adjudicating a flag-fall or resignation, from the perspective of the player who flagged or resigned. */
 public enum AdjudicationResult {
 
   /** The game is drawn: the opponent cannot checkmate by any possible series of legal moves. */

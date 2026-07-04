@@ -22,6 +22,14 @@ The tests under `againstchasolvercurated` read its `WB`, `W-`, `-B`, and `--`
 classifications directly instead of treating it as generated output from this
 project's PGN fixtures.
 
+`chasolver/curated/positions.txt` also feeds `TestUnwinnableSemiStatic`'s
+permanent Theorem 12 soundness sweep (its `WB`/`W-`/`-B`/`--` labels are the
+ground truth). It supersedes the retired copy of D3-Chess's
+`tests/test-vector.txt`: the Rust test set carries every C++ test vector
+except one - that orphan position is adopted as
+`pgn/cha/various/01_cha_test_vector_orphan.pgn` and pinned by
+`TestChaTestVectorOrphan`.
+
 The TSV columns are:
 
 ```text
@@ -29,20 +37,30 @@ fen	fullWhite	fullBlack	quickWhite	quickBlack
 ```
 
 `cha/ashlar-pgn/mobility.tsv` uses the same final FEN source, but writes one
-row per piece in every distinct position. The `toSquares` column is a
-comma-separated list of squares reached by Ambrona's saturated semistatic
-movement variable for that piece.
+row per piece in every distinct position; the `toSquares` column is the
+saturated mobility region CHA computed for that piece:
 
 ```text
 fen	side	pieceType	from	toSquares
 ```
 
-`cha/ashlar-pgn/semistatic.tsv` uses the same final FEN source and writes CHA
-rows for semistatic verdicts and helper sets.
+With the 22.0.0 paper-formulation engine this dump is compared **by
+implication, not equality** (`TestMobilityAgainstChaMobilityOracle`): cha
+evolved beyond the paper (text footnote 12) and tightens mobility below the
+paper's Figure 6/7 fixpoint in locked pawn structures, so cha's region must be
+a *subset* of ashlar's for every piece - ashlar computes the least fixpoint,
+and any cha square outside it would mean ashlar under-approximates, breaking
+the Theorem 12 admissibility argument. Measured split, pinned in the test:
+16758 of 16845 rows bit-identical, 87 rows cha-strictly-tighter.
 
-```text
-fen	side	kind	subject	value
-```
+Until 22.0.0 this folder also carried `cha/ashlar-pgn/semistatic.tsv`, a dump
+of CHA's semi-static verdicts and helper sets compared field-by-field against
+the former cha-port internals. It was retired with the port: cha's semi-static
+carries beyond-paper case-splitting while the paper's α-reading is stronger
+elsewhere, so no implication holds in either direction at that layer - the
+semi-static layer is instead covered by the Theorem 12 soundness sweep over the
+curated chasolver corpus (`TestUnwinnableSemiStatic`) and by the public-verdict
+oracles.
 
 ## One-time Windows setup
 
@@ -125,43 +143,9 @@ The unwinnability generator compiles `tools/ambrona-oracle/cha_oracle.cpp` into 
 WSL, streams every distinct final FEN to it, and rewrites
 `src/test/resources/oracle/cha/ashlar-pgn/unwinnability.tsv` with LF line endings.
 
-To regenerate the mobility oracle, run:
+The oracle comparison tests live in the unwinnability test package, which is
+excluded from default Maven test runs. Run them explicitly with:
 
 ```powershell
-mvn -q org.codehaus.mojo:exec-maven-plugin:3.6.2:java "-Dexec.classpathScope=test" "-Dexec.mainClass=io.github.dlbbld.ashlarchess.test.generate.GenerateAmbronaMobilityOracle"
-```
-
-The optional D3-Chess path argument and `ambrona.d3.path` system property work
-the same way as for the unwinnability oracle. The mobility generator compiles
-`tools/ambrona-oracle/mobility_oracle.cpp`.
-
-To regenerate the semistatic oracle, run:
-
-```powershell
-mvn -q org.codehaus.mojo:exec-maven-plugin:3.6.2:java "-Dexec.classpathScope=test" "-Dexec.mainClass=io.github.dlbbld.ashlarchess.test.generate.GenerateAmbronaSemiStaticOracle"
-```
-
-The optional D3-Chess path argument and `ambrona.d3.path` system property work
-the same way as for the unwinnability oracle. The semistatic generator compiles
-`tools/ambrona-oracle/semistatic_oracle.cpp`.
-
-To compare the generated mobility oracle against the Java mobility
-implementation without turning the mismatch report into a JUnit failure, run:
-
-```powershell
-mvn -q org.codehaus.mojo:exec-maven-plugin:3.6.2:java "-Dexec.classpathScope=test" "-Dexec.mainClass=io.github.dlbbld.ashlarchess.unwinnability.CompareAmbronaMobilityOracle"
-```
-
-To compare the generated semistatic oracle without turning the mismatch report
-into a JUnit failure, run:
-
-```powershell
-mvn -q org.codehaus.mojo:exec-maven-plugin:3.6.2:java "-Dexec.classpathScope=test" "-Dexec.mainClass=io.github.dlbbld.ashlarchess.unwinnability.CompareAmbronaSemiStaticOracle"
-```
-
-The corresponding JUnit baseline tests live in the unwinnability test package,
-which is excluded from default Maven test runs. Run them explicitly with:
-
-```powershell
-mvn -q "-Dtest.excludes=" "-Dtest=TestAmbronaMobilityOracleComparison,TestAmbronaSemiStaticOracleComparison" test
+mvn -q "-Dtest.excludes=" "-Dtest=TestAmbronaUnwinnabilityFullOracleComparison,TestAmbronaUnwinnabilityQuickOracleComparison,TestChasolverUnwinnabilityFullOracleComparison,TestChasolverUnwinnabilityQuickOracleComparison" test
 ```

@@ -83,7 +83,9 @@ public class PgnTestCaseCatalog {
       case CHA_LICHESS_QUICK_DEPTH_ABOVE_FOUR_WINNABLE_FOR_FLAGGING_WITH_HELPMATE -> createTestCasesChaLichessQuickNotDepthThreeHelpmate();
       case CHA_LICHESS_QUICK_DEPTH_THREE -> createTestCasesChaLichessQuickDepthThree();
       case CHA_LICHESS_QUICK_DEPTH_FOUR -> createTestCasesChaLichessQuickDepthFour();
-      case CHA_CHASOLVER_EXCEPTIONS -> createTestCasesChaChasolverExceptions();
+      case CHA_CHASOLVER_CHALLENGES_EXCEPTIONS -> createTestCasesChaChasolverChallengesExceptions();
+      case CHA_CHASOLVER_CHALLENGES_SUCCESS -> createTestCasesChaChasolverChallengesSuccess();
+      case CHA_VARIOUS -> createTestCasesChaVarious();
       case MAX_MOVES -> createTestCasesLongestPossible();
       case MAX_SAME_PIECE_PROMOTION_WHITE -> createTestCasesMaxSamePiecePromotionWhite();
       case MAX_SAME_PIECE_PROMOTION_BLACK -> createTestCasesMaxSamePiecePromotionBlack();
@@ -2609,12 +2611,41 @@ public class PgnTestCaseCatalog {
     return new PgnTestCaseList(PgnTest.CHA_BASIC_HELPMATE_EXISTENCE_THEOREM, list);
   }
 
-  private static PgnTestCaseList createTestCasesChaChasolverExceptions() {
+  // The chasolver-challenge family (bishop escalations of a chasolver test position; see chasolver issue #48):
+  // "exceptions" = chasolver hits its node limit on at least one query at default budgets; "success" = chasolver
+  // resolves both queries.
+  private static PgnTestCaseList createTestCasesChaChasolverChallengesExceptions() {
     final List<PgnFen> list = new ArrayList<>();
 
-    list.add(new PgnFen("chasolver_node_limit_exception.pgn", "1Bb5/1p6/pPp3k1/2Pp3p/P2PpBpP/4P1P1/5K2/8 w - - 8 32"));
+    list.add(
+        new PgnFen("01_chasolver_node_limit_exception.pgn", "1Bb5/1p6/pPp3k1/2Pp3p/P2PpBpP/4P1P1/5K2/8 w - - 8 32"));
+    list.add(
+        new PgnFen("02_chasolver_node_limit_exception.pgn", "1Bb5/1p6/pPp3k1/2Pp1b1p/P2PpBpP/4P1P1/5K2/8 w - - 5 37"));
+    list.add(new PgnFen("03_chasolver_node_limit_exception.pgn",
+        "1Bb5/1p6/pPpBb1k1/2Pp1b2/P2PpBp1/4P1P1/5K2/8 w - - 10 46"));
 
-    return new PgnTestCaseList(PgnTest.CHA_CHASOLVER_EXCEPTIONS, list);
+    return new PgnTestCaseList(PgnTest.CHA_CHASOLVER_CHALLENGES_EXCEPTIONS, list);
+  }
+
+  private static PgnTestCaseList createTestCasesChaChasolverChallengesSuccess() {
+    final List<PgnFen> list = new ArrayList<>();
+
+    list.add(new PgnFen("01_four_bishops_each.pgn", "1Bb5/8/2b1b1k1/1pBpBb2/pP1PpBp1/4P1P1/P4K2/8 w - - 9 56"));
+    list.add(new PgnFen("02_four_bishops_each_king_h1.pgn", "1Bb5/8/2b1b1k1/1pBpBb2/pP1PpBp1/4P1P1/P7/7K w - - 13 58"));
+
+    return new PgnTestCaseList(PgnTest.CHA_CHASOLVER_CHALLENGES_SUCCESS, list);
+  }
+
+  // Various composed cha positions without a dedicated group. 01: the "orphan" cha C++ test vector - the one
+  // position of D3-Chess tests/test-vector.txt that chasolver's test set does not carry (its family siblings made
+  // it over, this exact vector did not); adopted here so it stays a living test. See TestChaTestVectorOrphan for
+  // the analyzer-level pins.
+  private static PgnTestCaseList createTestCasesChaVarious() {
+    final List<PgnFen> list = new ArrayList<>();
+
+    list.add(new PgnFen("01_cha_test_vector_orphan.pgn", "1b3kBR/4pP1P/1p1pP2P/1P1P4/8/K5p1/6P1/1B6 b - - 0 1"));
+
+    return new PgnTestCaseList(PgnTest.CHA_VARIOUS, list);
   }
 
   // Fixtures the geometric pawn-wall classifier accepts as YES: chain spans file a to h, both kings on opposite

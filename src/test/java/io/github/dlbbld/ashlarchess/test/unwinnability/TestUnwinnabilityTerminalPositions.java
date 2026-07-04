@@ -13,7 +13,6 @@ import io.github.dlbbld.ashlarchess.board.enums.Side;
 import io.github.dlbbld.ashlarchess.unwinnability.UnwinnabilityFullAnalysis;
 import io.github.dlbbld.ashlarchess.unwinnability.UnwinnabilityFullVerdict;
 import io.github.dlbbld.ashlarchess.unwinnability.UnwinnableFullAnalyzer;
-import io.github.dlbbld.ashlarchess.unwinnability.WinnableProof;
 
 /**
  * Lock-down for the terminal-position contract of the full unwinnability analyzer, following Ambrona's CHA
@@ -35,7 +34,6 @@ class TestUnwinnabilityTerminalPositions {
     final Board board = Board.fromFenStrict(FOOLS_MATE);
     final UnwinnabilityFullAnalysis analysis = UnwinnableFullAnalyzer.unwinnableFull(board, Side.BLACK);
     assertEquals(UnwinnabilityFullVerdict.WINNABLE, analysis.verdict());
-    assertEquals(WinnableProof.HELPMATE, analysis.winnableProof());
     assertTrue(analysis.mateLine().isEmpty(), "an already-delivered mate is a zero-move helpmate");
   }
 

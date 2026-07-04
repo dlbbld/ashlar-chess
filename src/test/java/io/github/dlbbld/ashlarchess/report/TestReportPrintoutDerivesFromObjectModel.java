@@ -138,9 +138,7 @@ class TestReportPrintoutDerivesFromObjectModel {
     }
   }
 
-  /**
-   * The report lines for {@code board}, as produced by {@link Reporter#report(Board)}.
-   */
+  /** The report lines for {@code board}, as produced by {@link Reporter#report(Board)}. */
   private static List<String> reportLines(Board board) {
     return Reporter.report(board);
   }

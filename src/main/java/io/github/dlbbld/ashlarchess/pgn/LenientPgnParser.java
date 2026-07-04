@@ -218,8 +218,11 @@ public final class LenientPgnParser {
         tags.add(parseTag());
         continue;
       }
-      // Any line still containing [ or ] is a tag-line candidate; report it rather than slip into movetext parsing.
-      if (currentLineContainsTagBracket(peek.line())) {
+      // A line carrying a [ or ] OUTSIDE any comment is a tag-line candidate (e.g. `Event "?"]` missing its opening
+      // bracket); report it rather than slip into movetext parsing. Brackets INSIDE a {...} comment or after a ;
+      // line-comment - a `[%eval ...]` / `[%clk ...]` command, as lichess and other tools emit - are movetext
+      // content, not a tag, and must not be misread here.
+      if (lineHasTopLevelTagBracket(peek.line())) {
         throw tagFormatError("A tag line with an invalid format was found on line " + peek.line() + ".");
       }
       return tags;
@@ -227,9 +230,10 @@ public final class LenientPgnParser {
   }
 
   /**
-   * Returns true if line {@code lineNumber} (1-based) contains {@code [} or {@code ]}.
+   * Returns true if line {@code lineNumber} (1-based) contains a {@code [} or {@code ]} outside any {@code {...}} brace
+   * comment or {@code ;} rest-of-line comment.
    */
-  private boolean currentLineContainsTagBracket(int lineNumber) {
+  private boolean lineHasTopLevelTagBracket(int lineNumber) {
     int index = 0;
     int currentLine = 1;
     while (currentLine < lineNumber && index < source.length()) {
@@ -244,12 +248,22 @@ public final class LenientPgnParser {
       }
       index++;
     }
+    int braceDepth = 0;
     while (index < source.length()) {
       final char c = source.charAt(index);
       if (c == '\n' || c == '\r') {
         break;
       }
-      if (c == '[' || c == ']') {
+      if (c == ';' && braceDepth == 0) {
+        break; // a rest-of-line comment; brackets after it are comment content
+      }
+      if (c == '{') {
+        braceDepth++;
+      } else if (c == '}') {
+        if (braceDepth > 0) {
+          braceDepth--;
+        }
+      } else if (braceDepth == 0 && (c == '[' || c == ']')) {
         return true;
       }
       index++;
@@ -396,33 +410,42 @@ public final class LenientPgnParser {
         throw movetextError(LenientPgnParserValidationProblem.MOVETEXT_COMMENTARY_NOT_ALLOWED_IN_SAN,
             "A commentary cannot occur where a SAN move is expected.");
       }
-      if (type == PgnTokenType.MOVE_SUFFIX_ANNOTATION) {
-        if (moves.isEmpty()) {
-          tokenizer.next();
-          continue;
+      if (type != null) {
+        switch (type) {
+          // A suffix glyph (`!`/`?`/...) is folded into the move's NAG list - it is shorthand for a NAG (see Nag). A
+          // detached glyph with no move to attach to, or an unrecognised run like `!?!`, is tolerated by dropping it.
+          case MOVE_SUFFIX_ANNOTATION: {
+            final PgnToken suffixToken = tokenizer.next();
+            appendNagToLastMove(moves, glyphToNag(suffixToken.text()));
+            continue;
+          }
+          // A numeric annotation glyph (`$N`) annotates the move just played (chess.com's review export emits these).
+          // A NAG before any move, or a malformed/out-of-range code, is tolerated by dropping it.
+          case NAG: {
+            final PgnToken nagToken = tokenizer.next();
+            appendNagToLastMove(moves, parseNagLenient(nagToken));
+            continue;
+          }
+          case SYMBOL: {
+            // A recursive annotation variation (RAV) opens with a `(`-led symbol. ashlar does not model variations (a
+            // rules library reads the game that was played, not the engine's side-lines - see specification.md); the
+            // lenient parser skips the balanced group and keeps the mainline.
+            if (peek.text().startsWith("(")) {
+              skipVariation();
+              continue;
+            }
+            // Tolerate spaced move-number indicators like `1 . e4` and `1 ... e5` - see consumedSpacedMoveNumber.
+            if (consumedSpacedMoveNumber(peek)) {
+              continue;
+            }
+            final PgnMove move = parseMoveLenient();
+            moves.add(move);
+            consumePostMoveAnnotations(moves);
+            continue;
+          }
+          default:
+            break;
         }
-        final PgnToken suffixToken = tokenizer.next();
-        final MoveSuffixAnnotation suffix = parseMoveSuffix(suffixToken.text());
-        final int last = moves.size() - 1;
-        final PgnMove previous = Nulls.get(moves, last);
-        moves.set(last, new PgnMove(previous.san(), suffix, previous.commentary()));
-        continue;
-      }
-      if (type == PgnTokenType.SYMBOL) {
-        // Tolerate spaced move-number indicators like `1 . e4` and `1 ... e5` - see consumedSpacedMoveNumber.
-        if (consumedSpacedMoveNumber(peek)) {
-          continue;
-        }
-        final PgnMove move = parseMoveLenient();
-        moves.add(move);
-        skipInsignificantWhitespace();
-        if (isCommentToken(tokenizer.peek().type())) {
-          final PgnCommentary commentary = consumeCommentaryOrThrow();
-          final int last = moves.size() - 1;
-          final PgnMove previous = Nulls.get(moves, last);
-          moves.set(last, new PgnMove(previous.san(), previous.moveSuffixAnnotation(), commentary));
-        }
-        continue;
       }
       throw new LenientPgnParserValidationException(
           LenientPgnParserValidationProblem.EXCEPTION_CAUGHT_FROM_STRICT_VALIDATION, SanValidationProblem.NONE,
@@ -505,23 +528,24 @@ public final class LenientPgnParser {
     validateSanCharacters(san);
     validateSanLength(san);
 
-    MoveSuffixAnnotation suffix = MoveSuffixAnnotation.NONE;
-    // Allow whitespace between SAN and suffix annotation (`e4 !!`).
+    final List<Nag> nags = new ArrayList<>();
+    // Allow whitespace between SAN and suffix annotation (`e4 !!`); the glyph is folded into the move's NAG list.
     skipInlineWhitespace();
     if (tokenizer.peek().type() == PgnTokenType.MOVE_SUFFIX_ANNOTATION) {
-      suffix = parseMoveSuffix(tokenizer.next().text());
+      final Nag nag = glyphToNag(tokenizer.next().text());
+      if (nag != null) {
+        nags.add(nag);
+      }
     }
 
-    return new PgnMove(san, suffix, PgnCommentary.EMPTY);
+    return new PgnMove(san, nags, PgnCommentary.EMPTY);
   }
 
   private static boolean isBareCheckOrMate(String text) {
     return "+".equals(text) || "#".equals(text);
   }
 
-  /**
-   * Returns the {@link PgnCommentary} for a well-formed brace token, or throws the matching error category.
-   */
+  /** Returns the {@link PgnCommentary} for a well-formed brace token, or throws the matching error category. */
   private PgnCommentary consumeCommentaryOrThrow() {
     final PgnToken token = tokenizer.next();
     switch (token.type()) {
@@ -548,6 +572,109 @@ public final class LenientPgnParser {
     }
   }
 
+  /**
+   * Consumes every annotation trailing the move just added - comments and numeric annotation glyphs, in any order and
+   * quantity - and folds them onto that move. Real-world tools emit several and interleave them: lichess opens each
+   * analyzed game with {@code { [%eval ...] [%clk ...] } { <opening name> }}, and a NAG-plus-comment pair
+   * ({@code Nf3 $1 {develops}}) is ordinary PGN. Comments are merged onto the move's commentary; NAGs are appended to
+   * its NAG list. Handling both here keeps post-move annotation order-independent - {@code Nf3 $1 {c}} and
+   * {@code Nf3 {c} $1} parse identically.
+   */
+  private void consumePostMoveAnnotations(List<PgnMove> moves) {
+    skipInsignificantWhitespace();
+    while (true) {
+      final PgnToken ahead = tokenizer.peek();
+      if (isCommentToken(ahead.type())) {
+        final PgnCommentary commentary = consumeCommentaryOrThrow();
+        final int last = moves.size() - 1;
+        final PgnMove previous = Nulls.get(moves, last);
+        moves.set(last,
+            new PgnMove(previous.san(), previous.nags(), mergeCommentary(previous.commentary(), commentary)));
+      } else if (ahead.type() == PgnTokenType.NAG) {
+        tokenizer.next();
+        appendNagToLastMove(moves, parseNagLenient(ahead));
+      } else {
+        return;
+      }
+      skipInsignificantWhitespace();
+    }
+  }
+
+  /** Joins two commentaries with a single space, dropping either if empty. Used to merge consecutive comments. */
+  private static PgnCommentary mergeCommentary(PgnCommentary existing, PgnCommentary addition) {
+    if (existing.value().isEmpty()) {
+      return addition;
+    }
+    if (addition.value().isEmpty()) {
+      return existing;
+    }
+    return new PgnCommentary(existing.value() + " " + addition.value());
+  }
+
+  /**
+   * Appends a NAG to the most recently parsed move. A {@code null} NAG (an unrecognised glyph run, or a malformed /
+   * out-of-range {@code $N}) or a NAG before any move exists is tolerated by dropping it - the lenient parser reads
+   * what it can and never fails on an annotation.
+   */
+  private static void appendNagToLastMove(List<PgnMove> moves, @Nullable Nag nag) {
+    if (nag == null || moves.isEmpty()) {
+      return;
+    }
+    final int last = moves.size() - 1;
+    final PgnMove previous = Nulls.get(moves, last);
+    final List<Nag> nags = new ArrayList<>(previous.nags());
+    nags.add(nag);
+    moves.set(last, new PgnMove(previous.san(), nags, previous.commentary()));
+  }
+
+  /**
+   * The NAG a suffix glyph is shorthand for ({@code !}=1 ... {@code ?!}=6), or {@code null} for an unknown glyph run.
+   */
+  private static @Nullable Nag glyphToNag(String glyphText) {
+    if (!MoveSuffixAnnotation.exists(glyphText)) {
+      return null;
+    }
+    return new Nag(MoveSuffixAnnotation.parse(glyphText).getNagCode());
+  }
+
+  /** Parses a {@code $N} NAG token, or returns {@code null} (dropped) if the body is not a decimal 0..255. */
+  private static @Nullable Nag parseNagLenient(PgnToken nagToken) {
+    return Nag.fromDigits(Nulls.substring(nagToken.text(), 1)); // drop the leading '$'
+  }
+
+  /**
+   * Skips a balanced parenthesised variation (RAV) that begins at the current {@code (}-led symbol token. Depth is
+   * counted over the {@code (} and {@code )} characters in the consumed tokens; comment tokens are consumed without
+   * scanning their content, so parentheses inside a {@code {...}} comment (e.g. lichess's {@code {(0.32 -> 1.41) ...}})
+   * do not affect the balance. Nested variations are handled by the depth counter. An unbalanced group (EOF reached
+   * with depth still open) stops gracefully.
+   */
+  private void skipVariation() {
+    int depth = 0;
+    while (true) {
+      final PgnToken token = tokenizer.peek();
+      if (token.type() == PgnTokenType.EOF) {
+        return;
+      }
+      tokenizer.next();
+      if (isCommentToken(token.type())) {
+        continue;
+      }
+      final String text = token.text();
+      for (int i = 0; i < text.length(); i++) {
+        final char c = text.charAt(i);
+        if (c == '(') {
+          depth++;
+        } else if (c == ')') {
+          depth--;
+        }
+      }
+      if (depth <= 0) {
+        return;
+      }
+    }
+  }
+
   private static boolean isBraceToken(PgnTokenType type) {
     return type == PgnTokenType.BRACE_COMMENT || type == PgnTokenType.BRACE_COMMENT_UNCLOSED
         || type == PgnTokenType.BRACE_STRAY_CLOSE;
@@ -570,7 +697,7 @@ public final class LenientPgnParser {
         tokenizer.next();
         continue;
       }
-      if (token.type() == PgnTokenType.TAG_BRACKET_OPEN || currentLineContainsTagBracket(token.line())) {
+      if (token.type() == PgnTokenType.TAG_BRACKET_OPEN || lineHasTopLevelTagBracket(token.line())) {
         throw tagReappearError();
       }
       throwIfBrokenBrace(token);
@@ -579,9 +706,7 @@ public final class LenientPgnParser {
     }
   }
 
-  /**
-   * Throws the broken-brace-specific error if {@code token} is one; returns normally otherwise.
-   */
+  /** Throws the broken-brace-specific error if {@code token} is one; returns normally otherwise. */
   private static void throwIfBrokenBrace(PgnToken token) {
     switch (token.type()) {
       case BRACE_COMMENT_UNCLOSED:
@@ -598,14 +723,6 @@ public final class LenientPgnParser {
   private static LenientPgnParserValidationException movetextError(LenientPgnParserValidationProblem problem,
       String message) {
     return new LenientPgnParserValidationException(problem, SanValidationProblem.NONE, message);
-  }
-
-  private static MoveSuffixAnnotation parseMoveSuffix(String text) {
-    // Lenient: unknown suffixes downgrade to NONE rather than fail.
-    if (!MoveSuffixAnnotation.exists(text)) {
-      return MoveSuffixAnnotation.NONE;
-    }
-    return MoveSuffixAnnotation.parse(text);
   }
 
   private static void validateSanCharacters(String san) {
@@ -748,9 +865,7 @@ public final class LenientPgnParser {
     }
   }
 
-  /**
-   * Consumes only {@link PgnTokenType#SPACES} at the current position. Used inside a single logical line.
-   */
+  /** Consumes only {@link PgnTokenType#SPACES} at the current position. Used inside a single logical line. */
   private void skipInlineWhitespace() {
     while (tokenizer.peek().type() == PgnTokenType.SPACES) {
       tokenizer.next();
@@ -781,7 +896,7 @@ public final class LenientPgnParser {
         final LenientSanParseResult result = board.moveLenient(move.san());
         sanForgivenItemsAccumulator.addAll(result.forgivenItems());
         final String canonicalSan = board.getSan();
-        canonicalMoves.add(new PgnMove(canonicalSan, move.moveSuffixAnnotation(), move.commentary()));
+        canonicalMoves.add(new PgnMove(canonicalSan, move.nags(), move.commentary()));
       } catch (final LenientSanParserValidationException e) {
         final String moveNumberAndSan = MoveNumberFormat.calculateMoveNumberAndSanWithSpace(fullMoveNumber, side,
             move.san());

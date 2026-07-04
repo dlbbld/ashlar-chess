@@ -3,121 +3,68 @@
 
 package io.github.dlbbld.ashlarchess.unwinnability;
 
-import static io.github.dlbbld.ashlarchess.board.enums.PieceType.KING;
-import static io.github.dlbbld.ashlarchess.board.enums.Side.BLACK;
-import static io.github.dlbbld.ashlarchess.board.enums.Square.A6;
-import static io.github.dlbbld.ashlarchess.board.enums.Square.A8;
-import static io.github.dlbbld.ashlarchess.board.enums.Square.B8;
-import static io.github.dlbbld.ashlarchess.board.enums.Square.G8;
-import static io.github.dlbbld.ashlarchess.board.enums.Square.H6;
-import static io.github.dlbbld.ashlarchess.board.enums.Square.H8;
-
 import io.github.dlbbld.ashlarchess.bitboard.BitboardPosition;
-import io.github.dlbbld.ashlarchess.board.LegalMove;
-import io.github.dlbbld.ashlarchess.board.LegalMoveKind;
-import io.github.dlbbld.ashlarchess.board.enums.Piece;
+import io.github.dlbbld.ashlarchess.board.MoveSpecification;
 import io.github.dlbbld.ashlarchess.board.enums.PieceType;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
 import io.github.dlbbld.ashlarchess.board.enums.Square;
-import io.github.dlbbld.ashlarchess.board.enums.internal.SquareUtility;
-import io.github.dlbbld.ashlarchess.moves.CastlingUtility;
 
-//Figure 13 Going-to-corner routine used in Figure 12.
+// Figure 13 Going-to-corner routine, called from the Score heuristic on King and Knight moves.
+/**
+ * The Going-to-corner heuristic (paper Figure 13), used by {@link Score}. It rewards a "slow" piece (King or Knight)
+ * move that steps <em>closer</em> to a target square near the mating corner - the depth extension that lets the winner
+ * drive the loser's king into a corner. Pure heuristic: affects search effectiveness only, never correctness.
+ */
 final class GoingToCorner {
 
   private GoingToCorner() {
   }
 
-  // Inputs: position, legal move in the position, objective (Win or Lose)
-  // Output: bool (indicating whether or not m is leading to a corner mating position)
-  public static boolean goingToCorner(Side color, BitboardPosition bitboardPosition, LegalMove m, Goal goal) {
+  // Target squares near the h8 / a8 corners (square indices; rotated 180 degrees when the winner is Black).
+  private static final int H6 = 47;
+  private static final int H8 = 63;
+  private static final int G8 = 62;
+  private static final int A6 = 40;
+  private static final int A8 = 56;
+  private static final int B8 = 57;
 
-    // 1: let P be moved piece in m and let s be the square P is moving to
-
-    // let P be moved piece in m
-    final Piece movingPiece;
-    // let s be the square P is moving to
-    final Square toSquare;
-    final Square fromSquare;
-    if (m.kind() == LegalMoveKind.CASTLING) {
-      movingPiece = m.movingPiece();
-      toSquare = CastlingUtility.calculateKingCastlingTo(m.movingSide(), m.moveSpecification());
-      fromSquare = CastlingUtility.calculateKingCastlingFrom(m.movingSide(), m.moveSpecification());
-    } else {
-      movingPiece = m.movingPiece();
-      toSquare = m.moveSpecification().toSquare();
-      fromSquare = m.moveSpecification().fromSquare();
-    }
-
-    // 2: if P.type not in {K,N} then return false ( -> We focus on "slow" (non-sliding)
-    // pieces
-    // that could take several turns to reach the desired square)
-    if (movingPiece.getPieceType() != PieceType.KING && movingPiece.getPieceType() != PieceType.KNIGHT) {
+  /**
+   * Decides whether {@code move} steps a slow piece (king or knight) closer to the mating-corner target square.
+   *
+   * @param goalWin {@code true} for the winner's move (drive to mate), {@code false} for the loser's
+   * @return whether {@code move} decreases the piece's distance to the target corner square
+   */
+  static boolean towardCorner(BitboardPosition position, MoveSpecification move, Side winner, boolean goalWin) {
+    if (move.isCastling()) {
       return false;
     }
-
-    // 3: if the intended winner has dark-squared bishops or the intended loser has lightsquared
-    // bishops (and the intended winner does not) then ( -> The target corner is set
-    // to be h8)
-    final Square targetSquare = calculateTargetSquare(color, bitboardPosition, goal, movingPiece);
-
-    // 9: if P.type =K then return king-distance(s, target) < king-distance(P.sq, target)
-    if (movingPiece.getPieceType() == KING) {
-      return KingDistance.distance(toSquare, targetSquare) < KingDistance.distance(fromSquare, targetSquare);
-    }
-    // 10: else return knight-distance(s, target) < knight-distance(P.sq, target) ( -> P.type =N)
-    return KnightDistance.distance(toSquare, targetSquare) < KnightDistance.distance(fromSquare, targetSquare);
-
-  }
-
-  private static Square calculateTargetSquare(Side winner, BitboardPosition bitboardPosition, Goal goal, Piece p) {
-    final boolean isDarkCorner = UnwinnabilityMaterialBitboard.calculateHasDarkSquareBishops(winner, bitboardPosition)
-        || UnwinnabilityMaterialBitboard.calculateHasLightSquareBishops(winner.getOppositeSide(), bitboardPosition)
-            && UnwinnabilityMaterialBitboard.calculateHasNoBishops(winner, bitboardPosition);
-
-    Square target = calculateTargetSquare(isDarkCorner, goal, p.getPieceType());
-    if (winner == BLACK) {
-      // 8: set target := (flip-rank  flip-file)(target) . Rotate the target 180 degrees about the
-      // center of the board (a8 becomes h1, and h8 becomes a1)
-      target = SquareUtility.rotate180(target);
+    final Square from = move.fromSquare();
+    final Square to = move.toSquare();
+    final PieceType pieceType = position.get(from).getPieceType();
+    if (pieceType != PieceType.KING && pieceType != PieceType.KNIGHT) {
+      return false; // line 2: only slow pieces
     }
 
-    return target;
-  }
+    final long winnerBishops = winner == Side.WHITE ? position.whiteBishops() : position.blackBishops();
+    final long loserBishops = winner == Side.WHITE ? position.blackBishops() : position.whiteBishops();
+    final boolean winnerDark = (winnerBishops & SquareGeometry.DARK_SQUARES) != 0L;
+    final boolean winnerLight = (winnerBishops & SquareGeometry.LIGHT_SQUARES) != 0L;
+    final boolean loserLight = (loserBishops & SquareGeometry.LIGHT_SQUARES) != 0L;
 
-  private static Square calculateTargetSquare(boolean isDarkCorner, Goal goal, PieceType pieceType) {
-    if (isDarkCorner) {
-      // 4: set target := if goal = Win then (P.type=K)?h6 : h8 else (P.type =K)?h8 : g8
-      switch (goal) {
-        case WIN:
-          if (pieceType == KING) {
-            return H6;
-          }
-          return H8;
-        case LOSE:
-          if (pieceType == KING) {
-            return H8;
-          }
-          return G8;
-        default:
-          throw new IllegalArgumentException();
-      }
+    final boolean isKing = pieceType == PieceType.KING;
+    int target;
+    if (winnerDark || (loserLight && !winnerLight)) {
+      target = goalWin ? (isKing ? H6 : H8) : (isKing ? H8 : G8); // corner h8
+    } else {
+      target = goalWin ? (isKing ? A6 : A8) : (isKing ? A8 : B8); // corner a8
     }
-    // 5: else ( -> The target corner is set to be a8)
-    // 6: set target := if goal = Win then (P.type=K)?a6 : a8 else (P.type =K)?a8 : b8
-    switch (goal) {
-      case WIN:
-        if (pieceType == KING) {
-          return A6;
-        }
-        return A8;
-      case LOSE:
-        if (pieceType == KING) {
-          return A8;
-        }
-        return B8;
-      default:
-        throw new IllegalArgumentException();
+    if (winner == Side.BLACK) {
+      target = 63 - target; // flip-rank plus flip-file (180 degree rotation)
     }
+
+    final int toIndex = to.ordinal();
+    final int fromIndex = from.ordinal();
+    return isKing ? SquareGeometry.kingDistance(toIndex, target) < SquareGeometry.kingDistance(fromIndex, target)
+        : SquareGeometry.knightDistance(toIndex, target) < SquareGeometry.knightDistance(fromIndex, target);
   }
 }

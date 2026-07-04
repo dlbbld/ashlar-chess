@@ -220,7 +220,10 @@
       <message key="name.invalidPattern" value="Method name ''{0}'' must match pattern ''{1}''."/>
     </module>
     <module name="SingleLineJavadoc">
-      <property name="ignoreInlineTags" value="false"/>
+      <!-- Project-local relaxation of the google_checks default (false): the written Google Java Style Guide only
+           forbids the single-line Javadoc form for BLOCK tags; inline tags such as {@code} are fine in one-liners
+           (Guava uses that form throughout). -->
+      <property name="ignoreInlineTags" value="true"/>
     </module>
     <module name="EmptyCatchBlock">
       <property name="exceptionVariableName" value="expected"/>

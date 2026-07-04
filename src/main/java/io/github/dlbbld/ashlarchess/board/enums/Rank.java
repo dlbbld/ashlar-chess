@@ -34,9 +34,7 @@ public enum Rank {
     return number;
   }
 
-  /**
-   * Rank number: {@code "1"}..{@code "8"}, and {@code "none"} for {@link #NONE}.
-   */
+  /** Rank number: {@code "1"}..{@code "8"}, and {@code "none"} for {@link #NONE}. */
   @Override
   public String toString() {
     return this == NONE ? "none" : Nulls.valueOf(number);

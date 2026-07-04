@@ -34,9 +34,7 @@ final class PgnTokenizer {
     return result;
   }
 
-  /**
-   * One-token lookahead past {@link #peek()}.
-   */
+  /** One-token lookahead past {@link #peek()}. */
   public PgnToken peekNext() {
     if (peekedAt0 == null) {
       peekedAt0 = readNext();
@@ -93,6 +91,8 @@ final class PgnTokenizer {
       case '!':
       case '?':
         return readMoveSuffixAnnotation(line, column);
+      case '$':
+        return readNag(line, column);
       case '*':
         stream.read();
         return new PgnToken(PgnTokenType.TERMINATION_MARKER, "*", line, column);
@@ -199,6 +199,23 @@ final class PgnTokenizer {
     return new PgnToken(PgnTokenType.MOVE_SUFFIX_ANNOTATION, Nulls.toString(text), line, column);
   }
 
+  private PgnToken readNag(int line, int column) {
+    // A NAG is `$` + a non-negative decimal integer (spec 8.2.4). Consume trailing letters and a `+`/`-` sign too, so a
+    // malformed lexeme like `$abc`, `$1x`, or `$-1` surfaces as one NAG token the parser can reject/drop whole, rather
+    // than leaving `-1` / letters to be misread as a SAN move. Stop at whitespace and structural punctuation so a NAG
+    // glued to `*`, `)`, `.` etc. still splits (`$9*` -> `$9`, `*`).
+    final StringBuilder text = new StringBuilder();
+    text.append((char) stream.read()); // leading '$'
+    while (true) {
+      final int c = stream.peek();
+      if (!isAsciiDigit(c) && !isAsciiLetter(c) && c != '+' && c != '-') {
+        break;
+      }
+      text.append((char) stream.read());
+    }
+    return new PgnToken(PgnTokenType.NAG, Nulls.toString(text), line, column);
+  }
+
   private PgnToken readDigitStarted(int line, int column) {
     final StringBuilder text = new StringBuilder();
     while (isAsciiDigit(stream.peek())) {
@@ -263,10 +280,14 @@ final class PgnTokenizer {
 
   private static boolean isWordBreak(int c) {
     return c == ' ' || c == '\t' || c == '\n' || c == '\r' || c == '[' || c == ']' || c == '{' || c == '}' || c == '"'
-        || c == '!' || c == '?' || c == ';';
+        || c == '!' || c == '?' || c == ';' || c == '$';
   }
 
   private static boolean isAsciiDigit(int c) {
     return c >= '0' && c <= '9';
+  }
+
+  private static boolean isAsciiLetter(int c) {
+    return c >= 'a' && c <= 'z' || c >= 'A' && c <= 'Z';
   }
 }

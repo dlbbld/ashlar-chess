@@ -219,10 +219,6 @@ final class HelpmateSearchBoard {
     return isStalemate;
   }
 
-  boolean isInsufficientMaterial(Side side) {
-    return UnwinnabilityMaterialBitboard.calculateIsInsufficientMaterial(side, getBitboardPosition());
-  }
-
   // ---------------------------- private internals ----------------------------
 
   private void loadBitboard(BitboardPosition position) {
@@ -348,9 +344,7 @@ final class HelpmateSearchBoard {
     return new LegalMove(moveSpec, movingPiece, capturedPiece, kind);
   }
 
-  /**
-   * Returns the piece on {@code square} from the mutable bitboards. Mirrors {@link BitboardPosition#get(Square)}.
-   */
+  /** Returns the piece on {@code square} from the mutable bitboards. Mirrors {@link BitboardPosition#get(Square)}. */
   private Piece pieceAt(Square square) {
     final long bit = 1L << square.ordinal();
     if ((whitePawns & bit) != 0L) {
@@ -392,9 +386,7 @@ final class HelpmateSearchBoard {
     return Piece.NONE;
   }
 
-  /**
-   * Toggles {@code bit} on the bitboard for {@code piece}. No-op for {@link Piece#NONE}.
-   */
+  /** Toggles {@code bit} on the bitboard for {@code piece}. No-op for {@link Piece#NONE}. */
   private void togglePieceBit(Piece piece, long bit) {
     switch (piece) {
       case WHITE_PAWN -> whitePawns ^= bit;
@@ -415,9 +407,7 @@ final class HelpmateSearchBoard {
     }
   }
 
-  /**
-   * Applies {@code moveToPerform} to the piece bitboards in place - mirrors {@link BitboardPosition#afterMove}.
-   */
+  /** Applies {@code moveToPerform} to the piece bitboards in place - mirrors {@link BitboardPosition#afterMove}. */
   private void applyMoveInPlace(LegalMove moveToPerform) {
     final MoveSpecification moveSpec = moveToPerform.moveSpecification();
     if (moveSpec.castlingMove() != CastlingMove.NONE) {

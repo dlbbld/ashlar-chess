@@ -2,6 +2,62 @@
 
 Releases from 3.3 onward. Earlier history is in git tags only.
 
+## [22.0.0] - Unwinnability now straight from the FUN 2022 paper - 2026-07-04
+
+The unwinnability engine is now ashlar's own independent, paper-derived implementation of Miguel Ambrona's FUN 2022 paper *A
+Practical Algorithm for Chess Unwinnability* (Figures 5-13, Lemmas 5/6, Theorem 12), governed by the committed
+specification `fun22-spec.pdf` and derived from the paper only. It replaces the Java port of Ambrona's C++ CHA
+(D3-Chess): the algorithm is now traceable to the published paper rather than to another codebase. The engine was
+built and validated as a standalone independent project first: zero soundness contradictions against the D3-Chess
+ground-truth corpus, against the previous cha-port analyzer, and against Ambrona's independent Rust `chasolver`.
+Alongside the engine swap, PGN import learns real-world move annotations: NAGs and suffix glyphs are one unified,
+preserved model (validated against python-chess), and the lenient parser skips analysis side-lines (RAV) to read the
+game that was played.
+
+### Breaking
+
+- **PGN move annotations are now a unified NAG model.** `PgnMove` stores `List<Nag>` instead of a stored
+  `MoveSuffixAnnotation`; the six suffix glyphs (`!`, `?`, `!!`, `??`, `!?`, `?!`) are parsed as NAG codes `1`-`6`.
+  `PgnMove.moveSuffixAnnotation()` remains as a derived read convenience for the first assessment NAG, but code that
+  constructs or inspects moves should use `nags()`.
+- **`UnwinnabilityQuickVerdict` gains `WINNABLE`** (paper Figure 10 is three-valued): the quick analysis now proves
+  winnability on quickly matable positions instead of answering `POSSIBLY_WINNABLE`. Exhaustive switches over the
+  enum need a new case; comparisons against `UNWINNABLE` (the adjudication use) are unaffected.
+- **`WinnableProof` is removed and `UnwinnabilityFullAnalysis` is now `(verdict, mateLine)`**: the
+  basic-helpmate-existence theorem no longer short-circuits the full analyzer (it lives on as a test-side oracle), so
+  every `WINNABLE` verdict is search-proven and `mateLine()` is its witness - empty exactly for a zero-move helpmate
+  (the submitted position is already the intended winner's checkmate). Elementary-material wins (KQvK, KRvK, KNNvK,
+  ...) therefore now carry concrete mate lines instead of a theorem certification.
+
+### Behavioral
+
+- **PGN import/export now handles real-world move annotations.** Strict PGN accepts numeric annotation glyphs
+  (`$0`-`$255`) after moves; both parsers fold suffix glyphs and `$N` tokens into the same move NAG list. Semantic
+  export writes the first assessment NAG as a glyph and every other NAG as `$N`; archival export writes a deduplicated,
+  sorted `$N` sequence, including assessment codes. The lenient parser also skips recursive annotation variations
+  `(...)` to keep the mainline; strict parsing still rejects RAV.
+- **Quick analysis follows the paper's Figure 10** (bounded DFS with a global depth-9 interrupt, then the
+  semi-static check gated to pawn/bishop/king material without semi-open files) instead of CHA's deployed
+  `quick_analysis` heuristics. Some verdicts move between `UNWINNABLE` and `POSSIBLY_WINNABLE` in both directions;
+  definite verdicts remain sound.
+- **Full analysis follows the paper's Figure 9** (semi-static shortcut, then Find-Helpmate under iterative
+  deepening with the Figure 12/13 heuristics and the Figure 5 footnote-b reward chaining); the mate line on wins and
+  the 500 000-node global budget are kept. Resolution on hard positions may differ from the cha port in both
+  directions (the paper and cha diverge on completeness, never soundness); the exhausted-budget fall-through now
+  correctly answers `UNDETERMINED` where the old code could in principle over-claim `UNWINNABLE`.
+- **The basic-helpmate-existence theorem moved from production to the test suite.** The full analyzer is the paper's
+  Figure 9 with no theorem step; the theorem now certifies the engine in tests (agreement over the curated
+  elementary-material corpus: `UNWINNABLE` wherever the theorem proves unwinnability, a concrete helpmate wherever it
+  guarantees one). A side effect improves the out-of-domain story: on the known retro-illegal theorem
+  counterexamples, the full analyzer now proves `UNWINNABLE` by search exhaustion, agreeing with the quick analyzer
+  and chasolver - the previously documented full-vs-quick disagreement on those illegal positions is gone.
+
+### Internal
+
+- The cha-port internals (mobility/semi-static/search/material classes and their unit tests) are deleted; the
+  paper-derived engine classes and their ported unit tests replace them, including the permanent Theorem 12
+  soundness sweep (over the curated chasolver ground-truth corpus).
+
 ## [21.1.0] - Oracle housekeeping - 2026-07-03
 
 A documentation-and-test housekeeping release around the unwinnability analyzers and their oracles: the

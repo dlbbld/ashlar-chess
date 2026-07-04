@@ -31,3 +31,5 @@ src/test/resources/pgnParser/lenient/lineBreaks/03_mixed.pgn -text
 *.tar  binary
 *.7z   binary
 *.class binary
+
+fun22-spec.pdf binary

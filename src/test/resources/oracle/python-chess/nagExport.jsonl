@@ -1,0 +1,7 @@
+{"movetext":"1. e4 $1 e5 $2 2. Nf3 $6 Nc6 $10 3. Bb5 a6 4. Ba4 Nf6 5. O-O $14 Be7 1-0","nags":[[1],[2],[6],[10],[],[],[],[],[14],[]],"pgn":"01_one_nag_per_move.pgn"}
+{"movetext":"1. e4 $2 e5 $4 2. Nf3 $3 Nc6 $5 3. Bb5 $5 a6 $6 4. Bxc6 dxc6 *","nags":[[2],[4],[3],[5],[5],[6],[],[]],"pgn":"02_suffix_glyphs_become_nags.pgn"}
+{"movetext":"1. d4 $1 $14 d5 $2 $15 2. c4 $10 $22 e6 1-0","nags":[[1,14],[2,15],[10,22],[]],"pgn":"03_multiple_ascending_nags.pgn"}
+{"movetext":"1. e4 $0 e5 $255 2. Nf3 $7 Nc6 $18 1/2-1/2","nags":[[0],[255],[7],[18]],"pgn":"04_boundary_and_positional_nags.pgn"}
+{"movetext":"1. Nf3 $1 $14 Nf6 $6 $16 2. c4 e6 0-1","nags":[[1,14],[6,16],[],[]],"pgn":"05_glyph_plus_positional_nag.pgn"}
+{"movetext":"1. e4 $1 $2 e5 $1 2. Nf3 $6 $14 Nc6 1-0","nags":[[1,2],[1],[6,14],[]],"pgn":"06_non_canonical_order_and_duplicates.pgn"}
+{"movetext":"1. e4 $1 $4 e5 $2 $6 2. Nf3 $1 $10 d5 $2 0-1","nags":[[1,4],[2,6],[1,10],[2]],"pgn":"07_glyph_and_nag_unsorted.pgn"}

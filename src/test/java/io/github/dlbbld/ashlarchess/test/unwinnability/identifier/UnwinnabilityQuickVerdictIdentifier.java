@@ -12,7 +12,9 @@ import io.github.dlbbld.ashlarchess.unwinnability.UnwinnabilityQuickVerdict;
  *
  * <p>
  * Note that {@link UnwinnabilityQuickVerdict#POSSIBLY_WINNABLE} maps to {@code "undetermined"} because that is the
- * label CHA's quick analyzer emits for the same two-valued judgment.
+ * label CHA's quick analyzer emits for the same judgment. {@link UnwinnabilityQuickVerdict#WINNABLE} (which only the
+ * paper-formulation quick analyzer can produce; CHA's quick never claims winnability) maps to {@code "winnable"} and
+ * therefore never matches a CHA quick label - such rows are handled by the comparison's accepted-differences path.
  */
 public final class UnwinnabilityQuickVerdictIdentifier {
 
@@ -22,6 +24,7 @@ public final class UnwinnabilityQuickVerdictIdentifier {
   public static String getIdentifier(UnwinnabilityQuickVerdict verdict) {
     return switch (verdict) {
       case UNWINNABLE -> "unwinnable";
+      case WINNABLE -> "winnable";
       case POSSIBLY_WINNABLE -> "undetermined";
     };
   }

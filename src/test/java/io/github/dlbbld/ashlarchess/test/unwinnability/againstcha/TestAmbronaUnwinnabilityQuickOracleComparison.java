@@ -84,6 +84,14 @@ class TestAmbronaUnwinnabilityQuickOracleComparison {
 
   private static void check(PgnFen testCase, Side intendedWinner, UnwinnabilityQuickVerdict expected,
       UnwinnabilityQuickVerdict actual, List<String> failures, Set<AcceptedDifference> remainingAcceptedDifferenceSet) {
+    // Comparison by implication: CHA's quick analyzer is two-valued and its "undetermined" asserts nothing, so an
+    // ashlar WINNABLE there is a strictly stronger, non-contradicting verdict (the paper's Figure 10 proves
+    // winnability on quickly matable positions; soundness of those claims is covered by the full-analysis oracles).
+    // Everything else that differs - either analyzer proving UNWINNABLE where the other does not - must be listed in
+    // the accepted-differences fixture.
+    if (expected == UnwinnabilityQuickVerdict.POSSIBLY_WINNABLE && actual == UnwinnabilityQuickVerdict.WINNABLE) {
+      return;
+    }
     if (actual != expected) {
       final AcceptedDifference difference = new AcceptedDifference(testCase.pgnName(), intendedWinner, expected, actual,
           testCase.finalFen());

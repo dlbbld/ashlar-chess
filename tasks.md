@@ -11,9 +11,140 @@ Live planning only: current release work, backlog, and obsolete decisions. Shipp
 
 ---
 
+## 22.0.0 — Unwinnability now straight from the FUN 2022 paper
+
+Branch `implement-fun22`. The unwinnability engine becomes ashlar's own clean-room implementation of Ambrona's FUN 2022
+paper (*A Practical Algorithm for Chess Unwinnability*, Figures 5–13, Lemmas 5/6, Theorem 12), vendored from the
+validated `fun22-reference` project (branch `semi-static-v1`: whole-corpus sweeps vs chasolver with 0 contradictions).
+The cha-C++-mirroring internals (including the 21.0.0 pawn-intruders correction, which the paper formulation subsumes)
+are deleted. The governing document is the clean-room spec (`fun22-spec.pdf`, brought over from fun22-reference);
+**we honor the spec** — algorithm code must be traceable to the paper, never to cha.
+
+Design decisions (agreed 2026-07-03):
+
+- **Public API kept** (final state): `UnwinnableFullAnalyzer`, `UnwinnableQuickAnalyzer`, `DeadPositionAnalyzer`,
+  the two analysis records and the four verdict enums stay; `WinnableProof` was later removed together with the
+  theorem relocation (see the revised extensions bullet below). Everything package-private is swapped wholesale.
+- **Quick becomes three-valued** (paper Figure 10): `UnwinnabilityQuickVerdict` gains `WINNABLE` (fires when the
+  bounded DFS meets a mate for the intended winner before the first depth-`D` interrupt). Breaking change, allowed and
+  documented in a major release; `Adjudicator`/`DeadPositionAnalyzer` compare against `UNWINNABLE` only and are
+  unaffected.
+- **Ashlar extensions kept, clearly layered on top of the paper**: the mate line on searched wins
+  (`UnwinnabilityFullAnalysis.mateLine()`, mechanical bookkeeping in the Figure 5 search). **Revised 2026-07-03
+  (user decision)**: the `BasicHelpmateExistenceTheorem` shortcut is OUT of production - the full analyzer is
+  Figure 9 pure - and the theorem lives on as a test-side oracle (agreement tests over the curated
+  elementary-material corpus). With it, `WinnableProof` is removed and `UnwinnabilityFullAnalysis` becomes
+  `(verdict, mateLine)`: every `WINNABLE` is search-proven with its witnessing line. Side effect: on the 19
+  retro-illegal theorem counterexamples the full analyzer now proves `UNWINNABLE` by exhausting the tiny caged
+  graphs - full, quick and chasolver agree even on that illegal input, retiring the documented out-of-domain
+  disagreement.
+- **Full = Figure 9 pure**: semi-static shortcut → iterative deepening (the interim theorem step was removed with
+  the theorem relocation - see the revised extensions bullet below). The cha-specific forced-move pre-advance is
+  dropped from the full analyzer (the search decides forced lines within budget); the quick analyzer keeps its
+  forced-move advance because that is paper (Figure 10 step 1, loop-guarded per footnote a).
+- **Budget envelope kept from 21.x**: 500 000 global node budget across deepening iterations (the paper leaves
+  `bound(d)` as a parameter), depth cap 100, per-iteration node bound = remaining global budget. Transposition table
+  is **per-iteration, and the key includes the footnote-b reward-chain flag** (final state after the Codex review:
+  cross-iteration sharing — briefly implemented for performance — can let a stale depth-cut entry suppress a later
+  iteration's interrupt and fake an exhaustion witness → potential false `UNWINNABLE`; see `fun22-spec.pdf` §6). The
+  post-loop fall-through returns `UNDETERMINED`, fixing the old code's theoretically unsound `UNWINNABLE`
+  fall-through.
+- **The cha material predicate (`UnwinnabilityMaterialBitboard`) is retired with the port**; Ambrona's Lemmas 5/6 live
+  on in the clean-room `MaterialLemmas` (same proven lemmas, paper-traceable formulation — this does not reopen the
+  "material is correct" decision, it re-derives the identical predicate from the paper).
+- **Oracle contract shifts from adherence to implication**: vs cha/chasolver oracles, soundness contradictions are
+  bugs; completeness differences (who resolves more `UNDETERMINED`) are expected (paper ≠ cha extensions, text
+  footnote 12) and go to the accepted-differences fixtures.
+
+Work items:
+
+- **Vendor the semi-static layer** (SquareGeometry, Predecessors, semi-static Position model, Mobility = Fig 6/7
+  fixpoint, UnwinnableSemiStatic = Fig 8 with the α(s) reading verified at 500 dpi). ✅ DONE 2026-07-03 — the ported
+  Theorem 12 soundness sweep over the newly committed D3-Chess corpus reproduces fun22-reference exactly
+  (1723 analysed / 80 strict-FEN-rejected / 699 sound UNWINNABLE verdicts).
+- **Vendor the search layer** (MaterialLemmas, Score = Fig 12, GoingToCorner = Fig 13, FindHelpmate = Fig 5 with
+  footnote-b reward chaining + mate-line tracking) and rewire the public analyzers (Fig 9 full, Fig 10 quick).
+  ✅ DONE 2026-07-03 — `BasicHelpmateExistenceTheorem` now carries its three bitboard shape helpers itself (the cha
+  material class is gone).
+- **Delete the cha-port internals and their unit tests; port the fun22-reference unit tests.** ✅ DONE 2026-07-03 —
+  27 main classes and 22 test files deleted (including the mobility/semistatic internal-oracle comparisons and their
+  generators, which oracled cha internals that no longer exist); 6 ported test classes added.
+- **Docs**: package-info rewritten (clean-room paper implementation, no longer a cha port), spec brought into
+  `fun22-spec.pdf`, CHANGELOG entry. ✅ DONE 2026-07-03 — README/manual regenerated (the "blocked positions the quick
+  algorithm proves" example now uses the paper-provable bishop fortress; the old example has a semi-open file, which
+  Figure 10's gate declines by design). Default profile green (1302 tests).
+- **Full-suite sign-off**: run the excluded unwinnability suite, re-baseline the accepted-differences fixtures
+  (soundness contradictions block release), measure performance vs 21.1.0 and decide whether a fast-board pass is
+  needed before release. ✅ DONE 2026-07-03 — whole suite (default + excluded) green: **1348 tests, 0 failures,
+  0 soundness contradictions against cha and chasolver**. Verdict movement vs the cha port, in full: the FULL
+  analyzer regressed on exactly **one verdict** (Norgaard pawn-wall, White side, `UNWINNABLE`→`UNDETERMINED` — the
+  pure locked fortress only a beyond-paper semi-static proves; Black side was already `UNDETERMINED` since 21.0.0)
+  and gained one class of strength (quick `WINNABLE` on quickly matable positions, ~17 corpus positions). The QUICK
+  analyzer regressed on two fortress positions (`lichess_f6c1lu7R`, Norgaard-White). **Correction after the Codex
+  review**: the shared-transposition-table change that briefly recovered f6c1lu7R for the full analyzer (and cut the
+  suite from 22:03 to 14:39 min) was reverted as theoretically unsound (stale depth-cut entries can fake the
+  exhaustion witness — see the budget-envelope decision above), so the full analyzer's regression is f6c1lu7R (both
+  sides) plus Norgaard-White, all sound-direction and allowlisted. Test-harness changes: quick oracle
+  comparisons moved to implication semantics (a two-valued oracle's "undetermined" is consistent with a definite
+  ashlar verdict); Lichess pin tests now report all failing positions instead of failing fast; the retired
+  cha-internal mobility/semistatic oracles (fixtures, generators, C++ sources) are deleted.
+
+- **Codex review round (2026-07-03).** ✅ DONE — all three findings addressed plus the test gap:
+  - **P1 (transposition key)**: the reward-chain flag is now part of the search-state key, and the analysis exposed a
+    deeper issue in the briefly-shared transposition table (stale depth-cut entries can fake the exhaustion witness →
+    potential false `UNWINNABLE`); reverted to the paper-literal per-iteration table. Costs vs the shared version:
+    f6c1lu7R full is `UNDETERMINED` again (allowlisted; quick already was), and the honest exact-state keying now
+    agrees with both oracles on `chasolver_node_limit_exception.pgn` (`UNDETERMINED`; the old engine's `WINNABLE`
+    there rode on the unsoundly coarse key) — both legacy allowlist rows deleted.
+  - **P2**: `UnwinnabilityQuickAnalysis` javadoc and the manual's "Reading Quick Verdicts" section now describe the
+    three-valued quick verdict; README/manual regenerated.
+  - **P3**: the pom description no longer says "CHA-based" (now "implementing Ambrona's FUN 2022 algorithm").
+  - **Test gap**: direct Figure 12/13 unit tests added (`TestScoreFigure12`, `TestGoingToCornerFigure13`, one case
+    per figure line) plus a footnote-b end-to-end pin (K+Q vs K+pawn deep helpmate, outside every theorem class).
+    **Internal-layer oracle revived with an implication contract**: measured over the archived CHA C++ mobility dump,
+    cha's regions are bit-identical to the paper's Figure 6/7 least fixpoint on 16758 of 16845 piece rows and a
+    strict subset on the remaining 87 (all locked pawn structures — cha's beyond-paper "steady pieces" tightening);
+    `TestMobilityAgainstChaMobilityOracle` pins cha ⊆ paper per piece (a cha square outside our fixpoint would mean
+    we under-approximate and break Theorem 12 admissibility) plus the exact split. The retired `semistatic.tsv` layer
+    stays retired: no implication holds in either direction there (cha case-splitting vs the paper's stronger
+    α-reading), so that layer is covered by the D3-Chess Theorem 12 soundness sweep instead.
+
+- **PGN real-world annotations (grew into the release alongside the engine swap).** ✅ DONE 2026-07-04 — driven by
+  real lichess computer-analysis and chess.com game-review exports:
+  - Lenient tolerances: `[%eval]`/`[%clk]` command comments (brace-depth-aware tag heuristic), consecutive comments
+    merged per move, RAV `(...)` skipped to keep the mainline (tolerated, not modeled — variation trees stay a
+    non-goal; strict still rejects RAV).
+  - **Unified NAG model** (python-chess-informed, user decision): `PgnMove` stores `List<Nag>`; the six suffix
+    glyphs are import shorthand for codes 1–6 (`e4?` ≡ `e4 $2`), all 256 codes preserved in both parsers,
+    `moveSuffixAnnotation()` derived. Malformed/signed/out-of-range NAGs: strict rejects (`MOVETEXT_NAG_INVALID`),
+    lenient drops as one token. Semantic export renders the first assessment NAG as its glyph (fidelity: source
+    order/duplicates kept); archival export is canonical — dedup + sorted, all `$N` — matching python-chess
+    byte-for-byte (committed `nagExport.jsonl` oracle).
+  - Test corpus: anonymized lichess/chess.com fixtures + three annotated classics + nested-RAV stress files +
+    edge/contract pins (~90 new PGN tests); 19.5 MB ChessBase ECO one-shot sweep: 1366/1369 lenient (3 rejects =
+    corrupt U+007F comment bytes). Two Codex review rounds green; docs (spec/manual/README/changelog) aligned.
+
+Remaining before release:
+
+- **Performance decision**: the curated chasolver sweep runs 831 s vs ~404 s on the cha-port engine (~2×; the gap is
+  concentrated in hard positions that burn the full 500 000-node budget at public-`Board` per-node cost). Decide
+  whether 22.0.0 ships as-is (single-query production impact is millisecond-scale on typical positions) or first
+  gets a fast-board pass (drive the Figure 5 search and Figure 10 DFS over an internal make/unmake board).
+  ✅ DONE 2026-07-03 (user decision: the fast board MUST be used - it was wrongly deleted with the cha port despite
+  being engine-agnostic machinery). `HelpmateSearchBoard`/`HelpmateSearchKey`/`LegalMoveBuffer`/`UndoState` and their
+  lock-step tests restored from git history; `FindHelpmate` (Fig 5) and the Fig 10 quick DFS now run on the search
+  board; `Score`/`GoingToCorner` refactored to bitboard-level signatures. Verdicts identical (all oracle comparisons
+  and pins green with zero re-baselining). Curated sweep: **318 s** - 2.6× faster than the Board-driven engine and
+  ~21% faster than the old cha-port engine.
+- **Release steps** per workflows.md. ✅ Branch-side artifacts DONE 2026-07-04 (title "Unwinnability now straight
+  from the FUN 2022 paper"; pom 22.0.0, changelog header/date, README version snippets regenerated, this section
+  closed). Pre-flight (`-Pfull`), PR/merge/tag, and sign+publish from the notebook follow per runbook.
+
+---
+
 ## 21.1.0 — Oracle housekeeping
 
-Work on branch `further-improving`.
+Published 2026-07-03 (tag `21.1.0`, on Maven Central); see **CHANGELOG.md** for the consumer-facing summary. Shipped from branch `further-improving`.
 
 - **Correct the 21.0.0 release-notes overclaim about the KNNvK/KRRvK/KQQvK theorem.** ✅ DONE 2026-07-02 — the `CHANGELOG.md` `[21.0.0]` bullet is reworded (performance + proof-provenance improvement, not completeness; the search already proved these classes `WINNABLE`), the summary framing is now "A correctness release", and the published GitHub Release notes were edited in place to match. The correction is also called out in the `[21.1.0]` entry.
 

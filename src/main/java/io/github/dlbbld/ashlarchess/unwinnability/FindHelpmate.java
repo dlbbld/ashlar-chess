@@ -3,246 +3,116 @@
 
 package io.github.dlbbld.ashlarchess.unwinnability;
 
+import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Deque;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Logger;
 
 import io.github.dlbbld.ashlarchess.bitboard.BitboardPosition;
-import io.github.dlbbld.ashlarchess.board.Board;
-import io.github.dlbbld.ashlarchess.board.DynamicPosition;
 import io.github.dlbbld.ashlarchess.board.LegalMove;
+import io.github.dlbbld.ashlarchess.board.MoveSpecification;
 import io.github.dlbbld.ashlarchess.board.UciMove;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
-import io.github.dlbbld.ashlarchess.board.enums.Square;
-import io.github.dlbbld.ashlarchess.board.enums.SquareType;
 import io.github.dlbbld.ashlarchess.board.internal.UciMoveUtility;
-import io.github.dlbbld.ashlarchess.exceptions.ProgrammingMistakeException;
-import io.github.dlbbld.ashlarchess.internal.JdkLoggers;
 import io.github.dlbbld.ashlarchess.internal.Nulls;
 
-//Figure 5 Find-Helpmatec routine, returns true if a checkmate sequence for player c in {w, b},
-//the intended winner, is found or false otherwise. The base call should be done on depth = 0,
-//cnt = 0, and an empty table. The value of maxDepth and nodesBound can be chosen to set the
-//limits of the search. The Score routine is defined in Figure 12 (Appendix A).
-class FindHelpmate {
+// Figure 5 Find-Helpmate: a recursive routine for finding a checkmate by the intended winner.
+// Footnote b: a Normal-scored move following a Reward-scored move is also rewarded (chains
+// rewarded plans across both players).
+/**
+ * The Find-Helpmate search (paper Figure 5): a depth- and node-bounded DFS that succeeds iff it exhibits a checkmate
+ * <em>by the intended winner</em> (a helpmate), with a depth-aware transposition table and the Figure 12 {@link Score}
+ * depth heuristic. It runs over the mutable {@link HelpmateSearchBoard} hot path (make/unmake, per-depth legal-move
+ * buffers, cached terminal flags). As an ashlar extension the exhibited mate line is recorded on the unwind - pure
+ * bookkeeping, no influence on the search.
+ *
+ * <p>
+ * One instance = one bounded search (one iterative-deepening iteration of Figure 9), exactly the paper's Figure 5
+ * semantics. The transposition table is deliberately NOT shared across iterations, although the paper's prose allows
+ * it: the soundness of "tree exhausted without interrupt implies UNWINNABLE" rests on the interrupted flag being
+ * monotone over every visit the table's entries summarize. Within one iteration that holds - an entry written by a
+ * depth-cut visit coexists with the raised flag, so that iteration can no longer claim {@code UNWINNABLE}. A stale
+ * entry from an earlier, depth-cut iteration would prune a later iteration's node WITHOUT re-raising its interrupt
+ * flag, letting the later iteration believe it exhausted the tree while cut lines hide behind the prune - a potential
+ * false {@code UNWINNABLE}.
+ */
+final class FindHelpmate {
 
-  private static final Logger logger = JdkLoggers.getLogger(FindHelpmate.class);
+  private final Side winnerSide;
+  private final Side loserSide;
+  private final int nodesBound;
+  private final Map<TranspositionKey, Integer> transpositionTable = new HashMap<>();
+  private final Deque<UciMove> mateLine = new ArrayDeque<>();
+  private int nodesUsed;
+  private boolean interrupted;
 
-  // empirically enough
-  private static final int LOCAL_NODES_BOUND = 10000;
-
-  private final Side color;
-  private final Map<HelpmateSearchKey, Integer> transpositionMap = new HashMap<>();
-
-  private int localNodeCount = 0;
-
-  private boolean isCanExhaust = true;
-  private List<LegalMove> moveProgress = new ArrayList<>();
-
-  public FindHelpmate(Side side) {
-    this.color = side;
+  FindHelpmate(Side winner, int nodesBound) {
+    this.winnerSide = winner;
+    this.loserSide = winner.getOppositeSide();
+    this.nodesBound = nodesBound;
   }
 
-  public FindHelpmateAnalysis calculateHelpmate(Board board, int maxDepth) {
-    final HelpmateSearchBoard searchBoard = HelpmateSearchBoard.from(board);
-    return calculateHelpmate(searchBoard, maxDepth);
+  /** Base call: one bounded search from the search board's current position (Figure 9 step 3). */
+  HelpmateSearchResult search(HelpmateSearchBoard board, int maxDepth) {
+    final boolean helpmateFound = search(board, 0, maxDepth, false);
+    return new HelpmateSearchResult(helpmateFound, interrupted, nodesUsed, Nulls.copyOfList(new ArrayList<>(mateLine)));
   }
 
-  private FindHelpmateAnalysis calculateHelpmate(HelpmateSearchBoard board, int maxDepth) {
-
-    final DynamicPosition invariantPosition = board.getDynamicPosition();
-    final Square invariantEnPassantCaptureTargetSquare = board.getEnPassantCaptureTargetSquare();
-
-    if (maxDepth != 0 && maxDepth % 10 == 0) {
-      logger.fine(() -> "maxDepth=" + maxDepth);
+  private boolean search(HelpmateSearchBoard board, int depth, int maxDepth, boolean previousWasReward) {
+    // Steps 1-2: terminal positions. Checkmate of the loser is the helpmate; stalemate and the Lemma 5/6
+    // insufficient-winning-material positions (and the bare winner king) are leaves without one.
+    if (board.isCheckmate()) {
+      return board.getSideToMove() == loserSide;
     }
-
-    this.localNodeCount = 0;
-    this.isCanExhaust = true;
-    this.moveProgress = new ArrayList<>();
-
-    final FindHelpmateRecursionResult findHelpmate = findHelpmate(board, 0, maxDepth, 0, false);
-
-    if (!invariantPosition.equals(board.getDynamicPosition())
-        || invariantEnPassantCaptureTargetSquare != board.getEnPassantCaptureTargetSquare()) {
-      throw new ProgrammingMistakeException("Board was changed");
-    }
-
-    switch (findHelpmate) {
-      case HELPMATE_FOUND:
-        return new FindHelpmateAnalysis(FindHelpmateResult.HAS_HELPMATE, localNodeCount, toUciMoves(moveProgress));
-      case HELPMATE_NOT_FOUND:
-        if (isCanExhaust) {
-          return new FindHelpmateAnalysis(FindHelpmateResult.HAS_NO_HELPMATE, localNodeCount, new ArrayList<>());
-        }
-        return new FindHelpmateAnalysis(FindHelpmateResult.UNKNOWN, localNodeCount, new ArrayList<>());
-      default:
-        throw new IllegalArgumentException();
-    }
-  }
-
-  // Inputs: position, depth (int), maxDepth (int)
-  // Output: bool (true if a checkmate sequence was found, false otherwise)
-  private FindHelpmateRecursionResult findHelpmate(HelpmateSearchBoard board, int depth, int maxDepth, int actualDepth,
-      boolean isPastProgress) {
-
-    // 1: if the intended winner is checkmating their opponent in pos then return true
-    if (board.getSideToMove() == color.getOppositeSide() && board.isCheckmate()) {
-      return FindHelpmateRecursionResult.HELPMATE_FOUND;
-    }
-
-    // 2: if the intended winner has just the king or the position is unwinnable according
-    // to Lemma 5 or Lemma 6 or the position is stalemate or the intended winner is
-    // receiving checkmate in the position then return false
-
-    // Note: below omitted as not in the C++ code
-    // or the position is stalemate or the intended winner is
-    // receiving checkmate in the position then return false
-
-    // set d := limits.max-depth - depth
-    final int movesLeft = maxDepth - depth;
-
-    final HelpmateSearchKey cacheKey = board.currentTranspositionKey();
-    // 5: if (pos,D) in table with D >= d then return false (-> pos was already analyzed)
-    if (calculateIsInTranspositionTableWithEnoughDepth(cacheKey, movesLeft)) {
-      return FindHelpmateRecursionResult.HELPMATE_NOT_FOUND;
-    }
-
-    // 4: if cnt > nodesBound or d < 0 then return false (-> The search limits are exceeded)
-    if (localNodeCount > maxDepth * LOCAL_NODES_BOUND || movesLeft <= 0) {
-
-      if (isCanExhaust) {
-        isCanExhaust = false;
-      }
-      return FindHelpmateRecursionResult.HELPMATE_NOT_FOUND;
-    }
-
-    // 6: store (pos,D) in table
-    store(cacheKey, movesLeft);
-
-    // Per the paper / Ambrona issue thread: the 75-move and 5-fold-repetition rules do not apply when adjudicating
-    // timeouts, so the helpmate search must continue past them (no fivefold / seventy-five gate here).
-
-    final BitboardPosition bitboardPosition = board.getBitboardPosition();
-    if (UnwinnabilityMaterialBitboard.calculateHasKingOnly(color, bitboardPosition)
-        || UnwinnabilityMaterialBitboard.calculateHasNoPawns(color.getOppositeSide(), bitboardPosition)
-            && calculateIsNeedLoserPromotion(color, bitboardPosition)) {
-      return FindHelpmateRecursionResult.HELPMATE_NOT_FOUND;
-    }
-
-    // 7: for every legal move m in pos do:
-    for (final LegalMove legalMove : board.getLegalMoves()) {
-      // 8: let inc = match Score(pos,m) with Normal -> 0 | Reward -> 1 | Punish -> -2
-      ScoreResult score = Score.score(color, board.getSideToMove(), bitboardPosition, legalMove);
-
-      if (board.getSideToMove() == color.getOppositeSide()
-          && UnwinnabilityMaterialBitboard.calculateHasQueen(color.getOppositeSide(), bitboardPosition)) {
-        score = score == ScoreResult.REWARD ? ScoreResult.NORMAL : score;
-      }
-
-      if (actualDepth > 300) {
-        score = score == ScoreResult.REWARD ? ScoreResult.NORMAL : score;
-      }
-
-      int newDepth = depth + 1;
-      switch (score) {
-        case REWARD:
-          newDepth = newDepth - 1;
-          break;
-        case PUNISH:
-          newDepth = Math.min(maxDepth, newDepth + 2);
-          break;
-        case NORMAL:
-          if (isPastProgress) {
-            newDepth = newDepth - 1;
-          }
-          break;
-        default:
-          throw new IllegalArgumentException();
-      }
-
-      // 9: if Find-Helpmatec(pos.move(m), depth+1, maxDepth+inc) then return true
-      board.move(legalMove.moveSpecification());
-
-      moveProgress.add(legalMove);
-
-      final boolean isProgress = score == ScoreResult.REWARD;
-
-      // 3: increase cnt
-      localNodeCount++;
-
-      final FindHelpmateRecursionResult findHelpmate = findHelpmate(board, newDepth, maxDepth, actualDepth + 1,
-          isProgress);
-      board.unmove();
-      switch (findHelpmate) {
-        case HELPMATE_FOUND:
-          return findHelpmate;
-        case HELPMATE_NOT_FOUND:
-          // continue
-          break;
-        default:
-          throw new IllegalArgumentException();
-      }
-      moveProgress.remove(moveProgress.size() - 1);
-    }
-
-    // 10: return false (-> No mate was found after exploring every legal move)
-    return FindHelpmateRecursionResult.HELPMATE_NOT_FOUND;
-
-  }
-
-  private boolean calculateIsInTranspositionTableWithEnoughDepth(HelpmateSearchKey cacheKey, int movesLeft) {
-    if (!transpositionMap.containsKey(cacheKey)) {
+    final BitboardPosition placement = board.getBitboardPosition();
+    if (board.isStalemate() || MaterialLemmas.winnerHasBareKing(placement, winnerSide)
+        || MaterialLemmas.unwinnableByLemma5Or6(placement, winnerSide)) {
       return false;
     }
-    return Nulls.get(transpositionMap, cacheKey).intValue() >= movesLeft;
-  }
 
-  private void store(HelpmateSearchKey cacheKey, int movesLeft) {
-    transpositionMap.put(cacheKey, movesLeft);
-  }
-
-  static boolean calculateIsNeedLoserPromotion(Side winner, BitboardPosition bitboardPosition) {
-    if (calculateIsKnightNeedsPromotion(winner, bitboardPosition)) {
-      return true;
+    // Steps 3-4: search limits.
+    nodesUsed++;
+    final int remainingBudget = maxDepth - depth;
+    if (nodesUsed > nodesBound || remainingBudget < 0) {
+      interrupted = true;
+      return false;
     }
 
-    return calculateIsBishopNeedsPromotion(winner, bitboardPosition);
-  }
+    // Steps 5-6: depth-aware transposition table - skip a position already searched with at least this budget. The
+    // reward-chain flag is part of the key: a visit with the footnote-b boost pending explores a strictly stronger
+    // budget shape than one without, so the two states must not prune each other.
+    final TranspositionKey key = new TranspositionKey(board.currentTranspositionKey(), previousWasReward);
+    // Stored budgets are always >= 0, so -1 is a safe "absent" sentinel (remainingBudget is >= 0 here).
+    final int seenBudget = Nulls.getOrDefault(transpositionTable, key, -1);
+    if (seenBudget >= remainingBudget) {
+      return false;
+    }
+    transpositionTable.put(key, remainingBudget);
 
-  private static boolean calculateIsKnightNeedsPromotion(Side winner, BitboardPosition bitboardPosition) {
-    // if the intended winner has just a knight and the intended loser has just pawns
-    // and/or queens
-    return UnwinnabilityMaterialBitboard.calculateHasKingAndKnightOnly(winner, bitboardPosition)
-        && UnwinnabilityMaterialBitboard.calculateHasNoRooks(winner.getOppositeSide(), bitboardPosition)
-        && UnwinnabilityMaterialBitboard.calculateHasNoBishops(winner.getOppositeSide(), bitboardPosition)
-        && UnwinnabilityMaterialBitboard.calculateHasNoKnights(winner.getOppositeSide(), bitboardPosition);
-  }
-
-  private static boolean calculateIsBishopNeedsPromotion(Side winner, BitboardPosition bitboardPosition) {
-    // or the intended winner has just bishops of the same square color and
-    // the intended loser does not have knights or bishops of the opposite color
-
-    for (final SquareType squareType : SquareType.REAL) {
-      if (UnwinnabilityMaterialBitboard.calculateHasKingAndBishopsOnly(winner, bitboardPosition, squareType)
-          && UnwinnabilityMaterialBitboard.calculateHasNoKnights(winner.getOppositeSide(), bitboardPosition)
-          && UnwinnabilityMaterialBitboard.calculateHasNoBishops(winner.getOppositeSide(), bitboardPosition,
-              squareType.getOppositeSquareType())) {
+    // Steps 7-9: explore every legal move, adjusting the depth budget by Score. Figure 5 footnote b: also reward a
+    // Normal-scored move when the preceding move's score was Reward. The per-depth legal-move buffer stays intact
+    // while the recursion runs in deeper buffers, so indexed iteration over it is safe.
+    final Side movingSide = board.getSideToMove();
+    final List<LegalMove> legalMoves = board.getLegalMoves();
+    final int totalLegalMoves = legalMoves.size();
+    for (int i = 0; i < totalLegalMoves; i++) {
+      final MoveSpecification move = Nulls.get(legalMoves, i).moveSpecification();
+      final int score = Score.increment(placement, movingSide, move, winnerSide);
+      final int increment = score == 0 && previousWasReward ? 1 : score;
+      board.move(move);
+      final boolean helpmateFound = search(board, depth + 1, maxDepth + increment, score == 1);
+      board.unmove();
+      if (helpmateFound) {
+        mateLine.addFirst(UciMoveUtility.toUci(movingSide, move));
         return true;
       }
     }
-
-    return false;
+    return false; // step 10
   }
 
-  private static List<UciMove> toUciMoves(List<LegalMove> moveProgress) {
-    final List<UciMove> result = new ArrayList<>();
-    for (final LegalMove legalMove : moveProgress) {
-      result.add(UciMoveUtility.toUci(legalMove.movingSide(), legalMove.moveSpecification()));
-    }
-    return result;
+  /** Search-state identity for the transposition table (exact position key + reward-chain state). */
+  private record TranspositionKey(HelpmateSearchKey positionKey, boolean previousWasReward) {
   }
-
 }

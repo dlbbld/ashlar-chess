@@ -4,105 +4,66 @@
 package io.github.dlbbld.ashlarchess.unwinnability;
 
 import io.github.dlbbld.ashlarchess.bitboard.BitboardPosition;
-import io.github.dlbbld.ashlarchess.board.LegalMove;
-import io.github.dlbbld.ashlarchess.board.LegalMoveKind;
+import io.github.dlbbld.ashlarchess.board.MoveSpecification;
 import io.github.dlbbld.ashlarchess.board.enums.Piece;
 import io.github.dlbbld.ashlarchess.board.enums.PieceType;
 import io.github.dlbbld.ashlarchess.board.enums.PromotionPieceType;
-import io.github.dlbbld.ashlarchess.board.enums.Rank;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
+import io.github.dlbbld.ashlarchess.board.enums.Square;
 
-// Figure 12 Score routine used in Figure 5. Algorithm Going-to-corner is defined in Figure 13.
+// Figure 12 Score of a move, used to adjust the depth budget of the Find-Helpmate search.
+/**
+ * The Score heuristic (paper Figure 12): classifies a move as Normal (0), Reward (+1) or Punish (-2), used to adjust
+ * the search depth budget in {@link FindHelpmate}. This is a pure <em>efficiency</em> heuristic - soundness and
+ * completeness do not depend on it.
+ *
+ * <p>
+ * Full fidelity to Figure 12, including the {@code Going-to-corner} clauses (lines 2 and 8) via {@link GoingToCorner}
+ * (Figure 13).
+ */
 final class Score {
 
   private Score() {
   }
 
-  // Inputs: position, legal move in the position
-  // Output: Normal, Reward, or Punish (variation score)
-  public static ScoreResult score(Side color, Side sideToMove, BitboardPosition bitboardPosition, LegalMove legalMove) {
-    ScoreResult variation = ScoreResult.NORMAL;
-    // 1: if it is the intended winner's turn in pos then
-    if (sideToMove == color) {
-      // 2: if m is a capture or m is a pawn push or Going-to-corner(pos, m, Win) then
-      // 3: return Reward
+  /** Depth increment for exploring {@code move}: 0 (Normal), +1 (Reward), -2 (Punish). */
+  static int increment(BitboardPosition position, Side sideToMove, MoveSpecification move, Side winner) {
+    final boolean winnerTurn = sideToMove == winner;
 
-      // Spec uses pawn push, CHA 2.6.1 uses advanced pawn push.
-      // We follow CHA 2.6.1 so we can use it as oracle.
-      if (calculateIsCapture(legalMove) || calculateIsAdvancedPawnPush(legalMove)
-          || GoingToCorner.goingToCorner(color, bitboardPosition, legalMove, Goal.WIN)) {
-        variation = ScoreResult.REWARD;
-      }
-      // 4: else ( -> It is the intended loser's turn in pos)
-    } else {
-
-      // 5: if the intended winner has just a knight and the intended loser has just pawns
-      // and/or queens or the intended winner has just bishops of the same square color and
-      // the intended loser does not have knights or bishops of the opposite color then ( -> The
-      // conditions of Lemma 5 or Lemma 6 apply (ignoring the pawn-freeness condition))
-
-      // Spec for this case uses early returns which is semantically different than the assignments CHA 2.6.1 uses.
-      // We follow CHA 2.6.1 so we can use it as oracle.
-      final boolean isNeedLoserPromotion = FindHelpmate.calculateIsNeedLoserPromotion(color, bitboardPosition);
-      if (isNeedLoserPromotion) {
-        variation = calculateIsPawnMove(legalMove) && !calculateIsPromotionToHeavyPiece(legalMove) ? ScoreResult.REWARD
-            : ScoreResult.PUNISH; // CHA's base ternary
-      }
-      if (GoingToCorner.goingToCorner(color, bitboardPosition, legalMove, Goal.LOSE)) {
-        variation = ScoreResult.REWARD;
-      } else if (calculateIsCapture(legalMove)) { // else-if = corner wins over capture
-        variation = ScoreResult.PUNISH;
-      }
-    }
-    return variation;
-  }
-
-  private static boolean calculateIsCapture(LegalMove legalMove) {
-    return legalMove.capturedPiece() != Piece.NONE;
-  }
-
-  private static boolean calculateIsAdvancedPawnPush(LegalMove legalMove) {
-
-    if (!calculateIsPawnMove(legalMove)) {
-      return false;
+    if (move.isCastling()) {
+      return 0; // neither a capture nor a pawn move
     }
 
-    return calculateIsAdvancedRank(legalMove.movingSide(), legalMove.moveSpecification().toSquare().getRank());
-  }
+    final Square from = move.fromSquare();
+    final Square to = move.toSquare();
+    final boolean isPawnMove = position.get(from).getPieceType() == PieceType.PAWN;
+    final boolean sameFile = (from.ordinal() & 7) == (to.ordinal() & 7);
+    final boolean isCapture = isPawnMove ? !sameFile : position.get(to) != Piece.NONE;
+    final boolean isPawnPush = isPawnMove && sameFile;
 
-  private static boolean calculateIsPawnMove(LegalMove legalMove) {
-    // in the castling we don't set the king as the moving piece. querying the
-    // moving piece type would trigger an error as the moving piece is not set.
-    // so we must treat it separately, otherwise there is a runtime exception.
-    if (legalMove.kind() == LegalMoveKind.CASTLING) {
-      return false;
+    if (winnerTurn) {
+      // Figure 12 line 2: capture OR pawn push OR Going-to-corner(Win) -> Reward.
+      return isCapture || isPawnPush || GoingToCorner.towardCorner(position, move, winner, true) ? 1 : 0;
     }
-    return legalMove.movingPiece().getPieceType() == PieceType.PAWN;
-  }
 
-  private static boolean calculateIsAdvancedRank(Side side, Rank rank) {
-    return switch (side) {
-      case WHITE -> switch (rank) {
-        case RANK_1, RANK_2, RANK_3, RANK_4, RANK_5 -> false;
-        case RANK_6, RANK_7, RANK_8 -> true;
-        case NONE -> throw new IllegalArgumentException();
-        default -> throw new IllegalArgumentException();
-      };
-      case BLACK -> switch (rank) {
-        case RANK_1, RANK_2, RANK_3 -> true;
-        case RANK_4, RANK_5, RANK_6, RANK_7, RANK_8 -> false;
-        case NONE -> throw new IllegalArgumentException();
-        default -> throw new IllegalArgumentException();
-      };
-      case NONE -> throw new IllegalArgumentException();
-      default -> throw new IllegalArgumentException();
-    };
+    // Intended loser's turn.
+    if (MaterialLemmas.scoreMaterialCondition(position, winner)) {
+      if (move.isPromotion()) {
+        final PromotionPieceType promotion = move.promotionPieceType();
+        if (promotion == PromotionPieceType.QUEEN || promotion == PromotionPieceType.ROOK) {
+          return -2; // line 6: promotion to queen or rook -> Punish
+        }
+      }
+      if (isPawnMove) {
+        return 1; // line 7: any (other) pawn move -> Reward
+      }
+    }
+    if (GoingToCorner.towardCorner(position, move, winner, false)) {
+      return 1; // line 8: Going-to-corner(Lose) -> Reward
+    }
+    if (isCapture) {
+      return -2; // line 9: capture -> Punish
+    }
+    return 0; // line 10: Normal
   }
-
-  private static boolean calculateIsPromotionToHeavyPiece(LegalMove legalMove) {
-    return legalMove.kind() == LegalMoveKind.PROMOTION
-        && (legalMove.moveSpecification().promotionPieceType() == PromotionPieceType.QUEEN
-            || legalMove.moveSpecification().promotionPieceType() == PromotionPieceType.ROOK);
-  }
-
 }

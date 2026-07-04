@@ -3,27 +3,19 @@
 
 package io.github.dlbbld.ashlarchess.unwinnability;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
 import io.github.dlbbld.ashlarchess.board.Board;
-import io.github.dlbbld.ashlarchess.board.DynamicPosition;
-import io.github.dlbbld.ashlarchess.board.LegalMove;
-import io.github.dlbbld.ashlarchess.board.UciMove;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
-import io.github.dlbbld.ashlarchess.board.internal.UciMoveUtility;
 import io.github.dlbbld.ashlarchess.fen.model.Fen;
 import io.github.dlbbld.ashlarchess.internal.Nulls;
 
-//Figure 9 Main routine for deciding chess unwinnability. It is based on our semi-static
-//algorithm (Figure 8) and our search routine (Figure 5) integrated via iterative deepening.
-//Function bound must be increasing on d for the algorithm to be complete. The transposition
-//table used by Find-Helpmatec should be initialized to empty at the beginning, but it can be
-//shared between different calls to Find-Helpmatec in step 3. On the other hand, the global
-//counter cnt should be initialized to 0 on every base call to Find-Helpmatec in step 3.
+// Figure 9 Main routine for deciding chess unwinnability: the semi-static algorithm (Figure 8)
+// as a fast shortcut, then the Find-Helpmate search (Figure 5) under iterative deepening. The
+// routine is sound on every definite verdict and, given large enough limits, complete; with the
+// finite budget below it may return UNDETERMINED.
 /**
+ * The complete unwinnability analysis - the paper's Figure 9 main routine.
+ *
+ * <p>
  * Defined for legal positions only; on an illegal position the result is undefined (and may differ from the quick
  * analyzer). See this package's documentation for the legal-position contract.
  */
@@ -32,6 +24,8 @@ public final class UnwinnableFullAnalyzer {
   private UnwinnableFullAnalyzer() {
   }
 
+  // The paper leaves bound(d) as a parameter (its practical note fixes a small constant); ashlar keeps the 21.x
+  // budget envelope: one global node budget shared by all deepening iterations, and a depth ceiling.
   private static final int MAX_DEPTH = 100;
   private static final int GLOBAL_NODES_BOUND = 500000;
 
@@ -40,115 +34,47 @@ public final class UnwinnableFullAnalyzer {
    * and repetition history from the caller's game is intentionally ignored.
    *
    * <p>
-   * Terminal positions are handled, not rejected (CHA Find-Helpmate base cases): an already-checkmate position is
+   * Terminal positions are handled, not rejected (Figure 5 base cases): an already-checkmate position is
    * {@code WINNABLE} for the side that delivered mate - a zero-move helpmate, so
-   * {@link UnwinnabilityFullAnalysis#mateLine()} is empty and {@link UnwinnabilityFullAnalysis#winnableProof()} is
-   * {@link WinnableProof#HELPMATE} - and {@code UNWINNABLE} for the mated side; a stalemate is {@code UNWINNABLE} for
-   * both sides.
+   * {@link UnwinnabilityFullAnalysis#mateLine()} is empty - and {@code UNWINNABLE} for the mated side; a stalemate is
+   * {@code UNWINNABLE} for both sides.
    */
   public static UnwinnabilityFullAnalysis unwinnableFull(Board input, Side winner) {
     final Board board = copyCurrentPositionForFullSearch(input);
-    return unwinnableFull(board, winner, false, new MobilitySolution());
-  }
 
-  // Inputs: position, intended winner
-  // Output: Unwinnable or Winnable (definite solution to the chess unwinnability problem)
-  private static UnwinnabilityFullAnalysis unwinnableFull(Board board, Side winner, boolean isHasMobilitySolution,
-      MobilitySolution calculatedMobilitySolution) {
-
-    // add optimization from code
-    // if position is advanced cannot use the provided mobility solution if any
-    boolean isCanUseMobilitySolution = true;
-    boolean isForcedMove = board.getLegalMoves().size() == 1;
-    int totalForcedMoves = 0;
-    final List<UciMove> forcedMoveLine = new ArrayList<>();
-    final Set<DynamicPosition> forcedPositionSet = new HashSet<>();
-    while (isForcedMove && forcedPositionSet.add(board.getDynamicPosition())) {
-      isCanUseMobilitySolution = false;
-      final LegalMove onlyLegalMove = Nulls.getFirst(board.getLegalMoves());
-      forcedMoveLine.add(UciMoveUtility.toUci(onlyLegalMove.movingSide(), onlyLegalMove.moveSpecification()));
-      board.move(onlyLegalMove.moveSpecification());
-      isForcedMove = board.getLegalMoves().size() == 1;
-      totalForcedMoves++;
+    // 1: if UnwinnableSS(pos, c, Mobility(pos)) then return Unwinnable
+    final SemiStaticPosition semiStaticPosition = SemiStaticPosition.fromBoard(board);
+    if (UnwinnableSemiStatic.unwinnableSemiStatic(semiStaticPosition, winner, Mobility.mobility(semiStaticPosition))) {
+      return new UnwinnabilityFullAnalysis(UnwinnabilityFullVerdict.UNWINNABLE, Nulls.listOf());
     }
 
-    // 1: if true UnwinnableSS(pos, c, Mobility(pos)) then return Unwinnable
-    final MobilitySolution mobilitySolution;
-    if (isHasMobilitySolution && isCanUseMobilitySolution) {
-      mobilitySolution = calculatedMobilitySolution;
-    } else {
-      mobilitySolution = Mobility.mobility(board);
-    }
-    if (UnwinnableSemiStatic.unwinnableSemiStatic(board, winner, mobilitySolution)) {
-      undoForcedMoves(board, totalForcedMoves);
-      return new UnwinnabilityFullAnalysis(UnwinnabilityFullVerdict.UNWINNABLE, WinnableProof.NONE, Nulls.listOf());
-    }
+    // 2: for every d in N do (-> iterative deepening). The search runs on the mutable HelpmateSearchBoard hot path;
+    // make/unmake is balanced, so the same search board serves every iteration. The transposition table is
+    // per-iteration - see FindHelpmate for why sharing it across iterations could produce a false UNWINNABLE.
+    final HelpmateSearchBoard searchBoard = HelpmateSearchBoard.from(board);
+    int remainingNodes = GLOBAL_NODES_BOUND;
+    for (int maxDepth = 0; maxDepth <= MAX_DEPTH; maxDepth++) {
+      // 3: set b_d = Find-Helpmate_c(pos, 0, maxDepth = d), with the iteration's node bound being what is left of
+      // the global budget.
+      final FindHelpmate findHelpmate = new FindHelpmate(winner, remainingNodes);
+      final HelpmateSearchResult searchResult = findHelpmate.search(searchBoard, maxDepth);
+      remainingNodes -= searchResult.nodesUsed();
 
-    // Basic-helpmate-existence theorem: for elementary mating material, decide winnability directly instead of
-    // searching for a cooperative mate. The verdict is certified by the theorem, so no mate line accompanies a
-    // winnable result (see BasicHelpmateExistenceTheorem).
-    switch (BasicHelpmateExistenceTheorem.decide(board, winner)) {
-      case WINNABLE:
-        undoForcedMoves(board, totalForcedMoves);
-        return new UnwinnabilityFullAnalysis(UnwinnabilityFullVerdict.WINNABLE, WinnableProof.THEOREM, Nulls.listOf());
-      case UNWINNABLE:
-        undoForcedMoves(board, totalForcedMoves);
-        return new UnwinnabilityFullAnalysis(UnwinnabilityFullVerdict.UNWINNABLE, WinnableProof.NONE, Nulls.listOf());
-      case NOT_APPLICABLE:
-        break;
-      default:
-        throw new IllegalArgumentException();
-    }
-
-    // we must instantiate the class here to share the transposition table between calls
-    final FindHelpmate findHelpmate = new FindHelpmate(winner);
-
-    // 2: for every d in N do ( -> Iterative deepening)
-    int globalNodeCount = 0;
-    for (int maxDepth = 2; maxDepth <= MAX_DEPTH; maxDepth++) {
-      // 3: set bd Find-Helpmatec(pos, 0, maxDepth = d) (global nodesBound = bound(d))
-
-      final FindHelpmateAnalysis helpmateAnalysis = findHelpmate.calculateHelpmate(board, maxDepth);
-
-      globalNodeCount += helpmateAnalysis.localNodesCount();
-
-      if (globalNodeCount > GLOBAL_NODES_BOUND) {
-        return new UnwinnabilityFullAnalysis(UnwinnabilityFullVerdict.UNDETERMINED, WinnableProof.NONE, Nulls.listOf());
+      // 4: if b_d = true then return Winnable
+      if (searchResult.helpmateFound()) {
+        return new UnwinnabilityFullAnalysis(UnwinnabilityFullVerdict.WINNABLE, searchResult.mateLine());
       }
-
-      switch (helpmateAnalysis.findHelpmateResult()) {
-        case HAS_HELPMATE:
-          // 4: if bd = true then return Winnable
-          undoForcedMoves(board, totalForcedMoves);
-          return new UnwinnabilityFullAnalysis(UnwinnabilityFullVerdict.WINNABLE, WinnableProof.HELPMATE,
-              prependForcedMoves(forcedMoveLine, helpmateAnalysis.mateLine()));
-        case HAS_NO_HELPMATE:
-          // 5: else if the search was not interrupted (in step 4 of Figure 5) then
-          // 6: return Unwinnable
-          undoForcedMoves(board, totalForcedMoves);
-          return new UnwinnabilityFullAnalysis(UnwinnabilityFullVerdict.UNWINNABLE, WinnableProof.NONE, Nulls.listOf());
-        case UNKNOWN:
-          // the algorithm continues with next depth
-          break;
-        default:
-          throw new IllegalArgumentException();
+      // 5-6: if the search was not interrupted then return Unwinnable
+      if (!searchResult.interrupted()) {
+        return new UnwinnabilityFullAnalysis(UnwinnabilityFullVerdict.UNWINNABLE, Nulls.listOf());
+      }
+      if (remainingNodes <= 0) {
+        break; // global budget exhausted
       }
     }
 
-    undoForcedMoves(board, totalForcedMoves);
-    return new UnwinnabilityFullAnalysis(UnwinnabilityFullVerdict.UNWINNABLE, WinnableProof.NONE, Nulls.listOf());
-  }
-
-  private static void undoForcedMoves(Board board, int totalForcedMoves) {
-    for (int i = 1; i <= totalForcedMoves; i++) {
-      board.unmove();
-    }
-  }
-
-  private static List<UciMove> prependForcedMoves(List<UciMove> forcedMoveLine, List<UciMove> helpmateLine) {
-    final List<UciMove> result = new ArrayList<>(forcedMoveLine);
-    result.addAll(helpmateLine);
-    return Nulls.copyOfList(result);
+    // Budget or depth ceiling reached without a definite verdict.
+    return new UnwinnabilityFullAnalysis(UnwinnabilityFullVerdict.UNDETERMINED, Nulls.listOf());
   }
 
   private static Board copyCurrentPositionForFullSearch(Board input) {
@@ -157,5 +83,4 @@ public final class UnwinnableFullAnalyzer {
         input.getFullMoveNumber());
     return new Board(fen);
   }
-
 }

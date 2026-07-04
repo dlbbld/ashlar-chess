@@ -50,9 +50,7 @@ public enum File {
     return number;
   }
 
-  /**
-   * File letter: {@code "a"}..{@code "h"}, and {@code "none"} for {@link #NONE}.
-   */
+  /** File letter: {@code "a"}..{@code "h"}, and {@code "none"} for {@link #NONE}. */
   @Override
   public String toString() {
     return this == NONE ? "none" : letterString;

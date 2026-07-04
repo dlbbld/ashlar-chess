@@ -5,7 +5,6 @@ package io.github.dlbbld.ashlarchess.test.unwinnability;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,12 +13,12 @@ import org.junit.jupiter.api.Test;
 
 import io.github.dlbbld.ashlarchess.board.Board;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
-import io.github.dlbbld.ashlarchess.unwinnability.UnwinnabilityFullAnalysis;
+import io.github.dlbbld.ashlarchess.unwinnability.BasicHelpmateExistenceTheorem;
+import io.github.dlbbld.ashlarchess.unwinnability.BasicHelpmateExistenceTheoremResult;
 import io.github.dlbbld.ashlarchess.unwinnability.UnwinnabilityFullVerdict;
 import io.github.dlbbld.ashlarchess.unwinnability.UnwinnabilityQuickVerdict;
 import io.github.dlbbld.ashlarchess.unwinnability.UnwinnableFullAnalyzer;
 import io.github.dlbbld.ashlarchess.unwinnability.UnwinnableQuickAnalyzer;
-import io.github.dlbbld.ashlarchess.unwinnability.WinnableProof;
 
 /**
  * Documented out-of-domain lock-down: the known retro-illegal counterexamples to the basic-helpmate-existence theorem,
@@ -30,14 +29,15 @@ import io.github.dlbbld.ashlarchess.unwinnability.WinnableProof;
  * <p>
  * These positions are illegal - they cannot arise from the initial position by any series of legal moves (in each, the
  * side to move's opponent had no legal last move) - but only retrograde analysis can tell, so strict FEN parsing
- * accepts them. They are exactly the out-of-domain examples cited by the "legal positions only" contract in the
- * {@code unwinnability} package-info: the analysis is guaranteed on legal positions only, and on these illegal inputs
- * the full and quick analyzers visibly disagree. This test asserts that current, documented behaviour so any drift is
- * caught - it makes no correctness claim for illegal input:
+ * accepts them. They are the theorem's known out-of-domain failures: the theorem (a test-side oracle since 22.0.0)
+ * still concludes {@code WINNABLE} on them although no helpmate exists. The production analyzers, which since 22.0.0
+ * follow the FUN 2022 paper without the theorem shortcut, decide these caged positions by exhausting their tiny
+ * position graphs and answer {@code UNWINNABLE} - agreeing with each other and with chasolver even on this illegal
+ * input. This test asserts that current behaviour so any drift is caught:
  * <ul>
  * <li>{@code Board.fromFenStrict} accepts each position (retro-illegality is not enforced),</li>
- * <li>the full analyzer answers {@code WINNABLE} for White by {@link WinnableProof#THEOREM} with no mate line (the
- * theorem applies to the material class; no helpmate actually exists in these illegal positions),</li>
+ * <li>the theorem oracle still claims {@code WINNABLE} (the documented counterexample behaviour),</li>
+ * <li>the full analyzer answers {@code UNWINNABLE} for White (search exhaustion; no helpmate exists),</li>
  * <li>the quick analyzer answers {@code UNWINNABLE} for both sides (as does chasolver).</li>
  * </ul>
  */
@@ -85,11 +85,11 @@ class TestRetroIllegalTheoremCounterexamples {
     assertDoesNotThrow(() -> Board.fromFenStrict(fen), fen + ": strict FEN must accept (retro-illegality unenforced)");
 
     final Board board = Board.fromFenStrict(fen);
-    final UnwinnabilityFullAnalysis full = UnwinnableFullAnalyzer.unwinnableFull(board, Side.WHITE);
-    assertEquals(UnwinnabilityFullVerdict.WINNABLE, full.verdict(), fen);
-    assertEquals(WinnableProof.THEOREM, full.winnableProof(), fen);
-    assertTrue(full.mateLine().isEmpty(), fen + ": a theorem-certified verdict carries no mate line");
+    assertEquals(BasicHelpmateExistenceTheoremResult.WINNABLE, BasicHelpmateExistenceTheorem.decide(board, Side.WHITE),
+        fen + ": the theorem's documented out-of-domain overclaim");
 
+    assertEquals(UnwinnabilityFullVerdict.UNWINNABLE,
+        UnwinnableFullAnalyzer.unwinnableFull(board, Side.WHITE).verdict(), fen);
     assertEquals(UnwinnabilityQuickVerdict.UNWINNABLE,
         UnwinnableQuickAnalyzer.unwinnableQuick(board, Side.WHITE).verdict(), fen);
     assertEquals(UnwinnabilityQuickVerdict.UNWINNABLE,

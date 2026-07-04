@@ -119,9 +119,7 @@ public enum Square implements Comparable<Square> {
     return name;
   }
 
-  /**
-   * Algebraic notation: {@code "a1"}..{@code "h8"}, and {@code "none"} for {@link #NONE}.
-   */
+  /** Algebraic notation: {@code "a1"}..{@code "h8"}, and {@code "none"} for {@link #NONE}. */
   @Override
   public String toString() {
     return name;

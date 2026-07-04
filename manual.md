@@ -365,11 +365,13 @@ impossible double-bishop-check mate called unwinnable, or certain illegal `KBNvK
 
 The verdict enums are proof results, not booleans. Read the exact constant:
 
-- Side-specific quick: `UNWINNABLE` means proven unwinnable; `POSSIBLY_WINNABLE` means not proven unwinnable.
+- Side-specific quick: `UNWINNABLE` means proven unwinnable; `WINNABLE` means proven winnable (the bounded search met
+  a checkmate by the intended winner - it fires only on quickly matable positions and carries no mate line);
+  `POSSIBLY_WINNABLE` means not decided either way.
 - Dead-position quick: `DEAD` means both sides are proven unwinnable; `POSSIBLY_ALIVE` means at least one side was not
   proven unwinnable.
 
-Do not read `!= UNWINNABLE` as “winnable”; it also includes undecided states.
+Do not read `!= UNWINNABLE` as “winnable”; it also includes the undecided `POSSIBLY_WINNABLE`.
 
 ### Reading Full Verdicts
 
@@ -379,10 +381,10 @@ The full side-specific verdict has three public outcomes:
 - `UNWINNABLE` means proven unwinnable.
 - `UNDETERMINED` means the full search stopped at its bound.
 
-When you call `UnwinnableFullAnalyzer` directly, `UnwinnabilityFullAnalysis` also tells you how a `WINNABLE` result was
-proved: `winnableProof()` returns `WinnableProof.THEOREM` for theorem-certified wins and `WinnableProof.HELPMATE` for
-searched wins (where `mateLine()` carries a concrete UCI helpmate line). The `Board.unwinnableFull(Side)` convenience
-method exposes only the public verdict.
+When you call `UnwinnableFullAnalyzer` directly, `UnwinnabilityFullAnalysis` also carries the proof of a `WINNABLE`
+result: `mateLine()` is the concrete UCI helpmate line the search exhibited (empty exactly when the submitted position
+is already a checkmate delivered by the intended winner - a zero-move helpmate). The `Board.unwinnableFull(Side)`
+convenience method exposes only the public verdict.
 
 Dead-position full uses its own whole-position vocabulary: `DEAD`, `ALIVE`, or `UNDETERMINED`.
 
@@ -423,7 +425,7 @@ System.out.println(board.unwinnableFull(Side.WHITE)); // WINNABLE
 Blocked positions the quick algorithm proves:
 
 ```java
-final Board board = Board.fromFenStrict("1k6/1P5p/BP3p2/1P6/8/8/5PKP/8 b - - 0 41");
+final Board board = Board.fromFenStrict("2b1k3/8/8/1p1p1p1p/1P1P1P1P/8/8/2B1K3 w - - 0 40");
 System.out.println(board.unwinnableQuick(Side.WHITE)); // UNWINNABLE
 System.out.println(board.unwinnableFull(Side.WHITE)); // UNWINNABLE
 ```
@@ -465,9 +467,10 @@ System.out.println(board.unwinnableQuick(Side.WHITE)); // POSSIBLY_WINNABLE
 System.out.println(board.unwinnableFull(Side.WHITE)); // WINNABLE
 ```
 
-For quick side-specific unwinnability, `POSSIBLY_WINNABLE` is intentionally conservative: it means "not proven
-unwinnable". In the project statistics, more than 99.99% of these quick-open positions are in fact winnable, but callers
-that need a proof should use the full verdict.
+For quick side-specific unwinnability, `POSSIBLY_WINNABLE` is intentionally conservative: it means "not decided either
+way". In the project statistics, more than 99.99% of these quick-open positions are in fact winnable, but callers that
+need a proof should use the full verdict (or rely on quick's own `WINNABLE`, which fires on quickly matable
+positions).
 
 ## Validation Model
 
@@ -609,14 +612,21 @@ Lenient PGN routes its `FEN` tag through lenient FEN. Strict PGN routes the `FEN
 
 ### Limitations
 
-PGN support intentionally does not include:
+PGN support intentionally does not model:
 
-- recursive annotation variations;
-- Numeric Annotation Glyphs such as `$1`;
+- recursive annotation variations (RAV): the lenient parser tolerates and skips them to keep the mainline, and the
+  strict parser rejects them — ashlar reads the game that was played, not engine side-lines;
 - multi-game PGN files.
 
-UTF-8 byte-order marks are accepted by the lenient parser and rejected by the strict parser. PGN move suffix annotations
-(`!`, `?`, `!!`, `??`, `!?`, `?!`) are parsed, modeled, and round-tripped by both parsers.
+UTF-8 byte-order marks are accepted by the lenient parser and rejected by the strict parser.
+
+Move annotations are supported and modeled. Both the six suffix glyphs (`!`, `?`, `!!`, `??`, `!?`, `?!`) and Numeric
+Annotation Glyphs (`$0`–`$255`) are parsed, preserved, and round-tripped by both parsers. Per the PGN standard
+(section 8.2.3.8) the glyphs are import shorthand for NAG codes `1`–`6`, so ashlar folds both into one `Nag` list per
+move — `e4?` and `e4 $2` are the same annotation. Semantic (default) export writes the first assessment NAG as its
+readable glyph and preserves the source order and duplicates; archival export (`WriteMode.ARCHIVAL`) is canonical —
+it deduplicates and sorts a move's NAGs and writes every one as `$N`, matching the PGN export format and python-chess
+byte-for-byte.
 
 ### Parse Model
 
