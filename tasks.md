@@ -11,6 +11,56 @@ Live planning only: current release work, backlog, and obsolete decisions. Shipp
 
 ---
 
+## 22.1.0 — Release-procedure hardening (+ substance TBD)
+
+Branch `release-procedure` (created from `main` at the 22.0.0 tag commit `f04800f9`; PR #70 was opened and then
+**closed on purpose** — the process improvements alone don't justify the work a release creates, so this ships only
+once bundled with something substantial. Version deliberately 22.1.0, not 22.0.1: by the time it goes out there will
+be functional content). All process work below is DONE and pushed on the branch; the release itself waits.
+
+**Where this came from — challenges hit while cutting 22.0.0, and the solutions built:**
+
+- **A malformed corpus fixture hid for a full day, then broke release pre-flight** (1 failure + 5 errors, all one
+  root cause: `01_cha_test_vector_orphan.pgn` adopted ending `*\n` instead of `*\n\n`). Every test that
+  strict-parses the corpus lived in `-Pfull`, so the default profile stayed green until release day.
+  ✅ SOLVED — `TestPgnCorpusFileStructure`: the strict file-structure pre-scan over all 1386 corpus files in the
+  **default** profile (~0.2 s; negative-probe verified against the exact defect). Fixture-adding workflow in
+  workflows.md now includes the lint. The fix itself shipped in 22.0.0 via PR #69.
+- **Pre-flight was six manual steps with who-runs-what ambiguity, and a `BUILD FAILURE` hid behind a green shell
+  exit** (background `mvn ... ; echo` masked the real exit; caught only by reading the log).
+  ✅ SOLVED — `tools/preflight.ps1`: the whole of runbook step 5 as one fail-fast command, every gate's verdict from
+  the tool's own exit code, single summary, `-SkipExcludedSuite` for quick passes.
+- **Gate ordering wasted the expensive suites** (user-caught): JavaDoc ran AFTER the 30–40-minute suites, so a doc
+  slip there means a fix commit that invalidates the already-green suites ("ship what you validated") and forces a
+  full re-run. ✅ SOLVED — principle stated in workflows.md and encoded in the script: **cheap fix-prone gates
+  first, expensive read-only suites last** (worktree → headers → JavaDoc → `-Pfull` → excluded suite). JavaDoc
+  additionally moved into cleanup step 2.5 so pre-flight confirms rather than discovers.
+- **The published release notes broke every paragraph mid-sentence.** CHANGELOG.md is hard-wrapped ~120 cols —
+  invisible in file rendering (GitHub reflows single newlines in files) but every `\n` becomes `<br>` in a release
+  body (releases/issues/comments render hard newlines). Pasted verbatim = broken page; also nobody looked at the
+  page after publishing. ✅ SOLVED — `tools/build-release-notes.ps1` (extracts the changelog entry, unwraps each
+  paragraph/list item to one logical line, prepends the title H1, prints the `gh release create` command; verified
+  to reproduce the corrected live 22.0.0 notes). Runbook 10.3/10.4: **generate, never paste**, then "open the
+  release page and look at it". The live 22.0.0 notes were fixed in place with `gh release edit`.
+- Eclipse-only steps (Problems view 0/0/0) stay human by design — no change.
+
+**Still open for 22.1.0:**
+
+- **Merge the branch** (reopen PR #70 or fresh PR) when the substantial content exists. Note the branch also
+  carries the 22.0.0 tasks.md archival line (runbook 11.2) — main lacks it until this merges.
+- **CI decision (GitHub Actions)** — agreed direction, not yet built: default profile as the required PR check
+  (~3–4 min); the full suite nightly + `workflow_dispatch`, explicitly NOT a required check (free public runners
+  are 4 vCPU; expect ~25–40 min for the ~20-min local suite; CI must never sit in the release critical path — the
+  local preflight script stays authoritative, CI is the continuous safety net that would have caught the orphan a
+  day early).
+- **Optional:** `prepare-release` script for the step-4 mechanics (pom bump, README snippet bump + regeneration,
+  changelog header/date) — low priority, went cleanly by hand.
+- **Declined for now:** tag-triggered publish from CI (GPG key custody in GitHub secrets; the human staged-bundle
+  inspection and Publish click at Sonatype are valued gates, not friction).
+- **Substance TBD** — the functional work that actually justifies the release number.
+
+---
+
 ## 22.0.0 — Unwinnability now straight from the FUN 2022 paper
 
 Published 2026-07-04 (tag `22.0.0` on `f04800f9`, on Maven Central); see **CHANGELOG.md** for the consumer-facing summary. Shipped from branch `implement-fun22` (merged as PR #68, plus the pre-flight fixture fix PR #69). The `fun22-reference` project is decommissioned with the release: everything of value is vendored and validated in ashlar, a full-history bundle lives in `Downloads/fun22-reference-archive/`.
