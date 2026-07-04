@@ -16,6 +16,7 @@ import io.github.dlbbld.ashlarchess.pgn.LenientPgnParser;
 import io.github.dlbbld.ashlarchess.pgn.Nag;
 import io.github.dlbbld.ashlarchess.pgn.PgnCreate;
 import io.github.dlbbld.ashlarchess.pgn.PgnGame;
+import io.github.dlbbld.ashlarchess.pgn.ResultTagValue;
 import io.github.dlbbld.ashlarchess.pgn.StrictPgnParser;
 import io.github.dlbbld.ashlarchess.pgn.StrictPgnParserValidationException;
 import io.github.dlbbld.ashlarchess.pgn.StrictPgnParserValidationProblem;
@@ -151,6 +152,48 @@ class TestPgnAnnotationEdgeCases {
     final PgnGame game = lenient("1. e4 e5 (2. d4 exd4 *");
     assertEquals(2, game.moves().size());
     assertEquals("e5", Nulls.get(game.moves(), 1).san());
+  }
+
+  @SuppressWarnings("static-method")
+  @Test
+  void aVariationIsSkippedWithoutValidatingItsContents() {
+    // "Skip" means the side-line is never parsed as moves: illegal SANs and outright garbage inside it are consumed
+    // as opaque tokens, so the mainline (e4 e5) is unaffected and the game does not fail.
+    final PgnGame game = lenient("1. e4 (1. TotallyIllegal) e5 (2. Zxq9 foo bar) *");
+    assertEquals(2, game.moves().size());
+    assertEquals("e4", Nulls.get(game.moves(), 0).san());
+    assertEquals("e5", Nulls.get(game.moves(), 1).san());
+  }
+
+  @SuppressWarnings("static-method")
+  @Test
+  void aVariationImmediatelyBeforeTheTerminationKeepsTheRealMarker() {
+    // The balanced group is skipped and the `*` that follows it is still recognised as the game-termination marker.
+    final PgnGame game = lenient("1. e4 (1. d4 d5) *");
+    assertEquals(1, game.moves().size());
+    assertEquals("e4", Nulls.getFirst(game.moves()).san());
+    assertEquals(ResultTagValue.ONGOING, game.terminationMarker());
+  }
+
+  @SuppressWarnings("static-method")
+  @Test
+  void aSemicolonLineCommentInsideAVariationIsSkipped() {
+    // A `;` rest-of-line comment inside a side-line is consumed opaquely with the rest of the variation; the closing
+    // `)` on the next line still balances the group and the mainline is recovered.
+    final PgnGame game = lenient("1. e4 (1. d4 ; a branch note\nd5) e5 *");
+    assertEquals(2, game.moves().size());
+    assertEquals("e4", Nulls.get(game.moves(), 0).san());
+    assertEquals("e5", Nulls.get(game.moves(), 1).san());
+  }
+
+  @SuppressWarnings("static-method")
+  @Test
+  void variationsAreNotReEmittedOnExport() {
+    // "Discarded, not modelled": once skipped on import, a variation is gone - export carries only the mainline, with
+    // no `(...)` groups (contrast NAGs, which are preserved and re-emitted).
+    final PgnGame game = lenient("1. e4 (1. d4 d5) e5 2. Nf3 (2. Nc3 Nc6) Nc6 *");
+    final String pgn = PgnCreate.toPgnString(game);
+    assertEquals("1. e4 e5 2. Nf3 Nc6 *", Nulls.substring(pgn, pgn.indexOf("1. ")).trim());
   }
 
   // -----------------------------------------------------------------------------------------------------------------
