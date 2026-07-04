@@ -130,7 +130,7 @@ only when you need context.
 
 **5. Run pre-flight on the release branch**
 
-**5.1** Run the pre-flight script: `.\tools\preflight.ps1`. It chains, fail-fast with one summary and honest exit codes: worktree clean → license headers (`java-license-headers.ps1 -Check`) → `mvn test -Pfull` → `mvn test -Pfull -Dtest.excludes=` (the normally excluded unwinnability suite; a release exercises it) → the JavaDoc gates (`mvn clean javadoc:javadoc javadoc:test-javadoc -Dshow=private`).
+**5.1** Run the pre-flight script: `.\tools\preflight.ps1`. It chains, fail-fast with one summary and honest exit codes, **cheap fix-prone gates first, expensive read-only suites last**: worktree clean → license headers (`java-license-headers.ps1 -Check`) → the JavaDoc gates (`mvn clean javadoc:javadoc javadoc:test-javadoc -Dshow=private`) → `mvn test -Pfull` → `mvn test -Pfull -Dtest.excludes=` (the normally excluded unwinnability suite; a release exercises it). The order matters: a failed cheap gate means a fix commit, and a fix commit invalidates every gate already passed — front-loading the fix-prone gates keeps a header or doc slip from costing a 40-minute suite re-run. If any gate forced a commit, re-run the script from the top.
 
 **5.2** If the header gate reports drift, fix and commit: `.\tools\java-license-headers.ps1 -Fix`, then re-run 5.1.
 
