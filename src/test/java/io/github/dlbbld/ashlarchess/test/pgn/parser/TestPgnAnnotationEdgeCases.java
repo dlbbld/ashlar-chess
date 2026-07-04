@@ -5,6 +5,7 @@ package io.github.dlbbld.ashlarchess.test.pgn.parser;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
 
@@ -262,6 +263,46 @@ class TestPgnAnnotationEdgeCases {
     assertEquals("1. Nf3! $14 d5 *", movetext);
     final PgnGame reparsed = LenientPgnParser.parseText(pgn);
     assertEquals(List.of(new Nag(1), new Nag(14)), Nulls.getFirst(reparsed.moves()).nags());
+  }
+
+  @SuppressWarnings("static-method")
+  @Test
+  void strictRejectsANagAfterAComment() {
+    // Strict order is SAN -> suffix glyph -> NAGs -> comment. A NAG after the comment is out of order; strict rejects
+    // it (the NAG lands where the post-commentary move-number indicator is required). Lenient tolerates this ordering.
+    assertStrictProblem("1. e4 {comment} $1 e5 *",
+        StrictPgnParserValidationProblem.MOVETEXT_MOVE_NUMBER_REQUIRED_AFTER_COMMENTARY);
+  }
+
+  @SuppressWarnings("static-method")
+  @Test
+  void semanticRendersOnlyTheFirstOfSeveralAssessmentNagsAsAGlyph() {
+    // The "first assessment NAG as a glyph" rule is per move, not per assessment code: a second assessment code - even
+    // a duplicate - stays as $N, because two glyphs attached to one SAN would fuse ambiguously (?? + ? -> ???).
+    final PgnGame game = lenient("1. e4 $4 $2 e5 $2 $2 *");
+    final String pgn = PgnCreate.toPgnString(game);
+    assertEquals("1. e4?? $2 e5? $2 *", Nulls.substring(pgn, pgn.indexOf("1. ")).trim());
+  }
+
+  @SuppressWarnings("static-method")
+  @Test
+  void archivalManyNagsOnOneMoveWrapWithoutExceedingTheLineLimitAndReparse() {
+    // A move carrying many NAGs expands to a long $N run under archival; the exporter must still wrap at the line limit
+    // and the result must re-parse to the same NAG set.
+    final int[] codes = {1, 2, 3, 4, 5, 6, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23};
+    final StringBuilder movetext = new StringBuilder("1. e4");
+    for (final int code : codes) {
+      movetext.append(" $").append(code);
+    }
+    movetext.append(" e5 *");
+    final String pgn = PgnCreate.toPgnString(lenient(Nulls.toString(movetext)), WriteMode.ARCHIVAL);
+
+    final String[] lines = Nulls.split(pgn, "\n");
+    for (int i = 0; i < lines.length; i++) {
+      final String line = Nulls.get(lines, i);
+      assertTrue(line.length() <= PgnCreate.MAX_LINE_LENGTH, line);
+    }
+    assertEquals(codes.length, Nulls.getFirst(LenientPgnParser.parseText(pgn).moves()).nags().size());
   }
 
   private static PgnGame lenient(String movetext) {
