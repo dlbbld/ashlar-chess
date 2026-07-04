@@ -78,89 +78,131 @@ only when you need context.
 
 ### Release runbook
 
-1. **Clear Eclipse warnings and infos**
-   - Problems view: 0 errors, 0 warnings, 0 infos.
-   - Fix warnings instead of suppressing them.
-   - Add missing `package-info.java` / `@NonNullByDefault` when JDT reports a missing default nullness annotation.
+**1. Clear Eclipse warnings and infos**
 
-2. **Format, clean up, and regenerate generated docs**
-   - Eclipse: select `src/main/java` and `src/test/java`.
-   - Run Source -> Format.
-   - Run Source -> Clean Up.
-   - Regenerate README/manual examples: `mvn -o -q test-compile exec:java -Dexec.mainClass=io.github.dlbbld.ashlarchess.test.readme.GenerateReadme -Dexec.classpathScope=test`.
+**1.1** Problems view: 0 errors, 0 warnings, 0 infos.
 
-   - Review the diff as mechanical only.
-   - Commit this cleanup separately before the version bump.
+**1.2** Fix warnings instead of suppressing them.
 
-3. **Choose the release title**
-   - Pick one short title, for example `Endgame theorem and unwinnability API`.
-   - Reuse it verbatim in the changelog header, PR title/body, annotated tag message, and GitHub Release notes body.
+**1.3** Add missing `package-info.java` / `@NonNullByDefault` when JDT reports a missing default nullness annotation.
 
-4. **Update release artifacts on a release branch**
-   - Update [`pom.xml`](pom.xml): `<version>X.Y.Z</version>`.
-   - Update Maven version snippets in [`README.md`](README.md) and [`manual.md`](manual.md).
-   - Add the `CHANGELOG.md` entry above `[Unreleased]`.
-   - Changelog header: `## [X.Y.Z] - Release Title - YYYY-MM-DD`.
-   - Include a one-paragraph release summary.
-   - Add `### Notable`, `### Behavioral`, and `### Breaking` sections as needed.
+**2. Format, clean up, and regenerate generated docs**
 
-   - Move the relevant `tasks.md` section to **Done**.
-   - Commit and push the release branch.
-   - Do **not** tag yet.
+**2.1** Eclipse: select `src/main/java` and `src/test/java`.
 
-5. **Run pre-flight on the release branch**
-   - Confirm the worktree is clean.
-   - Check Java license headers: `.\tools\java-license-headers.ps1 -Check`.
-   - If needed, fix and commit header drift: `.\tools\java-license-headers.ps1 -Fix`.
-   - Run full tests: `mvn test -Pfull`.
-   - Also exercise the normally excluded unwinnability package for a release: `mvn test -Pfull -Dtest.excludes=`.
-   - Run JavaDoc gates from a clean `target/`: `mvn clean javadoc:javadoc javadoc:test-javadoc -Dshow=private`.
+**2.2** Run Source -> Format.
 
-   - Confirm all release tasks are done in `tasks.md`.
-   - If board logic changed materially, run the board burn-in and update the baseline: `mvn -o -q exec:java -Dexec.classpathScope=test -Dexec.mainClass=io.github.dlbbld.ashlarchess.test.performance.BoardApiBurnInSurvey`.
+**2.3** Run Source -> Clean Up.
 
-6. **Run the release build dry-run on the branch**
+**2.4** Regenerate README/manual examples: `mvn -o -q test-compile exec:java -Dexec.mainClass=io.github.dlbbld.ashlarchess.test.readme.GenerateReadme -Dexec.classpathScope=test`.
 
-   - Confirm the release profile: `mvn -Prelease help:active-profiles`.
-   - Verify the release build: `mvn -Prelease verify`.
+**2.5** Review the diff as mechanical only.
 
-   - If this fails, fix it on the branch, commit, then re-run pre-flight and the dry-run.
-   - Open the PR only after this is green.
+**2.6** Commit this cleanup separately before the version bump.
 
-7. **Open the PR and merge to main**
-   - PR target: `main`.
-   - PR title field: release title only, no version.
-   - PR body starts with `## <release title>`.
-   - Merge the PR.
-   - Delete the release branch.
+**3. Choose the release title**
 
-8. **Tag the release on main**
-   - Pull `main` locally so it is exactly the merged release commit.
-   - Create an annotated tag `X.Y.Z` on `main` HEAD.
-   - Tag message: release title.
-   - Push the tag.
+**3.1** Pick one short title, for example `Endgame theorem and unwinnability API`.
 
-   Command-line equivalent: `git tag -a X.Y.Z -m "Release Title"`, then `git push origin X.Y.Z`.
+**3.2** Reuse it verbatim in the changelog header, PR title/body, annotated tag message, and GitHub Release notes body.
 
-9. **Publish to Maven Central**
-   - From local `main` at the tagged commit: `mvn -Prelease deploy`.
+**4. Update release artifacts on a release branch**
 
-   - Review the staged deployment at <https://central.sonatype.com/publishing/deployments>.
-   - Publish only after the staged contents look correct.
+**4.1** Update [`pom.xml`](pom.xml): `<version>X.Y.Z</version>`.
 
-10. **Create the GitHub Release**
-    - Choose the existing tag `X.Y.Z`.
-    - Release title field: `X.Y.Z`.
-    - Notes body starts with `# <release title>`.
-    - Paste/adapt the `CHANGELOG.md` `[X.Y.Z]` entry below that H1.
+**4.2** Update Maven version snippets in [`README.md`](README.md) and [`manual.md`](manual.md).
 
-11. **Post-release**
-    - Verify the artifact resolves at <https://central.sonatype.com/artifact/io.github.dlbbld/ashlar-chess>.
-    - Archive the shipped release in `tasks.md`.
+**4.3** Add the `CHANGELOG.md` entry above `[Unreleased]`.
+
+**4.4** Changelog header: `## [X.Y.Z] - Release Title - YYYY-MM-DD`.
+
+**4.5** Include a one-paragraph release summary.
+
+**4.6** Add `### Notable`, `### Behavioral`, and `### Breaking` sections as needed.
+
+**4.7** Move the relevant `tasks.md` section to **Done**.
+
+**4.8** Commit and push the release branch.
+
+**4.9** Do **not** tag yet.
+
+**5. Run pre-flight on the release branch**
+
+**5.1** Confirm the worktree is clean.
+
+**5.2** Check Java license headers: `.\tools\java-license-headers.ps1 -Check`.
+
+**5.3** If needed, fix and commit header drift: `.\tools\java-license-headers.ps1 -Fix`.
+
+**5.4** Run full tests: `mvn test -Pfull`.
+
+**5.5** Also exercise the normally excluded unwinnability package for a release: `mvn test -Pfull -Dtest.excludes=`.
+
+**5.6** Run JavaDoc gates from a clean `target/`: `mvn clean javadoc:javadoc javadoc:test-javadoc -Dshow=private`.
+
+**5.7** Confirm all release tasks are done in `tasks.md`.
+
+**5.8** If board logic changed materially, run the board burn-in and update the baseline: `mvn -o -q exec:java -Dexec.classpathScope=test -Dexec.mainClass=io.github.dlbbld.ashlarchess.test.performance.BoardApiBurnInSurvey`.
+
+**6. Run the release build dry-run on the branch**
+
+**6.1** Confirm the release profile: `mvn -Prelease help:active-profiles`.
+
+**6.2** Verify the release build: `mvn -Prelease verify`.
+
+**6.3** If this fails, fix it on the branch, commit, then re-run pre-flight and the dry-run.
+
+**6.4** Open the PR only after this is green.
+
+**7. Open the PR and merge to main**
+
+**7.1** PR target: `main`.
+
+**7.2** PR title field: release title only, no version.
+
+**7.3** PR body starts with `## <release title>`.
+
+**7.4** Merge the PR.
+
+**7.5** Delete the release branch.
+
+**8. Tag the release on main**
+
+**8.1** Pull `main` locally so it is exactly the merged release commit.
+
+**8.2** Create an annotated tag `X.Y.Z` on `main` HEAD.
+
+**8.3** Tag message: release title.
+
+**8.4** Push the tag.
+
+**8.5** Command-line equivalent: `git tag -a X.Y.Z -m "Release Title"`, then `git push origin X.Y.Z`.
+
+**9. Publish to Maven Central**
+
+**9.1** From local `main` at the tagged commit: `mvn -Prelease deploy`.
+
+**9.2** Review the staged deployment at <https://central.sonatype.com/publishing/deployments>.
+
+**9.3** Publish only after the staged contents look correct.
+
+**10. Create the GitHub Release**
+
+**10.1** Choose the existing tag `X.Y.Z`.
+
+**10.2** Release title field: `X.Y.Z`.
+
+**10.3** Notes body starts with `# <release title>`.
+
+**10.4** Paste/adapt the `CHANGELOG.md` `[X.Y.Z]` entry below that H1.
+
+**11. Post-release**
+
+**11.1** Verify the artifact resolves at <https://central.sonatype.com/artifact/io.github.dlbbld/ashlar-chess>.
+
+**11.2** Archive the shipped release in `tasks.md`.
 
 ### Release explanations
-
-#### Order matters
 
 The release procedure is GitHub-PR-based, and the order is load-bearing: the working tree is cleared of Eclipse warnings
 and brought to a uniform auto-formatted / cleaned-up state; a release title is chosen up front and reused verbatim
@@ -172,7 +214,7 @@ publish is always the very last step.
 Direct pushes to `main` are not allowed, so a packaging/signing failure found after merge forces a brand-new branch and
 PR. That is why the release dry-run happens before the PR.
 
-#### Clean source first
+#### 1. Clear Eclipse warnings and infos
 
 A release ships from a clean compiler state **and** a uniformly formatted source tree. The project should have **zero
 Eclipse / JDT warnings and zero info messages** in the Problems view before the release artifacts are bumped.
@@ -180,6 +222,8 @@ Eclipse / JDT warnings and zero info messages** in the Problems view before the 
 Warnings include unused imports / locals, raw types, missing `@Override`, dead code, narrowing conversions, and similar
 cleanup. Info messages are most often JDT null-analysis notes such as "A default nullness annotation has not been
 specified", raised when a package lacks its `package-info.java` carrying `@NonNullByDefault`.
+
+#### 2. Format, clean up, and regenerate generated docs
 
 Auto-format can reflow the sliced example bodies in
 [`ReadmeExamples.java`](src/test/java/io/github/dlbbld/ashlarchess/test/readme/ReadmeExamples.java). Since `README.md`
@@ -190,7 +234,7 @@ The clean-up commit should be purely mechanical and behavior-preserving. The fir
 introduced may have a larger diff as accumulated drift is normalized; steady-state releases should produce little or
 nothing.
 
-#### Release title
+#### 3. Choose the release title
 
 Keep the version and the release title in **separate slots**. Do not concatenate them as `X.Y.Z Release Title`.
 
@@ -201,12 +245,12 @@ release title as an H1.
 
 The `tasks.md` "current release" heading is often a good source for the release title.
 
-#### Changelog entry
+#### 4. Update release artifacts on a release branch
 
 Browse prior entries in `CHANGELOG.md` for tone and depth. Entries before this convention use the older
 `## [X.Y.Z] - YYYY-MM-DD` header with no title; leave them as shipped.
 
-#### JavaDoc gates
+#### 5. Run pre-flight on the release branch
 
 The pre-flight JavaDoc command must run both main and test docs with `-Dshow=private`: many main classes and all test
 classes are package-private, and at javadoc's default `protected` visibility doclint silently skips them. Running from a
@@ -218,9 +262,7 @@ The pre-flight report goal does **not** prove the shipped javadoc jar builds. It
 step-6 release dry-run catches this. Rule: never leave a `package-info`-only package - a package must either carry types
 or have no `package-info.java` at all.
 
-#### Board burn-in
-
-The board performance regression check is required when board logic changed materially: move / unmove, the
+**Board burn-in.** The board performance regression check is required when board logic changed materially: move / unmove, the
 per-position `BoardState` record, repetition tracking, `hashCode` / `equals`, or legal-move caching.
 
 Compare the per-method `us/ply` and scaling `ratio` against
@@ -232,7 +274,7 @@ worktree (`git worktree add --detach ../ashlar-<prev> <tag>`), port the survey's
 changed, and run both in the **same boot session**. Append the new release's numbers and the comparison verdict to the
 baseline file.
 
-#### Release dry-run and signing
+#### 6. Run the release build dry-run on the branch
 
 `mvn -Prelease verify` builds and GPG-signs the full release bundle locally with **no upload**. This is also the only
 pre-merge gate that builds the shipped `javadoc:jar` at default visibility and the GPG signatures.
@@ -242,7 +284,12 @@ at sign time. The signing key (`6A4D42B96FD6045B`, RSA 4096) must be in the loca
 `keyserver.ubuntu.com`. Portal credentials (user token) live in `~/.m2/settings.xml` under
 `<server><id>central</id>`.
 
-#### PR, tag, and deploy ordering
+#### 7. Open the PR and merge to main
+
+The branch is ready for review only after pre-flight and the release dry-run are green. Merging puts the version bump on
+`main`, which is required before the release can be tagged.
+
+#### 8. Tag the release on main
 
 The version bump must be on `main` before tagging, so the tag and the published artifact reference the exact same
 commit. Do not tag the release branch.
@@ -253,7 +300,7 @@ repo policy. Releases before this convention used unannotated tags; from here on
 Tag **before** Maven deploy: the artifact is built from the tagged commit, so the tag and the published jar are provably
 the same source.
 
-#### Maven Central publishing
+#### 9. Publish to Maven Central
 
 Distribution is the Sonatype Central Portal via `central-publishing-maven-plugin`, wired into the `release` profile
 alongside GPG signing and the sources / javadoc jars. `mvn -Prelease deploy` builds and signs the main / sources /
@@ -263,13 +310,13 @@ javadoc jars and uploads a single staged deployment.
 `.asc` signatures, and the flattened POM before releasing. Releasing is immutable and irreversible: once released, the
 `groupId:artifactId:version` triple is permanent and cannot be changed or unpublished.
 
-#### GitHub Release shape
+#### 10. Create the GitHub Release
 
 The GitHub Release is the public, human-facing copy of the changelog entry. Use the existing tag `X.Y.Z`; do not create
 a new one. Set the Release title field to `X.Y.Z`, and open the notes body with `# <release title>` followed by the
 `CHANGELOG.md` `[X.Y.Z]` notes.
 
-#### Post-release archive
+#### 11. Post-release
 
 Index propagation can take minutes to a couple of hours. Verify the Central artifact before announcing.
 
