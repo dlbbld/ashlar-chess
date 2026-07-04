@@ -22,8 +22,9 @@ import io.github.dlbbld.ashlarchess.pgn.StrictPgnParserValidationProblem;
 import io.github.dlbbld.ashlarchess.test.PgnTestHelper;
 
 /**
- * The unified NAG model: annotations are {@link Nag}s in both parsers, a suffix glyph is the same thing as its NAG, and
- * canonical export round-trips them (glyph form for the assessment codes, {@code $N} for the rest).
+ * The unified NAG model: annotations are {@link Nag}s in both parsers, a suffix glyph is the same thing as its NAG,
+ * semantic export writes the first assessment as a glyph and the rest as {@code $N}, and archival export writes
+ * canonical {@code $N} tokens.
  */
 class TestPgnNagUnifiedModel {
 

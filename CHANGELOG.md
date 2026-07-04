@@ -13,6 +13,10 @@ ground-truth corpus, against the previous cha-port analyzer, and against Ambrona
 
 ### Breaking
 
+- **PGN move annotations are now a unified NAG model.** `PgnMove` stores `List<Nag>` instead of a stored
+  `MoveSuffixAnnotation`; the six suffix glyphs (`!`, `?`, `!!`, `??`, `!?`, `?!`) are parsed as NAG codes `1`-`6`.
+  `PgnMove.moveSuffixAnnotation()` remains as a derived read convenience for the first assessment NAG, but code that
+  constructs or inspects moves should use `nags()`.
 - **`UnwinnabilityQuickVerdict` gains `WINNABLE`** (paper Figure 10 is three-valued): the quick analysis now proves
   winnability on quickly matable positions instead of answering `POSSIBLY_WINNABLE`. Exhaustive switches over the
   enum need a new case; comparisons against `UNWINNABLE` (the adjudication use) are unaffected.
@@ -24,6 +28,11 @@ ground-truth corpus, against the previous cha-port analyzer, and against Ambrona
 
 ### Behavioral
 
+- **PGN import/export now handles real-world move annotations.** Strict PGN accepts numeric annotation glyphs
+  (`$0`-`$255`) after moves; both parsers fold suffix glyphs and `$N` tokens into the same move NAG list. Semantic
+  export writes the first assessment NAG as a glyph and every other NAG as `$N`; archival export writes a deduplicated,
+  sorted `$N` sequence, including assessment codes. The lenient parser also skips recursive annotation variations
+  `(...)` to keep the mainline; strict parsing still rejects RAV.
 - **Quick analysis follows the paper's Figure 10** (bounded DFS with a global depth-9 interrupt, then the
   semi-static check gated to pawn/bishop/king material without semi-open files) instead of CHA's deployed
   `quick_analysis` heuristics. Some verdicts move between `UNWINNABLE` and `POSSIBLY_WINNABLE` in both directions;
