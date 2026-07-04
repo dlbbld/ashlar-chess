@@ -5,9 +5,9 @@ package io.github.dlbbld.ashlarchess.unwinnability;
 
 /**
  * Public verdict of the quick unwinnability analysis (the paper's {@code Unwinnable_quick}, Figure 10). The quick
- * analysis is sound and deliberately incomplete: a definite verdict ({@code UNWINNABLE} or {@code WINNABLE}) is
- * always correct, and {@code POSSIBLY_WINNABLE} asserts nothing - establishing a concrete win in general is the
- * complete (full) analysis's job.
+ * analysis is sound and deliberately incomplete: a definite verdict ({@code UNWINNABLE} or {@code WINNABLE}) is always
+ * correct, and {@code POSSIBLY_WINNABLE} asserts nothing - establishing a concrete win in general is the complete
+ * (full) analysis's job.
  */
 public enum UnwinnabilityQuickVerdict {
 
@@ -15,9 +15,9 @@ public enum UnwinnabilityQuickVerdict {
   UNWINNABLE,
 
   /**
-   * Proven winnable for the intended winner: the bounded search met a checkmate by the intended winner before its
-   * first depth interrupt. The quick analysis proves winnability only on such quickly matable positions; it carries
-   * no mate line.
+   * Proven winnable for the intended winner: the bounded search met a checkmate by the intended winner before its first
+   * depth interrupt. The quick analysis proves winnability only on such quickly matable positions; it carries no mate
+   * line.
    */
   WINNABLE,
 

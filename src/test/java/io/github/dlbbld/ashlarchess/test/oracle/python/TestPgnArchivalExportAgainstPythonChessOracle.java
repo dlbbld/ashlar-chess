@@ -34,11 +34,12 @@ import io.github.dlbbld.ashlarchess.test.ConfigurationTestConstants;
  * python-chess's set.
  *
  * <p>
- * Both libraries treat the six suffix glyphs as import shorthand for NAG codes 1..6 and write every NAG as {@code $N} in
- * export/archival form. Archival export is also <em>canonical</em>: ashlar-chess deduplicates and sorts a move's NAGs
- * ascending, matching how python-chess holds them in a set - so the two serialisations coincide byte-for-byte even when
- * the source order is scrambled or carries duplicates (fixtures 06/07). The fixtures carry no variations (ashlar skips
- * those; python-chess models them). The per-move code comparison also deduplicates and sorts ashlar's parsed list.
+ * Both libraries treat the six suffix glyphs as import shorthand for NAG codes 1..6 and write every NAG as {@code $N}
+ * in export/archival form. Archival export is also <em>canonical</em>: ashlar-chess deduplicates and sorts a move's
+ * NAGs ascending, matching how python-chess holds them in a set - so the two serialisations coincide byte-for-byte even
+ * when the source order is scrambled or carries duplicates (fixtures 06/07). The fixtures carry no variations (ashlar
+ * skips those; python-chess models them). The per-move code comparison also deduplicates and sorts ashlar's parsed
+ * list.
  */
 class TestPgnArchivalExportAgainstPythonChessOracle {
 
@@ -50,8 +51,8 @@ class TestPgnArchivalExportAgainstPythonChessOracle {
   @SuppressWarnings({ "static-method", "unchecked" })
   @Test
   void archivalNagExportMatchesPythonChess() throws IOException {
-    @SuppressWarnings("null") final List<String> lines = Nulls.copyOfList(
-        Files.readAllLines(ORACLE_PATH, StandardCharsets.UTF_8));
+    @SuppressWarnings("null") final List<String> lines = Nulls
+        .copyOfList(Files.readAllLines(ORACLE_PATH, StandardCharsets.UTF_8));
     int fixtures = 0;
     for (int li = 0; li < lines.size(); li++) {
       final String line = Nulls.get(lines, li);
@@ -68,7 +69,8 @@ class TestPgnArchivalExportAgainstPythonChessOracle {
 
       // (1) direct export comparison: ashlar archival movetext == python-chess export movetext.
       final String archival = PgnCreate.toPgnString(game, WriteMode.ARCHIVAL);
-      assertEquals(expectedMovetext, movetextOf(archival), () -> pgn + " - archival movetext disagrees with python-chess");
+      assertEquals(expectedMovetext, movetextOf(archival),
+          () -> pgn + " - archival movetext disagrees with python-chess");
 
       // (2) semantic agreement: the same NAG codes per move (dedup + sorted, so the list-vs-set difference is neutral).
       assertEquals(expectedNags.size(), game.moves().size(), () -> pgn + " - move count");

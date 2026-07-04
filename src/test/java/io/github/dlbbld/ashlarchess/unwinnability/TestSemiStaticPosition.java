@@ -42,16 +42,17 @@ class TestSemiStaticPosition {
   @SuppressWarnings("static-method")
   @Test
   void rejectsDuplicateKing() {
-    assertThrows(ProgrammingMistakeException.class, () -> new SemiStaticPosition(
-        Nulls.listOf(king(Side.WHITE, 0), king(Side.WHITE, 1), king(Side.BLACK, 63)), false, false));
+    assertThrows(ProgrammingMistakeException.class,
+        () -> new SemiStaticPosition(Nulls.listOf(king(Side.WHITE, 0), king(Side.WHITE, 1), king(Side.BLACK, 63)),
+            false, false));
   }
 
   @SuppressWarnings("static-method")
   @Test
   void rejectsTwoPiecesOnOneSquare() {
-    assertThrows(ProgrammingMistakeException.class,
-        () -> new SemiStaticPosition(Nulls.listOf(king(Side.WHITE, 0), king(Side.BLACK, 63),
-            new SemiStaticPiece(PieceType.ROOK, Side.WHITE, 63)), false, false));
+    assertThrows(ProgrammingMistakeException.class, () -> new SemiStaticPosition(
+        Nulls.listOf(king(Side.WHITE, 0), king(Side.BLACK, 63), new SemiStaticPiece(PieceType.ROOK, Side.WHITE, 63)),
+        false, false));
   }
 
   @SuppressWarnings("static-method")

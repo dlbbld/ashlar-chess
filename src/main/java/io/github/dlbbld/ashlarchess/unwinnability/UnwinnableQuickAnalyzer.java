@@ -18,13 +18,13 @@ import io.github.dlbbld.ashlarchess.internal.Nulls;
 // sequences exist; capping is verdict-preserving since a forced prefix is equivalence-
 // preserving). Footnote b: the Lemma 5/6 material positions are DFS leaves.
 /**
- * The quick unwinnability analysis - the paper's {@code Unwinnable_quick} (Figure 10). Steps: (1) advance the
- * position while there is only one legal move; (2) a plain DFS that is interrupted as soon as any variation reaches
- * the depth bound, with checkmate/stalemate and the insufficient-winning-material positions of Lemmas 5/6 (and the
- * bare winner king) as tree leaves; (3) {@code WINNABLE} if a mate by the intended winner was met,
- * {@code UNWINNABLE} if the whole tree was exhausted without interruption; else (4) the semi-static check, gated to
- * positions with only pawn/bishop/king material and no <em>semi-open files</em> (files with pawns of one colour
- * only); else (5) {@code POSSIBLY_WINNABLE}.
+ * The quick unwinnability analysis - the paper's {@code Unwinnable_quick} (Figure 10). Steps: (1) advance the position
+ * while there is only one legal move; (2) a plain DFS that is interrupted as soon as any variation reaches the depth
+ * bound, with checkmate/stalemate and the insufficient-winning-material positions of Lemmas 5/6 (and the bare winner
+ * king) as tree leaves; (3) {@code WINNABLE} if a mate by the intended winner was met, {@code UNWINNABLE} if the whole
+ * tree was exhausted without interruption; else (4) the semi-static check, gated to positions with only
+ * pawn/bishop/king material and no <em>semi-open files</em> (files with pawns of one colour only); else (5)
+ * {@code POSSIBLY_WINNABLE}.
  *
  * <p>
  * The depth interrupt is <em>global</em>: the first line that reaches the depth bound stops the whole search (this
@@ -118,8 +118,8 @@ public final class UnwinnableQuickAnalyzer {
   }
 
   /**
-   * The Figure 10 step-2 DFS. Leaves (footnote b): checkmate, stalemate, and insufficient winning material (bare
-   * king, Lemma 5, Lemma 6). A non-leaf node at the depth bound interrupts the whole search.
+   * The Figure 10 step-2 DFS. Leaves (footnote b): checkmate, stalemate, and insufficient winning material (bare king,
+   * Lemma 5, Lemma 6). A non-leaf node at the depth bound interrupts the whole search.
    */
   private static final class QuickSearch {
 

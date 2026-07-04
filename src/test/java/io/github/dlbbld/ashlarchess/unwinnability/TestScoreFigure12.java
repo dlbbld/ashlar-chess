@@ -44,15 +44,18 @@ class TestScoreFigure12 {
   @Test
   void winnerCaptureIsReward() {
     final Board board = Board.fromFenStrict("4k3/8/8/4p3/4R3/8/8/4K3 w - - 0 1");
-    assertEquals(1, Score.increment(board.getBitboardPosition(), board.getSideToMove(), move(board, "e4", "e5"), Side.WHITE));
+    assertEquals(1,
+        Score.increment(board.getBitboardPosition(), board.getSideToMove(), move(board, "e4", "e5"), Side.WHITE));
   }
 
   @SuppressWarnings("static-method")
   @Test
   void winnerPawnPushIsReward() {
     final Board board = Board.fromFenStrict("4k3/8/8/8/8/8/4P3/4K3 w - - 0 1");
-    assertEquals(1, Score.increment(board.getBitboardPosition(), board.getSideToMove(), move(board, "e2", "e3"), Side.WHITE));
-    assertEquals(1, Score.increment(board.getBitboardPosition(), board.getSideToMove(), move(board, "e2", "e4"), Side.WHITE));
+    assertEquals(1,
+        Score.increment(board.getBitboardPosition(), board.getSideToMove(), move(board, "e2", "e3"), Side.WHITE));
+    assertEquals(1,
+        Score.increment(board.getBitboardPosition(), board.getSideToMove(), move(board, "e2", "e4"), Side.WHITE));
   }
 
   @SuppressWarnings("static-method")
@@ -60,15 +63,18 @@ class TestScoreFigure12 {
   void winnerKingTowardCornerIsReward() {
     // No bishops on the board -> the a8 corner branch; the winner-king target is a6. d4-c5 approaches, d4-e3 leaves.
     final Board board = Board.fromFenStrict("4k3/8/8/8/3K4/8/8/8 w - - 0 1");
-    assertEquals(1, Score.increment(board.getBitboardPosition(), board.getSideToMove(), move(board, "d4", "c5"), Side.WHITE));
-    assertEquals(0, Score.increment(board.getBitboardPosition(), board.getSideToMove(), move(board, "d4", "e3"), Side.WHITE));
+    assertEquals(1,
+        Score.increment(board.getBitboardPosition(), board.getSideToMove(), move(board, "d4", "c5"), Side.WHITE));
+    assertEquals(0,
+        Score.increment(board.getBitboardPosition(), board.getSideToMove(), move(board, "d4", "e3"), Side.WHITE));
   }
 
   @SuppressWarnings("static-method")
   @Test
   void winnerPlainPieceMoveIsNormal() {
     final Board board = Board.fromFenStrict("4k3/8/8/8/3R4/8/8/4K3 w - - 0 1");
-    assertEquals(0, Score.increment(board.getBitboardPosition(), board.getSideToMove(), move(board, "d4", "a4"), Side.WHITE));
+    assertEquals(0,
+        Score.increment(board.getBitboardPosition(), board.getSideToMove(), move(board, "d4", "a4"), Side.WHITE));
   }
 
   // ----- Intended loser's turn (Figure 12 lines 5-10). -----
@@ -79,18 +85,23 @@ class TestScoreFigure12 {
     // Winner (White) has just a knight; the loser has no knight/bishop/rook -> the material condition holds even
     // though the loser still has a pawn (Figure 12 ignores the Lemma 5/6 pawn-freeness requirement).
     final Board board = Board.fromFenStrict("4k3/8/8/8/8/8/2N1K1p1/8 b - - 0 1");
-    assertEquals(-2, Score.increment(board.getBitboardPosition(), board.getSideToMove(), promotion(board, "g2", "g1", PromotionPieceType.QUEEN), Side.WHITE));
-    assertEquals(-2, Score.increment(board.getBitboardPosition(), board.getSideToMove(), promotion(board, "g2", "g1", PromotionPieceType.ROOK), Side.WHITE));
+    assertEquals(-2, Score.increment(board.getBitboardPosition(), board.getSideToMove(),
+        promotion(board, "g2", "g1", PromotionPieceType.QUEEN), Side.WHITE));
+    assertEquals(-2, Score.increment(board.getBitboardPosition(), board.getSideToMove(),
+        promotion(board, "g2", "g1", PromotionPieceType.ROOK), Side.WHITE));
     // Line 7: any other pawn move - including an underpromotion - is a Reward.
-    assertEquals(1, Score.increment(board.getBitboardPosition(), board.getSideToMove(), promotion(board, "g2", "g1", PromotionPieceType.KNIGHT), Side.WHITE));
-    assertEquals(1, Score.increment(board.getBitboardPosition(), board.getSideToMove(), promotion(board, "g2", "g1", PromotionPieceType.BISHOP), Side.WHITE));
+    assertEquals(1, Score.increment(board.getBitboardPosition(), board.getSideToMove(),
+        promotion(board, "g2", "g1", PromotionPieceType.KNIGHT), Side.WHITE));
+    assertEquals(1, Score.increment(board.getBitboardPosition(), board.getSideToMove(),
+        promotion(board, "g2", "g1", PromotionPieceType.BISHOP), Side.WHITE));
   }
 
   @SuppressWarnings("static-method")
   @Test
   void loserPawnMoveIsRewardUnderTheMaterialCondition() {
     final Board board = Board.fromFenStrict("4k3/8/8/8/6p1/8/2N1K3/8 b - - 0 1");
-    assertEquals(1, Score.increment(board.getBitboardPosition(), board.getSideToMove(), move(board, "g4", "g3"), Side.WHITE));
+    assertEquals(1,
+        Score.increment(board.getBitboardPosition(), board.getSideToMove(), move(board, "g4", "g3"), Side.WHITE));
   }
 
   @SuppressWarnings("static-method")
@@ -98,7 +109,8 @@ class TestScoreFigure12 {
   void loserCaptureIsPunish() {
     // No material condition (winner has a rook); the loser's capture destroys mating material.
     final Board board = Board.fromFenStrict("4k3/8/8/3p4/4R3/8/8/K7 b - - 0 1");
-    assertEquals(-2, Score.increment(board.getBitboardPosition(), board.getSideToMove(), move(board, "d5", "e4"), Side.WHITE));
+    assertEquals(-2,
+        Score.increment(board.getBitboardPosition(), board.getSideToMove(), move(board, "d5", "e4"), Side.WHITE));
   }
 
   @SuppressWarnings("static-method")
@@ -106,8 +118,10 @@ class TestScoreFigure12 {
   void loserKingTowardCornerIsReward() {
     // No bishops -> a8 corner branch; the loser-king target is a8 itself. d7-c8 approaches, d7-e6 leaves.
     final Board board = Board.fromFenStrict("8/3k4/8/8/8/8/8/K5R1 b - - 0 1");
-    assertEquals(1, Score.increment(board.getBitboardPosition(), board.getSideToMove(), move(board, "d7", "c8"), Side.WHITE));
-    assertEquals(0, Score.increment(board.getBitboardPosition(), board.getSideToMove(), move(board, "d7", "e6"), Side.WHITE));
+    assertEquals(1,
+        Score.increment(board.getBitboardPosition(), board.getSideToMove(), move(board, "d7", "c8"), Side.WHITE));
+    assertEquals(0,
+        Score.increment(board.getBitboardPosition(), board.getSideToMove(), move(board, "d7", "e6"), Side.WHITE));
   }
 
   @SuppressWarnings("static-method")

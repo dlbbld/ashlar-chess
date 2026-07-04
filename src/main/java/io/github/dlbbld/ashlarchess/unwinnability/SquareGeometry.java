@@ -8,9 +8,9 @@ import java.util.Arrays;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
 
 /**
- * Fixed square geometry in the FUN 2022 paper's notation (see {@code fun22-spec.pdf} section 1). Every set is
- * "over an empty board" and is expressed as a 64-bit bitboard mask with {@code a1 = bit 0, ..., h8 = bit 63}
- * (little-endian rank-file, so square indices coincide with {@code Square.ordinal()}).
+ * Fixed square geometry in the FUN 2022 paper's notation (see {@code fun22-spec.pdf} section 1). Every set is "over an
+ * empty board" and is expressed as a 64-bit bitboard mask with {@code a1 = bit 0, ..., h8 = bit 63} (little-endian
+ * rank-file, so square indices coincide with {@code Square.ordinal()}).
  *
  * <p>
  * Naming follows the paper: {@code alpha} = &alpha; (orthogonal neighbours), {@code beta} = &beta; (diagonal

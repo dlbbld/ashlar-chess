@@ -230,8 +230,8 @@ public final class LenientPgnParser {
   }
 
   /**
-   * Returns true if line {@code lineNumber} (1-based) contains a {@code [} or {@code ]} outside any {@code {...}}
-   * brace comment or {@code ;} rest-of-line comment.
+   * Returns true if line {@code lineNumber} (1-based) contains a {@code [} or {@code ]} outside any {@code {...}} brace
+   * comment or {@code ;} rest-of-line comment.
    */
   private boolean lineHasTopLevelTagBracket(int lineNumber) {
     int index = 0;
@@ -582,8 +582,8 @@ public final class LenientPgnParser {
         final PgnCommentary commentary = consumeCommentaryOrThrow();
         final int last = moves.size() - 1;
         final PgnMove previous = Nulls.get(moves, last);
-        moves.set(last, new PgnMove(previous.san(), previous.nags(),
-            mergeCommentary(previous.commentary(), commentary)));
+        moves.set(last,
+            new PgnMove(previous.san(), previous.nags(), mergeCommentary(previous.commentary(), commentary)));
       } else if (ahead.type() == PgnTokenType.NAG) {
         tokenizer.next();
         appendNagToLastMove(moves, parseNagLenient(ahead));
@@ -621,7 +621,9 @@ public final class LenientPgnParser {
     moves.set(last, new PgnMove(previous.san(), nags, previous.commentary()));
   }
 
-  /** The NAG a suffix glyph is shorthand for ({@code !}=1 ... {@code ?!}=6), or {@code null} for an unknown glyph run. */
+  /**
+   * The NAG a suffix glyph is shorthand for ({@code !}=1 ... {@code ?!}=6), or {@code null} for an unknown glyph run.
+   */
   private static @Nullable Nag glyphToNag(String glyphText) {
     if (!MoveSuffixAnnotation.exists(glyphText)) {
       return null;

@@ -23,10 +23,10 @@ import io.github.dlbbld.ashlarchess.internal.Nulls;
 // rewarded plans across both players).
 /**
  * The Find-Helpmate search (paper Figure 5): a depth- and node-bounded DFS that succeeds iff it exhibits a checkmate
- * <em>by the intended winner</em> (a helpmate), with a depth-aware transposition table and the Figure 12
- * {@link Score} depth heuristic. It runs over the mutable {@link HelpmateSearchBoard} hot path (make/unmake,
- * per-depth legal-move buffers, cached terminal flags). As an ashlar extension the exhibited mate line is recorded on
- * the unwind - pure bookkeeping, no influence on the search.
+ * <em>by the intended winner</em> (a helpmate), with a depth-aware transposition table and the Figure 12 {@link Score}
+ * depth heuristic. It runs over the mutable {@link HelpmateSearchBoard} hot path (make/unmake, per-depth legal-move
+ * buffers, cached terminal flags). As an ashlar extension the exhibited mate line is recorded on the unwind - pure
+ * bookkeeping, no influence on the search.
  *
  * <p>
  * One instance = one bounded search (one iterative-deepening iteration of Figure 9), exactly the paper's Figure 5
@@ -35,8 +35,8 @@ import io.github.dlbbld.ashlarchess.internal.Nulls;
  * monotone over every visit the table's entries summarize. Within one iteration that holds - an entry written by a
  * depth-cut visit coexists with the raised flag, so that iteration can no longer claim {@code UNWINNABLE}. A stale
  * entry from an earlier, depth-cut iteration would prune a later iteration's node WITHOUT re-raising its interrupt
- * flag, letting the later iteration believe it exhausted the tree while cut lines hide behind the prune - a
- * potential false {@code UNWINNABLE}.
+ * flag, letting the later iteration believe it exhausted the tree while cut lines hide behind the prune - a potential
+ * false {@code UNWINNABLE}.
  */
 final class FindHelpmate {
 
@@ -57,8 +57,7 @@ final class FindHelpmate {
   /** Base call: one bounded search from the search board's current position (Figure 9 step 3). */
   HelpmateSearchResult search(HelpmateSearchBoard board, int maxDepth) {
     final boolean helpmateFound = search(board, 0, maxDepth, false);
-    return new HelpmateSearchResult(helpmateFound, interrupted, nodesUsed,
-        Nulls.copyOfList(new ArrayList<>(mateLine)));
+    return new HelpmateSearchResult(helpmateFound, interrupted, nodesUsed, Nulls.copyOfList(new ArrayList<>(mateLine)));
   }
 
   private boolean search(HelpmateSearchBoard board, int depth, int maxDepth, boolean previousWasReward) {

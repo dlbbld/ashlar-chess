@@ -44,8 +44,7 @@ public final class UnwinnableFullAnalyzer {
 
     // 1: if UnwinnableSS(pos, c, Mobility(pos)) then return Unwinnable
     final SemiStaticPosition semiStaticPosition = SemiStaticPosition.fromBoard(board);
-    if (UnwinnableSemiStatic.unwinnableSemiStatic(semiStaticPosition, winner,
-        Mobility.mobility(semiStaticPosition))) {
+    if (UnwinnableSemiStatic.unwinnableSemiStatic(semiStaticPosition, winner, Mobility.mobility(semiStaticPosition))) {
       return new UnwinnabilityFullAnalysis(UnwinnabilityFullVerdict.UNWINNABLE, Nulls.listOf());
     }
 

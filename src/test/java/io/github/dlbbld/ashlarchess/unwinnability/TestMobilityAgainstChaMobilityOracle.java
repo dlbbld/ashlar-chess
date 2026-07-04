@@ -41,8 +41,9 @@ class TestMobilityAgainstChaMobilityOracle {
     SemiStaticPosition position = null;
     MobilitySolution mobilitySolution = null;
 
-    try (InputStream in = TestMobilityAgainstChaMobilityOracle.class
-        .getResourceAsStream("/oracle/cha/ashlar-pgn/mobility.tsv");
+    try (
+        InputStream in = TestMobilityAgainstChaMobilityOracle.class
+            .getResourceAsStream("/oracle/cha/ashlar-pgn/mobility.tsv");
         BufferedReader reader = new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_8))) {
       String line = reader.readLine(); // header
       while ((line = reader.readLine()) != null) {

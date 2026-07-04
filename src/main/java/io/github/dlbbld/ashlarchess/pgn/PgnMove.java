@@ -26,9 +26,10 @@ public record PgnMove(@NonNull String san, @NonNull List<@NonNull Nag> nags, @No
   }
 
   /**
-   * The first move-assessment NAG ({@code 1..6}) on this move, as its symbolic glyph, or {@link MoveSuffixAnnotation#NONE}
-   * if the move carries no assessment glyph. A convenience over {@link #nags()} for the common "was this a blunder?"
-   * question; positional and other non-glyph NAGs are visible only through {@link #nags()}.
+   * The first move-assessment NAG ({@code 1..6}) on this move, as its symbolic glyph, or
+   * {@link MoveSuffixAnnotation#NONE} if the move carries no assessment glyph. A convenience over {@link #nags()} for
+   * the common "was this a blunder?" question; positional and other non-glyph NAGs are visible only through
+   * {@link #nags()}.
    */
   public MoveSuffixAnnotation moveSuffixAnnotation() {
     for (final Nag nag : nags) {

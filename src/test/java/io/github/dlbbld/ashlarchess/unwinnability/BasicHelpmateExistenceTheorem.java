@@ -146,11 +146,10 @@ public final class BasicHelpmateExistenceTheorem {
   }
 
   private static boolean isKingAndOppositeBishopsOnly(Side side, BitboardPosition position) {
-    return count(bishops(side, position)) == 2
-        && (bishops(side, position) & SquareGeometry.LIGHT_SQUARES) != 0L
-        && (bishops(side, position) & SquareGeometry.DARK_SQUARES) != 0L
-        && count(rooks(side, position)) == 0 && count(queens(side, position)) == 0
-        && count(knights(side, position)) == 0 && count(pawns(side, position)) == 0;
+    return count(bishops(side, position)) == 2 && (bishops(side, position) & SquareGeometry.LIGHT_SQUARES) != 0L
+        && (bishops(side, position) & SquareGeometry.DARK_SQUARES) != 0L && count(rooks(side, position)) == 0
+        && count(queens(side, position)) == 0 && count(knights(side, position)) == 0
+        && count(pawns(side, position)) == 0;
   }
 
   private static boolean isKingBishopKnightOnly(Side side, BitboardPosition position) {

@@ -344,7 +344,7 @@ class TestPgnAnnotationEdgeCases {
   void archivalManyNagsOnOneMoveWrapWithoutExceedingTheLineLimitAndReparse() {
     // A move carrying many NAGs expands to a long $N run under archival; the exporter must still wrap at the line limit
     // and the result must re-parse to the same NAG set.
-    final int[] codes = {1, 2, 3, 4, 5, 6, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23};
+    final int[] codes = { 1, 2, 3, 4, 5, 6, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23 };
     final StringBuilder movetext = new StringBuilder("1. e4");
     for (final int code : codes) {
       movetext.append(" $").append(code);

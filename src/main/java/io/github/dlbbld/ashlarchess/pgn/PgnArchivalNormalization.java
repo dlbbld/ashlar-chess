@@ -17,8 +17,8 @@ import io.github.dlbbld.ashlarchess.pgn.internal.TagUtility;
 
 /**
  * Prepares a {@link PgnGame} for PGN spec section 8.1.1 archival-storage output. This covers the in-memory
- * tag/model-level requirements; line-level differences such as canonical NAG emission are handled by
- * {@link PgnCreate} when {@link WriteMode#ARCHIVAL} is selected. Five transformations:
+ * tag/model-level requirements; line-level differences such as canonical NAG emission are handled by {@link PgnCreate}
+ * when {@link WriteMode#ARCHIVAL} is selected. Five transformations:
  *
  * <ol>
  * <li><b>FEN / SetUp pair follows {@code startFen}.</b> If {@code startFen} is the initial position, any FEN/SetUp tag

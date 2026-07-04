@@ -14,9 +14,8 @@ import io.github.dlbbld.ashlarchess.internal.Nulls;
  *
  * <p>
  * A {@code WINNABLE} verdict is always established by the Figure 5 search exhibiting a concrete helpmate;
- * {@link #mateLine()} carries the witnessing UCI line. The line is empty exactly in the zero-move case - the
- * submitted position is already a checkmate delivered by the intended winner. A non-winnable verdict never carries a
- * line.
+ * {@link #mateLine()} carries the witnessing UCI line. The line is empty exactly in the zero-move case - the submitted
+ * position is already a checkmate delivered by the intended winner. A non-winnable verdict never carries a line.
  */
 public record UnwinnabilityFullAnalysis(UnwinnabilityFullVerdict verdict, List<UciMove> mateLine) {
 

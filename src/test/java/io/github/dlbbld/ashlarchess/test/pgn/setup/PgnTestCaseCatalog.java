@@ -2631,8 +2631,7 @@ public class PgnTestCaseCatalog {
     final List<PgnFen> list = new ArrayList<>();
 
     list.add(new PgnFen("01_four_bishops_each.pgn", "1Bb5/8/2b1b1k1/1pBpBb2/pP1PpBp1/4P1P1/P4K2/8 w - - 9 56"));
-    list.add(
-        new PgnFen("02_four_bishops_each_king_h1.pgn", "1Bb5/8/2b1b1k1/1pBpBb2/pP1PpBp1/4P1P1/P7/7K w - - 13 58"));
+    list.add(new PgnFen("02_four_bishops_each_king_h1.pgn", "1Bb5/8/2b1b1k1/1pBpBb2/pP1PpBp1/4P1P1/P7/7K w - - 13 58"));
 
     return new PgnTestCaseList(PgnTest.CHA_CHASOLVER_CHALLENGES_SUCCESS, list);
   }

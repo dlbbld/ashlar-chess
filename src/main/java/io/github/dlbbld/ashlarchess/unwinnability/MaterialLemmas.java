@@ -7,8 +7,8 @@ import io.github.dlbbld.ashlarchess.bitboard.BitboardPosition;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
 
 /**
- * Material predicates used by the Find-Helpmate search and the quick analysis: the paper's Lemmas 5/6 and the Figure
- * 12 Score material condition. Pure counting over the per-piece bitboards, derived from the paper
+ * Material predicates used by the Find-Helpmate search and the quick analysis: the paper's Lemmas 5/6 and the Figure 12
+ * Score material condition. Pure counting over the per-piece bitboards, derived from the paper
  * ({@code fun22-spec.pdf}); the same proven lemmas the retired cha-port material predicate encoded.
  *
  * <ul>
@@ -65,8 +65,8 @@ final class MaterialLemmas {
   }
 
   /**
-   * The Figure 12 Score material condition: the Lemma 5/6 shapes ignoring the pawn-freeness requirement (the loser
-   * may have pawns).
+   * The Figure 12 Score material condition: the Lemma 5/6 shapes ignoring the pawn-freeness requirement (the loser may
+   * have pawns).
    */
   static boolean scoreMaterialCondition(BitboardPosition position, Side winner) {
     final SideMaterial winnerMaterial = materialOf(position, winner);

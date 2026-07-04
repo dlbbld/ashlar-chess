@@ -21,8 +21,8 @@ import io.github.dlbbld.ashlarchess.test.PgnTestHelper;
  * Real-world annotated-PGN tolerance for {@link LenientPgnParser}: the three constructs a lichess computer-analysis
  * export (and analysis-board exports in general) carry that the strict import format does not - {@code [%eval]} /
  * {@code [%clk]} command comments, consecutive comments on one move, and recursive annotation variations (RAV). The
- * lenient parser tolerates all three and recovers the mainline; ashlar does not model variations (a rules library
- * reads the game that was played, not the engine's side-lines), so RAV groups are skipped, not parsed into a tree.
+ * lenient parser tolerates all three and recovers the mainline; ashlar does not model variations (a rules library reads
+ * the game that was played, not the engine's side-lines), so RAV groups are skipped, not parsed into a tree.
  */
 class TestLenientPgnParserRealWorldAnnotations {
 
@@ -85,13 +85,13 @@ class TestLenientPgnParserRealWorldAnnotations {
   void moveAssessmentNagsArePreservedAndReadBackAsTheirGlyph() {
     // The six move-assessment NAGs ($1..$6) are shorthand for ashlar's symbolic glyphs; chess.com's review export
     // emits the numbers. Each is preserved as a Nag, and moveSuffixAnnotation() reads it back as the matching glyph.
-    final PgnGame game = LenientPgnParser.parseText(PgnTestHelper.header("*")
-        + "1. e4 $1 e5 $2 2. Nf3 $3 Nc6 $4 3. Bb5 $5 a6 $6 *\n\n");
+    final PgnGame game = LenientPgnParser
+        .parseText(PgnTestHelper.header("*") + "1. e4 $1 e5 $2 2. Nf3 $3 Nc6 $4 3. Bb5 $5 a6 $6 *\n\n");
     assertEquals(6, game.moves().size());
-    final int[] codes = {1, 2, 3, 4, 5, 6};
-    final MoveSuffixAnnotation[] glyphs = {MoveSuffixAnnotation.GOOD_MOVE, MoveSuffixAnnotation.MISTAKE,
+    final int[] codes = { 1, 2, 3, 4, 5, 6 };
+    final MoveSuffixAnnotation[] glyphs = { MoveSuffixAnnotation.GOOD_MOVE, MoveSuffixAnnotation.MISTAKE,
         MoveSuffixAnnotation.BRILLIANT_MOVE, MoveSuffixAnnotation.BLUNDER, MoveSuffixAnnotation.INTERESTING_MOVE,
-        MoveSuffixAnnotation.DUBIOUS_MOVE};
+        MoveSuffixAnnotation.DUBIOUS_MOVE };
     for (int i = 0; i < 6; i++) {
       assertEquals(List.of(new Nag(codes[i])), Nulls.get(game.moves(), i).nags());
       assertEquals(glyphs[i], Nulls.get(game.moves(), i).moveSuffixAnnotation());
@@ -113,8 +113,7 @@ class TestLenientPgnParserRealWorldAnnotations {
   void nonAssessmentNagsArePreservedNotDiscarded() {
     // Codes outside $1..$6 (positional, time, or chess.com's own $9) have no glyph shorthand, but they are real data
     // and are preserved as Nags - moveSuffixAnnotation() is NONE because there is no glyph, yet nags() carries them.
-    final PgnGame game = LenientPgnParser
-        .parseText(PgnTestHelper.header("*") + "1. e4 $9 e5 $10 2. Nf3 $7 Nc6 *\n\n");
+    final PgnGame game = LenientPgnParser.parseText(PgnTestHelper.header("*") + "1. e4 $9 e5 $10 2. Nf3 $7 Nc6 *\n\n");
     assertEquals(4, game.moves().size());
     assertEquals(List.of(new Nag(9)), Nulls.get(game.moves(), 0).nags());
     assertEquals(List.of(new Nag(10)), Nulls.get(game.moves(), 1).nags());
@@ -145,11 +144,10 @@ class TestLenientPgnParserRealWorldAnnotations {
   void nagAndCommentOnOneMoveParseInEitherOrder() {
     // A NAG and a textual comment on the same move (ChessBase/SCID emit both) must parse regardless of order: the NAG
     // is preserved, the commentary from the brace, either way round.
-    final PgnGame nagFirst = LenientPgnParser
-        .parseText(PgnTestHelper.header("*") + "1. Nf3 $1 { develops } d5 *\n\n");
+    final PgnGame nagFirst = LenientPgnParser.parseText(PgnTestHelper.header("*") + "1. Nf3 $1 { develops } d5 *\n\n");
     final PgnGame commentFirst = LenientPgnParser
         .parseText(PgnTestHelper.header("*") + "1. Nf3 { develops } $1 d5 *\n\n");
-    for (final PgnGame game : new PgnGame[] {nagFirst, commentFirst}) {
+    for (final PgnGame game : new PgnGame[] { nagFirst, commentFirst }) {
       assertEquals(2, game.moves().size());
       assertEquals(List.of(new Nag(1)), Nulls.getFirst(game.moves()).nags());
       assertEquals("develops", Nulls.getFirst(game.moves()).commentary().value().trim());

@@ -8,10 +8,10 @@ import org.eclipse.jdt.annotation.Nullable;
 /**
  * A Numeric Annotation Glyph (NAG) - the PGN standard's move annotation (spec section 8.2.4), a code in the range
  * {@code 0..255}. NAGs are the single, uniform representation of move annotations in ashlar's PGN model: the six
- * symbolic suffix glyphs the import format allows ({@code !} {@code ?} {@code !!} {@code ??} {@code !?} {@code ?!})
- * are shorthand for codes {@code 1..6} and are folded into NAGs on parse - {@code ?} <em>is</em> {@code $2}. Codes
- * outside {@code 1..6} (positional, time-pressure, and the like - e.g. chess.com's {@code $9}) have no glyph shorthand
- * and are carried as NAGs only. See {@link MoveSuffixAnnotation} for the glyph-to-code bridge.
+ * symbolic suffix glyphs the import format allows ({@code !} {@code ?} {@code !!} {@code ??} {@code !?} {@code ?!}) are
+ * shorthand for codes {@code 1..6} and are folded into NAGs on parse - {@code ?} <em>is</em> {@code $2}. Codes outside
+ * {@code 1..6} (positional, time-pressure, and the like - e.g. chess.com's {@code $9}) have no glyph shorthand and are
+ * carried as NAGs only. See {@link MoveSuffixAnnotation} for the glyph-to-code bridge.
  */
 public record Nag(int code) {
 
@@ -29,9 +29,9 @@ public record Nag(int code) {
   /**
    * Parses a NAG token body (the text after the leading {@code $}) into a {@link Nag}, or returns {@code null} if it is
    * not well-formed. Per PGN spec 8.2.4 a NAG is {@code $} followed by a non-negative decimal integer from 0 to 255, so
-   * an empty body, a sign ({@code $-1}, {@code $+5}), letters ({@code $abc}), or an out-of-range / overflowing value are
-   * all rejected. Callers decide the policy: the strict parser turns {@code null} into a validation error, the lenient
-   * parser drops it.
+   * an empty body, a sign ({@code $-1}, {@code $+5}), letters ({@code $abc}), or an out-of-range / overflowing value
+   * are all rejected. Callers decide the policy: the strict parser turns {@code null} into a validation error, the
+   * lenient parser drops it.
    */
   static @Nullable Nag fromDigits(String body) {
     if (body.isEmpty()) {

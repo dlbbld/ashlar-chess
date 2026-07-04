@@ -12,8 +12,8 @@ import io.github.dlbbld.ashlarchess.board.enums.Square;
 // Figure 13 Going-to-corner routine, called from the Score heuristic on King and Knight moves.
 /**
  * The Going-to-corner heuristic (paper Figure 13), used by {@link Score}. It rewards a "slow" piece (King or Knight)
- * move that steps <em>closer</em> to a target square near the mating corner - the depth extension that lets the
- * winner drive the loser's king into a corner. Pure heuristic: affects search effectiveness only, never correctness.
+ * move that steps <em>closer</em> to a target square near the mating corner - the depth extension that lets the winner
+ * drive the loser's king into a corner. Pure heuristic: affects search effectiveness only, never correctness.
  */
 final class GoingToCorner {
 

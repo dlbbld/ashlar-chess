@@ -572,7 +572,9 @@ public final class StrictPgnParser {
     return new SanAndNags(san, nags);
   }
 
-  /** Consumes a NAG token and validates its {@code $}-plus-digits form; the code must be a decimal in {@code 0..255}. */
+  /**
+   * Consumes a NAG token and validates its {@code $}-plus-digits form; the code must be a decimal in {@code 0..255}.
+   */
   private Nag parseNagStrict() {
     final PgnToken token = tokenizer.next();
     final Nag nag = Nag.fromDigits(Nulls.substring(token.text(), 1)); // drop the leading '$'
