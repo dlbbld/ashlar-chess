@@ -1,7 +1,7 @@
 // Copyright (C) 2020-2026 Daniel Baechli
 // SPDX-License-Identifier: GPL-3.0-only
 
-package io.github.dlbbld.ashlarchess.unwinnability;
+package io.github.dlbbld.ashlarchess.unwinnability.internal;
 
 import java.util.List;
 
@@ -12,11 +12,18 @@ import io.github.dlbbld.ashlarchess.board.enums.Piece;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
 
 /**
- * Finite-state basic-helpmate-existence theorem. Since 22.0.0 this is a <b>test-side oracle only</b>: the production
- * analyzer follows the FUN 2022 paper's Figure 9 exactly (semi-static shortcut + Find-Helpmate search) and no longer
- * takes a theorem shortcut; the theorem instead certifies, in the test suite, that the paper engine's verdicts agree
- * with the proven theorem on every covered elementary-material position (in particular that the engine answers
- * {@code UNWINNABLE} wherever the theorem proves unwinnability).
+ * Finite-state basic-helpmate-existence theorem for elementary-material positions. It serves two roles, and in neither
+ * does it touch the production unwinnability analyzer, which since 22.0.0 follows the FUN 2022 paper's Figure 9 exactly
+ * (semi-static shortcut + Find-Helpmate search) and takes no theorem shortcut:
+ * <ol>
+ * <li><b>Adjudication pre-check.</b> {@link #decideForAdjudication(Board, Side)} lets the {@code Adjudicator} settle a
+ * flag-fall or resignation on a covered elementary-material position instantly, without running the search - "we
+ * adjudicate with the FUN 2022 analyzer, and also with this proven theorem". It is restricted to the classes where the
+ * theorem is sound on any strictly FEN-legal input (see the legality note).</li>
+ * <li><b>Test oracle.</b> {@link #decide(Board, Side)} is the pure theorem statement over every covered class; the
+ * agreement tests check that the paper engine's verdicts match it on the curated elementary-material corpus (in
+ * particular that the engine answers {@code UNWINNABLE} wherever the theorem proves unwinnability).</li>
+ * </ol>
  *
  * <p>
  * The theorem was proved by exhaustive retrograde enumeration of the local legal state graph for each covered material
@@ -42,11 +49,13 @@ import io.github.dlbbld.ashlarchess.board.enums.Side;
  *
  * <p>
  * <b>Legality assumption.</b> The theorem holds for strictly game-legal positions, which is exactly the domain of the
- * FIDE dead-position and timeout rules this analyzer serves. The enumeration found a small number of retro-illegal
- * local states (for example the KBNvK position {@code 8/8/8/8/2N5/8/k1K5/1B6 b}) where the winnable conclusion would be
- * wrong; such positions cannot arise in a game and a strictly legal root cannot reach them, so they are outside the
- * intended input domain. The forced-capture (unwinnable) direction is a pure material-reduction argument and is sound
- * on any input.
+ * FIDE dead-position and timeout rules this serves. The enumeration found a small number of retro-illegal local states
+ * (for example the KBNvK position {@code 8/8/8/8/2N5/8/k1K5/1B6 b}) where the winnable conclusion would be wrong; such
+ * positions cannot arise in a game and a strictly legal root cannot reach them, but only retrograde analysis can tell
+ * them apart and {@code Board.fromFenStrict} accepts them. Every such counterexample lives in one of two classes -
+ * KBBvK opposite bishops and KBNvK - so for adjudication (which cannot assume a game-reachable root)
+ * {@link #decideForAdjudication(Board, Side)} excludes exactly those two classes and trusts the theorem on the rest.
+ * The forced-capture (unwinnable) direction is a pure material-reduction argument and is sound on any input.
  *
  * <p>
  * <b>No witness line.</b> A winnable decision here is certified by the theorem, not by an explicit mating sequence -
@@ -61,7 +70,9 @@ public final class BasicHelpmateExistenceTheorem {
   /**
    * Decides the complete unwinnability verdict from the theorem, or returns {@code NOT_APPLICABLE} when the position is
    * not in a covered class with {@code winner} as the mating side, or is a terminal (checkmate/stalemate) position
-   * better handled by the regular analysis.
+   * better handled by the regular analysis. This is the pure theorem statement over every covered class; for a verdict
+   * safe to trust on any strictly FEN-legal board (as an adjudication pre-check) use
+   * {@link #decideForAdjudication(Board, Side)}.
    */
   public static BasicHelpmateExistenceTheoremResult decide(Board board, Side winner) {
     final BitboardPosition position = board.getBitboardPosition();
@@ -106,6 +117,32 @@ public final class BasicHelpmateExistenceTheorem {
     return BasicHelpmateExistenceTheoremResult.UNWINNABLE;
   }
 
+  /**
+   * The theorem verdict restricted to the material classes where it is sound on <em>any</em> strictly FEN-legal
+   * position, for use as an adjudication pre-check. Returns {@code NOT_APPLICABLE} both when {@link #decide} does and
+   * for the two classes that carry known retro-illegal counterexamples - KBBvK opposite bishops and KBNvK - where a
+   * position that passes strict FEN parsing but cannot arise in a game may be reported {@code WINNABLE} although no
+   * helpmate exists. ashlar does not enforce retrograde legality, so the caller must fall back to the full search on
+   * those two classes; every other covered class is counterexample-free, so its {@code WINNABLE} / {@code UNWINNABLE}
+   * verdict may be trusted directly.
+   */
+  public static BasicHelpmateExistenceTheoremResult decideForAdjudication(Board board, Side winner) {
+    if (isCounterexampleBearingClass(board.getBitboardPosition(), winner)) {
+      return BasicHelpmateExistenceTheoremResult.NOT_APPLICABLE;
+    }
+    return decide(board, winner);
+  }
+
+  // KBBvK (opposite bishops) and KBNvK against a bare defender king: the only two covered classes with retro-illegal
+  // positions that pass strict FEN parsing yet violate the theorem's WINNABLE conclusion (enumerated exhaustively in
+  // the theorem project's README, "Illegal positions not satisfying the conclusion"). The adjudicator, which cannot
+  // assume a game-reachable root, must defer these to the search.
+  private static boolean isCounterexampleBearingClass(BitboardPosition position, Side winner) {
+    final Side defender = winner.getOppositeSide();
+    return hasKingOnly(defender, position)
+        && (isKingAndOppositeBishopsOnly(winner, position) || isKingBishopKnightOnly(winner, position));
+  }
+
   private static boolean isMainTheoremClass(BitboardPosition position, Side winner) {
     final Side defender = winner.getOppositeSide();
 
@@ -146,8 +183,8 @@ public final class BasicHelpmateExistenceTheorem {
   }
 
   private static boolean isKingAndOppositeBishopsOnly(Side side, BitboardPosition position) {
-    return count(bishops(side, position)) == 2 && (bishops(side, position) & SquareGeometry.LIGHT_SQUARES) != 0L
-        && (bishops(side, position) & SquareGeometry.DARK_SQUARES) != 0L && count(rooks(side, position)) == 0
+    final long sideBishops = bishops(side, position);
+    return count(sideBishops) == 2 && onOppositeColours(sideBishops) && count(rooks(side, position)) == 0
         && count(queens(side, position)) == 0 && count(knights(side, position)) == 0
         && count(pawns(side, position)) == 0;
   }
@@ -191,6 +228,19 @@ public final class BasicHelpmateExistenceTheorem {
     final long sideOccupancy = position.occupied(side);
     final long sideKings = side == Side.WHITE ? position.whiteKings() : position.blackKings();
     return sideOccupancy == sideKings && Long.bitCount(sideKings) == 1;
+  }
+
+  // Two bishops stand on opposite colours iff their squares have different colour parity. The caller guarantees
+  // exactly two bishops before calling, so the lowest and second-lowest set bits are the two bishop squares.
+  private static boolean onOppositeColours(long twoBishops) {
+    final int firstSquare = Long.numberOfTrailingZeros(twoBishops);
+    final int secondSquare = Long.numberOfTrailingZeros(twoBishops & (twoBishops - 1));
+    return squareColour(firstSquare) != squareColour(secondSquare);
+  }
+
+  // 0 for one colour, 1 for the other: the parity of file + rank, with file = square & 7 and rank = square >> 3.
+  private static int squareColour(int square) {
+    return ((square & 7) + (square >> 3)) & 1;
   }
 
   private static int count(long bitboard) {

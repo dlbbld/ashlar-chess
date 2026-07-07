@@ -1,7 +1,7 @@
 // Copyright (C) 2020-2026 Daniel Baechli
 // SPDX-License-Identifier: GPL-3.0-only
 
-package io.github.dlbbld.ashlarchess.unwinnability;
+package io.github.dlbbld.ashlarchess.test.unwinnability;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -9,6 +9,8 @@ import org.junit.jupiter.api.Test;
 
 import io.github.dlbbld.ashlarchess.board.Board;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
+import io.github.dlbbld.ashlarchess.unwinnability.internal.BasicHelpmateExistenceTheorem;
+import io.github.dlbbld.ashlarchess.unwinnability.internal.BasicHelpmateExistenceTheoremResult;
 
 // Unit test for the basic-helpmate-existence theorem shortcut (BasicHelpmateExistenceTheorem.decide). It pins the
 // theorem's three cases per covered class - winner to move -> WINNABLE; defender to move not forced -> WINNABLE;
@@ -94,7 +96,34 @@ class TestBasicHelpmateExistenceTheorem {
         "r1bqkbnr/pppppppp/2n5/8/8/5N2/PPPPPPPP/RNBQKB1R w KQkq - 4 3"); // opening
   }
 
+  // ----- decideForAdjudication: trust the counterexample-free classes, defer KBBvK / KBNvK to the search. -----
+
+  @SuppressWarnings("static-method")
+  @Test
+  void adjudicationTrustsTheCounterexampleFreeClasses() {
+    assertAdjudication(BasicHelpmateExistenceTheoremResult.WINNABLE, "4k3/8/8/8/8/8/8/R3K3 w - - 0 1"); // KRvK win
+    assertAdjudication(BasicHelpmateExistenceTheoremResult.UNWINNABLE, "k7/R1K5/8/8/8/8/8/8 b - - 0 1"); // forced cap
+  }
+
+  @SuppressWarnings("static-method")
+  @Test
+  void adjudicationExcludesTheTwoCounterexampleBearingClasses() {
+    assertAdjudication(BasicHelpmateExistenceTheoremResult.NOT_APPLICABLE, "4k3/8/8/8/8/8/8/2B1KB2 w - - 0 1"); // KBBvK
+    assertAdjudication(BasicHelpmateExistenceTheoremResult.NOT_APPLICABLE, "4k3/8/8/8/8/8/8/4KBN1 w - - 0 1"); // KBNvK
+    // A retro-illegal representative: decide() overclaims WINNABLE, but decideForAdjudication() withholds it so the
+    // adjudicator falls back to the search (which correctly proves it unwinnable).
+    final Board board = Board.fromFenStrict("8/8/8/8/2N5/8/k1K5/1B6 b - - 0 1");
+    assertEquals(BasicHelpmateExistenceTheoremResult.WINNABLE, BasicHelpmateExistenceTheorem.decide(board, Side.WHITE));
+    assertEquals(BasicHelpmateExistenceTheoremResult.NOT_APPLICABLE,
+        BasicHelpmateExistenceTheorem.decideForAdjudication(board, Side.WHITE));
+  }
+
   private static void assertWhiteWinner(BasicHelpmateExistenceTheoremResult expected, String fen) {
     assertEquals(expected, BasicHelpmateExistenceTheorem.decide(Board.fromFenStrict(fen), Side.WHITE), fen);
+  }
+
+  private static void assertAdjudication(BasicHelpmateExistenceTheoremResult expected, String fen) {
+    assertEquals(expected, BasicHelpmateExistenceTheorem.decideForAdjudication(Board.fromFenStrict(fen), Side.WHITE),
+        fen);
   }
 }

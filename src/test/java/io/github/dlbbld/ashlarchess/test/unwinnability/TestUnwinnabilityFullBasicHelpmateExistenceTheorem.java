@@ -18,10 +18,10 @@ import io.github.dlbbld.ashlarchess.board.internal.UciMoveUtility;
 import io.github.dlbbld.ashlarchess.test.model.PgnFen;
 import io.github.dlbbld.ashlarchess.test.pgn.setup.PgnTestCaseCatalog;
 import io.github.dlbbld.ashlarchess.test.pgntest.enums.PgnTest;
-import io.github.dlbbld.ashlarchess.unwinnability.BasicHelpmateExistenceTheorem;
 import io.github.dlbbld.ashlarchess.unwinnability.UnwinnabilityFullAnalysis;
 import io.github.dlbbld.ashlarchess.unwinnability.UnwinnabilityFullVerdict;
 import io.github.dlbbld.ashlarchess.unwinnability.UnwinnableFullAnalyzer;
+import io.github.dlbbld.ashlarchess.unwinnability.internal.BasicHelpmateExistenceTheorem;
 
 // The basic-helpmate-existence theorem as a test oracle (since 22.0.0 it no longer short-circuits the production
 // analyzer): over the curated elementary-material corpus the theorem decides every position by its proven

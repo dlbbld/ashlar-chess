@@ -10,8 +10,8 @@
  * parsers and their result types, adjudication, reporting, the unwinnability face, the base exception hierarchy, and
  * {@code BitboardPosition} as documented advanced low-level API. Everything not exported ({@code moves},
  * {@code analyze}, {@code squares}, {@code messages}, {@code internal}, {@code board.model}, and the {@code *.internal}
- * subpackages of {@code bitboard}/{@code board}/{@code board.enums}/{@code pgn}/{@code san}/{@code fen}) is internal
- * and hidden from modular consumers.
+ * subpackages of {@code bitboard}/{@code board}/{@code board.enums}/{@code pgn}/{@code san}/{@code fen}/
+ * {@code unwinnability}) is internal and hidden from modular consumers.
  */
 module io.github.dlbbld.ashlarchess {
 
