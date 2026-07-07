@@ -80,121 +80,137 @@ only when you need context.
 
 **1. Clear Eclipse warnings and infos**
 
-**1.1** Problems view: 0 errors, 0 warnings, 0 infos.
-
-**1.2** Fix warnings instead of suppressing them.
-
-**1.3** Add missing `package-info.java` / `@NonNullByDefault` when JDT reports a missing default nullness annotation.
+Action: Eclipse Problems view shows 0 errors, 0 warnings, 0 infos.
 
 **2. Format, clean up, and regenerate generated docs**
 
-**2.1** Eclipse: select `src/main/java` and `src/test/java`.
+Action: in Eclipse, select `src/main/java` and `src/test/java`, then run Source -> Format and Source -> Clean Up.
 
-**2.2** Run Source -> Format.
+Commands:
 
-**2.3** Run Source -> Clean Up.
+```powershell
+mvn -o -q test-compile exec:java -Dexec.mainClass=io.github.dlbbld.ashlarchess.test.readme.GenerateReadme -Dexec.classpathScope=test
+mvn clean javadoc:javadoc javadoc:test-javadoc -Dshow=private
+```
 
-**2.4** Regenerate README/manual examples: `mvn -o -q test-compile exec:java -Dexec.mainClass=io.github.dlbbld.ashlarchess.test.readme.GenerateReadme -Dexec.classpathScope=test`.
-
-**2.5** Run the JavaDoc gates: `mvn clean javadoc:javadoc javadoc:test-javadoc -Dshow=private`. Doc errors are cleanup-shaped and belong in this pass; pre-flight re-runs the same gate as a cheap confirmation.
-
-**2.6** Review the diff as mechanical only.
-
-**2.7** Commit this cleanup separately before the version bump.
+Check: review the diff as mechanical only, then commit this cleanup separately before the version bump.
 
 **3. Choose the release title**
 
-**3.1** Pick one short title, for example `Endgame theorem and unwinnability API`.
+Action: pick one short title, for example `Endgame theorem and unwinnability API`.
 
-**3.2** Reuse it verbatim in the changelog header, PR title/body, annotated tag message, and GitHub Release notes body.
+Check: reuse the exact title in the changelog header, PR title/body, annotated tag message, and GitHub Release notes body.
 
 **4. Update release artifacts on a release branch**
 
-**4.1** Update [`pom.xml`](pom.xml): `<version>X.Y.Z</version>`.
+Action: update the release artifacts:
 
-**4.2** Update Maven version snippets in [`README.md`](README.md) and [`manual.md`](manual.md).
+- [`pom.xml`](pom.xml): `<version>X.Y.Z</version>`
+- Maven version snippets in [`README.md`](README.md) and [`manual.md`](manual.md)
+- `CHANGELOG.md`: add the entry above `[Unreleased]`, headed `## [X.Y.Z] - Release Title - YYYY-MM-DD`
+- `CHANGELOG.md`: include a one-paragraph summary and the relevant sections, for example `### Notable`, `### Behavioral`, `### Breaking`
+- `tasks.md`: move the relevant release section to **Done**
 
-**4.3** Add the `CHANGELOG.md` entry above `[Unreleased]`.
+Commands:
 
-**4.4** Changelog header: `## [X.Y.Z] - Release Title - YYYY-MM-DD`.
+```powershell
+git status --short
+git add pom.xml README.md manual.md CHANGELOG.md tasks.md
+git commit -m "release: X.Y.Z - Release Title"
+git push -u origin HEAD
+```
 
-**4.5** Include a one-paragraph release summary.
-
-**4.6** Add `### Notable`, `### Behavioral`, and `### Breaking` sections as needed.
-
-**4.7** Move the relevant `tasks.md` section to **Done**.
-
-**4.8** Commit and push the release branch.
-
-**4.9** Do **not** tag yet.
+Check: the release branch is pushed. Do not tag yet.
 
 **5. Run pre-flight on the release branch**
 
-**5.1** Run the pre-flight script: `.\tools\preflight.ps1`. It chains, fail-fast with one summary and honest exit codes, **cheap fix-prone gates first, expensive read-only suites last**: worktree clean → license headers (`java-license-headers.ps1 -Check`) → the JavaDoc gates (`mvn clean javadoc:javadoc javadoc:test-javadoc -Dshow=private`) → `mvn test -Pfull` → `mvn test -Pfull -Dtest.excludes=` (the normally excluded unwinnability suite; a release exercises it). The order matters: a failed cheap gate means a fix commit, and a fix commit invalidates every gate already passed — front-loading the fix-prone gates keeps a header or doc slip from costing a 40-minute suite re-run. If any gate forced a commit, re-run the script from the top.
+Commands:
 
-**5.2** If the header gate reports drift, fix and commit: `.\tools\java-license-headers.ps1 -Fix`, then re-run 5.1.
+```powershell
+.\tools\preflight.ps1
+```
 
-**5.3** Confirm all release tasks are done in `tasks.md`.
+Required gates inside pre-flight, in order:
 
-**5.4** If board logic changed materially, run the board burn-in and update the baseline: `mvn -o -q exec:java -Dexec.classpathScope=test -Dexec.mainClass=io.github.dlbbld.ashlarchess.test.performance.BoardApiBurnInSurvey`.
+```powershell
+git status --porcelain
+.\tools\java-license-headers.ps1 -Check
+mvn clean javadoc:javadoc javadoc:test-javadoc -Dshow=private
+mvn test -Pfull
+mvn test -Pfull -Dtest.excludes=
+```
+
+Check: both full test commands must run green before the release is tagged. The second command re-enables the normally excluded unwinnability suite; do not skip it for unwinnability, board, move-generation, PGN/FEN/SAN, adjudication, or release-candidate changes.
+
+If the header gate reports drift:
+
+```powershell
+.\tools\java-license-headers.ps1 -Fix
+.\tools\preflight.ps1
+```
+
+If board logic changed materially:
+
+```powershell
+mvn -o -q exec:java -Dexec.classpathScope=test -Dexec.mainClass=io.github.dlbbld.ashlarchess.test.performance.BoardApiBurnInSurvey
+```
+
+Check: all release tasks are done in `tasks.md`. If any pre-flight gate forced a commit, rerun `.\tools\preflight.ps1` from the top, including both full test commands.
 
 **6. Run the release build dry-run on the branch**
 
-**6.1** Confirm the release profile: `mvn -Prelease help:active-profiles`.
+Commands:
 
-**6.2** Verify the release build: `mvn -Prelease verify`.
+```powershell
+mvn -Prelease help:active-profiles
+mvn -Prelease verify
+```
 
-**6.3** If this fails, fix it on the branch, commit, then re-run pre-flight and the dry-run.
-
-**6.4** Open the PR only after this is green.
+Check: if this fails, fix it on the branch, commit, then rerun pre-flight and the dry-run. Open the PR only after this is green.
 
 **7. Open the PR and merge to main**
 
-**7.1** PR target: `main`.
+Action: open the PR against `main`, merge it, then delete the release branch.
 
-**7.2** PR title field: release title only, no version.
-
-**7.3** PR body starts with `## <release title>`.
-
-**7.4** Merge the PR.
-
-**7.5** Delete the release branch.
+Check: PR title field is the release title only, no version. PR body starts with `## <release title>`.
 
 **8. Tag the release on main**
 
-**8.1** Pull `main` locally so it is exactly the merged release commit.
+Commands:
 
-**8.2** Create an annotated tag `X.Y.Z` on `main` HEAD.
+```powershell
+git switch main
+git pull --ff-only
+git tag -a X.Y.Z -m "Release Title"
+git push origin X.Y.Z
+```
 
-**8.3** Tag message: release title.
-
-**8.4** Push the tag.
-
-**8.5** Command-line equivalent: `git tag -a X.Y.Z -m "Release Title"`, then `git push origin X.Y.Z`.
+Check: local `main` is exactly the merged release commit before tagging.
 
 **9. Publish to Maven Central**
 
-**9.1** From local `main` at the tagged commit: `mvn -Prelease deploy`.
+Commands:
 
-**9.2** Review the staged deployment at <https://central.sonatype.com/publishing/deployments>.
+```powershell
+mvn -Prelease deploy
+```
 
-**9.3** Publish only after the staged contents look correct.
+Check: review the staged deployment at <https://central.sonatype.com/publishing/deployments>. Publish only after the staged contents look correct.
 
 **10. Create the GitHub Release**
 
-**10.1** Choose the existing tag `X.Y.Z`.
+Commands:
 
-**10.2** Release title field: `X.Y.Z`.
+```powershell
+.\tools\build-release-notes.ps1 -Version X.Y.Z -Title "Release Title"
+gh release create X.Y.Z --verify-tag --title "X.Y.Z" --notes-file release-notes-X.Y.Z.md
+```
 
-**10.3** Generate the notes body — never hand-paste changelog text: `.\tools\build-release-notes.ps1 -Version X.Y.Z -Title "<release title>"`. It emits `# <release title>` plus the `CHANGELOG.md` `[X.Y.Z]` entry with paragraphs and list items **unwrapped to one logical line each**. The changelog's ~120-column hard wraps are invisible in file rendering but become `<br>` in a release body (GitHub renders files with soft newlines, release notes/issues/comments with hard ones) — pasted verbatim, every paragraph breaks mid-sentence (22.0.0 lesson, fixed in place with `gh release edit`).
-
-**10.4** Publish: `gh release create X.Y.Z --verify-tag --title "X.Y.Z" --notes-file release-notes-X.Y.Z.md` — then **open the release page and look at it**.
+Check: choose the existing tag `X.Y.Z`, set the GitHub Release title field to `X.Y.Z`, then open the release page and look at it.
 
 **11. Post-release**
 
-**11.1** Verify the artifact resolves at <https://central.sonatype.com/artifact/io.github.dlbbld/ashlar-chess>.
-
-**11.2** Archive the shipped release in `tasks.md`.
+Action: verify the artifact resolves at <https://central.sonatype.com/artifact/io.github.dlbbld/ashlar-chess>, then archive the shipped release in `tasks.md`.
 
 ### Release explanations
 
