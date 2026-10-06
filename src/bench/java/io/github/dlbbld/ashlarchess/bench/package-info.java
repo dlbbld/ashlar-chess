@@ -13,4 +13,7 @@
  * Every benchmark reports per-position averages via {@code @OperationsPerInvocation} so a number stays comparable when
  * the fixture count changes. Fixtures are built in {@code @Setup}, never inside a measured method.
  */
+@NonNullByDefault
 package io.github.dlbbld.ashlarchess.bench;
+
+import org.eclipse.jdt.annotation.NonNullByDefault;

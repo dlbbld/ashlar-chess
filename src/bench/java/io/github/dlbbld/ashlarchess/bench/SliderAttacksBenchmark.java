@@ -27,10 +27,16 @@ import io.github.dlbbld.ashlarchess.board.Board;
  * Ray walk against magic lookup, head to head - the narrowest form of the question.
  *
  * <p>
- * Both implementations are measured in the same run over the same probe arrays, rather than by benchmarking one build
- * and then the other. That removes every difference except the code under test: same JVM, same JIT decisions, same
- * fixtures, same machine state. A before-and-after comparison across two builds cannot rule out drift from any of
- * those, and at the few-nanosecond scale this measures, that drift would be the same size as the effect.
+ * Both implementations are measured in one JMH invocation over the same probe arrays, rather than by benchmarking one
+ * build and then the other. That removes the build swap and keeps the fixtures and machine identical. It does not make
+ * the comparison simultaneous: JMH forks a separate JVM per benchmark method and runs them one after another, so the
+ * two are still measured minutes apart and thermal drift is reduced, not eliminated. Treat a difference of a few
+ * percent here as noise.
+ *
+ * <p>
+ * {@link SliderRayAttacks} is the shape the production code had before magics, deliberately so - see its own note.
+ * Rewriting it, even while preserving semantics, changes what the ray numbers below mean and would inflate the
+ * apparent speedup.
  *
  * <p>
  * The occupancy masks come from real positions rather than random bits, because the two implementations respond to

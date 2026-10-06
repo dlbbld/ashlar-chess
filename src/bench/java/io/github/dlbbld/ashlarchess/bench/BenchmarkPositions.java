@@ -54,24 +54,50 @@ public final class BenchmarkPositions {
    * prefix would benchmark one shape of problem. A stride spreads the sample across the whole file and is still
    * reproducible run to run. Positions the FEN parser rejects are skipped - the oracle carries a few deliberately, and
    * importability is not what these benchmarks measure.
+   *
+   * <p>
+   * Returns exactly {@code count} boards or throws. An earlier version returned however many survived the stride,
+   * which silently handed 239 boards to a caller that had asked for 256 and normalized its per-position scores by the
+   * number it requested - understating them by 7%. A sampler that quietly returns a different size than asked for
+   * cannot be used for normalization, so it now walks on past the stride to fill the shortfall.
    */
   public static List<Board> curatedBoards(int count) {
     if (count <= 0) {
       throw new ProgrammingMistakeException("Benchmark position count must be positive, got " + count);
     }
     final List<String> fens = curatedFens();
+    if (count > fens.size()) {
+      throw new ProgrammingMistakeException(
+          "Requested " + count + " positions but the chasolver curated oracle holds only " + fens.size());
+    }
     final int stride = Math.max(1, fens.size() / count);
     final List<Board> boards = new ArrayList<>();
-    for (int i = 0; i < fens.size() && boards.size() < count; i += stride) {
-      final String fen = Nulls.get(fens, i);
-      try {
-        boards.add(Board.fromFenLenient(fen));
-      } catch (final RuntimeException ignored) {
-        continue;
+    final boolean[] taken = new boolean[fens.size()];
+    RuntimeException lastRejection = null;
+
+    // First pass on the stride, then a second pass over everything still untaken to make up for positions the parser
+    // rejected. The stride pass is what spreads the sample across the file; the fill pass only restores the count.
+    for (int pass = 0; pass < 2 && boards.size() < count; pass++) {
+      final int step = pass == 0 ? stride : 1;
+      for (int i = 0; i < fens.size() && boards.size() < count; i += step) {
+        if (taken[i]) {
+          continue;
+        }
+        final String fen = Nulls.get(fens, i);
+        try {
+          boards.add(Board.fromFenLenient(fen));
+          taken[i] = true;
+        } catch (final RuntimeException rejection) {
+          taken[i] = true;
+          lastRejection = rejection;
+        }
       }
     }
-    if (boards.isEmpty()) {
-      throw new ProgrammingMistakeException("No importable positions in the chasolver curated oracle");
+
+    if (boards.size() != count) {
+      throw new ProgrammingMistakeException("Could only import " + boards.size() + " of the " + count
+          + " requested positions from the chasolver curated oracle"
+          + (lastRejection == null ? "" : "; last rejection: " + lastRejection.getMessage()));
     }
     return boards;
   }

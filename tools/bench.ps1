@@ -94,7 +94,9 @@ $jmhArguments = @(
   "org.openjdk.jmh.Main"
 )
 if ($Include -ne "") { $jmhArguments += $Include }
-$jmhArguments += @("-f", "$forks", "-rf", "json", "-rff", $jsonPath)
+# -foe true is what makes a failed benchmark fail the script. Without it JMH reports the error, writes an empty
+# or partial result file, and still exits 0 - so a setup exception reads as a clean run.
+$jmhArguments += @("-f", "$forks", "-foe", "true", "-rf", "json", "-rff", $jsonPath)
 if ($Quick) { $jmhArguments += @("-wi", "1", "-i", "2", "-w", "1s", "-r", "1s") }
 
 Write-Host "=== Running JMH (forks=$forks) ===" -ForegroundColor Cyan
@@ -104,6 +106,16 @@ $jmhExitCode = $LASTEXITCODE
 $stopwatch.Stop()
 
 if ($jmhExitCode -ne 0) { throw "JMH failed with exit code $jmhExitCode" }
+
+# An exit code alone is not enough: check a result actually landed. An empty array is what a failed run leaves behind.
+if (-not (Test-Path $jsonPath)) { throw "JMH reported success but wrote no result file: $jsonPath" }
+$recordedResults = @(Get-Content -Raw $jsonPath | ConvertFrom-Json)
+if ($recordedResults.Count -eq 0) { throw "JMH reported success but the result file holds no benchmarks: $jsonPath" }
+$scorelessResults = @($recordedResults | Where-Object { $null -eq $_.primaryMetric.score })
+if ($scorelessResults.Count -gt 0) {
+  throw "JMH wrote $($scorelessResults.Count) benchmark(s) without a score to $jsonPath"
+}
+Write-Host "recorded $($recordedResults.Count) benchmark result(s)" -ForegroundColor DarkGray
 
 Write-Host ""
 Write-Host "=== Done in $([int]$stopwatch.Elapsed.TotalSeconds)s ===" -ForegroundColor Green

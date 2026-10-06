@@ -22,6 +22,7 @@ import org.openjdk.jmh.annotations.Warmup;
 import io.github.dlbbld.ashlarchess.board.Board;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
 import io.github.dlbbld.ashlarchess.exceptions.ProgrammingMistakeException;
+import io.github.dlbbld.ashlarchess.internal.Nulls;
 import io.github.dlbbld.ashlarchess.unwinnability.UnwinnableFullAnalyzer;
 import io.github.dlbbld.ashlarchess.unwinnability.UnwinnableQuickAnalyzer;
 
@@ -58,9 +59,9 @@ public class UnwinnabilityBenchmark {
   /** Positions per invocation for the quick analyzer, which is cheap enough to sweep the corpus broadly. */
   private static final int QUICK_POSITIONS = 256;
 
-  private List<Board> typicalBoards = List.of();
-  private List<Board> hardBoards = List.of();
-  private List<Board> quickBoards = List.of();
+  private List<Board> typicalBoards = Nulls.listOf();
+  private List<Board> hardBoards = Nulls.listOf();
+  private List<Board> quickBoards = Nulls.listOf();
 
   @Setup(Level.Trial)
   public void setUp() {
@@ -77,6 +78,12 @@ public class UnwinnabilityBenchmark {
     if (this.hardBoards.size() != HARD_POSITIONS) {
       throw new ProgrammingMistakeException(
           "Hard fixture count " + this.hardBoards.size() + " does not match HARD_POSITIONS");
+    }
+    // The quick band was missing this check, and the sampler was quietly returning 239 boards for a requested 256,
+    // so every quick score was normalized by a count that was never delivered.
+    if (this.quickBoards.size() != QUICK_POSITIONS) {
+      throw new ProgrammingMistakeException(
+          "Quick fixture count " + this.quickBoards.size() + " does not match QUICK_POSITIONS");
     }
   }
 

@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 
+import org.eclipse.jdt.annotation.NonNull;
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.BenchmarkMode;
 import org.openjdk.jmh.annotations.Fork;
@@ -62,9 +63,12 @@ public class MoveGenerationBenchmark {
   @Param({ "8", "512" })
   private int positionCount;
 
-  private BitboardPosition[] positions = new BitboardPosition[0];
-  private Side[] sides = new Side[0];
-  private CastlingRight[] castlingRights = new CastlingRight[0];
+  // Element types are annotated explicitly: the package default makes the array reference non-null but leaves the
+  // element type unannotated, so every read handed to the annotated bitboard API would need an unchecked conversion.
+  // Annotating here rather than switching to lists keeps the measured loop unchanged.
+  private @NonNull BitboardPosition[] positions = new @NonNull BitboardPosition[0];
+  private @NonNull Side[] sides = new @NonNull Side[0];
+  private @NonNull CastlingRight[] castlingRights = new @NonNull CastlingRight[0];
   private long[] enPassantBits = new long[0];
   private int fixtureCount;
 
@@ -72,6 +76,7 @@ public class MoveGenerationBenchmark {
   // charge list growth and copying to the slider implementation under test.
   private int generatedMoveCount;
   private Consumer<LegalMove> countingSink = move -> {
+    // Placeholder so the field is never null; setUp installs the real counting sink before any benchmark runs.
   };
 
   @Setup(Level.Trial)
@@ -83,9 +88,9 @@ public class MoveGenerationBenchmark {
     boards.addAll(BenchmarkPositions.curatedBoards(this.positionCount));
 
     this.fixtureCount = boards.size();
-    this.positions = new BitboardPosition[this.fixtureCount];
-    this.sides = new Side[this.fixtureCount];
-    this.castlingRights = new CastlingRight[this.fixtureCount];
+    this.positions = new @NonNull BitboardPosition[this.fixtureCount];
+    this.sides = new @NonNull Side[this.fixtureCount];
+    this.castlingRights = new @NonNull CastlingRight[this.fixtureCount];
     this.enPassantBits = new long[this.fixtureCount];
 
     for (int i = 0; i < this.fixtureCount; i++) {
