@@ -11,11 +11,11 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Stream;
 
 import org.junit.jupiter.api.Test;
 
 import io.github.dlbbld.ashlarchess.internal.Nulls;
+import io.github.dlbbld.ashlarchess.test.common.utility.FileUtility;
 import io.github.dlbbld.ashlarchess.test.pgntest.constants.PgnTestConstants;
 
 /**
@@ -44,16 +44,18 @@ class TestPgnCorpusFileStructure {
     final List<String> failures = new ArrayList<>();
     int fileCount = 0;
 
-    try (Stream<Path> paths = Files.walk(corpusRoot)) {
-      final List<Path> pgnFiles = paths.filter(p -> Nulls.toString(p).endsWith(".pgn")).sorted().toList();
-      for (final Path pgnFile : pgnFiles) {
-        fileCount++;
-        final String source = new String(Files.readAllBytes(pgnFile), StandardCharsets.UTF_8);
-        try {
-          StrictFileStructurePreScan.validate(NewlineNormalization.toLf(source));
-        } catch (final StrictPgnParserValidationException e) {
-          failures.add(Nulls.toString(corpusRoot.relativize(pgnFile)) + "  -  " + e.getMessage());
-        }
+    final List<Path> corpusFiles = new ArrayList<>(FileUtility.listAllFilesRecursively(corpusRoot));
+    corpusFiles.sort(Path::compareTo);
+    for (final Path pgnFile : corpusFiles) {
+      if (!Nulls.toString(pgnFile).endsWith(".pgn")) {
+        continue;
+      }
+      fileCount++;
+      final String source = new String(Files.readAllBytes(pgnFile), StandardCharsets.UTF_8);
+      try {
+        StrictFileStructurePreScan.validate(NewlineNormalization.toLf(source));
+      } catch (final StrictPgnParserValidationException e) {
+        failures.add(Nulls.toString(Nulls.pathRelativize(corpusRoot, pgnFile)) + "  -  " + e.getMessage());
       }
     }
 

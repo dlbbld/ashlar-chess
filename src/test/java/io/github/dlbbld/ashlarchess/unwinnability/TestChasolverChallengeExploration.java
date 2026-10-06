@@ -13,6 +13,7 @@ import org.junit.jupiter.api.Test;
 
 import io.github.dlbbld.ashlarchess.board.Board;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
+import io.github.dlbbld.ashlarchess.internal.Nulls;
 import io.github.dlbbld.ashlarchess.pgn.PgnUtility;
 import io.github.dlbbld.ashlarchess.pgn.StrictPgnParser;
 import io.github.dlbbld.ashlarchess.test.pgntest.enums.PgnTest;
@@ -37,7 +38,7 @@ class TestChasolverChallengeExploration {
   private record CatalogProofGame(PgnTest pgnTest, String pgnName, String finalFen, int plies) {
   }
 
-  private static final List<ExplorationPosition> EXPLORATION_POSITIONS = List.of(
+  private static final List<ExplorationPosition> EXPLORATION_POSITIONS = Nulls.listOf(
       new ExplorationPosition("queen corner mirror seed",
           "8/8/8/3b2P1/5PpP/2K1Pp1p/4p1bk/5bnq w - - 0 1"),
       new ExplorationPosition("bishop wall seed",
@@ -70,11 +71,11 @@ class TestChasolverChallengeExploration {
       new ExplorationPosition("caged king stalemate capture", CAGED_KING_STALEMATE_CAPTURE),
       new ExplorationPosition("unwinnable exhaustion both sides", UNWINNABLE_EXHAUSTION_BOTH_SIDES));
 
-  private static final List<ProofGame> STORED_PROOF_GAMES = List.of(
+  private static final List<ProofGame> STORED_PROOF_GAMES = Nulls.listOf(
       new ProofGame("04_unwinnable_exhaustion_black_only.pgn", UNWINNABLE_EXHAUSTION_BLACK_ONLY, 110),
       new ProofGame("05_unwinnable_exhaustion_both_sides.pgn", UNWINNABLE_EXHAUSTION_BOTH_SIDES, 112));
 
-  private static final List<CatalogProofGame> ISSUE_48_WINNABLE_FAMILY_PROOF_GAMES = List.of(
+  private static final List<CatalogProofGame> ISSUE_48_WINNABLE_FAMILY_PROOF_GAMES = Nulls.listOf(
       new CatalogProofGame(PgnTest.CHA_CHASOLVER_CHALLENGES_EXCEPTIONS, "01_chasolver_node_limit_exception.pgn",
           "1Bb5/1p6/pPp3k1/2Pp3p/P2PpBpP/4P1P1/5K2/8 w - - 8 32", 62),
       new CatalogProofGame(PgnTest.CHA_CHASOLVER_CHALLENGES_EXCEPTIONS, "02_chasolver_node_limit_exception.pgn",
@@ -122,7 +123,8 @@ class TestChasolverChallengeExploration {
   @Test
   void storedProofGamesReachExhaustionChallengePositions() {
     for (final ProofGame proofGame : STORED_PROOF_GAMES) {
-      final Path pgnPath = PgnTest.CHA_CHASOLVER_CHALLENGES_EXCEPTIONS.getFolderPath().resolve(proofGame.pgnName());
+      final Path pgnPath = Nulls.pathResolve(PgnTest.CHA_CHASOLVER_CHALLENGES_EXCEPTIONS.getFolderPath(),
+          proofGame.pgnName());
       final var pgnGame = StrictPgnParser.parsePath(pgnPath);
 
       assertEquals(proofGame.plies(), pgnGame.moves().size(), proofGame.pgnName());
@@ -134,7 +136,7 @@ class TestChasolverChallengeExploration {
   @Test
   void issue48WinnableFamilyProofGamesRemainStored() {
     for (final CatalogProofGame proofGame : ISSUE_48_WINNABLE_FAMILY_PROOF_GAMES) {
-      final Path pgnPath = proofGame.pgnTest().getFolderPath().resolve(proofGame.pgnName());
+      final Path pgnPath = Nulls.pathResolve(proofGame.pgnTest().getFolderPath(), proofGame.pgnName());
       final var pgnGame = StrictPgnParser.parsePath(pgnPath);
 
       assertEquals(proofGame.plies(), pgnGame.moves().size(), proofGame.pgnName());
