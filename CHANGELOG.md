@@ -15,7 +15,8 @@ reproducible performance tooling and hardens the release procedure. No public AP
   combine them. Independent geometric, differential and perft checks verify correctness. Measured legal-move
   generation time falls by approximately 17–25% across the reviewed ThinkPad, iMac M3 and IdeaCentre workloads.
   The tables require 841 KiB of attack entries plus metadata, with a one-time initialization cost. See
-  [the verification record](benchmarks/magic-bitboard-verification.md) for workloads, environments and corrected baselines.
+  [the verification record](https://github.com/dlbbld/ashlar-chess/blob/22.1.0/benchmarks/magic-bitboard-verification.md)
+  for workloads, environments and corrected baselines.
 - **Faster adjudication on covered elementary-material positions.** Quick and full flag-fall/resignation methods
   first consult the basic-helpmate-existence theorem. The pre-check excludes KBNvK and opposite-coloured KBBvK,
   whose retro-illegal counterexamples can pass strict FEN parsing, and defers those classes to the existing analyzers.
