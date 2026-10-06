@@ -28,6 +28,7 @@ reproducible performance tooling and hardens the release procedure. No public AP
   library. iMac and Windows procedures preserve machine/JVM details, raw fork results, logs and harness fingerprints.
 - A default-profile corpus lint catches malformed strict PGN file structure before the expensive release suites.
   Additional proof games pin the chasolver exhaustion challenges, with external oracle coverage.
+- The test-only chesslib comparison dependency is updated to 1.3.7.
 - Release preflight now runs fail-fast gates in cost order: clean working tree, license headers, JavaDoc, then both
   full regression suites. Release notes are generated from the changelog with paragraphs unwrapped for GitHub rendering.
 
