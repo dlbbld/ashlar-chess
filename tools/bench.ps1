@@ -43,20 +43,45 @@ Write-Host "=== Resolving classpath ===" -ForegroundColor Cyan
 if ($LASTEXITCODE -ne 0) { throw "Classpath resolution failed with exit code $LASTEXITCODE" }
 
 $dependencyClasspath = (Get-Content -Raw $classpathFile).Trim()
-$classpath = "target/classes;target/test-classes;$dependencyClasspath"
+# Java wants the platform classpath separator - ";" on Windows, ":" elsewhere - and the Maven-generated
+# dependency list already uses it, so only the two leading entries need joining.
+$pathSeparator = [System.IO.Path]::PathSeparator
+$classpath = "target/classes$pathSeparator" + "target/test-classes$pathSeparator" + $dependencyClasspath
 
 # The machine, not just the number. A magic-bitboard verdict is cache-size and ISA dependent, so a score
 # without its host is not interpretable and definitely not comparable across machines.
-$processor = (Get-CimInstance Win32_Processor | Select-Object -First 1)
+# Get-CimInstance is Windows-only, so the CPU fingerprint is gathered per platform. This block is the reason a
+# score is interpretable later: a magic-bitboard verdict is cache-size and ISA dependent, so the host is part of
+# the result, not metadata about it.
+$processorName = "unknown"
+$physicalCores = "?"
+$logicalCores = [System.Environment]::ProcessorCount
+$maxClockMhz = "n/a"
+if ($IsWindows) {
+  $processor = (Get-CimInstance Win32_Processor | Select-Object -First 1)
+  $processorName = $processor.Name.Trim()
+  $physicalCores = $processor.NumberOfCores
+  $logicalCores = $processor.NumberOfLogicalProcessors
+  $maxClockMhz = $processor.MaxClockSpeed
+} elseif ($IsMacOS) {
+  $processorName = (& sysctl -n machdep.cpu.brand_string).Trim()
+  $physicalCores = (& sysctl -n hw.physicalcpu).Trim()
+  $logicalCores = (& sysctl -n hw.logicalcpu).Trim()
+  # Apple Silicon does not publish a max frequency, and its cores are heterogeneous anyway: a benchmark thread
+  # scheduled onto an efficiency core reads as a regression that is really just scheduling. Run in the foreground.
+} elseif ($IsLinux) {
+  $processorName = ((Get-Content /proc/cpuinfo | Select-String -Pattern "^model name" | Select-Object -First 1) -split ":")[1].Trim()
+  $physicalCores = (Get-Content /proc/cpuinfo | Select-String -Pattern "^cpu cores" | Select-Object -First 1).ToString().Split(":")[1].Trim()
+}
 $environment = @(
   "label                 : $Label",
   "timestamp             : $([DateTimeOffset]::Now.ToString('o'))",
   "git commit            : $(& git rev-parse --short HEAD)",
   "git dirty             : $([bool](& git status --porcelain))",
   "os                    : $([System.Environment]::OSVersion.VersionString)",
-  "cpu                   : $($processor.Name.Trim())",
-  "cpu cores / threads   : $($processor.NumberOfCores) / $($processor.NumberOfLogicalProcessors)",
-  "cpu max clock (MHz)   : $($processor.MaxClockSpeed)",
+  "cpu                   : $processorName",
+  "cpu cores / threads   : $physicalCores / $logicalCores",
+  "cpu max clock (MHz)   : $maxClockMhz",
   "jdk                   : $((& java -version 2>&1)[0])",
   "mode                  : $(if ($Quick) { 'QUICK - smoke test only, NOT decision-grade' } else { 'full' })"
 )
