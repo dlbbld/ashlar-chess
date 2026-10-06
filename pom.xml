@@ -50,6 +50,8 @@
 			override `-Dtest.excludes=` when explicitly running the unwinnability suite.
 		-->
 		<test.excludes>io/github/dlbbld/ashlarchess/test/unwinnability/**/*.java</test.excludes>
+		<!-- Benchmark-only; see the `bench` profile. Never a compile-scope dependency. -->
+		<jmh.version>1.37</jmh.version>
 	</properties>
 
 	<repositories>
@@ -232,6 +234,73 @@
 								<ashlar-chess.full>true</ashlar-chess.full>
 							</systemPropertyVariables>
 						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+
+		<!--
+			Benchmark harness. JMH and the src/bench/java source root exist ONLY under this
+			profile: the default build stays Java-only and fast, and nothing here can reach
+			the published artifact or the JPMS module graph.
+
+			Benchmarks are a decision tool, not a regression suite. They answer one question -
+			whether an optimization pays for the complexity it adds - and the answer is a
+			number measured on a named machine, which is not something a build can gate on.
+			So nothing is bound to surefire: `*Benchmark` matches none of surefire's include
+			patterns, so even `mvn -Pbench test` runs the normal suite and not these.
+
+			src/bench/java is added as a TEST source root, not a second compile root, so the
+			benchmarks reach non-exported internals (bitboard.internal) on exactly the terms
+			the white-box test tree already gets. A compile root would land in the published
+			artifact and would have to be exported by module-info to be usable at all.
+
+			Drive runs through tools/bench.ps1, which pins fork / warmup / iteration counts and
+			the JVM flags. Ad-hoc JMH invocations at default settings produce numbers that are
+			not comparable between runs, which defeats the point of measuring at all.
+		-->
+		<profile>
+			<id>bench</id>
+			<dependencies>
+				<dependency>
+					<groupId>org.openjdk.jmh</groupId>
+					<artifactId>jmh-core</artifactId>
+					<version>${jmh.version}</version>
+					<scope>test</scope>
+				</dependency>
+				<!--
+					An annotation processor, discovered by the default classpath scan
+					(maven-compiler-plugin sets no annotationProcessorPaths). It generates the
+					*_jmhType / *_jmhTest glue that JMH's Runner actually executes; without it the
+					harness compiles but finds zero benchmarks.
+				-->
+				<dependency>
+					<groupId>org.openjdk.jmh</groupId>
+					<artifactId>jmh-generator-annprocess</artifactId>
+					<version>${jmh.version}</version>
+					<scope>test</scope>
+				</dependency>
+			</dependencies>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.codehaus.mojo</groupId>
+						<artifactId>build-helper-maven-plugin</artifactId>
+						<version>3.6.0</version>
+						<executions>
+							<execution>
+								<id>add-bench-source</id>
+								<phase>generate-test-sources</phase>
+								<goals>
+									<goal>add-test-source</goal>
+								</goals>
+								<configuration>
+									<sources>
+										<source>src/bench/java</source>
+									</sources>
+								</configuration>
+							</execution>
+						</executions>
 					</plugin>
 				</plugins>
 			</build>

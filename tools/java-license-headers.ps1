@@ -21,6 +21,7 @@ $repoRoot = (Resolve-Path (Join-Path $PSScriptRoot "..")).Path
 $sourceRoots = @(
   Join-Path $repoRoot "src/main/java"
   Join-Path $repoRoot "src/test/java"
+  Join-Path $repoRoot "src/bench/java"
 )
 
 function Convert-ToRepoRelativePath {
