@@ -2,6 +2,34 @@
 
 Releases from 3.3 onward. Earlier history is in git tags only.
 
+## [22.1.0] - Magic bitboards and faster adjudication - 2026-10-07
+
+Bishop and rook attack generation now uses magic bitboards, with unchanged move-generation semantics and a measured
+reduction in legal-move generation time across three machines. Flag-fall and resignation adjudication gain a guarded
+elementary-material theorem pre-check that avoids search where the result is already proven. The release also adds
+reproducible performance tooling and hardens the release procedure. No public API is removed or changed.
+
+### Notable
+
+- **Magic-bitboard slider attacks.** Bishop and rook queries use precomputed occupancy-indexed tables; queen attacks
+  combine them. Independent geometric, differential and perft checks verify correctness. Measured legal-move
+  generation time falls by approximately 17–25% across the reviewed ThinkPad, iMac M3 and IdeaCentre workloads.
+  The tables require 841 KiB of attack entries plus metadata, with a one-time initialization cost. See
+  [the verification record](benchmarks/magic-bitboard-verification.md) for workloads, environments and corrected baselines.
+- **Faster adjudication on covered elementary-material positions.** Quick and full flag-fall/resignation methods
+  first consult the basic-helpmate-existence theorem. The pre-check excludes KBNvK and opposite-coloured KBBvK,
+  whose retro-illegal counterexamples can pass strict FEN parsing, and defers those classes to the existing analyzers.
+  The standalone quick and full unwinnability analyzers retain their paper-derived algorithms and witness contracts.
+
+### Validation and tooling
+
+- An opt-in JMH profile provides slider microbenchmarks and production workloads without adding JMH to the published
+  library. iMac and Windows procedures preserve machine/JVM details, raw fork results, logs and harness fingerprints.
+- A default-profile corpus lint catches malformed strict PGN file structure before the expensive release suites.
+  Additional proof games pin the chasolver exhaustion challenges, with external oracle coverage.
+- Release preflight now runs fail-fast gates in cost order: clean working tree, license headers, JavaDoc, then both
+  full regression suites. Release notes are generated from the changelog with paragraphs unwrapped for GitHub rendering.
+
 ## [22.0.0] - Unwinnability now straight from the FUN 2022 paper - 2026-07-04
 
 The unwinnability engine is now ashlar's own independent, paper-derived implementation of Miguel Ambrona's FUN 2022 paper *A

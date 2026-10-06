@@ -11,53 +11,28 @@ Live planning only: current release work, backlog, and obsolete decisions. Shipp
 
 ---
 
-## 22.1.0 — Release-procedure hardening (+ substance TBD)
+## 22.1.0 — Magic bitboards and faster adjudication
 
-Branch `release-procedure` (created from `main` at the 22.0.0 tag commit `f04800f9`; PR #70 was opened and then
-**closed on purpose** — the process improvements alone don't justify the work a release creates, so this ships only
-once bundled with something substantial. Version deliberately 22.1.0, not 22.0.1: by the time it goes out there will
-be functional content). All process work below is DONE and pushed on the branch; the release itself waits.
+Release candidate on `release-procedure`; publication follows the runbook in **workflows.md**.
+The implementation work below is complete. The full preflight, signed dry-run, PR, tag,
+staged-bundle inspection and publication are release gates, not claims of completed publication.
 
-**Where this came from — challenges hit while cutting 22.0.0, and the solutions built:**
+### Done
 
-- **A malformed corpus fixture hid for a full day, then broke release pre-flight** (1 failure + 5 errors, all one
-  root cause: `01_cha_test_vector_orphan.pgn` adopted ending `*\n` instead of `*\n\n`). Every test that
-  strict-parses the corpus lived in `-Pfull`, so the default profile stayed green until release day.
-  ✅ SOLVED — `TestPgnCorpusFileStructure`: the strict file-structure pre-scan over all 1386 corpus files in the
-  **default** profile (~0.2 s; negative-probe verified against the exact defect). Fixture-adding workflow in
-  workflows.md now includes the lint. The fix itself shipped in 22.0.0 via PR #69.
-- **Pre-flight was six manual steps with who-runs-what ambiguity, and a `BUILD FAILURE` hid behind a green shell
-  exit** (background `mvn ... ; echo` masked the real exit; caught only by reading the log).
-  ✅ SOLVED — `tools/preflight.ps1`: the whole of runbook step 5 as one fail-fast command, every gate's verdict from
-  the tool's own exit code, single summary, `-SkipExcludedSuite` for quick passes.
-- **Gate ordering wasted the expensive suites** (user-caught): JavaDoc ran AFTER the 30–40-minute suites, so a doc
-  slip there means a fix commit that invalidates the already-green suites ("ship what you validated") and forces a
-  full re-run. ✅ SOLVED — principle stated in workflows.md and encoded in the script: **cheap fix-prone gates
-  first, expensive read-only suites last** (worktree → headers → JavaDoc → `-Pfull` → excluded suite). JavaDoc
-  additionally moved into cleanup step 2.5 so pre-flight confirms rather than discovers.
-- **The published release notes broke every paragraph mid-sentence.** CHANGELOG.md is hard-wrapped ~120 cols —
-  invisible in file rendering (GitHub reflows single newlines in files) but every `\n` becomes `<br>` in a release
-  body (releases/issues/comments render hard newlines). Pasted verbatim = broken page; also nobody looked at the
-  page after publishing. ✅ SOLVED — `tools/build-release-notes.ps1` (extracts the changelog entry, unwraps each
-  paragraph/list item to one logical line, prepends the title H1, prints the `gh release create` command; verified
-  to reproduce the corrected live 22.0.0 notes). Runbook 10.3/10.4: **generate, never paste**, then "open the
-  release page and look at it". The live 22.0.0 notes were fixed in place with `gh release edit`.
-- Eclipse-only steps (Problems view 0/0/0) stay human by design — no change.
-
-**Still open for 22.1.0:**
-
-- **Merge the branch** (reopen PR #70 or fresh PR) when the substantial content exists. Note the branch also
-  carries the 22.0.0 tasks.md archival line (runbook 11.2) — main lacks it until this merges.
-- **CI decision (GitHub Actions)** — agreed direction, not yet built: default profile as the required PR check
-  (~3–4 min); the full suite nightly + `workflow_dispatch`, explicitly NOT a required check (free public runners
-  are 4 vCPU; expect ~25–40 min for the ~20-min local suite; CI must never sit in the release critical path — the
-  local preflight script stays authoritative, CI is the continuous safety net that would have caught the orphan a
-  day early).
-- **Optional:** `prepare-release` script for the step-4 mechanics (pom bump, README snippet bump + regeneration,
-  changelog header/date) — low priority, went cleanly by hand.
-- **Declined for now:** tag-triggered publish from CI (GPG key custody in GitHub secrets; the human staged-bundle
-  inspection and Publish click at Sonatype are valued gates, not friction).
-- **Substance TBD** — the functional work that actually justifies the release number.
+- Magic-bitboard bishop/rook attacks, exhaustive collision checks, deterministic generator,
+  independent geometry/differential/perft review, and corrected JMH evidence on ThinkPad,
+  iMac M3 and IdeaCentre. See [verification](benchmarks/magic-bitboard-verification.md).
+- Guarded elementary-material theorem pre-check for flag-fall and resignation; KBNvK and
+  opposite-coloured KBBvK remain on the analyzer path. The proposed further KBN changes,
+  UCI removal and transposition-map sizing are not implemented in this candidate.
+- Default-profile strict PGN corpus lint, two additional exhaustion proof-game fixtures,
+  and oracle rows generated for both new final positions using CHA and pinned chasolver 3.0.0.
+  The latter proves White UNWINNABLE in the first fixture while ashlar abstains; this exact
+  completeness difference is documented without changing the comparison assertions.
+- Fail-closed release preflight with cheap fix-prone gates first and both full test commands
+  required; generated GitHub Release notes with unwrapped paragraphs.
+- Eclipse diagnostic fixes and the user-confirmed Format/Clean Up pass, committed separately
+  before the release-artifact bump. Generated documentation and JavaDoc checks passed.
 
 ---
 
@@ -274,77 +249,41 @@ Verified green: `mvn -o test` + `-Pfull` (1276 tests, 0 failures), `javadoc:jar`
 
 ---
 
-### Unwinnability is not slider-bound - optimize the mobility fixpoint instead
-
-Magic bitboards made slider attacks 13-16x faster and moved unwinnability analysis
-not at all. A JMH stack profile of `unwinnableFullTypical` says why: of runnable
-samples, `Mobility.mobility` is the largest attributable cost at 17.6% and
-`BitboardPosition.emitTargetsAsMoves` another 10.3%, while slider attack generation
-does not appear. The Figure 7 fixpoint works over an occupancy-free abstraction, so
-no slider work can help it. Any future effort aimed at unwinnability speed belongs
-there, not in the attack layer. (Half the samples were unattributed to inlining, so
-treat the split as indicative.)
-
-### `UciMoveUtility.toUci` on the unwinnability search path
-
-Shows up in the same profile at 0.8% of runnable samples. Building UCI strings inside
-an analysis loop is work whose result nothing reads; worth confirming and removing.
-
-### Pre-size the helpmate transposition map
-
-`HashMap.resize` appears in the same profile at 0.6%. Growth rehashing on a search-hot
-map is avoidable with a capacity hint.
-
-### `BETWEEN` / `LINE` tables for the remaining ray walks
-
-`pinRay` and the squares-between walk in `BitboardPosition` still step square by square
-(three sites). Precomputed `BETWEEN[64][64]` / `LINE[64][64]` tables are about 32 KB, so
-unlike the 841 KB magic tables they stay in L1/L2 on any target and cannot lose on cache
-pressure. Deliberately NOT bundled with the magic-bitboard release: one performance change
-per release, so attribution stays possible.
-
-### The magic-bitboard A/B pair, for re-measuring on another machine
-
-The clean before/after pair is frozen in history and does not depend on released
-artifacts: `84b9f0b2` carries the harness with the production path still on ray loops,
-`686b84f7` is the same harness with magics. `MoveGenerationBenchmark` and
-`UnwinnabilityBenchmark` are identical in both, and both commits predate the KBN
-shortcut removal and the hot-path fixes, so the pair isolates magic bitboards no matter
-what else ships in the same release.
-
-Do not measure this by comparing the 22.0.0 and 22.1.0 jars. That release carries three
-performance-relevant changes - magics, the `toUci` removal and the pre-sized map - and the
-KBN shortcut removal pushes unwinnability the other way, because the affected positions now
-fall through to the full search instead of being decided by the theorem.
-
-`SliderAttacksBenchmark` needs no pair at all: it holds `bishopRay`/`bishopMagic`,
-`rookRay`/`rookMagic` and `queenRay`/`queenMagic` side by side, so one run on the current
-tree measures both implementations under identical conditions. That is the sharpest form of
-the measurement and the only one immune to between-run drift.
-
-### Benchmark methodology: single runs cannot resolve small effects on the notebook
-
-Between-run drift on identical code reached 19% (`unwinnableQuick`) and 34%
-(`pinnedPieces[512]`) across two runs of the same build. JMH's confidence interval covers
-within-run variance only and is blind to this, so it reported non-overlapping intervals for
-differences that were pure drift. Any future perf claim below roughly 20-35% needs
-alternating paired runs of both builds, plus a control benchmark that the change cannot
-affect - `pinnedPieces` served as that control here and is what caught the error.
-
-### Regenerate the Ambrona / chasolver oracle TSVs - blocks release preflight
-
-`f50c0812` added two exhaustion proof-game PGNs and wired them into the chasolver-challenge
-exceptions catalog without regenerating the oracles. The comparison tests look up
-`testCase.finalFen()` for every corpus entry, so the two new final positions have no oracle
-row and four tests fail hard:
-`IllegalArgumentException: No Ambrona unwinnability oracle row for FEN: 3k1b2/2p1pBp1/KpP1P1P1/pP3B2/P3B1B1/8/8/8 w - - 7 56`.
-Reproduced at the pre-magic commit, so it is not related to the slider change. Preflight gate 5
-runs exactly this suite with `-Dtest.excludes=`, so a release cannot pass until the oracles are
-regenerated via `tools/ambrona-oracle` / `tools/chasolver-oracle`.
-
 ## Backlog — captured but unscheduled
 
 Items here are not assigned to any release. Captured so they don't get lost; revisit if/when scope or motivation aligns.
+
+### Continuous integration safety net
+
+Deferred from the 22.1.0 process planning: default-profile checks on PRs, with the full
+suite nightly and on manual dispatch. Local preflight remains the authoritative release
+gate; automated publishing and CI signing-key custody remain out of scope.
+
+### Unwinnability profiling follow-ups
+
+An earlier notebook profile attributed runnable samples to `Mobility.mobility` (17.6%),
+`BitboardPosition.emitTargetsAsMoves` (10.3%), unused UCI rendering (0.8%) and map resizing
+(0.6%); roughly half the samples were unattributed after inlining. These are candidates
+for separate measured changes, not universal bottleneck claims. Later iMac and IdeaCentre
+runs support unwinnability gains from magics, superseding the earlier flat observation.
+
+### BETWEEN / LINE tables for remaining ray walks
+
+Precomputed tables could replace the remaining pin/squares-between walks. Measure their
+cache and end-to-end effects separately; their smaller size does not guarantee a gain on
+every target. This optimization is not bundled with the magic-bitboard change.
+
+### Benchmark evidence and methodology
+
+The corrected, independently checked workload pair is `84b9f0b2` before and `2702d82d`
+after, with the corrected shared harness overlaid on the before build. The production
+diff changes only the four slider classes. The previously claimed UCI/map/KBN changes
+are absent. Single-invocation JMH methods use separate sequential forks and are not
+immune to drift. Use repeated alternating runs, fork distributions and the unchanged
+pin control; no universal noise threshold follows from one notebook experiment.
+The original 13–16x headline used a slower rewritten ray baseline and is superseded by
+the corrected measurements in the verification record.
+
 
 ### Tighten remaining mutable return types on internal-but-public surfaces
 
