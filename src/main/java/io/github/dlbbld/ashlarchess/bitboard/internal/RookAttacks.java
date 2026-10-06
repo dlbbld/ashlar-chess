@@ -4,14 +4,13 @@
 package io.github.dlbbld.ashlarchess.bitboard.internal;
 
 /**
- * Rook attacks via classical ray loops. {@link #attacks(int, long)} returns the bitboard of squares a rook on
- * {@code squareOrdinal} attacks given an {@code occupied}-mask of all pieces on the board. Each of the four orthogonal
- * rays (N, S, E, W) accumulates target bits until the ray falls off the edge or hits an occupied square (the blocker
- * bit is included before stopping) - matching the existing reference's "isAllowOwnPiece = true" attack semantics.
+ * Rook attacks. {@link #attacks(int, long)} returns the bitboard of squares a rook on {@code squareOrdinal} attacks
+ * given an {@code occupied}-mask of all pieces on the board. Each of the four orthogonal rays contributes its empty
+ * squares plus the first blocker in that direction, whatever its colour - so own pieces read as defended.
  *
  * <p>
- * Classical ray loops are the implementation here; the API shape is compatible with occupied-mask attack generation
- * (e.g. magic bitboards), should that become worthwhile.
+ * Served by {@link MagicSliderAttacks}. {@link SliderRayAttacks} holds the equivalent ray walk, which builds those
+ * tables and remains the oracle the differential tests check against.
  */
 public final class RookAttacks {
 
@@ -22,29 +21,6 @@ public final class RookAttacks {
     if (squareOrdinal < 0 || squareOrdinal >= 64) {
       throw new IllegalArgumentException("squareOrdinal out of range: " + squareOrdinal);
     }
-    final int fromFile = squareOrdinal % 8;
-    final int fromRank = squareOrdinal / 8;
-    long attacks = 0L;
-    attacks |= rayAttacks(fromFile, fromRank, +1, 0, occupied);
-    attacks |= rayAttacks(fromFile, fromRank, -1, 0, occupied);
-    attacks |= rayAttacks(fromFile, fromRank, 0, +1, occupied);
-    attacks |= rayAttacks(fromFile, fromRank, 0, -1, occupied);
-    return attacks;
-  }
-
-  private static long rayAttacks(int fromFile, int fromRank, int fileStep, int rankStep, long occupied) {
-    long attacks = 0L;
-    int file = fromFile + fileStep;
-    int rank = fromRank + rankStep;
-    while (file >= 0 && file < 8 && rank >= 0 && rank < 8) {
-      final long targetBit = 1L << (rank * 8 + file);
-      attacks |= targetBit;
-      if ((targetBit & occupied) != 0L) {
-        break;
-      }
-      file += fileStep;
-      rank += rankStep;
-    }
-    return attacks;
+    return MagicSliderAttacks.rook(squareOrdinal, occupied);
   }
 }

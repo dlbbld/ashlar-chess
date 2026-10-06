@@ -19,25 +19,28 @@ import org.openjdk.jmh.annotations.State;
 import org.openjdk.jmh.annotations.Warmup;
 
 import io.github.dlbbld.ashlarchess.bitboard.BitboardPosition;
-import io.github.dlbbld.ashlarchess.bitboard.internal.BishopAttacks;
-import io.github.dlbbld.ashlarchess.bitboard.internal.QueenAttacks;
-import io.github.dlbbld.ashlarchess.bitboard.internal.RookAttacks;
+import io.github.dlbbld.ashlarchess.bitboard.internal.MagicSliderAttacks;
+import io.github.dlbbld.ashlarchess.bitboard.internal.SliderRayAttacks;
 import io.github.dlbbld.ashlarchess.board.Board;
 
 /**
- * The slider attack generators in isolation - the narrowest measurement of the ray-loop versus magic-bitboard
- * question.
+ * Ray walk against magic lookup, head to head - the narrowest form of the question.
  *
  * <p>
- * The occupancy masks are taken from real positions rather than generated at random, because the two implementations
- * respond to occupancy in opposite ways: a ray loop gets *cheaper* as the board fills up (it stops at the first
- * blocker), while a magic lookup costs the same either way. Random occupancies at ~50% density would therefore flatter
- * the ray loop relative to real play, and an empty board would flatter it enormously. Using the actual occupancy mix
- * from the curated corpus is the only way this microbenchmark predicts anything about real use.
+ * Both implementations are measured in the same run over the same probe arrays, rather than by benchmarking one build
+ * and then the other. That removes every difference except the code under test: same JVM, same JIT decisions, same
+ * fixtures, same machine state. A before-and-after comparison across two builds cannot rule out drift from any of
+ * those, and at the few-nanosecond scale this measures, that drift would be the same size as the effect.
  *
  * <p>
- * A microbenchmark win here is necessary but not sufficient: see {@link MoveGenerationBenchmark} for whether it
- * survives amortization into real move generation.
+ * The occupancy masks come from real positions rather than random bits, because the two implementations respond to
+ * occupancy in opposite ways: a ray walk gets <em>cheaper</em> as the board fills up, since it stops at the first
+ * blocker, while a magic lookup costs the same either way. Random occupancies at 50% density would therefore flatter
+ * the ray walk against real play, and an empty board would flatter it enormously.
+ *
+ * <p>
+ * A win here is necessary but not sufficient. See {@link MoveGenerationBenchmark} and {@link UnwinnabilityBenchmark}
+ * for whether it survives amortization into the work that actually calls these.
  */
 @State(Scope.Benchmark)
 @BenchmarkMode(Mode.AverageTime)
@@ -86,30 +89,62 @@ public class SliderAttacksBenchmark {
 
   @Benchmark
   @OperationsPerInvocation(PROBES)
-  public long bishopAttacks() {
+  public long bishopRay() {
     long accumulated = 0L;
     for (int i = 0; i < PROBES; i++) {
-      accumulated ^= BishopAttacks.attacks(this.squares[i], this.occupancies[i]);
+      accumulated ^= SliderRayAttacks.bishop(this.squares[i], this.occupancies[i]);
     }
     return accumulated;
   }
 
   @Benchmark
   @OperationsPerInvocation(PROBES)
-  public long rookAttacks() {
+  public long bishopMagic() {
     long accumulated = 0L;
     for (int i = 0; i < PROBES; i++) {
-      accumulated ^= RookAttacks.attacks(this.squares[i], this.occupancies[i]);
+      accumulated ^= MagicSliderAttacks.bishop(this.squares[i], this.occupancies[i]);
     }
     return accumulated;
   }
 
   @Benchmark
   @OperationsPerInvocation(PROBES)
-  public long queenAttacks() {
+  public long rookRay() {
     long accumulated = 0L;
     for (int i = 0; i < PROBES; i++) {
-      accumulated ^= QueenAttacks.attacks(this.squares[i], this.occupancies[i]);
+      accumulated ^= SliderRayAttacks.rook(this.squares[i], this.occupancies[i]);
+    }
+    return accumulated;
+  }
+
+  @Benchmark
+  @OperationsPerInvocation(PROBES)
+  public long rookMagic() {
+    long accumulated = 0L;
+    for (int i = 0; i < PROBES; i++) {
+      accumulated ^= MagicSliderAttacks.rook(this.squares[i], this.occupancies[i]);
+    }
+    return accumulated;
+  }
+
+  @Benchmark
+  @OperationsPerInvocation(PROBES)
+  public long queenRay() {
+    long accumulated = 0L;
+    for (int i = 0; i < PROBES; i++) {
+      accumulated ^= SliderRayAttacks.bishop(this.squares[i], this.occupancies[i])
+          | SliderRayAttacks.rook(this.squares[i], this.occupancies[i]);
+    }
+    return accumulated;
+  }
+
+  @Benchmark
+  @OperationsPerInvocation(PROBES)
+  public long queenMagic() {
+    long accumulated = 0L;
+    for (int i = 0; i < PROBES; i++) {
+      accumulated ^= MagicSliderAttacks.bishop(this.squares[i], this.occupancies[i])
+          | MagicSliderAttacks.rook(this.squares[i], this.occupancies[i]);
     }
     return accumulated;
   }

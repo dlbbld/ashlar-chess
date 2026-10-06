@@ -26,7 +26,7 @@ import io.github.dlbbld.ashlarchess.test.pgn.setup.PgnTestCaseCatalog;
 import io.github.dlbbld.ashlarchess.test.pgntest.enums.PgnTest;
 
 /**
- * Differential test for {@link RookAttacks}: for every rook on every fixture in the corpus, the bitboard ray-loop
+ * Differential test for {@link RookAttacks}: for every rook on every fixture in the corpus, the bitboard attack
  * result must agree with {@code RookAttackedSquares} (reached via {@link SlidingAttacksTestOracle}).
  */
 class TestRookAttacks {
