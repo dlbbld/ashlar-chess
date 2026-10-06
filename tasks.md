@@ -303,6 +303,25 @@ unlike the 841 KB magic tables they stay in L1/L2 on any target and cannot lose 
 pressure. Deliberately NOT bundled with the magic-bitboard release: one performance change
 per release, so attribution stays possible.
 
+### The magic-bitboard A/B pair, for re-measuring on another machine
+
+The clean before/after pair is frozen in history and does not depend on released
+artifacts: `84b9f0b2` carries the harness with the production path still on ray loops,
+`686b84f7` is the same harness with magics. `MoveGenerationBenchmark` and
+`UnwinnabilityBenchmark` are identical in both, and both commits predate the KBN
+shortcut removal and the hot-path fixes, so the pair isolates magic bitboards no matter
+what else ships in the same release.
+
+Do not measure this by comparing the 22.0.0 and 22.1.0 jars. That release carries three
+performance-relevant changes - magics, the `toUci` removal and the pre-sized map - and the
+KBN shortcut removal pushes unwinnability the other way, because the affected positions now
+fall through to the full search instead of being decided by the theorem.
+
+`SliderAttacksBenchmark` needs no pair at all: it holds `bishopRay`/`bishopMagic`,
+`rookRay`/`rookMagic` and `queenRay`/`queenMagic` side by side, so one run on the current
+tree measures both implementations under identical conditions. That is the sharpest form of
+the measurement and the only one immune to between-run drift.
+
 ### Benchmark methodology: single runs cannot resolve small effects on the notebook
 
 Between-run drift on identical code reached 19% (`unwinnableQuick`) and 34%
