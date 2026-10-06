@@ -274,6 +274,55 @@ Verified green: `mvn -o test` + `-Pfull` (1276 tests, 0 failures), `javadoc:jar`
 
 ---
 
+### Unwinnability is not slider-bound - optimize the mobility fixpoint instead
+
+Magic bitboards made slider attacks 13-16x faster and moved unwinnability analysis
+not at all. A JMH stack profile of `unwinnableFullTypical` says why: of runnable
+samples, `Mobility.mobility` is the largest attributable cost at 17.6% and
+`BitboardPosition.emitTargetsAsMoves` another 10.3%, while slider attack generation
+does not appear. The Figure 7 fixpoint works over an occupancy-free abstraction, so
+no slider work can help it. Any future effort aimed at unwinnability speed belongs
+there, not in the attack layer. (Half the samples were unattributed to inlining, so
+treat the split as indicative.)
+
+### `UciMoveUtility.toUci` on the unwinnability search path
+
+Shows up in the same profile at 0.8% of runnable samples. Building UCI strings inside
+an analysis loop is work whose result nothing reads; worth confirming and removing.
+
+### Pre-size the helpmate transposition map
+
+`HashMap.resize` appears in the same profile at 0.6%. Growth rehashing on a search-hot
+map is avoidable with a capacity hint.
+
+### `BETWEEN` / `LINE` tables for the remaining ray walks
+
+`pinRay` and the squares-between walk in `BitboardPosition` still step square by square
+(three sites). Precomputed `BETWEEN[64][64]` / `LINE[64][64]` tables are about 32 KB, so
+unlike the 841 KB magic tables they stay in L1/L2 on any target and cannot lose on cache
+pressure. Deliberately NOT bundled with the magic-bitboard release: one performance change
+per release, so attribution stays possible.
+
+### Benchmark methodology: single runs cannot resolve small effects on the notebook
+
+Between-run drift on identical code reached 19% (`unwinnableQuick`) and 34%
+(`pinnedPieces[512]`) across two runs of the same build. JMH's confidence interval covers
+within-run variance only and is blind to this, so it reported non-overlapping intervals for
+differences that were pure drift. Any future perf claim below roughly 20-35% needs
+alternating paired runs of both builds, plus a control benchmark that the change cannot
+affect - `pinnedPieces` served as that control here and is what caught the error.
+
+### Regenerate the Ambrona / chasolver oracle TSVs - blocks release preflight
+
+`f50c0812` added two exhaustion proof-game PGNs and wired them into the chasolver-challenge
+exceptions catalog without regenerating the oracles. The comparison tests look up
+`testCase.finalFen()` for every corpus entry, so the two new final positions have no oracle
+row and four tests fail hard:
+`IllegalArgumentException: No Ambrona unwinnability oracle row for FEN: 3k1b2/2p1pBp1/KpP1P1P1/pP3B2/P3B1B1/8/8/8 w - - 7 56`.
+Reproduced at the pre-magic commit, so it is not related to the slider change. Preflight gate 5
+runs exactly this suite with `-Dtest.excludes=`, so a release cannot pass until the oracles are
+regenerated via `tools/ambrona-oracle` / `tools/chasolver-oracle`.
+
 ## Backlog — captured but unscheduled
 
 Items here are not assigned to any release. Captured so they don't get lost; revisit if/when scope or motivation aligns.
