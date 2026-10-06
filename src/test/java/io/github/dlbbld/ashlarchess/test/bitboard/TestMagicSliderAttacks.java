@@ -15,15 +15,15 @@ import io.github.dlbbld.ashlarchess.bitboard.internal.SliderRayAttacks;
  *
  * <p>
  * The magic tables are built from the ray walk, so these tests are not checking that the two agree on the occupancies
- * used to build the table - that holds by construction. What they check is the indexing: that the magic hash maps
- * every occupancy onto the entry holding the right answer, and that the relevant-occupancy mask really is sufficient.
+ * used to build the table - that holds by construction. What they check is the indexing: that the magic hash maps every
+ * occupancy onto the entry holding the right answer, and that the relevant-occupancy mask really is sufficient.
  *
  * <p>
  * The mask claim is the subtle one and {@link #fullBoardOccupanciesAgree} is the test that earns it. A magic index is
  * computed from {@code occupied & mask}, which discards the last square of every ray, yet the ray walk does look at
  * those squares. Dropping them is only sound because a blocker on the final square of a ray changes nothing: that
- * square is attacked either way and there is nothing beyond it to shadow. So occupancies that set bits outside the
- * mask have to be tried explicitly, not just subsets of it.
+ * square is attacked either way and there is nothing beyond it to shadow. So occupancies that set bits outside the mask
+ * have to be tried explicitly, not just subsets of it.
  */
 class TestMagicSliderAttacks {
 
@@ -93,9 +93,10 @@ class TestMagicSliderAttacks {
     long subset = 0L;
     do {
       final long expected = isBishop ? SliderRayAttacks.bishop(square, subset) : SliderRayAttacks.rook(square, subset);
-      final long actual = isBishop ? MagicSliderAttacks.bishop(square, subset) : MagicSliderAttacks.rook(square, subset);
-      assertEquals(expected, actual, (isBishop ? "bishop" : "rook") + " mismatch on square " + square + " occupancy "
-          + Long.toHexString(subset));
+      final long actual = isBishop ? MagicSliderAttacks.bishop(square, subset)
+          : MagicSliderAttacks.rook(square, subset);
+      assertEquals(expected, actual,
+          (isBishop ? "bishop" : "rook") + " mismatch on square " + square + " occupancy " + Long.toHexString(subset));
       subset = (subset - mask) & mask;
     } while (subset != 0L);
   }

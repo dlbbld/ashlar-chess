@@ -20,14 +20,11 @@ import io.github.dlbbld.ashlarchess.test.pgntest.enums.PgnTest;
 
 class TestChasolverChallengeExploration {
 
-  private static final String UNWINNABLE_EXHAUSTION_BLACK_ONLY =
-      "3k1b2/2p1pBp1/KpP1P1P1/pP3B2/P3B1B1/8/8/8 w - - 7 56";
+  private static final String UNWINNABLE_EXHAUSTION_BLACK_ONLY = "3k1b2/2p1pBp1/KpP1P1P1/pP3B2/P3B1B1/8/8/8 w - - 7 56";
 
-  private static final String UNWINNABLE_EXHAUSTION_BOTH_SIDES =
-      "3k1b2/2p1pBp1/KpP1P1P1/1P3B2/4B1B1/5B2/8/8 w - - 3 57";
+  private static final String UNWINNABLE_EXHAUSTION_BOTH_SIDES = "3k1b2/2p1pBp1/KpP1P1P1/1P3B2/4B1B1/5B2/8/8 w - - 3 57";
 
-  private static final String CAGED_KING_STALEMATE_CAPTURE =
-      "1k1K1b1b/p1p1pBb1/PpP1PpPp/1P3P1P/4B3/8/8/8 w - - 3 57";
+  private static final String CAGED_KING_STALEMATE_CAPTURE = "1k1K1b1b/p1p1pBb1/PpP1PpPp/1P3P1P/4B3/8/8/8 w - - 3 57";
 
   private record ExplorationPosition(String label, String fen) {
   }
@@ -39,35 +36,24 @@ class TestChasolverChallengeExploration {
   }
 
   private static final List<ExplorationPosition> EXPLORATION_POSITIONS = Nulls.listOf(
-      new ExplorationPosition("queen corner mirror seed",
-          "8/8/8/3b2P1/5PpP/2K1Pp1p/4p1bk/5bnq w - - 0 1"),
-      new ExplorationPosition("bishop wall seed",
-          "Bb1k1b2/bKp1p1p1/1pP1P1P1/pP6/P5P1/1B6/8/8 w - - 0 1"),
-      new ExplorationPosition("two white bishops",
-          "B2k1b2/2p1pBp1/KpP1P1P1/pP6/P5P1/8/8/8 w - - 0 1"),
-      new ExplorationPosition("three white bishops",
-          "B2k1b2/2p1pBp1/KpP1P1P1/pP6/P5P1/8/8/3B4 w - - 0 1"),
-      new ExplorationPosition("four white bishops with a-pawns",
-          "3k1b2/2p1pBp1/KpP1P1P1/pP6/P5P1/8/2B5/3B4 w - - 0 1"),
+      new ExplorationPosition("queen corner mirror seed", "8/8/8/3b2P1/5PpP/2K1Pp1p/4p1bk/5bnq w - - 0 1"),
+      new ExplorationPosition("bishop wall seed", "Bb1k1b2/bKp1p1p1/1pP1P1P1/pP6/P5P1/1B6/8/8 w - - 0 1"),
+      new ExplorationPosition("two white bishops", "B2k1b2/2p1pBp1/KpP1P1P1/pP6/P5P1/8/8/8 w - - 0 1"),
+      new ExplorationPosition("three white bishops", "B2k1b2/2p1pBp1/KpP1P1P1/pP6/P5P1/8/8/3B4 w - - 0 1"),
+      new ExplorationPosition("four white bishops with a-pawns", "3k1b2/2p1pBp1/KpP1P1P1/pP6/P5P1/8/2B5/3B4 w - - 0 1"),
       new ExplorationPosition("four white bishops without g4 pawn",
           "3k1b2/2p1pBp1/KpP1P1P1/pP6/P7/8/2B1B3/3B4 w - - 0 1"),
-      new ExplorationPosition("black mobility bishop",
-          "1b1k1b2/2p1pBp1/KpP1P1P1/pP6/P7/8/2B1B3/3B4 w - - 0 1"),
-      new ExplorationPosition("bishop shifted onto d7",
-          "3k1b2/2pBpBp1/KpP1P1P1/pP6/P7/8/4B3/3B4 w - - 0 1"),
-      new ExplorationPosition("guarded c7 basis",
-          "1b1k1b2/b1p1pBp1/KpP1P1P1/pP6/P7/8/8/8 w - - 0 1"),
+      new ExplorationPosition("black mobility bishop", "1b1k1b2/2p1pBp1/KpP1P1P1/pP6/P7/8/2B1B3/3B4 w - - 0 1"),
+      new ExplorationPosition("bishop shifted onto d7", "3k1b2/2pBpBp1/KpP1P1P1/pP6/P7/8/4B3/3B4 w - - 0 1"),
+      new ExplorationPosition("guarded c7 basis", "1b1k1b2/b1p1pBp1/KpP1P1P1/pP6/P7/8/8/8 w - - 0 1"),
       new ExplorationPosition("unwinnable exhaustion black only", UNWINNABLE_EXHAUSTION_BLACK_ONLY),
       new ExplorationPosition("unwinnable exhaustion both sides, analysis clock",
           "3k1b2/2p1pBp1/KpP1P1P1/1P3B2/4B1B1/5B2/8/8 w - - 7 56"),
       new ExplorationPosition("guarded c7 plus black dark bishop",
           "1b1k1b2/b1p1pBp1/KpP1P1P1/1P3B2/4BbB1/5B2/8/8 w - - 7 56"),
-      new ExplorationPosition("maxing dark bishops",
-          "B2k1b2/1BpBpBp1/KpP1P1P1/1P2bB2/3b1b2/4b3/8/8 w - - 7 56"),
-      new ExplorationPosition("maxing light bishops",
-          "B2k1b2/1BpBpBpB/KpP1P1P1/1P2b3/3b1b2/4b3/8/8 w - - 7 56"),
-      new ExplorationPosition("static proof dead end",
-          "3k1b2/2pPpBp1/KpP1P1P1/1P2b3/3bBb2/3BbB2/8/8 b - - 8 56"),
+      new ExplorationPosition("maxing dark bishops", "B2k1b2/1BpBpBp1/KpP1P1P1/1P2bB2/3b1b2/4b3/8/8 w - - 7 56"),
+      new ExplorationPosition("maxing light bishops", "B2k1b2/1BpBpBpB/KpP1P1P1/1P2b3/3b1b2/4b3/8/8 w - - 7 56"),
+      new ExplorationPosition("static proof dead end", "3k1b2/2pPpBp1/KpP1P1P1/1P2b3/3bBb2/3BbB2/8/8 b - - 8 56"),
       new ExplorationPosition("caged king stalemate capture", CAGED_KING_STALEMATE_CAPTURE),
       new ExplorationPosition("unwinnable exhaustion both sides", UNWINNABLE_EXHAUSTION_BOTH_SIDES));
 
@@ -102,14 +88,11 @@ class TestChasolverChallengeExploration {
   void selectedFullVerdictsPinExplorationBoundaries() {
     assertFullVerdicts("queen corner mirror seed", "8/8/8/3b2P1/5PpP/2K1Pp1p/4p1bk/5bnq w - - 0 1",
         UnwinnabilityFullVerdict.WINNABLE, UnwinnabilityFullVerdict.WINNABLE);
-    assertFullVerdicts("black mobility bishop",
-        "1b1k1b2/2p1pBp1/KpP1P1P1/pP6/P7/8/2B1B3/3B4 w - - 0 1",
+    assertFullVerdicts("black mobility bishop", "1b1k1b2/2p1pBp1/KpP1P1P1/pP6/P7/8/2B1B3/3B4 w - - 0 1",
         UnwinnabilityFullVerdict.WINNABLE, UnwinnabilityFullVerdict.WINNABLE);
-    assertFullVerdicts("guarded c7 basis",
-        "1b1k1b2/b1p1pBp1/KpP1P1P1/pP6/P7/8/8/8 w - - 0 1", UnwinnabilityFullVerdict.UNWINNABLE,
-        UnwinnabilityFullVerdict.UNWINNABLE);
-    assertFullVerdicts("static proof dead end",
-        "3k1b2/2pPpBp1/KpP1P1P1/1P2b3/3bBb2/3BbB2/8/8 b - - 8 56",
+    assertFullVerdicts("guarded c7 basis", "1b1k1b2/b1p1pBp1/KpP1P1P1/pP6/P7/8/8/8 w - - 0 1",
+        UnwinnabilityFullVerdict.UNWINNABLE, UnwinnabilityFullVerdict.UNWINNABLE);
+    assertFullVerdicts("static proof dead end", "3k1b2/2pPpBp1/KpP1P1P1/1P2b3/3bBb2/3BbB2/8/8 b - - 8 56",
         UnwinnabilityFullVerdict.UNWINNABLE, UnwinnabilityFullVerdict.UNWINNABLE);
     assertFullVerdicts("caged king stalemate capture", CAGED_KING_STALEMATE_CAPTURE,
         UnwinnabilityFullVerdict.UNDETERMINED, UnwinnabilityFullVerdict.UNDETERMINED);

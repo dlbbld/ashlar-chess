@@ -17,9 +17,9 @@ package io.github.dlbbld.ashlarchess.bitboard.internal;
  * <p>
  * The four ray calls per piece are written out rather than looped over a direction table, which is also how this code
  * read before the magic tables arrived. That is deliberate and must stay: with the steps as constant arguments the
- * compiler specializes each call, and folding them into a loop over an {@code int[][]} costs roughly 50% on bishops
- * and 65% on rooks. Since this class doubles as the timed baseline for the magic-bitboard comparison, a rewrite that
- * slowed it down would silently inflate the measured speedup rather than show up as a regression.
+ * compiler specializes each call, and folding them into a loop over an {@code int[][]} costs roughly 50% on bishops and
+ * 65% on rooks. Since this class doubles as the timed baseline for the magic-bitboard comparison, a rewrite that slowed
+ * it down would silently inflate the measured speedup rather than show up as a regression.
  */
 public final class SliderRayAttacks {
 

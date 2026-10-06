@@ -95,7 +95,8 @@ final class SquareGeometry {
       queue[tail] = src;
       tail++;
       while (head < tail) {
-        final int u = queue[head++];
+        final int u = queue[head];
+        head++;
         long neighbours = KNIGHT[u];
         while (neighbours != 0L) {
           final int v = Long.numberOfTrailingZeros(neighbours);

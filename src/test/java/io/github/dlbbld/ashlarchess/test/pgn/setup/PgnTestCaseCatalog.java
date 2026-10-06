@@ -2623,10 +2623,10 @@ public class PgnTestCaseCatalog {
         new PgnFen("02_chasolver_node_limit_exception.pgn", "1Bb5/1p6/pPp3k1/2Pp1b1p/P2PpBpP/4P1P1/5K2/8 w - - 5 37"));
     list.add(new PgnFen("03_chasolver_node_limit_exception.pgn",
         "1Bb5/1p6/pPpBb1k1/2Pp1b2/P2PpBp1/4P1P1/5K2/8 w - - 10 46"));
-    list.add(new PgnFen("04_unwinnable_exhaustion_black_only.pgn",
-        "3k1b2/2p1pBp1/KpP1P1P1/pP3B2/P3B1B1/8/8/8 w - - 7 56"));
-    list.add(new PgnFen("05_unwinnable_exhaustion_both_sides.pgn",
-        "3k1b2/2p1pBp1/KpP1P1P1/1P3B2/4B1B1/5B2/8/8 w - - 3 57"));
+    list.add(
+        new PgnFen("04_unwinnable_exhaustion_black_only.pgn", "3k1b2/2p1pBp1/KpP1P1P1/pP3B2/P3B1B1/8/8/8 w - - 7 56"));
+    list.add(
+        new PgnFen("05_unwinnable_exhaustion_both_sides.pgn", "3k1b2/2p1pBp1/KpP1P1P1/1P3B2/4B1B1/5B2/8/8 w - - 3 57"));
 
     return new PgnTestCaseList(PgnTest.CHA_CHASOLVER_CHALLENGES_EXCEPTIONS, list);
   }
