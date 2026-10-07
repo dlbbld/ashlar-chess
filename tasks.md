@@ -11,7 +11,34 @@ Live planning only: current release work, backlog, and obsolete decisions. Shipp
 
 ---
 
+## 22.1.0 — Magic bitboards and faster adjudication
+
+Release candidate on `release-procedure`; publication follows the runbook in **workflows.md**.
+The implementation work below is complete. The full preflight, signed dry-run, PR, tag,
+staged-bundle inspection and publication are release gates, not claims of completed publication.
+
+### Done
+
+- Magic-bitboard bishop/rook attacks, exhaustive collision checks, deterministic generator,
+  independent geometry/differential/perft review, and corrected JMH evidence on ThinkPad,
+  iMac M3 and IdeaCentre. See [verification](benchmarks/magic-bitboard-verification.md).
+- Guarded elementary-material theorem pre-check for flag-fall and resignation; KBNvK and
+  opposite-coloured KBBvK remain on the analyzer path. The proposed further KBN changes,
+  UCI removal and transposition-map sizing are not implemented in this candidate.
+- Default-profile strict PGN corpus lint, two additional exhaustion proof-game fixtures,
+  and oracle rows generated for both new final positions using CHA and pinned chasolver 3.0.0.
+  The latter proves White UNWINNABLE in the first fixture while ashlar abstains; this exact
+  completeness difference is documented without changing the comparison assertions.
+- Fail-closed release preflight with cheap fix-prone gates first and both full test commands
+  required; generated GitHub Release notes with unwrapped paragraphs.
+- Eclipse diagnostic fixes and the user-confirmed Format/Clean Up pass, committed separately
+  before the release-artifact bump. Generated documentation and JavaDoc checks passed.
+
+---
+
 ## 22.0.0 — Unwinnability now straight from the FUN 2022 paper
+
+Published 2026-07-04 (tag `22.0.0` on `f04800f9`, on Maven Central); see **CHANGELOG.md** for the consumer-facing summary. Shipped from branch `implement-fun22` (merged as PR #68, plus the pre-flight fixture fix PR #69). The `fun22-reference` project is decommissioned with the release: everything of value is vendored and validated in ashlar, a full-history bundle lives in `Downloads/fun22-reference-archive/`.
 
 Branch `implement-fun22`. The unwinnability engine becomes ashlar's own clean-room implementation of Ambrona's FUN 2022
 paper (*A Practical Algorithm for Chess Unwinnability*, Figures 5–13, Lemmas 5/6, Theorem 12), vendored from the
@@ -225,6 +252,38 @@ Verified green: `mvn -o test` + `-Pfull` (1276 tests, 0 failures), `javadoc:jar`
 ## Backlog — captured but unscheduled
 
 Items here are not assigned to any release. Captured so they don't get lost; revisit if/when scope or motivation aligns.
+
+### Continuous integration safety net
+
+Deferred from the 22.1.0 process planning: default-profile checks on PRs, with the full
+suite nightly and on manual dispatch. Local preflight remains the authoritative release
+gate; automated publishing and CI signing-key custody remain out of scope.
+
+### Unwinnability profiling follow-ups
+
+An earlier notebook profile attributed runnable samples to `Mobility.mobility` (17.6%),
+`BitboardPosition.emitTargetsAsMoves` (10.3%), unused UCI rendering (0.8%) and map resizing
+(0.6%); roughly half the samples were unattributed after inlining. These are candidates
+for separate measured changes, not universal bottleneck claims. Later iMac and IdeaCentre
+runs support unwinnability gains from magics, superseding the earlier flat observation.
+
+### BETWEEN / LINE tables for remaining ray walks
+
+Precomputed tables could replace the remaining pin/squares-between walks. Measure their
+cache and end-to-end effects separately; their smaller size does not guarantee a gain on
+every target. This optimization is not bundled with the magic-bitboard change.
+
+### Benchmark evidence and methodology
+
+The corrected, independently checked workload pair is `84b9f0b2` before and `2702d82d`
+after, with the corrected shared harness overlaid on the before build. The production
+diff changes only the four slider classes. The previously claimed UCI/map/KBN changes
+are absent. Single-invocation JMH methods use separate sequential forks and are not
+immune to drift. Use repeated alternating runs, fork distributions and the unchanged
+pin control; no universal noise threshold follows from one notebook experiment.
+The original 13–16x headline used a slower rewritten ray baseline and is superseded by
+the corrected measurements in the verification record.
+
 
 ### Tighten remaining mutable return types on internal-but-public surfaces
 

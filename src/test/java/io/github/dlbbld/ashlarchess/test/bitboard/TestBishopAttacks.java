@@ -26,7 +26,7 @@ import io.github.dlbbld.ashlarchess.test.pgn.setup.PgnTestCaseCatalog;
 import io.github.dlbbld.ashlarchess.test.pgntest.enums.PgnTest;
 
 /**
- * Differential test for {@link BishopAttacks}: for every bishop on every fixture in the corpus, the bitboard ray-loop
+ * Differential test for {@link BishopAttacks}: for every bishop on every fixture in the corpus, the bitboard attack
  * result must agree with {@code BishopAttackedSquares} (reached via {@link SlidingAttacksTestOracle}). Unlike the
  * non-sliding attacks, this is genuinely position-dependent - the corpus walk exercises a wide range of blocker
  * patterns.

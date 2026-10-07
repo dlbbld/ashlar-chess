@@ -13,8 +13,8 @@ import io.github.dlbbld.ashlarchess.board.enums.Side;
 import io.github.dlbbld.ashlarchess.test.model.PgnFen;
 import io.github.dlbbld.ashlarchess.test.pgn.setup.PgnTestCaseCatalog;
 import io.github.dlbbld.ashlarchess.test.pgntest.enums.PgnTest;
-import io.github.dlbbld.ashlarchess.unwinnability.BasicHelpmateExistenceTheorem;
 import io.github.dlbbld.ashlarchess.unwinnability.UnwinnabilityQuickVerdict;
+import io.github.dlbbld.ashlarchess.unwinnability.internal.BasicHelpmateExistenceTheorem;
 
 // The basic-helpmate-existence theorem as a test oracle against the quick analyzer. The quick analysis is sound and
 // deliberately incomplete, so the contract is one-directional:

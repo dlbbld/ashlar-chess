@@ -4,14 +4,13 @@
 package io.github.dlbbld.ashlarchess.bitboard.internal;
 
 /**
- * Bishop attacks via classical ray loops. {@link #attacks(int, long)} returns the bitboard of squares a bishop on
- * {@code squareOrdinal} attacks given an {@code occupied}-mask of all pieces on the board. The result includes every
- * empty square along each of the four diagonals plus the first blocker in that direction (regardless of colour) -
- * matching the existing reference's "isAllowOwnPiece = true" semantics for attacked squares (own pieces are defended).
+ * Bishop attacks. {@link #attacks(int, long)} returns the bitboard of squares a bishop on {@code squareOrdinal} attacks
+ * given an {@code occupied}-mask of all pieces on the board. The result includes every empty square along each of the
+ * four diagonals plus the first blocker in that direction, whatever its colour - so own pieces read as defended.
  *
  * <p>
- * Classical ray loops are the implementation here. The API shape ({@code int sq, long occupied}) is compatible with
- * occupied-mask attack generation (e.g. magic bitboards), should that become worthwhile.
+ * Served by {@link MagicSliderAttacks}. {@link SliderRayAttacks} holds the equivalent ray walk, which builds those
+ * tables and remains the oracle the differential tests check against.
  */
 public final class BishopAttacks {
 
@@ -22,29 +21,6 @@ public final class BishopAttacks {
     if (squareOrdinal < 0 || squareOrdinal >= 64) {
       throw new IllegalArgumentException("squareOrdinal out of range: " + squareOrdinal);
     }
-    final int fromFile = squareOrdinal % 8;
-    final int fromRank = squareOrdinal / 8;
-    long attacks = 0L;
-    attacks |= rayAttacks(fromFile, fromRank, +1, +1, occupied);
-    attacks |= rayAttacks(fromFile, fromRank, -1, +1, occupied);
-    attacks |= rayAttacks(fromFile, fromRank, +1, -1, occupied);
-    attacks |= rayAttacks(fromFile, fromRank, -1, -1, occupied);
-    return attacks;
-  }
-
-  private static long rayAttacks(int fromFile, int fromRank, int fileStep, int rankStep, long occupied) {
-    long attacks = 0L;
-    int file = fromFile + fileStep;
-    int rank = fromRank + rankStep;
-    while (file >= 0 && file < 8 && rank >= 0 && rank < 8) {
-      final long targetBit = 1L << (rank * 8 + file);
-      attacks |= targetBit;
-      if ((targetBit & occupied) != 0L) {
-        break;
-      }
-      file += fileStep;
-      rank += rankStep;
-    }
-    return attacks;
+    return MagicSliderAttacks.bishop(squareOrdinal, occupied);
   }
 }

@@ -13,12 +13,12 @@ import org.junit.jupiter.api.Test;
 
 import io.github.dlbbld.ashlarchess.board.Board;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
-import io.github.dlbbld.ashlarchess.unwinnability.BasicHelpmateExistenceTheorem;
-import io.github.dlbbld.ashlarchess.unwinnability.BasicHelpmateExistenceTheoremResult;
 import io.github.dlbbld.ashlarchess.unwinnability.UnwinnabilityFullVerdict;
 import io.github.dlbbld.ashlarchess.unwinnability.UnwinnabilityQuickVerdict;
 import io.github.dlbbld.ashlarchess.unwinnability.UnwinnableFullAnalyzer;
 import io.github.dlbbld.ashlarchess.unwinnability.UnwinnableQuickAnalyzer;
+import io.github.dlbbld.ashlarchess.unwinnability.internal.BasicHelpmateExistenceTheorem;
+import io.github.dlbbld.ashlarchess.unwinnability.internal.BasicHelpmateExistenceTheoremResult;
 
 /**
  * Documented out-of-domain lock-down: the known retro-illegal counterexamples to the basic-helpmate-existence theorem,

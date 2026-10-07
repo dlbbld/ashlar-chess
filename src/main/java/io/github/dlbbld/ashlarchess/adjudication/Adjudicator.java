@@ -3,10 +3,13 @@
 
 package io.github.dlbbld.ashlarchess.adjudication;
 
+import org.eclipse.jdt.annotation.Nullable;
+
 import io.github.dlbbld.ashlarchess.board.Board;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
 import io.github.dlbbld.ashlarchess.unwinnability.UnwinnabilityFullVerdict;
 import io.github.dlbbld.ashlarchess.unwinnability.UnwinnabilityQuickVerdict;
+import io.github.dlbbld.ashlarchess.unwinnability.internal.BasicHelpmateExistenceTheorem;
 
 /**
  * Adjudicates flag-fall and resignation - the terminations where a player loses by an external event, subject to the
@@ -26,6 +29,13 @@ import io.github.dlbbld.ashlarchess.unwinnability.UnwinnabilityQuickVerdict;
  * proven dead position, rules a loss on a proven win, and reports {@code UNDETERMINED} only when the search bound is
  * hit (rare). The recommended check at game end, where the extra cost is negligible.</li>
  * </ul>
+ *
+ * <p>
+ * Both variants first consult the basic-helpmate-existence theorem as a fast pre-check
+ * ({@link BasicHelpmateExistenceTheorem#decideForAdjudication}): on the elementary-material classes it covers a proven
+ * verdict settles the position immediately and the unwinnability search is skipped. The theorem is trusted only on the
+ * classes where it is sound for any strictly FEN-legal board, so a pre-check ruling never disagrees with the
+ * {@code Board} analyzer it stands in for.
  *
  * <p>
  * The quick draw set is a subset of the full draw set, and the quick analyzer never proves winnability, so a quick
@@ -48,6 +58,10 @@ public final class Adjudicator {
    */
   public static AdjudicationResult adjudicateFlagfallQuick(Board board, Side flaggingPlayer) {
     final Side wouldBeWinner = opponentOf(flaggingPlayer);
+    final AdjudicationResult theoremResult = theoremPreCheck(board, wouldBeWinner);
+    if (theoremResult != null) {
+      return theoremResult;
+    }
     return board.unwinnableQuick(wouldBeWinner) == UnwinnabilityQuickVerdict.UNWINNABLE ? AdjudicationResult.DRAW
         : AdjudicationResult.LOSS;
   }
@@ -78,6 +92,10 @@ public final class Adjudicator {
    */
   public static AdjudicationResult adjudicateFlagfallFull(Board board, Side flaggingPlayer) {
     final Side wouldBeWinner = opponentOf(flaggingPlayer);
+    final AdjudicationResult theoremResult = theoremPreCheck(board, wouldBeWinner);
+    if (theoremResult != null) {
+      return theoremResult;
+    }
     final UnwinnabilityFullVerdict verdict = board.unwinnableFull(wouldBeWinner);
     if (verdict == UnwinnabilityFullVerdict.UNWINNABLE) {
       return AdjudicationResult.DRAW;
@@ -100,6 +118,26 @@ public final class Adjudicator {
    */
   public static AdjudicationResult adjudicateResignationFull(Board board, Side resigningPlayer) {
     return adjudicateFlagfallFull(board, resigningPlayer);
+  }
+
+  /**
+   * The basic-helpmate-existence theorem pre-check: {@link AdjudicationResult#DRAW} on a proven-unwinnable position or
+   * {@link AdjudicationResult#LOSS} on a proven-winnable one, when the theorem settles a covered elementary-material
+   * class outright, or {@code null} when it does not apply and the unwinnability analyzer must decide. Consulting the
+   * theorem only on its adjudication-safe classes (see {@link BasicHelpmateExistenceTheorem#decideForAdjudication})
+   * keeps this consistent with {@code Board.unwinnableQuick}/{@code Board.unwinnableFull} on every input, including the
+   * retro-illegal positions that pass strict FEN parsing.
+   */
+  private static @Nullable AdjudicationResult theoremPreCheck(Board board, Side wouldBeWinner) {
+    switch (BasicHelpmateExistenceTheorem.decideForAdjudication(board, wouldBeWinner)) {
+      case UNWINNABLE:
+        return AdjudicationResult.DRAW;
+      case WINNABLE:
+        return AdjudicationResult.LOSS;
+      default:
+        // NOT_APPLICABLE: outside the theorem's adjudication-safe classes; the analyzer decides.
+        return null;
+    }
   }
 
   private static Side opponentOf(Side flaggingPlayer) {

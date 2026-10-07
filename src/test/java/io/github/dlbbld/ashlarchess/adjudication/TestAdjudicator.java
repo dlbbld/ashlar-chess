@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 
 import io.github.dlbbld.ashlarchess.board.Board;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
+import io.github.dlbbld.ashlarchess.unwinnability.UnwinnabilityFullVerdict;
 
 /**
  * Flag-fall / resignation adjudication, quick and full. The quick variant rules only DRAW / LOSS; the full variant adds
@@ -29,6 +30,16 @@ class TestAdjudicator {
 
   // The one corpus position whose full analysis exhausts the 500k-node bound for Black: full -> UNDETERMINED.
   private static final String UNDETERMINED_FOR_BLACK = "2b5/1p6/pPp3k1/2Pp3p/P2PpBpP/4P1P1/5K2/8 b - - 46 59";
+
+  // KRvK, Black to move and forced to capture the lone rook: the basic-helpmate-existence theorem proves White
+  // unwinnable (a pure material-reduction argument), so the pre-check draws without invoking the search.
+  private static final String KRVK_BLACK_FORCED_TO_CAPTURE = "k7/R1K5/8/8/8/8/8/8 b - - 0 1";
+
+  // Retro-illegal counterexamples: accepted by strict FEN but impossible in a game, and the two classes (KBNvK,
+  // KBBvK opposite bishops) where the theorem overclaims WINNABLE. Adjudication excludes them and defers to the
+  // analyzer, which proves White unwinnable - so the adjudicator must still draw, agreeing with Board.unwinnableFull.
+  private static final String RETRO_ILLEGAL_KBN_VS_K = "8/8/8/8/2N5/8/k1K5/1B6 b - - 0 1";
+  private static final String RETRO_ILLEGAL_KBB_VS_K = "8/8/8/8/8/B7/B7/k1K5 w - - 0 1";
 
   // === quick: DRAW / LOSS only ===
 
@@ -88,6 +99,45 @@ class TestAdjudicator {
         Adjudicator.adjudicateFlagfallQuick(Board.fromFenStrict(UNDETERMINED_FOR_BLACK), Side.WHITE));
     assertEquals(AdjudicationResult.UNDETERMINED,
         Adjudicator.adjudicateFlagfallFull(Board.fromFenStrict(UNDETERMINED_FOR_BLACK), Side.WHITE));
+  }
+
+  // === basic-helpmate-existence theorem pre-check ===
+
+  @SuppressWarnings("static-method")
+  @Test
+  void theoremPreCheckRulesLossOnACoveredWinnableEndgame() {
+    // Black flags; the would-be winner (White) has a covered KRvK win the theorem settles without the search.
+    final Board board = Board.fromFenStrict(KING_AND_ROOK_VS_KING);
+    assertEquals(AdjudicationResult.LOSS, Adjudicator.adjudicateFlagfallQuick(board, Side.BLACK));
+    assertEquals(AdjudicationResult.LOSS, Adjudicator.adjudicateFlagfallFull(board, Side.BLACK));
+  }
+
+  @SuppressWarnings("static-method")
+  @Test
+  void theoremPreCheckDrawsWhenTheDefenderIsForcedToCaptureTheMatingMaterial() {
+    // Black flags; White would win with the rook, but Black (to move) must capture it, so White is unwinnable.
+    final Board board = Board.fromFenStrict(KRVK_BLACK_FORCED_TO_CAPTURE);
+    assertEquals(AdjudicationResult.DRAW, Adjudicator.adjudicateFlagfallQuick(board, Side.BLACK));
+    assertEquals(AdjudicationResult.DRAW, Adjudicator.adjudicateFlagfallFull(board, Side.BLACK));
+  }
+
+  @SuppressWarnings("static-method")
+  @Test
+  void retroIllegalKbnIsExcludedSoAdjudicationAgreesWithTheAnalyzer() {
+    final Board board = Board.fromFenStrict(RETRO_ILLEGAL_KBN_VS_K);
+    // The analyzer proves White unwinnable on this caged position; the pre-check must not override it to a loss.
+    assertEquals(UnwinnabilityFullVerdict.UNWINNABLE, board.unwinnableFull(Side.WHITE));
+    assertEquals(AdjudicationResult.DRAW, Adjudicator.adjudicateFlagfallFull(board, Side.BLACK));
+    assertEquals(AdjudicationResult.DRAW, Adjudicator.adjudicateFlagfallQuick(board, Side.BLACK));
+  }
+
+  @SuppressWarnings("static-method")
+  @Test
+  void retroIllegalKbbIsExcludedSoAdjudicationAgreesWithTheAnalyzer() {
+    final Board board = Board.fromFenStrict(RETRO_ILLEGAL_KBB_VS_K);
+    assertEquals(UnwinnabilityFullVerdict.UNWINNABLE, board.unwinnableFull(Side.WHITE));
+    assertEquals(AdjudicationResult.DRAW, Adjudicator.adjudicateFlagfallFull(board, Side.BLACK));
+    assertEquals(AdjudicationResult.DRAW, Adjudicator.adjudicateFlagfallQuick(board, Side.BLACK));
   }
 
   // === resignation == flag-fall ===
