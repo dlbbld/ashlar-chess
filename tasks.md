@@ -13,26 +13,8 @@ Live planning only: current release work, backlog, and obsolete decisions. Shipp
 
 ## 22.1.0 — Magic bitboards and faster adjudication
 
-Release candidate on `release-procedure`; publication follows the runbook in **workflows.md**.
-The implementation work below is complete. The full preflight, signed dry-run, PR, tag,
-staged-bundle inspection and publication are release gates, not claims of completed publication.
-
-### Done
-
-- Magic-bitboard bishop/rook attacks, exhaustive collision checks, deterministic generator,
-  independent geometry/differential/perft review, and corrected JMH evidence on ThinkPad,
-  iMac M3 and IdeaCentre. See [verification](benchmarks/magic-bitboard-verification.md).
-- Guarded elementary-material theorem pre-check for flag-fall and resignation; KBNvK and
-  opposite-coloured KBBvK remain on the analyzer path. The proposed further KBN changes,
-  UCI removal and transposition-map sizing are not implemented in this candidate.
-- Default-profile strict PGN corpus lint, two additional exhaustion proof-game fixtures,
-  and oracle rows generated for both new final positions using CHA and pinned chasolver 3.0.0.
-  The latter proves White UNWINNABLE in the first fixture while ashlar abstains; this exact
-  completeness difference is documented without changing the comparison assertions.
-- Fail-closed release preflight with cheap fix-prone gates first and both full test commands
-  required; generated GitHub Release notes with unwrapped paragraphs.
-- Eclipse diagnostic fixes and the user-confirmed Format/Clean Up pass, committed separately
-  before the release-artifact bump. Generated documentation and JavaDoc checks passed.
+Published 2026-10-07; see [CHANGELOG.md](CHANGELOG.md) and the
+[GitHub release](https://github.com/dlbbld/ashlar-chess/releases/tag/22.1.0).
 
 ---
 
