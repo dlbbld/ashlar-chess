@@ -10,6 +10,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import io.github.dlbbld.ashlarchess.board.StaticPosition;
 import io.github.dlbbld.ashlarchess.board.enums.CastlingRight;
@@ -41,6 +42,39 @@ class TestStrictFenSemanticParser {
   @Test
   void testOrdinaryDoubleCheckAllowsNonzeroHalfMoveClock() {
     checkParseFenSuccess("4r3/6k1/8/8/8/5n2/8/4K3 w - - 1 20");
+  }
+
+  @SuppressWarnings("static-method")
+  @Test
+  void testCountersAreCanonicalDecimalIntegers() {
+    // Regression: Integer.parseInt read all of these, so a negative halfmove clock reached the board.
+    final String position = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - ";
+    checkParseFenSuccess(position + "0 1");
+    checkParseFenSuccess(position + "10 100");
+    checkParseFenException(position + "-1 1", StrictFenSemanticValidationProblem.INVALID_HALF_MOVE_CLOCK_RANGE);
+    checkParseFenException(position + "-0 1", StrictFenSemanticValidationProblem.INVALID_HALF_MOVE_CLOCK_RANGE);
+    checkParseFenException(position + "00 1", StrictFenSemanticValidationProblem.INVALID_HALF_MOVE_CLOCK_RANGE);
+    checkParseFenException(position + "01 20", StrictFenSemanticValidationProblem.INVALID_HALF_MOVE_CLOCK_RANGE);
+    checkParseFenException(position + "0 01", StrictFenSemanticValidationProblem.INVALID_FULL_MOVE_NUMBER_RANGE);
+    checkParseFenException(position + "0 020", StrictFenSemanticValidationProblem.INVALID_FULL_MOVE_NUMBER_RANGE);
+    checkParseFenException(position + "0 -01", StrictFenSemanticValidationProblem.INVALID_FULL_MOVE_NUMBER_RANGE);
+    checkParseFenException(position + "+0 1", StrictFenSemanticValidationProblem.INVALID_HALF_MOVE_CLOCK_RANGE);
+    checkParseFenException(position + "- 1", StrictFenSemanticValidationProblem.INVALID_HALF_MOVE_CLOCK_RANGE);
+    checkParseFenException(position + "\u0660 1", // arabic-indic digit zero
+        StrictFenSemanticValidationProblem.INVALID_HALF_MOVE_CLOCK_RANGE);
+    checkParseFenException(position + "0 +1", StrictFenSemanticValidationProblem.INVALID_FULL_MOVE_NUMBER_RANGE);
+    checkParseFenException(position + "0 \u0661", // arabic-indic digit one
+        StrictFenSemanticValidationProblem.INVALID_FULL_MOVE_NUMBER_RANGE);
+    checkParseFenException(position + "0 -1", StrictFenSemanticValidationProblem.INVALID_FULL_MOVE_NUMBER_NEGATIVE);
+  }
+
+  @SuppressWarnings("static-method")
+  @ParameterizedTest
+  @ValueSource(strings = { "\n", "\r", "\u0085", "\u2028", "\u2029" })
+  void testLineTerminatorInPiecePlacement(String lineTerminator) {
+    // Regression: a rank closed by a line terminator passed the rank pattern and failed as a programming mistake.
+    checkParseFenException("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPP" + lineTerminator + "/RNBQKBNR w KQkq - 0 1",
+        StrictFenSemanticValidationProblem.INVALID_POSITION_UNKNOWN_CHAR);
   }
 
   @SuppressWarnings("static-method")

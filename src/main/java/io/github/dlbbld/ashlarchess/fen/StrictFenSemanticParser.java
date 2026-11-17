@@ -149,7 +149,9 @@ final class StrictFenSemanticParser {
     for (final String rankDescription : rankDescriptions) {
       rankNumber++;
       final Matcher matcherRank = PATTERN_RANK.matcher(rankDescription);
-      if (!matcherRank.find()) {
+      // matches(), not find(): with find() the "$" also matches before a closing line terminator, which would then
+      // reach the piece conversion as an unknown piece.
+      if (!matcherRank.matches()) {
         throw new StrictFenSemanticValidationException(StrictFenSemanticValidationProblem.INVALID_POSITION_UNKNOWN_CHAR,
             "the rank " + rankNumber + " contains invalid chars");
       }
@@ -436,14 +438,47 @@ final class StrictFenSemanticParser {
   }
 
   private static int validateHalfMoveClock(String halfMoveClockStr) throws StrictFenSemanticValidationException {
-    int halfMoveClock;
+    if (!isAsciiDecimalInteger(halfMoveClockStr)) {
+      throw new StrictFenSemanticValidationException(StrictFenSemanticValidationProblem.INVALID_HALF_MOVE_CLOCK_RANGE,
+          "the halfmove clock part of \"" + halfMoveClockStr + "\" is not an integer value");
+    }
+    // The sign itself is rejected, so "-0" does not pass as zero.
+    if (halfMoveClockStr.startsWith("-")) {
+      throw new StrictFenSemanticValidationException(StrictFenSemanticValidationProblem.INVALID_HALF_MOVE_CLOCK_RANGE,
+          "the halfmove clock of \"" + halfMoveClockStr + "\" cannot be negative");
+    }
+    if (hasLeadingZero(halfMoveClockStr)) {
+      throw new StrictFenSemanticValidationException(StrictFenSemanticValidationProblem.INVALID_HALF_MOVE_CLOCK_RANGE,
+          "the halfmove clock of \"" + halfMoveClockStr + "\" cannot have leading zeros");
+    }
     try {
-      halfMoveClock = Integer.parseInt(halfMoveClockStr);
+      return Integer.parseInt(halfMoveClockStr);
     } catch (@SuppressWarnings("unused") final NumberFormatException e) {
       throw new StrictFenSemanticValidationException(StrictFenSemanticValidationProblem.INVALID_HALF_MOVE_CLOCK_RANGE,
           "the halfmove clock part of \"" + halfMoveClockStr + "\" is not an integer value");
     }
-    return halfMoveClock;
+  }
+
+  // Integer.parseInt also reads a leading plus sign and the decimal digits of other scripts, neither of which is a FEN
+  // counter. The minus sign stays readable so that a negative counter keeps its own diagnostic.
+  private static boolean isAsciiDecimalInteger(String text) {
+    final int firstDigitIndex = text.startsWith("-") ? 1 : 0;
+    if (text.length() == firstDigitIndex) {
+      return false;
+    }
+    for (int i = firstDigitIndex; i < text.length(); i++) {
+      final char c = text.charAt(i);
+      if (c < '0' || c > '9') {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  // A counter is written in canonical decimal form: "0" or digits that do not start with a zero.
+  private static boolean hasLeadingZero(String decimalInteger) {
+    final int firstDigitIndex = decimalInteger.startsWith("-") ? 1 : 0;
+    return decimalInteger.length() > firstDigitIndex + 1 && decimalInteger.charAt(firstDigitIndex) == '0';
   }
 
   private static void validateHalfMoveClock(int halfMoveClock, Square enPassantCaptureTargetSquare)
@@ -456,6 +491,14 @@ final class StrictFenSemanticParser {
   }
 
   private static int validateFullMoveNumber(String fullMoveNumberStr) throws StrictFenSemanticValidationException {
+    if (!isAsciiDecimalInteger(fullMoveNumberStr)) {
+      throw new StrictFenSemanticValidationException(StrictFenSemanticValidationProblem.INVALID_FULL_MOVE_NUMBER_RANGE,
+          "the fullmove number of \"" + fullMoveNumberStr + "\" is not an integer value");
+    }
+    if (hasLeadingZero(fullMoveNumberStr)) {
+      throw new StrictFenSemanticValidationException(StrictFenSemanticValidationProblem.INVALID_FULL_MOVE_NUMBER_RANGE,
+          "the fullmove number of \"" + fullMoveNumberStr + "\" cannot have leading zeros");
+    }
     int fullMoveNumber;
     try {
       fullMoveNumber = Integer.parseInt(fullMoveNumberStr);
