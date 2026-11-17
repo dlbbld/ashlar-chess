@@ -148,6 +148,12 @@ a zero-move helpmate. A non-winnable verdict never carries a line. The `Board.un
 
 Side-specific quick/full unwinnability queries and whole-position dead-position queries are caller-invoked; no analyzer runs automatically during construction or move execution.
 
+**Conservative assistant coverage.** The semi-static shortcut counts every orthogonal escape square an assistant may
+attack, rather than assuming that each assistant covers at most one. A pawn on b7 can cover both a8 and c8 around a
+king on b8. The coverage bound deliberately permits incompatible placements within a mobility region; this can make
+the shortcut decline a proof, but cannot justify an incorrect `UNWINNABLE`. Full analysis handles terminal positions
+before applying this shortcut.
+
 ### 3.3 SAN, FEN, PGN
 
 - **SAN** — two pipelines: **strict** (canonical SAN only; reached from `Board.moveStrict(String)` and from the PGN-driven path) and **lenient** (accepts a defined set of forgivable deviations from canonical; reached from `Board.moveLenient(String)`). See §3.3.1 for the lenient taxonomy and algorithm.
@@ -198,6 +204,10 @@ Codes are not collapsed: each distinguishable deviation has its own code, and a 
 - **Mixed castling** (`0-O`, `O-0`) — no real-world tool emits this; allowing it would add parser complexity for zero practical value.
 - **Pawn `SPURIOUS_CAPTURE_MARKER`** — `dxe5` when e5 is empty has no clean string mutation that yields canonical SAN; the only "recovery" would silently swap the user's intended pawn (d-file) for a different one (e-file). That crosses the line from forgiving sloppiness to overriding intent.
 
+Explicit piece letters and coordinate origins remain constraints throughout recovery. An explicit `P` cannot select
+a king, knight or bishop. A noncanonical short b-file token is accepted only when its legal pawn/bishop
+interpretations identify one move. LAN hyphens must separate the source and destination squares.
+
 The strict pipeline remains the single source of chess-validation truth. Lenient is a thin input-shape transformation layer that reuses strict for everything else.
 
 #### 3.3.2 PGN parse model and write modes
@@ -217,6 +227,13 @@ PGN handling is structured around four separable jobs:
 
 **`createPgnGame(Board)`.** The Board → `PgnGame` factory produces the minimal honest shape — empty `tagList` for an initial-position board, `[SetUp, FEN]` for a non-initial position, `terminationMarker` derived from the board's game-status. STR fabrication does **not** happen here; archival export is the only path that fills the roster.
 
+Strict tag names contain only letters, digits and underscores and begin with a letter or digit. Lenient import and
+semantic export retain the wider symbol-style custom names. Archival export additionally requires an uppercase
+initial; it rejects unrepresentable names with `IllegalArgumentException` instead of renaming or dropping data.
+Both parsers and archival export require printing tag values of at most 255 decoded Unicode code points. NAGs end
+at the first non-digit, so `$1e5` contains the annotation `$1` followed by the move `e5`. An entirely empty game model
+is represented by `{}` in semantic output.
+
 #### 3.3.3 FEN parser tiers and lenient pre-processor
 
 FEN handling exposes two public entry points — strict and lenient. Internally, strict parsing is still staged into a lexical field split and a structural/rule-consistency pass, but those stages are implementation details rather than public API.
@@ -227,8 +244,8 @@ FEN handling exposes two public entry points — strict and lenient. Internally,
 | Lenient input | `LenientFenParser.parse` / `LenientFenParser.validate` / `Board.fromFenLenient(String)` | Normalise recoverable syntactic deviations, report every forgiven item, then run the same strict validation. |
 
 **`StrictFenParser`.** The public strict facade builds on internal lexical parsing and applies these strict invariants:
-- Piece placement is 8 ranks (separated by `/`), each containing only `[RNBQKPrnbqkp12345678]`, each evaluating to exactly 8 squares; no trailing or consecutive `/`.
-- Piece counts within physical bounds per side (at most one king, at most eight pawns, etc.); each side has exactly one king.
+- Piece placement is 8 ranks (separated by `/`), each containing only `[RNBQKPrnbqkp12345678]`, each evaluating to exactly 8 squares; no trailing or consecutive `/`, and no adjacent empty-run digits.
+- Piece counts within physical bounds per side; each side has exactly one king. Excess queens, rooks, knights and bishops of each square colour share one promotion budget, bounded by the number of missing pawns.
 - No pawn on rank 1 or rank 8.
 - The opposite side (the side that just moved) is not still in check.
 - Side-to-move letter is `w` or `b`.
@@ -240,6 +257,8 @@ FEN handling exposes two public entry points — strict and lenient. Internally,
 **`LenientFenParser` — syntactic tolerance only.** A purely syntactic pre-pass: walks the input, applies normalisation transforms (whitespace stripping, casing fixes, missing counter defaults, leading-zero stripping in the counters, non-canonical castling reorder, non-ASCII-dash replacement, trailing-garbage trim), then delegates to `StrictFenParser`. Every transform that fires surfaces as a typed `ForgivenFenItem` on `LenientFenParserValidationResult`. The lenient layer **does not** weaken any strict semantic invariant — a FEN with a missing king, a pawn on rank 1, or an impossible double-check still fails strict validation. The lenient layer also handles the one strict invariant that benefits from a syntactic recovery: when strict validation rejects for halfmove clock vs fullmove number inconsistency, the lenient layer auto-corrects `fullMoveNumber` up to `halfMoveClock` rounded up to the next multiple of ten — a generous reserve over the strict minimum, signalling to a reader that the value was reconstructed rather than measured (so `... 15 1` becomes `... 15 20`, not the strict minimum of `... 15 9`). All other strict-validation failures propagate.
 
 **Forgiven codes** (`ForgivenFenItemCode`):
+
+`SPLIT_EMPTY_SQUARE_RUN` merges adjacent empty-run digits when their sum fits the rank; the remaining codes are:
 `LEADING_WHITESPACE`, `TRAILING_WHITESPACE`, `EXTRA_WHITESPACE_BETWEEN_FIELDS`, `TAB_OR_NEWLINE_AS_SEPARATOR`, `MISSING_HALF_MOVE_CLOCK_AND_FULL_MOVE_NUMBER` (four-field FEN, common from Stockfish UCI), `MISSING_FULL_MOVE_NUMBER` (five-field FEN), `COUNTER_LEADING_ZEROS` (`00`, `020`), `UPPERCASE_SIDE_TO_MOVE`, `CASTLING_NON_CANONICAL_ORDER`, `EN_PASSANT_NON_STANDARD_DASH` (em-dash, en-dash, etc.), `EN_PASSANT_UPPERCASE`, `TRAILING_GARBAGE_TOKEN`, `HALF_MOVE_CLOCK_INCONSISTENT_WITH_FULL_MOVE_NUMBER`.
 
 **`LenientPgnParser` routes the FEN tag through `LenientFenParser`.** Lenient PGN parsing accepts a deficient FEN tag (e.g. a "speculative-fullMoveNumber" position) for symmetry with movetext leniency; the FEN-level forgiveness is applied silently at the PGN-parser level. Strict PGN parsing reads the FEN tag through strict FEN validation — a strict-parseable PGN must carry a strict-parseable FEN.

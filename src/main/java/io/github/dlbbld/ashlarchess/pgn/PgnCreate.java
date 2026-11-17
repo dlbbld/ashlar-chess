@@ -87,13 +87,12 @@ public final class PgnCreate {
       movetextIncludingPreGameCommentary = "{" + pregameCommentaryValue + "}" + " " + movetext + terminationSuffix;
     }
 
-    // Lenient parses can produce a PgnGame with no pregame commentary, no moves, and no termination marker
-    // (a tags-only PGN). The movetext string is then empty; PgnLineWrapper rejects empty input, so skip the
-    // wrap call and leave the movetext section blank. The output stays structurally well-formed (tag section,
-    // separator, trailing blank) and re-parses cleanly under the lenient parser.
     if (!movetextIncludingPreGameCommentary.isEmpty()) {
       fileLines
           .addAll(PgnLineWrapper.calculateWrappedLines(movetextIncludingPreGameCommentary, PgnCreate.MAX_LINE_LENGTH));
+    } else if (tags.isEmpty()) {
+      // An empty comment round-trips the empty model. Whitespace alone is an empty file, not a game.
+      fileLines.add("{}");
     }
     // Trailing blank line per the strict format.
     fileLines.add("");

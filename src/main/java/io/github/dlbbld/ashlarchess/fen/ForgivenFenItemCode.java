@@ -34,6 +34,9 @@ public enum ForgivenFenItemCode {
    */
   MISSING_FULL_MOVE_NUMBER,
 
+  /** Consecutive digits in a rank combined into one empty-square count. One item per corrected run. */
+  SPLIT_EMPTY_SQUARE_RUN,
+
   /** Side-to-move letter in uppercase ({@code W} or {@code B}) normalised to lowercase. */
   UPPERCASE_SIDE_TO_MOVE,
 

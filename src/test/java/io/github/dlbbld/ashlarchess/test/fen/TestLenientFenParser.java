@@ -244,6 +244,27 @@ class TestLenientFenParser {
     }
   }
 
+  @Test
+  void testSplitEmptySquareRunsAreCombinedWithinEachRank() {
+    final LenientFenParserValidationResult result = LenientFenParser.validate("22k3/44/8/8/8/8/8/4K111 w - - 0 1");
+    assertTrue(result.isValid(), result.message());
+    assertEquals("4k3/8/8/8/8/8/8/4K3 w - - 0 1", fenOf(result).fen());
+    assertEquals(List.of(new ForgivenFenItem(ForgivenFenItemCode.SPLIT_EMPTY_SQUARE_RUN, "22", "4"),
+        new ForgivenFenItem(ForgivenFenItemCode.SPLIT_EMPTY_SQUARE_RUN, "44", "8"),
+        new ForgivenFenItem(ForgivenFenItemCode.SPLIT_EMPTY_SQUARE_RUN, "111", "3")), result.forgivenItems());
+  }
+
+  @Test
+  void testSplitRunsCannotExcuseAnInvalidRankWidth() {
+    final LenientFenParserValidationResult overflow = LenientFenParser.validate("4k3/81/8/8/8/8/8/4K3 w - - 0 1");
+    assertEquals(StrictFenSemanticValidationProblem.INVALID_POSITION_SPLIT_EMPTY_SQUARE_RUN,
+        overflow.strictFenSemanticValidationProblem());
+    assertTrue(overflow.forgivenItems().isEmpty());
+    final LenientFenParserValidationResult underflow = LenientFenParser.validate("4k3/61/8/8/8/8/8/4K3 w - - 0 1");
+    assertEquals(StrictFenSemanticValidationProblem.INVALID_POSITION_LINE_EVALUATION_LENGTH,
+        underflow.strictFenSemanticValidationProblem());
+  }
+
   // -------------------------------------------------------------------------------------------------
   // Helpers
   // -------------------------------------------------------------------------------------------------

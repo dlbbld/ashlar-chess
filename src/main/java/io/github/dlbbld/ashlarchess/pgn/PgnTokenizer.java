@@ -200,15 +200,14 @@ final class PgnTokenizer {
   }
 
   private PgnToken readNag(int line, int column) {
-    // A NAG is `$` + a non-negative decimal integer (spec 8.2.4). Consume trailing letters and a `+`/`-` sign too, so a
-    // malformed lexeme like `$abc`, `$1x`, or `$-1` surfaces as one NAG token the parser can reject/drop whole, rather
-    // than leaving `-1` / letters to be misread as a SAN move. Stop at whitespace and structural punctuation so a NAG
-    // glued to `*`, `)`, `.` etc. still splits (`$9*` -> `$9`, `*`).
     final StringBuilder text = new StringBuilder();
     text.append((char) stream.read()); // leading '$'
+    // PGN section 7: the first non-digit after a numeric glyph belongs to the next token.
+    final boolean numeric = isAsciiDigit(stream.peek());
     while (true) {
       final int c = stream.peek();
-      if (!isAsciiDigit(c) && !isAsciiLetter(c) && c != '+' && c != '-') {
+      // Keep a malformed nonnumeric body (such as $abc or $-1) together for lenient recovery.
+      if (!isAsciiDigit(c) && (numeric || !isAsciiLetter(c) && c != '+' && c != '-')) {
         break;
       }
       text.append((char) stream.read());

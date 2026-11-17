@@ -28,12 +28,40 @@ public final class TagUtility {
 
   private static final String TAG_PATTERN = "\\[([\\w]+) \"([^\"]*)\"\\]";
 
-  /** PGN spec §7: a symbol token is at most 255 characters long. */
+  /** PGN spec section 7: a symbol token is at most 255 characters long. */
   public static final int MAX_TAG_NAME_LENGTH = 255;
+  private static final int MAX_TAG_VALUE_LENGTH = 255;
 
   @SuppressWarnings("null")
   public static final List<StandardTag> SEVEN_TAG_ROSTER_TAGS = Nulls.copyOfList(Arrays.asList(StandardTag.EVENT,
       StandardTag.SITE, StandardTag.DATE, StandardTag.ROUND, StandardTag.WHITE, StandardTag.BLACK, StandardTag.RESULT));
+
+  public static boolean isTagNameInitialCharacter(int c) {
+    return c >= '0' && c <= '9' || c >= 'A' && c <= 'Z' || c >= 'a' && c <= 'z';
+  }
+
+  public static boolean isTagNameCharacter(int c) {
+    return isTagNameInitialCharacter(c) || c == '_';
+  }
+
+  /** PGN section 7 limits the decoded string data, excluding delimiters and escape syntax. */
+  public static @Nullable String tagValueProblem(String value) {
+    int characters = 0;
+    for (int i = 0; i < value.length();) {
+      final int cp = value.codePointAt(i);
+      final int type = Character.getType(cp);
+      if (type == Character.CONTROL || type == Character.FORMAT || type == Character.LINE_SEPARATOR
+          || type == Character.PARAGRAPH_SEPARATOR || type == Character.SURROGATE || type == Character.UNASSIGNED
+          || type == Character.PRIVATE_USE) {
+        return "A tag value contains a non-printing character " + String.format("U+%04X", cp) + ".";
+      }
+      if (++characters > MAX_TAG_VALUE_LENGTH) {
+        return "A tag value may contain at most " + MAX_TAG_VALUE_LENGTH + " characters.";
+      }
+      i += Character.charCount(cp);
+    }
+    return null;
+  }
 
   public static boolean hasEvent(List<Tag> tags) {
     return existsTagName(tags, StandardTag.EVENT);

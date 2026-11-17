@@ -289,6 +289,10 @@ public final class LenientPgnParser {
     if (valueToken.type() != PgnTokenType.TAG_VALUE_STRING) {
       throw tagFormatError("A tag value enclosed in double quotes was expected.");
     }
+    final String valueProblem = TagUtility.tagValueProblem(valueToken.text());
+    if (valueProblem != null) {
+      throw tagFormatError(valueProblem);
+    }
     skipInlineWhitespace();
 
     final PgnToken close = tokenizer.next();
@@ -303,14 +307,13 @@ public final class LenientPgnParser {
     if (name.isEmpty()) {
       throw tagFormatError("Tag name must not be empty.");
     }
-    // PGN spec §7: a symbol starts with a letter or digit. The tokenizer also yields a symbol for a name that opens
-    // with one of the continuation characters, and such a name would survive into an export the strict parser rejects.
-    if (!isAsciiLetterOrDigit(name.charAt(0))) {
+    if (!TagUtility.isTagNameInitialCharacter(name.charAt(0))) {
       throw tagFormatError("The first character in the tag name must be one of A-Z, a-z or 0-9.");
     }
     for (int i = 0; i < name.length(); i++) {
       final char c = name.charAt(i);
-      if (!isAsciiLetterOrDigit(c) && c != '_' && c != '+' && c != '#' && c != '=' && c != ':' && c != '-') {
+      // Some imports use the full symbol alphabet for tag names. Semantic output keeps those names verbatim.
+      if (!TagUtility.isTagNameCharacter(c) && c != '+' && c != '#' && c != '=' && c != ':' && c != '-') {
         throw tagFormatError("The tag name contains an invalid character \"" + c + "\".");
       }
     }
@@ -597,6 +600,10 @@ public final class LenientPgnParser {
       } else if (ahead.type() == PgnTokenType.NAG) {
         tokenizer.next();
         pendingAnnotations.addNag(moves, parseNagLenient(ahead));
+      } else if (ahead.type() == PgnTokenType.MOVE_SUFFIX_ANNOTATION) {
+        pendingAnnotations.addNag(moves, glyphToNag(tokenizer.next().text()));
+      } else if (ahead.type() == PgnTokenType.SYMBOL && "(".equals(ahead.text())) {
+        skipVariation();
       } else {
         return;
       }
@@ -967,7 +974,4 @@ public final class LenientPgnParser {
         SanValidationProblem.NONE, "After the movetext started, tags can no longer appear.");
   }
 
-  private static boolean isAsciiLetterOrDigit(char c) {
-    return c >= '0' && c <= '9' || c >= 'A' && c <= 'Z' || c >= 'a' && c <= 'z';
-  }
 }

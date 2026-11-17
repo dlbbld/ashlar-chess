@@ -394,6 +394,73 @@ class TestLenientSanParser {
     assertEquals("exd5", canonical(result));
   }
 
+  @ParameterizedTest
+  @CsvSource({ "Pe1f1, e1f1, Kf1", "Pe1g1, e1g1, O-O", "Pb1c3, b1c3, Nc3", "PB1-C3, Nb1-c3, Nc3" })
+  void testExplicitPawnCoordinatesRequireAPawn(String invalidMove, String validMove, String san) {
+    final String fen = "4k3/8/8/8/8/8/8/1N2K2R w K - 0 42";
+    final Board board = Board.fromFenStrict(fen);
+    assertThrows(LenientSanParserValidationException.class, () -> board.moveLenient(invalidMove));
+    assertEquals(fen, board.getFen());
+    assertEquals(san, canonical(board.moveLenient(validMove)));
+  }
+
+  @Test
+  void testShortBFileCaptureResolvesOnlyLegalPiece() {
+    final Board pawn = new Board();
+    pawn.moveStrict("b4");
+    pawn.moveStrict("a5");
+    final LenientSanParseResult pawnCapture = pawn.moveLenient("ba5");
+    assertExactlyOneCode(pawnCapture, LenientSanValidationProblem.MISSING_CAPTURE_MARKER);
+    assertEquals("bxa5", canonical(pawnCapture));
+
+    final Board bishop = Board.fromFenStrict("7k/8/1B6/n7/8/8/8/K7 w - - 0 31");
+    final LenientSanParseResult bishopCapture = bishop.moveLenient("ba5");
+    assertContainsCode(bishopCapture, LenientSanValidationProblem.LOWERCASE_PIECE_LETTER);
+    assertEquals("Bxa5", canonical(bishopCapture));
+  }
+
+  @Test
+  void testShortBFileCaptureNeedsExplicitPieceWhenAmbiguous() {
+    final String fen = "7k/8/1B6/n7/1P6/8/8/K7 w - - 0 31";
+    final Board board = Board.fromFenStrict(fen);
+    assertThrows(LenientSanParserValidationException.class, () -> board.moveLenient("ba5"));
+    assertEquals(fen, board.getFen());
+    final LenientSanParseResult pawn = board.moveLenient("Pba5");
+    assertContainsCode(pawn, LenientSanValidationProblem.EXPLICIT_PAWN_LETTER);
+    assertContainsCode(pawn, LenientSanValidationProblem.MISSING_CAPTURE_MARKER);
+    assertEquals("bxa5", canonical(pawn));
+    assertEquals("bxa5", canonical(Board.fromFenStrict(fen).moveLenient("Pbxa5")));
+    assertEquals("bxa5", canonical(Board.fromFenStrict(fen).moveLenient("PB4-A5")));
+    assertTrue(Board.fromFenStrict(fen).moveLenient("bxa5").forgivenItems().isEmpty());
+    assertTrue(Board.fromFenStrict(fen).moveLenient("Bxa5").forgivenItems().isEmpty());
+  }
+
+  @ParameterizedTest
+  @CsvSource({ "b8q, b8=Q+", "b8b, b8=B", "B7B8Q, b8=Q+", "B7-B8=N, b8=N", "B7-B8=Q, b8=Q+" })
+  void testBFilePromotionComposesCaseAndNotation(String text, String san) {
+    final Board board = Board.fromFenStrict("7k/1P6/8/8/8/8/8/K7 w - - 0 48");
+    final LenientSanParseResult result = board.moveLenient(text);
+    assertEquals(san, canonical(result));
+    if (text.charAt(0) == 'b') {
+      assertContainsCode(result, LenientSanValidationProblem.MISSING_PROMOTION_EQUALS);
+      assertContainsCode(result, LenientSanValidationProblem.LOWERCASE_PROMOTION_PIECE);
+    } else {
+      assertContainsCode(result, LenientSanValidationProblem.UPPERCASE_FILE_LETTER);
+      assertContainsCode(result, text.indexOf('-') >= 0 ? LenientSanValidationProblem.LONG_ALGEBRAIC_NOTATION
+          : LenientSanValidationProblem.UCI_NOTATION);
+    }
+  }
+
+  @ParameterizedTest
+  @CsvSource({ "-e4, e2-e4", "e--4, e2-e4", "e4-, e2-e4", "e2--e4, e2-e4", "N-b1c3, Nb1-c3",
+      "Nb1c3-, Nb1-c3", "Nb1-xc3, Nb1-c3" })
+  void testLongAlgebraicHyphenSeparatesTwoSquares(String invalidMove, String validMove) {
+    final Board board = new Board();
+    assertThrows(LenientSanParserValidationException.class, () -> board.moveLenient(invalidMove));
+    assertEquals(0, board.getPerformedMoveCount());
+    assertContainsCode(board.moveLenient(validMove), LenientSanValidationProblem.LONG_ALGEBRAIC_NOTATION);
+  }
+
   // ---------------------------------------------------------------------------
   // Combination tests - multiple codes on one move.
   // ---------------------------------------------------------------------------
@@ -527,7 +594,7 @@ class TestLenientSanParser {
 
   @ParameterizedTest
   @CsvSource({ "w, e8g8, e1g1, O-O", "w, e8c8, e1c1, O-O-O",
-      "b, e1g1, e8g8, O-O", "b, e1c1, e8c8, O-O-O" })
+      "b, e1g1, e8g8, O-O", "b, e1c1, e8c8, O-O-O", "w, E8G8, E1G1, O-O", "b, E1C1, E8C8, O-O-O" })
   void testCoordinateCastlingKeepsMovingSide(String side, String invalidMove, String validMove, String san) {
     final String fen = "r3k2r/8/8/8/8/8/8/R3K2R " + side + " KQkq - 0 1";
     final Board board = Board.fromFenStrict(fen);

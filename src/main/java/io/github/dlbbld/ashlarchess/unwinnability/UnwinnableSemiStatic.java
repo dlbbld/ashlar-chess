@@ -72,9 +72,10 @@ final class UnwinnableSemiStatic {
 
     // Step 10: is there a candidate mate square for the loser's king? Steps 8-10 range over alpha(s) - the squares
     // SHARING A BORDER with s (the paper's share-a-border glyph, verified on the 500-dpi render), NOT all 8
-    // neighbours delta(s). Figure 8 footnote a says a "more complete check" would look at all neighbours, and the
-    // Lemma 11 footnote's at-most-one-square-per-assistant argument holds specifically for alpha(s) (opposite square
-    // colour to s, so the same-coloured bishop intruders can never attack them).
+    // neighbours delta(s). Figure 8 footnote a says a "more complete check" would look at all neighbours.
+    // An assistant can cover several alpha-squares: a pawn on b7 attacks both a8 and c8 around a king on b8.
+    // Count every potentially attacked escape, conservatively allowing simultaneous coverage even when the
+    // attacks require different placements within the mobility region. Overcounting can only decline a proof.
     for (int s = 0; s < SquareGeometry.SQUARES; s++) {
       if (((loserKingRegion >> s) & 1L) == 0L) {
         continue;
@@ -82,7 +83,7 @@ final class UnwinnableSemiStatic {
       final long alpha = SquareGeometry.alpha(s);
       final int alphaCount = Long.bitCount(alpha);
 
-      int coverers = 0; // |blockers(s)| + |assistants(s)|
+      int coverers = 0;
       boolean winnerAttacksS = false;
       for (int i = 0; i < totalPieces; i++) {
         final SemiStaticPiece piece = position.piece(i);
@@ -93,9 +94,7 @@ final class UnwinnableSemiStatic {
           }
         } else {
           // Assistant (step 9): a winner piece that can attack a bordering square.
-          if ((attackRegions[i] & alpha) != 0L) {
-            coverers++;
-          }
+          coverers += Long.bitCount(attackRegions[i] & alpha);
           if (((attackRegions[i] >> s) & 1L) != 0L) {
             winnerAttacksS = true;
           }

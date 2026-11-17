@@ -35,6 +35,13 @@ class TestUnwinnableSemiStatic {
 
   @SuppressWarnings("static-method")
   @Test
+  void onePawnCanCoverTwoKingEscapes() {
+    assertFalse(unwinnable("Bk6/PP6/1P6/7p/8/6p1/6p1/6Kb b - - 0 28", Side.WHITE));
+    assertFalse(unwinnable("6kB/6P1/6P1/8/7P/1p6/pp6/bK6 w - - 0 29", Side.BLACK));
+  }
+
+  @SuppressWarnings("static-method")
+  @Test
   void winnablePositionIsNotDeclaredUnwinnable() {
     // K+Q vs K: White can mate, and the kings can approach each other, so the semi-static check must decline.
     assertFalse(unwinnable("4k3/8/8/8/8/8/1Q6/4K3 w - - 0 1", Side.WHITE));
@@ -94,8 +101,8 @@ class TestUnwinnableSemiStatic {
 
     // Coverage guards (deterministic: committed corpus). A silent drop in `caught` would make the soundness check
     // pass vacuously; pin the counts and update them deliberately if the corpus or the algorithm changes.
-    assertEquals(3151, analysed, "corpus positions analysed changed (was 3151)");
-    assertEquals(263, skipped, "strict-FEN-rejected positions changed (was 263)");
+    assertEquals(3137, analysed, "corpus positions analysed changed (was 3137)");
+    assertEquals(277, skipped, "strict-FEN-rejected positions changed (was 277)");
     assertEquals(985, caught, "semi-static UNWINNABLE coverage changed (was 985)");
   }
 

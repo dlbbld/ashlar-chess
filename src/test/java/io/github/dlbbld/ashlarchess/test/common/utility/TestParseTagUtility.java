@@ -126,11 +126,11 @@ class TestParseTagUtility {
   @Test
   void testTagNameSecondCharacter() {
     checkTagFormat("[E_vent \"Live Chess\"]", true);
-    checkTagFormat("[E+vent \"Live Chess\"]", true);
-    checkTagFormat("[E#vent \"Live Chess\"]", true);
-    checkTagFormat("[E=vent \"Live Chess\"]", true);
-    checkTagFormat("[E:vent \"Live Chess\"]", true);
-    checkTagFormat("[E-vent \"Live Chess\"]", true);
+    checkException("[E+vent \"Live Chess\"]", StrictPgnParserValidationProblem.TAG_FORMAT_INVALID);
+    checkException("[E#vent \"Live Chess\"]", StrictPgnParserValidationProblem.TAG_FORMAT_INVALID);
+    checkException("[E=vent \"Live Chess\"]", StrictPgnParserValidationProblem.TAG_FORMAT_INVALID);
+    checkException("[E:vent \"Live Chess\"]", StrictPgnParserValidationProblem.TAG_FORMAT_INVALID);
+    checkException("[E-vent \"Live Chess\"]", StrictPgnParserValidationProblem.TAG_FORMAT_INVALID);
   }
 
   @SuppressWarnings("static-method")

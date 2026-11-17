@@ -12,6 +12,7 @@ import io.github.dlbbld.ashlarchess.board.Board;
 import io.github.dlbbld.ashlarchess.board.LegalMove;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
 import io.github.dlbbld.ashlarchess.exceptions.UsageException;
+import io.github.dlbbld.ashlarchess.internal.Nulls;
 
 /**
  * A position reached by a legal move must be accepted by the FEN parsers. Double checks are where that can fail: strict
@@ -27,6 +28,10 @@ class TestFenRoundtripDoubleCheck {
     checkDoubleCheckRoundtrip("8/5kPQ/8/8/8/8/8/4K3 w - - 0 1", "g7g8q", "6Q1/5k1Q/8/8/8/8/8/4K3 b - - 0 1");
     // Capture promotion next to the king's file: both checkers orthogonal, on the king's file and rank.
     checkDoubleCheckRoundtrip("7n/R5Pk/8/8/8/8/8/4K3 w - - 0 1", "g7h8r", "7R/R6k/8/8/8/8/8/4K3 b - - 0 1");
+    checkDoubleCheckRoundtrip("7n/R5Pk/8/8/8/8/PPPPPPP1/4K3 w - - 0 30", "g7h8r",
+        "7R/R6k/8/8/8/8/PPPPPPP1/4K3 b - - 0 30");
+    checkDoubleCheckRoundtrip("7n/R5Pk/8/8/8/8/PPPPPPP1/R3K3 w - - 0 30", "g7h8r",
+        "7R/R6k/8/8/8/8/PPPPPPP1/R3K3 b - - 0 30");
     checkDoubleCheckRoundtrip("7n/R5Pk/8/8/8/8/8/4K3 w - - 0 1", "g7h8q", "7Q/R6k/8/8/8/8/8/4K3 b - - 0 1");
     checkDoubleCheckRoundtrip("7n/Q5Pk/8/8/8/8/8/4K3 w - - 0 1", "g7h8q", "7Q/Q6k/8/8/8/8/8/4K3 b - - 0 1");
     // King on the promotion rank: the pawn leaves the king's file by capturing beside the king.
@@ -164,7 +169,7 @@ class TestFenRoundtripDoubleCheck {
       }
     }
     fen.append(isWhite ? " w - - 0 1" : " b - - 0 1");
-    return fen.toString();
+    return Nulls.toString(fen);
   }
 
   private static void checkDoubleCheckRoundtrip(String fenBefore, String uciMove, String expectedFenAfter) {

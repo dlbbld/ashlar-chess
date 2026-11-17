@@ -4,17 +4,24 @@
 package io.github.dlbbld.ashlarchess.test.pgn.export;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
 
+import io.github.dlbbld.ashlarchess.board.Board;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
 import io.github.dlbbld.ashlarchess.board.enums.Square;
 import io.github.dlbbld.ashlarchess.fen.internal.FenConstants;
+import io.github.dlbbld.ashlarchess.internal.Nulls;
 import io.github.dlbbld.ashlarchess.pgn.LenientPgnParser;
+import io.github.dlbbld.ashlarchess.pgn.LenientPgnParserValidationProblem;
 import io.github.dlbbld.ashlarchess.pgn.LenientPgnParserValidationResult;
 import io.github.dlbbld.ashlarchess.pgn.PgnCreate;
 import io.github.dlbbld.ashlarchess.pgn.PgnGame;
+import io.github.dlbbld.ashlarchess.pgn.StrictPgnParser;
+import io.github.dlbbld.ashlarchess.pgn.StrictPgnParserValidationProblem;
+import io.github.dlbbld.ashlarchess.pgn.Tag;
 import io.github.dlbbld.ashlarchess.pgn.WriteMode;
 import io.github.dlbbld.ashlarchess.pgn.internal.TagUtility;
 
@@ -35,6 +42,59 @@ import io.github.dlbbld.ashlarchess.pgn.internal.TagUtility;
  */
 @SuppressWarnings("static-method")
 class TestPgnRoundTripEdgeCases {
+
+  @Test
+  void emptyPregameCommentRoundTripsWithoutInventingTagsOrResult() {
+    final PgnGame game = LenientPgnParser.parseText("{}");
+    final String semantic = PgnCreate.toPgnString(game);
+    assertEquals("{}\n\n", semantic);
+    assertEquals(game, LenientPgnParser.parseText(semantic));
+    assertEquals(LenientPgnParserValidationProblem.FILE_EMPTY, LenientPgnParser.validateText("\n\n").parserProblem());
+  }
+
+  @Test
+  void blankLinesInsideCommentsSurviveArchivalExport() {
+    final String input = "[Event \"{\"]\n[Result \"*\"]\n\n{intro\r\n\r\n\r\nend} 1. e4 {first{\n\nsecond} e5 *";
+    final PgnGame game = LenientPgnParser.parseText(input);
+    final String archive = PgnCreate.toPgnString(game, WriteMode.ARCHIVAL);
+    final PgnGame strict = StrictPgnParser.parseText(archive);
+    assertEquals("intro\n\n\nend", strict.pregameCommentary().value());
+    assertEquals(game.moves(), strict.moves());
+    assertEquals("first{\n\nsecond", Nulls.getFirst(strict.moves()).commentary().value());
+    assertEquals(StrictPgnParserValidationProblem.FILE_EMPTY_LINE_EXACTLY_TWO,
+        StrictPgnParser.validateText(archive + "\n").parserProblem());
+  }
+
+  @Test
+  void tagValueLengthCountsDecodedCharacters() {
+    final String prefix = "v".repeat(252) + "\uD83D\uDE00";
+    final String input = "[Label \"" + prefix + "\\\"\\\\\"]\n[Result \"*\"]\n\n*\n\n";
+    final PgnGame game = StrictPgnParser.parseText(input);
+    assertEquals(prefix + "\"\\", TagUtility.readTagValue(game, "Label"));
+    assertEquals(game, LenientPgnParser.parseText(input));
+    final String archive = PgnCreate.toPgnString(game, WriteMode.ARCHIVAL);
+    assertEquals(prefix + "\"\\", TagUtility.readTagValue(StrictPgnParser.parseText(archive), "Label"));
+  }
+
+  @Test
+  void invalidTagStringsAreRejectedAtImportAndArchivalExport() {
+    assertInvalidTagString("a\0b");
+    assertInvalidTagString("a\tb");
+    assertInvalidTagString("a\u007fb");
+    assertInvalidTagString("a\u0085b");
+    assertInvalidTagString("a\uD800b");
+    assertInvalidTagString("v".repeat(255) + "v");
+  }
+
+  private static void assertInvalidTagString(String value) {
+    final String input = "[Label \"" + value + "\"]\n[Result \"*\"]\n\n*\n\n";
+    assertEquals(StrictPgnParserValidationProblem.TAG_FORMAT_INVALID,
+        StrictPgnParser.validateText(input).parserProblem());
+    assertEquals(LenientPgnParserValidationProblem.TAG_FORMAT_INVALID,
+        LenientPgnParser.validateText(input).parserProblem());
+    final PgnGame game = PgnCreate.createPgnGame(new Board(), Nulls.asList(new Tag("Label", value)));
+    assertThrows(IllegalArgumentException.class, () -> PgnCreate.toPgnString(game, WriteMode.ARCHIVAL));
+  }
 
   @Test
   void test01_tagValueWithEmbeddedQuoteAndBackslashRoundTrips() {

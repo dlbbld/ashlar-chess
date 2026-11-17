@@ -9,6 +9,7 @@ import static org.junit.jupiter.api.Assertions.assertTimeoutPreemptively;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.time.Duration;
+import java.util.Objects;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -19,10 +20,12 @@ import io.github.dlbbld.ashlarchess.internal.Nulls;
 import io.github.dlbbld.ashlarchess.pgn.LenientPgnParser;
 import io.github.dlbbld.ashlarchess.pgn.LenientPgnParserValidationException;
 import io.github.dlbbld.ashlarchess.pgn.LenientPgnParserValidationProblem;
+import io.github.dlbbld.ashlarchess.pgn.PgnCreate;
 import io.github.dlbbld.ashlarchess.pgn.PgnGame;
 import io.github.dlbbld.ashlarchess.pgn.StrictPgnParser;
 import io.github.dlbbld.ashlarchess.pgn.StrictPgnParserValidationException;
 import io.github.dlbbld.ashlarchess.pgn.StrictPgnParserValidationProblem;
+import io.github.dlbbld.ashlarchess.pgn.WriteMode;
 
 class TestPgnTagNameEdgeCases {
 
@@ -49,58 +52,70 @@ class TestPgnTagNameEdgeCases {
 
   @SuppressWarnings("static-method")
   @ParameterizedTest
-  @ValueSource(strings = { "1Tag", "123Annotator", "1_Tag2", "123" })
-  void digitStartedTagNamesArePreserved(String name) {
+  @ValueSource(strings = { "0", "0Tag", "1Tag", "123Annotator", "1_Tag2", "123", "zero" })
+  void nonUppercaseInitialIsAllowedOnImportOnly(String name) {
     final String tagLine = "[" + name + " \"value\"]\n";
     final PgnGame lenient = LenientPgnParser.parseText(lenientText(tagLine));
     final PgnGame strict = StrictPgnParser.parseText(strictText(tagLine));
     assertEquals(name, Nulls.getLast(lenient.tags()).name());
     assertEquals("value", Nulls.getLast(lenient.tags()).value());
     assertEquals(lenient, strict);
+    assertEquals(lenient, LenientPgnParser.parseText(PgnCreate.toPgnString(lenient)));
+    final IllegalArgumentException failure = Objects.requireNonNull(assertThrows(IllegalArgumentException.class,
+        () -> PgnCreate.toPgnString(lenient, WriteMode.ARCHIVAL)));
+    assertTrue(ExceptionUtility.getMessage(failure).contains("\"" + name + "\""));
   }
 
   @SuppressWarnings("static-method")
   @ParameterizedTest
   @ValueSource(strings = { "_", "+", "#", "=", ":", "-" })
   void tagNameMustStartWithLetterOrDigit(String continuationCharacter) {
-    // Regression: the lenient parser accepted a name opening with a symbol continuation character (PGN spec §7), and
-    // the archival export of that game was rejected by the strict parser.
     final String tagLine = "[" + continuationCharacter + "Annotator \"?\"]\n";
 
-    final LenientPgnParserValidationException lenient = assertThrows(LenientPgnParserValidationException.class,
-        () -> LenientPgnParser.parseText(lenientText(tagLine)));
+    final LenientPgnParserValidationException lenient = Objects.requireNonNull(assertThrows(
+        LenientPgnParserValidationException.class, () -> LenientPgnParser.parseText(lenientText(tagLine))));
     assertEquals(LenientPgnParserValidationProblem.TAG_FORMAT_INVALID, lenient.getLenientPgnParserValidationProblem());
 
-    final StrictPgnParserValidationException strict = assertThrows(StrictPgnParserValidationException.class,
-        () -> StrictPgnParser.parseText(strictText(tagLine)));
+    final StrictPgnParserValidationException strict = Objects.requireNonNull(assertThrows(
+        StrictPgnParserValidationException.class, () -> StrictPgnParser.parseText(strictText(tagLine))));
     assertEquals(StrictPgnParserValidationProblem.TAG_NAME_FIRST_CHARACTER,
         strict.getStrictPgnParserValidationProblem());
   }
 
   @SuppressWarnings("static-method")
+  @ParameterizedTest
+  @ValueSource(strings = { "A+B", "A#B", "A=B", "A:B", "A-B" })
+  void punctuationInTagNamesIsPreservedOnlyInLenientSemanticMode(String name) {
+    final String tagLine = "[" + name + " \"?\"]\n";
+    final PgnGame game = LenientPgnParser.parseText(lenientText(tagLine));
+    assertEquals(name, Nulls.getLast(game.tags()).name());
+    assertEquals(game, LenientPgnParser.parseText(PgnCreate.toPgnString(game)));
+    assertEquals(StrictPgnParserValidationProblem.TAG_FORMAT_INVALID,
+        StrictPgnParser.validateText(strictText(tagLine)).parserProblem());
+    assertThrows(IllegalArgumentException.class, () -> PgnCreate.toPgnString(game, WriteMode.ARCHIVAL));
+  }
+
+  @SuppressWarnings("static-method")
   @Test
-  void continuationCharactersStayValidAfterTheFirstCharacter() {
-    final String tagLine = "[A_+#=:-z \"?\"]\n";
-    assertEquals(8, LenientPgnParser.parseText(lenientText(tagLine)).tags().size());
-    assertEquals(8, StrictPgnParser.parseText(strictText(tagLine)).tags().size());
+  void conformingUnknownTagSurvivesArchivalExport() {
+    final PgnGame game = StrictPgnParser.parseText(strictText("[A_0b \"value\"]\n"));
+    assertEquals(game, StrictPgnParser.parseText(PgnCreate.toPgnString(game, WriteMode.ARCHIVAL)));
   }
 
   @SuppressWarnings("static-method")
   @Test
   void tagNameLengthLimitIsTheSameInBothParsers() {
-    // Regression: the lenient parser had no limit, and the archival export of a game with a longer name was rejected
-    // by the strict parser. PGN spec §7 limits a symbol to 255 characters.
     final String longestTagLine = "[" + "A".repeat(255) + " \"?\"]\n";
     assertEquals(8, LenientPgnParser.parseText(lenientText(longestTagLine)).tags().size());
     assertEquals(8, StrictPgnParser.parseText(strictText(longestTagLine)).tags().size());
 
     final String tooLongTagLine = "[" + "A".repeat(256) + " \"?\"]\n";
-    final LenientPgnParserValidationException lenient = assertThrows(LenientPgnParserValidationException.class,
-        () -> LenientPgnParser.parseText(lenientText(tooLongTagLine)));
+    final LenientPgnParserValidationException lenient = Objects.requireNonNull(assertThrows(
+        LenientPgnParserValidationException.class, () -> LenientPgnParser.parseText(lenientText(tooLongTagLine))));
     assertEquals(LenientPgnParserValidationProblem.TAG_FORMAT_INVALID, lenient.getLenientPgnParserValidationProblem());
 
-    final StrictPgnParserValidationException strict = assertThrows(StrictPgnParserValidationException.class,
-        () -> StrictPgnParser.parseText(strictText(tooLongTagLine)));
+    final StrictPgnParserValidationException strict = Objects.requireNonNull(assertThrows(
+        StrictPgnParserValidationException.class, () -> StrictPgnParser.parseText(strictText(tooLongTagLine))));
     assertEquals(StrictPgnParserValidationProblem.TAG_NAME_EXCEEDS_MAXIMUM_LENGTH,
         strict.getStrictPgnParserValidationProblem());
   }
@@ -110,13 +125,13 @@ class TestPgnTagNameEdgeCases {
   void duplicateTagNameReportedIsTheFirstTagWithADuplicate() {
     final String tagLines = "[Annotator \"a\"]\n[Opening \"b\"]\n[Opening \"c\"]\n[Annotator \"d\"]\n";
 
-    final LenientPgnParserValidationException lenient = assertThrows(LenientPgnParserValidationException.class,
-        () -> LenientPgnParser.parseText(lenientText(tagLines)));
+    final LenientPgnParserValidationException lenient = Objects.requireNonNull(assertThrows(
+        LenientPgnParserValidationException.class, () -> LenientPgnParser.parseText(lenientText(tagLines))));
     assertEquals(LenientPgnParserValidationProblem.TAG_NAME_NOT_UNIQUE, lenient.getLenientPgnParserValidationProblem());
     assertTrue(ExceptionUtility.getMessage(lenient).contains("\"Annotator\""));
 
-    final StrictPgnParserValidationException strict = assertThrows(StrictPgnParserValidationException.class,
-        () -> StrictPgnParser.parseText(strictText(tagLines)));
+    final StrictPgnParserValidationException strict = Objects.requireNonNull(assertThrows(
+        StrictPgnParserValidationException.class, () -> StrictPgnParser.parseText(strictText(tagLines))));
     assertEquals(StrictPgnParserValidationProblem.TAG_NAME_NOT_UNIQUE, strict.getStrictPgnParserValidationProblem());
     assertTrue(ExceptionUtility.getMessage(strict).contains("\"Annotator\""));
   }
@@ -133,12 +148,12 @@ class TestPgnTagNameEdgeCases {
     }
     final String extraTagLines = Nulls.toString(tagLines);
 
-    final PgnGame lenient = assertTimeoutPreemptively(Duration.ofSeconds(30),
-        () -> LenientPgnParser.parseText(lenientText(extraTagLines)));
+    final PgnGame lenient = Objects.requireNonNull(assertTimeoutPreemptively(Duration.ofSeconds(30),
+        () -> LenientPgnParser.parseText(lenientText(extraTagLines))));
     assertEquals(7 + extraTagCount, lenient.tags().size());
 
-    final PgnGame strict = assertTimeoutPreemptively(Duration.ofSeconds(30),
-        () -> StrictPgnParser.parseText(strictText(extraTagLines)));
+    final PgnGame strict = Objects.requireNonNull(assertTimeoutPreemptively(Duration.ofSeconds(30),
+        () -> StrictPgnParser.parseText(strictText(extraTagLines))));
     assertEquals(7 + extraTagCount, strict.tags().size());
   }
 }

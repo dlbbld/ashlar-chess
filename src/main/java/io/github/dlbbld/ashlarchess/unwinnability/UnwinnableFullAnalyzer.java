@@ -39,7 +39,17 @@ public final class UnwinnableFullAnalyzer {
    * {@code UNWINNABLE} for both sides.
    */
   public static UnwinnabilityFullAnalysis unwinnableFull(Board input, Side winner) {
+    final Side loser = winner.getOppositeSide();
     final Board board = input.copyCurrentPositionWithoutHistory();
+
+    if (board.isCheckmate()) {
+      final UnwinnabilityFullVerdict verdict = board.getSideToMove() == loser
+          ? UnwinnabilityFullVerdict.WINNABLE : UnwinnabilityFullVerdict.UNWINNABLE;
+      return new UnwinnabilityFullAnalysis(verdict, Nulls.listOf());
+    }
+    if (board.isStalemate()) {
+      return new UnwinnabilityFullAnalysis(UnwinnabilityFullVerdict.UNWINNABLE, Nulls.listOf());
+    }
 
     // 1: if UnwinnableSS(pos, c, Mobility(pos)) then return Unwinnable
     final SemiStaticPosition semiStaticPosition = SemiStaticPosition.fromBoard(board);

@@ -24,9 +24,9 @@ import io.github.dlbbld.ashlarchess.board.enums.PieceType;
 import io.github.dlbbld.ashlarchess.board.enums.Rank;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
 import io.github.dlbbld.ashlarchess.board.enums.Square;
-import io.github.dlbbld.ashlarchess.board.enums.SquareType;
 import io.github.dlbbld.ashlarchess.board.enums.internal.SquareUtility;
 import io.github.dlbbld.ashlarchess.exceptions.ProgrammingMistakeException;
+import io.github.dlbbld.ashlarchess.fen.FenMaterialCount.Balance;
 import io.github.dlbbld.ashlarchess.fen.internal.FenConstants;
 import io.github.dlbbld.ashlarchess.fen.internal.FenField;
 import io.github.dlbbld.ashlarchess.fen.internal.FenPieceSymbol;
@@ -62,7 +62,10 @@ final class StrictFenSemanticParser {
 
     final String piecePlacement = fenField.piecePlacement();
     final BitboardPosition bitboardPosition = validatePiecePlacement(piecePlacement);
-    validateNumberOfPieces(bitboardPosition);
+    final Balance whiteMaterial = FenMaterialCount.balance(WHITE, bitboardPosition);
+    validateNumberOfPieces(WHITE, whiteMaterial);
+    final Balance blackMaterial = FenMaterialCount.balance(BLACK, bitboardPosition);
+    validateNumberOfPieces(BLACK, blackMaterial);
 
     validatePawnRankNotPromotionRank(bitboardPosition);
 
@@ -86,7 +89,8 @@ final class StrictFenSemanticParser {
     final String halfMoveClockStr = fenField.halfMoveClock();
     final int halfMoveClock = validateHalfMoveClock(halfMoveClockStr, enPassantCaptureTargetSquare);
 
-    validateCheckConfiguration(bitboardPosition, sideToMove, halfMoveClock);
+    validateCheckConfiguration(bitboardPosition, sideToMove, halfMoveClock,
+        sideToMove == WHITE ? blackMaterial : whiteMaterial, sideToMove == WHITE ? whiteMaterial : blackMaterial);
 
     final String fullMoveNumberStr = fenField.fullMoveNumber();
     final int fullMoveNumber = validateFullMoveNumber(fullMoveNumberStr);
@@ -255,6 +259,11 @@ final class StrictFenSemanticParser {
       final String currentChar = Nulls.substring(rankDescription, i, i + 1);
       try {
         final int numberOfEmptyFields = Integer.parseInt(currentChar);
+        if (i > 0 && Character.isDigit(rankDescription.charAt(i - 1))) {
+          throw new StrictFenSemanticValidationException(
+              StrictFenSemanticValidationProblem.INVALID_POSITION_SPLIT_EMPTY_SQUARE_RUN,
+              "the rank description \"" + rankDescription + "\" uses consecutive digits for a single empty-square run");
+        }
         countEvaluatedLength += numberOfEmptyFields;
         for (int j = 1; j <= numberOfEmptyFields; j++) {
           squareDescriptions.add("");
@@ -624,152 +633,66 @@ final class StrictFenSemanticParser {
 
   }
 
-  private static void validateNumberOfPieces(BitboardPosition bitboardPosition)
-      throws StrictFenSemanticValidationException {
-    validateWhiteNumberOfPieces(bitboardPosition);
-    validateBlackNumberOfPieces(bitboardPosition);
-  }
-
-  private static void validateWhiteNumberOfPieces(BitboardPosition bitboardPosition)
-      throws StrictFenSemanticValidationException {
-    // kings
-    final int numberOfKings = FenMaterialCount.calculateNumberOfPieces(Side.WHITE, bitboardPosition, PieceType.KING);
-    if (numberOfKings > ChessConstants.NUMBER_OF_KINGS) {
-      throw new StrictFenSemanticValidationException(StrictFenSemanticValidationProblem.INVALID_WHITE_TOO_MANY_KINGS,
-          "there is more than one white king");
-    }
-    if (numberOfKings == 0) {
-      throw new StrictFenSemanticValidationException(StrictFenSemanticValidationProblem.INVALID_WHITE_NO_KING,
-          "there is no white king");
-    }
-
-    // pawns
-    final int numberOfPawns = FenMaterialCount.calculateNumberOfPieces(Side.WHITE, bitboardPosition, PieceType.PAWN);
-    if (numberOfPawns > ChessConstants.INITIAL_NUMBER_OF_PAWNS) {
-      throw new StrictFenSemanticValidationException(StrictFenSemanticValidationProblem.INVALID_WHITE_TOO_MANY_PAWNS,
-          "there are too many white pawns");
-    }
-
-    final int numberOfPossiblePromotions = ChessConstants.INITIAL_NUMBER_OF_PAWNS - numberOfPawns;
-
-    // rooks
-    final int numberOfRooks = FenMaterialCount.calculateNumberOfPieces(Side.WHITE, bitboardPosition, PieceType.ROOK);
-    final int numberOfRooksPromoted = numberOfRooks - ChessConstants.INITIAL_NUMBER_OF_ROOKS;
-    if (numberOfRooksPromoted > numberOfPossiblePromotions) {
-      throw new StrictFenSemanticValidationException(StrictFenSemanticValidationProblem.INVALID_WHITE_TOO_MANY_ROOKS,
-          "there are too many white rooks");
-    }
-
-    // knights
-    final int numberOfKnights = FenMaterialCount.calculateNumberOfPieces(Side.WHITE, bitboardPosition,
-        PieceType.KNIGHT);
-    final int numberOfKnightsPromoted = numberOfKnights - ChessConstants.INITIAL_NUMBER_OF_KNIGHTS;
-    if (numberOfKnightsPromoted > numberOfPossiblePromotions) {
-      throw new StrictFenSemanticValidationException(StrictFenSemanticValidationProblem.INVALID_WHITE_TOO_MANY_KNIGHTS,
-          "there are too many white knights");
-    }
-
-    // light square bishops
-    final int numberOfLightSquareBishops = FenMaterialCount.calculateNumberOfBishops(Side.WHITE, bitboardPosition,
-        SquareType.LIGHT_SQUARE);
-    final int numberOfLightSquareBishopsPromoted = numberOfLightSquareBishops
-        - ChessConstants.INITIAL_NUMBER_OF_LIGHT_SQUARE_BISHOPS;
-    if (numberOfLightSquareBishopsPromoted > numberOfPossiblePromotions) {
+  private static void validateNumberOfPieces(Side side, Balance material) throws StrictFenSemanticValidationException {
+    final boolean white = side == WHITE;
+    final String color = white ? "white" : "black";
+    if (material.kings() > ChessConstants.NUMBER_OF_KINGS) {
       throw new StrictFenSemanticValidationException(
-          StrictFenSemanticValidationProblem.INVALID_WHITE_TOO_MANY_LIGHT_SQUARE_BISHOPS,
-          "there are too many white light squared bishops");
+          white ? StrictFenSemanticValidationProblem.INVALID_WHITE_TOO_MANY_KINGS
+              : StrictFenSemanticValidationProblem.INVALID_BLACK_TOO_MANY_KINGS,
+          "there is more than one " + color + " king");
     }
-
-    // dark square bishops
-    final int numberOfDarkSquareBishops = FenMaterialCount.calculateNumberOfBishops(Side.WHITE, bitboardPosition,
-        SquareType.DARK_SQUARE);
-    final int numberOfDarkSquareBishopsPromoted = numberOfDarkSquareBishops
-        - ChessConstants.INITIAL_NUMBER_OF_DARK_SQUARE_BISHOPS;
-    if (numberOfDarkSquareBishopsPromoted > numberOfPossiblePromotions) {
+    if (material.kings() == 0) {
       throw new StrictFenSemanticValidationException(
-          StrictFenSemanticValidationProblem.INVALID_WHITE_TOO_MANY_DARK_SQUARE_BISHOPS,
-          "there are too many white dark squared bishops");
+          white ? StrictFenSemanticValidationProblem.INVALID_WHITE_NO_KING
+              : StrictFenSemanticValidationProblem.INVALID_BLACK_NO_KING,
+          "there is no " + color + " king");
     }
-
-    // queens
-    final int numberOfQueens = FenMaterialCount.calculateNumberOfPieces(Side.WHITE, bitboardPosition, PieceType.QUEEN);
-    final int numberOfQueensPromoted = numberOfQueens - ChessConstants.INITIAL_NUMBER_OF_QUEENS;
-    if (numberOfQueensPromoted > numberOfPossiblePromotions) {
-      throw new StrictFenSemanticValidationException(StrictFenSemanticValidationProblem.INVALID_WHITE_TOO_MANY_QUEENS,
-          "there are too many white queens");
-    }
-  }
-
-  private static void validateBlackNumberOfPieces(BitboardPosition bitboardPosition)
-      throws StrictFenSemanticValidationException {
-    // copy/replace code of white
-    // kings
-    final int numberOfKings = FenMaterialCount.calculateNumberOfPieces(Side.BLACK, bitboardPosition, PieceType.KING);
-    if (numberOfKings > ChessConstants.NUMBER_OF_KINGS) {
-      throw new StrictFenSemanticValidationException(StrictFenSemanticValidationProblem.INVALID_BLACK_TOO_MANY_KINGS,
-          "there is more than one black king");
-    }
-    if (numberOfKings == 0) {
-      throw new StrictFenSemanticValidationException(StrictFenSemanticValidationProblem.INVALID_BLACK_NO_KING,
-          "there is no black king");
-    }
-
-    // pawns
-    final int numberOfPawns = FenMaterialCount.calculateNumberOfPieces(Side.BLACK, bitboardPosition, PieceType.PAWN);
-    if (numberOfPawns > ChessConstants.INITIAL_NUMBER_OF_PAWNS) {
-      throw new StrictFenSemanticValidationException(StrictFenSemanticValidationProblem.INVALID_BLACK_TOO_MANY_PAWNS,
-          "there are too many black pawns");
-    }
-
-    final int numberOfPossiblePromotions = ChessConstants.INITIAL_NUMBER_OF_PAWNS - numberOfPawns;
-
-    // rooks
-    final int numberOfRooks = FenMaterialCount.calculateNumberOfPieces(Side.BLACK, bitboardPosition, PieceType.ROOK);
-    final int numberOfRooksPromoted = numberOfRooks - ChessConstants.INITIAL_NUMBER_OF_ROOKS;
-    if (numberOfRooksPromoted > numberOfPossiblePromotions) {
-      throw new StrictFenSemanticValidationException(StrictFenSemanticValidationProblem.INVALID_BLACK_TOO_MANY_ROOKS,
-          "there are too many black rooks");
-    }
-
-    // knights
-    final int numberOfKnights = FenMaterialCount.calculateNumberOfPieces(Side.BLACK, bitboardPosition,
-        PieceType.KNIGHT);
-    final int numberOfKnightsPromoted = numberOfKnights - ChessConstants.INITIAL_NUMBER_OF_KNIGHTS;
-    if (numberOfKnightsPromoted > numberOfPossiblePromotions) {
-      throw new StrictFenSemanticValidationException(StrictFenSemanticValidationProblem.INVALID_BLACK_TOO_MANY_KNIGHTS,
-          "there are too many black knights");
-    }
-
-    // light square bishops
-    final int numberOfLightSquareBishops = FenMaterialCount.calculateNumberOfBishops(Side.BLACK, bitboardPosition,
-        SquareType.LIGHT_SQUARE);
-    final int numberOfLightSquareBishopsPromoted = numberOfLightSquareBishops
-        - ChessConstants.INITIAL_NUMBER_OF_LIGHT_SQUARE_BISHOPS;
-    if (numberOfLightSquareBishopsPromoted > numberOfPossiblePromotions) {
+    final int missingPawns = material.missingPawns();
+    if (missingPawns < 0) {
       throw new StrictFenSemanticValidationException(
-          StrictFenSemanticValidationProblem.INVALID_BLACK_TOO_MANY_LIGHT_SQUARE_BISHOPS,
-          "there are too many black light squared bishops");
+          white ? StrictFenSemanticValidationProblem.INVALID_WHITE_TOO_MANY_PAWNS
+              : StrictFenSemanticValidationProblem.INVALID_BLACK_TOO_MANY_PAWNS,
+          "there are too many " + color + " pawns");
     }
-
-    // dark square bishops
-    final int numberOfDarkSquareBishops = FenMaterialCount.calculateNumberOfBishops(Side.BLACK, bitboardPosition,
-        SquareType.DARK_SQUARE);
-    final int numberOfDarkSquareBishopsPromoted = numberOfDarkSquareBishops
-        - ChessConstants.INITIAL_NUMBER_OF_DARK_SQUARE_BISHOPS;
-    if (numberOfDarkSquareBishopsPromoted > numberOfPossiblePromotions) {
+    if (material.rookSurplus() > missingPawns) {
       throw new StrictFenSemanticValidationException(
-          StrictFenSemanticValidationProblem.INVALID_BLACK_TOO_MANY_DARK_SQUARE_BISHOPS,
-          "there are too many black dark squared bishops");
+          white ? StrictFenSemanticValidationProblem.INVALID_WHITE_TOO_MANY_ROOKS
+              : StrictFenSemanticValidationProblem.INVALID_BLACK_TOO_MANY_ROOKS,
+          "there are too many " + color + " rooks");
     }
-
-    // queens
-    final int numberOfQueens = FenMaterialCount.calculateNumberOfPieces(Side.BLACK, bitboardPosition, PieceType.QUEEN);
-    final int numberOfQueensPromoted = numberOfQueens - ChessConstants.INITIAL_NUMBER_OF_QUEENS;
-    if (numberOfQueensPromoted > numberOfPossiblePromotions) {
-      throw new StrictFenSemanticValidationException(StrictFenSemanticValidationProblem.INVALID_BLACK_TOO_MANY_QUEENS,
-          "there are too many black queens");
+    if (material.knightSurplus() > missingPawns) {
+      throw new StrictFenSemanticValidationException(
+          white ? StrictFenSemanticValidationProblem.INVALID_WHITE_TOO_MANY_KNIGHTS
+              : StrictFenSemanticValidationProblem.INVALID_BLACK_TOO_MANY_KNIGHTS,
+          "there are too many " + color + " knights");
     }
-
+    if (material.lightBishopSurplus() > missingPawns) {
+      throw new StrictFenSemanticValidationException(
+          white ? StrictFenSemanticValidationProblem.INVALID_WHITE_TOO_MANY_LIGHT_SQUARE_BISHOPS
+              : StrictFenSemanticValidationProblem.INVALID_BLACK_TOO_MANY_LIGHT_SQUARE_BISHOPS,
+          "there are too many " + color + " light squared bishops");
+    }
+    if (material.darkBishopSurplus() > missingPawns) {
+      throw new StrictFenSemanticValidationException(
+          white ? StrictFenSemanticValidationProblem.INVALID_WHITE_TOO_MANY_DARK_SQUARE_BISHOPS
+              : StrictFenSemanticValidationProblem.INVALID_BLACK_TOO_MANY_DARK_SQUARE_BISHOPS,
+          "there are too many " + color + " dark squared bishops");
+    }
+    if (material.queenSurplus() > missingPawns) {
+      throw new StrictFenSemanticValidationException(
+          white ? StrictFenSemanticValidationProblem.INVALID_WHITE_TOO_MANY_QUEENS
+              : StrictFenSemanticValidationProblem.INVALID_BLACK_TOO_MANY_QUEENS,
+          "there are too many " + color + " queens");
+    }
+    final int requiredPromotions = FenMaterialCount.requiredPromotions(material);
+    if (requiredPromotions > missingPawns) {
+      throw new StrictFenSemanticValidationException(
+          white ? StrictFenSemanticValidationProblem.INVALID_WHITE_TOO_MANY_PROMOTIONS
+              : StrictFenSemanticValidationProblem.INVALID_BLACK_TOO_MANY_PROMOTIONS,
+          "the " + color + " pieces require at least " + requiredPromotions + " promotions but only " + missingPawns
+              + " pawns are missing");
+    }
   }
 
   private static void validatePawnRankNotPromotionRank(BitboardPosition bitboardPosition)
@@ -820,8 +743,8 @@ final class StrictFenSemanticParser {
   // check, and an en passant capture, which vacates two squares and can uncover two sliders at once. Those pairs are
   // rejected unless the halfmove clock is zero and one of those moves could have produced them. Other double checks
   // (knight + slider, bishop + rook, diagonal + orthogonal slider) are left untouched.
-  private static void validateCheckConfiguration(BitboardPosition bitboardPosition, Side sideToMove, int halfMoveClock)
-      throws StrictFenSemanticValidationException {
+  private static void validateCheckConfiguration(BitboardPosition bitboardPosition, Side sideToMove, int halfMoveClock,
+      Balance attackerMaterial, Balance defenderMaterial) throws StrictFenSemanticValidationException {
     final Square kingSquare = bitboardPosition.kingSquare(sideToMove);
     final Side attacker = sideToMove.getOppositeSide();
     final long checkers = bitboardPosition.attackersTo(kingSquare, attacker);
@@ -848,9 +771,12 @@ final class StrictFenSemanticParser {
     if (!sameGeometry && !bothQueens) {
       return;
     }
-    if (halfMoveClock == 0 && (isDoubleCheckByPromotion(attacker, kingSquare, firstSquare, secondSquare)
-        || isDoubleCheckByPromotion(attacker, kingSquare, secondSquare, firstSquare)
-        || isDoubleCheckByEnPassantCapture(bitboardPosition, attacker, kingSquare, firstSquare, secondSquare))) {
+    if (halfMoveClock == 0 && (isDoubleCheckByPromotion(attacker, kingSquare, firstSquare, firstChecker, secondSquare,
+        attackerMaterial, defenderMaterial)
+        || isDoubleCheckByPromotion(attacker, kingSquare, secondSquare, secondChecker, firstSquare, attackerMaterial,
+            defenderMaterial)
+        || FenMaterialCount.requiredPromotions(defenderMaterial) < defenderMaterial.missingPawns()
+            && isDoubleCheckByEnPassantCapture(bitboardPosition, attacker, kingSquare, firstSquare, secondSquare))) {
       return;
     }
     throw new StrictFenSemanticValidationException(StrictFenSemanticValidationProblem.INVALID_POSITION_IMPOSSIBLE_CHECK,
@@ -861,8 +787,9 @@ final class StrictFenSemanticParser {
   // king. That line is empty now because it carries a check. A pawn attacking the king from its origin square would
   // have given check before the move, which rules that origin out.
   private static boolean isDoubleCheckByPromotion(Side attacker, Square kingSquare, Square promotedSquare,
-      Square uncoveredSquare) {
-    if (!SquareUtility.getPromotionRankSquares(attacker).contains(promotedSquare)) {
+      Piece checker, Square uncoveredSquare, Balance attackerMaterial, Balance defenderMaterial) {
+    if (!SquareUtility.getPromotionRankSquares(attacker).contains(promotedSquare)
+        || !FenMaterialCount.canBePromoted(attackerMaterial, checker.getPieceType(), promotedSquare)) {
       return false;
     }
     final List<Square> pawnOrigins = new ArrayList<>();
@@ -875,7 +802,9 @@ final class StrictFenSemanticParser {
     }
     for (final Square pawnOrigin : pawnOrigins) {
       if (isStrictlyBetween(pawnOrigin, uncoveredSquare, kingSquare)
-          && !isPawnAttacking(pawnOrigin, attacker, kingSquare)) {
+          && !isPawnAttacking(pawnOrigin, attacker, kingSquare)
+          && (pawnOrigin.getFile() == promotedSquare.getFile()
+              || FenMaterialCount.canRestorePromotionVictim(defenderMaterial, promotedSquare))) {
         return true;
       }
     }

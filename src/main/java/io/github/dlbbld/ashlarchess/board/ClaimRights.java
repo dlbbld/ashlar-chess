@@ -5,6 +5,8 @@ package io.github.dlbbld.ashlarchess.board;
 
 import java.util.List;
 
+import io.github.dlbbld.ashlarchess.internal.Nulls;
+
 /**
  * Snapshot of the side-to-move's right to claim a draw under one specific FIDE rule (either 9.2 threefold or 9.3 fifty-
  * move), expressed as the list of legal moves that, if announced before being played, would satisfy the rule.
@@ -23,6 +25,7 @@ import java.util.List;
 public record ClaimRights(boolean canClaim, List<ClaimableMove> claimableMoves) {
 
   public ClaimRights {
+    claimableMoves = Nulls.copyOfList(claimableMoves);
     if (canClaim == claimableMoves.isEmpty()) {
       throw new IllegalArgumentException("canClaim must equal !claimableMoves.isEmpty(); got canClaim=" + canClaim
           + ", claimableMoves.size()=" + claimableMoves.size());

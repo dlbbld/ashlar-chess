@@ -536,6 +536,9 @@ Codes are not collapsed: each distinguishable deviation has its own code, and a 
 Mixed castling such as `0-O` is rejected. Pawn spurious capture marker recovery is also rejected because it would
 silently change the user's intended pawn.
 
+Explicit `P` notation always selects a pawn. Short b-file spellings such as `ba5` require a unique legal
+interpretation. Coordinate origins remain binding, and LAN hyphens must occur between the two squares.
+
 The PGN lenient parser routes movetext SAN through this same lenient SAN layer:
 
 ```java
@@ -575,8 +578,8 @@ Strict FEN entry points:
 
 Strict FEN requires canonical six-field FEN and validates the position:
 
-- piece placement is eight legal ranks and each rank has exactly eight squares;
-- each side has exactly one king and physically possible piece counts;
+- piece placement is eight legal ranks, each with exactly eight squares and no adjacent empty-run digits;
+- each side has exactly one king and physically possible piece counts, with one shared promotion budget;
 - no pawn on rank 1 or rank 8;
 - the side that just moved is not still in check;
 - side to move is `w` or `b`;
@@ -598,6 +601,7 @@ Lenient FEN performs syntactic recovery, reports every forgiven item, then runs 
 - tab/newline field separators;
 - missing halfmove/fullmove counters;
 - uppercase side-to-move or en-passant file;
+- adjacent empty-run digits, merged when their sum fits the rank (`SPLIT_EMPTY_SQUARE_RUN`);
 - non-canonical castling order;
 - non-ASCII dash for no en-passant square;
 - trailing garbage token;
@@ -638,6 +642,13 @@ PGN handling separates four jobs:
 - Archival export: produce PGN spec §8.1.1 archival output with filled/sorted Seven Tag Roster.
 
 The default export mode is semantic. Archival export is opt-in via `WriteMode.ARCHIVAL`.
+
+Strict tag names use only letters, digits and underscores and begin with a letter or digit. Lenient import and
+semantic export preserve broader custom names. Archival output requires an uppercase initial and rejects
+unrepresentable names with `IllegalArgumentException`; it does not rename or discard tags. Tag values must contain
+printing characters and at most 255 decoded Unicode code points. Semantic export represents an empty game as `{}`.
+
+A numeric annotation ends at its first non-digit: `$1e5` preserves both the NAG and the following `e5` move.
 
 ### Lenient PGN Parser
 

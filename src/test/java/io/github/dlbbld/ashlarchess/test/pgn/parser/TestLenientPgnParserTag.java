@@ -4,15 +4,22 @@
 package io.github.dlbbld.ashlarchess.test.pgn.parser;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
 import io.github.dlbbld.ashlarchess.internal.Nulls;
+import io.github.dlbbld.ashlarchess.pgn.LenientPgnParser;
+import io.github.dlbbld.ashlarchess.pgn.PgnCreate;
 import io.github.dlbbld.ashlarchess.pgn.PgnGame;
 import io.github.dlbbld.ashlarchess.pgn.ResultTagValue;
+import io.github.dlbbld.ashlarchess.pgn.Tag;
+import io.github.dlbbld.ashlarchess.pgn.WriteMode;
 import io.github.dlbbld.ashlarchess.pgn.internal.TagUtility;
 import io.github.dlbbld.ashlarchess.test.pgntest.constants.PgnTestConstants;
 
@@ -61,22 +68,30 @@ class TestLenientPgnParserTag {
 
   @SuppressWarnings("static-method")
   @Test
-  void testIgnoreSetUpTag() {
+  void preservesRedundantSetUpAndLowercaseCustomTagOnImport() {
+    final PgnGame reference = PgnCacheForStrictPgnParserTestCases.getPgn(PGN_TEST_FOLDER_PATH, "99_original.pgn");
+    assertSetUpPreserved(reference, "04_setup_tag_zero_remove.pgn", "0");
+    assertSetUpPreserved(reference, "05_setup_tag_one_remove.pgn", "1");
+  }
 
-    final PgnGame actual = PgnCacheForStrictPgnParserTestCases.getPgn(PGN_TEST_FOLDER_PATH, "99_original.pgn");
+  private static void assertSetUpPreserved(PgnGame reference, String file, String setUp) {
+    final PgnGame game = PgnCacheForLenientPgnParserTestCases.getPgn(PGN_TEST_FOLDER_PATH, file);
+    assertEquals(setUp, TagUtility.readSetUp(game.tags()));
+    final List<Tag> tags = new ArrayList<>(game.tags());
+    TagUtility.removeSetUpTag(tags);
+    assertEquals(reference, new PgnGame(tags, game.startFen(), game.pregameCommentary(), game.moves(),
+        game.terminationMarker()));
+    assertEquals("  tag value with white  space  ", TagUtility.readTagValue(game, "tagWithWhiteSpace"));
+    assertEquals(game, LenientPgnParser.parseText(PgnCreate.toPgnString(game)));
+    assertThrows(IllegalArgumentException.class, () -> PgnCreate.toPgnString(game, WriteMode.ARCHIVAL));
+  }
 
-    {
-      final PgnGame expected = PgnCacheForLenientPgnParserTestCases.getPgn(PGN_TEST_FOLDER_PATH,
-          "04_setup_tag_zero_remove.pgn");
-      // Lenient parser preserves the redundant SetUp tag in the parsed model; archival normalisation drops it
-      // because startFen is the initial position (FEN/SetUp are archival-only signals when not needed).
-      TestLenientPgnParserSupport.assertEqualsArchival(actual, expected);
-    }
-    {
-      final PgnGame expected = PgnCacheForLenientPgnParserTestCases.getPgn(PGN_TEST_FOLDER_PATH,
-          "05_setup_tag_one_remove.pgn");
-      TestLenientPgnParserSupport.assertEqualsArchival(actual, expected);
-    }
+  @SuppressWarnings("static-method")
+  @Test
+  void archivalExportDropsRedundantSetUpAtTheInitialPosition() {
+    final PgnGame reference = LenientPgnParser.parseText("1. e4 *");
+    TestLenientPgnParserSupport.assertEqualsArchival(reference, LenientPgnParser.parseText("[SetUp \"0\"]\n\n1. e4 *"));
+    TestLenientPgnParserSupport.assertEqualsArchival(reference, LenientPgnParser.parseText("[SetUp \"1\"]\n\n1. e4 *"));
   }
 
   @SuppressWarnings("static-method")

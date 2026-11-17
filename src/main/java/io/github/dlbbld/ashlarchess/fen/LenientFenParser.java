@@ -7,6 +7,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import io.github.dlbbld.ashlarchess.exceptions.ProgrammingMistakeException;
 import io.github.dlbbld.ashlarchess.fen.model.Fen;
@@ -15,7 +17,8 @@ import io.github.dlbbld.ashlarchess.internal.Nulls;
 
 /**
  * Lenient FEN parser. Applies a purely syntactic-tolerance normalisation pass (whitespace, casing, missing trailing
- * counters, leading zeros in the counters, non-canonical castling order, non-ASCII dashes, trailing garbage) then
+ * counters, split empty-square runs, leading zeros in counters, non-canonical castling order, non-ASCII dashes,
+ * trailing garbage) then
  * delegates to {@link StrictFenParser} for the structural and rule-consistency checks. Every transformation applied
  * during normalisation surfaces as a {@link ForgivenFenItem} on the result.
  *
@@ -37,6 +40,8 @@ import io.github.dlbbld.ashlarchess.internal.Nulls;
  */
 @SuppressWarnings("null")
 public final class LenientFenParser {
+
+  private static final Pattern SPLIT_EMPTY_SQUARE_RUN = Pattern.compile("[1-8]{2,}");
 
   private LenientFenParser() {
   }
@@ -222,6 +227,7 @@ public final class LenientFenParser {
     }
 
     // 8. Field-level normalisation.
+    normalisePiecePlacement(fields, accumulator);
     normaliseSideToMove(fields, accumulator);
     normaliseCastlingRights(fields, accumulator);
     normaliseEnPassantTargetSquare(fields, accumulator);
@@ -229,6 +235,28 @@ public final class LenientFenParser {
     normaliseCounterLeadingZeros(fields, FULL_MOVE_NUMBER_FIELD_INDEX, accumulator);
 
     return String.join(" ", fields);
+  }
+
+  private static void normalisePiecePlacement(List<String> fields, List<ForgivenFenItem> accumulator) {
+    final String field = Nulls.get(fields, 0);
+    final Matcher runs = SPLIT_EMPTY_SQUARE_RUN.matcher(field);
+    if (!runs.find()) {
+      return;
+    }
+    final StringBuilder placement = new StringBuilder(field.length());
+    do {
+      int squares = 0;
+      for (int i = runs.start(); i < runs.end() && squares <= 8; i++) {
+        squares += field.charAt(i) - '0';
+      }
+      if (squares <= 8) {
+        final String canonical = Integer.toString(squares);
+        runs.appendReplacement(placement, canonical);
+        accumulator.add(new ForgivenFenItem(ForgivenFenItemCode.SPLIT_EMPTY_SQUARE_RUN, runs.group(), canonical));
+      }
+    } while (runs.find());
+    runs.appendTail(placement);
+    fields.set(0, Nulls.toString(placement));
   }
 
   private static void normaliseSideToMove(List<String> fields, List<ForgivenFenItem> accumulator) {
