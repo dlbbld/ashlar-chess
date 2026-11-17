@@ -6,8 +6,10 @@ package io.github.dlbbld.ashlarchess.test.pgn.parser;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTimeoutPreemptively;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.time.Duration;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
@@ -132,6 +134,34 @@ class TestPgnAnnotationEdgeCases {
     for (int i = 0; i < 3; i++) {
       assertEquals(List.of(), Nulls.get(game.moves(), i).nags(), "move " + i);
     }
+  }
+
+  @SuppressWarnings("static-method")
+  @Test
+  void interleavedNagsAndCommentsKeepTheirOrder() {
+    final PgnGame game = lenient("1. e4 $1 {a} {} $2 {b} e5 {c} $3 2. Nf3 ! $4 {d} *");
+    assertEquals(List.of(new Nag(1), new Nag(2)), Nulls.get(game.moves(), 0).nags());
+    assertEquals("a b", Nulls.get(game.moves(), 0).commentary().value());
+    assertEquals(List.of(new Nag(3)), Nulls.get(game.moves(), 1).nags());
+    assertEquals("c", Nulls.get(game.moves(), 1).commentary().value());
+    assertEquals(List.of(new Nag(1), new Nag(4)), Nulls.get(game.moves(), 2).nags());
+    assertEquals("d", Nulls.get(game.moves(), 2).commentary().value());
+  }
+
+  @SuppressWarnings("static-method")
+  @Test
+  void manyAnnotationsOnOneMoveParseInLinearTime() {
+    // Regression: each annotation rebuilt the move with a copy of everything collected so far, so this input took
+    // minutes. The generous limit only has to tell linear from quadratic.
+    final int annotationCount = 200_000;
+    final StringBuilder movetext = new StringBuilder("1. e4");
+    for (int i = 0; i < annotationCount; i++) {
+      movetext.append(" $1 {c}");
+    }
+    movetext.append(" *");
+    final PgnGame game = assertTimeoutPreemptively(Duration.ofSeconds(30), () -> lenient(Nulls.toString(movetext)));
+    assertEquals(annotationCount, Nulls.get(game.moves(), 0).nags().size());
+    assertEquals(2 * annotationCount - 1, Nulls.get(game.moves(), 0).commentary().value().length());
   }
 
   // -----------------------------------------------------------------------------------------------------------------

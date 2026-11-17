@@ -369,6 +369,7 @@ public final class LenientPgnParser {
   private MovetextOutcome parseMovetext() {
     PgnCommentary pregameCommentary = PgnCommentary.EMPTY;
     final List<PgnMove> moves = new ArrayList<>();
+    final PendingAnnotations pendingAnnotations = new PendingAnnotations();
     @Nullable ResultTagValue terminationResult = null;
 
     skipInsignificantWhitespace();
@@ -415,14 +416,14 @@ public final class LenientPgnParser {
         // detached glyph with no move to attach to, or an unrecognised run like `!?!`, is tolerated by dropping it.
         case MOVE_SUFFIX_ANNOTATION: {
           final PgnToken suffixToken = tokenizer.next();
-          appendNagToLastMove(moves, glyphToNag(suffixToken.text()));
+          pendingAnnotations.addNag(moves, glyphToNag(suffixToken.text()));
           continue;
         }
         // A numeric annotation glyph (`$N`) annotates the move just played (chess.com's review export emits these).
         // A NAG before any move, or a malformed/out-of-range code, is tolerated by dropping it.
         case NAG: {
           final PgnToken nagToken = tokenizer.next();
-          appendNagToLastMove(moves, parseNagLenient(nagToken));
+          pendingAnnotations.addNag(moves, parseNagLenient(nagToken));
           continue;
         }
         case SYMBOL: {
@@ -438,8 +439,9 @@ public final class LenientPgnParser {
             continue;
           }
           final PgnMove move = parseMoveLenient();
+          pendingAnnotations.foldIntoLastMove(moves);
           moves.add(move);
-          consumePostMoveAnnotations(moves);
+          consumePostMoveAnnotations(moves, pendingAnnotations);
           continue;
         }
         default:
@@ -450,6 +452,7 @@ public final class LenientPgnParser {
           "Unexpected token \"" + peek.text() + "\" at line " + peek.line() + ".");
     }
 
+    pendingAnnotations.foldIntoLastMove(moves);
     return new MovetextOutcome(moves, pregameCommentary, terminationResult);
   }
 
@@ -578,19 +581,15 @@ public final class LenientPgnParser {
    * its NAG list. Handling both here keeps post-move annotation order-independent - {@code Nf3 $1 {c}} and
    * {@code Nf3 {c} $1} parse identically.
    */
-  private void consumePostMoveAnnotations(List<PgnMove> moves) {
+  private void consumePostMoveAnnotations(List<PgnMove> moves, PendingAnnotations pendingAnnotations) {
     skipInsignificantWhitespace();
     while (true) {
       final PgnToken ahead = tokenizer.peek();
       if (isCommentToken(ahead.type())) {
-        final PgnCommentary commentary = consumeCommentaryOrThrow();
-        final int last = moves.size() - 1;
-        final PgnMove previous = Nulls.get(moves, last);
-        moves.set(last,
-            new PgnMove(previous.san(), previous.nags(), mergeCommentary(previous.commentary(), commentary)));
+        pendingAnnotations.addCommentary(moves, consumeCommentaryOrThrow());
       } else if (ahead.type() == PgnTokenType.NAG) {
         tokenizer.next();
-        appendNagToLastMove(moves, parseNagLenient(ahead));
+        pendingAnnotations.addNag(moves, parseNagLenient(ahead));
       } else {
         return;
       }
@@ -598,31 +597,59 @@ public final class LenientPgnParser {
     }
   }
 
-  /** Joins two commentaries with a single space, dropping either if empty. Used to merge consecutive comments. */
-  private static PgnCommentary mergeCommentary(PgnCommentary existing, PgnCommentary addition) {
-    if (existing.value().isEmpty()) {
-      return addition;
-    }
-    if (addition.value().isEmpty()) {
-      return existing;
-    }
-    return new PgnCommentary(existing.value() + " " + addition.value());
-  }
-
   /**
-   * Appends a NAG to the most recently parsed move. A {@code null} NAG (an unrecognised glyph run, or a malformed /
-   * out-of-range {@code $N}) or a NAG before any move exists is tolerated by dropping it - the lenient parser reads
-   * what it can and never fails on an annotation.
+   * The NAGs and comments that follow the most recently parsed move. They are collected here and folded into the
+   * immutable {@link PgnMove} once, when the next move starts or the movetext ends - rebuilding the move for each
+   * annotation copies everything collected so far, which is quadratic in the number of annotations on one move.
+   *
+   * <p>
+   * Consecutive comments are joined with a single space, empty ones dropped. A {@code null} NAG (an unrecognised glyph
+   * run, or a malformed / out-of-range {@code $N}) or an annotation before any move exists is tolerated by dropping it
+   * - the lenient parser reads what it can and never fails on an annotation.
    */
-  private static void appendNagToLastMove(List<PgnMove> moves, @Nullable Nag nag) {
-    if (nag == null || moves.isEmpty()) {
-      return;
+  private static final class PendingAnnotations {
+
+    private final List<Nag> nags = new ArrayList<>();
+    private final StringBuilder commentary = new StringBuilder();
+
+    private void addNag(List<PgnMove> moves, @Nullable Nag nag) {
+      if (nag == null || moves.isEmpty()) {
+        return;
+      }
+      nags.add(nag);
     }
-    final int last = moves.size() - 1;
-    final PgnMove previous = Nulls.get(moves, last);
-    final List<Nag> nags = new ArrayList<>(previous.nags());
-    nags.add(nag);
-    moves.set(last, new PgnMove(previous.san(), nags, previous.commentary()));
+
+    private void addCommentary(List<PgnMove> moves, PgnCommentary addition) {
+      if (addition.value().isEmpty() || moves.isEmpty()) {
+        return;
+      }
+      if (commentary.length() > 0) {
+        commentary.append(' ');
+      }
+      commentary.append(addition.value());
+    }
+
+    private void foldIntoLastMove(List<PgnMove> moves) {
+      if (nags.isEmpty() && commentary.length() == 0) {
+        return;
+      }
+      final int last = moves.size() - 1;
+      final PgnMove previous = Nulls.get(moves, last);
+      final List<Nag> allNags = new ArrayList<>(previous.nags());
+      allNags.addAll(nags);
+      final String previousCommentary = previous.commentary().value();
+      final PgnCommentary allCommentary;
+      if (commentary.length() == 0) {
+        allCommentary = previous.commentary();
+      } else if (previousCommentary.isEmpty()) {
+        allCommentary = new PgnCommentary(Nulls.toString(commentary));
+      } else {
+        allCommentary = new PgnCommentary(previousCommentary + " " + commentary);
+      }
+      moves.set(last, new PgnMove(previous.san(), allNags, allCommentary));
+      nags.clear();
+      commentary.setLength(0);
+    }
   }
 
   /**
