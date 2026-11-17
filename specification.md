@@ -229,10 +229,11 @@ PGN handling is structured around four separable jobs:
 
 Strict tag names contain only letters, digits and underscores and begin with a letter or digit. Lenient import and
 semantic export retain the wider symbol-style custom names. Archival export additionally requires an uppercase
-initial; it rejects unrepresentable names with `IllegalArgumentException` instead of renaming or dropping data.
-Both parsers and archival export require printing tag values of at most 255 decoded Unicode code points. NAGs end
-at the first non-digit, so `$1e5` contains the annotation `$1` followed by the move `e5`. An entirely empty game model
-is represented by `{}` in semantic output.
+initial; it rejects unrepresentable custom names with `IllegalArgumentException` instead of renaming or dropping
+them. Both parsers require printing tag values of at most 255 decoded Unicode code points. Archival export checks
+the tags it emits after deriving `FEN` and `SetUp` from the starting position. NAGs end at the first non-digit, so
+`$1e5` contains the annotation `$1` followed by the move `e5`. An entirely empty game model is represented by `{}`
+in semantic output.
 
 #### 3.3.3 FEN parser tiers and lenient pre-processor
 

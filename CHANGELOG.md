@@ -35,9 +35,10 @@ is removed or changed.
   empty game as `{}`. Strict parsing distinguishes literal spaces from tabs and rejects trailing line whitespace.
 - Strict tag names use letters, digits and underscores with an alphanumeric first character. Lenient import keeps
   broader custom names. Archival export requires uppercase-initial conforming names and throws
-  `IllegalArgumentException` for unrepresentable names instead of renaming or discarding data.
-- Both PGN parsers and archival export reject nonprinting tag values and values longer than 255 decoded Unicode
-  code points. Quoted escapes, Unicode names and commentary retain their supported round-trip behavior.
+  `IllegalArgumentException` for unrepresentable custom names instead of renaming or discarding them.
+- Both PGN parsers reject nonprinting tag values and values longer than 255 decoded Unicode code points. Archival
+  export validates the tags it emits after normalizing `FEN` and `SetUp` from the starting position. Quoted escapes,
+  Unicode names and commentary retain their supported round-trip behavior.
 
 ### Validation
 
