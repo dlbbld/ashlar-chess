@@ -5,11 +5,14 @@ package io.github.dlbbld.ashlarchess.pgn.internal;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.Nullable;
 
 import io.github.dlbbld.ashlarchess.exceptions.ProgrammingMistakeException;
 import io.github.dlbbld.ashlarchess.internal.ListUtility;
@@ -24,6 +27,9 @@ public final class TagUtility {
   }
 
   private static final String TAG_PATTERN = "\\[([\\w]+) \"([^\"]*)\"\\]";
+
+  /** PGN spec §7: a symbol token is at most 255 characters long. */
+  public static final int MAX_TAG_NAME_LENGTH = 255;
 
   @SuppressWarnings("null")
   public static final List<StandardTag> SEVEN_TAG_ROSTER_TAGS = Nulls.copyOfList(Arrays.asList(StandardTag.EVENT,
@@ -123,6 +129,29 @@ public final class TagUtility {
 
   public static boolean existsTag(List<Tag> tags, StandardTag tag) {
     return existsTagName(tags, tag.getName());
+  }
+
+  /**
+   * Returns the name of the first tag whose name occurs more than once, or {@code null} when all names are unique. One
+   * pass over the names rather than a comparison of every pair, which is quadratic in the number of tags.
+   */
+  public static @Nullable String findFirstRepeatedTagName(List<Tag> tags) {
+    final Set<String> names = new HashSet<>();
+    final Set<String> repeatedNames = new HashSet<>();
+    for (final Tag tag : tags) {
+      if (!names.add(tag.name())) {
+        repeatedNames.add(tag.name());
+      }
+    }
+    if (repeatedNames.isEmpty()) {
+      return null;
+    }
+    for (final Tag tag : tags) {
+      if (repeatedNames.contains(tag.name())) {
+        return tag.name();
+      }
+    }
+    throw new ProgrammingMistakeException("A repeated tag name belongs to one of the tags");
   }
 
   private static boolean existsTagName(List<Tag> tags, StandardTag standardTag) {

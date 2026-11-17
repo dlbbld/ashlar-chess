@@ -5,9 +5,7 @@ package io.github.dlbbld.ashlarchess.pgn;
 
 import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
@@ -34,7 +32,6 @@ import io.github.dlbbld.ashlarchess.san.SanValidationProblem;
  */
 public final class StrictPgnParser {
 
-  private static final int MAX_TAG_NAME_LENGTH = 255;
   private static final int SAN_MIN_LENGTH = 2;
   private static final int SAN_MAX_LENGTH = 7;
   private static final String AS_EXPECTED_SUFFIX = "\" as expected.";
@@ -257,32 +254,19 @@ public final class StrictPgnParser {
   }
 
   private static void validateTagNameLength(String name) {
-    if (name.length() > MAX_TAG_NAME_LENGTH) {
+    if (name.length() > TagUtility.MAX_TAG_NAME_LENGTH) {
       throw tagFormatError(StrictPgnParserValidationProblem.TAG_NAME_EXCEEDS_MAXIMUM_LENGTH,
           "With " + name.length() + " characters, the tag name exceeds the allowed maximum length of "
-              + MAX_TAG_NAME_LENGTH + " characters per the PGN specification.");
+              + TagUtility.MAX_TAG_NAME_LENGTH + " characters per the PGN specification.");
     }
   }
 
-  // One pass over the names rather than a comparison of every pair, which is quadratic in the number of tags. The
-  // name reported is still that of the first tag that has a duplicate.
   private static void validateUniqueTagNames(List<Tag> tags) {
-    final Set<String> names = new HashSet<>();
-    final Set<String> repeatedNames = new HashSet<>();
-    for (final Tag tag : tags) {
-      if (!names.add(tag.name())) {
-        repeatedNames.add(tag.name());
-      }
-    }
-    if (repeatedNames.isEmpty()) {
-      return;
-    }
-    for (final Tag tag : tags) {
-      if (repeatedNames.contains(tag.name())) {
-        throw new StrictPgnParserValidationException(StrictPgnParserValidationProblem.TAG_NAME_NOT_UNIQUE,
-            SanValidationProblem.NONE,
-            "The tag name must be unique. The tag name \"" + tag.name() + "\" was used more than once.");
-      }
+    final String repeatedName = TagUtility.findFirstRepeatedTagName(tags);
+    if (repeatedName != null) {
+      throw new StrictPgnParserValidationException(StrictPgnParserValidationProblem.TAG_NAME_NOT_UNIQUE,
+          SanValidationProblem.NONE,
+          "The tag name must be unique. The tag name \"" + repeatedName + "\" was used more than once.");
     }
   }
 

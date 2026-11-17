@@ -5,9 +5,7 @@ package io.github.dlbbld.ashlarchess.pgn;
 
 import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
@@ -316,27 +314,19 @@ public final class LenientPgnParser {
         throw tagFormatError("The tag name contains an invalid character \"" + c + "\".");
       }
     }
+    // The length is not forgiven either: the name is kept as written, so a longer one would not read back strictly.
+    if (name.length() > TagUtility.MAX_TAG_NAME_LENGTH) {
+      throw tagFormatError("With " + name.length() + " characters, the tag name exceeds the allowed maximum length of "
+          + TagUtility.MAX_TAG_NAME_LENGTH + " characters per the PGN specification.");
+    }
   }
 
-  // One pass over the names rather than a comparison of every pair, which is quadratic in the number of tags. The
-  // name reported is still that of the first tag that has a duplicate.
   private static void validateUniqueTagNames(List<Tag> tags) {
-    final Set<String> names = new HashSet<>();
-    final Set<String> repeatedNames = new HashSet<>();
-    for (final Tag tag : tags) {
-      if (!names.add(tag.name())) {
-        repeatedNames.add(tag.name());
-      }
-    }
-    if (repeatedNames.isEmpty()) {
-      return;
-    }
-    for (final Tag tag : tags) {
-      if (repeatedNames.contains(tag.name())) {
-        throw new LenientPgnParserValidationException(LenientPgnParserValidationProblem.TAG_NAME_NOT_UNIQUE,
-            SanValidationProblem.NONE,
-            "The tag name must be unique. The tag name \"" + tag.name() + "\" was used more than once.");
-      }
+    final String repeatedName = TagUtility.findFirstRepeatedTagName(tags);
+    if (repeatedName != null) {
+      throw new LenientPgnParserValidationException(LenientPgnParserValidationProblem.TAG_NAME_NOT_UNIQUE,
+          SanValidationProblem.NONE,
+          "The tag name must be unique. The tag name \"" + repeatedName + "\" was used more than once.");
     }
   }
 

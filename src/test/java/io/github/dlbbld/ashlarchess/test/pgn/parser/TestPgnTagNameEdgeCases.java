@@ -87,6 +87,26 @@ class TestPgnTagNameEdgeCases {
 
   @SuppressWarnings("static-method")
   @Test
+  void tagNameLengthLimitIsTheSameInBothParsers() {
+    // Regression: the lenient parser had no limit, and the archival export of a game with a longer name was rejected
+    // by the strict parser. PGN spec §7 limits a symbol to 255 characters.
+    final String longestTagLine = "[" + "A".repeat(255) + " \"?\"]\n";
+    assertEquals(8, LenientPgnParser.parseText(lenientText(longestTagLine)).tags().size());
+    assertEquals(8, StrictPgnParser.parseText(strictText(longestTagLine)).tags().size());
+
+    final String tooLongTagLine = "[" + "A".repeat(256) + " \"?\"]\n";
+    final LenientPgnParserValidationException lenient = assertThrows(LenientPgnParserValidationException.class,
+        () -> LenientPgnParser.parseText(lenientText(tooLongTagLine)));
+    assertEquals(LenientPgnParserValidationProblem.TAG_FORMAT_INVALID, lenient.getLenientPgnParserValidationProblem());
+
+    final StrictPgnParserValidationException strict = assertThrows(StrictPgnParserValidationException.class,
+        () -> StrictPgnParser.parseText(strictText(tooLongTagLine)));
+    assertEquals(StrictPgnParserValidationProblem.TAG_NAME_EXCEEDS_MAXIMUM_LENGTH,
+        strict.getStrictPgnParserValidationProblem());
+  }
+
+  @SuppressWarnings("static-method")
+  @Test
   void duplicateTagNameReportedIsTheFirstTagWithADuplicate() {
     final String tagLines = "[Annotator \"a\"]\n[Opening \"b\"]\n[Opening \"c\"]\n[Annotator \"d\"]\n";
 
