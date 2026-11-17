@@ -219,6 +219,11 @@ final class LenientSanShapeNormalize {
 
     final StringBuilder out = new StringBuilder();
     if (pieceType == PieceType.PAWN) {
+      // Pawn SAN drops the origin rank, so first rule out resolving the coordinates to a different pawn.
+      if (board.getLegalMoves().stream().noneMatch(move -> move.moveSpecification().fromSquare() == from
+          && move.moveSpecification().toSquare() == to)) {
+        return null;
+      }
       // Pawn SAN: forward "<file><rank>", capture "<fromFile>x<toFile><toRank>", optional "=<P>"
       final boolean isCapture = body.charAt(0) != body.charAt(toIndex);
       if (hasCaptureMarker && !isCapture) {

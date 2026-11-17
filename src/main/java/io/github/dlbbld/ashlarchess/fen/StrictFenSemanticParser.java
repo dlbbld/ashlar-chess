@@ -76,8 +76,6 @@ final class StrictFenSemanticParser {
           "the king of the opposing player is in check");
     }
 
-    validateCheckConfiguration(bitboardPosition, sideToMove);
-
     final String castlingRightBothStr = fenField.castlingRightBoth();
     final CastlingRightBoth castlingRightBoth = validateCastlingRightBoth(bitboardPosition, castlingRightBothStr);
 
@@ -87,6 +85,8 @@ final class StrictFenSemanticParser {
 
     final String halfMoveClockStr = fenField.halfMoveClock();
     final int halfMoveClock = validateHalfMoveClock(halfMoveClockStr, enPassantCaptureTargetSquare);
+
+    validateCheckConfiguration(bitboardPosition, sideToMove, halfMoveClock);
 
     final String fullMoveNumberStr = fenField.fullMoveNumber();
     final int fullMoveNumber = validateFullMoveNumber(fullMoveNumberStr);
@@ -775,9 +775,9 @@ final class StrictFenSemanticParser {
   // check, so it cannot have been the silent blocker of that line. A pawn is not bound by this, which leaves exactly
   // two ways to reach such a pair: a promotion, where the pawn was the blocker and the promoted piece gives the direct
   // check, and an en passant capture, which vacates two squares and can uncover two sliders at once. Those pairs are
-  // rejected only when neither move could have produced them. Other double checks (knight + slider, bishop + rook,
-  // diagonal + orthogonal slider) are left untouched.
-  private static void validateCheckConfiguration(BitboardPosition bitboardPosition, Side sideToMove)
+  // rejected unless the halfmove clock is zero and one of those moves could have produced them. Other double checks
+  // (knight + slider, bishop + rook, diagonal + orthogonal slider) are left untouched.
+  private static void validateCheckConfiguration(BitboardPosition bitboardPosition, Side sideToMove, int halfMoveClock)
       throws StrictFenSemanticValidationException {
     final Square kingSquare = bitboardPosition.kingSquare(sideToMove);
     final Side attacker = sideToMove.getOppositeSide();
@@ -805,9 +805,9 @@ final class StrictFenSemanticParser {
     if (!sameGeometry && !bothQueens) {
       return;
     }
-    if (isDoubleCheckByPromotion(attacker, kingSquare, firstSquare, secondSquare)
+    if (halfMoveClock == 0 && (isDoubleCheckByPromotion(attacker, kingSquare, firstSquare, secondSquare)
         || isDoubleCheckByPromotion(attacker, kingSquare, secondSquare, firstSquare)
-        || isDoubleCheckByEnPassantCapture(bitboardPosition, attacker, kingSquare, firstSquare, secondSquare)) {
+        || isDoubleCheckByEnPassantCapture(bitboardPosition, attacker, kingSquare, firstSquare, secondSquare))) {
       return;
     }
     throw new StrictFenSemanticValidationException(StrictFenSemanticValidationProblem.INVALID_POSITION_IMPOSSIBLE_CHECK,

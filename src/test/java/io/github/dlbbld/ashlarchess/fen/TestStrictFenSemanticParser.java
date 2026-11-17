@@ -8,6 +8,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 
 import io.github.dlbbld.ashlarchess.board.StaticPosition;
 import io.github.dlbbld.ashlarchess.board.enums.CastlingRight;
@@ -18,6 +20,28 @@ import io.github.dlbbld.ashlarchess.fen.model.Fen;
 import io.github.dlbbld.ashlarchess.internal.ChessConstants;
 
 class TestStrictFenSemanticParser {
+
+  @SuppressWarnings("static-method")
+  @ParameterizedTest
+  @CsvSource({
+      "6Q1/5k1Q/8/8/8/8/8/4K3, b",
+      "4k3/8/8/8/8/8/5K1q/6q1, w",
+      "7R/R6k/8/8/8/8/8/4K3, b",
+      "4k3/8/8/8/8/8/r6K/7r, w",
+      "8/8/3Pk3/8/8/8/Q7/4QK2, b",
+      "4qk2/q7/8/8/8/3pK3/8/8, w"
+  })
+  void testPawnMoveDoubleCheckRequiresZeroHalfMoveClock(String placement, String sideToMove) {
+    final String position = placement + " " + sideToMove + " - - ";
+    checkParseFenSuccess(position + "0 20");
+    checkParseFenException(position + "1 20", StrictFenSemanticValidationProblem.INVALID_POSITION_IMPOSSIBLE_CHECK);
+  }
+
+  @SuppressWarnings("static-method")
+  @Test
+  void testOrdinaryDoubleCheckAllowsNonzeroHalfMoveClock() {
+    checkParseFenSuccess("4r3/6k1/8/8/8/5n2/8/4K3 w - - 1 20");
+  }
 
   @SuppressWarnings("static-method")
   @Test

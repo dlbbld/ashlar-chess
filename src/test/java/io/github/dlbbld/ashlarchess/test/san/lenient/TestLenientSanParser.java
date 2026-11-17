@@ -13,6 +13,8 @@ import java.util.List;
 import java.util.Random;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 
 import io.github.dlbbld.ashlarchess.board.Board;
 import io.github.dlbbld.ashlarchess.board.LegalMove;
@@ -527,6 +529,29 @@ class TestLenientSanParser {
   void testRejectPawnPushWithCaptureMarker() {
     final Board board = new Board();
     assertThrows(LenientSanParserValidationException.class, () -> board.moveLenient("e2xe4"));
+  }
+
+  @ParameterizedTest
+  @CsvSource({
+      "7k/8/3p4/4P3/4P3/8/8/K7 w - - 0 20, e4xd6, e5xd6",
+      "7k/8/3p4/4P3/4P3/8/8/K7 w - - 0 20, e4d6, e5d6",
+      "7k/8/3p4/4P3/4P3/8/8/K7 w - - 0 20, e4-e6, e5-e6",
+      "7k/4P3/4P3/8/8/8/8/K7 w - - 0 20, e6-e8=Q, e7-e8=Q",
+      "7k/4P3/4P3/8/8/8/8/K7 w - - 0 20, e6e8q, e7e8q",
+      "3r3k/4P3/4P3/8/8/8/8/K7 w - - 0 20, e6xd8=N, e7xd8=N",
+      "7k/8/8/3pP3/4P3/8/8/K7 w - d6 0 20, e4xd6, e5xd6",
+      "7k/8/8/4p3/4p3/3P4/8/K7 b - - 0 20, e5xd3, e4xd3",
+      "7k/8/8/8/8/4p3/4p3/K7 b - - 0 20, e3-e1=Q, e2-e1=Q",
+      "7k/8/4p3/8/8/8/4P3/K7 w - - 0 20, e6-e3, e2-e3"
+  })
+  void testCoordinatePawnMoveKeepsItsOrigin(String fen, String invalidMove, String validMove) {
+    final Board board = Board.fromFenStrict(fen);
+    assertThrows(LenientSanParserValidationException.class, () -> board.moveLenient(invalidMove));
+    assertEquals(fen, board.getFen());
+    assertEquals(0, board.getPerformedMoveCount());
+
+    board.moveLenient(validMove);
+    assertEquals(validMove.substring(0, 2), board.getLastMove().moveSpecification().fromSquare().getName());
   }
 
   @Test
