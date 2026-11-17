@@ -5,7 +5,9 @@ package io.github.dlbbld.ashlarchess.pgn;
 
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
@@ -303,6 +305,11 @@ public final class LenientPgnParser {
     if (name.isEmpty()) {
       throw tagFormatError("Tag name must not be empty.");
     }
+    // PGN spec §7: a symbol starts with a letter or digit. The tokenizer also yields a symbol for a name that opens
+    // with one of the continuation characters, and such a name would survive into an export the strict parser rejects.
+    if (!isAsciiLetterOrDigit(name.charAt(0))) {
+      throw tagFormatError("The first character in the tag name must be one of A-Z, a-z or 0-9.");
+    }
     for (int i = 0; i < name.length(); i++) {
       final char c = name.charAt(i);
       if (!isAsciiLetterOrDigit(c) && c != '_' && c != '+' && c != '#' && c != '=' && c != ':' && c != '-') {
@@ -311,14 +318,24 @@ public final class LenientPgnParser {
     }
   }
 
+  // One pass over the names rather than a comparison of every pair, which is quadratic in the number of tags. The
+  // name reported is still that of the first tag that has a duplicate.
   private static void validateUniqueTagNames(List<Tag> tags) {
-    for (int i = 0; i < tags.size(); i++) {
-      for (int j = i + 1; j < tags.size(); j++) {
-        if (Nulls.get(tags, i).name().equals(Nulls.get(tags, j).name())) {
-          throw new LenientPgnParserValidationException(LenientPgnParserValidationProblem.TAG_NAME_NOT_UNIQUE,
-              SanValidationProblem.NONE, "The tag name must be unique. The tag name \"" + Nulls.get(tags, i).name()
-                  + "\" was used more than once.");
-        }
+    final Set<String> names = new HashSet<>();
+    final Set<String> repeatedNames = new HashSet<>();
+    for (final Tag tag : tags) {
+      if (!names.add(tag.name())) {
+        repeatedNames.add(tag.name());
+      }
+    }
+    if (repeatedNames.isEmpty()) {
+      return;
+    }
+    for (final Tag tag : tags) {
+      if (repeatedNames.contains(tag.name())) {
+        throw new LenientPgnParserValidationException(LenientPgnParserValidationProblem.TAG_NAME_NOT_UNIQUE,
+            SanValidationProblem.NONE,
+            "The tag name must be unique. The tag name \"" + tag.name() + "\" was used more than once.");
       }
     }
   }
