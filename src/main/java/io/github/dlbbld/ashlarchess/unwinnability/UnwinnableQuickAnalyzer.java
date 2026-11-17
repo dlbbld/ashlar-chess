@@ -10,7 +10,6 @@ import io.github.dlbbld.ashlarchess.board.Board;
 import io.github.dlbbld.ashlarchess.board.LegalMove;
 import io.github.dlbbld.ashlarchess.board.MoveSpecification;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
-import io.github.dlbbld.ashlarchess.fen.model.Fen;
 import io.github.dlbbld.ashlarchess.internal.Nulls;
 
 // Figure 10 Unwinnable_quick: sound, computationally very light, deliberately incomplete.
@@ -58,7 +57,7 @@ public final class UnwinnableQuickAnalyzer {
   }
 
   private static UnwinnabilityQuickVerdict calculateUnwinnabilityQuickVerdict(Board input, Side c) {
-    final Board board = copyCurrentPositionForQuickSearch(input);
+    final Board board = input.copyCurrentPositionWithoutHistory();
 
     // Step 1: advance the position as long as there is only one legal move (loop-guarded, footnote a).
     int advanced = 0;
@@ -110,12 +109,6 @@ public final class UnwinnableQuickAnalyzer {
     return false;
   }
 
-  private static Board copyCurrentPositionForQuickSearch(Board input) {
-    final Fen fen = new Fen(input.getFen(), input.getBitboardPosition(), input.getSideToMove(),
-        input.getCastlingRightWhite(), input.getCastlingRightBlack(), input.getEnPassantCaptureTargetSquare(), 0,
-        input.getFullMoveNumber());
-    return new Board(fen);
-  }
 
   /**
    * The Figure 10 step-2 DFS. Leaves (footnote b): checkmate, stalemate, and insufficient winning material (bare king,

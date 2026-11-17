@@ -209,12 +209,13 @@ public final class Board {
 
   /**
    * Creates a new board whose initial position is this board's current position, without carrying over the move
-   * history.
-   *
+   * history. The halfmove clock is reset to zero, also in the FEN of the new board.
    */
   public Board copyCurrentPositionWithoutHistory() {
-    final Fen currentPosition = new Fen(getFen(), getBitboardPosition(), getSideToMove(), getCastlingRightWhite(),
-        getCastlingRightBlack(), getEnPassantCaptureTargetSquare(), 0, getFullMoveNumber());
+    final int halfMoveClock = 0;
+    final Fen currentPosition = new Fen(FenBoard.toFen(this, halfMoveClock), getBitboardPosition(), getSideToMove(),
+        getCastlingRightWhite(), getCastlingRightBlack(), getEnPassantCaptureTargetSquare(), halfMoveClock,
+        getFullMoveNumber());
     return new Board(currentPosition);
   }
 
