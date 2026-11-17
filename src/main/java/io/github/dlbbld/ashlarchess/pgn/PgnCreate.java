@@ -220,10 +220,10 @@ public final class PgnCreate {
    *
    * <p>
    * <b>Semantic</b> (the default) favours human readability and honest preservation over canonical form: the source
-   * order and duplicates are kept, the <em>first</em> assessment NAG (code {@code 1..6}) is written as its glyph
-   * attached to the SAN ({@code e4?}) and every other NAG - a second assessment code, {@code $0}, or any positional
-   * code - as a spaced {@code $N}. At most one glyph is attached so the output stays unambiguous (two fused glyphs,
-   * e.g. {@code ?}+{@code !}, would read as the single glyph {@code ?!}).
+   * order and duplicates are kept. If the first NAG is an assessment (code {@code 1..6}), it is written as its glyph
+   * attached to the SAN ({@code e4?}); all other NAGs are written as spaced {@code $N} tokens. An assessment after a
+   * positional NAG stays numeric to preserve its position. At most one glyph is attached so the output stays
+   * unambiguous (two fused glyphs, e.g. {@code ?}+{@code !}, would read as the single glyph {@code ?!}).
    */
   private static void appendNags(StringBuilder result, List<Nag> nags, WriteMode writeMode) {
     if (writeMode == WriteMode.ARCHIVAL) {
@@ -232,18 +232,13 @@ public final class PgnCreate {
       }
       return;
     }
-    int glyphIndex = -1;
     for (int i = 0; i < nags.size(); i++) {
-      final MoveSuffixAnnotation glyph = MoveSuffixAnnotation.fromNagCode(Nulls.get(nags, i).code());
-      if (glyph != null) {
+      final Nag nag = Nulls.get(nags, i);
+      final MoveSuffixAnnotation glyph = MoveSuffixAnnotation.fromNagCode(nag.code());
+      if (i == 0 && glyph != null) {
         result.append(glyph.getSuffix());
-        glyphIndex = i;
-        break;
-      }
-    }
-    for (int i = 0; i < nags.size(); i++) {
-      if (i != glyphIndex) {
-        result.append(" ").append(Nulls.get(nags, i).toToken());
+      } else {
+        result.append(" ").append(nag.toToken());
       }
     }
   }

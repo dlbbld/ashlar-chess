@@ -228,7 +228,7 @@ final class PgnTokenizer {
     if (next == '-' || next == '/') {
       return readTerminationAfterDigits(line, column, text);
     }
-    return new PgnToken(PgnTokenType.SYMBOL, Nulls.toString(text), line, column);
+    return readSymbol(line, column, text);
   }
 
   private PgnToken readMoveNumberDots(int line, int column, StringBuilder digits) {
@@ -263,7 +263,10 @@ final class PgnTokenizer {
   }
 
   private PgnToken readSymbol(int line, int column) {
-    final StringBuilder text = new StringBuilder();
+    return readSymbol(line, column, new StringBuilder());
+  }
+
+  private PgnToken readSymbol(int line, int column, StringBuilder text) {
     while (true) {
       final int c = stream.peek();
       if (c == CHAR_EOF || isWordBreak(c)) {
@@ -279,8 +282,9 @@ final class PgnTokenizer {
   }
 
   private static boolean isWordBreak(int c) {
+    // PGN spec section 7: parentheses and the asterisk delimit themselves even when touching a symbol.
     return c == ' ' || c == '\t' || c == '\n' || c == '\r' || c == '[' || c == ']' || c == '{' || c == '}' || c == '"'
-        || c == '!' || c == '?' || c == ';' || c == '$';
+        || c == '!' || c == '?' || c == ';' || c == '$' || c == '(' || c == ')' || c == '*';
   }
 
   private static boolean isAsciiDigit(int c) {

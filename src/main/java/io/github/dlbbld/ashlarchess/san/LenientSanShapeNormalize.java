@@ -135,7 +135,7 @@ final class LenientSanShapeNormalize {
     }
     final BitboardPosition position = board.getBitboardPosition();
     final Piece piece = position.get(from);
-    if (piece == Piece.NONE || piece.getPieceType() != PieceType.KING) {
+    if (piece != Piece.of(board.getSideToMove(), PieceType.KING)) {
       return null;
     }
     if (from == Square.E1 && to == Square.G1) {
@@ -216,6 +216,9 @@ final class LenientSanShapeNormalize {
       return null;
     }
     final PieceType pieceType = piece.getPieceType();
+    if (pieceType != PieceType.PAWN && !promotionLetter.isEmpty()) {
+      return null;
+    }
 
     final StringBuilder out = new StringBuilder();
     if (pieceType == PieceType.PAWN) {

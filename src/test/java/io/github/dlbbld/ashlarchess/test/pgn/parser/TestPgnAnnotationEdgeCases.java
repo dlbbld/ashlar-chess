@@ -340,6 +340,16 @@ class TestPgnAnnotationEdgeCases {
 
   @SuppressWarnings("static-method")
   @Test
+  void semanticExportKeepsAssessmentsAfterPositionalNags() {
+    final PgnGame game = lenient("1. e4 $14 $1 $14 $1 e5 $0 $2 *");
+    final String pgn = PgnCreate.toPgnString(game);
+    assertEquals("1. e4 $14 $1 $14 $1 e5 $0 $2 *", Nulls.substring(pgn, pgn.indexOf("1. ")).trim());
+    assertEquals(game, LenientPgnParser.parseText(pgn));
+    assertEquals(game, StrictPgnParser.parseText(pgn));
+  }
+
+  @SuppressWarnings("static-method")
+  @Test
   void glyphAndPositionalNagOnOneMoveRoundTrip() {
     // code 1 renders as the glyph "!", code 14 (no glyph) as "$14"; reparsing recovers both.
     final PgnGame game = lenient("1. Nf3 $1 $14 d5 *");

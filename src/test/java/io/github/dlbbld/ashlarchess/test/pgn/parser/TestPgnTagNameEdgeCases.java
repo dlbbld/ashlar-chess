@@ -49,6 +49,18 @@ class TestPgnTagNameEdgeCases {
 
   @SuppressWarnings("static-method")
   @ParameterizedTest
+  @ValueSource(strings = { "1Tag", "123Annotator", "1_Tag2", "123" })
+  void digitStartedTagNamesArePreserved(String name) {
+    final String tagLine = "[" + name + " \"value\"]\n";
+    final PgnGame lenient = LenientPgnParser.parseText(lenientText(tagLine));
+    final PgnGame strict = StrictPgnParser.parseText(strictText(tagLine));
+    assertEquals(name, Nulls.getLast(lenient.tags()).name());
+    assertEquals("value", Nulls.getLast(lenient.tags()).value());
+    assertEquals(lenient, strict);
+  }
+
+  @SuppressWarnings("static-method")
+  @ParameterizedTest
   @ValueSource(strings = { "_", "+", "#", "=", ":", "-" })
   void tagNameMustStartWithLetterOrDigit(String continuationCharacter) {
     // Regression: the lenient parser accepted a name opening with a symbol continuation character (PGN spec §7), and

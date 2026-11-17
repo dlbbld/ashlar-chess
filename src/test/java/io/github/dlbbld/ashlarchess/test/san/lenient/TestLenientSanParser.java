@@ -525,6 +525,32 @@ class TestLenientSanParser {
     assertThrows(LenientSanParserValidationException.class, () -> board.moveLenient("Ke8e7"));
   }
 
+  @ParameterizedTest
+  @CsvSource({ "w, e8g8, e1g1, O-O", "w, e8c8, e1c1, O-O-O",
+      "b, e1g1, e8g8, O-O", "b, e1c1, e8c8, O-O-O" })
+  void testCoordinateCastlingKeepsMovingSide(String side, String invalidMove, String validMove, String san) {
+    final String fen = "r3k2r/8/8/8/8/8/8/R3K2R " + side + " KQkq - 0 1";
+    final Board board = Board.fromFenStrict(fen);
+    assertThrows(LenientSanParserValidationException.class, () -> board.moveLenient(invalidMove));
+    assertEquals(fen, board.getFen());
+    assertEquals(0, board.getPerformedMoveCount());
+    board.moveLenient(validMove);
+    assertEquals(san, board.getSan());
+  }
+
+  @ParameterizedTest
+  @CsvSource({ "a1a3q, a1a3", "b1c3n, b1c3", "c1e3b, c1e3", "d1d4r, d1d4",
+      "e1e2q, e1e2", "g1-f3=Q, g1-f3" })
+  void testRejectNonPawnCoordinatePromotion(String invalidMove, String validMove) {
+    final String fen = "4k3/8/8/8/8/8/8/RNBQKBNR w KQ - 0 1";
+    final Board board = Board.fromFenStrict(fen);
+    assertThrows(LenientSanParserValidationException.class, () -> board.moveLenient(invalidMove));
+    assertEquals(fen, board.getFen());
+    assertEquals(0, board.getPerformedMoveCount());
+    board.moveLenient(validMove);
+    assertEquals(1, board.getPerformedMoveCount());
+  }
+
   @Test
   void testRejectPawnPushWithCaptureMarker() {
     final Board board = new Board();
