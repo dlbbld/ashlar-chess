@@ -50,6 +50,12 @@ public enum ForgivenFenItemCode {
   EN_PASSANT_UPPERCASE,
 
   /**
+   * Halfmove clock or fullmove number written with leading zeros (e.g. {@code 00}, {@code 020}). The zeros are
+   * stripped. One item per affected counter; signs and non-ASCII digits are not forgiven.
+   */
+  COUNTER_LEADING_ZEROS,
+
+  /**
    * More than six fields in the input. The first six are kept; the trailing field(s) are dropped. The detail carries
    * the dropped fragment.
    */

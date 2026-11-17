@@ -15,9 +15,9 @@ import io.github.dlbbld.ashlarchess.internal.Nulls;
 
 /**
  * Lenient FEN parser. Applies a purely syntactic-tolerance normalisation pass (whitespace, casing, missing trailing
- * counters, non-canonical castling order, non-ASCII dashes, trailing garbage) then delegates to {@link StrictFenParser}
- * for the structural and rule-consistency checks. Every transformation applied during normalisation surfaces as a
- * {@link ForgivenFenItem} on the result.
+ * counters, leading zeros in the counters, non-canonical castling order, non-ASCII dashes, trailing garbage) then
+ * delegates to {@link StrictFenParser} for the structural and rule-consistency checks. Every transformation applied
+ * during normalisation surfaces as a {@link ForgivenFenItem} on the result.
  *
  * <p>
  * The lenient layer does <b>not</b> weaken any of the strict semantic invariants — a FEN with a missing king, a pawn on
@@ -225,6 +225,8 @@ public final class LenientFenParser {
     normaliseSideToMove(fields, accumulator);
     normaliseCastlingRights(fields, accumulator);
     normaliseEnPassantTargetSquare(fields, accumulator);
+    normaliseCounterLeadingZeros(fields, HALF_MOVE_CLOCK_FIELD_INDEX, accumulator);
+    normaliseCounterLeadingZeros(fields, FULL_MOVE_NUMBER_FIELD_INDEX, accumulator);
 
     return String.join(" ", fields);
   }
@@ -322,6 +324,32 @@ public final class LenientFenParser {
         accumulator.add(new ForgivenFenItem(ForgivenFenItemCode.EN_PASSANT_UPPERCASE, original, canonical));
       }
     }
+  }
+
+  private static final int HALF_MOVE_CLOCK_FIELD_INDEX = 4;
+  private static final int FULL_MOVE_NUMBER_FIELD_INDEX = 5;
+
+  // Only an all-digit counter is rewritten. A sign or a digit of another script is not a leading-zero deviation and is
+  // left for the strict parser to reject.
+  private static void normaliseCounterLeadingZeros(List<String> fields, int fieldIndex,
+      List<ForgivenFenItem> accumulator) {
+    final String field = Nulls.get(fields, fieldIndex);
+    if (field.length() < 2 || field.charAt(0) != '0') {
+      return;
+    }
+    int firstKeptIndex = 0;
+    for (int i = 0; i < field.length(); i++) {
+      final char c = field.charAt(i);
+      if (c < '0' || c > '9') {
+        return;
+      }
+      if (c == '0' && firstKeptIndex == i && i < field.length() - 1) {
+        firstKeptIndex = i + 1;
+      }
+    }
+    final String canonical = Nulls.substring(field, firstKeptIndex);
+    fields.set(fieldIndex, canonical);
+    accumulator.add(new ForgivenFenItem(ForgivenFenItemCode.COUNTER_LEADING_ZEROS, field, canonical));
   }
 
   /**
