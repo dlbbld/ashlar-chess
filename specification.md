@@ -178,7 +178,7 @@ The lenient SAN pipeline (`LenientSanParser`, reached via `Board.moveLenient(Str
 | | `OVERSPECIFIED_RANK_DISAMBIGUATION` | `N3d7` when `Nd7` would suffice |
 | | `OVERSPECIFIED_SQUARE_DISAMBIGUATION` | `Nb3d7` when less would suffice |
 | | `NON_STANDARD_RANK_DISAMBIGUATION` | `R1d4` where canonical uses file (`Rad4`) |
-| **Notation form** (4) | `LONG_ALGEBRAIC_NOTATION` | `e2-e4`, `Nb1-d7` |
+| **Notation form** (4) | `LONG_ALGEBRAIC_NOTATION` | `e2-e4`, `e4xd5`, `e7-e8=Q`, `Nb1-d7`, `Ke1-e2` |
 | | `UCI_NOTATION` | `e2e4`, `e7e8q`, `e1g1` (castling) |
 | | `ZERO_INSTEAD_OF_O_CASTLING` | `0-0`, `0-0-0` |
 | | `EXPLICIT_PAWN_LETTER` | `Pe4` |
@@ -190,7 +190,7 @@ The lenient SAN pipeline (`LenientSanParser`, reached via `Board.moveLenient(Str
 
 Codes are not collapsed: each distinguishable deviation has its own code, and a single move can carry multiple codes (e.g. `nbxd7+` when actually mate emits `LOWERCASE_PIECE_LETTER` + `OVERSPECIFIED_FILE_DISAMBIGUATION` + `WRONG_CHECK_SUFFIX_FOR_CHECKMATE`).
 
-**Algorithm — two-phase.** *Phase 1 (shape normalization)* performs pure-string transforms plus board-aware UCI translation (look up piece on from-square): castling-zero, mixed-castling rejection, `P`-stripping, hyphen-stripping (LAN), UCI form translation, missing-`=` insertion, all four case fixups. LAN and UCI are mutually exclusive at the input level — a hyphen means LAN (`LONG_ALGEBRAIC_NOTATION` only), no hyphen means UCI shape (`UCI_NOTATION` only). *Phase 2 (semantic recovery)* feeds the normalized candidate to the strict pipeline and, on a recoverable rejection (terminal-marker mismatch, capture-marker mismatch, over-specification, non-standard disambig), mutates the candidate and retries. Each lenient code can fire at most once per parse, bounding the loop.
+**Algorithm — two-phase.** *Phase 1 (shape normalization)* performs pure-string transforms plus board-aware UCI translation (look up piece on from-square): castling-zero, mixed-castling rejection, `P`-stripping, hyphen-stripping (LAN), UCI form translation, missing-`=` insertion, all four case fixups. LAN and UCI are mutually exclusive at the input level — a hyphen or a capture marker between the two squares means LAN (`LONG_ALGEBRAIC_NOTATION` only), no separator means UCI shape (`UCI_NOTATION` only). A king move carrying its origin square (`Ke1e2`, `Ke1xd2`, or the LAN/UCI forms translated to that shape) is reduced in this phase with `OVERSPECIFIED_SQUARE_DISAMBIGUATION`, because the strict king format has no disambiguation for Phase 2 to act on. The library reads back its own `Board.getLan()` and UCI output for every move. *Phase 2 (semantic recovery)* feeds the normalized candidate to the strict pipeline and, on a recoverable rejection (terminal-marker mismatch, capture-marker mismatch, over-specification, non-standard disambig), mutates the candidate and retries. Each lenient code can fire at most once per parse, bounding the loop.
 
 **API.** `LenientSanParser.parse(String, Board)` returns a `LenientSanParseResult` (move + forgiven items); it validates by construction, throwing `LenientSanParserValidationException` on an unrecoverable input. `Board.moveLenient(String)` returns the same result type, so it also surfaces the forgiven items.
 
