@@ -41,6 +41,10 @@ class TestAdjudicator {
   private static final String RETRO_ILLEGAL_KBN_VS_K = "8/8/8/8/2N5/8/k1K5/1B6 b - - 0 1";
   private static final String RETRO_ILLEGAL_KBB_VS_K = "8/8/8/8/8/B7/B7/k1K5 w - - 0 1";
 
+  // KRvKN with Black, the rook side, to move and already checkmated. Black has the theorem's mating material, but the
+  // game is over and no helpmate exists.
+  private static final String KRVKN_ROOK_SIDE_CHECKMATED = "kr6/2N5/K7/8/8/8/8/8 b - - 0 60";
+
   // === quick: DRAW / LOSS only ===
 
   @SuppressWarnings("static-method")
@@ -138,6 +142,15 @@ class TestAdjudicator {
     assertEquals(UnwinnabilityFullVerdict.UNWINNABLE, board.unwinnableFull(Side.WHITE));
     assertEquals(AdjudicationResult.DRAW, Adjudicator.adjudicateFlagfallFull(board, Side.BLACK));
     assertEquals(AdjudicationResult.DRAW, Adjudicator.adjudicateFlagfallQuick(board, Side.BLACK));
+  }
+
+  @SuppressWarnings("static-method")
+  @Test
+  void checkmatedWouldBeWinnerIsLeftToTheAnalyzer() {
+    final Board board = Board.fromFenStrict(KRVKN_ROOK_SIDE_CHECKMATED);
+    assertEquals(UnwinnabilityFullVerdict.UNWINNABLE, board.unwinnableFull(Side.BLACK));
+    assertEquals(AdjudicationResult.DRAW, Adjudicator.adjudicateFlagfallFull(board, Side.WHITE));
+    assertEquals(AdjudicationResult.DRAW, Adjudicator.adjudicateFlagfallQuick(board, Side.WHITE));
   }
 
   // === resignation == flag-fall ===

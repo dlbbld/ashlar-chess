@@ -82,6 +82,15 @@ class TestBasicHelpmateExistenceTheorem {
 
   @SuppressWarnings("static-method")
   @Test
+  void checkmatedWinnerIsNotApplicable() {
+    // KRvKN with the rook side to move and checkmated: being to move must not be read as having a helpmate.
+    assertWhiteWinner(BasicHelpmateExistenceTheoremResult.NOT_APPLICABLE, "8/8/8/8/8/k7/2n5/KR6 w - - 0 1");
+    assertEquals(BasicHelpmateExistenceTheoremResult.NOT_APPLICABLE,
+        BasicHelpmateExistenceTheorem.decide(Board.fromFenStrict("kr6/2N5/K7/8/8/8/8/8 b - - 0 1"), Side.BLACK));
+  }
+
+  @SuppressWarnings("static-method")
+  @Test
   void sameColouredBishopsAreNotApplicable() {
     // KBBvK with both bishops on dark squares (c1, g1): not the opposite-bishop class the theorem covers.
     assertWhiteWinner(BasicHelpmateExistenceTheoremResult.NOT_APPLICABLE, "4k3/8/8/8/8/8/8/2B1K1B1 w - - 0 1");
