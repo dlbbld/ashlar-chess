@@ -79,8 +79,8 @@ class TestLenientPgnParserTag {
     assertEquals(setUp, TagUtility.readSetUp(game.tags()));
     final List<Tag> tags = new ArrayList<>(game.tags());
     TagUtility.removeSetUpTag(tags);
-    assertEquals(reference, new PgnGame(tags, game.startFen(), game.pregameCommentary(), game.moves(),
-        game.terminationMarker()));
+    assertEquals(reference,
+        new PgnGame(tags, game.startFen(), game.pregameCommentary(), game.moves(), game.terminationMarker()));
     assertEquals("  tag value with white  space  ", TagUtility.readTagValue(game, "tagWithWhiteSpace"));
     assertEquals(game, LenientPgnParser.parseText(PgnCreate.toPgnString(game)));
     assertThrows(IllegalArgumentException.class, () -> PgnCreate.toPgnString(game, WriteMode.ARCHIVAL));

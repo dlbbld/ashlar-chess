@@ -43,8 +43,8 @@ public final class UnwinnableFullAnalyzer {
     final Board board = input.copyCurrentPositionWithoutHistory();
 
     if (board.isCheckmate()) {
-      final UnwinnabilityFullVerdict verdict = board.getSideToMove() == loser
-          ? UnwinnabilityFullVerdict.WINNABLE : UnwinnabilityFullVerdict.UNWINNABLE;
+      final UnwinnabilityFullVerdict verdict = board.getSideToMove() == loser ? UnwinnabilityFullVerdict.WINNABLE
+          : UnwinnabilityFullVerdict.UNWINNABLE;
       return new UnwinnabilityFullAnalysis(verdict, Nulls.listOf());
     }
     if (board.isStalemate()) {

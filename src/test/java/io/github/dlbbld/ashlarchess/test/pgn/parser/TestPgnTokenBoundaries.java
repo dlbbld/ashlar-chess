@@ -14,9 +14,8 @@ class TestPgnTokenBoundaries {
 
   @SuppressWarnings("static-method")
   @ParameterizedTest
-  @ValueSource(strings = { "1. e4(1. d4)e5*", "1. e4 (1. d4)e5 *",
-      "1. e4(1. d4(1. c4))(1. Nf3)e5*", "1. e4(1. d4 {a ) ( comment} d5)e5*",
-      "1. e4(1. d4 $1! d5)e5*", "1. e4(1. d4; ) ignored\n d5)e5*" })
+  @ValueSource(strings = { "1. e4(1. d4)e5*", "1. e4 (1. d4)e5 *", "1. e4(1. d4(1. c4))(1. Nf3)e5*",
+      "1. e4(1. d4 {a ) ( comment} d5)e5*", "1. e4(1. d4 $1! d5)e5*", "1. e4(1. d4; ) ignored\n d5)e5*" })
   void variationsPreserveAdjacentMainlineMoves(String text) {
     assertEquals(LenientPgnParser.parseText("1. e4 e5 *"), LenientPgnParser.parseText(text));
   }

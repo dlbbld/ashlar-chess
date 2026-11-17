@@ -643,10 +643,8 @@ final class StrictFenSemanticParser {
           "there is more than one " + color + " king");
     }
     if (material.kings() == 0) {
-      throw new StrictFenSemanticValidationException(
-          white ? StrictFenSemanticValidationProblem.INVALID_WHITE_NO_KING
-              : StrictFenSemanticValidationProblem.INVALID_BLACK_NO_KING,
-          "there is no " + color + " king");
+      throw new StrictFenSemanticValidationException(white ? StrictFenSemanticValidationProblem.INVALID_WHITE_NO_KING
+          : StrictFenSemanticValidationProblem.INVALID_BLACK_NO_KING, "there is no " + color + " king");
     }
     final int missingPawns = material.missingPawns();
     if (missingPawns < 0) {
@@ -802,8 +800,7 @@ final class StrictFenSemanticParser {
     }
     for (final Square pawnOrigin : pawnOrigins) {
       if (isStrictlyBetween(pawnOrigin, uncoveredSquare, kingSquare)
-          && !isPawnAttacking(pawnOrigin, attacker, kingSquare)
-          && (pawnOrigin.getFile() == promotedSquare.getFile()
+          && !isPawnAttacking(pawnOrigin, attacker, kingSquare) && (pawnOrigin.getFile() == promotedSquare.getFile()
               || FenMaterialCount.canRestorePromotionVictim(defenderMaterial, promotedSquare))) {
         return true;
       }

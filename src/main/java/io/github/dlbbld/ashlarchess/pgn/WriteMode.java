@@ -15,9 +15,9 @@ package io.github.dlbbld.ashlarchess.pgn;
  * normalised by {@code PgnArchivalNormalization}: the full Seven Tag Roster is filled with spec-defined placeholders,
  * the SetUp/FEN coupling is enforced, redundant initial-position FEN/SetUp tags are dropped, a Result tag is
  * synthesised from the termination marker (or {@code *} if neither is present), the termination marker is guaranteed
- * present in the movetext, and tags are sorted into canonical order. A tag name or value that cannot be represented
- * in archival PGN causes an {@link IllegalArgumentException}. Archival tag names must begin with an uppercase ASCII
- * letter and contain only ASCII letters, digits and underscores.</li>
+ * present in the movetext, and tags are sorted into canonical order. A tag name or value that cannot be represented in
+ * archival PGN causes an {@link IllegalArgumentException}. Archival tag names must begin with an uppercase ASCII letter
+ * and contain only ASCII letters, digits and underscores.</li>
  * </ul>
  */
 public enum WriteMode {

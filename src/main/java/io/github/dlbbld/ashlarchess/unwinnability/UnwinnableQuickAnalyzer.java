@@ -109,7 +109,6 @@ public final class UnwinnableQuickAnalyzer {
     return false;
   }
 
-
   /**
    * The Figure 10 step-2 DFS. Leaves (footnote b): checkmate, stalemate, and insufficient winning material (bare king,
    * Lemma 5, Lemma 6). A non-leaf node at the depth bound interrupts the whole search.

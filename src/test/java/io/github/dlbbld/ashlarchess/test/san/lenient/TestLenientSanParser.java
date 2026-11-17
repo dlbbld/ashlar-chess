@@ -452,8 +452,8 @@ class TestLenientSanParser {
   }
 
   @ParameterizedTest
-  @CsvSource({ "-e4, e2-e4", "e--4, e2-e4", "e4-, e2-e4", "e2--e4, e2-e4", "N-b1c3, Nb1-c3",
-      "Nb1c3-, Nb1-c3", "Nb1-xc3, Nb1-c3" })
+  @CsvSource({ "-e4, e2-e4", "e--4, e2-e4", "e4-, e2-e4", "e2--e4, e2-e4", "N-b1c3, Nb1-c3", "Nb1c3-, Nb1-c3",
+      "Nb1-xc3, Nb1-c3" })
   void testLongAlgebraicHyphenSeparatesTwoSquares(String invalidMove, String validMove) {
     final Board board = new Board();
     assertThrows(LenientSanParserValidationException.class, () -> board.moveLenient(invalidMove));
@@ -593,8 +593,8 @@ class TestLenientSanParser {
   }
 
   @ParameterizedTest
-  @CsvSource({ "w, e8g8, e1g1, O-O", "w, e8c8, e1c1, O-O-O",
-      "b, e1g1, e8g8, O-O", "b, e1c1, e8c8, O-O-O", "w, E8G8, E1G1, O-O", "b, E1C1, E8C8, O-O-O" })
+  @CsvSource({ "w, e8g8, e1g1, O-O", "w, e8c8, e1c1, O-O-O", "b, e1g1, e8g8, O-O", "b, e1c1, e8c8, O-O-O",
+      "w, E8G8, E1G1, O-O", "b, E1C1, E8C8, O-O-O" })
   void testCoordinateCastlingKeepsMovingSide(String side, String invalidMove, String validMove, String san) {
     final String fen = "r3k2r/8/8/8/8/8/8/R3K2R " + side + " KQkq - 0 1";
     final Board board = Board.fromFenStrict(fen);
@@ -606,8 +606,7 @@ class TestLenientSanParser {
   }
 
   @ParameterizedTest
-  @CsvSource({ "a1a3q, a1a3", "b1c3n, b1c3", "c1e3b, c1e3", "d1d4r, d1d4",
-      "e1e2q, e1e2", "g1-f3=Q, g1-f3" })
+  @CsvSource({ "a1a3q, a1a3", "b1c3n, b1c3", "c1e3b, c1e3", "d1d4r, d1d4", "e1e2q, e1e2", "g1-f3=Q, g1-f3" })
   void testRejectNonPawnCoordinatePromotion(String invalidMove, String validMove) {
     final String fen = "4k3/8/8/8/8/8/8/RNBQKBNR w KQ - 0 1";
     final Board board = Board.fromFenStrict(fen);
@@ -625,18 +624,11 @@ class TestLenientSanParser {
   }
 
   @ParameterizedTest
-  @CsvSource({
-      "7k/8/3p4/4P3/4P3/8/8/K7 w - - 0 20, e4xd6, e5xd6",
-      "7k/8/3p4/4P3/4P3/8/8/K7 w - - 0 20, e4d6, e5d6",
-      "7k/8/3p4/4P3/4P3/8/8/K7 w - - 0 20, e4-e6, e5-e6",
-      "7k/4P3/4P3/8/8/8/8/K7 w - - 0 20, e6-e8=Q, e7-e8=Q",
-      "7k/4P3/4P3/8/8/8/8/K7 w - - 0 20, e6e8q, e7e8q",
-      "3r3k/4P3/4P3/8/8/8/8/K7 w - - 0 20, e6xd8=N, e7xd8=N",
-      "7k/8/8/3pP3/4P3/8/8/K7 w - d6 0 20, e4xd6, e5xd6",
-      "7k/8/8/4p3/4p3/3P4/8/K7 b - - 0 20, e5xd3, e4xd3",
-      "7k/8/8/8/8/4p3/4p3/K7 b - - 0 20, e3-e1=Q, e2-e1=Q",
-      "7k/8/4p3/8/8/8/4P3/K7 w - - 0 20, e6-e3, e2-e3"
-  })
+  @CsvSource({ "7k/8/3p4/4P3/4P3/8/8/K7 w - - 0 20, e4xd6, e5xd6", "7k/8/3p4/4P3/4P3/8/8/K7 w - - 0 20, e4d6, e5d6",
+      "7k/8/3p4/4P3/4P3/8/8/K7 w - - 0 20, e4-e6, e5-e6", "7k/4P3/4P3/8/8/8/8/K7 w - - 0 20, e6-e8=Q, e7-e8=Q",
+      "7k/4P3/4P3/8/8/8/8/K7 w - - 0 20, e6e8q, e7e8q", "3r3k/4P3/4P3/8/8/8/8/K7 w - - 0 20, e6xd8=N, e7xd8=N",
+      "7k/8/8/3pP3/4P3/8/8/K7 w - d6 0 20, e4xd6, e5xd6", "7k/8/8/4p3/4p3/3P4/8/K7 b - - 0 20, e5xd3, e4xd3",
+      "7k/8/8/8/8/4p3/4p3/K7 b - - 0 20, e3-e1=Q, e2-e1=Q", "7k/8/4p3/8/8/8/4P3/K7 w - - 0 20, e6-e3, e2-e3" })
   void testCoordinatePawnMoveKeepsItsOrigin(String fen, String invalidMove, String validMove) {
     final Board board = Board.fromFenStrict(fen);
     assertThrows(LenientSanParserValidationException.class, () -> board.moveLenient(invalidMove));
@@ -724,11 +716,12 @@ class TestLenientSanParser {
         assertEquals(move.moveSpecification(), uciBoard.getLastMove().moveSpecification(), "UCI " + uci);
       }
     }
-    assertTrue(kingMoves > 0 && kingCaptures > 0 && pawnCaptures > 0 && promotions > 0 && capturePromotions > 0
-        && enPassantCaptures > 0 && castlings > 0,
-        "Move kind not covered: king " + kingMoves + ", king capture " + kingCaptures + ", pawn capture "
-            + pawnCaptures + ", promotion " + promotions + ", capture promotion " + capturePromotions
-            + ", en passant " + enPassantCaptures + ", castling " + castlings);
+    assertTrue(
+        kingMoves > 0 && kingCaptures > 0 && pawnCaptures > 0 && promotions > 0 && capturePromotions > 0
+            && enPassantCaptures > 0 && castlings > 0,
+        "Move kind not covered: king " + kingMoves + ", king capture " + kingCaptures + ", pawn capture " + pawnCaptures
+            + ", promotion " + promotions + ", capture promotion " + capturePromotions + ", en passant "
+            + enPassantCaptures + ", castling " + castlings);
   }
 
   // ---------------------------------------------------------------------------

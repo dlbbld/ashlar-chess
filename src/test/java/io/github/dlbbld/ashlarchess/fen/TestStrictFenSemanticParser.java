@@ -24,14 +24,8 @@ class TestStrictFenSemanticParser {
 
   @SuppressWarnings("static-method")
   @ParameterizedTest
-  @CsvSource({
-      "6Q1/5k1Q/8/8/8/8/8/4K3, b",
-      "4k3/8/8/8/8/8/5K1q/6q1, w",
-      "7R/R6k/8/8/8/8/8/4K3, b",
-      "4k3/8/8/8/8/8/r6K/7r, w",
-      "8/8/3Pk3/8/8/8/Q7/4QK2, b",
-      "4qk2/q7/8/8/8/3pK3/8/8, w"
-  })
+  @CsvSource({ "6Q1/5k1Q/8/8/8/8/8/4K3, b", "4k3/8/8/8/8/8/5K1q/6q1, w", "7R/R6k/8/8/8/8/8/4K3, b",
+      "4k3/8/8/8/8/8/r6K/7r, w", "8/8/3Pk3/8/8/8/Q7/4QK2, b", "4qk2/q7/8/8/8/3pK3/8/8, w" })
   void testPawnMoveDoubleCheckRequiresZeroHalfMoveClock(String placement, String sideToMove) {
     final String position = placement + " " + sideToMove + " - - ";
     checkParseFenSuccess(position + "0 20");
@@ -46,16 +40,13 @@ class TestStrictFenSemanticParser {
 
   @SuppressWarnings("static-method")
   @ParameterizedTest
-  @ValueSource(strings = {
-      "7R/R6k/8/8/8/8/PPPPPPPP/4K3 b - - 0 30",
-      "4k3/pppppppp/8/8/8/8/r6K/7r w - - 0 30",
+  @ValueSource(strings = { "7R/R6k/8/8/8/8/PPPPPPPP/4K3 b - - 0 30", "4k3/pppppppp/8/8/8/8/r6K/7r w - - 0 30",
       // The only missing pawn already accounts for the second queen.
       "7R/R6k/8/8/8/8/PPPPPPP1/2QQK3 b - - 0 30",
       // gxh8=R would have to capture a piece. Black's only missing man is its light-square bishop.
       "rn1qrbnR/R6k/pppppppp/8/8/8/8/4K3 b - - 0 30",
       // exd6 e.p. would require a ninth black pawn before the capture.
-      "8/ppp1pppp/p2Pk3/8/8/8/Q7/4QK2 b - - 0 30"
-  })
+      "8/ppp1pppp/p2Pk3/8/8/8/Q7/4QK2 b - - 0 30" })
   void testDoubleCheckNeedsMaterialForTheLastMove(String fen) {
     assertEquals(StrictFenSemanticValidationProblem.INVALID_POSITION_IMPOSSIBLE_CHECK,
         StrictFenParser.validate(fen).problem());
@@ -65,14 +56,12 @@ class TestStrictFenSemanticParser {
 
   @SuppressWarnings("static-method")
   @ParameterizedTest
-  @CsvSource({
-      "rnbqkbnr/pppppppp/8/8/8/QR6/PPPPPPP1/RNBQKBNR w KQkq - 0 30, INVALID_WHITE_TOO_MANY_PROMOTIONS",
+  @CsvSource({ "rnbqkbnr/pppppppp/8/8/8/QR6/PPPPPPP1/RNBQKBNR w KQkq - 0 30, INVALID_WHITE_TOO_MANY_PROMOTIONS",
       "rnbqkbnr/pppppppp/8/8/8/QR6/PPPPPPP1/R2QK2R w KQkq - 0 30, INVALID_WHITE_TOO_MANY_PROMOTIONS",
       "r2qk2r/ppppppp1/qr6/8/8/8/PPPPPPPP/RNBQKBNR b KQkq - 0 30, INVALID_BLACK_TOO_MANY_PROMOTIONS",
       "4k3/8/8/8/8/BN6/PPPPPPP1/1NB1K1N1 w - - 0 30, INVALID_WHITE_TOO_MANY_PROMOTIONS",
       "1nb1k1n1/ppppppp1/bn6/8/8/8/8/4K3 b - - 0 30, INVALID_BLACK_TOO_MANY_PROMOTIONS",
-      "4k3/8/8/8/8/BB6/PPPPPPP1/2B1KB2 w - - 0 30, INVALID_WHITE_TOO_MANY_PROMOTIONS"
-  })
+      "4k3/8/8/8/8/BB6/PPPPPPP1/2B1KB2 w - - 0 30, INVALID_WHITE_TOO_MANY_PROMOTIONS" })
   void testMissingPawnsAreSharedAcrossPromotions(String fen, StrictFenSemanticValidationProblem expected) {
     assertEquals(expected, StrictFenParser.validate(fen).problem());
     assertEquals(expected, LenientFenParser.validate(fen).strictFenSemanticValidationProblem());
@@ -87,10 +76,8 @@ class TestStrictFenSemanticParser {
 
   @SuppressWarnings("static-method")
   @ParameterizedTest
-  @ValueSource(strings = {
-      "rnbqkbnr/pppppppp/44/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
-      "22k3/8/8/8/8/8/8/4K111 w - - 0 1"
-  })
+  @ValueSource(strings = { "rnbqkbnr/pppppppp/44/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
+      "22k3/8/8/8/8/8/8/4K111 w - - 0 1" })
   void testEachRunOfEmptySquaresRequiresOneDigit(String fen) {
     assertEquals(StrictFenSemanticValidationProblem.INVALID_POSITION_SPLIT_EMPTY_SQUARE_RUN,
         StrictFenParser.validate(fen).problem());

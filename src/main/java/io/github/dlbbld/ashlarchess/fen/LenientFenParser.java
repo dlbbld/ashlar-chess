@@ -18,9 +18,8 @@ import io.github.dlbbld.ashlarchess.internal.Nulls;
 /**
  * Lenient FEN parser. Applies a purely syntactic-tolerance normalisation pass (whitespace, casing, missing trailing
  * counters, split empty-square runs, leading zeros in counters, non-canonical castling order, non-ASCII dashes,
- * trailing garbage) then
- * delegates to {@link StrictFenParser} for the structural and rule-consistency checks. Every transformation applied
- * during normalisation surfaces as a {@link ForgivenFenItem} on the result.
+ * trailing garbage) then delegates to {@link StrictFenParser} for the structural and rule-consistency checks. Every
+ * transformation applied during normalisation surfaces as a {@link ForgivenFenItem} on the result.
  *
  * <p>
  * The lenient layer does <b>not</b> weaken any of the strict semantic invariants — a FEN with a missing king, a pawn on

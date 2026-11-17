@@ -181,8 +181,8 @@ class TestPgnAnnotationEdgeCases {
       movetext.append(" $1 {c}");
     }
     movetext.append(" *");
-    final PgnGame game = Objects.requireNonNull(
-        assertTimeoutPreemptively(Duration.ofSeconds(30), () -> lenient(Nulls.toString(movetext))));
+    final PgnGame game = Objects
+        .requireNonNull(assertTimeoutPreemptively(Duration.ofSeconds(30), () -> lenient(Nulls.toString(movetext))));
     assertEquals(annotationCount, Nulls.get(game.moves(), 0).nags().size());
     assertEquals(2 * annotationCount - 1, Nulls.get(game.moves(), 0).commentary().value().length());
   }

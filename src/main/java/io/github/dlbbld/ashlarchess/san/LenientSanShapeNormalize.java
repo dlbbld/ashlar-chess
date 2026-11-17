@@ -164,9 +164,9 @@ final class LenientSanShapeNormalize {
   /**
    * Translates a move given by its two squares and no piece letter to SAN using the piece on the from-square. The shape
    * is {@code <file><rank>[x]<file><rank>[[=]<promotion piece>]}, which covers UCI ({@code e2e4}, {@code e7e8q}) and
-   * the pawn and letterless forms of long algebraic notation once the hyphen is removed ({@code e4xd5},
-   * {@code e7e8=Q}, {@code b7xa8=N}). Returns {@code null} when the shape doesn't match - the caller decides whether
-   * that means "leave the body unchanged" or "this branch doesn't apply."
+   * the pawn and letterless forms of long algebraic notation once the hyphen is removed ({@code e4xd5}, {@code e7e8=Q},
+   * {@code b7xa8=N}). Returns {@code null} when the shape doesn't match - the caller decides whether that means "leave
+   * the body unchanged" or "this branch doesn't apply."
    */
   private static @Nullable String tryTranslateCoordinateShape(String body, Board board, boolean explicitPawn) {
     if (body.length() < 4 || !isFileLetter(body.charAt(0)) || !isRankDigit(body.charAt(1))) {
@@ -174,8 +174,7 @@ final class LenientSanShapeNormalize {
     }
     final boolean hasCaptureMarker = body.charAt(COORDINATE_SEPARATOR_INDEX) == 'x';
     final int toIndex = hasCaptureMarker ? COORDINATE_SEPARATOR_INDEX + 1 : COORDINATE_SEPARATOR_INDEX;
-    if (body.length() < toIndex + 2 || !isFileLetter(body.charAt(toIndex))
-        || !isRankDigit(body.charAt(toIndex + 1))) {
+    if (body.length() < toIndex + 2 || !isFileLetter(body.charAt(toIndex)) || !isRankDigit(body.charAt(toIndex + 1))) {
       return null;
     }
     final String promotionSuffix = Nulls.substring(body, toIndex + 2);
@@ -204,8 +203,8 @@ final class LenientSanShapeNormalize {
     final StringBuilder out = new StringBuilder();
     if (pieceType == PieceType.PAWN) {
       // Pawn SAN drops the origin rank, so first rule out resolving the coordinates to a different pawn.
-      if (board.getLegalMoves().stream().noneMatch(move -> move.moveSpecification().fromSquare() == from
-          && move.moveSpecification().toSquare() == to)) {
+      if (board.getLegalMoves().stream().noneMatch(
+          move -> move.moveSpecification().fromSquare() == from && move.moveSpecification().toSquare() == to)) {
         return null;
       }
       // Pawn SAN: forward "<file><rank>", capture "<fromFile>x<toFile><toRank>", optional "=<P>"
@@ -239,14 +238,12 @@ final class LenientSanShapeNormalize {
   // or produced by the LAN/UCI translation - is reduced here. An origin square that does not hold the moving king is
   // left for strict to reject.
   private static String stripKingOriginSquare(String body, Board board, List<LenientSanValidationProblem> codes) {
-    if (body.length() < 5 || body.charAt(0) != 'K' || !isFileLetter(body.charAt(1))
-        || !isRankDigit(body.charAt(2))) {
+    if (body.length() < 5 || body.charAt(0) != 'K' || !isFileLetter(body.charAt(1)) || !isRankDigit(body.charAt(2))) {
       return body;
     }
     final String destination = Nulls.substring(body, 3);
     final String toSquareName = destination.charAt(0) == 'x' ? Nulls.substring(destination, 1) : destination;
-    if (toSquareName.length() != 2 || !isFileLetter(toSquareName.charAt(0))
-        || !isRankDigit(toSquareName.charAt(1))) {
+    if (toSquareName.length() != 2 || !isFileLetter(toSquareName.charAt(0)) || !isRankDigit(toSquareName.charAt(1))) {
       return body;
     }
     final Square from = parseSquare(body.charAt(1), body.charAt(2));
@@ -400,9 +397,9 @@ final class LenientSanShapeNormalize {
 
   /**
    * Returns true when {@code body} starts with uppercase {@code B} but the rest of the shape is incompatible with any
-   * valid bishop SAN - i.e. a bare destination, a hyphen after the origin square, or a promotion suffix.
-   * Capture and disambiguation forms (e.g. {@code Bxf7}, {@code B1d4}) are canonically bishop, even though they could
-   * lexically also be uppercase b-file pawn forms; the case carries the user's intent and we respect it.
+   * valid bishop SAN - i.e. a bare destination, a hyphen after the origin square, or a promotion suffix. Capture and
+   * disambiguation forms (e.g. {@code Bxf7}, {@code B1d4}) are canonically bishop, even though they could lexically
+   * also be uppercase b-file pawn forms; the case carries the user's intent and we respect it.
    */
   private static boolean isUppercaseBPawnOnlyShape(String body) {
     return body.length() >= 2 && isRankDigit(body.charAt(1)) && (body.length() == 2 || body.charAt(2) == '-')

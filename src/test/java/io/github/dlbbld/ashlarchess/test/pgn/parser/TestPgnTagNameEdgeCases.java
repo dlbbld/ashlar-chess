@@ -61,8 +61,8 @@ class TestPgnTagNameEdgeCases {
     assertEquals("value", Nulls.getLast(lenient.tags()).value());
     assertEquals(lenient, strict);
     assertEquals(lenient, LenientPgnParser.parseText(PgnCreate.toPgnString(lenient)));
-    final IllegalArgumentException failure = Objects.requireNonNull(assertThrows(IllegalArgumentException.class,
-        () -> PgnCreate.toPgnString(lenient, WriteMode.ARCHIVAL)));
+    final IllegalArgumentException failure = Objects.requireNonNull(
+        assertThrows(IllegalArgumentException.class, () -> PgnCreate.toPgnString(lenient, WriteMode.ARCHIVAL)));
     assertTrue(ExceptionUtility.getMessage(failure).contains("\"" + name + "\""));
   }
 
@@ -76,8 +76,8 @@ class TestPgnTagNameEdgeCases {
         LenientPgnParserValidationException.class, () -> LenientPgnParser.parseText(lenientText(tagLine))));
     assertEquals(LenientPgnParserValidationProblem.TAG_FORMAT_INVALID, lenient.getLenientPgnParserValidationProblem());
 
-    final StrictPgnParserValidationException strict = Objects.requireNonNull(assertThrows(
-        StrictPgnParserValidationException.class, () -> StrictPgnParser.parseText(strictText(tagLine))));
+    final StrictPgnParserValidationException strict = Objects.requireNonNull(
+        assertThrows(StrictPgnParserValidationException.class, () -> StrictPgnParser.parseText(strictText(tagLine))));
     assertEquals(StrictPgnParserValidationProblem.TAG_NAME_FIRST_CHARACTER,
         strict.getStrictPgnParserValidationProblem());
   }
@@ -130,8 +130,8 @@ class TestPgnTagNameEdgeCases {
     assertEquals(LenientPgnParserValidationProblem.TAG_NAME_NOT_UNIQUE, lenient.getLenientPgnParserValidationProblem());
     assertTrue(ExceptionUtility.getMessage(lenient).contains("\"Annotator\""));
 
-    final StrictPgnParserValidationException strict = Objects.requireNonNull(assertThrows(
-        StrictPgnParserValidationException.class, () -> StrictPgnParser.parseText(strictText(tagLines))));
+    final StrictPgnParserValidationException strict = Objects.requireNonNull(
+        assertThrows(StrictPgnParserValidationException.class, () -> StrictPgnParser.parseText(strictText(tagLines))));
     assertEquals(StrictPgnParserValidationProblem.TAG_NAME_NOT_UNIQUE, strict.getStrictPgnParserValidationProblem());
     assertTrue(ExceptionUtility.getMessage(strict).contains("\"Annotator\""));
   }
@@ -152,8 +152,8 @@ class TestPgnTagNameEdgeCases {
         () -> LenientPgnParser.parseText(lenientText(extraTagLines))));
     assertEquals(7 + extraTagCount, lenient.tags().size());
 
-    final PgnGame strict = Objects.requireNonNull(assertTimeoutPreemptively(Duration.ofSeconds(30),
-        () -> StrictPgnParser.parseText(strictText(extraTagLines))));
+    final PgnGame strict = Objects.requireNonNull(
+        assertTimeoutPreemptively(Duration.ofSeconds(30), () -> StrictPgnParser.parseText(strictText(extraTagLines))));
     assertEquals(7 + extraTagCount, strict.tags().size());
   }
 }

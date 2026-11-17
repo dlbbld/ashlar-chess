@@ -586,10 +586,10 @@ public final class LenientPgnParser {
   /**
    * Consumes every annotation trailing the move just added - comments and numeric annotation glyphs, in any order and
    * quantity - and folds them onto that move. Real-world tools emit several and interleave them: lichess opens each
-   * analyzed game with {@code { [%eval ...] [%clk ...] } { <opening name> }}, and a NAG-plus-comment pair
-   * ({@code Nf3 $1 {develops}}) is ordinary PGN. Comments are merged onto the move's commentary; NAGs are appended to
-   * its NAG list. Handling both here keeps post-move annotation order-independent - {@code Nf3 $1 {c}} and
-   * {@code Nf3 {c} $1} parse identically.
+   * analyzed game with {@code { [%eval ...] [%clk ...] } { <opening name> }}, and a NAG-plus-comment pair ({@code Nf3
+   * $1 {develops}}) is ordinary PGN. Comments are merged onto the move's commentary; NAGs are appended to its NAG list.
+   * Handling both here keeps post-move annotation order-independent - {@code Nf3 $1 {c}} and {@code Nf3 {c} $1} parse
+   * identically.
    */
   private void consumePostMoveAnnotations(List<PgnMove> moves, PendingAnnotations pendingAnnotations) {
     skipInsignificantWhitespace();

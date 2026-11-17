@@ -17,9 +17,9 @@
  * contradictions.
  *
  * <p>
- * Assistant coverage uses a conservative correction to Figure 8: one piece may attack several orthogonal king
- * escapes. Counting all potentially covered escapes can decline a certificate but cannot create a false proof of
- * unwinnability. Full analysis handles existing mate and stalemate before the semi-static shortcut.
+ * Assistant coverage uses a conservative correction to Figure 8: one piece may attack several orthogonal king escapes.
+ * Counting all potentially covered escapes can decline a certificate but cannot create a false proof of unwinnability.
+ * Full analysis handles existing mate and stalemate before the semi-static shortcut.
  *
  * <p>
  * Insufficient material covers the trivial cases (king-vs-king, king + minor vs king); positions like blocked pawn

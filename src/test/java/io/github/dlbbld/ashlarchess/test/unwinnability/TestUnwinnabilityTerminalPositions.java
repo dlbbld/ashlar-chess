@@ -79,8 +79,7 @@ class TestUnwinnabilityTerminalPositions {
   void terminalPositionsStillRequireARealWinner() {
     for (final String fen : Nulls.listOf(FOOLS_MATE, STALEMATE)) {
       final Board board = Board.fromFenStrict(fen);
-      assertThrows(ProgrammingMistakeException.class,
-          () -> UnwinnableFullAnalyzer.unwinnableFull(board, Side.NONE));
+      assertThrows(ProgrammingMistakeException.class, () -> UnwinnableFullAnalyzer.unwinnableFull(board, Side.NONE));
     }
   }
 
