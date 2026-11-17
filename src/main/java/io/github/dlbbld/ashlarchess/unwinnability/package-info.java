@@ -54,9 +54,10 @@
  * <p>
  * Strict FEN validation ({@code Board.fromFenStrict}) rejects the illegal positions it can detect by structural rule -
  * wrong piece counts, the side not to move left in check, and unreachable check geometries (a double check by two
- * same-coloured bishops, two rooks, two queens, or two knights, or three or more checkers). But full legality cannot be
- * validated in practice - a complete check needs an infeasible retrograde / proof-game search - so <b>ashlar does not
- * enforce legality, and submitting only legal positions is the caller's responsibility.</b>
+ * bishops or two knights, by two rooks or two queens that no promotion or en passant capture could have produced, or
+ * three or more checkers). But full legality cannot be validated in practice - a complete check needs an infeasible
+ * retrograde / proof-game search - so <b>ashlar does not enforce legality, and submitting only legal positions is the
+ * caller's responsibility.</b>
  *
  * <p>
  * On an illegal position the result is undefined: it may be inaccurate, and the quick and full analyzers (or other

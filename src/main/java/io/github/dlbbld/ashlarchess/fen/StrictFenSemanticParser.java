@@ -768,17 +768,20 @@ final class StrictFenSemanticParser {
 
   }
 
-  // A double check can only be created by a single move that gives a direct check while uncovering a slider behind it
-  // (a discovered check). Several check configurations are therefore unreachable, so a FEN claiming them is illegal:
-  // three or more simultaneous checkers (one move cannot uncover more than one line), or a double check whose two
-  // checkers attack the king along the same geometry. A knight or pawn can never be the uncovered slider; two diagonal
-  // attackers (or two orthogonal attackers) cannot both check at once; and a queen can never be the silent blocker, so
-  // two queens can never co-check either. Legal double checks (knight + slider, bishop + rook, diagonal + orthogonal
-  // slider) are left untouched.
+  // A double check is created by one move, so the two checkers must be a piece that moved and gives a direct check
+  // plus a slider that this move uncovered. Three or more checkers are therefore unreachable. Two checkers of the same
+  // geometry, or two queens, are unreachable by an ordinary move: a knight or pawn can never be the uncovered slider,
+  // and a bishop (rook, queen) standing on a diagonal (orthogonal, any) line to the king would already have given
+  // check, so it cannot have been the silent blocker of that line. A pawn is not bound by this, which leaves exactly
+  // two ways to reach such a pair: a promotion, where the pawn was the blocker and the promoted piece gives the direct
+  // check, and an en passant capture, which vacates two squares and can uncover two sliders at once. Those pairs are
+  // rejected only when neither move could have produced them. Other double checks (knight + slider, bishop + rook,
+  // diagonal + orthogonal slider) are left untouched.
   private static void validateCheckConfiguration(BitboardPosition bitboardPosition, Side sideToMove)
       throws StrictFenSemanticValidationException {
     final Square kingSquare = bitboardPosition.kingSquare(sideToMove);
-    final long checkers = bitboardPosition.attackersTo(kingSquare, sideToMove.getOppositeSide());
+    final Side attacker = sideToMove.getOppositeSide();
+    final long checkers = bitboardPosition.attackersTo(kingSquare, attacker);
     final int checkerCount = Long.bitCount(checkers);
     if (checkerCount < 2) {
       return;
@@ -799,11 +802,92 @@ final class StrictFenSemanticParser {
         firstSquare) == calculateCheckGeometry(secondChecker, kingSquare, secondSquare);
     final boolean bothQueens = firstChecker.getPieceType() == PieceType.QUEEN
         && secondChecker.getPieceType() == PieceType.QUEEN;
-    if (sameGeometry || bothQueens) {
-      throw new StrictFenSemanticValidationException(
-          StrictFenSemanticValidationProblem.INVALID_POSITION_IMPOSSIBLE_CHECK,
-          "the " + sideToMove.getName() + " king is in a double check that no single move could create");
+    if (!sameGeometry && !bothQueens) {
+      return;
     }
+    if (isDoubleCheckByPromotion(attacker, kingSquare, firstSquare, secondSquare)
+        || isDoubleCheckByPromotion(attacker, kingSquare, secondSquare, firstSquare)
+        || isDoubleCheckByEnPassantCapture(bitboardPosition, attacker, kingSquare, firstSquare, secondSquare)) {
+      return;
+    }
+    throw new StrictFenSemanticValidationException(StrictFenSemanticValidationProblem.INVALID_POSITION_IMPOSSIBLE_CHECK,
+        "the " + sideToMove.getName() + " king is in a double check that no single move could create");
+  }
+
+  // The pawn stood on one of the three squares behind the promotion square, on the uncovered checker's line to the
+  // king. That line is empty now because it carries a check. A pawn attacking the king from its origin square would
+  // have given check before the move, which rules that origin out.
+  private static boolean isDoubleCheckByPromotion(Side attacker, Square kingSquare, Square promotedSquare,
+      Square uncoveredSquare) {
+    if (!SquareUtility.getPromotionRankSquares(attacker).contains(promotedSquare)) {
+      return false;
+    }
+    final List<Square> pawnOrigins = new ArrayList<>();
+    pawnOrigins.add(promotedSquare.getBehindSquare(attacker));
+    if (promotedSquare.hasBehindLeftDiagonalSquare(attacker)) {
+      pawnOrigins.add(promotedSquare.getBehindLeftDiagonalSquare(attacker));
+    }
+    if (promotedSquare.hasBehindRightDiagonalSquare(attacker)) {
+      pawnOrigins.add(promotedSquare.getBehindRightDiagonalSquare(attacker));
+    }
+    for (final Square pawnOrigin : pawnOrigins) {
+      if (isStrictlyBetween(pawnOrigin, uncoveredSquare, kingSquare)
+          && !isPawnAttacking(pawnOrigin, attacker, kingSquare)) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  // The capturing pawn left one line to the king and the captured pawn was removed from the other. The captured pawn
+  // had just advanced two squares, so its origin square and the square it passed are free of other pieces.
+  private static boolean isDoubleCheckByEnPassantCapture(BitboardPosition bitboardPosition, Side attacker,
+      Square kingSquare, Square firstSquare, Square secondSquare) {
+    final Piece attackerPawn = Piece.of(attacker, PAWN);
+    for (final Square pawnSquare : SquareUtility.getEnPassantCaptureTargetSquares(attacker)) {
+      if (bitboardPosition.get(pawnSquare) != attackerPawn) {
+        continue;
+      }
+      final Square capturedSquare = pawnSquare.getBehindSquare(attacker);
+      if (!bitboardPosition.isEmpty(capturedSquare) || !bitboardPosition.isEmpty(pawnSquare.getAheadSquare(attacker))) {
+        continue;
+      }
+      final List<Square> pawnOrigins = new ArrayList<>();
+      if (pawnSquare.hasBehindLeftDiagonalSquare(attacker)) {
+        pawnOrigins.add(pawnSquare.getBehindLeftDiagonalSquare(attacker));
+      }
+      if (pawnSquare.hasBehindRightDiagonalSquare(attacker)) {
+        pawnOrigins.add(pawnSquare.getBehindRightDiagonalSquare(attacker));
+      }
+      for (final Square pawnOrigin : pawnOrigins) {
+        final boolean firstThroughOrigin = isStrictlyBetween(pawnOrigin, firstSquare, kingSquare)
+            && isStrictlyBetween(capturedSquare, secondSquare, kingSquare);
+        final boolean secondThroughOrigin = isStrictlyBetween(pawnOrigin, secondSquare, kingSquare)
+            && isStrictlyBetween(capturedSquare, firstSquare, kingSquare);
+        if (firstThroughOrigin || secondThroughOrigin) {
+          return true;
+        }
+      }
+    }
+    return false;
+  }
+
+  private static boolean isPawnAttacking(Square pawnSquare, Side pawnSide, Square targetSquare) {
+    return pawnSquare.hasLeftDiagonalSquare(pawnSide) && pawnSquare.getLeftDiagonalSquare(pawnSide) == targetSquare
+        || pawnSquare.hasRightDiagonalSquare(pawnSide) && pawnSquare.getRightDiagonalSquare(pawnSide) == targetSquare;
+  }
+
+  // Both end squares are on a common rank, file or diagonal whenever one of them holds a slider checking the other.
+  private static boolean isStrictlyBetween(Square candidate, Square lineStart, Square lineEnd) {
+    final int lineFiles = lineEnd.getFile().getNumber() - lineStart.getFile().getNumber();
+    final int lineRanks = lineEnd.getRank().getNumber() - lineStart.getRank().getNumber();
+    final int candidateFiles = candidate.getFile().getNumber() - lineStart.getFile().getNumber();
+    final int candidateRanks = candidate.getRank().getNumber() - lineStart.getRank().getNumber();
+    if (candidateFiles * lineRanks != candidateRanks * lineFiles) {
+      return false;
+    }
+    final int projection = candidateFiles * lineFiles + candidateRanks * lineRanks;
+    return projection > 0 && projection < lineFiles * lineFiles + lineRanks * lineRanks;
   }
 
   private enum CheckGeometry {

@@ -445,12 +445,29 @@ class TestStrictFenSemanticParser {
     checkParseFenException("5B2/7r/5K1k/7r/8/4B3/8/8 b - - 0 1",
         StrictFenSemanticValidationProblem.INVALID_POSITION_IMPOSSIBLE_CHECK);
 
-    // Two rooks (both orthogonal): the moving rook cannot switch from the king's rank to its file.
+    // Two rooks (both orthogonal): the moving rook cannot switch from the king's rank to its file, and the rook on
+    // the promotion rank is too far from the king to have promoted from the king's file.
     checkParseFenException("4r3/6k1/8/8/8/8/8/r3K3 w - - 0 1",
         StrictFenSemanticValidationProblem.INVALID_POSITION_IMPOSSIBLE_CHECK);
 
-    // Two queens (here orthogonal + diagonal): a queen can never be the silent blocker, so two queens never co-check.
+    // Two queens (here orthogonal + diagonal): a queen can never be the silent blocker, and neither queen stands
+    // where a promotion or an en passant capture could have uncovered the other.
     checkParseFenException("4q3/6k1/8/q7/8/8/8/4K3 w - - 0 1",
+        StrictFenSemanticValidationProblem.INVALID_POSITION_IMPOSSIBLE_CHECK);
+
+    // A queen on the promotion rank does not help when the pawn had no origin square on the other queen's line: here
+    // that line has no square between queen and king.
+    checkParseFenException("6Q1/6Qk/8/8/8/8/8/4K3 b - - 0 1",
+        StrictFenSemanticValidationProblem.INVALID_POSITION_IMPOSSIBLE_CHECK);
+    // Nor when the pawn would have given check from its origin square (g7 against the king on h8).
+    checkParseFenException("6Qk/8/8/8/8/8/8/Q3K3 b - - 0 1",
+        StrictFenSemanticValidationProblem.INVALID_POSITION_IMPOSSIBLE_CHECK);
+    // Two bishops stay impossible even with one on the promotion rank.
+    checkParseFenException("5B2/6k1/8/8/3B4/8/8/4K3 b - - 0 1",
+        StrictFenSemanticValidationProblem.INVALID_POSITION_IMPOSSIBLE_CHECK);
+    // Two queens on a file and a diagonal with a pawn on the sixth rank, but the pawn is not next to the king's file,
+    // so no en passant capture connects the two lines.
+    checkParseFenException("8/8/1P2k3/8/8/8/Q7/4QK2 b - - 0 1",
         StrictFenSemanticValidationProblem.INVALID_POSITION_IMPOSSIBLE_CHECK);
 
     // Two knights: neither can be the uncovered slider.
@@ -464,6 +481,15 @@ class TestStrictFenSemanticParser {
     // Legal double checks must NOT be rejected: rook (orthogonal) + bishop (diagonal), and rook + knight.
     checkParseFenSuccess("4r3/6k1/8/8/1b6/8/8/4K3 w - - 0 1");
     checkParseFenSuccess("4r3/6k1/8/8/8/5n2/8/4K3 w - - 0 1");
+    // Nor the same-geometry and two-queen double checks that a promotion creates (the pawn was the silent blocker):
+    // g8=Q+ with a queen on h7, gxh8=R+ and gxh8=Q+ with a rook or queen on a7, ...gxh1=R+ with a rook on a2.
+    checkParseFenSuccess("6Q1/5k1Q/8/8/8/8/8/4K3 b - - 0 1");
+    checkParseFenSuccess("7R/R6k/8/8/8/8/8/4K3 b - - 0 1");
+    checkParseFenSuccess("7Q/R6k/8/8/8/8/8/4K3 b - - 0 1");
+    checkParseFenSuccess("7Q/Q6k/8/8/8/8/8/4K3 b - - 0 1");
+    checkParseFenSuccess("4k3/8/8/8/8/8/r6K/7r w - - 0 2");
+    // Nor two queens uncovered at once by an en passant capture (exd6 e.p. with queens on e1 and a2).
+    checkParseFenSuccess("8/8/3Pk3/8/8/8/Q7/4QK2 b - - 0 2");
     // A legal single check must NOT be rejected.
     checkParseFenSuccess("4r3/6k1/8/8/8/8/8/4K3 w - - 0 1");
   }
