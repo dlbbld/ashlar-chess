@@ -13,9 +13,8 @@ Live planning only: current release work, backlog, and obsolete decisions. Shipp
 
 ## 22.2.0 - Sound endgame verdicts and reliable notation
 
-Corrective changes and regression tests are complete, including the independent follow-up review.
-Release validation and publication follow the runbook in `workflows.md`. Maven Central publication requires the
-release signing key and Central credentials in the selected release environment.
+Published 2026-11-18 on Maven Central; see [CHANGELOG.md](CHANGELOG.md) and the
+[GitHub release](https://github.com/dlbbld/ashlar-chess/releases/tag/22.2.0).
 
 ---
 
