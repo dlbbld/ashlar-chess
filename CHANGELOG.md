@@ -36,6 +36,10 @@ is removed or changed.
 - Strict tag names use letters, digits and underscores with an alphanumeric first character. Lenient import keeps
   broader custom names. Archival export requires uppercase-initial conforming names and throws
   `IllegalArgumentException` for unrepresentable custom names instead of renaming or discarding them.
+- New diagnostic codes: `StrictFenSemanticValidationProblem.INVALID_POSITION_SPLIT_EMPTY_SQUARE_RUN`,
+  `INVALID_WHITE_TOO_MANY_PROMOTIONS` and `INVALID_BLACK_TOO_MANY_PROMOTIONS`, and
+  `ForgivenFenItemCode.SPLIT_EMPTY_SQUARE_RUN` and `COUNTER_LEADING_ZEROS`. Exhaustive switches over these enums
+  need the new cases.
 - Both PGN parsers reject nonprinting tag values and values longer than 255 decoded Unicode code points. Archival
   export validates the tags it emits after normalizing `FEN` and `SetUp` from the starting position. Quoted escapes,
   Unicode names and commentary retain their supported round-trip behavior.

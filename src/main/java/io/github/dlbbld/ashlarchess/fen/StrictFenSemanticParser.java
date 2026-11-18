@@ -688,8 +688,9 @@ final class StrictFenSemanticParser {
       throw new StrictFenSemanticValidationException(
           white ? StrictFenSemanticValidationProblem.INVALID_WHITE_TOO_MANY_PROMOTIONS
               : StrictFenSemanticValidationProblem.INVALID_BLACK_TOO_MANY_PROMOTIONS,
-          "the " + color + " pieces require at least " + requiredPromotions + " promotions but only " + missingPawns
-              + " pawns are missing");
+          "the " + color + " pieces require at least " + requiredPromotions
+              + (requiredPromotions == 1 ? " promotion" : " promotions") + " but only " + missingPawns
+              + (missingPawns == 1 ? " pawn is missing" : " pawns are missing"));
     }
   }
 
