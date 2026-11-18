@@ -14,6 +14,8 @@ import io.github.dlbbld.ashlarchess.board.enums.Side;
 import io.github.dlbbld.ashlarchess.board.enums.Square;
 import io.github.dlbbld.ashlarchess.fen.internal.FenConstants;
 import io.github.dlbbld.ashlarchess.internal.Nulls;
+import io.github.dlbbld.ashlarchess.pgn.ForgivenTagItem;
+import io.github.dlbbld.ashlarchess.pgn.ForgivenTagItemCode;
 import io.github.dlbbld.ashlarchess.pgn.LenientPgnParser;
 import io.github.dlbbld.ashlarchess.pgn.LenientPgnParserValidationProblem;
 import io.github.dlbbld.ashlarchess.pgn.LenientPgnParserValidationResult;
@@ -77,18 +79,18 @@ class TestPgnRoundTripEdgeCases {
   }
 
   @Test
-  void invalidTagStringsAreRejectedAtImportAndArchivalExport() {
-    assertInvalidTagString("a\0b");
-    assertInvalidTagString("a\tb");
-    assertInvalidTagString("a\u007fb");
-    assertInvalidTagString("a\u0085b");
-    assertInvalidTagString("a\uD800b");
-    assertInvalidTagString("a\u2028b");
-    assertInvalidTagString("a\u2029b");
-    assertInvalidTagString("a\uE000b");
-    assertInvalidTagString("a\uFDD0b");
-    assertInvalidTagString("a\uFFFFb");
-    assertInvalidTagString("v".repeat(255) + "v");
+  void invalidTagStringsAreForgivenOnlyByLenientImport() {
+    assertOnlyLenientAcceptsTagString("a\0b", ForgivenTagItemCode.TAG_VALUE_NON_PRINTING_CHARACTER, "U+0000");
+    assertOnlyLenientAcceptsTagString("a\tb", ForgivenTagItemCode.TAG_VALUE_NON_PRINTING_CHARACTER, "U+0009");
+    assertOnlyLenientAcceptsTagString("a\u007fb", ForgivenTagItemCode.TAG_VALUE_NON_PRINTING_CHARACTER, "U+007F");
+    assertOnlyLenientAcceptsTagString("a\u0085b", ForgivenTagItemCode.TAG_VALUE_NON_PRINTING_CHARACTER, "U+0085");
+    assertOnlyLenientAcceptsTagString("a\uD800b", ForgivenTagItemCode.TAG_VALUE_NON_PRINTING_CHARACTER, "U+D800");
+    assertOnlyLenientAcceptsTagString("a\u2028b", ForgivenTagItemCode.TAG_VALUE_NON_PRINTING_CHARACTER, "U+2028");
+    assertOnlyLenientAcceptsTagString("a\u2029b", ForgivenTagItemCode.TAG_VALUE_NON_PRINTING_CHARACTER, "U+2029");
+    assertOnlyLenientAcceptsTagString("a\uE000b", ForgivenTagItemCode.TAG_VALUE_NON_PRINTING_CHARACTER, "U+E000");
+    assertOnlyLenientAcceptsTagString("a\uFDD0b", ForgivenTagItemCode.TAG_VALUE_NON_PRINTING_CHARACTER, "U+FDD0");
+    assertOnlyLenientAcceptsTagString("a\uFFFFb", ForgivenTagItemCode.TAG_VALUE_NON_PRINTING_CHARACTER, "U+FFFF");
+    assertOnlyLenientAcceptsTagString("v".repeat(256), ForgivenTagItemCode.TAG_VALUE_TOO_LONG, "256");
   }
 
   @Test
@@ -109,13 +111,19 @@ class TestPgnRoundTripEdgeCases {
     }
   }
 
-  private static void assertInvalidTagString(String value) {
+  // Strict import and archival export follow the PGN string rules. Lenient import keeps the value and reports it, and
+  // semantic export writes it back unchanged, so the lenient round trip loses nothing.
+  private static void assertOnlyLenientAcceptsTagString(String value, ForgivenTagItemCode code, String detail) {
     final String input = "[Label \"" + value + "\"]\n[Result \"*\"]\n\n*\n\n";
     assertEquals(StrictPgnParserValidationProblem.TAG_FORMAT_INVALID,
         StrictPgnParser.validateText(input).parserProblem());
-    assertEquals(LenientPgnParserValidationProblem.TAG_FORMAT_INVALID,
-        LenientPgnParser.validateText(input).parserProblem());
-    final PgnGame game = PgnCreate.createPgnGame(new Board(), Nulls.asList(new Tag("Label", value)));
+    final LenientPgnParserValidationResult lenient = LenientPgnParser.validateText(input);
+    assertTrue(lenient.isValid(), () -> "Expected lenient parse to succeed but got: " + lenient.message());
+    assertTrue(lenient.tagForgivenItems().contains(new ForgivenTagItem(code, "Label", detail)),
+        () -> "Expected " + code + " with detail " + detail + " in: " + lenient.tagForgivenItems());
+    final PgnGame game = LenientPgnParser.parseText(input);
+    assertEquals(value, TagUtility.readTagValue(game, "Label"));
+    assertEquals(game, LenientPgnParser.parseText(PgnCreate.toPgnString(game)));
     assertThrows(IllegalArgumentException.class, () -> PgnCreate.toPgnString(game, WriteMode.ARCHIVAL));
   }
 

@@ -217,7 +217,7 @@ PGN handling is structured around four separable jobs:
 | Job | What it does | Where it lives |
 |---|---|---|
 | **Parse** | Reads PGN text into a `PgnGame`. Preserves what the source contained — tag presence/absence, tag order, FEN without SetUp, missing Result, redundant initial-position FEN/SetUp, unknown tags. No fabrication into the model. | `StrictPgnParser`, `LenientPgnParser` |
-| **Validation reporting** | Surfaces tolerated deviations as typed diagnostics. SAN-level deviations on `sanForgivenItems`; tag-level deviations on `tagForgivenItems` (missing STR, Result tag absent, SetUp/FEN coupling, redundant initial FEN). | `LenientPgnParserValidationResult` |
+| **Validation reporting** | Surfaces tolerated deviations as typed diagnostics. SAN-level deviations on `sanForgivenItems`; tag-level deviations on `tagForgivenItems` (missing STR, Result tag absent, SetUp/FEN coupling, redundant initial FEN, tag values with non-printing characters or beyond 255 characters). | `LenientPgnParserValidationResult` |
 | **Semantic export** | Emits the parse model as-given. Same tags, same values, same order, same Result presence/absence, same termination-marker presence/absence — no invented content. Formatting trivia is normalised (single-space tag brackets, standard line wrapping). Movetext SAN is canonical (canonicalised at parse time). The default. | `WriteMode.SEMANTIC` |
 | **Archival export** | Produces a PGN spec §8.1.1-conformant artifact. The model is run through `PgnArchivalNormalization` first: missing STR entries filled with spec-defined placeholders (`?` for most, `????.??.??` for Date per §8.1.1.3, `*` for Result per §8.1.1.7), SetUp/FEN coupling enforced, redundant initial-position FEN/SetUp dropped, Result tag synthesised from the termination marker, tags sorted into canonical order. Opt-in. | `WriteMode.ARCHIVAL` |
 
@@ -230,9 +230,11 @@ PGN handling is structured around four separable jobs:
 Strict tag names contain only letters, digits and underscores and begin with a letter or digit. Lenient import and
 semantic export retain the wider symbol-style custom names. Archival export additionally requires an uppercase
 initial; it rejects unrepresentable custom names with `IllegalArgumentException` instead of renaming or dropping
-them. Both parsers require tag values of at most 255 decoded Unicode code points without control characters, line or
-paragraph separators, unpaired surrogates, private-use code points and noncharacters; format characters such as the
-zero-width joiners are ordinary text.
+them. The strict parser requires tag values of at most 255 decoded Unicode code points without control characters,
+line or paragraph separators, unpaired surrogates, private-use code points and noncharacters; format characters such
+as the zero-width joiners are ordinary text. The lenient parser keeps a value that breaks this rule as written and
+reports it on `tagForgivenItems`; semantic export echoes it and archival export rejects it with
+`IllegalArgumentException`, as it does for unrepresentable names.
 Archival export checks the tags it emits after deriving `FEN` and `SetUp` from the starting position. NAGs end at the first non-digit, so
 `$1e5` contains the annotation `$1` followed by the move `e5`. An entirely empty game model is represented by `{}`
 in semantic output.

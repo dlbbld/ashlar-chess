@@ -414,10 +414,12 @@ The default export mode is semantic. Archival export is opt-in via `WriteMode.AR
 Strict tag names use only letters, digits and underscores and begin with a letter or digit. Lenient import and
 semantic export preserve broader custom names. Archival output requires an uppercase initial and rejects
 unrepresentable custom names with `IllegalArgumentException` instead of renaming or discarding them. It derives
-`FEN` and `SetUp` from the starting position, omitting both for the initial position. Both parsers require tag
+`FEN` and `SetUp` from the starting position, omitting both for the initial position. Strict import requires tag
 values of at most 255 decoded Unicode code points without control characters, line or paragraph separators,
-unpaired surrogates, private-use code points and noncharacters; archival export applies this check to the tags it
-emits after normalization. Semantic export represents an empty game as `{}`.
+unpaired surrogates, private-use code points and noncharacters. Lenient import keeps a value that breaks this rule
+as written and reports it as a forgiven tag item, and semantic export writes it back unchanged. Archival export
+applies the strict check to the tags it emits after normalization and rejects such a value with
+`IllegalArgumentException`. Semantic export represents an empty game as `{}`.
 
 A numeric annotation ends at its first non-digit: `$1e5` preserves both the NAG and the following `e5` move.
 

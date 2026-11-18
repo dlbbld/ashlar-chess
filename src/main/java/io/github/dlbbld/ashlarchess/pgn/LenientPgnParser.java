@@ -30,7 +30,8 @@ import io.github.dlbbld.ashlarchess.san.SanValidationProblem;
  * Lenient PGN parser. Permissive inter-token rules: any whitespace separates tokens, move-number indicators are
  * consumed and ignored, termination marker is optional, space before suffixes is tolerated. Tag-list contents are
  * preserved as given (missing seven-tag-roster entries, FEN without SetUp, Result tag absent, redundant
- * initial-position FEN/SetUp) - no fabrication into the parse model. Tag-level deviations surface via
+ * initial-position FEN/SetUp, tag values with non-printing characters or beyond the length limit) - no fabrication
+ * into the parse model. Tag-level deviations surface via
  * {@code tagForgivenItems} on the validation result; archival output is opt-in via {@code WriteMode.ARCHIVAL} on
  * {@code PgnWriter}. Independent validation pipeline from {@link StrictPgnParser}.
  */
@@ -289,10 +290,6 @@ public final class LenientPgnParser {
     if (valueToken.type() != PgnTokenType.TAG_VALUE_STRING) {
       throw tagFormatError("A tag value enclosed in double quotes was expected.");
     }
-    final String valueProblem = TagUtility.tagValueProblem(valueToken.text());
-    if (valueProblem != null) {
-      throw tagFormatError(valueProblem);
-    }
     skipInlineWhitespace();
 
     final PgnToken close = tokenizer.next();
@@ -300,7 +297,25 @@ public final class LenientPgnParser {
       throw tagFormatError("The tag line must end with the right square bracket ].");
     }
 
+    recordTagValueItems(nameToken.text(), valueToken.text());
     return new Tag(nameToken.text(), valueToken.text());
+  }
+
+  /**
+   * A value that PGN strings do not allow is kept as written and reported, as real-world files carry tabs and long
+   * free-text values. Semantic export writes such a value back unchanged; archival export refuses it.
+   */
+  private void recordTagValueItems(String name, String value) {
+    final int nonPrinting = TagUtility.firstNonPrintingCodePoint(value);
+    if (nonPrinting >= 0) {
+      tagForgivenItemsAccumulator.add(new ForgivenTagItem(ForgivenTagItemCode.TAG_VALUE_NON_PRINTING_CHARACTER, name,
+          TagUtility.formatCodePoint(nonPrinting)));
+    }
+    final int length = TagUtility.tagValueLength(value);
+    if (length > TagUtility.MAX_TAG_VALUE_LENGTH) {
+      tagForgivenItemsAccumulator
+          .add(new ForgivenTagItem(ForgivenTagItemCode.TAG_VALUE_TOO_LONG, name, Nulls.valueOf(length)));
+    }
   }
 
   private static void validateTagNameCharacters(String name) {

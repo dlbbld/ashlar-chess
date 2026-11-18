@@ -47,4 +47,19 @@ public enum ForgivenTagItemCode {
    */
   REDUNDANT_FEN_AND_SETUP_FOR_INITIAL_POSITION,
 
+  /**
+   * A tag value contained a character that a PGN string does not allow: a control character such as a tab, a line or
+   * paragraph separator, an unpaired surrogate, a private-use code point or a noncharacter. Emitted once per tag; the
+   * tag name is on {@link ForgivenTagItem#tagName()} and the first such code point, written as {@code U+0009}, on
+   * {@link ForgivenTagItem#detail()}. Archival-mode export does not repair the value; it rejects the tag.
+   */
+  TAG_VALUE_NON_PRINTING_CHARACTER,
+
+  /**
+   * A tag value was longer than the 255 characters of PGN spec section 7. The tag name is on
+   * {@link ForgivenTagItem#tagName()} and the length in Unicode code points on {@link ForgivenTagItem#detail()}.
+   * Archival-mode export does not shorten the value; it rejects the tag.
+   */
+  TAG_VALUE_TOO_LONG,
+
 }

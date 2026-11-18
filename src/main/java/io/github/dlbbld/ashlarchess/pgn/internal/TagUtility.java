@@ -30,7 +30,7 @@ public final class TagUtility {
 
   /** PGN spec section 7: a symbol token is at most 255 characters long. */
   public static final int MAX_TAG_NAME_LENGTH = 255;
-  private static final int MAX_TAG_VALUE_LENGTH = 255;
+  public static final int MAX_TAG_VALUE_LENGTH = 255;
 
   @SuppressWarnings("null")
   public static final List<StandardTag> SEVEN_TAG_ROSTER_TAGS = Nulls.copyOfList(Arrays.asList(StandardTag.EVENT,
@@ -45,27 +45,47 @@ public final class TagUtility {
   }
 
   /**
+   * The problem the strict parser and archival export report for a tag value, or {@code null} when the value is valid.
    * PGN section 7 limits the decoded string data, excluding delimiters and escape syntax.
-   *
-   * <p>
-   * Format characters are not rejected. They belong to ordinary text - Persian names carry the zero-width non-joiner,
-   * emoji sequences the zero-width joiner - so rejecting them would reject legitimate names.
    */
   public static @Nullable String tagValueProblem(String value) {
-    int characters = 0;
+    final int nonPrinting = firstNonPrintingCodePoint(value);
+    if (nonPrinting >= 0) {
+      return "A tag value contains a non-printing character " + formatCodePoint(nonPrinting) + ".";
+    }
+    if (tagValueLength(value) > MAX_TAG_VALUE_LENGTH) {
+      return "A tag value may contain at most " + MAX_TAG_VALUE_LENGTH + " characters.";
+    }
+    return null;
+  }
+
+  /**
+   * The first code point of the value that a PGN string may not contain, or {@code -1} when there is none.
+   *
+   * <p>
+   * Format characters are not among them. They belong to ordinary text - Persian names carry the zero-width non-joiner,
+   * emoji sequences the zero-width joiner - so rejecting them would reject legitimate names.
+   */
+  public static int firstNonPrintingCodePoint(String value) {
     for (int i = 0; i < value.length();) {
       final int cp = value.codePointAt(i);
       final int type = Character.getType(cp);
       if (type == Character.CONTROL || type == Character.LINE_SEPARATOR || type == Character.PARAGRAPH_SEPARATOR
           || type == Character.SURROGATE || type == Character.PRIVATE_USE || PgnCharacters.isNoncharacter(cp)) {
-        return "A tag value contains a non-printing character " + String.format("U+%04X", cp) + ".";
-      }
-      if (++characters > MAX_TAG_VALUE_LENGTH) {
-        return "A tag value may contain at most " + MAX_TAG_VALUE_LENGTH + " characters.";
+        return cp;
       }
       i += Character.charCount(cp);
     }
-    return null;
+    return -1;
+  }
+
+  /** The length the limit of {@value #MAX_TAG_VALUE_LENGTH} applies to: decoded code points, not UTF-16 units. */
+  public static int tagValueLength(String value) {
+    return value.codePointCount(0, value.length());
+  }
+
+  public static String formatCodePoint(int codePoint) {
+    return Nulls.format("U+%04X", codePoint);
   }
 
   public static boolean hasEvent(List<Tag> tags) {
