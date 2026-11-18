@@ -30,10 +30,10 @@ import io.github.dlbbld.ashlarchess.san.SanValidationProblem;
  * Lenient PGN parser. Permissive inter-token rules: any whitespace separates tokens, move-number indicators are
  * consumed and ignored, termination marker is optional, space before suffixes is tolerated. Tag-list contents are
  * preserved as given (missing seven-tag-roster entries, FEN without SetUp, Result tag absent, redundant
- * initial-position FEN/SetUp, tag values with non-printing characters or beyond the length limit) - no fabrication
- * into the parse model. Tag-level deviations surface via
- * {@code tagForgivenItems} on the validation result; archival output is opt-in via {@code WriteMode.ARCHIVAL} on
- * {@code PgnWriter}. Independent validation pipeline from {@link StrictPgnParser}.
+ * initial-position FEN/SetUp, tag values with non-printing characters or beyond the length limit) - no fabrication into
+ * the parse model. Tag-level deviations surface via {@code tagForgivenItems} on the validation result; archival output
+ * is opt-in via {@code WriteMode.ARCHIVAL} on {@code PgnWriter}. Independent validation pipeline from
+ * {@link StrictPgnParser}.
  */
 public final class LenientPgnParser {
 

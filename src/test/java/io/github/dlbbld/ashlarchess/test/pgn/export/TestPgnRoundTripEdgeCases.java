@@ -7,9 +7,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.util.Objects;
+
 import org.junit.jupiter.api.Test;
 
-import io.github.dlbbld.ashlarchess.board.Board;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
 import io.github.dlbbld.ashlarchess.board.enums.Square;
 import io.github.dlbbld.ashlarchess.fen.internal.FenConstants;
@@ -23,7 +24,6 @@ import io.github.dlbbld.ashlarchess.pgn.PgnCreate;
 import io.github.dlbbld.ashlarchess.pgn.PgnGame;
 import io.github.dlbbld.ashlarchess.pgn.StrictPgnParser;
 import io.github.dlbbld.ashlarchess.pgn.StrictPgnParserValidationProblem;
-import io.github.dlbbld.ashlarchess.pgn.Tag;
 import io.github.dlbbld.ashlarchess.pgn.WriteMode;
 import io.github.dlbbld.ashlarchess.pgn.internal.TagUtility;
 
@@ -90,7 +90,7 @@ class TestPgnRoundTripEdgeCases {
     assertOnlyLenientAcceptsTagString("a\uE000b", ForgivenTagItemCode.TAG_VALUE_NON_PRINTING_CHARACTER, "U+E000");
     assertOnlyLenientAcceptsTagString("a\uFDD0b", ForgivenTagItemCode.TAG_VALUE_NON_PRINTING_CHARACTER, "U+FDD0");
     assertOnlyLenientAcceptsTagString("a\uFFFFb", ForgivenTagItemCode.TAG_VALUE_NON_PRINTING_CHARACTER, "U+FFFF");
-    assertOnlyLenientAcceptsTagString("v".repeat(256), ForgivenTagItemCode.TAG_VALUE_TOO_LONG, "256");
+    assertOnlyLenientAcceptsTagString(Objects.requireNonNull("v".repeat(256)), ForgivenTagItemCode.TAG_VALUE_TOO_LONG, "256");
   }
 
   @Test

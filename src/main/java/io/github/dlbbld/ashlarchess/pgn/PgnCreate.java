@@ -43,7 +43,7 @@ public final class PgnCreate {
 
   /**
    * @throws IllegalArgumentException in {@link WriteMode#ARCHIVAL} mode when a tag name or value cannot be represented
-   *         in archival PGN; see {@link WriteMode}
+   *                                  in archival PGN; see {@link WriteMode}
    */
   public static String toPgnString(PgnGame pgnGame, WriteMode writeMode) {
     return appendEmptyLine(ListUtility.toLineSeparatedString(toPgnLines(pgnGame, writeMode)));
@@ -55,7 +55,7 @@ public final class PgnCreate {
 
   /**
    * @throws IllegalArgumentException in {@link WriteMode#ARCHIVAL} mode when a tag name or value cannot be represented
-   *         in archival PGN; see {@link WriteMode}
+   *                                  in archival PGN; see {@link WriteMode}
    */
   public static List<String> toPgnLines(PgnGame pgnGame, WriteMode writeMode) {
     final PgnGame effective = writeMode == WriteMode.ARCHIVAL ? PgnArchivalNormalization.apply(pgnGame) : pgnGame;

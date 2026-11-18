@@ -14,8 +14,8 @@ public final class PgnCharacters {
    *
    * <p>
    * These are rejected in place of every unassigned code point. The unassigned set shrinks with each Unicode version,
-   * so a character newer than the tables of the running JDK - an emoji added after Java 17 was released, say - would
-   * be valid on one Java version and invalid on another.
+   * so a character newer than the tables of the running JDK - an emoji added after Java 17 was released, say - would be
+   * valid on one Java version and invalid on another.
    */
   public static boolean isNoncharacter(int codePoint) {
     return codePoint >= 0xFDD0 && codePoint <= 0xFDEF || (codePoint & 0xFFFE) == 0xFFFE;
