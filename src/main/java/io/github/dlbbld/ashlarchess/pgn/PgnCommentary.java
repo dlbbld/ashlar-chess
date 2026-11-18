@@ -3,6 +3,8 @@
 
 package io.github.dlbbld.ashlarchess.pgn;
 
+import io.github.dlbbld.ashlarchess.pgn.internal.PgnCharacters;
+
 /**
  * Value object for PGN commentary content. Construction validates the contract - see specification.md (Commentary
  * contract).
@@ -28,8 +30,8 @@ public record PgnCommentary(String value) {
       // LF at the parser input, so the model invariant is "no CR ever".
       if (cp != '\t' && cp != '\n') {
         final int type = Character.getType(cp);
-        if (type == Character.CONTROL || type == Character.SURROGATE || type == Character.UNASSIGNED
-            || type == Character.PRIVATE_USE) {
+        if (type == Character.CONTROL || type == Character.SURROGATE || type == Character.PRIVATE_USE
+            || PgnCharacters.isNoncharacter(cp)) {
           throw new PgnCommentaryValidationException(formatTypeProblem(value, i, cp, type));
         }
       }
@@ -47,7 +49,7 @@ public record PgnCommentary(String value) {
     final String typeLabel = switch (type) {
       case Character.CONTROL -> "a control character";
       case Character.SURROGATE -> "a lone surrogate code point";
-      case Character.UNASSIGNED -> "an unassigned code point";
+      case Character.UNASSIGNED -> "a noncharacter code point";
       case Character.PRIVATE_USE -> "a private-use code point";
       default -> "an invalid character";
     };

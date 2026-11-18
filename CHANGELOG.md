@@ -40,9 +40,15 @@ is removed or changed.
   `INVALID_WHITE_TOO_MANY_PROMOTIONS` and `INVALID_BLACK_TOO_MANY_PROMOTIONS`, and
   `ForgivenFenItemCode.SPLIT_EMPTY_SQUARE_RUN` and `COUNTER_LEADING_ZEROS`. Exhaustive switches over these enums
   need the new cases.
-- Both PGN parsers reject nonprinting tag values and values longer than 255 decoded Unicode code points. Archival
-  export validates the tags it emits after normalizing `FEN` and `SetUp` from the starting position. Quoted escapes,
-  Unicode names and commentary retain their supported round-trip behavior.
+- Both PGN parsers reject tag values that contain control characters, line or paragraph separators, unpaired
+  surrogates, private-use code points or noncharacters, and values longer than 255 decoded Unicode code points.
+  Format characters such as the zero-width joiners stay valid. Archival export validates the tags it emits after
+  normalizing `FEN` and `SetUp` from the starting position. Quoted escapes, Unicode names and commentary retain
+  their supported round-trip behavior.
+- Commentary accepts code points that the Unicode tables of the running JDK do not know yet; of the unassigned code
+  points only the permanently reserved noncharacters are still rejected. A comment with an emoji newer than the
+  Unicode version of Java 17 was rejected there and accepted on Java 21; it is now valid on every supported Java
+  version.
 
 ### Validation
 

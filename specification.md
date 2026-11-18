@@ -230,8 +230,10 @@ PGN handling is structured around four separable jobs:
 Strict tag names contain only letters, digits and underscores and begin with a letter or digit. Lenient import and
 semantic export retain the wider symbol-style custom names. Archival export additionally requires an uppercase
 initial; it rejects unrepresentable custom names with `IllegalArgumentException` instead of renaming or dropping
-them. Both parsers require printing tag values of at most 255 decoded Unicode code points. Archival export checks
-the tags it emits after deriving `FEN` and `SetUp` from the starting position. NAGs end at the first non-digit, so
+them. Both parsers require tag values of at most 255 decoded Unicode code points without control characters, line or
+paragraph separators, unpaired surrogates, private-use code points and noncharacters; format characters such as the
+zero-width joiners are ordinary text.
+Archival export checks the tags it emits after deriving `FEN` and `SetUp` from the starting position. NAGs end at the first non-digit, so
 `$1e5` contains the annotation `$1` followed by the move `e5`. An entirely empty game model is represented by `{}`
 in semantic output.
 
@@ -332,7 +334,7 @@ The PGN specification's strict export format implies that brace commentary shoul
 
 ashlar-chess takes the more permissive (and more useful) reading: **`\t` and `\n` inside `{...}` commentary are content**, preserved verbatim through `parse → export → parse`. The rationale is round-trip fidelity for real-world PGN, where comments often carry multi-line annotation. This matches python-chess.
 
-The library still rejects malformed Unicode (lone surrogates, unassigned code points) and other control characters; the deviation is specifically about tab and LF. CR / CRLF are normalised to LF on input, so the model never carries CR directly.
+The library still rejects malformed Unicode (lone surrogates, noncharacters), private-use code points and other control characters; the deviation is specifically about tab and LF. Code points that are merely unassigned in the Unicode version of the running JDK are accepted, so the verdict does not depend on the Java version. CR / CRLF are normalised to LF on input, so the model never carries CR directly.
 
 ### 5.2 Pre-game commentary
 

@@ -83,7 +83,30 @@ class TestPgnRoundTripEdgeCases {
     assertInvalidTagString("a\u007fb");
     assertInvalidTagString("a\u0085b");
     assertInvalidTagString("a\uD800b");
+    assertInvalidTagString("a\u2028b");
+    assertInvalidTagString("a\u2029b");
+    assertInvalidTagString("a\uE000b");
+    assertInvalidTagString("a\uFDD0b");
+    assertInvalidTagString("a\uFFFFb");
     assertInvalidTagString("v".repeat(255) + "v");
+  }
+
+  @Test
+  void tagValuesKeepFormatCharactersAndCodePointsNewerThanTheJdk() {
+    // Regression: these were rejected as non-printing. The zero-width non-joiner is part of Persian spelling and the
+    // zero-width joiner of emoji sequences. U+1FAE8 is assigned since Unicode 15, so Java 17 still reports it as
+    // unassigned, and U+0378 is unassigned in every Unicode version so far: accepting both keeps the verdict the same
+    // on every Java version.
+    for (final String value : Nulls.listOf("\u0639\u0644\u06CC\u200C\u0631\u0636\u0627",
+        "\uD83D\uDC68\u200D\uD83D\uDC69", "a\u00ADb", "a\u200Bb", "a\u200Fb", "a\uFEFFb",
+        "a" + Character.toString(0x1FAE8) + "b", "a" + Character.toString(0x0378) + "b")) {
+      final String input = "[Label \"" + value + "\"]\n[Result \"*\"]\n\n*\n\n";
+      final PgnGame game = StrictPgnParser.parseText(input);
+      assertEquals(value, TagUtility.readTagValue(game, "Label"));
+      assertEquals(game, LenientPgnParser.parseText(input));
+      final String archive = PgnCreate.toPgnString(game, WriteMode.ARCHIVAL);
+      assertEquals(value, TagUtility.readTagValue(StrictPgnParser.parseText(archive), "Label"));
+    }
   }
 
   private static void assertInvalidTagString(String value) {

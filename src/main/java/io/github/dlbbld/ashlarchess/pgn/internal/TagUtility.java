@@ -44,15 +44,20 @@ public final class TagUtility {
     return isTagNameInitialCharacter(c) || c == '_';
   }
 
-  /** PGN section 7 limits the decoded string data, excluding delimiters and escape syntax. */
+  /**
+   * PGN section 7 limits the decoded string data, excluding delimiters and escape syntax.
+   *
+   * <p>
+   * Format characters are not rejected. They belong to ordinary text - Persian names carry the zero-width non-joiner,
+   * emoji sequences the zero-width joiner - so rejecting them would reject legitimate names.
+   */
   public static @Nullable String tagValueProblem(String value) {
     int characters = 0;
     for (int i = 0; i < value.length();) {
       final int cp = value.codePointAt(i);
       final int type = Character.getType(cp);
-      if (type == Character.CONTROL || type == Character.FORMAT || type == Character.LINE_SEPARATOR
-          || type == Character.PARAGRAPH_SEPARATOR || type == Character.SURROGATE || type == Character.UNASSIGNED
-          || type == Character.PRIVATE_USE) {
+      if (type == Character.CONTROL || type == Character.LINE_SEPARATOR || type == Character.PARAGRAPH_SEPARATOR
+          || type == Character.SURROGATE || type == Character.PRIVATE_USE || PgnCharacters.isNoncharacter(cp)) {
         return "A tag value contains a non-printing character " + String.format("U+%04X", cp) + ".";
       }
       if (++characters > MAX_TAG_VALUE_LENGTH) {
