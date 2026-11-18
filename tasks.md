@@ -11,7 +11,7 @@ Live planning only: current release work, backlog, and obsolete decisions. Shipp
 
 ---
 
-## 22.1.1 - Sound endgame verdicts and reliable notation
+## 22.2.0 - Sound endgame verdicts and reliable notation
 
 Corrective changes and regression tests are complete, including the independent follow-up review.
 Release validation and publication follow the runbook in `workflows.md`. Maven Central publication requires the

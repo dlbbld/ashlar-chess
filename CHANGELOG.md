@@ -2,7 +2,7 @@
 
 Releases from 3.3 onward. Earlier history is in git tags only.
 
-## [22.1.1] - Sound endgame verdicts and reliable notation - 2026-11-17
+## [22.2.0] - Sound endgame verdicts and reliable notation - 2026-11-18
 
 Corrects a false definite unwinnability verdict on legally reached checkmates and prevents notation recovery from
 changing the selected piece or losing a mainline move. FEN validation now shares the promotion allowance across
