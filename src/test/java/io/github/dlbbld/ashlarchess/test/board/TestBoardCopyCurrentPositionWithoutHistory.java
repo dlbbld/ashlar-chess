@@ -29,6 +29,20 @@ class TestBoardCopyCurrentPositionWithoutHistory {
     checkFromFen("4k3/8/8/3pP3/8/8/8/4K3 w - d6 0 2");
   }
 
+  @SuppressWarnings("static-method")
+  @Test
+  void testFenOfCopyCarriesTheResetHalfMoveClock() {
+    // Regression: the copy kept the source FEN text, so getFen() still showed the old clock until a move was played.
+    final Board fromFen = Board.fromFenStrict("r3k2r/8/8/8/8/8/8/R3K2R w KQkq - 37 42");
+    assertEquals("r3k2r/8/8/8/8/8/8/R3K2R w KQkq - 0 42", fromFen.copyCurrentPositionWithoutHistory().getFen());
+
+    final Board played = new Board();
+    played.movesStrict("Nf3", "Nf6", "Ng1", "Ng8");
+    assertEquals("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 4 3", played.getFen());
+    assertEquals("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 3",
+        played.copyCurrentPositionWithoutHistory().getFen());
+  }
+
   private static void checkAfterMoves(String... sanMoves) {
     final Board source = new Board();
     source.movesStrict(sanMoves);
@@ -59,6 +73,7 @@ class TestBoardCopyCurrentPositionWithoutHistory {
 
     // halfmove clock reset, everything else preserved
     assertEquals(0, actual.getHalfMoveClock());
+    assertEquals(actual.getFen(), Board.fromFenStrict(actual.getFen()).getFen());
     assertEquals(StaticPositionBridge.toStaticPosition(source.getBitboardPosition()),
         StaticPositionBridge.toStaticPosition(actual.getBitboardPosition()));
     assertEquals(source.getSideToMove(), actual.getSideToMove());

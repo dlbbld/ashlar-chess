@@ -32,47 +32,25 @@ final class StrictFileStructurePreScan {
           "The PGN cannot start with an empty line.");
     }
 
-    final int length = source.length();
-    final boolean endsOnNewline = endsOnNewline(source);
-    if (!endsOnNewline) {
+    if (!source.endsWith("\n")) {
       throw error(StrictPgnParserValidationProblem.FILE_EMPTY_LINE_MUST_END_WITH,
           "The PGN must end with an empty line.");
     }
 
-    // Count blank lines (a line with no content chars) and detect adjacency in one forward walk.
+    // A newline inside a brace comment belongs to the token, even when it begins a physical line.
+    final PgnTokenizer tokenizer = new PgnTokenizer(new PgnCharStream(source));
     int blankCount = 0;
     int previousBlankLineNumber = -1;
-    int currentLineNumber = 1;
-    int currentLineContentChars = 0;
     boolean adjacentDetected = false;
-
-    for (int i = 0; i < length; i++) {
-      final char c = source.charAt(i);
-      if (c == '\r') {
-        if (i + 1 < length && source.charAt(i + 1) == '\n') {
-          i++;
-        }
-        if (currentLineContentChars == 0) {
-          blankCount++;
-          if (previousBlankLineNumber != -1 && currentLineNumber == previousBlankLineNumber + 1) {
-            adjacentDetected = true;
-          }
-          previousBlankLineNumber = currentLineNumber;
-        }
-        currentLineNumber++;
-        currentLineContentChars = 0;
-      } else if (c == '\n') {
-        if (currentLineContentChars == 0) {
-          blankCount++;
-          if (previousBlankLineNumber != -1 && currentLineNumber == previousBlankLineNumber + 1) {
-            adjacentDetected = true;
-          }
-          previousBlankLineNumber = currentLineNumber;
-        }
-        currentLineNumber++;
-        currentLineContentChars = 0;
-      } else {
-        currentLineContentChars++;
+    for (PgnToken token = tokenizer.next(); token.type() != PgnTokenType.EOF; token = tokenizer.next()) {
+      if (token.type() == PgnTokenType.BRACE_COMMENT_UNCLOSED) {
+        // The missing delimiter absorbs the trailer. Let the parser diagnose it in context.
+        return;
+      }
+      if (token.type() == PgnTokenType.NEWLINE && token.column() == 1) {
+        blankCount++;
+        adjacentDetected |= token.line() == previousBlankLineNumber + 1;
+        previousBlankLineNumber = token.line();
       }
     }
 
@@ -84,11 +62,6 @@ final class StrictFileStructurePreScan {
       throw error(StrictPgnParserValidationProblem.FILE_EMPTY_LINE_NOT_CONSECUTIVE,
           "The PGN cannot have two consecutive empty lines.");
     }
-  }
-
-  private static boolean endsOnNewline(String source) {
-    final char last = source.charAt(source.length() - 1);
-    return last == '\n' || last == '\r';
   }
 
   private static StrictPgnParserValidationException error(StrictPgnParserValidationProblem problem, String message) {

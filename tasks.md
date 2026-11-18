@@ -11,6 +11,14 @@ Live planning only: current release work, backlog, and obsolete decisions. Shipp
 
 ---
 
+## 22.2.0 - Sound endgame verdicts and reliable notation
+
+Corrective changes and regression tests are complete, including the independent follow-up review.
+Release validation and publication follow the runbook in `workflows.md`. Maven Central publication requires the
+release signing key and Central credentials in the selected release environment.
+
+---
+
 ## 22.1.0 — Magic bitboards and faster adjudication
 
 Published 2026-10-07; see [CHANGELOG.md](CHANGELOG.md) and the

@@ -49,9 +49,26 @@ final class PgnArchivalNormalization {
     rewriteFenAndSetUpTags(tags, startFen);
     addResultTagIfMissing(tags, marker);
     fillMissingSevenTagRoster(tags);
+    for (final Tag tag : tags) {
+      validateArchivalTag(tag);
+    }
     Collections.sort(tags);
 
     return new PgnGame(Nulls.copyOfList(tags), startFen, input.pregameCommentary(), input.moves(), marker);
+  }
+
+  private static void validateArchivalTag(Tag tag) {
+    final String name = tag.name();
+    if (name.isEmpty() || name.charAt(0) < 'A' || name.charAt(0) > 'Z' || name.length() > TagUtility.MAX_TAG_NAME_LENGTH
+        || !name.chars().allMatch(TagUtility::isTagNameCharacter)) {
+      throw new IllegalArgumentException("Cannot archive tag \"" + name + "\". PGN archival tag names must start with"
+          + " an uppercase ASCII letter and contain at most " + TagUtility.MAX_TAG_NAME_LENGTH
+          + " ASCII letters, digits or underscores.");
+    }
+    final String valueProblem = TagUtility.tagValueProblem(tag.value());
+    if (valueProblem != null) {
+      throw new IllegalArgumentException("Cannot archive tag \"" + name + "\". " + valueProblem);
+    }
   }
 
   /**

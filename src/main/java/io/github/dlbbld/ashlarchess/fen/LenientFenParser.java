@@ -7,6 +7,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import io.github.dlbbld.ashlarchess.exceptions.ProgrammingMistakeException;
 import io.github.dlbbld.ashlarchess.fen.model.Fen;
@@ -15,9 +17,9 @@ import io.github.dlbbld.ashlarchess.internal.Nulls;
 
 /**
  * Lenient FEN parser. Applies a purely syntactic-tolerance normalisation pass (whitespace, casing, missing trailing
- * counters, non-canonical castling order, non-ASCII dashes, trailing garbage) then delegates to {@link StrictFenParser}
- * for the structural and rule-consistency checks. Every transformation applied during normalisation surfaces as a
- * {@link ForgivenFenItem} on the result.
+ * counters, split empty-square runs, leading zeros in counters, non-canonical castling order, non-ASCII dashes,
+ * trailing garbage) then delegates to {@link StrictFenParser} for the structural and rule-consistency checks. Every
+ * transformation applied during normalisation surfaces as a {@link ForgivenFenItem} on the result.
  *
  * <p>
  * The lenient layer does <b>not</b> weaken any of the strict semantic invariants — a FEN with a missing king, a pawn on
@@ -37,6 +39,8 @@ import io.github.dlbbld.ashlarchess.internal.Nulls;
  */
 @SuppressWarnings("null")
 public final class LenientFenParser {
+
+  private static final Pattern SPLIT_EMPTY_SQUARE_RUN = Pattern.compile("[1-8]{2,}");
 
   private LenientFenParser() {
   }
@@ -222,11 +226,36 @@ public final class LenientFenParser {
     }
 
     // 8. Field-level normalisation.
+    normalisePiecePlacement(fields, accumulator);
     normaliseSideToMove(fields, accumulator);
     normaliseCastlingRights(fields, accumulator);
     normaliseEnPassantTargetSquare(fields, accumulator);
+    normaliseCounterLeadingZeros(fields, HALF_MOVE_CLOCK_FIELD_INDEX, accumulator);
+    normaliseCounterLeadingZeros(fields, FULL_MOVE_NUMBER_FIELD_INDEX, accumulator);
 
     return String.join(" ", fields);
+  }
+
+  private static void normalisePiecePlacement(List<String> fields, List<ForgivenFenItem> accumulator) {
+    final String field = Nulls.get(fields, 0);
+    final Matcher runs = SPLIT_EMPTY_SQUARE_RUN.matcher(field);
+    if (!runs.find()) {
+      return;
+    }
+    final StringBuilder placement = new StringBuilder(field.length());
+    do {
+      int squares = 0;
+      for (int i = runs.start(); i < runs.end() && squares <= 8; i++) {
+        squares += field.charAt(i) - '0';
+      }
+      if (squares <= 8) {
+        final String canonical = Integer.toString(squares);
+        runs.appendReplacement(placement, canonical);
+        accumulator.add(new ForgivenFenItem(ForgivenFenItemCode.SPLIT_EMPTY_SQUARE_RUN, runs.group(), canonical));
+      }
+    } while (runs.find());
+    runs.appendTail(placement);
+    fields.set(0, Nulls.toString(placement));
   }
 
   private static void normaliseSideToMove(List<String> fields, List<ForgivenFenItem> accumulator) {
@@ -322,6 +351,32 @@ public final class LenientFenParser {
         accumulator.add(new ForgivenFenItem(ForgivenFenItemCode.EN_PASSANT_UPPERCASE, original, canonical));
       }
     }
+  }
+
+  private static final int HALF_MOVE_CLOCK_FIELD_INDEX = 4;
+  private static final int FULL_MOVE_NUMBER_FIELD_INDEX = 5;
+
+  // Only an all-digit counter is rewritten. A sign or a digit of another script is not a leading-zero deviation and is
+  // left for the strict parser to reject.
+  private static void normaliseCounterLeadingZeros(List<String> fields, int fieldIndex,
+      List<ForgivenFenItem> accumulator) {
+    final String field = Nulls.get(fields, fieldIndex);
+    if (field.length() < 2 || field.charAt(0) != '0') {
+      return;
+    }
+    int firstKeptIndex = 0;
+    for (int i = 0; i < field.length(); i++) {
+      final char c = field.charAt(i);
+      if (c < '0' || c > '9') {
+        return;
+      }
+      if (c == '0' && firstKeptIndex == i && i < field.length() - 1) {
+        firstKeptIndex = i + 1;
+      }
+    }
+    final String canonical = Nulls.substring(field, firstKeptIndex);
+    fields.set(fieldIndex, canonical);
+    accumulator.add(new ForgivenFenItem(ForgivenFenItemCode.COUNTER_LEADING_ZEROS, field, canonical));
   }
 
   /**

@@ -5,11 +5,14 @@ package io.github.dlbbld.ashlarchess.pgn.internal;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.Nullable;
 
 import io.github.dlbbld.ashlarchess.exceptions.ProgrammingMistakeException;
 import io.github.dlbbld.ashlarchess.internal.ListUtility;
@@ -25,9 +28,65 @@ public final class TagUtility {
 
   private static final String TAG_PATTERN = "\\[([\\w]+) \"([^\"]*)\"\\]";
 
+  /** PGN spec section 7: a symbol token is at most 255 characters long. */
+  public static final int MAX_TAG_NAME_LENGTH = 255;
+  public static final int MAX_TAG_VALUE_LENGTH = 255;
+
   @SuppressWarnings("null")
   public static final List<StandardTag> SEVEN_TAG_ROSTER_TAGS = Nulls.copyOfList(Arrays.asList(StandardTag.EVENT,
       StandardTag.SITE, StandardTag.DATE, StandardTag.ROUND, StandardTag.WHITE, StandardTag.BLACK, StandardTag.RESULT));
+
+  public static boolean isTagNameInitialCharacter(int c) {
+    return c >= '0' && c <= '9' || c >= 'A' && c <= 'Z' || c >= 'a' && c <= 'z';
+  }
+
+  public static boolean isTagNameCharacter(int c) {
+    return isTagNameInitialCharacter(c) || c == '_';
+  }
+
+  /**
+   * The problem the strict parser and archival export report for a tag value, or {@code null} when the value is valid.
+   * PGN section 7 limits the decoded string data, excluding delimiters and escape syntax.
+   */
+  public static @Nullable String tagValueProblem(String value) {
+    final int nonPrinting = firstNonPrintingCodePoint(value);
+    if (nonPrinting >= 0) {
+      return "A tag value contains a non-printing character " + formatCodePoint(nonPrinting) + ".";
+    }
+    if (tagValueLength(value) > MAX_TAG_VALUE_LENGTH) {
+      return "A tag value may contain at most " + MAX_TAG_VALUE_LENGTH + " characters.";
+    }
+    return null;
+  }
+
+  /**
+   * The first code point of the value that a PGN string may not contain, or {@code -1} when there is none.
+   *
+   * <p>
+   * Format characters are not among them. They belong to ordinary text - Persian names carry the zero-width non-joiner,
+   * emoji sequences the zero-width joiner - so rejecting them would reject legitimate names.
+   */
+  public static int firstNonPrintingCodePoint(String value) {
+    for (int i = 0; i < value.length();) {
+      final int cp = value.codePointAt(i);
+      final int type = Character.getType(cp);
+      if (type == Character.CONTROL || type == Character.LINE_SEPARATOR || type == Character.PARAGRAPH_SEPARATOR
+          || type == Character.SURROGATE || type == Character.PRIVATE_USE || PgnCharacters.isNoncharacter(cp)) {
+        return cp;
+      }
+      i += Character.charCount(cp);
+    }
+    return -1;
+  }
+
+  /** The length the limit of {@value #MAX_TAG_VALUE_LENGTH} applies to: decoded code points, not UTF-16 units. */
+  public static int tagValueLength(String value) {
+    return value.codePointCount(0, value.length());
+  }
+
+  public static String formatCodePoint(int codePoint) {
+    return Nulls.format("U+%04X", codePoint);
+  }
 
   public static boolean hasEvent(List<Tag> tags) {
     return existsTagName(tags, StandardTag.EVENT);
@@ -123,6 +182,29 @@ public final class TagUtility {
 
   public static boolean existsTag(List<Tag> tags, StandardTag tag) {
     return existsTagName(tags, tag.getName());
+  }
+
+  /**
+   * Returns the name of the first tag whose name occurs more than once, or {@code null} when all names are unique. One
+   * pass over the names rather than a comparison of every pair, which is quadratic in the number of tags.
+   */
+  public static @Nullable String findFirstRepeatedTagName(List<Tag> tags) {
+    final Set<String> names = new HashSet<>();
+    final Set<String> repeatedNames = new HashSet<>();
+    for (final Tag tag : tags) {
+      if (!names.add(tag.name())) {
+        repeatedNames.add(tag.name());
+      }
+    }
+    if (repeatedNames.isEmpty()) {
+      return null;
+    }
+    for (final Tag tag : tags) {
+      if (repeatedNames.contains(tag.name())) {
+        return tag.name();
+      }
+    }
+    throw new ProgrammingMistakeException("A repeated tag name belongs to one of the tags");
   }
 
   private static boolean existsTagName(List<Tag> tags, StandardTag standardTag) {

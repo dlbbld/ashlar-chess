@@ -22,7 +22,7 @@ import io.github.dlbbld.ashlarchess.pgn.PgnCommentaryValidationException;
  * <ul>
  * <li><b>Grammar:</b> no {@code {} or {@code }} (would corrupt the brace grammar on export).</li>
  * <li><b>Unicode categories:</b> no control characters except {@code \t} / {@code \n} / {@code \r}, no surrogates, no
- * unassigned code points, no private-use code points.</li>
+ * noncharacters, no private-use code points.</li>
  * </ul>
  * Everything else is permitted — letters, marks, numbers, punctuation, symbols, separators, format characters
  * (zero-width joiner etc.), and supplementary characters above U+FFFF (emoji, rare scripts).
@@ -211,7 +211,7 @@ class TestPgnCommentary {
   }
 
   // -------------------------------------------------------------------------------------------------
-  // Constructor — rejects malformed Unicode (lone surrogates, unassigned, private-use)
+  // Constructor — rejects malformed Unicode (lone surrogates, noncharacters, private-use)
   // -------------------------------------------------------------------------------------------------
 
   @SuppressWarnings("static-method")
@@ -243,9 +243,28 @@ class TestPgnCommentary {
 
   @SuppressWarnings("static-method")
   @Test
-  void unassignedCodePointIsRejected() {
+  void noncharacterIsRejected() {
     // U+FDD0 — first of the noncharacter range U+FDD0..U+FDEF (permanently unassigned, Cn category).
     assertThrows(PgnCommentaryValidationException.class, () -> new PgnCommentary("a﷐b"));
+  }
+
+  @SuppressWarnings("static-method")
+  @Test
+  void lastCodePointsOfAPlaneAreRejected() {
+    assertThrows(PgnCommentaryValidationException.class, () -> new PgnCommentary("a" + Character.toString(0xFFFE)));
+    assertThrows(PgnCommentaryValidationException.class, () -> new PgnCommentary("a" + Character.toString(0x1FFFF)));
+  }
+
+  @SuppressWarnings("static-method")
+  @Test
+  void codePointsNewerThanTheJdkAreAccepted() {
+    // Regression: every unassigned code point was rejected, so a comment with an emoji newer than the Unicode tables
+    // of the running JDK failed on Java 17 and passed on Java 21. U+1FAE8 is assigned since Unicode 15 and U+0378 is
+    // unassigned in every Unicode version so far; both must be accepted whatever the Java version.
+    final String emoji = "wow " + Character.toString(0x1FAE8);
+    org.junit.jupiter.api.Assertions.assertEquals(emoji, new PgnCommentary(emoji).value());
+    final String reserved = "a" + Character.toString(0x0378) + "b";
+    org.junit.jupiter.api.Assertions.assertEquals(reserved, new PgnCommentary(reserved).value());
   }
 
   // -------------------------------------------------------------------------------------------------

@@ -209,12 +209,13 @@ public final class Board {
 
   /**
    * Creates a new board whose initial position is this board's current position, without carrying over the move
-   * history.
-   *
+   * history. The halfmove clock is reset to zero, also in the FEN of the new board.
    */
   public Board copyCurrentPositionWithoutHistory() {
-    final Fen currentPosition = new Fen(getFen(), getBitboardPosition(), getSideToMove(), getCastlingRightWhite(),
-        getCastlingRightBlack(), getEnPassantCaptureTargetSquare(), 0, getFullMoveNumber());
+    final int halfMoveClock = 0;
+    final Fen currentPosition = new Fen(FenBoard.toFen(this, halfMoveClock), getBitboardPosition(), getSideToMove(),
+        getCastlingRightWhite(), getCastlingRightBlack(), getEnPassantCaptureTargetSquare(), halfMoveClock,
+        getFullMoveNumber());
     return new Board(currentPosition);
   }
 
@@ -232,11 +233,11 @@ public final class Board {
 
   /**
    * Constructs a {@code Board} from a FEN string via {@link LenientFenParser}. The lenient layer applies a
-   * syntactic-tolerance pass (whitespace, casing, missing halfmove clock and fullmove number, non-canonical castling
-   * order, non-ASCII dashes, trailing garbage) before delegating to {@link StrictFenParser}. Strict semantic invariants
-   * are unchanged: a FEN with a missing king, a pawn on rank 1, an impossible double-check, or castling rights that
-   * contradict the piece placement still fails. Callers who need to see the list of tolerated deviations should invoke
-   * {@link LenientFenParser#validate(String)} directly.
+   * syntactic-tolerance pass (whitespace, casing, missing halfmove clock and fullmove number, leading zeros in those
+   * counters, split empty-square runs, non-canonical castling order, non-ASCII dashes, trailing garbage) before
+   * delegating to {@link StrictFenParser}. Strict semantic invariants are unchanged: a FEN with a missing king, a pawn
+   * on rank 1, an impossible double-check, or castling rights that contradict the piece placement still fails. Callers
+   * who need to see the list of tolerated deviations should invoke {@link LenientFenParser#validate(String)} directly.
    *
    * @throws io.github.dlbbld.ashlarchess.fen.LenientFenParserValidationException when the input cannot be recovered or
    *                                                                              fails the strict semantic checks

@@ -32,7 +32,6 @@ import io.github.dlbbld.ashlarchess.san.SanValidationProblem;
  */
 public final class StrictPgnParser {
 
-  private static final int MAX_TAG_NAME_LENGTH = 255;
   private static final int SAN_MIN_LENGTH = 2;
   private static final int SAN_MAX_LENGTH = 7;
   private static final String AS_EXPECTED_SUFFIX = "\" as expected.";
@@ -205,7 +204,7 @@ public final class StrictPgnParser {
     validateTagNameLength(tagName);
 
     final PgnToken afterName = tokenizer.peek();
-    if (afterName.type() != PgnTokenType.SPACES || afterName.text().length() != 1) {
+    if (afterName.type() != PgnTokenType.SPACES || !" ".equals(afterName.text())) {
       throw tagFormatError(StrictPgnParserValidationProblem.TAG_FORMAT_INVALID,
           "A single space is required between the tag name and the tag value.");
     }
@@ -227,6 +226,10 @@ public final class StrictPgnParser {
       throw tagFormatError(StrictPgnParserValidationProblem.TAG_FORMAT_INVALID,
           "The tag value must be enclosed in double quotes.");
     }
+    final String valueProblem = TagUtility.tagValueProblem(valueToken.text());
+    if (valueProblem != null) {
+      throw tagFormatError(StrictPgnParserValidationProblem.TAG_FORMAT_INVALID, valueProblem);
+    }
 
     final PgnToken close = tokenizer.next();
     if (close.type() != PgnTokenType.TAG_BRACKET_CLOSE) {
@@ -238,7 +241,7 @@ public final class StrictPgnParser {
   }
 
   private static void validateTagNameFirstCharacter(String name) {
-    if (name.isEmpty() || !isAsciiLetterOrDigit(name.charAt(0))) {
+    if (name.isEmpty() || !TagUtility.isTagNameInitialCharacter(name.charAt(0))) {
       throw tagFormatError(StrictPgnParserValidationProblem.TAG_NAME_FIRST_CHARACTER,
           "The first character in the tag name must be one of A-Z, a-z or 0-9.");
     }
@@ -247,7 +250,7 @@ public final class StrictPgnParser {
   private static void validateTagNameCharacters(String name) {
     for (int i = 0; i < name.length(); i++) {
       final char c = name.charAt(i);
-      if (!isAsciiLetterOrDigit(c) && c != '_' && c != '+' && c != '#' && c != '=' && c != ':' && c != '-') {
+      if (!TagUtility.isTagNameCharacter(c)) {
         throw tagFormatError(StrictPgnParserValidationProblem.TAG_FORMAT_INVALID,
             "The tag name contains an invalid character \"" + c + "\".");
       }
@@ -255,22 +258,19 @@ public final class StrictPgnParser {
   }
 
   private static void validateTagNameLength(String name) {
-    if (name.length() > MAX_TAG_NAME_LENGTH) {
+    if (name.length() > TagUtility.MAX_TAG_NAME_LENGTH) {
       throw tagFormatError(StrictPgnParserValidationProblem.TAG_NAME_EXCEEDS_MAXIMUM_LENGTH,
           "With " + name.length() + " characters, the tag name exceeds the allowed maximum length of "
-              + MAX_TAG_NAME_LENGTH + " characters per the PGN specification.");
+              + TagUtility.MAX_TAG_NAME_LENGTH + " characters per the PGN specification.");
     }
   }
 
   private static void validateUniqueTagNames(List<Tag> tags) {
-    for (int i = 0; i < tags.size(); i++) {
-      for (int j = i + 1; j < tags.size(); j++) {
-        if (Nulls.get(tags, i).name().equals(Nulls.get(tags, j).name())) {
-          throw new StrictPgnParserValidationException(StrictPgnParserValidationProblem.TAG_NAME_NOT_UNIQUE,
-              SanValidationProblem.NONE, "The tag name must be unique. The tag name \"" + Nulls.get(tags, i).name()
-                  + "\" was used more than once.");
-        }
-      }
+    final String repeatedName = TagUtility.findFirstRepeatedTagName(tags);
+    if (repeatedName != null) {
+      throw new StrictPgnParserValidationException(StrictPgnParserValidationProblem.TAG_NAME_NOT_UNIQUE,
+          SanValidationProblem.NONE,
+          "The tag name must be unique. The tag name \"" + repeatedName + "\" was used more than once.");
     }
   }
 
@@ -366,7 +366,7 @@ public final class StrictPgnParser {
     boolean isFirstMove = true;
 
     // Zero-move game: just <space><terminator> after the (optional) pregame commentary - no move numbers, no SANs.
-    if (tokenizer.peek().type() == PgnTokenType.SPACES && tokenizer.peek().text().length() == 1
+    if (tokenizer.peek().type() == PgnTokenType.SPACES && " ".equals(tokenizer.peek().text())
         && tokenizer.peekNext().type() == PgnTokenType.TERMINATION_MARKER) {
       tokenizer.next();
       final PgnToken terminator = tokenizer.next();
@@ -475,7 +475,7 @@ public final class StrictPgnParser {
 
   private void expectSpaceAfterComment() {
     final PgnToken token = tokenizer.peek();
-    if (token.type() == PgnTokenType.NEWLINE || token.type() == PgnTokenType.SPACES && token.text().length() == 1) {
+    if (token.type() == PgnTokenType.NEWLINE || token.type() == PgnTokenType.SPACES && " ".equals(token.text())) {
       tokenizer.next();
       return;
     }
@@ -485,12 +485,16 @@ public final class StrictPgnParser {
         "The movetext doesnt continue with a space after a comment");
   }
 
-  /** After the termination marker only whitespace/newlines may appear before EOF. */
+  /** Spaces before further content must still allow the more specific broken-brace diagnostic. */
   private void expectOnlyTrailingWhitespaceUntilEof() {
     while (true) {
       final PgnToken token = tokenizer.peek();
       if (token.type() == PgnTokenType.EOF) {
         return;
+      }
+      if (token.type() == PgnTokenType.SPACES && tokenizer.peekNext().type() == PgnTokenType.NEWLINE) {
+        throw movetextError(StrictPgnParserValidationProblem.MOVETEXT_UNEXPECTED_FORMAT,
+            "Trailing whitespace after the game termination marker is not allowed.");
       }
       if (token.type() == PgnTokenType.NEWLINE || token.type() == PgnTokenType.SPACES) {
         tokenizer.next();
@@ -533,7 +537,7 @@ public final class StrictPgnParser {
     if (token.type() == PgnTokenType.NEWLINE) {
       return;
     }
-    if (token.type() != PgnTokenType.SPACES || token.text().length() != 1) {
+    if (token.type() != PgnTokenType.SPACES || !" ".equals(token.text())) {
       throw movetextError(problem, message);
     }
   }
@@ -691,7 +695,4 @@ public final class StrictPgnParser {
     return new StrictPgnParserValidationException(problem, SanValidationProblem.NONE, message);
   }
 
-  private static boolean isAsciiLetterOrDigit(char c) {
-    return c >= '0' && c <= '9' || c >= 'A' && c <= 'Z' || c >= 'a' && c <= 'z';
-  }
 }

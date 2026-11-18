@@ -34,6 +34,9 @@ public enum ForgivenFenItemCode {
    */
   MISSING_FULL_MOVE_NUMBER,
 
+  /** Consecutive digits in a rank combined into one empty-square count. One item per corrected run. */
+  SPLIT_EMPTY_SQUARE_RUN,
+
   /** Side-to-move letter in uppercase ({@code W} or {@code B}) normalised to lowercase. */
   UPPERCASE_SIDE_TO_MOVE,
 
@@ -48,6 +51,12 @@ public enum ForgivenFenItemCode {
 
   /** En-passant target square in uppercase (e.g. {@code E3}) normalised to lowercase. */
   EN_PASSANT_UPPERCASE,
+
+  /**
+   * Halfmove clock or fullmove number written with leading zeros (e.g. {@code 00}, {@code 020}). The zeros are
+   * stripped. One item per affected counter; signs and non-ASCII digits are not forgiven.
+   */
+  COUNTER_LEADING_ZEROS,
 
   /**
    * More than six fields in the input. The first six are kept; the trailing field(s) are dropped. The detail carries

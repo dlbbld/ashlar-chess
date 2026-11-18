@@ -42,6 +42,15 @@ class TestStrictFenParser {
 
   @SuppressWarnings("static-method")
   @Test
+  void validateReportsLineTerminatorInPiecePlacement() {
+    final StrictFenParserValidationResult result = StrictFenParser
+        .validate("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPP\n/RNBQKBNR w KQkq - 0 1");
+    assertFalse(result.isValid());
+    assertEquals(StrictFenSemanticValidationProblem.INVALID_POSITION_UNKNOWN_CHAR, result.problem());
+  }
+
+  @SuppressWarnings("static-method")
+  @Test
   void validateInvalidFenReturnsProblem() {
     final String fenWithInvalidSideToMove = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR x KQkq - 0 1";
 

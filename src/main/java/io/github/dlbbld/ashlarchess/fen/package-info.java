@@ -27,11 +27,11 @@
  * full game reachability - a position passing these checks may still be unreachable from the initial position through
  * any legal sequence; structural and rule-consistency plausibility is the bar.</li>
  * <li>{@link io.github.dlbbld.ashlarchess.fen.LenientFenParser} - purely syntactic-tolerance pre-pass. Normalises
- * whitespace, casing, missing trailing counters, non-canonical castling order, non-ASCII dashes, and trailing garbage;
- * also recovers from the strict halfmove clock vs fullmove number inconsistency by auto-correcting the fullmove number
- * up to a round reserve value consistent with the halfmove clock. After normalisation, delegates to
- * {@code StrictFenParser} - strict semantic invariants are unchanged. Every transform that fires surfaces as a typed
- * {@link io.github.dlbbld.ashlarchess.fen.ForgivenFenItem} on the
+ * whitespace, casing, missing trailing counters, split empty-square runs, leading zeros in the counters, non-canonical
+ * castling order, non-ASCII dashes, and trailing garbage; also recovers from the strict halfmove clock vs fullmove
+ * number inconsistency by auto-correcting the fullmove number up to a round reserve value consistent with the halfmove
+ * clock. After normalisation, delegates to {@code StrictFenParser} - strict semantic invariants are unchanged. Every
+ * transform that fires surfaces as a typed {@link io.github.dlbbld.ashlarchess.fen.ForgivenFenItem} on the
  * {@link io.github.dlbbld.ashlarchess.fen.LenientFenParserValidationResult}. Reached from
  * {@link io.github.dlbbld.ashlarchess.board.Board#fromFenLenient(String)}.</li>
  * </ul>

@@ -2,6 +2,64 @@
 
 Releases from 3.3 onward. Earlier history is in git tags only.
 
+## [22.2.0] - Sound endgame verdicts and reliable notation - 2026-11-18
+
+Corrects a false definite unwinnability verdict on legally reached checkmates and prevents notation recovery from
+changing the selected piece or losing a mainline move. FEN validation now shares the promotion allowance across
+piece types, and PGN parsing and export enforce their documented boundaries. No public method or record component
+is removed or changed.
+
+### Rule correctness
+
+- Full unwinnability handles mate and stalemate before semi-static shortcuts. A delivered mate is `WINNABLE` for
+  its winner with an empty witness, and is not a dead position. Legal proof games cover both colours.
+- Semi-static assistant coverage allows one piece to cover several orthogonal king escapes. The conservative
+  bound may decline a proof when placements are incompatible, but cannot certify unwinnability by undercounting
+  the squares that one pawn attacks.
+- Terminal positions also take precedence in the elementary-material adjudication shortcut.
+- `ClaimRights` defensively copies caller-supplied moves. History-free board copies reset the halfmove clock
+  consistently in their initial FEN and current state.
+
+### Notation and validation
+
+- Lenient SAN preserves explicit piece identities and coordinate origins, including pawn captures, king moves,
+  promotions and castling. Short b-file tokens require a unique legal interpretation. Combined case/promotion
+  tolerances work consistently, and misplaced LAN hyphens are rejected.
+- Strict FEN rejects impossible shared promotion inventories, impossible pawn origins and promotion double checks
+  requiring an extra pawn. Valid en-passant and promotion double checks still round-trip.
+- Strict FEN rejects split empty-square runs, noncanonical counters and line terminators. Lenient FEN merges valid
+  split runs with `SPLIT_EMPTY_SQUARE_RUN` diagnostics and forgives counter leading zeros.
+- PGN NAGs stop at the first non-digit, so `$1e5` retains both annotation and move. Mainline comments, NAGs and
+  suffix glyphs remain attached across skipped nested variations and mixed annotation order.
+- Blank lines inside brace comments survive archival export and strict reimport. Semantic export preserves an
+  empty game as `{}`. Strict parsing distinguishes literal spaces from tabs and rejects trailing line whitespace.
+- Strict tag names use letters, digits and underscores with an alphanumeric first character. Lenient import keeps
+  broader custom names. Archival export requires uppercase-initial conforming names and throws
+  `IllegalArgumentException` for unrepresentable custom names instead of renaming or discarding them.
+- New diagnostic codes: `StrictFenSemanticValidationProblem.INVALID_POSITION_SPLIT_EMPTY_SQUARE_RUN`,
+  `INVALID_WHITE_TOO_MANY_PROMOTIONS` and `INVALID_BLACK_TOO_MANY_PROMOTIONS`, and
+  `ForgivenFenItemCode.SPLIT_EMPTY_SQUARE_RUN` and `COUNTER_LEADING_ZEROS`, and
+  `ForgivenTagItemCode.TAG_VALUE_NON_PRINTING_CHARACTER` and `TAG_VALUE_TOO_LONG`. Exhaustive switches over these
+  enums need the new cases.
+- Strict PGN rejects tag values that contain control characters, line or paragraph separators, unpaired
+  surrogates, private-use code points or noncharacters, and values longer than 255 decoded Unicode code points.
+  Format characters such as the zero-width joiners stay valid. Lenient PGN keeps such a value as written and
+  reports it with `TAG_VALUE_NON_PRINTING_CHARACTER` or `TAG_VALUE_TOO_LONG`; semantic export writes it back
+  unchanged. Archival export validates the tags it emits after normalizing `FEN` and `SetUp` from the starting
+  position and throws `IllegalArgumentException` for such a value. Quoted escapes, Unicode names and commentary
+  retain their supported round-trip behavior.
+- Commentary accepts code points that the Unicode tables of the running JDK do not know yet; of the unassigned code
+  points only the permanently reserved noncharacters are still rejected. A comment with an emoji newer than the
+  Unicode version of Java 17 was rejected there and accepted on Java 21; it is now valid on every supported Java
+  version.
+
+### Validation
+
+- Regression tests cover every independently reproduced finding and the neighboring SAN and PGN cases.
+- Independent coordinate sweeps cover ordinary and explicit-pawn inputs; legal mating witnesses and search-board
+  state are checked against chesslib. Fourteen additional curated FENs are rejected because their required
+  promotions exceed the number of missing pawns; semi-static certificate coverage remains unchanged.
+
 ## [22.1.0] - Magic bitboards and faster adjudication - 2026-10-07
 
 Bishop and rook attack generation now uses magic bitboards, with unchanged move-generation semantics and a measured

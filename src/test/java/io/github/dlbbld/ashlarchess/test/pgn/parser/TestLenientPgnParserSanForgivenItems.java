@@ -13,6 +13,7 @@ import org.junit.jupiter.api.Test;
 import io.github.dlbbld.ashlarchess.internal.Nulls;
 import io.github.dlbbld.ashlarchess.pgn.LenientPgnParser;
 import io.github.dlbbld.ashlarchess.pgn.LenientPgnParserValidationResult;
+import io.github.dlbbld.ashlarchess.pgn.PgnUtility;
 import io.github.dlbbld.ashlarchess.san.ForgivenSanItem;
 import io.github.dlbbld.ashlarchess.san.LenientSanValidationProblem;
 import io.github.dlbbld.ashlarchess.test.pgntest.constants.PgnTestConstants;
@@ -137,6 +138,37 @@ class TestLenientPgnParserSanForgivenItems {
   @Test
   void test21_lowercasePromotionPiece() {
     assertExactlyOneCode("21_lowercase_promotion_piece.pgn", LenientSanValidationProblem.LOWERCASE_PROMOTION_PIECE);
+  }
+
+  // ---------------------------------------------------------------------------
+  // Whole games in long algebraic and UCI form, with the moves that have no SAN-like shape there: king moves, pawn
+  // captures and promotions.
+  // ---------------------------------------------------------------------------
+
+  private static final String TAGS = """
+      [Event "?"]
+      [Site "?"]
+      [Date "?"]
+      [Round "?"]
+      [White "?"]
+      [Black "?"]
+      [Result "*"]
+
+      """;
+
+  private static final String GAME_FEN_AFTER = "Q1bk1b1r/p1qnpppp/5n2/8/8/8/PPPPKPPP/RNBQ1BNR w - - 3 7";
+
+  @Test
+  void testLongAlgebraicNotationGame() {
+    final String pgn = TAGS + "1. e2-e4 d7-d5 2. e4xd5 c7-c6 3. d5xc6 Ng8-f6 4. c6xb7 Nb8-d7 5. b7xa8=Q Qd8-c7 "
+        + "6. Ke1-e2 Ke8-d8 *";
+    assertEquals(GAME_FEN_AFTER, PgnUtility.toBoard(LenientPgnParser.parseText(pgn)).getFen());
+  }
+
+  @Test
+  void testUciNotationGame() {
+    final String pgn = TAGS + "1. e2e4 d7d5 2. e4d5 c7c6 3. d5c6 g8f6 4. c6b7 b8d7 5. b7a8q d8c7 6. e1e2 e8d8 *";
+    assertEquals(GAME_FEN_AFTER, PgnUtility.toBoard(LenientPgnParser.parseText(pgn)).getFen());
   }
 
   // ---------------------------------------------------------------------------

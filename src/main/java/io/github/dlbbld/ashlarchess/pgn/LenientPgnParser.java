@@ -30,9 +30,10 @@ import io.github.dlbbld.ashlarchess.san.SanValidationProblem;
  * Lenient PGN parser. Permissive inter-token rules: any whitespace separates tokens, move-number indicators are
  * consumed and ignored, termination marker is optional, space before suffixes is tolerated. Tag-list contents are
  * preserved as given (missing seven-tag-roster entries, FEN without SetUp, Result tag absent, redundant
- * initial-position FEN/SetUp) - no fabrication into the parse model. Tag-level deviations surface via
- * {@code tagForgivenItems} on the validation result; archival output is opt-in via {@code WriteMode.ARCHIVAL} on
- * {@code PgnWriter}. Independent validation pipeline from {@link StrictPgnParser}.
+ * initial-position FEN/SetUp, tag values with non-printing characters or beyond the length limit) - no fabrication into
+ * the parse model. Tag-level deviations surface via {@code tagForgivenItems} on the validation result; archival output
+ * is opt-in via {@code WriteMode.ARCHIVAL} on {@code PgnWriter}. Independent validation pipeline from
+ * {@link StrictPgnParser}.
  */
 public final class LenientPgnParser {
 
@@ -296,30 +297,54 @@ public final class LenientPgnParser {
       throw tagFormatError("The tag line must end with the right square bracket ].");
     }
 
+    recordTagValueItems(nameToken.text(), valueToken.text());
     return new Tag(nameToken.text(), valueToken.text());
+  }
+
+  /**
+   * A value that PGN strings do not allow is kept as written and reported, as real-world files carry tabs and long
+   * free-text values. Semantic export writes such a value back unchanged; archival export refuses it.
+   */
+  private void recordTagValueItems(String name, String value) {
+    final int nonPrinting = TagUtility.firstNonPrintingCodePoint(value);
+    if (nonPrinting >= 0) {
+      tagForgivenItemsAccumulator.add(new ForgivenTagItem(ForgivenTagItemCode.TAG_VALUE_NON_PRINTING_CHARACTER, name,
+          TagUtility.formatCodePoint(nonPrinting)));
+    }
+    final int length = TagUtility.tagValueLength(value);
+    if (length > TagUtility.MAX_TAG_VALUE_LENGTH) {
+      tagForgivenItemsAccumulator
+          .add(new ForgivenTagItem(ForgivenTagItemCode.TAG_VALUE_TOO_LONG, name, Nulls.valueOf(length)));
+    }
   }
 
   private static void validateTagNameCharacters(String name) {
     if (name.isEmpty()) {
       throw tagFormatError("Tag name must not be empty.");
     }
+    if (!TagUtility.isTagNameInitialCharacter(name.charAt(0))) {
+      throw tagFormatError("The first character in the tag name must be one of A-Z, a-z or 0-9.");
+    }
     for (int i = 0; i < name.length(); i++) {
       final char c = name.charAt(i);
-      if (!isAsciiLetterOrDigit(c) && c != '_' && c != '+' && c != '#' && c != '=' && c != ':' && c != '-') {
+      // Some imports use the full symbol alphabet for tag names. Semantic output keeps those names verbatim.
+      if (!TagUtility.isTagNameCharacter(c) && c != '+' && c != '#' && c != '=' && c != ':' && c != '-') {
         throw tagFormatError("The tag name contains an invalid character \"" + c + "\".");
       }
+    }
+    // The length is not forgiven either: the name is kept as written, so a longer one would not read back strictly.
+    if (name.length() > TagUtility.MAX_TAG_NAME_LENGTH) {
+      throw tagFormatError("With " + name.length() + " characters, the tag name exceeds the allowed maximum length of "
+          + TagUtility.MAX_TAG_NAME_LENGTH + " characters per the PGN specification.");
     }
   }
 
   private static void validateUniqueTagNames(List<Tag> tags) {
-    for (int i = 0; i < tags.size(); i++) {
-      for (int j = i + 1; j < tags.size(); j++) {
-        if (Nulls.get(tags, i).name().equals(Nulls.get(tags, j).name())) {
-          throw new LenientPgnParserValidationException(LenientPgnParserValidationProblem.TAG_NAME_NOT_UNIQUE,
-              SanValidationProblem.NONE, "The tag name must be unique. The tag name \"" + Nulls.get(tags, i).name()
-                  + "\" was used more than once.");
-        }
-      }
+    final String repeatedName = TagUtility.findFirstRepeatedTagName(tags);
+    if (repeatedName != null) {
+      throw new LenientPgnParserValidationException(LenientPgnParserValidationProblem.TAG_NAME_NOT_UNIQUE,
+          SanValidationProblem.NONE,
+          "The tag name must be unique. The tag name \"" + repeatedName + "\" was used more than once.");
     }
   }
 
@@ -369,6 +394,7 @@ public final class LenientPgnParser {
   private MovetextOutcome parseMovetext() {
     PgnCommentary pregameCommentary = PgnCommentary.EMPTY;
     final List<PgnMove> moves = new ArrayList<>();
+    final PendingAnnotations pendingAnnotations = new PendingAnnotations();
     @Nullable ResultTagValue terminationResult = null;
 
     skipInsignificantWhitespace();
@@ -415,14 +441,14 @@ public final class LenientPgnParser {
         // detached glyph with no move to attach to, or an unrecognised run like `!?!`, is tolerated by dropping it.
         case MOVE_SUFFIX_ANNOTATION: {
           final PgnToken suffixToken = tokenizer.next();
-          appendNagToLastMove(moves, glyphToNag(suffixToken.text()));
+          pendingAnnotations.addNag(moves, glyphToNag(suffixToken.text()));
           continue;
         }
         // A numeric annotation glyph (`$N`) annotates the move just played (chess.com's review export emits these).
         // A NAG before any move, or a malformed/out-of-range code, is tolerated by dropping it.
         case NAG: {
           final PgnToken nagToken = tokenizer.next();
-          appendNagToLastMove(moves, parseNagLenient(nagToken));
+          pendingAnnotations.addNag(moves, parseNagLenient(nagToken));
           continue;
         }
         case SYMBOL: {
@@ -438,8 +464,9 @@ public final class LenientPgnParser {
             continue;
           }
           final PgnMove move = parseMoveLenient();
+          pendingAnnotations.foldIntoLastMove(moves);
           moves.add(move);
-          consumePostMoveAnnotations(moves);
+          consumePostMoveAnnotations(moves, pendingAnnotations);
           continue;
         }
         default:
@@ -450,6 +477,7 @@ public final class LenientPgnParser {
           "Unexpected token \"" + peek.text() + "\" at line " + peek.line() + ".");
     }
 
+    pendingAnnotations.foldIntoLastMove(moves);
     return new MovetextOutcome(moves, pregameCommentary, terminationResult);
   }
 
@@ -573,24 +601,24 @@ public final class LenientPgnParser {
   /**
    * Consumes every annotation trailing the move just added - comments and numeric annotation glyphs, in any order and
    * quantity - and folds them onto that move. Real-world tools emit several and interleave them: lichess opens each
-   * analyzed game with {@code { [%eval ...] [%clk ...] } { <opening name> }}, and a NAG-plus-comment pair
-   * ({@code Nf3 $1 {develops}}) is ordinary PGN. Comments are merged onto the move's commentary; NAGs are appended to
-   * its NAG list. Handling both here keeps post-move annotation order-independent - {@code Nf3 $1 {c}} and
-   * {@code Nf3 {c} $1} parse identically.
+   * analyzed game with {@code { [%eval ...] [%clk ...] } { <opening name> }}, and a NAG-plus-comment pair ({@code Nf3
+   * $1 {develops}}) is ordinary PGN. Comments are merged onto the move's commentary; NAGs are appended to its NAG list.
+   * Handling both here keeps post-move annotation order-independent - {@code Nf3 $1 {c}} and {@code Nf3 {c} $1} parse
+   * identically.
    */
-  private void consumePostMoveAnnotations(List<PgnMove> moves) {
+  private void consumePostMoveAnnotations(List<PgnMove> moves, PendingAnnotations pendingAnnotations) {
     skipInsignificantWhitespace();
     while (true) {
       final PgnToken ahead = tokenizer.peek();
       if (isCommentToken(ahead.type())) {
-        final PgnCommentary commentary = consumeCommentaryOrThrow();
-        final int last = moves.size() - 1;
-        final PgnMove previous = Nulls.get(moves, last);
-        moves.set(last,
-            new PgnMove(previous.san(), previous.nags(), mergeCommentary(previous.commentary(), commentary)));
+        pendingAnnotations.addCommentary(moves, consumeCommentaryOrThrow());
       } else if (ahead.type() == PgnTokenType.NAG) {
         tokenizer.next();
-        appendNagToLastMove(moves, parseNagLenient(ahead));
+        pendingAnnotations.addNag(moves, parseNagLenient(ahead));
+      } else if (ahead.type() == PgnTokenType.MOVE_SUFFIX_ANNOTATION) {
+        pendingAnnotations.addNag(moves, glyphToNag(tokenizer.next().text()));
+      } else if (ahead.type() == PgnTokenType.SYMBOL && "(".equals(ahead.text())) {
+        skipVariation();
       } else {
         return;
       }
@@ -598,31 +626,59 @@ public final class LenientPgnParser {
     }
   }
 
-  /** Joins two commentaries with a single space, dropping either if empty. Used to merge consecutive comments. */
-  private static PgnCommentary mergeCommentary(PgnCommentary existing, PgnCommentary addition) {
-    if (existing.value().isEmpty()) {
-      return addition;
-    }
-    if (addition.value().isEmpty()) {
-      return existing;
-    }
-    return new PgnCommentary(existing.value() + " " + addition.value());
-  }
-
   /**
-   * Appends a NAG to the most recently parsed move. A {@code null} NAG (an unrecognised glyph run, or a malformed /
-   * out-of-range {@code $N}) or a NAG before any move exists is tolerated by dropping it - the lenient parser reads
-   * what it can and never fails on an annotation.
+   * The NAGs and comments that follow the most recently parsed move. They are collected here and folded into the
+   * immutable {@link PgnMove} once, when the next move starts or the movetext ends - rebuilding the move for each
+   * annotation copies everything collected so far, which is quadratic in the number of annotations on one move.
+   *
+   * <p>
+   * Consecutive comments are joined with a single space, empty ones dropped. A {@code null} NAG (an unrecognised glyph
+   * run, or a malformed / out-of-range {@code $N}) or an annotation before any move exists is tolerated by dropping it
+   * - the lenient parser reads what it can and never fails on an annotation.
    */
-  private static void appendNagToLastMove(List<PgnMove> moves, @Nullable Nag nag) {
-    if (nag == null || moves.isEmpty()) {
-      return;
+  private static final class PendingAnnotations {
+
+    private final List<Nag> nags = new ArrayList<>();
+    private final StringBuilder commentary = new StringBuilder();
+
+    private void addNag(List<PgnMove> moves, @Nullable Nag nag) {
+      if (nag == null || moves.isEmpty()) {
+        return;
+      }
+      nags.add(nag);
     }
-    final int last = moves.size() - 1;
-    final PgnMove previous = Nulls.get(moves, last);
-    final List<Nag> nags = new ArrayList<>(previous.nags());
-    nags.add(nag);
-    moves.set(last, new PgnMove(previous.san(), nags, previous.commentary()));
+
+    private void addCommentary(List<PgnMove> moves, PgnCommentary addition) {
+      if (addition.value().isEmpty() || moves.isEmpty()) {
+        return;
+      }
+      if (commentary.length() > 0) {
+        commentary.append(' ');
+      }
+      commentary.append(addition.value());
+    }
+
+    private void foldIntoLastMove(List<PgnMove> moves) {
+      if (nags.isEmpty() && commentary.length() == 0) {
+        return;
+      }
+      final int last = moves.size() - 1;
+      final PgnMove previous = Nulls.get(moves, last);
+      final List<Nag> allNags = new ArrayList<>(previous.nags());
+      allNags.addAll(nags);
+      final String previousCommentary = previous.commentary().value();
+      final PgnCommentary allCommentary;
+      if (commentary.length() == 0) {
+        allCommentary = previous.commentary();
+      } else if (previousCommentary.isEmpty()) {
+        allCommentary = new PgnCommentary(Nulls.toString(commentary));
+      } else {
+        allCommentary = new PgnCommentary(previousCommentary + " " + commentary);
+      }
+      moves.set(last, new PgnMove(previous.san(), allNags, allCommentary));
+      nags.clear();
+      commentary.setLength(0);
+    }
   }
 
   /**
@@ -933,7 +989,4 @@ public final class LenientPgnParser {
         SanValidationProblem.NONE, "After the movetext started, tags can no longer appear.");
   }
 
-  private static boolean isAsciiLetterOrDigit(char c) {
-    return c >= '0' && c <= '9' || c >= 'A' && c <= 'Z' || c >= 'a' && c <= 'z';
-  }
 }

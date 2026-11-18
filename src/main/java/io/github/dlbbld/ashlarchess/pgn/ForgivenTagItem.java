@@ -12,8 +12,9 @@ import org.eclipse.jdt.annotation.NonNull;
  * the diagnostic channel telling consumers which deviations the parser tolerated.
  *
  * @param code    the typed deviation classifier
- * @param tagName the standard tag the diagnostic is about (e.g. {@code "Event"}, {@code "Result"}, {@code "SetUp"},
- *                {@code "FEN"}), or {@code ""} if the diagnostic spans multiple tags
+ * @param tagName the tag the diagnostic is about (e.g. {@code "Event"}, {@code "Result"}, {@code "SetUp"},
+ *                {@code "FEN"}, or a custom tag for the tag value codes), or {@code ""} if the diagnostic spans
+ *                multiple tags
  * @param detail  supplementary context - e.g. the termination-marker value for
  *                {@link ForgivenTagItemCode#RESULT_TAG_MISSING_BUT_TERMINATION_MARKER_PRESENT}, or {@code ""} when no
  *                extra context is needed

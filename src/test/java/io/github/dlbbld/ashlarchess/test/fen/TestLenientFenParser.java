@@ -212,6 +212,59 @@ class TestLenientFenParser {
     assertEquals(INITIAL_CANONICAL, fenOf(result).fen());
   }
 
+  @Test
+  void test19_counterLeadingZerosStripped() {
+    assertExactlyOneCode("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 00 1",
+        ForgivenFenItemCode.COUNTER_LEADING_ZEROS);
+    assertExactlyOneCode("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 01",
+        ForgivenFenItemCode.COUNTER_LEADING_ZEROS);
+
+    // Both counters: one item each, carrying the fragment as written and its canonical form.
+    final LenientFenParserValidationResult result = LenientFenParser.validate("8/8/8/8/8/8/8/4K2k w - - 0070 00200");
+    assertTrue(result.isValid(), () -> "expected valid; got: " + result.message());
+    assertEquals(List.of(new ForgivenFenItem(ForgivenFenItemCode.COUNTER_LEADING_ZEROS, "0070", "70"),
+        new ForgivenFenItem(ForgivenFenItemCode.COUNTER_LEADING_ZEROS, "00200", "200")), result.forgivenItems());
+    assertEquals("8/8/8/8/8/8/8/4K2k w - - 70 200", fenOf(result).fen());
+    assertEquals(70, fenOf(result).halfMoveClock());
+    assertEquals(200, fenOf(result).fullMoveNumber());
+
+    assertEquals(INITIAL_CANONICAL,
+        fenOf(LenientFenParser.validate("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 000 01")).fen());
+  }
+
+  @Test
+  void test20_counterSignNotForgiven() {
+    // Only leading zeros are a recognised deviation; a signed counter stays a strict rejection.
+    for (final String counters : List.of("-0 1", "+0 1", "0 +1", "-00 1")) {
+      final LenientFenParserValidationResult result = LenientFenParser
+          .validate("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - " + counters);
+      assertFalse(result.isValid(), () -> "expected invalid for counters: " + counters);
+      assertEquals(LenientFenParserValidationProblem.STRICT_SEMANTIC_INVALID, result.problem());
+      assertTrue(result.forgivenItems().isEmpty());
+    }
+  }
+
+  @Test
+  void testSplitEmptySquareRunsAreCombinedWithinEachRank() {
+    final LenientFenParserValidationResult result = LenientFenParser.validate("22k3/44/8/8/8/8/8/4K111 w - - 0 1");
+    assertTrue(result.isValid(), result.message());
+    assertEquals("4k3/8/8/8/8/8/8/4K3 w - - 0 1", fenOf(result).fen());
+    assertEquals(List.of(new ForgivenFenItem(ForgivenFenItemCode.SPLIT_EMPTY_SQUARE_RUN, "22", "4"),
+        new ForgivenFenItem(ForgivenFenItemCode.SPLIT_EMPTY_SQUARE_RUN, "44", "8"),
+        new ForgivenFenItem(ForgivenFenItemCode.SPLIT_EMPTY_SQUARE_RUN, "111", "3")), result.forgivenItems());
+  }
+
+  @Test
+  void testSplitRunsCannotExcuseAnInvalidRankWidth() {
+    final LenientFenParserValidationResult overflow = LenientFenParser.validate("4k3/81/8/8/8/8/8/4K3 w - - 0 1");
+    assertEquals(StrictFenSemanticValidationProblem.INVALID_POSITION_SPLIT_EMPTY_SQUARE_RUN,
+        overflow.strictFenSemanticValidationProblem());
+    assertTrue(overflow.forgivenItems().isEmpty());
+    final LenientFenParserValidationResult underflow = LenientFenParser.validate("4k3/61/8/8/8/8/8/4K3 w - - 0 1");
+    assertEquals(StrictFenSemanticValidationProblem.INVALID_POSITION_LINE_EVALUATION_LENGTH,
+        underflow.strictFenSemanticValidationProblem());
+  }
+
   // -------------------------------------------------------------------------------------------------
   // Helpers
   // -------------------------------------------------------------------------------------------------

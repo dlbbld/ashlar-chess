@@ -41,6 +41,10 @@ public final class PgnCreate {
     return toPgnString(pgnGame, WriteMode.SEMANTIC);
   }
 
+  /**
+   * @throws IllegalArgumentException in {@link WriteMode#ARCHIVAL} mode when a tag name or value cannot be represented
+   *                                  in archival PGN; see {@link WriteMode}
+   */
   public static String toPgnString(PgnGame pgnGame, WriteMode writeMode) {
     return appendEmptyLine(ListUtility.toLineSeparatedString(toPgnLines(pgnGame, writeMode)));
   }
@@ -49,6 +53,10 @@ public final class PgnCreate {
     return toPgnLines(pgnGame, WriteMode.SEMANTIC);
   }
 
+  /**
+   * @throws IllegalArgumentException in {@link WriteMode#ARCHIVAL} mode when a tag name or value cannot be represented
+   *                                  in archival PGN; see {@link WriteMode}
+   */
   public static List<String> toPgnLines(PgnGame pgnGame, WriteMode writeMode) {
     final PgnGame effective = writeMode == WriteMode.ARCHIVAL ? PgnArchivalNormalization.apply(pgnGame) : pgnGame;
     return Nulls.copyOfList(calculateFileLines(effective.tags(), effective.pregameCommentary(), effective.startFen(),
@@ -87,13 +95,12 @@ public final class PgnCreate {
       movetextIncludingPreGameCommentary = "{" + pregameCommentaryValue + "}" + " " + movetext + terminationSuffix;
     }
 
-    // Lenient parses can produce a PgnGame with no pregame commentary, no moves, and no termination marker
-    // (a tags-only PGN). The movetext string is then empty; PgnLineWrapper rejects empty input, so skip the
-    // wrap call and leave the movetext section blank. The output stays structurally well-formed (tag section,
-    // separator, trailing blank) and re-parses cleanly under the lenient parser.
     if (!movetextIncludingPreGameCommentary.isEmpty()) {
       fileLines
           .addAll(PgnLineWrapper.calculateWrappedLines(movetextIncludingPreGameCommentary, PgnCreate.MAX_LINE_LENGTH));
+    } else if (tags.isEmpty()) {
+      // An empty comment round-trips the empty model. Whitespace alone is an empty file, not a game.
+      fileLines.add("{}");
     }
     // Trailing blank line per the strict format.
     fileLines.add("");
@@ -220,10 +227,10 @@ public final class PgnCreate {
    *
    * <p>
    * <b>Semantic</b> (the default) favours human readability and honest preservation over canonical form: the source
-   * order and duplicates are kept, the <em>first</em> assessment NAG (code {@code 1..6}) is written as its glyph
-   * attached to the SAN ({@code e4?}) and every other NAG - a second assessment code, {@code $0}, or any positional
-   * code - as a spaced {@code $N}. At most one glyph is attached so the output stays unambiguous (two fused glyphs,
-   * e.g. {@code ?}+{@code !}, would read as the single glyph {@code ?!}).
+   * order and duplicates are kept. If the first NAG is an assessment (code {@code 1..6}), it is written as its glyph
+   * attached to the SAN ({@code e4?}); all other NAGs are written as spaced {@code $N} tokens. An assessment after a
+   * positional NAG stays numeric to preserve its position. At most one glyph is attached so the output stays
+   * unambiguous (two fused glyphs, e.g. {@code ?}+{@code !}, would read as the single glyph {@code ?!}).
    */
   private static void appendNags(StringBuilder result, List<Nag> nags, WriteMode writeMode) {
     if (writeMode == WriteMode.ARCHIVAL) {
@@ -232,18 +239,13 @@ public final class PgnCreate {
       }
       return;
     }
-    int glyphIndex = -1;
     for (int i = 0; i < nags.size(); i++) {
-      final MoveSuffixAnnotation glyph = MoveSuffixAnnotation.fromNagCode(Nulls.get(nags, i).code());
-      if (glyph != null) {
+      final Nag nag = Nulls.get(nags, i);
+      final MoveSuffixAnnotation glyph = MoveSuffixAnnotation.fromNagCode(nag.code());
+      if (i == 0 && glyph != null) {
         result.append(glyph.getSuffix());
-        glyphIndex = i;
-        break;
-      }
-    }
-    for (int i = 0; i < nags.size(); i++) {
-      if (i != glyphIndex) {
-        result.append(" ").append(Nulls.get(nags, i).toToken());
+      } else {
+        result.append(" ").append(nag.toToken());
       }
     }
   }

@@ -46,6 +46,19 @@ import io.github.dlbbld.ashlarchess.san.LenientSanParserValidationException;
  */
 class TestBoardClaimRights {
 
+  @SuppressWarnings("static-method")
+  @Test
+  void constructorDefensivelyCopiesClaimableMoves() {
+    final Board board = Board.fromFenStrict("7k/8/8/8/8/8/4K3/R7 w - - 99 51");
+    final ClaimRights original = board.fiftyMoveRuleClaimRights();
+    final List<ClaimableMove> supplied = new ArrayList<>(original.claimableMoves());
+    final ClaimRights snapshot = new ClaimRights(true, supplied);
+    supplied.clear();
+    assertEquals(original, snapshot);
+    assertTrue(snapshot.canClaim());
+    assertThrows(UnsupportedOperationException.class, () -> snapshot.claimableMoves().clear());
+  }
+
   // =============================================================================================
   // fiftyMoveRuleClaimRights - FIDE 9.3
   // =============================================================================================

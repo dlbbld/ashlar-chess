@@ -166,6 +166,39 @@ class TestLenientPgnParserTagForgivenItems {
     assertTrue(items.isEmpty());
   }
 
+  @Test
+  void test08_tagValueWithNonPrintingCharacterEmitsCodeWithFirstCodePointInDetail() {
+    // A tab followed by a private-use code point: one item per tag, naming the first of the two.
+    final String pgn = "[Event \"Spring\tClassic\"]\n[Annotator \"a\tb" + Character.toString(0xE000)
+        + "\"]\n[Result \"*\"]\n\n1. e4 e5 *\n\n";
+    final List<ForgivenTagItem> items = parseAndGetItems(pgn);
+
+    assertEquals(2, countByCode(items, ForgivenTagItemCode.TAG_VALUE_NON_PRINTING_CHARACTER));
+    assertHasItem(items, ForgivenTagItemCode.TAG_VALUE_NON_PRINTING_CHARACTER, StandardTag.EVENT.getName(), "U+0009");
+    assertHasItem(items, ForgivenTagItemCode.TAG_VALUE_NON_PRINTING_CHARACTER, "Annotator", "U+0009");
+  }
+
+  @Test
+  void test09_tagValueTooLongEmitsCodeWithCodePointLengthInDetail() {
+    // 255 code points are within the limit although the emoji takes two UTF-16 units; one more is not.
+    final String emoji = Character.toString(0x1F600);
+    final String pgn = "[White \"" + "v".repeat(254) + emoji + "\"]\n[Black \"" + "v".repeat(255) + emoji
+        + "\"]\n[Result \"*\"]\n\n1. e4 e5 *\n\n";
+    final List<ForgivenTagItem> items = parseAndGetItems(pgn);
+
+    assertEquals(1, countByCode(items, ForgivenTagItemCode.TAG_VALUE_TOO_LONG));
+    assertHasItem(items, ForgivenTagItemCode.TAG_VALUE_TOO_LONG, StandardTag.BLACK.getName(), "256");
+  }
+
+  @Test
+  void test10_tagValueWithBothDeviationsEmitsBothCodes() {
+    final String pgn = "[Annotator \"" + "v".repeat(255) + "\t\"]\n[Result \"*\"]\n\n1. e4 e5 *\n\n";
+    final List<ForgivenTagItem> items = parseAndGetItems(pgn);
+
+    assertHasItem(items, ForgivenTagItemCode.TAG_VALUE_NON_PRINTING_CHARACTER, "Annotator", "U+0009");
+    assertHasItem(items, ForgivenTagItemCode.TAG_VALUE_TOO_LONG, "Annotator", "256");
+  }
+
   // -------------------------------------------------------------------------------------------------
   // Helpers
   // -------------------------------------------------------------------------------------------------

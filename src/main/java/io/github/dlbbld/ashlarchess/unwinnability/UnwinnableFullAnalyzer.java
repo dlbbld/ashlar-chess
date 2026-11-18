@@ -5,7 +5,6 @@ package io.github.dlbbld.ashlarchess.unwinnability;
 
 import io.github.dlbbld.ashlarchess.board.Board;
 import io.github.dlbbld.ashlarchess.board.enums.Side;
-import io.github.dlbbld.ashlarchess.fen.model.Fen;
 import io.github.dlbbld.ashlarchess.internal.Nulls;
 
 // Figure 9 Main routine for deciding chess unwinnability: the semi-static algorithm (Figure 8)
@@ -40,7 +39,17 @@ public final class UnwinnableFullAnalyzer {
    * {@code UNWINNABLE} for both sides.
    */
   public static UnwinnabilityFullAnalysis unwinnableFull(Board input, Side winner) {
-    final Board board = copyCurrentPositionForFullSearch(input);
+    final Side loser = winner.getOppositeSide();
+    final Board board = input.copyCurrentPositionWithoutHistory();
+
+    if (board.isCheckmate()) {
+      final UnwinnabilityFullVerdict verdict = board.getSideToMove() == loser ? UnwinnabilityFullVerdict.WINNABLE
+          : UnwinnabilityFullVerdict.UNWINNABLE;
+      return new UnwinnabilityFullAnalysis(verdict, Nulls.listOf());
+    }
+    if (board.isStalemate()) {
+      return new UnwinnabilityFullAnalysis(UnwinnabilityFullVerdict.UNWINNABLE, Nulls.listOf());
+    }
 
     // 1: if UnwinnableSS(pos, c, Mobility(pos)) then return Unwinnable
     final SemiStaticPosition semiStaticPosition = SemiStaticPosition.fromBoard(board);
@@ -77,10 +86,4 @@ public final class UnwinnableFullAnalyzer {
     return new UnwinnabilityFullAnalysis(UnwinnabilityFullVerdict.UNDETERMINED, Nulls.listOf());
   }
 
-  private static Board copyCurrentPositionForFullSearch(Board input) {
-    final Fen fen = new Fen(input.getFen(), input.getBitboardPosition(), input.getSideToMove(),
-        input.getCastlingRightWhite(), input.getCastlingRightBlack(), input.getEnPassantCaptureTargetSquare(), 0,
-        input.getFullMoveNumber());
-    return new Board(fen);
-  }
 }

@@ -10,12 +10,16 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 
 import io.github.dlbbld.ashlarchess.board.Board;
 import io.github.dlbbld.ashlarchess.board.LegalMove;
 import io.github.dlbbld.ashlarchess.board.UciMove;
+import io.github.dlbbld.ashlarchess.board.enums.PieceType;
 import io.github.dlbbld.ashlarchess.board.internal.UciMoveUtility;
 import io.github.dlbbld.ashlarchess.internal.Nulls;
 import io.github.dlbbld.ashlarchess.san.ForgivenSanItem;
@@ -390,6 +394,73 @@ class TestLenientSanParser {
     assertEquals("exd5", canonical(result));
   }
 
+  @ParameterizedTest
+  @CsvSource({ "Pe1f1, e1f1, Kf1", "Pe1g1, e1g1, O-O", "Pb1c3, b1c3, Nc3", "PB1-C3, Nb1-c3, Nc3" })
+  void testExplicitPawnCoordinatesRequireAPawn(String invalidMove, String validMove, String san) {
+    final String fen = "4k3/8/8/8/8/8/8/1N2K2R w K - 0 42";
+    final Board board = Board.fromFenStrict(fen);
+    assertThrows(LenientSanParserValidationException.class, () -> board.moveLenient(invalidMove));
+    assertEquals(fen, board.getFen());
+    assertEquals(san, canonical(board.moveLenient(validMove)));
+  }
+
+  @Test
+  void testShortBFileCaptureResolvesOnlyLegalPiece() {
+    final Board pawn = new Board();
+    pawn.moveStrict("b4");
+    pawn.moveStrict("a5");
+    final LenientSanParseResult pawnCapture = pawn.moveLenient("ba5");
+    assertExactlyOneCode(pawnCapture, LenientSanValidationProblem.MISSING_CAPTURE_MARKER);
+    assertEquals("bxa5", canonical(pawnCapture));
+
+    final Board bishop = Board.fromFenStrict("7k/8/1B6/n7/8/8/8/K7 w - - 0 31");
+    final LenientSanParseResult bishopCapture = bishop.moveLenient("ba5");
+    assertContainsCode(bishopCapture, LenientSanValidationProblem.LOWERCASE_PIECE_LETTER);
+    assertEquals("Bxa5", canonical(bishopCapture));
+  }
+
+  @Test
+  void testShortBFileCaptureNeedsExplicitPieceWhenAmbiguous() {
+    final String fen = "7k/8/1B6/n7/1P6/8/8/K7 w - - 0 31";
+    final Board board = Board.fromFenStrict(fen);
+    assertThrows(LenientSanParserValidationException.class, () -> board.moveLenient("ba5"));
+    assertEquals(fen, board.getFen());
+    final LenientSanParseResult pawn = board.moveLenient("Pba5");
+    assertContainsCode(pawn, LenientSanValidationProblem.EXPLICIT_PAWN_LETTER);
+    assertContainsCode(pawn, LenientSanValidationProblem.MISSING_CAPTURE_MARKER);
+    assertEquals("bxa5", canonical(pawn));
+    assertEquals("bxa5", canonical(Board.fromFenStrict(fen).moveLenient("Pbxa5")));
+    assertEquals("bxa5", canonical(Board.fromFenStrict(fen).moveLenient("PB4-A5")));
+    assertTrue(Board.fromFenStrict(fen).moveLenient("bxa5").forgivenItems().isEmpty());
+    assertTrue(Board.fromFenStrict(fen).moveLenient("Bxa5").forgivenItems().isEmpty());
+  }
+
+  @ParameterizedTest
+  @CsvSource({ "b8q, b8=Q+", "b8b, b8=B", "B7B8Q, b8=Q+", "B7-B8=N, b8=N", "B7-B8=Q, b8=Q+" })
+  void testBFilePromotionComposesCaseAndNotation(String text, String san) {
+    final Board board = Board.fromFenStrict("7k/1P6/8/8/8/8/8/K7 w - - 0 48");
+    final LenientSanParseResult result = board.moveLenient(text);
+    assertEquals(san, canonical(result));
+    if (text.charAt(0) == 'b') {
+      assertContainsCode(result, LenientSanValidationProblem.MISSING_PROMOTION_EQUALS);
+      assertContainsCode(result, LenientSanValidationProblem.LOWERCASE_PROMOTION_PIECE);
+    } else {
+      assertContainsCode(result, LenientSanValidationProblem.UPPERCASE_FILE_LETTER);
+      assertContainsCode(result, text.indexOf('-') >= 0 ? LenientSanValidationProblem.LONG_ALGEBRAIC_NOTATION
+          : LenientSanValidationProblem.UCI_NOTATION);
+    }
+  }
+
+  @ParameterizedTest
+  @CsvSource({ "-e4, e2-e4", "e--4, e2-e4", "e4-, e2-e4", "e2--e4, e2-e4", "N-b1c3, Nb1-c3", "Nb1c3-, Nb1-c3",
+      "Nb1-xc3, Nb1-c3" })
+  void testLongAlgebraicHyphenSeparatesTwoSquares(String invalidMove, String validMove) {
+    final Board board = new Board();
+    assertThrows(LenientSanParserValidationException.class, () -> board.moveLenient(invalidMove));
+    assertEquals(0, board.getPerformedMoveCount());
+    assertContainsCode(board.moveLenient(validMove), LenientSanValidationProblem.LONG_ALGEBRAIC_NOTATION);
+  }
+
   // ---------------------------------------------------------------------------
   // Combination tests - multiple codes on one move.
   // ---------------------------------------------------------------------------
@@ -429,6 +500,228 @@ class TestLenientSanParser {
     assertContainsCode(result, LenientSanValidationProblem.UCI_NOTATION);
     assertContainsCode(result, LenientSanValidationProblem.OVERSPECIFIED_SQUARE_DISAMBIGUATION);
     assertEquals("Nf3", canonical(result));
+  }
+
+  // ---------------------------------------------------------------------------
+  // Long algebraic and UCI forms beyond the plain pawn push and the RNBQ piece move.
+  // ---------------------------------------------------------------------------
+
+  @Test
+  void testLongAlgebraicPawnCapture() {
+    final Board board = Board.fromFenStrict("rnbqkbnr/ppp2ppp/8/3pp3/4P3/5N2/PPPP1PPP/RNBQKB1R w KQkq - 0 3");
+    final LenientSanParseResult result = board.moveLenient("e4xd5");
+    assertExactlyOneCode(result, LenientSanValidationProblem.LONG_ALGEBRAIC_NOTATION);
+    assertEquals("exd5", canonical(result));
+  }
+
+  @Test
+  void testLongAlgebraicPieceCaptureWithoutPieceLetter() {
+    final Board board = Board.fromFenStrict("rnbqkbnr/ppp2ppp/8/3pp3/4P3/5N2/PPPP1PPP/RNBQKB1R w KQkq - 0 3");
+    final LenientSanParseResult result = board.moveLenient("f3xe5");
+    assertContainsCode(result, LenientSanValidationProblem.LONG_ALGEBRAIC_NOTATION);
+    assertContainsCode(result, LenientSanValidationProblem.OVERSPECIFIED_SQUARE_DISAMBIGUATION);
+    assertEquals(2, result.forgivenItems().size());
+    assertEquals("Nxe5", canonical(result));
+  }
+
+  @Test
+  void testLongAlgebraicPromotion() {
+    final Board board = Board.fromFenStrict("8/P6k/8/8/8/8/6p1/1n2K3 b - - 0 1");
+    final LenientSanParseResult result = board.moveLenient("g2-g1=Q+");
+    assertExactlyOneCode(result, LenientSanValidationProblem.LONG_ALGEBRAIC_NOTATION);
+    assertEquals("g1=Q+", canonical(result));
+  }
+
+  @Test
+  void testLongAlgebraicCapturePromotion() {
+    final Board board = Board.fromFenStrict("8/8/8/8/8/5k2/2p5/3RK3 b - - 0 1");
+    final LenientSanParseResult result = board.moveLenient("c2xd1=B");
+    assertExactlyOneCode(result, LenientSanValidationProblem.LONG_ALGEBRAIC_NOTATION);
+    assertEquals("cxd1=B", canonical(result));
+  }
+
+  @Test
+  void testUciPromotionWithEquals() {
+    final Board board = Board.fromFenStrict("8/P6k/8/8/8/8/6p1/1n2K3 b - - 0 1");
+    final LenientSanParseResult result = board.moveLenient("g2g1=Q+");
+    assertExactlyOneCode(result, LenientSanValidationProblem.UCI_NOTATION);
+    assertEquals("g1=Q+", canonical(result));
+  }
+
+  @Test
+  void testLongAlgebraicKingMove() {
+    final Board board = Board.fromFenStrict("4k3/8/8/8/8/8/3n4/4K3 w - - 0 1");
+    final LenientSanParseResult result = board.moveLenient("Ke1-e2");
+    assertContainsCode(result, LenientSanValidationProblem.LONG_ALGEBRAIC_NOTATION);
+    assertContainsCode(result, LenientSanValidationProblem.OVERSPECIFIED_SQUARE_DISAMBIGUATION);
+    assertEquals(2, result.forgivenItems().size());
+    assertEquals("Ke2", canonical(result));
+  }
+
+  @Test
+  void testLongAlgebraicKingCapture() {
+    final Board board = Board.fromFenStrict("4k3/8/8/8/8/8/3n4/4K3 w - - 0 1");
+    final LenientSanParseResult result = board.moveLenient("Ke1xd2");
+    assertExactlyOneCode(result, LenientSanValidationProblem.OVERSPECIFIED_SQUARE_DISAMBIGUATION);
+    assertEquals("Kxd2", canonical(result));
+  }
+
+  @Test
+  void testUciKingMove() {
+    final Board board = Board.fromFenStrict("4k3/8/8/8/8/8/3n4/4K3 w - - 0 1");
+    final LenientSanParseResult result = board.moveLenient("e1e2");
+    assertContainsCode(result, LenientSanValidationProblem.UCI_NOTATION);
+    assertContainsCode(result, LenientSanValidationProblem.OVERSPECIFIED_SQUARE_DISAMBIGUATION);
+    assertEquals(2, result.forgivenItems().size());
+    assertEquals("Ke2", canonical(result));
+  }
+
+  @Test
+  void testUciKingCapture() {
+    final Board board = Board.fromFenStrict("4k3/8/8/8/8/8/3n4/4K3 w - - 0 1");
+    final LenientSanParseResult result = board.moveLenient("e1d2");
+    assertContainsCode(result, LenientSanValidationProblem.UCI_NOTATION);
+    assertContainsCode(result, LenientSanValidationProblem.MISSING_CAPTURE_MARKER);
+    assertEquals("Kxd2", canonical(result));
+  }
+
+  @Test
+  void testRejectKingMoveWithWrongOriginSquare() {
+    final Board board = Board.fromFenStrict("4k3/8/8/8/8/8/3n4/4K3 w - - 0 1");
+    assertThrows(LenientSanParserValidationException.class, () -> board.moveLenient("Kd1-e2"));
+    assertThrows(LenientSanParserValidationException.class, () -> board.moveLenient("Ke8e7"));
+  }
+
+  @ParameterizedTest
+  @CsvSource({ "w, e8g8, e1g1, O-O", "w, e8c8, e1c1, O-O-O", "b, e1g1, e8g8, O-O", "b, e1c1, e8c8, O-O-O",
+      "w, E8G8, E1G1, O-O", "b, E1C1, E8C8, O-O-O" })
+  void testCoordinateCastlingKeepsMovingSide(String side, String invalidMove, String validMove, String san) {
+    final String fen = "r3k2r/8/8/8/8/8/8/R3K2R " + side + " KQkq - 0 1";
+    final Board board = Board.fromFenStrict(fen);
+    assertThrows(LenientSanParserValidationException.class, () -> board.moveLenient(invalidMove));
+    assertEquals(fen, board.getFen());
+    assertEquals(0, board.getPerformedMoveCount());
+    board.moveLenient(validMove);
+    assertEquals(san, board.getSan());
+  }
+
+  @ParameterizedTest
+  @CsvSource({ "a1a3q, a1a3", "b1c3n, b1c3", "c1e3b, c1e3", "d1d4r, d1d4", "e1e2q, e1e2", "g1-f3=Q, g1-f3" })
+  void testRejectNonPawnCoordinatePromotion(String invalidMove, String validMove) {
+    final String fen = "4k3/8/8/8/8/8/8/RNBQKBNR w KQ - 0 1";
+    final Board board = Board.fromFenStrict(fen);
+    assertThrows(LenientSanParserValidationException.class, () -> board.moveLenient(invalidMove));
+    assertEquals(fen, board.getFen());
+    assertEquals(0, board.getPerformedMoveCount());
+    board.moveLenient(validMove);
+    assertEquals(1, board.getPerformedMoveCount());
+  }
+
+  @Test
+  void testRejectPawnPushWithCaptureMarker() {
+    final Board board = new Board();
+    assertThrows(LenientSanParserValidationException.class, () -> board.moveLenient("e2xe4"));
+  }
+
+  @ParameterizedTest
+  @CsvSource({ "7k/8/3p4/4P3/4P3/8/8/K7 w - - 0 20, e4xd6, e5xd6", "7k/8/3p4/4P3/4P3/8/8/K7 w - - 0 20, e4d6, e5d6",
+      "7k/8/3p4/4P3/4P3/8/8/K7 w - - 0 20, e4-e6, e5-e6", "7k/4P3/4P3/8/8/8/8/K7 w - - 0 20, e6-e8=Q, e7-e8=Q",
+      "7k/4P3/4P3/8/8/8/8/K7 w - - 0 20, e6e8q, e7e8q", "3r3k/4P3/4P3/8/8/8/8/K7 w - - 0 20, e6xd8=N, e7xd8=N",
+      "7k/8/8/3pP3/4P3/8/8/K7 w - d6 0 20, e4xd6, e5xd6", "7k/8/8/4p3/4p3/3P4/8/K7 b - - 0 20, e5xd3, e4xd3",
+      "7k/8/8/8/8/4p3/4p3/K7 b - - 0 20, e3-e1=Q, e2-e1=Q", "7k/8/4p3/8/8/8/4P3/K7 w - - 0 20, e6-e3, e2-e3" })
+  void testCoordinatePawnMoveKeepsItsOrigin(String fen, String invalidMove, String validMove) {
+    final Board board = Board.fromFenStrict(fen);
+    assertThrows(LenientSanParserValidationException.class, () -> board.moveLenient(invalidMove));
+    assertEquals(fen, board.getFen());
+    assertEquals(0, board.getPerformedMoveCount());
+
+    board.moveLenient(validMove);
+    assertEquals(validMove.substring(0, 2), board.getLastMove().moveSpecification().fromSquare().getName());
+  }
+
+  @Test
+  void testBishopUnderpromotionWithOtherDeviation() {
+    // Regression: the uppercase-file-letter fold turned the promotion piece B into the file letter b, so a bishop
+    // underpromotion failed as soon as any other deviation sent the move through the lenient pipeline.
+    final String fen = "8/8/8/8/8/5k2/2p5/3RK3 b - - 0 1";
+
+    final LenientSanParseResult spuriousCheck = Board.fromFenStrict(fen).moveLenient("cxd1=B+");
+    assertExactlyOneCode(spuriousCheck, LenientSanValidationProblem.SPURIOUS_CHECK_SUFFIX);
+    assertEquals("cxd1=B", canonical(spuriousCheck));
+
+    final LenientSanParseResult missingCaptureMarker = Board.fromFenStrict(fen).moveLenient("cd1=B");
+    assertExactlyOneCode(missingCaptureMarker, LenientSanValidationProblem.MISSING_CAPTURE_MARKER);
+    assertEquals("cxd1=B", canonical(missingCaptureMarker));
+
+    final LenientSanParseResult missingEquals = Board.fromFenStrict(fen).moveLenient("c1B");
+    assertExactlyOneCode(missingEquals, LenientSanValidationProblem.MISSING_PROMOTION_EQUALS);
+    assertEquals("c1=B", canonical(missingEquals));
+
+    final LenientSanParseResult lowercasePiece = Board.fromFenStrict(fen).moveLenient("cxd1=b");
+    assertExactlyOneCode(lowercasePiece, LenientSanValidationProblem.LOWERCASE_PROMOTION_PIECE);
+    assertEquals("cxd1=B", canonical(lowercasePiece));
+
+    final LenientSanParseResult uciUppercase = Board.fromFenStrict(fen).moveLenient("c2d1B");
+    assertExactlyOneCode(uciUppercase, LenientSanValidationProblem.UCI_NOTATION);
+    assertEquals("cxd1=B", canonical(uciUppercase));
+  }
+
+  @Test
+  void testLibraryReadsBackItsOwnLanAndUci() {
+    // Every move of seeded random games, written by the library as LAN and as UCI, must be read back as the same
+    // move. The counters make sure the move kinds that have no SAN-like LAN form are actually exercised.
+    final Random random = new Random(20260622L);
+    int kingMoves = 0;
+    int kingCaptures = 0;
+    int pawnCaptures = 0;
+    int promotions = 0;
+    int capturePromotions = 0;
+    int enPassantCaptures = 0;
+    int castlings = 0;
+    for (int game = 0; game < 60; game++) {
+      final Board ref = new Board();
+      final Board lanBoard = new Board();
+      final Board uciBoard = new Board();
+      for (int moveIndex = 0; moveIndex < 200; moveIndex++) {
+        final List<LegalMove> legalMoves = ref.getLegalMoves();
+        if (legalMoves.isEmpty()) {
+          break;
+        }
+        final LegalMove move = Nulls.get(legalMoves, random.nextInt(legalMoves.size()));
+        final boolean isPawn = move.movingPiece().getPieceType() == PieceType.PAWN;
+        final boolean isKing = move.movingPiece().getPieceType() == PieceType.KING;
+        if (move.isCastling()) {
+          castlings++;
+        } else if (isKing && move.isCapture()) {
+          kingCaptures++;
+        } else if (isKing) {
+          kingMoves++;
+        } else if (isPawn && move.isPromotion() && move.isCapture()) {
+          capturePromotions++;
+        } else if (isPawn && move.isPromotion()) {
+          promotions++;
+        } else if (isPawn && move.isEnPassant()) {
+          enPassantCaptures++;
+        } else if (isPawn && move.isCapture()) {
+          pawnCaptures++;
+        }
+
+        ref.move(move.moveSpecification());
+        final String lan = ref.getLan();
+        final String uci = UciMoveUtility.toUci(move.movingSide(), move.moveSpecification()).uci();
+
+        lanBoard.moveLenient(lan);
+        assertEquals(move.moveSpecification(), lanBoard.getLastMove().moveSpecification(), "LAN " + lan);
+        uciBoard.moveLenient(uci);
+        assertEquals(move.moveSpecification(), uciBoard.getLastMove().moveSpecification(), "UCI " + uci);
+      }
+    }
+    assertTrue(
+        kingMoves > 0 && kingCaptures > 0 && pawnCaptures > 0 && promotions > 0 && capturePromotions > 0
+            && enPassantCaptures > 0 && castlings > 0,
+        "Move kind not covered: king " + kingMoves + ", king capture " + kingCaptures + ", pawn capture " + pawnCaptures
+            + ", promotion " + promotions + ", capture promotion " + capturePromotions + ", en passant "
+            + enPassantCaptures + ", castling " + castlings);
   }
 
   // ---------------------------------------------------------------------------

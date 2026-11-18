@@ -4,17 +4,26 @@
 package io.github.dlbbld.ashlarchess.test.pgn.export;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import java.util.Objects;
 
 import org.junit.jupiter.api.Test;
 
 import io.github.dlbbld.ashlarchess.board.enums.Side;
 import io.github.dlbbld.ashlarchess.board.enums.Square;
 import io.github.dlbbld.ashlarchess.fen.internal.FenConstants;
+import io.github.dlbbld.ashlarchess.internal.Nulls;
+import io.github.dlbbld.ashlarchess.pgn.ForgivenTagItem;
+import io.github.dlbbld.ashlarchess.pgn.ForgivenTagItemCode;
 import io.github.dlbbld.ashlarchess.pgn.LenientPgnParser;
+import io.github.dlbbld.ashlarchess.pgn.LenientPgnParserValidationProblem;
 import io.github.dlbbld.ashlarchess.pgn.LenientPgnParserValidationResult;
 import io.github.dlbbld.ashlarchess.pgn.PgnCreate;
 import io.github.dlbbld.ashlarchess.pgn.PgnGame;
+import io.github.dlbbld.ashlarchess.pgn.StrictPgnParser;
+import io.github.dlbbld.ashlarchess.pgn.StrictPgnParserValidationProblem;
 import io.github.dlbbld.ashlarchess.pgn.WriteMode;
 import io.github.dlbbld.ashlarchess.pgn.internal.TagUtility;
 
@@ -35,6 +44,88 @@ import io.github.dlbbld.ashlarchess.pgn.internal.TagUtility;
  */
 @SuppressWarnings("static-method")
 class TestPgnRoundTripEdgeCases {
+
+  @Test
+  void emptyPregameCommentRoundTripsWithoutInventingTagsOrResult() {
+    final PgnGame game = LenientPgnParser.parseText("{}");
+    final String semantic = PgnCreate.toPgnString(game);
+    assertEquals("{}\n\n", semantic);
+    assertEquals(game, LenientPgnParser.parseText(semantic));
+    assertEquals(LenientPgnParserValidationProblem.FILE_EMPTY, LenientPgnParser.validateText("\n\n").parserProblem());
+  }
+
+  @Test
+  void blankLinesInsideCommentsSurviveArchivalExport() {
+    final String input = "[Event \"{\"]\n[Result \"*\"]\n\n{intro\r\n\r\n\r\nend} 1. e4 {first{\n\nsecond} e5 *";
+    final PgnGame game = LenientPgnParser.parseText(input);
+    final String archive = PgnCreate.toPgnString(game, WriteMode.ARCHIVAL);
+    final PgnGame strict = StrictPgnParser.parseText(archive);
+    assertEquals("intro\n\n\nend", strict.pregameCommentary().value());
+    assertEquals(game.moves(), strict.moves());
+    assertEquals("first{\n\nsecond", Nulls.getFirst(strict.moves()).commentary().value());
+    assertEquals(StrictPgnParserValidationProblem.FILE_EMPTY_LINE_EXACTLY_TWO,
+        StrictPgnParser.validateText(archive + "\n").parserProblem());
+  }
+
+  @Test
+  void tagValueLengthCountsDecodedCharacters() {
+    final String prefix = "v".repeat(252) + "\uD83D\uDE00";
+    final String input = "[Label \"" + prefix + "\\\"\\\\\"]\n[Result \"*\"]\n\n*\n\n";
+    final PgnGame game = StrictPgnParser.parseText(input);
+    assertEquals(prefix + "\"\\", TagUtility.readTagValue(game, "Label"));
+    assertEquals(game, LenientPgnParser.parseText(input));
+    final String archive = PgnCreate.toPgnString(game, WriteMode.ARCHIVAL);
+    assertEquals(prefix + "\"\\", TagUtility.readTagValue(StrictPgnParser.parseText(archive), "Label"));
+  }
+
+  @Test
+  void invalidTagStringsAreForgivenOnlyByLenientImport() {
+    assertOnlyLenientAcceptsTagString("a\0b", ForgivenTagItemCode.TAG_VALUE_NON_PRINTING_CHARACTER, "U+0000");
+    assertOnlyLenientAcceptsTagString("a\tb", ForgivenTagItemCode.TAG_VALUE_NON_PRINTING_CHARACTER, "U+0009");
+    assertOnlyLenientAcceptsTagString("a\u007fb", ForgivenTagItemCode.TAG_VALUE_NON_PRINTING_CHARACTER, "U+007F");
+    assertOnlyLenientAcceptsTagString("a\u0085b", ForgivenTagItemCode.TAG_VALUE_NON_PRINTING_CHARACTER, "U+0085");
+    assertOnlyLenientAcceptsTagString("a\uD800b", ForgivenTagItemCode.TAG_VALUE_NON_PRINTING_CHARACTER, "U+D800");
+    assertOnlyLenientAcceptsTagString("a\u2028b", ForgivenTagItemCode.TAG_VALUE_NON_PRINTING_CHARACTER, "U+2028");
+    assertOnlyLenientAcceptsTagString("a\u2029b", ForgivenTagItemCode.TAG_VALUE_NON_PRINTING_CHARACTER, "U+2029");
+    assertOnlyLenientAcceptsTagString("a\uE000b", ForgivenTagItemCode.TAG_VALUE_NON_PRINTING_CHARACTER, "U+E000");
+    assertOnlyLenientAcceptsTagString("a\uFDD0b", ForgivenTagItemCode.TAG_VALUE_NON_PRINTING_CHARACTER, "U+FDD0");
+    assertOnlyLenientAcceptsTagString("a\uFFFFb", ForgivenTagItemCode.TAG_VALUE_NON_PRINTING_CHARACTER, "U+FFFF");
+    assertOnlyLenientAcceptsTagString(Objects.requireNonNull("v".repeat(256)), ForgivenTagItemCode.TAG_VALUE_TOO_LONG, "256");
+  }
+
+  @Test
+  void tagValuesKeepFormatCharactersAndCodePointsNewerThanTheJdk() {
+    // Regression: these were rejected as non-printing. The zero-width non-joiner is part of Persian spelling and the
+    // zero-width joiner of emoji sequences. U+1FAE8 is assigned since Unicode 15, so Java 17 still reports it as
+    // unassigned, and U+0378 is unassigned in every Unicode version so far: accepting both keeps the verdict the same
+    // on every Java version.
+    for (final String value : Nulls.listOf("\u0639\u0644\u06CC\u200C\u0631\u0636\u0627",
+        "\uD83D\uDC68\u200D\uD83D\uDC69", "a\u00ADb", "a\u200Bb", "a\u200Fb", "a\uFEFFb",
+        "a" + Character.toString(0x1FAE8) + "b", "a" + Character.toString(0x0378) + "b")) {
+      final String input = "[Label \"" + value + "\"]\n[Result \"*\"]\n\n*\n\n";
+      final PgnGame game = StrictPgnParser.parseText(input);
+      assertEquals(value, TagUtility.readTagValue(game, "Label"));
+      assertEquals(game, LenientPgnParser.parseText(input));
+      final String archive = PgnCreate.toPgnString(game, WriteMode.ARCHIVAL);
+      assertEquals(value, TagUtility.readTagValue(StrictPgnParser.parseText(archive), "Label"));
+    }
+  }
+
+  // Strict import and archival export follow the PGN string rules. Lenient import keeps the value and reports it, and
+  // semantic export writes it back unchanged, so the lenient round trip loses nothing.
+  private static void assertOnlyLenientAcceptsTagString(String value, ForgivenTagItemCode code, String detail) {
+    final String input = "[Label \"" + value + "\"]\n[Result \"*\"]\n\n*\n\n";
+    assertEquals(StrictPgnParserValidationProblem.TAG_FORMAT_INVALID,
+        StrictPgnParser.validateText(input).parserProblem());
+    final LenientPgnParserValidationResult lenient = LenientPgnParser.validateText(input);
+    assertTrue(lenient.isValid(), () -> "Expected lenient parse to succeed but got: " + lenient.message());
+    assertTrue(lenient.tagForgivenItems().contains(new ForgivenTagItem(code, "Label", detail)),
+        () -> "Expected " + code + " with detail " + detail + " in: " + lenient.tagForgivenItems());
+    final PgnGame game = LenientPgnParser.parseText(input);
+    assertEquals(value, TagUtility.readTagValue(game, "Label"));
+    assertEquals(game, LenientPgnParser.parseText(PgnCreate.toPgnString(game)));
+    assertThrows(IllegalArgumentException.class, () -> PgnCreate.toPgnString(game, WriteMode.ARCHIVAL));
+  }
 
   @Test
   void test01_tagValueWithEmbeddedQuoteAndBackslashRoundTrips() {

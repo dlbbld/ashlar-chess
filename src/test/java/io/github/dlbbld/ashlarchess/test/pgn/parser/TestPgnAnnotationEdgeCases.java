@@ -6,14 +6,18 @@ package io.github.dlbbld.ashlarchess.test.pgn.parser;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTimeoutPreemptively;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.time.Duration;
 import java.util.List;
+import java.util.Objects;
 
 import org.junit.jupiter.api.Test;
 
 import io.github.dlbbld.ashlarchess.internal.Nulls;
 import io.github.dlbbld.ashlarchess.pgn.LenientPgnParser;
+import io.github.dlbbld.ashlarchess.pgn.LenientPgnParserValidationException;
 import io.github.dlbbld.ashlarchess.pgn.Nag;
 import io.github.dlbbld.ashlarchess.pgn.PgnCreate;
 import io.github.dlbbld.ashlarchess.pgn.PgnGame;
@@ -74,13 +78,22 @@ class TestPgnAnnotationEdgeCases {
   @SuppressWarnings("static-method")
   @Test
   void nonNumericNagIsDroppedLenientlyAsOneToken() {
-    // `$abc` and `$1x` are captured whole as malformed NAG tokens (the trailing letters do NOT spill out as a bad
-    // SAN); lenient drops them and the game still parses.
-    final PgnGame game = lenient("1. e4 $abc e5 $1x 2. Nf3 Nc6 *");
+    final PgnGame game = lenient("1. e4 $abc e5 $x 2. Nf3 Nc6 *");
     assertEquals(4, game.moves().size());
     for (int i = 0; i < 4; i++) {
       assertEquals(List.of(), Nulls.get(game.moves(), i).nags(), "move " + i);
     }
+  }
+
+  @SuppressWarnings("static-method")
+  @Test
+  void numericNagEndsBeforeTheFollowingMove() {
+    final PgnGame game = lenient("1. e4 $1e5 *");
+    assertEquals(lenient("1. e4 $1 e5 *"), game);
+    assertEquals(List.of(new Nag(1)), Nulls.getFirst(game.moves()).nags());
+    assertEquals("e5", Nulls.get(game.moves(), 1).san());
+    assertStrictProblem("1. e4 $1e5 *", StrictPgnParserValidationProblem.MOVETEXT_UNEXPECTED_FORMAT);
+    assertThrows(LenientPgnParserValidationException.class, () -> lenient("1. e4 $1x *"));
   }
 
   @SuppressWarnings("static-method")
@@ -125,6 +138,17 @@ class TestPgnAnnotationEdgeCases {
 
   @SuppressWarnings("static-method")
   @Test
+  void mainlineAnnotationsContinueAfterVariationsAndDetachedGlyphs() {
+    final PgnGame game = lenient("1. e4 (1. d4 {side} (1. c4)) {first} $14 ! {second} (1. b4) ? e5 *");
+    assertEquals(2, game.moves().size());
+    assertEquals("first second", Nulls.getFirst(game.moves()).commentary().value());
+    assertEquals(List.of(new Nag(14), new Nag(1), new Nag(2)), Nulls.getFirst(game.moves()).nags());
+    assertEquals("e5", Nulls.getLast(game.moves()).san());
+    assertEquals("", Nulls.getLast(game.moves()).commentary().value());
+  }
+
+  @SuppressWarnings("static-method")
+  @Test
   void nagInsideAVariationIsSkippedWithIt() {
     // The $2 lives inside the skipped side-line; no mainline move picks it up.
     final PgnGame game = lenient("1. e4 e5 (1... c5 $2 2. Nf3) 2. Nf3 *");
@@ -132,6 +156,35 @@ class TestPgnAnnotationEdgeCases {
     for (int i = 0; i < 3; i++) {
       assertEquals(List.of(), Nulls.get(game.moves(), i).nags(), "move " + i);
     }
+  }
+
+  @SuppressWarnings("static-method")
+  @Test
+  void interleavedNagsAndCommentsKeepTheirOrder() {
+    final PgnGame game = lenient("1. e4 $1 {a} {} $2 {b} e5 {c} $3 2. Nf3 ! $4 {d} *");
+    assertEquals(List.of(new Nag(1), new Nag(2)), Nulls.get(game.moves(), 0).nags());
+    assertEquals("a b", Nulls.get(game.moves(), 0).commentary().value());
+    assertEquals(List.of(new Nag(3)), Nulls.get(game.moves(), 1).nags());
+    assertEquals("c", Nulls.get(game.moves(), 1).commentary().value());
+    assertEquals(List.of(new Nag(1), new Nag(4)), Nulls.get(game.moves(), 2).nags());
+    assertEquals("d", Nulls.get(game.moves(), 2).commentary().value());
+  }
+
+  @SuppressWarnings("static-method")
+  @Test
+  void manyAnnotationsOnOneMoveParseInLinearTime() {
+    // Regression: each annotation rebuilt the move with a copy of everything collected so far, so this input took
+    // minutes. The generous limit only has to tell linear from quadratic.
+    final int annotationCount = 200_000;
+    final StringBuilder movetext = new StringBuilder("1. e4");
+    for (int i = 0; i < annotationCount; i++) {
+      movetext.append(" $1 {c}");
+    }
+    movetext.append(" *");
+    final PgnGame game = Objects
+        .requireNonNull(assertTimeoutPreemptively(Duration.ofSeconds(30), () -> lenient(Nulls.toString(movetext))));
+    assertEquals(annotationCount, Nulls.get(game.moves(), 0).nags().size());
+    assertEquals(2 * annotationCount - 1, Nulls.get(game.moves(), 0).commentary().value().length());
   }
 
   // -----------------------------------------------------------------------------------------------------------------
@@ -306,6 +359,16 @@ class TestPgnAnnotationEdgeCases {
     final PgnGame game = lenient("1. e4 $2 $1 e5 $1 $1 *");
     final String pgn = PgnCreate.toPgnString(game);
     assertEquals("1. e4? $1 e5! $1 *", Nulls.substring(pgn, pgn.indexOf("1. ")).trim());
+  }
+
+  @SuppressWarnings("static-method")
+  @Test
+  void semanticExportKeepsAssessmentsAfterPositionalNags() {
+    final PgnGame game = lenient("1. e4 $14 $1 $14 $1 e5 $0 $2 *");
+    final String pgn = PgnCreate.toPgnString(game);
+    assertEquals("1. e4 $14 $1 $14 $1 e5 $0 $2 *", Nulls.substring(pgn, pgn.indexOf("1. ")).trim());
+    assertEquals(game, LenientPgnParser.parseText(pgn));
+    assertEquals(game, StrictPgnParser.parseText(pgn));
   }
 
   @SuppressWarnings("static-method")

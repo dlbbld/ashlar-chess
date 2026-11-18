@@ -11,6 +11,7 @@ import java.nio.file.Path;
 import org.junit.jupiter.api.Test;
 
 import io.github.dlbbld.ashlarchess.internal.Nulls;
+import io.github.dlbbld.ashlarchess.pgn.LenientPgnParser;
 import io.github.dlbbld.ashlarchess.pgn.StrictPgnParser;
 import io.github.dlbbld.ashlarchess.pgn.StrictPgnParserValidationException;
 import io.github.dlbbld.ashlarchess.pgn.StrictPgnParserValidationProblem;
@@ -19,6 +20,24 @@ import io.github.dlbbld.ashlarchess.test.pgntest.constants.PgnTestConstants;
 class TestStrictPgnParserNotSanException {
   private static final Path PGN_TEST_FOLDER_PATH = Nulls
       .pathResolve(PgnTestConstants.STRICT_PGN_PARSER_TEST_ROOT_FOLDER_PATH, "exception/other");
+
+  @SuppressWarnings("static-method")
+  @Test
+  void strictRequiresLiteralSpacesAndRejectsTrailingWhitespace() {
+    final String header = "[Result \"*\"]\n\n";
+    assertSpacingProblem("[Result\t\"*\"]\n\n1. e4 *\n\n", StrictPgnParserValidationProblem.TAG_FORMAT_INVALID);
+    assertSpacingProblem(header + "1.\te4 *\n\n", StrictPgnParserValidationProblem.MOVETEXT_UNEXPECTED_FORMAT);
+    assertSpacingProblem(header + "1. e4 {note}\t*\n\n",
+        StrictPgnParserValidationProblem.MOVETEXT_COMMENTARY_NOT_FOLLOWED_BY_SPACE);
+    assertSpacingProblem(header + "1. e4 * \n\n", StrictPgnParserValidationProblem.MOVETEXT_UNEXPECTED_FORMAT);
+    assertSpacingProblem(header + "1. e4 *\t\n\n", StrictPgnParserValidationProblem.MOVETEXT_UNEXPECTED_FORMAT);
+    assertTrue(StrictPgnParser.validateText(header + "1.\ne4 {a\tb} *\n\n").isValid());
+  }
+
+  private static void assertSpacingProblem(String text, StrictPgnParserValidationProblem expected) {
+    assertEquals(expected, StrictPgnParser.validateText(text).parserProblem());
+    assertTrue(LenientPgnParser.validateText(text).isValid());
+  }
 
   @SuppressWarnings("static-method")
   @Test

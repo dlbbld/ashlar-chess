@@ -81,14 +81,15 @@ public final class BasicHelpmateExistenceTheorem {
       return BasicHelpmateExistenceTheoremResult.NOT_APPLICABLE;
     }
 
+    // Leave genuine terminals to the regular path, whoever is to move: the theorem speaks about ongoing positions, and
+    // a mated or stalemated W has no helpmate despite its material.
+    if (board.isCheckmate() || board.isStalemate()) {
+      return BasicHelpmateExistenceTheoremResult.NOT_APPLICABLE;
+    }
+
     if (board.getSideToMove() == winner) {
       // W to move: W has a helpmate.
       return BasicHelpmateExistenceTheoremResult.WINNABLE;
-    }
-
-    // L to move. Leave genuine terminals to the regular path.
-    if (board.isCheckmate() || board.isStalemate()) {
-      return BasicHelpmateExistenceTheoremResult.NOT_APPLICABLE;
     }
 
     if (isTwoMajorClass) {

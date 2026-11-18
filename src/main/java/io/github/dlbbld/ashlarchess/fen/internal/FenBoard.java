@@ -16,6 +16,11 @@ public final class FenBoard {
   }
 
   public static String toFen(Board board) {
+    return toFen(board, board.getHalfMoveClock());
+  }
+
+  /** The FEN of the current position with the given halfmove clock in place of the board's own. */
+  public static String toFen(Board board, int halfMoveClock) {
 
     final Side sideToMove = board.getSideToMove();
 
@@ -89,7 +94,7 @@ public final class FenBoard {
     fen.append(" ");
 
     // halfmove clock
-    fen.append(board.getHalfMoveClock());
+    fen.append(halfMoveClock);
     fen.append(" ");
 
     // fullmove number (of next move)
